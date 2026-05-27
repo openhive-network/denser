@@ -665,6 +665,85 @@ export function expectFollowCustomJson(
   });
 }
 
+/**
+ * TX-08 / TX-09 (custom_json id="community"): subscribe / unsubscribe /
+ * setRole / setUserTitle / pinPost / unpinPost / flagPost / mutePost /
+ * unmutePost / updateProps.
+ *
+ * All community-management operations go through `CommunityOperation.*` in
+ * `@hiveio/wax` and emit a single `custom_json_operation` whose `id` is
+ * `"community"` and whose `json` parses to `[action, payload]` — where
+ * `action` is the verb (`"subscribe"`, `"setRole"`, …) and `payload` is
+ * the operation-specific object that wax serialises (e.g.
+ * `{ community }`, `{ community, account, role }`,
+ * `{ community, account, permlink }`, etc.).
+ *
+ * Assertion is **subset on payload**: only the keys present in
+ * `expected.payload` are checked. The chain occasionally adds defaulted
+ * keys (`notes: ""` for flag/mute ops when the caller omits notes) and
+ * we want specs to pass when those defaults appear. Pass the exact wire
+ * shape if you need a stricter check.
+ *
+ * `required_posting_auths` is asserted equal to `[expected.required_auth]`
+ * (the seeded user — same contract as `expectFollowCustomJson`).
+ */
+export interface CommunityCustomJsonExpectations {
+  required_auth: string;
+  action: string;
+  payload: Record<string, unknown>;
+}
+
+export function expectCommunityCustomJson(
+  call: InterceptedBroadcast,
+  expected: CommunityCustomJsonExpectations
+): void {
+  const trx = (call.params as { trx?: unknown } | undefined)?.trx as
+    | { operations?: unknown[] }
+    | undefined;
+  expect(trx, 'broadcast params should include trx').toBeDefined();
+
+  const op = trx?.operations?.[0] as
+    | { type?: string; value?: Record<string, unknown> }
+    | undefined;
+  expect(op?.type, 'operation.type should be custom_json_operation').toBe(
+    'custom_json_operation'
+  );
+
+  const value = op?.value as
+    | {
+        id?: string;
+        json?: string;
+        required_posting_auths?: string[];
+      }
+    | undefined;
+  expect(value?.id, 'custom_json.id').toBe('community');
+  expect(
+    value?.required_posting_auths,
+    'custom_json.required_posting_auths'
+  ).toEqual([expected.required_auth]);
+
+  const rawJson = value?.json ?? '';
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(rawJson);
+  } catch {
+    throw new Error(
+      `custom_json.json should be JSON-parseable; got: ${rawJson}`
+    );
+  }
+  expect(Array.isArray(parsed), 'custom_json.json should be a tuple').toBe(true);
+  const [tag, payload] = parsed as [unknown, unknown];
+  expect(tag, 'custom_json.json[0]').toBe(expected.action);
+
+  // Subset assertion — chain may pad in defaulted keys (e.g. notes="").
+  expect(payload, 'custom_json.json[1] should be an object').toBeDefined();
+  expect(typeof payload, 'custom_json.json[1] type').toBe('object');
+  const actualPayload = payload as Record<string, unknown>;
+  for (const [key, expectedValue] of Object.entries(expected.payload)) {
+    expect(actualPayload[key], `payload.${key}`).toEqual(expectedValue);
+  }
+}
+
 /** TX-15: `delete_comment_operation` payload. */
 export interface DeleteCommentOperationExpectations {
   author: string;
@@ -848,6 +927,34 @@ export interface InstallBroadcastInterceptorOptions {
   profileUpdateSwap?: {
     account: string;
   };
+  /**
+   * Hot-swap subsequent `bridge.get_community` responses for the given
+   * community **after** an `updateProps` community custom_json broadcast
+   * lands, applying the broadcast's `props` (title / about / description /
+   * flag_text / is_nsfw / lang) to the community result.
+   *
+   * Why: `useUpdateCommunityMutation.onSuccess` invalidates
+   * `['community', name]` 4 seconds after a successful broadcast, refetching
+   * `bridge.get_community`. The fixture-proxy serves the pre-edit recording,
+   * so without this swap the community page reverts to its old title/about.
+   * The swap keeps the page consistent with what was just edited — the same
+   * role `profileUpdateSwap` plays for the settings form.
+   */
+  communityUpdateSwap?: {
+    community: string;
+  };
+  /**
+   * Hot-swap subsequent `bridge.get_post` / `bridge.get_discussion` so a post's
+   * `author_title` reflects a `setUserTitle` community custom_json after it
+   * lands. `useUserTitleMutation` has NO optimistic update — it only
+   * invalidates `['postData', user, permlink]` / `['discussionData', permlink]`
+   * — and the fixture refetch returns the recorded (old) title, so without this
+   * the author-title badge never updates. Patches `author_title` (to the
+   * broadcast's title) on entries authored by `account`.
+   */
+  userTitleSwap?: {
+    account: string;
+  };
 }
 
 interface PostEditPatch {
@@ -898,6 +1005,43 @@ function patchFindAccountsResponse(
   return responseBody;
 }
 
+function patchGetCommunityResponse(
+  responseBody: unknown,
+  community: string,
+  props: Record<string, unknown>
+): unknown {
+  if (typeof responseBody !== 'object' || responseBody === null) return responseBody;
+  const root = responseBody as { result?: Record<string, unknown> };
+  const result = root.result;
+  if (result && typeof result === 'object' && result.name === community) {
+    for (const key of ['title', 'about', 'description', 'flag_text', 'is_nsfw', 'lang'] as const) {
+      if (props[key] !== undefined) result[key] = props[key];
+    }
+  }
+  return responseBody;
+}
+
+function patchAuthorTitleResponse(
+  method: string,
+  responseBody: unknown,
+  account: string,
+  title: string
+): unknown {
+  if (typeof responseBody !== 'object' || responseBody === null) return responseBody;
+  const result = (responseBody as { result?: unknown }).result;
+  if (!result || typeof result !== 'object') return responseBody;
+  if (method === 'bridge.get_post') {
+    const post = result as Record<string, unknown>;
+    if (post.author === account) post.author_title = title;
+  } else if (method === 'bridge.get_discussion') {
+    const map = result as Record<string, Record<string, unknown>>;
+    for (const key of Object.keys(map)) {
+      if (map[key]?.author === account) map[key].author_title = title;
+    }
+  }
+  return responseBody;
+}
+
 function patchPostResponse(
   method: string,
   responseBody: unknown,
@@ -940,6 +1084,10 @@ export async function installBroadcastInterceptor(
   let postEditPatch: PostEditPatch | null = null;
   const profileUpdateSwap = options.profileUpdateSwap;
   let profileUpdatePatch: { posting_json_metadata: string } | null = null;
+  const communityUpdateSwap = options.communityUpdateSwap;
+  let communityUpdatePatch: Record<string, unknown> | null = null;
+  const userTitleSwap = options.userTitleSwap;
+  let userTitlePatch: { account: string; title: string } | null = null;
 
   // Lazy-init the wax chain only when block confirmation is requested —
   // it loads WASM and is ~hundreds of ms; not worth the overhead for
@@ -1058,6 +1206,56 @@ export async function installBroadcastInterceptor(
             body: JSON.stringify(patched)
           });
         }
+      }
+
+      // Community-update hot-swap. After an `updateProps` broadcast for the
+      // configured community has been captured, patch subsequent
+      // `bridge.get_community` for that community with the edited props so the
+      // 4s invalidation+refetch keeps the page on the new title/about.
+      if (
+        communityUpdateSwap &&
+        communityUpdatePatch &&
+        method === 'bridge.get_community'
+      ) {
+        const params = body?.params as { name?: string } | undefined;
+        if (params?.name === communityUpdateSwap.community) {
+          const upstream = await route.fetch();
+          const upstreamBody = await upstream.json();
+          const patched = patchGetCommunityResponse(
+            upstreamBody,
+            communityUpdateSwap.community,
+            communityUpdatePatch
+          );
+          return route.fulfill({
+            status: upstream.status(),
+            contentType: 'application/json',
+            body: JSON.stringify(patched)
+          });
+        }
+      }
+
+      // User-title hot-swap. After a setUserTitle broadcast for the account
+      // has been captured, patch subsequent get_post / get_discussion so the
+      // author-title badge reflects the new title (the mutation only
+      // invalidates; the fixture refetch would otherwise return the old title).
+      if (
+        userTitleSwap &&
+        userTitlePatch &&
+        (method === 'bridge.get_post' || method === 'bridge.get_discussion')
+      ) {
+        const upstream = await route.fetch();
+        const upstreamBody = await upstream.json();
+        const patched = patchAuthorTitleResponse(
+          method,
+          upstreamBody,
+          userTitlePatch.account,
+          userTitlePatch.title
+        );
+        return route.fulfill({
+          status: upstream.status(),
+          contentType: 'application/json',
+          body: JSON.stringify(patched)
+        });
       }
 
       // WorkerBee block-confirmation stubs. Only kick in once we've
@@ -1199,6 +1397,60 @@ export async function installBroadcastInterceptor(
             profileUpdatePatch = {
               posting_json_metadata: value.posting_json_metadata
             };
+          }
+        }
+
+        // Stash the community-update patch from an `updateProps` community
+        // custom_json. The broadcast carries the new props verbatim, so the
+        // get_community hot-swap can apply them on the next fetch.
+        if (communityUpdateSwap) {
+          const trx = (body?.params as { trx?: { operations?: unknown[] } } | undefined)?.trx;
+          const op = trx?.operations?.[0] as
+            | { type?: string; value?: { id?: string; json?: string } }
+            | undefined;
+          if (op?.type === 'custom_json_operation' && op.value?.id === 'community') {
+            try {
+              const parsed = JSON.parse(op.value.json ?? '');
+              if (Array.isArray(parsed) && parsed[0] === 'updateProps') {
+                const payload = parsed[1] as {
+                  community?: string;
+                  props?: Record<string, unknown>;
+                };
+                if (
+                  payload?.community === communityUpdateSwap.community &&
+                  payload.props
+                ) {
+                  communityUpdatePatch = payload.props;
+                }
+              }
+            } catch {
+              /* non-JSON custom_json — ignore */
+            }
+          }
+        }
+
+        // Stash the new title from a setUserTitle community custom_json so the
+        // get_post / get_discussion hot-swap can apply it on the refetch.
+        if (userTitleSwap) {
+          const trx = (body?.params as { trx?: { operations?: unknown[] } } | undefined)?.trx;
+          const op = trx?.operations?.[0] as
+            | { type?: string; value?: { id?: string; json?: string } }
+            | undefined;
+          if (op?.type === 'custom_json_operation' && op.value?.id === 'community') {
+            try {
+              const parsed = JSON.parse(op.value.json ?? '');
+              if (Array.isArray(parsed) && parsed[0] === 'setUserTitle') {
+                const payload = parsed[1] as { account?: string; title?: string };
+                if (
+                  payload?.account === userTitleSwap.account &&
+                  typeof payload.title === 'string'
+                ) {
+                  userTitlePatch = { account: payload.account, title: payload.title };
+                }
+              }
+            } catch {
+              /* non-JSON custom_json — ignore */
+            }
           }
         }
       }

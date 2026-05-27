@@ -1,8 +1,31 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, QueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/index';
 import { Community } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
+
+/**
+ * Reflect a subscribe/unsubscribe in the explorer's cached community lists so
+ * `CommunitiesListItem` (which derives `isSubscribed` from
+ * `community.context.subscribed`) flips. The list is cached per
+ * `['communitiesList', sort, query, observer]`; without this its `useEffect`
+ * recomputes `isSubscribed` from a stale `context.subscribed` and snaps the
+ * card back to its pre-action state. Mirrors the per-community
+ * `['community', X]` optimistic write the hooks already do.
+ */
+function patchCommunitiesListCache(
+  queryClient: QueryClient,
+  community: string,
+  subscribed: boolean
+): void {
+  queryClient.getQueriesData<Community[]>({ queryKey: ['communitiesList'] }).forEach(([key, list]) => {
+    if (!Array.isArray(list)) return;
+    queryClient.setQueryData(
+      key,
+      list.map((c) => (c.name === community ? { ...c, context: { ...c.context, subscribed } } : c))
+    );
+  });
+}
 
 /**
  * Makes subscribe transaction.
@@ -55,6 +78,7 @@ export function useSubscribeMutation() {
         };
         queryClient.setQueryData(communityQueryKey, updatedCommunity);
       }
+      patchCommunitiesListCache(queryClient, community, true);
     },
     onSuccess: (data) => {
       const { community, username, communityTitle } = data;
@@ -126,6 +150,7 @@ export function useUnsubscribeMutation() {
         };
         queryClient.setQueryData(communityQueryKey, updatedCommunity);
       }
+      patchCommunitiesListCache(queryClient, community, false);
     },
     onSuccess: (data) => {
       const { community, username } = data;

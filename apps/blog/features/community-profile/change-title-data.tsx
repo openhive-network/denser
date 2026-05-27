@@ -41,9 +41,18 @@ const ChangeTitleData = ({
     <>
       <div className="text-start">
         {t('communities.title')}
-        <Input value={text} onChange={(e) => setText(e.target.value)} />
+        <Input
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          data-testid="community-change-title-input"
+        />
       </div>
-      <Button variant="redHover" className="w-fit justify-self-end" onClick={onSave}>
+      <Button
+        variant="redHover"
+        className="w-fit justify-self-end"
+        onClick={onSave}
+        data-testid="community-change-title-save"
+      >
         {t('communities.save')}
       </Button>
     </>

@@ -33,13 +33,22 @@ export function useUpdateCommunityMutation() {
         editor,
         { observe: true }
       );
-      const prevCommunityData: Community | undefined = queryClient.getQueryData(['community', communityName]);
-      return { ...response, ...params, prevCommunityData };
+      // The community page caches under ['community', name, observer]; match by
+      // prefix to find that observer-keyed entry. A bare getQueryData(['community',
+      // name]) never resolves it (React Query hashes the full key), so the
+      // optimistic write below silently no-oped and edits weren't reflected.
+      // Mirrors the lookup in use-subscribe-mutations.ts.
+      const communityQueryEntry = queryClient
+        .getQueriesData<Community>({ queryKey: ['community', communityName] })
+        .find(([, data]) => !!data);
+      const prevCommunityData = communityQueryEntry?.[1];
+      const communityQueryKey = communityQueryEntry?.[0];
+      return { ...response, ...params, prevCommunityData, communityQueryKey };
     },
     onSettled: (data) => {
       if (!data) return;
-      const { communityName, prevCommunityData, title, about, lang, nsfw, description, flagText } = data;
-      if (!!prevCommunityData) {
+      const { prevCommunityData, communityQueryKey, title, about, lang, nsfw, description, flagText } = data;
+      if (!!prevCommunityData && communityQueryKey) {
         const updatedCommunity = {
           ...prevCommunityData,
           title,
@@ -51,7 +60,7 @@ export function useUpdateCommunityMutation() {
           _temporary: true
         };
 
-        queryClient.setQueryData(['community', communityName], updatedCommunity);
+        queryClient.setQueryData(communityQueryKey, updatedCommunity);
       }
     },
     onSuccess: (data) => {

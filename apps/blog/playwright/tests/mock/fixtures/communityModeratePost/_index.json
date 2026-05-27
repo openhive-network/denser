@@ -1,0 +1,8 @@
+{
+  "testName": "communityModeratePost",
+  "base": "loggedInPostDetail",
+  "generatedAt": "2026-05-26T12:12:30.797Z",
+  "overlayFiles": [
+    "0012-bridge.list_community_roles.json"
+  ]
+}

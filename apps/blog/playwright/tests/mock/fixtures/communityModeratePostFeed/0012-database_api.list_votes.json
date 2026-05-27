@@ -1,0 +1,49 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "gtg",
+        "hive-hardfork-28-jump-starter-kit",
+        "guest4test"
+      ],
+      "limit": 1,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "7146fd713bff1101",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "gtg",
+      "hive-hardfork-28-jump-starter-kit",
+      "guest4test"
+    ],
+    "limit": 1,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "voter": "guest4test",
+          "author": "gtg",
+          "weight": 0,
+          "rshares": 0,
+          "permlink": "hive-hardfork-28-jump-starter-kit",
+          "last_update": "2026-01-19T10:36:45",
+          "num_changes": 0,
+          "vote_percent": 10000
+        }
+      ]
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

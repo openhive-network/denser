@@ -11,7 +11,11 @@ const EditCommunityDialog = ({ data }: { data: Community }) => {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="text-sm text-destructive" disabled={data._temporary}>
+      <DialogTrigger
+        className="text-sm text-destructive"
+        disabled={data._temporary}
+        data-testid="community-edit-props-trigger"
+      >
         {t('communities.edit_props')}
       </DialogTrigger>
       <EditDialogContent data={data} setOpen={setOpen} />

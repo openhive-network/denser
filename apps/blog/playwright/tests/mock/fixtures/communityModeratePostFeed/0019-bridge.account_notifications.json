@@ -1,0 +1,35 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.account_notifications",
+    "params": {
+      "account": "hive-160391",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "2180c2fad4322d96",
+  "method": "bridge.account_notifications",
+  "params": {
+    "account": "hive-160391",
+    "limit": 50
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "id": "85193937316216833",
+        "msg": "@shahabwp subscribed to Blockchain Wizardry",
+        "url": "c/hive-160391",
+        "date": "2026-04-14T22:55:48",
+        "type": "subscribe",
+        "score": 25
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

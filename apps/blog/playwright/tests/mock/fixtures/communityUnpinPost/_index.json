@@ -1,0 +1,9 @@
+{
+  "testName": "communityUnpinPost",
+  "base": "communityModeratePostFeed",
+  "generatedAt": "2026-05-26T12:12:30.805Z",
+  "overlayFiles": [
+    "0007-bridge.list_community_roles.json",
+    "0018-bridge.get_ranked_posts.json"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "testName": "communityLeaveFromExplorer",
+  "recordedAt": "2026-05-26T06:16:48.219Z",
+  "totalRequests": 12,
+  "savedFixtures": 8,
+  "duplicatesSkipped": 4,
+  "methods": {
+    "bridge.list_all_subscriptions": 1,
+    "bridge.list_communities": 1,
+    "GET /hivesense-api": 3,
+    "bridge.unread_notifications": 1,
+    "database_api.get_dynamic_global_properties": 2,
+    "database_api.find_accounts": 2,
+    "rc_api.find_rc_accounts": 1,
+    "bridge.get_profile": 1
+  }
+}

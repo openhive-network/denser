@@ -772,10 +772,18 @@ const PostContent = () => {
                               {/* TODO swap two button to one when api return stats.is_pinned,
                                 temprary use two button to unpin and pin
                                 */}
-                              <button className="ml-2 flex items-center text-destructive" onClick={pin}>
+                              <button
+                                className="ml-2 flex items-center text-destructive"
+                                onClick={pin}
+                                data-testid="post-pin-button"
+                              >
                                 {t('communities.pin')}
                               </button>
-                              <button className="ml-2 flex items-center text-destructive" onClick={unpin}>
+                              <button
+                                className="ml-2 flex items-center text-destructive"
+                                onClick={unpin}
+                                data-testid="post-unpin-button"
+                              >
                                 {t('communities.unpin')}
                               </button>
                             </div>

@@ -43,14 +43,20 @@ const AddRole = ({ community, loggedUserLevel }: { loggedUserLevel: number; comm
       onValueChange={(value) => setOpen((prev) => (prev === 'role-item' ? '' : value))}
     >
       <AccordionItem value="role-item">
-        <AccordionTrigger>{t('communities.add_user')}</AccordionTrigger>
+        <AccordionTrigger data-testid="community-add-role-trigger">
+          {t('communities.add_user')}
+        </AccordionTrigger>
         <AccordionContent>
           <div className="my-4 flex flex-col gap-6">
             <div>{t('communities.set_the_role_of_a_user_in_this_community')}</div>
 
             <div>
               <span>{t('communities.username')}</span>
-              <Input value={inputValue} onChange={(e) => setInputChange(e.target.value)} />
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputChange(e.target.value)}
+                data-testid="community-add-role-username"
+              />
             </div>
             <div>
               <span>{t('communities.role')}</span>
@@ -59,6 +65,7 @@ const AddRole = ({ community, loggedUserLevel }: { loggedUserLevel: number; comm
                 loggedUserLevel={loggedUserLevel}
                 value={selectValue}
                 onValueChange={(e) => setSelectValue(e)}
+                testId="community-add-role-select"
               />
             </div>
             <Button
@@ -66,6 +73,7 @@ const AddRole = ({ community, loggedUserLevel }: { loggedUserLevel: number; comm
               variant="redHover"
               className="w-fit justify-self-end"
               disabled={setRoleMutation.isLoading}
+              data-testid="community-add-role-save"
             >
               {setRoleMutation.isLoading ? (
                 <CircleSpinner loading={setRoleMutation.isLoading} size={18} color="#dc2626" />

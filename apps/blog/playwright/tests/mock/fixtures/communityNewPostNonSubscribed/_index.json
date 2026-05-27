@@ -1,0 +1,22 @@
+{
+  "testName": "communityNewPostNonSubscribed",
+  "recordedAt": "2026-05-26T06:17:34.796Z",
+  "totalRequests": 17,
+  "savedFixtures": 15,
+  "duplicatesSkipped": 2,
+  "methods": {
+    "bridge.get_community": 3,
+    "bridge.list_all_subscriptions": 1,
+    "bridge.list_communities": 1,
+    "GET /hivesense-api": 2,
+    "bridge.unread_notifications": 1,
+    "database_api.find_accounts": 2,
+    "database_api.get_dynamic_global_properties": 1,
+    "bridge.get_ranked_posts": 1,
+    "bridge.get_profile": 1,
+    "rc_api.find_rc_accounts": 1,
+    "bridge.get_follow_list": 1,
+    "bridge.account_notifications": 1,
+    "bridge.list_subscribers": 1
+  }
+}

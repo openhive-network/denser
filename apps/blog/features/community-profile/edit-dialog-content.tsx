@@ -126,7 +126,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                   <FormItem>
                     <FormLabel>{t('communities.edit_props_dialog.title')}</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} data-testid="community-edit-title" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -140,7 +140,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                   <FormItem>
                     <FormLabel>{t('communities.edit_props_dialog.about')}</FormLabel>
                     <FormControl>
-                      <Textarea {...field} />
+                      <Textarea {...field} data-testid="community-edit-about" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -154,7 +154,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                   <FormItem>
                     <FormLabel>{t('communities.edit_props_dialog.description')}</FormLabel>
                     <FormControl>
-                      <Textarea {...field} />
+                      <Textarea {...field} data-testid="community-edit-description" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,7 +168,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                   <FormItem>
                     <FormLabel>{t('communities.edit_props_dialog.flag_text')}</FormLabel>
                     <FormControl>
-                      <Textarea {...field} />
+                      <Textarea {...field} data-testid="community-edit-flag-text" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -183,7 +183,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                     <FormLabel>{t('communities.edit_props_dialog.lang')}</FormLabel>
                     <FormControl>
                       <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger>
+                        <SelectTrigger data-testid="community-edit-lang-trigger">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -210,6 +210,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                           checked={field.value}
                           onCheckedChange={field.onChange}
                           disabled={updateCommunityMutation.isPending}
+                          data-testid="community-edit-nsfw"
                         />
                       </FormControl>
                       <FormLabel>{t('communities.edit_props_dialog.nsfw')}</FormLabel>
@@ -226,10 +227,16 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                   }}
                   variant="outlineRed"
                   disabled={updateCommunityMutation.isPending}
+                  data-testid="community-edit-cancel"
                 >
                   {t('communities.edit_props_dialog.cancel')}
                 </Button>
-                <Button type="submit" variant="redHover" disabled={updateCommunityMutation.isPending}>
+                <Button
+                  type="submit"
+                  variant="redHover"
+                  disabled={updateCommunityMutation.isPending}
+                  data-testid="community-edit-save"
+                >
                   {updateCommunityMutation.isPending ? (
                     <CircleSpinner loading={updateCommunityMutation.isPending} size={18} color="#dc2626" />
                   ) : (

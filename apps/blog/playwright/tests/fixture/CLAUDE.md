@@ -164,10 +164,22 @@ For voting specs, prefer `postVotingContext.ts`:
 ### 3. Record fixtures
 
 ```bash
-pnpm --filter @hive/blog test:fixture:record -- myNewScenario
+# Per-spec record (the only safe form — see warning below):
+cd apps/blog && FIXTURE_MODE=record pnpm exec \
+  playwright test --config=playwright.fixture.config.ts myNewScenario
+node apps/blog/playwright/tests/support/fixture-auth/trim-fixtures.mjs \
+  apps/blog/playwright/tests/mock/fixtures/myNewScenario
 ```
 
-Writes `mock/fixtures/myNewScenario/` with whatever RPCs the test hit.
+Writes `mock/fixtures/myNewScenario/` with whatever RPCs the test hit,
+then trims `active_votes` arrays so the fixture stays small.
+
+> ⚠️ **Do not use `pnpm --filter @hive/blog test:fixture:record -- myNewScenario`**
+> for per-spec recording. The script chain ends with `&& pnpm run test:fixture:trim`,
+> and pnpm appends `--` args to the LAST command in the chain — so the
+> filter goes to `trim-fixtures`, never to `playwright`, and the recorder
+> re-records EVERY spec in the suite, wiping all committed fixture dirs.
+> Run the chained form ONLY when you genuinely want to re-record everything.
 
 ### 4. Replay
 
@@ -176,6 +188,9 @@ pnpm --filter @hive/blog test:fixture -- myNewScenario
 ```
 
 Runs offline. Commit `spec.ts` + `mock/fixtures/myNewScenario/` together.
+(Replay is safe with the script wrapper because `test:fixture` has no
+trailing trim command — the `--` arg lands on `playwright test` as
+intended.)
 
 ---
 
@@ -610,19 +625,15 @@ Normal cycle after changing infrastructure or app code that affects
 fixtures:
 
 ```bash
-# 1. Re-record the base fixture dir (requires network to api.hive.blog):
-pnpm --filter @hive/blog test:fixture:record -- postVoting.spec.ts
+# 1. Re-record the base fixture dir (requires network to api.hive.blog).
+#    Per-spec form — bypasses the script chain that would otherwise wipe
+#    all committed fixtures, see "Record fixtures" warning above:
+cd apps/blog && FIXTURE_MODE=record pnpm exec \
+  playwright test --config=playwright.fixture.config.ts postVoting
 
 # 2. Trim active_votes to keep fixtures small (5 voters per post):
-python3 -c "
-import json, pathlib
-p = pathlib.Path('apps/blog/playwright/tests/mock/fixtures/postVoting/0005-bridge.get_ranked_posts.json')
-data = json.loads(p.read_text())
-for post in data['response']['result']:
-    post['active_votes'] = post.get('active_votes', [])[:5]
-p.write_text(json.dumps(data, indent=2) + '\n')
-print('Trimmed active_votes')
-"
+node apps/blog/playwright/tests/support/fixture-auth/trim-fixtures.mjs \
+  apps/blog/playwright/tests/mock/fixtures/postVoting
 
 # 3. Regenerate overlay variants from the trimmed base:
 node apps/blog/playwright/tests/support/fixture-auth/generate-voted-variants.mjs

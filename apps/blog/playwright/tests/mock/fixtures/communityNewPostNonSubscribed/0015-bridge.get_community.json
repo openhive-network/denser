@@ -1,0 +1,74 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_community",
+    "params": {
+      "name": "hive-194913",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "21c21721945bbfdb",
+  "method": "bridge.get_community",
+  "params": {
+    "name": "hive-194913",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 1342089,
+      "lang": "en",
+      "name": "hive-194913",
+      "team": [
+        [
+          "hive-194913",
+          "owner",
+          ""
+        ],
+        [
+          "derangedvisions",
+          "admin",
+          "Photo Nerd"
+        ],
+        [
+          "badge-696969",
+          "mod",
+          "Contest and Curation"
+        ],
+        [
+          "erikah",
+          "mod",
+          ""
+        ],
+        [
+          "castleberry",
+          "mod",
+          "Bob Ross' Kid"
+        ]
+      ],
+      "about": "A place for photography lovers to share their work and photography tips.",
+      "title": "Photography Lovers",
+      "context": {
+        "role": "guest",
+        "title": "",
+        "subscribed": false
+      },
+      "is_nsfw": false,
+      "type_id": 1,
+      "settings": {},
+      "flag_text": "Original photography only. If you are not the owner of or the model in the photos that you are sharing, you will be flagged and muted. \nPlagiarism is not tolerated and will get you flagged and muted. \nStock Images, unless they are yours, will get you flagged and muted.\nAll NON-Photography posts will be muted.\nSingle image posts are not welcome or supported in this community.\nSelfies and Daily Snapshot posts may be muted at curator discretion.\nAny and all use of Artificial Intelligence in your images or text must be disclosed in your post.\nArtificial Intelligence only posts will be muted.\nSpamming posts into this community will also get you muted.\nCross Posting is allowed, but will not be curated.\nActive Users on Steemit and/or Blurt will be muted.",
+      "created_at": "2019-11-27 23:22:51",
+      "description": "Are you a photographer? Do you love photography? Well this is the community for you. It doesn’t matter what skill level you are. You can be a long time professional or a brand new photographer just starting out with a cell phone. We all have one thing in common, we all want to share the world through our lens and tell its stories. Join the Photography Lovers community where we can all share our love for the art and learn from each other.",
+      "num_authors": 208,
+      "num_pending": 910,
+      "subscribers": 25820,
+      "sum_pending": 625
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -117,6 +117,11 @@ export class PostPage {
   readonly postFooterTimestamp: Locator;
   readonly authorHeaderReputation: Locator;
   readonly authorHeaderAvatar: Locator;
+  readonly pinButton: Locator;
+  readonly unpinButton: Locator;
+  readonly changeTitleTrigger: Locator;
+  readonly changeTitleInput: Locator;
+  readonly changeTitleSave: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -254,6 +259,27 @@ export class PostPage {
     this.postFooterTimestamp = page.locator('[data-testid="post-footer-timestamp"]');
     this.authorHeaderReputation = this.articleAuthorData.locator('[data-testid="author-reputation"]');
     this.authorHeaderAvatar = this.articleAuthorData.locator('[data-testid="user-avatar"]');
+    // Moderator-only controls on the main post (rendered when userCanModerate
+    // and depth === 0). Pin/unpin buttons are unique to the main post.
+    this.pinButton = page.getByTestId('post-pin-button');
+    this.unpinButton = page.getByTestId('post-unpin-button');
+    // The change-title PenTool lives in the shared UserInfo, which also
+    // renders for every comment author — scope to the post-header block (the
+    // first author-data on the page). Dialog content is a body-level portal,
+    // so input/save stay page-scoped.
+    this.changeTitleTrigger = this.articleAuthorData
+      .first()
+      .getByTestId('community-change-title-trigger');
+    this.changeTitleInput = page.getByTestId('community-change-title-input');
+    this.changeTitleSave = page.getByTestId('community-change-title-save');
+  }
+
+  /** Open the post-header change-title dialog, set a new title, and save. */
+  async changeAuthorTitle(newTitle: string): Promise<void> {
+    await this.changeTitleTrigger.click();
+    await expect(this.changeTitleInput).toBeVisible();
+    await this.changeTitleInput.fill(newTitle);
+    await this.changeTitleSave.click();
   }
 
   async waitForPostHydration(timeout = TIMEOUTS.HYDRATION) {

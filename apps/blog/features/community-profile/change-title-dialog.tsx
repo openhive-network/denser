@@ -25,7 +25,7 @@ const ChangeTitleDialog = ({
 
   return moderateEnabled ? (
     <Dialog open={open} onOpenChange={(e) => setOpen(e)}>
-      <DialogTrigger>
+      <DialogTrigger data-testid="community-change-title-trigger">
         {titleMutation.isLoading ? (
           <div className="ml-2">
             <CircleSpinner loading={titleMutation.isLoading} size={18} color="#dc2626" />

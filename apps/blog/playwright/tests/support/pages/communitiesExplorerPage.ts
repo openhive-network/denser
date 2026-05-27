@@ -54,6 +54,32 @@ export class CommunitiesExplorePage{
         this.getCreateACommunityLink = page.getByText('Create a Community');
     }
 
+    /**
+     * Locate a single community card in the explorer list by its visible
+     * title. Cards carry `data-testid="community-list-item"`; `hasText`
+     * substring-matches the rendered card text (title + about + footer), so
+     * pass a title distinctive enough to hit exactly one card.
+     *
+     * Note: the explorer's `#search` box only re-queries on Enter
+     * (content.tsx `handleSearchCommunity`), and a search term would need
+     * its own recorded `bridge.list_communities` fixture — so specs locate
+     * the target inside the default rank-sorted list instead of typing to
+     * filter.
+     */
+    cardByTitle(title: string): Locator {
+        return this.page.locator('[data-testid="community-list-item"]', { hasText: title });
+    }
+
+    /** Subscribe button scoped to a single explorer card. */
+    subscribeButtonIn(card: Locator): Locator {
+        return card.locator('[data-testid="community-subscribe-button"]');
+    }
+
+    /** Joined/leave button scoped to a single explorer card. */
+    joinedLeaveButtonIn(card: Locator): Locator {
+        return card.locator('[data-testid="community-join-leave-button"]');
+    }
+
     async validataExplorerCommunitiesPageIsLoaded(){
         await expect(this.searchInput).toBeVisible();
         await expect(this.combobox).toBeVisible();

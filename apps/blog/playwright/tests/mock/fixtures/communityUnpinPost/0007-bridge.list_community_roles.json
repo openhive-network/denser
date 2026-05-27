@@ -1,0 +1,110 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_community_roles",
+    "params": {
+      "community": "hive-160391"
+    },
+    "id": 1
+  },
+  "requestHash": "1d62c58decd5cd74",
+  "method": "bridge.list_community_roles",
+  "params": {
+    "community": "hive-160391"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "guest4test",
+        "mod",
+        ""
+      ],
+      [
+        "hive-160391",
+        "owner",
+        ""
+      ],
+      [
+        "gandalf",
+        "admin",
+        ""
+      ],
+      [
+        "gtg",
+        "mod",
+        "Wizard"
+      ],
+      [
+        "guest4test1",
+        "member",
+        "tester"
+      ],
+      [
+        "guest4test2",
+        "member",
+        ""
+      ],
+      [
+        "baah",
+        "muted",
+        ""
+      ],
+      [
+        "bilpcoinbpc",
+        "muted",
+        ""
+      ],
+      [
+        "bpcvoter1",
+        "muted",
+        ""
+      ],
+      [
+        "bpcvoter3",
+        "muted",
+        ""
+      ],
+      [
+        "complaints-8",
+        "muted",
+        "Spammer"
+      ],
+      [
+        "gandalfthedark",
+        "muted",
+        "Impostor"
+      ],
+      [
+        "gangstalking",
+        "muted",
+        ""
+      ],
+      [
+        "gray00",
+        "muted",
+        ""
+      ],
+      [
+        "kalivankush",
+        "muted",
+        ""
+      ],
+      [
+        "wecare2",
+        "muted",
+        ""
+      ],
+      [
+        "world-travel-pro",
+        "muted",
+        "spammer"
+      ]
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

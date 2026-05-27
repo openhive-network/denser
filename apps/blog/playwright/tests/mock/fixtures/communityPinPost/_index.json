@@ -1,0 +1,8 @@
+{
+  "testName": "communityPinPost",
+  "base": "communityModeratePostFeed",
+  "generatedAt": "2026-05-26T12:12:30.801Z",
+  "overlayFiles": [
+    "0007-bridge.list_community_roles.json"
+  ]
+}

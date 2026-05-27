@@ -42,9 +42,13 @@ const TableItem = ({
   };
 
   return (
-    <TableRow key={item.name}>
+    <TableRow key={item.name} data-testid="community-role-row" data-account={item.name}>
       <TableCell className="p-2">
-        <BasePathLink href={`/@${item.name}`} className="text-destructive">
+        <BasePathLink
+          href={`/@${item.name}`}
+          className="text-destructive"
+          data-testid="community-role-account"
+        >
           @{item.name}
         </BasePathLink>
       </TableCell>
@@ -59,12 +63,21 @@ const TableItem = ({
                     loggedUserLevel={loggedUserValue}
                     value={selectedRole}
                     onValueChange={setSelectedRole}
+                    testId="community-role-edit-select"
                   />
                 </div>
-                <button onClick={onUpdateRole} disabled={setRoleMutation.isPending}>
+                <button
+                  onClick={onUpdateRole}
+                  disabled={setRoleMutation.isPending}
+                  data-testid="community-role-save-button"
+                >
                   <Save className="h-4 w-4 text-green-500" />
                 </button>
-                <button onClick={() => setEditMode((prev) => !prev)} disabled={setRoleMutation.isPending}>
+                <button
+                  onClick={() => setEditMode((prev) => !prev)}
+                  disabled={setRoleMutation.isPending}
+                  data-testid="community-role-cancel-button"
+                >
                   <X className="h-4 w-4 text-destructive" />
                 </button>
               </>
@@ -74,6 +87,7 @@ const TableItem = ({
                   className={clsx('', {
                     'animate-pulse text-destructive': item.temprary
                   })}
+                  data-testid="community-role-name"
                 >
                   {item.role}
                 </span>
@@ -81,6 +95,7 @@ const TableItem = ({
                   onClick={() => setEditMode(true)}
                   className="text-destructive"
                   disabled={item.temprary}
+                  data-testid="community-role-edit-button"
                 >
                   <Pen className="h-4 w-4" />
                 </button>
@@ -88,11 +103,13 @@ const TableItem = ({
             )}
           </span>
         ) : (
-          <span>{item.role}</span>
+          <span data-testid="community-role-name">{item.role}</span>
         )}
       </TableCell>
 
-      <TableCell className="p-2">{item.title}</TableCell>
+      <TableCell className="p-2" data-testid="community-role-title">
+        {item.title}
+      </TableCell>
     </TableRow>
   );
 };

@@ -1,0 +1,427 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.account_notifications",
+    "params": {
+      "account": "hive-194913",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "0a150f622c2b4329",
+  "method": "bridge.account_notifications",
+  "params": {
+    "account": "hive-194913",
+    "limit": 50
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "id": "86133745148493825",
+        "msg": "@time-based subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-25T11:26:45",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86130743771660289",
+        "msg": "@rahiih subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-25T08:20:24",
+        "type": "subscribe",
+        "score": 48
+      },
+      {
+        "id": "86123622447448065",
+        "msg": "@licht0804 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-25T00:58:15",
+        "type": "subscribe",
+        "score": 46
+      },
+      {
+        "id": "86117842763644929",
+        "msg": "@javier33 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-24T18:59:24",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86110291405832193",
+        "msg": "@factx subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-24T11:10:33",
+        "type": "subscribe",
+        "score": 38
+      },
+      {
+        "id": "86110075583725569",
+        "msg": "@timezonetalks subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-24T10:57:09",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86109240481021953",
+        "msg": "@prettynazzy subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-24T10:05:18",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86096854063775745",
+        "msg": "@jahver subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-23T21:16:15",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86095935209209857",
+        "msg": "@chaybaku subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-23T20:19:12",
+        "type": "subscribe",
+        "score": 40
+      },
+      {
+        "id": "86085496022761473",
+        "msg": "@uniquespunky subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-23T09:31:03",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86083643818115073",
+        "msg": "@cryptolayers subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-23T07:36:03",
+        "type": "subscribe",
+        "score": 48
+      },
+      {
+        "id": "86079935382290434",
+        "msg": "@imlietyy subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-23T03:45:48",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86067656876097537",
+        "msg": "@raijvaldi01 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-22T15:03:27",
+        "type": "subscribe",
+        "score": 43
+      },
+      {
+        "id": "86062990125694977",
+        "msg": "@w3hive subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-22T10:13:42",
+        "type": "subscribe",
+        "score": 26
+      },
+      {
+        "id": "86041251685597185",
+        "msg": "@nc6 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-21T11:44:00",
+        "type": "subscribe",
+        "score": 34
+      },
+      {
+        "id": "86037909664169985",
+        "msg": "@progresslove subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-21T08:16:30",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86036197582831617",
+        "msg": "@abdt subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-21T06:30:12",
+        "type": "subscribe",
+        "score": 59
+      },
+      {
+        "id": "86032953003474945",
+        "msg": "@pokharelbro7 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-21T03:08:45",
+        "type": "subscribe",
+        "score": 40
+      },
+      {
+        "id": "86024213818769409",
+        "msg": "@brillog subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-20T18:06:09",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86018076578938881",
+        "msg": "@lolitaanana001 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-20T11:45:06",
+        "type": "subscribe",
+        "score": 63
+      },
+      {
+        "id": "86017449245278209",
+        "msg": "@jokedose subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-20T11:06:09",
+        "type": "subscribe",
+        "score": 35
+      },
+      {
+        "id": "86014124135284737",
+        "msg": "@gorilom subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-20T07:39:42",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "86003113181315073",
+        "msg": "@emymora subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-19T20:16:03",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85997194179510273",
+        "msg": "@vincenty55 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-19T14:08:33",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85986821028184065",
+        "msg": "@diazktty subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-19T03:24:30",
+        "type": "subscribe",
+        "score": 52
+      },
+      {
+        "id": "85971008837648385",
+        "msg": "@idoctor subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-18T11:02:45",
+        "type": "subscribe",
+        "score": 57
+      },
+      {
+        "id": "85969651896418305",
+        "msg": "@faithingod subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-18T09:38:30",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85966011106328577",
+        "msg": "@marius19 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-18T05:52:27",
+        "type": "subscribe",
+        "score": 66
+      },
+      {
+        "id": "85958726304923649",
+        "msg": "@aquatrader subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-17T22:20:09",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85952900718657537",
+        "msg": "@valderalazaro subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-17T16:18:27",
+        "type": "subscribe",
+        "score": 54
+      },
+      {
+        "id": "85946600001634305",
+        "msg": "@web3story subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-17T09:47:15",
+        "type": "subscribe",
+        "score": 38
+      },
+      {
+        "id": "85938152337833985",
+        "msg": "@victvince1 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-17T01:02:45",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85926452041613313",
+        "msg": "@ttngraphy subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-16T12:56:18",
+        "type": "subscribe",
+        "score": 37
+      },
+      {
+        "id": "85921575911555073",
+        "msg": "@bomspring subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-16T07:53:33",
+        "type": "subscribe",
+        "score": 41
+      },
+      {
+        "id": "85915842130214913",
+        "msg": "@ndoddy subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-16T01:57:33",
+        "type": "subscribe",
+        "score": 49
+      },
+      {
+        "id": "85907982340063233",
+        "msg": "@crypto-rahul-14 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-15T17:49:33",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85904269093371907",
+        "msg": "@love-scout mentioned you and 9 others",
+        "url": "@love-scout/re-my-introduction-to-hive-ttngraphy-1778853540301",
+        "date": "2026-05-15T13:59:00",
+        "type": "mention",
+        "score": 52
+      },
+      {
+        "id": "85885225187409921",
+        "msg": "@lepkol subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-14T18:16:36",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85884344987549697",
+        "msg": "@mushanov subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-14T17:21:57",
+        "type": "subscribe",
+        "score": 63
+      },
+      {
+        "id": "85876910399160321",
+        "msg": "@yuemotional8308 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-14T09:40:21",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85873044928593921",
+        "msg": "@ola20 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-14T05:40:21",
+        "type": "subscribe",
+        "score": 33
+      },
+      {
+        "id": "85855510187737089",
+        "msg": "@hourglassgoddess subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-13T11:31:39",
+        "type": "subscribe",
+        "score": 43
+      },
+      {
+        "id": "85840525852147713",
+        "msg": "@wickedfizz subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-12T20:01:18",
+        "type": "subscribe",
+        "score": 49
+      },
+      {
+        "id": "85840512967245825",
+        "msg": "@theindicators subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-12T20:00:30",
+        "type": "subscribe",
+        "score": 54
+      },
+      {
+        "id": "85837813580300289",
+        "msg": "@zael1 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-12T17:12:54",
+        "type": "subscribe",
+        "score": 41
+      },
+      {
+        "id": "85829890976251905",
+        "msg": "@senses18 subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-12T09:01:00",
+        "type": "subscribe",
+        "score": 45
+      },
+      {
+        "id": "85817842787680257",
+        "msg": "@aengellow subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-11T20:32:57",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85811166797889537",
+        "msg": "@josediego subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-11T13:38:27",
+        "type": "subscribe",
+        "score": 25
+      },
+      {
+        "id": "85807773236854785",
+        "msg": "@laryang subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-11T10:07:45",
+        "type": "subscribe",
+        "score": 26
+      },
+      {
+        "id": "85800472329322497",
+        "msg": "@djisamsoe subscribed to Photography Lovers",
+        "url": "c/hive-194913",
+        "date": "2026-05-11T02:34:27",
+        "type": "subscribe",
+        "score": 25
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

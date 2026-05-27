@@ -46,6 +46,16 @@ export class CommunitiesPage {
   readonly subscribersLoadMoreButton: Locator;
   readonly unmoderatedName: Locator;
 
+  readonly editPropsTrigger: Locator;
+  readonly editTitleInput: Locator;
+  readonly editAboutInput: Locator;
+  readonly editDescriptionInput: Locator;
+  readonly editFlagTextInput: Locator;
+  readonly editNsfwCheckbox: Locator;
+  readonly editSaveButton: Locator;
+  readonly editCancelButton: Locator;
+  readonly communityNsfwBadge: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.postTitle = page.getByTestId('post-title');
@@ -95,6 +105,62 @@ export class CommunitiesPage {
     this.subscribersRowsOdd =  this.subscribersNotificationContent.locator('[data-testid="notification-list-item"]:nth-of-type(odd)');
     this.subscribersLoadMoreButton = this.subscribersNotificationContent.getByText('Load more');
     this.unmoderatedName = page.getByTestId('community-name-unmoderated');
+
+    // Scoped to the desktop sidebar — the trigger also renders in the mobile
+    // `community-simple-description-sidebar`, so an unscoped locator matches
+    // two elements. The opened dialog content (fields below) lives in a
+    // body-level portal, so those stay page-scoped.
+    this.editPropsTrigger = page.locator(
+      '[data-testid="community-info-sidebar"] [data-testid="community-edit-props-trigger"]'
+    );
+    this.editTitleInput = page.getByTestId('community-edit-title');
+    this.editAboutInput = page.getByTestId('community-edit-about');
+    this.editDescriptionInput = page.getByTestId('community-edit-description');
+    this.editFlagTextInput = page.getByTestId('community-edit-flag-text');
+    this.editNsfwCheckbox = page.getByTestId('community-edit-nsfw');
+    this.editSaveButton = page.getByTestId('community-edit-save');
+    this.editCancelButton = page.getByTestId('community-edit-cancel');
+    // NSFW badge in the desktop info card. The mobile sidebar renders a
+    // duplicate, so scope to community-info-sidebar. Badge text is hardcoded
+    // (not i18n), matching the getByText precedent (e.g. activityLogButton).
+    this.communityNsfwBadge = this.communityInfoSidebar.getByText('NSFW', { exact: true });
+  }
+
+  /**
+   * Open the EditCommunityDialog from the sidebar, fill the supplied fields,
+   * optionally flip the NSFW checkbox, and submit. Fields left undefined keep
+   * their prefilled (recorded) values — the produced `updateProps` broadcast
+   * still carries every prop, so callers asserting the full props object must
+   * account for the untouched ones.
+   */
+  async editCommunityProps({
+    title,
+    about,
+    description,
+    toggleNsfw
+  }: {
+    title?: string;
+    about?: string;
+    description?: string;
+    toggleNsfw?: boolean;
+  }): Promise<void> {
+    await this.editPropsTrigger.click();
+    await expect(this.editTitleInput).toBeVisible();
+    if (title !== undefined) await this.editTitleInput.fill(title);
+    if (about !== undefined) await this.editAboutInput.fill(about);
+    if (description !== undefined) await this.editDescriptionInput.fill(description);
+    if (toggleNsfw) await this.editNsfwCheckbox.click();
+    await this.editSaveButton.click();
+  }
+
+  /**
+   * The "Pinned" tag in the community feed for a specific post. It renders
+   * only when post.stats.is_pinned on a community page (post-list-item.tsx),
+   * as an <a data-testid="post-pinned-tag"> whose href ends with the permlink
+   * — so scope by permlink to target one post among several pinned ones.
+   */
+  pinnedTagForPermlink(permlink: string): Locator {
+    return this.page.locator(`[data-testid="post-pinned-tag"][href*="${permlink}"]`);
   }
 
   async validataCommunitiesPageIsLoaded(communityName: string) {

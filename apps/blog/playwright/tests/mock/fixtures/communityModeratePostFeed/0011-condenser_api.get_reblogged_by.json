@@ -1,0 +1,62 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_reblogged_by",
+    "params": [
+      "gtg",
+      "hive-hardfork-28-jump-starter-kit"
+    ],
+    "id": 1
+  },
+  "requestHash": "40c58c0b5332f51a",
+  "method": "condenser_api.get_reblogged_by",
+  "params": [
+    "gtg",
+    "hive-hardfork-28-jump-starter-kit"
+  ],
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      "ausbitbank",
+      "bhattg",
+      "bilpcoinbot1",
+      "bpcvoter1",
+      "bpcvoter4",
+      "crstypatata",
+      "cwow2",
+      "dgi",
+      "dynamicgreen",
+      "emrebeyler",
+      "filoriologo",
+      "gtg",
+      "guruvaj",
+      "hive.games",
+      "hurtlocker",
+      "khirstin",
+      "manzoriza713",
+      "miprimerconcurso",
+      "nahupuku",
+      "psyber-x",
+      "psyberkiller",
+      "psyberx.bee",
+      "psyberx.hustler",
+      "psyberx.oneup",
+      "psyberx.pgm",
+      "psyberx.sports",
+      "rrruelyn",
+      "shahabwp",
+      "themarkymark",
+      "timcliff",
+      "tydynrain",
+      "ulisg",
+      "valued-customer",
+      "vikvitnik",
+      "whosee"
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

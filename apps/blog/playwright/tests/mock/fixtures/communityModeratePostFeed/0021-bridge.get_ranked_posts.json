@@ -1,0 +1,34 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "trending",
+      "start_author": "gtg",
+      "start_permlink": "brace-yourself-hardfork-is-coming",
+      "limit": 20,
+      "tag": "hive-160391",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "07220b44cf1798a0",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "trending",
+    "start_author": "gtg",
+    "start_permlink": "brace-yourself-hardfork-is-coming",
+    "limit": 20,
+    "tag": "hive-160391",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

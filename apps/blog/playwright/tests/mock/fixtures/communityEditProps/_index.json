@@ -1,0 +1,9 @@
+{
+  "testName": "communityEditProps",
+  "base": "loggedInTagCommunityFeeds",
+  "generatedAt": "2026-05-26T12:12:30.792Z",
+  "overlayFiles": [
+    "0001-bridge.get_community.json",
+    "0004-bridge.get_community.json"
+  ]
+}

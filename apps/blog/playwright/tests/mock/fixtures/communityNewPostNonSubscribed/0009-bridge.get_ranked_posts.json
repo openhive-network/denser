@@ -1,0 +1,1793 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "trending",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "hive-194913",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "6002a212c7110482",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "trending",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "hive-194913",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/hive-194913/@tattoodjay/monochrome-monday-a-few-shots-from-recent-walks-tfl9wj",
+        "body": "# Monochrome Monday a few shots from recent walks\n\n\nI had the post prepared and perhaps sharing MONO images is kind of somber and appropriate for today being Memorial today\n\nBut I decided to add this first photo and these thoughts for the day \n\n***To the brave souls who never came home, thank you, the debt of gratitude will never be forgotten \nRemember them this memorial day***\n\n\n<center>  \n![raandom-3.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/48J9Sdos6UJAPTC8Jd6EMFLvcWkLDbyzcVvsPxuNpifhgNzAxc19vpawYgeTpj5onT.jpg)\n\n\n<sup> **Sony A7iv 259mm F10 1/125 Sec ISO 160**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/48J9Sdos6UJAPTC8Jd6EMFLvcWkLDbyzcVvsPxuNpifhgNzAxc19vpawYgeTpj5onT.jpg)**</sup>\n</center>  \n<br>\n\nI hope your weekend went well and wishing you a good week ahead.\nI am starting the week as I tend to do by sharing a few Monochrome Photos from recent walks.\n\nI was just thinking I am not sure I have ever discussed how I go about choosing photos to edit in mono, and for the most part I am not sure I have a deep thought process, just when I come to a photo and are ready to edit it, sometimes my mind clicks try this in MOnochrome.\n\nBut thinking about it more this morning I said to myself, myself I said :)\n\nWhat is it about the photos that make smy brain tell me to try a Monochrome edit and this is what I came up with\n\nI fele a lot to do with it is if the photo has strong contrasts, intricate textures, and interesting and or compelling geometry thats what draws me to try  monochrome editing. Stripping away color forces the viewer to focus on light, shadow, and form rather than being distracted by a messy over overwhelming color palette.\n\nAnd this first shot of the old Bridge out to Popes Island here in New Bedford is a good example of that\n\n<center>  \n![mono from recent walks-3.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/23tH81Ld38aBAuEDHvGvFmVqCcHQq6ioSoFS9BUCHgx8YYMVECLAnaVb12SJVfSDx4JhN.jpg)\n\n\n<sup> **Sony A7iv 21mm F10 8 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/23tH81Ld38aBAuEDHvGvFmVqCcHQq6ioSoFS9BUCHgx8YYMVECLAnaVb12SJVfSDx4JhN.jpg)**</sup>\n</center>  \n<br>\n\n\nand for this next shot in color the eyes would be drawn to the color sin the tree and or sky, and yet I think the belgian block streets  are the real start  of this shot and in color they dont grab the eye as much as I fele they should \n\n\n\n\n\n<center> \n![mono from recent walks-4.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/23tGwCgdAS9LAWpuEyZ4cLm3DVFoAyaSwZnGkGv2Z8sSry7zKT2U9EYVKrX16uZiJu1Rc.jpg)\n \n\n<sup> **Sony A7iv 20mm F8 13 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/23tGwCgdAS9LAWpuEyZ4cLm3DVFoAyaSwZnGkGv2Z8sSry7zKT2U9EYVKrX16uZiJu1Rc.jpg)**</sup>\n</center>  \n<br>\n\nand this next one may perhaps go against what I am saying a little, what caught me was the shape of the tree but in color it sort of faded into the background so I tried a Mono edit and here it is \n\n\n<center>  \n![mono from recent walks.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/23wWyQ2XynmaddCebTB4koQurnf4pN4jHDfJWG7ym9xXGXw4UCRMeRL4bv1TBzSFHFBdb.jpg)\n\n\n<sup> **Sony A7iv 50mm F8 1/250 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/23wWyQ2XynmaddCebTB4koQurnf4pN4jHDfJWG7ym9xXGXw4UCRMeRL4bv1TBzSFHFBdb.jpg)**</sup>\n</center>  \n<br>\n\nWhat caught my eye was the way the metal ramp coming off the pier was catching the light from the restaurant off to the right and not in shot, but when I tried editing it in color, it sort of faded into everything else, so I came up with this \n\n<center>  \n![mono from recent walks-2.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/23xAK64GaAszuU9bxw17AYN8ZGbiRAw4kwixBuxMsXp7Akr4sXLZaGKetxVquko1Mu3M6.jpg)\n\n\n<sup> **Sony A7iv  17mm F4 30 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/23xAK64GaAszuU9bxw17AYN8ZGbiRAw4kwixBuxMsXp7Akr4sXLZaGKetxVquko1Mu3M6.jpg)**</sup>\n</center>  \n<br>\n\n## And that’s all folks \n***\n## unless stated otherwise all photos used in my posts are taken and owned by myself, if you wish to use any of my images please contact me. \n\n\n***\n![](https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif)\n***\n![TEAMUSA JJ hive.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg)\n## TeamUSA is a Community for and supporting those from of in the United States, and now is in the process of rebuilding stronger than ever join us on [Discord](https://discord.gg/85ac2SM)\n<br>\n\n[//]:# (!worldmappin 41.63917 lat -70.91773 long popes island new bedford ma  d3scr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 574
+        },
+        "title": "Monochrome Monday a few shots from recent walks",
+        "author": "tattoodjay",
+        "payout": 15.477,
+        "created": "2026-05-25T10:45:57",
+        "reblogs": 6,
+        "replies": [],
+        "updated": "2026-05-25T10:45:57",
+        "category": "hive-194913",
+        "children": 11,
+        "permlink": "monochrome-monday-a-few-shots-from-recent-walks-tfl9wj",
+        "community": "hive-194913",
+        "payout_at": "2026-06-01T10:45:57",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 197727598220474,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "pharesim",
+            "rshares": 127819883544
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 6331345145
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 28544069934
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 90185978040
+          },
+          {
+            "voter": "gidlark",
+            "rshares": 5767454352
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "phototalent",
+            "photocircle",
+            "ocd",
+            "neoxian",
+            "proofofbrain",
+            "vyb",
+            "pimp",
+            "leo"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/48J9Sdos6UJAPTC8Jd6EMFLvcWkLDbyzcVvsPxuNpifhgNzAxc19vpawYgeTpj5onT.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/23tH81Ld38aBAuEDHvGvFmVqCcHQq6ioSoFS9BUCHgx8YYMVECLAnaVb12SJVfSDx4JhN.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/23tGwCgdAS9LAWpuEyZ4cLm3DVFoAyaSwZnGkGv2Z8sSry7zKT2U9EYVKrX16uZiJu1Rc.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/23wWyQ2XynmaddCebTB4koQurnf4pN4jHDfJWG7ym9xXGXw4UCRMeRL4bv1TBzSFHFBdb.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/23xAK64GaAszuU9bxw17AYN8ZGbiRAw4kwixBuxMsXp7Akr4sXLZaGKetxVquko1Mu3M6.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg"
+          ],
+          "users": [],
+          "format": "markdown",
+          "description": "Monochrome Monday a few shots from recent walks"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.7,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "15.477 HBD"
+      },
+      {
+        "url": "/hive-194913/@papilloncharity/magical-mountain-views",
+        "body": "...and it's always a pleasure to see how the clouds fold over the peaks.\n![002.jpg](https://files.peakd.com/file/peakd-hive/papilloncharity/48RPTRDZncrJBA2QKiHo6q1Pt8RfEohn6Ri8xhrhLiVbAhzYuAjo11YRFTo6TzjMtz.jpg)\n\nEarly morning shots and at the time I saw a band of cloud developing below the top of the mountains. I took some lovely landscapes of the band, as I had an idea what the views would look like later in the day, that I will show you in another post. So, we returned later in the afternoon, and we were happy to see what happened with the band of cloud. If you love mountains and landscapes as much as we do, then you will also like the views in here. \nBut for now, let me just show you some of the morning shots.\nCome and see.\n\n![003.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/243WKW9tDwjpbRn41f3w2Q5AJBAjs8BPZ8eEjHpUNyfrL9tqRVRDWbQcQX7CJvk6wJfeK.JPG)\n\nSee that band of cloud above the ground, that is what I was talking about to get later in the day. \n![004.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/Eq9VCqfBUXLvXEaco1fBV2mzkkmdjXSjz4CT7LE5SoXLyQz73R1bpwgQbtxRH75ZoNi.JPG)\n\n![005.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23uaEtE3VSmJFCLEE8g574oMkiCPyh8nLEu6L53A363Wdrxe2QnfShop86tiGu9jkyR1g.JPG)\n\n![007.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/243zi2fzFFBgHgrssHGUC7tZZLFehs7iB68ueozSqrdzrkwYpKebxrMNjtM8bUQoGroEo.JPG)\n\nThe weather was holding up today, and although it was a cool day, as we are in winter here now, a weak winter sun was also shining on occasion. I have said in the previous post that the mountains can form their own clouds, and this was another of such occurrences. Beautiful to see how the clouds blanket the mountains. Thankfully a gentle wind was in action, and none of those hair-raising wind gusts.\n\nOn the other side of these mountains are some even higher mountains further inland, and can you believe that they are in the summer rainfall area. We have a Mediterranean climate here and the Atlantic Ocean is just a few kilometers away from us. So, the ocean also has a great effect in our weather patterns. Long white sandy beaches are packed with the visitors during the holiday periods.    \n\n![013.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/Ep7uaRuRko5idhQ5TmMrs5yjvqecjFxFYyUgsmN2vNDz6dwpDrAixQFeGsWe3Hf9DNe.JPG)\n\n![017.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xySn2BScvAGZpuB1fSZoA1LsPQesoqHk7vMdSVedBd975fueKCXTJjc5vXS28kP3TT8.JPG)\n\n![018.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/244KNmAHMoWqhH2u9pkR9kYWzLehMbe7khog7WLBph8gsQqyHn4RxmB9hJtDPLEkWz9D4.JPG)\n\n![024.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23yTYxsWd4odhZM3NV4Dfq8sdrtoQ8tijk3yNHZtH9DfbK5LEYsDy6SE3y83SHXNbmKqh.JPG)\n\nFinally, just a look at a single mountain towards the north of our mountain range. Lovely how that cloud rests on the left-hand peak. \n![020.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/245cRyNiUP3oyD2DoNqWqGkrt9w7h5NoXaD4yGtMcoRvEyDwG63FhSwL7K51suTWVAGrv.JPG)\n\nAs human beings we are so strange, as most of us are born with a want. I want this, I want that, and if I get it then I am not satisfied as I want more. Striving after our wants is a waste of time as we miss out on life and how it was supposed to be. Every new generation comes along with new things and most of it requires a faster response of adaption for the older generations. Just the other day I had to make calls through a switchboard operator and nowadays I can make a direct call on my wife's mobile phone. \n\nUnheard of in the 50's. I still have a turntable and a pack of records in a cupboard, and also an original old telephone. But those days, along with its strict ethics and morals, have now been binned, as anyone can do just what they like, whether it is legal or not. The media is filled with horror stories that fills one with dread, and things are really becoming a madhouse. That's one of the reasons that we like to visit the sanity of nature, as it is almost a doctor's treatment every time. \nSuch is life. \n\nI hope you enjoyed the pictures and the story.\n\nPhotos by Zac Smith. All-Rights-Reserved. \n\nCamera: Canon PowershotSX70HS Bridge camera. \n\nUntil next time, cheers!",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 558
+        },
+        "title": "Magical mountain views...",
+        "author": "papilloncharity",
+        "payout": 8.57,
+        "created": "2026-05-25T11:13:00",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-25T11:13:00",
+        "category": "hive-194913",
+        "children": 4,
+        "permlink": "magical-mountain-views",
+        "community": "hive-194913",
+        "payout_at": "2026-06-01T11:13:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 109508209861231,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "steemychicken1",
+            "rshares": 5062940680112
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "team",
+            "rshares": 205659170775
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 2895236221
+          },
+          {
+            "voter": "ratel",
+            "rshares": 57034828412
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photographylovers",
+            "photography",
+            "nature",
+            "mountains",
+            "clouds",
+            "proofofbrain",
+            "creativecoin",
+            "neoxian",
+            "vyb",
+            "featheredfriends"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/48RPTRDZncrJBA2QKiHo6q1Pt8RfEohn6Ri8xhrhLiVbAhzYuAjo11YRFTo6TzjMtz.jpg",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/243WKW9tDwjpbRn41f3w2Q5AJBAjs8BPZ8eEjHpUNyfrL9tqRVRDWbQcQX7CJvk6wJfeK.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Eq9VCqfBUXLvXEaco1fBV2mzkkmdjXSjz4CT7LE5SoXLyQz73R1bpwgQbtxRH75ZoNi.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23uaEtE3VSmJFCLEE8g574oMkiCPyh8nLEu6L53A363Wdrxe2QnfShop86tiGu9jkyR1g.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/243zi2fzFFBgHgrssHGUC7tZZLFehs7iB68ueozSqrdzrkwYpKebxrMNjtM8bUQoGroEo.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Ep7uaRuRko5idhQ5TmMrs5yjvqecjFxFYyUgsmN2vNDz6dwpDrAixQFeGsWe3Hf9DNe.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xySn2BScvAGZpuB1fSZoA1LsPQesoqHk7vMdSVedBd975fueKCXTJjc5vXS28kP3TT8.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/244KNmAHMoWqhH2u9pkR9kYWzLehMbe7khog7WLBph8gsQqyHn4RxmB9hJtDPLEkWz9D4.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23yTYxsWd4odhZM3NV4Dfq8sdrtoQ8tijk3yNHZtH9DfbK5LEYsDy6SE3y83SHXNbmKqh.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/245cRyNiUP3oyD2DoNqWqGkrt9w7h5NoXaD4yGtMcoRvEyDwG63FhSwL7K51suTWVAGrv.JPG"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.67,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "8.570 HBD"
+      },
+      {
+        "url": "/hive-194913/@daveks/canadian-style-safari",
+        "body": "![DSC00002.jpeg](https://files.peakd.com/file/peakd-hive/daveks/242ryXBfS7d3fMxtxCi23G7zoxcMSGCBsG826jibLZGCjZNfyJCu6TzabusBay3neGHbi.jpeg)\n##### <center>Located near the Waterton Lakes park entry gate is this incredible Bison Paddock. After driving by many times, curiosity got the better part of me, and I just had to check it out for myself. So you can actually enter the paddock as long as you are in your vehicle. Surprisingly there were no staff (or cattleman or whatever you might call them) looking after this place and no entry fee, nothing. Let the safari begin. I followed this loop road which took me around the paddock perimeter. Somewhat bumpy, but I managed. Just wild that I could get so close to these beasts! Totally a surreal experience. Thanks for stopping by.</center> #####\n![DSC09998.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23wX5Lmb7ByQ7AG8kLVajJgHz2oeDvA2UPnt9zbpYKNUznre2dTsofsNAJU2b8AbxXs9z.jpeg)\n***\n![DSC00003.jpeg](https://files.peakd.com/file/peakd-hive/daveks/244KT87MYf1twmqKbB6WzckvRxgBxAqYiALLMDtJfFNP5EbNJU7TXZB49fjzeyAMgu5QT.jpeg)\n***\n![DSC00004.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23vYmbDraRaxoiQySEzoY8HcNYcuznGDwpJSdFV8LE9J83KC2ppS1LZSKmtdrsNkHB8oZ.jpeg)\n***\n![DSC00005.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23xyZ9gC6QPtzXz8CJm335ASVqN8htRcxudtx5KDhfUs7sm7N3WdHoCQWZfZb5X6ku8u6.jpeg)\n\n\n\n\n###### <center>Camera: Sony A7R III</center> ######\n###### <center>Lens: Sony 24-105mm f4 G OSS</center> ######\n###### <center>Editing: Lightroom</center> ######\n\n![DSC00002.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23wgMdnPdmWyfMz3T46LcMRursBu84ZGZXpMMnQ6oQsY1GUfSEwXpXeNj2TVgwW2UQSC8.jpeg)\n***\n![DSC09998.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23vhz1dzJ8tXoEe4vWmuVWwtProm212ZL8wFcG1mFvg4n1rByeB36xuRRmqPzFEysV2rz.jpeg)\n***\n![DSC00003.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23wqhzhb4Y6wWJFcbuddEgPFZDna3cJWKB3uioanwnMxafxovYjY56knxib28QnaUg4f3.jpeg)\n***\n![DSC00004.jpeg](https://files.peakd.com/file/peakd-hive/daveks/243zffEQPcSf1ccHmqumw53ZmJcF9yPqF7MhqooPDMhtwDyAAJzyauRiYjwn63K28Fpgs.jpeg)\n***\n![DSC00005.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23sxJQPPoFMxurk14Xm2CyCoGn2xscdE7KhwtSBN912Yc7BSr87wxV1UfZntSvPKFJdFr.jpeg)\n\n\n##### <center>Do you like Black and White photography? Do you like Colour photography? If you answered yes to both questions, then you are a perfect candidate for the “Colour / Black & White” photography community. Created specifically for that purpose. I will be personally curating qualifying posts. Join now.</center> #####\n\n### <center>![image.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg)</center> ###\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 244
+        },
+        "title": "Canadian Style Safari ",
+        "author": "daveks",
+        "payout": 4.898,
+        "created": "2026-05-26T03:17:00",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-26T03:17:00",
+        "category": "hive-194913",
+        "children": 0,
+        "permlink": "canadian-style-safari",
+        "community": "hive-194913",
+        "payout_at": "2026-06-02T03:17:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 62596034371069,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "steemychicken1",
+            "rshares": 5065019933502
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "robsteady",
+            "rshares": 4636074456
+          },
+          {
+            "voter": "sharker",
+            "rshares": 20740789729
+          },
+          {
+            "voter": "kibela",
+            "rshares": 3100855086
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "art",
+            "colourblackandwhite",
+            "canadianrockies",
+            "neoxian",
+            "sgslife",
+            "hikingadventures"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/daveks/242ryXBfS7d3fMxtxCi23G7zoxcMSGCBsG826jibLZGCjZNfyJCu6TzabusBay3neGHbi.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23wX5Lmb7ByQ7AG8kLVajJgHz2oeDvA2UPnt9zbpYKNUznre2dTsofsNAJU2b8AbxXs9z.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/244KT87MYf1twmqKbB6WzckvRxgBxAqYiALLMDtJfFNP5EbNJU7TXZB49fjzeyAMgu5QT.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23vYmbDraRaxoiQySEzoY8HcNYcuznGDwpJSdFV8LE9J83KC2ppS1LZSKmtdrsNkHB8oZ.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23xyZ9gC6QPtzXz8CJm335ASVqN8htRcxudtx5KDhfUs7sm7N3WdHoCQWZfZb5X6ku8u6.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23wgMdnPdmWyfMz3T46LcMRursBu84ZGZXpMMnQ6oQsY1GUfSEwXpXeNj2TVgwW2UQSC8.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23vhz1dzJ8tXoEe4vWmuVWwtProm212ZL8wFcG1mFvg4n1rByeB36xuRRmqPzFEysV2rz.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23wqhzhb4Y6wWJFcbuddEgPFZDna3cJWKB3uioanwnMxafxovYjY56knxib28QnaUg4f3.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/243zffEQPcSf1ccHmqumw53ZmJcF9yPqF7MhqooPDMhtwDyAAJzyauRiYjwn63K28Fpgs.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23sxJQPPoFMxurk14Xm2CyCoGn2xscdE7KhwtSBN912Yc7BSr87wxV1UfZntSvPKFJdFr.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.35,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "4.898 HBD"
+      },
+      {
+        "url": "/hive-194913/@tattoodjay/sublime-and-beautiful-sunday-tfjfk1",
+        "body": "# Sublime and Beautiful Sunday \n\n\n\nThis post is for #SublimeSunday is inspired by @c0ff33a and  #BeautifulSunday is initiated by @ace108.\n \nI must admit now that the weather has been nicer, the most sublime and beautiful sight for me is catching a nice sunrise, and over the last week I have bene lucky to catch a few nice sunrises, and today will share some from an early morning walk at the port.\n\nNow Mother nature can put on such amazing displays but she keeps us on our toes as we never know what sunrise colors we may be fortunate to see.\n\nAs I have mentioned I check the weather apps and look at what coulds they say are around and use that to pick where i may got for my morning walk.\nThis day according to the weather apps I was not that hopeful of a nice sunrise, and decided to head to the port for a walk, I often go there as even if the sky is dull its a cool spot for photos, if I am thinking there is a god chance of nice sunrise colors I will oftenhead to a beach or pond as I do love sunrises caught over the water.\n\nbut as it happenned that morning the apps or my interpretation of the clouds was wrong and I was lucky enough to catch a nice sunrise, and when not expecting it, then its even more sublime\n\nThis shot was taken just behind where I parked my car that moning, the Halina M and the seastreak ferry building in the background \n<center>  \n![sunrise at the port.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/48a43taA2nN8jZ8d7pcPjiaBYLsnurabGZxFv7SxFcVqE9RbMqB8SCnrkigBVLyX8f.jpg)\n\n\n<sup> **Sony A7iv 17mm F11 1/8 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/48a43taA2nN8jZ8d7pcPjiaBYLsnurabGZxFv7SxFcVqE9RbMqB8SCnrkigBVLyX8f.jp)**</sup>\n</center>  \n<br>\n\nand just round the corner a bit, I do love this view\n\nthe boat in the foreground does coastal tours which I must do someday \n\n<center>  \n![sunrise at the port-2.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/23xeZfnqRwa5E8ekV7kJQA5DtL44MZZ4bTQEjKFxA3oSKDC6cSgdhCCNKvJk5dNNQqrXq.jpg)\n\n\n<sup> **Sony A7iv 17mm F11 1/10 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/23xeZfnqRwa5E8ekV7kJQA5DtL44MZZ4bTQEjKFxA3oSKDC6cSgdhCCNKvJk5dNNQqrXq.jpg)**</sup>\n</center>  \n<br>\n\nwhen I visit the port, I always make a point to check out the view from this wooden pier\n\n\n<center>  \n![sunrise at the port-3.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/243Lvv6us3RrX2B2gZ8pdNB6baNNYaephv5Nya6Rj4bzJU7Yb8d8Tt9rwyfxX6GigDm9r.jpg)\n\n\n<sup> **Sony A7iv 17mm F11 1/15 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/243Lvv6us3RrX2B2gZ8pdNB6baNNYaephv5Nya6Rj4bzJU7Yb8d8Tt9rwyfxX6GigDm9r.jpg)**</sup>\n</center>  \n<br>\n\nand back near to where i parked my car, this statue of a family saying bye to a fisherman about to head out on a boat is quite touching\n\n\n<center>  \n![sunrise at the port-4.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/23wWntjSY5gxBs3ykwccszVRt2nGUudTkZUVg3LnSArKjxkEpxCbnVVb62JJK1H5FnEUC.jpg)\n\n\n<sup> **Sony A7iv 26mm F11 1/25 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/23wWntjSY5gxBs3ykwccszVRt2nGUudTkZUVg3LnSArKjxkEpxCbnVVb62JJK1H5FnEUC.jpg)**</sup>\n</center>  \n<br>\n\n\n\n\n\n\n## And that’s all folks \n***\n## unless stated otherwise all photos used in my posts are taken and owned by myself, if you wish to use any of my images please contact me. \n\n\n***\n![](https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif)\n***\n![TEAMUSA JJ hive.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg)\n## TeamUSA is a Community for and supporting those from of in the United States, and now is in the process of rebuilding stronger than ever join us on [Discord](https://discord.gg/85ac2SM)\n<br>\n\n!pinmapple 41.619467 lat -70.913685 long Cove Walk New Bedford MA d3scr",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 662
+        },
+        "title": "Sublime and Beautiful Sunday ",
+        "author": "tattoodjay",
+        "payout": 16.038,
+        "created": "2026-05-24T10:52:51",
+        "reblogs": 9,
+        "replies": [],
+        "updated": "2026-05-24T10:52:51",
+        "category": "hive-194913",
+        "children": 18,
+        "permlink": "sublime-and-beautiful-sunday-tfjfk1",
+        "community": "hive-194913",
+        "payout_at": "2026-05-31T10:52:51",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 199404289274546,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "team",
+            "rshares": 154205703767
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 6331345145
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 26955806793
+          },
+          {
+            "voter": "gidlark",
+            "rshares": 5724342735
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 17833249049
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "sublimesunday",
+            "beautifulsunday",
+            "photography",
+            "proofofbrain",
+            "photocircle",
+            "neoxian",
+            "vyb",
+            "pimp",
+            "leo"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/48a43taA2nN8jZ8d7pcPjiaBYLsnurabGZxFv7SxFcVqE9RbMqB8SCnrkigBVLyX8f.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/23xeZfnqRwa5E8ekV7kJQA5DtL44MZZ4bTQEjKFxA3oSKDC6cSgdhCCNKvJk5dNNQqrXq.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/243Lvv6us3RrX2B2gZ8pdNB6baNNYaephv5Nya6Rj4bzJU7Yb8d8Tt9rwyfxX6GigDm9r.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/23wWntjSY5gxBs3ykwccszVRt2nGUudTkZUVg3LnSArKjxkEpxCbnVVb62JJK1H5FnEUC.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg"
+          ],
+          "users": [
+            "c0ff33a",
+            "ace108."
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.7,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "16.038 HBD"
+      },
+      {
+        "url": "/hive-194913/@daveks/around-akaminacameron-with-an-iphone-16-pro",
+        "body": "![IMG_0755.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23tH3anywRwhbKSgfD8Mc3DJcDbyPQR3ngAhhE5ZngzQWtxavSNNB97xSBq7pXtjn56qv.jpeg)\n##### <center>Here is one of the rare occasions when I decided to use the smartphone instead of the Sony A7R. As mentioned yesterday, I have made a decision to pretty much stop using the iPhone for posting on Hive. Just way to many pics to edit and too many similar photos. But one great thing about the iPhone is the super wide angle. Now I could do something similar with the Sony, but that would require spending a lot of $ on new lenses. Someday will add new lenses, but not today. Photos taken around Cameron and Akamina lake, Waterton Lakes park, Alberta. Thanks for stopping by.</center> #####\n![IMG_0753.jpeg](https://files.peakd.com/file/peakd-hive/daveks/Ep5mDkfJBAg96XgKPDvxBQADKwrwaxw8qzk8M98QaCHczy8bL1TXDA8o4VyEnJVkG7K.jpeg)\n\n***\n\n### <center>![IMG_0752.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23xp6h29GQAvpHyuHxuVjgEcMEbYMMH9P8TUYSB2Mn3Dem6VU3fjW85EJsKNjScPs1tki.jpeg)</center> ###\n***\n\n![IMG_0750.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EpEJK2xUZdWLUKsjPLUB1Yr5r48e6QbSCawVi1wRnHDTRnn7yfnXha3SSQGk9fmrJV2.jpeg)\n\n###### <center>Camera: iPhone 16 Pro</center> ######\n\n###### <center>Editing: Lightroom</center> ######\n\n![IMG_0750.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EoeERReTmvZ7u5HTosPbj8p8a98p6ZV1LQ48a1HquDdAGQFCskvegszZHkgXMuXL4Lf.jpeg)\n***\n![IMG_0752.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23vhwxfepDWpvxJE7up8MxDxwBL9uq9noF8e24rSWS51FFE4gX2Uda2Y9tN95Z6ykFA8z.jpeg)\n***\n![IMG_0753.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EoGwwCr76sNd4qF583svRfRfAyMJqM9bfemDANpWi8rgdCVZswxLhkTsr2s9ietY3HM.jpeg)\n***\n![IMG_0755.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23t7cqzRhmFMLb6FbRZgvgXRen2BpFSdHhwQwqs85sAVcwyTzGW6jWMK9yAude4X3AWMD.jpeg)\n\n##### <center>Do you like Black and White photography? Do you like Colour photography? If you answered yes to both questions, then you are a perfect candidate for the “Colour / Black & White” photography community. Created specifically for that purpose. I will be personally curating qualifying posts. Join now.</center> #####\n\n### <center>![image.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg)</center> ###\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 419
+        },
+        "title": "Around Akamina/Cameron with an iPhone 16 Pro",
+        "author": "daveks",
+        "payout": 8.472,
+        "created": "2026-05-25T03:17:00",
+        "reblogs": 4,
+        "replies": [],
+        "updated": "2026-05-25T15:46:51",
+        "category": "hive-194913",
+        "children": 13,
+        "permlink": "around-akaminacameron-with-an-iphone-16-pro",
+        "community": "hive-194913",
+        "payout_at": "2026-06-01T03:17:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 105710068676440,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "steemychicken1",
+            "rshares": 5062834338856
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "team",
+            "rshares": 205659170775
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 3778807087
+          },
+          {
+            "voter": "robsteady",
+            "rshares": 4635800073
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "art",
+            "colourblackandwhite",
+            "canadianrockies",
+            "neoxian",
+            "sgslife",
+            "hikingadventures"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/daveks/23tH3anywRwhbKSgfD8Mc3DJcDbyPQR3ngAhhE5ZngzQWtxavSNNB97xSBq7pXtjn56qv.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/Ep5mDkfJBAg96XgKPDvxBQADKwrwaxw8qzk8M98QaCHczy8bL1TXDA8o4VyEnJVkG7K.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23xp6h29GQAvpHyuHxuVjgEcMEbYMMH9P8TUYSB2Mn3Dem6VU3fjW85EJsKNjScPs1tki.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EpEJK2xUZdWLUKsjPLUB1Yr5r48e6QbSCawVi1wRnHDTRnn7yfnXha3SSQGk9fmrJV2.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EoeERReTmvZ7u5HTosPbj8p8a98p6ZV1LQ48a1HquDdAGQFCskvegszZHkgXMuXL4Lf.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23vhwxfepDWpvxJE7up8MxDxwBL9uq9noF8e24rSWS51FFE4gX2Uda2Y9tN95Z6ykFA8z.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EoGwwCr76sNd4qF583svRfRfAyMJqM9bfemDANpWi8rgdCVZswxLhkTsr2s9ietY3HM.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23t7cqzRhmFMLb6FbRZgvgXRen2BpFSdHhwQwqs85sAVcwyTzGW6jWMK9yAude4X3AWMD.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.35,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "8.472 HBD"
+      },
+      {
+        "url": "/hive-194913/@aleister/vm-visual-mess-or-macro-photography-session-technical-description",
+        "body": "![COVER.jpg](https://files.peakd.com/file/peakd-hive/aleister/23tmBcjyJjKjnG3Z15Amkgh5sLViz44dZMfcF7EhxuJhoFeUVSoHEniWKmSNYxieLFf8A.jpg)\n\n##### Hi everyone :)\n\nTake a good look at the visual mess I encountered in this session.\nI don't dislike it, but I found it a bit confusing, especially when I looked at the set of photos and realized that everything looked kind of similar, dark, and abstract.\n\nBut when we look more closely, focusing on each of the results, the scenario transforms and we discover those always curious and mysterious details.\n\n---\n\n##### Session Purpose\n\nIn these sessions of macro photography, or objective, in order to spend a good amount of time reflecting on oneself, and go as long as possible in no detail, within the limits of the technique that is to be used, of course, sometimes it is difficult to obtain the result that is initially intended, it is better to always make the effort. What interests me is to look carefully, really stop in front of the chosen object and record everything that it reveals, opting for different angles and perspectives, recording the textures, the small irregularities, different contrasts and those small marks that normally go unnoticed. There is also a very visual side to this process, because I don't just want to document, I want to build interesting visual compositions. When I publish this work on my blog, I intend to share this experience of close observation and show the discreet beauty and complexity that exists, many times in the most banal objects, others not so much.\n\n##### Let me present today’s model:\n\n\n![IMG_4158.jpg](https://files.peakd.com/file/peakd-hive/aleister/23tkp96MmupYu1eETHzANbqmgeLZHMtgEpk57UfxcoMghtuVeyugTE9XaF3DYe78raxTi.jpg)\n<center><sub>F-stop: F/5 | Exposure time: 1/200 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4157.jpg](https://files.peakd.com/file/peakd-hive/aleister/23tS13kM2shoa853QavfPHqcXFZjfipfvdvSLQWHYNewCZH2iaf9pvGCFEVxBqeM19QrE.jpg)\n<center><sub>F-stop: F/4 | Exposure time: 1/250 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4159.jpg](https://files.peakd.com/file/peakd-hive/aleister/23u5tdeGChdqT3kcU9VELcFgyQ6iY5seZwYkgxUW3TGGQ5bm5rehWQCUiU26MxwUR3jMK.jpg)\n<center><sub>F-stop: F/5 | Exposure time: 1/200 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4162.jpg](https://files.peakd.com/file/peakd-hive/aleister/23vsDe6pCPeCVVLwNxZfY7WjpjfrGBAvd184p3aoQWkFpPuDpqwdnKifEEeXGyCHmnNbr.jpg)\n<center><sub>F-stop: F/4 | Exposure time: 1/250 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4166.jpg](https://files.peakd.com/file/peakd-hive/aleister/23tvAVStWsztcGDT6Wsi2DcN5nhXwbQsEnwvL4nQnDoFdzCszQvKKNhMest9STXrB8kLp.jpg)\n<center><sub>F-stop: F/4 | Exposure time: 1/250 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4163.jpg](https://files.peakd.com/file/peakd-hive/aleister/23tkmuMtJPW9wR1n2R7ThrP9eRccac2gF6VmTU1GRaEEJkHV9fQaaR9rpJ3DRXPdzQ29N.jpg)\n<center><sub>F-stop: F/5 | Exposure time: 1/200 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4161.jpg](https://files.peakd.com/file/peakd-hive/aleister/23u5ZgGrAWSq9R2tYQKZ5ZDebZDTrqUo9ejJscyeQYqDPYQZGhMieGKsVt7Lqg8poqmmB.jpg)\n<center><sub>F-stop: F/4 | Exposure time: 1/250 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4160.jpg](https://files.peakd.com/file/peakd-hive/aleister/23tbiC7e8ELKeh1HDwmNNpC3d8JZt8xFjh1WPvVV7BuiafCPRvkqFgLP3RrvvbM8b4r2c.jpg)\n<center><sub>F-stop: F/5 | Exposure time: 1/200 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4165.jpg](https://files.peakd.com/file/peakd-hive/aleister/23uEyyyW2ZcjC8N1eHCgYXicEwGiX61uXqrsDWjq5hskC8jEk1J1VzNdZMwzdrLTSAg2u.jpg)\n<center><sub>F-stop: F/4 | Exposure time: 1/250 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4164.jpg](https://files.peakd.com/file/peakd-hive/aleister/23tS2tnA5KeXAkyrg7YBBzuz2MFwvdpDg8iYky9XUkKmrekhG8mofp7GS5d2Jufjj9mRa.jpg)\n<center><sub>F-stop: F/4 | Exposure time: 1/250 sec. | ISO speed: ISO 400</sub></center>\n\n![IMG_4156.jpg](https://files.peakd.com/file/peakd-hive/aleister/23uEym28dDFoHTXbhqNoNZtZxFyXDp5RtvqDovdiYbFQsTwFneFswFnBk3ZSFe3zRsWmy.jpg)\n<center><sub>F-stop: F/5 | Exposure time: 1/200 sec. | ISO speed: ISO 400</sub></center>\n\n---\n\nThere are not several ways to shoot macro photography, but among the possible ways, this is, for me, one of the most simple and mainly the most accessible and very effective, especially for having a camera with objective movement. By removing the lens and inverting it, it is possible to get closer very close and reveal details that normally go unnoticed. With the help of an inverter, the process becomes practical, although it becomes a little instável and difficult to control. What most attracted me to this method is the relationship between the simplicity of the method and the minimally decent result I tend to have with the minimum resources, once it achieves a surprising extension and a new way of working for all types of objects, no matter how common it may seem.\n\nhttps://images.hive.blog/0x0/https://img.esteem.ws/qpm6pm12ej.gif\n\n##### Used equipment & Camera Settings\n\nFor these images I used a Canon EOS 600D, a DSLR with a CMOS sensor that gives me a good response to detail and a fairly balanced reading of texture and color.\nWorked with an EFS 18–55 mm objective, taking advantage of its versatility and reduced depth of field to isolate small areas of the surface and highlight very specific details. I also reviewed an inverter panel, essential in this process, for allowing the lens to be transformed into a simple and effective macro solution, as it has the opportunity to display the GIFs that part of this article.\nDo not use a tripod.\nThe lighting was made with adjustable LED lights, designed to distribute light softly, control harsh shadows and enhance the structure of the subject.\n\nFocus Mode: Manual focus to ensure precision in specific details of the structure.\nAperture: f/5 for adequate depth of field, ensuring all important details are in focus.\nISO: Low ISO setting (400) to minimize noise in images.\nShutter Speed: Adjust shutter speed as needed to avoid underexposure, while maintaining a value that allows you to capture sharp details.\n\n---\n\nTo finish, i leave you with some considerations regarding these photo sessions:\n\n> Observing all these pieces through macro photography reveals a fascinating dimension and breadth, full of minute details that ultimately assume significant importance in the visual composition. The complexity of these objects, when viewed from this perspective, takes on a beauty that is often overlooked by the indifference of the eye. The essence of macro photography lies in its ability to elevate ordinary objects to extraordinary levels, offering an intimate and captivating perspective.\n\nThe session is closed for today.\nHope you like it :)\n\n<center>https://images.hive.blog/0x0/https://files.peakd.com/file/peakd-hive/aleister/Eo1uXzYGZ1u9sf8emF4NkaQDbNboaKDW5LoqFdKE6vWqJHnoeZ2TtDeRL6Bb2VvsZyi.png</center>\n\n##### <center>These photos weren't taken with a tripod</center>\n\n<center>Photo by @aleister\nCamera - Canon EOS 600D\nLens - EFS 18-55mm\nLocation - Portugal</center>\n\n<center>Thanks for following me and support my work!</center>\n\n<center>![5bEGgqZEHBMe6s3wiPgGFTi3naqHERgdwJew6rJYRaB3RR7sSAdZKnpJrzBaM479LAPQZP9wVK4uxkMRP7miPfoHap3ywgiq.gif](https://files.peakd.com/file/peakd-hive/aleister/48PuiSSxQj3pqz6VtNFaomyvc7HbZjNwUm96kAv8oQT2n8tHbeVddnij6kpn5MgDcq.gif)</center>\n\nSee you soon\nThank you for watching\n\n\nNever forget\nThe price of anything is the amount of life you trade for it.\nTime is life... value yours, make every fraction worth it.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 119
+        },
+        "title": "\"VM\" Visual Mess | Macro Photography Session - Technical Description",
+        "author": "aleister",
+        "payout": 7.348,
+        "created": "2026-05-24T22:10:00",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-24T22:10:00",
+        "category": "hive-194913",
+        "children": 0,
+        "permlink": "vm-visual-mess-or-macro-photography-session-technical-description",
+        "community": "hive-194913",
+        "payout_at": "2026-05-31T22:10:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 92422232457572,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "roelandp",
+            "rshares": 14355739783
+          },
+          {
+            "voter": "nascimentoab",
+            "rshares": 10604894082
+          },
+          {
+            "voter": "arcange",
+            "rshares": 901791317481
+          },
+          {
+            "voter": "petrvl",
+            "rshares": 578437297705
+          },
+          {
+            "voter": "noborders",
+            "rshares": 520179017
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "tags": [
+            "photography",
+            "gems",
+            "neoxian",
+            "creativecoin",
+            "palnet",
+            "ocd",
+            "macro",
+            "art",
+            "photofeed",
+            "blog"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/aleister/23tmBcjyJjKjnG3Z15Amkgh5sLViz44dZMfcF7EhxuJhoFeUVSoHEniWKmSNYxieLFf8A.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23tkp96MmupYu1eETHzANbqmgeLZHMtgEpk57UfxcoMghtuVeyugTE9XaF3DYe78raxTi.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23tS13kM2shoa853QavfPHqcXFZjfipfvdvSLQWHYNewCZH2iaf9pvGCFEVxBqeM19QrE.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23u5tdeGChdqT3kcU9VELcFgyQ6iY5seZwYkgxUW3TGGQ5bm5rehWQCUiU26MxwUR3jMK.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23vsDe6pCPeCVVLwNxZfY7WjpjfrGBAvd184p3aoQWkFpPuDpqwdnKifEEeXGyCHmnNbr.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23tvAVStWsztcGDT6Wsi2DcN5nhXwbQsEnwvL4nQnDoFdzCszQvKKNhMest9STXrB8kLp.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23tkmuMtJPW9wR1n2R7ThrP9eRccac2gF6VmTU1GRaEEJkHV9fQaaR9rpJ3DRXPdzQ29N.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23u5ZgGrAWSq9R2tYQKZ5ZDebZDTrqUo9ejJscyeQYqDPYQZGhMieGKsVt7Lqg8poqmmB.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23tbiC7e8ELKeh1HDwmNNpC3d8JZt8xFjh1WPvVV7BuiafCPRvkqFgLP3RrvvbM8b4r2c.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23uEyyyW2ZcjC8N1eHCgYXicEwGiX61uXqrsDWjq5hskC8jEk1J1VzNdZMwzdrLTSAg2u.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23tS2tnA5KeXAkyrg7YBBzuz2MFwvdpDg8iYky9XUkKmrekhG8mofp7GS5d2Jufjj9mRa.jpg",
+            "https://files.peakd.com/file/peakd-hive/aleister/23uEym28dDFoHTXbhqNoNZtZxFyXDp5RtvqDovdiYbFQsTwFneFswFnBk3ZSFe3zRsWmy.jpg",
+            "https://img.esteem.ws/qpm6pm12ej.gif",
+            "https://files.peakd.com/file/peakd-hive/aleister/Eo1uXzYGZ1u9sf8emF4NkaQDbNboaKDW5LoqFdKE6vWqJHnoeZ2TtDeRL6Bb2VvsZyi.png",
+            "https://files.peakd.com/file/peakd-hive/aleister/48PuiSSxQj3pqz6VtNFaomyvc7HbZjNwUm96kAv8oQT2n8tHbeVddnij6kpn5MgDcq.gif"
+          ],
+          "users": [
+            "aleister"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 77.54,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "7.348 HBD"
+      },
+      {
+        "url": "/hive-194913/@papilloncharity/a-visit-to-the-lake",
+        "body": "...as we wanted to see if the lake has filled up after recent storms.\n![003.jpg](https://files.peakd.com/file/peakd-hive/papilloncharity/23uQto8Bzbw6fAzxYf8EiLYEHGGkVabEkCQx4RJ3dgGP69iGfGbrWsuS9Dw9nMfKZi1Yx.jpg)\n\nThis is what it looked like during our last visit that I posted. But by now all of the flamingos were gone, as they migrate every winter here to the warmer countries up north on the African Continent. They will return during the late spring season next year, as they breed here. Then their youngsters grow up during our summer season to be strong enough for the migration trip the next winter.\n\nWe were happy to see that the lake is full again, and even more water will be added to sustain it now during our winter, as we are in a winter rainfall area. So, today you will see no flamingos, and none of the other migratory birds, as we had to search for any local birds that we may find. There was no water to be seen here during our last visit, as we could walk in the area where the water is now. \nFortunally we found a few local birds that I will show you in here. \n\n![003.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EqquufEA6JDnEj4KPBsu2LsbEZTrEa12Vj64XNDGwWecZ1APF29byXRZAUGf2BiHfdZ.JPG)\n\n![006.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/Eqqtpdf6ud86L9Jg9ihB6BB8bCawWzevXLYsjet7u7CDuKUnC6htf3H1uUBwnkGxySu.JPG)\n\nNo birds, not even one could be seen, and during summer there are thousands of birds all over here.\n![008.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EqquSSsc6MGRiXRVveYSLYtfm7JREuQKSKfLrwdbJmZUAp24jdCH51X8AWoRcy7xKmk.JPG)\n\n**But what was this?**\n\nI saw the dive and knew that I was too close, so I stepped back to wait for the bird to emerge.\n![009.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23uFYCuDUw3mUQD7hw7psfuz6GpL9aR8fXGdZB3jUZUgdKuJ1saCNZVxEKt9S1Ls12ubC.JPG)\n\nAh! It was a Red-knobbed Coot (Fulica cristata).\n![010.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EoChDc29LBmX1rZ2F5TXHQaEYYp9BJQCwMeoER22ZpnzwJ3h9k8yKjVWS3Rire4maf3.JPG)\n\nAnd now for a scoop, as look what I got below.\n![021.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23z7DdDq5fpx1FKbve3odbQDChev1bPXgQGxS3rGcrLuQVwEEVDTHtUV9GB6yH9BVgtKE.JPG)\n\nA lovely Swan couple, and it might be Black Swans (Cygnus atratus), but with the sun in my eyes I could not be certain as to the species.\n![027.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EqL7GkvMWNUtv8NUNXamroYb4UeV1z8Sdk5BLL2dDbbQRAD5hkXyMJR11ifFWF3UWNu.JPG)\n\nI know that they can be found in Australia, and someone might have brought them in, or they escaped from somewhere.\n![025.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/Eos2DdA3m2DNrUjvyRDJJFtdi5ja5zvdqWnLfapRqMqNyfkbVGru9dH8fQoQKdtTifR.JPG)\n\nFinally, I close with some attacking coots on a run in the lake.\n![034.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/Eo4DyU55ZxAHfRFL3UW299yAxuKHhx1EuYU7u2xNmaBcfGwu39Ea9X8i9ii1ZpTcmCC.JPG)\n\nWe love our visits to this lake, as it has taught us so much about nature and the seasons. As much as the birds are dependent on the water, so we as human beings are also dependent on water. Only difference is that we cannot run on the water like the coots do :) Only joking, but yes, it is said that water is life, and here is evidence of it. The coots are tough little birds, and they fiercely protect their territories. If a strange coot appears, then they chase it by running after it on the water.\n\nAs far as the swans are concerned, we don't know them, but they are here, and so we will have to do some research to see what we can find. I should have done the research first before I did this post, but my excuse is that I am old and have a foggy brain, so don't ask me quickly what my name is :) In any case, I am sure that we will visit the lake again, and then when I do the post, I will have the information if I don't forget. \nSuch is life. \n\nI hope you enjoyed the pictures and the story.\n\nPhotos by Zac Smith. All-Rights-Reserved.\n\nCamera: Canon PowershotSX70HS Bridge camera. \n\nThank you kindly for supporting this post.   ",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 448
+        },
+        "title": "A visit to the lake...",
+        "author": "papilloncharity",
+        "payout": 24.261,
+        "created": "2026-05-23T11:12:00",
+        "reblogs": 7,
+        "replies": [],
+        "updated": "2026-05-23T11:12:00",
+        "category": "hive-194913",
+        "children": 16,
+        "permlink": "a-visit-to-the-lake",
+        "community": "hive-194913",
+        "payout_at": "2026-05-30T11:12:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 305800291500182,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "steemychicken1",
+            "rshares": 5058579960555
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "flemingfarm",
+            "rshares": 302833710546
+          },
+          {
+            "voter": "ratel",
+            "rshares": 56653746535
+          },
+          {
+            "voter": "faust",
+            "rshares": 25494331148
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photographylovers",
+            "photography",
+            "nature",
+            "lakes",
+            "seasons",
+            "proofofbrain",
+            "creativecoin",
+            "neoxian",
+            "featheredfriends",
+            "silverbloggers"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23uQto8Bzbw6fAzxYf8EiLYEHGGkVabEkCQx4RJ3dgGP69iGfGbrWsuS9Dw9nMfKZi1Yx.jpg",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EqquufEA6JDnEj4KPBsu2LsbEZTrEa12Vj64XNDGwWecZ1APF29byXRZAUGf2BiHfdZ.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Eqqtpdf6ud86L9Jg9ihB6BB8bCawWzevXLYsjet7u7CDuKUnC6htf3H1uUBwnkGxySu.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EqquSSsc6MGRiXRVveYSLYtfm7JREuQKSKfLrwdbJmZUAp24jdCH51X8AWoRcy7xKmk.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23uFYCuDUw3mUQD7hw7psfuz6GpL9aR8fXGdZB3jUZUgdKuJ1saCNZVxEKt9S1Ls12ubC.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EoChDc29LBmX1rZ2F5TXHQaEYYp9BJQCwMeoER22ZpnzwJ3h9k8yKjVWS3Rire4maf3.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23z7DdDq5fpx1FKbve3odbQDChev1bPXgQGxS3rGcrLuQVwEEVDTHtUV9GB6yH9BVgtKE.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EqL7GkvMWNUtv8NUNXamroYb4UeV1z8Sdk5BLL2dDbbQRAD5hkXyMJR11ifFWF3UWNu.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Eos2DdA3m2DNrUjvyRDJJFtdi5ja5zvdqWnLfapRqMqNyfkbVGru9dH8fQoQKdtTifR.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Eo4DyU55ZxAHfRFL3UW299yAxuKHhx1EuYU7u2xNmaBcfGwu39Ea9X8i9ii1ZpTcmCC.JPG"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.67,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "24.261 HBD"
+      },
+      {
+        "url": "/hive-194913/@ladytruckview/silent-world-filled-with-love",
+        "body": "\n\n![Kopia – Observed lives.jpg](https://files.peakd.com/file/peakd-hive/ladytruckview/23wCQpoxEKg2UEvhyz4HhweXKNfJ5JDDLiJrFpRTF23dVjd8d7EnPyKnbbCywWdZzW4Yo.jpg)\n\nI recently became the owner of a new phone, so it was finally time to test its camera. As it happened yesterday I was at my nephew’s birthday party and they have a cat at home. I decided it would be the perfect opportunity to take a few photos. So, the star of today’s post is NORKA and her story.\n\nLess than a year ago my nineteen-year-old nephew found a small, lost and undernourished kitten. I’m glad to have such a kind-hearted nephew. He took the kitten home, gave her food and water and cared for her. Norka stole the hearts of the whole family from the very first day. She was quickly accepted and it did not take long before the decision was made that she would stay with them permanently.\n\nAt first Norka was very frightened. She also displayed some unusual behaviors that were most likely caused by severe stress. However, she soon settled into her new home and those nervous habits gradually disappeared until they were completely gone.\n\nNot long afterwards it turned out that Norka was deaf. Unfortunately, there is no way to cure her condition. The world as Norka experiences it is completely silent. She grew up in my sister’s home surrounded above all by love, care and affection.\nAt first, because she was deaf and never made any sounds, we thought she might not only be deaf but also mute. However, only quite recently she began producing her very first meows!\n\nNow she is a friendly, happy cat who enjoys life!\nI’m very happy that she was found in time and given a chance for a better life!\n\n![IMG20260523203144.jpg](https://files.peakd.com/file/peakd-hive/ladytruckview/23vhoFTwUKkfLfmPousEkEaXFBPKvkAFdzE1uxgVXMf5dDp5ZnQ789Cnorxbr8nUZDT1B.jpg)\n\n![IMG20260523192108.jpg](https://files.peakd.com/file/peakd-hive/ladytruckview/23uFKXmchKas2yKjEtACNN4uPXMzu1TgSUZC4U7hqCJzjbSHYkHZWgdhdLu1guJ92hQia.jpg)\n\n![IMG20260523192329.jpg](https://files.peakd.com/file/peakd-hive/ladytruckview/23uFHFEQVcgYCsEXS384r6dfxr743MpWZSPkToRZJjMGpkin23Ryz9TJzBJzJLb1hQKaT.jpg)\n\n![IMG20260523195229.jpg](https://files.peakd.com/file/peakd-hive/ladytruckview/23vsLc23Dzdwox1HvGdGwjC2BqcL5QUBuX4nWYUKYaUxTJR9nJyHgDJktjxoAisngNss4.jpg)\n\n![IMG20260523195241.jpg](https://files.peakd.com/file/peakd-hive/ladytruckview/23w2eTMSv9ECXiu7FNxkpooKY4qnz1hYAfvGawDxx4Zmw2EvmHtPVfHhE2QajyiKYmQWN.jpg)\n\n![IMG20260523203353.jpg](https://files.peakd.com/file/peakd-hive/ladytruckview/23uQhyaKMXEvCo53n9dpyJ3T2ps74xHb8sF7xc3pyJqz84Xr6obkuoD4jU5atua1BPVzy.jpg)\n\n![IMG20260523195409.jpg](https://files.peakd.com/file/peakd-hive/ladytruckview/23tvCejdVzmzpdqAQAujFamqW3oFWQrjGY2wkTEggKjxwCY5c5j2MDNcJUjsnxgNWnBCK.jpg)\n\n\n\n@ladytruckview\n---\nMy Instagram : https://www.instagram.com/ciezarowka_przez_obiektyw/\nMy Facebook : https://www.facebook.com/ciezarowkaprzezobiektyw/\nMy Shutterstock : https://www.shutterstock.com/pl/g/Dotka\nMy 500px : https://500px.com/p/dtobor?view=photos\nMy WorldMapPin : https://worldmappin.com/@ladytruckview\n\n---\n<center>\n💬 Thank you for every upvote, comment and moment you share on my journey! 🙏\n</center>\n---\n<center>\n*This post is based on my own experience and original photography. AI was used for grammar correction and for supporting the translation process.*\n</center>\n\n---\n\n![dorota_bio_card_peakd.jpg](https://files.peakd.com/file/peakd-hive/ladytruckview/23tbPQfBuFw71YRnVYuEUMsMbWSfuTSLtDVD5PfJUEirNjmaBQ9MXaXGZRwEueUrdk6oy.jpg)\n\n\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 186
+        },
+        "title": "SILENT WORLD FILLED WITH LOVE",
+        "author": "ladytruckview",
+        "payout": 9.393,
+        "created": "2026-05-24T13:51:36",
+        "reblogs": 5,
+        "replies": [],
+        "updated": "2026-05-24T13:51:36",
+        "category": "hive-194913",
+        "children": 6,
+        "permlink": "silent-world-filled-with-love",
+        "community": "hive-194913",
+        "payout_at": "2026-05-31T13:51:36",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 116788476066835,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "team",
+            "rshares": 102787135845
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 14354641280
+          },
+          {
+            "voter": "arcange",
+            "rshares": 901775512125
+          },
+          {
+            "voter": "cornerstone",
+            "rshares": 956457949043
+          },
+          {
+            "voter": "funnyman",
+            "rshares": 4272725525
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "animals",
+            "cut",
+            "pet",
+            "domestics",
+            "hive",
+            "blog",
+            "originalcontent",
+            "visualshots",
+            "photography",
+            "love"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/ladytruckview/23wCQpoxEKg2UEvhyz4HhweXKNfJ5JDDLiJrFpRTF23dVjd8d7EnPyKnbbCywWdZzW4Yo.jpg",
+            "https://files.peakd.com/file/peakd-hive/ladytruckview/23vhoFTwUKkfLfmPousEkEaXFBPKvkAFdzE1uxgVXMf5dDp5ZnQ789Cnorxbr8nUZDT1B.jpg",
+            "https://files.peakd.com/file/peakd-hive/ladytruckview/23uFKXmchKas2yKjEtACNN4uPXMzu1TgSUZC4U7hqCJzjbSHYkHZWgdhdLu1guJ92hQia.jpg",
+            "https://files.peakd.com/file/peakd-hive/ladytruckview/23uFHFEQVcgYCsEXS384r6dfxr743MpWZSPkToRZJjMGpkin23Ryz9TJzBJzJLb1hQKaT.jpg",
+            "https://files.peakd.com/file/peakd-hive/ladytruckview/23vsLc23Dzdwox1HvGdGwjC2BqcL5QUBuX4nWYUKYaUxTJR9nJyHgDJktjxoAisngNss4.jpg",
+            "https://files.peakd.com/file/peakd-hive/ladytruckview/23w2eTMSv9ECXiu7FNxkpooKY4qnz1hYAfvGawDxx4Zmw2EvmHtPVfHhE2QajyiKYmQWN.jpg",
+            "https://files.peakd.com/file/peakd-hive/ladytruckview/23uQhyaKMXEvCo53n9dpyJ3T2ps74xHb8sF7xc3pyJqz84Xr6obkuoD4jU5atua1BPVzy.jpg",
+            "https://files.peakd.com/file/peakd-hive/ladytruckview/23tvCejdVzmzpdqAQAujFamqW3oFWQrjGY2wkTEggKjxwCY5c5j2MDNcJUjsnxgNWnBCK.jpg",
+            "https://files.peakd.com/file/peakd-hive/ladytruckview/23tbPQfBuFw71YRnVYuEUMsMbWSfuTSLtDVD5PfJUEirNjmaBQ9MXaXGZRwEueUrdk6oy.jpg"
+          ],
+          "users": [
+            "ladytruckview"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 73.61,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "9.393 HBD"
+      },
+      {
+        "url": "/hive-194913/@captainquack22/the-morning-sun-on-my",
+        "body": "\n![](https://i.ecency.com/DQmfDh228uB1vS5cjTDTMP8SVao9Ws8SXU1ntSHTFp7WE3T/1779712505898.jpg)\n\nAnd the contrast of some greenery, along the spot that my duck body is sat at.\n\nTwas a long night at work, trying to keep my sanity.....\n\n> and here we are....\n\nBack out in the wild.  At home now, sitting on this particular spot on the path.  The morning sun feels nice, i need to crisp up a bit, im a bit ghostly.  The season is here, but its been up and down around here.  This moment, its nice again.\n\n![](https://i.ecency.com/DQmdpxa8q4iEyipR285DSP127cVjfRsrkzPBDgzXeQeawS4/1779712652338.jpg)\n\nAnd then here I am of course...\n\n![](https://i.ecency.com/DQmWZy6ghx53vimwMQBa7gbaXU24ocbp87D29LauAArKpdX/1779712681847.jpg)\n\n---\n## The Path.... to NoWhere!?!? ##\n\n![](https://i.ecency.com/DQmQBbgQjowzeMLvWhuvJ4fGFjDs1N1DkMwyTFKzcZKSyPh/1779712813769.jpg)\n\n![](https://i.ecency.com/DQmVHHnxjMy2ws7xBnq3P1sdf68srBkFuWAomW5WpbmrdLD/1779712813926.jpg)\n \nAcross the way...\n\nPast the..... Mulberry bush...\n\nNext to the crazy squirrels.... (what the heck is going on).  3 of them were making noise and jetted out from the bush they were having a meeting in.\n\nAnd back into the Sun, How Fun 😁 \n\n![](https://i.ecency.com/DQmPCPyMPQg3fxuez8FZPHsVa14BFyXYNrzF4huJtRsvGJe/1779712925662.jpg)\n\n---\n\nA short adventure here, as i wrap it up already.  Every day is the mission.  Rinse and repeat.  Solid choices, keep stepping.  Its like im on Mount Everest, trekking to base camp.  In the snow, i got my suit on, and a guitar and amp.  \n\nKeep rockin 🎸 \n\n---\n---\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 115
+        },
+        "title": "The morning sun, on my ghostly body.",
+        "author": "captainquack22",
+        "payout": 3.709,
+        "created": "2026-05-25T12:49:48",
+        "reblogs": 3,
+        "replies": [],
+        "updated": "2026-05-25T12:49:48",
+        "category": "hive-194913",
+        "children": 11,
+        "permlink": "the-morning-sun-on-my",
+        "community": "hive-194913",
+        "payout_at": "2026-06-01T12:49:48",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 47485117624374,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "vortac",
+            "rshares": 134290769796
+          },
+          {
+            "voter": "oflyhigh",
+            "rshares": 3472328322006
+          },
+          {
+            "voter": "dylanhobalart",
+            "rshares": 129313317300
+          },
+          {
+            "voter": "funnel",
+            "rshares": 2134780800
+          },
+          {
+            "voter": "elizacheng",
+            "rshares": 76050011285
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "tags": [
+            "hive-194913",
+            "ecency",
+            "pimp",
+            "indiaunited"
+          ],
+          "type": "post",
+          "image": [
+            "https://i.ecency.com/DQmfDh228uB1vS5cjTDTMP8SVao9Ws8SXU1ntSHTFp7WE3T/1779712505898.jpg",
+            "https://i.ecency.com/DQmdpxa8q4iEyipR285DSP127cVjfRsrkzPBDgzXeQeawS4/1779712652338.jpg",
+            "https://i.ecency.com/DQmWZy6ghx53vimwMQBa7gbaXU24ocbp87D29LauAArKpdX/1779712681847.jpg",
+            "https://i.ecency.com/DQmQBbgQjowzeMLvWhuvJ4fGFjDs1N1DkMwyTFKzcZKSyPh/1779712813769.jpg",
+            "https://i.ecency.com/DQmVHHnxjMy2ws7xBnq3P1sdf68srBkFuWAomW5WpbmrdLD/1779712813926.jpg",
+            "https://i.ecency.com/DQmPCPyMPQg3fxuez8FZPHsVa14BFyXYNrzF4huJtRsvGJe/1779712925662.jpg"
+          ],
+          "links": [],
+          "format": "markdown+html",
+          "image_ratios": [
+            0.75,
+            0.75,
+            0.75,
+            0.75,
+            0.75
+          ]
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 71.03,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "3.709 HBD"
+      },
+      {
+        "url": "/hive-194913/@michupa/vertical-horizons-en-pt",
+        "body": "\n<div class=\"text-justify\">\n\nMy city might just be a reflection of what is happening in much of the world. A place where the past still remains standing while the present continues trying to draw the future, little by little. It is strange to think about that, because many of the things that today seem modern or even like something new will, a few years from now, also be seen as part of a time left behind. It sounds like something too obvious to say, but when we stop to truly observe, we realize how everything happens silently. We are so used to this mixture before our eyes that we almost never notice that, one day, what we call the present today will also become just a memory.\n\nWhen I walk through the city, this mixture between past and present becomes very evident. The city never stops growing. Spaces keep getting smaller, especially downtown, where it feels like every available piece has already been occupied. And then the most common solution appears: growing upward. Floor upon floor, bigger and bigger buildings trying to find space where there is almost no space left at all.\n\nBut the most curious thing is how this transformation happens without us fully noticing it. Little by little, everything starts blending together. Modern, mirrored, gleaming constructions begin sharing the landscape with old buildings that still carry marks of another era. And many times, all it takes is looking at the reflection on a glass surface to notice the contrast: the new reflecting the old, as if two different versions of the city were coexisting at the same time. And aren’t they?\n\nI particularly like that. There is something interesting about realizing how patterns change over the years. Ways of building, styles, and details that once seemed natural slowly disappear, giving place to new ideas, new aesthetics, and new needs. The city changes, but it still keeps fragments of what it once was.\n\nMaybe that is why these Sunday walks always leave me feeling a bit reflective. Walking among these concrete giants ends up being, in a certain way, like walking between different eras. Many times we pass through these places in a hurry without realizing that there is history hidden in every old facade or in every modern building that continues to rise. In the end, I think it is beautiful to notice that. Looking at the past still standing before us while the future continues being built right there, before our eyes.\n\n![](https://i.ecency.com/DQmXAvoao5G7Pgn6zBLdHPLBnKKy1VTjk34wZNusECxc5ez/image.png)\n\n![](https://i.ecency.com/DQmXr5nYZHrkpqik3hm1TGcNrCkkMVwwaPKmZEofmgLryA6/image.png)\n\n![](https://i.ecency.com/DQmPd4C2ghFkcA3p5nizauZn7kukMzpasPNHoCGgq9gXxhq/image.png)\n\n\n\n\n![](https://i.ecency.com/DQmfXYAaxJJ3wdcwGzhxMAhDyZW18SjeGViS1vJrrJKZ7GR/image.png)\n\nMinha cidade talvez seja apenas um reflexo do que está acontecendo em boa parte do mundo. Um lugar onde o passado ainda permanece de pé enquanto o presente continua tentando desenhar o futuro, pouco a pouco. É estranho pensar nisso, porque muitas das coisas que hoje parecem modernas ou até novidade, daqui alguns anos também serão vistas como parte de um tempo que ficou para trás. Parece algo óbvio de se dizer, mas, quando paramos para observar de verdade, percebemos como tudo acontece de forma silenciosa. Estamos tão acostumados com essa mistura diante dos nossos olhos que quase nunca percebemos que, um dia, aquilo que hoje chamamos de presente será apenas lembrança também.\n\nQuando caminho pela cidade, essa mistura entre passado e presente fica muito evidente. A cidade não para de crescer. Os espaços vão diminuindo, principalmente no centro, onde parece que cada pedaço disponível já foi ocupado. E então surge a solução mais comum: crescer para cima. Andares sobre andares, prédios cada vez maiores tentando encontrar espaço onde já quase não existe mais espaço algum.\n\nMas o mais curioso é como essa transformação acontece sem que a gente perceba completamente. Aos poucos, tudo vai se misturando. Construções modernas, espelhadas e reluzentes, passam a dividir cenário com prédios antigos que ainda carregam marcas de outra época. E, muitas vezes, basta olhar o reflexo de um vidro para enxergar o contraste: o novo refletindo o velho, como se duas versões diferentes da cidade coexistissem ao mesmo tempo. E não existem?\n\nEu particularmente gosto disso. Existe algo interessante em perceber como os padrões mudam com o passar dos anos. Formas de construir, estilos, detalhes que antes pareciam naturais vão desaparecendo devagar, dando lugar a novas ideias, novas estéticas e novas necessidades. A cidade muda, mas ainda guarda fragmentos do que já foi um dia.\n\nTalvez seja por isso que esses passeios de domingo sempre me deixam um pouco reflexivo. Caminhar entre esses gigantes de concreto acaba sendo, de certa forma, caminhar entre diferentes épocas. Muitas vezes passamos apressados por esses lugares sem perceber que existe história escondida em cada fachada antiga ou em cada prédio moderno que continua surgindo. No fim, acho bonito perceber isso. Olhar para o passado ainda presente diante de nós, enquanto o futuro continua sendo construído bem ali, diante dos nossos olhos.\n\n</div>\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 691
+        },
+        "title": "Vertical horizons [EN/PT]",
+        "author": "michupa",
+        "payout": 7.196,
+        "created": "2026-05-24T17:28:09",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-24T17:28:09",
+        "category": "hive-194913",
+        "children": 11,
+        "permlink": "vertical-horizons-en-pt",
+        "community": "hive-194913",
+        "payout_at": "2026-05-31T17:28:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 90150662884458,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "pharesim",
+            "rshares": 192945585245
+          },
+          {
+            "voter": "team",
+            "rshares": 102801363432
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 2404363518
+          },
+          {
+            "voter": "robsteady",
+            "rshares": 4635742853
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 55631932679
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "hive-194913",
+            "photography",
+            "photo",
+            "urbanarchitecture",
+            "urban",
+            "hivebr",
+            "neoxian",
+            "pob",
+            "pimp",
+            "tribes"
+          ],
+          "image": [
+            "https://i.ecency.com/DQmXAvoao5G7Pgn6zBLdHPLBnKKy1VTjk34wZNusECxc5ez/image.png",
+            "https://i.ecency.com/DQmXr5nYZHrkpqik3hm1TGcNrCkkMVwwaPKmZEofmgLryA6/image.png",
+            "https://i.ecency.com/DQmPd4C2ghFkcA3p5nizauZn7kukMzpasPNHoCGgq9gXxhq/image.png",
+            "https://i.ecency.com/DQmfXYAaxJJ3wdcwGzhxMAhDyZW18SjeGViS1vJrrJKZ7GR/image.png",
+            "https://i.ecency.com/DQmXAvoao5G7Pgn6zBLdHPLBnKKy1VTjk34wZNusECxc5ez/image.png)",
+            "https://i.ecency.com/DQmXr5nYZHrkpqik3hm1TGcNrCkkMVwwaPKmZEofmgLryA6/image.png)",
+            "https://i.ecency.com/DQmPd4C2ghFkcA3p5nizauZn7kukMzpasPNHoCGgq9gXxhq/image.png)",
+            "https://i.ecency.com/DQmfXYAaxJJ3wdcwGzhxMAhDyZW18SjeGViS1vJrrJKZ7GR/image.png)"
+          ],
+          "format": "markdown+html",
+          "thumbnails": [
+            "https://i.ecency.com/DQmXAvoao5G7Pgn6zBLdHPLBnKKy1VTjk34wZNusECxc5ez/image.png"
+          ],
+          "description": "My city might just be a reflection of what is happening in much of the world. A place where the past still remains standing while the present continues trying to draw the future, little by little. It is",
+          "image_ratios": [
+            "1.6292",
+            "1.6277",
+            "1.6263",
+            "1.6277",
+            "1.6292"
+          ]
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 79.03,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "7.196 HBD"
+      },
+      {
+        "url": "/hive-194913/@papilloncharity/a-wet-morning",
+        "body": "...and I open the post with a Camellia flower wearing a rainwater crown. \n![005.jpg](https://files.peakd.com/file/peakd-hive/papilloncharity/245HnoYUA3nXJFdhYdJn4oggSV59FMjBHq4F5x914BEY3wzaLFhHcFPtLKnUnRepR36qr.jpg)\n\nTwo parts in the post, as I also played a bit with the moon. The thing is that we expected no rain and yet for a few hours we had what we call fairy rain. Drops so small that one can barely feel them. Just a fine drizzle that wets everything very gently, and we were glad, especially after the damaging rainstorms and floods that we had to endure for the past days. I took some random shots during the day and thankfully the rain stopped. \n\nA dense mist had us drive very slowly with the car's lights on and we encountered no incidents on the roads. It seems the people have learnt how to drive in the wet, and one always has to be aware of some people's love to ignore the red traffic lights. Red means stop and wait for the green, but we have many chancers that simply drive through the red lights. Then another irritant is also those with the \"loud\" cars, the ones that try to sound like a rocket and the noise scares even the rain away.\n\nJust to show you what the view looked like early morning. \n![001.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23ywoF66YwqzfFoKSQAJ5TwMrYKHsxYi3KXvgLZVssSPZscpvPdW7rNJBQLgu3wLgnt73.JPG)\n\nLater on, the sun was, as usual, in a battle to break through the clouds. \n![012.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EoeFsCSL3F6dW3a6ZCqjWwW1cZAV2mFZdUEzwwpmssYWAKyrbVcHgPk3iWpeSj9jt5H.JPG)\n\nEver so slowly the clouds started to brighten up.\n![091.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EpGQJqcjx6LTXZdbUrTw6X1CRr5ENZPhFakSFQWCmKxkmAbhuzW3QYhEYoDfyno25at.JPG)\n\nHooray! The sky started to clear at last. \n![069.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/242YC5LEakD9dveZ1kQXwxdzLuZc7RvRStvjNTQF8ac3Z7wqBUQdtEgki8iUiCzDmdQiC.JPG)\n\nIn the second part of the post, I will show you some moon shots, as the sun seemed to light it up. The month of May has two full moons, and I missed the first one as the skies were covered in cloud, and so I will get a second chance to get the full moon on the 31st of May. I just hope that the clouds will read this post and give me a chance to get the full moon :)   \n\n![100.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23u5tEBNe21WJAmA6McAaZY9uoDvemsHbBNSaBfJRzHPnqRGiboFU9ig3TGNwxo5wj3Ln.JPG)\n\nThis photo below is where I at first became aware of the moon as the cloud opened up. \n![072.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EopmaCtXM1VJ5iFAT7qG6DjAvwzYnPp242sZcMQg3NA9CnuEZMUfDfdXPY7gjhqPAGX.JPG)\n\nBut it wasn't going to be for long, and I only had a chance to get a few shots.\n![103.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EoJyyUsHDUBzeFK1D6JiwUmnc3rv7xwuKzgnkv3mJHNnZtWzvC9AzjhwZQbvRTgvepH.JPG)\n\n![104.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EogLuygRRRitbNfrjqeFV1zQn98rtr52fUQiBKweDkFDqWnENMqSYYGkKbCymRfTpnd.JPG)\n\nFinally, the cloud became jealous, and it closed the moon again, but by then I had enough shots.\n![105.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/Ep7sdceTqW9tysNK4YVdzKTh7sbiEsnYKWxugD3qLFvNJmZ8w3ZEBFsK1w7dDwh71mF.JPG)\n\nI like to play in the sky as I am a being that belongs in the sky, at least it feels like that to me. Nary a day goes by that I do not have my eyes on the sky. Yes, I know that there are also abundant views for a photographer on the land, and I do try to combine the elements whenever I am out taking photos. Variety is the name of the game as it prevents one's offerings from becoming stale.\n\nNature, of course, has its own treasures for those of us that take a more concentrated look at things, and it holds a trove of surprises. One can learn nature's laws just via the medium of photography as everything in nature has a role in the eco-systems. Nothing goes to waste and the wetlands even filter the river water that flows into it. Just a pity that so many don't understand this as littering just continues to take place. \nSuch is life. \n\nI hope you enjoyed the pictures and the story.\n\nPhotos by Zac Smith. All-Rights-Reserved.\n\nCamera: Canon PowershotSX70HS Bridge camera.\n\nUntil next time, cheers! ",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 461
+        },
+        "title": "A wet morning...",
+        "author": "papilloncharity",
+        "payout": 8.388,
+        "created": "2026-05-24T11:13:00",
+        "reblogs": 3,
+        "replies": [],
+        "updated": "2026-05-24T11:13:00",
+        "category": "hive-194913",
+        "children": 6,
+        "permlink": "a-wet-morning",
+        "community": "hive-194913",
+        "payout_at": "2026-05-31T11:13:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 106176838072201,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "steemychicken1",
+            "rshares": 5060506349250
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 2895236221
+          },
+          {
+            "voter": "ratel",
+            "rshares": 56653746535
+          },
+          {
+            "voter": "faust",
+            "rshares": 25494331148
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photographylovers",
+            "photography",
+            "skies",
+            "nature",
+            "weather",
+            "proofofbrain",
+            "creativecoin",
+            "neoxian",
+            "vyb",
+            "silverbloggers"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/245HnoYUA3nXJFdhYdJn4oggSV59FMjBHq4F5x914BEY3wzaLFhHcFPtLKnUnRepR36qr.jpg",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23ywoF66YwqzfFoKSQAJ5TwMrYKHsxYi3KXvgLZVssSPZscpvPdW7rNJBQLgu3wLgnt73.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EoeFsCSL3F6dW3a6ZCqjWwW1cZAV2mFZdUEzwwpmssYWAKyrbVcHgPk3iWpeSj9jt5H.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EpGQJqcjx6LTXZdbUrTw6X1CRr5ENZPhFakSFQWCmKxkmAbhuzW3QYhEYoDfyno25at.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/242YC5LEakD9dveZ1kQXwxdzLuZc7RvRStvjNTQF8ac3Z7wqBUQdtEgki8iUiCzDmdQiC.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23u5tEBNe21WJAmA6McAaZY9uoDvemsHbBNSaBfJRzHPnqRGiboFU9ig3TGNwxo5wj3Ln.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EopmaCtXM1VJ5iFAT7qG6DjAvwzYnPp242sZcMQg3NA9CnuEZMUfDfdXPY7gjhqPAGX.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EoJyyUsHDUBzeFK1D6JiwUmnc3rv7xwuKzgnkv3mJHNnZtWzvC9AzjhwZQbvRTgvepH.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EogLuygRRRitbNfrjqeFV1zQn98rtr52fUQiBKweDkFDqWnENMqSYYGkKbCymRfTpnd.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Ep7sdceTqW9tysNK4YVdzKTh7sbiEsnYKWxugD3qLFvNJmZ8w3ZEBFsK1w7dDwh71mF.JPG"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.67,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "8.388 HBD"
+      },
+      {
+        "url": "/hive-194913/@tattoodjay/saturday-a-few-recent-sunrise-shots-from-a-couple-of-walks",
+        "body": "# a few recent sunrise shots from a couple of walks\n\n\nI have bene able to get out for a couple of early morning walks recently, in fact I could have got out for another one this morning, as I tend to do when I wake up I first check the weather apps, well thats second, first I check the time to make sure its not the middle of the night, then if its close to 4Am when I normally wake up I check the weather.\n\nThis morning 3 of the 4 weather apps I said all indicated about a 60% chance of rain this morning, so I stayed in, and did my steps inthe sun room, when it got light enough for me to check there had been no rain, but oh well tomorrow is another day.\n\nI do love getting out for morning walks, its my favorite way to start the day, so I am a happy camper there will be more days when I can get out for early morning walks again for the next few months.\nMOrning walks are what I do most, for a few reasons, as I said I love waking up and getting moving, so getting out for a photo walk is a good way to do that, another reason being my wife doesnt fele up to getting out much, so I do not like leavingher alone and heading out for a photo walk during hte day when she is up to often, and thirdly and somewhat related she sleeps inb a lot later than I do so  I can get out for a good walk, get home and do editing and preparing posts while she is still sleeping.\n\nOK lets get to the photos\n\nStarting off from a shot from yesterday morning ( as I prepare this draft) I headed to popes Island initially, I had not bene there for a photo walk yet this year, and I was lucky enough to catch a fairly nice sunrise.\nThis one taken on one of the piers at Fleet Marina\n\n\n\n<center> \n![recent sunrise sots-4.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/244UG8Fzq5pgHY4Vgbtak6xtTpGmGL752Z9cFw7qBcoRnJo2qGrKREahhU6QnGUVmbozs.jpg)\n \n\n<sup> **Sony A7iv 27mm F10 5 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/244UG8Fzq5pgHY4Vgbtak6xtTpGmGL752Z9cFw7qBcoRnJo2qGrKREahhU6QnGUVmbozs.jpg)**</sup>\n</center>  \n<br>\nAnother walk I took was at Neds Point in Mattapoisett, I often share shots of the light house there, but this time focusing on the other views, this one actually looking away from the rising sun, towards the moon adding a nice glow on the water\n\n\n<center>  \n![recent sunrise sots.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/2431ZatA6m4VmPYhMB6PMXeP5dC2uPyecJcMY3Y3BV2AajcnL6VFyCdGaYxHuNz4Fa4mg.jpg)\n\n\n<sup> **Sony A7iv 23mm F11 10 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/2431ZatA6m4VmPYhMB6PMXeP5dC2uPyecJcMY3Y3BV2AajcnL6VFyCdGaYxHuNz4Fa4mg.jpg)**</sup>\n</center>  \n<br>\n\nand at the other end of Neds Point, looking along the coast with some nice sunrise glow over the horizon\n\n\n\n\n\n\n<center>  \n![recent sunrise sots-2.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/242NTxNxvKk4sxeLot4R5kw2z2TaBXB7HWZ38S5oEdZgN21YUwzv1yxoR4GH3wwQpB1fw.jpg)\n\n\n<sup> **Sony A7iv 26mm F11 1.3 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/242NTxNxvKk4sxeLot4R5kw2z2TaBXB7HWZ38S5oEdZgN21YUwzv1yxoR4GH3wwQpB1fw.jpg)**</sup>\n</center>  \n<br>\n\nand another shot from yesterday morning, I do love getting shots of this old swing truss bridge, and a bonus with nice sunrise colors behind it\n\n<center>  \n![recent sunrise sots-3.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/23w2BAHPJCvVfFgEAucPBsjfkMotebETJb3ZWShRxsWcGXTcmZT3zN7HAXobGfsN7yJmP.jpg)\n\n\n<sup> **Sony A7iv 17mm F8 13 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/23w2BAHPJCvVfFgEAucPBsjfkMotebETJb3ZWShRxsWcGXTcmZT3zN7HAXobGfsN7yJmP.jpg)**</sup>\n</center>  \n<br>\n\n\n## And that’s all folks \n***\n## unless stated otherwise all photos used in my posts are taken and owned by myself, if you wish to use any of my images please contact me. \n\n\n***\n![](https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif)\n***\n![TEAMUSA JJ hive.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg)\n## TeamUSA is a Community for and supporting those from of in the United States, and now is in the process of rebuilding stronger than ever join us on [Discord](https://discord.gg/85ac2SM)\n<br>\n\n[//]:# (!worldmappin 41.64063 lat -70.91270 long  d3scr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 417
+        },
+        "title": "Saturday a few recent sunrise shots from a couple of walks",
+        "author": "tattoodjay",
+        "payout": 16.047,
+        "created": "2026-05-23T10:51:00",
+        "reblogs": 6,
+        "replies": [],
+        "updated": "2026-05-23T10:51:00",
+        "category": "hive-194913",
+        "children": 19,
+        "permlink": "saturday-a-few-recent-sunrise-shots-from-a-couple-of-walks",
+        "community": "hive-194913",
+        "payout_at": "2026-05-30T10:51:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 207229359144062,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "leprechaun",
+            "rshares": 6331345145
+          },
+          {
+            "voter": "gidlark",
+            "rshares": 5697712666
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 17797483234
+          },
+          {
+            "voter": "sharker",
+            "rshares": 29944319545
+          },
+          {
+            "voter": "kibela",
+            "rshares": 4501235123
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "phototalent",
+            "photocircle",
+            "ocd",
+            "neoxian",
+            "proofofbrain",
+            "vyb",
+            "pimp",
+            "leo"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/244UG8Fzq5pgHY4Vgbtak6xtTpGmGL752Z9cFw7qBcoRnJo2qGrKREahhU6QnGUVmbozs.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/2431ZatA6m4VmPYhMB6PMXeP5dC2uPyecJcMY3Y3BV2AajcnL6VFyCdGaYxHuNz4Fa4mg.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/242NTxNxvKk4sxeLot4R5kw2z2TaBXB7HWZ38S5oEdZgN21YUwzv1yxoR4GH3wwQpB1fw.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/23w2BAHPJCvVfFgEAucPBsjfkMotebETJb3ZWShRxsWcGXTcmZT3zN7HAXobGfsN7yJmP.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg"
+          ],
+          "users": [],
+          "format": "markdown",
+          "description": "a few recent sunrise shots from a couple of walks"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.7,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "16.047 HBD"
+      },
+      {
+        "url": "/hive-194913/@goga22/the-sea-from-a-lower",
+        "body": "<h3 style=\"text-align: left;\" data-align=\"left\"><em>Good morning dear Friends and Photography Lovers 🙌📸</em></h3>\n\n<h3 style=\"text-align: justify;\" data-align=\"justify\"><em>I'm sure that all photography enthusiasts, if not all, then at least most, like to take photos and experiment from a low angle. I like to take photos from that perspective, I like to lay the camera down on a surface if possible, lower the display to a horizontal position, parallel to the surface and take photos like that. Then I can play with the focus, and that way we can have one frame taken with different results.</em></h3><h3 style=\"text-align: left;\" data-align=\"left\"><em>So, let's go see together!</em></h3>\n\n<div class=\"pull-left\"><img src=\"https://i.ecency.com/DQmWF3NDAK6PdhvuXpidon2GcBA8gdkujbQZbxoDe3hxsmR/9805.jpg\"></div>\n\n<img src=\"https://i.ecency.com/DQmQpuUPDcNXRtbCWZNRDG2LjzLMVzVeQZBYBhvpLbda8ZB/9803.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmVRtrzLkUnWgR5dQ95cMehuqQQ2A5qEt6SEpkjEbYo5UW/9804.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmWF3NDAK6PdhvuXpidon2GcBA8gdkujbQZbxoDe3hxsmR/9805.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmcAf2Xg9qe9XGFKS5FU6oBsVgp1Sb6hWeF16k9rL14Ewa/9806.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmYsMu1bN3uNHG3Q6sJjuAYDP2fYrmbvhZTFYk48pwF4ep/9807.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmYHkxoRjYuNanRZdtxqaFfvbqXQtxGfu6qHLSMfcpCCaG/9808.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmRsE86YUNEeDdiqoqZzYP3ND12pugs8bwUh3D99izHvX4/9802.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmPeo46YDch2bKkbdBaenDJq3i3ux2WY4iVtnyNRFYwph8/9829.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmVsbBAyXD1nTop2Nev2oum9nShg61gE4GpuJh8zUAYg9U/9830.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmfLpqYDzuWgQpvzqCynM26xMsm5JFvWgLeKdhhimaXYiW/9831.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmXy9eFp4iLmT95G2iYxEsSqSgBwMn1mYpW5ft5kbjkJLQ/9832.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmYBbJHmeMHjhkZWPJD8CXSLzTwFJpYMdh9dGe96v61XdQ/9833.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmasckNwEVXRDZRAi2FeGMaqW3fa5X9FdPPAX12UiwJMST/9834.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmQ5WPmyazHWQYyNzbPxafptV5st8MR9xvSjc4jR2aga7Y/9835.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmUQXToCcVLhA1qqKPdwQh5PrNEakKSMfUPzPfgZSykVCP/9836.jpg\" alt=\"\" />\n\n<img src=\"https://i.ecency.com/DQmUJDibgVv7QpnG7cFRyL8RrNKwrY4Tkx4636U9mec4jSH/k75bszmwynu2l3ibmxq5y7xeiy1isfjszxnmzsxuxesxe4ee1cukgypmyvsfejsqmf3ygpnccdeoracpkupcksfzza2fbpflhzqh5gr8pwzeunggqy9hb7tunzftjw7eg7arzrj7t2mefp7qep4jrbzsvusjjkb7s.gif\" alt=\"\" />\n\n<h3 style=\"text-align: justify;\" data-align=\"justify\"><em>I took the photos with a Nikon D750, 50mm lens, f/1.8, manual mode, RAW format required, variable ISO and shutter speed. Processing in Photoshop - Camera Raw Filter.</em></h3><h3 style=\"text-align: left;\" data-align=\"left\"><em>So, this is all for Today, see you soon!</em></h3>\n\n<div class=\"pull-left\"><img src=\"https://i.ecency.com/DQmdWDkba7fDaczWx9bRhwj2LKNQtHA8Jo2nHZoJmH82ZMG/untitled_1.jpg\"></div>\n\n<h3 style=\"text-align: left;\" data-align=\"left\">👋👋 <em>@goga22</em></h3>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 13
+        },
+        "title": "The sea from a lower angle",
+        "author": "goga22",
+        "payout": 1.458,
+        "created": "2026-05-26T04:14:36",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-26T04:14:36",
+        "category": "hive-194913",
+        "children": 0,
+        "permlink": "the-sea-from-a-lower",
+        "community": "hive-194913",
+        "payout_at": "2026-06-02T04:14:36",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 18618595302968,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "aleister",
+            "rshares": 24644158809
+          },
+          {
+            "voter": "pixelfan",
+            "rshares": 118861681383
+          },
+          {
+            "voter": "pixresteemer",
+            "rshares": 41700676777
+          },
+          {
+            "voter": "joetunex",
+            "rshares": 644564884192
+          },
+          {
+            "voter": "anonyvoter",
+            "rshares": 10384241156
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "hive-194913",
+            "bbh",
+            "alive",
+            "inleo",
+            "proofofbrain",
+            "photography",
+            "photofeed",
+            "neoxian",
+            "hive",
+            "ecency"
+          ],
+          "image": [
+            "https://i.ecency.com/DQmasckNwEVXRDZRAi2FeGMaqW3fa5X9FdPPAX12UiwJMST/9834.jpg",
+            "https://i.ecency.com/DQmWF3NDAK6PdhvuXpidon2GcBA8gdkujbQZbxoDe3hxsmR/9805.jpg",
+            "https://i.ecency.com/DQmQpuUPDcNXRtbCWZNRDG2LjzLMVzVeQZBYBhvpLbda8ZB/9803.jpg",
+            "https://i.ecency.com/DQmVRtrzLkUnWgR5dQ95cMehuqQQ2A5qEt6SEpkjEbYo5UW/9804.jpg",
+            "https://i.ecency.com/DQmcAf2Xg9qe9XGFKS5FU6oBsVgp1Sb6hWeF16k9rL14Ewa/9806.jpg",
+            "https://i.ecency.com/DQmYsMu1bN3uNHG3Q6sJjuAYDP2fYrmbvhZTFYk48pwF4ep/9807.jpg",
+            "https://i.ecency.com/DQmYHkxoRjYuNanRZdtxqaFfvbqXQtxGfu6qHLSMfcpCCaG/9808.jpg",
+            "https://i.ecency.com/DQmRsE86YUNEeDdiqoqZzYP3ND12pugs8bwUh3D99izHvX4/9802.jpg",
+            "https://i.ecency.com/DQmPeo46YDch2bKkbdBaenDJq3i3ux2WY4iVtnyNRFYwph8/9829.jpg"
+          ],
+          "links": [],
+          "format": "markdown+html",
+          "links_meta": {},
+          "thumbnails": [
+            "https://i.ecency.com/DQmasckNwEVXRDZRAi2FeGMaqW3fa5X9FdPPAX12UiwJMST/9834.jpg"
+          ],
+          "description": "Good morning dear Friends and Photography Lovers 🙌📸 I'm sure that all photography enthusiasts, if not all, then at least most, like to take photos and experim",
+          "image_ratios": [
+            "1.4988",
+            "1.4988",
+            "1.4988",
+            "1.4988",
+            "1.4988"
+          ]
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 74.18,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.458 HBD"
+      },
+      {
+        "url": "/hive-194913/@daveks/akamina-lake-with-an-iphone-16-pro",
+        "body": "\n\n![IMG_0748.jpeg](https://files.peakd.com/file/peakd-hive/daveks/48QRewnDnW6AMHWFWFVME22fTL3XMdQDM4fS16tvqWuSZHvwNV2scEUabRsKEGBQuG.jpeg)\n##### <center>Lately I have been using the Sony A7R almost exclusively when out and about on the hiking trail. I felt that before I had or was taking an excessive amount of pics, too many in fact. So I made a conscious decision to scale it back. I am at the point now where I barely use the smartphone for any photography. At Akamina lake I made an exception and here is what I came up with. Photos taken inside Waterton Lakes park, Alberta. Thanks for stopping by, and hope your weekend is going well.</center> #####\n### <center>![IMG_0745.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23xyWzrDVcwXirwUJAS3ZjKuMDenyMpdDiwNMKudRpVMGYBmmYPYqMrvpSC1Gh42Vh8PA.jpeg)</center> ###\n***\n![IMG_0749.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EopsxQbTKMcHiZ8X4W4ZwSFwcA8aCLwvYZWvKZ4s22CoaNxjWYeAKzBtDCizWiFpLby.jpeg)\n***\n![IMG_0747.jpeg](https://files.peakd.com/file/peakd-hive/daveks/Eos1PuZTHSaMzAepB9o99RH94p4svhRqBzPRJhmwnN4zkzwFh28cq2hpYNDn7LFK32f.jpeg)\n\n***\n![IMG_0743.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EqdAr9Usz8mxkfhvgn4xCLKUfE9vvNexC4nmuRXhrvf7pDH9FT8vzHDDfAHCoRJubdR.jpeg)\n\n###### <center>Camera: iPhone 16 Pro</center> ######\n\n###### <center>Editing: Lightroom</center> ######\n\n![IMG_0748.jpeg](https://files.peakd.com/file/peakd-hive/daveks/48PTWQdvoo6R8D9GDWD2GXWWEqCkxz6GUyAmWAVL3zC6rfR6r6cxvjTA2D8DpYRZEt.jpeg)\n***\n### <center>![IMG_0745.jpeg](https://files.peakd.com/file/peakd-hive/daveks/23vhwMtJqtMLKJgicZWBBBMyv2AHBXAsxszVuH59wUATCHZeasqrdLVjPDcU8AXH3NwdC.jpeg)</center> ###\n***\n\n![IMG_0749.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EoK4pEwtgMacmeirpGNA7NpqUyLo5YrugKUVy9hGnyJbgDjSU3ceWuuG3q4RYJu8ipF.jpeg)\n***\n![IMG_0747.jpeg](https://files.peakd.com/file/peakd-hive/daveks/Eoc6XwwTU25p3RciHHUMZxho4tW2Q8uTnUMDnVcZn9WiBkJAxSp7fNTzZbqrcuGJDd1.jpeg)\n***\n\n![IMG_0743.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EpEHn1zmSDEoCX19FxPuXcVcrqLJhVsnXTPEbytDQKexALR676To4jxr2awhoitq6xw.jpeg)\n\n##### <center>Do you like Black and White photography? Do you like Colour photography? If you answered yes to both questions, then you are a perfect candidate for the “Colour / Black & White” photography community. Created specifically for that purpose. I will be personally curating qualifying posts. Join now.</center> #####\n\n### <center>![image.jpeg](https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg)</center> ###\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 398
+        },
+        "title": "Akamina lake with an iPhone 16 Pro",
+        "author": "daveks",
+        "payout": 7.959,
+        "created": "2026-05-24T03:18:00",
+        "reblogs": 5,
+        "replies": [],
+        "updated": "2026-05-24T03:18:00",
+        "category": "hive-194913",
+        "children": 18,
+        "permlink": "akamina-lake-with-an-iphone-16-pro",
+        "community": "hive-194913",
+        "payout_at": "2026-05-31T03:18:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 100036870843953,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "steemychicken1",
+            "rshares": 5059093762574
+          },
+          {
+            "voter": "copychicken1",
+            "rshares": 823684207
+          },
+          {
+            "voter": "robsteady",
+            "rshares": 4635546474
+          },
+          {
+            "voter": "vortac",
+            "rshares": 184560553702
+          },
+          {
+            "voter": "sharker",
+            "rshares": 20715298147
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "art",
+            "colourblackandwhite",
+            "canadianrockies",
+            "neoxian",
+            "sgslife",
+            "hikingadventures"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/daveks/48QRewnDnW6AMHWFWFVME22fTL3XMdQDM4fS16tvqWuSZHvwNV2scEUabRsKEGBQuG.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23xyWzrDVcwXirwUJAS3ZjKuMDenyMpdDiwNMKudRpVMGYBmmYPYqMrvpSC1Gh42Vh8PA.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EopsxQbTKMcHiZ8X4W4ZwSFwcA8aCLwvYZWvKZ4s22CoaNxjWYeAKzBtDCizWiFpLby.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/Eos1PuZTHSaMzAepB9o99RH94p4svhRqBzPRJhmwnN4zkzwFh28cq2hpYNDn7LFK32f.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EqdAr9Usz8mxkfhvgn4xCLKUfE9vvNexC4nmuRXhrvf7pDH9FT8vzHDDfAHCoRJubdR.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/48PTWQdvoo6R8D9GDWD2GXWWEqCkxz6GUyAmWAVL3zC6rfR6r6cxvjTA2D8DpYRZEt.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/23vhwMtJqtMLKJgicZWBBBMyv2AHBXAsxszVuH59wUATCHZeasqrdLVjPDcU8AXH3NwdC.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EoK4pEwtgMacmeirpGNA7NpqUyLo5YrugKUVy9hGnyJbgDjSU3ceWuuG3q4RYJu8ipF.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/Eoc6XwwTU25p3RciHHUMZxho4tW2Q8uTnUMDnVcZn9WiBkJAxSp7fNTzZbqrcuGJDd1.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EpEHn1zmSDEoCX19FxPuXcVcrqLJhVsnXTPEbytDQKexALR676To4jxr2awhoitq6xw.jpeg",
+            "https://files.peakd.com/file/peakd-hive/daveks/EowFatU7MVBYcD8QWT1xrvgVkoMGb6G1h4h9KQxwM4JnGdwzLzQTjZAfpJm8SswSEZB.jpeg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 82.35,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "7.959 HBD"
+      },
+      {
+        "url": "/hive-194913/@avdesing/spontaneous-surrealism-oscar-dominguez",
+        "body": "<div class=\"text-justify\">\n\n\n\n\n>Some art exhibitions surprise me, others amaze me; in others, I find myself questioning things or reflecting, but in most I simply enjoy each piece and what the artist conveys.\n\n---\n\n\n![Image_1779561497591.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23wX5UvaAdeiJ3MhUwjuVz5Y2L1fyMkMmmMe9Hoz8i3K7FfQneVKhBuwQ4F4tbvCeUGsR.jpg)\n\n\n\n---\n\nSome time ago, I was able to visit one of the wonderful temporary exhibitions held every so often at the city’s Picasso Museum. These exhibitions aren’t confined to a small room; instead, the space has a labyrinthine structure, where a large area is divided into smaller sections depending on the theme. The walls are always changing colour, depending on the artist and how they wish to highlight the works, and the truth is that the museum does an extraordinary job.\n\nUntil that day, I was unaware of the great work of the surrealist artist Óscar Domínguez, who is on a par with Miró, Picasso, Dalí and many others of his era, a difficult time, when many had to live in France or travel there for their art to be recognised. \n\n---\n\n![20251005_182714.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23wgaTfFWE7zCt1ccp6orwYgSyuBLL721SjFwmGrR9pGJKXw7qKoGFMYdNvRaB2FaWexd.jpg)\n\n---\n\n![20251005_183056.jpg](https://files.peakd.com/file/peakd-hive/avdesing/242466UsWTMk5YudniiYvv6cvqcy3Bxhx6h7ji9hKWy1VWJPMCyM2Sg2wfpioYsKTFmr8.jpg)\n\n\n\n“I Am Right, Surrealist Effect. Surrealist Composition II”, 1933, oil on canvas.\n\n---\n\n![20251005_183104.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23zbcnv6tWbb43JFhT4LfJNRHZTWy8GGbFsBhJwnWbGo2KiN68w5HyhnXEHS1q518kJHB.jpg)\n\n\n“The Piano”, 1933, oil on canvas.\n\n---\n\n![20251005_183111.jpg](https://files.peakd.com/file/peakd-hive/avdesing/48JeVJgkpbnNAyXrNmXH77dsTVBsuDk5W6mz6BB1sZUBU8sRpdfoYkSbAunaPK3nKB.jpg)\n\n\n“The Hunter”, 1933, oil on canvas.\n\n---\n\n![20251005_183127.jpg](https://files.peakd.com/file/peakd-hive/avdesing/48hJPpnAmcv3TtbWYLCQHtxRGWNNztp9NjuoZChbYVq4SaCkXJaLXEYE2ANiDrFZ6F.jpg)\n\n\n“Untitled”, 1933, oil on canvas.\n\n---\n\n\n<center>![20251005_183137.jpg](https://files.peakd.com/file/peakd-hive/avdesing/48YdEo3h5Ukd6ep1nXpVB7b2wJQ1YFiQrVv1R8axbmk3FqHi7a7kpT35xofBCBtFQF.jpg)</center>\n\n“Le dimanche or Rut marin”, 1935, oil on canvas.\n\n---\n\nThat’s why, when I stepped into the large hall, I was utterly captivated, not only by the quality of the artist’s work, but also by the size of the paintings and the way he imbued them with his own style and the spirit of his native Canary Islands.\n\nI hadn’t always been drawn to this kind of art; it was only after I’d finished my studies in drawing and painting that I became interested. It was then that I began to see more of this kind of art, and the blend of illusion, imagination and magic, plus the fantasy, is something I love. You can capture practically anything,  emotions, feelings, realities, ways of looking at life and even messages in various ways, some a little convoluted, but which the discerning eye will find meaning in.\n\n---\n\n\n\n\n<center>![20251005_183212.jpg](https://files.peakd.com/file/peakd-hive/avdesing/48kC7dU3Jo23KhBih1cXAfL8pLsZfgUZYyeV3Tb1JpU2nsrVzdRsojeHkR5i7x4C9b.jpg)</center>\n\n\n\n\n“The Dragon Tree”, 1933, oil on canvas.\n\n\n---\n\n<center>![20251005_183239.jpg](https://files.peakd.com/file/peakd-hive/avdesing/AKzDoV9XrnkBttmaaKMviervjsHefrHYVrykRMwTAFkG6GZ9WopGctGaRR25bKd.jpg)</center>\n\n“Can Opener”, 1936, oil on canvas.\n\n---\n\n\n![20251005_183302.jpg](https://files.peakd.com/file/peakd-hive/avdesing/24243ugnrMVSWzVo21tEndf5Mzd3oryy1LfccinAr5WqRPJYpxZAGmDNu2VuGVvyNuoca.jpg)\n\n\n“Spring”, 1939, oil on canvas.\n\n---\n\n\n![20251005_183319.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23ydByi55HcXpLcVdz4YLA5tahzhoqFV92DdURtJVSpwyPF2Xq91x3qtdUjUHe4jcQ1PX.jpg)\n\n\n\n\n“Surrealist Figures”, 1937, oil on canvas.\n\n---\n\n\n![20251005_183447.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23xAnjNM4ndzTs23xdMsKqjuxGfQGBAzaNudWQMiDMq45yz8iHDc1gf1rSyTD2E4gtKxq.jpg)\n\n\n\n\n“Apparition over the Sea”, 1939, oil on canvas.\n\n---\n\nI often see surrealist art, even if it isn’t real, as a way of expressing oneself in a coded form, and that, on the other side, there will eventually be someone who sees something in a painting that resonates with them personally. I like to think that, because every artist has the canvas before them like a blank sheet of paper through which they can say many things, both personal and things they know, and perhaps it is the only way to express what they believe, see or feel. That is why I think art is wonderful and every artist has their own special way of doing things.\n\n\nThis artist’s work is very good; I enjoyed standing there looking at each painting and observing both the colours he had used and his way of interpreting moments in life, sensations or experiences. \n\n---\n\n\n![20251005_183535.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23wCJADMzSKBj2YvTAeWR7cMJ7erDGshHzB52BiZeXqaqmbCN9j1ApkF52Xghd23KNw8U.jpg)\n\n\n“Delfos”, 1957, oil on canvas.\n\n---\n\n\n![20251005_183547.jpg](https://files.peakd.com/file/peakd-hive/avdesing/242hcxtVbaCN6wkaMmFhekoACz4H99MCRyrCe9AA8tx1mzCkJHabUR4NaFNwU4dLTf1Zr.jpg)\n\n\n\n\n\n“Los sifones”, 1938, oil on canvas.\n\n---\n\n\n![20251005_183606.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23xyhgBVfNsCSNiGKKrrJJJtSDmTxCHniT1KbhBBXhwYS1ycVHb41zgsgH68hsa5JWjU8.jpg)\n\n\n\n“The Road Roller and the Rose”, 1957, oil on canvas.\n\n---\n\n\n![20251005_183835.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23xpPNtqvx2z4qN3EQ7i3BJV8ejf9js5d5MBchntFcUCvsa3bT8Tz21aD2dncCcsZqmJg.jpg)\n\n\n\n“Lithochronic Figures”, 1939, oil on canvas.\n\n---\n\n\nIt is a form of surrealism brimming with magic, as if we were stepping through a door into a world that leads to unexpected places, where we can see strange shapes, figures and creatures. And there will always be one painting that we like more than another. In my case, I was drawn more to those with brighter, cheerful colours, rather than the dark or gloomy paintings, although of course they all have something worth seeing.\n\n\nOn the other hand, as I looked at the paintings, another thing I particularly liked was that they all have a great sense of movement, as if what the artist wanted to express and everything he painted were moving to the beat of an invisible music, music with a special vibration that brought colour to some parts of the painting, light to others, and finally various shadows.\n\nMany of the works are among my favourites, such as ‘Apparition over the Sea’, ‘Surrealist Figures’, ‘The Piano’ and ‘I Am Right’. It’s hard to choose just one. If you have a favourite, I’d love to hear about it in the comments.\n\n---\n\n\n\n![20251005_183811.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23u6FdFjXYPt8mhUde34gjtKBwARTi2GYLs91vLbjWUYhRCJ9X1S9GqGXZdEJpT8jVmfD.jpg)\n\n\n\n“House”, Jacques Hérold, 1959, oil on canvas.\n\n---\n\n\n![20251005_183859.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23wMkuh8sSgkbDpjDvwXjqAMpZqB44xhenRCngRWkjvkgsKzGpFKVuSpbt8utisnsSaGr.jpg)\n\n\n\n\n“Psychological Morphology”, Roberto Mata, 1938, oil on canvas.\n\n---\n\n<center>\n![20251005_183934.jpg](https://files.peakd.com/file/peakd-hive/avdesing/EqWnndQfJfR4WXkpwMpTqPE1LgRdbGk4DKdJaqTMRnWuQN6s5hjUFDAApESojaTm7Nm.jpg)\n</center>\n\n\n\n\n“Morgane”, Kurt Seligmann, 1951, oil on canvas.\n\n\n---\n\nThree works by other artists accompanied this art exhibition; all three were equally spectacular. Of these three, the last one is my favourite.\n\n---\n\n\n![20251005_184152.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23vsQfLozGTtSAUPBFrsPD8GNZL1S96vxEjbrC5odfFFhJMxMGBoLMUcUryCbB3oJZ8Ds.jpg)\n\n\n---\n\nIn one of the corners of a very dark room, I think I found confirmation of what I said earlier: a grand piano stood there to accompany a spectacular art exhibition. The atmosphere was perfect; the lighting and the harmony of the rooms allowed me to fully appreciate the work of this great artist.\n\nThank you very much for joining me today; I wish you all a very happy Sunday. See you soon.\nAmonet.\n\n\n\n\n---\n\n\n\n\n>All photographs are my own.\n\n\n![Separador Amonet rosa.png](https://files.peakd.com/file/peakd-hive/avdesing/Eo45huwdpJdeDRRmb3tm3Sv7mxs8Uq3XUZDd5bjvGqBDKfDE5DLGQM1duXTEQQYhyjs.png)\n\n\n</div>\n\n\n\n[//]:# (!worldmappin 36.721692 lat -4.418034 long Spontaneous Surrealism – Óscar Domínguez d3scr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 513
+        },
+        "title": "Spontaneous Surrealism – Óscar Domínguez",
+        "author": "avdesing",
+        "payout": 6.481,
+        "created": "2026-05-24T08:58:54",
+        "reblogs": 8,
+        "replies": [],
+        "updated": "2026-05-24T08:58:54",
+        "category": "hive-194913",
+        "children": 50,
+        "permlink": "spontaneous-surrealism-oscar-dominguez",
+        "community": "hive-194913",
+        "payout_at": "2026-05-31T08:58:54",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 80559357704695,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "team",
+            "rshares": 154205703767
+          },
+          {
+            "voter": "robsteady",
+            "rshares": 2878589283
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 28369420680
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 14354982195
+          },
+          {
+            "voter": "arcange",
+            "rshares": 901365648425
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "photographylovers",
+            "photofeed",
+            "digitalphotography",
+            "creativecoin",
+            "art",
+            "exhibition",
+            "surrealism",
+            "museum",
+            "painting"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/avdesing/23wX5UvaAdeiJ3MhUwjuVz5Y2L1fyMkMmmMe9Hoz8i3K7FfQneVKhBuwQ4F4tbvCeUGsR.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23wgaTfFWE7zCt1ccp6orwYgSyuBLL721SjFwmGrR9pGJKXw7qKoGFMYdNvRaB2FaWexd.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/242466UsWTMk5YudniiYvv6cvqcy3Bxhx6h7ji9hKWy1VWJPMCyM2Sg2wfpioYsKTFmr8.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23zbcnv6tWbb43JFhT4LfJNRHZTWy8GGbFsBhJwnWbGo2KiN68w5HyhnXEHS1q518kJHB.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/48JeVJgkpbnNAyXrNmXH77dsTVBsuDk5W6mz6BB1sZUBU8sRpdfoYkSbAunaPK3nKB.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/48hJPpnAmcv3TtbWYLCQHtxRGWNNztp9NjuoZChbYVq4SaCkXJaLXEYE2ANiDrFZ6F.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/48YdEo3h5Ukd6ep1nXpVB7b2wJQ1YFiQrVv1R8axbmk3FqHi7a7kpT35xofBCBtFQF.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/48kC7dU3Jo23KhBih1cXAfL8pLsZfgUZYyeV3Tb1JpU2nsrVzdRsojeHkR5i7x4C9b.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/AKzDoV9XrnkBttmaaKMviervjsHefrHYVrykRMwTAFkG6GZ9WopGctGaRR25bKd.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/24243ugnrMVSWzVo21tEndf5Mzd3oryy1LfccinAr5WqRPJYpxZAGmDNu2VuGVvyNuoca.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23ydByi55HcXpLcVdz4YLA5tahzhoqFV92DdURtJVSpwyPF2Xq91x3qtdUjUHe4jcQ1PX.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23xAnjNM4ndzTs23xdMsKqjuxGfQGBAzaNudWQMiDMq45yz8iHDc1gf1rSyTD2E4gtKxq.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23wCJADMzSKBj2YvTAeWR7cMJ7erDGshHzB52BiZeXqaqmbCN9j1ApkF52Xghd23KNw8U.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/242hcxtVbaCN6wkaMmFhekoACz4H99MCRyrCe9AA8tx1mzCkJHabUR4NaFNwU4dLTf1Zr.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23xyhgBVfNsCSNiGKKrrJJJtSDmTxCHniT1KbhBBXhwYS1ycVHb41zgsgH68hsa5JWjU8.jpg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 79.11,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "6.481 HBD"
+      },
+      {
+        "url": "/hive-194913/@dimascastillo90/changing-of-the-guard-patricios-regiment-buenos-aires",
+        "body": "<P><div class=\"text-justify\">\n\nA few weeks ago, I was at the iconic Plaza de Mayo in Buenos Aires, where the changing of the guard by the Patricios Regiment took place. This is a patriotic ceremony in which the guards on duty are replaced. I think this is a good time to post this because today is May 25th, which is Independence Day here.  This same event took place earlier this morning, but on a much larger scale. \n\nI’m sure I captured some interesting scenes from this moment, and it’s also nice to be able to share something a little different from what I usually post. So I hope you enjoy it, and I wish you all a great start to the week :)\n\n</div></P>\n\n![IMG_1287.jpeg](https://files.peakd.com/file/peakd-hive/dimascastillo90/23tbPckZD8DQD6XWmCT8RgRUvHM1iwcEc9iihR1Y4BRZo6SnVcupLvZ1fW1Miyw8j7CBd.jpeg)\n\n![IMG_1300.jpeg](https://files.peakd.com/file/peakd-hive/dimascastillo90/23t7FnSNW4MSUAvHZkw7kRKuX1bbfYn25EGJWRu4cpHXoN5DeJscxZQXqjcLTjTq8C32y.jpeg)\n\n![IMG_1298.jpeg](https://files.peakd.com/file/peakd-hive/dimascastillo90/23tvAwVNzT6ht5FYhWFq8atNsPvfrqjP1HkuSsHewMgLLHLmyJFfdd8EaUfYk7ADbFoMf.jpeg)\n\n![IMG_1321.jpeg](https://files.peakd.com/file/peakd-hive/dimascastillo90/23tGbnfaATo2myhcgEDDZc2KHE2PzuAXZV4marTDqsAnCwTUo8N3kyAZVRNhUYQ9qYVPr.jpeg)\n\n![IMG_1307.jpeg](https://files.peakd.com/file/peakd-hive/dimascastillo90/23swpxj7s3ZA97aGzWy6Ubys7psoPLKerfBqNM6K9GTURQnXquGvSy3SUFYZqCijy3cp4.jpeg)\n\n![IMG_1293.jpeg](https://files.peakd.com/file/peakd-hive/dimascastillo90/23tS2fmcrWpfs29Eqy5iYJoYJ75vUviXCdMbTMt1v9P6zD7X6v2Q3tAD1eMqC9MZ9qkwW.jpeg)\n\n_____\n\n<center>\n\n# That's all folks! Thanks for stopping by and appreciating.\n\n</center>\n\n_____\n\n\"Photography is a universal language that transcends the barriers of culture and time.\" Fan-Ho.\n\n![Picsart_23-06-14_15-32-40-829.jpg](https://files.peakd.com/file/peakd-hive/dimascastillo90/2423wYtfeSirWqKm5NgfhxfNECW9TwFiLknah659ZgBhBodcrD4mff5CLhVpERzeUmy3Y.jpg)\n\n<center>\n\n<sub>*Copyright © by @dimascastillo90 All rights reserved, 2024.*</sub>\n<sub>*Find out about my <A HREF=\"https://www.instagram.com/dimascastillo_ph?igsh=MTF3bGJwYjA0cWdqYw==\"><STRONG>Street</STRONG></A> and <A HREF=\"https://www.instagram.com/dimportz_?igsh=Z2FwcHdpYXoyazR6\"><STRONG>Boudoir</STRONG></A> photography works.*</sub>\n<sub>*Street Photographer | 🇻🇪 VEN based in ARG 🇦🇷*</sub>\n\n______\n\n</center>\n\n![3RTd4iuWD6NUeJEn5AVrJUoyatFqBqfcCJi1N7UixR4g2KPKN7w8NpZJkBWnyPhd7Jo4y7yaGYzdgjzeXttHNQ8xZn9aduo8nG7UEZ5XLB68D7fH3YkcJavW37xJMYBhWaXBPWmM35x5L8x4GSgVGuvoSgj9DpdrgeMBoonQg7sD4z.png](https://files.peakd.com/file/peakd-hive/dimascastillo90/242YJN7WryM72ACQg687rRXu3PxMNTxjnafcmtH24tspyycP9n7eNwxJ9LmatZjsdJTJE.png)\n\n# Hive Photographers Unite!\n\nIf you are a photographer on Hive too, come join us in the <A HREF=\"https://discord.gg/dMep2wsKjc\"><STRONG>Hive Photographer Discord Channel</STRONG></A> so we can make Hive a better place for photographers.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 309
+        },
+        "title": "Changing of the Guard, Patricios Regiment, Buenos Aires 🇦🇷",
+        "author": "dimascastillo90",
+        "payout": 2.176,
+        "created": "2026-05-25T15:35:33",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-25T15:35:33",
+        "category": "hive-194913",
+        "children": 2,
+        "permlink": "changing-of-the-guard-patricios-regiment-buenos-aires",
+        "community": "hive-194913",
+        "payout_at": "2026-06-01T15:35:33",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 27806489727680,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "pharesim",
+            "rshares": 127971398384
+          },
+          {
+            "voter": "juanmiguelsalas",
+            "rshares": 2897836992
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 90225107819
+          },
+          {
+            "voter": "gidlark",
+            "rshares": 822637660
+          },
+          {
+            "voter": "gikitiki",
+            "rshares": 3836727696
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "street",
+            "buenosaires",
+            "neoxian",
+            "pob",
+            "aap",
+            "pimp",
+            "cent"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/dimascastillo90/23t7FnSNW4MSUAvHZkw7kRKuX1bbfYn25EGJWRu4cpHXoN5DeJscxZQXqjcLTjTq8C32y.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dimascastillo90/23tbPckZD8DQD6XWmCT8RgRUvHM1iwcEc9iihR1Y4BRZo6SnVcupLvZ1fW1Miyw8j7CBd.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dimascastillo90/23tvAwVNzT6ht5FYhWFq8atNsPvfrqjP1HkuSsHewMgLLHLmyJFfdd8EaUfYk7ADbFoMf.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dimascastillo90/23tGbnfaATo2myhcgEDDZc2KHE2PzuAXZV4marTDqsAnCwTUo8N3kyAZVRNhUYQ9qYVPr.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dimascastillo90/23swpxj7s3ZA97aGzWy6Ubys7psoPLKerfBqNM6K9GTURQnXquGvSy3SUFYZqCijy3cp4.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dimascastillo90/23tS2fmcrWpfs29Eqy5iYJoYJ75vUviXCdMbTMt1v9P6zD7X6v2Q3tAD1eMqC9MZ9qkwW.jpeg",
+            "https://files.peakd.com/file/peakd-hive/dimascastillo90/2423wYtfeSirWqKm5NgfhxfNECW9TwFiLknah659ZgBhBodcrD4mff5CLhVpERzeUmy3Y.jpg",
+            "https://files.peakd.com/file/peakd-hive/dimascastillo90/242YJN7WryM72ACQg687rRXu3PxMNTxjnafcmtH24tspyycP9n7eNwxJ9LmatZjsdJTJE.png"
+          ],
+          "users": [
+            "dimascastillo90"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 77.6,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "2.176 HBD"
+      },
+      {
+        "url": "/hive-194913/@asklanbudi/photography-lovers-small-mushrooms-in-spring",
+        "body": "Hello photography lovers!\nI hope you're all still healthy out there.\n\nI'd like to take this opportunity to share some of my photos.\nThe photos I'd like to share are of mushrooms.\nI found these small mushrooms a few days ago in my yard. It's been raining a lot in the past few weeks, and the weather has been a bit cooler and fresher.\nSo, the small mushrooms have been growing scattered around my yard.\nI took advantage of this opportunity to take some photos with my phone, using my macro lens, since these mushrooms are quite small.\nSo today I'd like to share these mushroom photos, edited to black and white.\nPhotography lovers, you can see them in my post below:\n*\n\n![1000820674.jpg](https://files.peakd.com/file/peakd-hive/asklanbudi/Eo4A5CESagPfN3JcUULn4pZS2Xj2zqk6crevF3PFYZxx7MfUByLdkFGkV1oHHaWqyFy.jpg)\n\n![1000820675.jpg](https://files.peakd.com/file/peakd-hive/asklanbudi/23tSL9rui7Bi1syFZDbTAKcPu752J1PcWCGM2BjKF6DkcrGpMYVNobbE6ZyAMBnjq3KES.jpg)\n\n![1000820681.jpg](https://files.peakd.com/file/peakd-hive/asklanbudi/Eo8RSgGzDFVW4YZP37rtwmJq2YrVGhBvy4vTCKc6Qx8RDPrW9RAzcmK1q367nyk3jmN.jpg)\n\n![1000820682.jpg](https://files.peakd.com/file/peakd-hive/asklanbudi/23tbPKxBoPuAP99zxGrvX3nxF1WDHUZyK2Z9ufSCEG6xCptHHZAktEbdSXgW1dfDV7ZzS.jpg)\n\n![1000820678.jpg](https://files.peakd.com/file/peakd-hive/asklanbudi/23tbnxPadVtiXRNZWbcnKMVHfBGVzzAj8E4SY5QCRv5e5oK1hq7nQ1QcAFLr6bWbebxQb.jpg)\n\n![1000820680.jpg](https://files.peakd.com/file/peakd-hive/asklanbudi/23tvYJoBdTyK2yz2czZGDnmW6VXagvUTq1RJSe1Kb8ipYYzudLJAnvfny7uiQj1TQmrpP.jpg)\n\n![1000820679.jpg](https://files.peakd.com/file/peakd-hive/asklanbudi/Eo6DE155q4LwDL8bc6BtpsnxudXHfwd66ffFwMT4rzD8GhCVa2zzGcJcxP8FAe8Wz9D.jpg)\n\n![1000820676.jpg](https://files.peakd.com/file/peakd-hive/asklanbudi/23tm6rYvt8Ad7uUrbHWWeQQ2x3VemgchPBbmE6BGbcGsNV6j3XwRKN5xstcudffZP1H1K.jpg)\n\n***Thank you, photography lovers, for taking the time to stop by. I hope you enjoy it. Best regards, @asklanbudi***",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 217
+        },
+        "title": "Photography Lovers: small mushrooms in spring",
+        "author": "asklanbudi",
+        "payout": 2.004,
+        "created": "2026-05-25T15:07:27",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-25T15:07:27",
+        "category": "hive-194913",
+        "children": 5,
+        "permlink": "photography-lovers-small-mushrooms-in-spring",
+        "community": "hive-194913",
+        "payout_at": "2026-06-01T15:07:27",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 25024846807777,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "pharesim",
+            "rshares": 147186886976
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 104269979594
+          },
+          {
+            "voter": "gikitiki",
+            "rshares": 4423087478
+          },
+          {
+            "voter": "arcange",
+            "rshares": 902384258591
+          },
+          {
+            "voter": "bryan-imhoff",
+            "rshares": 1555649957
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "proofofbrain",
+            "neoxian",
+            "qurator",
+            "palnet",
+            "stem",
+            "pop-photography"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/asklanbudi/Eo4A5CESagPfN3JcUULn4pZS2Xj2zqk6crevF3PFYZxx7MfUByLdkFGkV1oHHaWqyFy.jpg",
+            "https://files.peakd.com/file/peakd-hive/asklanbudi/23tSL9rui7Bi1syFZDbTAKcPu752J1PcWCGM2BjKF6DkcrGpMYVNobbE6ZyAMBnjq3KES.jpg",
+            "https://files.peakd.com/file/peakd-hive/asklanbudi/Eo8RSgGzDFVW4YZP37rtwmJq2YrVGhBvy4vTCKc6Qx8RDPrW9RAzcmK1q367nyk3jmN.jpg",
+            "https://files.peakd.com/file/peakd-hive/asklanbudi/23tbPKxBoPuAP99zxGrvX3nxF1WDHUZyK2Z9ufSCEG6xCptHHZAktEbdSXgW1dfDV7ZzS.jpg",
+            "https://files.peakd.com/file/peakd-hive/asklanbudi/23tbnxPadVtiXRNZWbcnKMVHfBGVzzAj8E4SY5QCRv5e5oK1hq7nQ1QcAFLr6bWbebxQb.jpg",
+            "https://files.peakd.com/file/peakd-hive/asklanbudi/23tvYJoBdTyK2yz2czZGDnmW6VXagvUTq1RJSe1Kb8ipYYzudLJAnvfny7uiQj1TQmrpP.jpg",
+            "https://files.peakd.com/file/peakd-hive/asklanbudi/Eo6DE155q4LwDL8bc6BtpsnxudXHfwd66ffFwMT4rzD8GhCVa2zzGcJcxP8FAe8Wz9D.jpg",
+            "https://files.peakd.com/file/peakd-hive/asklanbudi/23tm6rYvt8Ad7uUrbHWWeQQ2x3VemgchPBbmE6BGbcGsNV6j3XwRKN5xstcudffZP1H1K.jpg"
+          ],
+          "users": [
+            "asklanbudi"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 73.67,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "2.004 HBD"
+      },
+      {
+        "url": "/hive-194913/@beelzael/as-if-i-was-immortal",
+        "body": "<div class=\"text-justify\">\n\n<center>https://images.hive.blog/0x0/https://usermedia.actifit.io/d386f54f-7086-4515-9516-f3a543bdddf9.jpg</center>\n\nLast week has definitely been better than we week before. Nero is back home, and I spend all week trying to get him to be inside in time for his medicine. As if a cat cares... But I got some wet food for him which he loves, so he learned pretty quick that being on time would be beneficial to him. The picture above is from a birthday party. It's summer here, so I brought an inflatable pool. When the kids were done, it was our time. Cool beer in the hot sun in the pool? Always fun.\n\n![This one somehow was turned into something like a painting. No idea why, but I guess it happened while adjusting the light, as it was already quite dark.](https://images.hive.blog/0x0/https://usermedia.actifit.io/f8b3f477-74ad-458a-b554-042d1499f86d.jpg)\n\nI went to the courthouse Friday, and of course they had forgotten to review a report from the psychologist. I really have to go there and ask for them to not forget the case every 2 days it feels like... Maybe I'll get an answer this week. Would be great. It's been 2 months now since they're gone, and yet I haven't achieved anything yet. \n\n\n![IMG_20260519_175848869_HDR_PCT.jpg](https://files.peakd.com/file/peakd-hive/beelzael/Eq35CKTL7H9Te8BwUkfrGWPCrfqfbBk2LYodBhZ9u8FtLtmKRa4RBZeENcJtUP5npGV.jpg)\n\nI asked Lily's mom to remind Lily that yesterday was my mom's birthday, so she could send her a message. Guess what? It was a \"no\" from the mom, stating that nobody in my family cared about Lily. Yeah... Good thing is, I got a voice message from Lily today asking about Nero. Seems like she hadn't listened to my voice messages and readings and videos for over a week. \n\n\nhttps://images.hive.blog/0x0/https://files.peakd.com/file/peakd-hive/beelzael/EpvhW2MTaYJUgtGaWiEPZsA7BzH8NdMmgYRB3Q2es2KB5Dw8t6xNP4UtS6fa6CJt1b8.jpg\n\nSince I finished The Sandman series, I find myself thinking a lot about the character of Hob Gadling, an immortal. 650 years alive, and still wanting more. Nothing like the Immortals by Borges, though those have lived longer. Will there be the point where one has experimented it all? Each feeling? Acquired all knowledge? Or is there always something new? A topic to write a post about...\n\n![IMG_20260523_184843592_HDR_PCT.jpg](https://files.peakd.com/file/peakd-hive/beelzael/EoEpyLH9tQ4EMe4bGi16dH5YToUkPYGqdBtCRxcSR9QsenXcA3VWPWcX1o1mGrQgGwb.jpg)\n\nThe Jamsession on Friday was pretty awesome, we were quite a lot of people and it was a lot of fun. We had two young Ecuadorians join us, and even Danny showed to play his favorites - Drive by Incubus, Música Ligera by Soda Stereo, and Creep by Radiohead. I'm happy to see it grow and be able to express myself through music each week. My favorite song to play is \"Wicked Game\" by Chris Isaac. \n\n![IMG_20260519_162339063_HDR_PCT.jpg](https://files.peakd.com/file/peakd-hive/beelzael/EqBcfLvQzA1GgPCm63CbxeGCwMGybrrRhYatQbjabo74MZ2oe3e59z7EiEc3HdpiD42.jpg)\n\nBack to immortality - when I think about Hob, it's his attitude that makes immortality something positive. He thoroughly lives every detail of life, including the sorrow. It seems like he even enjoys it. He says he had lost another wife, and buried another child, and though it's always the same, it still still feels different every time. \n\nhttps://images.hive.blog/0x0/https://usermedia.actifit.io/88375110-85a6-45d1-bac6-aa278dccc3a2.jpg\n\nHis ability to dig deeper into feelings gives him an edge. He examines different levels of pain, intensities and such. He keeps searching for more profoundness with each year of his life. Maybe that's the only way to enjoy immortality? \n\nhttps://images.hive.blog/0x0/https://usermedia.actifit.io/5fff06ef-803b-4936-9f57-3b03644eed6f.jpg\n\nI hope you enjoyed the pictures and the little writing with it. As always, any feedback and especially tips and tricks are very welcome! As long as it's not AI generated content or comment spamming... 😅\n___\n\nThank you for stopping by!\n\n>All pictures are taken by myself with a Motorola Edge 60 Pro and I reserve the copyright - but you're welcome to ask if you'd like to use one of the pics!\n\n</div>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 88
+        },
+        "title": "As if I was immortal.",
+        "author": "beelzael",
+        "payout": 1.272,
+        "created": "2026-05-26T02:03:06",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-26T02:03:06",
+        "category": "hive-194913",
+        "children": 0,
+        "permlink": "as-if-i-was-immortal",
+        "community": "hive-194913",
+        "payout_at": "2026-06-02T02:03:06",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 16294750617615,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "arcange",
+            "rshares": 902735581678
+          },
+          {
+            "voter": "funnel",
+            "rshares": 4319561599
+          },
+          {
+            "voter": "walterjay",
+            "rshares": 10512829567
+          },
+          {
+            "voter": "newhope",
+            "rshares": 7337967315811
+          },
+          {
+            "voter": "steemitboard",
+            "rshares": 26058321272
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "photographylovers",
+            "landscapephotography",
+            "reflect",
+            "sunset",
+            "friendship",
+            "pimp",
+            "neoxian",
+            "alive",
+            "spirituality"
+          ],
+          "image": [
+            "https://usermedia.actifit.io/d386f54f-7086-4515-9516-f3a543bdddf9.jpg",
+            "https://usermedia.actifit.io/f8b3f477-74ad-458a-b554-042d1499f86d.jpg",
+            "https://files.peakd.com/file/peakd-hive/beelzael/Eq35CKTL7H9Te8BwUkfrGWPCrfqfbBk2LYodBhZ9u8FtLtmKRa4RBZeENcJtUP5npGV.jpg",
+            "https://files.peakd.com/file/peakd-hive/beelzael/EpvhW2MTaYJUgtGaWiEPZsA7BzH8NdMmgYRB3Q2es2KB5Dw8t6xNP4UtS6fa6CJt1b8.jpg",
+            "https://files.peakd.com/file/peakd-hive/beelzael/EoEpyLH9tQ4EMe4bGi16dH5YToUkPYGqdBtCRxcSR9QsenXcA3VWPWcX1o1mGrQgGwb.jpg",
+            "https://files.peakd.com/file/peakd-hive/beelzael/EqBcfLvQzA1GgPCm63CbxeGCwMGybrrRhYatQbjabo74MZ2oe3e59z7EiEc3HdpiD42.jpg",
+            "https://usermedia.actifit.io/88375110-85a6-45d1-bac6-aa278dccc3a2.jpg",
+            "https://usermedia.actifit.io/5fff06ef-803b-4936-9f57-3b03644eed6f.jpg"
+          ],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 74.33,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.272 HBD"
+      },
+      {
+        "url": "/hive-194913/@ali-nhyamar78/los-muelles-olvidados-de-cienfuegos",
+        "body": "Hello fellow photography enthusiasts of this beautiful community! It's been a while since I've shared anything new. I've decided to revisit the forgotten piers of my city, so I visited the Junco Sur neighborhood, a peripheral area filled with buildings constructed mainly during the final years of the Soviet era. This neighborhood was founded in April 1986, and a pier was built near a beach there so that workers constructing the nuclear power plant could travel to the city of the same name, located on the other side of Jagua Bay. To reach the beach and the pier, which were once very popular, there was a road that is now a neglected and dilapidated track.\n![](https://i.ecency.com/DQmZBfLkVtc12bwGsLyKkEX98TeB9EexdrjN5mpu4qwu8gd/20260522_175114.jpg)\n\nBut it is in these forgotten spaces where beauty is often found.\n![](https://i.ecency.com/DQmaVxX4wYmZFEJUsZjWzyzdAvPEhunnqDneCgjabTsAESh/20260522_173311.jpg)\n\n![](https://i.ecency.com/DQmdqdS6QM1HHj5Zpi7Mn6xWHYmXxrrzTGSMTjZC86DU73S/20260522_173341.jpg)\n\n![](https://i.ecency.com/DQma2kZuUD5hU7SeNbuL31f9gfwTB8YpT9L45EeiRW5Jh6V/20260522_173349.jpg)\n\nNature, as always, begins to reclaim the space that was taken from it, especially when humans cover up spaces through neglect. However, in this solitude and oblivion, I have been able to find the most sublime art for my phone's lens.\n![](https://i.ecency.com/DQmWREB2ZZrpfwRTapHKRGqmXXqVPZx1tWgvkwjofHZ5kCL/20260522_173416.jpg)\n\n![](https://i.ecency.com/DQmVsNuprsSc5azF4PnM86kiJj5keoEFekPAtXtE97uMXt6/20260522_173429.jpg)\n\n![](https://i.ecency.com/DQmUiYYNqwPqhzUdbLkLPP4y6AAQ7fDjhZBcR6dVZiBLq7D/20260522_173507.jpg)\n\n![](https://i.ecency.com/DQmSWvAemtpeCNfsULebgtSHN9XPtSAVkidgyS15r63fK1X/20260522_173541.jpg)\n\nWhen I started taking pictures of the pier, I noticed that some people still come to this place to enjoy its tranquility and engage in fishing activities, an activity as old as humankind itself.\n![](https://i.ecency.com/DQmcBsJ5ydNz2mDrANfGHorxjUqQC7Efnr6RyVNw3thVmpi/20260522_173602.jpg)\n\n![](https://i.ecency.com/DQmTGrZLCCASuJKn4A7iP8tQsznkMgYKLFsRtL8XipdFGse/20260522_173609.jpg)\n\nAs happens in places where no maintenance is carried out, rust has taken over and corroded the foundations.\n![](https://i.ecency.com/DQma7K5r1XB9yGg72t1CqCHB7UrLYoi5T8isRz8PGJtjDYp/20260522_173622.jpg)\n\n![](https://i.ecency.com/DQmbQWWJeftTysQzrJw6yV64NBbpUB5v6CaumZVnWtvykiy/20260522_173639.jpg)\n\n![](https://i.ecency.com/DQmbXJK3WQWG8jiRJbg3APd6Gn9Z2agSj7NcHNCUBNrw3dB/20260522_173647.jpg)\n\nI remember my mother bringing me to this beach when we visited one of my aunts who still lives in this neighborhood. We often took different boats to the Nuclear City or another one dedicated to outdoor activities, belonging to a now-defunct recreational association known as SEPMI.\n\nThis rusty piece reminds me of the mooring knots that helped boats dock.\n![](https://i.ecency.com/DQmZm6JpxQFBQ1GUYUDGwENn7aZeiLFzgS3eMuomW75txEK/20260522_173833.jpg)\n\n![](https://i.ecency.com/DQmV8i2DdQmwEKgK9QBbVWKNRmaTPspLjwW8NbS4JEcLsPC/20260522_173847.jpg)\n\n![](https://i.ecency.com/DQmWUT746M4KgYV2JKjQRonNBxmg7T4Mu7WJ42rK1TnEDRC/20260522_173907.jpg)\n\n![](https://i.ecency.com/DQmdvZDRfcapgy36NJFTbMFxaDTkhi1REtdxVVonnpmnFYf/20260522_173919.jpg)\n\nThere were also light towers that have since disappeared; this image looks like it's from another planet, like mountains in a cursed desert.\n![](https://i.ecency.com/DQmSFyFLWPK48j7EfDzcPTRzp1HVUsWMLd7Z3MfQf7YhFJS/20260522_174126.jpg)\n\nThen there's the sea, that beautiful space that sometimes makes us feel so small, so insignificant in the face of such power and beauty. I hope one day I can take underwater photos and revel in the beauty of the vastness of the waters.\n![](https://i.ecency.com/DQmfDThxs3gMbLwoMUpZA3c1FoHVQceeaZvhVSY47Zu5KK9/20260522_174144.jpg)\n\nI couldn't resist taking these photos, a must-have on a pier and in a city that lives on the sea. Fishing lines, or fishing in the most traditional Cuban way, without rods, with all the tranquility in the world to wait for the right fish, or the one destined to catch.\n![](https://i.ecency.com/DQmTKJfZHFKxi5LCuDdrxi9orDHNQs7jkjS4Xa5afx2VdDb/20260522_174255.jpg)\n\n![](https://i.ecency.com/DQmNzsutnqdE4cscK1za5cnncbJ167hUkhmdAT7St1NG4BW/20260522_174315.jpg)\n\n![](https://i.ecency.com/DQmVzZf3cnDXdPfU2EigXAMJBhRWhHZU7exoitLHuVah61G/20260522_174440.jpg)\n\n![](https://i.ecency.com/DQmRdG3qQva7N3jftMCPWxYgY9Loh2JkT63Jy5rpuasqAww/20260522_174501.jpg)\n\n![](https://i.ecency.com/DQmXpzin2QkGoeWv2m6E4r7PEn1cLQD9QWezTAkDkARCWLg/20260522_174517.jpg)\n\n![](https://i.ecency.com/DQmYT1TzrNA3E7JLHqP2Dk2DiXsG6e5MuAsK25soXaiHUv3/20260522_174556.jpg)\n\n![](https://i.ecency.com/DQmZsoUpvKaghEAzggRokEhivi3dhWyz1YQickqg5wi3swZ/20260522_174640.jpg)\n\n![](https://i.ecency.com/DQmXAGVCJFsCp4EEptwu65dN5xKHLwe7wbjLG6y5SoFVWhS/20260522_174901.jpg)\n\n![](https://i.ecency.com/DQmbGgqhumt26MQHkjtKzuYTeprZvoDBQUyqminGTcg8WeG/20260522_174911.jpg)\nAs I was about to leave, a dog and its owner were enjoying the space. I hope you liked these photos.\n![](https://i.ecency.com/DQmXMP5ERFBMvo2ajfgAwH2M7djPwMprKo3b9nnRoo5wjWt/texto_11_.jpg)\n\n<center>![](https://i.ecency.com/DQmZgEYwbWXsPtnALCquFf8frbap3fDb9s56qGhCcPDj5KD/_al_nhyamar78_1_.jpg)</center>\n\n<center>![](https://i.ecency.com/DQmVY4EGuTB3o3vzY8R4UPP3dV29hXJfLBVDNx5eRYcTprx/versi_n_en_espa_ol_2_.jpg)</center>\n\nHola amigos amantes de la fotografía de esta hermosa comunidad, hace un tiempo que no mostraba nada nuevo. he decidido retomar los muelles olvidados de mi ciudad, por eso visite el barrio de Junco sur, un barrio periférico lleno de edificios construidos en la última etapa la era soviética principalmente. Es un barrio que se fundó en abril de 1986 y en el se construyó un muelle cerca de una playa, para que los trabajadores que trabajaban en la construcción de la central electro-nuclear viajaran hasta la ciudad de mismo nombre que esta al otro lado de la Bahía de Jagua. \nPara llegar a la playa y el muelle que eran muy visitados, existía una carretera que actualmente es un camino olvidado y en mal estado.\n![](https://i.ecency.com/DQmZBfLkVtc12bwGsLyKkEX98TeB9EexdrjN5mpu4qwu8gd/20260522_175114.jpg)\n\nPero es en estos espacios olvidados donde muchas veces se encuentra la belleza.\n![](https://i.ecency.com/DQmaVxX4wYmZFEJUsZjWzyzdAvPEhunnqDneCgjabTsAESh/20260522_173311.jpg)\n\n![](https://i.ecency.com/DQmdqdS6QM1HHj5Zpi7Mn6xWHYmXxrrzTGSMTjZC86DU73S/20260522_173341.jpg)\n\n![](https://i.ecency.com/DQma2kZuUD5hU7SeNbuL31f9gfwTB8YpT9L45EeiRW5Jh6V/20260522_173349.jpg)\n\nLa naturaleza como siempre comienza a cobrar el espacio que le fue tomada, más cuando el ser humano cubre los espacios con el desuso. sin embargo en esta soledad y olvido he podido encontrar el arte más sublime para el lente de mi teléfono.\n![](https://i.ecency.com/DQmWREB2ZZrpfwRTapHKRGqmXXqVPZx1tWgvkwjofHZ5kCL/20260522_173416.jpg)\n\n![](https://i.ecency.com/DQmVsNuprsSc5azF4PnM86kiJj5keoEFekPAtXtE97uMXt6/20260522_173429.jpg)\n\n![](https://i.ecency.com/DQmUiYYNqwPqhzUdbLkLPP4y6AAQ7fDjhZBcR6dVZiBLq7D/20260522_173507.jpg)\n\n![](https://i.ecency.com/DQmSWvAemtpeCNfsULebgtSHN9XPtSAVkidgyS15r63fK1X/20260522_173541.jpg)\n\nCuando comencé a tomar las fotos del muelle, percibí que algunas personas aún viene a este lugar para disfrutar de su tranquilidad y realizar actividades de pesca, una acción tan antigua como el propio ser humano.\n![](https://i.ecency.com/DQmcBsJ5ydNz2mDrANfGHorxjUqQC7Efnr6RyVNw3thVmpi/20260522_173602.jpg)\n\n![](https://i.ecency.com/DQmTGrZLCCASuJKn4A7iP8tQsznkMgYKLFsRtL8XipdFGse/20260522_173609.jpg)\n\nComo ocurre en los lugares en los que no se realiza mantenimiento el oxido ha compensado a corroer los cimientos.\n![](https://i.ecency.com/DQma7K5r1XB9yGg72t1CqCHB7UrLYoi5T8isRz8PGJtjDYp/20260522_173622.jpg)\n\n![](https://i.ecency.com/DQmbQWWJeftTysQzrJw6yV64NBbpUB5v6CaumZVnWtvykiy/20260522_173639.jpg)\n\n![](https://i.ecency.com/DQmbXJK3WQWG8jiRJbg3APd6Gn9Z2agSj7NcHNCUBNrw3dB/20260522_173647.jpg)\n\nRecuerdo que mi madre me traía a esta playa cuando veníamos de visita a casa de una de mis tías que aún vive en esta barriada. Incluso muchas veces tomamos diferentes barcos hacia la Ciudad Nuclear u otro que estaba dedicado a las actividades al aire libre y que pertenecía a una asociación de esparcimiento que ya no existe y que era conocida con el nombre de SEPMI.\nEsta pieza oxidada me recuerda los nudos de amarre que ayudaban a los barcos a atracar.\n![](https://i.ecency.com/DQmZm6JpxQFBQ1GUYUDGwENn7aZeiLFzgS3eMuomW75txEK/20260522_173833.jpg)\n\n![](https://i.ecency.com/DQmV8i2DdQmwEKgK9QBbVWKNRmaTPspLjwW8NbS4JEcLsPC/20260522_173847.jpg)\n\n![](https://i.ecency.com/DQmWUT746M4KgYV2JKjQRonNBxmg7T4Mu7WJ42rK1TnEDRC/20260522_173907.jpg)\n\n![](https://i.ecency.com/DQmdvZDRfcapgy36NJFTbMFxaDTkhi1REtdxVVonnpmnFYf/20260522_173919.jpg)\n\nTambién existían torres de luz que ya desaparecieron, esta imagen parece salida de otro planeta, como si fueran montañas en un desierto maldito.\n![](https://i.ecency.com/DQmSFyFLWPK48j7EfDzcPTRzp1HVUsWMLd7Z3MfQf7YhFJS/20260522_174126.jpg)\n Luego el mar, ese hermoso espacio que a veces nos hace sentir tan pequeño, tan esmirriado ante tanto poder y belleza. Espero algún día poder tomar fotos submarinas y deleitarme con la belleza de la inmensidad de las aguas.\n![](https://i.ecency.com/DQmfDThxs3gMbLwoMUpZA3c1FoHVQceeaZvhVSY47Zu5KK9/20260522_174144.jpg)\n\nNo pude dejar de tomar estas fotos que nunca pueden faltar en un muelle y en una ciudad que vive dentro del mar. Los hilos de pesca, o la pesca a la usanza más tradicional en Cuba, sin varas de pesca y con toda la tranquilidad del mundo para esperar a que llegue el pez adecuado o el destinado.\n![](https://i.ecency.com/DQmTKJfZHFKxi5LCuDdrxi9orDHNQs7jkjS4Xa5afx2VdDb/20260522_174255.jpg)\n\n![](https://i.ecency.com/DQmNzsutnqdE4cscK1za5cnncbJ167hUkhmdAT7St1NG4BW/20260522_174315.jpg)\n\n![](https://i.ecency.com/DQmVzZf3cnDXdPfU2EigXAMJBhRWhHZU7exoitLHuVah61G/20260522_174440.jpg)\n\n![](https://i.ecency.com/DQmRdG3qQva7N3jftMCPWxYgY9Loh2JkT63Jy5rpuasqAww/20260522_174501.jpg)\n\n![](https://i.ecency.com/DQmXpzin2QkGoeWv2m6E4r7PEn1cLQD9QWezTAkDkARCWLg/20260522_174517.jpg)\n\n![](https://i.ecency.com/DQmYT1TzrNA3E7JLHqP2Dk2DiXsG6e5MuAsK25soXaiHUv3/20260522_174556.jpg)\n\n![](https://i.ecency.com/DQmZsoUpvKaghEAzggRokEhivi3dhWyz1YQickqg5wi3swZ/20260522_174640.jpg)\n\n![](https://i.ecency.com/DQmXAGVCJFsCp4EEptwu65dN5xKHLwe7wbjLG6y5SoFVWhS/20260522_174901.jpg)\n\n![](https://i.ecency.com/DQmbGgqhumt26MQHkjtKzuYTeprZvoDBQUyqminGTcg8WeG/20260522_174911.jpg)\nCuando me decidía a retirarme, un perro y su dueño disfrutaban del espacio. Espero que estas fotos les hayan gustado.\n![](https://i.ecency.com/DQmSc7JwGNfhUMw5Wywv3gQkhRwF3jo366vaiZUD2UNGYAt/texto_12_.jpg)\n\n<center>![](https://i.ecency.com/DQmZgEYwbWXsPtnALCquFf8frbap3fDb9s56qGhCcPDj5KD/_al_nhyamar78_1_.jpg)</center>\n\n<sub>The text is AI-free, Google translated and proofread by me.</sub>\n<sub>The language separator and acknowledgments were created in Canva.</sub>\n<sub>The photos are my own; they were taken with my Samsung Galaxy A16 phone.</sub>\n\n<sub>El texto es libre de IA, traducido en Google y revisado por mí </sub>\n<sub>El separador de idiomas y los agradecimientos fueron creados en Canva</sub>\n<sub>Las fotos son de mi propiedad, fueron tomadas con mi teléfono Samsung Galaxy A16</sub>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 366
+        },
+        "title": "Los muelles olvidados de Cienfuegos/The forgotten docks of Cienfuegos(ENG-ESP)se",
+        "author": "ali-nhyamar78",
+        "payout": 1.775,
+        "created": "2026-05-25T12:23:57",
+        "reblogs": 3,
+        "replies": [],
+        "updated": "2026-05-25T12:23:57",
+        "category": "hive-194913",
+        "children": 4,
+        "permlink": "los-muelles-olvidados-de-cienfuegos",
+        "community": "hive-194913",
+        "payout_at": "2026-06-01T12:23:57",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 22098409372013,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "drifter1",
+            "rshares": 11396497588
+          },
+          {
+            "voter": "faust",
+            "rshares": 25494331148
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 55466513877
+          },
+          {
+            "voter": "treaphort",
+            "rshares": 1084142159
+          },
+          {
+            "voter": "elamental",
+            "rshares": 2055159779
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "hive-194913",
+            "photography",
+            "photocircle",
+            "ecency",
+            "forgottendocks",
+            "proofofbrain",
+            "neoxian",
+            "vyb",
+            "pimp",
+            "leo"
+          ],
+          "image": [
+            "https://i.ecency.com/DQmZm6JpxQFBQ1GUYUDGwENn7aZeiLFzgS3eMuomW75txEK/20260522_173833.jpg",
+            "https://i.ecency.com/DQmZBfLkVtc12bwGsLyKkEX98TeB9EexdrjN5mpu4qwu8gd/20260522_175114.jpg",
+            "https://i.ecency.com/DQmaVxX4wYmZFEJUsZjWzyzdAvPEhunnqDneCgjabTsAESh/20260522_173311.jpg",
+            "https://i.ecency.com/DQmdqdS6QM1HHj5Zpi7Mn6xWHYmXxrrzTGSMTjZC86DU73S/20260522_173341.jpg",
+            "https://i.ecency.com/DQma2kZuUD5hU7SeNbuL31f9gfwTB8YpT9L45EeiRW5Jh6V/20260522_173349.jpg",
+            "https://i.ecency.com/DQmWREB2ZZrpfwRTapHKRGqmXXqVPZx1tWgvkwjofHZ5kCL/20260522_173416.jpg",
+            "https://i.ecency.com/DQmVsNuprsSc5azF4PnM86kiJj5keoEFekPAtXtE97uMXt6/20260522_173429.jpg",
+            "https://i.ecency.com/DQmUiYYNqwPqhzUdbLkLPP4y6AAQ7fDjhZBcR6dVZiBLq7D/20260522_173507.jpg",
+            "https://i.ecency.com/DQmSWvAemtpeCNfsULebgtSHN9XPtSAVkidgyS15r63fK1X/20260522_173541.jpg"
+          ],
+          "format": "markdown+html",
+          "thumbnails": [
+            "https://i.ecency.com/DQmZm6JpxQFBQ1GUYUDGwENn7aZeiLFzgS3eMuomW75txEK/20260522_173833.jpg"
+          ],
+          "description": "Hello fellow photography enthusiasts of this beautiful community! It's been a while since I've shared anything new. I've decided to revisit the forgotten piers of my city, so I visited the Junco Sur",
+          "image_ratios": [
+            "0.7500",
+            "1.3333",
+            "1.3333",
+            "0.7500",
+            "0.7500"
+          ]
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 65.91,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.775 HBD"
+      },
+      {
+        "url": "/hive-194913/@naitreart/photos-from-a-classical-concert-engesp",
+        "body": "<div class=\"text-justify\">\n<p>There are moments that are really worth capturing in photos; the challenge comes when so much is happening at once that you have to decide what to focus on, but I personally tried to take photos of everything so I wouldn’t miss a thing. That’s why I’m sharing these photos from a classical music concert. </p>\n<blockquote>\n<p>Hay eventos que son muy interesantes de capturar en fotografías; lo difícil es cuando están ocurriendo tantas cosas al mismo tiempo que debes buscar en qué enfocarte, pero personalmente intenté hacer fotografías de todo para intentar que no se me escapara nada. Por eso, les comparto estas fotografías de un concierto de música clásica.        </p>\n</blockquote>\n</div><br/>\n<center>\nhttps://files.peakd.com/file/peakd-hive/naitreart/23tmFR1iCBC7HPNaPSj3D4JuYNNAH4KEikVgodhTpGnjhgxX9hi1Lert761Vrv1UZPjBu.jpg\n<p></p>\nhttps://files.peakd.com/file/peakd-hive/naitreart/23tbq7Ajc8Nu1jm3bGAYv6yL6HKDFMCahYfcn7KBet6grudszqUZgtx6wqkodHJKpgLP2.jpg\n<p></p>\nhttps://files.peakd.com/file/peakd-hive/naitreart/23tGwH3MrcKazhuXQzWZWLoRZki3JPxeKKopSbvgTTkHUuuUvvyfHeqbebyYrQmFZs5aT.jpg\n</center><br/>\n<div class=\"text-justify\">\n<p>Since there were so many musicians, I tried to give each of them their moment in the spotlight in different photos. That said, it’s clear that I took some wide shots—this is because I took the photos from a moderate distance and my lens’s zoom didn’t allow me to get any closer—but even so, I feel that you can still make out that sense of prominence I mentioned earlier. </p>\n<blockquote>\n<p>Al haber tantos músicos, intenté darles protagonismo a todos en distintas fotografías. De igual manera, es evidente que hice unos planos abiertos, y esto porque hice las fotos desde una distancia moderada y el zoom de mi lente no me permitía acercarme más, pero aun así siento que se logra distinguir ese protagonismo que les mencioné anteriormente.        </p>\n</blockquote>\n</div><br/>\n<center>\nhttps://files.peakd.com/file/peakd-hive/naitreart/23sx9epAMMf5Br1dNFtVVK9peuVyLGZnX4xMSpDazCWeCkdvCMmVv3d8MMSyGkWGcoG4S.jpg\n<p></p>\nhttps://files.peakd.com/file/peakd-hive/naitreart/23t7Fn4QZSbEim8wyVyLcmrgMmYHZTdECKRTv4zXqkbB6psuqN43TM1sWQELap2P4YLzN.jpg\n<p></p>\nhttps://files.peakd.com/file/peakd-hive/naitreart/23t7FVbP99xNQmgL6YQBK56MQL5x2rDSKRyVd6Q7PLHoZxsvWdHUaJXJQDfWG41Ae1wF2.jpg\n</center><br/>\n<div class=\"text-justify\">\n<p>When developing the photos, I focused on bringing out the orange tones of the instruments so that everything would look consistent and the photos would have a more professional finish, in my opinion, of course.</p>\n<blockquote>\n<p>Para el revelado de las fotografías, me centré en resaltar esa tonalidad naranja de los instrumentos, para que todo se viese de una forma uniforme y que las fotografías tuviesen un acabado más profesional, según mi punto de vista, por supuesto.       </p>\n</blockquote>\n</div><br/>\n<center>\nhttps://files.peakd.com/file/peakd-hive/naitreart/23tvYCyi4HA4uMLSTmyvU3c7Q3SFz7xRYkSppmjRUnev8fuTU5sTx5Er6gb5yxjkQmBxd.jpg\n<p></p>\nhttps://files.peakd.com/file/peakd-hive/naitreart/23uEzQgZ4gCot2Unq33mBUNgUtPk1RCm8bRvREhWTiCgmywKTavsujUHwtqfxDFXhzXL9.jpg\n</center><br/>\n<div class=\"text-justify\">\n<p>That's all for today; I hope you enjoy these photos as much as I do. It's interesting to take photos at concerts, but honestly, it's quite a challenge; I'd like to keep practicing to improve my skills with this kind of photography. Thank you for reading and viewing my photos. I hope you all have a wonderful day. See you next time! </p>\n<blockquote>\n<p>Esto es todo por el día de hoy; espero que estas fotografías les gusten tanto como a mí. Es interesante hacer fotografías en los conciertos, pero sinceramente es todo un reto; me gustaría seguir practicando para mejorar este tipo de fotos. Gracias por leerme y ver mis fotografías. Deseo que todos tengan un excelente día. ¡Hasta la próxima!        </p>\n</blockquote>\n</div><br/>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n</p><p><center><span><img src=\"https://images.hive.blog/768x0/https://files.peakd.com/file/peakd-hive/naitreart/244eLvUQgMVjDyJEhA1XpFJgzfHjBMZQ5G2Xw1YneShVFRnUHWCSqbf6vBJvEBXZuimuN.png\" srcset=\"https://images.hive.blog/768x0/https://files.peakd.com/file/peakd-hive/naitreart/244eLvUQgMVjDyJEhA1XpFJgzfHjBMZQ5G2Xw1YneShVFRnUHWCSqbf6vBJvEBXZuimuN.png 1x, https://images.hive.blog/1536x0/https://files.peakd.com/file/peakd-hive/naitreart/244eLvUQgMVjDyJEhA1XpFJgzfHjBMZQ5G2Xw1YneShVFRnUHWCSqbf6vBJvEBXZuimuN.png 2x\" /></span></center></p>\n<center>\nhttps://files.peakd.com/file/peakd-hive/naitreart/EoCgDBNyvRSKo1nF4KmX8PXntHbQkk1TFCxg7o2nBD1NcPy7R1aAmXzNYCARdhCaJrH.jpg\n</center>\n<p></p>\n<p><center><span><img src=\"https://images.hive.blog/768x0/https://files.peakd.com/file/peakd-hive/naitreart/244eLvUQgMVjDyJEhA1XpFJgzfHjBMZQ5G2Xw1YneShVFRnUHWCSqbf6vBJvEBXZuimuN.png\" srcset=\"https://images.hive.blog/768x0/https://files.peakd.com/file/peakd-hive/naitreart/244eLvUQgMVjDyJEhA1XpFJgzfHjBMZQ5G2Xw1YneShVFRnUHWCSqbf6vBJvEBXZuimuN.png 1x, https://images.hive.blog/1536x0/https://files.peakd.com/file/peakd-hive/naitreart/244eLvUQgMVjDyJEhA1XpFJgzfHjBMZQ5G2Xw1YneShVFRnUHWCSqbf6vBJvEBXZuimuN.png 2x\" /></span></center></p>\n<p><center><strong>Todos los derechos reservados / All rights reserved by <a href=\"/@naitreart\">@Naitreart</a>.</strong>\n<p>Cámara utilizada: Sony Alpha 3000<br />\nObjetivo Sony: 18-55mm<br />\n</p>\n<blockquote>\n<p><center><strong>Camera used: Sony Alpha 3000<br />\nSony Lens: 18-55mm<br />\n</strong></center></p>\n</blockquote>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 62
+        },
+        "title": "Photos from a classical concert [Eng/Esp]",
+        "author": "naitreart",
+        "payout": 1.031,
+        "created": "2026-05-26T02:35:15",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-26T02:35:15",
+        "category": "hive-194913",
+        "children": 0,
+        "permlink": "photos-from-a-classical-concert-engesp",
+        "community": "hive-194913",
+        "payout_at": "2026-06-02T02:35:15",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "member",
+        "net_rshares": 13170110504944,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "roelandp",
+            "rshares": 14417644650
+          },
+          {
+            "voter": "neoxian",
+            "rshares": 8243920964419
+          },
+          {
+            "voter": "arcange",
+            "rshares": 902750710288
+          },
+          {
+            "voter": "noborders",
+            "rshares": 520231034
+          },
+          {
+            "voter": "discovereurovelo",
+            "rshares": 5306090180
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "photography",
+            "spanish",
+            "photofeed",
+            "fotografia",
+            "neoxian",
+            "portrait",
+            "hive-194913",
+            "cent",
+            "aliveandthriving",
+            "music"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/naitreart/23tGwH3MrcKazhuXQzWZWLoRZki3JPxeKKopSbvgTTkHUuuUvvyfHeqbebyYrQmFZs5aT.jpg",
+            "https://files.peakd.com/file/peakd-hive/naitreart/23tmFR1iCBC7HPNaPSj3D4JuYNNAH4KEikVgodhTpGnjhgxX9hi1Lert761Vrv1UZPjBu.jpg",
+            "https://files.peakd.com/file/peakd-hive/naitreart/23tbq7Ajc8Nu1jm3bGAYv6yL6HKDFMCahYfcn7KBet6grudszqUZgtx6wqkodHJKpgLP2.jpg",
+            "https://files.peakd.com/file/peakd-hive/naitreart/23sx9epAMMf5Br1dNFtVVK9peuVyLGZnX4xMSpDazCWeCkdvCMmVv3d8MMSyGkWGcoG4S.jpg",
+            "https://files.peakd.com/file/peakd-hive/naitreart/23t7Fn4QZSbEim8wyVyLcmrgMmYHZTdECKRTv4zXqkbB6psuqN43TM1sWQELap2P4YLzN.jpg",
+            "https://files.peakd.com/file/peakd-hive/naitreart/23t7FVbP99xNQmgL6YQBK56MQL5x2rDSKRyVd6Q7PLHoZxsvWdHUaJXJQDfWG41Ae1wF2.jpg",
+            "https://files.peakd.com/file/peakd-hive/naitreart/23tvYCyi4HA4uMLSTmyvU3c7Q3SFz7xRYkSppmjRUnev8fuTU5sTx5Er6gb5yxjkQmBxd.jpg",
+            "https://files.peakd.com/file/peakd-hive/naitreart/23uEzQgZ4gCot2Unq33mBUNgUtPk1RCm8bRvREhWTiCgmywKTavsujUHwtqfxDFXhzXL9.jpg",
+            "https://files.peakd.com/file/peakd-hive/naitreart/244eLvUQgMVjDyJEhA1XpFJgzfHjBMZQ5G2Xw1YneShVFRnUHWCSqbf6vBJvEBXZuimuN.png",
+            "https://files.peakd.com/file/peakd-hive/naitreart/EoCgDBNyvRSKo1nF4KmX8PXntHbQkk1TFCxg7o2nBD1NcPy7R1aAmXzNYCARdhCaJrH.jpg"
+          ],
+          "users": [
+            "naitreart",
+            "Naitreart"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "Photography Lovers",
+        "author_reputation": 75.78,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.031 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

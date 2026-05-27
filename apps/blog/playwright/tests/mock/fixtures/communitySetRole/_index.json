@@ -1,0 +1,8 @@
+{
+  "testName": "communitySetRole",
+  "base": "communityModRolesPage",
+  "generatedAt": "2026-05-26T12:12:30.787Z",
+  "overlayFiles": [
+    "0001-bridge.list_community_roles.json"
+  ]
+}

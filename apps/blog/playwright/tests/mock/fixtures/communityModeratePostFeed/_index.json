@@ -1,0 +1,28 @@
+{
+  "testName": "communityModeratePostFeed",
+  "recordedAt": "2026-05-26T12:11:43.160Z",
+  "totalRequests": 33,
+  "savedFixtures": 23,
+  "duplicatesSkipped": 10,
+  "methods": {
+    "bridge.get_follow_list": 2,
+    "bridge.get_community": 3,
+    "bridge.get_post": 1,
+    "bridge.get_discussion": 1,
+    "GET /hivesense-api": 2,
+    "bridge.unread_notifications": 2,
+    "bridge.list_community_roles": 1,
+    "database_api.get_dynamic_global_properties": 2,
+    "database_api.find_accounts": 4,
+    "rc_api.find_rc_accounts": 2,
+    "condenser_api.get_reblogged_by": 1,
+    "database_api.list_votes": 3,
+    "bridge.get_profile": 2,
+    "bridge.list_all_subscriptions": 1,
+    "bridge.list_communities": 1,
+    "bridge.get_ranked_posts": 2,
+    "bridge.account_notifications": 1,
+    "bridge.list_subscribers": 1,
+    "GET /hivesense-api/posts/gtg/hive-hardfork-28-jump-starter-kit/similar": 1
+  }
+}

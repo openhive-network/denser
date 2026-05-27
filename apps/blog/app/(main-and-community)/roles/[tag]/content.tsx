@@ -44,8 +44,13 @@ const Content = ({ community }: { community: string }) => {
   return (
     <div className="my-4 flex w-full items-center justify-between" translate="no">
       <div className="m-2 w-full bg-background px-8 py-6">
-        <h2 className="mb-1 text-2xl">{t('communities.user_roles')}</h2>
-        <Table className="w-full border-[1px] border-solid border-secondary">
+        <h2 className="mb-1 text-2xl" data-testid="community-roles-heading">
+          {t('communities.user_roles')}
+        </h2>
+        <Table
+          className="w-full border-[1px] border-solid border-secondary"
+          data-testid="community-roles-table"
+        >
           <TableHeader className="text-">
             <TableRow className="bg-secondary">
               <TableHead className="px-2">{t('communities.account')}</TableHead>

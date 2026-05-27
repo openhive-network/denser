@@ -1,0 +1,1874 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "trending",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "hive-167922",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "bed9cdd2968fa460",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "trending",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "hive-167922",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/hive-167922/@leofinance/inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc",
+        "body": " https://img.leopedia.io/DQmYZfK62fk1b2aEdzUaGZnHLxYVHihSLdUYJqDtBrSmVnW/image.png \n\n\nINLEO has been building in a very specific way over the past few years and especially in the past few months. Our focus has always been on external users in the broader crypto space. Many of these users utilize X on a daily basis for their social interactions.\n\nThe fact that they are crypto users and they are using a platform like X is something that we believe we can change with our technology on Hive. Our platform has emerged as something that looks & feels similar to X but **puts all their data on the Hive blockchain**. \n\nImmutable accounts and data. Put it all on chain. \n\nOver the past several weeks, we've been working with other projects within the Hive ecosystem to proliferate our technology as open source contributions to the Hive Ecosystem.\n\nThis is all a part of our [updated DHF proposal](https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed). Our regular updates will showcase the roadmap to open sourcing more of INLEO's technologies and also providing finalized products in the form of Plug & Play APIs that are open source and easily available to all Hive frontends, games and applications. \n\nIt's obvious to us now that our path forward on Hive is to Open Source our work and help all Hive projects grow alongside us.\n\nINLEO's passion is not only in building this technology but also marketing it to the broader crypto space. We've found a lot of success in collaboration with other ecosystems. You can see this with our Dash collaboration from November-December 2024. You'll see it in our upcoming collaborations with the Solana Network, Arbitrum Foundation, Litecoin Foundation, ChainLink and the many other HUGE crypto partners that we have lined up as part of our DHF Proposal. \n\nAs we continue to do these collaborations, we want to open source the many technologies that have made INLEO so successful. These technologies can be utilized either from the Open Source codebases we release or from the Plug & Play APIs that we release and manage. \n\nWe believe that INLEO's place on Hive is about to transition heavily into designing, developing, iterating and managing Open Source, Plug & Play APIs that can be utilized by all Hive projects. \n\nAs we do this, our collaborations will bring in a flood of new users to not only INLEO, but also every other Hive application that is out there. The more that we can spread our successful technology to other Hive UIs, the more that we can all grow together as these new users come into Hive and find an app that they want to use on a daily basis (or hopefully, many Hive apps that they use each day).\n\nI am reaching out to all Hive App Owners and asking them if they'd like to collaborate with us in any way. Whether it means getting early access to our Open Source codebases as we roll them out one-by-one or getting set up with our Plug & Play APIs so that they can start integrating our most successful features. \n\nIn this post, I want to outline some of our most successful features and the ones that we plan to Open Source as a part of our DHF Proposal. \n\n## INLEO's Onboarding Technology\n\n https://img.leopedia.io/DQmTF5pZqwdiQg6thbfR6WWRgdExe3YNGo997khs3DTN6Vq/image.png \n\n\n> March 2025 | Released ✅\n\nAs promised in our first [DHF Transparency Report and Roadmap](https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed), we released the Plug & Play APIs + Documentation for our Onboarding Technology on Thursday of last week.\n\n https://img.leopedia.io/DQmZqVWPzhNJtnwYmLLx2EzPnBirhSd5ZRDgrSKxCNJ5G8V/image.png \n\n https://img.leopedia.io/DQmW6WPPsWxXo4gjgVFwSEWT4owy25w8Rxe7mvNGENwqj5H/image.png \n\n\nAny Hive application can now integrate INLEO's onboarding technology in 3 forms:\n1. Keystore (Full Hive Account, Full Self-Custody)\n2. X Lite Accounts (Lite Account, Web2 Authentication)\n3. Google Lite Accounts (Lite Account, Web2 Authentication)\n\nWe're talking with about 8 different Hive UIs and applications who are working to integrate the APIs/Open Source tech into their framework so that they can allow these signup and login methods.  If you are a Hive app owner and want to integrate, you can read the [docs](https://inleo.io/@leofinance/inleos-onboarding-framework-is-now-open-source-x-google-hive-lite-accounts-and-keystore-7nw) and/or get in touch with our team. We're happy to help any Hive UI who wants to integrate. \n\nThe Plug & Play APIs offer an elegant and simple way to integrate these sign up / login methods.\n\n## Dynamic Resource Credit (RC) Delegation System + Account Creation Tokens\n\n> March 2025 | Released ✅\n\n\nAs a reminder, we also included our Resource Credit delegation system + use of our account creation tokens as part of the Open Source APIs we released for our onboarding technology.\n\nA UI has two options to utilize our tech:\n1. Look at the Open Source codebase, clone it and integrate it on their own\n2. Use our Plug & Play API to easily connect to LeoInfra V2 and allow signups and logins instantly\n\nIf any Hive app uses option #2, we also provide our onboarding resources to new account creations. So it costs the Hive app nothing. The signup APIs use:\n1. INLEO's account creation tokens to create the Hive accounts\n2. INLEO's Dynamic Resource Credit delegation system\n\nThe dynamic RC delegation system does exactly what the title suggests: it dynamically delegates RCs to new signups **based on need**. So if a new signup becomes heavily active, our system reads their RCs and continually delegates more RCs to them as they get more active. This ensures the new signups don't run out of RCs if they start blogging/threading/commenting/upvoting right after signing up. \n\nIf a signup becomes inactive or powers up Hive or for whatever reason no longer needs as many RCs, our system sees that their RCs are sitting above 80% for an extended period of time - then the delegation is slowly reduced. If the user suddenly runs low on RCs again at some point in the future, our system will re-delegate RCs to them.\n\nLong story short, new onboards have plenty of RCs to interact off the bat. Over time, they are encouraged to power up their own Hive so that they control their own pool of RCs. \n\n## HAFSQL Access\n\n> March 2025 | Early Access Release\n\nLast Friday, we released access to our HAFSQL database to a handful of other applications privately. After a bit more testing and refining with some of the people who have started privately accessing it, we are going to open source the APIs and allow anyone to access our instance of HAFSQL - which is extremely useful for pulling real-time, onchain data. \n\nHAFSQL has become an integral part of INLEO's UI. It allows us to serve complex data sets to our users in various parts of our interface (Leaderboard, Referrals, etc.). \n\nUse of HAFSQL can be extremely custom. What we are opening up here is the ability for other apps on Hive to tap into our resources that we use to run our own instance of HAFSQL. For free as part of our [DHF Proposal](https://peakd.com/me/proposals/332). \n\n## Accounts API\n\n> This Week!\n\n https://img.leopedia.io/DQmYDu74SXbREuqDed9aJCvNa6gCsudSbQfWG3HkpUozwuG/image.png \n\nINLEO maintains our own Accounts API that provides relevant, real-time information about users. Some of this data is very common on-chain. Other pieces of data include:\n\n1. Premium status\n2. Creator Subscriptions\n3. etc.\n\nWe are planning to release this Accounts API in the next few days. This will allow other Hive UIs to pull real-time data from our Accounts API. The API has a lot of standard Hive Account info but it also has many modifications that our team has added. These upgrades are vital to running things like INLEO Premium, Creator Subscriptions, Referrals, etc. \n\nHaving access to that data is extremely important if/when other applications want to integrate our Creator Subs, Premium, Referrals, etc. technologies.\n\nThis is why we've chosen to Open Source our Accounts API sooner than later. It lays some critical foundation needed for us to open source some of our other successful technologies if other applications want to integrate them down the road. \n\n## Ledger, Trustwallet, Trezor Support\n\n https://img.leopedia.io/DQmWcZSwXgUE6X6LneDTjLaG3pLk4VVug2vEqUEUtN6LdQQ/image.png \n\nINLEO has been building a wallet framework. This is currently in beta for our team and private testers. We're refining this framework and will begin releasing more signup and login options to Hive. Fully open sourced as part of our DHF Proposal. \n\nThese new wallet options are extremely important for our upcoming collaborations. Similar to how we onboarded Dash users, we want to give our Solana, Arbitrum, Litecoin, Chainlink, etc. partners the wallet sign-in options they need to seamlessly sign up and login to Hive. \n\nOur updated proposal now includes us open sourcing these signup and login methods (like we already did for Keystore, X & Google Lite Accounts) and releasing them **prior to the collabs going live**. \n\nDoing these releases before the collabs go live is a great way for other Hive applications to add the integrations they want to add and tap into the growth that INLEO brings to the Hive blockchain in the form of new users from these other ecosystems. This is a new generation of Hivers that are very familiar with crypto, are eager to invest in HIVE and are also eager to get active on chain. \n\n## Referral System API, Backend and Frontend\n\n https://img.leopedia.io/DQmX2YuPybPdEutKi7RYKRanvjviJg2B4GxLgLXkXDtgYFx/image.png \n\n https://img.leopedia.io/DQmddrcMPMBe7fgoYDTShrkbMNjgSo6sEh5e2CGWGWYF8nV/image.png \n\n\nOur Referral System has proven to be quite successful. We continue to refine it and have found that it **significantly improves new user retention**. \n\nAcquiring new users is important but keeping those users around is equally important. Our referral system has proven to do a really good job of this as the Referral Dashboard frontend that we built allows existing users to see exactly who has signed up through their referral links, track their activity on the Hive blockchain and encourage them to get more active. \n\nTo make all of this work, we have several layers of infrastructure:\n\n1. Tracking on-chain data related to the onboard via HAFSQL - how many posts, threads, comments, etc. they've made as well as other relevant data in our Accounts API (access to our HAFSQL node is opened up in Phase 2 of this roadmap)\n2. Affiliate link structure (we modeled this after Amazon's Affiliate link structure. Where if a user clicks on a blog post / thread you've shared, then it will give you the referral credit if they signup to Hive within 30 days of clicking your link). This deeply incentivizes sharing your Hive content outside of the ecosystem and aiming to get as many clicks on it as possible\n3. ...\n\nAs you can see, laying the groundwork by releasing our other APIs is critical for adding successful features like this to our open source contributions to Hive. \n\n## Creator Subscriptions\n\n https://img.leopedia.io/DQmemUDRBzRkuTTwRvb4GtYdAmVQ5rAnYsBpzx9Uk3NfBny/image.png \n\n\nCreator Subs have been a really exciting addition to the INLEO App. Now, users can have their own subscribers (very similar to substack). This offers a whole new way for authors to monetize their content. \n\nWhat we've created with Creator Subs is:\n1. A payments platform that uses HBD for creators and their subscribers\n2. Private content for creators and their subs - uses an encrypted container system we built that is 100% on-chain\n3. Value capture for the Hive economy through a small fee on every creator-subscriber transaction\n\nhttps://img.leopedia.io/DQmUDiguYH8ZVU8B4V7pCa2rxXA8xBW9NHMmAR8BpP23Y32/image.png \n\nWith an influx of new users coming from our collabs, we want to ensure that other Hive apps have the opportunity to add Creator Subs and encrypted on-chain content to their frontend as well. \n\nWe'll be open sourcing the APIs for Creator Subscriptions so that every frontend can integrate a seamless system for:\n1. Payments\n2. Encrypted on-chain containers (private content)\n3. Value capture for HIVE through creator-subscriber fees\n\n https://img.leopedia.io/DQmXjCXavfR5w9YM3ds6dUytW5CsPdxwrB5z26g8viEtEVY/image.png \n\n\nAs we continue to release the other infrastructure mentioned above that is needed to operate Creator Subs, we'll announce the release date of the Open API access. We want to ensure that other Hive UIs can have this live before our collaborations so that we can all benefit from the influx of new users that come into Hive. \n\nIt's important that we not only onboard new users and investors into the HIVE token, but that we also bring paying members of the Hive economy. Imagine that these new users not only buy and stake HIVE POWER but also subscribe to some of their favorite creators. This will get them familiar with buying, holding and spending HBD in the Hive economy. A simultaneous effect will be rewarding the hard work that existing Hive Creators have put into building their brand on the Hive blockchain. \n\nWins for everyone. \n\n## Cross-UI Bookmarks Framework\n\n https://img.leopedia.io/DQmYehYDSJcskfDcPr1BwoUhwKc6pYbNkejgFUJswU5ix2A/image.png \n\n\nWe've built a robust system for bookmarks that not only allows users to bookmark posts, comments and threads but also allows them to create folders and subfolders for those bookmarks to organize them better. This utilizes on-chain data to assign bookmarks and folders to a specific user's Hive account.\n\nAs we onboard new users, we want them to be able to access their bookmarks, folders, etc. from other interfaces in addition to INLEO. We believe that this will greatly improve the User Experience if a user likes to utilize INLEO for some things but Ecency for another (example). \n\nAs part of our shift to open sourcing more of INLEO's technologies so that all Hive UIs can benefit and all existing and future Hive Users can have a better User Experience, we'll be open sourcing our Bookmarks APIs so that every UI can have a simple-to-implement framework for Bookmarks. No more losing your place on-chain. Any UI that has it will be able to seamlessly offer bookmarks and folders across UIs and across devices. \n\n## More APIs, More Onboarding, More Hive Application Collaboration\n\nThe point of this post is to talk a bit about the APIs that we've already released and plan to release in the very near future as part of our [DHF Proposal](https://peakd.com/me/proposals/332). Our proposal is not just about marketing the platform so that we can grow Hive - it's about open sourcing INLEO's technologies so that as we do that marketing, all the new users we bring to Hive can proliferate to the various Hive Apps in our ecosystem.\n\nWe believe heavily in a collaborative approach to growth. We believe that there's a lack of collaboration amongst Hive teams right now and many of us have to re-invent the wheel when new features pop up or new desires from the Hive ecosystem emerge. INLEO has been a part of this problem in the past - by developing our features in a silo.\n\nWe want to be a part of the solution going forward. Developing our innovations not just as INLEO-only features, but as open source contributions to the Hive ecosystem as well as Plug & Play APIs that can be utilized easily by any interface, application or game. \n\nKeep an eye out this week for the next iteration of our Open Source contributions to Hive. **Our proposal is currently at 96% but we are not waiting to get funded in order to do this work. We believe in our mission and we believe in our ability to grow Hive. We are doing all of this work up front to show our commitment to growing Hive both now and in the many years to come.** This ecosystem means so much to us and we will not stop building here. Join us as we continue to put 110% of our effort into making Hive a top 10 blockchain. Where it belongs.\n\n\n\n\n\n\n\nPosted Using [INLEO](https://inleo.io/@leofinance/inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "is_pinned": true,
+          "flag_weight": 0,
+          "total_votes": 566
+        },
+        "title": "INLEO's Vision for Hive | Open Sourcing Our Tech and Growth",
+        "author": "leofinance",
+        "payout": 28.549,
+        "created": "2025-03-18T15:07:24",
+        "reblogs": 29,
+        "replies": [],
+        "updated": "2025-03-18T15:07:24",
+        "category": "hive-167922",
+        "children": 36,
+        "permlink": "inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc",
+        "community": "hive-167922",
+        "payout_at": "2025-03-25T15:07:24",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 87094548317406,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "xeldal",
+            "rshares": 10424165235820
+          },
+          {
+            "voter": "adol",
+            "rshares": 2503262023962
+          },
+          {
+            "voter": "enki",
+            "rshares": 6418333439996
+          },
+          {
+            "voter": "simba",
+            "rshares": 136528745055
+          },
+          {
+            "voter": "ash",
+            "rshares": 816921688877
+          },
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "hive",
+            "hbd",
+            "dhf",
+            "growth",
+            "marketing",
+            "opensource",
+            "tech",
+            "palnet",
+            "neoxian"
+          ],
+          "links": [
+            "https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed).",
+            "https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed),",
+            "https://inleo.io/@leofinance/inleos-onboarding-framework-is-now-open-source-x-google-hive-lite-accounts-and-keystore-7nw)",
+            "https://peakd.com/me/proposals/332).",
+            "https://peakd.com/me/proposals/332).",
+            "https://inleo.io/@leofinance/inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmYZfK62fk1b2aEdzUaGZnHLxYVHihSLdUYJqDtBrSmVnW/image.png",
+            "https://img.leopedia.io/DQmTF5pZqwdiQg6thbfR6WWRgdExe3YNGo997khs3DTN6Vq/image.png",
+            "https://img.leopedia.io/DQmZqVWPzhNJtnwYmLLx2EzPnBirhSd5ZRDgrSKxCNJ5G8V/image.png",
+            "https://img.leopedia.io/DQmW6WPPsWxXo4gjgVFwSEWT4owy25w8Rxe7mvNGENwqj5H/image.png",
+            "https://img.leopedia.io/DQmYDu74SXbREuqDed9aJCvNa6gCsudSbQfWG3HkpUozwuG/image.png",
+            "https://img.leopedia.io/DQmWcZSwXgUE6X6LneDTjLaG3pLk4VVug2vEqUEUtN6LdQQ/image.png",
+            "https://img.leopedia.io/DQmX2YuPybPdEutKi7RYKRanvjviJg2B4GxLgLXkXDtgYFx/image.png",
+            "https://img.leopedia.io/DQmddrcMPMBe7fgoYDTShrkbMNjgSo6sEh5e2CGWGWYF8nV/image.png",
+            "https://img.leopedia.io/DQmemUDRBzRkuTTwRvb4GtYdAmVQ5rAnYsBpzx9Uk3NfBny/image.png",
+            "https://img.leopedia.io/DQmUDiguYH8ZVU8B4V7pCa2rxXA8xBW9NHMmAR8BpP23Y32/image.png",
+            "https://img.leopedia.io/DQmXjCXavfR5w9YM3ds6dUytW5CsPdxwrB5z26g8viEtEVY/image.png",
+            "https://img.leopedia.io/DQmYehYDSJcskfDcPr1BwoUhwKc6pYbNkejgFUJswU5ix2A/image.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@leofinance/inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 77.45,
+        "author_payout_value": "14.308 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "14.241 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-167922/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed",
+        "body": " https://img.leopedia.io/DQmXpZKeo2BbBxxz5oZ8T2ut4BEv8c7Gk54XHCysPX82Lo2/image.png \n\n\nHey everyone! This week, there was a call in the main Hive Discord where a bunch of Hivers came together to discuss the Hive ecosystem. A heavy emphasis was on the DHF and @blocktrades was the guest of the hour. @buttcoins and @shadowspub do a great job hosting. \n\nDuring that discussion, the idea of having more regular reporting expectations on DHF-funded projects was floated. I was listening and thought this was a great idea. \n\nFor projects on Hive, the DHF can be vital. Whether the project is building open source tech, marketing or some combination of the two (as INLEO's Proposal does), it is important to have clear expectations, regular reporting and accountability. \n\nINLEO's [Proposal](https://peakd.com/me/proposals/332) is 94% of the way to the funding line. We have been +/- 1M with the funding line for the past few days.\n\nWhile we are not currently funded, we would love to start delivering on these reports and many of the **promises** we have made surrounding open sourcing various aspects of INLEO and creating Plug & Play APIs that can seamlessly be used by any Hive UI to make our collaboative marketing campaigns not only bring new users to INLEO, but **bring new users to all Hive Apps**.\n\n**We're pushing hard on our goals to:**\n1. Open Source all of INLEO's Onboarding and Sign-In Technology\n2. Build Plug&Play, Open Source APIs for Other Hive UIs to Easily Integrate Our Onboarding Technology and Tap into Our Resource Credit Delegation System/Account Creation Tokens\n3. Use Our DHF Funding to Market Our Technologies and Onboard New Users to Hive by Collaborating With External Ecosystems and Onboarding Their Official Team and Community to Hive as a Group\n\nThis week, we faced some questions about our LeoAuth & Keystore Implementation for signing in and we made fundamental updates to both secure and improve those SignUp and Login Methods. This is extremely important work as we continue down the path of Open Sourcing INLEO's Onboarding and Sign-In Technologies.\n\nWe must ensure that our codebase for signing up and signing in to Hive is as secure as possible. As we continue to proliferate new sign up and sign in methods, having sound foundations and third-party auditing is key. \n\nIf you would like to audit and give us feedback on our sign up and sign in methods, our DMs our open. User security is our #1 priority and second to that is User Experience. We want to have both secure and enjoyable methods for signing up and logging in to Hive each day for all the new people we onboard to this ecosystem. \n\n## Transparent Accounting\n\nWhen the funding officially starts and we begin the first of the collaborative marketing campaigns, we will share transparent accounting of **every single expense** down the the penny. After our proposal is funded, you'll find this section as a spreadsheet in our future reports with line-by-line accounting for every single expense related to the campaigns. The format will be a very simple spreadsheet that is easy to track along with invoices, campaign links, media links and other relevant notes.\n\nWe believe in transparently accounting for every $0.01 spent during this DHF proposal and will deliver it in these regular reports as the campaigns begin. \n\n## Open Source Timeline\n\nOpen Sourcing INLEO's Onboarding Technology for Sign-Ins and Sign-Ups is an amendment we made to our original DHF Proposal. After getting a lot of feedback that INLEO should aim to do more Open Source contributions to Hive, this is how we've decided to begin doing that.\n\nOver time, our goal will be to continually release more INLEO Technologies as Open Source contributions to Hive. \n\nA key thing for me is that we not only release our tech as OS. I think it's equally (potentially more) valuable to also release **plug & play APIs along with well written documentation** so that any UI can integrate our technologies without having to adapt our code. Remember that each UI has its own code base. Some of us are written in different frameworks.\n\nJust because one UI builds something that is Open Source doesn't mean that it is easily applied to other UIs. While we will provide the code base Open Source so UIs can choose to look at it and pull what they want, we will also provide plug & play APIs to make it very easy for any UI to integrate something from INLEO's tech stack. \n\n## APIs & Open Source Code We're Releasing As Part of This Proposal:\n1. Phase 1). Plug & Play APIs for Keystore, RC Delegations and Account Creation Tokens\n2. Phase 2). HAFSQL Access\n3. Phase 3). Accounts API\n4. Phase 4). Dynamic RC Delegation Codebase\n5. Phase 5). Other Wallet Integrations Released as Open Source APIs for Other Hive UIs (Similar to Our Keystore API)\n6. Phase 6). Referral System API, Backend and Frontend\n\n### Phase 1). Plug & Play APIs for Keystore, RC Delegations and Account Creation Tokens\n\n> **Estimated Delivery Date:** Thursday, March 13th\n\n https://img.leopedia.io/DQmb4wqsWDa9UMoi1JEMmokXTLo7mBzqhukddbnPkxtPGSx/image.png \n\nThe first of many of the Plug & Play APIs that INLEO will release Open Source is the ability for other UIs to allow Keystore Signups and Logins. \n\nAs many of you know, the INLEO team does not waste any time. After making some updates to the core codebase, we've now started to put the finishing touches on developing and refining our APIs for Keystore Signups & Logins. \n\n**What is It?**\n\nThis set of APIs will allow any Hive UI who wants to instantly allow users to sign up and/or login with a Keystore Wallet: @splinterlands, @peakd, @ecency, @3speak, @liketu, @actifit, @holozing, @worldmappin, @engrave, @dcity, @dcrops, @dlux, @tribaldex, @vsc.network and many more great projects in our ecosystem.\n\nThis release will also enable our Account Creation Tokens + Dynamic Resource Credit Delegation system to be used on all signups. \n\nThis means that **any UI who integrates this API as a signup option on their site will have free account creation and allow new users who sign up to their platform to hv ave RCs immediately available to interact on the Hive blockchain**. If you're unfamiliar with our our dynamic RC pool works - in simple terms, we delegate @leo.voter's RCs to new signups based on activity. As their activity on chain increases, we increase the RC delegation. If their activity falls, we decrease the RC Delegation. As the user (hopefully) powers HIVE up over time, we also reduce their RC delegation. \n\nThis dynamic system ensures that all new signups have the RCs they need to immediately get active on chain and that their RCs get returned back to the pool as they power up more HIVE so that they're available for the next onboards. \n\n### Phase 2). HAFSQL Access\n\n> **Estimated Delivery Date**: Friday, March 14th\n\n@mahdiyari created something called HAFSQL for Hive. It's extremely useful and INLEO implemented it on one of our servers. We've been utilizing it for a variety of features on INLEO in order to seamlessly pull and serve on-chain data. One example is the Leaderboard on INLEO. Other examples include the Accounts API (more info on that below) and many other aspects of the interface. \n\nHAFSQL has become vital to speeding up INLEO operations and data coverage.\n\nAs part of our goal to Open Source more of INLEO and offer Plug & Play APIs to all Hive UIs so that we can collaborate and grow together as an ecosystem, INLEO will now offer **free access to our HAFSQL Instance**. \n\nAs part of this release, we'll also post detailed documentation about what kind of calls can be made and examples of how we utilize HAFSQL on INLEO so that other UIs can find their own creative ways to implement new features for their users. \n\n### Phase 3). Accounts API\n\n> **Estimated Delivery Date:** March 21st\n\n https://img.leopedia.io/DQmdyuPYCbXsr9C79wU598PrwYifZgsSfCLTyKSgjuL8eDy/image.png \n\nINLEO maintains our own Accounts API that provides relevant, real-time information about users. Some of this data is very common on-chain. Other pieces of data include:\n1. Premium status\n2. Creator Subscriptions\n3. etc.\n\nAs part of our proposal, we'll be open sourcing access to this Accounts API. This is critical infrastructure for open sourcing more aspects of INLEO and allowing other UIs to implement some of our innovative features such as [Premium](https://inleo.io/premium), [Creator Subscriptions](https://inleo.io/@leofinance/introducing-creator-subscriptions-paywall-encrypted-content-on-hive-earn-more-crypto-65a) and more. \n\nWe're refining this API and merging it with some of our other infrastructure to add more data. What you see in the screenshot above is some of the accounts data we have in the APA already, with more on the way. When it is ready, we'll be releasing the API along with detailed documentation so that any UI can immediately integrate it and start adapting features to their frontend. \n\n### Phase 4). Dynamic RC Delegation Codebase\n\n> **Estimated Delivery Date:** April 2025\n\n https://img.leopedia.io/DQmW4cyxZmHguAKkn4qiCgmVZpPdKdrvZih2szU3ooUDSNd/image.png \n\nIn Phase 1, we mentioned Open Sourcing the API to sign new users up via Keystore. If a user is signed up with that API, they utilize 1 of our account creation tokens. We also track and dynamically delegate Resource Credits so that this new user can interact onchain. \n\nIn Phase 4, we'll be open sourcing the codebase for the Dynamic RC Delegation System. This will allow other developers on Hive to take the raw codebase and either clone and deploy their own version, or modify it to their standards.\n\nThink of the Phase 1 release as a \"Plug & Play API\" where it's a finalized product for any UI to immediately integrate. This phase is us making the raw codebase Open Source so that anyone can take it and utilize it, even if INLEO weren't around for some reason. \n\nThis marks a material change in how INLEO is built. Moving more toward Open Source contributions to the chain and helping all Hive projects thrive alongside us. \n\n### Phase 5). Other Wallet Integrations Released as Open Source APIs for Other Hive UIs (Similar to Our Keystore API)\n\n> **Expected Delivery Date:** April 2025\n\n https://img.leopedia.io/DQmSsVfJhoVHzRoEXfQUZvWPoT2zpS7tKSKTfFDaYvYPv4N/image.png \n\nOur team has already begun work on a framework that can handle all of the major crypto wallets. As you can see in the screenshot above, we've got these in a testnet already. \n\nOur plan is to release each wallet API one-by-one. They will most likely coincide with the current collaboration we have running. For example, releasing our Phantom wallet integration coinciding with our Solana partnership as a sign-up/sign-in API that other UIs can integrate (using our Keystore API as a model for the framework).\n\nBy releasing the API just before we partner with Solana, we can work with other Hive UIs that want to be a part of the collaboration-approach to growth to do so. They can take our Open Source APIs and easily integrate Phantom wallet sign ups and sign ins.\n\nThen when we do our marketing campaigns, these other Hive Apps can be included in our official talks with the collaboration team (i.e. Solana). Now all Solana users can not only be pointed to INLEO, but they can also be pointed to any Hive App or Interface that has integrated Phantom as an option using either our API or our fully Open Source codebase. \n\n### Phase 6). Referral System API, Backend and Frontend\n\n> **Expected Delivery Date:** May 2025\n\n https://img.leopedia.io/DQmdyXDFs7Mkh5LsFdpUywoPxLeYBqjTMMoQXsb4xSs68dV/image.png \n\n https://img.leopedia.io/DQmesvwRCJcfaLhagAHUaaahSBnj1ZHXE8xMMiRMi4TFQYy/image.png \n\n\nWe're putting this delivery date as May but it may come sooner. We need to ensure that some of the right controls can be put into place to avoid abuse of the referral system that INLEO has built. We will aim to release it around the time of the first collaboration going live. \n\nICYMI: INLEO has an intricate referral system to incentivize the existing community on Hive to onboard new users AND retain them. Our referral system allows users to earn LEO tokens for onboarding their friends. The referral rewards are paid in a tiered system and requires that the user **retain their friend** by having them do more activities on chain.\n1. Make more Threads\n2. Make more Blog Posts\n3. Etc. \n\nThis referral system is designed as much to incentivize new onboards as it is to retain new onboards. The [Referral Dashboard](https://inleo.io/referral) allows users to see their referrals in real-time and track them. \n\nTo make all of this work, we have several layers of infrastructure:\n1. Tracking on-chain data related to the onboard via HAFSQL - how many posts, threads, comments, etc. they've made as well as other relevant data in our Accounts API (access to our HAFSQL node is opened up in Phase 2 of this roadmap) \n2. Affiliate link structure (we modeled this after Amazon's Affiliate link structure. Where if a user clicks on a blog post / thread you've shared, then it will give you the referral credit if they signup to Hive within 30 days of clicking your link). This deeply incentivizes sharing your Hive content outside of the ecosystem and aiming to get as many clicks on it as possible\n3. ...\n\n## Collaboration Timeline\n\n https://img.leopedia.io/DQmWtPCSNZmV9dLPBzXeqSpbNUarqyCzHfYQMzhomF6ZSm5/image.png \n\nINLEO aims to have our first collaboration up and running within 60 days of getting funded. We'll run that collaboration for ~3 months in full swing, then transition to the next collaboration. \n\nCollaborations don't just start and expire. They require a lot of ongoing work between our team and the team of the ecosystem we're collaborating with.\n\nThe Dash Collaboration we did is a good example of this. This collaboration ran for a few months in full swing with consistent Press Releases and X Ads. Now we maintain a great relationship with Dash, continue to do strategic retargeting ads and of course; spend a lot of our community time and resources on retention that is focused on the newly onboarded Dash Users. \n\n https://img.leopedia.io/DQmPnbtYkchdNxT9Hbg6N8dA3sXhF125367T2zWmuoQeibN/image.png \n\nEach collaboration will have a section in our Stats Dashboard where you can track the success of the campaign. The KPIs are:\n1. Total users onboarded\n2. Total Threads by those users\n3. Total Posts by those users\n4. Total HIVE Powered Up by those Users\n5. Total LEO Powered Up by those Users\n\n## Security, Open Source and Collaboration with Third-Parties / Hive Devs\n\nSecurity is extremely important to us and over the past few weeks, we've been reaching out to as many Hive devs as we can to get third-parties looking at our code bases and APIs. We've been pushing a number of updates and upgrades to many of the things listed above. \n\nRecently, we've had several devs looking at and auditing the Keystore APIs to ensure that they are ready for Open Sourcing and public release. \n\nWe're always pushing the boundaries of the norm in terms of our technology. This is why our UI very fluid and has faced quite a few challenges in the past. With each iteration, we leap forward into the unknown. Whether it's with encrypted on-chain content for Creator Subs (users having their own monetization outside of the rewards pool alone, using HBD as the settlement asset) or any other innovation we've done. \n\nIt's very challenging work and the team has had to grow a lot in terms of our ability to face those challenges, learn from them and better our approach on the next iteration.  \n\nLeaping forward into the unknown is what we are known for and we are not afraid of constant innovation and evolution. We're working hard to push Hive forward in the best way we know how. \n\nReleasing our APIs as Open Source, Plug & Play solutions is a critical lead domino to then doing these collaborations and onboarding new users and investors to Hive. \n\nIf you support this new direction for INLEO, support our proposal to release these Open Source technologies and APIs to be freely used by all Hive applications:\n1. https://peakd.com/proposals/332\n2. https://ecency.com/proposals/332\n\nPosted Using [INLEO](https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "is_pinned": true,
+          "flag_weight": 0,
+          "total_votes": 715
+        },
+        "title": "DHF Report #1 | Transparency, APIs & Documentation Release Timeline and Open Source Contributions to Hive",
+        "author": "leofinance",
+        "payout": 32.866,
+        "created": "2025-03-10T17:54:24",
+        "reblogs": 12,
+        "replies": [],
+        "updated": "2025-03-10T17:54:24",
+        "category": "hive-167922",
+        "children": 16,
+        "permlink": "dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed",
+        "community": "hive-167922",
+        "payout_at": "2025-03-17T17:54:24",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 96460449956879,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "xeldal",
+            "rshares": 10052658053469
+          },
+          {
+            "voter": "adol",
+            "rshares": 2414087660512
+          },
+          {
+            "voter": "enki",
+            "rshares": 6189589898649
+          },
+          {
+            "voter": "simba",
+            "rshares": 131233066211
+          },
+          {
+            "voter": "ash",
+            "rshares": 811199064477
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "null"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "hive",
+            "dhf",
+            "development",
+            "proposal",
+            "opensource",
+            "marketing",
+            "neoxian",
+            "palnet",
+            "leo"
+          ],
+          "links": [
+            "https://peakd.com/me/proposals/332)",
+            "https://inleo.io/premium),",
+            "https://inleo.io/@leofinance/introducing-creator-subscriptions-paywall-encrypted-content-on-hive-earn-more-crypto-65a)",
+            "https://inleo.io/referral)",
+            "https://peakd.com/proposals/332",
+            "https://ecency.com/proposals/332",
+            "https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmXpZKeo2BbBxxz5oZ8T2ut4BEv8c7Gk54XHCysPX82Lo2/image.png",
+            "https://img.leopedia.io/DQmb4wqsWDa9UMoi1JEMmokXTLo7mBzqhukddbnPkxtPGSx/image.png",
+            "https://img.leopedia.io/DQmdyuPYCbXsr9C79wU598PrwYifZgsSfCLTyKSgjuL8eDy/image.png",
+            "https://img.leopedia.io/DQmW4cyxZmHguAKkn4qiCgmVZpPdKdrvZih2szU3ooUDSNd/image.png",
+            "https://img.leopedia.io/DQmSsVfJhoVHzRoEXfQUZvWPoT2zpS7tKSKTfFDaYvYPv4N/image.png",
+            "https://img.leopedia.io/DQmdyXDFs7Mkh5LsFdpUywoPxLeYBqjTMMoQXsb4xSs68dV/image.png",
+            "https://img.leopedia.io/DQmesvwRCJcfaLhagAHUaaahSBnj1ZHXE8xMMiRMi4TFQYy/image.png",
+            "https://img.leopedia.io/DQmWtPCSNZmV9dLPBzXeqSpbNUarqyCzHfYQMzhomF6ZSm5/image.png",
+            "https://img.leopedia.io/DQmPnbtYkchdNxT9Hbg6N8dA3sXhF125367T2zWmuoQeibN/image.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 77.45,
+        "author_payout_value": "16.477 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "16.389 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-167922/@leofinance/hivestats-redesign-the-best-way-to-track-analyze-your-hive-account-3fa",
+        "body": " https://img.inleo.io/DQmU7LzpKhM4Mv8tydaresjdQqN3axJSLHmMVdRzkBvLJuK/image.png \n\n\nThis has been a long-time coming and while the INLEO Team has been focused heavily on our cross-chain tech stack to onboard ecosystems like Dash, Solana, Arbitrum, Litecoin and many others to the Hive blockchain, we also wanted to make sure our inward facing technology gets the love it deserves. \n\n<hr>\n\n***Check out the all-new look on https://hivestats.io!***\n\n<hr>\n\nWhen I (Khal) was in Croatia for HiveFest last September, I realized that a lot of people didn't know that INLEO created [Hivestats](https://hivestats.io). \n\nThe story of [Hivestats](https://hivestats.io) goes back to the legacy chain days. There were 2-3 awesome stats-tracking websites for the legacy chain that many of us used on a daily basis. I personally was a heavy user of them. \n\nWhen Hive was born, some of those stats apps didn't move over and I decided that the LEO Team owed it to the Hive community to build an awesome stats website that was even better than the ones that came before it. \n\nToday, [Hivestats](https://hivestats.io) is one of the most utilized tracking & analysis apps for Hive. 133k unique visitors and over 300k pageviews in the past year.\n\n https://img.inleo.io/DQmd9k6tcT6kg8sjYNN4uAc5GUG7Ut2SvQuNNp1L2umTvw2/image.png \n\nIf you're a regular user of Hivestats, then you'll know that it's been a bit of time since any major upgrades have been made to it.\n\nOutside of general maintenance and a few minor tweaks over the past 12 months, we haven't made a ton of changes to [Hivestats](https://hivestats.io). \n\nIt was long overdue for a refresh. \n\n## Same Analysis, Fresh Look\n\nhttps://img.inleo.io/DQmU7LzpKhM4Mv8tydaresjdQqN3axJSLHmMVdRzkBvLJuK/image.png\n\nOne of the most requested features on Hivestats was the \"Curation APR\" algorithm. Essentially, it looks at your last 7 days of curation data and uses it to project what APR you're earning on your HIVE POWER.\n\nThis is by far and away the most loved and used feature on Hivestats. We've got a few ideas for some more algorithmic analysis - especially with the upcoming release of LeoAI - and we'll be looking at integrating them into [Hivestats](https://hivestats.io) in the VerySoon future. \n\n https://img.inleo.io/DQmU4amnXnQNPEpSMuG2GvRm4XwwkfhC2RgZY59SP5T8exR/image.png \n\n\nIn this update, we focused on just refreshing the UI and making some backend changes to prepare for our next round of features. You'll notice the price trackers for HBD, HIVE & LEO are revamped and look much cleaner. We also fixed the API delays and the pricing will be more real-time and accurate. \n\n https://img.inleo.io/DQmPUC5Ug8dvMFxnh4pTqPFavFkru7qUR1acdbc7fFV2qB2/image.png \n\nMost other things remain largely the same, just with a fresh & updated look. Faster APIs to run, calculate & retrieve data, etc.\n\n## What's Next For [Hivestats](https://hivestats.io)?\n\nWe rely heavily on #feedback to guide the development of INLEO as a project in general. HiveStats is no different. Over the years, we've collected and developed features for Hivestats - i.e. the Curation APR Calculator - based entirely on community feedback and what you, the Hive community, want to see on [Hivestats](https://hivestats.io).\n\nIf you want to request features for the 2025 roadmap of [Hivestats](https://hivestats.io), now is the time to put those requests in.\n\nThere are two great ways to give feedback on [Hivestats](https://hivestats.io) and/or give feature requests:\n1. Leave a comment below on this post. Tell us your favorite things about [Hivestats](https://hivestats.io) and maybe what you'd like to see added next\n2. Post a thread on INLEO with two hashtags: #hivestats #feedback. Including these tags will help our team sort feedback and get your requests added to the roadmap for HS in 2025\n\nHead over to [Hivestats](https://hivestats.io) and start Tracking & Analyzing your Hive Account 🦁🐝\n \n\nPosted Using [INLEO](https://inleo.io/@leofinance/hivestats-redesign-the-best-way-to-track-analyze-your-hive-account-3fa)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "is_pinned": true,
+          "flag_weight": 0,
+          "total_votes": 308
+        },
+        "title": "Hivestats Re-Design! | The Best Way to Track & Analyze Your Hive Account",
+        "author": "leofinance",
+        "payout": 9.15,
+        "created": "2025-02-10T17:55:33",
+        "reblogs": 10,
+        "replies": [],
+        "updated": "2025-02-10T17:55:33",
+        "category": "hive-167922",
+        "children": 24,
+        "permlink": "hivestats-redesign-the-best-way-to-track-analyze-your-hive-account-3fa",
+        "community": "hive-167922",
+        "payout_at": "2025-02-17T17:55:33",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 21779076566976,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "simba",
+            "rshares": 133675971755
+          },
+          {
+            "voter": "ash",
+            "rshares": 815854981557
+          },
+          {
+            "voter": "renovatio",
+            "rshares": 0
+          },
+          {
+            "voter": "alz190",
+            "rshares": 2732735564
+          },
+          {
+            "voter": "animaya",
+            "rshares": 1806021589
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "hivestats",
+            "hive",
+            "hbd",
+            "analysis",
+            "data",
+            "palnet",
+            "ctp",
+            "oneup",
+            "proofofbrain"
+          ],
+          "links": [
+            "https://hivestats.io!***",
+            "https://hivestats.io).",
+            "https://hivestats.io)",
+            "https://hivestats.io)",
+            "https://hivestats.io).",
+            "https://hivestats.io)",
+            "https://hivestats.io)?",
+            "https://hivestats.io).",
+            "https://hivestats.io),",
+            "https://hivestats.io)",
+            "https://hivestats.io)",
+            "https://hivestats.io)",
+            "https://inleo.io/@leofinance/hivestats-redesign-the-best-way-to-track-analyze-your-hive-account-3fa)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.inleo.io/DQmU7LzpKhM4Mv8tydaresjdQqN3axJSLHmMVdRzkBvLJuK/image.png",
+            "https://img.inleo.io/DQmd9k6tcT6kg8sjYNN4uAc5GUG7Ut2SvQuNNp1L2umTvw2/image.png",
+            "https://img.inleo.io/DQmU7LzpKhM4Mv8tydaresjdQqN3axJSLHmMVdRzkBvLJuK/image.png",
+            "https://img.inleo.io/DQmU4amnXnQNPEpSMuG2GvRm4XwwkfhC2RgZY59SP5T8exR/image.png",
+            "https://img.inleo.io/DQmPUC5Ug8dvMFxnh4pTqPFavFkru7qUR1acdbc7fFV2qB2/image.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@leofinance/hivestats-redesign-the-best-way-to-track-analyze-your-hive-account-3fa"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 77.45,
+        "author_payout_value": "4.600 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "4.550 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-167922/@leofinance/introducing-refer2earn-onboard-your-friends-to-hive-earn-up-to-50-per-referral-jvd",
+        "body": " https://img.inleo.io/DQmfF7sy7Xe4JbhmXyBjZbaCdzAjHZQ1uuAripAqi3b1pQ5/image.png \n\n\nAs we near the end of 2024, the INLEO team has been wrapping up a wide array of work that we've been deeply focused on in the ladder part of this year. \n\nWe'll release several blog post from now until the end of the year talking about these things in detail. Today, we'll focus on the new Refer2Earn protocol that we've built for Hive.\n\nThis protocol is actually *not* brand new. We released it several months ago with a V1 basic release. Over the past few weeks, we started to roll out the remainder of the protocol. The initial release was a basic update to allow referral codes to be used.\n\n**INLEO has been growing like crazy in this last quarter of 2024**. Much of this is due to all of the updates we've rolled out as well as the major partnerships that we've integrated (currently: Dash. Soon: Maya Protocol, Several Maya UIs, Thorchain, Rujira, Arbitrum Foundation and many more!). We're smashing all of our all-time high user metrics in terms of:\n1. Onboarding new accounts\n2. Retention rates\n3. Number of Threads created\n4. Number of votes/engagements on site\n5. etc. etc.\n\nThe update brings several features into focus and rounds out the Refer2Earn experience on INLEO. This is **incredibly important** right now as we are onboarding a lot of new users to Hive. These new users have friends and we want to deeply encourage them to invite their friends and get active on INLEO & Hive.\n\n<hr>\n\nTLDR; you can now refer people to Hive accounts and earn up to $50 per referral. The Referral rewards can be claimed instantly and are paid in our native token, $LEO which is listed on 5 major decentralized exchanges. One of the best ways to trade LEO is using https://leodex.io which is a mutli-chain DEX we've built that is connected to Maya Protocol and Thorchain. \n\n<hr>\n\n## Earn Up to $50 Per Referral\n\nThe two main questions about the Referral program are:\n1. Where do rewards come from?\n2. How do I earn up to $50 per referral?\n\n https://img.inleo.io/DQmR54sEQtpNHGRZSRCvgDciHkbM1YSMrgRFB6jGkgZxtvs/image.png \n\nThe rewards come from our native token, LEO. We buy LEO off the market and fill the @leoreferral account with LEO. When a user goes to their [Referral Dashboard](https://inleo.io/referral), then they can click \"Claim Rewards\" and instantly claim their payouts. \n\nOne of the biggest onboarding problems on Hive is **retention**. How do you retain new users and encourage them to continually come back and stay active onchain?\n\nINLEO has come up with a many ways to solve this problem. One of them is the Referral program. We designed the Referral program to have entrenched incentives for users to **not only onboard their friends, but also track their activity and encourage them to be active**.\n\nHow that works is very simple. If you go to your [Referral Dashboard](https://inleo.io/referral) and click \"How it Works\", you'll see the following popup:\n\n https://img.inleo.io/DQmTsJuvtR3UmyPWJPQJpfXajgEUAbfDvR7ZpFiYqjW1XXX/image.png \n\nThis popup explains the tiers for rewards. In order to get the total $50 payout, your onboarded user needs to be active on chain. **The more active they are, the more you earn for that referral**. \n\n*there is no time expiration on this activity. If it takes 1 year for your onboard to do all the above actions, then you will get the payout released over the course of the year as each milestone is hit in real time*.\n\n## Referral Dashboard and How it Works\n\n https://img.inleo.io/DQmUtXYp9WmFFj42MWGYgV97ZxeMHMXSXwdXsa2nqYZ9ZQc/image.png \n\nYour referral dashboard on INLEO looks like this. You can reach it through the side menu or by going directly to it, here: https://inleo.io/referral.\n\nYou'll notice a few key aspects and all of it is hyper self-explanatory. You've got your Referral Code and Referral Link toward the top of the page. You can also click the \"QR\" icon to generate a QR code for your referral link to have other users scan it in real-time or share the image of it over text, etc.\n\n https://img.inleo.io/DQmc2rGRkMyY9RuTLFnZ2X67rBTtviXHR2DGFDkDHoSdXpb/image.png \n\nIf you scroll down the page a bit, you'll see your Total Referrals along with the Total LEO you have earned from the referral program, the Unclaimed Rewards that you have pending (awaiting claim) and the Total USD value of all the Rewards you've ever earned from the program. \n\nBelow that, you'll see \"How it Works\" and \"Claim Rewards\".\n\nWhen you have Rewards awaiting claim, you can click that button and instantly claim them to your Hive wallet. \n\nYou'll also notice a little orange icon to the right of the Total USD figure. This icon will auto-popup when you claim your rewards. You can also manually call it by clicking the icon: \n\n https://img.inleo.io/DQmeygstV9CjBoxr9DrRDJiBCsAbRtTFAwxczQ4EaCE4x7R/image.png \n\nClicking it will show the \"Share my Referral\" screen. You can download the image, share it on X or just screen capture it and share it however you like. This is built to incentivize others to scan your own QR code on the image and sign up to INLEO.\n\nIt shows how much you're earning from the INLEO Referral program. Leverage this image to get more people to sign up using your own referral code so they too can earn referral rewards.\n\nBeneath all of that is your Referral History.\n\n https://img.inleo.io/DQmPP8SKTsMe9TgPmYyA658FFhozGEs6WhaP6kYbnbMQj2M/image.png \n\nYour Referral History will show you who you've onboarded, when you onboarded them and also their activity level. You can see how many Threads & Blog Posts they've made since joining Hive & INLEO.\n\nThis is incredibly useful for tracking the activity of your onboards, how much you're earning from each and finding ways to encourage them to be more active so that they can hit more milestones and you can get the juicy $50 per user payout. \n\n## Amazon Affiliate-Style Link Design\n\nOutside of simply using your main Referral onboarding link (this link but with your own username: https://inleo.io/signup?referral=khaleelkazi), you can also share your Threads & Blog Posts from INLEO using the 3 dots icon next to any piece of content.\n\nWhen you use this icon, something seriously great happens: we drop a 30 day cookie in the browser of whoever clicks on your link.\n\nThis 30 day cookie tracks your affiliate code. If they leave the page and come back to INLEO at any point within 30 days of clicking your link, you will get the referral credit for them getting onboarded. \n\n**This steps Share2Earn up to a whole new level. Hive has never seen anything like this before.**\n\nWe modeled this program after the Amazon Affiliate Link program which has been wildly successful for growing Amazon's business and making creators tens of thousands of dollars per month in many cases. \n\nTo copy the affiliate-attached links is very simple: just use the \"3 dots menu\" next to any piece of content on INLEO. In the below image, you'll see how to get it from any Blog Post or Thread:\n\n https://img.inleo.io/DQmTjgRiCKapHLJEeeY9tXHamg3Rvr6xXxniz7HpXMhE1VS/image.png \n\nAfter clicking the copy link icon on the image above, the link generated looks like this: https://inleo.io/@khaleelkazi/inleo-walkthrough-navigating-inleo-and-how-to-make-money-cig?referral=khaleelkazi (note, if you're reading this from certain UIs on Hive, they may have changed the link to be their own. The image below will show you what the link properly looks like after copied). Do you see my referral code attached to the end of the permalink URL?\n\n https://img.inleo.io/DQmWSdizBe7fTdgnuRcqQrSKfsvjk43YuqdQy98pFUuwNvV/image.png \n\n\nIt takes a few seconds to simply copy one of these links and share it on X, over text or in any other medium. Give it a shot and start earning up to $50 from each person who clicks your link and signs up within 30 days!\n\n## Questions?\n\nIf you have any questions, comments, concerns or feedback about the referral program on INLEO, then leave a comment below and the INLEO team will be around to answer.\n\nReferrals are a way to multiply the growth that is **already happening on INLEO**. Social media and onboarding new users is all about network effects.\n\nINLEO has now built and released the tools necessary to not only onboard 100,000 users but now we've got the tools to leverage those 100,000 users to also onboard 100,000 of their friends. \n\nTime to bring the masses to HIVE!\n\n\n\n\nPosted Using [InLeo Alpha](https://inleo.io/@leofinance/introducing-refer2earn-onboard-your-friends-to-hive-earn-up-to-50-per-referral-jvd)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "is_pinned": true,
+          "flag_weight": 0,
+          "total_votes": 504
+        },
+        "title": "Introducing Refer2Earn | Onboard Your Friends to Hive, Earn Up to $50 Per Referral",
+        "author": "leofinance",
+        "payout": 29.718,
+        "created": "2024-12-23T17:13:12",
+        "reblogs": 42,
+        "replies": [],
+        "updated": "2024-12-23T17:13:12",
+        "category": "hive-167922",
+        "children": 53,
+        "permlink": "introducing-refer2earn-onboard-your-friends-to-hive-earn-up-to-50-per-referral-jvd",
+        "community": "hive-167922",
+        "payout_at": "2024-12-30T17:13:12",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 66057670801104,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "simba",
+            "rshares": 139680806202
+          },
+          {
+            "voter": "ash",
+            "rshares": 814197938832
+          },
+          {
+            "voter": "onealfa",
+            "rshares": 192211561339
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 7980227643
+          },
+          {
+            "voter": "churdtzu",
+            "rshares": 24378759576
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "hive",
+            "inleo",
+            "onboarding",
+            "dhf",
+            "hbd",
+            "dash",
+            "palnet",
+            "ctp",
+            "oneup"
+          ],
+          "links": [
+            "https://leodex.io",
+            "https://inleo.io/referral),",
+            "https://inleo.io/referral)",
+            "https://inleo.io/referral.",
+            "https://inleo.io/signup?referral=khaleelkazi),",
+            "https://inleo.io/@khaleelkazi/inleo-walkthrough-navigating-inleo-and-how-to-make-money-cig?referral=khaleelkazi",
+            "https://inleo.io/@leofinance/introducing-refer2earn-onboard-your-friends-to-hive-earn-up-to-50-per-referral-jvd)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.inleo.io/DQmfF7sy7Xe4JbhmXyBjZbaCdzAjHZQ1uuAripAqi3b1pQ5/image.png",
+            "https://img.inleo.io/DQmR54sEQtpNHGRZSRCvgDciHkbM1YSMrgRFB6jGkgZxtvs/image.png",
+            "https://img.inleo.io/DQmTsJuvtR3UmyPWJPQJpfXajgEUAbfDvR7ZpFiYqjW1XXX/image.png",
+            "https://img.inleo.io/DQmUtXYp9WmFFj42MWGYgV97ZxeMHMXSXwdXsa2nqYZ9ZQc/image.png",
+            "https://img.inleo.io/DQmc2rGRkMyY9RuTLFnZ2X67rBTtviXHR2DGFDkDHoSdXpb/image.png",
+            "https://img.inleo.io/DQmeygstV9CjBoxr9DrRDJiBCsAbRtTFAwxczQ4EaCE4x7R/image.png",
+            "https://img.inleo.io/DQmPP8SKTsMe9TgPmYyA658FFhozGEs6WhaP6kYbnbMQj2M/image.png",
+            "https://img.inleo.io/DQmTjgRiCKapHLJEeeY9tXHamg3Rvr6xXxniz7HpXMhE1VS/image.png",
+            "https://img.inleo.io/DQmWSdizBe7fTdgnuRcqQrSKfsvjk43YuqdQy98pFUuwNvV/image.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@leofinance/introducing-refer2earn-onboard-your-friends-to-hive-earn-up-to-50-per-referral-jvd"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 77.45,
+        "author_payout_value": "14.904 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "14.814 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-167922/@cryptoandcoffee/china-auto-brands-have-their-own-ships-7cr",
+        "body": "\n<center><img src=\"https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23xyV4VChHGCjsXAtu3yP9rtaXH8X9iB5whS51ig4jAN5Jwx3VYvfjqwHcFpPsGEah6nW.png\"/></center>\n\n[source](https://cnevpost.com/2025/04/28/byd-shenzhen-car-carrier-maiden-ocean-voyage/)\n\n**The BYD Shenzhen does not look real yet it is and is 20 football fields big transporting 9200 vehicles over 14 floors.**\n\n\n\n\n\nHave you ever wondered how the cars on our roads ever get here because I have and when I lived in Durban I only saw the local car ferry from East London in the Port of Durban. Imported cars account for roughly 65% of all cars on South African roads with India as the main importer followed by China. I enjoy researching these types of posts as you learn so much on how companies overcome various hurdles to market.\n\n\n<center><img src=\"https://files.peakd.com/file/peakd-hive/cryptoandcoffee/EpEJK1VjZ7QDGLHDi6r7APvULY8uuhWwACCHA97v3vBmfFvdgtPjo1dZPv4jmp9GKVW.png\"/></center>\n\n[source](https://cnevpost.com/wp-content/uploads/2025/04/2025042808001786.jpg)\n\n\nChina has been slowly climbing the market share ranks globally (excluding US) and you would think this would be a logistical nightmare booking shipping slots for automobile manufacturers. The vehicles are not transported in containers and are more specifically booked in roll in roll off vessels similar to the passenger ferries. Some auto companies do use containers, but the costs are seriously expensive and you should be using the roll on roll off car carriers. I think I presumed all cars came from shipping containers and is not the case.\n\n\n<center><img src=\"https://files.peakd.com/file/peakd-hive/cryptoandcoffee/244UonqFun6cHw4mpFy2j1b7aARrwJMth3zx5utvFjk2JF4HXZVzA4z6JsJPyx3Zxqn9Y.png\"/></center>\n\n[source](https://myelectricsparks.com/wp-content/uploads/2025/01/BYD-Shenzhen-vehicle-carrier-860x484.jpg)\n\n**Not the fastest ship around with a maximum speed of 21 mph and has to avoid rough weather because this is literally like one big sail.**\n\n\n\n\nThe biggest hurdle the Chinese automakers found was the deliver process as it was all based on the availability of these specialized vessels. During Covid many of the Chinese inventory was stuck at port waiting to be collected that created huge bottlenecks and delays to market. \n\nThe costs rose during the peak of Covid from around $10K chartering per day per vessel to $110K per day. This does not include fuel and is the pure booking of the vessel. At the peak 1 vehicle was costing around $1400 for delivery to Europe. Using their own shipping service these costs are now estimated to be between $400 and $500 per vehicle saving the company on todays costs around $1300 or $10.3 million per shipment.\n\nWhat the Chinese car giants did next was unprecedented as they cancelled shipping orders. At that particular time the car transporting vessels were owned and dominated by the Japanese and South Koreans. These shipping companies were loyal to serving their existing clients and the Chinese even though having booked long in advance often waited and had ships cancel on them at the last moment.\n\nThe solution was to build their own roll on roll off ships with Chinese ship builders and this is exactly what they did. The cost of one of these vessels is cheaper than a container vessel and is around $90-$110 million. A vessel will have between 8 and 14 decks that can carry anywhere between 5000 and 9200 vehicles per trip.\n\nBYD was the first to put together a fleet which now stands at 12 vessels strong which more importantly helps with growing their overseas expansion plans. SAIC who I have never heard of who has partnerships with Audi, Volkswagen and General Motors has a fleet of 14 vessels and accounts for 25% of all Chinese car exports.\n\nNot only has this benefitted a cheaper export price per vehicle, but they can also transport other competitor Chinese vehicles turning a good profit whilst reducing their own cost per vehicle even more. In the last year two years alone over 190 new roll on roll off ships have been built moving the total number globally from 760-950 vessels. Before Covid this figure was around 300 vessels so in the last 6 years has risen by over 300%. Chinese automakers now own roughly 10% of the global vessels ranking them 4th overall and can at least guarantee a route to market.\n\nToyota owns 20 vessels for exports supplying Asia, Europe, US and Oceana plus another 6 vessels for local supply in Japan. They also have 3rd parties delivering vehicles on their behalf. Hyundai use a logistics company under their Hyundai umbrella of companies that controls 130 vessels for exports.\n\nThe Chinese auto exports have risen from 1 million cars annually to over 7 million and one can clearly see the need to control your own shipping. Not only are these auto makers saving on delivery costs but can plan and strategize their own market share growth.\n\nPosted Using [INLEO](https://inleo.io/@cryptoandcoffee/china-auto-brands-have-their-own-ships-7cr)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 168
+        },
+        "title": "China Auto Brands Have Their Own Ships",
+        "author": "cryptoandcoffee",
+        "payout": 4.206,
+        "created": "2026-05-25T19:59:18",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-25T19:59:18",
+        "category": "hive-167922",
+        "children": 1,
+        "permlink": "china-auto-brands-have-their-own-ships-7cr",
+        "community": "hive-167922",
+        "payout_at": "2026-06-01T19:59:18",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 53718776820698,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 31415497699
+          },
+          {
+            "voter": "arcange",
+            "rshares": 902521506567
+          },
+          {
+            "voter": "netaterra",
+            "rshares": 5176227888
+          },
+          {
+            "voter": "penguinpablo",
+            "rshares": 155841238854
+          },
+          {
+            "voter": "seckorama",
+            "rshares": 40349196571
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "logistics",
+            "shipping",
+            "autobrands",
+            "markets",
+            "inhouse",
+            "reducedcosts",
+            "pob",
+            "waiv",
+            "vyb"
+          ],
+          "links": [
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23xyV4VChHGCjsXAtu3yP9rtaXH8X9iB5whS51ig4jAN5Jwx3VYvfjqwHcFpPsGEah6nW.png\"/></center>",
+            "https://cnevpost.com/2025/04/28/byd-shenzhen-car-carrier-maiden-ocean-voyage/)",
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/EpEJK1VjZ7QDGLHDi6r7APvULY8uuhWwACCHA97v3vBmfFvdgtPjo1dZPv4jmp9GKVW.png\"/></center>",
+            "https://cnevpost.com/wp-content/uploads/2025/04/2025042808001786.jpg)",
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/244UonqFun6cHw4mpFy2j1b7aARrwJMth3zx5utvFjk2JF4HXZVzA4z6JsJPyx3Zxqn9Y.png\"/></center>",
+            "https://myelectricsparks.com/wp-content/uploads/2025/01/BYD-Shenzhen-vehicle-carrier-860x484.jpg)",
+            "https://inleo.io/@cryptoandcoffee/china-auto-brands-have-their-own-ships-7cr)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@cryptoandcoffee/china-auto-brands-have-their-own-ships-7cr"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 84.34,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "4.206 HBD"
+      },
+      {
+        "url": "/hive-167922/@tobetada/hive-pumps-confirming-the-bottom",
+        "body": "\n### Hive is getting some action\n\nWhile it has been rather quiet since May 5th, the day we saw the 700M+ volume candle, recent days have shown some smaller pumps. I believe this activity is showing that Hive is now in a [**macro trend change**.](https://peakd.com/hive-167922/@tobetada/hive-macro-trend-change) As we could see from the last weeks, it is not something that happens quickly - it can be discouraging seeing all the gains from a big price swing getting erased and it ending up lower than from where it started. But this \"behavior\" is **characteristic for a bottom**: for Hive this has meant big price swings (pumps & dumps) within a consolidation phase and a breakout phase starting soon thereafter. \n\nCurrently, there seems to be a bigger resistance in the 6-7 cents area and a rounded bottom forming  beneath it. Once price goes above this resistance (which also coincides with a weekly resistance trend line), there should be a pretty big price swing taking us back into the double digits. \n\n\n![image.png](https://files.peakd.com/file/peakd-hive/tobetada/23t8CfKPvxwpaJU2n7WYYmrZ4RDShotvN2ABKtmUyUVDNXRAWTnSJ7CvWpvraBsiVEbCv.png)\n\nThe bigger picture shows 3 similar bottoms with the two previous ones occurring in 2021 and 2024. All of them have taken several months to resolve and should price break out to in the coming weeks it would fit the so far observed pattern.  \n\n![image.png](https://files.peakd.com/file/peakd-hive/tobetada/23t8CfKPvvxyoKTNDxeGnorjPxusg6Zc9fuaqTXqrjdNrSa9uZtuHPbZdnokU7f71wGRi.png)\n\n\n[Previously, I have shown that the current uptick in volume has so far always corresponded with a bigger positive price change.](https://peakd.com/hive-167922/@tobetada/hive-macro-trend-change\n) If this pattern holds, we can expect a bigger price swing up to either the low teens (10-13 cents) or a bigger one taking us back to the macro resistance at around 25-30 cents as shown here (price is in KRW):\n\n\nhttps://images.hive.blog/0x0/https://files.peakd.com/file/peakd-hive/tobetada/48HDM63pz3CmALaUtMUFQ4es3bGpZewnQYrmXQoXaiVq6MSJjGjaeGjQp8nwcB9HFE.png\n\n### Conclusion\n\nWhile it will still take some time for price being back at a level that actually reflects Hive's value, I believe the uptick in volume as well as an increased activity from the \"Cex whales\" is showing the start of a bigger trend change. My target for the next cryot peak is in late 2028, so Hive still has some time to get back up on its feet. \n\n\n---\n\n\n*As a general reminder: Please keep in mind that none of this is official investment advice! Crypto trading entails a great deal of risk; never spend money that you can't afford to lose!*\n\n\n<center>![Bottom.jpg](https://steemitimages.com/DQmaKSaCaesHvFXaRovU2pKpJX3pzguP2mgPZPLM8Ac1LQg/Bottom.jpg)</center>\n\n<center>⛅🌦🌧🌦🌧🌨☁🌩🌦⛅🌧☁🌤🌥🌪🌧🌨🌩⛅🌦☁🌤🌥🌤⛅🌤⛅🌦⛅</center>\n\n![lovetheclouds_community_banner.jpg](https://files.steempeak.com/file/steempeak/tobetada/8JQDzWCq-lovetheclouds_community_banner.jpg)\n\n### <center>**[Check out the Love The Clouds Community if you share the love for clouds!](https://peakd.com/c/hive-131609/created)** </center>\n\n<center>⛅🌦🌧🌦🌧🌨☁🌩🌦⛅🌧☁🌤🌥🌪🌧🌨🌩⛅🌦☁🌤🌥🌤⛅🌤⛅🌦⛅</center>\n\n\n<center>![Bottom.jpg](https://steemitimages.com/DQmaKSaCaesHvFXaRovU2pKpJX3pzguP2mgPZPLM8Ac1LQg/Bottom.jpg)</center>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 190
+        },
+        "title": "Hive Pumps Confirming The Bottom?",
+        "author": "tobetada",
+        "payout": 4.819,
+        "created": "2026-05-25T14:00:00",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-25T14:00:00",
+        "category": "hive-167922",
+        "children": 8,
+        "permlink": "hive-pumps-confirming-the-bottom",
+        "community": "hive-167922",
+        "payout_at": "2026-06-01T14:00:00",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 61676169616136,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "rarepepe",
+            "rshares": 4353076214
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 4858727035
+          },
+          {
+            "voter": "juanmiguelsalas",
+            "rshares": 932589574
+          },
+          {
+            "voter": "ratel",
+            "rshares": 61112316156
+          },
+          {
+            "voter": "dwinblood",
+            "rshares": 8609597223
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "hive",
+            "proofofbrain",
+            "bitcoin",
+            "trading",
+            "crypto",
+            "blog",
+            "gems"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/tobetada/23t8CfKPvxwpaJU2n7WYYmrZ4RDShotvN2ABKtmUyUVDNXRAWTnSJ7CvWpvraBsiVEbCv.png",
+            "https://files.peakd.com/file/peakd-hive/tobetada/23t8CfKPvvxyoKTNDxeGnorjPxusg6Zc9fuaqTXqrjdNrSa9uZtuHPbZdnokU7f71wGRi.png",
+            "https://files.peakd.com/file/peakd-hive/tobetada/48HDM63pz3CmALaUtMUFQ4es3bGpZewnQYrmXQoXaiVq6MSJjGjaeGjQp8nwcB9HFE.png",
+            "https://steemitimages.com/DQmaKSaCaesHvFXaRovU2pKpJX3pzguP2mgPZPLM8Ac1LQg/Bottom.jpg",
+            "https://files.steempeak.com/file/steempeak/tobetada/8JQDzWCq-lovetheclouds_community_banner.jpg"
+          ],
+          "users": [
+            "tobetada"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 76.85,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "4.819 HBD"
+      },
+      {
+        "url": "/hive-167922/@chorock/bitcoin-price-closed-the-week-with-dragonfly-doji-candle-8f6",
+        "body": "Bitcoin price reversed down from 200-day moving average. I shared lots of anaylysis about Bitcoin price chart and pointed possible support level on Bitcoin price chart. 75K USD level is the first support level on Bitcoin price chart and It support Bitcoin price. \n\nHere you can see weekly chart of Bitcoin price. Bitcoin price is in great ascending channel. If Bitcoin price breaks down 75K USD level, the bottom line of this great channel would be waiting for support. After touching  75K USD level, Bitcoin price reversed up 77K and closed the week. After this move, we have seen bullish candle dragonfly candle on Bitcoin price chart. Even we have see weekly red candle, It is good to see bullish candle. After this candle, Bitcoin price started the new week with green candle.\n\n\n![e1.PNG](https://files.peakd.com/file/peakd-hive/chorock/EnyoXqQ7AwG54zJjEyk9DYimCArVUGXrQ6deyRevrmgQeDES8aQGa7EFq4AaynbqoVd.PNG)\n\nHere you can see the indicators on weekly chart of Bitcoin price. Fisher Indicator is on the top. It is close to reverse down. If we see weekly green candle in this week, it may reverse up again and continue to go up. \n\nMACD Indicator is going up slowly. We need to see this indicator above 0 level.\n\nThere is great downtrend line on RSI Indicator. It is so possible to see reversing down after touching this downtrend line. Bitcoin price should go up to touch this great downtrend line.\n\n![e2.PNG](https://files.peakd.com/file/peakd-hive/chorock/23swib1P8sivJTGBLbcovbf3PcQLC46cSTnsVdhBjUuSPj8XfxbHrW2YwdgKGBvFj38oD.PNG)\n\n\nBitcoin price may go up following great ascending channel. We may see this scenario until RSI Indicator touched great downtrend line.\n\nWe will see..\n\nPosted Using [INLEO](https://inleo.io/@chorock/bitcoin-price-closed-the-week-with-dragonfly-doji-candle-8f6)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 103
+        },
+        "title": "Bitcoin Price Closed the Week with Dragonfly Doji Candle",
+        "author": "chorock",
+        "payout": 3.013,
+        "created": "2026-05-25T17:30:06",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-25T17:30:06",
+        "category": "hive-167922",
+        "children": 1,
+        "permlink": "bitcoin-price-closed-the-week-with-dragonfly-doji-candle-8f6",
+        "community": "hive-167922",
+        "payout_at": "2026-06-01T17:30:06",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 38488508448311,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "mangos",
+            "rshares": 3324945181093
+          },
+          {
+            "voter": "abduhawab",
+            "rshares": 43619377068
+          },
+          {
+            "voter": "smasssh",
+            "rshares": 5786397718
+          },
+          {
+            "voter": "josequintana",
+            "rshares": 923394609
+          },
+          {
+            "voter": "andyjaypowell",
+            "rshares": 387025430190
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "proofofbrain",
+            "neoxian",
+            "palnet",
+            "cent",
+            "ctp",
+            "bitcoin",
+            "analysis",
+            "vyb",
+            "posh"
+          ],
+          "links": [
+            "https://files.peakd.com/file/peakd-hive/chorock/EnyoXqQ7AwG54zJjEyk9DYimCArVUGXrQ6deyRevrmgQeDES8aQGa7EFq4AaynbqoVd.PNG)",
+            "https://files.peakd.com/file/peakd-hive/chorock/23swib1P8sivJTGBLbcovbf3PcQLC46cSTnsVdhBjUuSPj8XfxbHrW2YwdgKGBvFj38oD.PNG)",
+            "https://inleo.io/@chorock/bitcoin-price-closed-the-week-with-dragonfly-doji-candle-8f6)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@chorock/bitcoin-price-closed-the-week-with-dragonfly-doji-candle-8f6"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 78.12,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "3.013 HBD"
+      },
+      {
+        "url": "/hive-167922/@cryptoandcoffee/slip-streaming-passenger-aircraft--2wo",
+        "body": "\n<center><img src=\"https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23r1eUDHauxa3UEBdcUivcC7TuUXPP7nAuf4BnF9Uuqhg5tACHZu4m1Bf42o1iCTjJPeY.png\"/></center>\n\n[source](https://x.com/airlinerslive/status/2029836191722266708)\n\nAn article caught my attention the other day and it is fascinating what is taking place behind the scenes with regard to saving fuel costs. Not only the fuel costs but the amount of carbon emissions the airlines will be taxed on.\n\nWe have seen how well slip streaming in sports such as formula one and cycling works so why not with passenger aircraft? The problem is safety and why it has not been a good idea up till now due to dirty air left by the leading aircraft that will result in severe dangerous turbulence for the secondary trailing aircraft.\n\nHow dangerous is the turbulent vortex that is created by the wing tips of a large aircraft? Well they create unstable air similar to a tornado that can create severed down draft making air drop at 500ft per minute and can last up to 2 minutes depending if there is wind or not. This is why there is a minimum set period of time between take offs and landings at airports. Heathrow used to have a plane taking or landing every 30 seconds, but they have multiple runways which makes this possible. Pilots will take off prior to the previous planes take off point and land on a slightly higher gliding path landing further on the runway than the previous plane. Interesting as I did not know this.\n\nAirbus have been playing around with this with a project called Fello'Fly which is basically something the US Airforce have used in the past known as Vortex surfing. The slipstreaming plane has to be close enough which in this case is 3 miles or to make you understand the distance better approximately 20 seconds apart. The trailing plane has to be slightly higher so it receives the  upward airflow generated by the leading plane.\n\nThe test done earlier in the year from Toulouse in France which is where the Airbus factory is situated to Montreal in Canada. Apparently the idea is based on the Geese formation flying which conserves the energy of the Geese. The test flight was successful with the second trailing aircraft saving roughly 5% fuel over the trip.\n\nThe problem is obvious and that one would need special onboard flight control software, route planning and timing like clock work to make this happen. Unless you have pilots who can do this who stay awake for the entire flight not using auto pilot then we have to wait for this to be developed before this actually happens. Airbus reckons by 2050 this will be normal flying practice and my head is telling me just charge me 5% more than placing me 20 seconds apart from another airline who could be 20 seconds away from another aircraft. \n\n\n\n\n<center><img src=\"https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23uFKLC5ZrAfnsX3vzPtVodW65pVRui4VkyrqMVPgBUGMYMM8tNbc6KNfVBm4kBYqSXq4.png\"/></center>\n\n[source](https://www.flightradar24.com/45.83,-57.37/2)\n\nLooking at Flight Radar this evening you could see how this could easily work as most aircraft follow set routes controlled by air traffic control. Many of these flights are travelling at different altitudes in order to avoid collisions and turbulent air especially if there are much bigger planes around like the A380.\n\nI have to admit not all ideas are good ideas and this sounds like one of those that it may not be practical. Safety should always be the first concern over cutting costs and this sounds like the health and safety is being tossed out the window. The good news is the technology is not around yet and the reason why planes have so many different wing tip designs is to try and get rid of the dirty air moving it away from your own aircraft. Now they need to design wing tips to help favor planes following them plus the on board flight software. \n\nTo give you an idea an airline like British Airways would spend around $11 billion per annum on jet fuel so a 5% saving is $550 million. Still it does worry me that they think this is a good idea.\n\nPosted Using [INLEO](https://inleo.io/@cryptoandcoffee/slip-streaming-passenger-aircraft--2wo)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 319
+        },
+        "title": "Slip Streaming Passenger Aircraft ",
+        "author": "cryptoandcoffee",
+        "payout": 9.971,
+        "created": "2026-05-23T19:46:09",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-23T20:16:06",
+        "category": "hive-167922",
+        "children": 3,
+        "permlink": "slip-streaming-passenger-aircraft--2wo",
+        "community": "hive-167922",
+        "payout_at": "2026-05-30T19:46:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 126228279550877,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 14428270937
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 36846975808
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 14298614417
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 933520972
+          },
+          {
+            "voter": "arcange",
+            "rshares": 900903257995
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "fueleconomy",
+            "savings",
+            "safety",
+            "turbulence",
+            "dangers",
+            "technology",
+            "pob",
+            "waiv",
+            "vyb",
+            "hive-167922"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23r1eUDHauxa3UEBdcUivcC7TuUXPP7nAuf4BnF9Uuqhg5tACHZu4m1Bf42o1iCTjJPeY.png",
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23uFKLC5ZrAfnsX3vzPtVodW65pVRui4VkyrqMVPgBUGMYMM8tNbc6KNfVBm4kBYqSXq4.png"
+          ],
+          "links": [
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23r1eUDHauxa3UEBdcUivcC7TuUXPP7nAuf4BnF9Uuqhg5tACHZu4m1Bf42o1iCTjJPeY.png\"/></center>",
+            "https://x.com/airlinerslive/status/2029836191722266708)",
+            "https://files.peakd.com/file/peakd-hive/cryptoandcoffee/23uFKLC5ZrAfnsX3vzPtVodW65pVRui4VkyrqMVPgBUGMYMM8tNbc6KNfVBm4kBYqSXq4.png\"/></center>",
+            "https://www.flightradar24.com/45.83,-57.37/2)",
+            "https://inleo.io/@cryptoandcoffee/slip-streaming-passenger-aircraft--2wo)"
+          ],
+          "users": [
+            "cryptoandcoffee"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@cryptoandcoffee/slip-streaming-passenger-aircraft--2wo"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 84.34,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "9.971 HBD"
+      },
+      {
+        "url": "/hive-167922/@mightyrocklee/my-splinterlands-adventure-in-2026-week-22-as-i-upgrade-more-escalation-set-cards-3tg",
+        "body": "​\nSplinterlands' latest news are:\n\n- Escalation mini-series presale ended, and now we have only 129K out of 500K left, with Credits/DEC/SPS options to buy them.\n- The new voucher cards are here, Common dual Death/Earth for 25 Vouchers, Rare dual Water/Fire for 100 Vouchers and a Legendary dual Life/Dragon for 1050 Vouchers. The Common has Ranged attack, Rust and Heal, with 13 HP, the Rare card has 3 melee and 3 magic attack, wow!, and some serious attack boosting skills. I like this one. The Legendary card seems average to me, 3 melee attack, some relentless strike and life leech, now the greatest combination, I would say, for 1050 Vouchers per BCX. I may focus on the Rare cards, I think.\n \nhttps://img.leopedia.io/DQmWYyj78ajtGRgABiRDKytYfe3UUEt9Qk2u21mPo5NgfsL/image.png\n\nhttps://img.leopedia.io/DQmdNC3Rnv1dyuCDriAbdLqh9kWYSmsL8TKZ2ihMDNB8FBv/image.png\n\nhttps://img.leopedia.io/DQmbuUE75Mhc3zdXLgTycv3jG7zEGbS2XbVfS6MGamkZJdc/image.png\n\n- The Conclave Arcana adventures ended, wagons staking for Conflicts, and I got one card on the first, the third, the fifth, sixth and the last airdrop. Next, the Escalation cards, I believe we have 6 summoners, and I do not have enough stuff to hit major targets, I will be lucky to get one card for the each occassion.\n\n https://img.leopedia.io/DQmTkiq2GiECkr4LbKrwqq9iCyYVdwxP5kxrtUpoJ7facdS/image.png \n\n\n- Staked SPS will be counted, along with staked GLX, for the Colony Airdrop, which it seems to go for 5 years, or at least that's what they said. There is a minimum requirement, though - 10K GLX, 100 GLUSD and/or 5K SPS. Enjoy!\n\nLand: 13 lands left to fill fully\n\nLands completely ready - 73/73 - 100% (2 Tax, 11 Grain, 1 Research, 4 SPS, 3 Wood, 34 Stone, 6 Iron, 14 Aura), but 15 of them only have 1 card staked. Does anyone want 15 Magic Lands, all rare and up? Contact me! !\n\nLands with at least 1 card staked - 73/73 Natural staked - 42/42 (All ready) Magic staked - 26/27 (All ready) Occupied staked- 3/3 (All ready) Mythic ready - 2/2 (All ready)\n\nhttps://images.hive.blog/DQmdzCY4Aeh8kxqmvaupSwm5V5fwL1Mo3woDgV91UHydqB8/image.png\n\nGrain productivity: 1095/hour -3150/hour required = Minus -2055/hour \nResearch: 0/hour \nSPS: 1.796/hour \nWood: 88.160/hour \nStone: 366.908/hour \nIron: 14.454/hour \nAura: 71.901/hour\n\nDark energy 2.796.620/2.786.620 (100%)\n\n\nCards: My [Splinterlands ](https://splinterlands.com/?ref=mightyrocklee \"This link will take you away from hive.blog\")battle plans are going well, as I ended up reaching max level Gold I on Foundation and upgrading all cards to max level. On Rebellion, all legendary cards are upgraded to level 2, and all summoners to be upgraded next. On Conclave, I slowly upgrade my cards, buying cheap ones from the market. I need something crazy like 900K DEC to fully stake all my lands. I estimate that this will take me at least 10 months. The resource liquidity portfolio worth $26.41 last time was stopped and liquidated, as the value is dropping too fast without creating any extra value. \n\n\nConclave goals:\n\nAll summoners max level - 0/7 \nAll common level 4 - Done. All level 5 - Next \nAll rare level 2 - Done. All level 3 - Next \nAll epic level 1 - Done. All level 2 - Next \nAll legendary level 0 - Done. All level 1 - Next\n\nRebellion goals:\n\nAll summoners max level - 1/10 \nAll common level 5 - Done. All level 6 - Next \nAll rare level 4 - Done. All level 5 - Next \nAll epic level 2 - Done. All level 3 - Next \nAll legendary level 2 - Done. All level 3 - Next\n\n**Rental stats**: Today: 0.000/0.000 DEC\n\n\n**Cards upgraded**:\n\nI got to upgrade some cards from the Escalation core set. I focused on Common cards like Shire Knacker to level 7, gaining +1 Armor, Emberscale Invoker to level 4 gaining +1 Armor, Forlorn Geomant gaining +1 HP, and Steelshield Arbalest to level 3 gaining +1 HP.\n\n https://img.leopedia.io/DQmVd7rqqwhg9XK8unuoHbMLd3F8pPy7xvfvvxnEBuWGTrE/image.png \n\n https://img.leopedia.io/DQmT5j2iUZoD9d1tXPqdjEsLvMo5qwPFubrTPhyioaPDsHB/image.png \n\n https://img.leopedia.io/DQmWXdA8njszZ8mo5MAB3KpbYj7tEJBJKQxLSeZifttdPEM/image.png \n\n https://img.leopedia.io/DQmaxaWjHAiBDEa783t6UsmseF5wREAdsEHyEbVmSAYLzfr/image.png \n\n\n\n\n[@mightyrocklee](https://hive.blog/@mightyrocklee)'s cards:\n\nTotal Value (filterable): \n$ 3,695.88 using List Prices\n$ 3,204.60 using Market Prices\n2,221,226 CP (Burn Value)\n751,946 PP (Production Points)\n\n​\n\nThis is all for today!\n\nAll the best,\n\nGeorge\n\n\nhttps://images.hive.blog/DQmfU4msNwZqZs5aCaJgCVke4AyydbdY2xfrCKVnHUrsTLE/logo%20mgc.png\n\n​\n\n\nWhy not...\n\n​\n...have fun and win rewards on my favourite blockchain games ([Splinterlands](https://next.splinterlands.com/register?ref=mightyrocklee \"This link will take you away from hive.blog\")- Hearthstone-like card game) ([Golem Overlord](https://golemoverlord.com/?ref=mightyrocklee \"This link will take you away from hive.blog\") - Play2Earn game on Hive) ([Upland ](https://hive.blog/splinterlands/@mightyrocklee/Hi!%20Check%20out%20Upland,%20a%20virtual%20property%20trading%20game.%20If%20you%20use%20this%20link,%20Upland%20will%20award%20you%20with%20a%20bonus%20for%20your%20first%20purchase%20https://r.upland.me/7Aiy)- real-life virtual land) ([Holozing ](https://holozing.com/?ref=mightyrocklee \"This link will take you away from hive.blog\")- Pokemon-like game)and ([Rising Star](https://www.risingstargame.com/?referrer=heruvim1978 \"This link will take you away from hive.blog\") - Music creators game).\n\n​\n...get crypto while writing on [Publish0x](https://www.publish0x.com/?a=y5eVGmvaEP \"This link will take you away from hive.blog\") blog. I am also writing for crypto on [Hive](https://inleo.io/signup?referral=heruvim1978 \"This link will take you away from hive.blog\").\n\n\n\nPosted Using [INLEO](https://inleo.io/@mightyrocklee/my-splinterlands-adventure-in-2026-week-22-as-i-upgrade-more-escalation-set-cards-3tg)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 138
+        },
+        "title": "My Splinterlands adventure in 2026 - week 22 - As I upgrade more Escalation set cards",
+        "author": "mightyrocklee",
+        "payout": 1.687,
+        "created": "2026-05-25T21:28:45",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-25T21:28:45",
+        "category": "hive-167922",
+        "children": 1,
+        "permlink": "my-splinterlands-adventure-in-2026-week-22-as-i-upgrade-more-escalation-set-cards-3tg",
+        "community": "hive-167922",
+        "payout_at": "2026-06-01T21:28:45",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 21587108785257,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "robsteady",
+            "rshares": 4635924915
+          },
+          {
+            "voter": "abh12345",
+            "rshares": 114462128789
+          },
+          {
+            "voter": "funnel",
+            "rshares": 3820183130
+          },
+          {
+            "voter": "bigtakosensei",
+            "rshares": 2103692826
+          },
+          {
+            "voter": "ganjafarmer",
+            "rshares": 1698536030
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "splinterlands",
+            "bbh",
+            "archon",
+            "neoxian",
+            "oneup",
+            "cent",
+            "ctp",
+            "bee",
+            "proofofbrain"
+          ],
+          "links": [
+            "https://splinterlands.com/?ref=mightyrocklee",
+            "https://hive.blog/@mightyrocklee)'s",
+            "https://next.splinterlands.com/register?ref=mightyrocklee",
+            "https://golemoverlord.com/?ref=mightyrocklee",
+            "https://hive.blog/splinterlands/@mightyrocklee/Hi!%20Check%20out%20Upland,%20a%20virtual%20property%20trading%20game.%20If%20you%20use%20this%20link,%20Upland%20will%20award%20you%20with%20a%20bonus%20for%20your%20first%20purchase%20https://r.upland.me/7Aiy)-",
+            "https://holozing.com/?ref=mightyrocklee",
+            "https://www.risingstargame.com/?referrer=heruvim1978",
+            "https://www.publish0x.com/?a=y5eVGmvaEP",
+            "https://inleo.io/signup?referral=heruvim1978",
+            "https://inleo.io/@mightyrocklee/my-splinterlands-adventure-in-2026-week-22-as-i-upgrade-more-escalation-set-cards-3tg)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmWYyj78ajtGRgABiRDKytYfe3UUEt9Qk2u21mPo5NgfsL/image.png",
+            "https://img.leopedia.io/DQmdNC3Rnv1dyuCDriAbdLqh9kWYSmsL8TKZ2ihMDNB8FBv/image.png",
+            "https://img.leopedia.io/DQmbuUE75Mhc3zdXLgTycv3jG7zEGbS2XbVfS6MGamkZJdc/image.png",
+            "https://img.leopedia.io/DQmTkiq2GiECkr4LbKrwqq9iCyYVdwxP5kxrtUpoJ7facdS/image.png",
+            "https://images.hive.blog/DQmdzCY4Aeh8kxqmvaupSwm5V5fwL1Mo3woDgV91UHydqB8/image.png",
+            "https://img.leopedia.io/DQmVd7rqqwhg9XK8unuoHbMLd3F8pPy7xvfvvxnEBuWGTrE/image.png",
+            "https://img.leopedia.io/DQmT5j2iUZoD9d1tXPqdjEsLvMo5qwPFubrTPhyioaPDsHB/image.png",
+            "https://img.leopedia.io/DQmWXdA8njszZ8mo5MAB3KpbYj7tEJBJKQxLSeZifttdPEM/image.png",
+            "https://img.leopedia.io/DQmaxaWjHAiBDEa783t6UsmseF5wREAdsEHyEbVmSAYLzfr/image.png",
+            "https://images.hive.blog/DQmfU4msNwZqZs5aCaJgCVke4AyydbdY2xfrCKVnHUrsTLE/logo%20mgc.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@mightyrocklee/my-splinterlands-adventure-in-2026-week-22-as-i-upgrade-more-escalation-set-cards-3tg"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 70.96,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.687 HBD"
+      },
+      {
+        "url": "/hive-167922/@chorock/bitcoin-price-supported-by-75k-usd-level-cj7",
+        "body": "There was great support level on Bitcoin price chart. I shared lots of analysis about Bitcoin price chart and said Bitcoin price may be supported by 75K USD level or the bottom line of great ascending channel. After touching 200-day moving average, Bitcoin price is going down slowly.\n\nHere you can see daily chart of Bitcoin price. It is going down slowly after touching 200-day moving average. Bitcoin price broke down the middle line of this great ascending channel during price correction. 75K USD level was the first great support level and it supported. Bitcoin price is still below 8-day moving average. It is important signal for short-term.\n\n\n![e1.PNG](https://files.peakd.com/file/peakd-hive/chorock/23swiWiwQbCpKY1BpMZsgyMkGxaChYUBmU5zULioac85SAA4i7Duf3jJr9BrgUbQEMpdb.PNG)\n\nHere you can see the indicators on daily chart of Bitcoin price. Fisher Indicator is on the bottom and trying to reverse up. We may see reversing up on this indicator if we see more daily red candle.\n\nMACD Indicator is still in correction. Even it reversed down from the top, we may see reverse up if we see more daily green candle. If it reverses up we will see mini bullish trend on Bitcoin price chart. Because this reversing up will happen on 0 level.\n\nRSI Indicator broke down mini uptrend line. We need time to see the new bullish pattern on RSI Indicator.\n\n![e2.PNG](https://files.peakd.com/file/peakd-hive/chorock/23t77MG8Yq4bipyqcWGkDucZHmLmSPqKb7z6MCriGrkCNcUTxsheL5RXL84Sx73kJ34gx.PNG)\n\n8-day moving average important for Bitcoin price for short term. If we see more daily green candle, Bitcoin price will get daily close above 8-day and these major indicators will reverse up.\n\nWe may see mini bullish trend. If not, we will focus the bottom line of this great ascending channel to support Bitcoin price.\n\nWe will see..\n\nPosted Using [INLEO](https://inleo.io/@chorock/bitcoin-price-supported-by-75k-usd-level-cj7)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 155
+        },
+        "title": "Bitcoin Price Supported by 75K USD Level",
+        "author": "chorock",
+        "payout": 4.14,
+        "created": "2026-05-24T17:25:27",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-24T17:25:27",
+        "category": "hive-167922",
+        "children": 2,
+        "permlink": "bitcoin-price-supported-by-75k-usd-level-cj7",
+        "community": "hive-167922",
+        "payout_at": "2026-05-31T17:25:27",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 52699090514583,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "mgibson",
+            "rshares": 13348486356
+          },
+          {
+            "voter": "redes",
+            "rshares": 5113383413798
+          },
+          {
+            "voter": "abduhawab",
+            "rshares": 43619377068
+          },
+          {
+            "voter": "pouchon",
+            "rshares": 7274133277343
+          },
+          {
+            "voter": "ganjafarmer",
+            "rshares": 3015029195
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "proofofbrain",
+            "neoxian",
+            "palnet",
+            "cent",
+            "ctp",
+            "bitcoin",
+            "analysis",
+            "vyb",
+            "posh"
+          ],
+          "links": [
+            "https://files.peakd.com/file/peakd-hive/chorock/23swiWiwQbCpKY1BpMZsgyMkGxaChYUBmU5zULioac85SAA4i7Duf3jJr9BrgUbQEMpdb.PNG)",
+            "https://files.peakd.com/file/peakd-hive/chorock/23t77MG8Yq4bipyqcWGkDucZHmLmSPqKb7z6MCriGrkCNcUTxsheL5RXL84Sx73kJ34gx.PNG)",
+            "https://inleo.io/@chorock/bitcoin-price-supported-by-75k-usd-level-cj7)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@chorock/bitcoin-price-supported-by-75k-usd-level-cj7"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 78.12,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "4.140 HBD"
+      },
+      {
+        "url": "/hive-167922/@erikah/dollarhive-dollarbtc-and-ethbtc-technical-analysis-24052026",
+        "body": "I'm a bit early with my analysis post today, but it doesn't matter as the market is not doing much today, I mean there's not much momentum. However, I'd be cautious as there's a possibility for something to happen regarding the Iran situation. If an announcement is made by the US or the other party, it can move the market. Anyway, let's get started.  \n\n![image.png](https://files.peakd.com/file/peakd-hive/erikah/23t8CSPFAy7NbjF1hH5t7WpfQCxvM5GM61B8JmFeoZF7YyufpZTM6hnxgjPyeTB6cHTnD.png)\n\nThe ***monthly*** chart looks a bit better compared to last week, but only compared to last week as price is trading at $0.061 at the time of writing, compared to $0.0597 last week. However, if you look at the monthly candle, you see a candle so many token holders don't want to see. We had a big move to the upside, then price literally came back to monthly open as there was no buying pressure to keep price at that level. As a trader, we trade the markets both ways, so every move is an opportunity, like was this one too, to make some money. \n\nAnyway, we still have a week till the candle close, we'll see after the candle close, but as long as we get a bullish candle (white one), I'm ok with that. \n\n![image.png](https://files.peakd.com/file/peakd-hive/erikah/23t8CSPFC3qrkMFazf3hKYB6QuX5uyWajTjCcz3AoBeWDmiv1ueH9Zi5PArBpJq9AVnRn.png)\n\nThe ***weekly*** chart look different, although it says the same thing, just in a different way. You can see the big spike we had three weeks ago, after which came the bearish candle and this week we have a bullish candle, which closes in about 17 hours. Unfortunately the big upside wick tell you that selling pressure was again dominating as it push price back to $0.061. \n\nThe two levels I'd watch in case you want to trade or swap are swing low at $0.0553 and the current swing high at $0.0988, which seems miles away from where we are now.  \n\n![image.png](https://files.peakd.com/file/peakd-hive/erikah/23sxpRyy9SCb8FwQbcwnHBZeSXTHRKkESbpwDbYTtxSnUaXpABnYKqsDkfDwJ1XeKc1qW.png)\n\nOn the ***daily*** time frame we had a bullish move yesterday, price swept liquidity till $0.0688 and then sold off. Today we have no momentum as price has printed a doji so far, which means indecision. \n\nPrice needs to close above $0.0643, to set the bullish order block, then continue to the upside, but if there's more weakness, we could see $0.0569 revisited. \n\n![image.png](https://files.peakd.com/file/peakd-hive/erikah/23tcNzkBDJe5iSXc1cRxk4tfFUeYnW9kMMqCeSQshXKhKqwFD9fY7aZNuwLSNsyShmxaq.png)\n\nThis is not how I trade, but this support/resistance level marked with grey makes a lot of sense. Just look at how many times price has touched it. So if we take it into consideration, this level has to hold, otherwise it becomes resistance again. \n\n![image.png](https://files.peakd.com/file/peakd-hive/erikah/23tcP5TrvzSfsbcSZgUhSpUQ9Ev2iN42VoMzSsULduwdj1NpeVXSVSMm2f1tU1p4a3Pzx.png)\n\nOn a more granular scale, the ***h4*** time frame shows $HIVE trading above the bullish gap created yesterday, which has not been retested yet. This gap has to defend price, if we want bullish continuation. If the gap is lost, we could go back to $0.0578 and potentially $0.0569. \n\n![image.png](https://files.peakd.com/file/peakd-hive/erikah/23t8D1dSedmPZtd4jjfezjcKj2wUG54Lh4nffa4fdF83Ct78FWAuXPGN92TK83tqjeE1z.png)\n\nThis week ***$BTC*** lost the bullish gap, which could not hold price and swept $74,900, as I mentioned the possibility of it in my last week's analysis. We got a bounce there, but there's no enough bullish momentum yet, the order block has not been set yet. Let's see if we continue to the upside or we go lower. I'd be careful here. \n\n![image.png](https://files.peakd.com/file/peakd-hive/erikah/23twA7Rpz51tS6dZGQ9RvLsRUgrak2a4N2zz1zooxZ8hB1Ny4GM8KnYkMe8LyS439AXaT.png)\n \n***ETH/BTC *** has not done much lately. price is still retesting the top bullish gap. We either get a bounce here, which would be ideal, or we retest the second gap. \n\n![image.png](https://files.peakd.com/file/peakd-hive/erikah/23t86HDp3HeKSq1wf2CgJmzaXEt69L6XguUjxfvZnSuxbgNgNPZnACcVLb7a3uuuNBdDD.png)\n[source](https://www.forexfactory.com/calendar)\n\nNext week we only have one red folder day, but geo-political events can move the market, so stay safe. \n\n*Remember, technical analysis is not about forecasting price, but about reacting to what price does.*\n\nAs always, this is a game of probabilities, not certainties. Also please note, this is not financial advice, it's my view and understanding of the market.\n\nAll charts posted here are screenshots from Tradinview.\n\nCome trade with me on [Bybit](https://www.bybit.com/invite?ref=M3YJA).\n<center><img src=\"https://images.hive.blog/DQmfDaSmTz3y8oavngRrr5mmVhrTXheYoEU4qhGUS7pq3xh/HiveDivider.png\"></center>\n\nIf you're a newbie, you may want to check out these guides:\n- [Communities Explained - Newbie Guide](https://peakd.com/hive-174578/@erikah/communities-explained-newbie-guide)\n- [Cross Posting And Reposting Explained, Using PeakD](https://peakd.com/hive-174578/@erikah/cross-posting-and-reposting-explained-using-peakd)\n- [Hive Is Not For Me](https://peakd.com/hive-150329/@erikah/hive-is-not-for-me)\n- [How To Pump Your Reputation Fast - Newbie Guide](https://peakd.com/hive-150329/@erikah/how-to-pump-your-reputation-fast-newbie-guide)\n- [Tips And Tricks & Useful Hive Tools For Newbies](https://peakd.com/hive-150329/@erikah/tips-and-tricks-and-useful-hive-tools-for-newbies)\n- [More Useful Tools On Hive - Newbie Guide](https://peakd.com/hive-150329/@erikah/more-useful-tools-on-hive-newbie-guide)\n- [Community List And Why It Is Important To Post In The Right Community](https://peakd.com/hive-174578/@erikah/community-list-and-why-it-is-important-to-post-in-the-right-community)\n- [Witnesses And Proposals Explained - Newbie Guide](https://peakd.com/hive-150329/@erikah/wintesses-and-proposals-explained-newbie-guide)\n- [To Stake, Or Not To Stake - Newbie Guide](https://peakd.com/hive-150329/@erikah/to-stake-or-not-to-stake-newbie-guide)\n- [Tags And Tagging - Newbie Guide](https://peakd.com/hive-150329/@erikah/tags-and-tagging-newbie-guide)\n- [Newbie Expectations And Reality](https://peakd.com/hive-166408/@erikah/newbie-expectations-and-reality)\n- [About Dust Vote And Hive Reward Pool](https://peakd.com/hive-153850/@libertycrypto27/discover-hive-focus-on-dust-vote-hive-reward-pool-advices-for-new-users-cosa-sono-i-dust-vote-consigli-per-nuovi-utenti-engita), by libertycrypto27\n\n<center><a href=\"https://www.presearch.org/signup?rid=2058286\" target=\"_blank\">\n  <img src=\"https://presearch.org/images/rf/ban-4.jpg\" title=\"Presearch\" alt=\"presearch\" />\n</a></center> ",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 430
+        },
+        "title": "$HIVE, $BTC & ETH/BTC Technical Analysis - 24.05.2026",
+        "author": "erikah",
+        "payout": 5.338,
+        "created": "2026-05-24T08:19:27",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-05-24T08:19:27",
+        "category": "hive-167922",
+        "children": 11,
+        "permlink": "dollarhive-dollarbtc-and-ethbtc-technical-analysis-24052026",
+        "community": "hive-167922",
+        "payout_at": "2026-05-31T08:19:27",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 67576054259575,
+        "percent_hbd": 5000,
+        "active_votes": [
+          {
+            "voter": "leprechaun",
+            "rshares": 4416941601
+          },
+          {
+            "voter": "good-karma",
+            "rshares": 33188433711
+          },
+          {
+            "voter": "meesterboom",
+            "rshares": 370564467412
+          },
+          {
+            "voter": "smolalit",
+            "rshares": 586505336
+          },
+          {
+            "voter": "alexbezimeni",
+            "rshares": 583845091
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "technicalanalysis",
+            "hive",
+            "btc",
+            "neoxian",
+            "proofofbrain",
+            "vyb",
+            "cent",
+            "archon",
+            "waiv",
+            "crypto"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/erikah/23tcNzkBDJe5iSXc1cRxk4tfFUeYnW9kMMqCeSQshXKhKqwFD9fY7aZNuwLSNsyShmxaq.png",
+            "https://files.peakd.com/file/peakd-hive/erikah/23t8CSPFAy7NbjF1hH5t7WpfQCxvM5GM61B8JmFeoZF7YyufpZTM6hnxgjPyeTB6cHTnD.png",
+            "https://files.peakd.com/file/peakd-hive/erikah/23t8CSPFC3qrkMFazf3hKYB6QuX5uyWajTjCcz3AoBeWDmiv1ueH9Zi5PArBpJq9AVnRn.png",
+            "https://files.peakd.com/file/peakd-hive/erikah/23sxpRyy9SCb8FwQbcwnHBZeSXTHRKkESbpwDbYTtxSnUaXpABnYKqsDkfDwJ1XeKc1qW.png",
+            "https://files.peakd.com/file/peakd-hive/erikah/23tcP5TrvzSfsbcSZgUhSpUQ9Ev2iN42VoMzSsULduwdj1NpeVXSVSMm2f1tU1p4a3Pzx.png",
+            "https://files.peakd.com/file/peakd-hive/erikah/23t8D1dSedmPZtd4jjfezjcKj2wUG54Lh4nffa4fdF83Ct78FWAuXPGN92TK83tqjeE1z.png",
+            "https://files.peakd.com/file/peakd-hive/erikah/23twA7Rpz51tS6dZGQ9RvLsRUgrak2a4N2zz1zooxZ8hB1Ny4GM8KnYkMe8LyS439AXaT.png",
+            "https://files.peakd.com/file/peakd-hive/erikah/23t86HDp3HeKSq1wf2CgJmzaXEt69L6XguUjxfvZnSuxbgNgNPZnACcVLb7a3uuuNBdDD.png",
+            "https://images.hive.blog/DQmfDaSmTz3y8oavngRrr5mmVhrTXheYoEU4qhGUS7pq3xh/HiveDivider.png",
+            "https://presearch.org/images/rf/ban-4.jpg"
+          ],
+          "users": [
+            "erikah",
+            "libertycrypto27"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 82.8,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "5.338 HBD"
+      },
+      {
+        "url": "/hive-167922/@heruvim1978/there-is-no-such-uncertainty-as-a-sure-thing-weekly-crypto-updates-8b3",
+        "body": "​\nhttps://images.hive.blog/DQmX5iMfNxUo3z129s1B4PBkHUxDcvzyDnAQ99N5uK1tV5e/thumb%20mgc.jpg\n\nWhat happened in crypto in the past week? This week Bitcoin went down mostly, quite a bit, and weak hands sold, while long term holders bought. Ethereum looks shady lately. AI has potential. I found a way to expose myself to BTC via BlackRock, using [Freetrade](https://magic.freetrade.io/join/george/a08af1d8 \"This link will take you away from hive.blog\"). Feel free to check them. What else? Read below:\n\n\n- Bitcoin: The same story, short term BTC holders are selling at loss, a similar pattern to mid-November 2025, after a 15% price drop. Long term Bitcoin holders are accumulating at a record pace, controlling 71.6% of the circulating supply right now. Bitcoin is stuck as US Bond yields hit a multi-decade high. Crypto Quant said that Bitcoin is following the same patter as in the 2022 bear market, preceeding a bigger decline. Mark Cuban sold most of its Bitcoin after it failed to act as a hedge during dollar weakness. \n​\n\n- Ethereum: Harvard dropped ETH while sovereign funds bought more BTC ETF stakes. BTC now holds 60% of the crypto's value, with ETH near 10% and all other altcoins sitting at 30%. As ETH dropped to 2090 on May 18, a 12% pullback from its recent high, just had its worst week of ETF outflows this year. Vitalik published a personal post on May 24 addressing months of leadership exits at the Ethereum Foundation, saying that his own influence within the organisation will shrink intentionally, but the Foundation will plan to sell less ETH going forward. \n​\n\n- Altcoins and stablecoins: Van Eck and Grayscale both filed updated BNB ETF registration statements with the SEC on May 16. The Clarity Act handed 16 tokens a path to commodity status (XRP, SOL, LINK, ADA, HBAR, even ICP may benefit from it). Revolut launched a physical Dogecoin-themed Debit Card. Hyperliquid is now letting you trade pre-ipo stocks on-chain. Funny enough, while the rest of the crypto falls, ZCash gained 18%. Two US spot HYPE ETFs pulled over $22M in their first week, outpacing ETH ETFs. Bitwise confirmed it will stake its HYPE holdings and use a portion of management fees to buy more of it. HYPE hit an all time high of $61.35 on May 21. Fireblocks built a payment system for AI agents. Near Protocol introduced Synamic Resharding, a protocol upgrade to enable shard addition automatically on demand, to support NEAR intents and AI agents. \n​\n\n- NFTs and blockchain games:  I have also enjoyed playing [Golem Overlord ](https://golemoverlord.com/?ref=mightyrocklee \"This link will take you away from hive.blog\")lately on Hive, and it is quite enjoyable, I would say, with no significant updates lately. On [Splinterlands,](https://splinterlands.com/?ref=mightyrocklee \"This link will take you away from hive.blog\") we have had the Land NFT new update and improved tokenomics, and the new cards from the Escalation mini collection are up and running.\n\n​\n- Good news: Saudi Arabia is tokenizing $12.5B in real world assets, starting with real estate and expanding into energy and manufacturing. At least eight major Japanese financial institutions are developing crypto investment trust products for retail investors. Standard Chartered bought its own crypto custody unit, the Zodia Custody company, after obtaining a Luxemburg MiCA custody license. Tether bought out SoftBank's stake in Twenty One Capital (Bitcoin treasury firm) on May 20. OpenAI is planning to go public in September with and IPO underwrited by Golman Sachs and Morgan Stanley. Binance lets you trade SpaceX before its IPO. \n​\n\n- Bad news: Crypto funds bled over a billion in one week, ending a six week positive streak. The pullback is market by rising Treasury yields, persistent inflation concerns, and uncertainty around the Middle East conflict. AI sector alone bleeds $2.8B as Anthropic shadow market spirals. Polymarket lets you bet on private companies speculating over valuation thresholdd and IPO timing without receiving any equity. Blockchain.com also files for an IPO in the US.  The FTX law firm agreed to a settlement, the largest in the second wave of FTX class actions, of $54M to settle fraud claims. A single provision in the Clarity Act would bar platforms from paying yield for holding a digital asset, ending the passive hold-to-earn model. France accounts for roughly 70% of all globall crypto wrentch attacks, with 41 kidnappings in 2026 alone, the 2020 Ledger database leak is cited as a key turning point, with exposed home addresses of hundred of thousands of users. \n​\n\n- Joke of the week: At the beginning of the last week strategy signalled its next BTC purchase. They are also pushing to vota a change to STRC divident timing before June 8. After they acquired nearly 25K BTC in one week, reaching 843K BTC, TD Cowen raised its Strategy price target to $400. Then, on May 24, Strategy started to buy bonds, not Bitcoin, to rebuild liquidity and manage liabilitie, following its plan to repurchase part of its own converible debt. \n\n​\n\nAll the best,\n\nGeorge\n\n​\n\nWhy not...\n\n...have fun and win rewards on my favourite blockchain games ([Splinterlands](https://next.splinterlands.com/register?ref=mightyrocklee \"This link will take you away from hive.blog\")- a Hearthstone-like card game) ([Golem Overlord](https://golemoverlord.com/?ref=mightyrocklee \"This link will take you away from hive.blog\") - a Play2Earn game on Hive) ([Upland ](https://hive.blog/splinterlands/@mightyrocklee/Hi!%20Check%20out%20Upland,%20a%20virtual%20property%20trading%20game.%20If%20you%20use%20this%20link,%20Upland%20will%20award%20you%20with%20a%20bonus%20for%20your%20first%20purchase%20https://r.upland.me/7Aiy)- a real-life virtual land) ([Holozing ](https://holozing.com/?ref=mightyrocklee \"This link will take you away from hive.blog\")- a Pokemon-like game)and ( [Chain of Legends](https://chainoflegends.com/?ref=272871 \"This link will take you away from hive.blog\") - with a hint of Heroes of Might and Magic).\n\n...get crypto while writing on the [Publish0x](https://www.publish0x.com/?a=y5eVGmvaEP \"This link will take you away from hive.blog\") blog. I am also writing for crypto on [Hive](https://inleo.io/signup?referral=heruvim1978 \"This link will take you away from hive.blog\").\n\n​\n\n\nPosted Using [INLEO](https://inleo.io/@heruvim1978/there-is-no-such-uncertainty-as-a-sure-thing-weekly-crypto-updates-8b3)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 128
+        },
+        "title": "There is no such uncertainty as a sure thing! (weekly crypto updates)",
+        "author": "heruvim1978",
+        "payout": 1.492,
+        "created": "2026-05-25T20:49:33",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-25T20:49:33",
+        "category": "hive-167922",
+        "children": 1,
+        "permlink": "there-is-no-such-uncertainty-as-a-sure-thing-weekly-crypto-updates-8b3",
+        "community": "hive-167922",
+        "payout_at": "2026-06-01T20:49:33",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 19100026807300,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "robsteady",
+            "rshares": 4635924915
+          },
+          {
+            "voter": "neoxian",
+            "rshares": 7958785140965
+          },
+          {
+            "voter": "funnel",
+            "rshares": 3820183130
+          },
+          {
+            "voter": "bigtakosensei",
+            "rshares": 2103692826
+          },
+          {
+            "voter": "ganjafarmer",
+            "rshares": 1698536030
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "slothysavers",
+            "bbh",
+            "archon",
+            "splinterlands",
+            "oneup",
+            "neoxian",
+            "cent",
+            "ctp",
+            "proofofbrain"
+          ],
+          "links": [
+            "https://magic.freetrade.io/join/george/a08af1d8",
+            "https://golemoverlord.com/?ref=mightyrocklee",
+            "https://splinterlands.com/?ref=mightyrocklee",
+            "https://next.splinterlands.com/register?ref=mightyrocklee",
+            "https://golemoverlord.com/?ref=mightyrocklee",
+            "https://hive.blog/splinterlands/@mightyrocklee/Hi!%20Check%20out%20Upland,%20a%20virtual%20property%20trading%20game.%20If%20you%20use%20this%20link,%20Upland%20will%20award%20you%20with%20a%20bonus%20for%20your%20first%20purchase%20https://r.upland.me/7Aiy)-",
+            "https://holozing.com/?ref=mightyrocklee",
+            "https://chainoflegends.com/?ref=272871",
+            "https://www.publish0x.com/?a=y5eVGmvaEP",
+            "https://inleo.io/signup?referral=heruvim1978",
+            "https://inleo.io/@heruvim1978/there-is-no-such-uncertainty-as-a-sure-thing-weekly-crypto-updates-8b3)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://images.hive.blog/DQmX5iMfNxUo3z129s1B4PBkHUxDcvzyDnAQ99N5uK1tV5e/thumb%20mgc.jpg"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@heruvim1978/there-is-no-such-uncertainty-as-a-sure-thing-weekly-crypto-updates-8b3"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 71.33,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.492 HBD"
+      },
+      {
+        "url": "/hive-167922/@der-prophet/wie-du-es-schaffst-das-deine-familie-wohlhabend-wirdhow-to-make-your-family-wealthy--5kg",
+        "body": "**Eine einzige brillante Entscheidung kann Wohlstand schaffen. Aber der beste Weg, sein Vermögen über 100 Jahre hinweg zu erhalten, ist nicht eine brillante Entscheidung, sondern Hunderte von guten Entscheidungen über viele Jahre hinweg.**\n\n\n![58701.png](https://images.hive.blog/DQmQZej186kobgwzHszwetpHGPCCQ5gMshkTCH33z6FVS6E/58701.png)\n\n\n**Die richtige Familienkultur schaffen**\n-\n\n\nDie erfolgreichsten Familien vermitteln den nachfolgenden Generationen ein Gefühl von Sinnhaftigkeit. Sie schaffen ein Umfeld, in dem Kinder und Enkelkinder **keinen Anspruch auf das Erbe haben**, sondern motiviert sind, ihren eigenen Weg zu gehen und einen Mehrwert für die Welt zu schaffen.\n\nIn diesen Familien betrachten die nachfolgenden Generationen den Reichtum nicht als ihr Eigentum, sondern als etwas, das sie für die Zukunft verwalten.\n\n**Steuerplanung als fortlaufenden Prozess betrachten**\n-\n\nDer zweitwichtigste Faktor, den diese Familien zur Erhaltung ihres Vermögens nutzen, ist ein sehr bewusster und durchdachter Umgang mit Ausgaben und Kosten.\n\n**Typischerweise sind Steuern in solchen Situationen einer der größten Kostenfaktoren, und die Art und Weise, wie man sein Geld anlegt, kann entweder unglaublich steuerlich effizient oder unglaublich steuerlich ineffizient sein.**\n\nMan könnte zum Beispiel einen Aktienfonds kaufen, bei dem der Fondsmanager ständig kauft und verkauft. Man müsste damit rechnen, dass jedes Jahr ein erheblicher Anteil der kurzfristigen Kapitalgewinne besteuert wird, was die Nettorendite des Kunden schmälert.\n\nEine Alternative ist eine Strategie zum Steuerverlust-Harvesting, bei der man statt eines Investmentfonds einen Aktienkorb kauft und Positionen mit Verlust verkauft, um Gewinne an anderer Stelle auszugleichen. Die erwartete Bruttorendite ist dieselbe, aber die Renditen nach Steuern sind deutlich höher.\n\nDiese vermögenden Familien investieren viel Zeit in die Beauftragung von Fachleuten, um sicherzustellen, dass sie keine steuerlich ineffizienten Entscheidungen treffen. Sie betrachten Steuerplanung nicht als einmalige Angelegenheit, sondern als fortlaufenden Prozess.\n\n**Langfristiges Investieren**\n-\n\nEin weiteres häufiges Verhalten ist der Kauf und das Halten von Kernanlagen über lange Zeiträume, um Steuern und Transaktionskosten zu reduzieren.\n\nDas gleiche Prinzip gilt für Finanzanlagen. Ultra-vermögende Privatpersonen mit gut geplanten Aktienportfolios zahlen fast nie Steuern darauf, weil sie kaufen und halten.\n\nWenn sie beispielsweise 1 Million Dollar (etwa 920.000 Euro) für den Kauf einer Immobilie benötigen, verkaufen sie keine Anlagen und verursachen keine Steuern. Stattdessen nehmen sie einen Kredit auf ihr Portfolio auf oder schließen eine Hypothek ab. Sehr vermögende Menschen vermeiden es in der Regel, ihre Häuser bar zu bezahlen, da dies nicht die klügste Vorgehensweise ist.\n\n**Sparsam sein**\n-\n\nEs mag überraschen, aber sehr vermögende Privatpersonen können ausgesprochen sparsam sein. Während die meisten Menschen annehmen, dass sie sich um die Kleinigkeiten keine Gedanken machen würden, wenn sie so viel Geld hätten, glaube ich, dass eine Möglichkeit, sein Vermögen zu erhalten, darin besteht, sehr sparsam zu sein und auf die Kosten zu achten.\n\n**Der richtige Weg ist, alle finanziellen Entscheidungen konsequent bewusst zu treffen – und genau so bleiben wohlhabende Familien wohlhabend.**\n\nIch zitierte aus folgendem Artikel...\n\nhttps://de.finance.yahoo.com/nachrichten/berate-seit-jahrzehnten-reiche-familien-161518610.html\n\nMein persönliches Fazit:\n\nMittlerweile setzen meine Frau und ich uns jeden Sonntag zusammen und besprechen bewusst, welche größeren Ausgaben wirklich sinnvoll sind. Dabei geht es nicht nur darum, Geld auszugeben, sondern strategisch zu entscheiden, welche Investitionen langfristig einen Mehrwert schaffen.\n\nBei mir wird es zum Beispiel langsam Zeit, meinen alten Transporter gegen einen modernen Elektrotransporter auszutauschen. Zwar gibt es für Gewerbetreibende inzwischen keine staatliche Förderung mehr für E-Fahrzeuge, dafür aber oft attraktive Rabatte von Herstellern oder Händlern. Gleichzeitig hat eine solche Investition auch steuerliche Vorteile: Durch die höheren Betriebsausgaben reduziere ich mein zu versteuerndes Einkommen und spare dadurch unter anderem bei der Einkommensteuer, Gewerbesteuer und sogar bei den Beiträgen zur Krankenkasse – Kosten, die Privatpersonen in dieser Form nicht geltend machen können.\n\nNatürlich sprechen wir auch regelmäßig darüber, wie wir unsere Immobilien später möglichst sinnvoll an unsere Kinder übertragen können, ohne unnötig Erbschaftssteuer zahlen zu müssen. Klar ist für uns bereits jetzt: Diese Immobilien sollen langfristig in Familienbesitz bleiben und nicht auf dem freien Markt landen. Denkbar wäre zum Beispiel ein steuerfreier Verkauf innerhalb der Familie oder die Gründung einer Familienstiftung. Welche Lösung am Ende die beste ist, werden wir allerdings erst in den kommenden Jahren entscheiden.\n\nDa ich aber nicht nur in mein Unternehmen und Immobilien investiere, sondern auch in Kryptowährungen, spielt das Thema Steuern auch dort eine wichtige Rolle. Sollte die einjährige Haltefrist irgendwann abgeschafft werden und Gewinne nicht mehr steuerfrei sein, müsste man neue Strategien überlegen. Eine Möglichkeit wäre beispielsweise, Kryptowährungen als Sicherheit zu hinterlegen und darauf einen Kredit aufzunehmen, statt die Positionen direkt zu verkaufen. Die dabei entstehenden Zinsen könnten wiederum steuerlich berücksichtigt werden.\n\nGenau dieses langfristige und strategische Denken versuche ich schon heute, meinen Kindern mitzugeben.\n\n---\n\nEnglish \n\n**A single brilliant decision can create wealth. However, the best way to preserve one's fortune over the course of a century is not through a single brilliant decision, but through hundreds of sound decisions made over many years.**\n\n\n**Cultivating the Right Family Culture**\n-\n\nThe most successful families instill a sense of purpose in subsequent generations. They create an environment in which children and grandchildren **do not feel entitled to their inheritance**, but are instead motivated to forge their own paths and create value for the world.\n\nIn these families, subsequent generations view their wealth not as their personal property, but as something they are stewarding for the future.\n\n**Viewing Tax Planning as an Ongoing Process**\n-\n\nThe second most important factor these families utilize to preserve their wealth is a highly deliberate and thoughtful approach to expenses and costs.\n\n**Typically, in such situations, taxes represent one of the largest cost factors; moreover, the manner in which one invests one's money can be either incredibly tax-efficient or incredibly tax-inefficient.**\n\nFor instance, one might purchase an equity fund where the fund manager is constantly buying and selling. One would have to anticipate that a significant portion of the short-term capital gains would be subject to taxation each year—thereby eroding the client's net return.\n\nAn alternative is a tax-loss harvesting strategy, in which—rather than purchasing a mutual fund—one acquires a basket of individual stocks and sells positions trading at a loss to offset gains elsewhere. The expected gross return remains the same, but the after-tax returns are significantly higher.\n\nThese wealthy families invest considerable time in engaging professional advisors to ensure they avoid making tax-inefficient decisions. They view tax planning not as a one-time event, but as an ongoing process.  **Long-Term Investing**\n\n\nAnother common practice involves buying and holding core assets over extended periods to minimize taxes and transaction costs.\n\nThe same principle applies to financial assets. Ultra-high-net-worth individuals with well-structured stock portfolios almost never pay taxes on them, simply because they buy and hold.\n\nFor instance, if they require $1 million (approximately €920,000) to purchase a property, they do not sell off assets and thereby incur a tax liability. Instead, they take out a loan against their portfolio or secure a mortgage. Wealthy individuals generally avoid paying for their homes in cash, as this is rarely the most prudent financial strategy.\n\n**Being Frugal**\n-\n\nIt may come as a surprise, but ultra-high-net-worth individuals can be remarkably frugal. While most people assume that having such vast wealth would mean never having to worry about the small things, I believe that one key to preserving wealth lies in being highly frugal and keeping a close eye on expenses.\n\n**The right approach is to make every financial decision with consistent, conscious intent—and that is precisely how wealthy families remain wealthy.**\n\nMy personal conclusion:\n\nMy wife and I now sit down together every Sunday and consciously discuss which major expenses are truly worthwhile. It's not just about spending money, but about strategically deciding which investments will create long-term value.\n\nFor example, it's about time I replaced my old van with a modern electric one. While there are no longer any government subsidies for electric vehicles for businesses, manufacturers and dealers often offer attractive discounts. At the same time, such an investment also has tax advantages: The higher operating expenses reduce my taxable income, saving me on income tax, business tax, and even health insurance contributions – costs that private individuals cannot claim in this way.\n\nOf course, we also regularly discuss how we can best transfer our properties to our children later on without incurring unnecessary inheritance tax. One thing is already clear to us: These properties should remain in the family for the long term and not end up on the open market.  One possibility would be a tax-free sale within the family or the establishment of a family foundation. However, we won't be able to decide which solution is ultimately best until the coming years.\n\nSince I invest not only in my company and real estate but also in cryptocurrencies, the issue of taxes plays a significant role there as well. Should the one-year holding period be abolished at some point and profits no longer be tax-free, new strategies would have to be considered. One option, for example, would be to use cryptocurrencies as collateral and take out a loan against them instead of selling the positions directly. The resulting interest could then be tax-deductible.\n\nI'm already trying to instill this kind of long-term, strategic thinking in my children.\n\nPosted Using [INLEO](https://inleo.io/@der-prophet/wie-du-es-schaffst-das-deine-familie-wohlhabend-wirdhow-to-make-your-family-wealthy--5kg)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 248
+        },
+        "title": "Wie du es schaffst das deine Familie Wohlhabend wird/.How to make your family wealthy ",
+        "author": "der-prophet",
+        "payout": 2.019,
+        "created": "2026-05-25T09:42:18",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-25T09:42:18",
+        "category": "hive-167922",
+        "children": 14,
+        "permlink": "wie-du-es-schaffst-das-deine-familie-wohlhabend-wirdhow-to-make-your-family-wealthy--5kg",
+        "community": "hive-167922",
+        "payout_at": "2026-06-01T09:42:18",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 25400654171401,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "leprechaun",
+            "rshares": 6331345145
+          },
+          {
+            "voter": "penguinpablo",
+            "rshares": 155841238854
+          },
+          {
+            "voter": "uwelang",
+            "rshares": 2470613565566
+          },
+          {
+            "voter": "funnyman",
+            "rshares": 1563817529
+          },
+          {
+            "voter": "ahmadmanga",
+            "rshares": 926135146
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "threadstorm",
+            "outreach",
+            "pob",
+            "cent",
+            "deutsch",
+            "story"
+          ],
+          "links": [
+            "https://images.hive.blog/DQmQZej186kobgwzHszwetpHGPCCQ5gMshkTCH33z6FVS6E/58701.png)",
+            "https://de.finance.yahoo.com/nachrichten/berate-seit-jahrzehnten-reiche-familien-161518610.html",
+            "https://inleo.io/@der-prophet/wie-du-es-schaffst-das-deine-familie-wohlhabend-wirdhow-to-make-your-family-wealthy--5kg)"
+          ],
+          "format": "markdown",
+          "images": [],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@der-prophet/wie-du-es-schaffst-das-deine-familie-wohlhabend-wirdhow-to-make-your-family-wealthy--5kg"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 76.42,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "2.019 HBD"
+      },
+      {
+        "url": "/hive-167922/@shortsegments/the-bitcoin-lightning-point-of-sale-revolution-g1u",
+        "body": "### Background information:\n- **The way we buy things is about to change big time. For decades, when you walked into a store and swiped a plastic credit card, it felt like magic. But for the person owning that shop, it is actually a pretty bad deal. Every time a customer uses a credit card, the store owner has to hand over about 3% of the money to big card companies. On top of that, they have to wait days to actually get their cash, and customers can sometimes cancel payments later, which leaves the shop short on money.**\n\n***That is why a major change called the **Bitcoin Point of Sale Revolution** is starting to happen.***\n#\n https://img.leopedia.io/DQmZ8dXCNoXrjdaJmJKq3Nut4a7uipop4NGCJmaRzK5Y8kK/Screenshot%202026-05-23%20at%203.35.26%E2%80%AFPM.png \n\n\n## An alternative to Bitcoin Mining:\n\n- Instead of opening giant warehouses full of loud, expensive computers to mine new Bitcoins—which really only makes money for massive companies nowadays—there is a much smarter way to get involved. By running a **Bitcoin Lightning Network node**, everyday people can help stores take payments instantly and safely.\n\n- Think of a Lightning node like a tiny, digital post office that sits on a desk. Instead of sorting paper mail, this little computer securely routes money across the internet from the customer's digital wallet right to the store’s cash register.\n\n- For retailers, switching from old credit cards to the Lightning Network feels like upgrading from a horse and buggy to a spaceship. **It fixes the three biggest headaches that shop owners face every single day:**\n\n- * **Zero-Percent Fees:** Instead of losing 3% of every sale to credit card giants, using Bitcoin over the Lightning Network costs next to nothing. Stores get to keep all of their hard-earned money.\n- * **Instant Settlement:** With credit cards, a business might wait until the weekend to see their money. With Lightning, the money moves in the blink of an eye. The second a customer scans a code, the money belongs to the store.\n- * **No Chargebacks:** Credit cards allow people to call their bank and cancel a payment weeks after buying something, which can cheat honest business owners. Bitcoin transactions are permanent. Once it is sent, it is done, meaning no one can secretly take their money back.\n\n## Detailed Discussion\n\nFor retailers, switching from old credit cards to the Lightning Network feels like upgrading from a horse and buggy to a spaceship. To understand why this is such a big deal, we have to look closely at the three biggest headaches shop owners face every single day, and how Bitcoin completely fixes them.\n\n### 1. The Fee Problem: 3% vs. Next to Nothing\n#### How it works with Credit Cards\nWhen you swipe a credit card to buy a $100 item, the store does not actually get $100. Behind the scenes, a whole line of middle-men—including the store’s bank, the credit card company, and your bank—all grab a piece of the pie. Together, they take about 3% of the sale. This means the store owner only keeps $97. While three dollars might not sound like a lot, it adds up fast. If a small business sells $500,000 worth of goods in a year, they are handing over $15,000 just to let people swipe plastic. To survive, stores have to raise their prices, which means everything costs more for everyone.\n\n#### How Bitcoin Solves It\nBitcoin over the Lightning Network cuts out all the middle-men. Instead of passing through three different banks, the digital money goes straight from the customer to the shop owner. Because there are no giant credit card companies charging toll fees, the cost to send a payment is basically zero percent. Stores get to keep almost 100% of their hard-earned money, allowing them to keep their prices lower and stay in business.\n\n## 2. The Waiting Problem: Delayed Cash vs. Instant Settlement\n### How it works with Credit Cards\nWhen you pay with a credit card, the money doesn’t instantly jump into the store's bank account. Instead, the credit card company sends a message saying, \"We promise to pay you later.\" The store owner has to wait two, three, or sometimes even five days to actually get the cash, especially over weekends or holidays. This is called delayed settlement. It makes running a business really hard because the owner might need that money right away to buy more inventory or pay their workers, but it is locked up in the banking system.\n\n### How Bitcoin Solves It\nBitcoin fixes this with immediate settlement. The Lightning Network is like a super-fast digital highway. The exact second a customer scans a QR code with their phone, the Bitcoin moves across the network and lands in the store's digital cash register. There is no waiting for Monday morning, and no waiting for a bank to open. The money belongs to the store instantly, so they can use it to run their business without delay.\n\n## 3. The Trust Problem: Chargebacks vs. Permanent Payments\n#### How it works with Credit Cards\nOne of the biggest secrets of the credit card world is the chargeback. Credit cards were invented decades ago, and they aren't very secure. If a customer calls their bank and claims they never bought an item, or that they want to cancel a payment, the credit card company will often take the money right back out of the store's bank account. While this is meant to protect people from fraud, dishonest people can abuse it to get free stuff. The store owner loses the item they sold, loses the money they made, and usually has to pay a hefty \"chargeback penalty fee\" to the bank.\n\n### How Bitcoin Solves It\nBitcoin operates on a rule of absolute honesty: transactions are permanent. There is no central bank or credit card company to call to reverse a payment. Once Bitcoin is sent from a customer to a retailer, it cannot be pulled back by a third party. This eliminates fraud for the store owner. It means when a sale is made, the store owner can sleep easy knowing their money is safe and can never be secretly taken away.\n\n## This is where you come into the picture with your lightning node.\n\n- By running a Lightning node, you aren't just watching the future of money happen—you are building the tracks that the digital economy runs on. \n- It is a chance to help local neighborhood shops break free from old banking fees and join a faster, fairer world of digital cash.\n- It is a chance to launch early as a highway upon which consumer transactions travel, and pay a very, very small fee, but with hundreds or event thousands of transactions, it adds up to real money and potentially a successful business.\n- The devil is in the details.\n\nPosted Using [INLEO](https://inleo.io/@shortsegments/the-bitcoin-lightning-point-of-sale-revolution-g1u)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 246
+        },
+        "title": "The Bitcoin Lightning \"Point of Sale Revolution\".",
+        "author": "shortsegments",
+        "payout": 4.163,
+        "created": "2026-05-24T10:08:06",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-24T10:08:06",
+        "category": "hive-167922",
+        "children": 9,
+        "permlink": "the-bitcoin-lightning-point-of-sale-revolution-g1u",
+        "community": "hive-167922",
+        "payout_at": "2026-05-31T10:08:06",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 52400101483464,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "nanzo-scoop",
+            "rshares": 1435361459
+          },
+          {
+            "voter": "mummyimperfect",
+            "rshares": 560160769
+          },
+          {
+            "voter": "ak2020",
+            "rshares": 42514467044
+          },
+          {
+            "voter": "emily-cook",
+            "rshares": 2557560696
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 888870576
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "bitcoin-lightning-network",
+            "bitcoin-POS-revolution",
+            "bitcoin-pos",
+            "gems",
+            "onebitcoinclub",
+            "bitcoin",
+            "hodl",
+            "pal",
+            "thecityofneoxian"
+          ],
+          "links": [
+            "https://inleo.io/@shortsegments/the-bitcoin-lightning-point-of-sale-revolution-g1u)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmZ8dXCNoXrjdaJmJKq3Nut4a7uipop4NGCJmaRzK5Y8kK/Screenshot%202026-05-23%20at%203.35.26%E2%80%AFPM.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@shortsegments/the-bitcoin-lightning-point-of-sale-revolution-g1u"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 77.65,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "4.163 HBD"
+      },
+      {
+        "url": "/hive-167922/@costanza/playoffs-week-11-results-or-11w-10l-4p-or-0391-units-loss",
+        "body": "<center>https://images.hive.blog/DQmZNZAwJUbePuhUTg1bo9r6JZceDTdg6FEepYA1BWWWjb1/Week%2040.jpg\n</center>\n\n<center><b>This is a weekly overview of my personal sports betting/trading results on teams from the Belgian Jupiler League, documenting my journey toward long-term profit with some insights on my overall approach.</b></center>\n\nThe season pretty much came to an end with a typical week where I made a slight loss and where if I'm honest it wasn't good enough. The thing is that I ended another season in the green keeping the unbeaten streak alive, however at just +1.16% ROI on stakes that are kept conservative it also shows the reality at the moment that I need to improve and do better.\n\nThere is one more match to go, and I'm not sure if I will be able to watch/cover it, as I will be in Thailand during the next 2 months. This might very much be the last post here on Hive until the next season starts. \n\n\n<hr>\n\n<b>Pre-Game Preview Bets Season 2025-2026</b>\nhttps://images.hive.blog/DQmX2i6jaXJbZmWMbXy1v8Qd5G4WUATF7RNjKGh1qUiHgdX/image.png\n\nI didn't have any confidente bold pre-game bets this week and that was a good thing as pretty much all the main leans that I had were horribly wrong. I will be updating the overall chart and stats on these bets of the last 6 seasons once the 2026-2027 season starts. While this season ended in a small loss, the overall results still are around the ROI that is pretty solid so I will keep going with them.\n\n<hr>\n\n<blockquote>\n\nPrevious 5 Seasons Result\n\nhttps://images.hive.blog/DQmUwd5XuBrCYUR6HYKaHseExLBe1B6DwBArHnFbXJkqfsa/image.png\n\n\n</blockquote>\n\n<hr>\n\n<blockquote>\n<i>Aside from sharing my previews and bets on my Blog, I also cover all matches live in our <a href=\"https://discord.gg/RnKm63Tfvm\">SBC Discord Channel</a> sharing all the bets I take. The main purpose is to stay sharp and keep myself accountable.</i>\n</blockquote>\n\n\n<hr>\n\n\n\n<center><a href=\"https://www.sportmarket.com/?affiliateid=140\"><img src=\"https://images.hive.blog/DQmfC1vHuWgmYnPWHQ5nJq34qkR9VEWZPkTJ2ubaDdBVoRj/image.png\"/></a></center>\n\n<center><i>I take all my Pre-Game & Live bets with my Betting Broker <a href=\"https://www.sportmarket.com/?affiliateid=140\">Sportmarket Pro</a> who always provides the best offers on the market with a 1 click solution and doesn't limit winning players offering high limits. For more info check my <a href=\"https://steemit.com/betting/@costanza/betting-broker-review-or-sportmarket-pro#@costanza/re-suit5-re-costanza-betting-broker-review-or-sportmarket-pro-20180607t161329017z\">Sportmarket Pro Review</a></i></center>\n\n<hr>\n<center><h6>Playoffs 2025-2026 Chart</h6></center>\n\n<center>\nhttps://images.hive.blog/DQmawMv8JBC8nJ696ai9TP1GxvYzTKdJrdwVByU2wUFn5T4/image.png\n</center>\n\n<center><h6>Complete 2025-2026 Season Chart</h6></center>\n\n<center>https://images.hive.blog/DQmSmtC2BEKmdDmhyRmPBcFUZznhi85kt11upYySBZSYQUV/image.png\n</center>\n\nSo the playoffs lasted just 2 weeks too long and eventually ended in a slight loss after ~300 Bets so I might as well have skipped them. That said, I still enjoyed following them and the football season in general brings a very enjoyable structure in my life also filling the weekends. Next Season, I will be going into my 10th year covering all matches in the Belgian League and I have no reason to stop. I do as always aim to get better though and increase my stakes which have been 2 things that have been quite the challenge.\n<hr>\n\n<b>Season Results 2025-2026</b>\n\nPlayoffs Week 10 Results 25 Bets | 11W-10L-4P | Staked 02.481u | -0.391u Loss\n<a href=\"https://hive.blog/hive-167922/@costanza/playoffs-week-9-results-or-9w-18l-1p-or-1103-units-loss\">Playoffs Week 09 Results 28 Bets | 09W-18L-1P | Staked 02.985u | -1.103u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/playoffs-week-8-results-or-18w-19l-7p-or-1369-units-profit\">Playoffs Week 08 Results 44 Bets | 18W-19L-7P | Staked 04.041u | +1.369u Profit</a>\n<a href=\"https://hive.blog/hive-115814/@costanza/playoffs-week-8-sunday-previews-tf66o6\">Playoffs Week 07 Results 21 Bets | 06W-10L-5P | Staked 01.874u | -0.219u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/playoffs-week-6-results-or-14w-13l-3p-or-0047-units-loss\">Playoffs Week 06 Results 20 Bets | 14W-13L-3P | Staked 02.967u | -0.047u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/playoffs-week-5-results-or-15w-11l-3p-or-0440-units-profit\">Playoffs Week 05 Results 29 Bets | 15W-11L-3P | Staked 03.450u | +0.440u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/playoffs-week-4-results-or-11w-5l-2p-or-0097-units-profit\">Playoffs Week 04 Results 19 Bets | 11W-05L-2P | Staked 01.922u | +0.097u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/playoffs-week-3-results-or-11w-14l-2p-or-0998-units-loss\">Playoffs Week 03 Results 27 Bets | 11W-14L-2P | Staked 03.837u | -0.998u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/playoffs-week-2-results-or-20w-14l-11p-or-0361-units-loss\">Playoffs Week 02 Results 45 Bets | 20W-14L-11P | Staked 04.895u | -0.361u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/playoffs-week-1-results-or-15w-15l-7p-or-0535-units-profit\">Playoffs Week 01 Results 37 Bets | 15W-15L-07P | Staked 03.130u | +0.535u Profit</a>\n\n<a href=\"https://hive.blog/hive-167922/@costanza/week-30-results-or-10w-14l-1p-or-0673-units-loss\">Week 30 Results 25 Bets | 10W-14L-01P | Staked 02.904u | -0.673u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-29-results-or-18w-17l-2p-or-0903-units-profit\">Week 29 Results 37 Bets | 18W-17L-02P | Staked 03.821u | +0.903u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-28-results-or-15w-10l-2p-or-0476-units-profit\">Week 28 Results 37 Bets | 15W-10L-02P | Staked 02.525u | +0.476u Profit</a>\n<a href=\"https://hive.blog/hive-115814/@costanza/jupiler-league-week-28-saturday-previews-tbj3nz\">Week 27 Results 42 Bets | 11W-26L-05P | Staked 06.773u | -3.563u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-26-results-or-38w-24l-5p-or-1246-units-profit\">Week 26 Results 67 Bets | 38W-24L-05P | Staked 06.575u | +1.246u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-25-results-or-37w-34l-6p-or-1003-units-profit\">Week 25 Results 77 Bets | 37W-34L-06P | Staked 07.408u | +1.003u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-24-results-or-19w-12l-6p-or-0578-units-profit\">Week 24 Results 37 Bets | 19W-12L-06P | Staked 03.136u | +0.578u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-23-results-or-21w-26l-5p-or-1079-units-loss\">Week 23 Results 52 Bets | 21W-26L-05P | Staked 05.922u | -1.079u Loss</a>\n<a href=\"https://hive.blog/hive-101690/@costanza/jupiler-league-week-23-sunday-previews-8l6enh\">Week 22 Results 36 Bets | 11W-24L-01P | Staked 03.589u | -0.026u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-21-results-or-19w-25l-2p-or-0100-units-profit\">Week 21 Results 46 Bets | 19W-25L-02P | Staked 05.283u | +0.100u Profit</a>\n<a href=\"https://hive.blog/hive-101690/@costanza/jupiler-league-week-21-sunday-previews-mvakqo\">Week 20 Results 54 Bets | 21W-31L-02P | Staked 05.383u | -0.015u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-19-results-or-16w-14l-7p-or-0574-units-profit\">Week 19 Results 37 Bets | 16W-14L-07P | Staked 04.777u | +0.574u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-18-results-or-27w-18l-4p-or-0786-units-profit\">Week 18 Results 49 Bets | 27W-18L-04P | Staked 04.409u | +0.786u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-17-results-or-21w-20l-6p-or-1119-units-loss\">Week 17 Results 47 Bets | 21W-20L-06P | Staked 05.813u | -1.119u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-16-results-or-34w-21l-6p-or-1254-units-profithttps://hive.blog/hive-167922/@costanza/week-16-results-or-34w-21l-6p-or-1254-units-profit\">Week 16 Results 51 Bets | 34W-21L-06P | Staked 05.126u | +1.254u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-15-results-or-12w-19l-2p-or-0625-units-profit\">Week 15 Results 33 Bets | 12W-19L-02P | Staked 03.126u | +0.625u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-14-results-or-17w-16l-3p-or-0617-units-loss\">Week 14 Results 36 Bets | 17W-16L-03P | Staked 04.303u | -0.617u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-13-results-or-9w-12l-3p-or-0405-units-loss\">Week 13 Results 24 Bets | 09W-12L-03P | Staked 02.541u | -0.405u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-12-results-or-10w-29l-3p-or-0892-units-loss\">Week 12 Results 42 Bets | 10W-29L-03P | Staked 04.255u | -0.892u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-11-results-or-9w-16l-8p-or-0535-units-profit\">Week 11 Results 33 Bets | 09W-16L-08P | Staked 04.545u | +0.535u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-10-results-or-16w-29l-7p-or-1012-units-profit\">Week 10 Results 52 Bets | 16W-29L-07P | Staked 05.374u | +1.012u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-9-results-or-20w-32l-2p-or-0263-units-profit\">Week 09 Results 54 Bets | 20W-32L-02P | Staked 05.343u | +0.263u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-8-results-or-20w-17l-6p-or-0583-units-loss\">Week 08 Results 43 Bets | 20W-17L-06P | Staked 05.626u | -0.583u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-7-results-or-10w-20l-2p-or-0303-units-loss\">Week 07 Results 32 Bets | 10W-20L-02P | Staked 05.067u | -0.303u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-6-results-or-30w-19l-6p-or-1522-units-profit\">Week 06 Results 55 Bets | 30W-19L-06P | Staked 06.756u | +1.522u Profit</a>\n<a href=\"https://hive.blog/money/@costanza/week-5-results-or-25w-23l-3p-or-1163-units-profit\">Week 05 Results 51 Bets | 25W-23L-03P | Staked 06.240u | +1.163u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-4-results-or-20w-24l-6p-or-0695-units-loss\">Week 04 Results 50 Bets | 20W-24L-06P | Staked 06.374u | -0.695u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-3-results-or-22w-10l-4p-or-1099-units-profit\">Week 03 Results 36 Bets | 22W-10L-04P | Staked 04.453u | +1.099u Profit</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/week-2-results-or-20w-29l-2p-or-0533-units-loss\">Week 02 Results 51 Bets | 20W-29L-02P | Staked 06.242u | -0.533u Loss</a>\n<a href=\"https://hive.blog/hive-167922/@costanza/playoffs-week-11-results-2w12l0p-0284-units-loss-6m4\">Week 01 Results 45 Bets | 18W-22L-05P | Staked 05.858u | +0.046u Profit</a>\n\n\n<b>Total Season 2025-2026 Results</b>\n1635 Bets | 707W-763L-165P | 181.627u Staked | +2.111u Profit | +1.16% ROI\n\n\n<hr><b>Previous 9 Seasons...</b>\n\n<blockquote>\n\nSeason 2025-2026 | 1635 Bets +1.16% ROI\nSeason 2024-2025 | 1676 Bets +1.04% ROI\nSeason 2023-2024 | 1132 Bets +1.83% ROI\nSeason 2022-2023 | 1598 Bets +4.71% ROI\nSeason 2021-2022 | 1364 Bets +2.72% ROI\nSeason 2020-2021 | 1504 Bets +4.37% ROI\nSeason 2019-2020 | 1406 Bets +2.48% ROI\nSeason 2018-2019 | 1090 Bets +2.47% ROI\nSeason 2017-2018 | 821 Bets +7.22% ROI\n\nhttps://images.hive.blog/DQmPmqk45qWGs2QJkdxyENdLBLbrgUmPokp3fxF9Z1eHThJ/image.png\n\n\n\n</blockquote>\n\n\n\n<hr>\n<center><i>The season is over now and I will be back 2 months from now going at it again and trying to do better during the 2026-2027 Season which will not have playoffs anymore.</i></center>\n\n\n<hr>\n<center><b><h6>Crypto & Blockchain-Based Bookies and Exchanges that I'm personally using with some allowing anonymous betting with no KYC or personal restrictions...</h6></b></center>\n\n\n<a href=\"https://sbetp.com/d88f45669\"><img src=\"https://images.hive.blog/DQmRXoccQSRLKHkyzGJG3S9ger5KhwRpr7vqPSifCk7X88y/image.png\"/></a>|<a href=\"https://solcasino.io/r/QgfszDlc\"><img src=\"https://images.hive.blog/DQme82VABuw6U2RjM2TosqMnNxc9XDSCzbwkfERV2FTUrrc/image.png\"/></a>|<a href=\"https://mainnet.dexsport.io/\"><img src=\"https://images.hive.blog/DQmV7q3LNbnFzRo851DAynTwA8DKPBwDkPvJNECx4btRSXc/image.png\"/></a>\n-|-|-",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 149
+        },
+        "title": "Playoffs Week 10 Results | 11W-10L-4P | -0.391 Units Loss",
+        "author": "costanza",
+        "payout": 1.819,
+        "created": "2026-05-25T08:56:42",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-25T08:57:33",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "playoffs-week-11-results-or-11w-10l-4p-or-0391-units-loss",
+        "community": "hive-167922",
+        "payout_at": "2026-06-01T08:56:42",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 22618733610800,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "team",
+            "rshares": 102804585388
+          },
+          {
+            "voter": "leprechaun",
+            "rshares": 3778807087
+          },
+          {
+            "voter": "uwelang",
+            "rshares": 1482348139340
+          },
+          {
+            "voter": "abh12345",
+            "rshares": 34300259242
+          },
+          {
+            "voter": "lighteye",
+            "rshares": 912915758794
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.5.3",
+          "tags": [
+            "money",
+            "investing",
+            "betting",
+            "trading",
+            "bbh",
+            "neoxian",
+            "pob",
+            "inleo",
+            "ecency",
+            "blog"
+          ],
+          "image": [
+            "https://images.hive.blog/DQmZNZAwJUbePuhUTg1bo9r6JZceDTdg6FEepYA1BWWWjb1/Week%2040.jpg",
+            "https://images.hive.blog/DQmX2i6jaXJbZmWMbXy1v8Qd5G4WUATF7RNjKGh1qUiHgdX/image.png",
+            "https://images.hive.blog/DQmfC1vHuWgmYnPWHQ5nJq34qkR9VEWZPkTJ2ubaDdBVoRj/image.png",
+            "https://images.hive.blog/DQmawMv8JBC8nJ696ai9TP1GxvYzTKdJrdwVByU2wUFn5T4/image.png",
+            "https://images.hive.blog/DQmSmtC2BEKmdDmhyRmPBcFUZznhi85kt11upYySBZSYQUV/image.png",
+            "https://images.hive.blog/DQmRXoccQSRLKHkyzGJG3S9ger5KhwRpr7vqPSifCk7X88y/image.png",
+            "https://images.hive.blog/DQme82VABuw6U2RjM2TosqMnNxc9XDSCzbwkfERV2FTUrrc/image.png",
+            "https://images.hive.blog/DQmV7q3LNbnFzRo851DAynTwA8DKPBwDkPvJNECx4btRSXc/image.png"
+          ],
+          "users": [
+            "costanza"
+          ],
+          "format": "markdown"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 77.6,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.819 HBD"
+      },
+      {
+        "url": "/hive-167922/@borsengelaber/bitcoin-etf-buyers-are-stronger",
+        "body": "\n![](https://i.ecency.com/DQmVP8a9J7dtLWKwQfvcEYho5kEJwnGkMQD4TMzJo3PCtBF/img_1086.png)\n\n![](https://i.ecency.com/DQmcR5TKmTXjMAxauswiQq1trugrPb5TsRrf396GqbE62Gt/img_4678.png)\n\n**Strong Hands in BTC ETFs**\n\nWhat’s very surprising is that Bitcoin ETF buyers are turning out to be strong hodlers. As Bloomberg analyst Eric Balchunas pointed out this week, the cumulative net flows of all BTC ETFs are still near all-time highs, despite Bitcoin correcting for several months now.\n\nWhat this means is that the people and institutions entering Bitcoin through ETFs over the past two years are not short-term traders. Many seem to view Bitcoin simply as an addition to their investment portfolio with a relatively small allocation and even 50% drawdowns don’t shake them out.\n\nThat’s very good news. And with companies and even nation-states still mostly on the sidelines, there’s still huge potential demand ahead.\n\nBullish to me.\n\n\n![](https://i.ecency.com/DQmcR5TKmTXjMAxauswiQq1trugrPb5TsRrf396GqbE62Gt/img_4678.png)\n\n![](https://i.ecency.com/DQmQWmHS2mDYS6KPybcAbj8FG2EXqUg74BQ4gfX9Gh4Ehd9/img_1085.png)\n\n![](https://i.ecency.com/DQmPzio1ih6mk1WYRxpNjArCnHxCnc8ZwawAhomvY5VDApU/img_1084.png)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 105
+        },
+        "title": "Bitcoin ETF Buyers Are Stronger Hodlers Than Expected",
+        "author": "borsengelaber",
+        "payout": 2.846,
+        "created": "2026-05-24T18:55:21",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-24T18:55:21",
+        "category": "hive-167922",
+        "children": 2,
+        "permlink": "bitcoin-etf-buyers-are-stronger",
+        "community": "hive-167922",
+        "payout_at": "2026-05-31T18:55:21",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 35389020796833,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 45738082903
+          },
+          {
+            "voter": "darkflame",
+            "rshares": 421744169391
+          },
+          {
+            "voter": "seckorama",
+            "rshares": 40270234064
+          },
+          {
+            "voter": "esteemapp",
+            "rshares": 12027475415
+          },
+          {
+            "voter": "bigtakosensei",
+            "rshares": 2642116032
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.5.5-mobile",
+          "tags": [
+            "hive-167922",
+            "ecency",
+            "bitcoin"
+          ],
+          "type": "post",
+          "image": [
+            "https://i.ecency.com/DQmVP8a9J7dtLWKwQfvcEYho5kEJwnGkMQD4TMzJo3PCtBF/img_1086.png",
+            "https://i.ecency.com/DQmcR5TKmTXjMAxauswiQq1trugrPb5TsRrf396GqbE62Gt/img_4678.png",
+            "https://i.ecency.com/DQmcR5TKmTXjMAxauswiQq1trugrPb5TsRrf396GqbE62Gt/img_4678.png",
+            "https://i.ecency.com/DQmQWmHS2mDYS6KPybcAbj8FG2EXqUg74BQ4gfX9Gh4Ehd9/img_1085.png",
+            "https://i.ecency.com/DQmPzio1ih6mk1WYRxpNjArCnHxCnc8ZwawAhomvY5VDApU/img_1084.png"
+          ],
+          "links": [],
+          "format": "markdown+html",
+          "image_ratios": [
+            1,
+            9.660377358490566,
+            9.660377358490566,
+            1.194267515923567,
+            0.7460212201591512
+          ]
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 75.93,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "2.846 HBD"
+      },
+      {
+        "url": "/hive-167922/@leothreads/leothread-2026-05-24-13-15",
+        "body": "Multi-container thread chain.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 321
+        },
+        "title": "LeoThread 2026-05-24 13-15",
+        "author": "leothreads",
+        "payout": 3.342,
+        "created": "2026-05-24T13:15:12",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-24T13:15:12",
+        "category": "hive-167922",
+        "children": 2530,
+        "permlink": "leothread-2026-05-24-13-15",
+        "community": "hive-167922",
+        "payout_at": "2026-05-31T13:15:12",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 42806985621076,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 24957922527
+          },
+          {
+            "voter": "jacor",
+            "rshares": 40108963159
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 1648908660
+          },
+          {
+            "voter": "alz190",
+            "rshares": 1517930461
+          },
+          {
+            "voter": "rufans",
+            "rshares": 63726221590
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 10000,
+            "account": "commentrewarder"
+          }
+        ],
+        "json_metadata": {
+          "app": "leocache/1.0",
+          "tags": [
+            "leothreads",
+            "microblogging",
+            "leofinance",
+            "cent",
+            "neoxian",
+            "proofofbrain",
+            "palnet",
+            "ctp"
+          ]
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 75.87,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "3.342 HBD"
+      },
+      {
+        "url": "/hive-167922/@ssjsasha/aries-silver-coin-djn",
+        "body": " https://img.leopedia.io/DQmcQuSKmtfUg1gcCg43aBvpYnnLy8nfhE6L5pLcYJzECaP/IMG_9948.jpg \n\nI wasn't really around here for the Aries time but I did end up getting a good deal on 2 Aries tokens\n\nI have some special people in my life born as Aries so I want to \"keep them close\" with me through silver stacking\n\nThey both came in a plastic capsule and a black pouch I don't want to take them out of their pouch but I took a picture of both sides\n\nnot sure if you can see if from the picture but if you look at the top coin you will see that each symbol is around the coin but the Aries one is blacked out \n\nWould have loved to get all 12 versions of these coins but supply is super low these days its hard to find\n\nBut these will go into my \"never sell\" category of coin :)\n\nPosted Using [INLEO](https://inleo.io/@ssjsasha/aries-silver-coin-djn)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 25
+        },
+        "title": "Aries Silver Coin",
+        "author": "ssjsasha",
+        "payout": 0.844,
+        "created": "2026-05-26T02:22:30",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-05-26T02:22:30",
+        "category": "hive-167922",
+        "children": 2,
+        "permlink": "aries-silver-coin-djn",
+        "community": "hive-167922",
+        "payout_at": "2026-06-02T02:22:30",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 10805238962243,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "germansailor",
+            "rshares": 1677242505037
+          },
+          {
+            "voter": "sabine-reichert",
+            "rshares": 699213886976
+          },
+          {
+            "voter": "webhoster",
+            "rshares": 1017917468
+          },
+          {
+            "voter": "pocketechange",
+            "rshares": 305326465729
+          },
+          {
+            "voter": "scooter77",
+            "rshares": 70175492593
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "inleo",
+            "leo",
+            "leofinance",
+            "silvergoldstackers",
+            "silver",
+            "gold",
+            "aries",
+            "astrology",
+            "hive"
+          ],
+          "links": [
+            "https://inleo.io/@ssjsasha/aries-silver-coin-djn)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmcQuSKmtfUg1gcCg43aBvpYnnLy8nfhE6L5pLcYJzECaP/IMG_9948.jpg"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@ssjsasha/aries-silver-coin-djn"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 74.03,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.844 HBD"
+      },
+      {
+        "url": "/hive-167922/@zakludick/hive-progress-the-busy-bees-d5fd9ce91e2f7",
+        "body": "![](https://i.ecency.com/DQmW6ekuwSaGUWvXMYz6TxHqM3CMeWDQD8RpiVBnDYckVVf/image.png)\n[Source](https://pixabay.com/photos/bees-hive-insects-macro-honey-bees-326337/)\n\n\n\n\n\n# The Busy Bees\n\nThis weekend was busy. It was @merenludick's 16th birthday, we went ice-skating. I fell pretty badly on the ice, but I'll be OK. \n\nWork has been busy and @aimeludick is looking at going to the Netherlands next year after her Grade 12 is done.\n\nWell, plenty to do! Cheers!\n\nBeing put on to Sleep:\nNone\n\nLast call for the following:\nNone, all good!\n\n\nOn Holiday mode:\n\n@myjob \n@lex-zaiya \n\nThank you for your attention. Besides the above the rest of the active Busy Bees are doing really well!\n\n### Ecency Points to distribute\n\nSome community members have been sending me Ecency Points to distribute. They are as follows:\n@melinda010100 sent me 170,000 Ecency points.\n@alonicus sent me 48,500 Ecency points.\n@papilloncharity sent me 50,000 Ecency points.\n@chaosmagic23 sent me 30,000 Ecency points!\n@shaidon sent me 30,000 Ecency points to this fund.\n@oceanbee sent me 21,300 Ecency points to this fund.\n@itsostylish sent me 7,000 Ecency points to this fund.\n@zakludick (me) added 5,000 Ecency points to this fund.\n@okarun sent me 5,000 Ecency Points!\n@tydynrain sent me 2,000 Ecency points to this fund.\n@lecia89 sent me 5,000 Ecency points to this fund.\n\nTotal: 364,800 Ecency points has been put into this fund in all history of this group! Wow!\n\n\n200pts to an Active Busy Bee Redfish.\n100pts to an Active Busy Bee Minnow.\n\nI was able to distribute points today, I had to use my phone app.\n\nLast week we had 15,600 points left, this week I have 1,700 points to distribute and we shall have 13,900 points left.\n\nDonations of more Ecency Points are welcome! (PS please send me a message on a comment somewhere and let me know, otherwise I might forget to count it!\n\n## Congratulations\n\n## Promotions\nNone\n\n\n## Milestones of 1,000HP Increments \nCongratulations to @cryptoandcoffee for hitting the 208,000HP Milestone!\nCongratulations to @papilloncharity for hitting the 189,000HP Milestone!\nCongratulations to @melinda010100 for hitting the 103,000HP Milestone!\nCongratulations to @nkemkonam89 for hitting the 15,000HP Milestone!\nCongratulations to @cryptoreforma for hitting the 14,000HP Milestone!\nCongratulations to @irisworld for hitting the 13,000HP Milestone!\nCongratulations to @gragi for hitting the 11,000HP Milestone!\n\n![](https://images.ecency.com/DQmXJr15isF2anuJyMjnmLuq1zjF4WYY7HE56NpGBht4Zd3/blue_bar.jpg)\n\n\n\n## The Basic Rules of Activity\n\n- Activity means posting and commenting within a 30-day time. \n\n- Posting weekly is recommended.\n\n- Supporting one another with votes and engagement is encouraged. There is zero enforcement, we just recommend it. If you want people on Hive who will speak and interact with you - just look at the people in this list!\n\nAccounts that go dormant too long will be placed into sleeping bees.\n\n\n![](https://images.ecency.com/DQmXJr15isF2anuJyMjnmLuq1zjF4WYY7HE56NpGBht4Zd3/blue_bar.jpg)\n\n# Progress List\n\n![](https://i.ecency.com/DQmSXNUdfQFtMCdK1gfarn83QDGKq4UbzkhAqb7jKAv8qzF/image.png)\n\n\n\n\n\n\n## Orca Category \n@cryptoandcoffee\n@papilloncharity\n@ph1102 \n@melinda010100\n@jacobtothe \n\n## Dolphin Category\n@fermentedphil \n@joetunex \n@lizelle \n@new.things \n@generikat\n@alonicus \n@borsengelaber \n@tydynrain \n@shaidon\n@nkemakonam89 \n@cryptoreforma \n@tengolotodo \n@irisworld \n@flemingfarm\n@gargi \n@slothlydoesit \n@merit.ahama \n\n\n## Minnow Category\n\n\n@chaosmagic23 \n@consciouscat \n@reachdreams \n@jacoalberts \n@roswelborges \n@gurseerat \n@soyernesto \n@treasuree \n@dragan1957 \n@josueelinfame \n@kachy2022 \n@zakludick\n@myjob\n@clairemobey \n@lex-zaiya \n@lizandra \n@ivyann \n@quduus1\n@rajpootg\n@loadreaper\n@lecia89 \n\n\n\n\n## Redfish Category\n\n\n\n@hellsveiah \n@edycu007  \n@sommylove  \n@aimeludick \n@merenludick \n@matthew-williams \n\n\n\n\n\n# Group stats\n\n![](https://i.ecency.com/DQmehgLa4ZXM2mYyhTzwP3UfyLsqQBNB6iYk7EAyweTa5PX/image.png)\n\n\n\n# Nomination of Gifts\n\nMy Nomination of sharing 50% of this post's payout goes to @matthew-williams  for being the lowest HP account that posted something this week. (and is not on a negative HP growth or joined this week, or holding posting rewards unclaimed for weeks that would put you ahead of others who also could grow.)\n\n\nIn support of our Redfish doing well, For @alonicus' SBI gifts I nominate:  @edycu007 and @hellsveiah ! Well done! Great growth and performance!\n\n\n\nLet's go! Good luck for the new week!\n\n\n# Sleeping Bees\n\n@anikekirsten, @stevemuis, @michieme, @thefoxygeeksa, @evanrentschler, @giantbear, @geelocks, @pixelhuntersam, @newharvest, @nxghtrxven, @tomster-17, @kerras, @threedotz, @ma3str0, @rynow, @chekohler, @jasperdick, @nikv, @awgbibb, @mimismartypants, @penderis, @misshugo, @rafzat, @artywink, @therneau, @mirroredspork, @sabrinah, @actordontee, @loadreaper, @oceanbee, @itsostylish, @itcouldbecloud, @braaiboy, @quduus1, @wallay, @tigermom, @tranquil3, @xenowolfza, @littlebee4, @melibee, @hafiz34, @xplosive, @p1k4ppa10, @mimismartypants, @putu300, @julianhorack, @okarun, @george-dee, @mrenglish, @wrestlingdesires, @parkrunmayor, @joanstewart, @zo3d, @maiasun84, @alwaysonyi, @swordandboard, @beauty197, @technicalside, @fionasfavourites, @hopestylist \n\nCheers!\n@zakludick\n\n![](https://images.ecency.com/DQmcoPQHCZpHmnJJtUNUXNFjQxs5qU6Vzh5Zt7dpxnLR2Th/zak_banner_brittandjosie.png)\n\n![](https://images.ecency.com/DQmWCxqwCcJUbJgNkGaqDDqp98j7t9iibKMbkGgPQUSkwkM/image.png)\n\n[Hive South Africa](https://ecency.com/created/hive-150289)\n\n![](https://images.ecency.com/DQmXm94xYy1ud2XENv7jBAtMtcZYAt3S1wG7YdpmmHW37Kw/img_0.3319650127542638.jpg)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 114
+        },
+        "title": "HIVE PROGRESS - The Busy Bees 2026🐝🐝🐝 Progress Report Week 21",
+        "author": "zakludick",
+        "payout": 1.973,
+        "created": "2026-05-24T20:47:18",
+        "reblogs": 5,
+        "replies": [],
+        "updated": "2026-05-24T20:47:18",
+        "category": "hive-167922",
+        "children": 4,
+        "permlink": "hive-progress-the-busy-bees-d5fd9ce91e2f7",
+        "community": "hive-167922",
+        "payout_at": "2026-05-31T20:47:18",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 24728795168014,
+        "percent_hbd": 0,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 49467222703
+          },
+          {
+            "voter": "seckorama",
+            "rshares": 88654514940
+          },
+          {
+            "voter": "esteemapp",
+            "rshares": 13011314704
+          },
+          {
+            "voter": "bigtakosensei",
+            "rshares": 6141866874
+          },
+          {
+            "voter": "bloghound",
+            "rshares": 557530445
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "matthew-williams"
+          }
+        ],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "hive-167922",
+            "proofofbrain",
+            "neoxian",
+            "ocd",
+            "gems",
+            "busybees",
+            "community",
+            "goals",
+            "progress",
+            "growth"
+          ],
+          "image": [
+            "https://i.ecency.com/DQmW6ekuwSaGUWvXMYz6TxHqM3CMeWDQD8RpiVBnDYckVVf/image.png",
+            "https://images.ecency.com/DQmXJr15isF2anuJyMjnmLuq1zjF4WYY7HE56NpGBht4Zd3/blue_bar.jpg",
+            "https://i.ecency.com/DQmSXNUdfQFtMCdK1gfarn83QDGKq4UbzkhAqb7jKAv8qzF/image.png",
+            "https://i.ecency.com/DQmehgLa4ZXM2mYyhTzwP3UfyLsqQBNB6iYk7EAyweTa5PX/image.png",
+            "https://images.ecency.com/DQmcoPQHCZpHmnJJtUNUXNFjQxs5qU6Vzh5Zt7dpxnLR2Th/zak_banner_brittandjosie.png",
+            "https://images.ecency.com/DQmWCxqwCcJUbJgNkGaqDDqp98j7t9iibKMbkGgPQUSkwkM/image.png",
+            "https://images.ecency.com/DQmXm94xYy1ud2XENv7jBAtMtcZYAt3S1wG7YdpmmHW37Kw/img_0.3319650127542638.jpg",
+            "https://i.ecency.com/DQmW6ekuwSaGUWvXMYz6TxHqM3CMeWDQD8RpiVBnDYckVVf/image.png)",
+            "https://images.ecency.com/DQmXJr15isF2anuJyMjnmLuq1zjF4WYY7HE56NpGBht4Zd3/blue_bar.jpg)"
+          ],
+          "format": "markdown+html",
+          "thumbnails": [
+            "https://i.ecency.com/DQmW6ekuwSaGUWvXMYz6TxHqM3CMeWDQD8RpiVBnDYckVVf/image.png"
+          ],
+          "description": "This weekend was busy. It was @merenludick's 16th birthday, we went ice-skating. I fell pretty badly on the ice, but I'll be OK.",
+          "image_ratios": [
+            "1.4988",
+            "40.0000",
+            "0.6842",
+            "0.8582",
+            "1.7778"
+          ]
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 74.8,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "1.973 HBD"
+      },
+      {
+        "url": "/hive-167922/@bulkathos/myhivegoals-week-19-checking-my",
+        "body": "<center>\n\n![](https://i.ecency.com/DQmYGMg3RHm63sYKwXtb64GCkKjkXEuKMxNwcJUNyRZEcGx/front_mhgw19.jpg)\n\n</center>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23zRw3SoGotiSUAysx4tbYSPR3V3jdvPQ3LTooQ4k1z4VBxtPoNchWgAq1KiuHBo874BJ.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nGreetings, community, and happy start to the week! Hoping you're starting your day full of energy and in the best mood, I'm here to share my usual #MyHiveGoals report! In it, I summarize our activity and output from last week, and I was pleasantly surprised to see how productive it was. I've been finishing the last corrections my advisor sent me on my paper, and I've spent the last two weeks fine-tuning the details. I think I'll have it ready this week. Ironically, even though it seems like I have more time, I have to organize my desk in the lab. It's full of scientific articles, manuals, and lab protocols that I spent hours reading to finish my thesis discussion. Now I have to tidy up my desk to dedicate myself to the next phase of my professional career: applying for my first research project.\n\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmQoMtNS7e6G34e2omNb3XA4QAiAUCUoNzku7ioQbxwq2y/image.png)\n\nLink: [livecoinwatch](https://www.livecoinwatch.com/price/Hive-HIVE)\n\n</center>\n\n<div class=\"text-justify\">\n\nThe first big news I saw while brewing my coffee was that the price of Hive had recovered! $0.065 was the price I used to exchange all the liquid Hive from all my weekly rewards (remember that due to the low price of Hive, we aren't receiving HBD). It was depressing last week to see the price of Hive at $0.058 after almost reaching $0.09, although with the current circumstances, it only takes one geopolitical event for everything to collapse. Let's hope that this week we can overcome this fragile state in the crypto market.\n\n</div>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/Eo4Ab6YHDAqaRVh7pHakA5AGvkNLYU7VLBS8c1rk9qDwzndFTYaNHBV8B4vRG9gDDam.png)\n\n</center>\n\n<center>\n\n# Hive/HP\n</center>\n\n<div class=\"pull-right\">  \n\n![](https://i.ecency.com/DQmUAzC8hcAniKk2L51W2DAcKVWYa3iFkZKH1Hy9rxTtRtW/image.png)\n\n</div>\n\n<div class=\"text-justify\">\n\nWe haven't funded our wallet on Hive yet; I think that will be towards the end of this month. However, that hasn't stopped us from continuing to do the daily power-ups. We're on track to complete the 5th Hive Power Up Month, which, added to this week's rewards, has generated a total of 125 HP, which we add to our influence within the network. This is what surprised me, because I thought I would generate less since I was busy with my academic and teaching activities, and this week will be the same, tomorrow I will start giving practical classes in the laboratory so I don't know if I will get out early enough to get online.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmdXX6umzY8TrcxZFGbS3bma8NKHbGeBdnKfHRzG9D7DZz/image.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nBut overall, we're on the right track. We'll probably reach 10,000 HP sometime this week, and in June we'll formally begin working towards our annual goal of 12,000 HP. It would take six months of network activity to reach that amount, so I think it's perfectly achievable.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmUW2z8ja4yh4ami7nVZBQdSfiYp2o7mkoEAhyfL877uHg/image.png)|![](https://i.ecency.com/DQmNpNwB22C14t7CrdEXWpKQ3MYuHQ672qXy4x1qofag429/image.png)\n--|--\n\nLink: [hivestats](https://hivestats.io/)\n\n</center>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tbkj8mbMn9CYGJL7qVH3Zzq9mBSpZMLFAwUuy9ggaZ1KBkyRJwKGLVu3gb6pfH3bZUd.png)\n\n</center>\n\n<center>\n\n# HBD Savings\n</center>\n\n<div class=\"pull-right\">  \n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/AKNJfepRduyDCKjLtjvEhUPDPpkZXQf7PJtDkDBCyRbctqMHdqs6nxd3Ha31Gs1.png)\n\n\n</div>\n\n<div class=\"text-justify\">\n\nThe next metric we'll review is our HBD savings. In our previous post, we celebrated reaching 2,000 HBD after two years of deciding to explore the potential of this savings tool within the blockchain, through the HBD stablecoin (Hive-backed dollar). My thoughts at this point, considering not only our progress but also the challenging state of the crypto market in general, are that the HBD savings tool remains an excellent way to save and generate returns. I say this because even with the APR at 12%, it's still worth investing in HBD.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmQgkXjTw7PqwJKe7srF7mpG3RsYsJrmt2Q83jPrKAwCX7/image.png)\n\n</center>\n\n\n<div class=\"text-justify\">\n\nThis week we managed to generate 7,286 HBD. This was because I converted my liquid Hives to HBD right during this price recovery. A week ago, this would have been equivalent to 6 HBD, bringing our total to 2,008,236 HBD.\n\n</div>\n\n<center>\n\n![](https://i.ecency.com/DQmSGWf6Jt2WhA3qLASySnTdDq7RNt8cLeQSSpaCzPMGixY/image.png)\n\n---\n\n![](https://i.ecency.com/DQmPxyWm6MDkf5pUCfbdrEuSDdkHi4Uj97f6jRXA5yRWRWn/image.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nCompared to last week, when we started with 2,000 HBD, we've now taken our first step of 2,008.236 HBD toward our annual goal of 2,300 HBD. It's a challenging task considering Hive's low price and 12% APR, but I believe it's all about consistency and exploring other opportunities to connect with new Hive communities and reach more users. As long as we remain active and consistent on the platform, the rewards will follow.\n\n</div>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tGyXZoWHqdFmZ3okUbJHeoVbbUXGqH9Q7Eq9XGt2nrFidVxjieoh8GH2HD5583firb5.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nWell, friends, that's all for my weekly report on my Hive goals. I just wanted to mention that HBD I've earned in my wallet. In my previous post, I mentioned my interest in investing some of my HBD in second-layer and NFT projects, but recently Hive Engine was apparently compromised, and one of the consequences was that Rising Star, one of my favorite NFT games, will have to rethink its future. This led me to decide not to spend my HBD and to hold onto it until things are back to normal with Hive Engine. Until then, I just want to wish you a productive week and good health. See you soon, friends!\n\n</div>\n\n---\n\n<center>\n\n# Versión Español\n</center>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmYGMg3RHm63sYKwXtb64GCkKjkXEuKMxNwcJUNyRZEcGx/front_mhgw19.jpg)\n\n</center>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23zRw3SoGotiSUAysx4tbYSPR3V3jdvPQ3LTooQ4k1z4VBxtPoNchWgAq1KiuHBo874BJ.png)\n\n</center>\n\n<div class=\"text-justify\">\n\n¡Saludos, comunidad, y feliz inicio de semana! Espero que comiencen el día con energía y de buen humor. ¡Aquí les comparto mi informe habitual de #MyHiveGoals! En él, resumo nuestra actividad y producción de la semana pasada, y me sorprendió gratamente lo productiva que fue. He estado terminando las últimas correcciones que mi asesor me envió para mi trabajo y he dedicado las últimas dos semanas a perfeccionar los detalles. Creo que lo tendré listo esta semana. Irónicamente, aunque parece que tengo más tiempo, tengo que organizar mi escritorio en el laboratorio. Está lleno de artículos científicos, manuales y protocolos de laboratorio que leí durante horas para terminar la defensa de mi tesis. Ahora tengo que ordenar mi escritorio para dedicarme a la siguiente etapa de mi carrera profesional: solicitar mi primer proyecto de investigación.\n\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmQoMtNS7e6G34e2omNb3XA4QAiAUCUoNzku7ioQbxwq2y/image.png)\n\nLink: [livecoinwatch](https://www.livecoinwatch.com/price/Hive-HIVE)\n\n</center>\n\n<div class=\"text-justify\">\n\nLa primera gran noticia que vi mientras preparaba mi café fue que el precio de Hive se había recuperado. ¡Usé $0.065 para intercambiar todo el Hive líquido de mis recompensas semanales (recuerden que, debido al bajo precio de Hive, no estamos recibiendo HBD)! Fue desalentador la semana pasada ver el precio de Hive en $0.058 después de casi alcanzar los $0.09, aunque con las circunstancias actuales, basta un solo evento geopolítico para que todo se derrumbe. Esperemos que esta semana podamos superar esta frágil situación en el mercado de criptomonedas.\n\n</div>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/Eo4Ab6YHDAqaRVh7pHakA5AGvkNLYU7VLBS8c1rk9qDwzndFTYaNHBV8B4vRG9gDDam.png)\n\n</center>\n\n<center>\n\n# Hive/HP\n</center>\n\n<div class=\"pull-right\">  \n\n![](https://i.ecency.com/DQmUAzC8hcAniKk2L51W2DAcKVWYa3iFkZKH1Hy9rxTtRtW/image.png)\n\n</div>\n\n<div class=\"text-justify\">\n\nAún no hemos recargado nuestra billetera en Hive; creo que lo haremos hacia finales de este mes. Sin embargo, eso no nos ha impedido continuar con las recargas diarias. Estamos en camino de completar el 5.º Mes de Recargas de Hive, que, sumado a las recompensas de esta semana, ha generado un total de 125 HP, que añadimos a nuestra influencia dentro de la red. Esto me sorprendió, porque pensé que generaría menos, ya que estaba ocupado con mis actividades académicas y docentes, y esta semana será igual: mañana empiezo a dar clases prácticas en el laboratorio, así que no sé si podré salir lo suficientemente temprano para conectarme.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmdXX6umzY8TrcxZFGbS3bma8NKHbGeBdnKfHRzG9D7DZz/image.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nEn general, vamos por buen camino. Probablemente alcancemos los 10000 HP esta semana, y en junio comenzaremos formalmente a trabajar para lograr nuestro objetivo anual de 12 000 HP. Se necesitarían seis meses de actividad de red para alcanzar esa cifra, así que creo que es perfectamente factible.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmUW2z8ja4yh4ami7nVZBQdSfiYp2o7mkoEAhyfL877uHg/image.png)|![](https://i.ecency.com/DQmNpNwB22C14t7CrdEXWpKQ3MYuHQ672qXy4x1qofag429/image.png)\n--|--\n\nLink: [hivestats](https://hivestats.io/)\n\n</center>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tbkj8mbMn9CYGJL7qVH3Zzq9mBSpZMLFAwUuy9ggaZ1KBkyRJwKGLVu3gb6pfH3bZUd.png)\n\n</center>\n\n<center>\n\n# Ahorros HBD\n</center>\n\n<div class=\"pull-right\">  \n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/AKNJfepRduyDCKjLtjvEhUPDPpkZXQf7PJtDkDBCyRbctqMHdqs6nxd3Ha31Gs1.png)\n\n\n</div>\n\n<div class=\"text-justify\">\n\nEl siguiente parámetro que vamos a revisar es el de nuestros ahorros en HBD, ya en nuestra publicación anterior celebrábamos alcanzar los 2000 HBD luego de 2 años de haber tomado la decisión de ver el potencial de esta herramienta de ahorro dentro de la blockchain, a través de la stablecoin HBD (Dólar respaldado por Hive). Mis pensamientos a estas alturas no solo del camino recorrido, sino del difícil estado del mercado cripto en general, es que la herramienta de ahorros en HBD sigue siendo una excelente iniciativa para ahorrar y generar beneficios. Digo esto porque aún cuando el % de APR se encuentra al 12% sigue valiendo la pena apostar por HBD.\n\n</div>\n\n---\n\n<center>\n\n![](https://i.ecency.com/DQmQgkXjTw7PqwJKe7srF7mpG3RsYsJrmt2Q83jPrKAwCX7/image.png)\n\n</center>\n\n\n<div class=\"text-justify\">\n\nEsta semana logramos generar 7.286 HBD, esto fue porque cambié mis Hives líquidos a HBD justo en esta recuperación del precio, hace una semana atrás serían el equivalente a 6 HBD para llegar a un total de 2008.236 HBD.\n\n</div>\n\n<center>\n\n![](https://i.ecency.com/DQmSGWf6Jt2WhA3qLASySnTdDq7RNt8cLeQSSpaCzPMGixY/image.png)\n\n---\n\n![](https://i.ecency.com/DQmPxyWm6MDkf5pUCfbdrEuSDdkHi4Uj97f6jRXA5yRWRWn/image.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nEn comparación con la semana pasada, donde partimos con 2000 HBD, ahora damos nuestro primer paso de 2008.236 HBD hacia nuestra meta anual de 2300 HBD. Es una tarea ardua considerando el bajo precio de Hive y del APR a 12% pero creo que todo es cuestión de mantenerse constante y ver que otras oportunidades de conocer otros espacios y/o comunidades de hive que nos permitan relacionarnos con nuevas comunidades y llegar a más usuarios. Mientras sigamos activos y constante en nuestra actividad en la plata forma, las recompensas vendrán solas.\n</div>\n\n<center>\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23tGyXZoWHqdFmZ3okUbJHeoVbbUXGqH9Q7Eq9XGt2nrFidVxjieoh8GH2HD5583firb5.png)\n\n</center>\n\n<div class=\"text-justify\">\n\nBien amigos hasta llego con mi reporte semanal de mis metas en Hive, no quería dejar de comentar ese HBD líquido que deje en la billetera. En mi post anterior comenté sobre mi interés de invertir parte de ese HBD en proyectos de segunda capa y NFT, pero recientemente Hive Engine fue al parecer vulnerada y una de las consecuencias de esto fue que Rising Star uno de mis juegos NFT favoritos tendrá que replantearse su futuro, esto me llevó a no gastar ese HBD y mantenerlo hasta que las cosas se regularicen en Hive Engine. Hasta entonces, solo me queda desearles una semana productiva y mucha salud. Hasta pronto amigos!\n\n</div>\n\n<center>\n\n![image.png](https://files.peakd.com/file/peakd-hive/bulkathos/23zRw3SoGotiSUAysx4tbYSPR3V3jdvPQ3LTooQ4k1z4VBxtPoNchWgAq1KiuHBo874BJ.png)\n\n</center>\n\n<center>\n\n# Follow me on Hive!/¡Sigueme en Hive!\n\n[\n![Cinema pixelart 1 Banner con Logo.gif](https://files.peakd.com/file/peakd-hive/bulkathos/23wWTX6kP2RPnXbiA2u3EEC3YbHVXdqKZrySXhG3APNWFB8ZfqrZdR5ADNoZQGNkFF6Hq.gif)\n](https://ecency.com/@bulkathos)\n\n---\n\n![Ecency logo Bulkathos.gif](https://files.peakd.com/file/peakd-hive/bulkathos/23vsn34BaitCjk9Kz1FyeaZm1ZNPDrrm6AR86D2Wz858DntiDErgbN21u4QnRg7MwCibd.gif)\n\n</center>",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 81
+        },
+        "title": "#MyHiveGoals week #19: Checking my progress on my Hive/HP and HBD goals while organizing my desk in the Lab! [Eng/Esp]",
+        "author": "bulkathos",
+        "payout": 0.824,
+        "created": "2026-05-25T22:12:24",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-05-25T22:12:24",
+        "category": "hive-167922",
+        "children": 0,
+        "permlink": "myhivegoals-week-19-checking-my",
+        "community": "hive-167922",
+        "payout_at": "2026-06-01T22:12:24",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 10249207004584,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "good-karma",
+            "rshares": 54816726224
+          },
+          {
+            "voter": "funnel",
+            "rshares": 4319561599
+          },
+          {
+            "voter": "esteemapp",
+            "rshares": 14232632442
+          },
+          {
+            "voter": "bloghound",
+            "rshares": 612902218
+          },
+          {
+            "voter": "ganjafarmer",
+            "rshares": 1925618631
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/4.3.9-vision",
+          "tags": [
+            "hive-167922",
+            "myhivegoals",
+            "goals",
+            "hivepower",
+            "spanish",
+            "hbd",
+            "leofinance",
+            "archon",
+            "proofofbrain",
+            "bbh"
+          ],
+          "image": [
+            "https://i.ecency.com/DQmYGMg3RHm63sYKwXtb64GCkKjkXEuKMxNwcJUNyRZEcGx/front_mhgw19.jpg",
+            "https://files.peakd.com/file/peakd-hive/bulkathos/23zRw3SoGotiSUAysx4tbYSPR3V3jdvPQ3LTooQ4k1z4VBxtPoNchWgAq1KiuHBo874BJ.png",
+            "https://i.ecency.com/DQmQoMtNS7e6G34e2omNb3XA4QAiAUCUoNzku7ioQbxwq2y/image.png",
+            "https://files.peakd.com/file/peakd-hive/bulkathos/Eo4Ab6YHDAqaRVh7pHakA5AGvkNLYU7VLBS8c1rk9qDwzndFTYaNHBV8B4vRG9gDDam.png",
+            "https://i.ecency.com/DQmUAzC8hcAniKk2L51W2DAcKVWYa3iFkZKH1Hy9rxTtRtW/image.png",
+            "https://i.ecency.com/DQmdXX6umzY8TrcxZFGbS3bma8NKHbGeBdnKfHRzG9D7DZz/image.png",
+            "https://i.ecency.com/DQmUW2z8ja4yh4ami7nVZBQdSfiYp2o7mkoEAhyfL877uHg/image.png)|![](https://i.ecency.com/DQmNpNwB22C14t7CrdEXWpKQ3MYuHQ672qXy4x1qofag429/image.png",
+            "https://files.peakd.com/file/peakd-hive/bulkathos/23tbkj8mbMn9CYGJL7qVH3Zzq9mBSpZMLFAwUuy9ggaZ1KBkyRJwKGLVu3gb6pfH3bZUd.png",
+            "https://files.peakd.com/file/peakd-hive/bulkathos/AKNJfepRduyDCKjLtjvEhUPDPpkZXQf7PJtDkDBCyRbctqMHdqs6nxd3Ha31Gs1.png"
+          ],
+          "format": "markdown+html",
+          "thumbnails": [
+            "https://i.ecency.com/DQmYGMg3RHm63sYKwXtb64GCkKjkXEuKMxNwcJUNyRZEcGx/front_mhgw19.jpg"
+          ],
+          "description": "Greetings, community, and happy start to the week! Hoping you're starting your day full of energy and in the best mood, I'm here to share my usual #MyHiveGoals report! In it, I summarize our activity and",
+          "image_ratios": [
+            "1.7778",
+            "35.5556",
+            "1.9290",
+            "24.6154",
+            "1.1250"
+          ]
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 75.31,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.824 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

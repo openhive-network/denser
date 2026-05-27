@@ -1,0 +1,106 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post",
+    "params": {
+      "author": "gtg",
+      "permlink": "hive-hardfork-28-jump-starter-kit",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "7b2838a9ff86042e",
+  "method": "bridge.get_post",
+  "params": {
+    "author": "gtg",
+    "permlink": "hive-hardfork-28-jump-starter-kit",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "url": "/hive-160391/@gtg/hive-hardfork-28-jump-starter-kit",
+      "body": "This is a **copy–paste friendly** guide to get a **Hive** consensus node running for HF28.\n\nSimple **recipes** for:\n\n- seed node\n- witness node\n- exchange / personal wallet node\n- basic API node\n- Docker version of all of the above\n\n---\n\n## Assumptions / pre-requisites\n\nTo keep the recipes dead simple, I assume:\n\n### Hardware (minimum reasonable):\n\n- **x86-64 CPU** <sup>(\\*)</sup>\n- **8 GB RAM**\n- **1 TB fast SSD / NVMe**\n\nSingle-core CPU performance matters most during the initial replay/resync, and later for keeping up with the head block. The more RAM you have, the more data Linux can keep in the page cache, which means less pressure on your storage.\n\nThe required size of the shared memory file (where the node state lives) has dropped significantly, so we no longer recommend forcing it into RAM via `tmpfs`. In most cases it's enough to keep it on disk and let the kernel’s page cache do its job, especially on systems with plenty of RAM. You can still use `tmpfs` as an optional optimization if you really want to squeeze out every bit of replay/resync performance.\n\n<sup>(\\*) Others are just out of scope now</sup>\n\n### Software\n\n- **OS:** Ubuntu **24.04 LTS**\n- **User:** local user `hive`\n  - `uid = 1000`\n  - `HOME = /home/hive`\n- **Data dir:** `/home/hive/datadir`\n- **We use:**\n  - `screen` to keep `hived` running\n  - `lbzip2` for compressed snapshots\n  - `docker` if you follow the Docker section\n- **Ports (adjust firewall / security groups):**\n  - `2001` – P2P (seed)\n  - `8090`, `8091` – WebSocket / HTTP APIs\n\n---\n\n## What these recipes can run\n\nSame **binary**, different **config**:\n\n- **Seed node** – helps the P2P network, no special plugins.\n- **Witness node** – produces blocks, keeps the surface small.\n- **Exchange / wallet node** – uses history plugin to track deposits/withdrawals for chosen accounts.\n- **Basic API node** – serves simple RPC like `get_block`, broadcasts transactions, tracks the head block.\n\nThe **role** is decided by `config.ini` (plugins, tracked accounts, witness name, private key, etc.), not by different binaries.\nA snapshot may already contain extra data (like history for tracked accounts), but if you remove the related plugins or tracked accounts from `config.ini`, that data simply won’t be used.\n\n<center>https://www.youtube.com/watch?v=vlW9lDE3DuI</center>\n---\n\n# Part 1 – native binary (non-Docker) recipes\n\n## Recipe 1 – One-time prep (run as `hive` user)\n\n```bash\n# create basic tree\nmkdir -pv ~/datadir/{blockchain,snapshot} ~/bin\n```\n\n---\n\n## Recipe 2 – Get sample config\n\nStart from the \"exchange\" config and then tweak it for your node's desired role (seed / witness / wallet / API).\n\n```bash\nwget https://gtg.openhive.network/get/snapshot/exchange/example-exchange-config.ini \\\n  -O ~/datadir/config.ini\n```\n\nLater you might want to:\n\n- disable `plugin = ...` entries you don’t need\n  (adding new plugin entries may require a replay)\n- remove tracked accounts you don’t need\n  (mainly for exchange / wallet-style nodes)\n  (adding new tracked accounts will require a replay)\n- set `witness` and `private-key` if you run this node as a witness\n- tweak API bind addresses and ports for your setup\n- change the location of the shared memory file or comments / history databases\n- adjust how `block_log` is split to match your storage preferences\n\n---\n\n## Recipe 3 – Download Hive 1.28.3 binaries\n\n```bash\nwget https://gtg.openhive.network/get/bin/hived-1.28.3 -nc -P ~/bin\nwget https://gtg.openhive.network/get/bin/cli_wallet-1.28.3 -nc -P ~/bin\nchmod u+x ~/bin/{hived,cli_wallet}-1.28.3\n```\n\n---\n\n## Recipe 4 – Put shared_memory on tmpfs (optional, advanced)\n\n`shared_memory.bin` is hot. Putting it in RAM can speed up replay and reduce SSD wear, but if it’s gone (for example after a reboot) or corrupted, you will need to start over with replay or load a snapshot. Treat this as an **optional optimization**, not the default.\n\n1. **Enable tmpfs path in config:**\n\n```bash\nsed -i '/^# shared-file-dir/s/^# //' ~/datadir/config.ini\n# or manually uncomment line: shared-file-dir = \"/run/hive\"\n```\n\n2. **Prepare `/run/hive` (run as root):**\n\n```bash\nsudo mkdir -p /run/hive\nsudo chown -Rc hive:hive /run/hive\nsudo mount -o remount,size=12G /run\n```\n\nPlease note that aside from `shared_memory.bin`, Hive now also uses a `comments-rocksdb-storage` directory for part of the state. By default this lives alongside shared memory in the shared-file-dir (on disk), but if you move `shared-file-dir` to `/run/hive`, both `shared_memory.bin` and `comments-rocksdb-storage` will live in RAM.\n\n---\n\n## Recipe 5 – Use existing block_log (faster start)\n\nYou can either:\n\n- use your **existing** `block_log` (recommended), or\n- download a **public** one (huge, but can save replay time in some setups)\n\n```bash\nwget https://gtg.openhive.network/get/blockchain/block_log -nc -P ~/datadir/blockchain\nwget https://gtg.openhive.network/get/blockchain/block_log.artifacts -nc -P ~/datadir/blockchain\n```\n\n> The `block_log` is very large (hundreds of GB), so downloading it can take many hours.\n> If you **already have** a `block_log`, definitely reuse it for upgrades.\n> If you **don’t** have one yet, with the current improvements it’s usually better to just let the node sync from the P2P network instead of downloading a fresh `block_log` file from a single source.\n\n---\n\n## Recipe 6 – Use snapshot (fastest way to state)\n\nSnapshot = ready-made node state from another machine.\n\n```bash\nwget https://gtg.openhive.network/get/snapshot/exchange/latest.tar.bz2 -O - \\\n  | lbzip2 -dc \\\n  | tar xvC ~/datadir/snapshot\n```\n\n- Snapshot name in this recipe: `latest`\n  (it will end up in `~/datadir/snapshot/latest`)\n\nMake sure:\n\n- your `block_log` is **at least as fresh** as the snapshot\n- your `hived-1.28.3` and `config.ini` are **compatible** with it\n  (plugins, tracked accounts, etc.)\n\nHere **compatible** means: your config does *not* require any extra plugins or tracked accounts that were **not** used when the snapshot was created\n(for example, using new `account-history-rocksdb-track-account-range` entries that weren’t present when the snapshot was made).\nHaving **fewer** plugins or a **subset** of tracked accounts is fine.\n\n\n---\n\n## Recipe 7 – Adjust for specific roles\n\nAll roles use **the same data dir and binary**, just different `config.ini`.\n\n### Seed node\n\nIn `~/datadir/config.ini`:\n\n- make sure P2P port is open and public:\n\n```ini\np2p-endpoint = 0.0.0.0:2001\n```\n\nYou can now start `hived` using Recipe 8.\n\n---\n\n### Witness node\n\nIn `~/datadir/config.ini`:\n\n```ini\nwitness = \"yourwitnessname\"\nprivate-key = 5XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n```\n\nKeep it **clean and simple**: comment out or remove non-essential plugins (APIs, history, etc.).\n\nThen start `hived` using Recipe 8.\n\n---\n\n### Exchange / personal wallet node\n\nIn `~/datadir/config.ini`:\n\nExample config.ini you've downloaded in Recipe 2 is good enough as long as your desired account(s) are already tracked.\n\nIf so, use Recipe 8a.\n\nIf you need to **add any new tracked accounts** to the list of tracked accounts using format:\n```ini\naccount-history-rocksdb-track-account-range = [\"mytrackedaccount\",\"mytrackedaccount\"]\n```\nyou simply **cannot use that snapshot** anymore. In that case you must rebuild the state from scratch using your `block_log` (no `--load-snapshot`), use Recipe 8b.\n\n---\n\n### Basic API node (bots, simple apps)\n\n- Start from `example-exchange-config.ini`.\n- Disable anything you don’t need (like detailed history for accounts you don’t care about).\n- Make sure HTTP/WebSocket bind addresses are what you want:\n\n```ini\nwebserver-http-endpoint = 0.0.0.0:8090\nwebserver-ws-endpoint   = 0.0.0.0:8091\n```\n\nThen start `hived` using Recipe 8a.\n\n---\n\n## Recipe 8 – Start `hived` (native binary)\n\n### 8a) Start from snapshot (if your config is compatible)\n\n```bash\nscreen -S hived\n~/bin/hived-1.28.3 -d ~/datadir --load-snapshot=latest\n```\n\nDetach from `screen` with: `Ctrl+a`, then `d`\nReattach with: `screen -r hived`\n\n### 8b) Start with replay from `block_log` (no snapshot)\n\nIf you don’t use a snapshot and just want to rebuild state from your `block_log`:\n\n```bash\nscreen -S hived\n~/bin/hived-1.28.3 -d ~/datadir --replay\n```\n\nDetach from `screen` with: `Ctrl+a`, then `d`\nReattach with: `screen -r hived`\n\n### 8c) Resync from scratch (no snapshot, no `block_log`)\n\nWARNING: this removes your local blockchain data (don't do that unless you want to download everything again from the P2P network).\nIf you are upgrading, see Recipe 9.\n\nBefore you \"start from scratch\", double-check your directory tree. If you really want a clean resync, make sure there are no leftovers in your data dir, especially in `~/datadir/blockchain/`. Old files (like a previous monolithic `block_log`) can still occupy a lot of space even if they’re no longer used. When you’re sure you don’t need them anymore, `rm -rf ~/datadir/blockchain/*` gives you a truly empty blockchain directory to start from.\n\n```bash\nscreen -S hived\n~/bin/hived-1.28.3 -d ~/datadir --resync\n```\n\nDetach from `screen` with: `Ctrl+a`, then `d`\nReattach with: `screen -r hived`\n\nIf there is no existing state or `block_log`, running `hived` without `--load-snapshot` and without `--replay` will also effectively start resync from scratch. \n\n---\n\n## Recipe 9 – Upgrading from older version to 1.28.3\n\nAssuming you already run a node laid out like this:\n\n1. **Stop your current `hived`.**\n2. **Keep your existing data dir** (`~/datadir`), especially `blockchain/block_log`.\n3. **Update binaries** using Recipe 3 (download `hived-1.28.3` and `cli_wallet-1.28.3`).\n4. **Optionally download latest snapshot** using Recipe 6 if you are going to use it instead of replay.\n\nThen choose one of these paths:\n\n- If you **use snapshots**: start with Recipe 8a (`--load-snapshot=latest`).\n- If you **don’t use snapshots but have a `block_log`**: start with Recipe 8b (`--replay`).\n- If you **don’t have a usable `block_log`** (unlikely when you are upgrading): let the node sync from P2P, i.e. go with Recipe 8c (`--resync`).\n\nIn all cases, you reuse the same `config.ini` (adjusted as needed for your role).\n\nSome upgrades don’t require replay (for example, certain bug-fix releases within the same 1.28.x line – please refer to the release notes for details).\nIn such case it's enough to just stop your current hived-1.28.0 and start it with hived-1.28.3 to resume its operations.\nBut make sure you don't use any of `--load-snapshot`, `--force-replay`, or `--resync`.\n\n---\n\n# Part 2 – Docker recipe (Hive 1.28.3)\n\nSame idea as Part 1, just wrapped in a container.\n\nAll assumptions from Part 1 still apply (same `~/datadir`, same `config.ini`, optional `block_log` and snapshot). \n**Additionally** we assume:\n\n- Docker is installed and user `hive` can run `docker`.\n\n---\n\n## Recipe 10 – Run Hive 1.28.3 in Docker\n\nMost common Docker run (seed + basic API), using your existing `/home/hive/datadir` from Part 1:\n\n```bash\ndocker run \\\n  -e HIVED_UID=$(id -u) \\\n  -p 2001:2001 \\\n  -p 8090:8090 \\\n  -p 8091:8091 \\\n  -v /home/hive/datadir:/home/hived/datadir \\\n  hiveio/hive:1.28.3 \\\n  --set-benchmark-interval=100000 \\\n  --load-snapshot=latest \\\n  --replay\n```\n\nWhat this does:\n\n- runs image `hiveio/hive:1.28.3`\n- maps your host `/home/hive/datadir` to `/home/hived/datadir` inside the container\n- exposes ports `2001`, `8090`, `8091` from the container to the host\n- uses your user ID inside the container (`HIVED_UID=$(id -u)`) so files created by `hived` are owned by `hive` on the host\n- tells `hived` to:\n  - use `/home/hived/datadir/snapshot/latest` as the snapshot (`--load-snapshot=latest`)\n  - rebuild state, combining snapshot and `block_log` as needed (`--replay`)\n  - report periodic benchmark info (`--set-benchmark-interval=100000`)\n\nYou still need:\n\n- `config.ini` inside `/home/hive/datadir` (on the host)\n- `block_log`, and`block_log.artifacts` (unless pruned) and snapshot, exactly like in the bare-metal recipes\n\nFor simpler cases:\n\n- if you **don’t** want to use a snapshot, drop `--load-snapshot=latest` (keep `--replay` or `--force-replay` if you want a full replay from `block_log`)\n- if you already have a healthy state and just want to **restart**, drop **both** `--load-snapshot=latest` and `--replay`\n\nAdjust ports / extra flags to match your intended role (seed / witness / exchange / wallet / API), using the same `config.ini` rules as in Part 1.\n\n---\n\n# TL;DR – \"Complete simple recipe\" (native binary)\n\nIf you just want **one long paste** (native binary, default config, download block_log, use snapshot):\n\n```bash\nscreen -S hived\nmkdir -pv ~/datadir/{blockchain,snapshot} ~/bin\n\nwget https://gtg.openhive.network/get/bin/hived-1.28.3 -nc -P ~/bin\nwget https://gtg.openhive.network/get/bin/cli_wallet-1.28.3 -nc -P ~/bin\n\nchmod u+x ~/bin/{hived,cli_wallet}-1.28.3\n\nwget https://gtg.openhive.network/get/blockchain/block_log -nc -P ~/datadir/blockchain\nwget https://gtg.openhive.network/get/blockchain/block_log.artifacts -nc -P ~/datadir/blockchain\nwget https://gtg.openhive.network/get/snapshot/exchange/latest.tar.bz2 -O - | \\\n  lbzip2 -dc | tar xvC ~/datadir/snapshot\n\n# that will overwrite your config\nwget https://gtg.openhive.network/get/snapshot/exchange/example-exchange-config.ini \\\n  -O ~/datadir/config.ini\n\n~/bin/hived-1.28.3 -d ~/datadir --load-snapshot=latest\n```\n\n---\n\n## Estimated times (very rough)\n\n- **Sync from scratch** – long (a day, or two)\n- **Replay with existing `block_log`** – roughly half that\n- **Load snapshot** (existing block_log or pruned)  – up to an hour\n\n---\n\n**Congratulations, you have your Hive HF28 node running (or at least a copy-paste away).**\n",
+      "depth": 0,
+      "stats": {
+        "gray": false,
+        "hide": false,
+        "flag_weight": 0,
+        "total_votes": 881
+      },
+      "title": "Hive HardFork 28 Jump Starter Kit",
+      "author": "gtg",
+      "payout": 97.224,
+      "created": "2025-11-18T14:55:24",
+      "reblogs": 35,
+      "replies": [],
+      "updated": "2025-11-18T18:31:48",
+      "category": "hive-160391",
+      "children": 34,
+      "permlink": "hive-hardfork-28-jump-starter-kit",
+      "community": "hive-160391",
+      "payout_at": "2025-11-25T14:55:24",
+      "blacklists": [],
+      "is_paidout": true,
+      "author_role": "mod",
+      "net_rshares": 623866785470150,
+      "percent_hbd": 10000,
+      "active_votes": [
+        {
+          "voter": "smooth",
+          "rshares": 31212402036251
+        },
+        {
+          "voter": "blocktrades",
+          "rshares": 67383026498110
+        },
+        {
+          "voter": "abit",
+          "rshares": 25111593756253
+        },
+        {
+          "voter": "adm",
+          "rshares": 21486549249334
+        },
+        {
+          "voter": "gandalf",
+          "rshares": 5149449887
+        },
+        {
+          "voter": "guest4test",
+          "rshares": 0
+        }
+      ],
+      "author_title": "Wizard",
+      "beneficiaries": [],
+      "json_metadata": {
+        "app": "hive.blog/0.9",
+        "tags": [
+          "hivepressure",
+          "dev",
+          "witness-category",
+          "hive",
+          "doc",
+          "faq"
+        ],
+        "image": [
+          "youtu-vlW9lDE3DuI"
+        ],
+        "author": "gandalf",
+        "format": "markdown+html",
+        "summary": ""
+      },
+      "community_title": "Blockchain Wizardry",
+      "author_reputation": 76.01,
+      "author_payout_value": "48.634 HBD",
+      "max_accepted_payout": "1000000.000 HBD",
+      "curator_payout_value": "48.590 HBD",
+      "pending_payout_value": "0.000 HBD"
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
