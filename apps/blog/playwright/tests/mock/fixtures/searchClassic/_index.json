@@ -1,0 +1,11 @@
+{
+  "testName": "searchClassic",
+  "recordedAt": "2026-05-29T07:12:19.515Z",
+  "totalRequests": 15,
+  "savedFixtures": 3,
+  "duplicatesSkipped": 12,
+  "methods": {
+    "GET /hivesense-api": 8,
+    "search-api.find_text": 7
+  }
+}

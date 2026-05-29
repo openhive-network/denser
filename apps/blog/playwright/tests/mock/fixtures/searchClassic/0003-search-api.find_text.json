@@ -1,0 +1,36 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "search-api.find_text",
+    "params": {
+      "pattern": "hive",
+      "sort": "created",
+      "author": "",
+      "limit": 20,
+      "observer": "hive.blog",
+      "start_author": "",
+      "start_permlink": ""
+    },
+    "id": 1
+  },
+  "requestHash": "b9ebd0a682fd59bb",
+  "method": "search-api.find_text",
+  "params": {
+    "pattern": "hive",
+    "sort": "created",
+    "author": "",
+    "limit": 20,
+    "observer": "hive.blog",
+    "start_author": "",
+    "start_permlink": ""
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": null,
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
