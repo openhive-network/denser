@@ -1,0 +1,46 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "rc_api.find_rc_accounts",
+    "params": {
+      "accounts": [
+        "gtg"
+      ]
+    },
+    "id": 1
+  },
+  "requestHash": "75be1cdcb773e043",
+  "method": "rc_api.find_rc_accounts",
+  "params": {
+    "accounts": [
+      "gtg"
+    ]
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "rc_accounts": [
+        {
+          "account": "gtg",
+          "rc_manabar": {
+            "current_mana": 3369897917990263,
+            "last_update_time": 1780045356
+          },
+          "max_rc_creation_adjustment": {
+            "amount": "2020748973",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "max_rc": 3380899044591078,
+          "delegated_rc": 180000000000,
+          "received_delegated_rc": 10174616133
+        }
+      ]
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

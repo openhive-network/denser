@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_following",
+    "params": [
+      "gtg",
+      "",
+      "ignore",
+      1000
+    ],
+    "id": 1
+  },
+  "requestHash": "eba3b14fa9007ee7",
+  "method": "condenser_api.get_following",
+  "params": [
+    "gtg",
+    "",
+    "ignore",
+    1000
+  ],
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

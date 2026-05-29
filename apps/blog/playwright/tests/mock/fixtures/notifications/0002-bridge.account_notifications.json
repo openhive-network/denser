@@ -1,0 +1,427 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.account_notifications",
+    "params": {
+      "account": "gtg",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "ae637897cb69572c",
+  "method": "bridge.account_notifications",
+  "params": {
+    "account": "gtg",
+    "limit": 50
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "id": "86209258743398401",
+        "msg": "@demo followed you",
+        "url": "@demo",
+        "date": "2026-05-28T17:35:15",
+        "type": "follow",
+        "score": 36
+      },
+      {
+        "id": "86162294068740097",
+        "msg": "@offgridlife replied to your post",
+        "url": "@offgridlife/tfnluw",
+        "date": "2026-05-26T16:59:18",
+        "type": "reply",
+        "score": 67
+      },
+      {
+        "id": "86124765999267841",
+        "msg": "@cmcubba followed you",
+        "url": "@cmcubba",
+        "date": "2026-05-25T02:09:15",
+        "type": "follow",
+        "score": 38
+      },
+      {
+        "id": "85899169889255425",
+        "msg": "@iamkaye followed you",
+        "url": "@iamkaye",
+        "date": "2026-05-15T08:42:24",
+        "type": "follow",
+        "score": 55
+      },
+      {
+        "id": "85791531838996481",
+        "msg": "@godfish mentioned you and 0 others",
+        "url": "@godfish/re-leaky20-2026510t191925205z",
+        "date": "2026-05-10T17:19:21",
+        "type": "mention",
+        "score": 69
+      },
+      {
+        "id": "85751707023179777",
+        "msg": "@sagarkothari88 mentioned you and 1 others",
+        "url": "@sagarkothari88/1rrsscl9",
+        "date": "2026-05-09T00:06:42",
+        "type": "mention",
+        "score": 68
+      },
+      {
+        "id": "85694750123884550",
+        "msg": "@reiseamateur voted on your post ($0.02)",
+        "url": "@gtg/re-hivefest-1778016179738",
+        "date": "2026-05-06T13:10:21",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "85676721721835521",
+        "msg": "@ubglo17 followed you",
+        "url": "@ubglo17",
+        "date": "2026-05-05T18:31:00",
+        "type": "follow",
+        "score": 54
+      },
+      {
+        "id": "85659757947387905",
+        "msg": "@hallmann mentioned you and 2 others",
+        "url": "@hallmann/125k-hp",
+        "date": "2026-05-05T00:57:45",
+        "type": "mention",
+        "score": 70
+      },
+      {
+        "id": "85656969976741889",
+        "msg": "@honeydue mentioned you and 32 others",
+        "url": "@honeydue/hive-open-days-the-grace",
+        "date": "2026-05-04T22:04:39",
+        "type": "mention",
+        "score": 70
+      },
+      {
+        "id": "85609026859040769",
+        "msg": "@oslaikaaguilera reblogged your post",
+        "url": "@gtg/thank-you-for-passing-by",
+        "date": "2026-05-02T20:27:57",
+        "type": "reblog",
+        "score": 25
+      },
+      {
+        "id": "85597005253967873",
+        "msg": "@shortsegments mentioned you and 0 others",
+        "url": "@shortsegments/tee1t5",
+        "date": "2026-05-02T08:01:33",
+        "type": "mention",
+        "score": 69
+      },
+      {
+        "id": "85595529932701704",
+        "msg": "@shortsegments mentioned you and 0 others",
+        "url": "@shortsegments/tee1t5",
+        "date": "2026-05-02T06:29:57",
+        "type": "mention",
+        "score": 69
+      },
+      {
+        "id": "85591734523789313",
+        "msg": "@shortsegments mentioned you and 0 others",
+        "url": "@shortsegments/tee1t5",
+        "date": "2026-05-02T02:34:18",
+        "type": "mention",
+        "score": 69
+      },
+      {
+        "id": "85591734507012097",
+        "msg": "@shortsegments replied to your post",
+        "url": "@shortsegments/tee1t5",
+        "date": "2026-05-02T02:34:18",
+        "type": "reply",
+        "score": 69
+      },
+      {
+        "id": "85585458767069185",
+        "msg": "@haastrecht followed you",
+        "url": "@haastrecht",
+        "date": "2026-05-01T20:04:39",
+        "type": "follow",
+        "score": 68
+      },
+      {
+        "id": "85577619113771011",
+        "msg": "@pibara mentioned you and 33 others",
+        "url": "@pibara/a-little-script-to-figure-out-what-witnesses-to-vote-for",
+        "date": "2026-05-01T11:57:54",
+        "type": "mention",
+        "score": 60
+      },
+      {
+        "id": "85555854903869442",
+        "msg": "@pibara mentioned you and 29 others",
+        "url": "@pibara/re-gtg-teb6ob",
+        "date": "2026-04-30T13:26:36",
+        "type": "mention",
+        "score": 60
+      },
+      {
+        "id": "85555854891286530",
+        "msg": "@pibara replied to your comment",
+        "url": "@pibara/re-gtg-teb6ob",
+        "date": "2026-04-30T13:26:36",
+        "type": "reply_comment",
+        "score": 60
+      },
+      {
+        "id": "85554558364811296",
+        "msg": "@pibara voted on your post ($0.03)",
+        "url": "@gtg/re-pibara-1777539989525",
+        "date": "2026-04-30T12:06:06",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "85540670852300803",
+        "msg": "@pibara mentioned you and 33 others",
+        "url": "@pibara/a-little-script-to-figure-out-what-witnesses-to-vote-for",
+        "date": "2026-04-29T21:43:51",
+        "type": "mention",
+        "score": 60
+      },
+      {
+        "id": "85397203908034561",
+        "msg": "@rara2911 followed you",
+        "url": "@rara2911",
+        "date": "2026-04-23T17:16:15",
+        "type": "follow",
+        "score": 45
+      },
+      {
+        "id": "85378888024195076",
+        "msg": "@louis88 mentioned you and 23 others",
+        "url": "@louis88/1-month-claude-ai-a-report-of-progress",
+        "date": "2026-04-22T22:19:03",
+        "type": "mention",
+        "score": 71
+      },
+      {
+        "id": "85302969372770305",
+        "msg": "@aftabirshad followed you",
+        "url": "@aftabirshad",
+        "date": "2026-04-19T15:45:24",
+        "type": "follow",
+        "score": 51
+      },
+      {
+        "id": "85294867994902530",
+        "msg": "@sarmatia.app mentioned you and 1 others",
+        "url": "@sarmatia.app/misions-in-sarmatia-mundi-app",
+        "date": "2026-04-19T07:22:24",
+        "type": "mention",
+        "score": 50
+      },
+      {
+        "id": "85224153224839169",
+        "msg": "@ecency replied to your comment",
+        "url": "@ecency/re-gtg-2026416t91151548z",
+        "date": "2026-04-16T06:11:51",
+        "type": "reply_comment",
+        "score": 69
+      },
+      {
+        "id": "85210241574109194",
+        "msg": "@darine.darine voted on your post ($0.02)",
+        "url": "@gtg/re-darine-darine-1776266516975",
+        "date": "2026-04-15T15:48:06",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "85193991284326401",
+        "msg": "@shahabwp reblogged your post",
+        "url": "@gtg/hive-hardfork-28-jump-starter-kit",
+        "date": "2026-04-14T22:59:09",
+        "type": "reblog",
+        "score": 25
+      },
+      {
+        "id": "85099720522858498",
+        "msg": "@detlev voted on your post ($0.09)",
+        "url": "@gtg/re-detlev-1775823374479",
+        "date": "2026-04-10T21:26:03",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "85099718090162177",
+        "msg": "@detlev replied to your comment",
+        "url": "@detlev/re-gtg-tdarj6",
+        "date": "2026-04-10T21:25:54",
+        "type": "reply_comment",
+        "score": 72
+      },
+      {
+        "id": "85096416350830594",
+        "msg": "@meesterboom voted on your post ($0.32)",
+        "url": "@gtg/re-louis88-1775729566606",
+        "date": "2026-04-10T18:00:54",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "85071736118181889",
+        "msg": "@ladytruckview followed you",
+        "url": "@ladytruckview",
+        "date": "2026-04-09T16:28:33",
+        "type": "follow",
+        "score": 64
+      },
+      {
+        "id": "85071710348378113",
+        "msg": "@ladytruckview followed you",
+        "url": "@ladytruckview",
+        "date": "2026-04-09T16:26:57",
+        "type": "follow",
+        "score": 64
+      },
+      {
+        "id": "85065974159507460",
+        "msg": "@louis88 voted on your post ($0.37)",
+        "url": "@gtg/re-louis88-1775729566606",
+        "date": "2026-04-09T10:30:48",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "85019795472252929",
+        "msg": "@howo mentioned you and 0 others",
+        "url": "@howo/re-louis88-td4dsr",
+        "date": "2026-04-07T10:43:39",
+        "type": "mention",
+        "score": 68
+      },
+      {
+        "id": "84996362671751178",
+        "msg": "@louis88 voted on your post ($0.10)",
+        "url": "@gtg/re-louis88-1775470688248",
+        "date": "2026-04-06T10:28:45",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "84984674450931715",
+        "msg": "@louis88 mentioned you and 4 others",
+        "url": "@louis88/re-themarkymark-td1ku5",
+        "date": "2026-04-05T22:23:03",
+        "type": "mention",
+        "score": 71
+      },
+      {
+        "id": "84958237043982337",
+        "msg": "@luisma79 followed you",
+        "url": "@luisma79",
+        "date": "2026-04-04T19:01:36",
+        "type": "follow",
+        "score": 42
+      },
+      {
+        "id": "84949782946119682",
+        "msg": "@louis88 voted on your post ($0.07)",
+        "url": "@gtg/re-louis88-1775171470270",
+        "date": "2026-04-04T10:16:42",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "84938374170804226",
+        "msg": "@crimsonclad voted on your post ($0.05)",
+        "url": "@gtg/re-crimsonclad-1774881493706",
+        "date": "2026-04-03T22:28:21",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "84938127730278402",
+        "msg": "@crimsonclad replied to your comment",
+        "url": "@crimsonclad/re-gtg-tcxv1p",
+        "date": "2026-04-03T22:13:03",
+        "type": "reply_comment",
+        "score": 66
+      },
+      {
+        "id": "84929363589464065",
+        "msg": "@veramfund followed you",
+        "url": "@veramfund",
+        "date": "2026-04-03T13:08:54",
+        "type": "follow",
+        "score": 56
+      },
+      {
+        "id": "84928633981894657",
+        "msg": "@hiveborgminer followed you",
+        "url": "@hiveborgminer",
+        "date": "2026-04-03T12:23:36",
+        "type": "follow",
+        "score": 53
+      },
+      {
+        "id": "84925278270259201",
+        "msg": "@holdeck2 followed you",
+        "url": "@holdeck2",
+        "date": "2026-04-03T08:55:15",
+        "type": "follow",
+        "score": 58
+      },
+      {
+        "id": "84921029482250252",
+        "msg": "@guiltyparties voted on your post ($0.16)",
+        "url": "@gtg/re-crimsonclad-1774881493706",
+        "date": "2026-04-03T04:31:27",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "84921016580571137",
+        "msg": "@sm-silva replied to your comment",
+        "url": "@sm-silva/tcwhuw",
+        "date": "2026-04-03T04:30:39",
+        "type": "reply_comment",
+        "score": 50
+      },
+      {
+        "id": "84917498213826562",
+        "msg": "@acidyo voted on your post ($0.05)",
+        "url": "@gtg/re-pharesim-1775144731251",
+        "date": "2026-04-03T00:52:12",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "84916102617890818",
+        "msg": "@condeas voted on your post ($0.05)",
+        "url": "@gtg/re-louis88-1775171470270",
+        "date": "2026-04-02T23:25:33",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "84915001759891458",
+        "msg": "@louis88 mentioned you and 1 others",
+        "url": "@louis88/more-success-stories-with-the-claude-subscription-to-hive-related-projects-and-their-security",
+        "date": "2026-04-02T22:17:12",
+        "type": "mention",
+        "score": 71
+      },
+      {
+        "id": "84901514476257281",
+        "msg": "@valued-customer replied to your comment",
+        "url": "@valued-customer/re-gtg-tcuxt0",
+        "date": "2026-04-02T08:19:48",
+        "type": "reply_comment",
+        "score": 66
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

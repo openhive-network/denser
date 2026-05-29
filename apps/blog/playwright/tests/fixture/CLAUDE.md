@@ -226,6 +226,37 @@ operation types (`custom_json`, `comment`, etc.), inspect `broadcast.calls[i].pa
 
 ---
 
+## Recipe: assert a "mark all notifications as read" broadcast (§14)
+
+`transactionService.markAllNotificationAsRead(date, { observe: true })` emits
+ONE `custom_json_operation` with `id: "notify"` and a JSON tuple
+`["setLastRead", { date }]`. The `date` is `new Date().toISOString()` minus the
+trailing `.SSSZ`, so it can't be pinned — `expectNotifyCustomJson` asserts the
+`YYYY-MM-DDTHH:mm:ss` wire format instead.
+
+```ts
+import {
+  installBroadcastInterceptor,
+  expectNotifyCustomJson
+} from '../support/fixture-auth/broadcast-interceptor';
+
+// observe:true → confirmInBlock is MANDATORY (same as §9 social ops).
+const broadcast = await installBroadcastInterceptor(page, undefined, {
+  confirmInBlock: true
+});
+await page.getByRole('button', { name: 'Mark all as read' }).click();
+await broadcast.waitForCount(1);
+expectNotifyCustomJson(broadcast.calls[0], { required_auth: 'gtg' });
+```
+
+The "Mark all as read" control only renders for the account owner with
+`unread !== 0` (`notification-content.tsx`). The `notifications` spec logs in
+AS the profile owner (`authenticatedUser: { username: 'gtg' }`) and views
+`/@gtg/notifications`; the committed `bridge.unread_notifications` fixture
+freezes `unread: 3`, so the button is always present at replay time regardless
+of gtg's live read state. There is no per-notification "mark as read" control
+in the app — only "mark all".
+
 ## Recipe: assert a follow / mute / blacklist broadcast (§9)
 
 All social-graph operations (follow, unfollow, mute, unmute, blacklist,

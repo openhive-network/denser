@@ -1,0 +1,27 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.unread_notifications",
+    "params": {
+      "account": "gtg"
+    },
+    "id": 1
+  },
+  "requestHash": "d7f552fa923776a5",
+  "method": "bridge.unread_notifications",
+  "params": {
+    "account": "gtg"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "unread": 3,
+      "lastread": "2026-05-15 13:05:15"
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

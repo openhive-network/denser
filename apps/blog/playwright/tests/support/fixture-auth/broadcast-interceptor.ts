@@ -744,6 +744,67 @@ export function expectCommunityCustomJson(
   }
 }
 
+/**
+ * §14 NOTIF-03 — "mark all notifications as read".
+ *
+ * `transactionService.markAllNotificationAsRead(date)` emits ONE
+ * `custom_json_operation` with id `"notify"` and a JSON tuple of shape
+ * `["setLastRead", { date }]` (see transaction/index.ts). The `date` is
+ * `new Date().toISOString()` minus the trailing ".SSSZ" (19 chars), so it
+ * cannot be pinned — we assert its format instead.
+ */
+export interface NotifyCustomJsonExpectations {
+  /** Expected `required_posting_auths[0]` — the seeded user. */
+  required_auth: string;
+}
+
+export function expectNotifyCustomJson(
+  call: InterceptedBroadcast,
+  expected: NotifyCustomJsonExpectations
+): void {
+  const trx = (call.params as { trx?: unknown } | undefined)?.trx as
+    | { operations?: unknown[] }
+    | undefined;
+  expect(trx, 'broadcast params should include trx').toBeDefined();
+
+  const op = trx?.operations?.[0] as
+    | { type?: string; value?: Record<string, unknown> }
+    | undefined;
+  expect(op?.type, 'operation.type should be custom_json_operation').toBe(
+    'custom_json_operation'
+  );
+
+  const value = op?.value as
+    | { id?: string; json?: string; required_posting_auths?: string[] }
+    | undefined;
+  expect(value?.id, 'custom_json.id').toBe('notify');
+  expect(
+    value?.required_posting_auths,
+    'custom_json.required_posting_auths'
+  ).toEqual([expected.required_auth]);
+
+  const rawJson = value?.json ?? '';
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(rawJson);
+  } catch {
+    throw new Error(
+      `custom_json.json should be JSON-parseable; got: ${rawJson}`
+    );
+  }
+  expect(Array.isArray(parsed), 'custom_json.json should be a tuple').toBe(true);
+  const [action, payload] = parsed as [unknown, { date?: unknown }];
+  expect(action, 'custom_json.json[0]').toBe('setLastRead');
+
+  // `date` is time-based (new Date().toISOString().slice(0, -5)) so we assert
+  // the wire format rather than a fixed value: "YYYY-MM-DDTHH:mm:ss".
+  expect(typeof payload?.date, 'payload.date type').toBe('string');
+  expect(
+    payload?.date as string,
+    'payload.date should be a millisecond-stripped ISO timestamp'
+  ).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
+}
+
 /** TX-15: `delete_comment_operation` payload. */
 export interface DeleteCommentOperationExpectations {
   author: string;

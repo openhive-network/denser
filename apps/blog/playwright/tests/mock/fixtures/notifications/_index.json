@@ -1,0 +1,17 @@
+{
+  "testName": "notifications",
+  "recordedAt": "2026-05-29T09:02:48.527Z",
+  "totalRequests": 48,
+  "savedFixtures": 9,
+  "duplicatesSkipped": 39,
+  "methods": {
+    "database_api.find_accounts": 12,
+    "bridge.account_notifications": 6,
+    "bridge.get_profile": 8,
+    "database_api.get_dynamic_global_properties": 7,
+    "GET /hivesense-api": 3,
+    "bridge.unread_notifications": 3,
+    "rc_api.find_rc_accounts": 3,
+    "condenser_api.get_following": 6
+  }
+}
