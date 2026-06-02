@@ -1,5 +1,7 @@
 import { test, expect } from '../support/fixture-proxy-test';
 import { SearchPage } from '../support/pages/searchPage';
+import { ProfilePage } from '../support/pages/profilePage';
+import { TagCommunityFeedsPage } from '../support/pages/tagCommunityFeedsPage';
 import { TIMEOUTS } from '../support/constants';
 
 /**
@@ -53,7 +55,7 @@ test.describe('§13 Search — mode redirects', () => {
     await searchPage.searchInput.press('Enter');
 
     await expect(page).toHaveURL(new RegExp(`/@${ACCOUNT}(\\b|$)`));
-    await expect(page.getByTestId('profile-name')).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    await expect(new ProfilePage(page).profileName).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
   });
 
   // SRCH-03 — Search by topic/tag: tag mode redirects to the trending tag feed.
@@ -68,7 +70,7 @@ test.describe('§13 Search — mode redirects', () => {
     await searchPage.searchInput.press('Enter');
 
     await expect(page).toHaveURL(new RegExp(`/trending/${TAG}(\\b|$)`));
-    await expect(page.getByTestId('post-list-item').first()).toBeVisible({
+    await expect(new TagCommunityFeedsPage(page).firstPostItem).toBeVisible({
       timeout: TIMEOUTS.HYDRATION
     });
   });
