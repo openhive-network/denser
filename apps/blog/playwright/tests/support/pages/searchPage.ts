@@ -51,10 +51,11 @@ export class SearchPage {
     this.modeUserTopic = page.getByTestId('search-mode-user-topic');
     this.modeTag = page.getByTestId('search-mode-tag');
 
-    // Sort select - second combobox (visible only for classic/userTopic)
-    this.sortSelectTrigger = page.locator('button[role="combobox"]').nth(1);
-    this.sortRelevance = page.locator('[role="option"]').filter({ hasText: 'Relevance' });
-    this.sortCreated = page.locator('[role="option"]').filter({ hasText: /Newest|Created/i });
+    // Sort select - addressed by its testid (robust vs. relying on the
+    // combobox render order, which the mode select also matches).
+    this.sortSelectTrigger = page.getByTestId('search-sort-by-dropdown-list');
+    this.sortRelevance = page.getByRole('option', { name: 'Relevance' });
+    this.sortCreated = page.getByRole('option', { name: 'Newest' });
 
     // Search results - standard post-list-item
     this.postListItems = page.locator('[data-testid="post-list-item"]');

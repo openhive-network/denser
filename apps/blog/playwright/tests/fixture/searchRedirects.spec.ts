@@ -1,5 +1,6 @@
 import { test, expect } from '../support/fixture-proxy-test';
 import { SearchPage } from '../support/pages/searchPage';
+import { TIMEOUTS } from '../support/constants';
 
 /**
  * Search mode-redirect fixture suite — §13 Search (SRCH-02, SRCH-03).
@@ -52,7 +53,7 @@ test.describe('§13 Search — mode redirects', () => {
     await searchPage.searchInput.press('Enter');
 
     await expect(page).toHaveURL(new RegExp(`/@${ACCOUNT}(\\b|$)`));
-    await expect(page.getByTestId('profile-name')).toBeVisible({ timeout: 30000 });
+    await expect(page.getByTestId('profile-name')).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
   });
 
   // SRCH-03 — Search by topic/tag: tag mode redirects to the trending tag feed.
@@ -67,8 +68,8 @@ test.describe('§13 Search — mode redirects', () => {
     await searchPage.searchInput.press('Enter');
 
     await expect(page).toHaveURL(new RegExp(`/trending/${TAG}(\\b|$)`));
-    await expect(page.locator('[data-testid="post-list-item"]').first()).toBeVisible({
-      timeout: 30000
+    await expect(page.getByTestId('post-list-item').first()).toBeVisible({
+      timeout: TIMEOUTS.HYDRATION
     });
   });
 });

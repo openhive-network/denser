@@ -1,5 +1,6 @@
 import { test, expect } from '../support/fixture-proxy-test';
 import { SearchPage } from '../support/pages/searchPage';
+import { TIMEOUTS } from '../support/constants';
 
 /**
  * Classic search fixture suite — §13 Search (SRCH-01, SRCH-05).
@@ -45,7 +46,7 @@ test.describe('§13 Search — classic text search', () => {
     await expect(page).toHaveURL(/\/search\?q=hive/);
 
     // Results render deterministically from the fixture.
-    await expect(searchPage.firstPostItem).toBeVisible({ timeout: 30000 });
+    await expect(searchPage.firstPostItem).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     expect(await searchPage.getResultsCount()).toBeGreaterThanOrEqual(1);
 
     // The first result is pinned, proving we render the recorded response
@@ -65,16 +66,14 @@ test.describe('§13 Search — classic text search', () => {
   // completes deterministically.
   test('SRCH-05 sort selector re-issues the query with the chosen sort', async ({ page }) => {
     await searchPage.gotoWithClassicQuery(CLASSIC_QUERY, 'relevance');
-    await expect(searchPage.firstPostItem).toBeVisible({ timeout: 30000 });
+    await expect(searchPage.firstPostItem).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
 
     // The sort control reflects the active sort.
-    const sortTrigger = page.getByTestId('search-sort-by-dropdown-list');
-    await expect(sortTrigger).toContainText('Relevance');
+    await expect(searchPage.sortSelectTrigger).toContainText('Relevance');
 
     // Switching to "Newest" re-issues the search with sort=created while
     // preserving the query.
-    await sortTrigger.click();
-    await page.getByRole('option', { name: 'Newest' }).click();
+    await searchPage.selectSort('created');
 
     await expect(page).toHaveURL(/[?&]s=created/);
     await expect(page).toHaveURL(/[?&]q=hive/);
