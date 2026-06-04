@@ -52,7 +52,7 @@ variables:
   CADDY_TAG: '2.7.6'
   PLAYWRIGHT_TAG: 'v1.49.1-jammy'
 
-  HAF_COMMIT: 88d52ce4b9cb6715de2982b0ee881cc660d540c5
+  HAF_COMMIT: 222c848355efbdf0e4970c5f384b6da7cbfb582e
 include:
 - template: Workflows/Branch-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
@@ -62,13 +62,13 @@ include:
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: 88d52ce4b9cb6715de2982b0ee881cc660d540c5  # develop
+  ref: 222c848355efbdf0e4970c5f384b6da7cbfb582e  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
-  ref: 06a37f2b03d745fd0143f23b538c8a20fa4a35ba
+  ref: 10ac0ce94f7591b6ad80db1a23d046c9d57b6559
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
-  ref: 73cce209c074b639132366fe12d4a60523d62822
+  ref: d22ca041ec57cffa4531a030cc03175e73124cc3
   file: 'ci/node-replay.gitlab-ci.yml'
 
 default:
