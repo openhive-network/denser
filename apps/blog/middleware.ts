@@ -22,9 +22,9 @@ export const middleware = createMiddleware({
       'https://open.spotify.com',
       'https://3speak.tv',
       'https://odysee.com',
-      'https://openhive.chat',
-      // Allow denser OAuth flow inside RC iframe
-      'https://blog.openhive.network'
+      'https://openhive.chat'
+      // The site's own origin (for the denser OAuth flow inside the openhive.chat iframe) is added
+      // automatically by buildCsp from REACT_APP_SITE_DOMAIN — see packages/middleware/lib/csp.ts.
     ],
     reportUri: '/api/csp-report'
   }

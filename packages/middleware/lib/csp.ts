@@ -114,8 +114,26 @@ export function buildCsp(config: CspConfig = {}): string {
     } catch { /* invalid URL, use default */ }
   }
 
+  // Start from the app-configured frame-src sources. Apps that pass an explicit host list lose the
+  // implicit 'self', so ensure the document can still frame its own origin (required for the denser
+  // OAuth flow that loads inside the openhive.chat iframe). Resolve that origin from REACT_APP_SITE_DOMAIN
+  // at runtime so it is correct per deployment (blog.openhive.network, new.hive.blog, hive.blog) instead
+  // of a hardcoded host; skip when 'self' is already listed, and fall back to 'self' if the var is unset.
+  const frameSrcHosts = new Set(config.frameSrc ?? []);
+  if (frameSrcHosts.size > 0 && !frameSrcHosts.has("'self'")) {
+    const siteDomain = process.env.REACT_APP_SITE_DOMAIN;
+    let siteOrigin = "'self'";
+    if (siteDomain) {
+      try {
+        siteOrigin = new URL(siteDomain).origin;
+      } catch {
+        /* invalid URL, fall back to 'self' */
+      }
+    }
+    frameSrcHosts.add(siteOrigin);
+  }
   const frameSrcValue =
-    config.frameSrc && config.frameSrc.length > 0 ? `frame-src ${config.frameSrc.join(' ')}` : "frame-src 'self'";
+    frameSrcHosts.size > 0 ? `frame-src ${[...frameSrcHosts].join(' ')}` : "frame-src 'self'";
 
   const directives = [
     // Default fallback for unspecified resource types
