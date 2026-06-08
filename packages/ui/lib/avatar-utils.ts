@@ -1,55 +1,46 @@
-import env from '@beam-australia/react-env';
+import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 
 /**
- * Gets the base path for API routes
- * @returns The base path or empty string
+ * Avatar URL helpers.
+ *
+ * Avatars are served directly from the configured image hoster (imagehoster).
+ * These helpers only build the URL — the browser fetches the image straight
+ * from imagehoster, which handles resizing and caching. Denser does no
+ * server-side image fetching, proxying, or caching.
+ *
+ * Avatar endpoint: {imagesEndpoint}/u/{username}/avatar/{size}
+ *   size ∈ { small, medium, large }
  */
-function getBasePath(): string {
-  if (typeof window !== 'undefined') {
-    return env('BASE_PATH') || '';
-  }
-  if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_BASE_PATH) {
-    return process.env.NEXT_PUBLIC_BASE_PATH;
-  }
-  return '';
-}
+
+// Default avatar served by imagehoster when a user has no profile image.
+const DEFAULT_AVATAR_HASH = 'DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4';
 
 /**
- * Builds the internal API endpoint URL for avatars
- * @param path - The API path
- * @returns Full API URL with base path if needed
- */
-function getApiUrl(path: string): string {
-  const basePath = getBasePath();
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  return `${basePath}${normalizedPath}`;
-}
-
-/**
- * Get a user avatar URL using internal API endpoint (prevents caching)
+ * Get a user avatar URL served directly from the image hoster.
  * @param username - The Hive username
  * @param size - The avatar size ('small', 'medium', 'large')
- * @returns Internal API URL for avatar
+ * @returns Direct image hoster avatar URL
  */
 export function getUserAvatarUrl(username: string, size: 'small' | 'medium' | 'large' = 'small'): string {
-  return getApiUrl(`/api/avatar?username=${encodeURIComponent(username)}&size=${size}`);
+  return `${configuredImagesEndpoint}/u/${encodeURIComponent(username)}/avatar/${size}`;
 }
 
 /**
- * Get a user avatar URL with specific dimensions using internal API endpoint (prevents caching)
+ * Get a user avatar URL without a named size, served directly from the image
+ * hoster. The image hoster's avatar endpoint does not take pixel dimensions;
+ * callers needing a specific size should request a named size or use
+ * proxifyImageSrc. Kept for API compatibility.
  * @param username - The Hive username
- * @param width - Image width
- * @param height - Image height
- * @returns Internal API URL for avatar with dimensions
+ * @returns Direct image hoster avatar URL
  */
-export function getUserAvatarUrlWithDimensions(username: string, width: number, height: number): string {
-  return getApiUrl(`/api/avatar?username=${encodeURIComponent(username)}&width=${width}&height=${height}`);
+export function getUserAvatarUrlWithDimensions(username: string, _width: number, _height: number): string {
+  return `${configuredImagesEndpoint}/u/${encodeURIComponent(username)}/avatar`;
 }
 
 /**
- * Get the default fallback image URL using internal API endpoint (prevents caching)
- * @returns Internal API URL for default avatar
+ * Get the default fallback avatar URL served directly from the image hoster.
+ * @returns Direct image hoster default avatar URL
  */
 export function getDefaultImageUrl(): string {
-  return getApiUrl('/api/avatar/default');
+  return `${configuredImagesEndpoint}/${DEFAULT_AVATAR_HASH}`;
 }
