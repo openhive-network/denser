@@ -15,6 +15,13 @@ const nextConfig = {
   compress: false, // Nginx handles compression; disabling avoids zlib memory retention (denser#886)
   output: 'standalone',
   swcMinify: false,
+  // Skip ESLint + type-checking during the fixture test build ONLY (gated by
+  // FIXTURE_BUILD_SKIP_CHECKS, set only by the blog-fixture-tests CI job). That
+  // build exists solely to produce a runnable app for Playwright; lint and
+  // types are already enforced by dedicated CI jobs, so repeating them here
+  // just adds ~19s to every shard's build. Never set for production images.
+  eslint: { ignoreDuringBuilds: process.env.FIXTURE_BUILD_SKIP_CHECKS === 'true' },
+  typescript: { ignoreBuildErrors: process.env.FIXTURE_BUILD_SKIP_CHECKS === 'true' },
   basePath: basePath,
   assetPrefix: basePath,
   publicRuntimeConfig: {

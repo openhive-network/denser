@@ -825,16 +825,61 @@ blog-fixture-tests:
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   stage: test
   needs: []
+  # Each shard is a fully isolated container (own :3000 webServer + own :8200
+  # fixture proxy), so they never contend for the hardcoded port or share the
+  # stateful replay proxy. Playwright's `fullyParallel: false` config makes
+  # every spec file an indivisible test group, so `--shard` distributes whole
+  # files — never splitting a file's in-order calls across shards (which would
+  # corrupt the replay proxy's per-fixture call counters / pagination).
+  #
+  # 4 shards: the per-shard build is unavoidable (the production build bakes the
+  # build machine's absolute path into the server chunks — incl. @hiveio/wax's
+  # WASM loader — so the output is not portable to another runner, ruling out
+  # build-once-via-artifact). Going to 8 shards was measured to NOT help: the
+  # build (~90-180s, runner-local cache + contention when several shards land on
+  # one runner) is the bottleneck, not the test phase, so 8 shards gave the same
+  # wall-clock as 4 at double the CI-minutes. Reliably reaching ~3min needs
+  # build-once, which in turn needs the absolute-path baking solved.
+  parallel: 4
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
+    # Skip lint/type-check in the fixture build (see next.config.js) — they're
+    # covered by dedicated CI jobs and just slow every shard's build.
+    FIXTURE_BUILD_SKIP_CHECKS: 'true'
   script:
   - !reference [.node-job, script]
   - |
-    echo -e "\e[0Ksection_start:$(date +%s):fixture_tests[collapsed=false]\r\e[0KRunning blog fixture-based Playwright tests..."
+    echo -e "\e[0Ksection_start:$(date +%s):fixture_build[collapsed=true]\r\e[0KBuilding blog for fixture tests (shard ${CI_NODE_INDEX}/${CI_NODE_TOTAL})..."
     cd .$TURBO_APP_PATH
-    pnpm test:fixture
+    pnpm run test:fixture:prepare
+    echo -e "\e[0Ksection_end:$(date +%s):fixture_build\r\e[0K"
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):fixture_tests[collapsed=false]\r\e[0KRunning blog fixture-based Playwright tests (shard ${CI_NODE_INDEX}/${CI_NODE_TOTAL})..."
+    # Shard is read from CI_NODE_INDEX/CI_NODE_TOTAL inside the Playwright
+    # config (see playwright.fixture.config.ts) — no CLI flag needed.
+    pnpm run test:fixture:run
     echo -e "\e[0Ksection_end:$(date +%s):fixture_tests\r\e[0K"
+  cache:
+  # Dependency caches — pull-only (warmed by other @hive/blog jobs / prior
+  # runs). The inherited cache also listed `.next/` at the repo root, but the
+  # blog builds into apps/blog/.next, so that path cached nothing useful —
+  # dropped here in favour of the build-cache entry below.
+  - key: '$TURBO_APP_SCOPE-cache-2'
+    paths:
+    - .npm/
+    - .pnpm-store/
+    policy: pull
+  # Next.js incremental build cache. Because the inherited cache pointed at the
+  # wrong path, every build logged "No build cache found" and paid a full ~107s
+  # cold webpack compile. Caching the real apps/blog/.next/cache with pull-push
+  # lets each pipeline warm the next one's build (compile becomes incremental).
+  # The 4 shards build the same app and share one key; concurrent end-of-job
+  # pushes are last-writer-wins, which is benign for a best-effort build cache.
+  - key: '$TURBO_APP_SCOPE-next-build-cache'
+    paths:
+    - apps/blog/.next/cache
+    policy: pull-push
   artifacts:
     paths:
     - .${TURBO_APP_PATH}/test-results/

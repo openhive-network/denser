@@ -29,12 +29,28 @@ const FIXTURE_PORT = 8200;
 // Point the app at the fixture proxy
 process.env.REACT_APP_API_ENDPOINT = `http://localhost:${FIXTURE_PORT}`;
 
+// Optional CI sharding. GitLab's `parallel: N` sets CI_NODE_INDEX (1..N) and
+// CI_NODE_TOTAL (N) on each shard job; we map them straight onto Playwright's
+// `shard` option. Because this config is `fullyParallel: false` (every spec
+// file is one indivisible test group), `--shard` distributes whole files —
+// never splitting a file's ordered calls across shards, which would corrupt
+// the replay proxy's per-fixture call counters. Reading the shard from env
+// (rather than a CLI flag) sidesteps pnpm's `--` arg-forwarding quirk.
+// When the vars are absent (local runs / `parallel` unset) we run unsharded.
+const shardCurrent = Number(process.env.CI_NODE_INDEX);
+const shardTotal = Number(process.env.CI_NODE_TOTAL);
+const shard =
+  Number.isInteger(shardCurrent) && Number.isInteger(shardTotal) && shardTotal > 1
+    ? { current: shardCurrent, total: shardTotal }
+    : undefined;
+
 export default defineConfig({
   testDir: './playwright/tests/fixture',
   timeout: 60 * 1000,
   expect: {
     timeout: 10 * 1000
   },
+  shard,
   /* Single worker — fixture proxy is shared and test-scoped */
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
