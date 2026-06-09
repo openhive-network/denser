@@ -20,13 +20,31 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return new NextResponse(null, { status: 400 });
     }
 
-    // If the client signals redirect mode was used, construct the callback
-    // URI from request headers instead of accepting a client-provided value
+    // If the client signals redirect mode was used, reconstruct the callback
+    // URI server-side (never trust a client-provided value). Build it from the
+    // configured canonical site domain rather than the request Host header:
+    // behind a reverse proxy the forwarded Host can be an internal value rather
+    // than the public hostname, which would make this callback differ from the
+    // redirect_uri the client used during authorization (built from
+    // window.location.origin) and break the token exchange. Request headers are
+    // used only as a local-dev fallback. Same root cause as #924.
     let callbackUri: string | undefined;
     if (body['redirectUri']) {
-      const host = req.headers.get('host');
-      const proto = req.headers.get('x-forwarded-proto') || 'https';
-      callbackUri = `${proto}://${host}/api/google-drive/callback`;
+      let origin: string | undefined;
+      const siteDomain = process.env.REACT_APP_SITE_DOMAIN;
+      if (siteDomain) {
+        try {
+          origin = new URL(siteDomain).origin;
+        } catch {
+          // Misconfigured SITE_DOMAIN — fall through to request-header derivation.
+        }
+      }
+      if (!origin) {
+        const host = req.headers.get('host');
+        const proto = req.headers.get('x-forwarded-proto') || 'https';
+        origin = `${proto}://${host}`;
+      }
+      callbackUri = `${origin}/api/google-drive/callback`;
     }
 
     const oauth2Client = getGoogleDriveOAuth2Client(callbackUri);
