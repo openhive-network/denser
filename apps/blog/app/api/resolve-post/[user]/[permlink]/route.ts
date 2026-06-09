@@ -7,8 +7,22 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
 function getOrigin(request: Request): string {
-  const configuredBase = process.env.NEXT_PUBLIC_BASE_PATH;
+  // Build absolute redirect URLs from the configured canonical site domain.
+  // The reverse proxy forwards its upstream block name as the Host header
+  // (e.g. "newblog" for new.hive.blog), not the public hostname, so deriving
+  // the origin from request headers produces broken URLs like https://newblog/... .
+  // The Host header is also client-controllable, so trusting it for redirects is
+  // an open-redirect risk. Request headers are used only as a local-dev fallback.
+  const siteDomain = process.env.REACT_APP_SITE_DOMAIN;
+  if (siteDomain) {
+    try {
+      return new URL(siteDomain).origin;
+    } catch {
+      // Misconfigured SITE_DOMAIN — fall through to other strategies.
+    }
+  }
 
+  const configuredBase = process.env.NEXT_PUBLIC_BASE_PATH;
   if (configuredBase) {
     try {
       const tmp = new URL(configuredBase);
