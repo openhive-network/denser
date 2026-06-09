@@ -5,6 +5,50 @@ import { ApiHelper } from '../support/apiHelper';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { LoginForm } from '../support/pages/loginForm';
 
+// Must match the truncation in the popover card component
+// (features/post-rendering/popover-card-data.tsx): the about is sliced to
+// this many characters and gets a trailing ellipsis only when it is longer.
+const POPOVER_ABOUT_MAX_LENGTH = 140;
+
+/**
+ * Validates the "about" line of the user popover card against the API,
+ * covering both states the card can render:
+ *   - the author has a non-empty `profile.about` -> a `[data-testid="user-about"]`
+ *     paragraph is shown with the about truncated to POPOVER_ABOUT_MAX_LENGTH
+ *     (plus an ellipsis when the original is longer);
+ *   - the author has no about -> the line is not rendered at all, so we assert
+ *     the element is absent (count 0) rather than waiting for text that will
+ *     never appear.
+ *
+ * The popover must already be open when this is called.
+ */
+async function validateUserAboutInPopover(
+  postPage: PostPage,
+  apiHelper: ApiHelper,
+  authorName: string
+): Promise<void> {
+  let about: string | undefined;
+  try {
+    const postingJsonMetadata = (await apiHelper.getAccountInfoAPI(authorName))['result'][0]
+      .posting_json_metadata;
+    about = JSON.parse(postingJsonMetadata)?.profile?.about || undefined;
+  } catch {
+    // Missing/empty/malformed posting_json_metadata is treated as "no about".
+    about = undefined;
+  }
+
+  if (about) {
+    const expectedAbout =
+      about.slice(0, POPOVER_ABOUT_MAX_LENGTH) +
+      (about.length > POPOVER_ABOUT_MAX_LENGTH ? '...' : '');
+    await expect(postPage.userAboutPopoverCard).toBeVisible();
+    expect(await postPage.userAboutPopoverCard.textContent()).toBe(expectedAbout);
+  } else {
+    // No about in the profile -> the card must not render the about line.
+    await expect(postPage.userAboutPopoverCard).toHaveCount(0);
+  }
+}
+
 test.describe('Post page tests', () => {
   let homePage: HomePage;
   let postPage: PostPage;
@@ -104,27 +148,7 @@ test.describe('Post page tests', () => {
     await postPage.articleAuthorName.click();
     await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
 
-    try {
-      const userPostingJsonMetadata = await JSON.parse(
-        (await apiHelper.getAccountInfoAPI(firstPostAuthorName))['result'][0].posting_json_metadata
-      );
-
-      let userAboutAPI: any;
-
-      if ((await userPostingJsonMetadata.profile) && userPostingJsonMetadata.profile.about) {
-        userAboutAPI =
-          userPostingJsonMetadata.profile.about.slice(0, 157) +
-          (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
-        // console.log('userAboutAPI: ', await userAboutAPI);
-        expect(await postPage.userAboutPopoverCard.textContent()).toBe(userAboutAPI);
-      } else {
-        userAboutAPI = '';
-        // console.log('userAboutAPI: ', await userAboutAPI);
-        expect(await postPage.userAboutPopoverCard.textContent()).toBe(userAboutAPI);
-      }
-    } catch (error) {
-      console.log('Json error: ', error);
-    }
+    await validateUserAboutInPopover(postPage, apiHelper, firstPostAuthorName);
   });
 
   test('validate Follow button style in the popover card in light theme', async ({ page }) => {
@@ -520,25 +544,6 @@ test.describe('Post page tests', () => {
     await postPage.footerAuthorNameLink.click();
     await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
 
-    try {
-      const userPostingJsonMetadata = await JSON.parse(
-        (await apiHelper.getAccountInfoAPI(firstPostAuthorName))['result'][0].posting_json_metadata
-      );
-
-      let userAboutAPI: any;
-      if ((await userPostingJsonMetadata.profile) && userPostingJsonMetadata.profile.about) {
-        userAboutAPI =
-          userPostingJsonMetadata.profile.about.slice(0, 157) +
-          (157 < userPostingJsonMetadata.profile.about.length ? '...' : '');
-        // console.log('userAboutAPI: ', await userAboutAPI);
-        expect(await postPage.userAboutPopoverCard.textContent()).toBe(userAboutAPI);
-      } else {
-        userAboutAPI = '';
-        // console.log('userAboutAPI: ', await userAboutAPI);
-        expect(await postPage.userAboutPopoverCard.textContent()).toBe(userAboutAPI);
-      }
-    } catch (error) {
-      console.log('JSON error: ', error);
-    }
+    await validateUserAboutInPopover(postPage, apiHelper, firstPostAuthorName);
   });
 });
