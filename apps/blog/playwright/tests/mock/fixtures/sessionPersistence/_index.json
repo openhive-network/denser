@@ -1,0 +1,19 @@
+{
+  "testName": "sessionPersistence",
+  "recordedAt": "2026-06-10T05:26:15.869Z",
+  "totalRequests": 45,
+  "savedFixtures": 10,
+  "duplicatesSkipped": 35,
+  "methods": {
+    "bridge.list_all_subscriptions": 4,
+    "bridge.list_communities": 4,
+    "GET /hivesense-api": 5,
+    "bridge.unread_notifications": 4,
+    "bridge.get_ranked_posts": 4,
+    "rc_api.find_rc_accounts": 4,
+    "database_api.find_accounts": 8,
+    "database_api.get_dynamic_global_properties": 4,
+    "bridge.get_profile": 4,
+    "bridge.get_follow_list": 4
+  }
+}

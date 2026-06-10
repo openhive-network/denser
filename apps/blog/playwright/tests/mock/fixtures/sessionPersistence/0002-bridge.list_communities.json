@@ -1,0 +1,256 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_communities",
+    "params": {
+      "query": null,
+      "sort": "rank",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "4987c816a2e46259",
+  "method": "bridge.list_communities",
+  "params": {
+    "query": null,
+    "sort": "rank",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "id": 1337539,
+        "lang": "en",
+        "name": "hive-163772",
+        "about": "The Hive travel community",
+        "title": "Worldmappin",
+        "admins": [
+          "detlev",
+          "lizanomadsoul",
+          "worldmappin"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": true
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-11-17 07:09:54",
+        "num_authors": 200,
+        "num_pending": 1287,
+        "subscribers": 18327,
+        "sum_pending": 1120
+      },
+      {
+        "id": 1373301,
+        "lang": "zh",
+        "name": "hive-105017",
+        "about": "A community for sharing Chinese content on HIVE.",
+        "title": "HIVE CN 中文社区",
+        "admins": [
+          "sweetsssj"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2020-03-26 03:18:54",
+        "num_authors": 70,
+        "num_pending": 833,
+        "subscribers": 6181,
+        "sum_pending": 819
+      },
+      {
+        "id": 1341670,
+        "lang": "en",
+        "name": "hive-13323",
+        "about": "The Future of Web3 Gaming. Battle Trade and Earn",
+        "title": "Splinterlands",
+        "admins": [
+          "clove71",
+          "threespeak"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-11-26 17:34:36",
+        "num_authors": 152,
+        "num_pending": 1026,
+        "subscribers": 13371,
+        "sum_pending": 747
+      },
+      {
+        "id": 1342089,
+        "lang": "en",
+        "name": "hive-194913",
+        "about": "A place for photography lovers to share their work and photography tips.",
+        "title": "Photography Lovers",
+        "admins": [
+          "derangedvisions"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-11-27 23:22:51",
+        "num_authors": 205,
+        "num_pending": 993,
+        "subscribers": 25839,
+        "sum_pending": 563
+      },
+      {
+        "id": 1344380,
+        "lang": "en",
+        "name": "hive-193552",
+        "about": "It pays to be fit",
+        "title": "Actifit",
+        "admins": [
+          "mcfarhat"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-12-04 09:15:24",
+        "num_authors": 278,
+        "num_pending": 2607,
+        "subscribers": 11425,
+        "sum_pending": 531
+      },
+      {
+        "id": 1549235,
+        "lang": "es",
+        "name": "hive-100067",
+        "about": "Comida - Recetas - Concursos | Food - Recipes - Contests",
+        "title": "Hive Food",
+        "admins": [
+          "hivefood",
+          "mariale07"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2021-08-12 11:45:09",
+        "num_authors": 112,
+        "num_pending": 728,
+        "subscribers": 6335,
+        "sum_pending": 526
+      },
+      {
+        "id": 1341662,
+        "lang": "en",
+        "name": "hive-167922",
+        "about": "LeoFinance is a community for crypto & finance. Powered by Hive and the LEO token economy.",
+        "title": "LeoFinance",
+        "admins": [
+          "khaleelkazi"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": true
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-11-26 17:25:27",
+        "num_authors": 424,
+        "num_pending": 9191,
+        "subscribers": 26713,
+        "sum_pending": 358
+      },
+      {
+        "id": 1367073,
+        "lang": "en",
+        "name": "hive-142159",
+        "about": "Photography",
+        "title": "Black And White",
+        "admins": [
+          "brumest",
+          "ewkaw"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2020-02-19 23:55:27",
+        "num_authors": 94,
+        "num_pending": 584,
+        "subscribers": 11693,
+        "sum_pending": 328
+      },
+      {
+        "id": 1348946,
+        "lang": "en",
+        "name": "hive-140217",
+        "about": "A community for gamers on Hive  @hivegc",
+        "title": "Hive Gaming",
+        "admins": [
+          "hivegc",
+          "strawhat"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-12-20 01:55:36",
+        "num_authors": 118,
+        "num_pending": 504,
+        "subscribers": 16398,
+        "sum_pending": 325
+      },
+      {
+        "id": 1474872,
+        "lang": "en",
+        "name": "hive-153850",
+        "about": "Learn Everything About Hive Thoroughly, Be A Better Hivian",
+        "title": "Hive Learners",
+        "admins": [
+          "hive-learners",
+          "kronias"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2021-06-13 15:41:33",
+        "num_authors": 137,
+        "num_pending": 1006,
+        "subscribers": 10073,
+        "sum_pending": 317
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
