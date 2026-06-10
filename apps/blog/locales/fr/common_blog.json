@@ -164,7 +164,8 @@
       "votes": "Votes",
       "age": "Ancienneté",
       "filter_label": "Comment filtering",
-      "filtered_count": "{{count}} filtered"
+      "filtered_count": "{{count}} filtered",
+      "filter_tooltip": "Masquer les commentaires des comptes potentiellement spammeurs ou à faible réputation"
     },
     "search_sorter": {
       "newest": "Newest",

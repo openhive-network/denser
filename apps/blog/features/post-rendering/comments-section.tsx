@@ -6,8 +6,9 @@ import { commentsSectionClasses } from '@/blog/lib/post-layout-classes';
 import CommentList from './comment-list';
 import CommentSelectFilter from './comment-select-filter';
 import { Button } from '@ui/components/button';
-import { Switch } from '@ui/components/switch';
+import { Checkbox } from '@ui/components/checkbox';
 import { Label } from '@ui/components/label';
+import TooltipContainer from '@ui/components/tooltip-container';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 
 interface CommentsSectionProps {
@@ -79,22 +80,22 @@ const CommentsSection = memo(function CommentsSection({
   return (
     <div ref={sectionRef} className={commentsSectionClasses}>
       <div className="my-1 flex items-center justify-between" translate="no">
-        {hiddenCount > 0 ? (
+        <TooltipContainer title={t('select_sort.sort_comments.filter_tooltip')}>
           <div className="flex items-center gap-2">
-            <Switch
+            <Checkbox
               id="comment-filter"
               checked={filteringEnabled}
-              onCheckedChange={setFilteringEnabled}
-              className="h-[20px] w-[36px] data-[state=checked]:bg-destructive data-[state=unchecked]:bg-muted [&>span]:h-4 [&>span]:w-4 [&>span]:data-[state=checked]:translate-x-4"
+              onCheckedChange={(checked) => setFilteringEnabled(checked === true)}
+              className="cursor-pointer"
               aria-label={t('select_sort.sort_comments.filter_label')}
             />
             <Label htmlFor="comment-filter" className="cursor-pointer text-xs text-muted-foreground">
-              {t('select_sort.sort_comments.filtered_count', { count: hiddenCount })}
+              {hiddenCount > 0
+                ? t('select_sort.sort_comments.filtered_count', { count: hiddenCount })
+                : t('select_sort.sort_comments.filter_label')}
             </Label>
           </div>
-        ) : (
-          <div />
-        )}
+        </TooltipContainer>
         <div className="flex items-center">
           <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
           <CommentSelectFilter />

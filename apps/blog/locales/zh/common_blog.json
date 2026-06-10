@@ -164,7 +164,8 @@
       "votes": "点赞数",
       "age": "时间",
       "filter_label": "Comment filtering",
-      "filtered_count": "{{count}} filtered"
+      "filtered_count": "{{count}} filtered",
+      "filter_tooltip": "隐藏来自疑似垃圾账户或低声誉账户的评论"
     },
     "search_sorter": {
       "newest": "Newest",
