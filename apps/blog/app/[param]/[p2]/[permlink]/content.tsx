@@ -42,12 +42,15 @@ import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@tr
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 import { getActiveVotes } from '@transaction/lib/hive-api';
 import { getSimilarPostsByPost, isPostStub } from '@transaction/lib/hivesense-api';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
+import { Label } from '@ui/components/label';
 import Loading from '@ui/components/loading';
 import TimeAgo from '@ui/components/time-ago';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import TooltipContainer from '@ui/components/tooltip-container';
 import dmcaList from '@ui/config/lists/dmca-list';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
@@ -55,7 +58,7 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { handleError } from '@ui/lib/handle-error';
 import parseDate from '@ui/lib/parse-date';
 import { buildSafePath } from '@ui/lib/sanitize-url';
-import { Clock, Link2 } from 'lucide-react';
+import { Clock, Link2, ShieldCheck, ShieldOff } from 'lucide-react';
 import { Link } from '@hive/ui';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -144,6 +147,7 @@ const PostContent = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [commentsPage, setCommentsPage] = useState(1);
+  const [filteringEnabled, setFilteringEnabled] = useState(true);
   const postInCommunity = isCommunity(category);
   const { data: postData, isLoading: postIsLoading } = useQuery({
     queryKey: ['postData', author, permlink, observer],
@@ -376,6 +380,18 @@ const PostContent = () => {
   });
 
   const { data: mutedList } = useFollowListQuery(user.username, 'muted', initialMutedList);
+  const effectiveMutedList = mutedList || initialMutedList || EMPTY_MUTED_LIST;
+
+  // Replies hidden by the spam filter on the current comments page (muted or low-reputation authors)
+  const hiddenCommentsCount = useMemo(() => {
+    if (!postData || !paginatedDiscussionState) return 0;
+    return paginatedDiscussionState.comments.filter((comment) => {
+      // Skip the post itself (only count its replies)
+      if (comment.author === postData.author && comment.permlink === postData.permlink) return false;
+      const isMutedByViewer = effectiveMutedList.some((x) => x.name === comment.author);
+      return comment.stats?.gray || isMutedByViewer;
+    }).length;
+  }, [paginatedDiscussionState, postData, effectiveMutedList]);
 
   const pinMutations = usePinMutation();
   const unpinMutation = useUnpinMutation();
@@ -884,6 +900,40 @@ const PostContent = () => {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
+                      <span className="text-border">|</span>
+                      <TooltipContainer title={t('select_sort.sort_comments.filter_tooltip')}>
+                        {/* translate="no" prevents React reconciliation crash when browser auto-translate replaces dynamic text nodes (badge count, off label) */}
+                        <div translate="no" className="flex items-center gap-1.5">
+                          <CheckboxPrimitive.Root
+                            id="comment-filter"
+                            checked={filteringEnabled}
+                            onCheckedChange={(checked) => setFilteringEnabled(checked === true)}
+                            className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background data-[state=checked]:text-primary data-[state=checked]:hover:text-primary"
+                          >
+                            {filteringEnabled ? (
+                              <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+                            ) : (
+                              <ShieldOff className="h-5 w-5" aria-hidden="true" />
+                            )}
+                          </CheckboxPrimitive.Root>
+                          <Label
+                            htmlFor="comment-filter"
+                            className="flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground"
+                          >
+                            {t('select_sort.sort_comments.filter_short_label')}
+                            {filteringEnabled && hiddenCommentsCount > 0 && (
+                              <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-medium tabular-nums">
+                                {t('select_sort.sort_comments.filtered_count', { count: hiddenCommentsCount })}
+                              </span>
+                            )}
+                            {!filteringEnabled && (
+                              <span className="text-[11px] italic">
+                                {t('select_sort.sort_comments.filter_off')}
+                              </span>
+                            )}
+                          </Label>
+                        </div>
+                      </TooltipContainer>
                     </div>
                     {/* Share buttons */}
                     <div className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1">
@@ -942,13 +992,14 @@ const PostContent = () => {
               postData={postData}
               paginatedDiscussionState={paginatedDiscussionState}
               userCanModerate={!!userCanModerate}
-              mutedList={mutedList || initialMutedList || EMPTY_MUTED_LIST}
+              mutedList={effectiveMutedList}
               flagText={communityData?.flag_text}
               discussionAuthor={author}
               discussionPermlink={permlink}
               observer={observer}
               commentsPage={commentsPage}
               setCommentsPage={handleSetCommentsPage}
+              filteringEnabled={filteringEnabled}
             />
           ) : null}
         </div>

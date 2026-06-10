@@ -94,7 +94,7 @@ const CommentList = ({
     // When filtering is enabled, remove potentially spammy comments (gray/muted) from DOM entirely,
     // UNLESS they have at least one clean (unfiltered) descendant anywhere in their subtree —
     // those stay rendered collapsed/dimmed (see isOriginallyHidden in comment-list-item.tsx)
-    // so clean replies are not lost. Note: hiddenCount in comments-section.tsx still counts
+    // so clean replies are not lost. Note: hiddenCommentsCount in content.tsx still counts
     // such kept-but-collapsed comments as filtered, which is acceptable.
     let visibleComments = childComments;
     if (filteringEnabled) {
