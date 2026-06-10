@@ -165,10 +165,10 @@
       "votes": "الأصوات",
       "age": "العمر",
       "filter_label": "Comment filtering",
-      "filter_short_label": "فلتر السبام",
+      "filter_short_label": "فلتر القائمة السوداء",
       "filter_off": "معطل",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "إخفاء التعليقات من الحسابات التي يحتمل أن تكون مزعجة أو ذات سمعة منخفضة"
+      "filter_tooltip": "إخفاء التعليقات من الحسابات المدرجة في القائمة السوداء أو ذات السمعة المنخفضة"
     },
     "search_sorter": {
       "newest": "الأحدث",

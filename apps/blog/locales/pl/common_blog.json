@@ -166,10 +166,10 @@
       "votes": "Liczba głosów",
       "age": "Wiek",
       "filter_label": "Comment filtering",
-      "filter_short_label": "Filtr spamu",
+      "filter_short_label": "Filtr czarnej listy",
       "filter_off": "wył.",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "Ukryj komentarze od kont potencjalnie spamerskich lub o niskiej reputacji"
+      "filter_tooltip": "Ukryj komentarze od kont z czarnej listy lub o niskiej reputacji"
     },
     "search_sorter": {
       "newest": "Najnowsze",

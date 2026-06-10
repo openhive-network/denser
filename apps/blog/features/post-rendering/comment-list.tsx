@@ -91,7 +91,7 @@ const CommentList = ({
       (x) => x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink
     );
 
-    // When filtering is enabled, remove potentially spammy comments (gray/muted) from DOM entirely,
+    // When filtering is enabled, remove blacklisted comments (gray/muted) from DOM entirely,
     // UNLESS they have at least one clean (unfiltered) descendant anywhere in their subtree —
     // those stay rendered collapsed/dimmed (see isOriginallyHidden in comment-list-item.tsx)
     // so clean replies are not lost. Note: hiddenCommentsCount in content.tsx still counts

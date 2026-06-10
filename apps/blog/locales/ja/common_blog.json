@@ -164,10 +164,10 @@
       "votes": "投票数",
       "age": "日時",
       "filter_label": "Comment filtering",
-      "filter_short_label": "スパムフィルター",
+      "filter_short_label": "ブラックリストフィルター",
       "filter_off": "オフ",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "スパムの可能性がある、または評価の低いアカウントのコメントを非表示にする"
+      "filter_tooltip": "ブラックリストに登録されたアカウントや低評価のアカウントからのコメントを非表示にする"
     },
     "search_sorter": {
       "newest": "Newest",

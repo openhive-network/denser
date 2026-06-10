@@ -382,7 +382,7 @@ const PostContent = () => {
   const { data: mutedList } = useFollowListQuery(user.username, 'muted', initialMutedList);
   const effectiveMutedList = mutedList || initialMutedList || EMPTY_MUTED_LIST;
 
-  // Replies hidden by the spam filter on the current comments page (muted or low-reputation authors)
+  // Replies hidden by the blacklist filter on the current comments page (muted or low-reputation authors)
   const hiddenCommentsCount = useMemo(() => {
     if (!postData || !paginatedDiscussionState) return 0;
     return paginatedDiscussionState.comments.filter((comment) => {
