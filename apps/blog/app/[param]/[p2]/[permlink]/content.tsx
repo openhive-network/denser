@@ -196,8 +196,8 @@ const PostContent = () => {
       return fullPosts;
     }
   });
-  const communityObserverMatchesSSR = observer === ssrObserver;
-  const useCommunityInitialData = initialCommunity && communityObserverMatchesSSR;
+  const observerMatchesSSR = observer === ssrObserver;
+  const useCommunityInitialData = initialCommunity && observerMatchesSSR;
   const { data: communityData } = useQuery({
     queryKey: ['community', category, observer],
     queryFn: () => getCommunity(category, observer),
@@ -210,11 +210,14 @@ const PostContent = () => {
     }
   });
 
+  // SSR discussion was fetched for ssrObserver - seed cache only when the
+  // client observer matches, otherwise refetch to get observer-specific stats
+  const useDiscussionInitialData = initialDiscussion && observerMatchesSSR;
   const { data: discussionData } = useQuery({
     queryKey: ['discussionData', author, permlink, observer],
     queryFn: () => getDiscussion(author, permlink, observer),
-    initialData: initialDiscussion ?? undefined,
-    initialDataUpdatedAt: initialDiscussion ? Date.now() : undefined,
+    initialData: useDiscussionInitialData ? initialDiscussion : undefined,
+    initialDataUpdatedAt: useDiscussionInitialData ? Date.now() : undefined,
     staleTime: StaleTime.MEDIUM,
     onError: (error) => {
       handleError(error, { method: 'getDiscussion', params: { author, permlink, observer } });
