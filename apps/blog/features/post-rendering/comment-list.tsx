@@ -83,18 +83,53 @@ const CommentList = ({
     }
   }, []);
 
+  const mutedAuthorNames = useMemo(() => new Set((mutedList ?? []).map((muted) => muted.name)), [mutedList]);
+
   const arr = useMemo(() => {
     if (!data || !parent) return undefined;
-    const filtered = data.filter(
+    const childComments = data.filter(
       (x) => x?.parent_author === parent?.author && x?.parent_permlink === parent?.permlink
     );
 
-    const mutedContent = filtered.filter(
+    // When filtering is enabled, remove potentially spammy comments (gray/muted) from DOM entirely,
+    // UNLESS they have at least one clean (unfiltered) descendant anywhere in their subtree —
+    // those stay rendered collapsed/dimmed (see isOriginallyHidden in comment-list-item.tsx)
+    // so clean replies are not lost. Note: hiddenCount in comments-section.tsx still counts
+    // such kept-but-collapsed comments as filtered, which is acceptable.
+    let visibleComments = childComments;
+    if (filteringEnabled) {
+      const isFilteredOut = (entry: Entry): boolean =>
+        !!entry.stats?.gray || mutedAuthorNames.has(entry.author);
+      if (childComments.some(isFilteredOut)) {
+        // Replies lookup built once per list level inside useMemo (not per rendered item)
+        const repliesByParent = new Map<string, Entry[]>();
+        for (const entry of data) {
+          const parentKey = `${entry.parent_author}/${entry.parent_permlink}`;
+          const replies = repliesByParent.get(parentKey);
+          if (replies) {
+            replies.push(entry);
+          } else {
+            repliesByParent.set(parentKey, [entry]);
+          }
+        }
+        const hasCleanDescendant = (entry: Entry): boolean =>
+          (repliesByParent.get(`${entry.author}/${entry.permlink}`) ?? []).some(
+            (reply) => !isFilteredOut(reply) || hasCleanDescendant(reply)
+          );
+        visibleComments = childComments.filter(
+          (comment) => !isFilteredOut(comment) || hasCleanDescendant(comment)
+        );
+      }
+    }
+
+    const mutedContent = visibleComments.filter(
       (item) => parent && item.depth === 1 && item.parent_author === parent.author
     );
-    const unmutedContent = filtered.filter((md) => mutedContent.every((fd) => fd.post_id !== md.post_id));
+    const unmutedContent = visibleComments.filter((md) =>
+      mutedContent.every((fd) => fd.post_id !== md.post_id)
+    );
     return [...mutedContent, ...unmutedContent];
-  }, [data, parent?.author, parent?.permlink]);
+  }, [data, parent?.author, parent?.permlink, filteringEnabled, mutedAuthorNames]);
   return (
     <ul data-testid="comment-list" className="w-full min-w-0 overflow-hidden">
       <>
@@ -124,7 +159,6 @@ const CommentList = ({
                   discussionAuthor={discussionAuthor}
                   discussionPermlink={discussionPermlink}
                   observer={observer}
-                  filteringEnabled={filteringEnabled}
                   onCommnentLinkClick={(hash) => setMarkedHash(hash)}
                 >
                   <CommentList

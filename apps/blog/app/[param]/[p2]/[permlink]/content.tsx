@@ -39,7 +39,7 @@ import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { getBasePath } from '@ui/lib/path-utils';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
-import { Entry } from '@hive/common-hiveio-packages/wax';
+import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 import { getActiveVotes } from '@transaction/lib/hive-api';
 import { getSimilarPostsByPost, isPostStub } from '@transaction/lib/hivesense-api';
 import { Badge } from '@ui/components/badge';
@@ -76,6 +76,10 @@ import { StaleTime } from '@/blog/lib/react-query';
 
 // Maximum number of comments per page
 const MAX_COMMENTS_PER_PAGE = 50;
+
+// Stable empty fallback for mutedList — an inline [] would create a new reference
+// every render and invalidate mutedList-dependent useMemo in the comments tree.
+const EMPTY_MUTED_LIST: IFollowList[] = [];
 
 const PostContent = () => {
   const searchParams = useSearchParams();
@@ -938,7 +942,7 @@ const PostContent = () => {
               postData={postData}
               paginatedDiscussionState={paginatedDiscussionState}
               userCanModerate={!!userCanModerate}
-              mutedList={mutedList || initialMutedList || []}
+              mutedList={mutedList || initialMutedList || EMPTY_MUTED_LIST}
               flagText={communityData?.flag_text}
               discussionAuthor={author}
               discussionPermlink={permlink}

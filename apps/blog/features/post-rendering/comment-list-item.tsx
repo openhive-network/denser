@@ -49,7 +49,6 @@ interface CommentListProps {
   observer: string;
   parentAuthor: string;
   flagText: string | undefined;
-  filteringEnabled?: boolean;
   onCommnentLinkClick: (hash: string) => void;
   children?: ReactNode;
 }
@@ -67,7 +66,6 @@ const CommentListItem = memo(function CommentListItem({
   discussionAuthor,
   discussionPermlink,
   observer,
-  filteringEnabled = true,
   onCommnentLinkClick,
   children
 }: CommentListProps) {
@@ -77,7 +75,9 @@ const CommentListItem = memo(function CommentListItem({
   const isMutedByViewer = mutedList?.some((x) => x.name === comment.author);
   const isGrayedByStats = comment.stats?.gray;
   const isBlacklisted = comment.blacklists && comment.blacklists.length > 0;
-  const isOriginallyHidden = filteringEnabled && (isGrayedByStats || isMutedByViewer);
+  // Gray/muted comments always start collapsed/dimmed regardless of the list-level filter;
+  // the filter (comment-list.tsx) only decides whether they are rendered at all.
+  const isOriginallyHidden = !!(isGrayedByStats || isMutedByViewer);
   const [hiddenComment, setHiddenComment] = useState(isOriginallyHidden);
   const [openState, setOpenState] = useState<string>(isOriginallyHidden ? '' : 'item-1');
   const [tempraryHidden, setTemporaryHidden] = useState(false);
@@ -137,11 +137,11 @@ const CommentListItem = memo(function CommentListItem({
   const parentFromGDPR = gdprUserList.some((e) => e === comment.parent_author);
 
   useEffect(() => {
-    const shouldBeHidden = filteringEnabled && !!(comment.stats?.gray || isMutedByViewer);
+    const shouldBeHidden = !!(comment.stats?.gray || isMutedByViewer);
     setHiddenComment(shouldBeHidden);
     setOpenState(shouldBeHidden ? '' : 'item-1');
-    setTemporaryHidden(filteringEnabled && !!comment.stats?.gray);
-  }, [comment.stats?.gray, isMutedByViewer, filteringEnabled]);
+    setTemporaryHidden(!!comment.stats?.gray);
+  }, [comment.stats?.gray, isMutedByViewer]);
   const currentDepth = comment.depth - parent_depth;
 
   const deleteCommentMutation = useDeleteCommentMutation();
