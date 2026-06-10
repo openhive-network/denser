@@ -50,7 +50,6 @@ import { Label } from '@ui/components/label';
 import Loading from '@ui/components/loading';
 import TimeAgo from '@ui/components/time-ago';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import TooltipContainer from '@ui/components/tooltip-container';
 import dmcaList from '@ui/config/lists/dmca-list';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
@@ -148,6 +147,7 @@ const PostContent = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [commentsPage, setCommentsPage] = useState(1);
   const [filteringEnabled, setFilteringEnabled] = useState(true);
+  const [filterTooltipOpen, setFilterTooltipOpen] = useState(false);
   const postInCommunity = isCommunity(category);
   const { data: postData, isLoading: postIsLoading } = useQuery({
     queryKey: ['postData', author, permlink, observer],
@@ -901,39 +901,61 @@ const PostContent = () => {
                         </Tooltip>
                       </TooltipProvider>
                       <span className="text-border">|</span>
-                      <TooltipContainer title={t('select_sort.sort_comments.filter_tooltip')}>
-                        {/* translate="no" prevents React reconciliation crash when browser auto-translate replaces dynamic text nodes (badge count, off label) */}
-                        <div translate="no" className="flex items-center gap-1.5">
-                          <CheckboxPrimitive.Root
-                            id="comment-filter"
-                            checked={filteringEnabled}
-                            onCheckedChange={(checked) => setFilteringEnabled(checked === true)}
-                            className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background data-[state=checked]:text-primary data-[state=checked]:hover:text-primary"
-                          >
-                            {filteringEnabled ? (
-                              <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-                            ) : (
-                              <ShieldOff className="h-5 w-5" aria-hidden="true" />
-                            )}
-                          </CheckboxPrimitive.Root>
-                          <Label
-                            htmlFor="comment-filter"
-                            className="flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground"
-                          >
-                            {t('select_sort.sort_comments.filter_short_label')}
-                            {filteringEnabled && hiddenCommentsCount > 0 && (
-                              <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-medium tabular-nums">
-                                {t('select_sort.sort_comments.filtered_count', { count: hiddenCommentsCount })}
-                              </span>
-                            )}
-                            {!filteringEnabled && (
-                              <span className="text-[11px] italic">
-                                {t('select_sort.sort_comments.filter_off')}
-                              </span>
-                            )}
-                          </Label>
-                        </div>
-                      </TooltipContainer>
+                      <TooltipProvider>
+                        <Tooltip
+                          open={filterTooltipOpen}
+                          onOpenChange={setFilterTooltipOpen}
+                          disableHoverableContent={false}
+                        >
+                          <TooltipTrigger asChild>
+                            {/* translate="no" prevents React reconciliation crash when browser auto-translate replaces dynamic text nodes (badge count, off label) */}
+                            <div translate="no" className="flex items-center gap-1.5">
+                              <CheckboxPrimitive.Root
+                                id="comment-filter"
+                                checked={filteringEnabled}
+                                onCheckedChange={(checked) => setFilteringEnabled(checked === true)}
+                                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background data-[state=checked]:text-primary data-[state=checked]:hover:text-primary"
+                              >
+                                {filteringEnabled ? (
+                                  <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+                                ) : (
+                                  <ShieldOff className="h-5 w-5" aria-hidden="true" />
+                                )}
+                              </CheckboxPrimitive.Root>
+                              <Label
+                                htmlFor="comment-filter"
+                                className="flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground"
+                              >
+                                {t('select_sort.sort_comments.filter_short_label')}
+                                {filteringEnabled && hiddenCommentsCount > 0 && (
+                                  <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-medium tabular-nums">
+                                    {t('select_sort.sort_comments.filtered_count', { count: hiddenCommentsCount })}
+                                  </span>
+                                )}
+                                {!filteringEnabled && (
+                                  <span className="text-[11px] italic">
+                                    {t('select_sort.sort_comments.filter_off')}
+                                  </span>
+                                )}
+                              </Label>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="max-w-xs">
+                            <p>
+                              {t('select_sort.sort_comments.filter_tooltip')}{' '}
+                              <button
+                                type="button"
+                                onClick={() => setFilteringEnabled(!filteringEnabled)}
+                                className="font-medium text-destructive underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                              >
+                                {filteringEnabled
+                                  ? t('select_sort.sort_comments.filter_tooltip_click_show')
+                                  : t('select_sort.sort_comments.filter_tooltip_click_hide')}
+                              </button>
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                     {/* Share buttons */}
                     <div className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1">

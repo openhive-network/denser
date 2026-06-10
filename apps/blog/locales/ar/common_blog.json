@@ -168,7 +168,9 @@
       "filter_short_label": "فلتر القائمة السوداء",
       "filter_off": "معطل",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "إخفاء التعليقات من الحسابات المدرجة في القائمة السوداء أو ذات السمعة المنخفضة"
+      "filter_tooltip": "إخفاء التعليقات من الحسابات المدرجة في القائمة السوداء أو ذات السمعة المنخفضة",
+      "filter_tooltip_click_show": "انقر للإظهار",
+      "filter_tooltip_click_hide": "انقر للإخفاء"
     },
     "search_sorter": {
       "newest": "الأحدث",

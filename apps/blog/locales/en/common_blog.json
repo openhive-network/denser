@@ -177,7 +177,9 @@
       "filter_short_label": "Blacklist filter",
       "filter_off": "off",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "Hide comments from blacklisted or low-reputation accounts"
+      "filter_tooltip": "Hide comments from blacklisted or low-reputation accounts",
+      "filter_tooltip_click_show": "Click to show",
+      "filter_tooltip_click_hide": "Click to hide"
     },
     "search_sorter": {
       "newest": "Newest",

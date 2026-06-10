@@ -167,7 +167,9 @@
       "filter_short_label": "ブラックリストフィルター",
       "filter_off": "オフ",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "ブラックリストに登録されたアカウントや低評価のアカウントからのコメントを非表示にする"
+      "filter_tooltip": "ブラックリストに登録されたアカウントや低評価のアカウントからのコメントを非表示にする",
+      "filter_tooltip_click_show": "クリックして表示",
+      "filter_tooltip_click_hide": "クリックして非表示"
     },
     "search_sorter": {
       "newest": "Newest",

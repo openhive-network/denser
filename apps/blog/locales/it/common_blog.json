@@ -167,7 +167,9 @@
       "filter_short_label": "Filtro lista nera",
       "filter_off": "disattivato",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "Nascondi i commenti da account in lista nera o con bassa reputazione"
+      "filter_tooltip": "Nascondi i commenti da account in lista nera o con bassa reputazione",
+      "filter_tooltip_click_show": "Clicca per mostrare",
+      "filter_tooltip_click_hide": "Clicca per nascondere"
     },
     "search_sorter": {
       "newest": "Newest",

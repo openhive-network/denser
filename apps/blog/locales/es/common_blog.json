@@ -167,7 +167,9 @@
       "filter_short_label": "Filtro de lista negra",
       "filter_off": "desactivado",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "Ocultar comentarios de cuentas en lista negra o de baja reputación"
+      "filter_tooltip": "Ocultar comentarios de cuentas en lista negra o de baja reputación",
+      "filter_tooltip_click_show": "Haz clic para mostrar",
+      "filter_tooltip_click_hide": "Haz clic para ocultar"
     },
     "search_sorter": {
       "newest": "Newest",

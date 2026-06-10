@@ -167,7 +167,9 @@
       "filter_short_label": "黑名单过滤",
       "filter_off": "关闭",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "隐藏来自黑名单账户或低声誉账户的评论"
+      "filter_tooltip": "隐藏来自黑名单账户或低声誉账户的评论",
+      "filter_tooltip_click_show": "点击显示",
+      "filter_tooltip_click_hide": "点击隐藏"
     },
     "search_sorter": {
       "newest": "Newest",

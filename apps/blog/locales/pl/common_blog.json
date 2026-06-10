@@ -169,7 +169,9 @@
       "filter_short_label": "Filtr czarnej listy",
       "filter_off": "wył.",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "Ukryj komentarze od kont z czarnej listy lub o niskiej reputacji"
+      "filter_tooltip": "Ukryj komentarze od kont z czarnej listy lub o niskiej reputacji",
+      "filter_tooltip_click_show": "Kliknij, aby pokazać",
+      "filter_tooltip_click_hide": "Kliknij, aby ukryć"
     },
     "search_sorter": {
       "newest": "Najnowsze",

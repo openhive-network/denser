@@ -167,7 +167,9 @@
       "filter_short_label": "Фильтр чёрного списка",
       "filter_off": "выкл.",
       "filtered_count": "{{count}} filtered",
-      "filter_tooltip": "Скрывать комментарии от аккаунтов из чёрного списка или с низкой репутацией"
+      "filter_tooltip": "Скрывать комментарии от аккаунтов из чёрного списка или с низкой репутацией",
+      "filter_tooltip_click_show": "Нажмите, чтобы показать",
+      "filter_tooltip_click_hide": "Нажмите, чтобы скрыть"
     },
     "search_sorter": {
       "newest": "Newest",
