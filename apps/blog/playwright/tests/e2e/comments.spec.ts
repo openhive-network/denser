@@ -141,12 +141,24 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
     // getDiscussionCommentsAPI : (Default - author: "gtg", permlink: "hive-hardfork-25-jump-starter-kit")
-    const commentAmount = (await apiHelper.getDiscussionCommentsAPI())[apiResult][apiPostIdentifier][
-      apiPostChildren
-    ];
-    // console.log('API Comments amount: ', commentAmount);
-    // console.log('UI comments ammount ', (await postPage.commentListItems.all()).length)
-    expect((await postPage.commentListItems.all()).length).toBe(commentAmount);
+    const discussion = (await apiHelper.getDiscussionCommentsAPI())[apiResult];
+
+    // Total number of comments reported by the API (children of the post)
+    const commentAmount = discussion[apiPostIdentifier][apiPostChildren];
+
+    // Hidden (stats.hide) and grayed-out (stats.gray) comments are not rendered on the page, so subtract them
+    const hiddenCommentsAmount = (Object.entries(discussion) as [string, { stats?: { hide?: boolean; gray?: boolean } }][])
+      .filter(([identifier]) => identifier !== apiPostIdentifier)
+      .filter(([, comment]) => comment.stats?.hide === true || comment.stats?.gray === true).length;
+
+    const expectedVisibleComments = commentAmount - hiddenCommentsAmount;
+
+    // console.log('API comments amount: ', commentAmount);
+    // console.log('API hidden/grayed comments amount: ', hiddenCommentsAmount);
+    // console.log('Expected visible comments: ', expectedVisibleComments);
+    // console.log('UI comments amount: ', (await postPage.commentListItems.all()).length);
+
+    expect((await postPage.commentListItems.all()).length).toBe(expectedVisibleComments);
   });
 
   test('Validate the first comment in the post', async ({ page }) => {
