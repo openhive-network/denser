@@ -164,6 +164,8 @@
       "votes": "Votes",
       "age": "età",
       "filter_label": "Comment filtering",
+      "filter_short_label": "Filtro antispam",
+      "filter_off": "disattivato",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "Nascondi i commenti da account potenzialmente spam o con bassa reputazione"
     },

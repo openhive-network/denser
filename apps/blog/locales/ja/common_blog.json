@@ -164,6 +164,8 @@
       "votes": "投票数",
       "age": "日時",
       "filter_label": "Comment filtering",
+      "filter_short_label": "スパムフィルター",
+      "filter_off": "オフ",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "スパムの可能性がある、または評価の低いアカウントのコメントを非表示にする"
     },

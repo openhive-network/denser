@@ -6,7 +6,8 @@ import { commentsSectionClasses } from '@/blog/lib/post-layout-classes';
 import CommentList from './comment-list';
 import CommentSelectFilter from './comment-select-filter';
 import { Button } from '@ui/components/button';
-import { Checkbox } from '@ui/components/checkbox';
+import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
+import { ShieldCheck, ShieldOff } from 'lucide-react';
 import { Label } from '@ui/components/label';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
@@ -81,18 +82,32 @@ const CommentsSection = memo(function CommentsSection({
     <div ref={sectionRef} className={commentsSectionClasses}>
       <div className="my-1 flex items-center justify-between" translate="no">
         <TooltipContainer title={t('select_sort.sort_comments.filter_tooltip')}>
-          <div className="flex items-center gap-2">
-            <Checkbox
+          <div className="flex items-center gap-1.5">
+            <CheckboxPrimitive.Root
               id="comment-filter"
               checked={filteringEnabled}
               onCheckedChange={(checked) => setFilteringEnabled(checked === true)}
-              className="cursor-pointer"
-              aria-label={t('select_sort.sort_comments.filter_label')}
-            />
-            <Label htmlFor="comment-filter" className="cursor-pointer text-xs text-muted-foreground">
-              {hiddenCount > 0
-                ? t('select_sort.sort_comments.filtered_count', { count: hiddenCount })
-                : t('select_sort.sort_comments.filter_label')}
+              className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background data-[state=checked]:text-primary data-[state=checked]:hover:text-primary"
+            >
+              {filteringEnabled ? (
+                <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+              ) : (
+                <ShieldOff className="h-5 w-5" aria-hidden="true" />
+              )}
+            </CheckboxPrimitive.Root>
+            <Label
+              htmlFor="comment-filter"
+              className="flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              {t('select_sort.sort_comments.filter_short_label')}
+              {filteringEnabled && hiddenCount > 0 && (
+                <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-medium tabular-nums">
+                  {t('select_sort.sort_comments.filtered_count', { count: hiddenCount })}
+                </span>
+              )}
+              {!filteringEnabled && (
+                <span className="text-[11px] italic">{t('select_sort.sort_comments.filter_off')}</span>
+              )}
             </Label>
           </div>
         </TooltipContainer>

@@ -165,6 +165,8 @@
       "votes": "الأصوات",
       "age": "العمر",
       "filter_label": "Comment filtering",
+      "filter_short_label": "فلتر السبام",
+      "filter_off": "معطل",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "إخفاء التعليقات من الحسابات التي يحتمل أن تكون مزعجة أو ذات سمعة منخفضة"
     },

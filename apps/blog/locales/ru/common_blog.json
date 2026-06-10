@@ -164,6 +164,8 @@
       "votes": "голосов",
       "age": "возраст",
       "filter_label": "Comment filtering",
+      "filter_short_label": "Спам-фильтр",
+      "filter_off": "выкл.",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "Скрывать комментарии от потенциально спамных аккаунтов или аккаунтов с низкой репутацией"
     },

@@ -166,6 +166,8 @@
       "votes": "Liczba głosów",
       "age": "Wiek",
       "filter_label": "Comment filtering",
+      "filter_short_label": "Filtr spamu",
+      "filter_off": "wył.",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "Ukryj komentarze od kont potencjalnie spamerskich lub o niskiej reputacji"
     },
