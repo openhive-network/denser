@@ -933,7 +933,10 @@ lighthouse-metrics-blog:
     - --internal-certs
   variables:
     TURBO_APP_NAME: 'blog'
-    LIGHTHOUSE_URL: 'https://caddy'
+    # Target the real landing page directly: '/' issues a runtime redirect to
+    # /trending, which Lighthouse penalises ("Avoid multiple page redirects",
+    # ~220 ms) and isn't representative of the page users actually read.
+    LIGHTHOUSE_URL: 'https://caddy/trending'
 
 lighthouse-metrics-wallet:
   extends: .lighthouse_metrics_template
