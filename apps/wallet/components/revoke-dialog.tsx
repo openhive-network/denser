@@ -11,7 +11,7 @@ import {
 } from '@ui/components';
 import { useState } from 'react';
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getAsset } from '@transaction/lib/utils';
 

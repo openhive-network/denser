@@ -21,7 +21,7 @@ import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { convertStringToBig } from '@ui/lib/helpers';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { getAccountNotifications, getUnreadNotifications } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';

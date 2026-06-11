@@ -5,7 +5,7 @@ import { getLogger } from '@ui/lib/logging';
 import { OidcClientDetails } from '@smart-signer/lib/oidc';
 import { useConsent } from '@smart-signer/lib/auth/use-consent';
 import { PostConsentSchema } from '@smart-signer/lib/auth/utils';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { useEffect, useState } from 'react';
 
 const logger = getLogger('app');

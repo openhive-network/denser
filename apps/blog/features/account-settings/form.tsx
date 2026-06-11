@@ -22,7 +22,7 @@ import {
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 

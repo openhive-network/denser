@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useTranslation } from '@/wallet/i18n/client';
 import { NaiAsset } from '@hiveio/wax';
 import { Button } from '@ui/components';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
 import { getFindAccounts } from '@transaction/lib/hive-api';
 import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';

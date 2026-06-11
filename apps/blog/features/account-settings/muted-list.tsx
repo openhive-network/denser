@@ -4,7 +4,7 @@ import { useUnmuteMutation } from '@/blog/features/mute-follow/hooks/use-mute-mu
 import { useTranslation } from '@/blog/i18n/client';
 import { Button } from '@ui/components/button';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 
 const MutedList = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');

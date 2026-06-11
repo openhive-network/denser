@@ -12,7 +12,7 @@ import {
 import { useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
 import { useMutePostMutation, useUnmutePostMutation } from '@/blog/components/hooks/use-mute-post-mutations';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import clsx from 'clsx';
 import { useTranslation } from '@/blog/i18n/client';
 

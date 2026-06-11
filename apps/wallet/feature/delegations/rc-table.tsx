@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getDirectDelegations } from '@/wallet/lib/hive';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { prepareRC } from '@/wallet/lib/utils';
 import Big from 'big.js';
 import RCRow from './rc-row';

@@ -1,5 +1,5 @@
 import { Button } from '@ui/components/button';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { useTranslation } from '@/blog/i18n/client';
 
 interface LoadMoreButtonProps {

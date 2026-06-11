@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getManabar } from '@transaction/lib/hive-api';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { hoursAndMinutes } from './lib/utils';
 import RCStats from './rc-stats';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';

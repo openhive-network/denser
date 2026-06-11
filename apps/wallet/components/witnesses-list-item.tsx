@@ -10,7 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import DialogLogin from './dialog-login';
 import { useTranslation } from '@/wallet/i18n/client';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import WitnessRemoveVote from './witness-remove-vote';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@hive/ui';

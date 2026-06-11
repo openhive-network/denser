@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
 import { getPost } from '@transaction/lib/bridge-api';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components/button';
 import { useTranslation } from '@/blog/i18n/client';

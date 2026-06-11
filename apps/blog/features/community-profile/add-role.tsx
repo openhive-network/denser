@@ -2,7 +2,7 @@
 
 import { Button, Input, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@ui/components';
 import { useTranslation } from '@/blog/i18n/client';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { Roles } from './lib/utils';
 import RolesSelect from './roles-select';
 import { useSetRoleMutation } from '@/blog/features/community-profile/hooks/use-set-role-mutations';

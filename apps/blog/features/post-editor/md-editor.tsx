@@ -19,7 +19,7 @@ import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
 import { Icons } from '@ui/components/icons';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { useTranslation } from '@/blog/i18n/client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';

@@ -6,7 +6,7 @@ import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { Button } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
 import BasePathLink from '@/blog/components/base-path-link';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { getUserAvatarUrl } from '@hive/ui';
 
 const ListItem = ({

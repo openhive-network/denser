@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@hive/ui/co
 import { Icons } from "@ui/components/icons";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@ui/components/tooltip";
 import { Separator } from "@ui/components";
-import { CircleSpinner } from "react-spinners-kit";
+import { CircleSpinner } from '@hive/ui';
 import { Entry } from "@hive/common-hiveio-packages/wax";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";

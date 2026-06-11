@@ -5,7 +5,7 @@ import { useTranslation } from '@/wallet/i18n/client';
 import { SavingsWithdrawals } from '@hive/common-hiveio-packages/wax';
 import { cn } from '@ui/lib/utils';
 import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { getAmountFromWithdrawal } from '@/wallet/lib/utils';
 import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/use-cancel-transfer-from-savings-mutation';

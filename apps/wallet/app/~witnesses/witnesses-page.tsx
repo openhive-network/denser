@@ -18,7 +18,7 @@ import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useWitnessVoteMutation } from '@/wallet/components/hooks/use-vote-witness-mutation';
 import WitnessRemoveVote from '@/wallet/components/witness-remove-vote';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import { useSetProxyMutation } from '@/wallet/components/hooks/use-set-proxy-mutation';
 import {
   Dialog,

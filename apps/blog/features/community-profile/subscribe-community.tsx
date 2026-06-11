@@ -4,7 +4,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { User } from '@smart-signer/types/common';
 import { useSubscribeMutation, useUnsubscribeMutation } from './hooks/use-subscribe-mutations';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 
 const SubscribeCommunity = ({
   user,

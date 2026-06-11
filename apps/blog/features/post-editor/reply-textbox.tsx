@@ -5,7 +5,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { Icons } from '@ui/components/icons';
 import dynamic from 'next/dynamic';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@hive/ui';
 import {
   AlertDialog,
   AlertDialogAction,

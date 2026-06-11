@@ -11,26 +11,15 @@ if (!!env('SENTRY_DSN')) {
 Sentry.init({
   dsn: env('SENTRY_DSN'),
 
-  // Add optional integrations for additional features
-  integrations: [
-    Sentry.replayIntegration({
-      // SECURITY: Mask all input fields to prevent capturing passwords/keys in session replays
-      maskAllInputs: true,
-    }),
-  ],
+  // NOTE: Session Replay integration intentionally omitted — it ships ~200 kB of
+  // JS to every page and was the single largest avoidable chunk in the client
+  // bundle (Lighthouse "unused JavaScript"). Re-add Sentry.replayIntegration()
+  // behind a lazy import if replay is needed for a specific debugging session.
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1,
   // Enable logs to be sent to Sentry
   enableLogs: true,
-
-  // Define how likely Replay events are sampled.
-  // This sets the sample rate to be 10%. You may want this to be 100% while
-  // in development and sample at a lower rate in production
-  replaysSessionSampleRate: 0.1,
-
-  // Define how likely Replay events are sampled when an error occurs.
-  replaysOnErrorSampleRate: 1.0,
 
   // SECURITY: Disable PII collection by default for staging/production.
   // Set SENTRY_SEND_PII=true for local development debugging only.
