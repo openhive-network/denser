@@ -164,7 +164,7 @@
       "votes": "点赞数",
       "age": "时间",
       "filter_label": "Comment filtering",
-      "filter_short_label": "黑名单过滤",
+      "filter_short_label": "隐藏过滤",
       "filter_off": "关闭",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "隐藏来自黑名单账户或低声誉账户的评论",

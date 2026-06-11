@@ -164,7 +164,7 @@
       "votes": "Votes",
       "age": "Ancienneté",
       "filter_label": "Comment filtering",
-      "filter_short_label": "Filtre de liste noire",
+      "filter_short_label": "Filtre des masqués",
       "filter_off": "désactivé",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "Masquer les commentaires des comptes sur liste noire ou à faible réputation",

@@ -166,7 +166,7 @@
       "votes": "Liczba głosów",
       "age": "Wiek",
       "filter_label": "Comment filtering",
-      "filter_short_label": "Filtr czarnej listy",
+      "filter_short_label": "Filtr ukrytych",
       "filter_off": "wył.",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "Ukryj komentarze od kont z czarnej listy lub o niskiej reputacji",

@@ -164,7 +164,7 @@
       "votes": "投票数",
       "age": "日時",
       "filter_label": "Comment filtering",
-      "filter_short_label": "ブラックリストフィルター",
+      "filter_short_label": "非表示フィルター",
       "filter_off": "オフ",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "ブラックリストに登録されたアカウントや低評価のアカウントからのコメントを非表示にする",

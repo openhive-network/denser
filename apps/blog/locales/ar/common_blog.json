@@ -165,7 +165,7 @@
       "votes": "الأصوات",
       "age": "العمر",
       "filter_label": "Comment filtering",
-      "filter_short_label": "فلتر القائمة السوداء",
+      "filter_short_label": "فلتر المخفية",
       "filter_off": "معطل",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "إخفاء التعليقات من الحسابات المدرجة في القائمة السوداء أو ذات السمعة المنخفضة",

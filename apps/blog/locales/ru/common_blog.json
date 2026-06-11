@@ -164,7 +164,7 @@
       "votes": "голосов",
       "age": "возраст",
       "filter_label": "Comment filtering",
-      "filter_short_label": "Фильтр чёрного списка",
+      "filter_short_label": "Фильтр скрытых",
       "filter_off": "выкл.",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "Скрывать комментарии от аккаунтов из чёрного списка или с низкой репутацией",

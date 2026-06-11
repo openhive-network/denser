@@ -164,7 +164,7 @@
       "votes": "Votes",
       "age": "età",
       "filter_label": "Comment filtering",
-      "filter_short_label": "Filtro lista nera",
+      "filter_short_label": "Filtro nascosti",
       "filter_off": "disattivato",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "Nascondi i commenti da account in lista nera o con bassa reputazione",

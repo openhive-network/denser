@@ -174,7 +174,7 @@
       "votes": "Votes",
       "age": "Age",
       "filter_label": "Comment filtering",
-      "filter_short_label": "Blacklist filter",
+      "filter_short_label": "Hidden filter",
       "filter_off": "off",
       "filtered_count": "{{count}} filtered",
       "filter_tooltip": "Hide comments from blacklisted or low-reputation accounts",
