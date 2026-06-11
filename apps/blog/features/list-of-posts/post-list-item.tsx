@@ -35,6 +35,8 @@ interface PostListItemProps {
   isCommunityPage: boolean | undefined;
   blacklist: IFollowList[] | undefined;
   nsfwPreferences: Preferences['nsfw'];
+  // Eagerly load this card's image (set for the first card — the LCP element)
+  priority?: boolean;
 }
 
 function arePostListItemPropsEqual(prev: PostListItemProps, next: PostListItemProps): boolean {
@@ -42,6 +44,7 @@ function arePostListItemPropsEqual(prev: PostListItemProps, next: PostListItemPr
   if (prev.isCommunityPage !== next.isCommunityPage) return false;
   if (prev.nsfwPreferences !== next.nsfwPreferences) return false;
   if (prev.blacklist !== next.blacklist) return false;
+  if (prev.priority !== next.priority) return false;
 
   // Check post identity and changing fields
   const prevPost = prev.post;
@@ -63,7 +66,7 @@ function arePostListItemPropsEqual(prev: PostListItemProps, next: PostListItemPr
 }
 
 const PostListItem = memo(
-  function PostListItem({ post, isCommunityPage, blacklist, nsfwPreferences }: PostListItemProps) {
+  function PostListItem({ post, isCommunityPage, blacklist, nsfwPreferences, priority }: PostListItemProps) {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const reblogMutation = useReblogMutation();
@@ -253,7 +256,7 @@ const PostListItem = memo(
               !userFromImageBlockList &&
               !legalBlockedUser ? (
                 <>
-                  <PostImage post={post} />
+                  <PostImage post={post} priority={priority} />
                 </>
               ) : null}
             </div>

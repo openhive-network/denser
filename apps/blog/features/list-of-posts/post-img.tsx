@@ -94,7 +94,7 @@ export function find_first_img(post: Entry) {
   }
 }
 
-export default function PostImage({ post }: { post: Entry }) {
+export default function PostImage({ post, priority = false }: { post: Entry; priority?: boolean }) {
   // Use stable identifiers as dependencies - the image won't change for the same post
   const cardImage = useMemo(
     () => find_first_img(post),
@@ -121,7 +121,8 @@ export default function PostImage({ post }: { post: Entry }) {
               <img
                 srcSet={image}
                 alt="Post image"
-                loading="lazy"
+                loading={priority ? 'eager' : 'lazy'}
+                fetchPriority={priority ? 'high' : 'auto'}
                 className="w-full"
                 onError={() => setImage(getDefaultImageUrl())}
               />
