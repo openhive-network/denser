@@ -820,11 +820,46 @@ smoke-tests-blog:
   tags:
   - public-runner-docker
 
+# PROTOTYPE (build-once, variant B): extract the prebuilt Next standalone from
+# the testenv image once, so the fixture shards run tests WITHOUT each doing a
+# full `pnpm build`. The image builds at a fixed WORKDIR /app, so the build-time
+# absolute path baked into the server chunks (incl. @hiveio/wax's WASM loader)
+# stays valid when the standalone is restored to /app in each shard — which the
+# build-once-via-host-artifact route could not guarantee (runner build path
+# varies). The standalone tree (incl. traced node_modules) travels as a normal
+# GitLab artifact.
+blog-fixture-standalone:
+  extends: .docker_image_builder_job_template
+  stage: build
+  needs:
+  - docker-build-blog-testenv
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+  - !reference [.docker_image_builder_job_template, before_script]
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+  - |
+    echo "Extracting standalone from ${DENSER_BLOG_IMAGE_NAME}..."
+    docker pull "$DENSER_BLOG_IMAGE_NAME"
+    cid=$(docker create "$DENSER_BLOG_IMAGE_NAME")
+    mkdir -p fixture-standalone
+    docker cp "$cid:/app/." fixture-standalone/
+    docker rm "$cid"
+    du -sh fixture-standalone || true
+  artifacts:
+    paths:
+    - fixture-standalone/
+    expire_in: 1 day
+  tags:
+  - public-runner-docker
+
 blog-fixture-tests:
   extends: .node-job
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   stage: test
-  needs: []
+  needs:
+  - blog-fixture-standalone
   # Each shard is a fully isolated container (own :3000 webServer + own :8200
   # fixture proxy), so they never contend for the hardcoded port or share the
   # stateful replay proxy. Playwright's `fullyParallel: false` config makes
@@ -832,54 +867,41 @@ blog-fixture-tests:
   # files — never splitting a file's in-order calls across shards (which would
   # corrupt the replay proxy's per-fixture call counters / pagination).
   #
-  # 4 shards: the per-shard build is unavoidable (the production build bakes the
-  # build machine's absolute path into the server chunks — incl. @hiveio/wax's
-  # WASM loader — so the output is not portable to another runner, ruling out
-  # build-once-via-artifact). Going to 8 shards was measured to NOT help: the
-  # build (~90-180s, runner-local cache + contention when several shards land on
-  # one runner) is the bottleneck, not the test phase, so 8 shards gave the same
-  # wall-clock as 4 at double the CI-minutes. Reliably reaching ~3min needs
-  # build-once, which in turn needs the absolute-path baking solved.
+  # PROTOTYPE (build-once, variant B): shards no longer run `pnpm build`. The app
+  # is built once in docker-build-blog-testenv; blog-fixture-standalone extracts
+  # its standalone, and each shard restores that tree to /app (the exact path
+  # baked into the server chunks) before running its share of the tests.
   parallel: 4
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
-    # Skip lint/type-check in the fixture build (see next.config.js) — they're
-    # covered by dedicated CI jobs and just slow every shard's build.
-    FIXTURE_BUILD_SKIP_CHECKS: 'true'
+    # Point the webServer (playwright.fixture.config.ts) at the prebuilt
+    # standalone restored below, instead of a per-shard local `pnpm build`.
+    FIXTURE_STANDALONE_DIR: '/app/apps/blog'
   script:
   - !reference [.node-job, script]
   - |
-    echo -e "\e[0Ksection_start:$(date +%s):fixture_build[collapsed=true]\r\e[0KBuilding blog for fixture tests (shard ${CI_NODE_INDEX}/${CI_NODE_TOTAL})..."
-    cd .$TURBO_APP_PATH
-    pnpm run test:fixture:prepare
-    echo -e "\e[0Ksection_end:$(date +%s):fixture_build\r\e[0K"
+    echo -e "\e[0Ksection_start:$(date +%s):fixture_restore[collapsed=true]\r\e[0KRestoring prebuilt standalone to /app (shard ${CI_NODE_INDEX}/${CI_NODE_TOTAL})..."
+    mkdir -p /app
+    cp -a fixture-standalone/. /app/
+    rm -rf fixture-standalone
+    echo -e "\e[0Ksection_end:$(date +%s):fixture_restore\r\e[0K"
   - |
     echo -e "\e[0Ksection_start:$(date +%s):fixture_tests[collapsed=false]\r\e[0KRunning blog fixture-based Playwright tests (shard ${CI_NODE_INDEX}/${CI_NODE_TOTAL})..."
+    cd .$TURBO_APP_PATH
     # Shard is read from CI_NODE_INDEX/CI_NODE_TOTAL inside the Playwright
     # config (see playwright.fixture.config.ts) — no CLI flag needed.
     pnpm run test:fixture:run
     echo -e "\e[0Ksection_end:$(date +%s):fixture_tests\r\e[0K"
   cache:
   # Dependency caches — pull-only (warmed by other @hive/blog jobs / prior
-  # runs). The inherited cache also listed `.next/` at the repo root, but the
-  # blog builds into apps/blog/.next, so that path cached nothing useful —
-  # dropped here in favour of the build-cache entry below.
+  # runs). No build runs here in the build-once prototype, so the Next.js
+  # incremental build-cache entry is dropped.
   - key: '$TURBO_APP_SCOPE-cache-2'
     paths:
     - .npm/
     - .pnpm-store/
     policy: pull
-  # Next.js incremental build cache. Because the inherited cache pointed at the
-  # wrong path, every build logged "No build cache found" and paid a full ~107s
-  # cold webpack compile. Caching the real apps/blog/.next/cache with pull-push
-  # lets each pipeline warm the next one's build (compile becomes incremental).
-  # The 4 shards build the same app and share one key; concurrent end-of-job
-  # pushes are last-writer-wins, which is benign for a best-effort build cache.
-  - key: '$TURBO_APP_SCOPE-next-build-cache'
-    paths:
-    - apps/blog/.next/cache
-    policy: pull-push
   artifacts:
     paths:
     - .${TURBO_APP_PATH}/test-results/

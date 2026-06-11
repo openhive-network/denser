@@ -44,6 +44,29 @@ const shard =
     ? { current: shardCurrent, total: shardTotal }
     : undefined;
 
+// Standalone server location.
+//
+//  - Local / default: `pnpm build` produces ./.next/standalone, and we assemble
+//    static/ + public/ into it before booting node (the historical flow).
+//
+//  - Build-once prototype (CI): FIXTURE_STANDALONE_DIR points at a prebuilt
+//    standalone extracted from the production image into /app/apps/blog. The
+//    image builds at a fixed WORKDIR /app, so the build-time absolute path baked
+//    into the server chunks (incl. @hiveio/wax's WASM loader) stays valid once
+//    the tree is restored to /app. static/ and public/ are already assembled
+//    inside the image, so we only refresh __ENV.js before booting node — no
+//    per-shard `pnpm build`.
+const prebuiltStandalone = process.env.FIXTURE_STANDALONE_DIR;
+const localStandalone = '.next/standalone/apps/blog';
+const webServerCommand = prebuiltStandalone
+  ? `react-env -- sh -c "cp -f public/__ENV.js ${prebuiltStandalone}/public/__ENV.js && node ${prebuiltStandalone}/server.js"`
+  : [
+      `rm -rf ${localStandalone}/.next/static ${localStandalone}/public`,
+      `cp -r .next/static ${localStandalone}/.next/static`,
+      `cp -r public ${localStandalone}/public`,
+      `react-env -- sh -c "cp -f public/__ENV.js ${localStandalone}/public/__ENV.js && node ${localStandalone}/server.js"`
+    ].join(' && ');
+
 export default defineConfig({
   testDir: './playwright/tests/fixture',
   timeout: 60 * 1000,
@@ -89,12 +112,7 @@ export default defineConfig({
     // .network instead of our fixture proxy on :8200). We repeat the same
     // steps but copy the freshly-written __ENV.js into the standalone
     // public/ right before starting node.
-    command: [
-      'rm -rf .next/standalone/apps/blog/.next/static .next/standalone/apps/blog/public',
-      'cp -r .next/static .next/standalone/apps/blog/.next/static',
-      'cp -r public .next/standalone/apps/blog/public',
-      'react-env -- sh -c "cp -f public/__ENV.js .next/standalone/apps/blog/public/__ENV.js && node .next/standalone/apps/blog/server.js"'
-    ].join(' && '),
+    command: webServerCommand,
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
