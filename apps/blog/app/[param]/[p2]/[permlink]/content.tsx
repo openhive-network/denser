@@ -60,7 +60,7 @@ import { buildSafePath } from '@ui/lib/sanitize-url';
 import { Clock, Link2, ShieldCheck, ShieldOff } from 'lucide-react';
 import { Link } from '@hive/ui';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { CircleSpinner } from 'react-spinners-kit';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
@@ -109,8 +109,16 @@ const PostContent = () => {
   const { t } = useTranslation('common_blog');
   // Reply box state and drafts expire after 30 days
   // Empty key disables the hook entirely, preventing garbage entries
-  const [storedReply, storeReply, removeReply] = useStorageWithTTL<boolean>(replyStorageId, false, StorageTTL.UI_STATE);
-  const [storedEdit, storeEdit, removeEdit] = useStorageWithTTL<boolean>(editStorageId, false, StorageTTL.UI_STATE);
+  const [storedReply, storeReply, removeReply] = useStorageWithTTL<boolean>(
+    replyStorageId,
+    false,
+    StorageTTL.UI_STATE
+  );
+  const [storedEdit, storeEdit, removeEdit] = useStorageWithTTL<boolean>(
+    editStorageId,
+    false,
+    StorageTTL.UI_STATE
+  );
   const [storedComment] = useStorageWithTTL<string>(
     user.username ? `replyTo-/${author}/${permlink}-${user.username}` : '',
     '',
@@ -148,6 +156,7 @@ const PostContent = () => {
   const [commentsPage, setCommentsPage] = useState(1);
   const [filteringEnabled, setFilteringEnabled] = useState(true);
   const [filterTooltipOpen, setFilterTooltipOpen] = useState(false);
+  const filterTooltipContentRef = useRef<HTMLDivElement>(null);
   const postInCommunity = isCommunity(category);
   const { data: postData, isLoading: postIsLoading } = useQuery({
     queryKey: ['postData', author, permlink, observer],
@@ -169,7 +178,8 @@ const PostContent = () => {
   );
   const userFromGDPR = gdprUserList.some((e) => e === postData?.author);
 
-  const crossedPost = Array.isArray(postData?.json_metadata?.tags) && postData.json_metadata.tags.includes('cross-post');
+  const crossedPost =
+    Array.isArray(postData?.json_metadata?.tags) && postData.json_metadata.tags.includes('cross-post');
   const legalBlockedUser = userIllegalContent.some((e) => e === postData?.author);
   const copyRightCheck = dmcaList.includes(pathname ?? '');
   const { data: crossPostData } = useQuery({
@@ -549,27 +559,25 @@ const PostContent = () => {
                       noContext={!!discussionState && !discussionState.some((e) => e.depth === 1)}
                     />
                   )}
-                  {postData._optimistic && (
-                    <OptimisticStatusBanner createdAt={postData.created} />
-                  )}
+                  {postData._optimistic && <OptimisticStatusBanner createdAt={postData.created} />}
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <UserInfo
                       permlink={permlink}
                       moderateEnabled={!!userCanModerate}
                       author={crossPostData?.author ?? postData.author}
-                      author_reputation={
-                        crossPostData?.author_reputation ?? postData.author_reputation
-                      }
+                      author_reputation={crossPostData?.author_reputation ?? postData.author_reputation}
                       author_title={postData.author_title}
                       authored={postData.json_metadata?.author}
-                      community_title={
-                        crossPostData?.community_title ?? communityData?.title ?? ''
-                      }
+                      community_title={crossPostData?.community_title ?? communityData?.title ?? ''}
                       community={crossPostData?.community ?? category}
                       category={postData.category}
                       created={postData.created}
                       blacklist={
-                        firstPost ? firstPost.blacklists : thisPost ? thisPost.blacklists : postData.blacklists
+                        firstPost
+                          ? firstPost.blacklists
+                          : thisPost
+                            ? thisPost.blacklists
+                            : postData.blacklists
                       }
                     />
                     {/* Reblog Button in Header */}
@@ -632,18 +640,19 @@ const PostContent = () => {
                 <div className="clear-both mt-6 border-t border-border pt-5">
                   {!commentSite ? (
                     <ul className="flex flex-wrap gap-2" data-testid="hashtags-post">
-                      {Array.isArray(postData.json_metadata?.tags) && postData.json_metadata.tags
-                        .filter((e) => e !== postData.category && e !== '' && e !== postData.community)
-                        .map((tag: string) => (
-                          <li key={tag}>
-                            <Link
-                              href={`/trending/${tag}`}
-                              className="inline-block rounded-full border border-border bg-background-secondary px-3 py-1 text-sm font-medium text-muted-foreground transition-all hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
-                            >
-                              #{tag}
-                            </Link>
-                          </li>
-                        ))}
+                      {Array.isArray(postData.json_metadata?.tags) &&
+                        postData.json_metadata.tags
+                          .filter((e) => e !== postData.category && e !== '' && e !== postData.community)
+                          .map((tag: string) => (
+                            <li key={tag}>
+                              <Link
+                                href={`/trending/${tag}`}
+                                className="inline-block rounded-full border border-border bg-background-secondary px-3 py-1 text-sm font-medium text-muted-foreground transition-all hover:border-destructive hover:bg-destructive/10 hover:text-destructive"
+                              >
+                                #{tag}
+                              </Link>
+                            </li>
+                          ))}
                     </ul>
                   ) : null}
                 </div>
@@ -736,7 +745,9 @@ const PostContent = () => {
                           ${postData.payout?.toFixed(2)}
                         </span>
                       </DetailsCardHover>
-                      {activeVotesData && !!postData.stats?.total_votes && postData.stats?.total_votes !== 0 ? (
+                      {activeVotesData &&
+                      !!postData.stats?.total_votes &&
+                      postData.stats?.total_votes !== 0 ? (
                         <>
                           <span className="h-4 w-px bg-border" />
                           <DetailsCardVoters post={postData}>
@@ -880,7 +891,10 @@ const PostContent = () => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger className="flex items-center" data-testid="comment-respons">
-                            <Link href={postData.url} className="flex cursor-pointer items-center text-muted-foreground transition-colors hover:text-foreground">
+                            <Link
+                              href={postData.url}
+                              className="flex cursor-pointer items-center text-muted-foreground transition-colors hover:text-foreground"
+                            >
                               {postData.children > 1 ? (
                                 <Icons.messagesSquare className="mr-1 h-4 w-4" />
                               ) : (
@@ -909,12 +923,24 @@ const PostContent = () => {
                         >
                           <TooltipTrigger asChild>
                             {/* translate="no" prevents React reconciliation crash when browser auto-translate replaces dynamic text nodes (badge count, off label) */}
-                            <div translate="no" className="flex items-center gap-1.5">
+                            <div
+                              translate="no"
+                              className="flex items-center gap-1.5"
+                              // preventDefault skips Radix's blur-close when focus moves into the tooltip content
+                              onBlur={(focusEvent) => {
+                                if (
+                                  focusEvent.relatedTarget instanceof Node &&
+                                  filterTooltipContentRef.current?.contains(focusEvent.relatedTarget)
+                                ) {
+                                  focusEvent.preventDefault();
+                                }
+                              }}
+                            >
                               <CheckboxPrimitive.Root
                                 id="comment-filter"
                                 checked={filteringEnabled}
                                 onCheckedChange={(checked) => setFilteringEnabled(checked === true)}
-                                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background data-[state=checked]:text-primary data-[state=checked]:hover:text-primary"
+                                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=checked]:text-primary data-[state=checked]:hover:text-primary"
                               >
                                 {filteringEnabled ? (
                                   <ShieldCheck className="h-5 w-5" aria-hidden="true" />
@@ -929,7 +955,9 @@ const PostContent = () => {
                                 {t('select_sort.sort_comments.filter_short_label')}
                                 {filteringEnabled && hiddenCommentsCount > 0 && (
                                   <span className="rounded-full bg-muted px-1.5 py-0.5 text-[11px] font-medium tabular-nums">
-                                    {t('select_sort.sort_comments.filtered_count', { count: hiddenCommentsCount })}
+                                    {t('select_sort.sort_comments.filtered_count', {
+                                      count: hiddenCommentsCount
+                                    })}
                                   </span>
                                 )}
                                 {!filteringEnabled && (
@@ -940,12 +968,14 @@ const PostContent = () => {
                               </Label>
                             </div>
                           </TooltipTrigger>
-                          <TooltipContent side="bottom" className="max-w-xs">
+                          <TooltipContent ref={filterTooltipContentRef} side="bottom" className="max-w-xs">
                             <p>
                               {t('select_sort.sort_comments.filter_tooltip')}{' '}
                               <button
                                 type="button"
-                                onClick={() => setFilteringEnabled(!filteringEnabled)}
+                                // block focus steal on mousedown so the trigger's blur-close can't unmount the button mid-click
+                                onPointerDown={(e) => e.preventDefault()}
+                                onClick={() => setFilteringEnabled((prev) => !prev)}
                                 className="font-medium text-destructive underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                               >
                                 {filteringEnabled
@@ -964,7 +994,10 @@ const PostContent = () => {
                       <LinkedInShare title={postData.title} url={postData.url} />
                       <RedditShare title={postData.title} url={postData.url} />
                       <SharePost path={postData.url} title={postData.title}>
-                        <Link2 className="h-[18px] w-[18px] cursor-pointer text-muted-foreground transition-colors hover:text-destructive" data-testid="share-post" />
+                        <Link2
+                          className="h-[18px] w-[18px] cursor-pointer text-muted-foreground transition-colors hover:text-destructive"
+                          data-testid="share-post"
+                        />
                       </SharePost>
                     </div>
                   </div>
@@ -996,9 +1029,7 @@ const PostContent = () => {
                 <div className="md:hidden">
                   {!!suggestionData ? (
                     <div className="mt-6 border-t border-border pt-4">
-                      <h2 className="mb-3 px-4 font-sanspro text-lg font-bold">
-                        You Might Also Like
-                      </h2>
+                      <h2 className="mb-3 px-4 font-sanspro text-lg font-bold">You Might Also Like</h2>
                       <SuggestionsList suggestions={suggestionData} horizontal />
                     </div>
                   ) : null}
