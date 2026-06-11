@@ -24,15 +24,13 @@ const PostList = ({
     <ul data-testid={`post-list-${testFilter}`}>
       {data
         ?.filter((post) => post?.author && post.permlink)
-        .map((post: Entry, index: number) => (
+        .map((post: Entry) => (
           <PostListItem
             nsfwPreferences={nsfwPreferences}
             post={post}
             key={`${post.author}/${post.permlink}`}
             isCommunityPage={isCommunityPage}
             blacklist={blacklist}
-            // First card's image is the LCP element on feed pages — load it eagerly
-            priority={index === 0}
           />
         ))}
     </ul>

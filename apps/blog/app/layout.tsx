@@ -9,7 +9,6 @@ import { Providers } from '../features/layouts/providers';
 import { StorageCleanup } from '@hive/ui';
 import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '../lib/env-version';
-import { configuredImagesEndpoint } from '@ui/config/public-vars';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -73,9 +72,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
       <head>
-        {/* Warm up the connection to the image CDN — the LCP element on feed pages is a post thumbnail served from here */}
-        <link rel="preconnect" href={configuredImagesEndpoint} crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href={configuredImagesEndpoint} />
         {/* Use plain script tag for guaranteed synchronous loading of env globals */}
         <script src={`${basePath}/__ENV.js?v=${envVersion}`} />
       </head>
