@@ -52,8 +52,19 @@ console.log(lines.join('\n'));
 try {
   const audits = report.audits || {};
 
+  // Robustly find the LCP element node anywhere in the audit details tree
   const lcpEl = audits['largest-contentful-paint-element'];
-  const node = lcpEl?.details?.items?.[0]?.items?.[0]?.node;
+  const findNode = (v) => {
+    if (!v || typeof v !== 'object') return null;
+    if (v.type === 'node' && (v.snippet || v.selector)) return v;
+    if (v.node && (v.node.snippet || v.node.selector)) return v.node;
+    for (const k of Object.keys(v)) {
+      const r = findNode(v[k]);
+      if (r) return r;
+    }
+    return null;
+  };
+  const node = findNode(lcpEl?.details);
   console.log('\n── LCP diagnostics ─────────────────────────────');
   if (node) {
     console.log(`LCP element: ${node.nodeLabel || ''}`);
@@ -86,6 +97,43 @@ try {
   console.log('\n── Top opportunities (est. ms) ─────────────────');
   for (const o of ops) {
     console.log(`  ~${String(o.savingsMs).padStart(5)}ms  ${o.title}${o.display ? ` — ${o.display}` : ''}`);
+  }
+
+  // Explicit image / caching / LCP audits (regardless of overallSavingsMs) so
+  // we can tell image-driven LCP & caching apart from JS-driven cost.
+  const fmt = (s) => (s === null || s === undefined ? 'n/a' : s === 1 ? 'PASS' : Math.round(s * 100) + '/100');
+  const watch = [
+    'lcp-lazy-loaded',
+    'prioritize-lcp-image',
+    'uses-rel-preconnect',
+    'modern-image-formats',
+    'uses-optimized-images',
+    'uses-responsive-images',
+    'efficient-animated-content',
+    'offscreen-images',
+    'uses-long-cache-ttl',
+    'total-byte-weight'
+  ];
+  console.log('\n── Image / cache / LCP audits ──────────────────');
+  for (const id of watch) {
+    const a = audits[id];
+    if (!a) continue;
+    const saved = a.details?.overallSavingsMs ? ` (~${Math.round(a.details.overallSavingsMs)}ms)` : '';
+    console.log(`  ${fmt(a.score).padStart(8)}  ${id}${a.displayValue ? ` — ${a.displayValue}` : ''}${saved}`);
+  }
+
+  // Heaviest image responses actually downloaded (from the LCP/resource-summary)
+  const imgItems = (audits['uses-long-cache-ttl']?.details?.items || [])
+    .concat(audits['modern-image-formats']?.details?.items || [])
+    .filter((it) => it && /\.(png|jpe?g|webp|gif|avif)/i.test(it.url || ''))
+    .sort((a, b) => (b.totalBytes || b.wastedBytes || 0) - (a.totalBytes || a.wastedBytes || 0))
+    .slice(0, 5);
+  if (imgItems.length) {
+    console.log('\n── Heaviest images seen ────────────────────────');
+    for (const it of imgItems) {
+      const kb = Math.round((it.totalBytes || it.wastedBytes || 0) / 1024);
+      console.log(`  ${String(kb).padStart(5)} kB  ${(it.url || '').slice(0, 90)}`);
+    }
   }
   console.log('────────────────────────────────────────────────');
 } catch (e) {
