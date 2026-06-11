@@ -871,7 +871,7 @@ blog-fixture-tests:
   # is built once in docker-build-blog-testenv; blog-fixture-standalone extracts
   # its standalone, and each shard restores that tree to /app (the exact path
   # baked into the server chunks) before running its share of the tests.
-  parallel: 4
+  parallel: 8
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
