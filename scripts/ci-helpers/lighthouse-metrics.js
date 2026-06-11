@@ -99,41 +99,43 @@ try {
     console.log(`  ~${String(o.savingsMs).padStart(5)}ms  ${o.title}${o.display ? ` — ${o.display}` : ''}`);
   }
 
-  // Explicit image / caching / LCP audits (regardless of overallSavingsMs) so
-  // we can tell image-driven LCP & caching apart from JS-driven cost.
+  // Definitive image-vs-JS breakdown from total-byte-weight (always present in LH12).
   const fmt = (s) => (s === null || s === undefined ? 'n/a' : s === 1 ? 'PASS' : Math.round(s * 100) + '/100');
-  const watch = [
-    'lcp-lazy-loaded',
-    'prioritize-lcp-image',
-    'uses-rel-preconnect',
-    'modern-image-formats',
-    'uses-optimized-images',
-    'uses-responsive-images',
-    'efficient-animated-content',
-    'offscreen-images',
-    'uses-long-cache-ttl',
-    'total-byte-weight'
-  ];
-  console.log('\n── Image / cache / LCP audits ──────────────────');
-  for (const id of watch) {
-    const a = audits[id];
-    if (!a) continue;
-    const saved = a.details?.overallSavingsMs ? ` (~${Math.round(a.details.overallSavingsMs)}ms)` : '';
-    console.log(`  ${fmt(a.score).padStart(8)}  ${id}${a.displayValue ? ` — ${a.displayValue}` : ''}${saved}`);
+  const classify = (url) => {
+    if (/\.(png|jpe?g|webp|gif|avif|svg)(\?|$)/i.test(url) || /images\.hive\.blog/i.test(url)) return 'image';
+    if (/\.js(\?|$)/i.test(url) || /_next\/static\/chunks/i.test(url)) return 'js';
+    if (/\.css(\?|$)/i.test(url)) return 'css';
+    if (/\.(woff2?|ttf|otf|eot)(\?|$)/i.test(url)) return 'font';
+    return 'other';
+  };
+  const byteItems = audits['total-byte-weight']?.details?.items || [];
+  const sums = {};
+  for (const it of byteItems) {
+    const c = classify(it.url || '');
+    sums[c] = (sums[c] || 0) + (it.totalBytes || 0);
   }
+  console.log('\n── Page weight by type (top requests) ──────────');
+  for (const [c, b] of Object.entries(sums).sort((a, b) => b[1] - a[1])) {
+    console.log(`  ${String(Math.round(b / 1024)).padStart(6)} kB  ${c}`);
+  }
+  console.log('  heaviest individual requests:');
+  byteItems
+    .slice()
+    .sort((a, b) => (b.totalBytes || 0) - (a.totalBytes || 0))
+    .slice(0, 12)
+    .forEach((it) => {
+      console.log(
+        `    ${String(Math.round((it.totalBytes || 0) / 1024)).padStart(5)} kB  [${classify(it.url || '')}]  ${(it.url || '').slice(0, 80)}`
+      );
+    });
 
-  // Heaviest image responses actually downloaded (from the LCP/resource-summary)
-  const imgItems = (audits['uses-long-cache-ttl']?.details?.items || [])
-    .concat(audits['modern-image-formats']?.details?.items || [])
-    .filter((it) => it && /\.(png|jpe?g|webp|gif|avif)/i.test(it.url || ''))
-    .sort((a, b) => (b.totalBytes || b.wastedBytes || 0) - (a.totalBytes || a.wastedBytes || 0))
-    .slice(0, 5);
-  if (imgItems.length) {
-    console.log('\n── Heaviest images seen ────────────────────────');
-    for (const it of imgItems) {
-      const kb = Math.round((it.totalBytes || it.wastedBytes || 0) / 1024);
-      console.log(`  ${String(kb).padStart(5)} kB  ${(it.url || '').slice(0, 90)}`);
-    }
+  // List which LCP/image/cache audit ids this LH version actually exposes + scores
+  const watchRe = /(lcp|image|cache|preconnect|byte|render-blocking|unused|font-display)/i;
+  console.log('\n── Relevant audit scores (LH12 ids) ────────────');
+  for (const [id, a] of Object.entries(audits)) {
+    if (!watchRe.test(id) || !a || a.scoreDisplayMode === 'manual') continue;
+    if (a.score === 1 && !a.displayValue) continue; // skip clean, info-less passes
+    console.log(`  ${fmt(a.score).padStart(8)}  ${id}${a.displayValue ? ` — ${a.displayValue}` : ''}`);
   }
   console.log('────────────────────────────────────────────────');
 } catch (e) {
