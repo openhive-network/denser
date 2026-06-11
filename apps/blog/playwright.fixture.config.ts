@@ -29,12 +29,51 @@ const FIXTURE_PORT = 8200;
 // Point the app at the fixture proxy
 process.env.REACT_APP_API_ENDPOINT = `http://localhost:${FIXTURE_PORT}`;
 
+// Optional CI sharding. GitLab's `parallel: N` sets CI_NODE_INDEX (1..N) and
+// CI_NODE_TOTAL (N) on each shard job; we map them straight onto Playwright's
+// `shard` option. Because this config is `fullyParallel: false` (every spec
+// file is one indivisible test group), `--shard` distributes whole files —
+// never splitting a file's ordered calls across shards, which would corrupt
+// the replay proxy's per-fixture call counters. Reading the shard from env
+// (rather than a CLI flag) sidesteps pnpm's `--` arg-forwarding quirk.
+// When the vars are absent (local runs / `parallel` unset) we run unsharded.
+const shardCurrent = Number(process.env.CI_NODE_INDEX);
+const shardTotal = Number(process.env.CI_NODE_TOTAL);
+const shard =
+  Number.isInteger(shardCurrent) && Number.isInteger(shardTotal) && shardTotal > 1
+    ? { current: shardCurrent, total: shardTotal }
+    : undefined;
+
+// Standalone server location.
+//
+//  - Local / default: `pnpm build` produces ./.next/standalone, and we assemble
+//    static/ + public/ into it before booting node (the historical flow).
+//
+//  - Build-once (CI): FIXTURE_STANDALONE_DIR points at a prebuilt standalone
+//    extracted from the production image into /app/apps/blog. The
+//    image builds at a fixed WORKDIR /app, so the build-time absolute path baked
+//    into the server chunks (incl. @hiveio/wax's WASM loader) stays valid once
+//    the tree is restored to /app. static/ and public/ are already assembled
+//    inside the image, so we only refresh __ENV.js before booting node — no
+//    per-shard `pnpm build`.
+const prebuiltStandalone = process.env.FIXTURE_STANDALONE_DIR;
+const localStandalone = '.next/standalone/apps/blog';
+const webServerCommand = prebuiltStandalone
+  ? `react-env -- sh -c "cp -f public/__ENV.js ${prebuiltStandalone}/public/__ENV.js && node ${prebuiltStandalone}/server.js"`
+  : [
+      `rm -rf ${localStandalone}/.next/static ${localStandalone}/public`,
+      `cp -r .next/static ${localStandalone}/.next/static`,
+      `cp -r public ${localStandalone}/public`,
+      `react-env -- sh -c "cp -f public/__ENV.js ${localStandalone}/public/__ENV.js && node ${localStandalone}/server.js"`
+    ].join(' && ');
+
 export default defineConfig({
   testDir: './playwright/tests/fixture',
   timeout: 60 * 1000,
   expect: {
     timeout: 10 * 1000
   },
+  shard,
   /* Single worker — fixture proxy is shared and test-scoped */
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
@@ -73,12 +112,7 @@ export default defineConfig({
     // .network instead of our fixture proxy on :8200). We repeat the same
     // steps but copy the freshly-written __ENV.js into the standalone
     // public/ right before starting node.
-    command: [
-      'rm -rf .next/standalone/apps/blog/.next/static .next/standalone/apps/blog/public',
-      'cp -r .next/static .next/standalone/apps/blog/.next/static',
-      'cp -r public .next/standalone/apps/blog/public',
-      'react-env -- sh -c "cp -f public/__ENV.js .next/standalone/apps/blog/public/__ENV.js && node .next/standalone/apps/blog/server.js"'
-    ].join(' && '),
+    command: webServerCommand,
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,

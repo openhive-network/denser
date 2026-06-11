@@ -820,21 +820,90 @@ smoke-tests-blog:
   tags:
   - public-runner-docker
 
+# Build-once for the fixture suite: extract the prebuilt Next standalone from
+# the testenv image once, so the fixture shards run tests WITHOUT each doing a
+# full `pnpm build`. The image builds at a fixed WORKDIR /app, so the build-time
+# absolute path baked into the server chunks (incl. @hiveio/wax's WASM loader)
+# stays valid when the standalone is restored to /app in each shard — which a
+# build-once-via-host-artifact route could not guarantee (the runner build path
+# varies between jobs). The standalone tree (incl. traced node_modules) travels
+# as a normal ~39 MB GitLab artifact.
+blog-fixture-standalone:
+  extends: .docker_image_builder_job_template
+  stage: build
+  needs:
+  - docker-build-blog-testenv
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+  - !reference [.docker_image_builder_job_template, before_script]
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+  - |
+    echo "Extracting standalone from ${DENSER_BLOG_IMAGE_NAME}..."
+    docker pull "$DENSER_BLOG_IMAGE_NAME"
+    cid=$(docker create "$DENSER_BLOG_IMAGE_NAME")
+    mkdir -p fixture-standalone
+    docker cp "$cid:/app/." fixture-standalone/
+    docker rm "$cid"
+    du -sh fixture-standalone || true
+  artifacts:
+    paths:
+    - fixture-standalone/
+    expire_in: 1 day
+  tags:
+  - public-runner-docker
+
 blog-fixture-tests:
   extends: .node-job
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   stage: test
-  needs: []
+  needs:
+  - blog-fixture-standalone
+  # Each shard is a fully isolated container (own :3000 webServer + own :8200
+  # fixture proxy), so they never contend for the hardcoded port or share the
+  # stateful replay proxy. Playwright's `fullyParallel: false` config makes
+  # every spec file an indivisible test group, so `--shard` distributes whole
+  # files — never splitting a file's in-order calls across shards (which would
+  # corrupt the replay proxy's per-fixture call counters / pagination).
+  #
+  # Build-once: shards no longer run `pnpm build`. The app is built once in
+  # docker-build-blog-testenv; blog-fixture-standalone extracts its standalone,
+  # and each shard restores that tree to /app (the exact path baked into the
+  # server chunks) before running its share of the tests. 4 shards is the sweet
+  # spot — fixture is no longer the pipeline long-pole (build->e2e->report is),
+  # so more shards cut the test phase without moving pipeline wall-clock.
+  parallel: 4
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
+    # Point the webServer (playwright.fixture.config.ts) at the prebuilt
+    # standalone restored below, instead of a per-shard local `pnpm build`.
+    FIXTURE_STANDALONE_DIR: '/app/apps/blog'
   script:
   - !reference [.node-job, script]
   - |
-    echo -e "\e[0Ksection_start:$(date +%s):fixture_tests[collapsed=false]\r\e[0KRunning blog fixture-based Playwright tests..."
+    echo -e "\e[0Ksection_start:$(date +%s):fixture_restore[collapsed=true]\r\e[0KRestoring prebuilt standalone to /app (shard ${CI_NODE_INDEX}/${CI_NODE_TOTAL})..."
+    mkdir -p /app
+    cp -a fixture-standalone/. /app/
+    rm -rf fixture-standalone
+    echo -e "\e[0Ksection_end:$(date +%s):fixture_restore\r\e[0K"
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):fixture_tests[collapsed=false]\r\e[0KRunning blog fixture-based Playwright tests (shard ${CI_NODE_INDEX}/${CI_NODE_TOTAL})..."
     cd .$TURBO_APP_PATH
-    pnpm test:fixture
+    # Shard is read from CI_NODE_INDEX/CI_NODE_TOTAL inside the Playwright
+    # config (see playwright.fixture.config.ts) — no CLI flag needed.
+    pnpm run test:fixture:run
     echo -e "\e[0Ksection_end:$(date +%s):fixture_tests\r\e[0K"
+  cache:
+  # Dependency caches — pull-only (warmed by other @hive/blog jobs / prior
+  # runs). No build runs here in the build-once flow, so the Next.js
+  # incremental build-cache entry is dropped.
+  - key: '$TURBO_APP_SCOPE-cache-2'
+    paths:
+    - .npm/
+    - .pnpm-store/
+    policy: pull
   artifacts:
     paths:
     - .${TURBO_APP_PATH}/test-results/

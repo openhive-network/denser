@@ -33,7 +33,8 @@
     "test:mock": "playwright test --config=playwright.mock.config.ts",
     "test:mock:headed": "playwright test --config=playwright.mock.config.ts --headed",
     "test:fixture:prepare": "../../scripts/write-version.sh ./version.json && pnpm build",
-    "test:fixture": "pnpm run test:fixture:prepare && playwright test --config=playwright.fixture.config.ts",
+    "test:fixture:run": "playwright test --config=playwright.fixture.config.ts",
+    "test:fixture": "pnpm run test:fixture:prepare && pnpm run test:fixture:run",
     "test:fixture:headed": "pnpm run test:fixture:prepare && playwright test --config=playwright.fixture.config.ts --headed",
     "test:fixture:record": "pnpm run test:fixture:prepare && FIXTURE_MODE=record playwright test --config=playwright.fixture.config.ts && pnpm run test:fixture:trim",
     "test:fixture:trim": "node playwright/tests/support/fixture-auth/trim-fixtures.mjs"
