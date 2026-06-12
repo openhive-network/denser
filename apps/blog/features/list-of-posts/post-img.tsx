@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { Link } from '@hive/ui';
-import { proxifyImageSrc } from '@ui/lib/proxify-images';
+import { proxifyImageSrc, resizeProxyImageSrc } from '@ui/lib/proxify-images';
 import { getDefaultImageUrl, getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import { customEndsWith } from '@/blog/lib/ends-with';
 import {
@@ -16,6 +16,12 @@ import { Entry } from '@hive/common-hiveio-packages/wax';
 // Match condenser's 256x512 to share image cache at images.hive.blog
 const UX_IMAGE_WIDTH = 256;
 const UX_IMAGE_HEIGHT = 512;
+
+// On desktop (≥1000px) the thumbnail renders at ~130×80px, so the full 256px
+// asset is ~2× oversized at DPR 1. Serve a smaller 1× variant there (256 stays
+// as the 2× retina candidate and as the mobile/default image).
+const DESKTOP_IMG_WIDTH = 160;
+const DESKTOP_IMG_HEIGHT = 320;
 
 export function find_first_img(post: Entry) {
   try {
@@ -114,7 +120,7 @@ export default function PostImage({ post }: { post: Entry }) {
           <div className="relative flex h-[210px] items-center overflow-hidden bg-transparent sm:h-[360px] md:mr-3.5 md:max-h-[80px] md:w-fit md:min-w-[130px] md:max-w-[130px]">
             <picture className="articles__feature-img h-ful w-full">
               <source
-                srcSet={image}
+                srcSet={`${resizeProxyImageSrc(image, DESKTOP_IMG_WIDTH, DESKTOP_IMG_HEIGHT)} 1x, ${image} 2x`}
                 media="(min-width: 1000px)"
                 onError={() => setImage(getDefaultImageUrl())}
               />

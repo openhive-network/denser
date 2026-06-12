@@ -30,6 +30,19 @@ export function getLatestUrl(str: string): string {
   return last;
 }
 
+/**
+ * Rewrite the width/height of an already-proxified image URL to request a
+ * smaller variant (e.g. a desktop thumbnail that renders far smaller than the
+ * default proxy size). Returns the URL unchanged when it isn't a proxy `/p/`
+ * URL or carries no width/height (e.g. GIFs, avatars, default fallbacks).
+ */
+export function resizeProxyImageSrc(url: string, width: number, height: number): string {
+  if (!url || !url.startsWith(`${proxyBase}/p/`) || !/[?&]width=\d+/.test(url)) {
+    return url;
+  }
+  return url.replace(/([?&])width=\d+/, `$1width=${width}`).replace(/([?&])height=\d+/, `$1height=${height}`);
+}
+
 export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'match', token?: string) {
   if (!url || typeof url !== 'string') {
     return '';
