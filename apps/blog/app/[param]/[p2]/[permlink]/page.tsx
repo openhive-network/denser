@@ -1,6 +1,7 @@
 import PostContent from './content';
 import { getPostCached } from '@/blog/lib/cached-api';
 import { getCommunity, getDiscussion, getFollowList } from '@transaction/lib/bridge-api';
+import { isTransportError } from '@transaction/lib/wax-errors';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { isUsernameValid, isPermlinkValid, isValidUserParam } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
@@ -40,6 +41,7 @@ const PostPage = async ({
   let discussionData = null;
   let communityData = null;
   let mutedListData = null;
+  let postTransportError: unknown = null;
 
   try {
     // Fetch post, discussion, and optionally community in parallel.
@@ -53,9 +55,16 @@ const PostPage = async ({
       isCommunity(community) ? getCommunity(community, observer) : Promise.resolve(null)
     ]);
 
-    postData = postResult.status === 'fulfilled' ? (postResult.value ?? null) : null;
-    if (postResult.status === 'rejected') {
+    if (postResult.status === 'fulfilled') {
+      postData = postResult.value ?? null;
+    } else {
+      // A rejected post fetch is either a genuine "post does not exist" (hivemind returns that as
+      // an HTTP-200 JSON-RPC error) or a transport failure (429/5xx/timeout/network). Only the
+      // former is a real 404; a transport failure must surface as a 5xx, never a misleading 404.
       logger.error(postResult.reason, 'Error fetching post data:');
+      if (isTransportError(postResult.reason)) {
+        postTransportError = postResult.reason;
+      }
     }
 
     discussionData = discussionResult.status === 'fulfilled' ? (discussionResult.value ?? null) : null;
@@ -77,6 +86,13 @@ const PostPage = async ({
     }
   } catch (error) {
     logger.error(error, 'Error in PostPage:');
+  }
+
+  // A transport failure on the primary post fetch (node unreachable / overloaded / slow) must
+  // surface as a 5xx via the route error boundary (ServiceUnavailable) — never a false 404 for
+  // content that may well exist. See hive/denser#926.
+  if (postTransportError) {
+    throw postTransportError;
   }
 
   // Skip 404 when navigating from post creation — the client has optimistic data
