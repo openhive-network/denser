@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 
@@ -15,6 +14,8 @@ export function useUserTitleMutation() {
   const userTitleMutation = useMutation({
     mutationFn: async (params: { community: string; username: string; title: string; permlink: string }) => {
       const { community, username, title } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.setUserTitle(community, username, title, {
         observe: true
       });

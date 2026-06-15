@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
@@ -16,6 +15,8 @@ export function useMarkAllNotificationsAsReadMutation() {
   const markAllNotificationsAsReadMutation = useMutation({
     mutationFn: async (params: { date: string }) => {
       const { date } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.markAllNotificationAsRead(date, { observe: true });
       const response = { ...params, broadcastResult };
       return response;

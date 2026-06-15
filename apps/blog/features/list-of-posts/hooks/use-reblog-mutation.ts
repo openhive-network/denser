@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TransactionBroadcastResult, transactionService } from '@transaction/index';
+import type { TransactionBroadcastResult } from '@transaction/index';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
 
@@ -15,6 +15,9 @@ export function useReblogMutation() {
     mutationFn: async (params: { author: string; permlink: string; username: string }) => {
       const { author, permlink, username } = params;
 
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only
+      // when the user actually reblogs, keeping it out of the feed's first-load bundle.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult: TransactionBroadcastResult = await transactionService.reblog(author, permlink, {
         observe: true
       });

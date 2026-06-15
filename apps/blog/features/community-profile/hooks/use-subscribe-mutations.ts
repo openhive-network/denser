@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient, QueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { Community } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
@@ -38,6 +37,8 @@ export function useSubscribeMutation() {
   const subscribeMutation = useMutation({
     mutationFn: async (params: { community: string; username: string; communityTitle: string }) => {
       const { community } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.subscribe(community, { observe: true });
       const prevUserSubscriptionData: string[][] | undefined = queryClient.getQueryData([
         'subscriptions',
@@ -117,6 +118,8 @@ export function useUnsubscribeMutation() {
   const unsubscribeMutation = useMutation({
     mutationFn: async (params: { community: string; username: string }) => {
       const { community, username } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.unsubscribe(community, { observe: true });
       const prevUserSubscriptionData: string[][] | undefined = queryClient.getQueryData([
         'subscriptions',

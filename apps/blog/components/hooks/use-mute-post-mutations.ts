@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { Entry, EntryStat } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -67,6 +66,8 @@ export function useMutePostMutation() {
       discussionAuthor: string;
     }) => {
       const { community, username, permlink, notes, discussionPermlink } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.mutePost(community, username, permlink, notes, {
         observe: true
       });
@@ -188,6 +189,8 @@ export function useUnmutePostMutation() {
       discussionAuthor: string;
     }) => {
       const { community, username, permlink, notes, discussionPermlink } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.unmutePost(community, username, permlink, notes, {
         observe: true
       });

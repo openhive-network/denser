@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { useMutation, QueryClient, useQueryClient } from '@tanstack/react-query';
-import { TransactionBroadcastResult, transactionService } from '@transaction/index';
+import type { TransactionBroadcastResult } from '@transaction/index';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import { getLogger } from '@ui/lib/logging';
@@ -147,6 +147,9 @@ export function useVoteMutation() {
 
     mutationFn: async (params: { voter: string; author: string; permlink: string; weight: number }) => {
       const { voter, author, permlink, weight } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only
+      // when the user actually votes, keeping it out of the feed's first-load bundle.
+      const { transactionService } = await import('@transaction/index');
       // Use observe: false - don't wait for blockchain confirmation
       // A successful broadcast guarantees inclusion in the blockchain
       const broadcastResult: TransactionBroadcastResult = await transactionService.upVote(

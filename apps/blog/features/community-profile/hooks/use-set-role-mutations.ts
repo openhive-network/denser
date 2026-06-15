@@ -1,7 +1,6 @@
 import { Roles } from '@/blog/features/community-profile/lib/utils';
 import { EAvailableCommunityRoles } from '@hiveio/wax';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { Community } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -19,6 +18,8 @@ export function useSetRoleMutation() {
   const setRoleMutation = useMutation({
     mutationFn: async (params: { community: string; username: string; role: EAvailableCommunityRoles }) => {
       const { community, username, role } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.setRole(community, username, role, {
         observe: true
       });

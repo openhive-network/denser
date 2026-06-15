@@ -1,7 +1,6 @@
 import { useRef } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { getDiscussion } from '@transaction/lib/bridge-api';
 import { Preferences, Entry } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -148,6 +147,8 @@ export function useCommentMutation() {
     }) => {
       const { parentAuthor, parentPermlink, body, preferences, discussionPermlink } = params;
 
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       // Broadcast without waiting for blockchain confirmation
       // A successful broadcast guarantees inclusion in the blockchain
       const broadcastResult = await transactionService.comment(
@@ -285,6 +286,8 @@ export function useUpdateCommentMutation() {
       observer: string;
     }) => {
       const { parentAuthor, parentPermlink, permlink, body, discussionPermlink } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.updateComment(
         parentAuthor,
         parentPermlink,
@@ -395,6 +398,8 @@ export function useDeleteCommentMutation() {
       observer: string;
     }) => {
       const { permlink, discussionPermlink } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.deleteComment(permlink, { observe: false });
       logger.info('Done delete comment transaction: %o', { discussionPermlink, broadcastResult });
       return { ...params, broadcastResult };

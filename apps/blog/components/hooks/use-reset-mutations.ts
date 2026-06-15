@@ -1,6 +1,5 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -34,6 +33,8 @@ export function useResetAllListsMutation() {
     },
 
     mutationFn: async () => {
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.resetAllBlog({ observe: true });
       logger.info('Done reset all lists transaction: %o', { broadcastResult });
       return { broadcastResult };

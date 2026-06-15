@@ -1,6 +1,5 @@
 import { ApiAccount } from '@hiveio/wax';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
@@ -22,6 +21,8 @@ export function useClaimRewardsMutation() {
     mutationFn: async (params: { account: ApiAccount }) => {
       const { account } = params;
 
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcstResult = await transactionService.claimRewards(account, { observe: true });
       const prevData: FullAccount | undefined = queryClient.getQueryData(queryKey);
       const response = { ...params, broadcstResult, prevData };

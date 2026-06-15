@@ -1,6 +1,5 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { UseInfiniteQueryResult, useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { IFollow, IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -33,6 +32,8 @@ export function useMuteMutation() {
     },
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.mute(username, '', { observe: true });
       const prevIgnoredData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined = queryClient.getQueryData(
         ['followingData', user.username, 'ignore']
@@ -143,6 +144,8 @@ export function useUnmuteMutation() {
   const unmuteMutation = useMutation({
     mutationFn: async (params: { username: string }) => {
       const { username } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.unmute(username, { observe: true });
       const prevMutedList: IFollowList[] | undefined = queryClient.getQueryData(['muted', user.username]);
       const prevFollowingData: UseInfiniteQueryResult<IFollow[]>['data'] | undefined =
@@ -208,6 +211,8 @@ export function useResetBlogListMutation() {
 
   const resetBlogListMutation = useMutation({
     mutationFn: async () => {
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.resetBlogList({ observe: true });
       const response = { broadcastResult };
       logger.info('Done reset blog list transaction: %o', response);

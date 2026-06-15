@@ -1,6 +1,5 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -42,6 +41,8 @@ export function useFollowBlacklistBlogMutation() {
 
     mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.followBlacklistBlog(otherBlogs, blog, {
         observe: true
       });
@@ -109,6 +110,8 @@ export function useUnfollowBlacklistBlogMutation() {
 
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.unfollowBlacklistBlog(blog, { observe: true });
       logger.info('Done unfollow blacklist blog transaction: %o', { blog, broadcastResult });
       return { ...params, broadcastResult };
@@ -171,6 +174,8 @@ export function useResetFollowBlacklistBlogMutation() {
     },
 
     mutationFn: async () => {
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.resetFollowBlacklistBlog({ observe: true });
       logger.info('Done reset follow blacklist blog transaction: %o', { broadcastResult });
       return { broadcastResult };

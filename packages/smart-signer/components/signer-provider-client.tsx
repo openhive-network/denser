@@ -1,7 +1,6 @@
 'use client';
 import { type getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useSignerClient } from '@smart-signer/lib/use-signer-client';
-import { transactionService } from '@transaction/index';
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { getLogger } from '@hive/ui/lib/logging';
 
@@ -34,6 +33,9 @@ export const SignerProviderClient = ({ children }: { children: ReactNode }) => {
       const _getSigner = (await import('@smart-signer/lib/signer/get-signer')).getSigner;
       if (signerOptions.username !== '') {
         setSigner(_getSigner(signerOptions));
+        // Lazy-load the transaction service (pulls @hiveio/wax + workerbee, ~2.4 MB
+        // WASM) only when a logged-in user actually needs a signer.
+        const { transactionService } = await import('@transaction/index');
         transactionService.setSignerOptions(signerOptions);
       }
     })().catch(logger.error);

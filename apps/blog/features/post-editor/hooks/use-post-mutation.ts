@@ -1,7 +1,6 @@
 import { NaiAsset } from '@hiveio/wax';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { Beneficiarie } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -154,6 +153,8 @@ export function usePostMutation() {
         editMode
       } = params;
 
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       // Use observe: true - wait for block inclusion (~1.5s avg) before resolving.
       // This ensures the draft is not deleted until the transaction is confirmed on-chain.
       if (!editMode && !!maxAcceptedPayout) {
@@ -259,6 +260,8 @@ export function useDeletePostMutation() {
   const deletePostMutation = useMutation({
     mutationFn: async (params: { permlink: string }) => {
       const { permlink } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.deleteComment(permlink, { observe: false });
       const response = { ...params, broadcastResult };
       return response;

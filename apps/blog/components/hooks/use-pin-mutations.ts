@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -17,6 +16,8 @@ export function usePinMutation() {
   const pinMutation = useMutation({
     mutationFn: async (params: { community: string; username: string; permlink: string }) => {
       const { community, username, permlink } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.pin(community, username, permlink, {
         observe: true
       });
@@ -69,6 +70,8 @@ export function useUnpinMutation() {
   const unpinMutation = useMutation({
     mutationFn: async (params: { community: string; username: string; permlink: string }) => {
       const { community, username, permlink } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.unpin(community, username, permlink, {
         observe: true
       });

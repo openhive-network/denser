@@ -1,6 +1,5 @@
 import { ESupportedLanguages } from '@hiveio/wax';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { Community } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
@@ -22,6 +21,8 @@ export function useUpdateCommunityMutation() {
   const updateCommunityMutation = useMutation({
     mutationFn: async (params: UpdateCommunityMutationParams) => {
       const { communityName, title, about, editor, lang, nsfw, flagText, description } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const response = await transactionService.updateCommunityProps(
         communityName,
         title,

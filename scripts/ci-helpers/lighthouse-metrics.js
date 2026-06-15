@@ -46,3 +46,37 @@ for (const [auditId, metricName] of Object.entries(metrics)) {
 fs.writeFileSync(metricsFile, lines.join('\n') + '\n');
 console.log(`Metrics written to ${metricsFile}`);
 console.log(lines.join('\n'));
+
+// --- Page-weight diagnostics: does wax.common.wasm still download? (job log only) ---
+try {
+  const audits = report.audits || {};
+  const classify = (url) => {
+    if (/\.wasm(\?|$)/i.test(url)) return 'wasm';
+    if (/\.(png|jpe?g|webp|gif|avif|svg)(\?|$)/i.test(url) || /images\.hive\.blog/i.test(url)) return 'image';
+    if (/\.js(\?|$)/i.test(url) || /_next\/static\/chunks/i.test(url)) return 'js';
+    if (/\.css(\?|$)/i.test(url)) return 'css';
+    if (/\.(woff2?|ttf|otf)(\?|$)/i.test(url)) return 'font';
+    return 'other';
+  };
+  const items = audits['total-byte-weight']?.details?.items || [];
+  const sums = {};
+  for (const it of items) {
+    const c = classify(it.url || '');
+    sums[c] = (sums[c] || 0) + (it.totalBytes || 0);
+  }
+  console.log('\n── Page weight by type (top requests) ──────────');
+  for (const [c, b] of Object.entries(sums).sort((a, b) => b[1] - a[1])) {
+    console.log(`  ${String(Math.round(b / 1024)).padStart(6)} kB  ${c}`);
+  }
+  console.log('  heaviest requests:');
+  items
+    .slice()
+    .sort((a, b) => (b.totalBytes || 0) - (a.totalBytes || 0))
+    .slice(0, 10)
+    .forEach((it) => console.log(`    ${String(Math.round((it.totalBytes || 0) / 1024)).padStart(5)} kB  [${classify(it.url || '')}]  ${(it.url || '').slice(0, 80)}`));
+  const wasm = items.filter((it) => /\.wasm/i.test(it.url || ''));
+  console.log(`\n  wax/WASM downloaded on this page: ${wasm.length ? wasm.map((w) => Math.round((w.totalBytes || 0) / 1024) + 'kB').join(', ') : 'NONE ✅'}`);
+  console.log('────────────────────────────────────────────────');
+} catch (e) {
+  console.warn('Page-weight diagnostics failed (non-fatal):', e.message);
+}

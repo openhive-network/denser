@@ -1,6 +1,5 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -42,6 +41,8 @@ export function useFollowMutedBlogMutation() {
 
     mutationFn: async (params: { otherBlogs: string; blog?: string }) => {
       const { otherBlogs, blog } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.followMutedBlog(otherBlogs, blog, { observe: true });
       logger.info('Done follow muted blog transaction: %o', { otherBlogs, blog, broadcastResult });
       return { ...params, broadcastResult };
@@ -107,6 +108,8 @@ export function useUnfollowMutedBlogMutation() {
 
     mutationFn: async (params: { blog: string }) => {
       const { blog } = params;
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.unfollowMutedBlog(blog, { observe: true });
       logger.info('Done unfollow muted blog transaction: %o', { blog, broadcastResult });
       return { ...params, broadcastResult };
@@ -169,6 +172,8 @@ export function useResetFollowMutedBlogMutation() {
     },
 
     mutationFn: async () => {
+      // Lazy-load the transaction service (pulls @hiveio/wax + workerbee WASM) only when invoked.
+      const { transactionService } = await import('@transaction/index');
       const broadcastResult = await transactionService.resetFollowMutedBlog({ observe: true });
       logger.info('Done reset follow muted blog transaction: %o', { broadcastResult });
       return { broadcastResult };
