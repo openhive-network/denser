@@ -19,7 +19,8 @@ export function MainNav() {
           href={`/trending`}
           className={cn(
             'ml-6 flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
-            pathname === '/trending' ? 'text-destructive' : 'text-primary'
+            // Root (/) serves the trending feed via the middleware rewrite, so mark Posts active there too.
+            pathname === '/trending' || pathname === '/' ? 'text-destructive' : 'text-primary'
           )}
           data-testid="nav-posts-link"
         >

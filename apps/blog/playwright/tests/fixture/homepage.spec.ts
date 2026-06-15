@@ -3,8 +3,8 @@ import { test, expect } from '../support/fixture-proxy-test';
 /**
  * Homepage fixture test.
  *
- * This test opens the homepage (which redirects to /trending) and verifies
- * that posts are loaded and displayed.
+ * This test opens the homepage (which serves the trending feed via an internal
+ * rewrite, no redirect) and verifies that posts are loaded and displayed.
  *
  * Run in record mode to capture fixtures:
  *   pnpm --filter @hive/blog test:fixture:record

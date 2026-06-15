@@ -15,7 +15,10 @@ const PostSelectFilter = ({ param }: { param?: string }) => {
   const { t } = useTranslation('common_blog');
   const router = useRouter();
   const path = usePathname();
-  const currentPath = path ? `/${path.split('/')[1]}` : '/trending';
+  // Root (/) serves the trending feed via the middleware rewrite, so its first
+  // path segment is empty — treat that as /trending so the filter shows "Trending".
+  const segment = path?.split('/')[1];
+  const currentPath = segment ? `/${segment}` : '/trending';
   const onValueChange = (next: string) => {
     if (param) {
       router.push(`${next}/${param}`, undefined);

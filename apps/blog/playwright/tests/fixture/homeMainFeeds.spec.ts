@@ -21,11 +21,13 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
     homePage = new HomePage(page);
   });
 
-  test('ANON-HOME-01 — root URL redirects to /trending and feed renders', async ({ page }) => {
+  test('ANON-HOME-01 — root URL serves the trending feed without redirecting', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-    await page.waitForURL('**/trending', { timeout: TIMEOUTS.HYDRATION });
-    await expect(page).toHaveURL(/\/trending$/);
+    // The root path serves the trending feed via an internal middleware rewrite
+    // (no client-visible redirect), so the URL stays at / instead of /trending.
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page).not.toHaveURL(/\/trending$/);
 
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
   });
