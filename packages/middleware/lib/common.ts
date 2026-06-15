@@ -9,10 +9,13 @@ import { buildCsp, SECURITY_HEADERS, type CspConfig } from './csp';
  */
 export interface MiddlewareConfig {
   /**
-   * If provided, redirect root path (/) to this path
-   * Example: '/trending' will redirect / to /trending
+   * If provided, internally rewrite the root path (/) to this path.
+   * The target route's content is served at / with no client-visible redirect:
+   * the URL stays / and the browser receives the SSR response directly, avoiding
+   * the extra round-trip a 302 would cost.
+   * Example: '/trending' serves the trending feed at /.
    */
-  rootRedirect?: string;
+  rootRewrite?: string;
 
   /**
    * CSP configuration for runtime evaluation
@@ -33,25 +36,17 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
     const { pathname } = request.nextUrl;
     const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
-    // Handle root redirect if configured (before creating response)
-    if (config.rootRedirect) {
-      if (pathname === '/' || pathname === `${basePath}` || pathname === `${basePath}/`) {
-        const redirectResponse = NextResponse.redirect(
-          new URL(`${basePath}${config.rootRedirect}`, request.url),
-          { status: 302 }
-        );
-        // Apply security headers to redirect responses too
-        if (cspHeader) {
-          redirectResponse.headers.set('Content-Security-Policy', cspHeader);
-          for (const [key, value] of Object.entries(SECURITY_HEADERS)) {
-            redirectResponse.headers.set(key, value);
-          }
-        }
-        return redirectResponse;
-      }
-    }
-
-    const res = NextResponse.next();
+    // Serve a configured route at the root path without a client-visible redirect.
+    // A rewrite (vs a 302) keeps the URL at / and returns the target route's SSR
+    // response directly, saving the extra client→origin round-trip. The rewritten
+    // request still flows through the header/cookie/logging logic below, so / is
+    // treated like any other content page.
+    const isRootPath =
+      pathname === '/' || pathname === `${basePath}` || pathname === `${basePath}/`;
+    const res =
+      config.rootRewrite && isRootPath
+        ? NextResponse.rewrite(new URL(`${basePath}${config.rootRewrite}`, request.url))
+        : NextResponse.next();
 
     // Apply CSP and security headers
     if (cspHeader) {

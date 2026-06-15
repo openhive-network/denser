@@ -5,9 +5,10 @@ import { createMiddleware } from '@hive/middleware/lib/common';
 // and inline style attributes (style-src-attr) don't support nonces at all.
 // See GitLab issue #796 for tracking nonce CSP support in future Next.js versions.
 
-// Blog-specific middleware: redirects root to /trending, applies CSP at runtime
+// Blog-specific middleware: serves /trending at the root path (rewrite, no redirect),
+// applies CSP at runtime
 export const middleware = createMiddleware({
-  rootRedirect: '/trending',
+  rootRewrite: '/trending',
   csp: {
     // Embedded content whitelist for blog posts
     // Note: 3speak.online/co removed (compromised/spam), code normalizes to 3speak.tv
