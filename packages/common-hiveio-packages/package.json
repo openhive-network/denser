@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "sideEffects": false,
   "scripts": {
     "lint": "eslint ."
   },
@@ -15,6 +16,7 @@
     ".": "./src/index.ts",
     "./package.json": "./package.json",
     "./wax": "./src/wax/index.ts",
+    "./wax/chain": "./src/wax/hive-chain-service.ts",
     "./src/hb-auth": "./src/hb-auth/index.ts"
   },
   "devDependencies": {

@@ -1,11 +1,13 @@
-import {
+import type {
   TWaxApiRequest,
   RcAccount,
   GetDynamicGlobalPropertiesResponse,
   GetDynamicGlobalPropertiesRequest,
-  type asset as AssetType,
+  asset as AssetType,
   NaiAsset,
-  transaction
+  transaction,
+  TWaxExtended,
+  TWaxRestExtended
 } from '@hiveio/wax';
 
 export interface SearchType {
@@ -1169,3 +1171,10 @@ Together with the author name, it uniquely identifies the post.
     };
   };
 };
+
+/**
+ * The extended wax chain type. Defined here (a types-only module) rather than in
+ * hive-chain-service so consumers can reference it without pulling the wax runtime
+ * (createHiveChain → ~2.4 MB WASM) into their bundle.
+ */
+export type HiveChain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;

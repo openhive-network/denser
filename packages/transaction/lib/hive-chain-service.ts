@@ -1,4 +1,5 @@
-import { getChain, reuseHiveChain, HiveChain, setAiEndpoint, setRpcEndpoint } from "@hive/common-hiveio-packages";
+import { getChain, reuseHiveChain, setAiEndpoint, setRpcEndpoint } from "@hive/common-hiveio-packages/wax/chain";
+import type { HiveChain } from "@hive/common-hiveio-packages/wax";
 
 export type { HiveChain };
 

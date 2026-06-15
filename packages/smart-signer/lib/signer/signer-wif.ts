@@ -6,7 +6,7 @@ import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { KeyAuthorityType } from '@hiveio/hb-auth';
-import { getChain } from '@hive/common-hiveio-packages';
+import { getChain } from '@hive/common-hiveio-packages/wax/chain';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 
 const logger = getLogger('app');

@@ -1,4 +1,4 @@
-import { getChain } from '@hive/common-hiveio-packages';
+import { getChain } from '@hive/common-hiveio-packages/wax/chain';
 
 /**
  * Verify signature when you know message and algorithm used to hash

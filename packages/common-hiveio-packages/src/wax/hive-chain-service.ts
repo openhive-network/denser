@@ -1,10 +1,14 @@
-import { createHiveChain, IWaxOptionsChain, TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
+import { createHiveChain } from '@hiveio/wax';
+import type { IWaxOptionsChain } from '@hiveio/wax';
 import { siteConfig } from '@hive/ui/config/site'; // Maybe move this to package specific only to config
-import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
+import type { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
 import { getLogger } from '@hive/ui/lib/logging';
 import { initializeAssetConstants } from '@hive/ui/lib/asset-constants';
 
-export type HiveChain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
+// HiveChain lives in extended-hive.chain (types-only) so the type barrel can
+// expose it without pulling this runtime module (and its wax/WASM) into bundles.
+export type { HiveChain } from './extended-hive.chain';
+import type { HiveChain } from './extended-hive.chain';
 
 const logger = getLogger('wax');
 

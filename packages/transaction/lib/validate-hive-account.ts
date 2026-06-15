@@ -1,5 +1,5 @@
 import { getChain, resetTransactionChain } from './chain';
-import { isWasmMemoryError, resetChain } from '@hive/common-hiveio-packages';
+import { isWasmMemoryError, resetChain } from '@hive/common-hiveio-packages/wax/chain';
 import { getLogger } from '@hive/ui/lib/logging';
 
 const logger = getLogger('validate-hive-account');

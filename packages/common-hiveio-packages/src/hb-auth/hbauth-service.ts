@@ -3,7 +3,7 @@ import { OnlineClient, ClientOptions, OfflineClient, DEFAULT_INIT_TIMEOUT } from
 import { getLogger } from '@hive/ui/lib/logging';
 import { configuredSessionTime } from '@hive/ui/config/public-vars';
 import env from '@beam-australia/react-env';
-import { getChain } from '../wax';
+import { getChain } from '../wax/hive-chain-service';
 
 const logger = getLogger('app');
 

@@ -1,4 +1,4 @@
-import { reuseHiveChain } from "@hive/common-hiveio-packages";
+import { reuseHiveChain } from "@hive/common-hiveio-packages/wax/chain";
 
 export function validateWifKey(
   password: string,

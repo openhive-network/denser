@@ -1,4 +1,4 @@
-import { ApiAccount, NaiAsset, ApiAuthority, ApiManabar } from '@hiveio/wax';
+import type { ApiAccount, NaiAsset, ApiAuthority, ApiManabar } from '@hiveio/wax';
 
 export type ExpApiAccount = ApiAccount;
 export interface AccountProfile {
