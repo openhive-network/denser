@@ -1,5 +1,6 @@
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
+import { getCachedAnonymousCommunities } from '@/blog/lib/cached-ssr';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
@@ -17,9 +18,11 @@ const logger = getLogger('app');
 const ServerSideLayout = async ({ children }: { children: ReactNode }) => {
   const observer = await getObserverFromCookies();
   const isLoggedIn = observer !== DEFAULT_OBSERVER;
-  // Fetch communities (always) and subscriptions (logged-in) in parallel
+  // Fetch communities (always) and subscriptions (logged-in) in parallel.
+  // The communities list is identical for anonymous visitors — serve it from a
+  // short-lived cache so SSR doesn't wait on the live Hive API every request.
   const [communitiesResult, subscriptionsResult] = await Promise.allSettled([
-    getCommunities(sort, query, observer),
+    isLoggedIn ? getCommunities(sort, query, observer) : getCachedAnonymousCommunities(sort, query),
     isLoggedIn ? getSubscriptions(observer) : Promise.resolve(null)
   ]);
   const communitiesData =

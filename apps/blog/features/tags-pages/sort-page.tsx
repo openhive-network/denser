@@ -1,6 +1,7 @@
 import { SortTypes, DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
+import { getCachedAnonymousRankedPosts } from '@/blog/lib/cached-ssr';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
@@ -26,7 +27,13 @@ const SortPage = async ({
   const shouldSkipPrefetch = tag === 'my' && observer === DEFAULT_OBSERVER;
   if (!shouldSkipPrefetch) {
     try {
-      initialPosts = (await getPostsRanked(sort, tag, '', '', observer)) ?? null;
+      // Anonymous feed is identical for everyone and is what dominates server
+      // response time — serve it from a short-lived cache instead of hitting the
+      // live Hive API on every request. Logged-in users keep fresh, personalised data.
+      initialPosts =
+        observer === DEFAULT_OBSERVER
+          ? ((await getCachedAnonymousRankedPosts(sort, tag)) ?? null)
+          : ((await getPostsRanked(sort, tag, '', '', observer)) ?? null);
     } catch (error) {
       logger.error(error, 'Error in SortPage:');
     }
