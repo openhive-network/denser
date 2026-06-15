@@ -1,0 +1,256 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_communities",
+    "params": {
+      "query": null,
+      "sort": "rank",
+      "observer": "guest4test1"
+    },
+    "id": 1
+  },
+  "requestHash": "806c762177483120",
+  "method": "bridge.list_communities",
+  "params": {
+    "query": null,
+    "sort": "rank",
+    "observer": "guest4test1"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "about": "The Hive travel community",
+        "admins": [
+          "detlev",
+          "lizanomadsoul",
+          "worldmappin"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": true,
+          "title": ""
+        },
+        "created_at": "2019-11-17 07:09:54",
+        "id": 1337539,
+        "is_nsfw": false,
+        "lang": "en",
+        "name": "hive-163772",
+        "num_authors": 196,
+        "num_pending": 1238,
+        "subscribers": 18333,
+        "sum_pending": 985,
+        "title": "Worldmappin",
+        "type_id": 1
+      },
+      {
+        "about": "A community for sharing Chinese content on HIVE.",
+        "admins": [
+          "sweetsssj"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": true,
+          "title": ""
+        },
+        "created_at": "2020-03-26 03:18:54",
+        "id": 1373301,
+        "is_nsfw": false,
+        "lang": "zh",
+        "name": "hive-105017",
+        "num_authors": 70,
+        "num_pending": 752,
+        "subscribers": 6181,
+        "sum_pending": 746,
+        "title": "HIVE CN 中文社区",
+        "type_id": 1
+      },
+      {
+        "about": "The Future of Web3 Gaming. Battle Trade and Earn",
+        "admins": [
+          "clove71",
+          "threespeak"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": true,
+          "title": ""
+        },
+        "created_at": "2019-11-26 17:34:36",
+        "id": 1341670,
+        "is_nsfw": false,
+        "lang": "en",
+        "name": "hive-13323",
+        "num_authors": 121,
+        "num_pending": 908,
+        "subscribers": 13372,
+        "sum_pending": 713,
+        "title": "Splinterlands",
+        "type_id": 1
+      },
+      {
+        "about": "A place for photography lovers to share their work and photography tips.",
+        "admins": [
+          "derangedvisions"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": true,
+          "title": ""
+        },
+        "created_at": "2019-11-27 23:22:51",
+        "id": 1342089,
+        "is_nsfw": false,
+        "lang": "en",
+        "name": "hive-194913",
+        "num_authors": 173,
+        "num_pending": 987,
+        "subscribers": 25849,
+        "sum_pending": 521,
+        "title": "Photography Lovers",
+        "type_id": 1
+      },
+      {
+        "about": "It pays to be fit",
+        "admins": [
+          "mcfarhat"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": true,
+          "title": ""
+        },
+        "created_at": "2019-12-04 09:15:24",
+        "id": 1344380,
+        "is_nsfw": false,
+        "lang": "en",
+        "name": "hive-193552",
+        "num_authors": 279,
+        "num_pending": 2595,
+        "subscribers": 11427,
+        "sum_pending": 477,
+        "title": "Actifit",
+        "type_id": 1
+      },
+      {
+        "about": "Photography",
+        "admins": [
+          "brumest",
+          "ewkaw"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": false,
+          "title": ""
+        },
+        "created_at": "2020-02-19 23:55:27",
+        "id": 1367073,
+        "is_nsfw": false,
+        "lang": "en",
+        "name": "hive-142159",
+        "num_authors": 106,
+        "num_pending": 626,
+        "subscribers": 11698,
+        "sum_pending": 330,
+        "title": "Black And White",
+        "type_id": 1
+      },
+      {
+        "about": "LeoFinance is a community for crypto & finance. Powered by Hive and the LEO token economy.",
+        "admins": [
+          "khaleelkazi"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": false,
+          "title": ""
+        },
+        "created_at": "2019-11-26 17:25:27",
+        "id": 1341662,
+        "is_nsfw": false,
+        "lang": "en",
+        "name": "hive-167922",
+        "num_authors": 366,
+        "num_pending": 6754,
+        "subscribers": 26716,
+        "sum_pending": 324,
+        "title": "LeoFinance",
+        "type_id": 1
+      },
+      {
+        "about": "Learn Everything About Hive Thoroughly, Be A Better Hivian",
+        "admins": [
+          "hive-learners",
+          "kronias"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": false,
+          "title": ""
+        },
+        "created_at": "2021-06-13 15:41:33",
+        "id": 1474872,
+        "is_nsfw": false,
+        "lang": "en",
+        "name": "hive-153850",
+        "num_authors": 136,
+        "num_pending": 1077,
+        "subscribers": 10080,
+        "sum_pending": 307,
+        "title": "Hive Learners",
+        "type_id": 1
+      },
+      {
+        "about": "A community for gamers on Hive  @hivegc",
+        "admins": [
+          "hivegc",
+          "strawhat"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": true,
+          "title": ""
+        },
+        "created_at": "2019-12-20 01:55:36",
+        "id": 1348946,
+        "is_nsfw": false,
+        "lang": "en",
+        "name": "hive-140217",
+        "num_authors": 123,
+        "num_pending": 437,
+        "subscribers": 16399,
+        "sum_pending": 281,
+        "title": "Hive Gaming",
+        "type_id": 1
+      },
+      {
+        "about": "Comida - Recetas - Concursos | Food - Recipes - Contests",
+        "admins": [
+          "hivefood",
+          "mariale07"
+        ],
+        "context": {
+          "role": "guest",
+          "subscribed": true,
+          "title": ""
+        },
+        "created_at": "2021-08-12 11:45:09",
+        "id": 1549235,
+        "is_nsfw": false,
+        "lang": "es",
+        "name": "hive-100067",
+        "num_authors": 105,
+        "num_pending": 525,
+        "subscribers": 6339,
+        "sum_pending": 279,
+        "title": "Hive Food",
+        "type_id": 1
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

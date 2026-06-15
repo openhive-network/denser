@@ -1,0 +1,115 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_all_subscriptions",
+    "params": {
+      "account": "guest4test1"
+    },
+    "id": 1
+  },
+  "requestHash": "88788f57861d520d",
+  "method": "bridge.list_all_subscriptions",
+  "params": {
+    "account": "guest4test1"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-160391",
+        "Blockchain Wizardry",
+        "member",
+        "tester"
+      ],
+      [
+        "hive-163772",
+        "Worldmappin",
+        "guest",
+        ""
+      ],
+      [
+        "hive-105017",
+        "HIVE CN 中文社区",
+        "guest",
+        ""
+      ],
+      [
+        "hive-13323",
+        "Splinterlands",
+        "guest",
+        ""
+      ],
+      [
+        "hive-194913",
+        "Photography Lovers",
+        "guest",
+        ""
+      ],
+      [
+        "hive-193552",
+        "Actifit",
+        "guest",
+        ""
+      ],
+      [
+        "hive-140217",
+        "Hive Gaming",
+        "guest",
+        ""
+      ],
+      [
+        "hive-100067",
+        "Hive Food",
+        "guest",
+        ""
+      ],
+      [
+        "hive-124838",
+        "Snaps",
+        "guest",
+        ""
+      ],
+      [
+        "hive-131131",
+        "Holozing Community",
+        "guest",
+        ""
+      ],
+      [
+        "hive-108045",
+        "Family & Friends",
+        "guest",
+        ""
+      ],
+      [
+        "hive-140169",
+        "Vibes",
+        "guest",
+        ""
+      ],
+      [
+        "hive-153112",
+        "API TESTING",
+        "guest",
+        ""
+      ],
+      [
+        "hive-137823",
+        "Testing Zone",
+        "guest",
+        ""
+      ],
+      [
+        "hive-123492",
+        "hive-123492",
+        "guest",
+        ""
+      ]
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

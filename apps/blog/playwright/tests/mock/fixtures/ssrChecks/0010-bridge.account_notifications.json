@@ -1,0 +1,35 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.account_notifications",
+    "params": {
+      "account": "guest4test1",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "8afbb5f4b4f0e83c",
+  "method": "bridge.account_notifications",
+  "params": {
+    "account": "guest4test1",
+    "limit": 50
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "date": "2026-06-09T10:54:27",
+        "id": "86481117275750401",
+        "msg": "@guest4test2 replied to your post",
+        "score": 37,
+        "type": "reply",
+        "url": "@guest4test2/re-guest4test1-1781002468010"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

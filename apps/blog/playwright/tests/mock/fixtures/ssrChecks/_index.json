@@ -1,0 +1,18 @@
+{
+  "testName": "ssrChecks",
+  "recordedAt": "2026-06-15T12:56:27.842Z",
+  "totalRequests": 26,
+  "savedFixtures": 13,
+  "duplicatesSkipped": 13,
+  "methods": {
+    "bridge.list_communities": 6,
+    "bridge.get_ranked_posts": 4,
+    "bridge.list_all_subscriptions": 4,
+    "database_api.find_accounts": 2,
+    "bridge.get_profile": 4,
+    "database_api.get_dynamic_global_properties": 2,
+    "bridge.account_notifications": 1,
+    "bridge.get_community": 2,
+    "bridge.list_community_roles": 1
+  }
+}
