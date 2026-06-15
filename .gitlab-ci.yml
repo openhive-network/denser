@@ -886,6 +886,7 @@ e2e-report-aggregate-wallet:
   image: registry.gitlab.com/gitlab-ci-utils/lighthouse:latest
   variables:
     NODE_TLS_REJECT_UNAUTHORIZED: '0'
+    LIGHTHOUSE_RUNS: '3'
   script:
   - |
     # Wait for the service to be ready
@@ -894,11 +895,28 @@ e2e-report-aggregate-wallet:
       echo "Service not ready after timeout"; exit 1;
     }
   - |
-    lighthouse "$LIGHTHOUSE_URL" \
-      --preset=desktop \
-      --output=json,html \
-      --output-path="${TURBO_APP_NAME}-lighthouse" \
-      --chrome-flags="--headless --no-sandbox --disable-gpu --ignore-certificate-errors"
+    # Warm the server before measuring: wait-on only confirms the port is open,
+    # not that SSR + the Next route are compiled/cached. A cold first paint
+    # inflates LCP/TTFB and is the main source of run-to-run noise. Non-fatal.
+    echo "Warming up $LIGHTHOUSE_URL ..."
+    for i in 1 2 3; do
+      curl -ksS -o /dev/null "$LIGHTHOUSE_URL" 2>/dev/null \
+        || wget -q -O /dev/null --no-check-certificate "$LIGHTHOUSE_URL" 2>/dev/null \
+        || true
+      sleep 1
+    done
+  - |
+    # Run Lighthouse N times — a single cold run is noisy (same commit has scored
+    # 70–86). The median run is promoted for metrics/threshold checks.
+    for i in $(seq 1 "${LIGHTHOUSE_RUNS}"); do
+      echo "── Lighthouse run $i/${LIGHTHOUSE_RUNS} ──"
+      lighthouse "$LIGHTHOUSE_URL" \
+        --preset=desktop \
+        --output=json,html \
+        --output-path="${TURBO_APP_NAME}-lh-run-$i" \
+        --chrome-flags="--headless --no-sandbox --disable-gpu --ignore-certificate-errors"
+    done
+  - node scripts/ci-helpers/lighthouse-median.js "$TURBO_APP_NAME" "${LIGHTHOUSE_RUNS}"
   - node scripts/ci-helpers/lighthouse-metrics.js "${TURBO_APP_NAME}-lighthouse.report.json"
     "$TURBO_APP_NAME"
   - node scripts/ci-helpers/lighthouse-check-thresholds.js "${TURBO_APP_NAME}-lighthouse.report.json"
