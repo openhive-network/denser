@@ -1,0 +1,191 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "trending",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "hive-160391",
+      "observer": "guest4test1"
+    },
+    "id": 1
+  },
+  "requestHash": "485cb432b0932c09",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "trending",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "hive-160391",
+    "observer": "guest4test1"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [
+          {
+            "rshares": 31212402036251,
+            "voter": "smooth"
+          },
+          {
+            "rshares": 67383026498110,
+            "voter": "blocktrades"
+          },
+          {
+            "rshares": 25111593756253,
+            "voter": "abit"
+          },
+          {
+            "rshares": 21486549249334,
+            "voter": "adm"
+          },
+          {
+            "rshares": 5149449887,
+            "voter": "gandalf"
+          },
+          {
+            "rshares": 0,
+            "voter": "guest4test"
+          }
+        ],
+        "author": "gtg",
+        "author_payout_value": "48.634 HBD",
+        "author_reputation": 76.02,
+        "author_role": "mod",
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "This is a **copy–paste friendly** guide to get a **Hive** consensus node running for HF28.\n\nSimple **recipes** for:\n\n- seed node\n- witness node\n- exchange / personal wallet node\n- basic API node\n- Docker version of all of the above\n\n---\n\n## Assumptions / pre-requisites\n\nTo keep the recipes dead simple, I assume:\n\n### Hardware (minimum reasonable):\n\n- **x86-64 CPU** <sup>(\\*)</sup>\n- **8 GB RAM**\n- **1 TB fast SSD / NVMe**\n\nSingle-core CPU performance matters most during the initial replay/resync, and later for keeping up with the head block. The more RAM you have, the more data Linux can keep ",
+        "category": "hive-160391",
+        "children": 34,
+        "community": "hive-160391",
+        "community_title": "Blockchain Wizardry",
+        "created": "2025-11-18T14:55:24",
+        "curator_payout_value": "48.590 HBD",
+        "depth": 0,
+        "is_paidout": true,
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "author": "gandalf",
+          "format": "markdown+html",
+          "image": [
+            "youtu-vlW9lDE3DuI"
+          ],
+          "summary": "",
+          "tags": [
+            "hivepressure",
+            "dev",
+            "witness-category",
+            "hive",
+            "doc",
+            "faq"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 623866785470150,
+        "payout": 97.224,
+        "payout_at": "2025-11-25T14:55:24",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "hive-hardfork-28-jump-starter-kit",
+        "post_id": 147120131,
+        "reblogs": 35,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "is_pinned": true,
+          "total_votes": 881
+        },
+        "title": "Hive HardFork 28 Jump Starter Kit",
+        "updated": "2025-11-18T18:31:48",
+        "url": "/hive-160391/@gtg/hive-hardfork-28-jump-starter-kit"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 244780250417068,
+            "voter": "blocktrades"
+          },
+          {
+            "rshares": 7565421132862,
+            "voter": "xeldal"
+          },
+          {
+            "rshares": 2548027690229,
+            "voter": "adol"
+          },
+          {
+            "rshares": 5071843049971,
+            "voter": "enki"
+          },
+          {
+            "rshares": 25298520930871,
+            "voter": "adm"
+          }
+        ],
+        "author": "gtg",
+        "author_payout_value": "76.874 HBD",
+        "author_reputation": 76.02,
+        "author_role": "mod",
+        "author_title": "Wizard",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "# HF28 v1.28.0\n\nHardFork is not something that we do very often. That's because Hive is pretty much feature-complete on Layer1 and already a perfect tool for a variety of use cases where a fast, secure, and decentralized ledger is needed. We are doing lots of work on Layer2 (not in the scope of this post), but from time to time there are certain upgrades and fixes needed at the very core.\n\nAs discussed during the Core Devs panel at HiveFest 10 (Kuala Lumpur) earlier this month, the code for HardFork 28 is ready.\n\nIf you missed the panel, here’s the recording:\n<center>https://www.youtube.com/wa",
+        "category": "hive-160391",
+        "children": 69,
+        "community": "hive-160391",
+        "community_title": "Blockchain Wizardry",
+        "created": "2025-10-28T15:52:00",
+        "curator_payout_value": "76.811 HBD",
+        "depth": 0,
+        "is_paidout": true,
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "author": "gandalf",
+          "format": "markdown+html",
+          "image": [
+            "youtu-oPwuUofvf_0"
+          ],
+          "summary": "",
+          "tags": [
+            "witness-category",
+            "witness-update",
+            "hive",
+            "dev"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 768549611933983,
+        "payout": 153.685,
+        "payout_at": "2025-11-04T15:52:00",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "brace-yourself-hardfork-is-coming",
+        "post_id": 146658307,
+        "reblogs": 50,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "is_pinned": true,
+          "total_votes": 1023
+        },
+        "title": "Brace yourself: HardFork is coming",
+        "updated": "2025-10-28T15:55:00",
+        "url": "/hive-160391/@gtg/brace-yourself-hardfork-is-coming"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

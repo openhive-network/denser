@@ -663,6 +663,38 @@ start. If you have hand-generated variants (via
 touch them, but re-running the generator will wipe and regenerate them
 from the fresh base.
 
+### A FAILING assertion during record wipes earlier fixtures
+
+The proxy flushes the fixture dir on every worker teardown, and
+Playwright starts a fresh worker after each FAILED test. So if a spec
+has assertions that fail mid-record, each failure tears down the worker,
+the next worker re-flushes the dir, and only the LAST test's RPCs survive
+— replay then dies with `No recorded fixture` for everything else. The
+whole existing suite hides this because its specs pass in record.
+
+This bites any spec that intentionally asserts a NEGATIVE (e.g. SSR-gap
+checks that expect content to be MISSING). Two fixes, used together by
+`ssrChecks.spec.ts`:
+
+- Gate assertions off while recording so every test passes and one worker
+  records the full set: `import { isRecordMode }` and `if (isRecordMode)
+  return;` before the assertion (wrap it in a helper).
+- Mark known-failing cases `test.fail(!isRecordMode, '…')` — expected on
+  replay (suite stays green, regression flips it red), no-op on record.
+
+### SSR-correctness checks (ssrChecks.spec.ts)
+
+`ssrChecks.spec.ts` asserts what the SERVER renders into the initial HTML
+by running with `javaScriptEnabled: false` — JS off means the DOM is the
+server response, so a visible element was SSR'd and a missing one is
+client-only. Record via `api.openhive.network` (`FIXTURE_UPSTREAM`) —
+api.hive.blog returned 502 "connection pool" errors that poisoned the
+fixtures. Confirmed client-only gaps (data fetched server-side, rendered
+only after hydration) are marked `test.fail()`: `/@user/communities`,
+`/@user/notifications`, `/roles/[community]` (React Query Hydrate), plus
+the user-profile body, the community info sidebar (gated on a client-only
+getSubscribers), and classic search results.
+
 ---
 
 ## Record / regenerate workflow

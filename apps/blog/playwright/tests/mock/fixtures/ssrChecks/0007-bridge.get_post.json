@@ -1,0 +1,90 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post",
+    "params": {
+      "author": "guest4test1",
+      "permlink": "test-ako-post",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "042628c56955faba",
+  "method": "bridge.get_post",
+  "params": {
+    "author": "guest4test1",
+    "permlink": "test-ako-post",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active_votes": [
+        {
+          "rshares": 59921846914,
+          "voter": "fernandosoder"
+        },
+        {
+          "rshares": 0,
+          "voter": "guest4test2"
+        },
+        {
+          "rshares": 701582619,
+          "voter": "hive-103505"
+        },
+        {
+          "rshares": 12241263062,
+          "voter": "we-are-ai"
+        }
+      ],
+      "author": "guest4test1",
+      "author_payout_value": "0.000 HBD",
+      "author_reputation": 43.24,
+      "beneficiaries": [],
+      "blacklists": [],
+      "body": "# Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6\n\n*italic*\n**bold**\nLove**is**bold\nI just love __bold text__.\nalso _italic_\n***bold-italic***\n~~strikethrough~~\n[link](http://example.com)\n\nLists:\n- Milk\n- Bread\n    - Wholegrain\n- Butter\n\n1. Tidy the kitchen  \n2. Prepare ingredients  \n3. Cook delicious things  \n\n![hive logo](https://cryptologos.cc/logos/hive-blockchain-hive-logo.png?v=035)\n\n![sample image](https://usermedia.actifit.io/9246fa02-cdf0-424f-b1e8-634b1c209042)\n\n<img src=\"https://images.hive.blog/0x0/https://pixabay.com/get/ga1c244ce6431365a20f00107112a940f237bebf510518ff4bbb105240cdb24f3c9a3032fe29f21cbea57dbaf288ca28e2fe12f6831f2f8ff1481531c13c58a96_640.jpg\">\n\n---\nblockquote:\n> To be or not to be, that is the question.\n\nMulti-paragraph blockquote:\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\nNested blockquote:\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n>> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\nComplex blockquote:\n> #### The quarterly results look great!\n>\n> - Revenue was off the chart.\n> - Profits were higher than ever.\n>\n>  *Everything* is going according to **plan**.\n\nTable\n\nOne   | Two   | Three\n------|-------|------\nfour  | five  | six\nseven | eight | nine\n\nsample code:\nAt the command prompt, type `nano`.\n\n``Use `code` in your Markdown file.``\n\n    <html>\n      <head>\n      </head>\n    </html>\n\nLinks/Emails:\n<https://www.markdownguide.org>\n<fake@example.com>\n\n[link1](https://www.example.com/my%20great%20page)\n\n<a href=\"https://www.example.com/my great page\">link2</a>\n\nX/Twitter:\n[X link](https://x.com/ShouldHaveCat/status/1889804218132832323)\n\nThis X/Twitter embed is invisible in the Firefox incognito!!! (Blocked by FF incognito)\nhttps://x.com/ShouldHaveCat/status/1889804218132832323/asdasd\n\n\nInstagram emb:\n\nhttps://www.instagram.com/reel/DUflCf4DKB8\n\n\n\\* Without the backslash, this would be a bullet in an unordered list.\n\nSpoiler:\n>! [Hidden Spoiler Text] This is the spoiler content.\n> Optionally with more lines\n\nSpoiler Output:\n![image.png](https://usermedia.actifit.io/M20FVR8P5ZFXYEF49HN7QQH4KK8BJ9)\n\nCollapsible section:\n\n<details>\n<summary>Click to expand</summary>\n\nThese details <em>remain</em> <strong>hidden</strong> until expanded.\n\n<pre><code>PASTE LOGS HERE</code></pre>\n\n</details>\n\n3speak video (preferably displayed as embedded/playable video)\nhttps://3speak.tv/watch?v=jongolson/vhtttbyf\n\nSimilarly for youtube videos (sample video below)\nhttps://www.youtube.com/watch?v=a3ICNMQW7Ok\n\nFootnotes[^1] have a label[^@#$%] and the footnote's content.\n\n[^1]: This is a footnote content.\n[^@#$%]: A footnote on the label: \"@#$%\".\n\nText inside center tags should be centered.\n<center>\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more.\n</center>\n\nLink inside the blockquote should be visible.\n> Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. [source](/@silverd510/on-the-first-day-of)\n\nHive User links:\nHello Mr. @sketch.and.jam, how are you?\n\nTable with html special characters:<br>\n| Kod HTML   | Znak | Znaczenie                       |\n| ---------- | ---- | ------------------------------- |\n| &nbsp;   |      | Niełamliwa spacja               |\n| &lt;     | <  | Mniejszość (less than)          |\n| &gt;     | >  | Większość (greater than)        |\n| &amp;    | &  | Ampersand (znak „i” logiczne)   |\n| &quot;   | \"  | Cudzysłów (podwójny)            |\n| &apos;   | '  | Apostrof (pojedynczy cudzysłów) |\n| &copy;   | ©    | Symbol praw autorskich          |\n| &reg;    | ®    | Znak zarejestrowany             |\n| &euro;   | €    | Symbol euro                     |\n| &mdash;  | —    | Długa pauza (myślnik)           |\n| &hellip; | …    | Wielokropek                     |\n| &times;  | ×    | Znak mnożenia                   |\n| &divide; | ÷    | Znak dzielenia                  |\n| &deg;    | °    | Stopień (np. 30°C → 30°C)       |\n| &cent;   | ¢    | Cent                            |\n| &para;   | ¶    | Znak akapitu                    |\n\n\n\n<hr>\n\n## Testing pull-columns and incomplete closure of divs\n### Expected result - text in two columns\n<div class=\"text-justify\">\n<div class=\"pull-left\">\n\nMy day today was strange because it seemed like it was going to start badly, but somehow everything went smoothly. I did all my planned activities.\n\nI woke up early, went to the gym, had breakfast, went to work, and a few things happened there with some clients. I also received a package with some things I bought to use at work, like a purse, clothes, and a pair of black shoes. The purse was the first thing I wanted to use; I waited for the rest. They're mostly tops: two gym outfits and a pair of pants, which I'm grateful for. Here are some pictures.\n\n</div>\n\n<div class=\"pull-right\">\n<div class=\"text-justify\">\n\nMi día de hoy fue extraño porque fue como que quiso comenzar mal pero de alguna forma todo siguió su curso. Hice todas mis actividades previstas.\n\nDesperté temprano, fui al gym, desayuné, fui al trabajo y allí pasaron un par de cosas con algunos clientes, también recibí un paquete con algunas cosas qué compré para usar en el trabajo como una cartera, ropa, un par de zapatos negros. La cartera fue lo primero que quise usar, el resto me esperé, son mas que todo de la parte de arriba, 2 conjuntos de gym, un pantalón largo y eso lo agradezco, por aquí dejo algunas fotos. \n\n\n</div></div>\n\n<hr>\n\n\n",
+      "category": "test",
+      "children": 1,
+      "created": "2026-03-09T11:49:36",
+      "curator_payout_value": "0.000 HBD",
+      "depth": 0,
+      "is_paidout": true,
+      "json_metadata": {
+        "app": "hive.blog/0.9",
+        "author": "",
+        "format": "markdown+html",
+        "image": [
+          "https://images.hive.blog//p/ADdPNihJzmPcLkHtjKRVWu2N2uvBRfNLKJYb8XFwTcV1q64qPux1eA7AWjLBbhTDCkbmyf9TQn9sVrz23gWt8KVwf?format=match&mode=fit&width=1536"
+        ],
+        "summary": "",
+        "tags": [
+          "test"
+        ]
+      },
+      "max_accepted_payout": "1000000.000 HBD",
+      "net_rshares": 72864692595,
+      "payout": 0,
+      "payout_at": "2026-03-16T11:49:36",
+      "pending_payout_value": "0.000 HBD",
+      "percent_hbd": 10000,
+      "permlink": "test-ako-post",
+      "post_id": 149298381,
+      "reblogs": 0,
+      "replies": [],
+      "stats": {
+        "flag_weight": 0,
+        "gray": false,
+        "hide": false,
+        "total_votes": 4
+      },
+      "title": "Test ako post",
+      "updated": "2026-03-09T11:49:36",
+      "url": "/test/@guest4test1/test-ako-post"
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
