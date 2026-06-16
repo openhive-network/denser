@@ -54,10 +54,17 @@ async function gotoAndCollectHydrationErrors(page: Page, url: string): Promise<s
     }
   });
 
+  // `goto` resolves on 'load' — the client bundle is fetched and executed, so
+  // React hydrates right after (any mismatch is logged synchronously during
+  // hydration, and our listeners are already attached).
   await page.goto(url);
-  // Let hydration + initial client fetches settle. networkidle covers the
-  // React Query refetches that follow mount.
-  await page.waitForLoadState('networkidle');
+  // Best-effort settle so hydration + the first client effects flush. We do NOT
+  // hard-gate on networkidle: the post-detail page keeps re-fetching (hivesense
+  // "similar" + live data) and never goes idle in CI, which would hang the test
+  // (Playwright discourages networkidle for this reason). Cap the wait; a
+  // hydration error surfaces well within it. Fast routes still return as soon as
+  // the network does quiet down.
+  await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
   return errors;
 }
 
