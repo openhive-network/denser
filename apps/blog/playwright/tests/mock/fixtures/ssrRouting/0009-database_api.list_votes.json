@@ -1,0 +1,94 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "modernzorker",
+        "the-critical-role-of-digital-preservation-in-gaming-history",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "707a61561f33fbe8",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "modernzorker",
+      "the-critical-role-of-digital-preservation-in-gaming-history",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "modernzorker",
+          "id": 1171262106,
+          "last_update": "2026-06-14T21:50:21",
+          "num_changes": 0,
+          "permlink": "the-critical-role-of-digital-preservation-in-gaming-history",
+          "rshares": 35498760309632,
+          "vote_percent": 10000,
+          "voter": "acidyo",
+          "weight": 35498760309632
+        },
+        {
+          "author": "modernzorker",
+          "id": 1171318110,
+          "last_update": "2026-06-15T04:31:15",
+          "num_changes": 0,
+          "permlink": "the-critical-role-of-digital-preservation-in-gaming-history",
+          "rshares": 1864403544,
+          "vote_percent": 975,
+          "voter": "leprechaun",
+          "weight": 1864403544
+        },
+        {
+          "author": "modernzorker",
+          "id": 1171262681,
+          "last_update": "2026-06-14T21:56:45",
+          "num_changes": 1,
+          "permlink": "the-critical-role-of-digital-preservation-in-gaming-history",
+          "rshares": 15535843896,
+          "vote_percent": 37,
+          "voter": "roelandp",
+          "weight": 15535843896
+        },
+        {
+          "author": "modernzorker",
+          "id": 1171264804,
+          "last_update": "2026-06-14T21:56:48",
+          "num_changes": 0,
+          "permlink": "the-critical-role-of-digital-preservation-in-gaming-history",
+          "rshares": 1976411738,
+          "vote_percent": 2240,
+          "voter": "matt-a",
+          "weight": 1976411738
+        },
+        {
+          "author": "modernzorker",
+          "id": 1171264094,
+          "last_update": "2026-06-14T21:55:33",
+          "num_changes": 0,
+          "permlink": "the-critical-role-of-digital-preservation-in-gaming-history",
+          "rshares": 32077170528,
+          "vote_percent": 4000,
+          "voter": "jacor",
+          "weight": 32077170528
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

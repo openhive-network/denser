@@ -716,6 +716,14 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   (patches `bridge.get_discussion` for `test-ako-post` → HTTP 503 by its
   recorded requestHash); the post route tolerates it (`Promise.allSettled`)
   so the article still server-renders at 200.
+- **`ssrRouting.spec.ts`** — JS **enabled**; App Router client navigation
+  (Obszar 5). Soft-navigates by clicking the first feed post's title link
+  (`post-title` -> `<a>`) and checks: a `window.__nav` sentinel survives a soft
+  nav but not a `reload()` (proves soft vs hard), back/forward restore route +
+  content, and a hard URL entry renders the same article as the soft click. Own
+  recorded `ssrRouting` fixture dir (JS on — soft nav fetches the destination's
+  RSC, whose server render hits the proxy). Record-time assertions gated via an
+  `onReplay()` wrapper (same worker-wipe reason as the others).
 - **`ssrHydration.spec.ts`** — JS **enabled**; listens on `console`/`pageerror`
   for React hydration-mismatch signatures (minified #418/#423/#425 + dev text)
   while the page hydrates. Needs its **own** `ssrHydration` fixture dir recorded

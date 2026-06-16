@@ -1,0 +1,64 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_community",
+    "params": {
+      "name": "hive-154356",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "8584a040eacf0537",
+  "method": "bridge.get_community",
+  "params": {
+    "name": "hive-154356",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "about": "A place to discuss and share retro gaming resources....original hardware and emulation",
+      "context": {
+        "role": "guest",
+        "subscribed": false,
+        "title": ""
+      },
+      "created_at": "2020-02-22 23:35:15",
+      "description": "",
+      "flag_text": "",
+      "id": 1368310,
+      "is_nsfw": false,
+      "lang": "en",
+      "name": "hive-154356",
+      "num_authors": 12,
+      "num_pending": 22,
+      "settings": {},
+      "subscribers": 27,
+      "sum_pending": 42,
+      "team": [
+        [
+          "hive-154356",
+          "owner",
+          ""
+        ],
+        [
+          "sequentialvibe",
+          "admin",
+          ""
+        ],
+        [
+          "zekepickleman",
+          "mod",
+          ""
+        ]
+      ],
+      "title": "Retro Gaming",
+      "type_id": 1
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

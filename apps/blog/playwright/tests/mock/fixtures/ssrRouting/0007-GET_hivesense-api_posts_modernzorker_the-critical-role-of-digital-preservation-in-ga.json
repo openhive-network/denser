@@ -1,0 +1,13 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/posts/modernzorker/the-critical-role-of-digital-preservation-in-gaming-history/similar",
+  "requestQuery": {
+    "truncate": "100",
+    "result_limit": "10",
+    "full_posts": "10",
+    "observer": "hive.blog"
+  },
+  "requestHash": "72b2c0cbde7d2141",
+  "response": "",
+  "responseStatus": 404
+}

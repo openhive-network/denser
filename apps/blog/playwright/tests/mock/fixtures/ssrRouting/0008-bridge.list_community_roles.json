@@ -1,0 +1,40 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_community_roles",
+    "params": {
+      "community": "hive-154356"
+    },
+    "id": 1
+  },
+  "requestHash": "1827c132d39910a5",
+  "method": "bridge.list_community_roles",
+  "params": {
+    "community": "hive-154356"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-154356",
+        "owner",
+        ""
+      ],
+      [
+        "sequentialvibe",
+        "admin",
+        ""
+      ],
+      [
+        "zekepickleman",
+        "mod",
+        ""
+      ]
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
