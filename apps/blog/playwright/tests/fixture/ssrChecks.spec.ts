@@ -58,6 +58,12 @@ async function expectSsrMetaContent(locator: Locator): Promise<void> {
   await expect(locator).toHaveAttribute('content', /.+/);
 }
 
+/** Assert a server-rendered <head> link tag carries a non-empty href. */
+async function expectSsrHref(locator: Locator): Promise<void> {
+  if (isRecordMode) return;
+  await expect(locator).toHaveAttribute('href', /.+/);
+}
+
 test.use({ fixtureTestName: 'ssrChecks' });
 
 // ── Anonymous SSR ───────────────────────────────────────────────────────────
@@ -121,6 +127,34 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
   test('SSR-19 — post detail emits a non-empty og:title in the server <head>', async ({ page }) => {
     await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
     await expectSsrMetaContent(page.locator('head meta[property="og:title"]'));
+  });
+
+  // SEO crawlers read meta description from the server <head>; the post layout's
+  // generateMetadata sets it from the post summary/description.
+  test('SSR-23 — post detail emits a non-empty meta description in the server <head>', async ({
+    page
+  }) => {
+    await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
+    await expectSsrMetaContent(page.locator('head meta[name="description"]'));
+  });
+
+  // Gap: no route sets `alternates.canonical`, so Next emits no
+  // <link rel="canonical">. Hive posts are reachable under many tag/community
+  // prefixes (/trending/@u/p, /hive-x/@u/p, …), so a missing canonical lets
+  // crawlers treat each as a separate page (duplicate-content dilution).
+  test('SSR-24 — post detail emits a canonical link in the server <head>', async ({ page }) => {
+    test.fail(!isRecordMode, 'SEO gap: no canonical link is set (no alternates.canonical in metadata)');
+    await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
+    await expectSsrHref(page.locator('head link[rel="canonical"]'));
+  });
+
+  // Gap: no route sets a `robots` directive and there is no robots.ts / robots.txt
+  // route either, so the server emits no <meta name="robots">. Indexing is left
+  // entirely to crawler defaults with no per-page control.
+  test('SSR-25 — post detail emits a robots meta tag in the server <head>', async ({ page }) => {
+    test.fail(!isRecordMode, 'SEO gap: no robots meta is set (no robots field, no robots.txt route)');
+    await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
+    await expectSsrMetaContent(page.locator('head meta[name="robots"]'));
   });
 
   // User-profile SEO: generateMetadata (user-profile layout) sets og title +

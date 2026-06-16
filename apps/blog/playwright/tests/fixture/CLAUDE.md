@@ -693,7 +693,10 @@ fixtures. Confirmed client-only gaps (data fetched server-side, rendered
 only after hydration) are marked `test.fail()`: `/@user/communities`,
 `/@user/notifications`, `/roles/[community]` (React Query Hydrate), plus
 the user-profile body, the community info sidebar (gated on a client-only
-getSubscribers), and classic search results.
+getSubscribers), and classic search results. SEO: `meta description` + OG tags
+SSR fine (SSR-23/19/21/22), but `<link rel="canonical">` and `<meta name="robots">`
+are never emitted (no `alternates.canonical`/`robots` in metadata, no robots.txt
+route) — documented as `test.fail` gaps SSR-24/25.
 
 ### SSR safety / hydration / error-fallback specs (P1 set)
 
