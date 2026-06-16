@@ -123,6 +123,15 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
     await expectSsrMetaContent(page.locator('head meta[property="og:title"]'));
   });
 
+  // User-profile SEO: generateMetadata (user-profile layout) sets og title +
+  // image from the account — these MUST be in the server <head> for crawlers,
+  // even though the profile BODY is client-only (see SSR-10).
+  test('SSR-21 — /@user emits og:title + og:image in the server <head>', async ({ page }) => {
+    await page.goto(`/@${SUBSCRIBED_USER}`);
+    await expectSsrMetaContent(page.locator('head meta[property="og:title"]'));
+    await expectSsrMetaContent(page.locator('head meta[property="og:image"]'));
+  });
+
   // Gap: the whole user-profile body renders client-only. With JS off the
   // server HTML carries just the navbar shell — no post list — even though
   // get_account_posts runs and returns 20 posts server-side.
@@ -151,6 +160,17 @@ test.describe('SSR — community profile (JS disabled)', () => {
   test('SSR-08 — community feed renders the post list in server HTML', async ({ page }) => {
     await page.goto(`/trending/${COMMUNITY}`);
     await expectSsrVisible(page.getByTestId('post-list-item').first());
+  });
+
+  // Community SEO: buildCommunityTagMetadata sets og title + image from the
+  // community — these MUST be in the server <head> for crawlers, even though
+  // the info sidebar is client-only (see SSR-09).
+  test('SSR-22 — community page emits og:title + og:image in the server <head>', async ({
+    page
+  }) => {
+    await page.goto(`/trending/${COMMUNITY}`);
+    await expectSsrMetaContent(page.locator('head meta[property="og:title"]'));
+    await expectSsrMetaContent(page.locator('head meta[property="og:image"]'));
   });
 
   // Gap: the community sidebar (CommunityDescription) only renders once BOTH
