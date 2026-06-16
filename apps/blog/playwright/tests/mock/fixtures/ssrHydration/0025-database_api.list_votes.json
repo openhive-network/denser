@@ -1,0 +1,50 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "barddev",
+        "your-blog-your-rules",
+        "guest4test1"
+      ],
+      "limit": 1,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "be932a3fef8615ed",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "barddev",
+      "your-blog-your-rules",
+      "guest4test1"
+    ],
+    "limit": 1,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "barddev",
+          "id": 1142611630,
+          "last_update": "2026-01-22T10:33:33",
+          "num_changes": 11,
+          "permlink": "your-blog-your-rules",
+          "rshares": 0,
+          "vote_percent": 0,
+          "voter": "guest4test1",
+          "weight": 0
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

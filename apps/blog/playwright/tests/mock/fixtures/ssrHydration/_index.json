@@ -1,0 +1,25 @@
+{
+  "testName": "ssrHydration",
+  "recordedAt": "2026-06-16T10:41:51.121Z",
+  "totalRequests": 44,
+  "savedFixtures": 25,
+  "duplicatesSkipped": 19,
+  "methods": {
+    "bridge.list_communities": 2,
+    "bridge.get_ranked_posts": 2,
+    "GET /hivesense-api": 7,
+    "bridge.get_post": 1,
+    "bridge.get_discussion": 1,
+    "GET /hivesense-api/posts/guest4test1/test-ako-post/similar": 2,
+    "database_api.list_votes": 7,
+    "bridge.list_all_subscriptions": 1,
+    "database_api.find_accounts": 5,
+    "bridge.unread_notifications": 2,
+    "database_api.get_dynamic_global_properties": 3,
+    "bridge.get_profile": 4,
+    "rc_api.find_rc_accounts": 2,
+    "bridge.get_follow_list": 2,
+    "bridge.get_account_posts": 1,
+    "condenser_api.get_following": 2
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_follow_list",
+    "params": {
+      "observer": "guest4test1",
+      "follow_type": "blacklisted"
+    },
+    "id": 1
+  },
+  "requestHash": "27f0d3aaae5673d5",
+  "method": "bridge.get_follow_list",
+  "params": {
+    "observer": "guest4test1",
+    "follow_type": "blacklisted"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "guest4test2"
+      },
+      {
+        "blacklist_description": "",
+        "muted_list_description": "",
+        "name": "hivebuzz"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

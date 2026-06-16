@@ -1,0 +1,50 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "guest4test1",
+        "test-post-newwww-honey",
+        "guest4test1"
+      ],
+      "limit": 1,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "66194f1aaf525a18",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "guest4test1",
+      "test-post-newwww-honey",
+      "guest4test1"
+    ],
+    "limit": 1,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "guest4test1",
+          "id": 1152399936,
+          "last_update": "2026-03-11T10:10:21",
+          "num_changes": 0,
+          "permlink": "test-post-newwww-honey",
+          "rshares": 0,
+          "vote_percent": 10000,
+          "voter": "guest4test1",
+          "weight": 0
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

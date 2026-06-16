@@ -1,0 +1,49 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_profile",
+    "params": {
+      "account": "guest4test1"
+    },
+    "id": 1
+  },
+  "requestHash": "dfcad312dabb29ad",
+  "method": "bridge.get_profile",
+  "params": {
+    "account": "guest4test1"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active": "2026-03-20T08:10:06",
+      "blacklists": [],
+      "created": "2020-07-13T11:26:12",
+      "id": 1398404,
+      "metadata": {
+        "profile": {
+          "about": "Test City",
+          "blacklist_description": "",
+          "cover_image": "https://images.hive.blog/DQmdsrpk1okXX2ctyBz3PpakqUH4CM5YgCPvERtpNq91ujg/Clipboard%20-%20February%203,%202026%209_33.png",
+          "location": "Dąbrowa",
+          "muted_list_description": "",
+          "name": "",
+          "profile_image": "https://images.hive.blog/DQmcGb9iMP6K2rW1PKxGyr91gasi6JcAp9xsviQWHy88GwQ/Gemini_Generated_Image_3yu0pb3yu0pb3yu0.jpeg",
+          "website": ""
+        }
+      },
+      "name": "guest4test1",
+      "post_count": 492,
+      "reputation": 43.24,
+      "stats": {
+        "followers": 3,
+        "following": 0,
+        "rank": 0
+      }
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

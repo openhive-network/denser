@@ -1,0 +1,50 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "kesolink",
+        "78b9f7fa",
+        "guest4test1"
+      ],
+      "limit": 1,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "a99abdb77e2ea46f",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "kesolink",
+      "78b9f7fa",
+      "guest4test1"
+    ],
+    "limit": 1,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "kesolink",
+          "id": 1149610154,
+          "last_update": "2026-02-25T13:20:06",
+          "num_changes": 5,
+          "permlink": "78b9f7fa",
+          "rshares": 0,
+          "vote_percent": 10000,
+          "voter": "guest4test1",
+          "weight": 0
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -1,0 +1,13 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/posts/guest4test1/test-ako-post/similar",
+  "requestQuery": {
+    "truncate": "100",
+    "result_limit": "10",
+    "full_posts": "10",
+    "observer": "hive.blog"
+  },
+  "requestHash": "aace1645e459a9d7",
+  "response": "",
+  "responseStatus": 404
+}

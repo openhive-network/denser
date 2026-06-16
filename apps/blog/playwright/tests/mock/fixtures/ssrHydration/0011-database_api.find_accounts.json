@@ -1,0 +1,200 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.find_accounts",
+    "params": {
+      "accounts": [
+        "guest4test1"
+      ],
+      "delayed_votes_active": false
+    },
+    "id": 1
+  },
+  "requestHash": "06983f93229fd849",
+  "method": "database_api.find_accounts",
+  "params": {
+    "accounts": [
+      "guest4test1"
+    ],
+    "delayed_votes_active": false
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "accounts": [
+        {
+          "active": {
+            "account_auths": [
+              [
+                "guest4test8",
+                1
+              ]
+            ],
+            "key_auths": [
+              [
+                "STM8gQN2KodMgmVqTEY372XzZyEUpceKpLWU6igr39MF3D7Qv3Rqo",
+                1
+              ]
+            ],
+            "weight_threshold": 1
+          },
+          "balance": {
+            "amount": "1197",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "can_vote": true,
+          "comment_count": 0,
+          "created": "2020-07-13T11:26:15",
+          "curation_rewards": 0,
+          "delegated_vesting_shares": {
+            "amount": "0",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "downvote_manabar": {
+            "current_mana": 505941960,
+            "last_update_time": 1773994206
+          },
+          "governance_vote_expiration_ts": "2026-12-15T11:37:30",
+          "hbd_balance": {
+            "amount": "591",
+            "nai": "@@000000013",
+            "precision": 3
+          },
+          "hbd_last_interest_payment": "1970-01-01T00:00:00",
+          "hbd_seconds": "0",
+          "hbd_seconds_last_update": "1970-01-01T00:00:00",
+          "id": 1398403,
+          "is_smt": false,
+          "json_metadata": "",
+          "last_account_recovery": "1970-01-01T00:00:00",
+          "last_account_update": "2026-02-17T11:25:30",
+          "last_owner_update": "1970-01-01T00:00:00",
+          "last_post": "2026-03-17T11:12:51",
+          "last_post_edit": "2026-03-17T11:12:51",
+          "last_root_post": "2026-03-16T09:28:39",
+          "last_vote_time": "2026-03-20T08:10:06",
+          "lifetime_vote_count": 0,
+          "memo_key": "STM5rQHNguDyamX931kZegmB5QUcmy2WjdiTZTFRyVZA9FhLgzdeg",
+          "mined": false,
+          "name": "guest4test1",
+          "next_vesting_withdrawal": "1969-12-31T23:59:59",
+          "open_recurrent_transfers": 0,
+          "owner": {
+            "account_auths": [],
+            "key_auths": [
+              [
+                "STM5D3E2g6EpBcvQSjwHaf8gpV9KjQJV8NExboMJyJP5VCQmqYuk9",
+                1
+              ]
+            ],
+            "weight_threshold": 1
+          },
+          "pending_claimed_accounts": 0,
+          "pending_transfers": 0,
+          "post_bandwidth": 0,
+          "post_count": 547,
+          "post_voting_power": {
+            "amount": "2023767842",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "posting": {
+            "account_auths": [
+              [
+                "hive.blog",
+                1
+              ],
+              [
+                "voterbee",
+                1
+              ]
+            ],
+            "key_auths": [
+              [
+                "STM56UB7G2kab5br1eVNVxNfKcwTA1c5pHksZ8WAU52qM8J2538Uq",
+                1
+              ]
+            ],
+            "weight_threshold": 1
+          },
+          "posting_json_metadata": "{\"profile\":{\"profile_image\":\"https://images.hive.blog/DQmcGb9iMP6K2rW1PKxGyr91gasi6JcAp9xsviQWHy88GwQ/Gemini_Generated_Image_3yu0pb3yu0pb3yu0.jpeg\",\"cover_image\":\"https://images.hive.blog/DQmdsrpk1okXX2ctyBz3PpakqUH4CM5YgCPvERtpNq91ujg/Clipboard%20-%20February%203,%202026%209_33.png\",\"about\":\"Test City\",\"location\":\"Dąbrowa\",\"version\":2}}",
+          "posting_rewards": 3718,
+          "previous_owner_update": "1970-01-01T00:00:00",
+          "proxied_vsf_votes": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "proxy": "",
+          "received_vesting_shares": {
+            "amount": "0",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "recovery_account": "gtg",
+          "reset_account": "null",
+          "reward_hbd_balance": {
+            "amount": "0",
+            "nai": "@@000000013",
+            "precision": 3
+          },
+          "reward_hive_balance": {
+            "amount": "0",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "reward_vesting_balance": {
+            "amount": "0",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "reward_vesting_hive": {
+            "amount": "0",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "savings_balance": {
+            "amount": "13",
+            "nai": "@@000000021",
+            "precision": 3
+          },
+          "savings_hbd_balance": {
+            "amount": "8",
+            "nai": "@@000000013",
+            "precision": 3
+          },
+          "savings_hbd_last_interest_payment": "2025-06-09T10:28:00",
+          "savings_hbd_seconds": "0",
+          "savings_hbd_seconds_last_update": "2025-06-09T10:28:00",
+          "savings_withdraw_requests": 0,
+          "to_withdraw": 0,
+          "vesting_shares": {
+            "amount": "2023767842",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "vesting_withdraw_rate": {
+            "amount": "0",
+            "nai": "@@000000037",
+            "precision": 6
+          },
+          "voting_manabar": {
+            "current_mana": 1757038042,
+            "last_update_time": 1773994206
+          },
+          "withdraw_routes": 3,
+          "withdrawn": 0,
+          "witnesses_voted_for": 27
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

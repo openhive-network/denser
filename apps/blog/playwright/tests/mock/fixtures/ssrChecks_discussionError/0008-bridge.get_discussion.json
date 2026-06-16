@@ -1,0 +1,24 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_discussion",
+    "params": {
+      "author": "guest4test1",
+      "permlink": "test-ako-post",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "a6df08826bfc8eb4",
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "guest4test1",
+    "permlink": "test-ako-post",
+    "observer": "hive.blog"
+  },
+  "response": { "error": "Service Unavailable" },
+  "responseStatus": 503,
+  "responseContentType": "application/json"
+}

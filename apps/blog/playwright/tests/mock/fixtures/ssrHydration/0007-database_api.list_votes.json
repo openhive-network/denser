@@ -1,0 +1,83 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "guest4test1",
+        "test-ako-post",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "8ab6d002d7b67344",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "guest4test1",
+      "test-ako-post",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "guest4test1",
+          "id": 1152007301,
+          "last_update": "2026-03-09T11:55:24",
+          "num_changes": 0,
+          "permlink": "test-ako-post",
+          "rshares": 59921846914,
+          "vote_percent": 10000,
+          "voter": "fernandosoder",
+          "weight": 59921846914
+        },
+        {
+          "author": "guest4test1",
+          "id": 1152401935,
+          "last_update": "2026-03-11T10:19:33",
+          "num_changes": 0,
+          "permlink": "test-ako-post",
+          "rshares": 0,
+          "vote_percent": 10000,
+          "voter": "guest4test2",
+          "weight": 0
+        },
+        {
+          "author": "guest4test1",
+          "id": 1152008974,
+          "last_update": "2026-03-09T11:59:30",
+          "num_changes": 0,
+          "permlink": "test-ako-post",
+          "rshares": 701582619,
+          "vote_percent": 550,
+          "voter": "hive-103505",
+          "weight": 701582619
+        },
+        {
+          "author": "guest4test1",
+          "id": 1152008935,
+          "last_update": "2026-03-09T11:59:24",
+          "num_changes": 0,
+          "permlink": "test-ako-post",
+          "rshares": 12241263062,
+          "vote_percent": 550,
+          "voter": "we-are-ai",
+          "weight": 12241263062
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -4,7 +4,8 @@
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "TS_NODE_PROJECT=tsconfig.test.json mocha \"lib/**/*.test.ts\""
   },
   "dependencies": {
     "bs58": "6.0.0",

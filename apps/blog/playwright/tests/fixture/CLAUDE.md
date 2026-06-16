@@ -695,6 +695,42 @@ only after hydration) are marked `test.fail()`: `/@user/communities`,
 the user-profile body, the community info sidebar (gated on a client-only
 getSubscribers), and classic search results.
 
+### SSR safety / hydration / error-fallback specs (P1 set)
+
+Three sibling specs extend the SSR coverage beyond "what renders":
+
+- **`ssrSafety.spec.ts`** — pure HTTP (Playwright `request` API, no browser).
+  Reuses the **`ssrChecks` fixtures** (read-only on replay, safe to share the
+  dir). Asserts status codes (200; SAFE-03 expects 404 but is `test.fail` — see
+  soft-404 below), no secret leakage in server HTML (iron-session `Fe26.2`
+  seal, WIF, cookie password), and that the personalized `/trending/my` is not
+  publicly cacheable (no `public`/`s-maxage`) and renders different HTML per
+  `observer` cookie. Log in at HTTP level by sending `cookie: observer=<user>`
+  — `getObserver`'s primary path reads that lightweight cookie, no iron-session
+  needed.
+- **`ssrErrorFallback.spec.ts`** — graceful degradation when a SECONDARY
+  server fetch fails. Uses the **`ssrChecks_discussionError`** overlay
+  (patches `bridge.get_discussion` for `test-ako-post` → HTTP 503 by its
+  recorded requestHash); the post route tolerates it (`Promise.allSettled`)
+  so the article still server-renders at 200.
+- **`ssrHydration.spec.ts`** — JS **enabled**; listens on `console`/`pageerror`
+  for React hydration-mismatch signatures (minified #418/#423/#425 + dev text)
+  while the page hydrates. Needs its **own** `ssrHydration` fixture dir recorded
+  **with JS on** (a superset of the JS-off corpus — the browser also fetches
+  through the proxy). Assertions are gated off during record (`if (isRecordMode)
+  return`) per the worker-wipe rule. Record:
+  `FIXTURE_MODE=record FIXTURE_UPSTREAM=api.openhive.network pnpm exec playwright test --config=playwright.fixture.config.ts ssrHydration`,
+  then trim, then replay.
+
+**Soft-404 finding:** this build serves `notFound()` with HTTP **200** plus the
+not-found page body (verified for invalid handles, missing permlinks and an
+injected transport error alike — all 200, even with `maxRedirects:0`). Likely
+the runtime-CSP middleware (`@hive/middleware` `createMiddleware`) flattening
+the status. SAFE-03 documents it as a `test.fail` gap; the transport-error →
+5xx `ServiceUnavailable` contract (hive/denser#926) therefore can't be asserted
+at the HTTP level here — it's pinned instead by a unit test on `isTransportError`
+(`packages/transaction/lib/wax-errors.test.ts`, run via `pnpm --filter @hive/transaction test`).
+
 ---
 
 ## Record / regenerate workflow

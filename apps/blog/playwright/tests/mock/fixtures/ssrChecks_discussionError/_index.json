@@ -1,0 +1,5 @@
+{
+  "testName": "ssrChecks_discussionError",
+  "base": "ssrChecks",
+  "note": "Overlay: forces the SECONDARY bridge.get_discussion fetch for test-ako-post to a 503 error. The post route fetches discussion in a Promise.allSettled and tolerates its failure (discussionData=null), so the article must still render. Exercises graceful degradation on partial server-fetch failure (Obszar 7). Patches the base entry by its recorded requestHash. See ssrErrorFallback.spec.ts."
+}
