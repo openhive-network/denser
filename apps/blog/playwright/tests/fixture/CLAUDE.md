@@ -716,6 +716,13 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   (patches `bridge.get_discussion` for `test-ako-post` → HTTP 503 by its
   recorded requestHash); the post route tolerates it (`Promise.allSettled`)
   so the article still server-renders at 200.
+- **`ssrLocale.spec.ts`** — pure HTTP, reuses the `ssrChecks` fixtures
+  (`NEXT_LOCALE` doesn't change RPC params). Asserts the server resolves the UI
+  language from the `NEXT_LOCALE` cookie: `<html lang="es">`, `<html dir="rtl">`
+  for `ar`, the body copy is actually translated server-side (`all_posts` →
+  "todos publican", no English leak), and the locale-varying feed is not
+  publicly cacheable (sibling of SAFE-05/06 for the observer cookie). All
+  positive — i18n SSR works here.
 - **`ssrRouting.spec.ts`** — JS **enabled**; App Router client navigation
   (Obszar 5). Soft-navigates by clicking the first feed post's title link
   (`post-title` -> `<a>`) and checks: a `window.__nav` sentinel survives a soft
