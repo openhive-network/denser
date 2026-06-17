@@ -143,7 +143,7 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
   // prefixes (/trending/@u/p, /hive-x/@u/p, …), so a missing canonical lets
   // crawlers treat each as a separate page (duplicate-content dilution).
   test('SSR-24 — post detail emits a canonical link in the server <head>', async ({ page }) => {
-    test.fail(!isRecordMode, 'SEO gap: no canonical link is set (no alternates.canonical in metadata)');
+    test.fail(!isRecordMode, 'SEO gap (#931): no canonical link is set (no alternates.canonical in metadata)');
     await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
     await expectSsrHref(page.locator('head link[rel="canonical"]'));
   });
@@ -152,7 +152,7 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
   // route either, so the server emits no <meta name="robots">. Indexing is left
   // entirely to crawler defaults with no per-page control.
   test('SSR-25 — post detail emits a robots meta tag in the server <head>', async ({ page }) => {
-    test.fail(!isRecordMode, 'SEO gap: no robots meta is set (no robots field, no robots.txt route)');
+    test.fail(!isRecordMode, 'SEO gap (#931): no robots meta is set (no robots field, no robots.txt route)');
     await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
     await expectSsrMetaContent(page.locator('head meta[name="robots"]'));
   });

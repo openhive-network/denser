@@ -43,7 +43,7 @@ test.describe('SSR safety — HTTP status codes', () => {
   // status. Marked test.fail so the suite stays green and flips red once a real
   // 404 status is restored — then drop the marker.
   test('SAFE-03 — a post URL with an invalid username responds 404', async ({ request }) => {
-    test.fail(true, 'SSR gap: notFound() is served as HTTP 200 (soft-404) in this build');
+    test.fail(true, 'SSR gap (#930): notFound() is served as HTTP 200 (soft-404) in this build');
     const res = await request.get('/test/@Invalid_User/some-permlink');
     expect(res.status()).toBe(404);
   });
