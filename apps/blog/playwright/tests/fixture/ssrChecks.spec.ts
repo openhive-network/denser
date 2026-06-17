@@ -172,7 +172,7 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
   test('SSR-10 — /@user (blog tab) renders the account post list in server HTML', async ({
     page
   }) => {
-    test.fail(!isRecordMode, 'SSR gap: user-profile body is client-only (server HTML is navbar-only)');
+    test.fail(!isRecordMode, 'SSR gap (#932): user-profile body is client-only (server HTML is navbar-only)');
     await page.goto(`/@${SUBSCRIBED_USER}`);
     await expectSsrVisible(page.getByTestId('post-list-item').first());
   });
@@ -181,7 +181,7 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
   // when both q and s are present) but the results component renders them
   // client-only, so the server HTML carries no result list.
   test('SSR-20 — /search renders classic results in server HTML', async ({ page }) => {
-    test.fail(!isRecordMode, 'SSR gap: classic search results render client-only despite server-side fetch');
+    test.fail(!isRecordMode, 'SSR gap (#932): classic search results render client-only despite server-side fetch');
     await page.goto('/search?q=hive&s=relevance');
     await expectSsrVisible(page.getByTestId('post-list-item').first());
   });
@@ -212,7 +212,7 @@ test.describe('SSR — community profile (JS disabled)', () => {
   // fetched client-side with no SSR/initialData, so the sidebar never appears
   // in the server HTML (the community feed posts beside it do — SSR-08).
   test('SSR-09 — community info sidebar renders in server HTML', async ({ page }) => {
-    test.fail(!isRecordMode, 'SSR gap: sidebar gated on client-only subscriber fetch');
+    test.fail(!isRecordMode, 'SSR gap (#932): sidebar gated on client-only subscriber fetch');
     await page.goto(`/trending/${COMMUNITY}`);
     await expectSsrVisible(page.getByTestId('community-info-sidebar'));
   });
@@ -239,7 +239,7 @@ test.describe('SSR — Hydrate-based pages (JS disabled, confirmed gaps)', () =>
   }) => {
     test.fail(
       !isRecordMode,
-      'SSR gap: subscriptions are fetched server-side but rendered only after client hydration (React Query Hydrate)'
+      'SSR gap (#932): subscriptions are fetched server-side but rendered only after client hydration (React Query Hydrate)'
     );
     await page.goto(`/@${SUBSCRIBED_USER}/communities`);
     await expectSsrVisible(page.getByTestId('author-community-subscribed-list-item').first());
@@ -248,7 +248,7 @@ test.describe('SSR — Hydrate-based pages (JS disabled, confirmed gaps)', () =>
   test('SSR-12 — /@user/notifications renders notifications in server HTML', async ({ page }) => {
     test.fail(
       !isRecordMode,
-      'SSR gap: notifications are fetched server-side but rendered only after client hydration (React Query Hydrate)'
+      'SSR gap (#932): notifications are fetched server-side but rendered only after client hydration (React Query Hydrate)'
     );
     await page.goto(`/@${SUBSCRIBED_USER}/notifications`);
     await expectSsrVisible(page.getByTestId('notification-list-item').first());
@@ -257,7 +257,7 @@ test.describe('SSR — Hydrate-based pages (JS disabled, confirmed gaps)', () =>
   test('SSR-13 — /roles/[community] renders the roles table in server HTML', async ({ page }) => {
     test.fail(
       !isRecordMode,
-      'SSR gap: community roles are fetched server-side but rendered only after client hydration (React Query Hydrate)'
+      'SSR gap (#932): community roles are fetched server-side but rendered only after client hydration (React Query Hydrate)'
     );
     await page.goto(`/roles/${SUBSCRIBED_COMMUNITY}`);
     await expectSsrVisible(page.getByTestId('community-roles-table'));
