@@ -103,6 +103,27 @@ describe('ThreeSpeakEmbedder', () => {
             // Uppercase not allowed in Hive account names
             expect(metadata).to.be.undefined;
         });
+
+        // Issue #922: 3Speak now publishes posts with the play.3speak.tv subdomain.
+        // The whole URL (including the subdomain) must be captured so it is not split
+        // into two parts ("https://play." left behind + the embed marker).
+        it('should match the full URL including the play. subdomain', () => {
+            const url = 'https://play.3speak.tv/embed?v=patjules83/7bqet343';
+            const metadata = embedder.getEmbedMetadata(url);
+            expect(metadata).to.deep.equal({
+                id: 'patjules83/7bqet343',
+                url: 'https://play.3speak.tv/embed?v=patjules83/7bqet343'
+            });
+        });
+
+        it('should match the play. subdomain on watch URLs too', () => {
+            const url = 'https://play.3speak.tv/watch?v=starkerz/3speak-1780955077199';
+            const metadata = embedder.getEmbedMetadata(url);
+            expect(metadata).to.deep.equal({
+                id: 'starkerz/3speak-1780955077199',
+                url: 'https://play.3speak.tv/watch?v=starkerz/3speak-1780955077199'
+            });
+        });
     });
 
     describe('processEmbed', () => {
@@ -113,7 +134,7 @@ describe('ThreeSpeakEmbedder', () => {
             const result = embedder.processEmbed(id, size);
 
             expect(result).to.equal(
-                '<div class="threeSpeakWrapper"><iframe width="500" height="300" src="https://3speak.tv/embed?v=username/video-id" frameborder="0" allowfullscreen></iframe></div>'
+                '<div class="threeSpeakWrapper"><iframe width="500" height="300" src="https://play.3speak.tv/watch?v=username/video-id&mode=iframe&layout=desktop" frameborder="0" allowfullscreen></iframe></div>'
             );
         });
     });

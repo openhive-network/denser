@@ -90,22 +90,22 @@ export class StaticConfig {
             },
             {
                 // eslint-disable-next-line security/detect-unsafe-regex
-                re: /^(?:https?:)?\/\/(?:3speak\.(?:tv|online|co))\/embed\?v=([^&\s]+)/i,
+                re: /^(?:https?:)?\/\/(?:[a-z0-9-]+\.)?(?:3speak\.(?:tv|online|co))\/embed\?v=([^&\s]+)/i,
                 fn: (src: string) => {
                     if (!src) return null;
                     const match = src.match(/3speak\.(?:tv|online|co)\/embed\?v=([^&\s]+)/i);
                     if (!match || match.length !== 2) return null;
-                    return `https://3speak.tv/embed?v=${match[1]}`;
+                    return `https://play.3speak.tv/watch?v=${match[1]}&mode=iframe&layout=desktop`;
                 }
             },
             {
                 // eslint-disable-next-line security/detect-unsafe-regex
-                re: /^(?:https?:)?\/\/(?:3speak\.(?:tv|online|co))\/watch\?v=([^&\s]+)/i,
+                re: /^(?:https?:)?\/\/(?:[a-z0-9-]+\.)?(?:3speak\.(?:tv|online|co))\/watch\?v=([^&\s]+)/i,
                 fn: (src: string) => {
                     if (!src) return null;
                     const match = src.match(/3speak\.(?:tv|online|co)\/watch\?v=([^&\s]+)/i);
                     if (!match || match.length !== 2) return null;
-                    return `https://3speak.tv/embed?v=${match[1]}`;
+                    return `https://play.3speak.tv/watch?v=${match[1]}&mode=iframe&layout=desktop`;
                 }
             },
             {
