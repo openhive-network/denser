@@ -11,7 +11,8 @@ export const middleware = createMiddleware({
   rootRewrite: '/trending',
   csp: {
     // Embedded content whitelist for blog posts
-    // Note: 3speak.online/co removed (compromised/spam), code normalizes to 3speak.tv
+    // Note: 3speak.online/co removed (compromised/spam). Embeds render via play.3speak.tv,
+    // but plain 3speak.tv is also allowed so links starting with either host work.
     // Note: emb.d.tube removed (subdomain down, no renderer support)
     frameSrc: [
       'https://platform.twitter.com',
@@ -22,6 +23,7 @@ export const middleware = createMiddleware({
       'https://player.twitch.tv',
       'https://open.spotify.com',
       'https://3speak.tv',
+      'https://play.3speak.tv',
       'https://odysee.com',
       'https://openhive.chat'
       // The site's own origin (for the denser OAuth flow inside the openhive.chat iframe) is added

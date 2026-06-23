@@ -365,7 +365,7 @@ describe('Embed Processing Safety', () => {
         it('generates iframe with correct src', () => {
             const result = embedder.processEmbed('username/video-id', {width: 640, height: 480});
             expect(result).to.include('<iframe');
-            expect(result).to.include('3speak.tv/embed?v=username/video-id');
+            expect(result).to.include('play.3speak.tv/watch?v=username/video-id&mode=iframe&layout=desktop');
         });
 
         it('does not include event handlers in output', () => {

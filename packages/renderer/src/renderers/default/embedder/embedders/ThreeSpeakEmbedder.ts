@@ -9,8 +9,12 @@ export class ThreeSpeakEmbedder extends AbstractEmbedder {
      * Video IDs are in format: username/permlink (Hive account format)
      * - Username: lowercase alphanumeric, dots, dashes (2-16 chars)
      * - Permlink: lowercase alphanumeric, dashes
+     *
+     * An optional subdomain (e.g. `play.3speak.tv`) is allowed so the WHOLE URL is
+     * captured. Without it the match started at `3speak.tv`, leaving `https://play.`
+     * behind and splitting the link into two parts (issue #922).
      */
-    private static readonly linkRegex = /(?:https?:\/\/)?(?:3[sS]peak\.(?:tv|online|co)\/(?:watch|embed)\?v=)([a-z0-9][a-z0-9.-]{1,15}\/[a-z0-9][a-z0-9-]*)/;
+    private static readonly linkRegex = /(?:https?:\/\/)?(?:[a-z0-9-]+\.)?3[sS]peak\.(?:tv|online|co)\/(?:watch|embed)\?v=([a-z0-9][a-z0-9.-]{1,15}\/[a-z0-9][a-z0-9-]*)/;
 
     public getEmbedMetadata(input: string | HTMLObjectElement): EmbedMetadata | undefined {
         const url = typeof input === 'string' ? input : input.data;
@@ -34,7 +38,10 @@ export class ThreeSpeakEmbedder extends AbstractEmbedder {
     }
 
     public processEmbed(id: string, size: {width: number; height: number}): string {
-        const embedUrl = `https://3speak.tv/embed?v=${id}`;
+        // Use the `watch?mode=iframe&layout=desktop` form (same as hive.blog/condenser).
+        // The `/embed` endpoint renders an extra "Video Info" panel below the player;
+        // `mode=iframe&layout=desktop` tells 3Speak to show only the clean player (issue #922).
+        const embedUrl = `https://play.3speak.tv/watch?v=${id}&mode=iframe&layout=desktop`;
         return `<div class="threeSpeakWrapper"><iframe width="${size.width}" height="${size.height}" src="${embedUrl}" frameborder="0" allowfullscreen></iframe></div>`;
     }
 }

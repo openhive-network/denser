@@ -58,12 +58,14 @@ test.describe('Renderer media embeds', () => {
   });
 
   test('3Speak embed renders with correct video reference', async ({ page }) => {
-    const threeSpeakIframe = page.locator('#articleBody iframe[src*="3speak.tv/embed"]');
+    const threeSpeakIframe = page.locator('#articleBody iframe[src*="play.3speak.tv/watch"]');
 
     await expect(threeSpeakIframe).toBeAttached({ timeout: 10000 });
 
     const src = await threeSpeakIframe.getAttribute('src');
     expect(src).toContain('jongolson/vhtttbyf');
+    expect(src).toContain('mode=iframe');
+    expect(src).toContain('layout=desktop');
   });
 
   test('Twitter/X embed renders inside twitterWrapper', async ({ page, browserName }) => {
@@ -101,7 +103,7 @@ test.describe('Renderer media embeds', () => {
     const youtube = page.locator('#articleBody .videoWrapper iframe[src*="youtube.com/embed"]').first();
 
     // 3Speak
-    const threeSpeak = page.locator('#articleBody iframe[src*="3speak.tv/embed"]').first();
+    const threeSpeak = page.locator('#articleBody iframe[src*="play.3speak.tv/watch"]').first();
 
     // Twitter/X
     const twitter = page.locator('#articleBody .twitterWrapper').first();
