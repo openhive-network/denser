@@ -840,12 +840,17 @@ blog-fixture-standalone:
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
   - |
-    echo "Extracting standalone from ${DENSER_BLOG_IMAGE_NAME}..."
-    docker pull "$DENSER_BLOG_IMAGE_NAME"
-    cid=$(docker create "$DENSER_BLOG_IMAGE_NAME")
-    mkdir -p fixture-standalone
-    docker cp "$cid:/app/." fixture-standalone/
-    docker rm "$cid"
+    # Export the prebuilt /app tree straight out of the image via BuildKit —
+    # same logic as hive's scripts/ci-helpers/export-data-from-docker-image.sh
+    # (FROM scratch + COPY --from + `--output type=local`): no intermediate
+    # container to create/cp/rm, buildx streams the layer contents to the host.
+    echo "Exporting standalone from ${DENSER_BLOG_IMAGE_NAME}..."
+    docker buildx build \
+      --output "type=local,dest=fixture-standalone" \
+      -f- . << EOF
+      FROM scratch
+      COPY --from=${DENSER_BLOG_IMAGE_NAME} /app/ /
+    EOF
     du -sh fixture-standalone || true
   artifacts:
     paths:
