@@ -362,10 +362,13 @@ describe('Embed Processing Safety', () => {
     describe('3Speak processEmbed', () => {
         const embedder = new ThreeSpeakEmbedder();
 
-        it('generates iframe with correct src', () => {
+        it('generates a click-to-load facade with no third-party iframe at render time', () => {
             const result = embedder.processEmbed('username/video-id', {width: 640, height: 480});
-            expect(result).to.include('<iframe');
-            expect(result).to.include('play.3speak.tv/watch?v=username/video-id&mode=iframe&layout=desktop');
+            // Privacy facade (#934): the play.3speak.tv player is injected only on click.
+            expect(result).to.include('threespeak-facade');
+            expect(result).to.include('data-threespeak-id="username/video-id"');
+            expect(result).to.not.include('<iframe');
+            expect(result).to.not.include('play.3speak.tv');
         });
 
         it('does not include event handlers in output', () => {

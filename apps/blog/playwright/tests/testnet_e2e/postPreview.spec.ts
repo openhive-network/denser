@@ -338,13 +338,15 @@ https://www.youtube.com/watch?v=a3ICNMQW7Ok`;
 
     const preview = await postPage.articleBody.innerHTML();
 
-    const previewContent: string = `<p class=\"my-0\">3speak video (preferably displayed as embedded/playable video)
-</p><div class=\"threeSpeakWrapper videoWrapper\"><iframe width=\"640\" height=\"480\" src=\"https://play.3speak.tv/watch?v=jongolson/vhtttbyf&amp;mode=iframe&amp;layout=desktop\" frameborder=\"0\" allowfullscreen=\"\"></iframe></div><p class=\"my-0\"></p>
-<p class=\"my-0\">Similarly for youtube videos (sample video below)
-</p><div class=\"videoWrapper\"><iframe width=\"640\" height=\"480\" src=\"https://www.youtube.com/embed/a3ICNMQW7Ok\" allowfullscreen=\"allowfullscreen\" webkitallowfullscreen=\"webkitallowfullscreen\" mozallowfullscreen=\"mozallowfullscreen\" frameborder=\"0\"></iframe></div><p class=\"my-0\"></p>
-`;
-
-    expect(preview).toContain(previewContent);
+    // Privacy facades (#934): 3Speak and YouTube render as click-to-load placeholders;
+    // the player iframes (play.3speak.tv / youtube.com/embed) are injected only on click,
+    // so no third-party player URL appears in the rendered HTML up front.
+    expect(preview).toContain('threespeak-facade');
+    expect(preview).toContain('data-threespeak-id="jongolson/vhtttbyf"');
+    expect(preview).toContain('youtube-facade');
+    expect(preview).toContain('data-youtube-id="a3ICNMQW7Ok"');
+    expect(preview).not.toContain('play.3speak.tv');
+    expect(preview).not.toContain('youtube.com/embed');
   });
 
   test.skip('Check if Footnotes are displayed correctly', async ({ denserAutoTest0Page }) => {

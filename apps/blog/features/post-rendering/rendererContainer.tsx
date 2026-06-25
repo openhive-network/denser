@@ -7,6 +7,7 @@ import { getRenderer, getPreviewRenderer } from './lib/renderer';
 import ScrollToElement from './scroll-to-element';
 import { cn } from '@ui/lib/utils';
 import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
+import { proxifyImageSrc } from '@ui/lib/proxify-images';
 
 const RendererContainer = ({
   body,
@@ -51,21 +52,43 @@ const RendererContainer = ({
     setOpen(true);
   };
 
-  const handleYoutubeFacadeClick = (e: Event) => {
-    const target = e.currentTarget as HTMLElement;
-    const videoId = target.dataset.youtubeId;
-    const width = target.dataset.width || '640';
-    const height = target.dataset.height || '480';
-    if (videoId) {
-      const iframe = document.createElement('iframe');
-      iframe.width = width;
-      iframe.height = height;
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-      iframe.setAttribute('allowfullscreen', 'allowfullscreen');
-      iframe.setAttribute('allow', 'autoplay; encrypted-media');
-      iframe.setAttribute('frameborder', '0');
-      target.replaceWith(iframe);
+  // Build the player iframe for a clicked facade.
+  // Defense-in-depth (issue #934): `sandbox` without allow-top-navigation*/allow-popups
+  // so a compromised-but-allowlisted provider cannot redirect the reader or spawn popups;
+  // `referrerpolicy=no-referrer` so the provider does not learn which post is open.
+  // NOTE (prototype): verify playback per provider before shipping the sandbox attribute;
+  // if a given player needs more privileges, relax the token list (or drop sandbox for it).
+  const createEmbedIframe = (src: string, width: string, height: string) => {
+    const iframe = document.createElement('iframe');
+    iframe.width = width;
+    iframe.height = height;
+    iframe.src = src;
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('allowfullscreen', 'allowfullscreen');
+    iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
+    iframe.setAttribute('referrerpolicy', 'no-referrer');
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
+    return iframe;
+  };
+
+  const activateFacade = (el: HTMLElement) => {
+    const width = el.dataset.width || '640';
+    const height = el.dataset.height || '480';
+    const youtubeId = el.dataset.youtubeId;
+    const threespeakId = el.dataset.threespeakId;
+    let src = '';
+    if (youtubeId) {
+      src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`;
+    } else if (threespeakId) {
+      src = `https://play.3speak.tv/watch?v=${threespeakId}&mode=iframe&layout=desktop&autoplay=1`;
     }
+    if (!src) return;
+    el.replaceWith(createEmbedIframe(src, width, height));
+  };
+
+  const handleFacadeClick = (e: Event) => {
+    e.preventDefault();
+    activateFacade(e.currentTarget as HTMLElement);
   };
 
   useEffect(() => {
@@ -78,28 +101,26 @@ const RendererContainer = ({
         n.addEventListener('click', handleClick);
       }
     });
-    const youtubeFacades = ref.current?.querySelectorAll('.youtube-facade');
-    if (previewMode) {
-      youtubeFacades?.forEach((facade) => {
-        facade.addEventListener('click', handleYoutubeFacadeClick);
-      });
-    } else {
-      youtubeFacades?.forEach((facade) => {
+
+    // Click-to-load facades (YouTube + 3Speak): no third-party network contact until the
+    // reader clicks play. Thumbnails (YouTube) are loaded *proxied* through the image proxy
+    // so even the preview image is not a direct third-party request. Issue #934.
+    const facades = ref.current?.querySelectorAll('.embed-facade');
+    if (!communityDescription) {
+      facades?.forEach((facade) => {
         const el = facade as HTMLElement;
-        const videoId = el.dataset.youtubeId;
-        const width = el.dataset.width || '640';
-        const height = el.dataset.height || '480';
-        if (videoId) {
-          const iframe = document.createElement('iframe');
-          iframe.width = width;
-          iframe.height = height;
-          iframe.src = `https://www.youtube.com/embed/${videoId}`;
-          iframe.setAttribute('allowfullscreen', 'allowfullscreen');
-          iframe.setAttribute('frameborder', '0');
-          el.replaceWith(iframe);
+        const thumb = el.dataset.thumb;
+        if (thumb && !el.querySelector('img')) {
+          const img = document.createElement('img');
+          img.src = proxifyImageSrc(thumb, 1536, 0, 'match', proxyAuthToken);
+          img.alt = '';
+          img.loading = 'lazy';
+          el.insertBefore(img, el.firstChild);
         }
+        el.addEventListener('click', handleFacadeClick);
       });
     }
+
     const sub = document.querySelectorAll('sub');
     sub?.forEach((e) => {
       e.classList.add('leading-[150%]');
@@ -125,10 +146,12 @@ const RendererContainer = ({
         const srcText = document.createTextNode(n.src);
         n.replaceWith(srcText);
       });
-      const facades = ref.current?.querySelectorAll('.youtube-facade');
-      facades?.forEach((n) => {
-        const videoId = (n as HTMLElement).dataset.youtubeId;
-        const srcText = document.createTextNode(`https://www.youtube.com/watch?v=${videoId}`);
+      const descFacades = ref.current?.querySelectorAll('.embed-facade');
+      descFacades?.forEach((n) => {
+        const el = n as HTMLElement;
+        const srcText = el.dataset.youtubeId
+          ? document.createTextNode(`https://www.youtube.com/watch?v=${el.dataset.youtubeId}`)
+          : document.createTextNode(`https://play.3speak.tv/watch?v=${el.dataset.threespeakId}`);
         n.replaceWith(srcText);
       });
     }
@@ -145,13 +168,9 @@ const RendererContainer = ({
     return () => {
       pluginCleanups.forEach((cleanup) => cleanup());
       nodes?.forEach((n) => n.removeEventListener('click', handleClick));
-      if (previewMode) {
-        youtubeFacades?.forEach((facade) => {
-          facade.removeEventListener('click', handleYoutubeFacadeClick);
-        });
-      }
+      facades?.forEach((facade) => facade.removeEventListener('click', handleFacadeClick));
     };
-  }, [body, hiveRenderer, previewMode]);
+  }, [body, hiveRenderer, previewMode, communityDescription, proxyAuthToken]);
 
   const htmlBody = useMemo(() => {
     if (body) {

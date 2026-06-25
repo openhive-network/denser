@@ -127,15 +127,26 @@ describe('ThreeSpeakEmbedder', () => {
     });
 
     describe('processEmbed', () => {
-        it('should generate correct iframe HTML', () => {
+        it('should generate a click-to-load facade (no third-party iframe at render time)', () => {
             const id = 'username/video-id';
             const size = {width: 500, height: 300};
 
             const result = embedder.processEmbed(id, size);
 
-            expect(result).to.equal(
-                '<div class="threeSpeakWrapper"><iframe width="500" height="300" src="https://play.3speak.tv/watch?v=username/video-id&mode=iframe&layout=desktop" frameborder="0" allowfullscreen></iframe></div>'
-            );
+            // Privacy facade (#934): emit a placeholder carrying the data needed to build
+            // the play.3speak.tv player on click; no iframe / no 3Speak URL up front, so a
+            // reader who scrolls past makes no third-party request.
+            expect(result).to.include('threespeak-facade');
+            expect(result).to.include('data-threespeak-id="username/video-id"');
+            expect(result).to.include('data-width="500"');
+            expect(result).to.include('data-height="300"');
+            expect(result).to.not.include('<iframe');
+            expect(result).to.not.include('play.3speak.tv');
+        });
+
+        it('should not emit inline event handlers', () => {
+            const result = embedder.processEmbed('username/video-id', {width: 500, height: 300});
+            expect(result).to.not.match(/\son\w+\s*=/i);
         });
     });
 });

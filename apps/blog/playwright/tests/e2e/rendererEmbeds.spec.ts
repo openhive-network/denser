@@ -26,26 +26,35 @@ test.describe('Renderer media embeds', () => {
     await expect(postPage.articleBody).toBeVisible();
   });
 
-  test('YouTube embed renders with correct video ID', async ({ page }) => {
-    // On published posts, YouTube facades are auto-replaced with iframes on mount.
-    // Look for the resulting iframe inside .videoWrapper.
+  test('YouTube embed renders as a click-to-load facade and loads on click', async ({ page }) => {
+    // Privacy facade (#934): no YouTube iframe until the reader clicks play.
+    const facade = page.locator('#articleBody .videoWrapper .youtube-facade[data-youtube-id="a3ICNMQW7Ok"]');
+    await expect(facade).toBeAttached({ timeout: 10000 });
+
+    // No third-party YouTube iframe should exist before interaction.
+    await expect(page.locator('#articleBody iframe[src*="youtube.com/embed"]')).toHaveCount(0);
+
+    await facade.click();
+
     const youtubeIframe = page.locator(
       '#articleBody .videoWrapper iframe[src*="youtube.com/embed/a3ICNMQW7Ok"]'
     );
-
     await expect(youtubeIframe).toBeAttached({ timeout: 10000 });
 
     const src = await youtubeIframe.getAttribute('src');
     expect(src).toContain('a3ICNMQW7Ok');
   });
 
-  test('YouTube embed iframe is playable', async ({ page, browserName }) => {
+  test('YouTube embed iframe is playable after click', async ({ page, browserName }) => {
     test.skip(browserName !== 'chromium', 'YouTube iframe interaction tested on chromium only');
+
+    const facade = page.locator('#articleBody .videoWrapper .youtube-facade[data-youtube-id="a3ICNMQW7Ok"]');
+    await expect(facade).toBeAttached({ timeout: 10000 });
+    await facade.click();
 
     const youtubeIframe = page.locator(
       '#articleBody .videoWrapper iframe[src*="youtube.com/embed/a3ICNMQW7Ok"]'
     );
-
     await expect(youtubeIframe).toBeAttached({ timeout: 10000 });
 
     // Verify the iframe has allowfullscreen and proper dimensions
@@ -57,9 +66,15 @@ test.describe('Renderer media embeds', () => {
     expect(box.height).toBeGreaterThan(50);
   });
 
-  test('3Speak embed renders with correct video reference', async ({ page }) => {
-    const threeSpeakIframe = page.locator('#articleBody iframe[src*="play.3speak.tv/watch"]');
+  test('3Speak embed renders as a facade and loads play.3speak.tv on click', async ({ page }) => {
+    // Privacy facade (#934): no 3Speak iframe until the reader clicks play.
+    const facade = page.locator('#articleBody .threespeak-facade[data-threespeak-id*="jongolson/vhtttbyf"]');
+    await expect(facade).toBeAttached({ timeout: 10000 });
+    await expect(page.locator('#articleBody iframe[src*="3speak"]')).toHaveCount(0);
 
+    await facade.click();
+
+    const threeSpeakIframe = page.locator('#articleBody iframe[src*="play.3speak.tv/watch"]');
     await expect(threeSpeakIframe).toBeAttached({ timeout: 10000 });
 
     const src = await threeSpeakIframe.getAttribute('src');
@@ -99,11 +114,11 @@ test.describe('Renderer media embeds', () => {
     test.skip(browserName === 'webkit', 'Embed integration tested on chromium');
     test.skip(browserName === 'firefox', 'Embed integration tested on chromium');
 
-    // YouTube — facade is auto-replaced with iframe on mount (post may have multiple)
-    const youtube = page.locator('#articleBody .videoWrapper iframe[src*="youtube.com/embed"]').first();
+    // YouTube + 3Speak render as click-to-load facades (#934), not live iframes
+    const youtube = page.locator('#articleBody .videoWrapper .youtube-facade').first();
 
     // 3Speak
-    const threeSpeak = page.locator('#articleBody iframe[src*="play.3speak.tv/watch"]').first();
+    const threeSpeak = page.locator('#articleBody .threespeak-facade').first();
 
     // Twitter/X
     const twitter = page.locator('#articleBody .twitterWrapper').first();
