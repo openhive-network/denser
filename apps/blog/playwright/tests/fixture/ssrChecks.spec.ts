@@ -52,6 +52,19 @@ async function expectSsrVisible(locator: Locator): Promise<void> {
   await expect(locator).toBeVisible();
 }
 
+/**
+ * Assert SSR presence AND non-empty content. `toBeVisible()` alone only proves
+ * the element occupies a layout box — a server-rendered empty shell (e.g. a
+ * card with padding/min-height but no data) can be "visible" yet carry no text.
+ * For positive body assertions we additionally require at least one
+ * non-whitespace character, so an empty skeleton can never pass for real SSR.
+ */
+async function expectSsrNonEmpty(locator: Locator): Promise<void> {
+  if (isRecordMode) return;
+  await expect(locator).toBeVisible();
+  await expect(locator).toContainText(/\S/);
+}
+
 /** Assert a server-rendered <head> meta tag carries non-empty content. */
 async function expectSsrMetaContent(locator: Locator): Promise<void> {
   if (isRecordMode) return;
@@ -72,7 +85,7 @@ test.describe('SSR — anonymous feed & sidebar (JS disabled)', () => {
 
   test('SSR-01 — anonymous /trending renders the post list in server HTML', async ({ page }) => {
     await page.goto('/trending');
-    await expectSsrVisible(page.getByTestId('post-list-item').first());
+    await expectSsrNonEmpty(page.getByTestId('post-list-item').first());
   });
 
   test('SSR-06 — anonymous sidebar renders trending communities in server HTML', async ({
@@ -104,7 +117,7 @@ test.describe('SSR — logged-in personalization (JS disabled)', () => {
     page
   }) => {
     await page.goto('/trending/my');
-    await expectSsrVisible(page.getByTestId('post-list-item').first());
+    await expectSsrNonEmpty(page.getByTestId('post-list-item').first());
   });
 
   test('SSR-05 — logged-in sidebar renders communities in server HTML', async ({ page }) => {
@@ -119,7 +132,7 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
 
   test('SSR-16 — post detail renders the article title in server HTML', async ({ page }) => {
     await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
-    await expectSsrVisible(page.getByTestId('article-title'));
+    await expectSsrNonEmpty(page.getByTestId('article-title'));
   });
 
   // SEO: crawlers and link-unfurlers do not run JS, so the OpenGraph title MUST
@@ -193,7 +206,7 @@ test.describe('SSR — community profile (JS disabled)', () => {
 
   test('SSR-08 — community feed renders the post list in server HTML', async ({ page }) => {
     await page.goto(`/trending/${COMMUNITY}`);
-    await expectSsrVisible(page.getByTestId('post-list-item').first());
+    await expectSsrNonEmpty(page.getByTestId('post-list-item').first());
   });
 
   // Community SEO: buildCommunityTagMetadata sets og title + image from the
