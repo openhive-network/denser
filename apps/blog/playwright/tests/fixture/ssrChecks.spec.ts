@@ -92,7 +92,13 @@ test.describe('SSR — anonymous feed & sidebar (JS disabled)', () => {
     page
   }) => {
     await page.goto('/trending');
-    await expectSsrVisible(page.getByTestId('card-trending-comunities'));
+    // Target an actual community link, not the whole card: the card has a
+    // static header ("All posts") + a static "Explore communities" link that
+    // render even with zero communities. Community items are the only links
+    // with an `/trending/<name>` href (the header link is exactly `/trending`).
+    await expectSsrNonEmpty(
+      page.getByTestId('card-trending-comunities').locator('a[href^="/trending/"]').first()
+    );
   });
 
   // The skip-prefetch branch: for an anonymous observer, `/{sort}/my` must NOT
@@ -122,7 +128,10 @@ test.describe('SSR — logged-in personalization (JS disabled)', () => {
 
   test('SSR-05 — logged-in sidebar renders communities in server HTML', async ({ page }) => {
     await page.goto('/trending');
-    await expectSsrVisible(page.getByTestId('card-trending-comunities'));
+    // See SSR-06: assert a real community item, not the statically-headed card.
+    await expectSsrNonEmpty(
+      page.getByTestId('card-trending-comunities').locator('a[href^="/trending/"]').first()
+    );
   });
 });
 
