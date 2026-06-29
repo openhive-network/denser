@@ -47,17 +47,30 @@ const POST_PERMLINK = 'test-ako-post';
 const COMMUNITY = SUBSCRIBED_COMMUNITY;
 
 /**
- * Assert SSR presence AND non-empty content — the single body-content helper
- * (assertions run only on replay; see header note on recording).
+ * Loading-placeholder text the app renders into skeleton/fallback elements:
+ * the `global.loading` string ("Loading"), the literal `<div>Loading...</div>`
+ * fallbacks in the post lists, and the user-profile skeleton's sr-only
+ * "Loading…". Matched as the element's WHOLE text (not a substring), so a
+ * skeleton whose entire content is the placeholder is rejected, while a real
+ * card/title that merely happens to contain the word "loading" is not.
+ */
+const SSR_LOADING_PLACEHOLDER = /^(loading\.{0,3}|please wait|busy, please wait)$/i;
+
+/**
+ * Assert SSR presence AND non-empty, non-placeholder content — the single
+ * body-content helper (assertions run only on replay; see header note on
+ * recording).
  *
  * `toBeVisible()` alone only proves the element occupies a layout box — a
  * server-rendered empty shell (e.g. a card with padding/min-height but no data)
- * can be "visible" yet carry no text. We additionally require at least one
- * non-whitespace character, so an empty skeleton can never pass for real SSR.
+ * can be "visible" yet carry no text. We additionally require:
+ *   1. at least one non-whitespace character (not an empty skeleton), and
+ *   2. the whole text is not a loading placeholder ("Loading…" etc.) — guards
+ *      against a future skeleton/Suspense fallback rendering under our testid.
  *
  * This matters for the `test.fail` gap cases too: a gap should flip to an
- * unexpected pass only when the content genuinely SSRs with data, not when an
- * empty shell appears — otherwise an empty container would falsely read as
+ * unexpected pass only when the content genuinely SSRs with real data, not when
+ * an empty or still-loading shell appears — otherwise it would falsely read as
  * "gap closed". Always point this at a data-bearing element (a list/table row,
  * or a container whose first child is dynamic data), never at a container whose
  * leading text is a static header — see the SSR-13 / sidebar notes below.
@@ -66,6 +79,7 @@ async function expectSsrNonEmpty(locator: Locator): Promise<void> {
   if (isRecordMode) return;
   await expect(locator).toBeVisible();
   await expect(locator).toContainText(/\S/);
+  await expect(locator).not.toHaveText(SSR_LOADING_PLACEHOLDER);
 }
 
 /** Assert a server-rendered <head> meta tag carries non-empty content. */
