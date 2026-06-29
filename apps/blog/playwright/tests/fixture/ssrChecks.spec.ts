@@ -216,9 +216,12 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
     await expectSsrNonEmpty(page.getByTestId('post-list-item').first());
   });
 
-  // Gap: classic search fetches results server-side (search-api.find_text runs
-  // when both q and s are present) but the results component renders them
-  // client-only, so the server HTML carries no result list.
+  // Gap: classic search DOES fetch + server-render the results (find_text runs
+  // when both q and s are present — the 20 post-list-items are in the SSR HTML),
+  // but they sit inside a `display:none` container that only client JS reveals.
+  // So a crawler reading source sees them, yet a no-JS user sees nothing —
+  // toBeVisible() (correctly) fails. Verified empirically: count=20 but the
+  // first item's box is 0×0 under a `display:none` ancestor.
   test('SSR-20 — /search renders classic results in server HTML', async ({ page }) => {
     test.fail(!isRecordMode, 'SSR gap (#932): classic search results render client-only despite server-side fetch');
     await page.goto('/search?q=hive&s=relevance');
