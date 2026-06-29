@@ -46,18 +46,21 @@ const POST_PERMLINK = 'test-ako-post';
 /** Community `SUBSCRIBED_USER` is a member of — for personalized community SSR. */
 const COMMUNITY = SUBSCRIBED_COMMUNITY;
 
-/** Assert SSR presence — but only on replay (see header note on recording). */
-async function expectSsrVisible(locator: Locator): Promise<void> {
-  if (isRecordMode) return;
-  await expect(locator).toBeVisible();
-}
-
 /**
- * Assert SSR presence AND non-empty content. `toBeVisible()` alone only proves
- * the element occupies a layout box — a server-rendered empty shell (e.g. a
- * card with padding/min-height but no data) can be "visible" yet carry no text.
- * For positive body assertions we additionally require at least one
+ * Assert SSR presence AND non-empty content — the single body-content helper
+ * (assertions run only on replay; see header note on recording).
+ *
+ * `toBeVisible()` alone only proves the element occupies a layout box — a
+ * server-rendered empty shell (e.g. a card with padding/min-height but no data)
+ * can be "visible" yet carry no text. We additionally require at least one
  * non-whitespace character, so an empty skeleton can never pass for real SSR.
+ *
+ * This matters for the `test.fail` gap cases too: a gap should flip to an
+ * unexpected pass only when the content genuinely SSRs with data, not when an
+ * empty shell appears — otherwise an empty container would falsely read as
+ * "gap closed". Always point this at a data-bearing element (a list/table row,
+ * or a container whose first child is dynamic data), never at a container whose
+ * leading text is a static header — see the SSR-13 / sidebar notes below.
  */
 async function expectSsrNonEmpty(locator: Locator): Promise<void> {
   if (isRecordMode) return;
@@ -196,7 +199,7 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
   }) => {
     test.fail(!isRecordMode, 'SSR gap (#932): user-profile body is client-only (server HTML is navbar-only)');
     await page.goto(`/@${SUBSCRIBED_USER}`);
-    await expectSsrVisible(page.getByTestId('post-list-item').first());
+    await expectSsrNonEmpty(page.getByTestId('post-list-item').first());
   });
 
   // Gap: classic search fetches results server-side (search-api.find_text runs
@@ -205,7 +208,7 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
   test('SSR-20 — /search renders classic results in server HTML', async ({ page }) => {
     test.fail(!isRecordMode, 'SSR gap (#932): classic search results render client-only despite server-side fetch');
     await page.goto('/search?q=hive&s=relevance');
-    await expectSsrVisible(page.getByTestId('post-list-item').first());
+    await expectSsrNonEmpty(page.getByTestId('post-list-item').first());
   });
 });
 
@@ -236,7 +239,9 @@ test.describe('SSR — community profile (JS disabled)', () => {
   test('SSR-09 — community info sidebar renders in server HTML', async ({ page }) => {
     test.fail(!isRecordMode, 'SSR gap (#932): sidebar gated on client-only subscriber fetch');
     await page.goto(`/trending/${COMMUNITY}`);
-    await expectSsrVisible(page.getByTestId('community-info-sidebar'));
+    // The sidebar leads with the community title (dynamic data), so a non-empty
+    // check on the container is meaningful here — no static-only header prefix.
+    await expectSsrNonEmpty(page.getByTestId('community-info-sidebar'));
   });
 });
 
@@ -264,7 +269,7 @@ test.describe('SSR — Hydrate-based pages (JS disabled, confirmed gaps)', () =>
       'SSR gap (#932): subscriptions are fetched server-side but rendered only after client hydration (React Query Hydrate)'
     );
     await page.goto(`/@${SUBSCRIBED_USER}/communities`);
-    await expectSsrVisible(page.getByTestId('author-community-subscribed-list-item').first());
+    await expectSsrNonEmpty(page.getByTestId('author-community-subscribed-list-item').first());
   });
 
   test('SSR-12 — /@user/notifications renders notifications in server HTML', async ({ page }) => {
@@ -273,7 +278,7 @@ test.describe('SSR — Hydrate-based pages (JS disabled, confirmed gaps)', () =>
       'SSR gap (#932): notifications are fetched server-side but rendered only after client hydration (React Query Hydrate)'
     );
     await page.goto(`/@${SUBSCRIBED_USER}/notifications`);
-    await expectSsrVisible(page.getByTestId('notification-list-item').first());
+    await expectSsrNonEmpty(page.getByTestId('notification-list-item').first());
   });
 
   test('SSR-13 — /roles/[community] renders the roles table in server HTML', async ({ page }) => {
@@ -282,6 +287,8 @@ test.describe('SSR — Hydrate-based pages (JS disabled, confirmed gaps)', () =>
       'SSR gap (#932): community roles are fetched server-side but rendered only after client hydration (React Query Hydrate)'
     );
     await page.goto(`/roles/${SUBSCRIBED_COMMUNITY}`);
-    await expectSsrVisible(page.getByTestId('community-roles-table'));
+    // Target a real role row, not the table: the table has a static <thead>
+    // that would render even with zero role rows.
+    await expectSsrNonEmpty(page.getByTestId('community-role-row').first());
   });
 });
