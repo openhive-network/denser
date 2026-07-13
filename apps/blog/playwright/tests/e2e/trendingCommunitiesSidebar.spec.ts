@@ -15,11 +15,17 @@ test.describe('Home page tests - All posts', () => {
 
   test('move from one community to other community and home page next', async ({ page }) => {
     await homePage.goto();
-    // move from HomePage to LeoFinance community
-    await homePage.moveToLeoFinanceCommunities();
-    // move from LeoFinance community to Pinmapple community
-    await homePage.moveToWorldmappinCommunities();
-    // move from Pinmapple to Home page
+    // Use the first two communities actually listed in the sidebar - the card
+    // shows the current top-12 by rank, so hardcoded names go stale over time
+    const firstCommunityName = (await homePage.getTrendingCommunitiesSideBarLinks.nth(0).textContent())?.trim() ?? '';
+    await homePage.getTrendingCommunitiesSideBarLinks.nth(0).click();
+    await expect(homePage.getCommunityNameElement).toContainText(firstCommunityName);
+
+    const secondCommunityName = (await homePage.getTrendingCommunitiesSideBarLinks.nth(1).textContent())?.trim() ?? '';
+    await homePage.getTrendingCommunitiesSideBarLinks.nth(1).click();
+    await expect(homePage.getCommunityNameElement).toContainText(secondCommunityName);
+
+    // move back to Home page
     await page.goBack();
     await page.waitForLoadState("domcontentloaded");
     await page.goBack();

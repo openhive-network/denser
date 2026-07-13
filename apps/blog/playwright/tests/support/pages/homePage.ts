@@ -310,13 +310,14 @@ export class HomePage {
   }
 
   async moveToLeoFinanceCommunities() {
-    await this.getLeoFinanceCommunitiesLink.click();
-    // await this.page.waitForRequest('https://api.hive.blog/');
+    // Navigate directly - the trending sidebar only lists the current top-12
+    // communities by rank, so a hardcoded entry is not guaranteed to be there
+    await this.page.goto('/trending/hive-167922');
     await expect(this.getHeaderLeoCommunities).toBeVisible();
   }
 
   async moveToWorldmappinCommunities() {
-    await this.getWorldmappinCommunitiesLink.click();
+    await this.page.goto('/trending/hive-163772');
     await expect(this.getHeaderWorldmappinCommunities).toBeVisible();
   }
 
