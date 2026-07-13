@@ -79,6 +79,10 @@ function buildConnectSrcHosts(): Set<string> {
     }
   }
 
+  // Cloudflare Web Analytics beacon posts its measurements here when the
+  // zone auto-injects it; harmless for deployments not behind Cloudflare
+  hosts.add('https://cloudflareinsights.com');
+
   return hosts;
 }
 
@@ -90,6 +94,9 @@ function buildScriptSrc(): string {
 
   // Twitter/X widgets.js for native tweet rendering (used by TwitterResizePlugin)
   scriptSrc += ' https://platform.twitter.com';
+
+  // Cloudflare Web Analytics beacon, auto-injected by zones with RUM enabled
+  scriptSrc += ' https://static.cloudflareinsights.com';
 
   if (process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID) {
     scriptSrc += ' https://accounts.google.com/gsi/';
