@@ -19,7 +19,10 @@ import {
   IWitness
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
+import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
+
+const logger = getLogger('app');
 
 export declare type Bignum = string;
 
@@ -28,9 +31,62 @@ export type ProposalData = Omit<IProposal, 'daily_pay' | 'total_votes'> & {
   daily_pay: { amount: Big };
 };
 
+// Operation type ids are consensus constants (append-only), safe to use when
+// the operation-types endpoint cannot be reached.
+const FALLBACK_OP_TYPE_IDS: Record<string, number> = {
+  transfer_operation: 2,
+  transfer_to_vesting_operation: 3,
+  withdraw_vesting_operation: 4,
+  escrow_transfer_operation: 27,
+  escrow_dispute_operation: 28,
+  escrow_release_operation: 29,
+  escrow_approve_operation: 31,
+  transfer_to_savings_operation: 32,
+  transfer_from_savings_operation: 33,
+  cancel_transfer_from_savings_operation: 34,
+  claim_reward_balance_operation: 39,
+  fill_convert_request_operation: 50,
+  author_reward_operation: 51,
+  curation_reward_operation: 52,
+  comment_reward_operation: 53,
+  liquidity_reward_operation: 54,
+  interest_operation: 55,
+  fill_order_operation: 57,
+  comment_benefactor_reward_operation: 63,
+  producer_reward_operation: 64,
+  proposal_pay_operation: 66,
+  dhf_funding_operation: 67
+};
+
+let opTypesPromise: Promise<HiveOpTypeSchema[]> | undefined;
+
 export const getOpTypes = async (): Promise<HiveOpTypeSchema[]> => {
-  const chain = await getChain();
-  return await chain.restApi['hafah-api']['operation-types']();
+  // The list is a chain constant, so one successful fetch serves the whole session
+  if (!opTypesPromise) {
+    opTypesPromise = getChain()
+      .then((chain) => chain.restApi['hafah-api']['operation-types']())
+      .catch((error) => {
+        opTypesPromise = undefined; // do not cache failures, next call retries
+        throw error;
+      });
+  }
+  return opTypesPromise;
+};
+
+const getOperationTypeIds = async (operationNames: string[]): Promise<string[]> => {
+  try {
+    const opTypes = await getOpTypes();
+    return operationNames
+      .map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id)
+      .filter((id): id is number => id != null)
+      .map((id) => id.toString());
+  } catch (error) {
+    logger.warn('operation-types endpoint unavailable, using fallback operation ids: %o', error);
+    return operationNames
+      .map((operationName) => FALLBACK_OP_TYPE_IDS[operationName])
+      .filter((id): id is number => id != null)
+      .map((id) => id.toString());
+  }
 };
 
 export const getWitnessesByVote = async (limit: number): Promise<IWitness[]> => {
@@ -132,11 +188,7 @@ export const getAccountOperations = async (
   observer: string
 ): Promise<IGetOperationsByAccountResponse> => {
   const chain = await getChain();
-  const opTypes = await getOpTypes();
-  const operationTypesIds = walletOperations
-    .map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id)
-    .filter((id) => id != null) // filters out undefined/null
-    .map((id) => id?.toString());
+  const operationTypesIds = await getOperationTypeIds(walletOperations);
   const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
     'account-name': username,
     page,
@@ -197,11 +249,7 @@ export const getFinancialReportOperations = async (
   pageSize: number = 500
 ): Promise<HiveOperation[]> => {
   const chain = await getChain();
-  const opTypes = await getOpTypes();
-  const operationTypesIds = financialReportOperations
-    .map((operationName) => opTypes.find((opType) => opType.operation_name === operationName)?.op_type_id)
-    .filter((id) => id != null)
-    .map((id) => id?.toString());
+  const operationTypesIds = await getOperationTypeIds(financialReportOperations);
   const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
     'account-name': username,
     'operation-types': operationTypesIds.toString(),
@@ -216,12 +264,11 @@ export const getRestApiAccountRewardsHistory = async (
   limit: number = 20
 ): Promise<HiveOperation[]> => {
   const chain = await getChain();
-  const opTypes = await chain.restApi['hafah-api']['operation-types']();
-  const opTypeId = opTypes.find((opType) => opType.operation_name === op_type)?.op_type_id;
+  const [opTypeId] = await getOperationTypeIds([op_type]);
   const operations = (
     await chain.restApi['hivemind-api'].accountsOperations({
       'account-name': username,
-      'operation-types': opTypeId?.toString(),
+      'operation-types': opTypeId,
       'page-size': limit
     })
   ).operations_result;

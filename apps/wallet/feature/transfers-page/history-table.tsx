@@ -1,5 +1,6 @@
 import React from 'react';
 import { TFunction } from 'i18next';
+import { Button } from '@ui/components';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
@@ -10,14 +11,36 @@ type DynamicData = Pick<GetDynamicGlobalPropertiesResponse, 'total_vesting_fund_
 
 interface HistoryTableProps {
   isLoading: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
   historyList: HiveOperation[] | undefined;
   t: TFunction<'common_wallet', undefined>;
   username: string;
   dynamicData: DynamicData;
 }
 
-const HistoryTable = ({ t, isLoading, historyList = [], username, dynamicData }: HistoryTableProps) => {
+const HistoryTable = ({
+  t,
+  isLoading,
+  isError,
+  onRetry,
+  historyList = [],
+  username,
+  dynamicData
+}: HistoryTableProps) => {
   if (isLoading) return <div>{t('global.loading')}</div>;
+  if (isError)
+    return (
+      <div
+        className="flex flex-col items-center gap-4 py-12"
+        data-testid="wallet-account-history-error"
+      >
+        <div className="text-center text-lg text-destructive">{t('profile.account_history_error')}</div>
+        <Button variant="outlineRed" onClick={onRetry}>
+          {t('global.retry')}
+        </Button>
+      </div>
+    );
   if (historyList.length === 0)
     return (
       <div

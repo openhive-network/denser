@@ -51,6 +51,15 @@ function buildConnectSrcHosts(): Set<string> {
     } catch { /* invalid URL, skip */ }
   }
 
+  // Ensure the configured REST API endpoint is in connect-src (it may differ
+  // from the JSON-RPC endpoint and from the allowed-nodes list)
+  const restApiEndpoint = process.env.REACT_APP_REST_API_ENDPOINT;
+  if (restApiEndpoint) {
+    try {
+      hosts.add(new URL(restApiEndpoint).origin);
+    } catch { /* invalid URL, skip */ }
+  }
+
   // Google APIs for Drive wallet backup and Sign-In
   if (process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID) {
     hosts.add('https://www.googleapis.com');

@@ -204,7 +204,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
   const { t } = useTranslation('common_wallet');
   const [financialReportPeriod, setFinancialReportPeriod] = useState<FinancialReportPeriod>('last7days');
   const [selectedOpTypes, setSelectedOpTypes] = useState<Set<OpType>>(() => new Set(allOpTypes));
-  const { data: operationHistoryData, isLoading } = useFinancialReportOperations(username);
+  const { data: operationHistoryData, isLoading, isError, refetch } = useFinancialReportOperations(username);
 
   const matchCount = useMemo(() => {
     if (!operationHistoryData) return 0;
@@ -292,6 +292,14 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
               ? t('transfers_page.report_no_operations')
               : t('transfers_page.report_operations_found', { count: matchCount })}
           </span>
+        )}
+        {isError && (
+          <>
+            <span className="text-xs text-destructive">{t('profile.account_history_error')}</span>
+            <Button variant="outlineRed" onClick={() => refetch()}>
+              {t('global.retry')}
+            </Button>
+          </>
         )}
       </div>
     </div>

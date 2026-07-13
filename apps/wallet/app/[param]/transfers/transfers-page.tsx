@@ -41,7 +41,12 @@ export default function TransfersPage({ username }: { username: string }) {
     getFollowing({ account: username })
   );
 
-  const { data: operationHistoryData, isLoading: operationHistoryLoading } = useQuery(
+  const {
+    data: operationHistoryData,
+    isLoading: operationHistoryLoading,
+    isError: operationHistoryError,
+    refetch: refetchOperations
+  } = useQuery(
     ['Operations', username],
     () => getAccountOperations(username, undefined, 500, user.username),
     {
@@ -120,6 +125,8 @@ export default function TransfersPage({ username }: { username: string }) {
           dynamicData={dynamicData}
           operationHistoryData={operationHistoryData}
           isLoading={operationHistoryLoading}
+          isError={operationHistoryError}
+          onRetry={refetchOperations}
         />
       </div>
     </div>

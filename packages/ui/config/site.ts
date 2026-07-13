@@ -1,6 +1,6 @@
 import env from '@beam-australia/react-env';
 
-import { configuredApiEndpoint, configuredSiteDomain } from '@hive/ui/config/public-vars';
+import { configuredApiEndpoint, configuredRestApiEndpoint, configuredSiteDomain } from '@hive/ui/config/public-vars';
 
 const SERVER_VAR_PREFIX = 'DENSER_SERVER_';
 
@@ -20,6 +20,7 @@ export const siteConfig = {
   name: 'Hive Blog',
   url: configuredSiteDomain,
   endpoint: configuredApiEndpoint,
+  restApiEndpoint: configuredRestApiEndpoint,
   chainId,
   chainEnv: chainEnv[chainId] || chainEnv['testnet'],
   ogImage: '',

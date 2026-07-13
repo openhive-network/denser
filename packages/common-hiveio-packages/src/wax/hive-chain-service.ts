@@ -37,7 +37,10 @@ const getDefaultClientOptions = (): IWaxOptionsChain => {
     chainId: siteConfig.chainId,
     apiEndpoint: jsonRpcNode || siteConfig.endpoint,
     apiTimeout: 5_000, // To be adjusted
-    restApiEndpoint: restNode || jsonRpcNode || siteConfig.endpoint,
+    // REST precedence: user's explicit choice, then the operator-configured REST
+    // endpoint (REACT_APP_REST_API_ENDPOINT - the JSON-RPC node may not serve the
+    // REST APIs at all), then follow the JSON-RPC endpoint.
+    restApiEndpoint: restNode || siteConfig.restApiEndpoint || jsonRpcNode || siteConfig.endpoint,
   };
 };
 

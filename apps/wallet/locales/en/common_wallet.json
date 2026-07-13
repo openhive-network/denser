@@ -63,7 +63,8 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "retry": "Retry"
   },
   "navigation": {
     "main_nav_bar": {
@@ -214,7 +215,8 @@
     "to_reset": " to reset.",
     "witnesses_page": "Witnesses page",
     "please_vote_for_witnesses": "It looks like you have not yet voted for Witnesses, you can do so on the ",
-    "open_orders": "Open Orders"
+    "open_orders": "Open Orders",
+    "account_history_error": "Could not load account history."
   },
   "market_page": {
     "last_price": "Last price",
