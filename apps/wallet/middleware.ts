@@ -5,8 +5,7 @@ export const middleware = createMiddleware({
   csp: {
     // Allow Google accounts for OAuth popup/iframe
     frameSrc: ["'self'", 'https://accounts.google.com'],
-    // Report violations to blog's endpoint (wallet doesn't have its own)
-    // Note: This will only work if both apps share the same origin
+    // Report violations to the wallet's own endpoint (report-uri is same-origin)
     reportUri: '/api/csp-report'
   }
 });

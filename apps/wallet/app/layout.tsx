@@ -76,11 +76,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <script src={`${basePath}/__ENV.js?v=${envVersion}`} />
       </head>
       <body className="bg-background-secondary" suppressHydrationWarning>
-        {/* Google Sign-In - loaded lazily, CSP needs to allow accounts.google.com */}
-        <Script
-          src="https://accounts.google.com/gsi/client"
-          strategy="lazyOnload"
-        />
+        {/* Google Sign-In - loaded lazily, only when the Google Drive feature is
+            configured (CSP whitelists accounts.google.com under the same condition) */}
+        {process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID && (
+          <Script
+            src="https://accounts.google.com/gsi/client"
+            strategy="lazyOnload"
+          />
+        )}
         <Providers>
           <CondenserMigration />
           <>{children}</>
