@@ -216,7 +216,16 @@
     "witnesses_page": "Witnesses page",
     "please_vote_for_witnesses": "It looks like you have not yet voted for Witnesses, you can do so on the ",
     "open_orders": "Open Orders",
-    "account_history_error": "Could not load account history."
+    "account_history_error": "Could not load account history.",
+    "recurrent_transfer_to": "Set up recurring transfer of {{value}} (every {{recurrence}} hours, {{executions}} executions) to ",
+    "recurrent_transfer_from": "Recurring transfer of {{value}} (every {{recurrence}} hours, {{executions}} executions) set up by ",
+    "recurrent_transfer_cancel_to": "Cancelled recurring transfer to ",
+    "recurrent_transfer_cancel_from": "Recurring transfer to you cancelled by ",
+    "fill_recurrent_transfer_to": "Sent recurring transfer of {{value}} ({{remaining}} remaining) to ",
+    "fill_recurrent_transfer_from": "Received recurring transfer of {{value}} ({{remaining}} remaining) from ",
+    "failed_recurrent_transfer_to": "Failed to send recurring transfer of {{value}} ({{failures}} consecutive failures) to ",
+    "failed_recurrent_transfer_from": "Failed recurring transfer of {{value}} from ",
+    "recurrent_transfer_deleted": " - the recurring transfer was cancelled after too many failures"
   },
   "market_page": {
     "last_price": "Last price",

@@ -15,6 +15,9 @@ import {
   type fill_order,
   type withdraw_vesting,
   type author_reward,
+  type recurrent_transfer,
+  type fill_recurrent_transfer,
+  type failed_recurrent_transfer,
 } from '@hiveio/wax';
 import { TFunction } from 'i18next';
 import { Link } from '@hive/ui';
@@ -226,6 +229,96 @@ export function createWalletOperationsFormatter(
             {hasAmount
               ? t('profile.start_power_down', { amount: formattedHp })
               : t('profile.stop_power_down')}
+          </span>
+        ),
+      };
+    }
+
+    @WaxFormattable({ matchProperty: 'type', matchValue: 'recurrent_transfer_operation' })
+    formatRecurrentTransfer({
+      source: { value: op },
+      target,
+    }: IFormatFunctionArguments<{ value: recurrent_transfer }>) {
+      // amount 0 cancels the recurring transfer agreement
+      const cancelled = !op.amount || BigInt(op.amount.amount) === 0n;
+      const outgoing = op.from === username;
+      const other = outgoing ? op.to : op.from;
+      const key = cancelled
+        ? outgoing
+          ? 'profile.recurrent_transfer_cancel_to'
+          : 'profile.recurrent_transfer_cancel_from'
+        : outgoing
+          ? 'profile.recurrent_transfer_to'
+          : 'profile.recurrent_transfer_from';
+      return {
+        ...target,
+        value: (
+          <span>
+            {t(key, {
+              value: this.formatAsset(op.amount),
+              recurrence: op.recurrence,
+              executions: op.executions,
+            })}
+            <Link href={`/@${other}`} className="font-semibold text-primary hover:text-destructive">
+              {other}
+            </Link>
+          </span>
+        ),
+      };
+    }
+
+    @WaxFormattable({ matchProperty: 'type', matchValue: 'fill_recurrent_transfer_operation' })
+    formatFillRecurrentTransfer({
+      source: { value: op },
+      target,
+    }: IFormatFunctionArguments<{ value: fill_recurrent_transfer }>) {
+      const outgoing = op.from === username;
+      const other = outgoing ? op.to : op.from;
+      return {
+        ...target,
+        value: (
+          <span>
+            {t(
+              outgoing
+                ? 'profile.fill_recurrent_transfer_to'
+                : 'profile.fill_recurrent_transfer_from',
+              {
+                value: this.formatAsset(op.amount),
+                remaining: op.remaining_executions,
+              }
+            )}
+            <Link href={`/@${other}`} className="font-semibold text-primary hover:text-destructive">
+              {other}
+            </Link>
+          </span>
+        ),
+      };
+    }
+
+    @WaxFormattable({ matchProperty: 'type', matchValue: 'failed_recurrent_transfer_operation' })
+    formatFailedRecurrentTransfer({
+      source: { value: op },
+      target,
+    }: IFormatFunctionArguments<{ value: failed_recurrent_transfer }>) {
+      const outgoing = op.from === username;
+      const other = outgoing ? op.to : op.from;
+      return {
+        ...target,
+        value: (
+          <span className="text-destructive">
+            {t(
+              outgoing
+                ? 'profile.failed_recurrent_transfer_to'
+                : 'profile.failed_recurrent_transfer_from',
+              {
+                value: this.formatAsset(op.amount),
+                failures: op.consecutive_failures,
+              }
+            )}
+            <Link href={`/@${other}`} className="font-semibold text-primary hover:text-destructive">
+              {other}
+            </Link>
+            {op.deleted ? t('profile.recurrent_transfer_deleted') : ''}
           </span>
         ),
       };

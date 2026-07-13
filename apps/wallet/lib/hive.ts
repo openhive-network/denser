@@ -45,6 +45,7 @@ const FALLBACK_OP_TYPE_IDS: Record<string, number> = {
   transfer_from_savings_operation: 33,
   cancel_transfer_from_savings_operation: 34,
   claim_reward_balance_operation: 39,
+  recurrent_transfer_operation: 49,
   fill_convert_request_operation: 50,
   author_reward_operation: 51,
   curation_reward_operation: 52,
@@ -55,7 +56,9 @@ const FALLBACK_OP_TYPE_IDS: Record<string, number> = {
   comment_benefactor_reward_operation: 63,
   producer_reward_operation: 64,
   proposal_pay_operation: 66,
-  dhf_funding_operation: 67
+  dhf_funding_operation: 67,
+  fill_recurrent_transfer_operation: 83,
+  failed_recurrent_transfer_operation: 84
 };
 
 let opTypesPromise: Promise<HiveOpTypeSchema[]> | undefined;
@@ -178,7 +181,10 @@ const walletOperations = [
   'fill_convert_request_operation',
   'fill_order_operation',
   'claim_reward_balance_operation',
-  'author_reward_operation'
+  'author_reward_operation',
+  'recurrent_transfer_operation',
+  'fill_recurrent_transfer_operation',
+  'failed_recurrent_transfer_operation'
 ];
 
 export const getAccountOperations = async (
