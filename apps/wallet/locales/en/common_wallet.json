@@ -213,7 +213,8 @@
     "governance_expired": "Your Witnesses votes have expired on {{date}}. Please ",
     "to_reset": " to reset.",
     "witnesses_page": "Witnesses page",
-    "please_vote_for_witnesses": "It looks like you have not yet voted for Witnesses, you can do so on the "
+    "please_vote_for_witnesses": "It looks like you have not yet voted for Witnesses, you can do so on the ",
+    "open_orders": "Open Orders"
   },
   "market_page": {
     "last_price": "Last price",

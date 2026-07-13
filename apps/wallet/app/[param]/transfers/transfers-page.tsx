@@ -7,7 +7,7 @@ import {
   getFollowing
 } from '@transaction/lib/hive-api';
 import { getAccount } from '@transaction/lib/hive-api';
-import { getAccountOperations, getSavingsWithdrawals } from '@/wallet/lib/hive';
+import { getAccountOperations, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import { createListWithSuggestions } from '@/wallet/lib/utils';
 import Loading from '@ui/components/loading';
 import AccountHistory from '@/wallet/feature/transfers-page/account-history';
@@ -55,6 +55,10 @@ export default function TransfersPage({ username }: { username: string }) {
   const { data: withdrawals } = useQuery(['savingsWithdrawalsFrom', username], () =>
     getSavingsWithdrawals(username)
   );
+
+  const { data: openOrders } = useQuery(['openOrders', username], () => getOpenOrder(username), {
+    enabled: Boolean(username)
+  });
 
   const listOfAccounts = createListWithSuggestions(username, t, operationHistoryData, followingData);
 
@@ -104,6 +108,7 @@ export default function TransfersPage({ username }: { username: string }) {
         isOwner={user?.username === username}
         currentUsername={user?.username}
         blogURL={blogURL}
+        openOrders={openOrders}
       />
       <div className="w-full max-w-6xl">
         <PendingSavingsWithdrawals username={username} withdrawals={withdrawals} />

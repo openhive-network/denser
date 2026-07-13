@@ -5,7 +5,7 @@ import Big from 'big.js';
 import dayjs from 'dayjs';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
-import { FullAccount, IFeedHistory, HiveChain } from '@hive/common-hiveio-packages/wax';
+import { FullAccount, IFeedHistory, HiveChain, IOpenOrdersData } from '@hive/common-hiveio-packages/wax';
 import { Link } from '@hive/ui';
 import {
   Button,
@@ -31,7 +31,7 @@ import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-
 import { handleError } from '@ui/lib/handle-error';
 import { toast } from '@ui/components/hooks/use-toast';
 import { powerdownHive, convertToHP, numberWithCommas } from '@ui/lib/utils';
-import { convertStringToBig } from '@ui/lib/helpers';
+import { convertStringToBig, isHive } from '@ui/lib/helpers';
 import { getCurrentHpApr } from '@/wallet/lib/utils';
 import RCRow from './rc-row';
 
@@ -50,6 +50,7 @@ interface WalletBalancesTableProps {
   isOwner: boolean;
   currentUsername?: string;
   blogURL: string;
+  openOrders?: IOpenOrdersData[];
 }
 
 const WalletBalancesTable = ({
@@ -61,7 +62,8 @@ const WalletBalancesTable = ({
   listOfAccounts,
   isOwner,
   currentUsername,
-  blogURL
+  blogURL,
+  openOrders
 }: WalletBalancesTableProps) => {
   const { t } = useTranslation('common_wallet');
   const [open, setOpen] = useState(false);
@@ -107,10 +109,17 @@ const WalletBalancesTable = ({
   const balance_hive = convertStringToBig(accountData.balance);
 
   const savings_hbd_pending = 0;
-  const hbdOrders = 0;
   const conversionValue = 0;
   const savings_pending = 0;
-  const hiveOrders = 0;
+
+  // for_sale is expressed in the sell_price.base asset with 3-digit precision
+  const sumOrders = (assetFilter: (order: IOpenOrdersData) => boolean) =>
+    (openOrders ?? [])
+      .filter(assetFilter)
+      .reduce((sum, order) => sum.plus(order.for_sale), Big(0))
+      .div(1000);
+  const hiveOrders = sumOrders((order) => isHive(order.sell_price.base));
+  const hbdOrders = sumOrders((order) => !isHive(order.sell_price.base));
 
   const total_hbd = hbd_balance
     .plus(hbd_balance_savings)
@@ -239,6 +248,18 @@ const WalletBalancesTable = ({
                   </DropdownMenu>
                 ) : (
                   <div className="px-4 py-2">{amount.hive}</div>
+                )}
+                {hiveOrders.gt(0) && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="px-4" data-testid="wallet-hive-open-orders">
+                          <Link href="/market">(+{numberWithCommas(hiveOrders.toFixed(3))} HIVE)</Link>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="font-normal">{t('profile.open_orders')}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </td>
             </tr>
@@ -397,6 +418,18 @@ const WalletBalancesTable = ({
                   </DropdownMenu>
                 ) : (
                   <div className="px-4 py-2">{amount.hbd}</div>
+                )}
+                {hbdOrders.gt(0) && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="px-4" data-testid="wallet-hbd-open-orders">
+                          <Link href="/market">(+{'$' + numberWithCommas(hbdOrders.toFixed(3))})</Link>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="font-normal">{t('profile.open_orders')}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </td>
             </tr>
