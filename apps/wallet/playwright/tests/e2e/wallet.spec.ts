@@ -150,10 +150,15 @@ test.describe('Wallet page of @gtg tests', () => {
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
     await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
     const accountHistoryResult = await apiHelper.getAccountHistoryAPI('gtg', -1, 500);
-    const accountHistoryUI = await walletPage.walletAccountHistoryRow.all();
+    // History rows and the empty-state message render only after the history
+    // query settles - wait for either before branching, otherwise the check
+    // races the request and lands in the wrong branch
+    await expect(
+      walletPage.walletAccountHistoryRow.first().or(walletPage.walletAccountHistoryNoTransactionMsg)
+    ).toBeVisible({ timeout: 30000 });
 
     if (await walletPage.walletAccountHistoryRow.first().isVisible()) {
-      await walletPage.page.waitForSelector(await walletPage.walletAccountHistoryRow['_selector']);
+      const accountHistoryUI = await walletPage.walletAccountHistoryRow.all();
       await expect(accountHistoryUI.length).toBe(accountHistoryResult.result.length);
     } else {
       await expect(await walletPage.walletAccountHistoryNoTransactionMsg).toContainText(
@@ -175,7 +180,11 @@ test.describe('Wallet page of @gtg tests', () => {
     if ((await accountHistoryResultAPI.result) != null)
       accountHistoryResult = await accountHistoryResultAPI.result.reverse();
 
-    // console.log('Account history result:\n', await accountHistoryResult);
+    // History rows and the empty-state message render only after the history
+    // query settles - wait for either before branching
+    await expect(
+      walletPage.walletAccountHistoryRow.first().or(walletPage.walletAccountHistoryNoTransactionMsg)
+    ).toBeVisible({ timeout: 30000 });
 
     if (await walletPage.walletAccountHistoryRow.first().isVisible()) {
       const firstAccountHistoryOperation = await accountHistoryResult[0][1].op;
