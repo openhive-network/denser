@@ -89,7 +89,7 @@ export const blockGap = (
   return years + t('witnesses_page.bock_gap.years_ago');
 };
 
-export const numberWithCommas = (x: string) => x.replace(/\\B(?=(\d{3})+(?!\d))/g, ',');
+export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 export function convertToHP(
   vests: Big | NaiAsset,
