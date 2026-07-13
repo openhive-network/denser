@@ -9,8 +9,13 @@ const logStandarizedError = (methodName: string, error: unknown): null => {
 
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
-    const response = await (await getChain()).restApi['hivesense-api']();
-    return response.info.title === 'Hivesense';
+    const chain = await getChain();
+    // The OpenAPI document is served only at the trailing-slash root, which the
+    // wax REST caller cannot request (it filters out empty path segments)
+    const response = await fetch(`${chain.restApi['hivesense-api'].endpointUrl}/hivesense-api/`);
+    if (!response.ok) return false;
+    const spec = await response.json();
+    return spec?.info?.title === 'Hivesense';
   } catch (error) {
     return !!logStandarizedError('getHiveSenseStatus', error);
   }

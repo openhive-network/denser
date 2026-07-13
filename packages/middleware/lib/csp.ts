@@ -60,6 +60,12 @@ function buildConnectSrcHosts(): Set<string> {
     } catch { /* invalid URL, skip */ }
   }
 
+  // Hivesense (AI search) endpoint - not deployed on every API node; mirror
+  // the client-side default from public-vars (configuredAIDomain)
+  try {
+    hosts.add(new URL(process.env.REACT_APP_AI_DOMAIN || 'https://api.hive.blog').origin);
+  } catch { /* invalid URL, skip */ }
+
   // Google APIs for Drive wallet backup and Sign-In
   if (process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID) {
     hosts.add('https://www.googleapis.com');

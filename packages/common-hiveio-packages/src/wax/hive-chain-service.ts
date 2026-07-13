@@ -1,5 +1,6 @@
 import { createHiveChain, IWaxOptionsChain, TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { siteConfig } from '@hive/ui/config/site'; // Maybe move this to package specific only to config
+import { configuredAIDomain } from '@hive/ui/config/public-vars';
 import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
 import { getLogger } from '@hive/ui/lib/logging';
 import { initializeAssetConstants } from '@hive/ui/lib/asset-constants';
@@ -198,8 +199,10 @@ const setChainClient = (options: Partial<IWaxOptionsChain> = {}): Promise<HiveCh
 
     const aiEndpoint = getAIDefaultEndpoint();
 
-    // Always use the same endpoint as the main API for hivesense-api
-    hiveChain.restApi['hivesense-api'].endpointUrl = aiEndpoint || clientOptions.restApiEndpoint;
+    // Hivesense has its own default endpoint (REACT_APP_AI_DOMAIN) - it is not
+    // deployed on every API node; the localStorage override still wins
+    hiveChain.restApi['hivesense-api'].endpointUrl =
+      aiEndpoint || configuredAIDomain || clientOptions.restApiEndpoint;
     if (aiEndpoint) {
       hiveChain.api['search-api'].find_text.endpointUrl = aiEndpoint;
     }
