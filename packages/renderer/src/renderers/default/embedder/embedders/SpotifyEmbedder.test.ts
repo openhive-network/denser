@@ -131,7 +131,7 @@ describe('SpotifyEmbedder', () => {
         const embedder = new SpotifyEmbedder();
         const result = embedder.processEmbed('embed/playlist/1zLvUhumbFIEdfxYQcgUxk', {width: 300, height: 300});
         const expected =
-            '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="300" height="300" frameBorder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen ></iframe></div>';
+            '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="300" height="300" frameBorder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="encrypted-media" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>';
 
         expect(result).to.be.equal(expected);
     });

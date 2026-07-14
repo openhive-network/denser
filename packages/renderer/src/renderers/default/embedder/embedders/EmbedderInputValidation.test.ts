@@ -317,10 +317,12 @@ describe('Embed Processing Safety', () => {
     describe('Vimeo processEmbed', () => {
         const embedder = new VimeoEmbedder();
 
-        it('generates iframe with correct src', () => {
+        it('generates a click-to-load facade (no iframe at render time)', () => {
             const result = embedder.processEmbed('123456789', {width: 640, height: 480});
-            expect(result).to.include('<iframe');
-            expect(result).to.include('player.vimeo.com/video/123456789');
+            expect(result).to.include('vimeo-facade');
+            expect(result).to.include('data-vimeo-id="123456789"');
+            expect(result).to.not.include('<iframe');
+            expect(result).to.not.include('player.vimeo.com');
         });
 
         it('does not include event handlers in output', () => {
@@ -332,10 +334,12 @@ describe('Embed Processing Safety', () => {
     describe('Twitch processEmbed', () => {
         const embedder = new TwitchEmbedder(mockOptions);
 
-        it('generates iframe with correct src', () => {
+        it('generates a click-to-load facade (no iframe at render time)', () => {
             const result = embedder.processEmbed('?channel=channelname', {width: 640, height: 480});
-            expect(result).to.include('<iframe');
-            expect(result).to.include('player.twitch.tv/?channel=channelname');
+            expect(result).to.include('twitch-facade');
+            expect(result).to.include('data-twitch-id="?channel=channelname"');
+            expect(result).to.not.include('<iframe');
+            expect(result).to.not.include('player.twitch.tv');
         });
 
         it('does not include event handlers in output', () => {

@@ -328,20 +328,52 @@
   transform: scale(1.1);
 }
 
+/* Play button is drawn in pure CSS (rounded rect + border-trick triangle):
+   the renderer's XSS discipline forbids inline <svg> in post output. */
 #articleBody .embed-play-btn,
 .prose .embed-play-btn {
   position: relative;
   z-index: 1;
-  background: none;
+  width: 68px;
+  height: 48px;
+  background: rgba(20, 20, 20, 0.85);
   border: none;
+  border-radius: 10px;
   padding: 0;
   cursor: pointer;
   transition: transform 0.1s ease-in-out;
 }
 
-#articleBody .embed-play-btn svg,
-.prose .embed-play-btn svg {
-  display: block;
+#articleBody .embed-play-btn::after,
+.prose .embed-play-btn::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-style: solid;
+  border-width: 10px 0 10px 18px;
+  border-color: transparent transparent transparent #fff;
+}
+
+#articleBody .youtube-facade .embed-play-btn,
+.prose .youtube-facade .embed-play-btn {
+  background: #f00;
+}
+
+#articleBody .threespeak-facade .embed-play-btn,
+.prose .threespeak-facade .embed-play-btn {
+  background: #e6007a;
+}
+
+#articleBody .twitch-facade .embed-play-btn,
+.prose .twitch-facade .embed-play-btn {
+  background: #9146ff;
+}
+
+#articleBody .vimeo-facade .embed-play-btn,
+.prose .vimeo-facade .embed-play-btn {
+  background: #1ab7ea;
 }
 
 #articleBody .embed-facade-label,

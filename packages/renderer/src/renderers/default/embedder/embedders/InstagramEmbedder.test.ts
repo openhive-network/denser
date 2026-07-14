@@ -97,7 +97,7 @@ describe('InstagramEmbedder', () => {
             const embedder = new InstagramEmbedder();
             const result = embedder.processEmbed('p/ABC123defgh', {width: 640, height: 480});
             expect(result).to.equal(
-                '<div class="instagramWrapper"><iframe width="640" height="480" src="https://www.instagram.com/p/ABC123defgh/embed/" frameborder="0" allowtransparency="true"></iframe></div>'
+                '<div class="instagramWrapper"><iframe width="640" height="480" src="https://www.instagram.com/p/ABC123defgh/embed/" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
             );
         });
 
@@ -105,7 +105,7 @@ describe('InstagramEmbedder', () => {
             const embedder = new InstagramEmbedder();
             const result = embedder.processEmbed('reel/XYZ789abcde', {width: 500, height: 600});
             expect(result).to.equal(
-                '<div class="instagramWrapper"><iframe width="500" height="600" src="https://www.instagram.com/reel/XYZ789abcde/embed/" frameborder="0" allowtransparency="true"></iframe></div>'
+                '<div class="instagramWrapper"><iframe width="500" height="600" src="https://www.instagram.com/reel/XYZ789abcde/embed/" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
             );
         });
     });

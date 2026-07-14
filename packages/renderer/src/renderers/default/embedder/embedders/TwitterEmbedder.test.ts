@@ -110,7 +110,7 @@ describe('TwitterEmbedder', () => {
             const embedder = new TwitterEmbedder();
             const result = embedder.processEmbed('1234567890123456789', {width: 550, height: 400});
             expect(result).to.equal(
-                '<div class="twitterWrapper"><iframe src="https://platform.twitter.com/embed/Tweet.html?id=1234567890123456789" frameborder="0" allowtransparency="true"></iframe></div>'
+                '<div class="twitterWrapper"><iframe src="https://platform.twitter.com/embed/Tweet.html?id=1234567890123456789" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
             );
         });
 

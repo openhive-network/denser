@@ -74,128 +74,128 @@ describe('DefaultRender', () => {
             name: 'Spotify playlist link should be embedded correctly',
             raw: 'https://open.spotify.com/playlist/1zLvUhumbFIEdfxYQcgUxk',
             expected:
-                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="encrypted-media" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div></p>'
         },
         {
             name: 'Spotify track link should be embedded correctly',
             raw: 'https://open.spotify.com/track/3Qm86XLflmIXVm1wcwkgDK',
             expected:
-                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/track/3Qm86XLflmIXVm1wcwkgDK" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/track/3Qm86XLflmIXVm1wcwkgDK" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="encrypted-media" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div></p>'
         },
         {
             name: 'Spotify album link should be embedded correctly',
             raw: 'https://open.spotify.com/album/1zLvUhumbFIEdfxYQcgUxk',
             expected:
-                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/album/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/album/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="encrypted-media" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div></p>'
         },
         {
             name: 'Spotify episode link should be embedded correctly',
             raw: 'https://open.spotify.com/episode/1zLvUhumbFIEdfxYQcgUxk',
             expected:
-                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/episode/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/episode/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="encrypted-media" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div></p>'
         },
         {
             name: 'Spotify show link should be embedded correctly',
             raw: 'https://open.spotify.com/show/1zLvUhumbFIEdfxYQcgUxk',
             expected:
-                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/show/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/show/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="encrypted-media" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div></p>'
         },
         {
             name: 'Spotify artist link should be embedded correctly',
             raw: 'https://open.spotify.com/artist/1zLvUhumbFIEdfxYQcgUxk',
             expected:
-                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+                '<p><div class="videoWrapper"><iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="encrypted-media" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div></p>'
         },
         {
             name: 'Spotify embed playlist via iframe should be embedded correctly',
             raw: '<iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
             expected:
-                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/playlist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
         },
         {
             name: 'Spotify embed track via iframe should be embedded correctly',
             raw: '<iframe src="https://open.spotify.com/embed/track/3Qm86XLflmIXVm1wcwkgDK" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
             expected:
-                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/track/3Qm86XLflmIXVm1wcwkgDK" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/track/3Qm86XLflmIXVm1wcwkgDK" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
         },
         {
             name: 'Spotify embed album via iframe should be embedded correctly',
             raw: '<iframe src="https://open.spotify.com/embed/album/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
             expected:
-                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/album/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/album/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
         },
         {
             name: 'Spotify embed episode via iframe should be embedded correctly',
             raw: '<iframe src="https://open.spotify.com/embed-podcast/episode/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
             expected:
-                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/episode/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/episode/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
         },
         {
             name: 'Spotify embed show via iframe should be embedded correctly',
             raw: '<iframe src="https://open.spotify.com/embed-podcast/show/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
             expected:
-                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/show/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed-podcast/show/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
         },
         {
             name: 'Spotify embed artist via iframe should be embedded correctly',
             raw: '<iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
             expected:
-                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+                '<div class="videoWrapper"><iframe src="https://open.spotify.com/embed/artist/1zLvUhumbFIEdfxYQcgUxk" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
         },
         {
             name: 'Youtube link with www should be embedded correctly',
             raw: 'https://www.youtube.com/watch?v=0nFkmd-A7jA',
             expected:
-                '<p><div class="videoWrapper"><div class="youtube-facade" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480"><img src="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg" alt="YouTube video thumbnail" loading="eager" /><button class="youtube-play-btn" aria-label="Play video"><svg viewBox="0 0 68 48" width="68" height="48"><path class="youtube-play-bg" d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#f00"/><path d="M45 24 27 14v20" fill="#fff"/></svg></button></div></div></p>'
+                '<p><div class="videoWrapper"><div class="youtube-facade embed-facade" data-embed="youtube" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480" data-thumb="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg"><button class="youtube-play-btn embed-play-btn" aria-label="Play video"></button></div></div></p>'
         },
         {
             name: 'Youtube link without www should be embedded correctly',
             raw: 'https://youtube.com/watch?v=0nFkmd-A7jA',
             expected:
-                '<p><div class="videoWrapper"><div class="youtube-facade" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480"><img src="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg" alt="YouTube video thumbnail" loading="eager" /><button class="youtube-play-btn" aria-label="Play video"><svg viewBox="0 0 68 48" width="68" height="48"><path class="youtube-play-bg" d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#f00"/><path d="M45 24 27 14v20" fill="#fff"/></svg></button></div></div></p>'
+                '<p><div class="videoWrapper"><div class="youtube-facade embed-facade" data-embed="youtube" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480" data-thumb="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg"><button class="youtube-play-btn embed-play-btn" aria-label="Play video"></button></div></div></p>'
         },
         {
             name: 'Youtube link with embed should be embedded correctly',
             raw: 'https://www.youtube.com/embed/0nFkmd-A7jA',
             expected:
-                '<p><div class="videoWrapper"><div class="youtube-facade" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480"><img src="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg" alt="YouTube video thumbnail" loading="eager" /><button class="youtube-play-btn" aria-label="Play video"><svg viewBox="0 0 68 48" width="68" height="48"><path class="youtube-play-bg" d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#f00"/><path d="M45 24 27 14v20" fill="#fff"/></svg></button></div></div></p>'
+                '<p><div class="videoWrapper"><div class="youtube-facade embed-facade" data-embed="youtube" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480" data-thumb="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg"><button class="youtube-play-btn embed-play-btn" aria-label="Play video"></button></div></div></p>'
         },
         {
             name: 'Youtube shorted link with watch should be embedded correctly',
             raw: 'https://youtu.be/watch?v=0nFkmd-A7jA',
             expected:
-                '<p><div class="videoWrapper"><div class="youtube-facade" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480"><img src="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg" alt="YouTube video thumbnail" loading="eager" /><button class="youtube-play-btn" aria-label="Play video"><svg viewBox="0 0 68 48" width="68" height="48"><path class="youtube-play-bg" d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#f00"/><path d="M45 24 27 14v20" fill="#fff"/></svg></button></div></div></p>',
+                '<p><div class="videoWrapper"><div class="youtube-facade embed-facade" data-embed="youtube" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480" data-thumb="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg"><button class="youtube-play-btn embed-play-btn" aria-label="Play video"></button></div></div></p>',
             skip: true // TODO: Fix YouTube shortened link parsing - see #801
         },
         {
             name: 'Youtube shorted link should be embedded correctly',
             raw: 'https://youtu.be/0nFkmd-A7jA',
             expected:
-                '<p><div class="videoWrapper"><div class="youtube-facade" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480"><img src="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg" alt="YouTube video thumbnail" loading="eager" /><button class="youtube-play-btn" aria-label="Play video"><svg viewBox="0 0 68 48" width="68" height="48"><path class="youtube-play-bg" d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#f00"/><path d="M45 24 27 14v20" fill="#fff"/></svg></button></div></div></p>'
+                '<p><div class="videoWrapper"><div class="youtube-facade embed-facade" data-embed="youtube" data-youtube-id="0nFkmd-A7jA" data-width="640" data-height="480" data-thumb="https://img.youtube.com/vi/0nFkmd-A7jA/hqdefault.jpg"><button class="youtube-play-btn embed-play-btn" aria-label="Play video"></button></div></div></p>'
         },
         {
             name: 'Youtube embed via iframe should be embedded correctly',
             raw: '<iframe width="560" height="315" src="https://www.youtube.com/embed/0nFkmd-A7jA" frameborder="0" allowfullscreen></iframe>',
             expected:
-                '<div class="videoWrapper"><iframe src="https://www.youtube.com/embed/0nFkmd-A7jA" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen"></iframe></div>'
+                '<div class="videoWrapper"><iframe src="https://www.youtube.com/embed/0nFkmd-A7jA" width="640" height="480" frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
         },
         {
             name: 'Vimeo link via iframe should be embedded correctly',
             raw: '<iframe src="https://player.vimeo.com/video/174544848?byline=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>',
             expected:
-                '<div class="videoWrapper"><iframe frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" src="https://player.vimeo.com/video/174544848" width="640" height="480"></iframe></div>'
+                '<div class="videoWrapper"><iframe frameborder="0" allowfullscreen="allowfullscreen" webkitallowfullscreen="webkitallowfullscreen" mozallowfullscreen="mozallowfullscreen" src="https://player.vimeo.com/video/174544848" width="640" height="480" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>'
         },
         {
             name: 'Vimeo link should be embedded correctly',
             raw: 'https://vimeo.com/174544848',
             expected:
-                '<p><div class="videoWrapper"><iframe src="https://player.vimeo.com/video/174544848" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+                '<p><div class="videoWrapper"><div class="vimeo-facade embed-facade" data-embed="vimeo" data-vimeo-id="174544848" data-width="640" data-height="480" data-thumb="https://vumbnail.com/174544848.jpg"><button class="embed-play-btn" aria-label="Play video"></button></div></div></p>'
         },
         {
             name: 'Vimeo link without player should be embedded correctly',
             raw: 'https://vimeo.com/174544848',
             expected:
-                '<p><div class="videoWrapper"><iframe src="https://player.vimeo.com/video/174544848" width="640" height="480" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div></p>'
+                '<p><div class="videoWrapper"><div class="vimeo-facade embed-facade" data-embed="vimeo" data-vimeo-id="174544848" data-width="640" data-height="480" data-thumb="https://vumbnail.com/174544848.jpg"><button class="embed-play-btn" aria-label="Play video"></button></div></div></p>'
         }
     ];
 

@@ -78,31 +78,32 @@ describe('AbstractEmbedder', () => {
             expect(result).to.include('spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M');
         });
 
-        it('accepts valid Vimeo embed ID', () => {
+        it('accepts valid Vimeo embed ID (facade)', () => {
             const input = '~~~ embed:123456789 vimeo ~~~';
             const result = AbstractEmbedder.insertAllEmbeds(embedders, input, size);
 
-            expect(result).to.include('<iframe');
-            expect(result).to.include('player.vimeo.com/video/123456789');
+            expect(result).to.include('vimeo-facade');
+            expect(result).to.include('data-vimeo-id="123456789"');
+            expect(result).to.not.include('<iframe');
         });
 
         it('handles multiple embeds with one malicious', () => {
             const input = [
                 '~~~ embed:dQw4w9WgXcQ youtube ~~~',        // valid (uses facade, not iframe)
                 '~~~ embed:abc"onclick=alert(1) youtube ~~~', // malicious
-                '~~~ embed:123456789 vimeo ~~~'            // valid (uses iframe)
+                '~~~ embed:123456789 vimeo ~~~'            // valid (uses facade)
             ].join(' text between ');
 
             const result = AbstractEmbedder.insertAllEmbeds(embedders, input, size);
 
-            // YouTube now uses facade pattern (no iframe), only Vimeo has iframe
+            // All video providers use the facade pattern now - no live iframes at render time
             const iframeCount = (result.match(/<iframe/g) || []).length;
-            expect(iframeCount).to.equal(1); // Only Vimeo
+            expect(iframeCount).to.equal(0);
 
             // Should include the valid embeds
             expect(result).to.include('youtube-facade');
             expect(result).to.include('data-youtube-id="dQw4w9WgXcQ"');
-            expect(result).to.include('player.vimeo.com/video/123456789');
+            expect(result).to.include('data-vimeo-id="123456789"');
         });
 
         it('preserves text around embed markers', () => {
