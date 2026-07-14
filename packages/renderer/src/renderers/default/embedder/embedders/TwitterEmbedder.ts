@@ -46,6 +46,8 @@ export class TwitterEmbedder extends AbstractEmbedder {
         // Use platform.twitter.com which is the stable embed domain (not affected by x.com rebrand)
         // Note: width/height are handled by CSS; no scrolling="no" so content is scrollable as fallback
         const embedUrl = `https://platform.twitter.com/embed/Tweet.html?id=${id}`;
-        return `<div class="twitterWrapper"><iframe src="${embedUrl}" frameborder="0" allowtransparency="true"></iframe></div>`;
+        // Hardened embed (issue #934): sandboxed (no top-navigation), origin-only referrer,
+        // lazy-loaded; allow-popups keeps "open on X" links working.
+        return `<div class="twitterWrapper"><iframe src="${embedUrl}" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>`;
     }
 }

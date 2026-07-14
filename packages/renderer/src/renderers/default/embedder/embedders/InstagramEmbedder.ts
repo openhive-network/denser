@@ -42,6 +42,8 @@ export class InstagramEmbedder extends AbstractEmbedder {
     public processEmbed(id: string, size: {width: number; height: number}): string {
         // id format is "p/POST_ID" or "reel/REEL_ID"
         const embedUrl = `https://www.instagram.com/${id}/embed/`;
-        return `<div class="instagramWrapper"><iframe width="${size.width}" height="${size.height}" src="${embedUrl}" frameborder="0" allowtransparency="true"></iframe></div>`;
+        // Hardened embed (issue #934): sandboxed (no top-navigation), origin-only referrer,
+        // lazy-loaded; allow-popups keeps "view on Instagram" links working.
+        return `<div class="instagramWrapper"><iframe width="${size.width}" height="${size.height}" src="${embedUrl}" frameborder="0" allowtransparency="true" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" referrerpolicy="origin" loading="lazy"></iframe></div>`;
     }
 }

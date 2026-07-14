@@ -69,7 +69,18 @@ export class TagTransformingSanitizer {
             // SEE https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
             allowedAttributes: {
                 // "src" MUST pass a whitelist (below)
-                iframe: ['src', 'width', 'height', 'frameborder', 'allowfullscreen', 'webkitallowfullscreen', 'mozallowfullscreen'],
+                iframe: [
+                    'src',
+                    'width',
+                    'height',
+                    'frameborder',
+                    'allowfullscreen',
+                    'webkitallowfullscreen',
+                    'mozallowfullscreen',
+                    'sandbox',
+                    'referrerpolicy',
+                    'loading'
+                ],
 
                 // class attribute is strictly whitelisted (below)
                 // and title is only set in the case of a phishing warning
@@ -106,7 +117,13 @@ export class TagTransformingSanitizer {
                                     frameborder: '0',
                                     allowfullscreen: 'allowfullscreen',
                                     webkitallowfullscreen: 'webkitallowfullscreen',
-                                    mozallowfullscreen: 'mozallowfullscreen'
+                                    mozallowfullscreen: 'mozallowfullscreen',
+                                    // Hardening (issue #934), forced values - author-supplied
+                                    // sandbox/referrerpolicy are overwritten, never widened:
+                                    // no top-navigation, origin-only referrer, lazy load.
+                                    sandbox: 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox',
+                                    referrerpolicy: 'origin',
+                                    loading: 'lazy'
                                 }
                             };
                             return iframeToBeReturned;
