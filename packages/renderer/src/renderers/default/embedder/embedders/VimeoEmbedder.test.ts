@@ -55,4 +55,18 @@ describe('VimeoEmbedder', () => {
         const result = embedder.getEmbedMetadata(node);
         expect(result).to.be.undefined;
     });
+
+    it('should generate a click-to-load facade (no third-party iframe at render time)', () => {
+        // Privacy facade (#934): placeholder with the data needed to build the
+        // player.vimeo.com iframe on click; the thumbnail URL is carried in data-thumb
+        // and loaded proxied by the client, so no direct third-party request happens.
+        const embedder = new VimeoEmbedder();
+        const result = embedder.processEmbed('123456', {width: 100, height: 200});
+
+        expect(result).to.include('vimeo-facade');
+        expect(result).to.include('data-vimeo-id="123456"');
+        expect(result).to.include('data-thumb="https://vumbnail.com/123456.jpg"');
+        expect(result).to.not.include('<iframe');
+        expect(result).to.not.include('player.vimeo.com');
+    });
 });

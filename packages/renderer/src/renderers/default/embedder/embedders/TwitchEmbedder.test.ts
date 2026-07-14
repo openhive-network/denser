@@ -40,12 +40,18 @@ describe('TwitchEmbedder', () => {
         });
     });
 
-    it('should properly process twitch video', () => {
+    it('should generate a click-to-load facade (no third-party iframe at render time)', () => {
+        // Privacy facade (#934): emit a placeholder carrying the data needed to build the
+        // player.twitch.tv iframe on click (parent= is added client-side from the serving
+        // hostname); no iframe / no Twitch URL up front.
         const embedder = new TwitchEmbedder({baseUrl: 'https://engrave.dev'} as AssetEmbedderOptions);
         const result = embedder.processEmbed('?video=123456789', {width: 100, height: 200});
 
-        expect(result).to.be.equal(
-            '<div class="videoWrapper"><iframe src=https://player.twitch.tv/?video=123456789&parent=engrave.dev width=100 height=200 frameBorder="0" allowFullScreen></iframe></div>'
-        );
+        expect(result).to.include('twitch-facade');
+        expect(result).to.include('data-twitch-id="?video=123456789"');
+        expect(result).to.include('data-width="100"');
+        expect(result).to.include('data-height="200"');
+        expect(result).to.not.include('<iframe');
+        expect(result).to.not.include('player.twitch.tv');
     });
 });
