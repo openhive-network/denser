@@ -80,11 +80,18 @@ const RendererContainer = ({
     const height = el.dataset.height || '480';
     const youtubeId = el.dataset.youtubeId;
     const threespeakId = el.dataset.threespeakId;
+    const vimeoId = el.dataset.vimeoId;
+    const twitchId = el.dataset.twitchId;
     let src = '';
     if (youtubeId) {
       src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`;
     } else if (threespeakId) {
       src = `https://play.3speak.tv/watch?v=${threespeakId}&mode=iframe&layout=desktop&autoplay=1`;
+    } else if (vimeoId) {
+      src = `https://player.vimeo.com/video/${vimeoId}?autoplay=1`;
+    } else if (twitchId) {
+      // player.twitch.tv refuses to play without the embedding site's hostname as parent=
+      src = `https://player.twitch.tv/${twitchId}&parent=${window.location.hostname}&autoplay=true`;
     }
     if (!src) return;
     el.replaceWith(createEmbedIframe(src, width, height));
