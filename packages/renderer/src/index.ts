@@ -3,11 +3,11 @@ import {InstagramPlugin} from './renderers/default/plugins/InstagramPlugin';
 import {InstagramResizePlugin} from './renderers/default/plugins/InstagramResizePlugin';
 import {TablePlugin} from './renderers/default/plugins/TablePlugin';
 import {TwitterPlugin} from './renderers/default/plugins/TwitterPlugin';
-import {TwitterResizePlugin} from './renderers/default/plugins/TwitterResizePlugin';
+import {TwitterMessageResizePlugin} from './renderers/default/plugins/TwitterMessageResizePlugin';
 
 export {DefaultRenderer} from './renderers/default/DefaultRenderer';
 export {TwitterPlugin} from './renderers/default/plugins/TwitterPlugin';
-export {TwitterResizePlugin} from './renderers/default/plugins/TwitterResizePlugin';
+export {TwitterMessageResizePlugin} from './renderers/default/plugins/TwitterMessageResizePlugin';
 export {InstagramPlugin} from './renderers/default/plugins/InstagramPlugin';
 export {InstagramResizePlugin} from './renderers/default/plugins/InstagramResizePlugin';
 export {TablePlugin} from './renderers/default/plugins/TablePlugin';
@@ -17,7 +17,7 @@ export type {PostContext} from './renderers/default/sanitization/TagTransforming
 export const HiveContentRenderer = {
     DefaultRenderer,
     TwitterPlugin,
-    TwitterResizePlugin,
+    TwitterMessageResizePlugin,
     InstagramPlugin,
     InstagramResizePlugin,
     TablePlugin

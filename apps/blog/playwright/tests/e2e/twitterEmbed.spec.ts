@@ -35,9 +35,9 @@ test.describe('Twitter/X embed completeness', () => {
       // Scroll embed into view so the browser loads iframe content
       await wrapper.scrollIntoViewIfNeeded();
 
-      // TwitterResizePlugin (LOAD_TIMEOUT_MS = 10s) replaces the original iframe
-      // with a native widget iframe via twttr.widgets.createTweet().
-      // Wait for the plugin to finish before inspecting the wrapper.
+      // TwitterMessageResizePlugin grows the original iframe from the height
+      // posted by platform.twitter.com (twttr.embed resize messages). Wait for
+      // the messages to settle before inspecting the wrapper.
       await page.waitForTimeout(15000);
 
       // After the plugin settles, the wrapper contains either:

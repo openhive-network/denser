@@ -113,8 +113,8 @@ test.describe('Embed table layout regression', () => {
     // Wait for all embeds to render before taking screenshot
     await expect(postPage.twitterWrappers).toHaveCount(4, { timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE });
 
-    // Extra buffer for TwitterResizePlugin to settle after embeds appear.
-    // The Twitter widget fires multiple resize events after initial render;
+    // Extra buffer for TwitterMessageResizePlugin to settle after embeds appear.
+    // The Twitter embed fires multiple resize events after initial render;
     // there is no deterministic event to wait for, so a timeout is necessary.
     await page.waitForTimeout(TIMEOUTS.TWITTER_PLUGIN_SETTLE);
 

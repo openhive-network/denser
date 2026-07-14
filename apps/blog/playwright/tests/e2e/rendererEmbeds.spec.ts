@@ -90,7 +90,7 @@ test.describe('Renderer media embeds', () => {
     const twitterWrapper = page.locator('#articleBody .twitterWrapper');
     await expect(twitterWrapper).toBeAttached({ timeout: 10000 });
 
-    // TwitterResizePlugin may replace the initial iframe with a native widget.
+    // TwitterMessageResizePlugin resizes the original iframe in place.
     // Poll until at least one visible iframe appears (replaces hardcoded timeout).
     const visibleIframe = twitterWrapper.locator('iframe:visible');
     await expect(visibleIframe).toHaveCount(1, { timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE });
@@ -175,7 +175,7 @@ test.describe('Embed responsiveness on narrow viewport', () => {
     const twitterWrapper = page.locator('#articleBody .twitterWrapper').first();
     await expect(twitterWrapper).toBeAttached({ timeout: 10000 });
 
-    // Poll until TwitterResizePlugin has settled and wrapper fits within article body
+    // Poll until TwitterMessageResizePlugin has settled and wrapper fits within article body
     await expect
       .poll(
         async () => {
@@ -252,7 +252,7 @@ test.describe('Embed responsiveness on tablet viewport', () => {
     const twitterWrapper = page.locator('#articleBody .twitterWrapper').first();
     await expect(twitterWrapper).toBeAttached({ timeout: 10000 });
 
-    // Poll until TwitterResizePlugin has settled and wrapper fits within article body
+    // Poll until TwitterMessageResizePlugin has settled and wrapper fits within article body
     await expect
       .poll(
         async () => {
