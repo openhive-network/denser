@@ -53,11 +53,12 @@ const RendererContainer = ({
   };
 
   // Build the player iframe for a clicked facade.
-  // Defense-in-depth (issue #934): `sandbox` without allow-top-navigation*/allow-popups
-  // so a compromised-but-allowlisted provider cannot redirect the reader or spawn popups;
-  // `referrerpolicy=no-referrer` so the provider does not learn which post is open.
-  // NOTE (prototype): verify playback per provider before shipping the sandbox attribute;
-  // if a given player needs more privileges, relax the token list (or drop sandbox for it).
+  // Defense-in-depth (issue #934): `sandbox` without allow-top-navigation* so a
+  // compromised-but-allowlisted provider cannot redirect the reader; allow-popups is
+  // needed for the players' own "watch on provider" links to work (still cannot
+  // navigate this tab). `referrerpolicy=origin` discloses only the site origin, not
+  // which post is open - YouTube refuses to play embeds with a blank referrer
+  // (error 153 "player configuration error"), so no-referrer is not an option.
   const createEmbedIframe = (src: string, width: string, height: string) => {
     const iframe = document.createElement('iframe');
     iframe.width = width;
@@ -66,8 +67,11 @@ const RendererContainer = ({
     iframe.setAttribute('frameborder', '0');
     iframe.setAttribute('allowfullscreen', 'allowfullscreen');
     iframe.setAttribute('allow', 'autoplay; fullscreen; encrypted-media; picture-in-picture');
-    iframe.setAttribute('referrerpolicy', 'no-referrer');
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
+    iframe.setAttribute('referrerpolicy', 'origin');
+    iframe.setAttribute(
+      'sandbox',
+      'allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox'
+    );
     return iframe;
   };
 
