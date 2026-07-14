@@ -107,8 +107,8 @@ function buildConnectSrcHosts(): Set<string> {
 function buildScriptSrc(): string {
   let scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'";
 
-  // Twitter/X widgets.js for native tweet rendering (used by TwitterResizePlugin)
-  scriptSrc += ' https://platform.twitter.com';
+  // platform.twitter.com widgets.js is no longer loaded (issue #934) - tweets render
+  // inside their own platform.twitter.com iframe (frame-src), which needs no script-src
 
   // Cloudflare Web Analytics beacon, auto-injected by zones with RUM enabled
   scriptSrc += ' https://static.cloudflareinsights.com';
