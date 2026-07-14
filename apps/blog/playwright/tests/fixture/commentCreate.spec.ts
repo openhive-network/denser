@@ -9,6 +9,7 @@ import {
   POST_AUTHOR,
   POST_PERMLINK,
   gotoPostLoggedIn,
+  openReplyEditor,
   postReplyTrigger,
   typeIntoReplyEditor,
   submitReply,
@@ -38,7 +39,7 @@ test.describe('Comment creation — fresh state (§5)', () => {
     await gotoPostLoggedIn(page);
     const postPage = new PostPage(page);
 
-    await postReplyTrigger(page).click();
+    await openReplyEditor(postReplyTrigger(page), page.getByTestId('reply-editor'));
     const body = 'CMT-01 fixture-test reply on post';
     await typeIntoReplyEditor(page, body);
     await submitReply(page);
@@ -72,7 +73,10 @@ test.describe('Comment creation — fresh state (§5)', () => {
       await readFirstCommentIdent(postPage);
 
     // Click the reply button on the first comment (not the post-level one).
-    await postPage.commentCardsFooterReply.first().click();
+    await openReplyEditor(
+      postPage.commentCardsFooterReply.first(),
+      page.getByTestId('reply-editor')
+    );
 
     const body = 'CMT-02 fixture-test nested reply';
     await typeIntoReplyEditor(page, body);

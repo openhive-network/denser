@@ -5,6 +5,7 @@ import {
   POST_PERMLINK,
   VOTER,
   gotoPostLoggedIn,
+  openReplyEditor,
   postReplyTrigger,
   typeIntoReplyEditor
 } from '../support/commentingContext';
@@ -35,7 +36,7 @@ test.describe('Comment draft recovery (§5)', () => {
     await installBroadcastInterceptor(page);
 
     await gotoPostLoggedIn(page);
-    await postReplyTrigger(page).click();
+    await openReplyEditor(postReplyTrigger(page), page.getByTestId('reply-editor'));
     await typeIntoReplyEditor(page, draftBody);
 
     // Wait for the 500ms debounce in `saveToStorage`. Poll instead of a

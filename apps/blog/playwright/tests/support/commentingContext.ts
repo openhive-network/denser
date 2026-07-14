@@ -139,23 +139,27 @@ export function ownCommentDeleteButton(
  * comment-list-item, so its appearance is the positive confirmation
  * that the React state flip took effect.
  *
- * No `force: true`, no explicit timeouts: traces from job 3144190
- * show the previous `force: true` clicks were dispatched into a
- * hydration window where the button's DOM existed but its onClick
- * hadn't been (re)attached, so the click was lost. A plain `click()`
- * uses Playwright's auto-actionability (visible + stable layout +
- * hit-test) which polls until those preconditions hold — by the time
- * Playwright dispatches the click, React has settled, the handler is
- * wired, and `setEdit(true)` actually runs. `expect.toBeVisible()`
- * then auto-retries on the config-level `expect.timeout`, no per-call
- * override needed.
+ * Auto-actionability (visible + stable layout + hit-test) does NOT
+ * prove the React onClick is attached: a click dispatched into the
+ * hydration window is silently lost. Job 3144190 hit this with
+ * `force: true`; job 3211459 hit it again with a plain `click()` once
+ * the post route started holding the response on the post lookup
+ * (real-404 change), which moves script delivery after the `load`
+ * event and re-opens the window on slow runners. The only reliable
+ * contract is click-until-effect: retry the click until the editor is
+ * actually open, like a user re-clicking a dead button. The visibility
+ * guard before each click keeps a late-registering click from being
+ * toggled closed by the next attempt.
  */
 export async function openReplyEditor(
   trigger: Locator,
   editorScope: Locator
 ): Promise<void> {
-  await trigger.click();
-  await expect(editorScope.first()).toBeVisible();
+  await expect(async () => {
+    if (await editorScope.first().isVisible()) return;
+    await trigger.click({ timeout: 2000 });
+    await expect(editorScope.first()).toBeVisible({ timeout: 2500 });
+  }).toPass({ timeout: 20000 });
 }
 
 /**

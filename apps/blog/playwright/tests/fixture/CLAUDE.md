@@ -568,6 +568,21 @@ await gotoTrendingLoggedIn(page);
 
 which does `goto` + `expect(page.getByTestId('login-btn')).toBeHidden()`.
 
+**The `login-btn` gate is NOT enough for the first click on a page.**
+Login state is known server-side (session cookie), so `login-btn` is
+already hidden in the SSR HTML — the gate passes before hydration has
+attached any onClick handlers, and a click dispatched into that window
+is silently lost (auto-actionability checks visibility/stability/hit-test,
+not handler attachment). This bit twice: job 3144190 (`force: true`) and
+job 3211459 (plain `click()` after the post route started holding the
+response on the post lookup for real-404 statuses, which pushes script
+delivery after `load`). For any "first click after goto", use a
+click-until-effect helper — `openReplyEditor` in `commentingContext.ts`
+retries the click until the editor is actually open. If you add a new
+first-click flow, follow that pattern: retry the trigger until its
+observable effect appears; never trust a single click fired within the
+first seconds of page life.
+
 ### `list_votes` race on "undo" flows — wait for the filled icon
 
 `login-btn` hides as soon as `user.isLoggedIn` is true, which does *not*
