@@ -10,7 +10,6 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import DialogLogin from './dialog-login';
 import { useTranslation } from '@/wallet/i18n/client';
-import { CircleSpinner } from 'react-spinners-kit';
 import WitnessRemoveVote from './witness-remove-vote';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@hive/ui';
@@ -123,7 +122,7 @@ function WitnessListItem({
               <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
               {voteLoading ? (
                 <span className="relative rounded-full bg-white dark:bg-slate-900">
-                  <CircleSpinner loading={voteLoading} size={20} color="#dc2626" />
+                  <Icons.spinner className="h-5 w-5 animate-spin text-red-600" />
                 </span>
               ) : !isVoted ? (
                 <Icons.arrowUpCircle

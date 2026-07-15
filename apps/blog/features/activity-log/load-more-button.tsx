@@ -1,5 +1,5 @@
 import { Button } from '@ui/components/button';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { useTranslation } from '@/blog/i18n/client';
 
 interface LoadMoreButtonProps {
@@ -18,7 +18,7 @@ export function LoadMoreButton({ isFetching, onClick }: LoadMoreButtonProps) {
       disabled={isFetching}
     >
       {isFetching ? (
-        <CircleSpinner loading={isFetching} size={18} color="#dc2626" />
+        <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
       ) : (
         t('cards.comment_card.load_more')
       )}

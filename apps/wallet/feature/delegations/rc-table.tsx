@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getDirectDelegations } from '@/wallet/lib/hive';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { prepareRC } from '@/wallet/lib/utils';
 import Big from 'big.js';
 import RCRow from './rc-row';
@@ -26,7 +26,7 @@ const RCTable = ({ account }: { account: string }) => {
           <tbody>
             {isLoading ? (
               <div className="flex h-48 items-center justify-center">
-                <CircleSpinner size={48} color="#dc2626" />
+                <Icons.spinner className="h-12 w-12 animate-spin text-red-600" />
               </div>
             ) : data ? (
               data.list.length === 0 ? (

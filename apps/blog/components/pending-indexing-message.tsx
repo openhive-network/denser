@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
 import { getPost } from '@transaction/lib/bridge-api';
-import { CircleSpinner } from 'react-spinners-kit';
 import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components/button';
 import { useTranslation } from '@/blog/i18n/client';
@@ -65,7 +64,7 @@ export default function PendingIndexingMessage({
     <div className="mx-auto flex flex-col items-center py-8" data-testid="pending-indexing-message">
       <Icons.hive className="h-16 w-16" />
       <div className="my-4 flex items-center gap-2">
-        {!hasTimedOut && <CircleSpinner size={18} color="#3b82f6" loading />}
+        {!hasTimedOut && <Icons.spinner className="h-[18px] w-[18px] animate-spin text-blue-500" />}
         <h3 className="text-lg">{message}</h3>
       </div>
       {elapsedSeconds >= 120 && (

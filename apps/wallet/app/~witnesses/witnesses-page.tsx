@@ -18,7 +18,6 @@ import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useWitnessVoteMutation } from '@/wallet/components/hooks/use-vote-witness-mutation';
 import WitnessRemoveVote from '@/wallet/components/witness-remove-vote';
-import { CircleSpinner } from 'react-spinners-kit';
 import { useSetProxyMutation } from '@/wallet/components/hooks/use-set-proxy-mutation';
 import {
   Dialog,
@@ -270,7 +269,7 @@ export default function WitnessesPage() {
                       disabled={voteMutation.isLoading}
                     >
                       {voteMutation.isLoading ? (
-                        <CircleSpinner loading={voteMutation.isLoading} size={20} color="#fff" />
+                        <Icons.spinner className="h-5 w-5 animate-spin text-white" />
                       ) : (
                         t('witnesses_page.vote')
                       )}
@@ -279,7 +278,7 @@ export default function WitnessesPage() {
                     <WitnessRemoveVote onVote={() => onVote(voteInput, false)}>
                       <Button className="h-fit" variant="destructive" disabled={voteMutation.isLoading}>
                         {voteMutation.isLoading ? (
-                          <CircleSpinner loading={voteMutation.isLoading} size={20} color="#fff" />
+                          <Icons.spinner className="h-5 w-5 animate-spin text-white" />
                         ) : (
                           t('witnesses_page.vote')
                         )}
@@ -372,7 +371,7 @@ const ProxyDialog = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-fit" variant="destructive" disabled={loading}>
-          {loading ? <CircleSpinner loading={loading} size={20} color="#fff" /> : buttonTitle}
+          {loading ? <Icons.spinner className="h-5 w-5 animate-spin text-white" /> : buttonTitle}
         </Button>
       </DialogTrigger>
       <DialogContent>

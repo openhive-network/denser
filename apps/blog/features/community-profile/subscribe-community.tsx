@@ -4,7 +4,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { User } from '@smart-signer/types/common';
 import { useSubscribeMutation, useUnsubscribeMutation } from './hooks/use-subscribe-mutations';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 
 const SubscribeCommunity = ({
   user,
@@ -49,7 +49,7 @@ const SubscribeCommunity = ({
               }}
             >
               {subscribeMutation.isPending ? (
-                <CircleSpinner loading={subscribeMutation.isPending} size={18} color="#dc2626" />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               ) : (
                 t('communities.buttons.subscribe')
               )}
@@ -71,7 +71,7 @@ const SubscribeCommunity = ({
               }}
             >
               {unsubscribeMutation.isPending ? (
-                <CircleSpinner loading={unsubscribeMutation.isPending} size={18} color="#dc2626" />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               ) : (
                 <span>
                   <span className="group-hover:hidden">{t('communities.buttons.joined')}</span>

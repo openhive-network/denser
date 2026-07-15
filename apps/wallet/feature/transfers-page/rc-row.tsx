@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getManabar } from '@transaction/lib/hive-api';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { hoursAndMinutes } from './lib/utils';
 import RCStats from './rc-stats';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -50,7 +50,7 @@ const RCRow = ({ username }: { username: string }) => {
       </div>
       {isLoading ? (
         <div className="flex h-full items-center justify-center">
-          <CircleSpinner size={24} color="#dc2626" />
+          <Icons.spinner className="h-6 w-6 animate-spin text-red-600" />
         </div>
       ) : !!data ? (
         <div className="my-2 flex flex-col items-center justify-around gap-2 sm:flex-row">

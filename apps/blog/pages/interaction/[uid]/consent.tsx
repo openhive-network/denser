@@ -5,7 +5,7 @@ import { getLogger } from '@ui/lib/logging';
 import { OidcClientDetails } from '@smart-signer/lib/oidc';
 import { useConsent } from '@smart-signer/lib/auth/use-consent';
 import { PostConsentSchema } from '@smart-signer/lib/auth/utils';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { useEffect, useState } from 'react';
 
 const logger = getLogger('app');
@@ -71,7 +71,7 @@ export default function ConsentPage({
             className="w-fit rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-green-700 focus:outline-none disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
           >
             {runningAction === 'yes' ? (
-              <CircleSpinner loading={runningAction === 'yes'} size={18} color="#dc2626" />
+              <Icons.spinner className="h-[18px] w-[18px] animate-spin text-white" />
             ) : (
               'Yes, I consent'
             )}
@@ -83,7 +83,7 @@ export default function ConsentPage({
             className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
           >
             {runningAction === 'no' ? (
-              <CircleSpinner loading={runningAction === 'no'} size={18} color="#dc2626" />
+              <Icons.spinner className="h-[18px] w-[18px] animate-spin text-white" />
             ) : (
               'No, I do not consent'
             )}

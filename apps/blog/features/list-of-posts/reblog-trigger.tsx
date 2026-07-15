@@ -1,6 +1,5 @@
 'use client';
 
-import { CircleSpinner } from 'react-spinners-kit';
 import { cn } from '@ui/lib/utils';
 import { Icons } from '@ui/components/icons';
 import { handleError } from '@ui/lib/handle-error';
@@ -83,7 +82,7 @@ const ReblogTrigger = ({
           )}
         >
           {reblogMutation.isLoading ? (
-            <CircleSpinner loading={reblogMutation.isLoading} size={16} color="#dc2626" />
+            <Icons.spinner className="h-4 w-4 animate-spin text-red-600" />
           ) : (
             <Icons.forward
               className={cn('h-4 w-4', {
@@ -106,7 +105,7 @@ const ReblogTrigger = ({
         <TooltipTrigger disabled={isReblogged || reblogMutation.isLoading}>
           <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
             {reblogMutation.isLoading ? (
-              <CircleSpinner loading={reblogMutation.isLoading} size={18} color="#dc2626" />
+              <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
             ) : (
               <Icons.forward
                 className={cn('h-4 w-4 cursor-pointer', {

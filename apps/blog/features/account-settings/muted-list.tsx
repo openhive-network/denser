@@ -4,7 +4,7 @@ import { useUnmuteMutation } from '@/blog/features/mute-follow/hooks/use-mute-mu
 import { useTranslation } from '@/blog/i18n/client';
 import { Button } from '@ui/components/button';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 
 const MutedList = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');
@@ -38,7 +38,7 @@ const MutedList = ({ username }: { username: string }) => {
                 [
                 {mute_item ? (
                   <span className="flex items-center justify-center">
-                    <CircleSpinner loading={unmuteMutation.isPending} size={18} color="#dc2626" />
+                    <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
                   </span>
                 ) : (
                   t('settings_page.unmute')

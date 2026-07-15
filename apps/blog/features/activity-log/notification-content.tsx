@@ -21,7 +21,6 @@ import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { convertStringToBig } from '@ui/lib/helpers';
-import { CircleSpinner } from 'react-spinners-kit';
 import { getAccountNotifications, getUnreadNotifications } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -196,7 +195,7 @@ const NotificationActivities = ({
             className="w-36"
           >
             {claimRewardMutation.isPending ? (
-              <CircleSpinner loading={claimRewardMutation.isPending} size={18} color="#dc2626" />
+              <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
             ) : (
               t('navigation.profile_notifications_tab_navbar.redeem')
             )}
@@ -212,11 +211,7 @@ const NotificationActivities = ({
             onClick={handleMarkAllAsRead}
           >
             {markAllNotificationsAsReadMutation.isPending ? (
-              <CircleSpinner
-                loading={markAllNotificationsAsReadMutation.isPending}
-                size={18}
-                color="#dc2626"
-              />
+              <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
             ) : (
               t('navigation.profile_notifications_tab_navbar.mark_all')
             )}

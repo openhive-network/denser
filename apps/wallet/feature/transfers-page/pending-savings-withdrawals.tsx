@@ -5,7 +5,7 @@ import { useTranslation } from '@/wallet/i18n/client';
 import { SavingsWithdrawals } from '@hive/common-hiveio-packages/wax';
 import { cn } from '@ui/lib/utils';
 import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/components';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { getAmountFromWithdrawal } from '@/wallet/lib/utils';
 import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/use-cancel-transfer-from-savings-mutation';
@@ -77,11 +77,7 @@ const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWith
                           disabled={cancelTransferFromSavingsMutation.isLoading}
                         >
                           {cancelTransferFromSavingsMutation.isLoading ? (
-                            <CircleSpinner
-                              loading={cancelTransferFromSavingsMutation.isLoading}
-                              size={18}
-                              color="#dc2626"
-                            />
+                            <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
                           ) : (
                             t('transfers_page.cancel_withdraw_from_savings')
                           )}

@@ -2,7 +2,6 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import clsx from 'clsx';
-import { CircleSpinner } from 'react-spinners-kit';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { Slider } from '@ui/components/slider';
 import { Icons } from '@ui/components/icons';
@@ -111,11 +110,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
     <div className="flex items-center gap-1.5">
       {/* Upvote with slider - trigger */}
       {clickedVoteButton === 'up' && voteMutation.isLoading ? (
-        <CircleSpinner
-          loading={clickedVoteButton === 'up' && voteMutation.isLoading}
-          size={20}
-          color="#dc2626"
-        />
+        <Icons.spinner className="h-5 w-5 animate-spin text-red-600" />
       ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
         <Popover>
           <PopoverTrigger disabled={voteMutation.isLoading}>
@@ -241,11 +236,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
       )}
       {/* Downvote with slider - trigger */}
       {clickedVoteButton === 'down' && voteMutation.isLoading ? (
-        <CircleSpinner
-          loading={clickedVoteButton === 'down' && voteMutation.isLoading}
-          size={20}
-          color="#dc2626"
-        />
+        <Icons.spinner className="h-5 w-5 animate-spin text-red-600" />
       ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
         <Popover>
           <PopoverTrigger disabled={voteMutation.isLoading}>

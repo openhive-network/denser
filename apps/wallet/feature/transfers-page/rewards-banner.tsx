@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useTranslation } from '@/wallet/i18n/client';
 import { NaiAsset } from '@hiveio/wax';
 import { Button } from '@ui/components';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
 import { getFindAccounts } from '@transaction/lib/hive-api';
 import { useClaimRewardsMutation } from '@/wallet/components/hooks/use-claim-rewards-mutation';
@@ -78,7 +78,9 @@ const RewardsBanner = ({ username, isOwner, rewardBalances }: RewardsBannerProps
             disabled={claimRewardsMutation.isLoading}
           >
             {t('transfers_page.redeem_rewards')}
-            {claimRewardsMutation.isLoading ? <CircleSpinner size={18} color="#dc2626" /> : null}
+            {claimRewardsMutation.isLoading ? (
+              <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
+            ) : null}
           </Button>
         )}
       </div>

@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Separa
 import { PenTool } from 'lucide-react';
 import { useState } from 'react';
 import { useUserTitleMutation } from './hooks/use-user-title';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import ChangeTitleData from './change-title-data';
 import { useTranslation } from '@/blog/i18n/client';
 
@@ -28,7 +28,7 @@ const ChangeTitleDialog = ({
       <DialogTrigger data-testid="community-change-title-trigger">
         {titleMutation.isLoading ? (
           <div className="ml-2">
-            <CircleSpinner loading={titleMutation.isLoading} size={18} color="#dc2626" />
+            <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
           </div>
         ) : (
           <span title={t('communities.edit_title')}>

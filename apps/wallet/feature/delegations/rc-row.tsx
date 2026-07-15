@@ -2,7 +2,7 @@ import { prepareRC } from '@/wallet/lib/utils';
 import { Link } from '@hive/ui';
 import { useUndelegateMutation } from './hooks/use-undelegate-mutation';
 import { Button } from '@ui/components';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string; account: string }) => {
@@ -30,7 +30,7 @@ const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string
           >
             {undelegateMutation.isLoading ? (
               <span className="flex h-5 w-12 items-center justify-center">
-                <CircleSpinner loading={undelegateMutation.isLoading} size={18} color="#dc2626" />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               </span>
             ) : (
               'Revoke'

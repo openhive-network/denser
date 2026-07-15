@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode, useState } from 'react';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -86,7 +86,7 @@ export function ReblogDialog({
             >
               {needsQuery && isCheckingReblog ? (
                 <span className="flex items-center gap-2">
-                  <CircleSpinner loading size={14} color="#ffffff" />
+                  <Icons.spinner className="h-3.5 w-3.5 animate-spin text-white" />
                   {t('global.loading')}
                 </span>
               ) : (

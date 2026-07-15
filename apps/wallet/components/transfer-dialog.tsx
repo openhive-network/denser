@@ -34,7 +34,6 @@ import { getAccount } from '@transaction/lib/hive-api';
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
 import { convertStringToBig } from '@ui/lib/helpers';
-import { CircleSpinner } from 'react-spinners-kit';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getAsset } from '@transaction/lib/utils';
 
@@ -499,7 +498,7 @@ export function TransferDialog({
               onClick={type === 'powerDown' ? onConfirm : form.handleSubmit(onSubmit)}
             >
               {powerDownMutation.isLoading ? (
-                <CircleSpinner loading={powerDownMutation.isLoading} size={18} color="#dc2626" />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               ) : (
                 data.buttonTitle
               )}
@@ -653,17 +652,7 @@ export function TransferDialog({
               powerUpMutation.isLoading ||
               delegateMutation.isLoading ||
               withdrawFromSavingsMutation.isLoading ? (
-                <CircleSpinner
-                  loading={
-                    transferMutation.isLoading ||
-                    transferToSavingsMutation.isLoading ||
-                    powerUpMutation.isLoading ||
-                    delegateMutation.isLoading ||
-                    withdrawFromSavingsMutation.isLoading
-                  }
-                  size={18}
-                  color="#dc2626"
-                />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               ) : (
                 t('transfers_page.ok')
               )}

@@ -8,7 +8,7 @@ import { Accordion, Button } from '@ui/components';
 import useWindowSize from '@/wallet/components/hooks/use-window-size';
 import AuthoritesGroup from '@/wallet/components/authorities-group';
 import MemoAccordionItem from '@/wallet/components/memo-accordion-item';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useAuthorityOperations } from '@/wallet/components/hooks/use-authority-operation';
 import WalletMenu from '@/wallet/components/wallet-menu';
@@ -69,7 +69,7 @@ export default function AuthoritiesPage({ username }: { username: string }) {
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              <CircleSpinner size={18} color="#dc2626" />
+              <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
             ) : (
               t('authorities_page.update_authority')
             )}

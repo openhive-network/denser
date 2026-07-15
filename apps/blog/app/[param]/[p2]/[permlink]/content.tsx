@@ -61,7 +61,6 @@ import { Clock, Link2, ShieldCheck, ShieldOff } from 'lucide-react';
 import { Link } from '@hive/ui';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CircleSpinner } from 'react-spinners-kit';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -785,11 +784,7 @@ const PostContent = () => {
                           </button>
                           {pinMutations.isLoading || unpinMutation.isLoading ? (
                             <div className="ml-2">
-                              <CircleSpinner
-                                loading={pinMutations.isLoading || unpinMutation.isLoading}
-                                size={18}
-                                color="#dc2626"
-                              />
+                              <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
                             </div>
                           ) : userCanModerate && postData.depth === 0 ? (
                             <div className="flex flex-col items-center">
@@ -861,11 +856,7 @@ const PostContent = () => {
                               data-testid="comment-card-footer-delete"
                             >
                               {deletePostMutation.isLoading ? (
-                                <CircleSpinner
-                                  loading={deletePostMutation.isLoading}
-                                  size={18}
-                                  color="#dc2626"
-                                />
+                                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
                               ) : (
                                 t('cards.comment_card.delete')
                               )}

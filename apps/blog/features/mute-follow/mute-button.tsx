@@ -1,5 +1,5 @@
 import { Button } from '@hive/ui';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import clsx from 'clsx';
 import { useTranslation } from '@/blog/i18n/client';
 
@@ -42,7 +42,7 @@ const MuteButton = ({
     >
       {loading ? (
         <span className="flex h-5 w-12 items-center justify-center">
-          <CircleSpinner loading={loading} size={18} color="#dc2626" />
+          <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
         </span>
       ) : isMute ? (
         t('user_profile.unmute_button')

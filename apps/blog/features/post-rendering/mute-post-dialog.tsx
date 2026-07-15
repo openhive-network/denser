@@ -12,7 +12,7 @@ import {
 import { useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
 import { useMutePostMutation, useUnmutePostMutation } from '@/blog/components/hooks/use-mute-post-mutations';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import clsx from 'clsx';
 import { useTranslation } from '@/blog/i18n/client';
 
@@ -85,7 +85,7 @@ const MutePostDialog = ({
         })}
       >
         {mutePost.isLoading || unmutePost.isLoading ? (
-          <CircleSpinner loading={mutePost.isLoading || unmutePost.isLoading} size={18} color="#dc2626" />
+          <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
         ) : (
           <button
             className={clsx('ml-2 flex items-center', {

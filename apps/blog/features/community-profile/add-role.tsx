@@ -2,7 +2,7 @@
 
 import { Button, Input, Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@ui/components';
 import { useTranslation } from '@/blog/i18n/client';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { Roles } from './lib/utils';
 import RolesSelect from './roles-select';
 import { useSetRoleMutation } from '@/blog/features/community-profile/hooks/use-set-role-mutations';
@@ -76,7 +76,7 @@ const AddRole = ({ community, loggedUserLevel }: { loggedUserLevel: number; comm
               data-testid="community-add-role-save"
             >
               {setRoleMutation.isLoading ? (
-                <CircleSpinner loading={setRoleMutation.isLoading} size={18} color="#dc2626" />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               ) : (
                 t('communities.save')
               )}

@@ -5,7 +5,6 @@ import { useTranslation } from '@/blog/i18n/client';
 import { Icons } from '@ui/components/icons';
 import dynamic from 'next/dynamic';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { CircleSpinner } from 'react-spinners-kit';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,7 +34,7 @@ const MdEditor = dynamic(() => import('./md-editor'), {
   ssr: false,
   loading: () => (
     <div className="flex h-[200px] w-full items-center justify-center rounded-md border border-border bg-background-secondary/30">
-      <CircleSpinner loading size={24} color="#dc2626" />
+      <Icons.spinner className="h-6 w-6 animate-spin text-red-600" />
     </div>
   )
 });
@@ -360,11 +359,7 @@ export function ReplyTextbox({
               onClick={() => postComment()}
             >
               {commentMutation.isLoading || updateCommentMutation.isLoading ? (
-                <CircleSpinner
-                  loading={commentMutation.isLoading || updateCommentMutation.isLoading}
-                  size={18}
-                  color="#dc2626"
-                />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               ) : (
                 t('post_content.footer.comment.post')
               )}

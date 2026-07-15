@@ -6,7 +6,7 @@ import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { Button } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
 import BasePathLink from '@/blog/components/base-path-link';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { getUserAvatarUrl } from '@hive/ui';
 
 const ListItem = ({
@@ -104,7 +104,7 @@ const ListItem = ({
           disabled={isItemLoading || item._temporary}
         >
           {isItemLoading ? (
-            <CircleSpinner loading={isItemLoading} size={16} color="#dc2626" />
+            <Icons.spinner className="h-4 w-4 animate-spin text-red-600" />
           ) : (
             listTitle
           )}

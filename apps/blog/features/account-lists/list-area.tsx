@@ -7,7 +7,7 @@ import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { useEffect, useState } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { useResetAllListsMutation } from '@/blog/components/hooks/use-reset-mutations';
 import { Search, UserPlus } from 'lucide-react';
 import ListItem from './list-item';
@@ -122,7 +122,7 @@ const ListArea = ({
         ) : null}
         {isLoading ? (
           <li className="flex items-center justify-center py-4">
-            <CircleSpinner loading={isLoading} size={18} color="#dc2626" />
+            <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
           </li>
         ) : null}
       </ul>
@@ -198,7 +198,7 @@ const ListArea = ({
                 }}
               >
                 {isLoading ? (
-                  <CircleSpinner loading={isLoading} size={16} color="#fff" />
+                  <Icons.spinner className="h-4 w-4 animate-spin text-white" />
                 ) : (
                   t('user_profile.lists.list.add_to_list')
                 )}
@@ -238,7 +238,7 @@ const ListArea = ({
               disabled={disabled}
             >
               {resetListIsLoading || resetAllListsMutation.isPending ? (
-                <CircleSpinner loading={disabled} size={18} color="#dc2626" />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               ) : (
                 resetTitle
               )}
@@ -250,7 +250,7 @@ const ListArea = ({
               className="min-w-[120px] text-xs"
             >
               {resetAllListsMutation.isPending ? (
-                <CircleSpinner loading={resetAllListsMutation.isPending} size={18} color="#dc2626" />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               ) : (
                 t('user_profile.lists.list.reset_all_lists')
               )}

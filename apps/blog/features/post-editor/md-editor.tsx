@@ -19,7 +19,6 @@ import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import { cn } from '@ui/lib/utils';
 import { Icons } from '@ui/components/icons';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
-import { CircleSpinner } from 'react-spinners-kit';
 import { useTranslation } from '@/blog/i18n/client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
@@ -359,7 +358,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       {isUploading && uploadQueue.length === 0 && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
           <div className="flex items-center gap-2 rounded-md bg-background px-4 py-2 shadow-md">
-            <CircleSpinner loading size={18} color="#dc2626" />
+            <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
             <span className="text-sm font-medium">{t('submit_page.uploading_image')}</span>
           </div>
         </div>
@@ -379,7 +378,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
                   <Icons.close className="h-3 w-3 shrink-0 text-destructive" />
                 )}
                 {(item.status === 'pending' || item.status === 'processing' || item.status === 'uploading') && (
-                  <CircleSpinner loading size={12} color="#dc2626" />
+                  <Icons.spinner className="h-3 w-3 animate-spin text-red-600" />
                 )}
                 <span className="flex-1 truncate">{item.originalFile.name}</span>
                 {item.status === 'error' && (

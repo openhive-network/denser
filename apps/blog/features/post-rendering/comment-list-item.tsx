@@ -26,7 +26,6 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import RendererContainer from './rendererContainer';
 import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
 import MutePostDialog from './mute-post-dialog';
 import ChangeTitleDialog from '../community-profile/change-title-dialog';
 import { AlertDialogFlag } from './alert-window-flag';
@@ -206,7 +205,7 @@ const CommentListItem = memo(function CommentListItem({
                               <>
                                 {comment._optimistic && (
                                   <span className="mr-2 flex items-center gap-1 text-xs text-blue-500">
-                                    <CircleSpinner size={10} color="#3b82f6" loading />
+                                    <Icons.spinner className="h-2.5 w-2.5 animate-spin text-blue-500" />
                                     {t('global.publishing')}
                                   </span>
                                 )}
@@ -495,11 +494,7 @@ const CommentListItem = memo(function CommentListItem({
                                   data-testid="comment-card-footer-delete"
                                 >
                                   {deleteCommentMutation.isLoading ? (
-                                    <CircleSpinner
-                                      loading={deleteCommentMutation.isLoading}
-                                      size={18}
-                                      color="#dc2626"
-                                    />
+                                    <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
                                   ) : (
                                     t('cards.comment_card.delete')
                                   )}

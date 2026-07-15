@@ -8,7 +8,6 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@hive/ui/co
 import { Icons } from "@ui/components/icons";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@ui/components/tooltip";
 import { Separator } from "@ui/components";
-import { CircleSpinner } from "react-spinners-kit";
 import { Entry } from "@hive/common-hiveio-packages/wax";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
@@ -45,7 +44,7 @@ const MdEditor = dynamic(() => import("@/blog/features/post-editor/md-editor"), 
   ssr: false,
   loading: () => (
     <div className="flex h-[500px] w-full items-center justify-center rounded-md border border-border bg-background-secondary/30">
-      <CircleSpinner loading size={24} color="#dc2626" />
+      <Icons.spinner className="h-6 w-6 animate-spin text-red-600" />
     </div>
   ),
 });
@@ -358,7 +357,7 @@ export default function PostForm({
                   data-testid="submit-post-button"
                 >
                   {postMutation.isPending ? (
-                    <CircleSpinner loading={postMutation.isPending} size={18} color="#dc2626" />
+                    <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
                   ) : (
                     t("submit_page.submit")
                   )}

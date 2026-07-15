@@ -22,7 +22,7 @@ import {
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { Signer } from '@smart-signer/lib/signer/signer';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 
@@ -271,7 +271,7 @@ const SettingsForm = ({ username }: { username: string }) => {
         >
           {updateProfileMutation.isPending ? (
             <span className="flex items-center justify-center">
-              <CircleSpinner loading={updateProfileMutation.isPending} size={18} color="#dc2626" />
+              <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
             </span>
           ) : (
             t('settings_page.update')

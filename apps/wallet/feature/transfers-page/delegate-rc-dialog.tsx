@@ -12,7 +12,7 @@ import {
 import { useDelegateRCMutation } from './hooks/use-delegate-mutation';
 import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
 
@@ -178,7 +178,7 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
           <Button variant="redHover" onClick={onDelegate} disabled={!isFormValid}>
             {delegateMutation.isLoading ? (
               <span className="flex h-5 w-12 items-center justify-center">
-                <CircleSpinner loading={delegateMutation.isLoading} size={18} color="#dc2626" />
+                <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
               </span>
             ) : (
               'Delegate RC'

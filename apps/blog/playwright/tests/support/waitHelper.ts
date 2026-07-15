@@ -145,7 +145,7 @@ export async function waitForSecondProcessedDownvoteLightMode(page: Page) {
 }
 
 export async function waitForCircleSpinnerIsDetatched(page: Page) {
-  await page.waitForSelector('.circle__Wrapper-sc-16bbsoy-0', { state: 'detached' });
+  await page.waitForSelector('svg.lucide-loader-2', { state: 'detached' });
 }
 
 export async function waitForLifestyleMySubscriptionsLink(page: Page) {

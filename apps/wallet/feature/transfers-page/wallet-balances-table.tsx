@@ -25,7 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { TransferDialog } from '@/wallet/components/transfer-dialog';
 import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
 import { handleError } from '@ui/lib/handle-error';
@@ -333,11 +333,7 @@ const WalletBalancesTable = ({
                                   disabled={cancelPowerDownMutation.isLoading}
                                 >
                                   {cancelPowerDownMutation.isLoading ? (
-                                    <CircleSpinner
-                                      loading={cancelPowerDownMutation.isLoading}
-                                      size={18}
-                                      color="#dc2626"
-                                    />
+                                    <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
                                   ) : (
                                     t('profile.cancel_power_down')
                                   )}

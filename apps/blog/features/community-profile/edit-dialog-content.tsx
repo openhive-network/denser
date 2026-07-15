@@ -22,7 +22,7 @@ import {
   Checkbox,
   Button
 } from '@ui/components';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { useEffect } from 'react';
 
 const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open: boolean) => void }) => {
@@ -238,7 +238,7 @@ const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open:
                   data-testid="community-edit-save"
                 >
                   {updateCommunityMutation.isPending ? (
-                    <CircleSpinner loading={updateCommunityMutation.isPending} size={18} color="#dc2626" />
+                    <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" />
                   ) : (
                     t('communities.edit_props_dialog.save')
                   )}

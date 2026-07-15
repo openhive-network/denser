@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { useTranslation } from '@/blog/i18n/client';
 
 /**
@@ -35,7 +35,7 @@ export default function OptimisticStatusBanner({ createdAt }: { createdAt: strin
 
   return (
     <div className="my-2 flex items-center gap-2 rounded-md border border-blue-400/50 bg-blue-50 px-3 py-2 text-sm text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
-      <CircleSpinner size={14} color="#3b82f6" loading />
+      <Icons.spinner className="h-3.5 w-3.5 animate-spin text-blue-500" />
       <span>{message}</span>
     </div>
   );

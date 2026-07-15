@@ -11,7 +11,7 @@ import {
 } from '@ui/components';
 import { useState } from 'react';
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
-import { CircleSpinner } from 'react-spinners-kit';
+import { Icons } from '@ui/components/icons';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getAsset } from '@transaction/lib/utils';
 
@@ -58,7 +58,7 @@ const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: 
         </div>
         <DialogFooter>
           <Button variant="redHover" className="px-6" onClick={onRevoke} disabled={loading}>
-            {loading ? <CircleSpinner loading={loading} size={18} color="#dc2626" /> : 'Ok'}
+            {loading ? <Icons.spinner className="h-[18px] w-[18px] animate-spin text-red-600" /> : 'Ok'}
           </Button>
           <div className="flex-grow" />
           <Button variant="link" onClick={() => setOpen(false)} disabled={loading}>
