@@ -20,6 +20,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import FinancialReport from '@/wallet/components/financial-report';
 import env from '@beam-australia/react-env';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { handleError } from '@ui/lib/handle-error';
 
 export default function TransfersPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
@@ -43,16 +44,17 @@ export default function TransfersPage({ username }: { username: string }) {
 
   const {
     data: operationHistoryData,
-    isLoading: operationHistoryLoading,
-    isError: operationHistoryError,
-    refetch: refetchOperations
+    isLoading: operationHistoryLoading
   } = useQuery(
     ['Operations', username],
     () => getAccountOperations(username, undefined, 500, user.username),
     {
       select: (data) => data.operations_result,
       retry: false,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      onError: (error: unknown) => {
+        handleError(error, { method: 'getAccountOperations', params: { username } });
+      }
     }
   );
   const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery(['feedHistory'], () =>
@@ -127,8 +129,6 @@ export default function TransfersPage({ username }: { username: string }) {
           dynamicData={dynamicData}
           operationHistoryData={operationHistoryData}
           isLoading={operationHistoryLoading}
-          isError={operationHistoryError}
-          onRetry={refetchOperations}
         />
       </div>
     </div>
