@@ -50,7 +50,9 @@ export default function TransfersPage({ username }: { username: string }) {
     ['Operations', username],
     () => getAccountOperations(username, undefined, 500, user.username),
     {
-      select: (data) => data.operations_result
+      select: (data) => data.operations_result,
+      retry: false,
+      refetchOnWindowFocus: false
     }
   );
   const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery(['feedHistory'], () =>
