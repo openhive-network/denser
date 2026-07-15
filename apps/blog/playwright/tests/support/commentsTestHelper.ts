@@ -1,4 +1,4 @@
-import { test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { HomePage } from './pages/homePage';
 import { PostPage } from './pages/postPage';
 import { TIMEOUTS } from './constants';
@@ -114,4 +114,28 @@ export async function navigateToPostWithVisibleCommentsOrSkip(
 ): Promise<void> {
   const result = await findPostWithVisibleComments(page, homePage, postPage, options);
   test.skip(!result.found, 'No posts with visible comments found on the page');
+}
+
+/**
+ * Click a link that soft-navigates to a comment-view (or any post-route)
+ * page and retry until the URL actually changes.
+ *
+ * The post route has no loading boundary (it holds the response on the
+ * post lookup so missing posts return a real 404 - #930). Two
+ * consequences for tests: Next has no shell to prefetch for these
+ * links, so a click commits only after the full RSC round-trip; and a
+ * click dispatched while the source page is still hydrating or busy
+ * can have its router transition superseded and silently dropped -
+ * job 3211939 hit exactly that (the same flow passed in sibling tests
+ * on the same run; only the unluckiest worker slots lost the click).
+ * Retrying the click until its observable effect (a URL change) is the
+ * same contract a real user applies to a dead-feeling link.
+ */
+export async function clickAndAwaitUrlChange(page: Page, trigger: Locator): Promise<void> {
+  const from = page.url();
+  await expect(async () => {
+    await trigger.click({ timeout: 2000 });
+    await expect(page).not.toHaveURL(from, { timeout: 3000 });
+  }).toPass({ timeout: 20000 });
+  await page.waitForLoadState('domcontentloaded');
 }

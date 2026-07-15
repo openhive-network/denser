@@ -6,7 +6,10 @@ import { CommentViewPage } from '../support/pages/commentViewPage';
 import { ApiHelper } from '../support/apiHelper';
 import { LoginForm } from '../support/pages/loginForm';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
-import { navigateToPostWithVisibleCommentsOrSkip } from '../support/commentsTestHelper';
+import {
+  clickAndAwaitUrlChange,
+  navigateToPostWithVisibleCommentsOrSkip
+} from '../support/commentsTestHelper';
 
 test.describe('Comments of post', () => {
   let homePage: HomePage;
@@ -687,10 +690,9 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // click comment link of the first comment.
     // Don't separate scrollIntoViewIfNeeded from click — on webkit the
     // comment list re-renders during hydration and the locator captured
-    // by scrollIntoViewIfNeeded gets detached before click. Playwright's
-    // .click() already auto-scrolls and retries on stale elements.
-    await postPage.commentPageLink.first().click();
-    await commentViewPage.page.waitForLoadState('domcontentloaded');
+    // by scrollIntoViewIfNeeded gets detached before click. The helper
+    // retries the click until the URL changes (see its doc comment).
+    await clickAndAwaitUrlChange(page, postPage.commentPageLink.first());
     // validate re-title of the comment's thread
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
     // validate author of the main comment
@@ -747,10 +749,9 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
 
     // click comment link of the first comment.
-    // .click() auto-scrolls and retries on detached, which matters on
-    // webkit where the comment list re-renders during hydration.
-    await postPage.commentPageLink.first().click();
-    await commentViewPage.page.waitForLoadState('domcontentloaded');
+    // The helper auto-scrolls, retries on detached (webkit re-renders the
+    // comment list during hydration) and retries until the URL changes.
+    await clickAndAwaitUrlChange(page, postPage.commentPageLink.first());
     // validate re-title of the comment's thread - comment view page is loaded
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
     // validate the response comment's author
@@ -779,8 +780,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Move to the post with comments
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
     // Click comment link of the second comment(nested comment - gtg as author)
-    await postPage.commentPageLink.nth(1).click();
-    await commentViewPage.page.waitForLoadState('domcontentloaded');
+    await clickAndAwaitUrlChange(page, postPage.commentPageLink.nth(1));
     // Validate re-title of the comment's thread - comment view page is loaded
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
     await postPage.articleBody.waitFor({state: 'visible'});
@@ -813,8 +813,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // Move to the post with comments
     await postPage.gotoPostPage(communityCategoryName, postAuthorName, postPermlink);
     // Click comment link of the second comment(nested comment - gtg as author)
-    await postPage.commentPageLink.nth(1).click();
-    await commentViewPage.page.waitForLoadState('domcontentloaded');
+    await clickAndAwaitUrlChange(page, postPage.commentPageLink.nth(1));
     // Validate re-title of the comment's thread - comment view page is loaded
     await expect(commentViewPage.getReArticleTitle).toHaveText(reArticleTitle);
     await postPage.articleBody.waitFor({state: 'visible'});
