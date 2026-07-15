@@ -1,8 +1,9 @@
 'use client';
 
-import { ReactNode, useRef, useCallback } from 'react';
+import { ReactNode, forwardRef, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@ui/components/dialog';
+import { Slot } from '@radix-ui/react-slot';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
@@ -16,7 +17,10 @@ interface DialogLoginProps {
   redirectTo?: string;
 }
 
-function DialogLogin({ children, redirectTo }: DialogLoginProps) {
+const DialogLogin = forwardRef<HTMLButtonElement, DialogLoginProps>(function DialogLogin(
+  { children, redirectTo },
+  ref
+) {
   const signInFormRef = useRef<SignInFormRef>(null);
   const router = useRouter();
 
@@ -53,7 +57,9 @@ function DialogLogin({ children, redirectTo }: DialogLoginProps) {
         }
       }}
     >
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild>
+        <Slot ref={ref}>{children}</Slot>
+      </DialogTrigger>
       <DialogContent
         className="mt-32 max-w-[380px] rounded-md p-0 sm:mt-auto sm:max-w-[450px] sm:px-0"
         data-testid="login-dialog"
@@ -75,6 +81,6 @@ function DialogLogin({ children, redirectTo }: DialogLoginProps) {
       </DialogContent>
     </Dialog>
   );
-}
+});
 
 export default DialogLogin;
