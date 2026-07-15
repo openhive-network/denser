@@ -280,25 +280,29 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       /* eslint-disable react-hooks/exhaustive-deps */
     }, []);
 
-    const userFound = useMemo(() => {
-      const formUsername = form.getValues().username;
-      onUsernameChange(formUsername);
-      const found = authUsers.filter((user) => user.username === formUsername)[0];
+    const watchedUsername = form.watch('username');
 
-      if (found?.username) {
-        if (found?.unlocked) {
-          setDescription(`Unlocked with ${form.getValues().keyType} key`);
-        } else {
-          setDescription('Unlock user with password');
-        }
+    const userFound = useMemo(() => {
+      return authUsers.filter((user) => user.username === watchedUsername)[0];
+      /* eslint-disable react-hooks/exhaustive-deps */
+    }, [watchedUsername, authUsers]);
+
+    useEffect(() => {
+      onUsernameChange(watchedUsername);
+
+      if (userFound?.username) {
+        setDescription(
+          userFound.unlocked
+            ? `Unlocked with ${form.getValues().keyType} key`
+            : 'Unlock user with password'
+        );
       } else {
         setDescription(`Save your ${form.getValues().keyType} key by filling form below`);
       }
 
-      form.setValue('userFound', found ? true : false);
-      return found;
+      form.setValue('userFound', userFound ? true : false);
       /* eslint-disable react-hooks/exhaustive-deps */
-    }, [form.watch('username'), authUsers]);
+    }, [watchedUsername, userFound]);
 
     if (loading === undefined) return <Step loading={true}></Step>;
 
