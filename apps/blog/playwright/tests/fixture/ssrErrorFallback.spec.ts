@@ -20,10 +20,11 @@ import { test, expect } from '../support/fixture-proxy-test';
  * NOTE (separate, harder case): a TRANSPORT failure on the PRIMARY post fetch
  * must surface a 5xx ServiceUnavailable, never a 404 (hive/denser#926). That
  * path can't be faithfully reproduced through the fixture proxy — the bundled
- * wax does not classify a proxy-injected 5xx as a `WaxRequestError`, and this
- * build also returns HTTP 200 for `notFound()` (a soft-404, see ssrSafety
- * SAFE-03) — so asserting it at the HTTP level here is unreliable. Cover it
- * with a unit test on `isTransportError` and/or an e2e against a degraded node.
+ * wax does not classify a proxy-injected 5xx as a `WaxRequestError` — so
+ * asserting it at the HTTP level here is unreliable. Cover it with a unit
+ * test on `isTransportError` and/or an e2e against a degraded node. (Since
+ * the post route stopped streaming (#930), an API-unreachable primary fetch
+ * has been verified to return a real 500 at the document level.)
  *
  * Replay:  pnpm --filter @hive/blog test:fixture -- ssrErrorFallback
  */

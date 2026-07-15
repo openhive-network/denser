@@ -35,15 +35,13 @@ test.describe('SSR safety — HTTP status codes', () => {
   // (format-only, local WASM) → the post route calls `notFound()` BEFORE any
   // API call, so this needs no fixture. The contract is a real 404.
   //
-  // GAP (soft-404): this build serves `notFound()` with HTTP **200** and the
-  // not-found page body — verified for invalid handles, missing permlinks and
-  // a transport error alike (all → 200). A soft-404 lets crawlers index missing
-  // content as a live page. Likely cause: the runtime-CSP middleware
-  // (@hive/middleware createMiddleware) rewriting every route flattens the
-  // status. Marked test.fail so the suite stays green and flips red once a real
-  // 404 status is restored — then drop the marker.
+  // This held as a soft-404 (HTTP 200 + not-found body) until the post route
+  // stopped streaming (#930): the route-level loading.tsx committed the 200
+  // before the page body ran, so notFound() could only swap the UI. With the
+  // boundary removed the page decides the status again and the contract below
+  // holds. (The middleware rewrite was ruled out as the cause — 2-segment
+  // post routes returned real 404s under the same middleware all along.)
   test('SAFE-03 — a post URL with an invalid username responds 404', async ({ request }) => {
-    test.fail(true, 'SSR gap (#930): notFound() is served as HTTP 200 (soft-404) in this build');
     const res = await request.get('/test/@Invalid_User/some-permlink');
     expect(res.status()).toBe(404);
   });
