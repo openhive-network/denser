@@ -120,6 +120,10 @@ const WalletBalancesTable = ({
   const hiveOrders = convertStringToBig(hiveOrdersNai);
   const hbdOrders = convertStringToBig(hbdOrdersNai);
 
+  const noTokenNameFormatter = hiveChain.formatter.extend({
+    asset: { displayAsNai: false, appendTokenName: false, formatAmount: true }
+  });
+
   const total_hbd = hbd_balance
     .plus(hbd_balance_savings)
     .plus(savings_hbd_pending)
@@ -250,7 +254,7 @@ const WalletBalancesTable = ({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="px-4" data-testid="wallet-hive-open-orders">
-                          <Link href="/market">(+{hiveChain.formatter.format(hiveOrdersNai)})</Link>
+                          <Link href="/market">(+{hiveChain.formatter.waxify`${hiveOrdersNai}`})</Link>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent className="font-normal">{t('profile.open_orders')}</TooltipContent>
@@ -417,7 +421,7 @@ const WalletBalancesTable = ({
                       <TooltipTrigger asChild>
                         <div className="px-4" data-testid="wallet-hbd-open-orders">
                           <Link href="/market">
-                            (+{'$' + hiveChain.formatter.format(hbdOrdersNai).replace(' HBD', '')})
+                            (+{'$' + noTokenNameFormatter.format(hbdOrdersNai)})
                           </Link>
                         </div>
                       </TooltipTrigger>
