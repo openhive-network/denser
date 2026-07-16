@@ -1,6 +1,11 @@
 import env from '@beam-australia/react-env';
 
-import { configuredApiEndpoint, configuredRestApiEndpoint, configuredSiteDomain } from '@hive/ui/config/public-vars';
+import {
+  configuredApiEndpoint,
+  configuredApiEndpointFallbacks,
+  configuredRestApiEndpoint,
+  configuredSiteDomain
+} from '@hive/ui/config/public-vars';
 
 const SERVER_VAR_PREFIX = 'DENSER_SERVER_';
 
@@ -21,6 +26,7 @@ export const siteConfig = {
   url: configuredSiteDomain,
   endpoint: configuredApiEndpoint,
   restApiEndpoint: configuredRestApiEndpoint,
+  fallbackEndpoints: configuredApiEndpointFallbacks,
   chainId,
   chainEnv: chainEnv[chainId] || chainEnv['testnet'],
   ogImage: '',

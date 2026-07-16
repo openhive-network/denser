@@ -11,7 +11,10 @@
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {
-      "@hiveio/wax": ["lib/__test-stubs__/hiveio-wax.ts"]
+      "@hiveio/wax": ["lib/__test-stubs__/hiveio-wax.ts"],
+      "@ui/*": ["../ui/*"],
+      "@smart-signer/*": ["../smart-signer/*"],
+      "@hive/common-hiveio-packages/*": ["../common-hiveio-packages/src/*"]
     }
   },
   "include": ["lib/**/*.ts"],
