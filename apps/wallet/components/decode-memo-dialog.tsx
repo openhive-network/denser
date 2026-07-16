@@ -14,7 +14,7 @@ import {
   Label,
   Textarea
 } from '@ui/components';
-import { decryptMemoWithKeychain, decryptMemoWithPrivateKey } from '@smart-signer/lib/decrypt-memo';
+import { decryptMemoWithKeychain, decryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { useTranslation } from '@/wallet/i18n/client';
 
@@ -75,11 +75,7 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
       }}
     >
       <DialogTrigger asChild>
-        <Button
-          variant="link"
-          className="h-auto p-0 text-xs underline"
-          data-testid="decode-memo-trigger"
-        >
+        <Button variant="link" className="h-auto p-0 text-xs underline" data-testid="decode-memo-trigger">
           {t('transfers_page.decode_memo')}
         </Button>
       </DialogTrigger>
