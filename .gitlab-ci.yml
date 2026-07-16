@@ -925,12 +925,19 @@ lighthouse-metrics-blog:
     variables:
       HEALTHCHECK_TCP_PORT: '3000'
   - name: caddy:${CADDY_TAG}
+    # `caddy reverse-proxy` (used elsewhere) has no compression flag, so this job uses a
+    # Caddyfile instead - written inline since GitLab CI `services:` don't support volume
+    # mounts. Compression matters here specifically: real production sits behind nginx
+    # (which compresses - see apps/blog/next.config.js's `compress: false`), but this bare
+    # proxy didn't, so Lighthouse was scoring an uncompressed ~764KB response no real user
+    # ever sees (verified locally: gzip cuts it to ~210KB).
     command:
-    - caddy
-    - reverse-proxy
-    - --from=https://caddy
-    - --to=denser:3000
-    - --internal-certs
+    - sh
+    - -c
+    - >-
+      printf 'https://caddy {\n    tls internal\n    encode zstd gzip\n    reverse_proxy denser:3000\n}\n'
+      > /etc/caddy/Caddyfile &&
+      caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
   variables:
     TURBO_APP_NAME: 'blog'
     LIGHTHOUSE_URL: 'https://caddy'
@@ -946,12 +953,15 @@ lighthouse-metrics-wallet:
     variables:
       HEALTHCHECK_TCP_PORT: '4000'
   - name: caddy:${CADDY_TAG}
+    # See the identical block in lighthouse-metrics-blog above for why this uses an inline
+    # Caddyfile instead of `caddy reverse-proxy` - compression parity with real production.
     command:
-    - caddy
-    - reverse-proxy
-    - --from=https://caddy
-    - --to=denser:4000
-    - --internal-certs
+    - sh
+    - -c
+    - >-
+      printf 'https://caddy {\n    tls internal\n    encode zstd gzip\n    reverse_proxy denser:4000\n}\n'
+      > /etc/caddy/Caddyfile &&
+      caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
   variables:
     TURBO_APP_NAME: 'wallet'
     LIGHTHOUSE_URL: 'https://caddy'
