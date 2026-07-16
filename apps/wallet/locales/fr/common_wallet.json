@@ -298,6 +298,16 @@
     "our_homepage": "our homepage"
   },
   "transfers_page": {
+    "decode_memo": "Decode",
+    "decode_memo_encrypted_placeholder": "Encrypted memo",
+    "decode_memo_title": "Decode MEMO message",
+    "decode_memo_description": "To decode an encrypted MEMO message, you will need to provide the MEMO private key or use Hive Keychain. Your private key will not be sent to the server or saved in the browser.",
+    "decode_memo_private_key": "MEMO private key",
+    "decode_memo_original": "Original message",
+    "decode_memo_decoded": "Decoded message",
+    "decode_memo_with_private_key": "Decode with private key",
+    "decode_memo_with_keychain": "Decode with Keychain",
+    "decode_memo_error": "Error decoding MEMO: the private key is invalid or the MEMO message is not encrypted.",
     "financial_report": "Financial Report",
     "financial_report_description": "Use this to generate a CSV file containing financial transactions from your history within the selected date range. Depending on how active your account is, it might take a little while to complete.",
     "generate_report": "GENERATE REPORT",

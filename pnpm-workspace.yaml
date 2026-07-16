@@ -10,6 +10,8 @@ catalogs:
     '@hiveio/wax-signers-keychain': 1.28.6-rc10-stable.260326112051
     '@hiveio/wax-signers-metamask': 1.28.6-rc10-stable.260326112051
     '@hiveio/wax-signers-peakvault': 1.28.6-rc10-stable.260326112051
+    '@hiveio/wax-signers-beekeeper': 1.28.6-rc10-stable.260326112051
+    '@hiveio/beekeeper': 1.28.6-rc10-stable.260317081625
     '@hiveio/workerbee': 1.28.4-rc1-stable.260317120349
     '@hiveio/hb-auth': 1.28.4-rc0-stable.260405141254
     '@hiveio/healthchecker-component': 2.0.0-stable.260313120516

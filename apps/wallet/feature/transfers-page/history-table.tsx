@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { TFunction } from 'i18next';
 import { Button } from '@ui/components';
@@ -5,6 +7,8 @@ import TimeAgo from '@hive/ui/components/time-ago';
 import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import DecodeMemoDialog from '@/wallet/components/decode-memo-dialog';
 import { createWalletOperationsFormatter } from './wallet-operations-formatter';
 
 type DynamicData = Pick<GetDynamicGlobalPropertiesResponse, 'total_vesting_fund_hive' | 'total_vesting_shares'>;
@@ -28,6 +32,9 @@ const HistoryTable = ({
   username,
   dynamicData
 }: HistoryTableProps) => {
+  const { user } = useUserClient();
+  const isOwnAccount = user.isLoggedIn && user.username === username;
+
   if (isLoading) return <div>{t('global.loading')}</div>;
   if (isError)
     return (
@@ -62,6 +69,27 @@ const HistoryTable = ({
     return React.isValidElement(formatted?.op?.value) ? formatted.op.value : <div>error</div>;
   }
 
+  function renderMemo(memo: string | undefined) {
+    if (!memo) return <td></td>;
+    const isEncoded = /^#/.test(memo);
+    if (!isEncoded) {
+      return <td className="hidden break-all px-4 py-2 sm:block">{memo}</td>;
+    }
+    return (
+      <td
+        className="hidden break-all px-4 py-2 sm:block"
+        data-testid="wallet-account-history-encoded-memo"
+      >
+        <span className="italic text-primary/50">{t('transfers_page.decode_memo_encrypted_placeholder')}</span>
+        {isOwnAccount && (
+          <div>
+            <DecodeMemoDialog username={username} encodedMemo={memo} />
+          </div>
+        )}
+      </td>
+    );
+  }
+
   return (
     <table className="w-full max-w-6xl p-2">
       <tbody>
@@ -79,11 +107,7 @@ const HistoryTable = ({
                 <td className="px-4 py-2 sm:min-w-[300px]">
                   {formatOperationDescription(element)}
                 </td>
-                {element.op.value.memo ? (
-                  <td className="hidden break-all px-4 py-2 sm:block">{element.op.value.memo}</td>
-                ) : (
-                  <td></td>
-                )}
+                {renderMemo(element.op.value.memo)}
               </tr>
             )
         )}
