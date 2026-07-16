@@ -16,6 +16,9 @@ import { encryptMemoWithKeychain, encryptMemoWithPrivateKey } from '@smart-signe
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { getAccount } from '@transaction/lib/hive-api';
 import { useTranslation } from '@/wallet/i18n/client';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 interface EncryptMemoDialogProps {
   open: boolean;
@@ -59,7 +62,8 @@ const EncryptMemoDialog = ({
       if (!account) throw new Error(`Unknown account ${toAccount}`);
       const encrypted = await encryptMemoWithPrivateKey(privateKey, account.memo_key, memo);
       onEncrypted(encrypted);
-    } catch {
+    } catch (error) {
+      logger.error(error, 'Error encrypting memo with private key');
       setError(t('transfers_page.encrypt_memo_error'));
     } finally {
       setLoading(false);
@@ -72,7 +76,8 @@ const EncryptMemoDialog = ({
     try {
       const encrypted = await encryptMemoWithKeychain(fromAccount, toAccount, memo);
       onEncrypted(encrypted);
-    } catch {
+    } catch (error) {
+      logger.error(error, 'Error encrypting memo with Keychain');
       setError(t('transfers_page.encrypt_memo_error'));
     } finally {
       setLoading(false);
@@ -97,6 +102,7 @@ const EncryptMemoDialog = ({
             <Input
               id="encrypt-memo-private-key"
               type="password"
+              autoComplete="off"
               value={privateKey}
               onChange={(e) => setPrivateKey(e.target.value)}
             />

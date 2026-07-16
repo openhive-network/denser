@@ -17,6 +17,9 @@ import {
 import { decryptMemoWithKeychain, decryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { useTranslation } from '@/wallet/i18n/client';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('app');
 
 interface DecodeMemoDialogProps {
   username: string;
@@ -47,7 +50,8 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
     setError('');
     try {
       setDecodedMessage(await decryptMemoWithPrivateKey(privateKey, encodedMemo));
-    } catch {
+    } catch (error) {
+      logger.error(error, 'Error decoding memo with private key');
       setError(t('transfers_page.decode_memo_error'));
     } finally {
       setLoading(false);
@@ -59,7 +63,8 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
     setError('');
     try {
       setDecodedMessage(await decryptMemoWithKeychain(username, encodedMemo));
-    } catch {
+    } catch (error) {
+      logger.error(error, 'Error decoding memo with Keychain');
       setError(t('transfers_page.decode_memo_error'));
     } finally {
       setLoading(false);
@@ -91,6 +96,7 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
             <Input
               id="memo-private-key"
               type="password"
+              autoComplete="off"
               value={privateKey}
               onChange={(e) => setPrivateKey(e.target.value)}
             />

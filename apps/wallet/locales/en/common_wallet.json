@@ -476,6 +476,7 @@
     "advanced": "Advanced",
     "balance": "Balance",
     "memo_public": "This memo is public",
+    "memo_will_be_encrypted": "This memo will be encrypted",
     "power_up_info": "Converted HIVE POWER can be sent to yourself or someone else but can not transfer again without converting back to HIVE.",
     "bad_actors_info": "Use caution sending to this account. Please double check your spelling for possible phishing.",
     "next": "Next",

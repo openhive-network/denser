@@ -103,6 +103,11 @@ export function TransferDialog({
   const [nextOpen, setNextOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [encryptDialogOpen, setEncryptDialogOpen] = useState(false);
+  // `data.memo` holds ciphertext once true - guards against re-encrypting an
+  // already-encrypted memo if the user retries after cancelling/failing the
+  // confirm step (the ciphertext also starts with `#`, so onSubmit's own
+  // /^#/ check can't tell the two states apart on its own).
+  const [memoEncrypted, setMemoEncrypted] = useState(false);
   const queryClient = useQueryClient();
 
   const invalidateData = useCallback(() => {
@@ -271,7 +276,7 @@ export function TransferDialog({
     }
   });
   const onSubmit: SubmitHandler<TransferFormValues> = () => {
-    if (type === 'transfers' && data.memo && /^#/.test(data.memo)) {
+    if (type === 'transfers' && data.memo && /^#/.test(data.memo) && !memoEncrypted) {
       setEncryptDialogOpen(true);
       return;
     }
@@ -329,6 +334,7 @@ export function TransferDialog({
         memo={data.memo}
         onEncrypted={(encryptedMemo) => {
           setData({ ...data, memo: encryptedMemo });
+          setMemoEncrypted(true);
           setEncryptDialogOpen(false);
           setNextOpen(true);
         }}
@@ -445,7 +451,11 @@ export function TransferDialog({
                   <div>
                     <div className="grid grid-cols-4 items-center gap-4">
                       <div className="col-span-1"></div>
-                      <div className="col-span-3 text-xs">{t('transfers_page.memo_public')}</div>
+                      <div className="col-span-3 text-xs">
+                        {/^#/.test(data.memo)
+                          ? t('transfers_page.memo_will_be_encrypted')
+                          : t('transfers_page.memo_public')}
+                      </div>
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                       {t('transfers_page.memo')}
@@ -453,7 +463,10 @@ export function TransferDialog({
                         placeholder="Memo"
                         className="col-span-3"
                         value={data.memo}
-                        onChange={(e) => setData({ ...data, memo: e.target.value })}
+                        onChange={(e) => {
+                          setData({ ...data, memo: e.target.value });
+                          setMemoEncrypted(false);
+                        }}
                       />
                     </div>
                   </div>

@@ -3,12 +3,37 @@ import type { BeekeeperProvider as IBeekeeperProvider } from '@hiveio/wax-signer
 
 import { getLogger } from '@hive/ui/lib/logging';
 
-const logger = getLogger('app');
-
+// Also declared in signer-keychain.ts (byte-for-byte identical) - TypeScript
+// merges ambient `declare global` blocks harmlessly, but this repo's
+// mocha/ts-node setup type-checks files individually rather than as one
+// program, so dropping this in favor of relying on the other file's
+// declaration breaks this file's own standalone type-check. Kept duplicated
+// on purpose.
 declare global {
   interface Window {
     hive_keychain: any;
   }
+}
+
+const logger = getLogger('app');
+
+// Hive's memo convention (hive-js's memo.js): a leading `#` in the user-typed
+// plaintext marks "encrypt this", but that marker character itself is NOT
+// part of what gets encrypted - it's stripped before encryption and
+// re-prepended after decryption, so the decoded text matches what the user
+// originally typed. The Keychain browser extension (encodeMessage /
+// requestVerifyKey) already implements this convention internally via its
+// own hive-js dependency. wax's BeekeeperProvider does not: it encrypts
+// whatever string it's given verbatim. Without stripping/re-prepending here,
+// the WIF path's ciphertext embeds a literal `#` that every other Hive
+// client sees doubled on the wire (`##...`), and decrypting a
+// correctly-encrypted (Keychain-origin) memo through the WIF path loses the
+// leading `#` entirely. Applied only around BeekeeperProvider - Keychain's
+// own encode/decode already handles this and must not be double-adjusted.
+const ENCRYPTED_MEMO_MARKER = '#';
+
+export function stripEncryptedMemoMarker(memo: string): string {
+  return memo.startsWith(ENCRYPTED_MEMO_MARKER) ? memo.slice(ENCRYPTED_MEMO_MARKER.length) : memo;
 }
 
 interface KeychainCallbackResponse {
@@ -94,12 +119,20 @@ export async function decryptMemoWithKeychain(username: string, encodedMemo: str
 /**
  * Decrypts an encrypted memo (`#`-prefixed) using a user-supplied MEMO
  * private key (WIF).
+ *
+ * Re-prepends the `#` marker to the decrypted plaintext - see
+ * ENCRYPTED_MEMO_MARKER above. Unconditional, matching hive-js: every
+ * encrypted memo's decoded text is displayed with a leading `#`, regardless
+ * of what was originally typed before encryption.
  */
 export async function decryptMemoWithPrivateKey(
   memoPrivateKeyWif: string,
   encodedMemo: string
 ): Promise<string> {
-  return withEphemeralMemoProvider(memoPrivateKeyWif, (provider) => provider.decryptData(encodedMemo));
+  const decrypted = await withEphemeralMemoProvider(memoPrivateKeyWif, (provider) =>
+    provider.decryptData(encodedMemo)
+  );
+  return ENCRYPTED_MEMO_MARKER + decrypted;
 }
 
 /**
@@ -119,6 +152,9 @@ export async function encryptMemoWithKeychain(
 /**
  * Encrypts a memo using a user-supplied MEMO private key (WIF), for a
  * recipient identified by their MEMO public key.
+ *
+ * Strips a leading `#` from `memo` before encrypting - see
+ * ENCRYPTED_MEMO_MARKER above. Unconditional, matching hive-js.
  */
 export async function encryptMemoWithPrivateKey(
   memoPrivateKeyWif: string,
@@ -126,6 +162,6 @@ export async function encryptMemoWithPrivateKey(
   memo: string
 ): Promise<string> {
   return withEphemeralMemoProvider(memoPrivateKeyWif, (provider) =>
-    provider.encryptData(memo, toAccountMemoPublicKey)
+    provider.encryptData(stripEncryptedMemoMarker(memo), toAccountMemoPublicKey)
   );
 }
