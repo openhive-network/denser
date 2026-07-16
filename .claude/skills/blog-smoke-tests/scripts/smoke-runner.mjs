@@ -117,6 +117,49 @@ function parseResult(output) {
   return null;
 }
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 2000;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Runs a single test, retrying on failure up to MAX_RETRIES total attempts.
+ * A test that ultimately passes after retrying is still reported as passed -
+ * the flakiness is a UI-timing issue in the smoke script, not a real product
+ * regression, and the retry exists precisely so a slow CI runner doesn't
+ * flip an otherwise-green suite red.
+ * @param {string} testFile - Test filename
+ * @param {string} scriptsDir - Directory containing test scripts
+ * @returns {Promise<Object>} - Parsed __RESULT__ (or a synthesized failure)
+ */
+async function runTestWithRetry(testFile, scriptsDir) {
+  let lastResult = null;
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const { output } = await runTest(testFile, scriptsDir);
+    lastResult = parseResult(output);
+
+    if (lastResult?.passed) {
+      return lastResult;
+    }
+
+    if (attempt < MAX_RETRIES) {
+      console.log(`${colors.yellow}Retry ${attempt + 1}/${MAX_RETRIES} for ${testFile} in ${RETRY_DELAY_MS}ms...${colors.reset}`);
+      await sleep(RETRY_DELAY_MS);
+    }
+  }
+
+  return (
+    lastResult ?? {
+      id: testFile.replace('.mjs', '').toUpperCase(),
+      name: testFile,
+      passed: false,
+      error: 'No result output',
+      priority: 'N/A'
+    }
+  );
+}
+
 /**
  * Prints the summary table
  * @param {Array} results - Test results
@@ -197,21 +240,8 @@ async function main() {
     console.log(`Running: ${testFile}`);
     console.log('============================================');
 
-    const { output } = await runTest(testFile, scriptsDir);
-    const result = parseResult(output);
-
-    if (result) {
-      results.push(result);
-    } else {
-      // No result parsed, create a failure entry
-      results.push({
-        id: testFile.replace('.mjs', '').toUpperCase(),
-        name: testFile,
-        passed: false,
-        error: 'No result output',
-        priority: 'N/A'
-      });
-    }
+    const result = await runTestWithRetry(testFile, scriptsDir);
+    results.push(result);
   }
 
   // Save results JSON

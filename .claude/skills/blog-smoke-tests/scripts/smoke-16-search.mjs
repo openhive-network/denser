@@ -41,10 +41,6 @@ async function test({ page }) {
   await searchInput.fill('hive');
   await page.keyboard.press('Enter');
 
-  // Wait for results to load
-  await page.waitForLoadState('networkidle', { timeout: TIMEOUTS.NETWORK_IDLE }).catch(() => {});
-  await page.waitForTimeout(2000); // Allow time for search results
-
   console.log('\n3. Checking search results...');
 
   // Check URL contains search query
@@ -63,29 +59,38 @@ async function test({ page }) {
     'article',
     '[class*="result"]'
   ];
+  const resultsLocator = page.locator(resultSelectors.join(', ')).first();
+  const noResultsLocator = page.locator('text=/no results|not found|nothing found/i').first();
 
+  // Poll for either a real result or the "no results" empty state instead of a
+  // fixed sleep-then-check-once: the search results resolve asynchronously
+  // (client-side search-api call), so a flat 2s wait raced that fetch under
+  // variable load and failed intermittently in CI (job 3212103).
+  //
+  // Uses ELEMENT_VISIBLE (30s), not SHORT (10s): local verification showed the
+  // AI/hivesense search backend genuinely takes >10s to respond often enough
+  // that a 10s poll still caught the page mid-skeleton-loading-state (neither
+  // results nor the "no results" text present yet) - this is real backend
+  // latency, not a selector or race bug.
   let resultsFound = false;
-  for (const selector of resultSelectors) {
-    const results = page.locator(selector);
-    const count = await results.count().catch(() => 0);
-    if (count > 0) {
-      console.log(`   ✓ PASS: Found ${count} search results`);
-      resultsFound = true;
-      break;
-    }
+  try {
+    await Promise.race([
+      resultsLocator.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE }),
+      noResultsLocator.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE })
+    ]);
+    resultsFound = true;
+  } catch {
+    resultsFound = false;
   }
 
-  if (!resultsFound) {
-    // Check if there's a "no results" message (which is also valid)
-    const noResults = page.locator('text=/no results|not found|nothing found/i');
-    const noResultsVisible = await noResults.isVisible().catch(() => false);
-    if (noResultsVisible) {
+  if (resultsFound) {
+    const resultCount = await resultsLocator.count().catch(() => 0);
+    if (resultCount > 0) {
+      console.log(`   ✓ PASS: Found ${resultCount} search results`);
+    } else {
       console.log('   (i) INFO: No results found for query (valid state)');
-      resultsFound = true;
     }
-  }
-
-  if (!resultsFound) {
+  } else {
     console.log('   ✗ FAIL: No search results or empty state found');
     allPassed = false;
   }

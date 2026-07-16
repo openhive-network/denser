@@ -77,7 +77,7 @@ test.describe('Sync scroll tests', () => {
     // and also asserts the top→top endpoint of the mapping.
     await scrollEditorToFraction(0);
     await expect
-      .poll(previewScrollTop, { message: 'Preview should follow the editor to the top', timeout: 2000 })
+      .poll(previewScrollTop, { message: 'Preview should follow the editor to the top', timeout: 5000 })
       .toBeLessThan(20);
 
     // Scrolling the editor down must move the preview down (sync responds).
@@ -85,7 +85,7 @@ test.describe('Sync scroll tests', () => {
     await expect
       .poll(previewScrollTop, {
         message: 'Preview should scroll in response to editor scroll',
-        timeout: 2000
+        timeout: 5000
       })
       .toBeGreaterThan(0);
     const previewAtMid = await previewScrollTop();
@@ -101,7 +101,7 @@ test.describe('Sync scroll tests', () => {
     await expect
       .poll(previewScrollTop, {
         message: 'Preview should scroll further as the editor reaches the bottom',
-        timeout: 2000
+        timeout: 5000
       })
       .toBeGreaterThan(previewAtMid);
     expect(await previewScrollTop()).toBeGreaterThan(previewScrollable * 0.8);

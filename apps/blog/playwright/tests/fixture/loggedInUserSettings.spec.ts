@@ -10,6 +10,7 @@ import { PostPage } from '../support/pages/postPage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { SettingsPage } from '../support/pages/settingsPage';
 import { TagCommunityFeedsPage } from '../support/pages/tagCommunityFeedsPage';
+import { openReplyEditor } from '../support/commentingContext';
 import { gotoLoggedIn } from '../support/postDisplayContext';
 import { TIMEOUTS } from '../support/constants';
 import {
@@ -240,9 +241,12 @@ test.describe('§8 User Profile & Settings', () => {
     await gotoLoggedIn(page, prefPostUrl());
     const postPage = new PostPage(page);
     await expect(postPage.commentReplay).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
-    await postPage.commentReplay.click();
     const commentEditor = new CommentEditorPage(page);
-    await expect(commentEditor.getReplayEditorElement).toBeVisible();
+    // First click after goto - the visibility gate above only proves the SSR HTML
+    // rendered the button, not that hydration has attached its onClick handler yet.
+    // A single click can be silently lost in that window; retry until the editor
+    // actually opens (see fixture/CLAUDE.md's "first click after goto" gotcha).
+    await openReplyEditor(postPage.commentReplay, commentEditor.getReplayEditorElement);
     await expect(commentEditor.rewardsNotice('Decline Payout')).toBeVisible();
 
     expect(broadcast.calls).toHaveLength(0);
@@ -259,9 +263,9 @@ test.describe('§8 User Profile & Settings', () => {
     await gotoLoggedIn(page, prefPostUrl());
     const postPage = new PostPage(page);
     await expect(postPage.commentReplay).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
-    await postPage.commentReplay.click();
     const commentEditor = new CommentEditorPage(page);
-    await expect(commentEditor.getReplayEditorElement).toBeVisible();
+    // First click after goto - see the identical comment on SET-09 above.
+    await openReplyEditor(postPage.commentReplay, commentEditor.getReplayEditorElement);
     // Note: lowercase 'up' in the comment-footer translation
     // (post_content.footer.comment.power_up: 'Power up 100%') vs the
     // capitalized one in settings_page.power_up.
