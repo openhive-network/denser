@@ -4,7 +4,8 @@
   "main": "./components/index.tsx",
   "types": "./components/index.tsx",
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "TS_NODE_PROJECT=tsconfig.test.json mocha \"lib/**/*.test.ts\""
   },
   "dependencies": {
     "@hive/common-hiveio-packages": "workspace:*",

@@ -1,7 +1,5 @@
 import type { TPublicKey } from '@hiveio/wax';
-import BeekeeperProvider, { type BeekeeperProvider as IBeekeeperProvider } from '@hiveio/wax-signers-beekeeper';
-import createBeekeeper from '@hiveio/beekeeper';
-import { createWaxFoundation } from '@hiveio/wax';
+import type { BeekeeperProvider as IBeekeeperProvider } from '@hiveio/wax-signers-beekeeper';
 
 import { getLogger } from '@hive/ui/lib/logging';
 
@@ -57,6 +55,16 @@ async function withEphemeralMemoProvider<T>(
   memoPrivateKeyWif: string,
   fn: (provider: IBeekeeperProvider) => Promise<T>
 ): Promise<T> {
+  // Dynamic imports: @hiveio/beekeeper, @hiveio/wax-signers-beekeeper and
+  // @hiveio/wax are ESM-only (no CJS "require" export condition), so a
+  // static import breaks CJS tooling (e.g. ts-node/mocha). This also lazily
+  // loads the beekeeper WASM payload only when this path actually runs.
+  const [{ default: createBeekeeper }, { default: BeekeeperProvider }, { createWaxFoundation }] = await Promise.all([
+    import('@hiveio/beekeeper'),
+    import('@hiveio/wax-signers-beekeeper'),
+    import('@hiveio/wax')
+  ]);
+
   const beekeeperInstance = await createBeekeeper({ inMemory: true });
   try {
     const session = beekeeperInstance.createSession(crypto.randomUUID());
