@@ -309,6 +309,7 @@
     "decode_memo_with_keychain": "Decifra con Keychain",
     "decode_memo_with_peakvault": "Decifra con Peak Vault",
     "decode_memo_error": "Errore durante la decifratura del MEMO: la chiave privata non è valida oppure il messaggio MEMO non è cifrato.",
+    "decode_memo_auto_trying": "Tentativo di decifratura con il wallet collegato...",
     "memo_will_be_encrypted": "Questo memo verrà cifrato",
     "encrypt_memo_title": "Cifra messaggio MEMO",
     "encrypt_memo_description": "Questo memo verrà cifrato prima dell'invio. Fornisci la chiave privata MEMO oppure usa Hive Keychain.",

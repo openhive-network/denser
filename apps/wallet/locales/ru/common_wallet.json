@@ -311,6 +311,7 @@
     "decode_memo_with_keychain": "Расшифровать через Keychain",
     "decode_memo_with_peakvault": "Расшифровать через Peak Vault",
     "decode_memo_error": "Ошибка расшифровки MEMO: неверный приватный ключ или сообщение MEMO не зашифровано.",
+    "decode_memo_auto_trying": "Попытка расшифровки через ваш авторизованный кошелёк...",
     "memo_will_be_encrypted": "Эта заметка будет зашифрована",
     "encrypt_memo_title": "Зашифровать сообщение MEMO",
     "encrypt_memo_description": "Эта заметка будет зашифрована перед отправкой. Укажите приватный ключ MEMO или используйте Hive Keychain.",

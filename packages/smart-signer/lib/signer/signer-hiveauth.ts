@@ -1,8 +1,6 @@
-import { SignChallenge } from '@smart-signer/lib/signer/signer';
+import { SignChallenge, Signer, SignTransaction, SignerOptions } from '@smart-signer/lib/signer/signer';
 import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
-import { SignTransaction, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
-import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { TTransactionPackType } from '@hiveio/wax';
 import { safeJsonParse } from '@smart-signer/lib/safe-json-parse';
 
@@ -13,11 +11,17 @@ const logger = getLogger('app');
  * Signs challenges (any strings) or Hive transactions with Hive private
  * keys, using [Hiveauth](https://hiveauth.com/).
  *
+ * Extends `Signer` directly, not `SignerKeychain` - HiveAuth has no local key
+ * material, so MEMO encrypt/decrypt must stay "not supported" (`Signer`'s
+ * default), not inherit `SignerKeychain`'s real `window.hive_keychain` calls.
+ * Not unit-tested directly (ESM/CJS wall, see storage-mixin.test.ts for the
+ * underlying mechanism's coverage).
+ *
  * @export
  * @class SignerHiveauth
- * @extends {StorageMixin(SignerKeychain)}
+ * @extends {StorageMixin(Signer)}
  */
-export class SignerHiveauth extends StorageMixin(SignerKeychain) {
+export class SignerHiveauth extends StorageMixin(Signer) {
 
   constructor(
     signerOptions: SignerOptions,

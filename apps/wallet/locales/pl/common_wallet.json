@@ -342,6 +342,7 @@
     "decode_memo_with_keychain": "Odszyfruj za pomocą Keychain",
     "decode_memo_with_peakvault": "Odszyfruj za pomocą Peak Vault",
     "decode_memo_error": "Błąd odszyfrowywania MEMO: klucz prywatny jest nieprawidłowy lub wiadomość MEMO nie jest zaszyfrowana.",
+    "decode_memo_auto_trying": "Próba odszyfrowania za pomocą zalogowanego portfela...",
     "memo_will_be_encrypted": "Ta notatka zostanie zaszyfrowana",
     "encrypt_memo_title": "Zaszyfruj wiadomość MEMO",
     "encrypt_memo_description": "Ta notatka zostanie zaszyfrowana przed wysłaniem. Podaj klucz prywatny MEMO lub użyj Hive Keychain.",

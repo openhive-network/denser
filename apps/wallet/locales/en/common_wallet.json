@@ -417,6 +417,7 @@
     "decode_memo_with_keychain": "Decode with Keychain",
     "decode_memo_with_peakvault": "Decode with Peak Vault",
     "decode_memo_error": "Error decoding MEMO: the private key is invalid or the MEMO message is not encrypted.",
+    "decode_memo_auto_trying": "Trying to decode with your logged-in wallet...",
     "encrypt_memo_title": "Encrypt MEMO message",
     "encrypt_memo_description": "This memo will be encrypted before sending. Provide the MEMO private key or use Hive Keychain.",
     "encrypt_memo_plaintext": "Message to encrypt",

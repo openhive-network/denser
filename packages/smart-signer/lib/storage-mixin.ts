@@ -3,7 +3,7 @@ import { memoryStorage } from '@smart-signer/lib/memory-storage';
 
 export type StorageType = 'localStorage' | 'sessionStorage' | 'memoryStorage';
 
-type GConstructor<T = {}> = new (...args: any[]) => T;
+type GConstructor<T = {}> = abstract new (...args: any[]) => T;
 type WithStorage = GConstructor<{ storageType: StorageType }>;
 
 export interface StorageBaseOptions {
@@ -31,7 +31,7 @@ export class StorageBase {
  */
 export function StorageMixin<TBase extends WithStorage>(Base: TBase) {
 
-    return class extends Base {
+    abstract class StorageMixed extends Base {
 
         storage: Storage;
 
@@ -50,4 +50,6 @@ export function StorageMixin<TBase extends WithStorage>(Base: TBase) {
         }
 
     }
+
+    return StorageMixed;
 }

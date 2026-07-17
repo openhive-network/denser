@@ -309,6 +309,7 @@
     "decode_memo_with_keychain": "Déchiffrer avec Keychain",
     "decode_memo_with_peakvault": "Déchiffrer avec Peak Vault",
     "decode_memo_error": "Erreur lors du déchiffrement du MEMO : la clé privée est invalide ou le message MEMO n'est pas chiffré.",
+    "decode_memo_auto_trying": "Tentative de déchiffrement avec votre portefeuille connecté...",
     "memo_will_be_encrypted": "Ce mémo sera chiffré",
     "encrypt_memo_title": "Chiffrer le message MEMO",
     "encrypt_memo_description": "Ce mémo sera chiffré avant l'envoi. Fournissez la clé privée MEMO ou utilisez Hive Keychain.",

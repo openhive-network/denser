@@ -307,6 +307,7 @@
     "decode_memo_with_keychain": "Keychainでデコード",
     "decode_memo_with_peakvault": "Peak Vaultでデコード",
     "decode_memo_error": "MEMOのデコード中にエラーが発生しました。秘密鍵が無効か、MEMOメッセージが暗号化されていません。",
+    "decode_memo_auto_trying": "ログイン中のウォレットでデコードを試みています...",
     "memo_will_be_encrypted": "このメモは暗号化されます",
     "encrypt_memo_title": "MEMOメッセージを暗号化",
     "encrypt_memo_description": "このメモは送信前に暗号化されます。MEMO秘密鍵を入力するか、Hive Keychainを使用してください。",

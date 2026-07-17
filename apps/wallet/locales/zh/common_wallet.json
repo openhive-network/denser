@@ -309,6 +309,7 @@
     "decode_memo_with_keychain": "使用 Keychain 解码",
     "decode_memo_with_peakvault": "使用 Peak Vault 解码",
     "decode_memo_error": "解码 MEMO 时出错:私钥无效或该 MEMO 消息未加密。",
+    "decode_memo_auto_trying": "正在尝试使用已登录的钱包解码...",
     "memo_will_be_encrypted": "此备注将被加密",
     "encrypt_memo_title": "加密 MEMO 消息",
     "encrypt_memo_description": "此备注将在发送前加密。请提供 MEMO 私钥或使用 Hive Keychain。",

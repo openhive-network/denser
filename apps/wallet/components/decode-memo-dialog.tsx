@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -51,6 +51,12 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [nativeSignerAvailable, setNativeSignerAvailable] = useState(false);
+  // Gates the manual private-key form until the automatic native-signer attempt finishes.
+  const [autoAttempted, setAutoAttempted] = useState(false);
+  const autoAttemptStarted = useRef(false);
+  // Bumped on every close/reopen so a stale in-flight decode (started before the dialog
+  // was closed and reopened) can't clobber state from a newer attempt when it resolves.
+  const attemptIdRef = useRef(0);
 
   useEffect(() => {
     setNativeSignerAvailable(isNativeSignerAvailable(user.loginType));
@@ -60,22 +66,29 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
     setPrivateKey('');
     setDecodedMessage('');
     setError('');
+    setLoading(false);
+    setAutoAttempted(false);
+    autoAttemptStarted.current = false;
+    attemptIdRef.current += 1;
   };
 
   const onDecodeWithPrivateKey = async () => {
+    const attemptId = attemptIdRef.current;
     setLoading(true);
     setError('');
     try {
-      setDecodedMessage(await decryptMemoWithPrivateKey(privateKey, encodedMemo));
+      const decoded = await decryptMemoWithPrivateKey(privateKey, encodedMemo);
+      if (attemptIdRef.current === attemptId) setDecodedMessage(decoded);
     } catch (error) {
       logger.error(error, 'Error decoding memo with private key');
-      setError(t('transfers_page.decode_memo_error'));
+      if (attemptIdRef.current === attemptId) setError(t('transfers_page.decode_memo_error'));
     } finally {
-      setLoading(false);
+      if (attemptIdRef.current === attemptId) setLoading(false);
     }
   };
 
-  const onDecodeWithNativeSigner = async () => {
+  const onDecodeWithNativeSigner = useCallback(async () => {
+    const attemptId = attemptIdRef.current;
     setLoading(true);
     setError('');
     try {
@@ -87,14 +100,32 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
         keyType: KeyType.posting,
         storageType: 'localStorage'
       });
-      setDecodedMessage(await signer.decryptData(encodedMemo));
+      const decoded = await signer.decryptData(encodedMemo);
+      if (attemptIdRef.current === attemptId) setDecodedMessage(decoded);
     } catch (error) {
       logger.error(error, 'Error decoding memo with native signer');
-      setError(t('transfers_page.decode_memo_error'));
+      if (attemptIdRef.current === attemptId) setError(t('transfers_page.decode_memo_error'));
     } finally {
-      setLoading(false);
+      if (attemptIdRef.current === attemptId) setLoading(false);
     }
-  };
+  }, [username, encodedMemo, user.loginType, t]);
+
+  // Try the logged-in signer's own key store first; only reveal the manual
+  // private-key form once that attempt has run (successfully or not).
+  useEffect(() => {
+    if (!open || autoAttemptStarted.current) return;
+    autoAttemptStarted.current = true;
+
+    if (!nativeSignerAvailable) {
+      setAutoAttempted(true);
+      return;
+    }
+
+    const attemptId = attemptIdRef.current;
+    onDecodeWithNativeSigner().finally(() => {
+      if (attemptIdRef.current === attemptId) setAutoAttempted(true);
+    });
+  }, [open, nativeSignerAvailable, onDecodeWithNativeSigner]);
 
   const nativeSignerLabelKey = NATIVE_SIGNER_DECODE_LABEL_KEY[user.loginType];
 
@@ -118,16 +149,23 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
         </DialogHeader>
 
         <div className="grid gap-4">
-          <div>
-            <Label htmlFor="memo-private-key">{t('transfers_page.decode_memo_private_key')}</Label>
-            <Input
-              id="memo-private-key"
-              type="password"
-              autoComplete="off"
-              value={privateKey}
-              onChange={(e) => setPrivateKey(e.target.value)}
-            />
-          </div>
+          {nativeSignerAvailable && !autoAttempted && (
+            <div className="text-sm text-muted-foreground" data-testid="decode-memo-auto-trying">
+              {t('transfers_page.decode_memo_auto_trying')}
+            </div>
+          )}
+          {autoAttempted && (
+            <div>
+              <Label htmlFor="memo-private-key">{t('transfers_page.decode_memo_private_key')}</Label>
+              <Input
+                id="memo-private-key"
+                type="password"
+                autoComplete="off"
+                value={privateKey}
+                onChange={(e) => setPrivateKey(e.target.value)}
+              />
+            </div>
+          )}
           <div>
             <Label htmlFor="original-memo">{t('transfers_page.decode_memo_original')}</Label>
             <Input id="original-memo" disabled value={encodedMemo} />
@@ -146,9 +184,11 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
         </div>
 
         <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-          <Button onClick={onDecodeWithPrivateKey} disabled={!privateKey || loading}>
-            {t('transfers_page.decode_memo_with_private_key')}
-          </Button>
+          {autoAttempted && (
+            <Button onClick={onDecodeWithPrivateKey} disabled={!privateKey || loading}>
+              {t('transfers_page.decode_memo_with_private_key')}
+            </Button>
+          )}
           {nativeSignerAvailable && nativeSignerLabelKey && (
             <Button variant="ghost" onClick={onDecodeWithNativeSigner} disabled={loading}>
               {t(nativeSignerLabelKey)}
