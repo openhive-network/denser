@@ -275,7 +275,7 @@ const CommentListItem = memo(function CommentListItem({
                               {/* Only show flag here for non-originally-hidden comments; originally hidden ones show flag in the reveal/hide section */}
                               {!isOriginallyHidden && flagText && comment.community && !user.isLoggedIn ? (
                                 <DialogLogin>
-                                  <FlagTooltip onClick={() => {}} />
+                                  <FlagTooltip />
                                 </DialogLogin>
                               ) : !isOriginallyHidden && flagText && comment.community && user.isLoggedIn ? (
                                 <AlertDialogFlag
@@ -284,7 +284,7 @@ const CommentListItem = memo(function CommentListItem({
                                   permlink={comment.permlink}
                                   flagText={flagText}
                                 >
-                                  <FlagTooltip onClick={() => {}} />
+                                  <FlagTooltip />
                                 </AlertDialogFlag>
                               ) : null}
                               <AccordionTrigger
@@ -318,7 +318,7 @@ const CommentListItem = memo(function CommentListItem({
                             <div className="flex items-center">
                               {flagText && comment.community && !user.isLoggedIn ? (
                                 <DialogLogin>
-                                  <FlagTooltip onClick={() => {}} />
+                                  <FlagTooltip />
                                 </DialogLogin>
                               ) : flagText && comment.community && user.isLoggedIn ? (
                                 <AlertDialogFlag
@@ -327,7 +327,7 @@ const CommentListItem = memo(function CommentListItem({
                                   permlink={comment.permlink}
                                   flagText={flagText}
                                 >
-                                  <FlagTooltip onClick={() => {}} />
+                                  <FlagTooltip />
                                 </AlertDialogFlag>
                               ) : null}
                             </div>
