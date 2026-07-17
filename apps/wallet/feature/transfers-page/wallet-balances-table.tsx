@@ -112,14 +112,17 @@ const WalletBalancesTable = ({
   const conversionValue = 0;
   const savings_pending = 0;
 
-  // for_sale is expressed in the sell_price.base asset with 3-digit precision
-  const sumOrders = (assetFilter: (order: IOpenOrdersData) => boolean) =>
-    (openOrders ?? [])
-      .filter(assetFilter)
-      .reduce((sum, order) => sum.plus(order.for_sale), Big(0))
-      .div(1000);
-  const hiveOrders = sumOrders((order) => isHive(order.sell_price.base));
-  const hbdOrders = sumOrders((order) => !isHive(order.sell_price.base));
+  const sumForSale = (assetFilter: (order: IOpenOrdersData) => boolean) =>
+    (openOrders ?? []).filter(assetFilter).reduce((sum, order) => sum + order.for_sale, 0);
+
+  const hiveOrdersNai = hiveChain.hiveSatoshis(sumForSale((order) => isHive(order.sell_price.base)));
+  const hbdOrdersNai = hiveChain.hbdSatoshis(sumForSale((order) => !isHive(order.sell_price.base)));
+  const hiveOrders = convertStringToBig(hiveOrdersNai);
+  const hbdOrders = convertStringToBig(hbdOrdersNai);
+
+  const noTokenNameFormatter = hiveChain.formatter.extend({
+    asset: { displayAsNai: false, appendTokenName: false, formatAmount: true }
+  });
 
   const total_hbd = hbd_balance
     .plus(hbd_balance_savings)
@@ -191,10 +194,7 @@ const WalletBalancesTable = ({
             <tr className="flex flex-col py-2 sm:table-row">
               <td className="px-2 sm:px-4 sm:py-4">
                 <div className="font-semibold">HIVE</div>
-                <p
-                  className="text-xs leading-relaxed text-primary/70"
-                  data-testid="wallet-hive-description"
-                >
+                <p className="text-xs leading-relaxed text-primary/70" data-testid="wallet-hive-description">
                   {t('profile.hive_description')}
                 </p>
               </td>
@@ -254,7 +254,7 @@ const WalletBalancesTable = ({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="px-4" data-testid="wallet-hive-open-orders">
-                          <Link href="/market">(+{numberWithCommas(hiveOrders.toFixed(3))} HIVE)</Link>
+                          <Link href="/market">(+{hiveChain.formatter.waxify`${hiveOrdersNai}`})</Link>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent className="font-normal">{t('profile.open_orders')}</TooltipContent>
@@ -275,9 +275,7 @@ const WalletBalancesTable = ({
                     value: getCurrentHpApr(dynamicData).toFixed(2)
                   })}
                   <span className="font-semibold text-primary hover:text-destructive">
-                    <Link
-                      href={`${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}
-                    >
+                    <Link href={`${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}>
                       {t('profile.see_faq_for_details')}
                     </Link>
                   </span>
@@ -359,9 +357,7 @@ const WalletBalancesTable = ({
                         <div className="px-4">({received_power_balance + ' HIVE'})</div>
                       )}
                     </TooltipTrigger>
-                    <TooltipContent className="font-normal">
-                      {t('profile.delegated_tooltip')}
-                    </TooltipContent>
+                    <TooltipContent className="font-normal">{t('profile.delegated_tooltip')}</TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </td>
@@ -424,7 +420,9 @@ const WalletBalancesTable = ({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="px-4" data-testid="wallet-hbd-open-orders">
-                          <Link href="/market">(+{'$' + numberWithCommas(hbdOrders.toFixed(3))})</Link>
+                          <Link href="/market">
+                            (+{'$' + noTokenNameFormatter.format(hbdOrdersNai)})
+                          </Link>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent className="font-normal">{t('profile.open_orders')}</TooltipContent>

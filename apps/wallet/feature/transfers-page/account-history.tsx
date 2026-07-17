@@ -23,17 +23,13 @@ interface AccountHistoryProps {
   dynamicData: DynamicData;
   operationHistoryData: HiveOperation[] | undefined;
   isLoading: boolean;
-  isError?: boolean;
-  onRetry?: () => void;
 }
 
 const AccountHistory = ({
   username,
   dynamicData,
   operationHistoryData,
-  isLoading,
-  isError,
-  onRetry
+  isLoading
 }: AccountHistoryProps) => {
   const { t } = useTranslation('common_wallet');
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
@@ -61,8 +57,6 @@ const AccountHistory = ({
         </p>
         <HistoryTable
           isLoading={isLoading}
-          isError={isError}
-          onRetry={onRetry}
           historyList={filteredHistoryList}
           username={username}
           dynamicData={dynamicData}
