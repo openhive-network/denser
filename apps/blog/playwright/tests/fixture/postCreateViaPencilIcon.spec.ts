@@ -67,18 +67,18 @@ test.describe('Post creation via pencil icon (§2.1)', () => {
 
     // The pencil flips between two wrappings depending on
     // useUserClient hydration:
-    //   - logged-out: <DialogLogin>...<Button data-testid="nav-pencil">
-    //   - logged-in:  <a href="/submit.html"><Button data-testid="nav-pencil">
+    //   - logged-out: <DialogLogin>...<button data-testid="nav-pencil">
+    //   - logged-in:  <a href="/submit.html" data-testid="nav-pencil">
     // login-btn hides under TWO different conditions (pre-hydration
     // skeleton AND post-hydration logged-in), so on a slow runner we
     // can race past `login-btn.toBeHidden` while user.isLoggedIn is
     // still false → click hits the DialogLogin trigger and never
-    // navigates (job 3141819 hit exactly that). Wait for the Link
-    // wrapper to materialise instead.
-    const pencilLink = page
-      .locator('a[href="/submit.html"]')
-      .filter({ has: page.getByTestId('nav-pencil') });
-    await expect(pencilLink).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    // navigates (job 3141819 hit exactly that). Wait for the logged-in
+    // link variant to materialise instead.
+    const pencilLink = page.getByTestId('nav-pencil');
+    await expect(pencilLink).toHaveAttribute('href', '/submit.html', {
+      timeout: TIMEOUTS.HYDRATION
+    });
     await pencilLink.click();
     await page.waitForURL(/\/submit\.html(?:$|\?)/);
 

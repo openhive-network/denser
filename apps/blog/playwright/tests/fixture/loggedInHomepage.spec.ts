@@ -30,10 +30,7 @@ test.describe('Homepage — seeded logged-in user', () => {
 
     const pencil = page.getByTestId('nav-pencil');
     await expect(pencil).toBeVisible();
-    await expect(pencil.locator('xpath=ancestor::a[1]')).toHaveAttribute(
-      'href',
-      '/submit.html'
-    );
+    await expect(pencil).toHaveAttribute('href', '/submit.html');
   });
 
   test('/api/users/me returns the seeded username', async ({ page }) => {
