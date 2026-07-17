@@ -103,19 +103,31 @@ const ReblogTrigger = ({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger disabled={isReblogged || reblogMutation.isLoading}>
+        <TooltipTrigger
+          className="-m-1 flex items-center p-1"
+          disabled={isReblogged || reblogMutation.isLoading}
+        >
           <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
-            {reblogMutation.isLoading ? (
-              <CircleSpinner loading={reblogMutation.isLoading} size={18} color="#dc2626" />
-            ) : (
-              <Icons.forward
-                className={cn('h-4 w-4 cursor-pointer', {
-                  'text-destructive': isReblogged,
-                  'cursor-default': isReblogged
-                })}
-                data-testid={dataTestidTooltipIcon}
-              />
-            )}
+            {/* role="button" (not a nested <button>) - the outer TooltipTrigger already
+                renders a real, focusable button; this just gives Radix's cloned
+                aria-haspopup/aria-expanded/aria-controls a role that supports them. */}
+            <span
+              role="button"
+              aria-label={isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')}
+              className="contents"
+            >
+              {reblogMutation.isLoading ? (
+                <CircleSpinner loading={reblogMutation.isLoading} size={18} color="#dc2626" />
+              ) : (
+                <Icons.forward
+                  className={cn('h-4 w-4 cursor-pointer', {
+                    'text-destructive': isReblogged,
+                    'cursor-default': isReblogged
+                  })}
+                  data-testid={dataTestidTooltipIcon}
+                />
+              )}
+            </span>
           </ReblogDialog>
         </TooltipTrigger>
         <TooltipContent data-testid={dataTestidTooltipContent}>

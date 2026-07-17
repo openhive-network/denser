@@ -49,7 +49,7 @@ const CommunitiesSidebar: FC = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <span className="text-sm text-gray-400">{t('navigation.communities_nav.trending_communities')}</span>
+        <span className="text-sm text-gray-500">{t('navigation.communities_nav.trending_communities')}</span>
         <ul>
           {data?.slice(0, 12).map((community) => (
             <li key={community.id}>

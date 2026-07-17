@@ -118,7 +118,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         />
       ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
         <Popover>
-          <PopoverTrigger disabled={voteMutation.isLoading}>
+          <PopoverTrigger disabled={voteMutation.isLoading} aria-label={t('cards.post_card.upvote')}>
             <TooltipContainer
               loading={voteMutation.isLoading}
               text={t('cards.post_card.upvote')}
@@ -150,6 +150,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 <button
                   className="flex h-full items-center justify-center"
                   disabled={voteMutation.isLoading}
+                  aria-label={t('cards.post_card.upvote')}
                   onClick={() => {
                     setClickedVoteButton('up');
                     submitVote(sliderUpvote[0] * 100);
@@ -189,7 +190,17 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             submitVote(0);
           }}
         >
-          <span>
+          <button
+            type="button"
+            className="flex items-center border-0 bg-transparent p-0"
+            aria-label={
+              userVote && userVote.vote_percent === 10000 && !enable_slider
+                ? t('cards.post_card.undo_upvote')
+                : t('cards.post_card.undo_upvote_percent', {
+                    votePercent: ((userVote?.vote_percent ?? 0) / 100).toFixed(2)
+                  })
+            }
+          >
             <TooltipContainer
               loading={voteMutation.isLoading}
               text={
@@ -204,7 +215,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             >
               <Icons.arrowUpCircle className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white hover:bg-destructive-icon hover:text-white" />
             </TooltipContainer>
-          </span>
+          </button>
         </VoteRemovalDialog>
       ) : user.isLoggedIn ? (
         <TooltipContainer
@@ -216,6 +227,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           <button
             className="flex h-full items-center justify-center"
             disabled={voteMutation.isLoading}
+            aria-label={t('cards.post_card.upvote')}
             onClick={() => {
               if (voteMutation.isLoading) return;
               setClickedVoteButton('up');
@@ -227,7 +239,11 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </TooltipContainer>
       ) : (
         <DialogLogin>
-          <div className="flex items-center">
+          <button
+            type="button"
+            className="flex items-center border-0 bg-transparent p-0"
+            aria-label={t('cards.post_card.upvote')}
+          >
             <TooltipContainer
               text={t('cards.post_card.upvote')}
               loading={voteMutation.isLoading}
@@ -236,7 +252,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             >
               <Icons.arrowUpCircle className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white" />
             </TooltipContainer>
-          </div>
+          </button>
         </DialogLogin>
       )}
       {/* Downvote with slider - trigger */}
@@ -248,7 +264,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         />
       ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
         <Popover>
-          <PopoverTrigger disabled={voteMutation.isLoading}>
+          <PopoverTrigger disabled={voteMutation.isLoading} aria-label={t('cards.post_card.downvote')}>
             <TooltipContainer
               loading={voteMutation.isLoading}
               text={t('cards.post_card.downvote')}
@@ -280,6 +296,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
                 <button
                   className="flex h-full items-center justify-center"
                   disabled={voteMutation.isLoading}
+                  aria-label={t('cards.post_card.downvote')}
                   onClick={() => {
                     setClickedVoteButton('down');
                     submitVote(-sliderDownvote[0] * 100);
@@ -328,7 +345,17 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             submitVote(0);
           }}
         >
-          <span>
+          <button
+            type="button"
+            className="flex items-center border-0 bg-transparent p-0"
+            aria-label={
+              userVote && userVote.vote_percent === -10000 && !enable_slider
+                ? t('cards.post_card.undo_downvote')
+                : t('cards.post_card.undo_downvote_percent', {
+                    votePercent: (-(userVote?.vote_percent ?? 0) / 100).toFixed(2)
+                  })
+            }
+          >
             <TooltipContainer
               loading={voteMutation.isLoading}
               text={
@@ -343,7 +370,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             >
               <Icons.arrowDownCircle className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white opacity-80 hover:bg-gray-600 hover:text-white" />
             </TooltipContainer>
-          </span>
+          </button>
         </VoteRemovalDialog>
       ) : user.isLoggedIn ? (
         <TooltipContainer
@@ -355,6 +382,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
           <button
             className="flex h-full items-center justify-center"
             disabled={voteMutation.isLoading}
+            aria-label={t('cards.post_card.downvote')}
             onClick={() => {
               if (voteMutation.isLoading) return;
               setClickedVoteButton('down');
@@ -366,7 +394,11 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
         </TooltipContainer>
       ) : (
         <DialogLogin>
-          <div className="flex items-center">
+          <button
+            type="button"
+            className="flex items-center border-0 bg-transparent p-0"
+            aria-label={t('cards.post_card.downvote')}
+          >
             <TooltipContainer
               text={t('cards.post_card.downvote')}
               loading={voteMutation.isLoading}
@@ -375,7 +407,7 @@ const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' 
             >
               <Icons.arrowDownCircle className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />
             </TooltipContainer>
-          </div>
+          </button>
         </DialogLogin>
       )}
     </div>

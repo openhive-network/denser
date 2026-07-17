@@ -150,7 +150,7 @@ const PostListItem = memo(
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
               {nsfw === 'show' && post.blacklists.length < 1 && !blacklistCheck ? (
-                <Link href={`/@${displayAuthor}`} data-testid="post-card-avatar">
+                <Link href={`/@${displayAuthor}`} aria-label={displayAuthor} data-testid="post-card-avatar">
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
                     style={{
@@ -219,7 +219,10 @@ const PostListItem = memo(
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger data-testid="powered-up-100-trigger">
-                            <Link href={`/${post.category}/@${post.author}/${post.permlink}`}>
+                            <Link
+                              href={`/${post.category}/@${post.author}/${post.permlink}`}
+                              aria-label={t('cards.post_card.powered_up_100')}
+                            >
                               <Icons.hive className="h-4 w-4" />
                             </Link>
                           </TooltipTrigger>
@@ -271,7 +274,7 @@ const PostListItem = memo(
 
                   <DetailsCardHover post={post} decline={parseFloat(post.max_accepted_payout) === 0}>
                     <div
-                      className={`flex items-center hover:cursor-pointer hover:text-destructive ${
+                      className={`flex cursor-default items-center hover:text-destructive ${
                         parseFloat(post.max_accepted_payout) === 0 ? 'text-gray-600 line-through' : ''
                       }`}
                       data-testid="post-payout"
@@ -298,9 +301,10 @@ const PostListItem = memo(
                                 <button
                                   disabled={reblogMutation.isLoading}
                                   className={cn(
-                                    'flex items-center cursor-pointer hover:text-destructive',
+                                    '-m-1 flex items-center cursor-pointer p-1 hover:text-destructive',
                                     { 'cursor-not-allowed opacity-50': reblogMutation.isLoading }
                                   )}
+                                  aria-label={`${t('cards.post_card.reblog')} (${reblogCount})`}
                                   data-testid="post-card-reblog-count"
                                 >
                                   <Icons.forward className="h-4 w-4 sm:mr-1" />

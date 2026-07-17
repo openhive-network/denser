@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@ui/components/button';
+import { Button, buttonVariants } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
@@ -22,6 +22,7 @@ import DialogLogin from '@/blog/components/dialog-login';
 import ModeToggle from '@/blog/features/layouts/mode-toggle';
 import LangToggle from '@/blog/features/layouts/lang-toggle';
 import { hoursAndMinutes } from '@/blog/lib/utils';
+import { cn } from '@ui/lib/utils';
 import Sidebar from '@/blog/features/layouts/sidebar';
 import { useTranslation } from '@/blog/i18n/client';
 import { usePathname } from 'next/navigation';
@@ -108,10 +109,12 @@ const MainBar: FC = () => {
                     {t('navigation.main_nav_bar.login')}
                   </Button>
                 </DialogLogin>
-                <Link href="https://signup.hive.io/">
-                  <Button variant="redHover" className="whitespace-nowrap" data-testid="signup-btn">
-                    {t('navigation.main_nav_bar.sign_up')}
-                  </Button>
+                <Link
+                  href="https://signup.hive.io/"
+                  className={cn(buttonVariants({ variant: 'redHover' }), 'whitespace-nowrap')}
+                  data-testid="signup-btn"
+                >
+                  {t('navigation.main_nav_bar.sign_up')}
                 </Link>
               </div>
             ) : null}
@@ -125,15 +128,19 @@ const MainBar: FC = () => {
             <SearchButton aiTag={!!hiveSense} className="lg:hidden" />
             <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
               {user?.isLoggedIn ? (
-                <Link href="/submit.html">
-                  <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
-                    <Icons.pencil className="h-5 w-5" />
-                  </Button>
+                <Link
+                  href="/submit.html"
+                  className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'h-10 w-10 px-0')}
+                  data-testid="nav-pencil"
+                >
+                  <Icons.pencil className="h-5 w-5" />
+                  <span className="sr-only">{t('navigation.main_nav_bar.create_post')}</span>
                 </Link>
               ) : (
                 <DialogLogin redirectTo="/submit.html">
                   <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
                     <Icons.pencil className="h-5 w-5" />
+                    <span className="sr-only">{t('navigation.main_nav_bar.create_post')}</span>
                   </Button>
                 </DialogLogin>
               )}
@@ -160,14 +167,14 @@ const MainBar: FC = () => {
                     <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
                       <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                       <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                      <span className="hidden">Theme</span>
+                      <span className="sr-only">{t('navigation.main_nav_bar.theme')}</span>
                     </Button>
                   </ModeToggle>
                 </div>
               </>
             ) : null}
             {!isClient && !user?.isLoggedIn ? (
-              <Skeleton className="h-9 w-9 rounded-full hidden sm:block" />
+              <Skeleton className="hidden h-9 w-9 rounded-full sm:block" />
             ) : !user?.isLoggedIn ? (
               <div className="hidden sm:block">
                 <LangToggle logged={user ? user?.isLoggedIn : false} className="px-2" />
@@ -181,9 +188,17 @@ const MainBar: FC = () => {
                 {user.isLoggedIn ? (
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger data-testid="profile-avatar-button" className="cursor-pointer">
-                        <UserMenu user={user} notifications={data?.unread}>
-                          <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
+                      <TooltipTrigger asChild>
+                        <UserMenu
+                          user={user}
+                          notifications={data?.unread}
+                          data-testid="profile-avatar-button"
+                          className="cursor-pointer"
+                        >
+                          <button
+                            type="button"
+                            className="group relative inline-flex w-fit cursor-pointer items-center justify-center border-0 bg-transparent p-0"
+                          >
                             {data && data.unread !== 0 ? (
                               <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive-icon px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
                                 {data.unread}
@@ -234,7 +249,7 @@ const MainBar: FC = () => {
                                 />
                               </AvatarFallback>
                             </Avatar>
-                          </div>
+                          </button>
                         </UserMenu>
                       </TooltipTrigger>
                       {manabarsData && (

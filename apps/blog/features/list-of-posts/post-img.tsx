@@ -120,7 +120,7 @@ export default function PostImage({ post }: { post: Entry }) {
               />
               <img
                 srcSet={image}
-                alt="Post image"
+                alt={post.title}
                 loading="lazy"
                 className="w-full"
                 onError={() => setImage(getDefaultImageUrl())}

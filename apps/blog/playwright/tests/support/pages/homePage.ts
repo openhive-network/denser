@@ -82,8 +82,6 @@ export class HomePage {
   readonly getFirstPostVotes: Locator;
   readonly getFirstPostVotesTooltip: Locator;
   readonly getFirstPostChildren: Locator;
-  readonly getFirstPostChildernIcon: Locator;
-  readonly getFirstPostChildernCommentNumber: Locator;
   readonly getFirstPostChildernTooltip: Locator;
   readonly getFirstPostReblogCountDisplay: Locator;
   readonly getFirstPostReblogCountTooltip: Locator;
@@ -194,8 +192,6 @@ export class HomePage {
     this.getFirstPostResponseButton = page.locator('[data-testid="post-card-response-link"]').first();
     this.getFirstPostResponseButtonTooltip = page.locator('[data-testid="post-card-responses"]');
     this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first();
-    this.getFirstPostChildernIcon = this.getFirstPostChildren.locator('a:nth-of-type(1)');
-    this.getFirstPostChildernCommentNumber = this.getFirstPostChildren.locator('a:nth-of-type(2)');
     this.getFirstPostChildernTooltip = page.locator('[data-testid="post-card-responses"]');
     this.getPostChildren = page.locator('[data-testid="post-children"]');
     this.getPostCardFooter = page.locator('[data-testid="post-card-footer"]');
@@ -551,11 +547,10 @@ export class HomePage {
   }
 
   async validateFirstPostResponsesWithTooltip() {
-    await expect(this.getFirstPostChildernCommentNumber).toBeVisible();
-    await expect(this.getFirstPostChildernIcon).toBeVisible();
-    await this.getFirstPostChildernCommentNumber.hover();
+    await expect(this.getFirstPostResponseButton).toBeVisible();
+    await this.getFirstPostResponseButton.hover();
     await expect(this.getFirstPostChildernTooltip).toBeVisible({ timeout: 15000 });
-    const n = await this.getFirstPostChildernCommentNumber.textContent();
+    const n = await this.getFirstPostResponseButton.textContent();
     if (n === '0') {
       expect(await this.getFirstPostChildernTooltip.textContent()).toContain('No responses. Click to respond');
     } else if (n === '1') {

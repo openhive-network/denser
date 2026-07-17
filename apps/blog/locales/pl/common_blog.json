@@ -126,6 +126,7 @@
       "reblogs": "Reblogi"
     },
     "user_menu": {
+      "open_menu": "Menu użytkownika",
       "profile": "Profil",
       "notifications": "Powiadomienia",
       "comments": "Komentarze",

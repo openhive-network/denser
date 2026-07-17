@@ -60,6 +60,7 @@ const Sidebar = () => {
         <SheetTrigger asChild>
           <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button">
             <Icons.sidebarOpen className="h-5 w-5" />
+            <span className="sr-only">{t('navigation.main_nav_bar.menu_panel')}</span>
           </Button>
         </SheetTrigger>
       </TooltipContainer>

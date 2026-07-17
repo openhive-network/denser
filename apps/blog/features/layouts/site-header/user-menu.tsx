@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
-import { ReactNode } from 'react';
+import { cloneElement, forwardRef, ReactElement, HTMLAttributes } from 'react';
 import ModeToggle from '../mode-toggle';
 import { Link } from '@hive/ui';
 import BasePathLink from '../../../components/base-path-link';
@@ -19,6 +19,7 @@ import env from '@beam-australia/react-env';
 import { User, LoginType } from '@smart-signer/types/common';
 import { useTranslation } from '@/blog/i18n/client';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { cn } from '@ui/lib/utils';
 
 // Helper function to get login method icon
 const getLoginMethodIcon = (loginType: LoginType) => {
@@ -42,126 +43,139 @@ const getLoginMethodIcon = (loginType: LoginType) => {
   }
 };
 
-const UserMenu = ({
-  children,
-  user,
-  notifications
-}: {
-  children: ReactNode;
+interface UserMenuProps extends HTMLAttributes<HTMLElement> {
+  children: ReactElement;
   user: User;
   notifications?: number;
-}) => {
-  const onLogout = useLogout();
-  const walletHost = env('WALLET_ENDPOINT');
-  const { t } = useTranslation('common_blog');
+}
 
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 bg-background-secondary" data-testid="user-profile-menu-content">
-        <DropdownMenuLabel className="flex w-full items-center justify-between">
-          <span data-testid="user-name-in-profile-menu">{user.username}</span>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div
-                  className="flex items-center space-x-2"
-                  data-testid="login-method-indicator"
-                >
-                  {getLoginMethodIcon(user.loginType)}
-                  <div className="flex flex-col text-sm font-semibold">
-                    <span>Hive</span>
-                    <span className="text-destructive">Blog</span>
+// forwardRef + cloning `children` lets an outer Tooltip (main-bar.tsx) target
+// this same trigger element too, instead of wrapping its own separate button
+// around it - two stacked interactive elements, keyboard-inaccessible.
+const UserMenu = forwardRef<HTMLElement, UserMenuProps>(
+  ({ children, user, notifications, className, ...rest }, ref) => {
+    const onLogout = useLogout();
+    const walletHost = env('WALLET_ENDPOINT');
+    const { t } = useTranslation('common_blog');
+
+    const trigger = cloneElement(children, {
+      ...rest,
+      ref,
+      className: cn(children.props.className, className),
+      'aria-label': notifications
+        ? `${t('navigation.user_menu.open_menu')} (${notifications})`
+        : t('navigation.user_menu.open_menu')
+    });
+
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56 bg-background-secondary" data-testid="user-profile-menu-content">
+          <DropdownMenuLabel className="flex w-full items-center justify-between">
+            <span data-testid="user-name-in-profile-menu">{user.username}</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center space-x-2" data-testid="login-method-indicator">
+                    {getLoginMethodIcon(user.loginType)}
+                    <div className="flex flex-col text-sm font-semibold">
+                      <span>Hive</span>
+                      <span className="text-destructive">Blog</span>
+                    </div>
                   </div>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {t('navigation.user_menu.logged_in_with', {
-                    method: t(`navigation.user_menu.login_method.${user.loginType}`)
-                  })}
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </DropdownMenuLabel>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {t('navigation.user_menu.logged_in_with', {
+                      method: t(`navigation.user_menu.login_method.${user.loginType}`)
+                    })}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </DropdownMenuLabel>
 
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <BasePathLink href={`/@${user.username}`} data-testid="user-profile-menu-profile-link">
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <BasePathLink href={`/@${user.username}`} data-testid="user-profile-menu-profile-link">
+              <DropdownMenuItem className="cursor-pointer">
+                <Icons.user className="mr-2" />
+                <span className="w-full">{t('navigation.user_menu.profile')}</span>
+              </DropdownMenuItem>
+            </BasePathLink>
+            <Link
+              href={`/@${user.username}/notifications`}
+              data-testid="user-profile-menu-notifications-link"
+            >
+              <DropdownMenuItem className="cursor-pointer">
+                <Icons.clock className="mr-2" />
+                <span className="w-full">
+                  {t('navigation.user_menu.notifications')}
+                  {notifications ? `(${notifications})` : null}
+                </span>
+              </DropdownMenuItem>
+            </Link>
+            <Link href={`/@${user.username}/comments`} data-testid="user-profile-menu-comments-link">
+              <DropdownMenuItem className="cursor-pointer">
+                <Icons.comment className="mr-2" />
+                <span className="w-full">{t('navigation.user_menu.comments')}</span>
+              </DropdownMenuItem>
+            </Link>
+            <Link href={`/@${user.username}/replies`} data-testid="user-profile-menu-replies-link">
+              <DropdownMenuItem className="cursor-pointer">
+                <Icons.undo className="mr-2" />
+                <span className="w-full">{t('navigation.user_menu.replies')}</span>
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem className="cursor-pointer">
-              <Icons.user className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.profile')}</span>
+              <ModeToggle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex h-6 w-full p-0 text-start font-normal"
+                  data-testid="theme-mode"
+                >
+                  <div className="h-6 w-8">
+                    <Icons.sun className="absolute rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  </div>
+                  <span className="w-full">{t('navigation.user_menu.toggle_theme')}</span>
+                </Button>
+              </ModeToggle>
             </DropdownMenuItem>
-          </BasePathLink>
-          <Link href={`/@${user.username}/notifications`} data-testid="user-profile-menu-notifications-link">
             <DropdownMenuItem className="cursor-pointer">
-              <Icons.clock className="mr-2" />
-              <span className="w-full">
-                {t('navigation.user_menu.notifications')}
-                {notifications ? `(${notifications})` : null}
-              </span>
+              <LangToggle logged={true} />
             </DropdownMenuItem>
-          </Link>
-          <Link href={`/@${user.username}/comments`} data-testid="user-profile-menu-comments-link">
             <DropdownMenuItem className="cursor-pointer">
-              <Icons.comment className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.comments')}</span>
-            </DropdownMenuItem>
-          </Link>
-          <Link href={`/@${user.username}/replies`} data-testid="user-profile-menu-replies-link">
-            <DropdownMenuItem className="cursor-pointer">
-              <Icons.undo className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.replies')}</span>
-            </DropdownMenuItem>
-          </Link>
-          <DropdownMenuItem className="cursor-pointer">
-            <ModeToggle>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex h-6 w-full p-0 text-start font-normal"
-                data-testid="theme-mode"
+              <Link
+                target="_blank"
+                href={`${walletHost}/@${user.username}/transfers`}
+                className="flex w-full items-center"
+                data-testid="user-profile-menu-wallet-link"
               >
-                <div className="h-6 w-8">
-                  <Icons.sun className="absolute rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                  <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                </div>
-                <span className="w-full">{t('navigation.user_menu.toggle_theme')}</span>
-              </Button>
-            </ModeToggle>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            <LangToggle logged={true} />
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            <Link
-              target="_blank"
-              href={`${walletHost}/@${user.username}/transfers`}
-              className="flex w-full items-center"
-              data-testid="user-profile-menu-wallet-link"
-            >
-              <Icons.wallet className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.wallet')}</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            <Link
-              href=""
-              onClick={async (e) => {
-                e.preventDefault();
-                await onLogout();
-              }}
-              className="flex w-full items-center"
-              data-testid="user-profile-menu-logout-link"
-            >
-              <Icons.doorOpen className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.logout')}</span>
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
+                <Icons.wallet className="mr-2" />
+                <span className="w-full">{t('navigation.user_menu.wallet')}</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <Link
+                href=""
+                onClick={async (e) => {
+                  e.preventDefault();
+                  await onLogout();
+                }}
+                className="flex w-full items-center"
+                data-testid="user-profile-menu-logout-link"
+              >
+                <Icons.doorOpen className="mr-2" />
+                <span className="w-full">{t('navigation.user_menu.logout')}</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+);
+UserMenu.displayName = 'UserMenu';
 export default UserMenu;

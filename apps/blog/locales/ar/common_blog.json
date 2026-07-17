@@ -125,6 +125,7 @@
       "reblogs": "إعادة النشر"
     },
     "user_menu": {
+      "open_menu": "قائمة المستخدم",
       "profile": "الملف الشخصي",
       "notifications": "الإشعارات",
       "comments": "التعليقات",

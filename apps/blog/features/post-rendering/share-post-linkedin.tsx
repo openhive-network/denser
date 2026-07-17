@@ -22,13 +22,15 @@ export default function LinkedInShare({ title, url }: { title: string; url: stri
   };
 
   return (
-    <div
-      className="cursor-pointer text-muted-foreground transition-colors hover:text-destructive"
+    <button
+      type="button"
+      className="flex items-center border-0 bg-transparent p-0 text-muted-foreground transition-colors hover:text-destructive"
       onClick={openWindow}
       title={t('post_content.footer.share_on') + `LinkedIn`}
+      aria-label={t('post_content.footer.share_on') + `LinkedIn`}
       data-testid="share-on-linkedin"
     >
       <Linkedin className="h-[18px] w-[18px]" />
-    </div>
+    </button>
   );
 }

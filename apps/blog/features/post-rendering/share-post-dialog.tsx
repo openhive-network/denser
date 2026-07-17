@@ -11,7 +11,13 @@ export function SharePost({ children, path, title }: { children: ReactNode; path
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div title={t('post_content.footer.share_form.share_this_link')}>{children}</div>
+        <button
+          type="button"
+          className="flex items-center border-0 bg-transparent p-0"
+          aria-label={t('post_content.footer.share_form.share_this_link')}
+        >
+          {children}
+        </button>
       </DialogTrigger>
       <DialogContent className="flex flex-col gap-4 sm:max-w-[600px]" data-testid="share-post-dialog">
         <DialogHeader>

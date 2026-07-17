@@ -124,6 +124,7 @@
       "reblogs": "Reblogueos"
     },
     "user_menu": {
+      "open_menu": "Menú de usuario",
       "profile": "Perfil",
       "notifications": "Notificaciones",
       "comments": "Comentarios",

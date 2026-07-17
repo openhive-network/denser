@@ -124,6 +124,7 @@
       "reblogs": "Reblogs"
     },
     "user_menu": {
+      "open_menu": "ユーザーメニュー",
       "profile": "プロフィール",
       "notifications": "通知",
       "comments": "コメント",

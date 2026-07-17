@@ -124,6 +124,7 @@
       "reblogs": "Reblogs"
     },
     "user_menu": {
+      "open_menu": "Menu utente",
       "profile": "Profilo",
       "notifications": "Notifiche",
       "comments": "Commenti",
