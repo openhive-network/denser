@@ -1,4 +1,4 @@
-import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { EncryptMemo, SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { TTransactionPackType, IOnlineSignatureProvider } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
@@ -62,5 +62,30 @@ export class SignerPeakvault extends Signer {
       logger.error('SignerPeakvault.signTransaction error: %s', error instanceof Error ? error.message : String(error));
       throw error;
     }
+  }
+
+  /**
+   * Unlike Keychain, Peak Vault's own `PeakVaultProvider.encryptData` has no
+   * known casing bug to route around, so this calls it directly with the
+   * `'memo'` role.
+   *
+   * Note: whether the leading `#` marker convention (strip before encrypt,
+   * re-prepend after decrypt - see `memo-crypto.ts`) is followed depends on
+   * the real Peak Vault browser extension's internal behavior, which isn't
+   * independently verifiable from this codebase (only the `wax-signers-peakvault`
+   * wrapper is inspectable, and it does no marker adjustment of its own beyond
+   * ensuring the wire buffer has a `#` prefix before the extension call).
+   * Assumed to follow the same hive-js convention every other Hive wallet
+   * does; flag for review if a real #-prefixed round-trip through Peak Vault
+   * doesn't match Keychain's behavior.
+   */
+  async encryptData({ toAccountMemoPublicKey, memo }: EncryptMemo): Promise<string> {
+    const provider = PeakVaultProvider.for(this.username, 'memo');
+    return provider.encryptData(memo, toAccountMemoPublicKey);
+  }
+
+  async decryptData(encodedMemo: string): Promise<string> {
+    const provider = PeakVaultProvider.for(this.username, 'memo');
+    return provider.decryptData(encodedMemo);
   }
 }

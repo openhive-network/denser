@@ -14,12 +14,28 @@ import {
   Label,
   Textarea
 } from '@ui/components';
-import { decryptMemoWithKeychain, decryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
+import { decryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
+import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
+
+// See the identical constant in encrypt-memo-dialog.tsx.
+const NATIVE_SIGNER_DECODE_LABEL_KEY: Partial<Record<LoginType, string>> = {
+  [LoginType.keychain]: 'transfers_page.decode_memo_with_keychain',
+  [LoginType.peakvault]: 'transfers_page.decode_memo_with_peakvault'
+};
+
+const isNativeSignerAvailable = (loginType: LoginType): boolean => {
+  if (loginType === LoginType.keychain) return hasCompatibleKeychain();
+  if (loginType === LoginType.peakvault) return hasCompatiblePeakvault();
+  return false;
+};
 
 interface DecodeMemoDialogProps {
   username: string;
@@ -28,16 +44,17 @@ interface DecodeMemoDialogProps {
 
 const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
   const { t } = useTranslation('common_wallet');
+  const { user } = useUserClient();
   const [open, setOpen] = useState(false);
   const [privateKey, setPrivateKey] = useState('');
   const [decodedMessage, setDecodedMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [keychainSupported, setKeychainSupported] = useState(false);
+  const [nativeSignerAvailable, setNativeSignerAvailable] = useState(false);
 
   useEffect(() => {
-    setKeychainSupported(hasCompatibleKeychain());
-  }, []);
+    setNativeSignerAvailable(isNativeSignerAvailable(user.loginType));
+  }, [user.loginType]);
 
   const resetState = () => {
     setPrivateKey('');
@@ -58,18 +75,28 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
     }
   };
 
-  const onDecodeWithKeychain = async () => {
+  const onDecodeWithNativeSigner = async () => {
     setLoading(true);
     setError('');
     try {
-      setDecodedMessage(await decryptMemoWithKeychain(username, encodedMemo));
+      const signer = getSigner({
+        username,
+        loginType: user.loginType,
+        // Unused by decryptData (which hardcodes the 'memo' role internally)
+        // - the Signer constructor just requires some truthy KeyType.
+        keyType: KeyType.posting,
+        storageType: 'localStorage'
+      });
+      setDecodedMessage(await signer.decryptData(encodedMemo));
     } catch (error) {
-      logger.error(error, 'Error decoding memo with Keychain');
+      logger.error(error, 'Error decoding memo with native signer');
       setError(t('transfers_page.decode_memo_error'));
     } finally {
       setLoading(false);
     }
   };
+
+  const nativeSignerLabelKey = NATIVE_SIGNER_DECODE_LABEL_KEY[user.loginType];
 
   return (
     <Dialog
@@ -122,9 +149,9 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
           <Button onClick={onDecodeWithPrivateKey} disabled={!privateKey || loading}>
             {t('transfers_page.decode_memo_with_private_key')}
           </Button>
-          {keychainSupported && (
-            <Button variant="ghost" onClick={onDecodeWithKeychain} disabled={loading}>
-              {t('transfers_page.decode_memo_with_keychain')}
+          {nativeSignerAvailable && nativeSignerLabelKey && (
+            <Button variant="ghost" onClick={onDecodeWithNativeSigner} disabled={loading}>
+              {t(nativeSignerLabelKey)}
             </Button>
           )}
         </DialogFooter>

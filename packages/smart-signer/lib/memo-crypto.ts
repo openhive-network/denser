@@ -1,5 +1,6 @@
 import type { TPublicKey } from '@hiveio/wax';
 import type { BeekeeperProvider as IBeekeeperProvider } from '@hiveio/wax-signers-beekeeper';
+import KeychainProvider from '@hiveio/wax-signers-keychain';
 
 import { getLogger } from '@hive/ui/lib/logging';
 
@@ -43,19 +44,22 @@ interface KeychainCallbackResponse {
 }
 
 /**
- * Calls the Hive Keychain extension directly for memo encode/decode,
+ * Calls the Hive Keychain extension directly for memo *encoding*,
  * bypassing `@hiveio/wax-signers-keychain`'s `KeychainProvider`.
  *
  * `KeychainProvider` forwards wax's lowercase `TRole` (`'memo'`) verbatim as
- * the Keychain request's `method` field, but the real extension expects the
+ * the Keychain request's `method` field, but the real extension's
+ * `encodeMessage` handler does an exact-match comparison against the
  * capitalized `KeychainKeyTypes` convention (`'Memo'`) - see
- * `hive-keychain-commons`'s `KeychainKeyTypes` enum. The extension's
- * `encodeMessage` handler does `data.method === KeychainKeyTypes.memo`
- * (`'memo' === 'Memo'` is false) and silently falls back to the account's
- * POSTING public key, producing ciphertext nobody's real MEMO key can ever
- * decrypt. Transaction signing is unaffected (it resolves keys by matching
- * public keys against required authorities, not by this string), so only
- * memo encode/decode need this workaround.
+ * `hive-keychain-commons`'s `KeychainKeyTypes` enum. `data.method ===
+ * KeychainKeyTypes.memo` (`'memo' === 'Memo'` is false) and silently falls
+ * back to the account's POSTING public key, producing ciphertext nobody's
+ * real MEMO key can ever decrypt. Transaction signing is unaffected (it
+ * resolves keys by matching public keys against required authorities, not
+ * by this string). Decoding (`requestVerifyKey`) is unaffected too - its
+ * key resolution normalizes case rather than exact-matching - so
+ * `decryptMemoWithKeychain` below uses the standard `KeychainProvider`
+ * instead of this bypass.
  */
 function requestKeychain(
   invoke: (callback: (response: KeychainCallbackResponse) => void) => void
@@ -109,11 +113,15 @@ async function withEphemeralMemoProvider<T>(
 /**
  * Decrypts an encrypted memo (`#`-prefixed) using the Hive Keychain
  * extension. Requires the account's MEMO key to be present in Keychain.
+ *
+ * Goes through the standard `KeychainProvider` (unlike `encryptMemoWithKeychain`
+ * below, which bypasses it) - the extension's decode handler resolves the key
+ * via case-normalizing logic, not an exact string match, so `KeychainProvider`'s
+ * lowercase `'memo'` role works correctly here. Only encode has the casing bug.
  */
 export async function decryptMemoWithKeychain(username: string, encodedMemo: string): Promise<string> {
-  return requestKeychain((callback) =>
-    window.hive_keychain.requestVerifyKey(username, encodedMemo, 'Memo', callback)
-  );
+  const provider = KeychainProvider.for(username, 'memo');
+  return provider.decryptData(encodedMemo);
 }
 
 /**

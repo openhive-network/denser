@@ -12,13 +12,33 @@ import {
   Input,
   Label
 } from '@ui/components';
-import { encryptMemoWithKeychain, encryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
+import { encryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
+import { getSigner } from '@smart-signer/lib/signer/get-signer';
+import { KeyType, LoginType } from '@smart-signer/types/common';
 import { getAccount } from '@transaction/lib/hive-api';
 import { useTranslation } from '@/wallet/i18n/client';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
+
+// Login types whose Signer can encrypt a MEMO natively (Signer.encryptData -
+// see packages/smart-signer/lib/signer/signer.ts), with the translation key
+// for that button's label. Not every login type is here: hb-auth's key store
+// only knows active/posting/owner, and HiveAuth's remote relay flow has no
+// local key material - both fall through to the WIF option below.
+const NATIVE_SIGNER_ENCRYPT_LABEL_KEY: Partial<Record<LoginType, string>> = {
+  [LoginType.keychain]: 'transfers_page.encrypt_memo_with_keychain',
+  [LoginType.peakvault]: 'transfers_page.encrypt_memo_with_peakvault'
+};
+
+const isNativeSignerAvailable = (loginType: LoginType): boolean => {
+  if (loginType === LoginType.keychain) return hasCompatibleKeychain();
+  if (loginType === LoginType.peakvault) return hasCompatiblePeakvault();
+  return false;
+};
 
 interface EncryptMemoDialogProps {
   open: boolean;
@@ -38,14 +58,15 @@ const EncryptMemoDialog = ({
   onEncrypted
 }: EncryptMemoDialogProps) => {
   const { t } = useTranslation('common_wallet');
+  const { user } = useUserClient();
   const [privateKey, setPrivateKey] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [keychainSupported, setKeychainSupported] = useState(false);
+  const [nativeSignerAvailable, setNativeSignerAvailable] = useState(false);
 
   useEffect(() => {
-    setKeychainSupported(hasCompatibleKeychain());
-  }, []);
+    setNativeSignerAvailable(isNativeSignerAvailable(user.loginType));
+  }, [user.loginType]);
 
   useEffect(() => {
     if (!open) {
@@ -70,19 +91,31 @@ const EncryptMemoDialog = ({
     }
   };
 
-  const onEncryptWithKeychain = async () => {
+  const onEncryptWithNativeSigner = async () => {
     setLoading(true);
     setError('');
     try {
-      const encrypted = await encryptMemoWithKeychain(fromAccount, toAccount, memo);
+      const account = await getAccount(toAccount);
+      if (!account) throw new Error(`Unknown account ${toAccount}`);
+      const signer = getSigner({
+        username: fromAccount,
+        loginType: user.loginType,
+        // Unused by encryptData (which hardcodes the 'memo' role internally)
+        // - the Signer constructor just requires some truthy KeyType.
+        keyType: KeyType.posting,
+        storageType: 'localStorage'
+      });
+      const encrypted = await signer.encryptData({ toAccount, toAccountMemoPublicKey: account.memo_key, memo });
       onEncrypted(encrypted);
     } catch (error) {
-      logger.error(error, 'Error encrypting memo with Keychain');
+      logger.error(error, 'Error encrypting memo with native signer');
       setError(t('transfers_page.encrypt_memo_error'));
     } finally {
       setLoading(false);
     }
   };
+
+  const nativeSignerLabelKey = NATIVE_SIGNER_ENCRYPT_LABEL_KEY[user.loginType];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -114,9 +147,9 @@ const EncryptMemoDialog = ({
           <Button onClick={onEncryptWithPrivateKey} disabled={!privateKey || loading}>
             {t('transfers_page.encrypt_memo_with_private_key')}
           </Button>
-          {keychainSupported && (
-            <Button variant="ghost" onClick={onEncryptWithKeychain} disabled={loading}>
-              {t('transfers_page.encrypt_memo_with_keychain')}
+          {nativeSignerAvailable && nativeSignerLabelKey && (
+            <Button variant="ghost" onClick={onEncryptWithNativeSigner} disabled={loading}>
+              {t(nativeSignerLabelKey)}
             </Button>
           )}
           <Button variant="link" onClick={() => onOpenChange(false)} disabled={loading}>

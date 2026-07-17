@@ -8,12 +8,18 @@ import { encryptMemoWithKeychain, decryptMemoWithKeychain, stripEncryptedMemoMar
  * nobody could decrypt, including the production wallet.hive.blog. Root
  * cause was `KeychainProvider` (from `@hiveio/wax-signers-keychain`)
  * forwarding wax's lowercase `TRole` ('memo') verbatim to the Keychain
- * window API, while the real extension's `KeychainKeyTypes` enum
- * (hive-keychain-commons) is capitalized ('Memo') - a silent mismatch that
- * made the extension fall back to the recipient's POSTING key instead of
- * throwing. `memo-crypto.ts` now calls `window.hive_keychain` directly with
- * the correct casing; these tests pin that exact string so it cannot
- * regress silently again.
+ * window API, while the real extension's `encodeMessage` handler exact-matches
+ * against the capitalized `KeychainKeyTypes` enum (hive-keychain-commons,
+ * 'Memo') - a silent mismatch that made the extension fall back to the
+ * recipient's POSTING key instead of throwing. `encryptMemoWithKeychain`
+ * calls `window.hive_keychain` directly with the correct casing; the first
+ * test below pins that exact string so it cannot regress silently again.
+ *
+ * Decoding was never affected by the casing bug (the extension's decode key
+ * resolution normalizes case rather than exact-matching), so
+ * `decryptMemoWithKeychain` was simplified to go through the standard
+ * `KeychainProvider` instead of maintaining its own bypass - the second test
+ * below pins its (lowercase, and correctly so) 'memo' role string instead.
  *
  * Second regression, found in review: the WIF/Beekeeper path did not follow
  * hive-js's `#`-marker convention (strip before encrypt, re-prepend after
@@ -80,7 +86,7 @@ describe('memo-crypto: Keychain key-type casing (regression for #605 / #713)', (
     expect(result).to.equal('#encrypted');
   });
 
-  it('decryptMemoWithKeychain requests the capitalized "Memo" key type', async () => {
+  it('decryptMemoWithKeychain (via KeychainProvider) requests the lowercase "memo" role', async () => {
     let capturedMethod: string | undefined;
     (global as unknown as { window: unknown }).window = {
       hive_keychain: {
@@ -97,7 +103,7 @@ describe('memo-crypto: Keychain key-type casing (regression for #605 / #713)', (
     };
 
     const result = await decryptMemoWithKeychain('quochuy', '#encrypted');
-    expect(capturedMethod).to.equal('Memo');
+    expect(capturedMethod).to.equal('memo');
     expect(result).to.equal('#secret');
   });
 
