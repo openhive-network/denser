@@ -46,7 +46,8 @@ async function test({ page }) {
   // can churn through dozens of successful-but-never-rendering fetches well
   // past any reasonable smoke-test timeout (observed in CI: 20+ successful
   // 200-OK batches, zero visible results after 30s+) - a real product-side
-  // issue, not something a smoke test should be gating on. Classic Search hits
+  // issue tracked as #949, not something a smoke test should be gating on.
+  // Classic Search hits
   // bridge.get_by_text directly with no such pagination loop, so it's what
   // this smoke check actually verifies: "search works", not "AI search works".
   await page.goto(`${config.BASE_URL}/search?q=hive&s=relevance`, {
