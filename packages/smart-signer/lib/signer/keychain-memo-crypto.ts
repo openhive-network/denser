@@ -44,6 +44,9 @@ function requestKeychain(
  * back to the account's POSTING key, producing undecryptable ciphertext.
  * Decoding isn't affected (case-insensitive there), so `decryptMemoWithKeychain`
  * below doesn't need this bypass.
+ *
+ * Transitional: remove once gitlab.syncad.com/hive/wax !655 is merged/released/
+ * pinned here, and go back through `KeychainProvider`.
  */
 export async function encryptMemoWithKeychain(
   fromAccount: string,
