@@ -934,10 +934,15 @@ lighthouse-metrics-blog:
     command:
     - sh
     - -c
-    - >-
-      printf 'https://caddy {\n    tls internal\n    encode zstd gzip\n    reverse_proxy denser:3000\n}\n'
-      > /etc/caddy/Caddyfile &&
-      caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+    - |
+      cat > /etc/caddy/Caddyfile <<'EOF'
+      https://caddy {
+          tls internal
+          encode zstd gzip
+          reverse_proxy denser:3000
+      }
+      EOF
+      exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
   variables:
     TURBO_APP_NAME: 'blog'
     LIGHTHOUSE_URL: 'https://caddy'
@@ -958,10 +963,15 @@ lighthouse-metrics-wallet:
     command:
     - sh
     - -c
-    - >-
-      printf 'https://caddy {\n    tls internal\n    encode zstd gzip\n    reverse_proxy denser:4000\n}\n'
-      > /etc/caddy/Caddyfile &&
-      caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+    - |
+      cat > /etc/caddy/Caddyfile <<'EOF'
+      https://caddy {
+          tls internal
+          encode zstd gzip
+          reverse_proxy denser:4000
+      }
+      EOF
+      exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
   variables:
     TURBO_APP_NAME: 'wallet'
     LIGHTHOUSE_URL: 'https://caddy'
