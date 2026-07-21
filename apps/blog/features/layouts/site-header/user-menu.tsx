@@ -112,6 +112,17 @@ const UserMenu = ({
               <span className="w-full">{t('navigation.user_menu.replies')}</span>
             </DropdownMenuItem>
           </Link>
+          {user.loginType === LoginType.google && (
+            <BasePathLink
+              href={`/@${user.username}/settings/google-drive-wallet`}
+              data-testid="user-profile-menu-google-drive-wallet-link"
+            >
+              <DropdownMenuItem className="cursor-pointer">
+                <Icons.google className="mr-2 h-4 w-4" />
+                <span className="w-full">{t('navigation.user_menu.google_drive_wallet')}</span>
+              </DropdownMenuItem>
+            </BasePathLink>
+          )}
           <BasePathLink href={`/@${user.username}/settings`} data-testid="user-profile-menu-settings-link">
             <DropdownMenuItem className="cursor-pointer">
               <Icons.settings className="mr-2" />

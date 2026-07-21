@@ -153,7 +153,8 @@
         "hiveauth": "HiveAuth",
         "wif": "WIF Key",
         "hivesigner": "HiveSigner"
-      }
+      },
+      "google_drive_wallet": "Google Drive Wallet"
     }
   },
   "select_sort": {
@@ -769,14 +770,7 @@
     "changes_saved": "Changes saved",
     "tab_profile": "Profile",
     "tab_google_drive_wallet": "Google Drive Wallet",
-    "tab_appearance": "Appearance",
-    "theme_section_title": "Theme",
-    "theme_section_description": "Select your preferred color theme for the interface.",
-    "theme_light": "Light",
-    "theme_dark": "Dark",
-    "theme_system": "System",
-    "language_section_title": "Language",
-    "language_section_description": "Choose your preferred language for the interface."
+    "tab_appearance": "Appearance"
   },
   "google_drive_wallet": {
     "connect": {
@@ -854,8 +848,7 @@
       "remove_dialog_description": "This custom key will be permanently removed from your wallet.",
       "remove_warning": "Make sure you have a backup of this key before removing it. This action cannot be undone.",
       "removing": "Removing...",
-      "remove_key": "Remove Key",
-      "section_description": "Store additional private keys not tied to standard Hive roles"
+      "remove_key": "Remove Key"
     },
     "add_account": {
       "title": "Add Account",
