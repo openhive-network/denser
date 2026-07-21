@@ -15,14 +15,9 @@ export function StepAccountName({ accountName, onAccountNameChange, disabled }: 
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2">
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
-          1
-        </div>
-        <Label className="text-base font-semibold">
-          {t('google_drive_wallet.create_dialog.account_name_label')}
-        </Label>
-      </div>
+      <Label className="text-base font-semibold">
+        {t('google_drive_wallet.create_dialog.account_name_label')}
+      </Label>
       <Input
         value={accountName}
         onChange={(e) => onAccountNameChange(e.target.value)}

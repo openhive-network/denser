@@ -140,6 +140,7 @@
       "replies": "Replies",
       "toggle_theme": "Theme",
       "toggle_lang": "Language",
+      "settings": "Settings",
       "wallet": "Wallet",
       "logout": "Logout",
       "logged_in_with": "Logged in with {{method}}",
@@ -767,7 +768,8 @@
     "error_cant_remove_all": "You must have at least one endpoint in the list",
     "changes_saved": "Changes saved",
     "tab_profile": "Profile",
-    "tab_google_drive_wallet": "Google Drive Wallet"
+    "tab_google_drive_wallet": "Google Drive Wallet",
+    "tab_appearance": "Appearance"
   },
   "google_drive_wallet": {
     "connect": {
@@ -910,7 +912,12 @@
       "confirm_password_placeholder": "Confirm recovery password",
       "password_min_length": "Password must be at least 8 characters.",
       "passwords_no_match": "Passwords do not match.",
-      "password_valid": "Passwords match!"
+      "password_valid": "Passwords match!",
+      "step1_description": "Enter the Hive account name you want to manage",
+      "step2_description": "Add private keys for the roles you want to use",
+      "step3_description": "Set a password to encrypt your wallet",
+      "security_note": "Keys are encrypted before being stored on Google Drive",
+      "cancel": "Cancel"
     },
     "toast": {
       "error": "An error occurred",

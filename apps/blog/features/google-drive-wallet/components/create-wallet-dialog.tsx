@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Fragment, type FormEvent, useState, useCallback } from 'react';
+import { Check, KeyRound, Loader2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import {
 } from '@ui/components/dialog';
 import { Button } from '@ui/components/button';
 import { Alert, AlertDescription } from '@ui/components/alert';
+import { cn } from '@ui/lib/utils';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import type { TRole } from '@smart-signer/lib/google-drive-wallet-manager';
 import { useTranslation } from '@/blog/i18n/client';
@@ -169,24 +170,58 @@ export function CreateWalletDialog({
 
   const isLastStep = step === totalSteps || (step === 2 && isAddingToExistingWallet);
 
+  const stepDescriptionKey = `google_drive_wallet.create_dialog.step${step}_description` as const;
+
+  function handleFormSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (isLastStep) {
+      void handleSubmit();
+    } else {
+      handleNext();
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-md">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="flex items-center gap-2">
+            <KeyRound className="h-5 w-5" />
             {isAddingToExistingWallet
               ? t('google_drive_wallet.create_dialog.title_add_keys')
               : t('google_drive_wallet.create_dialog.title_create')}
           </DialogTitle>
           <DialogDescription>
-            {t('google_drive_wallet.create_dialog.step_indicator', {
-              current: step,
-              total: totalSteps
-            })}
+            {t(stepDescriptionKey)}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-2">
+        <div className="flex items-center justify-center gap-0 py-3">
+          {Array.from({ length: totalSteps }, (_, i) => {
+            const stepNum = i + 1;
+            const isActive = stepNum === step;
+            const isCompleted = stepNum < step;
+            return (
+              <Fragment key={stepNum}>
+                {i > 0 && (
+                  <div className={cn('h-0.5 w-12', isCompleted ? 'bg-primary' : 'bg-muted')} />
+                )}
+                <div
+                  className={cn(
+                    'flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-colors',
+                    isActive && 'bg-primary text-primary-foreground ring-2 ring-primary/20',
+                    isCompleted && 'bg-primary text-primary-foreground',
+                    !isActive && !isCompleted && 'bg-muted text-muted-foreground'
+                  )}
+                >
+                  {isCompleted ? <Check className="h-3.5 w-3.5" /> : stepNum}
+                </div>
+              </Fragment>
+            );
+          })}
+        </div>
+
+        <form onSubmit={handleFormSubmit} className="space-y-4 py-2">
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
@@ -224,35 +259,46 @@ export function CreateWalletDialog({
               disabled={isProcessing}
             />
           )}
-        </div>
 
-        <DialogFooter>
-          {step > 1 && (
-            <Button variant="outline" onClick={handleBack} disabled={isProcessing}>
-              {t('google_drive_wallet.create_dialog.back')}
-            </Button>
-          )}
+          <DialogFooter className="gap-2 sm:gap-2">
+            {step === 1 ? (
+              <Button
+                type="button"
+                variant="ghost"
+                disabled={isProcessing}
+                onClick={() => handleOpenChange(false)}
+              >
+                {t('google_drive_wallet.create_dialog.cancel')}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleBack}
+                disabled={isProcessing}
+              >
+                {t('google_drive_wallet.create_dialog.back')}
+              </Button>
+            )}
 
-          {isLastStep ? (
-            <Button
-              onClick={() => void handleSubmit()}
-              disabled={!canProceed || isProcessing}
-            >
-              {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isProcessing
-                ? isAddingToExistingWallet
-                  ? t('google_drive_wallet.create_dialog.adding_keys')
-                  : t('google_drive_wallet.create_dialog.creating_wallet')
-                : isAddingToExistingWallet
-                  ? t('google_drive_wallet.create_dialog.submit_add_keys')
-                  : t('google_drive_wallet.create_dialog.submit_create')}
-            </Button>
-          ) : (
-            <Button onClick={handleNext} disabled={!canProceed || isProcessing}>
-              {t('google_drive_wallet.create_dialog.next')}
-            </Button>
-          )}
-        </DialogFooter>
+            {isLastStep ? (
+              <Button type="submit" disabled={!canProceed || isProcessing}>
+                {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isProcessing
+                  ? isAddingToExistingWallet
+                    ? t('google_drive_wallet.create_dialog.adding_keys')
+                    : t('google_drive_wallet.create_dialog.creating_wallet')
+                  : isAddingToExistingWallet
+                    ? t('google_drive_wallet.create_dialog.submit_add_keys')
+                    : t('google_drive_wallet.create_dialog.submit_create')}
+              </Button>
+            ) : (
+              <Button type="submit" disabled={!canProceed || isProcessing}>
+                {t('google_drive_wallet.create_dialog.next')}
+              </Button>
+            )}
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

@@ -218,7 +218,7 @@ export function AccountKeyList({
         <div key={role} className="space-y-2 rounded-lg border p-3 sm:p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Badge variant="default" className="capitalize">{role}</Badge>
+              <Badge variant="outline" className="capitalize">{role}</Badge>
               <span className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
                 <Check className="h-4 w-4" />
                 {t('google_drive_wallet.configured')}

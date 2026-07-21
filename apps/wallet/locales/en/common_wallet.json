@@ -579,7 +579,13 @@
     }
   },
   "settings": {
+    "title": "Settings",
     "preferences": "Preferences",
+    "appearance": "Appearance",
+    "theme_label": "Theme",
+    "theme_description": "Choose between light, dark, or system theme",
+    "language_label": "Language",
+    "language_description": "Choose your preferred display language",
     "choose_api": "Choose Your Preferred API Node"
   }
 }

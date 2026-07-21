@@ -31,14 +31,9 @@ export function StepRecoveryPassword({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2">
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
-          3
-        </div>
-        <Label className="text-base font-semibold">
-          {t('google_drive_wallet.create_dialog.recovery_password_label')}
-        </Label>
-      </div>
+      <Label className="text-base font-semibold">
+        {t('google_drive_wallet.create_dialog.recovery_password_label')}
+      </Label>
 
       <Alert variant="destructive">
         <AlertDescription>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Eye, EyeOff, Plus, X } from 'lucide-react';
+import { Eye, EyeOff, Plus, ShieldAlert, X } from 'lucide-react';
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
@@ -47,14 +47,9 @@ export function StepPrivateKeys({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-medium text-primary-foreground">
-            2
-          </div>
-          <Label className="text-base font-semibold">
-            {t('google_drive_wallet.create_dialog.private_keys_label')}
-          </Label>
-        </div>
+        <Label className="text-base font-semibold">
+          {t('google_drive_wallet.create_dialog.private_keys_label')}
+        </Label>
         {availableRolesToAdd.length > 0 && (
           <Button variant="outline" size="sm" onClick={onAddKeyField} disabled={disabled}>
             <Plus className="mr-1 h-3.5 w-3.5" />
@@ -69,7 +64,7 @@ export function StepPrivateKeys({
 
       <div className="space-y-3">
         {keyFields.map((field, index) => (
-          <div key={index} className="space-y-2 rounded-lg border bg-card p-3">
+          <div key={index} className="space-y-2 rounded-lg border border-border/50 p-3">
             <div className="flex items-center gap-2">
               <Select
                 value={field.role}
@@ -86,12 +81,7 @@ export function StepPrivateKeys({
                       value={role}
                       disabled={usedRoles.includes(role) && field.role !== role}
                     >
-                      <div className="flex flex-col items-start gap-0.5">
-                        <span className="font-medium capitalize">{role}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {t(`google_drive_wallet.roles.${role}_desc`)}
-                        </span>
-                      </div>
+                      <span className="font-medium capitalize">{role}</span>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -109,6 +99,12 @@ export function StepPrivateKeys({
                 </Button>
               )}
             </div>
+
+            {field.role && (
+              <p className="text-xs text-muted-foreground">
+                {t(`google_drive_wallet.roles.${field.role}_desc`)}
+              </p>
+            )}
 
             <div className="relative">
               <Input
@@ -132,6 +128,11 @@ export function StepPrivateKeys({
           </div>
         ))}
       </div>
+
+      <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
+        {t('google_drive_wallet.create_dialog.security_note')}
+      </p>
     </div>
   );
 }
