@@ -1,32 +1,27 @@
-import SettingsContent from './content';
-import { getFollowList } from '@transaction/lib/bridge-api';
+'use client';
+
+import SettingsForm from '@/blog/features/account-settings/form';
+import MutedList from '@/blog/features/account-settings/muted-list';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useParams } from 'next/navigation';
 import { extractUsernameFromParam } from '@/blog/utils/validate-links';
-import { notFound } from 'next/navigation';
-import { getLogger } from '@ui/lib/logging';
-import { InitialFollowListProvider } from '@/blog/components/observer-provider';
 
-const logger = getLogger('app');
+const SettingsProfilePage = () => {
+  const params = useParams<{ param: string }>();
+  const username = extractUsernameFromParam(params?.param ?? '') ?? '';
+  const { user } = useUserClient();
+  const isMyProfile = user?.isLoggedIn && user?.username === username;
 
-const SettingsPage = async ({ params }: { params: { param: string } }) => {
-  const username = extractUsernameFromParam(params.param);
-  if (!username) notFound();
-
-  // Fetch muted list on server and pass via context.
-  // profileData is already cached from the user-profile layout.
-  // Using context+initialData instead of Hydrate/dehydrate to avoid
-  // overwriting optimistic cache updates on navigation.
-  let mutedData = null;
-  try {
-    mutedData = (await getFollowList(username, 'muted')) ?? null;
-  } catch (error) {
-    logger.error(error, 'Error in SettingsPage:');
+  if (isMyProfile) {
+    return (
+      <>
+        <SettingsForm username={user.username} />
+        <MutedList username={username} />
+      </>
+    );
   }
 
-  return (
-    <InitialFollowListProvider value={mutedData}>
-      <SettingsContent username={username} />
-    </InitialFollowListProvider>
-  );
+  return <MutedList username={username} />;
 };
 
-export default SettingsPage;
+export default SettingsProfilePage;

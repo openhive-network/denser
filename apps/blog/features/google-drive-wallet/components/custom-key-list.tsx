@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Key, Loader2, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
 import type { CustomKey } from '@smart-signer/lib/google-drive-wallet-manager';
 import { useTranslation } from '@/blog/i18n/client';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -9,6 +9,7 @@ import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
 import { Badge } from '@ui/components/badge';
+import { Separator } from '@ui/components/separator';
 import {
   Dialog,
   DialogContent,
@@ -110,20 +111,31 @@ export function CustomKeyList({ customKeys, onAddCustomKey, onRemoveCustomKey }:
 
   return (
     <div className="space-y-4">
+      <Separator />
+
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-muted-foreground">
-          {t('google_drive_wallet.custom_keys.title')}
-        </p>
-        <Button variant="outline" size="sm" onClick={openAddDialog}>
+        <div>
+          <h3 className="flex items-center gap-2 text-lg font-semibold leading-5">
+            <Key className="h-4 w-4 text-muted-foreground" />
+            {t('google_drive_wallet.custom_keys.title')}
+          </h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t('google_drive_wallet.custom_keys.section_description')}
+          </p>
+        </div>
+        <Button variant="outline" size="sm" className="shrink-0" onClick={openAddDialog}>
           <Plus className="mr-1 h-4 w-4" />
           {t('google_drive_wallet.custom_keys.add_button')}
         </Button>
       </div>
 
       {customKeys.length === 0 ? (
-        <p className="py-6 text-sm text-muted-foreground">
-          {t('google_drive_wallet.custom_keys.empty_state')}
-        </p>
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-8 text-center">
+          <Key className="mb-2 h-6 w-6 text-muted-foreground/50" />
+          <p className="text-sm text-muted-foreground">
+            {t('google_drive_wallet.custom_keys.empty_state')}
+          </p>
+        </div>
       ) : (
         <div className="space-y-2">
           {customKeys.map((key) => (
@@ -158,11 +170,10 @@ export function CustomKeyList({ customKeys, onAddCustomKey, onRemoveCustomKey }:
         </div>
       )}
 
-      <p className="text-xs text-muted-foreground">
-        <span className="font-medium">{t('google_drive_wallet.custom_keys.about_title')}</span>
-        {' '}
-        {t('google_drive_wallet.custom_keys.about_description')}
-      </p>
+      <div className="rounded-lg bg-muted p-3 text-xs text-muted-foreground">
+        <p className="mb-1 font-medium">{t('google_drive_wallet.custom_keys.about_title')}</p>
+        <p>{t('google_drive_wallet.custom_keys.about_description')}</p>
+      </div>
 
       {/* Add Custom Key Dialog */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>

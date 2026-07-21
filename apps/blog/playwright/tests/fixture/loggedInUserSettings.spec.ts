@@ -36,8 +36,8 @@ import {
  * not yet in scope.
  *
  * Settings page is gated on `user.isLoggedIn && user.username === username`
- * (apps/blog/app/[param]/(user-profile)/settings/content.tsx:12), so all
- * specs navigate to `/@{SETTINGS_USER}/settings`.
+ * (apps/blog/app/[param]/(user-profile)/settings/settings-tab-nav.tsx + each sub-page),
+ * so all specs navigate to `/@{SETTINGS_USER}/settings`.
  *
  * Record:  FIXTURE_MODE=record pnpm --filter @hive/blog exec \
  *            playwright test --config=playwright.fixture.config.ts \
