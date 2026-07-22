@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Plus, Trash2 } from 'lucide-react';
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 import { toast } from '@ui/components/hooks/use-toast';
 import { Button } from '@ui/components/button';
 import { Separator } from '@ui/components/separator';
@@ -26,7 +26,7 @@ import { WalletNeedsPassword } from './wallet-needs-password';
  * delegating all async logic to the `useGoogleDriveWallet` hook.
  */
 export function GoogleDriveKeyManager() {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();

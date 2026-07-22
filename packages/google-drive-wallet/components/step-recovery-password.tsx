@@ -4,7 +4,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
 import { Alert, AlertDescription } from '@ui/components/alert';
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 
 interface StepRecoveryPasswordProps {
   password: string;
@@ -25,7 +25,7 @@ export function StepRecoveryPassword({
   onToggleShowPassword,
   disabled
 }: StepRecoveryPasswordProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
   const passwordsMatch = password === confirmPassword;
   const isPasswordValid = password.length >= 8 && passwordsMatch;
 

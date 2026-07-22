@@ -10,7 +10,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
 import { Badge } from '@ui/components/badge';
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 import type { TRole } from '@smart-signer/lib/google-drive-wallet-manager';
 
 const ALL_ROLES: TRole[] = ['posting', 'active', 'owner', 'memo'];
@@ -42,7 +42,7 @@ function AddKeyDialog({ role, open, onOpenChange, onSubmit }: {
   onOpenChange: (v: boolean) => void;
   onSubmit: (role: TRole, key: string) => Promise<void>;
 }) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
   const [privateKey, setPrivateKey] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -121,7 +121,7 @@ function RemoveKeyDialog({ role, publicKey, open, onOpenChange, onConfirm }: {
   role: TRole | null; publicKey: string | null; open: boolean;
   onOpenChange: (v: boolean) => void; onConfirm: () => Promise<void>;
 }) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
   const [isRemoving, setIsRemoving] = useState(false);
 
   const handleConfirm = async () => {
@@ -179,7 +179,7 @@ export function AccountKeyList({
   configuredRoles, rolePublicKeys, isLoadingKeys,
   onAddKey, onRemoveKey, onRemoveAccount
 }: AccountKeyListProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
   const [addDialogRole, setAddDialogRole] = useState<TRole | null>(null);
   const [removeDialogRole, setRemoveDialogRole] = useState<TRole | null>(null);
   const [isRemovingAccount, setIsRemovingAccount] = useState(false);

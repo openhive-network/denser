@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 import type { TRole } from '@smart-signer/lib/google-drive-wallet-manager';
 import { Button } from '@ui/components/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@ui/components/dialog';
@@ -19,7 +19,7 @@ interface AddAccountDialogProps {
 }
 
 export function AddAccountDialog({ open, onOpenChange, onAccountAdded }: AddAccountDialogProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
   const [accountName, setAccountName] = useState('');
   const [selectedRole, setSelectedRole] = useState<TRole>('posting');
   const [privateKey, setPrivateKey] = useState('');

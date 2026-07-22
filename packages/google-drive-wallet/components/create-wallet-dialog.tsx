@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from '@ui/components/alert';
 import { cn } from '@ui/lib/utils';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import type { TRole } from '@smart-signer/lib/google-drive-wallet-manager';
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 import { StepAccountName } from './step-account-name';
 import { StepPrivateKeys, AVAILABLE_ROLES, type KeyField } from './step-private-keys';
 import { StepRecoveryPassword } from './step-recovery-password';
@@ -41,7 +41,7 @@ export function CreateWalletDialog({
   onCreateWallet,
   onAddKeys
 }: CreateWalletDialogProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [accountName, setAccountName] = useState(initialAccountName);

@@ -2,7 +2,7 @@
 
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 
 interface StepAccountNameProps {
   accountName: string;
@@ -11,7 +11,7 @@ interface StepAccountNameProps {
 }
 
 export function StepAccountName({ accountName, onAccountNameChange, disabled }: StepAccountNameProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
 
   return (
     <div className="space-y-3">

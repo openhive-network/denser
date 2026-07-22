@@ -1,0 +1,15 @@
+{
+  "extends": "@hive/tsconfig/base.json",
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@google-drive-wallet/*": ["./*"],
+      "@smart-signer/*": ["../smart-signer/*"],
+      "@ui/*": ["../ui/*"],
+      "@transaction/*": ["../transaction/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}

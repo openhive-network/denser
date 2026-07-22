@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
@@ -17,7 +17,7 @@ interface WalletNeedsPasswordProps {
  * and load keys from an existing Google Drive wallet file.
  */
 export function WalletNeedsPassword({ onLoadKeys, isLoading }: WalletNeedsPasswordProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 

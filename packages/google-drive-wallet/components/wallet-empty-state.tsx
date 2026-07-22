@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 import { Button } from '@ui/components/button';
 
 interface WalletEmptyStateProps {
@@ -13,7 +13,7 @@ interface WalletEmptyStateProps {
  * or when the wallet file exists but contains no configured keys.
  */
 export function WalletEmptyState({ hasWalletFile, onCreateWallet }: WalletEmptyStateProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
 
   return (
     <div>

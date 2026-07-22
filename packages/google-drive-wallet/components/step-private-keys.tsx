@@ -12,7 +12,7 @@ import {
   SelectValue
 } from '@ui/components/select';
 import type { TRole } from '@smart-signer/lib/google-drive-wallet-manager';
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 
 const AVAILABLE_ROLES: TRole[] = ['posting', 'active', 'owner', 'memo'];
 
@@ -42,7 +42,7 @@ export function StepPrivateKeys({
   usedRoles,
   disabled
 }: StepPrivateKeysProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
 
   return (
     <div className="space-y-3">

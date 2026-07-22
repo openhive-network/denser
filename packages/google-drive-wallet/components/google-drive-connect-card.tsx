@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 import { Button } from '@ui/components/button';
 import { Skeleton } from '@ui/components/skeletons/skeleton';
 import { Loader2 } from 'lucide-react';
@@ -19,7 +19,7 @@ interface GoogleDriveConnectCardProps {
  * 2. **Not connected** -- informational section with a "Connect" CTA.
  */
 export function GoogleDriveConnectCard({ isInitializing, onConnect }: GoogleDriveConnectCardProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
   const [isConnecting, setIsConnecting] = useState(false);
 
   async function handleConnect() {

@@ -13,7 +13,7 @@ import {
   AlertDialogTitle
 } from '@ui/components/alert-dialog';
 import { toast } from '@ui/components/hooks/use-toast';
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 
 interface DeleteWalletDialogProps {
   open: boolean;
@@ -22,7 +22,7 @@ interface DeleteWalletDialogProps {
 }
 
 export function DeleteWalletDialog({ open, onOpenChange, onConfirmDelete }: DeleteWalletDialogProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async (e: React.MouseEvent) => {

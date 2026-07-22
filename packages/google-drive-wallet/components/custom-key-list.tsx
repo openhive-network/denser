@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Key, Loader2, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
 import type { CustomKey } from '@smart-signer/lib/google-drive-wallet-manager';
-import { useTranslation } from '@/blog/i18n/client';
+import { useGDWTranslation } from '../i18n/context';
 import { toast } from '@ui/components/hooks/use-toast';
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';
@@ -28,7 +28,7 @@ interface CustomKeyListProps {
 }
 
 export function CustomKeyList({ customKeys, onAddCustomKey, onRemoveCustomKey }: CustomKeyListProps) {
-  const { t } = useTranslation('common_blog');
+  const { t } = useGDWTranslation();
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);

@@ -1,0 +1,24 @@
+{
+  "name": "@hive/google-drive-wallet",
+  "version": "0.1.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@hive/smart-signer": "workspace:*",
+    "@hive/ui": "workspace:*",
+    "lucide-react": "^0.482.0",
+    "simple-zustand-devtools": "^1.1.0",
+    "zustand": "^4.4.7"
+  },
+  "peerDependencies": {
+    "next": "^14.2.5",
+    "react": "^18.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.0",
+    "typescript": "5.3.3"
+  }
+}
