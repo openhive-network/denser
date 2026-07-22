@@ -12,7 +12,7 @@ import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import { getLogger } from '@ui/lib/logging';
-import { User } from '@smart-signer/types/common';
+import { User, LoginType } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
 
 const logger = getLogger('app');
@@ -38,6 +38,14 @@ const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
               <span className="w-full">{t('navigation.user_menu.wallet')}</span>
             </DropdownMenuItem>
           </Link>
+          {user.loginType === LoginType.google && (
+            <Link href={`/@${user.username}/settings/google-drive-wallet`}>
+              <DropdownMenuItem className="flex w-full cursor-pointer items-center">
+                <Icons.google className="mr-2 h-4 w-4" />
+                <span className="w-full">{t('navigation.user_menu.google_drive_wallet')}</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
           <Link href={`/@${user.username}/settings`}>
             <DropdownMenuItem className="flex w-full cursor-pointer items-center">
               <Icons.settings className="mr-2" />
