@@ -248,10 +248,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await expect(profilePage.notificationAccountAndMessage.first()).toBeVisible();
     // Validate the timestamp is visible
     await expect(profilePage.notificationTimestamp.first()).toBeVisible();
-    // Validate reputation badge exists and shows score
-    const firstReputationBadge = firstNotificationItem.locator('[data-testid="notification-reputation-badge"]');
-    await expect(firstReputationBadge).toBeVisible();
-    await expect(firstReputationBadge).toHaveText(String(notificationsAPI.result[0].score));
+    // Validate score badge exists and shows score
+    const firstScoreBadge = firstNotificationItem.locator('[data-testid="notification-score-badge"]');
+    await expect(firstScoreBadge).toBeVisible();
+    await expect(firstScoreBadge).toHaveText(String(notificationsAPI.result[0].score));
 
     // Second Notification
     const secondNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').nth(1);
@@ -259,10 +259,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await expect(secondNotificationItem).toBeVisible();
     // Validate the account icon is visible in the second notification
     await expect(profilePage.notificationAccountIconLink.locator('img').nth(1)).toBeVisible();
-    // Validate reputation badge exists and shows score
-    const secondReputationBadge = secondNotificationItem.locator('[data-testid="notification-reputation-badge"]');
-    await expect(secondReputationBadge).toBeVisible();
-    await expect(secondReputationBadge).toHaveText(String(notificationsAPI.result[1].score));
+    // Validate score badge exists and shows score
+    const secondScoreBadge = secondNotificationItem.locator('[data-testid="notification-score-badge"]');
+    await expect(secondScoreBadge).toBeVisible();
+    await expect(secondScoreBadge).toHaveText(String(notificationsAPI.result[1].score));
   });
 
   test('Validate the notifications styles in dark mode', async ({ page, browserName }) => {
@@ -289,10 +289,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await expect(profilePage.notificationAccountAndMessage.first()).toBeVisible();
     // Validate the timestamp is visible
     await expect(profilePage.notificationTimestamp.first()).toBeVisible();
-    // Validate reputation badge exists and shows score
-    const firstReputationBadge = firstNotificationItem.locator('[data-testid="notification-reputation-badge"]');
-    await expect(firstReputationBadge).toBeVisible();
-    await expect(firstReputationBadge).toHaveText(String(notificationsAPI.result[0].score));
+    // Validate score badge exists and shows score
+    const firstScoreBadge = firstNotificationItem.locator('[data-testid="notification-score-badge"]');
+    await expect(firstScoreBadge).toBeVisible();
+    await expect(firstScoreBadge).toHaveText(String(notificationsAPI.result[0].score));
 
     // Second Notification
     const secondNotificationItem = profilePage.notificationsMenuAllContent.locator('[data-testid="notification-list-item"]').nth(1);
@@ -300,10 +300,10 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     await expect(secondNotificationItem).toBeVisible();
     // Validate the account icon is visible in the second notification
     await expect(profilePage.notificationAccountIconLink.locator('img').nth(1)).toBeVisible();
-    // Validate reputation badge exists and shows score
-    const secondReputationBadge = secondNotificationItem.locator('[data-testid="notification-reputation-badge"]');
-    await expect(secondReputationBadge).toBeVisible();
-    await expect(secondReputationBadge).toHaveText(String(notificationsAPI.result[1].score));
+    // Validate score badge exists and shows score
+    const secondScoreBadge = secondNotificationItem.locator('[data-testid="notification-score-badge"]');
+    await expect(secondScoreBadge).toBeVisible();
+    await expect(secondScoreBadge).toHaveText(String(notificationsAPI.result[1].score));
   });
 
   // Temporary skipped it works localy but there are some problems in CI

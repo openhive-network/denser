@@ -131,7 +131,7 @@
       "reblogs": "Reblogs",
       "end_of_notifications": "End of notifications",
       "notifications_90_day_limit": "Notifications are only available for the last 90 days.",
-      "reputation_at_time": "Reputation at time of notification",
+      "notification_score": "Notification score",
       "refresh_failed": "Could not load notifications.",
       "refresh_failed_showing_cached": "Could not refresh notifications - showing previously loaded results.",
       "retry": "Retry"

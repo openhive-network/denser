@@ -670,13 +670,13 @@ test.describe('Communities page tests', () => {
       'rgba(0, 0, 0, 0)'
     );
 
-    // Validate reputation badge exists and shows score
-    const firstReputationBadge = firstListItem.locator('[data-testid="notification-reputation-badge"]');
-    await expect(firstReputationBadge).toBeVisible();
-    await expect(firstReputationBadge).toHaveText(String(sub.result[0].score));
+    // Validate score badge exists and shows score
+    const firstScoreBadge = firstListItem.locator('[data-testid="notification-score-badge"]');
+    await expect(firstScoreBadge).toBeVisible();
+    await expect(firstScoreBadge).toHaveText(String(sub.result[0].score));
 
     // Validate badge background (bg-background-tertiary = hsl(214, 32%, 91%) ≈ rgb(225, 231, 239))
-    await expect(await homePage.getElementCssPropertyValue(firstReputationBadge, 'background-color')).toBe(
+    await expect(await homePage.getElementCssPropertyValue(firstScoreBadge, 'background-color')).toBe(
       'rgb(225, 231, 239)'
     );
 
@@ -686,10 +686,10 @@ test.describe('Communities page tests', () => {
       'rgba(0, 0, 0, 0)'
     );
 
-    // Validate second reputation badge
-    const secondReputationBadge = secondListItem.locator('[data-testid="notification-reputation-badge"]');
-    await expect(secondReputationBadge).toBeVisible();
-    await expect(secondReputationBadge).toHaveText(String(sub.result[1].score));
+    // Validate second score badge
+    const secondScoreBadge = secondListItem.locator('[data-testid="notification-score-badge"]');
+    await expect(secondScoreBadge).toBeVisible();
+    await expect(secondScoreBadge).toHaveText(String(sub.result[1].score));
   });
 
   test('validate styles of the list of the subscribers in the modal in the dark mode', async ({ page, browserName }) => {
@@ -718,13 +718,13 @@ test.describe('Communities page tests', () => {
       'rgba(0, 0, 0, 0)'
     );
 
-    // Validate reputation badge exists and shows score
-    const firstReputationBadge = firstListItem.locator('[data-testid="notification-reputation-badge"]');
-    await expect(firstReputationBadge).toBeVisible();
-    await expect(firstReputationBadge).toHaveText(String(sub.result[0].score));
+    // Validate score badge exists and shows score
+    const firstScoreBadge = firstListItem.locator('[data-testid="notification-score-badge"]');
+    await expect(firstScoreBadge).toBeVisible();
+    await expect(firstScoreBadge).toHaveText(String(sub.result[0].score));
 
     // Validate badge background in dark mode (bg-background-tertiary = hsl(217, 19%, 27%) ≈ rgb(56, 66, 82))
-    await expect(await homePage.getElementCssPropertyValue(firstReputationBadge, 'background-color')).toBe(
+    await expect(await homePage.getElementCssPropertyValue(firstScoreBadge, 'background-color')).toBe(
       'rgb(56, 66, 82)'
     );
 
@@ -734,10 +734,10 @@ test.describe('Communities page tests', () => {
       'rgba(0, 0, 0, 0)'
     );
 
-    // Validate second reputation badge
-    const secondReputationBadge = secondListItem.locator('[data-testid="notification-reputation-badge"]');
-    await expect(secondReputationBadge).toBeVisible();
-    await expect(secondReputationBadge).toHaveText(String(sub.result[1].score));
+    // Validate second score badge
+    const secondScoreBadge = secondListItem.locator('[data-testid="notification-score-badge"]');
+    await expect(secondScoreBadge).toBeVisible();
+    await expect(secondScoreBadge).toHaveText(String(sub.result[1].score));
   });
 
   test('validate styles of the menu of list of the subscribers in the modal in the light mode', async ({

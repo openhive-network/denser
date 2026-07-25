@@ -144,19 +144,24 @@ const NotificationListItem = ({
         </span>
       </div>
 
-      {/* Reputation badge */}
+      {/*
+        The API's `score` field. This is not reputation. For votes hivemind
+        computes it from payout and rshares; for other types it is derived
+        from reputation data, but on a 0-100 scale that does not match the
+        reputation shown elsewhere in the UI. Keep the label neutral.
+      */}
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
             <div
               className="flex shrink-0 items-center justify-center rounded-full bg-background-tertiary px-2 py-0.5 text-xs text-foreground/70"
-              data-testid="notification-reputation-badge"
+              data-testid="notification-score-badge"
             >
               {score}
             </div>
           </TooltipTrigger>
           <TooltipContent side="left">
-            <p>{t('navigation.profile_notifications_tab_navbar.reputation_at_time')}</p>
+            <p>{t('navigation.profile_notifications_tab_navbar.notification_score')}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
