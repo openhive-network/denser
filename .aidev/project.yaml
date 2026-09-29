@@ -1,0 +1,92 @@
+# Profile for hive/denser, written by `aidev project scaffold` (#13561).
+#
+# Schema reference: docs/architecture/project-profile.md
+# Onboarding procedure: the `onboard-external-project` skill.
+# Guide: docs/operations/onboarding-an-external-project.md
+#
+# The generator writes a starting point, not a governed answer: every
+# binding below is the command a maintainer said this project runs, and it
+# is reviewed and edited like any other declaration.
+version: 2
+project: denser
+
+gitlab:
+  host: "gitlab.syncad.com"
+  path: "hive/denser"
+  id: 399
+
+# AIDEV integrates into its own branch; people merge it into develop through
+# merge requests, so `stable` is omitted and `aidev release` never moves
+# develop or main.
+branches:
+  integration: "aidev/integration"
+
+# How this project's suites execute (#13892): one kind, stated once.
+environment:
+  kind: "container"
+  image: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:3890fe8d4787a3134ebf68f33d02b5138354424201425f7787480ecaf964992c"
+  inputs: ["pnpm-lock.yaml"]
+
+issues:
+  intake_label: todo
+  taxonomy: ".aidev/labels.yaml"
+  decompose:
+    # `never` is where an external project starts: nothing marks work
+    # approved on this project's behalf until there is a track record.
+    auto_todo: never
+  # Reports about this project's work are filed against this project.
+  watcher_reports: self
+
+# Verification slots. Every suite runs in the image above, offline; each
+# writes junit under test-results/, the per-test evidence AIDEV records.
+# AIDEV does not run the `static` or `system` slots for a project, so the static
+# checks (ESLint errors, tsc for both apps) are a suite of quick, full and canary.
+#
+# Not bound, deliberately: the live-API Playwright suites (apps/*/playwright
+# tests/e2e, smoke) judge mainnet data rather than the change and are the flaky
+# part of denser's CI; mirrornet needs a HAF stack; translation checks
+# (lint:translations*) fail on existing debt. `coverage`: nothing measures it yet.
+verification:
+  # ~25 s: mocha unit suites of packages/renderer and packages/transaction
+  # (~1,430 tests), plus lint and type check.
+  quick:
+    suites:
+      - name: unit
+        adapter: command
+        args: [".aidev/run-unit-tests.sh"]
+        artifacts: ["test-results/unit/"]
+      - name: static
+        adapter: command
+        args: [".aidev/run-static.sh"]
+  # quick, plus a production build of the blog and its fixture-replay Playwright
+  # suite (~250 tests against recorded API responses, one worker).
+  full:
+    suites:
+      - name: unit
+        adapter: command
+        args: [".aidev/run-unit-tests.sh"]
+        artifacts: ["test-results/unit/"]
+      - name: static
+        adapter: command
+        args: [".aidev/run-static.sh"]
+      - name: fixture_e2e
+        adapter: command
+        args: [".aidev/run-fixture-e2e.sh"]
+        artifacts: ["test-results/fixture/"]
+  baseline:
+    adapter: command
+    args: [".aidev/run-unit-tests.sh"]
+    artifacts: ["test-results/unit/"]
+  # Re-checks the merged tree on deploy/promote.
+  canary:
+    suites:
+      - name: unit
+        adapter: command
+        args: [".aidev/run-unit-tests.sh"]
+        artifacts: ["test-results/unit/"]
+      - name: static
+        adapter: command
+        args: [".aidev/run-static.sh"]
+
+# Capability grants for target-side code. Empty until this project needs one.
+capabilities: []
