@@ -98,6 +98,16 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
   authenticatedUser: [undefined, { option: true }],
 
   context: async ({ context, authenticatedUser }, use) => {
+    // Every API call goes to the local fixture proxy, so the suite needs no
+    // network — but on a host without one (e.g. `docker run --network none`)
+    // Chromium reports navigator.onLine === false, and React Query then pauses
+    // every query and mutation: nothing ever reaches the proxy. Report online.
+    await context.addInitScript(() => {
+      Object.defineProperty(Navigator.prototype, 'onLine', {
+        configurable: true,
+        get: () => true
+      });
+    });
     if (authenticatedUser !== undefined) {
       await seedAuthCookie(context, authenticatedUser);
     }

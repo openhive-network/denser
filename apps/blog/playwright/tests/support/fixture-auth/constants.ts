@@ -19,3 +19,12 @@ export const FIXTURE_COOKIE_NAME = `${FIXTURE_APP_NAME}_session`;
  */
 export const FIXTURE_COOKIE_PASSWORD =
   'fixture-tests-dummy-cookie-password-not-a-secret';
+
+/**
+ * Posting key the seeder stores for the logged-in user when
+ * CI_TEST_USER_WIF_POSTING is not set, so a signing flow completes instead of
+ * stopping at the password dialog. Randomly generated and belonging to no
+ * account: fixture tests intercept every broadcast and stub verify_authority,
+ * so the key never has to match the account's recorded authority.
+ */
+export const FIXTURE_POSTING_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';

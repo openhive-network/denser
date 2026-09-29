@@ -30,7 +30,15 @@ export async function installImageUploadStub(page: Page): Promise<ImageUploadStu
   await page.route(
     /https?:\/\/(www\.)?images\.hive\.blog\/[^/]+\/[^/?#]+/,
     async (route) => {
-      if (route.request().method() !== 'POST') return route.continue();
+      if (route.request().method() !== 'POST') {
+        // The editor then renders the URLs this stub handed out (e.g. the
+        // cover picker's thumbnails); serve them too, so a host without
+        // network still gets a loaded image rather than a broken one.
+        if (uploadedUrls.includes(route.request().url())) {
+          return route.fulfill({ status: 200, contentType: 'image/png', body: TINY_PNG });
+        }
+        return route.continue();
+      }
       const idx = uploadedUrls.length + 1;
       const url = `https://images.hive.blog/p/QmFixture${idx}TestImage`;
       uploadedUrls.push(url);

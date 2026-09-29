@@ -3,7 +3,8 @@ import type { BrowserContext } from '@playwright/test';
 import { LoginType, KeyType, type User } from '@smart-signer/types/common';
 import {
   FIXTURE_COOKIE_NAME,
-  FIXTURE_COOKIE_PASSWORD
+  FIXTURE_COOKIE_PASSWORD,
+  FIXTURE_POSTING_WIF
 } from './constants';
 
 const DEFAULT_USERNAME = process.env.CI_TEST_USER || 'guest4test';
@@ -57,11 +58,12 @@ export async function seedAuthCookie(
   // Key and shape must match `smart-signer/lib/auth/user-localstore.ts`.
   const userJson = JSON.stringify(user);
 
-  // Optional posting WIF — lets broadcast-style operations (e.g. upvote) sign
+  // Posting WIF — lets broadcast-style operations (e.g. upvote) sign
   // without popping the password dialog. Storage key must match
-  // `signer-wif.ts#storageKey`: `wif.{username}@{keyType}`. Reading from env
-  // rather than hardcoding keeps test secrets out of the repo.
-  const postingWif = process.env.CI_TEST_USER_WIF_POSTING || '';
+  // `signer-wif.ts#storageKey`: `wif.{username}@{keyType}`. The test account's
+  // real key comes from env when set; otherwise a throwaway key, which is
+  // enough because broadcasts are intercepted (see FIXTURE_POSTING_WIF).
+  const postingWif = process.env.CI_TEST_USER_WIF_POSTING || FIXTURE_POSTING_WIF;
   const wifKey = `wif.${user.username}@${KeyType.posting}`;
   const wifValue = postingWif ? JSON.stringify(postingWif) : '';
 
