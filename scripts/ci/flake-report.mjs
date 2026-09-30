@@ -16,6 +16,9 @@
  *
  * Node built-ins only (Node >= 18 for fetch).
  *
+ * Runs weekly from the ci/flake-report branch's pipeline schedule, which
+ * fetches this file from develop. Default is a dry run (print only).
+ *
  * Usage:
  *   node scripts/ci/flake-report.mjs [--days 7] [--issue 908] [--post] [--out file.md]
  *
