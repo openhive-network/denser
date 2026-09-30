@@ -952,6 +952,10 @@ e2e-update-snapshots-blog:
     - .${TURBO_APP_PATH}/playwright/tests/e2e/*-snapshots/
     - .${TURBO_APP_PATH}/playwright-report/
     - .${TURBO_APP_PATH}/test-results/
+    # No junit: this run isn't a test result, so keep it out of the test report.
+    # `null`, not `{}`: extends deep-merges hashes, so `{}` would keep the
+    # template's junit.
+    reports: null
     when: always
     expire_in: 1 week
 

@@ -105,6 +105,7 @@ test.describe('Embed table layout regression', () => {
   });
 
   // @flaky: live Twitter/Instagram embeds change the table's height from run to run (#971).
+  // While @flaky its baseline isn't checked: the flaky job runs with --update-snapshots (#976).
   test('@flaky table with embeds renders correct layout', async ({ page, browserName }) => {
     chromiumOnly(browserName);
 
