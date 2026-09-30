@@ -1,0 +1,131 @@
+# denser under AIDEV
+
+`.aidev/project.yaml` is denser's AIDEV profile. The suites it binds run in the
+digest-pinned `registry.gitlab.syncad.com/hive/denser/aidev-tests` image
+(`.aidev/runtime/`), offline, and write junit under `test-results/`.
+
+## Live dev stack (`sandbox.dev`)
+
+An AIDEV implement session gets a running blog built from its own working tree:
+`next dev` with hot reload, against the fixture replay proxy (recorded Hive API
+responses, no network). It comes from the pinned image with the checkout
+bind-mounted; no image is built. Compose file: `.aidev/dev-stack.compose.yml`.
+
+The session's shell has:
+
+| Variable | What |
+|---|---|
+| `DENSER_DEV_BLOG_URL` | the blog, `http://127.0.0.1:<port>` |
+| `DENSER_DEV_FIXTURE_URL` | the fixture proxy's control address |
+| `DENSER_DEV_STACK_PROJECT` | the stack's compose project |
+| `DENSER_DEV_CHECKOUT` | the checkout as the docker daemon sees it |
+
+**Open a page.** `curl -s "$DENSER_DEV_BLOG_URL/trending"`. Edits under `apps/`
+and `packages/` recompile on the next request (a few seconds).
+
+**Run fixture specs against it** (from the checkout root; paths relative to
+`apps/blog`; extra arguments go to `playwright test`):
+
+```bash
+.aidev/dev-stack-spec.sh playwright/tests/fixture/postDetail.spec.ts
+.aidev/dev-stack-spec.sh playwright/tests/fixture/postDetail.spec.ts -g ANON-POST-07 --retries=0
+```
+
+Playwright runs in the pinned image inside the stack's network namespace, so the
+topology is the fixture suite's own (blog on `localhost:3000`, proxy on
+`localhost:8200`), and each spec is served its own recording. Traces land in
+`test-results/dev-stack/`. This checks a change in seconds; the verdict is still
+the `full` slot's `fixture_e2e` suite, which runs a production build.
+
+**Which recording the stack serves** when no spec is running: `ssrChecks` (feeds,
+a post, a profile, a community). Switch it:
+
+```bash
+curl -s -X PUT "$DENSER_DEV_FIXTURE_URL/__aidev/fixture-set/loggedInUserProfile"
+curl -s "$DENSER_DEV_FIXTURE_URL/__aidev/status"
+```
+
+Recordings are the directories of `apps/blog/playwright/tests/mock/fixtures/`.
+Server-rendered HTML reads the stack's proxy; in-page requests from a browser go
+to `http://localhost:8200`, which only `.aidev/dev-stack-spec.sh` provides — so
+check interactive behaviour with a spec, not a browser pointed at the URL.
+
+**Live data instead.** Start the stack with
+`DENSER_DEV_API_ENDPOINT=https://api.hive.blog` and the blog talks to the live
+API (needs egress; fixture specs then no longer apply).
+
+**Known limitation: next dev is not the production build.** The stack is for
+looking at pages and quick spec checks; the gate stays the `full` slot's
+production-build run. What was seen while qualifying it (#966):
+
+- Playwright output written under `apps/` or `packages/` (tailwind's content
+  globs put both in next's watch set) triggers a recompile mid-test; the
+  browser then gets truncated chunks (`ERR_CONTENT_LENGTH_MISMATCH`,
+  `ChunkLoadError`) and fails e.g. postDetail's ANON-POST-03 (vote buttons),
+  -06 (pending banner) and -07 (404 page). `.aidev/dev-stack-spec.sh` writes
+  to `test-results/dev-stack/` for that reason; with it postDetail is 7/7.
+- The first request to a route compiles it (tens of seconds for the post
+  page); `blog-ready` warms the common ones, others pay it inside the spec.
+- next dev logs warnings the build does not fail on (e.g. `useForm` is not
+  exported from `react-hook-form` in smart-signer's password form).
+
+**When things change.** Source edits hot-reload. A change to `pnpm-lock.yaml` or a
+`package.json`, `next.config.js`, the middleware package or the stack's own files
+restarts the stack's services (`reload` in the profile), which reinstalls
+`node_modules` from the image's store when the lockfile moved. A lockfile the
+image's store cannot satisfy needs a new `environment.image`
+(`.aidev/runtime/build.sh`).
+
+**By hand**, outside AIDEV:
+
+```bash
+export AIDEV_PORT_BLOG=3300 AIDEV_PORT_FIXTURE=8300
+docker compose -f .aidev/dev-stack.compose.yml -p denser-dev up -d --wait
+DENSER_DEV_STACK_PROJECT=denser-dev DENSER_DEV_CHECKOUT=$PWD \
+  .aidev/dev-stack-spec.sh playwright/tests/fixture/homepage.spec.ts
+docker compose -f .aidev/dev-stack.compose.yml -p denser-dev down -v
+```
+
+Files are written as uid `${AIDEV_UID:-1000}`; set `AIDEV_UID`/`AIDEV_GID` if
+your checkout belongs to someone else.
+
+## Test stack (`sandbox.compose`) and the `full` slot
+
+`full` runs `unit`, `static`, `fixture_e2e` and the advisory `live_e2e`, in that
+order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
+before the first `stack: true` suite. Only `live_e2e` declares one, so every
+suite before it runs with no stack up, under `--network none`.
+
+**`fixture_e2e` is self-contained and hermetic** (`stack: false`). It builds the
+blog (`.aidev/run-blog-build.sh`), and `playwright.fixture.config.ts`'s webServer
+serves the build inside the suite's own container. It does not use the stack
+because its fixture proxy is not a service. Each Playwright worker starts one
+for its spec's recording
+(`apps/blog/playwright/tests/support/fixture-proxy-test.ts:61-95`), and the
+app's server side must read that same proxy. A stack server could reach it only
+by relaying back into the suite container.
+
+**`live_e2e`** (`.aidev/run-live-e2e.sh`, always exits 0) runs the e2e specs the
+candidate changed, `--repeat-each=3 --retries=0`, against the stack's
+`blog-live`. That service serves `fixture_e2e`'s build against the live Hive
+API; no image is built. The changed files come from `AIDEV_CHANGED_FILES_FILE`,
+else from `git diff` against `AIDEV_BASE_REF` or `origin/aidev/integration`.
+With no e2e spec changed, or no change information, the suite reports a skipped
+"not applicable" case. With the worktree backend that happens until
+ai/aidev#14456 lands, because the workspace has no git and no base reaches the
+container. It needs no build of its own; it serves the one `fixture_e2e` made.
+
+**Opt-in: the fixture suite through the stack.** Set
+`DENSER_FIXTURE_VIA_STACK=1`, and bring up the `fixture-relay` profile's
+`fixture-proxy` and `blog` services. With these, the stack's `blog` serves the
+build, and its `fixture-proxy` relays the server side's API calls to the
+workers' proxies in the suite container. It is off by default and AIDEV never
+starts those services. On the same tree (steem-17, 2026-09-30):
+
+| path | result | time |
+|---|---|---|
+| standalone (default) | 247 passed / 2 skipped | 8.8 min |
+| through the stack | 247 passed / 2 skipped | 9.2 min |
+
+It buys nothing, and it gives the suite egress through the stack network. The
+default stays hermetic.

@@ -1,0 +1,144 @@
+# AIDEV live dev stack for denser (`sandbox.dev` in .aidev/project.yaml, #966).
+#
+# `next dev` of the blog, hot-reloading from the bind-mounted checkout, against
+# the fixture replay proxy — so the stack needs no network and no chain. Every
+# service runs the project's pinned test image (`environment.image`); nothing is
+# built. node_modules come from `pnpm install --offline` out of the image's store
+# (.aidev/pnpm-deps.sh), written into the checkout like every other suite does,
+# and skipped while pnpm-lock.yaml is unchanged.
+#
+# Network: the blog shares the fixture proxy's network namespace, so inside it
+# http://localhost:8200 is the proxy — the address playwright.fixture.config.ts
+# gives the app, and the one the broadcast interceptor matches in the browser.
+# Both published ports therefore sit on `fixture-proxy`.
+#
+# By hand (AIDEV sets these itself):
+#   AIDEV_PORT_BLOG=3300 AIDEV_PORT_FIXTURE=8300 \
+#     docker compose -f .aidev/dev-stack.compose.yml -p denser-dev up -d --wait
+#
+# How an agent uses it: .aidev/README.md.
+name: denser-aidev-dev
+
+x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:3890fe8d4787a3134ebf68f33d02b5138354424201425f7787480ecaf964992c
+
+# The checkout owner: node_modules, apps/*/version.json and next's cache are
+# written as this uid so a host-side `git clean` or worktree removal can delete
+# them. AIDEV exports no uid to a dev stack; 1000 is the session worker's user.
+x-user: &user "${AIDEV_UID:-1000}:${AIDEV_GID:-1000}"
+
+x-checkout: &checkout ${AIDEV_HOST_CHECKOUT:-${PWD}}:/work
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: ${AIDEV_STACK_SUBNET:-172.29.66.0/24}
+
+services:
+  # One-shot, as root: the blog's `.next` is a named volume (a dev server and a
+  # `pnpm build` in the same checkout would otherwise overwrite each other's
+  # output), and docker creates both the volume and its mount point root-owned.
+  # Hand them to the checkout owner before anything writes there.
+  init:
+    image: *image
+    user: "0:0"
+    volumes:
+      - *checkout
+      - blog_next:/next
+    command:
+      - sh
+      - -c
+      - mkdir -p /work/apps/blog/.next && chown "${AIDEV_UID:-1000}:${AIDEV_GID:-1000}" /work/apps/blog/.next /next
+    restart: "no"
+
+  # Installs node_modules (once per lockfile), then serves the recording named by
+  # FIXTURE_SET on :8200. Switch recordings with
+  #   curl -X PUT http://127.0.0.1:$AIDEV_PORT_FIXTURE/__aidev/fixture-set/<name>
+  fixture-proxy:
+    image: *image
+    user: *user
+    working_dir: /work
+    mem_limit: 1g
+    volumes:
+      - *checkout
+    environment:
+      FIXTURE_SET: ${DENSER_DEV_FIXTURE_SET:-ssrChecks}
+    command:
+      - bash
+      - -c
+      - source .aidev/pnpm-deps.sh && exec node .aidev/fixture-proxy-serve.mjs serve --port 8200
+    ports:
+      - "127.0.0.1:${AIDEV_PORT_BLOG:-3300}:3000"
+      - "127.0.0.1:${AIDEV_PORT_FIXTURE:-8300}:8200"
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8200/__aidev/status').then(r=>r.json()).then(s=>process.exit(s.backend==='none'?1:0),()=>process.exit(1))"]
+      interval: 3s
+      timeout: 5s
+      retries: 100
+      start_period: 10s
+
+  # `pnpm --filter @hive/blog dev` (react-env + next dev on :3000) with the env
+  # the fixture suite's webServer gets in playwright.fixture.config.ts.
+  blog:
+    image: *image
+    user: *user
+    working_dir: /work
+    mem_limit: 6g
+    network_mode: service:fixture-proxy
+    volumes:
+      - *checkout
+      - blog_next:/work/apps/blog/.next
+    environment:
+      # Fixture data by default. DENSER_DEV_API_ENDPOINT=https://api.hive.blog
+      # (set when starting the stack) points the blog at the live API instead.
+      REACT_APP_API_ENDPOINT: ${DENSER_DEV_API_ENDPOINT:-http://localhost:8200}
+      REACT_APP_ALLOWED_HIVE_API_NODES: ${DENSER_DEV_API_ENDPOINT:-http://localhost:8200}
+      REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+      # playwright/tests/support/fixture-auth/constants.ts: the app seals the
+      # session cookie with what the seeder seals it with.
+      REACT_APP_APP_NAME: blog
+      DENSER_SERVER_SECRET_COOKIE_PASSWORD: fixture-tests-dummy-cookie-password-not-a-secret
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+      NODE_OPTIONS: --max-old-space-size=4096
+      # Inotify reaches containers through a bind mount on Linux; set to true on
+      # a host where edits do not trigger a recompile.
+      WATCHPACK_POLLING: ${WATCHPACK_POLLING:-}
+    command:
+      - bash
+      - -c
+      # fixture-proxy owns the install; on a restart (the pnpm-lock.yaml reload
+      # rule restarts both) wait for it rather than run a second one beside it.
+      - |
+        until [ "$$(cat node_modules/.aidev-pnpm-lock-sha256 2>/dev/null)" = "$$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" ]; do sleep 2; done
+        source .aidev/pnpm-deps.sh && cd apps/blog && exec pnpm dev
+    depends_on:
+      fixture-proxy:
+        condition: service_healthy
+
+  # Healthy once the blog answers and the routes a spec usually opens first have
+  # been compiled — next dev compiles a route on its first request, which can take
+  # longer than a spec's own navigation timeout. See .aidev/blog-ready.sh.
+  blog-ready:
+    image: *image
+    user: *user
+    working_dir: /work
+    network_mode: service:fixture-proxy
+    volumes:
+      - *checkout
+    command: ["sleep", "infinity"]
+    depends_on:
+      blog:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "sh", ".aidev/blog-ready.sh", "http://127.0.0.1:3000"]
+      interval: 5s
+      timeout: 300s
+      retries: 120
+      start_period: 20s
+
+volumes:
+  blog_next:
