@@ -713,7 +713,10 @@
   "search_page": {
     "placeholder": "Search",
     "no_results": "Nothing was found.",
-    "error": "There was an error"
+    "error": "There was an error",
+    "ai_unavailable": "AI search is unavailable right now. Try Classic Search.",
+    "try_classic": "Classic Search",
+    "could_not_load_more": "Couldn't load more AI results."
   },
   "settings_page": {
     "invalid_url": "Invalid URL",
