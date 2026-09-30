@@ -88,3 +88,44 @@ docker compose -f .aidev/dev-stack.compose.yml -p denser-dev down -v
 
 Files are written as uid `${AIDEV_UID:-1000}`; set `AIDEV_UID`/`AIDEV_GID` if
 your checkout belongs to someone else.
+
+## Test stack (`sandbox.compose`) and the `full` slot
+
+`full` runs `unit`, `static`, `fixture_e2e` and the advisory `live_e2e`, in that
+order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
+before the first `stack: true` suite. Only `live_e2e` declares one, so every
+suite before it runs with no stack up, under `--network none`.
+
+**`fixture_e2e` is self-contained and hermetic** (`stack: false`). It builds the
+blog (`.aidev/run-blog-build.sh`), and `playwright.fixture.config.ts`'s webServer
+serves the build inside the suite's own container. It does not use the stack
+because its fixture proxy is not a service. Each Playwright worker starts one
+for its spec's recording
+(`apps/blog/playwright/tests/support/fixture-proxy-test.ts:61-95`), and the
+app's server side must read that same proxy. A stack server could reach it only
+by relaying back into the suite container.
+
+**`live_e2e`** (`.aidev/run-live-e2e.sh`, always exits 0) runs the e2e specs the
+candidate changed, `--repeat-each=3 --retries=0`, against the stack's
+`blog-live`. That service serves `fixture_e2e`'s build against the live Hive
+API; no image is built. The changed files come from `AIDEV_CHANGED_FILES_FILE`,
+else from `git diff` against `AIDEV_BASE_REF` or `origin/aidev/integration`.
+With no e2e spec changed, or no change information, the suite reports a skipped
+"not applicable" case. With the worktree backend that happens until
+ai/aidev#14456 lands, because the workspace has no git and no base reaches the
+container. It needs no build of its own; it serves the one `fixture_e2e` made.
+
+**Opt-in: the fixture suite through the stack.** Set
+`DENSER_FIXTURE_VIA_STACK=1`, and bring up the `fixture-relay` profile's
+`fixture-proxy` and `blog` services. With these, the stack's `blog` serves the
+build, and its `fixture-proxy` relays the server side's API calls to the
+workers' proxies in the suite container. It is off by default and AIDEV never
+starts those services. On the same tree (steem-17, 2026-09-30):
+
+| path | result | time |
+|---|---|---|
+| standalone (default) | 247 passed / 2 skipped | 8.8 min |
+| through the stack | 247 passed / 2 skipped | 9.2 min |
+
+It buys nothing, and it gives the suite egress through the stack network. The
+default stays hermetic.
