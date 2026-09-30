@@ -164,49 +164,44 @@ npx playwright show-trace ./playwright/temp_ai_report_tests/SMOKE-04-trace.zip
 | P4 | SMOKE-14 | Theme Toggle | smoke-14-theme.mjs |
 | P4 | SMOKE-15 | Login Button | smoke-15-login.mjs |
 
-## Retry Logic Pattern
+## Retry Logic, Flaky Passes and Warnings
 
-```javascript
-const MAX_RETRIES = 3;
-const results = [];
+`scripts/smoke-runner.mjs` (what CI runs) implements the retry itself: a failing
+test is re-run up to `SMOKE_MAX_ATTEMPTS` times (default 3) with
+`SMOKE_RETRY_DELAY_MS` (default 5000) between attempts. The tests run against live
+chain data through public API nodes, and most historical CI failures were one
+slow `api.hive.blog` response (#965), so a failure has to reproduce before it counts.
 
-for (const test of tests) {
-  let passed = false;
-  let attempts = 0;
-  let lastError = null;
-  let artifacts = [];
+- A test that passes only on a retry is reported as **⚠ WARN** with a
+  `flaky: passed on attempt N/3 after ...` warning naming the earlier failure.
+- A test that fails every attempt is **✗ FAIL**, and its error lists every attempt.
+- Tests can call `warn(message)` (passed to the test function by `runSmokeTest`)
+  for a degraded-but-working state; the result JSON carries `warnings: []`,
+  and the runner summary and HTML report list them.
+- `hiveApiCall()` in `test-utils.mjs` retries the test's own direct API calls
+  (15s timeout, 3 attempts) and throws `Hive API <method> ... failed` instead of
+  handing a null `result` to the test.
 
-  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    attempts = attempt;
-    const output = await runTest(test);
+**SMOKE-16 (Search)** fails only when the search UI is broken: no input, submit
+does not navigate, Classic Search (`/search?q=...`) shows nothing, or HiveSense
+serves renderable results that the page does not show. When AI search is degraded,
+the test passes with a warning: the health check is off (input falls back to
+Classic), the page shows the "AI search unavailable" fallback, or the results stay
+blank while HiveSense is down or returns full posts without `post_id` (#947/#949).
+The warning line includes a direct probe of `REACT_APP_AI_DOMAIN`'s `posts/search`.
 
-    // Parse __RESULT__ from output
-    const resultLine = output.match(/__RESULT__(.+)/);
-    if (resultLine) {
-      const result = JSON.parse(resultLine[1]);
-      passed = result.passed;
-      lastError = result.error;
-      artifacts = result.artifacts;
-    }
+## Running Against a Local Production Build
 
-    if (passed) break;
+`next build` standalone output does not include `apps/blog/lib/markdowns/`, which
+the static pages read at runtime relative to the server's cwd (`server.js` does
+`process.chdir(__dirname)`). The Docker image copies it (Dockerfile), so a local
+standalone server needs it too, or `/faq.html` and `/tos.html` return HTTP 500 and SMOKE-13 fails:
 
-    if (attempt < MAX_RETRIES) {
-      console.log(`Retry ${attempt + 1}/${MAX_RETRIES} in 2 seconds...`);
-      await sleep(2000);
-    }
-  }
-
-  results.push({
-    id: test.id,
-    name: test.name,
-    priority: test.priority,
-    passed,
-    attempts,
-    error: lastError,
-    artifacts
-  });
-}
+```bash
+cd apps/blog
+cp -r .next/static .next/standalone/apps/blog/.next/
+cp -r public .next/standalone/apps/blog/
+mkdir -p .next/standalone/apps/blog/lib && cp -r lib/markdowns .next/standalone/apps/blog/lib/
 ```
 
 ## Environment Variables
@@ -216,6 +211,9 @@ for (const test of tests) {
 | `BASE_URL` | Target environment URL | `https://blog.openhive.network` |
 | `HEADLESS` | Run browser in headless mode | `false` (headed) |
 | `REPORT_DIR` | Directory for artifacts and report | `./playwright/temp_ai_report_tests` |
+| `API_URL` | Hive API node the tests compare against | `https://api.hive.blog` |
+| `SMOKE_MAX_ATTEMPTS` | Attempts per failing test in `smoke-runner.mjs` | `3` |
+| `SMOKE_RETRY_DELAY_MS` | Delay between attempts | `5000` |
 
 ### Available Environments
 
