@@ -1,3 +1,4 @@
+import path from 'path';
 import { test as base, expect } from '@playwright/test';
 import {
   createFixtureProxy,
@@ -6,6 +7,7 @@ import {
   type IFixtureProxyHandle
 } from './mock-server';
 import { seedAuthCookie } from './fixture-auth/seeder';
+import { appendMissShard } from './fixture-misses/miss-log';
 import type { User } from '@smart-signer/types/common';
 
 /**
@@ -43,6 +45,8 @@ export type FixtureProxyWorkerFixtures = {
 };
 
 export type FixtureAuthTestFixtures = {
+  /** Auto: attributes the proxy's replay MISSes to the running spec (see fixture-misses/). */
+  missLog: void;
   /**
    * If set, a sealed iron-session cookie is injected into the test context
    * before the page is given to the test. `{}` seeds the default test user
@@ -93,6 +97,18 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
       await proxy.close();
     },
     { scope: 'worker', auto: true }
+  ],
+
+  missLog: [
+    async ({ fixtureProxy }, use, testInfo) => {
+      await use();
+      const misses = fixtureProxy.drainMisses();
+      // A failed attempt already fails or retries the run; its misses
+      // (often from an aborted flow) would only make the baseline flaky.
+      if (isRecordMode || testInfo.status !== testInfo.expectedStatus) return;
+      appendMissShard(path.relative(testInfo.project.testDir, testInfo.file), misses);
+    },
+    { auto: true }
   ],
 
   authenticatedUser: [undefined, { option: true }],

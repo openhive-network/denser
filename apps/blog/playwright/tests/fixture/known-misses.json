@@ -1,0 +1,387 @@
+[
+  {
+    "spec": "communityModeratePost.spec.ts",
+    "method": "bridge.get_profile",
+    "hash": "27c21eb5844992c1"
+  },
+  {
+    "spec": "loggedInCommunitiesExplorer.spec.ts",
+    "method": "bridge.get_profile",
+    "hash": "27c21eb5844992c1"
+  },
+  {
+    "spec": "loggedInHomepage.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "265f49c19fa4b53c"
+  },
+  {
+    "spec": "loggedInHomepage.spec.ts",
+    "method": "bridge.unread_notifications",
+    "hash": "95a7b2910818b567"
+  },
+  {
+    "spec": "loggedInHomepage.spec.ts",
+    "method": "database_api.find_accounts",
+    "hash": "27c2e86bd7fcf0a2"
+  },
+  {
+    "spec": "loggedInHomepage.spec.ts",
+    "method": "database_api.get_dynamic_global_properties",
+    "hash": "7aa6e3d75d65a388"
+  },
+  {
+    "spec": "loggedInHomepage.spec.ts",
+    "method": "rc_api.find_rc_accounts",
+    "hash": "5c91c171e8a943dc"
+  },
+  {
+    "spec": "loggedInPostDetail.spec.ts",
+    "method": "bridge.get_profile",
+    "hash": "27c21eb5844992c1"
+  },
+  {
+    "spec": "postCreate.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "96563ad540d23c34"
+  },
+  {
+    "spec": "postCreate.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "e12c7880b80e890e"
+  },
+  {
+    "spec": "postCreate.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "23c8aaf1693ef1a4"
+  },
+  {
+    "spec": "postCreate.spec.ts",
+    "method": "bridge.get_post",
+    "hash": "65cccbcd4ae334c2"
+  },
+  {
+    "spec": "postCreate.spec.ts",
+    "method": "bridge.get_post",
+    "hash": "eca4735c87c6b4f7"
+  },
+  {
+    "spec": "postCreate.spec.ts",
+    "method": "condenser_api.get_reblogged_by",
+    "hash": "0311f1a2f22321b9"
+  },
+  {
+    "spec": "postCreate.spec.ts",
+    "method": "condenser_api.get_reblogged_by",
+    "hash": "e79d38f6489af16b"
+  },
+  {
+    "spec": "postCreate.spec.ts",
+    "method": "database_api.list_votes",
+    "hash": "3735cc2ef2c9f546"
+  },
+  {
+    "spec": "postCreate.spec.ts",
+    "method": "database_api.list_votes",
+    "hash": "461ddf66a78212ab"
+  },
+  {
+    "spec": "postCreateInCommunity.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "7608a7933d5bc9bb"
+  },
+  {
+    "spec": "postCreateInCommunity.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "23c8aaf1693ef1a4"
+  },
+  {
+    "spec": "postCreateInCommunity.spec.ts",
+    "method": "bridge.get_post",
+    "hash": "5dbe6820827579fb"
+  },
+  {
+    "spec": "postCreateInCommunity.spec.ts",
+    "method": "bridge.list_community_roles",
+    "hash": "1d62c58decd5cd74"
+  },
+  {
+    "spec": "postCreateInCommunity.spec.ts",
+    "method": "condenser_api.get_reblogged_by",
+    "hash": "69bc1c81c3a69972"
+  },
+  {
+    "spec": "postCreateInCommunity.spec.ts",
+    "method": "database_api.list_votes",
+    "hash": "a159655cd6686b35"
+  },
+  {
+    "spec": "postCreateRedirectCommunity.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "7608a7933d5bc9bb"
+  },
+  {
+    "spec": "postCreateRedirectCommunity.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "23c8aaf1693ef1a4"
+  },
+  {
+    "spec": "postCreateRedirectCommunity.spec.ts",
+    "method": "bridge.get_post",
+    "hash": "5dbe6820827579fb"
+  },
+  {
+    "spec": "postCreateRedirectCommunity.spec.ts",
+    "method": "bridge.list_community_roles",
+    "hash": "1d62c58decd5cd74"
+  },
+  {
+    "spec": "postCreateRedirectCommunity.spec.ts",
+    "method": "condenser_api.get_reblogged_by",
+    "hash": "69bc1c81c3a69972"
+  },
+  {
+    "spec": "postCreateRedirectCommunity.spec.ts",
+    "method": "database_api.list_votes",
+    "hash": "a159655cd6686b35"
+  },
+  {
+    "spec": "postCreateRedirectTag.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "96563ad540d23c34"
+  },
+  {
+    "spec": "postCreateRedirectTag.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "23c8aaf1693ef1a4"
+  },
+  {
+    "spec": "postCreateRedirectTag.spec.ts",
+    "method": "bridge.get_post",
+    "hash": "eca4735c87c6b4f7"
+  },
+  {
+    "spec": "postCreateRedirectTag.spec.ts",
+    "method": "condenser_api.get_reblogged_by",
+    "hash": "e79d38f6489af16b"
+  },
+  {
+    "spec": "postCreateRedirectTag.spec.ts",
+    "method": "database_api.list_votes",
+    "hash": "461ddf66a78212ab"
+  },
+  {
+    "spec": "postCreateSameTitle.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "*"
+  },
+  {
+    "spec": "postCreateSameTitle.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "23c8aaf1693ef1a4"
+  },
+  {
+    "spec": "postCreateSameTitle.spec.ts",
+    "method": "bridge.get_post",
+    "hash": "*"
+  },
+  {
+    "spec": "postCreateSameTitle.spec.ts",
+    "method": "condenser_api.get_reblogged_by",
+    "hash": "*"
+  },
+  {
+    "spec": "postCreateSameTitle.spec.ts",
+    "method": "database_api.list_votes",
+    "hash": "*"
+  },
+  {
+    "spec": "postCreateUserWithPosts.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "674fb11dd8b4f2ae"
+  },
+  {
+    "spec": "postCreateUserWithPosts.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "23c8aaf1693ef1a4"
+  },
+  {
+    "spec": "postCreateUserWithPosts.spec.ts",
+    "method": "bridge.get_post",
+    "hash": "a3a98e9db2063dca"
+  },
+  {
+    "spec": "postCreateUserWithPosts.spec.ts",
+    "method": "condenser_api.get_reblogged_by",
+    "hash": "af6111d04f6cc59d"
+  },
+  {
+    "spec": "postCreateUserWithPosts.spec.ts",
+    "method": "database_api.list_votes",
+    "hash": "85e81ca0b7aca5e9"
+  },
+  {
+    "spec": "postEdit.spec.ts",
+    "method": "bridge.get_account_posts",
+    "hash": "723ab2531313fb8d"
+  },
+  {
+    "spec": "postEdit.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "3bd646f7f2fb9222"
+  },
+  {
+    "spec": "postEdit.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "d36fe00401414219"
+  },
+  {
+    "spec": "postEdit.spec.ts",
+    "method": "bridge.list_all_subscriptions",
+    "hash": "df9f4e1006b25bd5"
+  },
+  {
+    "spec": "postEdit.spec.ts",
+    "method": "condenser_api.get_following",
+    "hash": "de1bb204ac5e337d"
+  },
+  {
+    "spec": "postEdit.spec.ts",
+    "method": "condenser_api.get_following",
+    "hash": "ff22f37c1a6ae080"
+  },
+  {
+    "spec": "postEditCommunity.spec.ts",
+    "method": "bridge.get_community",
+    "hash": "50f0a6832c3ff911"
+  },
+  {
+    "spec": "postEditCommunity.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "d36fe00401414219"
+  },
+  {
+    "spec": "postEditCommunity.spec.ts",
+    "method": "bridge.list_all_subscriptions",
+    "hash": "df9f4e1006b25bd5"
+  },
+  {
+    "spec": "postEditPayoutFinalized.spec.ts",
+    "method": "bridge.list_all_subscriptions",
+    "hash": "df9f4e1006b25bd5"
+  },
+  {
+    "spec": "postEditPayoutVoted.spec.ts",
+    "method": "bridge.list_all_subscriptions",
+    "hash": "df9f4e1006b25bd5"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "029508d4662e84c8"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "0546daf37cb9bb9c"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "167d607bcbab50f0"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "1f6024b34b6d217e"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "28424e9275d06253"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "298e4657e76c56c4"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "2ee6c032c7e76c1e"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "36fd623807c17f07"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "6ab63e4e76e76d8f"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "91048508ca0c4d8c"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "9ab5f83c439dd8bf"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "c66df5e65bac593f"
+  },
+  {
+    "spec": "postPayout.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "f208a830c059c58c"
+  },
+  {
+    "spec": "postPayoutCommunity.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "496e058197b0d0ad"
+  },
+  {
+    "spec": "postPayoutCommunity.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "5bbac730026b60a6"
+  },
+  {
+    "spec": "postPayoutCommunity.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "ddbf4d7827992b49"
+  },
+  {
+    "spec": "postTemplates.spec.ts",
+    "method": "bridge.get_post_header",
+    "hash": "0f817dfbc9d85522"
+  },
+  {
+    "spec": "postTemplates.spec.ts",
+    "method": "bridge.get_ranked_posts",
+    "hash": "c8dae4654501ce7a"
+  },
+  {
+    "spec": "postTemplates.spec.ts",
+    "method": "bridge.list_communities",
+    "hash": "4987c816a2e46259"
+  },
+  {
+    "spec": "tagCommunityFeeds.spec.ts",
+    "method": "bridge.account_notifications",
+    "hash": "6cf994cdd94d6a87"
+  },
+  {
+    "spec": "tagCommunityFeeds.spec.ts",
+    "method": "bridge.get_community",
+    "hash": "3a4e4a7c203fd9a5"
+  },
+  {
+    "spec": "tagCommunityFeeds.spec.ts",
+    "method": "bridge.list_subscribers",
+    "hash": "717fe18162cdc2fe"
+  }
+]
