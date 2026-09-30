@@ -1,4 +1,4 @@
-import { test, expect, Locator } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { CommunitiesExplorePage } from '../support/pages/communitiesExplorerPage';
 
@@ -49,7 +49,7 @@ test.describe('Home page tests - All posts', () => {
     await homePage.goto();
 
     const url = process.env.REACT_APP_API_ENDPOINT;
-    let titleCommunitiesList = [];
+    const titleCommunitiesList: string[] = [];
 
     const response = await request.post(`${url}/`, {
       data: {
@@ -74,14 +74,14 @@ test.describe('Home page tests - All posts', () => {
     );
 
     // Get Tranding communities link names from website
-    let displayedNameLink: Locator[] = [];
+    const displayedNameLink: string[] = [];
 
     for (const el of await homePage.getTrendingCommunitiesSideBarLinks.all()) {
-      displayedNameLink.push(await el.textContent());
+      displayedNameLink.push((await el.textContent()) ?? '');
     }
 
     // Compare the link names of communities from api against the link names taken from the website
-    titleCommunitiesList.forEach(async (linkName, index) => {
+    titleCommunitiesList.forEach((linkName, index) => {
       expect(linkName).toBe(displayedNameLink[index]);
     });
   });

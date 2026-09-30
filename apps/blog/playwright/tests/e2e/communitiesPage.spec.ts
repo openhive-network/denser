@@ -162,7 +162,7 @@ test.describe('Communities page tests', () => {
     for (let i = 0; i < leadershipLinkLists.length; i++) {
       await leadershipLinkLists[i].click();
       await page.waitForSelector(profilePage.profileName['_selector']);
-      expect(await profilePage.profileName).toBeVisible();
+      await expect(await profilePage.profileName).toBeVisible();
       await profilePage.profilePostsLink.click();
       await page.waitForSelector(
         await profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']
@@ -446,7 +446,7 @@ test.describe('Communities page tests', () => {
       if (i < 3) {
         await leadershipLinkLists[i].click();
         await page.waitForSelector(profilePage.profileName['_selector']);
-        expect(await profilePage.profileName).toBeVisible();
+        await expect(await profilePage.profileName).toBeVisible();
         await profilePage.profilePostsLink.click();
         await page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
 

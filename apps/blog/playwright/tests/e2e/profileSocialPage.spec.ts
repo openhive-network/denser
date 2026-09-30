@@ -25,10 +25,10 @@ test.describe.skip('Social tab in the profile page of @gtg', () => {
     test('social tab is loaded', async ({ page }) => {
         await profilePage.gotoSocialProfilePage('@gtg');
         await profilePage.profileSocialTabIsSelected();
-        expect(await profilePage.socialCommunitySubscriptionsLabel).toHaveText('Community Subscriptions');
-        expect(await profilePage.socialCommunitySubscriptionsDescription).toHaveText('The author has subscribed to the following Hive Communities');
-        expect(await profilePage.socialAuthorSubscribedCommunitiesList).toBeVisible();
-        expect(await profilePage.socialBadgesAchivementsLabel).toHaveText('Badges and achievements');
+        await expect(await profilePage.socialCommunitySubscriptionsLabel).toHaveText('Community Subscriptions');
+        await expect(await profilePage.socialCommunitySubscriptionsDescription).toHaveText('The author has subscribed to the following Hive Communities');
+        await expect(await profilePage.socialAuthorSubscribedCommunitiesList).toBeVisible();
+        await expect(await profilePage.socialBadgesAchivementsLabel).toHaveText('Badges and achievements');
         // Text varies based on REACT_APP_ENABLE_THIRD_PARTY_API flag
         await expect(profilePage.socialBadgesAchivementsDescription).toBeVisible();
         await profilePage.page.waitForSelector(await profilePage.socialBadgesAchievemntsMenuBar['_selector']);
@@ -51,7 +51,7 @@ test.describe.skip('Social tab in the profile page of @gtg', () => {
         // Validate: Subscribed communities names, user role tags, affiliation tag
         let listOfSubscribedCommunitiesUITextContent: string;
         for (let i = 0; i < listOfSubscribedCommunitiesAPI.length; i++) {
-            listOfSubscribedCommunitiesUITextContent = await listOfSubscribedCommunitiesUI[i].textContent();
+            listOfSubscribedCommunitiesUITextContent = await listOfSubscribedCommunitiesUI[i].textContent() ?? '';
             // console.log('111 ', await listOfSubscribedCommunitiesUITextContent.toLocaleLowerCase())
             expect(await listOfSubscribedCommunitiesUITextContent.toLocaleLowerCase())
                 .toContain(await listOfSubscribedCommunitiesAPI[i][1].toLocaleLowerCase()); // Community name

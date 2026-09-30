@@ -17,7 +17,6 @@ export class HbauthLoginDialog {
   readonly hbauthAddKeyUsernameInput: Locator;
   readonly hbauthAddKeyPasswordInput: Locator;
   readonly hbauthAddKeySelectKeyType: Locator;
-  readonly hbauthAddKeySelectKeyTypeTrigger: Locator;
   readonly hbauthAddKeyTypeRadioPostingPrivateKey: Locator;
   readonly hbauthAddKeyTypeRadioActivePrivateKey: Locator;
   readonly hbauthAddKeyPrivateKeyInput: Locator;

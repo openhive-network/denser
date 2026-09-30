@@ -87,7 +87,7 @@ test.describe.skip('Witnesses page tests', () => {
     const priceFeedFrontEnd: any = await witnessPage.firstWitnessPriceFeed.innerText();
     const priceFeedString: any = await priceFeedFrontEnd.match(/\d.(\d){1,3}/g)[0];
     const priceFeedFromAPI = Number(firstWitnessInfoAPI.hbd_exchange_rate.base.amount) / Math.pow(10, firstWitnessInfoAPI.hbd_exchange_rate.base.precision);
-    const priceFeedOfFirstWitnessAPIString: any = priceFeedFromAPI.toFixed(3).match(/\d.(\d){1,3}/g)[0];
+    const priceFeedOfFirstWitnessAPIString: any = priceFeedFromAPI.toFixed(3).match(/\d.(\d){1,3}/g)?.[0];
     expect(await priceFeedOfFirstWitnessAPIString).toBe(await priceFeedString);
 
     // Calculate Votes received in HP
@@ -124,7 +124,7 @@ test.describe.skip('Witnesses page tests', () => {
     await witnessPage.firstWitnessNameLink.click();
 
     await profilePage.page.waitForSelector(profilePage.profileName['_selector']);
-    await profilePage.profileNickNameIsEqual(witnessName);
+    await expect(profilePage.profileNickName).toContainText(witnessName ?? '');
   });
 
   test('move to the extra side of the first witness', async ({ page }) => {

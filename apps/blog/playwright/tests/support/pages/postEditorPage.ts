@@ -173,38 +173,38 @@ export class PostEditorPage {
     }
 
     async validateDefaultPostEditorIsLoaded() {
-        expect(this.getPostTitleInput).toHaveAttribute('placeholder', 'Title');
-        expect(this.getFormContainer).toBeVisible();
-        expect(this.getPreviewContainer).toBeVisible();
-        expect(this.getEditorContent).toBeVisible();
-        expect(this.getPostSummaryInput).toHaveAttribute('placeholder', 'Post summary(for posts & SEO, max 140 chars)');
-        expect(this.getEnterYourTagsInput).toHaveAttribute('placeholder', 'Enter your tags separated by a space');
-        expect(this.getAdvancedSettingsButton).toBeVisible();
-        expect(this.getPostingToListTrigger).toBeVisible();
-        expect(this.getSubmitPostButton).toBeVisible();
+        await expect(this.getPostTitleInput).toHaveAttribute('placeholder', 'Title');
+        await expect(this.getFormContainer).toBeVisible();
+        await expect(this.getPreviewContainer).toBeVisible();
+        await expect(this.getEditorContent).toBeVisible();
+        await expect(this.getPostSummaryInput).toHaveAttribute('placeholder', 'Post summary(for posts & SEO, max 140 chars)');
+        await expect(this.getEnterYourTagsInput).toHaveAttribute('placeholder', 'Enter your tags separated by a space');
+        await expect(this.getAdvancedSettingsButton).toBeVisible();
+        await expect(this.getPostingToListTrigger).toBeVisible();
+        await expect(this.getSubmitPostButton).toBeVisible();
     }
 
     async validateDefaultPostEditorForSpecificCommunityIsLoaded(communityName: string) {
-        expect(this.getPostTitleInput).toHaveAttribute('placeholder', 'Title');
-        expect(this.getFormContainer).toBeVisible();
-        expect(this.getPreviewContainer).toBeVisible();
-        expect(this.getEditorContent).toBeVisible();
-        expect(this.getPostSummaryInput).toHaveAttribute('placeholder', 'Post summary(for posts & SEO, max 140 chars)');
-        expect(this.getEnterYourTagsInput).toHaveAttribute('placeholder', 'Enter your tags separated by a space');
-        expect(this.getAdvancedSettingsButton).toBeVisible();
-        expect(this.getPostingToListTrigger).toContainText(communityName);
-        expect(this.getSubmitPostButton).toBeVisible();
+        await expect(this.getPostTitleInput).toHaveAttribute('placeholder', 'Title');
+        await expect(this.getFormContainer).toBeVisible();
+        await expect(this.getPreviewContainer).toBeVisible();
+        await expect(this.getEditorContent).toBeVisible();
+        await expect(this.getPostSummaryInput).toHaveAttribute('placeholder', 'Post summary(for posts & SEO, max 140 chars)');
+        await expect(this.getEnterYourTagsInput).toHaveAttribute('placeholder', 'Enter your tags separated by a space');
+        await expect(this.getAdvancedSettingsButton).toBeVisible();
+        await expect(this.getPostingToListTrigger).toContainText(communityName);
+        await expect(this.getSubmitPostButton).toBeVisible();
     }
 
     async validateThePostEditorOfSpecificPostIsLoaded(postTitle: string, postContent: string, postSummary: string, postTags: string){
         await this.page.waitForSelector(this.getSubmitPostButton['_selector']);
-        expect(this.getPostTitleInput).toHaveValue(postTitle);
-        expect(this.getFormContainer).toBeVisible();
-        expect(this.getPreviewContainer).toBeVisible();
-        expect(this.getEditorContent).toContainText(postContent);
-        expect(this.getPostSummaryInput).toHaveValue(postSummary);
-        expect(this.getEnterYourTagsInput).toHaveValue(postTags);
-        expect(this.getSubmitPostButton).toBeVisible();
+        await expect(this.getPostTitleInput).toHaveValue(postTitle);
+        await expect(this.getFormContainer).toBeVisible();
+        await expect(this.getPreviewContainer).toBeVisible();
+        await expect(this.getEditorContent).toContainText(postContent);
+        await expect(this.getPostSummaryInput).toHaveValue(postSummary);
+        await expect(this.getEnterYourTagsInput).toHaveValue(postTags);
+        await expect(this.getSubmitPostButton).toBeVisible();
     }
 
     async createSimplePost(

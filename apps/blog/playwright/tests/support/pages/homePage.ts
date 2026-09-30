@@ -333,7 +333,7 @@ export class HomePage {
 
     // Validate that you moved to the clicked post author profile page
     await this.page.waitForSelector(profilePage.profileName['_selector']);
-    expect(await profilePage.profileName).toBeVisible();
+    await expect(await profilePage.profileName).toBeVisible();
     await profilePage.profilePostsLink.click();
     await this.page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
     const firstPostAuthorNameProfilePage = await this.page.locator('[data-testid="post-author"]').first();
@@ -348,7 +348,7 @@ export class HomePage {
 
     // Validate that you moved to the clicked post author profile page
     await this.page.waitForSelector(profilePage.profileName['_selector']);
-    expect(await profilePage.profileName).toBeVisible();
+    await expect(await profilePage.profileName).toBeVisible();
     await profilePage.profilePostsLink.click();
     await this.page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
     const firstPostAuthorNameProfilePage = await this.page.locator('[data-testid="post-author"]').first();
@@ -363,7 +363,7 @@ export class HomePage {
       const firstPostCardCommunityLink = await this.getFirstPostCardCommunityLink;
       const firstPostCardCommunityLinkText = await this.getFirstPostCardCommunityLink.textContent();
 
-      firstPostCardCommunityLink.click();
+      await firstPostCardCommunityLink.click();
       await this.page.waitForSelector(
         await this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
       );
@@ -377,7 +377,7 @@ export class HomePage {
       const firstPostCardCategoryLink = await this.getFirstPostCardCategoryLink;
       const firstPostCardCategoryLinkText = await this.getFirstPostCardCategoryLink.textContent();
 
-      firstPostCardCategoryLink.click();
+      await firstPostCardCategoryLink.click();
       await this.page.waitForSelector(
         this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
       );
@@ -449,12 +449,6 @@ export class HomePage {
     await this.getFirstPostChildren.click();
     await this.page.waitForSelector(await this.page.locator('[data-testid="article-title"]')['_selector']);
     expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
-  }
-
-  async moveToNavPostsPage() {
-    const url = env('API_ENDPOINT');
-    await this.getNavPostsLink.click();
-    await expect(this.page.url()).toBe(`https://${url}/trending`);
   }
 
   async moveToNavProposalsPage() {

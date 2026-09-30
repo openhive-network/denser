@@ -87,9 +87,7 @@ export class PostPage {
   readonly postsCommentsFirstAvatar: Locator;
   readonly mutedPostsBannedImageText: Locator;
   readonly userPostMenu: Locator;
-  readonly postFooterUpvoteButton: Locator;
   readonly postFooterUpvoteTooltip: Locator;
-  readonly postFooterDownvoteButton: Locator;
   readonly postFooterDownvoteTooltip: Locator;
   readonly firstPostAffiliationTag: Locator;
   readonly showPostBodyBtn: Locator;

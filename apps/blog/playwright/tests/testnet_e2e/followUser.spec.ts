@@ -98,11 +98,11 @@ test.describe.skip('Follow user - tests', () => {
       '1 following'
     );
     await denserAutoTest0Page.page.getByText('1 following').click();
-    expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).toBeVisible();
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).toBeVisible();
 
     await denserAutoTest0Page.page.locator(profilePage.followBtn).click()
     await denserAutoTest0Page.page.waitForTimeout(5000)
-    expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).not.toBeVisible()
+    await expect(denserAutoTest0Page.page.getByRole('link', { name: `${commentAuthorNameText}` })).not.toBeVisible()
     await denserAutoTest0Page.page.waitForSelector(profilePage.profileStatsString)
     await denserAutoTest0Page.page.reload({ waitUntil: 'load' });
     await expect(denserAutoTest0Page.page.locator(profilePage.profileStatsString)).toContainText('Not following anybody')
