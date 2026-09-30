@@ -793,6 +793,10 @@ smoke-tests-blog:
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   stage: test
   allow_failure: true
+  # smoke-runner.mjs stops starting attempts after 25 min (SMOKE_RUN_BUDGET_MS)
+  # and kills an attempt after 4 min, so the report is written well before this.
+  # Measured: ~3.5 min normal, ~11 min for a whole-app outage without retries.
+  timeout: 45 minutes
   needs:
   - docker-build-blog-testenv
   services:

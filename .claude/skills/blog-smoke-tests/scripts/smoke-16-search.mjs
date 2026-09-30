@@ -9,17 +9,21 @@
  *   - /search shows the search input
  *   - submitting a query navigates to a search results URL
  *   - Classic Search (/search?q=...; bridge-based, independent of HiveSense)
- *     renders results or its empty state
- *   - AI results that the HiveSense backend demonstrably serves in the shape
- *     the UI expects are rendered
+ *     renders results. "hive" always has results, so its "Nothing was found."
+ *     state is a failure too
+ *   - whenever a direct probe of HiveSense returns renderable posts, the AI
+ *     page must show them. The AI error/"unavailable" fallback, a blank page,
+ *     or a search input that never enters AI mode is then our own code failing
+ *   - AI search saying "Nothing was found." while the probe returns results
  *
- * Degraded, reported as a warning (the test passes):
+ * Degraded, reported as a warning (the test passes) only when the probe shows
+ * HiveSense down, empty, or serving posts the blog cannot render (no post_id):
  *   - the AI-search health check is off, so the input falls back to Classic
  *     Search (the #947 fallback)
- *   - AI results show the "AI search is unavailable" fallback (#947)
- *   - AI results stay on the loading spinner / blank while the HiveSense
- *     backend is unavailable, slow, or returns posts without post_id
- *     (#947 / #949: develop drops such posts and never shows a fallback)
+ *   - AI results show the "AI search is unavailable" fallback (#947), or
+ *     "Nothing was found." while the backend returns nothing
+ *   - AI results stay on the loading spinner / blank
+ *     (#947 / #949: develop drops posts without post_id, shows no fallback)
  *
  * The AI part depends on an external service that the blog cannot fix and
  * that has been degraded for months; failing on it made the whole smoke job
@@ -53,6 +57,9 @@ const AI_UNAVAILABLE_TEXT = /ai search is unavailable|error loading search resul
  * @returns {Promise<string|null>}
  */
 async function readAiDomain(page) {
+  // SMOKE_AI_DOMAIN probes a different HiveSense than the deployed blog uses
+  // (e.g. to check the test's verdicts against a stub backend).
+  if (process.env.SMOKE_AI_DOMAIN) return process.env.SMOKE_AI_DOMAIN.replace(/\/$/, '');
   try {
     const response = await page.request.get(`${config.BASE_URL}/__ENV.js`, { timeout: TIMEOUTS.SHORT });
     const match = (await response.text()).match(/"REACT_APP_AI_DOMAIN"\s*:\s*"([^"]+)"/);
@@ -128,16 +135,30 @@ async function checkAiResults(page, warn) {
     console.log(`   ✓ PASS: AI search rendered ${count} results`);
     return true;
   }
-  if (outcome === 'empty') {
-    console.log('   ✓ PASS: AI search rendered its "nothing found" state');
-    return true;
-  }
 
   const aiDomain = await readAiDomain(page);
   const probe = await probeHiveSense(aiDomain);
   console.log(`   (i) INFO: HiveSense probe: ${probe.summary}`);
 
+  if (outcome === 'empty') {
+    // "hive" always matches something; empty is only plausible when the
+    // backend itself returns nothing.
+    if (probe.healthy) {
+      console.log(`   ✗ FAIL: AI search says "Nothing was found." but HiveSense returns results. Backend: ${probe.summary}`);
+      return false;
+    }
+    warn(`AI search degraded: page says "Nothing was found." and HiveSense returns nothing (#947). Backend: ${probe.summary}`);
+    return true;
+  }
+
   if (outcome === 'fallback') {
+    if (probe.renderable) {
+      console.log(
+        '   ✗ FAIL: AI search shows its error/"unavailable" fallback but HiveSense serves renderable results ' +
+          `(the blog's own request code failed). Backend: ${probe.summary}`
+      );
+      return false;
+    }
     warn(`AI search degraded: page shows the "AI search unavailable" fallback (#947). Backend: ${probe.summary}`);
     return true;
   }
@@ -185,8 +206,8 @@ async function checkClassicSearch(page) {
     return true;
   }
   if (outcome === 'empty') {
-    console.log('   ✓ PASS: Classic Search rendered its "nothing found" state');
-    return true;
+    console.log(`   ✗ FAIL: Classic Search says "Nothing was found." for "${QUERY}", which always has results`);
+    return false;
   }
   console.log(`   ✗ FAIL: Classic Search showed no results and no empty state within ${TIMEOUTS.ELEMENT_VISIBLE / 1000}s`);
   return false;
@@ -228,8 +249,22 @@ async function test({ page, warn }) {
     allPassed = (await checkAiResults(page, warn)) && allPassed;
   } else {
     // ModeSwitchInput starts in AI mode only when getHiveSenseStatus() is true;
-    // otherwise the input submits a Classic Search (the #947 fallback).
-    warn('AI search mode unavailable (HiveSense health check failed); the search input fell back to Classic Search (#947)');
+    // otherwise the input submits a Classic Search (the #947 fallback). That
+    // is only acceptable when HiveSense really cannot serve renderable results.
+    const probe = await probeHiveSense(await readAiDomain(page));
+    console.log(`   (i) INFO: HiveSense probe: ${probe.summary}`);
+    if (probe.renderable) {
+      console.log(
+        '   ✗ FAIL: The search input submitted a Classic Search (AI mode off) although HiveSense serves ' +
+          `renderable results. Backend: ${probe.summary}`
+      );
+      allPassed = false;
+    } else {
+      warn(
+        'AI search mode unavailable (HiveSense health check failed); the search input fell back to Classic Search ' +
+          `(#947). Backend: ${probe.summary}`
+      );
+    }
   }
 
   allPassed = (await checkClassicSearch(page)) && allPassed;
