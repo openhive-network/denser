@@ -31,6 +31,10 @@ process.env.REACT_APP_API_ENDPOINT = `http://localhost:${FIXTURE_PORT}`;
 
 export default defineConfig({
   testDir: './playwright/tests/fixture',
+  // Collect the fixture proxy's replay MISSes and fail on ones missing
+  // from playwright/tests/fixture/known-misses.json.
+  globalSetup: './playwright/tests/support/fixture-misses/global-setup.ts',
+  globalTeardown: './playwright/tests/support/fixture-misses/global-teardown.ts',
   timeout: 60 * 1000,
   expect: {
     timeout: 10 * 1000

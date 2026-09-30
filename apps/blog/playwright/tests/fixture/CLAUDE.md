@@ -28,12 +28,14 @@ apps/blog/
 ├── playwright.fixture.config.ts                           # Playwright config (webServer, env overrides)
 └── playwright/tests/
     ├── fixture/                                           # the spec files (this directory)
+    │   └── known-misses.json                              # baseline of accepted replay MISSes
     ├── mock/fixtures/<testName>/                          # recorded JSON-RPC pairs per test
     └── support/
         ├── fixture-proxy-test.ts                          # `test` + `expect` exports, worker-scope proxy
         ├── postVotingContext.ts                           # shared voter/post constants + hydration helpers
         ├── pages/                                         # Page Object Models (use these, don't roll your own locators)
         ├── mock-server/fixture-proxy.ts                   # record/replay HTTP proxy on :8200
+        ├── fixture-misses/                                # MISS log + global setup/teardown baseline check
         └── fixture-auth/
             ├── constants.ts                               # shared cookie name + dummy password
             ├── seeder.ts                                  # seedAuthCookie — iron-session + localStorage
@@ -191,6 +193,54 @@ Runs offline. Commit `spec.ts` + `mock/fixtures/myNewScenario/` together.
 (Replay is safe with the script wrapper because `test:fixture` has no
 trailing trim command — the `--` arg lands on `playwright test` as
 intended.)
+
+The run fails at global teardown if the spec made an API call with no
+recording (see "Replay MISS baseline" below). Record the missing call, or
+accept it into the baseline.
+
+---
+
+## Replay MISS baseline
+
+When the replay proxy has no recording for a request it logs
+`[fixture-proxy:replay] MISS — no fixture for …` and answers with a
+JSON-RPC error, so the UI renders an error state while the test may
+still pass. To stop new unrecorded calls from slipping in:
+
+- `fixture-proxy-test.ts`'s auto `missLog` fixture drains the proxy's
+  misses after every test and appends them, keyed by
+  `(spec file, method, request hash)`, to
+  `test-results/fixture/misses.d/` (repo root). Misses from **failed**
+  attempts are dropped — the failure already fails or retries the run.
+- `fixture-misses/global-teardown.ts` merges them into
+  `test-results/fixture/misses.json` and compares against
+  `known-misses.json` **for the specs that ran** (a narrowed run is
+  judged against its own slice). A miss absent from the baseline fails
+  the run with one error listing spec, method and hash. Baseline entries
+  that no longer happen are printed as a warning so the file can shrink.
+- Record mode skips the check.
+
+The `hash` is the proxy's normalized request hash (same as a fixture's
+`requestHash`), so a changed param is a new miss even when the method
+is already listed.
+
+A few calls carry params that are random per run — e.g.
+`postCreateSameTitle.spec.ts` reads back a post whose permlink gets a
+random noise prefix — so no hash is stable. For those, set the entry's
+`hash` to `"*"`: it accepts any params for that spec + method, and
+baseline updates keep it as is. Use `*` only for truly random params.
+
+Regenerate the baseline after a green replay run (a failed attempt
+drops its misses, so updating from a red run can remove real entries):
+
+```bash
+# whole suite, or narrow it — only the specs that ran are rewritten
+cd apps/blog && FIXTURE_MISS_BASELINE=update pnpm exec \
+  playwright test --config=playwright.fixture.config.ts [specs...]
+```
+
+Commit the `known-misses.json` diff and say in the MR why each added
+entry is acceptable. Prefer recording the call instead.
 
 ---
 

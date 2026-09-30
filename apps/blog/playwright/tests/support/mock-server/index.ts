@@ -44,7 +44,8 @@ export {
   getFixtureDir,
   hasFixtures,
   type IFixtureProxyHandle,
-  type IFixtureEntry
+  type IFixtureEntry,
+  type IReplayMiss
 } from './fixture-proxy';
 
 import { JsonRpcMock } from './api-mock';

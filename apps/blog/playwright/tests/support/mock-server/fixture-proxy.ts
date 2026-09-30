@@ -34,8 +34,18 @@ export interface IFixtureEntry {
   responseContentType?: string;
 }
 
+/** A request the replay proxy had no recording for. */
+export interface IReplayMiss {
+  /** JSON-RPC method, or `<HTTP method> <path>` for non-RPC calls */
+  method: string;
+  /** Normalized request hash (same scheme as `IFixtureEntry.requestHash`) */
+  hash: string;
+}
+
 export interface IFixtureProxyHandle {
   close: () => Promise<void>;
+  /** Returns the misses recorded since the previous call and forgets them. Always empty in record mode. */
+  drainMisses: () => IReplayMiss[];
   port: number;
   url: string;
   fixtureDir: string;
@@ -355,6 +365,7 @@ export async function createFixtureProxy(
       });
       server.closeAllConnections?.();
     },
+    drainMisses: () => [],
     port,
     url: `http://localhost:${port}`,
     fixtureDir,
@@ -534,6 +545,7 @@ export async function createReplayProxy(
   const callCounters = new Map<string, number>();
   let servedCount = 0;
   let missCount = 0;
+  let pendingMisses: IReplayMiss[] = [];
 
   const app = express();
   app.use(cors());
@@ -574,6 +586,7 @@ export async function createReplayProxy(
 
     if (!entries || entries.length === 0) {
       missCount++;
+      pendingMisses.push({ method: label, hash: requestHash });
       console.warn(
         `[fixture-proxy:replay] MISS — no fixture for ${label} (hash: ${requestHash})`
       );
@@ -635,6 +648,11 @@ export async function createReplayProxy(
         server.close((err) => (err ? reject(err) : resolve()));
       });
       server.closeAllConnections?.();
+    },
+    drainMisses: () => {
+      const drained = pendingMisses;
+      pendingMisses = [];
+      return drained;
     },
     port,
     url: `http://localhost:${port}`,
