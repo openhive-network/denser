@@ -8,7 +8,7 @@ describe('VimeoEmbedder', () => {
         'https://player.vimeo.com/video/179213493?h=11571f92bf',
         'https://player.vimeo.com/video/179213493?byline=0'
     ].forEach((input) => {
-        it('should properly return metadata for vimeo video link with player', () => {
+        it(`should properly return metadata for vimeo video link with player: ${input}`, () => {
             const embedder = new VimeoEmbedder();
             const expected = {
                 id: '179213493',
@@ -24,7 +24,7 @@ describe('VimeoEmbedder', () => {
         'https://vimeo.com/179213493',
         'https://vimeo.com/179213493?byline=0'
     ].forEach((input) => {
-        it('should properly return metadata for vimeo video', () => {
+        it(`should properly return metadata for vimeo video: ${input}`, () => {
             const embedder = new VimeoEmbedder();
             const expected = {
                 id: '179213493',
