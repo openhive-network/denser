@@ -23,10 +23,11 @@ test.describe('Profile page of @gtg', () => {
   });
 
   test('Tab Posts - Posts - List', async ({ page, request }) => {
+    const pageSize = 20;
+    const toPostKey = (href: string | null) => href?.match(/(@[^/]+\/[^/?#]+)$/)?.[1] ?? null;
+
     await profilePage.gotoPostsProfilePage('@gtg');
     await expect(profilePage.postBlogItem.first()).toBeVisible();
-    const post = await profilePage.postBlogItem.all();
-    const postLenght = await post.length;
 
     const url = process.env.REACT_APP_API_ENDPOINT;
 
@@ -35,29 +36,36 @@ test.describe('Profile page of @gtg', () => {
         id: 0,
         jsonrpc: '2.0',
         method: 'bridge.get_account_posts',
-        params: { sort: 'comments', account: 'gtg', start_author: '', start_permlink: '', limit: 20 }
+        params: { sort: 'posts', account: 'gtg', start_author: '', start_permlink: '', limit: pageSize }
       },
       headers: {
         Accept: 'application/json, text/plain, */*'
       }
     });
 
-    const postAmount = (await response.json()).result;
-    const postAmountLenght = postAmount.length;
+    const apiPosts: { author: string; permlink: string }[] = (await response.json()).result;
+    expect(apiPosts).toHaveLength(pageSize);
+    const apiPostKeys = apiPosts.map((post) => `@${post.author}/${post.permlink}`);
 
-    await expect(postAmountLenght).toEqual(postLenght);
+    // The list auto-fetches further pages via a prefetch sentinel, so only the
+    // first page of rendered cards is stable enough to compare with the API.
+    await expect.poll(() => profilePage.postBlogItem.count()).toBeGreaterThanOrEqual(pageSize);
+    const firstPageHrefs: (string | null)[] = await profilePage.postBlogItem.evaluateAll(
+      (items: Element[], size: number) =>
+        items
+          .slice(0, size)
+          .map((item) => item.querySelector('[data-testid="post-title"] > a')?.getAttribute('href') ?? null),
+      pageSize
+    );
+    expect(firstPageHrefs.map(toPostKey)).toEqual(apiPostKeys);
 
     await page.evaluate(() => {
       window.scrollBy(0, 3000);
     });
 
-    await expect(profilePage.postBlogItem.nth(21)).toBeVisible();
-
-    const postScrolled = await profilePage.postBlogItem.all();
-    const postScrolledLenght = await postScrolled.length;
-    const expectedPostsAmount = postAmountLenght * 2;
-
-    await expect(postScrolledLenght).toEqual(expectedPostsAmount);
+    await expect.poll(() => profilePage.postBlogItem.count()).toBeGreaterThan(pageSize);
+    const postScrolledLength = await profilePage.postBlogItem.count();
+    expect(postScrolledLength % pageSize).toBe(0);
   });
 
   test('Tab Posts - Posts Card Header- Avatar', async ({ page }) => {
