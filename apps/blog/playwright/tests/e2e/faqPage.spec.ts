@@ -1,6 +1,11 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { FaqPage } from '../support/pages/faqPage';
+
+// The header search box (ModeSwitchInput) renders differently depending on
+// the live HiveSense status, so it's masked in the FAQ screenshots (#971).
+// It has no data-testid; this is its wrapper in main-bar.tsx.
+const liveHeaderElements = (page: Page) => [page.locator('header nav > div.hidden.lg\\:block')];
 
 test.describe('Faq page tests', () => {
   let homePage: HomePage;
@@ -54,7 +59,9 @@ test.describe('Faq page tests', () => {
     await faqPage.whatIsHiveBlogLink.click();
     // Wait for page to settle before screenshot
     await faqPage.page.waitForLoadState('networkidle');
-    await expect(faqPage.page).toHaveScreenshot('whatishiveblog.png');
+    await expect(faqPage.page).toHaveScreenshot('whatishiveblog.png', {
+      mask: liveHeaderElements(page)
+    });
   });
 
   test('move to the "Can I earn digital tokens on Hive? How?" description and come back', async ({
@@ -68,11 +75,15 @@ test.describe('Faq page tests', () => {
     await faqPage.canIEarnDigitalTokensOnHiveLink.click();
     // Wait for page to settle before screenshot
     await faqPage.page.waitForLoadState('networkidle');
-    await expect(faqPage.page).toHaveScreenshot('canIEarnDigitalTokensOnHiveDescription.png');
+    await expect(faqPage.page).toHaveScreenshot('canIEarnDigitalTokensOnHiveDescription.png', {
+      mask: liveHeaderElements(page)
+    });
     await faqPage.caretSignCanIEarnDigitalTokensOnHiveLink.click();
     // Wait for page to settle before screenshot
     await faqPage.page.waitForLoadState('networkidle');
-    await expect(faqPage.page).toHaveScreenshot('canIEarnDigitalTokensOnHiveComeBack.png');
+    await expect(faqPage.page).toHaveScreenshot('canIEarnDigitalTokensOnHiveComeBack.png', {
+      mask: liveHeaderElements(page)
+    });
   });
 
   test('validate styles of faq page titles and links part in the light mode', async ({ page, browserName }) => {

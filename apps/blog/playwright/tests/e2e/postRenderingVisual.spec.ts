@@ -104,7 +104,8 @@ test.describe('Embed table layout regression', () => {
     await expect(postPage.articleTable).toHaveCSS('border-collapse', 'collapse');
   });
 
-  test('table with embeds renders correct layout', async ({ page, browserName }) => {
+  // @flaky: live Twitter/Instagram embeds change the table's height from run to run (#971).
+  test('@flaky table with embeds renders correct layout', async ({ page, browserName }) => {
     chromiumOnly(browserName);
 
     await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
