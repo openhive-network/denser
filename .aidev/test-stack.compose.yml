@@ -1,0 +1,97 @@
+# AIDEV's shared test stack for denser (`sandbox.compose` in .aidev/project.yaml,
+# #967): the blog's production build, served once per `full` run to the suites
+# that need a server — fixture_e2e (.aidev/run-fixture-e2e.sh) and the advisory
+# live_e2e (.aidev/run-live-e2e.sh).
+#
+# No image is built: every service runs the pinned test image (`environment.image`)
+# over the read-only checkout, and the build is the one the blog_build suite
+# (.aidev/run-blog-build.sh) made before AIDEV started this stack. The suites
+# reach it over the stack network (AIDEV runs them with
+# --network <project>_default), so nothing is published on the host.
+#
+#   fixture-proxy  :8200. Relays to the fixture proxy each Playwright worker
+#                  starts for its spec inside the suite's container, once the
+#                  suite registers itself (POST /__aidev/upstream). Network
+#                  alias `blog`: the fixture blog lives in this namespace.
+#   blog           :3000 (as blog:3000) — the build with playwright.fixture.config.ts's
+#                  webServer env. It shares fixture-proxy's network namespace,
+#                  so its server-side http://localhost:8200 is the relay; the
+#                  browser's http://localhost:8200 is the worker's own proxy in the
+#                  suite container, as in CI. Both therefore read one recording.
+#   blog-live      :3000 (as blog-live:3000) — the same build against the live
+#                  Hive API (the app's defaults), for live_e2e.
+#
+# By hand, after .aidev/run-blog-build.sh:
+#   docker compose -f .aidev/test-stack.compose.yml -p denser-test up -d --wait
+name: denser-aidev-test
+
+x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:3890fe8d4787a3134ebf68f33d02b5138354424201425f7787480ecaf964992c
+
+x-checkout: &checkout ${AIDEV_HOST_CHECKOUT:-${PWD}}:/work:ro
+
+# Healthy once the server answers — or while there is no build to serve (the
+# blog_build suite failed), so a broken build is reported by the suites that
+# need it rather than as a stack that never became ready.
+x-blog-health: &blog-health
+  test:
+    - CMD
+    - node
+    - -e
+    - "require('fs').existsSync('/work/apps/blog/.next/aidev-build-complete') ? fetch('http://127.0.0.1:3000/favicon.ico').then(()=>process.exit(0),()=>process.exit(1)) : process.exit(0)"
+  interval: 2s
+  timeout: 5s
+  retries: 90
+  start_period: 5s
+
+services:
+  fixture-proxy:
+    image: *image
+    working_dir: /work
+    mem_limit: 512m
+    volumes:
+      - *checkout
+    command: ["node", ".aidev/fixture-proxy-serve.mjs", "serve", "--port", "8200"]
+    networks:
+      default:
+        aliases: [blog]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8200/__aidev/status').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 2s
+
+  blog:
+    image: *image
+    working_dir: /work
+    mem_limit: 2g
+    network_mode: service:fixture-proxy
+    volumes:
+      - *checkout
+    environment:
+      REACT_APP_API_ENDPOINT: http://localhost:8200
+      REACT_APP_ALLOWED_HIVE_API_NODES: http://localhost:8200
+      REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+      # playwright/tests/support/fixture-auth/constants.ts: the app seals the
+      # session cookie with what the seeder seals it with.
+      REACT_APP_APP_NAME: blog
+      DENSER_SERVER_SECRET_COOKIE_PASSWORD: fixture-tests-dummy-cookie-password-not-a-secret
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    command: ["bash", ".aidev/blog-serve-standalone.sh"]
+    depends_on:
+      fixture-proxy:
+        condition: service_healthy
+    healthcheck: *blog-health
+
+  blog-live:
+    image: *image
+    working_dir: /work
+    mem_limit: 2g
+    volumes:
+      - *checkout
+    environment:
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    command: ["bash", ".aidev/blog-serve-standalone.sh"]
+    healthcheck: *blog-health
