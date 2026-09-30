@@ -92,8 +92,10 @@ services:
       - *checkout
       - blog_next:/work/apps/blog/.next
     environment:
-      REACT_APP_API_ENDPOINT: http://localhost:8200
-      REACT_APP_ALLOWED_HIVE_API_NODES: http://localhost:8200
+      # Fixture data by default. DENSER_DEV_API_ENDPOINT=https://api.hive.blog
+      # (set when starting the stack) points the blog at the live API instead.
+      REACT_APP_API_ENDPOINT: ${DENSER_DEV_API_ENDPOINT:-http://localhost:8200}
+      REACT_APP_ALLOWED_HIVE_API_NODES: ${DENSER_DEV_API_ENDPOINT:-http://localhost:8200}
       REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
       # playwright/tests/support/fixture-auth/constants.ts: the app seals the
       # session cookie with what the seeder seals it with.

@@ -50,6 +50,25 @@ Server-rendered HTML reads the stack's proxy; in-page requests from a browser go
 to `http://localhost:8200`, which only `.aidev/dev-stack-spec.sh` provides — so
 check interactive behaviour with a spec, not a browser pointed at the URL.
 
+**Live data instead.** Start the stack with
+`DENSER_DEV_API_ENDPOINT=https://api.hive.blog` and the blog talks to the live
+API (needs egress; fixture specs then no longer apply).
+
+**Known limitation: next dev is not the production build.** The stack is for
+looking at pages and quick spec checks; the gate stays the `full` slot's
+production-build run. What was seen while qualifying it (#966):
+
+- Playwright output written under `apps/` or `packages/` (tailwind's content
+  globs put both in next's watch set) triggers a recompile mid-test; the
+  browser then gets truncated chunks (`ERR_CONTENT_LENGTH_MISMATCH`,
+  `ChunkLoadError`) and fails e.g. postDetail's ANON-POST-03 (vote buttons),
+  -06 (pending banner) and -07 (404 page). `.aidev/dev-stack-spec.sh` writes
+  to `test-results/dev-stack/` for that reason; with it postDetail is 7/7.
+- The first request to a route compiles it (tens of seconds for the post
+  page); `blog-ready` warms the common ones, others pay it inside the spec.
+- next dev logs warnings the build does not fail on (e.g. `useForm` is not
+  exported from `react-hook-form` in smart-signer's password form).
+
 **When things change.** Source edits hot-reload. A change to `pnpm-lock.yaml` or a
 `package.json`, `next.config.js`, the middleware package or the stack's own files
 restarts the stack's services (`reload` in the profile), which reinstalls
