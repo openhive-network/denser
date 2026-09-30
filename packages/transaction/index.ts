@@ -26,6 +26,9 @@ import WorkerBee, { IWorkerBee } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
 import { getChain } from './lib/chain';
+import { PUBLISHING_APP } from './lib/publishing-app';
+
+export { PUBLISHING_APP } from './lib/publishing-app';
 
 const logger = getLogger('app');
 
@@ -559,7 +562,10 @@ export class TransactionService {
       parentPermlink,
       author: this.signerOptions.username,
       body,
-      permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`
+      permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`,
+      jsonMetadata: {
+        app: PUBLISHING_APP
+      }
     };
 
     if (preferences.comment_rewards === '100%') {
@@ -591,7 +597,9 @@ export class TransactionService {
       parentPermlink,
       author: this.signerOptions.username,
       body,
-      jsonMetadata: {},
+      jsonMetadata: {
+        app: PUBLISHING_APP
+      },
       permlink
     });
 
@@ -628,7 +636,7 @@ export class TransactionService {
       images: [image ? image : ''],
       jsonMetadata: {
         summary,
-        app: 'hive.blog/0.9'
+        app: PUBLISHING_APP
       }
     });
     return await this.processHiveAppOperation((builder) => {
@@ -657,7 +665,7 @@ export class TransactionService {
       images: [image ? image : ''],
       jsonMetadata: {
         summary,
-        app: 'hive.blog/0.9'
+        app: PUBLISHING_APP
       }
     });
 
