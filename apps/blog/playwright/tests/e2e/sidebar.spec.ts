@@ -111,7 +111,7 @@ test.describe('Sidebar tests', () => {
    * SIDEBAR ON DIFFERENT FEEDS
    */
 
-  test('@flaky sidebar is visible on hot feed', async ({ page }) => {
+  test('sidebar is visible on hot feed', async ({ page }) => {
     await page.goto('/hot');
     await page.waitForLoadState('domcontentloaded');
 
@@ -122,7 +122,7 @@ test.describe('Sidebar tests', () => {
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
   });
 
-  test('@flaky sidebar is visible on created feed', async ({ page }) => {
+  test('sidebar is visible on created feed', async ({ page }) => {
     await page.goto('/created');
     await page.waitForLoadState('domcontentloaded');
 

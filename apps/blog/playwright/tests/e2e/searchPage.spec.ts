@@ -84,6 +84,7 @@ test.describe('Search page tests', () => {
     expect(resultsCount).toBeGreaterThan(0);
   });
 
+  // @flaky kept (#964): self-skips on HiveSearcher timeout in every CI run checked and 10/10 locally, so no pass evidence.
   test('@flaky search sorting by newest (created) works', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Search results timing issues on WebKit');
     test.skip(isProductionEnvironment(), 'Production: search by created sort intermittently fails');

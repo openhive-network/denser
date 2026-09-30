@@ -129,7 +129,7 @@ test.describe('Error States tests', () => {
    * APP FUNCTIONALITY TESTS
    */
 
-  test('@flaky app remains functional after navigation', async ({ page }) => {
+  test('app remains functional after navigation', async ({ page }) => {
     await homePage.goto();
 
     await page.goto('/hot');
