@@ -14,15 +14,15 @@ labels:
     color: "#1f75cb"
     description: "Implementation task (code change). implement + todo = approved for submit."
     authority: executive
+  # bug and enhancement are denser's existing labels, declared with their own
+  # colour and no description so the sync leaves them as they are.
   - name: bug
     group: type
-    color: "#dd2b0e"
-    description: "Defect in existing behaviour."
+    color: "#d9534f"
     authority: executive
-  - name: feature
+  - name: enhancement
     group: type
-    color: "#108548"
-    description: "New capability."
+    color: "#a2eeef"
     authority: executive
   - name: todo
     group: status
