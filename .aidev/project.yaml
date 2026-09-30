@@ -42,10 +42,11 @@ issues:
 # AIDEV does not run the `static` or `system` slots for a project, so the static
 # checks (ESLint errors, tsc for both apps) are a suite of quick, full and canary.
 #
-# Not bound, deliberately: the live-API Playwright suites (apps/*/playwright
-# tests/e2e, smoke) judge mainnet data rather than the change and are the flaky
-# part of denser's CI; mirrornet needs a HAF stack; translation checks
-# (lint:translations*) fail on existing debt.
+# The live-API Playwright suites (apps/*/playwright/tests/e2e, smoke) judge
+# mainnet data rather than the change and are the flaky part of denser's CI, so
+# they never gate: the e2e specs a candidate changes run only as full's advisory
+# live_e2e suite, and smoke is not bound. Not bound either: mirrornet needs a HAF
+# stack; translation checks (lint:translations*) fail on existing debt.
 verification:
   # ~25 s: mocha unit suites of packages/renderer and packages/transaction
   # (~1,430 tests), plus lint and type check.
@@ -55,28 +56,44 @@ verification:
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
         artifacts: ["test-results/unit/"]
+        stack: false
       - name: static
         adapter: command
         args: [".aidev/run-static.sh"]
+        stack: false
   # quick, plus a production build of the blog and its fixture-replay Playwright
-  # suite (~250 tests against recorded API responses, one worker).
+  # suite (~250 tests against recorded API responses, one worker), then the
+  # advisory live_e2e against that build served by the test stack.
   full:
     suites:
       - name: unit
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
         artifacts: ["test-results/unit/"]
+        stack: false
       - name: static
         adapter: command
         args: [".aidev/run-static.sh"]
+        stack: false
       - name: fixture_e2e
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
         artifacts: ["test-results/fixture/"]
+        stack: false
+      # ADVISORY (always exits 0): the live-API e2e specs this candidate changed,
+      # --repeat-each=3, against the stack's blog-live (fixture_e2e's build);
+      # "not applicable" when it changes none or no change information reaches
+      # the container (ai/aidev#14456). See .aidev/run-live-e2e.sh.
+      - name: live_e2e
+        adapter: command
+        args: [".aidev/run-live-e2e.sh"]
+        artifacts: ["test-results/live-e2e/"]
+        env: {DENSER_TEST_STACK: "1"}
   baseline:
     adapter: command
     args: [".aidev/run-unit-tests.sh"]
     artifacts: ["test-results/unit/"]
+    stack: false
   # Re-checks the merged tree on deploy/promote.
   canary:
     suites:
@@ -84,15 +101,57 @@ verification:
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
         artifacts: ["test-results/unit/"]
+        stack: false
       - name: static
         adapter: command
         args: [".aidev/run-static.sh"]
+        stack: false
   # The unit suites under nyc (renderer's own dev dependency): per-package
   # Cobertura + text summary and junit in test-results/coverage/.
   coverage:
     adapter: command
     args: [".aidev/run-coverage.sh"]
     artifacts: ["test-results/coverage/"]
+    stack: false
+
+# Live dev stack (#966): `next dev` of the blog, hot-reloading from the implement
+# checkout, against the fixture replay proxy — from the pinned image above, with
+# no image build. An agent opens pages at $DENSER_DEV_BLOG_URL and runs fixture
+# specs with .aidev/dev-stack-spec.sh; see .aidev/README.md.
+# Measured on steem-17: 64 s to healthy with no node_modules (the offline install
+# is ~7 s of it), 57 s warm; most of it is next dev compiling the warmed routes.
+# Shared test stack (#967): fixture_e2e's production build served against the
+# live Hive API, for the advisory live_e2e only (.aidev/test-stack.compose.yml).
+# fixture_e2e itself stays self-contained: its fixture proxy is per spec, inside
+# the Playwright process (see .aidev/run-fixture-e2e.sh). Only live_e2e declares
+# `stack: true`; every other binding says `stack: false`.
+sandbox:
+  compose: .aidev/test-stack.compose.yml
+  # One Next.js server (2 GB limit); heavy as #967 asks, one copy per host.
+  resource_class: heavy
+  services: [blog-live]
+  # Copying the standalone build and starting the server takes ~10 s.
+  readiness_timeout: 300
+  dev:
+    compose: .aidev/dev-stack.compose.yml
+    services: [init, fixture-proxy, blog, blog-ready]
+    readiness_timeout: 600
+    ports: [BLOG, FIXTURE]
+    env:
+      DENSER_DEV_BLOG_URL: http://127.0.0.1:${AIDEV_PORT_BLOG}
+      DENSER_DEV_FIXTURE_URL: http://127.0.0.1:${AIDEV_PORT_FIXTURE}
+      DENSER_DEV_STACK_PROJECT: ${AIDEV_DEV_STACK_PROJECT}
+      DENSER_DEV_CHECKOUT: ${AIDEV_HOST_CHECKOUT}
+    reload:
+      # A dependency change needs node_modules reinstalled (offline, from the
+      # image's store) and next restarted; restarting reruns .aidev/pnpm-deps.sh,
+      # which installs only when the lockfile moved. No image is rebuilt: a
+      # lockfile the image's store cannot satisfy needs a new environment.image.
+      - paths: ["pnpm-lock.yaml", "package.json", "apps/*/package.json", "packages/*/package.json"]
+        action: restart
+      # next.config.js and the env/middleware wiring are read once at startup.
+      - paths: ["apps/blog/next.config.js", "packages/middleware/**", ".aidev/dev-stack.compose.yml", ".aidev/fixture-proxy-serve.mjs"]
+        action: restart
 
 # Capability grants for target-side code. Empty until this project needs one.
 capabilities: []
