@@ -8,12 +8,15 @@
 # Pipeline schedule settings (Build > Pipeline schedules):
 #   target branch: ci/flake-report, e.g. cron "17 6 * * 1" (Monday)
 # CI/CD variable:
-#   FLAKE_REPORT_TOKEN: masked. A project access token with the Reporter
+#   FLAKE_REPORT_TOKEN: masked and protected. A project access token with the Reporter
 #     role and api scope: reads pipelines, jobs, artifacts and logs, and
 #     posts the note.
-# Optional pipeline variables: FLAKE_REPORT_DAYS (7), FLAKE_REPORT_ISSUE (908),
-#   FLAKE_REPORT_POST ("1" posts, anything else is a dry run),
-#   FLAKE_REPORT_SCRIPT_REF (develop).
+#   Keep this branch protected: the job runs with that token.
+# Posting: scheduled pipelines post the note. Manual (web) and API runs are a
+#   dry run unless FLAKE_REPORT_POST=1 is set explicitly.
+# Optional pipeline variables: FLAKE_REPORT_DAYS (7), FLAKE_REPORT_ISSUE (908).
+# The script is always taken from develop (no ref override), so only reviewed
+# code runs with the token.
 
 stages:
 - report
@@ -31,14 +34,13 @@ flake-report:
     GIT_DEPTH: 1
     FLAKE_REPORT_DAYS: '7'
     FLAKE_REPORT_ISSUE: '908'
-    FLAKE_REPORT_POST: '1'
-    FLAKE_REPORT_SCRIPT_REF: develop
   script:
-  - git fetch --depth 1 origin "$FLAKE_REPORT_SCRIPT_REF"
+  - git fetch --depth 1 origin develop
   - git show FETCH_HEAD:scripts/ci/flake-report.mjs > /tmp/flake-report.mjs
   - |
     POST_FLAG=""
-    if [ "$FLAKE_REPORT_POST" = "1" ]; then POST_FLAG="--post"; fi
+    if [ "$CI_PIPELINE_SOURCE" = "schedule" ] || [ "$FLAKE_REPORT_POST" = "1" ]; then POST_FLAG="--post"; fi
+    echo "pipeline source: $CI_PIPELINE_SOURCE, post: ${POST_FLAG:-no (dry run)}"
     node /tmp/flake-report.mjs --out flake-report.md $POST_FLAG
   artifacts:
     paths:
