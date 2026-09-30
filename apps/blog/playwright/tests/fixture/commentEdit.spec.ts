@@ -14,6 +14,7 @@ import {
   ownCommentEditButton,
   ownCommentDescription,
   ownCommentEditor,
+  openReplyEditor,
   typeIntoReplyEditor,
   submitReply
 } from '../support/commentingContext';
@@ -47,14 +48,11 @@ test.describe('Comment editing — own comment (§5)', () => {
       postPage,
       OWN_COMMENT_TOP_LEVEL_PERMLINK
     );
-    // Sicarius's payout=0.293 sorts top under trending; injected own
-    // comment with payout=0 lands further down — scroll into view so
-    // headed mode's hover/click hits it.
-    await editBtn.scrollIntoViewIfNeeded();
-    await editBtn.click({ force: true });
+    const editor = ownCommentEditor(postPage, OWN_COMMENT_TOP_LEVEL_PERMLINK);
+    await openReplyEditor(editBtn, editor);
 
     const newBody = 'CMT-03 fixture-test edited body';
-    await typeIntoReplyEditor(page, newBody, { clearFirst: true });
+    await typeIntoReplyEditor(page, newBody, { clearFirst: true, editor });
     await submitReply(page);
 
     await broadcast.waitForCount(1);
