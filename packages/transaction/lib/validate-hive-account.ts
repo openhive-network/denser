@@ -18,7 +18,7 @@ const ACCOUNT_NAME_REGEX = /^[a-z][a-z0-9.-]{2,15}$/;
  * WORKAROUND: Used when WASM memory corrupts after extended uptime.
  * See: https://gitlab.syncad.com/hive/wax/-/issues/161
  */
-function validateAccountNameFormat(name: string): boolean {
+export function validateAccountNameFormat(name: string): boolean {
   if (typeof name !== 'string') return false;
   if (!ACCOUNT_NAME_REGEX.test(name)) return false;
 
