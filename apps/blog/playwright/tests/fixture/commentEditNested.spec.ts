@@ -12,6 +12,7 @@ import {
   ownCommentEditButton,
   ownCommentDescription,
   ownCommentEditor,
+  openReplyEditor,
   typeIntoReplyEditor,
   submitReply
 } from '../support/commentingContext';
@@ -40,11 +41,11 @@ test.describe('Comment editing — nested reply (§5)', () => {
       postPage,
       OWN_COMMENT_NESTED_PERMLINK
     );
-    await editBtn.scrollIntoViewIfNeeded();
-    await editBtn.click({ force: true });
+    const editor = ownCommentEditor(postPage, OWN_COMMENT_NESTED_PERMLINK);
+    await openReplyEditor(editBtn, editor);
 
     const newBody = 'CMT-04 fixture-test edited nested body';
-    await typeIntoReplyEditor(page, newBody, { clearFirst: true });
+    await typeIntoReplyEditor(page, newBody, { clearFirst: true, editor });
     await submitReply(page);
 
     await broadcast.waitForCount(1);

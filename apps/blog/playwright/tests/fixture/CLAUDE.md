@@ -583,6 +583,16 @@ first-click flow, follow that pattern: retry the trigger until its
 observable effect appears; never trust a single click fired within the
 first seconds of page life.
 
+**Don't `force: true` a first click on the post page either.** Own-comment
+footer buttons (edit/delete) render only after `useUserClient` resolves the
+user post-mount, and the comment cards keep shifting for a few hundred ms
+while the other post-hydration queries land. A forced click skips the
+stable-box and hit-target checks, so it lands on whatever moved under the
+stale point: a click probe caught every failing CMT-03/04 first click (4/80
+under CPU load) with the comment body's `<p>` as the event target, not Edit.
+CMT-03/04/05 go through `openReplyEditor` / `openDeleteDialog` (unforced
+click, retried until the editor or dialog is visible).
+
 ### `list_votes` race on "undo" flows — wait for the filled icon
 
 `login-btn` hides as soon as `user.isLoggedIn` is true, which does *not*

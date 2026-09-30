@@ -9,7 +9,8 @@ import {
   OWN_COMMENT_AUTHOR,
   OWN_COMMENT_TOP_LEVEL_PERMLINK,
   gotoPostLoggedIn,
-  ownCommentDeleteButton
+  ownCommentDeleteButton,
+  openDeleteDialog
 } from '../support/commentingContext';
 
 /**
@@ -40,15 +41,7 @@ test.describe('Comment delete — own comment (§5)', () => {
       postPage,
       OWN_COMMENT_TOP_LEVEL_PERMLINK
     );
-    await deleteBtn.scrollIntoViewIfNeeded();
-    // `force: true` is the same workaround as VOTE-C03/C04 + CMT-03 —
-    // the inner `cursor-pointer` span sits under a Tooltip that
-    // intermittently overlays the click target in headed Chromium.
-    await deleteBtn.click({ force: true });
-
-    // PostDeleteDialog is the same AlertDialog as FlagDialog — testids
-    // are reused (`flag-dialog-*`), see post-delete-dialog.tsx.
-    await expect(page.getByTestId('flag-dialog-header')).toBeVisible();
+    await openDeleteDialog(deleteBtn, page);
     await expect(page.getByTestId('flag-dialog-header')).toHaveText(
       /Confirm Delete Comment/
     );

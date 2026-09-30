@@ -155,10 +155,43 @@ export async function openReplyEditor(
   trigger: Locator,
   editorScope: Locator
 ): Promise<void> {
+  await clickUntilVisible(trigger, editorScope);
+}
+
+/**
+ * Click an own comment's delete trigger and confirm PostDeleteDialog
+ * opened (it reuses FlagDialog's `flag-dialog-*` testids, see
+ * post-delete-dialog.tsx). Same click-until-effect contract as
+ * `openReplyEditor`: the delete button sits in the same card footer as
+ * edit, so a first click can be lost the same ways.
+ */
+export async function openDeleteDialog(
+  trigger: Locator,
+  page: Page
+): Promise<void> {
+  await clickUntilVisible(trigger, page.getByTestId('flag-dialog-header'));
+}
+
+/**
+ * Retry `trigger.click()` until `effect` is visible. The click is NOT
+ * forced: the own-comment footer buttons (edit/delete) only render once
+ * `useUserClient` resolves the logged-in user after mount, and the card
+ * keeps shifting for a few hundred ms after that as the other
+ * post-hydration queries land. `force: true` skips the stable-box and
+ * hit-target checks, so a click computed before a shift lands on
+ * whatever now sits at that point — a probe on CMT-03 caught the
+ * failing click's target as the comment body's `<p>`, not the Edit
+ * button. The unforced click waits for a stable box and retries if
+ * another element would receive it.
+ */
+async function clickUntilVisible(
+  trigger: Locator,
+  effect: Locator
+): Promise<void> {
   await expect(async () => {
-    if (await editorScope.first().isVisible()) return;
+    if (await effect.first().isVisible()) return;
     await trigger.click({ timeout: 2000 });
-    await expect(editorScope.first()).toBeVisible({ timeout: 2500 });
+    await expect(effect.first()).toBeVisible({ timeout: 2500 });
   }).toPass({ timeout: 20000 });
 }
 
