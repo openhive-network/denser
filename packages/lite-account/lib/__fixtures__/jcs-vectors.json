@@ -1,0 +1,205 @@
+[
+ {
+  "name": "simple",
+  "input": {
+   "app": "l2_notes",
+   "version": 1,
+   "expiration": "2026-06-22T12:00:00",
+   "operations": [
+    {
+     "method": "set",
+     "params": {
+      "account": "alice",
+      "key": "k",
+      "value": "v"
+     }
+    }
+   ]
+  },
+  "jcs": "{\"app\":\"l2_notes\",\"expiration\":\"2026-06-22T12:00:00\",\"operations\":[{\"method\":\"set\",\"params\":{\"account\":\"alice\",\"key\":\"k\",\"value\":\"v\"}}],\"version\":1}",
+  "digest_mainnet": "288ac965bcba7716d98f4a01716ea885a1c62d4d07ad69f41933c1f28b3c1976",
+  "digest_testnet": "2a7427fca023d8171fa3b3b4a282df69bb5335428ea7aa1f35a3969504e96804"
+ },
+ {
+  "name": "key_order",
+  "input": {
+   "version": 1,
+   "operations": [],
+   "app": "x",
+   "expiration": "2026-01-01T00:00:00"
+  },
+  "jcs": "{\"app\":\"x\",\"expiration\":\"2026-01-01T00:00:00\",\"operations\":[],\"version\":1}",
+  "digest_mainnet": "74d78ae6db49d6be43e32259f3e5c9a14f23eee098b115955df70e41692c5a59",
+  "digest_testnet": "e221ae37fdf524d99462c11f8de8445a0cbaa1a23e0cab04cb8eadc2a1b4f15c"
+ },
+ {
+  "name": "with_nonce",
+  "input": {
+   "app": "x",
+   "version": 2,
+   "nonce": "e8459c74",
+   "expiration": "2026-01-01T00:00:00",
+   "operations": []
+  },
+  "jcs": "{\"app\":\"x\",\"expiration\":\"2026-01-01T00:00:00\",\"nonce\":\"e8459c74\",\"operations\":[],\"version\":2}",
+  "digest_mainnet": "1a67160f9d1afa196e2d80b4b593aa8aee583becc7888db11ef1498c9d78ddc2",
+  "digest_testnet": "b0d5b883bed3e4282bfbe6c4252847d5ef256b1b611a79b7cb9a5bd23d9cb45d"
+ },
+ {
+  "name": "unicode",
+  "input": {
+   "app": "x",
+   "version": 1,
+   "expiration": "2026-01-01T00:00:00",
+   "operations": [
+    {
+     "method": "set",
+     "params": {
+      "v": "héllo é \"q\" \\b\n"
+     }
+    }
+   ]
+  },
+  "jcs": "{\"app\":\"x\",\"expiration\":\"2026-01-01T00:00:00\",\"operations\":[{\"method\":\"set\",\"params\":{\"v\":\"héllo é \\\"q\\\" \\\\b\\n\"}}],\"version\":1}",
+  "digest_mainnet": "09b4d7fbd447c2cc729eedef00af156f84a8e80d872f21fe01bd5cd40e539a42",
+  "digest_testnet": "a04e6cdb7f5f81d789102e6359032b512a0cbaba77a8371451c8cd76f9a91831"
+ },
+ {
+  "name": "nested",
+  "input": {
+   "app": "x",
+   "version": 1,
+   "expiration": "2026-01-01T00:00:00",
+   "operations": [
+    {
+     "method": "a",
+     "params": {
+      "n": [
+       1,
+       2,
+       3
+      ],
+      "m": {
+       "z": 1,
+       "a": 2
+      }
+     }
+    }
+   ]
+  },
+  "jcs": "{\"app\":\"x\",\"expiration\":\"2026-01-01T00:00:00\",\"operations\":[{\"method\":\"a\",\"params\":{\"m\":{\"a\":2,\"z\":1},\"n\":[1,2,3]}}],\"version\":1}",
+  "digest_mainnet": "6bc26568a8db0ae462a13db6b94bde2494d9d706522ec5fe4066ad0fcc28cd15",
+  "digest_testnet": "182360d1ffe534f450a683c4cfefe9f030789195b3095780b8ec9ba51c20513a"
+ },
+ {
+  "name": "bigint_as_string",
+  "input": {
+   "app": "x",
+   "version": 1,
+   "expiration": "2026-01-01T00:00:00",
+   "operations": [],
+   "big": "9223372036854775807"
+  },
+  "jcs": "{\"app\":\"x\",\"big\":\"9223372036854775807\",\"expiration\":\"2026-01-01T00:00:00\",\"operations\":[],\"version\":1}",
+  "digest_mainnet": "8a202306b5f0e76e0ff90cfb46116718d97198439294f8f4064df239550e6d31",
+  "digest_testnet": "dd0a4d3a189512a547fe2e11cc28d145710b90ac74ec57590381f53823945dae"
+ },
+ {
+  "name": "register_account",
+  "input": {
+   "app": "lite_account",
+   "version": 1,
+   "expiration": "2026-09-30T12:00:00",
+   "operations": [
+    {
+     "method": "register_account",
+     "args": {
+      "name": "brave-otter-4823",
+      "owner": {
+       "weight_threshold": 1,
+       "key_auths": [
+        {
+         "member": {
+          "type": "secp256k1",
+          "value": "STM6LLegbAgLAy28EHrffBVuANFWcFgmqRMW13wBmTExqFE9SCkg4"
+         },
+         "weight": 1
+        }
+       ],
+       "account_auths": []
+      },
+      "posting": {
+       "weight_threshold": 1,
+       "key_auths": [
+        {
+         "member": {
+          "type": "secp256k1",
+          "value": "STM7j1orEPpWp4bU2SuH46eYXuXkFKEMeJkuXkZVJSaru2zFDGaEH"
+         },
+         "weight": 1
+        }
+       ],
+       "account_auths": []
+      }
+     }
+    }
+   ]
+  },
+  "jcs": "{\"app\":\"lite_account\",\"expiration\":\"2026-09-30T12:00:00\",\"operations\":[{\"args\":{\"name\":\"brave-otter-4823\",\"owner\":{\"account_auths\":[],\"key_auths\":[{\"member\":{\"type\":\"secp256k1\",\"value\":\"STM6LLegbAgLAy28EHrffBVuANFWcFgmqRMW13wBmTExqFE9SCkg4\"},\"weight\":1}],\"weight_threshold\":1},\"posting\":{\"account_auths\":[],\"key_auths\":[{\"member\":{\"type\":\"secp256k1\",\"value\":\"STM7j1orEPpWp4bU2SuH46eYXuXkFKEMeJkuXkZVJSaru2zFDGaEH\"},\"weight\":1}],\"weight_threshold\":1}},\"method\":\"register_account\"}],\"version\":1}",
+  "digest_mainnet": "256b3d7451361f3f0bd50a7ef604d1ac7964718551a24947a3ae162c3a01fd14",
+  "digest_testnet": "c9083f1ebd2205b50e8e5c489c4c3a91d9974c1fcd26efa43112620080d732de"
+ },
+ {
+  "name": "attest_post",
+  "input": {
+   "app": "lite_posts",
+   "version": 1,
+   "expiration": "2026-09-30T12:00:00",
+   "operations": [
+    {
+     "method": "attest_post",
+     "args": {
+      "author": "brave-otter-4823",
+      "l1_author": "gate1",
+      "permlink": "re-alice-abc-k3f9qz",
+      "content_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "content_alg": "lite-comment-v1"
+     }
+    }
+   ]
+  },
+  "jcs": "{\"app\":\"lite_posts\",\"expiration\":\"2026-09-30T12:00:00\",\"operations\":[{\"args\":{\"author\":\"brave-otter-4823\",\"content_alg\":\"lite-comment-v1\",\"content_hash\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"l1_author\":\"gate1\",\"permlink\":\"re-alice-abc-k3f9qz\"},\"method\":\"attest_post\"}],\"version\":1}",
+  "digest_mainnet": "3d25d4c6a70699f542aaf3c57c3f596017f3675f4b471b229660d0158339a953",
+  "digest_testnet": "9b83bcf9e48d1ba195b11a040368bf9f85805e9a9c3f9962a4efcf365e1085e6"
+ },
+ {
+  "name": "content",
+  "input": {
+   "parent_author": "alice",
+   "parent_permlink": "hello-world",
+   "title": "",
+   "body": "Hello, **world**! 🚀 é",
+   "tags": [
+    "test",
+    "lite"
+   ]
+  },
+  "jcs": "{\"body\":\"Hello, **world**! 🚀 é\",\"parent_author\":\"alice\",\"parent_permlink\":\"hello-world\",\"tags\":[\"test\",\"lite\"],\"title\":\"\"}",
+  "digest_mainnet": "f6adc6aa949eb19815aa50fd77af4c42e6c04107552a96cc7a9c511c82e8357e",
+  "digest_testnet": "49567cc224d368a9d56fb1e80ce7179f4290729808e23a0c6f5e781da72eb9d4"
+ },
+ {
+  "name": "utf16_key_order",
+  "input": {
+   "a": 1,
+   "é": 2,
+   "😀": 3,
+   "z": 4,
+   "B": 5,
+   "Ａ": 6
+  },
+  "jcs": "{\"B\":5,\"a\":1,\"z\":4,\"é\":2,\"😀\":3,\"Ａ\":6}",
+  "digest_mainnet": "6fe4968bf5a9da2eb1952c28d763af10a4ebead1c6581cd12193a9daa00cd109",
+  "digest_testnet": "401090f8409e3502dae87b279397651ea553269c389bc9daa0b0e9f2594d7b67"
+ }
+]
