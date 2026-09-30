@@ -320,9 +320,9 @@ test.describe.skip('Translation tests', () => {
     await expect(postPage.articleTitle).toBeVisible();
     await postPage.articleAuthorName.hover();
     await page.waitForTimeout(4000);
-    await expect(await postPage.userHoverCardFollowButton.textContent()).toBe('Obserwuj');
-    await expect(await postPage.userFollowingHoverCard.textContent()).toContain('Obserwowani');
-    await expect(await postPage.userFollowersHoverCard.textContent()).toContain('Obserwujący');
+    await expect(await postPage.userPopoverCardFollowButton.textContent()).toBe('Obserwuj');
+    await expect(await postPage.userFollowingPopoverCard.textContent()).toContain('Obserwowani');
+    await expect(await postPage.userFollowersPopoverCard.textContent()).toContain('Obserwujący');
   });
 
   // Skipped due to new login form

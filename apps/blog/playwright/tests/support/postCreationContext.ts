@@ -146,7 +146,7 @@ export async function gotoCommunityNewPostLoggedIn(page: Page): Promise<void> {
         })
       );
     },
-    [POST_AUTHOR, POST_COMMUNITY, 30 * 24 * 60 * 60 * 1000]
+    [POST_AUTHOR, POST_COMMUNITY, 30 * 24 * 60 * 60 * 1000] as const
   );
 
   await page.goto(`${SUBMIT_PATH}?category=${POST_COMMUNITY}`, {
@@ -336,7 +336,7 @@ export async function seedPostTemplates(
 export async function readSeededPostTemplates(
   page: Page
 ): Promise<SeededPostTemplate[]> {
-  return await page.evaluate((user) => {
+  return (await page.evaluate((user) => {
     const raw = window.localStorage.getItem(`hivePostTemplates-${user}`);
     if (!raw) return [] as unknown[];
     try {
@@ -346,7 +346,7 @@ export async function readSeededPostTemplates(
     } catch {
       return [] as unknown[];
     }
-  }, POST_AUTHOR) as Promise<SeededPostTemplate[]>;
+  }, POST_AUTHOR)) as SeededPostTemplate[];
 }
 
 /**

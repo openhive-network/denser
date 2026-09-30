@@ -176,7 +176,7 @@ test.describe('Wallet page of @gtg tests', () => {
     await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
 
     const accountHistoryResultAPI = await apiHelper.getAccountHistoryAPI(username, -1, 500);
-    let accountHistoryResult = null;
+    let accountHistoryResult: any = null;
 
     if ((await accountHistoryResultAPI.result) != null)
       accountHistoryResult = await accountHistoryResultAPI.result.reverse();

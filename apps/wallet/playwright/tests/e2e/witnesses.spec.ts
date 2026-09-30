@@ -144,7 +144,7 @@ test.describe('Witnesses page tests', () => {
     const witnesses = resWitnessesByVoteAPI.result.witnesses;
     const lastConfirmedBlockNum = witnesses[0].last_confirmed_block_num.toString();
     // Validate last confirmed block number
-    expect(await witnessesPage.witnessLastBlockNumber.first()).toBeVisible();
+    await expect(await witnessesPage.witnessLastBlockNumber.first()).toBeVisible();
     // Below assertion is too unstable
     // expect(await witnessesPage.witnessLastBlockNumber.first().textContent()).toContain(await lastConfirmedBlockNum);
 
@@ -317,7 +317,7 @@ test.describe('Witnesses page tests', () => {
     const firstWitnessTableRow = await witnessesPage.witnessTableBody.locator('tr').first();
 
     // Validate the tooltip message of highlight link after hovering
-    expect(await witnessHighlightLink).toHaveAttribute(
+    await expect(await witnessHighlightLink).toHaveAttribute(
       'title',
       'Use this for linking to this page and highlight the selected witness'
     );
@@ -350,7 +350,7 @@ test.describe('Witnesses page tests', () => {
     const firstWitnessTableRow = await witnessesPage.witnessTableBody.locator('tr').first();
 
     // Validate the tooltip message of highlight link after hovering
-    expect(await witnessHighlightLink).toHaveAttribute(
+    await expect(await witnessHighlightLink).toHaveAttribute(
       'title',
       'Use this for linking to this page and highlight the selected witness'
     );

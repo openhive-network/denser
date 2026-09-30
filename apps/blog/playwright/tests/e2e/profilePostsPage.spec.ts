@@ -190,7 +190,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
     await expect(commentViewPage.getResponsePostCommentPayout.first()).toBeVisible();
     const firstPayout = await commentViewPage.getResponsePostCommentPayout.first();
-    const payoutText = await commentViewPage.getResponsePostCommentPayout.first().textContent();
+    const payoutText = await commentViewPage.getResponsePostCommentPayout.first().textContent() ?? '';
     await expect(commentViewPage.getResponsePostCommentPayout.first()).toBeVisible();
 
     if (payoutText.includes('0.00')) {
@@ -392,7 +392,7 @@ test.describe('Profile page of @gtg', () => {
       const postListItems = await page.$$('[data-testid="post-list-item"]');
 
       for (const postItem of postListItems) {
-        const textContent = await postItem.textContent();
+        const textContent = (await postItem.textContent()) ?? '';
         if (textContent.includes('RE:')) {
           const postCardTimestamp = await postItem.$$('[data-testid="post-card-timestamp"]');
 
