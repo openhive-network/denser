@@ -324,6 +324,9 @@ test.describe('Healthchecker page - Accessibility', () => {
     test.beforeEach(async ({ page }) => {
         healthcheckerPage = new HealthcheckerPage(page);
         await healthcheckerPage.goto();
+        // HealthCheckerComponent is mounted only by a client effect, so its presence means the
+        // Radix tabs are hydrated and will react to key presses.
+        await expect(healthcheckerPage.healthCheckerComponent).toBeVisible();
     });
 
     test('Validate tabs have proper ARIA roles', async ({ page }) => {
