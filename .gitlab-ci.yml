@@ -1,0 +1,47 @@
+# Branch ci/flake-report: weekly flake table for the Playwright CI jobs,
+# posted as a note on #908 (hive/denser#971).
+#
+# This branch only carries the pipeline schedule's CI config, so the weekly
+# pipeline runs this one job and nothing else. The report logic is
+# scripts/ci/flake-report.mjs on develop, fetched at run time.
+#
+# Pipeline schedule settings (Build > Pipeline schedules):
+#   target branch: ci/flake-report, e.g. cron "17 6 * * 1" (Monday)
+# CI/CD variable:
+#   FLAKE_REPORT_TOKEN: masked. A project access token with the Reporter
+#     role and api scope: reads pipelines, jobs, artifacts and logs, and
+#     posts the note.
+# Optional pipeline variables: FLAKE_REPORT_DAYS (7), FLAKE_REPORT_ISSUE (908),
+#   FLAKE_REPORT_POST ("1" posts, anything else is a dry run),
+#   FLAKE_REPORT_SCRIPT_REF (develop).
+
+stages:
+- report
+
+flake-report:
+  stage: report
+  image: node:20.11.1
+  interruptible: false
+  timeout: 30 minutes
+  tags:
+  - public-runner-docker
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "api"
+  variables:
+    GIT_DEPTH: 1
+    FLAKE_REPORT_DAYS: '7'
+    FLAKE_REPORT_ISSUE: '908'
+    FLAKE_REPORT_POST: '1'
+    FLAKE_REPORT_SCRIPT_REF: develop
+  script:
+  - git fetch --depth 1 origin "$FLAKE_REPORT_SCRIPT_REF"
+  - git show FETCH_HEAD:scripts/ci/flake-report.mjs > /tmp/flake-report.mjs
+  - |
+    POST_FLAG=""
+    if [ "$FLAKE_REPORT_POST" = "1" ]; then POST_FLAG="--post"; fi
+    node /tmp/flake-report.mjs --out flake-report.md $POST_FLAG
+  artifacts:
+    paths:
+    - flake-report.md
+    when: always
+    expire_in: 4 weeks
