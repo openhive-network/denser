@@ -12,6 +12,13 @@ function reply(body: LiteReplyResponse, status: number): Response {
   return Response.json(body, { status });
 }
 
+/** GET /api/lite-reply — whether this deployment runs a relay, and which gate/chain it serves. */
+export async function GET(): Promise<Response> {
+  const cfg = liteRelayConfig();
+  if (!cfg) return Response.json({ enabled: false }, { status: 200 });
+  return Response.json({ enabled: true, gate_account: cfg.gateAccount, chain_id: cfg.chainId }, { status: 200 });
+}
+
 /**
  * POST /api/lite-reply — the broadcaster relay for lite-account replies.
  * Validates the L2 transactions, applies a rate limit, and broadcasts the bridged

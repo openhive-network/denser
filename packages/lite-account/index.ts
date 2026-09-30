@@ -6,3 +6,5 @@ export * from './lib/ops';
 export * from './lib/names';
 export * from './lib/permlink';
 export * from './lib/relay';
+export * from './lib/reply-flow';
+export * from './lib/relay-validate';

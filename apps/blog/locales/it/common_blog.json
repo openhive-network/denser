@@ -967,5 +967,29 @@
       "user_topic": "Post dell'utente per argomento",
       "tag": "Tag"
     }
+  },
+  "lite_account": {
+    "badge_prefix": "lite account",
+    "badge_tooltip": "Posted through a relay on behalf of a lite account (attribution pending on-chain verification)",
+    "reply_as_guest": "Reply without an account — you'll pick a name when you post.",
+    "replying_as": "Replying as lite account {{name}}",
+    "name_dialog": {
+      "title": "Pick a name for your lite account",
+      "description": "No sign-up needed. This name is how your replies will be attributed.",
+      "label": "Name",
+      "suggest_another": "Suggest another",
+      "invalid_name": "3–63 lowercase letters, digits or hyphens; no leading/trailing hyphen.",
+      "disposable_note": "Your identity is kept in this browser only until you save it.",
+      "confirm": "Post as this name",
+      "cancel": "Cancel"
+    },
+    "posted": {
+      "title": "Reply posted",
+      "description": "Your reply was posted as lite account {{name}}."
+    },
+    "save_identity": {
+      "title": "Save this identity?",
+      "description": "It lives only in this browser for now. Add a passkey or sign in with a social account to keep it (coming soon)."
+    }
   }
 }

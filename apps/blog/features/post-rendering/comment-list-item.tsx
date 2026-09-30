@@ -16,6 +16,9 @@ import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '../../components/dialog-login';
+import LiteAuthorBadge from '../lite-account/lite-author-badge';
+import { LiteReplyBox } from '../lite-account/lite-reply-box';
+import LiteReplyTrigger from '../lite-account/lite-reply-trigger';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
@@ -232,6 +235,7 @@ const CommentListItem = memo(function CommentListItem({
                                   author_reputation={comment.author_reputation}
                                   blacklist={comment.blacklists}
                                 />
+                                <LiteAuthorBadge jsonMetadata={comment.json_metadata} />
                                 {comment.author_title ? (
                                   <Badge
                                     variant="outline"
@@ -462,14 +466,13 @@ const CommentListItem = memo(function CommentListItem({
                               {t('cards.comment_card.reply')}
                             </button>
                           ) : (
-                            <DialogLogin>
-                              <button
-                                className="flex items-center hover:cursor-pointer hover:text-destructive"
-                                data-testid="comment-card-footer-reply"
-                              >
-                                {t('post_content.footer.reply')}
-                              </button>
-                            </DialogLogin>
+                            <LiteReplyTrigger
+                              onToggle={() => setReply(!reply)}
+                              className="flex items-center hover:cursor-pointer hover:text-destructive"
+                              testId="comment-card-footer-reply"
+                            >
+                              {t('post_content.footer.reply')}
+                            </LiteReplyTrigger>
                           )}
                           {user && user.isLoggedIn && comment.author === user.username ? (
                             <>
@@ -530,6 +533,18 @@ const CommentListItem = memo(function CommentListItem({
                         </div>
                       )}
                     </CardFooter>
+                    {reply && !user.isLoggedIn ? (
+                      <div className="px-2 pb-2">
+                        <LiteReplyBox
+                          parentAuthor={comment.author}
+                          parentPermlink={comment.permlink}
+                          discussionAuthor={discussionAuthor}
+                          discussionPermlink={discussionPermlink}
+                          observer={observer}
+                          onSetReply={setReply}
+                        />
+                      </div>
+                    ) : null}
                     {reply && user && user.isLoggedIn ? (
                       <div className="px-2 pb-2">
                         <ReplyTextbox

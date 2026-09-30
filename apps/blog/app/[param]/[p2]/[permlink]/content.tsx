@@ -15,6 +15,8 @@ import { useRebloggedByQuery } from '@/blog/features/list-of-posts/hooks/use-reb
 import { useDeletePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
+import { LiteReplyBox } from '@/blog/features/lite-account/lite-reply-box';
+import LiteReplyTrigger from '@/blog/features/lite-account/lite-reply-trigger';
 import { AlertDialogFlag } from '@/blog/features/post-rendering/alert-window-flag';
 import CommentsSection from '@/blog/features/post-rendering/comments-section';
 import ContextLinks from '@/blog/features/post-rendering/context-links';
@@ -773,11 +775,13 @@ const PostContent = () => {
                           ) : null}
                         </>
                       ) : (
-                        <DialogLogin>
-                          <button className="flex items-center text-destructive" data-testid="comment-reply">
-                            {t('post_content.footer.reply')}
-                          </button>
-                        </DialogLogin>
+                        <LiteReplyTrigger
+                          onToggle={() => setReply(!reply)}
+                          className="flex items-center text-destructive"
+                          testId="comment-reply"
+                        >
+                          {t('post_content.footer.reply')}
+                        </LiteReplyTrigger>
                       )}
                       {postData.children === 0 &&
                       user.isLoggedIn &&
@@ -932,6 +936,18 @@ const PostContent = () => {
                     </div>
                   </div>
                 </div>
+                {reply && postData && !user.isLoggedIn ? (
+                  <div className="mt-4 px-4">
+                    <LiteReplyBox
+                      parentAuthor={postData.author}
+                      parentPermlink={permlink}
+                      discussionAuthor={author}
+                      discussionPermlink={permlink}
+                      observer={observer}
+                      onSetReply={setReply}
+                    />
+                  </div>
+                ) : null}
                 {reply && postData && user.isLoggedIn ? (
                   <div className="mt-4 px-4">
                     <ReplyTextbox
