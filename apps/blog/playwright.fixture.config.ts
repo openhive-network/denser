@@ -46,7 +46,15 @@ export default defineConfig({
   // intermittent failures. Locally we keep 0 so flakes stay loud.
   retries: process.env.CI ? 1 : 0,
   workers: 1,
-  reporter: [['list']],
+  // Under CI also write junit (GitLab test report) and JSON (flake report,
+  // scripts/ci/flake-report.mjs) next to each other, as the e2e configs do.
+  reporter: process.env.CI
+    ? [
+        ['list'],
+        ['junit', { outputFile: 'junit/fixture/results.xml' }],
+        ['json', { outputFile: 'junit/fixture/results.json' }]
+      ]
+    : [['list']],
   use: {
     actionTimeout: 0,
     baseURL: 'http://localhost:3000',

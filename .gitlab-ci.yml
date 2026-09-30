@@ -516,6 +516,13 @@ renderer-unit-tests:
   tags:
   - public-runner-docker
 
+# The weekly flake-report schedule (FLAKE_REPORT=1) must not rerun the tests
+# it reports on. Prepend this rule to a job's rules to keep it out (#971).
+.skip-on-flake-report:
+  rules:
+  - if: $FLAKE_REPORT == "1"
+    when: never
+
 .e2e_tests_template:
   extends: .node-job
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
@@ -532,7 +539,7 @@ renderer-unit-tests:
   - |
     echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
     cd .$TURBO_APP_PATH
-    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
+    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL
     echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
@@ -541,6 +548,9 @@ renderer-unit-tests:
     - .${TURBO_APP_PATH}/junit/
     reports:
       junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
+  rules:
+  - !reference [.skip-on-flake-report, rules]
+  - when: on_success
 
 mirrornet-replay-data-copy:
   rules:
@@ -669,7 +679,7 @@ e2e-tests-blog-stable:
   - |
     echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning stable tests..."
     cd .$TURBO_APP_PATH
-    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky --update-snapshots
+    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky
     echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
@@ -707,7 +717,7 @@ e2e-tests-wallet-stable:
   - |
     echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning stable tests..."
     cd .$TURBO_APP_PATH
-    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky --update-snapshots
+    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky
     echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
@@ -847,6 +857,9 @@ blog-fixture-tests:
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   stage: test
   needs: []
+  rules:
+  - !reference [.skip-on-flake-report, rules]
+  - when: on_success
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
@@ -860,6 +873,9 @@ blog-fixture-tests:
   artifacts:
     paths:
     - .${TURBO_APP_PATH}/test-results/
+    - .${TURBO_APP_PATH}/junit/
+    reports:
+      junit: .${TURBO_APP_PATH}/junit/fixture/results.xml
     when: always
     expire_in: 1 week
   tags:
@@ -868,8 +884,10 @@ blog-fixture-tests:
 .e2e_report_aggregate_template:
   extends: .node-job
   stage: test-report-aggregate
-  when: always
   allow_failure: true
+  rules:
+  - !reference [.skip-on-flake-report, rules]
+  - when: always
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   script:
   - cd .$TURBO_APP_PATH
@@ -899,6 +917,82 @@ e2e-report-aggregate-wallet:
     TURBO_APP_PATH: '/apps/wallet'
     PROJECTS: '["chromium"]'
     SHARD_TOTAL: 5
+
+# Regenerate the blog screenshot baselines (toHaveScreenshot) in CI's own
+# image and browser. The stable jobs compare against the committed
+# *-snapshots/*.png and no longer rewrite them (#971). After an intended
+# visual change: run this job, download its artifacts, check the new PNGs,
+# and commit apps/blog/playwright/tests/e2e/*-snapshots/.
+e2e-update-snapshots-blog:
+  extends: .e2e_tests_template
+  stage: test
+  needs:
+  - docker-build-blog-testenv
+  rules:
+  - !reference [.skip-on-flake-report, rules]
+  - when: manual
+    allow_failure: true
+  services:
+  - name: $DENSER_BLOG_IMAGE_NAME
+    alias: denser
+    variables:
+      HEALTHCHECK_TCP_PORT: '3000'
+
+  - name: caddy:${CADDY_TAG}
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy
+    - --to=denser:3000
+    - --internal-certs
+  script:
+  - !reference [.node-job, script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KUpdating screenshot baselines..."
+    cd .$TURBO_APP_PATH
+    SPECS=$(grep -rl 'toHaveScreenshot\|toMatchSnapshot' playwright/tests/e2e --include='*.spec.ts' | sort)
+    echo "Specs with screenshot assertions:"; echo "$SPECS"
+    npx playwright test --project=$PROJECT --update-snapshots $SPECS
+    git status --porcelain -- playwright/tests/e2e || true
+    echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
+  variables:
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    PORT: 3000
+    PROJECT: chromium
+    SHARD_INDEX: 1
+    SHARD_TOTAL: 1
+    REACT_APP_API_ENDPOINT: 'https://api.openhive.network'
+  artifacts:
+    paths:
+    - .${TURBO_APP_PATH}/playwright/tests/e2e/*-snapshots/
+    - .${TURBO_APP_PATH}/playwright-report/
+    - .${TURBO_APP_PATH}/test-results/
+    when: always
+    expire_in: 1 week
+
+# Weekly flake table posted on #908 (#971). Runs only in a pipeline schedule
+# (or a manual "Run pipeline") that sets FLAKE_REPORT=1; needs the masked
+# variable FLAKE_REPORT_TOKEN (project access token, Reporter role, api scope).
+flake-report:
+  extends: .job-defaults
+  stage: test
+  image: node:20.11.1-alpine3.18
+  needs: []
+  interruptible: false
+  rules:
+  - if: $FLAKE_REPORT == "1" && ($CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "web")
+  variables:
+    GIT_DEPTH: 1
+    FLAKE_REPORT_DAYS: 7
+    FLAKE_REPORT_ISSUE: 908
+  script:
+  - node scripts/ci/flake-report.mjs --post --out flake-report.md
+  artifacts:
+    paths:
+    - flake-report.md
+    when: always
+    expire_in: 4 weeks
 
 # Lighthouse metrics job template
 # Uses pre-built image with Chrome + Lighthouse: https://gitlab.com/gitlab-ci-utils/lighthouse
