@@ -94,5 +94,33 @@ verification:
     args: [".aidev/run-coverage.sh"]
     artifacts: ["test-results/coverage/"]
 
+# Live dev stack (#966): `next dev` of the blog, hot-reloading from the implement
+# checkout, against the fixture replay proxy — from the pinned image above, with
+# no image build. An agent opens pages at $DENSER_DEV_BLOG_URL and runs fixture
+# specs with .aidev/dev-stack-spec.sh; see .aidev/README.md.
+# Measured on steem-17: 64 s to healthy with no node_modules (the offline install
+# is ~7 s of it), 57 s warm; most of it is next dev compiling the warmed routes.
+sandbox:
+  dev:
+    compose: .aidev/dev-stack.compose.yml
+    services: [init, fixture-proxy, blog, blog-ready]
+    readiness_timeout: 600
+    ports: [BLOG, FIXTURE]
+    env:
+      DENSER_DEV_BLOG_URL: http://127.0.0.1:${AIDEV_PORT_BLOG}
+      DENSER_DEV_FIXTURE_URL: http://127.0.0.1:${AIDEV_PORT_FIXTURE}
+      DENSER_DEV_STACK_PROJECT: ${AIDEV_DEV_STACK_PROJECT}
+      DENSER_DEV_CHECKOUT: ${AIDEV_HOST_CHECKOUT}
+    reload:
+      # A dependency change needs node_modules reinstalled (offline, from the
+      # image's store) and next restarted; restarting reruns .aidev/pnpm-deps.sh,
+      # which installs only when the lockfile moved. No image is rebuilt: a
+      # lockfile the image's store cannot satisfy needs a new environment.image.
+      - paths: ["pnpm-lock.yaml", "package.json", "apps/*/package.json", "packages/*/package.json"]
+        action: restart
+      # next.config.js and the env/middleware wiring are read once at startup.
+      - paths: ["apps/blog/next.config.js", "packages/middleware/**", ".aidev/dev-stack.compose.yml", ".aidev/fixture-proxy-serve.mjs"]
+        action: restart
+
 # Capability grants for target-side code. Empty until this project needs one.
 capabilities: []
