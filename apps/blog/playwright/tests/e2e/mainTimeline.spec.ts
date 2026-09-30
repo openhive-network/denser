@@ -360,7 +360,8 @@ test.describe('Home page tests', () => {
     await expect(homePage.getNavSearchInput).toHaveAttribute('placeholder', 'Search...');
   });
 
-  test('navigation search link is visible', async ({ page }) => {
+  // Quarantined (#962): header shows classic search or AI-search depending on live hivesense health (#947).
+  test('@flaky navigation search link is visible', async ({ page }) => {
     await homePage.goto();
 
     await expect(homePage.getNavSearchClassicInput).toBeVisible();
