@@ -743,8 +743,6 @@ e2e-tests-blog-flaky:
     PORT: 3000
 
 e2e-tests-wallet-flaky:
-  rules:
-  - when: never  # No @flaky tests in wallet yet
   extends: .e2e_tests_template
   stage: test
   allow_failure: true
