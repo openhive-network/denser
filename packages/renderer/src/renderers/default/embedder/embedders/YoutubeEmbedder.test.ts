@@ -16,7 +16,7 @@ describe('YoutubeEmbedder', () => {
         'https://www.youtube.com/watch?v=umvcUpmIie8&t=14s',
         'https://youtu.be/umvcUpmIie8?t=7s'
     ].forEach((input) => {
-        it('should properly return metadata for youtube video link', () => {
+        it(`should properly return metadata for youtube video link: ${input}`, () => {
             const expected = {
                 id: 'umvcUpmIie8',
                 url: input,
@@ -48,7 +48,7 @@ describe('YoutubeEmbedder', () => {
         'https://www.youtube.com/shorts/_R4ScrD0O8c',
         'https://youtube.com/shorts/_R4ScrD0O8c'
     ].forEach((input) => {
-        it('should properly return metadata for youtube shorts link', () => {
+        it(`should properly return metadata for youtube shorts link: ${input}`, () => {
             const expected = {
                 id: '_R4ScrD0O8c',
                 url: input,
@@ -72,7 +72,7 @@ describe('YoutubeEmbedder', () => {
         'https://oauth.com/login/redirect?=youtube.com',
         'https://oauth.com/login/redirect?=www.youtube.com'
     ].forEach((input) => {
-        it('should return undefined for invalid input', () => {
+        it(`should return undefined for invalid input: ${input}`, () => {
             const embedder = new YoutubeEmbedder();
             const node = {data: input} as HTMLObjectElement;
             const metadata = embedder.getEmbedMetadata(node);
