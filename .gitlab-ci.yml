@@ -207,12 +207,20 @@ mirrornet-haf-binaries-extraction:
 
     export NEW_IMAGE_TAGNAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-${IMAGE_SUFFIX}:${CI_COMMIT_SHA}"
 
+    # Inputs = base image manifest + env file (denser#969): reuse when unchanged.
+    INPUT_HASH="$( { docker buildx imagetools inspect --raw "${BASE_IMAGE_NAME}"; cat "${ENV_FILE_PATHNAME}"; } | sha256sum | cut -c1-32)"
+    INPUT_TAG="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-${IMAGE_SUFFIX}:inputs-${INPUT_HASH}"
+    if [[ "${FORCE_IMAGE_BUILD:-false}" != "true" ]] && docker buildx imagetools inspect "${INPUT_TAG}" >/dev/null 2>&1; then
+      echo "Inputs unchanged: reusing ${INPUT_TAG} (no docker build)"
+      docker buildx imagetools create --tag "${NEW_IMAGE_TAGNAME}" "${INPUT_TAG}"
+    else
     docker buildx build \
       --push \
-      -t "${NEW_IMAGE_TAGNAME}" -f- . << EOF
+      -t "${NEW_IMAGE_TAGNAME}" -t "${INPUT_TAG}" -f- . << EOF
       FROM $BASE_IMAGE_NAME AS production
       COPY "${ENV_FILE_PATHNAME}" /app/apps/.env
     EOF
+    fi
     echo "DENSER_${TURBO_APP_NAME^^}_IMAGE_NAME=${NEW_IMAGE_TAGNAME}" > docker-build-testenv-${TURBO_APP_NAME}-image.env
   artifacts:
     paths:

@@ -27,13 +27,28 @@ fi
 
 echo -e "\e[0Ksection_end:$(date +%s):tag\r\e[0K"
 
-echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image \"${CI_REGISTRY_IMAGE:?}/${TURBO_APP_NAME:?}:${TAG:?}\"..."
 git config --global --add safe.directory "${CI_PROJECT_DIR:?}"
-"${CI_PROJECT_DIR:?}/scripts/build_instance.sh" --progress=plain "${CI_PROJECT_DIR:?}"
+IMAGE_REPO="${CI_REGISTRY_IMAGE:?}/${TURBO_APP_NAME:?}"
+
+# Reuse the image built from identical inputs (denser#969): the `inputs-<hash>` tag
+# is pushed only after a successful build, so re-tagging it is a registry-side
+# manifest copy, no build. Release tags always build (they also push to hive.blog).
+INPUT_HASH="$("${CI_PROJECT_DIR:?}/scripts/ci-helpers/image-input-hash.sh" "${TURBO_APP_PATH:-apps/${TURBO_APP_NAME}}")"
+INPUT_TAG="${IMAGE_REPO}:inputs-${INPUT_HASH}"
+echo "Image input hash: ${INPUT_HASH}"
+if [[ -z "${CI_COMMIT_TAG}" && "${FORCE_IMAGE_BUILD:-false}" != "true" ]] \
+    && docker buildx imagetools inspect "${INPUT_TAG}" >/dev/null 2>&1; then
+  echo "Inputs unchanged: reusing ${INPUT_TAG} as :${TAG} and :${CI_COMMIT_SHORT_SHA:?} (no docker build)"
+  docker buildx imagetools create --tag "${IMAGE_REPO}:${TAG}" --tag "${IMAGE_REPO}:${CI_COMMIT_SHORT_SHA}" "${INPUT_TAG}"
+else
+  echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image \"${IMAGE_REPO}:${TAG:?}\"..."
+  "${CI_PROJECT_DIR:?}/scripts/build_instance.sh" --progress=plain "${CI_PROJECT_DIR:?}"
+  docker buildx imagetools create --tag "${INPUT_TAG}" "${IMAGE_REPO}:${CI_COMMIT_SHORT_SHA:?}"
+  echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
+fi
 APP_NAME="${TURBO_APP_NAME:?}"
 # Replace hyphens with underscores for the environment variable name (GitLab dotenv only allows letters, digits, and underscores)
 ENV_VAR_NAME="${APP_NAME//-/_}"
 echo "${ENV_VAR_NAME^^}_IMAGE_NAME=${CI_REGISTRY_IMAGE:?}/${APP_NAME}:${CI_COMMIT_SHORT_SHA:?}" > "${APP_NAME}-docker-build.env"
 echo "Unique image tag:"
 cat "${APP_NAME}-docker-build.env"
-echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
