@@ -19,7 +19,7 @@ test.describe('User parmlink redirect tests', () => {
       .locator(homePage.articleBodyString)
       .locator('p > strong')
       .getByText(expectedContentElementText);
-    expect(specificContentTextLocator).toBeVisible();
+    await expect(specificContentTextLocator).toBeVisible();
   });
 
   test('validate redirect location for user/permlink endpoint', async ({ page, request }) => {
