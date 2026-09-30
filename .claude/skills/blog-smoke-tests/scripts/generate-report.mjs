@@ -213,6 +213,7 @@ async function generateReport(results) {
           <span class="test-priority ${r.priority}">${r.priority}</span>
           ${r.attempts ? `<span style="color: var(--text-muted);">${r.attempts} attempt${r.attempts > 1 ? 's' : ''}</span>` : ''}
           ${r.error ? `<div class="test-error">${escapeHtml(r.error)}</div>` : ''}
+          ${r.warnings && r.warnings.length > 0 ? r.warnings.map(w => `<div class="test-error" style="border-color: #d97706; color: #b45309;">⚠ ${escapeHtml(w)}</div>`).join('') : ''}
           ${r.artifacts && r.artifacts.length > 0 ? `
             <div class="test-artifacts">
               ${r.artifacts.map(a => `

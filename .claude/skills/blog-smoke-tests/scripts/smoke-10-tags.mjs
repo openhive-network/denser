@@ -22,7 +22,13 @@ async function test({ page }) {
   await gotoAndWaitForPosts(page, '/trending');
 
   console.log('\n2. Finding category/tag to click...');
-  const tagLink = page.locator(SELECTORS.POST_CARD_CATEGORY).first();
+  // A post card links either to its #category or, for a community post, to the
+  // community (post-list-item.tsx renders one or the other). Most trending posts
+  // are community posts, so a page with no #category link at all is normal and
+  // used to fail this test (#965). Either link opens a filtered /trending/<tag>.
+  const tagLink = page
+    .locator(`${SELECTORS.POST_CARD_CATEGORY}:visible, [data-testid="post-card-community"]:visible`)
+    .first();
   const tagVisible = await tagLink.isVisible().catch(() => false);
 
   if (tagVisible) {
@@ -57,7 +63,7 @@ async function test({ page }) {
       allPassed = false;
     }
   } else {
-    console.log('   ✗ FAIL: No tag link found');
+    console.log('   ✗ FAIL: No category or community link found on any post card');
     allPassed = false;
   }
 

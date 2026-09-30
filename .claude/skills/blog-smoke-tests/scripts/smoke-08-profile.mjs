@@ -26,7 +26,9 @@ async function test({ page }) {
     waitUntil: 'domcontentloaded',
     timeout: TIMEOUTS.NAVIGATION
   });
-  await page.waitForLoadState('networkidle', { timeout: TIMEOUTS.NETWORK_IDLE });
+  // networkidle is only a settle hint: long-polling or a slow third-party call
+  // can keep the network busy; the element waits below are the real checks.
+  await page.waitForLoadState('networkidle', { timeout: TIMEOUTS.NETWORK_IDLE }).catch(() => {});
 
   console.log('\n2. Getting UI stats...');
   const profileStats = page.locator(SELECTORS.PROFILE_STATS);

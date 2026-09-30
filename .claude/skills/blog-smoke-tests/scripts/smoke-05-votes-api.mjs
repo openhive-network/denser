@@ -17,6 +17,8 @@ import {
 const TEST_ID = 'SMOKE-05';
 const TEST_NAME = 'Votes API';
 const TEST_PRIORITY = 'P1';
+const VOTE_LAG_TOLERANCE_MIN = 5;
+const VOTE_LAG_TOLERANCE_RATIO = 0.02;
 
 async function test({ page }) {
   let allPassed = true;
@@ -43,7 +45,10 @@ async function test({ page }) {
   await page.waitForLoadState('domcontentloaded', { timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
   // On post page, look for votes
+  // The votes link renders only after the client-side active-votes query
+  // resolves, which can take well over 10s when the Hive API is slow.
   const pageVotesElement = page.locator(SELECTORS.COMMENT_VOTES).filter({ hasText: /vote/i }).first();
+  await page.locator(SELECTORS.COMMENT_VOTES).first().waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE }).catch(() => {});
   let pageVotes = 0;
 
   const pageVotesVisible = await pageVotesElement.isVisible().catch(() => false);
@@ -81,11 +86,19 @@ async function test({ page }) {
     console.log(`   (i) INFO: Page votes element shows ${pageVotes}`);
   }
 
-  // Card votes should be >= API (API limited to 1000)
-  if (cardVotes >= apiVotes || (apiVotes === 1000 && cardVotes >= apiVotes)) {
-    console.log(`   ✓ PASS: UI (${cardVotes}) >= API (${apiVotes})`);
+  // The card count comes from the rendered (possibly cached) trending page, the
+  // API count is fetched seconds later. Trending posts gain votes constantly, so
+  // UI < API by a handful of votes is expected (failed #965 jobs showed
+  // 174 vs 175 and 512 vs 515). Allow that lag; a real mismatch (e.g. a wrong
+  // field or a truncated count) is far larger. list_votes is capped at 1000.
+  const tolerance = Math.max(VOTE_LAG_TOLERANCE_MIN, Math.ceil(apiVotes * VOTE_LAG_TOLERANCE_RATIO));
+  const diff = apiVotes - cardVotes;
+  if (apiVotes === 1000 && cardVotes >= apiVotes) {
+    console.log(`   ✓ PASS: UI (${cardVotes}) >= API (${apiVotes}, API limit reached)`);
+  } else if (Math.abs(diff) <= tolerance) {
+    console.log(`   ✓ PASS: UI (${cardVotes}) ~ API (${apiVotes}), diff ${diff} within +-${tolerance}`);
   } else {
-    console.log(`   ✗ FAIL: UI (${cardVotes}) < API (${apiVotes})`);
+    console.log(`   ✗ FAIL: UI (${cardVotes}) vs API (${apiVotes}), diff ${diff} exceeds +-${tolerance}`);
     allPassed = false;
   }
 

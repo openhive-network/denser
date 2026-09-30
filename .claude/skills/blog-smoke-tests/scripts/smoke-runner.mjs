@@ -16,7 +16,14 @@ const config = {
   BASE_URL: process.env.BASE_URL || 'https://blog.openhive.network',
   HEADLESS: process.env.HEADLESS || 'true',
   REPORT_DIR: process.env.REPORT_DIR || './playwright/smoke-report',
-  API_URL: process.env.API_URL || 'https://api.hive.blog'
+  API_URL: process.env.API_URL || 'https://api.hive.blog',
+  // Every smoke test runs against live chain data through public API nodes, so
+  // a single slow upstream response can fail any of them (#965). A failing test
+  // is re-run up to MAX_ATTEMPTS times in total (as SKILL.md documents); a test
+  // that needed a retry still passes but is reported as flaky, so the noise
+  // stays visible without hiding a failure that reproduces on every attempt.
+  MAX_ATTEMPTS: Math.max(1, parseInt(process.env.SMOKE_MAX_ATTEMPTS || '3', 10) || 3),
+  RETRY_DELAY_MS: parseInt(process.env.SMOKE_RETRY_DELAY_MS || '5000', 10)
 };
 
 // ANSI color codes
@@ -118,6 +125,55 @@ function parseResult(output) {
 }
 
 /**
+ * Short description of why an attempt failed, for the flaky-pass warning.
+ * @param {Object|null} result - Parsed __RESULT__ (null if none)
+ * @param {string} output - Raw test output
+ * @returns {string}
+ */
+function describeFailure(result, output) {
+  if (result?.error) return result.error.split('\n')[0].substring(0, 160);
+  const failLine = output.split('\n').find((line) => line.includes('✗ FAIL:'));
+  if (failLine) return failLine.replace(/^.*✗ FAIL:\s*/, '').substring(0, 160);
+  return result ? 'test reported failure' : 'no result output';
+}
+
+/**
+ * Runs a test, retrying on failure up to config.MAX_ATTEMPTS attempts.
+ * @param {string} testFile - Test filename
+ * @param {string} scriptsDir - Directory containing test scripts
+ * @returns {Promise<Object>} - Result with attempts and warnings
+ */
+async function runTestWithRetry(testFile, scriptsDir) {
+  const failures = [];
+  let result = null;
+  for (let attempt = 1; attempt <= config.MAX_ATTEMPTS; attempt++) {
+    if (attempt > 1) {
+      console.log(`${colors.yellow}Retrying ${testFile} (attempt ${attempt}/${config.MAX_ATTEMPTS}) in ${config.RETRY_DELAY_MS / 1000}s...${colors.reset}`);
+      await new Promise((resolve) => setTimeout(resolve, config.RETRY_DELAY_MS));
+    }
+    const { output } = await runTest(testFile, scriptsDir);
+    result = parseResult(output) || {
+      id: testFile.replace('.mjs', '').toUpperCase(),
+      name: testFile,
+      passed: false,
+      error: 'No result output',
+      priority: 'N/A'
+    };
+    result.attempts = attempt;
+    result.warnings = result.warnings || [];
+    if (result.passed) break;
+    failures.push(`attempt ${attempt}: ${describeFailure(result, output)}`);
+  }
+  if (result.passed && failures.length > 0) {
+    result.flaky = true;
+    result.warnings.unshift(`flaky: passed on attempt ${result.attempts}/${config.MAX_ATTEMPTS} after ${failures.join('; ')}`);
+  } else if (!result.passed && failures.length > 1) {
+    result.error = `${result.error || 'failed'} (failed all ${failures.length} attempts: ${failures.join('; ')})`;
+  }
+  return result;
+}
+
+/**
  * Prints the summary table
  * @param {Array} results - Test results
  */
@@ -125,6 +181,7 @@ function printSummary(results) {
   const passed = results.filter(r => r.passed).length;
   const failed = results.filter(r => !r.passed).length;
   const total = results.length;
+  const warned = results.filter(r => r.passed && r.warnings && r.warnings.length > 0);
 
   console.log('');
   console.log('╔══════════════════════════════════════════════════════════════╗');
@@ -132,9 +189,12 @@ function printSummary(results) {
   console.log('╠══════════════════════════════════════════════════════════════╣');
 
   for (const r of results) {
-    const status = r.passed
-      ? `${colors.green}✓ PASS${colors.reset}`
-      : `${colors.red}✗ FAIL${colors.reset}`;
+    let status = `${colors.red}✗ FAIL${colors.reset}`;
+    if (r.passed) {
+      status = r.warnings && r.warnings.length > 0
+        ? `${colors.yellow}⚠ WARN${colors.reset}`
+        : `${colors.green}✓ PASS${colors.reset}`;
+    }
     const id = (r.id || 'UNKNOWN').padEnd(10);
     const name = (r.name || 'Unknown').substring(0, 30).padEnd(30);
     const priority = r.priority || 'N/A';
@@ -143,14 +203,24 @@ function printSummary(results) {
 
   console.log('╠══════════════════════════════════════════════════════════════╣');
 
+  if (warned.length > 0) {
+    console.log(`║  ${colors.yellow}⚠ WARNINGS (passed, but degraded or flaky):${colors.reset}`);
+    for (const r of warned) {
+      for (const w of r.warnings) {
+        console.log(`║    - ${r.id}: ${w}`);
+      }
+    }
+    console.log('║');
+  }
+
   if (failed === 0) {
-    console.log(`║  ${colors.green}✓ ALL TESTS PASSED: ${passed} / ${total}${colors.reset}`);
+    console.log(`║  ${colors.green}✓ ALL TESTS PASSED: ${passed} / ${total}${warned.length ? ` (${warned.length} with warnings)` : ''}${colors.reset}`);
   } else {
     console.log(`║  ${colors.red}✗ SOME TESTS FAILED: ${passed} / ${total} passed, ${failed} failed${colors.reset}`);
     console.log('║');
     console.log('║  Failed tests:');
     for (const r of results.filter(r => !r.passed)) {
-      console.log(`║    - ${r.id}: ${r.name}`);
+      console.log(`║    - ${r.id}: ${r.name}${r.error ? ` — ${r.error.substring(0, 300)}` : ''}`);
     }
   }
 
@@ -185,6 +255,7 @@ async function main() {
   console.log(`Scripts directory: ${scriptsDir}`);
   console.log(`Report directory: ${config.REPORT_DIR}`);
   console.log(`Base URL: ${config.BASE_URL}`);
+  console.log(`Max attempts per test: ${config.MAX_ATTEMPTS}`);
   console.log('');
 
   console.log('Running smoke tests...\n');
@@ -197,21 +268,7 @@ async function main() {
     console.log(`Running: ${testFile}`);
     console.log('============================================');
 
-    const { output } = await runTest(testFile, scriptsDir);
-    const result = parseResult(output);
-
-    if (result) {
-      results.push(result);
-    } else {
-      // No result parsed, create a failure entry
-      results.push({
-        id: testFile.replace('.mjs', '').toUpperCase(),
-        name: testFile,
-        passed: false,
-        error: 'No result output',
-        priority: 'N/A'
-      });
-    }
+    results.push(await runTestWithRetry(testFile, scriptsDir));
   }
 
   // Save results JSON
