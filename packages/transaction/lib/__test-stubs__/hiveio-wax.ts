@@ -16,3 +16,11 @@ export class WaxRequestError extends Error {
     this.name = 'WaxRequestError';
   }
 }
+
+/** Minimal chain shape for modules that only reference wax chain types. */
+export type TWaxExtended<_NodeApi, _RestApi> = {
+  api: object;
+  restApi: object;
+  isValidAccountName(name: string): boolean;
+};
+export type TWaxRestExtended<RestApi> = RestApi;
