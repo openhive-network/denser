@@ -106,10 +106,16 @@ const CommentListItem = memo(function CommentListItem({
     StorageTTL.UI_STATE
   );
 
+  // Guests have no storage key (empty replyStorageId disables the hook), so the lite
+  // reply box keeps its open/closed state in memory instead.
+  const [guestReply, setGuestReply] = useState(false);
+
   // Wrapper to match expected interface and handle storage
   const setReply = useCallback(
     (value: boolean | ((prev: boolean) => boolean)) => {
-      if (typeof value === 'function') {
+      if (!user.isLoggedIn) {
+        setGuestReply(value);
+      } else if (typeof value === 'function') {
         setStoredReply((prev) => value(prev));
       } else if (value) {
         setStoredReply(true);
@@ -117,7 +123,7 @@ const CommentListItem = memo(function CommentListItem({
         removeStoredReply();
       }
     },
-    [setStoredReply, removeStoredReply]
+    [user.isLoggedIn, setStoredReply, removeStoredReply]
   );
 
   const setEdit = useCallback(
@@ -132,7 +138,7 @@ const CommentListItem = memo(function CommentListItem({
   );
 
   // Use stored values directly as state
-  const reply = storedReply;
+  const reply = user.isLoggedIn ? storedReply : guestReply;
   const edit = storedEdit;
   const userFromDMCA = dmcaUserList.some((e) => e === comment.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);

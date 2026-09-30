@@ -57,17 +57,21 @@ export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, d
       comment: { parent_author: parentAuthor, parent_permlink: parentPermlink, title: '', body: text, tags: [] },
       clientId: ensureClientId()
     });
-    await mutation.mutateAsync({
-      built,
-      gateAccount: relay.data.gate_account,
-      attester: who.name,
-      body: text,
-      parentAuthor,
-      parentPermlink,
-      discussionAuthor,
-      discussionPermlink,
-      observer
-    });
+    try {
+      await mutation.mutateAsync({
+        built,
+        gateAccount: relay.data.gate_account,
+        attester: who.name,
+        body: text,
+        parentAuthor,
+        parentPermlink,
+        discussionAuthor,
+        discussionPermlink,
+        observer
+      });
+    } catch {
+      return; // the mutation's onError already rolled back and toasted
+    }
     removeText();
     onSetReply(false);
     toast({ title: t('lite_account.posted.title'), description: t('lite_account.posted.description', { name: who.name }), variant: 'success' });

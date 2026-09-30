@@ -135,18 +135,23 @@ const PostContent = () => {
     StorageTTL.DRAFT
   );
 
+  // Guests have no storage key (see replyStorageId), so the lite reply box keeps its
+  // open/closed state in memory instead.
+  const [guestReply, setGuestReply] = useState(false);
   // Use stored values directly - no useState needed
   // This ensures proper hydration and cross-tab sync
-  const reply = storedReply;
+  const reply = user.isLoggedIn ? storedReply : guestReply;
   const setReply = useCallback(
     (value: boolean) => {
-      if (value) {
+      if (!user.isLoggedIn) {
+        setGuestReply(value);
+      } else if (value) {
         storeReply(true);
       } else {
         removeReply();
       }
     },
-    [storeReply, removeReply]
+    [user.isLoggedIn, storeReply, removeReply]
   );
 
   const edit = storedEdit;

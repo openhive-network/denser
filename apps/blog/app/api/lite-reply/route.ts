@@ -24,6 +24,18 @@ export async function GET(): Promise<Response> {
  * Validates the L2 transactions, applies a rate limit, and broadcasts the bridged
  * comment + attestation as one L1 transaction signed by the gate account.
  */
+/**
+ * Node errors carry multi-kilobyte C++ dumps wrapped in generic "Non-typed Error during
+ * Wasm call" / "0 exception: unspecified" lines; the client only needs the first line
+ * that says something.
+ */
+function shortErrorMessage(message: string): string {
+  const generic = /^(Non-typed Error during Wasm call|\d+ exception: unspecified)/;
+  const lines = message.split('\n').map((l) => l.trim()).filter((l) => l !== '');
+  const informative = lines.find((l) => !generic.test(l) && !l.startsWith('{')) ?? lines[0] ?? 'broadcast failed';
+  return informative.length > 200 ? `${informative.slice(0, 200)}…` : informative;
+}
+
 export async function POST(request: Request): Promise<Response> {
   const cfg = liteRelayConfig();
   if (!cfg) return reply({ ok: false, code: 'relay_unavailable', message: 'lite relay is not configured' }, 503);
@@ -48,9 +60,9 @@ export async function POST(request: Request): Promise<Response> {
     if (error instanceof RelayValidationError) {
       return reply({ ok: false, code: error.code, message: error.message }, 400);
     }
-    const message = error instanceof Error ? error.message : 'broadcast failed';
+    const fullMessage = error instanceof Error ? error.message : 'broadcast failed';
     logger.error(error, 'bridged reply broadcast failed');
-    const code = /already exists|permlink/i.test(message) ? 'permlink_taken' : 'broadcast_failed';
-    return reply({ ok: false, code, message }, 502);
+    const code = /already exists|permlink/i.test(fullMessage) ? 'permlink_taken' : 'broadcast_failed';
+    return reply({ ok: false, code, message: shortErrorMessage(fullMessage) }, 502);
   }
 }
