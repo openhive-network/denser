@@ -5,19 +5,9 @@ import { hiveChainService} from "@transaction/lib/hive-chain-service"
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
 import { useLocalStorage } from 'usehooks-ts';
 import { siteConfig } from "@ui/config/site";
+import { DEFAULT_HIVE_API_NODES } from "@ui/lib/api-node-preference";
 
-const DEFAULTS_ENDPOINTS = [
-  "https://api.hive.blog",
-  "https://api.openhive.network",
-  "https://anyx.io",
-  "https://techcoderx.com",
-  "https://hive.roelandp.nl",
-  "https://api.deathwing.me",
-  "https://api.c0ff33a.uk",
-  "https://hive-api.arcange.eu",
-  "https://hive-api.3speak.tv",
-  "https://hiveapi.actifit.io",
-];
+const DEFAULTS_ENDPOINTS = [...DEFAULT_HIVE_API_NODES];
 
 /**
  * React hook to prepare everything to call and get HC service. Put necessary params there and create HC for component.

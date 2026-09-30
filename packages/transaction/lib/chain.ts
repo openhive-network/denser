@@ -8,13 +8,20 @@ export type Chain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestA
 let chain: Promise<Chain> | undefined = undefined;
 
 export const getChain = (): Promise<Chain> => {
-  if (chain) return chain;
+  if (!chain) {
+    chain = getHiveChainService()
+      .getHiveChain()
+      .then(wrapChainWithLogging)
+      .catch((error) => {
+        chain = undefined; // Clear cache so next call retries
+        throw error;
+      });
+    return chain;
+  }
 
-  chain = getHiveChainService().getHiveChain().then(wrapChainWithLogging).catch((error) => {
-    chain = undefined; // Clear cache so next call retries
-    throw error;
-  });
-  return chain;
+  // Re-enter hive-chain getChain so the request's api-node cookie is applied
+  // onto the shared singleton before callers use it (hive/denser#952).
+  return Promise.all([chain, getHiveChainService().getHiveChain()]).then(([wrapped]) => wrapped);
 };
 
 /**

@@ -1,5 +1,6 @@
 import { getLogger } from '@hive/ui/lib/logging';
 import { getCookie } from '@ui/lib/utils';
+import { setApiNodeCookie } from '@ui/lib/api-node-preference';
 import { cookieName, languages } from '@/wallet/i18n/settings';
 
 // Direct localStorage access is intentional: we read/write Condenser's legacy
@@ -121,6 +122,7 @@ export function migrateApiEndpoint(): void {
 
     // Denser stores endpoints as JSON-stringified values
     localStorage.setItem('node-endpoint', JSON.stringify(endpoint));
+    setApiNodeCookie(endpoint);
     logger.info('Condenser wallet migration: API endpoint "%s" migrated to node-endpoint', endpoint);
   } catch (error) {
     logger.error(error, 'Condenser wallet migration: failed to migrate API endpoint');

@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { getCookie } from '@ui/lib/utils';
 import { getLanguage } from '@/blog/utils/language';
+import { syncApiNodeCookieFromLocalStorage } from '@ui/lib/api-node-preference';
 
 export default function ClientEffects() {
   useEffect(() => {
@@ -10,6 +11,9 @@ export default function ClientEffects() {
     if (typeof window !== 'undefined' && !getCookie('NEXT_LOCALE')) {
       document.cookie = `NEXT_LOCALE=en; SameSite=Lax`;
     }
+
+    // Mirror selected API node into cookie so SSR uses it (hive/denser#952)
+    syncApiNodeCookieFromLocalStorage();
 
     // Handle language setting from localStorage/cookies
     const savedLang = getLanguage();

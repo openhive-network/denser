@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { getCookie } from '@ui/lib/utils';
+import { syncApiNodeCookieFromLocalStorage } from '@ui/lib/api-node-preference';
 import { languages, defaultLocale, cookieName } from '@/wallet/i18n/settings';
 
 export default function ClientEffects() {
@@ -11,6 +12,8 @@ export default function ClientEffects() {
     if (!currentLocale || !languages.includes(currentLocale)) {
       document.cookie = `${cookieName}=${defaultLocale}; path=/; SameSite=Lax`;
     }
+    // Mirror selected API node into cookie so SSR uses it (hive/denser#952)
+    syncApiNodeCookieFromLocalStorage();
   }, []);
 
   // Set document direction for RTL languages
