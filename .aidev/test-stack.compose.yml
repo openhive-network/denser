@@ -1,28 +1,28 @@
 # AIDEV's shared test stack for denser (`sandbox.compose` in .aidev/project.yaml,
-# #967): the blog's production build, served once per `full` run to the suites
-# that need a server — fixture_e2e (.aidev/run-fixture-e2e.sh) and the advisory
-# live_e2e (.aidev/run-live-e2e.sh).
+# #967): the blog's production build served against the LIVE Hive API, for the
+# full slot's advisory live_e2e suite (.aidev/run-live-e2e.sh).
 #
 # No image is built: every service runs the pinned test image (`environment.image`)
-# over the read-only checkout, and the build is the one the blog_build suite
-# (.aidev/run-blog-build.sh) made before AIDEV started this stack. The suites
-# reach it over the stack network (AIDEV runs them with
-# --network <project>_default), so nothing is published on the host.
+# over the read-only checkout, and the build is the one fixture_e2e made
+# (.aidev/run-fixture-e2e.sh -> .aidev/run-blog-build.sh) before AIDEV started
+# this stack (it starts right before the first `stack: true` suite). Suites reach
+# it over the stack network (AIDEV runs them with --network <project>_default,
+# which also gives them egress); nothing is published on the host.
 #
-#   fixture-proxy  :8200. Relays to the fixture proxy each Playwright worker
-#                  starts for its spec inside the suite's container, once the
-#                  suite registers itself (POST /__aidev/upstream). Network
-#                  alias `blog`: the fixture blog lives in this namespace.
-#   blog           :3000 (as blog:3000) — the build with playwright.fixture.config.ts's
-#                  webServer env. It shares fixture-proxy's network namespace,
-#                  so its server-side http://localhost:8200 is the relay; the
-#                  browser's http://localhost:8200 is the worker's own proxy in the
-#                  suite container, as in CI. Both therefore read one recording.
-#   blog-live      :3000 (as blog-live:3000) — the same build against the live
-#                  Hive API (the app's defaults), for live_e2e.
+#   blog-live      blog-live:3000 — the build with the app's default (live) API.
+#
+# Profile `fixture-relay` (not started by AIDEV; sandbox.services names only
+# blog-live) is the opt-in DENSER_FIXTURE_VIA_STACK=1 path of run-fixture-e2e.sh:
+#
+#   fixture-proxy  :8200, network alias `blog`. Relays to the fixture proxy each
+#                  Playwright worker starts for its spec inside the suite's
+#                  container, once the suite registers (POST /__aidev/upstream).
+#   blog           blog:3000 — the build with playwright.fixture.config.ts's
+#                  webServer env, in fixture-proxy's network namespace, so its
+#                  server-side http://localhost:8200 is the relay.
 #
 # By hand, after .aidev/run-blog-build.sh:
-#   docker compose -f .aidev/test-stack.compose.yml -p denser-test up -d --wait
+#   docker compose -f .aidev/test-stack.compose.yml -p denser-test up -d --wait blog-live
 name: denser-aidev-test
 
 x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:3890fe8d4787a3134ebf68f33d02b5138354424201425f7787480ecaf964992c
@@ -30,7 +30,7 @@ x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:3890fe
 x-checkout: &checkout ${AIDEV_HOST_CHECKOUT:-${PWD}}:/work:ro
 
 # Healthy once the server answers — or while there is no build to serve (the
-# blog_build suite failed), so a broken build is reported by the suites that
+# build failed), so a broken build is reported by the suites that
 # need it rather than as a stack that never became ready.
 x-blog-health: &blog-health
   test:
@@ -45,6 +45,7 @@ x-blog-health: &blog-health
 
 services:
   fixture-proxy:
+    profiles: [fixture-relay]
     image: *image
     working_dir: /work
     mem_limit: 512m
@@ -62,6 +63,7 @@ services:
       start_period: 2s
 
   blog:
+    profiles: [fixture-relay]
     image: *image
     working_dir: /work
     mem_limit: 2g

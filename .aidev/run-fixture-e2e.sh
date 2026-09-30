@@ -2,23 +2,30 @@
 # The blog's fixture-replay Playwright suite (apps/blog/playwright/tests/fixture),
 # the `fixture_e2e` suite of the full slot: a production build of the blog served
 # against the fixture proxy on :8200, which answers every Hive API call from the
-# committed recordings. The live-API e2e suites run only as the advisory live_e2e
-# (.aidev/run-live-e2e.sh); smoke and mirrornet are not bound.
+# committed recordings, so the suite needs no network. The live-API e2e specs run
+# only as the advisory live_e2e (.aidev/run-live-e2e.sh); smoke and mirrornet are
+# not bound.
 #
-# Two ways to get the server:
+# Self-contained by default, as CI's blog-fixture-tests job (pnpm test:fixture):
+# build, then playwright.fixture.config.ts's webServer serves the build here.
+# The build goes through .aidev/run-blog-build.sh, whose completion marker lets
+# the test stack's blog-live serve the same build to live_e2e afterwards.
 #
-#   the test stack (#967) — DENSER_TEST_STACK=1 (the full slot's binding sets it)
-#     and the stack reachable: the build the blog_build suite made
-#     (.aidev/run-blog-build.sh) is served by .aidev/test-stack.compose.yml's
-#     `blog`, reached here as localhost:3000 through a forwarder. The stack's
-#     fixture proxy relays the server side's API calls to the proxy each
-#     Playwright worker starts here, so both sides read the spec's recording.
-#   standalone — anything else (no stack, a run by hand): build here and let
-#     playwright.fixture.config.ts's webServer start the server, as CI does.
+# Why it does not use the shared test stack (#967): the fixture proxy is not a
+# service but a per-spec, per-worker fixture — apps/blog/playwright/tests/support/
+# fixture-proxy-test.ts:61-95 starts a replay proxy for the spec's own recording
+# on :8200 inside the Playwright process, and the app's server side must read
+# that same proxy. A stack server can only reach it by relaying back into the
+# suite's container. That relay exists, opt-in and off by default:
 #
-# Same commands as CI's blog-fixture-tests job (pnpm test:fixture), plus a junit
-# report in test-results/fixture/ for AIDEV. Arguments are passed to
-# `playwright test`, so a run can be narrowed:
+#   DENSER_FIXTURE_VIA_STACK=1 with .aidev/test-stack.compose.yml's `fixture-relay`
+#   profile up — the stack's `blog` serves the build, its `fixture-proxy` relays
+#   the server side's API calls to this container's workers, and the browser
+#   reaches the blog as localhost:3000 (the seeder's cookie domain,
+#   fixture-auth/seeder.ts:49) through a forwarder. Measured equal to the
+#   default path on the same tree (247 passed / 2 skipped either way).
+#
+# Arguments are passed to `playwright test`, so a run can be narrowed:
 #
 #   .aidev/run-fixture-e2e.sh playwright/tests/fixture/13-profile
 set -euo pipefail
@@ -39,26 +46,22 @@ junit="$PWD/test-results/fixture/junit.xml"
 export CI=1
 export PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit"
 
-stack_up() {
-    [ "${DENSER_TEST_STACK:-}" = 1 ] || return 1
-    node -e "fetch('http://fixture-proxy:8200/__aidev/status').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))" < /dev/null
-}
-
-if ! stack_up; then
-    [ "${DENSER_TEST_STACK:-}" = 1 ] && echo "fixture_e2e: DENSER_TEST_STACK=1 but the test stack is unreachable; building and serving the blog here" >&2
+if [ "${DENSER_FIXTURE_VIA_STACK:-}" != 1 ]; then
+    .aidev/run-blog-build.sh
     cd apps/blog
-    pnpm build < /dev/null
     exec pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit "$@" < /dev/null
 fi
 
-echo "fixture_e2e: against the test stack (.aidev/test-stack.compose.yml)" >&2
+# ---- opt-in: against the test stack's `fixture-relay` services ----------------
 
-# The blog_build suite normally built already; build here when it did not run
-# (a narrowed `aidev test` run, say). The stack's blog starts on the marker.
+node -e "fetch('http://fixture-proxy:8200/__aidev/status').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))" < /dev/null || {
+    run_with_junit_fallback "$junit" fixture_e2e sh -c 'echo "DENSER_FIXTURE_VIA_STACK=1 but the test stack fixture-proxy is unreachable (is the fixture-relay profile up?)"; exit 1'
+    exit 1
+}
+echo "fixture_e2e: against the test stack (.aidev/test-stack.compose.yml, fixture-relay)" >&2
+
 [ -f apps/blog/.next/aidev-build-complete ] || .aidev/run-blog-build.sh
 
-# The seeder's session cookie is scoped to `localhost`, so the browser must reach
-# the blog as localhost:3000.
 node .aidev/fixture-proxy-serve.mjs forward 3000 blog:3000 < /dev/null &
 forwarder=$!
 cleanup() {

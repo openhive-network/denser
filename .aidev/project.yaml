@@ -61,9 +61,9 @@ verification:
         adapter: command
         args: [".aidev/run-static.sh"]
         stack: false
-  # quick, plus a production build of the blog, served by the test stack to its
-  # fixture-replay Playwright suite (~250 tests against recorded API responses,
-  # one worker) and to the advisory live_e2e.
+  # quick, plus a production build of the blog and its fixture-replay Playwright
+  # suite (~250 tests against recorded API responses, one worker), then the
+  # advisory live_e2e against that build served by the test stack.
   full:
     suites:
       - name: unit
@@ -75,20 +75,15 @@ verification:
         adapter: command
         args: [".aidev/run-static.sh"]
         stack: false
-      # The production build the test stack serves; runs before the stack starts
-      # (AIDEV starts it right before the first `stack: true` suite).
-      - name: blog_build
-        adapter: command
-        args: [".aidev/run-blog-build.sh"]
-        stack: false
       - name: fixture_e2e
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
         artifacts: ["test-results/fixture/"]
-        env: {DENSER_TEST_STACK: "1"}
+        stack: false
       # ADVISORY (always exits 0): the live-API e2e specs this candidate changed,
-      # --repeat-each=3, against the stack's blog-live; "not applicable" when it
-      # changes none. See .aidev/run-live-e2e.sh.
+      # --repeat-each=3, against the stack's blog-live (fixture_e2e's build);
+      # "not applicable" when it changes none or no change information reaches
+      # the container (ai/aidev#14456). See .aidev/run-live-e2e.sh.
       - name: live_e2e
         adapter: command
         args: [".aidev/run-live-e2e.sh"]
@@ -125,16 +120,17 @@ verification:
 # specs with .aidev/dev-stack-spec.sh; see .aidev/README.md.
 # Measured on steem-17: 64 s to healthy with no node_modules (the offline install
 # is ~7 s of it), 57 s warm; most of it is next dev compiling the warmed routes.
-# Shared test stack (#967): the blog's production build — made by the full slot's
-# blog_build suite, not by an image — served over the stack network to
-# fixture_e2e and live_e2e (.aidev/test-stack.compose.yml). Only those two suites
-# declare `stack: true`; every other binding says `stack: false`.
+# Shared test stack (#967): fixture_e2e's production build served against the
+# live Hive API, for the advisory live_e2e only (.aidev/test-stack.compose.yml).
+# fixture_e2e itself stays self-contained: its fixture proxy is per spec, inside
+# the Playwright process (see .aidev/run-fixture-e2e.sh). Only live_e2e declares
+# `stack: true`; every other binding says `stack: false`.
 sandbox:
   compose: .aidev/test-stack.compose.yml
-  # A fixture blog, a live blog and a relay: ~2.5 GB at the limits.
+  # One Next.js server (2 GB limit); heavy as #967 asks, one copy per host.
   resource_class: heavy
-  services: [fixture-proxy, blog, blog-live]
-  # Copying the standalone build and starting two servers takes ~15 s.
+  services: [blog-live]
+  # Copying the standalone build and starting the server takes ~10 s.
   readiness_timeout: 300
   dev:
     compose: .aidev/dev-stack.compose.yml

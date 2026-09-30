@@ -8,12 +8,19 @@
 # change, so their verdict must not gate; their per-test results are recorded
 # from test-results/live-e2e/junit.xml and the log shows them.
 #
-# Selection: `git diff --name-only --diff-filter=d <base>...HEAD` over
-# apps/*/playwright/tests/e2e, where <base> is $DENSER_LIVE_E2E_BASE, else the
-# first of origin/aidev/integration, aidev/integration, origin/develop that
-# exists. Each selected spec runs --repeat-each=3 --retries=0 on chromium.
-# Nothing selected — or no git metadata to select with — is reported as a
-# skipped "not applicable" testcase naming why.
+# Selection — the changed files, first source that exists:
+#   1. $AIDEV_CHANGED_FILES_FILE (one path per line), and
+#   2. `git diff --name-only --diff-filter=d <base>...HEAD` when git works in the
+#      workspace, <base> = $AIDEV_BASE_REF, else $DENSER_LIVE_E2E_BASE, else the
+#      first of origin/aidev/integration, aidev/integration, origin/develop;
+#   both proposed for every suite, containers included, by ai/aidev#14456. Until
+#   it lands an AIDEV run with the worktree backend has neither (the workspace's
+#   .git points outside the mounted /work, and no base is exported), so live_e2e
+#   reports "not applicable: no change information available"; the ZFS backend
+#   and runs by hand have git.
+# Of those, the specs under apps/*/playwright/tests/e2e run, --repeat-each=3
+# --retries=0 on chromium. None selected is a skipped "not applicable" testcase
+# naming why.
 #
 #   .aidev/run-live-e2e.sh                          # select from the diff
 #   .aidev/run-live-e2e.sh apps/blog/playwright/tests/e2e/faqPage.spec.ts   # these specs
@@ -45,19 +52,25 @@ not_applicable() { report skipped "live_e2e not applicable" "$1"; exit 0; }
 if [ "$#" -gt 0 ]; then
     specs=("$@")
 else
-    git rev-parse --git-dir > /dev/null 2>&1 \
-        || not_applicable "no git metadata in the workspace, so the candidate's changed specs cannot be determined"
-    base="${DENSER_LIVE_E2E_BASE:-}"
-    if [ -z "$base" ]; then
-        for ref in origin/aidev/integration aidev/integration origin/develop; do
-            git rev-parse --verify -q "$ref^{commit}" > /dev/null && { base=$ref; break; }
-        done
+    e2e_specs() { grep -E '^apps/[^/]+/playwright/tests/e2e/.+\.spec\.ts$' | sort -u; }
+    if [ -n "${AIDEV_CHANGED_FILES_FILE:-}" ] && [ -r "$AIDEV_CHANGED_FILES_FILE" ]; then
+        source_desc="AIDEV_CHANGED_FILES_FILE"
+        mapfile -t specs < <(while read -r f; do [ -e "$f" ] && echo "$f"; done < "$AIDEV_CHANGED_FILES_FILE" | e2e_specs)
+    else
+        git rev-parse --git-dir > /dev/null 2>&1 \
+            || not_applicable "no change information available (no AIDEV_CHANGED_FILES_FILE, no git metadata in the workspace; ai/aidev#14456)"
+        base="${AIDEV_BASE_REF:-${DENSER_LIVE_E2E_BASE:-}}"
+        if [ -z "$base" ]; then
+            for ref in origin/aidev/integration aidev/integration origin/develop; do
+                git rev-parse --verify -q "$ref^{commit}" > /dev/null && { base=$ref; break; }
+            done
+        fi
+        [ -n "$base" ] || not_applicable "no change information available (git works but no base ref; ai/aidev#14456)"
+        source_desc="git diff against $base"
+        mapfile -t specs < <(git diff --name-only --diff-filter=d "$base...HEAD" | e2e_specs)
     fi
-    [ -n "$base" ] || not_applicable "no base ref (origin/aidev/integration, origin/develop) to diff against"
-    mapfile -t specs < <(git diff --name-only --diff-filter=d "$base...HEAD" -- \
-        'apps/*/playwright/tests/e2e/*.spec.ts' 'apps/*/playwright/tests/e2e/**/*.spec.ts' | sort -u)
-    [ "${#specs[@]}" -gt 0 ] || not_applicable "the candidate changes no e2e spec (diff against $base)"
-    echo "live_e2e: specs changed since $base: ${specs[*]}" >&2
+    [ "${#specs[@]}" -gt 0 ] || not_applicable "the candidate changes no e2e spec ($source_desc)"
+    echo "live_e2e: changed e2e specs ($source_desc): ${specs[*]}" >&2
 fi
 
 blog_specs=()
@@ -75,7 +88,7 @@ done
 if ! node -e "fetch('http://blog-live:3000/favicon.ico').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))" < /dev/null; then
     [ -f apps/blog/.next/aidev-build-complete ] \
         && report failure "live_e2e stack" "the test stack's blog-live does not answer" \
-        || report failure "live_e2e stack" "no blog build to serve (the blog_build suite failed)"
+        || report failure "live_e2e stack" "no blog build to serve (the fixture_e2e build failed or did not run)"
     exit 0
 fi
 

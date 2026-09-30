@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Command of the blog services in .aidev/test-stack.compose.yml: serve the
-# checkout's production build (apps/blog/.next/standalone, from the blog_build
-# suite, .aidev/run-blog-build.sh) on :3000 with this container's REACT_APP_*
+# checkout's production build (apps/blog/.next/standalone, from fixture_e2e,
+# .aidev/run-blog-build.sh) on :3000 with this container's REACT_APP_*
 # environment.
 #
 # The checkout is mounted read-only and shared by every blog service, so the
@@ -21,7 +21,7 @@ marker="$blog/.next/aidev-build-complete"
 srv=/tmp/blog-standalone
 
 until [ -f "$marker" ]; do
-    [ -n "${waiting:-}" ] || { echo "blog: waiting for $marker (the blog_build suite)"; waiting=1; }
+    [ -n "${waiting:-}" ] || { echo "blog: waiting for $marker (fixture_e2e builds it)"; waiting=1; }
     sleep 2
 done
 echo "blog: serving the build of $(cat "$marker")"
