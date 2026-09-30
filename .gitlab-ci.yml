@@ -208,19 +208,28 @@ mirrornet-haf-binaries-extraction:
     export NEW_IMAGE_TAGNAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-${IMAGE_SUFFIX}:${CI_COMMIT_SHA}"
 
     # Inputs = base image config (same whether or not re-tagging wrapped it in an
-    # index) + env file (denser#969): reuse when unchanged.
-    INPUT_HASH="$( { docker buildx imagetools inspect "${BASE_IMAGE_NAME}" --format "{{json .Image}}"; cat "${ENV_FILE_PATHNAME}"; } | sha256sum | cut -c1-32)"
+    # index) + the Dockerfile template + env file (denser#969). Same trust rule as
+    # scripts/ci-helpers/docker-build-template-script.sh: protected refs and deploy
+    # branches always build (and push inputs-<hash>); only unprotected branch/MR
+    # pipelines reuse.
+    DOCKERFILE_TEMPLATE='FROM @BASE_IMAGE@ AS production
+    COPY "@ENV_FILE@" /app/apps/.env'
+    DOCKERFILE="${DOCKERFILE_TEMPLATE//@BASE_IMAGE@/${BASE_IMAGE_NAME}}"
+    DOCKERFILE="${DOCKERFILE//@ENV_FILE@/${ENV_FILE_PATHNAME}}"
+    BASE_CONFIG="$(docker buildx imagetools inspect "${BASE_IMAGE_NAME}" --format "{{json .Image}}")" \
+      || { echo "ERROR: cannot inspect ${BASE_IMAGE_NAME}"; exit 1; }
+    [[ -n "${BASE_CONFIG}" ]] || { echo "ERROR: empty image config for ${BASE_IMAGE_NAME}"; exit 1; }
+    INPUT_HASH="$(printf '%s\n' "${BASE_CONFIG}" "${DOCKERFILE_TEMPLATE}" "${ENV_FILE_PATHNAME}" "$(cat "${ENV_FILE_PATHNAME}")" | sha256sum | cut -c1-32)"
     INPUT_TAG="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-${IMAGE_SUFFIX}:inputs-${INPUT_HASH}"
-    if [[ "${FORCE_IMAGE_BUILD:-false}" != "true" ]] && docker buildx imagetools inspect "${INPUT_TAG}" >/dev/null 2>&1; then
+    if [[ "${CI_COMMIT_REF_PROTECTED:-}" != "true" && -z "${CI_COMMIT_TAG:-}" \
+          && ! "${CI_COMMIT_BRANCH:-}" =~ ^(main|develop|dev-deployment)$ \
+          && "${FORCE_IMAGE_BUILD:-false}" != "true" ]] \
+        && docker buildx imagetools inspect "${INPUT_TAG}" >/dev/null 2>&1; then
       echo "Inputs unchanged: reusing ${INPUT_TAG} (no docker build)"
       docker buildx imagetools create --tag "${NEW_IMAGE_TAGNAME}" "${INPUT_TAG}"
     else
-    docker buildx build \
-      --push \
-      -t "${NEW_IMAGE_TAGNAME}" -t "${INPUT_TAG}" -f- . << EOF
-      FROM $BASE_IMAGE_NAME AS production
-      COPY "${ENV_FILE_PATHNAME}" /app/apps/.env
-    EOF
+      printf '%s\n' "${DOCKERFILE}" | docker buildx build --push \
+        -t "${NEW_IMAGE_TAGNAME}" -t "${INPUT_TAG}" -f- .
     fi
     echo "DENSER_${TURBO_APP_NAME^^}_IMAGE_NAME=${NEW_IMAGE_TAGNAME}" > docker-build-testenv-${TURBO_APP_NAME}-image.env
   artifacts:

@@ -31,13 +31,29 @@ git config --global --add safe.directory "${CI_PROJECT_DIR:?}"
 IMAGE_REPO="${CI_REGISTRY_IMAGE:?}/${TURBO_APP_NAME:?}"
 
 # Reuse the image built from identical inputs (denser#969): the `inputs-<hash>` tag
-# is pushed only after a successful build, so re-tagging it is a registry-side
-# manifest copy, no build. Release tags always build (they also push to hive.blog).
+# is pushed after a successful build, and re-tagging it is a registry-side
+# manifest copy, no build.
+#
+# Trust rule: any branch pipeline can push `inputs-<hash>` (a predictable name,
+# same registry rights), so a reused image is only as trustworthy as the least
+# trusted branch. Protected refs (develop, main, dev-deployment, release tags) and
+# every branch a deploy job runs on therefore ALWAYS build; they still push
+# `inputs-<hash>` for branch pipelines to reuse. Reuse is for unprotected
+# branch/MR pipelines only. FORCE_IMAGE_BUILD=true always builds.
 INPUT_HASH="$("${CI_PROJECT_DIR:?}/scripts/ci-helpers/image-input-hash.sh" "${TURBO_APP_PATH:-apps/${TURBO_APP_NAME}}")"
 INPUT_TAG="${IMAGE_REPO}:inputs-${INPUT_HASH}"
 echo "Image input hash: ${INPUT_HASH}"
-if [[ -z "${CI_COMMIT_TAG}" && "${FORCE_IMAGE_BUILD:-false}" != "true" ]] \
-    && docker buildx imagetools inspect "${INPUT_TAG}" >/dev/null 2>&1; then
+if [[ "${CI_COMMIT_REF_PROTECTED:-}" == "true" || -n "${CI_COMMIT_TAG:-}" \
+      || "${CI_COMMIT_BRANCH:-}" =~ ^(main|develop|dev-deployment)$ \
+      || "${FORCE_IMAGE_BUILD:-false}" == "true" ]]; then
+  echo "Protected/deploy ref or forced build: building (never reusing) ${IMAGE_REPO}:${TAG}"
+  REUSE=false
+elif docker buildx imagetools inspect "${INPUT_TAG}" >/dev/null 2>&1; then
+  REUSE=true
+else
+  REUSE=false
+fi
+if [[ "${REUSE}" == "true" ]]; then
   echo "Inputs unchanged: reusing ${INPUT_TAG} as :${TAG} and :${CI_COMMIT_SHORT_SHA:?} (no docker build)"
   docker buildx imagetools create --tag "${IMAGE_REPO}:${TAG}" --tag "${IMAGE_REPO}:${CI_COMMIT_SHORT_SHA}" "${INPUT_TAG}"
 else

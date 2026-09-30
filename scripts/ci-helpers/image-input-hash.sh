@@ -2,8 +2,10 @@
 # Print the content hash of everything that goes into an app's Docker image
 # (Dockerfile + build scripts, the workspace manifests and lockfile, the app and
 # the shared packages, minus tests), plus the build arguments that change its
-# output. Two commits with the same hash produce the same image, so CI reuses
-# the image tagged `inputs-<hash>` instead of rebuilding it (denser#969).
+# output (read from docker-bake.hcl's `args`), and the ISO week, so a reused image
+# is rebuilt at least weekly. Two commits with the same hash produce the same
+# image, so CI reuses the image tagged `inputs-<hash>` instead of rebuilding it
+# (denser#969).
 #
 #   scripts/ci-helpers/image-input-hash.sh apps/blog
 #
@@ -41,11 +43,14 @@ EXCLUDES=(
 
 {
   git ls-files -s -- "${INPUTS[@]}" "${EXCLUDES[@]}"
-  # docker-bake.hcl build args that change the image (labels/version.json excluded:
-  # they name the commit that built the image).
-  for var in TURBO_APP_SCOPE TURBO_APP_PATH TURBO_APP_NAME BASE_PATH \
-             REACT_APP_SENTRY_DSN REACT_APP_ALLOWED_HIVE_API_NODES \
-             REACT_APP_GOOGLE_DRIVE_CLIENT_ID IMAGE_INPUT_SALT; do
+  # Every build arg docker-bake.hcl passes (its `args = { ... }` block), except
+  # the label/version ones that name the building commit.
+  bake_args="$(sed -n '/^ *args *= *{/,/^ *}/p' docker-bake.hcl | grep -oE '^ *[A-Z_][A-Z0-9_]* *=' | tr -d ' =' | sort -u)"
+  [[ -n "$bake_args" ]] || { echo "no build args parsed from docker-bake.hcl" >&2; exit 1; }
+  for var in $bake_args IMAGE_INPUT_SALT; do
+    case "$var" in BUILD_TIME|GIT_*) continue ;; esac
     printf '%s=%s\n' "$var" "${!var:-}"
   done
+  # Freshness: a new ISO week forces a rebuild, picking up base-image/apk fixes.
+  printf 'WEEK=%s\n' "$(date -u +%G-W%V)"
 } | sha256sum | cut -c1-32

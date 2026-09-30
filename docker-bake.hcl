@@ -49,6 +49,8 @@ target "local-build" {
     # Add tags for registry-upload.hive.blog when PUSH_TO_HIVE_BLOG is set
     notempty(PUSH_TO_HIVE_BLOG) && notempty(CI_COMMIT_TAG) ? "registry-upload.hive.blog/denser/${TURBO_APP_NAME}:${CI_COMMIT_TAG}": ""
   ]
+  # Every arg here except BUILD_TIME/GIT_* goes into the CI image-reuse hash
+  # (scripts/ci-helpers/image-input-hash.sh parses this block).
   args = {
     TURBO_APP_SCOPE = "${TURBO_APP_SCOPE}",
     TURBO_APP_PATH = "${TURBO_APP_PATH}",
