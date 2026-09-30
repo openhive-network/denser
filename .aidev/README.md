@@ -4,6 +4,41 @@
 digest-pinned `registry.gitlab.syncad.com/hive/denser/aidev-tests` image
 (`.aidev/runtime/`), offline, and write junit under `test-results/`.
 
+## The test runtime image (`runtime/`)
+
+Suites run offline in `registry.gitlab.syncad.com/hive/denser/aidev-tests`, pinned
+by digest in `project.yaml` (`environment.image`). The image holds Node, pnpm,
+Playwright's Chromium and every package `pnpm-lock.yaml` resolves.
+
+Its tag is `aidev-` plus a hash of its inputs: `runtime/Dockerfile`, `pnpm-lock.yaml`,
+`pnpm-workspace.yaml`, `.npmrc` and the `packageManager` field of `package.json`.
+`runtime/build.sh` looks that tag up in the registry first and builds nothing when it
+is there; `build.sh --tag` prints the tag. The registry cleanup policy keeps
+`aidev-*` tags, so a pinned image isn't expired.
+
+### Changing dependencies (lockfile + digest bump)
+
+AIDEV refuses a commit that changes `pnpm-lock.yaml` unless `environment.image` moves
+in the same commit. When you change any image input:
+
+1. Run `.aidev/runtime/build.sh --push` (needs push rights on the registry). It prints
+   `registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:<digest>`, building and
+   pushing only when no image for these inputs exists yet.
+2. Put that reference in `project.yaml` `environment.image` and in the `x-image`
+   line of `dev-stack.compose.yml` and `test-stack.compose.yml`, and commit them
+   together with the input change.
+
+Without registry rights, push the input change to a branch that runs the
+`aidev-tests-image` CI job (`aidev/integration`, `develop`): the job builds and pushes
+the image and fails with the reference to put in `project.yaml`; commit that digest.
+
+### The `aidev-tests-image` CI job
+
+Runs on `aidev/integration` and `develop` when an input, `runtime/` or `project.yaml`
+changes. It runs `build.sh --push` (under a minute when the image exists) and fails
+when `environment.image` or a compose file's `x-image` isn't the image of the
+committed inputs, printing the reference to use.
+
 ## Live dev stack (`sandbox.dev`)
 
 An AIDEV implement session gets a running blog built from its own working tree:

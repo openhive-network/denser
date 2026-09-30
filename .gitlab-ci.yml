@@ -233,6 +233,46 @@ mirrornet-haf-binaries-extraction:
   tags:
   - public-runner-docker
 
+# AIDEV test runtime image (denser#968): built only when its inputs change; the
+# tag is aidev-<hash of them>, so an existing tag means no build. Fails when
+# .aidev/project.yaml's environment.image doesn't pin the image of these inputs.
+aidev-tests-image:
+  extends: .docker_image_builder_job_template
+  stage: build
+  interruptible: true
+  rules:
+  - if: $CI_COMMIT_BRANCH == "aidev/integration" || $CI_COMMIT_BRANCH == "develop"
+    changes:
+    - .aidev/runtime/**/*
+    - .aidev/project.yaml
+    - .aidev/*.compose.yml
+    - package.json
+    - pnpm-lock.yaml
+    - pnpm-workspace.yaml
+    - .npmrc
+  script:
+  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  - |
+    image="$(.aidev/runtime/build.sh --push)"
+    pinned="$(sed -n 's/^ *image: *"\{0,1\}\([^"]*\)"\{0,1\} *$/\1/p' .aidev/project.yaml | head -1)"
+    echo "image of these inputs: $image (tag $(.aidev/runtime/build.sh --tag))"
+    echo "pinned in the profile: $pinned"
+    if [ "$image" != "$pinned" ]; then
+      echo "ERROR: .aidev/project.yaml environment.image doesn't match the image of these inputs."
+      echo "Set it, in the same commit as the input change, to:"
+      echo "  image: \"$image\""
+      exit 1
+    fi
+    # The stack compose files pin the same image (x-image anchor).
+    for f in .aidev/*.compose.yml; do
+      if grep -q '^x-image:' "$f" && ! grep -q "^x-image: &image $image\$" "$f"; then
+        echo "ERROR: $f x-image doesn't match; set it to: x-image: &image $image"
+        exit 1
+      fi
+    done
+  tags:
+  - public-runner-docker
+
 # Blog builds - separate for main (prod) and develop (dev) with different env vars
 docker-build-blog:
   extends: .docker_build_template
