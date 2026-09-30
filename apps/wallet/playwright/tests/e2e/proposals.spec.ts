@@ -694,8 +694,8 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.voteProposalsDialogTrigger.first().click();
     await expect(proposalsPage.voteProposalDialogList).toBeVisible();
-    expect(await proposalsPage.voteProposalDialogList.getByText('Votes on proposal ')).toBeVisible();
-    await expect(await proposalsPage.proposalIdOnDialog).toHaveText(await firstProposalId.textContent());
+    await expect(await proposalsPage.voteProposalDialogList.getByText('Votes on proposal ')).toBeVisible();
+    await expect(await proposalsPage.proposalIdOnDialog).toHaveText((await firstProposalId.textContent()) ?? '');
     await expect(await proposalsPage.proposalVoterLinkInDialogList.first()).toBeVisible();
     await proposalsPage.closeVoteProposalDialogList.click();
     await expect(proposalsPage.proposalListItem.first()).toBeVisible();
@@ -711,7 +711,7 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.voteProposalsDialogTrigger.first().click();
     await expect(proposalsPage.voteProposalDialogList).toBeVisible();
-    expect(await proposalsPage.voteProposalDialogList.getByText('Votes on proposal ')).toBeVisible();
+    await expect(await proposalsPage.voteProposalDialogList.getByText('Votes on proposal ')).toBeVisible();
 
     // `Votes on proposal`: color
     expect(
@@ -759,7 +759,7 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.voteProposalsDialogTrigger.first().click();
     await expect(proposalsPage.voteProposalDialogList).toBeVisible();
-    expect(await proposalsPage.voteProposalDialogList.getByText('Votes on proposal ')).toBeVisible();
+    await expect(await proposalsPage.voteProposalDialogList.getByText('Votes on proposal ')).toBeVisible();
 
     // Vote proposal dialog: background-color
     expect(

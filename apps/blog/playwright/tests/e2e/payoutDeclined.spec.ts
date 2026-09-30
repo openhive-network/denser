@@ -21,7 +21,7 @@ test.describe('Profile page of @hiveio', () => {
     await profilePage.gotoProfilePage('@hiveio');
     await expect(profilePage.page).toHaveURL(/ *.\/@hiveio$/);
     // Find the post card with the declined payout
-    let amountPayoutsDeclined: [] = await page.locator('[data-testid="post-payout-decline"]').all();
+    let amountPayoutsDeclined = await page.locator('[data-testid="post-payout-decline"]').all();
 
     // If there are no declined payouts in the post card then load next page of the posts (scroll down)
     let i = 0;

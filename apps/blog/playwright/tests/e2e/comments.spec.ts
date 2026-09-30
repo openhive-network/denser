@@ -759,7 +759,7 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     // validate the response comment's author reputation
     expect(await commentViewPage.getResponseCommentAuthorReputation.textContent()).toBe('(76)');
     // validate the response comment's author affiliation tag
-    expect(await commentViewPage.getResponseCommentAffiliationTag).toHaveText('Wizard');
+    await expect(await commentViewPage.getResponseCommentAffiliationTag).toHaveText('Wizard');
     // validate the response comment's author content
     const contentResponseComment: string =
       (await commentViewPage.getResponseCommentContent.textContent()) || '';
@@ -789,8 +789,8 @@ test.describe('@gtg - Comments of "hive-160391/@gtg/hive-hardfork-25-jump-starte
     await postPage.page.waitForLoadState('domcontentloaded');
     await postPage.articleBody.waitFor({state: 'visible'});
     // Validate that the post page of Hive HardFork 25 Jump Starter Kit of gtg is loaded
-    expect(await postPage.articleTitle).toHaveText('Hive HardFork 25 Jump Starter Kit');
-    expect(await postPage.articleAuthorName).toHaveText('gtg');
+    await expect(await postPage.articleTitle).toHaveText('Hive HardFork 25 Jump Starter Kit');
+    await expect(await postPage.articleAuthorName).toHaveText('gtg');
     // Validate that the response comment of the first comment in the post is selected by red border
     expect(
       await postPage.getElementCssPropertyValue(

@@ -74,10 +74,10 @@ test.describe('Home page tests', () => {
     const postPayout = (await response.json()).result[0].payout.toFixed(2);
     // console.log("Post payout: ", await postPayout)
 
-    expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
-    expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
-    expect(homePage.getFirstPostTitle).toHaveText(postTitle);
-    expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
+    await expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
+    await expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
+    await expect(homePage.getFirstPostTitle).toHaveText(postTitle);
+    await expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
 
     // Vote/children counts can change between API fetch and UI check, so just verify they're numbers
     const firstPostTotalVotes = (await homePage.getFirstPostVotes.allInnerTexts()).at(0);
@@ -182,10 +182,10 @@ test.describe('Home page tests', () => {
     const postPayout = (await response.json()).result[0].payout.toFixed(2);
     // console.log("Post payout: ", await postPayout)
 
-    expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
-    expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
-    expect(homePage.getFirstPostTitle).toHaveText(postTitle);
-    expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
+    await expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
+    await expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
+    await expect(homePage.getFirstPostTitle).toHaveText(postTitle);
+    await expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
 
     // Vote count can change between API fetch and UI check, so just verify it's a number
     const firstPostTotalVotes = (await homePage.getFirstPostVotes.allInnerTexts()).at(0);
@@ -717,7 +717,7 @@ test.describe('Home page tests', () => {
       // console.log('url of the first post ', await firstPoweredUp100Link.getAttribute("href"));
       await homePage.postCardPoweredUp100Trigger.first().click();
       await homePage.page.waitForSelector('#articleBody');
-      await expect(homePage.page).toHaveURL(urlOfFirstPoweredUp10Link);
+      await expect(homePage.page).toHaveURL(urlOfFirstPoweredUp10Link ?? '');
     } else console.log('No Powered Up 100% tags on the 40 post cards');
   });
 });

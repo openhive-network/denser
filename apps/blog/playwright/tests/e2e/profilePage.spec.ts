@@ -52,7 +52,7 @@ test.describe('Profile page of @gtg', () => {
     const profileNameApi = accountsData.result.accounts[0].name;
 
     await page.waitForSelector(profilePage.profileName['_selector']);
-    expect(await profilePage.profileName).toBeVisible();
+    await expect(await profilePage.profileName).toBeVisible();
     await profilePage.profilePostsLink.click();
     await page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
     await expect(profilePage.page.locator('[data-testid="post-author"]').first()).toContainText(

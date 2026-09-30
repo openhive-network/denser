@@ -269,18 +269,18 @@ describe('Generated Payload Variations', function () {
     describe('Whitespace Variations', function () {
         const whitespaceChars = [' ', '\t', '\n', '\r', '\f', '\v'];
 
-        for (const base of basePayloads) {
+        basePayloads.forEach((base, payloadIndex) => {
             for (const ws of whitespaceChars) {
                 // Insert whitespace after < in tags
                 const varied = base.replace(/<([a-z])/gi, `<${ws}$1`);
                 const wsName = JSON.stringify(ws);
-                it(`should handle whitespace ${wsName} in tags`, function () {
+                it(`should handle whitespace ${wsName} in tags (payload #${payloadIndex + 1})`, function () {
                     const output = sanitizer.sanitize(varied);
                     const issues = detectDangerousPatterns(output);
                     expect(issues, `Found: ${issues.join(', ')}\nOutput: ${output}`).to.be.empty;
                 });
             }
-        }
+        });
     });
 
     // Null byte injection

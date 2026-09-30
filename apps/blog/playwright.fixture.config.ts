@@ -1,3 +1,4 @@
+import path from 'path';
 import { defineConfig, devices } from '@playwright/test';
 import {
   FIXTURE_APP_NAME,
@@ -31,6 +32,12 @@ process.env.REACT_APP_API_ENDPOINT = `http://localhost:${FIXTURE_PORT}`;
 
 export default defineConfig({
   testDir: './playwright/tests/fixture',
+  // Collect the fixture proxy's replay MISSes and fail on ones missing
+  // from playwright/tests/fixture/known-misses.json.
+  // Absolute: .aidev/playwright.fixture-stack.config.ts spreads this config
+  // from another directory, and relative paths resolve against that one.
+  globalSetup: path.join(__dirname, 'playwright/tests/support/fixture-misses/global-setup.ts'),
+  globalTeardown: path.join(__dirname, 'playwright/tests/support/fixture-misses/global-teardown.ts'),
   timeout: 60 * 1000,
   expect: {
     timeout: 10 * 1000

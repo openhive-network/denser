@@ -7,7 +7,6 @@ export class LoginToVoteDialog {
   readonly getUsernameInput: Locator;
   readonly getPostingPrivateKeyInput: Locator;
   // readonly getHbauthPasswordInput: Locator;
-  readonly getHiveAuthCheckbox: Locator;
   readonly getUseKeychainCheckbox: Locator;
   readonly getUseHiveauthCheckbox: Locator;
   readonly getUseHbauthCheckbox: Locator;
