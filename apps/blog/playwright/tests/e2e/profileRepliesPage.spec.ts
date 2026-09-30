@@ -139,7 +139,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       // Validate the comment author name is the same as autor post in the profile page in posts tab
       await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
     } else {
-      const notBloggingYet: string = await profilePage.userHasNotStartedBloggingYetMsg.textContent() ?? '';
+      const notBloggingYet = await profilePage.userHasNotStartedBloggingYetMsg.textContent();
+      if (notBloggingYet === null) throw new Error('"Not blogging yet" message has no text content');
       await expect(notBloggingYet).toMatch(
         /^Looks like @\b\w+(?:-\w+)?\b hasn't started blogging yet!$/
       );
@@ -166,7 +167,8 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       // Validate the comment author name is the same as autor post in the profile page in posts tab
       await expect(await firstCommentCardNickName).toContain(await profilePagePostAuthor);
     } else {
-      const notBloggingYet: string = await profilePage.userHasNotStartedBloggingYetMsg.textContent() ?? '';
+      const notBloggingYet = await profilePage.userHasNotStartedBloggingYetMsg.textContent();
+      if (notBloggingYet === null) throw new Error('"Not blogging yet" message has no text content');
       await expect(notBloggingYet).toMatch(
         /^Looks like @\b\w+(?:-\w+)?\b hasn't started blogging yet!$/
       );

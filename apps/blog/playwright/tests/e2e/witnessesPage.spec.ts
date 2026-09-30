@@ -124,9 +124,8 @@ test.describe.skip('Witnesses page tests', () => {
     await witnessPage.firstWitnessNameLink.click();
 
     await profilePage.page.waitForSelector(profilePage.profileName['_selector']);
-    // `?? ''` would make toContainText pass on anything, so require the name first
-    expect(witnessName).toBeTruthy();
-    await expect(profilePage.profileNickName).toContainText(witnessName ?? '');
+    if (!witnessName) throw new Error('First witness name link has no text content');
+    await expect(profilePage.profileNickName).toContainText(witnessName);
   });
 
   test('move to the extra side of the first witness', async ({ page }) => {

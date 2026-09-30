@@ -714,10 +714,11 @@ test.describe('Home page tests', () => {
     if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
       const firstPoweredUp100Link = await homePage.postCardPoweredUp100TriggerLink.first();
       const urlOfFirstPoweredUp10Link = await firstPoweredUp100Link.getAttribute('href');
+      if (urlOfFirstPoweredUp10Link === null) throw new Error('Powered Up 100% post card link has no href');
       // console.log('url of the first post ', await firstPoweredUp100Link.getAttribute("href"));
       await homePage.postCardPoweredUp100Trigger.first().click();
       await homePage.page.waitForSelector('#articleBody');
-      await expect(homePage.page).toHaveURL(urlOfFirstPoweredUp10Link ?? '');
+      await expect(homePage.page).toHaveURL(urlOfFirstPoweredUp10Link);
     } else console.log('No Powered Up 100% tags on the 40 post cards');
   });
 });

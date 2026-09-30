@@ -49,9 +49,11 @@ test.describe.skip('Social tab in the profile page of @gtg', () => {
         // console.log(' UI list of subscribed communities:', await listOfSubscribedCommunitiesUI);
 
         // Validate: Subscribed communities names, user role tags, affiliation tag
-        let listOfSubscribedCommunitiesUITextContent: string;
         for (let i = 0; i < listOfSubscribedCommunitiesAPI.length; i++) {
-            listOfSubscribedCommunitiesUITextContent = await listOfSubscribedCommunitiesUI[i].textContent() ?? '';
+            const listOfSubscribedCommunitiesUITextContent = await listOfSubscribedCommunitiesUI[i].textContent();
+            if (listOfSubscribedCommunitiesUITextContent === null) {
+                throw new Error(`Subscribed community #${i} has no text content`);
+            }
             // console.log('111 ', await listOfSubscribedCommunitiesUITextContent.toLocaleLowerCase())
             expect(await listOfSubscribedCommunitiesUITextContent.toLocaleLowerCase())
                 .toContain(await listOfSubscribedCommunitiesAPI[i][1].toLocaleLowerCase()); // Community name

@@ -77,7 +77,9 @@ test.describe('Home page tests - All posts', () => {
     const displayedNameLink: string[] = [];
 
     for (const el of await homePage.getTrendingCommunitiesSideBarLinks.all()) {
-      displayedNameLink.push((await el.textContent()) ?? '');
+      const linkName = await el.textContent();
+      if (linkName === null) throw new Error('Trending communities sidebar link has no text content');
+      displayedNameLink.push(linkName);
     }
 
     // Compare the link names of communities from api against the link names taken from the website

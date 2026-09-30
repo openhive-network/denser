@@ -695,7 +695,9 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.voteProposalsDialogTrigger.first().click();
     await expect(proposalsPage.voteProposalDialogList).toBeVisible();
     await expect(await proposalsPage.voteProposalDialogList.getByText('Votes on proposal ')).toBeVisible();
-    await expect(await proposalsPage.proposalIdOnDialog).toHaveText((await firstProposalId.textContent()) ?? '');
+    const firstProposalIdText = await firstProposalId.textContent();
+    if (firstProposalIdText === null) throw new Error('First proposal id has no text content');
+    await expect(await proposalsPage.proposalIdOnDialog).toHaveText(firstProposalIdText);
     await expect(await proposalsPage.proposalVoterLinkInDialogList.first()).toBeVisible();
     await proposalsPage.closeVoteProposalDialogList.click();
     await expect(proposalsPage.proposalListItem.first()).toBeVisible();
