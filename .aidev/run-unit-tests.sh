@@ -10,6 +10,8 @@ cd "$(dirname "$0")/.."
 
 # shellcheck source=pnpm-deps.sh
 source .aidev/pnpm-deps.sh
+# shellcheck source=junit-helpers.sh
+source .aidev/junit-helpers.sh
 
 # Last-run-wins: a report left by an earlier run must not be read as this one's.
 rm -rf test-results/unit
@@ -18,7 +20,8 @@ mkdir -p test-results/unit
 status=0
 for pkg in renderer transaction; do
     echo "== mocha packages/$pkg" >&2
-    pnpm --filter "@hive/$pkg" test --reporter xunit \
-        --reporter-option "output=$PWD/test-results/unit/$pkg.xml" < /dev/null || status=1
+    junit="$PWD/test-results/unit/$pkg.xml"
+    run_with_junit_fallback "$junit" "$pkg" pnpm --filter "@hive/$pkg" test --reporter xunit \
+        --reporter-option "output=$junit" < /dev/null || status=1
 done
 exit "$status"

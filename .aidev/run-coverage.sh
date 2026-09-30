@@ -10,6 +10,8 @@ cd "$(dirname "$0")/.."
 
 # shellcheck source=pnpm-deps.sh
 source .aidev/pnpm-deps.sh
+# shellcheck source=junit-helpers.sh
+source .aidev/junit-helpers.sh
 
 rm -rf test-results/coverage
 nyc="$PWD/node_modules/.bin/nyc"
@@ -23,12 +25,13 @@ for pkg in renderer transaction; do
     out="$PWD/test-results/coverage/$pkg"
     mkdir -p "$out"
     echo "== nyc mocha packages/$pkg" >&2
-    (cd "packages/$pkg" && TS_NODE_PROJECT=tsconfig.test.json "$nyc" \
+    run_with_junit_fallback "$out/junit.xml" "$pkg" \
+    env -C "packages/$pkg" TS_NODE_PROJECT=tsconfig.test.json "$nyc" \
         --extension .ts --include "$src/**/*.ts" \
         --exclude "$src/**/*.test.ts" --exclude "$src/__test-stubs__/**" \
         --reporter text-summary --reporter cobertura \
         --report-dir "$out" --temp-dir "${TMPDIR:-/tmp}/nyc-$pkg" \
         pnpm exec mocha "$src/**/*.test.ts" \
-            --reporter xunit --reporter-option "output=$out/junit.xml" < /dev/null) || status=1
+            --reporter xunit --reporter-option "output=$out/junit.xml" < /dev/null || status=1
 done
 exit "$status"
