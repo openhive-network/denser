@@ -73,6 +73,7 @@ const nextConfig = {
   },
   transpilePackages: [
     '@hive/common-hiveio-packages',
+    '@hive/lite-account',
     '@hive/smart-signer',
     '@hive/ui',
     '@hive/transaction',
