@@ -45,7 +45,7 @@ issues:
 # Not bound, deliberately: the live-API Playwright suites (apps/*/playwright
 # tests/e2e, smoke) judge mainnet data rather than the change and are the flaky
 # part of denser's CI; mirrornet needs a HAF stack; translation checks
-# (lint:translations*) fail on existing debt. `coverage`: nothing measures it yet.
+# (lint:translations*) fail on existing debt.
 verification:
   # ~25 s: mocha unit suites of packages/renderer and packages/transaction
   # (~1,430 tests), plus lint and type check.
@@ -87,6 +87,12 @@ verification:
       - name: static
         adapter: command
         args: [".aidev/run-static.sh"]
+  # The unit suites under nyc (renderer's own dev dependency): per-package
+  # Cobertura + text summary and junit in test-results/coverage/.
+  coverage:
+    adapter: command
+    args: [".aidev/run-coverage.sh"]
+    artifacts: ["test-results/coverage/"]
 
 # Capability grants for target-side code. Empty until this project needs one.
 capabilities: []
