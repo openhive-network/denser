@@ -374,7 +374,8 @@ test.describe('Profile page of @gtg', () => {
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
-  test('Tab Payouts - ReComment Card Header - Timestamp', async ({ page }) => {
+  // Quarantined (#962): depends on whether @gtg currently has pending comment payouts on mainnet.
+  test('@flaky Tab Payouts - ReComment Card Header - Timestamp', async ({ page }) => {
     await profilePage.gotoPostsPayoutsProfilePage('@gtg');
 
     if (await profilePage.postBlogItem.first().isVisible()) {
@@ -398,7 +399,8 @@ test.describe('Profile page of @gtg', () => {
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
-  test('Tab Payouts - ReComment Card - Title', async ({ page }) => {
+  // Quarantined (#962): depends on whether @gtg currently has pending comment payouts on mainnet.
+  test('@flaky Tab Payouts - ReComment Card - Title', async ({ page }) => {
     await profilePage.gotoPostsPayoutsProfilePage('@gtg');
 
     if (await profilePage.postBlogItem.first().isVisible()) {
@@ -422,7 +424,8 @@ test.describe('Profile page of @gtg', () => {
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
-  test('Tab Payouts - ReComment Card - Description', async ({ page }) => {
+  // Quarantined (#962): depends on whether @gtg currently has pending comment payouts on mainnet.
+  test('@flaky Tab Payouts - ReComment Card - Description', async ({ page }) => {
     await profilePage.gotoPostsPayoutsProfilePage('@gtg');
 
     if (await profilePage.postBlogItem.first().isVisible()) {
@@ -446,7 +449,8 @@ test.describe('Profile page of @gtg', () => {
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
 
-  test('Tab Payouts - ReComment Card Footer - Response', async ({ page }) => {
+  // Quarantined (#962): depends on whether @gtg currently has pending comment payouts on mainnet.
+  test('@flaky Tab Payouts - ReComment Card Footer - Response', async ({ page }) => {
     await profilePage.gotoPostsPayoutsProfilePage('@gtg');
 
     if (await profilePage.postBlogItem.first().isVisible()) {

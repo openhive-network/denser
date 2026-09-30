@@ -121,7 +121,8 @@ test.describe('Wallet page of @gtg tests', () => {
     await expect(walletPage.walletSearchInput).toHaveAttribute('value', 'unknownuser');
   });
 
-  test('validate searching by unknown user on @gtg wallet page is visible', async ({ page }) => {
+  // Quarantined (#962): waits on live @gtg account history; a slow history API times out (#943).
+  test('@flaky validate searching by unknown user on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
     await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
