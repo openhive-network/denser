@@ -93,7 +93,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     }));
 
-    const authClient = useRef<OnlineClient>();
+    const authClient = useRef<OnlineClient | undefined>(undefined);
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
