@@ -25,6 +25,27 @@ This project uses **gitlab.syncad.com**, NOT gitlab.com.
 - APIs: api.hive.blog, api.openhive.network
 - SSR connects to Hive API, client can use any endpoint
 
+## Working in an AIDEV workflow
+When AIDEV runs you on an issue, no one is there to answer questions, so skip any step above that says to ask the user (e.g. the pre-MR smoke-test question). Don't run the `blog-smoke-tests` skill or any tests against production or the dev site. Use the local stack and slots below. `.aidev/README.md` has the details.
+
+### Checking your change
+Run `aidev test run --slot quick` (from the repository root) **once, after your last edit**, before declaring done. It runs the unit tests (`.aidev/run-unit-tests.sh`) and the static checks: ESLint, plus `tsc` for both apps and their Playwright code (`.aidev/run-static.sh`).
+
+- **When iterating**: run the narrowest thing that covers your edit. That's the touched package's unit tests, a single spec on the dev stack (below), or `.aidev/run-static.sh`. Don't re-run a check whose inputs haven't changed.
+- **UI, rendering, or e2e test changes**: also run `aidev test run --slot full`. It adds `fixture_e2e`, a production build of your tree run through the Playwright fixture suite with recorded Hive API data and no network. It also adds `live_e2e`, an advisory run of any `playwright/tests/e2e` specs you changed against the live API. That one needs `--with-stack` unless a dev stack is running.
+
+### The live dev stack
+When the prompt has a **Live dev stack** section, a blog built from *your worktree* is already running: `next dev` with hot reload, against the fixture replay proxy. Its address is in `$DENSER_DEV_BLOG_URL`. Use it instead of starting your own server:
+
+- **Look at a page**: `curl -s "$DENSER_DEV_BLOG_URL/trending"`. Edits under `apps/` and `packages/` recompile on the next request.
+- **Run a fixture spec against it**, in seconds:
+  `.aidev/dev-stack-spec.sh playwright/tests/fixture/postDetail.spec.ts -g ANON-POST-07 --retries=0`
+  The path is relative to `apps/blog`. Check interactive (in-browser) behaviour this way, not by pointing a browser at the URL; only the spec runner wires up the in-page API calls.
+- **Switch which recording the stack serves**: `curl -s -X PUT "$DENSER_DEV_FIXTURE_URL/__aidev/fixture-set/<name>"`, where `<name>` is a directory of `apps/blog/playwright/tests/mock/fixtures/`.
+- Readiness: `aidev project devstack status --name "$AIDEV_DEV_STACK_NAME"`.
+
+The dev stack is for fast feedback; `next dev` is not the production build. The verdict comes from the `full` slot. If there's no Live dev stack section, work without it.
+
 ---
 
 ## Tech Stack & Frameworks
