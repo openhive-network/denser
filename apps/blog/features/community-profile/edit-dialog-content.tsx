@@ -22,7 +22,7 @@ import {
   Checkbox,
   Button
 } from '@ui/components';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import { useEffect } from 'react';
 
 const EditDialogContent = ({ data, setOpen }: { data: Community; setOpen: (open: boolean) => void }) => {

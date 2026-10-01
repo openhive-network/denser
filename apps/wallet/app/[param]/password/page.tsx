@@ -4,10 +4,11 @@ import { getAccountMetadata } from '@transaction/lib/metadata';
 import PasswordPage from './password-page';
 
 interface PageProps {
-  params: { param: string };
+  params: Promise<{ param: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const param = decodeURIComponent(params.param);
   if (!param.startsWith('@')) {
     return {};
@@ -24,7 +25,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default function Page({ params }: PageProps) {
+export default async function Page(props: PageProps) {
+  const params = await props.params;
   const param = decodeURIComponent(params.param);
   if (!param.startsWith('@')) {
     notFound();

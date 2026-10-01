@@ -5,7 +5,8 @@ import { notFound } from 'next/navigation';
 
 const query = 'blog';
 
-const Page = async ({ params }: { params: { param: string } }) => {
+const Page = async (props: { params: Promise<{ param: string }> }) => {
+  const params = await props.params;
   const username = extractUsernameFromParam(params.param);
   if (!username) notFound();
 

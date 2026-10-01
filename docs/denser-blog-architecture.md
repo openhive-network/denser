@@ -2,7 +2,7 @@
 
 ## Overview
 
-Denser is a blogging application for the Hive blockchain, built with Next.js 14 App Router, React 18, TypeScript, and TanStack React Query.
+Denser is a blogging application for the Hive blockchain, built with Next.js 16 App Router, React 19, TypeScript, and TanStack React Query.
 
 ---
 
@@ -10,8 +10,8 @@ Denser is a blogging application for the Hive blockchain, built with Next.js 14 
 
 | Category | Technology |
 |----------|------------|
-| Framework | Next.js 14 (App Router) |
-| UI | React 18, Tailwind CSS, Radix UI, shadcn/ui pattern |
+| Framework | Next.js 16 (App Router) |
+| UI | React 19, Tailwind CSS, Radix UI, shadcn/ui pattern |
 | Server State | TanStack React Query 4.x |
 | Client State | Zustand |
 | Blockchain | @hiveio/wax (Hive SDK) |
@@ -51,7 +51,7 @@ denser/
 ### Key Routes
 
 ```
-/                    → redirects to /trending (via middleware)
+/                    → redirects to /trending (via proxy)
 /trending            → Trending posts feed
 /hot                 → Hot posts feed
 /created             → New posts feed
@@ -308,7 +308,7 @@ User navigates to /@username/post-slug
 | File | Purpose |
 |------|---------|
 | `app/layout.tsx` | Root layout, Providers wrapper, metadata |
-| `middleware.ts` | Root redirect (/ → /trending), CSP |
+| `proxy.ts` | Root redirect (/ → /trending), CSP |
 | `lib/react-query.ts` | QueryClient factory for SSR/CSR |
 | `lib/cached-api.ts` | Request-level API deduplication |
 | `lib/auth-utils.ts` | Server-side auth helpers |
@@ -348,7 +348,7 @@ NEXT_PUBLIC_BACKEND_AUTHENTICATION=false
 
 ## Summary
 
-Denser blog is a well-organized Next.js 14 application with:
+Denser blog is a well-organized Next.js 16 application with:
 
 - Feature-driven architecture (16 feature modules)
 - SSR with React Query hydration pattern

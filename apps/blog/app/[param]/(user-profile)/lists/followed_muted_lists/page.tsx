@@ -7,7 +7,8 @@ import FollowedMutedListsContent from './content';
 const logger = getLogger('app');
 const type = 'follow_muted';
 
-const FollowedMutedListsPage = async ({ params }: { params: { param: string } }) => {
+const FollowedMutedListsPage = async (props: { params: Promise<{ param: string }> }) => {
+  const params = await props.params;
   const username = extractUsernameFromParam(params.param);
   if (!username) notFound();
 

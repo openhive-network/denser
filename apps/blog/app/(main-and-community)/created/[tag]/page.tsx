@@ -2,14 +2,15 @@ import SortPage from '@/blog/features/community-profile/sort-page';
 import Content from './content';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     tag: string;
-  };
+  }>;
 }
 
 const sort = 'created';
 
-const Page = ({ params }: PageProps) => {
+const Page = async (props: PageProps) => {
+  const params = await props.params;
   const { tag } = params;
 
   return (

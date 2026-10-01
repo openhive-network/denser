@@ -7,7 +7,7 @@ import { createMiddleware } from '@hive/middleware/lib/common';
 
 // Blog-specific middleware: serves /trending at the root path (rewrite, no redirect),
 // applies CSP at runtime
-export const middleware = createMiddleware({
+export const proxy = createMiddleware({
   rootRewrite: '/trending',
   csp: {
     // Embedded content whitelist for blog posts

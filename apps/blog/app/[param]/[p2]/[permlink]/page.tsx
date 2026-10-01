@@ -34,13 +34,14 @@ const FALLBACK_METADATA: Metadata = {
 // the soft-404 mechanism behind #930. Pages (unlike layouts) also receive searchParams,
 // which the ?pending post-creation escape needs. The post fetch is request-deduplicated
 // with the page body via getPostCached (React cache()).
-export async function generateMetadata({
-  params,
-  searchParams
-}: {
-  params: { param: string; p2: string; permlink: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    params: Promise<{ param: string; p2: string; permlink: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  }
+): Promise<Metadata> {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
   if (!isValidUserParam(params?.p2)) notFound();
   const author = params.p2.replace('%40', '').replace('@', '');
   const permlink = params?.permlink;
@@ -93,13 +94,21 @@ export async function generateMetadata({
   };
 }
 
-const PostPage = async ({
-  params: { param, p2, permlink },
-  searchParams
-}: {
-  params: { param: string; p2: string; permlink: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}) => {
+const PostPage = async (
+  props: {
+    params: Promise<{ param: string; p2: string; permlink: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  }
+) => {
+  const searchParams = await props.searchParams;
+  const params = await props.params;
+
+  const {
+    param,
+    p2,
+    permlink
+  } = params;
+
   if (!isValidUserParam(p2)) notFound();
 
   const username = p2.replace('%40', '').replace('@', '');

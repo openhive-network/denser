@@ -50,7 +50,7 @@ variables:
 
   # Other settings
   CADDY_TAG: '2.7.6'
-  PLAYWRIGHT_TAG: 'v1.49.1-jammy'
+  PLAYWRIGHT_TAG: 'v1.63.0-jammy'
 
   HAF_COMMIT: 3c237ec1495da795679f767a7aa40c8b2d583dfa
 # Branch pipelines (what the Workflows/Branch-Pipelines template did), except on

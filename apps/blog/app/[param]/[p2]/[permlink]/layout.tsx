@@ -6,10 +6,15 @@ import { isValidUserParam } from '@/blog/utils/validate-links';
 // searchParams and before the loading boundary streams) so notFound() yields a
 // real HTTP 404 - see #930.
 
-export default async function Layout({
-  children,
-  params
-}: PropsWithChildren<{ params: { param: string; p2: string; permlink: string } }>) {
+export default async function Layout(
+  props: PropsWithChildren<{ params: Promise<{ param: string; p2: string; permlink: string }> }>
+) {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   // Validate p2 param - must start with @ or %40 for valid post URLs
   if (!isValidUserParam(params?.p2)) {
     notFound();

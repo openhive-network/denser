@@ -7,7 +7,7 @@ import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { useEffect, useState } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import { useResetAllListsMutation } from '@/blog/components/hooks/use-reset-mutations';
 import { Search, UserPlus } from 'lucide-react';
 import ListItem from './list-item';

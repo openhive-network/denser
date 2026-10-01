@@ -5,7 +5,8 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-const Page = async ({ params }: { params: { tag: string } }) => {
+const Page = async (props: { params: Promise<{ tag: string }> }) => {
+  const params = await props.params;
   const queryClient = getQueryClient();
   try {
     await queryClient.prefetchQuery({

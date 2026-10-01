@@ -1,5 +1,5 @@
 import { Button } from '@hive/ui';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import clsx from 'clsx';
 import { useTranslation } from '@/blog/i18n/client';
 

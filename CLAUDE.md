@@ -57,8 +57,8 @@ The dev stack is for fast feedback; `next dev` is not the production build. The 
 - **TypeScript**: 5.3.3
 
 ### Frontend Framework
-- **Next.js**: 14.2.x (App Router)
-- **React**: 18.3.0
+- **Next.js**: 16.x (App Router, Turbopack)
+- **React**: 19.3.0
 
 ### Styling
 - **Tailwind CSS**: with custom config (`@hive/tailwindcss-config`)
@@ -183,7 +183,7 @@ apps/blog/
 ├── public/                       # Static assets
 ├── pages/                        # Legacy pages (if any)
 ├── playwright/                   # E2E test support files
-├── middleware.ts                 # Next.js middleware
+├── proxy.ts                      # Next.js proxy (formerly middleware)
 ├── next.config.js                # Next.js configuration
 └── tailwind.config.js            # Tailwind (imports shared config)
 ```

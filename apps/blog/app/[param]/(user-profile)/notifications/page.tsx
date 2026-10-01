@@ -8,7 +8,8 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-const NotificationsPage = async ({ params }: { params: { param: string } }) => {
+const NotificationsPage = async (props: { params: Promise<{ param: string }> }) => {
+  const params = await props.params;
   const username = extractUsernameFromParam(params.param);
   if (!username) notFound();
 

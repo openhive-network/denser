@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
 
-export async function generateMetadata({ params }: { params: { param: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const username = params?.param?.startsWith('%40') ? params.param.replace('%40', '') : params.param;
   const title = `People followed by ${username}`;
 

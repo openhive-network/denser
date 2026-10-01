@@ -7,7 +7,8 @@ import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 const LIMIT = 50;
 
-const FollowedUsersPage = async ({ params }: { params: { param: string } }) => {
+const FollowedUsersPage = async (props: { params: Promise<{ param: string }> }) => {
+  const params = await props.params;
   const username = extractUsernameFromParam(params.param);
   if (!username) notFound();
 

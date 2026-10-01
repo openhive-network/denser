@@ -1,4 +1,4 @@
-import { isHiveAccountNameValid } from '@hive/transaction';
+import { isHiveAccountNameValid } from '@transaction/lib/validate-hive-account';
 
 export function isPermlinkValid(permlink: string): boolean {
   if (typeof permlink !== 'string') return false;

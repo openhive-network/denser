@@ -20,7 +20,7 @@ const logger = getLogger('app');
  * Wrapped with React.cache() to deduplicate across RSC calls within a request.
  */
 export const getObserver = cache(async (): Promise<string> => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
 
   // Primary: observer cookie (lightweight, client-set)
   const observerCookie = cookieStore.get('observer');

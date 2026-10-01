@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getGoogleDriveOAuth2Client } from './client';
+import { getGoogleDriveOAuth2Client } from '@/wallet/lib/google-drive-client';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('google-drive-auth');
