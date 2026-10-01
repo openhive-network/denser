@@ -244,6 +244,30 @@ entry is acceptable. Prefer recording the call instead.
 
 ---
 
+## Recipe: observe a pending state (hold a replayed response)
+
+`fixtureProxy.holdResponses(filter)` makes the replay proxy hold every
+JSON-RPC response whose `{ method, params }` matches `filter` until the
+returned `release()` runs. It holds server-side (SSR/RSC) calls too, which
+`page.route` cannot reach. Always release in a `finally`. No-op in record mode.
+
+```ts
+test('...', async ({ page, fixtureProxy }) => {
+  const release = fixtureProxy.holdResponses(
+    ({ method, params }) => method === 'bridge.get_ranked_posts' && params.sort === 'hot'
+  );
+  try {
+    // trigger the navigation, assert the loading state
+  } finally {
+    release();
+  }
+});
+```
+
+Used by `feedNavigation.spec.ts` (feed skeleton during Trending → Hot).
+
+---
+
 ## Recipe: assert a produced vote broadcast (TX-04)
 
 ```ts
@@ -810,6 +834,19 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   return`) per the worker-wipe rule. Record:
   `FIXTURE_MODE=record FIXTURE_UPSTREAM=api.openhive.network pnpm exec playwright test --config=playwright.fixture.config.ts ssrHydration`,
   then trim, then replay.
+
+- **`ssrSeoGuard.spec.ts`** — JS **disabled**; guards SEO against React 19
+  Suspense outlining (a route-level `loading.tsx` moves the finished feed into
+  `<div hidden id="S:…">` that only `$RC` reveals). For `/trending`, `/hot`,
+  `/created`, a community feed, a tag feed, a post and a profile, every
+  recorded post must be in the raw HTML with no `hidden`/`<template>`
+  ancestor, and `<title>`, meta description, `og:title`/`og:image` must be in
+  `<head>`. Replay-only: `ssrSeoGuard` is an additive overlay on `ssrChecks`
+  built from files copied out of other recordings (see its `_index.json`).
+- **`feedNavigation.spec.ts`** — JS **enabled**; replay-only on the
+  `homeMainPage` recording. Holds the `/hot` feed call (see "observe a pending
+  state" recipe), asserts the `feed-navigation-pending` skeleton, then the Hot
+  feed and no hydration errors.
 
 **Soft-404 finding:** this build serves `notFound()` with HTTP **200** plus the
 not-found page body (verified for invalid handles, missing permlinks and an

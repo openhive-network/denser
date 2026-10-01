@@ -1,6 +1,7 @@
 'use client';
 
 import { Link } from '@hive/ui';
+import FeedLink from '@/blog/features/layouts/sorts/feed-link';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunities } from '@transaction/lib/bridge-api';
 import { cn } from '@ui/lib/utils';
@@ -43,9 +44,9 @@ const CommunitiesSidebar: FC = () => {
     >
       <CardHeader className="px-0 py-4">
         <CardTitle>
-          <Link href="/trending" className="hover:text-destructive">
+          <FeedLink href="/trending" className="hover:text-destructive">
             {t('navigation.communities_nav.all_posts')}
-          </Link>
+          </FeedLink>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -53,12 +54,12 @@ const CommunitiesSidebar: FC = () => {
         <ul>
           {data?.slice(0, 12).map((community) => (
             <li key={community.id}>
-              <Link
+              <FeedLink
                 href={`/trending/${community.name}`}
                 className="w-full text-sm font-light hover:text-destructive"
               >
                 {community.title}
-              </Link>
+              </FeedLink>
             </li>
           ))}
           <li className="py-4">
