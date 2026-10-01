@@ -7,7 +7,7 @@ import type { NextApiRequest } from 'next';
  */
 export function getClientIp(req: NextRequest | NextApiRequest): string {
     // Handle NextRequest (Edge Runtime)
-    if ('ip' in req && req.ip) {
+    if ('ip' in req && typeof req.ip === 'string' && req.ip) {
         return req.ip;
     }
 

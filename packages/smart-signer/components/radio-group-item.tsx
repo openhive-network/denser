@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import type { JSX } from 'react';
 import { RadioGroupItem as RadioGroupItemRoot } from '@ui/components/radio-group';
 
 export interface IRadioGroupItem {

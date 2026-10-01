@@ -5,7 +5,7 @@ import { safeScrollToElement } from '@ui/lib/sanitize-url';
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
-const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement> }> = ({ rendererRef }) => {
+const ScrollToElement: FC<{ rendererRef: RefObject<HTMLDivElement | null> }> = ({ rendererRef }) => {
   useIsomorphicLayoutEffect(() => {
     const hash = window.location.hash;
     const handleScroll = async () => {

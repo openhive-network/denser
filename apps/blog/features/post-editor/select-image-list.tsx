@@ -16,7 +16,7 @@ interface SelectImageListTypes {
 const SelectImageList: FC<SelectImageListTypes> = ({ content, value, onChange, proxyAuthToken }) => {
   const { t } = useTranslation('common_blog');
   const [debouncedContent, setDebouncedContent] = useState(content);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     clearTimeout(timerRef.current);
