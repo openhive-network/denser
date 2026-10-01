@@ -62,8 +62,9 @@ verification:
         args: [".aidev/run-static.sh"]
         stack: false
   # quick, plus a production build of the blog and its fixture-replay Playwright
-  # suite (~250 tests against recorded API responses, one worker), then the
-  # advisory live_e2e against that build served by the test stack.
+  # suite (~250 tests against recorded API responses, one worker), the dev stack
+  # boot check, then the advisory live_e2e against that build served by the test
+  # stack.
   full:
     suites:
       - name: unit
@@ -79,6 +80,17 @@ verification:
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
         artifacts: ["test-results/fixture/"]
+        stack: false
+      # Boots the live dev stack (sandbox.dev) cold and over the base revision's
+      # node_modules, when the candidate changes its dependencies, next.config,
+      # middleware or the stack's own files; "not applicable" otherwise. It runs
+      # its own compose projects, so it needs a docker daemon: under AIDEV's
+      # `--network none` container it reports a skipped case saying it could not
+      # run. See .aidev/run-dev-stack.sh.
+      - name: dev_stack
+        adapter: command
+        args: [".aidev/run-dev-stack.sh"]
+        artifacts: ["test-results/dev-stack-suite/"]
         stack: false
       # ADVISORY (always exits 0): the live-API e2e specs this candidate changed,
       # --repeat-each=3, against the stack's blog-live (fixture_e2e's build);

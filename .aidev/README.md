@@ -129,10 +129,41 @@ docker compose -f .aidev/dev-stack.compose.yml -p denser-dev down -v
 Files are written as uid `${AIDEV_UID:-1000}`; set `AIDEV_UID`/`AIDEV_GID` if
 your checkout belongs to someone else.
 
+**Verifying the stack itself: the `dev_stack` suite** (`.aidev/run-dev-stack.sh`,
+`full` slot). No other suite boots the dev stack, so a dependency upgrade can pass
+every gate and still break it (#995). When the candidate changes `pnpm-lock.yaml`,
+a `package.json`, `apps/*/next.config.js`, `packages/middleware/`,
+`.aidev/runtime/` or the stack's own files, the suite boots the stack twice. Each
+boot uses a scratch copy under `test-results/dev-stack-work` and its own compose
+project, and is torn down afterwards:
+
+- **cold**: the candidate tree with no `node_modules`.
+- **upgrade**: `node_modules` installed from the base revision's lockfile in the
+  base's image, then the tree switched to the candidate. The switch keeps
+  `node_modules` and the marker claims the candidate's lockfile. That is the
+  state the stack met on 2026-10-01.
+
+Each boot must be ready within `sandbox.dev.readiness_timeout`. `/trending`, a
+post and a community must then answer 200 with their recorded titles, and
+postDetail's ANON-POST-01 must pass. Every container with a `mem_limit` must stay
+under 90% of it; the measured bytes are junit properties. Any other change gets a
+skipped "not applicable" case. Junit and logs go to `test-results/dev-stack-suite/`.
+
+Measured on this host (2026-10-01), Next 14 base to Next 16 candidate: 2m47s, all
+passing. With the pre-#995 `pnpm-deps.sh`, the upgrade case serves `/trending` as a
+500 and fails at the readiness timeout (11m49s in all). A failing boot therefore costs up to
+`readiness_timeout`.
+
+The suite drives docker, but AIDEV runs a container project's suites under
+`docker run --network none` with no docker socket. So inside the gate it can only
+report a skipped "could not run" case naming the applicable files. Run it on a
+docker host (`DENSER_DEV_STACK_BASE=<rev>` picks the base). Set `AIDEV_HOST_CHECKOUT`
+when the daemon sees the checkout at a different path.
+
 ## Test stack (`sandbox.compose`) and the `full` slot
 
-`full` runs `unit`, `static`, `fixture_e2e` and the advisory `live_e2e`, in that
-order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
+`full` runs `unit`, `static`, `fixture_e2e`, `dev_stack` (above) and the advisory
+`live_e2e`, in that order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
 before the first `stack: true` suite. Only `live_e2e` declares one, so every
 suite before it runs with no stack up, under `--network none`.
 
