@@ -608,7 +608,10 @@
   "search_page": {
     "placeholder": "検索",
     "no_results": "Nothing was found.",
-    "error": "There was an error"
+    "error": "There was an error",
+    "ai_unavailable": "AI検索は現在利用できません。クラシック検索をお試しください。",
+    "try_classic": "クラシック検索",
+    "could_not_load_more": "AI検索の結果をこれ以上読み込めませんでした。"
   },
   "settings_page": {
     "invalid_url": "無効なURL",

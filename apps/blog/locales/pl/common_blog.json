@@ -613,7 +613,10 @@
   "search_page": {
     "placeholder": "Szukaj",
     "no_results": "Nic nie znaleziono.",
-    "error": "Wystąpił błąd"
+    "error": "Wystąpił błąd",
+    "ai_unavailable": "Wyszukiwanie AI jest teraz niedostępne. Spróbuj wyszukiwania klasycznego.",
+    "try_classic": "Wyszukiwanie klasyczne",
+    "could_not_load_more": "Nie udało się wczytać więcej wyników AI."
   },
   "settings_page": {
     "invalid_url": "Nieprawidłowy adres URL",

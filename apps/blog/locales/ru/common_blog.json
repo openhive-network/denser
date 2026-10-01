@@ -614,7 +614,10 @@
   "search_page": {
     "placeholder": "Поиск",
     "no_results": "Nothing was found.",
-    "error": "There was an error"
+    "error": "There was an error",
+    "ai_unavailable": "ИИ-поиск сейчас недоступен. Попробуйте классический поиск.",
+    "try_classic": "Классический поиск",
+    "could_not_load_more": "Не удалось загрузить больше результатов ИИ-поиска."
   },
   "settings_page": {
     "invalid_url": "Неверный URL",

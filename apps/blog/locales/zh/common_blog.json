@@ -608,7 +608,10 @@
   "search_page": {
     "placeholder": "搜索",
     "no_results": "Nothing was found.",
-    "error": "There was an error"
+    "error": "There was an error",
+    "ai_unavailable": "AI 搜索目前不可用。请尝试经典搜索。",
+    "try_classic": "经典搜索",
+    "could_not_load_more": "无法加载更多 AI 搜索结果。"
   },
   "settings_page": {
     "invalid_url": "无效的URL",
