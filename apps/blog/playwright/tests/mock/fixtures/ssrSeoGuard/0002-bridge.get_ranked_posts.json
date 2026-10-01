@@ -1,0 +1,1702 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "created",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "75dbcd8f7d340e48",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "created",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [
+          {
+            "rshares": 15496854641,
+            "voter": "isnochys"
+          },
+          {
+            "rshares": 9667263790,
+            "voter": "glimpsytips.dex"
+          }
+        ],
+        "author": "scifimultiverse",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 69.46,
+        "author_role": "admin",
+        "author_title": "curator",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<div class=\"text-justify\">\n\nHello SciFi\n\nThe 26th sci-fi quiz was successfully held. Well done to everyone that participated! As we might already know, the post chosen for the quiz was written by  @twicejoy titled :[Surviving the storm how i'm learning to breath in a broken economy](https://peakd.com/hive-111030/@twicejoy/surviving-the-storm-how-im-learning-to-breathe-in-a-broken-economy-lbs)\n\n<center>\n\n![image.png](https://files.peakd.com/file/peakd-hive/scifimultiverse/23xeUywQpZPG3ZtRnqxSbbLS4tXrjy3cVkwvJQhQ9LvMBdtiLeRrRoEfUiy3CBPSQ6zJo.png)\n\n</center>\n\n<div class=\"text-justify\">\n\n# LEADER BOARD\nLeader board\n1 afrikens      5points\n2 marsdave 3 points\n3 matthewdaddywah 1 point\n4 mikechrist 1 point\n# Winners\nFirst position @afrikens\nSecond Position @marsdave\nThird portion  @Mathewdaddywah\n\nNote :\nWinners should share the link to their post to get their rewards as a comment under this post. The post should not be older than 24hrs.\n\n\nThe scifi multiverse quiz for the year 2026 has officially kicked off every Sunday by 9pm. Let's start off the ride once more. \n\n|<center>POST FOR NEXT SCIFI QUIZ</center>|\n|--|\n\n||\n|--|\n\n\n<div class=\"text-justify\">\n\nPost for the next scifi quiz has been selected. It's this post written by @cagolistic titled **[A time out in the floating](https://peakd.com/hive-111030/@cagolistic/a-time-out-in-floating)**\nWe invite everyone to read and engage in the posts.\n\n\n|<center>HOW SCIFI QUIZ WORKS</center>|\n|--|\n\n||\n|--|\n\n\n- Starting from this month of March , a quiz will be held every Sunday by 9pm WAT. \n\n- For this quiz, a random post (of course, quality post) made in the community by any author will be chosen.\n\n- The chosen post will be announced in our [Discord](https://discord.gg/ccGNPh48zH) prior to the quiz.\n\n- Members are encouraged to read through the post and get all the information they can, cause' the questions will come from the selected post.\n\n\n\n|<center>CRITERIA FOR POST SELECTION</center>|\n|--|\n\n||\n|--|\n\n- Post must be made in [Scifi Multiverse](https://peakd.com/c/hive-111030/created)\n- Post should be a minimum of 400 words\n- No plagiarism or use of AI \n- No politics, Religion, or Hate speech.\n\n\n\n\n|<center>RULES OF SCIFI QUIZ</center>|\n|--|\n\n||\n|--|\n\n- Author should be subscribed to SciFi Multiverse community. \n\n- Author should be a verified Scifi Multiverse Discord participant, meaning: you need to get the orange color. \n\n\n\n\n\n|<center>SCIFI QUIZ PRIZE</center>|\n|--|\n\n||\n|--| \n\n- Selected post will be tipped 2 hives (Prize may increase in the following weeks). \n\n- There will be 3 winners; \nFirst gets 100% Scifi Vote \nSecond gets 80% Scifi vote \nThird gets 60% Scifi Vote \n\n- Attendees will get 50 neoxag token each. \n\n\n---\n## The next Scifi quiz will hold on Sunday 26th of April 2026. \n\n\nWe hope to see you there. \n\n---\n\n\n<center><b> \n[SciFi Discord](https://discord.gg/ccGNPh48zH) \n[SciFi Curation Trail](https://hive.vote/dash.php?i=1&trail=scifimultiverse) \n</b></center> <center> \nhttps://tenor.com/en-GB/view/scifi-multiverse-gif-6299279887383224047.gif \n\n</center>  \n<center>\n<div class=\"phishy\">  \nConsider delegating to scifimultiverse via the link: \n\n[5 HP](https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=scifimultiverse&vesting_shares=5%20HP) - [10 HP](https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=scifimultiverse&vesting_shares=10%20HP) - [20 HP](https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=scifimultiverse&vesting_shares=20%20HP) - [50 HP](https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=scifimultiverse&vesting_shares=50%20HP) - [100 HP](https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=scifimultiverse&vesting_shares=100%20HP) - [200 HP](https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=scifimultiverse&vesting_shares=200%20HP) - [500 HP](https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=scifimultiverse&vesting_shares=1000%20HP) - [1000 HP](https://hivesigner.com/sign/delegateVestingShares?delegator=&delegatee=scifimultiverse&vesting_shares=1000%20HP)</center>\n\n\n</div>",
+        "category": "hive-111030",
+        "children": 0,
+        "community": "hive-111030",
+        "community_title": "SciFi Multiverse",
+        "created": "2026-04-21T11:17:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/scifimultiverse/23xeUywQpZPG3ZtRnqxSbbLS4tXrjy3cVkwvJQhQ9LvMBdtiLeRrRoEfUiy3CBPSQ6zJo.png",
+            "https://tenor.com/en-GB/view/scifi-multiverse-gif-6299279887383224047.gif"
+          ],
+          "tags": [
+            "science",
+            "waiv",
+            "scifi-quiz",
+            "hive",
+            "vyb",
+            "scifiverse",
+            "hive-engine"
+          ],
+          "users": [
+            "twicejoy",
+            "afrikens",
+            "marsdave",
+            "Mathewdaddywah",
+            "cagolistic"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 25164118431,
+        "payout": 0.002,
+        "payout_at": "2026-04-28T11:17:06",
+        "pending_payout_value": "0.002 HBD",
+        "percent_hbd": 10000,
+        "permlink": "scifi-ouiz-resultpost-for-new-quiz",
+        "post_id": 149883524,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 2
+        },
+        "title": "SCIFI OUIZ RESULT//POST FOR NEW QUIZ",
+        "updated": "2026-04-21T11:17:06",
+        "url": "/hive-111030/@scifimultiverse/scifi-ouiz-resultpost-for-new-quiz"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 410249379991,
+            "voter": "teamukraine"
+          },
+          {
+            "rshares": 15273128197,
+            "voter": "sansey"
+          },
+          {
+            "rshares": 39144714889,
+            "voter": "aeneas.fund"
+          },
+          {
+            "rshares": 9667263790,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 0,
+            "voter": "endhivewatchers"
+          }
+        ],
+        "author": "infa",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 66.72,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "engrave",
+            "weight": 100
+          }
+        ],
+        "blacklists": [],
+        "body": "![](https://images.hive.blog/DQmYuUDfhvENZfEU6DnrpWeiuV7Gxyzuz4iwjMfwjfs1b5n/image)\n\nРинок оренди перегрітий майже всюди. Але переплата - це майже завжди наслідок помилок. Розповідаємо, як їх уникати. \n\n1. Комісії агентів \n\nУ багатьох країнах (Німеччина, Іспанія, Португалія) комісійні це 1-2 місяці оренди. Часто її платить орендодавець, а не ви. Перевіряйте, хто має платити комісію. Якщо ж агент нав’язує оплату - шукайте напряму (Idealista, OLX тощо). \n\n2. Депозити \n\nНорма - 1-2 місяці, але часто вимагають 3-4. Це спроба на вас заробити. Торгуйтесь або йдіть. \n\n3. «Хитрі» контракти \n\nКороткі договори (3–6 міс.) із підвищенням ціни.\nЧитайте кожен пункт, особливо умови перегляду ціни й штрафи «за все». \n\n4. Переплата за мегаполіси \n\nОренда в столицях і невеликих містах різниться у 2-3 рази.\n\n📌 Найголовніше: \n\nЖитло без контракту й офіційної реєстрації - ви без прав!\n\n\"Швидше, бо перехоплять!\":\n- не платіть нічого до перегляду\n- перевірте особу власника\n- читайте контракт\n- закладайте +20% до бюджету на старт \n\nЖитло - найбільша стаття витрат. Контроль = економія.\n\n[INFA UA](https://t.me/INFA_U_A)\n\n***\n<center><sup>Originally posted on [INFA UA](http://infa.dblog.org/yak-ne-pereplachuvati-za-zhitlo). Hive blog powered by [ENGRAVE](https://dblog.org).</sup></center>",
+        "category": "hive-165469",
+        "children": 0,
+        "community": "hive-165469",
+        "community_title": "Team Ukraine",
+        "created": "2026-04-21T11:16:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "engrave",
+          "canonical_url": "https://infa.dblog.org/yak-ne-pereplachuvati-za-zhitlo",
+          "engrave": {
+            "categories": [
+              "69e0fafb7f2831003147bede"
+            ],
+            "domain": "infa.dblog.org",
+            "featured_image": "https://images.hive.blog/DQmYuUDfhvENZfEU6DnrpWeiuV7Gxyzuz4iwjMfwjfs1b5n/image",
+            "permlink": "yak-ne-pereplachuvati-za-zhitlo",
+            "url": "https://infa.dblog.org/yak-ne-pereplachuvati-za-zhitlo"
+          },
+          "format": "markdown",
+          "image": [
+            "https://images.hive.blog/DQmYuUDfhvENZfEU6DnrpWeiuV7Gxyzuz4iwjMfwjfs1b5n/image"
+          ],
+          "links": [
+            "https://images.hive.blog/DQmYuUDfhvENZfEU6DnrpWeiuV7Gxyzuz4iwjMfwjfs1b5n/image",
+            "https://t.me/INFA_U_A"
+          ],
+          "tags": [
+            "hive-165469",
+            "ua",
+            "ukrainian",
+            "news"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 474334486867,
+        "payout": 0.046,
+        "payout_at": "2026-04-28T11:16:09",
+        "pending_payout_value": "0.046 HBD",
+        "percent_hbd": 10000,
+        "permlink": "yak-ne-pereplachuvati-za-zhitlo",
+        "post_id": 149883517,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 5
+        },
+        "title": "Як не переплачувати за житло",
+        "updated": "2026-04-21T11:17:30",
+        "url": "/hive-165469/@infa/yak-ne-pereplachuvati-za-zhitlo"
+      },
+      {
+        "active_votes": [],
+        "author": "adityamadhok",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 37.08,
+        "beneficiaries": [
+          {
+            "account": "hiveonboard",
+            "weight": 100
+          },
+          {
+            "account": "ocdb",
+            "weight": 100
+          }
+        ],
+        "blacklists": [],
+        "body": "![ \" \\\" \\\\\"e63065bb01d9ce9ef07a69858ada7e07b3a18f5751326ef878b983b72f2a21de.jpg\\\\\"\\\"\"](https://images.hive.blog/DQmXLU8SLbhQAyLdqC6bpQXrqfJVnhUVvC7FGNDGWxoDu8w/e63065bb01d9ce9ef07a69858ada7e07b3a18f5751326ef878b983b72f2a21de.jpg)\n\n# 1 - ++One Hour. That Is All You Need to Start++. : -\n\nHello my friends. Welcome back. I hope you are safe and doing well wherever you are reading this today. I want to talk about something very real and very practical today. Something that I personally think about a lot because I am building my own online income journey right now alongside you. Here is the honest truth that most people miss completely - You do not need eight hours a day to start earning online. You do not need to quit your job tomorrow or abandon your family responsibilities or sit in front of a screen all day, - You need exactly one focused intentional hour daily. That is it. One hour of consistent action repeated every single day adds up to 365 hours of real work by the end of one year and what's more is this 365 hours of focused online work done in the right direction on the right platforms can genuinely change your financial situation in ways that will surprise you. I have seen this happen. And today I want to give you the complete honest practical blueprint for making that one daily hour count.\n\n![ \" \\\"47de6a67e0d02f67d22fabb04df3f3a13bf2f5e2f6a5ae296b1abd65142c9b34.jpg\\\"\"](https://images.hive.blog/DQmTBvWbDmJPkgnAJ56zkUEWUymXMPBr6itVA8Nd8N8oq1q/47de6a67e0d02f67d22fabb04df3f3a13bf2f5e2f6a5ae296b1abd65142c9b34.jpg)\n\n# 2 - The Niches That Actually Make Serious Money for Beginners : -\n\nBefore we talk about platforms and strategies I need to talk about niches. Because choosing the wrong niche is like digging a well in the wrong location. You can dig for years and find nothing. But choosing the right niche is like finding a natural clean water. The water is already there waiting for you. From everything I have researched and personally experienced, the niches that consistently make serious money for complete beginners are these - Personal finance and money management, - consistently attracts millions of desperate readers every single day because everyone has money problems and everyone wants solutions; Health wellness and mental health is another massive niche because people are suffering in record numbers right now and searching urgently for answers; Spirituality and faith based content is growing rapidly especially during these war times and global uncertainties when people are searching for meaning hope and peace; Artificial intelligence and technology tutorials is perhaps the fastest growing niche of 2026 because every single person on Earth is trying to understand what AI means for their job, their business and their future. Cryptocurrency and blockchain education remains strong because most people still do not understand it and good clear honest explanations earn real loyal audiences. And finally education specifically helping students with subjects like mathematics, physics and science is an evergreen niche that never goes out of demand no matter what else is happening in the world around us. Pick one of these. Just one. Master it. Then expand.\n\n\n![ \"1.jpg\"](https://images.hive.blog/DQmWUZGitnJ2x79W8ETeq93yLYsBdsK3UZaqt8ptNnh8YeL/1.jpg)\n\n3 -++** The Platforms That Will Actually Pay You : **++**-**\n\n Now let us talk about the real platforms. The ones that actually put money in your pocket or crypto in your wallet with just one hour of daily work. Publish0x is where I personally started, back in 2022, and where I still consistently post. It pays you in cryptocurrency tokens just for writing and for reading other people's content. Zero investment required, Zero technical knowledge needed, - just write honestly about what you know and the platform rewards you; Medium Partner Program pays you real money via Stripe direct to your bank account based on how much time paying members spend reading your articles, (based on what I have read and reasearched for, I still don't have medium partner program), Many writers earn between fifty and five hundred dollars, monthly on Medium with consistent daily writing. Substack allows you to build a free newsletter audience first and then convert your most loyal readers into paid subscribers who pay you monthly directly (I have seen people on Substack earning more like medium), Hive Blog and Read.cash pay you in cryptocurrencies - HIVE and Bitcoin Cash respectively, just for posting quality content consistently. For teaching specifically, Skillshare and Udemy allow you to create one simple course and earn passive royalties every month for years from that single hour of initial creation work. Fiverr and Upwork allow you to sell your writing, design, teaching or consulting services starting from just five dollars per gig and scaling up as your reputation grows, and YouTube despite feeling intimidating to beginners rewards consistent creators through the Partner Program once you reach 1000 subscribers and 4000 watch hours which is genuinely achievable within one year of one daily hour of consistent video creation.\n\n![ \"AI is hilarious\"](https://cdn.publish0x.com/prod/fs/cachedimages/2340594248-941b1a6b4808de468f35046ecaf9ff704fc51dbdf71d69054e9a9882f0b0c097.webp)\n\n## **4 -** ++**How to Actually Use Your One Hour Every Day**++ **: -**\n\nThis is the part that most online earning guides completely skip and I think it is the most important part of everything I am sharing today. Having the right platforms and the right niche means nothing if you do not have a clear simple structure for how you use your one daily hour. Because one hour of scattered unfocused activity produces almost nothing. But one hour of deliberate structured action produces compounding results that build on each other day after day. Here is how I personally think about structuring that one hour. The first fifteen minutes should always be writing or creating. Not planning, not researching, not scrolling, but creating, writing the next paragraph of your blog post, recording the next sixty seconds of your video, writing the next section of your newsletter. Creation first - Always. The next twenty minutes should be publishing and cross posting your content across your chosen platforms. One piece of content posted to Publish0x, Medium and Hive Blog simultaneously, takes only minutes and triples your potential earning reach instantly. The next fifteen minutes should be genuine, authentic, community engagement. Commenting thoughtfully on other people's content, responding to comments on your own content, building real relationships with your audience because relationships are what convert casual readers into loyal paying subscribers over time. And the final ten minutes should be learning something new relevant to your niche. Watch one short YouTube tutorial. Read one article from a successful creator in your space. Study one platform's newest features. Consistent daily learning compounds just as powerfully as consistent daily creating.\n\n**Your Simple One Hour Daily Structure:**\n\n- ✍️ **0 to 15 min** - Create. Write publish record or design something new without distraction.\n- 📤 **15 to 35 min** - Publish and cross post across all your active platforms simultaneously.\n- 🤝 **35 to 50 min** - Engage genuinely with your community and respond to every comment.\n- 📚 **50 to 60 min** - Learn one new thing relevant to your niche or platform growth.\n\n \n\n![ \"0f51469f1d5a6cf5cf922a4fbb59cfa27bc6fba2cc8bec64cfc3082632af8d9d.jpg\"](https://cdn.publish0x.com/prod/fs/cachedimages/884812937-0f51469f1d5a6cf5cf922a4fbb59cfa27bc6fba2cc8bec64cfc3082632af8d9d.webp)\n\n## **5 -** ++**The Honest Reality of What to Expect**++ **: -**\n\nI want to be completely real with you here because I think dishonesty about timelines is one of the biggest reasons people give up on online earning before their harvest arrives. In your first month you will probably earn almost nothing. Maybe a few cents on Publish0x. Maybe zero views on your first Medium article. Maybe one or two followers on your new Substack. And I need you to hear this clearly - that is completely normal, that is not failure, that is foundation building. The online creators who are earning thousands of dollars monthly today, all have embarrassing first months in their history that looked exactly like yours will look. By month three, with consistent daily one hour action, you should start seeing small, but real earnings. Between one and twenty dollars across your platforms depending on your niche consistency and content quality. By month six with continued consistency and smart cross posting those numbers should grow to between twenty and one hundred dollars monthly. By the end of your first full year of one daily hour consistently applied you should realistically be looking at somewhere between one hundred and five hundred dollars monthly depending on how well you chose your niche how consistently you showed up and how generously you served your growing audience. These are not extraordinary numbers. But they are real. They are honest. And they are the beginning of something that compounds far beyond year one if you simply do not quit before the harvest comes. Galatians 6:9 in Bible says that let us not become weary in doing good for at the proper time, we will reap a harvest if we do not give up. That verse was written two thousand years ago and it is still the most accurate description of building an online income that I have ever read.\n\n![ \"334217ff86c09cfb116e74fc4a4a0d977320e7de3b36af952993718ed992833d.jpg\"](https://cdn.publish0x.com/prod/fs/cachedimages/3735359064-334217ff86c09cfb116e74fc4a4a0d977320e7de3b36af952993718ed992833d.webp)",
+        "category": "earnmoneyonline",
+        "children": 0,
+        "created": "2026-04-21T11:15:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "format": "html",
+          "image": [
+            "https://images.hive.blog/DQmXLU8SLbhQAyLdqC6bpQXrqfJVnhUVvC7FGNDGWxoDu8w/e63065bb01d9ce9ef07a69858ada7e07b3a18f5751326ef878b983b72f2a21de.jpg",
+            "https://images.hive.blog/DQmTBvWbDmJPkgnAJ56zkUEWUymXMPBr6itVA8Nd8N8oq1q/47de6a67e0d02f67d22fabb04df3f3a13bf2f5e2f6a5ae296b1abd65142c9b34.jpg",
+            "https://images.hive.blog/DQmWUZGitnJ2x79W8ETeq93yLYsBdsK3UZaqt8ptNnh8YeL/1.jpg",
+            "https://cdn.publish0x.com/prod/fs/cachedimages/2340594248-941b1a6b4808de468f35046ecaf9ff704fc51dbdf71d69054e9a9882f0b0c097.webp",
+            "https://cdn.publish0x.com/prod/fs/cachedimages/884812937-0f51469f1d5a6cf5cf922a4fbb59cfa27bc6fba2cc8bec64cfc3082632af8d9d.webp",
+            "https://cdn.publish0x.com/prod/fs/cachedimages/3735359064-334217ff86c09cfb116e74fc4a4a0d977320e7de3b36af952993718ed992833d.webp"
+          ],
+          "tags": [
+            "earnmoneyonline",
+            "earnonline"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 0,
+        "payout": 0,
+        "payout_at": "2026-04-28T11:15:30",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "the-beginner-s-blueprint-to-earning-online-with-just-one-hour-daily",
+        "post_id": 149883513,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 0
+        },
+        "title": "The Beginner's Blueprint to Earning Online With Just One Hour Daily.",
+        "updated": "2026-04-21T11:15:30",
+        "url": "/earnmoneyonline/@adityamadhok/the-beginner-s-blueprint-to-earning-online-with-just-one-hour-daily"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 373914473629,
+            "voter": "slickwilly"
+          },
+          {
+            "rshares": 43799556522,
+            "voter": "rok-sivante"
+          },
+          {
+            "rshares": 12963843525,
+            "voter": "scaredycatguide"
+          },
+          {
+            "rshares": 3410982966,
+            "voter": "netaterra"
+          },
+          {
+            "rshares": 790424508840,
+            "voter": "sumatranate"
+          }
+        ],
+        "author": "bozz",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 82.27,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<center>![20230711_113158.jpg](https://files.peakd.com/file/peakd-hive/bozz/243LvvYFKSFF3ka1GDi2VngqH146a7mFTNLEUZwAuHttrzLiVQ4PE9XE7bzehv82EMEtp.jpg)</center>\n\n----------------------------\n\nIt's been a long long time since I have been to Minnesota.  I remember when I was much younger, my parents decided to do the Lake Superior circle tour.  In case you aren't familiar with the concept, it's basically just a designated route around Lake Superior (called Gitche Gumee by the Ojibwa).  Each of the Great Lakes has a circle route (at least the three main ones that touch Michigan).  In the case of Superior, it takes you through the upper peninsula of Michigan into Wisconsin, then a short jaunt along the northern shore of the lake until you get into Canada.  Eventually, you find yourself back in Sault Ste. Marie and cross back over into Michigan making the circuit complete.\n\nMore recently, I had a flight layover in Minneapolis, but since we never left the airport, I don't really count that as having visited Minnesota.  This Summer, @mrsbozz and I are planning on taking a trip to Wisconsin.  It is very possible we will be making a quick drive over to Duluth to have lunch one day, so although it will be just a taste of the state, we should still be able to count having visited it on our map.\n\n\n<center>![20230711_104853.jpg](https://files.peakd.com/file/peakd-hive/bozz/23rAtY8EB48skrEdqYXmNTsXSrkuUsnGYbFxTTtEADPDtsk58XwmnX8fwiyG7J2xiLd8R.jpg)</center>\n\n--------------------------\n\nSince I don't really have any photos of Minnesota, I am sharing photos of Lake Superior for this post.  In case you haven't guessed, this weeks #threetunetuesday sponsored by @ablaze brings us to the great state of Minnesota, land of 10,000 lakes.  When I was younger, I used to get annoyed that Minnesota was memorialized for its lakes.  I mean sure, it might have a lot of lakes, but we have the Great Lakes.  How much better is that?  It's funny the things you think are important when you are younger.\n\nIn fact, if you look at a map, Minnesota does indeed have a metric crap ton of lakes.  It's honestly no contest, but yes, Michigan still does have the Great Lakes.\n\nMinnesota was actually a bit harder than I would have expected to find songs for this post.  Sure, it's not that easy to rhyme something with Minnesota, but I think we all know by now that not every song has to rhyme, it just makes it easier and a bit more catchy when it does.  \n\nI was able to pick out three songs that I am going to share here, I hope you enjoy them.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/KwbeHSI-3Co?si=kb4MEzqR_ivlmt12\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n--------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=KwbeHSI-3Co&list=RDKwbeHSI-3Co&start_radio=1)\n\n-------------------------\n\nI know I might catch a lot of flack for this, but I am a huge Indigo Girls fan.  I understand there is this preconceived notion that only gay women like Indigo Girls music, but I think if you actually listen to them you will realize that isn't the case.  Or at least realize that shouldn't be the case.  The harmonies alone are so amazing, and then when you add in the lyrical prowess, there is just something really special about this duo.  \n\nI was going to share a more recent video of the song \"Ghost\" from them, but honestly, these days their voices aren't quite the same as they used to be, so I found an older cut of it.  You just have to get past the overly long intro because it seems like the video is broken at first.  It isn't until about ten seconds in that you really start to hear it.\n\nI really like the line in this song where they talk about the Mississippi River starting in Minnesota.  I've seen pictures of the headwaters of the Mississippi and to be honest, it's nothing special.  There is a little sign and then just a swampy area I think.  The part in the song where they say you can walk across it in five steps is just really poignant to me.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/sNh-iw7gsuI?si=WMDbvDmHQsmaDpIp\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n---------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=sNh-iw7gsuI&list=RDsNh-iw7gsuI&start_radio=1)\n\n---------------------------\n\nI'll be the first to admit, I never really got into Soundgarden when they were popular.  Yes, I knew the couple of big hits they had, but it wasn't until Chris Cornell passed away and it became more apparent just how many creative project he had his hands in and just how amazing he was.  \"Outshined\" has a reference to Minnesota if listen really closely.  I wouldn't have known it if I hadn't looked it up online, but I felt it would just be a little wrong to not include this prolific artist this week.\n\nIt doesn't take long to hear the reference to Minnesota.  It happens before we even get to the chorus in fact, but it is there.  If you watch the video with the captions on it is even easier to catch.  I don't have much else to say here.  Soundgarden kind of speaks for themself.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/bErza7LieSM?si=Xw3WUPfpIfvpKZ1A\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n---------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=bErza7LieSM&list=RDbErza7LieSM&start_radio=1)\n\n-------------------------\n\nFinally, I realized it would be an absolute crime if I didn't include one of Minnesota's favorite sons in this post.  Of course I am talking about Prince and if you know, you know.  As I was preparing for this post yesterday, I realized just how little of his music I actually know.  Yes, I know the big hits, and the smaller ones too, but he had a massive career spanning back to the late 70's and an amazing catalog of music to sift through.\n\nI've made it my mission to take a deep dive into his music on Spotify this week.  That doesn't even include the songs he wrote for so many other people.  \n\n\"Laydown\" is one of the songs that I have probably never heard in my life until now and it's quite simple, but if you listen to the whole thing you will eventually hear the reference to Minnesota. It's too bad that Prince had to be taken from us so soon. I think he really could have made so much more great music.  \n\nI remember maybe about twenty years ago he was in Michigan doing a show near where we lived.  I just kind of laughed it off and didn't have much interest in going to see him, but I really wish I had now.  Just to be able to say I saw a legend.\n\n----------\n\n<center>\n### [My Sports Account - @bozz.sports](https://www.peakd.com/@bozz.sports)\n</center>\n\n----------\n\n#### <center>Come hang out in [The Pub](https://peakd.com/c/hive-178138/created)</center>\n<center>[Find us on Discord](https://discord.gg/cCEMJXAEXk)</center>\n\n<center>Or Check out my [Grilling and Smoking Community on HIVE](https://peakd.com/c/hive-138631/created)</center>\n\n-------------\n\n<center>![TEAMUSAhive_footer_bozz.jpg](https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg)</center>\n\n----------------\n\n<center>*All pictures/screenshots taken by myself or @mrsbozz unless otherwise sourced*</center>\n\n\n\n \n\n\n\n\n",
+        "category": "hive-193212",
+        "children": 1,
+        "community": "hive-193212",
+        "community_title": "Discovery-it",
+        "created": "2026-04-21T11:14:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "description": "The North shore to be exact",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/bozz/243LvvYFKSFF3ka1GDi2VngqH146a7mFTNLEUZwAuHttrzLiVQ4PE9XE7bzehv82EMEtp.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23rAtY8EB48skrEdqYXmNTsXSrkuUsnGYbFxTTtEADPDtsk58XwmnX8fwiyG7J2xiLd8R.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg"
+          ],
+          "tags": [
+            "discovery-it",
+            "threetunetuesday",
+            "pimp",
+            "tribes",
+            "bbh",
+            "gems",
+            "vibes",
+            "music4life",
+            "silverbloggers",
+            "ccc"
+          ],
+          "users": [
+            "mrsbozz",
+            "ablaze",
+            "bozz.sports"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 17629286667921,
+        "payout": 1.716,
+        "payout_at": "2026-04-28T11:14:06",
+        "pending_payout_value": "1.716 HBD",
+        "percent_hbd": 10000,
+        "permlink": "on-the-shores-of-gitche-gumee",
+        "post_id": 149883505,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 79
+        },
+        "title": "\"On the shores of Gitche Gumee\"",
+        "updated": "2026-04-21T11:14:06",
+        "url": "/hive-193212/@bozz/on-the-shores-of-gitche-gumee"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 23461074129,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 12515092594759,
+            "voter": "deanliu"
+          },
+          {
+            "rshares": 6260141649,
+            "voter": "esteemapp"
+          },
+          {
+            "rshares": 930708158,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 7026106415,
+            "voter": "travelgirl"
+          }
+        ],
+        "author": "magicmonk",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 79.66,
+        "author_role": "guest",
+        "author_title": "🧹僧",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![image.png](https://images.hive.blog/DQmVuWGvKo8sTfifgTS4abUgTvM4gA5HEvgW14T1CHbBY4r/image.png)\n\n前幾次有提到，我最近開始上非常便宜的高爾夫球課，本來在練習場上課，但最後幾個禮拜到真的高爾夫球場上，然後又給我們開球車。平常租球車的錢就跟這堂課的錢差不多，所以這堂課等於免費了。\n\n這次上課還是我第一次坐並駕駛高爾夫球車。這台球車其實比想像中聰明很多，速度不是想快就快，如果開得太快，它會自動幫你降速。上下坡的時候也很穩，幾乎不會讓人感到晃或不安，對第一次開的人來說真的很安心。前方還有一個螢幕，清楚顯示整個球場的地圖，現在在哪一洞、下一個目的地在哪裡，一眼就能看懂。\n\n球具全部放在車後方，不用自己提著球桿袋在球場上走來走去，實在是太舒服了。想到上一次跟爸媽一起打高爾夫球，因為捨不得租車，幾乎整場都在走路，結束後累得不行，現在再回頭看，只能說下次再來一定會租車，完全不想再省那筆錢。\n\n這次我和一位同學一起坐同一台球車，他以前有開過，所以一開始先簡單教了我怎麼操作，之後就讓我一路開到底。有個人坐在旁邊給點提示，心裡踏實很多，也很快就上手了。\n\n打球的感覺也跟以前很不一樣。上次跟爸媽打的時候，幾乎還沒上過課，常常揮空，球也打不遠，現在因為已經上了一段時間的課，揮桿順多了。雖然談不上打得好，但至少每一顆球都打得到，而且大多都比之前更接近洞口，這種進步真的讓人很開心。\n\n我們四個人一組，用的是那種選最遠落點再繼續打的方式，所以每一洞進行得非常快，不會卡關，也沒有壓力。大家邊玩邊笑，球很快就推進下一洞，整個過程流暢又輕鬆。\n\n那天下課時，其實心裡有點捨不得離開球場。不只是因為開球車好玩，更因為真實地感覺到自己在慢慢進步。現在反而開始期待下一次上課，再一次把球車開上球道，繼續累積高爾夫回憶。",
+        "category": "hive-105017",
+        "children": 0,
+        "community": "hive-105017",
+        "community_title": "HIVE CN 中文社区",
+        "created": "2026-04-21T11:13:57",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "format": "markdown",
+          "image": [
+            "https://images.hive.blog/DQmVuWGvKo8sTfifgTS4abUgTvM4gA5HEvgW14T1CHbBY4r/image.png"
+          ],
+          "tags": [
+            "hive-105017",
+            "cn",
+            "life",
+            "blog",
+            "golf"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 19666987982970,
+        "payout": 1.915,
+        "payout_at": "2026-04-28T11:13:57",
+        "pending_payout_value": "1.915 HBD",
+        "percent_hbd": 0,
+        "permlink": "6dpbsp",
+        "post_id": 149883504,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 51
+        },
+        "title": "高爾夫球車初體驗",
+        "updated": "2026-04-21T11:13:57",
+        "url": "/hive-105017/@magicmonk/6dpbsp"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": -1791573928,
+            "voter": "spaminator"
+          }
+        ],
+        "author": "bocen",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 5.83,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n\n\n<center>![image](https://pixabay.com/get/gbcef4fb3315c9a907a3d9e9c89d5eee60b394bc2181b17608a1ec947347c982040a30e83be41d6dfffa6a2ba562fa9e1df2ced02e1df7374dfb8f9e4e47dcd20_640.jpg)</center>\n\n***\n\n猫咪总是能带给人无尽的温暖与快乐。它们那优雅的动作和柔软的毛发，让人忍不住想要靠近、抚摸。每当看到它们懒洋洋地晒太阳，心中总会浮现出一种宁静和满足。猫咪独立又神秘的性格，仿佛总有自己的小秘密，让人倍感好奇。与它们相伴的时光，总是充满了乐趣和惊喜。\n\n***\n\n[WhereIn Android](http://www.wherein.io)",
+        "category": "hive-193084",
+        "children": 0,
+        "community": "hive-193084",
+        "community_title": "DBuzz",
+        "created": "2026-04-21T11:13:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "dBuzz/v3.0.0",
+          "shortForm": "true",
+          "tags": [
+            "cat",
+            "life",
+            "nature",
+            "kr",
+            "waivio",
+            "neoxian",
+            "leo",
+            "inleo",
+            "cent",
+            "oneup",
+            "pob",
+            "proofofbrain",
+            "hustler",
+            "pal",
+            "pimp"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": -1791573928,
+        "payout": 0,
+        "payout_at": "2026-04-28T11:13:06",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "cru5agcnuk7ty8whckckk3",
+        "post_id": 149883497,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1
+        },
+        "title": "猫咪总是让我感到无比温暖和舒适。它们那柔软",
+        "updated": "2026-04-21T11:13:06",
+        "url": "/hive-193084/@bocen/cru5agcnuk7ty8whckckk3"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 59418083367,
+            "voter": "ratel"
+          },
+          {
+            "rshares": 5141474449,
+            "voter": "netaterra"
+          },
+          {
+            "rshares": 791014188053,
+            "voter": "cornerstone"
+          },
+          {
+            "rshares": 5406955258054,
+            "voter": "redes"
+          },
+          {
+            "rshares": 74343279639,
+            "voter": "ganjafarmer"
+          }
+        ],
+        "author": "papilloncharity",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 82.56,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "There was no way that I could get around a palm tree to get the sun behind me.\n![022.jpg](https://files.peakd.com/file/peakd-hive/papilloncharity/EpLgYmrZqoksf62Ygf9wCEA1jVDcxGfPeuqe4DrLEsRLdV6nvr3Jbd5t36yn6611ce7.jpg)\n\nThis was too good to worry about the position of the sun, and I just had to cope with the conditions.\n\nThe African Harrier Hawk (Polyboroides typus) was previously known as a Gymnogene, which suited his athletic prowess as it is one of only a few bird species that can climb trees. \n\n*The two species of polyboroides (one in Africa and one in Madagascar) are large hawks with very broad, deeply slotted wings, long tails and long, slender legs which have the unique ability of being able to bend backwards and sideways at the tarsal (ankle) joint. This enables them to insert their feet into holes and cracks in rocks and tree stems to pull out bats, lizards, nestling birds, and other prey. Their unusually narrow small head also facilitates probing into holes. They have bare facial skin which changes color from red to yellow according to the bird's state of agitation.*     \n\nSource: Book: Birds of Southern Africa. ISBN: 978-1-77584-668-0.\n\nHis call that he made alerted me to his presence, and so I went out to search for him. \n![021.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23ywsaGGqww62Ye3PdiMGM6cZrieRSCDR9J4xpFU8s9V5j7LyYA24ko4PFKTgzrfZ3two.JPG)\n\nThey are famous for searching trees for prey. \n![007.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xp2Pm7hwKKbVFeE7Ra3rwmBFnVxQefBdJw6vqAChsDvRtEYVXQiL5xH2MuwuaA7Hti1.JPG)\n\nAnd this one was scoping the trunk of the tree, as there are little pockets on the trunk that the birds and the squirrels use to nest in. \n![010.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xVRXyBCg9q18TsweJozFYQUdiCh4JnGERuYQbjB3wMSazBYoFTC7pPXQgmtGJ7w1NZe.JPG)\n\nThe wind caught him behind the head, resulting in a lovely look.\n![027.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/Epzz7gf7YNsb7Uj52QVTWBVbJTmuUL3QnPoo1wyTLFfisZ6RZ4zA7Lwo4JJ5FMrrhyh.JPG)\n\nThen he was on his way, but I don't know if he saw anything. \n![017.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23yd1r76yJ6S6T4s4VHRsKmzqPaSwJUEuR6mvVcKfvpNk2CSaUYgmNdiCyWVhy5h1jm34.JPG)\n\nA bit later he appeared lower in the tree.\n![019.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xARkE4oDXA3ctK6gWDBVFZTCYU1QmH6gF5Gvx7YSqLEccshpdxJ2LLLyAzHyBFP4cF1.JPG)\n\nI thought that he would attack something below him.\n![034.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xempz1BB7NKJYqTUkiiDtXtHyJWSmyXsRanEAQ28DDqFSnZunqJQFg6amsCi8T925sn.JPG)\n\nBut not to be, as he rather stepped down and then disappeared behind the tree.\n![037.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23wMabWQgdDHRWRsmDHVdmbtnkskWsoXW3ZYhuCaThzAj7u3tGYSYPt2g3rkHbtAYA5ma.JPG)\n\nThis is the tree that he was in, and you can see the glaring light of the sun.\n![025.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EqUfHg3Uq4AHVN6MVNiJYnZ6f6K5YfVM5njMu56qZXkWn6S7rbH1MjmBpnf8hnnL7JV.JPG)\n\nAs I said above, there was no way I could get behind this tree as it is on a private property, ringed by an electric fence. I don't know if the hawk knew that I couldn't get to him in that tree, maybe but I am only guessing. \nEvery season a pair of harrier hawks are born and believe it or not every season I get them on camera. Sometimes I even get them with their prey, mainly small birds and doves. \n\nWe also have a sparrow hawk that patrols the sky here every day, but he is way too fast for me to get him on camera. One just has to stand outside and to see a sudden rush of doves and smaller birds flying off suddenly to know that the sparrow hawk was on its way. But no problem, as I know that someday I will get him in flight. Things have gotten cold here over the last while, and we already had two cold fronts (winter storms) over the past weekend. I will do a post about it to show you. \nSuch is life.\n\nI hope you enjoyed the pictures and the story.\n\nPhotos by Zac Smith. All-Rights-Reserved.\n\nCamera: Canon PowershotSX70HS Bridge camera.\n\nUntil next time, cheers!  ",
+        "category": "hive-194913",
+        "children": 0,
+        "community": "hive-194913",
+        "community_title": "Photography Lovers",
+        "created": "2026-04-21T11:13:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.3.4",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EpLgYmrZqoksf62Ygf9wCEA1jVDcxGfPeuqe4DrLEsRLdV6nvr3Jbd5t36yn6611ce7.jpg",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23ywsaGGqww62Ye3PdiMGM6cZrieRSCDR9J4xpFU8s9V5j7LyYA24ko4PFKTgzrfZ3two.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xp2Pm7hwKKbVFeE7Ra3rwmBFnVxQefBdJw6vqAChsDvRtEYVXQiL5xH2MuwuaA7Hti1.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xVRXyBCg9q18TsweJozFYQUdiCh4JnGERuYQbjB3wMSazBYoFTC7pPXQgmtGJ7w1NZe.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Epzz7gf7YNsb7Uj52QVTWBVbJTmuUL3QnPoo1wyTLFfisZ6RZ4zA7Lwo4JJ5FMrrhyh.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23yd1r76yJ6S6T4s4VHRsKmzqPaSwJUEuR6mvVcKfvpNk2CSaUYgmNdiCyWVhy5h1jm34.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xARkE4oDXA3ctK6gWDBVFZTCYU1QmH6gF5Gvx7YSqLEccshpdxJ2LLLyAzHyBFP4cF1.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xempz1BB7NKJYqTUkiiDtXtHyJWSmyXsRanEAQ28DDqFSnZunqJQFg6amsCi8T925sn.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23wMabWQgdDHRWRsmDHVdmbtnkskWsoXW3ZYhuCaThzAj7u3tGYSYPt2g3rkHbtAYA5ma.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EqUfHg3Uq4AHVN6MVNiJYnZ6f6K5YfVM5njMu56qZXkWn6S7rbH1MjmBpnf8hnnL7JV.JPG"
+          ],
+          "tags": [
+            "photographylovers",
+            "photography",
+            "wildbirds",
+            "hawks",
+            "prey",
+            "proofofbrain",
+            "creativecoin",
+            "neoxian",
+            "featheredfriends",
+            "silverbloggers"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 35019424939977,
+        "payout": 3.409,
+        "payout_at": "2026-04-28T11:13:00",
+        "pending_payout_value": "3.409 HBD",
+        "percent_hbd": 0,
+        "permlink": "a-juvenile-harrier-hawk-landed",
+        "post_id": 149883496,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 105
+        },
+        "title": "A juvenile Harrier Hawk landed.",
+        "updated": "2026-04-21T11:13:00",
+        "url": "/hive-194913/@papilloncharity/a-juvenile-harrier-hawk-landed"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 9667263790,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 15471651,
+            "voter": "bbscribe94"
+          },
+          {
+            "rshares": -23145272,
+            "voter": "aprendeconleidy"
+          }
+        ],
+        "author": "bbscribe94",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 53.35,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![](https://images.ecency.com/DQmPnvwXp4wvhCU5WLdzYkrL8VuLic3iJrJyxfoFyYYnkVw/1776769852194.jpg)\n\nAn image of me \n\nThere was a time I couldn’t trust myself, not in a dramatic way tho but in small and quiet ways that slowly add up. I would promise myself I’d wake up early, then snooze and dismiss the alarm. I’d plan my day, then scroll it away. I’d say, “this time I’m serious,” but deep down, I didn’t even believe me anymore.\n\nIt’s a painful place to be as a woman when your words start to lose weight, even to yourself.\n\nOne evening, tired of starting over, I came across a video by Mel Robbins talking about something simple: the 5-second rule, not the one about food but about action.\n\nShe said, “If you have an instinct to act on a goal, you must move within 5 seconds before your brain kills it.”\n\nI won’t lie, it sounded too simple, almost silly.\n\nBut the next morning, when my alarm rang, I felt that familiar urge to stay in bed. Normally, I would negotiate with myself, lose and sleep again.\n\nBut this time, I counted, 5… 4… 3… 2… 1…\n\nI stood up like an armed force personnel resounding to orders \n\nJust like that, no motivation, no deep thinking, just movement and action \n\nThis felt small but it felt different.\n\nThat same day, I used it again, when I wanted to procrastinate, i'd say 5, 4, 3, 2, 1 and start. When I felt like avoiding a difficult message, 5, 4, 3, 2, 1, do it.\n\nAnd slowly, something I didn’t expect happened, I started trusting myself again.\n\nNot because I became perfect, but because I stopped overthinking myself out of action.\n\nThat’s what this lesson gave me: a way to interrupt fear, doubt, and delay.\n\nAs women, we carry so much in our minds, expectations, pressure, “what ifs,” fear of getting it wrong. And sometimes, it’s not that we don’t know what to do, we just don’t move.\n\nThat simple countdown became my bridge between knowing and doing.\n\nAnd that’s why I would recommend learning from Mel Robbins to any woman who feels stuck in her own head.\n\nBecause it reminds you that confidence doesn’t come before action, it comes after action\n\nYou don’t need to feel ready, you don’t need to have it all figured out.\n\nSometimes, you just need 5 seconds and the courage to move before your fear speaks louder\n\n",
+        "category": "hive-124452",
+        "children": 0,
+        "community": "hive-124452",
+        "community_title": "Ladies of Hive",
+        "created": "2026-04-21T11:11:51",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmPnvwXp4wvhCU5WLdzYkrL8VuLic3iJrJyxfoFyYYnkVw/1776769852194.jpg"
+          ],
+          "image_ratios": [
+            0.5625
+          ],
+          "links": [],
+          "tags": [
+            "hive-124452",
+            "contest",
+            "women",
+            "ladiesofhive",
+            "ecency",
+            "archon",
+            "neoxian",
+            "palnet",
+            "freewriters",
+            "leofinance"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 9659590169,
+        "payout": 0,
+        "payout_at": "2026-04-28T11:11:51",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "the-5-second-decision-that",
+        "post_id": 149883491,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 3
+        },
+        "title": "THE 5-SECOND DECISION THAT HELPED ME TRUST MYSELF AGAIN ~285",
+        "updated": "2026-04-21T11:11:51",
+        "url": "/hive-124452/@bbscribe94/the-5-second-decision-that"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 21869727128,
+            "voter": "honolulu"
+          },
+          {
+            "rshares": 15496854641,
+            "voter": "isnochys"
+          },
+          {
+            "rshares": 9818228236,
+            "voter": "coolguy123"
+          },
+          {
+            "rshares": 22995204907,
+            "voter": "andyblack"
+          },
+          {
+            "rshares": 3208012445,
+            "voter": "microbot"
+          }
+        ],
+        "author": "kingsleyy",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.18,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<img src=\"https://images.ecency.com/DQmbi3GdvHHwjdobXpFBLHRDVG5utaYbhqbYMa45PAGuCYC/1002475551.jpg\" alt=\"\" />\n\nIt's been two or three weeks already that I didn't join the #ttt. I'm not going to let this Tuesday go away like that\n\nhttps://youtu.be/asrX759rR-s?si=J8f8fIaVRSPrLWNi\n\nThe first on my list is a song that was released many years ago by Dbanj and 2Face but they didn't get to make the video. I don't really know what happened. A few weeks ago, the video was relaxed and it feels good seeing these two artists singing and dancing together in a video.  \nThe song is good, a very good format of what we knew the two guys with in their prime. I love it and I've watched the video countless times.\n\nShe Did It Again by Tyla and Zara Larsso\n\nhttps://youtu.be/rtwpk9rb1Dc?si=mBgPBUCXP1\\_0sEHb\n\nThis song especially the video took the pattern of Beautiful lair by Beyonce and Shakira. If you've seen that video, you'll know exactly what I'm talking about.  \nI didn't know about this song until I came across it today and saw that it was newly released and people have been applauding the craft in the video. The video is full of explicít dance styles. Don't watch if you don't want to imagine things. Lol\n\n* * *\n\nJam by Fally Ipupa and WizKid\n\nhttps://youtu.be/5uZ25\\_etXHk?si=PruWlOWimE0Vm0u8\n\nNot today, I've known of Fally Ipupa for a long time, from the days he did collaboration with the likes of Jmartins, Flavour and others.  \nThis song is a newly released one and it's making waves already. WizKid is a big influence here.\n\nThanks for reading.\n\n[Photo](https://www.freepik.com/free-photo/top-view-vinyl-discs-with-white-background_5448290.htm#fromView=search&page=2&position=35&uuid=d08c35f8-945a-4aae-b68d-2eac814a59fa&query=music+plug)",
+        "category": "hive-193816",
+        "children": 0,
+        "community": "hive-193816",
+        "community_title": "Music",
+        "created": "2026-04-21T11:11:12",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.8-vision",
+          "description": "It's been two or three weeks already that I didn't join the #ttt. I'm not going to let this Tuesday go away like that The first on my list is a song that was released many years ago by Dbanj and 2Face",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmbi3GdvHHwjdobXpFBLHRDVG5utaYbhqbYMa45PAGuCYC/1002475551.jpg"
+          ],
+          "image_ratios": [
+            "1.7794"
+          ],
+          "links": [],
+          "links_meta": {},
+          "tags": [
+            "hive-193816",
+            "ttt",
+            "music",
+            "fun",
+            "afrobeats",
+            "neoxian",
+            "pob",
+            "waivio",
+            "alive"
+          ],
+          "thumbnails": [
+            "https://images.ecency.com/DQmbi3GdvHHwjdobXpFBLHRDVG5utaYbhqbYMa45PAGuCYC/1002475551.jpg"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 2359298651874,
+        "payout": 0.229,
+        "payout_at": "2026-04-28T11:11:12",
+        "pending_payout_value": "0.229 HBD",
+        "percent_hbd": 10000,
+        "permlink": "music-tuesday-709761ce9b673",
+        "post_id": 149883488,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 17
+        },
+        "title": "Music Tuesday ",
+        "updated": "2026-04-21T11:11:12",
+        "url": "/hive-193816/@kingsleyy/music-tuesday-709761ce9b673"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 160507785468,
+            "voter": "edgy-ed-morrison"
+          },
+          {
+            "rshares": 117655505139,
+            "voter": "abelfotografia"
+          },
+          {
+            "rshares": 9667263790,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 145838599704,
+            "voter": "rg2-foto"
+          }
+        ],
+        "author": "muhammadhalim",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 72.82,
+        "author_role": "member",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          }
+        ],
+        "blacklists": [],
+        "body": "<center>\n<hr><hr><br>\n<div style=\"letter-spacing: 2px;\">\n<h1><strong>PHOTOS I DON'T KNOW WHERE TO PUT</strong></h1>\n</div>\n<div style=\"letter-spacing: 1px;\">\n<h3><i>(Fotos que no sé dónde poner)</i></h3>\n</div>\n<br><hr><hr>\n</center>\n\n![_DSC2177_copy_3872x2592.jpg](https://files.peakd.com/file/peakd-hive/muhammadhalim/23vsQTk9kiTx6JrzPcVb3eLDptTXTKkaemA5aDdor3XDc1nuDpCpYqkwjc8oUKVxDNdua.jpg)\n<center>\n<hr>\n<sub><i>Official entry for the <b>#monomad</b> challenge hosted by @monochromes and @brumest</i></sub>\n<hr>\n</center>\n\n<br>\n\n<center>\n<table width=\"100%\">\n<tr>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\n<div class=\"pull-left\"><span style=\"font-size: 50px; line-height: 45px;\"><b>G</b></span></div>reetings, dear friends, hugs from afar 🤗 Today I want to show you some photos I’ve been taking throughout the week. But there’s something different about them…\n</td>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\n<div class=\"pull-left\"><span style=\"font-size: 50px; line-height: 45px;\"><b>S</b></span></div>aludos, amigos queridos, abrazos a la distancia 🤗 Hoy les quiero enseñar algunas fotos que he ido haciendo durante la semana. Pero tienen algo diferente…\n</td>\n</tr>\n</table>\n</center>\n\n\n\n![_DSC2180_copy_3512x2507.jpg](https://files.peakd.com/file/peakd-hive/muhammadhalim/23vhsCxZxgtz4CM2XBxhg1tAABR1vjv3Gci7RfXFqwWm6JeYog1JCn2KcYM4at71EHdXz.jpg)\n<center>\n<table width=\"100%\">\n<tr>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nI almost always try to make each post work as a series, with a clear theme, where all the images are connected. I like there to be an idea that ties them together.\n</td>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nCasi siempre intento que cada publicación funcione como una serie, con un tema claro, donde todas las imágenes se conecten entre sí. Me gusta que haya una idea que las una.\n</td>\n</tr>\n</table>\n</center>\n\n![_DSC2151_copy_3629x2591.jpg](https://files.peakd.com/file/peakd-hive/muhammadhalim/23vsQDEbHJzmyGr4CDDyZizDHg6uqPDmq9k5cDGV1zkZAT2LoFoNQRgmqgDhzneRKiW95.jpg)\n<center>\n<br>\n◈  ◈  ◈\n<br>\n</center>\n\n![_DSC2174_copy_3629x2592.jpg](https://files.peakd.com/file/peakd-hive/muhammadhalim/23x19P9uQQsMi62zZyPgjybxXJfN7Maedw7T1xUe7tdiXHCsPRvfUGTyuv9bP8d3soqMD.jpg)\n<center>\n<table width=\"100%\">\n<tr>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nBut that didn’t happen this time. I had these photos saved, and no matter how much I looked at them, I couldn’t figure out where to put them. They didn’t fit into any theme, any series… they were just kind of loose.\n</td>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nPero esta vez no me pasó eso. Tenía estas fotos guardadas y, por más que las miraba, no encontraba dónde ponerlas. No encajaban en ningún tema, en ninguna serie… estaban como sueltas.\n</td>\n</tr>\n</table>\n</center>\n\n\n![_DSC2189_copy_3628x2592.jpg](https://files.peakd.com/file/peakd-hive/muhammadhalim/23wWwFCEXNhgqN7z6oNeeiqy5zF9UKQ58t86xMe3AsPRTBZm2NVLX3x8Qx8RdnaGEW7Na.jpg)\n<center>\n<table width=\"100%\">\n<tr>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nAnd then, after mulling it over, something occurred to me: if they don’t fit anywhere, then that’s the theme. That’s where the title came from: “Photos I Don’t Know Where to Put.” And interestingly, as soon as the title appeared… everything started to make sense.\n</td>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nY nada, después de darle vueltas, se me ocurrió algo: si no encajan en ningún lado, entonces ese es el tema. De ahí salió el título: “Fotos que no sé dónde poner”. Y curiosamente, en cuanto apareció el título… todo empezó a tener sentido.\n</td>\n</tr>\n</table>\n</center>\n\n\n![_DSC2126_copy_3628x2592.jpg](https://files.peakd.com/file/peakd-hive/muhammadhalim/23xefazuZcPoqsGbTfdkdMcr13NkzYSVxCYXKecsJ8eV4oRqBbnjQZ8EdjJ2qDeHsWied.jpg)\n<center>\n<table style=\"width: 85%; border-top: 1px solid #444; border-bottom: 1px solid #444; padding: 20px 0; margin: 20px 0;\">\n<tr>\n<td style=\"text-align: center; font-family: 'Georgia', serif; font-size: 22px; color: #222; line-height: 1.4;\">\n<i>\"If they don’t fit anywhere, then that’s the theme.\"</i>\n<br>\n<span style=\"font-size: 18px; color: #666; font-style: italic;\">\n\"Si no encajan en ningún lado, entonces ese es el tema.\"\n</span>\n</td>\n</tr>\n</table>\n</center>\n\n![_DSC1166-NEF_DxO_PRIME_copy_3118x2228.jpg](https://files.peakd.com/file/peakd-hive/muhammadhalim/23tbwMB9jGC2FWmpJmQSzdaHPJgK39zda3Ldt1as1tfbFbTjf63ZJpdhDmMz5sPszCp7x.jpg)\n\n<center>\n<table width=\"100%\">\n<tr>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nSo here they are, together, just as they came out, without forcing them.\n</td>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nAsí que aquí están, juntas, tal cual salieron, sin forzarlas.\n</td>\n</tr>\n</table>\n</center>\n\n\n![_DSC2133_copy_3629x2592.jpg](https://files.peakd.com/file/peakd-hive/muhammadhalim/23vi5jsZxvfn43ypD3DZ44MCyjccfu9VtpGSdvKdeSXKpe7stC45ueVebnvgah9dhmJmi.jpg)\n\n<center>\n<hr>\n<table width=\"100%\">\n<tr>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nThank you, as always, for being there and taking the time to check out my work. Sometimes it’s best not to overcomplicate things and just share. See you soon with more photos and more stories.\n</td>\n<td width=\"50%\" style=\"padding: 10px; text-align: justify; vertical-align: top;\">\nGracias, como siempre, por estar ahí y tomarse el tiempo de pasar por mi trabajo. A veces lo mejor es no complicarse tanto y simplemente compartir. Nos vemos pronto con más fotos y más historias.\n</td>\n</tr>\n</table>\n<hr>\n</center>\n\n<center>\n<br>\n◈  ◈  ◈\n<br>\n<h3><b>CONNECT WITH ME</b></h3>\n<p>\n<a href=\"https://instagram.com/muhammad_photography\" target=\"_blank\">Instagram</a> | \n<a href=\"https://facebook.com/Muhammad Halim Machado\" target=\"_blank\">Facebook</a> | \n<a href=\"https://wa.me/5356888639\" target=\"_blank\">WhatsApp</a>\n</p>\n</center>\n\n\n![Portada Para Facebook Barbería Moderno Llamativo Blanco Negro y Azul _20251123_212002_0000.jpg](https://files.peakd.com/file/peakd-hive/muhammadhalim/EpviRRzaZ4CSeYPDhhpioFksFjbv4LfFVkxssCmrR9ntxjN8AnBMfN2jLDaK8UfH6Xr.jpg)\n\n\n<center>\n<hr>\n<div style=\"padding: 10px;\">\n<sub>\n<b>TECHNICAL SPECIFICATIONS</b><br>\n<b>Camera:</b> Nikon D200 | <b>Lenses:</b> AF-S NIKKOR 18-70mm & ED 70-300mm<br>\n<b>Digital Processing:</b> Images enhanced with <b>DxO PureRAW 3</b> for superior detail and noise reduction.\n<br><br>\n<b>POST ARCHITECTURE</b><br>\n<b>Formatting:</b> Custom HTML layout designed with the assistance of <b>Google Gemini</b>.<br>\n<b>Translation:</b> DeepL | <b>Author:</b> @muhammadhalim\n</sub>\n</div>\n<hr>\n</center>\n\n</center>\n\n\n\n\n\n",
+        "category": "hive-142159",
+        "children": 0,
+        "community": "hive-142159",
+        "community_title": "Black And White",
+        "created": "2026-04-21T11:10:27",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "description": "Today I want to show you some photos I’ve been taking throughout the week. But there’s something different about them…",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/muhammadhalim/23vsQTk9kiTx6JrzPcVb3eLDptTXTKkaemA5aDdor3XDc1nuDpCpYqkwjc8oUKVxDNdua.jpg",
+            "https://files.peakd.com/file/peakd-hive/muhammadhalim/23vhsCxZxgtz4CM2XBxhg1tAABR1vjv3Gci7RfXFqwWm6JeYog1JCn2KcYM4at71EHdXz.jpg",
+            "https://files.peakd.com/file/peakd-hive/muhammadhalim/23vsQDEbHJzmyGr4CDDyZizDHg6uqPDmq9k5cDGV1zkZAT2LoFoNQRgmqgDhzneRKiW95.jpg",
+            "https://files.peakd.com/file/peakd-hive/muhammadhalim/23x19P9uQQsMi62zZyPgjybxXJfN7Maedw7T1xUe7tdiXHCsPRvfUGTyuv9bP8d3soqMD.jpg",
+            "https://files.peakd.com/file/peakd-hive/muhammadhalim/23wWwFCEXNhgqN7z6oNeeiqy5zF9UKQ58t86xMe3AsPRTBZm2NVLX3x8Qx8RdnaGEW7Na.jpg",
+            "https://files.peakd.com/file/peakd-hive/muhammadhalim/23xefazuZcPoqsGbTfdkdMcr13NkzYSVxCYXKecsJ8eV4oRqBbnjQZ8EdjJ2qDeHsWied.jpg",
+            "https://files.peakd.com/file/peakd-hive/muhammadhalim/23tbwMB9jGC2FWmpJmQSzdaHPJgK39zda3Ldt1as1tfbFbTjf63ZJpdhDmMz5sPszCp7x.jpg",
+            "https://files.peakd.com/file/peakd-hive/muhammadhalim/23vi5jsZxvfn43ypD3DZ44MCyjccfu9VtpGSdvKdeSXKpe7stC45ueVebnvgah9dhmJmi.jpg",
+            "https://files.peakd.com/file/peakd-hive/muhammadhalim/EpviRRzaZ4CSeYPDhhpioFksFjbv4LfFVkxssCmrR9ntxjN8AnBMfN2jLDaK8UfH6Xr.jpg"
+          ],
+          "tags": [
+            "monomad",
+            "blackandwhite",
+            "photography",
+            "street",
+            "people",
+            "hivecuba",
+            "documentary",
+            "streetphotography",
+            "creativecoin",
+            "spanish"
+          ],
+          "users": [
+            "monochromes",
+            "brumest",
+            "muhammadhalim"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 433669154101,
+        "payout": 0.042,
+        "payout_at": "2026-04-28T11:10:27",
+        "pending_payout_value": "0.042 HBD",
+        "percent_hbd": 10000,
+        "permlink": "photos-i-dont-know-where-to-put-monomad-challenge-engesp",
+        "post_id": 149883485,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 4
+        },
+        "title": "Photos i don't know where to put. /Monomad Challenge [Eng/Esp]",
+        "updated": "2026-04-21T11:10:27",
+        "url": "/hive-142159/@muhammadhalim/photos-i-dont-know-where-to-put-monomad-challenge-engesp"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 26274128975,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 1750720853,
+            "voter": "kaylinart"
+          },
+          {
+            "rshares": 1024112159,
+            "voter": "trevonjb"
+          },
+          {
+            "rshares": 2356606477,
+            "voter": "sinzzer"
+          },
+          {
+            "rshares": 4746984285,
+            "voter": "joshglen"
+          }
+        ],
+        "author": "asgharali",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 77.4,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![ChatGPT Image Apr 21, 2026, 10_44_40 AM.png](https://files.peakd.com/file/peakd-hive/asgharali/23u64w2uXiL8ehjG7zxg6NZWLaJDNzcDwCadMMmRh6sJKL6qXvMEBQttuBjwiejE9zmVa.png)\n![Capture.PNG](https://i.imgur.com/uGB0GKX.png)\n\n\nTorch Myrmidon is a strong monster card in Splinterlands whose stats and abilities are very good. At the start I was thinking of it as a middle line monster and many times I used it in the middle line during battles. But now after getting more information actually it is a frontline monster.\n\nIf I talk about the identity of this card you can guess from its visual display. In the background you can see fire signs and in the top corner there is a fire symbol which proves that it belongs to the Fire splinter.\n\nIts main role is a front line tank. It is known as a sustain fighter and its mana cost is eight. You can easily use it in mid to high mana battles while in low mana battles it can create some difficulty because its mana cost is high.\n\nThe most surprising and good thing about it is that even while being in the front line meaning while playing the role of a tank monster it can still attack. This is considered its special ability. \n\n![Screenshot 2026-04-21 101227.png](https://files.peakd.com/file/peakd-hive/asgharali/23uQLi8GUHdd9hCBUxDeHZbtjPTQSsVfDMLdsuqhzK3LCKgJwFZeVbGgPJh2v1DFdVQCW.png)\n![Capture.PNG](https://i.imgur.com/uGB0GKX.png)\n\nFor example if it is in the front line its armor which is 2 keeps giving it protection and along with that it keeps attacking with +1 every round. That means while staying in the front line it can keep attacking enemy monsters.\n\nIts health is also good and its armor keeps trying to protect its health. Remember whenever you see high health and high armor in any monster card you can use them in the front line.\n\nIn the same way this monsters speed is 4 which helps in attacks. Torch Myrmidon has two special abilities that is Reach and Heal.\n\nIn Reach what happens is that it can attack from position 2. This means you can place it in position 2 and still attack. The benefit of this is that you can use a double front line. That means you can place one strong tank first and then place this card behind it and take full advantage of its abilities.\n\nIts second ability is healing. That means in every round it restores a portion of its health and this is the strength of this card.\n\nFrom its visual design I imagine that this monster looks very angry and because of its anger, flames are coming out from its head and a spear is passing above it. It looks like it is trying to damage enemy monsters. Its visual display is very beautiful and I tried to imagine and present this idea.\n\n![Screenshot 2026-04-21 101155.png](https://files.peakd.com/file/peakd-hive/asgharali/23tSN1PaLJLpZRR7fdeh383u7VSjkF3WYSsWJJZLtwHSjBGUkT3qA5mg5sqfjx6amxEg5.png)\n![Capture.PNG](https://i.imgur.com/uGB0GKX.png)\n\nNow lets talk about its weaknesses because every monster has its own weakness. Its first big weakness is that you cannot select it in low mana battles. Second it has only 1 melee attack so it will struggle against high health enemies. Third it can be affected by high burst damage meaning if the enemy has heavy damage it can make its heal ability useless.\n\nNow if we talk about its price this monster is very strong but still very reasonable in price. In the screenshot you can see its minimum price is 0.087 which means at level 1 you can easily buy it and start your battles. Later if you want to upgrade it you can do that at each level which also impacts the price.\n\nThis was the summary of this powerful monster which I tried to explain in the best and simple way so that you can use such monsters correctly in battles.\n\nI hope you guys will like this post and is interesting as well. If you find it informative then dont forget to give me a support. Share you reviews in the comment section below. Thank you all for your time reading the content.\n\n![Capture.PNG](https://i.imgur.com/uGB0GKX.png)\n\n[TWITTER](https://www.google.com/search?q=twitter+logo&oq=twitter+l&aqs=chrome.0.69i59j69i57j0i67i433j0i10i131i433i512j0i67j69i60l3.2422j0j7&sourceid=chrome&ie=UTF-8#imgrc=8e2TggaMeUYcpM) [TELEGRAM](https://www.google.com/search?q=telegram+logo&oq=TELEGRAM&aqs=chrome.0.69i59j69i57j0i131i433i512j0i433i512j0i131i433i512l4j0i433i512j0i131i433i512.1427j0j9&sourceid=chrome&ie=UTF-8#imgrc=ke0Q9O_EvKXTeM) [HIVE](https://www.google.com/search?q=hive+logo&oq=HIVE+L&aqs=chrome.0.69i59j69i57j0i512l3j69i60l3.1706j0j9&sourceid=chrome&ie=UTF-8#imgrc=TyzPWyVPZJvAoM) [WHATSAPP](https://www.google.com/search?q=whatsapp+logo&oq=WH&aqs=chrome.0.69i59j69i57j35i39j0i131i433i512l2j69i60l3.1017j0j9&sourceid=chrome&ie=UTF-8#imgrc=r9NkmOQXLYQD2M) [DISCORD](https://www.google.com/search?q=discord+logo&oq=DI&aqs=chrome.0.69i59j69i57j35i39j0i131i433i512l2j0i131i433j0i131i433i512j69i61.1013j0j9&sourceid=chrome&ie=UTF-8#imgrc=riZgxXaRU8fqtM)\n\n**IMAGES SOURCES**\n[1](https://chatgpt.com/c/69e70ddc-713c-8322-a913-6d0c3bdb7026)\n[2](https://splinterlands.com/card-detail/613/regular/12/?tab=for-sale)\n\n# REMEMBER: We should prepare for the unexpected and always hope for the best. Life may not be easy but you must do your best and leave the rest to God...\n\n![](https://images.ecency.com/DQmf6mY7yuWy7MFJ3KH5BZZB6yxic1eAbJ6j8SRw7tXxpp3/you_can_reach_us_by_joining_the_official_helios_voter_discord_channel_or_sending_a_message_on_discord_to_asgharo_2972..gif)\n\n\n![](https://images.ecency.com/DQmUEWGNmwGwWzMt4zFmENUBApSJ6KA4bBBcaj8TmeWN6yJ/hybrid_dynamic.gif)",
+        "category": "hive-13323",
+        "children": 1,
+        "community": "hive-13323",
+        "community_title": "Splinterlands",
+        "created": "2026-04-21T11:09:33",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/asgharali/23u64w2uXiL8ehjG7zxg6NZWLaJDNzcDwCadMMmRh6sJKL6qXvMEBQttuBjwiejE9zmVa.png",
+            "https://i.imgur.com/uGB0GKX.png",
+            "https://images.ecency.com/DQmUEWGNmwGwWzMt4zFmENUBApSJ6KA4bBBcaj8TmeWN6yJ/hybrid_dynamic.gif",
+            "https://images.ecency.com/DQmf6mY7yuWy7MFJ3KH5BZZB6yxic1eAbJ6j8SRw7tXxpp3/you_can_reach_us_by_joining_the_official_helios_voter_discord_channel_or_sending_a_message_on_discord_to_asgharo_2972..gif",
+            "https://i.imgur.com/uGB0GKX.png",
+            "https://files.peakd.com/file/peakd-hive/asgharali/23tSN1PaLJLpZRR7fdeh383u7VSjkF3WYSsWJJZLtwHSjBGUkT3qA5mg5sqfjx6amxEg5.png",
+            "https://i.imgur.com/uGB0GKX.png",
+            "https://i.imgur.com/uGB0GKX.png",
+            "https://files.peakd.com/file/peakd-hive/asgharali/23uQLi8GUHdd9hCBUxDeHZbtjPTQSsVfDMLdsuqhzK3LCKgJwFZeVbGgPJh2v1DFdVQCW.png"
+          ],
+          "image_ratios": [
+            1.7768331562167907,
+            8.703448275862069,
+            1,
+            1.7777777777777777,
+            8.703448275862069
+          ],
+          "links": [
+            "https://www.google.com/search?q=twitter+logo&oq=twitter+l&aqs=chrome.0.69i59j69i57j0i67i433j0i10i131i433i512j0i67j69i60l3.2422j0j7&sourceid=chrome&ie=UTF-8#imgrc=8e2TggaMeUYcpM",
+            "https://www.google.com/search?q=telegram+logo&oq=TELEGRAM&aqs=chrome.0.69i59j69i57j0i131i433i512j0i433i512j0i131i433i512l4j0i433i512j0i131i433i512.1427j0j9&sourceid=chrome&ie=UTF-8#imgrc=ke0Q9O_EvKXTeM",
+            "https://www.google.com/search?q=hive+logo&oq=HIVE+L&aqs=chrome.0.69i59j69i57j0i512l3j69i60l3.1706j0j9&sourceid=chrome&ie=UTF-8#imgrc=TyzPWyVPZJvAoM",
+            "https://www.google.com/search?q=whatsapp+logo&oq=WH&aqs=chrome.0.69i59j69i57j35i39j0i131i433i512l2j69i60l3.1017j0j9&sourceid=chrome&ie=UTF-8#imgrc=r9NkmOQXLYQD2M",
+            "https://www.google.com/search?q=discord+logo&oq=DI&aqs=chrome.0.69i59j69i57j35i39j0i131i433i512l2j0i131i433j0i131i433i512j69i61.1013j0j9&sourceid=chrome&ie=UTF-8#imgrc=riZgxXaRU8fqtM"
+          ],
+          "tags": [
+            "hive-13323",
+            "arcadecolony",
+            "steemmonsters",
+            "bdcommunity",
+            "splinterlands",
+            "neoxian",
+            "hivegames",
+            "indiaunited",
+            "sps",
+            "tribes"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 8175025067081,
+        "payout": 0.796,
+        "payout_at": "2026-04-28T11:09:33",
+        "pending_payout_value": "0.796 HBD",
+        "percent_hbd": 10000,
+        "permlink": "double-tank-strategy-with-torch",
+        "post_id": 149883483,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 162
+        },
+        "title": "Double Tank Strategy with Torch Myrmidon || The Fire Tank That Never Dies",
+        "updated": "2026-04-21T11:09:33",
+        "url": "/hive-13323/@asgharali/double-tank-strategy-with-torch"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1674337601,
+            "voter": "stefanialexis"
+          },
+          {
+            "rshares": 3546980686,
+            "voter": "techken"
+          },
+          {
+            "rshares": 930708158,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 1796544291,
+            "voter": "grocko"
+          },
+          {
+            "rshares": 789677918,
+            "voter": "bambukah"
+          }
+        ],
+        "author": "fieryfootprints",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.6,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "![IMG_20260421_135425.jpg](https://files.peakd.com/file/peakd-hive/fieryfootprints/23t7aTBTjotmRBE2yNo3hpXgmTsqhWEbZFDW7X36ic2LDgFuWQAeP3ps5xttxbvpJgbtK.jpg)\n\nThis time I wanted to draw a castle on the mountain. In the end I think that it looks more like a fort than a true castle.",
+        "category": "hive-156509",
+        "children": 1,
+        "community": "hive-156509",
+        "community_title": "OnChainArt",
+        "created": "2026-04-21T11:08:12",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/fieryfootprints/23t7aTBTjotmRBE2yNo3hpXgmTsqhWEbZFDW7X36ic2LDgFuWQAeP3ps5xttxbvpJgbtK.jpg"
+          ],
+          "tags": [
+            "art",
+            "neoxian",
+            "proofofbrain",
+            "fieryfootprints"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 2231302332299,
+        "payout": 0.217,
+        "payout_at": "2026-04-28T11:08:12",
+        "pending_payout_value": "0.217 HBD",
+        "percent_hbd": 10000,
+        "permlink": "lonely-fort",
+        "post_id": 149883476,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 88
+        },
+        "title": "Lonely fort.",
+        "updated": "2026-04-21T11:08:12",
+        "url": "/hive-156509/@fieryfootprints/lonely-fort"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 7215919080,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 3208220287,
+            "voter": "ats-david"
+          },
+          {
+            "rshares": 3624465320,
+            "voter": "gamer00"
+          },
+          {
+            "rshares": 586421645,
+            "voter": "supergoodliving"
+          },
+          {
+            "rshares": 6050786549735,
+            "voter": "alexis555"
+          }
+        ],
+        "author": "bluerobo",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 69.82,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n\n\n\n### 1. Battery Electric Vehicles (BEV) Share in Total Vehicle Stock – Passenger Cars\n\n\n\n![% Car BEV (5).png](https://files.peakd.com/file/peakd-hive/bluerobo/23t8DBnQGXKN6PY13o3Bkzanfm73tp3BeRNE7Ar1r5WAAhExSeAY9FGuYXcQwwfA9f2sj.png)\n\n\n\n| Quarter     | % Car BEV |\n|-------------|-----------|\n| 01.01.2026  | 4.11%     |\n| 01.10.2025  | 3.89%     |\n| 01.07.2025  | 3.71%     |\n| 01.04.2025  | 3.50%     |\n| 01.01.2025  | 3.30%     |\n| 01.10.2024  | 3.20%     |\n| 01.07.2024  | 3.10%     |\n| 01.04.2024  | 3.00%     |\n| 01.01.2024  | 2.90%     |\n| 01.10.2023  | 2.70%     |\n| 01.07.2023  | 2.40%     |\n| 01.04.2023  | 2.20%     |\n| 01.01.2023  | 2.10%     |\n| 01.10.2022  | 1.70%     |\n| 01.07.2022  | 1.60%     |\n| 01.04.2022  | 1.40%     |\n| 01.01.2022  | 1.30%     |\n| 01.10.2021  | 1.10%     |\n| 01.07.2021  | 0.90%     |\n| 01.04.2021  | 0.80%     |\n| 01.01.2021  | 0.60%     |\n| 01.10.2020  | 0.50%     |\n| 01.07.2020  | 0.40%     |\n| 01.04.2020  | 0.30%     |\n| 01.01.2020  | 0.30%     |\n| 01.10.2019  | 0.30%     |\n| 01.07.2019  | 0.20%     |\n| 01.04.2019  | 0.20%     |\n| 01.01.2019  | 0.20%     |\n| 01.10.2018  | 0.20%     |\n| 01.07.2018  | 0.10%     |\n\n### 2. BEV Share in Total Stock – Buses, Vans and Trucks\n\n\n![% Commercial BEV (5).png](https://files.peakd.com/file/peakd-hive/bluerobo/23tHbr9aBDCPZtjgwTenutRgievekg9SrdaAQb47GYkRUsjU8PUDMXiR5Edjc6YFshfiq.png)\n\n\n\n| Quarter     | % Bus BEV | % Van BEV | % Truck BEV |\n|-------------|-----------|-----------|-------------|\n| 01.01.2026  | 5.59%     | 2.97%     | 0.12%       |\n| 01.10.2025  | 4.94%     | 2.77%     | 0.11%       |\n| 01.07.2025  | 4.60%     | 2.60%     | 0.10%       |\n| 01.04.2025  | 4.66%     | 2.52%     | 0.09%       |\n| 01.01.2025  | 4.23%     | 2.41%     | 0.08%       |\n| 01.10.2024  | 3.65%     | 2.32%     | 0.07%       |\n| 01.07.2024  | 3.69%     | 2.30%     | 0.07%       |\n| 01.04.2024  | 3.45%     | 2.21%     | 0.06%       |\n| 01.01.2024  | 3.28%     | 2.13%     | 0.05%       |\n| 01.10.2023  | 2.91%     | 2.05%     | 0.04%       |\n| 01.07.2023  | 2.70%     | 1.86%     | 0.04%       |\n| 01.04.2023  | 2.54%     | 1.75%     | 0.04%       |\n| 01.01.2023  | 2.38%     | 1.68%     | 0.04%       |\n| 01.10.2022  | 2.09%     | 1.47%     | 0.03%       |\n| 01.07.2022  | 1.97%     | 1.37%     | 0.03%       |\n| 01.04.2022  | 1.84%     | 1.30%     | 0.03%       |\n| 01.01.2022  | 1.69%     | 1.25%     | 0.03%       |\n| 01.10.2021  | 1.41%     | 1.14%     | 0.03%       |\n| 01.07.2021  | 1.23%     | 1.07%     | 0.03%       |\n| 01.04.2021  | 1.13%     | 1.00%     | 0.03%       |\n| 01.01.2021  | 1.03%     | 0.95%     | 0.03%       |\n\n### 3. Passenger Car Fleet by Fuel Type (Year-End Stock)\n\n\n![Passenger Cars by Fuel Type.png](https://files.peakd.com/file/peakd-hive/bluerobo/23t8CfK4iwyAddnZvguwvFnoAAL4Xx6GcHuyjcebxKR6BVS6o2d8fJjyHMaK4NSkPD3Yx.png)\n\n\n\n| Year | Gasoline     | Diesel       | Methanol    | BEV          | Hybrid       | **Total**    |\n|------|--------------|--------------|-------------|--------------|--------------|--------------|\n| 2017 | 29,978,635   | 15,089,392   | 525,212     | 34,022       | 165,405      | 45,792,666   |\n| 2018 | 30,451,268   | 15,225,296   | 496,742     | 53,861       | 236,710      | 46,463,877   |\n| 2019 | 31,031,021   | 15,153,364   | 476,368     | 83,175       | 341,411      | 47,085,339   |\n| 2020 | 31,464,680   | 15,111,382   | 453,670     | 136,617      | 539,383      | 47,705,732   |\n| 2021 | 31,435,340   | 15,060,124   | 429,832     | 309,083      | 1,004,089    | 48,238,468   |\n| 2022 | 31,005,134   | 14,824,262   | 413,790     | 618,460      | 1,669,051    | 48,530,697   |\n| 2023 | 30,556,538   | 14,437,489   | 407,483     | 1,013,009    | 2,337,897    | 48,752,416   |\n| 2024 | 30,235,032   | 14,142,184   | 391,144     | 1,408,681    | 2,911,262    | 49,088,303   |\n| 2025 | 29,918,520   | 13,829,261   | 373,045     | 1,651,643    | 3,556,956    | 49,329,425   |\n| 2026 | 29,343,732   | 13,385,662   | 350,851     | 2,034,260    | 4,362,563    | 49,477,068   |\n\n**Key Observations:**\n- BEV penetration in the passenger car fleet continues to grow, reaching **4.11%** as of January 2026.\n- Growth in the overall stock remains largely linear across passenger cars, buses, and vans.\n- Truck BEV adoption remains very low at **0.12%**, with only marginal quarterly increases (approximately 0.01 percentage points per quarter since late 2023).\n- New passenger car BEV registration quota for March 2026 reached **24%**, up from **20.9%** in October 2025.\n\nData published by the German Kraftfahrt-Bundesamt (KBA).  \n\n**Data as of 01.01.2026**  \n\n[Official KBA statistics](https://www.kba.de/DE/Statistik/Fahrzeuge/Bestand/Vierteljaehrlicher_Bestand/viertelj%C3%A4hrlicher_bestand_node.html)\n\n###### Vote for my witness: [@blue-witness](https://peakd.com/me/witnesses)\n\n",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-04-21T11:07:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/bluerobo/23t8DBnQGXKN6PY13o3Bkzanfm73tp3BeRNE7Ar1r5WAAhExSeAY9FGuYXcQwwfA9f2sj.png",
+            "https://files.peakd.com/file/peakd-hive/bluerobo/23tHbr9aBDCPZtjgwTenutRgievekg9SrdaAQb47GYkRUsjU8PUDMXiR5Edjc6YFshfiq.png",
+            "https://files.peakd.com/file/peakd-hive/bluerobo/23t8CfK4iwyAddnZvguwvFnoAAL4Xx6GcHuyjcebxKR6BVS6o2d8fJjyHMaK4NSkPD3Yx.png"
+          ],
+          "tags": [
+            "ev",
+            "bev",
+            "vehicle",
+            "technology",
+            "adoption",
+            "germany",
+            "inleo",
+            "leofinance"
+          ],
+          "users": [
+            "blue-witness"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 19415307536891,
+        "payout": 1.89,
+        "payout_at": "2026-04-28T11:07:21",
+        "pending_payout_value": "1.890 HBD",
+        "percent_hbd": 10000,
+        "permlink": "bev-adoption-trends-in-germany-quarterly-stock-shares",
+        "post_id": 149883473,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 57
+        },
+        "title": "BEV Adoption Trends in Germany – Quarterly Stock Shares",
+        "updated": "2026-04-21T11:07:21",
+        "url": "/hive-167922/@bluerobo/bev-adoption-trends-in-germany-quarterly-stock-shares"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 9667263790,
+            "voter": "glimpsytips.dex"
+          },
+          {
+            "rshares": 8377011741,
+            "voter": "phoennix09"
+          },
+          {
+            "rshares": 10473275676,
+            "voter": "riona09"
+          }
+        ],
+        "author": "riona09",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 62.64,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<div class=\"text-justify\">\n\n![wins and losses.jpg](https://files.peakd.com/file/peakd-hive/riona09/23xpTS7wCSxqMR9yDXBW81VasHpNwiFtSow1UaowAYmPm15o26ndVNVwgidkErPz8dYUG.jpg)\n\nGood day, dear hivers! It's @riona09 again, back with another blog! I am now on week 11 of my wins and losses and so far, so good. This week wasn't something special but slightly heartbreaking. Graduation was definitely on my 2026 bingo card but I didn't know it would make me this emotional. \n\nSo, week 11 it is. \n\n**MY WIN** \n\n![436d2b5b-6f33-47da-b6d5-f18d56e43153.jfif](https://files.peakd.com/file/peakd-hive/riona09/23xevRrSP95CdLdHUrow8e4szFci97JXQUKCF7pgnh3kBED18YynP6o39cBYK5XB4p6Py)\n\nFor this week, all we did was to practice our upcoming graduation rites. It's a bit tiring, especially with the large number of graduates in our school. Now, why am I being so emotional? Even if I only stayed in this beloved school for two years, for me, it was long and amazing. If I were to say, I will always be the transferee girl no one expected to be there, yet everyone never let me feel out of place. It was just two years, but I've known myself more. Still, I'm not yet read to say goodbye.\n\n**MY LOSS**\n\n![Loss.jpg](https://files.peakd.com/file/peakd-hive/riona09/23w2sdnZYWGBKC7TcA2qWUx8t7piePcJQkdLZ3Jmv5rPsj9FQqgbjpnQDkgPFF9CLDemS.jpg)\n\nIt's graduation season, and I'm still trying to sink in the fact that I'm leaving high school behind. It was a great loss. High school were basically almost half of my life, it was where I built an identity for myself. The friends, the knowledge, the mindset and even the things I have now, it existed because I was able to go through high school. It was a big part of me and leaving it would also have a very big impact in my life. But it was the reality I can never escape, and all I wish is a fresh and good start of my college era. \n\n![THUMBNAIL.png](https://files.peakd.com/file/peakd-hive/riona09/23uQtsbYk7sd7DCxqCsZFJs4TFV4eSHoPsGrRxd2U7AdkVaZmr8GHepyDr3FVuXymjTWn.png)\n\nThat's it, dear hivers! I hope I got to entertain you today and thank you for reading until the very end. See you on my next blog!\n\n</div>",
+        "category": "hive-188409",
+        "children": 0,
+        "community": "hive-188409",
+        "community_title": "Hive PH",
+        "created": "2026-04-21T11:05:54",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.5",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/riona09/23xpTS7wCSxqMR9yDXBW81VasHpNwiFtSow1UaowAYmPm15o26ndVNVwgidkErPz8dYUG.jpg",
+            "https://files.peakd.com/file/peakd-hive/riona09/23xevRrSP95CdLdHUrow8e4szFci97JXQUKCF7pgnh3kBED18YynP6o39cBYK5XB4p6Py",
+            "https://files.peakd.com/file/peakd-hive/riona09/23w2sdnZYWGBKC7TcA2qWUx8t7piePcJQkdLZ3Jmv5rPsj9FQqgbjpnQDkgPFF9CLDemS.jpg",
+            "https://files.peakd.com/file/peakd-hive/riona09/23uQtsbYk7sd7DCxqCsZFJs4TFV4eSHoPsGrRxd2U7AdkVaZmr8GHepyDr3FVuXymjTWn.png"
+          ],
+          "tags": [
+            "hiveph",
+            "hive-engine",
+            "asianhive",
+            "me",
+            "wins",
+            "losses",
+            "curator",
+            "appreciator"
+          ],
+          "users": [
+            "riona09"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 28517551207,
+        "payout": 0.002,
+        "payout_at": "2026-04-28T11:05:54",
+        "pending_payout_value": "0.002 HBD",
+        "percent_hbd": 10000,
+        "permlink": "wins-and-losses-week-11",
+        "post_id": 149883470,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 3
+        },
+        "title": "WINS AND LOSSES: Week 11",
+        "updated": "2026-04-21T11:05:54",
+        "url": "/hive-188409/@riona09/wins-and-losses-week-11"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 15793979233,
+            "voter": "p3d1"
+          },
+          {
+            "rshares": 9667263790,
+            "voter": "glimpsytips.dex"
+          }
+        ],
+        "author": "p3d1",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 65.59,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![](https://images.ecency.com/DQmYGWAjycGfaYBazivp4zmCEnWEgunkdgGY7hgAvo2GqxW/1776759896714.jpg)\nHow are you, friends? Best wishes to you all, wherever you are.\n\nI'm so happy to see flowers in bloom. The bright colors are so beautiful. This flower is a bougainvillea in a pot. It's a poorly maintained bougainvillea, but it still blooms beautifully. The cuttings come in other colors: pink, purple, yellow, and white.\n\nThis bougainvillea is in front of the house, in a simple garden, along with other flowers, typically bougainvillea. Other bougainvillea flowers aren't as beautiful as this one. It caught my attention, and I'm sure others who see it in person will be interested too.\n\nThis bougainvillea is approximately 50 cm tall. Grafting bougainvillea in various colors is not easy, especially for beginners who lack patience. So, it all requires patience.\n\nI once grafted bougainvillea in three colors. The result was that only two colors worked. When I asked a friend, they said the connection shouldn't be loose or airy. That's one of the reasons why there are probably many other things we don't understand.\n\nI managed to take several photos of this bougainvillea flower from various positions. You can see the results in this post. We apologize for any shortcomings.\n\n![](https://images.ecency.com/DQmccaR3ZuaqhUVsa1jpsfbfuyusaDsSt8oYGZimKLKMjLu/1776759947346.jpg)\n\n![](https://images.ecency.com/DQmT6SgNSH2HScWzEPS8sDuiQ4FxUf32Ep3onNP6QSCw4zz/1776759947599.jpg)\n\n![](https://images.ecency.com/DQmV9EamisqvfuCdsU5r8XJpHHGpaDdbzeM1oqgCLZ4Hta9/1776759947791.jpg)\n\n![](https://images.ecency.com/DQmYCZLZQ2BF72K7hSqvb3gw3RHRiJB86pW9wkRFV7QKe1y/1776760009477.jpg)\n\n![](https://images.ecency.com/DQmQ9cipSppfmrvHS1CsGrHR9pMsoYRDFiH2UC6kbLinXh2/1776760009637.jpg)\n\n![](https://images.ecency.com/DQmXZRucVtzN25aiqhibfKvGXLUHRXxLWhTV3L2jfUmJW4D/1776760009754.jpg)\n\n![](https://images.ecency.com/DQmZp5wKrGiA6SgynfCrPWmQJnxkJmKyARZAfpQxSQT2Nry/1776760009890.jpg)\n\n###### <center>Note: I am writing in Indonesian and using the help of Google translate to translate into English.</center> \n \n<HR> \n \nPhotographer|Smartphone used |Location  \n|-|-|-| \n@p3d1|Galaxy A16 5G|Aceh Province. Indonesian Country. \n \n<HR> \n \n#### <center> Thank you for your visit.</center> \n \n### <center>Best Regards @p3d1</center>",
+        "category": "hive-181964",
+        "children": 0,
+        "community": "hive-181964",
+        "community_title": "PHOTOGRAPHY [DAC]",
+        "created": "2026-04-21T11:05:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmYGWAjycGfaYBazivp4zmCEnWEgunkdgGY7hgAvo2GqxW/1776759896714.jpg",
+            "https://images.ecency.com/DQmQ9cipSppfmrvHS1CsGrHR9pMsoYRDFiH2UC6kbLinXh2/1776760009637.jpg",
+            "https://images.ecency.com/DQmZp5wKrGiA6SgynfCrPWmQJnxkJmKyARZAfpQxSQT2Nry/1776760009890.jpg",
+            "https://images.ecency.com/DQmXZRucVtzN25aiqhibfKvGXLUHRXxLWhTV3L2jfUmJW4D/1776760009754.jpg",
+            "https://images.ecency.com/DQmV9EamisqvfuCdsU5r8XJpHHGpaDdbzeM1oqgCLZ4Hta9/1776759947791.jpg",
+            "https://images.ecency.com/DQmYCZLZQ2BF72K7hSqvb3gw3RHRiJB86pW9wkRFV7QKe1y/1776760009477.jpg",
+            "https://images.ecency.com/DQmccaR3ZuaqhUVsa1jpsfbfuyusaDsSt8oYGZimKLKMjLu/1776759947346.jpg",
+            "https://images.ecency.com/DQmT6SgNSH2HScWzEPS8sDuiQ4FxUf32Ep3onNP6QSCw4zz/1776759947599.jpg"
+          ],
+          "image_ratios": [
+            1.3333333333333333,
+            1.3333333333333333,
+            1.3333333333333333,
+            1.3333333333333333,
+            0.75
+          ],
+          "links": [],
+          "tags": [
+            "hive-181964",
+            "flowers",
+            "beautiful",
+            "neoxian",
+            "stem",
+            "stemsocial",
+            "archon",
+            "ecency",
+            "ctp"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 25461243023,
+        "payout": 0.002,
+        "payout_at": "2026-04-28T11:05:30",
+        "pending_payout_value": "0.002 HBD",
+        "percent_hbd": 10000,
+        "permlink": "colorful-bougainvillea-flowers",
+        "post_id": 149883469,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 2
+        },
+        "title": "Colorful Bougainvillea Flowers",
+        "updated": "2026-04-21T11:05:30",
+        "url": "/hive-181964/@p3d1/colorful-bougainvillea-flowers"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": -1791573928,
+            "voter": "spaminator"
+          }
+        ],
+        "author": "lunaz",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 8.81,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n\n\n<center>![image](https://pixabay.com/get/g4ec1fd9752b29eaf27cd55088f57a6a7fb92e7171dabbad529cd984be69fb58b3a171a8d7417cbf6f39a1bf35fa3ca35613747ad71b1fab8b89a69552f0a9984_640.jpg)</center>\n\n***\n\n# 10 Уникальных Советов по Оптимизации Производительности Linux для Вашего Серверного\n\nПривет, администраторы! Если вы хотите, чтобы ваш сервер работал быстрее, чем вы успеваете выпить чашку кофе, вот 10 уникальных советов по оптимизации производительности Linux. И не забудьте, что даже самый быстрый сервер не спасет вас от медленного интернета!\n\n## 1. Отключите ненужные службы\nЗачем вашему серверу служба, которая отвечает за отправку факсов? Отключите все ненужные службы, чтобы освободить ресурсы. Помните, чем меньше служб, тем меньше шансов, что одна из них сломается и начнет петь песни о любви к старым версиям ядра.\n\n## 2. Используйте SSD\nЕсли ваш сервер все еще работает на HDD, то он как черепаха на марафоне. Пора перейти на SSD! Это как дать вашему серверу энергетик. Он будет работать быстрее, а вы сможете меньше нервничать.\n\n## 3. Настройте SWAP\nSWAP — это как запасной парашют. Вы надеетесь, что он вам не понадобится, но когда он нужен, лучше, чтобы он был настроен правильно. Убедитесь, что у вас достаточно SWAP, чтобы ваш сервер не упал, как старый компьютер на Windows 95.\n\n## 4. Оптимизируйте конфигурацию ядра\nНастройте ядро под ваши нужды. Это как выбрать идеальный размер футболки: слишком большая — не удобно, слишком малая — не дышит. Найдите баланс, и ваш сервер будет работать как часы.\n\n## 5. Используйте кэширование\nКэширование — это как иметь запасную пиццу в холодильнике. Зачем ждать, когда можно просто достать ее и наслаждаться? Используйте кэширование для ускорения доступа к данным.\n\n## 6. Мониторинг ресурсов\nСледите за ресурсами вашего сервера, как за любимым питомцем. Если он начинает \"пухнуть\" (использовать много ресурсов), возможно, ему нужно немного меньше \"лакомств\" (процессов).\n\n## 7. Настройка сетевых параметров\nОптимизируйте параметры сети, чтобы ваш сервер мог общаться быстрее, чем вы с коллегами за чашкой кофе. Настройте MTU и TCP, и наблюдайте, как скорость возрастает!\n\n## 8. Удалите ненужные пакеты\nКаждый ненужный пакет — это как лишний килограмм на весах. Удалите все, что не нужно, и пусть ваш сервер чувствует себя легче и быстрее. Не забывайте, что \"чем меньше, тем лучше\" работает и в мире серверов.\n\n## 9. Используйте легковесные дистрибутивы\nЕсли ваш сервер все еще использует тяжелый дистрибутив, возможно, ему стоит на диету. Легковесные дистрибутивы могут значительно улучшить производительность. Это как перейти с жирных бургеров на салат — сначала непривычно, но потом вы почувствуете себя лучше.\n\n## 10. Регулярные обновления\nНе забывайте обновлять систему и программное обеспечение. Это как регулярные медицинские осмотры для вашего сервера. Лучше предотвратить проблемы, чем потом пытаться их исправить, как после вечеринки с пивом и чипсами.\n\n---\n\nНадеюсь, эти советы помогут вам оптимизировать производительность вашего сервера до небес! Помните, что даже самый быстрый сервер не спасет вас от неполадок, если вы забудете сделать резервную копию! Удачи! 🚀\n\n***\n\n<center>![image](https://pixabay.com/get/gd7982772d8d154766caee606cfaf9b9df03b42c94fdd46d4c4d22589e9e60fb0e6d57351976738c45e9909e4424eb652_640.jpg)</center>\n\n***\n\nAll images are taken from the [Pixabay.com](https://pixabay.com)Больше полезных статей [4adm.in](https://4admin.mywire.org)",
+        "category": "linux",
+        "children": 0,
+        "created": "2026-04-21T11:05:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "shortForm": "true",
+          "tags": [
+            "linux",
+            "life",
+            "kr",
+            "waivio",
+            "neoxian",
+            "leo",
+            "inleo",
+            "cent",
+            "oneup",
+            "pob",
+            "proofofbrain",
+            "hustler",
+            "pal",
+            "pimp"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": -1791573928,
+        "payout": 0,
+        "payout_at": "2026-04-28T11:05:21",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "feocnx2tmbjzei4to6cxzs",
+        "post_id": 149883466,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1
+        },
+        "title": "\"10 Уникальных Советов по Оптимизации Производительности Linux для Вашего Серверного",
+        "updated": "2026-04-21T11:05:21",
+        "url": "/linux/@lunaz/feocnx2tmbjzei4to6cxzs"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": -1791573928,
+            "voter": "spaminator"
+          }
+        ],
+        "author": "lasos",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 4.33,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n\n\n<center>![image](https://pixabay.com/get/g86b56a9c7eb0dea55ab463ffdf2fa023317e6ec145682901dd38a1f258902bbfe10298730b55a05c0372d71766ffce36b05c20b701f364ce4cb42fe215e80de9_640.jpg)</center>\n\n***\n\n1. \"Los mejores atardeceres en la playa de Tulum 🌅 #Viajes #Tulum\"\n2. \"Explorando las calles empedradas de Lisboa 🇵🇹 #Aventura #Lisboa\"\n3. \"¿Quién más sueña con un café en París? ☕️❤️ #Viajar #París\"\n4. \"Descubriendo la magia de Kyoto en primavera 🌸 #Japón #Viajes\"\n5. \"Caminando por el desierto de Atacama, ¡un paisaje de otro mundo! 🏜️ #Chile #Aventura\"\n6. \"Comiendo tapas en Barcelona, ¡la vida es mejor con buena comida! 🍽️ #España #Gastronomía\"\n7. \"Navegando por los canales de Ámsterdam 🚲🌷 #Holanda #Viajes\"\n8. \"La selva amazónica: un paraíso de biodiversidad 🌿🦜 #Naturaleza #Aventura\"\n9. \"Cruzando el Puente Golden Gate, ¡un ícono de San Francisco! 🌉 #EEUU #Viajes\"\n10. \"¡Ya tengo mi pasaporte listo para la próxima aventura! ✈️🌍 #Viajar #Aventura\" \n\n¡Espero que te inspiren!\n\n***\n\n",
+        "category": "hive-193084",
+        "children": 0,
+        "community": "hive-193084",
+        "community_title": "DBuzz",
+        "created": "2026-04-21T11:05:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "dBuzz/v3.0.0",
+          "shortForm": "true",
+          "tags": [
+            "trip",
+            "life",
+            "nature",
+            "kr",
+            "waivio",
+            "neoxian",
+            "leo",
+            "inleo",
+            "cent",
+            "oneup",
+            "pob",
+            "proofofbrain",
+            "hustler",
+            "pal",
+            "pimp"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": -1791573928,
+        "payout": 0,
+        "payout_at": "2026-04-28T11:05:09",
+        "pending_payout_value": "0.000 HBD",
+        "percent_hbd": 10000,
+        "permlink": "sijpzvyxh3ooajur2drhbx",
+        "post_id": 149883463,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1
+        },
+        "title": "¡Claro! Aquí tienes algunas ideas de títulos breves para tweets sobre viajes:\n\n1. \"Los",
+        "updated": "2026-04-21T11:05:09",
+        "url": "/hive-193084/@lasos/sijpzvyxh3ooajur2drhbx"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 10722690903774,
+            "voter": "magicmonk"
+          },
+          {
+            "rshares": 1517748464,
+            "voter": "steemcleaners"
+          },
+          {
+            "rshares": 32547259391,
+            "voter": "whatamidoing"
+          },
+          {
+            "rshares": 4036965588,
+            "voter": "shikika"
+          },
+          {
+            "rshares": 19856607961,
+            "voter": "samminator"
+          }
+        ],
+        "author": "vanje",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 71.83,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Wenn ich heute über Technik nachdenke, merke ich, wie schwer es geworden ist, ihren Anfang zu bestimmen. Sie ist einfach überall. Aber irgendwann muss es diesen ersten Moment gegeben haben, an dem ich ihr bewusst begegnet bin.\n\nVielleicht war es das Telefon im Flur mit der Wählscheibe. Oder die Musiktruhe im Wohnzimmer – Plattenspieler und Radio in einem Möbelstück. Ich weiß es nicht mehr genau. Ich weiß nur: Diese Geräte gehörten nicht uns Kindern. Sie gehörten den Erwachsenen. Und genau dort beginnt meine persönliche Geschichte mit Technik.\n\n„Wenn ich versuche, mich zu erinnern, entsteht eine Art technologische Zeitlinie meines Lebens …“\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23u5QY15N5qMJKeX4xm6NEBhVJTciNWRBYRfVsDfQtvthhtkqviGsDBdgKjesHvFnTwz1.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n\n## Eine persönliche Zeitlinie\n### Ende der 1960er – Technik gehört den Erwachsenen\n\nErste bewusste Begegnungen mit Technik. Wählscheiben-Telefon im Flur. Musiktruhe im Wohnzimmer (Plattenspieler + Radio). \n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/EqQPXhL6tvohCXKiJTEWbAELmzXdDH9RP4sWh8ASXhpYje63kZGDtCGtNE6USJUmBPE.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n\n\n\nSchlager aus den 60ern. Technik ist teuer und fast ein „Heiligtum“. Kinder benutzen Geräte nicht – sie beobachten. Eine meiner stärksten Erinnerungen: Wenn das Telefon klingelte, war es oft mein Vater, der beruflich unterwegs war. Und mich wollte er immer sprechen.\n\n\n\n\n### Frühe 1970er – Mein erstes eigenes Gerät\n\nDas erste Stück Technik, das wirklich mir gehörte: Ein kleines batteriebetriebenes Transistorradio, überall dabei, englischsprachige Musik entdecken (Abgrenzung zum Schlager der Erwachsenen). Technik wird zum ersten Mal Teil der eigenen Identität.\n\n### Mitte / Ende der 1970er – Musik wird teilbar\n\nDer nächste große Schritt: Der Kassettenrekorder. Plötzlich konnte man: Musik aus dem Radio aufnehmen, eigene Kassetten erstellen, Musik mit Freunden tauschen. Das bedeutete aber auch: stundenlang auf einen Song warten. Aufnahme neu starten, wenn der Moderator hineinredet. ständig neue Batterien kaufen. Musik hören kostete damals Zeit und Energie.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23wCLgCfALkgwY4UGpJo34aoaTo19FkHdJDcbvwFzCkS2yKLK6pUuwxyi3ZaWE3CSTrXv.png)<br><sup>Image by <a href=\"https://pixabay.com/users/mastertux-470906/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=6004436\">MasterTux</a> from <a href=\"https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=6004436\">Pixabay</a></sup>\n\n\n### Ende der 1970er – Erste eigene HiFi-Anlage\n\nWeihnachtsgeschenk: eine Schneider Kompakt-Stereoanlage. Ich war ehrlich gesagt enttäuscht. Ich wollte: einzelne Komponenten, Geräte später austauschen, meine Anlage selbst zusammenstellen. Diese Enttäuschung führte zu etwas Neuem: Ich begann nach der Schule zu arbeiten, um Geld zu verdienen. Saisonarbeiten, Baujobs – oft half ich beim Vater eines Freundes, der Fliesenleger war. Der Bruder eines Freundes hatte sich mit Gerüstbau selbständig gemacht.\n\n\n### 1985 – Der Heimcomputer\n\nMit Beginn meines Studiums in Automatisierungstechnik kam der nächste große Sprung. Heimcomputer. Zur Auswahl standen damals: Commodore C64 und Schneider CPC\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23xeVMaZpXJhwHrkHvAqD9pqJDXqRcedWnjAHbfViA4TX4MzFMQC9iED65ft7zBV75nLQ.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\nUnser Dozent riet uns: Wartet ein paar Wochen. Ihr werdet selbst merken, welcher Computer zu euch passt. Ich wartete natürlich nicht. Ein gutes Angebot führte schnell zum C64. Im Nachhinein war es eine gute Entscheidung – dort gab es viel mehr Möglichkeiten zu basteln und zu lernen.\n\n### Ende der 1980er – Technik wird Beruf\n\nIn der Ausbildung arbeiteten wir mit echten Mikroprozessoren: 8085, 8086, Z80\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23uEyoWVhoaXZhRCdob4cchTJgcMhC2R27y28dhJ27eoUtcnGwGf21WEcrBEuaGo9hr3V.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\nProgrammiert wurde in: Assembler, BASIC, CP/M, SPS. Dazu kamen PID-Regler und Steuerungen. Software steuerte plötzlich reale Maschinen. Das war eine ganz andere Verantwortung als beim Heimcomputer.\n\n### Automatisierung und Medizintechnik\n\nMein erster beruflicher Einstieg: SPS-Programmierung. Entwickelte halbautomatische Prüfabläufe für Platinen. Später wechselte ich in die Medizintechnik. Entwicklung digitaler Systeme um wiederkehrende Abläufe zu automatisieren. Der PC wurde dabei mein ständiger Begleiter. Von PC-DOS, MS-DOS, bis zu Windows und später auch Linux.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23wWvpez2MtaN83h61iRpsr3tukJGmxsy92qj9a2TBy69fDAM4Di5nvX3FBDGr3unBH1N.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n### Netzwerke und Infrastruktur\n\nEin weiterer Schwerpunkt wurde Netzwerktechnik. Ich installierte Netzwerke bei: Freunden, kleinen Firmen, Selbstständigen. Damals meist 10-Mbit Ethernet. Fehlersuche war oft ein Albtraum. Ein defektes Kabel oder unsaubere Verbindung – und das ganze Netz stand.\n\n### Vor dem Internet – BTX\n\nNoch bevor das Internet alltäglich wurde, arbeitete ich mit BTX (Bildschirmtext). Mit Freunden, einer hatte von seinem Vater einen größeren Kurierdienst übernommen, entwickelten wir eine interaktive Plattform zur Reduktion von Leerfahrten (OMS-2000). Technik dafür: GPS, D2 Mobilfunk, zentrale Plattform. Im Grunde ein früher Vorläufer moderner Logistikplattformen.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23ynZ2z5hrGUkmYcxjeAzUhwGqu3RWxwgNnssVKLEjLHjnrK9J4UiWxxdDbcGGsgraXLN.png)<br><sup>Vieles davon wirkt heute selbstverständlich. Damals (1990-1995) war es ein gefördertes Experiment.</sup>\n\n\n### Frühe Online-Zeit – Modems und ISDN\n\nDie ersten Verbindungen ins Netz: Akustikkoppler (0,3k), 2.8k Modems, später 56k. Der große Fortschritt kam mit ISDN (64k), mit geeigneter teurer Hardware (aktive ISDN-Karte AVM B1) konnte man zwei Leitungen bündeln (128k). Jetzt konnte man stabil online arbeiten.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23y9AZa9mm191utkVTvFTWCRQL5JhCtba4JhbtcFNK6KaDZHwYmvdUnGMed2MeC5TYKeG.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\nIch begann Webseiten zu erstellen: für Freunde, für Vereine, für Selbstständige inklusive Infrastrukturplanung. Solange Technik eine Herausforderung war, machte sie besonders viel Spaß.\n\n### Mobile Kommunikation\n \nDurch meinen Beruf war Erreichbarkeit wichtig. Ich begann mit dem B-Netz. Später kam mein erstes richtig mobiles Telefon - Ein Motorola-Klapphandy mit ausziehbarer Antenne. Erstaunlich gute Funkqualität für diese Zeit.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23wqi9JZVFb8tMzfGrQNsnikgCdwNJ8xS3AjSFnGsgoym4ZYAhSSXkcfBDmDWvsXXpAcC.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n### Frühe Smartphones\n\nNoch lange bevor Apple oder Samsung den Markt dominierten, hatte ich bereits ein frühes Smartphone. Damit konnte man: E-Mails schreiben, Fotos machen, Termine verwalten. Damals fühlte sich das schon wie Zukunft an.\n\n### Heute – Technik als Werkzeug\n\nHeute nutze ich Technik anders. Nicht mehr primär beruflich, sondern als Werkzeug für Gedanken, Austausch und Dokumentation. Zum Beispiel: Schreiben, Reflektieren, Publizieren. Technik unterstützt den Prozess – sie steht nicht mehr im Mittelpunkt.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23x1WXw2cyeXLjY5eizrASwWugaqNGbJ4n5aqwsHx9iAZt35oVUXUUMQXcNZB5o3GHRai.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n## Die eigentliche Entwicklung\n\nWenn ich zurückblicke, sehe ich eine interessante Bewegung: \n- Technik war zuerst selten und zentral\n- Dann wurde sie persönlich\n- Später Werkzeug\n- Dann Infrastruktur\n- Und heute ist sie einfach Begleiter im Alltag.\n\n## Schlussgedanke \nWenn ich heute darüber nachdenke, habe ich eine erstaunliche Entwicklung miterlebt.\n\n- Von der Musiktruhe im Wohnzimmer zum Smartphone in der Hosentasche.\n- Von der Wählscheibe zu globalen Netzwerken.\n- Von Kassettenaufnahmen aus dem Radio zu Musikbibliotheken, die in Sekunden verfügbar sind.\n- Und vom Heimcomputer, auf dem man Programme noch aus Zeitschriften abtippte, hin zu Systemen, die heute mit Hilfe künstlicher Intelligenz Texte formulieren – und ganze Prozesse im Hintergrund mitdenken.\n\nTechnik hat sich ständig verändert. Was sich dabei aber kaum verändert hat, ist etwas anderes: die Neugier. Der Wunsch zu verstehen, wie Dinge funktionieren. Probleme zu lösen. Neue Möglichkeiten auszuprobieren.\n\nFrüher bedeutete das: Kassetten aufnehmen. Computer programmieren. Netzwerke aufbauen.\n\nHeute bedeutet es vielleicht: Gedanken aufschreiben. Erfahrungen teilen. Oder einfach beobachten, wohin sich diese technische Welt noch entwickelt.\n\n\nWenn ich eines gelernt habe, dann: Technik kommt und geht. Aber die Neugier darauf bleibt.",
+        "category": "hive-121566",
+        "children": 0,
+        "community": "hive-121566",
+        "community_title": "Deutsch D-A-CH",
+        "created": "2026-04-21T11:04:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "ai_tools": {
+            "media_generation": true,
+            "writing_edit": true
+          },
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/vanje/23u5QY15N5qMJKeX4xm6NEBhVJTciNWRBYRfVsDfQtvthhtkqviGsDBdgKjesHvFnTwz1.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/EqQPXhL6tvohCXKiJTEWbAELmzXdDH9RP4sWh8ASXhpYje63kZGDtCGtNE6USJUmBPE.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23wCLgCfALkgwY4UGpJo34aoaTo19FkHdJDcbvwFzCkS2yKLK6pUuwxyi3ZaWE3CSTrXv.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23xeVMaZpXJhwHrkHvAqD9pqJDXqRcedWnjAHbfViA4TX4MzFMQC9iED65ft7zBV75nLQ.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23uEyoWVhoaXZhRCdob4cchTJgcMhC2R27y28dhJ27eoUtcnGwGf21WEcrBEuaGo9hr3V.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23wWvpez2MtaN83h61iRpsr3tukJGmxsy92qj9a2TBy69fDAM4Di5nvX3FBDGr3unBH1N.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23ynZ2z5hrGUkmYcxjeAzUhwGqu3RWxwgNnssVKLEjLHjnrK9J4UiWxxdDbcGGsgraXLN.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23y9AZa9mm191utkVTvFTWCRQL5JhCtba4JhbtcFNK6KaDZHwYmvdUnGMed2MeC5TYKeG.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23wqi9JZVFb8tMzfGrQNsnikgCdwNJ8xS3AjSFnGsgoym4ZYAhSSXkcfBDmDWvsXXpAcC.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23x1WXw2cyeXLjY5eizrASwWugaqNGbJ4n5aqwsHx9iAZt35oVUXUUMQXcNZB5o3GHRai.png"
+          ],
+          "tags": [
+            "deutsch",
+            "reflexion",
+            "lebensweg",
+            "zeitreise",
+            "erinnerung",
+            "gedanken",
+            "persoenlicheentwicklung"
+          ],
+          "users": [
+            "vanje"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 14557594184369,
+        "payout": 1.417,
+        "payout_at": "2026-04-28T11:04:30",
+        "pending_payout_value": "1.417 HBD",
+        "percent_hbd": 10000,
+        "permlink": "wie-technik-und-ich-uns-entwickelten",
+        "post_id": 149883458,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 73
+        },
+        "title": "Wie Technik und ich uns entwickelten",
+        "updated": "2026-04-21T11:04:30",
+        "url": "/hive-121566/@vanje/wie-technik-und-ich-uns-entwickelten"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 5007065542,
+            "voter": "gidlark"
+          },
+          {
+            "rshares": 34146024986,
+            "voter": "onyfest"
+          },
+          {
+            "rshares": 10219796103,
+            "voter": "dechastre"
+          },
+          {
+            "rshares": 16936000676,
+            "voter": "adetorrent"
+          },
+          {
+            "rshares": 1277136636393,
+            "voter": "eidolon"
+          }
+        ],
+        "author": "lindoro",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 75.82,
+        "author_role": "member",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "---\n\n![](https://images.ecency.com/DQmY1nJeWhNVgRgGv4RqodoeNoLg3jYjv7Dj2v2dSqvmnYG/1776734989693.jpg)\n\n<center>*These photos are my entry for the #monomad contest by @brumest and @monochromes.*</center>\n\n---\n\n\nYesterday my niece turned one year old and several friends and family went to her house to celebrate and brighten her afternoon a little, among the activities that were done one was the traditional game of dominoes that is never missing on holidays, while people were playing I was walking around with my camera taking photographs, here I show you some, I hope you like them and they are to your liking, greetings to all and until next time.\n\n---\n\n\n![](https://images.ecency.com/DQmRuAKffEfNRscqtxyS2SAoEB1o5YZhBtmodcb6tN42iox/1776734989779.jpg)\n\n![](https://images.ecency.com/DQmVuv8m3hfDo6c4MP1cearxpmuGBiaBSzhFzFLZLo5XkuV/1776734989852.jpg)\n\n![](https://images.ecency.com/DQmYEHjY56FJs1793UgmM6WUHgDAoZf6GGVhPU21foT2v2q/1776734989925.jpg)\n\n![](https://images.ecency.com/DQmbMZ4T5wU6ydGD5jPzxSQNrqBSnwnhZdoWTsqn1Fv5PaS/1776734990013.jpg)\n\n![](https://images.ecency.com/DQmXGQTjEQTsM4vWUXqka8dbPvNduGb5LbwRnj7ouDe8bpu/1776735041075.jpg)\n\n![](https://images.ecency.com/DQmRPQB7TsNNT1rSAuVw91YesqZyRi9Gk84wCUcwxenduMc/1776735041174.jpg)\n\n![](https://images.ecency.com/DQmXVKifktYvihczr6F76cXBuSRbE7WpMJmnRDisDVbBHy4/1776735041266.jpg)\n\n![](https://images.ecency.com/DQmd2JRa6Z7RSAHJVQrrr265araQuBPZPzfxvYnfZP5FQ4a/1776735394045.jpg)\n\n![](https://images.ecency.com/DQmPepKjWd4xoWsieq2qD5fSTN9LpwNpQNiRVXX1rNctnDq/1776735041336.jpg)\n\n![](https://images.ecency.com/DQmXu5rmvUeUfXDAHN75smM6SvEaVjZahBw3PvaBx3eXM1B/1776735041386.jpg)\n\n![](https://images.ecency.com/DQmRUWZZvNd8L7r5wkNsvkiStqeTKhHCB1LNnoseHQ1H356/1776735110812.jpg)",
+        "category": "hive-142159",
+        "children": 0,
+        "community": "hive-142159",
+        "community_title": "Black And White",
+        "created": "2026-04-21T11:03:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmY1nJeWhNVgRgGv4RqodoeNoLg3jYjv7Dj2v2dSqvmnYG/1776734989693.jpg",
+            "https://images.ecency.com/DQmXVKifktYvihczr6F76cXBuSRbE7WpMJmnRDisDVbBHy4/1776735041266.jpg",
+            "https://images.ecency.com/DQmRUWZZvNd8L7r5wkNsvkiStqeTKhHCB1LNnoseHQ1H356/1776735110812.jpg",
+            "https://images.ecency.com/DQmXu5rmvUeUfXDAHN75smM6SvEaVjZahBw3PvaBx3eXM1B/1776735041386.jpg",
+            "https://images.ecency.com/DQmPepKjWd4xoWsieq2qD5fSTN9LpwNpQNiRVXX1rNctnDq/1776735041336.jpg",
+            "https://images.ecency.com/DQmd2JRa6Z7RSAHJVQrrr265araQuBPZPzfxvYnfZP5FQ4a/1776735394045.jpg",
+            "https://images.ecency.com/DQmXGQTjEQTsM4vWUXqka8dbPvNduGb5LbwRnj7ouDe8bpu/1776735041075.jpg",
+            "https://images.ecency.com/DQmRPQB7TsNNT1rSAuVw91YesqZyRi9Gk84wCUcwxenduMc/1776735041174.jpg",
+            "https://images.ecency.com/DQmRuAKffEfNRscqtxyS2SAoEB1o5YZhBtmodcb6tN42iox/1776734989779.jpg",
+            "https://images.ecency.com/DQmbMZ4T5wU6ydGD5jPzxSQNrqBSnwnhZdoWTsqn1Fv5PaS/1776734990013.jpg"
+          ],
+          "image_ratios": [
+            1.5,
+            1.5,
+            1.5,
+            1.5,
+            1.5
+          ],
+          "links": [],
+          "tags": [
+            "hive-142159",
+            "monomad",
+            "ecency",
+            "hivecuba",
+            "arcange",
+            "photography",
+            "people",
+            "street"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 2427656562306,
+        "payout": 0.236,
+        "payout_at": "2026-04-28T11:03:21",
+        "pending_payout_value": "0.236 HBD",
+        "percent_hbd": 10000,
+        "permlink": "monomad-or-or-playing-dominoes",
+        "post_id": 149883455,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 17
+        },
+        "title": "Monomad || Playing dominoes.",
+        "updated": "2026-04-21T11:03:21",
+        "url": "/hive-142159/@lindoro/monomad-or-or-playing-dominoes"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 96950347161,
+            "voter": "pixelfan"
+          },
+          {
+            "rshares": 41656952112,
+            "voter": "pixresteemer"
+          },
+          {
+            "rshares": 8676888211,
+            "voter": "anonyvoter"
+          },
+          {
+            "rshares": 15495484994,
+            "voter": "randomvoter"
+          },
+          {
+            "rshares": 12847063811,
+            "voter": "steem-holder"
+          }
+        ],
+        "author": "gunting",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 69.05,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "actifit.pay",
+            "weight": 500
+          },
+          {
+            "account": "hiveonboard",
+            "weight": 100
+          },
+          {
+            "account": "ocdb",
+            "weight": 100
+          }
+        ],
+        "blacklists": [],
+        "body": "![](https://images.ecency.com/DQmVJQfHdhhSpRvtT26A1hftSUoV9VNRzZkb3cRjhkbuFzn/1776768668114.jpg)\n![hive dividers-04.png](https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png)\nThis morning began with a warm atmosphere at home. I enjoyed a plate of fried rice made by my wife, which was just right, simple yet meaningful. Afterward, a cup of hot coffee was the perfect way to start the day. The steam rising slowly seemed to give me extra energy before starting my day.\n\nAs usual, I continued my routine of delivering bread to my favorite shops. The sun had been shining brightly since morning, making the air feel hotter than usual. On the way, I carried many boxes of bread on my modified motorcycle to keep the load secure. Despite the scorching heat, the work must go on.\n\nOn the way, I stopped by the Bangka Jaya sea. The sea breeze provided a bit of coolness in the sweltering heat. There was also a bread vendor there, so I took a look around. The calm sea view and shady trees made for a pleasant, if only brief, stop.\n\nHowever, today's trip wasn't entirely smooth. I was stuck in a long traffic jam due to road repairs. Many vehicles, from motorcycles to large cars, piled up. This situation made the journey longer than usual. Even so, I tried to remain patient and enjoy the process.\n\nIt was a tiring, hot, and challenging day, but there were still small moments to be grateful for. From a simple breakfast at home to a short stop by the sea, everything was part of the story of the day.\n![hive dividers-04.png](https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png)\n\n![](https://images.ecency.com/DQmVjdthmDKi76yagRHAvVCiJhSpHh4BxDMrfvhbZdcdAbK/1776768667942.jpg)\n\n![](https://images.ecency.com/DQmZykN4zEDeTrGdREQNmruJRXN1U2cYGjCfqnH9EMfmoMe/1776768668307.jpg)\n\n![](https://images.ecency.com/DQmXvQdkcPPcK5HyuS73Tk3u6y7UcypSCw8WuL2xovH3cBK/1776768668483.jpg)\n\n![](https://images.ecency.com/DQmWVfGBDusa6So3GovhLy3kTGnPa2qULxKLQTjk9XuQ6hq/1776768668599.jpg)\n![hive dividers-04.png](https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png)\n<HR>\n\n##### <center>Note: I am writing in Indonesian and using the help of Google translate to translate into English.</center>\n\n#### <center>All gifts from this post will be burned and made into strength to support other hivers posts.</center>\n\n<HR>\n\nPhotographer|Smartphone used |Location \n|-|-|-|\n@gunting|Realme C53|Nanggroe Aceh Darussalam\n\n<HR>\n\n#### <center> Thank you for your visit.</center>\n\n### <center>Warm Greetings From</center>\n\n## <center>@gunting</center> <br/> _This report was published via Actifit app ([Android](https://bit.ly/actifit-app) | [iOS](https://bit.ly/actifit-ios)). Check out the original version [here on actifit.io](https://actifit.io/@gunting/actifit-gunting-20260421t110131902z)_ <br/> <br><img src=\"https://cdn.steemitimages.com/DQmXv9QWiAYiLCSr3sKxVzUJVrgin3ZZWM2CExEo3fd5GUS/sep3.png\"><br><table>\t<tr>\t\t<img src=\"https://actifit.s3.us-east-1.amazonaws.com/ACTIVITYDATE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>21/04/2026</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmRgAoqi4vUVymaro8hXdRraNX6LHkXhMRBZxEo5vVWXDN/ACTIVITYCOUNT.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><b>18460</b></div>\t</tr></table><table>\t<tr>\t\t<img src=\"https://cdn.steemitimages.com/DQmZ6ZT8VaEpaDzB16qZzK8omffbWUpEpe4BkJkMXmN3xrF/ACTIVITYTYPE.png\">\t</tr>\t<tr>\t\t<div class=\"text-center\"><pre><b>Daily Activity</b></div></pre></div>\t</tr></table><div class=\"text-center\"><img src=\"https://cdn.steemitimages.com/DQmW1VsUNbEjTUKawau4KJQ6agf41p69teEvdGAj1TMXmuc/A-5.png\"><a href=\"https://bit.ly/actifit-app\"><img src=\"https://cdn.steemitimages.com/DQmQqfpSmcQtfrHAtzfBtVccXwUL9vKNgZJ2j93m8WNjizw/l5.png\"></a><a href=\"https://bit.ly/actifit-ios\"><img src=\"https://cdn.steemitimages.com/DQmbWy8KzKT1UvCvznUTaFPw6wBUcyLtBT5XL9wdbB7Hfmn/l6.png\"></a></div>",
+        "category": "hive-193552",
+        "children": 0,
+        "community": "hive-193552",
+        "community_title": "Actifit",
+        "created": "2026-04-21T11:01:33",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "actiCrVal": "20f87039c8e6f6f6a29a0c2192d82ab2ef08bfa7b49a7a0bf60778cb20844339fbfd46bc816cc17de4ec07b97f131335",
+          "actifitUserID": [
+            "e2546cd6-b3bf-4252-abe0-b35adf891636v0.13.4"
+          ],
+          "activityDate": [
+            "20260421"
+          ],
+          "activity_type": [
+            "Daily Activity"
+          ],
+          "app": "actifit/0.13.4",
+          "appType": "Android",
+          "chestUnit": [
+            "cm"
+          ],
+          "community": [
+            "hive-193552"
+          ],
+          "dataTrackingSource": [
+            "Device Tracking"
+          ],
+          "detailedActivity": [
+            "0030115|004526|05001|0645111|0700534|0715685|073097|0745146|0800189|0815713|0830332|0845968|0900991|0915486|0930505|0945661|1000456|1015445|1030481|1045411|1100399|1115385|1130304|1145363|1200339|1215285|1230501|1245183|1300223|1315472|1330918|1345462|1400553|141543|1430231|1445565|1500787|1515871|1530374|15451208|1600360|16156|16308|16458|170043|171565|1730138|174512|18001|"
+          ],
+          "heightUnit": [
+            "cm"
+          ],
+          "image": [
+            "https://images.ecency.com/DQmVJQfHdhhSpRvtT26A1hftSUoV9VNRzZkb3cRjhkbuFzn/1776768668114.jpg",
+            "https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png",
+            "https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png",
+            "https://images.ecency.com/DQmVjdthmDKi76yagRHAvVCiJhSpHh4BxDMrfvhbZdcdAbK/1776768667942.jpg",
+            "https://images.ecency.com/DQmZykN4zEDeTrGdREQNmruJRXN1U2cYGjCfqnH9EMfmoMe/1776768668307.jpg",
+            "https://images.ecency.com/DQmXvQdkcPPcK5HyuS73Tk3u6y7UcypSCw8WuL2xovH3cBK/1776768668483.jpg",
+            "https://images.ecency.com/DQmWVfGBDusa6So3GovhLy3kTGnPa2qULxKLQTjk9XuQ6hq/1776768668599.jpg",
+            "https://images.hive.blog/DQmdvc788wxsBSQHY3z21o3wSTU7hqRnyYc2JFEn2pEYSev/hive%20dividers-04.png",
+            "https://cdn.steemitimages.com/DQmW1VsUNbEjTUKawau4KJQ6agf41p69teEvdGAj1TMXmuc/A-5.png"
+          ],
+          "step_count": [
+            "18460"
+          ],
+          "tags": [
+            "hive-193552",
+            "actifit",
+            "aliveanddriving",
+            "iamalivechallenge",
+            "bbh",
+            "alive",
+            "waiv",
+            "neoxian",
+            "archon",
+            "pimp",
+            "pepe",
+            "ccc",
+            "cent",
+            "proofofbrain",
+            "lassecash",
+            "spt",
+            "meme",
+            "photo",
+            "ctp",
+            "stem",
+            "vyb",
+            "growth",
+            "",
+            "sportstalk",
+            "movetoearn",
+            "move2earn"
+          ],
+          "thighsUnit": [
+            "cm"
+          ],
+          "timezone": [
+            "GMT+07:00"
+          ],
+          "users": [
+            "actifit"
+          ],
+          "waistUnit": [
+            "cm"
+          ],
+          "weightUnit": [
+            "kg"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 374290602316,
+        "payout": 0.036,
+        "payout_at": "2026-04-28T11:01:33",
+        "pending_payout_value": "0.036 HBD",
+        "percent_hbd": 10000,
+        "permlink": "actifit-gunting-20260421t110131902z",
+        "post_id": 149883445,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 11
+        },
+        "title": "My Actifit Report Card: April 21 2026",
+        "updated": "2026-04-21T11:01:33",
+        "url": "/hive-193552/@gunting/actifit-gunting-20260421t110131902z"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

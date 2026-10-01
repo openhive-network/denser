@@ -1,0 +1,1785 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "hot",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "3397b880ac79ffad",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "hot",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [
+          {
+            "rshares": 669292591,
+            "voter": "shadowspub"
+          },
+          {
+            "rshares": 153762571092,
+            "voter": "penguinpablo"
+          },
+          {
+            "rshares": 2363994824,
+            "voter": "dadview"
+          },
+          {
+            "rshares": 1563817529,
+            "voter": "funnyman"
+          },
+          {
+            "rshares": 1382162259,
+            "voter": "bigtakosensei"
+          }
+        ],
+        "author": "steemflow",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 80.14,
+        "author_role": "member",
+        "author_title": "Verified | India ✅",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "It was yesterday that I was watching a video of a well known entrepreneur lashing out her frustration because of the online trolling. She was getting a lot of abusive message on her social media account because she shared about the benefit of offering namaz. There was nothing wrong yet she is facing backlashes. She was literally crying because of the bullying she faced. Bullying is purposeful behavior intended to cause pain emotional, social, or physical. It always leave a heavy amount of distress in the people minds\n\n\n![20260406_063520(1).jpg](https://files.peakd.com/file/peakd-hive/steemflow/Eq7LpeFdKHoQ18FZ9kUmFSUqGPcPjh1M3NVU5pdvfR6VNT8gddKqP8sLEdNH1gpwPds.jpg)\n*(own edited image)*\n\nI remember, I was facing a lot of backlashes too in my childhood due to my overweight body. Kids from.all age group use to pinch me and ran away. It was physical torture that faced for a longer period in my childhood. Untill I stand against the torture. The scenarios have changed and bullying are done through online. But there is a always a point of discussion, about the level of harm it will bring to the person. Both physical and online bullying are deeply harmful, often causing long term emotional, mental, and physical health issues. Physical bullying presents an immediate threat to physical safety, while online bullying is uniquely damaging because it is 24/7, allows for anonymity, and can reach a massive audience, often providing no safe space for the victim. There are many online social media account that were deactivated just because the.user unable to bear the burnt of the online bullying. \n\n> ***Bullying isn’t a rite of passage. It’s trauma that follows you home.***\n\n\nBullying, both physical and online, is a deliberate, repetitive action aimed at establishing power, dominance, or control over another person, often stemming from the bully's own insecurities, jealousy, or desire for social status. Perpetrators often act out of peer pressure, a need for control, or to feel popular, with cyberbullying amplified by anonymity and the ability to cause distress from a distance. Physical bullying typically requires the bully to have a direct advantage in physical size, strength, or social, popular power. Whereas, online bullying is motivated by the ability to remain anonymous, the ability to act without seeing the victim's reaction, and the belief that it is \"funny\" or a game. \n\nEither physical or online each of them have their level of effects in the victims mind.\n\n\n> *Online bullying can be worse because, it can be relentless, with content going viral instantly, creating permanent damage to reputation. Victims feel inescapable persecution, often leading to severe anxiety and suicidal ideation. The anonymity of the perpetrator can make it more ruthless.*\n\n\n> *Physical bullying can be worse, as it causes immediate bodily harm and fear, causing intense, direct trauma. The immediate threat to life and safety can create profound, instant terror.*\n\n\nPeople are often targeted for being \"different,\" such as differences in appearance, race, religion, or social status. Ultimately, both are incredibly damaging, and the \"worst\" one depends on the nature and extent of the abuse experienced by the individual. Both can lead to long-lasting mental health issues, including depression, anxiety, and low self-esteem. \n\n\n\n\n\n**In good faith - Peace!!**\n\n\n\n![1000037470.png](https://files.peakd.com/file/peakd-hive/steemflow/Eo8M1obna2cYnnMAc2ZC3wWMW9ZqZHvk9StEga6aY2cTsKmweW7zFBDm7D13YHVoC5N.png)",
+        "category": "hive-153850",
+        "children": 1,
+        "community": "hive-153850",
+        "community_title": "Hive Learners",
+        "created": "2026-04-21T10:48:57",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.8-vision",
+          "description": "It was yesterday that I was watching a video of a well known entrepreneur lashing out her frustration because of the online trolling. She was getting a lot of abusive message on her social media account",
+          "format": "markdown+html",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/steemflow/Eq7LpeFdKHoQ18FZ9kUmFSUqGPcPjh1M3NVU5pdvfR6VNT8gddKqP8sLEdNH1gpwPds.jpg",
+            "https://files.peakd.com/file/peakd-hive/steemflow/Eo8M1obna2cYnnMAc2ZC3wWMW9ZqZHvk9StEga6aY2cTsKmweW7zFBDm7D13YHVoC5N.png"
+          ],
+          "image_ratios": [
+            "1.3333",
+            "4.0000"
+          ],
+          "tags": [
+            "hive-153850",
+            "bullying",
+            "philosophy",
+            "art",
+            "hl-exclusive",
+            "hl-w214e1",
+            "trolling",
+            "neoxian",
+            "waivio",
+            "community"
+          ],
+          "thumbnails": [
+            "https://files.peakd.com/file/peakd-hive/steemflow/Eq7LpeFdKHoQ18FZ9kUmFSUqGPcPjh1M3NVU5pdvfR6VNT8gddKqP8sLEdNH1gpwPds.jpg"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 56352688943979,
+        "payout": 5.487,
+        "payout_at": "2026-04-28T10:48:57",
+        "pending_payout_value": "5.487 HBD",
+        "percent_hbd": 10000,
+        "permlink": "before-you-judge-before-you",
+        "post_id": 149883390,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 201
+        },
+        "title": "Before you judge, before you post, consider the impact. ",
+        "updated": "2026-04-21T10:48:57",
+        "url": "/hive-153850/@steemflow/before-you-judge-before-you"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 59418083367,
+            "voter": "ratel"
+          },
+          {
+            "rshares": 5141474449,
+            "voter": "netaterra"
+          },
+          {
+            "rshares": 791014188053,
+            "voter": "cornerstone"
+          },
+          {
+            "rshares": 5406955258054,
+            "voter": "redes"
+          },
+          {
+            "rshares": 74343279639,
+            "voter": "ganjafarmer"
+          }
+        ],
+        "author": "papilloncharity",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 82.56,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "There was no way that I could get around a palm tree to get the sun behind me.\n![022.jpg](https://files.peakd.com/file/peakd-hive/papilloncharity/EpLgYmrZqoksf62Ygf9wCEA1jVDcxGfPeuqe4DrLEsRLdV6nvr3Jbd5t36yn6611ce7.jpg)\n\nThis was too good to worry about the position of the sun, and I just had to cope with the conditions.\n\nThe African Harrier Hawk (Polyboroides typus) was previously known as a Gymnogene, which suited his athletic prowess as it is one of only a few bird species that can climb trees. \n\n*The two species of polyboroides (one in Africa and one in Madagascar) are large hawks with very broad, deeply slotted wings, long tails and long, slender legs which have the unique ability of being able to bend backwards and sideways at the tarsal (ankle) joint. This enables them to insert their feet into holes and cracks in rocks and tree stems to pull out bats, lizards, nestling birds, and other prey. Their unusually narrow small head also facilitates probing into holes. They have bare facial skin which changes color from red to yellow according to the bird's state of agitation.*     \n\nSource: Book: Birds of Southern Africa. ISBN: 978-1-77584-668-0.\n\nHis call that he made alerted me to his presence, and so I went out to search for him. \n![021.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23ywsaGGqww62Ye3PdiMGM6cZrieRSCDR9J4xpFU8s9V5j7LyYA24ko4PFKTgzrfZ3two.JPG)\n\nThey are famous for searching trees for prey. \n![007.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xp2Pm7hwKKbVFeE7Ra3rwmBFnVxQefBdJw6vqAChsDvRtEYVXQiL5xH2MuwuaA7Hti1.JPG)\n\nAnd this one was scoping the trunk of the tree, as there are little pockets on the trunk that the birds and the squirrels use to nest in. \n![010.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xVRXyBCg9q18TsweJozFYQUdiCh4JnGERuYQbjB3wMSazBYoFTC7pPXQgmtGJ7w1NZe.JPG)\n\nThe wind caught him behind the head, resulting in a lovely look.\n![027.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/Epzz7gf7YNsb7Uj52QVTWBVbJTmuUL3QnPoo1wyTLFfisZ6RZ4zA7Lwo4JJ5FMrrhyh.JPG)\n\nThen he was on his way, but I don't know if he saw anything. \n![017.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23yd1r76yJ6S6T4s4VHRsKmzqPaSwJUEuR6mvVcKfvpNk2CSaUYgmNdiCyWVhy5h1jm34.JPG)\n\nA bit later he appeared lower in the tree.\n![019.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xARkE4oDXA3ctK6gWDBVFZTCYU1QmH6gF5Gvx7YSqLEccshpdxJ2LLLyAzHyBFP4cF1.JPG)\n\nI thought that he would attack something below him.\n![034.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xempz1BB7NKJYqTUkiiDtXtHyJWSmyXsRanEAQ28DDqFSnZunqJQFg6amsCi8T925sn.JPG)\n\nBut not to be, as he rather stepped down and then disappeared behind the tree.\n![037.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23wMabWQgdDHRWRsmDHVdmbtnkskWsoXW3ZYhuCaThzAj7u3tGYSYPt2g3rkHbtAYA5ma.JPG)\n\nThis is the tree that he was in, and you can see the glaring light of the sun.\n![025.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EqUfHg3Uq4AHVN6MVNiJYnZ6f6K5YfVM5njMu56qZXkWn6S7rbH1MjmBpnf8hnnL7JV.JPG)\n\nAs I said above, there was no way I could get behind this tree as it is on a private property, ringed by an electric fence. I don't know if the hawk knew that I couldn't get to him in that tree, maybe but I am only guessing. \nEvery season a pair of harrier hawks are born and believe it or not every season I get them on camera. Sometimes I even get them with their prey, mainly small birds and doves. \n\nWe also have a sparrow hawk that patrols the sky here every day, but he is way too fast for me to get him on camera. One just has to stand outside and to see a sudden rush of doves and smaller birds flying off suddenly to know that the sparrow hawk was on its way. But no problem, as I know that someday I will get him in flight. Things have gotten cold here over the last while, and we already had two cold fronts (winter storms) over the past weekend. I will do a post about it to show you. \nSuch is life.\n\nI hope you enjoyed the pictures and the story.\n\nPhotos by Zac Smith. All-Rights-Reserved.\n\nCamera: Canon PowershotSX70HS Bridge camera.\n\nUntil next time, cheers!  ",
+        "category": "hive-194913",
+        "children": 0,
+        "community": "hive-194913",
+        "community_title": "Photography Lovers",
+        "created": "2026-04-21T11:13:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.3.4",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EpLgYmrZqoksf62Ygf9wCEA1jVDcxGfPeuqe4DrLEsRLdV6nvr3Jbd5t36yn6611ce7.jpg",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23ywsaGGqww62Ye3PdiMGM6cZrieRSCDR9J4xpFU8s9V5j7LyYA24ko4PFKTgzrfZ3two.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xp2Pm7hwKKbVFeE7Ra3rwmBFnVxQefBdJw6vqAChsDvRtEYVXQiL5xH2MuwuaA7Hti1.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xVRXyBCg9q18TsweJozFYQUdiCh4JnGERuYQbjB3wMSazBYoFTC7pPXQgmtGJ7w1NZe.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/Epzz7gf7YNsb7Uj52QVTWBVbJTmuUL3QnPoo1wyTLFfisZ6RZ4zA7Lwo4JJ5FMrrhyh.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23yd1r76yJ6S6T4s4VHRsKmzqPaSwJUEuR6mvVcKfvpNk2CSaUYgmNdiCyWVhy5h1jm34.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xARkE4oDXA3ctK6gWDBVFZTCYU1QmH6gF5Gvx7YSqLEccshpdxJ2LLLyAzHyBFP4cF1.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xempz1BB7NKJYqTUkiiDtXtHyJWSmyXsRanEAQ28DDqFSnZunqJQFg6amsCi8T925sn.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23wMabWQgdDHRWRsmDHVdmbtnkskWsoXW3ZYhuCaThzAj7u3tGYSYPt2g3rkHbtAYA5ma.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EqUfHg3Uq4AHVN6MVNiJYnZ6f6K5YfVM5njMu56qZXkWn6S7rbH1MjmBpnf8hnnL7JV.JPG"
+          ],
+          "tags": [
+            "photographylovers",
+            "photography",
+            "wildbirds",
+            "hawks",
+            "prey",
+            "proofofbrain",
+            "creativecoin",
+            "neoxian",
+            "featheredfriends",
+            "silverbloggers"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 35019424939977,
+        "payout": 3.409,
+        "payout_at": "2026-04-28T11:13:00",
+        "pending_payout_value": "3.409 HBD",
+        "percent_hbd": 0,
+        "permlink": "a-juvenile-harrier-hawk-landed",
+        "post_id": 149883513,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 105
+        },
+        "title": "A juvenile Harrier Hawk landed.",
+        "updated": "2026-04-21T11:13:00",
+        "url": "/hive-194913/@papilloncharity/a-juvenile-harrier-hawk-landed"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 22006994755693,
+            "voter": "steempty"
+          },
+          {
+            "rshares": 450510083469,
+            "voter": "alexpmorris"
+          },
+          {
+            "rshares": 791014188053,
+            "voter": "cornerstone"
+          },
+          {
+            "rshares": 300998716831,
+            "voter": "michellectv"
+          },
+          {
+            "rshares": 511514064,
+            "voter": "domo"
+          }
+        ],
+        "author": "torem-di-torem",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 78.8,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![IMG_3090.jpeg](https://images.hive.blog/DQmWsLQAFW7Z8sdCULXvEkmQchgnFvBspsHj1yrgMLPM6yy/IMG_3090.jpeg)\n\nSometimes it seems that everything is under control. Well, it's true - 17 dogs, work, constant work, and I already automatically notice the slightest changes. And then it turns out that no, not everything. And that's what I just hate. It's hard for me to lose control, I can start to panic.\n\nPortos scratched his stomach. I didn't see where exactly. I didn't notice it right away either, and it's, of course, unpleasant. I immediately think in my head: \"I should have done it earlier\". Self-flagellation begins... But to be honest, with so many animals, it's impossible to keep track of every little thing. It's just reality. And I'll probably have to put up with it. But, as I said above, I hate losing control.\n\nAt first, the wound looked like nonsense. Nothing serious. I treated it with chlorhexidine. And everything would be fine if I hadn't started licking it later. That's when the inflammation started, and it became clear that you can't pull it. Let's go to the vet.\n\nAt first, Portos kept calm. I endured as much as I could. He just looked at me with his own eyes - and everything was read there. But then he staged a performance. The three of us kept him so that the vet could do everything necessary.\n\nThe vet prescribed treatment, treatment and, of course, a collar. This is taking into account the root cause of the problem - Portos' love for self-treation!\n\nAnd he didn't like it at all 😄 He walks in this collar like an elephant in a crockery shop, clings to everything, obviously doesn't understand what he's for. He looks with the expression: \"I remembered\". Very expressive, I must say.\n\nBut there is no choice. It's better to endure a little inconvenience than to treat something more serious later. Portos will get better, of course. But it seems that he will show resentment for the collar for some time 😄 And it also seems to me that he is shy of other dogs, that he has to walk in this collar. He is trying to be the leader of our family-pack and, probably, he thinks it's humiliating for himself to wear this collar.",
+        "category": "hive-196708",
+        "children": 0,
+        "community": "hive-196708",
+        "community_title": "Hive Pets",
+        "created": "2026-04-21T10:58:15",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "format": "markdown",
+          "image": [
+            "https://images.hive.blog/DQmWsLQAFW7Z8sdCULXvEkmQchgnFvBspsHj1yrgMLPM6yy/IMG_3090.jpeg"
+          ],
+          "tags": [
+            "hive-196708",
+            "hivepets",
+            "pets",
+            "dogs",
+            "problem",
+            "vet"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 29649350176857,
+        "payout": 2.886,
+        "payout_at": "2026-04-28T10:58:15",
+        "pending_payout_value": "2.886 HBD",
+        "percent_hbd": 10000,
+        "permlink": "little-problem-with-portos",
+        "post_id": 149883437,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 21
+        },
+        "title": "Little problem with Portos",
+        "updated": "2026-04-21T10:58:15",
+        "url": "/hive-196708/@torem-di-torem/little-problem-with-portos"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 6075124854,
+            "voter": "leprechaun"
+          },
+          {
+            "rshares": 12568180894,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 5007065542,
+            "voter": "gidlark"
+          },
+          {
+            "rshares": 17158152117,
+            "voter": "jeffjagoe"
+          },
+          {
+            "rshares": 872532473736,
+            "voter": "arcange"
+          }
+        ],
+        "author": "tattoodjay",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 82.59,
+        "author_role": "member",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "# Neds Point Light\n\n\nToday I will share a few shots taken on visits  to Neds Point in Mattapoisett MA, about an half an hour drive from home, I like getting there early well before sunrise and hope to be lucky enough to catch some nice colors as the sunr rises, but even if not its still a nice spot to start the day\n\nThis post will focus on the lighthouse and here is a little bit about it\n\n\nNed Point Light as it is official called I believe is a historic lighthouse on Ned's Point Road in Mattapoisett, Massachusetts.\nThe lighthouse was built in 1838 at a cost of approximately $5,000, and named after Ned Dexter, a local farmer. Supervised by a local builder, Leonard Hammond, the lighthouse was constructed with a birdcage-style lantern similar to Bird Island Light found in Marion, Massachusetts.\n\nAll the stone used for the construction of the lighthouse was locally sourced, with most of it originating from nearby beaches.\n\nInside, Which I didn't get to see, are 32 granite steps that are cantilevered to the outside wall without the use of mortar. The original lantern used 11 whale oil lamps, each with its own parabolic reflector. And like other lighthouses I have read up on around here the Whale oil no doubt came from the New Bedford Whaling ships.\n\nThe Great Blizzard of 1888 significantly damaged the keeper's stone house, resulting in it being demolished and the building of a wooden replacement.\n\nFollowing modernization in 1961, the lighthouse was reactivated in 1961 with its current 6-second isophase.\n\nIt was added to the National Register of Historic Places in 1982.\n\nMostly I post the shots from those taken earliest through to later in the morning, and for no real reason today I decided to do the opposite\n\nIts a lovely spot, to walk around if your like me, but also has a few benches and a rock wall one can sit on, or of course as most who visit there seem to do you can park, and relax in your car and enjoy the sunrise\n\n\n\n<center>  \n![neds point light-4.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/23sU2MvPYVJghZz7Wzx6b1Lc7LBu7wVzGLT2YU2X2RPucSrGyZUFg1ZxwCs81mGq2pisa.jpg)\n\n\n<sup> **Sony A7iv 21mm F11 1 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/23sU2MvPYVJghZz7Wzx6b1Lc7LBu7wVzGLT2YU2X2RPucSrGyZUFg1ZxwCs81mGq2pisa.jpg)**</sup>\n</center>  \n<br>\nit has a good-sized green area as this shot shows part of, which I tend to walk around many times catching shots at different angles and getting my steps in \n\n<center>  \n![neds point light-3.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/241QAgTLTdMVqXYUDvQ64mqU7Y7m5rXB2n6Tv1TVCGJTN3cZJs2Y1qhVqMeb63uchccxk.jpg)\n\n\n<sup> **Sony A7iv 28mm F11 4 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/241QAgTLTdMVqXYUDvQ64mqU7Y7m5rXB2n6Tv1TVCGJTN3cZJs2Y1qhVqMeb63uchccxk.jpg)**</sup>\n</center>  \n<br>\n\nand in the middle of the green area\n\n\n\n<center>  \n![neds point light-2.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/245vfD34pHwbZGoWBcFfLm8vPqdkG5gkgbuQGuuN4iQur1cqptN73ciD514pSwJEYBEWZ.jpg)\n\n\n<sup> **Sony A7iv 23mm F11 13 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/245vfD34pHwbZGoWBcFfLm8vPqdkG5gkgbuQGuuN4iQur1cqptN73ciD514pSwJEYBEWZ.jpg)**</sup>\n</center>  \n<br>\n\nSince i get there when its still dark its a good time to try some light painting \n\n\n<center>  \n![neds point light.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/48GCAMbYuXTYPHdVk6RtaguSqAXLdkXgxcYuGG8zkDV7kZW6GuiUKbxTEXTMxG7t4T.jpg)\n\n\n<sup> **Sony A7iv 18mm F11 129 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/48GCAMbYuXTYPHdVk6RtaguSqAXLdkXgxcYuGG8zkDV7kZW6GuiUKbxTEXTMxG7t4T.jpg)**</sup>\n</center>  \n<br>\n\n\n\n\n## And that’s all folks \n***\n## unless stated otherwise all photos used in my posts are taken and owned by myself, if you wish to use any of my images please contact me. \n\n\n***\n![](https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif)\n***\n![TEAMUSA JJ hive.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg)\n## TeamUSA is a Community for and supporting those from of in the United States, and now is in the process of rebuilding stronger than ever join us on [Discord](https://discord.gg/85ac2SM)\n<br>\n\n[//]:# (!worldmappin 41.65086 lat -70.79564 long Neds Point Lighthouse, Ned's Point Road, Mattapoisett, MA, USA d3scr)",
+        "category": "hive-194913",
+        "children": 2,
+        "community": "hive-194913",
+        "community_title": "Photography Lovers",
+        "created": "2026-04-21T10:32:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.6",
+          "description": "Neds Point Light",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/23sU2MvPYVJghZz7Wzx6b1Lc7LBu7wVzGLT2YU2X2RPucSrGyZUFg1ZxwCs81mGq2pisa.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/241QAgTLTdMVqXYUDvQ64mqU7Y7m5rXB2n6Tv1TVCGJTN3cZJs2Y1qhVqMeb63uchccxk.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/245vfD34pHwbZGoWBcFfLm8vPqdkG5gkgbuQGuuN4iQur1cqptN73ciD514pSwJEYBEWZ.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/48GCAMbYuXTYPHdVk6RtaguSqAXLdkXgxcYuGG8zkDV7kZW6GuiUKbxTEXTMxG7t4T.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg"
+          ],
+          "tags": [
+            "photography",
+            "phototalent",
+            "photocircle",
+            "ocd",
+            "neoxian",
+            "proofofbrain",
+            "vyb",
+            "pimp",
+            "leo"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 40684066082820,
+        "payout": 3.961,
+        "payout_at": "2026-04-28T10:32:06",
+        "pending_payout_value": "3.961 HBD",
+        "percent_hbd": 10000,
+        "permlink": "tuesday-neds-point-light",
+        "post_id": 149883282,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 291
+        },
+        "title": "Tuesday Neds Point Light",
+        "updated": "2026-04-21T10:32:06",
+        "url": "/hive-194913/@tattoodjay/tuesday-neds-point-light"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1371443684,
+            "voter": "fabio"
+          },
+          {
+            "rshares": 32074224064,
+            "voter": "miketr"
+          },
+          {
+            "rshares": 828928052888,
+            "voter": "lemouth"
+          },
+          {
+            "rshares": 3410982966,
+            "voter": "netaterra"
+          },
+          {
+            "rshares": 1413908771608,
+            "voter": "pollux.one"
+          }
+        ],
+        "author": "stayoutoftherz",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 79.98,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Liebe Müll-Produzenten,\nwer in Wien zum ersten Mal mit der U4 oder U6 an der Station Spittelau vorbeikommt, trifft auf ein überrasched buntes Gebäude, das so gar nicht nach Industrieanlage aussieht — Türme, goldene Kugeln, unregelmäßige Fassaden in Gelb, Blau und Rot und Bäume am Dach. Man könnte meinen, hier wurde ein weiteres [Hundertwasserhaus](https://de.wikipedia.org/wiki/Hundertwasserhaus_(Wien)) errichtet. Was sich dahinter verbirgt, ist eine ganz gewöhnliche Müllverbrennungsanlage — oder doch nicht so gewöhnlich.\n\nBlick vom Norden, von der Heiligenstädterbrücke über den Donaukanal.\n![IMG_4326.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/242rtshbry5wD4Xi4uGAg9pBYhX1MSJh6hBswLUEdqSWRt9Cm7rsAivgVcsHurGCe7tHv.jpg)\nDie beiden Türme rechts im Hintergrund gehören zum [AKH](https://de.wikipedia.org/wiki/Allgemeines_Krankenhaus_der_Stadt_Wien), einem der größten Spitäler Europas, für deren Energieversorgung die ca. 2km entfernte Spittelau erst gebaut wurde. \n\n##### Von der nüchternen Zweckanlage zum Wahrzeichen\nDie Anlage, offiziell \"Thermische Abfallbehandlung Spittelau\" genannt, wurde 1969-1971 von Simmering-Graz-Pauker errichtet, ein schlichter Industriebau, der seinen Zweck erfüllte und weiter nichts. 1987 zerstörte ein Brand große Teile der Anlage. Statt sie abzureißen, entschied die Stadt Wien, sie neu aufzubauen — und dabei etwas Außergewöhnliches zu wagen. Der Beharrlichkeit des damaligen Wiener Bürgermeisters Helmut Zilk (dessen Porträt heute im Stadtsenats-Sitzungssaal des [Rathauses](https://peakd.com/hive-166496/@stayoutoftherz/das-wiener-rathaus-viennas-city-hall) hängt) ist es zu verdanken, dass [Friedensreich Regentag Dunkelbunt Hundertwasser](https://de.wikipedia.org/wiki/Friedensreich_Hundertwasser) die Umgestaltung übernahm (1988-1992).\nDenn Hundertwasser war zuerst alles andere als begeistert: Er lehnte das Projekt aus ökologischen Gründen ab — er wollte nicht etwas verschönern, das der Natur schadet. Letztendlich stimmte er unter drei Bedingungen zu: modernste Filteranlagen, niemand sollte sich in seine Pläne einmischen, und er arbeitete unentgeltlich. So konnte niemand ihn beschuldigen, an einem „schmutzigen\" Thema zu verdienen.\n\nDer Vergleich vorher-nachher aus einem Video, das vor der eigentlichen Führung gezeigt wird.\n![IMG_4488.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/243BYGdfvr5kdrD6ksu7Ay91QK2GTYAryw2qamcTymd67aZaxrG7ecWCD65VF3byWDMZd.jpg)\n---\n\nHier werden *täglich* (montags bis freitags) von rund 200 Müllwägen ca. 670 Tonnen Hausmüll abgeladen, im Jahr summiert sich das auf rund 250.000 Tonnen! Ein unangenehmer Geruch liegt in der Luft, aber das war klar bei so viel Müll🤕. \n![IMG_4497.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/EqQP3VznY8xwW8RhAPxn2H48mT8H3SdVQuw7EQL6MB4gkG3HCqMYcdqt5nJDyRDX3x5.jpg)\n\nUm die Ecke (am oberen Foto nicht zu sehen, hinter dem weißen PKW rechts) ein kurioses kleines Häuschen - ein WC für die Müllwagenfahrer 😄!\n![IMG_4543.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wX1Fzk7Fuuoz5Jvaeor9JKcn2RqivBTiFAwo12C9qeh67E2by2nDdaZCu7KHqbdxrF9.jpg)\n\n\n##### Wie funktioniert moderne Müllverbrennung?\n\nDer Müll landet in einem riesigen Sammelbecken, \"Bunker\" genannt. Die Besucher sind zum Glück durch Glasscheiben vom Müllberg getrennt. Oben erkennt man die zwei Öffnungen (die linke ist großteils nicht zu sehen), durch die der Müll mit zwei riesigen Polypenkränen, manuell gesteuert, aus dem Bunker in die zwei Heizkessel befördert wird. Die laufen 24/7. Nur einmal im Jahr wird ausgeschaltet für die jährliche Wartung. \n![IMG_4530.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wCDgRDiTTtn3tKtbzEeMoi5xSJD5LQdPPKZE2S7bGdLtRnWB8kHu94vtWWm7uSHHaQy.jpg)\n\n![IMG_4529.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23xepPusWD5LTnd9MqgCpPLvF148ReuKKpFABWqU6tX6uNeybLjSdnYUbHrYrbgW38yrZ.jpg)\n\nDie Kräne verfrachten den Müll nicht nur in die Heizkessel, sondern packen immer wieder Müll und lassen ihn wieder los. Kein Versehen, sondern Absicht. Nur so kann gewährleistet werden, dass größere Gegenstände wie Fahrräder vorher erkannt und aussortiert werden. Die würden nämlich sonst die Einlasstricher der Kessel verstopfen. Alles, was nicht aussortiert wird, landet in den Heizkesseln und wird mind. 1h bei 850 Grad C. verbrannt, was angeblich die allermeisten Giftstoffe zerstört.\n\nTeil der Heizkesselanlage. In die anderen Bereiche der Anlage (Turbinen, Fernkälteerzeugung, etc.) konnte man leider nicht gelangen.\n![IMG_4503.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/EoK6mBggibVeLRvgSYzCjgzvi2oY712RymCtHgaq5DTzfWNmuL6kuA2xR1j6ji8jZAF.jpg)\n\n\nUnd nach der Verbrennung? Es entstehen dabei ca. 20% Schlacke und 2,5% Asche, d.h. ja 200kg und 25kg pro Tonne Hausmüll. Die Schlacke und die Asche werden mit Wasser und Zement gebunden zu Schlackenzement (im Bild unten). Der ist ziemlich inert und kann für Straßenfundamentierungen genutzt werden.\n![IMG_4538.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23yncnSEtB1xHS3xeUxo7jkr48CRpGKEh7VPdCQi3h7wBd4kPF1Cz9VnzLDyp9DjxXQMJ.jpg)\n\nWas natürlich noch entsteht, sind die flüchtigen Verbrennungsprodukte, also die Abgase. Die werden zuerst durch (teure, aber wieder verwendbare) Gewebefilter geleitet, siehe die Röhre im unteren Bild. Danach kommt eine sog. Rauchgaswäsche, bei der die übrigen Partikel, auch Feinstaub, in Wasser gebunden werden. Das Wasser wird gereinigt und dem Kreislauf wieder zugeführt. Die heißen Abgase werden für Fernwärme genutzt. Am Schluss durchlaufen die Abgase noch eine katalytische DeNO<sub>x</sub>-Anlage zum Abbau von Dioxinen und Stickoxiden (die \"Entstickung\" gibt es seit 1991 in dieser Form und war damals weltweit eine der ersten). Der Rest gelangt über den Schlot in die Luft.\nAngeblich ist das, was dort oben rauskommt, sauberer als die Luft ringsherum auf Straßenniveau (also das, was wir tagtäglich einatmen), da z.B. der allgegenwärtige Feinstaub (Gummiabrieb von Fahrzeugen, Hausbrand, etc.) nicht mehr enthalten ist!\n![IMG_4536.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wMct3tfsYn598urA4dQwCVmnBFh67F9FtzjNZ72tKfZ4fizZYLAsG5X7NxiNGyvoKqD.jpg)\nÜbrig nach der Abgasbehandlung bleibt ein hochgiftiger, schwermetallreicher Filterkuchen - 0,1% des Mülls (1kg pro Tonne). Der wird in einer Spezialdeponie in Deutschland endgelagert, im stillgelegten Salzbergwerk Heilbronn - dort lagern bereits 160.000 Tonnen Müllrückstände aus Wien!\n\nMit der Wärme aus der Verbrennung werden ca. 60.000 Wiener Haushalte mit Energie versorgt (inkl. Warmwasser) und ca. 50.000 Wiener Haushalte mit Strom. Seit 2009 wird hier auch Fern*kälte* produziert.\nNicht ganz so bekannt: In der Spittelau lässt die Polizei mehrmals wöchentlich Schmuggelware vernichten — Zigaretten, Cannabis und Kokain gehen so in Fernwärme über ([Quelle](https://www.moderne-regional.de/fachbeitrag-muellverbrennungsanlage-spittelau/)).\n\n##### Das Gebäude\nWestfassade. Rund um die Fenster sind oft Ausmalungen in der Größe einer Armlänge - Hunderwasser nannte das [\"Fensterrecht\"](https://de.wikipedia.org/wiki/Fensterrecht).\n![IMG_4484.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/23yTYt3c5SFiWdDfannvRjCmRZPTWtAuZSeXG197LSPpmZE1YnNR2QLT26ND3SywvsYLf.jpg)\n\nDer 126m hohe Abgasschlot. Die große goldene Kugel (die eigentlich eine Zwiebel darstellt!) ist vor allem dekorativ, es gibt dort keine Aussichtsplattform oder ein Kaffeehaus (was genial wäre), nur eine Messstation zur Abgasmessung. Die Abgaswerte kann man [hier](https://www.wienenergie.at/ueber-uns/unternehmen/energie-klimaschutz/energieerzeugung/abfallverwertungsanlagen/emissionswerte/) einsehen.\n![IMG_4482.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/242NWCd1592XdiU1GcSR6pkuHXSs92pE9pE6XbxWNSSGUo1opdcEGkv2MrD5qUwBMZkCo.jpg)\n\nUnter dem obersten goldenen Ring sind Löcher zu erkennen. Dort nisten Turmfalken!\n![IMG_4499.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/2432HqZm1UPE1vdd53jLPoK5L2va1NYoDu8gj1Eb2HR3ann7fLFJiFQoG34WJPFiygvFE.jpg)\n\nAuf einem der begrünten Dächer. Vor ein paar Jahren mussten die Bäumen (nach 35 Jahren) gefällt werden und durch kleinere ersetzt werden, da die Statik sonst gefährdet gewesen wäre.\n![IMG_4506.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/EpnCk9hmzXH5TMydrzzYXdixqQJ1162jjhtbCxGoMnQ5BY91sQG6Ep2WVHt9o9E1Puv.jpg)\n\nDas Verwaltungsgebäude neben der Verbrennungsanlage wurde ebenfalls verziert, mit Kugeln, roten \"Lebensadern\" und dem obligatorischen begrünten Dach.\n![IMG_4509.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/244KLTdMGMVeHJGQGaVimHCEGL52WvXhKh2PM1gXoKXTNQnF4FGdNuJdY1hr1xPVEUFy1.jpg)\n\n\n##### Das Kapperl\n![IMG_4525.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/243Bko8qUTtWtStJhBzqgLVCGAFFWQNkWxmAxxquy4us4FfGSfHV6mtxPhAu7PywVxSRk.jpg)\n\nEine der amüsantesten Geschichten rund um die Spittelau betrifft das auffällige Metallkapperl auf einem Lüftungsschacht. Um diesen entbrannte eine Diskussion, wie er am besten dekoriert werden könnte (eine Kugel wäre zu groß). Als man sich partout nicht einigen konnte, verlor Hundertwasser die Geduld und verließ zornig die Runde mit den Worten „Ich hau den Hut drauf!\" — eine österreichischen Redewendung für Aufgeben. Die Bauherren nahmen ihn beim Wort und ergänzten die Anlage tatsächlich um besagtes Kapperl, für das Hundertwasser berühmt war, weil er es fast immer trug (er hatte es selbst genäht, denn er war auch ein guter Schneider).\n![IMG_4524.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/242DNom745J4bvfTNZoo1PiuZfLCqnwodTWRrxbynfYhq4hps3hMppVY5wdwfzyNiS2TQ.jpg)\nLinks im Hintergrund der Kahlenberg.\n\nBlick vom Dach über den Donaukanal auf die Brigittenau (20. Bezirk Wiens). Man sieht rechts der Bildmitte 2 der insg. 6 [Flak-Türme](https://peakd.com/deutsch/@stayoutoftherz/about-the-flak-towers-in-vienna-die-flak-tuerme-in-wien) (ziemlich genau in deren Mitte weiter hinten das Riesenrad). Rechts vom rechten Flakturm sind die beiden 200m hohen Schlote des Kraftwerks Simmering zu sehen, des größten Kraftwerks Österreichs, das bei Vollast 50% der Wiener Haushalte mit Strom versorgen kann. Aber das ist eine andere Geschichte...\n![IMG_4519.jpg](https://files.peakd.com/file/peakd-hive/stayoutoftherz/Eq9VLxNFNuWhtH3tuzVKP95pZfd9BHGm5ndgmZgbjXbpHTSCWXtKYeewjo1Y3Lxgv6v.jpg)\n\nAm besten ist natürlich **Abfallvermeidung**! Je weniger Hausmüll entsteht, umso weniger davon muss  aufwendig entsorgt werden!\nZuletzt noch eine Frage: Wohin mit Pizzakartons, Restmüll oder Altpapier? Was meint Ihr?\n\nall pics by @stayoutoftherz\n\n**Fernwärme Wien — Spittelau**\nAdresse: Spittelauer Lände 45, 1090 Wien\nErreichbarkeit: U4/U6 Station Spittelau\nFührungen (gratis): online anmelden via wienenergie.at\n\n\n--- \n<center>\n[**❤️If you like what you read, please vote for me as a witness ❤️**](https://vote.hive.uno/@stayoutoftherz)\n</center> \n\n\n[//]:# (!worldmappin 48.235151 lat 16.359091 long Waste incineration plant decorated as art d3scr)",
+        "category": "hive-163772",
+        "children": 1,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-04-21T09:39:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "description": "In Vienna there is a waste incineration plant decorated as art",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23yTYt3c5SFiWdDfannvRjCmRZPTWtAuZSeXG197LSPpmZE1YnNR2QLT26ND3SywvsYLf.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/242rtshbry5wD4Xi4uGAg9pBYhX1MSJh6hBswLUEdqSWRt9Cm7rsAivgVcsHurGCe7tHv.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/243BYGdfvr5kdrD6ksu7Ay91QK2GTYAryw2qamcTymd67aZaxrG7ecWCD65VF3byWDMZd.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/EqQP3VznY8xwW8RhAPxn2H48mT8H3SdVQuw7EQL6MB4gkG3HCqMYcdqt5nJDyRDX3x5.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wX1Fzk7Fuuoz5Jvaeor9JKcn2RqivBTiFAwo12C9qeh67E2by2nDdaZCu7KHqbdxrF9.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wCDgRDiTTtn3tKtbzEeMoi5xSJD5LQdPPKZE2S7bGdLtRnWB8kHu94vtWWm7uSHHaQy.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23xepPusWD5LTnd9MqgCpPLvF148ReuKKpFABWqU6tX6uNeybLjSdnYUbHrYrbgW38yrZ.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/EoK6mBggibVeLRvgSYzCjgzvi2oY712RymCtHgaq5DTzfWNmuL6kuA2xR1j6ji8jZAF.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23yncnSEtB1xHS3xeUxo7jkr48CRpGKEh7VPdCQi3h7wBd4kPF1Cz9VnzLDyp9DjxXQMJ.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/23wMct3tfsYn598urA4dQwCVmnBFh67F9FtzjNZ72tKfZ4fizZYLAsG5X7NxiNGyvoKqD.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/242NWCd1592XdiU1GcSR6pkuHXSs92pE9pE6XbxWNSSGUo1opdcEGkv2MrD5qUwBMZkCo.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/2432HqZm1UPE1vdd53jLPoK5L2va1NYoDu8gj1Eb2HR3ann7fLFJiFQoG34WJPFiygvFE.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/EpnCk9hmzXH5TMydrzzYXdixqQJ1162jjhtbCxGoMnQ5BY91sQG6Ep2WVHt9o9E1Puv.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/244KLTdMGMVeHJGQGaVimHCEGL52WvXhKh2PM1gXoKXTNQnF4FGdNuJdY1hr1xPVEUFy1.jpg",
+            "https://files.peakd.com/file/peakd-hive/stayoutoftherz/243Bko8qUTtWtStJhBzqgLVCGAFFWQNkWxmAxxquy4us4FfGSfHV6mtxPhAu7PywVxSRk.jpg"
+          ],
+          "portfolio": true,
+          "tags": [
+            "deutsch",
+            "wien",
+            "vienna",
+            "waste",
+            "travel",
+            "worldmappin",
+            "stem",
+            "art",
+            "leofinance",
+            "ocd"
+          ],
+          "users": [
+            "stayoutoftherz"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 82612556723324,
+        "payout": 8.049,
+        "payout_at": "2026-04-28T09:39:03",
+        "pending_payout_value": "8.049 HBD",
+        "percent_hbd": 10000,
+        "permlink": "wiens-schonste-mullverbrennungsanlage",
+        "post_id": 149882950,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 168
+        },
+        "title": "Wiens schönste Müllverbrennungsanlage",
+        "updated": "2026-04-21T09:39:03",
+        "url": "/hive-163772/@stayoutoftherz/wiens-schonste-mullverbrennungsanlage"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 23461074129,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 12515092594759,
+            "voter": "deanliu"
+          },
+          {
+            "rshares": 6260141649,
+            "voter": "esteemapp"
+          },
+          {
+            "rshares": 930708158,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 7026106415,
+            "voter": "travelgirl"
+          }
+        ],
+        "author": "magicmonk",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 79.66,
+        "author_role": "guest",
+        "author_title": "🧹僧",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![image.png](https://images.hive.blog/DQmVuWGvKo8sTfifgTS4abUgTvM4gA5HEvgW14T1CHbBY4r/image.png)\n\n前幾次有提到，我最近開始上非常便宜的高爾夫球課，本來在練習場上課，但最後幾個禮拜到真的高爾夫球場上，然後又給我們開球車。平常租球車的錢就跟這堂課的錢差不多，所以這堂課等於免費了。\n\n這次上課還是我第一次坐並駕駛高爾夫球車。這台球車其實比想像中聰明很多，速度不是想快就快，如果開得太快，它會自動幫你降速。上下坡的時候也很穩，幾乎不會讓人感到晃或不安，對第一次開的人來說真的很安心。前方還有一個螢幕，清楚顯示整個球場的地圖，現在在哪一洞、下一個目的地在哪裡，一眼就能看懂。\n\n球具全部放在車後方，不用自己提著球桿袋在球場上走來走去，實在是太舒服了。想到上一次跟爸媽一起打高爾夫球，因為捨不得租車，幾乎整場都在走路，結束後累得不行，現在再回頭看，只能說下次再來一定會租車，完全不想再省那筆錢。\n\n這次我和一位同學一起坐同一台球車，他以前有開過，所以一開始先簡單教了我怎麼操作，之後就讓我一路開到底。有個人坐在旁邊給點提示，心裡踏實很多，也很快就上手了。\n\n打球的感覺也跟以前很不一樣。上次跟爸媽打的時候，幾乎還沒上過課，常常揮空，球也打不遠，現在因為已經上了一段時間的課，揮桿順多了。雖然談不上打得好，但至少每一顆球都打得到，而且大多都比之前更接近洞口，這種進步真的讓人很開心。\n\n我們四個人一組，用的是那種選最遠落點再繼續打的方式，所以每一洞進行得非常快，不會卡關，也沒有壓力。大家邊玩邊笑，球很快就推進下一洞，整個過程流暢又輕鬆。\n\n那天下課時，其實心裡有點捨不得離開球場。不只是因為開球車好玩，更因為真實地感覺到自己在慢慢進步。現在反而開始期待下一次上課，再一次把球車開上球道，繼續累積高爾夫回憶。",
+        "category": "hive-105017",
+        "children": 0,
+        "community": "hive-105017",
+        "community_title": "HIVE CN 中文社区",
+        "created": "2026-04-21T11:13:57",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "format": "markdown",
+          "image": [
+            "https://images.hive.blog/DQmVuWGvKo8sTfifgTS4abUgTvM4gA5HEvgW14T1CHbBY4r/image.png"
+          ],
+          "tags": [
+            "hive-105017",
+            "cn",
+            "life",
+            "blog",
+            "golf"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 19666987982970,
+        "payout": 1.915,
+        "payout_at": "2026-04-28T11:13:57",
+        "pending_payout_value": "1.915 HBD",
+        "percent_hbd": 0,
+        "permlink": "6dpbsp",
+        "post_id": 149883521,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 51
+        },
+        "title": "高爾夫球車初體驗",
+        "updated": "2026-04-21T11:13:57",
+        "url": "/hive-105017/@magicmonk/6dpbsp"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1773376239,
+            "voter": "allyinspirit"
+          },
+          {
+            "rshares": 387132941782,
+            "voter": "akipponn"
+          },
+          {
+            "rshares": 44575346907,
+            "voter": "amy-goodrich"
+          },
+          {
+            "rshares": 26607133450,
+            "voter": "samstonehill"
+          },
+          {
+            "rshares": 1005453016,
+            "voter": "kenistyles"
+          }
+        ],
+        "author": "minismallholding",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.36,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "*I should probably give a quick explanation of the term Pom. I used to think that everyone knew what it jokingly referred to, but unless you're British or Australian apparently it isn't actually common knowledge. A Pom is what Australians call British people who come to Australia. There are different theories as to how the term originated, but nothing conclusive. The most likely theory seems to be the [reference to pomegranites.](https://wavelengthmag.com/why-do-aussies-call-brits-poms/)*\n\nI'll be honest, when I first immigrated to Australia I wasn't entirely sure what expect, probably something akin to the film Crocodile Dundee. We chose to move to Adelaide, South Australia (SA) and arrived in winter so it didn't initially seem much different to England. It was chilly and rainy, a time of year when lots of things are green and growing, so we weren't yet seeing the yellows that come with the summer drought. The language is the same and South Australians are generally teased by the rest of Australia for sounding like Poms, so the Aussie accent here isn't even that strong. (A couple of South Aussies have even mentioned that when visiting the UK some people there didn't twig that they had Aussie accents.) The only thing at the time that stood out as being a bit different was that the architecture and infrastructure layout had a slightly Germen feel to it. I don't know if that's because SA had a lot of German migrants in it's early settlement or if it's just because Germany is the only other country I've visited that had a similar vibe. \n\nBecause there are a lot of similarities between British and Australian culture, it took time to pick up on the differences. Naturally the climate and weather are the most obviously different, more so or less so depending where you are in the country. These differences will also dictate a difference in way of life. Other than a brief visit to Queensland, I've only experienced South Australia, so my comparissons will be biased towards that. The states and territories all do things a bit differently. \n\n<center>![17766471578765080497891495527010.jpg](https://files.peakd.com/file/peakd-hive/minismallholding/EnoJn6eLLDkGafj7nMiKUj6ZfPniUaKQwRSmjhmhc6dXKNeXti3RjbqNsMNrC9CrNjZ.jpg)\n<sup>My daughters at a South Australian beach</sup></center>\n\n\n<h3>Talk About the Weather</h3>\n\nThe weather in SA is described as mediterranean but I'd say it's more extreme. It's the driest state in the driest country and in summer can usually go without rain for a month or more. We've experienced some years where it's been 3 months without rain. Ironically the total rainfall here is comparable to the UK, the difference being that most of that falls in winter here (flooding isn't uncommon then) and the summer heat quickly dries up any reserves in creeks or ponds. SA's humidity levels are generally quite low even in winter, so when we experience 18°C it feels much colder than it would in the UK. 35°C here doesn't feel anywhere near as unbearable as it does in the UK. While the UK's season when vegetation grows like mad is the summer, in SA it's the winter when it's cooler and wetter, so thankfully stinging nettles come out in winter when you **don't** have bare legs. \n\nWhen you walk into a shopping centre here on a hot day, instead of feeling warm air blowing on you as the doors open you feel cool air. It's like things are reversed and you get hot air blasting you when you walk back out. People who don't have good or any air conditioning at home will sometimes go to the shopping centres to stay cool. Either that or the beach if that's close enough. \n\nOn the subject of shopping centres, something that I found unusual when we came here was that they have supermarkets in them. So you'll have your fashion, accesories shops, jewellers, chemists etc, then you can go and get your groceries. It's also not uncommon to see people browsing in clothing shops with a trolley full of groceries. \n\nIn the UK practically all houses have central heating and radiators in each room. I've never seen a radiator in SA, but nearly every house has air conditioning. Some houses have such bad heating that it's common for Australians to just dress up warmer when inside in winter or wrap themselves in blankets. Ugg boots and Oodies are also popular here for winter. While Oodies are made more for indoor use in some areas (certainly in my area) you'll see people in the shopping centres wearing them. Indeed you'll also see them in their bedroom slippers, pyjamas and dressing gowns on occasion. In summer some go barefoot, *although I don't know how the don't burn their feet on the tarmac.* There's a bit of a joke on social media that when you move to Australia your dress sense when you go out gets more and more casual until you're dressing like a bogan. \n\n<sub>The closest British equivelent of 'bogan' is probably 'chav'; however, where chav's are more likely to dress blingy bogans dress daggy.</sub>\n\nI'm not sure why Australians tend to gravitate more towards casual, comfortable dress, but that could also be due to the heat. A suit is going to get uncomfortable when you're sweating and probably doesn't even look that smart once covered in sweat stains. It will also depend on the area as to how people present themselves. In the wealthier suburbs they will dress smarter and will look healthier in general too. I don't recall seeing such an obvious visual divide in people in the UK unless you're going to a completely different part of the country. \n\n<h3>Hiearchy</h3>\n\nHave you ever noticed how different countries have different things they see as reflecting your status? For example in the UK the type of car we drive is often the way people judge us, while in France it doesn't matter what car you're driving it's how you dress. In Australia it's where you live and where you went to school and what you drive, except their vehicle hiearchy is different to Britain's. \n\nIn England sporty cars are held in high regard on the road. When I drove my little fiesta I was constantly being cut up, less likely to be let out from a side road in heavy trafic and more likely to be blocked if I needed to change lanes. When I drove my husband's RS Turbo it was like I was suddenly royalty! Everyone jumped at letting me in and I didn't get cut up once. In Australia the Ute is king. Anything that is traditional car shaped will be cut up by everyone else, including others like it. Bigger vehicles will basically bully their way in front of you and Utes respect only other Utes. In fact they are so sure of their superiority that they will sometimes even take on the big trucks/lorries, which doesn't always end well. Naturally here my husband has a Ute and wonders why he gets cut up when he has to borrow my car.\n\nI drive various vehicles for work and their size dictates how often I'm likely to be cut up. The smallest car is bright red and sometimes other drivers don't even see it, despite looking straight at it, until I'm nearly on top of them. My own car is black and is still seen more than that one, so I can only assume it's because it's a bit bigger. People still don't like it being in front of them, though. My daughter's car is a bit bigger again, and is tolerated a little bit more by other road users, but only a little. \n \n<h3>Food Stuff</h3>\n\nThe food here took some adjusting to. The first place we ate out at that was recommended to us by a local we found the food very bland. Many of the European types of foods here are much blander and the range of Indian style foods is more limited. In recent years we've been able to find Indians which have better flavour and spicier food, but I think that's only come with demand as we have gained more immigrants from Asia. \n\nOn our first visits to supermarkets here I had to do a double take when I saw the bottles of cordial, because for a moment I thought they were toilet cleaners, they were that brightly coloured. I hadn't seen food colourings so bright since my childhood and I have to say I didn't miss it. I used to like mayonaise back in England, but here it has sugar in it. Cadbury's chocolate was one of my favourites, but in Australia it tastes like it has antifreeze in it. Apparently they do actually add something which is a kind of antifreeze in order to stop it melting too easily in the hotter temperatures.\n\nIt's not all bad, though, Tim Tams could quite possibly make up for any food faux pas Australia has ever made. I once said that we had nothing comparible in the UK and was horrified at the suggestion they were like Penguin biscuits! While the concept might be the same and they might look similar, Penguins can't hold a candle to the Tim Tam. \n\nThe proximity to Asia means that we get a wider range of ethnic foods here than you get in the UK. Sushi is practically a staple here, as are Vietnamese dishes like banh mi, noodle bowls and rice bowls. Recently I've also been hearing a lot of praise for restaurants offering athentic cooking from some of the African countries in the bigger capitals. I'm not aware of Adelaide having anything like this yet, though. \n\n<h3>The Language Barrier</h3>\n\nAustralians may speak English, but sometimes you can get tripped up or have some embarassing interactions due to differences in word meanings. When we first arrived my husband had to get a medical check to start work. The nurse asked him to take his top and pants off and got all flustered when she came back in to him naked and trying to cover his bits with his hands. If you aren't familiar with British English we call undies pants. Australians, like Americans, call trousers pants and we didn't know that. Thongs here are what we call flip-flops in the UK and it took a while before I could comfortably call them that and not feel like I was discussing underwear. \n\nI have had to learn to call plasters bandaids, otherwise I get a confused stare if I ask for one. Something that often amuses me is the propensity for Aussies to add 'ie' or 'y' to the end of some nouns. For example they call 'bikers' 'bikies'. To me adding that suffix makes things sound cuter, so adding cuteness to what are generally big, imposing looking people makes me chuckle. They do not, however, view them as cute. In fact they are often seen as potential criminals due to some gangs dealing in drugs and there are laws against them gathering in their club colours; essentially anti-association laws. \n\n***\n\n*I know we have a quite a few people here on Hive who have experienced different countries either by living in them long term or visiting and I'd really love to know what your experiences have been. What's the good, the bad, the ugly, the amusing and even the surprising? I love to hear about different cultural experiences from different perspectives. Please, please share either in the comments or with a post of your own and don't forget to tag me if you do a post.*",
+        "category": "hive-181017",
+        "children": 1,
+        "community": "hive-181017",
+        "community_title": "Cross Culture",
+        "created": "2026-04-21T10:38:42",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.5",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/minismallholding/EnoJn6eLLDkGafj7nMiKUj6ZfPniUaKQwRSmjhmhc6dXKNeXti3RjbqNsMNrC9CrNjZ.jpg"
+          ],
+          "tags": [
+            "life",
+            "culture",
+            "teamuk",
+            "neoxian"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 32424500599660,
+        "payout": 3.157,
+        "payout_at": "2026-04-28T10:38:42",
+        "pending_payout_value": "3.157 HBD",
+        "percent_hbd": 10000,
+        "permlink": "from-a-poms-eye-view",
+        "post_id": 149883326,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 218
+        },
+        "title": "From A Pom's Eye View",
+        "updated": "2026-04-21T10:38:42",
+        "url": "/hive-181017/@minismallholding/from-a-poms-eye-view"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 22006994755693,
+            "voter": "steempty"
+          },
+          {
+            "rshares": 5141474449,
+            "voter": "netaterra"
+          },
+          {
+            "rshares": 632801350442,
+            "voter": "cornerstone"
+          },
+          {
+            "rshares": 6293087686,
+            "voter": "sergiomendes"
+          },
+          {
+            "rshares": 4360300208,
+            "voter": "greencross"
+          }
+        ],
+        "author": "mattsanthonyit",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 80.7,
+        "author_role": "admin",
+        "author_title": "Agricultural Mindset",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![Screenshot_20260421-100214.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/23wqpbtQ8jCtgB2GApFcfjEqbdnwHVARw5BgYFhfwvvwvy7gXKuBevhci9o4M4KE6pGsm.png)\n\n\n\n\n\n\n\nHello Hivers 💕💘,\n\n\n\n\n\n\n\n\n\n\n---\n---\n---\n\n\n\n\n\n\n\nDespite the fact that the rain continues over and over making some places on the farm overflooded yet we also have good production at the same time. The production also continuous as far as the rain continues. This is the reason why farmers make use of the rainy season to cultivate much more better and even more faster. Whereas, this also depend on individual choices and strength. \n\nFarm engagement using different types of Farm implement and tools make farm tunes easy to hear. And that is why come engagement must continue slowly and gradually. When you see that what you have cultivated proceeded along with much weed, you must make sure that its been attended to. I mean eradicate it finally. Weed will always manipulate itself over time to reduce the production of the cultivated crops but as a farmer you must not sleep on it. Among other crops that is being planted using the mobile seedbed we have the turmeric plant. And it doing great as far as turmeric productions is concerned as shown in the pictures.  \n\nWe also have different crops alongside with it. They also grow together. You can see the crawling green vegetable as well. This is the time to produce more bigger than the dry season where the production may be low and continuous use of artificial irrigation system is been used. I took this pictures to show that farming is always a gradual process and a matter of time.  \n\n\n\n* The turmeric plant with always strive when they saw is nutrient highly filled. So I always recommend that you give your best when it comes to land preparation for planting of crops generally speaking. \n\n\n\n![Screenshot_20260421-100241.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/EpA4NCHJbf24RRN8uKbs7KLafA8odtiabnBjJQFpSgQvjPxp5KXNakconRBZGx4FdX7.png)\n\n![Screenshot_20260421-100310.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/23yThbDTZoaV1BEnAHiYBf99tdReKRSn7TAtVofZiVFucQFHvFoJ4Q1QfEG1YQhvH4ZRk.png)\n\n![Screenshot_20260421-100225.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/EonmZDfAc9v5EmVu4eq7bNqekrE81UoJucAsJrs84wcbySWWzR4YNHjbwsNaqQg7uH4.png)\n\n\nFor those of us that have been into one crop production of the other but might have not seen this type of cropped before or plant. This is the turmeric plant. It can grow all year round, if you manage it very well with good soil attachment. you can also see the appetizer to the stomach vegetable growing extremely well. And crawling over so many branches. It's doing great. \n\n![Screenshot_20260421-100257.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/23yJJUEDXGAfkQTNCcFBx2XzAwUrGYVpkHwRrb9yEVPyk528f19gtj6Q4ihPJ1oYZTzZp.png)\n\n![Screenshot_20260421-100152.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/23vsSdT2Xb9VTRt2vX42JF9coQQXhLMBkL5vUT6P53LurybbXgLy1Xnkemo51P9Pr93J3.png)\n\n![Screenshot_20260421-100202.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/23xKxxxycG5DtmWwpWRCdBtFjSLx5g94HpofS9RfbftBqYMjy7jd7fS5cFtrUteWW5fsv.png)\n\n\nThe leaves always grow more wider and wider. That is my own observation. It also bend towards the sunlight whenever there is heavy rainfall. This is to show us that the photosynthesis always take place every time.\n\n* The turmeric also make a lot of roots tubers as Time goes On it begin to show more of the sign inside the soil. In as much as there is good soil factors to nourish. \n \n\n\n![Screenshot_20260421-100140.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/23xVTPwBPJpR35RYRAAKEThpZBScvBYEUSBkasNfk3TP6pPF7iP2JLLBa1rDEi7kWtdiv.png)\n\n![Screenshot_20260421-100128.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/23zbWRdonc4W43kaUuDvrq1vFW72bmVgNM2QPSoDJ7P6EoKK3L5nvmD257EFAYTgdhYXm.png)\n\n![Screenshot_20260421-100115.png](https://files.peakd.com/file/peakd-hive/mattsanthonyit/23z7QA4ZNmB7Vfe1epWoQ8JnuKVt99VUNuS1gi8LwoKSHkxgipxRcrtbEYnZ7L4aKjfLp.png)\n\n\n\n\n\n\n\n\n#  Camera  Details. ( Infinix Note 7 )\n\n\n### MAIN CAMERA\n\n> Quad MP, f/1.8, # Camera  Details. ( Infinix Note 7 )\n\n\n### MAIN CAMERA\n\n> Quad\t48 MP, f/1.8, (wide), 1/2.0\", 0.8µm, PDAF\n> 2 MP, f/2.4, (macro)\n> 2 MP, f/2.4Mobile, (depth)\n> 2 MP, f/1.8, (dedicated video camera) - 128/6 model only\n> Features\tQuad-LED flash, panorama, HDR\nVideo\t1080p@30fps\n\n### SELFIE CAMERA\n. The n\n> Single\t16 MP, f/2.0, 26mm (wide), 1/3.06\", 1.0µm\n> Video\t1080p@30fps\n\n\n\n\n\n---\n\n</sub>**Thanks For Stopping by And checking Out My Blog 📝📖🗒️**</sub>\n\n\n---\n\n\n\n_Original content by me, @mattsanthonyit_\n\n---\n\n\n\n###### Please important note▶️, order than any stated link in my post otherwise every other photographs used in my posts are originally taken and owned by me [@mattsanthonyit](https://peakd.com/@mattsanthonyit), if you like them and wish to use any of my images please contact me privately. Thanks🔛.\n\n\n<sub>🗓️Date Capture: 21/4/2026.  📸Medium capture: Infinix Note5 Smartphone. 🌍Location: Ilorin.Kwara State. Nigeria. 🕰️Time:11:23am ⚡Posted with: peakd.com</sub>\n\n\n\n---\n\n\nIf you actually like what you see😃😄😉,watch📷📺📸 and read📖📋 I would equally be grateful for an upvote♥️⚡ a very cool comment under my comment box  or a reblog 🌀😏 for everyone to see ... and  perhaps maybe you would like to follow me for more of my Post to show on your own feeds. Don't miss any of my Post.🔝. Special thanks to all who put big smiles on my face with **Auto Upvote**  for always being supportive to me 💞💯. \n\n\n\n\n\n\n\n###### Twitter:\n\nCheck out Matthew O. Akinlotan [peakd [@mattsanthonyit](https://peakd.com/@mattsanthonyit) ] ([@mattsanthonyit](https://peakd.com/@mattsanthonyit)): [https://twitter.com/mattsanthonyit?s=09](https://twitter.com/mattsanthonyit?s=09)\n\n---\n\n\n###### Instagram:\n\n[https://instagram.com/officialoluwagb](https://instagram.com/officialoluwagb)...\n\n\n---\n\n###### YouTube:\n\n[https://m.youtube.com/channel/UCPBPk8al3dnLy5xAWnbWT1w\n\n---\n\n###### Facebook:\n\n( [https://mobile.facebook.com/akinlotan](https://mobile.facebook.com/akinlotan)...)\n\n---\n\n\n###### Hive: \n [@mattsanthonyit](https://hive.blog/@mattsanthonyit)\n\n\n---\n\n\n\n⬇️⬇️\n\n\n![IMG_1569582921655.jpg](https://files.steempeak.com/file/steempeak/mattsanthonyit/f0XZGi57-IMG_1569582921655.jpg)\n\n\n**</sub>Matthew is a farmer and lover of Hive. HIVE has really helped my life to grow more healthier than I was, HIVE testimony. I'm a Dad, husband and a hustler. Farmer who loves animals, he practice what he preaches . He is also a Photographer, Traveller , Mr Chef ( Loves Cooking) and above all, he is a blogger and a vlogger</sub>**♣️♠️\n\n\n",
+        "category": "hive-150280",
+        "children": 0,
+        "community": "hive-150280",
+        "community_title": "Agricultural Mindset",
+        "created": "2026-04-21T10:23:45",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/23wqpbtQ8jCtgB2GApFcfjEqbdnwHVARw5BgYFhfwvvwvy7gXKuBevhci9o4M4KE6pGsm.png",
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/EpA4NCHJbf24RRN8uKbs7KLafA8odtiabnBjJQFpSgQvjPxp5KXNakconRBZGx4FdX7.png",
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/23yThbDTZoaV1BEnAHiYBf99tdReKRSn7TAtVofZiVFucQFHvFoJ4Q1QfEG1YQhvH4ZRk.png",
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/EonmZDfAc9v5EmVu4eq7bNqekrE81UoJucAsJrs84wcbySWWzR4YNHjbwsNaqQg7uH4.png",
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/23yJJUEDXGAfkQTNCcFBx2XzAwUrGYVpkHwRrb9yEVPyk528f19gtj6Q4ihPJ1oYZTzZp.png",
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/23vsSdT2Xb9VTRt2vX42JF9coQQXhLMBkL5vUT6P53LurybbXgLy1Xnkemo51P9Pr93J3.png",
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/23xKxxxycG5DtmWwpWRCdBtFjSLx5g94HpofS9RfbftBqYMjy7jd7fS5cFtrUteWW5fsv.png",
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/23xVTPwBPJpR35RYRAAKEThpZBScvBYEUSBkasNfk3TP6pPF7iP2JLLBa1rDEi7kWtdiv.png",
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/23zbWRdonc4W43kaUuDvrq1vFW72bmVgNM2QPSoDJ7P6EoKK3L5nvmD257EFAYTgdhYXm.png",
+            "https://files.peakd.com/file/peakd-hive/mattsanthonyit/23z7QA4ZNmB7Vfe1epWoQ8JnuKVt99VUNuS1gi8LwoKSHkxgipxRcrtbEYnZ7L4aKjfLp.png",
+            "https://files.steempeak.com/file/steempeak/mattsanthonyit/f0XZGi57-IMG_1569582921655.jpg"
+          ],
+          "tags": [
+            "neoxian",
+            "proofofbrain",
+            "creativecoin",
+            "diy",
+            "blog",
+            "palnet",
+            "hive",
+            "community",
+            "nigeria",
+            "africa"
+          ],
+          "users": [
+            "30fps",
+            "mattsanthonyit"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 37125929736506,
+        "payout": 3.615,
+        "payout_at": "2026-04-28T10:23:45",
+        "pending_payout_value": "3.615 HBD",
+        "percent_hbd": 0,
+        "permlink": "the-turmeric-plant-genesis-to-overcome-high-production-using-the-mobile-seedbed-planting-techniques-oror-the-raining-season-bles",
+        "post_id": 149883231,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 74
+        },
+        "title": "The Turmeric Plant 🌱🌿🌱🌿 Genesis To Overcome High Production Using The Mobile Seedbed Planting Techniques || The Raining Season Blessings Over Dry Season. ",
+        "updated": "2026-04-21T10:23:45",
+        "url": "/hive-150280/@mattsanthonyit/the-turmeric-plant-genesis-to-overcome-high-production-using-the-mobile-seedbed-planting-techniques-oror-the-raining-season-bles"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 373914473629,
+            "voter": "slickwilly"
+          },
+          {
+            "rshares": 43799556522,
+            "voter": "rok-sivante"
+          },
+          {
+            "rshares": 12963843525,
+            "voter": "scaredycatguide"
+          },
+          {
+            "rshares": 3410982966,
+            "voter": "netaterra"
+          },
+          {
+            "rshares": 790424508840,
+            "voter": "sumatranate"
+          }
+        ],
+        "author": "bozz",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 82.27,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<center>![20230711_113158.jpg](https://files.peakd.com/file/peakd-hive/bozz/243LvvYFKSFF3ka1GDi2VngqH146a7mFTNLEUZwAuHttrzLiVQ4PE9XE7bzehv82EMEtp.jpg)</center>\n\n----------------------------\n\nIt's been a long long time since I have been to Minnesota.  I remember when I was much younger, my parents decided to do the Lake Superior circle tour.  In case you aren't familiar with the concept, it's basically just a designated route around Lake Superior (called Gitche Gumee by the Ojibwa).  Each of the Great Lakes has a circle route (at least the three main ones that touch Michigan).  In the case of Superior, it takes you through the upper peninsula of Michigan into Wisconsin, then a short jaunt along the northern shore of the lake until you get into Canada.  Eventually, you find yourself back in Sault Ste. Marie and cross back over into Michigan making the circuit complete.\n\nMore recently, I had a flight layover in Minneapolis, but since we never left the airport, I don't really count that as having visited Minnesota.  This Summer, @mrsbozz and I are planning on taking a trip to Wisconsin.  It is very possible we will be making a quick drive over to Duluth to have lunch one day, so although it will be just a taste of the state, we should still be able to count having visited it on our map.\n\n\n<center>![20230711_104853.jpg](https://files.peakd.com/file/peakd-hive/bozz/23rAtY8EB48skrEdqYXmNTsXSrkuUsnGYbFxTTtEADPDtsk58XwmnX8fwiyG7J2xiLd8R.jpg)</center>\n\n--------------------------\n\nSince I don't really have any photos of Minnesota, I am sharing photos of Lake Superior for this post.  In case you haven't guessed, this weeks #threetunetuesday sponsored by @ablaze brings us to the great state of Minnesota, land of 10,000 lakes.  When I was younger, I used to get annoyed that Minnesota was memorialized for its lakes.  I mean sure, it might have a lot of lakes, but we have the Great Lakes.  How much better is that?  It's funny the things you think are important when you are younger.\n\nIn fact, if you look at a map, Minnesota does indeed have a metric crap ton of lakes.  It's honestly no contest, but yes, Michigan still does have the Great Lakes.\n\nMinnesota was actually a bit harder than I would have expected to find songs for this post.  Sure, it's not that easy to rhyme something with Minnesota, but I think we all know by now that not every song has to rhyme, it just makes it easier and a bit more catchy when it does.  \n\nI was able to pick out three songs that I am going to share here, I hope you enjoy them.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/KwbeHSI-3Co?si=kb4MEzqR_ivlmt12\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n--------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=KwbeHSI-3Co&list=RDKwbeHSI-3Co&start_radio=1)\n\n-------------------------\n\nI know I might catch a lot of flack for this, but I am a huge Indigo Girls fan.  I understand there is this preconceived notion that only gay women like Indigo Girls music, but I think if you actually listen to them you will realize that isn't the case.  Or at least realize that shouldn't be the case.  The harmonies alone are so amazing, and then when you add in the lyrical prowess, there is just something really special about this duo.  \n\nI was going to share a more recent video of the song \"Ghost\" from them, but honestly, these days their voices aren't quite the same as they used to be, so I found an older cut of it.  You just have to get past the overly long intro because it seems like the video is broken at first.  It isn't until about ten seconds in that you really start to hear it.\n\nI really like the line in this song where they talk about the Mississippi River starting in Minnesota.  I've seen pictures of the headwaters of the Mississippi and to be honest, it's nothing special.  There is a little sign and then just a swampy area I think.  The part in the song where they say you can walk across it in five steps is just really poignant to me.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/sNh-iw7gsuI?si=WMDbvDmHQsmaDpIp\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n---------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=sNh-iw7gsuI&list=RDsNh-iw7gsuI&start_radio=1)\n\n---------------------------\n\nI'll be the first to admit, I never really got into Soundgarden when they were popular.  Yes, I knew the couple of big hits they had, but it wasn't until Chris Cornell passed away and it became more apparent just how many creative project he had his hands in and just how amazing he was.  \"Outshined\" has a reference to Minnesota if listen really closely.  I wouldn't have known it if I hadn't looked it up online, but I felt it would just be a little wrong to not include this prolific artist this week.\n\nIt doesn't take long to hear the reference to Minnesota.  It happens before we even get to the chorus in fact, but it is there.  If you watch the video with the captions on it is even easier to catch.  I don't have much else to say here.  Soundgarden kind of speaks for themself.\n\n<center><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/bErza7LieSM?si=Xw3WUPfpIfvpKZ1A\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen></iframe></center>\n\n---------------------------\n\n[Direct Link](https://www.youtube.com/watch?v=bErza7LieSM&list=RDbErza7LieSM&start_radio=1)\n\n-------------------------\n\nFinally, I realized it would be an absolute crime if I didn't include one of Minnesota's favorite sons in this post.  Of course I am talking about Prince and if you know, you know.  As I was preparing for this post yesterday, I realized just how little of his music I actually know.  Yes, I know the big hits, and the smaller ones too, but he had a massive career spanning back to the late 70's and an amazing catalog of music to sift through.\n\nI've made it my mission to take a deep dive into his music on Spotify this week.  That doesn't even include the songs he wrote for so many other people.  \n\n\"Laydown\" is one of the songs that I have probably never heard in my life until now and it's quite simple, but if you listen to the whole thing you will eventually hear the reference to Minnesota. It's too bad that Prince had to be taken from us so soon. I think he really could have made so much more great music.  \n\nI remember maybe about twenty years ago he was in Michigan doing a show near where we lived.  I just kind of laughed it off and didn't have much interest in going to see him, but I really wish I had now.  Just to be able to say I saw a legend.\n\n----------\n\n<center>\n### [My Sports Account - @bozz.sports](https://www.peakd.com/@bozz.sports)\n</center>\n\n----------\n\n#### <center>Come hang out in [The Pub](https://peakd.com/c/hive-178138/created)</center>\n<center>[Find us on Discord](https://discord.gg/cCEMJXAEXk)</center>\n\n<center>Or Check out my [Grilling and Smoking Community on HIVE](https://peakd.com/c/hive-138631/created)</center>\n\n-------------\n\n<center>![TEAMUSAhive_footer_bozz.jpg](https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg)</center>\n\n----------------\n\n<center>*All pictures/screenshots taken by myself or @mrsbozz unless otherwise sourced*</center>\n\n\n\n \n\n\n\n\n",
+        "category": "hive-193212",
+        "children": 1,
+        "community": "hive-193212",
+        "community_title": "Discovery-it",
+        "created": "2026-04-21T11:14:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "description": "The North shore to be exact",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/bozz/243LvvYFKSFF3ka1GDi2VngqH146a7mFTNLEUZwAuHttrzLiVQ4PE9XE7bzehv82EMEtp.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/23rAtY8EB48skrEdqYXmNTsXSrkuUsnGYbFxTTtEADPDtsk58XwmnX8fwiyG7J2xiLd8R.jpg",
+            "https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg"
+          ],
+          "tags": [
+            "discovery-it",
+            "threetunetuesday",
+            "pimp",
+            "tribes",
+            "bbh",
+            "gems",
+            "vibes",
+            "music4life",
+            "silverbloggers",
+            "ccc"
+          ],
+          "users": [
+            "mrsbozz",
+            "ablaze",
+            "bozz.sports"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 17404395666213,
+        "payout": 1.694,
+        "payout_at": "2026-04-28T11:14:06",
+        "pending_payout_value": "1.694 HBD",
+        "percent_hbd": 10000,
+        "permlink": "on-the-shores-of-gitche-gumee",
+        "post_id": 149883522,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 73
+        },
+        "title": "\"On the shores of Gitche Gumee\"",
+        "updated": "2026-04-21T11:14:06",
+        "url": "/hive-193212/@bozz/on-the-shores-of-gitche-gumee"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 7215919080,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 3208220287,
+            "voter": "ats-david"
+          },
+          {
+            "rshares": 3624465320,
+            "voter": "gamer00"
+          },
+          {
+            "rshares": 586421645,
+            "voter": "supergoodliving"
+          },
+          {
+            "rshares": 6050786549735,
+            "voter": "alexis555"
+          }
+        ],
+        "author": "bluerobo",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 69.82,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n\n\n\n### 1. Battery Electric Vehicles (BEV) Share in Total Vehicle Stock – Passenger Cars\n\n\n\n![% Car BEV (5).png](https://files.peakd.com/file/peakd-hive/bluerobo/23t8DBnQGXKN6PY13o3Bkzanfm73tp3BeRNE7Ar1r5WAAhExSeAY9FGuYXcQwwfA9f2sj.png)\n\n\n\n| Quarter     | % Car BEV |\n|-------------|-----------|\n| 01.01.2026  | 4.11%     |\n| 01.10.2025  | 3.89%     |\n| 01.07.2025  | 3.71%     |\n| 01.04.2025  | 3.50%     |\n| 01.01.2025  | 3.30%     |\n| 01.10.2024  | 3.20%     |\n| 01.07.2024  | 3.10%     |\n| 01.04.2024  | 3.00%     |\n| 01.01.2024  | 2.90%     |\n| 01.10.2023  | 2.70%     |\n| 01.07.2023  | 2.40%     |\n| 01.04.2023  | 2.20%     |\n| 01.01.2023  | 2.10%     |\n| 01.10.2022  | 1.70%     |\n| 01.07.2022  | 1.60%     |\n| 01.04.2022  | 1.40%     |\n| 01.01.2022  | 1.30%     |\n| 01.10.2021  | 1.10%     |\n| 01.07.2021  | 0.90%     |\n| 01.04.2021  | 0.80%     |\n| 01.01.2021  | 0.60%     |\n| 01.10.2020  | 0.50%     |\n| 01.07.2020  | 0.40%     |\n| 01.04.2020  | 0.30%     |\n| 01.01.2020  | 0.30%     |\n| 01.10.2019  | 0.30%     |\n| 01.07.2019  | 0.20%     |\n| 01.04.2019  | 0.20%     |\n| 01.01.2019  | 0.20%     |\n| 01.10.2018  | 0.20%     |\n| 01.07.2018  | 0.10%     |\n\n### 2. BEV Share in Total Stock – Buses, Vans and Trucks\n\n\n![% Commercial BEV (5).png](https://files.peakd.com/file/peakd-hive/bluerobo/23tHbr9aBDCPZtjgwTenutRgievekg9SrdaAQb47GYkRUsjU8PUDMXiR5Edjc6YFshfiq.png)\n\n\n\n| Quarter     | % Bus BEV | % Van BEV | % Truck BEV |\n|-------------|-----------|-----------|-------------|\n| 01.01.2026  | 5.59%     | 2.97%     | 0.12%       |\n| 01.10.2025  | 4.94%     | 2.77%     | 0.11%       |\n| 01.07.2025  | 4.60%     | 2.60%     | 0.10%       |\n| 01.04.2025  | 4.66%     | 2.52%     | 0.09%       |\n| 01.01.2025  | 4.23%     | 2.41%     | 0.08%       |\n| 01.10.2024  | 3.65%     | 2.32%     | 0.07%       |\n| 01.07.2024  | 3.69%     | 2.30%     | 0.07%       |\n| 01.04.2024  | 3.45%     | 2.21%     | 0.06%       |\n| 01.01.2024  | 3.28%     | 2.13%     | 0.05%       |\n| 01.10.2023  | 2.91%     | 2.05%     | 0.04%       |\n| 01.07.2023  | 2.70%     | 1.86%     | 0.04%       |\n| 01.04.2023  | 2.54%     | 1.75%     | 0.04%       |\n| 01.01.2023  | 2.38%     | 1.68%     | 0.04%       |\n| 01.10.2022  | 2.09%     | 1.47%     | 0.03%       |\n| 01.07.2022  | 1.97%     | 1.37%     | 0.03%       |\n| 01.04.2022  | 1.84%     | 1.30%     | 0.03%       |\n| 01.01.2022  | 1.69%     | 1.25%     | 0.03%       |\n| 01.10.2021  | 1.41%     | 1.14%     | 0.03%       |\n| 01.07.2021  | 1.23%     | 1.07%     | 0.03%       |\n| 01.04.2021  | 1.13%     | 1.00%     | 0.03%       |\n| 01.01.2021  | 1.03%     | 0.95%     | 0.03%       |\n\n### 3. Passenger Car Fleet by Fuel Type (Year-End Stock)\n\n\n![Passenger Cars by Fuel Type.png](https://files.peakd.com/file/peakd-hive/bluerobo/23t8CfK4iwyAddnZvguwvFnoAAL4Xx6GcHuyjcebxKR6BVS6o2d8fJjyHMaK4NSkPD3Yx.png)\n\n\n\n| Year | Gasoline     | Diesel       | Methanol    | BEV          | Hybrid       | **Total**    |\n|------|--------------|--------------|-------------|--------------|--------------|--------------|\n| 2017 | 29,978,635   | 15,089,392   | 525,212     | 34,022       | 165,405      | 45,792,666   |\n| 2018 | 30,451,268   | 15,225,296   | 496,742     | 53,861       | 236,710      | 46,463,877   |\n| 2019 | 31,031,021   | 15,153,364   | 476,368     | 83,175       | 341,411      | 47,085,339   |\n| 2020 | 31,464,680   | 15,111,382   | 453,670     | 136,617      | 539,383      | 47,705,732   |\n| 2021 | 31,435,340   | 15,060,124   | 429,832     | 309,083      | 1,004,089    | 48,238,468   |\n| 2022 | 31,005,134   | 14,824,262   | 413,790     | 618,460      | 1,669,051    | 48,530,697   |\n| 2023 | 30,556,538   | 14,437,489   | 407,483     | 1,013,009    | 2,337,897    | 48,752,416   |\n| 2024 | 30,235,032   | 14,142,184   | 391,144     | 1,408,681    | 2,911,262    | 49,088,303   |\n| 2025 | 29,918,520   | 13,829,261   | 373,045     | 1,651,643    | 3,556,956    | 49,329,425   |\n| 2026 | 29,343,732   | 13,385,662   | 350,851     | 2,034,260    | 4,362,563    | 49,477,068   |\n\n**Key Observations:**\n- BEV penetration in the passenger car fleet continues to grow, reaching **4.11%** as of January 2026.\n- Growth in the overall stock remains largely linear across passenger cars, buses, and vans.\n- Truck BEV adoption remains very low at **0.12%**, with only marginal quarterly increases (approximately 0.01 percentage points per quarter since late 2023).\n- New passenger car BEV registration quota for March 2026 reached **24%**, up from **20.9%** in October 2025.\n\nData published by the German Kraftfahrt-Bundesamt (KBA).  \n\n**Data as of 01.01.2026**  \n\n[Official KBA statistics](https://www.kba.de/DE/Statistik/Fahrzeuge/Bestand/Vierteljaehrlicher_Bestand/viertelj%C3%A4hrlicher_bestand_node.html)\n\n###### Vote for my witness: [@blue-witness](https://peakd.com/me/witnesses)\n\n",
+        "category": "hive-167922",
+        "children": 0,
+        "community": "hive-167922",
+        "community_title": "LeoFinance",
+        "created": "2026-04-21T11:07:21",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.7",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/bluerobo/23t8DBnQGXKN6PY13o3Bkzanfm73tp3BeRNE7Ar1r5WAAhExSeAY9FGuYXcQwwfA9f2sj.png",
+            "https://files.peakd.com/file/peakd-hive/bluerobo/23tHbr9aBDCPZtjgwTenutRgievekg9SrdaAQb47GYkRUsjU8PUDMXiR5Edjc6YFshfiq.png",
+            "https://files.peakd.com/file/peakd-hive/bluerobo/23t8CfK4iwyAddnZvguwvFnoAAL4Xx6GcHuyjcebxKR6BVS6o2d8fJjyHMaK4NSkPD3Yx.png"
+          ],
+          "tags": [
+            "ev",
+            "bev",
+            "vehicle",
+            "technology",
+            "adoption",
+            "germany",
+            "inleo",
+            "leofinance"
+          ],
+          "users": [
+            "blue-witness"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 19415307536891,
+        "payout": 1.89,
+        "payout_at": "2026-04-28T11:07:21",
+        "pending_payout_value": "1.890 HBD",
+        "percent_hbd": 10000,
+        "permlink": "bev-adoption-trends-in-germany-quarterly-stock-shares",
+        "post_id": 149883490,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 57
+        },
+        "title": "BEV Adoption Trends in Germany – Quarterly Stock Shares",
+        "updated": "2026-04-21T11:07:21",
+        "url": "/hive-167922/@bluerobo/bev-adoption-trends-in-germany-quarterly-stock-shares"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 2353963956,
+            "voter": "yiyi.maiola"
+          },
+          {
+            "rshares": 17421149007,
+            "voter": "ganjafarmer"
+          },
+          {
+            "rshares": 1697026919,
+            "voter": "underground"
+          },
+          {
+            "rshares": 52217208337,
+            "voter": "jga"
+          },
+          {
+            "rshares": 3340120079,
+            "voter": "cryptoknight12"
+          }
+        ],
+        "author": "ravenmus1c",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.85,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![Non animated Header Donations.jpg](https://files.peakd.com/file/peakd-hive/ravenmus1c/48EJqq5CZRcbhFgWyXvYqE6z6mV4xgEC3ZK9e35GoK22KDvp2ogJYTRETtXUzJqBcZ.jpg)\n\n\n<details>\n  <summary>DEUTSCHE Version hier</summary>\n    <p>\n\n###### Hallo ihr Lieben! 😊  \nWie geht es euch?\n\nEs ist Zeit für einen neuen Spenden-Post! 😊😍  \nIch weiß, ich bin aktuell nicht besonders aktiv auf Hive. Aber im Hintergrund bereite ich gerade sehr viel vor – zum Beispiel erstelle ich hunderte Shorts für unser Label Panda Beats, weil wir anfangen möchten, unser Label etwas mehr zu promoten.\n\n###### Außerdem habe ich mir eine Deadline bis Ende des Jahres gesetzt, um meinen neuen Musik-Channel **\"Save A Paw – Calming Music for Animals\"** vorzubereiten. 🐶🐱🎶\n\nIch produziere entspannende Musik für Tiere. Ich nutze diese Art von Musik auch selbst, wenn ich meinen Hund für ein paar Stunden alleine lassen muss. Ich glaube, es hilft ihr, entspannter zu bleiben.\n\nMein Plan ist es, etwa 60–70 verschiedene Tracks vorzubereiten, damit ich genug Content habe, um jede Woche auf YouTube hochladen zu können. Außerdem habe ich einen zweiten Producer mit an Bord, der mir beim Produzieren hilft, weil es einfach sehr viel Arbeit ist. Und meine Freundin unterstützt mich beim Grafikdesign.\n\n###### Neben der Musik muss ich natürlich auch Videos produzieren.  \nDa es sehr aufwendig wäre, dafür eigenes Material zu filmen, habe ich mich entschieden, Bilder mit KI zu erstellen und diese anschließend mit einer anderen KI zu animieren.  \nIch bin eigentlich kein großer Fan von all dem KI-Zeug, aber ich habe gemerkt, dass es aktuell meine einzige realistische Möglichkeit ist, so viel Content zu erstellen. Es ist der einzige Weg, um so einen Channel überhaupt umsetzen zu können – also habe ich akzeptiert, dass ich dafür KI nutzen muss.\n\nNeben den Videos möchte ich auch Shorts erstellen, um das Projekt auf YouTube, TikTok und Pinterest zu promoten.\n\n###### Ich werde mindestens 50 % aller Einnahmen an Tierschutzorganisationen spenden, deshalb bedeutet mir dieses Projekt sehr viel. Es wird mir helfen, noch mehr Geld spenden zu können.  \nIch gebe mein Bestes, alles so gut wie möglich vorzubereiten, und hoffe wirklich, dass es erfolgreich wird.\n\nIm Moment investiere ich also den Großteil meiner Zeit in diese Vorbereitung (neben Live-Musik und Kundenaufträgen 😄).\n\n###### Drückt mir bitte die Daumen für mein Projekt – und dafür, dass wir viel Geld für gute Zwecke spenden können. ❤️\n\n___\n\nIn der Zwischenzeit habe ich wieder etwas Geld an einen Hunde- und Katzen-Tierschutzverein in Deutschland gespendet.  \nSie haben ein limitiertes Portemonnaie verkauft – und natürlich hilft das Geld dabei, sich um die Tiere zu kümmern.  \nIch finde es richtig schön und liebe die Idee, etwas zu kaufen, das ich selbst nutzen kann, und gleichzeitig etwas Gutes zu tun!\n\n###### Alles über meine Tierschutz-Initiative könnt ihr in [diesem Post](https://peakd.com/hive-149312/@ravenmus1c/first-hive-money-donated-to-flipper-all-nft-sales-will-go-into-donation) lesen.  \nDer Name der Initiative ist:\n\n### **SAVE A PAW Collective** – Every NFT leaves a Mark of Hope ✨🐶🐱\n\n![Save A Paw Logo neu.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/48QSHbJZMfaZ2iznEiwd9njitS1CuntKn1D82FFCruEimejjs3k2sUebQt1ox9r9Jr.png)\n\n### Dieses Mal habe ich mir ein Portemonnaie gekauft von:\n## [Ankerhunde e.V.](https://ankerhunde.de/)\n\n###### Es ist sehr hochwertig und sieht einfach richtig schön aus.\n\n# Spendenbetrag: 29 Euro\n\n![image.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/23u5zy6iDTsUPn5caLzwyBxFQVQZ3WYeNo4y414Govc6cKDnsh1FHtikuPwAyzv33vWy7.png)\n\n![image.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/23w2qMhaGgZLn9fzTX2pQ9RCQeYEFjfnzvuyim8LFk4FP9wVxAHLYT6fiAXp5xvNiLxw5.png)\n\nhttps://files.peakd.com/file/peakd-hive/ravenmus1c/EoiVo75JKCNy6JzYyxaQpUraR7CYN9uuH7fyc863EsqN8Su7TmUrKLeoXEaf9iVALyK.png\n\n___\n\n#### Wenn ihr selbst etwas spenden möchtet, hier ist der Link zur Website:\n\n## https://ankerhunde.de/\n\nIch wollte mich nochmal bei allen bedanken, die diese Posts voten und mir so helfen, auf diese Weise mehr Geld zu spenden!  \nDanke auch an @elevator09, dass du mich in dein Charity-Projekt aufgenommen hast!\n\nIch weiß das sehr zu schätzen und bin unglaublich froh, dass ich auf diese Weise zumindest ein bisschen Gutes für Tiere tun kann!\n\n#### Danke an alle, die mich bisher unterstützt haben – und an alle, die diese Initiative noch unterstützen möchten! ❤️🙏\n\nLasst uns gemeinsam ein paar Tiere retten...  \nUnd vergesst nicht: Wenn ihr euch ein Tier holen möchtet:\n\n#### Adoptieren statt kaufen!\n\n### RAVEN 🐦\n\n![image.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/23tmKrtg6CktXNpF2Sn8UMs3miyTzu4FMBW8KsjqSGJakdYedgPrC6VDyhyP6hPNDGdQs.png)\n\n</p>\n</details>\n\n###### Hello everyone! 😊\nHow are you doing?\n\nIt´s time for another donation post! 😊😍 \nI know I am not very active in Hive at the moment. But I am preparing alot of stuff in the background, such as creating hundreds of shorts for our label Panda Beats - because we want to start promoting our label a bit more.\n\n###### Also I set myself a deadline till the end of the year to prepare my new music channel **\"Save A Paw - Calming Music for Animals\"**. 🐶🐱🎶\n\nI produce relaxing music for animals. I often use this kind of music myself when I have to leave my dog alone for a few hours. I think it helps her stay more relaxed.\n\nMy plan is to prepare around 60-70 different tracks of music, to have enough content to be able to upload to YouTube every week. I also have a second producer on board that helps me produce, because it´s alot of work. And my girlfriend helps me with graphical design.\n\n###### Apart from the audio, I also need to produce videos. \nAs this can be very challenging when starting to film material, I decided to create pictures with AI and then animate them with another AI.\nI am not a big fan of all this AI stuff, but I realised that this is mainly my only option when wanting to create that much material. It will be the only way to be able to open up such a channel, so I accepted that I need to use AI. \n\nApart from the videos, I also want to create Shorts, so I can promote the project in YouTube, TikTok and Pinterest.\n\n###### I will donate at least 50% of all income to animal charity causes, so this project means alot to me. It will help me to be able to donate more money.\nI do my best to prepare everything as good as possible, and I really hope it will have some success.\n\nSo yeah, right now I invest most of my time into preparing all this (apart from some live music and customer orders 😄).\n\n###### Please keep your fingers crossed for my project, and that we can donate lot´s of money for good causes. ❤️\n\n___\n\nIn the meantime, I donated a little more money to a dog and cat charity association in Germany.\nThey sold a limited wallet. And of course the money helps them to take care of their animals.\nI really like it, and buying something that I can use and helping charity at the same time is a great thing!\n\n\n###### You can read everything about my animal charity initiatve on [this post](https://peakd.com/hive-149312/@ravenmus1c/first-hive-money-donated-to-flipper-all-nft-sales-will-go-into-donation).\nThe name of this initiative is:\n### **SAVE A PAW Collective** - Every NFT leaves a Mark of Hope ✨🐶🐱\n\n\n![Save A Paw Logo neu.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/48QSHbJZMfaZ2iznEiwd9njitS1CuntKn1D82FFCruEimejjs3k2sUebQt1ox9r9Jr.png)\n\n\n### This time I bought a wallet for myself from:\n## [Ankerhunde e.V.](https://ankerhunde.de/)\n\n###### It´s a very good quality and looks so nice.\n\n# Amount of \"donation\": 29 Euro\n\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/23u5zy6iDTsUPn5caLzwyBxFQVQZ3WYeNo4y414Govc6cKDnsh1FHtikuPwAyzv33vWy7.png)\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/23w2qMhaGgZLn9fzTX2pQ9RCQeYEFjfnzvuyim8LFk4FP9wVxAHLYT6fiAXp5xvNiLxw5.png)\n\n\n\nhttps://files.peakd.com/file/peakd-hive/ravenmus1c/EoiVo75JKCNy6JzYyxaQpUraR7CYN9uuH7fyc863EsqN8Su7TmUrKLeoXEaf9iVALyK.png\n\n\n___\n\n\n#### If you want to donate something yourself, here is the link to their websites:\n\n## https://ankerhunde.de/\n\n\nI just wanted to say thanks again to all the people that vote for these posts and help me donate more money this way! Thanks also to @elevator09 for including me in your charity project!\nI appreciate this alot and I am soo happy that I can do at least something good for animals! \n\n#### Thanks for everyone who supported me so far and who wants to support this initiative!❤️🙏\n\nLet´s be able together to save some animals...\nAnd don´t forget, if you want to get an animal yourself: \n#### Adopt, don´t shop!\n\n### RAVEN 🐦\n\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/23tmKrtg6CktXNpF2Sn8UMs3miyTzu4FMBW8KsjqSGJakdYedgPrC6VDyhyP6hPNDGdQs.png)\n\n\n___\n\nTo extend the possibilities of donating money:\n\n##### ❗️ All money I raise with NFT sales on NFT Showroom @nftshowroom and on the WAX Blockchain will go into donation for animals in danger from now on! 🐶🏥\n\n\n##### Here are the links to the NFTs 🖼\n\n\n###### [NFT SHOWROOM](https://nftshowroom.com/ravenmus1c/gallery)\n\n\n###### [WAX Blockchain NFTs](https://wax.atomichub.io/market?blockchain=wax-mainnet&collection_name=reignofraven&order=desc&sort=created&symbol=WAX#sales)\n\n\n###### [WAX Blockchain Packs](https://neftyblocks.com/collection/reignofraven)\n###### Here are explanations to my packs:\nPack 1: https://peakd.com/nftdrop/@ravenmus1c/dollarraven-holders-drop-halloween-special-2-claim-now\n\nPack 2: https://peakd.com/nfts/@ravenmus1c/dollarraven-holders-drop-2-robot-dance-claim-now\n\n\n\n![Raven Divider2.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/23tbkbQt8TaSYxzsoyt6kXkZQwR4QURoznRNdsF39PJ9eRPnTGXMvPd2RSCLpFYXLJx63.png)\n\n___\n#### **<center>I am very thankful for everyone who supports me on my journey!!</center>**\n\n|<center>[Buy RAVENCOIN and get access to the fanclub!](https://hive-engine.com/trade/RAVEN)</center>|<center>[Join the Reign of the Raven Queen on Discord!](https://discord.gg/Gw33rwqd5V)</center>|\n|-|-|\n|<center><a href=\"https://hive-engine.com/trade/RAVEN\">![Coin_gif_120x120.gif](https://files.peakd.com/file/peakd-hive/ravenmus1c/AJkSQ7TmHQokjByaACgUUv6rw5GchfHxm2mQNCaqzSVS6V9MYwZPfLV4dktX2TX.gif)</a></center> | <center><a href=\"https://discord.gg/Gw33rwqd5V\">![Discord 120x120.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/AKAoXP9Y5PaDbgRvRZ57DcQqKcRXNNAtY2Si8gWY8Q4MLoYLjr2JGj97CdVLEwn.png)</a></center>|\n|<center>[Read about the project here](https://peakd.com/token/@ravenmus1c/the-official-token-sale-of-ravencoin-starts-now)</center>|<center>[Become a resident of the Reign](https://discord.gg/Gw33rwqd5V)</center>\n\n\n\n|<center>[Buy my NFT collections on ATOMICHUB](https://wax.atomichub.io/market?collection_name=reignofraven)</center>|<center>[Buy my NFT songs on NFTTunz](https://market.nfttunz.io/artiste/ravenmus1c)</center>|\n|-|-|\n|<center><a href=\"https://hive-engine.com/trade/RAVEN\">![NFT Ad.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/48GgTYnvrrQMzLVWuqX75BfHs7cTaxLrckiuUqSDojzrad2Pz44XgKyRPQHSt2CmwG.png)</a></center>|<center><a href=\"https://nfttunz.io/@ravenmus1c\">![NFTTunz Ad.png](https://files.peakd.com/file/peakd-hive/ravenmus1c/48PSrocxqTef1rfovMKCKTeas3fJ81V5vUP7PfDNiG5aAw7fhXP1jmWQNvCNQM6yV6.png)</a></center>|\n\n\n|Follow Socials and Side Projects|Listen to and buy Music|Use my Referrals|\n|-|-|-|\n|[Twitter](https://twitter.com/RavenMus1c) | [Audius](https://audius.co/ravenmus1c) - [Emanate](https://emanate.live/raven) | [Terracore](https://www.terracoregame.com/?ref=ravenmus1c) <sub>P2E Game on Hive</sub> |\n|[Hive Music Video Foundation](https://peakd.com/@hmvf)| [3Speak](https://3speak.tv/user/ravenmus1c) - [Odysee](https://odysee.com/@Raven:da) |[Rising Star Game](https://www.risingstargame.com?referrer=ravenmus1c) <sub>P2E Game on Hive</sub>|\n|[Brain Candy](https://peakd.com/@brain.candy) | [Bandcamp](https://ravenmus1c.bandcamp.com/) |[Doctor Who](https://doctorwho-worldsapart.com/r/20707/) <sub>NFT game made by BBC</sub>",
+        "category": "charity",
+        "children": 0,
+        "created": "2026-04-21T10:40:39",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/48EJqq5CZRcbhFgWyXvYqE6z6mV4xgEC3ZK9e35GoK22KDvp2ogJYTRETtXUzJqBcZ.jpg",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/48QSHbJZMfaZ2iznEiwd9njitS1CuntKn1D82FFCruEimejjs3k2sUebQt1ox9r9Jr.png",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/23u5zy6iDTsUPn5caLzwyBxFQVQZ3WYeNo4y414Govc6cKDnsh1FHtikuPwAyzv33vWy7.png",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/23w2qMhaGgZLn9fzTX2pQ9RCQeYEFjfnzvuyim8LFk4FP9wVxAHLYT6fiAXp5xvNiLxw5.png",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/EoiVo75JKCNy6JzYyxaQpUraR7CYN9uuH7fyc863EsqN8Su7TmUrKLeoXEaf9iVALyK.png",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/23tmKrtg6CktXNpF2Sn8UMs3miyTzu4FMBW8KsjqSGJakdYedgPrC6VDyhyP6hPNDGdQs.png",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/23tbkbQt8TaSYxzsoyt6kXkZQwR4QURoznRNdsF39PJ9eRPnTGXMvPd2RSCLpFYXLJx63.png",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/AJkSQ7TmHQokjByaACgUUv6rw5GchfHxm2mQNCaqzSVS6V9MYwZPfLV4dktX2TX.gif",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/AKAoXP9Y5PaDbgRvRZ57DcQqKcRXNNAtY2Si8gWY8Q4MLoYLjr2JGj97CdVLEwn.png",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/48GgTYnvrrQMzLVWuqX75BfHs7cTaxLrckiuUqSDojzrad2Pz44XgKyRPQHSt2CmwG.png",
+            "https://files.peakd.com/file/peakd-hive/ravenmus1c/48PSrocxqTef1rfovMKCKTeas3fJ81V5vUP7PfDNiG5aAw7fhXP1jmWQNvCNQM6yV6.png"
+          ],
+          "tags": [
+            "charity",
+            "animal",
+            "donation",
+            "deutsch",
+            "support",
+            "appreciator",
+            "ocd",
+            "curangel",
+            "saveapaw",
+            "animals"
+          ],
+          "users": [
+            "ravenmus1c",
+            "elevator09",
+            "nftshowroom",
+            "hmvf",
+            "Raven",
+            "brain.candy"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 21487411296512,
+        "payout": 2.092,
+        "payout_at": "2026-04-28T10:40:39",
+        "pending_payout_value": "2.092 HBD",
+        "percent_hbd": 10000,
+        "permlink": "11-hive-money-donated-to-ankerhunde-ev-or-nft-sales-will-go-into-donation",
+        "post_id": 149883335,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 167
+        },
+        "title": "#11 Hive Money donated to Ankerhunde e.V. | NFT Sales will go into Donation 🙏🐶🐱",
+        "updated": "2026-04-21T10:40:39",
+        "url": "/charity/@ravenmus1c/11-hive-money-donated-to-ankerhunde-ev-or-nft-sales-will-go-into-donation"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 10722690903774,
+            "voter": "magicmonk"
+          },
+          {
+            "rshares": 1517748464,
+            "voter": "steemcleaners"
+          },
+          {
+            "rshares": 32547259391,
+            "voter": "whatamidoing"
+          },
+          {
+            "rshares": 4036965588,
+            "voter": "shikika"
+          },
+          {
+            "rshares": 19856607961,
+            "voter": "samminator"
+          }
+        ],
+        "author": "vanje",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 71.83,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Wenn ich heute über Technik nachdenke, merke ich, wie schwer es geworden ist, ihren Anfang zu bestimmen. Sie ist einfach überall. Aber irgendwann muss es diesen ersten Moment gegeben haben, an dem ich ihr bewusst begegnet bin.\n\nVielleicht war es das Telefon im Flur mit der Wählscheibe. Oder die Musiktruhe im Wohnzimmer – Plattenspieler und Radio in einem Möbelstück. Ich weiß es nicht mehr genau. Ich weiß nur: Diese Geräte gehörten nicht uns Kindern. Sie gehörten den Erwachsenen. Und genau dort beginnt meine persönliche Geschichte mit Technik.\n\n„Wenn ich versuche, mich zu erinnern, entsteht eine Art technologische Zeitlinie meines Lebens …“\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23u5QY15N5qMJKeX4xm6NEBhVJTciNWRBYRfVsDfQtvthhtkqviGsDBdgKjesHvFnTwz1.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n\n## Eine persönliche Zeitlinie\n### Ende der 1960er – Technik gehört den Erwachsenen\n\nErste bewusste Begegnungen mit Technik. Wählscheiben-Telefon im Flur. Musiktruhe im Wohnzimmer (Plattenspieler + Radio). \n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/EqQPXhL6tvohCXKiJTEWbAELmzXdDH9RP4sWh8ASXhpYje63kZGDtCGtNE6USJUmBPE.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n\n\n\nSchlager aus den 60ern. Technik ist teuer und fast ein „Heiligtum“. Kinder benutzen Geräte nicht – sie beobachten. Eine meiner stärksten Erinnerungen: Wenn das Telefon klingelte, war es oft mein Vater, der beruflich unterwegs war. Und mich wollte er immer sprechen.\n\n\n\n\n### Frühe 1970er – Mein erstes eigenes Gerät\n\nDas erste Stück Technik, das wirklich mir gehörte: Ein kleines batteriebetriebenes Transistorradio, überall dabei, englischsprachige Musik entdecken (Abgrenzung zum Schlager der Erwachsenen). Technik wird zum ersten Mal Teil der eigenen Identität.\n\n### Mitte / Ende der 1970er – Musik wird teilbar\n\nDer nächste große Schritt: Der Kassettenrekorder. Plötzlich konnte man: Musik aus dem Radio aufnehmen, eigene Kassetten erstellen, Musik mit Freunden tauschen. Das bedeutete aber auch: stundenlang auf einen Song warten. Aufnahme neu starten, wenn der Moderator hineinredet. ständig neue Batterien kaufen. Musik hören kostete damals Zeit und Energie.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23wCLgCfALkgwY4UGpJo34aoaTo19FkHdJDcbvwFzCkS2yKLK6pUuwxyi3ZaWE3CSTrXv.png)<br><sup>Image by <a href=\"https://pixabay.com/users/mastertux-470906/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=6004436\">MasterTux</a> from <a href=\"https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=6004436\">Pixabay</a></sup>\n\n\n### Ende der 1970er – Erste eigene HiFi-Anlage\n\nWeihnachtsgeschenk: eine Schneider Kompakt-Stereoanlage. Ich war ehrlich gesagt enttäuscht. Ich wollte: einzelne Komponenten, Geräte später austauschen, meine Anlage selbst zusammenstellen. Diese Enttäuschung führte zu etwas Neuem: Ich begann nach der Schule zu arbeiten, um Geld zu verdienen. Saisonarbeiten, Baujobs – oft half ich beim Vater eines Freundes, der Fliesenleger war. Der Bruder eines Freundes hatte sich mit Gerüstbau selbständig gemacht.\n\n\n### 1985 – Der Heimcomputer\n\nMit Beginn meines Studiums in Automatisierungstechnik kam der nächste große Sprung. Heimcomputer. Zur Auswahl standen damals: Commodore C64 und Schneider CPC\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23xeVMaZpXJhwHrkHvAqD9pqJDXqRcedWnjAHbfViA4TX4MzFMQC9iED65ft7zBV75nLQ.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\nUnser Dozent riet uns: Wartet ein paar Wochen. Ihr werdet selbst merken, welcher Computer zu euch passt. Ich wartete natürlich nicht. Ein gutes Angebot führte schnell zum C64. Im Nachhinein war es eine gute Entscheidung – dort gab es viel mehr Möglichkeiten zu basteln und zu lernen.\n\n### Ende der 1980er – Technik wird Beruf\n\nIn der Ausbildung arbeiteten wir mit echten Mikroprozessoren: 8085, 8086, Z80\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23uEyoWVhoaXZhRCdob4cchTJgcMhC2R27y28dhJ27eoUtcnGwGf21WEcrBEuaGo9hr3V.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\nProgrammiert wurde in: Assembler, BASIC, CP/M, SPS. Dazu kamen PID-Regler und Steuerungen. Software steuerte plötzlich reale Maschinen. Das war eine ganz andere Verantwortung als beim Heimcomputer.\n\n### Automatisierung und Medizintechnik\n\nMein erster beruflicher Einstieg: SPS-Programmierung. Entwickelte halbautomatische Prüfabläufe für Platinen. Später wechselte ich in die Medizintechnik. Entwicklung digitaler Systeme um wiederkehrende Abläufe zu automatisieren. Der PC wurde dabei mein ständiger Begleiter. Von PC-DOS, MS-DOS, bis zu Windows und später auch Linux.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23wWvpez2MtaN83h61iRpsr3tukJGmxsy92qj9a2TBy69fDAM4Di5nvX3FBDGr3unBH1N.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n### Netzwerke und Infrastruktur\n\nEin weiterer Schwerpunkt wurde Netzwerktechnik. Ich installierte Netzwerke bei: Freunden, kleinen Firmen, Selbstständigen. Damals meist 10-Mbit Ethernet. Fehlersuche war oft ein Albtraum. Ein defektes Kabel oder unsaubere Verbindung – und das ganze Netz stand.\n\n### Vor dem Internet – BTX\n\nNoch bevor das Internet alltäglich wurde, arbeitete ich mit BTX (Bildschirmtext). Mit Freunden, einer hatte von seinem Vater einen größeren Kurierdienst übernommen, entwickelten wir eine interaktive Plattform zur Reduktion von Leerfahrten (OMS-2000). Technik dafür: GPS, D2 Mobilfunk, zentrale Plattform. Im Grunde ein früher Vorläufer moderner Logistikplattformen.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23ynZ2z5hrGUkmYcxjeAzUhwGqu3RWxwgNnssVKLEjLHjnrK9J4UiWxxdDbcGGsgraXLN.png)<br><sup>Vieles davon wirkt heute selbstverständlich. Damals (1990-1995) war es ein gefördertes Experiment.</sup>\n\n\n### Frühe Online-Zeit – Modems und ISDN\n\nDie ersten Verbindungen ins Netz: Akustikkoppler (0,3k), 2.8k Modems, später 56k. Der große Fortschritt kam mit ISDN (64k), mit geeigneter teurer Hardware (aktive ISDN-Karte AVM B1) konnte man zwei Leitungen bündeln (128k). Jetzt konnte man stabil online arbeiten.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23y9AZa9mm191utkVTvFTWCRQL5JhCtba4JhbtcFNK6KaDZHwYmvdUnGMed2MeC5TYKeG.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\nIch begann Webseiten zu erstellen: für Freunde, für Vereine, für Selbstständige inklusive Infrastrukturplanung. Solange Technik eine Herausforderung war, machte sie besonders viel Spaß.\n\n### Mobile Kommunikation\n \nDurch meinen Beruf war Erreichbarkeit wichtig. Ich begann mit dem B-Netz. Später kam mein erstes richtig mobiles Telefon - Ein Motorola-Klapphandy mit ausziehbarer Antenne. Erstaunlich gute Funkqualität für diese Zeit.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23wqi9JZVFb8tMzfGrQNsnikgCdwNJ8xS3AjSFnGsgoym4ZYAhSSXkcfBDmDWvsXXpAcC.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n### Frühe Smartphones\n\nNoch lange bevor Apple oder Samsung den Markt dominierten, hatte ich bereits ein frühes Smartphone. Damit konnte man: E-Mails schreiben, Fotos machen, Termine verwalten. Damals fühlte sich das schon wie Zukunft an.\n\n### Heute – Technik als Werkzeug\n\nHeute nutze ich Technik anders. Nicht mehr primär beruflich, sondern als Werkzeug für Gedanken, Austausch und Dokumentation. Zum Beispiel: Schreiben, Reflektieren, Publizieren. Technik unterstützt den Prozess – sie steht nicht mehr im Mittelpunkt.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/vanje/23x1WXw2cyeXLjY5eizrASwWugaqNGbJ4n5aqwsHx9iAZt35oVUXUUMQXcNZB5o3GHRai.png)<br><sup>Quelle: OpenAI Bildgenerator; @vanje</sup>\n\n\n## Die eigentliche Entwicklung\n\nWenn ich zurückblicke, sehe ich eine interessante Bewegung: \n- Technik war zuerst selten und zentral\n- Dann wurde sie persönlich\n- Später Werkzeug\n- Dann Infrastruktur\n- Und heute ist sie einfach Begleiter im Alltag.\n\n## Schlussgedanke \nWenn ich heute darüber nachdenke, habe ich eine erstaunliche Entwicklung miterlebt.\n\n- Von der Musiktruhe im Wohnzimmer zum Smartphone in der Hosentasche.\n- Von der Wählscheibe zu globalen Netzwerken.\n- Von Kassettenaufnahmen aus dem Radio zu Musikbibliotheken, die in Sekunden verfügbar sind.\n- Und vom Heimcomputer, auf dem man Programme noch aus Zeitschriften abtippte, hin zu Systemen, die heute mit Hilfe künstlicher Intelligenz Texte formulieren – und ganze Prozesse im Hintergrund mitdenken.\n\nTechnik hat sich ständig verändert. Was sich dabei aber kaum verändert hat, ist etwas anderes: die Neugier. Der Wunsch zu verstehen, wie Dinge funktionieren. Probleme zu lösen. Neue Möglichkeiten auszuprobieren.\n\nFrüher bedeutete das: Kassetten aufnehmen. Computer programmieren. Netzwerke aufbauen.\n\nHeute bedeutet es vielleicht: Gedanken aufschreiben. Erfahrungen teilen. Oder einfach beobachten, wohin sich diese technische Welt noch entwickelt.\n\n\nWenn ich eines gelernt habe, dann: Technik kommt und geht. Aber die Neugier darauf bleibt.",
+        "category": "hive-121566",
+        "children": 0,
+        "community": "hive-121566",
+        "community_title": "Deutsch D-A-CH",
+        "created": "2026-04-21T11:04:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "ai_tools": {
+            "media_generation": true,
+            "writing_edit": true
+          },
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/vanje/23u5QY15N5qMJKeX4xm6NEBhVJTciNWRBYRfVsDfQtvthhtkqviGsDBdgKjesHvFnTwz1.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/EqQPXhL6tvohCXKiJTEWbAELmzXdDH9RP4sWh8ASXhpYje63kZGDtCGtNE6USJUmBPE.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23wCLgCfALkgwY4UGpJo34aoaTo19FkHdJDcbvwFzCkS2yKLK6pUuwxyi3ZaWE3CSTrXv.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23xeVMaZpXJhwHrkHvAqD9pqJDXqRcedWnjAHbfViA4TX4MzFMQC9iED65ft7zBV75nLQ.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23uEyoWVhoaXZhRCdob4cchTJgcMhC2R27y28dhJ27eoUtcnGwGf21WEcrBEuaGo9hr3V.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23wWvpez2MtaN83h61iRpsr3tukJGmxsy92qj9a2TBy69fDAM4Di5nvX3FBDGr3unBH1N.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23ynZ2z5hrGUkmYcxjeAzUhwGqu3RWxwgNnssVKLEjLHjnrK9J4UiWxxdDbcGGsgraXLN.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23y9AZa9mm191utkVTvFTWCRQL5JhCtba4JhbtcFNK6KaDZHwYmvdUnGMed2MeC5TYKeG.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23wqi9JZVFb8tMzfGrQNsnikgCdwNJ8xS3AjSFnGsgoym4ZYAhSSXkcfBDmDWvsXXpAcC.png",
+            "https://files.peakd.com/file/peakd-hive/vanje/23x1WXw2cyeXLjY5eizrASwWugaqNGbJ4n5aqwsHx9iAZt35oVUXUUMQXcNZB5o3GHRai.png"
+          ],
+          "tags": [
+            "deutsch",
+            "reflexion",
+            "lebensweg",
+            "zeitreise",
+            "erinnerung",
+            "gedanken",
+            "persoenlicheentwicklung"
+          ],
+          "users": [
+            "vanje"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 14557594184369,
+        "payout": 1.417,
+        "payout_at": "2026-04-28T11:04:30",
+        "pending_payout_value": "1.417 HBD",
+        "percent_hbd": 10000,
+        "permlink": "wie-technik-und-ich-uns-entwickelten",
+        "post_id": 149883475,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 73
+        },
+        "title": "Wie Technik und ich uns entwickelten",
+        "updated": "2026-04-21T11:04:30",
+        "url": "/hive-121566/@vanje/wie-technik-und-ich-uns-entwickelten"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 44938542740,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 40108963159,
+            "voter": "jacor"
+          },
+          {
+            "rshares": 2533141268236,
+            "voter": "mangos"
+          },
+          {
+            "rshares": 12027475415,
+            "voter": "esteemapp"
+          },
+          {
+            "rshares": 13304720337,
+            "voter": "dreemsteem"
+          }
+        ],
+        "author": "maxwellmarcusart",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 79.55,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![](https://images.ecency.com/DQmbZkj7Gqtdj2sTQLXeicFYqxZ1NL8cUKdgcL8GicugRyp/20260415_110441.jpg)\n\n\nHi all! Greetings. \n\nToday, I'm sharing with you my new pen drawing. It is a portrait drawing of a professional footballer who plays the Egyptian national and goes by the name, Mohamed Salah. He also plays for an English premiere league football club called Liverpool. \n\nSadly, this will be his last season at Liverpool as it has it has been agreed that he will not renew his contract.\nThe drawing was done with a blue ballpoint pen on a cardboard paper using scribble style. My steps can be seen below:\n\n![](https://images.ecency.com/DQmXvzaCxaxo3xgSXBZrrkDnMLdKRPsZ6AB6a8aseciK3gX/20260415_104357.jpg)\n\n![](https://images.ecency.com/DQmfCT665TgmkdBYmP9Gcyww5tiqeT8eYhWETnfFoZMVdNH/photogrid_1776765379017.jpg)\n\n![](https://images.ecency.com/DQmfNDBQic7CaMnPAvTGuyNN8nQYuvkc3HmcLV8cQH5aJ7a/photogrid_1776765388079.jpg)\n\n![](https://images.ecency.com/DQmZqxoBJL34GJ8gucUnSqyBMSmXfaod9QdAD6t4Uc64QVA/photogrid_1776765396076.jpg)\n\nThank you.\n",
+        "category": "hive-174301",
+        "children": 1,
+        "community": "hive-174301",
+        "community_title": "Sketchbook",
+        "created": "2026-04-21T10:43:12",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.4.2-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmbZkj7Gqtdj2sTQLXeicFYqxZ1NL8cUKdgcL8GicugRyp/20260415_110441.jpg",
+            "https://images.ecency.com/DQmXvzaCxaxo3xgSXBZrrkDnMLdKRPsZ6AB6a8aseciK3gX/20260415_104357.jpg",
+            "https://images.ecency.com/DQmfCT665TgmkdBYmP9Gcyww5tiqeT8eYhWETnfFoZMVdNH/photogrid_1776765379017.jpg",
+            "https://images.ecency.com/DQmfNDBQic7CaMnPAvTGuyNN8nQYuvkc3HmcLV8cQH5aJ7a/photogrid_1776765388079.jpg",
+            "https://images.ecency.com/DQmZqxoBJL34GJ8gucUnSqyBMSmXfaod9QdAD6t4Uc64QVA/photogrid_1776765396076.jpg"
+          ],
+          "image_ratios": [
+            null,
+            null,
+            0.8256880733944955,
+            0.8258064516129032,
+            0.8178913738019169
+          ],
+          "links": [],
+          "tags": [
+            "hive-174301",
+            "art",
+            "drawing",
+            "diy",
+            "football",
+            "sportstalk",
+            "waivio",
+            "bpc",
+            "pepe",
+            "airhawk"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 17692200682421,
+        "payout": 1.723,
+        "payout_at": "2026-04-28T10:43:12",
+        "pending_payout_value": "1.723 HBD",
+        "percent_hbd": 10000,
+        "permlink": "mohamed-salah-pen-drawing-ba20461d85a81",
+        "post_id": 149883347,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 129
+        },
+        "title": "Mohamed Salah - Pen Drawing",
+        "updated": "2026-04-21T10:43:12",
+        "url": "/hive-174301/@maxwellmarcusart/mohamed-salah-pen-drawing-ba20461d85a81"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 46199308258,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 98269029557,
+            "voter": "jlufer"
+          },
+          {
+            "rshares": 4855220027641,
+            "voter": "redes"
+          },
+          {
+            "rshares": 12366730342,
+            "voter": "esteemapp"
+          },
+          {
+            "rshares": 522561933,
+            "voter": "bloghound"
+          }
+        ],
+        "author": "digi-me",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 77.67,
+        "author_role": "mod",
+        "author_title": "Contest Master",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<center>![](https://images.ecency.com/DQmQvLYjmmwf3gkGNDjZEEHYgPpZ7z4gda19xV3DtS9Uz1P/01.jpg)</center>\n\nThis beautiful portrait is found in the city center of Aarhus, one of the larger cities in Denmark. The title « Beautiful Age» is painted by artist Hendrik Beikirch. As I don't know the artist from before, I had to look for information and found out that he is a based in Germany. I did quess he might be German because of the name... I found out that he paints beautiful black and white portraits. Seems he has done lots of work around the world, but I haven't come across work done by him before this work in Aarhus.\n\n<br>\n<center>https://images.ecency.com/DQmf3nZddKpTVANPKaHNus9J2QFUp8KmvKgzhbNYbMa6zXD/02.jpg\n\nhttps://images.ecency.com/DQmZmtjeeZLKUXocfXceHVAVu4MLWDuAmjCmgqgXY7E3Wo5/03.jpg\n\nhttps://images.ecency.com/DQmQ3WCiZ8vXB4uW2zsE6ohrDKUSa3peBgVGE3tEi5KTgTb/04.jpg</center>\n\nHis black and white work does make a powerful inpression. His portraits certainly have personalities and expression of emotions. His portraits are just as eye-catching as those in colors. \n\nHis portraits are not just subjects. They have character that I think comes out much more strongly when he uses nothing but black and white and not the full color palette. Impressive work.  \n\nCheck the link for more portraits and an article about Beikirch. \n\nHenrick Beikirch :\nhttps://magazine-art-mag.fr/en/henrick-beikirch-masters-of-monumental-frescoes/\n\n<p></p>\nYou like street art? Join our street art contest -><br>\n<a href=\"https://ecency.com/hive-184784/@digi-me/ccc-s-street-art-contest-165f14a5cc74a\">CCC's Street Art Contest #297 | 🎁 : 100% Liquid Payout and Ecency points as Prize Pool & Winners of #296</a></p>\n<p><br></p>\n<p>Please do follow if you want to keep up with my next street art. Any upvotes or reblogs are hugely appreciated!</p>\n<p>Latest street art post, check out :<br>\n<a href=\"https://ecency.com/hive-184784/@digi-me/street-art-247-something-new\">STREET ART #247– Something new at the Le Gaudan Waterfront in Port Louis, Mauritius</a>\n<p><br></p>\n<p>U.J</p>\n<p>Kristiansand, Norway</p>\n<p>All the photoes are mine, Ulla Jensen (flickr, Instagram and facebook)</p>\nw\n<p><br></p>\n<p><center><a href=\"https://hive.blog/hive-148441/@digi-me/5-years-on-hive-today\">Read about us?</a> // <a href=\"https://hive.blog/@digi-me\">Main page!</a><br>\nFollow us for our street art contest and blogs about travel, art, photo, crypto & gaming\nhttps://cdn.steemitimages.com/DQmcqzxkvfRSyuudJwYEWbPkAteNz8FRyBrsLiZXb1KKur9/Steemit%20header.jpg</p></center>",
+        "category": "hive-184784",
+        "children": 1,
+        "community": "hive-184784",
+        "community_title": "StreetArt",
+        "created": "2026-04-21T10:16:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.8-vision",
+          "description": "This beautiful portrait is found in the city center of Aarhus, one of the larger cities in Denmark. The title « Beautiful Age» is painted by artist Hendrik Beikirch.",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmQvLYjmmwf3gkGNDjZEEHYgPpZ7z4gda19xV3DtS9Uz1P/01.jpg",
+            "https://images.ecency.com/DQmf3nZddKpTVANPKaHNus9J2QFUp8KmvKgzhbNYbMa6zXD/02.jpg",
+            "https://images.ecency.com/DQmZmtjeeZLKUXocfXceHVAVu4MLWDuAmjCmgqgXY7E3Wo5/03.jpg",
+            "https://images.ecency.com/DQmQ3WCiZ8vXB4uW2zsE6ohrDKUSa3peBgVGE3tEi5KTgTb/04.jpg",
+            "https://cdn.steemitimages.com/DQmcqzxkvfRSyuudJwYEWbPkAteNz8FRyBrsLiZXb1KKur9/Steemit%20header.jpg",
+            "https://images.ecency.com/DQmQvLYjmmwf3gkGNDjZEEHYgPpZ7z4gda19xV3DtS9Uz1P/01.jpg)"
+          ],
+          "image_ratios": [
+            "1.5038",
+            "0.6717",
+            "0.6750",
+            "1.4888",
+            "5.1406"
+          ],
+          "tags": [
+            "hive-184784",
+            "streetart",
+            "graffiti",
+            "photography",
+            "travel",
+            "cch",
+            "curangel",
+            "gems",
+            "ecency",
+            "creativecoin"
+          ],
+          "thumbnails": [
+            "https://images.ecency.com/DQmQvLYjmmwf3gkGNDjZEEHYgPpZ7z4gda19xV3DtS9Uz1P/01.jpg"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 21843625280913,
+        "payout": 2.127,
+        "payout_at": "2026-04-28T10:16:09",
+        "pending_payout_value": "2.127 HBD",
+        "percent_hbd": 10000,
+        "permlink": "street-art-248-beautiful-portrait",
+        "post_id": 149883184,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 121
+        },
+        "title": "STREET ART #248 – Beautiful portrait in Aarhus, Denmark",
+        "updated": "2026-04-21T10:16:09",
+        "url": "/hive-184784/@digi-me/street-art-248-beautiful-portrait"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 153762571092,
+            "voter": "penguinpablo"
+          },
+          {
+            "rshares": 1563817529,
+            "voter": "funnyman"
+          },
+          {
+            "rshares": 930708158,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": 26381690515,
+            "voter": "rafalski"
+          },
+          {
+            "rshares": 28535412783,
+            "voter": "skate"
+          }
+        ],
+        "author": "kinderflaco",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 67.23,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "hypeuser",
+            "weight": 100
+          },
+          {
+            "account": "skatehype.com",
+            "weight": 400
+          }
+        ],
+        "blacklists": [],
+        "body": "<center>[<img src='https://www.skatehype.com/tempimg/kinderflaco-32957-hive.jpg?1776765605'>](https://www.skatehype.com/v/32957/big-spin-metro-skatepark-felix-primera)</center>\n\nTrick: big spin, metro skatepark.\nSkater: Felix Primera [Venezuela]\nFilmer: Ardilla\n\n<div style='position:relative;padding-bottom:56.25%;height:0;overflow:hidden'><iframe style='position:absolute;top:0;left:0;width:100%;height:100%' allowfullscreen src='https://www.skatehype.com/ifplay.php?v=32957' name='hype32957'></iframe><br>\n</div>",
+        "category": "hive-106687",
+        "children": 0,
+        "community": "hive-106687",
+        "community_title": "Skate Hype",
+        "created": "2026-04-21T10:00:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "beempy/0.24.27",
+          "canonical_url": "https://peakd.com/hive-106687/@kinderflaco/big-spin-metro-skatepark-felix-primera",
+          "community": "hive-106687",
+          "tags": [
+            "skateboarding",
+            "skatehype",
+            "skate",
+            "kinderflaco",
+            "sports",
+            "spanish",
+            "video"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 24399287797778,
+        "payout": 2.372,
+        "payout_at": "2026-04-28T10:00:06",
+        "pending_payout_value": "2.372 HBD",
+        "percent_hbd": 10000,
+        "permlink": "big-spin-metro-skatepark-felix-primera",
+        "post_id": 149883081,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 285
+        },
+        "title": "Big spin, metro skatepark, Felix Primera",
+        "updated": "2026-04-21T10:00:06",
+        "url": "/hive-106687/@kinderflaco/big-spin-metro-skatepark-felix-primera"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 12565041474,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 872482306140,
+            "voter": "arcange"
+          },
+          {
+            "rshares": 24678059585,
+            "voter": "avellana"
+          },
+          {
+            "rshares": 17506886489,
+            "voter": "anarcist69"
+          },
+          {
+            "rshares": 98269029557,
+            "voter": "jlufer"
+          }
+        ],
+        "author": "avdesing",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 78.75,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<div class=\"text-justify\">\n\n---\n\n>Every part of the city has its own little details and unique characteristics; even within the city itself, there are areas, neighbourhoods, beaches and parks that seem to belong to a different city altogether.\n\n---\n\n\n\n![Image_1776727595637.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23wqq2XR1cvku8NVyCs8xoHSekN9xvvUmWvkaRPUe1fB55spR6EkVJM3E6SseUW6YvYqG.jpg)\n\n\n---\n\n\n\nSo far, I’ve visited several beaches; in some cases, I’ve gone specifically to one of them, and in others, I’ve taken a long walk along several, when they aren’t too long. But in this case, I’m bringing you one of the most popular beaches; in fact, I believe, in my opinion and based on my visits, that it’s the second most popular in Málaga. The first is La Malagueta.\n\nI usually prefer quieter beaches for relaxing and enjoying the sea, and although at first, when I arrived in Málaga, I used to go to the most famous and touristy one, it was always very crowded, so for quite some time I chose to walk a bit further and head to La Caleta.\n\n---\n\n\n![20250912_172224.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23vYdMTrVQzkGhYKZCu2mBpVcFVG9nxDzFvLBPu4jFggYFYn2piV1KLVgk8bFQxyP38ro.jpg)\n\n![20250912_172227.jpg](https://files.peakd.com/file/peakd-hive/avdesing/243Lxi8U36t9Q9iF2FW2XEDevgHUvikxKaNWDtUCxUgvTdc9nj3Cdd3gdzRQn9h77D4pb.jpg)\n\n![20250912_172234.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23y8oasjGsKp84tNxTtBiuinHf7aqLXgebwTnbH45555Mo9GUqsAwUzszeUZi6qUwG4td.jpg)\n\n![20250922_164416.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23xKrQJ4orJDiTUM9wcK4Hyrb5TtiV9sBGXUeR6y6RtWjohZtTtrJcfrVA82zjiw5zwo5.jpg)\n\n![20250922_174524.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23v4c45gc7kLUjxZ8NjPXRpuSJFkRzPj1cseqmtoDBsiugTT9uQS85mL4baV9fcwHZXS1.jpg)\n\n![20250922_174507.jpg](https://files.peakd.com/file/peakd-hive/avdesing/241QTNFMsQyu2orvAL6gxdWxoLUnkueopt151XWu3SLseWhhkn2R6jzKhHEJxtVWXVGrY.jpg)\n\n![20250922_174627.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23vYjfrkbne36RDUh9B8tQRujEnDL23dVgY4TswXioZWtTC5Qe935qGQUmP7i3P2a5JhY.jpg)\n\n![20250922_174631.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23zGa9KSPMgvH9b7SdGJxMvm7MbHdjuBZwbtvoTiSMYy3i5xodmtWJmubGXp1zMKgk4kc.jpg)\n\n\n---\n\nWalking along its promenade offers the chance to look out over the Mediterranean Sea on one side and the various buildings on the other, many of them hotels or places exclusively for tourists, although there are people who have flats overlooking the sea. That’s the best bit of all.\n\n\nThe sea is always my favourite thing to see on my walk, but this beach is full of beach bars with excellent restaurants and plenty of space, where you can choose to eat inside or on the terraces with an incredible view of the water and the horizon.\n\n---\n\n\n![20250922_174734.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23r1nzhcKnUkbLqbGRpbMzyqRcu3wNqxiYnCAzCv9kPoeRXoKEX5xSVb9hRAdWbxJxRHj.jpg)\n\n![20250922_174642.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23sdfpngHUaa9Rbt6BjVeiXy2GzVtiuiR4fSdJU4PYcAc99wNFEq47yVmY88XWfGdNUsj.jpg)\n\n![20250922_174655.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23xVEhKKc9sPLLUiXBnYKJA4djL1TaaBLdnEvR4wD1K2Qtdh5MiUs1w6epqW5NDfWRMSR.jpg)\n\n![20250922_174736.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23yd5nTzXoxFNLdJmmFX2KimP27GRhgAYvSTUodbk32rq6ZTboz6fzHzfkrEJsLQcNXes.jpg)\n\n![20250922_175047.jpg](https://files.peakd.com/file/peakd-hive/avdesing/245ca8mn4bpcpo4SjELecKLzXSM497WvrL6jCfY32ePqBxtwuhTDPCt5doHRSSu5JvMgu.jpg)\n\n![20250922_175332.jpg](https://files.peakd.com/file/peakd-hive/avdesing/245TEGnq3Wd3JuEpV6eUPVXcRjC8xekMuiGGyAjiWXGthgEbnJNyDdjfEvKEdNYAaA2Wi.jpg)\n\n![20250922_175400.jpg](https://files.peakd.com/file/peakd-hive/avdesing/244odaCjverZJV8gwekhv6YR5AqKqcE86fEhHs5gM12ocnHdUMLE3xv4LLgMcQXp88ZzM.jpg)\n\n---\n\nIt’s a beach full of green spaces near the promenade, with plenty of palm trees, so you can enjoy the shade in the height of summer, have a picnic, or make the most of the sunny spots. To be honest, I prefer the sunny spots; I love sunbathing whenever I can.\n\nAccording to the information signs that appear every now and then on the beach, it stretches for 1,000 metres, although it seems much longer. I usually walk from west to east, but on this occasion I started the other way round. \n\n---\n\n\n\n![20250922_174830.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23vPLieHRRSp3jQuMdH5AXc7GSHgdUzkpLXVtM1HkjJLzBXJ4ZeGMvwuoDJ7dxde8fKNU.jpg)\n\n![20250922_174824.jpg](https://files.peakd.com/file/peakd-hive/avdesing/243zff9iHrnd5nbNJWP6ZjJWH2qCmnqsfA6GWgnaHvCEsA6FsZY4QyUbWwPg2QjktwwKw.jpg)\n\n![20250922_175315.jpg](https://files.peakd.com/file/peakd-hive/avdesing/244A2UA8x7q2yJYKwpPUCHLMAHLrzX2MSRHB2SZEhVUkFAmQKhGTAKxTiFzhAporevfX7.jpg)\n\n![20250922_175423.jpg](https://files.peakd.com/file/peakd-hive/avdesing/2432BAUfB459GtVKPtx5uMEpjtiqMEJNHkL3vU43ugkCt1tX54WWSiU8FkwroZNE6vvtx.jpg)\n\n![20250922_175749.jpg](https://files.peakd.com/file/peakd-hive/avdesing/243zZRmLTELLXGgdGqwv9Z3ze7CPZ3inbAs93WZxzmd3L3imdbCsWDNymiMArAnGM3rxf.jpg)\n\n![20250922_175427.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23z7Bd7GXnaK4RSM8Wtkh1WbrP93DiyJwtrgWm7fPSjMfsXPJmQcXKunS72BprdpSy3ub.jpg)\n\n![20250922_175508.jpg](https://files.peakd.com/file/peakd-hive/avdesing/2432FMRvVm3MLrD7biPLFx3pnaNbo1qQ8RMAZmkh3st5bQ2HT2xmY8qdktoHRs2TxT2A4.jpg)\n\n![20250922_175606.jpg](https://files.peakd.com/file/peakd-hive/avdesing/244odaD6XoUAXJKyHb462QeD44ExA6XXmDJZuXNEsBHAUZX6NE4MxqGH8EZa71YPyth3d.jpg)\n\n\n\n\n---\n\nLa Caleta beach is situated between Baños del Carmen beach,  or rather, from a stretch of beach just beyond the latter, which forms part of Pedregalejo beach,  and extends all the way to La Malagueta beach. It’s in the eastern part of the city, which I think is why it’s one of the most popular with tourists. The beaches in the western part are more family-oriented.\n\nThe promenade that runs alongside it is the Pablo Ruiz Picasso Promenade. It’s a beach where, although there are plenty of tourists, it’s better maintained than La Malagueta, and over the years I’ve seen various improvements, such as pedestrian walkways and cycle paths, improvements that keep it in good condition and make it appealing to visitors. It is one of the beaches closest to the city centre, which I think is why it is the second most popular choice.\n\n---\n\n![20250922_180016.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23sUGWny88uFHNdNmWMS6nB1sbKGuRwe4Qr3ydumv83BSHJrnX473EfkKsZzZcJ2cSq5P.jpg)\n\n![20250922_180021.jpg](https://files.peakd.com/file/peakd-hive/avdesing/241tWyhRV5zsHzBEra6P8BnrcMaePG11Bp1TpNXn13UGXBjrPnE4kxzmLayMefYcCWMtp.jpg)\n\n![20250922_175555.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23wMWDtMTsfswoi64BEVaYMYbzWEKa6oHxMZ2PiwUeWQy6kRho4CXqYLrzgKKgTeBFxaB.jpg)\n\n![20250922_180149.jpg](https://files.peakd.com/file/peakd-hive/avdesing/243fp1KW4S2KDpCCRgij5Z8bJshbvgFqDvTT9sDLSAQYwhPXqWtxvHVEqRNYNhGPHtG4d.jpg)\n\n![20250922_180248.jpg](https://files.peakd.com/file/peakd-hive/avdesing/244A4viRH6V6x9nXFCAJbXK1ur2QfzkfczEDDotV3QYRwTxq65zkTQyBHZpcaobNnrqsz.jpg)\n\n![20250922_180143.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23sJrT1w2RL4atARwnQfmrdsGN99g7SmK49fwMuj14iB46ENJ1gavm5JEDwyk781egp7M.jpg)\n\n![20250922_180332.jpg](https://files.peakd.com/file/peakd-hive/avdesing/241Zt6hpZRRPj2PuCw2tnx5vNm5VCuicGEAug7nMhQZi1STsu8oT4UZDKXx6qLTi9Fo7M.jpg)\n\n\n\n\n---\n\nIn the past, it was also a quiet beach used for fishing, like so many others in the eastern part of the city, but there have been so many improvements that the difference from the others is now very noticeable, particularly in the buildings, structures and even the sand.\n\nAs I mentioned, every so often along the stretch there is a beach bar with very modern restaurants, each with its own style, and I think this is one of the things that sets it apart the most. \n\n---\n\n![20250922_180432.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23ujmxJM9HUgfQDW7YA8r86WHFCTCBWkjMhK1vgwuWxkHQoEoPHPn3sd9DVNFEhrxu4YG.jpg)\n\n![20250922_180255.jpg](https://files.peakd.com/file/peakd-hive/avdesing/243fpTSMdc1gY4VGGzzKWRgQnQ16bR67M2nbBHep1QtSyKLmBW6UYk1jS5BQ27fh68fhP.jpg)\n\n![20250922_180726.jpg](https://files.peakd.com/file/peakd-hive/avdesing/245myNMWC8UehzYV5M9KaEvEd2SNpifgMemRg18xcrXHu8FSySL6aB9ea6DKCYu6o6YWq.jpg)\n\n![20250922_180530.jpg](https://files.peakd.com/file/peakd-hive/avdesing/244eGkUdcfQvXyuo4QnK7AA7cXsiao62tfZ2d1eZg8kiAY4wHmcWSije79Lrf3VBdZ14x.jpg)\n\n![20250922_180526.jpg](https://files.peakd.com/file/peakd-hive/avdesing/244y1hGVZtHggo5cGgcSmhsubDQzyBY7eTxE1fE1nFgKPsNk129ZNGztUwk9e8iwetyMt.jpg)\n\n\n<center>![20250922_180604.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23wqs27pQv4Hjw2hXxh1V3NKp59rtETXJMm8cymURwuXFKidVaHS9QoKrkpScjZyuqY5t.jpg)</center>\n\n\n![20250922_180608.jpg](https://files.peakd.com/file/peakd-hive/avdesing/242Y9vRfhuACFGkWJ2u6rim5RtVKxe5sDkNKH3L4bAzG1wk7tGkrHUrw63W76KyeGQbtu.jpg)\n\n\n---\n\nIt shares its name with, or derives its name from, the neighbourhood nearby, which was once a very affluent area, home to the bourgeoisie, particularly in the late 19th century. The beach is part of a luxury residential area; indeed, one of the finest hotels, the five-star Hotel Miramar, is situated very close by, overlooking the sea. It is the most luxurious hotel I have ever seen.\n\n---\n\n\n![20250922_181301.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23yJJkd1qUKYAVX85L6UoLWyuhvj6kCbUNqNgBNDoxyd4bRevqsDkmyzXtB3qRqCJdMuC.jpg)\n\n![20250922_181322.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23sUMBJeiYSr4L38mXtvipDqFgG4gyxhUKXbKRT52danejpz4mg9FpW48qEyeeuNkEFmS.jpg)\n\n![20250922_181331.jpg](https://files.peakd.com/file/peakd-hive/avdesing/242ryBXpCCpZJQWcaQiFTSErARFbaXBwNPjjx9axomrsUaeWy71T3cCPDLEHSqd5gMEwH.jpg)\n\n![20250922_181435.jpg](https://files.peakd.com/file/peakd-hive/avdesing/242NjC3MAVzZYKmbkGhwYWp7HUtSxwsJmntQWMYvG35ncFSzjENvTap8UfGET8zRQ2MzZ.jpg)\n\n![20250922_181334.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23wgMmUxtGVVHBabne4TKuaUfFnKK7xiSna6a7B1C5Uoq5RsR1o1v9A8surNrW3L9Gpze.jpg)\n\n\n\n---\n\nFurthermore, as you’ll see in the photos, there are several public toilets along the route, and you can also use the toilets at the beach bars, even if you haven’t bought anything. But the toilets on the beach always feature murals in incredible colours. Art is everywhere I look, and that’s one of the things I enjoy most.\n\n---\n\n\n\n\n\n![20250922_181713.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23zRwAAzvKydJNGgqCwBVFp1WVVdcboiZEBmdV1hJ92KJn4AK7XBP5Akno2EohhrHWRtb.jpg)\n\n![20250922_181528.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23v4dcnEvB42GkqGMKDesdGzz5JbEhpYGqSHAbYGZnB2ZCn1GWRigqnL8jmuSEZ6ukv6A.jpg)\n\n![20250922_181835.jpg](https://files.peakd.com/file/peakd-hive/avdesing/242Nd7a6LnZfuZnmeci87B6xhmBnQW19wu8mKz7RRQELD4Z2yU7AEZQhYDxjsNuRdP7ZS.jpg)\n\n![20250922_181803.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23zkprkMBXMmt2PBX7pXWB1VhNC6VA921CJ2HwDwkBz19DVdLEjDMhyHWk6BrojNyEjve.jpg)\n\n![20250922_181911.jpg](https://files.peakd.com/file/peakd-hive/avdesing/245TBTyKtmwczZV3hKihGwpjNTzJRxRFcCqWG7C4QEEhbTL8aDAr5UarHPh9G3SSqQRs8.jpg)\n\n\n---\n\nThis beach has a distinctive, glamorous style, with modern-style buildings and structures; as you cross the avenue, you come across those beach bars that stand out so much on the beach and can be seen from afar, offering incredible sea views as you stroll along the promenade, which you can explore either on foot or by bike. In fact, many of the bike tours always pass through this spot.\n\n---\n\n\n\n![20250922_182005.jpg](https://files.peakd.com/file/peakd-hive/avdesing/242NjBxF7fDGod5sxegriZq2GGNSJrQGGwpWe1CLfnHXubuBD842VvLSBFEpvovfvRu97.jpg)\n\n![20250922_182011.jpg](https://files.peakd.com/file/peakd-hive/avdesing/242hURijTEW9kssZJhEkDrfJ3k9W8Sjd5MDeksgW3GFLQXCY6RHgTWWhjYWqJ93neFmNf.jpg)\n\n![20250922_181921.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23r1kvGCKVEtUUjt5vdX4Edr14Qea4xnQ49zqrr9ZuFirmjKdJgp7gv7ce4QWosXK6TaV.jpg)\n\n![20250922_182027.jpg](https://files.peakd.com/file/peakd-hive/avdesing/23sUEwCnaG4Kpppwv85NKhpnYzSYH13Nwf8nWis4LnHfg9RWTChr5XLDH4zjExKsfm6Xs.jpg)\n\n\n---\n\nIf we add to all that the islands with their palm trees and a festive, cheerful atmosphere all the time, plus the warm sea wáter, ideal for enjoying yourself, it makes La Caleta beach one of the most visited and also one of the most sophisticated, so to speak. That’s why I said that each one has something special that sets it apart and makes it different from the others. I still have several left to explore, especially in the west, with more walks by the sea.\n\nThank you very much for joining me today; I send you my warmest regards. See you soon.\nAmonet.\n\n\n---\n---\n\n\n<center><sub>All photographs are my own.\nSeparators created by me in Photoshop.\nUsed translator [Deepl.com](https://www.deepl.com/translator) free version. \n[//]:# (!worldmappin 36.722362 lat -4.394343 long La Caleta, a very popular beach with a special charm 📷 Málaga – Spain d3scr)\n</sub></center>\n\n![Separador Amonet rosa.png](https://files.peakd.com/file/peakd-hive/avdesing/Eo45huwdpJdeDRRmb3tm3Sv7mxs8Uq3XUZDd5bjvGqBDKfDE5DLGQM1duXTEQQYhyjs.png)\n\n\n</div>\n\n\n\n[//]:# (!worldmappin 36.722362 lat -4.394343 long La Caleta, a very popular beach with a special charm 📷 Málaga – Spain d3scr)",
+        "category": "hive-163772",
+        "children": 4,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-04-21T09:03:36",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/avdesing/23wqq2XR1cvku8NVyCs8xoHSekN9xvvUmWvkaRPUe1fB55spR6EkVJM3E6SseUW6YvYqG.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23vYdMTrVQzkGhYKZCu2mBpVcFVG9nxDzFvLBPu4jFggYFYn2piV1KLVgk8bFQxyP38ro.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/243Lxi8U36t9Q9iF2FW2XEDevgHUvikxKaNWDtUCxUgvTdc9nj3Cdd3gdzRQn9h77D4pb.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23y8oasjGsKp84tNxTtBiuinHf7aqLXgebwTnbH45555Mo9GUqsAwUzszeUZi6qUwG4td.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23xKrQJ4orJDiTUM9wcK4Hyrb5TtiV9sBGXUeR6y6RtWjohZtTtrJcfrVA82zjiw5zwo5.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23v4c45gc7kLUjxZ8NjPXRpuSJFkRzPj1cseqmtoDBsiugTT9uQS85mL4baV9fcwHZXS1.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/241QTNFMsQyu2orvAL6gxdWxoLUnkueopt151XWu3SLseWhhkn2R6jzKhHEJxtVWXVGrY.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23vYjfrkbne36RDUh9B8tQRujEnDL23dVgY4TswXioZWtTC5Qe935qGQUmP7i3P2a5JhY.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23zGa9KSPMgvH9b7SdGJxMvm7MbHdjuBZwbtvoTiSMYy3i5xodmtWJmubGXp1zMKgk4kc.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23r1nzhcKnUkbLqbGRpbMzyqRcu3wNqxiYnCAzCv9kPoeRXoKEX5xSVb9hRAdWbxJxRHj.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23sdfpngHUaa9Rbt6BjVeiXy2GzVtiuiR4fSdJU4PYcAc99wNFEq47yVmY88XWfGdNUsj.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23xVEhKKc9sPLLUiXBnYKJA4djL1TaaBLdnEvR4wD1K2Qtdh5MiUs1w6epqW5NDfWRMSR.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/23yd5nTzXoxFNLdJmmFX2KimP27GRhgAYvSTUodbk32rq6ZTboz6fzHzfkrEJsLQcNXes.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/245ca8mn4bpcpo4SjELecKLzXSM497WvrL6jCfY32ePqBxtwuhTDPCt5doHRSSu5JvMgu.jpg",
+            "https://files.peakd.com/file/peakd-hive/avdesing/245TEGnq3Wd3JuEpV6eUPVXcRjC8xekMuiGGyAjiWXGthgEbnJNyDdjfEvKEdNYAaA2Wi.jpg"
+          ],
+          "tags": [
+            "traveldigest",
+            "worldmappin",
+            "travel",
+            "photography",
+            "photofeed",
+            "haveyoubeenhere",
+            "photographylovers",
+            "nature",
+            "beach",
+            "exploration"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 49401468329028,
+        "payout": 4.81,
+        "payout_at": "2026-04-28T09:03:36",
+        "pending_payout_value": "4.810 HBD",
+        "percent_hbd": 10000,
+        "permlink": "la-caleta-a-very-popular-beach-with-a-special-charm-malaga-spain",
+        "post_id": 149882759,
+        "reblogs": 4,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 181
+        },
+        "title": "La Caleta, a very popular beach with a special charm 📷 Málaga – Spain",
+        "updated": "2026-04-21T09:03:36",
+        "url": "/hive-163772/@avdesing/la-caleta-a-very-popular-beach-with-a-special-charm-malaga-spain"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 46073312717,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 2467524066,
+            "voter": "shadowspub"
+          },
+          {
+            "rshares": 8398981883,
+            "voter": "dadview"
+          },
+          {
+            "rshares": 12332804849,
+            "voter": "esteemapp"
+          },
+          {
+            "rshares": 4962567905,
+            "voter": "bigtakosensei"
+          }
+        ],
+        "author": "sacra97",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.33,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "![](https://images.ecency.com/DQmPjhjTkNmcqVGaDp1U96UTWGmMtejTtrauDfweJjeQPss/imagen.png)\n\n\n\n<div class=\"text-justify\">\n\nSi tu puedes hacer algo para cambiar tu entorno, hay simplemente que hacerlo y no mirar alrededor quien te puede ayudar, lo haces y poco a poco se irán uniendo los que sienten que pueden hacer algo para cambiar su entorno.\n\nSi no esta en tus manos lograr un cambio, entonces y solo entonces te darás cuenta que solo te traerá preocupación y no ocupación del problema. Se que no es fácil mantenerse atento a los problemas y a veces hasta los chismes nos entretiene. \n\nLos días siguen pasando, las madrugadas se siguen viendo hermosas y se acercan los cambios, lo sé, lo estoy mirando. Adaptarse a esos cambios seguramente me costara tiempo, pero sigo repitiéndome día con día; todo va a salir bien. \n\nNo es fácil improvisar todos los días, no es fácil levantarse cada día con una sonrisa y de buen humor, pero el día esta allí esperando por ti. No lo haces por los demás lo haces simplemente para ti y luego eso te permite cambiar en algo tu entorno. Son esos pequeños pasos de logros, de metas por lograr. \n\nTengo licencia para vivir y siempre me la da cada día la fuerza suprema del universo y yo se la agradezco.  \n\n\n\n\n\n\n<center>***</center>\n\n\nEste texto corresponde a mi participación en el reto diario del amigo @latino.romano y @mariannewest \n\n[post](https://hive.blog/hive-161155/@daily.prompt/21-april-2026-freewriters-community-daily-writing-prompt-day-3080-licence-to-do-something)\n\n\n\n**ENGLISH VERSION**\n\nIf you can do something to change your environment, you simply have to do it and not look around for someone who can help you. You do it, and little by little, those who feel they can do something to change their environment will join you.\n\nIf making a change isn't in your hands, then and only then will you realize that it will only bring you worry and not address the problem. I know it's not easy to stay focused on problems, and sometimes even gossip distracts us.\n\nThe days keep passing, the early mornings continue to be beautiful, and changes are coming. I know it; I can see it. Adapting to these changes will surely take time, but I keep telling myself every day: everything will be alright.\n\nIt's not easy to improvise every day, it's not easy to get up every day with a smile and in a good mood, but the day is there waiting for you. You don't do it for others; you do it simply for yourself, and then that allows you to change your environment in some way. These are the small steps of achievement, of goals to reach.\n\nI have a license to live, and the supreme force of the universe grants it to me every day, and I am grateful for it.\n\n\n<center>***</center>\n\n\nThis text corresponds to my participation in the daily challenge of my friend  @improv, @felt.buzz, @latino.romano and @mariannewest \n\n[post](https://hive.blog/hive-161155/@daily.prompt/21-april-2026-freewriters-community-daily-writing-prompt-day-3080-licence-to-do-something)\n\n\n\n\n<center><sub><em>   Fotos con fuente identificadas\nTraducido con google (versión gratuita) </em></sub>\n<br>\n\n<sub><em> Photos with source identified\nTranslated with google (free version) </em></sub></center>\n\n\n\n<center>\n<h4>¡Gracias por tu visita/Thank you for your visit!</h4>\n</center>\n\n\n\n</div>",
+        "category": "hive-161155",
+        "children": 1,
+        "community": "hive-161155",
+        "community_title": "Freewriters",
+        "created": "2026-04-21T10:22:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.8-vision",
+          "description": "Si tu puedes hacer algo para cambiar tu entorno, hay simplemente que hacerlo y no mirar alrededor quien te puede ayudar, lo haces y poco a poco se irán uniendo los que sienten que pueden hacer algo para",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmPjhjTkNmcqVGaDp1U96UTWGmMtejTtrauDfweJjeQPss/imagen.png",
+            "https://images.ecency.com/DQmPjhjTkNmcqVGaDp1U96UTWGmMtejTtrauDfweJjeQPss/imagen.png)"
+          ],
+          "image_ratios": [
+            "0.7523",
+            "0.7523"
+          ],
+          "tags": [
+            "hive-161155",
+            "spanish",
+            "ecency",
+            "dailyprompt",
+            "pimp",
+            "creativecoin",
+            "bbh",
+            "alive",
+            "ladiesofhive",
+            "powerup"
+          ],
+          "thumbnails": [
+            "https://images.ecency.com/DQmPjhjTkNmcqVGaDp1U96UTWGmMtejTtrauDfweJjeQPss/imagen.png"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 16534297861523,
+        "payout": 1.61,
+        "payout_at": "2026-04-28T10:22:03",
+        "pending_payout_value": "1.610 HBD",
+        "percent_hbd": 0,
+        "permlink": "mensaje-diario-de-5-minutos-31c3876d6d364",
+        "post_id": 149883214,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 185
+        },
+        "title": "Mensaje diario de 5 minutos-Licencia para hacer algo/ Daily 5 minute message- Licence to do something",
+        "updated": "2026-04-21T10:22:03",
+        "url": "/hive-161155/@sacra97/mensaje-diario-de-5-minutos-31c3876d6d364"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 6075124854,
+            "voter": "leprechaun"
+          },
+          {
+            "rshares": 1371443684,
+            "voter": "fabio"
+          },
+          {
+            "rshares": 1662417262500,
+            "voter": "germansailor"
+          },
+          {
+            "rshares": 684371928155,
+            "voter": "sabine-reichert"
+          },
+          {
+            "rshares": 1413908771608,
+            "voter": "pollux.one"
+          }
+        ],
+        "author": "vikisecrets",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 79.68,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Hier ist ein Rulebook wie (autokratische) Regierungen versuchen Social Media zu zensurieren und zu beeinflussen.\n\nIm Wesentlichen unterscheiden sich die Methoden gar nicht so sehr von den Methoden, die autokratische Regime seit jeher gegen traditionelle Medien einsetzen.\n\nFünf Wege, wie Regierungen Social Media zensieren:\n\n### 1. Kauf der Plattform durch regierungsnahe Oligarchen, Milliardäre.\n\nDie dann in Folge Inhalte blocken, den Algorithmus tunen und Shadow-Bans im Sinne der Regierung implementieren etc. Sehr effizient.\n\n### 2. Drakonische Regulierung\n\nIst es für eine Regierung nicht möglich die Plattformen zu kaufen und zu betreiben, weil sie zum Beispiel im Ausland betrieben werden, ist der nächste Trick, Unmengen an restriktiven Gesetzen, Regulierungen und Einschränkungen zu erlassen, um die Plattformen zum Löschen von Inhalten zu zwingen.\n\nDas geht so weit, dass Plattformen sogar proaktiv nach unerwünschten Inhalten suchen, diese bannen und Daten an die Behörden weitergeben müssen.\n\n### 3. Geheime Deals\n\nNächster Schritt ist nachdem die Regulierungen erlassen wurden, geheime Deals mit den Plattform-Betreibern einzugehen. Die Plattformen verpflichten sich dann informell durch geheime Absprachen mit den Behörden zu kooperieren und Inhalte, die eigentlich durch die Meinungs- und Pressefreiheit gedeckt wären, zu bannen.\n\n### 4. Kriminalisieren von CEOs und Usern\n\nKlappt das mit der Regulierung und den geheimen Deals nicht, ist der nächste Schritt die Justiz einzusetzen. \n\n(Autokratische) Regime versuchen CEOs und User, für Dinge die sie posten, drakonische Strafen aufzuerlegen. Meinungsdelikte einzuführen. Ideen und Meinungen zunehmend zu kriminalisieren.\n\nDas geht sogar soweit, dass CEOs von Social Media und Messaging-Services von Behörden aus Flugzeugen und Flughäfen gekidnappt und unter Druck gesetzt werden, um Inhalte zu zensieren und User-Daten an die Behörden weiterzugeben.\n\n### 5. Alters- und ID-Checks\n\nEtwas harmloser klingt der neueste Baustein aus dem Zensur-Baukasten. Verpflichtende Alters- und ID-Checks auf Plattformen und auf Betriebssystem-Ebene einzuführen, um die User aus Angst zur Selbst-Zensur zu bewegen.\n\nFür Alterschecks müssen die User natürlich Regierungs-Software auf ihren Smartphones installieren, die autokratische Regime natürlich auch gleich für Überwachung und Backdoors einsetzen können. Wie praktisch.\n\nKinder- und Jugendschutz ist der Cheat-Code, um das alles zu legitimieren.\n\nWas sagt ihr dazu? Kommt euch einige oder mehrere Methoden bekannt vor?\n\n## Telegram CEO about social media censorship\n\n![image.png](https://files.peakd.com/file/peakd-hive/vikisecrets/Eo43ukdkpns1m9ZJrZr6BzHqaBjoMBvrUrtpwyPfJhQ4MSDYAztbdXUDH2ZQDTRoAfL.png)\n\nhttps://x.com/durov/status/2046266184908124601\n\n## English\n\nHere is a guide to how (autocratic) governments attempt to censor and influence social media.\n\nEssentially, these methods aren’t all that different from the ones autocratic regimes have always used against traditional media.\n\nFive ways governments censor social media:\n\n### 1. Purchase of the platform by oligarchs and billionaires with ties to the government.\n\nWho then block content, tweak the algorithm, and implement shadow bans in line with the government’s agenda. Very efficient.\n\n### 2. Draconian regulation\n\nIf a government cannot buy and operate the platforms—for example, because they are based abroad—the next tactic is to enact a barrage of restrictive laws, regulations, and outright restrictions to force the platforms to delete content.\n\nThis goes so far that platforms are even required to proactively search for unwanted content, ban it, and permanently hand over data to the authorities.\n\n### 3. Secret Deals\n\nThe next step, after the regulations have been in place, is to enter into secret deals with the platform operators. The platforms then informally commit, through secret agreements with the authorities, to cooperate and ban content that would otherwise be protected by freedom of speech and freedom of the press.\n\n### 4. Criminalizing CEOs and Users\n\nIf the regulations and secret deals don’t work, the next step is to involve the judiciary.\n\n(Autocratic) regimes attempt to impose draconian penalties on CEOs and users for things they post. Introducing speech crimes. Increasingly criminalizing ideas and opinions.\n\nThis even goes so far that CEOs of social media and messaging services are kidnapped by authorities from airplanes and airports and pressured to censor content and hand over user data to the authorities.\n\n### 5. Age and ID Checks\n\nThe newest component of the censorship toolkit sounds somewhat more harmless. Introducing mandatory age and ID checks on platforms and at the operating system level to encourage users to self-censor out of fear.\n\nFor age checks, users must, of course, install government software on their smartphones, which autocratic regimes can naturally use for surveillance and backdoors right away. How convenient.\n\nChild and youth protection is the cheat code used to legitimize all of this.\n\nWhat do you think? Do some or several of these methods sound familiar to you?",
+        "category": "hive-121566",
+        "children": 0,
+        "community": "hive-121566",
+        "community_title": "Deutsch D-A-CH",
+        "created": "2026-04-21T09:57:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/vikisecrets/Eo43ukdkpns1m9ZJrZr6BzHqaBjoMBvrUrtpwyPfJhQ4MSDYAztbdXUDH2ZQDTRoAfL.png"
+          ],
+          "links": [
+            "https://x.com/durov/status/2046266184908124601"
+          ],
+          "tags": [
+            "socialmedia",
+            "telegram",
+            "censorship",
+            "x",
+            "elonmusk",
+            "deutsch",
+            "hive-engine",
+            "proofofbrain",
+            "inleo",
+            "eu"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 23303791088686,
+        "payout": 2.269,
+        "payout_at": "2026-04-28T09:57:06",
+        "pending_payout_value": "2.269 HBD",
+        "percent_hbd": 10000,
+        "permlink": "5-ways-governments-censor-social-media-secret-deals-are-only-one-of-them-protecting-children-is-the-cheat-code-sounds-familia",
+        "post_id": 149883056,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 119
+        },
+        "title": "5 ways governments censor social media, secret deals are only one of them, \"protecting children\" is the cheat code. Sounds familiar?",
+        "updated": "2026-04-21T10:42:27",
+        "url": "/hive-121566/@vikisecrets/5-ways-governments-censor-social-media-secret-deals-are-only-one-of-them-protecting-children-is-the-cheat-code-sounds-familia"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 26274128975,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 1750720853,
+            "voter": "kaylinart"
+          },
+          {
+            "rshares": 1024112159,
+            "voter": "trevonjb"
+          },
+          {
+            "rshares": 2356606477,
+            "voter": "sinzzer"
+          },
+          {
+            "rshares": 4746984285,
+            "voter": "joshglen"
+          }
+        ],
+        "author": "asgharali",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 77.4,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\n![ChatGPT Image Apr 21, 2026, 10_44_40 AM.png](https://files.peakd.com/file/peakd-hive/asgharali/23u64w2uXiL8ehjG7zxg6NZWLaJDNzcDwCadMMmRh6sJKL6qXvMEBQttuBjwiejE9zmVa.png)\n![Capture.PNG](https://i.imgur.com/uGB0GKX.png)\n\n\nTorch Myrmidon is a strong monster card in Splinterlands whose stats and abilities are very good. At the start I was thinking of it as a middle line monster and many times I used it in the middle line during battles. But now after getting more information actually it is a frontline monster.\n\nIf I talk about the identity of this card you can guess from its visual display. In the background you can see fire signs and in the top corner there is a fire symbol which proves that it belongs to the Fire splinter.\n\nIts main role is a front line tank. It is known as a sustain fighter and its mana cost is eight. You can easily use it in mid to high mana battles while in low mana battles it can create some difficulty because its mana cost is high.\n\nThe most surprising and good thing about it is that even while being in the front line meaning while playing the role of a tank monster it can still attack. This is considered its special ability. \n\n![Screenshot 2026-04-21 101227.png](https://files.peakd.com/file/peakd-hive/asgharali/23uQLi8GUHdd9hCBUxDeHZbtjPTQSsVfDMLdsuqhzK3LCKgJwFZeVbGgPJh2v1DFdVQCW.png)\n![Capture.PNG](https://i.imgur.com/uGB0GKX.png)\n\nFor example if it is in the front line its armor which is 2 keeps giving it protection and along with that it keeps attacking with +1 every round. That means while staying in the front line it can keep attacking enemy monsters.\n\nIts health is also good and its armor keeps trying to protect its health. Remember whenever you see high health and high armor in any monster card you can use them in the front line.\n\nIn the same way this monsters speed is 4 which helps in attacks. Torch Myrmidon has two special abilities that is Reach and Heal.\n\nIn Reach what happens is that it can attack from position 2. This means you can place it in position 2 and still attack. The benefit of this is that you can use a double front line. That means you can place one strong tank first and then place this card behind it and take full advantage of its abilities.\n\nIts second ability is healing. That means in every round it restores a portion of its health and this is the strength of this card.\n\nFrom its visual design I imagine that this monster looks very angry and because of its anger, flames are coming out from its head and a spear is passing above it. It looks like it is trying to damage enemy monsters. Its visual display is very beautiful and I tried to imagine and present this idea.\n\n![Screenshot 2026-04-21 101155.png](https://files.peakd.com/file/peakd-hive/asgharali/23tSN1PaLJLpZRR7fdeh383u7VSjkF3WYSsWJJZLtwHSjBGUkT3qA5mg5sqfjx6amxEg5.png)\n![Capture.PNG](https://i.imgur.com/uGB0GKX.png)\n\nNow lets talk about its weaknesses because every monster has its own weakness. Its first big weakness is that you cannot select it in low mana battles. Second it has only 1 melee attack so it will struggle against high health enemies. Third it can be affected by high burst damage meaning if the enemy has heavy damage it can make its heal ability useless.\n\nNow if we talk about its price this monster is very strong but still very reasonable in price. In the screenshot you can see its minimum price is 0.087 which means at level 1 you can easily buy it and start your battles. Later if you want to upgrade it you can do that at each level which also impacts the price.\n\nThis was the summary of this powerful monster which I tried to explain in the best and simple way so that you can use such monsters correctly in battles.\n\nI hope you guys will like this post and is interesting as well. If you find it informative then dont forget to give me a support. Share you reviews in the comment section below. Thank you all for your time reading the content.\n\n![Capture.PNG](https://i.imgur.com/uGB0GKX.png)\n\n[TWITTER](https://www.google.com/search?q=twitter+logo&oq=twitter+l&aqs=chrome.0.69i59j69i57j0i67i433j0i10i131i433i512j0i67j69i60l3.2422j0j7&sourceid=chrome&ie=UTF-8#imgrc=8e2TggaMeUYcpM) [TELEGRAM](https://www.google.com/search?q=telegram+logo&oq=TELEGRAM&aqs=chrome.0.69i59j69i57j0i131i433i512j0i433i512j0i131i433i512l4j0i433i512j0i131i433i512.1427j0j9&sourceid=chrome&ie=UTF-8#imgrc=ke0Q9O_EvKXTeM) [HIVE](https://www.google.com/search?q=hive+logo&oq=HIVE+L&aqs=chrome.0.69i59j69i57j0i512l3j69i60l3.1706j0j9&sourceid=chrome&ie=UTF-8#imgrc=TyzPWyVPZJvAoM) [WHATSAPP](https://www.google.com/search?q=whatsapp+logo&oq=WH&aqs=chrome.0.69i59j69i57j35i39j0i131i433i512l2j69i60l3.1017j0j9&sourceid=chrome&ie=UTF-8#imgrc=r9NkmOQXLYQD2M) [DISCORD](https://www.google.com/search?q=discord+logo&oq=DI&aqs=chrome.0.69i59j69i57j35i39j0i131i433i512l2j0i131i433j0i131i433i512j69i61.1013j0j9&sourceid=chrome&ie=UTF-8#imgrc=riZgxXaRU8fqtM)\n\n**IMAGES SOURCES**\n[1](https://chatgpt.com/c/69e70ddc-713c-8322-a913-6d0c3bdb7026)\n[2](https://splinterlands.com/card-detail/613/regular/12/?tab=for-sale)\n\n# REMEMBER: We should prepare for the unexpected and always hope for the best. Life may not be easy but you must do your best and leave the rest to God...\n\n![](https://images.ecency.com/DQmf6mY7yuWy7MFJ3KH5BZZB6yxic1eAbJ6j8SRw7tXxpp3/you_can_reach_us_by_joining_the_official_helios_voter_discord_channel_or_sending_a_message_on_discord_to_asgharo_2972..gif)\n\n\n![](https://images.ecency.com/DQmUEWGNmwGwWzMt4zFmENUBApSJ6KA4bBBcaj8TmeWN6yJ/hybrid_dynamic.gif)",
+        "category": "hive-13323",
+        "children": 1,
+        "community": "hive-13323",
+        "community_title": "Splinterlands",
+        "created": "2026-04-21T11:09:33",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/asgharali/23u64w2uXiL8ehjG7zxg6NZWLaJDNzcDwCadMMmRh6sJKL6qXvMEBQttuBjwiejE9zmVa.png",
+            "https://i.imgur.com/uGB0GKX.png",
+            "https://images.ecency.com/DQmUEWGNmwGwWzMt4zFmENUBApSJ6KA4bBBcaj8TmeWN6yJ/hybrid_dynamic.gif",
+            "https://images.ecency.com/DQmf6mY7yuWy7MFJ3KH5BZZB6yxic1eAbJ6j8SRw7tXxpp3/you_can_reach_us_by_joining_the_official_helios_voter_discord_channel_or_sending_a_message_on_discord_to_asgharo_2972..gif",
+            "https://i.imgur.com/uGB0GKX.png",
+            "https://files.peakd.com/file/peakd-hive/asgharali/23tSN1PaLJLpZRR7fdeh383u7VSjkF3WYSsWJJZLtwHSjBGUkT3qA5mg5sqfjx6amxEg5.png",
+            "https://i.imgur.com/uGB0GKX.png",
+            "https://i.imgur.com/uGB0GKX.png",
+            "https://files.peakd.com/file/peakd-hive/asgharali/23uQLi8GUHdd9hCBUxDeHZbtjPTQSsVfDMLdsuqhzK3LCKgJwFZeVbGgPJh2v1DFdVQCW.png"
+          ],
+          "image_ratios": [
+            1.7768331562167907,
+            8.703448275862069,
+            1,
+            1.7777777777777777,
+            8.703448275862069
+          ],
+          "links": [
+            "https://www.google.com/search?q=twitter+logo&oq=twitter+l&aqs=chrome.0.69i59j69i57j0i67i433j0i10i131i433i512j0i67j69i60l3.2422j0j7&sourceid=chrome&ie=UTF-8#imgrc=8e2TggaMeUYcpM",
+            "https://www.google.com/search?q=telegram+logo&oq=TELEGRAM&aqs=chrome.0.69i59j69i57j0i131i433i512j0i433i512j0i131i433i512l4j0i433i512j0i131i433i512.1427j0j9&sourceid=chrome&ie=UTF-8#imgrc=ke0Q9O_EvKXTeM",
+            "https://www.google.com/search?q=hive+logo&oq=HIVE+L&aqs=chrome.0.69i59j69i57j0i512l3j69i60l3.1706j0j9&sourceid=chrome&ie=UTF-8#imgrc=TyzPWyVPZJvAoM",
+            "https://www.google.com/search?q=whatsapp+logo&oq=WH&aqs=chrome.0.69i59j69i57j35i39j0i131i433i512l2j69i60l3.1017j0j9&sourceid=chrome&ie=UTF-8#imgrc=r9NkmOQXLYQD2M",
+            "https://www.google.com/search?q=discord+logo&oq=DI&aqs=chrome.0.69i59j69i57j35i39j0i131i433i512l2j0i131i433j0i131i433i512j69i61.1013j0j9&sourceid=chrome&ie=UTF-8#imgrc=riZgxXaRU8fqtM"
+          ],
+          "tags": [
+            "hive-13323",
+            "arcadecolony",
+            "steemmonsters",
+            "bdcommunity",
+            "splinterlands",
+            "neoxian",
+            "hivegames",
+            "indiaunited",
+            "sps",
+            "tribes"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 8175025067081,
+        "payout": 0.796,
+        "payout_at": "2026-04-28T11:09:33",
+        "pending_payout_value": "0.796 HBD",
+        "percent_hbd": 10000,
+        "permlink": "double-tank-strategy-with-torch",
+        "post_id": 149883500,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 161
+        },
+        "title": "Double Tank Strategy with Torch Myrmidon || The Fire Tank That Never Dies",
+        "updated": "2026-04-21T11:09:33",
+        "url": "/hive-13323/@asgharali/double-tank-strategy-with-torch"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 11323873263,
+            "voter": "drifter1"
+          },
+          {
+            "rshares": 12567994024,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 872530453521,
+            "voter": "arcange"
+          },
+          {
+            "rshares": 586505336,
+            "voter": "smolalit"
+          },
+          {
+            "rshares": 583845091,
+            "voter": "alexbezimeni"
+          }
+        ],
+        "author": "nurfay",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 77.93,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "hiveonboard",
+            "weight": 100
+          },
+          {
+            "account": "ocdb",
+            "weight": 100
+          }
+        ],
+        "blacklists": [],
+        "body": "<div class=\"text-justify\"> <div class=\"pull-left\"> </div>\n\n![20260417_123544.jpg](https://files.peakd.com/file/peakd-hive/nurfay/Eoc9uk4q9cUnv6NnTBY28rZncDHpfcFS3XQMqNRdePyr5mPei2HTr43b3W7bsEXDNPN.jpg)\n<hr>\n<hr>\n\nHello, vegan lovers! hidangannblvegan always brings a fresh twist to every unique flavor. The deliciousness of a simple dish gives me an unusual new sensation. It might sound simple, but when you taste it, this is truly a heavenly snack.\n<hr>\n\n![20260417_123538.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23uFbyCUzsTvwrAt7DKh3VYEXz3PE3LgAbiovG4v7zxMGHw7VqR2KfNUKAvpQ1G1EFgcC.jpg)\n\nRoasted sweet potatoes topped with a generous sprinkle of coconut sugar—a simple combination that results in a luxurious dish. The idea for this dish came to me when I was craving something roasted. So I decided to try roasting sweet potatoes; usually, when I enjoy roasted sweet potatoes, I use a special variety called \"ubi celembu.\" But this time, I turned regular sweet potatoes into a delicious treat with melted palm sugar. The generous topping makes this dish look absolutely amazing.\n<hr>\n<hr>\n<hr> \n\n<center><h5>Ingredients</h5></center>\n<hr>\n\n![20260417_091424.jpg](https://files.peakd.com/file/peakd-hive/nurfay/EpQyH7BZ7VMMmufFZCqRqo1XLmyzLA7xYUZ96Fxbei7vUEMW5QXbhVh9YvcGQhT9cKN.jpg)\n<hr>\n\n<center>4 sweet potatoes\n1 tablespoon palm sugar\n1 tablespoon sesame seeds\n1 tablespoon peanuts</center>\n<hr>\n<hr>\n<hr> \n\n<center><h5>Instructions</h5></center>\n<hr>\n\nWash the sweet potatoes thoroughly and scrub them first, since we’ll be baking them with the skin on, then slice them thinly—about half a centimeter thick. \n<hr>\n\n<div class=\"pull-left\">\n\n![20260417_091426.jpg](https://files.peakd.com/file/peakd-hive/nurfay/242hhPCw2u1hYyKdjYKaDybquyP6m3qTtGE3EzRLmAxs3h7FJDaN3fY4G2noWFmp8AkU1.jpg)\n</div>\n\n<div class=\"pull-right\">\n\n![20260417_092142.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23z7QCwKd7KcpWvjFzshSftNSjmqLi3AQvPrL163Re3Dq3w1XGu2qAoyZPhUnQ4qzuGs2.jpg)\n</div>\n<hr>\n\nNext, arrange them on a baking sheet and bake in an oven at 180 degrees Celsius using top and bottom heat for about 2 hours. If you want them to cook faster, you can parboil them until half-done first, though the texture will be slightly different.\n<hr>\n\n<div class=\"pull-left\">\n\n![20260417_092133.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23xethZvxWHZ7mfC57yLWLvTTjh5EFTTVEB4PBveNXDRzRDqm9RsjqRztxUpdsKwr67Z8.jpg)\n\n![20260417_092108.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23xetnuyBnupzPhhRW5T1ihHDwqnHxXnX8j9qKMhhogsjDRfnrRiUoYU865x86BG8HgVM.jpg)\n</div>\n\n<div class=\"pull-right\">\n\n![20260417_092729.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23wqpjCaanwMwyDFv8YGwaQpMb4bWdB7KS4WXNux8meRbinkgKa4cYwJMkJwTseT1urMk.jpg)\n\n![20260417_100447.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23tmYTZLa59UoXmq9pVjHQVCDzABdiMRS1L2mmrapQ3ZBZggYxfuGnvxb23gaCiNCB727.jpg)\n</div>\n<hr>\n\nOnce they’re partially baked, sprinkle them with powdered palm sugar, then top with roasted peanuts and sesame seeds, and bake again until fully cooked.\n<hr>\n\n<div class=\"pull-left\">\n\n![20260417_100520.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23tcA6AwWEsHNjHb58CGVZvWUcHNmr3iyVvpj5D91g1pFR8WhRM994Da4WiR7nS4mbFjC.jpg)\n</div>\n\n<div class=\"pull-right\">\n\n![20260417_111012.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23x1FAawsGGbrMhyVGdvHsgm6ixPMvLNM5teW9yDvU8YtrenSzqmQjDrPxe2JY7bfbT4Z.jpg)\n</div>\n<hr>\n<hr>\n<hr> \n\n<center><h5>Result</h5></center>\n<hr>\n\n![20260417_123628.jpg](https://files.peakd.com/file/peakd-hive/nurfay/EoErxM3JCGwctxbVBwTgGjs9GF5FpNqWhh9SPv22MTuMCwXQVSGL7USGkD5MsG9MKF6.jpg)\n\nThese ready-to-serve roasted sweet potatoes make a perfect healthy family snack to enjoy during the rainy season—best served warm. They’re incredibly tender and cooked evenly, even though they take quite a while to prepare, but I’m very satisfied with the result.\n<hr>\n\n|![20260417_123613.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23zbae1YEbYf7gwtjNxj9sLFH7ickSZMQ7f5nwMHunFBszDQaPUMHkm48zheXoLhQzV6C.jpg)|![20260417_123609.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23xAnWivXuuxmBcyWEngRSZscqMZ64o57hNjGFM1yyUjhd3xjFGctVRXkf11CfSfMd8V1.jpg)|![20260417_123657.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23xyk2aLzaqShYSMzW58k2uaVQpi6Q6DzsHnbDz7RP7GAAx11hK9GMir5tF5fDzF2WdjA.jpg)|\n|-|-|-|\n<hr>\n\nThe flavor is savory-sweet with a rich aroma of sesame and palm sugar. The combination of ingredients is just right—I’m sure anyone who tries this will want to make it again because it’s truly delicious, especially for those of you trying to cut back on oily foods; these sweet potatoes will be the perfect solution, in my opinion.\n\n![20260417_123602.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23viCmaNtpMGrfK84UtSXMUS9fNi45vfoQ5XG8hKuJgyL5XBEQWDJPWyWQfr7wT3pc1ca.jpg)\n<hr>\n<hr>\n<hr> \n\n![20230813_094117_0000.png](https://files.peakd.com/file/peakd-hive/nurfay/23ynhM4HY26LsJBc56VnzHwHASWwNh2k6eRFsTW3ZB37BNXHsDPbYNJn7HniS1Ky4w7Ki.png)\n<hr>\n<hr>\n\n<div class=\"text-justify\"> <div class=\"pull-left\">\n\n![20240420_153413.jpg](https://files.peakd.com/file/peakd-hive/nurfay/23xybJaDM9iJEac2d34ghVhwHTLJQ2LkMrCFUTk1gbXyPNb8JzZk9mvDrrsvBt1wnEFYU.jpg)\n</div>\n\n<center><h5>About The Author</h5></center>\n\n<sub>Welcome to this blog, I have a real name \"Nurul\", who comes from Indonesia. I have several hobbies, reading, writing, gardening, I also love food and cooking, even art related.  And the most interesting one is spending the whole day traveling. From those hobbies, I will share some inspiring content for all of you, I hope you like my blog, please and reblog this post if you like it!.</sub>\n<hr>\n\n|<center><sub>Hi Readers and Hivers, Thank you for reading and visiting my posts which are 100% copyrighted by myself, my own content, writings and photos, taken with the Samsung Galaxy A72 Smartphone.</sub></center>|\n|--|\n<hr>\n<hr>\n\n<center>**Find some of my other recipes below!**</center>\n\n[Steamed Green Bean Cake for Birthday Celebration](https://peakd.com/hive-180569/@nurfay/steamed-green-bean-cake-for-birthday-celebration)\n\n[Dragon Fruit Stuffed Cassava Balls](https://peakd.com/hive-180569/@nurfay/cassava-balls-with-dragon-fruit-stuffing)\n\n[Classic Corn Vermicelli Putu with Aren Sugar Sauce](https://peakd.com/hive-180569/@nurfay/classic-corn-vermicelli-putu-with-aren-sugar-sauce) \n\n[Coconut Milk Sticky Dragon Fruit Balls](https://peakd.com/hive-180569/@nurfay/dragon-fruit-ball-sticky-rice-fla-coconut-milk)\n<hr>\n<hr>\n<hr>\n\n\n",
+        "category": "hive-180569",
+        "children": 1,
+        "community": "hive-180569",
+        "community_title": "Plant Power (Vegan)",
+        "created": "2026-04-21T10:00:57",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.5",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/nurfay/Eoc9uk4q9cUnv6NnTBY28rZncDHpfcFS3XQMqNRdePyr5mPei2HTr43b3W7bsEXDNPN.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23uFbyCUzsTvwrAt7DKh3VYEXz3PE3LgAbiovG4v7zxMGHw7VqR2KfNUKAvpQ1G1EFgcC.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/EpQyH7BZ7VMMmufFZCqRqo1XLmyzLA7xYUZ96Fxbei7vUEMW5QXbhVh9YvcGQhT9cKN.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/242hhPCw2u1hYyKdjYKaDybquyP6m3qTtGE3EzRLmAxs3h7FJDaN3fY4G2noWFmp8AkU1.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23z7QCwKd7KcpWvjFzshSftNSjmqLi3AQvPrL163Re3Dq3w1XGu2qAoyZPhUnQ4qzuGs2.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23xethZvxWHZ7mfC57yLWLvTTjh5EFTTVEB4PBveNXDRzRDqm9RsjqRztxUpdsKwr67Z8.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23xetnuyBnupzPhhRW5T1ihHDwqnHxXnX8j9qKMhhogsjDRfnrRiUoYU865x86BG8HgVM.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23wqpjCaanwMwyDFv8YGwaQpMb4bWdB7KS4WXNux8meRbinkgKa4cYwJMkJwTseT1urMk.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23tmYTZLa59UoXmq9pVjHQVCDzABdiMRS1L2mmrapQ3ZBZggYxfuGnvxb23gaCiNCB727.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23tcA6AwWEsHNjHb58CGVZvWUcHNmr3iyVvpj5D91g1pFR8WhRM994Da4WiR7nS4mbFjC.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23x1FAawsGGbrMhyVGdvHsgm6ixPMvLNM5teW9yDvU8YtrenSzqmQjDrPxe2JY7bfbT4Z.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/EoErxM3JCGwctxbVBwTgGjs9GF5FpNqWhh9SPv22MTuMCwXQVSGL7USGkD5MsG9MKF6.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23zbae1YEbYf7gwtjNxj9sLFH7ickSZMQ7f5nwMHunFBszDQaPUMHkm48zheXoLhQzV6C.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23xAnWivXuuxmBcyWEngRSZscqMZ64o57hNjGFM1yyUjhd3xjFGctVRXkf11CfSfMd8V1.jpg",
+            "https://files.peakd.com/file/peakd-hive/nurfay/23xyk2aLzaqShYSMzW58k2uaVQpi6Q6DzsHnbDz7RP7GAAx11hK9GMir5tF5fDzF2WdjA.jpg"
+          ],
+          "tags": [
+            "plantbased",
+            "foodies",
+            "recipe",
+            "foodphotography",
+            "crueltyfree",
+            "lifestyle",
+            "veganlove",
+            "neoxian"
+          ],
+          "users": [
+            "nurfay"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 19383228841504,
+        "payout": 1.888,
+        "payout_at": "2026-04-28T10:00:57",
+        "pending_payout_value": "1.888 HBD",
+        "percent_hbd": 10000,
+        "permlink": "roasted-sweet-potatoes-with-palm-sugar-glaze",
+        "post_id": 149883089,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 329
+        },
+        "title": "Roasted Sweet Potatoes with Palm Sugar Glaze",
+        "updated": "2026-04-21T10:00:57",
+        "url": "/hive-180569/@nurfay/roasted-sweet-potatoes-with-palm-sugar-glaze"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

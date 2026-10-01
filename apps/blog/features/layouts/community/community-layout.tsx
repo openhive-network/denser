@@ -14,6 +14,7 @@ import {
 import CommunityDescription from './community-description';
 import { CommunitiesSelect } from '@/blog/features/layouts/communities-select';
 import PostSelectFilter from '@/blog/features/layouts/post-select-filter';
+import FeedListPending from '@/blog/features/layouts/sorts/feed-list-pending';
 import { usePathname } from 'next/navigation';
 import BasePathLink from '@/blog/components/base-path-link';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -140,7 +141,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
                 </div>
               )}
             </div>
-            {children}
+            <FeedListPending>{children}</FeedListPending>
           </div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">

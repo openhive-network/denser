@@ -7,6 +7,7 @@ import ExploreHive from '@/blog/features/layouts/explore-hive';
 import { useTranslation } from '@/blog/i18n/client';
 import { CommunitiesSelect } from '@/blog/features/layouts/communities-select';
 import PostSelectFilter from '@/blog/features/layouts/post-select-filter';
+import FeedListPending from '@/blog/features/layouts/sorts/feed-list-pending';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
 import { useQuery } from '@tanstack/react-query';
@@ -75,7 +76,7 @@ const MainPageLayout = ({
                 }
               </div>
             )}
-            {children}
+            <FeedListPending>{children}</FeedListPending>
           </div>
         </div>
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">

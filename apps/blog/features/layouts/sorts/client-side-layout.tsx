@@ -3,16 +3,17 @@
 import MainPageLayout from '@/blog/features/layouts/main-page-layout';
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
+import { FeedNavigationProvider } from './feed-navigation-context';
 
 const ClientSideLayout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const params = pathname?.split('/');
   const tag = params?.[2];
 
-  if (!tag || tag === 'my') {
-    return <MainPageLayout tag={tag}>{children}</MainPageLayout>;
-  } else {
-    return children;
-  }
+  return (
+    <FeedNavigationProvider>
+      {!tag || tag === 'my' ? <MainPageLayout tag={tag}>{children}</MainPageLayout> : children}
+    </FeedNavigationProvider>
+  );
 };
 export default ClientSideLayout;

@@ -1,0 +1,116 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post",
+    "params": {
+      "author": "dlmmqb",
+      "permlink": "behind-the-scenes-and-more-coding-hive-engine-hive",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "8022541010adf542",
+  "method": "bridge.get_post",
+  "params": {
+    "author": "dlmmqb",
+    "permlink": "behind-the-scenes-and-more-coding-hive-engine-hive",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active_votes": [
+        {
+          "rshares": 1834653802,
+          "voter": "leprechaun"
+        },
+        {
+          "rshares": 3551577619,
+          "voter": "dwinblood"
+        },
+        {
+          "rshares": 119984733509,
+          "voter": "logic"
+        },
+        {
+          "rshares": 1085488544,
+          "voter": "kaykunoichi"
+        },
+        {
+          "rshares": 2087903819,
+          "voter": "psygambler"
+        }
+      ],
+      "author": "dlmmqb",
+      "author_payout_value": "0.000 HBD",
+      "author_reputation": 74.99,
+      "author_role": "member",
+      "author_title": "PANDA-X MANAGER 🦋",
+      "beneficiaries": [],
+      "blacklists": [],
+      "body": "<center>![image.jpeg](https://files.peakd.com/file/peakd-hive/dlmmqb/23w2cbp8w4zMYWtibKqxy8iUDtxGjJsjGMv8iEm2rCVzD4zADKkfpuy756u9vNgVf7yhs.jpeg)</center>\n\n<sub>*Note: Hey everyone! Just a heads-up that I’ve included some simple explanations in brackets throughout this post. I wanted to make sure that even if you aren't into coding or crypto or non hiver, you can still follow along with the story without feeling lost!*</sub>\n\nFor those of you who know me, I am a software engineer, but I promise not to bore you with overly technical details. Grab a tea, coffee, or some popcorn and join me for a heart to heart moment. I completed my software engineering degree two or three years ago, but initially, I did not have much interest in the field. I was always more drawn to business analysis and numbers. People often say coding is just math, but getting addicted to it takes a specific moment. It usually happens when you spend days or weeks building something, only to realize that the fix for a major problem was incredibly basic. You realize you were just overthinking it the whole time.\n\nSome people think AI is going to replace us or that tools like Claude Code (an AI tool designed to help write software) make everything easy. For me, things are a bit different because the number verification for those paid subscriptions does not work for me, so I cannot even use them to make my life easier. Beyond that, I actually want to focus on improving my basics. Relying on AI without knowing what it is actually doing makes it harder to truly learn. I like to understand every single line of code myself to be at mental ease. I do take help from AI, but it is not as simple as just letting it do all the work.\n\nSince the start of this new year, I have started feeling a real kick when building things. I am genuinely enjoying it now, which is something I never thought would happen. To get through the difficult hours of coding, I rely on beatboxing, which is really just me making random sounds. When things finally work, I scream in a low pitched voice so my neighbors do not hear me. I mostly code for a few specific friends because I want to help non technical people see the outputs they desire. It has been a blast fulfilling so many requests. I might open source (sharing code publicly so anyone can see or use it) my code on GitHub (a website where programmers store and share their projects) someday, but my knowledge is still quite limited.\n\nI am also very thankful to every developer on Hive who helped me when I was starting out. I used to be quite scared of IDEs (Integrated Development Environments, which are the software programs where you actually write and test code). One person who helped me more than anyone is hivetrending. It is not necessarily about his teaching style; it is more about a connection. If other developers like gwajnberg, spiritsurge, ecoinstant, or mengao tell me something, I will eventually understand it, but if hivetrending says the same thing, it just clicks. I try to disturb him as little as possible. I would rather spend hours looking through documents than send him a message for every answer, because I know I would never truly learn that way. He has an incredible aura, and his words feel like quests to me. There are so many people I want to thank, and they all deserve their own special note.\n\nI want to share a recent story to give you some behind the scenes insight without being too technical. Recently, a friend asked me to find out the APY (Annual Percentage Yield, or the real rate of return earned on an investment over a year) for a specific L2 (Layer 2, which refers to secondary protocols built on top of the main blockchain) investment token. It sounds simple, but it was not. I might be a rookie at coding, but when it comes to numbers, I think of what the mathematician Shakuntala Devi said: \"My numbers never let me down.\" My own numbers might fail me occasionally, but that quote always sticks with me.\n\nTo truly calculate an accurate APY, I have to figure out how much return a delegation (giving your voting power to someone else) provides in terms of new tokens, which is the minting rate (the speed at which new tokens are created). Then you have to look at dividends per unit, averages, percentages, and the average weighted price (a price calculation that accounts for the volume of trades). This is just the tip of the iceberg. To give a precise answer, I have to dig deep into how the blockchain works and where information is stored.\n\nI have been working on different tasks since January (improving skills), but lately, Hive Engine (the platform for custom tokens on Hive) has really caught my interest. While trying to find that average weighted price, I spent eight hours digging through documentation (as I was solving problem by over complicating it, without knowing what's causing it and looking in wrong directions). Sometimes the answers are right in front of you, but you just cannot see them. It turns out I had the answer in my own cheat sheet, which is a document where I keep short notes for my memory. I had wasted an entire day looking for something I already had. I eventually texted hivetrending, and he told me to look at the history for Hive Engine (history.hive-engine.com). When I went to write that down in my notes, I saw it was already there. I felt incredibly stupid but also laughed, and felt a massive sense of relief all at once.\n\nFor the average person to understand this, imagine a neighbor comes over and asks for a hammer. You check your toolbox and say you do not have one, even though it is just sitting on a different shelf. The neighbor cannot know where you left it. That is how machines are. They are \"dumb\" in that sense, and that is why we have documentation to help us understand them. Sometimes, we just forget what we already know.\n\nIn the end, I really want to say that I am loving Hive. This place triggers a desire in me to learn and improve my skills in a way nothing else could. I know all about the token price and the discussions around the DHF (Decentralized Hive Fund, which is a community managed pool of funds for network projects), but let me show you something powerful. Are you familiar with the story of Sheikh Chilli? He was a character known for daydreaming about wealth. He thought about buying eggs, having them hatch into hens, then getting more eggs, then cows, then milk, and so on. It was a greedy loop that ended when he accidentally broke his bucket of eggs.\n\nInvesting on Hive is a bit like that, but in a functional way. You can have 100 EDSI tokens (a specific type of investment token) making more tokens, getting weekly dividends, and creating a loop where you only withdraw the dividends in HIVE. It is about growing assets by selling high and buying low. You could start with a small amount of BNB (a popular cryptocurrency) and try to reach a whole coin through compounding. When I think about it, I might sound like Sheikh Chilli, but that is just how modern wealth grows. Why should Hive give me rewards for posting when it provides the technology to help me make money elsewhere (A personal self reflection and not related to readers)? Sometimes the return rates are not great, and that is why we test different logic and try to find the best strategies.\n\n<center>https://youtube.com/shorts/AVik82Vepi0?si=PjYvHTefNdQkwRIE</center>\n\nRookie developer with lots of dreams and ideas signing out! Peace!\n\n### EYE CANDY\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/dlmmqb/Ep1cCYTWAH12gvqYFpsVaYKpdB6j4qatSkojdYr57VAY9J7k6rFojbfhTcXchJig3rz.png)</center>\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/dlmmqb/Eo1wMUEJVcS9u5z9HKvtSXkVG4M1DeQpCup2mx9Knpcmz7hwHL7W9aW6UT6xK2sAEhg.png)</center>\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/dlmmqb/23tGW1fNDjbvvjEymConTsHmUyyaGHnEBciphC38FEbeg11fggPts84LsMBZXzWy9cDur.png)</center>\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/dlmmqb/48FE3xoqPVzNv4BZe7CD21CsL4GxhuHC2BCB5LCVcqSv96dy4YwR5EPhYuCoaKZbpA.png)</center>\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/dlmmqb/23swgMvaSkSX5CihGvKFrLa5rAWiCq9pB4DSvR2iThgvHVbzBmEs7qrdqEGsqvh42oRVB.png)</center>\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/dlmmqb/23tGTYwkzDLrZ85oP1AeCVjDNW3SMWEtZNa2h6E2nrVsSyUJLB4M5Fj1h1WMTq37nL5jU.png)</center>",
+      "category": "hive-153850",
+      "children": 21,
+      "community": "hive-153850",
+      "community_title": "Hive Learners",
+      "created": "2026-04-19T20:37:27",
+      "curator_payout_value": "0.000 HBD",
+      "depth": 0,
+      "is_paidout": false,
+      "json_metadata": {
+        "app": "peakd/2026.3.4",
+        "description": "Join my \"heart to heart\" journey from software engineer to Hive coding rookie, featuring late-night beats and joys.",
+        "format": "markdown",
+        "image": [
+          "https://files.peakd.com/file/peakd-hive/dlmmqb/23w2cbp8w4zMYWtibKqxy8iUDtxGjJsjGMv8iEm2rCVzD4zADKkfpuy756u9vNgVf7yhs.jpeg",
+          "https://files.peakd.com/file/peakd-hive/dlmmqb/Ep1cCYTWAH12gvqYFpsVaYKpdB6j4qatSkojdYr57VAY9J7k6rFojbfhTcXchJig3rz.png",
+          "https://files.peakd.com/file/peakd-hive/dlmmqb/Eo1wMUEJVcS9u5z9HKvtSXkVG4M1DeQpCup2mx9Knpcmz7hwHL7W9aW6UT6xK2sAEhg.png",
+          "https://files.peakd.com/file/peakd-hive/dlmmqb/23tGW1fNDjbvvjEymConTsHmUyyaGHnEBciphC38FEbeg11fggPts84LsMBZXzWy9cDur.png",
+          "https://files.peakd.com/file/peakd-hive/dlmmqb/48FE3xoqPVzNv4BZe7CD21CsL4GxhuHC2BCB5LCVcqSv96dy4YwR5EPhYuCoaKZbpA.png",
+          "https://files.peakd.com/file/peakd-hive/dlmmqb/23swgMvaSkSX5CihGvKFrLa5rAWiCq9pB4DSvR2iThgvHVbzBmEs7qrdqEGsqvh42oRVB.png",
+          "https://files.peakd.com/file/peakd-hive/dlmmqb/23tGTYwkzDLrZ85oP1AeCVjDNW3SMWEtZNa2h6E2nrVsSyUJLB4M5Fj1h1WMTq37nL5jU.png"
+        ],
+        "links": [
+          "https://youtube.com/shorts/AVik82Vepi0?si=PjYvHTefNdQkwRIE"
+        ],
+        "tags": [
+          "dev",
+          "hive-eninge",
+          "arcadecolony",
+          "hivedevs",
+          "development",
+          "pimp",
+          "alive",
+          "pob",
+          "tribes",
+          "hive-139531"
+        ],
+        "users": []
+      },
+      "max_accepted_payout": "1000000.000 HBD",
+      "net_rshares": 274814614688609,
+      "payout": 26.603,
+      "payout_at": "2026-04-26T20:37:27",
+      "pending_payout_value": "26.603 HBD",
+      "percent_hbd": 10000,
+      "permlink": "behind-the-scenes-and-more-coding-hive-engine-hive",
+      "post_id": 149864703,
+      "reblogs": 3,
+      "replies": [],
+      "stats": {
+        "flag_weight": 0,
+        "gray": false,
+        "hide": false,
+        "total_votes": 566
+      },
+      "title": "Behind the scenes, and MORE! #Coding #hive-engine #hive",
+      "updated": "2026-04-19T22:14:51",
+      "url": "/hive-153850/@dlmmqb/behind-the-scenes-and-more-coding-hive-engine-hive"
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
