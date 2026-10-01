@@ -1,6 +1,6 @@
 "use client";
 
-import { RefObject, useEffect, useRef } from "react";
+import { MutableRefObject, RefObject, useEffect, useRef } from "react";
 
 interface UseScrollSyncParams {
   editorContainerRef: RefObject<HTMLDivElement | null>;
@@ -9,6 +9,34 @@ interface UseScrollSyncParams {
   effectiveSideBySide: boolean;
   preview: boolean;
   previewContent: string | undefined;
+}
+
+/**
+ * Sets `el.scrollTop` programmatically and remembers the resulting position in
+ * `echoRef`, so the scroll event this write produces (dispatched on the next
+ * frame) can be recognised as our own echo and ignored. Nothing is recorded
+ * when the position does not change, because then no scroll event follows.
+ */
+function setScrollTopTracked(
+  el: HTMLElement,
+  target: number,
+  echoRef: MutableRefObject<number | null>
+) {
+  const before = el.scrollTop;
+  el.scrollTop = target;
+  const after = el.scrollTop;
+  echoRef.current = after !== before ? after : null;
+}
+
+/**
+ * Returns true when the pane's current scroll event is the echo of our own
+ * programmatic write (see setScrollTopTracked). The marker is consumed either
+ * way, so a genuine user scroll is never swallowed by a stale marker.
+ */
+function consumeScrollEcho(el: HTMLElement, echoRef: MutableRefObject<number | null>): boolean {
+  const expected = echoRef.current;
+  echoRef.current = null;
+  return expected !== null && el.scrollTop === expected;
 }
 
 /**
@@ -25,7 +53,13 @@ export function useScrollSync({
   preview,
   previewContent,
 }: UseScrollSyncParams) {
-  const isScrollSyncingRef = useRef(false);
+  // Scroll positions we last wrote to each pane, used to ignore the echo
+  // scroll events of our own writes. This is per pane on purpose: a shared
+  // "currently syncing" flag also swallowed genuine scrolls of the *other*
+  // pane that arrived within a frame of a sync, leaving the panes out of step
+  // (issue #963).
+  const previewEchoRef = useRef<number | null>(null);
+  const editorEchoRef = useRef<number | null>(null);
   const editorRafIdRef = useRef<number | null>(null);
   const previewRafIdRef = useRef<number | null>(null);
   const scrollCleanupRef = useRef<(() => void) | null>(null);
@@ -49,7 +83,7 @@ export function useScrollSync({
       const isNearBottom = maxEditorScroll <= 0 || editorScrollArea.scrollTop >= maxEditorScroll - 50;
 
       if (isNearBottom) {
-        previewEl.scrollTop = previewEl.scrollHeight;
+        setScrollTopTracked(previewEl, previewEl.scrollHeight, previewEchoRef);
       }
     }, 100);
 
@@ -359,7 +393,7 @@ export function useScrollSync({
       previewEl.addEventListener("load", markDirty, { capture: true });
 
       const handleEditorScroll = () => {
-        if (isScrollSyncingRef.current || editorRafIdRef.current) return;
+        if (consumeScrollEcho(editorScrollArea, editorEchoRef) || editorRafIdRef.current) return;
 
         editorRafIdRef.current = requestAnimationFrame(() => {
           editorRafIdRef.current = null;
@@ -369,20 +403,17 @@ export function useScrollSync({
           const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
           if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
 
-          isScrollSyncingRef.current = true;
-          if (editorAnchors && previewAnchors && editorAnchors.length > 2) {
-            previewEl.scrollTop = interpolate(editorScrollArea.scrollTop, editorAnchors, previewAnchors);
-          } else {
-            previewEl.scrollTop = (editorScrollArea.scrollTop / maxEditorScroll) * maxPreviewScroll;
-          }
-          requestAnimationFrame(() => {
-            isScrollSyncingRef.current = false;
-          });
+          const target =
+            editorAnchors && previewAnchors && editorAnchors.length > 2
+              ? interpolate(editorScrollArea.scrollTop, editorAnchors, previewAnchors)
+              : (editorScrollArea.scrollTop / maxEditorScroll) * maxPreviewScroll;
+          setScrollTopTracked(previewEl, target, previewEchoRef);
         });
       };
 
       const handlePreviewScroll = () => {
-        if (scrollLockRef.current || isScrollSyncingRef.current || previewRafIdRef.current) return;
+        if (consumeScrollEcho(previewEl, previewEchoRef)) return;
+        if (scrollLockRef.current || previewRafIdRef.current) return;
 
         previewRafIdRef.current = requestAnimationFrame(() => {
           previewRafIdRef.current = null;
@@ -392,19 +423,11 @@ export function useScrollSync({
           const maxPreviewScroll = previewEl.scrollHeight - previewEl.clientHeight;
           if (maxEditorScroll <= 0 || maxPreviewScroll <= 0) return;
 
-          isScrollSyncingRef.current = true;
-          if (previewAnchors && editorAnchors && previewAnchors.length > 2) {
-            editorScrollArea.scrollTop = interpolate(
-              previewEl.scrollTop,
-              previewAnchors,
-              editorAnchors
-            );
-          } else {
-            editorScrollArea.scrollTop = (previewEl.scrollTop / maxPreviewScroll) * maxEditorScroll;
-          }
-          requestAnimationFrame(() => {
-            isScrollSyncingRef.current = false;
-          });
+          const target =
+            previewAnchors && editorAnchors && previewAnchors.length > 2
+              ? interpolate(previewEl.scrollTop, previewAnchors, editorAnchors)
+              : (previewEl.scrollTop / maxPreviewScroll) * maxEditorScroll;
+          setScrollTopTracked(editorScrollArea, target, editorEchoRef);
         });
       };
 

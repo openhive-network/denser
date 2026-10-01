@@ -69,6 +69,7 @@ test.describe('Post Content tests', () => {
     await expect(postPage.articleFooter).toBeVisible();
   });
 
+  // @flaky kept (#964): failed 1/10 locally 2026-09-30 (article-title not shown in 15s); 24 CI fail/flaky, last 07-13.
   test('@flaky post page has interactive elements', async ({ page }) => {
     await homePage.goto();
 
@@ -170,7 +171,7 @@ test.describe('Post Content tests', () => {
    * POST COMMENTS
    */
 
-  test('@flaky post page shows comments section', async ({ page }) => {
+  test('post page shows comments section', async ({ page }) => {
     await homePage.goto();
 
     // Navigate to first post

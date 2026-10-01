@@ -163,7 +163,7 @@ test.describe('Deep Linking tests', () => {
    * FEED DEEP LINKS
    */
 
-  test('@flaky direct link to hot feed loads correctly', async ({ page }) => {
+  test('direct link to hot feed loads correctly', async ({ page }) => {
     await page.goto('/hot');
 
     await expect(page).toHaveURL('/hot');
@@ -173,7 +173,7 @@ test.describe('Deep Linking tests', () => {
     expect(postsCount).toBeGreaterThan(0);
   });
 
-  test('@flaky direct link to created/new feed loads correctly', async ({ page }) => {
+  test('direct link to created/new feed loads correctly', async ({ page }) => {
     await page.goto('/created');
 
     await expect(page).toHaveURL('/created');

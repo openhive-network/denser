@@ -608,7 +608,10 @@
   "search_page": {
     "placeholder": "Buscar",
     "no_results": "No se encontró nada.",
-    "error": "Hubo un error"
+    "error": "Hubo un error",
+    "ai_unavailable": "La búsqueda con IA no está disponible en este momento. Prueba la búsqueda clásica.",
+    "try_classic": "Búsqueda clásica",
+    "could_not_load_more": "No se pudieron cargar más resultados de IA."
   },
   "settings_page": {
     "invalid_url": "URL inválida",

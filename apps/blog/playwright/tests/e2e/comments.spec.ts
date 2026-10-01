@@ -855,6 +855,7 @@ test.describe('Load more... comments in the post', () => {
     expect((await postPage.commentListItems.all()).length).toBe(3);
   });
 
+  // @flaky kept (#964): CI flaky 2026-09-16 (job 3277082, comment author not found); 10/10 locally.
   test('@flaky Validate sorting the comments in the post "leofinance/@leo-curation/organic-curation-report-week-25"', async ({
     page
   }) => {

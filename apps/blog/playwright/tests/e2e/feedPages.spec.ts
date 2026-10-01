@@ -13,7 +13,7 @@ import { testFeedPagination, FEED_CONFIG, type FeedType } from '../support/feedT
 const PRODUCTION_FILTER_BUG = 'Production bug: filter dropdown not functional';
 const PRODUCTION_PAGINATION_BUG = 'Production bug: infinite scroll pagination not working';
 
-test.describe('@flaky Feed pages tests', () => {
+test.describe('Feed pages tests', () => {
   let homePage: HomePage;
 
   test.beforeEach(async ({ page }) => {
@@ -98,7 +98,8 @@ test.describe('@flaky Feed pages tests', () => {
     await expect(homePage.getPostListNew).toBeVisible();
   });
 
-  test('created feed displays posts sorted by time', async ({ page, request, browserName }) => {
+  // @flaky kept (#964): CI flaky 2026-09-29 (page.goto 60s timeout on /created, job 3291560); 10/10 locally.
+  test('@flaky created feed displays posts sorted by time', async ({ page, request, browserName }) => {
     test.skip(browserName === 'firefox', 'API validation timing issues on Firefox');
     test.skip(!isApiEndpointConfigured(), 'REACT_APP_API_ENDPOINT not configured');
 
@@ -135,7 +136,8 @@ test.describe('@flaky Feed pages tests', () => {
     expect(apiTopTitles).toContain(firstPostTitle);
   });
 
-  test('created feed pagination works', async ({ page, browserName }) => {
+  // @flaky kept (#964): CI flaky 2026-09-29 (page.goto 60s timeout on /created, job 3291560); 10/10 locally.
+  test('@flaky created feed pagination works', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Pagination scroll has timing issues on WebKit');
     test.skip(isProductionEnvironment(), PRODUCTION_PAGINATION_BUG);
 
@@ -259,7 +261,7 @@ test.describe('@flaky Feed pages tests', () => {
  * Split from mega-test for better isolation and failure identification
  * NOTE: These tests fail on production due to filter dropdown not working (SSR hydration bug)
  */
-test.describe('@flaky Feed navigation tests', () => {
+test.describe('Feed navigation tests', () => {
   let homePage: HomePage;
 
   test.beforeEach(async ({ page }) => {
@@ -342,11 +344,15 @@ test.describe('@flaky Feed navigation tests', () => {
  * These tests use shared helper to reduce code duplication
  * NOTE: These tests fail on production due to infinite scroll not working
  */
-test.describe('@flaky Feed pagination tests (parametrized)', () => {
+test.describe('Feed pagination tests (parametrized)', () => {
   const paginationFeedTypes: FeedType[] = ['hot', 'created', 'payout'];
 
   for (const feedType of paginationFeedTypes) {
-    test(`${feedType} feed pagination using helper`, async ({ page, browserName }) => {
+    // 'created' keeps @flaky (#964): CI flaky 2026-09-29 (page.goto 60s timeout, job 3291532); hot/payout quiet since July.
+    test(`${feedType === 'created' ? '@flaky ' : ''}${feedType} feed pagination using helper`, async ({
+      page,
+      browserName
+    }) => {
       test.skip(browserName === 'webkit', 'Pagination scroll has timing issues on WebKit');
       test.skip(isProductionEnvironment(), PRODUCTION_PAGINATION_BUG);
       await testFeedPagination(page, feedType);

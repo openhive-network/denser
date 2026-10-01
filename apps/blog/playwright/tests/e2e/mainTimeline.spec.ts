@@ -147,6 +147,7 @@ test.describe('Home page tests', () => {
     await homePage.validateFirstPostHeaderElements();
   });
 
+  // @flaky kept (#964): 42 CI fail/flaky since May, last 2026-09-30; 9/10 locally (new post races the API check).
   test('@flaky validate the first post (for New filter)', async ({ page, request, browserName }) => {
     await homePage.goto();
 
@@ -239,7 +240,7 @@ test.describe('Home page tests', () => {
     await homePage.moveToTheFirstPostCommentContantPageByClickingResponses();
   });
 
-  test('@flaky move to the dark mode and back to the light mode', async ({ page }) => {
+  test('move to the dark mode and back to the light mode', async ({ page }) => {
     await homePage.goto();
 
     await homePage.validateThemeModeIsLight();

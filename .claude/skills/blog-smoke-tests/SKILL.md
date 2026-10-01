@@ -1,6 +1,6 @@
 ---
 name: blog-smoke-tests
-description: Run Playwright smoke tests for Denser blog application. Executes 15 tests (SMOKE-01 to SMOKE-15) against configurable environment (production, dev, or localhost) with retry support (max 3 attempts per failing test). Supports headed (visible browser) and headless modes. Collects artifacts (screenshots, trace.zip) on failures and generates HTML report. Use when testing blog functionality, verifying deployments, checking UI/API consistency, or when user requests smoke tests, playwright tests, or blog testing.
+description: Run Playwright smoke tests for Denser blog application. Executes 20 tests (SMOKE-01 to SMOKE-20) against configurable environment (production, dev, or localhost) with retry support (max 3 attempts per failing test). Supports headed (visible browser) and headless modes. Collects artifacts (screenshots, trace.zip) on failures and generates HTML report. Use when testing blog functionality, verifying deployments, checking UI/API consistency, or when user requests smoke tests, playwright tests, or blog testing.
 allowed-tools:
   - Bash
   - Read
@@ -14,7 +14,7 @@ Run Playwright smoke tests against the Denser blog application.
 
 ## Features
 
-- **15 smoke tests** organized by priority (P0-P4)
+- **20 smoke tests** organized by priority (P0-P4)
 - **Retry logic** - max 3 attempts per failing test
 - **Headed/headless modes** - choose visible or background execution
 - **Artifact collection** - screenshots and trace.zip on failures
@@ -37,7 +37,7 @@ Before running tests, ask user:
    - **Headless** - faster, for CI/CD
 
 3. **Test scope**:
-   - **All** - run all 15 tests
+   - **All** - run all 20 tests
    - **P0** - critical tests only (SMOKE-01, 04, 08)
    - **P1** - important tests (SMOKE-05, 06, 07)
    - **P2** - tooltip tests (SMOKE-02, 03, 09)
@@ -164,49 +164,54 @@ npx playwright show-trace ./playwright/temp_ai_report_tests/SMOKE-04-trace.zip
 | P4 | SMOKE-14 | Theme Toggle | smoke-14-theme.mjs |
 | P4 | SMOKE-15 | Login Button | smoke-15-login.mjs |
 
-## Retry Logic Pattern
+## Retry Logic, Flaky Passes and Warnings
 
-```javascript
-const MAX_RETRIES = 3;
-const results = [];
+`scripts/smoke-runner.mjs` (what CI runs) implements the retry itself: a failing
+test is re-run up to `SMOKE_MAX_ATTEMPTS` times (default 3) with
+`SMOKE_RETRY_DELAY_MS` (default 5000) between attempts. The tests run against live
+chain data through public API nodes, and most historical CI failures were one
+slow `api.hive.blog` response (#965), so a failure has to reproduce before it counts.
 
-for (const test of tests) {
-  let passed = false;
-  let attempts = 0;
-  let lastError = null;
-  let artifacts = [];
+- A test that passes only on a retry is reported as **⚠ WARN** with a
+  `flaky: passed on attempt N/3 after ...` warning naming the earlier failure.
+- A test that fails every attempt is **✗ FAIL**, and its error lists every attempt.
+- Tests can call `warn(message)` (passed to the test function by `runSmokeTest`)
+  for a degraded-but-working state; the result JSON carries `warnings: []`,
+  and the runner summary and HTML report list them.
+- Each failed attempt's screenshot and trace are kept as
+  `<ID>-attemptN-failure.png` / `<ID>-attemptN-trace.zip` and linked from the
+  result, also when a later attempt passes.
+- Runtime is bounded so an outage still produces `smoke-results.json` and the
+  report: an attempt is killed after `SMOKE_TEST_TIMEOUT_MS` (240s); no attempt
+  starts after `SMOKE_RUN_BUDGET_MS` (25 min; remaining tests are reported as
+  failed "not run"); and a circuit breaker runs the remaining tests once, without
+  retries, after SMOKE-01 or `SMOKE_BREAKER_THRESHOLD` (3) tests failed every
+  attempt. The CI job `timeout:` (45 min) sits above budget + one attempt + setup.
+- `hiveApiCall()` in `test-utils.mjs` retries the test's own direct API calls
+  (15s timeout, 3 attempts) and throws `Hive API <method> ... failed` instead of
+  handing a null `result` to the test.
 
-  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-    attempts = attempt;
-    const output = await runTest(test);
+**SMOKE-16 (Search)** probes HiveSense `posts/search` directly and decides with it.
+It fails when the search UI is broken: no input, submit does not navigate,
+Classic Search (`/search?q=hive`) shows nothing or "Nothing was found.", or the
+probe gets renderable posts (with `post_id`) while the page shows the AI error /
+fallback, stays blank, or the input never enters AI mode; also when AI search
+says "Nothing was found." although the probe gets results. It passes with a
+warning only when the probe shows HiveSense down, empty, or serving posts
+without `post_id` (#947/#949); the warning names the case and the probe result.
 
-    // Parse __RESULT__ from output
-    const resultLine = output.match(/__RESULT__(.+)/);
-    if (resultLine) {
-      const result = JSON.parse(resultLine[1]);
-      passed = result.passed;
-      lastError = result.error;
-      artifacts = result.artifacts;
-    }
+## Running Against a Local Production Build
 
-    if (passed) break;
+`next build` standalone output does not include `apps/blog/lib/markdowns/`, which
+the static pages read at runtime relative to the server's cwd (`server.js` does
+`process.chdir(__dirname)`). The Docker image copies it (Dockerfile), so a local
+standalone server needs it too, or `/faq.html` and `/tos.html` return HTTP 500 and SMOKE-13 fails:
 
-    if (attempt < MAX_RETRIES) {
-      console.log(`Retry ${attempt + 1}/${MAX_RETRIES} in 2 seconds...`);
-      await sleep(2000);
-    }
-  }
-
-  results.push({
-    id: test.id,
-    name: test.name,
-    priority: test.priority,
-    passed,
-    attempts,
-    error: lastError,
-    artifacts
-  });
-}
+```bash
+cd apps/blog
+cp -r .next/static .next/standalone/apps/blog/.next/
+cp -r public .next/standalone/apps/blog/
+mkdir -p .next/standalone/apps/blog/lib && cp -r lib/markdowns .next/standalone/apps/blog/lib/
 ```
 
 ## Environment Variables
@@ -216,6 +221,13 @@ for (const test of tests) {
 | `BASE_URL` | Target environment URL | `https://blog.openhive.network` |
 | `HEADLESS` | Run browser in headless mode | `false` (headed) |
 | `REPORT_DIR` | Directory for artifacts and report | `./playwright/temp_ai_report_tests` |
+| `API_URL` | Hive API node the tests compare against | `https://api.hive.blog` |
+| `SMOKE_MAX_ATTEMPTS` | Attempts per failing test in `smoke-runner.mjs` | `3` |
+| `SMOKE_RETRY_DELAY_MS` | Delay between attempts | `5000` |
+| `SMOKE_TEST_TIMEOUT_MS` | Kill one attempt of one test after this | `240000` |
+| `SMOKE_RUN_BUDGET_MS` | No new attempt starts after this | `1500000` |
+| `SMOKE_BREAKER_THRESHOLD` | Tests failing every attempt before retries stop | `3` |
+| `SMOKE_AI_DOMAIN` | HiveSense URL SMOKE-16 probes (default: the blog's `REACT_APP_AI_DOMAIN`) | from `/__ENV.js` |
 
 ### Available Environments
 

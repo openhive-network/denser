@@ -50,7 +50,7 @@ test.describe('Sync scroll tests', () => {
     };
   }
 
-  test('@flaky Sync scroll works immediately after page load without toggling', async ({ page }) => {
+  test('Sync scroll works immediately after page load without toggling', async ({ page }) => {
     const { editorScroller, previewScroller } = await setupEditorWithContent(page);
 
     const previewScrollTop = () => previewScroller.evaluate((el) => el.scrollTop);

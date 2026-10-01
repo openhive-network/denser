@@ -73,7 +73,8 @@ async function test({ page }) {
 
   // Check for votes element
   const votesElement = page.locator(`${SELECTORS.COMMENT_VOTES}, [data-testid="post-total-votes"]`);
-  await votesElement.first().waitFor({ state: 'visible', timeout: TIMEOUTS.SHORT }).catch(() => {});
+  // Rendered only once the client-side active-votes query resolves.
+  await votesElement.first().waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE }).catch(() => {});
   const votesVisible = await votesElement.first().isVisible().catch(() => false);
 
   if (votesVisible) {

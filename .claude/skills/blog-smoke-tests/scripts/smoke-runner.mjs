@@ -5,7 +5,7 @@
  * Replaces bash+jq logic in CI pipeline
  */
 import { spawn } from 'child_process';
-import { mkdir, writeFile, readdir } from 'fs/promises';
+import { mkdir, writeFile, readdir, rename } from 'fs/promises';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -16,8 +16,31 @@ const config = {
   BASE_URL: process.env.BASE_URL || 'https://blog.openhive.network',
   HEADLESS: process.env.HEADLESS || 'true',
   REPORT_DIR: process.env.REPORT_DIR || './playwright/smoke-report',
-  API_URL: process.env.API_URL || 'https://api.hive.blog'
+  API_URL: process.env.API_URL || 'https://api.hive.blog',
+  // Every smoke test runs against live chain data through public API nodes, so
+  // a single slow upstream response can fail any of them (#965). A failing test
+  // is re-run up to MAX_ATTEMPTS times in total (as SKILL.md documents); a test
+  // that needed a retry still passes but is reported as flaky, so the noise
+  // stays visible without hiding a failure that reproduces on every attempt.
+  MAX_ATTEMPTS: Math.max(1, parseInt(process.env.SMOKE_MAX_ATTEMPTS || '3', 10) || 3),
+  RETRY_DELAY_MS: parseInt(process.env.SMOKE_RETRY_DELAY_MS || '5000', 10),
+  // Runtime bounds, so a whole-app or upstream outage still ends with
+  // smoke-results.json and the report written instead of the CI job being
+  // killed at its timeout (the smoke-tests-blog job timeout is set above
+  // RUN_BUDGET_MS + TEST_TIMEOUT_MS + setup):
+  // - one attempt of one test is killed after TEST_TIMEOUT_MS;
+  // - no new attempt starts once RUN_BUDGET_MS has elapsed (remaining tests
+  //   are reported as failed, not run);
+  // - circuit breaker: once SMOKE-01 (homepage) or BREAKER_THRESHOLD tests
+  //   have failed every attempt, the remaining tests run once, without retries.
+  TEST_TIMEOUT_MS: parseInt(process.env.SMOKE_TEST_TIMEOUT_MS || '240000', 10),
+  RUN_BUDGET_MS: parseInt(process.env.SMOKE_RUN_BUDGET_MS || '1500000', 10),
+  BREAKER_THRESHOLD: parseInt(process.env.SMOKE_BREAKER_THRESHOLD || '3', 10)
 };
+
+const BREAKER_SENTINEL_TEST = 'smoke-01-homepage-posts.mjs';
+const runStartedAt = Date.now();
+const breaker = { tripped: false, reason: '', failedAllAttempts: 0 };
 
 // ANSI color codes
 const colors = {
@@ -65,6 +88,8 @@ function runTest(testFile, scriptsDir) {
     let output = '';
 
     const child = spawn('node', [testPath], {
+      // Own process group, so a timeout kills the test and its browser.
+      detached: true,
       env: {
         ...process.env,
         BASE_URL: config.BASE_URL,
@@ -87,7 +112,23 @@ function runTest(testFile, scriptsDir) {
       process.stderr.write(text);
     });
 
+    const killGroup = (signal) => {
+      try {
+        process.kill(-child.pid, signal);
+      } catch {
+        // already gone
+      }
+    };
+    const timer = setTimeout(() => {
+      const note = `\n✗ ERROR: ${testFile} killed after ${config.TEST_TIMEOUT_MS / 1000}s (SMOKE_TEST_TIMEOUT_MS)\n`;
+      output += note;
+      process.stdout.write(note);
+      killGroup('SIGTERM');
+      setTimeout(() => killGroup('SIGKILL'), 5000).unref();
+    }, config.TEST_TIMEOUT_MS);
+
     child.on('close', (code) => {
+      clearTimeout(timer);
       resolve({ output, exitCode: code ?? 1 });
     });
 
@@ -118,6 +159,117 @@ function parseResult(output) {
 }
 
 /**
+ * Short description of why an attempt failed, for the flaky-pass warning.
+ * @param {Object|null} result - Parsed __RESULT__ (null if none)
+ * @param {string} output - Raw test output
+ * @returns {string}
+ */
+function describeFailure(result, output) {
+  if (result?.error) return result.error.split('\n')[0].substring(0, 160);
+  const failLine = output.split('\n').find((line) => line.includes('✗ FAIL:'));
+  if (failLine) return failLine.replace(/^.*✗ FAIL:\s*/, '').substring(0, 160);
+  return result ? 'test reported failure' : 'no result output';
+}
+
+/**
+ * Runs a test, retrying on failure up to config.MAX_ATTEMPTS attempts.
+ * @param {string} testFile - Test filename
+ * @param {string} scriptsDir - Directory containing test scripts
+ * @returns {Promise<Object>} - Result with attempts and warnings
+ */
+async function runTestWithRetry(testFile, scriptsDir) {
+  const failures = [];
+  const keptArtifacts = [];
+  let result = null;
+  const maxAttempts = breaker.tripped ? 1 : config.MAX_ATTEMPTS;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    if (Date.now() - runStartedAt > config.RUN_BUDGET_MS) {
+      const note = `run budget of ${config.RUN_BUDGET_MS / 1000}s (SMOKE_RUN_BUDGET_MS) exhausted`;
+      console.log(`${colors.yellow}Not starting attempt ${attempt} of ${testFile}: ${note}${colors.reset}`);
+      if (!result) {
+        return { id: testIdFromFile(testFile), name: testFile, passed: false, error: `not run: ${note}`, priority: 'N/A', attempts: 0, warnings: [], artifacts: [] };
+      }
+      break;
+    }
+    if (attempt > 1) {
+      console.log(`${colors.yellow}Retrying ${testFile} (attempt ${attempt}/${maxAttempts}) in ${config.RETRY_DELAY_MS / 1000}s...${colors.reset}`);
+      await new Promise((resolve) => setTimeout(resolve, config.RETRY_DELAY_MS));
+    }
+    const { output } = await runTest(testFile, scriptsDir);
+    result = parseResult(output) || {
+      id: testIdFromFile(testFile),
+      name: testFile,
+      passed: false,
+      error: output.includes('(SMOKE_TEST_TIMEOUT_MS)') ? `killed after ${config.TEST_TIMEOUT_MS / 1000}s` : 'No result output',
+      priority: 'N/A'
+    };
+    result.attempts = attempt;
+    result.warnings = result.warnings || [];
+    if (result.passed) break;
+    failures.push(`attempt ${attempt}: ${describeFailure(result, output)}`);
+    // Each attempt writes <ID>-failure.png / <ID>-trace.zip; keep every
+    // attempt's copy so a later attempt (or a pass) doesn't lose the evidence.
+    keptArtifacts.push(...(await keepAttemptArtifacts(result.artifacts || [], attempt)));
+  }
+  result.artifacts = keptArtifacts;
+  if (result.passed && failures.length > 0) {
+    result.flaky = true;
+    result.warnings.unshift(`flaky: passed on attempt ${result.attempts}/${maxAttempts} after ${failures.join('; ')}`);
+  } else if (!result.passed && failures.length > 1) {
+    result.error = `${result.error || 'failed'} (failed all ${failures.length} attempts: ${failures.join('; ')})`;
+  }
+  if (!result.passed && breaker.tripped && maxAttempts === 1) {
+    result.error = `${result.error || 'failed'} (run once, no retries: ${breaker.reason})`;
+  }
+  return result;
+}
+
+/**
+ * Renames an attempt's failure artifacts to <ID>-attemptN-<suffix>.
+ * @param {string[]} artifacts - Artifact filenames in REPORT_DIR
+ * @param {number} attempt - Attempt number
+ * @returns {Promise<string[]>} - New filenames
+ */
+async function keepAttemptArtifacts(artifacts, attempt) {
+  const kept = [];
+  for (const name of artifacts) {
+    const renamed = name.replace(/^(SMOKE-\d+)-/, `$1-attempt${attempt}-`);
+    try {
+      await rename(join(config.REPORT_DIR, name), join(config.REPORT_DIR, renamed));
+      kept.push(renamed);
+    } catch {
+      kept.push(name);
+    }
+  }
+  return kept;
+}
+
+/**
+ * Updates the circuit breaker after a test finished.
+ * @param {string} testFile - Test filename
+ * @param {Object} result - Final result of the test
+ */
+function updateBreaker(testFile, result) {
+  if (breaker.tripped || result.passed || result.attempts < config.MAX_ATTEMPTS) return;
+  breaker.failedAllAttempts++;
+  if (testFile === BREAKER_SENTINEL_TEST) {
+    breaker.tripped = true;
+    breaker.reason = `${result.id} (homepage) failed all ${config.MAX_ATTEMPTS} attempts`;
+  } else if (breaker.failedAllAttempts >= config.BREAKER_THRESHOLD) {
+    breaker.tripped = true;
+    breaker.reason = `${breaker.failedAllAttempts} tests failed all ${config.MAX_ATTEMPTS} attempts`;
+  }
+  if (breaker.tripped) {
+    console.log(`${colors.red}Circuit breaker: ${breaker.reason}; running the remaining tests once, without retries${colors.reset}`);
+  }
+}
+
+function testIdFromFile(testFile) {
+  const match = testFile.match(/^smoke-(\d+)/);
+  return match ? `SMOKE-${match[1]}` : testFile.replace('.mjs', '').toUpperCase();
+}
+
+/**
  * Prints the summary table
  * @param {Array} results - Test results
  */
@@ -125,6 +277,7 @@ function printSummary(results) {
   const passed = results.filter(r => r.passed).length;
   const failed = results.filter(r => !r.passed).length;
   const total = results.length;
+  const warned = results.filter(r => r.passed && r.warnings && r.warnings.length > 0);
 
   console.log('');
   console.log('╔══════════════════════════════════════════════════════════════╗');
@@ -132,9 +285,12 @@ function printSummary(results) {
   console.log('╠══════════════════════════════════════════════════════════════╣');
 
   for (const r of results) {
-    const status = r.passed
-      ? `${colors.green}✓ PASS${colors.reset}`
-      : `${colors.red}✗ FAIL${colors.reset}`;
+    let status = `${colors.red}✗ FAIL${colors.reset}`;
+    if (r.passed) {
+      status = r.warnings && r.warnings.length > 0
+        ? `${colors.yellow}⚠ WARN${colors.reset}`
+        : `${colors.green}✓ PASS${colors.reset}`;
+    }
     const id = (r.id || 'UNKNOWN').padEnd(10);
     const name = (r.name || 'Unknown').substring(0, 30).padEnd(30);
     const priority = r.priority || 'N/A';
@@ -143,14 +299,29 @@ function printSummary(results) {
 
   console.log('╠══════════════════════════════════════════════════════════════╣');
 
+  if (warned.length > 0) {
+    console.log(`║  ${colors.yellow}⚠ WARNINGS (passed, but degraded or flaky):${colors.reset}`);
+    for (const r of warned) {
+      for (const w of r.warnings) {
+        console.log(`║    - ${r.id}: ${w}`);
+      }
+    }
+    console.log('║');
+  }
+
+  if (breaker.tripped) {
+    console.log(`║  ${colors.red}Circuit breaker tripped: ${breaker.reason}; later tests ran once, without retries${colors.reset}`);
+    console.log('║');
+  }
+
   if (failed === 0) {
-    console.log(`║  ${colors.green}✓ ALL TESTS PASSED: ${passed} / ${total}${colors.reset}`);
+    console.log(`║  ${colors.green}✓ ALL TESTS PASSED: ${passed} / ${total}${warned.length ? ` (${warned.length} with warnings)` : ''}${colors.reset}`);
   } else {
     console.log(`║  ${colors.red}✗ SOME TESTS FAILED: ${passed} / ${total} passed, ${failed} failed${colors.reset}`);
     console.log('║');
     console.log('║  Failed tests:');
     for (const r of results.filter(r => !r.passed)) {
-      console.log(`║    - ${r.id}: ${r.name}`);
+      console.log(`║    - ${r.id}: ${r.name}${r.error ? ` — ${r.error.substring(0, 300)}` : ''}`);
     }
   }
 
@@ -185,6 +356,7 @@ async function main() {
   console.log(`Scripts directory: ${scriptsDir}`);
   console.log(`Report directory: ${config.REPORT_DIR}`);
   console.log(`Base URL: ${config.BASE_URL}`);
+  console.log(`Max attempts per test: ${config.MAX_ATTEMPTS}, per-attempt timeout: ${config.TEST_TIMEOUT_MS / 1000}s, run budget: ${config.RUN_BUDGET_MS / 1000}s`);
   console.log('');
 
   console.log('Running smoke tests...\n');
@@ -197,21 +369,9 @@ async function main() {
     console.log(`Running: ${testFile}`);
     console.log('============================================');
 
-    const { output } = await runTest(testFile, scriptsDir);
-    const result = parseResult(output);
-
-    if (result) {
-      results.push(result);
-    } else {
-      // No result parsed, create a failure entry
-      results.push({
-        id: testFile.replace('.mjs', '').toUpperCase(),
-        name: testFile,
-        passed: false,
-        error: 'No result output',
-        priority: 'N/A'
-      });
-    }
+    const result = await runTestWithRetry(testFile, scriptsDir);
+    updateBreaker(testFile, result);
+    results.push(result);
   }
 
   // Save results JSON

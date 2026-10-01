@@ -70,6 +70,16 @@ To build Docker images use the following commands:
 
 All the options available can be displayed by running `scripts/build_instance.sh --help`.
 
+In CI the `docker-build-*` jobs build an image only when its inputs change: each built
+image is also tagged `inputs-<hash>` (`scripts/ci-helpers/image-input-hash.sh`: the
+Dockerfile and build scripts, workspace manifests and lockfile, the app and `packages/`
+without tests, and the build arguments). When that tag exists the job re-tags it for
+the pipeline instead of building, so a test- or docs-only commit builds nothing. Only
+unprotected branch/MR pipelines reuse: protected refs (`develop`, `main`,
+`dev-deployment`, release tags) always build, since any branch can push an
+`inputs-<hash>` tag. The ISO week is part of the hash, so a reused image is rebuilt
+at least weekly. Set `FORCE_IMAGE_BUILD=true` on a pipeline to rebuild anyway.
+
 ### Startup
 
 To start Docker images run the following commands:

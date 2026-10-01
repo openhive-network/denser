@@ -133,14 +133,15 @@ export function outputResult(result) {
  * @param {string[]} artifacts - Array of artifact filenames
  * @returns {Object}
  */
-export function createResult(testId, testName, priority, passed, error = null, artifacts = []) {
+export function createResult(testId, testName, priority, passed, error = null, artifacts = [], warnings = []) {
   return {
     id: testId,
     name: testName,
     priority: priority,
     passed: passed,
     error: error,
-    artifacts: artifacts
+    artifacts: artifacts,
+    warnings: warnings
   };
 }
 
@@ -213,11 +214,22 @@ export async function hoverAndWaitForTooltip(page, element, timeout = TIMEOUTS.T
   return tooltip;
 }
 
+// Direct Hive API calls made by the tests themselves. api.hive.blog regularly
+// answers slowly or with a JSON-RPC error; before #965 the raw response was
+// used unchecked, so a single hiccup surfaced as "Cannot read properties of
+// null (reading 'find')" and failed the test. Retry, then fail loudly.
+const API_ATTEMPTS = 3;
+const API_TIMEOUT_MS = 15000;
+const API_RETRY_DELAY_MS = 2000;
+
 /**
- * Makes an API request to Hive blockchain
+ * Makes an API request to Hive blockchain.
+ * Retries timeouts, HTTP errors and JSON-RPC errors; throws a descriptive
+ * "Hive API ... failed" error when every attempt fails, so the report shows
+ * an upstream problem instead of a TypeError deep inside a test.
  * @param {string} method - API method name
  * @param {Object} params - Method parameters
- * @returns {Promise<Object>} - API response
+ * @returns {Promise<Object>} - API response ({ result })
  */
 export async function hiveApiCall(method, params) {
   const request = {
@@ -227,13 +239,33 @@ export async function hiveApiCall(method, params) {
     id: 1
   };
 
-  const response = await fetch(config.API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request)
-  });
-
-  return response.json();
+  let lastProblem = '';
+  for (let attempt = 1; attempt <= API_ATTEMPTS; attempt++) {
+    try {
+      const response = await fetch(config.API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(request),
+        signal: AbortSignal.timeout(API_TIMEOUT_MS)
+      });
+      if (!response.ok) {
+        lastProblem = `HTTP ${response.status}`;
+      } else {
+        const data = await response.json();
+        if (data && data.result !== undefined && data.result !== null && !data.error) {
+          return data;
+        }
+        lastProblem = data?.error ? `JSON-RPC error: ${JSON.stringify(data.error).substring(0, 200)}` : 'empty result';
+      }
+    } catch (error) {
+      lastProblem = error instanceof Error ? `${error.name}: ${error.message}` : String(error);
+    }
+    if (attempt < API_ATTEMPTS) {
+      console.log(`   (i) INFO: ${method} via ${config.API_URL} failed (${lastProblem}), retry ${attempt + 1}/${API_ATTEMPTS}`);
+      await new Promise((resolve) => setTimeout(resolve, API_RETRY_DELAY_MS * attempt));
+    }
+  }
+  throw new Error(`Hive API ${method} via ${config.API_URL} failed after ${API_ATTEMPTS} attempts: ${lastProblem}`);
 }
 
 /**
@@ -338,7 +370,9 @@ export function parseInteger(text) {
  * @param {string} testConfig.name - Test name
  * @param {string} testConfig.priority - Priority
  * @param {string} [testConfig.headerSuffix] - Optional header suffix
- * @param {Function} testFn - Test function receiving {page, browser, context}
+ * @param {Function} testFn - Test function receiving {page, browser, context, warn}.
+ *   Returns a boolean (passed). Call warn(message) for a degraded-but-not-broken
+ *   state: the test still passes, and the runner prints the warning in the summary.
  * @returns {Promise<boolean>}
  */
 export async function runSmokeTest(testConfig, testFn) {
@@ -351,9 +385,14 @@ export async function runSmokeTest(testConfig, testFn) {
   let passed = true;
   let errorMessage = null;
   let artifacts = [];
+  const warnings = [];
+  const warn = (message) => {
+    warnings.push(message);
+    console.log(`   ⚠ WARN: ${message}`);
+  };
 
   try {
-    passed = await testFn({ page, browser, context });
+    passed = await testFn({ page, browser, context, warn });
   } catch (error) {
     console.error('✗ ERROR:', error.message);
     errorMessage = error.message;
@@ -367,7 +406,7 @@ export async function runSmokeTest(testConfig, testFn) {
   await closeBrowser(browser, context, passed);
 
   printFooter(id, passed);
-  outputResult(createResult(id, name, priority, passed, errorMessage, artifacts));
+  outputResult(createResult(id, name, priority, passed, errorMessage, artifacts, warnings));
 
   return passed;
 }

@@ -27,13 +27,44 @@ fi
 
 echo -e "\e[0Ksection_end:$(date +%s):tag\r\e[0K"
 
-echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image \"${CI_REGISTRY_IMAGE:?}/${TURBO_APP_NAME:?}:${TAG:?}\"..."
 git config --global --add safe.directory "${CI_PROJECT_DIR:?}"
-"${CI_PROJECT_DIR:?}/scripts/build_instance.sh" --progress=plain "${CI_PROJECT_DIR:?}"
+IMAGE_REPO="${CI_REGISTRY_IMAGE:?}/${TURBO_APP_NAME:?}"
+
+# Reuse the image built from identical inputs (denser#969): the `inputs-<hash>` tag
+# is pushed after a successful build, and re-tagging it is a registry-side
+# manifest copy, no build.
+#
+# Trust rule: any branch pipeline can push `inputs-<hash>` (a predictable name,
+# same registry rights), so a reused image is only as trustworthy as the least
+# trusted branch. Protected refs (develop, main, dev-deployment, release tags) and
+# every branch a deploy job runs on therefore ALWAYS build; they still push
+# `inputs-<hash>` for branch pipelines to reuse. Reuse is for unprotected
+# branch/MR pipelines only. FORCE_IMAGE_BUILD=true always builds.
+INPUT_HASH="$("${CI_PROJECT_DIR:?}/scripts/ci-helpers/image-input-hash.sh" "${TURBO_APP_PATH:-apps/${TURBO_APP_NAME}}")"
+INPUT_TAG="${IMAGE_REPO}:inputs-${INPUT_HASH}"
+echo "Image input hash: ${INPUT_HASH}"
+if [[ "${CI_COMMIT_REF_PROTECTED:-}" == "true" || -n "${CI_COMMIT_TAG:-}" \
+      || "${CI_COMMIT_BRANCH:-}" =~ ^(main|develop|dev-deployment)$ \
+      || "${FORCE_IMAGE_BUILD:-false}" == "true" ]]; then
+  echo "Protected/deploy ref or forced build: building (never reusing) ${IMAGE_REPO}:${TAG}"
+  REUSE=false
+elif docker buildx imagetools inspect "${INPUT_TAG}" >/dev/null 2>&1; then
+  REUSE=true
+else
+  REUSE=false
+fi
+if [[ "${REUSE}" == "true" ]]; then
+  echo "Inputs unchanged: reusing ${INPUT_TAG} as :${TAG} and :${CI_COMMIT_SHORT_SHA:?} (no docker build)"
+  docker buildx imagetools create --tag "${IMAGE_REPO}:${TAG}" --tag "${IMAGE_REPO}:${CI_COMMIT_SHORT_SHA}" "${INPUT_TAG}"
+else
+  echo -e "\e[0Ksection_start:$(date +%s):build[collapsed=true]\r\e[0KBaking image \"${IMAGE_REPO}:${TAG:?}\"..."
+  "${CI_PROJECT_DIR:?}/scripts/build_instance.sh" --progress=plain "${CI_PROJECT_DIR:?}"
+  docker buildx imagetools create --tag "${INPUT_TAG}" "${IMAGE_REPO}:${CI_COMMIT_SHORT_SHA:?}"
+  echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"
+fi
 APP_NAME="${TURBO_APP_NAME:?}"
 # Replace hyphens with underscores for the environment variable name (GitLab dotenv only allows letters, digits, and underscores)
 ENV_VAR_NAME="${APP_NAME//-/_}"
 echo "${ENV_VAR_NAME^^}_IMAGE_NAME=${CI_REGISTRY_IMAGE:?}/${APP_NAME}:${CI_COMMIT_SHORT_SHA:?}" > "${APP_NAME}-docker-build.env"
 echo "Unique image tag:"
 cat "${APP_NAME}-docker-build.env"
-echo -e "\e[0Ksection_end:$(date +%s):build\r\e[0K"

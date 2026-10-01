@@ -52,7 +52,7 @@ variables:
   CADDY_TAG: '2.7.6'
   PLAYWRIGHT_TAG: 'v1.63.0-jammy'
 
-  HAF_COMMIT: 3c237ec1495da795679f767a7aa40c8b2d583dfa
+  HAF_COMMIT: 8de693b2812a040aa5c4365c232ebab8036a1d11
 # Branch pipelines (what the Workflows/Branch-Pipelines template did), except on
 # AIDEV's working branches: ai/<issue>-... and session/<name> are judged by the
 # suites in .aidev/project.yaml, and a full pipeline per AIDEV push would only
@@ -72,10 +72,10 @@ include:
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: 3c237ec1495da795679f767a7aa40c8b2d583dfa  # develop
+  ref: 8de693b2812a040aa5c4365c232ebab8036a1d11  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
-  ref: fdd7816413bb027a158e058f28b6db44bf9e7ee9
+  ref: 66c735a9c42cace2def83df3d373d608f018ea5f
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
   ref: 629f21c0ccb19737144ca7317a4faf8e95198bcb
@@ -217,12 +217,30 @@ mirrornet-haf-binaries-extraction:
 
     export NEW_IMAGE_TAGNAME="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-${IMAGE_SUFFIX}:${CI_COMMIT_SHA}"
 
-    docker buildx build \
-      --push \
-      -t "${NEW_IMAGE_TAGNAME}" -f- . << EOF
-      FROM $BASE_IMAGE_NAME AS production
-      COPY "${ENV_FILE_PATHNAME}" /app/apps/.env
-    EOF
+    # Inputs = base image config (same whether or not re-tagging wrapped it in an
+    # index) + the Dockerfile template + env file (denser#969). Same trust rule as
+    # scripts/ci-helpers/docker-build-template-script.sh: protected refs and deploy
+    # branches always build (and push inputs-<hash>); only unprotected branch/MR
+    # pipelines reuse.
+    DOCKERFILE_TEMPLATE='FROM @BASE_IMAGE@ AS production
+    COPY "@ENV_FILE@" /app/apps/.env'
+    DOCKERFILE="${DOCKERFILE_TEMPLATE//@BASE_IMAGE@/${BASE_IMAGE_NAME}}"
+    DOCKERFILE="${DOCKERFILE//@ENV_FILE@/${ENV_FILE_PATHNAME}}"
+    BASE_CONFIG="$(docker buildx imagetools inspect "${BASE_IMAGE_NAME}" --format "{{json .Image}}")" \
+      || { echo "ERROR: cannot inspect ${BASE_IMAGE_NAME}"; exit 1; }
+    [[ -n "${BASE_CONFIG}" ]] || { echo "ERROR: empty image config for ${BASE_IMAGE_NAME}"; exit 1; }
+    INPUT_HASH="$(printf '%s\n' "${BASE_CONFIG}" "${DOCKERFILE_TEMPLATE}" "${ENV_FILE_PATHNAME}" "$(cat "${ENV_FILE_PATHNAME}")" | sha256sum | cut -c1-32)"
+    INPUT_TAG="${CI_REGISTRY_IMAGE}/${TURBO_APP_NAME}-${IMAGE_SUFFIX}:inputs-${INPUT_HASH}"
+    if [[ "${CI_COMMIT_REF_PROTECTED:-}" != "true" && -z "${CI_COMMIT_TAG:-}" \
+          && ! "${CI_COMMIT_BRANCH:-}" =~ ^(main|develop|dev-deployment)$ \
+          && "${FORCE_IMAGE_BUILD:-false}" != "true" ]] \
+        && docker buildx imagetools inspect "${INPUT_TAG}" >/dev/null 2>&1; then
+      echo "Inputs unchanged: reusing ${INPUT_TAG} (no docker build)"
+      docker buildx imagetools create --tag "${NEW_IMAGE_TAGNAME}" "${INPUT_TAG}"
+    else
+      printf '%s\n' "${DOCKERFILE}" | docker buildx build --push \
+        -t "${NEW_IMAGE_TAGNAME}" -t "${INPUT_TAG}" -f- .
+    fi
     echo "DENSER_${TURBO_APP_NAME^^}_IMAGE_NAME=${NEW_IMAGE_TAGNAME}" > docker-build-testenv-${TURBO_APP_NAME}-image.env
   artifacts:
     paths:
@@ -583,7 +601,7 @@ flake-report-unit-tests:
   - |
     echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning tests..."
     cd .$TURBO_APP_PATH
-    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --update-snapshots
+    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL
     echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   artifacts:
     paths:
@@ -720,7 +738,7 @@ e2e-tests-blog-stable:
   - |
     echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning stable tests..."
     cd .$TURBO_APP_PATH
-    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky --update-snapshots
+    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky
     echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
@@ -758,7 +776,7 @@ e2e-tests-wallet-stable:
   - |
     echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KRunning stable tests..."
     cd .$TURBO_APP_PATH
-    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky --update-snapshots
+    npx playwright test --project=$PROJECT --shard=$SHARD_INDEX/$SHARD_TOTAL --grep-invert @flaky
     echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
@@ -842,6 +860,10 @@ smoke-tests-blog:
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   stage: test
   allow_failure: true
+  # smoke-runner.mjs stops starting attempts after 25 min (SMOKE_RUN_BUDGET_MS)
+  # and kills an attempt after 4 min, so the report is written well before this.
+  # Measured: ~3.5 min normal, ~11 min for a whole-app outage without retries.
+  timeout: 45 minutes
   needs:
   - docker-build-blog-testenv
   services:
@@ -905,6 +927,9 @@ blog-fixture-tests:
   artifacts:
     paths:
     - .${TURBO_APP_PATH}/test-results/
+    - .${TURBO_APP_PATH}/junit/
+    reports:
+      junit: .${TURBO_APP_PATH}/junit/fixture/results.xml
     when: always
     expire_in: 1 week
   tags:
@@ -944,6 +969,62 @@ e2e-report-aggregate-wallet:
     TURBO_APP_PATH: '/apps/wallet'
     PROJECTS: '["chromium"]'
     SHARD_TOTAL: 5
+
+# Regenerate the blog screenshot baselines (toHaveScreenshot) in CI's own
+# image and browser. The stable jobs compare against the committed
+# *-snapshots/*.png and no longer rewrite them (#971). After an intended
+# visual change: run this job, download its artifacts, check the new PNGs,
+# and commit apps/blog/playwright/tests/e2e/*-snapshots/.
+e2e-update-snapshots-blog:
+  extends: .e2e_tests_template
+  stage: test
+  needs:
+  - docker-build-blog-testenv
+  rules:
+  - when: manual
+    allow_failure: true
+  services:
+  - name: $DENSER_BLOG_IMAGE_NAME
+    alias: denser
+    variables:
+      HEALTHCHECK_TCP_PORT: '3000'
+
+  - name: caddy:${CADDY_TAG}
+    command:
+    - caddy
+    - reverse-proxy
+    - --from=https://caddy
+    - --to=denser:3000
+    - --internal-certs
+  script:
+  - !reference [.node-job, script]
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):tests[collapsed=false]\r\e[0KUpdating screenshot baselines..."
+    cd .$TURBO_APP_PATH
+    SPECS=$(grep -rl 'toHaveScreenshot\|toMatchSnapshot' playwright/tests/e2e --include='*.spec.ts' | sort)
+    echo "Specs with screenshot assertions:"; echo "$SPECS"
+    npx playwright test --project=$PROJECT --update-snapshots $SPECS
+    git status --porcelain -- playwright/tests/e2e || true
+    echo -e "\e[0Ksection_end:$(date +%s):tests\r\e[0K"
+  variables:
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    PORT: 3000
+    PROJECT: chromium
+    SHARD_INDEX: 1
+    SHARD_TOTAL: 1
+    REACT_APP_API_ENDPOINT: 'https://api.openhive.network'
+  artifacts:
+    paths:
+    - .${TURBO_APP_PATH}/playwright/tests/e2e/*-snapshots/
+    - .${TURBO_APP_PATH}/playwright-report/
+    - .${TURBO_APP_PATH}/test-results/
+    # No junit: this run isn't a test result, so keep it out of the test report.
+    # `null`, not `{}`: extends deep-merges hashes, so `{}` would keep the
+    # template's junit.
+    reports:
+    when: always
+    expire_in: 1 week
 
 # Lighthouse metrics job template
 # Uses pre-built image with Chrome + Lighthouse: https://gitlab.com/gitlab-ci-utils/lighthouse

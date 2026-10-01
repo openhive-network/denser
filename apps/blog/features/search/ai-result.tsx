@@ -14,7 +14,14 @@ import { useSSRObserver } from '@/blog/components/observer-provider';
 
 import PostList from '../list-of-posts/posts-loader';
 import { useTranslation } from '@/blog/i18n/client';
-import { getPostsByIds, isPostStub, searchPosts } from '@transaction/lib/hivesense-api';
+import { getPostsByIds, searchPosts } from '@transaction/lib/hivesense-api';
+import {
+  isRenderableSearchEntry,
+  nextAiSearchPageState,
+  partitionHiveSensePosts,
+  promiseWithTimeout,
+  AI_SEARCH_REQUEST_TIMEOUT_MS
+} from '@transaction/lib/hivesense-search';
 
 const AIResult = ({
   query,
@@ -38,6 +45,10 @@ const AIResult = ({
   const [loadedStubPosts, setLoadedStubPosts] = useState<Entry[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [consecutiveEmptyPages, setConsecutiveEmptyPages] = useState(0);
+  // Set when a page comes back empty or the request fails/times out, so the
+  // in-view sentinel cannot keep requesting forever with nothing on screen.
+  const [paginationStopped, setPaginationStopped] = useState(false);
 
   // Fetch all results in a single call
   const {
@@ -48,16 +59,21 @@ const AIResult = ({
   } = useQuery({
     queryKey: ['searchPosts', query, observer],
     queryFn: async () => {
-      return await searchPosts({
-        query,
-        observer,
-        result_limit: 1000, // Get up to 1000 results
-        full_posts: PER_PAGE // Get first page fully expanded
-      });
+      return await promiseWithTimeout(
+        searchPosts({
+          query,
+          observer,
+          result_limit: 1000, // Get up to 1000 results
+          full_posts: PER_PAGE // Get first page fully expanded
+        }),
+        AI_SEARCH_REQUEST_TIMEOUT_MS,
+        'searchPosts'
+      );
     },
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false,
+    retry: false,
     enabled: !!query,
     staleTime: StaleTime.LONG,
     initialData: initialData ?? undefined,
@@ -66,26 +82,11 @@ const AIResult = ({
 
   // Separate full posts and stubs from search results
   const { fullPosts, stubPosts } = useMemo(() => {
-    if (!searchResults) return { fullPosts: [], stubPosts: [] };
-
-    const full: Entry[] = [];
-    const stubs: PostStub[] = [];
-
-    searchResults.forEach((post) => {
-      // Filter out null or invalid posts
-      if (!post) return;
-
-      if (isPostStub(post)) {
-        stubs.push(post);
-      } else {
-        // Only check post_id for full Entry objects
-        if ((post as Entry).post_id) {
-          full.push(post as Entry);
-        }
-      }
-    });
-
-    return { fullPosts: full, stubPosts: stubs };
+    const parts = partitionHiveSensePosts(searchResults);
+    return {
+      fullPosts: parts.fullPosts as Entry[],
+      stubPosts: parts.stubPosts as PostStub[]
+    };
   }, [searchResults]);
 
   // Combine initial full posts with additionally loaded stub posts
@@ -102,7 +103,7 @@ const AIResult = ({
 
   // Load next page of posts
   const fetchNextPage = async () => {
-    if (!hasNextPage || isLoadingMore) return;
+    if (!hasNextPage || isLoadingMore || paginationStopped) return;
 
     setIsLoadingMore(true);
 
@@ -113,42 +114,58 @@ const AIResult = ({
       const stubsToFetch = stubPosts.slice(startIndex, endIndex);
 
       if (stubsToFetch.length === 0) {
+        setPaginationStopped(true);
         setIsLoadingMore(false);
         return;
       }
 
-      // Fetch full post data for the stubs
-      const fullPostData = await getPostsByIds({
-        posts: stubsToFetch,
-        observer
-      });
+      // Fetch full post data for the stubs. Timeout so a hung by-ids call
+      // surfaces a fallback instead of a blank page (#947).
+      const fullPostData = await promiseWithTimeout(
+        getPostsByIds({
+          posts: stubsToFetch,
+          observer
+        }),
+        AI_SEARCH_REQUEST_TIMEOUT_MS,
+        'getPostsByIds'
+      );
 
-      if (fullPostData) {
-        // Filter out null or invalid posts before adding to loaded posts
-        const validPosts = fullPostData.filter((post) => post && post.post_id);
-        if (validPosts.length > 0) {
-          setLoadedStubPosts((prev) => [...prev, ...validPosts]);
-        }
-        setCurrentPage((prev) => prev + 1);
+      const validPosts = Array.isArray(fullPostData)
+        ? fullPostData.filter((post) => isRenderableSearchEntry(post))
+        : [];
+      if (validPosts.length > 0) {
+        setLoadedStubPosts((prev) => [...prev, ...validPosts]);
       }
+      const next = nextAiSearchPageState({
+        currentPage,
+        validCount: validPosts.length,
+        consecutiveEmpty: consecutiveEmptyPages
+      });
+      setCurrentPage(next.currentPage);
+      setConsecutiveEmptyPages(next.consecutiveEmpty);
+      if (next.stop) setPaginationStopped(true);
     } catch (error) {
       console.error('Error fetching next page:', error);
+      setPaginationStopped(true);
     } finally {
       setIsLoadingMore(false);
     }
   };
 
-  // Auto-load when scrolling to bottom
+  // Auto-load when scrolling to bottom. Stop once a page produced nothing
+  // visible — otherwise the sentinel stays in view and refires forever (#949).
   useEffect(() => {
-    if (inView && hasNextPage && !isLoadingMore) {
+    if (inView && hasNextPage && !isLoadingMore && !paginationStopped) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, isLoadingMore]);
+  }, [inView, hasNextPage, isLoadingMore, paginationStopped]);
 
   // Reset loaded stub posts on query change
   useEffect(() => {
     setCurrentPage(1);
     setLoadedStubPosts([]);
+    setConsecutiveEmptyPages(0);
+    setPaginationStopped(false);
   }, [query]);
 
   if (!query) return null;
@@ -157,12 +174,30 @@ const AIResult = ({
     return <Loading loading={isLoading} />;
   }
 
+  const classicHref = `/search?q=${encodeURIComponent(query)}&s=relevance`;
+
   if (error) {
-    return <div>Error loading search results</div>;
+    return (
+      <div data-testid="ai-search-error">
+        <p>{t('search_page.ai_unavailable')}</p>
+        <a href={classicHref}>{t('search_page.try_classic')}</a>
+      </div>
+    );
   }
 
   if (!searchResults || searchResults.length === 0) {
     return <div>{t('search_page.no_results')}</div>;
+  }
+
+  // Results came back but none of them can be rendered (and we are not still
+  // fetching a stub page). Say so instead of leaving the page blank.
+  if (displayedPosts.length === 0 && !isLoadingMore && (!hasNextPage || paginationStopped)) {
+    return (
+      <div data-testid="ai-search-empty">
+        <p>{paginationStopped ? t('search_page.ai_unavailable') : t('search_page.no_results')}</p>
+        <a href={classicHref}>{t('search_page.try_classic')}</a>
+      </div>
+    );
   }
 
   return (
@@ -173,11 +208,15 @@ const AIResult = ({
         <button
           ref={ref}
           onClick={() => fetchNextPage()}
-          disabled={!hasNextPage || isLoadingMore}
-          style={{ display: hasNextPage ? 'block' : 'none' }}
+          disabled={!hasNextPage || isLoadingMore || paginationStopped}
+          style={{ display: hasNextPage && !paginationStopped ? 'block' : 'none' }}
         >
           {isLoadingMore ? <PostListItemSkeleton /> : hasNextPage ? t('user_profile.load_newer') : null}
         </button>
+
+        {paginationStopped && hasNextPage && displayedPosts.length > 0 && (
+          <div data-testid="ai-search-load-more-failed">{t('search_page.could_not_load_more')}</div>
+        )}
 
         {!hasNextPage && displayedPosts.length > 0 && <div>{t('user_profile.nothing_more_to_load')}</div>}
       </div>

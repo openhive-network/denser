@@ -47,6 +47,9 @@ export default defineConfig({
           }
         ],
         ['junit', { outputFile: `junit/${process.env.PROJECT}/${process.env.SHARD_INDEX}/results.xml` }],
+        // junit has no notion of "passed on retry"; the JSON report does, and
+        // scripts/ci/flake-report.mjs reads it from the job artifacts (#971).
+        ['json', { outputFile: `junit/${process.env.PROJECT}/${process.env.SHARD_INDEX}/results.json` }],
         ['list', { printSteps: false }]
       ]
     : 'html', 
