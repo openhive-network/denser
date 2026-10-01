@@ -99,3 +99,28 @@ test.describe('Hydration — logged-in personalized pages', () => {
     expect(errors, errors.join('\n')).toEqual([]);
   });
 });
+
+// The server reads NEXT_LOCALE in the root layout and hands it to client
+// components via LocaleProvider; the client re-reads it from document.cookie.
+// Both sides must agree, or the Spanish SSR copy flips to English on hydrate.
+test.describe('Hydration — localized pages', () => {
+  /** `navigation.communities_nav.all_posts` in es / en. */
+  const ALL_POSTS_ES = 'todos publican';
+  const ALL_POSTS_EN = 'All posts';
+
+  test('HYD-05 — NEXT_LOCALE=es /trending is Spanish in SSR and hydrates with no mismatch', async ({
+    page,
+    baseURL
+  }) => {
+    await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'es', url: baseURL ?? '' }]);
+    const serverHtml = await (await page.request.get('/trending')).text();
+    const errors = await gotoAndCollectHydrationErrors(page, '/trending');
+    if (isRecordMode) return;
+
+    expect(serverHtml, 'expected the Spanish sidebar string in the server HTML').toContain(ALL_POSTS_ES);
+    expect(serverHtml, 'English copy should not leak into the es server HTML').not.toContain(ALL_POSTS_EN);
+    expect(errors, errors.join('\n')).toEqual([]);
+    await expect(page.getByText(ALL_POSTS_ES).first()).toBeVisible();
+    await expect(page.getByText(ALL_POSTS_EN)).toHaveCount(0);
+  });
+});

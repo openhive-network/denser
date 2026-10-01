@@ -7,31 +7,20 @@ import { initReactI18next, useTranslation as useTranslationOrg, Trans } from 're
 export { Trans };
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { getOptions, languages, cookieName, defaultLocale } from './settings';
+import { useLocale } from './locale-context';
 
 import { isServer } from '@tanstack/react-query';
 
 /**
- * Gets the language from cookie, works on both server and client side
- * On server: tries to use Next.js cookies() if available
- * On client: uses document.cookie
+ * Reads the language from `document.cookie`. Client-only: during SSR the
+ * language comes from `LocaleProvider`, set by the root layout.
  * Returns the language code or empty string if not found
  */
 export const getLanguageFromCookie = (): string => {
-  // Server-side: try to use Next.js cookies() if available
-  if (typeof window === 'undefined') {
-    try {
-      // Dynamic import to avoid issues in client components
-      const { cookies } = require('next/headers');
-      const cookieStore = cookies();
-      const cookie = cookieStore.get(cookieName);
-      return cookie?.value || '';
-    } catch {
-      // If cookies() is not available (e.g., in client component), return empty string
-      return '';
-    }
+  if (typeof document === 'undefined') {
+    return '';
   }
 
-  // Client-side: use document.cookie
   const name = cookieName + '=';
   const decodedCookie = decodeURIComponent(document.cookie);
   const ca = decodedCookie.split(';');
@@ -79,7 +68,8 @@ i18next
   });
 
 export function useTranslation(ns: string, options?: Record<string, unknown>) {
-  const lng = getLanguageFromCookie();
+  const { locale } = useLocale();
+  const lng = isServer ? locale : getLanguageFromCookie();
   const ret = useTranslationOrg(ns, options);
 
   const { i18n } = ret;
