@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, RefObject, SetStateAction } from "react";
+import { Dispatch, Ref, SetStateAction } from "react";
 import clsx from "clsx";
 import { Link } from "@hive/ui";
 import { Button } from "@hive/ui/components/button";
@@ -15,7 +15,7 @@ interface PostPreviewPanelProps {
   sideBySide: boolean;
   syncScroll: boolean;
   setSyncScroll: Dispatch<SetStateAction<boolean>>;
-  previewContainerRef: RefObject<HTMLDivElement>;
+  previewContainerRef: Ref<HTMLDivElement>;
   previewContent: string | undefined;
   proxyAuthToken: string | undefined;
 }

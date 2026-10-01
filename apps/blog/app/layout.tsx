@@ -70,7 +70,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const envVersion = getEnvVersion();
 
   return (
-    <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
+    <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <head>
         {/* Use plain script tag for guaranteed synchronous loading of env globals */}
         <script src={`${basePath}/__ENV.js?v=${envVersion}`} />

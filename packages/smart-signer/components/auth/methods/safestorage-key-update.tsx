@@ -87,7 +87,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
       }
     }));
 
-    const authClient = useRef<OnlineClient>();
+    const authClient = useRef<OnlineClient | undefined>(undefined);
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
     const [registeredUser, setRegisteredUser] = useState<AuthUser | null>(null);

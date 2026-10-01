@@ -63,8 +63,8 @@ export function usePostFormActions({
 
   // Ref always holds the latest editor value (updated immediately, even before debounced form sync)
   const latestPostAreaRef = useRef(storedPost.postArea || defaultValues.postArea);
-  const postAreaSyncTimerRef = useRef<ReturnType<typeof setTimeout>>();
-  const storeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const postAreaSyncTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const storeTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   // Debounce form.setValue for postArea to avoid re-rendering entire PostForm on every keystroke.
   const handlePostAreaChange = useCallback(
