@@ -46,10 +46,32 @@ junit="$PWD/test-results/fixture/junit.xml"
 export CI=1
 export PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit"
 
+# Playwright can fail the run outside any test: the replay MISS baseline
+# (fixture-misses/global-teardown.ts) throws from globalTeardown, which runs
+# before the junit reporter writes, so the junit shows no failure. Record such
+# a run as a failing case in the junit.
+miss_error='new fixture MISS'
+run_playwright() {
+    local log status=0
+    log="$(mktemp)"
+    pnpm exec playwright test --reporter=list,junit "$@" < /dev/null 2>&1 | tee "$log" || status=${PIPESTATUS[0]}
+    if [ "$status" -ne 0 ]; then
+        if grep -q "$miss_error" "$log"; then
+            junit_add_unreported_failure "$junit" fixture_e2e "fixture MISS baseline" "$log" "$status" "$miss_error"
+        else
+            junit_add_unreported_failure "$junit" fixture_e2e "fixture_e2e run" "$log" "$status"
+        fi
+    fi
+    rm -f "$log"
+    return "$status"
+}
+
 if [ "${DENSER_FIXTURE_VIA_STACK:-}" != 1 ]; then
     .aidev/run-blog-build.sh
     cd apps/blog
-    exec pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit "$@" < /dev/null
+    status=0
+    run_playwright --config=playwright.fixture.config.ts "$@" || status=$?
+    exit "$status"
 fi
 
 # ---- opt-in: against the test stack's `fixture-relay` services ----------------
@@ -92,6 +114,6 @@ const deadline = Date.now() + 180000;
 cd apps/blog
 status=0
 DENSER_BLOG_URL=http://localhost:3000 \
-    pnpm exec playwright test --config=../../.aidev/playwright.fixture-stack.config.ts \
-    --tsconfig=tsconfig.json --reporter=list,junit "$@" < /dev/null || status=$?
+    run_playwright --config=../../.aidev/playwright.fixture-stack.config.ts \
+    --tsconfig=tsconfig.json "$@" || status=$?
 exit "$status"
