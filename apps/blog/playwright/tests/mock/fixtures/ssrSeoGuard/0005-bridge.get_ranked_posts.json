@@ -1,0 +1,2009 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "trending",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "hive-139531",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "530dd0c8b3bdf76b",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "trending",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "hive-139531",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [
+          {
+            "rshares": 32200998139384,
+            "voter": "abit"
+          },
+          {
+            "rshares": 26915673526915,
+            "voter": "adm"
+          },
+          {
+            "rshares": 140965160042,
+            "voter": "pnc"
+          },
+          {
+            "rshares": 29318686294,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 21426402541015,
+            "voter": "magicmonk"
+          }
+        ],
+        "author": "cutehive.com",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 69.69,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "In the HIVE ecosystem, we can evaluate a witness from many dimensions: community reputation, historical contributions, activity level… but ultimately, **the most important factor is just one thing — whether they are running a stable node that consistently produces blocks.**\n\n\n![image.png](https://images.hive.blog/DQmYyr9BUEhswgJ5aBD1BAo9T48qdiYXxW7mEaCGpprvpyo/image.png)\n\n\nIf a witness node is running an outdated version for a long time, producing delayed or stalled blocks, or frequently going offline, then regardless of their past contributions or reputation, it may be time to reconsider your vote.\n\nThe problem is:  \n👉 For most users, **evaluating node health and reviewing their votes is not an easy task.**\n\nAlthough we previously introduced a witness list tool (https://www.cutehive.com/witnesses) to simplify this process, it still lacks intuitive clarity for fast decision-making.\n\n---\n\n## 🧭 Hive Witness Monitor: Turning Complexity into Clarity\n\nThat’s why we built a new tool:\n\n## 🚀 Hive Witness Monitor\n\nIts goal is simple:  \n👉 **Make witness evaluation and vote checking effortless, intuitive, and even enjoyable.**\n\n---\n\n## ✨ Why Do You Need It?\n\nIn HIVE’s decentralized world, **witnesses are the backbone of consensus**.  \nAs a stakeholder, every vote you cast directly impacts the network’s security and future.\n\nBut in reality:\n\n- There are hundreds of witnesses  \n- Node status changes frequently  \n- Traditional lists are not intuitive enough  \n\n👉 This is exactly the problem Hive Witness Monitor is designed to solve.\n\n\n![8d829f5df67dbc5a1ff24336a5b8ae3d.png](https://images.hive.blog/DQmTApEqCVBh8i8y6FCFGP2kK3aCVifV1W7vhL2fmaTxdfX/8d829f5df67dbc5a1ff24336a5b8ae3d.png)\n\n\n## 🔍 Key Features\n\n### ✅ Instantly Understand Node Health\n\nWe use multi-dimensional data analysis to classify witnesses intelligently:\n\n- ✅ **Healthy**: Correct version + actively producing blocks  \n- ⚠️ **Outdated Version**: Below current hard fork requirement, posing consensus risk  \n- ⏰ **Delayed / Stalled**: Potential sync or node issues  \n- 💤 **Inactive / Offline**: Consider removing your vote  \n\n👉 No need to analyze raw data manually — just glance and decide.\n\n\n![97750ab4291bc2056153296132abef98.png](https://images.hive.blog/DQmRa9UBE3dNxvAuN7YJacC2urA6xosAoAoJLvkqAWqVAhW/97750ab4291bc2056153296132abef98.png)\n\n\n### 👀 “Who Did I Vote For?” — Instantly Highlighted\n\nSimply enter your Hive username:\n\n- Your voted witnesses will be automatically highlighted  \n- Quickly identify:\n  - Votes supporting problematic nodes  \n  - Votes that are no longer effective  \n\n👉 **Your voting power becomes fully visible and actionable.**\n\n---\n\n### 🎨 Modern UI: Bento Box Experience\n\nWe moved away from outdated tables and adopted a modern design:\n\n- 🍱 Bento Box layout  \n- 📊 Real-time block height display  \n- 📈 Visualized status ratios  \n\nA smooth and clear experience on both desktop and mobile.\n\n---\n\n### ⚙️ Highly Customizable\n\nTo meet different user needs:\n\n- 🌍 Custom RPC nodes (global selection)  \n- 🔢 Adjustable monitoring range (Top 50 ~ 300+)  \n\n👉 Use trusted data sources and focus on what matters to you.\n\n\n![c2a0cfa5b7685285bed186eced585504.png](https://images.hive.blog/DQmVgVfBhscr7hpWs71BarJHPTgvNkAG9xbqoBBABbdAnmR/c2a0cfa5b7685285bed186eced585504.png)\n\n\n## 🧰 Not Just for Users — Also for Witnesses\n\nThis tool is equally useful for witnesses themselves:\n\n- Detect block delays  \n- Identify version mismatches  \n- Monitor missed blocks  \n\n👉 Spot issues early and fix them before they impact your reputation and votes.\n\n---\n\n## 🔐 Technology & Privacy\n\nMaintained by @cutehive.com, this tool follows strict principles:\n\n- 🛡️ **Privacy First**: No private keys, no personal data collection  \n- 🌐 **Frontend Only**: All data fetched via public Hive RPC nodes  \n- 🔍 **Transparent & Verifiable**: Open data sources and clear logic  \n\n---\n\n## 🚀 Get Started\n\n👉 Visit now: 🔗 https://witness-monitor.cutehive.com/  \n🌱If you have any suggestions or feedback, feel free to leave a comment below 👇",
+        "category": "hive-139531",
+        "children": 5,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-19T14:15:27",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "format": "markdown",
+          "image": [
+            "https://images.hive.blog/DQmYyr9BUEhswgJ5aBD1BAo9T48qdiYXxW7mEaCGpprvpyo/image.png",
+            "https://images.hive.blog/DQmTApEqCVBh8i8y6FCFGP2kK3aCVifV1W7vhL2fmaTxdfX/8d829f5df67dbc5a1ff24336a5b8ae3d.png",
+            "https://images.hive.blog/DQmRa9UBE3dNxvAuN7YJacC2urA6xosAoAoJLvkqAWqVAhW/97750ab4291bc2056153296132abef98.png",
+            "https://images.hive.blog/DQmVgVfBhscr7hpWs71BarJHPTgvNkAG9xbqoBBABbdAnmR/c2a0cfa5b7685285bed186eced585504.png"
+          ],
+          "links": [
+            "https://www.cutehive.com/witnesses"
+          ],
+          "tags": [
+            "hive",
+            "blockchain",
+            "development",
+            "cutehive",
+            "witness",
+            "monitor",
+            "tool"
+          ],
+          "users": [
+            "cutehive.com"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 420978427736841,
+        "payout": 40.781,
+        "payout_at": "2026-04-26T14:15:27",
+        "pending_payout_value": "40.781 HBD",
+        "percent_hbd": 10000,
+        "permlink": "introducing-hive-witness-monitor-making-witness-evaluation-and-voting-decisions-simple-and-intuitive",
+        "post_id": 149861021,
+        "reblogs": 10,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 284
+        },
+        "title": "Introducing Hive Witness Monitor: Making Witness Evaluation and Voting Decisions Simple and Intuitive",
+        "updated": "2026-04-19T14:15:27",
+        "url": "/hive-139531/@cutehive.com/introducing-hive-witness-monitor-making-witness-evaluation-and-voting-decisions-simple-and-intuitive"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1174143469377,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 43328900518,
+            "voter": "garagebill"
+          },
+          {
+            "rshares": 16446321374,
+            "voter": "pcste"
+          },
+          {
+            "rshares": 1773376239,
+            "voter": "allyinspirit"
+          },
+          {
+            "rshares": 2663763707,
+            "voter": "pixiehunter"
+          }
+        ],
+        "author": "sagarkothari88",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.61,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          },
+          {
+            "account": "null",
+            "weight": 300
+          },
+          {
+            "account": "ph1102",
+            "weight": 100
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1775741228632-1b40eb59884b1ed1.webp)](https://3speak.tv/watch?v=sagarkothari88/b0ad1f54)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=sagarkothari88/b0ad1f54)\n\n\n---\n\n## hive-stats App\n\n### Integrate Favourite Functionality with UserDetailProfile\n\n- feat: integrate favourite functionality with UserDetailProfile.\n- Replace legacy favourite props with new API:\n  - onAddToFavourite  \n  - onFavouriteList  \n  - isFavourited  \n  - favouriteCount  \n\n\n- Integrated useFavorites hook for toggle and state management.\n- Fixed username mismatch by stripping @ prefix from URL param.\n- Added navigation to favourites list screen.\n- Enabled reactive favourite count badge updates.\n- Converted favourites UI to dark-mode-only styling.\n\nFavourite Toggle and Count Badge UI\n![Favourite Toggle and Count Badge UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGTghWKy7zaUBY9uax1rcT8ygNfN5ArdawqEpEovpjpacvo6sxgUcPvFpdKHWL4KBg8.png)\n\nFavourites List Screen\n![Favourites List Screen](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t72kBDXKCSpehsN3SNEgVtmsWwDTvJrSr4VSwCtViNUVTKMzEP19zhEVYSPYGz2u1QY.png)\n\n\n---\n\n## Distriator App\n\n### Wallet Component Integration and UX Improvements\n- Updated Wallet Component Integrated from hive-react-kit.\n\n\n##### Fix: Improve Wallet Header Stickiness and Back Navigation Scroll\n\n- Made Wallet header sticky (`top-0`, `z-50`) for persistent visibility.\n- Ensured header remains visible during scroll.\n- Scroll to top on back navigation.\n- Prevented previous screen from rendering mid-scroll.\n\n\nWallet Component Integrated from hive-react-kit\n![Wallet Component Integrated from hive-react-kit](https://files.peakd.com/file/peakd-hive/sagarkothari88/23u5QnTUeBcVTzSqKxwvzCSuRwVWmWPAyKpjRmZEQTHCueikMPjLyMoKbPqJNickEUiQL.png)\n\n---\n\n## hSnaps App\n\n### Hot Fix Updates\n\n- Integrated reply-snap API with cached suffix injection.\n- Fully wired HiveDetailPost callbacks (post + comment level).\n- Removed duplicate layout wrapper from post detail page.\n- Enabled template support on post detail view.\n- Fixed infinite API calls using module-level caching.\n- Improved Keychain cancel handling without clearing composer.\n\nKeychain cancel handling without clearing composer\n![Keychain cancel handling without clearing composer](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tv48Ejrg6UMag2LYbZQfZfWxErbs7igyJZt34svvqiWcBz8oygJ5Aw8dA7R38u1zVhz.png)\n\nFully wired HiveDetailPost callbacks (post + comment level)\n![Fully wired HiveDetailPost callbacks (post + comment level)](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo6Bfaq9Bu6U3RJCpoUgDtQd3uvHJqMPtiDHSu1xZ5jWxidRbJyPEVLf1YpPovGwZCw.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=sagarkothari88/b0ad1f54)\n",
+        "category": "hive-139531",
+        "children": 4,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-21T06:02:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1775741228632-1b40eb59884b1ed1.webp"
+          ],
+          "tags": [
+            "hive",
+            "dev",
+            "hiveproject",
+            "india",
+            "reactjs",
+            "witness",
+            "playstore",
+            "appstore",
+            "dapps",
+            "3speak"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "## hive-stats App\n\n### Integrate Favourite Functionality with UserDetailProfile\n\n- feat: integrate favourite functionality with UserDetailProfile.\n- Replace legacy favourite props with new API:\n  - onAddToFavourite  \n  - onFavouriteList  \n  - isFavourited  \n  - favouriteCount  \n\n\n- Integrated useFavorites hook for toggle and state management.\n- Fixed username mismatch by stripping @ prefix from URL param.\n- Added navigation to favourites list screen.\n- Enabled reactive favourite count badge updates.\n- Converted favourites UI to dark-mode-only styling.\n\nFavourite Toggle and Count Badge UI\n![Favourite Toggle and Count Badge UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGTghWKy7zaUBY9uax1rcT8ygNfN5ArdawqEpEovpjpacvo6sxgUcPvFpdKHWL4KBg8.png)\n\nFavourites List Screen\n![Favourites List Screen](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t72kBDXKCSpehsN3SNEgVtmsWwDTvJrSr4VSwCtViNUVTKMzEP19zhEVYSPYGz2u1QY.png)\n\n\n---\n\n## Distriator App\n\n### Wallet Component Integration and UX Improvements\n- Updated Wallet Component Integrated from hive-react-kit.\n\n\n##### Fix: Improve Wallet Header Stickiness and Back Navigation Scroll\n\n- Made Wallet header sticky (`top-0`, `z-50`) for persistent visibility.\n- Ensured header remains visible during scroll.\n- Scroll to top on back navigation.\n- Prevented previous screen from rendering mid-scroll.\n\n\nWallet Component Integrated from hive-react-kit\n![Wallet Component Integrated from hive-react-kit](https://files.peakd.com/file/peakd-hive/sagarkothari88/23u5QnTUeBcVTzSqKxwvzCSuRwVWmWPAyKpjRmZEQTHCueikMPjLyMoKbPqJNickEUiQL.png)\n\n---\n\n## hSnaps App\n\n### Hot Fix Updates\n\n- Integrated reply-snap API with cached suffix injection.\n- Fully wired HiveDetailPost callbacks (post + comment level).\n- Removed duplicate layout wrapper from post detail page.\n- Enabled template support on post detail view.\n- Fixed infinite API calls using module-level caching.\n- Improved Keychain cancel handling without clearing composer.\n\nKeychain cancel handling without clearing composer\n![Keychain cancel handling without clearing composer](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tv48Ejrg6UMag2LYbZQfZfWxErbs7igyJZt34svvqiWcBz8oygJ5Aw8dA7R38u1zVhz.png)\n\nFully wired HiveDetailPost callbacks (post + comment level)\n![Fully wired HiveDetailPost callbacks (post + comment level)](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo6Bfaq9Bu6U3RJCpoUgDtQd3uvHJqMPtiDHSu1xZ5jWxidRbJyPEVLf1YpPovGwZCw.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |",
+              "tags": [
+                "hive",
+                "dev",
+                "hiveproject",
+                "india",
+                "reactjs",
+                "witness",
+                "playstore",
+                "appstore",
+                "dapps",
+                "3speak"
+              ]
+            },
+            "info": {
+              "author": "sagarkothari88",
+              "duration": 73,
+              "file": "ipfs://QmdGRtgAdKgPSrHAznWVpChGreHyymaoR534nRQqfgi6QA",
+              "filesize": 77930607,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "b0ad1f54",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://QmZkajvW7s2EufNVVVevb3Wd8Xx8mTJi819kmuhYSnjvvH/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1775741228632-1b40eb59884b1ed1.webp"
+                }
+              ],
+              "title": "Daily Development Update: Hive Stats Favorites Integration, Distriator Wallet Improvements, and hSnaps Fixes",
+              "video_v2": "ipfs://QmZkajvW7s2EufNVVVevb3Wd8Xx8mTJi819kmuhYSnjvvH/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 37583960224176,
+        "payout": 3.66,
+        "payout_at": "2026-04-28T06:02:03",
+        "pending_payout_value": "3.660 HBD",
+        "percent_hbd": 0,
+        "permlink": "b0ad1f54",
+        "post_id": 149881575,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 217
+        },
+        "title": "Daily Development Update: Hive Stats Favorites Integration, Distriator Wallet Improvements, and hSnaps Fixes",
+        "updated": "2026-04-21T06:02:03",
+        "url": "/hive-139531/@sagarkothari88/b0ad1f54"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 2672898263076,
+            "voter": "steemychicken1"
+          },
+          {
+            "rshares": 1173830492240,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 43317296139,
+            "voter": "garagebill"
+          },
+          {
+            "rshares": 4615008864372,
+            "voter": "demotruk"
+          },
+          {
+            "rshares": 16446321374,
+            "voter": "pcste"
+          }
+        ],
+        "author": "sagarkothari88",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.61,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          },
+          {
+            "account": "null",
+            "weight": 300
+          },
+          {
+            "account": "snapie",
+            "weight": 100
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1775739648460-a3b64d92ff9464e9.webp)](https://3speak.tv/watch?v=sagarkothari88/887c1285)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=sagarkothari88/887c1285)\n\n\n---\n\n# Daily Development Update: hCurators Manual Curation Feature and hSnaps Fixes\n\n## hCurators\n\n### Add Missing Item Feature for Curators and Admins\n\n- Curators and admins now have a new \"Add Missing Item\" menu option in the sidebar.\n- Sometimes the system misses posts or comments because Hive servers lag behind — this feature lets curators manually add those missed items.\n- Curators simply paste the URL of the missed post/comment and hit submit.\n- The system checks if the item is valid, fetches its details from Hive, and adds it to the curation queue.\n- If an item was previously rejected, submitting it again will restore it back to pending.\n- Flagged authors are still blocked — their content cannot be added.\n- Everything works the same way as if the system had caught the item automatically.\n\nAdd Missing Item Sidebar Option\n![Add Missing Item Sidebar Option](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGa1WHKY7q14jkjGHCxSP7RYC5YPgoynk4dPtb8e4337kVHiwqrtN6yejSJwfCDV3Zm.png)\n![Add Missing Item Sidebar Option](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tkk8EeBA36391iTAiKvo5shoWAYFaB3oiGiPqF5YQKT8icCpbixJ2izKouRJ1MzZGsv.png)\n\n![URL Submission and Validation Flow](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo1vRjVWPQXuY7bBjn1hm9pZHcits2jrdhJaDnb6gS3DNA6yE7WazoLeDX9tfPppvub.png)\n\n---\n\n## hSnaps\n\n### Hot Fix Updates\n\n- Hive React Kit Package Updated.\n- Feed Composer Bug fixed.\n- Now templated icon and list of templates are visible.\n- Code icon visible.\n- @ username icon visible and working.\n\n> **[Add Image Here – ]**\nFeed Composer with Template Options\n![Feed Composer with Template Options](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t6zNn9rk3SKpuYxTRqySgkM4mjVn5f7kMmyQ8P9HJTmf7P7eqyJ2UG6yXMVfJkncdD2.png)\n\nIcons Visibility (Code, @ Mention)\n![Icons Visibility (Code, @ Mention)](https://files.peakd.com/file/peakd-hive/sagarkothari88/23swdkaVKMR4nzbZXMYgSvY4w4WUnqDrUo9SoaC5iHFPQNbg5egrDLNL8vB9ugyYyHYEy.png)\n\n\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=sagarkothari88/887c1285)\n",
+        "category": "hive-139531",
+        "children": 12,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-20T06:02:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1775739648460-a3b64d92ff9464e9.webp"
+          ],
+          "tags": [
+            "hive",
+            "dev",
+            "hiveproject",
+            "india",
+            "reactjs",
+            "witness",
+            "playstore",
+            "appstore",
+            "dapps",
+            "3speak"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "# Daily Development Update: hCurators Manual Curation Feature and hSnaps Fixes\n\n## hCurators\n\n### Add Missing Item Feature for Curators and Admins\n\n- Curators and admins now have a new \"Add Missing Item\" menu option in the sidebar.\n- Sometimes the system misses posts or comments because Hive servers lag behind — this feature lets curators manually add those missed items.\n- Curators simply paste the URL of the missed post/comment and hit submit.\n- The system checks if the item is valid, fetches its details from Hive, and adds it to the curation queue.\n- If an item was previously rejected, submitting it again will restore it back to pending.\n- Flagged authors are still blocked — their content cannot be added.\n- Everything works the same way as if the system had caught the item automatically.\n\nAdd Missing Item Sidebar Option\n![Add Missing Item Sidebar Option](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGa1WHKY7q14jkjGHCxSP7RYC5YPgoynk4dPtb8e4337kVHiwqrtN6yejSJwfCDV3Zm.png)\n![Add Missing Item Sidebar Option](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tkk8EeBA36391iTAiKvo5shoWAYFaB3oiGiPqF5YQKT8icCpbixJ2izKouRJ1MzZGsv.png)\n\n![URL Submission and Validation Flow](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo1vRjVWPQXuY7bBjn1hm9pZHcits2jrdhJaDnb6gS3DNA6yE7WazoLeDX9tfPppvub.png)\n\n---\n\n## hSnaps\n\n### Hot Fix Updates\n\n- Hive React Kit Package Updated.\n- Feed Composer Bug fixed.\n- Now templated icon and list of templates are visible.\n- Code icon visible.\n- @ username icon visible and working.\n\n> **[Add Image Here – ]**\nFeed Composer with Template Options\n![Feed Composer with Template Options](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t6zNn9rk3SKpuYxTRqySgkM4mjVn5f7kMmyQ8P9HJTmf7P7eqyJ2UG6yXMVfJkncdD2.png)\n\nIcons Visibility (Code, @ Mention)\n![Icons Visibility (Code, @ Mention)](https://files.peakd.com/file/peakd-hive/sagarkothari88/23swdkaVKMR4nzbZXMYgSvY4w4WUnqDrUo9SoaC5iHFPQNbg5egrDLNL8vB9ugyYyHYEy.png)\n\n\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |",
+              "tags": [
+                "hive",
+                "dev",
+                "hiveproject",
+                "india",
+                "reactjs",
+                "witness",
+                "playstore",
+                "appstore",
+                "dapps",
+                "3speak"
+              ]
+            },
+            "info": {
+              "author": "sagarkothari88",
+              "duration": 42,
+              "file": "ipfs://QmT68SpzkZybktMTW1VJkgTJCv89mZjBBg8q5AehiSVGvM",
+              "filesize": 18603625,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "887c1285",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://QmYMp4LktJAodbMgsRGqovRAvuASTmyHL2RQmAMfK93vBx/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1775739648460-a3b64d92ff9464e9.webp"
+                }
+              ],
+              "title": "hCurators manual curation feature and hSnaps fixes improve reliability and content creation experience in Hive apps.",
+              "video_v2": "ipfs://QmYMp4LktJAodbMgsRGqovRAvuASTmyHL2RQmAMfK93vBx/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 64800238655493,
+        "payout": 6.257,
+        "payout_at": "2026-04-27T06:02:03",
+        "pending_payout_value": "6.257 HBD",
+        "percent_hbd": 0,
+        "permlink": "887c1285",
+        "post_id": 149868715,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 290
+        },
+        "title": "hCurators manual curation feature and hSnaps fixes improve reliability and content creation experience in Hive apps.",
+        "updated": "2026-04-20T06:02:03",
+        "url": "/hive-139531/@sagarkothari88/887c1285"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 140965160042,
+            "voter": "pnc"
+          },
+          {
+            "rshares": 1173511085486,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 43303539205,
+            "voter": "garagebill"
+          },
+          {
+            "rshares": 21558656274,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 493537272392,
+            "voter": "ausbitbank"
+          }
+        ],
+        "author": "sagarkothari88",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.61,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          },
+          {
+            "account": "forkyishere",
+            "weight": 100
+          },
+          {
+            "account": "null",
+            "weight": 300
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1775737807399-8d6efaed9ad3e6cf.webp)](https://3speak.tv/watch?v=sagarkothari88/2d1bab38)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=sagarkothari88/2d1bab38)\n\n\n---\n\n## Hive React Kit\n\n### Add Inline Comments, Poll Vote Changes, and Moderation Support\n\n- feat(HiveDetailPost): add inline comments, poll vote changes, and moderation support.\n- Replaced modal comments with inline threaded comments.\n- Added inline composer and reply UX improvements.\n- Enabled poll vote change functionality.\n- Added parent navigation for replies.\n- Introduced content moderation filtering.\n- Improved rendering, personalisation, and documentation.\n\nInline Threaded Comments UI\n![Inline Threaded Comments UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23wBfrCH86jbxhTrm9o1T6VGdty3qENJVMgbFsy9sqW5it2xwtp2A3YAbfnNXxHmD7xc9.png)\n\nPoll Vote Change Interaction\n![Poll Vote Change Interaction](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tuz43shyuzpqdHG1p9aTf3LRojbj19rzjGs5VCuuSvueHW3kYmVTnM4XV1p1JajGbHc.png)\n\n---\n\n### Add Comment Actions, Mobile UI Improvements, and Clean Preview\n\n- feat(HiveDetailPost): add comment actions, mobile UI improvements, and clean preview.\n- Added share, tip, report, and payout to comments.\n- Improved mobile UI with responsive layout and bottom sheet composer.\n- Added clean plain-text preview for collapsed comments.\n- Enabled navigation to post detail from comments.\n- Updated integration and documentation.\n\n\nComment Action Bar UI\n![Comment Action Bar UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23sweNAZR76b4LAV3N3qphbAj3iyYKcQaH8SukGMEM4GN9x6FU8ThNd7nzNmsVu4TLQLu.png)\n\nMobile Bottom Sheet Composer\n![Mobile Bottom Sheet Composer](https://files.peakd.com/file/peakd-hive/sagarkothari88/23swgSfM731Ckh95MBdvTqv9LvYBceHcWPJjhEY9LMJV7baU96t79D1xvGxZcEx7gw92i.png)\n\n\n---\n\n## hReplier App\n\n### UI Updated Using Hive React Kit\n\n- UI Updated Using Hive React Kit.\n- Wire all HiveDetailPost callbacks with aioha operations.\n- Poll voting via aioha.customJSON, reblog via signAndBroadcastTx.\n- Comment share/report/tip with clipboard, API, and toast.\n- reportedAuthors combines ignored authors + reported users.\n- onBack uses window.history.back() for parent post navigation.\n- onCommentClick on UserDetailProfile navigates to post detail.\n\nhReplier Post Detail with New UI\n![hReplier Post Detail with New UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo1vSkEFqHo85mpRj5tTrysFXeWhngrJeAXZnJMRfj2F79Vb8QgqK7a46baLNvJZYJJ.png)\n\n\nNavigation from Profile to Post Detail\n![User Profile Feed On click Open the Post Detail](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGXzNSmtRTqV4LiUoLdyRJJd7auqspV9NG9yvXWdd8FqLSjcRqPCZwALZrooPwR1TTS.png)\n\n![Post Details](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tRrM4kKVgcq6caLL94MchRoCd6rzXqURbrNzUN1Y6nuC1K98ANCzKiUAfEADPRHKXas.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=sagarkothari88/2d1bab38)\n",
+        "category": "hive-139531",
+        "children": 22,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-19T06:02:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1775737807399-8d6efaed9ad3e6cf.webp"
+          ],
+          "tags": [
+            "hive",
+            "dev",
+            "hiveproject",
+            "india",
+            "reactjs",
+            "witness",
+            "playstore",
+            "appstore",
+            "dapps",
+            "3speak"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "## Hive React Kit\n\n### Add Inline Comments, Poll Vote Changes, and Moderation Support\n\n- feat(HiveDetailPost): add inline comments, poll vote changes, and moderation support.\n- Replaced modal comments with inline threaded comments.\n- Added inline composer and reply UX improvements.\n- Enabled poll vote change functionality.\n- Added parent navigation for replies.\n- Introduced content moderation filtering.\n- Improved rendering, personalisation, and documentation.\n\nInline Threaded Comments UI\n![Inline Threaded Comments UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23wBfrCH86jbxhTrm9o1T6VGdty3qENJVMgbFsy9sqW5it2xwtp2A3YAbfnNXxHmD7xc9.png)\n\nPoll Vote Change Interaction\n![Poll Vote Change Interaction](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tuz43shyuzpqdHG1p9aTf3LRojbj19rzjGs5VCuuSvueHW3kYmVTnM4XV1p1JajGbHc.png)\n\n---\n\n### Add Comment Actions, Mobile UI Improvements, and Clean Preview\n\n- feat(HiveDetailPost): add comment actions, mobile UI improvements, and clean preview.\n- Added share, tip, report, and payout to comments.\n- Improved mobile UI with responsive layout and bottom sheet composer.\n- Added clean plain-text preview for collapsed comments.\n- Enabled navigation to post detail from comments.\n- Updated integration and documentation.\n\n\nComment Action Bar UI\n![Comment Action Bar UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23sweNAZR76b4LAV3N3qphbAj3iyYKcQaH8SukGMEM4GN9x6FU8ThNd7nzNmsVu4TLQLu.png)\n\nMobile Bottom Sheet Composer\n![Mobile Bottom Sheet Composer](https://files.peakd.com/file/peakd-hive/sagarkothari88/23swgSfM731Ckh95MBdvTqv9LvYBceHcWPJjhEY9LMJV7baU96t79D1xvGxZcEx7gw92i.png)\n\n\n---\n\n## hReplier App\n\n### UI Updated Using Hive React Kit\n\n- UI Updated Using Hive React Kit.\n- Wire all HiveDetailPost callbacks with aioha operations.\n- Poll voting via aioha.customJSON, reblog via signAndBroadcastTx.\n- Comment share/report/tip with clipboard, API, and toast.\n- reportedAuthors combines ignored authors + reported users.\n- onBack uses window.history.back() for parent post navigation.\n- onCommentClick on UserDetailProfile navigates to post detail.\n\nhReplier Post Detail with New UI\n![hReplier Post Detail with New UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo1vSkEFqHo85mpRj5tTrysFXeWhngrJeAXZnJMRfj2F79Vb8QgqK7a46baLNvJZYJJ.png)\n\n\nNavigation from Profile to Post Detail\n![User Profile Feed On click Open the Post Detail](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGXzNSmtRTqV4LiUoLdyRJJd7auqspV9NG9yvXWdd8FqLSjcRqPCZwALZrooPwR1TTS.png)\n\n![Post Details](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tRrM4kKVgcq6caLL94MchRoCd6rzXqURbrNzUN1Y6nuC1K98ANCzKiUAfEADPRHKXas.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |",
+              "tags": [
+                "hive",
+                "dev",
+                "hiveproject",
+                "india",
+                "reactjs",
+                "witness",
+                "playstore",
+                "appstore",
+                "dapps",
+                "3speak"
+              ]
+            },
+            "info": {
+              "author": "sagarkothari88",
+              "duration": 79,
+              "file": "ipfs://QmXmS692CShHAVPXBbeUUFKgD5RbemicPHUZu9p24QCqAo",
+              "filesize": 90287418,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "2d1bab38",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://QmduCgsSTXuhrEsgRVsLwm6dRs7aTaBKgqv1J7skMUKqPH/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1775737807399-8d6efaed9ad3e6cf.webp"
+                }
+              ],
+              "title": "Daily Development Update: Hive React Kit Inline Comments, Moderation, and hReplier UI Upgrade",
+              "video_v2": "ipfs://QmduCgsSTXuhrEsgRVsLwm6dRs7aTaBKgqv1J7skMUKqPH/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 92737027146973,
+        "payout": 9.197,
+        "payout_at": "2026-04-26T06:02:03",
+        "pending_payout_value": "9.197 HBD",
+        "percent_hbd": 0,
+        "permlink": "2d1bab38",
+        "post_id": 149856492,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 448
+        },
+        "title": "Daily Development Update: Hive React Kit Inline Comments, Moderation, and hReplier UI Upgrade",
+        "updated": "2026-04-19T06:02:03",
+        "url": "/hive-139531/@sagarkothari88/2d1bab38"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 12391132848,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 869397782242,
+            "voter": "arcange"
+          },
+          {
+            "rshares": 586440143,
+            "voter": "smolalit"
+          },
+          {
+            "rshares": 583779899,
+            "voter": "alexbezimeni"
+          },
+          {
+            "rshares": 1419756327427,
+            "voter": "borran"
+          }
+        ],
+        "author": "meno",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 78.77,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "ph1102",
+            "weight": 100
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1776451638680-7661c7eb7820e6ac.webp)](https://3speak.tv/watch?v=meno/34e6f29f)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=meno/34e6f29f)\n\n\n---\n\nI could use some feedback from the community on this. That said, as it is right now, we could have this deployed before the day ends. \n\nI'm going to talk to @eddiespino about it for the next steps.\n\nAre you guys not excited?\n\n- MenO\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=meno/34e6f29f)\n",
+        "category": "hive-139531",
+        "children": 20,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-17T18:55:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1776451638680-7661c7eb7820e6ac.webp"
+          ],
+          "tags": [
+            "hive",
+            "snapie",
+            "devlog",
+            "snapieradio",
+            "hiveproject",
+            "hangouts",
+            "openpods"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "I could use some feedback from the community on this. That said, as it is right now, we could have this deployed before the day ends. \n\nI'm going to talk to @eddiespino about it for the next steps.\n\nAre you guys not excited?\n\n- MenO",
+              "tags": [
+                "hive",
+                "snapie",
+                "devlog",
+                "snapieradio",
+                "hiveproject",
+                "hangouts",
+                "openpods"
+              ]
+            },
+            "info": {
+              "author": "meno",
+              "duration": 291,
+              "file": "ipfs://QmYNYJKnPmzrwePX4cVpFcwe4r9PUJqyNrJ3xhyEBgS1hw",
+              "filesize": 164158099,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "34e6f29f",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://QmZeyQkQZL89b2fC2yZRZv7rrCchUTjZfMG6LecSfBgGir/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1776451638680-7661c7eb7820e6ac.webp"
+                }
+              ],
+              "title": "Snapie Radio is almost here!",
+              "video_v2": "ipfs://QmZeyQkQZL89b2fC2yZRZv7rrCchUTjZfMG6LecSfBgGir/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 215923440355843,
+        "payout": 21.357,
+        "payout_at": "2026-04-24T18:55:09",
+        "pending_payout_value": "21.357 HBD",
+        "percent_hbd": 10000,
+        "permlink": "34e6f29f",
+        "post_id": 149842129,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 327
+        },
+        "title": "Snapie Radio is almost here!",
+        "updated": "2026-04-17T18:55:09",
+        "url": "/hive-139531/@meno/34e6f29f"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 140965160042,
+            "voter": "pnc"
+          },
+          {
+            "rshares": 39436193463,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 2866052712,
+            "voter": "robsteady"
+          },
+          {
+            "rshares": 31167555116,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 176730973159,
+            "voter": "roelandp"
+          }
+        ],
+        "author": "tibfox",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.22,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 1000
+          },
+          {
+            "account": "ph1102",
+            "weight": 100
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1776433851783-9b2a39908840014f.webp)](https://3speak.tv/watch?v=tibfox/107690e7)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=tibfox/107690e7)\n\n\n---\n\n<div class=\"pull-right\"><img src=\"https://files.peakd.com/file/peakd-hive/buzzparty/EpXKVh9oNxaJNE1aFz7zehiLQ6Z95cWTnSU4gZrj47b5DYBb6KNMkH4vXJTUfuMTd6v.png\"></div>\n<div class=\"text-justify\">\n13 days left until <a href=\"https://hiveopendays.com/\">Hive Open Days '26</a> kicks off in Alicante and I still can't quite believe it's actually happening. Four days of Hive, Web3, sunshine, and way too much good food, all starting April 30th at ULab Coworking Space.\n<br><br>\nOne of the many things I've been chipping away at over the past months is the event badges. Each badge carries a QR code that does a few things at once: it onboards brand new users to Hive in a genuinely simple way, and it gives attendees everything they need on-site. They can find the full event timetable, a one-tap link to our local HOD Telegram group, and direct access to the @ecency Discord server. They will also be able to <b>realtime-translate all of their conversations and the main stage talks</b> with a simple link. That will be the topic of another video tho.<br><br><br>\nOh, and this time I printed all the badges myself - saves us a solid chunk of funds and cuts out the waiting time on external print shops. Bonus: full control over quality and last-minute changes.\nThe part I'm especially proud of is the onboarding flow itself. In this video, I'll walk you through how it works end-to-end, and once the event is wrapped, I promise to polish the whole thing up and release it <b>open source</b> on the <a href=\"https://github.com/Mantequilla-Soft\">mantequilla-soft github</a> so anyone organizing a Hive meetup can use it. If you have any questions, drop them below — see you in Alicante! ☀️\n\n</div>\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=tibfox/107690e7)\n",
+        "category": "hive-139531",
+        "children": 19,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-17T14:00:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1776433851783-9b2a39908840014f.webp"
+          ],
+          "tags": [
+            "onboarding",
+            "development",
+            "event",
+            "badges",
+            "hodalicante",
+            "hiveopendays"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "<div class=\"pull-right\"><img src=\"https://files.peakd.com/file/peakd-hive/buzzparty/EpXKVh9oNxaJNE1aFz7zehiLQ6Z95cWTnSU4gZrj47b5DYBb6KNMkH4vXJTUfuMTd6v.png\"></div>\n<div class=\"text-justify\">\n13 days left until <a href=\"https://hiveopendays.com/\">Hive Open Days '26</a> kicks off in Alicante and I still can't quite believe it's actually happening. Four days of Hive, Web3, sunshine, and way too much good food, all starting April 30th at ULab Coworking Space.\n<br><br>\nOne of the many things I've been chipping away at over the past months is the event badges. Each badge carries a QR code that does a few things at once: it onboards brand new users to Hive in a genuinely simple way, and it gives attendees everything they need on-site. They can find the full event timetable, a one-tap link to our local HOD Telegram group, and direct access to the @ecency Discord server. They will also be able to <b>realtime-translate all of their conversations and the main stage talks</b> with a simple link. That will be the topic of another video tho.<br><br><br>\nOh, and this time I printed all the badges myself - saves us a solid chunk of funds and cuts out the waiting time on external print shops. Bonus: full control over quality and last-minute changes.\nThe part I'm especially proud of is the onboarding flow itself. In this video, I'll walk you through how it works end-to-end, and once the event is wrapped, I promise to polish the whole thing up and release it <b>open source</b> on the <a href=\"https://github.com/Mantequilla-Soft\">mantequilla-soft github</a> so anyone organizing a Hive meetup can use it. If you have any questions, drop them below — see you in Alicante! ☀️\n\n</div>",
+              "tags": [
+                "onboarding",
+                "development",
+                "event",
+                "badges",
+                "hodalicante",
+                "hiveopendays"
+              ]
+            },
+            "info": {
+              "author": "tibfox",
+              "duration": 407,
+              "file": "ipfs://QmYyTxNbVy8cL6WMxBeEEvhMDo3MhgoZRZW14eA28M4vFx",
+              "filesize": 355680456,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "107690e7",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://QmdwjvDtuiqJ7DSHh6T24xaXuqTW78Z5wGW7c5yL5KfVCe/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1776433851783-9b2a39908840014f.webp"
+                }
+              ],
+              "title": "☀️Hive Open Days 2026 - Onboarding Badges 🪪",
+              "video_v2": "ipfs://QmdwjvDtuiqJ7DSHh6T24xaXuqTW78Z5wGW7c5yL5KfVCe/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 204806431264356,
+        "payout": 20.394,
+        "payout_at": "2026-04-24T14:00:09",
+        "pending_payout_value": "20.394 HBD",
+        "percent_hbd": 10000,
+        "permlink": "107690e7",
+        "post_id": 149839618,
+        "reblogs": 9,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 675
+        },
+        "title": "☀️Hive Open Days 2026 - Onboarding Badges 🪪",
+        "updated": "2026-04-17T14:00:09",
+        "url": "/hive-139531/@tibfox/107690e7"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1173301292124,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 43295943024,
+            "voter": "garagebill"
+          },
+          {
+            "rshares": 19462125455,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 184991294515,
+            "voter": "ausbitbank"
+          },
+          {
+            "rshares": 16446321374,
+            "voter": "pcste"
+          }
+        ],
+        "author": "sagarkothari88",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.61,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          },
+          {
+            "account": "eddie-3speak",
+            "weight": 100
+          },
+          {
+            "account": "null",
+            "weight": 300
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1775736324518-eec18d6233ddc457.webp)](https://3speak.tv/watch?v=sagarkothari88/f2fd2884)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=sagarkothari88/f2fd2884)\n\n\n---\n\n## hSnaps App\n\n### Fix Twitter Preview, Add Hive Node Switcher, Disable Rep Filter, Add 3Speak Icons\n\n- feat: fix Twitter preview, add Hive node switcher, disable rep filter, add 3Speak icons.\n- Fixed Twitter/X embed layout and sizing issues.\n- Added Hive RPC node switching in Settings for better connectivity and flexibility.\n- Disabled reputation filtering temporarily to ensure broader content visibility.\n- Added missing 3Speak media icons for improved media identification.\n\nTwitter/X Embed Fix UI\n![Twitter/X Embed Fix UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23vhTrSrNERhAm6XqvyjYjzZsQdVtk753d6eyWqsFHvrezkUE7sm1QkbzSeXWB7FoT111.png)\n\nHive Node Switcher in Settings\n![Hive Node Switcher in Settings](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tbJsvMfYmzFGg1JcHo7RdAkfUwj7i7eko7TGSiYFSHqaaRE1y7FSER9f8dzduf7LoSg.png)\n\n\n---\n\n### Improve Feed Processing and Auto-Load Behaviour\n\n- feat: process all containers per batch and auto-load 7 days for My Feed snaps.\n- Fixed feed skipping containers during pagination.\n- Improved cursor structure for batch processing.\n- Added auto-load for snaps in My Feed with a 7-day range.\n- Kept other feed types unchanged to maintain consistency.\n\nFeed Pagination UI & Auto-loaded Snaps in My Feed upto 7 days\n![Feed Pagination UI & Auto-loaded Snaps in My Feed upto 7 days](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGVUj8osDPTUFJ4RXdtffnspAuCyovMeUzpVGWYNm3dRpsojGaMRBprQq4EgjFQy1nK.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=sagarkothari88/f2fd2884)\n",
+        "category": "hive-139531",
+        "children": 33,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-18T06:02:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1775736324518-eec18d6233ddc457.webp"
+          ],
+          "tags": [
+            "hive",
+            "dev",
+            "hiveproject",
+            "india",
+            "reactjs",
+            "witness",
+            "playstore",
+            "appstore",
+            "dapps",
+            "3speak"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "## hSnaps App\n\n### Fix Twitter Preview, Add Hive Node Switcher, Disable Rep Filter, Add 3Speak Icons\n\n- feat: fix Twitter preview, add Hive node switcher, disable rep filter, add 3Speak icons.\n- Fixed Twitter/X embed layout and sizing issues.\n- Added Hive RPC node switching in Settings for better connectivity and flexibility.\n- Disabled reputation filtering temporarily to ensure broader content visibility.\n- Added missing 3Speak media icons for improved media identification.\n\nTwitter/X Embed Fix UI\n![Twitter/X Embed Fix UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23vhTrSrNERhAm6XqvyjYjzZsQdVtk753d6eyWqsFHvrezkUE7sm1QkbzSeXWB7FoT111.png)\n\nHive Node Switcher in Settings\n![Hive Node Switcher in Settings](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tbJsvMfYmzFGg1JcHo7RdAkfUwj7i7eko7TGSiYFSHqaaRE1y7FSER9f8dzduf7LoSg.png)\n\n\n---\n\n### Improve Feed Processing and Auto-Load Behaviour\n\n- feat: process all containers per batch and auto-load 7 days for My Feed snaps.\n- Fixed feed skipping containers during pagination.\n- Improved cursor structure for batch processing.\n- Added auto-load for snaps in My Feed with a 7-day range.\n- Kept other feed types unchanged to maintain consistency.\n\nFeed Pagination UI & Auto-loaded Snaps in My Feed upto 7 days\n![Feed Pagination UI & Auto-loaded Snaps in My Feed upto 7 days](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGVUj8osDPTUFJ4RXdtffnspAuCyovMeUzpVGWYNm3dRpsojGaMRBprQq4EgjFQy1nK.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |",
+              "tags": [
+                "hive",
+                "dev",
+                "hiveproject",
+                "india",
+                "reactjs",
+                "witness",
+                "playstore",
+                "appstore",
+                "dapps",
+                "3speak"
+              ]
+            },
+            "info": {
+              "author": "sagarkothari88",
+              "duration": 31,
+              "file": "ipfs://Qmc2ZdJ36Q79qrAcE2oeWLzE5fC6JtqRR6tceNDggCznZ8",
+              "filesize": 45282194,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "f2fd2884",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://QmTW7GX1spBsb7xauacM4njxZGjK3Kri7MEa3ZmEx9jV2S/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1775736324518-eec18d6233ddc457.webp"
+                }
+              ],
+              "title": "Daily Development Update: hSnaps Feed Optimisation and Feature Enhancements",
+              "video_v2": "ipfs://QmTW7GX1spBsb7xauacM4njxZGjK3Kri7MEa3ZmEx9jV2S/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 72872753474054,
+        "payout": 7.093,
+        "payout_at": "2026-04-25T06:02:03",
+        "pending_payout_value": "7.093 HBD",
+        "percent_hbd": 0,
+        "permlink": "f2fd2884",
+        "post_id": 149846432,
+        "reblogs": 4,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 359
+        },
+        "title": "Daily Development Update: hSnaps Feed Optimisation and Feature Enhancements",
+        "updated": "2026-04-18T06:02:03",
+        "url": "/hive-139531/@sagarkothari88/f2fd2884"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1173194189894,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 43292650077,
+            "voter": "garagebill"
+          },
+          {
+            "rshares": 24774732203,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 16446321374,
+            "voter": "pcste"
+          },
+          {
+            "rshares": 2661709949,
+            "voter": "pixiehunter"
+          }
+        ],
+        "author": "beggars",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 70.62,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Last week Anthropic quietly dropped a report on a model called Mythos. The short version is that it found thousands of zero day vulnerabilities across every major operating system and every major web browser.\n\nOne of those bugs was 27 years old. It lived in OpenBSD. Yes, OpenBSD. The operating system famous for having the most paranoid security review process in the industry.\n\nThat bug survived decades of human review, millions of automated fuzzing runs, and an entire cottage industry of people who do nothing but look for BSD vulnerabilities for a living. Mythos found it on a prompt that essentially amounted to please find a security vulnerability in this program.\n\nThink about that for a second. Then think about the code running your favourite blockchain.\n\n## What Mythos actually does\n\nMythos is not a security specific model. It is a general purpose frontier model that happens to be terrifyingly good at cyber work. Anthropic restricted access to a handpicked group of partners under something called Project Glasswing. The public does not get it. Very few defenders do either.\n\nThe numbers from the red team report are the part that should get everyone's attention. Over 83 percent success rate on reproducing vulnerabilities and developing working exploits on the first attempt. Going from a CVE identifier and a git commit hash to a full working exploit chain in under a day, for under 2000 USD in compute.\n\nMulti vulnerability privilege escalation chains in the Linux kernel. JIT heap sprays escaping browser sandboxes. A remote code execution exploit against FreeBSD that Mythos wrote autonomously. A 16 year old bug in FFmpeg. A 27 year old bug in OpenBSD. And critically, over 99 percent of what they found has not yet been patched.\n\nMythos is not an incremental improvement on existing vulnerability scanners. It sits in a different category of tool.\n\n## OpenAI is playing catch up and they know it\n\nWithin a week of Mythos being announced, OpenAI shipped GPT-5.4-Cyber to their Trusted Access for Cyber program. It is a variant of GPT-5.4 fine tuned specifically for defensive security work, with a lower refusal boundary for legitimate security queries. It also introduces binary reverse engineering capabilities, letting security professionals analyse compiled software without access to source code.\n\nOpenAI also has a separate cyber product that Axios reported on. That product is different from OpenAI's upcoming model Spud, and the cyber capabilities of Spud itself are unclear.\n\nSpud is the internal codename for what is widely expected to be GPT-6. Pre training for the next generation architecture reportedly concluded in late March 2026. A leaked internal memo describes Spud as an important step in the intelligence foundation for the next generation of work, with early customer feedback pointing to stronger reasoning and more reliable production results. Nobody outside OpenAI knows what its cyber capabilities look like, but given the trajectory of every previous GPT release it is safe to assume Spud will push past Mythos in at least some domains.\n\nThe pattern is clear. Frontier labs are gating their most capable models because they are genuinely afraid of what will happen when these capabilities are in the hands of people who want to burn things down. We are in the era of AI models being too dangerous to release, which is the exact framing OpenAI used for GPT-2 back in 2019. GPT-2 turned out to be laughably tame. This time they might actually be right.\n\n## The uncomfortable part for crypto\n\nLegacy codebases are where the real horror is. Mythos did not find those OpenBSD and FFmpeg bugs because it got clever. It found them because there were decades of accumulated assumptions nobody had questioned since the code was written.\n\nBlockchain code is legacy code. Even when it is new.\n\nBitcoin's codebase is old. Ethereum's clients are old. Hive's core is a fork of the BitShares Graphene codebase that dates back to 2015. That is 11 years of assumptions baked into C++ that was designed when most of us were still using Bootstrap 3.\n\nNow ask yourself how many people have actually sat down and done a serious security review of the Hive core in the last five years. Not a witness skimming a PR. Not a bounty hunter chasing a specific class of bug. A proper, paid, methodical review of the signing code, the consensus logic, the RC system, the resource math, the plugin surface area. As far as I know the answer at the protocol level is essentially zero. I know the core of Hive is in very capable hands, but if it can happen to OpenBSD it can happen to anyone.\n\n## Where Hive actually sits\n\nLet me be specific because this matters. Hive is a Graphene chain, meaning the layer 1 is written in C++ with a fairly narrow operation set. No general purpose smart contracts at layer 1. That is genuinely a security advantage because the attack surface is smaller than an EVM chain. Fewer moving parts, fewer sharp edges.\n\nBut Hive is not just the layer 1. There is Hive Engine, the JavaScript side chain running custom tokens worth real money and an entire DeFi ecosystem on top. Hive Engine is a Node.js based solution. There is Magi which opens Hive up to other blockxhains, smart contracts and so on. A lot of projects are working on their own EVM integrations. There are half a dozen frontends, each with their own auth flow, each integrating with Keychain or HiveAuth.\n\nEvery one of those is attack surface. Every one of those is written in languages Mythos and Spud understand extremely well. Every one of those has probably never been properly audited.\n\nThe Hive MetaMask Snap got a Hacken audit last year. That is good. That is one component of one integration. The actual chain code, the layer 2s, the signing libraries, the frontends, the bridges, none of that has been through a comparable process as far as I can tell.\n\n## What happens when Spud is public\n\nRight now the frontier cyber capable models are gated. Mythos is only accessible through Project Glasswing. GPT-5.4-Cyber requires TAC verification. Spud has not shipped.\n\nThis will not last. It never does.\n\nOpen weights models are catching up fast. AISLE published a test where small open source models, some with only around 3.6 billion active parameters at eleven cents per million tokens, detected Mythos's flagship FreeBSD exploit. A 5.1 billion active parameter open model recovered the core chain of the 27 year old OpenBSD bug. The gap between frontier and open is narrowing, not widening.\n\nWithin 12 months you will be able to run something Mythos adjacent on a rented H100. Within 24 months you will probably run it on your own hardware. At that point the people prompting it are not going to be ArmorCode customers. They will be the same people already picking at Hive Engine token contracts looking for a payday.\n\n## The DHF elephant in the room\n\nHive has a Decentralised Hive Fund. It pays out hundreds of thousands of HIVE a month to proposals. Most of that goes to community building, tooling, marketing, and a lot of ValuePlan shaped holes that the community has been arguing about for months.\n\nYou know what has never been funded at any meaningful scale? A comprehensive security review of the Hive core codebase.\n\nWe spend on frontends. We spend on games. We spend on marketing campaigns that go nowhere. We do not spend on the thing that, if it fails, kills the entire chain instantly and irrecoverably.\n\nThis is not a hypothetical. Poly Network was 611 million USD gone. Ronin was 625 million. Wormhole was 325 million. Those chains had audits. They had bug bounties. They had budgets for security that dwarf anything Hive has ever committed to.\n\nHive has the DHF and a handful of witnesses reading each other's PRs. Calling that a security strategy would be generous.\n\n## What should happen\n\nThe point of this is to get ahead of something that is coming fast, not to assign blame after the fact. There are concrete things the Hive community can do right now that would genuinely move the needle.\n\nFund a proper chain audit through the DHF. Not a branding exercise. A real one, scoped at the consensus and signing code, done by a firm that has handled Graphene derived chains before. Budget six figures if that is what it takes. It is cheaper than a single successful attack.\n\nSet up a bug bounty with real payouts. Immunefi tier numbers, not 100 HIVE for a critical. If you want security researchers to look at your chain, you have to pay them what they can get elsewhere.\n\nShameful plug, but I actually built a Hive based bounty app already called Hive Bounty where we could fund bounties already: https://hivebounty.com\n\nGet the layer 2s audited separately. Hive Engine is running serious value through a JavaScript codebase that, to my knowledge, has never been through a formal review. Magi is activating. All of those need scrutiny.\n\nStart running AI assisted code review now, while the models are still behaving themselves. Claude Code, Codex, whichever you prefer. Have them systematically walk the codebase. Every AI finding goes through a human reviewer, but the coverage you get from agentic review is already better than what most small OSS projects have today.\n\n## Last thought\n\nThe era of powerful AI models is not coming. It is here. Mythos found a bug in OpenBSD that predates Bitcoin by nine years. Spud is sitting in a training cluster somewhere waiting for a release window.\n\nHive is a small chain with a small core team and a lot of legacy code nobody has looked at properly in years. The attackers will have access to the same tools as the defenders within 18 months, and unlike the defenders, they do not have to fill out an access request form.\n\nIf you are a witness, a dev, a stakeholder, or just somebody who cares about this ecosystem surviving the next cycle, start pushing for this now. Before Spud ships. Before the open weights catch up. Before someone runs Mythos Lite against the Hive daemon on a Tuesday and decides to see what happens.\n\nThe clock started last week.",
+        "category": "hive-139531",
+        "children": 16,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-18T00:38:15",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.3.4",
+          "format": "markdown",
+          "image": [],
+          "tags": [
+            "hive",
+            "blockchain",
+            "hivedevs",
+            "development"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 72130048200046,
+        "payout": 7.126,
+        "payout_at": "2026-04-25T00:38:15",
+        "pending_payout_value": "7.126 HBD",
+        "percent_hbd": 10000,
+        "permlink": "ai-is-finding-27-year-old-bugs-hive-should-be-nervous",
+        "post_id": 149844271,
+        "reblogs": 7,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 208
+        },
+        "title": "AI Is Finding 27 Year Old Bugs. Hive Should Be Nervous",
+        "updated": "2026-04-18T01:02:33",
+        "url": "/hive-139531/@beggars/ai-is-finding-27-year-old-bugs-hive-should-be-nervous"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 22472926650,
+            "voter": "fractalnode"
+          },
+          {
+            "rshares": 1810224632913,
+            "voter": "gunthertopp"
+          },
+          {
+            "rshares": 131977730631,
+            "voter": "grecki-bazar-ewy"
+          },
+          {
+            "rshares": 3630145021572,
+            "voter": "tipu"
+          },
+          {
+            "rshares": 15477264392,
+            "voter": "isnochys"
+          }
+        ],
+        "author": "sarmatia.app",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 55.76,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 1000
+          },
+          {
+            "account": "sarmatia.gov",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "In the last post I described our communication system ([czat i prywatne wiadomości](/hive-139531/@sarmatia.app/public-chat-and-private-dm-made-only-on-blokchain)). After publishing it, I had a very interesting exchange with @gtg, as a result of which I added a warning to the messages: if you lose your memo key, a thief will gain access to the entire message history. Therefore, this system should only be used for non-sensitive communication (the app is meant to be a kind of game, so in principle, no one should even think of sending sensitive messages there anyway). I also added online activity indicators so users know who is currently online. In the plans: adding a blacklist to the inbox and other convenience features.\n\nToday, however, I’ll show you the next important stage in the development of our app — the **Missions module**.\n\n### Types of Missions\n\nMissions can be extremely varied, and I’m sure I haven’t foreseen all the possibilities (there will be room for app updates :)). Still, I tried to include the options that seemed most important to me.\n\nFirst and foremost — the **reward** issue. The app currently supports 3 types of rewards:\n\n- **Barter**: A descriptive reward with no payment guarantee, but a simple rating system for the mission issuer is provided. The account that took on the mission, completed it, and received acceptance of completion will be able to give a simple note: whether the issuer fulfilled the payment or not.\n- **Tokens**: Both native ones (HIVE, HBD) and those from Hive Engine. Payment is guaranteed through a mechanism similar to a smart-contract escrow (a trusted intermediary — the app’s account).\n- **Merit Points**: Points that will be used to create rankings and more within the game layer of the app. Only admins can award these.\n\nWhat else can we set?\n\n- How many people can take on a given mission. In the case of a token reward, this must be a finite number; in the case of barter, it can be unlimited. We can also add exclusions so that selected people cannot take on the mission.\n- We can set the duration of the announcement. This is useful because sometimes completing a mission after a certain date no longer makes sense…\n- We also have to set the time within which we declare we will review the correct completion of the mission.\n- The final element is an optional pin on the map. The map will be an important part of our app, so we can, for example, commission an article about a battle that took place in a specific location. Such a mission will be visible both on the list and on the map.\n\nAdding options looks like this:  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23sweHStVBtdi8uneuDEsmZmGyaD37hPTUdpqSjvrQfB8AQKyBoFSKk7u7JFtmNNvbL3R.png)\n\n### Process\n\nI consider the proper process to be the most important thing in this kind of system, so that it provides maximum fairness and transparency. That’s why completing a mission in our app can be a multi-stage process.\n\nThe first step is, of course, creating the mission. Any logged-in user can do this, although the admin has a few extra options. The mission itself is a post on the blockchain. All additional mission attributes are stored in the post’s json_metadata. After publication, the mission appears on the list:  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23t76k7pL8Qj18YdJvJykyNz4bJDWu8FAHJvdsCvtwznkzxghumDkzttRsFny6vuMCJWx.png)\n\nThe next step is, naturally, accepting the mission by a user. If the mission was intended for single use or the last available slot has been taken, it becomes locked for other users after acceptance. After completing the mission, you go into it in the app, click the “Report Completion” button, then enter a descriptive justification and/or a link. And you wait for the issuer’s approval:  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/EnynaEEWj1nG6ekmLJu75Pi71Rr9bZK9HUZZon2YQwCcaJdSHMty2fyjzm8NxQmc6kU.png)\n\nAt this point, there are two paths. Either the issuer accepts it — and then the token reward is automatically sent to the person who completed the mission (or the issuer makes the barter payment). Or the work is rejected (optionally with a justification).\n\nHowever, that’s not the end, because the person who completed the mission can either accept the “verdict” or appeal it. In the appeal, they can also add a justification.\n\nThe appeal is resolved by an admin, who can either side with the person who completed the mission (in which case the automatic payout occurs, or the issuer is honor-bound to do what they committed to — if they don’t, they receive a negative rating) or side with the issuer. And that concludes the mission process.\n\nEvery subsequent step is recorded in the comments under the mission post, so the entire course is fully transparent.\n\n### Adding a Mission vs. the Hive Feed\n\nAs mentioned, a mission is a post, so it also has the standard text editor, title, tags, and beneficiaries. Due to the nature of this post, we added an automatic system that sets the @null account as the default beneficiary (though it can be removed). Sometimes the mission itself can be valuable content worthy of upvotes and a Hive community reward. However, we added one more feature — internal tags. This solution allows good filtering on the mission list on one hand, while on the other it prevents cluttering the actual post tags if the mission doesn’t need wider publication or if it would be closer to spam than valuable content.\n\n### Statistics\n\nStatistics are a nice thing — I like them. That’s why we added a tab on the user’s account where they can check the history of both missions they’ve taken on and those they’ve commissioned. When you open them, you’ll see the full history of the mission process.  \n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23swfvnJUfidJCD3NSNcYUMcvtgxthK6w5oz5SF3EC4DHcssvvBCMijE3YCpCijyK19gW.png)\n\nThe history is saved to an off-chain database so we don’t have to query the blockchain every single time.\n\nAnd that’s all for today. I hope you like the mission system — feel free to share your thoughts in the comments :)\n\n---\n## Moduł Misji w Sarmatiamundi\n\nW ostatnim poście opisałem nasz system komunikacji ([czat i prywatne wiadomości](/hive-139531/@sarmatia.app/public-chat-and-private-dm-made-only-on-blokchain)). Po publikacji odbyłem bardzo ciekawą wymianę zdań z @gtg w efekcie czego dodałem ostrzeżenie przy wiadomościach iż w wypadku utraty klucza memo, złodziej będzie miał dostęp do całej historii wiadomości, więc można używać tego systemu tylko do niewrażliwej komunikacji (aplikacja ma być swego rodzaju grą, więc co do zasady raczej nikt nawet nie będzie miał pomysłu by przesyłać tam wiadomości wrażliwych). Dodałem także oznaczenia o aktywności, by użytkownicy wiedzieli kto jest on-line. W planie dodanie do skrzynki blacklisty i inne ułatwienia.\n\nDziś natomiast pokażę kolejny ważny etap tworzenia naszej aplikacji, a więc moduł Misji.\n\n### Rodzaje misji\n\nMisje mogą być różne, najróżniejsze i z pewnością masy możliwości nie przewidziałem (będzie miejsce na aktualizacje aplikacji :)) ale postarałem się dodać opcje które wydały mi się najważniejsze. \nPrzede wszystkim kwestia nagroda. Aplikacja dopuszcza obecnie 3 rodzaje nagrody:\n- Barter: nagroda w formie opisowej, brak gwarancji wypłaty, ale przewidziany jest prosty system oceny zlecającego misję (konto które się podjęło misji, wykonało, dostało akcept wykonania będzie mogło dać prostą informację: zlecający wywiązał się lub nie wywiązał z wypłąty)\n- Tokeny: zarówno natywne (HIVE, HBD), jak i te z Hive Engine. Gwarancja realizacji zapłaty poprzez mechanizm jak w smart-contract escrow (zaufany pośrednik - konto aplikacji)\n- Punkty Zasług: Punkty, które będą służyć do tworzenia rankingu i nie tylko w warstwie grywalnej aplikacji, te mogą przyznawać tylko admini.\n\nA co jeszcze możemy ustawić?\n- ile osób może się podjąć danej misji, w przypadku nagrody w formie tokenowej musi to być skończona ilość, w przypadku barteru może być nieskończona. Możemy też dodać wykluczenia, tak aby wybrane przez nas osoby nie mogły podjąć się misji.\n- możemy również ustawić czas trwania ogłoszenia. To przydatne, bo czasami wykonanie misji po jakiejś dacie przestaje mieć sens...\n- musimy także ustawić czas, w jakim deklarujemy rozpatrzenie prawidłowego wykonania misji.\n- ostatnim wreszcie elementem jest opcjonalna pinezka. Mapa będzie ważnym elementem naszej aplikacji, dlatego możemy zlecić np napisanie artykułu o bitwie która odbyła się w jakimś konkretnym miejscu. Taka misja będzie widoczna zarówno na liście jak i na mapie. \n\nDodawanie opcji wygląda tak:\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23sweHStVBtdi8uneuDEsmZmGyaD37hPTUdpqSjvrQfB8AQKyBoFSKk7u7JFtmNNvbL3R.png)\n\n\n### Proces\n\nZa najważniejsze w tego typu systemie uważam właściwy proces tak aby zapewniał maksimum uczciwości i przejrzystości. Dlatego też przebieg wypełniania misji w naszej aplikacji może być wieloetapowy.\nPierwszym krokiem jest oczywiście ustanowienie misji. Może to zrobić każdy zalogowany użytkownik chociaż admin ma trochę dodatkowych opcji. Sama misja jest postem na blokchainie. Wszystkie dodatkowe atrybuty misji są w json_metadata postu. Po publikacji misja pojawia się na liście:\n\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23t76k7pL8Qj18YdJvJykyNz4bJDWu8FAHJvdsCvtwznkzxghumDkzttRsFny6vuMCJWx.png)\n\nKolejnym krokiem, jest oczywiście przyjęcie misji przez użytkownika. Jeśli misja była przeznaczona do jednorazowego użycia, lub zostało ostatnie użycie, po podjęciu misji jest ona zablokowana dla innych użytkowników. Po wykonaniu misji, wchodzimy w nią w aplikacji klikamy guziczek zgłoś wykonanie i następnie wpisujemy uzasadnienie opisowe i/lub link. I czekamy na akceptacje zlecającego:\n\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/EnynaEEWj1nG6ekmLJu75Pi71Rr9bZK9HUZZon2YQwCcaJdSHMty2fyjzm8NxQmc6kU.png)\n\nI teraz mamy dwie ścieżki. Albo zlecający akceptuje i wtedy nagroda tokenowa automatycznie idzie do wykonującego misję, lub zlecający wykonuje inną zapłate (barterową). Albo następuje odrzucenie pracy (opcjonalnie z uzasadnieniem.\n\nTo jednak nie koniec, bo wykonujący może albo przyjąć \"werdykt\" albo się odwołać. Przy odwołaniu również może dodać uzasadnienie.\nRozstrzygającym odwołanie jest admin i może on albo przyznać rację wykonującemu (i wtedy następuje wypłata automatyczna, lub zleceniodawca jest zobowiązany honorem aby zrobić to do czego się zobowiązał - jeśli nie zrobi dostanie negatywną ocenę) albo zlecającemu. I na tym kończy się proces przebiegu misji.\nKażdy kolejny krok jest zapisywany w komentarzach do postu-misji, więc przebieg jest w pełni transparentny.\n\n### Dodawanie misji, a feed hive\nMisja jak było to wspomniane jest postem, więc ma też standardowy edytor tekstu, tytuł, tagi, beneficjenci. Ze względu na charakter tego postu dodaliśmy automat ustanawiający konto @null jako domyślny beneficjent (ale można go usunąć). Czasem misja sama w sobie może być wartościową treścią godną upvotów i nagrody społeczności hive. Dodaliśmy jednak jeszcze jeden dodatek - tagi wewnętrzne. Takie rozwiązanie ma z jednej strony umożliwić dobre filtrowanie na liście misji, a z drugiej nie zaśmiecać tagów z faktycznymi postami, jeśli misja nie wymaga by ją gdzieś szerzej publikować, czy miałaby charakter bliższy spamowi niż wartościowej treści.\n\n### Statystyki\n\nStatystyki to fajna rzecz, ja ją lubię. Dlatego dodaliśmy na koncie użytkownika zakładke gdzie może sprawdzić historię zarówno podjętych misji jak i zleconych, a wchodząc w nie będzie widział historię procesu misji. \n\n![image.png](https://files.peakd.com/file/peakd-hive/sarmatia.app/23swfvnJUfidJCD3NSNcYUMcvtgxthK6w5oz5SF3EC4DHcssvvBCMijE3YCpCijyK19gW.png)\nHistoria, zapisuje się do bazy of-chain, żeby nie trzeba było za każdym razem odpytywać blokchainu. \nNo i to tyle na dziś, mam nadzieję, że system misji się Wam podoba, podzielcie się refleksjami w komentarzu :)\n",
+        "category": "hive-139531",
+        "children": 0,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-19T07:22:24",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/sarmatia.app/23t76k7pL8Qj18YdJvJykyNz4bJDWu8FAHJvdsCvtwznkzxghumDkzttRsFny6vuMCJWx.png",
+            "https://files.peakd.com/file/peakd-hive/sarmatia.app/23sweHStVBtdi8uneuDEsmZmGyaD37hPTUdpqSjvrQfB8AQKyBoFSKk7u7JFtmNNvbL3R.png",
+            "https://files.peakd.com/file/peakd-hive/sarmatia.app/EnynaEEWj1nG6ekmLJu75Pi71Rr9bZK9HUZZon2YQwCcaJdSHMty2fyjzm8NxQmc6kU.png",
+            "https://files.peakd.com/file/peakd-hive/sarmatia.app/23swfvnJUfidJCD3NSNcYUMcvtgxthK6w5oz5SF3EC4DHcssvvBCMijE3YCpCijyK19gW.png"
+          ],
+          "tags": [
+            "hivedev",
+            "polish",
+            "hive",
+            "pob",
+            "qurator",
+            "games",
+            "rpg",
+            "hivebounty"
+          ],
+          "users": [
+            "sarmatia.app",
+            "gtg",
+            "null"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 14892900701333,
+        "payout": 1.446,
+        "payout_at": "2026-04-26T07:22:24",
+        "pending_payout_value": "1.446 HBD",
+        "percent_hbd": 10000,
+        "permlink": "misions-in-sarmatia-mundi-app",
+        "post_id": 149857054,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 59
+        },
+        "title": "Misions in Sarmatia Mundi App",
+        "updated": "2026-04-19T07:22:24",
+        "url": "/hive-139531/@sarmatia.app/misions-in-sarmatia-mundi-app"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 19152274986495,
+            "voter": "acidyo"
+          },
+          {
+            "rshares": 157894773849,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 1172582875130,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 12229379211,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 1468316157,
+            "voter": "matt-a"
+          }
+        ],
+        "author": "louis88",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 80.03,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "I gonna call it day. But...\n\n...in this blog post, I’d like to look back on the work I’ve done today – partly as a summary for myself, but also to show you all what I’ve managed to accomplish today! \n\nIt’s now 10:30 p.m., and I started my work researching security vulnerabilities in the HIVE ecosystem around midday. First, I went through a few audits from last week to see if I’d missed anything, and I had something in mind that I’d been wanting to test for a long time. Namely, Witnesses can include a description along with their parameters for the blockchain, as well as a URL for their Witness announcement post or whatever—most use their profile or their project. And that’s exactly where I wanted to start and see what might happen—and yes, something did happen.\n\n\n![untitled.gif](https://media.tenor.com/ahM_AwIFbigAAAAC/dwight-schrute.gif)\n\n\nI started by using my brother’s witness and entered various XSS payloads as URLs... from standard javascript:// to frontend-specific variables, I tried out about 50 different payloads and have to say—sure enough, the frontends I tested all passed with no significant errors! But I couldn’t just let that slide because there had to be something there—so I took my Claude subscription, threw everything I’d done so far out the window, and ran the AI through a bunch of different repos—because that’s the kind of work an AI can handle well. In the end, something interesting came out of it—namely, a pretty silly and simple error... In that very field, I could enter something specific and completely crash at least one frontend. The server behind it just said—Sorry, dude—something’s wrong here and threw me a 500 error. That was immediate confirmation for me, so I told the developer right away what was going on. He saw the problem right away and got to work on a fix. Less than 20 minutes later, the error was fixed and we were both happy :)\n\n\n![untitled.gif](https://media.tenor.com/HYGK4__zJFEAAAAC/thumbs-up-nice.gif)\n\n---\n\nBut the day didn’t end there—since I don’t give up easily and, thanks to my years of experience, now know what matters when it comes to HIVE—I was able to use AI to identify additional vulnerabilities in HIVE frontends over the course of three cycles. In one of the vulnerabilities I found, the title wasn’t properly sanitized, making a stored XSS attack possible. The site operator fixed this immediately after I reported it.\n\n\n![untitled.gif](https://media.tenor.com/u2QCLfzxZnAAAAAC/nice-work-you-two-chief-li.gif)\n\n---\n\nI really don’t give up and keep going until I get tired or it no longer makes sense to pursue the goal—so I kept at it and found more stored XSS bugs—this time in an area I hadn’t really been focusing on, but which might still be used sometimes, and areas like that should be tested too. In this case, it was about looking at the history of a blog post and comparing two versions.\nI reported it, and it was fixed right away. Perfect! I think I did a good job today (at least from my perspective) and made the Hive ecosystem a little bit more secure—even more secure than it already is!\n\n![untitled.gif](https://media.tenor.com/xTPo2esLHcMAAAAC/make-america-great-again-maga.gif)\n\n---\n\nThat’s all from me for today—and for those wondering why I’ve already published five articles today: these are blog posts linked to a product on PeakD. You can support me and my work there every month by visiting my shop at https://peakd.com/@louis88/shop. But only if you like what I’m doing for the HIVE blockchain.\n\n![untitled.gif](https://media.tenor.com/3Y2EN-82AzwAAAAC/you-deserved-it-barney-ross.gif)\n\nAnd for those wondering why Inleo’s Rafiki AI bot is so fascinated by the Flat Earth theory—well, that’s probably a topic for another episode titled “Security in the Hive Ecosystem with Louis and the Friendly AI Next Door” (who’s always happy to drop by for coffee).\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/louis88/EoKBea7Ni2Xf4j6wi6LY11Aj31y4Mrq4nwF57EUjRJtNxDAYyuXkuDvycm38CrC7GaX.png)\n\n\nWell, with that in mind—see you next time, and sorry for all the spam today.\n\nCya\n\n![untitled.gif](https://media.tenor.com/zuLgj0hQlqIAAAAC/brrr-so-cold.gif)",
+        "category": "hive-139531",
+        "children": 14,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-14T21:27:51",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "ai_tools": {
+            "other": true
+          },
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://media.tenor.com/ahM_AwIFbigAAAAC/dwight-schrute.gif",
+            "https://media.tenor.com/HYGK4__zJFEAAAAC/thumbs-up-nice.gif",
+            "https://media.tenor.com/u2QCLfzxZnAAAAAC/nice-work-you-two-chief-li.gif",
+            "https://media.tenor.com/xTPo2esLHcMAAAAC/make-america-great-again-maga.gif",
+            "https://media.tenor.com/3Y2EN-82AzwAAAAC/you-deserved-it-barney-ross.gif",
+            "https://files.peakd.com/file/peakd-hive/louis88/EoKBea7Ni2Xf4j6wi6LY11Aj31y4Mrq4nwF57EUjRJtNxDAYyuXkuDvycm38CrC7GaX.png",
+            "https://media.tenor.com/zuLgj0hQlqIAAAAC/brrr-so-cold.gif"
+          ],
+          "tags": [
+            "hive",
+            "community",
+            "security",
+            "blog",
+            "frontend",
+            "development",
+            "dev",
+            "research"
+          ],
+          "users": [
+            "louis88"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 483103419293617,
+        "payout": 48.159,
+        "payout_at": "2026-04-21T21:27:51",
+        "pending_payout_value": "48.159 HBD",
+        "percent_hbd": 0,
+        "permlink": "another-successful-day-for-security-in-the-hive-ecosystem-only-a-dead-bug-is-a-good-bug",
+        "post_id": 149810427,
+        "reblogs": 6,
+        "replies": [],
+        "stats": {
+          "flag_weight": 2,
+          "gray": false,
+          "hide": false,
+          "total_votes": 784
+        },
+        "title": "Another successful day for security in the HIVE ecosystem (Only a Dead Bug, is a Good Bug!)",
+        "updated": "2026-04-14T21:27:51",
+        "url": "/hive-139531/@louis88/another-successful-day-for-security-in-the-hive-ecosystem-only-a-dead-bug-is-a-good-bug"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 32143175032361,
+            "voter": "abit"
+          },
+          {
+            "rshares": 26915673526915,
+            "voter": "adm"
+          },
+          {
+            "rshares": 23273646283,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 669034822076,
+            "voter": "ace108"
+          },
+          {
+            "rshares": 1085488544,
+            "voter": "kaykunoichi"
+          }
+        ],
+        "author": "cutehive.com",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 69.69,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "While using **HIVE READER MINI**, a friend recently asked me a very practical question:  \n>👉 *How can I find the TXID of a deposit I made to an exchange (such as Binance)?*\n\nThis made me realize that although HIVE READER already supports viewing wallet records and account activities, **it didn’t display the TXID**, which can be inconvenient in certain scenarios.\n\n\n![image.png](https://images.hive.blog/DQmUUcd7YkQ9ekWcHZ1RoPCK3WuEExM2795yyH6WYdiSmkN/image.png)\n\n\nWhen dealing with exchanges, **the TXID (transaction hash) is one of the most critical pieces of information**, as it allows the other party to quickly locate your transaction.\n\nSo, I’ve added this feature to HIVE READER MINI to make things easier for everyone 👇\n\n---\n\n## ✨ Key Update: Full TXID Display Support\n\nYou can now directly view the transaction ID (TXID) in:\n\n- Wallet Activity  \n- Activities  \n\n---\n\n## 🧩 Technical Improvements\n\nThis update goes beyond UI enhancements and includes backend optimizations:\n\n- **Data Model Extension**  \n  The Activity interface now includes a new `trx_id` field to store the transaction hash from the Hive blockchain.\n\n- **Service Layer Optimization**  \n  Updated the `getHistory` and `getWalletHistory` methods in `hiveService.ts`:  \n  👉 Automatically extracts and stores the TXID for each operation when fetching account history from Hive nodes.\n\n\n![ed2a96425f2c9b0588c48409855b3569.png](https://images.hive.blog/DQmWWJQmoYoyDQNDjt6DPhAoQs9NQrbEkxC2XJHKh9DEabG/ed2a96425f2c9b0588c48409855b3569.png)\n\n\n## 🖥️ UI Enhancements: Clearer and More Intuitive\n\n### 📌 JSON Modal Upgrade (JsonModal)\n\nWhen you click the activity icon to view raw JSON data:\n\n- If a TXID is present  \n- It will be displayed prominently at the top of the modal in **orange text** under the **TXID** section\n\nThis makes it easy to spot at a glance.\n\n---\n\n## ⚡ New Feature: One-Click TXID Copy\n\nTo further improve usability, a quick copy feature has been added:\n\n- 🆕 **Copy Button**  \n  A small copy icon is now displayed next to the TXID\n\n- ⚡ **One-Click Copy**  \n  Click the icon to instantly copy the TXID to your clipboard\n\n- ✅ **Visual Feedback**  \n  The icon briefly changes to a checkmark (✔) to confirm a successful copy\n\n- 🔄 **Independent State Management**  \n  The TXID copy function works independently from the “Copy Full JSON” button for more precise interaction\n\n\n![image.png](https://images.hive.blog/DQmUQSsN373Gzr5ep93KNKThMrHaPnt2brBCXtJTwvQHzi7/image.png)\n\n\n## 🚀 Practical Benefits\n\nWith TXID support, you can now:\n\n- Quickly provide transaction proof to exchanges (e.g., Binance)  \n- Easily look up transactions in Hive block explorers  \n- Improve efficiency in troubleshooting and asset tracking  \n\n---\n\n## 🌐 Current Version\n\n✅ **Version: v2.7.8**  \n👉 https://reader.cutehive.com\n\n\n\nWe always listen to user feedback, and this update is a direct result of a real-world use case. We’ll continue refining and improving the tool to make it more practical and user-friendly.\n\n**Step by step, contributing to the growth of the HIVE ecosystem.**",
+        "category": "hive-139531",
+        "children": 2,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-15T08:43:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "format": "markdown",
+          "image": [
+            "https://images.hive.blog/DQmUUcd7YkQ9ekWcHZ1RoPCK3WuEExM2795yyH6WYdiSmkN/image.png",
+            "https://images.hive.blog/DQmWWJQmoYoyDQNDjt6DPhAoQs9NQrbEkxC2XJHKh9DEabG/ed2a96425f2c9b0588c48409855b3569.png",
+            "https://images.hive.blog/DQmUQSsN373Gzr5ep93KNKThMrHaPnt2brBCXtJTwvQHzi7/image.png"
+          ],
+          "links": [
+            "https://reader.cutehive.com"
+          ],
+          "tags": [
+            "hive",
+            "blockchain",
+            "development",
+            "cutehive",
+            "reader"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 321243875549919,
+        "payout": 32.233,
+        "payout_at": "2026-04-22T08:43:30",
+        "pending_payout_value": "32.233 HBD",
+        "percent_hbd": 10000,
+        "permlink": "hive-reader-mini-update-txid-support-now-live-v2-7-8",
+        "post_id": 149814624,
+        "reblogs": 5,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 189
+        },
+        "title": "🔧 HIVE READER MINI Update: TXID Support Now Live (v2.7.8)",
+        "updated": "2026-04-15T08:43:30",
+        "url": "/hive-139531/@cutehive.com/hive-reader-mini-update-txid-support-now-live-v2-7-8"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1173062417348,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 43286585659,
+            "voter": "garagebill"
+          },
+          {
+            "rshares": 4960060881400,
+            "voter": "demotruk"
+          },
+          {
+            "rshares": 16446321374,
+            "voter": "pcste"
+          },
+          {
+            "rshares": 1773376239,
+            "voter": "allyinspirit"
+          }
+        ],
+        "author": "sagarkothari88",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.61,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          },
+          {
+            "account": "joseamenac",
+            "weight": 100
+          },
+          {
+            "account": "null",
+            "weight": 300
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1775734552472-1e378bfba702283e.webp)](https://3speak.tv/watch?v=sagarkothari88/1b9a03ac)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=sagarkothari88/1b9a03ac)\n\n\n---\n\n## HiveReactKit\n\n### Add Poll Widget in HiveDetailPost and Improve Data Handling\n\n- feat: add poll widget in HiveDetailPost and fix snaps API + metadata parsing.\n- Added poll widget with live voting data in post detail.\n- Fixed json_metadata parsing across different API responses.\n- Improved payout handling for paid posts.\n- Resolved snaps API 403 issue.\n- Synced types with PeakD pagination format.\n\n\nPoll Widget with Live Voting Data\n![Poll Widget with Live Voting Data](https://files.peakd.com/file/peakd-hive/sagarkothari88/23uEjc2tzBwef8Mkc1NPMKheMZCNY2bpBW1af8UAXaijFFCDA85gus1s84fTBx5yQEwjW.png)\n\nPost Detail with Poll and Payout UI\n![Post Detail with Poll and Payout UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/Ep3V9z4wDtpsLkXVXECwk85uNqDyK2u69Dj3tF6QGFt5YSa4wMUL6zHsAVcXMNLfX4K.png)\n\n---\n\n## hReplier-react\n\n### Integrate HiveDetailPost with Routing and Post Detail Navigation\n\n- Integrated HiveDetailPost with routing and post detail navigation.\n- Added post detail routing and full-width layout.\n- Integrated HiveDetailPost with full interaction support.\n- Preserved feed tab state for back navigation.\n- Connected local HiveReactKit build for development.\n\n\nPost Detail Full-Width Layout With Poll Details\n![Post Detail Full-Width Layout With Poll Details](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tkbgVDtvGMA8cUMrZmhbfy2Z8VfeSuqPkuodLce26yT1W7fky41LwysFer2pirEvest.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=sagarkothari88/1b9a03ac)\n",
+        "category": "hive-139531",
+        "children": 9,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-17T06:02:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1775734552472-1e378bfba702283e.webp"
+          ],
+          "tags": [
+            "hive",
+            "dev",
+            "hiveproject",
+            "india",
+            "reactjs",
+            "witness",
+            "playstore",
+            "appstore",
+            "dapps",
+            "3speak"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "## HiveReactKit\n\n### Add Poll Widget in HiveDetailPost and Improve Data Handling\n\n- feat: add poll widget in HiveDetailPost and fix snaps API + metadata parsing.\n- Added poll widget with live voting data in post detail.\n- Fixed json_metadata parsing across different API responses.\n- Improved payout handling for paid posts.\n- Resolved snaps API 403 issue.\n- Synced types with PeakD pagination format.\n\n\nPoll Widget with Live Voting Data\n![Poll Widget with Live Voting Data](https://files.peakd.com/file/peakd-hive/sagarkothari88/23uEjc2tzBwef8Mkc1NPMKheMZCNY2bpBW1af8UAXaijFFCDA85gus1s84fTBx5yQEwjW.png)\n\nPost Detail with Poll and Payout UI\n![Post Detail with Poll and Payout UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/Ep3V9z4wDtpsLkXVXECwk85uNqDyK2u69Dj3tF6QGFt5YSa4wMUL6zHsAVcXMNLfX4K.png)\n\n---\n\n## hReplier-react\n\n### Integrate HiveDetailPost with Routing and Post Detail Navigation\n\n- Integrated HiveDetailPost with routing and post detail navigation.\n- Added post detail routing and full-width layout.\n- Integrated HiveDetailPost with full interaction support.\n- Preserved feed tab state for back navigation.\n- Connected local HiveReactKit build for development.\n\n\nPost Detail Full-Width Layout With Poll Details\n![Post Detail Full-Width Layout With Poll Details](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tkbgVDtvGMA8cUMrZmhbfy2Z8VfeSuqPkuodLce26yT1W7fky41LwysFer2pirEvest.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |",
+              "tags": [
+                "hive",
+                "dev",
+                "hiveproject",
+                "india",
+                "reactjs",
+                "witness",
+                "playstore",
+                "appstore",
+                "dapps",
+                "3speak"
+              ]
+            },
+            "info": {
+              "author": "sagarkothari88",
+              "duration": 42,
+              "file": "ipfs://QmctgbvA4PcSfw4uhP39uoqbH62yQhnGnXjwY8VXCSNmCa",
+              "filesize": 20642530,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "1b9a03ac",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://QmfJMo3Pv1UYKuYwLeuafCUCdKsEX3Ve84hwQkKueP9uFZ/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1775734552472-1e378bfba702283e.webp"
+                }
+              ],
+              "title": "Daily Development Update: HiveReactKit Poll Integration and hReplier Post Detail Navigation",
+              "video_v2": "ipfs://QmfJMo3Pv1UYKuYwLeuafCUCdKsEX3Ve84hwQkKueP9uFZ/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 54742459596508,
+        "payout": 5.421,
+        "payout_at": "2026-04-24T06:02:03",
+        "pending_payout_value": "5.421 HBD",
+        "percent_hbd": 0,
+        "permlink": "1b9a03ac",
+        "post_id": 149836145,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 244
+        },
+        "title": "Daily Development Update: HiveReactKit Poll Integration and hReplier Post Detail Navigation",
+        "updated": "2026-04-17T06:02:03",
+        "url": "/hive-139531/@sagarkothari88/1b9a03ac"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1172785570566,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 43276510222,
+            "voter": "garagebill"
+          },
+          {
+            "rshares": 72561216431,
+            "voter": "ardina"
+          },
+          {
+            "rshares": 4955445818372,
+            "voter": "demotruk"
+          },
+          {
+            "rshares": 16446321374,
+            "voter": "pcste"
+          }
+        ],
+        "author": "sagarkothari88",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.61,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          },
+          {
+            "account": "eddie-3speak",
+            "weight": 100
+          },
+          {
+            "account": "null",
+            "weight": 300
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1775558347214-6ed2bc9d21e81873.webp)](https://3speak.tv/watch?v=sagarkothari88/3ab1542f)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=sagarkothari88/3ab1542f)\n\n\n---\n\n## HiveReactKit\n\n### Refactor HiveDetailPost to Modern Single-Column Layout with Enhanced UI\n- Refactored post detail to clean single-column layout.\n- Unified UI with UserDetailProfile design for consistency across components.\n- Improved actions via PostActionButton for better interaction handling.\n- Fixed payout display and added tooltip for detailed reward insights.\n- Added skeleton loading to improve perceived performance.\n- Introduced image captions for better content clarity.\n- Introduced new route and full documentation for easier integration and usage.\n\n\nPayout Tooltip and Action Bar\n![Payout Tooltip and Action Bar](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo6BhJsFEiHvqjfN5GH7BX37UqxsaZvweb4BVgpkPx6nfgq4UNECHn1R37sPGeERo6m.png)\n\nNew Single Column Post Detail UI\n![New Single Column Post Detail UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tbKEDctMcbnytoVYWC4yUMxivmEpbN2uPwMkn4jeXfPrLSmJ2vDvcicfjAvnQKu3oau.png)\n\n---\n\n### Switch to @snapie/renderer, Fix 3Speak Layout and Payout Parsing\n\n- Switched to modern renderer for better media embeds.\n- Fixed 3Speak portrait video layout for improved viewing experience.\n- Corrected payout parsing and fallback logic.\n- Added customisation props (icon, background) for flexibility.\n- Improved loading UI consistency across components.\n\nMedia Embed with New Renderer\n![Media Embed with New Renderer](https://files.peakd.com/file/peakd-hive/sagarkothari88/23uEua4sPvAtGsprN1aTfcyxBhZLvaTDkSGuQ642D94ftvcF2xavykDnfRejioCvwcHe9.png)\n\n3Speak Video Layout Fix\n![3Speak Video Layout Fix](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tv8HKaYjA5tnpge1riM9Hn8aDcyCdVTty4qqd2HdZKkfbUW7ApffAxfDGtnEmpGiLxC.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=sagarkothari88/3ab1542f)\n",
+        "category": "hive-139531",
+        "children": 21,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-16T06:02:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1775558347214-6ed2bc9d21e81873.webp"
+          ],
+          "tags": [
+            "hive",
+            "dev",
+            "hiveproject",
+            "india",
+            "reactjs",
+            "witness",
+            "playstore",
+            "appstore",
+            "dapps",
+            "3speak"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "## HiveReactKit\n\n### Refactor HiveDetailPost to Modern Single-Column Layout with Enhanced UI\n- Refactored post detail to clean single-column layout.\n- Unified UI with UserDetailProfile design for consistency across components.\n- Improved actions via PostActionButton for better interaction handling.\n- Fixed payout display and added tooltip for detailed reward insights.\n- Added skeleton loading to improve perceived performance.\n- Introduced image captions for better content clarity.\n- Introduced new route and full documentation for easier integration and usage.\n\n\nPayout Tooltip and Action Bar\n![Payout Tooltip and Action Bar](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo6BhJsFEiHvqjfN5GH7BX37UqxsaZvweb4BVgpkPx6nfgq4UNECHn1R37sPGeERo6m.png)\n\nNew Single Column Post Detail UI\n![New Single Column Post Detail UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tbKEDctMcbnytoVYWC4yUMxivmEpbN2uPwMkn4jeXfPrLSmJ2vDvcicfjAvnQKu3oau.png)\n\n---\n\n### Switch to @snapie/renderer, Fix 3Speak Layout and Payout Parsing\n\n- Switched to modern renderer for better media embeds.\n- Fixed 3Speak portrait video layout for improved viewing experience.\n- Corrected payout parsing and fallback logic.\n- Added customisation props (icon, background) for flexibility.\n- Improved loading UI consistency across components.\n\nMedia Embed with New Renderer\n![Media Embed with New Renderer](https://files.peakd.com/file/peakd-hive/sagarkothari88/23uEua4sPvAtGsprN1aTfcyxBhZLvaTDkSGuQ642D94ftvcF2xavykDnfRejioCvwcHe9.png)\n\n3Speak Video Layout Fix\n![3Speak Video Layout Fix](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tv8HKaYjA5tnpge1riM9Hn8aDcyCdVTty4qqd2HdZKkfbUW7ApffAxfDGtnEmpGiLxC.png)\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimised version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |",
+              "tags": [
+                "hive",
+                "dev",
+                "hiveproject",
+                "india",
+                "reactjs",
+                "witness",
+                "playstore",
+                "appstore",
+                "dapps",
+                "3speak"
+              ]
+            },
+            "info": {
+              "author": "sagarkothari88",
+              "duration": 43,
+              "file": "ipfs://QmPcSwZJM9eHDzqsrXYwAE9Bk4hy7sVGdw7jCv5etgSSHq",
+              "filesize": 57546302,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "3ab1542f",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://Qme5jzEvdbPzj4cX78hUa6T8NCBSHSVrUrWEYu6E2o5iRC/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1775558347214-6ed2bc9d21e81873.webp"
+                }
+              ],
+              "title": "Daily Development Update: HiveReactKit Post Detail Refactor and Renderer Improvements",
+              "video_v2": "ipfs://Qme5jzEvdbPzj4cX78hUa6T8NCBSHSVrUrWEYu6E2o5iRC/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 54933122837590,
+        "payout": 5.313,
+        "payout_at": "2026-04-23T06:02:03",
+        "pending_payout_value": "5.313 HBD",
+        "percent_hbd": 0,
+        "permlink": "3ab1542f",
+        "post_id": 149824783,
+        "reblogs": 4,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 252
+        },
+        "title": "Daily Development Update: HiveReactKit Post Detail Refactor and Renderer Improvements",
+        "updated": "2026-04-16T06:02:03",
+        "url": "/hive-139531/@sagarkothari88/3ab1542f"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 2665353916490,
+            "voter": "steemychicken1"
+          },
+          {
+            "rshares": 1172505410097,
+            "voter": "kenny-crane"
+          },
+          {
+            "rshares": 43265162299,
+            "voter": "garagebill"
+          },
+          {
+            "rshares": 4955330314372,
+            "voter": "demotruk"
+          },
+          {
+            "rshares": 16446321374,
+            "voter": "pcste"
+          }
+        ],
+        "author": "sagarkothari88",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.61,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 300
+          },
+          {
+            "account": "null",
+            "weight": 300
+          },
+          {
+            "account": "threespeakfund",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "[![](https://images.3speak.tv/images/1775548266596-b359b3c98e887e8b.webp)](https://3speak.tv/watch?v=sagarkothari88/1860e262)\n\n▶️ [Watch on 3Speak](https://3speak.tv/watch?v=sagarkothari88/1860e262)\n\n\n---\n\n## hReplier App\n\n### Profile Integration: Reporting, Sharing, and Blocked User Handling\n\n- feat(profile-integration): add reporting, sharing, and blocked-user handling with local stores.\n- Implemented onShare and onSharePost with hReplier URLs.\n- Removed rewards tabs via tabShown.\n- Wired onReportUser with API + ignore + local tracking.\n- Wired onReportPost with API + local tracking.\n- Added reportedPostsStore and reportedUsersStore with caching.\n- Implemented blocked profile UI for ignored users.\n- Passed reportedPosts and reportedAuthors to profile for filtering.\n\nShare User Profile\n![Share User Profile](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGVYgvbeDw1GpG8zAGMQXWtCPPiZ9Kn3LSoRVaXKn68x7joj29AW3ey9HAm1qJTRT7p.png)\n\nReport User Profile and It get automatically blocked\n![Report User Profile and It get automatically blocked](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo1vQfdbT8jHN5MY89h416npky89yc1o4ftZyvgbCQdNw2Jk27AyZnqnBZB74hNskVa.png)\n\nBlocked User Profile UI handling\n![Blocked User Profile UI handling](https://files.peakd.com/file/peakd-hive/sagarkothari88/23swbht76kt3scQsb3Ywv9xoxbG6ZhKkXaxJtkVXFNnvEpymmVbhv9QdeTKV1RoPwcuzH.png)\n\nRemove Blocked User Profile from Ignore List\n![Remove Blocked User Profile from Ignore List](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t6zatBHcZarXvjymRMw7oScYnDvN9RknwvaSrAMyDPDAPLQUkULVtJqyiXx6BGPLr4V.png)\n\n---\n\n## Hive-Stats App\n\n### Profile System Upgrade and Navigation Improvements\n\n- Replaced entire custom profile dashboard with UserDetailProfile.\n- Switched to local package to fix React version issues.\n- Simplified tabs to focus on analytics (wallet, voting, rewards, etc.).\n- Updated routing to cleaner /@username format.\n- Added share profile functionality.\n- Improved back navigation using browser history.\n\nUpdated Search Screen in Hive-Stats\n![Updated Search Screen in Hive-Stats](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t773pPub4AnmZdpH4r2ahuwDrtnNeEF51JZ7fgmVqRXf9WykBbCNJpQqNBk3PCXJ2KR.png)\n\nUpdated New Dashboard - Analytics Tabs (Wallet, Voting, Rewards)\n![Updated New Dashboard - Voting Power Tab UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t75BLN52Ht6a5d4rh2WT8wYY8hirZFVvLHZvfLDQdjVp4qvKzEddFAwYUPLzmChKZKa.png)\n\n![Updated New Dashboard - Wallet Tab UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23w28skpojWbyEv8yKxL5dbSNmkaarDC3cgbRdeyaFXS8egiFwngGoL3Adk9wdSyqC1sQ.png)\n\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimized version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |\n\n---\n\n▶️ [3Speak](https://3speak.tv/watch?v=sagarkothari88/1860e262)\n",
+        "category": "hive-139531",
+        "children": 15,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-15T06:02:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "3speak/0.3.0",
+          "image": [
+            "https://images.3speak.tv/images/1775548266596-b359b3c98e887e8b.webp"
+          ],
+          "tags": [
+            "hive",
+            "dev",
+            "hiveproject",
+            "india",
+            "reactjs",
+            "witness",
+            "playstore",
+            "appstore",
+            "dapps",
+            "3speak"
+          ],
+          "type": "3speak/video",
+          "video": {
+            "content": {
+              "description": "## hReplier App\n\n### Profile Integration: Reporting, Sharing, and Blocked User Handling\n\n- feat(profile-integration): add reporting, sharing, and blocked-user handling with local stores.\n- Implemented onShare and onSharePost with hReplier URLs.\n- Removed rewards tabs via tabShown.\n- Wired onReportUser with API + ignore + local tracking.\n- Wired onReportPost with API + local tracking.\n- Added reportedPostsStore and reportedUsersStore with caching.\n- Implemented blocked profile UI for ignored users.\n- Passed reportedPosts and reportedAuthors to profile for filtering.\n\nShare User Profile\n![Share User Profile](https://files.peakd.com/file/peakd-hive/sagarkothari88/23tGVYgvbeDw1GpG8zAGMQXWtCPPiZ9Kn3LSoRVaXKn68x7joj29AW3ey9HAm1qJTRT7p.png)\n\nReport User Profile and It get automatically blocked\n![Report User Profile and It get automatically blocked](https://files.peakd.com/file/peakd-hive/sagarkothari88/Eo1vQfdbT8jHN5MY89h416npky89yc1o4ftZyvgbCQdNw2Jk27AyZnqnBZB74hNskVa.png)\n\nBlocked User Profile UI handling\n![Blocked User Profile UI handling](https://files.peakd.com/file/peakd-hive/sagarkothari88/23swbht76kt3scQsb3Ywv9xoxbG6ZhKkXaxJtkVXFNnvEpymmVbhv9QdeTKV1RoPwcuzH.png)\n\nRemove Blocked User Profile from Ignore List\n![Remove Blocked User Profile from Ignore List](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t6zatBHcZarXvjymRMw7oScYnDvN9RknwvaSrAMyDPDAPLQUkULVtJqyiXx6BGPLr4V.png)\n\n---\n\n## Hive-Stats App\n\n### Profile System Upgrade and Navigation Improvements\n\n- Replaced entire custom profile dashboard with UserDetailProfile.\n- Switched to local package to fix React version issues.\n- Simplified tabs to focus on analytics (wallet, voting, rewards, etc.).\n- Updated routing to cleaner /@username format.\n- Added share profile functionality.\n- Improved back navigation using browser history.\n\nUpdated Search Screen in Hive-Stats\n![Updated Search Screen in Hive-Stats](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t773pPub4AnmZdpH4r2ahuwDrtnNeEF51JZ7fgmVqRXf9WykBbCNJpQqNBk3PCXJ2KR.png)\n\nUpdated New Dashboard - Analytics Tabs (Wallet, Voting, Rewards)\n![Updated New Dashboard - Voting Power Tab UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23t75BLN52Ht6a5d4rh2WT8wYY8hirZFVvLHZvfLDQdjVp4qvKzEddFAwYUPLzmChKZKa.png)\n\n![Updated New Dashboard - Wallet Tab UI](https://files.peakd.com/file/peakd-hive/sagarkothari88/23w28skpojWbyEv8yKxL5dbSNmkaarDC3cgbRdeyaFXS8egiFwngGoL3Adk9wdSyqC1sQ.png)\n\n\n---\n\n## Powering the Hive Ecosystem\n\n- Continuously improving Hive applications with a focus on stability, performance, and scalability  \n- Contributing to open-source development and building reusable solutions for the community  \n- Working towards a stronger, more accessible, and feature-rich Hive ecosystem  \n\n---\n\n### Final Note\n\n- This post has been refined with the help of AI to improve readability and structure  \n- The original content and optimized version are both available for reference  \n\n---\n\n##### Applications Built by Us\n\n| | | |\n|---|---|---|\n| [![](https://images.ecency.com/70x0/https://hreplier.sagarkothari88.one/images/logo.png)](https://hreplier.sagarkothari88.one) | [![](https://images.ecency.com/70x0/https://hpolls.sagarkothari88.one/logo.png)](https://hpolls.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hive-stats.sagarkothari88.one/images/stats_logo.png)](https://hive-stats.sagarkothari88.one) |\n| [hReplier](https://hreplier.sagarkothari88.one) | [hPolls](https://hpolls.sagarkothari88.one/) | [hStats](https://hive-stats.sagarkothari88.one/) |\n| --- | --- | --- |\n| [![](https://images.ecency.com/70x0/https://hsnaps.sagarkothari88.one/logo.png)](https://hsnaps.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://hivefestfacts.sagarkothari88.one/logo-2.png)](https://hivefestfacts.sagarkothari88.one/) | [![](https://images.ecency.com/70x0/https://images.hive.blog/u/sagarkothari88/avatar?id=test)](https://sagarkothari88.one) |\n| [hSnaps](https://hsnaps.sagarkothari88.one/) | [hFestFacts](https://hivefestfacts.sagarkothari88.one/) | [Know more about us](https://sagarkothari88.one) |\n| --- | --- | --- |\n\n##### Support and Contact\n\n| | | |\n|---|---|---|\n[![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/12449/12449996.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://sagarkothari88.one/#/expenses)| [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/9720/9720387.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://vote.hive.uno/@sagarkothari88) | [![](https://images.ecency.com/70x0/https://cdn-icons-png.freepik.com/512/3670/3670157.png?uid=R157450845&ga=GA1.1.352572717.1773017077)](https://discord.gg/WEKa8JKg7W) |\n| [Transparency](https://sagarkothari88.one/#/expenses) | [Vote as Witness](https://vote.hive.uno/@sagarkothari88) | [Support via Discord](https://discord.gg/WEKa8JKg7W) |",
+              "tags": [
+                "hive",
+                "dev",
+                "hiveproject",
+                "india",
+                "reactjs",
+                "witness",
+                "playstore",
+                "appstore",
+                "dapps",
+                "3speak"
+              ]
+            },
+            "info": {
+              "author": "sagarkothari88",
+              "duration": 91,
+              "file": "ipfs://QmYj2s81hMBiwXWgp6s5QR953rg3bFfPQ9eDWEUiGKhQpZ",
+              "filesize": 41101246,
+              "firstUpload": false,
+              "ipfs": null,
+              "ipfsThumbnail": null,
+              "lang": "en",
+              "permlink": "1860e262",
+              "platform": "3speak",
+              "sourceMap": [
+                {
+                  "format": "m3u8",
+                  "type": "video",
+                  "url": "ipfs://QmNvJzSRk3rzuMYFaoLEm83U5BFDWzaTnFnRaW2cMPuzNk/manifest.m3u8"
+                },
+                {
+                  "type": "thumbnail",
+                  "url": "https://images.3speak.tv/images/1775548266596-b359b3c98e887e8b.webp"
+                }
+              ],
+              "title": "Daily Development Update: hReplier React Moderation Features and Hive Stats Profile Upgrade",
+              "video_v2": "ipfs://QmNvJzSRk3rzuMYFaoLEm83U5BFDWzaTnFnRaW2cMPuzNk/manifest.m3u8"
+            }
+          }
+        },
+        "max_accepted_payout": "100000.000 HBD",
+        "net_rshares": 118358967173031,
+        "payout": 11.89,
+        "payout_at": "2026-04-22T06:02:03",
+        "pending_payout_value": "11.890 HBD",
+        "percent_hbd": 0,
+        "permlink": "1860e262",
+        "post_id": 149813879,
+        "reblogs": 5,
+        "replies": [],
+        "stats": {
+          "flag_weight": 2,
+          "gray": false,
+          "hide": false,
+          "total_votes": 366
+        },
+        "title": "Daily Development Update: hReplier React Moderation Features and Hive Stats Profile Upgrade",
+        "updated": "2026-04-15T06:02:03",
+        "url": "/hive-139531/@sagarkothari88/1860e262"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 197364843140,
+            "voter": "ausbitbank"
+          },
+          {
+            "rshares": 930690429,
+            "voter": "joeyarnoldvn"
+          },
+          {
+            "rshares": -1350392080,
+            "voter": "mmmmkkkk311"
+          },
+          {
+            "rshares": -93615517,
+            "voter": "mariuszkarowski"
+          },
+          {
+            "rshares": 1859595721575,
+            "voter": "quochuy"
+          }
+        ],
+        "author": "dlmmqb",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 74.99,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "This is a cross post of [@dlmmqb/behind-the-scenes-and-more-coding-hive-engine-hive](/hive-153850/@dlmmqb/behind-the-scenes-and-more-coding-hive-engine-hive) by @dlmmqb.<br><br>Eye Candy Rookie CODE OUTPUTS in bottom of post",
+        "category": "hive-139531",
+        "children": 0,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-19T20:54:57",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "image": [],
+          "original_author": "dlmmqb",
+          "original_permlink": "behind-the-scenes-and-more-coding-hive-engine-hive",
+          "tags": [
+            "cross-post"
+          ]
+        },
+        "max_accepted_payout": "0.000 HBD",
+        "net_rshares": 2460357584844,
+        "payout": 0.243,
+        "payout_at": "2026-04-26T20:54:57",
+        "pending_payout_value": "0.243 HBD",
+        "percent_hbd": 10000,
+        "permlink": "behind-the-scenes-and-more-coding-hive-engine-hive-hive-139531",
+        "post_id": 149864775,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 24
+        },
+        "title": "Behind the scenes, and MORE! #Coding #hive-engine #hive",
+        "updated": "2026-04-19T20:54:57",
+        "url": "/hive-139531/@dlmmqb/behind-the-scenes-and-more-coding-hive-engine-hive-hive-139531"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 833435495785,
+            "voter": "steevc"
+          },
+          {
+            "rshares": 9562656611,
+            "voter": "dickturpin"
+          },
+          {
+            "rshares": 2045413283822,
+            "voter": "guiltyparties"
+          },
+          {
+            "rshares": 8853283173,
+            "voter": "mountainjewel"
+          },
+          {
+            "rshares": 30487658983,
+            "voter": "newageinv"
+          }
+        ],
+        "author": "aftabirshad",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 55.92,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "postify",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "**Today, I want to share something** I've been quietly working on. It’s not live yet; we're 95% finished. However, I believe this community deserves to know where HivePostify is headed before we launch.\n\n\n![p35252](https://hivepostify.cloud/uploads/posts/488a62e67fc1d7b324b8151c2c7ce880.webp)\n\n\n\n\n## The Problem I Kept Thinking About\n\nRight now, every creator on Hive publishes everything to everyone. There is no middle ground. You either make your work available to everyone for free, or you don’t publish it at all.\n\nThat works for most content. But what about the creator who has spent years developing real expertise? What about the writer whose in-depth research posts take 12 hours to create? What about the photographer, analyst, educator, or strategist?\n\nThey deserve more than a 7-day payout window and a public post that anyone can access forever without contributing a single token.\n\nI am creating a solution.\n\n\n## What I Am Building: Exclusive Content on HivePostify\n\nThis idea is not vague. The work is already underway. Here is exactly what the system will look like.\n\nCreators can mark any content as exclusive.  This includes articles, long-form posts, in-depth guides, and premium material. The content gets published, but the full content is locked.\n\nEvery exclusive post gets a public preview. Anyone browsing HivePostify can see the title, an introduction, and enough context to understand what it’s about. It’s like a trailer; it shows what’s inside without revealing everything. The post link will be on the Hive blockchain, as always, but the full content will be securely stored in the HivePostify database.\n\n#### Access works two ways, and I am still deciding which to choose:\nThe first option is pay-per-post. A reader finds a post they want, pays a one-time amount set by the creator, and permanently unlocks that specific post. Simple and straightforward, with no commitment needed.\n\nThe second option is subscriptions. A reader subscribes to a creator, gaining access to all that creator's exclusive content as long as their subscription is active. One payment gives full library access.\n\nMy instinct is to launch with pay-per-post first. It lowers the barrier for both sides. Readers won’t have to commit to a monthly payment before even reading a piece. Once trust is established, the subscription option can be added later.\n\n\n![1](https://hivepostify.cloud/uploads/posts/181a17a17ef1cec3f2343670f6cc5685.webp)\n \n\n![2](https://hivepostify.cloud/uploads/posts/ce7ded57c9446323a4cf4f1d891a38ef.webp)\n \n\nBut I genuinely want to hear what this community thinks. I will explain more about why at the end.\n\n\n\n## The Creator Is in Control. Completely.\n\nThis is crucial, and I want to be clear.\n\nHivePostify does not set prices; I do not set prices. The creator decides the price for every single piece of content and for every subscription tier they choose to offer.\n\nIf you want to charge 2 HIVE for a detailed analysis post, that’s your decision. If you want to offer a monthly subscription at 15 HIVE, that’s up to you. The platform facilitates the transaction while giving the creator control.\n\nPayments will be accepted in HIVE and AHPT, the native utility token of HivePostify. I don't plan to add HBD at launch. Eventually, Hive Engine tokens may be included, but I want to keep things focused and stable for now.\n\n#### What does HivePostify take?\n\nI’ve been considering this and think it will be between 0.01% and 11.3% per transaction. I haven’t finalized that number yet. I’m seeking real feedback before making a decision, aiming for fairness to creators and sustainability for the platform.\n\n\n![3](https://hivepostify.cloud/uploads/posts/fea7e0a85fe16e14a1f96d805260c888.webp)\n \n\n\n\n## The Writing Experience Is Not Hive Markdown\n\nThis matters a lot to me.\n\nStandard Hive markdown is functional, but it doesn’t provide the experience I want for exclusive content creators. When someone is creating premium content on HivePostify, the editor should reflect the quality of their work.\n\nThe exclusive content editor will have better formatting tools than standard markdown offers. It will allow richer layouts and give more control over how a piece looks when read. This should create an experience that feels worth paying for before the reader even sees the first line.\n\nDetails about the editor are still being refined, but this is a key part of the plan.\n\n\n\n## What This Means for the Hive Ecosystem\n\nEvery paid access on the exclusive content system brings new value to Hive. A reader pays HIVE or AHPT to unlock a post. That HIVE comes from outside the creator's current earnings. It’s new money entering the chain.\n\n\n![4](https://hivepostify.cloud/uploads/posts/8c6caba89d64dacfd9c54bb8be1369d7.webp)\n \n\nCreators who build real audiences will have a steady income stream that doesn’t expire after seven days. This gives creators a reason to invest seriously in Hive rather than treating it as a secondary platform.\n\n\n\n## Where We Are Right Now\n\nWe are 95% complete.\n\n\n![5](https://hivepostify.cloud/uploads/posts/5519a769792d8597222b4643465cd819.webp)\n\n\nThe remaining work focuses on final security layers, the payment flow, and the dashboard where creators can view their earnings from exclusive content separately from their regular post rewards.\n\nMy board exams are approaching, which means progress will slow down for a bit. I want to be honest about that rather than go quiet and leave people wondering. Development will continue. Nothing is being put on hold. The moment my exams are behind me, we will move forward at full speed.\n\n\n\n## I Need Your Honest Opinion\n\nBefore I finalize the structure, I have two genuine questions for anyone who has read this far.\n\n#### Should exclusive content launch with pay-per-post, monthly subscriptions, or both?\n\n#### And a tougher one: What percentage cut is fair for HivePostify to take per transaction?\n\nI’m not asking these questions just as a formality. The answers will directly influence what gets built. If the community strongly prefers subscriptions from day one, I will make that happen. If there is a specific number that feels right for platform fees, I want to hear it before deciding in private.\n\nThis community has been with HivePostify since the beginning. You deserve a say before we launch.\n\nThe platform is live at hivepostify.cloud.\n\nBuilt on Hive. One student. One mission. Still building.\n\n\n\n### <center>Posted Via [HivePostify](https://hivepostify.cloud/)</center>\n",
+        "category": "hive-139531",
+        "children": 0,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-18T05:31:15",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hive-postify/1.0.0",
+          "community": "hive-139531",
+          "format": "markdown",
+          "tags": [
+            "creators",
+            "exclusivecontent",
+            "hivedev",
+            "hivepostify",
+            "buildingonhive",
+            "monetization",
+            "web3",
+            "pakistan"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 9152491197786,
+        "payout": 0.919,
+        "payout_at": "2026-04-25T05:31:15",
+        "pending_payout_value": "0.919 HBD",
+        "percent_hbd": 10000,
+        "permlink": "hivepostify-is-getting-exclusive-content-creators-will-finally-control-who-sees-what-mo3wfqm9",
+        "post_id": 149846129,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 24
+        },
+        "title": "HivePostify is Getting Exclusive Content, Creators Will Finally Control Who Sees What",
+        "updated": "2026-04-18T05:31:15",
+        "url": "/hive-139531/@aftabirshad/hivepostify-is-getting-exclusive-content-creators-will-finally-control-who-sees-what-mo3wfqm9"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 256761145409,
+            "voter": "akdx"
+          }
+        ],
+        "author": "hivepostify",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 53.42,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "postify",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "I do not like making claims without evidence. Today, instead of asking you to trust my words, I am sharing our actual server analytics directly from Cloudflare, the infrastructure layer that supports hivepostify.cloud.\n\n\n![pp24](https://hivepostify.cloud/uploads/posts/243c011939fd9badf9207caefc75aba8.webp)\n\n\nEvery number below comes from our live Cloudflare dashboard. Nothing is exaggerated. Nothing is estimated. This is what is happening on this platform right now.\n\n---\n\n## Traffic Overview - Previous 7 Days\n\n| Metric | Value |\n|---|---|\n| Total Requests | 1,750,000 |\n| Cached Requests | 14,230 |\n| Uncached Requests | 1,740,000 |\n| Total Bandwidth | 20.46 GB |\n| Cached Bandwidth | 9.66 GB |\n| Uncached Bandwidth | 10.80 GB |\n\nIn the last seven days, our servers handled one million seven hundred and fifty thousand requests. Over twenty gigabytes of data served real users loading real pages, real images, and real content from Hive worldwide.\n\n\n\n![2](https://hivepostify.cloud/uploads/posts/c18424baa56d81b41733b1e30c703a72.webp)\n\n\n![3](https://hivepostify.cloud/uploads/posts/90c578da4d026159e8dd89d3c584cc1b.webp)\n\n\n![4](https://hivepostify.cloud/uploads/posts/114104896514751be36454581e8eb14b.webp)\n\n*These Images are 24 Hours Data*\n\n\n\nThe fact that 1,740,000 out of 1,750,000 requests are uncached and hitting our origin server directly indicates something important. Most of our traffic consists of dynamic, live, and personalized content. This includes logged-in users, API responses, and real-time Hive blockchain data. This is what an active social platform looks like, not a static landing page with inflated numbers.\n\n---\n\n## Unique Visitors - Previous 7 Days\n\n| Metric | Value |\n|---|---|\n| Total Unique Visitors | 9,140 |\n| Peak Day (Maximum) | 2,440 visitors |\n| Lowest Day (Minimum) | 309 visitors |\n\n\n\n\nOver nine thousand unique people visited hivepostify.cloud in the past seven days. The growth trend between our minimum and maximum day shows that the platform is gaining momentum, not losing it.\n\n---\n\n## Top Traffic Countries - Previous 24 Hours\n\n| Country | Requests |\n|---|---|\n| United States | 189,295 |\n| Pakistan | 25,520 |\n| France | 3,833 |\n| Switzerland | 86 |\n| Netherlands | 58 |\n\n\n\n\n\n![5](https://hivepostify.cloud/uploads/posts/f82253b407d7bd2b0df11bbd25c4f4e4.webp)\n\n\n![6](https://hivepostify.cloud/uploads/posts/92e437275997d196e12dc420ab9aa001.webp)\n\n \n\n\nThe United States leading our traffic is a significant point in this report. HivePostify is not just a local Pakistani platform; it is also being discovered and used by international audiences. American users reading content on a platform created by a student in Pakistan on the Hive blockchain indicates real product quality and content worth engaging.\n\nPakistan is our second largest source, which aligns with our mission. Our active Facebook ad campaigns targeting Pakistani freelancers and content creators are clearly converting into real visits.\n\n---\n\n## HTTP Version Distribution - Previous 24 Hours\n\n| Protocol | Requests | Percentage |\n|---|---|---|\n| HTTP/1.1 | 196,006 | 86.72% |\n| HTTP/2 | 15,546 | 6.88% |\n| HTTP/3 | 14,479 | 6.41% |\n\n\n\n![7](https://hivepostify.cloud/uploads/posts/e2d7e33d47972ebe3947fb7a34ba08dc.webp)\n \n\nThe presence of HTTP/3 traffic means modern clients are successfully negotiating our fastest available protocol. This indicates our server configuration is optimized for performance.\n\n---\n\n## Content Type Breakdown - Previous 24 Hours\n\n| Content Type | Requests | Percentage |\n|---|---|---|\n| JSON | 192,854 | 88.06% |\n| HTML | 16,075 | 7.34% |\n| Empty | 8,922 | 4.07% |\n| TXT | 579 | 0.30% |\n| JS | 150 | 0.07% |\n| PNG | 131 | 0.06% |\n| CSS | 109 | 0.05% |\n| WebP | 102 | 0.05% |\n| Other | 72 | 0.03% |\n\n\n\n![8](https://hivepostify.cloud/uploads/posts/d28dc16816c7c2cc5653a95d3d6f5b2e.webp)\n \n\n\nThis table is the most important one in this entire post for anyone who understands how web applications work.\n\n88.06% of all our traffic returns JSON data. JSON responses are API calls, which represent users actively engaging with the platform. This includes loading feeds, submitting posts, retrieving blockchain data, placing orders on the marketplace, and voting on content.\n\nA platform where nearly 90% of traffic is live API activity indicates that people are not just visiting; they are using it.\n\n---\n\n## Bandwidth Saved by Caching - Previous 24 Hours\n\n| Metric | Value |\n|---|---|\n| Total Bandwidth | 1.58 GB |\n| Saved by Cache | 261.29 MB |\n| Cache Saving Percentage | 17% |\n\n\n\n![9](https://hivepostify.cloud/uploads/posts/9d49172973717ae8f0fd1f27564fd959.webp)\n \n\n\nCloudflare's caching layer saved us 264 megabytes in a single day. This helps keep our infrastructure costs down and improves load times for users everywhere.\n\n---\n\n## Core Web Vitals - Page Load Performance\n\n| LCP Score | Percentage of Visits |\n|---|---|\n| Good | 57% |\n| Needs Improvement | 11% |\n| Poor | 31% |\n\n| LCP Percentile | Load Time |\n|---|---|\n| P50 (Median) | 1,832ms |\n| P75 | 4,580ms |\n| P90 | 6,620ms |\n| P99 | 17,716ms |\n\n\n\n\n![10](https://hivepostify.cloud/uploads/posts/244806f092587d49dc520add51730397.webp)\n\n*Latest On Track*\n \n\n\n**Average Page Load Time: 880ms**\n\nI am sharing this openly because I believe in full transparency, not just when the numbers look good.\n\nThe Poor percentage is real, and we know exactly why it happens. Posts containing images hosted on third-party services, like PeakD, can show LCP times as high as 15 seconds. These images are embedded in content created by Hive users across the ecosystem, and we have no control over their hosting speeds.\n\nOur self-hosted images tell a different story. One of our WebP-compressed images in the debug data shows an LCP of just 3.1 seconds, which is significantly better and within an acceptable range for a live blockchain application making real-time API calls.\n\nWe are actively working on lazy loading and image optimization to reduce the Poor percentage. This is part of our roadmap, and we will fix it.\n\nThe 880ms average load time across all visits is a strong result for any platform making live Hive blockchain calls and rendering decentralized content in real time.\n\n---\n\n### See Images Only Scr Data....\n\n\n\n![11](https://hivepostify.cloud/uploads/posts/f9c1701acd3a9a6f3660b60d562be73c.webp)\n\n\n![12](https://hivepostify.cloud/uploads/posts/280a1db3b151a8431d06bf712a27385c.webp)\n\n\n![13](https://hivepostify.cloud/uploads/posts/22a728021ce850348e694c5492962f05.webp)\n\n\n![14](https://hivepostify.cloud/uploads/posts/5958ba9861c21b7d4c53771fc1e8adab.webp)\n \n \n \n \n\n\n\n\n\n## What This Data Means for Hive\n\nHere is a simple summary of everything above.\n\nIn the last seven days, over nine thousand unique people visited a Hive-powered platform. 1.75 million requests were handled by our servers. Twenty gigabytes of Hive content was served to users in the United States, Pakistan, France, and beyond.\n\n\n\n![14](https://hivepostify.cloud/uploads/posts/d17f46029ef52a82ef4c594dc6db08b7.webp)\n\n*24 Hours*\n \n\n![15](https://hivepostify.cloud/uploads/posts/e30a339d71b143f5e2914a50bf1e34ab.webp)\n\n*30 Days Data*\n \n\n\nThis is not a proposal or a roadmap. This is a live report of what is happening right now.\n\nHivePostify is driving real international traffic to Hive content. Every article read on our platform is part of the Hive ecosystem being engaged by someone who may never have discovered it through hive.blog or PeakD. Every Pakistani freelancer who visits our marketplace is a potential new Hive account. Every local user who finds out they can withdraw to EasyPaisa or JazzCash is a user who's likely to stay long-term.\n\nAll of this is happening without any DHF funding, without a team, and without outside investment.\n\n---\n\n## What We Still Need\n\nThe data shows the platform works. But two factors are stopping us from converting this traffic into long-term Hive users.\n\nWe need delegated HP at @hivepostify. New users who post their first content require votes to stay. Without that signal, they leave within a week. Each HP delegation directly boosts user retention.\n\n#### Upvote this post. \nEvery reward goes to account claims and server costs.\n\n#### Delegate to @hivepostify.\n Your HP stays yours. You can withdraw it anytime. While delegated, it helps keep new users active on Hive.\n\n---\n\nAll data in this post comes from our live Cloudflare dashboard. Screenshots are attached above for verification. Many Screenahot show 24 hours Data.\n\n**hivepostify.cloud**\n\n*Posted via HivePostify* \n",
+        "category": "hive-139531",
+        "children": 0,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-19T03:40:57",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hive-postify/1.0.0",
+          "community": "hive-139531",
+          "format": "markdown",
+          "tags": [
+            "hive",
+            "analytics",
+            "report",
+            "hivepostify",
+            "traffic",
+            "cloudflare",
+            "growth",
+            "onboarding"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 256761145409,
+        "payout": 0.025,
+        "payout_at": "2026-04-26T03:40:57",
+        "pending_payout_value": "0.025 HBD",
+        "percent_hbd": 10000,
+        "permlink": "hivepostify-cloud-real-traffic-real-users-real-growth-our-cloudflare-analytics-report-crp-1-mo57xuz6",
+        "post_id": 149855601,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1
+        },
+        "title": "HivePostify.cloud: Real Traffic, Real Users, Real Growth - Our Cloudflare Analytics Report  CRP-1",
+        "updated": "2026-04-19T03:40:57",
+        "url": "/hive-139531/@hivepostify/hivepostify-cloud-real-traffic-real-users-real-growth-our-cloudflare-analytics-report-crp-1-mo57xuz6"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1664671968118,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 43300576691,
+            "voter": "aboutcoolscience"
+          },
+          {
+            "rshares": 864033718614,
+            "voter": "quochuy"
+          },
+          {
+            "rshares": 128738977,
+            "voter": "steemulant"
+          },
+          {
+            "rshares": 9113153084,
+            "voter": "teamvn"
+          }
+        ],
+        "author": "pharesim",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.76,
+        "author_role": "mod",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "This is a cross post of [@pevo.science/publish-and-evaluate-openly-pevo-science-open-beta-officially-launched](/pevo-blog/@pevo.science/publish-and-evaluate-openly-pevo-science-open-beta-officially-launched) by @pharesim.<br><br>Open beta launched!",
+        "category": "hive-139531",
+        "children": 0,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-15T16:05:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "image": [],
+          "original_author": "pevo.science",
+          "original_permlink": "publish-and-evaluate-openly-pevo-science-open-beta-officially-launched",
+          "tags": [
+            "cross-post"
+          ]
+        },
+        "max_accepted_payout": "0.000 HBD",
+        "net_rshares": 2814909658028,
+        "payout": 0.274,
+        "payout_at": "2026-04-22T16:05:03",
+        "pending_payout_value": "0.274 HBD",
+        "percent_hbd": 10000,
+        "permlink": "publish-and-evaluate-openly-pevo-science-open-beta-officially-launched-hive-139531",
+        "post_id": 149818436,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 9
+        },
+        "title": "Publish and Evaluate Openly - PEvO science open beta officially launched!",
+        "updated": "2026-04-15T16:05:03",
+        "url": "/hive-139531/@pharesim/publish-and-evaluate-openly-pevo-science-open-beta-officially-launched-hive-139531"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 121310613184,
+            "voter": "dylanhobalart"
+          },
+          {
+            "rshares": 704085113,
+            "voter": "hive-103505"
+          },
+          {
+            "rshares": 7028937996,
+            "voter": "nabbas0786"
+          },
+          {
+            "rshares": 1218893539,
+            "voter": "gatet"
+          },
+          {
+            "rshares": 0,
+            "voter": "magic.byte"
+          }
+        ],
+        "author": "hivepostify",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 53.42,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "postify",
+            "weight": 1000
+          }
+        ],
+        "blacklists": [],
+        "body": "Seven months. No team. No funding. No one to share the load with.\n\n\n![th199](https://hivepostify.cloud/uploads/posts/10969694a15bb98f3afb4b7fd5330cb6.webp)\n\n\nJust me, a laptop, countless sleepless nights, and one belief that has never left me: **creators deserve to be paid for every single view they earn, not just the ones that happen within seven days.**\n\nToday, I want to share something I have quietly started building. When it launches, it will change how every creator on this platform earns permanently.\n\n**I have begun development on the HivePostify Monetization System.**\n\nThis is not just a plan. Work has already started. I am announcing it today because this community has stood behind me since the very beginning, and you deserve to know where this platform is going before it gets there.\n\n---\n\n## The Problem Every Hive Creator Knows\n\nYou spend hours writing an article. You publish it. For seven days, it earns rewards. Then it stops.\n\nIt does not matter if that article gets read ten thousand more times after those seven days. It does not matter if someone finds it a year later and shares it with their entire audience. The earning window is closed. The content keeps giving, but the creator stops receiving.\n\nI have thought about this problem for a long time. I am building the solution directly into HivePostify.\n\n---\n\n## What the HivePostify Monetization System Will Do\n\n### Ads That Respect the User\n\nAds will be displayed across the platform on articles, on videos, and on profile pages. But I am not building a platform that bombards users with pop-ups and interruptions. Every ad placement will be chosen carefully so that it feels natural within the experience. The reader keeps reading. The viewer keeps watching. The creator keeps earning. Nobody gets annoyed.\n\nGambling will never be promoted through HivePostify ads. This is a permanent policy. This platform exists for creators, freelancers, learners, and communities. The advertising environment will always reflect those values.\n\n### Almost All Revenue Goes to the Creator\n\nThe vast majority of ad revenue generated from a creator's content will go directly to that creator. HivePostify is not a platform that quietly takes most of what you earned and gives you a small percentage. You built the audience. You created the content. You deserve to be paid for it.\n\nEarnings will be paid in **AHPT**, HivePostify's native token, with instant withdrawal available. No waiting. No complicated processes.\n\n### Lifetime Earnings Not a 7-Day Window\n\nThis is the part that matters most.\n\nEvery view a creator's articles and videos receive today, next month, next year, five years from now will count toward their earnings. A post published six months ago that still attracts readers every single day will still generate income daily. There is no closing window. There is no expiry date on your work.\n\n**You create once. You earn forever.**\n\n### A Dashboard That Shows You Everything\n\nI will build a dedicated earnings dashboard for every creator on HivePostify. It will show total lifetime views across all content, earnings broken down per article and per video, full withdrawal history, and current balance all in one place, all transparent, all honest.\n\nNo confusion. No hidden numbers. Just a clear picture of what your content has earned and what you are owed.\n\n---\n\n## Videos Are Coming to HivePostify\n\nBefore the monetization system fully launches, I plan to bring video support to HivePostify both short-form and long-form.\n\nVideo is where attention lives today. It is also where ad revenue is strongest, meaning video creators on HivePostify will have significant earning opportunities from day one. Video hosting requires server infrastructure that I am actively working toward as this platform grows. The direction is set. The intention is firm.\n\nShort videos. Long videos. Lifetime earnings on every view of every one of them.\n\n---\n\n## How Monetization Eligibility Will Work\n\nMonetization will **not** be based on Hive reputation score.\n\nI want to be clear about this because it matters. Reputation on Hive reflects how other users have voted on your content. It should not determine whether you can earn from your own work. A creator who builds a real audience, publishes genuine content, and attracts real views deserves to monetize regardless of their reputation number.\n\nEligibility will be based on real, measurable activity views, followers, and content engagement. Full criteria will be published in detail when the system is ready to launch.\n\n---\n\n## An Honest Note on Timing\n\nMy board exams are approaching. For the next several weeks, I need to dedicate more time to studying than coding. Development will continue, but at a slower pace. I would rather tell you this directly than go quiet and leave people wondering.\n\nThe moment my exams are finished, I will return to full-speed development. Monetization, video support, and every other update in the pipeline will accelerate from that point forward. Nothing is being abandoned. Everything is still being built.\n\n---\n\n## What This Means for You Right Now\n\nIf you are already publishing content on HivePostify, every article you post today is a permanent asset in your lifetime earnings record. When monetization launches, your existing content will already be part of your earning history. You are not starting from zero when the system goes live. You are already ahead.\n\nIf you have not started creating on HivePostify, the time is now before this platform gets crowded, before monetization launches, and before the earning system rewards those who were here early.\n\n---\n\n*Platform is live at hivepostify.cloud*  \n*All activity verifiable on-chain at @hivepostify*  \n*Built on Hive. Developed independently. One student. One mission.*\n\n## <center> Posted Via [HivePostify](https://hivepostify.cloud/) Pakistan First Web3 Social and Freelancing Platform</center>\n\n",
+        "category": "hive-139531",
+        "children": 4,
+        "community": "hive-139531",
+        "community_title": "HiveDevs",
+        "created": "2026-04-15T11:36:03",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hive-postify/1.0.0",
+          "community": "hive-139531",
+          "format": "markdown",
+          "tags": [
+            "monetization",
+            "creators",
+            "hive",
+            "hivepostify",
+            "hivedev",
+            "buildingonhive",
+            "update",
+            "hivegrowth"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 333987276792,
+        "payout": 0.029,
+        "payout_at": "2026-04-22T11:36:03",
+        "pending_payout_value": "0.029 HBD",
+        "percent_hbd": 10000,
+        "permlink": "i-am-building-monetization-into-hivepostify-creators-will-earn-for-life-not-just-7-days-every-view-you-ever-get-will-earn-you-money-forever-mnzz58rq",
+        "post_id": 149815760,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 10
+        },
+        "title": "I Am Building Monetization Into HivePostify. Creators Will Earn for Life, Not Just 7 Days. Every View You Ever Get Will Earn You Money, Forever",
+        "updated": "2026-04-15T11:36:03",
+        "url": "/hive-139531/@hivepostify/i-am-building-monetization-into-hivepostify-creators-will-earn-for-life-not-just-7-days-every-view-you-ever-get-will-earn-you-money-forever-mnzz58rq"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

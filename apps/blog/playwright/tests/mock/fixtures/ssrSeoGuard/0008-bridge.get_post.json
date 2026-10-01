@@ -1,0 +1,99 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post",
+    "params": {
+      "author": "pevo.science",
+      "permlink": "publish-and-evaluate-openly-pevo-science-open-beta-officially-launched",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "217f7c817a9f3bf3",
+  "method": "bridge.get_post",
+  "params": {
+    "author": "pevo.science",
+    "permlink": "publish-and-evaluate-openly-pevo-science-open-beta-officially-launched",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "active_votes": [
+        {
+          "rshares": 1386156752677,
+          "voter": "pharesim"
+        },
+        {
+          "rshares": 1172582875130,
+          "voter": "kenny-crane"
+        },
+        {
+          "rshares": 832350550817,
+          "voter": "ausbitbank"
+        },
+        {
+          "rshares": 35551777641,
+          "voter": "jeffjagoe"
+        },
+        {
+          "rshares": 1777739934876,
+          "voter": "felixxx"
+        }
+      ],
+      "author": "pevo.science",
+      "author_payout_value": "0.000 HBD",
+      "author_reputation": 50.75,
+      "beneficiaries": [],
+      "blacklists": [],
+      "body": "## Why PEvO, Why Now\n\nScientific publishing is due for structural reform. The problems are well documented: opaque peer review, concentrated gatekeeping, access barriers that persist even under open-access mandates, a reputation system built around journal prestige rather than research quality, and recurring integrity failures that the current system is poorly equipped to detect or correct. These observations are not new - researchers, funders, and institutions have debated them for over a decade.\n\nWhat has been missing is infrastructure.\n\n## Open access changed who pays, not who controls\n\nThe open-access movement succeeded in establishing the principle that publicly funded research should be publicly available. But in practice, much of what passes for open access has introduced new costs for authors through article processing charges, while leaving editorial control, peer review, and reputation mechanisms in the same hands. The publisher remains the intermediary. The journal name remains the proxy for quality.\n\nThis is not a criticism of the effort, just a recognition that access alone does not solve the structural problem. As long as a single entity controls the review process, the publication record, the infrastructure that hosts it and the career prospects of those that do the work, the system retains the vulnerabilities that reform was meant to address.\n\n## Scientific integrity starts with transparency\n\nThe current system makes it difficult to detect and correct flawed research. Peer review happens behind closed doors, so methodological problems often go unnoticed until after publication. Retractions take years when they happen at all, and the retracted work continues to be cited. Data fabrication, undisclosed conflicts of interest, and selective reporting persist in part because the process that is supposed to catch them is itself opaque and unaccountable.\n\nWhen evaluation is public, these problems become harder to sustain. Reviews are visible, so the quality of scrutiny can itself be scrutinized. Ratings and reputation reflect community judgment over time, not a single editorial decision. And because the entire record is permanent and auditable, corrections and context travel with the work rather than being buried in separate, easily missed notices.\n\n## What a different foundation would look like\n\nConsider a publishing infrastructure with the following properties.\n\nPublications are stored on a public network that no single organisation operates. No server shutdown, acquisition, or policy change can remove a published work. Evaluation is public: peer review happens in the open, reviews are citable contributions, and reviewers build reputation through the quality of their evaluations. A researcher's standing is derived from measurable contributions using a transparent algorithm that anyone can audit, reproduce, or improve, not from the name of the journal that accepted their manuscript. There are no subscription fees and no article processing charges. Publishing and reviewing are free.\n\nSounds too good to be true? This is exactly what PEvO delivers!\n\n## How it works\n\n<center>![image](https://images.hive.blog/DQmU7ocxPsYnzBSBvvMJZogCH1NsGnjbVdmqCwwmEoGgZVj/infopics_board_5.png)</center>\n\nPEvO (Publish and Evaluate Openly) is a platform for scientific publication and interactive peer evaluation. Papers, reviews, and votes are recorded on a permanent public record that no single entity controls.\n\nAuthors publish directly. There is no editorial board that decides what is worthy of consideration. Instead, accredited researchers, verified through institutional affiliation, ORCID or a Web of Trust, evaluate published work through structured reviews and community voting. Reputation scores are computed from these contributions using an open algorithm. The entire process, from submission to evaluation, is transparent and auditable.\n\nThe platform is non-profit, open-source (AGPL-3.0), and designed to be forkable. If the community disagrees with how it is run, they can take the code and the data and build something better. That is not a fallback. It is a design principle.\n\n## Common concerns\n\n*\"Similar platforms have been tried before.\"* They have. Most were built as centralised services that asked researchers to trust a new intermediary. PEvO does not operate a database of papers. It uses a public network as its data layer. There is no proprietary lock-in because there is nothing proprietary to lock into.\n\n*\"This will never reach critical mass.\"* Possibly. But PEvO does not require mass adoption to be useful. A single research group can use it today to publish and evaluate work transparently. Value scales with participation, but it does not start at zero.\n\n*\"You cannot replace established journals.\"* PEvO is not trying to replace journals. It is providing an alternative infrastructure for researchers who want transparent evaluation and permanent, open publication. The two can coexist. Researchers already post preprints alongside journal submissions. PEvO extends that practice with structured peer evaluation.\n\n## Get involved\n\nPEvO is in public beta. The platform is functional: you can create an account, publish a paper, review existing work, and see how reputation scores are computed. Content published during the beta is permanently stored but will not be visible on the platform after launch.\n\nIf you believe that scientific communication should be transparent, permanent, and free from gatekeeping, we invite you to participate. Test the site, help creating awareness. We're non-profit and need support from researchers, networkers, designers, developers, and anyone else who has an idea what to improve.\n\nVisit [beta.pevo.science](https://beta.pevo.science), join the [Discord](https://discord.gg/jqvmz7wdPV), or explore the [source code on GitHub](https://github.com/pharesim/pevo-science).",
+      "category": "pevo-blog",
+      "children": 6,
+      "created": "2026-04-15T16:04:12",
+      "curator_payout_value": "0.000 HBD",
+      "depth": 0,
+      "is_paidout": false,
+      "json_metadata": {
+        "app": "hivecomb/1.0",
+        "canonical_url": "https://hivecomb.net/@pevo.science/publish-and-evaluate-openly-pevo-science-open-beta-officially-launched",
+        "description": "Calling on researchers to join build the future of Open Access and Peer Reviewing",
+        "format": "markdown",
+        "image": [
+          "https://images.hive.blog/DQmU7ocxPsYnzBSBvvMJZogCH1NsGnjbVdmqCwwmEoGgZVj/infopics_board_5.png"
+        ],
+        "tags": [
+          "pevo-blog",
+          "research",
+          "science",
+          "openscience",
+          "peerreview"
+        ],
+        "users": []
+      },
+      "max_accepted_payout": "1000000.000 HBD",
+      "net_rshares": 39412049104856,
+      "payout": 3.959,
+      "payout_at": "2026-04-22T16:04:12",
+      "pending_payout_value": "3.959 HBD",
+      "percent_hbd": 0,
+      "permlink": "publish-and-evaluate-openly-pevo-science-open-beta-officially-launched",
+      "post_id": 149818430,
+      "reblogs": 2,
+      "replies": [],
+      "stats": {
+        "flag_weight": 0,
+        "gray": false,
+        "hide": false,
+        "total_votes": 49
+      },
+      "title": "Publish and Evaluate Openly - PEvO science open beta officially launched!",
+      "updated": "2026-04-15T17:13:03",
+      "url": "/pevo-blog/@pevo.science/publish-and-evaluate-openly-pevo-science-open-beta-officially-launched"
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

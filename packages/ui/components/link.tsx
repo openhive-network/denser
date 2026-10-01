@@ -1,6 +1,8 @@
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 import { AnchorHTMLAttributes, forwardRef } from 'react';
 
+export { useLinkStatus } from 'next/link';
+
 export interface LinkProps
   extends NextLinkProps,
     Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof NextLinkProps> {

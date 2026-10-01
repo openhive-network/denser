@@ -1,6 +1,7 @@
 'use client';
 
 import { Link } from '@hive/ui';
+import FeedLink from '@/blog/features/layouts/sorts/feed-link';
 import { cn } from '@ui/lib/utils';
 import { Card, CardContent, CardTitle } from '@hive/ui/components/card';
 import { useTranslation } from '@/blog/i18n/client';
@@ -16,9 +17,9 @@ const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
       data-testid="card-trending-comunities"
     >
       <CardTitle>
-        <Link href="/trending" className="text-base hover:text-destructive">
+        <FeedLink href="/trending" className="text-base hover:text-destructive">
           {t('navigation.communities_nav.all_posts')}
-        </Link>
+        </FeedLink>
       </CardTitle>
       <CardTitle>
         <Link href={`/@${user.username}/feed`} className="text-base hover:text-destructive">
@@ -26,9 +27,9 @@ const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
         </Link>
       </CardTitle>
       <CardTitle>
-        <Link href="/trending/my" className="text-base hover:text-destructive">
+        <FeedLink href="/trending/my" className="text-base hover:text-destructive">
           My communities
-        </Link>
+        </FeedLink>
       </CardTitle>
 
       {data && data?.length > 0 ? (
@@ -37,9 +38,9 @@ const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
           <ul>
             {data.map((e) => (
               <li key={e[0]}>
-                <Link href={`/trending/${e[0]}`} className="w-full text-sm font-light hover:text-destructive">
+                <FeedLink href={`/trending/${e[0]}`} className="w-full text-sm font-light hover:text-destructive">
                   {e[1]}
-                </Link>
+                </FeedLink>
               </li>
             ))}
           </ul>

@@ -34,6 +34,11 @@ export interface IFixtureEntry {
   responseContentType?: string;
 }
 
+export interface IJsonRpcCall {
+  method: string;
+  params: Record<string, unknown>;
+}
+
 /** A request the replay proxy had no recording for. */
 export interface IReplayMiss {
   /** JSON-RPC method, or `<HTTP method> <path>` for non-RPC calls */
@@ -46,6 +51,12 @@ export interface IFixtureProxyHandle {
   close: () => Promise<void>;
   /** Returns the misses recorded since the previous call and forgets them. Always empty in record mode. */
   drainMisses: () => IReplayMiss[];
+  /**
+   * Holds every replayed JSON-RPC response whose call matches `filter` until
+   * the returned `release` runs, so a test can observe a pending UI state
+   * deterministically. No-op in record mode.
+   */
+  holdResponses: (filter: (call: IJsonRpcCall) => boolean) => () => void;
   port: number;
   url: string;
   fixtureDir: string;
@@ -124,9 +135,7 @@ function computeParamsHash(method: string, params: Record<string, unknown>): str
   return crypto.createHash('sha256').update(payload).digest('hex').slice(0, 16);
 }
 
-function extractJsonRpc(
-  body: unknown
-): { method: string; params: Record<string, unknown> } | null {
+function extractJsonRpc(body: unknown): IJsonRpcCall | null {
   if (typeof body !== 'object' || body === null) return null;
   const obj = body as Record<string, unknown>;
   if (typeof obj.method !== 'string') return null;
@@ -366,6 +375,7 @@ export async function createFixtureProxy(
       server.closeAllConnections?.();
     },
     drainMisses: () => [],
+    holdResponses: () => () => {},
     port,
     url: `http://localhost:${port}`,
     fixtureDir,
@@ -546,6 +556,7 @@ export async function createReplayProxy(
   let servedCount = 0;
   let missCount = 0;
   let pendingMisses: IReplayMiss[] = [];
+  const holds = new Set<{ filter: (call: IJsonRpcCall) => boolean; released: Promise<void> }>();
 
   const app = express();
   app.use(cors());
@@ -561,7 +572,7 @@ export async function createReplayProxy(
     });
   });
 
-  app.use((req, res) => {
+  app.use(async (req, res) => {
     const httpMethod = req.method;
     const requestPath = req.path;
     const query = req.query as Record<string, unknown>;
@@ -611,6 +622,10 @@ export async function createReplayProxy(
       `[fixture-proxy:replay] ${label} → fixture #${(callIndex % entries.length) + 1}/${entries.length}`
     );
 
+    if (jsonRpc) {
+      await Promise.all([...holds].filter((h) => h.filter(jsonRpc)).map((h) => h.released));
+    }
+
     const status = entry.responseStatus ?? 200;
     const contentType = entry.responseContentType ?? 'application/json';
     res.setHeader('content-type', contentType);
@@ -653,6 +668,15 @@ export async function createReplayProxy(
       const drained = pendingMisses;
       pendingMisses = [];
       return drained;
+    },
+    holdResponses: (filter) => {
+      let release = () => {};
+      const hold = { filter, released: new Promise<void>((resolve) => (release = resolve)) };
+      holds.add(hold);
+      return () => {
+        holds.delete(hold);
+        release();
+      };
     },
     port,
     url: `http://localhost:${port}`,

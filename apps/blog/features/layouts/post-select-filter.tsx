@@ -10,20 +10,23 @@ import {
 } from '@ui/components/select';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTranslation } from '../../i18n/client';
+import { useFeedNavigation } from './sorts/feed-navigation-context';
 
 const PostSelectFilter = ({ param }: { param?: string }) => {
   const { t } = useTranslation('common_blog');
   const router = useRouter();
+  const feedNavigation = useFeedNavigation();
   const path = usePathname();
   // Root (/) serves the trending feed via the middleware rewrite, so its first
   // path segment is empty — treat that as /trending so the filter shows "Trending".
   const segment = path?.split('/')[1];
   const currentPath = segment ? `/${segment}` : '/trending';
   const onValueChange = (next: string) => {
-    if (param) {
-      router.push(`${next}/${param}`, undefined);
+    const href = param ? `${next}/${param}` : next;
+    if (feedNavigation) {
+      feedNavigation.navigate(href);
     } else {
-      router.push(next, undefined);
+      router.push(href);
     }
   };
   return (
