@@ -52,7 +52,7 @@ variables:
   CADDY_TAG: '2.7.6'
   PLAYWRIGHT_TAG: 'v1.49.1-jammy'
 
-  HAF_COMMIT: 3c237ec1495da795679f767a7aa40c8b2d583dfa
+  HAF_COMMIT: 8de693b2812a040aa5c4365c232ebab8036a1d11
 include:
 - template: Workflows/Branch-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
@@ -62,10 +62,10 @@ include:
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: 3c237ec1495da795679f767a7aa40c8b2d583dfa  # develop
+  ref: 8de693b2812a040aa5c4365c232ebab8036a1d11  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
-  ref: fdd7816413bb027a158e058f28b6db44bf9e7ee9
+  ref: 66c735a9c42cace2def83df3d373d608f018ea5f
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
   ref: 629f21c0ccb19737144ca7317a4faf8e95198bcb
@@ -955,7 +955,7 @@ e2e-update-snapshots-blog:
     # No junit: this run isn't a test result, so keep it out of the test report.
     # `null`, not `{}`: extends deep-merges hashes, so `{}` would keep the
     # template's junit.
-    reports: null
+    reports:
     when: always
     expire_in: 1 week
 
