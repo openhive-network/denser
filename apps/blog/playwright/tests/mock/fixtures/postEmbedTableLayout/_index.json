@@ -1,0 +1,12 @@
+{
+  "testName": "postEmbedTableLayout",
+  "recordedAt": "2026-10-01T02:28:21.595Z",
+  "totalRequests": 3,
+  "savedFixtures": 3,
+  "duplicatesSkipped": 0,
+  "methods": {
+    "bridge.get_post": 1,
+    "bridge.get_discussion": 1,
+    "database_api.list_votes": 1
+  }
+}
