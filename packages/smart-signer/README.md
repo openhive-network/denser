@@ -4,9 +4,9 @@ blockchain.
 ## Using in your application
 
 1. Copy file `../../node_modules/@hiveio/hb-auth/dist/worker.js` to
-   `public/auth/` when your applications builds. Use webpack CopyPlugin
-   to do this, see
-   [../../apps/auth/next.config.js](../../apps/auth/next.config.js).
+   `public/auth/` before your application builds or starts in dev mode,
+   see the `copy:public` script in
+   [../../apps/blog/package.json](../../apps/blog/package.json).
 2. Implement `@tanstack/react-query` provider in your application, see
    [../../apps/auth/components/common/providers.tsx](../../apps/auth/components/common/providers.tsx).
 3. Add function `setLoginChallengeCookies` to your `middleware.ts`, see
@@ -38,10 +38,9 @@ blockchain.
     `next-i18next.config.js`, see
     [../../apps/auth/next-i18next.config.js](../../apps/auth/next-i18next.config.js]),
 
-    b) use WebpackCopyPlugin to copy locale files, both for your
-    application and for package `smart-signer`, to your `./public/locales`,
-    see
-    [../../apps/auth/next.config.js](../../apps/auth/next.config.js),
+    b) copy locale files, both for your application and for package
+    `smart-signer`, to your `./public/locales`, see the `copy:public`
+    script in [../../apps/blog/package.json](../../apps/blog/package.json),
 
     c) gitignore your `./public/locales`, see
     [../../apps/auth/.gitignore](../../apps/auth/.gitignore),

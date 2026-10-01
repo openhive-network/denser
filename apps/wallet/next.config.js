@@ -1,5 +1,4 @@
 const path = require('path');
-const CopyPlugin = require('copy-webpack-plugin');
 
 // Get basePath from environment variable at build time
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -19,9 +18,6 @@ const nextConfig = {
   basePath: basePath,
   // assetPrefix must match basePath for proper asset serving
   assetPrefix: basePath,
-  publicRuntimeConfig: {
-    basePath: basePath,
-  },
   experimental: {
     outputFileTracingRoot: path.join(__dirname, '../..')
   },
@@ -65,33 +61,6 @@ const nextConfig = {
     if (!isServer) {
       config.resolve.fallback = { fs: false, module: false };
     }
-
-    config.plugins.push(
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/worker.js'),
-            to: path.join(__dirname, 'public/auth/')
-          },
-          {
-            from: path.join(__dirname, '../../node_modules/@hiveio/hb-auth/dist/assets'),
-            to: path.join(__dirname, 'public/auth/assets')
-          },
-          {
-            from: path.join(__dirname, './locales'),
-            to: path.join(__dirname, 'public/locales/')
-          },
-          {
-            from: path.join(__dirname, '../../packages/smart-signer/locales'),
-            to: path.join(__dirname, 'public/locales/')
-          },
-          {
-            from: path.join(__dirname, '../../packages/smart-signer/public/smart-signer'),
-            to: path.join(__dirname, 'public/smart-signer/')
-          }
-        ]
-      })
-    );
 
     return config;
   }
