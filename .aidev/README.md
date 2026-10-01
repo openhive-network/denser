@@ -109,7 +109,10 @@ production-build run. What was seen while qualifying it (#966):
 **When things change.** Source edits hot-reload. A change to `pnpm-lock.yaml` or a
 `package.json`, `next.config.js`, the middleware package or the stack's own files
 restarts the stack's services (`reload` in the profile), which reinstalls
-`node_modules` from the image's store when the lockfile moved. A lockfile the
+`node_modules` from the image's store when the lockfile or the image moved, or
+when an app no longer resolves the `next`/`react` the lockfile pins
+(`.aidev/pnpm-deps.sh`). An install that fails stops the service rather than
+starting `next` on a half-linked tree. A lockfile the
 image's store cannot satisfy needs a new `environment.image`
 (`.aidev/runtime/build.sh`).
 
