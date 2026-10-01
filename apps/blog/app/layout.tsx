@@ -9,6 +9,7 @@ import { Providers } from '../features/layouts/providers';
 import { StorageCleanup } from '@hive/ui';
 import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '../lib/env-version';
+import { LocaleProvider } from '../i18n/locale-context';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -76,17 +77,19 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <script src={`${basePath}/__ENV.js?v=${envVersion}`} />
       </head>
       <body className="bg-background-secondary">
-        <div className="min-h-screen">
-          <Providers>
-            <>
-              <StorageCleanup />
-              <CondenserMigration />
-              <MainBar />
-              <main className="mx-auto">{children}</main>
-            </>
-          </Providers>
-        </div>
-        <ClientEffects />
+        <LocaleProvider locale={locale}>
+          <div className="min-h-screen">
+            <Providers>
+              <>
+                <StorageCleanup />
+                <CondenserMigration />
+                <MainBar />
+                <main className="mx-auto">{children}</main>
+              </>
+            </Providers>
+          </div>
+          <ClientEffects />
+        </LocaleProvider>
       </body>
     </html>
   );

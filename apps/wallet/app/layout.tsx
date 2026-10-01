@@ -8,6 +8,7 @@ import { Providers } from './providers';
 import ClientEffects from './client-effects';
 import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '../lib/env-version';
+import { LocaleProvider } from '../i18n/locale-context';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -84,11 +85,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             strategy="lazyOnload"
           />
         )}
-        <Providers>
-          <CondenserMigration />
-          <>{children}</>
-        </Providers>
-        <ClientEffects />
+        <LocaleProvider locale={locale}>
+          <Providers>
+            <CondenserMigration />
+            <>{children}</>
+          </Providers>
+          <ClientEffects />
+        </LocaleProvider>
       </body>
     </html>
   );
