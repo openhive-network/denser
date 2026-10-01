@@ -487,6 +487,12 @@
       "community_rules": "Reglas de la comunidad",
       "cancel": "Cancelar",
       "ok": "Aceptar"
+    },
+    "suggestions": {
+      "sorry": "Lo sentimos",
+      "all_hidden_low_ratings": "Todas las publicaciones sugeridas se ocultaron debido a valoraciones bajas.",
+      "show_all": "Mostrar todo",
+      "hide": "Ocultar"
     }
   },
   "submit_page": {

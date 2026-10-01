@@ -121,6 +121,11 @@ export class PostPage {
   readonly changeTitleInput: Locator;
   readonly changeTitleSave: Locator;
 
+  readonly suggestionsList: Locator;
+  readonly suggestionCardTitles: Locator;
+  readonly suggestionsAllHiddenMessage: Locator;
+  readonly suggestionsToggle: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.showPostBodyBtn = page.locator('div').filter({
@@ -270,6 +275,11 @@ export class PostPage {
       .getByTestId('community-change-title-trigger');
     this.changeTitleInput = page.getByTestId('community-change-title-input');
     this.changeTitleSave = page.getByTestId('community-change-title-save');
+    // The desktop sidebar and the mobile strip both render a list; only one is displayed.
+    this.suggestionsList = page.getByTestId('suggestions-list').filter({ visible: true });
+    this.suggestionCardTitles = this.suggestionsList.locator('h2');
+    this.suggestionsAllHiddenMessage = this.suggestionsList.getByTestId('suggestions-all-hidden');
+    this.suggestionsToggle = this.suggestionsList.getByTestId('suggestions-toggle');
   }
 
   /** Open the post-header change-title dialog, set a new title, and save. */

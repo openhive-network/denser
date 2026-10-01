@@ -487,6 +487,12 @@
       "community_rules": "コミュニティ規則",
       "cancel": "キャンセル",
       "ok": "OK"
+    },
+    "suggestions": {
+      "sorry": "申し訳ありません",
+      "all_hidden_low_ratings": "おすすめの投稿はすべて低評価のため非表示になりました。",
+      "show_all": "すべて表示",
+      "hide": "非表示"
     }
   },
   "submit_page": {
