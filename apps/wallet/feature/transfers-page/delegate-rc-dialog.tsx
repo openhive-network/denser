@@ -12,7 +12,7 @@ import {
 import { useDelegateRCMutation } from './hooks/use-delegate-mutation';
 import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
 

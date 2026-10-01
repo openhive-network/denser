@@ -8,7 +8,7 @@ import { Accordion, Button } from '@ui/components';
 import useWindowSize from '@/wallet/components/hooks/use-window-size';
 import AuthoritesGroup from '@/wallet/components/authorities-group';
 import MemoAccordionItem from '@/wallet/components/memo-accordion-item';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useAuthorityOperations } from '@/wallet/components/hooks/use-authority-operation';
 import WalletMenu from '@/wallet/components/wallet-menu';

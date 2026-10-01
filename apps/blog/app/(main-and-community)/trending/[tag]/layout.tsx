@@ -5,10 +5,17 @@ import { notFound } from 'next/navigation';
 import { buildCommunityTagMetadata } from '@/blog/features/layouts/community/lib/metadata';
 import { isValidTagFormat, isCommunityFormat } from '@transaction/lib/validation';
 
-export async function generateMetadata({ params }: { params: { tag: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ tag: string }> }): Promise<Metadata> {
+  const params = await props.params;
   return buildCommunityTagMetadata(params, 'trending');
 }
-const Layout = ({ children, params }: { children: ReactNode; params: { tag: string } }) => {
+const Layout = async (props: { children: ReactNode; params: Promise<{ tag: string }> }) => {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const { tag } = params;
 
   // Validate: must be a valid tag or valid community name format

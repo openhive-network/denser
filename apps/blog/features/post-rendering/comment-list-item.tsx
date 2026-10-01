@@ -26,7 +26,7 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import RendererContainer from './rendererContainer';
 import { useDeleteCommentMutation } from './hooks/use-comment-mutations';
 import { handleError } from '@ui/lib/handle-error';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import MutePostDialog from './mute-post-dialog';
 import ChangeTitleDialog from '../community-profile/change-title-dialog';
 import { AlertDialogFlag } from './alert-window-flag';

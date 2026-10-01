@@ -101,8 +101,10 @@ production-build run. What was seen while qualifying it (#966):
   to `test-results/dev-stack/` for that reason; with it postDetail is 7/7.
 - The first request to a route compiles it (tens of seconds for the post
   page); `blog-ready` warms the common ones, others pay it inside the spec.
-- next dev logs warnings the build does not fail on (e.g. `useForm` is not
-  exported from `react-hook-form` in smart-signer's password form).
+- next dev is Turbopack (Next 16). After postDetail the blog container holds
+  about 1.9 GiB (4.2 GiB with 14.2's webpack); a cold compile of many routes
+  drives it to its 3 GiB `mem_limit`, which Turbopack absorbs without an OOM
+  kill (8 specs, 31 tests, from an empty `.next`, 2026-10-01).
 
 **When things change.** Source edits hot-reload. A change to `pnpm-lock.yaml` or a
 `package.json`, `next.config.js`, the middleware package or the stack's own files

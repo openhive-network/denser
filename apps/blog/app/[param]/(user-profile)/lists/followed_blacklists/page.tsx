@@ -7,7 +7,8 @@ import FollowedBlacklistContent from './content';
 const logger = getLogger('app');
 const type = 'follow_blacklist';
 
-const FollowedBlacklistPage = async ({ params }: { params: { param: string } }) => {
+const FollowedBlacklistPage = async (props: { params: Promise<{ param: string }> }) => {
+  const params = await props.params;
   const username = extractUsernameFromParam(params.param);
   if (!username) notFound();
 

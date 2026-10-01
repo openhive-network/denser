@@ -5,7 +5,8 @@ import Content from './content';
 
 const query = 'posts';
 
-const Page = ({ params }: { params: { param: string } }) => {
+const Page = async (props: { params: Promise<{ param: string }> }) => {
+  const params = await props.params;
   if (!extractUsernameFromParam(params.param)) notFound();
 
   return (

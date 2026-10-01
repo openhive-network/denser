@@ -53,6 +53,13 @@ export async function gotoTrendingLoggedIn(page: Page): Promise<void> {
 }
 
 /**
+ * The bare `bg-destructive-icon` class token. Vote icons always carry
+ * `hover:bg-destructive-icon` / `hover:bg-gray-600`, which a plain
+ * substring regex would match before the vote state has loaded.
+ */
+const VOTED_ICON_CLASS = /(?:^|\s)bg-destructive-icon(?:\s|$)/;
+
+/**
  * Wait until the first post's upvote icon shows the "already upvoted"
  * visual state (the `bg-destructive-icon` class is applied when
  * `userVote.vote_percent > 0`). Until this class lands, the component
@@ -64,17 +71,33 @@ export async function gotoTrendingLoggedIn(page: Page): Promise<void> {
 export async function expectFirstPostUpvotedState(page: Page): Promise<void> {
   await expect(
     page.getByTestId('upvote-button').first().locator('svg')
-  ).toHaveClass(/bg-destructive-icon/);
+  ).toHaveClass(VOTED_ICON_CLASS);
 }
 
 /**
- * Downvote analog — filled downvote icon gets the `bg-gray-600` class
- * when `userVote.vote_percent < 0`.
+ * Downvote analog — the filled downvote icon of the "already downvoted"
+ * branch also gets the `bg-destructive-icon` class.
  */
 export async function expectFirstPostDownvotedState(
   page: Page
 ): Promise<void> {
   await expect(
     page.getByTestId('downvote-button').first().locator('svg')
-  ).toHaveClass(/bg-gray-600/);
+  ).toHaveClass(VOTED_ICON_CLASS);
+}
+
+/**
+ * Wait until the first post's vote button opens the weight slider: it sits
+ * inside the popover trigger only once the voter's account (`net_vests`) has
+ * loaded. Before that the button is the plain one-click vote, so a click
+ * would broadcast a 100% vote instead of opening the slider — the same
+ * `login-btn` race as above, on `find_accounts` instead of `list_votes`.
+ */
+export async function expectFirstPostSliderEnabled(
+  page: Page,
+  direction: 'upvote' | 'downvote'
+): Promise<void> {
+  await expect(
+    page.getByTestId(`${direction}-button`).first().locator('xpath=ancestor::button[1]')
+  ).toHaveAttribute('aria-haspopup', 'dialog');
 }

@@ -5,7 +5,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountNotifications } from '@transaction/lib/bridge-api';
 import { Button } from '@ui/components/button';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 
 const NotificationContent = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');

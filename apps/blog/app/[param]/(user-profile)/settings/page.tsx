@@ -7,7 +7,8 @@ import { InitialFollowListProvider } from '@/blog/components/observer-provider';
 
 const logger = getLogger('app');
 
-const SettingsPage = async ({ params }: { params: { param: string } }) => {
+const SettingsPage = async (props: { params: Promise<{ param: string }> }) => {
+  const params = await props.params;
   const username = extractUsernameFromParam(params.param);
   if (!username) notFound();
 

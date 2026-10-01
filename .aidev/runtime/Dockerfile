@@ -11,7 +11,7 @@
 # The image is built from pnpm-lock.yaml, so a lockfile change needs a rebuild and
 # a new digest in .aidev/project.yaml in the same commit (AIDEV refuses the lockfile
 # alone). Rebuild with .aidev/runtime/build.sh.
-FROM mcr.microsoft.com/playwright:v1.49.1-jammy@sha256:019b822658965bf5f6d509472802797554360f2940e677b2afb0f17748d0d0e3
+FROM mcr.microsoft.com/playwright:v1.63.0-jammy@sha256:167d0506cfbe3c294fb214b2d11737326eeee028aa611fa1ba538e5057675847
 
 # The suite runs as an arbitrary uid with no passwd entry, so HOME must be a
 # directory anyone can write. Corepack and the pnpm store live outside HOME.

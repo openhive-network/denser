@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import clsx from 'clsx';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { Slider } from '@ui/components/slider';
 import { Icons } from '@ui/components/icons';

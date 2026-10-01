@@ -9,12 +9,13 @@ import { ObserverProvider } from '@/blog/components/observer-provider';
 import type { Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
 
 interface SearchPageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const logger = getLogger('app');
 
-const SearchPage = async ({ searchParams }: SearchPageProps) => {
+const SearchPage = async (props: SearchPageProps) => {
+  const searchParams = await props.searchParams;
   const validatedParams = parseSearchParams(searchParams);
   const aiParam = validatedParams.ai;
   const classicQuery = validatedParams.q;

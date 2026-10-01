@@ -5,7 +5,7 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 // Note: Security headers (CSP, X-Content-Type-Options, etc.) are now applied
 // via middleware for runtime environment variable evaluation.
-// See packages/middleware/lib/csp.ts and apps/blog/middleware.ts
+// See packages/middleware/lib/csp.ts and apps/blog/proxy.ts
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -13,12 +13,14 @@ const nextConfig = {
   poweredByHeader: false, // Don't expose X-Powered-By: Next.js
   compress: false, // Nginx handles compression; disabling avoids zlib memory retention (denser#886)
   output: 'standalone',
-  swcMinify: false,
   basePath: basePath,
   assetPrefix: basePath,
-  experimental: {
-    outputFileTracingRoot: path.join(__dirname, '../..'),
-    instrumentationHook: true
+  outputFileTracingRoot: path.join(__dirname, '../..'),
+  turbopack: {
+    root: path.join(__dirname, '../..'),
+    // wax, beekeeper and hb-auth import their emscripten .wasm dynamically
+    rules: { '*.wasm': { type: 'asset' } },
+    resolveAlias: { fs: { browser: './empty.js' }, module: { browser: './empty.js' } }
   },
   // Worker files need specific headers (security headers are applied via middleware)
   async headers() {
@@ -76,13 +78,6 @@ const nextConfig = {
         }
       ],
     };
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = { fs: false, module: false };
-    }
-
-    return config;
   }
 };
 

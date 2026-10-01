@@ -1,7 +1,7 @@
 import { useTranslation } from '@/blog/i18n/client';
 import { Button } from '@hive/ui';
 import clsx from 'clsx';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 
 const FollowButton = ({
   variant,

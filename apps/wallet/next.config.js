@@ -5,21 +5,24 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 // Note: Security headers (CSP, X-Content-Type-Options, etc.) are now applied
 // via middleware for runtime environment variable evaluation.
-// See packages/middleware/lib/csp.ts and apps/wallet/middleware.ts
+// See packages/middleware/lib/csp.ts and apps/wallet/proxy.ts
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Don't expose X-Powered-By: Next.js
   output: 'standalone',
-  swcMinify: false,
   // basePath is set at build time from NEXT_PUBLIC_BASE_PATH env variable
   // This allows building separate images for root (/) and subdirectory (/wallet) deployments
   basePath: basePath,
   // assetPrefix must match basePath for proper asset serving
   assetPrefix: basePath,
-  experimental: {
-    outputFileTracingRoot: path.join(__dirname, '../..')
+  outputFileTracingRoot: path.join(__dirname, '../..'),
+  turbopack: {
+    root: path.join(__dirname, '../..'),
+    // wax, beekeeper and hb-auth import their emscripten .wasm dynamically
+    rules: { '*.wasm': { type: 'asset' } },
+    resolveAlias: { fs: { browser: './empty.js' }, module: { browser: './empty.js' } }
   },
   transpilePackages: [
     '@hive/common-hiveio-packages',
@@ -55,14 +58,6 @@ const nextConfig = {
         ]
       }
     ];
-  },
-
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = { fs: false, module: false };
-    }
-
-    return config;
   }
 };
 

@@ -7,7 +7,8 @@ import {
   SLIDER_MAX,
   SLIDER_TARGET_PERCENT,
   SLIDER_DRAG_TOLERANCE,
-  gotoTrendingLoggedIn
+  gotoTrendingLoggedIn,
+  expectFirstPostSliderEnabled
 } from '../support/postVotingContext';
 
 /**
@@ -33,6 +34,7 @@ test.describe('Post voting — weight persistence (§6.1)', () => {
   test('VOTE-09: slider weight persists across reload', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page);
     await gotoTrendingLoggedIn(page);
+    await expectFirstPostSliderEnabled(page, 'upvote');
 
     const homePage = new HomePage(page);
     const slider = new VotingSlider(page);
@@ -83,6 +85,7 @@ test.describe('Post voting — weight persistence (§6.1)', () => {
     // it does not touch `votesValues`, so the stored percent survives.
     await page.reload();
     await expect(page.getByTestId('login-btn')).toBeHidden();
+    await expectFirstPostSliderEnabled(page, 'upvote');
 
     // Step 4 — open the slider again; it should hydrate from stored
     // value rather than the DEFAULT_VOTES_VALUES of 100%.

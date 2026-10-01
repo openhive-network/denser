@@ -12,7 +12,8 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
-export async function generateMetadata({ params }: { params: { param: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const raw = params.param;
   // Only process if it looks like a username (starts with @ or %40)
   if (!raw.startsWith('@') && !raw.startsWith('%40')) {
@@ -59,7 +60,13 @@ export async function generateMetadata({ params }: { params: { param: string } }
   }
 }
 
-const Layout = async ({ children, params }: { children: ReactNode; params: { param: string } }) => {
+const Layout = async (props: { children: ReactNode; params: Promise<{ param: string }> }) => {
+  const params = await props.params;
+
+  const {
+    children
+  } = props;
+
   const queryClient = getQueryClient();
   const { param } = params;
 

@@ -43,7 +43,11 @@ function notFoundRedirect(request: Request): NextResponse {
   return NextResponse.redirect(new URL('/404', origin), { status: 302 });
 }
 
-export async function GET(request: Request, { params }: { params: { user: string; permlink: string } }) {
+export async function GET(
+  request: Request,
+  props: { params: Promise<{ user: string; permlink: string }> }
+) {
+  const params = await props.params;
   try {
     if (!isValidUserParam(params?.user)) {
       return notFoundRedirect(request);

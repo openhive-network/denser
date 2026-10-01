@@ -14,7 +14,8 @@ import {
   SLIDER_TARGET_PERCENT,
   SLIDER_DRAG_TOLERANCE,
   BASIS_POINTS_PER_PERCENT,
-  gotoTrendingLoggedIn
+  gotoTrendingLoggedIn,
+  expectFirstPostSliderEnabled
 } from '../support/postVotingContext';
 
 /**
@@ -36,6 +37,7 @@ test.describe('Post voting — slider upvote (§6.1)', () => {
   test('VOTE-05: upvote with custom slider weight', async ({ page }) => {
     const broadcast = await installBroadcastInterceptor(page);
     await gotoTrendingLoggedIn(page);
+    await expectFirstPostSliderEnabled(page, 'upvote');
 
     await new HomePage(page).getFirstPostUpvoteButton.click();
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import { cn } from '@ui/lib/utils';
 import { Icons } from '@ui/components/icons';
 import { handleError } from '@ui/lib/handle-error';
