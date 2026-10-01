@@ -5,7 +5,7 @@
 # service runs the project's pinned test image (`environment.image`); nothing is
 # built. node_modules come from `pnpm install --offline` out of the image's store
 # (.aidev/pnpm-deps.sh), written into the checkout like every other suite does,
-# and skipped while pnpm-lock.yaml is unchanged.
+# and skipped while pnpm-lock.yaml and the image are unchanged and the tree checks out.
 #
 # Network: the blog shares the fixture proxy's network namespace, so inside it
 # http://localhost:8200 is the proxy — the address playwright.fixture.config.ts
@@ -110,11 +110,9 @@ services:
     command:
       - bash
       - -c
-      # fixture-proxy owns the install; on a restart (the pnpm-lock.yaml reload
-      # rule restarts both) wait for it rather than run a second one beside it.
-      - |
-        until [ "$$(cat node_modules/.aidev-pnpm-lock-sha256 2>/dev/null)" = "$$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" ]; do sleep 2; done
-        source .aidev/pnpm-deps.sh && cd apps/blog && exec pnpm dev
+      # On a restart (the pnpm-lock.yaml reload rule restarts both) fixture-proxy
+      # may be installing; pnpm-deps.sh waits on its lock, then verifies the tree.
+      - source .aidev/pnpm-deps.sh && cd apps/blog && exec pnpm dev
     depends_on:
       fixture-proxy:
         condition: service_healthy
