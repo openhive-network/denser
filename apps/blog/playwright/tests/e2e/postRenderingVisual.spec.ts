@@ -7,7 +7,9 @@ import { chromiumOnly } from '../support/testHelpers';
  * Visual regression tests for post content rendering.
  *
  * Uses screenshot comparison to detect layout regressions
- * (e.g. two-column text layout, image placement, embed table layout).
+ * (e.g. two-column text layout, image placement). The embed table's layout
+ * screenshot lives in fixture/postEmbedTableLayout.spec.ts, where the embeds
+ * can't change its height.
  */
 
 const twoColumnPosts = [
@@ -102,28 +104,5 @@ test.describe('Embed table layout regression', () => {
 
     // Verify table CSS properties for proper rendering
     await expect(postPage.articleTable).toHaveCSS('border-collapse', 'collapse');
-  });
-
-  test('table with embeds renders correct layout', async ({ page, browserName }) => {
-    chromiumOnly(browserName);
-
-    await postPage.gotoPostPage(fixturePost.community, fixturePost.author, fixturePost.permlink);
-    await expect(postPage.articleBody).toBeVisible();
-
-    // Wait for all embeds to render before taking screenshot
-    await expect(postPage.twitterWrappers).toHaveCount(4, { timeout: TIMEOUTS.TWITTER_PLUGIN_SETTLE });
-
-    // Extra buffer for TwitterMessageResizePlugin to settle after embeds appear.
-    // The Twitter embed fires multiple resize events after initial render;
-    // there is no deterministic event to wait for, so a timeout is necessary.
-    await page.waitForTimeout(TIMEOUTS.TWITTER_PLUGIN_SETTLE);
-
-    // Mask all iframes to avoid flakiness from external embed content
-    const iframes = await postPage.articleIframes.all();
-
-    await expect(postPage.articleBody).toHaveScreenshot('embed-table-layout.png', {
-      mask: iframes,
-      maxDiffPixelRatio: 0.01
-    });
   });
 });

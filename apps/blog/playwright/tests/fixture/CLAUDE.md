@@ -697,6 +697,17 @@ record time. Specs pin the first post's author/permlink as module-level
 constants (e.g. `FIRST_POST_AUTHOR`). If someone re-records, they must
 update the constants in any spec that uses them.
 
+### Screenshots: stub third-party embed frames, generate baselines in the image
+
+The fixture proxy only replays Hive API calls; embed iframes (Twitter/X,
+Instagram) still load from the internet in CI and resize themselves via
+`postMessage`, so a screenshot that includes them changes height between
+runs. `postEmbedTableLayout.spec.ts` `page.route`s those origins to a blank
+page, which keeps each iframe at the stylesheet's fixed size. Baselines
+(`<spec>.ts-snapshots/*-chromium-fixture-linux.png`) must be written with
+`--update-snapshots` inside the pinned `aidev-tests` image (same Playwright
+base image as CI's `blog-fixture-tests`), not on a dev machine.
+
 ### `fixtureTestName` is worker-scoped
 
 You cannot switch fixture dirs per `test.describe` in one file. Each

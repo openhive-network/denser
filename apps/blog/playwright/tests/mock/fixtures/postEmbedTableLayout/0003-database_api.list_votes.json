@@ -1,0 +1,49 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "guest4test1",
+        "test-twitter-and-insta-embeds",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "43064ab73c4aa818",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "guest4test1",
+      "test-twitter-and-insta-embeds",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "voter": "guest4test2",
+          "author": "guest4test1",
+          "weight": 0,
+          "rshares": 0,
+          "permlink": "test-twitter-and-insta-embeds",
+          "last_update": "2025-11-13T07:36:57",
+          "num_changes": 0,
+          "vote_percent": 10000
+        }
+      ]
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

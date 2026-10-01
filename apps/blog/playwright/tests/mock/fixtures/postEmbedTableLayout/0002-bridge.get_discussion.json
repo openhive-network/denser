@@ -1,0 +1,80 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_discussion",
+    "params": {
+      "author": "guest4test1",
+      "permlink": "test-twitter-and-insta-embeds",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "7caf59080c4ccee9",
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "guest4test1",
+    "permlink": "test-twitter-and-insta-embeds",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "guest4test1/test-twitter-and-insta-embeds": {
+        "url": "/test/@guest4test1/test-twitter-and-insta-embeds",
+        "body": "https://x.com/NASA/status/1894840654506627485\n\n| Header | Header |  Header |\n|--------|--------|--------|\n| https://x.com/NASA/status/1894863223637041293 | https://x.com/NASAJPL/status/1894463814835245368 | https://x.com/NASA/status/1894417737117548852 |\n| https://www.instagram.com/nasa/reel/DEX5oOZK9Bi/ | https://www.instagram.com/nasa/p/DFGtysOpcB7/ | https://www.instagram.com/nasa/p/DEihMdppK1c/?img_index=1 |\n| Cell | Cell | Cell |\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Test twitter and insta embeds",
+        "author": "guest4test1",
+        "payout": 0,
+        "created": "2025-05-16T08:25:15",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-05-16T08:25:15",
+        "category": "test",
+        "children": 0,
+        "permlink": "test-twitter-and-insta-embeds",
+        "payout_at": "2025-05-23T08:25:15",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test2",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "test",
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 43.24,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
