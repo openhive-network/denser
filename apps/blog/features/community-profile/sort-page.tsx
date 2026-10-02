@@ -4,6 +4,7 @@ import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
+import { keepObserverVotes } from '@/blog/lib/feed-entries';
 
 const logger = getLogger('app');
 
@@ -21,7 +22,8 @@ const SortPage = async ({
   const observer = await getObserverFromCookies();
   let initialPosts = null;
   try {
-    initialPosts = (await getPostsRanked(sort, tag, '', '', observer)) ?? null;
+    const posts = await getPostsRanked(sort, tag, '', '', observer);
+    initialPosts = posts ? keepObserverVotes(posts, observer) : null;
   } catch (error) {
     logger.error(error, 'Error in SortPage:');
   }
