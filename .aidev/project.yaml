@@ -166,4 +166,41 @@ sandbox:
         action: restart
 
 # Capability grants for target-side code. Empty until this project needs one.
+# The integration site (stack/integration, https://denser.discuss.peerverity.info):
+# each promote landing on aidev/integration builds the images hive/haf_api_node's
+# `ui` profile runs (blog at /blog, wallet at /wallet), pushes `:<sha8>` and moves
+# `:integration`; the site's 5-minute upgrade timer follows that tag. No GitLab CI
+# is involved. No stable channel: production images still come from develop/main
+# through CI.
+publish:
+  images:
+    - name: blog-subdirectory
+      repository: registry.gitlab.syncad.com/hive/denser/blog-subdirectory
+      dockerfile: Dockerfile
+      context: .
+      args:
+        TURBO_APP_SCOPE: "@hive/blog"
+        TURBO_APP_PATH: /apps/blog
+        TURBO_APP_NAME: blog-subdirectory
+        BASE_PATH: /blog
+        GIT_CURRENT_BRANCH: aidev/integration
+      build_args: [NPM_CONFIG_REGISTRY]
+    - name: wallet-subdirectory
+      repository: registry.gitlab.syncad.com/hive/denser/wallet-subdirectory
+      dockerfile: Dockerfile
+      context: .
+      args:
+        TURBO_APP_SCOPE: "@hive/wallet"
+        TURBO_APP_PATH: /apps/wallet
+        TURBO_APP_NAME: wallet-subdirectory
+        BASE_PATH: /wallet
+        GIT_CURRENT_BRANCH: aidev/integration
+      build_args: [NPM_CONFIG_REGISTRY]
+  channels:
+    integration: integration
+  # A key, never a value: resolved from the denser project secrets
+  # AIDEV_PROJECT_SECRET_PUBLISH_DENSER_REGISTRY_REGISTRY_USER / _TOKEN
+  # (hive/denser deploy token 74, read/write_registry).
+  credentials: denser-registry
+
 capabilities: []
