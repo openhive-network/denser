@@ -5,9 +5,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { Preferences } from '@/blog/lib/utils';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
-
-// The first feed images are the LCP candidates, so they must not wait for lazy-loading.
-const PRIORITY_IMAGE_COUNT = 2;
+import { PRIORITY_IMAGE_COUNT } from './lib/card-image';
 
 const PostList = ({
   data,

@@ -10,6 +10,7 @@ import { StorageCleanup } from '@hive/ui';
 import CondenserMigration from '../components/condenser-migration';
 import ChainWarmup from '../components/chain-warmup';
 import { getEnvVersion } from '../lib/env-version';
+import { ImagesHostHints } from '@ui/components/images-host-hints';
 import { LocaleProvider } from '../i18n/locale-context';
 
 // Get basePath from build-time environment
@@ -76,6 +77,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <head>
         {/* Use plain script tag for guaranteed synchronous loading of env globals */}
         <script src={`${basePath}/__ENV.js?v=${envVersion}`} />
+        <ImagesHostHints />
       </head>
       <body className="bg-background-secondary">
         <LocaleProvider locale={locale}>

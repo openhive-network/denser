@@ -1,5 +1,5 @@
 import { Entry } from '@hive/common-hiveio-packages/wax';
-import { find_first_img } from '../list-of-posts/post-img';
+import { find_first_img } from '../list-of-posts/lib/card-image';
 import { Link } from '@hive/ui';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { useState } from 'react';

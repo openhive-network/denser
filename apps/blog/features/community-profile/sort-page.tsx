@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
 import { keepObserverVotes } from '@/blog/lib/feed-entries';
+import FirstCardImagePreload from '@/blog/features/list-of-posts/first-card-image-preload';
 
 const logger = getLogger('app');
 
@@ -33,6 +34,7 @@ const SortPage = async ({
   // query client, causing unnecessary client-side refetches.
   return (
     <ObserverProvider value={observer}>
+      <FirstCardImagePreload entries={initialPosts} />
       <InitialPostsProvider value={initialPosts}>{children}</InitialPostsProvider>
     </ObserverProvider>
   );
