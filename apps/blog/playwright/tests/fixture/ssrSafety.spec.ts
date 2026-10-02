@@ -1,5 +1,6 @@
 import { test, expect } from '../support/fixture-proxy-test';
 import { FIXTURE_COOKIE_PASSWORD } from '../support/fixture-auth/constants';
+import type { APIResponse } from '@playwright/test';
 
 /**
  * SSR safety checks — HTTP-level guarantees the server must hold BEFORE any
@@ -21,6 +22,22 @@ import { FIXTURE_COOKIE_PASSWORD } from '../support/fixture-auth/constants';
 
 const SUBSCRIBED_USER = 'guest4test1';
 const POST_LIST_ITEM = 'data-testid="post-list-item"';
+
+/**
+ * Every page renders per request (the root layout reads cookies), so none may
+ * tell a shared cache (CDN/proxy) to store it.
+ */
+function expectNotSharedCacheable(res: APIResponse, what: string) {
+  const cacheControl = (res.headers()['cache-control'] ?? '').toLowerCase();
+
+  expect(cacheControl, `missing Cache-Control on ${what}`).not.toBe('');
+  expect(cacheControl, `${what} is publicly cacheable`).not.toContain('public');
+  expect(cacheControl, `${what} allows shared-cache storage`).not.toContain('s-maxage');
+  expect(
+    /no-store|private|no-cache/.test(cacheControl),
+    `expected a private/no-store directive on ${what}, got "${cacheControl}"`
+  ).toBe(true);
+}
 
 /** Reuse the committed SSR fixture corpus (read-only on replay — safe to share). */
 test.use({ fixtureTestName: 'ssrChecks' });
@@ -80,15 +97,37 @@ test.describe('SSR safety — cache headers & per-user isolation', () => {
     const res = await request.get('/trending/my', {
       headers: { cookie: `observer=${SUBSCRIBED_USER}` }
     });
-    const cacheControl = (res.headers()['cache-control'] ?? '').toLowerCase();
+    expectNotSharedCacheable(res, 'personalized feed');
+  });
 
-    expect(cacheControl, 'missing Cache-Control on personalized response').not.toBe('');
-    expect(cacheControl, 'personalized feed is publicly cacheable').not.toContain('public');
-    expect(cacheControl, 'personalized feed allows shared-cache storage').not.toContain('s-maxage');
-    expect(
-      /no-store|private|no-cache/.test(cacheControl),
-      `expected a private/no-store directive, got "${cacheControl}"`
-    ).toBe(true);
+  // Every other page is rendered on demand too (ƒ in the build's route table),
+  // and the response must keep saying so. Next 15 changed caching defaults;
+  // these pin the headers Next 14 sent. The community feed is requested as the
+  // observer it was recorded for.
+  const PAGES = [
+    { what: 'feed', path: '/trending' },
+    { what: 'post', path: `/test/@${SUBSCRIBED_USER}/test-ako-post` },
+    { what: 'profile', path: `/@${SUBSCRIBED_USER}` },
+    { what: 'community feed', path: '/trending/hive-160391', observer: SUBSCRIBED_USER }
+  ];
+  for (const { what, path, observer } of PAGES) {
+    test(`SAFE-09 — ${what} ${path} is not publicly cacheable`, async ({ request }) => {
+      const res = await request.get(path, {
+        headers: observer ? { cookie: `observer=${observer}` } : {}
+      });
+      expect(res.status()).toBe(200);
+      expectNotSharedCacheable(res, what);
+    });
+  }
+
+  // /api/health is a static route handler. Next 15+ gives static handlers
+  // `s-maxage=31536000` by default, which would let a proxy cache keep
+  // answering "ok" for a dead app.
+  test('SAFE-10 — /api/health is never stored by a cache', async ({ request }) => {
+    const res = await request.get('/api/health');
+    expect(res.status()).toBe(200);
+    expectNotSharedCacheable(res, '/api/health');
+    expect(res.headers()['cache-control']).toContain('no-store');
   });
 
   // Differential proof the response is rendered per-cookie, not served from one
