@@ -83,9 +83,14 @@ curl -s "$DENSER_DEV_FIXTURE_URL/__aidev/status"
 ```
 
 Recordings are the directories of `apps/blog/playwright/tests/mock/fixtures/`.
-Server-rendered HTML reads the stack's proxy; in-page requests from a browser go
-to `http://localhost:8200`, which only `.aidev/dev-stack-spec.sh` provides — so
-check interactive behaviour with a spec, not a browser pointed at the URL.
+
+**Open it in a browser.** A browser (e.g. ad-hoc Playwright) on
+`$DENSER_DEV_BLOG_URL` hydrates the page and makes its client API calls: both
+apps' `allowedDevOrigins` let next dev serve `/_next/hmr` to `127.0.0.1`, and the
+`dev_stack` suite checks it. With fixture data those calls go to
+`http://localhost:8200`, which is the proxy only inside the stack's network, so
+in-page data from a browser on the host needs live data (below); for fixture
+data check interactive behaviour with `.aidev/dev-stack-spec.sh`.
 
 **Live data instead.** Start the stack with
 `DENSER_DEV_API_ENDPOINT=https://api.hive.blog` and the blog talks to the live
