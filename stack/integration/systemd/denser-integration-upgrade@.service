@@ -2,7 +2,7 @@
 #   inst=$(systemd-escape --path /home/syncad/denser-integration/stack/integration)
 #   sudo systemctl enable --now "denser-integration-upgrade@${inst}.timer"
 [Unit]
-Description=Upgrade the denser integration site in %I
+Description=Upgrade the denser integration site in %f
 After=docker.service network-online.target
 Wants=network-online.target
 
@@ -10,6 +10,6 @@ Wants=network-online.target
 Type=oneshot
 User=syncad
 Group=syncad
-WorkingDirectory=%I
-ExecStart=%I/upgrade.sh --quiet
+WorkingDirectory=%f
+ExecStart=%f/upgrade.sh --quiet
 TimeoutStartSec=900

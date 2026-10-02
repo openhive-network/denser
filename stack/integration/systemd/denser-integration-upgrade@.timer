@@ -1,5 +1,5 @@
 [Unit]
-Description=Upgrade the denser integration site in %I every 5 minutes
+Description=Upgrade the denser integration site in %f every 5 minutes
 
 [Timer]
 OnBootSec=2min
