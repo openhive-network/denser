@@ -53,13 +53,17 @@ variables:
   PLAYWRIGHT_TAG: 'v1.63.0-jammy'
 
   HAF_COMMIT: 8de693b2812a040aa5c4365c232ebab8036a1d11
-# Branch pipelines (what the Workflows/Branch-Pipelines template did), except on
-# AIDEV's working branches: ai/<issue>-... and session/<name> are judged by the
-# suites in .aidev/project.yaml, and a full pipeline per AIDEV push would only
-# repeat them. Work reaches CI when it lands on aidev/integration.
+# Branch pipelines (what the Workflows/Branch-Pipelines template did), except for
+# AIDEV-driven development: ai/<issue>-..., session/<name> and aidev/integration
+# are verified by the suites in .aidev/project.yaml, not by CI. A push to
+# aidev/integration runs no pipeline; one started by hand or through the API does
+# (`glab ci run -b aidev/integration`), which is how its MR into develop gets the
+# pipeline that develop's merge rule requires.
 workflow:
   rules:
   - if: $CI_COMMIT_BRANCH =~ /^(ai|session)\//
+    when: never
+  - if: $CI_COMMIT_BRANCH == "aidev/integration" && $CI_PIPELINE_SOURCE !~ /^(web|api)$/
     when: never
   - if: $CI_COMMIT_TAG
   - if: $CI_COMMIT_BRANCH
@@ -248,46 +252,6 @@ mirrornet-haf-binaries-extraction:
     reports:
       dotenv: docker-build-testenv-${TURBO_APP_NAME}-image.env
     when: always # This ensures artifacts are created even if job fails
-  tags:
-  - public-runner-docker
-
-# AIDEV test runtime image (denser#968): built only when its inputs change; the
-# tag is aidev-<hash of them>, so an existing tag means no build. Fails when
-# .aidev/project.yaml's environment.image doesn't pin the image of these inputs.
-aidev-tests-image:
-  extends: .docker_image_builder_job_template
-  stage: build
-  interruptible: true
-  rules:
-  - if: $CI_COMMIT_BRANCH == "aidev/integration" || $CI_COMMIT_BRANCH == "develop"
-    changes:
-    - .aidev/runtime/**/*
-    - .aidev/project.yaml
-    - .aidev/*.compose.yml
-    - package.json
-    - pnpm-lock.yaml
-    - pnpm-workspace.yaml
-    - .npmrc
-  script:
-  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
-  - |
-    image="$(.aidev/runtime/build.sh --push)"
-    pinned="$(sed -n 's/^ *image: *"\{0,1\}\([^"]*\)"\{0,1\} *$/\1/p' .aidev/project.yaml | head -1)"
-    echo "image of these inputs: $image (tag $(.aidev/runtime/build.sh --tag))"
-    echo "pinned in the profile: $pinned"
-    if [ "$image" != "$pinned" ]; then
-      echo "ERROR: .aidev/project.yaml environment.image doesn't match the image of these inputs."
-      echo "Set it, in the same commit as the input change, to:"
-      echo "  image: \"$image\""
-      exit 1
-    fi
-    # The stack compose files pin the same image (x-image anchor).
-    for f in .aidev/*.compose.yml; do
-      if grep -q '^x-image:' "$f" && ! grep -q "^x-image: &image $image\$" "$f"; then
-        echo "ERROR: $f x-image doesn't match; set it to: x-image: &image $image"
-        exit 1
-      fi
-    done
   tags:
   - public-runner-docker
 

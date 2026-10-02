@@ -28,16 +28,18 @@ in the same commit. When you change any image input:
    line of `dev-stack.compose.yml` and `test-stack.compose.yml`, and commit them
    together with the input change.
 
-Without registry rights, push the input change to a branch that runs the
-`aidev-tests-image` CI job (`aidev/integration`, `develop`): the job builds and pushes
-the image and fails with the reference to put in `project.yaml`; commit that digest.
+The workflow (or person) that changes an input runs `build.sh --push` itself; no
+CI job builds this image. AIDEV-driven development doesn't use GitLab CI (see
+"CI" below).
 
-### The `aidev-tests-image` CI job
+## CI
 
-Runs on `aidev/integration` and `develop` when an input, `runtime/` or `project.yaml`
-changes. It runs `build.sh --push` (under a minute when the image exists) and fails
-when `environment.image` or a compose file's `x-image` isn't the image of the
-committed inputs, printing the reference to use.
+GitLab CI is not part of AIDEV-driven development. `ai/*` and `session/*` branches
+never run a pipeline, and a push to `aidev/integration` (every promote) doesn't
+either; the slots in `project.yaml` are the verification. CI still runs for
+`develop`, `main`, tags and other branches. Before merging the `aidev/integration`
+MR into `develop` (which requires a successful pipeline), start one by hand:
+`glab ci run -b aidev/integration`.
 
 ## Live dev stack (`sandbox.dev`)
 

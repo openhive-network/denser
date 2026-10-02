@@ -28,6 +28,8 @@ This project uses **gitlab.syncad.com**, NOT gitlab.com.
 ## Working in an AIDEV workflow
 When AIDEV runs you on an issue, no one is there to answer questions, so skip any step above that says to ask the user (e.g. the pre-MR smoke-test question). Don't run the `blog-smoke-tests` skill or any tests against production or the dev site. Use the local stack and slots below. `.aidev/README.md` has the details.
 
+GitLab CI is not part of AIDEV-driven development: your branch and `aidev/integration` run no pipeline. Don't wait for, trigger or edit CI to verify a change; the slots below are the verification. Don't add new `.gitlab-ci.yml` jobs for AIDEV checks: put them in `.aidev/project.yaml`.
+
 ### Checking your change
 Run `aidev test run --slot quick` (from the repository root) **once, after your last edit**, before declaring done. It runs the unit tests (`.aidev/run-unit-tests.sh`) and the static checks: ESLint, plus `tsc` for both apps and their Playwright code (`.aidev/run-static.sh`).
 
