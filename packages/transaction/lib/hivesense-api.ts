@@ -1,6 +1,7 @@
 import { logger } from '@ui/lib/logger';
 import { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-packages/wax';
 import { getChain } from './chain';
+import { getHiveChainService } from './hive-chain-service';
 import {
   AI_SEARCH_REQUEST_TIMEOUT_MS,
   HIVE_SENSE_PROBE_TIMEOUT_MS,
@@ -18,8 +19,7 @@ const logStandarizedError = (methodName: string, error: unknown): null => {
 
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
-    const chain = await getChain();
-    const base = String(chain.restApi['hivesense-api'].endpointUrl).replace(/\/$/, '');
+    const base = getHiveChainService().getAiSearchEndpoint().replace(/\/$/, '');
     // The OpenAPI document is served only at the trailing-slash root, which the
     // wax REST caller cannot request (it filters out empty path segments).
     // A live spec is not enough: also probe posts/search so a degraded

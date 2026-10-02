@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 import {
   installBroadcastInterceptor,
@@ -50,6 +51,22 @@ test.use({
   fixtureTestName: 'loggedInUserSettings',
   authenticatedUser: {}
 });
+
+/**
+ * The Reply button is server-rendered, so it is visible before hydration and
+ * an early click is lost. Retry until the editor opens; only click while it is
+ * closed, since the button toggles it.
+ */
+async function openPostReplyEditor(page: Page): Promise<CommentEditorPage> {
+  const postPage = new PostPage(page);
+  const commentEditor = new CommentEditorPage(page);
+  await expect(postPage.commentReplay).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+  await expect(async () => {
+    if (!(await commentEditor.getReplayEditorElement.isVisible())) await postPage.commentReplay.click();
+    await expect(commentEditor.getReplayEditorElement).toBeVisible({ timeout: 2000 });
+  }).toPass({ timeout: TIMEOUTS.HYDRATION });
+  return commentEditor;
+}
 
 test.describe('§8 User Profile & Settings', () => {
   let settings: SettingsPage;
@@ -238,11 +255,7 @@ test.describe('§8 User Profile & Settings', () => {
     // whenever `preferences.comment_rewards !== '50%'`
     // (reply-textbox.tsx:408-417).
     await gotoLoggedIn(page, prefPostUrl());
-    const postPage = new PostPage(page);
-    await expect(postPage.commentReplay).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
-    await postPage.commentReplay.click();
-    const commentEditor = new CommentEditorPage(page);
-    await expect(commentEditor.getReplayEditorElement).toBeVisible();
+    const commentEditor = await openPostReplyEditor(page);
     await expect(commentEditor.rewardsNotice('Decline Payout')).toBeVisible();
 
     expect(broadcast.calls).toHaveLength(0);
@@ -257,11 +270,7 @@ test.describe('§8 User Profile & Settings', () => {
     await expectPreferences(page, { comment_rewards: '100%' });
 
     await gotoLoggedIn(page, prefPostUrl());
-    const postPage = new PostPage(page);
-    await expect(postPage.commentReplay).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
-    await postPage.commentReplay.click();
-    const commentEditor = new CommentEditorPage(page);
-    await expect(commentEditor.getReplayEditorElement).toBeVisible();
+    const commentEditor = await openPostReplyEditor(page);
     // Note: lowercase 'up' in the comment-footer translation
     // (post_content.footer.comment.power_up: 'Power up 100%') vs the
     // capitalized one in settings_page.power_up.

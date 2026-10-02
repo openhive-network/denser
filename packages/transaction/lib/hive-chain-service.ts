@@ -1,4 +1,11 @@
-import { getChain, reuseHiveChain, HiveChain, setAiEndpoint, setRpcEndpoint } from "@hive/common-hiveio-packages";
+import {
+  getAiEndpoint,
+  getChain,
+  reuseHiveChain,
+  HiveChain,
+  setAiEndpoint,
+  setRpcEndpoint
+} from "@hive/common-hiveio-packages";
 
 export type { HiveChain };
 
@@ -17,6 +24,10 @@ export class HiveChainService {
 
   public async setAiSearchEndpoint(newEndpoint: string) {
     setAiEndpoint(newEndpoint);
+  }
+
+  public getAiSearchEndpoint(): string {
+    return getAiEndpoint();
   }
 }
 

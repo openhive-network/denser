@@ -60,6 +60,11 @@ const getAIDefaultEndpoint = (): string | undefined => {
   return undefined;
 };
 
+// Hivesense has its own default endpoint (REACT_APP_AI_DOMAIN) - it is not
+// deployed on every API node; the localStorage override still wins
+const resolveAiEndpoint = (restApiEndpoint: string): string =>
+  getAIDefaultEndpoint() || configuredAIDomain || restApiEndpoint;
+
 let hiveChainPromise: Promise<HiveChain> | undefined = undefined;
 // This should be just a reference retrieved from the hiveChainPromise.
 let hiveChain: HiveChain | undefined = undefined;
@@ -135,6 +140,16 @@ export const setAiEndpoint = (newEndpoint: string): void => {
   window.localStorage.setItem('ai-search-endpoint', JSON.stringify(newEndpoint));
 };
 
+/**
+ * Hivesense endpoint the chain uses, or would use once created. Does not create
+ * the chain, so it is safe to call during page load (no wasm download).
+ */
+export const getAiEndpoint = (): string => {
+  if (hiveChain) return String(hiveChain.restApi['hivesense-api'].endpointUrl);
+
+  return resolveAiEndpoint(getDefaultClientOptions().restApiEndpoint);
+};
+
 // This is intentionally non-async method as we don't want any race condition for hiveChainPromise !== undefined check
 const setChainClient = (options: Partial<IWaxOptionsChain> = {}): Promise<HiveChain> => {
   const clientOptions = {
@@ -199,10 +214,7 @@ const setChainClient = (options: Partial<IWaxOptionsChain> = {}): Promise<HiveCh
 
     const aiEndpoint = getAIDefaultEndpoint();
 
-    // Hivesense has its own default endpoint (REACT_APP_AI_DOMAIN) - it is not
-    // deployed on every API node; the localStorage override still wins
-    hiveChain.restApi['hivesense-api'].endpointUrl =
-      aiEndpoint || configuredAIDomain || clientOptions.restApiEndpoint;
+    hiveChain.restApi['hivesense-api'].endpointUrl = resolveAiEndpoint(clientOptions.restApiEndpoint);
     if (aiEndpoint) {
       hiveChain.api['search-api'].find_text.endpointUrl = aiEndpoint;
     }

@@ -5,7 +5,7 @@ import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
 import { Link } from '@hive/ui';
-import React, { useState, FC, useEffect } from 'react';
+import React, { useState, FC, useEffect, useCallback } from 'react';
 import clsx from 'clsx';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Avatar, AvatarFallback, AvatarImage, Skeleton } from '@ui/components';
@@ -27,6 +27,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { usePathname } from 'next/navigation';
 import { MainNav } from './main-nav';
 import SearchButton from './search-button';
+import { useIdleAfterLoad } from '@/blog/components/hooks/use-idle-after-load';
 
 const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');
@@ -44,9 +45,13 @@ const MainBar: FC = () => {
     queryFn: () => getUnreadNotifications(user.username),
     enabled: !!user.username
   });
+  const isIdle = useIdleAfterLoad();
+  const [isSearchTouched, setIsSearchTouched] = useState(false);
+  const handleSearchTouched = useCallback(() => setIsSearchTouched(true), []);
   const { data: hiveSense } = useQuery({
     queryKey: ['hivesense-api'],
     queryFn: () => getHiveSenseStatus(),
+    enabled: isIdle || isSearchTouched,
     refetchOnWindowFocus: false,
     refetchOnMount: false
   });
@@ -115,7 +120,11 @@ const MainBar: FC = () => {
                 </Link>
               </div>
             ) : null}
-            <div className="hidden lg:block">
+            <div
+              className="hidden lg:block"
+              onFocusCapture={handleSearchTouched}
+              onPointerDownCapture={handleSearchTouched}
+            >
               {pathname === '/search' ? (
                 <SearchButton aiTag={!!hiveSense} />
               ) : (
