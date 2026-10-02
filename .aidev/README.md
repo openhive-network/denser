@@ -85,7 +85,11 @@ curl -s "$DENSER_DEV_FIXTURE_URL/__aidev/status"
 Recordings are the directories of `apps/blog/playwright/tests/mock/fixtures/`.
 Server-rendered HTML reads the stack's proxy; in-page requests from a browser go
 to `http://localhost:8200`, which only `.aidev/dev-stack-spec.sh` provides — so
-check interactive behaviour with a spec, not a browser pointed at the URL.
+check interactive behaviour on fixture data with a spec. A browser pointed at
+`$DENSER_DEV_BLOG_URL` does hydrate and make those calls (`allowedDevOrigins:
+['127.0.0.1']` in `apps/*/next.config.js`; `next dev` otherwise serves its dev
+resources such as `/_next/hmr` only to `localhost`), so in live mode (below) it
+sees the full page.
 
 **Live data instead.** Start the stack with
 `DENSER_DEV_API_ENDPOINT=https://api.hive.blog` and the blog talks to the live
@@ -146,8 +150,10 @@ project, and is torn down afterwards:
   state the stack met on 2026-10-01.
 
 Each boot must be ready within `sandbox.dev.readiness_timeout`. `/trending`, a
-post and a community must then answer 200 with their recorded titles, and
-postDetail's ANON-POST-01 must pass. Every container with a `mem_limit` must stay
+post and a community must then answer 200 with their recorded titles. A browser
+that opens the post at `127.0.0.1` must make a client API request, with no
+"Blocked cross-origin request" in the blog's log. postDetail's ANON-POST-01 must
+pass. Every container with a `mem_limit` must stay
 under 90% of it; the measured bytes are junit properties. Any other change gets a
 skipped "not applicable" case. Junit and logs go to `test-results/dev-stack-suite/`.
 

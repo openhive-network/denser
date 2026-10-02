@@ -16,6 +16,9 @@ const nextConfig = {
   basePath: basePath,
   assetPrefix: basePath,
   outputFileTracingRoot: path.join(__dirname, '../..'),
+  // next dev serves its dev resources (/_next/hmr) only to these origins besides
+  // localhost; the AIDEV dev stack is opened at http://127.0.0.1:<port>.
+  allowedDevOrigins: ['127.0.0.1'],
   turbopack: {
     root: path.join(__dirname, '../..'),
     // wax, beekeeper and hb-auth import their emscripten .wasm dynamically

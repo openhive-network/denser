@@ -21,8 +21,11 @@
 #            over a Next 14 install whose marker claims it is current. The
 #            candidate's stack must find that out and reinstall.
 # Each boots within sandbox.dev.readiness_timeout, then: /trending, a post and a
-# community answer 200 with recorded titles in the server-rendered HTML;
-# postDetail's ANON-POST-01 passes through .aidev/dev-stack-spec.sh; and each
+# community answer 200 with recorded titles in the server-rendered HTML; a
+# browser that opens the post at 127.0.0.1, the host DENSER_DEV_BLOG_URL names,
+# hydrates it — its client calls the API, and next dev logs no "Blocked
+# cross-origin request" (allowedDevOrigins, #999); postDetail's ANON-POST-01
+# passes through .aidev/dev-stack-spec.sh; and each
 # memory-limited container uses at most 90% of its mem_limit (recorded as junit
 # properties).
 #
@@ -183,6 +186,29 @@ const probes = [
 '
 }
 
+# The post in a browser at http://127.0.0.1, not the localhost the specs use:
+# next dev serves its dev resources only to localhost and allowedDevOrigins, and
+# a page whose /_next/hmr is refused never makes its client-side API calls.
+probe_browser() { # PROXY_CONTAINER DIR
+    docker run --rm --network "container:$1" --user "$uid:$gid" -v "$host_root/$2:/work" -w /work/apps/blog "$image" node -e '
+const { chromium } = require("@playwright/test");
+(async () => {
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    const api = [];
+    page.on("request", (r) => { if (new URL(r.url()).port === "8200") api.push(r.url()); });
+    const r = await page.goto("http://127.0.0.1:3000/test/@guest4test1/test-ako-post", { timeout: 280000 });
+    if (!api.length) await page.waitForEvent("request", { predicate: (q) => new URL(q.url()).port === "8200", timeout: 60000 }).catch(() => {});
+    console.log(`status ${r.status()}, ${api.length} client API request(s)`);
+    process.exitCode = r.status() === 200 && api.length > 0 ? 0 : 1;
+  } finally {
+    await browser.close();
+  }
+})().catch((e) => { console.log(String(e)); process.exit(1); });
+'
+}
+
 # Usage as `docker stats` counts it (memory.current less inactive file cache),
 # for every container of the project with a memory limit; fails past 90% of it.
 check_memory() { # SCENARIO DIR PROJECT LOG
@@ -215,7 +241,7 @@ run_stack() { # SCENARIO DIR
     if ! boot "$dir" "$project" "$log"; then
         compose "$dir" "$project" logs --no-color --tail 200 > "$out/$scenario-compose.log" 2>&1
         record "$scenario: ready" fail $((SECONDS - t)) "the dev stack was not ready within ${readiness_timeout}s (compose log in $out/$scenario-compose.log)" "$out/$scenario-compose.log"
-        for step in pages ANON-POST-01 memory; do record "$scenario: $step" skip 0 "not run: the stack is not ready"; done
+        for step in pages browser ANON-POST-01 memory; do record "$scenario: $step" skip 0 "not run: the stack is not ready"; done
         compose "$dir" "$project" down -v --remove-orphans >> "$log" 2>&1
         return 1
     fi
@@ -228,6 +254,16 @@ run_stack() { # SCENARIO DIR
         record "$scenario: pages" pass $((SECONDS - t)) ""
     else
         record "$scenario: pages" fail $((SECONDS - t)) "$(grep -v -E ': 200, has' "$out/$scenario-pages.log" | head -1)" "$out/$scenario-pages.log"
+    fi
+
+    t=$SECONDS
+    probe_browser "$proxy" "$dir" > "$out/$scenario-browser.log" 2>&1
+    status=$?
+    compose "$dir" "$project" logs --no-color blog 2>&1 | grep 'Blocked cross-origin request' >> "$out/$scenario-browser.log" && status=1
+    if [ "$status" = 0 ]; then
+        record "$scenario: browser" pass $((SECONDS - t)) ""
+    else
+        record "$scenario: browser" fail $((SECONDS - t)) "a browser at 127.0.0.1 got no client API calls or a blocked dev resource: $(tail -1 "$out/$scenario-browser.log")" "$out/$scenario-browser.log"
     fi
 
     # Judged by the test's own result, not playwright's exit status: the fixture
