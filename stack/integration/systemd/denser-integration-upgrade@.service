@@ -1,0 +1,15 @@
+# One instance per site directory (the escaped path of stack/integration):
+#   inst=$(systemd-escape --path /home/syncad/denser-integration/stack/integration)
+#   sudo systemctl enable --now "denser-integration-upgrade@${inst}.timer"
+[Unit]
+Description=Upgrade the denser integration site in %I
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=syncad
+Group=syncad
+WorkingDirectory=%I
+ExecStart=%I/upgrade.sh --quiet
+TimeoutStartSec=900

@@ -1,0 +1,45 @@
+{
+	# Behind the host's sites-router: it forwards TLS untouched and prepends a
+	# PROXY header, so the client address is taken from that header.
+	servers :443 {
+		listener_wrappers {
+			proxy_protocol {
+				allow {$CADDY_PROXY_PROTOCOL_ALLOW}
+			}
+			tls
+		}
+	}
+}
+
+{$SITE_HOST} {
+	# Certificates by DNS-01: the name resolves to a LAN address the ACME
+	# servers can't reach.
+	tls {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+	}
+	encode zstd gzip
+
+	# The routes of hive/haf_api_node's caddy/Caddyfile.tmpl for the `ui` profile.
+	handle /blog {
+		reverse_proxy blog:80
+	}
+	handle /blog/* {
+		reverse_proxy blog:80
+	}
+	handle /wallet {
+		reverse_proxy wallet:80
+	}
+	handle /wallet/* {
+		reverse_proxy wallet:80
+	}
+
+	# What runs here: commit and image digests, rewritten by upgrade.sh.
+	handle_path /status/* {
+		root * /srv/status
+		file_server
+	}
+
+	handle {
+		redir * /blog 302
+	}
+}

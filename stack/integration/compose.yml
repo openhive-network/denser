@@ -1,0 +1,93 @@
+# The denser integration site: blog + wallet at the tip of aidev/integration, laid
+# out the way hive/haf_api_node's `ui` profile deploys denser on API nodes
+# (ui.yaml): the `-subdirectory` images, blog at /blog and wallet at /wallet on one
+# hostname. It is to denser what discuss.syncad.com is to ratings.
+#
+# Every AIDEV promote publishes the `integration` images (.aidev/project.yaml
+# `publish:`); upgrade.sh, run every 5 minutes by the systemd timer, pulls them and
+# recreates what changed. The Hive API is a public node (networks/), not a local HAF.
+#
+# Run from a checkout of this repository on aidev/integration, in
+# stack/integration, with a .env made from .env.example. See README.md.
+name: ${COMPOSE_PROJECT_NAME:-denser-integration}
+
+x-app: &app
+  restart: unless-stopped
+  env_file:
+    # mainnet (default) or mirrornet: the API node, chain id and AI search domain.
+    - networks/${DENSER_NETWORK:-mainnet}.env
+  environment: &app-env
+    PORT: "80"
+    HOSTNAME: 0.0.0.0
+    REACT_APP_SITE_DOMAIN: https://${SITE_HOST}/blog
+    REACT_APP_BLOG_DOMAIN: https://${SITE_HOST}/blog
+    REACT_APP_WALLET_ENDPOINT: https://${SITE_HOST}/wallet
+    REACT_APP_SSR_HOST: https://${SITE_HOST}
+    REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+    REACT_APP_EXPLORER_DOMAIN: https://explore.openhive.network
+    REACT_APP_LOGGING_BROWSER_ENABLED: "true"
+    REACT_APP_LOGGING_LOG_LEVEL: info
+    DENSER_SERVER_SECRET_COOKIE_PASSWORD: ${DENSER_SERVER_SECRET_COOKIE_PASSWORD:?set it in .env (32+ random characters)}
+
+services:
+  blog:
+    <<: *app
+    image: registry.gitlab.syncad.com/hive/denser/blog-subdirectory:${DENSER_TAG:-integration}
+    environment:
+      <<: *app-env
+      REACT_APP_APP_NAME: blog
+      REACT_APP_BASE_PATH: /blog
+      NODE_OPTIONS: --max-old-space-size=3072
+    mem_limit: 4g
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:80/blog || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+  wallet:
+    <<: *app
+    image: registry.gitlab.syncad.com/hive/denser/wallet-subdirectory:${DENSER_TAG:-integration}
+    environment:
+      <<: *app-env
+      REACT_APP_APP_NAME: wallet
+      REACT_APP_BASE_PATH: /wallet
+    mem_limit: 2g
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:80/wallet || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 60s
+
+  caddy:
+    # Caddy with the cloudflare DNS provider (DNS-01 certificates for names the
+    # internet can't reach) and the PROXY-protocol listener (behind sites-router).
+    image: registry.gitlab.syncad.com/peerverity/ratings-stack/caddy:2.10.0-alpine
+    restart: unless-stopped
+    depends_on: [blog, wallet]
+    ports:
+      - ${HTTP_PORT:-80}:80
+      - ${HTTPS_PORT:-443}:443
+    environment:
+      SITE_HOST: ${SITE_HOST}
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:?the Cloudflare token for the hostname's zone}
+      CADDY_PROXY_PROTOCOL_ALLOW: ${CADDY_PROXY_PROTOCOL_ALLOW:-127.0.0.1/32}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./status:/srv/status:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [default, sites]
+
+networks:
+  # The host's sites-router network (~/sites-router on predicate-testing). Set
+  # PROXY_NETWORK to an existing network on a host without one.
+  sites:
+    external: true
+    name: ${PROXY_NETWORK:-sites}
+
+volumes:
+  caddy_data:
+  caddy_config:
