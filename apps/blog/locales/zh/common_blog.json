@@ -487,6 +487,12 @@
       "community_rules": "社区规则",
       "cancel": "取消",
       "ok": "确定"
+    },
+    "suggestions": {
+      "sorry": "抱歉",
+      "all_hidden_low_ratings": "由于评分较低，所有推荐帖子均已隐藏。",
+      "show_all": "全部显示",
+      "hide": "隐藏"
     }
   },
   "submit_page": {

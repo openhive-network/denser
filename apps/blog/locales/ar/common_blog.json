@@ -534,6 +534,12 @@
       "community_rules": "قواعد المجتمع",
       "cancel": "إلغاء",
       "ok": "موافق"
+    },
+    "suggestions": {
+      "sorry": "عذرًا",
+      "all_hidden_low_ratings": "تم إخفاء جميع المنشورات المقترحة بسبب التقييمات المنخفضة.",
+      "show_all": "عرض الكل",
+      "hide": "إخفاء"
     }
   },
   "submit_page": {

@@ -493,6 +493,12 @@
       "community_rules": "Правила сообщества",
       "cancel": "Отмена",
       "ok": "OK"
+    },
+    "suggestions": {
+      "sorry": "Извините",
+      "all_hidden_low_ratings": "Все предложенные посты скрыты из-за низких оценок.",
+      "show_all": "Показать все",
+      "hide": "Скрыть"
     }
   },
   "submit_page": {

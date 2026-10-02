@@ -592,6 +592,12 @@
       "community_rules": "Community rules",
       "cancel": "Cancel",
       "ok": "OK"
+    },
+    "suggestions": {
+      "sorry": "Sorry",
+      "all_hidden_low_ratings": "All suggested posts were hidden due to low ratings.",
+      "show_all": "Show all",
+      "hide": "Hide"
     }
   },
   "submit_page": {

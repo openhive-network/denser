@@ -41,7 +41,8 @@ import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 import { getActiveVotes } from '@transaction/lib/hive-api';
-import { getSimilarPostsByPost, isPostStub } from '@transaction/lib/hivesense-api';
+import { getSimilarPostsByPost } from '@transaction/lib/hivesense-api';
+import { isRenderableSearchEntry } from '@transaction/lib/hivesense-search';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
@@ -205,13 +206,8 @@ const PostContent = () => {
         full_posts: 10 // Get all as full posts
       });
 
-      if (!results) return null;
-
-      // Filter out null/invalid posts and only include full Entry objects (not stubs)
-      const fullPosts = results.filter(
-        (post) => post && !isPostStub(post) && (post as Entry).post_id
-      ) as Entry[];
-      return fullPosts;
+      const fullPosts = results?.filter((post): post is Entry => isRenderableSearchEntry(post)) ?? [];
+      return fullPosts.length > 0 ? fullPosts : null;
     }
   });
   const observerMatchesSSR = observer === ssrObserver;
