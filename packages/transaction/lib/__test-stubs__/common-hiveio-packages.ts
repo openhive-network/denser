@@ -22,5 +22,8 @@ export const setRpcEndpoint = (_endpoint: string): void => {
 export const setAiEndpoint = (_endpoint: string): void => {
   throw new Error(STUB_ERROR_MESSAGE);
 };
+export const getAiEndpoint = (): string => {
+  throw new Error(STUB_ERROR_MESSAGE);
+};
 export const isWasmMemoryError = (_error: unknown): boolean => false;
 export const resetChain = (): void => undefined;
