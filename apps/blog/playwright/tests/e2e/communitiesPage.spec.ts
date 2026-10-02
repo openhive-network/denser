@@ -354,7 +354,7 @@ test.describe('Communities page tests', () => {
     );
 
     // The tooltip is visible by hovering
-    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes' + votes + ' votes');
+    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'color')).toBe(
       'rgb(15, 23, 42)'
     );
@@ -385,7 +385,7 @@ test.describe('Communities page tests', () => {
       'rgb(248, 250, 252)'
     );
     // The tooltip is visible by hovering
-    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes' + votes + ' votes');
+    expect(await homePage.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes');
     expect(await homePage.getElementCssPropertyValue(await homePage.getFirstPostVotesTooltip, 'color')).toBe(
       'rgb(148, 163, 184)'
     );

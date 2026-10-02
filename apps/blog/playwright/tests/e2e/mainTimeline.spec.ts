@@ -658,7 +658,7 @@ test.describe('Home page tests', () => {
 
     if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
       await homePage.postCardPoweredUp100Trigger.first().hover();
-      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('100% Hive Power100% Hive Power');
+      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('100% Hive Power');
     } else console.log('No Powered Up 100% tags on the 40 post cards');
   });
 
@@ -687,7 +687,7 @@ test.describe('Home page tests', () => {
 
     if (await homePage.postCardPoweredUp100Trigger.first().isVisible()) {
       await homePage.postCardPoweredUp100Trigger.first().hover();
-      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('100% Hive Power100% Hive Power');
+      await expect(homePage.postCardPoweredUp100Tooltip).toHaveText('100% Hive Power');
     } else console.log('No Powered Up 100% tags on the 40 post cards');
   });
 

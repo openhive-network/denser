@@ -7,6 +7,7 @@ import { CommentViewPage } from '../support/pages/commentViewPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { LoginForm } from '../support/pages/loginForm';
+import { voteTooltipText } from '../support/testHelpers';
 
 test.describe('Replies Tab in Profile page of @gtg', () => {
   let homePage: HomePage;
@@ -244,8 +245,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.postUpvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    const tooltipText = await profilePage.postUpvoteTooltip.textContent();
-    expect(['UpvoteUpvote', 'UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards']).toContain(tooltipText);
+    await expect(profilePage.postUpvoteTooltip).toHaveText(voteTooltipText('Upvote'));
 
     await profilePage.postUpvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -265,8 +265,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     await profilePage.postDownvoteButton.first().hover();
     await profilePage.page.waitForTimeout(1000);
     // Validate the tooltip message
-    const tooltipText = await profilePage.postDownvoteTooltip.textContent();
-    expect(['DownvoteDownvote', 'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards']).toContain(tooltipText);
+    await expect(profilePage.postDownvoteTooltip).toHaveText(voteTooltipText('Downvote'));
 
     await profilePage.postDownvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -297,19 +296,19 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
       await expect(firstCommentCardVote).toBeVisible();
       await firstCommentCardVote.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.postVotesTooltip.nth(0)).toContainText(/\d+\s*votes\s*\d+\s*votes/);
+      await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText(`${firstCommentCardVoteText} votes`);
     } else if (Number(firstCommentCardVoteText) == 1) {
       // equal 1 vote
       await expect(firstCommentCardVote).toBeVisible();
       await firstCommentCardVote.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('1 vote1 vote');
+      await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('1 vote');
     } else {
       // no vote
       await expect(firstCommentCardVote).toBeVisible();
       await firstCommentCardVote.hover();
       await profilePage.page.waitForTimeout(1000);
-      await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('no votesno votes');
+      await expect(await profilePage.postVotesTooltip.nth(0)).toHaveText('no votes');
     }
   });
 

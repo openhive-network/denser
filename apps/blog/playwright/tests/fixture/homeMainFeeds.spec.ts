@@ -2,6 +2,9 @@ import type { Request } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 import { HomePage, MOBILE_VIEWPORT } from '../support/pages/homePage';
 import { TIMEOUTS } from '../support/constants';
+import { LoginForm } from '../support/pages/loginForm';
+import { TOSPage } from '../support/pages/tosPage';
+import { voteTooltipText } from '../support/testHelpers';
 import {
   IMAGES_ORIGIN,
   expectOnlyFirstCardImagePreloaded,
@@ -193,5 +196,54 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
     await page.waitForLoadState('networkidle');
 
     expect(firstCardImageRequests).toHaveLength(1);
+  });
+
+  test('ANON-HOME-14 — Post card votes tooltip shows the vote count once', async ({ page }) => {
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+
+    const votes = await homePage.getFirstPostVotes.textContent();
+    expect(Number(votes)).toBeGreaterThan(1);
+    // A hover before hydration opens nothing, so retry it until the tooltip shows.
+    await expect(async () => {
+      await homePage.getFirstPostVotes.hover();
+      await homePage.getFirstPostVotesTooltip.waitFor({ state: 'visible', timeout: 3000 });
+    }).toPass({ timeout: TIMEOUTS.HYDRATION });
+    await expect(homePage.getFirstPostVotesTooltip).toHaveText(`${votes} votes`);
+  });
+
+  test('ANON-HOME-15 — Logged-out upvote shows its tooltip and opens the login dialog on the first click', async ({
+    page
+  }) => {
+    const loginForm = new LoginForm(page);
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+
+    await expect(async () => {
+      await homePage.getFirstPostUpvoteButton.hover();
+      await homePage.getFirstPostUpvoteButtonTooltip.waitFor({ state: 'visible', timeout: 3000 });
+    }).toPass({ timeout: TIMEOUTS.HYDRATION });
+    await expect(homePage.getFirstPostUpvoteButtonTooltip).toHaveText(voteTooltipText('Upvote'));
+
+    await homePage.getFirstPostUpvoteButton.click();
+    await expect(loginForm.loginDialog).toBeVisible();
+    await loginForm.validateDefaultLoginFormIsLoaded();
+  });
+
+  test('ANON-HOME-16 — Sidebar menu Terms of Service link opens /tos.html and closes the menu', async ({ page }) => {
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+
+    await homePage.getNavSidebarMenu.waitFor({ state: 'visible' });
+    await expect(async () => {
+      await homePage.getNavSidebarMenu.click();
+      await homePage.getNavSidebarMenuContent.waitFor({ state: 'visible', timeout: 5000 });
+    }).toPass({ timeout: 20000, intervals: [1000, 2000, 3000] });
+
+    await homePage.getNavSidebarMenuContent.getByRole('button', { name: 'Terms of Service' }).click();
+
+    await expect(page).toHaveURL(/\/tos\.html$/);
+    await expect(new TOSPage(page).firstSubtitle).toHaveText('1. Privacy Policy');
+    await expect(homePage.getNavSidebarMenuContent).toBeHidden();
   });
 });
