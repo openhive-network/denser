@@ -16,7 +16,6 @@ import { useFollowingInfiniteQuery } from '../account-lists/hooks/use-following-
 import ButtonsContainer from '../mute-follow/buttons-container';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { AlertTriangle } from 'lucide-react';
 import { accountReputation } from '@hive/ui';
 
@@ -35,23 +34,20 @@ const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDat
   const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
   const about = account?.profile?.about ?? null;
   const { data: dynamicData } = useDynamicGlobalData();
-  const hiveChain = hiveChainService.reuseHiveChain();
   const delegated_hive =
-    dynamicData && account && hiveChain
+    dynamicData && account
       ? convertToHP(
           convertStringToBig(account.delegated_vesting_shares).minus(
             convertStringToBig(account.received_vesting_shares)
           ),
-          hiveChain,
           dynamicData.total_vesting_shares,
           dynamicData.total_vesting_fund_hive
         )
       : Big(0);
   const vesting_hive =
-    dynamicData && account && hiveChain
+    dynamicData && account
       ? convertToHP(
           convertStringToBig(account.vesting_shares),
-          hiveChain,
           dynamicData.total_vesting_shares,
           dynamicData.total_vesting_fund_hive
         )

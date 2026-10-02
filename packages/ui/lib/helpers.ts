@@ -1,13 +1,6 @@
 import { NaiAsset } from '@hiveio/wax';
 import Big from 'big.js';
-import {
-  getAssetConfig,
-  getNaiSymbols,
-  isAssetConstantsInitialized
-} from './asset-constants';
-
-// Re-export helper functions from asset-constants
-export { isAssetConstantsInitialized };
+import { getAssetConfig, getNaiSymbols } from './asset-constants';
 
 export function convertStringToBig(number: string | NaiAsset): Big {
   if (number === '') throw new Error('Number cant be empty string');
@@ -20,7 +13,6 @@ export function convertStringToBig(number: string | NaiAsset): Big {
 
 /**
  * Checks if a NaiAsset is HBD.
- * Requires asset constants to be initialized via initializeAssetConstants().
  */
 export function isHbd(asset: NaiAsset): boolean {
   return asset.nai === getAssetConfig().HBD.nai;
@@ -28,7 +20,6 @@ export function isHbd(asset: NaiAsset): boolean {
 
 /**
  * Checks if a NaiAsset is HIVE.
- * Requires asset constants to be initialized via initializeAssetConstants().
  */
 export function isHive(asset: NaiAsset): boolean {
   return asset.nai === getAssetConfig().HIVE.nai;
@@ -36,7 +27,6 @@ export function isHive(asset: NaiAsset): boolean {
 
 /**
  * Checks if a NaiAsset is VESTS.
- * Requires asset constants to be initialized via initializeAssetConstants().
  */
 export function isVests(asset: NaiAsset): boolean {
   return asset.nai === getAssetConfig().VESTS.nai;

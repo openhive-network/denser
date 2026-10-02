@@ -1,0 +1,49 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_profile",
+    "params": {
+      "account": "gtg"
+    },
+    "id": 1
+  },
+  "requestHash": "9ddf162f788d5702",
+  "method": "bridge.get_profile",
+  "params": {
+    "account": "gtg"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 14008,
+      "name": "gtg",
+      "stats": {
+        "rank": 0,
+        "followers": 10954,
+        "following": 847
+      },
+      "active": "2026-05-29T07:23:48",
+      "created": "2016-06-30T17:22:18",
+      "metadata": {
+        "profile": {
+          "name": "Gandalf the Grey",
+          "about": "IT Wizard, Hive Witness",
+          "website": "",
+          "location": "Hive",
+          "cover_image": "",
+          "profile_image": "https://grey.house/img/gandalf.png",
+          "blacklist_description": "",
+          "muted_list_description": ""
+        }
+      },
+      "blacklists": [],
+      "post_count": 7374,
+      "reputation": 76.01
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -40,7 +40,6 @@ export default function CurationRewardsPage({ username }: { username: string }) 
       .reduce((total, reward) => {
         const rewardHP = convertToHP(
           convertStringToBig(reward.op.reward ?? '0'),
-          hiveChain,
           dynamicData.total_vesting_shares,
           dynamicData.total_vesting_fund_hive
         );

@@ -2,6 +2,7 @@ import { createHiveChain, IWaxOptionsChain, TWaxExtended, TWaxRestExtended } fro
 import { siteConfig } from '@hive/ui/config/site'; // Maybe move this to package specific only to config
 import { configuredAIDomain } from '@hive/ui/config/public-vars';
 import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
+import { EXTENDED_REST_API_DEFINITION } from './rest-api-definition';
 import { getLogger } from '@hive/ui/lib/logging';
 import { initializeAssetConstants } from '@hive/ui/lib/asset-constants';
 
@@ -100,15 +101,14 @@ export const resetChain = (): void => {
   hiveChain = undefined;
 };
 
+// The setters persist the choice even before the chain exists: the wasm-free read client and a
+// chain created later both resolve their endpoints from it (see getApiEndpoints).
 export const setRpcEndpoint = (newEndpoint: string): void => {
   logger.info('Changing chain.api.endpointUrl with newEndpoint: %o', newEndpoint);
 
-  // We should ensure the call flow is correct (init first -> modify next)
-  if (!hiveChain) {
-    throw new Error('Wax Chain is not initialized yet. Call initChain() first.');
+  if (hiveChain) {
+    hiveChain.api.endpointUrl = newEndpoint;
   }
-
-  hiveChain.api.endpointUrl = newEndpoint;
 
   window.localStorage.setItem('node-endpoint', JSON.stringify(newEndpoint));
 };
@@ -116,26 +116,20 @@ export const setRpcEndpoint = (newEndpoint: string): void => {
 export const setRestApiEndpoint = (newEndpoint: string): void => {
   logger.info('Changing chain.restApi.endpointUrl with newEndpoint: %o', newEndpoint);
 
-  // We should ensure the call flow is correct (init first -> modify next)
-  if (!hiveChain) {
-    throw new Error('Wax Chain is not initialized yet. Call initChain() first.');
+  if (hiveChain) {
+    hiveChain.restApi.endpointUrl = newEndpoint;
   }
 
-  hiveChain.restApi.endpointUrl = newEndpoint;
   window.localStorage.setItem('rest-node-endpoint', JSON.stringify(newEndpoint));
 };
 
 export const setAiEndpoint = (newEndpoint: string): void => {
   logger.info('Changing chain.restApi["hivesense-api"].endpointUrl with newEndpoint: %o', newEndpoint);
 
-  // We should ensure the call flow is correct (init first -> modify next)
-  if (!hiveChain) {
-    throw new Error('Wax Chain is not initialized yet. Call initChain() first.');
+  if (hiveChain) {
+    hiveChain.restApi['hivesense-api'].endpointUrl = newEndpoint;
+    hiveChain.api['search-api'].find_text.endpointUrl = newEndpoint;
   }
-
-  // Always use the same endpoint as the main API for hivesense-api
-  hiveChain.restApi['hivesense-api'].endpointUrl = newEndpoint;
-  hiveChain.api['search-api'].find_text.endpointUrl = newEndpoint;
 
   window.localStorage.setItem('ai-search-endpoint', JSON.stringify(newEndpoint));
 };
@@ -150,6 +144,34 @@ export const getAiEndpoint = (): string => {
   return resolveAiEndpoint(getDefaultClientOptions().restApiEndpoint);
 };
 
+export interface IApiEndpoints {
+  chainId: string;
+  apiEndpoint: string;
+  restApiEndpoint: string;
+  apiTimeout: number;
+  /** Endpoint of the `hivesense-api` REST API. */
+  aiEndpoint: string;
+  /** Endpoint of the `search-api` JSON-RPC API, when it is not `apiEndpoint`. */
+  searchApiEndpoint?: string;
+}
+
+/**
+ * Endpoints the wax chain is (or would be) configured with. Does not create the chain, so
+ * a client that only reads from the API can follow the same node choice without loading wasm.
+ */
+export const getApiEndpoints = (): IApiEndpoints => {
+  const { chainId, apiEndpoint, restApiEndpoint, apiTimeout } = getDefaultClientOptions();
+
+  return {
+    chainId,
+    apiEndpoint,
+    restApiEndpoint,
+    apiTimeout,
+    aiEndpoint: resolveAiEndpoint(restApiEndpoint),
+    searchApiEndpoint: getAIDefaultEndpoint()
+  };
+};
+
 // This is intentionally non-async method as we don't want any race condition for hiveChainPromise !== undefined check
 const setChainClient = (options: Partial<IWaxOptionsChain> = {}): Promise<HiveChain> => {
   const clientOptions = {
@@ -159,53 +181,9 @@ const setChainClient = (options: Partial<IWaxOptionsChain> = {}): Promise<HiveCh
   logger.info('Creating instance of Wax Chain with options: %o', clientOptions);
 
   hiveChainPromise = createHiveChain(clientOptions).then((hiveChainInitialized) => {
-    const extended = hiveChainInitialized.extend<ExtendedNodeApi>().extendRest<ExtendedRestApi>({
-      'hivesense-api': {
-        posts: {
-          urlPath: "posts",
-          search: {
-            urlPath: "search",
-            method: "GET"
-          },
-          author: {
-            urlPath: "{author}",
-            permlink: {
-              urlPath: "{permlink}",
-              similar: {
-                urlPath: "similar",
-                method: "GET"
-              }
-            }
-          },
-          byIds: {
-            urlPath: "by-ids",
-            method: "POST"
-          },
-          byIdsQuery: {
-            urlPath: "by-ids-query",
-            method: "GET"
-          }
-        },
-        authors: {
-          urlPath: "authors",
-          search: {
-            urlPath: "search",
-            method: "GET"
-          }
-        },
-      },
-      method: "GET",
-      'hivemind-api': {
-        "accountsOperations": {
-          urlPath: 'accounts/{account-name}/operations',
-        }
-      },
-      'hafah-api': {
-        'operation-types': {
-          urlPath: 'operation-types'
-        }
-      }
-    });
+    const extended = hiveChainInitialized
+      .extend<ExtendedNodeApi>()
+      .extendRest<ExtendedRestApi>(EXTENDED_REST_API_DEFINITION);
 
     hiveChain = extended;
 

@@ -1,6 +1,6 @@
 import { AccountAuthorityUpdateOperation } from '@hiveio/wax';
 import { Entry, IListWitnessVotes } from '@hive/common-hiveio-packages/wax';
-import { getChain } from './chain';
+import { getChain, getReadChain } from './chain';
 
 export interface IDynamicProps {
   hivePerMVests: number;
@@ -22,8 +22,7 @@ export const getPost = async (
   permlink: string,
   observer: string = ''
 ): Promise<Entry | null> => {
-  const chain = await getChain();
-  return chain.api.bridge.get_post({ author: username, permlink, observer });
+  return getReadChain().api.bridge.get_post({ author: username, permlink, observer });
 };
 
 export const getListWitnessVotes = async (
@@ -31,8 +30,7 @@ export const getListWitnessVotes = async (
   limit: number,
   order: string
 ): Promise<IListWitnessVotes> => {
-  const chain = await getChain();
-  return chain.api.database_api.list_witness_votes({ start: [username, ''], limit, order });
+  return getReadChain().api.database_api.list_witness_votes({ start: [username, ''], limit, order });
 };
 
 export const getAuthority = async (username: string): Promise<AccountAuthorityUpdateOperation> => {

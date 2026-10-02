@@ -1,8 +1,10 @@
 import {
   getAiEndpoint,
+  getApiEndpoints,
   getChain,
   reuseHiveChain,
   HiveChain,
+  IApiEndpoints,
   setAiEndpoint,
   setRpcEndpoint
 } from "@hive/common-hiveio-packages";
@@ -28,6 +30,10 @@ export class HiveChainService {
 
   public getAiSearchEndpoint(): string {
     return getAiEndpoint();
+  }
+
+  public getApiEndpoints(): IApiEndpoints {
+    return getApiEndpoints();
   }
 }
 

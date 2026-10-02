@@ -1,6 +1,6 @@
 import { logger } from '@ui/lib/logger';
 import { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-packages/wax';
-import { getChain } from './chain';
+import { getReadChain } from './chain';
 import { getHiveChainService } from './hive-chain-service';
 import {
   AI_SEARCH_REQUEST_TIMEOUT_MS,
@@ -63,7 +63,7 @@ export const searchPosts = async ({
   observer: string;
 }): Promise<MixedPostsResponse | null> => {
   try {
-    const chain = await getChain();
+    const chain = getReadChain();
     const response = await promiseWithTimeout(
       chain.restApi['hivesense-api'].posts.search({
         q: query,
@@ -97,7 +97,7 @@ export const getSimilarPostsByPost = async ({
   observer: string;
 }): Promise<MixedPostsResponse | null> => {
   try {
-    const chain = await getChain();
+    const chain = getReadChain();
     const response = await chain.restApi['hivesense-api'].posts.author.permlink.similar({
       author,
       permlink,
@@ -122,7 +122,7 @@ export const getPostsByIds = async ({
   observer: string;
 }): Promise<Entry[] | null> => {
   try {
-    const chain = await getChain();
+    const chain = getReadChain();
     const response = await promiseWithTimeout(
       chain.restApi['hivesense-api'].posts.byIds({
         posts,

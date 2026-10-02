@@ -149,8 +149,14 @@ A failed fetch is never stored. While a background reload fails the stale feed k
 - `getManabars()` - Voting power, RC
 
 **Chain Service** (`chain.ts`):
-- Singleton wrapper around WAX (Hive SDK)
-- On the server it is wrapped by `server-failover.ts`: a read-only JSON-RPC call that fails at the
+- `getReadChain()`: wasm-free client (`read-client.ts`) for read-only calls — `chain.api` JSON-RPC
+  and the `ExtendedRestApi` REST APIs (hivesense). Same call shape, endpoints and requests as wax
+  (`wax-equivalence.test.ts`); `bridge-api.ts`, `hive-api.ts`, `hivesense-api.ts` read through it,
+  so an anonymous reader never downloads `wax.common.wasm`.
+- `getChain()`: singleton wrapper around WAX (Hive SDK), only for signing, broadcasting, login and
+  wasm-only computation; created on first use, and warmed up on idle for logged-in users only
+  (`components/chain-warmup.tsx`)
+- On the server both are wrapped by `server-failover.ts`: a read-only JSON-RPC call that fails at the
   transport level is retried once on the primary node, then on the other nodes of
   `REACT_APP_ALLOWED_HIVE_API_NODES` (images host excluded), within an 8 s budget per call
 

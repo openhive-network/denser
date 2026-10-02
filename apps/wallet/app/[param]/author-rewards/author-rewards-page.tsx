@@ -39,7 +39,6 @@ export default function AuthorRewardsPage({ username }: { username: string }) {
         (total, reward) => {
           const rewardHP = convertToHP(
             convertStringToBig(reward.op.vesting_payout ?? '0'),
-            hiveChain,
             dynamicData.total_vesting_shares,
             dynamicData.total_vesting_fund_hive
           );

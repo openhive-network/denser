@@ -1,0 +1,6 @@
+{
+  "testName": "postDetail_popover",
+  "base": "postDetail",
+  "additive": true,
+  "note": "Replay-only corpus for anonymousNoWasmPost.spec.ts: the postDetail recording plus the anonymous author popover card's reads of gtg (database_api.find_accounts, bridge.get_profile) and database_api.get_dynamic_global_properties, copied verbatim from notifications 0001/0003/0004. `additive: true` because these keys are new, not patches."
+}

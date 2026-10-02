@@ -10,7 +10,7 @@ import {
   IVoteListItem
 } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
-import { getChain } from './chain';
+import { getChain, getReadChain } from './chain';
 import { ApiAccount, IManabarData } from '@hiveio/wax';
 import { DATA_LIMIT } from './bridge-api';
 
@@ -149,7 +149,7 @@ export const getManabar = async (accountName: string): Promise<Manabar | null> =
 };
 
 export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> => {
-  const result = await (await getChain()).api.database_api.find_accounts({
+  const result = await getReadChain().api.database_api.find_accounts({
     accounts: usernames,
     delayed_votes_active: false
   });
@@ -230,7 +230,7 @@ export const getAccount = (username: string): Promise<FullAccount> =>
 export const getProfileInfo = async (
   username: string
 ): Promise<{ follow_stats: AccountFollowStats; reputation: number }> => {
-  const profile = await (await getChain()).api.bridge.get_profile({ account: username });
+  const profile = await getReadChain().api.bridge.get_profile({ account: username });
   if (!profile || !profile.stats) {
     return {
       follow_stats: {
@@ -277,11 +277,11 @@ export const getFollowCount = async (username: string): Promise<AccountFollowSta
  * @returns
  */
 export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
-  return (await getChain()).api.condenser_api.get_reblogged_by([ author, permlink ]);
+  return getReadChain().api.condenser_api.get_reblogged_by([ author, permlink ]);
 };
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
-  return (await getChain()).api.database_api.get_feed_history();
+  return getReadChain().api.database_api.get_feed_history();
 };
 
 // See https://developers.hive.io/apidefinitions/#database_api.list_votes
@@ -289,11 +289,11 @@ export const getListVotesByCommentVoter = async (
   start: [string, string, string] | null, // should be [author, permlink, voter]
   limit: number
 ): Promise<{ votes: IVoteListItem[] }> => {
-  return (await getChain()).api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
+  return getReadChain().api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
 };
 
 export const getFindAccounts = async (username: string): Promise<{ accounts: ApiAccount[] }> => {
-  return (await getChain()).api.database_api.find_accounts({
+  return getReadChain().api.database_api.find_accounts({
     accounts: [username],
     delayed_votes_active: false
   });
@@ -320,7 +320,7 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
     const type = params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type;
     const limit = params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit;
 
-    return (await getChain()).api.condenser_api.get_following([
+    return getReadChain().api.condenser_api.get_following([
       account,
       start,
       type,
@@ -336,7 +336,7 @@ export const getAccountReputations = async (
   account_lower_bound: string,
   _limit: number
 ): Promise<IAccountReputations[]> => {
-  const profile = await (await getChain()).api.bridge.get_profile({ account: account_lower_bound });
+  const profile = await getReadChain().api.bridge.get_profile({ account: account_lower_bound });
   if (!profile) {
     return [];
   }
@@ -348,7 +348,7 @@ export const getAccountReputations = async (
   ];
 };
 export const getDynamicGlobalProperties = async (): Promise<GetDynamicGlobalPropertiesResponse> => {
-  return (await getChain()).api.database_api.get_dynamic_global_properties({});
+  return getReadChain().api.database_api.get_dynamic_global_properties({});
 };
 
 export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<IFollow[]> => {
@@ -358,7 +358,7 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
     const type = params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type;
     const limit = params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit;
 
-    return (await getChain()).api.condenser_api.get_followers([
+    return getReadChain().api.condenser_api.get_followers([
       account,
       start,
       type,
@@ -378,9 +378,9 @@ export const getByText = async ({
   observer,
   start_author = '',
   start_permlink = ''
-}: Parameters<Awaited<ReturnType<typeof getChain>>['api']['search-api']['find_text']>[0] // Temporary solution
+}: Parameters<ReturnType<typeof getReadChain>['api']['search-api']['find_text']>[0] // Temporary solution
 ): Promise<Entry[]> => {
-  return (await getChain()).api['search-api'].find_text({
+  return getReadChain().api['search-api'].find_text({
     pattern,
     sort,
     author,
