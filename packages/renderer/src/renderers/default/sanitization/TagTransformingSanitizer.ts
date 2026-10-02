@@ -89,7 +89,7 @@ export class TagTransformingSanitizer {
                 // style is subject to attack, filtering more below
                 td: ['style'],
                 th: ['style'],
-                img: ['src', 'alt', 'loading', 'decoding'],
+                img: ['src', 'srcset', 'sizes', 'alt', 'loading', 'fetchpriority', 'decoding'],
 
                 // title is only set in the case of an external link warning
                 a: ['href', 'rel', 'title', 'class', 'target', 'id'],
@@ -145,7 +145,7 @@ export class TagTransformingSanitizer {
                         return retTagOnImagesNotAllowed;
                     }
                     // See https://github.com/punkave/sanitize-html/issues/117
-                    const {src, alt} = attribs;
+                    const {src, srcset, sizes, alt} = attribs;
                     // eslint-disable-next-line security/detect-unsafe-regex
                     if (!/^(https?:)?\/\//i.test(src)) {
                         Log.log().warn(`Blocked image (invalid src)${this.formatPostContext()}: src="${src || '(empty)'}"`);
@@ -159,12 +159,25 @@ export class TagTransformingSanitizer {
 
                     const atts: sanitize.Attributes = {};
                     atts.src = src.replace(/^http:\/\//i, '//'); // replace http:// with // to force https when needed
+                    // srcset/sizes are set by HtmlDOMParser from the image proxy, never taken from the author
+                    if (srcset) {
+                        atts.srcset = srcset;
+                    }
+                    if (sizes) {
+                        atts.sizes = sizes;
+                    }
                     if (alt && alt !== '') {
                         atts.alt = alt;
                     }
                     // Lazy-load off-screen images to reduce layout shifts during scroll sync
-                    // and avoid blocking the main thread with eager decoding of large images
-                    atts.loading = 'lazy';
+                    // and avoid blocking the main thread with eager decoding of large images.
+                    // Only the LCP candidate HtmlDOMParser prioritizes loads eagerly.
+                    if (attribs.loading === 'eager' && attribs.fetchpriority === 'high') {
+                        atts.loading = 'eager';
+                        atts.fetchpriority = 'high';
+                    } else {
+                        atts.loading = 'lazy';
+                    }
                     atts.decoding = 'async';
                     const retTag: sanitize.Tag = {tagName, attribs: atts};
                     return retTag;

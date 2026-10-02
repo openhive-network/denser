@@ -3,6 +3,7 @@
  */
 
 import * as xmldom from '@xmldom/xmldom';
+import ow from 'ow';
 import ChainedError from 'typescript-chained-error';
 import {Log} from '../../../Log';
 import {LinkSanitizer} from '../../../security/LinkSanitizer';
@@ -13,7 +14,7 @@ import {AccountNameValidator} from './utils/AccountNameValidator';
 import linksRe, {any as linksAny} from './utils/Links';
 
 export class HtmlDOMParser {
-    private options: AssetEmbedderOptions;
+    private options: HtmlDOMParserOptions;
     private localization: LocalizationOptions;
     private linkSanitizer: LinkSanitizer;
     public embedder: AssetEmbedder;
@@ -33,8 +34,8 @@ export class HtmlDOMParser {
     private mutate = true;
     private parsedDocument: Document | undefined = undefined;
 
-    public constructor(options: AssetEmbedderOptions, localization: LocalizationOptions = Localization.DEFAULT) {
-        AssetEmbedder.validate(options);
+    public constructor(options: HtmlDOMParserOptions, localization: LocalizationOptions = Localization.DEFAULT) {
+        HtmlDOMParser.validate(options);
         Localization.validate(localization);
         this.options = options;
         this.localization = localization;
@@ -543,6 +544,7 @@ export class HtmlDOMParser {
      * - For each image with a non-local URL (not matching linksRe.local pattern):
      *   - Transforms the src URL using the configured imageProxyFn
      * - Local images are left unchanged
+     * - Every image gets its responsive sources and loading hints
      *
      * @param doc - The Document object containing the DOM to process
      * @private
@@ -556,12 +558,60 @@ export class HtmlDOMParser {
         if (!doc) {
             return;
         }
-        Array.from(doc.getElementsByTagName('img')).forEach((node) => {
+        Array.from(doc.getElementsByTagName('img')).forEach((node, index) => {
             const url: string = node.getAttribute('src') || '';
             if (!linksRe.local.test(url)) {
                 node.setAttribute('src', this.options.imageProxyFn(url));
             }
+            this.setResponsiveSources(node, url);
+            this.setLoadingPriority(node, index);
         });
+    }
+
+    /**
+     * Replaces any author-supplied `srcset`/`sizes` with the configured responsive sources,
+     * so every candidate an image can load from goes through the image proxy.
+     *
+     * @param node - The img element to update
+     * @param url - The image's original (unproxied) URL, passed to imageSrcSetFn
+     * @private
+     */
+    private setResponsiveSources(node: Element, url: string) {
+        node.removeAttribute('srcset');
+        node.removeAttribute('sizes');
+        const srcset = this.options.imageSrcSetFn?.(url);
+        if (!srcset) {
+            return;
+        }
+        node.setAttribute('srcset', srcset);
+        if (this.options.imageSizes) {
+            node.setAttribute('sizes', this.options.imageSizes);
+        }
+    }
+
+    /**
+     * Sets the loading hints: the first image loads eagerly at high priority when
+     * prioritizeFirstImage is enabled, every other image is lazy-loaded.
+     *
+     * @param node - The img element to update
+     * @param index - The image's position among the document's images
+     * @private
+     */
+    private setLoadingPriority(node: Element, index: number) {
+        node.removeAttribute('fetchpriority');
+        if (this.options.prioritizeFirstImage && index === 0) {
+            node.setAttribute('loading', 'eager');
+            node.setAttribute('fetchpriority', 'high');
+        } else {
+            node.setAttribute('loading', 'lazy');
+        }
+    }
+
+    private static validate(o: HtmlDOMParserOptions) {
+        AssetEmbedder.validate(o);
+        ow(o.imageSrcSetFn, 'HtmlDOMParserOptions.imageSrcSetFn', ow.optional.function);
+        ow(o.imageSizes, 'HtmlDOMParserOptions.imageSizes', ow.optional.string);
+        ow(o.prioritizeFirstImage, 'HtmlDOMParserOptions.prioritizeFirstImage', ow.optional.boolean);
     }
 
     /**
@@ -591,6 +641,15 @@ export class HtmlDOMParser {
         }
         return url;
     }
+}
+
+export interface HtmlDOMParserOptions extends AssetEmbedderOptions {
+    /** Returns a `srcset` of proxied candidates for an image's original URL, or '' to serve `src` only */
+    imageSrcSetFn?: (url: string) => string;
+    /** `sizes` attribute added to images that get a `srcset` */
+    imageSizes?: string;
+    /** Load the first image eagerly at high fetch priority instead of lazily */
+    prioritizeFirstImage?: boolean;
 }
 
 export interface State {

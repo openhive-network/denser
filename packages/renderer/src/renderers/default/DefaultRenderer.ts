@@ -55,6 +55,9 @@ export class DefaultRenderer {
                 ipfsPrefix: this.options.ipfsPrefix,
                 baseUrl: this.options.baseUrl,
                 imageProxyFn: this.options.imageProxyFn,
+                imageSrcSetFn: this.options.imageSrcSetFn,
+                imageSizes: this.options.imageSizes,
+                prioritizeFirstImage: this.options.prioritizeFirstImage,
                 hashtagUrlFn: this.options.hashtagUrlFn,
                 usertagUrlFn: this.options.usertagUrlFn,
                 hideImages: this.options.doNotShowImages
@@ -224,6 +227,9 @@ export class DefaultRenderer {
         ow(o.assetsWidth, 'RendererOptions.assetsWidth', ow.number.integer.positive);
         ow(o.assetsHeight, 'RendererOptions.assetsHeight', ow.number.integer.positive);
         ow(o.imageProxyFn, 'RendererOptions.imageProxyFn', ow.function);
+        ow(o.imageSrcSetFn, 'RendererOptions.imageSrcSetFn', ow.optional.function);
+        ow(o.imageSizes, 'RendererOptions.imageSizes', ow.optional.string);
+        ow(o.prioritizeFirstImage, 'RendererOptions.prioritizeFirstImage', ow.optional.boolean);
         ow(o.hashtagUrlFn, 'RendererOptions.hashtagUrlFn', ow.function);
         ow(o.usertagUrlFn, 'RendererOptions.usertagUrlFn', ow.function);
         ow(o.isLinkSafeFn, 'RendererOptions.isLinkSafeFn', ow.function);
@@ -261,6 +267,12 @@ export interface RendererOptions {
     assetsHeight: number;
     /** Function to proxy image URLs */
     imageProxyFn: (url: string) => string;
+    /** Function returning a `srcset` of proxied candidates for an image's original URL, or '' for `src` only */
+    imageSrcSetFn?: (url: string) => string;
+    /** `sizes` attribute for images that get a `srcset` */
+    imageSizes?: string;
+    /** Load the first image eagerly at high fetch priority (the page's LCP candidate) */
+    prioritizeFirstImage?: boolean;
     /** Function to generate hashtag URLs */
     hashtagUrlFn: (hashtag: string) => string;
     /** Function to generate user profile URLs */

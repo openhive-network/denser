@@ -291,6 +291,49 @@ describe('DefaultRender', () => {
         expect(rendered2).to.be.equal('<p><img src="https://gateway.io/ipfs/QmQqzMTavQgT4f4T5v6PWBp7XNKtoPmC9jvn12WPT3gkSE" alt="img.jpg" loading="lazy" decoding="async" /></p>');
     });
 
+    describe('responsive images', () => {
+        const responsiveOptions: RendererOptions = {
+            ...defaultOptions,
+            imageProxyFn: (url: string) => `https://proxy.test/0x0/${url}`,
+            imageSrcSetFn: (url: string) => (url.endsWith('.gif') ? '' : `https://proxy.test/640/${url} 640w, https://proxy.test/1024/${url} 1024w`),
+            imageSizes: '100vw'
+        };
+        const twoImages = '![a](https://example.com/a.jpg)\n\n![b](https://example.com/b.jpg)';
+
+        it('adds the proxied srcset and sizes next to the full-size src', () => {
+            const rendered = new DefaultRenderer(responsiveOptions).render('![a](https://example.com/a.jpg)').trim();
+            expect(rendered).to.equal(
+                '<p><img src="https://proxy.test/0x0/https://example.com/a.jpg" ' +
+                    'srcset="https://proxy.test/640/https://example.com/a.jpg 640w, https://proxy.test/1024/https://example.com/a.jpg 1024w" ' +
+                    'sizes="100vw" alt="a" loading="lazy" decoding="async" /></p>'
+            );
+        });
+
+        it('serves src only when imageSrcSetFn returns no candidates', () => {
+            const rendered = new DefaultRenderer(responsiveOptions).render('![a](https://example.com/a.gif)').trim();
+            expect(rendered).to.equal('<p><img src="https://proxy.test/0x0/https://example.com/a.gif" alt="a" loading="lazy" decoding="async" /></p>');
+        });
+
+        it('drops an author-supplied srcset and sizes that would bypass the image proxy', () => {
+            const rendered = new DefaultRenderer(defaultOptions).render('<p><img src="https://example.com/a.jpg" srcset="https://tracker.test/a.jpg 2x" sizes="50vw"></p>').trim();
+            expect(rendered).to.not.include('tracker.test');
+            expect(rendered).to.not.include('sizes=');
+        });
+
+        it('loads the first image eagerly at high priority and the rest lazily when prioritizeFirstImage is set', () => {
+            const rendered = new DefaultRenderer({...responsiveOptions, prioritizeFirstImage: true}).render(twoImages);
+            const loadingHints = [...rendered.matchAll(/<img [^>]*?(loading="\w+"(?: fetchpriority="\w+")?)/g)].map((m) => m[1]);
+            expect(loadingHints).to.deep.equal(['loading="eager" fetchpriority="high"', 'loading="lazy"']);
+        });
+
+        it('lazy-loads every image, whatever the author asked for, without prioritizeFirstImage', () => {
+            const rendered = new DefaultRenderer(responsiveOptions).render('<p><img src="https://example.com/a.jpg" loading="eager" fetchpriority="high"></p>');
+            expect(rendered).to.include('loading="lazy"');
+            expect(rendered).to.not.include('eager');
+            expect(rendered).to.not.include('fetchpriority');
+        });
+    });
+
     it('should wrap adjacent pull-left and pull-right divs in pull-columns container', () => {
         const renderer = new DefaultRenderer(defaultOptions);
         const raw = '<div class="pull-left"><p>Left</p></div>\n<div class="pull-right"><p>Right</p></div>';

@@ -796,6 +796,17 @@ so count it with a browser-context `request` listener —
 on `postDetail_popover`, an additive overlay adding the author popover
 card's reads (copied from `notifications`).
 
+### Image-host requests are not replayed: serve them with `page.route`
+
+The fixture proxy only replays Hive API calls; `images.hive.blog` requests go
+to the network. Specs that depend on images loading route the image host
+themselves: `recordImageRequests` (`support/cardImagePreload.ts`) answers a
+1x1 PNG, `serveImages` (`support/bodyImages.ts`) answers an SVG of a chosen
+pixel size, can delay resized (`/p/…?width=`) or full-size URLs separately,
+and records every requested URL. `postBodyImages.spec.ts` uses the delays to
+observe the lightbox before the full-size image arrives and layout shifts
+from late body images.
+
 ### `fixtureTestName` is worker-scoped
 
 You cannot switch fixture dirs per `test.describe` in one file. Each

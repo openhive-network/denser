@@ -19,6 +19,7 @@ export interface LayoutShiftReport {
 declare global {
   interface Window {
     __aboveArticleShifts?: { value: number; sources: string[] }[];
+    __layoutShiftScore?: number;
   }
 }
 
@@ -70,4 +71,24 @@ export async function collectAboveArticleLayoutShifts(page: Page): Promise<Layou
     score: entries.reduce((sum, entry) => sum + entry.value, 0),
     shifts: entries.map((entry) => `${entry.value.toFixed(4)} ← ${entry.sources.join(', ')}`)
   };
+}
+
+/**
+ * Sums every layout shift on the page not caused by recent input: an upper bound of CLS,
+ * which takes the worst session window of these shifts. Must be called before navigation.
+ */
+export async function observeLayoutShiftScore(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    window.__layoutShiftScore = 0;
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        const shift = entry as PerformanceEntry & { value: number; hadRecentInput: boolean };
+        if (!shift.hadRecentInput) window.__layoutShiftScore = (window.__layoutShiftScore ?? 0) + shift.value;
+      }
+    }).observe({ type: 'layout-shift', buffered: true });
+  });
+}
+
+export async function readLayoutShiftScore(page: Page): Promise<number> {
+  return page.evaluate(() => window.__layoutShiftScore ?? 0);
 }
