@@ -807,6 +807,15 @@ and records every requested URL. `postBodyImages.spec.ts` uses the delays to
 observe the lightbox before the full-size image arrives and layout shifts
 from late body images.
 
+### The header's HiveSense probe leaves the proxy: stub it to assert "no console errors"
+
+`getHiveSenseStatus` (site header, every page) fetches `<AI domain>/hivesense-api/`
+and a `posts/search` probe. The fixture config doesn't set `REACT_APP_AI_DOMAIN`,
+so they go to `https://api.hive.blog`; with no network Chromium logs two
+`Failed to load resource: net::ERR_INTERNET_DISCONNECTED` console errors. The dev
+stack has egress, so it doesn't show them. A spec that fails on any console error
+routes those URLs to a `200 {}` (AI search off), as `healthchecker.spec.ts` does.
+
 ### `fixtureTestName` is worker-scoped
 
 You cannot switch fixture dirs per `test.describe` in one file. Each
