@@ -26,6 +26,10 @@ import { test, expect } from '../support/fixture-proxy-test';
  * the post route stopped streaming (#930), an API-unreachable primary fetch
  * has been verified to return a real 500 at the document level.)
  *
+ * SAFE-08 covers the primary FEED fetch instead: `fixtureProxy.failRequests`
+ * drops the connection (what a node blip looks like to wax), which IS a
+ * transport error, so the feed route must answer 503 + a client-side retry.
+ *
  * Replay:  pnpm --filter @hive/blog test:fixture -- ssrErrorFallback
  */
 
@@ -50,4 +54,24 @@ test('SAFE-07 — a failed secondary (discussion) fetch still server-renders the
   expect(html, 'partial failure must not trip the service-unavailable boundary').not.toContain(
     'Service Temporarily Unavailable'
   );
+});
+
+test('SAFE-08 — an unreachable feed answers 503 with a retry that recovers the feed in place', async ({
+  page,
+  fixtureProxy
+}) => {
+  const restore = fixtureProxy.failRequests(({ method }) => method === 'bridge.get_ranked_posts');
+  try {
+    const response = await page.goto('/trending');
+    expect(response?.status()).toBe(503);
+    await expect(page.getByRole('heading', { name: 'Service Temporarily Unavailable' })).toBeVisible();
+  } finally {
+    restore();
+  }
+
+  // The API answers again: retrying re-renders the feed without a full page reload.
+  await page.evaluate(() => ((window as Window & { __noReload?: boolean }).__noReload = true));
+  await page.getByTestId('service-unavailable-retry').click();
+  await expect(page.getByTestId('post-list-item').first()).toBeVisible();
+  expect(await page.evaluate(() => (window as Window & { __noReload?: boolean }).__noReload)).toBe(true);
 });

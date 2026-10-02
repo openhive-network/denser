@@ -94,7 +94,9 @@ export default defineConfig({
       'cp -r public .next/standalone/apps/blog/public',
       'react-env -- sh -c "cp -f public/__ENV.js .next/standalone/apps/blog/public/__ENV.js && node .next/standalone/apps/blog/server.js"'
     ].join(' && '),
-    url: 'http://127.0.0.1:3000',
+    // Not `/`: the fixture proxy only starts with the first worker, and a feed whose API is
+    // unreachable answers 503, which Playwright does not count as ready.
+    url: 'http://127.0.0.1:3000/api/health',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
     stdout: 'pipe',

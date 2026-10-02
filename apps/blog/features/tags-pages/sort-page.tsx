@@ -1,6 +1,8 @@
 import { SortTypes, DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getPostsRanked } from '@transaction/lib/bridge-api';
+import { isTransportError } from '@transaction/lib/wax-errors';
+import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
@@ -32,6 +34,9 @@ const SortPage = async ({
       initialPosts = posts ? keepObserverVotes(posts, observer) : null;
     } catch (error) {
       logger.error(error, 'Error in SortPage:');
+      // The server-side chain already retried and failed over: answer 503, not a 200 whose
+      // feed is only the client-fetch skeleton.
+      if (isTransportError(error)) throw new ServiceUnavailableError(error);
     }
   }
   // Pass data directly via context instead of Hydrate/dehydrate.
