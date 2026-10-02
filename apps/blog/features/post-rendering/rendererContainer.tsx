@@ -8,6 +8,8 @@ import ScrollToElement from './scroll-to-element';
 import { cn } from '@ui/lib/utils';
 import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
+import FirstBodyImagePreload from './first-body-image-preload';
+import { useResponsiveImageNaturalWidth } from './hooks/use-responsive-image-natural-width';
 
 const RendererContainer = ({
   body,
@@ -36,8 +38,8 @@ const RendererContainer = ({
   const hiveRenderer = useMemo(
     () => proxyAuthToken
       ? getPreviewRenderer(proxyAuthToken, author)
-      : getRenderer(author),
-    [proxyAuthToken, author]
+      : getRenderer(author, Boolean(mainPost)),
+    [proxyAuthToken, author, mainPost]
   );
 
   const handleClick = (e: Event) => {
@@ -190,10 +192,13 @@ const RendererContainer = ({
     }
   }, [hiveRenderer, body, author, permlink]);
 
+  useResponsiveImageNaturalWidth(ref, htmlBody);
+
   return !htmlBody ? (
     <Loading loading={false} />
   ) : (
     <>
+      {mainPost ? <FirstBodyImagePreload html={htmlBody} /> : null}
       <div className="flex h-fit w-full">
         <div
           id="articleBody"
