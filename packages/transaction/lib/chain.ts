@@ -4,10 +4,11 @@ import {
   type ExtendedRestApi
 } from '@hive/common-hiveio-packages/wax';
 import { getHiveChainService } from './hive-chain-service';
-import { RequestHelper, TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
+import type { TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { wrapChainWithLogging } from './chain-proxy';
 import { parseFallbackNodes, wrapChainWithServerFailover } from './server-failover';
 import { createReadClient, IReadClient, IReadClientConfig } from './read-client';
+import { fetchReadTransport } from './read-transport';
 
 export type Chain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
 
@@ -65,7 +66,7 @@ const createReadChain = (getConfig: () => IReadClientConfig): ReadChain =>
   wrapChainWithLogging(
     createReadClient<ReadChain['api'], ReadChain['restApi']>({
       getConfig,
-      transport: new RequestHelper(),
+      transport: fetchReadTransport,
       restApiDefinition: EXTENDED_REST_API_DEFINITION
     })
   );

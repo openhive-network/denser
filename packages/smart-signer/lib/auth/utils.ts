@@ -1,6 +1,6 @@
 import * as z from 'zod';
 import { validateHiveAccountName } from '@smart-signer/lib/validators/validate-hive-account-name';
-import { LoginType, User, KeyType } from '@smart-signer/types/common';
+import { LoginType, KeyType } from '@smart-signer/types/common';
 import { TTransactionPackType } from '@hiveio/wax';
 
 export const username = z.string()
@@ -49,15 +49,3 @@ export const postConsentSchema = z.object({
 export type PostConsentSchema = z.infer<typeof postConsentSchema>;
 
 export type Signatures = PostLoginSchema["signatures"];
-
-export const defaultUser: User = {
-    isLoggedIn: false,
-    username: '',
-    avatarUrl: '',
-    loginType: LoginType.hbauth,
-    keyType: KeyType.posting,
-    authenticateOnBackend: true,
-    chatAuthToken: '',
-    oauthConsent: {},
-    strict: false,
-};

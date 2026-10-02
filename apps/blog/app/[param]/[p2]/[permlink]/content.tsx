@@ -1,5 +1,6 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import BasePathLink from '@/blog/components/base-path-link';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
@@ -12,7 +13,6 @@ import DetailsCardHover from '@/blog/features/list-of-posts/details-card-hover';
 import ReblogTrigger from '@/blog/features/list-of-posts/reblog-trigger';
 import { useRebloggedByQuery } from '@/blog/features/list-of-posts/hooks/use-reblogged-by-query';
 import { useDeletePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
-import PostForm from '@/blog/features/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
 import { AlertDialogFlag } from '@/blog/features/post-rendering/alert-window-flag';
@@ -76,6 +76,9 @@ import {
   useInitialFollowList
 } from '@/blog/components/observer-provider';
 import { StaleTime } from '@/blog/lib/react-query';
+
+// The post editor (its form schema and transaction helpers) is needed only when editing the post.
+const PostForm = dynamic(() => import('@/blog/features/post-editor/post-form'), { ssr: false });
 
 // Maximum number of comments per page
 const MAX_COMMENTS_PER_PAGE = 50;

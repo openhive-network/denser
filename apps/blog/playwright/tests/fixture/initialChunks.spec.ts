@@ -1,4 +1,5 @@
 import { test, expect } from '../support/fixture-proxy-test';
+import { CHUNK_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from '../support/initialChunks';
 
 /**
  * Initial JS chunks fixture test.
@@ -8,31 +9,24 @@ import { test, expect } from '../support/fixture-proxy-test';
  * adds replay after load through a dynamic import(). A static reference to
  * `replayIntegration` from page-load code pulls rrweb back into these chunks.
  *
+ * Nor may they carry wax's JavaScript or hb-auth's beekeeper: reads go through
+ * the wax-free read client, and signing, login and transactions are loaded
+ * through dynamic import()s when a user logs in or writes. A static import of
+ * wax, the signers or `@transaction/index` from page-load code pulls them back.
+ * initialChunksPost.spec.ts and initialChunksProfile.spec.ts check a post and a
+ * profile.
+ *
  * Reads the server HTML only, so it reuses the trending feed recording.
  */
 
 test.use({ fixtureTestName: 'homeMainPage' });
 
-const CHUNK_URL_PATTERN = /\/_next\/static\/chunks\/[^"'\s\\]+\.js/g;
-
 test.describe('Initial JS chunks (fixture-based)', () => {
-  test('PERF-CHUNKS-01 — no chunk referenced from the /trending HTML contains rrweb', async ({ request }) => {
-    const pageResponse = await request.get('/trending');
-    expect(pageResponse.status()).toBe(200);
-    const html = await pageResponse.text();
-
-    const chunkUrls = [...new Set(html.match(CHUNK_URL_PATTERN) ?? [])];
-    expect(chunkUrls.length).toBeGreaterThan(0);
-
-    const chunksWithRrweb: string[] = [];
-    for (const chunkUrl of chunkUrls) {
-      const chunkResponse = await request.get(chunkUrl);
-      expect(chunkResponse.status(), chunkUrl).toBe(200);
-      if ((await chunkResponse.text()).includes('rrweb')) {
-        chunksWithRrweb.push(chunkUrl);
-      }
-    }
-
-    expect(chunksWithRrweb).toEqual([]);
+  test('PERF-CHUNKS-01 — no chunk referenced from the /trending HTML contains rrweb, wax or beekeeper', async ({
+    request
+  }) => {
+    expect(
+      await findMarkersInInitialChunks(request, '/trending', [CHUNK_MARKERS.rrweb, ...SIGNING_STACK_MARKERS])
+    ).toEqual([]);
   });
 });

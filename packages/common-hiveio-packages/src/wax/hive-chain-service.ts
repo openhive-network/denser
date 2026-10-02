@@ -1,4 +1,4 @@
-import { createHiveChain, IWaxOptionsChain, TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
+import type { IWaxOptionsChain, TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { siteConfig } from '@hive/ui/config/site'; // Maybe move this to package specific only to config
 import { configuredAIDomain } from '@hive/ui/config/public-vars';
 import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
@@ -180,7 +180,10 @@ const setChainClient = (options: Partial<IWaxOptionsChain> = {}): Promise<HiveCh
   };
   logger.info('Creating instance of Wax Chain with options: %o', clientOptions);
 
-  hiveChainPromise = createHiveChain(clientOptions).then((hiveChainInitialized) => {
+  // wax's JavaScript is loaded with the chain, so pages that never create one do not download it.
+  const createChain = async () => (await import('@hiveio/wax')).createHiveChain(clientOptions);
+
+  hiveChainPromise = createChain().then((hiveChainInitialized) => {
     const extended = hiveChainInitialized
       .extend<ExtendedNodeApi>()
       .extendRest<ExtendedRestApi>(EXTENDED_REST_API_DEFINITION);

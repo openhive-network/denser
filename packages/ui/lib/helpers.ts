@@ -1,4 +1,4 @@
-import { NaiAsset } from '@hiveio/wax';
+import type { NaiAsset } from '@hiveio/wax';
 import Big from 'big.js';
 import { getAssetConfig, getNaiSymbols } from './asset-constants';
 

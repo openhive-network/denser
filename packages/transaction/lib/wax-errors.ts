@@ -1,9 +1,11 @@
 import { WaxRequestError } from '@hiveio/wax';
+import { ReadTransportError } from './read-transport';
 
 /**
  * True when an error means we could not get a usable answer from the API node — an HTTP non-2xx
  * (e.g. `429` / `5xx`), a request timeout, a network/CORS failure, or a malformed-JSON response.
- * These are surfaced by `@hiveio/wax` as the `WaxRequestError` family.
+ * These are surfaced by `@hiveio/wax` as the `WaxRequestError` family, and by the read client's
+ * transport as `ReadTransportError`.
  *
  * It is deliberately NOT true for a definitive API answer that the requested content does not
  * exist: hivemind returns "Post …/… does not exist" as an HTTP-200 JSON-RPC error, which wax
@@ -16,7 +18,7 @@ import { WaxRequestError } from '@hiveio/wax';
  * indexable as "missing"). See hive/denser#926.
  */
 export function isTransportError(error: unknown): boolean {
-  if (error instanceof WaxRequestError) {
+  if (error instanceof WaxRequestError || error instanceof ReadTransportError) {
     return true;
   }
 
