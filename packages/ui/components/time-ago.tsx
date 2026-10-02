@@ -44,9 +44,15 @@ const getTimeAgoString = (date: Date, lang: string = 'en'): string => {
 };
 
 const TimeAgo: FC<TimeAgoProps> = ({ date, lang }) => {
-  const [timeAgo, setTimeAgo] = useState<string>('');
   // Use provided lang prop, fall back to cookie or 'en'
   const userLang = lang || getCookie('NEXT_LOCALE') || 'en';
+  // Computed during render so the server HTML already holds the text and the line keeps its final width
+  const [timeAgo, setTimeAgo] = useState<string>(() => getTimeAgoString(new Date(date), userLang));
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const updateTimeAgo = () => {
@@ -59,7 +65,17 @@ const TimeAgo: FC<TimeAgoProps> = ({ date, lang }) => {
     return () => clearInterval(interval);
   }, [date, userLang]);
 
-  return <span title={new Date(date).toLocaleString(userLang)}>{timeAgo}</span>;
+  // The server renders with its own clock, timezone and no locale cookie. Hydration keeps that text
+  // (mismatch suppressed), so the span is re-created once mounted to show the client's values.
+  return (
+    <span
+      key={isMounted ? 'client' : 'server'}
+      title={new Date(date).toLocaleString(userLang)}
+      suppressHydrationWarning
+    >
+      {timeAgo}
+    </span>
+  );
 };
 
 export default TimeAgo;

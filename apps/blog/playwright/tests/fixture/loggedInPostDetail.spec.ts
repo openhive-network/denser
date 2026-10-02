@@ -6,6 +6,12 @@ import {
   POST_DETAIL_COMMUNITY,
   gotoLoggedIn
 } from '../support/postDisplayContext';
+import {
+  MAX_ABOVE_ARTICLE_SHIFT,
+  MOBILE_VIEWPORT,
+  collectAboveArticleLayoutShifts,
+  observeAboveArticleLayoutShifts
+} from '../support/layoutShift';
 
 /**
  * §4 Post Display & Views — post detail page (logged-in observer).
@@ -61,5 +67,21 @@ test.describe('§4 Post Display & Views — post detail (logged-in observer)', (
     // Comments tree — recorded post has prior comments, so the first
     // comment list item should render.
     await expect(postPage.commentListLocator.first()).toBeVisible();
+  });
+
+  test.describe('on a phone viewport', () => {
+    test.use({ viewport: MOBILE_VIEWPORT });
+
+    test('VIEW-08b — header above the article does not shift after hydration', async ({ page }) => {
+      await observeAboveArticleLayoutShifts(page);
+      await gotoLoggedIn(
+        page,
+        `/${POST_DETAIL_COMMUNITY}/@${POST_DETAIL_AUTHOR}/${POST_DETAIL_PERMLINK}/`
+      );
+      await expect(postPage.articleBody).toBeVisible();
+
+      const { score, shifts } = await collectAboveArticleLayoutShifts(page);
+      expect(score, shifts.join('\n')).toBeLessThan(MAX_ABOVE_ARTICLE_SHIFT);
+    });
   });
 });
