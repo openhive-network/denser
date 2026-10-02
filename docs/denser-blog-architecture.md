@@ -138,6 +138,18 @@ export const getPostCached = cache(async (author: string, permlink: string) => {
 
 **Chain Service** (`chain.ts`):
 - Singleton wrapper around WAX (Hive SDK)
+- On the server it is wrapped by `server-failover.ts`: a read-only JSON-RPC call that fails at the
+  transport level is retried once on the primary node, then on the other nodes of
+  `REACT_APP_ALLOWED_HIVE_API_NODES` (images host excluded), within an 8 s budget per call
+
+**Primary data unreachable → HTTP 503** (`apps/blog/lib/service-unavailable.ts`):
+- A server component that cannot render without its data throws `ServiceUnavailableError` when the
+  fetch still fails with a transport error (feeds: `features/*/sort-page.tsx`; post page). The route's
+  `error.tsx` shows the "temporarily unavailable" UI with a retry.
+- `instrumentation.ts` turns that render's 500 into `503` + `Retry-After` (App Router has no API for a
+  503). It only works for routes that have not started streaming when the page throws, i.e. without a
+  `loading.tsx` above the page; a streamed route keeps its 200.
+- Never swallow such a failure into a 200 with a loading skeleton: crawlers index it as empty.
 
 ---
 

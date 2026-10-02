@@ -268,6 +268,32 @@ Used by `feedNavigation.spec.ts` (feed skeleton during Trending → Hot).
 
 ---
 
+## Recipe: simulate an API node blip (drop a replayed call)
+
+`fixtureProxy.failRequests(filter, times?)` makes the replay proxy destroy the
+connection of the next `times` JSON-RPC calls matching `filter` (default: all of
+them) without answering. The app sees what a real node blip produces — wax's
+`WaxUnknownRequestError` ("fetch failed"), a transport error that the server
+retries / fails over and, when it persists, answers with a 503. Like
+`holdResponses` it reaches SSR calls. Always `restore()` in a `finally`. No-op in
+record mode.
+
+```ts
+const restore = fixtureProxy.failRequests(({ method }) => method === 'bridge.get_ranked_posts', 1);
+try {
+  // the server's first feed fetch fails; its retry is served normally
+} finally {
+  restore();
+}
+```
+
+Used by `ssrSeoGuard.spec.ts` (`SEO-0x-RETRY` / `SEO-0x-503`) and
+`ssrErrorFallback.spec.ts` (SAFE-08). Note: a *recorded* 5xx response (an overlay
+with `responseStatus: 503`) is a different case — wax still surfaces it as a
+transport error, so the server retries it too.
+
+---
+
 ## Recipe: assert a produced vote broadcast (TX-04)
 
 ```ts
@@ -810,7 +836,9 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   server fetch fails. Uses the **`ssrChecks_discussionError`** overlay
   (patches `bridge.get_discussion` for `test-ako-post` → HTTP 503 by its
   recorded requestHash); the post route tolerates it (`Promise.allSettled`)
-  so the article still server-renders at 200.
+  so the article still server-renders at 200. SAFE-08 (JS on) makes the PRIMARY
+  `/trending` feed fetch unreachable via `failRequests`: the document is a 503 and
+  its "Reload page" retry recovers the feed without a full reload.
 - **`ssrLocale.spec.ts`** — pure HTTP, reuses the `ssrChecks` fixtures
   (`NEXT_LOCALE` doesn't change RPC params). Asserts the server resolves the UI
   language from the `NEXT_LOCALE` cookie: `<html lang="es">`, `<html dir="rtl">`
@@ -843,6 +871,8 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   ancestor, and `<title>`, meta description, `og:title`/`og:image` must be in
   `<head>`. Replay-only: `ssrSeoGuard` is an additive overlay on `ssrChecks`
   built from files copied out of other recordings (see its `_index.json`).
+  The `-RETRY` / `-503` variants drop the feed's `bridge.get_ranked_posts` once
+  (still a full 200) or always (503 + `Retry-After`, never a post-less 200).
 - **`feedNavigation.spec.ts`** — JS **enabled**; replay-only on the
   `homeMainPage` recording. Holds the `/hot` feed call (see "observe a pending
   state" recipe), asserts the `feed-navigation-pending` skeleton, then the Hot
