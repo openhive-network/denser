@@ -1,5 +1,4 @@
 import { getLogger } from '@ui/lib/logging';
-import { isTransportError } from './wax-errors';
 
 const logger = getLogger('app');
 
@@ -12,6 +11,11 @@ export const FAILOVER_ATTEMPT_TIMEOUT_MS = 2_000;
  * finish within it is not started, so a call never holds a server render longer than this.
  */
 export const FAILOVER_BUDGET_MS = 8_000;
+
+// Loaded on the first failed call: `wax-errors` imports `@hiveio/wax`, which browser bundles of the
+// chain module must not pull in statically (the failover only runs on the server).
+const isTransportError = async (error: unknown): Promise<boolean> =>
+  (await import('./wax-errors')).isTransportError(error);
 
 /** JSON-RPC namespaces that are not read-only; a failed broadcast must never be re-sent. */
 const NON_RETRYABLE_NAMESPACES = new Set(['network_broadcast_api']);
@@ -123,7 +127,7 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
         logger.warn('%s served by %s after %d failed attempt(s)', method, node, index + 1);
         return result;
       } catch (error) {
-        if (!isTransportError(error)) throw error;
+        if (!(await isTransportError(error))) throw error;
         lastError = error;
       }
     }
@@ -143,7 +147,7 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
     try {
       return await callOn(chain, path, args);
     } catch (error) {
-      if (!isTransportError(error) || NON_RETRYABLE_NAMESPACES.has(path[0])) throw error;
+      if (NON_RETRYABLE_NAMESPACES.has(path[0]) || !(await isTransportError(error))) throw error;
       return failOver(path, args, error, startedAt);
     }
   };

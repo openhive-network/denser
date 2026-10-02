@@ -5,10 +5,10 @@
  *
  * Use getAssetConfig(), getNaiSymbols(), etc. for type-safe access.
  */
-import { EAssetName, NaiAsset } from '@hiveio/wax';
+import type { EAssetName, NaiAsset } from '@hiveio/wax';
 
-// Re-export EAssetName for convenience
-export { EAssetName };
+/** Name of a Hive asset: the values of wax's `EAssetName`, without importing wax at runtime. */
+export type AssetName = `${EAssetName}`;
 
 // Symbol enum for type safety - includes SPK which is not a native Hive asset
 export enum Symbol {
@@ -20,40 +20,40 @@ export enum Symbol {
 
 // NAIs and precisions are fixed by the Hive protocol: wax's chain.ASSETS holds the same values
 // on every network.
-const PROTOCOL_ASSETS: Readonly<Record<EAssetName, NaiAsset>> = {
-  [EAssetName.HBD]: { amount: '0', precision: 3, nai: '@@000000013' },
-  [EAssetName.HIVE]: { amount: '0', precision: 3, nai: '@@000000021' },
-  [EAssetName.VESTS]: { amount: '0', precision: 6, nai: '@@000000037' }
+const PROTOCOL_ASSETS: Readonly<Record<AssetName, NaiAsset>> = {
+  HBD: { amount: '0', precision: 3, nai: '@@000000013' },
+  HIVE: { amount: '0', precision: 3, nai: '@@000000021' },
+  VESTS: { amount: '0', precision: 6, nai: '@@000000037' }
 };
 
-let assetConfig: Readonly<Record<EAssetName, NaiAsset>> = PROTOCOL_ASSETS;
+let assetConfig: Readonly<Record<AssetName, NaiAsset>> = PROTOCOL_ASSETS;
 
 /**
  * Initialize asset constants from wax's chain.ASSETS.
  * Called once the chain is created.
  */
-export function initializeAssetConstants(assets: Readonly<Record<EAssetName, NaiAsset>>): void {
+export function initializeAssetConstants(assets: Readonly<Record<AssetName, NaiAsset>>): void {
   assetConfig = assets;
 }
 
 /**
  * Get the full asset configuration.
  */
-export function getAssetConfig(): Readonly<Record<EAssetName, NaiAsset>> {
+export function getAssetConfig(): Readonly<Record<AssetName, NaiAsset>> {
   return assetConfig;
 }
 
 /**
  * Get NAI string for a token type.
  */
-export function getNai(token: EAssetName): string {
+export function getNai(token: AssetName): string {
   return getAssetConfig()[token].nai;
 }
 
 /**
  * Get precision for a token type.
  */
-export function getPrecision(token: EAssetName): number {
+export function getPrecision(token: AssetName): number {
   return getAssetConfig()[token].precision;
 }
 

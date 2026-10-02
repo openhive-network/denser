@@ -3,7 +3,7 @@ import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import { User } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
-import { defaultUser } from '@smart-signer/lib/auth/utils';
+import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { getLogger } from '@ui/lib/logging';
 

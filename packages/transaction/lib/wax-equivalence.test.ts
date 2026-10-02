@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import { EXTENDED_REST_API_DEFINITION } from '@hive/common-hiveio-packages/wax';
-import { createReadClient, IReadTransport, JsonRpcApiError } from './read-client';
+import { createReadClient, JsonRpcApiError } from './read-client';
+import { fetchReadTransport, ReadTransportError } from './read-transport';
+import { isTransportError } from './wax-errors';
 import { vestsToHiveSatoshis } from '../../ui/lib/asset-math';
 
 /**
@@ -32,7 +34,6 @@ interface IWaxChain {
 }
 interface IWaxModule {
   createHiveChain(options: object): Promise<IWaxChain>;
-  RequestHelper: new () => IReadTransport;
   WaxRequestError: new (...args: never[]) => Error;
 }
 
@@ -110,7 +111,7 @@ describe('wasm-free reads and asset math are equivalent to wax', function () {
         jsonRpcEndpoints: { 'search-api.find_text': SEARCH },
         restEndpoints: { 'hivesense-api': AI }
       }),
-      transport: new wax.RequestHelper(),
+      transport: fetchReadTransport,
       restApiDefinition: EXTENDED_REST_API_DEFINITION
     });
   });
@@ -201,14 +202,57 @@ describe('wasm-free reads and asset math are equivalent to wax', function () {
     });
   }
 
-  it('an HTTP 5xx rejects both with the same wax transport error class', async () => {
-    globalThis.fetch = createFakeFetch(() => ({ status: 503, body: { message: 'unavailable' } })).fakeFetch as typeof fetch;
-    const waxError = await waxChain.api.bridge.get_post({ author: 'a', permlink: 'p', observer: '' }).catch((error: unknown) => error);
+  const transportFailures: Array<[string, Responder]> = [
+    ['an HTTP 5xx', () => ({ status: 503, body: { message: 'unavailable' } })],
+    ['an HTTP 429', () => ({ status: 429, body: { message: 'too many requests' } })]
+  ];
+
+  for (const [name, responder] of transportFailures) {
+    it(`${name} rejects both with a transport error`, async () => {
+      globalThis.fetch = createFakeFetch(responder).fakeFetch as typeof fetch;
+      const waxError = await waxChain.api.bridge.get_post({ author: 'a', permlink: 'p', observer: '' }).catch((error: unknown) => error);
+      const readError = await readClient.api.bridge.get_post({ author: 'a', permlink: 'p', observer: '' }).catch((error: unknown) => error);
+
+      expect(waxError).to.be.instanceOf(wax.WaxRequestError);
+      expect(readError).to.be.instanceOf(ReadTransportError);
+      expect(isTransportError(readError)).to.equal(true);
+    });
+  }
+
+  it('a network failure rejects the read client with a transport error carrying the cause', async () => {
+    const networkError = new TypeError('fetch failed');
+    globalThis.fetch = (async () => {
+      throw networkError;
+    }) as typeof fetch;
     const readError = await readClient.api.bridge.get_post({ author: 'a', permlink: 'p', observer: '' }).catch((error: unknown) => error);
 
-    expect(waxError).to.be.instanceOf(wax.WaxRequestError);
-    expect(readError).to.be.instanceOf(wax.WaxRequestError);
-    expect((readError as Error).constructor).to.equal((waxError as Error).constructor);
+    expect(readError).to.be.instanceOf(ReadTransportError);
+    expect((readError as Error).cause).to.equal(networkError);
+    expect(isTransportError(readError)).to.equal(true);
+  });
+
+  it('a malformed JSON body rejects the read client with a transport error', async () => {
+    globalThis.fetch = (async () => new Response('<html>bad gateway</html>', { status: 200 })) as typeof fetch;
+    const readError = await readClient.api.bridge.get_post({ author: 'a', permlink: 'p', observer: '' }).catch((error: unknown) => error);
+
+    expect(readError).to.be.instanceOf(ReadTransportError);
+    expect((readError as Error).message).to.contain('malformed JSON');
+  });
+
+  it('a request slower than the timeout rejects the read client with a transport error', async () => {
+    globalThis.fetch = ((_input: string | URL, init: RequestInit = {}) =>
+      new Promise<Response>((_resolve, reject) => {
+        init.signal?.addEventListener('abort', () => reject(init.signal?.reason));
+      })) as typeof fetch;
+    const shortTimeoutClient = createReadClient<IApiTree, IApiTree>({
+      getConfig: () => ({ chainId: CHAIN_ID, apiEndpoint: API, restApiEndpoint: REST, timeoutMs: 10 }),
+      transport: fetchReadTransport,
+      restApiDefinition: EXTENDED_REST_API_DEFINITION
+    });
+    const readError = await shortTimeoutClient.api.bridge.get_post({ author: 'a', permlink: 'p', observer: '' }).catch((error: unknown) => error);
+
+    expect(readError).to.be.instanceOf(ReadTransportError);
+    expect((readError as Error).message).to.match(/^Request timed out/);
   });
 
   it('a JSON-RPC error answer rejects both, and neither as a transport error', async () => {
@@ -222,7 +266,8 @@ describe('wasm-free reads and asset math are equivalent to wax', function () {
     const readError = await readClient.api.bridge.get_post({ author: 'alice', permlink: 'missing', observer: '' }).catch((error: unknown) => error);
 
     expect(waxError).to.be.instanceOf(Error).and.not.instanceOf(wax.WaxRequestError);
-    expect(readError).to.be.instanceOf(JsonRpcApiError).and.not.instanceOf(wax.WaxRequestError);
+    expect(readError).to.be.instanceOf(JsonRpcApiError).and.not.instanceOf(ReadTransportError);
+    expect(isTransportError(readError)).to.equal(false);
     expect((readError as Error).message).to.equal('bridge.get_post: Invalid parameters');
   });
 

@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
-import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import { useSigner } from '@smart-signer/lib/use-signer';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
@@ -50,6 +49,7 @@ export function useLogout(redirect?: string) {
       // Signer cleanup
       Promise.resolve().then(async () => {
         try {
+          const { getSigner } = await import('@smart-signer/lib/signer/get-signer');
           const signer = getSigner(signerOptions);
           await signer.destroy();
         } catch (error) {

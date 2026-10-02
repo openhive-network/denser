@@ -4,7 +4,7 @@ import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
 import { useLocalStorage } from 'usehooks-ts';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
-import { defaultUser } from '@smart-signer/lib/auth/utils';
+import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { getLogger } from '@ui/lib/logging';
 import { User } from '@smart-signer/types/common';
 

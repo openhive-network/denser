@@ -17,13 +17,6 @@ export class WaxRequestError extends Error {
   }
 }
 
-/** Inert transport: unit tests that need real requests pass their own. */
-export class RequestHelper {
-  request(_config: unknown): Promise<{ response?: unknown }> {
-    return Promise.reject(new Error('@hiveio/wax is stubbed in unit tests'));
-  }
-}
-
 /** Minimal chain shape for modules that only reference wax chain types. */
 export type TWaxExtended<_NodeApi, _RestApi> = {
   api: object;
