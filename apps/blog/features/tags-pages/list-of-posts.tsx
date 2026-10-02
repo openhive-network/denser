@@ -114,6 +114,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
                   key={`f-${pageIndex}`}
                   isCommunityPage={isCommunity(tag)}
                   testFilter={sort}
+                  prioritizeLeadingImages={pageIndex === 0}
                 />
                 {/* Add prefetch trigger before the last page, when we have more than one page */}
                 {pageIndex === data.pages.length - 1 && totalPosts > 10 && (

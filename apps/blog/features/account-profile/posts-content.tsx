@@ -107,6 +107,7 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
                     key={`x-${pageIndex}`}
                     nsfwPreferences={preferences.nsfw}
                     testFilter="profile-blog-list"
+                    prioritizeLeadingImages={pageIndex === 0}
                   />
                   {/* Add prefetch trigger before the last page, when we have more than one page */}
                   {pageIndex === data.pages.length - 1 && totalPosts > 10 && (
