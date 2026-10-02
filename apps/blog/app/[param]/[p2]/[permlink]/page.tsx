@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import PostContent from './content';
 import { getPostCached } from '@/blog/lib/cached-api';
-import { getCommunity, getDiscussion, getFollowList } from '@transaction/lib/bridge-api';
+import { getCommunity, getDiscussion, getFollowList, getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
@@ -15,6 +15,7 @@ import {
   InitialPostDataProvider,
   InitialDiscussionProvider,
   InitialCommunityProvider,
+  InitialCommunityRolesProvider,
   InitialFollowListProvider
 } from '@/blog/components/observer-provider';
 
@@ -125,19 +126,23 @@ const PostPage = async (
   let postData = null;
   let discussionData = null;
   let communityData = null;
+  let communityRolesData = null;
   let mutedListData = null;
   let postTransportError: unknown = null;
 
   try {
-    // Fetch post, discussion, and optionally community in parallel.
-    // ActiveVotes and rolesList are secondary — fetched client-side only.
-    const [postResult, discussionResult, mutedListResult, communityResult] = await Promise.allSettled([
+    // Fetch post, discussion, and optionally community and its roles in parallel.
+    // The full voter list is not fetched here: the page shows only stats.total_votes
+    // until the voters card is opened, which loads the list on demand.
+    const [postResult, discussionResult, mutedListResult, communityResult, communityRolesResult] =
+      await Promise.allSettled([
       // Use cached version — deduplicated with layout's generateMetadata within the same request
       getPostCached(username, permlink, observer),
       getDiscussion(username, permlink, observer),
       // Prefetch the user's muted list so comments are filtered from the first render
       isLoggedIn ? getFollowList(observer, 'muted') : Promise.resolve(null),
-      isCommunity(community) ? getCommunity(community, observer) : Promise.resolve(null)
+      isCommunity(community) ? getCommunity(community, observer) : Promise.resolve(null),
+      isCommunity(community) ? getListCommunityRoles(community) : Promise.resolve(null)
     ]);
 
     if (postResult.status === 'fulfilled') {
@@ -168,6 +173,11 @@ const PostPage = async (
       if (communityResult.status === 'rejected') {
         logger.error(communityResult.reason, 'Error fetching community data:');
       }
+      communityRolesData =
+        communityRolesResult.status === 'fulfilled' ? (communityRolesResult.value ?? null) : null;
+      if (communityRolesResult.status === 'rejected') {
+        logger.error(communityRolesResult.reason, 'Error fetching community roles:');
+      }
     }
   } catch (error) {
     logger.error(error, 'Error in PostPage:');
@@ -193,9 +203,11 @@ const PostPage = async (
       <InitialPostDataProvider value={postData}>
         <InitialDiscussionProvider value={discussionData}>
           <InitialCommunityProvider value={communityData}>
-            <InitialFollowListProvider value={mutedListData}>
-              <PostContent />
-            </InitialFollowListProvider>
+            <InitialCommunityRolesProvider value={communityRolesData}>
+              <InitialFollowListProvider value={mutedListData}>
+                <PostContent />
+              </InitialFollowListProvider>
+            </InitialCommunityRolesProvider>
           </InitialCommunityProvider>
         </InitialDiscussionProvider>
       </InitialPostDataProvider>
