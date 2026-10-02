@@ -277,8 +277,8 @@ test.describe.skip('Translation tests', () => {
     // Wait for Polish translation to load on post page
     await expect(postPage.articleTitle).toBeVisible();
     // Validate post footer upvote and downvote buttons tooltips
-    const expectedUpvoteTooltipText: string = 'Głos zaGłos za';
-    const expectedDownvoteTooltipText: string = 'Głos przeciwGłos przeciw';
+    const expectedUpvoteTooltipText: string = 'Głos za';
+    const expectedDownvoteTooltipText: string = 'Głos przeciw';
     await postPage.upvoteButton.locator('svg').hover();
     await expect(postPage.postFooterUpvoteTooltip).toContainText(expectedUpvoteTooltipText);
     await postPage.downvoteButton.locator('svg').hover();
@@ -377,11 +377,11 @@ test.describe.skip('Translation tests', () => {
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate upvote button tooltip
-    const expectedUpvoteTooltipText: string = 'Głos zaGłos za';
+    const expectedUpvoteTooltipText: string = 'Głos za';
     await homePage.getFirstPostUpvoteButton.hover();
     await expect(homePage.getFirstPostUpvoteButtonTooltip).toHaveText(expectedUpvoteTooltipText);
     // Validate downvote button tooltip
-    const expectedDownvoteTooltipText: string = 'Głos przeciwGłos przeciw';
+    const expectedDownvoteTooltipText: string = 'Głos przeciw';
     await homePage.getFirstPostDownvoteButton.hover();
     await expect(homePage.getFirstPostDownvoteButtonTooltip).toHaveText(expectedDownvoteTooltipText);
   });

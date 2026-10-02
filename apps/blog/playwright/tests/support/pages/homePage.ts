@@ -541,7 +541,7 @@ export class HomePage {
     await this.getFirstPostVotes.hover();
     await expect(this.getFirstPostVotesTooltip).toBeVisible({ timeout: 15000 });
     const votes = await this.getFirstPostVotes.textContent();
-    expect(await this.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes' + votes + ' votes');
+    expect(await this.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes');
   }
 
   async validateFirstPostResponsesWithTooltip() {
@@ -646,9 +646,10 @@ export class HomePage {
   async moveToTermsOfServicePage() {
     await this.getNavSidebarMenu.click();
     await this.getNavSidebarMenuContent.getByRole('button', { name: 'Terms of Service' }).click();
-    await this.page.waitForTimeout(5000);
-    await expect(this.page.locator('div').getByText('Terms of Service')).toBeVisible();
     await expect(this.page).toHaveURL('tos.html');
+    // The sidebar sheet closes on navigation and the page has no "Terms of Service" title of its own.
+    await expect(this.page.locator('#articleBody h2').first()).toHaveText('1. Privacy Policy');
+    await expect(this.getNavSidebarMenuContent).toBeHidden();
   }
 
   // Tranding All Posts

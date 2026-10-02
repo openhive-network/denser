@@ -19,6 +19,16 @@ export function assertDefined<T>(val: T | null | undefined, msg: string): assert
   expect(val, msg).not.toBeNull();
 }
 
+const AFTER_PAYOUT_VOTE_NOTE = 'Voting on Content after their payout does not generate any new rewards';
+
+/**
+ * Matches the full text of a vote button tooltip: the label (e.g. 'Upvote'),
+ * optionally followed by the note shown on posts past their payout.
+ */
+export function voteTooltipText(label: string): RegExp {
+  return new RegExp(`^${label}(${AFTER_PAYOUT_VOTE_NOTE})?$`);
+}
+
 /**
  * Log in via the default login form and navigate to the post editor.
  *

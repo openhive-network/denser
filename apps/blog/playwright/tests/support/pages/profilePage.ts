@@ -502,8 +502,9 @@ export class ProfilePage {
     await this.page.goto(`/${nickName}/payout`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForSelector(this.profileInfo['_selector']);
-    // Wait for either the posts list OR the "no payouts" message to appear
-    await this.profileBlogPostsList.or(this.userHasNotStartedBloggingYetMsg).waitFor();
+    // Wait for either the posts list OR the "no payouts" message to appear.
+    // Each fetched page renders its own list, so a second page may already be there.
+    await this.profileBlogPostsList.first().or(this.userHasNotStartedBloggingYetMsg).waitFor();
   }
 
   async gotoRepliesProfilePage(nickName: string) {

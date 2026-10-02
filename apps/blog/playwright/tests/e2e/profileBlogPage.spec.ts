@@ -5,6 +5,7 @@ import { PostPage } from '../support/pages/postPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 import { LoginForm } from '../support/pages/loginForm';
+import { voteTooltipText } from '../support/testHelpers';
 
 
 test.describe('Profile page of @gtg', () => {
@@ -188,10 +189,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.postUpvoteButton.first().hover();
     await expect(profilePage.postUpvoteTooltip).toBeVisible({ timeout: 15000 });
     // Validate the tooltip message
-    const tooltipText = await profilePage.postUpvoteTooltip.textContent();
-    expect(
-      tooltipText === "UpvoteUpvote" || tooltipText === "UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards"
-    ).toBeTruthy();
+    await expect(profilePage.postUpvoteTooltip).toHaveText(voteTooltipText('Upvote'));
 
     await profilePage.postUpvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();
@@ -210,10 +208,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.postDownvoteButton.first().hover();
     await expect(profilePage.postDownvoteTooltip).toBeVisible({ timeout: 15000 });
     // Validate the tooltip message
-    const tooltipText = await profilePage.postDownvoteTooltip.textContent();
-    expect(
-      tooltipText === "DownvoteDownvote" || tooltipText === "DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards"
-    ).toBeTruthy();
+    await expect(profilePage.postDownvoteTooltip).toHaveText(voteTooltipText('Downvote'));
 
     await profilePage.postDownvoteButton.first().click();
     await loginDialog.validateDefaultLoginFormIsLoaded();

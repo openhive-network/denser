@@ -241,7 +241,8 @@ test.describe('Profile page of @gtg', () => {
   test('Tab Posts - Payouts - List', async ({ page, request }) => {
     await profilePage.gotoPostsPayoutsProfilePage('@gtg');
 
-    const post = await profilePage.postBlogItem.all();
+    // Compare the first fetched page with the API's first page; later pages load on scroll.
+    const post = await profilePage.profileBlogPostsList.first().getByTestId('post-list-item').all();
     const postLenght = await post.length;
 
     if (await profilePage.postBlogItem.first().isVisible())
