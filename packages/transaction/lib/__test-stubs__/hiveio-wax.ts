@@ -20,7 +20,10 @@ export class WaxRequestError extends Error {
 /** Minimal chain shape for modules that only reference wax chain types. */
 export type TWaxExtended<_NodeApi, _RestApi> = {
   api: object;
-  restApi: object;
+  restApi: { endpointUrl: string };
+  readonly chainId: string;
+  readonly endpointUrl: string;
+  extendConfig(config: { chainId: string; apiEndpoint: string; restApiEndpoint: string; apiTimeout: number }): TWaxExtended<_NodeApi, _RestApi>;
   isValidAccountName(name: string): boolean;
 };
 export type TWaxRestExtended<RestApi> = RestApi;

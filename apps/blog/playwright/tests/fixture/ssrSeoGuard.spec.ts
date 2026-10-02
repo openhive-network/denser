@@ -24,6 +24,12 @@ import type { Locator, Page } from '@playwright/test';
  * No route sets a canonical link yet — that gap is tracked by ssrChecks SSR-24
  * (#903), so it is not asserted here.
  *
+ * Node blips: a feed page must answer either with its posts (200) or with a
+ * retryable 503 — never a 200 that only carries the loading skeleton, which a
+ * crawler would index as an empty feed. `fixtureProxy.failRequests` drops the
+ * server's `bridge.get_ranked_posts` connection once (the server must retry)
+ * or every time (the server must answer 503 with `Retry-After`).
+ *
  * Fixtures: `ssrSeoGuard` is an additive overlay on `ssrChecks` composed from
  * other recordings (see its `_index.json`), so it can only be replayed.
  *
@@ -56,6 +62,8 @@ function recordedPosts(recording: string): { title: string; href: string }[] {
     href: `/${category}/@${author}/${permlink}`
   }));
 }
+
+const isRankedPostsCall = ({ method }: { method: string }) => method === 'bridge.get_ranked_posts';
 
 /** Navigates with JS off and returns the raw server HTML. */
 async function serverHtml(page: Page, url: string): Promise<string> {
@@ -118,6 +126,41 @@ test.describe('SEO guard — feeds in visible server HTML (JS disabled)', () => 
       await expect(list.getByTestId('post-title').first()).toHaveText(posts[0].title);
 
       await expectSeoHead(page, feed.title);
+    });
+  }
+});
+
+test.describe('SEO guard — feeds under API node failures (JS disabled)', () => {
+  for (const feed of FEEDS) {
+    test(`${feed.id}-RETRY — ${feed.url} still serves its posts when the first feed fetch fails`, async ({
+      page,
+      fixtureProxy
+    }) => {
+      const posts = recordedPosts(feed.recording);
+      const restore = fixtureProxy.failRequests(isRankedPostsCall, 1);
+      try {
+        const html = await serverHtml(page, feed.url);
+        for (const post of posts) {
+          expect(html, `raw HTML links ${post.href}`).toContain(`href="${post.href}"`);
+        }
+      } finally {
+        restore();
+      }
+    });
+
+    test(`${feed.id}-503 — ${feed.url} answers 503 with Retry-After, not a post-less 200, while the feed stays unreachable`, async ({
+      request,
+      fixtureProxy
+    }) => {
+      const restore = fixtureProxy.failRequests(isRankedPostsCall);
+      try {
+        const response = await request.get(feed.url);
+        expect(response.status(), `${feed.url} status`).toBe(503);
+        expect(response.headers()['retry-after'], 'Retry-After header').toMatch(/^\d+$/);
+        expect(await response.text()).not.toContain('data-testid="post-list-item"');
+      } finally {
+        restore();
+      }
     });
   }
 });

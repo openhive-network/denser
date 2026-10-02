@@ -1,8 +1,9 @@
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { Icons } from '@ui/components/icons';
 import { AlertTriangle, Activity, Home, RefreshCw } from 'lucide-react';
 
-const ServiceUnavailable: FC = () => {
+/** `children`: extra actions (e.g. a retry button) shown before the navigation links. */
+const ServiceUnavailable: FC<{ children?: ReactNode }> = ({ children }) => {
   return (
     <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center px-4 py-20 text-center">
       <div className="mb-6 flex items-end gap-2 relative">
@@ -39,6 +40,7 @@ const ServiceUnavailable: FC = () => {
       </div>
 
       <div className="flex flex-wrap justify-center gap-4">
+        {children}
         <a
           href="/"
           className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90"

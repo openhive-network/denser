@@ -3,6 +3,7 @@ import PostContent from './content';
 import { getPostCached } from '@/blog/lib/cached-api';
 import { getCommunity, getDiscussion, getFollowList } from '@transaction/lib/bridge-api';
 import { isTransportError } from '@transaction/lib/wax-errors';
+import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { isUsernameValid, isPermlinkValid, isValidUserParam } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
@@ -176,7 +177,7 @@ const PostPage = async (
   // surface as a 5xx via the route error boundary (ServiceUnavailable) — never a false 404 for
   // content that may well exist. See hive/denser#926.
   if (postTransportError) {
-    throw postTransportError;
+    throw new ServiceUnavailableError(postTransportError);
   }
 
   // Skip 404 when navigating from post creation — the client has optimistic data

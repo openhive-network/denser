@@ -1,0 +1,169 @@
+import { getLogger } from '@ui/lib/logging';
+import { isTransportError } from './wax-errors';
+
+const logger = getLogger('app');
+
+/** Pause before re-asking the primary node, so a momentary blip has passed. */
+const RETRY_DELAY_MS = 250;
+/** Request timeout of every retry / failover attempt. */
+export const FAILOVER_ATTEMPT_TIMEOUT_MS = 2_000;
+/**
+ * Upper bound for one call, counted from the start of the first attempt. An attempt that could not
+ * finish within it is not started, so a call never holds a server render longer than this.
+ */
+export const FAILOVER_BUDGET_MS = 8_000;
+
+/** JSON-RPC namespaces that are not read-only; a failed broadcast must never be re-sent. */
+const NON_RETRYABLE_NAMESPACES = new Set(['network_broadcast_api']);
+
+export interface IFailoverChain {
+  readonly api: object;
+  readonly endpointUrl: string;
+}
+
+export interface IServerFailoverOptions<T extends IFailoverChain> {
+  /** Nodes to fail over to after the primary, in order of preference. */
+  fallbackNodes: readonly string[];
+  /** Builds a chain that sends JSON-RPC calls to `node` with the given request timeout. */
+  createNodeChain: (node: string, timeoutMs: number) => T;
+  /** Clock and sleep, injectable for tests. */
+  now?: () => number;
+  sleep?: (ms: number) => Promise<void>;
+}
+
+const defaultSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+const isObjectLike = (value: unknown): value is object =>
+  (typeof value === 'object' || typeof value === 'function') && value !== null;
+
+/** `chain.api` followed along `path`, e.g. `['bridge', 'get_post']` → `chain.api.bridge.get_post`. */
+const resolveApiPath = (api: object, path: readonly string[]): object => {
+  const resolved = path.reduce<unknown>(
+    (node, key) => (isObjectLike(node) ? Reflect.get(node, key) : undefined),
+    api
+  );
+  if (!isObjectLike(resolved)) throw new TypeError(`chain.api.${path.join('.')} does not exist`);
+  return resolved;
+};
+
+/**
+ * Parses a whitespace/comma-separated node list (the `REACT_APP_ALLOWED_HIVE_API_NODES` format) into
+ * distinct origins, dropping `excluded` entries (e.g. the images host, which is listed for CSP but is
+ * not an API node) and anything that is not an http(s) URL.
+ */
+export function parseFallbackNodes(
+  list: string | undefined,
+  excluded: readonly (string | undefined)[] = []
+): string[] {
+  const toOrigin = (value: string | undefined): string | undefined => {
+    if (!value) return undefined;
+    try {
+      const url = new URL(value);
+      return url.protocol === 'http:' || url.protocol === 'https:' ? url.origin : undefined;
+    } catch {
+      return undefined;
+    }
+  };
+  const excludedOrigins = new Set(excluded.map(toOrigin).filter(Boolean));
+  const nodes = (list ?? '')
+    .split(/[\s,]+/)
+    .map(toOrigin)
+    .filter((node): node is string => !!node && !excludedOrigins.has(node));
+  return [...new Set(nodes)];
+}
+
+/**
+ * Wraps a chain so that each read-only JSON-RPC call on `chain.api` that fails at the transport level
+ * (see `isTransportError`) is retried once on the primary node and then on each fallback node, within
+ * `FAILOVER_BUDGET_MS`. A definitive API answer (e.g. "post does not exist") is never retried. When
+ * every attempt fails, the last transport error is rethrown. Everything other than `chain.api` is
+ * passed through untouched.
+ *
+ * Meant for the server, where one node blip would otherwise turn a whole page render into an error.
+ */
+export function wrapChainWithServerFailover<T extends IFailoverChain>(
+  chain: T,
+  options: IServerFailoverOptions<T>
+): T {
+  const { fallbackNodes, createNodeChain, now = Date.now, sleep = defaultSleep } = options;
+  const attemptChains = new Map<string, T>();
+
+  // Chains are cached per node: every wax chain instance allocates wasm state that is never freed.
+  const getAttemptChain = (node: string): T => {
+    let attemptChain = attemptChains.get(node);
+    if (!attemptChain) {
+      attemptChain = createNodeChain(node, FAILOVER_ATTEMPT_TIMEOUT_MS);
+      attemptChains.set(node, attemptChain);
+    }
+    return attemptChain;
+  };
+
+  const callOn = async (target: T, path: readonly string[], args: unknown[]): Promise<unknown> => {
+    const method = resolveApiPath(target.api, path);
+    if (typeof method !== 'function') throw new TypeError(`chain.api.${path.join('.')} is not callable`);
+    return Reflect.apply(method, undefined, args);
+  };
+
+  const failOver = async (
+    path: readonly string[],
+    args: unknown[],
+    firstError: unknown,
+    startedAt: number
+  ) => {
+    const method = path.join('.');
+    const primary = chain.endpointUrl;
+    const nodes = [primary, ...fallbackNodes.filter((node) => node !== primary)];
+    let lastError = firstError;
+
+    for (const [index, node] of nodes.entries()) {
+      if (index === 0) await sleep(RETRY_DELAY_MS);
+      if (now() - startedAt + FAILOVER_ATTEMPT_TIMEOUT_MS > FAILOVER_BUDGET_MS) break;
+      try {
+        const result = await callOn(getAttemptChain(node), path, args);
+        logger.warn('%s served by %s after %d failed attempt(s)', method, node, index + 1);
+        return result;
+      } catch (error) {
+        if (!isTransportError(error)) throw error;
+        lastError = error;
+      }
+    }
+
+    logger.error(
+      lastError,
+      '%s failed on every node (%s) within %d ms',
+      method,
+      nodes.join(', '),
+      now() - startedAt
+    );
+    throw lastError;
+  };
+
+  const callWithFailover = async (path: readonly string[], args: unknown[]) => {
+    const startedAt = now();
+    try {
+      return await callOn(chain, path, args);
+    } catch (error) {
+      if (!isTransportError(error) || NON_RETRYABLE_NAMESPACES.has(path[0])) throw error;
+      return failOver(path, args, error, startedAt);
+    }
+  };
+
+  // wax resolves `chain.api.<namespace>.<method>` lazily through its own proxy; mirror the access path
+  // and replay it on whichever chain serves the call.
+  const createApiProxy = (path: readonly string[]): object =>
+    new Proxy(function apiPath() {}, {
+      get: (_target, prop) => {
+        if (typeof prop === 'symbol' || prop === 'endpointUrl') {
+          return Reflect.get(resolveApiPath(chain.api, path), prop);
+        }
+        return createApiProxy([...path, prop]);
+      },
+      set: (_target, prop, value) => Reflect.set(resolveApiPath(chain.api, path), prop, value),
+      apply: (_target, _thisArg, args: unknown[]) => callWithFailover(path, args)
+    });
+
+  return new Proxy(chain, {
+    get: (target, prop, receiver) =>
+      prop === 'api' ? createApiProxy([]) : Reflect.get(target, prop, receiver)
+  });
+}

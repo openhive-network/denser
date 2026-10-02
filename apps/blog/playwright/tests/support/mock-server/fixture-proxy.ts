@@ -57,6 +57,13 @@ export interface IFixtureProxyHandle {
    * deterministically. No-op in record mode.
    */
   holdResponses: (filter: (call: IJsonRpcCall) => boolean) => () => void;
+  /**
+   * Drops the connection of the next `times` replayed JSON-RPC calls whose call
+   * matches `filter` (default: every one) without answering — the way an API
+   * node blip reaches the app ("fetch failed"). Reaches server-side calls too.
+   * Returns `restore`, which stops it. No-op in record mode.
+   */
+  failRequests: (filter: (call: IJsonRpcCall) => boolean, times?: number) => () => void;
   port: number;
   url: string;
   fixtureDir: string;
@@ -376,6 +383,7 @@ export async function createFixtureProxy(
     },
     drainMisses: () => [],
     holdResponses: () => () => {},
+    failRequests: () => () => {},
     port,
     url: `http://localhost:${port}`,
     fixtureDir,
@@ -557,6 +565,7 @@ export async function createReplayProxy(
   let missCount = 0;
   let pendingMisses: IReplayMiss[] = [];
   const holds = new Set<{ filter: (call: IJsonRpcCall) => boolean; released: Promise<void> }>();
+  const failures = new Set<{ filter: (call: IJsonRpcCall) => boolean; remaining: number }>();
 
   const app = express();
   app.use(cors());
@@ -585,6 +594,14 @@ export async function createReplayProxy(
 
     const jsonRpc = extractJsonRpc(reqBody);
     const label = jsonRpc?.method || `${httpMethod} ${requestPath}`;
+
+    const failure = jsonRpc ? [...failures].find((f) => f.remaining > 0 && f.filter(jsonRpc)) : undefined;
+    if (failure) {
+      failure.remaining--;
+      console.log(`[fixture-proxy:replay] ${label} → injected connection failure`);
+      req.socket.destroy();
+      return;
+    }
 
     const requestHash = computeRequestHash(httpMethod, requestPath, query, reqBody);
     let entries = fixtures.get(requestHash);
@@ -676,6 +693,13 @@ export async function createReplayProxy(
       return () => {
         holds.delete(hold);
         release();
+      };
+    },
+    failRequests: (filter, times = Infinity) => {
+      const failure = { filter, remaining: times };
+      failures.add(failure);
+      return () => {
+        failures.delete(failure);
       };
     },
     port,
