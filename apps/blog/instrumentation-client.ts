@@ -5,22 +5,17 @@
 import env from "@beam-australia/react-env";
 import * as Sentry from "@sentry/nextjs";
 import { scrubEvent } from "@ui/lib/sentry-scrub";
+import { parseTracesSampleRate } from "@ui/lib/sentry-sample-rate";
 
 if (!!env('SENTRY_DSN')) {
 
 Sentry.init({
   dsn: env('SENTRY_DSN'),
 
-  // Add optional integrations for additional features
-  integrations: [
-    Sentry.replayIntegration({
-      // SECURITY: Mask all input fields to prevent capturing passwords/keys in session replays
-      maskAllInputs: true,
-    }),
-  ],
+  // Replay is added lazily after page load (see loadReplayIntegration) to keep it out of the initial JS.
 
-  // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+  // Define how likely traces are sampled. Set REACT_APP_SENTRY_TRACES_SAMPLE_RATE to override (default 0.1).
+  tracesSampleRate: parseTracesSampleRate(env('SENTRY_TRACES_SAMPLE_RATE')),
   // Enable logs to be sent to Sentry
   enableLogs: true,
 
@@ -41,6 +36,23 @@ Sentry.init({
   // SECURITY: Scrub WIF private keys from error events before sending to Sentry
   beforeSend: scrubEvent as any,
 });
+
+// The replay sample rates above apply once the integration is added; replays only start after that point.
+const loadReplayIntegration = async () => {
+  const { replayIntegration } = await import("./lib/sentry-replay");
+  Sentry.addIntegration(
+    replayIntegration({
+      // SECURITY: Mask all input fields to prevent capturing passwords/keys in session replays
+      maskAllInputs: true,
+    })
+  );
+};
+
+if (document.readyState === 'complete') {
+  void loadReplayIntegration();
+} else {
+  window.addEventListener('load', () => void loadReplayIntegration(), { once: true });
+}
 
 }
 
