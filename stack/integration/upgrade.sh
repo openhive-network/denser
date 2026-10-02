@@ -29,6 +29,8 @@ raw = sys.stdin.read().strip()
 rows = json.loads(raw) if raw.startswith("[") else [json.loads(l) for l in raw.splitlines() if l]
 print(" ".join(sorted(r.get("ID", "") for r in rows)))'; }
 
+# Before compose up: caddy bind-mounts status/, and docker would create it root-owned.
+mkdir -p status
 before=$(ids)
 # A tag not published yet (first boot, or a failed publish) keeps the running or
 # locally built image instead of stopping the upgrade.
@@ -39,7 +41,6 @@ docker compose up -d --remove-orphans --wait --wait-timeout 300 >/dev/null 2>&1 
 }
 after=$(ids)
 
-mkdir -p status
 python3 - "$(git rev-parse HEAD)" <<'EOF' > status/deployed.json.tmp
 import json, subprocess, sys, datetime
 checkout = sys.argv[1]
