@@ -1,4 +1,5 @@
 import Big from 'big.js';
+import { getImageSrc } from './path-utils';
 
 /**
  * User level based on VESTS (not HP).
@@ -41,7 +42,7 @@ export function getUserLevel(vests: Big | number): UserLevel {
  * @returns Path to the level icon image
  */
 export function getLevelIconPath(level: UserLevel): string {
-  return `/${level}.png`;
+  return getImageSrc(`/${level}.png`);
 }
 
 /**
