@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/nextjs";
+import { captureUnderscoreErrorException } from "@sentry/nextjs";
 import Error from "next/error";
 import type { NextPageContext } from "next/types";
 import env from "@beam-australia/react-env";
@@ -12,7 +12,7 @@ CustomErrorComponent.getInitialProps = async (contextData: NextPageContext) => {
   // time to send the error before the lambda exits
 
   if (!!env('SENTRY_DSN')) {
-    await Sentry.captureUnderscoreErrorException(contextData);
+    await captureUnderscoreErrorException(contextData);
   }
 
   // This will contain the status code of the response

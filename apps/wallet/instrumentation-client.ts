@@ -2,17 +2,17 @@
 // The added config here will be used whenever a users loads a page in their browser.
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-import * as Sentry from "@sentry/nextjs";
+import { captureRouterTransitionStart, init } from "@sentry/nextjs";
 import env from "@beam-australia/react-env";
 import { scrubEvent } from "@ui/lib/sentry-scrub";
 import { parseTracesSampleRate } from "@ui/lib/sentry-sample-rate";
 
 if (!!env('SENTRY_DSN')) {
 
-Sentry.init({
+init({
   dsn: env('SENTRY_DSN'),
 
-  // Replay is added lazily after page load (see loadReplayIntegration) to keep it out of the initial JS.
+  // Replay is added once the page has loaded and gone idle (see scheduleReplayIntegration), to keep it out of the initial JS.
 
   // Define how likely traces are sampled. Set REACT_APP_SENTRY_TRACES_SAMPLE_RATE to override (default 0.1).
   tracesSampleRate: parseTracesSampleRate(env('SENTRY_TRACES_SAMPLE_RATE')),
@@ -38,22 +38,26 @@ Sentry.init({
 });
 
 // The replay sample rates above apply once the integration is added; replays only start after that point.
+// Only the dynamic import() may reference the replay module: a static import would put rrweb back in the initial chunks.
 const loadReplayIntegration = async () => {
-  const { replayIntegration } = await import("./lib/sentry-replay");
-  Sentry.addIntegration(
-    replayIntegration({
-      // SECURITY: Mask all input fields to prevent capturing passwords/keys in session replays
-      maskAllInputs: true,
-    })
-  );
+  const { addReplayIntegration } = await import("./lib/sentry-replay");
+  addReplayIntegration();
+};
+
+const scheduleReplayIntegration = () => {
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => void loadReplayIntegration());
+  } else {
+    setTimeout(() => void loadReplayIntegration(), 0);
+  }
 };
 
 if (document.readyState === 'complete') {
-  void loadReplayIntegration();
+  scheduleReplayIntegration();
 } else {
-  window.addEventListener('load', () => void loadReplayIntegration(), { once: true });
+  window.addEventListener('load', scheduleReplayIntegration, { once: true });
 }
 
 }
 
-export const onRouterTransitionStart = !!env('SENTRY_DSN') ? Sentry.captureRouterTransitionStart : undefined;
+export const onRouterTransitionStart = !!env('SENTRY_DSN') ? captureRouterTransitionStart : undefined;
