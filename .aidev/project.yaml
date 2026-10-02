@@ -183,7 +183,8 @@ publish:
         TURBO_APP_PATH: /apps/blog
         TURBO_APP_NAME: blog-subdirectory
         BASE_PATH: /blog
-        GIT_CURRENT_BRANCH: aidev/integration
+        GIT_CURRENT_BRANCH: ${AIDEV_COMMIT_BRANCH}
+        GIT_COMMIT_SHA: ${AIDEV_COMMIT_SHA}
       build_args: [NPM_CONFIG_REGISTRY]
     - name: wallet-subdirectory
       repository: registry.gitlab.syncad.com/hive/denser/wallet-subdirectory
@@ -194,7 +195,8 @@ publish:
         TURBO_APP_PATH: /apps/wallet
         TURBO_APP_NAME: wallet-subdirectory
         BASE_PATH: /wallet
-        GIT_CURRENT_BRANCH: aidev/integration
+        GIT_CURRENT_BRANCH: ${AIDEV_COMMIT_BRANCH}
+        GIT_COMMIT_SHA: ${AIDEV_COMMIT_SHA}
       build_args: [NPM_CONFIG_REGISTRY]
   channels:
     integration: integration
