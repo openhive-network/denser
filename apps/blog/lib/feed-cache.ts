@@ -1,6 +1,6 @@
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { DATA_LIMIT, getPostsRanked } from '@transaction/lib/bridge-api';
-import { getChain } from '@transaction/lib/chain';
+import { getReadChain } from '@transaction/lib/chain';
 import { createFeedCache, readFeedCacheConfig, type IFeedCache } from '@transaction/lib/feed-cache';
 import { getLogger } from '@ui/lib/logging';
 import { DEFAULT_OBSERVER } from './utils';
@@ -29,7 +29,7 @@ const getFeedCache = (): IFeedCache<FeedPage> =>
  * requests with an observer always fetch. Rejects as `getPostsRanked` does.
  */
 export async function getFeedFirstPage(sort: string, tag: string, observer: string): Promise<FeedPage> {
-  const chain = await getChain();
+  const chain = getReadChain();
   const request = {
     network: `${chain.chainId}|${chain.endpointUrl}`,
     sort,

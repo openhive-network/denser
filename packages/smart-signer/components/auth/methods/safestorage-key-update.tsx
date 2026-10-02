@@ -60,8 +60,8 @@ function getFormSchema() {
       }),
       isStrict: z.boolean().default(false)
     })
-    .superRefine((val, ctx) => {
-      const result = validateWifKey(val.wif);
+    .superRefine(async (val, ctx) => {
+      const result = await validateWifKey(val.wif);
       if (result) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,

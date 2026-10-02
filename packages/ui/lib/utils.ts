@@ -7,6 +7,7 @@ import type { FullAccount, Entry, IVote, HiveChain } from '@hive/common-hiveio-p
 import { EAssetName, GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { parseDate2 } from './parse-date';
 import { Symbol, getNaiToSymbol, getPrecision } from './asset-constants';
+import { vestsToHiveSatoshis } from './asset-math';
 
 // Re-export getRoundedAbbreveration from math-utils for backward compatibility
 export { getRoundedAbbreveration } from './math-utils';
@@ -93,28 +94,21 @@ export const numberWithCommas = (x: string) => x.replace(/\B(?=(\d{3})+(?!\d))/g
 
 export function convertToHP(
   vests: Big | NaiAsset,
-  chain: HiveChain,
   totalVestingShares: NaiAsset,
   totalVestingFundHive: NaiAsset,
   div: number = 1
 ): Big {
-  // Convert Big to NaiAsset if needed
-  let vestsAsNai: NaiAsset;
-  if ('nai' in vests) {
-    vestsAsNai = vests;
-  } else {
-    // Convert Big to satoshis (multiply by 10^precision)
-    const vestsPrecision = getPrecision(EAssetName.VESTS);
-    const satoshis = vests.times(Big(10).pow(vestsPrecision)).toFixed(0);
-    vestsAsNai = chain.vestsSatoshis(satoshis);
-  }
+  const vestsSatoshis =
+    'nai' in vests
+      ? BigInt(vests.amount)
+      : BigInt(vests.times(Big(10).pow(getPrecision(EAssetName.VESTS))).toFixed(0));
+  const hiveSatoshis = vestsToHiveSatoshis(
+    vestsSatoshis,
+    BigInt(totalVestingFundHive.amount),
+    BigInt(totalVestingShares.amount)
+  );
 
-  // Use wax's vestsToHp for the conversion
-  const hpAsset = chain.vestsToHp(vestsAsNai, totalVestingFundHive, totalVestingShares);
-
-  // Convert NaiAsset back to Big and apply divisor
-  const hpBig = Big(hpAsset.amount).div(Big(10).pow(hpAsset.precision));
-  return hpBig.div(div);
+  return Big(hiveSatoshis.toString()).div(Big(10).pow(getPrecision(EAssetName.HIVE))).div(div);
 }
 
 export function powerdownHive(

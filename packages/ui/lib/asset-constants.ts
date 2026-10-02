@@ -1,10 +1,9 @@
 /**
  * Centralized asset constants for Hive blockchain tokens.
- * Values are sourced from wax's chain.ASSETS to ensure consistency.
+ * They start as the Hive protocol values and are replaced by wax's chain.ASSETS once
+ * the chain is created, so they are usable before (or without) loading wax's wasm.
  *
- * Usage:
- * 1. Call initializeAssetConstants(chain.ASSETS) during app bootstrap
- * 2. Use getAssetConfig(), getNaiSymbols(), etc. for type-safe access
+ * Use getAssetConfig(), getNaiSymbols(), etc. for type-safe access.
  */
 import { EAssetName, NaiAsset } from '@hiveio/wax';
 
@@ -19,38 +18,33 @@ export enum Symbol {
   SPK = 'SPK'
 }
 
-// Cached asset configuration from wax
-let assetConfig: Readonly<Record<EAssetName, NaiAsset>> | null = null;
+// NAIs and precisions are fixed by the Hive protocol: wax's chain.ASSETS holds the same values
+// on every network.
+const PROTOCOL_ASSETS: Readonly<Record<EAssetName, NaiAsset>> = {
+  [EAssetName.HBD]: { amount: '0', precision: 3, nai: '@@000000013' },
+  [EAssetName.HIVE]: { amount: '0', precision: 3, nai: '@@000000021' },
+  [EAssetName.VESTS]: { amount: '0', precision: 6, nai: '@@000000037' }
+};
+
+let assetConfig: Readonly<Record<EAssetName, NaiAsset>> = PROTOCOL_ASSETS;
 
 /**
  * Initialize asset constants from wax's chain.ASSETS.
- * Should be called once during app bootstrap after chain is created.
+ * Called once the chain is created.
  */
 export function initializeAssetConstants(assets: Readonly<Record<EAssetName, NaiAsset>>): void {
   assetConfig = assets;
 }
 
 /**
- * Check if asset constants have been initialized
- */
-export function isAssetConstantsInitialized(): boolean {
-  return assetConfig !== null;
-}
-
-/**
- * Get the full asset configuration from wax.
- * Throws if not initialized.
+ * Get the full asset configuration.
  */
 export function getAssetConfig(): Readonly<Record<EAssetName, NaiAsset>> {
-  if (!assetConfig) {
-    throw new Error('Asset constants not initialized. Call initializeAssetConstants(chain.ASSETS) first.');
-  }
   return assetConfig;
 }
 
 /**
  * Get NAI string for a token type.
- * Throws if not initialized.
  */
 export function getNai(token: EAssetName): string {
   return getAssetConfig()[token].nai;
@@ -58,7 +52,6 @@ export function getNai(token: EAssetName): string {
 
 /**
  * Get precision for a token type.
- * Throws if not initialized.
  */
 export function getPrecision(token: EAssetName): number {
   return getAssetConfig()[token].precision;

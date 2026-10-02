@@ -85,7 +85,6 @@ const WalletBalancesTable = ({
 
   const vesting_hive = convertToHP(
     convertStringToBig(accountData.vesting_shares),
-    hiveChain,
     dynamicData.total_vesting_shares,
     dynamicData.total_vesting_fund_hive
   );
@@ -94,7 +93,6 @@ const WalletBalancesTable = ({
     convertStringToBig(accountData.delegated_vesting_shares).minus(
       convertStringToBig(accountData.received_vesting_shares)
     ),
-    hiveChain,
     dynamicData.total_vesting_shares,
     dynamicData.total_vesting_fund_hive
   );
@@ -140,7 +138,6 @@ const WalletBalancesTable = ({
 
   const delegatedVesting = convertToHP(
     convertStringToBig(accountData.delegated_vesting_shares),
-    hiveChain,
     dynamicData.total_vesting_shares,
     dynamicData.total_vesting_fund_hive
   );
@@ -156,14 +153,12 @@ const WalletBalancesTable = ({
     delegatedVesting: delegatedVesting,
     to_withdraw: convertToHP(
       Big(accountData.to_withdraw),
-      hiveChain,
       dynamicData.total_vesting_shares,
       dynamicData.total_vesting_fund_hive,
       1000000
     ),
     withdraw: convertToHP(
       Big(accountData.withdrawn),
-      hiveChain,
       dynamicData.total_vesting_shares,
       dynamicData.total_vesting_fund_hive,
       1000000

@@ -28,8 +28,8 @@ export const passwordFormDefaultValuesHbauth = {
 
 // Wif password
 
-export const passwordWif = z.string().superRefine((val, ctx) => {
-  const result = validateWifKey(val);
+export const passwordWif = z.string().superRefine(async (val, ctx) => {
+  const result = await validateWifKey(val);
   if (result) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,

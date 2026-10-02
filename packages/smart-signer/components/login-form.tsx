@@ -25,8 +25,8 @@ const ZodLoginTypeEnum = z.nativeEnum(LoginType);
 type ZodLoginTypeEnum = z.infer<typeof ZodLoginTypeEnum>;
 
 const passwordField = z.object({
-  password: z.string().superRefine((val, ctx) => {
-    const result = validateWifKey(val);
+  password: z.string().superRefine(async (val, ctx) => {
+    const result = await validateWifKey(val);
     if (result) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

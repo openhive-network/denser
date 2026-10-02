@@ -82,7 +82,9 @@ Opt in per spec with `test.use({ authenticatedUser: {} })`. Pass a
 
 ### Mutation stubs
 
-Client wax posts to `http://localhost:8200` (pinned via
+Client API calls — reads through the wasm-free read client
+(`getReadChain()`), signing/broadcast through wax — post to
+`http://localhost:8200` (pinned via
 `REACT_APP_API_ENDPOINT` in `playwright.fixture.config.ts`). Read-only
 calls flow through the fixture proxy and hit committed JSON. Mutation-class
 calls are intercepted by `installBroadcastInterceptor(page)` before the
@@ -783,6 +785,16 @@ page, which keeps each iframe at the stylesheet's fixed size. Baselines
 (`<spec>.ts-snapshots/*-chromium-fixture-linux.png`) must be written with
 `--update-snapshots` inside the pinned `aidev-tests` image (same Playwright
 base image as CI's `blog-fixture-tests`), not on a dev machine.
+
+### Detecting wax's wasm download: listen, don't route
+
+`anonymousNoWasm*.spec.ts` assert that logged-out flows never request
+`wax.common.<hash>.wasm`; `loggedInHomepage.spec.ts` asserts the logged-in
+idle warm-up still does. `page.route('**/*.wasm')` never sees that fetch,
+so count it with a browser-context `request` listener —
+`recordWasmRequests(page)` in `support/wasmRequests.ts`. The post spec runs
+on `postDetail_popover`, an additive overlay adding the author popover
+card's reads (copied from `notifications`).
 
 ### `fixtureTestName` is worker-scoped
 

@@ -50,9 +50,9 @@ function getFormSchema() {
       userFound: z.boolean(),
       strict: z.boolean()
     })
-    .superRefine((val, ctx) => {
+    .superRefine(async (val, ctx) => {
       if (!val.userFound) {
-        const result = validateWifKey(val.wif);
+        const result = await validateWifKey(val.wif);
         if (result) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
