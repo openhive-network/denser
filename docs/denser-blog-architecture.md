@@ -115,6 +115,18 @@ export const getPostCached = cache(async (author: string, permlink: string) => {
 
 **Purpose**: Prevents duplicate API calls when both `generateMetadata()` and page component need the same data.
 
+### Anonymous Feed Cache (`lib/feed-cache.ts`)
+
+The first page of a ranked feed (trending/hot/created/payout/muted, tag and community feeds) is cached in the server process for requests without an observer (`DEFAULT_OBSERVER`); requests with one always fetch, so a viewer's votes and mutes are never shared or stale. Stale-while-revalidate, bounded in memory, keyed by sort, tag, cursor, limit and the chain id + API node, so mainnet and mirrornet never share entries (`packages/transaction/lib/feed-cache.ts`).
+
+| Env | Default | Meaning |
+|-----|---------|---------|
+| `DENSER_FEED_CACHE_TTL_S` | 30 | Seconds a feed is served without fetching; `0` turns the cache off |
+| `DENSER_FEED_CACHE_STALE_S` | 30 | Seconds past the TTL it is still served while reloaded in the background |
+| `DENSER_FEED_CACHE_MAX_MB` | 32 | Memory cap; least recently used feeds are dropped first |
+
+A failed fetch is never stored. While a background reload fails the stale feed keeps being served (logged as a warning); past the stale window a failed fetch answers 503 as before. Only the data is cached: pages stay `private, no-store`. The cache is per process, so every server replica keeps its own.
+
 ### React Query Configuration (`lib/react-query.ts`)
 
 - **Server**: Creates new QueryClient per request (SSR-safe)
@@ -323,6 +335,7 @@ User navigates to /@username/post-slug
 | `proxy.ts` | Root redirect (/ → /trending), CSP |
 | `lib/react-query.ts` | QueryClient factory for SSR/CSR |
 | `lib/cached-api.ts` | Request-level API deduplication |
+| `lib/feed-cache.ts` | Server-side cache of anonymous feed data |
 | `lib/auth-utils.ts` | Server-side auth helpers |
 | `store/app.ts` | Minimal Zustand store |
 | `features/layouts/providers.tsx` | Client provider hierarchy |

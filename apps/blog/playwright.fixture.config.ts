@@ -4,6 +4,15 @@ import {
   FIXTURE_APP_NAME,
   FIXTURE_COOKIE_PASSWORD
 } from './playwright/tests/support/fixture-auth/constants';
+import {
+  FEED_CACHE_PORT,
+  FEED_CACHE_STALE_S,
+  FEED_CACHE_TTL_S
+} from './playwright/tests/support/feed-cache-server';
+import type {
+  FixtureAuthTestFixtures,
+  FixtureProxyWorkerFixtures
+} from './playwright/tests/support/fixture-proxy-test';
 require('dotenv').config({ path: './.env.local' });
 
 /**
@@ -30,7 +39,35 @@ const FIXTURE_PORT = 8200;
 // Point the app at the fixture proxy
 process.env.REACT_APP_API_ENDPOINT = `http://localhost:${FIXTURE_PORT}`;
 
-export default defineConfig({
+const serverEnv = {
+  REACT_APP_API_ENDPOINT: `http://localhost:${FIXTURE_PORT}`,
+  // Client-side wax picks its endpoint from ALLOWED_HIVE_API_NODES
+  // (written into __ENV.js by react-env at server startup), NOT from
+  // API_ENDPOINT. Without this override the browser posts to whatever
+  // host was baked into .env.local (api.fake.openhive.network), so
+  // neither the fixture-proxy nor the broadcast interceptor sees it.
+  REACT_APP_ALLOWED_HIVE_API_NODES: `http://localhost:${FIXTURE_PORT}`,
+  // Pin the images endpoint so middleware/csp.ts adds
+  // images.hive.blog to `connect-src`. Locally `.env.local` already
+  // sets this, but CI runs without that file — and the editor's
+  // image-upload POST is then blocked by CSP before
+  // installImageUploadStub can intercept it (job 3142272 saw exactly
+  // this for POST-08/09/18).
+  REACT_APP_IMAGES_ENDPOINT: 'https://images.hive.blog/',
+  HOSTNAME: '0.0.0.0',
+  PORT: '3000',
+  // Pin APP_NAME so iron-session's cookieName matches what the seeder
+  // (see playwright/tests/support/fixture-auth/) writes from the test
+  // side. Without this the app could default to "app_session" while
+  // the seeder targets "blog_session".
+  REACT_APP_APP_NAME: FIXTURE_APP_NAME,
+  // Shared with the seeder via fixture-auth/constants.ts — the app
+  // seals and the test seals with the same password so sessions
+  // unseal cleanly on both sides.
+  DENSER_SERVER_SECRET_COOKIE_PASSWORD: FIXTURE_COOKIE_PASSWORD
+};
+
+export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>({
   testDir: './playwright/tests/fixture',
   // Collect the fixture proxy's replay MISSes and fail on ones missing
   // from playwright/tests/fixture/known-misses.json.
@@ -65,6 +102,7 @@ export default defineConfig({
   use: {
     actionTimeout: 0,
     baseURL: 'http://localhost:3000',
+    feedCacheBaseURL: `http://localhost:${FEED_CACHE_PORT}`,
     trace: {
       mode: 'retain-on-failure',
       screenshots: true,
@@ -80,53 +118,44 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] }
     }
   ],
-  webServer: {
-    // `pnpm start:standalone` bakes the build-time __ENV.js into the
-    // standalone's public/ *before* react-env has a chance to write a fresh
-    // copy, so at runtime the client bundle loads stale values (e.g. the
-    // REACT_APP_API_ENDPOINT from .env.local points at api.fake.openhive
-    // .network instead of our fixture proxy on :8200). We repeat the same
-    // steps but copy the freshly-written __ENV.js into the standalone
-    // public/ right before starting node.
-    command: [
-      'rm -rf .next/standalone/apps/blog/.next/static .next/standalone/apps/blog/public',
-      'cp -r .next/static .next/standalone/apps/blog/.next/static',
-      'cp -r public .next/standalone/apps/blog/public',
-      'react-env -- sh -c "cp -f public/__ENV.js .next/standalone/apps/blog/public/__ENV.js && node .next/standalone/apps/blog/server.js"'
-    ].join(' && '),
-    // Not `/`: the fixture proxy only starts with the first worker, and a feed whose API is
-    // unreachable answers 503, which Playwright does not count as ready.
-    url: 'http://127.0.0.1:3000/api/health',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-    stdout: 'pipe',
-    stderr: 'pipe',
-    env: {
-      REACT_APP_API_ENDPOINT: `http://localhost:${FIXTURE_PORT}`,
-      // Client-side wax picks its endpoint from ALLOWED_HIVE_API_NODES
-      // (written into __ENV.js by react-env at server startup), NOT from
-      // API_ENDPOINT. Without this override the browser posts to whatever
-      // host was baked into .env.local (api.fake.openhive.network), so
-      // neither the fixture-proxy nor the broadcast interceptor sees it.
-      REACT_APP_ALLOWED_HIVE_API_NODES: `http://localhost:${FIXTURE_PORT}`,
-      // Pin the images endpoint so middleware/csp.ts adds
-      // images.hive.blog to `connect-src`. Locally `.env.local` already
-      // sets this, but CI runs without that file — and the editor's
-      // image-upload POST is then blocked by CSP before
-      // installImageUploadStub can intercept it (job 3142272 saw exactly
-      // this for POST-08/09/18).
-      REACT_APP_IMAGES_ENDPOINT: 'https://images.hive.blog/',
-      HOSTNAME: '0.0.0.0',
-      PORT: '3000',
-      // Pin APP_NAME so iron-session's cookieName matches what the seeder
-      // (see playwright/tests/support/fixture-auth/) writes from the test
-      // side. Without this the app could default to "app_session" while
-      // the seeder targets "blog_session".
-      REACT_APP_APP_NAME: FIXTURE_APP_NAME,
-      // Shared with the seeder via fixture-auth/constants.ts — the app
-      // seals and the test seals with the same password so sessions
-      // unseal cleanly on both sides.
-      DENSER_SERVER_SECRET_COOKIE_PASSWORD: FIXTURE_COOKIE_PASSWORD
+  webServer: [
+    {
+      // `pnpm start:standalone` bakes the build-time __ENV.js into the
+      // standalone's public/ *before* react-env has a chance to write a fresh
+      // copy, so at runtime the client bundle loads stale values (e.g. the
+      // REACT_APP_API_ENDPOINT from .env.local points at api.fake.openhive
+      // .network instead of our fixture proxy on :8200). We repeat the same
+      // steps but copy the freshly-written __ENV.js into the standalone
+      // public/ right before starting node.
+      command: [
+        'rm -rf .next/standalone/apps/blog/.next/static .next/standalone/apps/blog/public',
+        'cp -r .next/static .next/standalone/apps/blog/.next/static',
+        'cp -r public .next/standalone/apps/blog/public',
+        'react-env -- sh -c "cp -f public/__ENV.js .next/standalone/apps/blog/public/__ENV.js && node .next/standalone/apps/blog/server.js"'
+      ].join(' && '),
+      // Not `/`: the fixture proxy only starts with the first worker, and a feed whose API is
+      // unreachable answers 503, which Playwright does not count as ready.
+      url: 'http://127.0.0.1:3000/api/health',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      stdout: 'pipe',
+      stderr: 'pipe',
+      env: { ...serverEnv, DENSER_FEED_CACHE_TTL_S: '0' }
+    },
+    // Started once the server above has put the build's static files in place.
+    {
+      command: 'node .next/standalone/apps/blog/server.js',
+      url: `http://127.0.0.1:${FEED_CACHE_PORT}/api/health`,
+      reuseExistingServer: !process.env.CI,
+      timeout: 120 * 1000,
+      stdout: 'pipe',
+      stderr: 'pipe',
+      env: {
+        ...serverEnv,
+        PORT: String(FEED_CACHE_PORT),
+        DENSER_FEED_CACHE_TTL_S: String(FEED_CACHE_TTL_S),
+        DENSER_FEED_CACHE_STALE_S: String(FEED_CACHE_STALE_S)
+      }
     }
-  }
+  ]
 });

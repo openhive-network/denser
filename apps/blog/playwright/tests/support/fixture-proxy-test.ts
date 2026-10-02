@@ -42,6 +42,8 @@ export type FixtureProxyWorkerFixtures = {
   fixturePort: number;
   /** The running proxy handle. Auto-started per worker; tests rarely need to touch it. */
   fixtureProxy: IFixtureProxyHandle;
+  /** The blog server with the feed cache on (support/feed-cache-server.ts); unset when none runs. */
+  feedCacheBaseURL: string | undefined;
 };
 
 export type FixtureAuthTestFixtures = {
@@ -61,6 +63,7 @@ export const isRecordMode = process.env.FIXTURE_MODE === 'record';
 export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>({
   fixtureTestName: ['', { option: true, scope: 'worker' }],
   fixturePort: [8200, { option: true, scope: 'worker' }],
+  feedCacheBaseURL: [undefined, { option: true, scope: 'worker' }],
 
   fixtureProxy: [
     async ({ fixtureTestName, fixturePort }, use) => {

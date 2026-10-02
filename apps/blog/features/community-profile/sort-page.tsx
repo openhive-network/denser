@@ -1,12 +1,11 @@
 import { SortTypes } from '@/blog/lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
-import { getPostsRanked } from '@transaction/lib/bridge-api';
 import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
-import { keepObserverVotes } from '@/blog/lib/feed-entries';
+import { getFeedFirstPage } from '@/blog/lib/feed-cache';
 import FirstCardImagePreload from '@/blog/features/list-of-posts/first-card-image-preload';
 
 const logger = getLogger('app');
@@ -25,8 +24,7 @@ const SortPage = async ({
   const observer = await getObserverFromCookies();
   let initialPosts = null;
   try {
-    const posts = await getPostsRanked(sort, tag, '', '', observer);
-    initialPosts = posts ? keepObserverVotes(posts, observer) : null;
+    initialPosts = await getFeedFirstPage(sort, tag, observer);
   } catch (error) {
     logger.error(error, 'Error in SortPage:');
     // The server-side chain already retried and failed over: answer 503, not a 200 whose
