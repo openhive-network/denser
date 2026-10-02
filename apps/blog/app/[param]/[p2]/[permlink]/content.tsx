@@ -40,7 +40,6 @@ import { getBasePath } from '@ui/lib/path-utils';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
-import { getActiveVotes } from '@transaction/lib/hive-api';
 import { getSimilarPostsByPost } from '@transaction/lib/hivesense-api';
 import { isRenderableSearchEntry } from '@transaction/lib/hivesense-search';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
@@ -73,6 +72,7 @@ import {
   useInitialPostData,
   useInitialDiscussion,
   useInitialCommunity,
+  useInitialCommunityRoles,
   useInitialFollowList
 } from '@/blog/components/observer-provider';
 import { StaleTime } from '@/blog/lib/react-query';
@@ -98,6 +98,7 @@ const PostContent = () => {
   const initialPostData = useInitialPostData();
   const initialDiscussion = useInitialDiscussion();
   const initialCommunity = useInitialCommunity();
+  const initialCommunityRoles = useInitialCommunityRoles();
   const initialMutedList = useInitialFollowList();
   // Use SSR observer before hydration to match prefetched cache keys,
   // then switch to client observer (which should be the same value for logged-in users)
@@ -365,6 +366,9 @@ const PostContent = () => {
     queryKey: ['rolesList', category],
     queryFn: () => getListCommunityRoles(category),
     enabled: postInCommunity,
+    initialData: initialCommunityRoles ?? undefined,
+    initialDataUpdatedAt: initialCommunityRoles ? Date.now() : undefined,
+    staleTime: StaleTime.LONG,
     onError: (error) => {
       handleError(error, { method: 'getListCommunityRoles', params: { category } });
     },
@@ -374,14 +378,6 @@ const PostContent = () => {
         ? userRole[1] === 'mod' || userRole[1] === 'admin' || userRole[1] === 'owner'
         : false;
       return userCanModerate;
-    }
-  });
-
-  const { data: activeVotesData } = useQuery({
-    queryKey: ['activeVotes'],
-    queryFn: () => getActiveVotes(author, permlink),
-    onError: (error) => {
-      handleError(error, { method: 'getActiveVotes', params: { author, permlink } });
     }
   });
 
@@ -741,9 +737,7 @@ const PostContent = () => {
                           ${postData.payout?.toFixed(2)}
                         </span>
                       </DetailsCardHover>
-                      {activeVotesData &&
-                      !!postData.stats?.total_votes &&
-                      postData.stats?.total_votes !== 0 ? (
+                      {postData.stats?.total_votes ? (
                         <>
                           <span className="h-4 w-px bg-border" />
                           <DetailsCardVoters post={postData}>

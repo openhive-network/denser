@@ -69,6 +69,22 @@ export const InitialCommunityProvider = ({
 
 export const useInitialCommunity = () => useContext(InitialCommunityContext);
 
+const InitialCommunityRolesContext = createContext<string[][] | null>(null);
+
+/**
+ * Provides server-fetched community roles (bridge.list_community_roles rows) to
+ * client components, used as initialData for the ['rolesList', community] query.
+ */
+export const InitialCommunityRolesProvider = ({
+  value,
+  children
+}: {
+  value: string[][] | null;
+  children: ReactNode;
+}) => <InitialCommunityRolesContext.Provider value={value}>{children}</InitialCommunityRolesContext.Provider>;
+
+export const useInitialCommunityRoles = () => useContext(InitialCommunityRolesContext);
+
 const InitialSubscriptionsContext = createContext<string[][] | null>(null);
 
 /**

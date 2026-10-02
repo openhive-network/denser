@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { test, expect } from '../support/fixture-proxy-test';
 import { PostPage } from '../support/pages/postPage';
 import { TIMEOUTS } from '../support/constants';
@@ -21,12 +23,23 @@ import {
  *   06 – Pending-indexing banner
  *   07 – Non-existent post → 404
  *   08 – No layout shift above the article on a phone viewport
+ *   09 – No roles/votes requests after load; voter list loads when opened
  *
  * Record:  FIXTURE_MODE=record pnpm --filter @hive/blog test:fixture
  * Replay:  pnpm --filter @hive/blog test:fixture
  */
 
 test.use({ fixtureTestName: 'postDetail' });
+
+const POST_RECORDING = path.resolve(__dirname, '..', 'mock', 'fixtures', 'postDetail', '0001-bridge.get_post.json');
+const DEFERRED_RPC_METHODS = ['bridge.list_community_roles', 'database_api.list_votes'];
+
+function recordedTotalVotes(): number {
+  const raw: { response: { result: { stats: { total_votes: number } } } } = JSON.parse(
+    fs.readFileSync(POST_RECORDING, 'utf-8')
+  );
+  return raw.response.result.stats.total_votes;
+}
 
 test.describe('Post Detail tests (fixture-based)', () => {
   const community = 'hive-160391';
@@ -148,5 +161,31 @@ test.describe('Post Detail tests (fixture-based)', () => {
       const { score, shifts } = await collectAboveArticleLayoutShifts(page);
       expect(score, shifts.join('\n')).toBeLessThan(MAX_ABOVE_ARTICLE_SHIFT);
     });
+  });
+
+  // ── ANON-POST-09: Roles and votes rendered from the server ───────────
+
+  test('ANON-POST-09: no roles or votes request after load, voter list loads when opened', async ({
+    page
+  }) => {
+    const deferredRequests: string[] = [];
+    page.on('request', (request) => {
+      const body = request.postData() ?? '';
+      deferredRequests.push(...DEFERRED_RPC_METHODS.filter((method) => body.includes(`"${method}"`)));
+    });
+
+    await page.goto(`/${community}/@${author}/${permlink}/`, { waitUntil: 'load' });
+    await postPage.waitForPostHydration();
+    await page.waitForLoadState('networkidle');
+
+    expect(deferredRequests).toEqual([]);
+    await expect(postPage.postFooterVotes).toHaveText(`${recordedTotalVotes()} votes`);
+
+    const listVotes = page.waitForRequest((request) =>
+      (request.postData() ?? '').includes('"database_api.list_votes"')
+    );
+    await postPage.postFooterVotes.click();
+    await listVotes;
+    await expect(postPage.postVoterList.locator('li').first()).toBeVisible();
   });
 });
