@@ -202,6 +202,15 @@
   color: red;
 }
 
+/* Body images with a srcset have no known dimensions until they load: reserve a column-wide
+   3:2 box, which the image's own aspect ratio replaces once loaded ("auto"). After load,
+   useResponsiveImageNaturalWidth pins the width to the image's real pixel width. */
+#articleBody img[srcset],
+.prose img[srcset] {
+  width: 100%;
+  aspect-ratio: auto 3 / 2;
+}
+
 #articleBody .videoWrapper,
 .prose .videoWrapper {
   position: relative;
