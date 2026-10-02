@@ -28,7 +28,7 @@ import { test, expect } from '../support/fixture-proxy-test';
  *
  * SAFE-08 covers the primary FEED fetch instead: `fixtureProxy.failRequests`
  * drops the connection (what a node blip looks like to wax), which IS a
- * transport error, so the feed route must answer 503 + a client-side retry.
+ * transport error, so the feed route must answer 503 and retry client-side by itself.
  *
  * Replay:  pnpm --filter @hive/blog test:fixture -- ssrErrorFallback
  */
@@ -56,7 +56,7 @@ test('SAFE-07 — a failed secondary (discussion) fetch still server-renders the
   );
 });
 
-test('SAFE-08 — an unreachable feed answers 503 with a retry that recovers the feed in place', async ({
+test('SAFE-08 — an unreachable feed answers 503, then recovers in place by itself', async ({
   page,
   fixtureProxy
 }) => {
@@ -64,14 +64,18 @@ test('SAFE-08 — an unreachable feed answers 503 with a retry that recovers the
   try {
     const response = await page.goto('/trending');
     expect(response?.status()).toBe(503);
+    expect(response?.headers()['retry-after']).toBe('30');
     await expect(page.getByRole('heading', { name: 'Service Temporarily Unavailable' })).toBeVisible();
+    await expect(page.getByTestId('service-unavailable-reconnecting')).toBeVisible();
+    await expect(page.getByTestId('service-unavailable-retry')).toBeVisible();
   } finally {
     restore();
   }
 
-  // The API answers again: retrying re-renders the feed without a full page reload.
+  // The API answers again: with no user action, the automatic retry (first one after 2 s, then
+  // 5 s, 10 s) re-renders the feed without a full page reload.
   await page.evaluate(() => ((window as Window & { __noReload?: boolean }).__noReload = true));
-  await page.getByTestId('service-unavailable-retry').click();
-  await expect(page.getByTestId('post-list-item').first()).toBeVisible();
+  await expect(page.getByTestId('post-list-item').first()).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId('service-unavailable-reconnecting')).toBeHidden();
   expect(await page.evaluate(() => (window as Window & { __noReload?: boolean }).__noReload)).toBe(true);
 });
