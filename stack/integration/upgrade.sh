@@ -30,7 +30,9 @@ rows = json.loads(raw) if raw.startswith("[") else [json.loads(l) for l in raw.s
 print(" ".join(sorted(r.get("ID", "") for r in rows)))'; }
 
 before=$(ids)
-docker compose pull -q
+# A tag not published yet (first boot, or a failed publish) keeps the running or
+# locally built image instead of stopping the upgrade.
+docker compose pull -q --ignore-pull-failures || true
 docker compose up -d --remove-orphans --wait --wait-timeout 300 >/dev/null 2>&1 || {
     echo "upgrade: compose up did not reach healthy; see 'docker compose ps' and logs" >&2
     docker compose ps >&2
