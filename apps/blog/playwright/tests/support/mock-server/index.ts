@@ -45,6 +45,7 @@ export {
   hasFixtures,
   type IFixtureProxyHandle,
   type IFixtureEntry,
+  type IJsonRpcCall,
   type IReplayMiss
 } from './fixture-proxy';
 

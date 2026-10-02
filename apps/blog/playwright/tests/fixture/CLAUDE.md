@@ -33,6 +33,7 @@ apps/blog/
     └── support/
         ├── fixture-proxy-test.ts                          # `test` + `expect` exports, worker-scope proxy
         ├── postVotingContext.ts                           # shared voter/post constants + hydration helpers
+        ├── feed-cache-server.ts                           # port + TTLs of the feed-cache blog server (:3001)
         ├── pages/                                         # Page Object Models (use these, don't roll your own locators)
         ├── mock-server/fixture-proxy.ts                   # record/replay HTTP proxy on :8200
         ├── fixture-misses/                                # MISS log + global setup/teardown baseline check
@@ -43,9 +44,12 @@ apps/blog/
             └── generate-voted-variants.mjs                # fixture-dir post-processor
 ```
 
-Config uses two ports:
+Config uses three ports:
 
-- `:3000` — the blog app (standalone Next.js server)
+- `:3000` — the blog app (standalone Next.js server), server-side feed cache
+  off (`DENSER_FEED_CACHE_TTL_S=0`)
+- `:3001` — the same build again with the feed cache on and a TTL of a few
+  seconds; only `feedCache.spec.ts` uses it (`feedCacheBaseURL`)
 - `:8200` — the fixture proxy (record → mainnet; replay → committed JSON)
 
 ---
@@ -291,6 +295,28 @@ Used by `ssrSeoGuard.spec.ts` (`SEO-0x-RETRY` / `SEO-0x-503`) and
 `ssrErrorFallback.spec.ts` (SAFE-08). Note: a *recorded* 5xx response (an overlay
 with `responseStatus: 503`) is a different case — wax still surfaces it as a
 transport error, so the server retries it too.
+
+---
+
+## Recipe: count the calls that reach the proxy
+
+`fixtureProxy.countRequests(filter)` tallies the JSON-RPC calls matching
+`filter` from now on (including ones `failRequests` drops); `count()` reads it,
+`stop()` ends it. To count only the server's calls, load pages with
+`context.request` instead of a `page`: the browser's own calls reach the same
+proxy. Always 0 in record mode.
+
+```ts
+const calls = fixtureProxy.countRequests(({ method }) => method === 'bridge.get_ranked_posts');
+try {
+  await context.request.get('/trending');
+  expect(calls.count()).toBe(1);
+} finally {
+  calls.stop();
+}
+```
+
+Used by `feedCache.spec.ts`.
 
 ---
 
@@ -839,6 +865,12 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   so the article still server-renders at 200. SAFE-08 (JS on) makes the PRIMARY
   `/trending` feed fetch unreachable via `failRequests`: the document is a 503 and
   its "Reload page" retry recovers the feed without a full reload.
+- **`feedCache.spec.ts`** — pure HTTP against the `:3001` server, `login`
+  fixtures (they hold `/trending` for both `hive.blog` and `guest4test`).
+  Anonymous feed renders are cached server-side, logged-in ones are not. Serial;
+  every test first waits out the cache's TTL + stale window, so state never
+  leaks between tests. Skipped when `feedCacheBaseURL` is unset (the AIDEV stack
+  config, unless `DENSER_FEED_CACHE_BLOG_URL` names such a server).
 - **`ssrLocale.spec.ts`** — pure HTTP, reuses the `ssrChecks` fixtures
   (`NEXT_LOCALE` doesn't change RPC params). Asserts the server resolves the UI
   language from the `NEXT_LOCALE` cookie: `<html lang="es">`, `<html dir="rtl">`

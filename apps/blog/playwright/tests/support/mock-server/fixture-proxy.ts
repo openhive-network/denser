@@ -64,6 +64,11 @@ export interface IFixtureProxyHandle {
    * Returns `restore`, which stops it. No-op in record mode.
    */
   failRequests: (filter: (call: IJsonRpcCall) => boolean, times?: number) => () => void;
+  /**
+   * Counts the JSON-RPC calls matching `filter` that reach the proxy from now on, including ones
+   * `failRequests` drops. `count()` reads the tally, `stop()` ends it. Always 0 in record mode.
+   */
+  countRequests: (filter: (call: IJsonRpcCall) => boolean) => { count: () => number; stop: () => void };
   port: number;
   url: string;
   fixtureDir: string;
@@ -384,6 +389,7 @@ export async function createFixtureProxy(
     drainMisses: () => [],
     holdResponses: () => () => {},
     failRequests: () => () => {},
+    countRequests: () => ({ count: () => 0, stop: () => {} }),
     port,
     url: `http://localhost:${port}`,
     fixtureDir,
@@ -566,6 +572,7 @@ export async function createReplayProxy(
   let pendingMisses: IReplayMiss[] = [];
   const holds = new Set<{ filter: (call: IJsonRpcCall) => boolean; released: Promise<void> }>();
   const failures = new Set<{ filter: (call: IJsonRpcCall) => boolean; remaining: number }>();
+  const counters = new Set<{ filter: (call: IJsonRpcCall) => boolean; count: number }>();
 
   const app = express();
   app.use(cors());
@@ -594,6 +601,10 @@ export async function createReplayProxy(
 
     const jsonRpc = extractJsonRpc(reqBody);
     const label = jsonRpc?.method || `${httpMethod} ${requestPath}`;
+
+    if (jsonRpc) {
+      for (const counter of counters) if (counter.filter(jsonRpc)) counter.count++;
+    }
 
     const failure = jsonRpc ? [...failures].find((f) => f.remaining > 0 && f.filter(jsonRpc)) : undefined;
     if (failure) {
@@ -701,6 +712,11 @@ export async function createReplayProxy(
       return () => {
         failures.delete(failure);
       };
+    },
+    countRequests: (filter) => {
+      const counter = { filter, count: 0 };
+      counters.add(counter);
+      return { count: () => counter.count, stop: () => counters.delete(counter) };
     },
     port,
     url: `http://localhost:${port}`,

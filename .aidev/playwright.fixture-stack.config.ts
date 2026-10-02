@@ -13,6 +13,9 @@
  *                               calls http://localhost:8200 (the app's
  *                               REACT_APP_API_ENDPOINT, and what the broadcast
  *                               interceptor matches).
+ *   DENSER_FEED_CACHE_BLOG_URL  a blog serving with the feed cache on, as the base
+ *                               config's second webServer does; unset skips
+ *                               feedCache.spec.ts.
  *   DENSER_PLAYWRIGHT_OUTPUT_DIR traces and screenshots, default apps/blog/test-results.
  *                               Against `next dev` keep it outside apps/ and
  *                               packages/: tailwind's content globs make next
@@ -35,6 +38,7 @@ export default {
   use: {
     ...base.use,
     baseURL: process.env.DENSER_BLOG_URL || 'http://localhost:3000',
-    fixturePort: Number(process.env.DENSER_FIXTURE_WORKER_PORT || 8200)
+    fixturePort: Number(process.env.DENSER_FIXTURE_WORKER_PORT || 8200),
+    feedCacheBaseURL: process.env.DENSER_FEED_CACHE_BLOG_URL
   }
 };
