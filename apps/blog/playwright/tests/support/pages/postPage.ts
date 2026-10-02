@@ -107,6 +107,7 @@ export class PostPage {
   readonly deleteDialogCancel: Locator;
   readonly articleTable: Locator;
   readonly articleIframes: Locator;
+  readonly articleImages: Locator;
   readonly twitterWrappers: Locator;
   readonly instagramWrappers: Locator;
   readonly pendingIndexingMessage: Locator;
@@ -254,6 +255,7 @@ export class PostPage {
     this.deleteDialogCancel = page.getByTestId('flag-dialog-cancel');
     this.articleTable = page.locator('#articleBody table');
     this.articleIframes = page.locator('#articleBody iframe');
+    this.articleImages = page.locator('#articleBody img');
     this.twitterWrappers = page.locator('#articleBody .twitterWrapper');
     this.instagramWrappers = page.locator('#articleBody .instagramWrapper');
     this.pendingIndexingMessage = page.locator('[data-testid="pending-indexing-message"]');

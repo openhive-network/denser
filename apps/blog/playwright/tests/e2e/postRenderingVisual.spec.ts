@@ -50,7 +50,10 @@ test.describe('Post rendering visual regression', () => {
 
       await postPage.waitForArticleImages();
 
+      // Image pixels are the proxy's re-encoding of third-party files; the layout
+      // check needs only their boxes, which a mask keeps.
       await expect(postPage.articleBody).toHaveScreenshot(post.snapshot, {
+        mask: [postPage.articleImages],
         maxDiffPixelRatio: 0.01
       });
     });
