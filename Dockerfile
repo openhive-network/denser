@@ -52,6 +52,15 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Now copy source and build (this layer changes on code changes)
 COPY --from=builder /app/out/full/ .
+# The app imports its version.json (gitignored). CI's scripts/build_instance.sh
+# writes it into the context with git; a build from a plain checkout (AIDEV's
+# publish) has no .git, so write it from the build args instead.
+ARG TURBO_APP_PATH
+ARG GIT_COMMIT_SHA
+ARG GIT_CURRENT_BRANCH
+RUN f=".${TURBO_APP_PATH}/version.json"; [ -f "$f" ] || \
+    printf '{"branch":"%s","commithash":"%s","version":"%s"}\n' \
+      "${GIT_CURRENT_BRANCH:-unknown}" "${GIT_COMMIT_SHA:-unknown}" "$(printf %.8s "${GIT_COMMIT_SHA:-unknown}")" > "$f"
 RUN pnpm dlx turbo run build --filter=${TURBO_APP_SCOPE}
 
 # ============================================================================
