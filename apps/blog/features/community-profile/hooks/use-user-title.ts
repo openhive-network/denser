@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
+import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { getLogger } from '@ui/lib/logging';
 const logger = getLogger('app');
 

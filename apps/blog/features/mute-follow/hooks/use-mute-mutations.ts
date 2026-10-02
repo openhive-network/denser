@@ -1,6 +1,6 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { UseInfiniteQueryResult, useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
+import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { IFollow, IFollowList } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';

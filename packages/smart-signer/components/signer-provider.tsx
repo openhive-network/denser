@@ -1,6 +1,5 @@
 import { type getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
-import { transactionService } from '@transaction/index';
 import { createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { getLogger } from '@hive/ui/lib/logging';
 
@@ -26,11 +25,14 @@ export const SignerProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     logger.info('Starting SignerProvider.useEffect() to setup Signer');
     (async () => {
-      const _getSigner = (await import('@smart-signer/lib/signer/get-signer')).getSigner;
-      if (signerOptions.username !== '') {
-        setSigner(_getSigner(signerOptions));
-        transactionService.setSignerOptions(signerOptions);
-      }
+      if (signerOptions.username === '') return;
+      // Signers and the transaction service pull in wax: load them only for a logged-in user.
+      const [{ getSigner: _getSigner }, { transactionService }] = await Promise.all([
+        import('@smart-signer/lib/signer/get-signer'),
+        import('@transaction/index')
+      ]);
+      setSigner(_getSigner(signerOptions));
+      transactionService.setSignerOptions(signerOptions);
     })().catch(logger.error);
   }, [signerOptions.username, signerOptions.loginType, signerOptions.keyType]);
 

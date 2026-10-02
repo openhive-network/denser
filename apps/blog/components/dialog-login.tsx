@@ -4,9 +4,13 @@ import { ReactNode, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@ui/components/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
+import dynamic from 'next/dynamic';
+import type { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
 import { siteConfig } from '@ui/config/site';
+
+// The sign-in form brings the signers, wax and the form validation: load it when the dialog opens.
+const SignInForm = dynamic(() => import('@smart-signer/components/auth/form'), { ssr: false });
 
 const GOOGLE_GSI_SCRIPT_ID = 'google-gsi-script';
 const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';

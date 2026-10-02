@@ -1,7 +1,7 @@
 import { NextApiHandler } from "next";
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
-import { defaultUser } from '@smart-signer/lib/auth/utils';
+import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
 import { getLogger } from "@hive/ui/lib/logging";

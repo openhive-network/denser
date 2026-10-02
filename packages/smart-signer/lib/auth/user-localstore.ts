@@ -1,5 +1,5 @@
 import { User } from '@smart-signer/types/common';
-import { defaultUser } from '@smart-signer/lib/auth/utils';
+import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { safeJsonParse } from '@smart-signer/lib/safe-json-parse';
 

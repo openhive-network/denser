@@ -4,8 +4,8 @@
  *
  * It mirrors wax's `chain.api` / `chain.restApi` call shape and builds the same HTTP requests, so
  * read code can use it in place of the wax chain and anonymous readers never load the wax wasm.
- * Transport (fetch, timeout, transport-error classes) is injected; production passes wax's own
- * `RequestHelper`, which is plain JavaScript.
+ * Transport (fetch, timeout, transport-error classes) is injected; production passes
+ * `fetchReadTransport`, which does not import `@hiveio/wax` at all.
  */
 
 /** A node of a REST API definition: `urlPath` and `method` as in wax's `extendRest`. */

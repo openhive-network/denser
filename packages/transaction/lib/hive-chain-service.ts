@@ -7,7 +7,7 @@ import {
   IApiEndpoints,
   setAiEndpoint,
   setRpcEndpoint
-} from "@hive/common-hiveio-packages";
+} from "@hive/common-hiveio-packages/wax";
 
 export type { HiveChain };
 

@@ -1,6 +1,6 @@
 import { ApiAccount } from '@hiveio/wax';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
+import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';

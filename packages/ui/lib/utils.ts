@@ -4,7 +4,7 @@ import Big from 'big.js';
 import { convertStringToBig } from './helpers';
 import { TFunction } from 'i18next';
 import type { FullAccount, Entry, IVote, HiveChain } from '@hive/common-hiveio-packages/wax';
-import { EAssetName, GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
+import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { parseDate2 } from './parse-date';
 import { Symbol, getNaiToSymbol, getPrecision } from './asset-constants';
 import { vestsToHiveSatoshis } from './asset-math';
@@ -101,14 +101,14 @@ export function convertToHP(
   const vestsSatoshis =
     'nai' in vests
       ? BigInt(vests.amount)
-      : BigInt(vests.times(Big(10).pow(getPrecision(EAssetName.VESTS))).toFixed(0));
+      : BigInt(vests.times(Big(10).pow(getPrecision('VESTS'))).toFixed(0));
   const hiveSatoshis = vestsToHiveSatoshis(
     vestsSatoshis,
     BigInt(totalVestingFundHive.amount),
     BigInt(totalVestingShares.amount)
   );
 
-  return Big(hiveSatoshis.toString()).div(Big(10).pow(getPrecision(EAssetName.HIVE))).div(div);
+  return Big(hiveSatoshis.toString()).div(Big(10).pow(getPrecision('HIVE'))).div(div);
 }
 
 export function powerdownHive(
@@ -129,7 +129,7 @@ export function powerdownHive(
   const vests = Math.min(withdrawRateVests, remainingVests);
 
   // Convert vests to NaiAsset and use wax for conversion
-  const vestsPrecision = getPrecision(EAssetName.VESTS);
+  const vestsPrecision = getPrecision('VESTS');
   const satoshis = Math.floor(vests * Math.pow(10, vestsPrecision)).toString();
   const vestsAsNai = chain.vestsSatoshis(satoshis);
 

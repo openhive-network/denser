@@ -6,7 +6,7 @@ import { FC, PropsWithChildren, useMemo } from 'react';
 import Head from 'next/head';
 import { useTheme } from 'next-themes';
 import { SignerProvider } from '@hive/smart-signer/components/signer-provider';
-import { GoogleOAuthRedirectHandler } from '@smart-signer/components/google-oauth-redirect-handler';
+import { LazyGoogleOAuthRedirectHandler } from '@smart-signer/components/lazy-google-oauth-redirect-handler';
 import { siteConfig } from '@ui/config/site';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -38,7 +38,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
             <NavigationProgress />
             <NavigationProgressHandler />
             <SignerProvider>
-              <GoogleOAuthRedirectHandler
+              <LazyGoogleOAuthRedirectHandler
                 authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
                 strict={!siteConfig.allowNonStrictLogin}
                 loadingText={t('login_form.completing_google_auth')}

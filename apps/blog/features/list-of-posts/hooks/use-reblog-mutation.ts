@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { TransactionBroadcastResult, transactionService } from '@transaction/index';
+import type { TransactionBroadcastResult } from '@transaction/index';
+import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
 

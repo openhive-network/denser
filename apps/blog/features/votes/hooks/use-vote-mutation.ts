@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useMutation, QueryClient, useQueryClient } from '@tanstack/react-query';
-import { TransactionBroadcastResult, transactionService } from '@transaction/index';
+import type { TransactionBroadcastResult } from '@transaction/index';
+import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import { getLogger } from '@ui/lib/logging';

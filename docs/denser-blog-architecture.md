@@ -152,13 +152,22 @@ A failed fetch is never stored. While a background reload fails the stale feed k
 - `getReadChain()`: wasm-free client (`read-client.ts`) for read-only calls — `chain.api` JSON-RPC
   and the `ExtendedRestApi` REST APIs (hivesense). Same call shape, endpoints and requests as wax
   (`wax-equivalence.test.ts`); `bridge-api.ts`, `hive-api.ts`, `hivesense-api.ts` read through it,
-  so an anonymous reader never downloads `wax.common.wasm`.
+  so an anonymous reader never downloads `wax.common.wasm`. Its transport (`read-transport.ts`) is
+  plain `fetch` and does not import `@hiveio/wax` either, so reads do not load wax's JavaScript.
 - `getChain()`: singleton wrapper around WAX (Hive SDK), only for signing, broadcasting, login and
   wasm-only computation; created on first use, and warmed up on idle for logged-in users only
   (`components/chain-warmup.tsx`)
 - On the server both are wrapped by `server-failover.ts`: a read-only JSON-RPC call that fails at the
   transport level is retried once on the primary node, then on the other nodes of
   `REACT_APP_ALLOWED_HIVE_API_NODES` (images host excluded), within an 8 s budget per call
+
+**Initial client bundle** — the chunks a page's server HTML references must not contain wax,
+hb-auth/beekeeper or the signers (fixture guard `initialChunks*.spec.ts`, PERF-CHUNKS-01..03).
+Page-load code reaches them only through dynamic `import()`: the chain (`getChain()`), the
+transaction service (`lazy-transaction-service.ts`), the signers (`signer-provider.tsx`,
+`use-logout.ts`), the login dialog's form and the Google OAuth redirect handler (`next/dynamic`).
+Import wax for its types only (`import type`); its enums are runtime values, so use string
+literals instead (e.g. `AssetName` in `ui/lib/asset-constants.ts`).
 
 **Primary data unreachable → HTTP 503** (`apps/blog/lib/service-unavailable.ts`):
 - A server component that cannot render without its data throws `ServiceUnavailableError` when the
@@ -237,10 +246,12 @@ const { user } = useUserClient();
 
 ## 9. Transaction Service
 
-All blockchain operations use centralized service from `@transaction/index`:
+All blockchain operations use centralized service from `@transaction/index`. Client components
+import it through `@transaction/lib/lazy-transaction-service`, which loads `@transaction/index`
+(wax, the signers, workerbee) on the first call:
 
 ```typescript
-import { transactionService } from '@transaction/index';
+import { transactionService } from '@transaction/lib/lazy-transaction-service';
 
 // Voting
 await transactionService.upVote(author, permlink, weight, { observe: true });
