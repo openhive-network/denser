@@ -1,6 +1,11 @@
 import { test, expect } from '../support/fixture-proxy-test';
 import { ProfilePage } from '../support/pages/profilePage';
 import { TIMEOUTS } from '../support/constants';
+import {
+  expectOnlyFirstCardImagePreloaded,
+  getFirstCardImageUrl,
+  recordImageRequests
+} from '../support/cardImagePreload';
 
 /**
  * User Profile Tabs fixture tests — Section 1.4 of the Test Plan:
@@ -17,6 +22,8 @@ import { TIMEOUTS } from '../support/constants';
  *   08 – Communities tab renders community subscriptions
  *   09 – Profile nav tabs structure (main + Posts sub-tabs)
  *   10 – Non-existent user → 404
+ *   11 – Profile server HTML preloads only the first card image
+ *   12 – Profile fetches the preloaded first card image only once
  *
  * Record:  FIXTURE_MODE=record pnpm --filter @hive/blog test:fixture
  * Replay:  pnpm --filter @hive/blog test:fixture
@@ -167,5 +174,26 @@ test.describe('User Profile Tabs tests (fixture-based)', () => {
 
     await expect(profilePage.notFoundPage).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await expect(profilePage.notFoundHeading).toHaveText('404');
+  });
+
+  // ── ANON-PROF-11/12: First card image preload ────────────────────────
+
+  test('ANON-PROF-11: profile server HTML preloads only the first card image', async ({ page }) => {
+    const serverHtml = await (await page.request.get(`/@${user}`)).text();
+
+    expectOnlyFirstCardImagePreloaded(serverHtml);
+  });
+
+  test('ANON-PROF-12: profile fetches the preloaded first card image only once', async ({ page }) => {
+    const serverHtml = await (await page.request.get(`/@${user}`)).text();
+    const firstCardImageUrl = getFirstCardImageUrl(serverHtml);
+    expect(firstCardImageUrl).toBeTruthy();
+    const firstCardImageRequests = await recordImageRequests(page, firstCardImageUrl);
+
+    await page.goto(`/@${user}`, { waitUntil: 'load' });
+    await expect(profilePage.profileBlogPostsList).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    await page.waitForLoadState('networkidle');
+
+    expect(firstCardImageRequests).toHaveLength(1);
   });
 });

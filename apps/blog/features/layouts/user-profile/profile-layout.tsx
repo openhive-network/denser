@@ -39,6 +39,11 @@ import ListItem from './list-item';
 import ProfileLayoutSkeleton from './profile-layout-skeleton';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
+// Rendered at 80/96 CSS px; 192 covers 2x displays without fetching the full-size default avatar.
+const AVATAR_FALLBACK_SIZE = 192;
+// Header images use fetchPriority="low": React's SSR auto-preloads every other eager <img>,
+// and those preloads would compete with the first feed card image, the page's LCP candidate.
+
 const getCoverImageStyle = (profileData: { posting_json_metadata?: string } | null): string => {
   try {
     if (!profileData?.posting_json_metadata) return '';
@@ -192,8 +197,9 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                   <AvatarFallback>
                     <img
                       className="h-full w-full object-cover"
-                      src={getDefaultImageUrl()}
+                      src={proxifyImageSrc(getDefaultImageUrl(), AVATAR_FALLBACK_SIZE, AVATAR_FALLBACK_SIZE)}
                       alt="Profile picture"
+                      fetchPriority="low"
                     />
                   </AvatarFallback>
                 </Avatar>
@@ -226,6 +232,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                           })}
                           className="h-6 w-6 transition-transform duration-300 hover:scale-150"
                           src={getLevelIconPath(userLevel)}
+                          fetchPriority="low"
                           data-testid="profile-level-image"
                         />
                       </Link>

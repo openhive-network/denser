@@ -6,6 +6,8 @@ import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
 import { keepObserverVotes } from '@/blog/lib/feed-entries';
 import { extractUsernameFromParam } from '@/blog/utils/validate-links';
+import FirstCardImagePreload from '@/blog/features/list-of-posts/first-card-image-preload';
+import userIllegalContent from '@ui/config/lists/user-illegal-content';
 
 const logger = getLogger('app');
 
@@ -33,6 +35,8 @@ const PostsPage = async ({
   // query client, causing unnecessary client-side refetches.
   return (
     <ObserverProvider value={observer}>
+      {/* PostsContent renders no feed for legally blocked users, so there is no card image to preload. */}
+      <FirstCardImagePreload entries={userIllegalContent.includes(username) ? null : initialPosts} />
       <InitialPostsProvider value={initialPosts}>{children}</InitialPostsProvider>
     </ObserverProvider>
   );
