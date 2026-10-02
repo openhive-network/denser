@@ -8,7 +8,6 @@ import { Icons } from '@ui/components/icons';
 import { Separator } from '@ui/components/separator';
 import { Badge } from '@ui/components/badge';
 import dmcaUserList from '@ui/config/lists/dmca-user-list';
-import imageUserBlocklist from '@ui/config/lists/image-user-blocklist';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import TimeAgo from '@ui/components/time-ago';
@@ -20,6 +19,7 @@ import { handleError } from '@ui/lib/handle-error';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DetailsCardHover from './details-card-hover';
 import PostImage from './post-img';
+import { isCardImageRestricted } from './lib/card-image';
 import { ReblogDialog } from './reblog-dialog';
 import { useReblogMutation } from './hooks/use-reblog-mutation';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
@@ -101,7 +101,6 @@ const PostListItem = memo(
 
   const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
   const userFromDMCA = dmcaUserList.includes(post.author);
-  const userFromImageBlockList = imageUserBlocklist.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
 
   if (gdprUserList.includes(post.author)) return null;
@@ -254,12 +253,7 @@ const PostListItem = memo(
           </CardHeader>
           <div className="flex w-full flex-col md:flex-row ">
             <div>
-              {nsfw === 'show' &&
-              post.blacklists.length < 1 &&
-              !blacklistCheck &&
-              !userFromDMCA &&
-              !userFromImageBlockList &&
-              !legalBlockedUser ? (
+              {nsfw === 'show' && !blacklistCheck && !isCardImageRestricted(post) ? (
                 <>
                   <PostImage post={post} isPriority={isImagePriority} />
                 </>

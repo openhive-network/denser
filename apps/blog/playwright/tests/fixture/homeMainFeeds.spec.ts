@@ -15,8 +15,25 @@ import { TIMEOUTS } from '../support/constants';
 
 test.use({ fixtureTestName: 'homeMainPage' });
 
+// playwright.fixture.config.ts sets REACT_APP_IMAGES_ENDPOINT to https://images.hive.blog/.
+const IMAGES_ORIGIN = 'https://images.hive.blog';
+const ONE_PIXEL_PNG = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+  'base64'
+);
+
 const isWasmRequest = (request: Request) => new URL(request.url()).pathname.endsWith('.wasm');
 const isHiveSenseRequest = (request: Request) => new URL(request.url()).pathname.includes('/hivesense-api/');
+
+const decodeHtmlAttribute = (value: string) => value.replace(/&amp;/g, '&');
+
+function getImagePreloads(html: string): string[] {
+  return [...html.matchAll(/<link rel="preload" as="image"[^>]*>/g)].map(([link]) => link);
+}
+
+function getFirstCardImageSrcSet(html: string): string | undefined {
+  return html.match(/<img srcSet="([^"]+)" alt="Post image"/)?.[1];
+}
 
 test.describe('Home & Main Feeds (fixture-based)', () => {
   let homePage: HomePage;
@@ -162,5 +179,43 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
     expect(serverHtml).toContain('data-testid="post-list-item"');
     // The recorded trending posts have votes from roelandp and others; none belong to the anonymous observer.
     expect(serverHtml).not.toMatch(/\\"voter\\":/);
+  });
+
+  test('ANON-HOME-12 — Trending server HTML preconnects to the image host and preloads only the first card image', async ({ page }) => {
+    const serverHtml = await (await page.request.get('/trending')).text();
+
+    expect(serverHtml).toContain(`<link rel="preconnect" href="${IMAGES_ORIGIN}"/>`);
+    expect(serverHtml).toContain(`<link rel="dns-prefetch" href="${IMAGES_ORIGIN}"/>`);
+
+    const imagePreloads = getImagePreloads(serverHtml);
+    expect(imagePreloads).toHaveLength(1);
+    const [preload] = imagePreloads;
+    const firstCardSrcSet = getFirstCardImageSrcSet(serverHtml);
+    expect(firstCardSrcSet).toMatch(new RegExp(`^${IMAGES_ORIGIN}/`));
+    expect(preload).toContain(`imageSrcSet="${firstCardSrcSet}"`);
+    expect(preload).toContain('fetchPriority="high"');
+    expect(preload).not.toContain('imageSizes');
+    expect(serverHtml.indexOf(preload)).toBeLessThan(serverHtml.indexOf('data-testid="post-list-item"'));
+  });
+
+  test('ANON-HOME-13 — Trending fetches the preloaded first card image only once', async ({ page }) => {
+    const serverHtml = await (await page.request.get('/trending')).text();
+    const firstCardSrcSet = getFirstCardImageSrcSet(serverHtml);
+    expect(firstCardSrcSet).toBeTruthy();
+    const firstCardImageUrl = decodeHtmlAttribute(firstCardSrcSet ?? '');
+
+    await page.route(`${IMAGES_ORIGIN}/**`, (route) =>
+      route.fulfill({ status: 200, contentType: 'image/png', body: ONE_PIXEL_PNG })
+    );
+    const firstCardImageRequests: Request[] = [];
+    page.on('request', (request) => {
+      if (request.url() === firstCardImageUrl) firstCardImageRequests.push(request);
+    });
+
+    await page.goto('/trending', { waitUntil: 'load' });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    await page.waitForLoadState('networkidle');
+
+    expect(firstCardImageRequests).toHaveLength(1);
   });
 });
