@@ -4,6 +4,7 @@ import { QueryTypes } from './lib/utils';
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
+import { keepObserverVotes } from '@/blog/lib/feed-entries';
 import { extractUsernameFromParam } from '@/blog/utils/validate-links';
 
 const logger = getLogger('app');
@@ -21,7 +22,8 @@ const PostsPage = async ({
   const observer = await getObserverFromCookies();
   let initialPosts = null;
   try {
-    initialPosts = (await getAccountPosts(query, username, observer, '', '')) ?? null;
+    const posts = await getAccountPosts(query, username, observer, '', '');
+    initialPosts = posts ? keepObserverVotes(posts, observer) : null;
   } catch (error) {
     logger.error(error, 'Error in PostsPage:');
   }

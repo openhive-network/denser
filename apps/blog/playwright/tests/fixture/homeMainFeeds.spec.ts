@@ -155,4 +155,12 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
     await hiveSenseProbe;
     await wasmWarmup;
   });
+
+  test('ANON-HOME-11 — Trending server HTML carries no other accounts\' votes', async ({ page }) => {
+    const serverHtml = await (await page.request.get('/trending')).text();
+
+    expect(serverHtml).toContain('data-testid="post-list-item"');
+    // The recorded trending posts have votes from roelandp and others; none belong to the anonymous observer.
+    expect(serverHtml).not.toMatch(/\\"voter\\":/);
+  });
 });
