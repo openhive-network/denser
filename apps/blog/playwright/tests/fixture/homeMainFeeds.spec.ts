@@ -140,37 +140,40 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
     await expect(menu.getByRole('button', { name: 'Terms of Service' })).toBeVisible();
   });
 
-  // The wax wasm (~2.4 MB) is fetched when the chain is created. The feed needs
-  // no chain to render, so neither it nor the header's hivesense status probe
-  // may run before the browser is idle. Idle callbacks are held back to make
-  // "before idle" deterministic, then released.
-  test('ANON-HOME-10 — Trending feed does not create the wax chain before idle', async ({ page }) => {
+  // The wax wasm (~2.4 MB) is fetched when the chain is created. An anonymous reader never needs the
+  // chain (reads are wasm-free; only a logged-in user's chain is warmed up on idle), and the header's
+  // hivesense status probe waits for idle. Idle callbacks are held back to make "before idle"
+  // deterministic, then released.
+  test('ANON-HOME-10 — Trending feed never creates the wax chain, and probes hivesense only after idle', async ({
+    page
+  }) => {
     await page.addInitScript(() => {
       const held: IdleRequestCallback[] = [];
       Object.assign(window, { __heldIdleCallbacks: held });
       window.requestIdleCallback = (callback) => held.push(callback);
       window.cancelIdleCallback = () => {};
     });
-    const requestsBeforeIdle: Request[] = [];
-    const collect = (request: Request) => requestsBeforeIdle.push(request);
+    const requests: Request[] = [];
+    const collect = (request: Request) => requests.push(request);
     page.on('request', collect);
 
     await page.goto('/trending', { waitUntil: 'load' });
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await page.waitForLoadState('networkidle');
-    page.off('request', collect);
 
-    expect(requestsBeforeIdle.filter(isWasmRequest).map((request) => request.url())).toEqual([]);
-    expect(requestsBeforeIdle.filter(isHiveSenseRequest).map((request) => request.url())).toEqual([]);
+    expect(requests.filter(isWasmRequest).map((request) => request.url())).toEqual([]);
+    expect(requests.filter(isHiveSenseRequest).map((request) => request.url())).toEqual([]);
 
     const hiveSenseProbe = page.waitForRequest(isHiveSenseRequest, { timeout: TIMEOUTS.HYDRATION });
-    const wasmWarmup = page.waitForRequest(isWasmRequest, { timeout: TIMEOUTS.HYDRATION });
     await page.evaluate(() => {
       const { __heldIdleCallbacks: held } = window as unknown as { __heldIdleCallbacks: IdleRequestCallback[] };
       held.splice(0).forEach((callback) => callback({ didTimeout: false, timeRemaining: () => 50 }));
     });
     await hiveSenseProbe;
-    await wasmWarmup;
+    await page.waitForLoadState('networkidle');
+    page.off('request', collect);
+
+    expect(requests.filter(isWasmRequest).map((request) => request.url())).toEqual([]);
   });
 
   test('ANON-HOME-11 — Trending server HTML carries no other accounts\' votes', async ({ page }) => {

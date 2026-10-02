@@ -25,5 +25,16 @@ export const setAiEndpoint = (_endpoint: string): void => {
 export const getAiEndpoint = (): string => {
   throw new Error(STUB_ERROR_MESSAGE);
 };
+export interface IApiEndpoints {
+  chainId: string;
+  apiEndpoint: string;
+  restApiEndpoint: string;
+  apiTimeout: number;
+  aiEndpoint: string;
+  searchApiEndpoint?: string;
+}
+export const getApiEndpoints = (): IApiEndpoints => {
+  throw new Error(STUB_ERROR_MESSAGE);
+};
 export const isWasmMemoryError = (_error: unknown): boolean => false;
 export const resetChain = (): void => undefined;

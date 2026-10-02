@@ -30,7 +30,6 @@ import { accountReputation, compareDates } from '@/blog/lib/utils';
 import CustomError from '@/blog/components/custom-error';
 import NoDataError from '@/blog/components/no-data-error';
 import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
-import { getChain } from '@transaction/lib/chain';
 
 import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
 import { notFound, usePathname } from 'next/navigation';
@@ -110,23 +109,13 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
     queryFn: () => getDynamicGlobalProperties()
   });
 
-  const {
-    data: hiveChain,
-    isError: isChainError,
-    isLoading: isChainPending
-  } = useQuery({
-    queryKey: ['hiveChain'],
-    queryFn: () => getChain(),
-    staleTime: Infinity
-  });
-
   // Handle API errors - show error state with retry option
-  if (isProfileError || isDynamicGlobalError || isChainError) {
+  if (isProfileError || isDynamicGlobalError) {
     return <NoDataError />;
   }
 
-  // Handle loading state - wait for data (including hiveChain initialization)
-  if (isProfilePending || isDynamicGlobalPending || isChainPending || !hiveChain) {
+  // Handle loading state - wait for data
+  if (isProfilePending || isDynamicGlobalPending) {
     return <ProfileLayoutSkeleton />;
   }
 
@@ -149,13 +138,11 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
     convertStringToBig(profileData.delegated_vesting_shares).minus(
       convertStringToBig(profileData.received_vesting_shares)
     ),
-    hiveChain,
     dynamicGlobalData.total_vesting_shares,
     dynamicGlobalData.total_vesting_fund_hive
   );
   const vesting_hive = convertToHP(
     convertStringToBig(profileData.vesting_shares),
-    hiveChain,
     dynamicGlobalData.total_vesting_shares,
     dynamicGlobalData.total_vesting_fund_hive
   );

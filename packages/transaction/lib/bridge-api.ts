@@ -8,19 +8,19 @@ import {
   IGetPostHeader,
   IUnreadNotifications
 } from '@hive/common-hiveio-packages/wax';
-import { getChain } from './chain';
+import { getReadChain } from './chain';
 
 export const DATA_LIMIT = 20;
 
 const logger = getLogger('bridge');
 export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
-  return (await getChain()).api.bridge.get_post_header({
+  return getReadChain().api.bridge.get_post_header({
     author,
     permlink
   });
 };
 export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
-  return (await getChain()).api.bridge.unread_notifications({
+  return getReadChain().api.bridge.unread_notifications({
     account
   });
 };
@@ -30,7 +30,7 @@ export const getCommunities = async (
   query?: string | null,
   observer: string = 'hive.blog'
 ): Promise<Community[] | null> => {
-  return (await getChain()).api.bridge.list_communities({
+  return getReadChain().api.bridge.list_communities({
     query,
     sort,
     observer
@@ -38,7 +38,7 @@ export const getCommunities = async (
 };
 
 export const getSubscriptions = async (account: string): Promise<string[][] | null> => {
-  return (await getChain()).api.bridge.list_all_subscriptions({
+  return getReadChain().api.bridge.list_all_subscriptions({
     account
   });
 };
@@ -51,7 +51,7 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return (await getChain()).api.bridge
+  return getReadChain().api.bridge
     .get_ranked_posts({
       sort,
       start_author,
@@ -107,7 +107,7 @@ export const getPost = async (
   permlink: string = '',
   observer: string = ''
 ): Promise<Entry | null> => {
-  return (await getChain()).api.bridge
+  return getReadChain().api.bridge
     .get_post({
       author,
       permlink,
@@ -130,7 +130,7 @@ export const getAccountPosts = async (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return (await getChain()).api.bridge
+  return getReadChain().api.bridge
     .get_account_posts({
       sort,
       account,
@@ -152,14 +152,14 @@ export const getFollowList = async (
   observer: string,
   follow_type: FollowListType
 ): Promise<IFollowList[]> => {
-  return (await getChain()).api.bridge.get_follow_list({
+  return getReadChain().api.bridge.get_follow_list({
     observer,
     follow_type
   });
 };
 
 export const getSubscribers = async (community: string): Promise<string[][] | null> => {
-  return (await getChain()).api.bridge.list_subscribers({
+  return getReadChain().api.bridge.list_subscribers({
     community
   });
 };
@@ -177,17 +177,17 @@ export const getAccountNotifications = async (
   if (lastId) {
     params.last_id = lastId;
   }
-  return (await getChain()).api.bridge.account_notifications(params);
+  return getReadChain().api.bridge.account_notifications(params);
 };
 
 export const getCommunity = async (
   name: string,
   observer: string | undefined = ''
 ): Promise<Community | null> => {
-  return (await getChain()).api.bridge.get_community({ name, observer });
+  return getReadChain().api.bridge.get_community({ name, observer });
 };
 export const getListCommunityRoles = async (community: string): Promise<string[][] | null> => {
-  return (await getChain()).api.bridge.list_community_roles({ community });
+  return getReadChain().api.bridge.list_community_roles({ community });
 };
 
 export const getDiscussion = async (
@@ -195,7 +195,7 @@ export const getDiscussion = async (
   permlink: string,
   observer?: string
 ): Promise<Record<string, Entry> | null> => {
-  return (await getChain()).api.bridge.get_discussion({
+  return getReadChain().api.bridge.get_discussion({
     author,
     permlink,
     observer
