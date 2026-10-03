@@ -2,6 +2,7 @@ import { NaiAsset } from '@hiveio/wax';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
+import { PUBLISHING_APP } from '@transaction/lib/publishing-app';
 import { Beneficiarie } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
@@ -76,7 +77,7 @@ export function usePostMutation() {
             tags,
             image: image ? [image] : [],
             description: summary,
-            app: 'denser/0.1'
+            app: PUBLISHING_APP
           },
           created: new Date().toISOString(),
           updated: new Date().toISOString(),

@@ -356,7 +356,10 @@
       "followed_you": "@{{username}} followed you",
       "mentioned_you_and_others": "@{{username}} mentioned you and {{others}} others",
       "subscribed_to": "@{{username}} subscribed to {{community}}"
-    }
+    },
+    "load_more_failed": "Couldn't load more posts.",
+    "load_more_retry": "Retry",
+    "check_node_status": "Check Node Status"
   },
   "communities": {
     "set_title_for_user": "Définir le titre pour @{{username}}",

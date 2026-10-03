@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
+import { PUBLISHING_APP } from '@transaction/lib/publishing-app';
 import { getDiscussion } from '@transaction/lib/bridge-api';
 import { Preferences, Entry } from '@hive/common-hiveio-packages/wax';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -84,7 +85,8 @@ export function useCommentMutation() {
         json_metadata: {
           images: [],
           author: user.username,
-          image: ''
+          image: '',
+          app: PUBLISHING_APP
         },
         max_accepted_payout: '1000000.000 HBD',
         net_rshares: 0,

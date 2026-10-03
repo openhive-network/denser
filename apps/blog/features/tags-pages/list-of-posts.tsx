@@ -13,6 +13,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import PostList from '../list-of-posts/posts-loader';
 import NoDataError from '@/blog/components/no-data-error';
+import LoadMoreError from '@/blog/components/load-more-error';
 import { isCommunity } from '@ui/lib/utils';
 import { PostListSkeleton } from '@hive/ui';
 import { useSSRObserver, useInitialPosts } from '@/blog/components/observer-provider';
@@ -70,16 +71,20 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   // can't fire while any fetch is in flight — otherwise empty/short pages keep
   // the sentinel in view and we'd loop until exhausting the feed.
   useEffect(() => {
-    if ((prefetchInView || inView) && hasNextPage && !isFetching) {
+    // Skip auto-fetch while the query is in an error state — otherwise a failed
+    // fetchNextPage would loop forever as long as the sentinel stays in view.
+    if ((prefetchInView || inView) && hasNextPage && !isFetching && !isError) {
       fetchNextPage();
     }
-  }, [prefetchInView, inView, hasNextPage, isFetching, fetchNextPage]);
+  }, [prefetchInView, inView, hasNextPage, isFetching, isError, fetchNextPage]);
 
   // Calculate total posts to determine when to show prefetch trigger
   const totalPosts = data?.pages?.reduce((acc, page) => acc + (page?.length || 0), 0) || 0;
 
-  // Handle API error - show error state with retry option
-  if (isError) {
+  // Only replace the whole list when there is nothing to show. A failed
+  // fetchNextPage leaves earlier pages in `data` — keep them and show an
+  // inline retry at the bottom instead (see LoadMoreError below).
+  if (isError && !data?.pages?.length) {
     return <NoDataError />;
   }
 
@@ -124,15 +129,19 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
             ) : null;
           })}
       <div>
-        <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
-          {isFetchingNextPage && !!data && data.pages.length > 0 ? (
-            <div>Loading...</div>
-          ) : hasNextPage ? (
-            t('user_profile.load_newer')
-          ) : data?.pages?.[0] && data.pages[0].length > 0 ? (
-            t('user_profile.nothing_more_to_load')
-          ) : null}
-        </button>
+        {isError ? (
+          <LoadMoreError onRetry={() => fetchNextPage()} isRetrying={isFetchingNextPage} />
+        ) : (
+          <button ref={ref} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+            {isFetchingNextPage && !!data && data.pages.length > 0 ? (
+              <div>Loading...</div>
+            ) : hasNextPage ? (
+              t('user_profile.load_newer')
+            ) : data?.pages?.[0] && data.pages[0].length > 0 ? (
+              t('user_profile.nothing_more_to_load')
+            ) : null}
+          </button>
+        )}
       </div>
       <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
     </>
