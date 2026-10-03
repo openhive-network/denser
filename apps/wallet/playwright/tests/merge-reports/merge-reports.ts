@@ -173,7 +173,7 @@ async function mergeHTMLReports(inputReportPaths: string[], givenConfig: Config 
 window.playwrightReportBase64 = "data:application/zip;base64,`
   );
 
-  await new Promise((f) => {
+  await new Promise<void>((f) => {
     mergedZipContent.end(undefined, () => {
       mergedZipContent.outputStream
         .pipe(new Base64Encoder())

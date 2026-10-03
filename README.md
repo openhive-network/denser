@@ -14,7 +14,7 @@ The project consists of two apps:
 
 - Node.js >= 20.0.0 & <21.0.0
 
-If you have Volta installed, the 20.11.1 version of Node.js in pinned in the main [package.json](package.json) file.
+If you have Volta installed, the 24.21.0 version of Node.js is pinned in the main [package.json](package.json) file.
 
 ## Building
 

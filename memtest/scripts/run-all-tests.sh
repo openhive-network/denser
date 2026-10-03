@@ -237,14 +237,14 @@ run_test "f1-baseline" "blog-crawler.js" \
 
 # ============================================================================
 # F2: Node.js version comparison
-# F2 is N/A in this setup — emsdk image uses Node 22.
-# The Dockerfile.memtest runner stage uses node:22-alpine.
-# To test Node 20.17 vs 20.15, we'd need separate Dockerfiles.
-# We run F2 as a single test with the current Node 22 (the fix itself).
+# F2 is N/A in this setup — the emsdk builder image ships its own Node.
+# The Dockerfile.memtest runner stage uses node:24.21.0-alpine3.24.
+# Comparing Node versions would need one runner image per version.
+# We run F2 as a single test with the runner's Node 24.
 # ============================================================================
 
-log "F2: Node version test — using node:22 (emsdk build). Node 20.x variants require separate images."
-run_test "f2-node22" "blog-crawler.js" \
+log "F2: Node version test — using the node:24 runner. Other Node versions require separate images."
+run_test "f2-node24" "blog-crawler.js" \
   -- \
   "NODE_OPTIONS=--expose-gc --max-old-space-size=3072"
 
