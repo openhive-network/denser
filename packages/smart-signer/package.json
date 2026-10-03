@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.14",
     "@types/http-errors": "^2.0.4",
-    "@types/node": "^20.10.4",
+    "@types/node": "^24",
     "@types/oidc-provider": "^8.4.2",
     "@types/qrcode": "^1.5.4",
     "@types/react": "19.3.0",

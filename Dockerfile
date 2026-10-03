@@ -1,4 +1,4 @@
-FROM node:22.22.1-alpine3.23 AS pure_node
+FROM node:24.21.0-alpine3.24 AS pure_node
 FROM pure_node AS base
 ARG NPM_CONFIG_REGISTRY
 ENV NPM_CONFIG_REGISTRY=${NPM_CONFIG_REGISTRY}
