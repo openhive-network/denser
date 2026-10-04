@@ -5,30 +5,19 @@ import { wrapChainWithLogging } from './chain-proxy';
 
 export type Chain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
 
-let chain: Promise<Chain> | undefined = undefined;
-
 export const getChain = (): Promise<Chain> => {
-  if (!chain) {
-    chain = getHiveChainService()
-      .getHiveChain()
-      .then(wrapChainWithLogging)
-      .catch((error) => {
-        chain = undefined; // Clear cache so next call retries
-        throw error;
-      });
-    return chain;
-  }
-
-  // Re-enter hive-chain getChain so the request's api-node cookie is applied
-  // onto the shared singleton before callers use it (hive/denser#952).
-  return Promise.all([chain, getHiveChainService().getHiveChain()]).then(([wrapped]) => wrapped);
+  // Do not cache the instance. On the server, hive-chain getChain returns a
+  // request-scoped view for the api-node cookie. Caching it (or unwrapping
+  // back to the singleton) would let one visitor's node serve later SSR.
+  // Init failures still clear the wax singleton inside hive-chain-service.
+  return getHiveChainService().getHiveChain().then(wrapChainWithLogging);
 };
 
 /**
- * Reset the transaction-layer chain cache.
- * Must be called alongside resetChain() from hive-chain-service
- * to ensure WASM error recovery clears both layers.
+ * Kept for callers that reset both layers after a WASM failure.
+ * The transaction layer does not cache a chain anymore (that cache reused
+ * one request's API node). resetChain() drops the wax singleton.
  */
 export const resetTransactionChain = (): void => {
-  chain = undefined;
+  // Intentionally empty: see the doc comment.
 };
