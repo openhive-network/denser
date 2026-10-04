@@ -359,6 +359,7 @@ export const getAccountReputations = async (
   if (!profile) {
     return [];
   }
+  // bridge get_profile.reputation is calibrated, not a condenser raw share_type.
   return [
     {
       account: profile.name,
