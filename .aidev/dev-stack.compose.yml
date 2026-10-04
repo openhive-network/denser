@@ -19,7 +19,7 @@
 # How an agent uses it: .aidev/README.md.
 name: denser-aidev-dev
 
-x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:d97093bb8d6de7169e1b4732b0810cb0062df3b0d1c0c0b7ab3db8a732fed7cc
+x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:9e4a99ba5fded75cdb60e3473db36b181bcf3fd0fae70f6324d9aeae36e86edc
 
 # The checkout owner: node_modules, apps/*/version.json and next's cache are
 # written as this uid so a host-side `git clean` or worktree removal can delete
