@@ -52,7 +52,7 @@ variables:
   CADDY_TAG: '2.7.6'
   PLAYWRIGHT_TAG: 'v1.49.1-jammy'
 
-  HAF_COMMIT: 8de693b2812a040aa5c4365c232ebab8036a1d11
+  HAF_COMMIT: 38d51f261009904881da1fac87b7f5b7f6c3cb3a
 include:
 - template: Workflows/Branch-Pipelines.gitlab-ci.yml
 - project: 'hive/common-ci-configuration'
@@ -62,10 +62,10 @@ include:
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
 - project: 'hive/haf'
-  ref: 8de693b2812a040aa5c4365c232ebab8036a1d11  # develop
+  ref: 38d51f261009904881da1fac87b7f5b7f6c3cb3a  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
 - project: 'hive/hive'
-  ref: 66c735a9c42cace2def83df3d373d608f018ea5f
+  ref: 274384a8adddf54b69965a7fd43d8eb0ddda7701
   file: '/scripts/ci-helpers/extended_block_log_creation.gitlab-ci.yml'
 - project: 'hive/haf_api_node'
   ref: 629f21c0ccb19737144ca7317a4faf8e95198bcb
