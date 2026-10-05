@@ -41,6 +41,10 @@ either; the slots in `project.yaml` are the verification. CI still runs for
 MR into `develop` (which requires a successful pipeline), start one by hand:
 `glab ci run -b aidev/integration`.
 
+CI's per-MR Lighthouse comment doesn't run for AIDEV work either. Instead the
+integration site measures every promoted revision itself: see "Lighthouse after each
+promote" in `stack/integration/README.md`.
+
 ## Live dev stack (`sandbox.dev`)
 
 An AIDEV implement session gets a running blog built from its own working tree:
