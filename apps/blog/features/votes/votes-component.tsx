@@ -10,7 +10,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useQuery } from '@tanstack/react-query';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
-import { Entry } from '@hive/common-hiveio-packages/wax';
+import type { TrimmedEntry } from '@/blog/features/list-of-posts/lib/card-entry';
 import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
 import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
 import { useTranslation } from '@/blog/i18n/client';
@@ -46,7 +46,7 @@ const getVoteValue = (
   return stored?.[voteType]?.[direction] ?? DEFAULT_VOTES_VALUES[voteType][direction];
 };
 
-const VotesComponent = ({ post, type }: { post: Entry; type: 'comment' | 'post' }) => {
+const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 'post' }) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
   const [clickedVoteButton, setClickedVoteButton] = useState('');

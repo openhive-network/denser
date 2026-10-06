@@ -8,7 +8,7 @@ import Big from 'big.js';
 import Loading from '@ui/components/loading';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { getFeedHistory } from '@transaction/lib/hive-api';
-import { Entry } from '@hive/common-hiveio-packages/wax';
+import type { TrimmedEntry } from './lib/card-entry';
 import { useTranslation } from '@/blog/i18n/client';
 import { useDynamicGlobalData } from '@/blog/components/hooks/use-dynamic-global-data';
 
@@ -20,7 +20,7 @@ interface IBeneficiary {
 // hbd_print_rate is expressed in basis points; 10000 == 100% (no haircut).
 const HBD_PRINT_RATE_MAX = 10000;
 
-export default function PayoutHoverContent({ post }: { post: Entry }) {
+export default function PayoutHoverContent({ post }: { post: TrimmedEntry }) {
   const { t } = useTranslation('common_blog');
   const { data, isLoading } = useQuery({
     queryKey: ['feedHistory'],

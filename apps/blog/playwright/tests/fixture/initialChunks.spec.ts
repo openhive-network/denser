@@ -14,6 +14,8 @@ import { CHUNK_MARKERS, SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInit
  * the wax-free read client, and signing, login and transactions are loaded
  * through dynamic import()s when a user logs in or writes. A static import of
  * wax, the signers or `@transaction/index` from page-load code pulls them back.
+ * Nor may they carry Remarkable: the server derives feed card summaries from the post bodies, and
+ * client-fetched pages load the converter through a dynamic import().
  * initialChunksPost.spec.ts and initialChunksProfile.spec.ts check a post and a
  * profile.
  *
@@ -23,11 +25,16 @@ import { CHUNK_MARKERS, SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInit
 test.use({ fixtureTestName: 'homeMainPage' });
 
 test.describe('Initial JS chunks (fixture-based)', () => {
-  test('PERF-CHUNKS-01 — no chunk referenced from the /trending HTML contains Sentry, rrweb, wax or beekeeper', async ({
+  test('PERF-CHUNKS-01 — no chunk referenced from the /trending HTML contains Sentry, rrweb, wax, beekeeper or Remarkable', async ({
     request
   }) => {
     expect(
-      await findMarkersInInitialChunks(request, '/trending', [...SENTRY_MARKERS, CHUNK_MARKERS.rrweb, ...SIGNING_STACK_MARKERS])
+      await findMarkersInInitialChunks(request, '/trending', [
+        ...SENTRY_MARKERS,
+        CHUNK_MARKERS.rrweb,
+        CHUNK_MARKERS.remarkable,
+        ...SIGNING_STACK_MARKERS
+      ])
     ).toEqual([]);
   });
 });
