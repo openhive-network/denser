@@ -1,9 +1,9 @@
 [Unit]
-Description=Upgrade the denser integration site in %f every 5 minutes
+Description=Upgrade the denser integration site in %f every 2 minutes
 
 [Timer]
 OnBootSec=2min
-OnUnitActiveSec=5min
+OnUnitActiveSec=2min
 RandomizedDelaySec=20s
 
 [Install]

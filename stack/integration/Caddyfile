@@ -19,27 +19,5 @@
 	}
 	encode zstd gzip
 
-	# The routes of hive/haf_api_node's caddy/Caddyfile.tmpl for the `ui` profile.
-	handle /blog {
-		reverse_proxy blog:80
-	}
-	handle /blog/* {
-		reverse_proxy blog:80
-	}
-	handle /wallet {
-		reverse_proxy wallet:80
-	}
-	handle /wallet/* {
-		reverse_proxy wallet:80
-	}
-
-	# What runs here: commit and image digests, rewritten by upgrade.sh.
-	handle_path /status/* {
-		root * /srv/status
-		file_server
-	}
-
-	handle {
-		redir * /blog 302
-	}
+	import Caddyfile.routes
 }

@@ -1,0 +1,69 @@
+# Follow mode: an overlay on compose.yml that serves blog and wallet from production
+# builds of a checkout instead of from published images. upgrade.sh selects it
+# (COMPOSE_FILE=compose.yml:compose.follow.yml) unless .env says DENSER_MODE=images;
+# session-stack.sh adds compose.session.yml on top for a session's own stack.
+#
+# Every service runs the project's environment image (`environment.image` in
+# .aidev/project.yaml: Node, pnpm and the pnpm store of pnpm-lock.yaml), with the
+# checkout at /src. Nothing is built into an image:
+#
+#   follower  follow/follow.sh: `next build` of each app whose build inputs moved,
+#             in the checkout, then a release under releases/ and `current`
+#             repointed. upgrade.sh runs it once per timer run
+#             (`docker compose run --rm follower ...`); the `watch` profile runs it
+#             as a polling service instead (session stacks).
+#   blog,     follow/serve.sh: serve releases/<app>/current and restart onto the
+#   wallet    next release when the follower swaps it in. The previous release
+#             serves for as long as a build runs.
+#
+# The variables (upgrade.sh and session-stack.sh export them):
+#   DENSER_FOLLOW_IMAGE  the environment image, read from .aidev/project.yaml
+#   DENSER_SOURCE_DIR    the checkout as the docker daemon sees it (default: ../..)
+#   DENSER_UID/GID       the checkout's owner; builds and releases are written as it
+
+x-follow: &follow
+  image: ${DENSER_FOLLOW_IMAGE:?upgrade.sh or session-stack.sh sets it from .aidev/project.yaml}
+  user: "${DENSER_UID:-1000}:${DENSER_GID:-1000}"
+  working_dir: /src
+  entrypoint: []
+
+x-follow-env: &follow-env
+  FOLLOW_RELEASES: /releases
+  FOLLOW_SOURCE_DIR: /src
+
+services:
+  follower:
+    <<: *follow
+    profiles: [watch]
+    restart: "no"
+    env_file:
+      - networks/${DENSER_NETWORK:-mainnet}.env
+    environment:
+      <<: *follow-env
+      FOLLOW_STATUS: /status
+      FOLLOW_SOURCE_LABEL: follow:${DENSER_SOURCE_BRANCH:-checkout}
+      DENSER_SERVER_SECRET_COOKIE_PASSWORD: ${DENSER_SERVER_SECRET_COOKIE_PASSWORD:?set it in .env (32+ random characters)}
+      # The blog's build needs more than node's default heap.
+      NODE_OPTIONS: --max-old-space-size=4096
+    mem_limit: 8g
+    volumes:
+      - ${DENSER_SOURCE_DIR:-../..}:/src
+      - ${DENSER_SOURCE_DIR:-../..}/stack/integration/releases:/releases
+      - ${DENSER_SOURCE_DIR:-../..}/stack/integration/status:/status
+    command: ["bash", "stack/integration/follow/follow.sh", "watch"]
+
+  blog:
+    <<: *follow
+    environment: *follow-env
+    volumes:
+      - ${DENSER_SOURCE_DIR:-../..}:/src:ro
+      - ${DENSER_SOURCE_DIR:-../..}/stack/integration/releases:/releases
+    command: ["bash", "/src/stack/integration/follow/serve.sh", "blog"]
+
+  wallet:
+    <<: *follow
+    environment: *follow-env
+    volumes:
+      - ${DENSER_SOURCE_DIR:-../..}:/src:ro
+      - ${DENSER_SOURCE_DIR:-../..}/stack/integration/releases:/releases
+    command: ["bash", "/src/stack/integration/follow/serve.sh", "wallet"]

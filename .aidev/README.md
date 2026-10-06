@@ -102,7 +102,10 @@ API (needs egress; fixture specs then no longer apply).
 
 **Known limitation: next dev is not the production build.** The stack is for
 looking at pages and quick spec checks; the gate stays the `full` slot's
-production-build run. What was seen while qualifying it (#966):
+production-build run. For the integration site's own topology (blog and wallet
+production builds behind caddy's `/blog` and `/wallet` routing, rebuilt as the
+checkout moves), start `stack/integration/session-stack.sh up`; see "A session's
+stack" in `stack/integration/README.md`. What was seen while qualifying it (#966):
 
 - Playwright output written under `apps/` or `packages/` (tailwind's content
   globs put both in next's watch set) triggers a recompile mid-test; the

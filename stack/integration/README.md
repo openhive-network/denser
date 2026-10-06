@@ -2,8 +2,8 @@
 
 The tip of `aidev/integration`, deployed for anyone to try: denser's counterpart of
 discuss.syncad.com (ratings). Laid out like hive/haf_api_node's `ui` profile, which is
-how API nodes run denser: the `blog-subdirectory` / `wallet-subdirectory` images, with
-the blog at `/blog` and the wallet at `/wallet` on one hostname.
+how API nodes run denser: blog at `/blog` and wallet at `/wallet` on one hostname,
+each a production (`output: 'standalone'`) build with that base path.
 
 - **URL:** https://denser.discuss.peerverity.info/blog (wallet: `/wallet`, status:
   `/status/deployed.json`).
@@ -13,21 +13,50 @@ the blog at `/blog` and the wallet at `/wallet` on one hostname.
   header. `*.discuss.peerverity.info` resolves there internally and publicly.
 - **Network:** `DENSER_NETWORK=mainnet` (default, api.hive.blog) or `mirrornet`
   (api.fake.openhive.network); see `networks/`. Switching is a restart, not a rebuild:
-  edit `.env`, then `docker compose up -d`.
+  edit `.env`, then `./upgrade.sh`.
   On mainnet, logging in signs **real** transactions.
 
-## How it updates
+## How it updates (follow mode)
 
-1. A promote of an AIDEV session into `aidev/integration` publishes
-   `registry.gitlab.syncad.com/hive/denser/{blog,wallet}-subdirectory:<sha>` and moves
-   their `:integration` tag (`.aidev/project.yaml` `publish:`).
-2. `systemd/denser-integration-upgrade@.timer` runs `upgrade.sh --quiet` every 5
-   minutes. It fast-forwards this checkout, pulls, recreates what changed and rewrites
-   `status/deployed.json` (image digests and `org.opencontainers.image.revision`).
-3. Once every app in `status/deployed.json` runs the checkout's HEAD (the promoted tip),
-   `upgrade.sh` runs `lighthouse.sh`: a Lighthouse check of that revision (below).
+The site runs from this checkout; no image is built or pulled for the apps.
 
-No GitLab CI is involved.
+1. `systemd/denser-integration-upgrade@.timer` runs `upgrade.sh --quiet` every 2
+   minutes. It fast-forwards this checkout to `origin/$DENSER_SOURCE_BRANCH`
+   (`aidev/integration`). A run that finds nothing new builds nothing.
+2. It runs `follow/follow.sh once` in the project's test image
+   (`environment.image` of `.aidev/project.yaml`: Node, pnpm and the pnpm store of
+   this lockfile), with the checkout mounted. For each app the build key is Turbo's
+   hash of its build task (its sources, the workspace packages it uses, the lockfile's
+   resolution of its dependencies, `turbo.json`, its base path) plus the image and
+   the root workspace files:
+   - `apps/blog/**` moves the blog's key only, `apps/wallet/**` the wallet's;
+   - `packages/**` moves the key of each app that depends on the package;
+   - `pnpm-lock.yaml` comes with a new `environment.image` (AIDEV requires both
+     together), which reinstalls `node_modules` and moves both keys;
+   - docs, `.aidev/`, `stack/`, `apps/*/playwright/**` move nothing.
+3. An app whose key moved gets `next build` in the checkout (`.next/cache` stays
+   there), with `NEXT_PUBLIC_BASE_PATH` and the commit's `version.json` (the
+   sidebar's version). The standalone output becomes `releases/<app>/<commit8>-<key>`,
+   which is started once on a scratch port; only when it answers is
+   `releases/<app>/current` repointed. The running server (`follow/serve.sh`, in
+   `compose.follow.yml`) serves the previous build for the whole build and then
+   restarts onto the new one; caddy holds requests during that restart
+   (`lb_try_duration`).
+4. A build or start that fails leaves `current` alone: the app keeps serving the
+   previous commit's build, `status/deployed.json` says `ROLLED-BACK` with the
+   failed commit and its log (`releases/<app>/logs/`), the unit exits 1, and the next
+   run tries again. A checkout with local changes, on another branch, or behind a
+   rewritten branch is `REFUSED` (exit 3) and nothing changes.
+5. `status/deployed.json` reports each app's `revision` (the checkout's commit when
+   its build is that commit's build), its `release`, `source: follow:<branch>` and
+   its state. Once every app reports the checkout's HEAD, `upgrade.sh` runs
+   `lighthouse.sh` (below).
+
+No GitLab CI is involved. `DENSER_MODE=images` in `.env` runs the published
+`registry.gitlab.syncad.com/hive/denser/{blog,wallet}-subdirectory:$DENSER_TAG` images
+instead (`compose.yml` alone), e.g. to pin a version. While the `publish:` section of
+`.aidev/project.yaml` stays, each promote still builds those images; once this site
+reports `"mode": "follow"` that section can go.
 
 ## Lighthouse after each promote
 
@@ -45,10 +74,12 @@ image is `loading="lazy"` (Lighthouse's own LCP discovery check).
   breach named per route. A breach is also logged in the upgrade unit's journal
   (`journalctl -u 'denser-integration-upgrade@*'`).
 - **Advisory:** a breach never fails or rolls back the upgrade.
-- **Bounded:** one check (18 Lighthouse runs, about 7 minutes) per promoted revision.
-  A revision whose images never deploy, or that a later promote overtakes before it
-  is served, is not measured. With `DENSER_TAG` pinned the site never serves the
-  tip, so nothing is measured.
+- **Bounded:** one check (18 Lighthouse runs, about 7 minutes) per promoted revision
+  whose builds have not been measured: a commit that rebuilt nothing (docs, tests)
+  serves the builds an earlier revision was measured with, and is skipped. A
+  revision that never deploys, or that a later promote overtakes before it is
+  served, is not measured. In images mode with `DENSER_TAG` pinned the site never
+  serves the tip, so nothing is measured.
 - **By hand:** `./lighthouse.sh --force` measures the deployed tip again.
 - **Thresholds** are the medians measured on 2026-10-05 with headroom for noise:
   single mobile runs of one build differ by seconds of LCP, which is why each route
@@ -71,5 +102,36 @@ inst=$(systemd-escape --path "$PWD")
 sudo systemctl daemon-reload && sudo systemctl enable --now "denser-integration-upgrade@${inst}.timer"
 ```
 
-To pin a version, set `DENSER_TAG=<sha8>` in `.env`. To follow a release instead, set
-the tag that release publishes.
+A site set up in images mode switches to follow mode by itself: the first
+`upgrade.sh` that has `compose.follow.yml` builds both apps while the image
+containers keep serving, then replaces them. Copying the units again (the commands
+above) shortens the timer to 2 minutes. By hand, compose needs the same file list:
+`COMPOSE_FILE=compose.yml:compose.follow.yml DENSER_FOLLOW_IMAGE=$(follow/environment-image.sh) docker compose ps`.
+
+## A session's stack (`session-stack.sh`)
+
+The same follow mode, on a session's checkout: blog and wallet production builds
+behind caddy's `/blog` and `/wallet` routing (`Caddyfile.routes`, shared with the
+site), on one loopback port, against the live Hive API (`DENSER_NETWORK`). This is
+the topology the site runs, which the AIDEV dev stack (`next dev` of the blog alone,
+`.aidev/dev-stack.compose.yml`) is not: subdirectory routing, both apps, production
+bundles.
+
+```bash
+stack/integration/session-stack.sh up       # prints http://127.0.0.1:<port>/blog
+stack/integration/session-stack.sh status   # services, and each app's release and state
+stack/integration/session-stack.sh logs follower
+stack/integration/session-stack.sh down
+```
+
+`compose.session.yml` on top of the site's two files replaces only what is
+site-specific (TLS, the sites-router, public URLs) and runs the follower as a
+service (`follow.sh watch`): every 20 seconds it re-keys the apps and rebuilds the one
+whose build inputs changed, so a commit reaching the checkout is served without a
+restart. Run it on a checkout that follows the session branch, such as the
+session's dev-stack checkout, which AIDEV fast-forwards on every push. Its builds
+write `apps/*/.next` in that checkout, like the `fixture_e2e` suite does. From inside
+a container whose paths differ from the docker host's, set `DENSER_SOURCE_DIR` to
+the checkout's host path (`$DENSER_DEV_CHECKOUT` is used when set).
+AIDEV's profile declares a single dev stack (`sandbox.dev`), so this one is started
+with the script rather than by AIDEV.
