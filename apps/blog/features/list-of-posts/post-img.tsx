@@ -1,20 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
 import { Link } from '@hive/ui';
 import { getDefaultImageUrl } from '@ui/lib/avatar-utils';
-import { Entry } from '@hive/common-hiveio-packages/wax';
-import { find_first_img } from './lib/card-image';
+import type { CardEntry } from './lib/card-entry';
 
-export default function PostImage({ post, isPriority = false }: { post: Entry; isPriority?: boolean }) {
-  // Use stable identifiers as dependencies - the image won't change for the same post
-  const cardImage = useMemo(
-    () => find_first_img(post),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [post.author, post.permlink]
-  );
-  const [image, setImage] = useState<string>(cardImage);
+export default function PostImage({ post, isPriority = false }: { post: CardEntry; isPriority?: boolean }) {
+  const [image, setImage] = useState<string>(post.cardImage);
 
   return (
     <>

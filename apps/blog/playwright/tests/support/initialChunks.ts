@@ -22,7 +22,9 @@ export const CHUNK_MARKERS = {
   waxApiCaller: 'x-wax-api-caller',
   waxWasm: 'wax.common.wasm',
   /** @hive/renderer: the label of one of DefaultRenderer's option checks */
-  renderer: 'RendererOptions.assetsWidth'
+  renderer: 'RendererOptions.assetsWidth',
+  /** Remarkable, the markdown renderer: one of its token types */
+  remarkable: 'footnote_reference_open'
 } as const;
 
 /** The Sentry SDK: page-load code reaches it only through a dynamic `import()`, made when a DSN is set. */

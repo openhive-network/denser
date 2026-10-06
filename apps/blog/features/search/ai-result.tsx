@@ -5,7 +5,7 @@ import Loading from '@ui/components/loading';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState, useMemo } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-packages/wax';
+import { PostStub } from '@hive/common-hiveio-packages/wax';
 import { PER_PAGE } from './lib/utils';
 import { DEFAULT_OBSERVER, Preferences } from '@/blog/lib/utils';
 import { PostListItemSkeleton } from '@hive/ui';
@@ -13,6 +13,7 @@ import { StaleTime } from '@/blog/lib/react-query';
 import { useSSRObserver } from '@/blog/components/observer-provider';
 
 import PostList from '../list-of-posts/posts-loader';
+import { CardEntry, loadCardEntries } from '../list-of-posts/lib/card-entry';
 import { useTranslation } from '@/blog/i18n/client';
 import { getPostsByIds, searchPosts } from '@transaction/lib/hivesense-api';
 import {
@@ -30,7 +31,7 @@ const AIResult = ({
 }: {
   query: string;
   nsfwPreferences: Preferences['nsfw'];
-  initialData?: MixedPostsResponse | null;
+  initialData?: Array<CardEntry | PostStub> | null;
 }) => {
   const ssrObserver = useSSRObserver();
   const { user, isHydrated } = useUserClient();
@@ -42,7 +43,7 @@ const AIResult = ({
   // the brief pre-hydration window.
   const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const observer = isHydrated ? clientObserver : ssrObserver;
-  const [loadedStubPosts, setLoadedStubPosts] = useState<Entry[]>([]);
+  const [loadedStubPosts, setLoadedStubPosts] = useState<CardEntry[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [consecutiveEmptyPages, setConsecutiveEmptyPages] = useState(0);
@@ -59,16 +60,20 @@ const AIResult = ({
   } = useQuery({
     queryKey: ['searchPosts', query, observer],
     queryFn: async () => {
-      return await promiseWithTimeout(
-        searchPosts({
-          query,
-          observer,
-          result_limit: 1000, // Get up to 1000 results
-          full_posts: PER_PAGE // Get first page fully expanded
-        }),
-        AI_SEARCH_REQUEST_TIMEOUT_MS,
-        'searchPosts'
-      );
+      const [results, { toCardSearchResults }] = await Promise.all([
+        promiseWithTimeout(
+          searchPosts({
+            query,
+            observer,
+            result_limit: 1000, // Get up to 1000 results
+            full_posts: PER_PAGE // Get first page fully expanded
+          }),
+          AI_SEARCH_REQUEST_TIMEOUT_MS,
+          'searchPosts'
+        ),
+        import('../list-of-posts/lib/to-card-entries')
+      ]);
+      return results ? toCardSearchResults(results) : null;
     },
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -84,7 +89,7 @@ const AIResult = ({
   const { fullPosts, stubPosts } = useMemo(() => {
     const parts = partitionHiveSensePosts(searchResults);
     return {
-      fullPosts: parts.fullPosts as Entry[],
+      fullPosts: parts.fullPosts as CardEntry[],
       stubPosts: parts.stubPosts as PostStub[]
     };
   }, [searchResults]);
@@ -121,13 +126,15 @@ const AIResult = ({
 
       // Fetch full post data for the stubs. Timeout so a hung by-ids call
       // surfaces a fallback instead of a blank page (#947).
-      const fullPostData = await promiseWithTimeout(
-        getPostsByIds({
-          posts: stubsToFetch,
-          observer
-        }),
-        AI_SEARCH_REQUEST_TIMEOUT_MS,
-        'getPostsByIds'
+      const fullPostData = await loadCardEntries(
+        promiseWithTimeout(
+          getPostsByIds({
+            posts: stubsToFetch,
+            observer
+          }),
+          AI_SEARCH_REQUEST_TIMEOUT_MS,
+          'getPostsByIds'
+        )
       );
 
       const validPosts = Array.isArray(fullPostData)
