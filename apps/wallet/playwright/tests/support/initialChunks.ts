@@ -9,7 +9,7 @@ import { expect, type APIRequestContext } from '@playwright/test';
  * code is compiled on its own, against its own app's path aliases.
  */
 
-const CHUNK_URL_PATTERN = /\/_next\/static\/chunks\/[^"'\s\\]+\.js/g;
+const CHUNK_URL_PATTERN = /(?:\/[\w-]+)*\/_next\/static\/chunks\/[^"'\s\\]+\.js/g;
 
 /** Strings that only the bundled code of a library carries, keyed by what they identify. */
 export const CHUNK_MARKERS = {

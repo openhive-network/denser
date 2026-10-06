@@ -1,5 +1,6 @@
 import type { Server } from 'node:http';
 import { test, expect } from '@playwright/test';
+import { WALLET_BASE_PATH } from '../support/basePath';
 import { STUB_WITNESSES, startWitnessApiStub } from '../support/witnessApiStub';
 
 /**
@@ -22,7 +23,7 @@ test.afterAll(async () => {
 
 test.describe('Witnesses server HTML', () => {
   test('WALLET-WITNESSES-SSR-01 — the witness rows are rendered on the server', async ({ page }) => {
-    await page.goto('/~witnesses');
+    await page.goto(`${WALLET_BASE_PATH}/~witnesses`);
 
     const body = page.getByTestId('witness-table-body');
     const rows = body.locator('tr');
@@ -37,7 +38,7 @@ test.describe('Witnesses server HTML', () => {
   });
 
   test('WALLET-WITNESSES-SSR-02 — the table has fixed column widths', async ({ page }) => {
-    await page.goto('/~witnesses');
+    await page.goto(`${WALLET_BASE_PATH}/~witnesses`);
 
     await expect(page.locator('table:has([data-testid="witness-table-body"])')).toHaveCSS('table-layout', 'fixed');
   });

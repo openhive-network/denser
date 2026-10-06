@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { WALLET_BASE_PATH } from '../support/basePath';
 import { SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from '../support/initialChunks';
 
 /**
@@ -22,11 +23,11 @@ test.describe('Initial JS chunks', () => {
     request
   }) => {
     expect(
-      await findMarkersInInitialChunks(request, '/@gtg/transfers', [...SENTRY_MARKERS, ...SIGNING_STACK_MARKERS])
+      await findMarkersInInitialChunks(request, `${WALLET_BASE_PATH}/@gtg/transfers`, [...SENTRY_MARKERS, ...SIGNING_STACK_MARKERS])
     ).toEqual([]);
   });
 
   test('WALLET-PERF-CHUNKS-02 — no chunk referenced from the home page HTML contains Sentry', async ({ request }) => {
-    expect(await findMarkersInInitialChunks(request, '/', SENTRY_MARKERS)).toEqual([]);
+    expect(await findMarkersInInitialChunks(request, `${WALLET_BASE_PATH}/`, SENTRY_MARKERS)).toEqual([]);
   });
 });
