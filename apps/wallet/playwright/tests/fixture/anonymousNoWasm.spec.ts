@@ -29,6 +29,18 @@ test.afterAll(async () => {
   await new Promise((resolve) => stub.close(resolve));
 });
 
+// The pages read from the stub on 127.0.0.1, but on a host without a network (`docker run --network
+// none`) Chromium reports navigator.onLine === false and React Query pauses every query, so nothing
+// reaches the stub. Report online, as the blog's fixture-proxy-test does.
+test.beforeEach(async ({ context }) => {
+  await context.addInitScript(() => {
+    Object.defineProperty(Navigator.prototype, 'onLine', {
+      configurable: true,
+      get: () => true
+    });
+  });
+});
+
 test.describe('Logged-out wallet pages without wasm', () => {
   test('WALLET-ANON-WASM-01 — /market renders its statistics and requests no .wasm', async ({ page }) => {
     const wasmRequests = recordWasmRequests(page);
