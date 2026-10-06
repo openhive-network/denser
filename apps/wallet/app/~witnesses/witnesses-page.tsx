@@ -1,17 +1,13 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import Big from 'big.js';
 import { getListWitnessVotes } from '@transaction/lib/hive';
-import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { Icons } from '@hive/ui/components/icons';
 import { Input } from '@hive/ui/components/input';
-import { FullAccount, IWitness } from '@hive/common-hiveio-packages/wax';
-import { convertStringToBig } from '@hive/ui/lib/helpers';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@hive/ui/components/button';
-import { getWitnessesByVote } from '@/wallet/lib/hive';
+import { getWitnessList, rankWitnesses, WITNESS_LIST_QUERY_KEY } from '@/wallet/lib/witness-list';
 import WitnessListItem from '@/wallet/components/witnesses-list-item';
 import DialogLogin from '@/wallet/components/dialog-login';
 import { useTranslation } from '@/wallet/i18n/client';
@@ -30,51 +26,18 @@ import {
   Separator
 } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
-import { getAccount, getAccounts } from '@transaction/lib/hive-api';
+import { getAccount } from '@transaction/lib/hive-api';
 
-const LAST_BLOCK_AGE_THRESHOLD_IN_SEC = 2592000;
 // User can vote only for 30 witnesses
 const MAX_VOTES = 30;
-
-const mapWitnesses =
-  (totalVesting: Big, totalShares: Big, headBlock: number, observer?: string[]) =>
-  (witness: IWitness, i: number, witnessList: IWitness[]) => {
-    const vestsToHpPrev = witnessList[i - 1]
-      ? totalVesting.times(Big(witnessList[i - 1].votes).div(totalShares)).div(1000000)
-      : 0;
-    const vestsToHp = Big(totalVesting.times(Big(witness.votes).div(totalShares))).div(1000000);
-    const deltaHpf = Big(vestsToHpPrev).minus(vestsToHp);
-    return {
-      ...witness,
-      rank: i + 1,
-      vestsToHp,
-      requiredHpToRankUp: deltaHpf.gt(0) ? deltaHpf : null,
-      witnessLastBlockAgeInSecs: (headBlock - witness.last_confirmed_block_num) * 3,
-      url: witness.url.replace('steemit.com', 'hive.blog'),
-      observer: observer ? observer.includes(witness.owner) : false
-    };
-  };
-export type ExtendWitness = ReturnType<ReturnType<typeof mapWitnesses>>;
 
 export default function WitnessesPage() {
   const { user } = useUserClient();
   const { t } = useTranslation('common_wallet');
   const searchParams = useSearchParams();
+  const highlight = searchParams?.get('highlight') ?? '';
   // value of input field for voting witness by name, not included in the list
-  const [voteInput, setVoteInput] = useState('');
-  const {
-    data: dynamicData,
-    isSuccess: dynamicSuccess,
-    isLoading: dynamicLoading
-  } = useQuery(['dynamicGlobalProperties'], () => getDynamicGlobalProperties(), {
-    select: (data) => {
-      return {
-        ...data,
-        total_vesting_fund_hive: convertStringToBig(data.total_vesting_fund_hive),
-        total_vesting_shares: convertStringToBig(data.total_vesting_shares)
-      };
-    }
-  });
+  const [voteInput, setVoteInput] = useState(highlight);
   const { data: observerData } = useQuery(
     ['accountData', user?.username || ''],
     () => getAccount(user?.username || ''),
@@ -99,65 +62,36 @@ export default function WitnessesPage() {
       .map((vote) => vote.witness);
   }, [listWitnessVotesData?.votes, user?.username]);
 
-  const headBlock = dynamicData?.head_block_number ?? 0;
-  const totalVesting = dynamicData?.total_vesting_fund_hive ?? Big(0);
-  const totalShares = dynamicData?.total_vesting_shares ?? Big(0);
-
-  const {
-    data: witnessesData,
-    isLoading: witnessesLoading,
-    isSuccess: witnessesSuccess
-  } = useQuery(['witnesses'], () => getWitnessesByVote(250), {
-    select: (witnesses) => {
-      const witnessVotes = listWitnessVotesData?.votes
-        .filter((vote) => vote.account === user?.username)
-        .map((vote) => vote.witness);
-      return witnesses
-        .map(mapWitnesses(totalVesting, totalShares, headBlock, witnessVotes))
-        .filter(
-          (witness) =>
-            witness.rank <= 101 || witness.witnessLastBlockAgeInSecs <= LAST_BLOCK_AGE_THRESHOLD_IN_SEC
-        );
-    },
-    enabled: dynamicSuccess
-  });
-
-  const { data: accountData, isLoading: accountLoading } = useQuery(
-    ['accountsData'],
-    async () => {
-      if (!witnessesData) return new Map<string, FullAccount>();
-      const res = await getAccounts(witnessesData.map((wit) => wit.owner));
-      return res.reduce((prev, curr) => {
-        prev.set(curr.name, curr);
-        return prev;
-      }, new Map<string, FullAccount>());
-    },
-    { enabled: witnessesSuccess || Boolean(witnessesData) }
-  );
+  const { data: witnessList, isLoading: witnessesLoading } = useQuery(WITNESS_LIST_QUERY_KEY, getWitnessList);
+  const rankedWitnesses = useMemo(() => (witnessList ? rankWitnesses(witnessList) : undefined), [witnessList]);
 
   // Mutation for handle voting witness
   const voteMutation = useWitnessVoteMutation();
   // Mutation for handle set proxy
   const proxyMutation = useSetProxyMutation();
 
-  // Function for handle voting witness
-  const onVote = async (witness: string, approve: boolean) => {
-    // Check if user is logged in and observerData is loaded
-    if (observerData && user) {
-      try {
-        await voteMutation.mutateAsync({
-          account: user.username,
-          witness: witness,
-          approve: approve
-        });
-      } catch (error) {
-        handleError(error, {
-          method: 'voteWitness',
-          params: { account: user.username, witness: witness, approve: approve }
-        });
+  const { mutateAsync: voteWitness } = voteMutation;
+  // Function for handle voting witness; stable, so the memoized rows don't re-render on every page render
+  const onVote = useCallback(
+    async (witness: string, approve: boolean) => {
+      // Check if user is logged in and observerData is loaded
+      if (observerData && user) {
+        try {
+          await voteWitness({
+            account: user.username,
+            witness: witness,
+            approve: approve
+          });
+        } catch (error) {
+          handleError(error, {
+            method: 'voteWitness',
+            params: { account: user.username, witness: witness, approve: approve }
+          });
+        }
       }
-    }
-  };
+    },
+    [observerData, user, voteWitness]
+  );
 
   // Function for handle set proxy
   const onSetProxy = async (witness: string) => {
@@ -171,10 +105,8 @@ export default function WitnessesPage() {
   };
 
   useEffect(() => {
-    if (!searchParams) return;
-    const highlight = searchParams.get('highlight');
-    setVoteInput(highlight ?? '');
-  }, [searchParams]);
+    setVoteInput(highlight);
+  }, [highlight]);
 
   // Calculate how many votes user have left
   const votesLeft = MAX_VOTES - userWitnessVotes.length;
@@ -197,7 +129,13 @@ export default function WitnessesPage() {
               {t('witnesses_page.witness_list_notes')}
             </p>
           </div>
-          <table className="mt-4 w-full table-auto text-xs">
+          <table className="mt-4 w-full table-fixed text-xs">
+            <colgroup>
+              <col className="w-12 sm:w-20" />
+              <col />
+              <col className="w-24 sm:w-40" />
+              <col className="w-20 sm:w-32" />
+            </colgroup>
             <thead
               className=" h-10 bg-zinc-100 text-left  dark:bg-slate-900"
               data-testid="witness-table-head"
@@ -210,7 +148,7 @@ export default function WitnessesPage() {
               </tr>
             </thead>
             <tbody data-testid="witness-table-body">
-              {witnessesLoading || dynamicLoading || accountLoading ? (
+              {witnessesLoading ? (
                 <tr>
                   <td className="animate-pulse p-2 text-xl">{t('global.loading')}</td>
 
@@ -220,7 +158,7 @@ export default function WitnessesPage() {
 
                   <td className="animate-pulse p-2 text-xl">{t('global.loading')}</td>
                 </tr>
-              ) : !witnessesData || !dynamicData || !accountData ? (
+              ) : !witnessList || !rankedWitnesses ? (
                 <tr>
                   <td className="animate-pulse p-2 text-xl">{t('global.something_went_wrong')}</td>
                   <td className="animate-pulse p-2 text-xl">{t('global.something_went_wrong')}</td>
@@ -228,13 +166,14 @@ export default function WitnessesPage() {
                   <td className="animate-pulse p-2 text-xl">{t('global.something_went_wrong')}</td>
                 </tr>
               ) : (
-                witnessesData.map((element) => (
+                rankedWitnesses.map((element) => (
                   <WitnessListItem
-                    onVote={(approve) => onVote(element.owner, approve)}
+                    onVote={onVote}
                     data={element}
-                    witnessAccount={accountData?.get(element.owner)}
+                    witnessProfile={witnessList.profiles[element.owner]}
                     key={element.id}
-                    headBlock={headBlock}
+                    headBlock={witnessList.headBlock}
+                    highlighted={highlight === element.owner}
                     voteEnabled={user?.isLoggedIn}
                     isVoted={userWitnessVotes.includes(element.owner)}
                     voteLoading={voteMutation.isLoading && voteMutation.variables?.witness === element.owner}

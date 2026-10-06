@@ -1,13 +1,11 @@
 import { Link } from '@hive/ui';
-import { ExtendWitness } from '@/wallet/app/~witnesses/witnesses-page';
+import { RankedWitness, WitnessProfile } from '@/wallet/lib/witness-list';
 import clsx from 'clsx';
 import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';
 import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
-import { FullAccount } from '@hive/common-hiveio-packages/wax';
 import { dateToRelative } from '@hive/ui/lib/parse-date';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import DialogLogin from './dialog-login';
 import { useTranslation } from '@/wallet/i18n/client';
 import { CircleSpinner } from '@ui/components/circle-spinner';
@@ -24,10 +22,12 @@ const getOwnersString = (owners?: string) => {
 };
 
 interface WitnessListItemProps {
-  data: ExtendWitness;
-  witnessAccount?: FullAccount;
+  data: RankedWitness;
+  witnessProfile?: WitnessProfile;
   headBlock: number;
-  onVote: (approve: boolean) => void;
+  /** Whether the row is the one the page's `highlight` parameter names */
+  highlighted: boolean;
+  onVote: (witness: string, approve: boolean) => void;
   voteEnabled: boolean;
   isVoted: boolean;
   voteLoading: boolean;
@@ -38,7 +38,8 @@ const ONE_WEEK_IN_SEC = 604800;
 function WitnessListItem({
   data,
   headBlock,
-  witnessAccount,
+  witnessProfile,
+  highlighted,
   onVote,
   voteEnabled,
   isVoted,
@@ -46,8 +47,8 @@ function WitnessListItem({
 }: WitnessListItemProps) {
   const { t } = useTranslation('common_wallet');
   const disableUser = data.signing_key === DISABLED_SIGNING_KEY;
-  const witnessDescription = witnessAccount?.profile?.witness_description;
-  const witnessOwner = witnessAccount?.profile?.witness_owner;
+  const witnessDescription = witnessProfile?.witnessDescription;
+  const witnessOwner = witnessProfile?.witnessOwner;
 
   function witnessLink() {
     if (disableUser)
@@ -96,22 +97,20 @@ function WitnessListItem({
     );
   }
 
-  const searchParams = useSearchParams();
-  const highlight = searchParams?.get('highlight') ?? '';
+  const onVoteForWitness = (approve: boolean) => onVote(data.owner, approve);
 
   const ref = useRef<HTMLTableRowElement>(null);
-  const markedWitness = highlight === data.owner;
   useEffect(() => {
-    if (highlight === data.owner && ref.current) {
+    if (highlighted && ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [data.owner, highlight]);
+  }, [highlighted]);
 
   return (
     <tr
       className={clsx({
-        'bg-rose-200  dark:bg-rose-800': markedWitness,
-        'even:bg-zinc-100 dark:even:bg-slate-900': !markedWitness
+        'bg-rose-200  dark:bg-rose-800': highlighted,
+        'even:bg-zinc-100 dark:even:bg-slate-900': !highlighted
       })}
       ref={ref}
     >
@@ -127,18 +126,18 @@ function WitnessListItem({
                 </span>
               ) : !isVoted ? (
                 <Icons.arrowUpCircle
-                  onClick={() => onVote(true)}
+                  onClick={() => onVoteForWitness(true)}
                   viewBox="1.7 1.7 20.7 20.7"
                   className={clsx(
                     'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
                     {
-                      'bg-slate-100 dark:bg-slate-900': !markedWitness,
-                      'bg-rose-200  dark:bg-rose-800': markedWitness
+                      'bg-slate-100 dark:bg-slate-900': !highlighted,
+                      'bg-rose-200  dark:bg-rose-800': highlighted
                     }
                   )}
                 />
               ) : (
-                <WitnessRemoveVote onVote={onVote}>
+                <WitnessRemoveVote onVote={onVoteForWitness}>
                   <Icons.arrowUpCircle className="relative inline-flex h-5 w-5 cursor-pointer rounded-full bg-rose-600 stroke-1 text-white dark:bg-rose-600 dark:text-white" />
                 </WitnessRemoveVote>
               )}
@@ -156,8 +155,8 @@ function WitnessListItem({
                   className={clsx(
                     'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
                     {
-                      'bg-slate-100 dark:bg-slate-900': !markedWitness,
-                      'bg-rose-200  dark:bg-rose-800': markedWitness
+                      'bg-slate-100 dark:bg-slate-900': !highlighted,
+                      'bg-rose-200  dark:bg-rose-800': highlighted
                     }
                   )}
                 />
@@ -166,7 +165,7 @@ function WitnessListItem({
           )}
         </div>
       </td>
-      <td className="font-light md:font-normal">
+      <td className="break-words font-light md:font-normal">
         <div className="flex" data-testid="witness-list-item-info">
           <div className="self hidden p-2 sm:block" title={t('witnesses_page.navigate_to_witness_profile')}>
             <Link href={`/@${data.owner}`} target="_blank">
@@ -182,7 +181,7 @@ function WitnessListItem({
             </Link>
           </div>
           <div className="flex flex-col gap-1 py-1 sm:px-2">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Link
                 href={`/@${data.owner}`}
                 data-testid="witness-name-link"
@@ -213,7 +212,7 @@ function WitnessListItem({
 
               <Link
                 href={
-                  highlight !== data.owner
+                  !highlighted
                     ? `/~witnesses?highlight=${data.owner}`
                     : `/~witnesses`
                 }
@@ -285,4 +284,4 @@ function WitnessListItem({
   );
 }
 
-export default WitnessListItem;
+export default memo(WitnessListItem);
