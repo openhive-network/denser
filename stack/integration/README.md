@@ -72,7 +72,24 @@ image is `loading="lazy"` (Lighthouse's own LCP discovery check).
 - **Results:** `https://$SITE_HOST/status/lighthouse/<revision>.json` and
   `/status/lighthouse/latest.json`, with `"status": "pass"` or `"breach"` and each
   breach named per route. A breach is also logged in the upgrade unit's journal
-  (`journalctl -u 'denser-integration-upgrade@*'`).
+  (`journalctl -u 'denser-integration-upgrade@*'`). The status page of the last
+  passes is `https://$SITE_HOST/status/lighthouse/` (`index.html`).
+- **Backend timing:** each run, and each route's median, also keeps what the report
+  says about the backend (`backend`): the document's TTFB (`server-response-time`),
+  the LCP breakdown, the LCP resource's host, bytes and duration, the image bytes,
+  and per upstream host (the Hive API nodes of `networks/<network>.env`,
+  `images.hive.blog`, the site; the rest summed as `other`) the request count, bytes
+  and median/max duration. Each run's full report is kept gzip'd under
+  `reports/<revision>/` for the latest revision only.
+- **Environment:** just before and just after the routes, 5 samples each of
+  `get_dynamic_global_properties` on the server's API node, one fixed
+  `images.hive.blog` image and the site's `/blog/favicon.ico` (`environment.before` /
+  `.after`). A pass is `environment.status: degraded` when a probe failed every
+  sample, or a probe median or a route's median TTFB is at least 2× and 300 ms above
+  its baseline: the median over the last 20 passes (`environment-baseline.json`,
+  which needs 3 of them first). A degraded pass's `verdict` reads
+  `breach (environment degraded)` (or `pass (…)`), apart from a code breach; the exit
+  code does not change.
 - **Advisory:** a breach never fails or rolls back the upgrade.
 - **Bounded:** one check (18 Lighthouse runs, about 7 minutes) per promoted revision
   whose builds have not been measured: a commit that rebuilt nothing (docs, tests)
