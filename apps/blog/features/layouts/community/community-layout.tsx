@@ -78,7 +78,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
         </div>
         <div className="col-span-12 md:col-span-9 xl:col-span-8">
           <div data-testid="card-explore-hive-mobile" className="md:col-span-10 md:flex xl:hidden">
-            {communityData && subsData ? (
+            {communityData ? (
               <CommunitySimpleDescription
                 data={communityData}
                 subs={subsData}
@@ -147,7 +147,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
         <div data-testid="card-explore-hive-desktop" className="hidden xl:col-span-2 xl:flex">
           {!community && !communityData ? (
             <CommunitiesSidebar />
-          ) : communityData && subsData ? (
+          ) : communityData ? (
             <CommunityDescription
               data={communityData}
               subs={subsData}
