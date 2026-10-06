@@ -24,7 +24,7 @@ const metadata = {
   },
   description: SITE_DESC,
   icons: {
-    icon: '/favicon.ico'
+    icon: `${basePath}/favicon.ico`
   },
   openGraph: {
     type: 'website',

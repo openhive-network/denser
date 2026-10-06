@@ -13,7 +13,7 @@
     "build": "react-env -- next build",
     "start": "react-env -- next start -p 4000",
     "lint": "eslint .",
-    "test:fixture": "pnpm build && playwright test --config=playwright.fixture.config.ts",
+    "test:fixture": "NEXT_PUBLIC_BASE_PATH=/wallet pnpm build && playwright test --config=playwright.fixture.config.ts",
     "pw:test:local": "playwright test --config=playwright.local4000.config.ts",
     "pw:test:local:chromium": "playwright test --project=chromium --config=playwright.local4000.config.ts --headed",
     "pw:test:local:firefox": "playwright test --project=firefox --config=playwright.local4000.config.ts --headed",
