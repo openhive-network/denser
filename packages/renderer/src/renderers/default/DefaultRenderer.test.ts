@@ -295,8 +295,8 @@ describe('DefaultRender', () => {
         const responsiveOptions: RendererOptions = {
             ...defaultOptions,
             imageProxyFn: (url: string) => `https://proxy.test/0x0/${url}`,
-            imageSrcSetFn: (url: string) => (url.endsWith('.gif') ? '' : `https://proxy.test/640/${url} 640w, https://proxy.test/1024/${url} 1024w`),
-            imageSizes: '100vw'
+            imageSrcSetFn: (url: string) => (url.endsWith('.gif') ? '' : `https://proxy.test/480/${url} 480w, https://proxy.test/768/${url} 768w, https://proxy.test/1024/${url} 1024w`),
+            imageSizes: 'calc(100vw - 42px)'
         };
         const twoImages = '![a](https://example.com/a.jpg)\n\n![b](https://example.com/b.jpg)';
 
@@ -304,8 +304,8 @@ describe('DefaultRender', () => {
             const rendered = new DefaultRenderer(responsiveOptions).render('![a](https://example.com/a.jpg)').trim();
             expect(rendered).to.equal(
                 '<p><img src="https://proxy.test/0x0/https://example.com/a.jpg" ' +
-                    'srcset="https://proxy.test/640/https://example.com/a.jpg 640w, https://proxy.test/1024/https://example.com/a.jpg 1024w" ' +
-                    'sizes="100vw" alt="a" loading="lazy" decoding="async" /></p>'
+                    'srcset="https://proxy.test/480/https://example.com/a.jpg 480w, https://proxy.test/768/https://example.com/a.jpg 768w, https://proxy.test/1024/https://example.com/a.jpg 1024w" ' +
+                    'sizes="calc(100vw - 42px)" alt="a" loading="lazy" decoding="async" /></p>'
             );
         });
 

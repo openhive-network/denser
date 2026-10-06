@@ -1,9 +1,11 @@
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 
-// Resizing-proxy widths offered to the browser for post body images.
-const BODY_IMAGE_WIDTHS = [640, 1024, 1536];
-// The post body column: full width below md, 8 of 12 grid columns up to the 2xl container.
-export const BODY_IMAGE_SIZES = '(min-width: 1536px) 1024px, (min-width: 768px) 67vw, 100vw';
+// Resizing-proxy widths offered to the browser for post body images. 480/768 let phones
+// (~320-420 CSS px at DPR 1.5-2) take a candidate close to their content width.
+const BODY_IMAGE_WIDTHS = [480, 640, 768, 1024, 1536];
+// The post body column: the viewport below md, 8 of 12 grid columns from md, minus the post
+// card's 42 px of padding and border either way, until the card's max-w-4xl caps it at 854 px.
+export const BODY_IMAGE_SIZES = '(min-width: 1344px) 854px, (min-width: 768px) calc(66.67vw - 42px), calc(100vw - 42px)';
 // Resizing would drop GIF animation frames and rasterize SVGs.
 const NOT_RESIZABLE_IMAGE = /\.(gif|svg)($|\?)/i;
 

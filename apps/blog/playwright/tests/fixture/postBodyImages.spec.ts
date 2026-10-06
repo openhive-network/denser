@@ -27,6 +27,9 @@ const MAX_LAYOUT_SHIFT = 0.05;
 // The post opens with a YouTube video, ahead of its body image.
 const VIDEO_THUMBNAIL_PROXY_URL = /^https:\/\/images\.hive\.blog\/p\/[^?]+\?format=match&mode=fit&width=1536$/;
 
+// Below md the post body spans the viewport minus the post card's padding and border.
+const MOBILE_FIRST_SIZES = /, calc\(100vw - 42px\)$/;
+
 const bodyImage = (page: Page) => page.locator('#articleBody img[alt="star_fork.png"]');
 
 async function waitForImageLoaded(image: Locator): Promise<string> {
@@ -44,9 +47,9 @@ test.describe('Post body images (fixture-based)', () => {
     const image = bodyImage(page);
     await expect(image).toHaveAttribute('src', FULL_SIZE_URL);
     const srcset = (await image.getAttribute('srcset')) ?? '';
-    expect(srcset.split(', ').map((candidate) => candidate.split(' ')[1])).toEqual(['640w', '1024w', '1536w']);
+    expect(srcset.split(', ').map((candidate) => candidate.split(' ')[1])).toEqual(['480w', '640w', '768w', '1024w', '1536w']);
     srcset.split(', ').forEach((candidate) => expect(candidate.split(' ')[0]).toMatch(RESIZED_PROXY_URL));
-    await expect(image).toHaveAttribute('sizes', /100vw$/);
+    await expect(image).toHaveAttribute('sizes', MOBILE_FIRST_SIZES);
     // Below the leading video, so not the LCP candidate.
     await expect(image).toHaveAttribute('loading', 'lazy');
     await expect(image).not.toHaveAttribute('fetchpriority', /.*/);
@@ -77,7 +80,7 @@ test.describe('Post body images (fixture-based)', () => {
       .split(', ')
       .forEach((candidate) => expect(candidate.split(' ')[0]).toMatch(RESIZED_PROXY_URL));
     const sizes = thumbnail.match(/ sizes="([^"]+)"/)?.[1];
-    expect(sizes).toMatch(/100vw$/);
+    expect(sizes).toMatch(MOBILE_FIRST_SIZES);
 
     const preloads = [...html.matchAll(/<link rel="preload" as="image"[^>]*>/g)].map(([link]) => link);
     expect(preloads).toHaveLength(1);
