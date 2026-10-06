@@ -52,11 +52,11 @@ The site runs from this checkout; no image is built or pulled for the apps.
    its state. Once every app reports the checkout's HEAD, `upgrade.sh` runs
    `lighthouse.sh` (below).
 
-No GitLab CI is involved. `DENSER_MODE=images` in `.env` runs the published
+No GitLab CI is involved. `DENSER_MODE=images` in `.env` runs the
 `registry.gitlab.syncad.com/hive/denser/{blog,wallet}-subdirectory:$DENSER_TAG` images
-instead (`compose.yml` alone), e.g. to pin a version. While the `publish:` section of
-`.aidev/project.yaml` stays, each promote still builds those images; once this site
-reports `"mode": "follow"` that section can go.
+instead (`compose.yml` alone), e.g. to pin a version. Promotes no longer build
+`:integration` images (`.aidev/project.yaml` has no `publish:` section since the site
+switched to follow mode), so in images mode pin a tag CI builds from develop/main.
 
 ## Lighthouse after each promote
 
