@@ -89,7 +89,7 @@ const CommentsSection = memo(function CommentsSection({
         observer={observer}
       />
       {paginatedDiscussionState.totalPages > 1 && (
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+        <div data-testid="comments-pagination" className="mt-6 flex flex-wrap items-center justify-center gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -124,6 +124,7 @@ const CommentsSection = memo(function CommentsSection({
                 key={pageNum}
                 variant={pageNum === paginatedDiscussionState.currentPage ? 'default' : 'outline'}
                 size="sm"
+                aria-current={pageNum === paginatedDiscussionState.currentPage ? 'page' : undefined}
                 onClick={() => handlePageClick(pageNum)}
               >
                 {pageNum}

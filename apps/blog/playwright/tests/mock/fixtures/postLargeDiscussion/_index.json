@@ -1,0 +1,13 @@
+{
+  "testName": "postLargeDiscussion",
+  "recordedAt": "2026-10-06T04:39:00.000Z",
+  "totalRequests": 4,
+  "savedFixtures": 4,
+  "duplicatesSkipped": 0,
+  "methods": {
+    "bridge.get_post": 1,
+    "bridge.get_discussion": 1,
+    "GET /hivesense-api": 1,
+    "GET /hivesense-api/posts/hiveio/announcing-the-launch-of-hive-blockchain/similar": 1
+  }
+}

@@ -3,6 +3,7 @@
 import { createContext, useContext, ReactNode } from 'react';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import type { Entry, Community, IFollowList } from '@hive/common-hiveio-packages/wax';
+import type { DiscussionPageSeed } from '@/blog/features/post-rendering/lib/paginate-discussion';
 
 const ObserverContext = createContext<string>(DEFAULT_OBSERVER);
 
@@ -119,10 +120,10 @@ export const InitialPostDataProvider = ({
 
 export const useInitialPostData = () => useContext(InitialPostDataContext);
 
-const InitialDiscussionContext = createContext<Record<string, Entry> | null>(null);
+const InitialDiscussionContext = createContext<DiscussionPageSeed | null>(null);
 
 /**
- * Provides server-fetched discussion (comments) data to client components.
+ * Provides the server-computed first comments page of a discussion to client components.
  * Used by the post detail page to pass getDiscussion() data
  * without relying on Hydrate/dehydrate.
  */
@@ -130,7 +131,7 @@ export const InitialDiscussionProvider = ({
   value,
   children
 }: {
-  value: Record<string, Entry> | null;
+  value: DiscussionPageSeed | null;
   children: ReactNode;
 }) => <InitialDiscussionContext.Provider value={value}>{children}</InitialDiscussionContext.Provider>;
 

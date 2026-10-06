@@ -22,6 +22,11 @@ import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voter
 import FlagIcon from '@/blog/features/post-rendering/flag-icon';
 import MutePostDialog from '@/blog/features/post-rendering/mute-post-dialog';
 import PostBodySection from '@/blog/features/post-rendering/post-body-section';
+import {
+  paginateDiscussion,
+  parseCommentSort,
+  sortDiscussion
+} from '@/blog/features/post-rendering/lib/paginate-discussion';
 import { PostDeleteDialog } from '@/blog/features/post-rendering/post-delete-dialog';
 import { SharePost } from '@/blog/features/post-rendering/share-post-dialog';
 import FacebookShare from '@/blog/features/post-rendering/share-post-facebook';
@@ -34,7 +39,6 @@ import AnimatedList from '@/blog/features/suggestions-posts/animated-tab';
 import SuggestionsList from '@/blog/features/suggestions-posts/list';
 import { useTranslation } from '@/blog/i18n/client';
 import { postContainerClasses } from '@/blog/lib/post-layout-classes';
-import sorter, { SortOrder } from '@/blog/lib/sorter';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { getBasePath } from '@ui/lib/path-utils';
 import { useQuery } from '@tanstack/react-query';
@@ -79,9 +83,6 @@ import { StaleTime } from '@/blog/lib/react-query';
 
 // The post editor (its form schema and transaction helpers) is needed only when editing the post.
 const PostForm = dynamic(() => import('@/blog/features/post-editor/post-form'), { ssr: false });
-
-// Maximum number of comments per page
-const MAX_COMMENTS_PER_PAGE = 50;
 
 // Stable empty fallback for mutedList — an inline [] would create a new reference
 // every render and invalidate mutedList-dependent useMemo in the comments tree.
@@ -228,134 +229,56 @@ const PostContent = () => {
     }
   });
 
-  // SSR discussion was fetched for ssrObserver - seed cache only when the
+  // SSR seeded only the first comments page, for ssrObserver - seed the cache only when the
   // client observer matches, otherwise refetch to get observer-specific stats
-  const useDiscussionInitialData = initialDiscussion && observerMatchesSSR;
-  const { data: discussionData } = useQuery({
+  const useDiscussionInitialData = !!initialDiscussion && observerMatchesSSR;
+  // Sort order the seeded page was built with; the seed holds the right entries only for it
+  const [seededCommentSort] = useState(initialDiscussion?.sort);
+  const [hasFullDiscussion, setHasFullDiscussion] = useState(false);
+  const {
+    data: discussionData,
+    refetch: refetchDiscussion,
+    isFetching: discussionIsFetching
+  } = useQuery({
     queryKey: ['discussionData', author, permlink, observer],
     queryFn: () => getDiscussion(author, permlink, observer),
-    initialData: useDiscussionInitialData ? initialDiscussion : undefined,
+    initialData: useDiscussionInitialData ? initialDiscussion.entries : undefined,
     initialDataUpdatedAt: useDiscussionInitialData ? Date.now() : undefined,
     staleTime: StaleTime.MEDIUM,
+    // Fires only for fetches, never for the seed or optimistic setQueryData updates
+    onSuccess: () => setHasFullDiscussion(true),
     onError: (error) => {
       handleError(error, { method: 'getDiscussion', params: { author, permlink, observer } });
+      setCommentsPage(1);
     }
   });
-  const discussionState = useMemo(() => {
-    if (!discussionData) return undefined;
-    const list = [...Object.keys(discussionData).map((key) => discussionData[key])];
-    const sortType = commentSort as SortOrder;
-    sorter(list, sortType);
-    return list;
-  }, [discussionData, commentSort]);
+  const isPartialDiscussion = useDiscussionInitialData && !hasFullDiscussion;
+  const commentSortOrder = parseCommentSort(commentSort);
+  const awaitingFullDiscussion =
+    isPartialDiscussion && (commentsPage > 1 || commentSortOrder !== seededCommentSort);
+
+  useEffect(() => {
+    if (awaitingFullDiscussion) refetchDiscussion();
+  }, [awaitingFullDiscussion, refetchDiscussion]);
+
+  const discussionState = useMemo(
+    () => (discussionData ? sortDiscussion(discussionData, commentSortOrder) : undefined),
+    [discussionData, commentSortOrder]
+  );
 
   const paginatedDiscussionState = useMemo(() => {
     if (!discussionState || !postData) return undefined;
-
-    // Build a map of comments by parent_author/parent_permlink for fast lookup
-    const commentsByParent = new Map<string, Entry[]>();
-
-    discussionState.forEach((comment) => {
-      const parentKey = `${comment.parent_author}/${comment.parent_permlink}`;
-      if (!commentsByParent.has(parentKey)) {
-        commentsByParent.set(parentKey, []);
-      }
-      commentsByParent.get(parentKey)!.push(comment);
-    });
-
-    // Find all main comments (direct replies to the current post/comment)
-    const mainComments = discussionState.filter(
-      (comment) =>
-        comment.depth === postData.depth + 1 &&
-        comment.parent_author === postData.author &&
-        comment.parent_permlink === postData.permlink
-    );
-
-    // Divide main comments into pages - maximum 50 comments total per page
-    const mainPost = discussionState.find((c) => c.depth === 0);
-    const pages: Set<number>[] = [];
-    let currentPageIds = new Set<number>();
-    let currentPageCount = mainPost ? 1 : 0;
-
-    if (mainPost) {
-      currentPageIds.add(mainPost.post_id);
+    if (!isPartialDiscussion || !initialDiscussion) {
+      return paginateDiscussion(discussionState, postData, commentsPage);
     }
-
-    for (const mainComment of mainComments) {
-      // Estimate how many comments this main comment has (1 + nested)
-      const parentKey = `${mainComment.author}/${mainComment.permlink}`;
-      const directChildren = commentsByParent.get(parentKey) || [];
-      // Simple estimate: main + direct children
-      const estimatedCount = 1 + Math.min(directChildren.length, 10);
-
-      // If adding this comment probably exceeds the limit, save the current page
-      if (
-        currentPageCount + estimatedCount > MAX_COMMENTS_PER_PAGE &&
-        currentPageIds.size > (mainPost ? 1 : 0)
-      ) {
-        pages.push(currentPageIds);
-        currentPageIds = new Set<number>();
-        currentPageCount = mainPost ? 1 : 0;
-        if (mainPost) {
-          currentPageIds.add(mainPost.post_id);
-        }
-      }
-
-      // Now collect actual comments with the limit
-      const remainingLimit = MAX_COMMENTS_PER_PAGE - currentPageCount;
-      if (remainingLimit <= 0) continue;
-
-      currentPageIds.add(mainComment.post_id);
-      currentPageCount++;
-
-      // Collect nested comments with the limit (iteratively)
-      const queue: Entry[] = [...directChildren].sort(
-        (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()
-      );
-      const visited = new Set<number>([mainComment.post_id]);
-
-      while (queue.length > 0 && currentPageCount < MAX_COMMENTS_PER_PAGE) {
-        const current = queue.shift()!;
-        if (visited.has(current.post_id)) continue;
-        if (currentPageIds.has(current.post_id)) continue;
-
-        visited.add(current.post_id);
-        currentPageIds.add(current.post_id);
-        currentPageCount++;
-
-        // Add children of this comment to the queue
-        const currentParentKey = `${current.author}/${current.permlink}`;
-        const currentChildren = commentsByParent.get(currentParentKey) || [];
-        const sortedCurrentChildren = [...currentChildren].sort(
-          (a, b) => new Date(a.created).getTime() - new Date(b.created).getTime()
-        );
-        queue.push(...sortedCurrentChildren);
-      }
-    }
-
-    if (currentPageIds.size > (mainPost ? 1 : 0)) {
-      pages.push(currentPageIds);
-    }
-
-    const totalPages = Math.max(1, pages.length);
-    const validPage = Math.min(commentsPage, totalPages);
-    const pageIncludedIds = pages[validPage - 1] || new Set<number>();
-
-    // Always include the main post
-    if (mainPost && !pageIncludedIds.has(mainPost.post_id)) {
-      pageIncludedIds.add(mainPost.post_id);
-    }
-
-    // Create the final list using Set for O(1) lookup
-    const paginatedComments = discussionState.filter((comment) => pageIncludedIds.has(comment.post_id));
-
+    // The seed is the first page; page count and top-level total come from the whole discussion
+    const firstPage = paginateDiscussion(discussionState, postData, 1);
     return {
-      comments: paginatedComments,
-      totalPages,
-      currentPage: validPage,
-      totalMainComments: mainComments.length
+      ...firstPage,
+      totalPages: Math.max(firstPage.totalPages, initialDiscussion.totalPages),
+      totalMainComments: initialDiscussion.totalMainComments
     };
-  }, [discussionState, postData, commentsPage]);
+  }, [discussionState, postData, commentsPage, isPartialDiscussion, initialDiscussion]);
   const firstPost = discussionState?.find((post) => post.depth === 0);
   const post_is_pinned = firstPost?.stats?.is_pinned ?? false;
 
@@ -452,6 +375,7 @@ const PostContent = () => {
   // Reset comments pagination when the post changes
   useEffect(() => {
     setCommentsPage(1);
+    setHasFullDiscussion(false);
   }, [author, permlink]);
 
   // Stable callback for CommentsSection
@@ -1033,7 +957,9 @@ const PostContent = () => {
             )}
           </div>
           <div id="comments" className="flex" />
-          {!!postData && paginatedDiscussionState ? (
+          {awaitingFullDiscussion && discussionIsFetching ? (
+            <Loading loading />
+          ) : !!postData && paginatedDiscussionState ? (
             <CommentsSection
               postData={postData}
               paginatedDiscussionState={paginatedDiscussionState}

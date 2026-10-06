@@ -5,6 +5,7 @@ import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { sanitizeHash } from '@ui/lib/sanitize-url';
+import { getEntryKey } from './lib/paginate-discussion';
 
 /**
  * ThreadLine component for Reddit-style visual thread indicators
@@ -125,9 +126,8 @@ const CommentList = ({
     const mutedContent = visibleComments.filter(
       (item) => parent && item.depth === 1 && item.parent_author === parent.author
     );
-    const unmutedContent = visibleComments.filter((md) =>
-      mutedContent.every((fd) => fd.post_id !== md.post_id)
-    );
+    const mutedContentKeys = new Set(mutedContent.map(getEntryKey));
+    const unmutedContent = visibleComments.filter((md) => !mutedContentKeys.has(getEntryKey(md)));
     return [...mutedContent, ...unmutedContent];
   }, [data, parent?.author, parent?.permlink, filteringEnabled, mutedAuthorNames]);
   return (
@@ -136,7 +136,7 @@ const CommentList = ({
         {!!arr
           ? arr.map((comment: Entry, index: number) => (
               <div
-                key={`parent-${comment.post_id}-index-${index}`}
+                key={`parent-${getEntryKey(comment)}`}
                 className={clsx('min-w-0 flex', {
                   'my-2 rounded border-2 border-red-600 bg-green-50 p-2 dark:bg-slate-950':
                     markedHash?.includes(`@${comment.author}/${comment.permlink}`) && comment.depth < 8
@@ -152,7 +152,7 @@ const CommentList = ({
                   parentAuthor={highestAuthor}
                   permissionToMute={permissionToMute}
                   comment={comment}
-                  key={`${comment.post_id}-item-${comment.depth}-index-${index}`}
+                  key={`${getEntryKey(comment)}-item`}
                   parent_depth={parent_depth}
                   mutedList={mutedList}
                   flagText={flagText}
@@ -169,7 +169,7 @@ const CommentList = ({
                     mutedList={mutedList}
                     data={data}
                     parent={comment}
-                    key={`${comment.post_id}-list-${comment.depth}-index-${index}`}
+                    key={`${getEntryKey(comment)}-list`}
                     parent_depth={parent_depth}
                     discussionAuthor={discussionAuthor}
                     discussionPermlink={discussionPermlink}
