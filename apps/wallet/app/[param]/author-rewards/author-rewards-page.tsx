@@ -14,8 +14,8 @@ import { Button } from '@ui/components/button';
 import { InfoIcon } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import TimeAgo from '@ui/components/time-ago';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { convertToFormattedHivePower } from '@/wallet/lib/utils';
+import { formatAsset, isNaiAsset } from '@ui/lib/asset-format';
 
 const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
@@ -23,13 +23,12 @@ export default function AuthorRewardsPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
   const { data, isLoading, dynamicData } = useRewardsHistory(username, 'author_reward_operation');
   const [currentPage, setCurrentPage] = useState(0);
-  const hiveChain = hiveChainService.reuseHiveChain();
 
   const itemsPerPage = 50;
   const totalPages = data ? Math.ceil(data.length / itemsPerPage) : 0;
   const currentItems = data?.reverse()?.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
   const weeklyRewards = useMemo(() => {
-    if (!data || !dynamicData || !hiveChain) return { hbd: 0, hive: 0, hp: 0 };
+    if (!data || !dynamicData) return { hbd: 0, hive: 0, hp: 0 };
 
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -52,7 +51,7 @@ export default function AuthorRewardsPage({ username }: { username: string }) {
         },
         { hbd: 0, hive: 0, hp: 0 }
       );
-  }, [data, dynamicData, hiveChain]);
+  }, [data, dynamicData]);
 
   return (
     <div>
@@ -134,17 +133,16 @@ export default function AuthorRewardsPage({ username }: { username: string }) {
                     <TableCell className="text-right">
                       <div className="flex flex-col items-end">
                         <span>
-                          {reward.op.vesting_payout && dynamicData && hiveChain
+                          {reward.op.vesting_payout && dynamicData
                             ? convertToFormattedHivePower(
                                 reward.op.vesting_payout,
                                 dynamicData.total_vesting_fund_hive,
-                                dynamicData.total_vesting_shares,
-                                hiveChain
+                                dynamicData.total_vesting_shares
                               )
                             : '0'}
                         </span>
-                        <span>{hiveChain?.formatter.format(reward.op.hive_payout)}</span>
-                        <span>{hiveChain?.formatter.format(reward.op.hbd_payout)}</span>
+                        <span>{isNaiAsset(reward.op.hive_payout) && formatAsset(reward.op.hive_payout)}</span>
+                        <span>{isNaiAsset(reward.op.hbd_payout) && formatAsset(reward.op.hbd_payout)}</span>
                       </div>
                     </TableCell>
                   </TableRow>

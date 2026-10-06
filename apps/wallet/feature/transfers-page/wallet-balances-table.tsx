@@ -5,7 +5,7 @@ import Big from 'big.js';
 import dayjs from 'dayjs';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
-import { FullAccount, IFeedHistory, HiveChain, IOpenOrdersData } from '@hive/common-hiveio-packages/wax';
+import { FullAccount, IFeedHistory, IOpenOrdersData } from '@hive/common-hiveio-packages/wax';
 import { Link } from '@hive/ui';
 import {
   Button,
@@ -32,6 +32,8 @@ import { handleError } from '@ui/lib/handle-error';
 import { toast } from '@ui/components/hooks/use-toast';
 import { powerdownHive, convertToHP, numberWithCommas } from '@ui/lib/utils';
 import { convertStringToBig, isHive } from '@ui/lib/helpers';
+import { createNaiAsset } from '@ui/lib/asset-constants';
+import { formatAsset } from '@ui/lib/asset-format';
 import { getCurrentHpApr } from '@/wallet/lib/utils';
 import RCRow from './rc-row';
 
@@ -45,7 +47,6 @@ interface WalletBalancesTableProps {
   accountData: FullAccount;
   dynamicData: GetDynamicGlobalPropertiesResponse;
   historyFeedData: IFeedHistory;
-  hiveChain: HiveChain;
   listOfAccounts: SuggestedUser[];
   isOwner: boolean;
   currentUsername?: string;
@@ -58,7 +59,6 @@ const WalletBalancesTable = ({
   accountData,
   dynamicData,
   historyFeedData,
-  hiveChain,
   listOfAccounts,
   isOwner,
   currentUsername,
@@ -97,7 +97,7 @@ const WalletBalancesTable = ({
     dynamicData.total_vesting_fund_hive
   );
 
-  const powerdown_hive = powerdownHive(accountData, dynamicData, hiveChain);
+  const powerdown_hive = powerdownHive(accountData, dynamicData);
   const received_power_balance =
     (delegated_hive.lt(0) ? '+' : '') + numberWithCommas((-delegated_hive).toFixed(3));
 
@@ -113,14 +113,10 @@ const WalletBalancesTable = ({
   const sumForSale = (assetFilter: (order: IOpenOrdersData) => boolean) =>
     (openOrders ?? []).filter(assetFilter).reduce((sum, order) => sum + order.for_sale, 0);
 
-  const hiveOrdersNai = hiveChain.hiveSatoshis(sumForSale((order) => isHive(order.sell_price.base)));
-  const hbdOrdersNai = hiveChain.hbdSatoshis(sumForSale((order) => !isHive(order.sell_price.base)));
+  const hiveOrdersNai = createNaiAsset('HIVE', sumForSale((order) => isHive(order.sell_price.base)));
+  const hbdOrdersNai = createNaiAsset('HBD', sumForSale((order) => !isHive(order.sell_price.base)));
   const hiveOrders = convertStringToBig(hiveOrdersNai);
   const hbdOrders = convertStringToBig(hbdOrdersNai);
-
-  const noTokenNameFormatter = hiveChain.formatter.extend({
-    asset: { displayAsNai: false, appendTokenName: false, formatAmount: true }
-  });
 
   const total_hbd = hbd_balance
     .plus(hbd_balance_savings)
@@ -249,7 +245,7 @@ const WalletBalancesTable = ({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="px-4" data-testid="wallet-hive-open-orders">
-                          <Link href="/market">(+{hiveChain.formatter.waxify`${hiveOrdersNai}`})</Link>
+                          <Link href="/market">(+{formatAsset(hiveOrdersNai)})</Link>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent className="font-normal">{t('profile.open_orders')}</TooltipContent>
@@ -416,7 +412,7 @@ const WalletBalancesTable = ({
                       <TooltipTrigger asChild>
                         <div className="px-4" data-testid="wallet-hbd-open-orders">
                           <Link href="/market">
-                            (+{'$' + noTokenNameFormatter.format(hbdOrdersNai)})
+                            (+{'$' + formatAsset(hbdOrdersNai, { appendTokenName: false })})
                           </Link>
                         </div>
                       </TooltipTrigger>

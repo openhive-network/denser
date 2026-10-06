@@ -20,7 +20,7 @@ import {
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
 import { getLogger } from '@ui/lib/logging';
-import { getChain, getReadChain } from '@transaction/lib/chain';
+import { getReadChain } from '@transaction/lib/chain';
 
 const logger = getLogger('app');
 
@@ -66,8 +66,8 @@ let opTypesPromise: Promise<HiveOpTypeSchema[]> | undefined;
 export const getOpTypes = async (): Promise<HiveOpTypeSchema[]> => {
   // The list is a chain constant, so one successful fetch serves the whole session
   if (!opTypesPromise) {
-    opTypesPromise = getChain()
-      .then((chain) => chain.restApi['hafah-api']['operation-types']())
+    opTypesPromise = getReadChain()
+      .restApi['hafah-api']['operation-types']()
       .catch((error) => {
         opTypesPromise = undefined; // do not cache failures, next call retries
         throw error;
@@ -106,12 +106,12 @@ export const getWitnessesByVote = async (limit: number): Promise<IWitness[]> => 
 };
 
 export const findRcAccounts = async (username: string): Promise<{ rc_accounts: RcAccount[] }> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   return chain.api.rc_api.find_rc_accounts({ accounts: [username] });
 };
 
 export const getDirectDelegations = async (account: string): Promise<IDirectDelegation> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   return chain.api.rc_api.list_rc_direct_delegations({ limit: 1000, start: [account, ''] });
 };
 
@@ -125,7 +125,7 @@ export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {
 
 export const getProposals = async (params?: Partial<IGetProposalsParams>): Promise<IProposal[]> => {
   try {
-    const chain = await getChain();
+    const chain = getReadChain();
     const response = await chain.api.database_api.list_proposals({
       ...DEFAULT_PARAMS_FOR_PROPOSALS,
       ...params
@@ -155,7 +155,7 @@ export const getVestingDelegations = async (
   from: string = '',
   limit: number = 1000
 ): Promise<IVestingDelegation[]> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const response = await chain.api.database_api.list_vesting_delegations({
     start: [username, from],
     limit,
@@ -193,7 +193,7 @@ export const getAccountOperations = async (
   pageSize: number = 500,
   observer: string
 ): Promise<IGetOperationsByAccountResponse> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const operationTypesIds = await getOperationTypeIds(walletOperations);
   const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
     'account-name': username,
@@ -254,7 +254,7 @@ export const getFinancialReportOperations = async (
   username: string,
   pageSize: number = 500
 ): Promise<HiveOperation[]> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const operationTypesIds = await getOperationTypeIds(financialReportOperations);
   const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
     'account-name': username,
@@ -269,7 +269,7 @@ export const getRestApiAccountRewardsHistory = async (
   op_type: 'author_reward_operation' | 'curation_reward_operation',
   limit: number = 20
 ): Promise<HiveOperation[]> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const [opTypeId] = await getOperationTypeIds([op_type]);
   const operations = (
     await chain.restApi['hivemind-api'].accountsOperations({
@@ -286,7 +286,7 @@ export const getProposalVotes = async (
   voter: string = '',
   limit: number = 1000
 ): Promise<IProposalVote[]> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const result = await chain.api.database_api.list_proposal_votes({
     start: [proposalId, voter],
     limit,
@@ -298,7 +298,7 @@ export const getProposalVotes = async (
 };
 
 export const getUserVotes = async (voter: string, limit: number = 1000): Promise<IProposalVote[]> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const result = await chain.api.database_api.list_proposal_votes({
     start: [voter],
     limit,
@@ -310,17 +310,17 @@ export const getUserVotes = async (voter: string, limit: number = 1000): Promise
 };
 
 export const getMarketStatistics = async (): Promise<IMarketStatistics> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   return chain.api.market_history_api.get_ticker({});
 };
 
 export const getOrderBook = async (limit: number = 500): Promise<IOrdersData> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   return chain.api.market_history_api.get_order_book({ limit });
 };
 
 export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const response = await chain.api.database_api.list_limit_orders({
     start: [user, 0],
     limit: 1000,
@@ -330,7 +330,7 @@ export const getOpenOrder = async (user: string): Promise<IOpenOrdersData[]> => 
 };
 
 export const getTradeHistory = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const todayEarlier = dayjs().subtract(10, 'hour').format().split('+')[0];
   const todayNow = dayjs().format().split('+')[0];
   const response = await chain.api.market_history_api.get_trade_history({
@@ -342,18 +342,18 @@ export const getTradeHistory = async (limit: number = 1000): Promise<IRecentTrad
 };
 
 export const getRecentTrades = async (limit: number = 1000): Promise<IRecentTradesData[]> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const response = await chain.api.market_history_api.get_recent_trades({ limit });
   return response.trades;
 };
 
 export const getSavingsWithdrawals = async (account: string): Promise<SavingsWithdrawals> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   return chain.api.database_api.find_savings_withdrawals({ account: account });
 };
 
 export const getOwnerHistory = async (account: string): Promise<OwnerHistory> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   const result = await chain.api.database_api.find_owner_histories({ owner: account });
   return result.owner_auths;
 };

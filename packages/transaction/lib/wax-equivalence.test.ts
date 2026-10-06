@@ -4,6 +4,8 @@ import { createReadClient, JsonRpcApiError } from './read-client';
 import { fetchReadTransport, ReadTransportError } from './read-transport';
 import { isTransportError } from './wax-errors';
 import { vestsToHiveSatoshis } from '../../ui/lib/asset-math';
+import { formatAsset } from '../../ui/lib/asset-format';
+import { createNaiAsset } from '../../ui/lib/asset-constants';
 
 /**
  * The wasm-free read client and the asset math that replaced wax calls must give the same results
@@ -30,7 +32,13 @@ interface IWaxChain {
   extendRest(definition: object): IWaxChain;
   vestsSatoshis(amount: string): INaiAsset;
   hiveSatoshis(amount: string): INaiAsset;
+  hbdSatoshis(amount: string): INaiAsset;
+  formatter: IWaxFormatter;
   vestsToHp(vests: INaiAsset, totalVestingFundHive: INaiAsset, totalVestingShares: INaiAsset): INaiAsset;
+}
+interface IWaxFormatter {
+  format(value: unknown): string;
+  extend(options: object): IWaxFormatter;
 }
 interface IWaxModule {
   createHiveChain(options: object): Promise<IWaxChain>;
@@ -194,7 +202,66 @@ describe('wasm-free reads and asset math are equivalent to wax', function () {
       'hivemind accountsOperations (placeholder in a multi-segment urlPath)',
       (c) => c.restApi['hivemind-api'].accountsOperations({ 'account-name': 'alice', page: 2, 'operation-types': [1, 2] }),
       REST
-    ]
+    ],
+    [
+      'hivemind accountsOperations (wallet history: comma-joined operation types, observer)',
+      (c) =>
+        c.restApi['hivemind-api'].accountsOperations({
+          'account-name': 'alice',
+          page: undefined,
+          'page-size': 500,
+          'operation-types': '2,3,49',
+          'observer-name': 'hive.blog'
+        }),
+      REST
+    ],
+    ['hafah operation-types (no params)', (c) => c.restApi['hafah-api']['operation-types'](), REST],
+    ['rc_api.find_rc_accounts', (c) => c.api.rc_api.find_rc_accounts({ accounts: ['alice'] }), API],
+    ['rc_api.list_rc_direct_delegations', (c) => c.api.rc_api.list_rc_direct_delegations({ limit: 1000, start: ['alice', ''] }), API],
+    [
+      'database_api.list_proposals',
+      (c) =>
+        c.api.database_api.list_proposals({
+          start: [],
+          limit: 30,
+          order: 'by_total_votes',
+          order_direction: 'descending',
+          status: 'votable'
+        }),
+      API
+    ],
+    [
+      'database_api.list_proposal_votes',
+      (c) =>
+        c.api.database_api.list_proposal_votes({
+          start: [42, ''],
+          limit: 1000,
+          order: 'by_proposal_voter',
+          order_direction: 'ascending',
+          status: 'all'
+        }),
+      API
+    ],
+    [
+      'database_api.list_vesting_delegations',
+      (c) => c.api.database_api.list_vesting_delegations({ start: ['alice', ''], limit: 1000, order: 'by_delegation' }),
+      API
+    ],
+    [
+      'database_api.list_limit_orders',
+      (c) => c.api.database_api.list_limit_orders({ start: ['alice', 0], limit: 1000, order: 'by_account' }),
+      API
+    ],
+    ['database_api.find_savings_withdrawals', (c) => c.api.database_api.find_savings_withdrawals({ account: 'alice' }), API],
+    ['database_api.find_owner_histories', (c) => c.api.database_api.find_owner_histories({ owner: 'alice' }), API],
+    ['market_history_api.get_ticker (empty params)', (c) => c.api.market_history_api.get_ticker({}), API],
+    ['market_history_api.get_order_book', (c) => c.api.market_history_api.get_order_book({ limit: 500 }), API],
+    [
+      'market_history_api.get_trade_history',
+      (c) => c.api.market_history_api.get_trade_history({ start: '2026-10-01T00:00:00', end: '2026-10-01T10:00:00', limit: 1000 }),
+      API
+    ],
+    ['market_history_api.get_recent_trades', (c) => c.api.market_history_api.get_recent_trades({ limit: 1000 }), API]
   ];
 
   for (const [name, call, endpoint] of samples) {
@@ -285,5 +352,36 @@ describe('wasm-free reads and asset math are equivalent to wax', function () {
 
       expect(vestsToHiveSatoshis(BigInt(vests), BigInt(fund), BigInt(shares)).toString()).to.equal(expected.amount, vests);
     }
+  });
+
+  const SATOSHI_SAMPLES = ['0', '1', '999', '1000', '1234567', '100000000', '123456789012', '9007199254740993'];
+
+  it('createNaiAsset matches wax hiveSatoshis / hbdSatoshis / vestsSatoshis', () => {
+    for (const satoshis of SATOSHI_SAMPLES) {
+      expect(createNaiAsset('HIVE', satoshis)).to.deep.equal(waxChain.hiveSatoshis(satoshis), satoshis);
+      expect(createNaiAsset('HBD', BigInt(satoshis))).to.deep.equal(waxChain.hbdSatoshis(satoshis), satoshis);
+      expect(createNaiAsset('VESTS', satoshis)).to.deep.equal(waxChain.vestsSatoshis(satoshis), satoshis);
+    }
+  });
+
+  it('formatAsset matches wax formatter.format, with and without the token name', () => {
+    const noTokenName = waxChain.formatter.extend({
+      asset: { displayAsNai: false, appendTokenName: false, formatAmount: true }
+    });
+    for (const satoshis of SATOSHI_SAMPLES) {
+      for (const asset of [waxChain.hiveSatoshis(satoshis), waxChain.hbdSatoshis(satoshis), waxChain.vestsSatoshis(satoshis)]) {
+        expect(formatAsset(asset)).to.equal(waxChain.formatter.format(asset), JSON.stringify(asset));
+        expect(formatAsset(asset, { appendTokenName: false })).to.equal(noTokenName.format(asset), JSON.stringify(asset));
+      }
+    }
+  });
+
+  it('formatAsset keeps the exact value of a negative amount', () => {
+    expect(formatAsset(createNaiAsset('HIVE', '-1234567'))).to.equal(`-${formatAsset(createNaiAsset('HIVE', '1234567'))}`);
+    expect(formatAsset(createNaiAsset('VESTS', '-1'))).to.equal(`-${formatAsset(createNaiAsset('VESTS', '1'))}`);
+  });
+
+  it('formatAsset rejects a NAI that is not a Hive asset', () => {
+    expect(() => formatAsset({ amount: '1', precision: 3, nai: '@@000000999' })).to.throw('Unknown asset NAI');
   });
 });

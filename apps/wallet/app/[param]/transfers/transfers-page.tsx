@@ -20,14 +20,12 @@ import WalletMenu from '@/wallet/components/wallet-menu';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import FinancialReport from '@/wallet/components/financial-report';
 import env from '@beam-australia/react-env';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { handleError } from '@ui/lib/handle-error';
 
 export default function TransfersPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
   const blogURL = env('BLOG_DOMAIN');
   const { user } = useUserClient();
-  const hiveChain = hiveChainService.reuseHiveChain();
   const queryClient = useQueryClient();
   // The profile layout already holds this account (prefetched on the server): start from it instead
   // of a second find_accounts. Mutations still refresh it through the 'accountData' key.
@@ -83,8 +81,7 @@ export default function TransfersPage({ username }: { username: string }) {
     historyFeedLoading ||
     !accountData ||
     !dynamicData ||
-    !historyFeedData ||
-    !hiveChain
+    !historyFeedData
   ) {
     return (
       <Loading
@@ -94,8 +91,7 @@ export default function TransfersPage({ username }: { username: string }) {
           historyFeedLoading ||
           !accountData ||
           !dynamicData ||
-          !historyFeedData ||
-          !hiveChain
+          !historyFeedData
         }
       />
     );
@@ -118,7 +114,6 @@ export default function TransfersPage({ username }: { username: string }) {
         accountData={accountData}
         dynamicData={dynamicData}
         historyFeedData={historyFeedData}
-        hiveChain={hiveChain}
         listOfAccounts={listOfAccounts}
         isOwner={user?.username === username}
         currentUsername={user?.username}

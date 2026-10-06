@@ -22,7 +22,6 @@ import {
 import { TFunction } from 'i18next';
 import { Link } from '@hive/ui';
 import { convertToFormattedHivePower } from '@/wallet/lib/utils';
-import { HiveChain } from '@transaction/lib/hive-chain-service';
 
 type DynamicData = Pick<
   GetDynamicGlobalPropertiesResponse,
@@ -32,8 +31,7 @@ type DynamicData = Pick<
 export function createWalletOperationsFormatter(
   username: string,
   dynamicData: DynamicData,
-  t: TFunction<'common_wallet', undefined>,
-  hiveChain: HiveChain
+  t: TFunction<'common_wallet', undefined>
 ) {
   class WalletOperationsFormatter implements IWaxCustomFormatter {
     constructor(private readonly wax: IWaxBaseInterface) {}
@@ -47,8 +45,7 @@ export function createWalletOperationsFormatter(
       return convertToFormattedHivePower(
         vests as NaiAsset | undefined,
         dynamicData.total_vesting_fund_hive,
-        dynamicData.total_vesting_shares,
-        hiveChain
+        dynamicData.total_vesting_shares
       );
     }
 
