@@ -174,6 +174,7 @@
     "witnesses": "Witnesses",
     "account_history_description": "Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.",
     "no_transactions_found": "Nie znaleziono transakcji",
+    "show_more_transactions": "Pokaż więcej",
     "the_next_power_down": "Następne zmniejszanie mocy odbędzie się za",
     "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",

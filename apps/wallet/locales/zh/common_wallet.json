@@ -147,6 +147,7 @@
     "witnesses": "Witnesses",
     "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
     "no_transactions_found": "No transactions found",
+    "show_more_transactions": "显示更多",
     "the_next_power_down": "The next power down is scheduled to happen in ",
     "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",

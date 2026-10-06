@@ -145,6 +145,7 @@
     "witnesses": "Witnesses",
     "account_history_description": "送金メモのスパムやフィッシングに注意してください。信用していないユーザーからのリンクを開かないでください。第三者のウェブサイトに秘密キーを提供しないでください。 Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
     "no_transactions_found": "No transactions found",
+    "show_more_transactions": "もっと見る",
     "the_next_power_down": "The next power down is scheduled to happen in ",
     "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",

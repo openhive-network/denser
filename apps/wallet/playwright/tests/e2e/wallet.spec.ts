@@ -159,6 +159,13 @@ test.describe('Wallet page of @gtg tests', () => {
     ).toBeVisible({ timeout: 30000 });
 
     if (await walletPage.walletAccountHistoryRow.first().isVisible()) {
+      // The history renders a page of rows at a time: expand it to the whole history first
+      const showMoreButton = page.getByTestId('wallet-account-history-show-more');
+      while (await showMoreButton.isVisible()) {
+        const shownRows = await walletPage.walletAccountHistoryRow.count();
+        await showMoreButton.click();
+        await expect(walletPage.walletAccountHistoryRow).not.toHaveCount(shownRows);
+      }
       const accountHistoryUI = await walletPage.walletAccountHistoryRow.all();
       await expect(accountHistoryUI.length).toBe(accountHistoryResult.result.length);
     } else {

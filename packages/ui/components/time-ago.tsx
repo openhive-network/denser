@@ -18,9 +18,30 @@ const TIME_INTERVALS: [number, Intl.RelativeTimeFormatUnit][] = [
   [1, 'second']
 ];
 
+// Intl formatters are costly to construct and lists render hundreds of TimeAgo: share them.
+const UTC_NOW_FORMAT = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'UTC',
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric'
+});
+const relativeTimeFormats = new Map<string, Intl.RelativeTimeFormat>();
+
+const getRelativeTimeFormat = (lang: string): Intl.RelativeTimeFormat => {
+  let rtf = relativeTimeFormats.get(lang);
+  if (!rtf) {
+    rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' });
+    relativeTimeFormats.set(lang, rtf);
+  }
+  return rtf;
+};
+
 const getTimeAgoString = (date: Date, lang: string = 'en'): string => {
   try {
-    const now = new Date().toLocaleString('en-US', { timeZone: 'UTC' });
+    const now = UTC_NOW_FORMAT.format(new Date());
     const timestamp = new Date(date).getTime();
     const diff = Math.floor((new Date(now).getTime() - timestamp) / 1000);
 
@@ -28,7 +49,7 @@ const getTimeAgoString = (date: Date, lang: string = 'en'): string => {
       return 'Invalid date';
     }
 
-    const rtf = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' });
+    const rtf = getRelativeTimeFormat(lang);
 
     for (const [secondsInUnit, unit] of TIME_INTERVALS) {
       const value = Math.floor(diff / secondsInUnit);
