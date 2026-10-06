@@ -25,7 +25,8 @@
       "largest-contentful-paint": 11000,
       "total-blocking-time": 3500,
       "cumulative-layout-shift": 0.1,
-      "script-transfer-bytes": 960000
+      "script-transfer-bytes": 960000,
+      "lcp-lazy-loaded": false
     },
     "/blog/@gtg": {
       "performance": 40,
