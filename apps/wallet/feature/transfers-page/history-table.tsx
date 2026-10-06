@@ -1,13 +1,44 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { TFunction } from 'i18next';
 import { Button } from '@ui/components';
 import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { HiveChain, hiveChainService } from '@transaction/lib/hive-chain-service';
+import { getLogger } from '@ui/lib/logging';
 import { createWalletOperationsFormatter } from './wallet-operations-formatter';
 import HistoryTableRow from './history-table-row';
 
+const logger = getLogger('app');
+
 type DynamicData = Pick<GetDynamicGlobalPropertiesResponse, 'total_vesting_fund_hive' | 'total_vesting_shares'>;
+
+/**
+ * The operation descriptions are rendered by wax's formatter, so wax is loaded here, after the page
+ * (balances included) has painted, instead of gating the page on it.
+ */
+const useLazyHiveChain = (): { hiveChain: HiveChain | undefined; failed: boolean } => {
+  const [hiveChain, setHiveChain] = useState(() => hiveChainService.reuseHiveChain());
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    if (hiveChain) return;
+    let cancelled = false;
+    hiveChainService
+      .getHiveChain()
+      .then((chain) => {
+        if (!cancelled) setHiveChain(chain);
+      })
+      .catch((error: unknown) => {
+        logger.error(error, 'Loading wax for the account history formatter failed');
+        if (!cancelled) setFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [hiveChain]);
+
+  return { hiveChain, failed };
+};
 
 // Each row costs a wax format call and a TimeAgo: rendering the whole history in one commit blocks
 // the main thread for seconds on mobile, so rows are rendered a page at a time.
@@ -29,11 +60,11 @@ const HistoryTable = ({
   dynamicData
 }: HistoryTableProps) => {
   const [visibleCount, setVisibleCount] = useState(HISTORY_PAGE_SIZE);
-  const hiveChain = hiveChainService.reuseHiveChain();
+  const { hiveChain, failed: hiveChainFailed } = useLazyHiveChain();
 
   const formatOperationDescription = useMemo(() => {
     if (!hiveChain) return null;
-    const FormatterClass = createWalletOperationsFormatter(username, dynamicData, t, hiveChain);
+    const FormatterClass = createWalletOperationsFormatter(username, dynamicData, t);
     const extendedFormatter = hiveChain.formatter.extend(FormatterClass);
 
     return (operation: HiveOperation): React.ReactNode => {
@@ -55,7 +86,8 @@ const HistoryTable = ({
       </div>
     );
 
-  if (!formatOperationDescription) return <></>;
+  if (hiveChainFailed) return <div className="py-12 text-center">{t('global.something_went_wrong')}</div>;
+  if (!formatOperationDescription) return <div>{t('global.loading')}</div>;
 
   return (
     <>

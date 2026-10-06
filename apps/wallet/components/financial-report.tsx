@@ -12,7 +12,7 @@ import { Checkbox } from '@ui/components/checkbox';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useMemo, useState } from 'react';
 import { HiveOperation, OpType } from '@hive/common-hiveio-packages/wax';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
+import { formatAsset, isNaiAsset } from '@ui/lib/asset-format';
 import dayjs from 'dayjs';
 import { useFinancialReportOperations } from '@/wallet/components/hooks/use-financial-report-operations';
 import Loading from '@ui/components/loading';
@@ -54,20 +54,9 @@ const escapeCSV = (value: string | number | undefined | null): string => {
   return str;
 };
 
-const formatAmount = (
-  hiveChain: ReturnType<typeof hiveChainService.reuseHiveChain>,
-  amount: unknown
-): string => {
-  if (!amount || !hiveChain) return '';
-  try {
-    return hiveChain.formatter.format(amount);
-  } catch {
-    return '';
-  }
-};
+const formatAmount = (amount: unknown): string => (isNaiAsset(amount) ? formatAsset(amount) : '');
 
 const convertHistoryToCSV = (transactions: HiveOperation[]) => {
-  const hiveChain = hiveChainService.reuseHiveChain();
   let csv = '';
   const columns = [
     'timestamp',
@@ -110,63 +99,63 @@ const convertHistoryToCSV = (transactions: HiveOperation[]) => {
       case 'transfer_operation':
         row.from = String(value.from || '');
         row.to = String(value.to || '');
-        row.amount = formatAmount(hiveChain, value.amount);
+        row.amount = formatAmount(value.amount);
         row.memo = String(value.memo || '');
         break;
 
       case 'curation_reward_operation':
         row.account = String(value.curator || '');
-        row.reward = formatAmount(hiveChain, value.reward);
+        row.reward = formatAmount(value.reward);
         row.permlink = String(value.comment_permlink || '');
         break;
 
       case 'author_reward_operation':
         row.account = String(value.author || '');
         row.permlink = String(value.permlink || '');
-        row.hbd_payout = formatAmount(hiveChain, value.hbd_payout);
-        row.hive_payout = formatAmount(hiveChain, value.hive_payout);
-        row.vesting_payout = formatAmount(hiveChain, value.vesting_payout);
+        row.hbd_payout = formatAmount(value.hbd_payout);
+        row.hive_payout = formatAmount(value.hive_payout);
+        row.vesting_payout = formatAmount(value.vesting_payout);
         break;
 
       case 'comment_reward_operation':
         row.account = String(value.author || '');
         row.permlink = String(value.permlink || '');
-        row.hbd_payout = formatAmount(hiveChain, value.payout);
+        row.hbd_payout = formatAmount(value.payout);
         break;
 
       case 'comment_benefactor_reward_operation':
         row.account = String(value.benefactor || '');
         row.permlink = String(value.permlink || '');
-        row.hbd_payout = formatAmount(hiveChain, value.hbd_payout);
-        row.hive_payout = formatAmount(hiveChain, value.hive_payout);
-        row.vesting_payout = formatAmount(hiveChain, value.vesting_payout);
+        row.hbd_payout = formatAmount(value.hbd_payout);
+        row.hive_payout = formatAmount(value.hive_payout);
+        row.vesting_payout = formatAmount(value.vesting_payout);
         break;
 
       case 'producer_reward_operation':
         row.account = String(value.producer || '');
-        row.vesting_payout = formatAmount(hiveChain, value.vesting_shares);
+        row.vesting_payout = formatAmount(value.vesting_shares);
         break;
 
       case 'interest_operation':
         row.account = String(value.owner || '');
-        row.amount = formatAmount(hiveChain, value.interest);
+        row.amount = formatAmount(value.interest);
         break;
 
       case 'proposal_pay_operation':
         row.account = String(value.receiver || '');
         row.from = String(value.payer || '');
         row.to = String(value.receiver || '');
-        row.amount = formatAmount(hiveChain, value.payment);
+        row.amount = formatAmount(value.payment);
         break;
 
       case 'sps_fund_operation':
       case 'dhf_funding_operation':
-        row.amount = formatAmount(hiveChain, value.additional_funds);
+        row.amount = formatAmount(value.additional_funds);
         break;
 
       default:
         row.account = String(value.account || value.owner || value.author || '');
-        row.amount = formatAmount(hiveChain, value.amount || value.reward);
+        row.amount = formatAmount(value.amount || value.reward);
     }
 
     const formatted = columns.map((col) => escapeCSV(row[col]));

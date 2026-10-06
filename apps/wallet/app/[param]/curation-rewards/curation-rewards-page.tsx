@@ -15,7 +15,6 @@ import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@ui/co
 import { InfoIcon } from 'lucide-react';
 import TimeAgo from '@ui/components/time-ago';
 import { convertToFormattedHivePower } from '@/wallet/lib/utils';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
@@ -23,14 +22,13 @@ export default function CurationRewardsPage({ username }: { username: string }) 
   const { t } = useTranslation('common_wallet');
   const { data, dynamicData, isLoading } = useRewardsHistory(username, 'curation_reward_operation');
   const [currentPage, setCurrentPage] = useState(0);
-  const hiveChain = hiveChainService.reuseHiveChain();
 
   const itemsPerPage = 50;
   const totalPages = data ? Math.ceil(data.length / itemsPerPage) : 0;
   const currentItems = data?.reverse()?.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   const weeklyRewards = useMemo(() => {
-    if (!data || !dynamicData || !hiveChain) return 0;
+    if (!data || !dynamicData) return 0;
 
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -45,7 +43,7 @@ export default function CurationRewardsPage({ username }: { username: string }) 
         );
         return Number(Big(total).plus(rewardHP));
       }, 0);
-  }, [data, dynamicData, hiveChain]);
+  }, [data, dynamicData]);
 
   return (
     <div>
@@ -126,12 +124,11 @@ export default function CurationRewardsPage({ username }: { username: string }) 
                       </Link>
                     </TableCell>
                     <TableCell className="text-right">
-                      {reward.op.reward && dynamicData && hiveChain
+                      {reward.op.reward && dynamicData
                         ? convertToFormattedHivePower(
                             reward.op.reward,
                             dynamicData.total_vesting_fund_hive,
-                            dynamicData.total_vesting_shares,
-                            hiveChain
+                            dynamicData.total_vesting_shares
                           )
                         : '0'}
                     </TableCell>

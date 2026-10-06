@@ -1,12 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
-import { FIXTURE_API_PORT } from './playwright/tests/support/witnessApiStub';
+import { FIXTURE_API_PORT } from './playwright/tests/support/apiStub';
 import { WALLET_BASE_PATH } from './playwright/tests/support/basePath';
 
 /**
  * Playwright config for the wallet's offline specs (playwright/tests/fixture): a production build
  * served from `.next/standalone`, with no network and no recorded API responses. Every API
  * endpoint points at FIXTURE_API_PORT, closed unless a spec starts a stub there
- * (tests/support/witnessApiStub.ts); while it is closed the server's prefetches fail at once and
+ * (tests/support/apiStub.ts); while it is closed the server's prefetches fail at once and
  * pages render without account data; the specs check what does not depend on it (the JS chunks a
  * page loads, the requests it makes). The build must be made with
  * `NEXT_PUBLIC_BASE_PATH=WALLET_BASE_PATH`.

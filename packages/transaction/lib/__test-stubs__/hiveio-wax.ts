@@ -27,3 +27,15 @@ export type TWaxExtended<_NodeApi, _RestApi> = {
   isValidAccountName(name: string): boolean;
 };
 export type TWaxRestExtended<RestApi> = RestApi;
+
+/** Asset types for the pure-TS asset modules of `@hive/ui` (type-only imports of wax). */
+export interface NaiAsset {
+  amount: string;
+  precision: number;
+  nai: string;
+}
+export enum EAssetName {
+  HIVE = 'HIVE',
+  HBD = 'HBD',
+  VESTS = 'VESTS'
+}

@@ -58,6 +58,14 @@ export function getPrecision(token: AssetName): number {
 }
 
 /**
+ * A NaiAsset of `satoshis` of the given token, as wax's `hiveSatoshis` / `hbdSatoshis` /
+ * `vestsSatoshis` create it.
+ */
+export function createNaiAsset(token: AssetName, satoshis: bigint | number | string): NaiAsset {
+  return { ...getAssetConfig()[token], amount: satoshis.toString() };
+}
+
+/**
  * Get NAI to symbol mapping.
  * Useful for converting NaiAsset.nai to display symbol.
  */

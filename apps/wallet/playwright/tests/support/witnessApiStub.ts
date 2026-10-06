@@ -1,13 +1,10 @@
-import { createServer, type Server } from 'node:http';
+import type { Server } from 'node:http';
+import { FIXTURE_API_PORT, startApiStub, type JsonRpcResults } from './apiStub';
 
 /**
- * A JSON-RPC stand-in for a Hive API node that answers the reads of the witness page with a fixed,
- * hand-written witness list, so the offline wallet specs can check what the server renders from it.
- * Every other method gets a JSON-RPC error answer, which fails the read at once.
+ * The reads of the witness page, answered with a fixed, hand-written witness list, so the offline
+ * wallet specs can check what the server renders from it (served by apiStub.ts).
  */
-
-/** The port playwright.fixture.config.ts points the wallet's API endpoints at */
-export const FIXTURE_API_PORT = 8201;
 
 const HEAD_BLOCK = 100_000_000;
 
@@ -49,7 +46,7 @@ const account = (name: string) => {
   };
 };
 
-const RESULTS: Record<string, (params: { accounts?: string[] }) => unknown> = {
+export const WITNESS_RESULTS: JsonRpcResults = {
   'database_api.get_dynamic_global_properties': () => ({
     head_block_number: HEAD_BLOCK,
     total_vesting_fund_hive: { amount: '180000000000', precision: 3, nai: '@@000000021' },
@@ -59,24 +56,6 @@ const RESULTS: Record<string, (params: { accounts?: string[] }) => unknown> = {
   'database_api.find_accounts': (params) => ({ accounts: (params.accounts ?? []).map(account) })
 };
 
-const answer = (body: string): unknown => {
-  const { method, params, id } = JSON.parse(body);
-  const result = RESULTS[method];
-  if (!result) return { jsonrpc: '2.0', error: { code: -32601, message: `Not served by the stub: ${method}` }, id };
-  return { jsonrpc: '2.0', result: result(params ?? {}), id };
-};
-
-/** Starts the stub on 127.0.0.1; resolves with the server to close after the spec. */
+/** Starts the stub node with the witness page's reads; resolves with the server to close after the spec. */
 export const startWitnessApiStub = (port = FIXTURE_API_PORT): Promise<Server> =>
-  new Promise((resolve, reject) => {
-    const server = createServer((request, response) => {
-      let body = '';
-      request.on('data', (chunk) => (body += chunk));
-      request.on('end', () => {
-        response.writeHead(200, { 'content-type': 'application/json' });
-        response.end(JSON.stringify(answer(body)));
-      });
-    });
-    server.once('error', reject);
-    server.listen(port, '127.0.0.1', () => resolve(server));
-  });
+  startApiStub({ jsonRpc: WITNESS_RESULTS }, port);

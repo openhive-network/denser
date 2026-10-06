@@ -7,8 +7,9 @@ import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
 import Big from 'big.js';
-import { getPrecision } from '@ui/lib/asset-constants';
-import { HiveChain } from '@transaction/lib/hive-chain-service';
+import { createNaiAsset, getPrecision } from '@ui/lib/asset-constants';
+import { vestsToHiveSatoshis } from '@ui/lib/asset-math';
+import { formatAsset } from '@ui/lib/asset-format';
 
 export function getCurrentHpApr(data: GetDynamicGlobalPropertiesResponse) {
   // The inflation was set to 9.5% at block 7m
@@ -258,12 +259,12 @@ export function createListWithSuggestions(
 export const prepareRC = (rc: string): string => {
   return `${numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))}bil`;
 };
-export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined, hiveChain: HiveChain): string {
-  let operationHp = hiveChain?.hiveSatoshis(0);
-  if (vests && totalVestingFund && totalVestingShares) {
-    operationHp = hiveChain?.vestsToHp(vests, totalVestingFund, totalVestingShares);
-  }
-  return hiveChain.formatter.format(operationHp).replace("HIVE", "HIVE POWER");
+export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined): string {
+  const hiveSatoshis =
+    vests && totalVestingFund && totalVestingShares
+      ? vestsToHiveSatoshis(BigInt(vests.amount), BigInt(totalVestingFund.amount), BigInt(totalVestingShares.amount))
+      : 0;
+  return formatAsset(createNaiAsset('HIVE', hiveSatoshis)).replace("HIVE", "HIVE POWER");
 }
 
 export function filterSmallerThanOne(asset?: NaiAsset) {

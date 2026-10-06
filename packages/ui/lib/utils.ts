@@ -3,10 +3,10 @@ import { twMerge } from 'tailwind-merge';
 import Big from 'big.js';
 import { convertStringToBig } from './helpers';
 import { TFunction } from 'i18next';
-import type { FullAccount, Entry, IVote, HiveChain } from '@hive/common-hiveio-packages/wax';
+import type { FullAccount, Entry, IVote } from '@hive/common-hiveio-packages/wax';
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { parseDate2 } from './parse-date';
-import { Symbol, getNaiToSymbol, getPrecision } from './asset-constants';
+import { Symbol, createNaiAsset, getNaiToSymbol, getPrecision } from './asset-constants';
 import { vestsToHiveSatoshis } from './asset-math';
 
 // Re-export getRoundedAbbreveration from math-utils for backward compatibility
@@ -111,11 +111,7 @@ export function convertToHP(
   return Big(hiveSatoshis.toString()).div(Big(10).pow(getPrecision('HIVE'))).div(div);
 }
 
-export function powerdownHive(
-  accountData: FullAccount,
-  dynamicData: GetDynamicGlobalPropertiesResponse,
-  chain: HiveChain
-): Big {
+export function powerdownHive(accountData: FullAccount, dynamicData: GetDynamicGlobalPropertiesResponse): Big {
   const withdrawRateVests = convertStringToBig(accountData.vesting_withdraw_rate).toNumber();
   const toWithdraw =
     typeof accountData.to_withdraw === 'number'
@@ -128,18 +124,14 @@ export function powerdownHive(
   const remainingVests = (toWithdraw - withdrawn) / 1000000;
   const vests = Math.min(withdrawRateVests, remainingVests);
 
-  // Convert vests to NaiAsset and use wax for conversion
   const vestsPrecision = getPrecision('VESTS');
   const satoshis = Math.floor(vests * Math.pow(10, vestsPrecision)).toString();
-  const vestsAsNai = chain.vestsSatoshis(satoshis);
 
-  const hpAsset = chain.vestsToHp(
-    vestsAsNai,
-    dynamicData.total_vesting_fund_hive,
-    dynamicData.total_vesting_shares
+  return convertToHP(
+    createNaiAsset('VESTS', satoshis),
+    dynamicData.total_vesting_shares,
+    dynamicData.total_vesting_fund_hive
   );
-
-  return Big(hpAsset.amount).div(Big(10).pow(hpAsset.precision));
 }
 
 export function findAndParseJSON(value: string) {

@@ -12,13 +12,11 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import TimeAgo from '@ui/components/time-ago';
 import RCTable from '@/wallet/feature/delegations/rc-table';
 import { convertToFormattedHivePower } from '@/wallet/lib/utils';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
 
 export default function DelegationsPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUserClient();
   const accoutOwner = user.isLoggedIn && user.username === username;
-  const hiveChain = hiveChainService.reuseHiveChain();
   const { data: vestingData, isLoading: vestingLoading } = useQuery(['vestingDelegation', username], () =>
     getVestingDelegations(username)
   );
@@ -29,7 +27,7 @@ export default function DelegationsPage({ username }: { username: string }) {
   if (dynamicLoading || vestingLoading) {
     return <Loading loading={dynamicLoading || vestingLoading} />;
   }
-  if (!vestingData || !dynamicData || !hiveChain) {
+  if (!vestingData || !dynamicData) {
     return <p className="my-32 text-center text-3xl">{t('global.something_went_wrong')}</p>;
   }
   return (
@@ -51,8 +49,7 @@ export default function DelegationsPage({ username }: { username: string }) {
                       convertToFormattedHivePower(
                         element.vesting_shares,
                         dynamicData.total_vesting_fund_hive,
-                        dynamicData.total_vesting_shares,
-                        hiveChain
+                        dynamicData.total_vesting_shares
                       ).replace(' HIVE POWER', '')
                     )}{' '}
                     HP
