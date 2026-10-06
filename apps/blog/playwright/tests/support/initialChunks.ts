@@ -24,7 +24,9 @@ export const CHUNK_MARKERS = {
   /** @hive/renderer: the label of one of DefaultRenderer's option checks */
   renderer: 'RendererOptions.assetsWidth',
   /** Remarkable, the markdown renderer: one of its token types */
-  remarkable: 'footnote_reference_open'
+  remarkable: 'footnote_reference_open',
+  /** zod: one of its issue codes */
+  zod: 'invalid_intersection_types'
 } as const;
 
 /** The Sentry SDK: page-load code reaches it only through a dynamic `import()`, made when a DSN is set. */

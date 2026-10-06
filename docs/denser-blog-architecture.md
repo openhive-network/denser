@@ -104,10 +104,6 @@ Uses React's `cache()` function to deduplicate API calls within a single request
 ```typescript
 import { cache } from 'react';
 
-export const getAccountFullCached = cache(async (username: string) => {
-  return getAccountFull(username);
-});
-
 export const getPostCached = cache(async (author: string, permlink: string) => {
   return getPost(author, permlink);
 });
@@ -126,6 +122,10 @@ The first page of a ranked feed (trending/hot/created/payout/muted, tag and comm
 | `DENSER_FEED_CACHE_MAX_MB` | 32 | Memory cap; least recently used feeds are dropped first |
 
 A failed fetch is never stored. While a background reload fails the stale feed keeps being served (logged as a warning); past the stale window a failed fetch answers 503 as before. Only the data is cached: pages stay `private, no-store`. The cache is per process, so every server replica keeps its own.
+
+### Anonymous Profile Cache (`lib/profile-cache.ts`)
+
+The profile layout's server reads (account, reputation, dynamic global properties) and the first page of a profile tab's posts use the same settings and the same anonymous-only rule, keyed by read, account and the chain id + API node (`packages/transaction/lib/profile-cache.ts`). The stale window is capped at the TTL, so profile data is served at most one TTL past fresh. Each of the four reads has its own cache with its own `DENSER_FEED_CACHE_MAX_MB` cap. `getProfileAccount` is also wrapped in React `cache()`, deduplicating `generateMetadata` and the layout within a request.
 
 ### React Query Configuration (`lib/react-query.ts`)
 

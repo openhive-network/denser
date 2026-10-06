@@ -56,12 +56,26 @@ export interface IFeedCacheOptions {
   now?: () => number;
 }
 
-export interface IFeedCache<T> {
-  /** Answers from the cache for anonymous requests; calls `load` directly for any other observer. */
-  get: (request: IFeedRequest, load: () => Promise<T>) => Promise<T>;
+/** A request the anonymous-read cache can answer: only the anonymous observer's requests are cached. */
+export interface IObservedRequest {
+  observer: string;
 }
 
-export function createFeedCache<T>(options: IFeedCacheOptions): IFeedCache<T> {
+export interface IAnonymousReadCache<R extends IObservedRequest, T> {
+  /** Answers from the cache for anonymous requests; calls `load` directly for any other observer. */
+  get: (request: R, load: () => Promise<T>) => Promise<T>;
+}
+
+export type IFeedCache<T> = IAnonymousReadCache<IFeedRequest, T>;
+
+/**
+ * Process cache of server-side reads that look the same to every anonymous visitor.
+ * `keyOf` must separate every request field that changes the answer, except the observer.
+ */
+export function createAnonymousReadCache<R extends IObservedRequest, T>(
+  options: IFeedCacheOptions,
+  keyOf: (request: R) => string
+): IAnonymousReadCache<R, T> {
   const { config, anonymousObserver } = options;
   if (config.ttlMs === 0) return { get: (_request, load) => load() };
 
@@ -76,6 +90,10 @@ export function createFeedCache<T>(options: IFeedCacheOptions): IFeedCache<T> {
   });
   return {
     get: (request, load) =>
-      request.observer === anonymousObserver ? cache.get(feedCacheKey(request), load) : load()
+      request.observer === anonymousObserver ? cache.get(keyOf(request), load) : load()
   };
+}
+
+export function createFeedCache<T>(options: IFeedCacheOptions): IFeedCache<T> {
+  return createAnonymousReadCache<IFeedRequest, T>(options, feedCacheKey);
 }

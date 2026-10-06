@@ -3,8 +3,7 @@ import { ReactNode } from 'react';
 import { Metadata } from 'next';
 import { dehydrate, Hydrate } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
-import { getAccountFullCached } from '@/blog/lib/cached-api';
-import { getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
+import { getProfileAccount, getProfileGlobalProperties, getProfileReputations } from '@/blog/lib/profile-cache';
 import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
 import { isValidAccountNameFormat } from '@transaction/lib/validation';
 import { notFound } from 'next/navigation';
@@ -24,8 +23,8 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
   }
   const username = raw.startsWith('%40') ? raw.replace('%40', '') : raw.replace('@', '');
   try {
-    // Use cached version - deduplicated with Layout's prefetch within the same request
-    const account = await getAccountFullCached(username);
+    // Deduplicated with Layout's prefetch within the same request
+    const account = await getProfileAccount(username);
     const image = account?.profile?.profile_image || 'https://hive.blog/images/hive-blog-share.png';
     const about = account?.profile?.about || `Profile of @${username} on Hive.`;
     const title = `Blog ${username}`;
@@ -84,8 +83,8 @@ const Layout = async (props: { children: ReactNode; params: Promise<{ param: str
   }
 
   // Layer 2: Existence check (API call) - fixes 500 for nonexistent users
-  // Uses getAccountFullCached for request-level dedup with generateMetadata
-  const account = await getAccountFullCached(username);
+  // Uses getProfileAccount for request-level dedup with generateMetadata
+  const account = await getProfileAccount(username);
   if (!account || !account.name) {
     notFound();
   }
@@ -99,11 +98,11 @@ const Layout = async (props: { children: ReactNode; params: Promise<{ param: str
       }),
       queryClient.prefetchQuery({
         queryKey: ['accountReputationData', username],
-        queryFn: () => getAccountReputations(username, 1)
+        queryFn: () => getProfileReputations(username)
       }),
       queryClient.prefetchQuery({
         queryKey: ['dynamicGlobalData'],
-        queryFn: () => getDynamicGlobalProperties()
+        queryFn: () => getProfileGlobalProperties()
       })
     ];
 
