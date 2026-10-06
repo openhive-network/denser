@@ -4,7 +4,10 @@ import { Dialog, DialogTrigger } from '@ui/components/dialog';
 import { useTranslation } from '@/blog/i18n/client';
 import { Community } from '@hive/common-hiveio-packages/wax';
 import { useState } from 'react';
-import EditDialogContent from './edit-dialog-content';
+import dynamic from 'next/dynamic';
+
+// The form carries zod and wax's language enum; only community admins ever open it.
+const EditDialogContent = dynamic(() => import('./edit-dialog-content'), { ssr: false });
 
 const EditCommunityDialog = ({ data }: { data: Community }) => {
   const { t } = useTranslation('common_blog');

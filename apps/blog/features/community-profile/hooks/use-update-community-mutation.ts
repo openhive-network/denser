@@ -1,4 +1,4 @@
-import { ESupportedLanguages } from '@hiveio/wax';
+import type { ESupportedLanguages } from '@hiveio/wax';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Community } from '@hive/common-hiveio-packages/wax';
