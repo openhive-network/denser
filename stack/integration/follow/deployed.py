@@ -8,6 +8,7 @@ Each app's `revision` is the commit its *served* release stands for: the checkou
 commit when the served release is the current one and the commit changed nothing
 that app's build reads, otherwise the commit that release was built from.
 """
+
 import argparse
 import datetime
 import json
@@ -15,7 +16,7 @@ import os
 from typing import Any, Optional
 
 
-def _read(path: str) -> Optional[dict[str, Any]]:
+def _read(path: str) -> dict[str, Any] | None:
     try:
         with open(path) as f:
             data = json.load(f)
@@ -29,7 +30,9 @@ def _app_status(releases: str, app: str, source: str) -> dict[str, Any]:
     state = _read(os.path.join(base, "state.json")) or {}
     serving = _read(os.path.join(base, "serving.json")) or {}
     served = serving.get("release")
-    built = (_read(os.path.join(base, served, "release.json")) if served else None) or {}
+    built = (
+        _read(os.path.join(base, served, "release.json")) if served else None
+    ) or {}
     if served and served == state.get("release"):
         revision = state.get("revision")
     else:
@@ -49,7 +52,9 @@ def _app_status(releases: str, app: str, source: str) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--releases", required=True)
-    parser.add_argument("--apps", required=True, help='"<app>:<base path>" pairs, space separated')
+    parser.add_argument(
+        "--apps", required=True, help='"<app>:<base path>" pairs, space separated'
+    )
     parser.add_argument("--source", required=True, help="follow:<branch>")
     parser.add_argument("--checkout", default="", help="the checkout's commit")
     parser.add_argument("--upgrade-status", default="OK")
@@ -59,27 +64,38 @@ def main() -> None:
     args = parser.parse_args()
 
     services = {
-        entry.split(":", 1)[0]: _app_status(args.releases, entry.split(":", 1)[0], args.source)
+        entry.split(":", 1)[0]: _app_status(
+            args.releases, entry.split(":", 1)[0], args.source
+        )
         for entry in args.apps.split()
     }
     upgrade_status, upgrade_detail = args.upgrade_status, args.upgrade_detail
-    failed = {app: s["failed"] for app, s in services.items() if s["status"] in ("ROLLED-BACK", "FAILED")}
+    failed = {
+        app: s["failed"]
+        for app, s in services.items()
+        if s["status"] in ("ROLLED-BACK", "FAILED")
+    }
     if upgrade_status == "OK" and failed:
         upgrade_status = "ROLLED-BACK"
         upgrade_detail = "; ".join(
             f"{app}: {f.get('stage')} failed at {f.get('revision') or 'the tree'} ({f.get('log')})"
             for app, f in failed.items()
         )
-    print(json.dumps({
-        "site": args.site,
-        "network": args.network,
-        "mode": "follow",
-        "source": args.source,
-        "stack_checkout": args.checkout or None,
-        "upgrade": {"status": upgrade_status, "detail": upgrade_detail or None},
-        "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        "services": services,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "site": args.site,
+                "network": args.network,
+                "mode": "follow",
+                "source": args.source,
+                "stack_checkout": args.checkout or None,
+                "upgrade": {"status": upgrade_status, "detail": upgrade_detail or None},
+                "generated_at": datetime.datetime.now(datetime.UTC).isoformat(),
+                "services": services,
+            },
+            indent=2,
+        )
+    )
 
 
 if __name__ == "__main__":
