@@ -2,10 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import { getManabar } from '@transaction/lib/hive-api';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { hoursAndMinutes } from './lib/utils';
-import RCStats from './rc-stats';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { prepareRC } from '@/wallet/lib/utils';
 import DelegateRCDialog from './delegate-rc-dialog';
+import dynamic from 'next/dynamic';
+
+// recharts draws the manabar rings only once the manabars are fetched: keep it out of page-load chunks.
+const RCStats = dynamic(() => import('./rc-stats'), { ssr: false });
 
 const RCRow = ({ username }: { username: string }) => {
   const { data, isLoading } = useQuery(['manabar', username], () => getManabar(username), {
