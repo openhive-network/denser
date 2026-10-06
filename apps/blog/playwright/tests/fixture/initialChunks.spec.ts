@@ -1,13 +1,14 @@
 import { test, expect } from '../support/fixture-proxy-test';
-import { CHUNK_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from '../support/initialChunks';
+import { CHUNK_MARKERS, SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from '../support/initialChunks';
 
 /**
  * Initial JS chunks fixture test.
  *
  * Every chunk the server HTML references is fetched before the page loads, so
- * none of them may carry Sentry Session Replay (rrweb): instrumentation-client.ts
- * adds replay after load through a dynamic import(). A static reference to
- * `replayIntegration` from page-load code pulls rrweb back into these chunks.
+ * none of them may carry the Sentry SDK: instrumentation-client.ts loads it
+ * through a dynamic import() only when a DSN is configured, and adds Session
+ * Replay (rrweb) after load through another. A static import of `@sentry/nextjs`
+ * from page-load code pulls the SDK back into these chunks.
  *
  * Nor may they carry wax's JavaScript or hb-auth's beekeeper: reads go through
  * the wax-free read client, and signing, login and transactions are loaded
@@ -22,11 +23,11 @@ import { CHUNK_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from
 test.use({ fixtureTestName: 'homeMainPage' });
 
 test.describe('Initial JS chunks (fixture-based)', () => {
-  test('PERF-CHUNKS-01 — no chunk referenced from the /trending HTML contains rrweb, wax or beekeeper', async ({
+  test('PERF-CHUNKS-01 — no chunk referenced from the /trending HTML contains Sentry, rrweb, wax or beekeeper', async ({
     request
   }) => {
     expect(
-      await findMarkersInInitialChunks(request, '/trending', [CHUNK_MARKERS.rrweb, ...SIGNING_STACK_MARKERS])
+      await findMarkersInInitialChunks(request, '/trending', [...SENTRY_MARKERS, CHUNK_MARKERS.rrweb, ...SIGNING_STACK_MARKERS])
     ).toEqual([]);
   });
 });

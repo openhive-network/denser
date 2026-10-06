@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from '../support/initialChunks';
+import { SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from '../support/initialChunks';
 
 /**
  * Initial JS chunks of the wallet.
@@ -10,14 +10,23 @@ import { SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from '../support/in
  * (the account history formatter) are loaded through dynamic import()s. A static import of wax,
  * the signers or `@transaction/index` from page-load code pulls them back.
  *
+ * Nor may they carry the Sentry SDK, which instrumentation-client.ts loads through a dynamic
+ * import() only when a DSN is configured.
+ *
  * Reads the server HTML only. The server's API endpoint is unreachable
  * (playwright.fixture.config.ts), so the page renders without account data.
  */
 
 test.describe('Initial JS chunks', () => {
-  test('WALLET-PERF-CHUNKS-01 — no chunk referenced from the /@gtg/transfers HTML contains wax or beekeeper', async ({
+  test('WALLET-PERF-CHUNKS-01 — no chunk referenced from the /@gtg/transfers HTML contains Sentry, wax or beekeeper', async ({
     request
   }) => {
-    expect(await findMarkersInInitialChunks(request, '/@gtg/transfers', SIGNING_STACK_MARKERS)).toEqual([]);
+    expect(
+      await findMarkersInInitialChunks(request, '/@gtg/transfers', [...SENTRY_MARKERS, ...SIGNING_STACK_MARKERS])
+    ).toEqual([]);
+  });
+
+  test('WALLET-PERF-CHUNKS-02 — no chunk referenced from the home page HTML contains Sentry', async ({ request }) => {
+    expect(await findMarkersInInitialChunks(request, '/', SENTRY_MARKERS)).toEqual([]);
   });
 });

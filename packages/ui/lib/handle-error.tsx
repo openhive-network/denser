@@ -1,6 +1,5 @@
 'use client';
 
-import { captureException } from "@sentry/nextjs";
 import { transformError } from '@hive/transaction/lib/transform-error';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
@@ -72,6 +71,13 @@ function performDesyncLogout(): void {
   window.dispatchEvent(new CustomEvent('auth-storage-desync'));
 }
 
+// A dynamic import() keeps the Sentry SDK out of the initial chunks of every page that can show an error toast.
+function reportToSentry(error: unknown): void {
+  import('@sentry/nextjs')
+    .then(({ captureException }) => captureException(error))
+    .catch(importError => logger.error('Loading Sentry to report an error failed: %o', importError));
+}
+
 export function handleError<T>(error: unknown, ctx?: { method: string; params: T }, toastOptions?: Toast) {
   // User-cancelled operations (dismissed password dialog) — silently ignore
   if (isUserCancelled(error)) {
@@ -95,7 +101,7 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   const { errorTitle, fullError, isWellKnownError } = transformError<T>(error, ctx);
 
   if (!!env('SENTRY_DSN') && !isWellKnownError)
-    captureException(fullError);
+    reportToSentry(fullError);
 
   toast({
     description: (
