@@ -5,6 +5,7 @@ import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
 import { keepObserverVotes } from '@/blog/lib/feed-entries';
+import { toCardEntries } from '@/blog/features/list-of-posts/lib/to-card-entries';
 import { extractUsernameFromParam } from '@/blog/utils/validate-links';
 import FirstCardImagePreload from '@/blog/features/list-of-posts/first-card-image-preload';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
@@ -25,7 +26,7 @@ const PostsPage = async ({
   let initialPosts = null;
   try {
     const posts = await getAccountPosts(query, username, observer, '', '');
-    initialPosts = posts ? keepObserverVotes(posts, observer) : null;
+    initialPosts = posts ? toCardEntries(keepObserverVotes(posts, observer)) : null;
   } catch (error) {
     logger.error(error, 'Error in PostsPage:');
   }

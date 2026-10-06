@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import VotesComponent from './votes-component';
-import { Entry } from '@hive/common-hiveio-packages/wax';
+import type { TrimmedEntry } from '@/blog/features/list-of-posts/lib/card-entry';
 
-const VotesComponentWrapper = ({ post, type }: { post: Entry; type: 'comment' | 'post' }) => {
+const VotesComponentWrapper = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 'post' }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

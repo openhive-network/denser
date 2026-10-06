@@ -3,11 +3,11 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
 import { cn } from '@ui/lib/utils';
 import { ReactNode, useRef, useState } from 'react';
-import { Entry } from '@hive/common-hiveio-packages/wax';
+import type { TrimmedEntry } from './lib/card-entry';
 import PayoutHoverContent from './payout-hover-content';
 
 type DetailsCardHoverProps = {
-  post: Entry;
+  post: TrimmedEntry;
   children: ReactNode;
   decline?: boolean;
   post_page?: boolean;

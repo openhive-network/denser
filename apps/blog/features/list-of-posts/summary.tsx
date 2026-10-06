@@ -1,14 +1,14 @@
 'use client';
 
 import PostCardHidden from '@/blog/features/list-of-posts/post-card-hidden';
-import { getPostSummary, Preferences } from '@/blog/lib/utils';
+import { Preferences } from '@/blog/lib/utils';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { Entry } from '@hive/common-hiveio-packages/wax';
 import { Badge } from '@ui/components/badge';
 import { CardContent, CardDescription, CardTitle } from '@ui/components/card';
 import { Separator } from '@ui/components/separator';
 import { useTranslation } from '@/blog/i18n/client';
 import { Link } from '@hive/ui';
+import type { CardEntry } from './lib/card-entry';
 
 const PostSummary = ({
   post,
@@ -17,7 +17,7 @@ const PostSummary = ({
   userFromDMCA,
   legalBlockedUser
 }: {
-  post: Entry;
+  post: CardEntry;
   nsfw: Preferences['nsfw'];
   setNSFW: (nsfw: Preferences['nsfw']) => void;
   userFromDMCA: boolean;
@@ -49,7 +49,7 @@ const PostSummary = ({
                 ? t('cards.content_removed')
                 : legalBlockedUser
                   ? t('global.unavailable_for_legal_reasons')
-                  : getPostSummary(post.json_metadata, post.body)}
+                  : post.summary}
             </Link>
           </CardDescription>
           <Separator orientation="horizontal" className="my-1" />

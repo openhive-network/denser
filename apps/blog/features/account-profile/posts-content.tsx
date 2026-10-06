@@ -3,6 +3,7 @@
 import NoDataError from '@/blog/components/no-data-error';
 import LoadMoreError from '@/blog/components/load-more-error';
 import PostList from '@/blog/features/list-of-posts/posts-loader';
+import { loadCardEntries } from '@/blog/features/list-of-posts/lib/card-entry';
 import { PER_PAGE } from '@/blog/features/search/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
@@ -49,8 +50,8 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
 
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isLoading } = useInfiniteQuery({
     queryKey: ['accountEntriesInfinite', username, query, observer],
-    queryFn: async ({ pageParam }: { pageParam?: Entry }) => {
-      return await getAccountPosts(query, username, observer, pageParam?.author, pageParam?.permlink);
+    queryFn: async ({ pageParam }: { pageParam?: Pick<Entry, 'author' | 'permlink'> }) => {
+      return await loadCardEntries(getAccountPosts(query, username, observer, pageParam?.author, pageParam?.permlink));
     },
     getNextPageParam: (lastPage) => {
       if (lastPage && lastPage.length === PER_PAGE) {

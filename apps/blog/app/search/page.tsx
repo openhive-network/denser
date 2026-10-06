@@ -6,7 +6,9 @@ import { getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
 import { parseSearchParams } from '@ui/lib/search-params';
 import { ObserverProvider } from '@/blog/components/observer-provider';
-import type { Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
+import type { PostStub } from '@hive/common-hiveio-packages/wax';
+import type { CardEntry } from '@/blog/features/list-of-posts/lib/card-entry';
+import { toCardEntries, toCardSearchResults } from '@/blog/features/list-of-posts/lib/to-card-entries';
 
 interface SearchPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -25,9 +27,9 @@ const SearchPage = async (props: SearchPageProps) => {
 
   const observer = await getObserverFromCookies();
 
-  let initialAIResults: MixedPostsResponse | null = null;
-  let initialClassicResults: Entry[] | null = null;
-  let initialTopicResults: Entry[] | null = null;
+  let initialAIResults: Array<CardEntry | PostStub> | null = null;
+  let initialClassicResults: CardEntry[] | null = null;
+  let initialTopicResults: CardEntry[] | null = null;
 
   try {
     const results = await Promise.allSettled([
@@ -57,9 +59,13 @@ const SearchPage = async (props: SearchPageProps) => {
         : Promise.resolve(null)
     ]);
 
-    initialAIResults = results[0].status === 'fulfilled' ? (results[0].value ?? null) : null;
-    initialClassicResults = results[1].status === 'fulfilled' ? (results[1].value ?? null) : null;
-    initialTopicResults = results[2].status === 'fulfilled' ? (results[2].value ?? null) : null;
+    const [aiResults, classicResults, topicResults] = results;
+    initialAIResults =
+      aiResults.status === 'fulfilled' && aiResults.value ? toCardSearchResults(aiResults.value) : null;
+    initialClassicResults =
+      classicResults.status === 'fulfilled' && classicResults.value ? toCardEntries(classicResults.value) : null;
+    initialTopicResults =
+      topicResults.status === 'fulfilled' && topicResults.value ? toCardEntries(topicResults.value) : null;
   } catch (error) {
     logger.error(error, 'Error in SearchPage:');
   }

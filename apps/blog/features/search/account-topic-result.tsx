@@ -8,9 +8,10 @@ import Loading from '@ui/components/loading';
 import { getByText } from '@transaction/lib/hive-api';
 import { Link } from '@hive/ui';
 import { Activity } from 'lucide-react';
-import { Entry, Preferences } from '@hive/common-hiveio-packages/wax';
+import { Preferences } from '@hive/common-hiveio-packages/wax';
 import { PostListItemSkeleton } from '@hive/ui';
 import PostList from '../list-of-posts/posts-loader';
+import { CardEntry, loadCardEntries } from '../list-of-posts/lib/card-entry';
 import { useTranslation } from '@/blog/i18n/client';
 import NoDataError from '@/blog/components/no-data-error';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
@@ -28,7 +29,7 @@ const AccountTopicResult = ({
   sort: SearchSort;
   author?: string;
   nsfwPreferences: Preferences['nsfw'];
-  initialData?: Entry[] | null;
+  initialData?: CardEntry[] | null;
 }) => {
   const ssrObserver = useSSRObserver();
   const { user, isHydrated } = useUserClient();
@@ -49,15 +50,17 @@ const AccountTopicResult = ({
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage, isError } = useInfiniteQuery({
     queryKey: ['similarPosts', query, author, sort, observer],
     queryFn: async ({ pageParam }: { pageParam?: { author: string; permlink: string } }) => {
-      return await getByText({
-        pattern: query,
-        author,
-        observer,
-        start_permlink: pageParam?.permlink ?? '',
-        start_author: pageParam?.author ?? '',
-        limit: PER_PAGE,
-        sort
-      });
+      return await loadCardEntries(
+        getByText({
+          pattern: query,
+          author,
+          observer,
+          start_permlink: pageParam?.permlink ?? '',
+          start_author: pageParam?.author ?? '',
+          limit: PER_PAGE,
+          sort
+        })
+      );
     },
     getNextPageParam: (lastPage) => {
       if (lastPage && lastPage.length === PER_PAGE) {
