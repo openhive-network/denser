@@ -45,14 +45,16 @@ image is `loading="lazy"` (Lighthouse's own LCP discovery check).
   breach named per route. A breach is also logged in the upgrade unit's journal
   (`journalctl -u 'denser-integration-upgrade@*'`).
 - **Advisory:** a breach never fails or rolls back the upgrade.
-- **Bounded:** one check (12 Lighthouse runs, about 5 minutes) per promoted revision.
+- **Bounded:** one check (18 Lighthouse runs, about 7 minutes) per promoted revision.
   A revision whose images never deploy, or that a later promote overtakes before it
   is served, is not measured. With `DENSER_TAG` pinned the site never serves the
   tip, so nothing is measured.
 - **By hand:** `./lighthouse.sh --force` measures the deployed tip again.
 - **Thresholds** are the medians measured on 2026-10-05 with headroom for noise:
   single mobile runs of one build differ by seconds of LCP, which is why each route
-  takes the median of 3. Tighten a route's limits as its performance improves.
+  takes the median of 3. Tighten a route's limits as its performance improves. The
+  image-led post and the community feed were added from the 2026-10-06 audit
+  (`docs/performance/page-audit-2026-10.md`), with limits just above that day's runs.
 
 ## Setup (done once per host)
 
