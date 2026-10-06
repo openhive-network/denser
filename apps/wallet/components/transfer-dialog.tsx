@@ -25,7 +25,7 @@ import { usePowerDownMutation, usePowerUpMutation } from './hooks/use-power-hive
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { useQueryClient } from '@tanstack/react-query';
-import { TransactionBroadcastResult } from '@transaction/index';
+import type { TransactionBroadcastResult } from '@transaction/index';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';

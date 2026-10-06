@@ -28,6 +28,10 @@
 # Arguments are passed to `playwright test`, so a run can be narrowed:
 #
 #   .aidev/run-fixture-e2e.sh playwright/tests/fixture/13-profile
+#
+# A run without arguments then builds the wallet and runs its offline specs
+# (apps/wallet/playwright.fixture.config.ts: the initial-chunk guard), which need
+# no fixture proxy. Their junit is test-results/fixture/wallet-junit.xml.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -66,11 +70,22 @@ run_playwright() {
     return "$status"
 }
 
+run_wallet_fixture() {
+    local wallet_junit="$PWD/test-results/fixture/wallet-junit.xml"
+    (
+        cd apps/wallet
+        PLAYWRIGHT_JUNIT_OUTPUT_NAME="$wallet_junit" run_with_junit_fallback "$wallet_junit" wallet_fixture \
+            sh -c 'pnpm build < /dev/null && pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit < /dev/null'
+    )
+}
+
 if [ "${DENSER_FIXTURE_VIA_STACK:-}" != 1 ]; then
     .aidev/run-blog-build.sh
-    cd apps/blog
     status=0
-    run_playwright --config=playwright.fixture.config.ts "$@" || status=$?
+    (cd apps/blog && run_playwright --config=playwright.fixture.config.ts "$@") || status=$?
+    if [ "$#" -eq 0 ]; then
+        run_wallet_fixture || status=1
+    fi
     exit "$status"
 fi
 
@@ -111,9 +126,11 @@ const deadline = Date.now() + 180000;
     exit 1
 }
 
-cd apps/blog
 status=0
-DENSER_BLOG_URL=http://localhost:3000 \
+(cd apps/blog && DENSER_BLOG_URL=http://localhost:3000 \
     run_playwright --config=../../.aidev/playwright.fixture-stack.config.ts \
-    --tsconfig=tsconfig.json "$@" || status=$?
+    --tsconfig=tsconfig.json "$@") || status=$?
+if [ "$#" -eq 0 ]; then
+    run_wallet_fixture || status=1
+fi
 exit "$status"

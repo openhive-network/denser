@@ -1,12 +1,15 @@
 'use client';
 
 import { useTranslation } from '@/wallet/i18n/client';
-import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
+import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import TransfersHistoryFilter, { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import useFilters from '@/wallet/components/hooks/use-filters';
-import HistoryTable from './history-table';
 import { getFilter } from '@/wallet/lib/utils';
+import dynamic from 'next/dynamic';
+
+// The history is formatted by wax's formatter: load it with wax, after the page's first render.
+const HistoryTable = dynamic(() => import('./history-table'), { ssr: false });
 
 const initialFilters: TransferFilters = {
   search: '',

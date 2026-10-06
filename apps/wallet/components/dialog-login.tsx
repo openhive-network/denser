@@ -1,7 +1,11 @@
 import { ReactNode, useRef } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import SignInForm, { SignInFormRef } from '@smart-signer/components/auth/form';
+import dynamic from 'next/dynamic';
+import type { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
+
+// The sign-in form brings the signers, wax and the form validation: load it when the dialog opens.
+const SignInForm = dynamic(() => import('@smart-signer/components/auth/form'), { ssr: false });
 
 function DialogLogin({ children }: { children: ReactNode }) {
   const signInFormRef = useRef<SignInFormRef>(null);

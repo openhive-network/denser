@@ -3,7 +3,7 @@ import { convertStringToBig, isHive } from '@hive/ui/lib/helpers';
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
 import { SavingsWithdrawals, IFollow, HiveOperation } from '@hive/common-hiveio-packages/wax';
-import { EAssetName, GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
+import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
 import Big from 'big.js';
@@ -116,7 +116,7 @@ export const transformWithdraw = (
   const multiplication = total_vests.times(divide);
   if (format === 'big') return multiplication;
   if (format === 'number') return multiplication.toNumber();
-  return numberWithCommas(multiplication.toFixed(getPrecision(EAssetName.VESTS)));
+  return numberWithCommas(multiplication.toFixed(getPrecision('VESTS')));
 };
 
 export const getAmountFromWithdrawal = (withdrawal: SavingsWithdrawals['withdrawals'][number]) => {

@@ -2,11 +2,11 @@ import getSlug from 'speakingurl';
 import base58 from 'bs58';
 import secureRandom from 'secure-random';
 import { getPostHeader } from './bridge-api';
-import { asset as assetFn, EAssetName } from '@hiveio/wax';
+import type { EAssetName } from '@hiveio/wax';
 import { getChain } from './chain';
 
 // Re-export EAssetName for convenience
-export { EAssetName };
+export type { EAssetName };
 
 // Token type that accepts both enum values and string literals
 type TokenType = EAssetName | 'HIVE' | 'HBD' | 'VESTS';
@@ -16,7 +16,8 @@ type TokenType = EAssetName | 'HIVE' | 'HBD' | 'VESTS';
  * This ensures consistency with the wax library's native asset definitions.
  */
 export const createAsset = async (amount: string, token: TokenType) => {
-  const chain = await getChain();
+  // wax is loaded on first use, so importing this module does not pull it into page-load chunks.
+  const [chain, { asset: assetFn }] = await Promise.all([getChain(), import('@hiveio/wax')]);
   const assetConfig = chain.ASSETS[token as EAssetName];
   return assetFn.create({
     amount,

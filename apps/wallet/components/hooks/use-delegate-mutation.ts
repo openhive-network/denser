@@ -1,6 +1,6 @@
 import { asset, TNaiAssetSource } from '@hiveio/wax';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { transactionService } from '@transaction/index';
+import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { logger } from '@ui/lib/logger';
 
 /**

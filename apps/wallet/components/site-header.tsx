@@ -12,16 +12,19 @@ import { useTranslation } from '@/wallet/i18n/client';
 import { getLogger } from '@ui/lib/logging';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import UserMenu from './user-menu';
-import { PieChart, Pie } from 'recharts';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
 import { findRcAccounts } from '../lib/hive';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
-import { RcAccount } from '@hiveio/wax';
+import type { RcAccount } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 import WitnessVoteExpiryWarning from './witness-vote-expiry-warning';
 import { getAccount } from '@transaction/lib/hive-api';
 import { getUserAvatarUrl } from '@hive/ui';
+import dynamic from 'next/dynamic';
+
+// recharts is shown to logged-in users only: keep it out of the chunks every page loads.
+const RcRingChart = dynamic(() => import('./rc-ring-chart'), { ssr: false });
 
 const logger = getLogger('app');
 
@@ -74,7 +77,6 @@ const SiteHeader: FC = () => {
         resourceCreditsWaitTime: 0
       };
   const chartAngle = (360 * stats.resourceCreditsPercent) / 100;
-  const chart = [{ name: '', value: 1 }];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background shadow-sm">
@@ -126,20 +128,7 @@ const SiteHeader: FC = () => {
                       <UserMenu user={user}>
                         <div className="relative inline-flex w-fit cursor-pointer items-center justify-center">
                           <div className="absolute cursor-pointer">
-                            <PieChart width={50} height={50}>
-                              <Pie
-                                data={chart}
-                                cx={20}
-                                cy={20}
-                                startAngle={90}
-                                endAngle={-chartAngle + 90}
-                                innerRadius={17}
-                                outerRadius={23}
-                                fill="#0088FE"
-                                paddingAngle={0}
-                                dataKey="value"
-                              ></Pie>
-                            </PieChart>
+                            <RcRingChart angle={chartAngle} />
                           </div>
                           <Avatar>
                             <AvatarImage
