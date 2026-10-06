@@ -9,8 +9,17 @@
 # every app on builds an earlier revision was measured with, and those builds are
 # not measured again. The check itself is scripts/ci-helpers/lighthouse-integration-check.js.
 #
+# Just before and just after the routes, the check probes the Hive API node the site's
+# server reads from, a fixed images.hive.blog image and the site's own favicon, and
+# marks the pass `environment: degraded` when they, or a route's TTFB, are far above
+# the baseline of the last passes.
+#
 # Results, served at https://$SITE_HOST/status/lighthouse/:
-#   <revision>.json and latest.json  ("status": "pass" | "breach")
+#   index.html                       the status page of the last passes
+#   <revision>.json and latest.json  ("status": "pass" | "breach", "verdict" adding
+#                                    " (environment degraded)", "environment")
+#   reports/<revision>/              each run's full report (gzip'd), latest revision only
+#   environment-baseline.json        the probes and TTFBs of the last passes
 #
 #   ./lighthouse.sh            # measure the tip if it is deployed and not yet measured
 #   ./lighthouse.sh --quiet    # print nothing when there is nothing to measure
@@ -39,6 +48,18 @@ say() { $quiet || echo "$@"; }
 revision=$(git rev-parse HEAD)
 site_host=$(sed -n 's/^SITE_HOST=//p' .env | tail -n 1)
 [ -n "$site_host" ] || { echo "lighthouse: SITE_HOST is not set in .env" >&2; exit 1; }
+network=$(sed -n 's/^DENSER_NETWORK=//p' .env | tail -n 1)
+network_env=networks/${network:-mainnet}.env
+# The server's node first (the one probed), then the others the client may pick.
+api_node_args=()
+for node in $(sed -n 's/^REACT_APP_API_ENDPOINT=//p' "$network_env") \
+            $(sed -n 's/^REACT_APP_ALLOWED_HIVE_API_NODES=//p' "$network_env"); do
+    case "$node" in
+        https://images.hive.blog*) ;;
+        *) api_node_args+=(--api-node "$node") ;;
+    esac
+done
+[ "${#api_node_args[@]}" -gt 0 ] || { echo "lighthouse: no REACT_APP_API_ENDPOINT in $network_env" >&2; exit 1; }
 
 # "yes <builds>" when every app serves $revision, <builds> naming what they serve
 # (follow mode's releases, or the images' digests).
@@ -80,7 +101,8 @@ docker run --rm --cpus 2 --memory 2g \
     -w /check \
     "$LIGHTHOUSE_IMAGE" \
     node lighthouse-integration-check.js \
-        --site "https://$site_host" --revision "$revision" --out /out --wait-timeout 300 || rc=$?
+        --site "https://$site_host" --revision "$revision" --out /out --wait-timeout 300 \
+        "${api_node_args[@]}" || rc=$?
 # 0 within thresholds, 2 a breach: either way these builds have their result.
 if [ "$rc" = 0 ] || [ "$rc" = 2 ]; then
     echo "$revision" > "$OUT/builds/$builds"

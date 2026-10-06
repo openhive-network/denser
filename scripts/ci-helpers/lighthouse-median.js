@@ -56,6 +56,8 @@ function summarizeRuns(runs) {
   const summary = { measuredRuns: measured.length, errors: runs.filter((r) => r.error).map((r) => r.error) };
   if (measured.length === 0) return summary;
   for (const metric of Object.keys(measured[0])) {
+    // Nested figures (a run's `backend`) have their own summary.
+    if (typeof measured[0][metric] === 'object') continue;
     if (metric === 'lcp-lazy-loaded') {
       summary[metric] = measured.filter((run) => run[metric]).length * 2 > measured.length;
     } else {
