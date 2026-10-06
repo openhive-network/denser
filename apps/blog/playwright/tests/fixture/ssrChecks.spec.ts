@@ -239,8 +239,7 @@ test.describe('SSR — community profile (JS disabled)', () => {
   });
 
   // Community SEO: buildCommunityTagMetadata sets og title + image from the
-  // community — these MUST be in the server <head> for crawlers, even though
-  // the info sidebar is client-only (see SSR-09).
+  // community — these MUST be in the server <head> for crawlers.
   test('SSR-22 — community page emits og:title + og:image in the server <head>', async ({
     page
   }) => {
@@ -249,16 +248,21 @@ test.describe('SSR — community profile (JS disabled)', () => {
     await expectSsrMetaContent(page.locator('head meta[property="og:image"]'));
   });
 
-  // Gap: the community sidebar (CommunityDescription) only renders once BOTH
-  // community data AND subscriber data are present — but getSubscribers is
-  // fetched client-side with no SSR/initialData, so the sidebar never appears
-  // in the server HTML (the community feed posts beside it do — SSR-08).
+  // The sidebar renders from the community data PrefetchComponent fetches on the
+  // server; the subscriber list only fills its dialog once the client loads it.
   test('SSR-09 — community info sidebar renders in server HTML', async ({ page }) => {
-    test.fail(!isRecordMode, 'SSR gap (#932): sidebar gated on client-only subscriber fetch');
     await page.goto(`/trending/${COMMUNITY}`);
     // The sidebar leads with the community title (dynamic data), so a non-empty
     // check on the container is meaningful here — no static-only header prefix.
     await expectSsrNonEmpty(page.getByTestId('community-info-sidebar'));
+  });
+
+  // On mobile the community card sits above the feed column: if it only appeared
+  // after a client fetch it would push the whole feed down (layout shift).
+  test('SSR-26 — mobile community card above the feed renders in server HTML', async ({ page }) => {
+    await page.setViewportSize({ width: 412, height: 915 });
+    await page.goto(`/trending/${COMMUNITY}`);
+    await expectSsrNonEmpty(page.getByTestId('community-simple-description-sidebar'));
   });
 });
 

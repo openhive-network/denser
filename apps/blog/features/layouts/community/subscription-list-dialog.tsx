@@ -17,7 +17,7 @@ export function SubsListDialog({
   community: string;
   moderateEnabled: boolean;
   children: ReactNode;
-  subs: string[][];
+  subs: string[][] | null | undefined;
   title: string;
 }) {
   return (
@@ -28,7 +28,7 @@ export function SubsListDialog({
       <DialogContent className=" h-5/6 overflow-auto sm:max-w-[425px]">
         <div>Latest {title} Subscribers</div>
         <ul>
-          {subs.map((e: string[]) => (
+          {subs?.map((e: string[]) => (
             <li key={e[0]} className="flex items-center gap-1 p-[1.5px] text-sm">
               <BasePathLink href={`/@${e[0]}`} className="text-destructive">
                 @{e[0]}

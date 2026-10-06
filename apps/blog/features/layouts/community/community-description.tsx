@@ -25,7 +25,7 @@ const CommunityDescription = ({
   userSubscriptions
 }: {
   data: Community;
-  subs: string[][];
+  subs: string[][] | null | undefined;
   notificationData: IAccountNotification[] | null | undefined;
   username: string;
   userSubscriptions?: string[][] | null;

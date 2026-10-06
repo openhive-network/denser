@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
-import { getPostsRanked } from '@transaction/lib/bridge-api';
+import { DATA_LIMIT, getPostsRanked } from '@transaction/lib/bridge-api';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
@@ -50,7 +50,8 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
       return postsData ?? [];
     },
     getNextPageParam: (lastPage: Entry[]) => {
-      if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
+      // A short page is the end of the feed; asking for more would only return it empty.
+      if (!Array.isArray(lastPage) || lastPage.length < DATA_LIMIT) return undefined;
       const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
       if (!last?.author || !last?.permlink) return undefined;
       return { author: last.author, permlink: last.permlink };
