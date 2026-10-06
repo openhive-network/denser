@@ -10,6 +10,7 @@
  * used to turn the server into an open proxy (SSRF).
  */
 
+import { unstable_rethrow } from 'next/navigation';
 import { siteConfig } from '@hive/ui/config/site';
 
 export const API_NODE_COOKIE = 'api-node';
@@ -146,9 +147,13 @@ export function syncApiNodeCookieFromLocalStorage(): void {
 /**
  * Resolve the preferred JSON-RPC endpoint for this environment:
  * - browser: localStorage
- * - server: api-node cookie via next/headers (when available)
+ * - server: the current request's api-node cookie via next/headers
+ *
+ * Async because Next 16 only exposes request cookies through `await cookies()`.
+ * On the server the result belongs to the current request only: callers must
+ * not store it anywhere another request can read it.
  */
-export function resolvePreferredApiNode(): string | undefined {
+export async function resolvePreferredApiNode(): Promise<string | undefined> {
   if (typeof window === 'object' && window.localStorage) {
     return readPreferredApiNodeFromLocalStorage();
   }
@@ -158,10 +163,12 @@ export function resolvePreferredApiNode(): string | undefined {
       // Dynamic require keeps this module importable from client bundles.
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { cookies } = require('next/headers') as typeof import('next/headers');
-      const store = cookies();
+      const store = await cookies();
       return readPreferredApiNodeFromCookie((name) => store.get(name)?.value);
-    } catch {
-      // Outside a Next.js request (tests, scripts) — no cookie available.
+    } catch (error) {
+      // Let Next.js see its own control-flow errors (dynamic rendering bailout etc.).
+      unstable_rethrow(error);
+      // Outside a Next.js request (tests, scripts, background revalidation): no cookie.
       return undefined;
     }
   }

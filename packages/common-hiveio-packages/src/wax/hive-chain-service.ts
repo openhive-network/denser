@@ -5,10 +5,8 @@ import { ExtendedNodeApi, ExtendedRestApi } from './extended-hive.chain';
 import { EXTENDED_REST_API_DEFINITION } from './rest-api-definition';
 import { getLogger } from '@hive/ui/lib/logging';
 import { initializeAssetConstants } from '@hive/ui/lib/asset-constants';
-import {
-  resolvePreferredApiNode,
-  setApiNodeCookie
-} from '@hive/ui/lib/api-node-preference';
+import { resolvePreferredApiNode, setApiNodeCookie } from '@hive/ui/lib/api-node-preference';
+import { createApiNodeViews } from './request-scoped-api-node';
 
 export type HiveChain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
 
@@ -16,11 +14,21 @@ const logger = getLogger('wax');
 
 const getDefaultClientOptions = (): IWaxOptionsChain => {
   // I don't think this logic should be here, but for now it is easier to keep it. We have dedicated MemoryMixin (?)
+  let jsonRpcNode: string | undefined = undefined;
   let restNode: string | undefined = undefined;
-  // Prefer user's selected JSON-RPC node: localStorage on client, api-node cookie on SSR.
-  const jsonRpcNode = resolvePreferredApiNode();
-
+  // Check if user has selected a custom node in localStorage. Client-only: the SSR
+  // api-node cookie must NOT be baked into the process-wide singleton (one visitor's
+  // node would stick for every later request); getChain() applies it per request.
   if (typeof window === 'object' && window.localStorage) {
+    const storedJsonRpcEndpoint = window.localStorage.getItem('node-endpoint');
+    if (storedJsonRpcEndpoint) {
+      try {
+        jsonRpcNode = JSON.parse(storedJsonRpcEndpoint);
+      } catch (err) {
+        logger.error('Error parsing stored node-endpoint from localStorage: %o', err);
+      }
+    }
+
     const storedRestEndpoint = window.localStorage.getItem('rest-node-endpoint');
     if (storedRestEndpoint) {
       try {
@@ -219,21 +227,25 @@ export const reuseHiveChain = (): HiveChain | undefined => {
   return hiveChain;
 };
 
-/**
- * Apply the request's preferred API node onto the shared chain singleton.
- * Needed because the chain is created once; later SSR requests with an
- * api-node cookie must still override endpointUrl for that render.
- */
-const applyPreferredEndpointToChain = (chain: HiveChain): HiveChain => {
-  const preferred = resolvePreferredApiNode();
-  if (preferred && chain.api.endpointUrl !== preferred) {
-    logger.info('Applying preferred API node for request: %o (was %o)', preferred, chain.api.endpointUrl);
-    chain.api.endpointUrl = preferred;
-  }
-  return chain;
-};
+const apiNodeViews = createApiNodeViews<HiveChain>(
+  (shared, node) =>
+    shared.extendConfig({
+      chainId: shared.chainId,
+      apiEndpoint: node,
+      restApiEndpoint: shared.restApi.endpointUrl,
+      apiTimeout: getDefaultClientOptions().apiTimeout
+    }),
+  (node, shared) =>
+    logger.info('Created per-node chain view for API node %o (shared client stays %o)', node, shared.api.endpointUrl)
+);
 
-export const getChain = (): Promise<HiveChain> => {
-  const promise = hiveChainPromise ?? initChain();
-  return promise.then(applyPreferredEndpointToChain);
+export const getChain = async (): Promise<HiveChain> => {
+  const shared = await (hiveChainPromise ?? initChain());
+
+  // Browser: one user; the singleton already follows localStorage / setRpcEndpoint().
+  if (typeof window !== 'undefined') return shared;
+
+  // Server: the request's allowlisted api-node cookie selects a cached per-node view.
+  // Never assign endpointUrl here; that would mutate the shared wax client.
+  return apiNodeViews(shared, await resolvePreferredApiNode());
 };

@@ -15,7 +15,8 @@
       "@hive/common-hiveio-packages": ["lib/__test-stubs__/common-hiveio-packages.ts"],
       "@hive/common-hiveio-packages/wax": ["lib/__test-stubs__/common-hiveio-packages-wax.ts"],
       "@hive/ui/lib/logging": ["lib/__test-stubs__/ui-logging.ts"],
-      "@ui/lib/logging": ["lib/__test-stubs__/ui-logging.ts"]
+      "@ui/lib/logging": ["lib/__test-stubs__/ui-logging.ts"],
+      "@ui/lib/api-node-preference": ["lib/__test-stubs__/ui-api-node-preference.ts"]
     }
   },
   "include": ["lib/**/*.ts"],
