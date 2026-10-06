@@ -6,7 +6,7 @@ import { Button } from '@ui/components/button';
 import { useTranslation } from '@/blog/i18n/client';
 import ImageGallery from './image-gallery';
 import RendererContainer from './rendererContainer';
-import { postClassName } from '@/blog/features/post-editor/lib/utils';
+import { postClassName } from '@/blog/features/post-editor/lib/post-class-name';
 import { getPostHiddenMessageKey } from '@/blog/lib/muted-reasons';
 
 interface PostBodySectionProps {

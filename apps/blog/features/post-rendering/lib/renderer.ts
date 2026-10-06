@@ -1,5 +1,7 @@
-import { DefaultRenderer, TablePlugin, InstagramResizePlugin, TwitterMessageResizePlugin } from '@hive/renderer';
+import { DefaultRenderer } from '@hive/renderer';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
+import { BODY_IMAGE_SIZES, getBodyImageSrcSet } from './body-image-sources';
+import { RENDERER_PLUGINS } from './renderer-plugins';
 
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 
@@ -33,24 +35,6 @@ function isLinkSafe(url: string): boolean {
   }
 }
 
-// Resizing-proxy widths offered to the browser for post body images.
-const BODY_IMAGE_WIDTHS = [640, 1024, 1536];
-// The post body column: full width below md, 8 of 12 grid columns up to the 2xl container.
-const BODY_IMAGE_SIZES = '(min-width: 1536px) 1024px, (min-width: 768px) 67vw, 100vw';
-// Resizing would drop GIF animation frames and rasterize SVGs.
-const NOT_RESIZABLE_IMAGE = /\.(gif|svg)($|\?)/i;
-
-/**
- * `srcset` of resized WebP candidates for a body image, or '' when the image must be served
- * as is: GIF/SVG, or a URL proxifyImageSrc returns unchanged whatever the width (already proxied).
- */
-function getBodyImageSrcSet(url: string, token?: string): string {
-  if (NOT_RESIZABLE_IMAGE.test(url)) return '';
-  const candidates = BODY_IMAGE_WIDTHS.map((width) => proxifyImageSrc(url, width, 0, 'webp', token));
-  if (new Set(candidates).size !== candidates.length) return '';
-  return candidates.map((candidate, i) => `${candidate} ${BODY_IMAGE_WIDTHS[i]}w`).join(', ');
-}
-
 const renderDefaultOptions = {
   baseUrl: configuredSiteDomain,
   breaks: false,
@@ -64,10 +48,7 @@ const renderDefaultOptions = {
   ipfsPrefix: '',
   assetsWidth: 640,
   assetsHeight: 480,
-  // Note: Instagram and Twitter/X both use iframe-only resize (postMessage) - no
-  // third-party widgets.js runs in our origin (issue #934); the platform.twitter.com
-  // iframe renders the tweet on its own and posts its height.
-  plugins: [new TablePlugin(), new InstagramResizePlugin(), new TwitterMessageResizePlugin()],
+  plugins: [...RENDERER_PLUGINS],
   imageProxyFn: (url: string) => proxifyImageSrc(url, 1536, 0),
   imageSrcSetFn: (url: string) => getBodyImageSrcSet(url),
   imageSizes: BODY_IMAGE_SIZES,

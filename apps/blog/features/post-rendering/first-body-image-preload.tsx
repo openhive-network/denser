@@ -14,13 +14,10 @@ function readAttribute(tag: string, name: string): string | undefined {
  * candidate. React hoists the `<link>` ahead of the post markup in the server HTML.
  *
  * It carries the image's own `src`/`srcset`/`sizes`, so the browser picks the same candidate
- * for both and downloads the image once. `videoThumbnailSrc`, the thumbnail of a video facade
- * that comes before every body image, is preloaded instead when given.
+ * for both and downloads the image once. When a video facade comes before every body image,
+ * the high-priority image is the facade's thumbnail.
  */
-export default function FirstBodyImagePreload({ html, videoThumbnailSrc }: { html: string; videoThumbnailSrc?: string }) {
-  if (videoThumbnailSrc) {
-    return <link rel="preload" as="image" href={videoThumbnailSrc} fetchPriority="high" />;
-  }
+export default function FirstBodyImagePreload({ html }: { html: string }) {
   const tag = html.match(PRIORITY_IMAGE_TAG)?.[0];
   if (!tag) return null;
   const src = readAttribute(tag, 'src');

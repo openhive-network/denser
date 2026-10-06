@@ -8,7 +8,7 @@ import { Icons } from "@ui/components/icons";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@ui/components/tooltip";
 import { useTranslation } from "@/blog/i18n/client";
 import RendererContainer from "@/blog/features/post-rendering/rendererContainer";
-import { postClassName } from "@/blog/features/post-editor/lib/utils";
+import { postClassName } from "@/blog/features/post-editor/lib/post-class-name";
 
 interface PostPreviewPanelProps {
   preview: boolean;
