@@ -7,9 +7,9 @@ import { getRenderer, getPreviewRenderer } from './lib/renderer';
 import ScrollToElement from './scroll-to-element';
 import { cn } from '@ui/lib/utils';
 import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
-import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import FirstBodyImagePreload from './first-body-image-preload';
 import { useResponsiveImageNaturalWidth } from './hooks/use-responsive-image-natural-width';
+import { getFacadeThumbnailSrc, prioritizeLeadingVideoThumbnail, type PrioritizedBody } from './lib/leading-video-thumbnail';
 
 const RendererContainer = ({
   body,
@@ -41,6 +41,13 @@ const RendererContainer = ({
       : getRenderer(author, Boolean(mainPost)),
     [proxyAuthToken, author, mainPost]
   );
+
+  const { html: htmlBody, leadingVideoThumbnail } = useMemo((): Partial<PrioritizedBody> => {
+    if (!body) return {};
+    const postContext = author || permlink ? { author, permlink } : undefined;
+    const html = hiveRenderer.render(body, postContext);
+    return mainPost && !communityDescription ? prioritizeLeadingVideoThumbnail(html) : { html };
+  }, [hiveRenderer, body, author, permlink, mainPost, communityDescription]);
 
   const handleClick = (e: Event) => {
     e.preventDefault();
@@ -120,14 +127,21 @@ const RendererContainer = ({
     // so even the preview image is not a direct third-party request. Issue #934.
     const facades = ref.current?.querySelectorAll('.embed-facade');
     if (!communityDescription) {
+      let leadingThumbnailPending = Boolean(leadingVideoThumbnail);
       facades?.forEach((facade) => {
         const el = facade as HTMLElement;
         const thumb = el.dataset.thumb;
         if (thumb && !el.querySelector('img')) {
           const img = document.createElement('img');
-          img.src = proxifyImageSrc(thumb, 1536, 0, 'match', proxyAuthToken);
+          img.src = getFacadeThumbnailSrc(thumb, proxyAuthToken);
           img.alt = '';
-          img.loading = 'lazy';
+          if (leadingThumbnailPending && thumb === leadingVideoThumbnail) {
+            leadingThumbnailPending = false;
+            img.loading = 'eager';
+            img.setAttribute('fetchpriority', 'high');
+          } else {
+            img.loading = 'lazy';
+          }
           el.insertBefore(img, el.firstChild);
         }
         el.addEventListener('click', handleFacadeClick);
@@ -183,14 +197,7 @@ const RendererContainer = ({
       nodes?.forEach((n) => n.removeEventListener('click', handleClick));
       facades?.forEach((facade) => facade.removeEventListener('click', handleFacadeClick));
     };
-  }, [body, hiveRenderer, previewMode, communityDescription, proxyAuthToken]);
-
-  const htmlBody = useMemo(() => {
-    if (body) {
-      const postContext = author || permlink ? { author, permlink } : undefined;
-      return hiveRenderer.render(body, postContext);
-    }
-  }, [hiveRenderer, body, author, permlink]);
+  }, [body, hiveRenderer, previewMode, communityDescription, proxyAuthToken, leadingVideoThumbnail]);
 
   useResponsiveImageNaturalWidth(ref, htmlBody);
 
@@ -198,7 +205,14 @@ const RendererContainer = ({
     <Loading loading={false} />
   ) : (
     <>
-      {mainPost ? <FirstBodyImagePreload html={htmlBody} /> : null}
+      {mainPost ? (
+        <FirstBodyImagePreload
+          html={htmlBody}
+          videoThumbnailSrc={
+            leadingVideoThumbnail ? getFacadeThumbnailSrc(leadingVideoThumbnail, proxyAuthToken) : undefined
+          }
+        />
+      ) : null}
       <div className="flex h-fit w-full">
         <div
           id="articleBody"

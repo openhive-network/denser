@@ -6,8 +6,9 @@ import { MOBILE_VIEWPORT, observeLayoutShiftScore, readLayoutShiftScore } from '
 /**
  * Post body images: responsive proxy candidates inline, show-then-upgrade lightbox, no layout shift.
  *
- *   01 – Inline image loads a resized proxy candidate (srcset + sizes), never the full size
- *   02 – Server HTML preloads the first body image with the image's own srcset/sizes
+ *   01 – Inline image loads a resized proxy candidate (srcset + sizes), never the full size; the
+ *        leading video's thumbnail, the LCP candidate, loads eagerly instead of the image
+ *   02 – Server HTML preloads the leading video's thumbnail
  *   03 – Lightbox paints the inline image at once, then swaps in the full size
  *   04 – Hovering an image with a mouse prefetches its full size
  *   05 – Body images loading late do not shift the page
@@ -22,6 +23,9 @@ const RESIZED_PROXY_URL = /^https:\/\/images\.hive\.blog\/p\/[^?]+\?format=webp&
 // Tighter than the 0.1 CLS target: the recorded post has a single body image, which shifts
 // the phone viewport by ~0.07 when it loads without reserved space, and by ~0.01 with it.
 const MAX_LAYOUT_SHIFT = 0.05;
+
+// The post opens with a YouTube video, ahead of its body image.
+const VIDEO_THUMBNAIL_PROXY_URL = /^https:\/\/images\.hive\.blog\/p\/[^?]+\?format=match&mode=fit&width=1536$/;
 
 const bodyImage = (page: Page) => page.locator('#articleBody img[alt="star_fork.png"]');
 
@@ -43,30 +47,33 @@ test.describe('Post body images (fixture-based)', () => {
     expect(srcset.split(', ').map((candidate) => candidate.split(' ')[1])).toEqual(['640w', '1024w', '1536w']);
     srcset.split(', ').forEach((candidate) => expect(candidate.split(' ')[0]).toMatch(RESIZED_PROXY_URL));
     await expect(image).toHaveAttribute('sizes', /100vw$/);
-    // The first body image is the LCP candidate.
-    await expect(image).toHaveAttribute('loading', 'eager');
-    await expect(image).toHaveAttribute('fetchpriority', 'high');
+    // Below the leading video, so not the LCP candidate.
+    await expect(image).toHaveAttribute('loading', 'lazy');
+    await expect(image).not.toHaveAttribute('fetchpriority', /.*/);
+
+    const thumbnail = page.locator('#articleBody .youtube-facade img');
+    const preloadHref = await page.locator('head link[rel="preload"][as="image"]').getAttribute('href');
+    expect(preloadHref).toMatch(VIDEO_THUMBNAIL_PROXY_URL);
+    await expect(thumbnail).toHaveAttribute('src', preloadHref ?? '');
+    await expect(thumbnail).toHaveAttribute('loading', 'eager');
+    await expect(thumbnail).toHaveAttribute('fetchpriority', 'high');
 
     expect(await waitForImageLoaded(image)).toMatch(RESIZED_PROXY_URL);
     await page.waitForLoadState('networkidle');
     expect(requested).not.toContain(FULL_SIZE_URL);
   });
 
-  test('POST-IMG-02: server HTML preloads the first body image with its srcset and sizes', async ({ request }) => {
+  test('POST-IMG-02: server HTML preloads the leading video thumbnail, not the body image', async ({ request }) => {
     const html = await (await request.get(POST_URL)).text();
-
-    const imageTag = html.match(/<img [^>]*alt="star_fork.png"[^>]*>/)?.[0] ?? '';
-    const srcset = imageTag.match(/ srcset="([^"]+)"/)?.[1];
-    const sizes = imageTag.match(/ sizes="([^"]+)"/)?.[1];
-    expect(srcset).toBeTruthy();
-
     const preloads = [...html.matchAll(/<link rel="preload" as="image"[^>]*>/g)].map(([link]) => link);
     expect(preloads).toHaveLength(1);
     const [preload] = preloads;
-    expect(decodeHtmlAttribute(preload.match(/imageSrcSet="([^"]+)"/)?.[1] ?? '')).toBe(decodeHtmlAttribute(srcset ?? ''));
-    expect(preload).toContain(`imageSizes="${sizes}"`);
+    const preloadHref = decodeHtmlAttribute(preload.match(/ href="([^"]+)"/)?.[1] ?? '');
+    expect(preloadHref).toMatch(VIDEO_THUMBNAIL_PROXY_URL);
     expect(preload).toContain('fetchPriority="high"');
+    expect(preload).not.toContain('imageSrcSet');
     expect(html.indexOf(preload)).toBeLessThan(html.indexOf('id="articleBody"'));
+    expect(html).not.toContain('fetchpriority="high"');
   });
 
   test('POST-IMG-03: lightbox paints the inline image at once, then swaps in the full size', async ({ page }) => {
