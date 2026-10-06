@@ -9,7 +9,6 @@ import { useTranslation } from '@/wallet/i18n/client';
 import DialogLogin from './dialog-login';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
-import version from '../version.json';
 import { siteConfig } from '@ui/config/site';
 import TooltipContainer from '@ui/components/tooltip-container';
 import env from '@beam-australia/react-env';
@@ -116,7 +115,7 @@ const Sidebar = () => {
             <Item href={`${envURL}/tos.html`} target>
               {t('navigation.sidebar.terms_of_service')}
             </Item>
-            <span className="text-center text-xs font-light">Version: {version.commithash.slice(0, 8)}</span>
+            <span className="text-center text-xs font-light">Version: {env('GIT_COMMIT_SHA')?.slice(0, 8)}</span>
           </ul>
         </div>
       </SheetContent>

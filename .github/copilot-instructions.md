@@ -40,7 +40,7 @@ pnpm install
 pnpm run dev:blog      # Port 3000
 pnpm run dev:wallet    # Port 4000
 ```
-Version info is written to `version.json` before each dev/build command via `scripts/write-version.sh`.
+The sidebar version is read at runtime from `REACT_APP_GIT_COMMIT_SHA`, which `scripts/with-commit-sha.sh` sets from git for each dev/build command.
 
 ### Building & Starting
 ```bash

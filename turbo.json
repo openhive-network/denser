@@ -1,5 +1,8 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalPassThroughEnv": [
+    "REACT_APP_GIT_COMMIT_SHA"
+  ],
   "tasks": {
     "dev": {
       "cache": false,
@@ -24,7 +27,10 @@
       ],
       "outputs": [
         ".next/**",
-        "!.next/cache/**"
+        "!.next/cache/**",
+        "public/auth/**",
+        "public/locales/**",
+        "public/smart-signer/**"
       ]
     },
     "test": {

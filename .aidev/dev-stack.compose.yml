@@ -21,7 +21,7 @@ name: denser-aidev-dev
 
 x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:9e4a99ba5fded75cdb60e3473db36b181bcf3fd0fae70f6324d9aeae36e86edc
 
-# The checkout owner: node_modules, apps/*/version.json and next's cache are
+# The checkout owner: node_modules and next's cache are
 # written as this uid so a host-side `git clean` or worktree removal can delete
 # them. AIDEV exports no uid to a dev stack; 1000 is the session worker's user.
 x-user: &user "${AIDEV_UID:-1000}:${AIDEV_GID:-1000}"

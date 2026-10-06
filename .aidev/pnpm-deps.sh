@@ -1,8 +1,8 @@
 # Sourced, not executed, from the repository root by every .aidev/run-*.sh script
-# and by the dev stack's services: installs node_modules and writes
-# apps/*/version.json, the two things a fresh checkout lacks before anything in it
-# can be linted, type-checked, tested or built. Returns non-zero when the install
-# fails, so a caller must stop on it (`set -e`, or `source … && …`).
+# and by the dev stack's services: installs node_modules, which a fresh checkout
+# lacks before anything in it can be linted, type-checked, tested or built.
+# Returns non-zero when the install fails, so a caller must stop on it (`set -e`,
+# or `source … && …`).
 #
 # The suites run in the image of .aidev/runtime/Dockerfile under `--network none`,
 # so the install is offline, from the pnpm store baked into that image. It is
@@ -39,11 +39,3 @@ if [ "$(cat "$marker" 2>/dev/null)" != "$marker_want" ] || ! node .aidev/check-n
     mv -f "$marker.tmp.$$" "$marker"
 fi
 exec {install_lock_fd}>&-
-
-# Imported by the apps' sidebars and gitignored; the root scripts write it before
-# dev/build. Without git metadata (a worktree whose .git points outside the
-# mount) the fields are empty, which the apps render as a blank version.
-for app in blog wallet; do
-    [ -e "apps/$app/version.json" ] || ./scripts/write-version.sh "apps/$app/version.json" < /dev/null > /dev/null 2>&1 \
-        || echo '{"branch":"","commithash":"","version":""}' > "apps/$app/version.json"
-done
