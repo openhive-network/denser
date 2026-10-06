@@ -13,13 +13,14 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import { accountReputation } from '@hive/ui';
-import { IFollowList, Entry } from '@hive/common-hiveio-packages/wax';
+import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { cn } from '@ui/lib/utils';
 import { handleError } from '@ui/lib/handle-error';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DetailsCardHover from './details-card-hover';
 import PostImage from './post-img';
 import { isCardImageRestricted } from './lib/card-image';
+import type { CardEntry } from './lib/card-entry';
 import { ReblogDialog } from './reblog-dialog';
 import { useReblogMutation } from './hooks/use-reblog-mutation';
 import PostCardCommentTooltip from './post-card-comment-tooltip';
@@ -31,7 +32,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
 
 interface PostListItemProps {
-  post: Entry;
+  post: CardEntry;
   isCommunityPage: boolean | undefined;
   blacklist: IFollowList[] | undefined;
   nsfwPreferences: Preferences['nsfw'];

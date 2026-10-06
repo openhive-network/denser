@@ -2,10 +2,10 @@
 
 import PostListItem from '@/blog/features/list-of-posts/post-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { Entry } from '@hive/common-hiveio-packages/wax';
 import { Preferences } from '@/blog/lib/utils';
 import { useFollowListQuery } from '@/blog/components/hooks/use-follow-list';
 import { PRIORITY_IMAGE_COUNT } from './lib/card-image';
+import type { CardEntry } from './lib/card-entry';
 
 const PostList = ({
   data,
@@ -14,7 +14,7 @@ const PostList = ({
   nsfwPreferences,
   prioritizeLeadingImages = false
 }: {
-  data: Entry[];
+  data: CardEntry[];
   isCommunityPage?: boolean;
   testFilter?: string;
   nsfwPreferences: Preferences['nsfw'];
@@ -27,7 +27,7 @@ const PostList = ({
     <ul data-testid={`post-list-${testFilter}`}>
       {data
         ?.filter((post) => post?.author && post.permlink)
-        .map((post: Entry, index) => (
+        .map((post: CardEntry, index) => (
           <PostListItem
             nsfwPreferences={nsfwPreferences}
             post={post}

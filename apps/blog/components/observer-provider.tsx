@@ -3,6 +3,7 @@
 import { createContext, useContext, ReactNode } from 'react';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import type { Entry, Community, IFollowList } from '@hive/common-hiveio-packages/wax';
+import type { CardEntry } from '@/blog/features/list-of-posts/lib/card-entry';
 
 const ObserverContext = createContext<string>(DEFAULT_OBSERVER);
 
@@ -21,7 +22,7 @@ export const ObserverProvider = ({ value, children }: { value: string; children:
  */
 export const useSSRObserver = () => useContext(ObserverContext);
 
-const InitialPostsContext = createContext<Entry[] | null>(null);
+const InitialPostsContext = createContext<CardEntry[] | null>(null);
 
 /**
  * Provides server-fetched post data directly to client components.
@@ -29,7 +30,7 @@ const InitialPostsContext = createContext<Entry[] | null>(null);
  * compatibility issues with Next.js App Router streaming SSR in v4.
  * Client components use this as initialData for useInfiniteQuery.
  */
-export const InitialPostsProvider = ({ value, children }: { value: Entry[] | null; children: ReactNode }) => (
+export const InitialPostsProvider = ({ value, children }: { value: CardEntry[] | null; children: ReactNode }) => (
   <InitialPostsContext.Provider value={value}>{children}</InitialPostsContext.Provider>
 );
 

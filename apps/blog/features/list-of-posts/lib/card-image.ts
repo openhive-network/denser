@@ -11,6 +11,7 @@ import {
   extractUrlsFromJsonString,
   extractYouTubeVideoIds
 } from '@/blog/lib/utils';
+import type { TrimmedEntry, CardEntry } from './card-entry';
 
 // The first feed images are the LCP candidates, so they must not wait for lazy-loading.
 export const PRIORITY_IMAGE_COUNT = 2;
@@ -97,7 +98,7 @@ export function find_first_img(post: Entry) {
 }
 
 /** Whether the post's author or blacklist status hides its card image for every viewer. */
-export function isCardImageRestricted(post: Entry): boolean {
+export function isCardImageRestricted(post: TrimmedEntry): boolean {
   return (
     post.blacklists.length > 0 ||
     dmcaUserList.includes(post.author) ||
@@ -106,7 +107,7 @@ export function isCardImageRestricted(post: Entry): boolean {
   );
 }
 
-function isNsfw(post: Entry): boolean {
+function isNsfw(post: TrimmedEntry): boolean {
   return Array.isArray(post.json_metadata?.tags) && post.json_metadata.tags.includes('nsfw');
 }
 
@@ -116,14 +117,13 @@ function isNsfw(post: Entry): boolean {
  * Mirrors PostList/PostListItem: nsfw cards start in "warn" (no image) and gray cards
  * hide theirs, so neither is a visible LCP candidate.
  */
-export function findFirstVisibleCardImage(entries: Entry[]): string {
+export function findFirstVisibleCardImage(entries: CardEntry[]): string {
   const leadingCards = entries.filter((post) => post?.author && post.permlink).slice(0, PRIORITY_IMAGE_COUNT);
   for (const post of leadingCards) {
     if (gdprUserList.includes(post.author) || isNsfw(post) || post.stats?.gray || isCardImageRestricted(post)) {
       continue;
     }
-    const image = find_first_img(post);
-    if (image) return image;
+    if (post.cardImage) return post.cardImage;
   }
   return '';
 }

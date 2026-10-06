@@ -10,7 +10,8 @@ import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { SearchSort } from '@ui/hooks/use-search';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
-import type { Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
+import type { PostStub } from '@hive/common-hiveio-packages/wax';
+import type { CardEntry } from '@/blog/features/list-of-posts/lib/card-entry';
 
 interface SearchContentProps {
   aiParam: string | undefined;
@@ -18,9 +19,9 @@ interface SearchContentProps {
   userTopicQuery: string | undefined;
   topicQuery: string | undefined;
   sortQuery: SearchSort | undefined;
-  initialAIResults?: MixedPostsResponse | null;
-  initialClassicResults?: Entry[] | null;
-  initialTopicResults?: Entry[] | null;
+  initialAIResults?: Array<CardEntry | PostStub> | null;
+  initialClassicResults?: CardEntry[] | null;
+  initialTopicResults?: CardEntry[] | null;
 }
 
 const SearchContent = ({

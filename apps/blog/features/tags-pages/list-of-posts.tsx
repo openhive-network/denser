@@ -10,8 +10,8 @@ import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
 import { StaleTime } from '@/blog/lib/react-query';
 import { useTranslation } from '@/blog/i18n/client';
-import { Entry } from '@hive/common-hiveio-packages/wax';
 import PostList from '../list-of-posts/posts-loader';
+import { CardEntry, loadCardEntries } from '../list-of-posts/lib/card-entry';
 import NoDataError from '@/blog/components/no-data-error';
 import LoadMoreError from '@/blog/components/load-more-error';
 import { isCommunity } from '@ui/lib/utils';
@@ -46,10 +46,10 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     queryKey: ['entriesInfinite', sort, tag, observer],
     queryFn: async ({ pageParam }) => {
       const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
-      const postsData = await getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer);
+      const postsData = await loadCardEntries(getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer));
       return postsData ?? [];
     },
-    getNextPageParam: (lastPage: Entry[]) => {
+    getNextPageParam: (lastPage: CardEntry[]) => {
       // A short page is the end of the feed; asking for more would only return it empty.
       if (!Array.isArray(lastPage) || lastPage.length < DATA_LIMIT) return undefined;
       const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
