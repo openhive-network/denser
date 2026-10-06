@@ -1,0 +1,32 @@
+{
+  "testName": "lighthouse",
+  "recordedAt": "2026-10-06T20:55:59.401Z",
+  "totalRequests": 337,
+  "savedFixtures": 29,
+  "duplicatesSkipped": 308,
+  "methods": {
+    "bridge.list_communities": 74,
+    "bridge.get_ranked_posts": 12,
+    "bridge.get_community": 40,
+    "bridge.list_community_roles": 20,
+    "bridge.get_post": 20,
+    "bridge.get_discussion": 20,
+    "database_api.find_accounts": 26,
+    "bridge.get_profile": 26,
+    "database_api.get_dynamic_global_properties": 9,
+    "bridge.get_account_posts": 3,
+    "GET /hivesense-api/": 18,
+    "GET /hivesense-api/posts/search": 18,
+    "GET /hivesense-api/posts/gtg/hive-hardfork-25-jump-starter-kit/similar": 4,
+    "GET /hivesense-api/posts/ibarra95/visiting-the-desparramaderos-waterfall-nature/similar": 5,
+    "bridge.account_notifications": 3,
+    "bridge.list_subscribers": 3,
+    "condenser_api.get_following": 6,
+    "GET /hafah-api/operation-types": 6,
+    "database_api.find_savings_withdrawals": 6,
+    "database_api.get_feed_history": 6,
+    "database_api.list_limit_orders": 6,
+    "rc_api.find_rc_accounts": 3,
+    "GET /hivemind-api/accounts/gtg/operations": 3
+  }
+}

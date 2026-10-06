@@ -1,0 +1,18 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivemind-api/accounts/gtg/operations",
+  "requestQuery": {
+    "page-size": "500",
+    "operation-types": "2,3,4,55,54,32,33,27,34,31,28,29,50,57,39,51,49,83,84",
+    "observer-name": "hive.blog"
+  },
+  "requestHash": "a8ba13be7183f2a7",
+  "response": {
+    "code": "57014",
+    "details": null,
+    "hint": null,
+    "message": "canceling statement due to statement timeout"
+  },
+  "responseStatus": 500,
+  "responseContentType": "application/json; charset=utf-8"
+}

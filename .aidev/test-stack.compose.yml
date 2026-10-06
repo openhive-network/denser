@@ -25,7 +25,7 @@
 #   docker compose -f .aidev/test-stack.compose.yml -p denser-test up -d --wait blog-live
 name: denser-aidev-test
 
-x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:9e4a99ba5fded75cdb60e3473db36b181bcf3fd0fae70f6324d9aeae36e86edc
+x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:dd8791ff8fe97440a0c1b1c3b65d301ef5127018260a27c903a9218bc74754bc
 
 x-checkout: &checkout ${AIDEV_HOST_CHECKOUT:-${PWD}}:/work:ro
 

@@ -15,16 +15,22 @@
 //              `PUT /__aidev/fixture-set/<name>` (a switch restarts the replay
 //              proxy, so its per-request call counters start over, as they do
 //              when a spec file starts its own).
+//   record   — fixture-proxy.ts's createFixtureProxy: forward to the live API
+//              ($FIXTURE_RECORD_TARGET, default api.hive.blog) and save each unique
+//              request into a recording. `PUT /__aidev/record/<name>` starts it (the
+//              recording's directory is emptied first); `DELETE /__aidev/record`
+//              closes it, which writes the recording's _index.json. Needs egress.
 //   relay    — forward to another fixture proxy, e.g. the one a Playwright worker
 //              starts inside the suite's container. `POST /__aidev/upstream`
 //              (optionally `?port=8200` or a JSON body {"url": "http://h:p"})
 //              registers the requester's own address; `DELETE` drops it.
 //
-// `GET /__aidev/status` reports the current backend. With no backend the proxy
-// answers a JSON-RPC error, the shape a replay MISS has, so the blog renders its
-// error states rather than hanging.
+// `GET /__aidev/status` reports the current backend; a replay backend's report adds
+// `served` and `misses`, its replay proxy's counts since it started. With no backend
+// the proxy answers a JSON-RPC error, the shape a replay MISS has, so the blog renders
+// its error states rather than hanging.
 //
-// The replay backend needs node_modules (express, cors, jiti); relay and
+// The replay and record backends need node_modules (express, cors, jiti); relay and
 // forward use node's standard library only.
 import http from 'node:http';
 import net from 'node:net';
@@ -60,11 +66,11 @@ function loadReplayModule() {
 // ----------------------------------------------------------------- serve ----
 
 function serve(port) {
-  let backend = null; // { kind: 'replay', name, handle, url } | { kind: 'relay', url }
+  let backend = null; // { kind: 'replay' | 'record', name, handle, url } | { kind: 'relay', url }
   let switching = Promise.resolve();
 
-  async function stopReplay() {
-    if (backend?.kind === 'replay') {
+  async function stopProxy() {
+    if (backend?.kind === 'replay' || backend?.kind === 'record') {
       const { handle } = backend;
       backend = null;
       await handle.close();
@@ -74,23 +80,33 @@ function serve(port) {
   async function useReplay(name) {
     const mod = loadReplayModule();
     if (!mod.hasFixtures(name)) throw new Error(`no recording named ${JSON.stringify(name)} under playwright/tests/mock/fixtures`);
-    await stopReplay();
+    await stopProxy();
     const handle = await mod.createReplayProxy(name, { port: INTERNAL_REPLAY_PORT });
     backend = { kind: 'replay', name, handle, url: `http://127.0.0.1:${INTERNAL_REPLAY_PORT}` };
     log(`backend: replay ${name}`);
   }
 
+  async function useRecord(name) {
+    const mod = loadReplayModule();
+    await stopProxy();
+    const target = process.env.FIXTURE_RECORD_TARGET || 'api.hive.blog';
+    const handle = await mod.createFixtureProxy(name, { port: INTERNAL_REPLAY_PORT, target });
+    backend = { kind: 'record', name, handle, url: `http://127.0.0.1:${INTERNAL_REPLAY_PORT}` };
+    log(`backend: record ${name} from ${target}`);
+  }
+
   async function useRelay(url) {
-    await stopReplay();
+    await stopProxy();
     backend = { kind: 'relay', url };
     log(`backend: relay to ${url}`);
   }
 
-  function status() {
+  async function status() {
     if (!backend) return { backend: 'none' };
-    return backend.kind === 'replay'
-      ? { backend: 'replay', fixtureSet: backend.name }
-      : { backend: 'relay', upstream: backend.url };
+    if (backend.kind === 'relay') return { backend: 'relay', upstream: backend.url };
+    if (backend.kind === 'record') return { backend: 'record', fixtureSet: backend.name };
+    const { served, misses } = await (await fetch(`${backend.url}/_status`)).json();
+    return { backend: 'replay', fixtureSet: backend.name, served, misses };
   }
 
   function reply(res, code, body) {
@@ -116,12 +132,18 @@ function serve(port) {
   async function control(req, res, url) {
     const parts = url.pathname.split('/').filter(Boolean); // ['__aidev', ...]
     try {
-      if (parts[1] === 'status' && req.method === 'GET') return reply(res, 200, status());
+      if (parts[1] === 'status' && req.method === 'GET') return reply(res, 200, await status());
       if (parts[1] === 'fixture-set' && parts[2] && (req.method === 'PUT' || req.method === 'POST')) {
         const name = decodeURIComponent(parts[2]);
         switching = switching.then(() => useReplay(name));
         await switching;
-        return reply(res, 200, status());
+        return reply(res, 200, await status());
+      }
+      if (parts[1] === 'record' && parts[2] && req.method === 'PUT') {
+        const name = decodeURIComponent(parts[2]);
+        switching = switching.then(() => useRecord(name));
+        await switching;
+        return reply(res, 200, await status());
       }
       if (parts[1] === 'upstream' && req.method === 'POST') {
         const raw = (await readBody(req)).toString().trim();
@@ -129,16 +151,16 @@ function serve(port) {
         if (!target) target = `http://${remoteHost(req)}:${url.searchParams.get('port') || 8200}`;
         switching = switching.then(() => useRelay(target.replace(/\/+$/, '')));
         await switching;
-        return reply(res, 200, status());
+        return reply(res, 200, await status());
       }
-      if ((parts[1] === 'upstream' || parts[1] === 'fixture-set') && req.method === 'DELETE') {
+      if (['upstream', 'fixture-set', 'record'].includes(parts[1]) && req.method === 'DELETE') {
         switching = switching.then(async () => {
-          await stopReplay();
+          await stopProxy();
           backend = null;
           log('backend: none');
         });
         await switching;
-        return reply(res, 200, status());
+        return reply(res, 200, await status());
       }
       return reply(res, 404, { error: `unknown control request ${req.method} ${url.pathname}` });
     } catch (error) {
@@ -196,7 +218,7 @@ function serve(port) {
     }
   });
 
-  const shutdown = () => stopReplay().finally(() => process.exit(0));
+  const shutdown = () => stopProxy().finally(() => process.exit(0));
   process.on('SIGTERM', shutdown);
   process.on('SIGINT', shutdown);
 }

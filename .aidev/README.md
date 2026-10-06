@@ -214,3 +214,132 @@ starts those services. On the same tree (steem-17, 2026-09-30):
 
 It buys nothing, and it gives the suite egress through the stack network. The
 default stays hermetic.
+
+## Deterministic Lighthouse pass (`system` slot)
+
+The integration site's Lighthouse check (`stack/integration/lighthouse.sh`) measures
+the live site against the live Hive API and `images.hive.blog`, whose latency and
+content change between runs. The `lighthouse_fixture` suite measures the same routes
+(`integration` in `scripts/ci-helpers/lighthouse-thresholds.json`), with the same
+Lighthouse (13.5.0, mobile, median of 3 runs), on production builds of this tree served
+from recorded data, so two passes differ only by the code and the host's CPU.
+
+```bash
+aidev test run --slot system                      # build, measure, compare with the baseline
+.aidev/run-lighthouse-fixture.sh --route /blog/trending --runs 1   # in the image, narrowed
+```
+
+It is bound to `system` because AIDEV's slot names are fixed (there is no `perf`
+slot) and no workflow phase requests `system` for a project: it never gates, and
+it is not part of `quick` or `full`. It takes about 5 minutes (both builds with
+next's build cache warm, then 18 Lighthouse runs); a cold build cache adds a few.
+
+**What runs** (`.aidev/run-lighthouse-fixture.sh`, all inside the suite's container
+under `--network none`, no docker):
+
+| | |
+|---|---|
+| `127.0.0.1:8000` | `lighthouse-fixture/site-router.mjs`: the integration site's routing (`/blog`, `/wallet`, else a redirect to `/blog`) and caddy's `encode zstd gzip` |
+| `:3000`, `:4000` | `next build` of blog (`NEXT_PUBLIC_BASE_PATH=/blog`) and wallet (`/wallet`), packaged and started as follow mode does, with compose.yml's app environment |
+| `:8200` | `fixture-proxy-serve.mjs` replaying the `lighthouse` recording: the API endpoint of both apps' server and client (`REACT_APP_API_ENDPOINT`, `REACT_APP_ALLOWED_HIVE_API_NODES`, `REACT_APP_AI_DOMAIN`) |
+| `:8201` | `lighthouse-fixture/image-server.mjs` replaying the recorded images: `REACT_APP_IMAGES_ENDPOINT` |
+
+It does not run `stack/integration/session-stack.sh`: that stack is docker compose,
+and an AIDEV suite has no docker socket. The topology is the same one, in one
+container. Lighthouse runs without its full-page screenshot, which happens after the
+trace and loads every lazy image of the page; no metric reads it.
+
+**Determinism.**
+- *Data.* Every API call and every image the measured runs make is answered from
+  `apps/blog/playwright/tests/mock/fixtures/lighthouse/` (API responses as the
+  fixture suite's recordings are; images under `images/`, keyed by path and query,
+  so each width a page asks for is its own entry).
+- *Time.* The servers' and each page's `Date` start at the recording's instant
+  (`_lighthouse.json` `clock`) and advance in real time
+  (`lighthouse-fixture/clock.cjs`, preloaded into the servers and injected first
+  into each document's `<head>` by the router, about 0.6 KB). "x hours ago", payout
+  windows and server/client hydration agree with the data, and requests that carry a
+  time match the recording.
+- *Nothing leaves the host, asserted:* a request in any Lighthouse report to a host
+  other than the three above, a connection the app servers open off the host
+  (`lighthouse-fixture/egress-guard.cjs` refuses and logs it), or a replay MISS on the
+  API or image server fails the pass (`hermetic` in the result).
+
+**Results** in `test-results/lighthouse-fixture/`: `result.json` (the integration
+check's shape, `status` `pass` | `breach` | `regression` | `leaked`, plus `hermetic`
+and `comparison`), each run's report under `reports/`, the servers' logs under
+`logs/`, and `junit.xml` (a case per build step and per route, the route's medians as
+properties).
+
+**Reading the comparison.** Each route's medians are compared with
+`.aidev/lighthouse-fixture/baseline.json` (`DENSER_LIGHTHOUSE_BASELINE` names another).
+A metric regresses when it moves the wrong way by more than
+max(relative × baseline, absolute) (`scripts/ci-helpers/lighthouse-compare.js`):
+
+| metric | tolerance | why |
+|---|---|---|
+| script, image, total transfer bytes | 2 %, at least 2 KiB (total: 4 KiB) | identical between runs of one tree |
+| request count | 2 requests | identical between replayed passes; a lazy image can land on either side of the trace's end |
+| LCP | 25 %, at least 500 ms | follows the host's CPU |
+| TBT | 50 %, at least 250 ms | follows the host's CPU |
+| CLS | 0.05 | |
+| performance score | 10 points down | |
+
+Each run also keeps Lighthouse's CPU benchmark (`benchmark-index`). When a route's
+median benchmark is more than 15% below the baseline's, the host was slower than when
+the baseline was measured, and an LCP, TBT or score regression on it is an advisory
+(`comparison.advisories`, ⚠️) that does not fail the pass; bytes and requests are
+judged the same either way.
+
+The output lists every metric as `baseline -> current (delta, tolerance)`, each
+route headed by its CPU benchmark, and marks regressions with ❌. Bytes are the
+signal: a byte or request regression is the code. An LCP or TBT regression with
+unchanged bytes is worth re-running before believing, more so on another host than
+the baseline's.
+
+**Spread** of two consecutive passes of one tree (steem-3, 2026-10-06; medians of
+pass 1 / pass 2, and the range of all 6 runs):
+
+| route | LCP median (ms) | LCP runs | TBT median (ms) | TBT runs | score | JS bytes | image bytes | requests |
+|---|---|---|---|---|---|---|---|---|
+| `/blog/trending` | 4774 / 5000 | 4613–5152 | 362 / 381 | 344–403 | 74 / 73 | same | same | same |
+| `/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit` | 4914 / 4990 | 4913–5285 | 1219 / 1274 | 1138–1298 | 57 / 57 | -14 B | same | same |
+| `/blog/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature` | 7450 / 7360 | 5557–7510 | 598 / 608 | 584–635 | 61 / 60 | same | same | same |
+| `/blog/trending/hive-160391` | 3908 / 3906 | 3757–4207 | 612 / 641 | 594–700 | 71 / 72 | same | same | same |
+| `/blog/@gtg` | 5916 / 5311 | 5309–5932 | 380 / 379 | 362–393 | 69 / 71 | same | same | same |
+| `/wallet/@gtg/transfers` | 6394 / 6429 | 6224–6435 | 732 / 743 | 709–821 | 59 / 59 | same | same | same |
+
+Response bodies are byte-identical; the 14 B are a response header that depends on
+whether a chunk came over a new or a reused connection. On a busier host (load
+average 15 against 5) the wallet's TBT median was 1742 ms against 730 ms, with LCP
+and bytes unchanged: what the CPU benchmark rule above is for. A deliberate
+regression, 100 KB of incompressible JavaScript imported by `/trending`'s client
+component, was reported as `script-transfer-bytes: 512.7 KiB -> 590.1 KiB (+77.3 KiB,
+tolerance 10.3 KiB)` (zstd shrinks base64 to three quarters) and failed the pass,
+with LCP and TBT within their tolerances.
+
+**Updating the baseline.** After a change that is meant to move the numbers (or on a
+new host): `.aidev/run-lighthouse-fixture.sh --update-baseline`, in the image, and
+commit `.aidev/lighthouse-fixture/baseline.json`. It is written only by a pass that is
+hermetic and within thresholds.
+
+**Refreshing the recordings.** Recording needs egress, so it runs in the image without
+`--network none`, from the checkout as the docker daemon sees it:
+
+```bash
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work \
+    registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:<environment.image digest> \
+    .aidev/run-lighthouse-fixture.sh --record
+```
+
+`--record` serves the same site with `fixture-proxy-serve.mjs` recording from
+`api.hive.blog` (`PUT /__aidev/record/<name>`, `FIXTURE_RECORD_TARGET` for another
+node) and the image server recording from `images.hive.blog`, with the clock at the
+recording's start. It runs every route as the pass does (3 runs, so feed-cache hits
+and misses are both seen), then writes `_index.json` and `_lighthouse.json`. Images
+no measured run's report lists (Lighthouse probes lazy images at full size after its
+trace) are kept as bodiless 404s (`image-server.mjs prune`), which keeps the set at
+about 7 MB. A recording replaces the set: after one, run `--update-baseline` and
+commit both. Do it when a route is added to `lighthouse-thresholds.json` (a route
+without a recording MISSes), or when the pages start making requests the recording
+lacks.

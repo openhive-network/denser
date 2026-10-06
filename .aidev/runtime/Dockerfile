@@ -42,3 +42,11 @@ RUN cd /tmp/pnpm-fetch \
     && pnpm fetch \
     && cd / && rm -rf /tmp/pnpm-fetch \
     && chmod -R a+rwX /opt/pnpm-store /opt/corepack
+
+# Lighthouse for the `system` slot's lighthouse_fixture suite (.aidev/run-lighthouse-fixture.sh):
+# the version the integration site's check runs (stack/integration/lighthouse.sh), installed
+# outside the workspace so no app depends on it. It drives Playwright's Chromium (CHROME_PATH,
+# set by the suite).
+RUN npm install -g --prefix /opt/lighthouse --no-fund --no-audit lighthouse@13.5.0 \
+    && /opt/lighthouse/bin/lighthouse --version
+ENV PATH=/opt/lighthouse/bin:$PATH

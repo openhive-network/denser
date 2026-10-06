@@ -1,0 +1,275 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_community_roles",
+    "params": {
+      "community": "hive-163772"
+    },
+    "id": 1
+  },
+  "requestHash": "e86da745691ef68b",
+  "method": "bridge.list_community_roles",
+  "params": {
+    "community": "hive-163772"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-163772",
+        "owner",
+        ""
+      ],
+      [
+        "detlev",
+        "admin",
+        "Management"
+      ],
+      [
+        "lizanomadsoul",
+        "admin",
+        "Community & Curation Management"
+      ],
+      [
+        "worldmappin",
+        "admin",
+        ""
+      ],
+      [
+        "gabrielatravels",
+        "mod",
+        ""
+      ],
+      [
+        "glecerioberto",
+        "mod",
+        "Curation & Moderation"
+      ],
+      [
+        "lauramica",
+        "mod",
+        "Curation & Moderation"
+      ],
+      [
+        "ninaeatshere",
+        "mod",
+        "Curation & Moderation"
+      ],
+      [
+        "ybanezkim26",
+        "mod",
+        "Curation & Moderation"
+      ],
+      [
+        "arcange",
+        "member",
+        "Dev Ops"
+      ],
+      [
+        "godfish",
+        "member",
+        "Community"
+      ],
+      [
+        "louis88",
+        "member",
+        "Graphic Design & Testing"
+      ],
+      [
+        "masterswatch",
+        "member",
+        "Front End Development"
+      ],
+      [
+        "rivalzzz",
+        "member",
+        "Communication"
+      ],
+      [
+        "uniforced",
+        "member",
+        "Front End Development"
+      ],
+      [
+        "abdur1",
+        "muted",
+        "Spammer"
+      ],
+      [
+        "abhaybisht",
+        "muted",
+        "5 double pinning"
+      ],
+      [
+        "adilkhan001",
+        "muted",
+        ""
+      ],
+      [
+        "afshan0522",
+        "muted",
+        "spam"
+      ],
+      [
+        "ahsanhadi",
+        "muted",
+        "Spam comment"
+      ],
+      [
+        "akawoh",
+        "muted",
+        ""
+      ],
+      [
+        "akhyar23",
+        "muted",
+        "spam content"
+      ],
+      [
+        "alassnaf",
+        "muted",
+        ""
+      ],
+      [
+        "alice2an",
+        "muted",
+        ""
+      ],
+      [
+        "alinastel",
+        "muted",
+        "part of denpauli farm"
+      ],
+      [
+        "alisa509",
+        "muted",
+        ""
+      ],
+      [
+        "anbuga",
+        "muted",
+        "spammer"
+      ],
+      [
+        "animal-shelter",
+        "muted",
+        ""
+      ],
+      [
+        "anisilyana09",
+        "muted",
+        "plagiarist"
+      ],
+      [
+        "ankitverma21",
+        "muted",
+        "plagiarism"
+      ],
+      [
+        "annguyen38",
+        "muted",
+        "plagiarist"
+      ],
+      [
+        "antor2024",
+        "muted",
+        "plagiarst"
+      ],
+      [
+        "ardhi",
+        "muted",
+        "spam"
+      ],
+      [
+        "arieswilly",
+        "muted",
+        ""
+      ],
+      [
+        "arojitmondal",
+        "muted",
+        ""
+      ],
+      [
+        "austengold",
+        "muted",
+        "part of denpauli farm"
+      ],
+      [
+        "ayijufridar",
+        "muted",
+        ""
+      ],
+      [
+        "azmahi",
+        "muted",
+        "plagiarist"
+      ],
+      [
+        "bahadd12",
+        "muted",
+        ""
+      ],
+      [
+        "banglawolf",
+        "muted",
+        ""
+      ],
+      [
+        "barbaraj",
+        "muted",
+        "plagiarist"
+      ],
+      [
+        "be-alysha",
+        "muted",
+        ""
+      ],
+      [
+        "binhmay0084",
+        "muted",
+        ""
+      ],
+      [
+        "binhmay0227",
+        "muted",
+        "Identity theft"
+      ],
+      [
+        "boriscecil",
+        "muted",
+        ""
+      ],
+      [
+        "bossmode",
+        "muted",
+        ""
+      ],
+      [
+        "buzznewlight",
+        "muted",
+        "spam"
+      ],
+      [
+        "caloocan",
+        "muted",
+        ""
+      ],
+      [
+        "calvinbayer",
+        "muted",
+        ""
+      ],
+      [
+        "ceramixer",
+        "muted",
+        ""
+      ]
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

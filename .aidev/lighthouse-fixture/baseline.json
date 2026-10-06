@@ -1,0 +1,193 @@
+{
+  "revision": "worktree",
+  "site": "http://127.0.0.1:8000",
+  "measuredAt": "2026-10-06T21:18:10.801Z",
+  "formFactor": "mobile",
+  "runsPerRoute": 3,
+  "lighthouseVersion": "13.5.0",
+  "environment": {
+    "mode": "fixture",
+    "fixtureSet": "lighthouse",
+    "clock": "2026-10-06T20:50:09Z"
+  },
+  "hermetic": {
+    "status": "hermetic",
+    "offHost": [],
+    "misses": {
+      "http://127.0.0.1:8200/__aidev/status": 0,
+      "http://127.0.0.1:8201/__aidev/status": 0
+    }
+  },
+  "routes": [
+    {
+      "route": "/blog/trending",
+      "url": "http://127.0.0.1:8000/blog/trending",
+      "thresholds": {
+        "performance": 40,
+        "largest-contentful-paint": 10000,
+        "total-blocking-time": 1500,
+        "cumulative-layout-shift": 0.1,
+        "script-transfer-bytes": 800000,
+        "lcp-lazy-loaded": false
+      },
+      "median": {
+        "measuredRuns": 3,
+        "errors": [],
+        "performance": 74,
+        "largest-contentful-paint": 4774.338725,
+        "total-blocking-time": 362.5,
+        "cumulative-layout-shift": 0,
+        "script-transfer-bytes": 525038,
+        "lcp-lazy-loaded": false,
+        "image-transfer-bytes": 389847,
+        "total-transfer-bytes": 990693,
+        "request-count": 82,
+        "benchmark-index": 2897.5
+      },
+      "breaches": [],
+      "offHost": []
+    },
+    {
+      "route": "/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit",
+      "url": "http://127.0.0.1:8000/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit",
+      "thresholds": {
+        "performance": 35,
+        "largest-contentful-paint": 11000,
+        "total-blocking-time": 3500,
+        "cumulative-layout-shift": 0.1,
+        "script-transfer-bytes": 960000,
+        "lcp-lazy-loaded": false
+      },
+      "median": {
+        "measuredRuns": 3,
+        "errors": [],
+        "performance": 57,
+        "largest-contentful-paint": 4914.293699999998,
+        "total-blocking-time": 1218.9999999999986,
+        "cumulative-layout-shift": 0,
+        "script-transfer-bytes": 621759,
+        "lcp-lazy-loaded": false,
+        "image-transfer-bytes": 27434,
+        "total-transfer-bytes": 1035967,
+        "request-count": 43,
+        "benchmark-index": 2890
+      },
+      "breaches": [],
+      "offHost": []
+    },
+    {
+      "route": "/blog/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature",
+      "url": "http://127.0.0.1:8000/blog/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature",
+      "thresholds": {
+        "performance": 35,
+        "largest-contentful-paint": 8500,
+        "total-blocking-time": 2500,
+        "cumulative-layout-shift": 0.1,
+        "script-transfer-bytes": 930000,
+        "lcp-lazy-loaded": false
+      },
+      "median": {
+        "measuredRuns": 3,
+        "errors": [],
+        "performance": 61,
+        "largest-contentful-paint": 7450.179400000001,
+        "total-blocking-time": 598.5,
+        "cumulative-layout-shift": 0,
+        "script-transfer-bytes": 621745,
+        "lcp-lazy-loaded": false,
+        "image-transfer-bytes": 1924845,
+        "total-transfer-bytes": 2829504,
+        "request-count": 48,
+        "benchmark-index": 2940
+      },
+      "breaches": [],
+      "offHost": []
+    },
+    {
+      "route": "/blog/trending/hive-160391",
+      "url": "http://127.0.0.1:8000/blog/trending/hive-160391",
+      "thresholds": {
+        "performance": 55,
+        "largest-contentful-paint": 4500,
+        "total-blocking-time": 1500,
+        "cumulative-layout-shift": 0.2,
+        "script-transfer-bytes": 930000,
+        "lcp-lazy-loaded": false
+      },
+      "median": {
+        "measuredRuns": 3,
+        "errors": [],
+        "performance": 71,
+        "largest-contentful-paint": 3908.2154,
+        "total-blocking-time": 612.4999999999986,
+        "cumulative-layout-shift": 0,
+        "script-transfer-bytes": 700785,
+        "lcp-lazy-loaded": false,
+        "image-transfer-bytes": 128623,
+        "total-transfer-bytes": 895356,
+        "request-count": 48,
+        "benchmark-index": 2918.5
+      },
+      "breaches": [],
+      "offHost": []
+    },
+    {
+      "route": "/blog/@gtg",
+      "url": "http://127.0.0.1:8000/blog/@gtg",
+      "thresholds": {
+        "performance": 40,
+        "largest-contentful-paint": 9000,
+        "total-blocking-time": 2500,
+        "cumulative-layout-shift": 0.1,
+        "script-transfer-bytes": 800000,
+        "lcp-lazy-loaded": false
+      },
+      "median": {
+        "measuredRuns": 3,
+        "errors": [],
+        "performance": 69,
+        "largest-contentful-paint": 5915.81325,
+        "total-blocking-time": 379.85714999999936,
+        "cumulative-layout-shift": 0,
+        "script-transfer-bytes": 532724,
+        "lcp-lazy-loaded": false,
+        "image-transfer-bytes": 434256,
+        "total-transfer-bytes": 1027902,
+        "request-count": 52,
+        "benchmark-index": 2925.5
+      },
+      "breaches": [],
+      "offHost": []
+    },
+    {
+      "route": "/wallet/@gtg/transfers",
+      "url": "http://127.0.0.1:8000/wallet/@gtg/transfers",
+      "thresholds": {
+        "performance": 35,
+        "largest-contentful-paint": 16000,
+        "total-blocking-time": 2500,
+        "cumulative-layout-shift": 0.1,
+        "script-transfer-bytes": 970000,
+        "lcp-lazy-loaded": false
+      },
+      "median": {
+        "measuredRuns": 3,
+        "errors": [],
+        "performance": 59,
+        "largest-contentful-paint": 6393.659400000001,
+        "total-blocking-time": 731.5,
+        "cumulative-layout-shift": 0,
+        "script-transfer-bytes": 680864,
+        "lcp-lazy-loaded": false,
+        "image-transfer-bytes": 5560,
+        "total-transfer-bytes": 1884068,
+        "request-count": 47,
+        "benchmark-index": 2877
+      },
+      "breaches": [],
+      "offHost": []
+    }
+  ],
+  "verdict": "pass",
+  "status": "pass"
+}

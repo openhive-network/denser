@@ -24,19 +24,16 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execFile } = require('child_process');
 const { parseArgs } = require('util');
+const { RUNS_PER_ROUTE, runLighthouse } = require('./lighthouse-runner');
 const { extractRunMetrics, summarizeRuns, findBreaches } = require('./lighthouse-median');
 const { extractBackendTiming, summarizeBackend, hostOf } = require('./lighthouse-backend');
 const { probeTargets, probeEnvironment, DEFAULT_PROBE_IMAGE } = require('./lighthouse-probe');
 const { classifyEnvironment, appendToHistory, verdictOf } = require('./lighthouse-environment');
 const store = require('./lighthouse-integration-store');
 
-const RUNS_PER_ROUTE = 3;
 const DEPLOYED_POLL_MS = 15_000;
-const LIGHTHOUSE_RUN_TIMEOUT_MS = 120_000;
 const REVISION_PATTERN = /^[0-9a-f]{40}$/;
-const CHROME_FLAGS = '--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage';
 
 function parseOptions() {
   const { values } = parseArgs({
@@ -106,23 +103,6 @@ async function waitForRevision(site, revision, apps, waitMs) {
     }
     await new Promise((resolve) => setTimeout(resolve, DEPLOYED_POLL_MS));
   }
-}
-
-function runLighthouse(url) {
-  const args = [url, '--output=json', '--output-path=stdout', '--quiet', `--chrome-flags=${CHROME_FLAGS}`];
-  return new Promise((resolve) => {
-    execFile('lighthouse', args, { maxBuffer: 256 * 1024 * 1024, timeout: LIGHTHOUSE_RUN_TIMEOUT_MS }, (err, stdout, stderr) => {
-      if (err) {
-        resolve({ report: null, error: `lighthouse failed: ${err.message.split('\n')[0]} ${stderr.trim().split('\n').pop() || ''}` });
-        return;
-      }
-      try {
-        resolve({ report: JSON.parse(stdout), error: null });
-      } catch (parseErr) {
-        resolve({ report: null, error: `lighthouse output is not JSON: ${parseErr.message}` });
-      }
-    });
-  });
 }
 
 function runMetrics(report, error, upstreams) {

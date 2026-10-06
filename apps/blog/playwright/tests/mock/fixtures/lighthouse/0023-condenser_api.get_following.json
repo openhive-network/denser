@@ -1,0 +1,381 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "condenser_api.get_following",
+    "params": [
+      "gtg",
+      "",
+      "blog",
+      50
+    ],
+    "id": 1
+  },
+  "requestHash": "dcdaf915e58d5b9a",
+  "method": "condenser_api.get_following",
+  "params": [
+    "gtg",
+    "",
+    "blog",
+    50
+  ],
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "aantonop"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "aaronli"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "abh12345"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "abigail-dantes"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "abit"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "acidyo"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "acromott"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "adalbertus"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "adamdo"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "adelair"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "adept"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "aditor"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "adreini"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "adrianwastag"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "aishwarya"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "ak2020"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "akipponn"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "albakerki"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "alejandra91"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "alexcote"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "aliquam.org"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "allasyummyfood"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "almost-digital"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "amalinavia"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "amy-goodrich"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anahilarski"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anasya"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anca3drandom"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "andablackwidow"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "andrarchy"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "andrewmcmillen"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "andu"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "ania"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anialavender"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anka"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anmitsu"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anna-redhead"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anna.urbanska"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "annasworld"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anomadsoul"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anshia"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "anyx"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "apiekarczyk"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "arcange"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "arhag"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "armandocat"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "armentor"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "artist1989"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "arunaelentari"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "gtg",
+        "following": "asbear"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

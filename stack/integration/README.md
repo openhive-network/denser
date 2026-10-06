@@ -98,6 +98,10 @@ image is `loading="lazy"` (Lighthouse's own LCP discovery check).
   served, is not measured. In images mode with `DENSER_TAG` pinned the site never
   serves the tip, so nothing is measured.
 - **By hand:** `./lighthouse.sh --force` measures the deployed tip again.
+- **Comparing two commits:** this check follows the live API and image proxy, so a
+  before/after of two revisions mixes code with upstream latency. The deterministic
+  pass measures the same routes on recorded data with no network
+  (`aidev test run --slot system`; ".aidev/README.md", "Deterministic Lighthouse pass").
 - **Thresholds** are the medians measured on 2026-10-05 with headroom for noise:
   single mobile runs of one build differ by seconds of LCP, which is why each route
   takes the median of 3. Tighten a route's limits as its performance improves. The
