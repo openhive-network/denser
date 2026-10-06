@@ -1,12 +1,13 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   getDynamicGlobalProperties,
   getFeedHistory,
   getFollowing
 } from '@transaction/lib/hive-api';
 import { getAccount } from '@transaction/lib/hive-api';
+import { FullAccount } from '@hive/common-hiveio-packages/wax';
 import { getAccountOperations, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import { createListWithSuggestions } from '@/wallet/lib/utils';
 import Loading from '@ui/components/loading';
@@ -27,11 +28,16 @@ export default function TransfersPage({ username }: { username: string }) {
   const blogURL = env('BLOG_DOMAIN');
   const { user } = useUserClient();
   const hiveChain = hiveChainService.reuseHiveChain();
+  const queryClient = useQueryClient();
+  // The profile layout already holds this account (prefetched on the server): start from it instead
+  // of a second find_accounts. Mutations still refresh it through the 'accountData' key.
   const { data: accountData, isLoading: accountLoading } = useQuery(
     ['accountData', username],
     () => getAccount(username),
     {
-      enabled: Boolean(username)
+      enabled: Boolean(username),
+      initialData: () => queryClient.getQueryData<FullAccount>(['profileData', username]),
+      initialDataUpdatedAt: () => queryClient.getQueryState(['profileData', username])?.dataUpdatedAt
     }
   );
   const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalPropertiesData'], () =>

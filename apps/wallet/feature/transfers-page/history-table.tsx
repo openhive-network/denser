@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { TFunction } from 'i18next';
-import TimeAgo from '@hive/ui/components/time-ago';
+import { Button } from '@ui/components';
 import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { createWalletOperationsFormatter } from './wallet-operations-formatter';
+import HistoryTableRow from './history-table-row';
 
 type DynamicData = Pick<GetDynamicGlobalPropertiesResponse, 'total_vesting_fund_hive' | 'total_vesting_shares'>;
+
+// Each row costs a wax format call and a TimeAgo: rendering the whole history in one commit blocks
+// the main thread for seconds on mobile, so rows are rendered a page at a time.
+const HISTORY_PAGE_SIZE = 50;
 
 interface HistoryTableProps {
   isLoading: boolean;
@@ -23,6 +28,22 @@ const HistoryTable = ({
   username,
   dynamicData
 }: HistoryTableProps) => {
+  const [visibleCount, setVisibleCount] = useState(HISTORY_PAGE_SIZE);
+  const hiveChain = hiveChainService.reuseHiveChain();
+
+  const formatOperationDescription = useMemo(() => {
+    if (!hiveChain) return null;
+    const FormatterClass = createWalletOperationsFormatter(username, dynamicData, t, hiveChain);
+    const extendedFormatter = hiveChain.formatter.extend(FormatterClass);
+
+    return (operation: HiveOperation): React.ReactNode => {
+      const formatted = extendedFormatter.format(operation);
+      return React.isValidElement(formatted?.op?.value) ? formatted.op.value : <div>error</div>;
+    };
+  }, [hiveChain, username, dynamicData, t]);
+
+  const showMore = useCallback(() => setVisibleCount((count) => count + HISTORY_PAGE_SIZE), []);
+
   if (isLoading) return <div>{t('global.loading')}</div>;
   if (historyList.length === 0)
     return (
@@ -34,44 +55,32 @@ const HistoryTable = ({
       </div>
     );
 
-  const hiveChain = hiveChainService.reuseHiveChain();
-  if (!hiveChain) return <></>;
-
-  const FormatterClass = createWalletOperationsFormatter(username, dynamicData, t, hiveChain);
-  const extendedFormatter = hiveChain.formatter.extend(FormatterClass);
-
-  function formatOperationDescription(operation: HiveOperation): React.ReactNode {
-    const formatted = extendedFormatter.format(operation);
-    return React.isValidElement(formatted?.op?.value) ? formatted.op.value : <div>error</div>;
-  }
+  if (!formatOperationDescription) return <></>;
 
   return (
-    <table className="w-full max-w-6xl p-2">
-      <tbody>
-        {[...historyList].map(
-          (element) =>
-            element.op && (
-              <tr
-                key={element.operation_id}
-                className="m-0 w-full p-0 text-xs even:bg-background-tertiary sm:text-sm"
-                data-testid="wallet-account-history-row"
-              >
-                <td className="px-4 py-2 sm:min-w-[150px]">
-                  <TimeAgo date={element.timestamp} />
-                </td>
-                <td className="px-4 py-2 sm:min-w-[300px]">
-                  {formatOperationDescription(element)}
-                </td>
-                {element.op.value.memo ? (
-                  <td className="hidden break-all px-4 py-2 sm:block">{element.op.value.memo}</td>
-                ) : (
-                  <td></td>
-                )}
-              </tr>
-            )
-        )}
-      </tbody>
-    </table>
+    <>
+      <table className="w-full max-w-6xl p-2">
+        <tbody>
+          {historyList.slice(0, visibleCount).map(
+            (element) =>
+              element.op && (
+                <HistoryTableRow
+                  key={element.operation_id}
+                  operation={element}
+                  formatOperationDescription={formatOperationDescription}
+                />
+              )
+          )}
+        </tbody>
+      </table>
+      {historyList.length > visibleCount && (
+        <div className="flex justify-center p-2">
+          <Button variant="outline" onClick={showMore} data-testid="wallet-account-history-show-more">
+            {t('profile.show_more_transactions')}
+          </Button>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -147,6 +147,7 @@
     "witnesses": "Witnesses",
     "account_history_description": "Остерегайтесь спама и фишинговых ссылок в передачах. Не открывайте ссылки от пользователей, которым вы не доверяете. Не предоставляйте свои личные ключи третьим сторонам. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
     "no_transactions_found": "No transactions found",
+    "show_more_transactions": "Показать ещё",
     "the_next_power_down": "The next power down is scheduled to happen in ",
     "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",

@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useTranslation } from '@/wallet/i18n/client';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { HiveOperation } from '@hive/common-hiveio-packages/wax';
@@ -37,7 +38,10 @@ const AccountHistory = ({
   const { t } = useTranslation('common_wallet');
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
 
-  const filteredHistoryList = operationHistoryData?.filter(getFilter({ filter, username }));
+  const filteredHistoryList = useMemo(
+    () => operationHistoryData?.filter(getFilter({ filter, username })),
+    [operationHistoryData, filter, username]
+  );
 
   return (
     <>

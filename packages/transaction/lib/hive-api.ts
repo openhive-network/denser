@@ -38,7 +38,18 @@ interface IManabars {
 const PERCENT_VALUE_DOUBLE_PRECISION = 100;
 const ONE_HUNDRED_PERCENT = BigInt(100) * BigInt(PERCENT_VALUE_DOUBLE_PRECISION);
 
-export const getManabars = async (accountName: string): Promise<IManabars | null> => {
+type ManabarDynamicGlobalProperties = Pick<GetDynamicGlobalPropertiesResponse, 'time' | 'downvote_pool_percent'>;
+
+/**
+ * Loads the global properties the manabars are computed against. Callers that already hold them
+ * (e.g. in a query cache) pass a loader to avoid another get_dynamic_global_properties request.
+ */
+type DynamicGlobalPropertiesLoader = () => Promise<ManabarDynamicGlobalProperties>;
+
+export const getManabars = async (
+  accountName: string,
+  loadDynamicGlobalProperties?: DynamicGlobalPropertiesLoader
+): Promise<IManabars | null> => {
   try {
     const chain = await getChain();
 
@@ -47,7 +58,7 @@ export const getManabars = async (accountName: string): Promise<IManabars | null
     }, {
       rc_accounts: [rcAccount]
     }] = await Promise.all([
-      chain.api.database_api.get_dynamic_global_properties({}),
+      loadDynamicGlobalProperties ? loadDynamicGlobalProperties() : chain.api.database_api.get_dynamic_global_properties({}),
       chain.api.database_api.find_accounts({
         accounts: [accountName],
         delayed_votes_active: false
@@ -120,8 +131,11 @@ export const getManabars = async (accountName: string): Promise<IManabars | null
     return null;
   }
 };
-export const getManabar = async (accountName: string): Promise<Manabar | null> => {
-  const manabars = await getManabars(accountName!);
+export const getManabar = async (
+  accountName: string,
+  loadDynamicGlobalProperties?: DynamicGlobalPropertiesLoader
+): Promise<Manabar | null> => {
+  const manabars = await getManabars(accountName!, loadDynamicGlobalProperties);
   if (!manabars) return null;
   const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown } = manabars;
 

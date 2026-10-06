@@ -176,6 +176,7 @@
     "account_history_title": "Account History",
     "see_faq_for_details": "See FAQ for details.",
     "no_transactions_found": "No transactions found",
+    "show_more_transactions": "Show more",
     "the_next_power_down": "The next power down is scheduled to happen in ",
     "paid_for": "Paid {{value1}} for {{value2}}",
     "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",

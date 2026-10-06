@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { getManabar } from '@transaction/lib/hive-api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getDynamicGlobalProperties, getManabar } from '@transaction/lib/hive-api';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { hoursAndMinutes } from './lib/utils';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -11,7 +11,11 @@ import dynamic from 'next/dynamic';
 const RCStats = dynamic(() => import('./rc-stats'), { ssr: false });
 
 const RCRow = ({ username }: { username: string }) => {
-  const { data, isLoading } = useQuery(['manabar', username], () => getManabar(username), {
+  const queryClient = useQueryClient();
+  // Shares the page's global properties query instead of requesting them a second time.
+  const loadDynamicGlobalProperties = () =>
+    queryClient.fetchQuery(['dynamicGlobalPropertiesData'], () => getDynamicGlobalProperties());
+  const { data, isLoading } = useQuery(['manabar', username], () => getManabar(username, loadDynamicGlobalProperties), {
     select: (e) =>
       e
         ? {
