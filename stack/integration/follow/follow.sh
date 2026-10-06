@@ -161,10 +161,9 @@ _follow_app() {
     log="$dir/logs/$id.log"
     echo "follow: $app: building ${commit:-the tree} (key $key${current:+, serving $current})"
     if [ ! -f "$dir/$id/release.json" ]; then
-        # version.json is what the sidebar shows; the build bundles it.
-        if ! ( ./scripts/write-version.sh "apps/$app/version.json" \
-                 || echo '{"branch":"","commithash":"","version":""}' > "apps/$app/version.json"
-               cd "apps/$app" && NEXT_PUBLIC_BASE_PATH="$base" pnpm build < /dev/null ) > "$log" 2>&1; then
+        # The commit the sidebar shows is not built in: serve.sh hands it to the
+        # server as REACT_APP_GIT_COMMIT_SHA from release.json (see the Dockerfile).
+        if ! ( cd "apps/$app" && NEXT_PUBLIC_BASE_PATH="$base" pnpm build < /dev/null ) > "$log" 2>&1; then
             _record_failure "$dir" "$key" "$commit" build "$log"
             return 1
         fi

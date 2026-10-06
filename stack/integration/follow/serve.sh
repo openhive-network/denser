@@ -28,7 +28,9 @@ trap 'stop; exit 0' TERM INT
 while true; do
     release=$(readlink "$dir/current")
     echo "serve: $app: starting $release"
-    (cd "$dir/$release/apps/$app" && exec setsid "$react_env" -- node server.js) &
+    # The sidebar's version, read at runtime as in the production image's runner stage.
+    revision=$(sed -n 's/.*"revision":"\([0-9a-f]*\)".*/\1/p' "$dir/$release/release.json")
+    (cd "$dir/$release/apps/$app" && REACT_APP_GIT_COMMIT_SHA="$revision" exec setsid "$react_env" -- node server.js) &
     pid=$!
     printf '{"release":"%s","since":"%s"}\n' "$release" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$dir/serving.json.tmp"
     mv -f "$dir/serving.json.tmp" "$dir/serving.json"
