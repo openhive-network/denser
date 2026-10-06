@@ -63,7 +63,10 @@ i18next
       order: ['cookie', 'path', 'htmlTag', 'navigator'],
       cookieName
     },
-    preload: languages 
+    // The server shares one instance across requests of every language, so it keeps
+    // them all; the browser only needs `lng` (and its fallback), and other
+    // languages are fetched by `changeLanguage` when the user switches.
+    preload: isServer ? languages : false
   });
 
 export function useTranslation(ns: string, options?: any) {

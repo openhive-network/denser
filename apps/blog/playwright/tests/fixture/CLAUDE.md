@@ -796,6 +796,14 @@ so count it with a browser-context `request` listener —
 on `postDetail_popover`, an additive overlay adding the author popover
 card's reads (copied from `notifications`).
 
+### Recognising a locale bundle: by content, not by URL
+
+`next dev` names a translation chunk after its file
+(`apps_blog_locales_es_common_blog_json_…`); the production build hashes it.
+`localeBundles.spec.ts` therefore reads every script response's body and picks
+out the value of `global.no_rewards`, a key every `common_blog.json` has, to
+tell which languages the browser downloaded.
+
 ### Image-host requests are not replayed: serve them with `page.route`
 
 The fixture proxy only replays Hive API calls; `images.hive.blog` requests go
