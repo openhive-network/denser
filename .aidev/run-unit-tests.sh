@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
-# node:test suites of scripts/ci-helpers: the `baseline` slot and the `unit` suite
+# node:test suites of scripts/ci-helpers and packages/ui (run through node's
+# TypeScript type stripping): the `baseline` slot and the `unit` suite
 # of the quick, full and canary slots.
 # No I/O, no server. Each package writes junit (mocha's built-in xunit reporter)
 # to test-results/unit/, the per-test evidence AIDEV reads from the binding's
@@ -32,4 +33,11 @@ run_with_junit_fallback "$junit" ci-helpers node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     scripts/ci-helpers/*.test.js < /dev/null || status=1
+
+echo "== node --test packages/ui" >&2
+junit="$PWD/test-results/unit/ui.xml"
+run_with_junit_fallback "$junit" ui node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    packages/ui/lib/time-ago.test.ts < /dev/null || status=1
 exit "$status"
