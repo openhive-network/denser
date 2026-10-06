@@ -25,6 +25,10 @@
       "dependsOn": [
         "^build"
       ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!playwright/**"
+      ],
       "outputs": [
         ".next/**",
         "!.next/cache/**",

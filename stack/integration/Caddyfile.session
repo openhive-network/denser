@@ -1,0 +1,6 @@
+# A session stack (compose.session.yml): plain HTTP on a loopback port, the
+# integration site's routes.
+:80 {
+	encode zstd gzip
+	import Caddyfile.routes
+}

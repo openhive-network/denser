@@ -3,9 +3,11 @@
 # (ui.yaml): the `-subdirectory` images, blog at /blog and wallet at /wallet on one
 # hostname. It is to denser what discuss.syncad.com is to ratings.
 #
-# Every AIDEV promote publishes the `integration` images (.aidev/project.yaml
-# `publish:`); upgrade.sh, run every 5 minutes by the systemd timer, pulls them and
-# recreates what changed. The Hive API is a public node (networks/), not a local HAF.
+# This file alone runs the published `-subdirectory` images (DENSER_MODE=images).
+# The site's default is follow mode: compose.follow.yml on top serves blog and
+# wallet from production builds of this checkout, which upgrade.sh, run every 2
+# minutes by the systemd timer, fast-forwards and rebuilds where the code changed.
+# The Hive API is a public node (networks/), not a local HAF.
 #
 # Run from a checkout of this repository on aidev/integration, in
 # stack/integration, with a .env made from .env.example. See README.md.
@@ -76,6 +78,7 @@ services:
       CADDY_PROXY_PROTOCOL_ALLOW: ${CADDY_PROXY_PROTOCOL_ALLOW:-127.0.0.1/32}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./Caddyfile.routes:/etc/caddy/Caddyfile.routes:ro
       - ./status:/srv/status:ro
       - caddy_data:/data
       - caddy_config:/config

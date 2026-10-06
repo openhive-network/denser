@@ -1,0 +1,41 @@
+# A session's "real system" stack: the integration site's follow mode (compose.yml +
+# compose.follow.yml) on a session's checkout, on one loopback port, with no TLS and
+# no sites-router. session-stack.sh brings it up; see README.md.
+#
+# What differs from the site:
+#   - caddy serves plain HTTP on 127.0.0.1:${DENSER_SESSION_PORT} (Caddyfile.session,
+#     the same routes), on the stack's own network only;
+#   - the follower runs as a service (the `watch` profile), polling the checkout and
+#     rebuilding what a commit changed, instead of being run by upgrade.sh;
+#   - the apps' public URLs are that loopback address.
+# Every path is under DENSER_SOURCE_DIR (the checkout as the docker daemon sees it),
+# so a launcher in a container whose paths differ from the daemon's still mounts
+# the right directories.
+
+x-session-urls: &session-urls
+  REACT_APP_SITE_DOMAIN: http://127.0.0.1:${DENSER_SESSION_PORT}/blog
+  REACT_APP_BLOG_DOMAIN: http://127.0.0.1:${DENSER_SESSION_PORT}/blog
+  REACT_APP_WALLET_ENDPOINT: http://127.0.0.1:${DENSER_SESSION_PORT}/wallet
+  REACT_APP_SSR_HOST: http://127.0.0.1:${DENSER_SESSION_PORT}
+
+services:
+  follower:
+    command: ["bash", "stack/integration/follow/follow.sh", "watch", "20"]
+
+  blog:
+    environment: *session-urls
+
+  wallet:
+    environment: *session-urls
+
+  caddy:
+    image: caddy:2.10.0-alpine
+    ports: !override
+      - 127.0.0.1:${DENSER_SESSION_PORT:?session-stack.sh picks it}:80
+    environment: !override {}
+    networks: !override [default]
+    volumes: !override
+      - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.session:/etc/caddy/Caddyfile:ro
+      - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.routes:/etc/caddy/Caddyfile.routes:ro
+      - ${DENSER_SOURCE_DIR}/stack/integration/status:/srv/status:ro
+
