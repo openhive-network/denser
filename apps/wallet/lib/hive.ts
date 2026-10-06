@@ -20,7 +20,7 @@ import {
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
 import { getLogger } from '@ui/lib/logging';
-import { getChain } from '@transaction/lib/chain';
+import { getChain, getReadChain } from '@transaction/lib/chain';
 
 const logger = getLogger('app');
 
@@ -93,7 +93,7 @@ const getOperationTypeIds = async (operationNames: string[]): Promise<string[]> 
 };
 
 export const getWitnessesByVote = async (limit: number): Promise<IWitness[]> => {
-  const chain = await getChain();
+  const chain = getReadChain();
   // Use max int64 value as starting point since API iterates downward from the start point
   // This ensures we get witnesses sorted by votes in descending order
   const response = await chain.api.database_api.list_witnesses({

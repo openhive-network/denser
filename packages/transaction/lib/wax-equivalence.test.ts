@@ -159,6 +159,12 @@ describe('wasm-free reads and asset math are equivalent to wax', function () {
       (c) => c.api.database_api.find_accounts({ accounts: ['alice'], delayed_votes_active: false }),
       API
     ],
+    [
+      'database_api.list_witnesses (int64 start as a string)',
+      (c) =>
+        c.api.database_api.list_witnesses({ start: ['9223372036854775807', ''], limit: 250, order: 'by_vote_name' }),
+      API
+    ],
     ['database_api.get_feed_history (no params)', (c) => c.api.database_api.get_feed_history(), API],
     ['search-api.find_text (own endpoint)', (c) => c.api['search-api'].find_text({ pattern: 'hive', sort: 'relevance' }), SEARCH],
     [
