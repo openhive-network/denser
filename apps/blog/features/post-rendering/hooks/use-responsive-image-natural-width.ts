@@ -1,6 +1,8 @@
 import { RefObject, useEffect } from 'react';
 
 const RESPONSIVE_IMAGE_SELECTOR = 'img[srcset]';
+// A video facade's thumbnail covers the whole player box, whatever its pixel width.
+const FACADE_THUMBNAIL_SELECTOR = '.embed-facade img';
 
 function pinToNaturalWidth(image: HTMLImageElement) {
   if (!image.currentSrc) return;
@@ -25,7 +27,9 @@ function handleImageLoad(event: Event) {
  */
 export function useResponsiveImageNaturalWidth(containerRef: RefObject<HTMLElement | null>, html: string | undefined) {
   useEffect(() => {
-    const images = Array.from(containerRef.current?.querySelectorAll<HTMLImageElement>(RESPONSIVE_IMAGE_SELECTOR) ?? []);
+    const images = Array.from(
+      containerRef.current?.querySelectorAll<HTMLImageElement>(RESPONSIVE_IMAGE_SELECTOR) ?? []
+    ).filter((image) => !image.matches(FACADE_THUMBNAIL_SELECTOR));
     images.forEach((image) => {
       if (image.complete && image.naturalWidth > 0) pinToNaturalWidth(image);
       // Also fires when the browser switches to another candidate after a resize.

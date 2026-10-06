@@ -20,7 +20,9 @@ export const CHUNK_MARKERS = {
   beekeeper: 'beekeeper',
   /** wax's JavaScript: its request header and the name of the wasm it loads */
   waxApiCaller: 'x-wax-api-caller',
-  waxWasm: 'wax.common.wasm'
+  waxWasm: 'wax.common.wasm',
+  /** @hive/renderer: the label of one of DefaultRenderer's option checks */
+  renderer: 'RendererOptions.assetsWidth'
 } as const;
 
 /** The Sentry SDK: page-load code reaches it only through a dynamic `import()`, made when a DSN is set. */

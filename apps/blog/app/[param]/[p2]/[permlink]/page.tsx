@@ -18,6 +18,8 @@ import {
   InitialCommunityRolesProvider,
   InitialFollowListProvider
 } from '@/blog/components/observer-provider';
+import { RenderedBodiesProvider } from '@/blog/features/post-rendering/rendered-bodies-context';
+import { renderDiscussionBodies } from '@/blog/features/post-rendering/lib/render-discussion-bodies';
 
 const logger = getLogger('app');
 
@@ -194,6 +196,10 @@ const PostPage = async (
   // in React Query cache that will render while Hivemind indexes the post.
   if (!postData && !searchParams?.pending) notFound();
 
+  // Bodies are rendered here so the client hydrates their HTML instead of loading the
+  // renderer and rendering them again.
+  const renderedBodies = renderDiscussionBodies(postData, discussionData);
+
   // Pass data directly via context instead of Hydrate/dehydrate.
   // React Query v4's <Hydrate> has compatibility issues with Next.js App Router
   // streaming SSR where dehydrated state doesn't reliably reach the browser
@@ -205,7 +211,9 @@ const PostPage = async (
           <InitialCommunityProvider value={communityData}>
             <InitialCommunityRolesProvider value={communityRolesData}>
               <InitialFollowListProvider value={mutedListData}>
-                <PostContent />
+                <RenderedBodiesProvider value={renderedBodies}>
+                  <PostContent />
+                </RenderedBodiesProvider>
               </InitialFollowListProvider>
             </InitialCommunityRolesProvider>
           </InitialCommunityProvider>

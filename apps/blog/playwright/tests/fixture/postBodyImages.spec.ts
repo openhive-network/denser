@@ -8,7 +8,7 @@ import { MOBILE_VIEWPORT, observeLayoutShiftScore, readLayoutShiftScore } from '
  *
  *   01 – Inline image loads a resized proxy candidate (srcset + sizes), never the full size; the
  *        leading video's thumbnail, the LCP candidate, loads eagerly instead of the image
- *   02 – Server HTML preloads the leading video's thumbnail
+ *   02 – Server HTML carries the leading video's thumbnail at high priority, and preloads it
  *   03 – Lightbox paints the inline image at once, then swaps in the full size
  *   04 – Hovering an image with a mouse prefetches its full size
  *   05 – Body images loading late do not shift the page
@@ -63,17 +63,30 @@ test.describe('Post body images (fixture-based)', () => {
     expect(requested).not.toContain(FULL_SIZE_URL);
   });
 
-  test('POST-IMG-02: server HTML preloads the leading video thumbnail, not the body image', async ({ request }) => {
+  test('POST-IMG-02: server HTML carries the leading video thumbnail at high priority, and preloads it', async ({
+    request
+  }) => {
     const html = await (await request.get(POST_URL)).text();
+    const thumbnail = html.match(/<div class="youtube-facade embed-facade"[^>]*>(<img [^>]*>)/)?.[1] ?? '';
+    expect(thumbnail).toContain('loading="eager" fetchpriority="high"');
+    expect([...html.matchAll(/fetchpriority="high"/g)]).toHaveLength(1);
+    const src = decodeHtmlAttribute(thumbnail.match(/ src="([^"]+)"/)?.[1] ?? '');
+    expect(src).toMatch(VIDEO_THUMBNAIL_PROXY_URL);
+    const srcset = thumbnail.match(/ srcset="([^"]+)"/)?.[1] ?? '';
+    decodeHtmlAttribute(srcset)
+      .split(', ')
+      .forEach((candidate) => expect(candidate.split(' ')[0]).toMatch(RESIZED_PROXY_URL));
+    const sizes = thumbnail.match(/ sizes="([^"]+)"/)?.[1];
+    expect(sizes).toMatch(/100vw$/);
+
     const preloads = [...html.matchAll(/<link rel="preload" as="image"[^>]*>/g)].map(([link]) => link);
     expect(preloads).toHaveLength(1);
     const [preload] = preloads;
-    const preloadHref = decodeHtmlAttribute(preload.match(/ href="([^"]+)"/)?.[1] ?? '');
-    expect(preloadHref).toMatch(VIDEO_THUMBNAIL_PROXY_URL);
+    expect(decodeHtmlAttribute(preload.match(/ href="([^"]+)"/)?.[1] ?? '')).toBe(src);
+    expect(decodeHtmlAttribute(preload.match(/imageSrcSet="([^"]+)"/)?.[1] ?? '')).toBe(decodeHtmlAttribute(srcset));
+    expect(preload).toContain(`imageSizes="${sizes}"`);
     expect(preload).toContain('fetchPriority="high"');
-    expect(preload).not.toContain('imageSrcSet');
     expect(html.indexOf(preload)).toBeLessThan(html.indexOf('id="articleBody"'));
-    expect(html).not.toContain('fetchpriority="high"');
   });
 
   test('POST-IMG-03: lightbox paints the inline image at once, then swaps in the full size', async ({ page }) => {

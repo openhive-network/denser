@@ -1,15 +1,16 @@
 'use client';
 
-import { useRef, useEffect, useState, useMemo, memo } from 'react';
+import { useRef, useEffect, useState, memo } from 'react';
 import Loading from '@ui/components/loading';
 import { LeavePageDialog } from './leave-page-dialog';
-import { getRenderer, getPreviewRenderer } from './lib/renderer';
+import { RENDERER_PLUGINS } from './lib/renderer-plugins';
 import ScrollToElement from './scroll-to-element';
 import { cn } from '@ui/lib/utils';
 import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
 import FirstBodyImagePreload from './first-body-image-preload';
 import { useResponsiveImageNaturalWidth } from './hooks/use-responsive-image-natural-width';
-import { getFacadeThumbnailSrc, prioritizeLeadingVideoThumbnail, type PrioritizedBody } from './lib/leading-video-thumbnail';
+import { useClientRenderedBody } from './hooks/use-client-rendered-body';
+import { useServerRenderedBody } from './rendered-bodies-context';
 
 const RendererContainer = ({
   body,
@@ -20,7 +21,8 @@ const RendererContainer = ({
   mainPost,
   className,
   previewMode,
-  proxyAuthToken
+  proxyAuthToken,
+  renderedHtml
 }: {
   body: string;
   author: string;
@@ -31,23 +33,22 @@ const RendererContainer = ({
   mainPost?: Boolean;
   previewMode?: boolean;
   proxyAuthToken?: string;
+  /** `body` already rendered (see renderBody) */
+  renderedHtml?: string;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState('');
-  const hiveRenderer = useMemo(
-    () => proxyAuthToken
-      ? getPreviewRenderer(proxyAuthToken, author)
-      : getRenderer(author, Boolean(mainPost)),
-    [proxyAuthToken, author, mainPost]
-  );
-
-  const { html: htmlBody, leadingVideoThumbnail } = useMemo((): Partial<PrioritizedBody> => {
-    if (!body) return {};
-    const postContext = author || permlink ? { author, permlink } : undefined;
-    const html = hiveRenderer.render(body, postContext);
-    return mainPost && !communityDescription ? prioritizeLeadingVideoThumbnail(html) : { html };
-  }, [hiveRenderer, body, author, permlink, mainPost, communityDescription]);
+  const serverRenderedHtml = useServerRenderedBody(author, permlink, body, Boolean(mainPost));
+  const prerenderedHtml = renderedHtml ?? (communityDescription || proxyAuthToken ? undefined : serverRenderedHtml);
+  const clientRenderedHtml = useClientRenderedBody(prerenderedHtml ? undefined : body, {
+    author,
+    permlink,
+    mainPost: Boolean(mainPost),
+    communityDescription,
+    proxyAuthToken
+  });
+  const htmlBody = prerenderedHtml ?? clientRenderedHtml;
 
   const handleClick = (e: Event) => {
     e.preventDefault();
@@ -123,29 +124,10 @@ const RendererContainer = ({
     });
 
     // Click-to-load facades (YouTube + 3Speak): no third-party network contact until the
-    // reader clicks play. Thumbnails (YouTube) are loaded *proxied* through the image proxy
-    // so even the preview image is not a direct third-party request. Issue #934.
+    // reader clicks play. Issue #934.
     const facades = ref.current?.querySelectorAll('.embed-facade');
     if (!communityDescription) {
-      let leadingThumbnailPending = Boolean(leadingVideoThumbnail);
-      facades?.forEach((facade) => {
-        const el = facade as HTMLElement;
-        const thumb = el.dataset.thumb;
-        if (thumb && !el.querySelector('img')) {
-          const img = document.createElement('img');
-          img.src = getFacadeThumbnailSrc(thumb, proxyAuthToken);
-          img.alt = '';
-          if (leadingThumbnailPending && thumb === leadingVideoThumbnail) {
-            leadingThumbnailPending = false;
-            img.loading = 'eager';
-            img.setAttribute('fetchpriority', 'high');
-          } else {
-            img.loading = 'lazy';
-          }
-          el.insertBefore(img, el.firstChild);
-        }
-        el.addEventListener('click', handleFacadeClick);
-      });
+      facades?.forEach((facade) => facade.addEventListener('click', handleFacadeClick));
     }
 
     const sub = document.querySelectorAll('sub');
@@ -186,7 +168,7 @@ const RendererContainer = ({
     const rootEl = ref.current;
     const pluginCleanups: (() => void)[] = [];
     if (rootEl) {
-      hiveRenderer.getPlugins().forEach((plugin) => {
+      RENDERER_PLUGINS.forEach((plugin) => {
         const cleanup = plugin.onMount?.(rootEl);
         if (cleanup) pluginCleanups.push(cleanup);
       });
@@ -197,7 +179,7 @@ const RendererContainer = ({
       nodes?.forEach((n) => n.removeEventListener('click', handleClick));
       facades?.forEach((facade) => facade.removeEventListener('click', handleFacadeClick));
     };
-  }, [body, hiveRenderer, previewMode, communityDescription, proxyAuthToken, leadingVideoThumbnail]);
+  }, [htmlBody, previewMode, communityDescription]);
 
   useResponsiveImageNaturalWidth(ref, htmlBody);
 
@@ -205,14 +187,7 @@ const RendererContainer = ({
     <Loading loading={false} />
   ) : (
     <>
-      {mainPost ? (
-        <FirstBodyImagePreload
-          html={htmlBody}
-          videoThumbnailSrc={
-            leadingVideoThumbnail ? getFacadeThumbnailSrc(leadingVideoThumbnail, proxyAuthToken) : undefined
-          }
-        />
-      ) : null}
+      {mainPost ? <FirstBodyImagePreload html={htmlBody} /> : null}
       <div className="flex h-fit w-full">
         <div
           id="articleBody"
