@@ -1,0 +1,19 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/posts/search",
+  "requestQuery": {
+    "q": "hive",
+    "truncate": "1",
+    "result_limit": "1",
+    "full_posts": "0"
+  },
+  "requestHash": "6e2bbdbfad2b92b6",
+  "response": [
+    {
+      "author": "htwegyi",
+      "permlink": "hive-r0k1my"
+    }
+  ],
+  "responseStatus": 200,
+  "responseContentType": "application/json; charset=utf-8"
+}

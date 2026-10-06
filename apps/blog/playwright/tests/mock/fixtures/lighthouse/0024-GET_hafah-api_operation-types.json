@@ -1,0 +1,474 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hafah-api/operation-types",
+  "requestHash": "4dead46dd8a42e50",
+  "response": [
+    {
+      "op_type_id": 0,
+      "operation_name": "vote_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 1,
+      "operation_name": "comment_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 2,
+      "operation_name": "transfer_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 3,
+      "operation_name": "transfer_to_vesting_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 4,
+      "operation_name": "withdraw_vesting_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 5,
+      "operation_name": "limit_order_create_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 6,
+      "operation_name": "limit_order_cancel_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 7,
+      "operation_name": "feed_publish_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 8,
+      "operation_name": "convert_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 9,
+      "operation_name": "account_create_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 10,
+      "operation_name": "account_update_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 11,
+      "operation_name": "witness_update_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 12,
+      "operation_name": "account_witness_vote_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 13,
+      "operation_name": "account_witness_proxy_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 14,
+      "operation_name": "pow_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 15,
+      "operation_name": "custom_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 16,
+      "operation_name": "witness_block_approve_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 17,
+      "operation_name": "delete_comment_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 18,
+      "operation_name": "custom_json_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 19,
+      "operation_name": "comment_options_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 20,
+      "operation_name": "set_withdraw_vesting_route_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 21,
+      "operation_name": "limit_order_create2_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 22,
+      "operation_name": "claim_account_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 23,
+      "operation_name": "create_claimed_account_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 24,
+      "operation_name": "request_account_recovery_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 25,
+      "operation_name": "recover_account_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 26,
+      "operation_name": "change_recovery_account_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 27,
+      "operation_name": "escrow_transfer_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 28,
+      "operation_name": "escrow_dispute_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 29,
+      "operation_name": "escrow_release_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 30,
+      "operation_name": "pow2_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 31,
+      "operation_name": "escrow_approve_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 32,
+      "operation_name": "transfer_to_savings_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 33,
+      "operation_name": "transfer_from_savings_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 34,
+      "operation_name": "cancel_transfer_from_savings_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 35,
+      "operation_name": "custom_binary_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 36,
+      "operation_name": "decline_voting_rights_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 37,
+      "operation_name": "reset_account_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 38,
+      "operation_name": "set_reset_account_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 39,
+      "operation_name": "claim_reward_balance_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 40,
+      "operation_name": "delegate_vesting_shares_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 41,
+      "operation_name": "account_create_with_delegation_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 42,
+      "operation_name": "witness_set_properties_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 43,
+      "operation_name": "account_update2_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 44,
+      "operation_name": "create_proposal_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 45,
+      "operation_name": "update_proposal_votes_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 46,
+      "operation_name": "remove_proposal_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 47,
+      "operation_name": "update_proposal_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 48,
+      "operation_name": "collateralized_convert_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 49,
+      "operation_name": "recurrent_transfer_operation",
+      "is_virtual": false
+    },
+    {
+      "op_type_id": 50,
+      "operation_name": "fill_convert_request_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 51,
+      "operation_name": "author_reward_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 52,
+      "operation_name": "curation_reward_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 53,
+      "operation_name": "comment_reward_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 54,
+      "operation_name": "liquidity_reward_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 55,
+      "operation_name": "interest_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 56,
+      "operation_name": "fill_vesting_withdraw_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 57,
+      "operation_name": "fill_order_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 58,
+      "operation_name": "shutdown_witness_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 59,
+      "operation_name": "fill_transfer_from_savings_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 60,
+      "operation_name": "hardfork_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 61,
+      "operation_name": "comment_payout_update_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 62,
+      "operation_name": "return_vesting_delegation_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 63,
+      "operation_name": "comment_benefactor_reward_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 64,
+      "operation_name": "producer_reward_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 65,
+      "operation_name": "clear_null_account_balance_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 66,
+      "operation_name": "proposal_pay_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 67,
+      "operation_name": "dhf_funding_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 68,
+      "operation_name": "hardfork_hive_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 69,
+      "operation_name": "hardfork_hive_restore_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 70,
+      "operation_name": "delayed_voting_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 71,
+      "operation_name": "consolidate_treasury_balance_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 72,
+      "operation_name": "effective_comment_vote_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 73,
+      "operation_name": "ineffective_delete_comment_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 74,
+      "operation_name": "dhf_conversion_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 75,
+      "operation_name": "expired_account_notification_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 76,
+      "operation_name": "changed_recovery_account_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 77,
+      "operation_name": "transfer_to_vesting_completed_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 78,
+      "operation_name": "pow_reward_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 79,
+      "operation_name": "vesting_shares_split_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 80,
+      "operation_name": "account_created_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 81,
+      "operation_name": "fill_collateralized_convert_request_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 82,
+      "operation_name": "system_warning_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 83,
+      "operation_name": "fill_recurrent_transfer_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 84,
+      "operation_name": "failed_recurrent_transfer_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 85,
+      "operation_name": "limit_order_cancelled_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 86,
+      "operation_name": "producer_missed_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 87,
+      "operation_name": "proposal_fee_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 88,
+      "operation_name": "collateralized_convert_immediate_conversion_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 89,
+      "operation_name": "escrow_approved_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 90,
+      "operation_name": "escrow_rejected_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 91,
+      "operation_name": "proxy_cleared_operation",
+      "is_virtual": true
+    },
+    {
+      "op_type_id": 92,
+      "operation_name": "declined_voting_rights_operation",
+      "is_virtual": true
+    }
+  ],
+  "responseStatus": 200,
+  "responseContentType": "application/json; charset=utf-8"
+}

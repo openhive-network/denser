@@ -1,0 +1,51 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.account_notifications",
+    "params": {
+      "account": "hive-160391",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "2180c2fad4322d96",
+  "method": "bridge.account_notifications",
+  "params": {
+    "account": "hive-160391",
+    "limit": 50
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "id": "89114958721187841",
+        "msg": "@encuentro subscribed to Blockchain Wizardry",
+        "url": "c/hive-160391",
+        "date": "2026-10-01T00:24:51",
+        "type": "subscribe",
+        "score": 64
+      },
+      {
+        "id": "87436331419959297",
+        "msg": "@iasirhamid subscribed to Blockchain Wizardry",
+        "url": "c/hive-160391",
+        "date": "2026-07-20T15:21:57",
+        "type": "subscribe",
+        "score": 38
+      },
+      {
+        "id": "87421275412103169",
+        "msg": "@brucebates subscribed to Blockchain Wizardry",
+        "url": "c/hive-160391",
+        "date": "2026-07-19T23:47:09",
+        "type": "subscribe",
+        "score": 31
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

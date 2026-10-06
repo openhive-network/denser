@@ -24,7 +24,7 @@ branches:
 # How this project's suites execute (#13892): one kind, stated once.
 environment:
   kind: "container"
-  image: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:9e4a99ba5fded75cdb60e3473db36b181bcf3fd0fae70f6324d9aeae36e86edc"
+  image: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:dd8791ff8fe97440a0c1b1c3b65d301ef5127018260a27c903a9218bc74754bc"
   inputs: ["pnpm-lock.yaml"]
 
 issues:
@@ -125,6 +125,20 @@ verification:
     args: [".aidev/run-coverage.sh"]
     artifacts: ["test-results/coverage/"]
     stack: false
+  # The deterministic Lighthouse pass (.aidev/run-lighthouse-fixture.sh): production
+  # builds of blog and wallet behind one origin, recorded Hive API and image data, no
+  # network; the integration check's routes and medians, compared with the committed
+  # baseline (.aidev/lighthouse-fixture/baseline.json). Bound to `system` because the
+  # slot names are AIDEV's fixed vocabulary (there is no `perf`) and no phase requests
+  # `system` for a project: it gates nothing and runs only as
+  # `aidev test run --slot system`. ~5 min with next's build cache warm.
+  system:
+    suites:
+      - name: lighthouse_fixture
+        adapter: command
+        args: [".aidev/run-lighthouse-fixture.sh"]
+        artifacts: ["test-results/lighthouse-fixture/"]
+        stack: false
 
 # Live dev stack (#966): `next dev` of the blog, hot-reloading from the implement
 # checkout, against the fixture replay proxy — from the pinned image above, with
