@@ -10,6 +10,7 @@ import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { buildDiscussionPageSeed, parseCommentSort } from '@/blog/features/post-rendering/lib/paginate-discussion';
 import {
   ObserverProvider,
   InitialPostDataProvider,
@@ -196,6 +197,18 @@ const PostPage = async (
   // in React Query cache that will render while Hivemind indexes the post.
   if (!postData && !searchParams?.pending) notFound();
 
+  // Only the first comments page goes into the HTML and the RSC payload; the client fetches the
+  // whole discussion when another page or sort order is requested.
+  const sortParam = searchParams?.sort;
+  const discussionPageSeed =
+    discussionData && postData
+      ? buildDiscussionPageSeed(
+          discussionData,
+          postData,
+          parseCommentSort(Array.isArray(sortParam) ? sortParam[0] : sortParam)
+        )
+      : null;
+
   // Bodies are rendered here so the client hydrates their HTML instead of loading the
   // renderer and rendering them again.
   const renderedBodies = renderDiscussionBodies(postData, discussionData);
@@ -207,7 +220,7 @@ const PostPage = async (
   return (
     <ObserverProvider value={observer}>
       <InitialPostDataProvider value={postData}>
-        <InitialDiscussionProvider value={discussionData}>
+        <InitialDiscussionProvider value={discussionPageSeed}>
           <InitialCommunityProvider value={communityData}>
             <InitialCommunityRolesProvider value={communityRolesData}>
               <InitialFollowListProvider value={mutedListData}>

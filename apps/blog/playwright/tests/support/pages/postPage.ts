@@ -98,6 +98,7 @@ export class PostPage {
   readonly commentCard: string;
   readonly commentListItem: string;
   readonly commentListLocator: Locator;
+  readonly commentsPagination: Locator;
   readonly articleBodyParagraph: string;
   readonly postingToDropdown: Locator;
   readonly postEditButton: Locator;
@@ -168,6 +169,7 @@ export class PostPage {
     this.commentContentToHover = page.getByTestId('comment-card-to-hover');
     this.commentListItem = '[data-testid="comment-list-item"]'
     this.commentListLocator = page.locator('[data-testid="comment-list"]');
+    this.commentsPagination = page.getByTestId('comments-pagination');
     this.commentAuthorLink = page.locator(
       '[data-testid="comment-card-header"] [data-testid="author-name-link"] span[class="font-semibold text-foreground hover:text-destructive"]'
     );

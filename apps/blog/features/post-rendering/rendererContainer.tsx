@@ -130,11 +130,11 @@ const RendererContainer = ({
       facades?.forEach((facade) => facade.addEventListener('click', handleFacadeClick));
     }
 
-    const sub = document.querySelectorAll('sub');
+    const sub = ref.current?.querySelectorAll('sub');
     sub?.forEach((e) => {
       e.classList.add('leading-[150%]');
     });
-    const threeSpeak = document.querySelectorAll('.threeSpeakWrapper');
+    const threeSpeak = ref.current?.querySelectorAll('.threeSpeakWrapper');
     threeSpeak?.forEach((link) => {
       link.classList.add('videoWrapper');
     });
@@ -142,8 +142,8 @@ const RendererContainer = ({
     // This caused issue #759 where line breaks/spacing weren't visible in preview
     // Now paragraphs keep their default prose styling in both preview and published view
     if (communityDescription) {
-      const elementsWithVideoWrapper = document.querySelectorAll('.videoWrapper');
-      elementsWithVideoWrapper.forEach((element) => {
+      const elementsWithVideoWrapper = ref.current?.querySelectorAll('.videoWrapper');
+      elementsWithVideoWrapper?.forEach((element) => {
         element.classList.remove('videoWrapper');
       });
       const code_block = ref.current?.querySelectorAll('code');
