@@ -3,7 +3,8 @@
 # tip of aidev/integration for this directory's compose files. Run every 5 minutes
 # by systemd/denser-integration-upgrade@.timer; safe to run by hand.
 #
-#   ./upgrade.sh            # pull, recreate what changed, rewrite status/deployed.json
+#   ./upgrade.sh            # pull, recreate what changed, rewrite status/deployed.json,
+#                           # then Lighthouse-check a newly deployed tip (lighthouse.sh)
 #   ./upgrade.sh --quiet    # print nothing when nothing changed (the timer's mode)
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -82,3 +83,9 @@ if [ "$before" != "$after" ]; then
 else
     say "upgrade: no image change"
 fi
+
+# Advisory: a breach or a failed check is reported in status/lighthouse/ and here,
+# never by failing the upgrade or rolling it back.
+lighthouse_args=()
+$quiet && lighthouse_args+=(--quiet)
+./lighthouse.sh "${lighthouse_args[@]}" || echo "upgrade: lighthouse check exited $?; see status/lighthouse/latest.json" >&2

@@ -12,4 +12,6 @@ User=syncad
 Group=syncad
 WorkingDirectory=%f
 ExecStart=%f/upgrade.sh --quiet
-TimeoutStartSec=900
+# compose's 300 s readiness wait, plus a Lighthouse check after a promote: 12 runs
+# of at most 120 s each (about 5 minutes in practice).
+TimeoutStartSec=2400
