@@ -90,7 +90,7 @@ def main() -> None:
                 "source": args.source,
                 "stack_checkout": args.checkout or None,
                 "upgrade": {"status": upgrade_status, "detail": upgrade_detail or None},
-                "generated_at": datetime.datetime.now(datetime.UTC).isoformat(),
+                "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),  # noqa: UP017 - the image runs Python 3.10
                 "services": services,
             },
             indent=2,

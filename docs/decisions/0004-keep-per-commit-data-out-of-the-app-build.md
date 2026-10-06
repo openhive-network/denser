@@ -5,7 +5,7 @@ decision-makers: []
 consulted: []
 informed: []
 
-id: DR-PENDING
+id: DR-004
 proposed_by: claude
 area: build/docker
 related_issues: [1057]
