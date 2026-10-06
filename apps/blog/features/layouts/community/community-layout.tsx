@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import CommunitySimpleDescription from './community-simple-description';
 import CommunitiesMyBar from '../communities-my-bar';
 import CommunitiesSidebar from './communities-sidebar';
@@ -11,7 +12,6 @@ import {
   getSubscribers,
   getSubscriptions
 } from '@transaction/lib/bridge-api';
-import CommunityDescription from './community-description';
 import { CommunitiesSelect } from '@/blog/features/layouts/communities-select';
 import PostSelectFilter from '@/blog/features/layouts/post-select-filter';
 import FeedListPending from '@/blog/features/layouts/sorts/feed-list-pending';
@@ -23,6 +23,9 @@ import { StaleTime } from '@/blog/lib/react-query';
 import { useSSRObserver, useInitialCommunity, useInitialSubscriptions } from '@/blog/components/observer-provider';
 import { t } from 'i18next';
 import { Skeleton } from '@hive/ui';
+
+// Carries the content renderer; plain tag feeds never render it, so they don't load it.
+const CommunityDescription = dynamic(() => import('./community-description'));
 
 const CommunityLayout = ({ children, community }: { children: ReactNode; community: string }) => {
   const { user, isHydrated } = useUserClient();
