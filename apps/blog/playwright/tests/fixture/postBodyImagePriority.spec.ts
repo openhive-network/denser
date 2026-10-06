@@ -13,6 +13,9 @@ test.use({ fixtureTestName: 'ssrChecks' });
 
 const POST_URL = '/test/@guest4test1/test-ako-post';
 
+// Lighthouse's mobile emulation: 412 CSS px at DPR 1.75 leaves a ~650 device-px content column.
+const LIGHTHOUSE_PHONE = { viewport: { width: 412, height: 823 }, deviceScaleFactor: 1.75, isMobile: true };
+
 const decodeHtmlAttribute = (value: string) => value.replace(/&amp;/g, '&');
 
 function getBodyImageTags(html: string): string[] {
@@ -58,5 +61,27 @@ test.describe('Post body image priority (fixture-based)', () => {
     const thumbnail = page.locator('#articleBody .youtube-facade img').first();
     await expect(thumbnail).toHaveAttribute('loading', 'lazy');
     await expect(thumbnail).not.toHaveAttribute('fetchpriority', /.*/);
+  });
+
+  test.describe('on a Lighthouse-sized phone', () => {
+    test.use(LIGHTHOUSE_PHONE);
+
+    test('POST-IMG-PRIO-04: the first body image loads the 768 px candidate, once', async ({ page }) => {
+      const requested = await serveImages(page);
+      await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+
+      const first = page.locator('#articleBody img[decoding="async"]').first();
+      await expect(first).toHaveAttribute('loading', 'eager');
+      await expect(first).toHaveAttribute('fetchpriority', 'high');
+      await expect.poll(() => first.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+      const currentSrc = await first.evaluate((img: HTMLImageElement) => img.currentSrc);
+      expect(currentSrc).toMatch(/[?&]width=768$/);
+
+      // The preload and the eager image have both resolved by `load`.
+      await page.waitForLoadState('load');
+      const imagePath = currentSrc.split('?')[0];
+      expect(requested.filter((url) => url.split('?')[0] === imagePath)).toEqual([currentSrc]);
+      expect(new Set(requested).size).toBe(requested.length);
+    });
   });
 });
