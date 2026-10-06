@@ -24,6 +24,8 @@ node_modules
 **/.cache
 
 # Generated files
+# Old checkouts still have one; nothing reads it any more
+**/version.json
 **/public/auth/worker.js
 ssl
 

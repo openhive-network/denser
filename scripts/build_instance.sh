@@ -128,8 +128,6 @@ if [ -z "$GIT_LAST_COMMIT_DATE" ]; then
 fi
 export GIT_LAST_COMMIT_DATE
 
-./scripts/write-version.sh ".${TURBO_APP_PATH}/version.json"
-
 # Attempt to login to Docker Hub if credentials are available (increases rate limit)
 if [ -n "${DOCKERHUB_USER:-}" ] && [ -n "${DOCKERHUB_PASSWORD:-}" ]; then
   echo "Logging in to Docker Hub to increase rate limits..."

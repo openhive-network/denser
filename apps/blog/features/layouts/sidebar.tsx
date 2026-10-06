@@ -9,7 +9,6 @@ import { useTranslation } from '@/blog/i18n/client';
 import env from '@beam-australia/react-env';
 import DialogLogin from '../../components/dialog-login';
 import { getLogger } from '@ui/lib/logging';
-import version from '../../version.json';
 import { siteConfig } from '@ui/config/site';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -129,7 +128,7 @@ const Sidebar = () => {
             <Item href="/privacy.html">{t('navigation.sidebar.privacy_policy')}</Item>
             <Item href={`/healthchecker`}>Healthchecker</Item>
             <Item href="/tos.html">{t('navigation.sidebar.terms_of_service')}</Item>
-            <span className="text-center text-xs font-light">Version: {version.commithash.slice(0, 8)}</span>
+            <span className="text-center text-xs font-light">Version: {env('GIT_COMMIT_SHA')?.slice(0, 8)}</span>
           </ul>
         </div>
       </SheetContent>

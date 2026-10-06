@@ -52,16 +52,15 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Now copy source and build (this layer changes on code changes)
 COPY --from=builder /app/out/full/ .
-# The app imports its version.json (gitignored). CI's scripts/build_instance.sh
-# writes it into the context with git; a build from a plain checkout (AIDEV's
-# publish) has no .git, so write it from the build args instead.
+# Nothing commit-specific may reach this stage: the sidebar's version is read at
+# runtime (REACT_APP_GIT_COMMIT_SHA, set in the runner), so a commit that changes
+# no app input reuses this layer. When the layer does miss, the cache mounts let
+# Turbopack and turbo reuse the previous build of this app.
 ARG TURBO_APP_PATH
-ARG GIT_COMMIT_SHA
-ARG GIT_CURRENT_BRANCH
-RUN f=".${TURBO_APP_PATH}/version.json"; [ -f "$f" ] || \
-    printf '{"branch":"%s","commithash":"%s","version":"%s"}\n' \
-      "${GIT_CURRENT_BRANCH:-unknown}" "${GIT_COMMIT_SHA:-unknown}" "$(printf %.8s "${GIT_COMMIT_SHA:-unknown}")" > "$f"
-RUN pnpm dlx turbo run build --filter=${TURBO_APP_SCOPE}
+ARG TURBO_APP_NAME
+RUN --mount=type=cache,id=next-${TURBO_APP_NAME},target=/app${TURBO_APP_PATH}/.next/cache \
+    --mount=type=cache,id=turbo-${TURBO_APP_NAME},target=/turbo-cache \
+    pnpm dlx turbo run build --filter=${TURBO_APP_SCOPE} --cache-dir=/turbo-cache
 
 # ============================================================================
 # RUNNER: Minimal production image
@@ -71,27 +70,6 @@ ARG TURBO_APP_PATH
 ARG TURBO_APP_NAME
 ENV TURBO_APP_PATH=${TURBO_APP_PATH}
 ENV TURBO_APP_NAME=${TURBO_APP_NAME}
-
-# Image labels
-ARG BUILD_TIME
-ARG GIT_COMMIT_SHA
-ARG GIT_CURRENT_BRANCH
-ARG GIT_LAST_LOG_MESSAGE
-ARG GIT_LAST_COMMITTER
-ARG GIT_LAST_COMMIT_DATE
-LABEL org.opencontainers.image.created="$BUILD_TIME"
-LABEL org.opencontainers.image.url="https://hive.io/"
-LABEL org.opencontainers.image.documentation="https://gitlab.syncad.com/hive/denser"
-LABEL org.opencontainers.image.source="https://gitlab.syncad.com/hive/denser"
-LABEL org.opencontainers.image.revision="$GIT_COMMIT_SHA"
-LABEL org.opencontainers.image.licenses="MIT"
-LABEL org.opencontainers.image.ref.name="Denser $TURBO_APP_NAME"
-LABEL org.opencontainers.image.title="Denser $TURBO_APP_NAME Image"
-LABEL org.opencontainers.image.description="Runs Denser $TURBO_APP_NAME application"
-LABEL io.hive.image.branch="$GIT_CURRENT_BRANCH"
-LABEL io.hive.image.commit.log_message="$GIT_LAST_LOG_MESSAGE"
-LABEL io.hive.image.commit.author="$GIT_LAST_COMMITTER"
-LABEL io.hive.image.commit.date="$GIT_LAST_COMMIT_DATE"
 
 WORKDIR /app
 
@@ -132,6 +110,31 @@ EXPOSE $AUTH_PORT
 # Limit V8 heap to fail-fast instead of slow OOM degradation (denser#886).
 # Default: 1536 MB — override via NODE_OPTIONS env var if needed.
 ENV NODE_OPTIONS="--max-old-space-size=1536"
+
+# Image labels, and the commit the sidebar shows (written to __ENV.js by
+# react-env at startup). Declared last: an ARG is in the environment of every
+# later RUN, so declaring the per-commit ARGs earlier would rebuild LAYER 1 on
+# every commit.
+ARG BUILD_TIME
+ARG GIT_COMMIT_SHA
+ARG GIT_CURRENT_BRANCH
+ARG GIT_LAST_LOG_MESSAGE
+ARG GIT_LAST_COMMITTER
+ARG GIT_LAST_COMMIT_DATE
+LABEL org.opencontainers.image.created="$BUILD_TIME"
+LABEL org.opencontainers.image.url="https://hive.io/"
+LABEL org.opencontainers.image.documentation="https://gitlab.syncad.com/hive/denser"
+LABEL org.opencontainers.image.source="https://gitlab.syncad.com/hive/denser"
+LABEL org.opencontainers.image.revision="$GIT_COMMIT_SHA"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.ref.name="Denser $TURBO_APP_NAME"
+LABEL org.opencontainers.image.title="Denser $TURBO_APP_NAME Image"
+LABEL org.opencontainers.image.description="Runs Denser $TURBO_APP_NAME application"
+LABEL io.hive.image.branch="$GIT_CURRENT_BRANCH"
+LABEL io.hive.image.commit.log_message="$GIT_LAST_LOG_MESSAGE"
+LABEL io.hive.image.commit.author="$GIT_LAST_COMMITTER"
+LABEL io.hive.image.commit.date="$GIT_LAST_COMMIT_DATE"
+ENV REACT_APP_GIT_COMMIT_SHA=${GIT_COMMIT_SHA}
 
 ENTRYPOINT ["/sbin/tini", "--", "/app/docker-entrypoint.sh"]
 CMD ["sh", "-c", "node .${TURBO_APP_PATH}/server.js"]
