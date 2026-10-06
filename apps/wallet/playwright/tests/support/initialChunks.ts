@@ -13,12 +13,18 @@ const CHUNK_URL_PATTERN = /\/_next\/static\/chunks\/[^"'\s\\]+\.js/g;
 
 /** Strings that only the bundled code of a library carries, keyed by what they identify. */
 export const CHUNK_MARKERS = {
+  /** The Sentry SDK: the global carrier every SDK entry point reads, and the SDK name `init` reports */
+  sentryCarrier: '__SENTRY__',
+  sentrySdkName: 'sentry.javascript.',
   /** hb-auth's key store, bundled with hb-auth */
   beekeeper: 'beekeeper',
   /** wax's JavaScript: its request header and the name of the wasm it loads */
   waxApiCaller: 'x-wax-api-caller',
   waxWasm: 'wax.common.wasm'
 } as const;
+
+/** The Sentry SDK: page-load code reaches it only through a dynamic `import()`, made when a DSN is set. */
+export const SENTRY_MARKERS = [CHUNK_MARKERS.sentryCarrier, CHUNK_MARKERS.sentrySdkName] as const;
 
 /** What no page may load up front: wax and the signing and login stack. */
 export const SIGNING_STACK_MARKERS = [
