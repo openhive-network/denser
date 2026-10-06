@@ -5,7 +5,7 @@ decision-makers: []
 consulted: []
 informed: []
 
-id: DR-PENDING
+id: DR-003
 proposed_by: claude
 area: blog/post-rendering
 related_issues: [1041, 1039]

@@ -75,7 +75,7 @@ run_wallet_fixture() {
     (
         cd apps/wallet
         PLAYWRIGHT_JUNIT_OUTPUT_NAME="$wallet_junit" run_with_junit_fallback "$wallet_junit" wallet_fixture \
-            sh -c 'pnpm build < /dev/null && pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit < /dev/null'
+            sh -c 'NEXT_PUBLIC_BASE_PATH=/wallet pnpm build < /dev/null && pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit < /dev/null'
     )
 }
 

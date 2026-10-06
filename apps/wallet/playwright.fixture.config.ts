@@ -1,12 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
 import { FIXTURE_API_PORT } from './playwright/tests/support/witnessApiStub';
+import { WALLET_BASE_PATH } from './playwright/tests/support/basePath';
 
 /**
  * Playwright config for the wallet's offline specs (playwright/tests/fixture): a production build
  * served from `.next/standalone`, with no network and no recorded API responses. Every API
  * endpoint points at FIXTURE_API_PORT, closed unless a spec starts a stub there
  * (tests/support/witnessApiStub.ts); while it is closed the server's prefetches fail at once and
- * pages render without account data.
+ * pages render without account data; the specs check what does not depend on it (the JS chunks a
+ * page loads, the requests it makes). The build must be made with
+ * `NEXT_PUBLIC_BASE_PATH=WALLET_BASE_PATH`.
  *
  * Usage: pnpm --filter @hive/wallet test:fixture
  */
@@ -42,7 +45,7 @@ export default defineConfig({
       'cp -r public .next/standalone/apps/wallet/public',
       'react-env -- sh -c "cp -f public/__ENV.js .next/standalone/apps/wallet/public/__ENV.js && node .next/standalone/apps/wallet/server.js"'
     ].join(' && '),
-    url: `http://127.0.0.1:${PORT}/api/health`,
+    url: `http://127.0.0.1:${PORT}${WALLET_BASE_PATH}/api/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
     stdout: 'pipe',
