@@ -1,66 +1,49 @@
 'use client';
 
-import { useRef, useEffect, useState, memo } from 'react';
+import { useRef, useEffect, memo } from 'react';
 import Loading from '@ui/components/loading';
 import { LeavePageDialog } from './leave-page-dialog';
 import { RENDERER_PLUGINS } from './lib/renderer-plugins';
 import ScrollToElement from './scroll-to-element';
 import { cn } from '@ui/lib/utils';
-import { isUrlWhitelisted } from '@hive/ui/config/lists/phishing';
 import FirstBodyImagePreload from './first-body-image-preload';
 import { useResponsiveImageNaturalWidth } from './hooks/use-responsive-image-natural-width';
 import { useClientRenderedBody } from './hooks/use-client-rendered-body';
 import { useServerRenderedBody } from './rendered-bodies-context';
+import { useLeavePageLinks } from './hooks/use-leave-page-links';
+
+const isExternalLink = (link: HTMLAnchorElement) => link.classList.contains('link-external');
 
 const RendererContainer = ({
   body,
   author,
   permlink,
   dataTestid,
-  communityDescription,
   mainPost,
   className,
   previewMode,
-  proxyAuthToken,
-  renderedHtml
+  proxyAuthToken
 }: {
   body: string;
   author: string;
   permlink?: string;
   dataTestid?: string;
-  communityDescription?: boolean;
   className?: string;
   mainPost?: Boolean;
   previewMode?: boolean;
   proxyAuthToken?: string;
-  /** `body` already rendered (see renderBody) */
-  renderedHtml?: string;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState(false);
-  const [link, setLink] = useState('');
   const serverRenderedHtml = useServerRenderedBody(author, permlink, body, Boolean(mainPost));
-  const prerenderedHtml = renderedHtml ?? (communityDescription || proxyAuthToken ? undefined : serverRenderedHtml);
+  const prerenderedHtml = proxyAuthToken ? undefined : serverRenderedHtml;
   const clientRenderedHtml = useClientRenderedBody(prerenderedHtml ? undefined : body, {
     author,
     permlink,
     mainPost: Boolean(mainPost),
-    communityDescription,
     proxyAuthToken
   });
   const htmlBody = prerenderedHtml ?? clientRenderedHtml;
-
-  const handleClick = (e: Event) => {
-    e.preventDefault();
-    // Use currentTarget (the <a> we registered the listener on) rather than
-    // target (whatever element was clicked). target can be a descendant when
-    // the link's visible text is wrapped — e.g. Google Translate injects
-    // nested <font> tags around translated text — and walking parentElement
-    // a fixed number of levels can't reliably reach the anchor.
-    const anchor = e.currentTarget as HTMLAnchorElement;
-    setLink(anchor.href);
-    setOpen(true);
-  };
+  const { link, open, setOpen } = useLeavePageLinks(ref, htmlBody, isExternalLink);
 
   // Build the player iframe for a clicked facade.
   // Defense-in-depth (issue #934): `sandbox` without allow-top-navigation* so a
@@ -113,22 +96,10 @@ const RendererContainer = ({
   };
 
   useEffect(() => {
-    const nodes = ref.current?.querySelectorAll('a.link-external');
-    nodes?.forEach((n) => {
-      const href = (n as HTMLAnchorElement).href || (n.parentElement as HTMLAnchorElement)?.href;
-      if (isUrlWhitelisted(href)) {
-        n.setAttribute('target', '_blank');
-      } else {
-        n.addEventListener('click', handleClick);
-      }
-    });
-
     // Click-to-load facades (YouTube + 3Speak): no third-party network contact until the
     // reader clicks play. Issue #934.
     const facades = ref.current?.querySelectorAll('.embed-facade');
-    if (!communityDescription) {
-      facades?.forEach((facade) => facade.addEventListener('click', handleFacadeClick));
-    }
+    facades?.forEach((facade) => facade.addEventListener('click', handleFacadeClick));
 
     const sub = ref.current?.querySelectorAll('sub');
     sub?.forEach((e) => {
@@ -141,30 +112,6 @@ const RendererContainer = ({
     // Note: Previously removed margins from paragraphs when !mainPost (preview mode)
     // This caused issue #759 where line breaks/spacing weren't visible in preview
     // Now paragraphs keep their default prose styling in both preview and published view
-    if (communityDescription) {
-      const elementsWithVideoWrapper = ref.current?.querySelectorAll('.videoWrapper');
-      elementsWithVideoWrapper?.forEach((element) => {
-        element.classList.remove('videoWrapper');
-      });
-      const code_block = ref.current?.querySelectorAll('code');
-      code_block?.forEach((c) => (c.className = 'whitespace-normal'));
-      const links = ref.current?.querySelectorAll('a');
-      links?.forEach((l) => (l.className = ' text-destructive break-words'));
-      const iframes = ref.current?.querySelectorAll('iframe');
-      iframes?.forEach((n) => {
-        const srcText = document.createTextNode(n.src);
-        n.replaceWith(srcText);
-      });
-      const descFacades = ref.current?.querySelectorAll('.embed-facade');
-      descFacades?.forEach((n) => {
-        const el = n as HTMLElement;
-        const srcText = el.dataset.youtubeId
-          ? document.createTextNode(`https://www.youtube.com/watch?v=${el.dataset.youtubeId}`)
-          : document.createTextNode(`https://play.3speak.tv/watch?v=${el.dataset.threespeakId}`);
-        n.replaceWith(srcText);
-      });
-    }
-
     const rootEl = ref.current;
     const pluginCleanups: (() => void)[] = [];
     if (rootEl) {
@@ -176,10 +123,9 @@ const RendererContainer = ({
 
     return () => {
       pluginCleanups.forEach((cleanup) => cleanup());
-      nodes?.forEach((n) => n.removeEventListener('click', handleClick));
       facades?.forEach((facade) => facade.removeEventListener('click', handleFacadeClick));
     };
-  }, [htmlBody, previewMode, communityDescription]);
+  }, [htmlBody, previewMode]);
 
   useResponsiveImageNaturalWidth(ref, htmlBody);
 

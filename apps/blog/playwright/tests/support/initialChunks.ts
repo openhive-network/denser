@@ -25,6 +25,8 @@ export const CHUNK_MARKERS = {
   renderer: 'RendererOptions.assetsWidth',
   /** Remarkable, the markdown renderer: one of its token types */
   remarkable: 'footnote_reference_open',
+  /** sanitize-html, the renderer's sanitizer: one of its options */
+  sanitizeHtml: 'allowProtocolRelative',
   /** zod: one of its issue codes */
   zod: 'invalid_intersection_types'
 } as const;

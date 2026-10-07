@@ -945,6 +945,12 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   built from files copied out of other recordings (see its `_index.json`).
   The `-RETRY` / `-503` variants drop the feed's `bridge.get_ranked_posts` once
   (still a full 200) or always (503 + `Retry-After`, never a post-less 200).
+- **`communityDescription.spec.ts`** — the community sidebar's description is
+  server-rendered: its HTML with JS off and after hydration must equal the
+  HTML the client-side renderer used to produce, and the page loads no
+  renderer chunk. Replay-only: `communityDescription` overlays `ssrSeoGuard`,
+  giving hive-139531 a description with links, an image, code, a table and
+  embeds (see its `_index.json`); `initialChunksTag.spec.ts` uses it too.
 - **`feedNavigation.spec.ts`** — JS **enabled**; replay-only on the
   `homeMainPage` recording. Holds the `/hot` feed call (see "observe a pending
   state" recipe), asserts the `feed-navigation-pending` skeleton, then the Hot

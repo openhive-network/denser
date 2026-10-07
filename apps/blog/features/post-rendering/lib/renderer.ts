@@ -2,38 +2,13 @@ import { DefaultRenderer } from '@hive/renderer';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { BODY_IMAGE_SIZES, getBodyImageSrcSet } from './body-image-sources';
 import { RENDERER_PLUGINS } from './renderer-plugins';
+import { isLinkSafe } from './link-safety';
 
 import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 
-import { configuredSiteDomain, configuredImagesEndpoint } from '@hive/ui/config/public-vars';
+import { configuredSiteDomain } from '@hive/ui/config/public-vars';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-
-// Build a set of trusted origins for link safety checks.
-// Uses URL.origin comparison instead of string prefix matching to prevent
-// subdomain spoofing (e.g. "images.hive.blog.evil.com" matching "images.hive.blog").
-const safeOrigins = new Set(
-  [configuredImagesEndpoint, configuredSiteDomain]
-    .filter(Boolean)
-    .map((domain) => {
-      try {
-        return new URL(domain).origin;
-      } catch {
-        return null;
-      }
-    })
-    .filter((o): o is string => o !== null)
-);
-
-function isLinkSafe(url: string): boolean {
-  if (url.startsWith('#')) return true;
-  if (url.startsWith('/') && !url.startsWith('//')) return true;
-  try {
-    return safeOrigins.has(new URL(url).origin);
-  } catch {
-    return false;
-  }
-}
 
 const renderDefaultOptions = {
   baseUrl: configuredSiteDomain,

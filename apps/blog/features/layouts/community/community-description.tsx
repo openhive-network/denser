@@ -8,11 +8,10 @@ import { SubsListDialog } from './subscription-list-dialog';
 import { ActivityLogDialog } from '../../activity-log/dialog';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from '@/blog/i18n/client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import SubscribeCommunity from '../../community-profile/subscribe-community';
 import NewPost from './new-post-button';
-import RendererContainer from '../../post-rendering/rendererContainer';
-import { renderBody } from '../../post-rendering/lib/render-body';
+import CommunityDescriptionBody from './community-description-body';
 import EditCommunityDialog from '../../community-profile/edit-dialog';
 import { Separator } from '@ui/components';
 import clsx from 'clsx';
@@ -46,11 +45,6 @@ const CommunityDescription = ({
   useEffect(() => {
     setIsSubscribed(Boolean(data.context.subscribed) || subscribedFromList);
   }, [data.context.subscribed, subscribedFromList]);
-  // Rendered during SSR, so the sidebar's server HTML carries the description.
-  const descriptionHtml = useMemo(
-    () => (data.description ? renderBody(data.description, { author: '', communityDescription: true }) : undefined),
-    [data.description]
-  );
   return (
     <div className="flex w-full max-w-[240px] flex-col">
       <Card
@@ -153,13 +147,7 @@ const CommunityDescription = ({
               {t('communities.titles.description')}
             </h6>
 
-            <RendererContainer
-              body={data.description}
-              renderedHtml={descriptionHtml}
-              dataTestid="community-description-content"
-              author=""
-              communityDescription={true}
-            />
+            <CommunityDescriptionBody description={data.description} />
           </div>
 
           {data.flag_text.trim() !== '' ? (
