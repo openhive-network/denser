@@ -90,7 +90,7 @@ export default function PostForm({
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const { user } = useUserClient();
-  const { signer } = useSignerContext();
+  const { loadSigner } = useSignerContext();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const searchParams = useSearchParams();
   const categoryParam = searchParams?.get("category") ?? undefined;
@@ -181,11 +181,12 @@ export default function PostForm({
 
   // --- Proxy auth token ---
   const fetchProxyAuthToken = useCallback(async () => {
-    if (!user.isLoggedIn || !signer) {
+    if (!user.isLoggedIn) {
       proxyAuthRequested.current = false;
       return;
     }
     try {
+      const signer = await loadSigner();
       const timestamp = Date.now();
       const imageOwner = signer.authorityUsername || signer.username;
       const message = `Authorize image proxy preview for ${imageOwner} at ${new Date(timestamp).toISOString()}`;
@@ -205,7 +206,7 @@ export default function PostForm({
     } catch (error) {
       logger.error("Error obtaining proxy auth token: %o", error);
     }
-  }, [user.isLoggedIn, signer]);
+  }, [user.isLoggedIn, loadSigner]);
 
   useEffect(() => {
     if (proxyAuthRequested.current || !previewContent) return;

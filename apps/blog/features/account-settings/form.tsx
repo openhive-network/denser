@@ -23,7 +23,6 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { Signer } from '@smart-signer/lib/signer/signer';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 
 const SettingsForm = ({ username }: { username: string }) => {
@@ -40,7 +39,7 @@ const SettingsForm = ({ username }: { username: string }) => {
   );
   const profileData = data?.profile;
 
-  const { signer } = useSignerContext();
+  const { loadSigner } = useSignerContext();
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [insertImg, setInsertImg] = useState('');
   const inputProfileRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
@@ -102,19 +101,19 @@ const SettingsForm = ({ username }: { username: string }) => {
   const inputProfileHandler = async (event: { target: { files: FileList } }) => {
     if (event.target.files && event.target.files.length === 1) {
       setInsertImg('');
-      const url = await onImageUpload(event.target.files[0], username, signer);
+      const url = await onImageUpload(event.target.files[0], username);
       setSettings((prev) => ({ ...prev, profile_image: url }));
     }
   };
 
-  const onImageUpload = async (file: File, username: string, signer: Signer) => {
-    const url = await processAndUploadImg(file, username, signer);
+  const onImageUpload = async (file: File, username: string) => {
+    const url = await processAndUploadImg(file, username, loadSigner);
     return url;
   };
   const inputCoverHandler = async (event: { target: { files: FileList } }) => {
     if (event.target.files && event.target.files.length === 1) {
       setInsertImg('');
-      const url = await onImageUpload(event.target.files[0], username, signer);
+      const url = await onImageUpload(event.target.files[0], username);
       setSettings((prev) => ({ ...prev, cover_image: url }));
     }
   };

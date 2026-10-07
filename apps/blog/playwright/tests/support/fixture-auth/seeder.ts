@@ -23,8 +23,8 @@ const DEFAULT_USER: User = {
 
 /**
  * Pre-seeds logged-in state for the blog app without running the real login
- * flow. Two-sided: the iron-session cookie satisfies server-side handlers
- * (e.g. `/api/users/me`), and the `localStorage['user']` entry satisfies the
+ * flow. Two-sided: the iron-session and `observer` cookies satisfy server-side
+ * handlers (e.g. `/api/users/me`) and renders, and the `localStorage['user']` entry satisfies the
  * client — `useUserCore` hydrates `useQuery` from localStorage via
  * `initialData` with `refetchOnMount: false`, so seeding only the cookie
  * leaves the UI stuck in anonymous state.
@@ -49,6 +49,16 @@ export async function seedAuthCookie(
       domain: 'localhost',
       path: '/',
       httpOnly: true,
+      secure: false,
+      sameSite: 'Lax'
+    },
+    // What `use-sign-in.tsx` sets on login; server renders read the observer from it first.
+    {
+      name: 'observer',
+      value: user.username,
+      domain: 'localhost',
+      path: '/',
+      httpOnly: false,
       secure: false,
       sameSite: 'Lax'
     }

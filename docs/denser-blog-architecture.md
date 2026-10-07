@@ -155,8 +155,8 @@ The profile layout's server reads (account, reputation, dynamic global propertie
   so an anonymous reader never downloads `wax.common.wasm`. Its transport (`read-transport.ts`) is
   plain `fetch` and does not import `@hiveio/wax` either, so reads do not load wax's JavaScript.
 - `getChain()`: singleton wrapper around WAX (Hive SDK), only for signing, broadcasting, login and
-  wasm-only computation; created on first use, and warmed up on idle for logged-in users only
-  (`components/chain-warmup.tsx`)
+  wasm-only computation; created on the first action that needs it, never at startup, logged in or
+  not. Manabars use a BigInt port of wax's math (`manabar-math.ts`) instead.
 - On the server both are wrapped by `server-failover.ts`: a read-only JSON-RPC call that fails at the
   transport level is retried once on the primary node, then on the other nodes of
   `REACT_APP_ALLOWED_HIVE_API_NODES` (images host excluded), within an 8 s budget per call
@@ -164,8 +164,11 @@ The profile layout's server reads (account, reputation, dynamic global propertie
 **Initial client bundle** — the chunks a page's server HTML references must not contain wax,
 hb-auth/beekeeper or the signers (fixture guard `initialChunks*.spec.ts`, PERF-CHUNKS-01..03).
 Page-load code reaches them only through dynamic `import()`: the chain (`getChain()`), the
-transaction service (`lazy-transaction-service.ts`), the signers (`signer-provider.tsx`,
+transaction service (`lazy-transaction-service.ts`), the signers (`use-lazy-signer.ts`,
 `use-logout.ts`), the login dialog's form and the Google OAuth redirect handler (`next/dynamic`).
+Being logged in imports none of them: `SignerProvider` hands out `loadSigner()`, and the signer
+options reach the transaction service through `signer-options.ts`, so the first signing action
+loads them (fixture guard `loggedInNoWasm*.spec.ts`, `loggedInVoteSigningStack.spec.ts`).
 Import wax for its types only (`import type`); its enums are runtime values, so use string
 literals instead (e.g. `AssetName` in `ui/lib/asset-constants.ts`).
 

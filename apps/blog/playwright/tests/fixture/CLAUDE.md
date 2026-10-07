@@ -39,7 +39,7 @@ apps/blog/
         ├── fixture-misses/                                # MISS log + global setup/teardown baseline check
         └── fixture-auth/
             ├── constants.ts                               # shared cookie name + dummy password
-            ├── seeder.ts                                  # seedAuthCookie — iron-session + localStorage
+            ├── seeder.ts                                  # seedAuthCookie — iron-session + observer cookies, localStorage
             ├── broadcast-interceptor.ts                   # page.route that stubs mutation RPCs
             └── generate-voted-variants.mjs                # fixture-dir post-processor
 ```
@@ -67,7 +67,8 @@ Instead, `seedAuthCookie(context)` (in `fixture-auth/seeder.ts`):
 
 1. Seals an `IronSessionData` envelope with the dummy password from
    `fixture-auth/constants.ts` and injects it as the `blog_session`
-   cookie. Satisfies server-side handlers (e.g. `/api/users/me`).
+   cookie, plus the `observer` cookie the real login sets. Satisfies
+   server-side handlers (e.g. `/api/users/me`) and renders.
 2. Runs an `addInitScript` that writes the same `User` into
    `localStorage['user']`. Without this, `useUserCore`'s
    `useQuery({initialData: storedUser, refetchOnMount: false})` locks the
@@ -788,10 +789,11 @@ base image as CI's `blog-fixture-tests`), not on a dev machine.
 
 ### Detecting wax's wasm download: listen, don't route
 
-`anonymousNoWasm*.spec.ts` assert that logged-out flows never request
-`wax.common.<hash>.wasm`; `loggedInHomepage.spec.ts` asserts the logged-in
-idle warm-up still does. `page.route('**/*.wasm')` never sees that fetch,
-so count it with a browser-context `request` listener —
+`anonymousNoWasm*.spec.ts` and `loggedInNoWasm*.spec.ts` assert that
+neither logged-out nor logged-in page loads request `wax.common.<hash>.wasm`
+or load the signing stack; `loggedInVoteSigningStack.spec.ts` asserts the
+first vote does (helpers in `support/signingStack.ts`). `page.route('**/*.wasm')`
+never sees that fetch, so count it with a browser-context `request` listener —
 `recordWasmRequests(page)` in `support/wasmRequests.ts`. The post spec runs
 on `postDetail_popover`, an additive overlay adding the author popover
 card's reads (copied from `notifications`).

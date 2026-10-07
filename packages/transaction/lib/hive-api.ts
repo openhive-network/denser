@@ -10,8 +10,13 @@ import {
   IVoteListItem
 } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
-import { getChain, getReadChain } from './chain';
-import { ApiAccount, IManabarData } from '@hiveio/wax';
+import { getReadChain } from './chain';
+import { ApiAccount } from '@hiveio/wax';
+import {
+  calculateCurrentManabarValue,
+  calculateManabarFullRegenerationTime,
+  type IManabarValue
+} from './manabar-math';
 import { DATA_LIMIT } from './bridge-api';
 
 interface ISingleManabar {
@@ -27,9 +32,9 @@ interface Manabar {
 }
 
 interface IManabars {
-  upvote: IManabarData;
-  downvote: IManabarData;
-  rc: IManabarData;
+  upvote: IManabarValue;
+  downvote: IManabarValue;
+  rc: IManabarValue;
   upvoteCooldown: Date;
   downvoteCooldown: Date;
   rcCooldown: Date;
@@ -51,7 +56,7 @@ export const getManabars = async (
   loadDynamicGlobalProperties?: DynamicGlobalPropertiesLoader
 ): Promise<IManabars | null> => {
   try {
-    const chain = await getChain();
+    const chain = getReadChain();
 
     const [dgpo, {
       accounts: [account]
@@ -72,7 +77,7 @@ export const getManabars = async (
 
     const time = new Date(`${dgpo.time}Z`).getTime() / 1000;
 
-    const upvoteCooldown = new Date(chain.calculateManabarFullRegenerationTime(
+    const upvoteCooldown = new Date(calculateManabarFullRegenerationTime(
       time,
       account.post_voting_power.amount,
       account.voting_manabar.current_mana,
@@ -87,31 +92,31 @@ export const getManabars = async (
     else
       max = (max * downvotePoolPercent) / ONE_HUNDRED_PERCENT;
 
-    const downvoteCooldown = new Date(chain.calculateManabarFullRegenerationTime(
+    const downvoteCooldown = new Date(calculateManabarFullRegenerationTime(
       time,
       max,
       account.downvote_manabar.current_mana,
       account.downvote_manabar.last_update_time
     ) * 1000);
-    const rcCooldown = new Date(chain.calculateManabarFullRegenerationTime(
+    const rcCooldown = new Date(calculateManabarFullRegenerationTime(
       time,
       rcAccount.max_rc,
       rcAccount.rc_manabar.current_mana,
       rcAccount.rc_manabar.last_update_time
     ) * 1000);
-    const upvote = chain.calculateCurrentManabarValue(
+    const upvote = calculateCurrentManabarValue(
       time,
       account.post_voting_power.amount,
       account.voting_manabar.current_mana,
       account.voting_manabar.last_update_time
     );
-    const downvote = chain.calculateCurrentManabarValue(
+    const downvote = calculateCurrentManabarValue(
       time,
       max,
       account.downvote_manabar.current_mana,
       account.downvote_manabar.last_update_time
     );
-    const rc = chain.calculateCurrentManabarValue(
+    const rc = calculateCurrentManabarValue(
       time,
       rcAccount.max_rc,
       rcAccount.rc_manabar.current_mana,

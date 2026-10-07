@@ -35,6 +35,11 @@
     "hash": "5c91c171e8a943dc"
   },
   {
+    "spec": "loggedInNoWasmPost.spec.ts",
+    "method": "bridge.get_profile",
+    "hash": "27c21eb5844992c1"
+  },
+  {
     "spec": "loggedInPostDetail.spec.ts",
     "method": "bridge.get_profile",
     "hash": "27c21eb5844992c1"
