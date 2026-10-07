@@ -1,6 +1,7 @@
 /**
  * What a page fetched, from one Lighthouse report: transfer totals by resource type,
- * and the requests that left an allowed set of hosts. Pure functions; no I/O.
+ * the WebAssembly it loaded, and the requests that left an allowed set of hosts.
+ * Pure functions; no I/O.
  */
 
 const NON_NETWORK_SCHEMES = new Set(['data:', 'blob:', 'about:', 'chrome-extension:']);
@@ -17,6 +18,19 @@ function extractResourceTotals(report) {
     'total-transfer-bytes': total?.transferSize,
     'request-count': total?.requestCount,
   };
+}
+
+/**
+ * The transfer bytes of every `.wasm` (or `application/wasm`) request of a run, 0 when
+ * it loaded none; `undefined` when the report lists no requests. A page fetches its
+ * WebAssembly, so the resource summary counts it under `other`, not `script`.
+ */
+function wasmTransferBytes(report) {
+  const requests = report.audits?.['network-requests']?.details?.items;
+  if (!requests) return undefined;
+  return requests
+    .filter((request) => request.mimeType === 'application/wasm' || /\.wasm(?:[?#]|$)/.test(request.url || ''))
+    .reduce((sum, request) => sum + (request.transferSize || 0), 0);
 }
 
 /**
@@ -41,4 +55,4 @@ function offHostRequests(report, allowedHosts) {
   return [...seen];
 }
 
-module.exports = { extractResourceTotals, offHostRequests };
+module.exports = { extractResourceTotals, wasmTransferBytes, offHostRequests };

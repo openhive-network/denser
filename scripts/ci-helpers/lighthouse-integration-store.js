@@ -25,10 +25,14 @@ function writeJson(file, data) {
   writeAtomically(file, JSON.stringify(data, null, 2) + '\n');
 }
 
-/** Saves one run's report gzip'd; returns its path relative to `out`. */
-function saveReport(out, revision, route, runIndex, report) {
+/**
+ * Saves one run's report gzip'd; returns its path relative to `out`. A run in a
+ * `mode` other than `loggedOut` has the mode in its name.
+ */
+function saveReport(out, revision, route, runIndex, report, mode = 'loggedOut') {
   const slug = route.replace(/^\/+/, '').replace(/[^A-Za-z0-9._-]+/g, '_');
-  const relative = `${REPORTS_DIR}/${revision}/${slug}-run${runIndex + 1}.json.gz`;
+  const suffix = mode === 'loggedOut' ? '' : `-${mode}`;
+  const relative = `${REPORTS_DIR}/${revision}/${slug}${suffix}-run${runIndex + 1}.json.gz`;
   fs.mkdirSync(path.join(out, REPORTS_DIR, revision), { recursive: true });
   writeAtomically(path.join(out, relative), zlib.gzipSync(JSON.stringify(report)));
   return relative;

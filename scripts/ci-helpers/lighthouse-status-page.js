@@ -1,7 +1,8 @@
 /**
  * The integration Lighthouse status page: one section per pass, newest first, with
  * its verdict, its environment block (probes before and after, baseline, why it was
- * degraded) and per route the median vitals, the simulated LCP next to the observed
+ * degraded) and per route and mode (a route's logged-in row under its logged-out
+ * one) the median vitals, script and WASM bytes, the simulated LCP next to the observed
  * paints (each with its runs), TTFB, LCP breakdown and upstream hosts.
  * A pure function of the parsed result files; every field may be missing, as it is
  * in result files written before it existed.
@@ -89,16 +90,21 @@ function renderReports(route) {
   return links.length ? `<br>reports: ${links.join(' ')}` : '';
 }
 
-function renderRoute(route, withReports) {
+// Results written before the logged-in mode have no `mode`: they are logged out.
+function modeCell(route, observer) {
+  return route.mode === 'loggedIn' ? `logged in as @${plain(observer)}` : 'logged out';
+}
+
+function renderRoute(route, observer, withReports) {
   const m = route.median || {};
   const backend = m.backend;
   const breaches = (route.breaches || []).map(breachText);
   const cls = typeof m['cumulative-layout-shift'] === 'number' ? m['cumulative-layout-shift'].toFixed(3) : '—';
   return `<tr class="${breaches.length ? 'breach' : ''}"><td>${plain(route.route)}${withReports ? renderReports(route) : ''}${breaches.length ? `<br>${breaches.join('<br>')}` : ''}</td>
-<td>${plain(m.performance)}</td><td>${withRuns(m['largest-contentful-paint'], route.runs, 'largest-contentful-paint')}</td>
+<td>${modeCell(route, observer)}</td><td>${plain(m.performance)}</td><td>${withRuns(m['largest-contentful-paint'], route.runs, 'largest-contentful-paint')}</td>
 <td>${withRuns(m['observed-largest-contentful-paint'], route.runs, 'observed-largest-contentful-paint')}</td>
 <td>${withRuns(m['observed-first-contentful-paint'], route.runs, 'observed-first-contentful-paint')}</td><td>${ms(m['total-blocking-time'])}</td><td>${cls}</td>
-<td>${kib(m['script-transfer-bytes'])}</td><td>${ms(backend?.['server-response-time'])}</td><td>${renderLcp(backend)}</td>
+<td>${kib(m['script-transfer-bytes'])}</td><td>${kib(m['wasm-transfer-bytes'])}</td><td>${ms(backend?.['server-response-time'])}</td><td>${renderLcp(backend)}</td>
 <td>${kib(backend?.['image-transfer-bytes'])}</td><td>${renderHosts(backend?.hosts)}</td></tr>`;
 }
 
@@ -109,8 +115,8 @@ function renderPass(result, reportsRevision) {
 <h2><code>${plain(result.revision)}</code> <span class="${verdictClass}">${plain(verdict)}</span></h2>
 <p class="muted">${plain(result.measuredAt)} · ${plain(result.formFactor)} · median of ${plain(result.runsPerRoute)} · Lighthouse ${plain(result.lighthouseVersion)}</p>
 ${renderEnvironment(result.environment)}
-<table><tr><th>route</th><th>perf</th><th>LCP (simulated)</th><th>LCP (observed)</th><th>FCP (observed)</th><th>TBT</th><th>CLS</th><th>JS</th><th>TTFB</th><th>LCP breakdown</th><th>images</th><th>upstream hosts</th></tr>
-${(result.routes || []).map((route) => renderRoute(route, result.revision === reportsRevision)).join('\n')}</table>
+<table><tr><th>route</th><th>mode</th><th>perf</th><th>LCP (simulated)</th><th>LCP (observed)</th><th>FCP (observed)</th><th>TBT</th><th>CLS</th><th>JS</th><th>WASM</th><th>TTFB</th><th>LCP breakdown</th><th>images</th><th>upstream hosts</th></tr>
+${(result.routes || []).map((route) => renderRoute(route, result.observer, result.revision === reportsRevision)).join('\n')}</table>
 </section>`;
 }
 
@@ -128,7 +134,8 @@ table{border-collapse:collapse;margin:.5rem 0}th,td{border:1px solid #ccc;paddin
 </style></head><body>
 <h1>Lighthouse integration check</h1>
 <p class="muted">Raw results: <a href="latest.json">latest.json</a>. Full Lighthouse reports (gzip'd JSON) are kept for the latest revision only.
-Thresholds judge the simulated LCP (slow 4G); the observed paints are what the run's browser drew. An LCP breach whose median observed LCP is under ${SIMULATED_ONLY_OBSERVED_LCP_MS / 1000} s is marked simulated-only.</p>
+Logged-in rows read as the observer account with the state a Keychain login leaves (its cookie and localStorage entry; no key), and have their own thresholds.
+JS and WASM are transfer bytes. Thresholds judge the simulated LCP (slow 4G); the observed paints are what the run's browser drew. An LCP breach whose median observed LCP is under ${SIMULATED_ONLY_OBSERVED_LCP_MS / 1000} s is marked simulated-only.</p>
 ${results.length ? results.map((result) => renderPass(result, reportsRevision)).join('\n') : '<p>No passes measured yet.</p>'}
 </body></html>
 `;
