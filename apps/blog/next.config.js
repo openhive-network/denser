@@ -35,9 +35,21 @@ const nextConfig = {
             key: 'Content-Type',
             value: 'application/javascript; charset=utf-8'
           },
+          // Revalidated on every use (a 304 while unchanged). no-store bought nothing more:
+          // the worker is public code and hb-auth keeps keys in IndexedDB.
           {
             key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate, max-age=0'
+            value: 'public, max-age=0, must-revalidate'
+          }
+        ]
+      },
+      // hb-auth's dist/assets: Vite output named by content hash (worker.js refers to it).
+      {
+        source: '/auth/assets/:file*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
           }
         ]
       }

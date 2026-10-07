@@ -1,4 +1,6 @@
 # /<app>/_next/static/* in images mode (compose.yml alone): the app's own server
-# has the files, so the /<app>/* route proxies them like any other path.
+# has the files, so the /<app>/* route proxies them like any other path. It proxies
+# the public/ files Caddyfile.static.releases serves in follow mode; their cache
+# headers come from the app's next.config.js.
 #
 #   import Caddyfile.static.next <app>
