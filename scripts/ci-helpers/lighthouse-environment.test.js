@@ -89,3 +89,9 @@ test('verdictOf names a degraded environment', () => {
   assert.equal(verdictOf('breach', 'normal'), 'breach');
   assert.equal(verdictOf('pass', 'no-baseline'), 'pass');
 });
+
+test('verdictOf names a breach that only the simulation saw', () => {
+  assert.equal(verdictOf('breach', 'normal', true), 'breach (simulated-only)');
+  assert.equal(verdictOf('breach', 'degraded', true), 'breach (simulated-only, environment degraded)');
+  assert.equal(verdictOf('pass', 'normal', true), 'pass', 'a pass has no breach to label');
+});

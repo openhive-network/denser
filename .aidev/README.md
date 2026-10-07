@@ -221,7 +221,7 @@ The integration site's Lighthouse check (`stack/integration/lighthouse.sh`) meas
 the live site against the live Hive API and `images.hive.blog`, whose latency and
 content change between runs. The `lighthouse_fixture` suite measures the same routes
 (`integration` in `scripts/ci-helpers/lighthouse-thresholds.json`), with the same
-Lighthouse (13.5.0, mobile, median of 3 runs), on production builds of this tree served
+Lighthouse (13.5.0, mobile, median of 5 runs), on production builds of this tree served
 from recorded data, so two passes differ only by the code and the host's CPU.
 
 ```bash
@@ -231,8 +231,12 @@ aidev test run --slot system                      # build, measure, compare with
 
 It is bound to `system` because AIDEV's slot names are fixed (there is no `perf`
 slot) and no workflow phase requests `system` for a project: it never gates, and
-it is not part of `quick` or `full`. It takes about 5 minutes (both builds with
-next's build cache warm, then 18 Lighthouse runs); a cold build cache adds a few.
+it is not part of `quick` or `full`. It takes about 8 minutes (both builds with
+next's build cache warm, then 30 Lighthouse runs of about 14 s each, 3 minutes more
+than the 18 of 3 runs per route); a cold build cache adds a few. Each route's median
+also carries the paints the browser observed (`observed-first-contentful-paint`,
+`observed-largest-contentful-paint`) next to the simulated LCP the thresholds judge;
+an LCP breach whose median observed LCP is under 2.5 s is labelled `simulatedOnly`.
 
 **What runs** (`.aidev/run-lighthouse-fixture.sh`, all inside the suite's container
 under `--network none`, no docker):
@@ -348,7 +352,7 @@ docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work \
 `--record` serves the same site with `fixture-proxy-serve.mjs` recording from
 `api.hive.blog` (`PUT /__aidev/record/<name>`, `FIXTURE_RECORD_TARGET` for another
 node) and the image server recording from `images.hive.blog`, with the clock at the
-recording's start. It runs every route as the pass does (3 runs, so feed-cache hits
+recording's start. It runs every route as the pass does (5 runs, so feed-cache hits
 and misses are both seen), then writes `_index.json` and `_lighthouse.json`. Images
 no measured run's report lists (Lighthouse probes lazy images at full size after its
 trace) are kept as bodiless 404s (`image-server.mjs prune`), which keeps the set at

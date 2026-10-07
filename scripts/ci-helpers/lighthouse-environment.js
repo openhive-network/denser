@@ -89,9 +89,15 @@ function appendToHistory(history, { revision, measuredAt, before, after, ttfb })
   return [...history, entry].slice(-BASELINE_WINDOW);
 }
 
-/** `pass` or `breach`, with ` (environment degraded)` when the environment was. */
-function verdictOf(status, environmentStatus) {
-  return environmentStatus === 'degraded' ? `${status} (environment degraded)` : status;
+/**
+ * `pass` or `breach`, labelled in parentheses: `simulated-only` for a breach whose every
+ * breach is (lighthouse-median.js), `environment degraded` when the environment was.
+ */
+function verdictOf(status, environmentStatus, simulatedOnly = false) {
+  const labels = [];
+  if (simulatedOnly && status === 'breach') labels.push('simulated-only');
+  if (environmentStatus === 'degraded') labels.push('environment degraded');
+  return labels.length ? `${status} (${labels.join(', ')})` : status;
 }
 
 module.exports = { classifyEnvironment, appendToHistory, verdictOf, BASELINE_WINDOW };

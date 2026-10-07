@@ -1,0 +1,196 @@
+{
+  "lighthouseVersion": "13.5.0",
+  "requestedUrl": "http://127.0.0.1:8000/blog/trending/hive-160391",
+  "finalDisplayedUrl": "http://127.0.0.1:8000/blog/trending/hive-160391",
+  "fetchTime": "2026-10-07T00:50:53.277Z",
+  "categories": {
+    "performance": {
+      "id": "performance",
+      "score": 0.71
+    }
+  },
+  "audits": {
+    "metrics": {
+      "id": "metrics",
+      "numericValue": 6313,
+      "details": {
+        "type": "debugdata",
+        "items": [
+          {
+            "firstContentfulPaint": 1151,
+            "largestContentfulPaint": 4208,
+            "interactive": 6313,
+            "speedIndex": 1602,
+            "totalBlockingTime": 608,
+            "maxPotentialFID": 279,
+            "cumulativeLayoutShift": 0,
+            "cumulativeLayoutShiftMainFrame": 0,
+            "lcpLoadDelay": 2089,
+            "lcpLoadDuration": 2239,
+            "timeToFirstByte": 458,
+            "observedTimeOrigin": 0,
+            "observedTimeOriginTs": 5194535371766,
+            "observedNavigationStart": 0,
+            "observedNavigationStartTs": 5194535371766,
+            "observedFirstPaint": 136,
+            "observedFirstPaintTs": 5194535507904,
+            "observedFirstContentfulPaint": 136,
+            "observedFirstContentfulPaintTs": 5194535507904,
+            "observedFirstContentfulPaintAllFrames": 136,
+            "observedFirstContentfulPaintAllFramesTs": 5194535507904,
+            "observedLargestContentfulPaint": 136,
+            "observedLargestContentfulPaintTs": 5194535507904,
+            "observedLargestContentfulPaintAllFrames": 136,
+            "observedLargestContentfulPaintAllFramesTs": 5194535507904,
+            "observedTraceEnd": 2831,
+            "observedTraceEndTs": 5194538202701,
+            "observedLoad": 227,
+            "observedLoadTs": 5194535598825,
+            "observedDomContentLoaded": 134,
+            "observedDomContentLoadedTs": 5194535505362,
+            "observedCumulativeLayoutShift": 0,
+            "observedCumulativeLayoutShiftMainFrame": 0,
+            "observedFirstVisualChange": 136,
+            "observedFirstVisualChangeTs": 5194535507766,
+            "observedLastVisualChange": 757,
+            "observedLastVisualChangeTs": 5194536128766,
+            "observedSpeedIndex": 152,
+            "observedSpeedIndexTs": 5194535523997
+          }
+        ]
+      }
+    },
+    "largest-contentful-paint": {
+      "id": "largest-contentful-paint",
+      "numericValue": 4208.4767999999995
+    },
+    "total-blocking-time": {
+      "id": "total-blocking-time",
+      "numericValue": 608
+    },
+    "cumulative-layout-shift": {
+      "id": "cumulative-layout-shift",
+      "numericValue": 0
+    },
+    "resource-summary": {
+      "id": "resource-summary",
+      "details": {
+        "type": "table",
+        "headings": [
+          {
+            "key": "label",
+            "valueType": "text",
+            "label": "Resource Type"
+          },
+          {
+            "key": "requestCount",
+            "valueType": "numeric",
+            "label": "Requests"
+          },
+          {
+            "key": "transferSize",
+            "valueType": "bytes",
+            "label": "Transfer Size"
+          }
+        ],
+        "items": [
+          {
+            "resourceType": "total",
+            "label": "Total",
+            "requestCount": 48,
+            "transferSize": 876436
+          },
+          {
+            "resourceType": "script",
+            "label": "Script",
+            "requestCount": 37,
+            "transferSize": 681866
+          },
+          {
+            "resourceType": "image",
+            "label": "Image",
+            "requestCount": 3,
+            "transferSize": 128623
+          },
+          {
+            "resourceType": "document",
+            "label": "Document",
+            "requestCount": 1,
+            "transferSize": 22880
+          },
+          {
+            "resourceType": "other",
+            "label": "Other",
+            "requestCount": 6,
+            "transferSize": 22043
+          },
+          {
+            "resourceType": "stylesheet",
+            "label": "Stylesheet",
+            "requestCount": 1,
+            "transferSize": 21024
+          },
+          {
+            "resourceType": "media",
+            "label": "Media",
+            "requestCount": 0,
+            "transferSize": 0
+          },
+          {
+            "resourceType": "font",
+            "label": "Font",
+            "requestCount": 0,
+            "transferSize": 0
+          },
+          {
+            "resourceType": "third-party",
+            "label": "Third-party",
+            "requestCount": 0,
+            "transferSize": 0
+          }
+        ]
+      }
+    },
+    "lcp-discovery-insight": {
+      "id": "lcp-discovery-insight",
+      "details": {
+        "type": "list",
+        "items": [
+          {
+            "type": "checklist",
+            "items": {
+              "priorityHinted": {
+                "label": "fetchpriority=high applied",
+                "value": true
+              },
+              "requestDiscoverable": {
+                "label": "Request is discoverable in initial document",
+                "value": true
+              },
+              "eagerlyLoaded": {
+                "label": "LCP resources should not use loading=lazy",
+                "value": true
+              }
+            }
+          },
+          {
+            "type": "node",
+            "lhId": "page-0-IMG",
+            "path": "2,MAIN,0,DIV,0,DIV,1,DIV,1,DIV,2,DIV,0,UL,0,LI,0,DIV,1,DIV,0,DIV,0,A,0,DIV,0,PICTURE,1,IMG",
+            "selector": "a > div.relative > picture.articles__feature-img > img.w-full",
+            "boundingRect": {
+              "top": 0,
+              "bottom": 0,
+              "left": 0,
+              "right": 0,
+              "width": 0,
+              "height": 0
+            },
+            "snippet": "<img srcset=\"http://127.0.0.1:8201/p/HNWT6DgoBc1692QWn5trsLBYecSp3jKD1kzdmSDmp6qf2yRHZN\u2026\" alt=\"Post image\" loading=\"eager\" fetchpriority=\"high\" class=\"w-full\">",
+            "nodeLabel": "Post image"
+          }
+        ]
+      }
+    }
+  }
+}

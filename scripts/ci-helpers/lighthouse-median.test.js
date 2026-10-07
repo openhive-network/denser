@@ -1,10 +1,14 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { extractRunMetrics, median, summarizeRuns, findBreaches } = require('./lighthouse-median');
+const { extractRunMetrics, median, summarizeRuns, findBreaches, isSimulatedOnly } = require('./lighthouse-median');
 const thresholds = require('./lighthouse-thresholds.json');
+// A Lighthouse 13.5 mobile run of /trending/hive-160391 on the recorded data, cut down
+// to the audits extractRunMetrics reads.
+const recordedCommunity = require('./fixtures/lighthouse-report-community.json');
 
-function fakeReport({ score = 0.5, lcp = 8000, tbt = 900, cls = 0.01, scriptBytes = 700000, lazyLcp } = {}) {
+function fakeReport({ score = 0.5, lcp = 8000, tbt = 900, cls = 0.01, scriptBytes = 700000, lazyLcp, observedFcp = 400, observedLcp = 600 } = {}) {
   const audits = {
+    metrics: { details: { items: [{ observedFirstContentfulPaint: observedFcp, observedLargestContentfulPaint: observedLcp }] } },
     'largest-contentful-paint': { numericValue: lcp },
     'total-blocking-time': { numericValue: tbt },
     'cumulative-layout-shift': { numericValue: cls },
@@ -33,9 +37,31 @@ test('extractRunMetrics reads score, vitals, script bytes and the LCP lazy-load 
     'cumulative-layout-shift': 0.01,
     'script-transfer-bytes': 700000,
     'lcp-lazy-loaded': true,
+    'observed-first-contentful-paint': 400,
+    'observed-largest-contentful-paint': 600,
   });
   assert.equal(extractRunMetrics(fakeReport({ lazyLcp: false }))['lcp-lazy-loaded'], false);
   assert.equal(extractRunMetrics(fakeReport())['lcp-lazy-loaded'], false, 'a text LCP element is not lazy');
+});
+
+test('extractRunMetrics reads the observed paints of a recorded report next to its simulated LCP', () => {
+  assert.deepEqual(extractRunMetrics(recordedCommunity), {
+    performance: 71,
+    'largest-contentful-paint': 4208.4767999999995,
+    'total-blocking-time': 608,
+    'cumulative-layout-shift': 0,
+    'script-transfer-bytes': 681866,
+    'lcp-lazy-loaded': false,
+    'observed-first-contentful-paint': 136,
+    'observed-largest-contentful-paint': 136,
+  });
+});
+
+test('a recorded run whose simulated LCP breaches while it painted in 136 ms is simulated-only', () => {
+  const summary = summarizeRuns([extractRunMetrics(recordedCommunity)]);
+  assert.deepEqual(findBreaches(summary, { 'largest-contentful-paint': 4000, 'total-blocking-time': 1500 }), [
+    { metric: 'largest-contentful-paint', value: 4208.4767999999995, threshold: 4000, simulatedOnly: true, observed: 136 },
+  ]);
 });
 
 test('extractRunMetrics reports a run Lighthouse could not measure', () => {
@@ -66,6 +92,18 @@ test('summarizeRuns is the per-metric median of the measured runs', () => {
   assert.equal(summary['lcp-lazy-loaded'], true, 'two of three runs saw a lazy LCP image');
 });
 
+test('summarizeRuns keeps the median observed paints next to the simulated LCP', () => {
+  const runs = [
+    { lcp: 10200, observedLcp: 710, observedFcp: 300 },
+    { lcp: 11400, observedLcp: 1520, observedFcp: 320 },
+    { lcp: 6300, observedLcp: 5750, observedFcp: 2900 },
+  ].map((run) => extractRunMetrics(fakeReport(run)));
+  const summary = summarizeRuns(runs);
+  assert.equal(summary['largest-contentful-paint'], 10200);
+  assert.equal(summary['observed-largest-contentful-paint'], 1520);
+  assert.equal(summary['observed-first-contentful-paint'], 320);
+});
+
 test('findBreaches: performance is a floor, metrics are ceilings, booleans must match', () => {
   const limits = {
     performance: 40,
@@ -83,6 +121,30 @@ test('findBreaches: performance is a floor, metrics are ceilings, booleans must 
     { metric: 'cumulative-layout-shift', value: 'not measured', threshold: 0.1 },
     { metric: 'lcp-lazy-loaded', value: true, threshold: false },
   ]);
+});
+
+test('findBreaches labels an LCP breach the browser did not see as simulated-only', () => {
+  const limits = { performance: 55, 'largest-contentful-paint': 4500, 'total-blocking-time': 1500 };
+  const fastPaint = { measuredRuns: 5, performance: 50, 'largest-contentful-paint': 5100, 'total-blocking-time': 1600, 'observed-largest-contentful-paint': 420 };
+  assert.deepEqual(findBreaches(fastPaint, limits), [
+    { metric: 'performance', value: 50, threshold: 55 },
+    { metric: 'largest-contentful-paint', value: 5100, threshold: 4500, simulatedOnly: true, observed: 420 },
+    { metric: 'total-blocking-time', value: 1600, threshold: 1500 },
+  ]);
+
+  const slowPaint = { ...fastPaint, 'observed-largest-contentful-paint': 2500 };
+  assert.deepEqual(findBreaches(slowPaint, limits)[1], { metric: 'largest-contentful-paint', value: 5100, threshold: 4500 });
+  const unobserved = { ...fastPaint, 'observed-largest-contentful-paint': undefined };
+  assert.deepEqual(findBreaches(unobserved, limits)[1], { metric: 'largest-contentful-paint', value: 5100, threshold: 4500 });
+});
+
+test('isSimulatedOnly holds when routes breach and every breach is simulated-only', () => {
+  const simulated = { breaches: [{ metric: 'largest-contentful-paint', simulatedOnly: true }] };
+  const real = { breaches: [{ metric: 'script-transfer-bytes' }] };
+  const clean = { breaches: [] };
+  assert.equal(isSimulatedOnly([simulated, clean]), true);
+  assert.equal(isSimulatedOnly([simulated, real]), false);
+  assert.equal(isSimulatedOnly([clean]), false, 'nothing breached');
 });
 
 test('findBreaches flags a route with no successful run', () => {

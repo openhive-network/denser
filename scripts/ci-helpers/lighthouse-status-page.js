@@ -1,10 +1,13 @@
 /**
  * The integration Lighthouse status page: one section per pass, newest first, with
  * its verdict, its environment block (probes before and after, baseline, why it was
- * degraded) and per route the median vitals, TTFB, LCP breakdown and upstream hosts.
+ * degraded) and per route the median vitals, the simulated LCP next to the observed
+ * paints (each with its runs), TTFB, LCP breakdown and upstream hosts.
  * A pure function of the parsed result files; every field may be missing, as it is
  * in result files written before it existed.
  */
+
+const { SIMULATED_ONLY_OBSERVED_LCP_MS } = require('./lighthouse-median');
 
 const PROBE_NAMES = ['api', 'images', 'origin'];
 
@@ -66,6 +69,19 @@ function renderLcp(backend) {
   return parts + from;
 }
 
+// The median, and under it each run's value: the spread is what tells a simulation
+// artifact from a slow page.
+function withRuns(median, runs, metric) {
+  const values = (runs || []).filter((run) => !run.error).map((run) => run[metric]);
+  if (!values.some((v) => typeof v === 'number')) return ms(median);
+  return `${ms(median)}<br><span class="muted">runs: ${values.map(ms).join(', ')}</span>`;
+}
+
+function breachText(b) {
+  const label = b.simulatedOnly ? ` <span class="sim">simulated-only: observed ${ms(b.observed)}</span>` : '';
+  return `<span class="bad">${escapeHtml(b.metric)} = ${plain(b.value)} (threshold ${plain(b.threshold)})</span>${label}`;
+}
+
 function renderReports(route) {
   const links = (route.runs || [])
     .map((run, i) => (run.report ? `<a href="${escapeHtml(run.report)}">run ${i + 1}</a>` : ''))
@@ -76,10 +92,12 @@ function renderReports(route) {
 function renderRoute(route, withReports) {
   const m = route.median || {};
   const backend = m.backend;
-  const breaches = (route.breaches || []).map((b) => `${escapeHtml(b.metric)} = ${plain(b.value)} (threshold ${plain(b.threshold)})`);
+  const breaches = (route.breaches || []).map(breachText);
   const cls = typeof m['cumulative-layout-shift'] === 'number' ? m['cumulative-layout-shift'].toFixed(3) : '—';
-  return `<tr class="${breaches.length ? 'breach' : ''}"><td>${plain(route.route)}${withReports ? renderReports(route) : ''}${breaches.length ? `<br><span class="bad">${breaches.join('<br>')}</span>` : ''}</td>
-<td>${plain(m.performance)}</td><td>${ms(m['largest-contentful-paint'])}</td><td>${ms(m['total-blocking-time'])}</td><td>${cls}</td>
+  return `<tr class="${breaches.length ? 'breach' : ''}"><td>${plain(route.route)}${withReports ? renderReports(route) : ''}${breaches.length ? `<br>${breaches.join('<br>')}` : ''}</td>
+<td>${plain(m.performance)}</td><td>${withRuns(m['largest-contentful-paint'], route.runs, 'largest-contentful-paint')}</td>
+<td>${withRuns(m['observed-largest-contentful-paint'], route.runs, 'observed-largest-contentful-paint')}</td>
+<td>${withRuns(m['observed-first-contentful-paint'], route.runs, 'observed-first-contentful-paint')}</td><td>${ms(m['total-blocking-time'])}</td><td>${cls}</td>
 <td>${kib(m['script-transfer-bytes'])}</td><td>${ms(backend?.['server-response-time'])}</td><td>${renderLcp(backend)}</td>
 <td>${kib(backend?.['image-transfer-bytes'])}</td><td>${renderHosts(backend?.hosts)}</td></tr>`;
 }
@@ -91,7 +109,7 @@ function renderPass(result, reportsRevision) {
 <h2><code>${plain(result.revision)}</code> <span class="${verdictClass}">${plain(verdict)}</span></h2>
 <p class="muted">${plain(result.measuredAt)} · ${plain(result.formFactor)} · median of ${plain(result.runsPerRoute)} · Lighthouse ${plain(result.lighthouseVersion)}</p>
 ${renderEnvironment(result.environment)}
-<table><tr><th>route</th><th>perf</th><th>LCP</th><th>TBT</th><th>CLS</th><th>JS</th><th>TTFB</th><th>LCP breakdown</th><th>images</th><th>upstream hosts</th></tr>
+<table><tr><th>route</th><th>perf</th><th>LCP (simulated)</th><th>LCP (observed)</th><th>FCP (observed)</th><th>TBT</th><th>CLS</th><th>JS</th><th>TTFB</th><th>LCP breakdown</th><th>images</th><th>upstream hosts</th></tr>
 ${(result.routes || []).map((route) => renderRoute(route, result.revision === reportsRevision)).join('\n')}</table>
 </section>`;
 }
@@ -106,10 +124,11 @@ function renderStatusPage(results, reportsRevision) {
 <style>
 body{font:14px/1.4 system-ui,sans-serif;margin:1.5rem;color:#222}
 table{border-collapse:collapse;margin:.5rem 0}th,td{border:1px solid #ccc;padding:.25rem .5rem;text-align:left;vertical-align:top}
-.ok{color:#176f2c}.bad{color:#b00020}.muted{color:#666}tr.breach{background:#fff4f4}
+.ok{color:#176f2c}.bad{color:#b00020}.muted{color:#666}.sim{color:#8a5a00}tr.breach{background:#fff4f4}
 </style></head><body>
 <h1>Lighthouse integration check</h1>
-<p class="muted">Raw results: <a href="latest.json">latest.json</a>. Full Lighthouse reports (gzip'd JSON) are kept for the latest revision only.</p>
+<p class="muted">Raw results: <a href="latest.json">latest.json</a>. Full Lighthouse reports (gzip'd JSON) are kept for the latest revision only.
+Thresholds judge the simulated LCP (slow 4G); the observed paints are what the run's browser drew. An LCP breach whose median observed LCP is under ${SIMULATED_ONLY_OBSERVED_LCP_MS / 1000} s is marked simulated-only.</p>
 ${results.length ? results.map((result) => renderPass(result, reportsRevision)).join('\n') : '<p>No passes measured yet.</p>'}
 </body></html>
 `;

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# Median-of-3 Lighthouse check of this site, once per revision of aidev/integration.
+# Median-of-5 Lighthouse check of this site, once per revision of aidev/integration.
 # Run by upgrade.sh after it rewrites status/deployed.json; safe to run by hand.
 #
 # It measures only when every app in status/deployed.json runs this checkout's HEAD
 # (the promoted tip) and that revision has no result yet, so one promote costs one
-# check of 3 runs per route, one Chrome at a time, CPU-capped: the host serves other
+# check of 5 runs per route, one Chrome at a time, CPU-capped: the host serves other
 # sites too. In follow mode a commit that changes no app's build (docs, tests) leaves
 # every app on builds an earlier revision was measured with, and those builds are
 # not measured again. The check itself is scripts/ci-helpers/lighthouse-integration-check.js.
@@ -17,7 +17,8 @@
 # Results, served at https://$SITE_HOST/status/lighthouse/:
 #   index.html                       the status page of the last passes
 #   <revision>.json and latest.json  ("status": "pass" | "breach", "verdict" adding
-#                                    " (environment degraded)", "environment")
+#                                    " (simulated-only)", " (environment degraded)" or
+#                                    " (simulated-only, environment degraded)", "environment")
 #   reports/<revision>/              each run's full report (gzip'd), latest revision only
 #   environment-baseline.json        the probes and TTFBs of the last passes
 #

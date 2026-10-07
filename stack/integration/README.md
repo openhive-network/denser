@@ -63,7 +63,7 @@ switched to follow mode), so in images mode pin a tag CI builds from develop/mai
 `lighthouse.sh` measures each revision of `aidev/integration` once, after the site
 serves it: it waits for `https://$SITE_HOST/status/deployed.json` to report the
 revision for blog and wallet, then runs Lighthouse (mobile, in the pinned
-`gitlab-ci-utils/lighthouse` image, 2 CPUs, one run at a time) 3 times on each route
+`gitlab-ci-utils/lighthouse` image, 2 CPUs, one run at a time) 5 times on each route
 and compares the median performance score, LCP, TBT, CLS and transferred JS with the
 `integration` section of `scripts/ci-helpers/lighthouse-thresholds.json`. That section
 is also the list of routes. `lcp-lazy-loaded: false` there flags a route whose LCP
@@ -81,6 +81,14 @@ image is `loading="lazy"` (Lighthouse's own LCP discovery check).
   `images.hive.blog`, the site; the rest summed as `other`) the request count, bytes
   and median/max duration. Each run's full report is kept gzip'd under
   `reports/<revision>/` for the latest revision only.
+- **Observed paints:** the LCP judged is Lighthouse's simulation (Lantern, slow 4G),
+  which replays the requests that finished before the paint and can land seconds
+  apart on runs that painted alike. Each run and median also keeps what the browser
+  drew (`observed-first-contentful-paint`, `observed-largest-contentful-paint`, from
+  the `metrics` audit), and the status page shows both with every run's value. An LCP
+  breach whose median observed LCP is under 2.5 s carries `simulatedOnly: true`; when
+  every breach of a pass does, its `verdict` reads `breach (simulated-only)`. A label,
+  like the environment's: the exit code does not change.
 - **Environment:** just before and just after the routes, 5 samples each of
   `get_dynamic_global_properties` on the server's API node, one fixed
   `images.hive.blog` image and the site's `/blog/favicon.ico` (`environment.before` /
@@ -91,7 +99,8 @@ image is `loading="lazy"` (Lighthouse's own LCP discovery check).
   `breach (environment degraded)` (or `pass (…)`), apart from a code breach; the exit
   code does not change.
 - **Advisory:** a breach never fails or rolls back the upgrade.
-- **Bounded:** one check (18 Lighthouse runs, about 7 minutes) per promoted revision
+- **Bounded:** one check (30 Lighthouse runs, about 12 minutes, 5 more than with 3
+  runs per route) per promoted revision
   whose builds have not been measured: a commit that rebuilt nothing (docs, tests)
   serves the builds an earlier revision was measured with, and is skipped. A
   revision that never deploys, or that a later promote overtakes before it is
@@ -104,9 +113,11 @@ image is `loading="lazy"` (Lighthouse's own LCP discovery check).
   (`aidev test run --slot system`; ".aidev/README.md", "Deterministic Lighthouse pass").
 - **Thresholds** are the medians measured on 2026-10-05 with headroom for noise:
   single mobile runs of one build differ by seconds of LCP, which is why each route
-  takes the median of 3. Tighten a route's limits as its performance improves. The
+  takes the median of 5. Tighten a route's limits as its performance improves. The
   image-led post and the community feed were added from the 2026-10-06 audit
   (`docs/performance/page-audit-2026-10.md`), with limits just above that day's runs.
+  The community feed's LCP limit is `/blog/trending`'s since 2026-10-07: both simulate
+  about 5.0 s while painting in under 0.6 s.
 
 ## Setup (done once per host)
 
