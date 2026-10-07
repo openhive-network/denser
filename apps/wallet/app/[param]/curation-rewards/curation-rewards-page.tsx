@@ -2,6 +2,7 @@
 
 import { useTranslation } from '@/wallet/i18n/client';
 import { useRewardsHistory } from '@/wallet/components/hooks/use-rewards-history';
+import AccountHistoryError from '@/wallet/components/account-history-error';
 import Loading from '@ui/components/loading';
 import { Link } from '@hive/ui';
 import { convertToHP } from '@ui/lib/utils';
@@ -20,7 +21,7 @@ const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 export default function CurationRewardsPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
-  const { data, dynamicData, isLoading } = useRewardsHistory(username, 'curation_reward_operation');
+  const { data, dynamicData, isLoading, isError, refetch } = useRewardsHistory(username, 'curation_reward_operation');
   const [currentPage, setCurrentPage] = useState(0);
 
   const itemsPerPage = 50;
@@ -72,6 +73,8 @@ export default function CurationRewardsPage({ username }: { username: string }) 
           <div className="flex items-center justify-center">
             <Loading loading={isLoading} />
           </div>
+        ) : isError ? (
+          <AccountHistoryError onRetry={refetch} t={t} />
         ) : (
           <>
             <div className="flex justify-between">

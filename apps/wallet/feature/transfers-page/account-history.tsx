@@ -3,11 +3,12 @@
 import { useMemo } from 'react';
 import { useTranslation } from '@/wallet/i18n/client';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
-import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import TransfersHistoryFilter, { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import useFilters from '@/wallet/components/hooks/use-filters';
 import { getFilter } from '@/wallet/lib/utils';
 import dynamic from 'next/dynamic';
+import { IAccountHistory } from './hooks/use-account-history';
+import AccountHistoryError from '@/wallet/components/account-history-error';
 
 // The history is formatted by wax's formatter: load it with wax, after the page's first render.
 const HistoryTable = dynamic(() => import('./history-table'), { ssr: false });
@@ -25,23 +26,36 @@ type DynamicData = Pick<GetDynamicGlobalPropertiesResponse, 'total_vesting_fund_
 interface AccountHistoryProps {
   username: string;
   dynamicData: DynamicData;
-  operationHistoryData: HiveOperation[] | undefined;
-  isLoading: boolean;
+  history: IAccountHistory;
 }
 
-const AccountHistory = ({
-  username,
-  dynamicData,
-  operationHistoryData,
-  isLoading
-}: AccountHistoryProps) => {
+const AccountHistory = ({ username, dynamicData, history }: AccountHistoryProps) => {
   const { t } = useTranslation('common_wallet');
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
+  const { operations, isLoading, isError, hasOlder, isFetchingOlder, loadOlder, retry } = history;
 
   const filteredHistoryList = useMemo(
-    () => operationHistoryData?.filter(getFilter({ filter, username })),
-    [operationHistoryData, filter, username]
+    () => operations?.filter(getFilter({ filter, username })),
+    [operations, filter, username]
   );
+
+  const content = (() => {
+    if (isLoading) return <div data-testid="wallet-account-history-loading">{t('global.loading')}</div>;
+    if (!operations) return <AccountHistoryError onRetry={retry} t={t} />;
+    return (
+      <HistoryTable
+        historyList={filteredHistoryList}
+        username={username}
+        dynamicData={dynamicData}
+        t={t}
+        hasOlder={hasOlder}
+        isFetchingOlder={isFetchingOlder}
+        olderFailed={isError && !isFetchingOlder}
+        onLoadOlder={loadOlder}
+        onRetry={retry}
+      />
+    );
+  })();
 
   return (
     <>
@@ -62,13 +76,7 @@ const AccountHistory = ({
         >
           {t('profile.account_history_description')}
         </p>
-        <HistoryTable
-          isLoading={isLoading}
-          historyList={filteredHistoryList}
-          username={username}
-          dynamicData={dynamicData}
-          t={t}
-        />
+        {content}
       </div>
     </>
   );

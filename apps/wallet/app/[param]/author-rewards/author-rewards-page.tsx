@@ -2,6 +2,7 @@
 
 import { useTranslation } from '@/wallet/i18n/client';
 import { useRewardsHistory } from '@/wallet/components/hooks/use-rewards-history';
+import AccountHistoryError from '@/wallet/components/account-history-error';
 import { Link } from '@hive/ui';
 import env from '@beam-australia/react-env';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -21,7 +22,7 @@ const WEEK_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000;
 
 export default function AuthorRewardsPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
-  const { data, isLoading, dynamicData } = useRewardsHistory(username, 'author_reward_operation');
+  const { data, isLoading, dynamicData, isError, refetch } = useRewardsHistory(username, 'author_reward_operation');
   const [currentPage, setCurrentPage] = useState(0);
 
   const itemsPerPage = 50;
@@ -81,6 +82,8 @@ export default function AuthorRewardsPage({ username }: { username: string }) {
         </h4>
         {isLoading ? (
           <Loading loading={isLoading} />
+        ) : isError ? (
+          <AccountHistoryError onRetry={refetch} t={t} />
         ) : (
           <>
             <div className="flex justify-between">

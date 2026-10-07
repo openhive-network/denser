@@ -58,7 +58,8 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "retry": "再試行"
   },
   "navigation": {
     "main_nav_bar": {
@@ -141,6 +142,7 @@
     "estimated_account_value_title": "推定アカウント価格",
     "estimated_account_value_description": "推定値はHIVEの平均値に基いてUSドルで表されます。",
     "account_history_title": "履歴",
+    "account_history_error": "アカウント履歴を読み込めませんでした。",
     "see_faq_for_details": "See FAQ for details.",
     "witnesses": "Witnesses",
     "account_history_description": "送金メモのスパムやフィッシングに注意してください。信用していないユーザーからのリンクを開かないでください。第三者のウェブサイトに秘密キーを提供しないでください。 Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",

@@ -8,7 +8,7 @@ import {
 } from '@transaction/lib/hive-api';
 import { getAccount } from '@transaction/lib/hive-api';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
-import { getAccountOperations, getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
+import { getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
 import { createListWithSuggestions } from '@/wallet/lib/utils';
 import Loading from '@ui/components/loading';
 import AccountHistory from '@/wallet/feature/transfers-page/account-history';
@@ -20,7 +20,7 @@ import WalletMenu from '@/wallet/components/wallet-menu';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import FinancialReport from '@/wallet/components/financial-report';
 import env from '@beam-australia/react-env';
-import { handleError } from '@ui/lib/handle-error';
+import { useAccountHistory } from '@/wallet/feature/transfers-page/hooks/use-account-history';
 
 export default function TransfersPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
@@ -46,21 +46,7 @@ export default function TransfersPage({ username }: { username: string }) {
     getFollowing({ account: username })
   );
 
-  const {
-    data: operationHistoryData,
-    isLoading: operationHistoryLoading
-  } = useQuery(
-    ['Operations', username],
-    () => getAccountOperations(username, undefined, 500, user.username),
-    {
-      select: (data) => data.operations_result,
-      retry: false,
-      refetchOnWindowFocus: false,
-      onError: (error: unknown) => {
-        handleError(error, { method: 'getAccountOperations', params: { username } });
-      }
-    }
-  );
+  const accountHistory = useAccountHistory(username, user.username);
   const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery(['feedHistory'], () =>
     getFeedHistory()
   );
@@ -73,7 +59,7 @@ export default function TransfersPage({ username }: { username: string }) {
     enabled: Boolean(username)
   });
 
-  const listOfAccounts = createListWithSuggestions(username, t, operationHistoryData, followingData);
+  const listOfAccounts = createListWithSuggestions(username, t, accountHistory.operations, followingData);
 
   if (
     accountLoading ||
@@ -128,8 +114,7 @@ export default function TransfersPage({ username }: { username: string }) {
         <AccountHistory
           username={username}
           dynamicData={dynamicData}
-          operationHistoryData={operationHistoryData}
-          isLoading={operationHistoryLoading}
+          history={accountHistory}
         />
       </div>
     </div>

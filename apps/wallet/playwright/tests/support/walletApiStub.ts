@@ -57,7 +57,9 @@ const fullAccount = (account: object & { name: string }) => ({
 });
 
 const findAccounts: JsonRpcResults[string] = (params) => {
-  const { accounts } = WITNESS_RESULTS['database_api.find_accounts'](params) as { accounts: { name: string }[] };
+  const { accounts } = WITNESS_RESULTS['database_api.find_accounts'](params) as {
+    accounts: { name: string }[];
+  };
   return { accounts: accounts.map(fullAccount) };
 };
 
@@ -75,10 +77,11 @@ const proposal = {
   status: 'active'
 };
 
-const transfer = {
+/** A `transfer_operation` of the account history, as the hivemind operations API returns it. */
+export const stubTransfer = ({ from, operationId }: { from: string; operationId: string }) => ({
   op: {
     type: 'transfer_operation',
-    value: { from: STUB_TRANSFER_SENDER, to: STUB_ACCOUNT, amount: hive('1000'), memo: '' }
+    value: { from, to: STUB_ACCOUNT, amount: hive('1000'), memo: '' }
   },
   block: 99_999_000,
   trx_id: '0000000000000000000000000000000000000001',
@@ -86,9 +89,9 @@ const transfer = {
   op_type_id: 2,
   timestamp: '2026-10-01T12:00:00',
   virtual_op: false,
-  operation_id: '429492434051907584',
+  operation_id: operationId,
   trx_in_block: 0
-};
+});
 
 const JSON_RPC_RESULTS: JsonRpcResults = {
   ...WITNESS_RESULTS,
@@ -133,12 +136,14 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
 };
 
 const REST_RESULTS: RestResults = {
-  '/hafah-api/operation-types': () => [{ op_type_id: 2, operation_name: 'transfer_operation', is_virtual: false }],
+  '/hafah-api/operation-types': () => [
+    { op_type_id: 2, operation_name: 'transfer_operation', is_virtual: false }
+  ],
   [`/hivemind-api/accounts/${STUB_ACCOUNT}/operations`]: () => ({
     total_operations: 1,
     total_pages: 1,
     block_range: { from: 1, to: 100_000_000 },
-    operations_result: [transfer]
+    operations_result: [stubTransfer({ from: STUB_TRANSFER_SENDER, operationId: '429492434051907584' })]
   })
 };
 

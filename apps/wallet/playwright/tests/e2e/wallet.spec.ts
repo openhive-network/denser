@@ -159,15 +159,21 @@ test.describe('Wallet page of @gtg tests', () => {
     ).toBeVisible({ timeout: 30000 });
 
     if (await walletPage.walletAccountHistoryRow.first().isVisible()) {
-      // The history renders a page of rows at a time: expand it to the whole history first
-      const showMoreButton = page.getByTestId('wallet-account-history-show-more');
-      while (await showMoreButton.isVisible()) {
-        const shownRows = await walletPage.walletAccountHistoryRow.count();
-        await showMoreButton.click();
-        await expect(walletPage.walletAccountHistoryRow).not.toHaveCount(shownRows);
+      // The history is shown and loaded a page at a time: expand it to at least as many rows as the
+      // API answer has, or to the whole history when it is shorter
+      const olderButton = page.getByTestId('wallet-account-history-older');
+      const apiRows = accountHistoryResult.result.length;
+      let shownRows = await walletPage.walletAccountHistoryRow.count();
+      while (shownRows < apiRows && (await olderButton.isVisible())) {
+        await olderButton.click();
+        await expect(walletPage.walletAccountHistoryRow).not.toHaveCount(shownRows, { timeout: 30000 });
+        shownRows = await walletPage.walletAccountHistoryRow.count();
       }
-      const accountHistoryUI = await walletPage.walletAccountHistoryRow.all();
-      await expect(accountHistoryUI.length).toBe(accountHistoryResult.result.length);
+      if (await olderButton.isVisible()) {
+        await expect(shownRows).toBeGreaterThanOrEqual(apiRows);
+      } else {
+        await expect(shownRows).toBe(apiRows);
+      }
     } else {
       await expect(await walletPage.walletAccountHistoryNoTransactionMsg).toContainText(
         'No transactions found'

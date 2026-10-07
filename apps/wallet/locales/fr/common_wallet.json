@@ -60,7 +60,8 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "retry": "Réessayer"
   },
   "navigation": {
     "main_nav_bar": {
@@ -143,6 +144,7 @@
     "estimated_account_value_title": "aleur estimée du compte",
     "estimated_account_value_description": "La valeur estimée est basée sur la valeur moyenne de HIVE en dollars américains.",
     "account_history_title": "HISTORIQUE",
+    "account_history_error": "Impossible de charger l'historique du compte.",
     "see_faq_for_details": "See FAQ for details.",
     "no_transactions_found": "No transactions found",
     "show_more_transactions": "Afficher plus",

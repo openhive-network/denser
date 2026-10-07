@@ -60,7 +60,8 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "retry": "Reintentar"
   },
   "navigation": {
     "main_nav_bar": {
@@ -143,6 +144,7 @@
     "estimated_account_value_title": "Valor de cuenta aproximado",
     "estimated_account_value_description": "El valor estimado está basado en el valor medio de 1HIVE en US dollars.",
     "account_history_title": "HISTORIA",
+    "account_history_error": "No se pudo cargar el historial de la cuenta.",
     "see_faq_for_details": "See FAQ for details.",
     "no_transactions_found": "No transactions found",
     "show_more_transactions": "Mostrar más",
