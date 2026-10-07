@@ -570,6 +570,7 @@ flake-report-unit-tests:
   artifacts:
     paths:
     - .${TURBO_APP_PATH}/playwright-report/
+    - .${TURBO_APP_PATH}/blob-report/
     - .${TURBO_APP_PATH}/test-results/
     - .${TURBO_APP_PATH}/junit/
     reports:
@@ -906,12 +907,21 @@ blog-fixture-tests:
   allow_failure: true
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   script:
-  - cd .$TURBO_APP_PATH
-  - pnpm install -D playwright-merge-html-reports
-  - ./node_modules/.bin/playwright test tests/merge-reports --config playwright.merge.config.ts
+  - !reference [.node-job, script]
+  - |
+    cd .$TURBO_APP_PATH
+    # Each shard job's blob reporter writes blob-report/report-<hash>-<shard>.zip,
+    # so the downloaded artifacts sit side by side in one directory. The
+    # shards' own HTML reports arrive under playwright-report/ too; drop them
+    # so the artifact is the merged report alone.
+    # The config's testDir rebases the shards' test paths onto this checkout,
+    # which may sit at a different builds path than the shard jobs used.
+    rm -rf playwright-report
+    PLAYWRIGHT_HTML_OUTPUT_DIR=playwright-report pnpm exec playwright merge-reports \
+      --config playwright.config.ts --reporter html ./blob-report
   artifacts:
     paths:
-    - .${TURBO_APP_PATH}/merged-html-report/
+    - .${TURBO_APP_PATH}/playwright-report/
     - .${TURBO_APP_PATH}/junit/
 
 e2e-report-aggregate-blog:
@@ -921,8 +931,6 @@ e2e-report-aggregate-blog:
   variables:
     TURBO_APP_SCOPE: '@hive/blog'
     TURBO_APP_PATH: '/apps/blog'
-    PROJECTS: '["chromium"]'
-    SHARD_TOTAL: 5
 
 e2e-report-aggregate-wallet:
   extends: .e2e_report_aggregate_template
@@ -931,8 +939,6 @@ e2e-report-aggregate-wallet:
   variables:
     TURBO_APP_SCOPE: '@hive/wallet'
     TURBO_APP_PATH: '/apps/wallet'
-    PROJECTS: '["chromium"]'
-    SHARD_TOTAL: 5
 
 # Regenerate the blog screenshot baselines (toHaveScreenshot) in CI's own
 # image and browser. The stable jobs compare against the committed

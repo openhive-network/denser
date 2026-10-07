@@ -50,6 +50,8 @@ export default defineConfig({
         // junit has no notion of "passed on retry"; the JSON report does, and
         // scripts/ci/flake-report.mjs reads it from the job artifacts (#971).
         ['json', { outputFile: `junit/${process.env.PROJECT}/${process.env.SHARD_INDEX}/results.json` }],
+        // e2e-report-aggregate-* merges the shards' blobs into one HTML report.
+        ['blob', { outputDir: 'blob-report' }],
         ['list', { printSteps: false }]
       ]
     : 'html', 

@@ -43,7 +43,7 @@ public/__ENV.js
 /test-results/
 /playwright-report/
 /playwright/.cache/
-/merged-html-report/
+/blob-report/
 
 public/locales
 public/smart-signer
