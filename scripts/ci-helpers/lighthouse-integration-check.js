@@ -4,8 +4,11 @@
  *
  * Waits until <site>/status/deployed.json reports <revision> for every app it
  * measures, then runs Lighthouse (mobile, its default form factor) RUNS_PER_ROUTE
- * times per route, one run at a time. The routes and their limits are the
- * `integration` section of lighthouse-thresholds.json. Each run keeps its vitals (the
+ * times per route and mode, one run at a time. The logged-out routes and their limits
+ * are the `integration` section of lighthouse-thresholds.json; the logged-in ones,
+ * read as the --observer account (lighthouse-login.js), `integrationLoggedIn`, where
+ * `{observer}` in a route is that account. A route in both alternates its logged-out
+ * and logged-in runs, so both modes see the same backend. Each run keeps its vitals (the
  * simulated ones judged, the observed paints alongside) and its backend timing (lighthouse-backend.js); the backend is probed just before and
  * just after the routes (lighthouse-probe.js), and the pass is classified against the
  * environment of the passes before it (lighthouse-environment.js). Writes
@@ -17,7 +20,7 @@
  *
  * Usage: node lighthouse-integration-check.js --site https://host --revision <sha>
  *        --out <dir> --api-node <url> [--api-node <url>...] [--probe-image <url>]
- *        [--wait-timeout <seconds>]
+ *        [--wait-timeout <seconds>] [--observer <account>]
  * The first --api-node is the node the site's server reads from, and the one probed;
  * every --api-node's host is summarized as an API host.
  */
@@ -25,7 +28,8 @@
 const fs = require('fs');
 const path = require('path');
 const { parseArgs } = require('util');
-const { RUNS_PER_ROUTE, runLighthouse } = require('./lighthouse-runner');
+const { RUNS_PER_ROUTE, runLighthouse, runLighthouseLoggedIn } = require('./lighthouse-runner');
+const { DEFAULT_OBSERVER, validObserver, observerRoutes } = require('./lighthouse-login');
 const { extractRunMetrics, summarizeRuns, findBreaches, isSimulatedOnly } = require('./lighthouse-median');
 const { extractBackendTiming, summarizeBackend, hostOf } = require('./lighthouse-backend');
 const { probeTargets, probeEnvironment, DEFAULT_PROBE_IMAGE } = require('./lighthouse-probe');
@@ -34,6 +38,9 @@ const store = require('./lighthouse-integration-store');
 
 const DEPLOYED_POLL_MS = 15_000;
 const REVISION_PATTERN = /^[0-9a-f]{40}$/;
+const LOGGED_OUT = 'loggedOut';
+const LOGGED_IN = 'loggedIn';
+const MODE_LABELS = { [LOGGED_OUT]: 'logged out', [LOGGED_IN]: 'logged in' };
 
 function parseOptions() {
   const { values } = parseArgs({
@@ -44,6 +51,7 @@ function parseOptions() {
       'api-node': { type: 'string', multiple: true, default: [] },
       'probe-image': { type: 'string', default: DEFAULT_PROBE_IMAGE },
       'wait-timeout': { type: 'string', default: '600' },
+      observer: { type: 'string', default: DEFAULT_OBSERVER },
     },
   });
   const site = values.site?.replace(/\/+$/, '');
@@ -63,15 +71,25 @@ function parseOptions() {
     waitMs: waitSeconds * 1000,
     apiNodes,
     probeImage: values['probe-image'],
+    observer: validObserver(values.observer),
   };
 }
 
-function loadRouteThresholds() {
+/** The thresholds per mode and route, `{ loggedOut: {...}, loggedIn: {...} }`. */
+function loadRouteThresholds(observer) {
   const all = JSON.parse(fs.readFileSync(path.join(__dirname, 'lighthouse-thresholds.json'), 'utf8'));
-  if (!all.integration || Object.keys(all.integration).length === 0) {
-    throw new Error('lighthouse-thresholds.json has no `integration` routes');
+  for (const section of ['integration', 'integrationLoggedIn']) {
+    if (!all[section] || Object.keys(all[section]).length === 0) {
+      throw new Error(`lighthouse-thresholds.json has no \`${section}\` routes`);
+    }
   }
-  return all.integration;
+  return { [LOGGED_OUT]: all.integration, [LOGGED_IN]: observerRoutes(all.integrationLoggedIn, observer) };
+}
+
+/** Each route once, in the threshold files' order, with the modes it is measured in. */
+function routeModes(routeThresholds) {
+  const routes = new Set([...Object.keys(routeThresholds[LOGGED_OUT]), ...Object.keys(routeThresholds[LOGGED_IN])]);
+  return [...routes].map((route) => ({ route, modes: [LOGGED_OUT, LOGGED_IN].filter((mode) => route in routeThresholds[mode]) }));
 }
 
 // The app serving a route is its first path segment: /blog/... or /wallet/....
@@ -111,21 +129,35 @@ function runMetrics(report, error, upstreams) {
   return metrics.error ? metrics : { ...metrics, backend: extractBackendTiming(report, upstreams) };
 }
 
-async function measureRoute({ site, revision, out, upstreams }, route, thresholds) {
-  const url = `${site}${route}`;
-  const runs = [];
-  let lighthouseVersion;
-  for (let i = 0; i < RUNS_PER_ROUTE; i++) {
-    const { report, error } = await runLighthouse(url);
-    const metrics = runMetrics(report, error, upstreams);
-    if (report) metrics.report = store.saveReport(out, revision, route, i, report);
-    lighthouseVersion = report?.lighthouseVersion || lighthouseVersion;
-    console.log(`  ${route} run ${i + 1}/${RUNS_PER_ROUTE}: ${metrics.error || `perf ${metrics.performance}, LCP ${Math.round(metrics['largest-contentful-paint'])} ms (observed ${Math.round(metrics['observed-largest-contentful-paint'])} ms), TTFB ${metrics.backend['server-response-time']} ms`}`);
-    runs.push(metrics);
-  }
+function summarizeMode(route, url, mode, thresholds, runs) {
   const median = summarizeRuns(runs);
   if (median.measuredRuns) median.backend = summarizeBackend(runs.filter((run) => run.backend).map((run) => run.backend));
-  return { route, url, thresholds, median, breaches: findBreaches(median, thresholds), runs, lighthouseVersion };
+  return { route, mode, url, thresholds, median, breaches: findBreaches(median, thresholds), runs };
+}
+
+/**
+ * One result per mode of `route`, its runs taken in turn, mode after mode.
+ * `context.run(url, mode)` resolves one run's `{ report, error }` (lighthouse-runner.js).
+ */
+async function measureRoute(context, { route, modes }, routeThresholds) {
+  const { site, revision, out, upstreams, run } = context;
+  const url = `${site}${route}`;
+  const runs = Object.fromEntries(modes.map((mode) => [mode, []]));
+  let lighthouseVersion;
+  for (let i = 0; i < RUNS_PER_ROUTE; i++) {
+    for (const mode of modes) {
+      const { report, error } = await run(url, mode);
+      const metrics = runMetrics(report, error, upstreams);
+      if (report) metrics.report = store.saveReport(out, revision, route, i, report, mode);
+      lighthouseVersion = report?.lighthouseVersion || lighthouseVersion;
+      console.log(`  ${route} ${MODE_LABELS[mode]} run ${i + 1}/${RUNS_PER_ROUTE}: ${metrics.error || `perf ${metrics.performance}, LCP ${Math.round(metrics['largest-contentful-paint'])} ms (observed ${Math.round(metrics['observed-largest-contentful-paint'])} ms), TTFB ${metrics.backend['server-response-time']} ms, WASM ${metrics['wasm-transfer-bytes']} B`}`);
+      runs[mode].push(metrics);
+    }
+  }
+  return {
+    lighthouseVersion,
+    results: modes.map((mode) => summarizeMode(route, url, mode, routeThresholds[mode][route], runs[mode])),
+  };
 }
 
 function formatProbes(probes) {
@@ -139,7 +171,7 @@ function printSummary(result) {
   for (const route of result.routes) {
     const m = route.median;
     const icon = route.breaches.length ? '❌' : '✅';
-    console.log(`  ${icon} ${route.route}: perf ${m.performance}, LCP ${Math.round(m['largest-contentful-paint'])} ms (observed ${Math.round(m['observed-largest-contentful-paint'])} ms, FCP ${Math.round(m['observed-first-contentful-paint'])} ms), TBT ${Math.round(m['total-blocking-time'])} ms, CLS ${m['cumulative-layout-shift']?.toFixed(3)}, JS ${Math.round((m['script-transfer-bytes'] || 0) / 1024)} KiB, TTFB ${m.backend?.['server-response-time']} ms`);
+    console.log(`  ${icon} ${route.route} (${MODE_LABELS[route.mode]}): perf ${m.performance}, LCP ${Math.round(m['largest-contentful-paint'])} ms (observed ${Math.round(m['observed-largest-contentful-paint'])} ms, FCP ${Math.round(m['observed-first-contentful-paint'])} ms), TBT ${Math.round(m['total-blocking-time'])} ms, CLS ${m['cumulative-layout-shift']?.toFixed(3)}, JS ${Math.round((m['script-transfer-bytes'] || 0) / 1024)} KiB, WASM ${Math.round((m['wasm-transfer-bytes'] || 0) / 1024)} KiB, TTFB ${m.backend?.['server-response-time']} ms`);
     for (const b of route.breaches) {
       console.log(`      breach: ${b.metric} = ${b.value} (threshold ${b.threshold})${b.simulatedOnly ? `, simulated-only: observed ${Math.round(b.observed)} ms` : ''}`);
     }
@@ -150,27 +182,35 @@ function printSummary(result) {
   console.log(result.status === 'pass' ? '\n✅ All medians meet thresholds.' : `\n❌ Thresholds breached: ${result.verdict} (advisory: nothing is rolled back).`);
 }
 
+// Logged out only: the baseline compares like with like, and the observer's own
+// pages render differently on the server.
 function routeTtfb(routes) {
-  return Object.fromEntries(routes.map((r) => [r.route, r.median.backend?.['server-response-time']]));
+  return Object.fromEntries(
+    routes.filter((r) => r.mode === LOGGED_OUT).map((r) => [r.route, r.median.backend?.['server-response-time']])
+  );
 }
 
 async function main() {
-  const { site, revision, out, waitMs, apiNodes, probeImage } = parseOptions();
-  const routeThresholds = loadRouteThresholds();
-  const routes = Object.keys(routeThresholds);
-  const apps = [...new Set(routes.map(appOf))];
+  const { site, revision, out, waitMs, apiNodes, probeImage, observer } = parseOptions();
+  const routeThresholds = loadRouteThresholds(observer);
+  const routes = routeModes(routeThresholds);
+  const apps = [...new Set(routes.map(({ route }) => appOf(route)))];
 
   console.log(`Waiting for ${site}/status/deployed.json to report ${revision} for ${apps.join(', ')}...`);
   await waitForRevision(site, revision, apps, waitMs);
 
   fs.mkdirSync(out, { recursive: true });
   const upstreams = { origin: hostOf(site), images: hostOf(probeImage), api: apiNodes.map(hostOf) };
+  const run = (url, mode) => (mode === LOGGED_IN ? runLighthouseLoggedIn(url, site, observer) : runLighthouse(url));
   const targets = probeTargets({ site, apiNode: apiNodes[0], imageUrl: probeImage });
   console.log('Probing the backend before the routes...');
   const before = await probeEnvironment(targets);
   const measured = [];
+  let lighthouseVersion;
   for (const route of routes) {
-    measured.push(await measureRoute({ site, revision, out, upstreams }, route, routeThresholds[route]));
+    const measuredRoute = await measureRoute({ site, revision, out, upstreams, run }, route, routeThresholds);
+    lighthouseVersion = measuredRoute.lighthouseVersion || lighthouseVersion;
+    measured.push(...measuredRoute.results);
   }
   console.log('Probing the backend after the routes...');
   const after = await probeEnvironment(targets);
@@ -185,11 +225,12 @@ async function main() {
     measuredAt: new Date().toISOString(),
     formFactor: 'mobile',
     runsPerRoute: RUNS_PER_ROUTE,
-    lighthouseVersion: measured.find((r) => r.lighthouseVersion)?.lighthouseVersion,
+    observer,
+    lighthouseVersion,
     status,
     verdict: verdictOf(status, environment.status, isSimulatedOnly(measured)),
     environment,
-    routes: measured.map(({ lighthouseVersion: _version, ...route }) => route),
+    routes: measured,
   };
 
   store.writeJson(path.join(out, `${revision}.json`), result);
@@ -201,10 +242,14 @@ async function main() {
   return result.status === 'pass' ? 0 : 2;
 }
 
-main().then(
-  (code) => process.exit(code),
-  (err) => {
-    console.error(`lighthouse-integration-check: ${err.message}`);
-    process.exit(1);
-  }
-);
+module.exports = { loadRouteThresholds, routeModes, measureRoute };
+
+if (require.main === module) {
+  main().then(
+    (code) => process.exit(code),
+    (err) => {
+      console.error(`lighthouse-integration-check: ${err.message}`);
+      process.exit(1);
+    }
+  );
+}

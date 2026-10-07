@@ -2,9 +2,13 @@
 # Median-of-5 Lighthouse check of this site, once per revision of aidev/integration.
 # Run by upgrade.sh after it rewrites status/deployed.json; safe to run by hand.
 #
+# Each route is measured logged out and, for the routes of `integrationLoggedIn` in
+# lighthouse-thresholds.json, logged in as LIGHTHOUSE_OBSERVER (.env, default
+# blocktrades) with the cookie and localStorage entry a Keychain login leaves; no key.
+#
 # It measures only when every app in status/deployed.json runs this checkout's HEAD
 # (the promoted tip) and that revision has no result yet, so one promote costs one
-# check of 5 runs per route, one Chrome at a time, CPU-capped: the host serves other
+# check of 5 runs per route and mode, one Chrome at a time, CPU-capped: the host serves other
 # sites too. In follow mode a commit that changes no app's build (docs, tests) leaves
 # every app on builds an earlier revision was measured with, and those builds are
 # not measured again. The check itself is scripts/ci-helpers/lighthouse-integration-check.js.
@@ -49,6 +53,9 @@ say() { $quiet || echo "$@"; }
 revision=$(git rev-parse HEAD)
 site_host=$(sed -n 's/^SITE_HOST=//p' .env | tail -n 1)
 [ -n "$site_host" ] || { echo "lighthouse: SITE_HOST is not set in .env" >&2; exit 1; }
+observer=$(sed -n 's/^LIGHTHOUSE_OBSERVER=//p' .env | tail -n 1)
+observer_args=()
+[ -z "$observer" ] || observer_args=(--observer "$observer")
 network=$(sed -n 's/^DENSER_NETWORK=//p' .env | tail -n 1)
 network_env=networks/${network:-mainnet}.env
 # The server's node first (the one probed), then the others the client may pick.
@@ -103,7 +110,7 @@ docker run --rm --cpus 2 --memory 2g \
     "$LIGHTHOUSE_IMAGE" \
     node lighthouse-integration-check.js \
         --site "https://$site_host" --revision "$revision" --out /out --wait-timeout 300 \
-        "${api_node_args[@]}" || rc=$?
+        "${api_node_args[@]}" "${observer_args[@]}" || rc=$?
 # 0 within thresholds, 2 a breach: either way these builds have their result.
 if [ "$rc" = 0 ] || [ "$rc" = 2 ]; then
     echo "$revision" > "$OUT/builds/$builds"

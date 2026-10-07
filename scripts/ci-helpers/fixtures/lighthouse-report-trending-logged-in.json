@@ -1,0 +1,1191 @@
+{
+ "lighthouseVersion": "13.5.0",
+ "requestedUrl": "http://127.0.0.1:53655/trending",
+ "finalDisplayedUrl": "http://127.0.0.1:53655/trending",
+ "fetchTime": "2026-10-07T02:56:38.884Z",
+ "configSettings": {
+  "formFactor": "mobile",
+  "throttlingMethod": "simulate",
+  "disableStorageReset": true
+ },
+ "categories": {
+  "performance": {
+   "id": "performance",
+   "score": 0.43
+  }
+ },
+ "audits": {
+  "metrics": {
+   "id": "metrics",
+   "details": {
+    "type": "debugdata",
+    "items": [
+     {
+      "observedFirstContentfulPaint": 229,
+      "observedLargestContentfulPaint": 229
+     }
+    ]
+   }
+  },
+  "largest-contentful-paint": {
+   "id": "largest-contentful-paint",
+   "numericValue": 4730.95445
+  },
+  "total-blocking-time": {
+   "id": "total-blocking-time",
+   "numericValue": 2571
+  },
+  "cumulative-layout-shift": {
+   "id": "cumulative-layout-shift",
+   "numericValue": 0.001443648865940254
+  },
+  "resource-summary": {
+   "id": "resource-summary",
+   "details": {
+    "type": "table",
+    "items": [
+     {
+      "resourceType": "total",
+      "label": "Total",
+      "requestCount": 97,
+      "transferSize": 18237246
+     },
+     {
+      "resourceType": "script",
+      "label": "Script",
+      "requestCount": 51,
+      "transferSize": 15540589
+     },
+     {
+      "resourceType": "other",
+      "label": "Other",
+      "requestCount": 42,
+      "transferSize": 2466509
+     },
+     {
+      "resourceType": "stylesheet",
+      "label": "Stylesheet",
+      "requestCount": 1,
+      "transferSize": 133181
+     },
+     {
+      "resourceType": "document",
+      "label": "Document",
+      "requestCount": 1,
+      "transferSize": 63878
+     },
+     {
+      "resourceType": "font",
+      "label": "Font",
+      "requestCount": 1,
+      "transferSize": 28560
+     },
+     {
+      "resourceType": "image",
+      "label": "Image",
+      "requestCount": 1,
+      "transferSize": 4529
+     },
+     {
+      "resourceType": "media",
+      "label": "Media",
+      "requestCount": 0,
+      "transferSize": 0
+     },
+     {
+      "resourceType": "third-party",
+      "label": "Third-party",
+      "requestCount": 40,
+      "transferSize": 12275
+     }
+    ]
+   }
+  },
+  "network-requests": {
+   "id": "network-requests",
+   "details": {
+    "type": "table",
+    "items": [
+     {
+      "url": "http://127.0.0.1:53655/trending",
+      "resourceType": "Document",
+      "statusCode": 200,
+      "mimeType": "text/html",
+      "networkRequestTime": 1.3920001983642578,
+      "networkEndTime": 159.0009994506836,
+      "transferSize": 63878,
+      "resourceSize": 62064,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/packages_tailwindcss_globals_0sc_imo.css",
+      "resourceType": "Stylesheet",
+      "statusCode": 200,
+      "mimeType": "text/css",
+      "networkRequestTime": 167.66899967193604,
+      "networkEndTime": 179.42399978637695,
+      "transferSize": 133181,
+      "resourceSize": 131838,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/%5Broot-of-the-server%5D__0dnt_98._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 169.89100074768066,
+      "networkEndTime": 182.45300006866455,
+      "transferSize": 2702,
+      "resourceSize": 1349,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1lx-_next_dist_compiled_next-devtools_index_176afph.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 183.4709997177124,
+      "networkEndTime": 211.88599967956543,
+      "transferSize": 865658,
+      "resourceSize": 864301,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1lx-_next_dist_compiled_react-dom_1xljqzh._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 183.64900016784668,
+      "networkEndTime": 213.3470001220703,
+      "transferSize": 1066917,
+      "resourceSize": 1065558,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1lx-_next_dist_compiled_react-server-dom-turbopack_1-0l82f._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 184.35299968719482,
+      "networkEndTime": 209.10299968719482,
+      "transferSize": 179877,
+      "resourceSize": 178520,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1lx-_next_dist_compiled_2124iz2._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 184.5310001373291,
+      "networkEndTime": 209.48999977111816,
+      "transferSize": 152450,
+      "resourceSize": 151093,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1lx-_next_dist_client_1wtntdy._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 184.70399951934814,
+      "networkEndTime": 215.05200004577637,
+      "transferSize": 986961,
+      "resourceSize": 985604,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1lx-_next_dist_1cxye52._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 184.875,
+      "networkEndTime": 209.93499946594238,
+      "transferSize": 184432,
+      "resourceSize": 183075,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/node_modules__pnpm_0rh9t1w._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 210.06799983978271,
+      "networkEndTime": 227.79399967193604,
+      "transferSize": 6849,
+      "resourceSize": 5495,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/_0qvhkct._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 210.36299991607666,
+      "networkEndTime": 223.92799949645996,
+      "transferSize": 8651,
+      "resourceSize": 7297,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/apps_blog_1anvha4._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 210.79799938201904,
+      "networkEndTime": 229.83599948883057,
+      "transferSize": 2616,
+      "resourceSize": 1263,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/turbopack-apps_blog_0q7wvur._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 212.5329999923706,
+      "networkEndTime": 232.38700008392334,
+      "transferSize": 106939,
+      "resourceSize": 105582,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/apps_blog_08q-7vt._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 213.86800003051758,
+      "networkEndTime": 232.51999950408936,
+      "transferSize": 5124,
+      "resourceSize": 3771,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/_0gxzu9h._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 215.23699951171875,
+      "networkEndTime": 232.19899940490723,
+      "transferSize": 11306,
+      "resourceSize": 9952,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/packages_01-s7xx._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 224.0649995803833,
+      "networkEndTime": 253.25600051879883,
+      "transferSize": 1139105,
+      "resourceSize": 1137746,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/apps_blog_19co0yd._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 227.94400024414062,
+      "networkEndTime": 251.2770004272461,
+      "transferSize": 453205,
+      "resourceSize": 451848,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1lx-_next_1sydxhu._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 229.95800018310547,
+      "networkEndTime": 252.17000007629395,
+      "transferSize": 521294,
+      "resourceSize": 519937,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0xb8_tailwind-merge_dist_lib_0ay54t7._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 232.61999988555908,
+      "networkEndTime": 249.77199935913086,
+      "transferSize": 145392,
+      "resourceSize": 144035,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0trl_lucide-react_dist_esm_0aktxt8._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 232.6939992904663,
+      "networkEndTime": 250.8380002975464,
+      "transferSize": 225542,
+      "resourceSize": 224185,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/20___%40radix-ui_react-select_dist_index_mjs_0bgnf3y._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 232.75500011444092,
+      "networkEndTime": 250.20099925994873,
+      "transferSize": 154780,
+      "resourceSize": 153423,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/009v_%40tanstack_query-core_build_lib_1kqt8r-._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 250.73500061035156,
+      "networkEndTime": 271.88799953460693,
+      "transferSize": 153781,
+      "resourceSize": 152424,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1-tf_%40tanstack_react-query-devtools_build_lib_19kyh9n._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 250.9689998626709,
+      "networkEndTime": 272.539999961853,
+      "transferSize": 211689,
+      "resourceSize": 210332,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/node_modules__pnpm_0bhtvnl._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 251.44000053405762,
+      "networkEndTime": 278.1339998245239,
+      "transferSize": 2289077,
+      "resourceSize": 2287718,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0glv_%40sentry_nextjs_build_esm_index_client_0_6jae3.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 251.77200031280518,
+      "networkEndTime": 269.4739999771118,
+      "transferSize": 2638,
+      "resourceSize": 1285,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/_0nx2inv._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 252.66400051116943,
+      "networkEndTime": 270.1820001602173,
+      "transferSize": 38364,
+      "resourceSize": 37009,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/_1le8y_e._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 253.53400039672852,
+      "networkEndTime": 272.1599998474121,
+      "transferSize": 182134,
+      "resourceSize": 180777,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0glv_%40sentry_nextjs_build_esm_index_client_0c9pao-.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 270.86400032043457,
+      "networkEndTime": 290.07100009918213,
+      "transferSize": 2638,
+      "resourceSize": 1285,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/_0n2m5ao._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 271.3739995956421,
+      "networkEndTime": 288.61200046539307,
+      "transferSize": 88395,
+      "resourceSize": 87039,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/_0lt_6wt._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 272.6850004196167,
+      "networkEndTime": 290.2789993286133,
+      "transferSize": 3142,
+      "resourceSize": 1789,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/_09zr_fn._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 272.85799980163574,
+      "networkEndTime": 293.4670000076294,
+      "transferSize": 468021,
+      "resourceSize": 466664,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/node_modules__pnpm_01ffw9k._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 273.17300033569336,
+      "networkEndTime": 293.632999420166,
+      "transferSize": 487197,
+      "resourceSize": 485840,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0glv_%40sentry_nextjs_build_esm_index_client_1c0038x.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 278.45200061798096,
+      "networkEndTime": 291.003999710083,
+      "transferSize": 2638,
+      "resourceSize": 1285,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/_1eiskzp._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 290.18199920654297,
+      "networkEndTime": 296.83300018310547,
+      "transferSize": 71476,
+      "resourceSize": 70120,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/__ENV.js?v=xuo1ev",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 172.88599967956543,
+      "networkEndTime": 182.5970001220703,
+      "transferSize": 1552,
+      "resourceSize": 209,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1mojsay._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 352.70400047302246,
+      "networkEndTime": 439.9799995422363,
+      "transferSize": 16970,
+      "resourceSize": 15615,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/apps_blog_locales_en_common_blog_json_%5Bjson%5D_cjs_1oiaii6._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 602.0819997787476,
+      "networkEndTime": 609.7919998168945,
+      "transferSize": 32890,
+      "resourceSize": 31535,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/favicon.ico",
+      "resourceType": "Other",
+      "statusCode": 200,
+      "mimeType": "image/x-icon",
+      "networkRequestTime": 618.8179998397827,
+      "networkEndTime": 628.875,
+      "transferSize": 18280,
+      "resourceSize": 16958,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 788.8979997634888,
+      "networkEndTime": 789.9899997711182,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 796.2340002059937,
+      "networkEndTime": 796.7039995193481,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 813.4090003967285,
+      "networkEndTime": 813.967999458313,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 786.2379999160767,
+      "networkEndTime": 1424.8330001831055,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 793.6479997634888,
+      "networkEndTime": 1425.4409999847412,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 810.8739995956421,
+      "networkEndTime": 1425.6890001296997,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/node_modules__pnpm_0mlrdg_._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 818.2379999160767,
+      "networkEndTime": 828.6420001983643,
+      "transferSize": 717965,
+      "resourceSize": 716608,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/apps_blog_0c-z0a1._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 822.0419998168945,
+      "networkEndTime": 827.5100002288818,
+      "transferSize": 9644,
+      "resourceSize": 8290,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/_14naivb._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 835.125,
+      "networkEndTime": 842.1920003890991,
+      "transferSize": 3741,
+      "resourceSize": 2388,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/packages_0uk68yj._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 837.4540004730225,
+      "networkEndTime": 845.1010007858276,
+      "transferSize": 169092,
+      "resourceSize": 167735,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0s1n_%40hiveio_wax_wasm_dist_bundle_01qs5bf._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 839.9069995880127,
+      "networkEndTime": 850.1069993972778,
+      "transferSize": 544673,
+      "resourceSize": 543316,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1obt_%40hiveio_beekeeper_dist_bundle_0bvo-sd._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 842.6950006484985,
+      "networkEndTime": 849.9790000915527,
+      "transferSize": 149502,
+      "resourceSize": 148145,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0xar_zod_v4_1kq7orv._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 846.1569995880127,
+      "networkEndTime": 854.7399997711182,
+      "transferSize": 968451,
+      "resourceSize": 967094,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0oo4_zod_v3_1e--mym._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 850.8219995498657,
+      "networkEndTime": 857.4159994125366,
+      "transferSize": 244756,
+      "resourceSize": 243399,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/1gh8_lodash_lodash_0g25-wj.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 853.6560001373291,
+      "networkEndTime": 866.5590000152588,
+      "transferSize": 570782,
+      "resourceSize": 569425,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/07oq_crypto-js_086q9kg._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 856.3309993743896,
+      "networkEndTime": 867.306999206543,
+      "transferSize": 274080,
+      "resourceSize": 272723,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/node_modules__pnpm_15awss4._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 858.8680000305176,
+      "networkEndTime": 870.327000617981,
+      "transferSize": 262839,
+      "resourceSize": 261482,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/packages_0i8wj44._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 862.1070003509521,
+      "networkEndTime": 873.0939998626709,
+      "transferSize": 243796,
+      "resourceSize": 242439,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/node_modules__pnpm_063hayh._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 865.0989999771118,
+      "networkEndTime": 875.1519994735718,
+      "transferSize": 500704,
+      "resourceSize": 499347,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1180.378999710083,
+      "networkEndTime": 1180.9899997711182,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1196.3129997253418,
+      "networkEndTime": 1196.880000114441,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1178.1389999389648,
+      "networkEndTime": 1432.8459997177124,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1194.087999343872,
+      "networkEndTime": 1434.0590000152588,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0s1n_%40hiveio_wax_wasm_dist_bundle_build_wasm_wax_common_wasm_0bpylm2._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 1203.0669994354248,
+      "networkEndTime": 1214.7309999465942,
+      "transferSize": 2146,
+      "resourceSize": 794,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0s1n_%40hiveio_wax_wasm_dist_bundle_1oz_spo._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 1206.0620002746582,
+      "networkEndTime": 1217.4840002059937,
+      "transferSize": 604244,
+      "resourceSize": 602887,
+      "finished": true
+     },
+     {
+      "url": "https://images.hive.blog/u/blocktrades/avatar/small",
+      "resourceType": null,
+      "statusCode": 302,
+      "mimeType": "text/html",
+      "networkRequestTime": 1358.8730001449585,
+      "networkEndTime": 1496.1659994125366,
+      "transferSize": 757,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "https://images.hive.blog/p/9RTqgzgfVW72JAr5EBqwkV7yimLPuigugbVonoXbYWSPqoXbY6aoBcYvDnANP4oDdhUH3pFSXx?width=64&height=64",
+      "resourceType": "Image",
+      "statusCode": 200,
+      "mimeType": "image/png",
+      "networkRequestTime": 1496.6009998321533,
+      "networkEndTime": 1631.4259996414185,
+      "transferSize": 4529,
+      "resourceSize": 3889,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/chunks/0s1n_%40hiveio_wax_wasm_dist_bundle_build_wasm_wax_common_wasm_1q7josq._.js",
+      "resourceType": "Script",
+      "statusCode": 200,
+      "mimeType": "application/javascript",
+      "networkRequestTime": 1567.6110000610352,
+      "networkEndTime": 1574.742000579834,
+      "transferSize": 1772,
+      "resourceSize": 420,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/_next/static/media/wax.common.3u1k3aaure_a4.wasm",
+      "resourceType": "Fetch",
+      "statusCode": 200,
+      "mimeType": "application/wasm",
+      "networkRequestTime": 1581.5120000839233,
+      "networkEndTime": 1598.5440006256104,
+      "transferSize": 2452652,
+      "resourceSize": 2451314,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1639.7379999160767,
+      "networkEndTime": 1640.7210006713867,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1640.3140001296997,
+      "networkEndTime": 1642.3970003128052,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1640.958999633789,
+      "networkEndTime": 1643.0069999694824,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1639.081000328064,
+      "networkEndTime": 1644.255000114441,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1639.787000656128,
+      "networkEndTime": 1647.3420000076294,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 1640.3489999771118,
+      "networkEndTime": 1647.5840005874634,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/__nextjs_font/geist-latin.woff2",
+      "resourceType": "Font",
+      "statusCode": 200,
+      "mimeType": "font/woff2",
+      "networkRequestTime": 1715.076000213623,
+      "networkEndTime": 1784.3509998321533,
+      "transferSize": 28560,
+      "resourceSize": 28356,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/__nextjs_original-stack-frames",
+      "resourceType": "Fetch",
+      "statusCode": 200,
+      "mimeType": "application/json",
+      "networkRequestTime": 1719.5220003128052,
+      "networkEndTime": 1816.3669996261597,
+      "transferSize": 2848,
+      "resourceSize": 2691,
+      "finished": true
+     },
+     {
+      "url": "http://127.0.0.1:53655/__nextjs_original-stack-frames",
+      "resourceType": "Fetch",
+      "statusCode": 200,
+      "mimeType": "application/json",
+      "networkRequestTime": 1720.1619997024536,
+      "networkEndTime": 1818.3209991455078,
+      "transferSize": 3263,
+      "resourceSize": 3106,
+      "finished": true
+     },
+     {
+      "url": "https://api.hive.blog/hivesense-api/",
+      "resourceType": "Fetch",
+      "statusCode": 200,
+      "mimeType": "application/json",
+      "networkRequestTime": 1816.7320003509521,
+      "networkEndTime": 1969.6259994506836,
+      "transferSize": 6432,
+      "resourceSize": 23107,
+      "finished": true
+     },
+     {
+      "url": "https://api.hive.blog/hivesense-api/posts/search?q=hive&truncate=1&result_limit=1&full_posts=0",
+      "resourceType": "Fetch",
+      "statusCode": 200,
+      "mimeType": "application/json",
+      "networkRequestTime": 1817.9779996871948,
+      "networkEndTime": 3795.388999938965,
+      "transferSize": 557,
+      "resourceSize": 50,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2425.9809999465942,
+      "networkEndTime": 2427.6859998703003,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2426.5329999923706,
+      "networkEndTime": 2427.180000305176,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2426.656000137329,
+      "networkEndTime": 2428.0019998550415,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2427.055000305176,
+      "networkEndTime": 2427.267999649048,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2427.4530000686646,
+      "networkEndTime": 2427.742000579834,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2427.1370000839233,
+      "networkEndTime": 2428.2379999160767,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2434.1459999084473,
+      "networkEndTime": 2435.083999633789,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2433.534999847412,
+      "networkEndTime": 2435.2170000076294,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2434.543999671936,
+      "networkEndTime": 2435.508999824524,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 2435.4749994277954,
+      "networkEndTime": 2435.958999633789,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4429.137999534607,
+      "networkEndTime": 4431.39999961853,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4428.517999649048,
+      "networkEndTime": 4431.631999969482,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4429.496000289917,
+      "networkEndTime": 4432.241000175476,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4430.476999282837,
+      "networkEndTime": 4432.612999916077,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4431.944000244141,
+      "networkEndTime": 4432.223999977112,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4432.254999160767,
+      "networkEndTime": 4432.4299993515015,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4436.831000328064,
+      "networkEndTime": 4438.649000167847,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4435.892999649048,
+      "networkEndTime": 4439.118000030518,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Preflight",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4438.762999534607,
+      "networkEndTime": 4439.609000205994,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     },
+     {
+      "url": "http://localhost:8200/",
+      "resourceType": "Fetch",
+      "statusCode": -1,
+      "mimeType": "",
+      "networkRequestTime": 4437.578000068665,
+      "networkEndTime": 4439.578000068665,
+      "transferSize": 0,
+      "resourceSize": 0,
+      "finished": true
+     }
+    ]
+   }
+  }
+ }
+}

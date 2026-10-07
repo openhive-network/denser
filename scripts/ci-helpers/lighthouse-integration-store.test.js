@@ -21,6 +21,9 @@ test('reports are saved gzip\'d per revision, and only the latest revision\'s ar
   const saved = store.saveReport(out, REV_B, '/blog/@gtg/transfers', 2, { lighthouseVersion: '13.5.0' });
   assert.equal(saved, `reports/${REV_B}/blog_gtg_transfers-run3.json.gz`);
 
+  const loggedIn = store.saveReport(out, REV_B, '/blog/@gtg/transfers', 2, { lighthouseVersion: '13.5.0' }, 'loggedIn');
+  assert.equal(loggedIn, `reports/${REV_B}/blog_gtg_transfers-loggedIn-run3.json.gz`, 'a logged-in run does not overwrite the logged-out one');
+
   store.pruneReports(out, REV_B);
   assert.deepEqual(fs.readdirSync(path.join(out, 'reports')), [REV_B]);
   const report = JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(out, saved))));
