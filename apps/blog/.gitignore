@@ -43,7 +43,7 @@ public/__ENV.js
 /test-results/
 /playwright-report/
 /playwright/.cache/
-/merged-html-report/
+/blob-report/
 /playwright/.auth/
 /playwright/temp_ai_report_tests/
 /playwright/temp_ai_script_tests/
