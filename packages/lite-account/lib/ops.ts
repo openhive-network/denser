@@ -2,10 +2,18 @@ import { CONTENT_ALG, l2Digest } from './digest';
 import type { JcsObject, JcsValue } from './jcs';
 import { signDigest } from './sign';
 
-/** App names = the custom_json ids the HAF apps listen on. */
+/** Release app names = the custom_json ids the HAF apps listen on (= the in-body `app`). */
 export const LITE_ACCOUNT_APP = 'lite_account';
 export const LITE_POSTS_APP = 'lite_posts';
 export const L2_VERSION = 1;
+
+/**
+ * The on-chain namespace a deployment uses. A test deployment runs under different ids
+ * (e.g. lite_account_test / lite_posts_test) so the release never has to filter test
+ * data out. The relay advertises its ids (GET /api/lite-reply) and the client builds with them.
+ */
+export type LiteAppIds = { account: string; posts: string };
+export const DEFAULT_LITE_APP_IDS: LiteAppIds = { account: LITE_ACCOUNT_APP, posts: LITE_POSTS_APP };
 
 export type L2Operation = { method: string; args: JcsObject };
 
@@ -92,4 +100,12 @@ export type LiteBridgeMarker = { attester: string; alg: string };
 /** The disavowal marker the gate puts in the comment's json_metadata (M2 spec §2.1). */
 export function liteBridgeMarker(attester: string): LiteBridgeMarker {
   return { attester, alg: CONTENT_ALG };
+}
+
+/**
+ * json_metadata of a bridged comment: the marker is keyed by the posts app id, so a
+ * comment marked under a test namespace is invisible to the release lite_posts app.
+ */
+export function bridgedCommentMetadata(apps: LiteAppIds, attester: string, tags: string[]): Record<string, unknown> {
+  return { tags, [apps.posts]: liteBridgeMarker(attester) };
 }

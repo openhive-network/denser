@@ -54,6 +54,7 @@ export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, d
       identity: who,
       gateAccount: relay.data.gate_account,
       chainId: relay.data.chain_id,
+      apps: relay.data.apps,
       comment: { parent_author: parentAuthor, parent_permlink: parentPermlink, title: '', body: text, tags: [] },
       clientId: ensureClientId()
     });
@@ -61,6 +62,7 @@ export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, d
       await mutation.mutateAsync({
         built,
         gateAccount: relay.data.gate_account,
+        apps: relay.data.apps,
         attester: who.name,
         body: text,
         parentAuthor,

@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 import { MAINNET_CHAIN_ID } from './digest';
+import { bridgedCommentMetadata } from './ops';
 import { LiteRelayValidationError, validateLiteReply } from './relay-validate';
 import { buildLiteReplyRequest, createLiteIdentity } from './reply-flow';
 
@@ -28,6 +29,16 @@ describe('lite reply flow: build → relay validation round-trip', () => {
     const { request } = build(true);
     expect(request.register_tx).to.equal(undefined);
     expect(validateLiteReply(request, OPTS).permlink).to.equal(request.attest_tx.operations[0]?.args.permlink);
+  });
+  it('builds in a test namespace and only validates against the same namespace', () => {
+    const apps = { account: 'lite_account_test', posts: 'lite_posts_test' };
+    const identity = createLiteIdentity('brave-otter-4823', OPTS.nowMs);
+    const { request } = buildLiteReplyRequest({ identity, gateAccount: 'gate1', chainId: MAINNET_CHAIN_ID, comment: COMMENT, apps, nowMs: OPTS.nowMs });
+    expect(request.register_tx?.app).to.equal('lite_account_test');
+    expect(request.attest_tx.app).to.equal('lite_posts_test');
+    expect(validateLiteReply(request, { ...OPTS, apps }).signer).to.equal(identity.postingPublicKey);
+    expect(() => validateLiteReply(request, OPTS)).to.throw(LiteRelayValidationError).with.property('code', 'invalid_request');
+    expect(bridgedCommentMetadata(apps, 'brave-otter-4823', ['t'])).to.deep.equal({ tags: ['t'], lite_posts_test: { attester: 'brave-otter-4823', alg: 'lite-comment-v1' } });
   });
   it('rejects tampered content, wrong gate, foreign signer, and stale expiration', () => {
     const { request } = build(false);

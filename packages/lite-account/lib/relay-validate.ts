@@ -1,5 +1,5 @@
 import { CONTENT_ALG, contentHash, l2Digest, type CommentContent } from './digest';
-import { LITE_ACCOUNT_APP, LITE_POSTS_APP } from './ops';
+import { DEFAULT_LITE_APP_IDS, type LiteAppIds } from './ops';
 import { isValidPermlink } from './permlink';
 import type { LiteReplyErrorCode } from './relay';
 import { recoverPublicKey } from './sign';
@@ -30,6 +30,8 @@ export type RelayRequest = {
 export type RelayValidationOptions = {
   gateAccount: string;
   chainId: string;
+  /** This relay's on-chain namespace (defaults to the release ids). */
+  apps?: LiteAppIds;
   maxExpirationMinutes: number;
   maxBodyBytes: number;
   nowMs?: number;
@@ -71,7 +73,8 @@ function keyAuthValues(authority: unknown): string[] {
 
 function validateAttest(req: RelayRequest, opts: RelayValidationOptions, nowMs: number): ValidatedReply {
   const tx = req.attest_tx;
-  if (tx.app !== LITE_POSTS_APP) fail('invalid_request', `attest_tx.app must be ${LITE_POSTS_APP}`);
+  const posts = (opts.apps ?? DEFAULT_LITE_APP_IDS).posts;
+  if (tx.app !== posts) fail('invalid_request', `attest_tx.app must be ${posts}`);
   checkExpiration(tx, opts.maxExpirationMinutes, nowMs);
   const [op] = tx.operations;
   if (tx.operations.length !== 1 || !op || op.method !== 'attest_post') {
@@ -96,7 +99,8 @@ function validateAttest(req: RelayRequest, opts: RelayValidationOptions, nowMs: 
 function validateRegister(req: RelayRequest, opts: RelayValidationOptions, signer: string, nowMs: number): void {
   const tx = req.register_tx;
   if (!tx) return;
-  if (tx.app !== LITE_ACCOUNT_APP) fail('invalid_request', `register_tx.app must be ${LITE_ACCOUNT_APP}`);
+  const account = (opts.apps ?? DEFAULT_LITE_APP_IDS).account;
+  if (tx.app !== account) fail('invalid_request', `register_tx.app must be ${account}`);
   checkExpiration(tx, opts.maxExpirationMinutes, nowMs);
   if (tx.signatures.length !== 0) fail('invalid_request', 'register_tx must not carry L2 signatures');
   const [op] = tx.operations;

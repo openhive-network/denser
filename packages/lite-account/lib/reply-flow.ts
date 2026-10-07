@@ -1,7 +1,7 @@
 import { contentHash, type CommentContent } from './digest';
 import { generateKeyPair } from './keys';
 import {
-  attestPostOp, l2Expiration, l2SignedFields, LITE_ACCOUNT_APP, LITE_POSTS_APP, registerAccountOp,
+  attestPostOp, DEFAULT_LITE_APP_IDS, l2Expiration, l2SignedFields, type LiteAppIds, registerAccountOp,
   signL2Transaction, singleKeyAuthority, unsignedL2Transaction
 } from './ops';
 import { mintReplyPermlink } from './permlink';
@@ -39,6 +39,8 @@ export type BuildLiteReplyParams = {
   gateAccount: string;
   chainId: string;
   comment: CommentContent;
+  /** The relay's on-chain namespace (defaults to the release ids). */
+  apps?: LiteAppIds;
   expirationMinutes?: number;
   clientId?: string;
   nowMs?: number;
@@ -55,8 +57,9 @@ export function buildLiteReplyRequest(p: BuildLiteReplyParams): BuiltLiteReply {
   const hash = contentHash(p.comment, p.chainId);
   const permlink = mintReplyPermlink(p.comment.parent_author, p.comment.parent_permlink, hash);
   const expiration = l2Expiration(p.expirationMinutes ?? 10, p.nowMs);
+  const apps = p.apps ?? DEFAULT_LITE_APP_IDS;
   const attest = signL2Transaction(
-    l2SignedFields(LITE_POSTS_APP, [attestPostOp({ author: p.identity.name, l1Author: p.gateAccount, permlink, contentHash: hash })], expiration),
+    l2SignedFields(apps.posts, [attestPostOp({ author: p.identity.name, l1Author: p.gateAccount, permlink, contentHash: hash })], expiration),
     p.chainId,
     [p.identity.postingWif]
   );
@@ -64,7 +67,7 @@ export function buildLiteReplyRequest(p: BuildLiteReplyParams): BuiltLiteReply {
   if (p.clientId) request.client_id = p.clientId;
   if (!p.identity.registered) {
     request.register_tx = unsignedL2Transaction(
-      l2SignedFields(LITE_ACCOUNT_APP,
+      l2SignedFields(apps.account,
         [registerAccountOp(p.identity.name, singleKeyAuthority(p.identity.ownerPublicKey), singleKeyAuthority(p.identity.postingPublicKey))],
         expiration)
     );

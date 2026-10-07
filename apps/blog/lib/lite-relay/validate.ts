@@ -9,6 +9,7 @@ export function validateReply(req: LiteReplyRequestInput, cfg: LiteRelayConfig, 
   return validateLiteReply(req, {
     gateAccount: cfg.gateAccount,
     chainId: cfg.chainId,
+    apps: cfg.apps,
     maxExpirationMinutes: cfg.maxExpirationMinutes,
     maxBodyBytes: cfg.maxBodyBytes,
     nowMs

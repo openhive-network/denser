@@ -12,11 +12,11 @@ function reply(body: LiteReplyResponse, status: number): Response {
   return Response.json(body, { status });
 }
 
-/** GET /api/lite-reply — whether this deployment runs a relay, and which gate/chain it serves. */
+/** GET /api/lite-reply — whether this deployment runs a relay, and which gate/chain/app ids it serves. */
 export async function GET(): Promise<Response> {
   const cfg = liteRelayConfig();
   if (!cfg) return Response.json({ enabled: false }, { status: 200 });
-  return Response.json({ enabled: true, gate_account: cfg.gateAccount, chain_id: cfg.chainId }, { status: 200 });
+  return Response.json({ enabled: true, gate_account: cfg.gateAccount, chain_id: cfg.chainId, apps: cfg.apps }, { status: 200 });
 }
 
 /**

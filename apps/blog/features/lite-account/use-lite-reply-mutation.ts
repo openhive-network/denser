@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { postLiteReply, type BuiltLiteReply } from '@hive/lite-account';
+import { bridgedCommentMetadata, postLiteReply, type BuiltLiteReply, type LiteAppIds } from '@hive/lite-account';
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { getDiscussion } from '@transaction/lib/bridge-api';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -15,6 +15,7 @@ const logger = getLogger('app');
 export type LiteReplyVariables = {
   built: BuiltLiteReply;
   gateAccount: string;
+  apps: LiteAppIds;
   attester: string;
   body: string;
   parentAuthor: string;
@@ -29,7 +30,7 @@ type Discussion = Record<string, Entry>;
 /** An optimistic bridged comment: author = the gate account, attributed to the lite name via json_metadata. */
 function optimisticEntry(v: LiteReplyVariables, parent: Entry | undefined, nowIso: string): Entry {
   const jsonMetadata = { image: '', images: [], author: v.attester };
-  Object.assign(jsonMetadata, { lite_bridge: { attester: v.attester, alg: 'lite-comment-v1' } });
+  Object.assign(jsonMetadata, bridgedCommentMetadata(v.apps, v.attester, []));
   return {
     active_votes: [],
     author: v.gateAccount,

@@ -4,12 +4,13 @@ import type { L2Transaction } from './ops';
 /**
  * Frontend → relay contract for posting a bridged reply (instant-comment spec Part B,
  * M2 spec §2.2). The relay (gate account) broadcasts ONE L1 transaction:
- *   comment_operation (json_metadata.lite_bridge = { attester, alg })
- *   + custom_json lite_account [register_account]   (first post only, unsigned L2)
- *   + custom_json lite_posts   [attest_post]        (signed by the lite posting key)
+ *   comment_operation (json_metadata[<posts app id>] = { attester, alg })
+ *   + custom_json <account app id> [register_account]   (first post only, unsigned L2)
+ *   + custom_json <posts app id>   [attest_post]        (signed by the lite posting key)
+ * where the app ids are the relay's on-chain namespace (release: lite_account / lite_posts).
  */
 export type LiteReplyRequest = {
-  /** The lite account name claiming the comment (= json_metadata.lite_bridge.attester). */
+  /** The lite account name claiming the comment (= the marker's attester). */
   attester: string;
   /** Exact comment content; the relay posts it byte-for-byte and re-derives content_hash. */
   comment: CommentContent;
