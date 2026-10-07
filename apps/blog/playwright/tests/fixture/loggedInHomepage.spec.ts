@@ -1,5 +1,4 @@
 import { test, expect } from '../support/fixture-proxy-test';
-import { WASM_URL, recordWasmRequests } from '../support/wasmRequests';
 
 /**
  * Logged-in homepage fixture test — demo of the auth-seeding flow.
@@ -48,18 +47,5 @@ test.describe('Homepage — seeded logged-in user', () => {
     const body = await res.json();
     expect(body.isLoggedIn).toBe(true);
     expect(body.username).toBe(EXPECTED_USERNAME);
-  });
-
-  // Anonymous readers never download wax's wasm (anonymousNoWasm*.spec.ts); a logged-in user
-  // still gets the chain warmed up once the page is idle, so the first vote does not wait for it.
-  test('the wax chain is warmed up (wasm requested) after load', async ({ page }) => {
-    const wasmRequests = recordWasmRequests(page);
-    const wasmRequested = page.waitForRequest(WASM_URL);
-
-    await page.goto('/');
-    await expect(page.getByTestId('nav-pencil')).toBeVisible();
-    await wasmRequested;
-
-    expect(wasmRequests.length).toBeGreaterThan(0);
   });
 });

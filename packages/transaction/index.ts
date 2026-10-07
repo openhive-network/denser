@@ -27,6 +27,7 @@ import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
 import { getChain } from './lib/chain';
 import { PUBLISHING_APP } from './lib/publishing-app';
+import { subscribeToSignerOptions } from './lib/signer-options';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
 
@@ -1192,6 +1193,7 @@ export class TransactionService {
   }
 }
 export const transactionService = new TransactionService();
+subscribeToSignerOptions((signerOptions) => transactionService.setSignerOptions(signerOptions));
 
 export { isHiveAccountNameValid } from './lib/validate-hive-account';
 

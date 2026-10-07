@@ -1,4 +1,4 @@
-import { Signer } from '@smart-signer/lib/signer/signer';
+import type { LoadSigner } from '@smart-signer/lib/use-lazy-signer';
 import { TFunction } from 'i18next';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { getLogger } from '@ui/lib/logging';
@@ -68,7 +68,7 @@ export function validation(values: Settings, t: TFunction<'common_blog'>) {
   };
 }
 
-export const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
+export const uploadImg = async (file: File, username: string, loadSigner: LoadSigner): Promise<string> => {
   try {
     if (!file)
       throw new Error("No file provided");
@@ -96,6 +96,7 @@ export const uploadImg = async (file: File, username: string, signer: Signer): P
     buf.set(data, prefix.length);
 
     // 5. Sign (Works natively with Uint8Array)
+    const signer = await loadSigner();
     const sig = await signer.signChallenge({
       message: buf,
       password: ''
@@ -113,7 +114,7 @@ export const uploadImg = async (file: File, username: string, signer: Signer): P
 };
 
 /** Process image (convert HEIC, resize, compress) then upload. Always optimizes for avatars/covers. */
-export const processAndUploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
+export const processAndUploadImg = async (file: File, username: string, loadSigner: LoadSigner): Promise<string> => {
   const result = await processImageForUpload(file, { optimize: true });
-  return uploadImg(result.file, username, signer);
+  return uploadImg(result.file, username, loadSigner);
 };

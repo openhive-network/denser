@@ -8,7 +8,6 @@ import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
 import { StorageCleanup } from '@hive/ui';
 import CondenserMigration from '../components/condenser-migration';
-import ChainWarmup from '../components/chain-warmup';
 import { getEnvVersion } from '../lib/env-version';
 import { ImagesHostHints } from '@ui/components/images-host-hints';
 import { LocaleProvider } from '../i18n/locale-context';
@@ -86,7 +85,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               <>
                 <StorageCleanup />
                 <CondenserMigration />
-                <ChainWarmup />
                 <MainBar />
                 <main className="mx-auto">{children}</main>
               </>

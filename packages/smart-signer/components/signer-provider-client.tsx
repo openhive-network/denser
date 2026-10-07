@@ -1,13 +1,10 @@
 'use client';
-import { type getSigner } from '@smart-signer/lib/signer/get-signer';
 import { useSignerClient } from '@smart-signer/lib/use-signer-client';
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { getLogger } from '@hive/ui/lib/logging';
-
-const logger = getLogger('app');
+import { useLazySigner, type LoadSigner } from '@smart-signer/lib/use-lazy-signer';
+import { createContext, useContext, ReactNode } from 'react';
 
 type SignerContextType = {
-  signer: ReturnType<typeof getSigner>;
+  loadSigner: LoadSigner;
 };
 
 export const SignerContext = createContext<SignerContextType | undefined>(undefined);
@@ -25,22 +22,8 @@ export const useSignerContext = () => {
  * Use SignerProvider for Pages Router components.
  */
 export const SignerProviderClient = ({ children }: { children: ReactNode }) => {
-  const [signer, setSigner] = useState<ReturnType<typeof getSigner> | null>(null);
   const { signerOptions } = useSignerClient();
-  useEffect(() => {
-    logger.info('Starting SignerProviderClient.useEffect() to setup Signer');
-    (async () => {
-      if (signerOptions.username === '') return;
-      // Signers and the transaction service pull in wax: load them only for a logged-in user.
-      const [{ getSigner: _getSigner }, { transactionService }] = await Promise.all([
-        import('@smart-signer/lib/signer/get-signer'),
-        import('@transaction/index')
-      ]);
-      setSigner(_getSigner(signerOptions));
-      transactionService.setSignerOptions(signerOptions);
-    })().catch(logger.error);
-  }, [signerOptions.username, signerOptions.loginType, signerOptions.keyType]);
+  const loadSigner = useLazySigner(signerOptions);
 
-  // TODO: Wait for signer to be initialized
-  return <SignerContext.Provider value={{ signer: signer! }}>{children}</SignerContext.Provider>;
+  return <SignerContext.Provider value={{ loadSigner }}>{children}</SignerContext.Provider>;
 };

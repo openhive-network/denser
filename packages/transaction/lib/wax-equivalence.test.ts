@@ -2,13 +2,14 @@ import { expect } from 'chai';
 import { EXTENDED_REST_API_DEFINITION } from '@hive/common-hiveio-packages/wax';
 import { createReadClient, JsonRpcApiError } from './read-client';
 import { fetchReadTransport, ReadTransportError } from './read-transport';
+import { calculateCurrentManabarValue, calculateManabarFullRegenerationTime } from './manabar-math';
 import { isTransportError } from './wax-errors';
 import { vestsToHiveSatoshis } from '../../ui/lib/asset-math';
 import { formatAsset } from '../../ui/lib/asset-format';
 import { createNaiAsset } from '../../ui/lib/asset-constants';
 
 /**
- * The wasm-free read client and the asset math that replaced wax calls must give the same results
+ * The wasm-free read client and the asset and manabar math that replaced wax calls must give the same results
  * as wax itself. Both clients run against the same recorded fake `fetch`, so every sample checks
  * the HTTP request each one sends as well as the value it resolves to.
  *
@@ -35,6 +36,13 @@ interface IWaxChain {
   hbdSatoshis(amount: string): INaiAsset;
   formatter: IWaxFormatter;
   vestsToHp(vests: INaiAsset, totalVestingFundHive: INaiAsset, totalVestingShares: INaiAsset): INaiAsset;
+  calculateCurrentManabarValue(now: number, maxMana: string, currentMana: string, lastUpdateTime: number): IManabarValue;
+  calculateManabarFullRegenerationTime(now: number, maxMana: string, currentMana: string, lastUpdateTime: number): number;
+}
+interface IManabarValue {
+  max: bigint;
+  current: bigint;
+  percent: number;
 }
 interface IWaxFormatter {
   format(value: unknown): string;
@@ -91,7 +99,7 @@ const restResult = (request: IRecordedRequest) => ({
 
 const answerAll: Responder = (request) => (request.method === 'POST' && request.body?.includes('"jsonrpc"') ? jsonRpcResult(request) : restResult(request));
 
-describe('wasm-free reads and asset math are equivalent to wax', function () {
+describe('wasm-free reads, asset and manabar math are equivalent to wax', function () {
   let wax: IWaxModule;
   let waxChain: IWaxChain;
   let readClient: { api: IApiTree; restApi: IApiTree };
@@ -383,5 +391,48 @@ describe('wasm-free reads and asset math are equivalent to wax', function () {
 
   it('formatAsset rejects a NAI that is not a Hive asset', () => {
     expect(() => formatAsset({ amount: '1', precision: 3, nai: '@@000000999' })).to.throw('Unknown asset NAI');
+  });
+
+  const NOW = 1_700_000_000;
+  /** [max mana, current mana, seconds since the last update]; a negative age is an update after `NOW`. */
+  const MANABAR_SAMPLES: [string, string, number][] = [
+    ['1000000', '500000', 0],
+    ['1000000', '500000', 1],
+    ['1000000', '500000', 1000],
+    ['1000000', '0', 431_999],
+    ['1000000', '0', 432_000],
+    ['1000000', '1000000', 100],
+    ['1000000', '2000000', 100],
+    ['1000000', '500000', -500],
+    ['1000000', '1000000', -500],
+    ['7', '3', 10],
+    ['432000', '1', 5000],
+    ['5000000000', '1000', 1000],
+    ['987654321098765432', '12345678901234567', 10_000],
+    ['987654321098765432', '12345678901234567', 100_000_000]
+  ];
+
+  it('calculateCurrentManabarValue matches wax', () => {
+    for (const [max, current, age] of MANABAR_SAMPLES) {
+      const sample = `${max} ${current} ${age}`;
+      expect(calculateCurrentManabarValue(NOW, max, current, NOW - age)).to.deep.equal(
+        waxChain.calculateCurrentManabarValue(NOW, max, current, NOW - age),
+        sample
+      );
+    }
+  });
+
+  it('calculateManabarFullRegenerationTime matches wax', () => {
+    for (const [max, current, age] of MANABAR_SAMPLES) {
+      const sample = `${max} ${current} ${age}`;
+      expect(calculateManabarFullRegenerationTime(NOW, max, current, NOW - age)).to.equal(
+        waxChain.calculateManabarFullRegenerationTime(NOW, max, current, NOW - age),
+        sample
+      );
+    }
+  });
+
+  it('an empty manabar (max 0) is full, as in wax', () => {
+    expect(calculateCurrentManabarValue(NOW, '0', '0', NOW)).to.deep.equal(waxChain.calculateCurrentManabarValue(NOW, '0', '0', NOW));
   });
 });

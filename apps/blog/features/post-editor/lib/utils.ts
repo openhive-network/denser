@@ -1,5 +1,5 @@
 import { getRenderer, getPreviewRenderer } from '@/blog/features/post-rendering/lib/renderer';
-import { Signer } from '@smart-signer/lib/signer/signer';
+import type { LoadSigner } from '@smart-signer/lib/use-lazy-signer';
 import { configuredImagesEndpoint } from '@ui/config/public-vars';
 import { handleError } from '@ui/lib/handle-error';
 import { getLogger } from '@ui/lib/logging';
@@ -125,10 +125,10 @@ export function maxAcceptedPayout(customValue: number | string | undefined, maxP
  *
  * @param {File} file
  * @param {string} username
- * @param {Signer} signer
+ * @param {LoadSigner} loadSigner
  * @returns {Promise<string>}
  */
-const uploadImg = async (file: File, username: string, signer: Signer): Promise<string> => {
+const uploadImg = async (file: File, username: string, loadSigner: LoadSigner): Promise<string> => {
   try {
     if (!file)
       throw new Error("No file provided");
@@ -157,6 +157,7 @@ const uploadImg = async (file: File, username: string, signer: Signer): Promise<
     buf.set(prefix, 0);
     buf.set(fileData, prefix.length);
 
+    const signer = await loadSigner();
     const sig = await signer.signChallenge({
       message: buf,
       password: ''
@@ -180,7 +181,7 @@ export const onImageUpload = async (
   file: File,
   insertText: (text: string, pos?: number) => void,
   username: string,
-  signer: Signer,
+  loadSigner: LoadSigner,
   setUploading?: Dispatch<SetStateAction<boolean>>,
   cursorPos?: number,
   processingOptions?: ProcessingOptions
@@ -188,7 +189,7 @@ export const onImageUpload = async (
   setUploading?.(true);
   try {
     const result = await processImageForUpload(file, processingOptions);
-    const url = await uploadImg(result.file, username, signer);
+    const url = await uploadImg(result.file, username, loadSigner);
     const name = result.file.name;
     const imageMarkdown = ` ![${name}](${!url ? 'UPLOAD FAILED' : url}) `;
     insertText(imageMarkdown, cursorPos);
@@ -204,7 +205,7 @@ export const onImageDrop = async (
   dataTransfer: DataTransfer,
   insertText: (text: string, pos?: number) => void,
   username: string,
-  signer: Signer,
+  loadSigner: LoadSigner,
   setUploading?: Dispatch<SetStateAction<boolean>>,
   cursorPos?: number,
   processingOptions?: ProcessingOptions
@@ -216,7 +217,7 @@ export const onImageDrop = async (
   }
 
   if (files.length === 1) {
-    await onImageUpload(files[0], insertText, username, signer, setUploading, cursorPos, processingOptions);
+    await onImageUpload(files[0], insertText, username, loadSigner, setUploading, cursorPos, processingOptions);
     return;
   }
 
@@ -226,7 +227,7 @@ export const onImageDrop = async (
   for (const file of files) {
     try {
       const result = await processImageForUpload(file, processingOptions);
-      const url = await uploadImg(result.file, username, signer);
+      const url = await uploadImg(result.file, username, loadSigner);
       const name = result.file.name;
       const markdown = `![${name}](${!url ? 'UPLOAD FAILED' : url})\n\n`;
       const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
@@ -248,7 +249,7 @@ export const onImagePaste = async (
   clipboardData: DataTransfer,
   insertText: (text: string, pos?: number) => void,
   username: string,
-  signer: Signer,
+  loadSigner: LoadSigner,
   setUploading?: Dispatch<SetStateAction<boolean>>,
   cursorPos?: number,
   processingOptions?: ProcessingOptions
@@ -264,7 +265,7 @@ export const onImagePaste = async (
   if (!files.length) return false;
 
   if (files.length === 1) {
-    await onImageUpload(files[0], insertText, username, signer, setUploading, cursorPos, processingOptions);
+    await onImageUpload(files[0], insertText, username, loadSigner, setUploading, cursorPos, processingOptions);
     return true;
   }
 
@@ -274,7 +275,7 @@ export const onImagePaste = async (
   for (const file of files) {
     try {
       const result = await processImageForUpload(file, processingOptions);
-      const url = await uploadImg(result.file, username, signer);
+      const url = await uploadImg(result.file, username, loadSigner);
       const name = result.file.name;
       const markdown = `![${name}](${!url ? 'UPLOAD FAILED' : url})\n\n`;
       const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
@@ -307,7 +308,7 @@ export const onBatchImageUpload = async (
   files: File[],
   insertText: (text: string, pos?: number) => void,
   username: string,
-  signer: Signer,
+  loadSigner: LoadSigner,
   callbacks: BatchUploadCallbacks,
   cursorPos?: number,
   processingOptions?: ProcessingOptions
@@ -321,7 +322,7 @@ export const onBatchImageUpload = async (
       const result = await processImageForUpload(file, processingOptions);
 
       callbacks.onFileProgress(i, 'uploading');
-      const url = await uploadImg(result.file, username, signer);
+      const url = await uploadImg(result.file, username, loadSigner);
       const name = result.file.name;
 
       if (url) {
