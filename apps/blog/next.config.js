@@ -99,6 +99,12 @@ module.exports = withSentryConfig(withBundleAnalyzer(nextConfig), {
     disable: true,
   },
 
+  // With Turbopack this hook defaults on and, sourcemaps disabled or not, injects
+  // debug IDs into every .js under distDir, following .next/node_modules symlinks
+  // into the workspace node_modules: the next build then bundles those rewritten
+  // sources, so the client JS depended on whether a build had run before.
+  useRunAfterProductionCompileHook: false,
+
   silent: true,
 
   webpack: {

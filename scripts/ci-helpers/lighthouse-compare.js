@@ -7,6 +7,8 @@
  * max(relative * baseline, absolute). The defaults suit a deterministic pass
  * (recorded data, no network): bytes and request counts are reproducible, so their
  * bounds are tight; LCP and TBT still follow the host's CPU, so theirs are loose.
+ * Script bytes take no relative share: rebuilds of one tree serve identical chunks,
+ * and passes differ by a few response-header bytes, so 2 KiB is any real change.
  *
  * When a route's median `benchmark-index` (Lighthouse's CPU benchmark of each run) is
  * more than HOST_SLOWER_RATIO below the baseline's, the host was slower than when the
@@ -15,7 +17,7 @@
  */
 
 const DEFAULT_TOLERANCES = {
-  'script-transfer-bytes': { relative: 0.02, absolute: 2048 },
+  'script-transfer-bytes': { relative: 0, absolute: 2048 },
   'image-transfer-bytes': { relative: 0.02, absolute: 2048 },
   'total-transfer-bytes': { relative: 0.02, absolute: 4096 },
   'request-count': { relative: 0, absolute: 2 },

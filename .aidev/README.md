@@ -278,7 +278,8 @@ max(relative × baseline, absolute) (`scripts/ci-helpers/lighthouse-compare.js`)
 
 | metric | tolerance | why |
 |---|---|---|
-| script, image, total transfer bytes | 2 %, at least 2 KiB (total: 4 KiB) | identical between runs of one tree |
+| script transfer bytes | 2 KiB | rebuilds of one tree serve byte-identical chunks; passes differ by response-header bytes (≤ 28 B measured) |
+| image, total transfer bytes | 2 %, at least 2 KiB (total: 4 KiB) | identical between runs of one tree |
 | request count | 2 requests | identical between replayed passes; a lazy image can land on either side of the trace's end |
 | LCP | 25 %, at least 500 ms | follows the host's CPU |
 | TBT | 50 %, at least 250 ms | follows the host's CPU |
@@ -317,6 +318,18 @@ regression, 100 KB of incompressible JavaScript imported by `/trending`'s client
 component, was reported as `script-transfer-bytes: 512.7 KiB -> 590.1 KiB (+77.3 KiB,
 tolerance 10.3 KiB)` (zstd shrinks base64 to three quarters) and failed the pass,
 with LCP and TBT within their tolerances.
+
+**Reproducible builds.** Every build of one tree, cold or warm `.next/cache`, emits the
+same `static/chunks` byte for byte; only the random build ID's directory
+(`_buildManifest.js` and friends, which App Router pages do not load) differs. Both
+apps set `useRunAfterProductionCompileHook: false` in `withSentryConfig` to keep it
+so: with Turbopack the hook defaults on and, sourcemaps disabled or not, injects
+Sentry debug IDs into every `.js` under `.next`, following Turbopack's
+`.next/node_modules/<pkg>-<hash>` symlinks into the workspace `node_modules`
+(about 4,600 files of `next`, `dayjs`, `zod`, …). The next build then bundled those
+rewritten sources, so the blog's shared JS was ~12 KB heavier on any checkout that
+had been built before. A `node_modules` built before that setting keeps the
+rewritten files until it is reinstalled from scratch.
 
 **Updating the baseline.** After a change that is meant to move the numbers (or on a
 new host): `.aidev/run-lighthouse-fixture.sh --update-baseline`, in the image, and

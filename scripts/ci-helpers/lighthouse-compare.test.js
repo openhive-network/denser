@@ -28,7 +28,7 @@ test('an identical pass compares clean, metric by metric', () => {
   assert.deepEqual(comparison.regressions, []);
   assert.deepEqual(comparison.baseline, { revision: 'base', measuredAt: '2026-10-06T00:00:00.000Z' });
   const js = comparison.routes[0].metrics['script-transfer-bytes'];
-  assert.deepEqual(js, { baseline: 700000, current: 700000, delta: 0, limit: 14000, regressed: false });
+  assert.deepEqual(js, { baseline: 700000, current: 700000, delta: 0, limit: 2048, regressed: false });
 });
 
 test('100 KB more eager JavaScript on /trending is a regression; CPU-noise-sized LCP and TBT moves are not', () => {
@@ -58,6 +58,19 @@ test('bytes within 2% and a request more are within tolerance; three requests mo
   assert.equal(within.status, 'pass');
   const beyond = compareResults(result({ '/blog/trending': { ...TRENDING, 'request-count': 63 } }), result({ '/blog/trending': TRENDING }));
   assert.deepEqual(beyond.regressions.map((r) => [r.metric, r.delta]), [['request-count', 3]]);
+});
+
+test('script bytes hold to 2 KiB whatever the route size: header noise passes, a 12 KB chunk change does not', () => {
+  const noise = compareResults(
+    result({ '/blog/trending': { ...TRENDING, 'script-transfer-bytes': TRENDING['script-transfer-bytes'] + 28 } }),
+    result({ '/blog/trending': TRENDING })
+  );
+  assert.equal(noise.status, 'pass');
+  const chunk = compareResults(
+    result({ '/blog/trending': { ...TRENDING, 'script-transfer-bytes': TRENDING['script-transfer-bytes'] + 11791 } }),
+    result({ '/blog/trending': TRENDING })
+  );
+  assert.deepEqual(chunk.regressions.map((r) => [r.metric, r.delta, r.limit]), [['script-transfer-bytes', 11791, 2048]]);
 });
 
 test('a performance score is a regression when it drops, never when it rises', () => {
@@ -97,6 +110,6 @@ test('formatComparison marks each regressed metric', () => {
   const current = result({ '/blog/trending': { ...TRENDING, 'script-transfer-bytes': 802400 } });
   const lines = formatComparison(compareResults(current, result({ '/blog/trending': TRENDING })));
   assert.match(lines[0], /baseline of base/);
-  assert.ok(lines.some((line) => /❌ script-transfer-bytes: 683\.6 KiB -> 783\.6 KiB \(\+100\.0 KiB, tolerance 13\.7 KiB\)/.test(line)));
+  assert.ok(lines.some((line) => /❌ script-transfer-bytes: 683\.6 KiB -> 783\.6 KiB \(\+100\.0 KiB, tolerance 2\.0 KiB\)/.test(line)));
   assert.ok(lines.some((line) => /^ +largest-contentful-paint: 3000 ms -> 3000 ms \(±0 ms, tolerance 750 ms\)$/.test(line)));
 });
