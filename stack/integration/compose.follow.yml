@@ -15,6 +15,10 @@
 #   blog,     follow/serve.sh: serve releases/<app>/current and restart onto the
 #   wallet    next release when the follower swaps it in. The previous release
 #             serves for as long as a build runs.
+#   caddy     serves /<app>/_next/static/* itself, precompressed, from
+#             releases/<app>/static (Caddyfile.static.releases): the static files
+#             of every release follow.sh published in the last 7 days, so a page
+#             of an earlier release still loads its chunks after a swap.
 #
 # The variables (upgrade.sh and session-stack.sh export them):
 #   DENSER_FOLLOW_IMAGE  the environment image, read from .aidev/project.yaml
@@ -67,3 +71,9 @@ services:
       - ${DENSER_SOURCE_DIR:-../..}:/src:ro
       - ${DENSER_SOURCE_DIR:-../..}/stack/integration/releases:/releases
     command: ["bash", "/src/stack/integration/follow/serve.sh", "wallet"]
+
+  caddy:
+    environment:
+      DENSER_STATIC_FROM: releases
+    volumes:
+      - ${DENSER_SOURCE_DIR:-../..}/stack/integration/releases:/srv/releases:ro

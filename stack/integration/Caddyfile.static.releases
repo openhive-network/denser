@@ -1,0 +1,16 @@
+# /<app>/_next/static/* in follow mode (compose.follow.yml sets DENSER_STATIC_FROM):
+# straight from releases/<app>/static, the immutable build assets of the releases
+# follow.sh published (follow/follow.sh, _publish_static), with the .br/.zst
+# sidecars it wrote. A path no release published is a 404, not a request to Next.
+#
+#   import Caddyfile.static.releases <app>
+handle_path /{args[0]}/_next/static/* {
+	root * /srv/releases/{args[0]}/static
+	# Not on a 404: a file published later must not be cached as missing.
+	@published file
+	header @published Cache-Control "public, max-age=31536000, immutable"
+	header @published X-Content-Type-Options nosniff
+	file_server {
+		precompressed br zstd gzip
+	}
+}

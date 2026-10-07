@@ -1,0 +1,4 @@
+# /<app>/_next/static/* in images mode (compose.yml alone): the app's own server
+# has the files, so the /<app>/* route proxies them like any other path.
+#
+#   import Caddyfile.static.next <app>

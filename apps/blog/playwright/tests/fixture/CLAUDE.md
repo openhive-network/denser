@@ -826,6 +826,14 @@ so they go to `https://api.hive.blog`; with no network Chromium logs two
 stack has egress, so it doesn't show them. A spec that fails on any console error
 routes those URLs to a `200 {}` (AI search off), as `healthchecker.spec.ts` does.
 
+### Asserting Set-Cookie: a fresh request context per request
+
+The middleware sets `blog_login_challenge_server`, `blog_login_challenge` and
+`session_uid` only when the request lacks them, and a Playwright request context
+(the `request` fixture, or a page's) keeps and resends the cookies it was given.
+After the first page, "no Set-Cookie" proves nothing. `staticAssetCookies.spec.ts`
+makes each request from its own `playwright.request.newContext({ baseURL })`.
+
 ### `fixtureTestName` is worker-scoped
 
 You cannot switch fixture dirs per `test.describe` in one file. Each

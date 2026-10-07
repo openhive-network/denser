@@ -1,5 +1,11 @@
 # The routes of hive/haf_api_node's caddy/Caddyfile.tmpl for the `ui` profile,
 # imported by the integration site (Caddyfile) and a session stack (Caddyfile.session).
+
+# /<app>/_next/static/*: Caddyfile.static.releases (follow mode) or
+# Caddyfile.static.next (images mode), as DENSER_STATIC_FROM says.
+import Caddyfile.static.{$DENSER_STATIC_FROM:next} blog
+import Caddyfile.static.{$DENSER_STATIC_FROM:next} wallet
+
 # lb_try_duration: while an app's server restarts (follow mode swapping in a new
 # build, or a container being recreated) a request waits for it rather than failing.
 handle /blog {

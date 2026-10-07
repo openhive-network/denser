@@ -79,6 +79,8 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./Caddyfile.routes:/etc/caddy/Caddyfile.routes:ro
+      - ./Caddyfile.static.next:/etc/caddy/Caddyfile.static.next:ro
+      - ./Caddyfile.static.releases:/etc/caddy/Caddyfile.static.releases:ro
       - ./status:/srv/status:ro
       - caddy_data:/data
       - caddy_config:/config
