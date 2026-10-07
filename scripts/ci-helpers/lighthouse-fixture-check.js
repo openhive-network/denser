@@ -133,7 +133,7 @@ function routeCaseLines(result) {
       ...r.offHost.map((url) => `request left the host: ${url}`),
     ];
     lines.push(['case', r.route, problems.length ? 'fail' : 'pass', 0, problems.join('; ')].join('\t'));
-    for (const metric of ['largest-contentful-paint', 'total-blocking-time', 'script-transfer-bytes', 'image-transfer-bytes', 'request-count']) {
+    for (const metric of ['largest-contentful-paint', 'observed-largest-contentful-paint', 'total-blocking-time', 'script-transfer-bytes', 'image-transfer-bytes', 'request-count']) {
       lines.push(['property', `${r.route} ${metric}`, r.median[metric] ?? ''].join('\t'));
     }
   }
@@ -153,8 +153,8 @@ function printSummary(result) {
       console.log(`  ❌ ${route.route}: no successful run (${m.errors.join('; ')})`);
       continue;
     }
-    console.log(`  ${icon} ${route.route}: perf ${m.performance}, LCP ${Math.round(m['largest-contentful-paint'])} ms, TBT ${Math.round(m['total-blocking-time'])} ms, CLS ${m['cumulative-layout-shift']?.toFixed(3)}, JS ${m['script-transfer-bytes']} B, images ${m['image-transfer-bytes']} B, ${m['request-count']} requests`);
-    for (const b of route.breaches) console.log(`      breach: ${b.metric} = ${b.value} (threshold ${b.threshold})`);
+    console.log(`  ${icon} ${route.route}: perf ${m.performance}, LCP ${Math.round(m['largest-contentful-paint'])} ms (observed ${Math.round(m['observed-largest-contentful-paint'])} ms), TBT ${Math.round(m['total-blocking-time'])} ms, CLS ${m['cumulative-layout-shift']?.toFixed(3)}, JS ${m['script-transfer-bytes']} B, images ${m['image-transfer-bytes']} B, ${m['request-count']} requests`);
+    for (const b of route.breaches) console.log(`      breach: ${b.metric} = ${b.value} (threshold ${b.threshold})${b.simulatedOnly ? `, simulated-only: observed ${Math.round(b.observed)} ms` : ''}`);
     for (const url of route.offHost) console.log(`      left the host: ${url}`);
   }
   console.log(`Hermetic: ${result.hermetic.status}; replay misses ${JSON.stringify(result.hermetic.misses)}`);

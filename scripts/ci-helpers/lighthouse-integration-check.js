@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 /**
- * Median-of-3 Lighthouse check of the integration site for one deployed revision.
+ * Median-of-5 Lighthouse check of the integration site for one deployed revision.
  *
  * Waits until <site>/status/deployed.json reports <revision> for every app it
  * measures, then runs Lighthouse (mobile, its default form factor) RUNS_PER_ROUTE
  * times per route, one run at a time. The routes and their limits are the
- * `integration` section of lighthouse-thresholds.json. Each run keeps its vitals and
- * its backend timing (lighthouse-backend.js); the backend is probed just before and
+ * `integration` section of lighthouse-thresholds.json. Each run keeps its vitals (the
+ * simulated ones judged, the observed paints alongside) and its backend timing (lighthouse-backend.js); the backend is probed just before and
  * just after the routes (lighthouse-probe.js), and the pass is classified against the
  * environment of the passes before it (lighthouse-environment.js). Writes
  * <out>/<revision>.json, <out>/latest.json, the full reports, the baseline and the
  * status page (lighthouse-integration-store.js).
  *
  * Exit: 0 every median within its thresholds, 2 a threshold breached (whatever the
- *       environment), 1 nothing measured (bad usage, or the revision never deployed).
+ *       environment, simulated-only or not), 1 nothing measured (bad usage, or the revision never deployed).
  *
  * Usage: node lighthouse-integration-check.js --site https://host --revision <sha>
  *        --out <dir> --api-node <url> [--api-node <url>...] [--probe-image <url>]
@@ -26,7 +26,7 @@ const fs = require('fs');
 const path = require('path');
 const { parseArgs } = require('util');
 const { RUNS_PER_ROUTE, runLighthouse } = require('./lighthouse-runner');
-const { extractRunMetrics, summarizeRuns, findBreaches } = require('./lighthouse-median');
+const { extractRunMetrics, summarizeRuns, findBreaches, isSimulatedOnly } = require('./lighthouse-median');
 const { extractBackendTiming, summarizeBackend, hostOf } = require('./lighthouse-backend');
 const { probeTargets, probeEnvironment, DEFAULT_PROBE_IMAGE } = require('./lighthouse-probe');
 const { classifyEnvironment, appendToHistory, verdictOf } = require('./lighthouse-environment');
@@ -120,7 +120,7 @@ async function measureRoute({ site, revision, out, upstreams }, route, threshold
     const metrics = runMetrics(report, error, upstreams);
     if (report) metrics.report = store.saveReport(out, revision, route, i, report);
     lighthouseVersion = report?.lighthouseVersion || lighthouseVersion;
-    console.log(`  ${route} run ${i + 1}/${RUNS_PER_ROUTE}: ${metrics.error || `perf ${metrics.performance}, LCP ${Math.round(metrics['largest-contentful-paint'])} ms, TTFB ${metrics.backend['server-response-time']} ms`}`);
+    console.log(`  ${route} run ${i + 1}/${RUNS_PER_ROUTE}: ${metrics.error || `perf ${metrics.performance}, LCP ${Math.round(metrics['largest-contentful-paint'])} ms (observed ${Math.round(metrics['observed-largest-contentful-paint'])} ms), TTFB ${metrics.backend['server-response-time']} ms`}`);
     runs.push(metrics);
   }
   const median = summarizeRuns(runs);
@@ -139,15 +139,15 @@ function printSummary(result) {
   for (const route of result.routes) {
     const m = route.median;
     const icon = route.breaches.length ? '❌' : '✅';
-    console.log(`  ${icon} ${route.route}: perf ${m.performance}, LCP ${Math.round(m['largest-contentful-paint'])} ms, TBT ${Math.round(m['total-blocking-time'])} ms, CLS ${m['cumulative-layout-shift']?.toFixed(3)}, JS ${Math.round((m['script-transfer-bytes'] || 0) / 1024)} KiB, TTFB ${m.backend?.['server-response-time']} ms`);
+    console.log(`  ${icon} ${route.route}: perf ${m.performance}, LCP ${Math.round(m['largest-contentful-paint'])} ms (observed ${Math.round(m['observed-largest-contentful-paint'])} ms, FCP ${Math.round(m['observed-first-contentful-paint'])} ms), TBT ${Math.round(m['total-blocking-time'])} ms, CLS ${m['cumulative-layout-shift']?.toFixed(3)}, JS ${Math.round((m['script-transfer-bytes'] || 0) / 1024)} KiB, TTFB ${m.backend?.['server-response-time']} ms`);
     for (const b of route.breaches) {
-      console.log(`      breach: ${b.metric} = ${b.value} (threshold ${b.threshold})`);
+      console.log(`      breach: ${b.metric} = ${b.value} (threshold ${b.threshold})${b.simulatedOnly ? `, simulated-only: observed ${Math.round(b.observed)} ms` : ''}`);
     }
   }
   const env = result.environment;
   console.log(`\nEnvironment: ${env.status}; probes before: ${formatProbes(env.before)}; after: ${formatProbes(env.after)}`);
   for (const reason of env.reasons) console.log(`      degraded: ${JSON.stringify(reason)}`);
-  console.log(result.status === 'pass' ? '\n✅ All medians meet thresholds.' : `\n❌ Thresholds breached${env.status === 'degraded' ? ' (environment degraded)' : ''} (advisory: nothing is rolled back).`);
+  console.log(result.status === 'pass' ? '\n✅ All medians meet thresholds.' : `\n❌ Thresholds breached: ${result.verdict} (advisory: nothing is rolled back).`);
 }
 
 function routeTtfb(routes) {
@@ -187,7 +187,7 @@ async function main() {
     runsPerRoute: RUNS_PER_ROUTE,
     lighthouseVersion: measured.find((r) => r.lighthouseVersion)?.lighthouseVersion,
     status,
-    verdict: verdictOf(status, environment.status),
+    verdict: verdictOf(status, environment.status, isSimulatedOnly(measured)),
     environment,
     routes: measured.map(({ lighthouseVersion: _version, ...route }) => route),
   };

@@ -76,6 +76,34 @@ test('a result file without the new fields still renders', () => {
   assert.match(oldSection, /<td>—<\/td>/, 'missing figures show as a dash');
 });
 
+test('the status page shows the observed paints of each run next to the simulated LCP, and labels a simulated-only breach', () => {
+  const run = (lcp, observedLcp, observedFcp) => ({
+    'largest-contentful-paint': lcp,
+    'observed-largest-contentful-paint': observedLcp,
+    'observed-first-contentful-paint': observedFcp,
+  });
+  const result = {
+    revision: REV_NEW,
+    status: 'breach',
+    verdict: 'breach (simulated-only)',
+    routes: [
+      {
+        route: '/blog/trending/hive-160391',
+        median: { measuredRuns: 3, ...run(5100, 420, 410) },
+        breaches: [{ metric: 'largest-contentful-paint', value: 5100, threshold: 4500, simulatedOnly: true, observed: 420 }],
+        runs: [run(5000, 530, 520), { error: 'timeout' }, run(5600, 420, 410), run(5100, 420, 400)],
+      },
+    ],
+  };
+  const html = renderStatusPage([result], REV_OLD);
+  assert.match(html, /<th>LCP \(simulated\)<\/th><th>LCP \(observed\)<\/th><th>FCP \(observed\)<\/th>/);
+  assert.match(html, /<td>5100 ms<br><span class="muted">runs: 5000 ms, 5600 ms, 5100 ms<\/span><\/td>/);
+  assert.match(html, /<td>420 ms<br><span class="muted">runs: 530 ms, 420 ms, 420 ms<\/span><\/td>/);
+  assert.match(html, /<td>410 ms<br><span class="muted">runs: 520 ms, 410 ms, 400 ms<\/span><\/td>/);
+  assert.match(html, /largest-contentful-paint = 5100 \(threshold 4500\)<\/span> <span class="sim">simulated-only: observed 420 ms<\/span>/);
+  assert.match(html, /breach \(simulated-only\)/);
+});
+
 test('only the revision whose reports are kept links them', () => {
   assert.doesNotMatch(renderStatusPage([newResult], REV_OLD), /run1\.json\.gz/);
   assert.match(renderStatusPage([], REV_NEW), /No passes measured yet/);

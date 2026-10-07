@@ -6,7 +6,7 @@
 
 const { execFile } = require('child_process');
 
-const RUNS_PER_ROUTE = 3;
+const RUNS_PER_ROUTE = 5;
 const LIGHTHOUSE_RUN_TIMEOUT_MS = 120_000;
 const CHROME_FLAGS = '--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage';
 

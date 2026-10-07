@@ -4,9 +4,16 @@
  *
  * Thresholds name a metric and its limit: `performance` is a floor (0-100), a
  * boolean (`lcp-lazy-loaded`) must equal the median, every other metric is a ceiling.
+ *
+ * The judged LCP is Lighthouse's simulation (Lantern, slow 4G). The `observed-*`
+ * metrics are the paints the browser actually made in the run; they are recorded,
+ * not judged.
  */
 
 const FLOOR_METRICS = new Set(['performance']);
+// An LCP breach whose median observed LCP is below this is a simulation artifact:
+// the page painted fast, and only Lantern's replay of the requests around it is slow.
+const SIMULATED_ONLY_OBSERVED_LCP_MS = 2500;
 
 /** Metrics read from one report, or `{ error }` when Lighthouse could not measure the page. */
 function extractRunMetrics(report) {
@@ -28,6 +35,15 @@ function extractRunMetrics(report) {
     'cumulative-layout-shift': audits['cumulative-layout-shift']?.numericValue,
     'script-transfer-bytes': scriptRow?.transferSize,
     'lcp-lazy-loaded': lcpIsLazyLoaded(audits),
+    ...observedPaints(audits),
+  };
+}
+
+function observedPaints(audits) {
+  const observed = audits.metrics?.details?.items?.[0] || {};
+  return {
+    'observed-first-contentful-paint': observed.observedFirstContentfulPaint,
+    'observed-largest-contentful-paint': observed.observedLargestContentfulPaint,
   };
 }
 
@@ -67,7 +83,11 @@ function summarizeRuns(runs) {
   return summary;
 }
 
-/** Every threshold a route summary breaches, as `{ metric, value, threshold }`. */
+/**
+ * Every threshold a route summary breaches, as `{ metric, value, threshold }`. An LCP
+ * breach whose median observed LCP is under SIMULATED_ONLY_OBSERVED_LCP_MS also carries
+ * `simulatedOnly: true` and that `observed` value.
+ */
 function findBreaches(summary, thresholds) {
   if (summary.measuredRuns === 0) {
     return [{ metric: 'measurement', value: 'no successful run', threshold: 'at least one' }];
@@ -84,9 +104,21 @@ function findBreaches(summary, thresholds) {
       continue;
     }
     const breached = FLOOR_METRICS.has(metric) ? value < threshold : value > threshold;
-    if (breached) breaches.push({ metric, value, threshold });
+    if (breached) breaches.push({ metric, value, threshold, ...simulatedOnlyLabel(metric, summary) });
   }
   return breaches;
 }
 
-module.exports = { extractRunMetrics, median, summarizeRuns, findBreaches };
+function simulatedOnlyLabel(metric, summary) {
+  const observed = summary['observed-largest-contentful-paint'];
+  if (metric !== 'largest-contentful-paint' || typeof observed !== 'number') return {};
+  return observed < SIMULATED_ONLY_OBSERVED_LCP_MS ? { simulatedOnly: true, observed } : {};
+}
+
+/** Whether `routes` breach, and every breach is labelled `simulatedOnly`. */
+function isSimulatedOnly(routes) {
+  const breaches = routes.flatMap((route) => route.breaches);
+  return breaches.length > 0 && breaches.every((breach) => breach.simulatedOnly);
+}
+
+module.exports = { extractRunMetrics, median, summarizeRuns, findBreaches, isSimulatedOnly, SIMULATED_ONLY_OBSERVED_LCP_MS };
