@@ -3,8 +3,8 @@ import type { Page } from '@playwright/test';
 /**
  * Helpers for asserting which pages download wax's wasm (`wax.common.<hash>.wasm`).
  *
- * Anonymous readers must never request it: reads go through the wasm-free read client and the idle
- * chain warm-up runs only for logged-in users.
+ * Readers must never request it, logged in or not: reads go through the wasm-free read client, and
+ * the chain is created on the first action that signs.
  */
 
 export const WASM_URL = /\.wasm(\?|$)/;
@@ -22,8 +22,8 @@ export const recordWasmRequests = (page: Page): string[] => {
 };
 
 /**
- * Waits until the page has loaded and gone idle — the point at which a logged-in user's chain
- * warm-up starts — and its network has settled.
+ * Waits until the page has loaded and gone idle, and its network has settled, so that work deferred
+ * to idle time has started.
  */
 export const settleAfterLoad = async (page: Page): Promise<void> => {
   await page.waitForLoadState('load');

@@ -45,7 +45,7 @@ interface MdEditorProps {
 const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, windowheight }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
-  const { signer } = useSignerContext();
+  const { loadSigner } = useSignerContext();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDrag, setIsDrag] = useState(false);
@@ -135,7 +135,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         event.preventDefault();
         const cursorPos = view.state.selection.main.head;
         onImagePaste(
-          event.clipboardData, insertTextAtPosition, signer.username, signer,
+          event.clipboardData, insertTextAtPosition, user.username, loadSigner,
           setIsUploading, cursorPos, processingOptionsRef.current
         );
         return true;
@@ -197,7 +197,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
       return true;
     },
-    [setMarkdownAdapter, signer, isBlockedUser, t]
+    [setMarkdownAdapter, loadSigner, user.username, isBlockedUser, t]
   );
 
   // Stable ref for paste handler so extension doesn't need to be re-created
@@ -226,7 +226,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
       if (fileList.length === 1) {
         await onImageUpload(
-          fileList[0], insertTextAtPosition, user.username, signer,
+          fileList[0], insertTextAtPosition, user.username, loadSigner,
           setIsUploading, cursorPos, processingOptions
         );
       } else {
@@ -240,7 +240,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         }));
         setUploadQueue(items);
 
-        await onBatchImageUpload(files, insertTextAtPosition, user.username, signer, {
+        await onBatchImageUpload(files, insertTextAtPosition, user.username, loadSigner, {
           onFileStart: (i) => {
             setUploadQueue((prev) =>
               prev.map((item, idx) => (idx === i ? { ...item, status: 'processing' } : item))
@@ -267,7 +267,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         }, cursorPos, processingOptions);
       }
     },
-    [insertTextAtPosition, signer, user.username, processingOptions, viewRef]
+    [insertTextAtPosition, loadSigner, user.username, processingOptions, viewRef]
   );
 
   // Drag handlers
@@ -291,11 +291,11 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       setIsDrag(false);
       const cursorPos = viewRef.current?.state.selection.main.head;
       await onImageDrop(
-        event.dataTransfer, insertTextAtPosition, signer.username, signer,
+        event.dataTransfer, insertTextAtPosition, user.username, loadSigner,
         setIsUploading, cursorPos, processingOptions
       );
     },
-    [insertTextAtPosition, signer, processingOptions, viewRef]
+    [insertTextAtPosition, loadSigner, user.username, processingOptions, viewRef]
   );
 
   // Toolbar buttons

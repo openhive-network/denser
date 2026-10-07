@@ -8,6 +8,13 @@ import { expect } from './fixture-proxy-test';
  */
 
 const CHUNK_URL_PATTERN = /\/_next\/static\/chunks\/[^"'\s\\]+\.js/g;
+const CHUNK_PATH_PATTERN = /static\/chunks\/[^"'\s\\]+\.js/g;
+
+/**
+ * `code` without the chunk paths it mentions: a chunk's list of the chunks it may load later is
+ * not their code, and `next dev` names chunks after their package (`…_@hiveio_beekeeper_….js`).
+ */
+export const withoutChunkPaths = (code: string): string => code.replace(CHUNK_PATH_PATTERN, '');
 
 /** Strings that only the bundled code of a library carries, keyed by what they identify. */
 export const CHUNK_MARKERS = {
@@ -61,7 +68,7 @@ export const findMarkersInInitialChunks = async (
   for (const chunkUrl of chunkUrls) {
     const chunkResponse = await request.get(chunkUrl);
     expect(chunkResponse.status(), chunkUrl).toBe(200);
-    const chunk = await chunkResponse.text();
+    const chunk = withoutChunkPaths(await chunkResponse.text());
     for (const marker of markers) {
       if (chunk.includes(marker)) found.push(`${chunkUrl}: ${marker}`);
     }
