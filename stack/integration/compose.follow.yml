@@ -18,7 +18,9 @@
 #   caddy     serves /<app>/_next/static/* itself, precompressed, from
 #             releases/<app>/static (Caddyfile.static.releases): the static files
 #             of every release follow.sh published in the last 7 days, so a page
-#             of an earlier release still loads its chunks after a swap.
+#             of an earlier release still loads its chunks after a swap; and the
+#             generated public/ files (auth/, locales/, smart-signer/) from
+#             releases/<app>/current, precompressed too.
 #
 # The variables (upgrade.sh and session-stack.sh export them):
 #   DENSER_FOLLOW_IMAGE  the environment image, read from .aidev/project.yaml

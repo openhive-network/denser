@@ -61,11 +61,12 @@ ARG TURBO_APP_NAME
 RUN --mount=type=cache,id=next-${TURBO_APP_NAME},target=/app${TURBO_APP_PATH}/.next/cache \
     --mount=type=cache,id=turbo-${TURBO_APP_NAME},target=/turbo-cache \
     pnpm dlx turbo run build --filter=${TURBO_APP_SCOPE} --cache-dir=/turbo-cache
-# .br/.zst next to each compressible static asset, for a proxy that serves them
-# precompressed (caddy's `file_server { precompressed br zstd gzip }`). The server
-# itself serves the originals.
+# .br/.zst next to each compressible static asset and each public/ file copy:public
+# generates, for a proxy that serves them precompressed (caddy's
+# `file_server { precompressed br zstd gzip }`). The server itself serves the originals.
 COPY --from=builder /app/scripts/precompress-static.mjs /usr/local/lib/precompress-static.mjs
-RUN node /usr/local/lib/precompress-static.mjs /app${TURBO_APP_PATH}/.next/static
+RUN node /usr/local/lib/precompress-static.mjs /app${TURBO_APP_PATH}/.next/static \
+    /app${TURBO_APP_PATH}/public/auth /app${TURBO_APP_PATH}/public/locales /app${TURBO_APP_PATH}/public/smart-signer
 
 # ============================================================================
 # RUNNER: Minimal production image

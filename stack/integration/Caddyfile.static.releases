@@ -14,3 +14,52 @@ handle_path /{args[0]}/_next/static/* {
 		precompressed br zstd gzip
 	}
 }
+
+# /<app>/auth/*, /<app>/locales/* and /<app>/smart-signer/*: the files copy:public
+# puts in public/ (hb-auth's worker.js and its WASM, the translations, the signer's
+# images), straight from the served release with the .br/.zst sidecars follow.sh
+# wrote (_package). Their names carry no content hash, so a cache must revalidate
+# them; file_server answers that with a 304 on a matching ETag. hb-auth's assets/
+# are Vite's content-hashed output (worker.js names them), so they are immutable.
+# A path the release lacks is a 404, as the app's server would answer it.
+#
+# worker.js was no-store in the app's headers. Nothing in it is user data (hb-auth
+# keeps keys in IndexedDB) and no-store gave nothing revalidation does not: a
+# browser still checks it on every use and takes a new one as soon as it is
+# published.
+handle_path /{args[0]}/auth/* {
+	root * /srv/releases/{args[0]}/current/apps/{args[0]}/public/auth
+	@hashed {
+		file
+		path /assets/*
+	}
+	@revalidated {
+		file
+		not path /assets/*
+	}
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+	@published file
+	header @revalidated Cache-Control "public, max-age=0, must-revalidate"
+	header @published X-Content-Type-Options nosniff
+	file_server {
+		precompressed br zstd gzip
+	}
+}
+handle_path /{args[0]}/locales/* {
+	root * /srv/releases/{args[0]}/current/apps/{args[0]}/public/locales
+	@published file
+	header @published Cache-Control "public, max-age=0, must-revalidate"
+	header @published X-Content-Type-Options nosniff
+	file_server {
+		precompressed br zstd gzip
+	}
+}
+handle_path /{args[0]}/smart-signer/* {
+	root * /srv/releases/{args[0]}/current/apps/{args[0]}/public/smart-signer
+	@published file
+	header @published Cache-Control "public, max-age=0, must-revalidate"
+	header @published X-Content-Type-Options nosniff
+	file_server {
+		precompressed br zstd gzip
+	}
+}

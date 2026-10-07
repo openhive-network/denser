@@ -105,8 +105,8 @@ _smoke_start() {
 }
 
 # The Dockerfile's runner stage, as a directory: standalone output, static assets
-# (with their .br/.zst sidecars), public/ and lib/markdowns (read at run time,
-# outside the standalone trace).
+# and the public/ files copy:public generates (both with their .br/.zst sidecars),
+# public/ and lib/markdowns (read at run time, outside the standalone trace).
 _package() {
     local app=$1 out=$2
     rm -rf "$out" \
@@ -115,6 +115,8 @@ _package() {
         && node scripts/precompress-static.mjs "$out/apps/$app/.next/static" \
         && rm -rf "$out/apps/$app/public" \
         && cp -a "apps/$app/public" "$out/apps/$app/public" \
+        && node scripts/precompress-static.mjs "$out/apps/$app/public/auth" \
+            "$out/apps/$app/public/locales" "$out/apps/$app/public/smart-signer" \
         && if [ -d "apps/$app/lib/markdowns" ]; then
             mkdir -p "$out/apps/$app/lib" && cp -a "apps/$app/lib/markdowns" "$out/apps/$app/lib/markdowns"
         fi
