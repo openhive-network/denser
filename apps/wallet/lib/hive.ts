@@ -16,11 +16,13 @@ import {
   IGetOperationsByAccountResponse,
   HiveOperation,
   HiveOpTypeSchema,
-  IWitness
+  IWitness,
+  GetOperationsByAccountParams
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
 import { getLogger } from '@ui/lib/logging';
 import { getReadChain } from '@transaction/lib/chain';
+import { retryReadOnce } from '@transaction/lib/read-retry';
 
 const logger = getLogger('app');
 
@@ -187,22 +189,29 @@ const walletOperations = [
   'failed_recurrent_transfer_operation'
 ];
 
+// Filtered operation queries of accounts with a long history can take the API several seconds,
+// well past the shared apiTimeout, and a repeated query is often answered much faster.
+const ACCOUNT_OPERATIONS_TIMEOUT_MS = 15_000;
+
+const readAccountOperations = (params: GetOperationsByAccountParams): Promise<IGetOperationsByAccountResponse> =>
+  retryReadOnce(() =>
+    getReadChain().withTimeout(ACCOUNT_OPERATIONS_TIMEOUT_MS).restApi['hivemind-api'].accountsOperations(params)
+  );
+
 export const getAccountOperations = async (
   username: string,
   page: number | undefined = undefined,
   pageSize: number = 500,
   observer: string
 ): Promise<IGetOperationsByAccountResponse> => {
-  const chain = getReadChain();
   const operationTypesIds = await getOperationTypeIds(walletOperations);
-  const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
+  return readAccountOperations({
     'account-name': username,
     page,
     'page-size': pageSize,
     'operation-types': operationTypesIds.toString(),
     'observer-name': observer !== '' ? observer : commonVariables.defaultObserver
   });
-  return accountOperations;
 };
 
 export type IAuthorReward = {
@@ -254,9 +263,8 @@ export const getFinancialReportOperations = async (
   username: string,
   pageSize: number = 500
 ): Promise<HiveOperation[]> => {
-  const chain = getReadChain();
   const operationTypesIds = await getOperationTypeIds(financialReportOperations);
-  const accountOperations = await chain.restApi['hivemind-api'].accountsOperations({
+  const accountOperations = await readAccountOperations({
     'account-name': username,
     'operation-types': operationTypesIds.toString(),
     'page-size': pageSize
@@ -269,10 +277,9 @@ export const getRestApiAccountRewardsHistory = async (
   op_type: 'author_reward_operation' | 'curation_reward_operation',
   limit: number = 20
 ): Promise<HiveOperation[]> => {
-  const chain = getReadChain();
   const [opTypeId] = await getOperationTypeIds([op_type]);
   const operations = (
-    await chain.restApi['hivemind-api'].accountsOperations({
+    await readAccountOperations({
       'account-name': username,
       'operation-types': opTypeId,
       'page-size': limit

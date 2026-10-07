@@ -60,7 +60,8 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "retry": "重试"
   },
   "navigation": {
     "main_nav_bar": {
@@ -143,6 +144,7 @@
     "estimated_account_value_title": "账户估值",
     "estimated_account_value_description": "基于美元计算，HIVE的估值。",
     "account_history_title": "历史",
+    "account_history_error": "无法加载账户历史记录。",
     "see_faq_for_details": "See FAQ for details.",
     "witnesses": "Witnesses",
     "account_history_description": "Beware of spam and phishing links in transfer memos. Do not open links from users you do not trust. Do not provide your private keys to any third party websites. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
