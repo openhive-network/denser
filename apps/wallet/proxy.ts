@@ -16,6 +16,9 @@ export const proxy = createMiddleware({
 // statically, so it is a literal here and in the other app's proxy.ts.
 export const config = {
   matcher: [
+    // The root on its own: under a base path Next does not match `/wallet` (no trailing
+    // slash) with the pattern below, and the root page needs the middleware's CSP too.
+    '/',
     '/((?!_next/static/|_next/image|[^@%]*\\.(?:ico|png|jpe?g|gif|webp|avif|svg|woff2?|ttf|wasm|json|txt|map|js)$).*)'
   ]
 };
