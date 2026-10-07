@@ -1,47 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { TFunction } from 'i18next';
 import { Button } from '@ui/components';
-import { HiveOperation } from '@hive/common-hiveio-packages/wax';
-import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
-import { HiveChain, hiveChainService } from '@transaction/lib/hive-chain-service';
-import { getLogger } from '@ui/lib/logging';
+import type { HiveOperation } from '@hive/common-hiveio-packages/wax';
+import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { createWalletOperationsFormatter } from './wallet-operations-formatter';
 import HistoryTableRow from './history-table-row';
 import AccountHistoryError from '@/wallet/components/account-history-error';
 
-const logger = getLogger('app');
-
 type DynamicData = Pick<GetDynamicGlobalPropertiesResponse, 'total_vesting_fund_hive' | 'total_vesting_shares'>;
 
-/**
- * The operation descriptions are rendered by wax's formatter, so wax is loaded here, after the page
- * (balances included) has painted, instead of gating the page on it.
- */
-const useLazyHiveChain = (): { hiveChain: HiveChain | undefined; failed: boolean } => {
-  const [hiveChain, setHiveChain] = useState(() => hiveChainService.reuseHiveChain());
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    if (hiveChain) return;
-    let cancelled = false;
-    hiveChainService
-      .getHiveChain()
-      .then((chain) => {
-        if (!cancelled) setHiveChain(chain);
-      })
-      .catch((error: unknown) => {
-        logger.error(error, 'Loading wax for the account history formatter failed');
-        if (!cancelled) setFailed(true);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [hiveChain]);
-
-  return { hiveChain, failed };
-};
-
-// Each row costs a wax format call and a TimeAgo: rendering the whole history in one commit blocks
+// Each row costs a format call and a TimeAgo: rendering the whole history in one commit blocks
 // the main thread for seconds on mobile, so rows are rendered a page at a time.
 const HISTORY_PAGE_SIZE = 50;
 
@@ -69,18 +37,11 @@ const HistoryTable = ({
   onRetry
 }: HistoryTableProps) => {
   const [visibleCount, setVisibleCount] = useState(HISTORY_PAGE_SIZE);
-  const { hiveChain, failed: hiveChainFailed } = useLazyHiveChain();
 
-  const formatOperationDescription = useMemo(() => {
-    if (!hiveChain) return null;
-    const FormatterClass = createWalletOperationsFormatter(username, dynamicData, t);
-    const extendedFormatter = hiveChain.formatter.extend(FormatterClass);
-
-    return (operation: HiveOperation): React.ReactNode => {
-      const formatted = extendedFormatter.format(operation);
-      return React.isValidElement(formatted?.op?.value) ? formatted.op.value : <div>error</div>;
-    };
-  }, [hiveChain, username, dynamicData, t]);
+  const formatOperationDescription = useMemo(
+    () => createWalletOperationsFormatter(username, dynamicData, t),
+    [username, dynamicData, t]
+  );
 
   // Rows already loaded are shown first; only when they run out is the next page requested.
   const showOlder = useCallback(() => {
@@ -117,9 +78,6 @@ const HistoryTable = ({
         {footer}
       </>
     );
-
-  if (hiveChainFailed) return <div className="py-12 text-center">{t('global.something_went_wrong')}</div>;
-  if (!formatOperationDescription) return <div>{t('global.loading')}</div>;
 
   return (
     <>
