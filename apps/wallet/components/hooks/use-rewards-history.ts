@@ -4,10 +4,12 @@ import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import parseDate from '@ui/lib/parse-date';
 
 export const useRewardsHistory = (username: string, opType: 'author_reward_operation' | 'curation_reward_operation') => {
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, isError, refetch } = useQuery(
     ['accountHistory', username, opType],
     () => getRestApiAccountRewardsHistory(username, opType, 1000),
     {
+      retry: false,
+      refetchOnWindowFocus: false,
       select: (data) =>
         data
           .map((element) => ({
@@ -23,6 +25,8 @@ export const useRewardsHistory = (username: string, opType: 'author_reward_opera
   return {
     data,
     dynamicData,
-    isLoading: isLoading || dynamicLoading
+    isLoading: isLoading || dynamicLoading,
+    isError,
+    refetch
   };
 };

@@ -52,6 +52,11 @@ export interface IReadClient<TApi, TRestApi> {
   readonly restApi: TRestApi;
   readonly chainId: string;
   readonly endpointUrl: string;
+  /**
+   * A client for the same endpoints whose requests time out after `timeoutMs` instead of the
+   * configured `timeoutMs`, for a call known to be slower than the rest.
+   */
+  withTimeout(timeoutMs: number): IReadClient<TApi, TRestApi>;
 }
 
 /**
@@ -229,6 +234,12 @@ export function createReadClient<TApi extends object, TRestApi extends object>({
     },
     get endpointUrl() {
       return getConfig().apiEndpoint;
-    }
+    },
+    withTimeout: (timeoutMs) =>
+      createReadClient<TApi, TRestApi>({
+        getConfig: () => ({ ...getConfig(), timeoutMs }),
+        transport,
+        restApiDefinition
+      })
   };
 }

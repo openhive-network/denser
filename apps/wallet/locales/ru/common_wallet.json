@@ -60,7 +60,8 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "retry": "Повторить"
   },
   "navigation": {
     "main_nav_bar": {
@@ -143,6 +144,7 @@
     "estimated_account_value_title": "Приблизительная стоимость аккаунта",
     "estimated_account_value_description": "Сметная стоимость основана на среднем значении %(LIQUID_TOKEN)s в долларах США.",
     "account_history_title": "ИСТОРИЯ",
+    "account_history_error": "Не удалось загрузить историю аккаунта.",
     "see_faq_for_details": "See FAQ for details.",
     "witnesses": "Witnesses",
     "account_history_description": "Остерегайтесь спама и фишинговых ссылок в передачах. Не открывайте ссылки от пользователей, которым вы не доверяете. Не предоставляйте свои личные ключи третьим сторонам. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",

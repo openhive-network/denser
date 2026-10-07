@@ -63,7 +63,8 @@
       "a_month": " miesiąc",
       "years": " lat_a",
       "a_year": " rok"
-    }
+    },
+    "retry": "Spróbuj ponownie"
   },
   "navigation": {
     "main_nav_bar": {
@@ -170,6 +171,7 @@
     "estimated_account_value_title": "Szacowana wartość konta",
     "estimated_account_value_description": "Szacowana wartość bazuje na średniej cenie tokenu HIVE w dolarach amerykańskich.",
     "account_history_title": "Historia",
+    "account_history_error": "Nie udało się wczytać historii konta.",
     "see_faq_for_details": "Zobacz szczegóły.",
     "witnesses": "Witnesses",
     "account_history_description": "Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.",

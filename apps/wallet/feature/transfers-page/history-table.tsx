@@ -7,6 +7,7 @@ import { HiveChain, hiveChainService } from '@transaction/lib/hive-chain-service
 import { getLogger } from '@ui/lib/logging';
 import { createWalletOperationsFormatter } from './wallet-operations-formatter';
 import HistoryTableRow from './history-table-row';
+import AccountHistoryError from '@/wallet/components/account-history-error';
 
 const logger = getLogger('app');
 
@@ -45,19 +46,27 @@ const useLazyHiveChain = (): { hiveChain: HiveChain | undefined; failed: boolean
 const HISTORY_PAGE_SIZE = 50;
 
 interface HistoryTableProps {
-  isLoading: boolean;
   historyList: HiveOperation[] | undefined;
   t: TFunction<'common_wallet', undefined>;
   username: string;
   dynamicData: DynamicData;
+  hasOlder: boolean;
+  isFetchingOlder: boolean;
+  olderFailed: boolean;
+  onLoadOlder: () => void;
+  onRetry: () => void;
 }
 
 const HistoryTable = ({
   t,
-  isLoading,
   historyList = [],
   username,
-  dynamicData
+  dynamicData,
+  hasOlder,
+  isFetchingOlder,
+  olderFailed,
+  onLoadOlder,
+  onRetry
 }: HistoryTableProps) => {
   const [visibleCount, setVisibleCount] = useState(HISTORY_PAGE_SIZE);
   const { hiveChain, failed: hiveChainFailed } = useLazyHiveChain();
@@ -73,17 +82,40 @@ const HistoryTable = ({
     };
   }, [hiveChain, username, dynamicData, t]);
 
-  const showMore = useCallback(() => setVisibleCount((count) => count + HISTORY_PAGE_SIZE), []);
+  // Rows already loaded are shown first; only when they run out is the next page requested.
+  const showOlder = useCallback(() => {
+    if (historyList.length > visibleCount) {
+      setVisibleCount((count) => count + HISTORY_PAGE_SIZE);
+      return;
+    }
+    setVisibleCount(historyList.length + HISTORY_PAGE_SIZE);
+    onLoadOlder();
+  }, [historyList.length, visibleCount, onLoadOlder]);
 
-  if (isLoading) return <div>{t('global.loading')}</div>;
+  const footer = (() => {
+    if (isFetchingOlder) return <div className="p-2 text-center">{t('global.loading')}</div>;
+    if (olderFailed) return <AccountHistoryError onRetry={onRetry} t={t} />;
+    if (historyList.length <= visibleCount && !hasOlder) return null;
+    return (
+      <div className="flex justify-center p-2">
+        <Button variant="outline" onClick={showOlder} data-testid="wallet-account-history-older">
+          {t('profile.older')}
+        </Button>
+      </div>
+    );
+  })();
+
   if (historyList.length === 0)
     return (
-      <div
-        className="py-12 text-center text-3xl text-red-300"
-        data-testid="wallet-account-history-no-transacions-found"
-      >
-        {t('profile.no_transactions_found')}
-      </div>
+      <>
+        <div
+          className="py-12 text-center text-3xl text-red-300"
+          data-testid="wallet-account-history-no-transacions-found"
+        >
+          {t('profile.no_transactions_found')}
+        </div>
+        {footer}
+      </>
     );
 
   if (hiveChainFailed) return <div className="py-12 text-center">{t('global.something_went_wrong')}</div>;
@@ -105,13 +137,7 @@ const HistoryTable = ({
           )}
         </tbody>
       </table>
-      {historyList.length > visibleCount && (
-        <div className="flex justify-center p-2">
-          <Button variant="outline" onClick={showMore} data-testid="wallet-account-history-show-more">
-            {t('profile.show_more_transactions')}
-          </Button>
-        </div>
-      )}
+      {footer}
     </>
   );
 };
