@@ -32,3 +32,13 @@ export const proxy = createMiddleware({
     reportUri: '/api/csp-report'
   }
 });
+
+// No middleware for build assets and public files: it would put Set-Cookie on them,
+// which keeps shared caches from storing them. Paths with an @ (or %40) are account
+// pages, whose names may end in what looks like a file extension. Next reads this
+// statically, so it is a literal here and in the other app's proxy.ts.
+export const config = {
+  matcher: [
+    '/((?!_next/static/|_next/image|[^@%]*\\.(?:ico|png|jpe?g|gif|webp|avif|svg|woff2?|ttf|wasm|json|txt|map|js)$).*)'
+  ]
+};

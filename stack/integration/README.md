@@ -42,12 +42,24 @@ The site runs from this checkout; no image is built or pulled for the apps.
    `compose.follow.yml`) serves the previous build for the whole build and then
    restarts onto the new one; caddy holds requests during that restart
    (`lb_try_duration`).
-4. A build or start that fails leaves `current` alone: the app keeps serving the
+4. Static assets: packaging writes a `.br` (brotli 11) and `.zst` (zstd 19) next to
+   each compressible file of the release's `.next/static`
+   (`scripts/precompress-static.mjs`; the production `Dockerfile` does the same).
+   Before the swap the release's files are copied into `releases/<app>/static`,
+   which caddy serves at `/<app>/_next/static/*` itself (`Caddyfile.static.releases`):
+   the precompressed sidecar the browser accepts, `Cache-Control: public,
+   max-age=31536000, immutable`, a 404 for a file no release published (never a
+   request to Next). The directory keeps every release's files for 7 days
+   (`FOLLOW_STATIC_KEEP_DAYS`), and those of the served and previous releases
+   whatever their age, so a page opened before a swap still loads its lazy chunks
+   after it. In images mode (`DENSER_STATIC_FROM` unset) caddy proxies them to the
+   app as before (`Caddyfile.static.next`).
+5. A build or start that fails leaves `current` alone: the app keeps serving the
    previous commit's build, `status/deployed.json` says `ROLLED-BACK` with the
    failed commit and its log (`releases/<app>/logs/`), the unit exits 1, and the next
    run tries again. A checkout with local changes, on another branch, or behind a
    rewritten branch is `REFUSED` (exit 3) and nothing changes.
-5. `status/deployed.json` reports each app's `revision` (the checkout's commit when
+6. `status/deployed.json` reports each app's `revision` (the checkout's commit when
    its build is that commit's build), its `release`, `source: follow:<branch>` and
    its state. Once every app reports the checkout's HEAD, `upgrade.sh` runs
    `lighthouse.sh` (below).

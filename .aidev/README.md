@@ -243,7 +243,7 @@ under `--network none`, no docker):
 
 | | |
 |---|---|
-| `127.0.0.1:8000` | `lighthouse-fixture/site-router.mjs`: the integration site's routing (`/blog`, `/wallet`, else a redirect to `/blog`) and caddy's `encode zstd gzip` |
+| `127.0.0.1:8000` | `lighthouse-fixture/site-router.mjs`: the integration site's routing (`/blog`, `/wallet`, else a redirect to `/blog`), caddy's `encode zstd gzip`, and follow mode's `/<app>/_next/static` from the builds' files with their `.br`/`.zst` sidecars (`static-files.mjs`) |
 | `:3000`, `:4000` | `next build` of blog (`NEXT_PUBLIC_BASE_PATH=/blog`) and wallet (`/wallet`), packaged and started as follow mode does, with compose.yml's app environment |
 | `:8200` | `fixture-proxy-serve.mjs` replaying the `lighthouse` recording: the API endpoint of both apps' server and client (`REACT_APP_API_ENDPOINT`, `REACT_APP_ALLOWED_HIVE_API_NODES`, `REACT_APP_AI_DOMAIN`) |
 | `:8201` | `lighthouse-fixture/image-server.mjs` replaying the recorded images: `REACT_APP_IMAGES_ENDPOINT` |

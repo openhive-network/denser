@@ -5,7 +5,8 @@
 # this tree served from recorded Hive API and image data, with no network.
 #
 # The site is the integration site's layout, in this container:
-#   127.0.0.1:8000  site-router.mjs: /blog -> blog (:3000), /wallet -> wallet (:4000)
+#   127.0.0.1:8000  site-router.mjs: /blog -> blog (:3000), /wallet -> wallet (:4000),
+#                   /<app>/_next/static from the builds' files, precompressed
 #   127.0.0.1:8200  fixture-proxy-serve.mjs replaying the recording, the API endpoint
 #                   of both apps' server and client
 #   127.0.0.1:8201  image-server.mjs replaying the recorded images, the image proxy
@@ -107,6 +108,7 @@ build() {
     # The Dockerfile's runner stage, as follow/follow.sh packages a release.
     cp -a "apps/$app/.next/standalone" "$work/$app" \
         && cp -a "apps/$app/.next/static" "$work/$app/apps/$app/.next/static" \
+        && node scripts/precompress-static.mjs "$work/$app/apps/$app/.next/static" \
         && rm -rf "$work/$app/apps/$app/public" \
         && cp -a "apps/$app/public" "$work/$app/apps/$app/public" \
         || return 1
@@ -158,6 +160,7 @@ start_site() {
     serve_app blog "$blog_port"
     serve_app wallet "$wallet_port"
     DENSER_FIXTURE_CLOCK="$clock" node "$here/site-router.mjs" --port "$site_port" --blog "$blog_port" --wallet "$wallet_port" \
+        --static-blog "$work/blog/apps/blog/.next/static" --static-wallet "$work/wallet/apps/wallet/.next/static" \
         > "$out/logs/site-router.log" 2>&1 < /dev/null &
     pids+=($!)
     wait_for "http://127.0.0.1:$api_port/__aidev/status" \
