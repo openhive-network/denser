@@ -32,10 +32,14 @@ services:
     image: caddy:2.10.0-alpine
     ports: !override
       - 127.0.0.1:${DENSER_SESSION_PORT:?session-stack.sh picks it}:80
-    environment: !override {}
+    environment: !override
+      DENSER_STATIC_FROM: releases
     networks: !override [default]
     volumes: !override
       - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.session:/etc/caddy/Caddyfile:ro
       - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.routes:/etc/caddy/Caddyfile.routes:ro
+      - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.static.next:/etc/caddy/Caddyfile.static.next:ro
+      - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.static.releases:/etc/caddy/Caddyfile.static.releases:ro
       - ${DENSER_SOURCE_DIR}/stack/integration/status:/srv/status:ro
+      - ${DENSER_SOURCE_DIR}/stack/integration/releases:/srv/releases:ro
 

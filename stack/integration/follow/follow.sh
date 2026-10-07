@@ -31,6 +31,8 @@ src=${FOLLOW_SOURCE_DIR:-/src}
 # Smoke starts bind 127.0.0.1 inside this container, never a served port.
 smoke_port=3990
 smoke_timeout=120
+# How long releases/<app>/static keeps a file no newer release published.
+static_keep_days=${FOLLOW_STATIC_KEEP_DAYS:-7}
 
 cd "$src"
 
@@ -102,18 +104,32 @@ _smoke_start() {
     [ -n "$code" ] && echo "smoke: $base answered $code"
 }
 
-# The Dockerfile's runner stage, as a directory: standalone output, static assets,
-# public/ and lib/markdowns (read at run time, outside the standalone trace).
+# The Dockerfile's runner stage, as a directory: standalone output, static assets
+# (with their .br/.zst sidecars), public/ and lib/markdowns (read at run time,
+# outside the standalone trace).
 _package() {
     local app=$1 out=$2
     rm -rf "$out" \
         && cp -a "apps/$app/.next/standalone" "$out" \
         && cp -a "apps/$app/.next/static" "$out/apps/$app/.next/static" \
+        && node scripts/precompress-static.mjs "$out/apps/$app/.next/static" \
         && rm -rf "$out/apps/$app/public" \
         && cp -a "apps/$app/public" "$out/apps/$app/public" \
         && if [ -d "apps/$app/lib/markdowns" ]; then
             mkdir -p "$out/apps/$app/lib" && cp -a "apps/$app/lib/markdowns" "$out/apps/$app/lib/markdowns"
         fi
+}
+
+# releases/<app>/static: every release's /_next/static files, which caddy serves
+# (Caddyfile.static.releases). Filled before the swap, so the new release's pages
+# never name a file caddy lacks, and kept after it, so a page of an earlier release
+# still loads its lazy chunks. cp without -a stamps each file with the time it was
+# last published; _prune drops what no release published for static_keep_days.
+_publish_static() {
+    local dir=$1 id=$2 app=$3
+    mkdir -p "$dir/static" \
+        && cp -R "$dir/$id/apps/$app/.next/static/." "$dir/static/" \
+        && touch "$dir/$id/.static-published"
 }
 
 _swap() {
@@ -125,17 +141,26 @@ _swap() {
     ln -sfn "$id" "$dir/current.tmp" && mv -fT "$dir/current.tmp" "$dir/current"
 }
 
-# Keeps the served release, the one before it (a rollback by hand is one symlink)
-# and the last 10 logs.
+# Keeps the served release, the one before it (a rollback by hand is one symlink),
+# the last 10 logs, and the static files some release published in the last
+# static_keep_days or one of those two releases has, whatever their age.
 _prune() {
-    local dir=$1 keep_current keep_previous entry
+    local dir=$1 app=$2 keep_current keep_previous entry
     keep_current=$(readlink "$dir/current" 2>/dev/null || true)
     keep_previous=$(readlink "$dir/previous" 2>/dev/null || true)
     for entry in "$dir"/*/; do
         entry=$(basename "$entry")
-        case "$entry" in current|previous|logs|"$keep_current"|"$keep_previous") ;; *) rm -rf "${dir:?}/$entry" ;; esac
+        case "$entry" in current|previous|logs|static|"$keep_current"|"$keep_previous") ;; *) rm -rf "${dir:?}/$entry" ;; esac
     done
     ls -1t "$dir/logs" 2>/dev/null | tail -n +11 | while read -r old; do rm -f "$dir/logs/$old"; done
+    [ -d "$dir/static" ] || return 0
+    (cd "$dir/static" && find . -type f -mtime +"$static_keep_days" -print0) \
+        | while IFS= read -r -d '' entry; do
+            [ -e "$dir/$keep_current/apps/$app/.next/static/$entry" ] \
+                || { [ -n "$keep_previous" ] && [ -e "$dir/$keep_previous/apps/$app/.next/static/$entry" ]; } \
+                || rm -f "$dir/static/$entry"
+        done
+    find "$dir/static" -mindepth 1 -type d -empty -delete
 }
 
 _follow_app() {
@@ -148,6 +173,16 @@ _follow_app() {
 
     if [ -n "$current" ] && [ "$(_release_key "$dir/$current")" = "$key" ]; then
         # Nothing this app's build reads has changed: its release is this commit's too.
+        if [ ! -e "$dir/$current/.static-published" ]; then
+            # Packaged before releases/<app>/static existed: caddy serves its static
+            # files only once they are there.
+            log="$dir/logs/$current.static.log"
+            if ! { node scripts/precompress-static.mjs "$dir/$current/apps/$app/.next/static" \
+                    && _publish_static "$dir" "$current" "$app"; } > "$log" 2>&1; then
+                echo "follow: $app: could not publish $current's static files; log ${log#"$releases"/}" >&2
+                return 1
+            fi
+        fi
         if [ "$(_state_field "$dir" status)" != deployed ] || [ "$(_state_field "$dir" revision)" != "$commit" ]; then
             _write_state "$dir" deployed "$current" "$key" "$commit"
         fi
@@ -185,9 +220,13 @@ _follow_app() {
         _record_failure "$dir" "$key" "$commit" start "$log"
         return 1
     fi
+    if ! _publish_static "$dir" "$id" "$app" >> "$log" 2>&1; then
+        _record_failure "$dir" "$key" "$commit" package "$log"
+        return 1
+    fi
     _swap "$dir" "$id"
     _write_state "$dir" deployed "$id" "$key" "$commit"
-    _prune "$dir"
+    _prune "$dir" "$app"
     echo "follow: $app: serving $id"
 }
 
