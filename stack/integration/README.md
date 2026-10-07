@@ -54,6 +54,16 @@ The site runs from this checkout; no image is built or pulled for the apps.
    whatever their age, so a page opened before a swap still loads its lazy chunks
    after it. In images mode (`DENSER_STATIC_FROM` unset) caddy proxies them to the
    app as before (`Caddyfile.static.next`).
+
+   The public/ files the build generates (`copy:public`: hb-auth's `auth/worker.js`
+   and `auth/assets/`, `locales/`, `smart-signer/`) get the same sidecars, and caddy
+   serves `/<app>/auth/*`, `/<app>/locales/*` and `/<app>/smart-signer/*` from the
+   served release's `public/` (`releases/<app>/current`). Their names carry no
+   content hash, so they are `public, max-age=0, must-revalidate` and a repeat
+   use is a 304 on the ETag; hb-auth's `auth/assets/` are content-hashed and
+   immutable. `worker.js` was `no-store`; it is public code and hb-auth keeps no
+   secret in it, so revalidation gives the same freshness. The apps' `next.config.js`
+   sends the same headers in images mode.
 5. A build or start that fails leaves `current` alone: the app keeps serving the
    previous commit's build, `status/deployed.json` says `ROLLED-BACK` with the
    failed commit and its log (`releases/<app>/logs/`), the unit exits 1, and the next
