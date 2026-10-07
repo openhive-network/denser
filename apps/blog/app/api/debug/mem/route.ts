@@ -41,5 +41,6 @@ function formatMem(mem: NodeJS.MemoryUsage) {
     heapUsed_mb: +(mem.heapUsed / 1024 / 1024).toFixed(2),
     external_mb: +(mem.external / 1024 / 1024).toFixed(2),
     arrayBuffers_mb: +(mem.arrayBuffers / 1024 / 1024).toFixed(2),
+    activeTimeouts: process.getActiveResourcesInfo().filter((resource) => resource === 'Timeout').length,
   };
 }

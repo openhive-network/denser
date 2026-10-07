@@ -269,6 +269,14 @@ trace and loads every lazy image of the page; no metric reads it.
   (`lighthouse-fixture/egress-guard.cjs` refuses and logs it), or a replay MISS on the
   API or image server fails the pass (`hermetic` in the result).
 
+**Server heap.** After the Lighthouse runs, `lighthouse-fixture/heap-check.mjs` renders
+the blog routes 300 times to warm up, then 1,000 more (16 concurrent), reading
+`/blog/api/debug/mem` after forced GCs before and after (the blog server runs with
+`--expose-gc` and `DENSER_DEBUG_MEM=true`). The case fails when `heapUsed` grew more
+than 50 MB or the pending `Timeout`s grew by more than 50: on Node 24 a timer keeps
+the request it was created in reachable until it fires, so a render that leaves one
+behind retains the whole request. Log: `logs/heap-check.log`.
+
 **Results** in `test-results/lighthouse-fixture/`: `result.json` (the integration
 check's shape, `status` `pass` | `breach` | `regression` | `leaked`, plus `hermetic`
 and `comparison`), each run's report under `reports/`, the servers' logs under

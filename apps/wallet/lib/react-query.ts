@@ -1,7 +1,9 @@
 import { QueryClient, isServer } from '@tanstack/react-query';
+import { ServerMutationCache, ServerQueryCache } from '@ui/lib/server-query-cache';
 
 function makeQueryClient() {
   return new QueryClient({
+    ...(isServer && { queryCache: new ServerQueryCache(), mutationCache: new ServerMutationCache() }),
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000
