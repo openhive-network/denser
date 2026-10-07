@@ -24,7 +24,7 @@ branches:
 # How this project's suites execute (#13892): one kind, stated once.
 environment:
   kind: "container"
-  image: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:dd8791ff8fe97440a0c1b1c3b65d301ef5127018260a27c903a9218bc74754bc"
+  image: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:6afb152f4c54426ee6a7fb0eb443963932319f7f4d4dcb5fd24e3a8319b348ef"
   inputs: ["pnpm-lock.yaml"]
 
 issues:
