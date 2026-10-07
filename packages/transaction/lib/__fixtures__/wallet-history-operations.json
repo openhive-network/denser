@@ -1,0 +1,788 @@
+{
+  "source": "api.hive.blog hivemind-api /accounts/{account}/operations and database_api.get_dynamic_global_properties, recorded 2026-10-07; memos blanked",
+  "dynamicGlobalProperties": {
+    "total_vesting_fund_hive": {
+      "amount": "216769457526",
+      "precision": 3,
+      "nai": "@@000000021"
+    },
+    "total_vesting_shares": {
+      "amount": "348485532060956056",
+      "precision": 6,
+      "nai": "@@000000037"
+    }
+  },
+  "operations": [
+    {
+      "operation_id": "474919839866028050",
+      "timestamp": "2026-10-07T21:09:18",
+      "op": {
+        "type": "transfer_operation",
+        "value": {
+          "to": "hive.fund",
+          "from": "hbdstabilizer",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "100000",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "474872479261655047",
+      "timestamp": "2026-10-07T11:55:33",
+      "op": {
+        "type": "transfer_operation",
+        "value": {
+          "to": "ecency",
+          "from": "bonusdeal",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "15000",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "474811211553177606",
+      "timestamp": "2026-10-07T00:00:00",
+      "op": {
+        "type": "transfer_operation",
+        "value": {
+          "to": "hivepen",
+          "from": "ecency",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "1",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "348565149012983814",
+      "timestamp": "2023-12-19T08:47:06",
+      "op": {
+        "type": "transfer_to_vesting_operation",
+        "value": {
+          "to": "guest4test",
+          "from": "gtg",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "100",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "248661417979281485",
+      "timestamp": "2021-10-01T05:19:51",
+      "op": {
+        "type": "transfer_to_vesting_operation",
+        "value": {
+          "to": "gtg",
+          "from": "gandalf",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "1234",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "248538109468213277",
+      "timestamp": "2021-09-30T05:19:45",
+      "op": {
+        "type": "transfer_to_vesting_operation",
+        "value": {
+          "to": "gtg",
+          "from": "gandalf",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "1234",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "466069896543862803",
+      "timestamp": "2026-07-28T01:30:27",
+      "op": {
+        "type": "withdraw_vesting_operation",
+        "value": {
+          "account": "arcange",
+          "vesting_shares": {
+            "nai": "@@000000037",
+            "amount": "892131013780480",
+            "precision": 6
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "460122784178110467",
+      "timestamp": "2026-06-09T20:15:39",
+      "op": {
+        "type": "withdraw_vesting_operation",
+        "value": {
+          "account": "arcange",
+          "vesting_shares": {
+            "nai": "@@000000037",
+            "amount": "0",
+            "precision": 6
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "62841410264498196",
+      "timestamp": "2017-08-16T18:13:36",
+      "op": {
+        "type": "withdraw_vesting_operation",
+        "value": {
+          "account": "blocktrades",
+          "vesting_shares": {
+            "nai": "@@000000037",
+            "amount": "0",
+            "precision": 6
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "44971709203218450",
+      "timestamp": "2017-03-25T02:32:42",
+      "op": {
+        "type": "interest_operation",
+        "value": {
+          "owner": "gtg",
+          "interest": {
+            "nai": "@@000000013",
+            "amount": "6",
+            "precision": 3
+          },
+          "is_saved_into_hbd_balance": true
+        }
+      }
+    },
+    {
+      "operation_id": "33531312191045726",
+      "timestamp": "2016-12-22T11:36:33",
+      "op": {
+        "type": "interest_operation",
+        "value": {
+          "owner": "gtg",
+          "interest": {
+            "nai": "@@000000013",
+            "amount": "428",
+            "precision": 3
+          },
+          "is_saved_into_hbd_balance": true
+        }
+      }
+    },
+    {
+      "operation_id": "29739500313772034",
+      "timestamp": "2016-11-21T17:53:39",
+      "op": {
+        "type": "interest_operation",
+        "value": {
+          "owner": "gtg",
+          "interest": {
+            "nai": "@@000000013",
+            "amount": "985",
+            "precision": 3
+          },
+          "is_saved_into_hbd_balance": true
+        }
+      }
+    },
+    {
+      "operation_id": "347716613799149643",
+      "timestamp": "2023-12-12T12:00:06",
+      "op": {
+        "type": "transfer_to_savings_operation",
+        "value": {
+          "to": "gtg",
+          "from": "guest4test1",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "1",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "341341044085882941",
+      "timestamp": "2023-10-21T21:48:51",
+      "op": {
+        "type": "transfer_to_savings_operation",
+        "value": {
+          "to": "gandalf",
+          "from": "gtg",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000013",
+            "amount": "53750",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "339861754269925377",
+      "timestamp": "2023-10-09T22:28:12",
+      "op": {
+        "type": "transfer_to_savings_operation",
+        "value": {
+          "to": "gandalf",
+          "from": "gtg",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000013",
+            "amount": "32700",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "418717186320760834",
+      "timestamp": "2025-07-09T09:55:18",
+      "op": {
+        "type": "transfer_from_savings_operation",
+        "value": {
+          "to": "gtg",
+          "from": "gtg",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000013",
+            "amount": "1",
+            "precision": 3
+          },
+          "request_id": 1
+        }
+      }
+    },
+    {
+      "operation_id": "418717023112003586",
+      "timestamp": "2025-07-09T09:53:24",
+      "op": {
+        "type": "transfer_from_savings_operation",
+        "value": {
+          "to": "gtg",
+          "from": "gtg",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "1",
+            "precision": 3
+          },
+          "request_id": 0
+        }
+      }
+    },
+    {
+      "operation_id": "274522889242279991",
+      "timestamp": "2022-04-28T20:54:12",
+      "op": {
+        "type": "transfer_from_savings_operation",
+        "value": {
+          "to": "gtg",
+          "from": "gandalf",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000013",
+            "amount": "822183",
+            "precision": 3
+          },
+          "request_id": 1
+        }
+      }
+    },
+    {
+      "operation_id": "473809285877334039",
+      "timestamp": "2026-09-28T20:59:39",
+      "op": {
+        "type": "cancel_transfer_from_savings_operation",
+        "value": {
+          "from": "arcange",
+          "request_id": 1790629177
+        }
+      }
+    },
+    {
+      "operation_id": "450822878607179783",
+      "timestamp": "2026-03-26T10:41:42",
+      "op": {
+        "type": "cancel_transfer_from_savings_operation",
+        "value": {
+          "from": "ecency",
+          "request_id": 700198346
+        }
+      }
+    },
+    {
+      "operation_id": "434662763508269092",
+      "timestamp": "2025-11-15T11:18:06",
+      "op": {
+        "type": "cancel_transfer_from_savings_operation",
+        "value": {
+          "from": "ecency",
+          "request_id": 2268887365
+        }
+      }
+    },
+    {
+      "operation_id": "13372732863414277",
+      "timestamp": "2016-07-11T20:22:18",
+      "op": {
+        "type": "fill_convert_request_operation",
+        "value": {
+          "owner": "gtg",
+          "amount_in": {
+            "nai": "@@000000013",
+            "amount": "2",
+            "precision": 3
+          },
+          "requestid": 1467663726,
+          "amount_out": {
+            "nai": "@@000000021",
+            "amount": "6",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "13372363496226821",
+      "timestamp": "2016-07-11T20:18:00",
+      "op": {
+        "type": "fill_convert_request_operation",
+        "value": {
+          "owner": "gtg",
+          "amount_in": {
+            "nai": "@@000000013",
+            "amount": "127144",
+            "precision": 3
+          },
+          "requestid": 1467663446,
+          "amount_out": {
+            "nai": "@@000000021",
+            "amount": "439944",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "38218719238815747",
+      "timestamp": "2017-01-29T10:48:03",
+      "op": {
+        "type": "fill_convert_request_operation",
+        "value": {
+          "owner": "arcange",
+          "amount_in": {
+            "nai": "@@000000013",
+            "amount": "5000",
+            "precision": 3
+          },
+          "requestid": 1485384393,
+          "amount_out": {
+            "nai": "@@000000021",
+            "amount": "34228",
+            "precision": 3
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "77443564631490561",
+      "timestamp": "2017-12-12T21:12:39",
+      "op": {
+        "type": "fill_order_operation",
+        "value": {
+          "open_pays": {
+            "nai": "@@000000021",
+            "amount": "6894",
+            "precision": 3
+          },
+          "open_owner": "mydays",
+          "current_pays": {
+            "nai": "@@000000013",
+            "amount": "1068",
+            "precision": 3
+          },
+          "open_orderid": 1513112911,
+          "current_owner": "gtg",
+          "current_orderid": 1474045244
+        }
+      }
+    },
+    {
+      "operation_id": "76837944177983516",
+      "timestamp": "2017-12-07T23:38:45",
+      "op": {
+        "type": "fill_order_operation",
+        "value": {
+          "open_pays": {
+            "nai": "@@000000013",
+            "amount": "3883",
+            "precision": 3
+          },
+          "open_owner": "gtg",
+          "current_pays": {
+            "nai": "@@000000021",
+            "amount": "18001",
+            "precision": 3
+          },
+          "open_orderid": 1474045242,
+          "current_owner": "happychau123",
+          "current_orderid": 111734608
+        }
+      }
+    },
+    {
+      "operation_id": "76837944177983498",
+      "timestamp": "2017-12-07T23:38:45",
+      "op": {
+        "type": "fill_order_operation",
+        "value": {
+          "open_pays": {
+            "nai": "@@000000013",
+            "amount": "2588",
+            "precision": 3
+          },
+          "open_owner": "gtg",
+          "current_pays": {
+            "nai": "@@000000021",
+            "amount": "12000",
+            "precision": 3
+          },
+          "open_orderid": 1474045242,
+          "current_owner": "happychau123",
+          "current_orderid": 111731901
+        }
+      }
+    },
+    {
+      "operation_id": "474878161503387676",
+      "timestamp": "2026-10-07T13:01:57",
+      "op": {
+        "type": "claim_reward_balance_operation",
+        "value": {
+          "account": "gtg",
+          "reward_hbd": {
+            "nai": "@@000000013",
+            "amount": "0",
+            "precision": 3
+          },
+          "reward_hive": {
+            "nai": "@@000000021",
+            "amount": "0",
+            "precision": 3
+          },
+          "reward_vests": {
+            "nai": "@@000000037",
+            "amount": "910272954",
+            "precision": 6
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "474854758226591752",
+      "timestamp": "2026-10-07T08:28:27",
+      "op": {
+        "type": "claim_reward_balance_operation",
+        "value": {
+          "account": "gtg",
+          "reward_hbd": {
+            "nai": "@@000000013",
+            "amount": "0",
+            "precision": 3
+          },
+          "reward_hive": {
+            "nai": "@@000000021",
+            "amount": "1827",
+            "precision": 3
+          },
+          "reward_vests": {
+            "nai": "@@000000037",
+            "amount": "2938330608",
+            "precision": 6
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "474839133135568905",
+      "timestamp": "2026-10-07T05:26:03",
+      "op": {
+        "type": "claim_reward_balance_operation",
+        "value": {
+          "account": "gtg",
+          "reward_hbd": {
+            "nai": "@@000000013",
+            "amount": "0",
+            "precision": 3
+          },
+          "reward_hive": {
+            "nai": "@@000000021",
+            "amount": "0",
+            "precision": 3
+          },
+          "reward_vests": {
+            "nai": "@@000000037",
+            "amount": "779087776792",
+            "precision": 6
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "474669241409208368",
+      "timestamp": "2026-10-05T20:22:15",
+      "op": {
+        "type": "author_reward_operation",
+        "value": {
+          "author": "arcange",
+          "permlink": "re-1790626934046",
+          "hbd_payout": {
+            "nai": "@@000000013",
+            "amount": "0",
+            "precision": 3
+          },
+          "hive_payout": {
+            "nai": "@@000000021",
+            "amount": "97",
+            "precision": 3
+          },
+          "vesting_payout": {
+            "nai": "@@000000037",
+            "amount": "157629085",
+            "precision": 6
+          },
+          "payout_must_be_claimed": true,
+          "curators_vesting_payout": {
+            "nai": "@@000000037",
+            "amount": "312041251",
+            "precision": 6
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "472583472146284553",
+      "timestamp": "2026-09-18T22:22:00",
+      "op": {
+        "type": "author_reward_operation",
+        "value": {
+          "author": "arcange",
+          "permlink": "re-1789165319239",
+          "hbd_payout": {
+            "nai": "@@000000013",
+            "amount": "0",
+            "precision": 3
+          },
+          "hive_payout": {
+            "nai": "@@000000021",
+            "amount": "191",
+            "precision": 3
+          },
+          "vesting_payout": {
+            "nai": "@@000000037",
+            "amount": "309218573",
+            "precision": 6
+          },
+          "payout_must_be_claimed": true,
+          "curators_vesting_payout": {
+            "nai": "@@000000037",
+            "amount": "615216120",
+            "precision": 6
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "472582595972956180",
+      "timestamp": "2026-09-18T22:11:48",
+      "op": {
+        "type": "author_reward_operation",
+        "value": {
+          "author": "arcange",
+          "permlink": "re-1789164705972",
+          "hbd_payout": {
+            "nai": "@@000000013",
+            "amount": "0",
+            "precision": 3
+          },
+          "hive_payout": {
+            "nai": "@@000000021",
+            "amount": "423",
+            "precision": 3
+          },
+          "vesting_payout": {
+            "nai": "@@000000037",
+            "amount": "682858056",
+            "precision": 6
+          },
+          "payout_must_be_claimed": true,
+          "curators_vesting_payout": {
+            "nai": "@@000000037",
+            "amount": "1360884570",
+            "precision": 6
+          }
+        }
+      }
+    },
+    {
+      "operation_id": "320028501535096837",
+      "timestamp": "2023-05-02T09:23:54",
+      "op": {
+        "type": "recurrent_transfer_operation",
+        "value": {
+          "to": "arcange",
+          "from": "peak.open",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000013",
+            "amount": "55000",
+            "precision": 3
+          },
+          "executions": 10,
+          "extensions": [],
+          "recurrence": 720
+        }
+      }
+    },
+    {
+      "operation_id": "295705015111123070",
+      "timestamp": "2022-10-17T12:18:30",
+      "op": {
+        "type": "recurrent_transfer_operation",
+        "value": {
+          "to": "hive.autoclaim",
+          "from": "arcange",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "0",
+            "precision": 3
+          },
+          "executions": 6,
+          "extensions": [],
+          "recurrence": 721
+        }
+      }
+    },
+    {
+      "operation_id": "277725934117716025",
+      "timestamp": "2022-05-24T19:44:39",
+      "op": {
+        "type": "recurrent_transfer_operation",
+        "value": {
+          "to": "arcange",
+          "from": "peak.pay",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000013",
+            "amount": "55000",
+            "precision": 3
+          },
+          "executions": 10,
+          "extensions": [],
+          "recurrence": 720
+        }
+      }
+    },
+    {
+      "operation_id": "353385489593532467",
+      "timestamp": "2024-01-27T09:23:51",
+      "op": {
+        "type": "fill_recurrent_transfer_operation",
+        "value": {
+          "to": "arcange",
+          "from": "peak.open",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000013",
+            "amount": "55000",
+            "precision": 3
+          },
+          "extensions": [],
+          "remaining_executions": 0
+        }
+      }
+    },
+    {
+      "operation_id": "349680745293283368",
+      "timestamp": "2023-12-28T09:23:51",
+      "op": {
+        "type": "fill_recurrent_transfer_operation",
+        "value": {
+          "to": "arcange",
+          "from": "peak.open",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000013",
+            "amount": "55000",
+            "precision": 3
+          },
+          "extensions": [],
+          "remaining_executions": 1
+        }
+      }
+    },
+    {
+      "operation_id": "345972998810894383",
+      "timestamp": "2023-11-28T09:23:51",
+      "op": {
+        "type": "fill_recurrent_transfer_operation",
+        "value": {
+          "to": "arcange",
+          "from": "peak.open",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000013",
+            "amount": "55000",
+            "precision": 3
+          },
+          "extensions": [],
+          "remaining_executions": 2
+        }
+      }
+    },
+    {
+      "operation_id": "260115069260529785",
+      "timestamp": "2022-01-02T01:36:42",
+      "op": {
+        "type": "failed_recurrent_transfer_operation",
+        "value": {
+          "to": "blocktrades",
+          "from": "pamboy27",
+          "memo": "",
+          "amount": {
+            "nai": "@@000000021",
+            "amount": "22000",
+            "precision": 3
+          },
+          "deleted": true,
+          "extensions": [],
+          "consecutive_failures": 1,
+          "remaining_executions": 0
+        }
+      }
+    }
+  ]
+}

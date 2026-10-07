@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect } from 'chai';
 import { EXTENDED_REST_API_DEFINITION } from '@hive/common-hiveio-packages/wax';
 import { createReadClient, JsonRpcApiError } from './read-client';
@@ -5,7 +7,7 @@ import { fetchReadTransport, ReadTransportError } from './read-transport';
 import { calculateCurrentManabarValue, calculateManabarFullRegenerationTime } from './manabar-math';
 import { isTransportError } from './wax-errors';
 import { vestsToHiveSatoshis } from '../../ui/lib/asset-math';
-import { formatAsset } from '../../ui/lib/asset-format';
+import { formatAsset, formatOptionalAsset } from '../../ui/lib/asset-format';
 import { createNaiAsset } from '../../ui/lib/asset-constants';
 
 /**
@@ -391,6 +393,80 @@ describe('wasm-free reads, asset and manabar math are equivalent to wax', functi
 
   it('formatAsset rejects a NAI that is not a Hive asset', () => {
     expect(() => formatAsset({ amount: '1', precision: 3, nai: '@@000000999' })).to.throw('Unknown asset NAI');
+  });
+
+  describe('account history formatting of recorded operations', () => {
+    interface IRecordedOperation {
+      operation_id: string;
+      op: { type: string; value: Record<string, INaiAsset | unknown> };
+    }
+    const { dynamicGlobalProperties, operations } = JSON.parse(
+      readFileSync(join(__dirname, '__fixtures__/wallet-history-operations.json'), 'utf8')
+    ) as {
+      dynamicGlobalProperties: { total_vesting_fund_hive: INaiAsset; total_vesting_shares: INaiAsset };
+      operations: IRecordedOperation[];
+    };
+
+    /** The fields the wallet history formatter renders, per operation type: as an asset, or as Hive Power. */
+    const HISTORY_FIELDS: Record<string, { assets: string[]; hivePower: string[] }> = {
+      claim_reward_balance_operation: { assets: ['reward_hbd', 'reward_hive'], hivePower: ['reward_vests'] },
+      transfer_from_savings_operation: { assets: ['amount'], hivePower: [] },
+      transfer_operation: { assets: ['amount'], hivePower: [] },
+      transfer_to_savings_operation: { assets: ['amount'], hivePower: [] },
+      transfer_to_vesting_operation: { assets: ['amount'], hivePower: [] },
+      interest_operation: { assets: ['interest'], hivePower: [] },
+      cancel_transfer_from_savings_operation: { assets: [], hivePower: [] },
+      fill_order_operation: { assets: ['current_pays', 'open_pays'], hivePower: [] },
+      withdraw_vesting_operation: { assets: [], hivePower: ['vesting_shares'] },
+      recurrent_transfer_operation: { assets: ['amount'], hivePower: [] },
+      fill_recurrent_transfer_operation: { assets: ['amount'], hivePower: [] },
+      failed_recurrent_transfer_operation: { assets: ['amount'], hivePower: [] },
+      author_reward_operation: { assets: ['hbd_payout', 'hive_payout'], hivePower: ['vesting_payout'] }
+    };
+
+    const formattedOperations = operations.filter(({ op }) => op.type in HISTORY_FIELDS);
+    const fieldSamples = (kind: 'assets' | 'hivePower') =>
+      formattedOperations.flatMap(({ operation_id, op }) =>
+        HISTORY_FIELDS[op.type][kind].map((field) => ({
+          sample: `${op.type} ${operation_id} ${field}`,
+          asset: op.value[field] as INaiAsset | undefined
+        }))
+      );
+
+    it('the recordings hold every operation type the history formats', () => {
+      const recordedTypes = new Set(formattedOperations.map(({ op }) => op.type));
+
+      expect([...recordedTypes].sort()).to.deep.equal(Object.keys(HISTORY_FIELDS).sort());
+    });
+
+    it('every asset matches wax formatter.format', () => {
+      const samples = fieldSamples('assets');
+
+      expect(samples.length).to.be.greaterThan(0);
+      for (const { sample, asset } of samples) {
+        expect(asset, sample).to.not.equal(undefined);
+        expect(formatOptionalAsset(asset)).to.equal(waxChain.formatter.format(asset), sample);
+      }
+    });
+
+    it('an absent asset formats as an empty string, as the wax formatter path rendered it', () => {
+      expect(formatOptionalAsset(undefined)).to.equal('');
+    });
+
+    it('every vesting share amount matches wax vestsToHp formatted by wax', () => {
+      const { total_vesting_fund_hive: fund, total_vesting_shares: shares } = dynamicGlobalProperties;
+      const samples = fieldSamples('hivePower');
+
+      expect(samples.length).to.be.greaterThan(0);
+      for (const { sample, asset } of samples) {
+        const hiveSatoshis = vestsToHiveSatoshis(BigInt(asset.amount), BigInt(fund.amount), BigInt(shares.amount));
+
+        expect(formatAsset(createNaiAsset('HIVE', hiveSatoshis))).to.equal(
+          waxChain.formatter.format(waxChain.vestsToHp(asset, fund, shares)),
+          sample
+        );
+      }
+    });
   });
 
   const NOW = 1_700_000_000;
