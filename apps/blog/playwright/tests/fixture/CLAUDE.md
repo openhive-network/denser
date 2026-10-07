@@ -71,7 +71,7 @@ Instead, `seedAuthCookie(context)` (in `fixture-auth/seeder.ts`):
    server-side handlers (e.g. `/api/users/me`) and renders.
 2. Runs an `addInitScript` that writes the same `User` into
    `localStorage['user']`. Without this, `useUserCore`'s
-   `useQuery({initialData: storedUser, refetchOnMount: false})` locks the
+   `useQuery({initialData: userLocalStorage.getUser, refetchOnMount: false})` locks the
    client into the anonymous state even with a valid cookie.
 3. If `CI_TEST_USER_WIF_POSTING` is set, also writes
    `localStorage['wif.{username}@posting']` so `signer-wif.ts` signs

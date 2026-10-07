@@ -9,6 +9,11 @@ import { useLocale } from './locale-context';
 
 import { isServer } from '@tanstack/react-query';
 
+// `useTranslation` asks for the language on every render of every translated component,
+// and reading `document.cookie` is not cheap, so one read serves the rest of the task;
+// a cookie written later (setLanguage) is read from the next task on.
+let languageThisTask: string | undefined;
+
 /**
  * Reads the language from `document.cookie`. Client-only: during SSR the
  * language comes from `LocaleProvider`, set by the root layout.
@@ -19,8 +24,18 @@ export const getLanguageFromCookie = (): string => {
     return '';
   }
 
+  if (languageThisTask === undefined) {
+    languageThisTask = parseLanguageCookie(document.cookie);
+    setTimeout(() => {
+      languageThisTask = undefined;
+    }, 0);
+  }
+  return languageThisTask;
+};
+
+function parseLanguageCookie(cookie: string): string {
   const name = cookieName + '=';
-  const decodedCookie = decodeURIComponent(document.cookie);
+  const decodedCookie = decodeURIComponent(cookie);
   const ca = decodedCookie.split(';');
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];

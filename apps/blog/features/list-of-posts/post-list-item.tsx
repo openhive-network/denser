@@ -13,7 +13,6 @@ import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import { accountReputation } from '@hive/ui';
-import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { cn } from '@ui/lib/utils';
 import { handleError } from '@ui/lib/handle-error';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -34,7 +33,7 @@ import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper
 interface PostListItemProps {
   post: CardEntry;
   isCommunityPage: boolean | undefined;
-  blacklist: IFollowList[] | undefined;
+  isAuthorBlacklisted: boolean;
   nsfwPreferences: Preferences['nsfw'];
   isImagePriority?: boolean;
 }
@@ -43,7 +42,7 @@ function arePostListItemPropsEqual(prev: PostListItemProps, next: PostListItemPr
   // Check primitive props first (fast)
   if (prev.isCommunityPage !== next.isCommunityPage) return false;
   if (prev.nsfwPreferences !== next.nsfwPreferences) return false;
-  if (prev.blacklist !== next.blacklist) return false;
+  if (prev.isAuthorBlacklisted !== next.isAuthorBlacklisted) return false;
   if (prev.isImagePriority !== next.isImagePriority) return false;
 
   // Check post identity and changing fields
@@ -69,7 +68,7 @@ const PostListItem = memo(
   function PostListItem({
     post,
     isCommunityPage,
-    blacklist,
+    isAuthorBlacklisted,
     nsfwPreferences,
     isImagePriority = false
   }: PostListItemProps) {
@@ -100,7 +99,6 @@ const PostListItem = memo(
     }
   }, [nsfwPreferences, tagExists]);
 
-  const blacklistCheck = blacklist ? blacklist.some((e) => e.name === post.author) : false;
   const userFromDMCA = dmcaUserList.includes(post.author);
   const legalBlockedUser = userIllegalContent.includes(post.author);
 
@@ -157,7 +155,7 @@ const PostListItem = memo(
           ) : null}
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
-              {nsfw === 'show' && post.blacklists.length < 1 && !blacklistCheck ? (
+              {nsfw === 'show' && post.blacklists.length < 1 && !isAuthorBlacklisted ? (
                 <Link href={`/@${displayAuthor}`} data-testid="post-card-avatar">
                   <div
                     className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
@@ -182,7 +180,7 @@ const PostListItem = memo(
                 >
                   ({accountReputation(displayReputation)})
                 </span>
-                <PostCardBlacklistMark blacklistCheck={blacklistCheck} blacklists={post.blacklists} />
+                <PostCardBlacklistMark blacklistCheck={isAuthorBlacklisted} blacklists={post.blacklists} />
                 {post.author_role && post.author_role !== 'guest' && isCommunityPage ? (
                   <span className="text-xs md:text-sm">&nbsp;{post.author_role.toUpperCase()}&nbsp;</span>
                 ) : null}
@@ -254,7 +252,7 @@ const PostListItem = memo(
           </CardHeader>
           <div className="flex w-full flex-col md:flex-row ">
             <div>
-              {nsfw === 'show' && !blacklistCheck && !isCardImageRestricted(post) ? (
+              {nsfw === 'show' && !isAuthorBlacklisted && !isCardImageRestricted(post) ? (
                 <>
                   <PostImage post={post} isPriority={isImagePriority} />
                 </>

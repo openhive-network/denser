@@ -1,5 +1,5 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { createContext, FC, useContext } from 'react';
+import { createContext, FC, useContext, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { netVests } from '@/blog/lib/utils';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
@@ -26,6 +26,9 @@ type LoggedUserContextType = {
 };
 
 const LoggedUserContext = createContext<LoggedUserContextType | undefined>(undefined);
+// Vote buttons, one per card and comment, need only this number; on its own it does not
+// re-render them when the manabars arrive or refresh.
+const NetVestsContext = createContext(0);
 
 export const useLoggedUserContext = () => {
   const context = useContext(LoggedUserContext);
@@ -34,6 +37,8 @@ export const useLoggedUserContext = () => {
   }
   return context;
 };
+
+export const useLoggedUserNetVests = () => useContext(NetVestsContext);
 
 export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useUserClient();
@@ -51,10 +56,14 @@ export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children
   });
   const net_vests = accountData ? netVests(accountData) : 0;
   const reputation = accountData?.reputation ?? 25;
+  const value = useMemo(
+    () => ({ loggedUser: accountData, net_vests, reputation, manabarsData }),
+    [accountData, net_vests, reputation, manabarsData]
+  );
 
   return (
-    <LoggedUserContext.Provider value={{ loggedUser: accountData, net_vests, reputation, manabarsData }}>
-      {children}
+    <LoggedUserContext.Provider value={value}>
+      <NetVestsContext.Provider value={net_vests}>{children}</NetVestsContext.Provider>
     </LoggedUserContext.Provider>
   );
 };

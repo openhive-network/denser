@@ -87,9 +87,9 @@ export async function expectFirstPostDownvotedState(
 }
 
 /**
- * Wait until the first post's vote button opens the weight slider: it sits
- * inside the popover trigger only once the voter's account (`net_vests`) has
- * loaded. Before that the button is the plain one-click vote, so a click
+ * Wait until the first post's vote button opens the weight slider: the button
+ * around it announces the popover (`aria-haspopup`) only once the voter's
+ * account (`net_vests`) has loaded. Before that the button is the plain one-click vote, so a click
  * would broadcast a 100% vote instead of opening the slider — the same
  * `login-btn` race as above, on `find_accounts` instead of `list_votes`.
  */

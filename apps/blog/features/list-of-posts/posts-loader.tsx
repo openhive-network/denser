@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import PostListItem from '@/blog/features/list-of-posts/post-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Preferences } from '@/blog/lib/utils';
@@ -22,6 +23,7 @@ const PostList = ({
 }) => {
   const { user } = useUserClient();
   const { data: blacklist } = useFollowListQuery(user.username, 'blacklisted');
+  const blacklistedAuthors = useMemo(() => new Set(blacklist?.map((entry) => entry.name)), [blacklist]);
 
   return (
     <ul data-testid={`post-list-${testFilter}`}>
@@ -33,7 +35,7 @@ const PostList = ({
             post={post}
             key={`${post.author}/${post.permlink}`}
             isCommunityPage={isCommunityPage}
-            blacklist={blacklist}
+            isAuthorBlacklisted={blacklistedAuthors.has(post.author)}
             isImagePriority={prioritizeLeadingImages && index < PRIORITY_IMAGE_COUNT}
           />
         ))}
