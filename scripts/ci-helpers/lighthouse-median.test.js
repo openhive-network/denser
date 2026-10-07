@@ -6,7 +6,9 @@ const thresholds = require('./lighthouse-thresholds.json');
 // to the audits extractRunMetrics reads.
 const recordedCommunity = require('./fixtures/lighthouse-report-community.json');
 
-function fakeReport({ score = 0.5, lcp = 8000, tbt = 900, cls = 0.01, scriptBytes = 700000, lazyLcp, observedFcp = 400, observedLcp = 600 } = {}) {
+function fakeReport({ score = 0.5, lcp = 8000, tbt = 900, cls = 0.01, scriptBytes = 700000, wasmBytes = 0, lazyLcp, observedFcp = 400, observedLcp = 600 } = {}) {
+  const requests = [{ url: 'https://site/_next/static/chunks/main.js', mimeType: 'application/javascript', transferSize: scriptBytes }];
+  if (wasmBytes) requests.push({ url: 'https://site/_next/static/media/wax.common.wasm', mimeType: 'application/wasm', transferSize: wasmBytes });
   const audits = {
     metrics: { details: { items: [{ observedFirstContentfulPaint: observedFcp, observedLargestContentfulPaint: observedLcp }] } },
     'largest-contentful-paint': { numericValue: lcp },
@@ -20,6 +22,7 @@ function fakeReport({ score = 0.5, lcp = 8000, tbt = 900, cls = 0.01, scriptByte
         ],
       },
     },
+    'network-requests': { details: { items: requests } },
   };
   if (lazyLcp !== undefined) {
     audits['lcp-discovery-insight'] = {
@@ -29,13 +32,14 @@ function fakeReport({ score = 0.5, lcp = 8000, tbt = 900, cls = 0.01, scriptByte
   return { categories: { performance: { score } }, audits };
 }
 
-test('extractRunMetrics reads score, vitals, script bytes and the LCP lazy-load check', () => {
-  assert.deepEqual(extractRunMetrics(fakeReport({ score: 0.51, lazyLcp: true })), {
+test('extractRunMetrics reads score, vitals, script and WASM bytes and the LCP lazy-load check', () => {
+  assert.deepEqual(extractRunMetrics(fakeReport({ score: 0.51, lazyLcp: true, wasmBytes: 947178 })), {
     performance: 51,
     'largest-contentful-paint': 8000,
     'total-blocking-time': 900,
     'cumulative-layout-shift': 0.01,
     'script-transfer-bytes': 700000,
+    'wasm-transfer-bytes': 947178,
     'lcp-lazy-loaded': true,
     'observed-first-contentful-paint': 400,
     'observed-largest-contentful-paint': 600,
@@ -51,6 +55,7 @@ test('extractRunMetrics reads the observed paints of a recorded report next to i
     'total-blocking-time': 608,
     'cumulative-layout-shift': 0,
     'script-transfer-bytes': 681866,
+    'wasm-transfer-bytes': undefined,
     'lcp-lazy-loaded': false,
     'observed-first-contentful-paint': 136,
     'observed-largest-contentful-paint': 136,
@@ -153,12 +158,12 @@ test('findBreaches flags a route with no successful run', () => {
   ]);
 });
 
-test('every integration threshold names a route of an app and a metric a run produces', () => {
+test('every integration threshold, logged out and logged in, names a route of an app and a metric a run produces', () => {
   const produced = Object.keys(extractRunMetrics(fakeReport({ lazyLcp: false })));
-  const routes = Object.entries(thresholds.integration);
-  assert.ok(routes.length > 0);
+  const routes = [...Object.entries(thresholds.integration), ...Object.entries(thresholds.integrationLoggedIn)];
+  assert.ok(Object.keys(thresholds.integration).length > 0 && Object.keys(thresholds.integrationLoggedIn).length > 0);
   for (const [route, limits] of routes) {
-    assert.match(route, /^\/(blog|wallet)\//);
+    assert.match(route, /^\/(blog|wallet)\/[^{}]*(\{observer\}[^{}]*)?$/);
     for (const [metric, limit] of Object.entries(limits)) {
       assert.ok(produced.includes(metric), `${route}: unknown metric ${metric}`);
       assert.equal(typeof limit, metric === 'lcp-lazy-loaded' ? 'boolean' : 'number', `${route}: ${metric}`);

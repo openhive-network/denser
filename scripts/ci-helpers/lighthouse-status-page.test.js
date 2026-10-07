@@ -104,6 +104,32 @@ test('the status page shows the observed paints of each run next to the simulate
   assert.match(html, /breach \(simulated-only\)/);
 });
 
+test('the status page shows a route logged out and logged in side by side, each with its JS and WASM', () => {
+  const result = {
+    revision: REV_NEW,
+    status: 'pass',
+    observer: 'blocktrades',
+    routes: [
+      { route: '/blog/trending', mode: 'loggedOut', median: { measuredRuns: 5, 'script-transfer-bytes': 484228, 'wasm-transfer-bytes': 0 }, breaches: [], runs: [] },
+      { route: '/blog/trending', mode: 'loggedIn', median: { measuredRuns: 5, 'script-transfer-bytes': 768000, 'wasm-transfer-bytes': 966656 }, breaches: [], runs: [] },
+    ],
+  };
+  const html = renderStatusPage([result], REV_OLD);
+  assert.match(html, /<th>route<\/th><th>mode<\/th>/);
+  assert.match(html, /<th>JS<\/th><th>WASM<\/th>/);
+  const loggedOut = html.indexOf('<td>logged out</td>');
+  const loggedIn = html.indexOf('<td>logged in as @blocktrades</td>');
+  assert.ok(loggedOut > 0 && loggedIn > loggedOut, 'the logged-in row follows the logged-out one');
+  assert.match(html.slice(loggedOut, loggedIn), /<td>473 KiB<\/td><td>0 KiB<\/td>/);
+  assert.match(html.slice(loggedIn), /<td>750 KiB<\/td><td>944 KiB<\/td>/);
+});
+
+test('a route of a result written before the logged-in mode is logged out', () => {
+  const html = renderStatusPage([oldResult], REV_OLD);
+  assert.match(html, /<td>logged out<\/td>/);
+  assert.doesNotMatch(html, /logged in as/);
+});
+
 test('only the revision whose reports are kept links them', () => {
   assert.doesNotMatch(renderStatusPage([newResult], REV_OLD), /run1\.json\.gz/);
   assert.match(renderStatusPage([], REV_NEW), /No passes measured yet/);

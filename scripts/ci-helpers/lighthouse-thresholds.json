@@ -18,6 +18,7 @@
       "total-blocking-time": 1500,
       "cumulative-layout-shift": 0.1,
       "script-transfer-bytes": 800000,
+      "wasm-transfer-bytes": 0,
       "lcp-lazy-loaded": false
     },
     "/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit": {
@@ -26,6 +27,7 @@
       "total-blocking-time": 3500,
       "cumulative-layout-shift": 0.1,
       "script-transfer-bytes": 960000,
+      "wasm-transfer-bytes": 0,
       "lcp-lazy-loaded": false
     },
     "/blog/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature": {
@@ -34,6 +36,7 @@
       "total-blocking-time": 2500,
       "cumulative-layout-shift": 0.1,
       "script-transfer-bytes": 930000,
+      "wasm-transfer-bytes": 0,
       "lcp-lazy-loaded": false
     },
     "/blog/trending/hive-160391": {
@@ -42,6 +45,7 @@
       "total-blocking-time": 1500,
       "cumulative-layout-shift": 0.2,
       "script-transfer-bytes": 930000,
+      "wasm-transfer-bytes": 0,
       "lcp-lazy-loaded": false
     },
     "/blog/@gtg": {
@@ -50,6 +54,7 @@
       "total-blocking-time": 2500,
       "cumulative-layout-shift": 0.1,
       "script-transfer-bytes": 800000,
+      "wasm-transfer-bytes": 0,
       "lcp-lazy-loaded": false
     },
     "/wallet/@gtg/transfers": {
@@ -58,6 +63,80 @@
       "total-blocking-time": 2500,
       "cumulative-layout-shift": 0.1,
       "script-transfer-bytes": 970000,
+      "lcp-lazy-loaded": false
+    }
+  },
+  "integrationLoggedIn": {
+    "/blog/trending": {
+      "largest-contentful-paint": 11000,
+      "total-blocking-time": 3600,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 850000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit": {
+      "largest-contentful-paint": 11000,
+      "total-blocking-time": 8400,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 960000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/blog/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature": {
+      "largest-contentful-paint": 8500,
+      "total-blocking-time": 6000,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 960000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/blog/trending/hive-160391": {
+      "largest-contentful-paint": 11000,
+      "total-blocking-time": 3600,
+      "cumulative-layout-shift": 0.2,
+      "script-transfer-bytes": 870000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/blog/@gtg": {
+      "largest-contentful-paint": 10000,
+      "total-blocking-time": 6000,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 860000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/wallet/@gtg/transfers": {
+      "largest-contentful-paint": 24000,
+      "total-blocking-time": 4750,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 900000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/blog/@{observer}": {
+      "largest-contentful-paint": 20000,
+      "total-blocking-time": 6000,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 860000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/blog/@{observer}/notifications": {
+      "largest-contentful-paint": 9000,
+      "total-blocking-time": 6750,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 840000,
+      "wasm-transfer-bytes": 1070000,
+      "lcp-lazy-loaded": false
+    },
+    "/wallet/@{observer}/transfers": {
+      "largest-contentful-paint": 24000,
+      "total-blocking-time": 4750,
+      "cumulative-layout-shift": 0.1,
+      "script-transfer-bytes": 900000,
+      "wasm-transfer-bytes": 1070000,
       "lcp-lazy-loaded": false
     }
   }

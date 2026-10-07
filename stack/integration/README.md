@@ -64,10 +64,31 @@ switched to follow mode), so in images mode pin a tag CI builds from develop/mai
 serves it: it waits for `https://$SITE_HOST/status/deployed.json` to report the
 revision for blog and wallet, then runs Lighthouse (mobile, in the pinned
 `gitlab-ci-utils/lighthouse` image, 2 CPUs, one run at a time) 5 times on each route
-and compares the median performance score, LCP, TBT, CLS and transferred JS with the
-`integration` section of `scripts/ci-helpers/lighthouse-thresholds.json`. That section
-is also the list of routes. `lcp-lazy-loaded: false` there flags a route whose LCP
-image is `loading="lazy"` (Lighthouse's own LCP discovery check).
+and compares the median performance score, LCP, TBT, CLS, transferred JS and
+transferred WASM with the `integration` section of
+`scripts/ci-helpers/lighthouse-thresholds.json`. That section is also the list of
+routes. `lcp-lazy-loaded: false` there flags a route whose LCP image is
+`loading="lazy"` (Lighthouse's own LCP discovery check).
+
+- **Logged in:** the routes of `integrationLoggedIn` (the six above, plus the
+  observer's own profile, notifications and wallet: `{observer}` in a route) are
+  measured a second time as a logged-in reader, with the same settings and runs,
+  each logged-in run right after the route's logged-out one so both see the same
+  backend. Logged in is the state denser's Keychain login leaves: the `observer`
+  cookie and the localStorage `user` entry. No key is stored or used. The account is
+  `LIGHTHOUSE_OBSERVER` in `.env` (default `blocktrades`, which has a large history).
+  These runs go through Lighthouse's Node API with puppeteer-core, both from the same
+  image (`scripts/ci-helpers/lighthouse-logged-in-run.js`), with the storage reset off
+  so the login survives. Each route keeps a result per mode (`"mode": "loggedOut"` or
+  `"loggedIn"`), and the status page shows the two next to each other.
+- **WASM:** `wasm-transfer-bytes` is the transfer size of every `*.wasm` request.
+  Pages fetch it, so the `script` bytes leave it out: the 0.95 MB wax WASM a
+  logged-in page loads shows only there. The logged-out blog routes have a limit of
+  0 (they load none); the wallet reads through the WASM logged out too.
+- **One process per run:** each Lighthouse run, in either mode, is its own process
+  with its own Chrome, and the check keeps only the run's metrics and the path of its
+  saved report. Lighthouse runs in one Node process ran out of memory after about 40
+  runs.
 
 - **Results:** `https://$SITE_HOST/status/lighthouse/<revision>.json` and
   `/status/lighthouse/latest.json`, with `"status": "pass"` or `"breach"` and each
@@ -99,8 +120,8 @@ image is `loading="lazy"` (Lighthouse's own LCP discovery check).
   `breach (environment degraded)` (or `pass (…)`), apart from a code breach; the exit
   code does not change.
 - **Advisory:** a breach never fails or rolls back the upgrade.
-- **Bounded:** one check (30 Lighthouse runs, about 12 minutes, 5 more than with 3
-  runs per route) per promoted revision
+- **Bounded:** one check (75 Lighthouse runs, about 30 minutes: 30 logged-out runs,
+  about 12 minutes, and 45 logged-in ones, about 18 minutes more) per promoted revision
   whose builds have not been measured: a commit that rebuilt nothing (docs, tests)
   serves the builds an earlier revision was measured with, and is skipped. A
   revision that never deploys, or that a later promote overtakes before it is
@@ -117,7 +138,10 @@ image is `loading="lazy"` (Lighthouse's own LCP discovery check).
   image-led post and the community feed were added from the 2026-10-06 audit
   (`docs/performance/page-audit-2026-10.md`), with limits just above that day's runs.
   The community feed's LCP limit is `/blog/trending`'s since 2026-10-07: both simulate
-  about 5.0 s while painting in under 0.6 s.
+  about 5.0 s while painting in under 0.6 s. The logged-in limits start from the
+  2026-10-07 comparison of the two modes (`docs/performance/logged-in-2026-10-07.md`),
+  described there. If the pass gets too long, take routes out of
+  `integrationLoggedIn` rather than runs per route.
 
 ## Setup (done once per host)
 

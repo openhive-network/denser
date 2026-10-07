@@ -10,6 +10,8 @@
  * not judged.
  */
 
+const { wasmTransferBytes } = require('./lighthouse-resources');
+
 const FLOOR_METRICS = new Set(['performance']);
 // An LCP breach whose median observed LCP is below this is a simulation artifact:
 // the page painted fast, and only Lantern's replay of the requests around it is slow.
@@ -34,6 +36,7 @@ function extractRunMetrics(report) {
     'total-blocking-time': audits['total-blocking-time']?.numericValue,
     'cumulative-layout-shift': audits['cumulative-layout-shift']?.numericValue,
     'script-transfer-bytes': scriptRow?.transferSize,
+    'wasm-transfer-bytes': wasmTransferBytes(report),
     'lcp-lazy-loaded': lcpIsLazyLoaded(audits),
     ...observedPaints(audits),
   };
