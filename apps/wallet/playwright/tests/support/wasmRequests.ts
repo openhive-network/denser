@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 
 /** Wax's wasm (`wax.common.<hash>.wasm`): logged-out wallet pages paint without it. */
-export const WASM_URL = /\.wasm(\?|$)/;
+const WASM_URL = /\.wasm(\?|$)/;
 
 /**
  * Records every `.wasm` request made in `page`'s browser context; returns the (live) list of their

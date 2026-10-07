@@ -6,12 +6,9 @@ import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import TransfersHistoryFilter, { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import useFilters from '@/wallet/components/hooks/use-filters';
 import { getFilter } from '@/wallet/lib/utils';
-import dynamic from 'next/dynamic';
 import { IAccountHistory } from './hooks/use-account-history';
+import HistoryTable from './history-table';
 import AccountHistoryError from '@/wallet/components/account-history-error';
-
-// The history is formatted by wax's formatter: load it with wax, after the page's first render.
-const HistoryTable = dynamic(() => import('./history-table'), { ssr: false });
 
 const initialFilters: TransferFilters = {
   search: '',
