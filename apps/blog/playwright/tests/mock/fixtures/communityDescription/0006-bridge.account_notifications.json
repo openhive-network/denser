@@ -1,0 +1,427 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.account_notifications",
+    "params": {
+      "account": "hive-139531",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "cd8056ac2f0b2ce4",
+  "method": "bridge.account_notifications",
+  "params": {
+    "account": "hive-139531",
+    "limit": 50
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "date": "2026-04-19T21:08:36",
+        "id": "85308174856355841",
+        "msg": "@zimri7 subscribed to HiveDevs",
+        "score": 42,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-04-19T12:47:09",
+        "id": "85300098438791169",
+        "msg": "@uwak subscribed to HiveDevs",
+        "score": 55,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-04-17T16:57:21",
+        "id": "85257742545059841",
+        "msg": "@fastbuka subscribed to HiveDevs",
+        "score": 43,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-04-14T23:03:21",
+        "id": "85194058917478401",
+        "msg": "@shahabwp subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-04-14T22:37:36",
+        "id": "85193644184698881",
+        "msg": "@maryfegil29 subscribed to HiveDevs",
+        "score": 49,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-04-08T14:40:42",
+        "id": "85046806253142020",
+        "msg": "@love-scout mentioned you and 10 others",
+        "score": 52,
+        "type": "mention",
+        "url": "@love-scout/re-the-birth-of-the-3rd-1775659241604"
+      },
+      {
+        "date": "2026-04-07T14:10:48",
+        "id": "85023131856535557",
+        "msg": "@love-scout mentioned you and 10 others",
+        "score": 52,
+        "type": "mention",
+        "url": "@love-scout/re-this-girl-behind-her-unique-name-simp-1775571049640"
+      },
+      {
+        "date": "2026-04-06T12:21:18",
+        "id": "84998175391219713",
+        "msg": "@jef-001 subscribed to HiveDevs",
+        "score": 52,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-04-03T18:58:42",
+        "id": "84934997496037377",
+        "msg": "@hivepen subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-04-01T14:58:21",
+        "id": "84884740741529601",
+        "msg": "@mydempire subscribed to HiveDevs",
+        "score": 34,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-30T12:14:03",
+        "id": "84835708858007554",
+        "msg": "@masterbed subscribed to HiveDevs",
+        "score": 32,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-29T13:22:42",
+        "id": "84813621720252417",
+        "msg": "@marketwatcher1 subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-29T12:36:57",
+        "id": "84812884864925697",
+        "msg": "@the-official-dm subscribed to HiveDevs",
+        "score": 37,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-28T21:26:42",
+        "id": "84798224262496257",
+        "msg": "@rasialwis subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-27T08:44:18",
+        "id": "84762752127598594",
+        "msg": "@yordan96 subscribed to HiveDevs",
+        "score": 50,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-26T07:24:24",
+        "id": "84738272424624129",
+        "msg": "@zainzain subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-25T15:32:06",
+        "id": "84722934559539201",
+        "msg": "@deechamp subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-25T09:42:48",
+        "id": "84717308689252353",
+        "msg": "@demotruk subscribed to HiveDevs",
+        "score": 65,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-24T23:20:54",
+        "id": "84707292288647169",
+        "msg": "@fred360 subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-22T15:49:21",
+        "id": "84653633920040961",
+        "msg": "@cloudwithazar subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-21T04:14:45",
+        "id": "84619253801549833",
+        "msg": "@love-scout mentioned you and 11 others",
+        "score": 52,
+        "type": "mention",
+        "url": "@love-scout/re-introducing-myself-meo-gaming-my-1774066487210"
+      },
+      {
+        "date": "2026-03-21T04:14:33",
+        "id": "84619250580324356",
+        "msg": "@love-scout mentioned you and 10 others",
+        "score": 52,
+        "type": "mention",
+        "url": "@love-scout/re-new-hivedev-team-1774066473248"
+      },
+      {
+        "date": "2026-03-19T19:29:30",
+        "id": "84587601213784065",
+        "msg": "@marless6 subscribed to HiveDevs",
+        "score": 39,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-19T10:40:09",
+        "id": "84579075435266049",
+        "msg": "@melinda010100 subscribed to HiveDevs",
+        "score": 70,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-18T22:45:39",
+        "id": "84567567607267329",
+        "msg": "@aranda subscribed to HiveDevs",
+        "score": 55,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-17T00:58:54",
+        "id": "84523328101941249",
+        "msg": "@khanstore subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-16T20:56:33",
+        "id": "84519424781975553",
+        "msg": "@duke254 subscribed to HiveDevs",
+        "score": 50,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-16T15:21:18",
+        "id": "84514025202778113",
+        "msg": "@cetamlab subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-15T15:31:30",
+        "id": "84490996661878785",
+        "msg": "@sarmatia.app subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-14T05:02:12",
+        "id": "84457668273504262",
+        "msg": "@love-scout mentioned you and 11 others",
+        "score": 51,
+        "type": "mention",
+        "url": "@love-scout/re-my-hive-s-journey-begins-1773464532328"
+      },
+      {
+        "date": "2026-03-14T05:01:57",
+        "id": "84457664246972421",
+        "msg": "@love-scout mentioned you and 9 others",
+        "score": 51,
+        "type": "mention",
+        "url": "@love-scout/re-hello-everyone-1773464517840"
+      },
+      {
+        "date": "2026-03-12T01:57:33",
+        "id": "84408308609318913",
+        "msg": "@maxpayn subscribed to HiveDevs",
+        "score": 37,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-10T16:00:00",
+        "id": "84375491569516545",
+        "msg": "@innopay subscribed to HiveDevs",
+        "score": 39,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-09T14:33:27",
+        "id": "84350904760795137",
+        "msg": "@yoodro subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-07T21:47:33",
+        "id": "84311510800662529",
+        "msg": "@faizaan173 followed you",
+        "score": 42,
+        "type": "follow",
+        "url": "@faizaan173"
+      },
+      {
+        "date": "2026-03-07T12:06:54",
+        "id": "84302158761033729",
+        "msg": "@faizaan173 subscribed to HiveDevs",
+        "score": 42,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-07T09:33:06",
+        "id": "84299681638645761",
+        "msg": "@immau14 subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-03T15:29:00",
+        "id": "84212642536751111",
+        "msg": "@love-scout mentioned you and 11 others",
+        "score": 51,
+        "type": "mention",
+        "url": "@love-scout/re-my-introduction-to-hive-blockchain-1772551740513"
+      },
+      {
+        "date": "2026-03-03T12:17:27",
+        "id": "84209557387083777",
+        "msg": "@ingeldnood subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-03-02T16:21:27",
+        "id": "84190294479732743",
+        "msg": "@love-scout mentioned you and 10 others",
+        "score": 51,
+        "type": "mention",
+        "url": "@love-scout/re-roots-algorithms-a-journey-from-1772468487652"
+      },
+      {
+        "date": "2026-03-02T16:21:00",
+        "id": "84190287231975430",
+        "msg": "@love-scout mentioned you and 11 others",
+        "score": 51,
+        "type": "mention",
+        "url": "@love-scout/re-introducing-my-humble-self-to-1772468460442"
+      },
+      {
+        "date": "2026-03-01T12:33:00",
+        "id": "84163422190567425",
+        "msg": "@hivepredict subscribed to HiveDevs",
+        "score": 50,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-02-28T17:42:18",
+        "id": "84145210992361473",
+        "msg": "@crappypasta subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-02-28T16:40:27",
+        "id": "84144214828384257",
+        "msg": "@pradip32525 subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-02-26T17:07:45",
+        "id": "84098268878864385",
+        "msg": "@hivedairysuccess subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-02-24T14:46:06",
+        "id": "84049601820098564",
+        "msg": "@love-scout mentioned you and 11 others",
+        "score": 51,
+        "type": "mention",
+        "url": "@love-scout/re-my-hive-introduction-post-1771944366984"
+      },
+      {
+        "date": "2026-02-24T06:29:03",
+        "id": "84041596248522753",
+        "msg": "@ecohive subscribed to HiveDevs",
+        "score": 56,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-02-23T12:42:39",
+        "id": "84024420674306049",
+        "msg": "@oneteacher365 subscribed to HiveDevs",
+        "score": 25,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-02-23T12:14:33",
+        "id": "84023968092127233",
+        "msg": "@mantequilla-soft subscribed to HiveDevs",
+        "score": 60,
+        "type": "subscribe",
+        "url": "c/hive-139531"
+      },
+      {
+        "date": "2026-02-17T22:22:24",
+        "id": "83894601282224136",
+        "msg": "@love-scout mentioned you and 11 others",
+        "score": 51,
+        "type": "mention",
+        "url": "@love-scout/re-de-las-aulas-del-ipvce-1771366945307"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
