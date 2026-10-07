@@ -39,5 +39,5 @@ junit="$PWD/test-results/unit/ui.xml"
 run_with_junit_fallback "$junit" ui node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    packages/ui/lib/time-ago.test.ts < /dev/null || status=1
+    packages/ui/lib/time-ago.test.ts packages/ui/lib/server-query-cache.test.ts < /dev/null || status=1
 exit "$status"

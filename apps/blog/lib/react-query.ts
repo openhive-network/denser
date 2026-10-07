@@ -1,4 +1,5 @@
 import { QueryClient, QueryKey, isServer } from '@tanstack/react-query';
+import { ServerMutationCache, ServerQueryCache } from '@ui/lib/server-query-cache';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -25,6 +26,7 @@ export const StaleTime = {
 
 function makeQueryClient() {
   return new QueryClient({
+    ...(isServer && { queryCache: new ServerQueryCache(), mutationCache: new ServerMutationCache() }),
     defaultOptions: {
       queries: {
         // Default to 1 minute - individual queries can override with StaleTime constants

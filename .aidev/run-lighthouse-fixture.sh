@@ -139,7 +139,13 @@ serve_app() {
             NODE_OPTIONS="--require $repo/$here/clock.cjs --require $repo/$here/egress-guard.cjs"
         # A recording must see where the servers go, not be stopped by it.
         [ "$mode" = record ] || export DENSER_EGRESS_BLOCK=1
-        exec "$repo/apps/$app/node_modules/.bin/react-env" -- node server.js
+        # The blog's heap check (heap-check.mjs) forces GCs through /blog/api/debug/mem.
+        local node_flags=()
+        if [ "$app" = blog ]; then
+            export DENSER_DEBUG_MEM=true
+            node_flags=(--expose-gc)
+        fi
+        exec "$repo/apps/$app/node_modules/.bin/react-env" -- node "${node_flags[@]}" server.js
     ) > "$out/logs/$app.log" 2>&1 < /dev/null &
     pids+=($!)
 }
@@ -204,6 +210,19 @@ if [ "$mode" = replay ]; then
 fi
 status=0
 node scripts/ci-helpers/lighthouse-fixture-check.js "${args[@]}" "${check_args[@]}" < /dev/null || status=$?
+
+if [ "$mode" = replay ]; then
+    heap_case="the blog server's heap stays bounded over 1000 renders"
+    heap_start=$SECONDS
+    if node "$here/heap-check.mjs" --origin "http://127.0.0.1:$blog_port" > "$out/logs/heap-check.log" 2>&1 < /dev/null; then
+        printf 'case\t%s\tpass\t%s\t\n' "$heap_case" $((SECONDS - heap_start)) >> "$cases"
+    else
+        printf 'case\t%s\tfail\t%s\t%s\t%s\n' "$heap_case" $((SECONDS - heap_start)) \
+            "$(tail -n 1 "$out/logs/heap-check.log")" "$out/logs/heap-check.log" >> "$cases"
+        tail -n 5 "$out/logs/heap-check.log" >&2
+        [ "$status" -ne 0 ] || status=2
+    fi
+fi
 
 if [ -s "$out/egress.log" ]; then
     printf 'case\tthe app servers opened no connection off the host\tfail\t0\t%s\t%s\n' \
