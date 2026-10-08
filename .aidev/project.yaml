@@ -153,8 +153,10 @@ verification:
 # `stack: true`; every other binding says `stack: false`.
 sandbox:
   compose: .aidev/test-stack.compose.yml
-  # One Next.js server (2 GB limit); heavy as #967 asks, one copy per host.
-  resource_class: heavy
+  # One Next.js server (2 GB limit): light, up to four per host. As heavy (#967) it
+  # took the host's only heavy slot, shared with ratings, and a full run that landed
+  # on a host already holding it waited 15 min, then failed without running a suite.
+  resource_class: light
   services: [blog-live]
   # Copying the standalone build and starting the server takes ~10 s.
   readiness_timeout: 300
