@@ -43,3 +43,6 @@ export function formatAsset(asset: NaiAsset, { appendTokenName = true }: IFormat
   const amount = `${negative ? '-' : ''}${integer}${asset.precision > 0 ? `${decimalSeparator}${fraction}` : ''}`;
   return appendTokenName ? `${amount} ${symbol}` : amount;
 }
+
+/** `formatAsset` of an operation's optional asset field: an empty string when it is absent. */
+export const formatOptionalAsset = (asset: NaiAsset | undefined): string => (asset ? formatAsset(asset) : '');
