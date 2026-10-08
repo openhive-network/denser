@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
-# node:test suites of scripts/ci-helpers and packages/ui (run through node's
+# node:test suites of scripts/ci-helpers, packages/ui and packages/smart-signer (run through node's
 # TypeScript type stripping): the `baseline` slot and the `unit` suite
 # of the quick, full and canary slots.
 # No I/O, no server. Each package writes junit (mocha's built-in xunit reporter)
@@ -39,7 +39,14 @@ junit="$PWD/test-results/unit/ui.xml"
 run_with_junit_fallback "$junit" ui node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    packages/ui/lib/time-ago.test.ts packages/ui/lib/server-query-cache.test.ts < /dev/null || status=1
+    packages/ui/lib/time-ago.test.ts packages/ui/lib/server-query-cache.test.ts \
+    packages/ui/lib/site-url.test.ts < /dev/null || status=1
+echo "== node --test packages/smart-signer" >&2
+junit="$PWD/test-results/unit/smart-signer.xml"
+run_with_junit_fallback "$junit" smart-signer node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    packages/smart-signer/lib/oauth/return-url.test.ts < /dev/null || status=1
 echo "== node --test packages/middleware" >&2
 junit="$PWD/test-results/unit/middleware.xml"
 run_with_junit_fallback "$junit" middleware node --test \

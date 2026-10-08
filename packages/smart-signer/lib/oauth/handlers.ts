@@ -18,6 +18,8 @@ import { siteConfig } from '@hive/ui/config/site';
 import { getHiveUserProfile } from '@smart-signer/lib/get-hive-user-profile';
 import { getLogger } from '@hive/ui/lib/logging';
 import { proxifyImageSrc } from '@hive/ui/lib/proxify-images';
+import { joinSiteUrl } from '@hive/ui/lib/site-url';
+import { buildOAuthReturnUrl } from '@smart-signer/lib/oauth/return-url';
 
 /** Strip HTML tags and limit length for plain-text profile fields. */
 function sanitizeProfileText(value: string | undefined, maxLen = 160): string | undefined {
@@ -138,7 +140,7 @@ export const handleAuthorize: NextApiHandler = async (req, res) => {
     await session.save();
 
     // Redirect to login with return URL
-    const loginUrl = new URL('/login', siteConfig.url);
+    const loginUrl = joinSiteUrl(siteConfig.url, '/login');
     loginUrl.searchParams.set('oauth_return', 'true');
     res.redirect(302, loginUrl.toString());
     return;
@@ -388,23 +390,5 @@ export const getOAuthReturnUrl = async (
   res: NextApiResponse
 ): Promise<string | null> => {
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
-  const oauthState = session.oauthState;
-
-  if (!oauthState) {
-    return null;
-  }
-
-  // Build the authorize URL to redirect back to
-  const authorizeUrl = new URL('/api/oauth/authorize', siteConfig.url);
-  authorizeUrl.searchParams.set('response_type', 'code');
-  authorizeUrl.searchParams.set('client_id', oauthState.clientId);
-  authorizeUrl.searchParams.set('redirect_uri', oauthState.redirectUri);
-  if (oauthState.scope) {
-    authorizeUrl.searchParams.set('scope', oauthState.scope);
-  }
-  if (oauthState.state) {
-    authorizeUrl.searchParams.set('state', oauthState.state);
-  }
-
-  return authorizeUrl.toString();
+  return buildOAuthReturnUrl(session.oauthState, siteConfig.url);
 };
