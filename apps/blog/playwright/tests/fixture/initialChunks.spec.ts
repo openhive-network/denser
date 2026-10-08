@@ -16,6 +16,10 @@ import { CHUNK_MARKERS, SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInit
  * wax, the signers or `@transaction/index` from page-load code pulls them back.
  * Nor may they carry Remarkable: the server derives feed card summaries from the post bodies, and
  * client-fetched pages load the converter through a dynamic import().
+ * Nor may they carry cmdk, which only @hive/ui's unused Command component imports:
+ * a server component (the root layout) that imports from the `@hive/ui` barrel
+ * makes every client component the barrel re-exports a client reference of the
+ * page, so server modules import @hive/ui's components by their own paths.
  * initialChunksPost.spec.ts and initialChunksProfile.spec.ts check a post and a
  * profile.
  *
@@ -25,7 +29,7 @@ import { CHUNK_MARKERS, SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInit
 test.use({ fixtureTestName: 'homeMainPage' });
 
 test.describe('Initial JS chunks (fixture-based)', () => {
-  test('PERF-CHUNKS-01 — no chunk referenced from the /trending HTML contains Sentry, rrweb, wax, beekeeper or Remarkable', async ({
+  test('PERF-CHUNKS-01 — no chunk referenced from the /trending HTML contains Sentry, rrweb, wax, beekeeper, Remarkable or cmdk', async ({
     request
   }) => {
     expect(
@@ -33,6 +37,7 @@ test.describe('Initial JS chunks (fixture-based)', () => {
         ...SENTRY_MARKERS,
         CHUNK_MARKERS.rrweb,
         CHUNK_MARKERS.remarkable,
+        CHUNK_MARKERS.cmdk,
         ...SIGNING_STACK_MARKERS
       ])
     ).toEqual([]);

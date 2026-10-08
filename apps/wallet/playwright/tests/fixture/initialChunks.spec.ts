@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
-import { SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from '../support/initialChunks';
+import { CHUNK_MARKERS, SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from '../support/initialChunks';
 
 /**
  * Initial JS chunks of the wallet.
@@ -12,7 +12,8 @@ import { SENTRY_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } fro
  * the signers or `@transaction/index` from page-load code pulls them back.
  *
  * Nor may they carry the Sentry SDK, which instrumentation-client.ts loads through a dynamic
- * import() only when a DSN is configured.
+ * import() only when a DSN is configured. Nor, on /market, recharts: the market chart renders
+ * only once the order book has loaded client-side, so it is loaded through a dynamic import().
  *
  * Reads the server HTML only. The server's API endpoint is unreachable
  * (playwright.fixture.config.ts), so the page renders without account data.
@@ -29,5 +30,9 @@ test.describe('Initial JS chunks', () => {
 
   test('WALLET-PERF-CHUNKS-02 — no chunk referenced from the home page HTML contains Sentry', async ({ request }) => {
     expect(await findMarkersInInitialChunks(request, `${WALLET_BASE_PATH}/`, SENTRY_MARKERS)).toEqual([]);
+  });
+
+  test('WALLET-PERF-CHUNKS-03 — no chunk referenced from the /market HTML contains recharts', async ({ request }) => {
+    expect(await findMarkersInInitialChunks(request, `${WALLET_BASE_PATH}/market`, [CHUNK_MARKERS.recharts])).toEqual([]);
   });
 });

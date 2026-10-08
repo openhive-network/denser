@@ -1,4 +1,4 @@
-import { Skeleton, PostListSkeleton } from '@hive/ui';
+import { Skeleton, PostListSkeleton } from '@ui/components/skeleton';
 
 export default function Loading() {
   return (
