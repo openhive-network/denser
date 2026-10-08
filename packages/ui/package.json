@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "./components/index.tsx",
   "types": "./components/index.tsx",
+  "sideEffects": false,
   "scripts": {
     "lint": "eslint ."
   },

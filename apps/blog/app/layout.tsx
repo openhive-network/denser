@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 import MainBar from '../features/layouts/site-header/main-bar';
 import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
-import { StorageCleanup } from '@hive/ui';
+import { StorageCleanup } from '@ui/components/storage-cleanup';
 import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '../lib/env-version';
 import { ImagesHostHints } from '@ui/components/images-host-hints';

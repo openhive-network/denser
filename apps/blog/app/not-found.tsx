@@ -1,4 +1,4 @@
-import { Link } from '@hive/ui';
+import { Link } from '@ui/components/link';
 
 export default function NotFound() {
   return (

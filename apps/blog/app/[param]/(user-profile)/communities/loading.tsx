@@ -1,4 +1,4 @@
-import { Skeleton } from '@hive/ui';
+import { Skeleton } from '@ui/components/skeleton';
 
 function CommunityRowSkeleton() {
   return (

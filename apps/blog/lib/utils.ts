@@ -1,7 +1,9 @@
 import { Entry, FullAccount } from '@hive/common-hiveio-packages/wax';
 import dayjs from 'dayjs';
 import { TFunction } from 'i18next';
-import { proxifyImageSrc, Symbol, accountReputation } from '@hive/ui';
+import { proxifyImageSrc } from '@ui/lib/proxify-images';
+import { Symbol } from '@ui/lib/asset-constants';
+import { accountReputation } from '@ui/lib/reputation';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
 
 // Re-export Symbol and accountReputation for backwards compatibility
