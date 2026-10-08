@@ -28,3 +28,12 @@ export const FIXTURE_COOKIE_PASSWORD =
  * so the key never has to match the account's recorded authority.
  */
 export const FIXTURE_POSTING_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';
+
+/**
+ * Client secret of the `denser` OAuth client (openhive.chat), which the app
+ * registers only when DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET is set. A test
+ * constant like the cookie password: the fixture server and the spec playing
+ * the client must agree on it.
+ */
+export const FIXTURE_OAUTH_CLIENT_SECRET =
+  'fixture-tests-dummy-oauth-client-secret-not-a-secret';

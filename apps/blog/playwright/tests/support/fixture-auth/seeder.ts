@@ -1,6 +1,6 @@
-import { sealData } from 'iron-session';
+import { sealData, unsealData } from 'iron-session';
 import type { BrowserContext } from '@playwright/test';
-import { LoginType, KeyType, type User } from '@smart-signer/types/common';
+import { LoginType, KeyType, type IronSessionData, type User } from '@smart-signer/types/common';
 import {
   FIXTURE_COOKIE_NAME,
   FIXTURE_COOKIE_PASSWORD,
@@ -29,6 +29,9 @@ const DEFAULT_USER: User = {
  * `initialData` with `refetchOnMount: false`, so seeding only the cookie
  * leaves the UI stuck in anonymous state.
  *
+ * A session the context already holds (e.g. a pending OAuth request the
+ * server stored) is kept, with the user replaced, as a real login keeps it.
+ *
  * Call before any `page.goto(...)` in the test.
  */
 export async function seedAuthCookie(
@@ -37,11 +40,17 @@ export async function seedAuthCookie(
 ): Promise<User> {
   const user: User = { ...DEFAULT_USER, ...overrides, isLoggedIn: true };
 
+  const existing = (await context.cookies()).find((c) => c.name === FIXTURE_COOKIE_NAME);
+  const session = existing
+    ? await unsealData<IronSessionData>(existing.value, { password: FIXTURE_COOKIE_PASSWORD })
+    : {};
   const sealed = await sealData(
-    { user },
+    { ...session, user },
     { password: FIXTURE_COOKIE_PASSWORD }
   );
 
+  // The server's cookie is host-only; one added for `domain` would sit next to it.
+  if (existing) await context.clearCookies({ name: FIXTURE_COOKIE_NAME });
   await context.addCookies([
     {
       name: FIXTURE_COOKIE_NAME,

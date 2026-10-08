@@ -71,14 +71,33 @@ The site runs from this checkout; no image is built or pulled for the apps.
    rewritten branch is `REFUSED` (exit 3) and nothing changes.
 6. `status/deployed.json` reports each app's `revision` (the checkout's commit when
    its build is that commit's build), its `release`, `source: follow:<branch>` and
-   its state. Once every app reports the checkout's HEAD, `upgrade.sh` runs
-   `lighthouse.sh` (below).
+   its state. `upgrade.sh` then checks the blog's OAuth2 provider, and once every
+   app reports the checkout's HEAD runs `lighthouse.sh` (both below).
 
 No GitLab CI is involved. `DENSER_MODE=images` in `.env` runs the
 `registry.gitlab.syncad.com/hive/denser/{blog,wallet}-subdirectory:$DENSER_TAG` images
 instead (`compose.yml` alone), e.g. to pin a version. Promotes no longer build
 `:integration` images (`.aidev/project.yaml` has no `publish:` section since the site
 switched to follow mode), so in images mode pin a tag CI builds from develop/main.
+
+## OAuth2 check after each deploy
+
+The blog is the OAuth2 provider of openhive.chat ("Sign in with Denser"), with the
+client `denser` registered from `DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET` in `.env`.
+After each upgrade `upgrade.sh` requests
+`https://$SITE_HOST/blog/api/oauth/authorize?response_type=code&client_id=denser&redirect_uri=https%3A%2F%2Fopenhive.chat%2F_oauth%2Fdenser`
+signed out. It must answer 302 with a `Location` ending in
+`/blog/login?oauth_return=true`: the client is registered and the redirect keeps the
+base path.
+
+- **Result:** `https://$SITE_HOST/status/oauth.json`: `{revision, status: ok|fail,
+  http_code, location, at}`, `revision` being the checkout's HEAD.
+- **When:** once per revision that passes; a failing revision is checked again on
+  every run until it passes.
+- **Advisory:** a failure is logged in the upgrade unit's journal and recorded,
+  never fails or rolls back the upgrade.
+- The whole flow (sign-in, code exchange, userinfo) under `/blog` is the `@basepath`
+  pass of the fixture suite (`apps/blog/playwright/tests/fixture/oauthFlow.spec.ts`).
 
 ## Lighthouse after each promote
 
@@ -170,8 +189,9 @@ routes. `lcp-lazy-loaded: false` there flags a route whose LCP image is
 ```bash
 git clone --branch aidev/integration git@gitlab.syncad.com:hive/denser.git ~/denser-integration
 cd ~/denser-integration/stack/integration
-cp .env.example .env    # fill in CLOUDFLARE_API_TOKEN (the zone of SITE_HOST) and
+cp .env.example .env    # fill in CLOUDFLARE_API_TOKEN (the zone of SITE_HOST),
                         # DENSER_SERVER_SECRET_COOKIE_PASSWORD (openssl rand -hex 32)
+                        # and DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET (openhive.chat's)
 ./upgrade.sh
 # route the name: one line in ~/sites-router/sites.map, then ./render.sh there
 #   denser.discuss.peerverity.info    denser-integration-caddy-1
