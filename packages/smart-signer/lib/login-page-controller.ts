@@ -28,7 +28,7 @@ export const loginPageController: GetServerSideProps = async (ctx) => {
     // If user is already logged in and this is an OAuth return,
     // redirect to the OAuth authorize endpoint
     if (user?.isLoggedIn && user.username && user.authenticateOnBackend && session.oauthState) {
-      const returnUrl = buildOAuthReturnUrl(session.oauthState);
+      const returnUrl = buildOAuthReturnUrl(session.oauthState, siteConfig.url);
       if (returnUrl) {
         logger.info('loginPageController: OAuth return, user %s already logged in, redirecting to authorize', user.username);
         return {

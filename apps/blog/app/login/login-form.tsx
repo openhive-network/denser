@@ -5,14 +5,15 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { KeyType } from '@smart-signer/types/common';
+import { OAUTH_AUTHORIZE_PATH } from '@smart-signer/lib/oauth/return-url';
 import { siteConfig } from '@ui/config/site';
+import { withBasePath } from '@ui/lib/path-utils';
 
 // The sign-in form uses browser-only signers and wax: render it on the client, as the login dialog does.
 const SignInForm = dynamic(() => import('@smart-signer/components/auth/form'), { ssr: false });
 
 const GOOGLE_GSI_SCRIPT_ID = 'google-gsi-script';
 const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
-const OAUTH_AUTHORIZE_PATH = '/api/oauth/authorize';
 
 function loadGoogleScript() {
   if (!siteConfig.googleDrive.clientId) return;
@@ -50,8 +51,8 @@ export default function LoginForm({ oauthReturn }: LoginFormProps) {
     async (_username: string) => {
       if (oauthReturn) {
         // A full navigation: the authorize endpoint reads the pending request from the session
-        // and redirects to the OAuth client.
-        window.location.assign(OAUTH_AUTHORIZE_PATH);
+        // and redirects to the OAuth client. Next does not prefix full navigations with basePath.
+        window.location.assign(withBasePath(OAUTH_AUTHORIZE_PATH));
         return;
       }
       router.push('/');
