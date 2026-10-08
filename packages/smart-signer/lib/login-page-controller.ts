@@ -6,6 +6,7 @@ import { IronSessionData } from '@smart-signer/types/common';
 import { sessionOptions } from './session';
 import { siteConfig } from '@hive/ui/config/site';
 import { getSafeRedirectUrl } from './redirect-validation';
+import { buildOAuthReturnUrl } from './oauth/return-url';
 
 const logger = getLogger('app');
 
@@ -13,27 +14,6 @@ export interface LoginPageProps {
   redirectTo?: string;
   oauthReturn?: boolean;
 }
-
-/**
- * Build the OAuth return URL from session state.
- * Used when user completes login and needs to return to OAuth flow.
- */
-const buildOAuthReturnUrl = (oauthState: IronSessionData['oauthState']): string | null => {
-  if (!oauthState) return null;
-
-  const authorizeUrl = new URL('/api/oauth/authorize', siteConfig.url);
-  authorizeUrl.searchParams.set('response_type', 'code');
-  authorizeUrl.searchParams.set('client_id', oauthState.clientId);
-  authorizeUrl.searchParams.set('redirect_uri', oauthState.redirectUri);
-  if (oauthState.scope) {
-    authorizeUrl.searchParams.set('scope', oauthState.scope);
-  }
-  if (oauthState.state) {
-    authorizeUrl.searchParams.set('state', oauthState.state);
-  }
-
-  return authorizeUrl.toString();
-};
 
 export const loginPageController: GetServerSideProps = async (ctx) => {
   const { req, res } = ctx;
