@@ -19,6 +19,11 @@ const nextConfig = {
   // next dev serves its dev resources (/_next/hmr) only to localhost and these
   // hosts; AIDEV's dev stack hands out http://127.0.0.1:<port>. No effect on builds.
   allowedDevOrigins: ['127.0.0.1'],
+  // Metadata blocks for every user agent, so title/og/twitter tags are always in the
+  // server <head>. Next otherwise streams it to non-bots, and whenever generateMetadata
+  // resolves after the shell flushes the tags land in <body>, where link-preview
+  // fetchers outside Next's bot list (Telegram, Mastodon, Signal...) never read them.
+  htmlLimitedBots: /.*/,
   turbopack: {
     root: path.join(__dirname, '../..'),
     // wax, beekeeper and hb-auth import their emscripten .wasm dynamically
