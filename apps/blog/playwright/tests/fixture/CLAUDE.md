@@ -915,6 +915,11 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   so the article still server-renders at 200. SAFE-08 (JS on) makes the PRIMARY
   `/trending` feed fetch unreachable via `failRequests`: the document is a 503 and
   its "Reload page" retry recovers the feed without a full reload.
+- **`ssrProfileFollowCount.spec.ts`** — pure HTTP, `userProfileTabs` fixtures.
+  SAFE-11 drops every `bridge.get_profile` call via `failRequests`: `/@hiveio`
+  still renders at 200, with both follow counts marked unavailable
+  (`profile-follow-count-unavailable`) instead of 0. SAFE-12 is the control:
+  the recorded follower count renders when the read succeeds.
 - **`feedCache.spec.ts`** — pure HTTP against the `:3001` server, `login`
   fixtures (they hold `/trending` for both `hive.blog` and `guest4test`).
   Anonymous feed renders are cached server-side, logged-in ones are not. Serial;
