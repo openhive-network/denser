@@ -78,6 +78,9 @@ services:
       # session cookie with what the seeder seals it with.
       REACT_APP_APP_NAME: blog
       DENSER_SERVER_SECRET_COOKIE_PASSWORD: fixture-tests-dummy-cookie-password-not-a-secret
+      # FIXTURE_OAUTH_CLIENT_SECRET there: registers the `denser` OAuth client
+      # that oauthFlow.spec.ts plays.
+      DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET: fixture-tests-dummy-oauth-client-secret-not-a-secret
       # Feed cache off: one server answers spec after spec (or fixture set after
       # fixture set), and a cached feed would carry the previous one's data.
       DENSER_FEED_CACHE_TTL_S: "0"

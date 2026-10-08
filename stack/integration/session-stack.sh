@@ -43,6 +43,8 @@ export DENSER_SOURCE_BRANCH=${DENSER_SOURCE_BRANCH:-$(git -C "$repo" symbolic-re
 export DENSER_UID=${DENSER_UID:-$(stat -c %u "$repo")}
 export DENSER_GID=${DENSER_GID:-$(stat -c %g "$repo")}
 export DENSER_SERVER_SECRET_COOKIE_PASSWORD=${DENSER_SERVER_SECRET_COOKIE_PASSWORD:-$(cat "$cookie_file")}
+# No client uses a session stack's OAuth provider; a throwaway secret registers it.
+export DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET=${DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET:-$(python3 -c 'import secrets; print(secrets.token_hex(32))')}
 DENSER_FOLLOW_IMAGE=$(follow/environment-image.sh)
 export DENSER_FOLLOW_IMAGE
 export COMPOSE_FILE=compose.yml:compose.follow.yml:compose.session.yml

@@ -2,7 +2,8 @@
 # Bring the integration site to the tip of its branch. Run every 2 minutes by
 # systemd/denser-integration-upgrade@.timer; safe to run by hand.
 #
-#   ./upgrade.sh            # upgrade, rewrite status/deployed.json, then
+#   ./upgrade.sh            # upgrade, rewrite status/deployed.json, check the blog's
+#                           # OAuth2 provider (status/oauth.json), then
 #                           # Lighthouse-check a newly deployed tip (lighthouse.sh)
 #   ./upgrade.sh --quiet    # print nothing when nothing changed (the timer's mode)
 #
@@ -218,14 +219,49 @@ follow_upgrade() {
     fi
 }
 
+# The blog's OAuth2 provider must send a signed-out user to its sign-in page under
+# /blog. Checked once per checkout revision, and again on every run while it fails;
+# the result goes to status/oauth.json.
+oauth_check() {
+    local revision url headers http_code location result=fail
+    revision=$(git rev-parse HEAD)
+    python3 -c 'import json, sys; d = json.load(open("status/oauth.json")); sys.exit(d.get("revision") != sys.argv[1] or d.get("status") != "ok")' \
+        "$revision" 2> /dev/null && return 0
+    url="https://$(env_value SITE_HOST)/blog/api/oauth/authorize?response_type=code&client_id=denser&redirect_uri=https%3A%2F%2Fopenhive.chat%2F_oauth%2Fdenser"
+    headers=$(curl -s -o /dev/null -D - --max-time 30 "$url" | tr -d '\r') || true
+    http_code=$(sed -n '1s/^HTTP\/[0-9.]* \([0-9]*\).*/\1/p' <<< "$headers")
+    location=$(sed -n 's/^[Ll]ocation: //p' <<< "$headers" | tail -n 1)
+    [ "$http_code" = 302 ] && [[ "$location" == *"/blog/login?oauth_return=true" ]] && result=ok
+    python3 - "$revision" "$result" "$http_code" "$location" <<'EOF' > status/oauth.json.tmp
+import datetime, json, sys
+revision, status, http_code, location = sys.argv[1:]
+print(json.dumps({
+    "revision": revision,
+    "status": status,
+    "http_code": int(http_code) if http_code else None,
+    "location": location or None,
+    "at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+}, indent=2))
+EOF
+    mv status/oauth.json.tmp status/oauth.json
+    if [ "$result" = ok ]; then
+        say "upgrade: oauth check ok at $revision"
+        return 0
+    fi
+    echo "upgrade: oauth check failed: authorize answered ${http_code:-nothing}, Location ${location:-none}" >&2
+    return 1
+}
+
 case "$mode" in
     follow) follow_upgrade ;;
     images) images_upgrade ;;
     *) echo "upgrade: DENSER_MODE=$mode is neither follow nor images" >&2; exit 64 ;;
 esac
 
-# Advisory: a breach or a failed check is reported in status/lighthouse/ and here,
-# never by failing the upgrade or rolling it back.
+# Advisory: a failed check or a breach is reported in status/oauth.json,
+# status/lighthouse/ and here, never by failing the upgrade or rolling it back.
+oauth_check || echo "upgrade: see status/oauth.json" >&2
+
 lighthouse_args=()
 $quiet && lighthouse_args+=(--quiet)
 ./lighthouse.sh "${lighthouse_args[@]}" || echo "upgrade: lighthouse check exited $?; see status/lighthouse/latest.json" >&2

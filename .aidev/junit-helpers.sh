@@ -124,3 +124,42 @@ fs.writeFileSync(JUNIT,
   properties + body.join("\n") + `\n</testsuite>\n`);
 ' < /dev/null
 }
+
+# junit_merge_prefixed JUNIT EXTRA PREFIX
+#   Appends EXTRA's testsuites to JUNIT (creating it if missing), each suite and
+#   case named "PREFIX › <name>" so a failure says which pass it came from, and
+#   adds EXTRA's counts to JUNIT's root, then removes EXTRA. Does nothing when
+#   EXTRA is missing.
+junit_merge_prefixed() {
+    JUNIT="$1" EXTRA="$2" PREFIX="$3" node -e '
+const fs = require("fs");
+const { JUNIT, EXTRA, PREFIX } = process.env;
+if (!fs.existsSync(EXTRA)) process.exit(0);
+const esc = (s) => s.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "\"": "&quot;" })[c]);
+const prefix = (tag, attrs) => tag.replace(new RegExp(`\\b(${attrs})="`, "g"), (m) => `${m}${esc(PREFIX)} › `);
+const extra = fs.readFileSync(EXTRA, "utf8");
+const suites = (extra.match(/<testsuite\b[\s\S]*?<\/testsuite>/g) || []).map((suite) =>
+  suite
+    .replace(/<testsuite\b[^>]*>/, (tag) => prefix(tag, "name"))
+    .replace(/<testcase\b[^>]*>/g, (tag) => prefix(tag, "name|classname")));
+const COUNTS = ["tests", "failures", "errors", "skipped"];
+const added = Object.fromEntries(COUNTS.map((k) => [k, 0]));
+for (const suite of suites) {
+  const tag = suite.match(/<testsuite\b[^>]*>/)[0];
+  for (const k of COUNTS) added[k] += Number((tag.match(new RegExp(`\\b${k}="(\\d+)"`)) || [])[1] || 0);
+}
+const existing = fs.existsSync(JUNIT) ? fs.readFileSync(JUNIT, "utf8") : "";
+let xml;
+if (/<\/testsuites>/.test(existing)) {
+  xml = existing
+    .replace(/<testsuites\b[^>]*>/, (tag) =>
+      tag.replace(/\b(tests|failures|errors|skipped)="(\d*)"/g, (_, k, n) => `${k}="${(Number(n) || 0) + added[k]}"`))
+    .replace(/<\/testsuites>/, `${suites.join("\n")}\n</testsuites>`);
+} else {
+  const body = existing.replace(/^<\?xml[^>]*\?>\s*/, "");
+  xml = `<?xml version="1.0" encoding="UTF-8"?>\n<testsuites>\n${body}${suites.join("\n")}\n</testsuites>\n`;
+}
+fs.writeFileSync(JUNIT, xml);
+fs.unlinkSync(EXTRA);
+' < /dev/null
+}

@@ -29,6 +29,13 @@
 #
 #   .aidev/run-fixture-e2e.sh playwright/tests/fixture/13-profile
 #
+# A run without arguments also runs the @basepath specs a second time against a
+# build served under /blog, as subdirectory deployments (the integration site, API
+# nodes' `ui` profile) serve it; production (hive.blog) is the root pass. That
+# build is made first and moved to test-results/blog-basepath-next: `next build`
+# empties apps/blog/.next, and the root build must be the one left there for the
+# test stack's blog-live. Its cases join junit.xml as suite `basepath › <spec>`.
+#
 # A run without arguments then builds the wallet and runs its offline specs
 # (apps/wallet/playwright.fixture.config.ts: the initial-chunk guard), which need
 # no fixture proxy. Their junit is test-results/fixture/wallet-junit.xml.
@@ -44,26 +51,31 @@ source .aidev/junit-helpers.sh
 rm -rf test-results/fixture
 mkdir -p test-results/fixture
 junit="$PWD/test-results/fixture/junit.xml"
+basepath_junit="$PWD/test-results/fixture/basepath-junit.xml"
+basepath_next="$PWD/test-results/blog-basepath-next"
+basepath=/blog
 
 # CI=1: forbid test.only, one retry, and always start a fresh server (the
 # config's reuseExistingServer would otherwise attach to anything on :3000).
 export CI=1
-export PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit"
 
 # Playwright can fail the run outside any test: the replay MISS baseline
 # (fixture-misses/global-teardown.ts) throws from globalTeardown, which runs
 # before the junit reporter writes, so the junit shows no failure. Record such
 # a run as a failing case in the junit.
+#
+#   run_playwright JUNIT SUITE PLAYWRIGHT_ARGS...
 miss_error='new fixture MISS'
 run_playwright() {
-    local log status=0
+    local junit="$1" suite="$2" log status=0
+    shift 2
     log="$(mktemp)"
-    pnpm exec playwright test --reporter=list,junit "$@" < /dev/null 2>&1 | tee "$log" || status=${PIPESTATUS[0]}
+    PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit" pnpm exec playwright test --reporter=list,junit "$@" < /dev/null 2>&1 | tee "$log" || status=${PIPESTATUS[0]}
     if [ "$status" -ne 0 ]; then
         if grep -q "$miss_error" "$log"; then
-            junit_add_unreported_failure "$junit" fixture_e2e "fixture MISS baseline" "$log" "$status" "$miss_error"
+            junit_add_unreported_failure "$junit" "$suite" "fixture MISS baseline" "$log" "$status" "$miss_error"
         else
-            junit_add_unreported_failure "$junit" fixture_e2e "fixture_e2e run" "$log" "$status"
+            junit_add_unreported_failure "$junit" "$suite" "$suite run" "$log" "$status"
         fi
     fi
     rm -f "$log"
@@ -79,11 +91,39 @@ run_wallet_fixture() {
     )
 }
 
+# Chained: run under `||`, a function does not stop on a failing command.
+build_basepath_blog() {
+    rm -rf "$basepath_next" \
+        && (cd apps/blog && NEXT_PUBLIC_BASE_PATH="$basepath" pnpm build < /dev/null) \
+        && mkdir -p "$basepath_next" \
+        && mv apps/blog/.next/standalone apps/blog/.next/static "$basepath_next/"
+}
+
+run_basepath_fixture() {
+    (cd apps/blog && FIXTURE_BASE_PATH="$basepath" FIXTURE_NEXT_DIR="$basepath_next" \
+        run_playwright "$basepath_junit" fixture_e2e_basepath --config=playwright.fixture.config.ts \
+        --grep @basepath --output=test-results/basepath)
+}
+
+# Merges the basepath pass's junit into junit.xml; its exit status is the pass's.
+finish_basepath_fixture() {
+    local status="$1"
+    junit_merge_prefixed "$junit" "$basepath_junit" basepath
+    rm -rf "$basepath_next"
+    return "$status"
+}
+
 if [ "${DENSER_FIXTURE_VIA_STACK:-}" != 1 ]; then
-    .aidev/run-blog-build.sh
     status=0
-    (cd apps/blog && run_playwright --config=playwright.fixture.config.ts "$@") || status=$?
+    basepath_status=0
     if [ "$#" -eq 0 ]; then
+        run_with_junit_fallback "$basepath_junit" fixture_e2e_basepath build_basepath_blog || basepath_status=$?
+    fi
+    .aidev/run-blog-build.sh
+    (cd apps/blog && run_playwright "$junit" fixture_e2e --config=playwright.fixture.config.ts "$@") || status=$?
+    if [ "$#" -eq 0 ]; then
+        [ "$basepath_status" -ne 0 ] || run_basepath_fixture || basepath_status=$?
+        finish_basepath_fixture "$basepath_status" || status=1
         run_wallet_fixture || status=1
     fi
     exit "$status"
@@ -128,7 +168,7 @@ const deadline = Date.now() + 180000;
 
 status=0
 (cd apps/blog && DENSER_BLOG_URL=http://localhost:3000 \
-    run_playwright --config=../../.aidev/playwright.fixture-stack.config.ts \
+    run_playwright "$junit" fixture_e2e --config=../../.aidev/playwright.fixture-stack.config.ts \
     --tsconfig=tsconfig.json "$@") || status=$?
 if [ "$#" -eq 0 ]; then
     run_wallet_fixture || status=1

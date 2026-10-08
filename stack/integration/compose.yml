@@ -40,6 +40,8 @@ services:
       REACT_APP_APP_NAME: blog
       REACT_APP_BASE_PATH: /blog
       NODE_OPTIONS: --max-old-space-size=3072
+      # Registers the `denser` OAuth client ("Sign in with Denser" for openhive.chat).
+      DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET: ${DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET:?set it in .env (32+ random characters)}
     mem_limit: 4g
     healthcheck:
       test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:80/blog || exit 1"]

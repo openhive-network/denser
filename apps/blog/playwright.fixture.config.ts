@@ -2,7 +2,8 @@ import path from 'path';
 import { defineConfig, devices } from '@playwright/test';
 import {
   FIXTURE_APP_NAME,
-  FIXTURE_COOKIE_PASSWORD
+  FIXTURE_COOKIE_PASSWORD,
+  FIXTURE_OAUTH_CLIENT_SECRET
 } from './playwright/tests/support/fixture-auth/constants';
 import {
   FEED_CACHE_PORT,
@@ -32,9 +33,17 @@ require('dotenv').config({ path: './.env.local' });
  *
  *   # Replay from recorded fixtures (stable, repeatable):
  *   pnpm --filter @hive/blog test:fixture
+ *
+ * FIXTURE_BASE_PATH (e.g. `/blog`) serves a build made with the same
+ * NEXT_PUBLIC_BASE_PATH under that path, as a subdirectory deployment does;
+ * FIXTURE_NEXT_DIR points at that build when it is not `.next`. See the
+ * `@basepath` pass of .aidev/run-fixture-e2e.sh.
  */
 
 const FIXTURE_PORT = 8200;
+const BASE_PATH = process.env.FIXTURE_BASE_PATH ?? '';
+const NEXT_DIR = process.env.FIXTURE_NEXT_DIR ?? '.next';
+const STANDALONE_APP_DIR = `${NEXT_DIR}/standalone/apps/blog`;
 
 // Point the app at the fixture proxy
 process.env.REACT_APP_API_ENDPOINT = `http://localhost:${FIXTURE_PORT}`;
@@ -64,7 +73,13 @@ const serverEnv = {
   // Shared with the seeder via fixture-auth/constants.ts — the app
   // seals and the test seals with the same password so sessions
   // unseal cleanly on both sides.
-  DENSER_SERVER_SECRET_COOKIE_PASSWORD: FIXTURE_COOKIE_PASSWORD
+  DENSER_SERVER_SECRET_COOKIE_PASSWORD: FIXTURE_COOKIE_PASSWORD,
+  // Registers the `denser` OAuth client (smart-signer/lib/oauth/config.ts),
+  // which the spec playing openhive.chat authenticates as.
+  DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET: FIXTURE_OAUTH_CLIENT_SECRET,
+  // A subdirectory deployment's site URL carries its base path, and the
+  // server builds its redirects from it. The root pass keeps the default.
+  ...(BASE_PATH ? { REACT_APP_SITE_DOMAIN: `http://localhost:3000${BASE_PATH}` } : {})
 };
 
 export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>({
@@ -101,7 +116,7 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
     : [['list']],
   use: {
     actionTimeout: 0,
-    baseURL: 'http://localhost:3000',
+    baseURL: `http://localhost:3000${BASE_PATH}`,
     feedCacheBaseURL: `http://localhost:${FEED_CACHE_PORT}`,
     trace: {
       mode: 'retain-on-failure',
@@ -128,14 +143,14 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
       // steps but copy the freshly-written __ENV.js into the standalone
       // public/ right before starting node.
       command: [
-        'rm -rf .next/standalone/apps/blog/.next/static .next/standalone/apps/blog/public',
-        'cp -r .next/static .next/standalone/apps/blog/.next/static',
-        'cp -r public .next/standalone/apps/blog/public',
-        'react-env -- sh -c "cp -f public/__ENV.js .next/standalone/apps/blog/public/__ENV.js && node .next/standalone/apps/blog/server.js"'
+        `rm -rf ${STANDALONE_APP_DIR}/.next/static ${STANDALONE_APP_DIR}/public`,
+        `cp -r ${NEXT_DIR}/static ${STANDALONE_APP_DIR}/.next/static`,
+        `cp -r public ${STANDALONE_APP_DIR}/public`,
+        `react-env -- sh -c "cp -f public/__ENV.js ${STANDALONE_APP_DIR}/public/__ENV.js && node ${STANDALONE_APP_DIR}/server.js"`
       ].join(' && '),
       // Not `/`: the fixture proxy only starts with the first worker, and a feed whose API is
       // unreachable answers 503, which Playwright does not count as ready.
-      url: 'http://127.0.0.1:3000/api/health',
+      url: `http://127.0.0.1:3000${BASE_PATH}/api/health`,
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
       stdout: 'pipe',
@@ -144,8 +159,8 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
     },
     // Started once the server above has put the build's static files in place.
     {
-      command: 'node .next/standalone/apps/blog/server.js',
-      url: `http://127.0.0.1:${FEED_CACHE_PORT}/api/health`,
+      command: `node ${STANDALONE_APP_DIR}/server.js`,
+      url: `http://127.0.0.1:${FEED_CACHE_PORT}${BASE_PATH}/api/health`,
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
       stdout: 'pipe',
