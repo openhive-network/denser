@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
 import { buildOAuthReturnUrl } from '@smart-signer/lib/oauth/return-url';
+import { siteConfig } from '@ui/config/site';
 import type { IronSessionData } from '@smart-signer/types/common';
 import LoginForm from './login-form';
 
@@ -19,7 +20,7 @@ async function getPendingOAuthReturnUrl(): Promise<string | null> {
   const session = await getIronSession<IronSessionData>(await cookies(), sessionOptions);
   const { user, oauthState } = session;
   if (!user?.isLoggedIn || !user.username || !user.authenticateOnBackend) return null;
-  return buildOAuthReturnUrl(oauthState);
+  return buildOAuthReturnUrl(oauthState, siteConfig.url);
 }
 
 /**
