@@ -18,6 +18,9 @@ import {
   type IManabarValue
 } from './manabar-math';
 import { DATA_LIMIT } from './bridge-api';
+import { getLogger } from '@ui/lib/logging';
+
+const logger = getLogger('hive-api');
 
 interface ISingleManabar {
   max: string;
@@ -270,6 +273,10 @@ export const getProfileInfo = async (
   };
 };
 
+/**
+ * The account with its follow stats and reputation. When the profile read fails, `follow_stats`
+ * and `reputation` are left undefined (unavailable) rather than failing the whole account read.
+ */
 export const getAccountFull = (username: string): Promise<FullAccount> =>
   getAccount(username).then(async (account) => {
     let follow_stats: AccountFollowStats | undefined;
@@ -278,7 +285,9 @@ export const getAccountFull = (username: string): Promise<FullAccount> =>
       const profileInfo = await getProfileInfo(username);
       follow_stats = profileInfo.follow_stats;
       reputation = profileInfo.reputation;
-    } catch (e) {}
+    } catch (error) {
+      logger.warn(error, 'getAccountFull: profile read for %s failed, follow stats unavailable', username);
+    }
     return { ...account, follow_stats, reputation };
   });
 

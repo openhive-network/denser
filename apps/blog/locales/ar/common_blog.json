@@ -324,6 +324,7 @@
       "followers_label": "المتابعون",
       "posts_label": "المشاركات",
       "following_label": "يتابع",
+      "count_unavailable": "غير متاح مؤقتًا",
       "blacklisted_users": "المستخدمون المدرجون في القائمة السوداء",
       "muted_users": "المستخدمون الصامت",
       "followed_blacklists": "قوائم الكتم المتبعة",

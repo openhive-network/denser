@@ -301,6 +301,7 @@
       "followers_label": "フォロワー",
       "posts_label": "投稿",
       "following_label": "フォロー中",
+      "count_unavailable": "一時的に利用できません",
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "ミュートユーザー",
       "followed_blacklists": "Followed Blacklists",

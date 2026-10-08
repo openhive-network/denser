@@ -301,6 +301,7 @@
       "followers_label": "Abonnés",
       "posts_label": "Articles",
       "following_label": "Abonnements",
+      "count_unavailable": "Temporairement indisponible",
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "Utilisateurs ignorés",
       "followed_blacklists": "Followed Blacklists",

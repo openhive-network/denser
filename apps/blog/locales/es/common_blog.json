@@ -301,6 +301,7 @@
       "followers_label": "Seguidores",
       "posts_label": "Posts",
       "following_label": "Siguiendo",
+      "count_unavailable": "No disponible temporalmente",
       "blacklisted_users": "Blacklisted Users",
       "muted_users": "Usuarios silenciados",
       "followed_blacklists": "Followed Blacklists",

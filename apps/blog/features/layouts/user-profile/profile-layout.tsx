@@ -36,6 +36,7 @@ import { notFound, usePathname } from 'next/navigation';
 import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
 import ListItem from './list-item';
+import FollowCount from './follow-count';
 import ProfileLayoutSkeleton from './profile-layout-skeleton';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
@@ -90,7 +91,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   const followingCount =
     isOwnProfile && following.data?.pages
       ? following.data.pages.reduce((sum, page) => sum + page.length, 0)
-      : (profileData?.follow_stats?.following_count ?? 0);
+      : profileData?.follow_stats?.following_count;
 
   const { data: accountReputationData } = useQuery({
     queryKey: ['accountReputationData', username],
@@ -273,9 +274,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                       href={`/@${profileData.name}/followers`}
                       className="group flex flex-col items-center transition-colors"
                     >
-                      <span className="text-lg font-semibold sm:text-xl">
-                        {profileData?.follow_stats?.follower_count ?? 0}
-                      </span>
+                      <FollowCount value={profileData.follow_stats?.follower_count} />
                       <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
                         {t('user_profile.lists.followers_label')}
                       </span>
@@ -293,7 +292,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                       href={`/@${profileData.name}/followed`}
                       className="group flex flex-col items-center transition-colors"
                     >
-                      <span className="text-lg font-semibold sm:text-xl">{followingCount}</span>
+                      <FollowCount value={followingCount} />
                       <span className="text-xs text-white/70 group-hover:text-white sm:text-sm">
                         {t('user_profile.lists.following_label')}
                       </span>
