@@ -75,15 +75,14 @@ const FollowedContent = ({
   const followingCount = isOwnProfile && followedSet
     ? followedSet.size
     : profileData?.follow_stats?.following_count;
+  const totalPages = followingCount === undefined ? '?' : Math.max(1, Math.ceil(followingCount / LIMIT));
 
   return (
     <div className="flex flex-col gap-2 p-2">
       <h1 className="self-center p-2">
         {t('user_profile.lists.followed_pages', {
           current: page + 1,
-          total: followingCount
-            ? Math.ceil(followingCount / LIMIT)
-            : '?'
+          total: totalPages
         })}
       </h1>
       <PrevNextButtons
@@ -135,9 +134,7 @@ const FollowedContent = ({
       <h1 className="self-center p-2">
         {t('user_profile.lists.followed_pages', {
           current: page + 1,
-          total: followingCount
-            ? Math.ceil(followingCount / LIMIT)
-            : '?'
+          total: totalPages
         })}
       </h1>
     </div>

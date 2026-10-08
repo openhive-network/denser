@@ -6,44 +6,19 @@ import { IronSessionData } from '@smart-signer/types/common';
 import { sessionOptions } from './session';
 import { siteConfig } from '@hive/ui/config/site';
 import { getSafeRedirectUrl } from './redirect-validation';
-import { buildOAuthReturnUrl } from './oauth/return-url';
 
 const logger = getLogger('app');
 
 export interface LoginPageProps {
   redirectTo?: string;
-  oauthReturn?: boolean;
 }
 
 export const loginPageController: GetServerSideProps = async (ctx) => {
   const { req, res } = ctx;
   const uid = ctx.query.uid || '' as string;
-  const oauthReturn = ctx.query.oauth_return === 'true';
 
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   const user = session.user;
-
-  // Handle new OAuth flow (oauth_return=true)
-  if (oauthReturn) {
-    // If user is already logged in and this is an OAuth return,
-    // redirect to the OAuth authorize endpoint
-    if (user?.isLoggedIn && user.username && user.authenticateOnBackend && session.oauthState) {
-      const returnUrl = buildOAuthReturnUrl(session.oauthState);
-      if (returnUrl) {
-        logger.info('loginPageController: OAuth return, user %s already logged in, redirecting to authorize', user.username);
-        return {
-          redirect: {
-            destination: returnUrl,
-            permanent: false,
-          },
-        };
-      }
-    }
-
-    // User needs to log in, pass oauthReturn flag to the login page
-    // so it knows to redirect after successful login
-    return { props: { oauthReturn: true } };
-  }
 
   // Legacy oidc-provider flow
   if (!oidc) {
