@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
-import { useLocalStorage } from 'usehooks-ts';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { getLogger } from '@ui/lib/logging';
@@ -25,35 +24,58 @@ async function getUser(): Promise<User> {
   return await fetchJson(`/api/users/me`);
 }
 
+// Every hook instance would write the same user on mount; write it once per change.
+let lastSavedUser: User | undefined;
+
+function saveUserOnce(user: User): void {
+  if (user === lastSavedUser) return;
+  lastSavedUser = user;
+  userLocalStorage.saveUser(user);
+}
+
+const subscribeToNothing = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
+
+/**
+ * False while React hydrates server HTML (and on the server), true otherwise. A
+ * component mounted after hydration reads true on its first render, so it renders
+ * once, with the stored user, instead of rendering logged out and then again.
+ */
+function useIsPastHydration(): boolean {
+  return useSyncExternalStore(subscribeToNothing, getClientSnapshot, getServerSnapshot);
+}
+
 /**
  * Core user hook logic shared between Pages Router and App Router versions.
  *
  * @param options - Configuration options
  * @param onRedirect - Callback to handle redirects (router-specific)
- * @param isMounted - Optional function to check if component is mounted (for App Router)
+ * @param waitForHydration - Report the logged-out user until hydration completes (App Router)
  * @returns User data and query state
  */
 export function useUserCore(
   { redirectTo = '', redirectIfFound = false }: UseUserOptions = {},
   onRedirect: (path: string) => void,
-  isMounted?: () => boolean
+  waitForHydration = false
 ): IUseUser {
   const queryClient = useQueryClient();
-  const [storedUser, storeUser] = useLocalStorage<User>('user', defaultUser);
+  const isPastHydration = useIsPastHydration();
   const { data: user } = useQuery<User>({
     queryKey: [QUERY_KEY.user],
     queryFn: async (): Promise<User> => getUser(),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    initialData: storedUser,
+    // Read once, when the query is created, not by every hook instance
+    initialData: () => userLocalStorage.getUser(),
     onError: () => {
-      storeUser(defaultUser);
+      saveUserOnce(defaultUser);
     }
   });
 
   useEffect(() => {
-    userLocalStorage.saveUser(user || defaultUser);
+    saveUserOnce(user || defaultUser);
   }, [user]);
 
   // Listen for auth storage desync events (IndexedDB cleared while session valid).
@@ -62,11 +84,11 @@ export function useUserCore(
     const handleDesync = () => {
       logger.warn('Auth storage desync event received — resetting user to logged-out state');
       queryClient.setQueryData([QUERY_KEY.user], defaultUser);
-      storeUser(defaultUser);
+      saveUserOnce(defaultUser);
     };
     window.addEventListener('auth-storage-desync', handleDesync);
     return () => window.removeEventListener('auth-storage-desync', handleDesync);
-  }, [queryClient, storeUser]);
+  }, [queryClient]);
 
   useEffect(() => {
     // If no redirect needed, just return (example: already on
@@ -86,24 +108,13 @@ export function useUserCore(
     }
   }, [user, redirectIfFound, redirectTo, onRedirect]);
 
-  // For App Router, check if mounted before returning user to prevent hydration mismatch
-  // Server uses cookies, client uses localStorage - these may differ during hydration
-  // Post-hydration invalidation in useUserClient ensures queries refetch with correct observer
-  const resolvedUser = isMounted
-    ? (!isMounted() || !user ? defaultUser : user)
-    : (user ?? defaultUser);
-
-  // Track hydration state - true when user state from localStorage is stable
-  // This ensures queries wait for proper user state before fetching
-  const [isHydrated, setIsHydrated] = useState(false);
-  useEffect(() => {
-    if (isMounted && isMounted()) {
-      setIsHydrated(true);
-    }
-  }, [isMounted]);
+  // Server uses cookies, client uses localStorage - these may differ during hydration,
+  // so hydration renders the logged-out user the server rendered
+  const isHydrated = !waitForHydration || isPastHydration;
+  const resolvedUser = isHydrated && user ? user : defaultUser;
 
   return {
     user: resolvedUser,
-    isHydrated: isMounted ? isHydrated : true // For Pages Router (no isMounted), always hydrated
+    isHydrated
   };
 }

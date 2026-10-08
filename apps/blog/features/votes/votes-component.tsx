@@ -1,9 +1,7 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
-import clsx from 'clsx';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { Slider } from '@ui/components/slider';
 import { Icons } from '@ui/components/icons';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -11,19 +9,15 @@ import DialogLogin from '@/blog/components/dialog-login';
 import { useQuery } from '@tanstack/react-query';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
 import type { TrimmedEntry } from '@/blog/features/list-of-posts/lib/card-entry';
-import { Popover, PopoverTrigger, PopoverContent } from '@ui/components/popover';
-import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
+import { useLoggedUserNetVests } from '@/blog/features/votes/hooks/use-logged-user';
 import { useTranslation } from '@/blog/i18n/client';
 import { handleError } from '@ui/lib/handle-error';
 import { useVoteMutation } from './hooks/use-vote-mutation';
 import { VoteRemovalDialog } from './vote-removal-dialog';
+import { TooltipContainer } from './vote-tooltip-container';
+import WeightedVoteButton from './weighted-vote-button';
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
-
-const offsetSlider = {
-  popoverSideOffset: -37,
-  popoverAlignOfset: -19
-};
 
 // Default votes values - defined outside component for stable reference
 const DEFAULT_VOTES_VALUES = {
@@ -79,8 +73,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
     refetchOnReconnect: false,
     refetchOnMount: false
   });
-  const { net_vests } = useLoggedUserContext();
-  const enable_slider = net_vests > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
+  const enable_slider = useLoggedUserNetVests() > VOTE_WEIGHT_DROPDOWN_THRESHOLD;
 
   const userVote =
     userVotes?.votes[0] && userVotes?.votes[0].voter === voter ? userVotes.votes[0] : undefined;
@@ -116,71 +109,60 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
           size={20}
           color="#dc2626"
         />
-      ) : user.isLoggedIn && enable_slider && !vote_upvoted ? (
-        <Popover>
-          <PopoverTrigger disabled={voteMutation.isLoading}>
+      ) : user.isLoggedIn && !vote_upvoted ? (
+        <WeightedVoteButton
+          sliderEnabled={enable_slider}
+          loading={voteMutation.isLoading}
+          tooltipText={t('cards.post_card.upvote')}
+          dataTestId="upvote-button"
+          sliderTestId="upvote-slider-modal"
+          afterPayout={pastPayout && !vote_upvoted}
+          icon={<Icons.arrowUpCircle className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white" />}
+          onFullWeightVote={() => {
+            setClickedVoteButton('up');
+            submitVote(10000);
+          }}
+        >
+          <div className="flex h-full items-center gap-2">
             <TooltipContainer
               loading={voteMutation.isLoading}
               text={t('cards.post_card.upvote')}
-              dataTestId="upvote-button"
+              dataTestId="upvote-button-slider"
               afterPayout={pastPayout && !vote_upvoted}
             >
-              <Icons.arrowUpCircle
-                className={clsx(
-                  'h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white',
-                  { 'bg-destructive-icon text-white': userVote && userVote.vote_percent > 0 }
-                )}
-              />
-            </TooltipContainer>
-          </PopoverTrigger>
-          <PopoverContent
-            className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
-            sideOffset={offsetSlider.popoverSideOffset}
-            align="start"
-            alignOffset={offsetSlider.popoverAlignOfset}
-            data-testid="upvote-slider-modal"
-          >
-            <div className="flex h-full items-center gap-2">
-              <TooltipContainer
-                loading={voteMutation.isLoading}
-                text={t('cards.post_card.upvote')}
-                dataTestId="upvote-button-slider"
-                afterPayout={pastPayout && !vote_upvoted}
+              <button
+                className="flex h-full items-center justify-center"
+                disabled={voteMutation.isLoading}
+                onClick={() => {
+                  setClickedVoteButton('up');
+                  submitVote(sliderUpvote[0] * 100);
+                  storeVotesValues((prev) => ({
+                    ...prev,
+                    [type]: {
+                      ...prev[type],
+                      upvote: sliderUpvote
+                    }
+                  }));
+                }}
               >
-                <button
-                  className="flex h-full items-center justify-center"
-                  disabled={voteMutation.isLoading}
-                  onClick={() => {
-                    setClickedVoteButton('up');
-                    submitVote(sliderUpvote[0] * 100);
-                    storeVotesValues((prev) => ({
-                      ...prev,
-                      [type]: {
-                        ...prev[type],
-                        upvote: sliderUpvote
-                      }
-                    }));
-                  }}
-                >
-                  <Icons.arrowUpCircle
-                    className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive-icon hover:text-white sm:mr-1"
-                  />
-                </button>
-              </TooltipContainer>
-              <Slider
-                dataTestId="upvote-slider"
-                defaultValue={sliderUpvote}
-                value={sliderUpvote}
-                min={1}
-                className="w-36"
-                onValueChange={(e: number[]) => setSliderUpvote(e)}
-              />
-              <div className="w-fit" data-testid="upvote-slider-percentage-value">
-                {sliderUpvote}%
-              </div>
+                <Icons.arrowUpCircle
+                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive-icon hover:text-white sm:mr-1"
+                />
+              </button>
+            </TooltipContainer>
+            <Slider
+              dataTestId="upvote-slider"
+              defaultValue={sliderUpvote}
+              value={sliderUpvote}
+              min={1}
+              className="w-36"
+              onValueChange={(e: number[]) => setSliderUpvote(e)}
+            />
+            <div className="w-fit" data-testid="upvote-slider-percentage-value">
+              {sliderUpvote}%
             </div>
-          </PopoverContent>
-        </Popover>
+          </div>
+        </WeightedVoteButton>
       ) : user.isLoggedIn && vote_upvoted ? (
         <VoteRemovalDialog
           voteType="upvote"
@@ -206,25 +188,6 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
             </TooltipContainer>
           </span>
         </VoteRemovalDialog>
-      ) : user.isLoggedIn ? (
-        <TooltipContainer
-          loading={voteMutation.isLoading}
-          text={t('cards.post_card.upvote')}
-          dataTestId="upvote-button"
-          afterPayout={pastPayout && !vote_upvoted}
-        >
-          <button
-            className="flex h-full items-center justify-center"
-            disabled={voteMutation.isLoading}
-            onClick={() => {
-              if (voteMutation.isLoading) return;
-              setClickedVoteButton('up');
-              submitVote(10000);
-            }}
-          >
-            <Icons.arrowUpCircle className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white" />
-          </button>
-        </TooltipContainer>
       ) : (
         <DialogLogin>
           <div className="flex items-center">
@@ -246,80 +209,69 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
           size={20}
           color="#dc2626"
         />
-      ) : user.isLoggedIn && enable_slider && !vote_downvoted ? (
-        <Popover>
-          <PopoverTrigger disabled={voteMutation.isLoading}>
+      ) : user.isLoggedIn && !vote_downvoted ? (
+        <WeightedVoteButton
+          sliderEnabled={enable_slider}
+          loading={voteMutation.isLoading}
+          tooltipText={t('cards.post_card.downvote')}
+          dataTestId="downvote-button"
+          sliderTestId="downvote-slider-modal"
+          afterPayout={pastPayout && !vote_downvoted}
+          icon={<Icons.arrowDownCircle className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />}
+          onFullWeightVote={() => {
+            setClickedVoteButton('down');
+            submitVote(-10000);
+          }}
+        >
+          <div className="flex h-full items-center gap-2">
             <TooltipContainer
               loading={voteMutation.isLoading}
               text={t('cards.post_card.downvote')}
-              dataTestId="downvote-button"
+              dataTestId="downvote-button-slider"
               afterPayout={pastPayout && !vote_downvoted}
             >
-              <Icons.arrowDownCircle
-                className={clsx(
-                  'h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white',
-                  { 'bg-gray-600 text-white': userVote && userVote.vote_percent < 0 }
-                )}
-              />
-            </TooltipContainer>
-          </PopoverTrigger>
-          <PopoverContent
-            className="z-50 max-w-xs rounded-lg bg-background-secondary p-4 shadow-lg"
-            sideOffset={offsetSlider.popoverSideOffset}
-            align="start"
-            alignOffset={offsetSlider.popoverAlignOfset}
-            data-testid="downvote-slider-modal"
-          >
-            <div className="flex h-full items-center gap-2">
-              <TooltipContainer
-                loading={voteMutation.isLoading}
-                text={t('cards.post_card.downvote')}
-                dataTestId="downvote-button-slider"
-                afterPayout={pastPayout && !vote_downvoted}
+              <button
+                className="flex h-full items-center justify-center"
+                disabled={voteMutation.isLoading}
+                onClick={() => {
+                  setClickedVoteButton('down');
+                  submitVote(-sliderDownvote[0] * 100);
+                  storeVotesValues((prev) => ({
+                    ...prev,
+                    [type]: {
+                      ...prev[type],
+                      downvote: sliderDownvote
+                    }
+                  }));
+                }}
               >
-                <button
-                  className="flex h-full items-center justify-center"
-                  disabled={voteMutation.isLoading}
-                  onClick={() => {
-                    setClickedVoteButton('down');
-                    submitVote(-sliderDownvote[0] * 100);
-                    storeVotesValues((prev) => ({
-                      ...prev,
-                      [type]: {
-                        ...prev[type],
-                        downvote: sliderDownvote
-                      }
-                    }));
-                  }}
-                >
-                  <Icons.arrowDownCircle
-                    className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
-                  />
-                </button>
-              </TooltipContainer>
-              <Slider
-                dataTestId="downvote-slider"
-                defaultValue={sliderDownvote}
-                value={sliderDownvote}
-                min={1}
-                className="w-36"
-                onValueChange={(e: number[]) => setSliderDownvote(e)}
-              />
-              <div className="w-fit text-destructive" data-testid="downvote-slider-percentage-value">
-                -{sliderDownvote}%
-              </div>
+                <Icons.arrowDownCircle
+                  className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
+                />
+              </button>
+            </TooltipContainer>
+            <Slider
+              dataTestId="downvote-slider"
+              defaultValue={sliderDownvote}
+              value={sliderDownvote}
+              min={1}
+              className="w-36"
+              onValueChange={(e: number[]) => setSliderDownvote(e)}
+            />
+            <div className="w-fit text-destructive" data-testid="downvote-slider-percentage-value">
+              -{sliderDownvote}%
             </div>
-            <div className="flex flex-col gap-1 pt-2 text-sm" data-testid="downvote-description-content">
-              <p>{t('cards.post_card.downvote_warning')}</p>
-              <ul>
-                <li>{t('cards.post_card.reason_1')}</li>
-                <li>{t('cards.post_card.reason_2')}</li>
-                <li>{t('cards.post_card.reason_3')}</li>
-                <li>{t('cards.post_card.reason_4')}</li>
-              </ul>
-            </div>
-          </PopoverContent>
-        </Popover>
+          </div>
+          <div className="flex flex-col gap-1 pt-2 text-sm" data-testid="downvote-description-content">
+            <p>{t('cards.post_card.downvote_warning')}</p>
+            <ul>
+              <li>{t('cards.post_card.reason_1')}</li>
+              <li>{t('cards.post_card.reason_2')}</li>
+              <li>{t('cards.post_card.reason_3')}</li>
+              <li>{t('cards.post_card.reason_4')}</li>
+            </ul>
+          </div>
+        </WeightedVoteButton>
       ) : user.isLoggedIn && vote_downvoted ? (
         <VoteRemovalDialog
           voteType="downvote"
@@ -345,25 +297,6 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
             </TooltipContainer>
           </span>
         </VoteRemovalDialog>
-      ) : user.isLoggedIn ? (
-        <TooltipContainer
-          loading={voteMutation.isLoading}
-          text={t('cards.post_card.downvote')}
-          dataTestId="downvote-button"
-          afterPayout={pastPayout && !vote_downvoted}
-        >
-          <button
-            className="flex h-full items-center justify-center"
-            disabled={voteMutation.isLoading}
-            onClick={() => {
-              if (voteMutation.isLoading) return;
-              setClickedVoteButton('down');
-              submitVote(-10000);
-            }}
-          >
-            <Icons.arrowDownCircle className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />
-          </button>
-        </TooltipContainer>
       ) : (
         <DialogLogin>
           <div className="flex items-center">
@@ -383,38 +316,3 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
 };
 
 export default VotesComponent;
-
-const TooltipContainer = ({
-  children,
-  loading,
-  text,
-  dataTestId,
-  afterPayout
-}: {
-  children: ReactNode;
-  loading: boolean;
-  text: string;
-  dataTestId: string;
-  afterPayout?: boolean;
-}) => {
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger data-testid={dataTestId} disabled={loading} asChild>
-          <span className="cursor-pointer">{children}</span>
-        </TooltipTrigger>
-        <TooltipContent
-          data-testid={dataTestId + '-tooltip'}
-          className="flex flex-col items-center justify-center"
-        >
-          <div className="font-bold">{text}</div>
-          {afterPayout && (
-            <div className="text-xs text-destructive opacity-80">
-              Voting on Content after their payout does not generate any new rewards
-            </div>
-          )}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-};

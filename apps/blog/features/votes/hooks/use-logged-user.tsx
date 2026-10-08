@@ -1,5 +1,5 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { createContext, FC, useContext } from 'react';
+import { createContext, FC, useContext, useDeferredValue, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { netVests } from '@/blog/lib/utils';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
@@ -26,6 +26,9 @@ type LoggedUserContextType = {
 };
 
 const LoggedUserContext = createContext<LoggedUserContextType | undefined>(undefined);
+// Vote buttons (one per post and comment) need only this; it changes when the account
+// loads, not on every manabar refetch.
+const LoggedUserNetVestsContext = createContext(0);
 
 export const useLoggedUserContext = () => {
   const context = useContext(LoggedUserContext);
@@ -34,6 +37,8 @@ export const useLoggedUserContext = () => {
   }
   return context;
 };
+
+export const useLoggedUserNetVests = () => useContext(LoggedUserNetVestsContext);
 
 export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useUserClient();
@@ -51,10 +56,17 @@ export const LoggedUserProvider: FC<{ children: React.ReactNode }> = ({ children
   });
   const net_vests = accountData ? netVests(accountData) : 0;
   const reputation = accountData?.reputation ?? 25;
+  const value = useMemo(
+    () => ({ loggedUser: accountData, net_vests, reputation, manabarsData }),
+    [accountData, net_vests, reputation, manabarsData]
+  );
+  // When the account loads, every vote button re-renders to enable its weight slider.
+  // At transition priority React renders that in slices instead of one long task.
+  const deferredNetVests = useDeferredValue(net_vests);
 
   return (
-    <LoggedUserContext.Provider value={{ loggedUser: accountData, net_vests, reputation, manabarsData }}>
-      {children}
+    <LoggedUserContext.Provider value={value}>
+      <LoggedUserNetVestsContext.Provider value={deferredNetVests}>{children}</LoggedUserNetVestsContext.Provider>
     </LoggedUserContext.Provider>
   );
 };
