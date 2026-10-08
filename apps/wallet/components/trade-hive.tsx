@@ -1,6 +1,7 @@
 'use client';
 
 import Big from 'big.js';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import BuyOrSellForm from './buy-sell-form';
 import { MarketTable, HistoryTable, OrdersItem } from './market-table';
@@ -8,13 +9,15 @@ import Loading from '@ui/components/loading';
 import { useTradeHistory } from './hooks/use-trade-history';
 import { useOrderBook } from './hooks/use-order-book';
 import dayjs from 'dayjs';
-import Chart from './chart';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getOpenOrder } from '../lib/hive';
 import OpenOrders from './open-orders';
 import { useQuery } from '@tanstack/react-query';
 import { NaiAsset } from '@hiveio/wax';
+
+// recharts' AreaChart; the chart only renders once the order book has loaded client-side.
+const Chart = dynamic(() => import('./chart'));
 
 interface Market {
   hbd_volume: NaiAsset;

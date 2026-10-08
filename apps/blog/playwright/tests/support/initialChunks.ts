@@ -35,7 +35,9 @@ export const CHUNK_MARKERS = {
   /** sanitize-html, the renderer's sanitizer: one of its options */
   sanitizeHtml: 'allowProtocolRelative',
   /** zod: one of its issue codes */
-  zod: 'invalid_intersection_types'
+  zod: 'invalid_intersection_types',
+  /** cmdk, behind @hive/ui's Command, which the blog never renders: one of its item selectors */
+  cmdk: 'cmdk-group-items'
 } as const;
 
 /** The Sentry SDK: page-load code reaches it only through a dynamic `import()`, made when a DSN is set. */
