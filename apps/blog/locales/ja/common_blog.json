@@ -360,7 +360,10 @@
     },
     "load_more_failed": "Couldn't load more posts.",
     "load_more_retry": "Retry",
-    "check_node_status": "Check Node Status"
+    "check_node_status": "Check Node Status",
+    "load_failed_title": "このプロフィールを読み込めませんでした",
+    "load_failed_description": "Hive API が応答しませんでした。通常は一時的なものです。",
+    "go_home": "ホームへ"
   },
   "communities": {
     "set_title_for_user": "@{{username}}のタイトルを設定",

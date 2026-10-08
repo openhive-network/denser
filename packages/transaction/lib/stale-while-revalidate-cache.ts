@@ -6,6 +6,8 @@ export interface IStaleWhileRevalidateOptions<T> {
   /** Upper bound of the summed `sizeOf` of all stored values; least recently used ones go first. */
   maxSize: number;
   sizeOf: (value: T) => number;
+  /** Whether a loaded value may be stored (default: every one); a value it rejects only answers its own load. */
+  cacheIf?: (value: T) => boolean;
   /** Called when a background reload failed and the stale value keeps being served. */
   onRevalidateError?: (error: unknown, key: string) => void;
   now?: () => number;
@@ -21,8 +23,10 @@ interface IEntry<T> {
 /**
  * In-process cache with stale-while-revalidate semantics and a size cap.
  *
- * Only values `load` resolved are stored: a rejected load is never cached, it reaches the caller
- * when no servable value exists, and otherwise leaves the stale value in place until it expires.
+ * Only values `load` resolved, and `cacheIf` accepts, are stored: a rejected load is never cached,
+ * it reaches the caller when no servable value exists, and otherwise leaves the stale value in place
+ * until it expires. A resolved value `cacheIf` rejects is handled the same way, except that it is
+ * returned to the callers of that load instead of an error.
  * Concurrent loads of one key share a single `load` call.
  */
 export class StaleWhileRevalidateCache<T> {
@@ -55,7 +59,7 @@ export class StaleWhileRevalidateCache<T> {
 
     const loading = load()
       .then((value) => {
-        this.store(key, value);
+        if (this.options.cacheIf?.(value) ?? true) this.store(key, value);
         return value;
       })
       .finally(() => this.inFlight.delete(key));

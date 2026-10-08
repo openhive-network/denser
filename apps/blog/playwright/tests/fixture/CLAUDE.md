@@ -919,7 +919,18 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   SAFE-11 drops every `bridge.get_profile` call via `failRequests`: `/@hiveio`
   still renders at 200, with both follow counts marked unavailable
   (`profile-follow-count-unavailable`) instead of 0. SAFE-12 is the control:
-  the recorded follower count renders when the read succeeds.
+  the recorded follower count renders when the read succeeds. SAFE-15 (on the
+  `:3001` cache-on server, skipped without it) checks such a degraded profile
+  is not cached: the next anonymous read shows the real counts.
+- **`ssrProfileNotFound.spec.ts`** — JS on, `userProfileTabs` fixtures. SAFE-13:
+  `/@nosuchuser1078` (a valid name recorded as having no account) is a 404 with
+  the not-found page. SAFE-14: with `database_api.find_accounts` dropped,
+  `/@hiveio` answers 503 with the profile load error (`profile-load-error`) and
+  its retry, not the not-found page. The account lookup runs in the profile
+  layout, so its error is caught by `app/[param]/error.tsx`, which renders the
+  profile error for the `(user-profile)` segment. The trending /
+  `list_communities` recordings in the dir are copies from `ssrRouting` for the
+  calls that page makes.
 - **`feedCache.spec.ts`** — pure HTTP against the `:3001` server, `login`
   fixtures (they hold `/trending` for both `hive.blog` and `guest4test`).
   Anonymous feed renders are cached server-side, logged-in ones are not. Serial;

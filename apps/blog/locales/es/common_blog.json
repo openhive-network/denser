@@ -360,7 +360,10 @@
     },
     "load_more_failed": "Couldn't load more posts.",
     "load_more_retry": "Retry",
-    "check_node_status": "Check Node Status"
+    "check_node_status": "Check Node Status",
+    "load_failed_title": "No se pudo cargar este perfil",
+    "load_failed_description": "La API de Hive no respondió. Suele ser algo temporal.",
+    "go_home": "Ir al inicio"
   },
   "communities": {
     "set_title_for_user": "Establecer título para @{{username}}",

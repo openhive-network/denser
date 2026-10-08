@@ -87,6 +87,33 @@ describe('createProfileCache', () => {
     expect(await get()).to.equal('profile#3');
   });
 
+  it('never serves a later request a value cacheIf rejects, and keeps serving the stale one', async () => {
+    let clock = 0;
+    const answers = ['good#1', 'degraded#2', 'good#3', 'degraded#4', 'good#5'];
+    const cache = createProfileCache<string>({
+      config: readFeedCacheConfig({}),
+      anonymousObserver: ANONYMOUS,
+      now: () => clock,
+      cacheIf: (value) => !value.startsWith('degraded')
+    });
+    const get = () => cache.get(request(), async () => answers.shift() ?? 'exhausted');
+
+    expect(await get()).to.equal('good#1');
+    clock += 30_000;
+    // Stale: answered at once while the reload brings back a degraded value, which is not stored.
+    expect(await get()).to.equal('good#1');
+    await flush();
+    expect(await get()).to.equal('good#1');
+    await flush();
+    expect(await get()).to.equal('good#3');
+
+    clock += 60_000;
+    // Nothing servable: the degraded value answers its own request only.
+    expect(await get()).to.equal('degraded#4');
+    expect(await get()).to.equal('good#5');
+    expect(await get()).to.equal('good#5');
+  });
+
   it('loads every time when the TTL is 0', async () => {
     const { get, loads } = setup(readFeedCacheConfig({ DENSER_FEED_CACHE_TTL_S: '0' }));
     await get();

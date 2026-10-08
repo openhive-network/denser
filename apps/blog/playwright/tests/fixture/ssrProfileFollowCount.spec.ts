@@ -1,4 +1,5 @@
 import { test, expect } from '../support/fixture-proxy-test';
+import { FEED_CACHE_STALE_S, FEED_CACHE_TTL_S } from '../support/feed-cache-server';
 
 /**
  * A profile whose follow counts could not be read shows them as unavailable, never as 0.
@@ -7,7 +8,7 @@ import { test, expect } from '../support/fixture-proxy-test';
  * the account itself. When that secondary read fails (an upstream 429 or a node blip) the page
  * still renders from the account, but the counts are marked unavailable instead of falling back
  * to a real-looking 0. `failRequests` drops every `bridge.get_profile` call, so the server's
- * retries fail too.
+ * retries fail too. SAFE-15 checks such a degraded profile is not cached for later anonymous viewers.
  *
  * Level: pure HTTP (the header is server-rendered into the initial HTML). Replay only.
  *
@@ -46,5 +47,31 @@ test('SAFE-12 — the recorded follow counts render when the read succeeds', asy
 
   const html = await res.text();
   expect(html).toContain(`>${RECORDED_FOLLOWERS}<`);
+  expect(html).not.toContain(UNAVAILABLE_MARKER);
+});
+
+test('SAFE-15 — a profile read with failed follow counts is not served from the cache afterwards', async ({
+  request,
+  fixtureProxy,
+  feedCacheBaseURL
+}) => {
+  test.skip(!feedCacheBaseURL, 'no blog serves with the server-side cache on');
+  // Let any profile a previous attempt cached expire first.
+  await new Promise((resolve) => setTimeout(resolve, (FEED_CACHE_TTL_S + FEED_CACHE_STALE_S) * 1000 + 500));
+  const url = `${feedCacheBaseURL}${PROFILE_PATH}`;
+
+  const restore = fixtureProxy.failRequests(({ method }) => method === 'bridge.get_profile');
+  let degraded: string;
+  try {
+    degraded = await (await request.get(url)).text();
+  } finally {
+    restore();
+  }
+  expect(degraded, 'the first, anonymous read is degraded').toContain(UNAVAILABLE_MARKER);
+
+  const res = await request.get(url);
+  expect(res.status()).toBe(200);
+  const html = await res.text();
+  expect(html, 'the next anonymous read loads the counts again').toContain(`>${RECORDED_FOLLOWERS}<`);
   expect(html).not.toContain(UNAVAILABLE_MARKER);
 });

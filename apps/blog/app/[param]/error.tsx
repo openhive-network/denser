@@ -3,7 +3,10 @@
 import { useEffect } from 'react';
 import { Button } from '@ui/components/button';
 import { handleError } from '@ui/lib/handle-error';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
+import ProfileLoadError from '@/blog/features/layouts/user-profile/profile-load-error';
+
+const PROFILE_SEGMENT = '(user-profile)';
 
 export default function ParamError({
   error,
@@ -13,10 +16,15 @@ export default function ParamError({
   reset: () => void;
 }) {
   const router = useRouter();
+  const segment = useSelectedLayoutSegment();
 
   useEffect(() => {
     handleError(error, { method: 'ParamErrorBoundary', params: { digest: error.digest } });
   }, [error]);
+
+  // A profile layout's own error (e.g. its account lookup failed) reaches this boundary, not the
+  // profile's error.tsx, which only wraps the layout's children.
+  if (segment === PROFILE_SEGMENT) return <ProfileLoadError reset={reset} />;
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-8">
