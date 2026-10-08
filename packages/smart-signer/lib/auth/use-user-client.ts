@@ -1,7 +1,6 @@
 'use client';
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useIsMounted } from 'usehooks-ts';
 import { useUserCore, IUseUser, UseUserOptions } from './use-user-core';
 
 /**
@@ -12,12 +11,11 @@ import { useUserCore, IUseUser, UseUserOptions } from './use-user-core';
  * @returns User data
  */
 export function useUserClient(options: UseUserOptions = {}): IUseUser {
-  const isMounted = useIsMounted();
   const router = useRouter();
 
   const handleRedirect = useCallback((path: string) => {
     router.push(path);
   }, [router]);
 
-  return useUserCore(options, handleRedirect, isMounted);
+  return useUserCore(options, handleRedirect, true);
 }

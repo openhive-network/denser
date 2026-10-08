@@ -71,7 +71,7 @@ Instead, `seedAuthCookie(context)` (in `fixture-auth/seeder.ts`):
    server-side handlers (e.g. `/api/users/me`) and renders.
 2. Runs an `addInitScript` that writes the same `User` into
    `localStorage['user']`. Without this, `useUserCore`'s
-   `useQuery({initialData: storedUser, refetchOnMount: false})` locks the
+   `useQuery({initialData: () => getUser(), refetchOnMount: false})` locks the
    client into the anonymous state even with a valid cookie.
 3. If `CI_TEST_USER_WIF_POSTING` is set, also writes
    `localStorage['wif.{username}@posting']` so `signer-wif.ts` signs
@@ -685,9 +685,9 @@ SSR-visible data, patch the fixture dir, not the test.
 
 ### Wait for hydration before interacting on logged-in pages
 
-`useUserCore` uses an `isMounted` guard that briefly resolves user to
-`defaultUser` between SSR and mount. Post cards re-render into their
-anonymous (DialogLogin-wrapped) branch for that window. Clicking mid-flight
+`useUserCore` resolves user to `defaultUser` while React hydrates the server
+HTML (a `useSyncExternalStore` hydration flag). Post cards render their
+anonymous (DialogLogin-wrapped) branch until then. Clicking mid-flight
 opens a login dialog instead of the real handler. Use the shared helper:
 
 ```ts

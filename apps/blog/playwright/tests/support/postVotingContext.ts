@@ -87,8 +87,8 @@ export async function expectFirstPostDownvotedState(
 }
 
 /**
- * Wait until the first post's vote button opens the weight slider: it sits
- * inside the popover trigger only once the voter's account (`net_vests`) has
+ * Wait until the first post's vote button opens the weight slider: it is
+ * marked as a popup trigger only once the voter's account (`net_vests`) has
  * loaded. Before that the button is the plain one-click vote, so a click
  * would broadcast a 100% vote instead of opening the slider — the same
  * `login-btn` race as above, on `find_accounts` instead of `list_votes`.
@@ -98,6 +98,6 @@ export async function expectFirstPostSliderEnabled(
   direction: 'upvote' | 'downvote'
 ): Promise<void> {
   await expect(
-    page.getByTestId(`${direction}-button`).first().locator('xpath=ancestor::button[1]')
+    page.getByTestId(`${direction}-button`).first().locator('button')
   ).toHaveAttribute('aria-haspopup', 'dialog');
 }
