@@ -6,6 +6,7 @@ import { OrdersItem } from './market-table';
 import Big from 'big.js';
 import { getRoundedAbbreveration } from '@ui/lib/utils';
 import { useTranslation } from '@/wallet/i18n/client';
+import { CHART_HEIGHT } from './chart-dimensions';
 
 export type PayloadOrder = {
   total: number;
@@ -151,7 +152,7 @@ export default function Chart({ bids, asks }: { bids: OrdersItem[]; asks: Orders
     <div data-testid="market-chart">
       <AreaChart
         width={Math.min(windowWidth / 1.1, 1200)}
-        height={250}
+        height={CHART_HEIGHT}
         data={data}
         margin={{
           top: 10,

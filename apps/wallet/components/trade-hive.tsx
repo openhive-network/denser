@@ -15,9 +15,12 @@ import { getOpenOrder } from '../lib/hive';
 import OpenOrders from './open-orders';
 import { useQuery } from '@tanstack/react-query';
 import { NaiAsset } from '@hiveio/wax';
+import { CHART_HEIGHT } from './chart-dimensions';
 
 // recharts' AreaChart; the chart only renders once the order book has loaded client-side.
-const Chart = dynamic(() => import('./chart'));
+const Chart = dynamic(() => import('./chart'), {
+  loading: () => <div style={{ height: CHART_HEIGHT }} />
+});
 
 interface Market {
   hbd_volume: NaiAsset;
