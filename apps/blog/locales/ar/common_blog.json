@@ -383,7 +383,10 @@
     },
     "load_more_failed": "Couldn't load more posts.",
     "load_more_retry": "Retry",
-    "check_node_status": "Check Node Status"
+    "check_node_status": "Check Node Status",
+    "load_failed_title": "تعذر تحميل هذا الملف الشخصي",
+    "load_failed_description": "لم تستجب واجهة Hive البرمجية. عادةً ما يكون هذا مؤقتًا.",
+    "go_home": "الصفحة الرئيسية"
   },
   "communities": {
     "set_title_for_user": "تعيين العنوان لـ @{{username}}",

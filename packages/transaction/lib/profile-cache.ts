@@ -1,4 +1,8 @@
-import { createAnonymousReadCache, type IAnonymousReadCache, type IFeedCacheOptions } from './feed-cache';
+import {
+  createAnonymousReadCache,
+  type IAnonymousReadCache,
+  type IAnonymousReadCacheOptions
+} from './feed-cache';
 
 export interface IProfileRequest {
   /** Identifies the chain and API node the data comes from (e.g. chain id + endpoint URL). */
@@ -22,7 +26,7 @@ export function profileCacheKey(request: IProfileRequest): string {
  * Same settings as the feed cache, except that a value is never served for longer than one TTL
  * past its freshness: the stale window is capped at the TTL.
  */
-export function createProfileCache<T>(options: IFeedCacheOptions): IProfileCache<T> {
+export function createProfileCache<T>(options: IAnonymousReadCacheOptions<T>): IProfileCache<T> {
   const { config } = options;
   return createAnonymousReadCache<IProfileRequest, T>(
     { ...options, config: { ...config, staleMs: Math.min(config.staleMs, config.ttlMs) } },

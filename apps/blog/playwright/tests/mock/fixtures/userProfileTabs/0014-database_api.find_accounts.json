@@ -1,0 +1,32 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.find_accounts",
+    "params": {
+      "accounts": [
+        "nosuchuser1078"
+      ],
+      "delayed_votes_active": false
+    },
+    "id": 1
+  },
+  "requestHash": "ebb4e67dbbb37c2b",
+  "method": "database_api.find_accounts",
+  "params": {
+    "accounts": [
+      "nosuchuser1078"
+    ],
+    "delayed_votes_active": false
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "accounts": []
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

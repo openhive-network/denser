@@ -1,0 +1,53 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_profile",
+    "params": {
+      "account": "nosuchuser1078"
+    },
+    "id": 1
+  },
+  "requestHash": "35f622b74fa31347",
+  "method": "bridge.get_profile",
+  "params": {
+    "account": "nosuchuser1078"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": {
+        "assert_hash": "3c4d5e6f7a8b9c0d1e2f",
+        "code": 10,
+        "extension": {
+          "assertion_expression": "[{\"nosuchuser1078\": \"account does not exist\"}]"
+        },
+        "message": "Assert Exception",
+        "name": "assert_exception",
+        "stack": [
+          {
+            "context": {
+              "file": "",
+              "hostname": "",
+              "level": "error",
+              "line": 0,
+              "method": "",
+              "thread_name": "",
+              "timestamp": "2026-10-08T04:14:49"
+            },
+            "data": {
+              "category": "hivemind"
+            },
+            "format": ""
+          }
+        ]
+      },
+      "message": "Assert Exception:[{\"nosuchuser1078\": \"account does not exist\"}]"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -1,0 +1,63 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_account_posts",
+    "params": {
+      "sort": "blog",
+      "account": "nosuchuser1078",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "b67cbcda5c8b15db",
+  "method": "bridge.get_account_posts",
+  "params": {
+    "sort": "blog",
+    "account": "nosuchuser1078",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "observer": "hive.blog"
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": {
+        "assert_hash": "1a2b3c4d5e6f7a8b9c0d",
+        "code": 10,
+        "extension": {
+          "assertion_expression": "Account nosuchuser1078 does not exist"
+        },
+        "message": "Assert Exception",
+        "name": "assert_exception",
+        "stack": [
+          {
+            "context": {
+              "file": "",
+              "hostname": "",
+              "level": "error",
+              "line": 0,
+              "method": "",
+              "thread_name": "",
+              "timestamp": "2026-10-08T04:20:51"
+            },
+            "data": {
+              "category": "hivemind"
+            },
+            "format": ""
+          }
+        ]
+      },
+      "message": "Assert Exception:Account nosuchuser1078 does not exist"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

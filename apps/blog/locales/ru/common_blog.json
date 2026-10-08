@@ -366,7 +366,10 @@
     },
     "load_more_failed": "Couldn't load more posts.",
     "load_more_retry": "Retry",
-    "check_node_status": "Check Node Status"
+    "check_node_status": "Check Node Status",
+    "load_failed_title": "Не удалось загрузить этот профиль",
+    "load_failed_description": "API Hive не ответил. Обычно это временно.",
+    "go_home": "На главную"
   },
   "communities": {
     "set_title_for_user": "Установить заголовок для @{{username}}",

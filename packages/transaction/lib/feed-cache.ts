@@ -56,6 +56,11 @@ export interface IFeedCacheOptions {
   now?: () => number;
 }
 
+export interface IAnonymousReadCacheOptions<T> extends IFeedCacheOptions {
+  /** Whether a loaded value may be cached (default: every one); one it rejects answers only its own request. */
+  cacheIf?: (value: T) => boolean;
+}
+
 /** A request the anonymous-read cache can answer: only the anonymous observer's requests are cached. */
 export interface IObservedRequest {
   observer: string;
@@ -73,7 +78,7 @@ export type IFeedCache<T> = IAnonymousReadCache<IFeedRequest, T>;
  * `keyOf` must separate every request field that changes the answer, except the observer.
  */
 export function createAnonymousReadCache<R extends IObservedRequest, T>(
-  options: IFeedCacheOptions,
+  options: IAnonymousReadCacheOptions<T>,
   keyOf: (request: R) => string
 ): IAnonymousReadCache<R, T> {
   const { config, anonymousObserver } = options;
@@ -85,6 +90,7 @@ export function createAnonymousReadCache<R extends IObservedRequest, T>(
     maxSize: config.maxBytes,
     // UTF-16 code units, close enough to the retained size for a memory cap.
     sizeOf: (value) => JSON.stringify(value)?.length ?? 0,
+    cacheIf: options.cacheIf,
     onRevalidateError: options.onRevalidateError,
     now: options.now
   });

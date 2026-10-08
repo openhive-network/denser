@@ -360,7 +360,10 @@
     },
     "load_more_failed": "Couldn't load more posts.",
     "load_more_retry": "Retry",
-    "check_node_status": "Check Node Status"
+    "check_node_status": "Check Node Status",
+    "load_failed_title": "无法加载此个人资料",
+    "load_failed_description": "Hive API 没有响应。这通常是暂时的。",
+    "go_home": "返回首页"
   },
   "communities": {
     "set_title_for_user": "为 @{{username}} 设置标题",

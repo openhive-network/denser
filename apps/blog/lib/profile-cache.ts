@@ -29,17 +29,22 @@ declare global {
   var denserProfileCaches: IProfileCaches | undefined;
 }
 
-const createCache = <T,>(): IProfileCache<T> =>
+const createCache = <T,>(cacheIf?: (value: T) => boolean): IProfileCache<T> =>
   createProfileCache<T>({
     config: readFeedCacheConfig(process.env),
     anonymousObserver: DEFAULT_OBSERVER,
+    cacheIf,
     onRevalidateError: (error, key) =>
       logger.warn(error, 'Profile cache: reloading %s failed, serving the stale value', key)
   });
 
+// `getAccountFull` leaves the follow stats undefined when their read failed. Such an account is
+// served to its own request only, so one upstream blip is not shown to every anonymous viewer.
+const hasFollowStats = (account: FullAccount): boolean => account.follow_stats !== undefined;
+
 const getCaches = (): IProfileCaches =>
   (globalThis.denserProfileCaches ??= {
-    account: createCache(),
+    account: createCache(hasFollowStats),
     reputations: createCache(),
     globalProperties: createCache(),
     posts: createCache()

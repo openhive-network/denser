@@ -6,6 +6,8 @@ import { getQueryClient } from '@/blog/lib/react-query';
 import { getProfileAccount, getProfileGlobalProperties, getProfileReputations } from '@/blog/lib/profile-cache';
 import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
 import { isValidAccountNameFormat } from '@transaction/lib/validation';
+import { isTransportError } from '@transaction/lib/wax-errors';
+import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 
@@ -83,8 +85,11 @@ const Layout = async (props: { children: ReactNode; params: Promise<{ param: str
   }
 
   // Layer 2: Existence check (API call) - fixes 500 for nonexistent users
-  // Uses getProfileAccount for request-level dedup with generateMetadata
-  const account = await getProfileAccount(username);
+  // Uses getProfileAccount for request-level dedup with generateMetadata.
+  // A lookup that failed says nothing about whether the account exists: answer 503, never a 404.
+  const account = await getProfileAccount(username).catch((error: unknown) => {
+    throw isTransportError(error) ? new ServiceUnavailableError(error) : error;
+  });
   if (!account || !account.name) {
     notFound();
   }
