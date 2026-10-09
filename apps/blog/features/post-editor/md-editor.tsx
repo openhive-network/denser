@@ -68,10 +68,6 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     [optimizeImages]
   );
 
-  // Track whether content changes are internal (from editor typing) to avoid sync loops
-  const isInternalChangeRef = useRef(false);
-  const lastInputTimeRef = useRef(0);
-
   // Refs so paste handler closure always sees latest values
   const convertHiveLinksRef = useRef(convertHiveLinks);
   useEffect(() => {
@@ -96,7 +92,6 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     const current = view.state.doc.toString();
     const newValue = typeof action === 'function' ? action(current) : action;
     if (newValue === current) return;
-    isInternalChangeRef.current = true;
     view.dispatch({
       changes: { from: 0, to: view.state.doc.length, insert: newValue }
     });
@@ -107,7 +102,6 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     const view = viewRef.current;
     if (!view) return;
     const insertPos = Math.min(pos ?? view.state.doc.length, view.state.doc.length);
-    isInternalChangeRef.current = true;
     view.dispatch({
       changes: { from: insertPos, insert: text },
       selection: { anchor: insertPos + text.length }
@@ -174,7 +168,6 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       const currentDoc = view.state.doc.toString();
       const undoValue = currentDoc.slice(0, from) + clipboardText + currentDoc.slice(to);
 
-      isInternalChangeRef.current = true;
       view.dispatch({
         changes: { from, to, insert: convertedText },
         selection: { anchor: from + convertedText.length }
@@ -211,9 +204,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     windowheight,
     persistedValue,
     onChangeRef,
-    pasteHandlerRef,
-    isInternalChangeRef,
-    lastInputTimeRef
+    pasteHandlerRef
   });
 
   // Image upload handler -- supports single and multi-file selection

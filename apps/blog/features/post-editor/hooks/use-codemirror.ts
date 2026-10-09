@@ -33,8 +33,6 @@ interface UseCodemirrorConfig {
   pasteHandlerRef: React.MutableRefObject<
     (event: ClipboardEvent, view: EditorView) => boolean
   >;
-  isInternalChangeRef: React.MutableRefObject<boolean>;
-  lastInputTimeRef: React.MutableRefObject<number>;
 }
 
 export function useCodemirror(config: UseCodemirrorConfig) {
@@ -44,8 +42,6 @@ export function useCodemirror(config: UseCodemirrorConfig) {
     persistedValue,
     onChangeRef,
     pasteHandlerRef,
-    isInternalChangeRef,
-    lastInputTimeRef,
   } = config;
 
   const viewRef = useRef<EditorView | null>(null);
@@ -58,8 +54,6 @@ export function useCodemirror(config: UseCodemirrorConfig) {
     const updateListener = EditorView.updateListener.of(
       (update: ViewUpdate) => {
         if (update.docChanged) {
-          isInternalChangeRef.current = true;
-          lastInputTimeRef.current = Date.now();
           onChangeRef.current(update.state.doc.toString());
         }
       }
