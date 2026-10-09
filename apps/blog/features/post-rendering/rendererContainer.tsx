@@ -11,6 +11,7 @@ import { useResponsiveImageNaturalWidth } from './hooks/use-responsive-image-nat
 import { useClientRenderedBody } from './hooks/use-client-rendered-body';
 import { useServerRenderedBody } from './rendered-bodies-context';
 import { useLeavePageLinks } from './hooks/use-leave-page-links';
+import { usePatchedHtml } from './hooks/use-patched-html';
 
 const isExternalLink = (link: HTMLAnchorElement) => link.classList.contains('link-external');
 
@@ -128,6 +129,8 @@ const RendererContainer = ({
   }, [htmlBody, previewMode]);
 
   useResponsiveImageNaturalWidth(ref, htmlBody);
+  // The live preview re-renders on every keystroke: patch it so unchanged images are not reloaded.
+  usePatchedHtml(ref, previewMode ? htmlBody : undefined);
 
   return !htmlBody ? (
     <Loading loading={false} />
@@ -140,9 +143,7 @@ const RendererContainer = ({
           ref={ref}
           className={cn('prose w-full', className)}
           data-testid={dataTestid}
-          dangerouslySetInnerHTML={{
-            __html: htmlBody
-          }}
+          dangerouslySetInnerHTML={previewMode ? undefined : { __html: htmlBody }}
         />
       </div>
       <LeavePageDialog link={link} open={open} setOpen={setOpen} />
