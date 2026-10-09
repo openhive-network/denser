@@ -415,6 +415,25 @@ export interface IListVestingDelegationsResponse {
   delegations: IVestingDelegation[];
 }
 
+/**
+ * Removed delegation whose vesting shares return to the delegator at `expiration`,
+ * from database_api.find_vesting_delegation_expirations
+ */
+export interface IVestingDelegationExpiration {
+  id: number;
+  delegator: string;
+  vesting_shares: NaiAsset;
+  expiration: string;
+}
+
+export interface IFindVestingDelegationExpirationsParams {
+  account: string;
+}
+
+export interface IFindVestingDelegationExpirationsResponse {
+  delegations: IVestingDelegationExpiration[];
+}
+
 export interface IFindOwnerHistoriesParams {
   owner: string;
 }
@@ -931,6 +950,10 @@ export type ExtendedNodeApi = {
       { votes: IVoteListItem[] }
     >;
     list_vesting_delegations: TWaxApiRequest<IListVestingDelegationsParams, IListVestingDelegationsResponse>;
+    find_vesting_delegation_expirations: TWaxApiRequest<
+      IFindVestingDelegationExpirationsParams,
+      IFindVestingDelegationExpirationsResponse
+    >;
     get_witness_schedule: TWaxApiRequest<Record<string, never>, IWitnessSchedule>;
     list_limit_orders: TWaxApiRequest<IListLimitOrdersParams, IListLimitOrdersResponse>;
     find_owner_histories: TWaxApiRequest<IFindOwnerHistoriesParams, IFindOwnerHistoriesResponse>;
