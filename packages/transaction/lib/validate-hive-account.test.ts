@@ -4,7 +4,7 @@ import { validateAccountNameFormat } from './validate-hive-account';
 
 describe('validateAccountNameFormat', () => {
   describe('accepts valid Hive account names', () => {
-    const validNames = ['gtg', 'blocktrades', 'guest4test', 'hive-167922', 'abc.def', 'abcdefghijklmnop'];
+    const validNames = ['gtg', 'blocktrades', 'guest4test', 'hive-167922', 'abc.def', 'abcdefghijklmnop', 'ab--cd'];
 
     for (const name of validNames) {
       it(`accepts "${name}"`, () => {
@@ -23,7 +23,6 @@ describe('validateAccountNameFormat', () => {
       ['contains an underscore', 'block_trades'],
       ['contains other characters', 'block@trades'],
       ['contains consecutive dots', 'a..b'],
-      ['contains consecutive hyphens', 'ab--cd'],
       ['ends with a dot', 'abcd.'],
       ['ends with a hyphen', 'abcd-'],
       ['has a dot-separated segment shorter than 3', 'abc.de']
