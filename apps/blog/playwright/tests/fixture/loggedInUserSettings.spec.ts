@@ -20,6 +20,7 @@ import {
   TEST_DISPLAY_NAME,
   TEST_LOCATION,
   TEST_WEBSITE,
+  TEST_X_HANDLE,
   expectPreferences,
   prefPostUrl
 } from '../support/userSettingsContext';
@@ -27,7 +28,8 @@ import {
 /**
  * §8 User Profile & Settings — logged-in user editing their own settings.
  *
- * Covers SET-01..04 (profile fields → account_update2 broadcast, TX-10)
+ * Covers SET-01..04 and SET-14 (profile fields and social links →
+ * account_update2 broadcast, TX-10)
  * and SET-07..13 (NSFW / blog rewards / comment rewards / referral system
  * preferences → user-preferences-{username} localStorage, no broadcast).
  *
@@ -179,6 +181,37 @@ test.describe('§8 User Profile & Settings', () => {
 
     await expect(settings.changesSavedToast).toBeVisible();
     await expect(profilePage.profileWebsiteLink(TEST_WEBSITE)).toBeVisible();
+  });
+
+  test('SET-14 — Set X handle, keeping metadata other apps wrote', async ({ page }) => {
+    const broadcast = await installBroadcastInterceptor(page, undefined, {
+      confirmInBlock: true,
+      profileUpdateSwap: { account: SETTINGS_USER }
+    });
+    await gotoLoggedIn(page, `/@${SETTINGS_USER}/settings`);
+    await settings.waitForReady();
+    await expect(profilePage.onChainSocialLinks).toHaveCount(0);
+
+    await settings.socialXInput.fill(`@${TEST_X_HANDLE}`);
+    await settings.updateButton.click();
+    await broadcast.waitForCount(1);
+
+    // The recorded guest4test metadata carries OAuth app keys the settings
+    // form does not manage (`type`, `is_public`, `redirect_uris`); the save
+    // must merge into it instead of rebuilding the profile from scratch.
+    expectAccountUpdate2Operation(broadcast.calls[0], {
+      account: SETTINGS_USER,
+      profile: {
+        social: { x: TEST_X_HANDLE },
+        type: 'app',
+        is_public: false,
+        redirect_uris: ['http://localhost:3000/callback'],
+        version: 2
+      }
+    });
+
+    await expect(settings.changesSavedToast).toBeVisible();
+    await expect(profilePage.onChainSocialLink('x')).toHaveAttribute('href', `https://x.com/${TEST_X_HANDLE}`);
   });
 
   // ── §8.2 Preferences (localStorage + downstream consumer) ─────────────

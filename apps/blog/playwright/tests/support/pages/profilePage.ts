@@ -6,6 +6,7 @@ export class ProfilePage {
   readonly profileNickName: Locator;
   readonly profileInfo: Locator;
   readonly profileName: Locator;
+  readonly onChainSocialLinks: Locator;
   readonly profileAbout: Locator;
   readonly profileLastTimeActive: Locator;
   readonly profileJoined: Locator;
@@ -464,6 +465,7 @@ export class ProfilePage {
     this.userBannerLevelLink = page.locator('[data-testid="profile-level-link"]');
     this.userBannerLevelImg = page.locator('[data-testid="profile-level-image"]');
     this.userBannerTwitterBadgeLink = page.locator('[data-testid="profile-twitter-badge"]');
+    this.onChainSocialLinks = page.locator('[data-testid^="profile-social-"]');
 
     this.notFoundPage = page.locator('[data-testid="not-found-page"]');
     this.notFoundHeading = this.notFoundPage.locator('h1');
@@ -595,6 +597,14 @@ export class ProfilePage {
    */
   profileWebsiteLink(website: string): Locator {
     return this.page.getByRole('link', { name: website });
+  }
+
+  /**
+   * On-chain social handles in the profile header (`profile-social-links.tsx`),
+   * one item per platform key: `x`, `ig`, `yt`, `tg`, `bsky`, `dc`, `nostr`.
+   */
+  onChainSocialLink(key: string): Locator {
+    return this.page.getByTestId(`profile-social-${key}`);
   }
 
   async profileInfoIsVisible(
