@@ -490,6 +490,20 @@ catches recordings that lost an expected RPC (e.g. a method rename or
 positional vs. object param change) before they produce a silent
 empty overlay.
 
+### Post-state: the chain "indexes" a follow
+
+The follow mutation invalidates `followingData` right after the
+broadcast, and the replay refetch serves the pre-follow recording, so
+a following list read after the follow drops the new account again.
+To read the post-follow state in the same test, install
+`installFollowIndexSwap(page, broadcast, { follower, following })`
+(`support/fixture-auth/follow-index-swap.ts`) AFTER
+`installBroadcastInterceptor`: once the matching follow broadcast is
+captured, the browser's `condenser_api.get_following(follower, …,
+'blog', …)` responses get `following` merged in. SSR reads are not
+patched (a page route can't reach them) and keep the recording.
+Used by `socialFollowOwnProfile.spec.ts` (FOL-04).
+
 ---
 
 ## Recipe: the user should see a "previously voted" post

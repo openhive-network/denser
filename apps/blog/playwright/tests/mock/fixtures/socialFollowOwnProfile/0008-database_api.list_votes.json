@@ -1,0 +1,49 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "guest4test",
+        "my-post-with-defaults-2",
+        "guest4test"
+      ],
+      "limit": 1,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "d886f47748fd841f",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "guest4test",
+      "my-post-with-defaults-2",
+      "guest4test"
+    ],
+    "limit": 1,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "voter": "guest4test",
+          "author": "guest4test",
+          "weight": 0,
+          "rshares": 0,
+          "permlink": "my-post-with-defaults-2",
+          "last_update": "2026-01-26T11:27:24",
+          "num_changes": 0,
+          "vote_percent": 10000
+        }
+      ]
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

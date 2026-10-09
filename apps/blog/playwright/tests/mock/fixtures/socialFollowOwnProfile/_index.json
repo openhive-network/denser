@@ -1,0 +1,6 @@
+{
+  "testName": "socialFollowOwnProfile",
+  "base": "socialFollow",
+  "additive": true,
+  "note": "Replay-only corpus for socialFollowOwnProfile.spec.ts. Shares the @hiveio profile + follow reads with socialFollow and adds the seeded user's own profile and followed page. 0001 bridge.get_account_posts (guest4test blog) is copied verbatim from loggedInUserProfile/0017. 0002 condenser_api.get_following [guest4test, '', 'blog', 50] (the followed page's first page) carries socialFollow/0010's result verbatim: that recording asked for limit 1000 and got 4 rows, so the 50-row page is the same 4 rows. 0003-0014 database_api.list_votes (the seeded user's votes on those posts) are copied verbatim from loggedInUserProfile/0018-0029. `additive: true` because every file is a new key."
+}
