@@ -22,7 +22,6 @@ export class MyCommunitiesPage {
         await this.page.waitForURL('**\/my');
         expect(this.page.url()).toContain(`/my`);
         await this.page.waitForSelector(locatorSelector(this.firstPostListItem));
-        await this.page.waitForTimeout(3000);
         expect(await this.postListItems.count()).toBeGreaterThan(0);
         await expect(this.myCommunitiesHeader).toBeVisible();
     }

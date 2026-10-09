@@ -518,14 +518,12 @@ export class ProfilePage {
   async gotoNotificationsProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/notifications`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForTimeout(3000);
     await this.page.waitForSelector(locatorSelector(this.profileInfo));
   }
 
   async gotoSocialProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/communities`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForTimeout(1000);
     await this.page.waitForSelector(locatorSelector(this.profileInfo));
     await this.page.waitForSelector(locatorSelector(this.socialBadgesAchievemntsMenuBar));
   }
@@ -570,7 +568,6 @@ export class ProfilePage {
     // Click Endpoint for AI search
     await this.apiEndpointAISearchButton.click();
     await this.page.waitForSelector(locatorSelector(this.page.getByText('AI search').first()));
-    await this.page.waitForTimeout(1000);
   }
 
   async profileNameIsEqual(authorName: string) {
@@ -793,7 +790,6 @@ export class ProfilePage {
   }
 
   async moveToSocialTab() {
-    await this.page.waitForTimeout(3000);
     await this.profileSocialLink.click();
     await this.profileSocialTabIsSelected();
   }
@@ -808,8 +804,6 @@ export class ProfilePage {
     await this.profileWalletLink.click();
     const newPage = await pagePromise;
     await expect(newPage).toHaveURL(/.*transfers/);
-
-    await newPage.waitForTimeout(1000);
     await expect(newPage).toHaveTitle('Gandalf the Grey (@gtg) — Hive');
   }
 
