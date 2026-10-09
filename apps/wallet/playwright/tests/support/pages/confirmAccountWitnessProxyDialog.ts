@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../../../../../blog/playwright/tests/support/locatorSelector';
 
 export class ConfirmAccountWitnessProxyDialog {
   readonly page: Page;
@@ -18,7 +19,7 @@ export class ConfirmAccountWitnessProxyDialog {
   }
 
   async validateConfirmProxyDialogIsVisible() {
-    await this.page.waitForSelector(this.getHeaderConfirmProxyDialog['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.getHeaderConfirmProxyDialog));
     await expect(this.getHeaderConfirmProxyDialog).toHaveText("Confirm Account Witness Proxy");
     await expect(this.getConfirmProxyDescription).toHaveText("You are about to remove your proxy.");
     await expect(this.getCloseDialogButton).toBeVisible();

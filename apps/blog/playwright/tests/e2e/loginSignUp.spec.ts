@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { LoginForm } from '../support/pages/loginForm';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Login and Sign Up tests', () =>{
   let homePage: HomePage;
@@ -91,7 +92,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginFormDefaut.saveSignInButton.click();
     await homePage.profileAvatarButton.click();
     // Validate User is logged in
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+    await page.waitForSelector(locatorSelector(profileMenu.profileMenuContent));
     await profileMenu.validateUserProfileManuIsOpen();
     await profileMenu.validateUserNameInProfileMenu(user.username);
   });
@@ -109,7 +110,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginFormDefaut.saveSignInButton.click();
     await homePage.profileAvatarButton.click();
     // Validate User is logged in
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+    await page.waitForSelector(locatorSelector(profileMenu.profileMenuContent));
     await profileMenu.validateUserProfileManuIsOpen();
     await profileMenu.validateUserNameInProfileMenu(user.username);
     // Logout
@@ -132,7 +133,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.saveSignInButton.click();
     await homePage.profileAvatarButton.click();
     // Validate User is logged in
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+    await page.waitForSelector(locatorSelector(profileMenu.profileMenuContent));
     await profileMenu.validateUserProfileManuIsOpen();
     await profileMenu.validateUserNameInProfileMenu(user.username);
     // Logout
@@ -149,7 +150,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.dismissBiometricPromptIfPresent();
     await homePage.profileAvatarButton.click();
     // Validate User is logged in
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+    await page.waitForSelector(locatorSelector(profileMenu.profileMenuContent));
     await profileMenu.validateUserProfileManuIsOpen();
     await profileMenu.validateUserNameInProfileMenu(user.username);
   });
@@ -175,7 +176,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.postingPrivateKeySubmitButton.click();
     // Validate User is logged in
     await homePage.profileAvatarButton.click();
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+    await page.waitForSelector(locatorSelector(profileMenu.profileMenuContent));
     await profileMenu.validateUserProfileManuIsOpen();
     await profileMenu.validateUserNameInProfileMenu(user.username);
   });
@@ -245,11 +246,11 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Type Safe storage password with less then 6 characters into the password login form
     await loginForm.passwordInput.fill('ako');
-    await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
+    await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
     await expect(loginForm.passwordErrorMessage).toHaveText('Password length should be at least 6 characters');
     // Type empty string into the safe storage password in the login form
     await loginForm.passwordInput.fill('');
-    await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
+    await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
     await expect(loginForm.passwordErrorMessage).toHaveText('Password length should be at least 6 characters');
   });
 
@@ -464,11 +465,11 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Type Safe storage password with less then 6 characters into the password login form
     await loginForm.passwordInput.fill('ako');
-    await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
+    await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(218, 43, 43)");
     // Type empty string into the safe storage password in the login form
     await loginForm.passwordInput.fill('');
-    await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
+    await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(218, 43, 43)");
   });
 
@@ -513,11 +514,11 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Type Safe storage password with less then 6 characters into the password login form
     await loginForm.passwordInput.fill('ako');
-    await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
+    await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
     // Type empty string into the safe storage password in the login form
     await loginForm.passwordInput.fill('');
-    await loginForm.page.waitForSelector(loginForm.passwordErrorMessage['_selector']);
+    await loginForm.page.waitForSelector(locatorSelector(loginForm.passwordErrorMessage));
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessage, 'color')).toBe("rgb(246, 85, 85)");
   });
 
@@ -530,7 +531,7 @@ test.describe('Login and Sign Up tests', () =>{
     await homePage.loginBtn.click()
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Type username (more than 3 chars)
-    await loginForm.page.waitForSelector(loginForm.usernameInput['_selector']);
+    await loginForm.page.waitForSelector(locatorSelector(loginForm.usernameInput));
     await loginForm.usernameInput.fill(user.username);
     // Type wrong WIF format to the input
     await loginForm.wifInput.fill('wrongWif');

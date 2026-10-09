@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
+import { locatorSelector } from "../../../../../blog/playwright/tests/support/locatorSelector";
 
 export class WalletPage {
   readonly page: Page;
@@ -80,14 +81,14 @@ export class WalletPage {
   async goToWalletPage() {
     await this.page.goto("/");
     await this.page.waitForLoadState("domcontentloaded");
-    await this.page.waitForSelector(this.hiveWalletLoginLabel["_selector"]);
+    await this.page.waitForSelector(locatorSelector(this.hiveWalletLoginLabel));
     await expect(this.hiveWalletLoginLabel).toBeVisible();
   }
 
   async goToWalletPageOfUser(user: string) {
     await this.page.goto(`/${user}/transfers`);
     await this.page.waitForLoadState("domcontentloaded");
-    await this.page.waitForSelector(this.userProfileInfo["_selector"]);
+    await this.page.waitForSelector(locatorSelector(this.userProfileInfo));
     await expect(this.userProfileInfo).toBeVisible();
   }
 

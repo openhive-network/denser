@@ -14,6 +14,7 @@ import { CommunitiesExplorePage } from '../support/pages/communitiesExplorerPage
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { MyFriendsPage } from '../support/pages/myFriendsPage';
 import { MyCommunitiesPage } from '../support/pages/myCommunitiesPage';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Test for commonities in the blog app', () => {
     const communityName: string = 'Photography Lovers';
@@ -21,7 +22,7 @@ test.describe('Test for commonities in the blog app', () => {
     test('Validate that denserAutoTest3Page subscribes Photography Lovers', async ({ denserAutoTest3Page }) => {
         const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
 
-        await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
+        await denserAutoTest3Page.page.waitForSelector(locatorSelector(photographyLoversCommunityLocator));
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
         await expect(photographyLoversCommunityLocator).toHaveRole("link");
     });
@@ -31,7 +32,7 @@ test.describe('Test for commonities in the blog app', () => {
         const communityPage: CommunitiesPage = new CommunitiesPage(denserAutoTest3Page.page);
         const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
 
-        await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
+        await denserAutoTest3Page.page.waitForSelector(locatorSelector(photographyLoversCommunityLocator));
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
         await photographyLoversCommunityLocator.click();
 
@@ -62,7 +63,7 @@ test.describe('Test for commonities in the blog app', () => {
         const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
 
         // Validate the Photography Lovers link is in My subscriptions
-        await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
+        await denserAutoTest3Page.page.waitForSelector(locatorSelector(photographyLoversCommunityLocator));
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
         await photographyLoversCommunityLocator.click();
         // Validate the Photography Lovers is loaded
@@ -98,7 +99,7 @@ test.describe('Test for commonities in the blog app', () => {
         const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('ul').filter({ hasText: /^Photography Lovers$/ }).getByRole('link');
 
         // Move to the page of the community (Photography Lovers)
-        await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
+        await denserAutoTest3Page.page.waitForSelector(locatorSelector(photographyLoversCommunityLocator));
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
         await photographyLoversCommunityLocator.click();
         // Validate the community page is loaded
@@ -162,7 +163,7 @@ test.describe('Test for commonities in the blog app', () => {
         const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
 
         // Validate the Photography Lovers link is in My subscriptions
-        await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
+        await denserAutoTest3Page.page.waitForSelector(locatorSelector(photographyLoversCommunityLocator));
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
         // Click Explore communities...
         await denserAutoTest3Page.page.getByText('Explore communities...').click();
@@ -197,7 +198,7 @@ test.describe('Test for commonities in the blog app', () => {
         const photographyLoversCommunityLocator: Locator = denserAutoTest3Page.page.locator('[href="/trending/hive-100006"]');
 
         // Validate the Photography Lovers link is in My subscriptions
-        await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
+        await denserAutoTest3Page.page.waitForSelector(locatorSelector(photographyLoversCommunityLocator));
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
         // Click Explore communities...
         await denserAutoTest3Page.page.getByText('Explore communities...').click();
@@ -244,7 +245,7 @@ test.describe('Test for commonities in the blog app', () => {
         await profileMenu.page.waitForTimeout(500);
         await homePage.validateThemeModeIsDark();
         // Validate the Photography Lovers link is in My subscriptions
-        await denserAutoTest3Page.page.waitForSelector(photographyLoversCommunityLocator['_selector']);
+        await denserAutoTest3Page.page.waitForSelector(locatorSelector(photographyLoversCommunityLocator));
         await expect(photographyLoversCommunityLocator).toHaveText(communityName);
         // Click Explore communities...
         await denserAutoTest3Page.page.getByText('Explore communities...').click();

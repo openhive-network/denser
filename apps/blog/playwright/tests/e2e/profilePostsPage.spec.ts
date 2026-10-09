@@ -4,6 +4,7 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { CommentViewPage } from '../support/pages/commentViewPage';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Profile page of @gtg', () => {
   let homePage: HomePage;
@@ -92,7 +93,7 @@ test.describe('Profile page of @gtg', () => {
     await profilePage.gotoPostsProfilePage('@gtg');
     await expect(profilePage.postBlogItem.first()).toBeVisible();
     await homePage.getFirstPostCardTimestampLink.click();
-    await page.waitForSelector(postPage.articleBody['_selector']);
+    await page.waitForSelector(locatorSelector(postPage.articleBody));
     await expect(postPage.articleBody).toBeVisible();
   });
 
@@ -180,7 +181,7 @@ test.describe('Profile page of @gtg', () => {
 
     await expect(postPage.postListItemOnHomePage.first()).toBeVisible();
     await profilePage.communityTimeStamp.click();
-    await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
+    await page.waitForSelector(locatorSelector(commentViewPage.commentGreenSection));
     await expect(postPage.articleBody).toBeVisible();
     await expect(postPage.articleTitle).toBeVisible();
     await expect(postPage.articleTitle).toHaveText(`${commentTittText}`);
@@ -353,7 +354,7 @@ test.describe('Profile page of @gtg', () => {
           }
         }
       }
-      await page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
+      await page.waitForSelector(locatorSelector(profilePage.profileBlogPostsList));
   
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
@@ -378,7 +379,7 @@ test.describe('Profile page of @gtg', () => {
           }
         }
       }
-      await page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
+      await page.waitForSelector(locatorSelector(profilePage.profileBlogPostsList));
   
       await expect(profilePage.blogTabPostsContainer).toBeVisible();
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
@@ -406,7 +407,7 @@ test.describe('Profile page of @gtg', () => {
           }
         }
       }
-      await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
+      await page.waitForSelector(locatorSelector(commentViewPage.commentGreenSection));
       await expect(commentViewPage.commentGreenSection).toBeVisible();
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
@@ -432,7 +433,7 @@ test.describe('Profile page of @gtg', () => {
           }
         }
       }
-      await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
+      await page.waitForSelector(locatorSelector(commentViewPage.commentGreenSection));
       await expect(commentViewPage.commentGreenSection).toBeVisible();
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
@@ -458,7 +459,7 @@ test.describe('Profile page of @gtg', () => {
           }
         }
       }
-      await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
+      await page.waitForSelector(locatorSelector(commentViewPage.commentGreenSection));
       await expect(commentViewPage.commentGreenSection).toBeVisible();
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });
@@ -484,7 +485,7 @@ test.describe('Profile page of @gtg', () => {
           }
         }
       }
-      await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
+      await page.waitForSelector(locatorSelector(commentViewPage.commentGreenSection));
       await expect(commentViewPage.commentGreenSection).toBeVisible();
     } else await expect(profilePage.userHasNotStartedBloggingYetMsg).toHaveText('No pending payouts.');
   });

@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../locatorSelector';
 
 export class MyCommunitiesPage {
     readonly page: Page;
@@ -20,8 +21,7 @@ export class MyCommunitiesPage {
     async validateMyCommunitiesPage() {
         await this.page.waitForURL('**\/my');
         expect(this.page.url()).toContain(`/my`);
-        await this.page.waitForSelector(this.firstPostListItem['_selector']);
-        await this.page.waitForTimeout(3000);
+        await this.page.waitForSelector(locatorSelector(this.firstPostListItem));
         expect(await this.postListItems.count()).toBeGreaterThan(0);
         await expect(this.myCommunitiesHeader).toBeVisible();
     }

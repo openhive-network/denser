@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../locatorSelector';
 
 export class LoginForm {
   readonly page: Page;
@@ -107,7 +108,7 @@ export class LoginForm {
   }
 
   async validateDefaultLoginFormIsLoaded() {
-    await this.page.waitForSelector(this.loginFormDescription['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.loginFormDescription));
     await expect(this.loginFormDescription).toHaveText('Save your posting key by filling form below');
     await expect(this.usernameInput).toHaveAttribute('placeholder', 'Username');
     await expect(this.passwordInput).toHaveAttribute('placeholder', 'Safe storage password');
@@ -117,7 +118,7 @@ export class LoginForm {
   }
 
   async validateUnlockUserWithPasswordLoginFormIsLoaded(username: string) {
-    await this.page.waitForSelector(this.loginFormDescription['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.loginFormDescription));
     await expect(this.loginFormDescription).toHaveText('Unlock user with password');
     await expect(this.usernameInput).toHaveAttribute('value', username);
     await expect(this.passwordInput).toHaveAttribute('placeholder', 'Safe storage password');
@@ -126,7 +127,7 @@ export class LoginForm {
   }
 
   async validateDefaultOtherSignInOptionsFormIsLoaded() {
-    await this.page.waitForSelector(this.otherSignInOptionsDescription['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.otherSignInOptionsDescription));
     await expect(this.otherSignInOptionsDescription).toHaveText(
       'Enter your username and select a sign in method'
     );
@@ -140,7 +141,7 @@ export class LoginForm {
 
   // user when username is typed in Sign in form
   async validateOtherSignInOptionsFormWithUsernameIsLoaded(username: string) {
-    await this.page.waitForSelector(this.otherSignInOptionsDescription['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.otherSignInOptionsDescription));
     await expect(this.otherSignInOptionsDescription).toHaveText(
       'Enter your username and select a sign in method'
     );
@@ -156,7 +157,7 @@ export class LoginForm {
   }
 
   async validateEnterYourWifKeyFormIsLoaded() {
-    await this.page.waitForSelector(this.headerEnterYourWifKey['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.headerEnterYourWifKey));
     await expect(this.headerEnterYourWifKey).toBeVisible();
     await expect(this.postingPrivateKeyInput).toBeVisible();
     await expect(this.storeKeyCheckbox).not.toBeChecked();
@@ -165,7 +166,7 @@ export class LoginForm {
   }
 
   async validateEnterYourPasswordToUnlockKeyIsLoaded() {
-    await this.page.waitForSelector(this.enterYourPasswordForm['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.enterYourPasswordForm));
     await expect(this.headerEnterYourPassword).toHaveText('Enter your password');
     await expect(this.passwordToUnlockKeyInput).toHaveAttribute('placeholder', 'Password to unlock key');
     await expect(this.passwordToUnlockKeySubmitButton).toBeVisible();
@@ -173,7 +174,7 @@ export class LoginForm {
   }
 
   async putEnterYourPasswordToUnlockKey(safeStoragePassword: string) {
-    await this.page.waitForSelector(this.enterYourPasswordForm['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.enterYourPasswordForm));
     await expect(this.headerEnterYourPassword).toHaveText('Enter your password');
     await expect(this.passwordToUnlockKeyInput).toHaveAttribute('placeholder', 'Password to unlock key');
     await expect(this.passwordToUnlockKeySubmitButton).toBeVisible();

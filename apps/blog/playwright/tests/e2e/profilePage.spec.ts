@@ -3,6 +3,7 @@ import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 import { LoginForm } from '../support/pages/loginForm';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Profile page of @gtg', () => {
   let homePage: HomePage;
@@ -51,10 +52,10 @@ test.describe('Profile page of @gtg', () => {
     const accountsData = await responseGetAccounts.json();
     const profileNameApi = accountsData.result.accounts[0].name;
 
-    await page.waitForSelector(profilePage.profileName['_selector']);
+    await page.waitForSelector(locatorSelector(profilePage.profileName));
     await expect(await profilePage.profileName).toBeVisible();
     await profilePage.profilePostsLink.click();
-    await page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+    await page.waitForSelector(locatorSelector(profilePage.page.locator('[data-testid="user-post-menu"]')));
     await expect(profilePage.page.locator('[data-testid="post-author"]').first()).toContainText(
       profileNameApi
     );
