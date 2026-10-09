@@ -1,6 +1,7 @@
 import { QueryClient, QueryKey, isServer } from '@tanstack/react-query';
 import { ServerMutationCache, ServerQueryCache } from '@ui/lib/server-query-cache';
 import { getLogger } from '@ui/lib/logging';
+import { retryQueriesOnApiNodeSwitch } from '@ui/lib/retry-queries-on-api-node-switch';
 
 const logger = getLogger('app');
 
@@ -164,7 +165,10 @@ export function getQueryClient() {
     // This is very important, so we don't re-make a new client if React
     // suspends during the initial render. This may not be needed if we
     // have a suspense boundary BELOW the creation of the query client
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    if (!browserQueryClient) {
+      browserQueryClient = makeQueryClient();
+      retryQueriesOnApiNodeSwitch(browserQueryClient);
+    }
     return browserQueryClient;
   }
 }

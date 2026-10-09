@@ -10,21 +10,59 @@ export type HiveChain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedR
 
 const logger = getLogger('wax');
 
+// sessionStorage, not localStorage: an automatic pick must not outlive the browser session, and it
+// is kept apart from `node-endpoint`, the user's explicit choice, which it never overwrites.
+const AUTO_RPC_ENDPOINT_KEY = 'auto-node-endpoint';
+
+interface IAutoRpcEndpoint {
+  /** The configured node (explicit choice or site default) this pick stands in for. */
+  replaced: string;
+  node: string;
+}
+
+const isAutoRpcEndpoint = (value: unknown): value is IAutoRpcEndpoint =>
+  typeof value === 'object' &&
+  value !== null &&
+  'replaced' in value &&
+  typeof value.replaced === 'string' &&
+  'node' in value &&
+  typeof value.node === 'string';
+
+const getSessionStorage = (): Storage | undefined =>
+  typeof window === 'object' && window.sessionStorage ? window.sessionStorage : undefined;
+
+/** The node picked automatically this session in place of `configuredNode`, if any. */
+const getAutoRpcEndpoint = (configuredNode: string): string | undefined => {
+  const stored = getSessionStorage()?.getItem(AUTO_RPC_ENDPOINT_KEY);
+  if (!stored) return undefined;
+  try {
+    const parsed: unknown = JSON.parse(stored);
+    // A pick made for another configured node no longer applies once the user chose a node.
+    return isAutoRpcEndpoint(parsed) && parsed.replaced === configuredNode ? parsed.node : undefined;
+  } catch (err) {
+    logger.error('Error parsing stored %s from sessionStorage: %o', AUTO_RPC_ENDPOINT_KEY, err);
+    return undefined;
+  }
+};
+
+const getStoredRpcEndpoint = (): string | undefined => {
+  if (typeof window !== 'object' || !window.localStorage) return undefined;
+  const stored = window.localStorage.getItem('node-endpoint');
+  if (!stored) return undefined;
+  try {
+    return JSON.parse(stored);
+  } catch (err) {
+    logger.error('Error parsing stored node-endpoint from localStorage: %o', err);
+    return undefined;
+  }
+};
+
 const getDefaultClientOptions = (): IWaxOptionsChain => {
   // I don't think this logic should be here, but for now it is easier to keep it. We have dedicated MemoryMixin (?)
-  let jsonRpcNode: string | undefined = undefined;
-  let restNode: string | undefined = undefined;
   // Check if user has selected a custom node in localStorage
+  const jsonRpcNode = getStoredRpcEndpoint();
+  let restNode: string | undefined = undefined;
   if (typeof window === 'object' && window.localStorage) {
-    const storedJsonRpcEndpoint = window.localStorage.getItem('node-endpoint');
-    if (storedJsonRpcEndpoint) {
-      try {
-        jsonRpcNode = JSON.parse(storedJsonRpcEndpoint);
-      } catch (err) {
-        logger.error('Error parsing stored node-endpoint from localStorage: %o', err);
-      }
-    }
-
     const storedRestEndpoint = window.localStorage.getItem('rest-node-endpoint');
     if (storedRestEndpoint) {
       try {
@@ -35,14 +73,17 @@ const getDefaultClientOptions = (): IWaxOptionsChain => {
     }
   }
 
+  const configuredNode = jsonRpcNode || siteConfig.endpoint;
+  const apiEndpoint = getAutoRpcEndpoint(configuredNode) || configuredNode;
+
   return {
     chainId: siteConfig.chainId,
-    apiEndpoint: jsonRpcNode || siteConfig.endpoint,
+    apiEndpoint,
     apiTimeout: 5_000, // To be adjusted
     // REST precedence: user's explicit choice, then the operator-configured REST
     // endpoint (REACT_APP_REST_API_ENDPOINT - the JSON-RPC node may not serve the
     // REST APIs at all), then follow the JSON-RPC endpoint.
-    restApiEndpoint: restNode || siteConfig.restApiEndpoint || jsonRpcNode || siteConfig.endpoint,
+    restApiEndpoint: restNode || siteConfig.restApiEndpoint || apiEndpoint,
   };
 };
 
@@ -101,16 +142,48 @@ export const resetChain = (): void => {
   hiveChain = undefined;
 };
 
+// `endpointUrl` is the chain's default node (what failover and chains extended from it start from);
+// `api.endpointUrl` overrides it for the JSON-RPC calls. Both must follow a node switch.
+const pointChainAt = (endpoint: string): void => {
+  if (!hiveChain) return;
+  hiveChain.endpointUrl = endpoint;
+  hiveChain.api.endpointUrl = endpoint;
+};
+
 // The setters persist the choice even before the chain exists: the wasm-free read client and a
 // chain created later both resolve their endpoints from it (see getApiEndpoints).
 export const setRpcEndpoint = (newEndpoint: string): void => {
   logger.info('Changing chain.api.endpointUrl with newEndpoint: %o', newEndpoint);
 
-  if (hiveChain) {
-    hiveChain.api.endpointUrl = newEndpoint;
-  }
+  pointChainAt(newEndpoint);
 
   window.localStorage.setItem('node-endpoint', JSON.stringify(newEndpoint));
+  getSessionStorage()?.removeItem(AUTO_RPC_ENDPOINT_KEY);
+};
+
+/**
+ * Switches API calls to `newEndpoint` for the rest of the browser session, after the configured
+ * node failed. The configured node (the user's explicit choice or the site default) stays stored
+ * and is used again by the next session; picking the configured node itself drops the switch.
+ */
+export const setAutoRpcEndpoint = (newEndpoint: string): void => {
+  const configuredNode = getStoredRpcEndpoint() || siteConfig.endpoint;
+  logger.warn('Switching API node to %s for this session, replacing %s', newEndpoint, configuredNode);
+
+  pointChainAt(newEndpoint);
+
+  const storage = getSessionStorage();
+  if (newEndpoint === configuredNode) {
+    storage?.removeItem(AUTO_RPC_ENDPOINT_KEY);
+  } else {
+    const pick: IAutoRpcEndpoint = { replaced: configuredNode, node: newEndpoint };
+    storage?.setItem(AUTO_RPC_ENDPOINT_KEY, JSON.stringify(pick));
+  }
+
+  // A REST endpoint that follows the JSON-RPC node follows the switch too.
+  if (hiveChain) {
+    hiveChain.restApi.endpointUrl = getDefaultClientOptions().restApiEndpoint;
+  }
 };
 
 export const setRestApiEndpoint = (newEndpoint: string): void => {

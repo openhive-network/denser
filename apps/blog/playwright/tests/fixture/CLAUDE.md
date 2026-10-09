@@ -625,6 +625,13 @@ intentionally NEW (not patches), so it skips the STALE OVERLAY warning
 that would otherwise fire on every replay. The drift signal still
 works for normal overlays — only this dir is exempt.
 
+An additive overlay may also patch a base key in the same dir:
+`profilePayoutComments` replaces `userProfileTabs`' empty @hiveio Payouts
+response with a pending comment copied from `lighthouse/0010`, and adds that
+comment's `get_post` / `get_discussion` / community reads, all built from the
+same recording. Such a dir is replay-only (`test.skip(isRecordMode, …)`);
+its `_index.json` `note` says where each file came from.
+
 Same chain rule applies to additive overlays: a sibling can itself
 have an overlay (e.g. `socialBlacklistListPage_populated` extends
 `socialBlacklistListPage` extends `socialMutedListPage`), and the
@@ -825,6 +832,10 @@ so they go to `https://api.hive.blog`; with no network Chromium logs two
 `Failed to load resource: net::ERR_INTERNET_DISCONNECTED` console errors. The dev
 stack has egress, so it doesn't show them. A spec that fails on any console error
 routes those URLs to a `200 {}` (AI search off), as `healthchecker.spec.ts` does.
+To put the header in a given state, serve recorded probe answers instead:
+`headerSearchMode.spec.ts` answers both probe URLs with the recorded 404
+(`homeMainPage/0002`, classic `Search...`) or with `lighthouse/0017` + `0018`
+(OpenAPI document + `posts/search` result, `AI Search...`).
 
 ### Esc closes the topmost Radix layer, which may be a tooltip
 

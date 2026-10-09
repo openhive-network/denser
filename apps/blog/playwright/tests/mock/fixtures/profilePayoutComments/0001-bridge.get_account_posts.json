@@ -1,0 +1,89 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_account_posts",
+    "params": {
+      "sort": "payout",
+      "account": "hiveio",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "39fd35776713e803",
+  "method": "bridge.get_account_posts",
+  "params": {
+    "sort": "payout",
+    "account": "hiveio",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature#@nesbi94/re-ibarra95-tmguqe",
+        "body": "Truly amazing waterfall. Thanks for sharing wonderful pictures of it and the place. There's a lot to see and experience😊. No wonder many people love to go there.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Visiting the Desparramaderos waterfall: Nature and peasant tradition in \"El Nicho\" Natural Park, Cienfuegos, Cuba. [ENG] [ESP]",
+        "author": "nesbi94",
+        "payout": 0.036,
+        "created": "2026-10-06T03:23:03",
+        "reblogs": 0,
+        "replies": [
+          "ibarra95/re-nesbi94-2026105t232445927z"
+        ],
+        "updated": "2026-10-06T03:23:03",
+        "category": "hive-163772",
+        "children": 1,
+        "permlink": "re-ibarra95-tmguqe",
+        "community": "hive-163772",
+        "payout_at": "2026-10-13T03:23:03",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 469831975408,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "ibarra95",
+            "rshares": 469831975408
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.7.5",
+          "tags": [
+            "hive-163772"
+          ],
+          "image": [],
+          "users": []
+        },
+        "parent_author": "ibarra95",
+        "community_title": "Worldmappin",
+        "parent_permlink": "visiting-the-desparramaderos-waterfall-nature",
+        "author_reputation": 65.73,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.036 HBD"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
