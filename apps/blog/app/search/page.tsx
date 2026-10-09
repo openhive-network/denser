@@ -2,7 +2,7 @@ import { SearchSort } from '@ui/hooks/use-search';
 import SearchContent from './content';
 import { searchPosts } from '@transaction/lib/hivesense-api';
 import { getByText } from '@transaction/lib/hive-api';
-import { getObserverFromCookies } from '@/blog/lib/auth-utils';
+import { getEffectiveObserverFromCookies, getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
 import { parseSearchParams } from '@ui/lib/search-params';
 import { ObserverProvider } from '@/blog/components/observer-provider';
@@ -25,7 +25,7 @@ const SearchPage = async (props: SearchPageProps) => {
   const topicQuery = validatedParams.p;
   const sortQuery = validatedParams.s as SearchSort | undefined;
 
-  const observer = await getObserverFromCookies();
+  const observer = await getEffectiveObserverFromCookies();
 
   let initialAIResults: Array<CardEntry | PostStub> | null = null;
   let initialClassicResults: CardEntry[] | null = null;
@@ -71,7 +71,7 @@ const SearchPage = async (props: SearchPageProps) => {
   }
 
   return (
-    <ObserverProvider value={observer}>
+    <ObserverProvider value={await getObserverFromCookies()} effectiveValue={observer}>
       <SearchContent
         aiParam={aiParam}
         classicQuery={classicQuery}

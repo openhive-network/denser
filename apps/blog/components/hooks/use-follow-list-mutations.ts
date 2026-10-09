@@ -1,6 +1,7 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import type { TransactionBroadcastResult } from '@transaction/index';
+import { updateOwnListsAfterChange } from '@transaction/lib/observer-lists';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { useOperationMutation, type OperationToast } from '@ui/components/hooks/use-operation-mutation';
 import {
@@ -29,6 +30,7 @@ type ApplyListChange<TVariables> = (
 ) => void;
 
 interface ListChange<TVariables> {
+  addsAccount: boolean;
   optimistic?: ApplyListChange<TVariables>;
   // Re-applied after the broadcast: a refetch during an observed broadcast can overwrite the optimistic write.
   onSuccess: ApplyListChange<TVariables>;
@@ -38,7 +40,7 @@ interface ListChange<TVariables> {
 function useFollowListMutation<TVariables>(
   list: FollowList,
   { name, run, toast }: FollowListOperation<TVariables>,
-  { optimistic, onSuccess, rollback = restoreList }: ListChange<TVariables>
+  { addsAccount, optimistic, onSuccess, rollback = restoreList }: ListChange<TVariables>
 ) {
   const { username } = useUserClient().user;
   const queryKey = [list, username];
@@ -50,7 +52,10 @@ function useFollowListMutation<TVariables>(
       optimistic?.(queryClient, queryKey, variables);
       return snapshot;
     },
-    onSuccess: (_data, variables, queryClient) => onSuccess(queryClient, queryKey, variables),
+    onSuccess: (_data, variables, queryClient) => {
+      onSuccess(queryClient, queryKey, variables);
+      updateOwnListsAfterChange(username, addsAccount);
+    },
     rollback: (context, _variables, queryClient) => rollback(queryClient, queryKey, context),
     successToast: (_data, variables) => toast(variables),
     invalidate: () => [queryKey, ['entriesInfinite']],
@@ -69,6 +74,7 @@ export function useAddToFollowListMutation(
   operation: FollowListOperation<{ otherBlogs: string; blog?: string }>
 ) {
   return useFollowListMutation(list, operation, {
+    addsAccount: true,
     optimistic: addAccount,
     onSuccess: addAccount,
     rollback: (queryClient, queryKey, context) => {
@@ -84,11 +90,16 @@ export function useRemoveFromFollowListMutation(
   operation: FollowListOperation<{ blog: string }>
 ) {
   return useFollowListMutation(list, operation, {
+    addsAccount: false,
     onSuccess: (queryClient, queryKey, { blog }) => removeFromListCache(queryClient, queryKey, blog)
   });
 }
 
 /** Empties one of the account's follow lists. */
 export function useResetFollowListMutation(list: FollowList, operation: FollowListOperation<void>) {
-  return useFollowListMutation(list, operation, { optimistic: emptyList, onSuccess: emptyList });
+  return useFollowListMutation(list, operation, {
+    addsAccount: false,
+    optimistic: emptyList,
+    onSuccess: emptyList
+  });
 }

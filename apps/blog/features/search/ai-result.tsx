@@ -7,10 +7,11 @@ import { useEffect, useState, useMemo } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { PostStub } from '@hive/common-hiveio-packages/wax';
 import { PER_PAGE } from './lib/utils';
-import { DEFAULT_OBSERVER, Preferences } from '@/blog/lib/utils';
+import { Preferences } from '@/blog/lib/utils';
 import { PostListItemSkeleton } from '@hive/ui';
 import { StaleTime } from '@/blog/lib/react-query';
-import { useSSRObserver } from '@/blog/components/observer-provider';
+import { useSSREffectiveObserver } from '@/blog/components/observer-provider';
+import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-observer';
 
 import PostList from '../list-of-posts/posts-loader';
 import { CardEntry, loadCardEntries } from '../list-of-posts/lib/card-entry';
@@ -33,15 +34,15 @@ const AIResult = ({
   nsfwPreferences: Preferences['nsfw'];
   initialData?: Array<CardEntry | PostStub> | null;
 }) => {
-  const ssrObserver = useSSRObserver();
-  const { user, isHydrated } = useUserClient();
+  const ssrObserver = useSSREffectiveObserver();
+  const { isHydrated } = useUserClient();
   const { ref, inView } = useInView();
   const { t } = useTranslation('common_blog');
 
   // Use SSR observer (from cookie) before hydration to match the prefetched
   // initialData and avoid sending DEFAULT_OBSERVER for a logged-in user during
   // the brief pre-hydration window.
-  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const { effectiveObserver: clientObserver } = useEffectiveObserver();
   const observer = isHydrated ? clientObserver : ssrObserver;
   const [loadedStubPosts, setLoadedStubPosts] = useState<CardEntry[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
