@@ -1,4 +1,4 @@
-import { expect, Locator} from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { HomePage } from './pages/homePage';
 import { CommentEditorPage } from '../support/pages/commentEditorPage';
 
@@ -23,7 +23,7 @@ export function generateRandomString(length: number = 8): string {
  * @param {number} timeout - Maximum waiting time in milliseconds.
  * @param {number} interval - Checking interval in milliseconds.
  */
-export async function waitForElementVisible(page, selector, timeout = 5000, interval = 250) {
+export async function waitForElementVisible(page: Page, selector: string, timeout = 5000, interval = 250) {
   const startTime = Date.now();
 
   while (Date.now() - startTime < timeout) {
@@ -51,7 +51,7 @@ export async function waitForElementVisible(page, selector, timeout = 5000, inte
  * @param {number} timeout - Maximum waiting time in milliseconds.
  * @param {number} interval - Checking interval in milliseconds.
  */
-export async function waitForElementColor(page, selector, colorRGB, timeout = 5000, interval = 250) {
+export async function waitForElementColor(page: Page, selector: string, colorRGB: string, timeout = 5000, interval = 250) {
   const homePage = new HomePage(page);
   const startTime = Date.now();
 
@@ -79,7 +79,7 @@ export async function waitForElementColor(page, selector, colorRGB, timeout = 50
  * @param {number} timeout - Maximum waiting time in milliseconds.
  * @param {number} interval - Checking interval in milliseconds.
  */
-export async function waitForDownvoteColor(page, selector, colorRGB, timeout = 5000, interval = 250) {
+export async function waitForDownvoteColor(page: Page, selector: string, colorRGB: string, timeout = 5000, interval = 250) {
   const homePage = new HomePage(page);
   const startTime = Date.now();
 
@@ -109,7 +109,7 @@ export async function waitForDownvoteColor(page, selector, colorRGB, timeout = 5
  * @param {number} timeout - Maximum waiting time in milliseconds.
  * @param {number} interval - Checking interval in milliseconds.
  */
-export async function waitForCommentIsVisible(page, randomString, timeout = 5000, interval = 250) {
+export async function waitForCommentIsVisible(page: Page, randomString: string, timeout = 5000, interval = 250) {
   const startTime = Date.now();
   const commentEditorPage = new CommentEditorPage(page);
 

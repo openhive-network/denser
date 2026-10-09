@@ -3,6 +3,7 @@ import { HomePage } from '../support/pages/homePage';
 import { PostPage } from '../support/pages/postPage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { CommentViewPage } from '../support/pages/commentViewPage';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Muted posts tests', () => {
   let homePage: HomePage;
@@ -163,7 +164,7 @@ test.describe('Muted posts tests', () => {
         if (postTittle.length > 0) {
 
           await postTittle[0].click();
-          await page.waitForSelector(commentViewPage.commentGreenSection['_selector']);
+          await page.waitForSelector(locatorSelector(commentViewPage.commentGreenSection));
           await expect(commentViewPage.commentGreenSection).toBeVisible();
           break;
         }

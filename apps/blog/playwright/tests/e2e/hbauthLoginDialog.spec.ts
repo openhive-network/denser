@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { HbauthLoginDialog } from '../support/pages/hbauthLoginDialog';
+import { locatorSelector } from '../support/locatorSelector';
 
 // Skipped those tests due to changing Hbauth
 test.describe.skip('Login and Sign Up tests', () => {
@@ -168,7 +169,7 @@ test.describe.skip('Login and Sign Up tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
     await homePage.page.waitForTimeout(10000);
-    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getNavHbauthButton));
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
 
@@ -275,7 +276,7 @@ test.describe.skip('Login and Sign Up tests', () => {
   test('Validate base style of Hbauth in Add Key in the light mode', async ({ page }) => {
     await homePage.goto();
     await homePage.page.waitForTimeout(10000);
-    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getNavHbauthButton));
     await homePage.getNavHbauthLink.click();
     // Move to the Add Key Tab
     await hbauthLoginDialog.hbauthAddKeyButton.click();
@@ -419,7 +420,7 @@ test.describe.skip('Login and Sign Up tests', () => {
     await homePage.validateThemeModeIsDark();
     // Open Hbauth login dialog
     await homePage.page.waitForTimeout(10000);
-    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getNavHbauthButton));
     await homePage.getNavHbauthLink.click();
     // Move to the Add Key Tab
     await hbauthLoginDialog.hbauthAddKeyButton.click();
@@ -601,7 +602,7 @@ test.describe.skip('Login and Sign Up tests', () => {
     await homePage.validateThemeModeIsDark();
     // Open Hbauth dialog
     await homePage.page.waitForTimeout(10000);
-    await homePage.page.waitForSelector(homePage.getNavHbauthButton['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getNavHbauthButton));
     await homePage.getNavHbauthLink.click();
     await hbauthLoginDialog.validateHbauthUnlockKeyDialogIsVisible();
     // Move to the Hbauth Add Key Dialog

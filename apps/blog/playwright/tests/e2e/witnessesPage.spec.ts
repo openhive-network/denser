@@ -5,6 +5,7 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { ApiHelper } from '../support/apiHelper';
 
 import Big from 'big.js';
+import { locatorSelector } from '../support/locatorSelector';
 
 // -------------------------------------------------------------------------------------
 // Below test were passing but due to back to the old view of hive blog are skipped.
@@ -123,7 +124,7 @@ test.describe.skip('Witnesses page tests', () => {
     const witnessName = await witnessPage.firstWitnessNameLink.textContent();
     await witnessPage.firstWitnessNameLink.click();
 
-    await profilePage.page.waitForSelector(profilePage.profileName['_selector']);
+    await profilePage.page.waitForSelector(locatorSelector(profilePage.profileName));
     if (!witnessName) throw new Error('First witness name link has no text content');
     await expect(profilePage.profileNickName).toContainText(witnessName);
   });
@@ -135,8 +136,8 @@ test.describe.skip('Witnesses page tests', () => {
     await witnessPage.witnessesExternalSiteLink.first().waitFor({ state: 'visible' });
 
     const hrefValueFirstWitnessExternalSiteLink = await witnessPage.page.$eval(
-      await witnessPage.witnessesExternalSiteLink.first()['_selector'],
-      (el) => el.href
+      locatorSelector(witnessPage.witnessesExternalSiteLink.first()),
+      (el: HTMLAnchorElement) => el.href
     );
 
     // expected site of blocktrades

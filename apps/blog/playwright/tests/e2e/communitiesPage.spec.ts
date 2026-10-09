@@ -7,6 +7,7 @@ import { PostPage } from '../support/pages/postPage';
 import { LoginForm } from '../support/pages/loginForm';
 import { ApiHelper } from '../support/apiHelper';
 import { MakePostWarningPage } from '../support/pages/makePostWarningPage';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Communities page tests', () => {
   let homePage: HomePage;
@@ -161,11 +162,11 @@ test.describe('Communities page tests', () => {
 
     for (let i = 0; i < leadershipLinkLists.length; i++) {
       await leadershipLinkLists[i].click();
-      await page.waitForSelector(profilePage.profileName['_selector']);
+      await page.waitForSelector(locatorSelector(profilePage.profileName));
       await expect(await profilePage.profileName).toBeVisible();
       await profilePage.profilePostsLink.click();
       await page.waitForSelector(
-        await profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']
+        locatorSelector(profilePage.page.locator('[data-testid="user-post-menu"]'))
       );
 
       if ((await profilePage.page.locator('[data-testid="post-author"]').count()) > 0) {
@@ -200,7 +201,7 @@ test.describe('Communities page tests', () => {
       // Click the last pinned tag of the community articles
       await communitiesPage.communityPinnedPost.first().click();
       await page.waitForLoadState('domcontentloaded');
-      await page.waitForSelector(postPage.articleFooter['_selector']);
+      await page.waitForSelector(locatorSelector(postPage.articleFooter));
       await expect(postPage.articleTitle).toHaveText(firstPostTitle);
     } else await console.log('There are not any pinned posts!!!');
   });
@@ -445,10 +446,10 @@ test.describe('Communities page tests', () => {
     for (let i = 0; i < leadershipLinkLists.length; i++) {
       if (i < 3) {
         await leadershipLinkLists[i].click();
-        await page.waitForSelector(profilePage.profileName['_selector']);
+        await page.waitForSelector(locatorSelector(profilePage.profileName));
         await expect(await profilePage.profileName).toBeVisible();
         await profilePage.profilePostsLink.click();
-        await page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+        await page.waitForSelector(locatorSelector(profilePage.page.locator('[data-testid="user-post-menu"]')));
 
         if ((await profilePage.page.locator('[data-testid="post-author"]').count()) > 0) {
           expect(await leadershipLinkNickNamesLists[i]).toContain(
@@ -625,9 +626,10 @@ test.describe('Communities page tests', () => {
     });
 
     // const languageApi = (await response.json()).result[0].lang;
-    const languageApi = (await response.json()).result
+    const communities: { title: string; lang: string }[] = (await response.json()).result;
+    const languageApi = communities
       .map((item) => (item.title === 'LeoFinance' ? item : null))
-      .find((item) => item !== null).lang;
+      .find((item) => item !== null)?.lang;
 
     expect(communityChoosenLanguageText).toBe(languageApi);
   });
@@ -637,7 +639,7 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     await communitiesPage.activityLogButton.click();
-    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationContent['_selector']);
+    await communitiesPage.page.waitForSelector(locatorSelector(communitiesPage.subscribersNotificationContent));
     await expect(communitiesPage.subscribersNotificationContent).toBeVisible();
     await expect(communitiesPage.subscribersNotificationLocalMenu).toBeVisible();
 
@@ -657,7 +659,7 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     await communitiesPage.activityLogButton.click();
-    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationContent['_selector']);
+    await communitiesPage.page.waitForSelector(locatorSelector(communitiesPage.subscribersNotificationContent));
 
     // Get list of subscribers by the api request
     const sub = await apiHelper.getCommunitySubscribersAPI(leoFinanceCommunityAccount);
@@ -705,7 +707,7 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     await communitiesPage.activityLogButton.click();
-    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationContent['_selector']);
+    await communitiesPage.page.waitForSelector(locatorSelector(communitiesPage.subscribersNotificationContent));
 
     // Get list of subscribers by the api request
     const sub = await apiHelper.getCommunitySubscribersAPI(leoFinanceCommunityAccount);
@@ -746,7 +748,7 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     await communitiesPage.activityLogButton.click();
-    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationLocalMenu['_selector']);
+    await communitiesPage.page.waitForSelector(locatorSelector(communitiesPage.subscribersNotificationLocalMenu));
     // All button (default)
     await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('All')).toBeVisible();
     await expect(
@@ -843,7 +845,7 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     await communitiesPage.activityLogButton.click();
-    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationLocalMenu['_selector']);
+    await communitiesPage.page.waitForSelector(locatorSelector(communitiesPage.subscribersNotificationLocalMenu));
     // All button (default)
     await expect(communitiesPage.subscribersNotificationLocalMenu.getByText('All')).toBeVisible();
     await expect(
@@ -937,7 +939,7 @@ test.describe('Communities page tests', () => {
     await homePage.moveToLeoFinanceCommunities();
     await communitiesPage.validataCommunitiesPageIsLoaded('LeoFinance');
     await communitiesPage.activityLogButton.click();
-    await communitiesPage.page.waitForSelector(communitiesPage.subscribersNotificationLocalMenu['_selector']);
+    await communitiesPage.page.waitForSelector(locatorSelector(communitiesPage.subscribersNotificationLocalMenu));
 
     await expect(communitiesPage.subscribersNotificationContent).toBeVisible();
     await expect(communitiesPage.subscribersLoadMoreButton).toHaveText('Load more');
