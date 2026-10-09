@@ -4,7 +4,8 @@
 # against the fixture proxy on :8200, which answers every Hive API call from the
 # committed recordings, so the suite needs no network. The live-API e2e specs run
 # only as the advisory live_e2e (.aidev/run-live-e2e.sh); smoke and mirrornet are
-# not bound.
+# not bound. The wallet's fixture suite is its own full-slot suite,
+# wallet_fixture (.aidev/run-wallet-fixture-e2e.sh), so it gets its own wall.
 #
 # Self-contained by default, as CI's blog-fixture-tests job (pnpm test:fixture):
 # build, then playwright.fixture.config.ts's webServer serves the build here.
@@ -35,10 +36,6 @@
 # build is made first and moved to test-results/blog-basepath-next: `next build`
 # empties apps/blog/.next, and the root build must be the one left there for the
 # test stack's blog-live. Its cases join junit.xml as suite `basepath › <spec>`.
-#
-# A run without arguments then builds the wallet and runs its offline specs
-# (apps/wallet/playwright.fixture.config.ts: the initial-chunk guard), which need
-# no fixture proxy. Their junit is test-results/fixture/wallet-junit.xml.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -82,14 +79,6 @@ run_playwright() {
     return "$status"
 }
 
-run_wallet_fixture() {
-    local wallet_junit="$PWD/test-results/fixture/wallet-junit.xml"
-    (
-        cd apps/wallet
-        PLAYWRIGHT_JUNIT_OUTPUT_NAME="$wallet_junit" run_with_junit_fallback "$wallet_junit" wallet_fixture \
-            sh -c 'NEXT_PUBLIC_BASE_PATH=/wallet pnpm build < /dev/null && pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit < /dev/null'
-    )
-}
 
 # Chained: run under `||`, a function does not stop on a failing command.
 build_basepath_blog() {
@@ -124,7 +113,6 @@ if [ "${DENSER_FIXTURE_VIA_STACK:-}" != 1 ]; then
     if [ "$#" -eq 0 ]; then
         [ "$basepath_status" -ne 0 ] || run_basepath_fixture || basepath_status=$?
         finish_basepath_fixture "$basepath_status" || status=1
-        run_wallet_fixture || status=1
     fi
     exit "$status"
 fi
@@ -170,7 +158,4 @@ status=0
 (cd apps/blog && DENSER_BLOG_URL=http://localhost:3000 \
     run_playwright "$junit" fixture_e2e --config=../../.aidev/playwright.fixture-stack.config.ts \
     --tsconfig=tsconfig.json "$@") || status=$?
-if [ "$#" -eq 0 ]; then
-    run_wallet_fixture || status=1
-fi
 exit "$status"

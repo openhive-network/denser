@@ -62,9 +62,9 @@ verification:
         args: [".aidev/run-static.sh"]
         stack: false
   # quick, plus a production build of the blog and its fixture-replay Playwright
-  # suite (~250 tests against recorded API responses, one worker), the dev stack
-  # boot check, then the advisory live_e2e against that build served by the test
-  # stack.
+  # suite (fixture_e2e: recorded API responses, one worker), the wallet's build and
+  # fixture suite (wallet_fixture), the dev stack boot check, then the advisory
+  # live_e2e against the blog build served by the test stack.
   full:
     suites:
       - name: unit
@@ -80,6 +80,13 @@ verification:
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
         artifacts: ["test-results/fixture/"]
+        stack: false
+      # The wallet's fixture suite, split out of fixture_e2e on 2026-10-09 so a slow
+      # blog pass on a loaded host cannot use up its wall (denser#1093, #799).
+      - name: wallet_fixture
+        adapter: command
+        args: [".aidev/run-wallet-fixture-e2e.sh"]
+        artifacts: ["test-results/wallet-fixture/"]
         stack: false
       # Boots the live dev stack (sandbox.dev) cold and over the base revision's
       # node_modules, when the candidate changes its dependencies, next.config,
