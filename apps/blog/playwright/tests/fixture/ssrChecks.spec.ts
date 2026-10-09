@@ -285,21 +285,19 @@ test.describe('SSR — community profile (JS disabled)', () => {
 // prove the API call happened) yet renders NOTHING into the initial HTML; the
 // content only appears after client hydration.
 //
-// Each is marked `test.fail()` on replay, so the suite stays green while
-// documenting the gap. If someone makes one of these pages SSR its content,
-// the test will start passing unexpectedly → flip it to a normal assertion and
-// drop the marker. The marker is skipped while recording (assertions are gated
-// off there, so the test would otherwise "pass" and trip the expected-failure).
+// SSR-11 and SSR-13 now pass the server fetch to the page as initialData and
+// are normal assertions. SSR-12 is still a gap, marked `test.fail()` on replay
+// so the suite stays green while documenting it. If someone makes it SSR its
+// content, the test will start passing unexpectedly → flip it to a normal
+// assertion and drop the marker. The marker is skipped while recording
+// (assertions are gated off there, so the test would otherwise "pass" and trip
+// the expected-failure).
 test.describe('SSR — Hydrate-based pages (JS disabled, confirmed gaps)', () => {
   test.use({ javaScriptEnabled: false, authenticatedUser: { username: SUBSCRIBED_USER } });
 
   test('SSR-11 — /@user/communities renders the subscriptions list in server HTML', async ({
     page
   }) => {
-    test.fail(
-      !isRecordMode,
-      'SSR gap (#932): subscriptions are fetched server-side but rendered only after client hydration (React Query Hydrate)'
-    );
     await page.goto(`/@${SUBSCRIBED_USER}/communities`);
     await expectSsrNonEmpty(page.getByTestId('author-community-subscribed-list-item').first());
   });
@@ -314,10 +312,6 @@ test.describe('SSR — Hydrate-based pages (JS disabled, confirmed gaps)', () =>
   });
 
   test('SSR-13 — /roles/[community] renders the roles table in server HTML', async ({ page }) => {
-    test.fail(
-      !isRecordMode,
-      'SSR gap (#932): community roles are fetched server-side but rendered only after client hydration (React Query Hydrate)'
-    );
     await page.goto(`/roles/${SUBSCRIBED_COMMUNITY}`);
     // Target a real role row, not the table: the table has a static <thead>
     // that would render even with zero role rows.
