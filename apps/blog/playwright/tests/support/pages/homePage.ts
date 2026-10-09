@@ -136,6 +136,7 @@ export class HomePage {
 
   // for logged in user
   readonly profileAvatarButton: Locator;
+  readonly profileMenuProfileLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -292,6 +293,7 @@ export class HomePage {
 
     // for logged in user
     this.profileAvatarButton = page.locator('[data-testid="profile-avatar-button"]');
+    this.profileMenuProfileLink = page.getByTestId('user-profile-menu-profile-link');
   }
 
   async goto() {

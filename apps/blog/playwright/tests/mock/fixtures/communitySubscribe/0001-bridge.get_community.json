@@ -6,15 +6,15 @@
     "method": "bridge.get_community",
     "params": {
       "name": "hive-194913",
-      "observer": ""
+      "observer": "hive.blog"
     },
     "id": 1
   },
-  "requestHash": "3a5394a28836794d",
+  "requestHash": "21c21721945bbfdb",
   "method": "bridge.get_community",
   "params": {
     "name": "hive-194913",
-    "observer": ""
+    "observer": "hive.blog"
   },
   "response": {
     "jsonrpc": "2.0",
@@ -51,7 +51,11 @@
       ],
       "about": "A place for photography lovers to share their work and photography tips.",
       "title": "Photography Lovers",
-      "context": {},
+      "context": {
+        "role": "guest",
+        "subscribed": false,
+        "title": ""
+      },
       "is_nsfw": false,
       "type_id": 1,
       "settings": {},

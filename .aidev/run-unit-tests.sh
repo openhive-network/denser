@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
-# node:test suites of scripts/ci-helpers, packages/ui, packages/smart-signer and
-# apps/blog (run through node's TypeScript type stripping): the `baseline` slot
+# node:test suites of scripts/ci-helpers, packages/ui, packages/smart-signer,
+# apps/blog and apps/wallet (run through node's TypeScript type stripping): the `baseline` slot
 # and the `unit` suite of the quick, full and canary slots.
 # No I/O, no server. Each package writes junit (mocha's built-in xunit reporter)
 # to test-results/unit/, the per-test evidence AIDEV reads from the binding's
@@ -40,7 +40,8 @@ run_with_junit_fallback "$junit" ui node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     packages/ui/lib/time-ago.test.ts packages/ui/lib/server-query-cache.test.ts \
-    packages/ui/lib/site-url.test.ts packages/ui/lib/operation-mutation.test.ts < /dev/null || status=1
+    packages/ui/lib/site-url.test.ts packages/ui/lib/operation-mutation.test.ts \
+    packages/ui/lib/account-name-rules.test.ts < /dev/null || status=1
 echo "== node --test packages/smart-signer" >&2
 junit="$PWD/test-results/unit/smart-signer.xml"
 run_with_junit_fallback "$junit" smart-signer node --test \
@@ -60,4 +61,10 @@ run_with_junit_fallback "$junit" blog node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     apps/blog/lib/canonical-url.test.ts < /dev/null || status=1
+echo "== node --test apps/wallet" >&2
+junit="$PWD/test-results/unit/wallet.xml"
+run_with_junit_fallback "$junit" wallet node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    apps/wallet/lib/history-filter.test.ts < /dev/null || status=1
 exit "$status"

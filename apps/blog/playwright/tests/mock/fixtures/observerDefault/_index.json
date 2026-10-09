@@ -1,0 +1,6 @@
+{
+  "testName": "observerDefault",
+  "base": "loggedInHomeFeeds",
+  "additive": true,
+  "note": "The logged-in trending feed (base) plus the anonymous one (bridge.get_ranked_posts observer=hive.blog, copied from homepage), so a spec can tell which observer a feed read sent."
+}

@@ -5,12 +5,13 @@ import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { Symbol } from '@ui/lib/asset-constants';
 import { accountReputation } from '@ui/lib/reputation';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
+import { commonVariables } from '@ui/lib/common-variables';
 
 // Re-export Symbol and accountReputation for backwards compatibility
 export { Symbol, accountReputation };
 // NaiMap is replaced by NaiToSymbol from @hive/ui
 
-export const DEFAULT_OBSERVER = 'hive.blog';
+export const DEFAULT_OBSERVER = commonVariables.defaultObserver;
 export type SortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
 
 export interface Preferences {

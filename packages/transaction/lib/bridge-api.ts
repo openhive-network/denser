@@ -8,7 +8,9 @@ import {
   IGetPostHeader,
   IUnreadNotifications
 } from '@hive/common-hiveio-packages/wax';
+import { commonVariables } from '@ui/lib/common-variables';
 import { getReadChain } from './chain';
+import type { IObserverListsApi } from './observer-lists';
 
 export const DATA_LIMIT = 20;
 
@@ -28,7 +30,7 @@ export const getUnreadNotifications = async (account: string): Promise<IUnreadNo
 export const getCommunities = async (
   sort: string,
   query?: string | null,
-  observer: string = 'hive.blog'
+  observer: string = commonVariables.defaultObserver
 ): Promise<Community[] | null> => {
   return getReadChain().api.bridge.list_communities({
     query,
@@ -105,7 +107,7 @@ const resolvePost = (post: Entry, observer: string): Promise<Entry> => {
 export const getPost = async (
   author: string = '',
   permlink: string = '',
-  observer: string = ''
+  observer: string = commonVariables.defaultObserver
 ): Promise<Entry | null> => {
   return getReadChain().api.bridge
     .get_post({
@@ -158,6 +160,12 @@ export const getFollowList = async (
   });
 };
 
+export const doesUserFollowAnyLists = async (observer: string): Promise<boolean> => {
+  return getReadChain().api.bridge.does_user_follow_any_lists({ observer });
+};
+
+export const observerListsApi: IObserverListsApi = { getFollowList, doesUserFollowAnyLists };
+
 export const getSubscribers = async (community: string): Promise<string[][] | null> => {
   return getReadChain().api.bridge.list_subscribers({
     community
@@ -182,7 +190,7 @@ export const getAccountNotifications = async (
 
 export const getCommunity = async (
   name: string,
-  observer: string | undefined = ''
+  observer: string = commonVariables.defaultObserver
 ): Promise<Community | null> => {
   return getReadChain().api.bridge.get_community({ name, observer });
 };
@@ -193,7 +201,7 @@ export const getListCommunityRoles = async (community: string): Promise<string[]
 export const getDiscussion = async (
   author: string,
   permlink: string,
-  observer?: string
+  observer: string = commonVariables.defaultObserver
 ): Promise<Record<string, Entry> | null> => {
   return getReadChain().api.bridge.get_discussion({
     author,

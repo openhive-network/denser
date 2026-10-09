@@ -15,6 +15,9 @@ export const useDelegateMutation = () =>
     run: withBroadcastResult(({ delegator, delegatee, hp }: DelegateParams) =>
       transactionService.delegateVestingShares(delegator, delegatee, hp, OBSERVE)
     ),
-    invalidate: ({ delegator }: DelegateParams) => [['vestingDelegation', delegator]],
+    invalidate: ({ delegator }: DelegateParams) => [
+      ['vestingDelegation', delegator],
+      ['expiringVestingDelegations', delegator]
+    ],
     reportErrors: false
   });

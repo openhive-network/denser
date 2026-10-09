@@ -6,6 +6,8 @@ import { User } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLogger } from '@ui/lib/logging';
+import { observerListsApi } from '@transaction/lib/bridge-api';
+import { ownListsQueryKey, refreshOwnLists } from '@transaction/lib/observer-lists';
 
 const logger = getLogger('app');
 
@@ -52,6 +54,11 @@ export function useSignIn() {
       if (user.username) {
         const secure = window.location.protocol === 'https:' ? '; Secure' : '';
         document.cookie = `observer=${user.username}; path=/; SameSite=Lax${secure}`;
+        // Decides whether feed and post reads may send the default observer instead
+        queryClient.prefetchQuery({
+          queryKey: ownListsQueryKey(user.username),
+          queryFn: () => refreshOwnLists(user.username, observerListsApi)
+        });
       }
 
       // Invalidate observer-dependent queries to refetch with new user context
