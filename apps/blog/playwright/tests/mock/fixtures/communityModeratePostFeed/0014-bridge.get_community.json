@@ -6,15 +6,15 @@
     "method": "bridge.get_community",
     "params": {
       "name": "hive-160391",
-      "observer": ""
+      "observer": "hive.blog"
     },
     "id": 1
   },
-  "requestHash": "b43a9d048dbcd393",
+  "requestHash": "b49604161d1e1394",
   "method": "bridge.get_community",
   "params": {
     "name": "hive-160391",
-    "observer": ""
+    "observer": "hive.blog"
   },
   "response": {
     "jsonrpc": "2.0",
@@ -41,7 +41,11 @@
       ],
       "about": "Magic the Forkening, BlockCraft, Hashes of Creation, etc.",
       "title": "Blockchain Wizardry",
-      "context": {},
+      "context": {
+        "role": "guest",
+        "subscribed": false,
+        "title": ""
+      },
       "is_nsfw": false,
       "type_id": 1,
       "settings": {},

@@ -6,9 +6,10 @@ import PostList from '@/blog/features/list-of-posts/posts-loader';
 import { loadCardEntries } from '@/blog/features/list-of-posts/lib/card-entry';
 import { PER_PAGE } from '@/blog/features/search/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
-import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
+import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { StaleTime } from '@/blog/lib/react-query';
-import { useSSRObserver, useInitialPosts } from '@/blog/components/observer-provider';
+import { useSSREffectiveObserver, useInitialPosts } from '@/blog/components/observer-provider';
+import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-observer';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getAccountPosts } from '@transaction/lib/bridge-api';
@@ -26,7 +27,7 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   const params = useParams<{ param: string }>();
   const username = params?.param.replace('%40', '') ?? '';
   const legalBlockedUser = userIllegalContent.includes(username);
-  const ssrObserver = useSSRObserver();
+  const ssrObserver = useSSREffectiveObserver();
   const initialPosts = useInitialPosts();
   const { ref, inView } = useInView();
   // Create a separate ref for prefetching - triggers earlier than the main ref
@@ -38,10 +39,14 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   });
   const { t } = useTranslation('common_blog');
   const { user, isHydrated } = useUserClient();
+  const observers = useEffectiveObserver();
   // Use SSR observer before hydration to match prefetched cache keys,
-  // then switch to client observer (which should be the same value for logged-in users)
-  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  // then switch to client observer (which should be the same value for logged-in users).
+  // "feed" lists the posts of accounts the user follows, so it always sends the username.
+  const clientObserver = query === 'feed' ? observers.observer : observers.effectiveObserver;
   const observer = isHydrated ? clientObserver : ssrObserver;
+  // The server read its posts as ssrObserver; another observer (e.g. after a list change) fetches its own
+  const seedPosts = observer === ssrObserver ? initialPosts : null;
   const [preferences] = useStorageWithTTL<Preferences>(
     user.username ? `user-preferences-${user.username}` : '',
     DEFAULT_PREFERENCES,
@@ -67,8 +72,8 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
       initialPageParam: undefined,
       enabled: Boolean(username),
       // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
-      initialData: initialPosts ? { pages: [initialPosts], pageParams: [undefined] } : undefined,
-      initialDataUpdatedAt: initialPosts ? Date.now() : undefined,
+      initialData: seedPosts ? { pages: [seedPosts], pageParams: [undefined] } : undefined,
+      initialDataUpdatedAt: seedPosts ? Date.now() : undefined,
       staleTime: StaleTime.MEDIUM
     });
 

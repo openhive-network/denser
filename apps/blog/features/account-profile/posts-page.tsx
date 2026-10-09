@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { QueryTypes } from './lib/utils';
-import { getObserverFromCookies } from '@/blog/lib/auth-utils';
+import { getEffectiveObserverFromCookies, getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
 import { ObserverProvider, InitialPostsProvider } from '@/blog/components/observer-provider';
 import { getProfilePostsFirstPage } from '@/blog/lib/profile-cache';
@@ -21,9 +21,11 @@ const PostsPage = async ({
 }) => {
   const username = extractUsernameFromParam(param) ?? param;
   const observer = await getObserverFromCookies();
+  // "feed" lists the posts of accounts the user follows, so it always sends the username
+  const feedObserver = query === 'feed' ? observer : await getEffectiveObserverFromCookies();
   let initialPosts = null;
   try {
-    initialPosts = await getProfilePostsFirstPage(query, username);
+    initialPosts = await getProfilePostsFirstPage(query, username, feedObserver);
   } catch (error) {
     logger.error(error, 'Error in PostsPage:');
   }
@@ -32,7 +34,7 @@ const PostsPage = async ({
   // streaming SSR where dehydrated state doesn't reliably reach the browser
   // query client, causing unnecessary client-side refetches.
   return (
-    <ObserverProvider value={observer}>
+    <ObserverProvider value={observer} effectiveValue={feedObserver}>
       {/* PostsContent renders no feed for legally blocked users, so there is no card image to preload. */}
       <FirstCardImagePreload entries={userIllegalContent.includes(username) ? null : initialPosts} />
       <InitialPostsProvider value={initialPosts}>{children}</InitialPostsProvider>

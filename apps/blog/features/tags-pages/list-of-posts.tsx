@@ -7,7 +7,7 @@ import { DATA_LIMIT, getPostsRanked } from '@transaction/lib/bridge-api';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
-import { DEFAULT_OBSERVER, DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
+import { DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
 import { StaleTime } from '@/blog/lib/react-query';
 import { useTranslation } from '@/blog/i18n/client';
 import PostList from '../list-of-posts/posts-loader';
@@ -16,16 +16,21 @@ import NoDataError from '@/blog/components/no-data-error';
 import LoadMoreError from '@/blog/components/load-more-error';
 import { isCommunity } from '@ui/lib/utils';
 import { PostListSkeleton } from '@hive/ui';
-import { useSSRObserver, useInitialPosts } from '@/blog/components/observer-provider';
+import { useSSREffectiveObserver, useInitialPosts } from '@/blog/components/observer-provider';
+import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-observer';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
-  const ssrObserver = useSSRObserver();
+  const ssrObserver = useSSREffectiveObserver();
   const initialPosts = useInitialPosts();
   const { user, isHydrated } = useUserClient();
+  const observers = useEffectiveObserver();
   // Use SSR observer before hydration to match prefetched cache keys,
-  // then switch to client observer (which should be the same value for logged-in users)
-  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  // then switch to client observer (which should be the same value for logged-in users).
+  // "my" lists the user's subscriptions, so it always sends the username.
+  const clientObserver = tag === 'my' ? observers.observer : observers.effectiveObserver;
   const observer = isHydrated ? clientObserver : ssrObserver;
+  // The server read its posts as ssrObserver; another observer (e.g. after a list change) fetches its own
+  const seedPosts = observer === ssrObserver ? initialPosts : null;
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
   // Create a separate ref for prefetching - triggers earlier than the main ref
@@ -66,8 +71,8 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
       // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
       // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
       // initialData is only used when the query has no cached data (first load).
-      initialData: initialPosts ? { pages: [initialPosts], pageParams: [undefined] } : undefined,
-      initialDataUpdatedAt: initialPosts ? Date.now() : undefined,
+      initialData: seedPosts ? { pages: [seedPosts], pageParams: [undefined] } : undefined,
+      initialDataUpdatedAt: seedPosts ? Date.now() : undefined,
       staleTime: StaleTime.MEDIUM
     });
 

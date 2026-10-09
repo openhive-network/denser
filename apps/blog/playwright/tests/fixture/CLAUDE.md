@@ -77,6 +77,18 @@ Instead, `seedAuthCookie(context)` (in `fixture-auth/seeder.ts`):
    `localStorage['wif.{username}@posting']` so `signer-wif.ts` signs
    without popping a password dialog. WIF just needs valid Hive format —
    it does not need to match a real account.
+4. Seeds the answer of the login-time list check
+   (`transaction/lib/observer-lists.ts`): `localStorage['observer-own-lists-{username}']`,
+   only when absent, so a list change during the test sticks. By default the
+   user *has* lists of its own, so every read sends the username as the
+   recordings expect and no check request (`bridge.get_follow_list` muted /
+   blacklisted, `bridge.does_user_follow_any_lists`) is made.
+   `test.use({ authenticatedUserHasOwnLists: false })` seeds an account
+   without lists (plus the `observer-no-own-lists` cookie the server reads):
+   feed, post, discussion and search reads then send `hive.blog`, while
+   community, subscription, `my` and `feed` reads keep the username
+   (`observerDefault.spec.ts`). A spec that removes an entry from a list
+   drops the answer, and the app then makes the check requests.
 
 Opt in per spec with `test.use({ authenticatedUser: {} })`. Pass a
 `Partial<User>` to override defaults (loginType, keyType, etc.).

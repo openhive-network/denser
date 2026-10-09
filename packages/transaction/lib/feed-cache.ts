@@ -50,7 +50,10 @@ export function feedCacheKey(request: IFeedRequest): string {
 
 export interface IFeedCacheOptions {
   config: IFeedCacheConfig;
-  /** The observer of requests without a viewer; requests for any other observer are never cached. */
+  /**
+   * The default observer: sent by anonymous requests and by accounts without mute or blacklist
+   * lists of their own (see `getEffectiveObserver`). Requests for any other observer are never cached.
+   */
   anonymousObserver: string;
   onRevalidateError?: (error: unknown, key: string) => void;
   now?: () => number;
