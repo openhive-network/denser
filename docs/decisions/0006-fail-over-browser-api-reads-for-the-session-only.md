@@ -5,7 +5,7 @@ decision-makers: []
 consulted: []
 informed: []
 
-id: DR-PENDING
+id: DR-006
 proposed_by: claude
 area: transaction/api-node-selection
 related_issues: [951]
