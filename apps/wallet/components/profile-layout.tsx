@@ -19,7 +19,7 @@ import {
 } from '@ui/components/dropdown-menu';
 import { useTranslation } from '@/wallet/i18n/client';
 import { getExternalLink } from '@/wallet/lib/utils';
-import { getUserAvatarUrl } from '@hive/ui';
+import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 
 const getCoverImageStyle = (profileData: { posting_json_metadata?: string } | null): string => {
   try {
@@ -76,11 +76,12 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
             className="flex h-auto max-h-full min-h-full w-auto min-w-full max-w-full flex-col items-center"
           >
             <div className="mt-4 flex items-center">
-              <div
-                className="mr-3 h-[48px] w-[48px] rounded-3xl bg-cover bg-no-repeat"
-                style={{
-                  backgroundImage: `url(${getUserAvatarUrl(profileData?.name || '', 'medium')})`
-                }}
+              <UserAvatarImg
+                className="mr-3 h-[48px] w-[48px] rounded-3xl object-cover"
+                data-testid="profile-avatar"
+                src={getUserAvatarUrl(profileData?.name || '', 'medium')}
+                alt=""
+                fetchPriority="low"
               />
               <h4 className="sm:text-2xl" data-testid="profile-name">
                 <span className="font-semibold">

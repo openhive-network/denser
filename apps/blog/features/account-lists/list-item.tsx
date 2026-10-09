@@ -7,7 +7,7 @@ import { Button } from '@ui/components';
 import { handleError } from '@ui/lib/handle-error';
 import BasePathLink from '@/blog/components/base-path-link';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { getUserAvatarUrl } from '@hive/ui';
+import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 
 const ListItem = ({
   item,
@@ -67,7 +67,7 @@ const ListItem = ({
       className={`flex items-center justify-between border-b border-border-primary/30 px-3 py-2 transition-colors last:border-b-0 odd:bg-background-tertiary/50 hover:bg-background-tertiary ${item._temporary ? 'opacity-50' : ''}`}
     >
       <span className="flex min-w-0 items-center gap-2">
-        <img
+        <UserAvatarImg
           src={getUserAvatarUrl(item.name, 'small')}
           alt=""
           className="h-6 w-6 shrink-0 rounded-full bg-background-tertiary"
