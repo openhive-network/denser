@@ -5,7 +5,7 @@ decision-makers: []
 consulted: []
 informed: []
 
-id: DR-PENDING
+id: DR-007
 proposed_by: claude
 area: transaction/observer
 related_issues: [500]
