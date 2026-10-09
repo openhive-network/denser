@@ -1,4 +1,5 @@
 import { expect, type Page } from '@playwright/test';
+import { testTimeout } from '../../../../../../playwright/support/timeouts';
 
 const FIXTURE_PROXY_PORT = 8200;
 
@@ -1536,7 +1537,7 @@ export async function installBroadcastInterceptor(
 
   return {
     calls,
-    async waitForCount(count, timeoutMs = 10000) {
+    async waitForCount(count, timeoutMs = testTimeout('broadcast-count', 10000)) {
       const deadline = Date.now() + timeoutMs;
       while (calls.length < count && Date.now() < deadline) {
         await new Promise((r) => setTimeout(r, 50));

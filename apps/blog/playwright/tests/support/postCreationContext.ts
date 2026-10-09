@@ -1,5 +1,6 @@
 import { expect, type Page } from '@playwright/test';
 import { TIMEOUTS } from './constants';
+import { timed } from '../../../../../playwright/support/timeouts';
 import { AdvancedSettingsModal } from './pages/advancedSettingsModal';
 import type { BroadcastInterceptor } from './fixture-auth/broadcast-interceptor';
 
@@ -181,7 +182,7 @@ export async function gotoCommunityNewPostLoggedIn(page: Page): Promise<void> {
  */
 export async function fillPostBody(page: Page, body: string): Promise<void> {
   const cm = page.locator('div.cm-editor').locator('.cm-content').first();
-  await cm.waitFor({ state: 'visible', timeout: 30_000 });
+  await timed('editor-ready', 30_000, (timeout) => cm.waitFor({ state: 'visible', timeout }));
   await cm.click({ force: true });
   await page.keyboard.type(body);
 }

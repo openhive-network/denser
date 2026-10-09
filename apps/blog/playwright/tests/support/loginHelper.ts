@@ -1,4 +1,5 @@
 import { Page, expect } from '@playwright/test';
+import { timed } from '../../../../../playwright/support/timeouts';
 import { HomePage } from './pages/homePage';
 import { LoginForm } from './pages/loginForm';
 import { ProfileUserMenu } from './pages/profileUserMenu';
@@ -30,7 +31,7 @@ export async function loginViaHBAuth(
   const homePage = new HomePage(page);
   const loginForm = new LoginForm(page);
 
-  await expect(homePage.loginBtn).toBeVisible({ timeout: 30000 });
+  await timed('login-button-visible', 30000, (timeout) => expect(homePage.loginBtn).toBeVisible({ timeout }));
   await homePage.loginBtn.click();
 
   await loginForm.validateDefaultLoginFormIsLoaded();
@@ -149,9 +150,9 @@ export class LoginHelper {
     await this.loginFormDefaut.wifInput.fill(privatePostingKey);
     await this.loginFormDefaut.saveSignInButton.click();
 
-    await expect(this.loginFormDefaut.loginDialog).toBeHidden({ timeout: 30000 });
+    await timed('login-dialog-closed', 30000, (timeout) => expect(this.loginFormDefaut.loginDialog).toBeHidden({ timeout }));
     await this.page.reload({ waitUntil: 'domcontentloaded' });
-    await expect(this.homePage.profileAvatarButton).toBeVisible({ timeout: 30000 });
+    await timed('profile-avatar-visible', 30000, (timeout) => expect(this.homePage.profileAvatarButton).toBeVisible({ timeout }));
 
     await this.homePage.profileAvatarButton.click();
     // Validate User is logged in

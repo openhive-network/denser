@@ -6,15 +6,16 @@
  * files after its imports run, and must see those values.
  */
 import { devices, type PlaywrightTestConfig, type Project } from '@playwright/test';
+import { testTimeout } from './support/timeouts';
 
 /** Test and expect() timeouts, and the test.only guard on CI. */
 export function baseConfig() {
   return {
     /* Maximum time one test can run for. */
-    timeout: 60 * 1000,
+    timeout: testTimeout('playwright:test', 60 * 1000),
     expect: {
       /* Maximum time expect() should wait for the condition to be met. */
-      timeout: 10 * 1000
+      timeout: testTimeout('playwright:expect', 10 * 1000)
     },
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!process.env.CI
@@ -31,6 +32,7 @@ export const FULL_HD_VIEWPORT = { width: 1920, height: 1080 };
 export function browserUse(snapshots: boolean) {
   return {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
+    // Fixed: 0 is no limit, which no load can need stretched.
     actionTimeout: 0,
     trace: {
       mode: 'retain-on-failure',
@@ -95,6 +97,7 @@ export function localE2eOverrides(baseURL: string) {
     workers: process.env.CI ? 1 : undefined,
     reporter: 'html',
     use: {
+      // Fixed: 0 is no limit, which no load can need stretched.
       actionTimeout: 0,
       baseURL,
       trace: 'retain-on-failure',
@@ -128,7 +131,7 @@ export function standaloneServerCommand(app: string, nextDir = '.next') {
 export function ownWebServerOptions() {
   return {
     reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
+    timeout: testTimeout('playwright:web-server', 120 * 1000),
     stdout: 'pipe',
     stderr: 'pipe'
   } as const;

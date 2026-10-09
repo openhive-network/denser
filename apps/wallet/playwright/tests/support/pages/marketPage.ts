@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { timed } from '../../../../../../playwright/support/timeouts';
 
 /**
  * Page Object Model for the Market page.
@@ -157,10 +158,10 @@ export class MarketPage {
    * Wait for the market page to be fully loaded with data.
    */
   async waitForPageLoaded(): Promise<void> {
-    await expect(this.marketPage).toBeVisible({ timeout: 30000 });
-    await expect(this.lastPriceBox).toBeVisible({ timeout: 30000 });
-    await expect(this.chart).toBeVisible({ timeout: 30000 });
-    await expect(this.buyOrdersSection).toBeVisible({ timeout: 30000 });
+    await timed('market-page-visible', 30000, (timeout) => expect(this.marketPage).toBeVisible({ timeout }));
+    await timed('market-section-visible', 30000, (timeout) => expect(this.lastPriceBox).toBeVisible({ timeout }));
+    await timed('market-section-visible', 30000, (timeout) => expect(this.chart).toBeVisible({ timeout }));
+    await timed('market-section-visible', 30000, (timeout) => expect(this.buyOrdersSection).toBeVisible({ timeout }));
   }
 
   /**

@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from "@playwright/test";
+import { timed } from "../../../../../../playwright/support/timeouts";
 
 export class ProposalsPage {
   readonly page: Page;
@@ -76,10 +77,12 @@ export class ProposalsPage {
     await expect(this.proposalsHeaderName).toHaveText("Proposals");
     await expect(this.proposalsBody).toBeVisible();
     // Wait for proposals to load - either proposal items appear or "no proposals" message
-    await Promise.race([
-      this.proposalListItem.first().waitFor({ state: 'visible', timeout: 10000 }),
-      this.proposalMessageCannotShowYouAnyProposals.waitFor({ state: 'visible', timeout: 10000 })
-    ]).catch(() => {
+    await timed('proposals-loaded', 10000, (timeout) =>
+      Promise.race([
+        this.proposalListItem.first().waitFor({ state: 'visible', timeout }),
+        this.proposalMessageCannotShowYouAnyProposals.waitFor({ state: 'visible', timeout })
+      ])
+    ).catch(() => {
       // If neither appears within timeout, continue anyway (data may still be loading)
     });
   }

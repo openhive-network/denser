@@ -1,6 +1,7 @@
 /**
  * Test constants for Playwright E2E tests
  */
+import { testTimeout } from '../../../../../playwright/support/timeouts';
 
 /**
  * Theme color constants for CSS assertions
@@ -29,16 +30,17 @@ export const PAGINATION = {
 } as const;
 
 /**
- * Timeout constants (in milliseconds)
+ * Timeout constants (in milliseconds), each a named action of playwright/support/timeouts.ts
+ * with the value as its default
  */
 export const TIMEOUTS = {
-  SEARCH_RESULTS: 15000,
-  PAGE_LOAD: 10000,
-  ELEMENT_VISIBLE: 5000,
-  NETWORK_IDLE: 10000,
-  HYDRATION: 30000, // Longer timeout for React hydration on production
-  IMAGE_LOAD: 15000,
-  TWITTER_PLUGIN_SETTLE: 15000
+  SEARCH_RESULTS: testTimeout('search-results', 15000),
+  PAGE_LOAD: testTimeout('page-load', 10000),
+  ELEMENT_VISIBLE: testTimeout('element-visible', 5000),
+  NETWORK_IDLE: testTimeout('network-idle', 10000),
+  HYDRATION: testTimeout('hydration', 30000), // Longer timeout for React hydration on production
+  IMAGE_LOAD: testTimeout('image-load', 15000),
+  TWITTER_PLUGIN_SETTLE: testTimeout('twitter-plugin-settle', 15000)
 } as const;
 
 /**

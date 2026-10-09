@@ -1,4 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
+import { timed } from '../../../../../../playwright/support/timeouts';
+import { TIMEOUTS } from '../constants';
 
 export class SearchPage {
   readonly page: Page;
@@ -86,7 +88,7 @@ export class SearchPage {
   async switchToMode(mode: 'classic' | 'ai' | 'account' | 'userTopic' | 'tag') {
     await this.modeSelectTrigger.click();
     // Wait for menu to appear
-    await this.page.waitForSelector('[role="option"]', { timeout: 5000 });
+    await timed('select-options-visible', 5000, (timeout) => this.page.waitForSelector('[role="option"]', { timeout }));
 
     switch (mode) {
       case 'classic':
@@ -106,7 +108,9 @@ export class SearchPage {
         break;
     }
     // Wait for menu to close by checking options are no longer visible
-    await this.page.locator('[role="option"]').first().waitFor({ state: 'hidden', timeout: 5000 });
+    await timed('select-options-hidden', 5000, (timeout) =>
+      this.page.locator('[role="option"]').first().waitFor({ state: 'hidden', timeout })
+    );
   }
 
   async performSearch(query: string) {
@@ -123,7 +127,7 @@ export class SearchPage {
 
   async selectSort(sort: 'relevance' | 'created') {
     await this.sortSelectTrigger.click();
-    await this.page.waitForSelector('[role="option"]', { timeout: 5000 });
+    await timed('select-options-visible', 5000, (timeout) => this.page.waitForSelector('[role="option"]', { timeout }));
 
     if (sort === 'relevance') {
       await this.sortRelevance.click();
@@ -133,7 +137,7 @@ export class SearchPage {
     await this.page.waitForLoadState('domcontentloaded');
   }
 
-  async waitForSearchResults(timeout: number = 15000): Promise<'results' | 'empty' | 'timeout'> {
+  async waitForSearchResults(timeout: number = TIMEOUTS.SEARCH_RESULTS): Promise<'results' | 'empty' | 'timeout'> {
     // Wait for results to appear or no results message
     try {
       await Promise.race([
@@ -159,12 +163,16 @@ export class SearchPage {
 
   async clickFirstResult() {
     await this.firstPostTitle.click();
-    await this.page.waitForSelector('[data-testid="article-title"]', { timeout: 15000 });
+    await timed('post-page-loaded', 15000, (timeout) =>
+      this.page.waitForSelector('[data-testid="article-title"]', { timeout })
+    );
   }
 
   async clickFirstResultAuthor() {
     await this.firstPostAuthor.click();
-    await this.page.waitForSelector('[data-testid="profile-name"]', { timeout: 15000 });
+    await timed('profile-page-loaded', 15000, (timeout) =>
+      this.page.waitForSelector('[data-testid="profile-name"]', { timeout })
+    );
   }
 
   async scrollToLoadMore() {
@@ -172,10 +180,12 @@ export class SearchPage {
     await this.page.keyboard.press('End');
     // Wait for new items to load or network to settle
     try {
-      await this.page.waitForFunction(
-        (initial) => document.querySelectorAll('[data-testid="post-list-item"]').length > initial,
-        initialCount,
-        { timeout: 10000 }
+      await timed('more-results-loaded', 10000, (timeout) =>
+        this.page.waitForFunction(
+          (initial) => document.querySelectorAll('[data-testid="post-list-item"]').length > initial,
+          initialCount,
+          { timeout }
+        )
       );
     } catch {
       // No new items loaded - that's acceptable, test will verify count

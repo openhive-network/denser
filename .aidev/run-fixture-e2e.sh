@@ -136,15 +136,20 @@ cleanup() {
 trap cleanup EXIT
 
 # Wait for the server (it may still be copying the build), then register this
-# container's workers as the relay's upstream.
-node -e '
-const deadline = Date.now() + 180000;
+# container's workers as the relay's upstream. The wait is the named timeout
+# fixture-stack-blog-ready (playwright/support/timeouts.ts).
+node --input-type=module -e '
+import { testTimeout, recordTimedAction } from "./playwright/support/timeouts.ts";
+const defaultMs = 180000;
+const timeoutMs = testTimeout("fixture-stack-blog-ready", defaultMs);
+const start = Date.now();
 (async function wait() {
   for (;;) {
     try { await fetch("http://127.0.0.1:3000/favicon.ico"); break; } catch {}
-    if (Date.now() > deadline) { console.error("fixture_e2e: the stack blog did not answer within 180 s"); process.exit(1); }
+    if (Date.now() - start > timeoutMs) { console.error(`fixture_e2e: the stack blog did not answer within ${timeoutMs / 1000} s`); process.exit(1); }
     await new Promise((r) => setTimeout(r, 1000));
   }
+  recordTimedAction("fixture-stack-blog-ready", Date.now() - start, defaultMs);
   const r = await fetch("http://fixture-proxy:8200/__aidev/upstream?port=8200", { method: "POST" });
   console.error("fixture_e2e: stack proxy", await r.text());
   process.exit(r.ok ? 0 : 1);

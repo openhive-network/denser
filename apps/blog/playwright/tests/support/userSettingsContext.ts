@@ -1,4 +1,5 @@
 import { expect, type Page } from '@playwright/test';
+import { timed } from '../../../../../playwright/support/timeouts';
 
 /**
  * Mirrors `apps/blog/lib/utils.ts`'s `Preferences` interface. Re-declared
@@ -97,18 +98,20 @@ export async function expectPreferences(
   expected: Partial<Preferences>,
   username: string = SETTINGS_USER
 ): Promise<void> {
-  await expect
-    .poll(
-      async () => {
-        const prefs = await readPreferences(page, username);
-        if (!prefs) return null;
-        const subset: Partial<Preferences> = {};
-        for (const k of Object.keys(expected) as (keyof Preferences)[]) {
-          subset[k] = prefs[k] as never;
-        }
-        return subset;
-      },
-      { message: `localStorage[${preferencesStorageKey(username)}] should match`, timeout: 5_000 }
-    )
-    .toEqual(expected);
+  await timed('preferences-stored', 5_000, (timeout) =>
+    expect
+      .poll(
+        async () => {
+          const prefs = await readPreferences(page, username);
+          if (!prefs) return null;
+          const subset: Partial<Preferences> = {};
+          for (const k of Object.keys(expected) as (keyof Preferences)[]) {
+            subset[k] = prefs[k] as never;
+          }
+          return subset;
+        },
+        { message: `localStorage[${preferencesStorageKey(username)}] should match`, timeout }
+      )
+      .toEqual(expected)
+  );
 }

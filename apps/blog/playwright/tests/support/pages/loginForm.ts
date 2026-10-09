@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { timed } from '../../../../../../playwright/support/timeouts';
 import { locatorSelector } from '../locatorSelector';
 
 export class LoginForm {
@@ -100,7 +101,9 @@ export class LoginForm {
   // Click "Not now" if it appears so the login flow can complete.
   async dismissBiometricPromptIfPresent() {
     try {
-      await this.biometricPromptNotNowButton.waitFor({ state: 'visible', timeout: 3000 });
+      await timed('biometric-prompt-visible', 3000, (timeout) =>
+        this.biometricPromptNotNowButton.waitFor({ state: 'visible', timeout })
+      );
       await this.biometricPromptNotNowButton.click();
     } catch {
       // Prompt not shown — nothing to dismiss.

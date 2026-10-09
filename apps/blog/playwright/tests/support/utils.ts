@@ -1,4 +1,5 @@
 import { expect, Page } from '@playwright/test';
+import { testTimeout } from '../../../../../playwright/support/timeouts';
 import { HomePage } from './pages/homePage';
 import { CommentEditorPage } from '../support/pages/commentEditorPage';
 
@@ -53,7 +54,7 @@ async function pollWithReload(
  * @param {number} timeout - Maximum waiting time in milliseconds.
  * @param {number} interval - Checking interval in milliseconds.
  */
-export async function waitForElementVisible(page: Page, selector: string, timeout = 5000, interval = 250) {
+export async function waitForElementVisible(page: Page, selector: string, timeout = testTimeout('poll-with-reload', 5000), interval = 250) {
   await pollWithReload(
     page,
     () => page.locator(selector).isVisible(),
@@ -72,7 +73,7 @@ export async function waitForElementVisible(page: Page, selector: string, timeou
  * @param {number} timeout - Maximum waiting time in milliseconds.
  * @param {number} interval - Checking interval in milliseconds.
  */
-export async function waitForElementColor(page: Page, selector: string, colorRGB: string, timeout = 5000, interval = 250) {
+export async function waitForElementColor(page: Page, selector: string, colorRGB: string, timeout = testTimeout('poll-with-reload', 5000), interval = 250) {
   const homePage = new HomePage(page);
 
   await pollWithReload(
@@ -93,7 +94,7 @@ export async function waitForElementColor(page: Page, selector: string, colorRGB
  * @param {number} timeout - Maximum waiting time in milliseconds.
  * @param {number} interval - Checking interval in milliseconds.
  */
-export async function waitForDownvoteColor(page: Page, selector: string, colorRGB: string, timeout = 5000, interval = 250) {
+export async function waitForDownvoteColor(page: Page, selector: string, colorRGB: string, timeout = testTimeout('poll-with-reload', 5000), interval = 250) {
   const homePage = new HomePage(page);
 
   await pollWithReload(
@@ -118,7 +119,7 @@ export async function waitForDownvoteColor(page: Page, selector: string, colorRG
  * @param {number} timeout - Maximum waiting time in milliseconds.
  * @param {number} interval - Checking interval in milliseconds.
  */
-export async function waitForCommentIsVisible(page: Page, randomString: string, timeout = 5000, interval = 250) {
+export async function waitForCommentIsVisible(page: Page, randomString: string, timeout = testTimeout('poll-with-reload', 5000), interval = 250) {
   const commentEditorPage = new CommentEditorPage(page);
 
   await pollWithReload(
