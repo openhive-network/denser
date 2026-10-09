@@ -1,0 +1,6 @@
+{
+  "testName": "profilePayoutComments",
+  "base": "userProfileTabs",
+  "additive": true,
+  "note": "Replay-only corpus for profilePayoutComments.spec.ts. Shares the anonymous @hiveio profile reads with userProfileTabs. 0001 PATCHES userProfileTabs/0009 (the @hiveio Payouts tab, recorded empty): its result is the pending comment nesbi94/re-ibarra95-tmguqe (depth 1, is_paidout false, 1 reply) copied verbatim from lighthouse/0010-bridge.get_discussion. The comment's own page is built from the same recording: 0002 bridge.get_post answers that entry verbatim, 0003 bridge.get_discussion answers the comment's subtree (it and its reply ibarra95/re-nesbi94-2026105t232445927z, verbatim). 0004/0005 are its community hive-163772 (lighthouse 0007/0008, copied verbatim). `additive: true` because 0002-0005 are new keys, not patches."
+}

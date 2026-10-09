@@ -1,0 +1,94 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_community",
+    "params": {
+      "name": "hive-163772",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "8462f7fde2484e7c",
+  "method": "bridge.get_community",
+  "params": {
+    "name": "hive-163772",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 1337539,
+      "lang": "en",
+      "name": "hive-163772",
+      "team": [
+        [
+          "hive-163772",
+          "owner",
+          ""
+        ],
+        [
+          "worldmappin",
+          "admin",
+          ""
+        ],
+        [
+          "lizanomadsoul",
+          "admin",
+          "Community & Curation Management"
+        ],
+        [
+          "detlev",
+          "admin",
+          "Management"
+        ],
+        [
+          "ninaeatshere",
+          "mod",
+          "Curation & Moderation"
+        ],
+        [
+          "glecerioberto",
+          "mod",
+          "Curation & Moderation"
+        ],
+        [
+          "lauramica",
+          "mod",
+          "Curation & Moderation"
+        ],
+        [
+          "gabrielatravels",
+          "mod",
+          ""
+        ],
+        [
+          "ybanezkim26",
+          "mod",
+          "Curation & Moderation"
+        ]
+      ],
+      "about": "The Hive travel community",
+      "title": "Worldmappin",
+      "context": {
+        "role": "guest",
+        "title": "",
+        "subscribed": false
+      },
+      "is_nsfw": false,
+      "type_id": 1,
+      "settings": {},
+      "flag_text": "This community is only for posts pinned to Worldmappin: Go to https://worldmappin.com, find the location of your publication on the map, you can do this by scrolling on the map or using the search bar, get the code and add to your Hive post\nEnglish, Spanish (or bi-lingual with one of the languages being English) content is going to be curated only.\nOriginal content only, no plagiarism, no AI generated content, no recycled content.\nContent should be about permanent places that you have personally travelled to yourself and your experience.\nWorldmappin is a travel community, please post accommodation, food and restaurant reviews in other appropriate communities unless the focus of the post is not about the food from the restaurant.\nFor questions and support join our Discord: https://discord.gg/EGtBvSM",
+      "created_at": "2019-11-17 07:09:54",
+      "description": "Worldmappin:\n- Pin all your Hive travel posts on the map\n- Get curated by our team\n- Check it out at https://worldmappin.com\n\n\nPlease join our Discord: https://discord.gg/EGtBvSM",
+      "num_authors": 182,
+      "num_pending": 1005,
+      "subscribers": 18530,
+      "sum_pending": 954
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
