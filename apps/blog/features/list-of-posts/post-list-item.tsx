@@ -12,6 +12,7 @@ import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import TimeAgo from '@ui/components/time-ago';
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
+import { UserAvatarImg } from '@ui/components/user-avatar-img';
 import { accountReputation } from '@hive/ui';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { cn } from '@ui/lib/utils';
@@ -159,11 +160,11 @@ const PostListItem = memo(
             <div className="md:text-md flex items-center text-sm">
               {nsfw === 'show' && post.blacklists.length < 1 && !blacklistCheck ? (
                 <Link href={`/@${displayAuthor}`} data-testid="post-card-avatar">
-                  <div
-                    className="mr-3 h-[24px] w-[24px] rounded-3xl bg-cover bg-no-repeat"
-                    style={{
-                      backgroundImage: `url(${getUserAvatarUrl(displayAuthor, 'small')})`
-                    }}
+                  <UserAvatarImg
+                    className="mr-3 h-[24px] w-[24px] rounded-3xl object-cover"
+                    src={getUserAvatarUrl(displayAuthor, 'small')}
+                    alt=""
+                    fetchPriority="low"
                   />
                 </Link>
               ) : null}

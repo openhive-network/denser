@@ -11,7 +11,7 @@ import { useTranslation } from '@/wallet/i18n/client';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import WitnessRemoveVote from './witness-remove-vote';
 import TimeAgo from '@ui/components/time-ago';
-import { getUserAvatarUrl } from '@hive/ui';
+import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 
 const getOwnersString = (owners?: string) => {
   if (!owners) return '';
@@ -169,7 +169,7 @@ function WitnessListItem({
         <div className="flex" data-testid="witness-list-item-info">
           <div className="self hidden p-2 sm:block" title={t('witnesses_page.navigate_to_witness_profile')}>
             <Link href={`/@${data.owner}`} target="_blank">
-              <img
+              <UserAvatarImg
                 className={clsx('mr-1 h-[47px] min-w-[47px] rounded-full', {
                   'opacity-50': disableUser
                 })}

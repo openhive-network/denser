@@ -848,7 +848,9 @@ themselves: `recordImageRequests` (`support/cardImagePreload.ts`) answers a
 pixel size, can delay resized (`/p/…?width=`) or full-size URLs separately,
 and records every requested URL. `postBodyImages.spec.ts` uses the delays to
 observe the lightbox before the full-size image arrives and layout shifts
-from late body images.
+from late body images. `failAvatarRequests` (`support/avatarImages.ts`) answers user
+avatars (`/u/<user>/avatar/…`) with a 404 and everything else with a 1x1 PNG,
+for the `avatarFallback*.spec.ts` checks of the default-avatar fallback.
 
 ### The header's HiveSense probe leaves the proxy: stub it to assert "no console errors"
 

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { getUserAvatarUrl } from '@hive/ui';
+import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 
 interface Props {
   username: string;
@@ -12,12 +12,11 @@ function UserAvatar({ username, size, className }: Props) {
   const imageSrc = getUserAvatarUrl(username, imgSize as 'small' | 'medium' | 'large');
 
   return (
-    <span
-      className={clsx(
-        `mr-2 block h-12 w-12 rounded-full bg-transparent bg-cover bg-center bg-no-repeat`,
-        className
-      )}
-      style={{ backgroundImage: `url(${imageSrc})` }}
+    <UserAvatarImg
+      className={clsx('mr-2 block h-12 w-12 rounded-full bg-transparent object-cover object-center', className)}
+      src={imageSrc}
+      alt=""
+      fetchPriority="low"
       data-testid="user-avatar"
     />
   );
