@@ -19,22 +19,28 @@ export function Autocompleter({
   const handleInputFocus = () => {
     setIsOpen(true);
   };
-  const handleClickOutside = (event: MouseEvent) => {
-    if (autocompleteRef.current && !autocompleteRef.current.contains(event.target as Node)) {
-      setIsOpen(false);
-    }
-  };
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' || e.key === 'Enter' || e.key === 'Tab') {
-      setIsOpen(false);
-    }
+  const handleValueChange = (next: string) => {
+    setIsOpen(true);
+    onChange(next);
   };
 
-  document.addEventListener('click', handleClickOutside);
-  window.addEventListener('keydown', onKey);
+  // `mousedown`, not `click`: the click that opens the surrounding dialog mounts this component
+  // and still bubbles to the document afterwards, which would close the list as it opens.
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (autocompleteRef.current && !autocompleteRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === 'Tab') {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', onKey);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
       window.removeEventListener('keydown', onKey);
     };
   }, []);
@@ -45,7 +51,7 @@ export function Autocompleter({
         ref={inputRef}
         onFocus={handleInputFocus}
         value={value}
-        onValueChange={(e) => onChange(e)}
+        onValueChange={handleValueChange}
       />
       <CommandList className="z-20 bg-primary">
         {isOpen && (

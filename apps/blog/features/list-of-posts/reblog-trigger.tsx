@@ -100,11 +100,14 @@ const ReblogTrigger = ({
     );
   }
 
+  // The dialog wraps the tooltip trigger, not the other way round: React bubbles the dialog's
+  // focus and pointer events through its portal to its ancestors, and a TooltipTrigger among them
+  // would open the tooltip above the open dialog, where it takes the first Esc.
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger disabled={isReblogged || reblogMutation.isLoading}>
-          <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
+        <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
+          <TooltipTrigger disabled={isReblogged || reblogMutation.isLoading}>
             {reblogMutation.isLoading ? (
               <CircleSpinner loading={reblogMutation.isLoading} size={18} color="#dc2626" />
             ) : (
@@ -116,8 +119,8 @@ const ReblogTrigger = ({
                 data-testid={dataTestidTooltipIcon}
               />
             )}
-          </ReblogDialog>
-        </TooltipTrigger>
+          </TooltipTrigger>
+        </ReblogDialog>
         <TooltipContent data-testid={dataTestidTooltipContent}>
           <p>{isReblogged ? t('cards.post_card.you_reblogged') : t('cards.post_card.reblog')}</p>
         </TooltipContent>
