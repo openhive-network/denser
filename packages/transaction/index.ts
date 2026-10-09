@@ -28,8 +28,11 @@ import { createAsset, getAsset } from './lib/utils';
 import { getChain } from './lib/chain';
 import { PUBLISHING_APP } from './lib/publishing-app';
 import { subscribeToSignerOptions } from './lib/signer-options';
+import { getFindAccounts } from './lib/hive-api';
+import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/profile-metadata';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
+export type { ProfileMetadataUpdate } from './lib/profile-metadata';
 
 const logger = getLogger('app');
 
@@ -652,41 +655,23 @@ export class TransactionService {
     }, transactionOptions);
   }
 
-  async updateProfile(
-    profile_image?: string,
-    cover_image?: string,
-    name?: string,
-    about?: string,
-    location?: string,
-    website?: string,
-    witness_owner?: string,
-    witness_description?: string,
-    blacklist_description?: string,
-    muted_list_description?: string,
-    version: number = 2, // signal upgrade to posting_json_metadata
-    transactionOptions: TransactionOptions = {}
-  ) {
+  /**
+   * Broadcasts `account_update2` with the profile merged into the account's current
+   * `posting_json_metadata`, so keys other frontends set survive the save.
+   */
+  async updateProfile(profile: ProfileMetadataUpdate, transactionOptions: TransactionOptions = {}) {
+    const { username } = this.signerOptions;
+    const { accounts } = await getFindAccounts(username);
+    const account = accounts[0];
+    if (!account) throw new Error(`Account ${username} not found`);
+    const postingJsonMetadata = mergePostingJsonMetadata(account.posting_json_metadata, profile);
     return await this.processHiveAppOperation((builder) => {
       builder.pushOperation({
         account_update2_operation: {
-          account: this.signerOptions.username,
+          account: username,
           extensions: [],
           json_metadata: '',
-          posting_json_metadata: JSON.stringify({
-            profile: {
-              profile_image,
-              cover_image,
-              name,
-              about,
-              location,
-              website,
-              witness_owner,
-              witness_description,
-              blacklist_description,
-              muted_list_description,
-              version
-            }
-          })
+          posting_json_metadata: postingJsonMetadata
         }
       });
     }, transactionOptions);

@@ -34,11 +34,13 @@ export const SETTINGS_USER = process.env.CI_TEST_USER || 'guest4test';
 export const preferencesStorageKey = (username: string = SETTINGS_USER): string =>
   `user-preferences-${username}`;
 
-/** Sample values for the SET-01..04 profile field updates. */
+/** Sample values for the SET-01..04 and SET-14 profile field updates. */
 export const TEST_DISPLAY_NAME = 'Settings Test Name';
 export const TEST_ABOUT = 'Updated bio for §8 fixture tests.';
 export const TEST_LOCATION = 'Test City, Country';
 export const TEST_WEBSITE = 'https://example.org/profile';
+/** Typed with a leading `@` in SET-14; the form saves it without one. */
+export const TEST_X_HANDLE = 'settings_test';
 
 /**
  * Stable post used by SET-09 / SET-10 to assert that `comment_rewards`

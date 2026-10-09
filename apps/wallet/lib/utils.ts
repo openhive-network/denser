@@ -1,6 +1,5 @@
 import { TFunction } from 'i18next';
 import { convertStringToBig, isHive } from '@hive/ui/lib/helpers';
-import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
 import { SavingsWithdrawals, IFollow, HiveOperation } from '@hive/common-hiveio-packages/wax';
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
@@ -9,6 +8,8 @@ import { configuredBlogDomain } from '@ui/config/public-vars';
 import { createNaiAsset } from '@ui/lib/asset-constants';
 import { vestsToHiveSatoshis } from '@ui/lib/asset-math';
 import { formatAsset } from '@ui/lib/asset-format';
+
+export { getFilter } from './history-filter';
 
 export function getCurrentHpApr(data: GetDynamicGlobalPropertiesResponse) {
   // The inflation was set to 9.5% at block 7m
@@ -38,78 +39,6 @@ export function getCurrentHpApr(data: GetDynamicGlobalPropertiesResponse) {
   const totalVestingFunds = convertStringToBig(data.total_vesting_fund_hive);
   return virtualSupply.times(currentInflationRate).times(vestingRewardPercent).div(totalVestingFunds);
 }
-
-type OperationValue = HiveOperation['op']['value'];
-
-const SEARCHABLE_ACCOUNT_FIELDS = ['from', 'to', 'account', 'owner', 'author'] as const;
-
-const involvesSearchedAccount = (opValue: OperationValue, search: string) =>
-  SEARCHABLE_ACCOUNT_FIELDS.some((field) => opValue[field]?.includes(search));
-
-interface getFilterArgs {
-  filter: TransferFilters;
-  username: string;
-}
-
-export const getFilter =
-  ({ filter, username }: getFilterArgs) =>
-  ({ op }: HiveOperation) => {
-    const opValue = op?.value;
-    if (!opValue) return false;
-    if (filter.search && !involvesSearchedAccount(opValue, filter.search)) return false;
-    switch (op.type) {
-      case 'transfer_operation':
-        const incomingFromCurrent = opValue.to === username || opValue.from !== username;
-        const outcomingFromCurrent = opValue.from === username || opValue.to !== username;
-
-        return (
-          !(filter.exlude && filterSmallerThanOne(opValue.amount)) &&
-          (filter.incoming || !incomingFromCurrent) &&
-          (filter.outcoming || !outcomingFromCurrent)
-        );
-      case 'claim_reward_balance_operation':
-        if (
-          !filter.others ||
-          (filter.exlude &&
-            opValue.reward_hbd &&
-            opValue.reward_hive &&
-            opValue.reward_vests
-        ))
-          return false;
-        break;
-
-      case 'transfer_from_savings_operation':
-      case 'transfer_to_savings_operation':
-      case 'transfer_to_vesting_operation':
-        if (!filter.others || (filter.exlude && filterSmallerThanOne(opValue.amount)))
-          return false;
-        break;
-      case 'interest_operation':
-        if (!filter.others || (filter.exlude && filterSmallerThanOne(opValue.interest)))
-          return false;
-        break;
-      case 'fill_order_operation':
-        if (
-          !filter.others ||
-          (filter.exlude &&
-            filterSmallerThanOne(opValue.open_pays) &&
-            filterSmallerThanOne(opValue.current_pays))
-        )
-          return false;
-        break;
-
-      case 'cancel_transfer_from_savings_operation':
-        if (!filter.others || filter.exlude) return false;
-        break;
-      case 'withdraw_vesting_operation':
-        if (!filter.others || filter.exlude) return false;
-        break;
-      case 'author_reward_operation':
-        if (!filter.others) return false;
-        break;
-    }
-    return true;
-  };
 
 export const getAmountFromWithdrawal = (withdrawal: SavingsWithdrawals['withdrawals'][number]) => {
   const amount = Number(withdrawal.amount.amount) / 10 ** withdrawal.amount.precision;
@@ -256,10 +185,4 @@ export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVe
       ? vestsToHiveSatoshis(BigInt(vests.amount), BigInt(totalVestingFund.amount), BigInt(totalVestingShares.amount))
       : 0;
   return formatAsset(createNaiAsset('HIVE', hiveSatoshis)).replace("HIVE", "HIVE POWER");
-}
-
-export function filterSmallerThanOne(asset?: NaiAsset) {
-  if (!asset) return false;
-  const {precision, amount} = asset;
-  return parseInt(amount, 10) < 10 ** precision;
 }

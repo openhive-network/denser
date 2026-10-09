@@ -9,13 +9,21 @@ import { getHivebuzzBadges, getPeakdBadges, isThirdPartyApiEnabled } from '@tran
 import { getUserAvatarUrl } from '@ui/lib/avatar-utils';
 import { Link } from '@hive/ui';
 
-const CommunityContent = ({ username }: { username: string }) => {
+const CommunityContent = ({
+  username,
+  initialData
+}: {
+  username: string;
+  initialData: string[][] | null;
+}) => {
   const { t } = useTranslation('common_blog');
   const thirdPartyEnabled = isThirdPartyApiEnabled();
 
   const { data } = useQuery({
     queryKey: ['listAllSubscription', username],
-    queryFn: () => getSubscriptions(username)
+    queryFn: () => getSubscriptions(username),
+    initialData: initialData ?? undefined,
+    initialDataUpdatedAt: initialData ? Date.now() : undefined
   });
 
   const { data: hivebuzz } = useQuery({

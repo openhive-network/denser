@@ -1,6 +1,6 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { Link } from '@hive/ui';
 import {
   DropdownMenu,
@@ -38,6 +38,8 @@ import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-
 import ListItem from './list-item';
 import FollowCount from './follow-count';
 import ProfileLayoutSkeleton from './profile-layout-skeleton';
+import ProfileSocialLinks from './profile-social-links';
+import { parseSocialLinks } from './lib/social-links';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 // Rendered at 80/96 CSS px; 192 covers 2x displays without fetching the full-size default avatar.
@@ -99,10 +101,16 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
     enabled: !!username
   });
 
+  const socialLinks = useMemo(
+    () => parseSocialLinks(profileData?.posting_json_metadata),
+    [profileData?.posting_json_metadata]
+  );
+  const hasOnChainX = socialLinks.some((link) => link.key === 'x');
+
   const { data: twitterData } = useQuery({
     queryKey: ['twitterData', username],
     queryFn: () => getTwitterInfo(username),
-    enabled: !!username && thirdPartyEnabled,
+    enabled: !!username && thirdPartyEnabled && !isProfilePending && !hasOnChainX,
     retry: false,
     refetchOnWindowFocus: false
   });
@@ -236,7 +244,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                         />
                       </Link>
                     ) : null}
-                    {twitterData && isSafeExternalUrl(twitterData.twitter_profile) ? (
+                    {!hasOnChainX && twitterData && isSafeExternalUrl(twitterData.twitter_profile) ? (
                       <Link
                         href={twitterData.twitter_profile}
                         title={t('user_profile.twitter_badge_title')}
@@ -246,6 +254,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                         <Icons.twitter fill="#1da1f2" className="h-5 w-5" />
                       </Link>
                     ) : null}
+                    {!legalBlockedUser ? <ProfileSocialLinks links={socialLinks} /> : null}
                   </div>
 
                   {/* Bio */}

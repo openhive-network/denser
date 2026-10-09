@@ -1,0 +1,5 @@
+{
+  "testName": "profileSocialLinks",
+  "base": "userProfileTabs",
+  "note": "Replay-only corpus for profileSocialLinks.spec.ts. 0001 PATCHES userProfileTabs/0001 (@hiveio find_accounts): posting_json_metadata.profile gains social {x: hiveio, ig: hive.blockchain, yt: a/../../evil}; the yt handle is invalid and must not render. Everything else is the userProfileTabs recording."
+}

@@ -15,6 +15,8 @@ const FIRST_PAGE_SIZE = '100';
 const NEWER_SENDER = 'newer-sender';
 const OLDER_SENDER = 'older-sender';
 const RECURRING_SENDER = 'recurring-sender';
+const INTEREST = { amount: '1539', precision: 3, nai: '@@000000013' };
+const CANCELLED_REQUEST_ID = 1773083171;
 
 let stub: Server;
 
@@ -53,6 +55,33 @@ const recurrentTransfer = (from: string, operationId: string) => {
     },
     op_type_id: 49
   };
+};
+
+// A cancelled savings withdrawal and the interest virtual op its transaction paid: the same trx_id,
+// and operation ids beyond Number.MAX_SAFE_INTEGER that differ only in the last digit, as the API sends them.
+const cancelWithInterest = () => {
+  const transfer = stubTransfer({ from: STUB_ACCOUNT, operationId: '448768239267217408' });
+  return [
+    {
+      ...transfer,
+      op: {
+        type: 'interest_operation',
+        value: { owner: STUB_ACCOUNT, interest: INTEREST, is_saved_into_hbd_balance: false }
+      },
+      op_pos: 1,
+      op_type_id: 55,
+      virtual_op: true,
+      operation_id: '448768239267217409'
+    },
+    {
+      ...transfer,
+      op: {
+        type: 'cancel_transfer_from_savings_operation',
+        value: { from: STUB_ACCOUNT, request_id: CANCELLED_REQUEST_ID }
+      },
+      op_type_id: 34
+    }
+  ];
 };
 
 // The browser reads the operations from the API origin, so the answer needs the CORS header the API sends.
@@ -158,5 +187,26 @@ test.describe('Wallet account history', () => {
     await page.getByTestId('wallet-search-input').fill(RECURRING_SENDER);
     await expect(historyRows(page)).toHaveCount(1);
     await expect(historyRows(page)).toContainText(RECURRING_SENDER);
+  });
+
+  test('WALLET-HISTORY-04 — a cancelled savings withdrawal and the interest it paid render as two rows', async ({
+    page
+  }) => {
+    await routeOperations(page, (_query, route) =>
+      fulfillJson(route, {
+        total_operations: 2,
+        total_pages: 1,
+        block_range: { from: 1, to: 100_000_000 },
+        operations_result: cancelWithInterest()
+      })
+    );
+
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+
+    await expect(historyRows(page)).toHaveCount(2);
+    await expect(historyRows(page).first()).toContainText('Received interest of 1.539 HBD');
+    await expect(historyRows(page).last()).toContainText(
+      `Cancel transfer from savings (request ${CANCELLED_REQUEST_ID})`
+    );
   });
 });
