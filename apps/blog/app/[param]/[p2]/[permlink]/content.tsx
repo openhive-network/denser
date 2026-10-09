@@ -39,7 +39,7 @@ import AnimatedList from '@/blog/features/suggestions-posts/animated-tab';
 import SuggestionsList from '@/blog/features/suggestions-posts/list';
 import { useTranslation } from '@/blog/i18n/client';
 import { postContainerClasses } from '@/blog/lib/post-layout-classes';
-import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-observer';
 import { getBasePath } from '@ui/lib/path-utils';
 import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
@@ -74,6 +74,7 @@ import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper
 import { isCommunity } from '@ui/lib/utils';
 import {
   useSSRObserver,
+  useSSREffectiveObserver,
   useInitialPostData,
   useInitialDiscussion,
   useInitialCommunity,
@@ -100,6 +101,7 @@ const PostContent = () => {
   const permlink = params?.permlink ?? '';
   const { user, isHydrated } = useUserClient();
   const ssrObserver = useSSRObserver();
+  const ssrEffectiveObserver = useSSREffectiveObserver();
   const initialPostData = useInitialPostData();
   const initialDiscussion = useInitialDiscussion();
   const initialCommunity = useInitialCommunity();
@@ -107,8 +109,10 @@ const PostContent = () => {
   const initialMutedList = useInitialFollowList();
   // Use SSR observer before hydration to match prefetched cache keys,
   // then switch to client observer (which should be the same value for logged-in users)
-  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
-  const observer = isHydrated ? clientObserver : ssrObserver;
+  const { observer: clientObserver, effectiveObserver: clientEffectiveObserver } = useEffectiveObserver();
+  const communityObserver = isHydrated ? clientObserver : ssrObserver;
+  // Post, discussion and suggestion reads; community reads use the username
+  const observer = isHydrated ? clientEffectiveObserver : ssrEffectiveObserver;
   // Use empty key when user is not logged in to disable storage hooks
   const replyStorageId = user.username ? `replybox-/${author}/${permlink}-${user.username}` : '';
   const editStorageId = user.username ? `editbox-/${author}/${permlink}-${user.username}` : '';
@@ -217,11 +221,10 @@ const PostContent = () => {
       return fullPosts.length > 0 ? fullPosts : null;
     }
   });
-  const observerMatchesSSR = observer === ssrObserver;
-  const useCommunityInitialData = initialCommunity && observerMatchesSSR;
+  const useCommunityInitialData = initialCommunity && communityObserver === ssrObserver;
   const communityQuery = useQuery({
-    queryKey: ['community', category, observer],
-    queryFn: () => getCommunity(category, observer),
+    queryKey: ['community', category, communityObserver],
+    queryFn: () => getCommunity(category, communityObserver),
     enabled: postInCommunity,
     initialData: useCommunityInitialData ? initialCommunity : undefined,
     initialDataUpdatedAt: useCommunityInitialData ? Date.now() : undefined,
@@ -229,12 +232,12 @@ const PostContent = () => {
   });
   const communityData = communityQuery.data;
   useQueryErrorEffect(communityQuery, (error) => {
-    handleError(error, { method: 'getCommunity', params: { category, observer } });
+    handleError(error, { method: 'getCommunity', params: { category, observer: communityObserver } });
   });
 
   // SSR seeded only the first comments page, for ssrObserver - seed the cache only when the
   // client observer matches, otherwise refetch to get observer-specific stats
-  const useDiscussionInitialData = !!initialDiscussion && observerMatchesSSR;
+  const useDiscussionInitialData = !!initialDiscussion && observer === ssrEffectiveObserver;
   // Sort order the seeded page was built with; the seed holds the right entries only for it
   const [seededCommentSort] = useState(initialDiscussion?.sort);
   const [hasFullDiscussion, setHasFullDiscussion] = useState(false);

@@ -75,11 +75,20 @@ export const getProfileGlobalProperties = async (): Promise<GetDynamicGlobalProp
     getDynamicGlobalProperties()
   );
 
-/** The first page of a profile tab's posts as the server renders it: card entries with only the observer's own votes. */
-export const getProfilePostsFirstPage = async (sort: string, username: string): Promise<PostsPage> => {
-  const request = await profileRequest(`posts:${sort}`, username);
-  return getCaches().posts.get(request, async () => {
-    const posts = await getAccountPosts(sort, username, request.observer, '', '');
-    return posts ? toCardEntries(keepObserverVotes(posts, request.observer)) : null;
+/**
+ * The first page of a profile tab's posts as the server renders it: card entries with only the viewer's own votes.
+ * `observer` is the one sent to the API; the viewer is the signed-in user, or the default observer.
+ */
+export const getProfilePostsFirstPage = async (
+  sort: string,
+  username: string,
+  observer: string
+): Promise<PostsPage> => {
+  const request = { ...(await profileRequest(`posts:${sort}`, username)), observer };
+  // Cached with every vote: one cached page serves every viewer that sends the default observer.
+  const page = await getCaches().posts.get(request, async () => {
+    const posts = await getAccountPosts(sort, username, observer, '', '');
+    return posts ? toCardEntries(posts) : null;
   });
+  return page && keepObserverVotes(page, await getObserver());
 };

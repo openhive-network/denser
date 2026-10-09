@@ -1,5 +1,5 @@
 import { SortTypes } from '@/blog/lib/utils';
-import { getObserverFromCookies } from '@/blog/lib/auth-utils';
+import { getEffectiveObserverFromCookies, getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { ReactNode } from 'react';
@@ -22,9 +22,11 @@ const SortPage = async ({
   // Get observer from cookies - returns user's observer if logged in, DEFAULT_OBSERVER for anonymous
   // Community data (getCommunity) is already prefetched in the layout's PrefetchComponent
   const observer = await getObserverFromCookies();
+  // "my" lists the user's subscriptions, so it always sends the username
+  const feedObserver = tag === 'my' ? observer : await getEffectiveObserverFromCookies();
   let initialPosts = null;
   try {
-    initialPosts = await getFeedFirstPage(sort, tag, observer);
+    initialPosts = await getFeedFirstPage(sort, tag, feedObserver, observer);
   } catch (error) {
     logger.error(error, 'Error in SortPage:');
     // The server-side chain already retried and failed over: answer 503, not a 200 whose
@@ -36,7 +38,7 @@ const SortPage = async ({
   // streaming SSR where dehydrated state doesn't reliably reach the browser
   // query client, causing unnecessary client-side refetches.
   return (
-    <ObserverProvider value={observer}>
+    <ObserverProvider value={observer} effectiveValue={feedObserver}>
       <FirstCardImagePreload entries={initialPosts} />
       <InitialPostsProvider value={initialPosts}>{children}</InitialPostsProvider>
     </ObserverProvider>
