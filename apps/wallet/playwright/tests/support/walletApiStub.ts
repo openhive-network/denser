@@ -1,4 +1,5 @@
 import type { Server } from 'node:http';
+import type { Page } from '@playwright/test';
 import { FIXTURE_API_PORT, startApiStub, type JsonRpcResults, type RestResults } from './apiStub';
 import { WITNESS_RESULTS } from './witnessApiStub';
 
@@ -166,3 +167,22 @@ const REST_RESULTS: RestResults = {
 /** Starts the stub node with the wallet pages' reads; resolves with the server to close after the spec. */
 export const startWalletApiStub = (port = FIXTURE_API_PORT): Promise<Server> =>
   startApiStub({ jsonRpc: JSON_RPC_RESULTS, rest: REST_RESULTS }, port);
+
+/** Logs STUB_ACCOUNT in on the client, as the blog's fixture seeder does: the stored user is what `useUser` starts from. */
+export const logInAsStubAccount = (page: Page) =>
+  page.context().addInitScript((username) => {
+    window.localStorage.setItem(
+      'user',
+      JSON.stringify({
+        isLoggedIn: true,
+        username,
+        avatarUrl: '',
+        loginType: 'wif',
+        keyType: 'posting',
+        authenticateOnBackend: false,
+        chatAuthToken: '',
+        oauthConsent: {},
+        strict: false
+      })
+    );
+  }, STUB_ACCOUNT);
