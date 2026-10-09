@@ -375,6 +375,16 @@
     "hash": "4987c816a2e46259"
   },
   {
+    "spec": "ssrSeoGuard.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "5a2c11f563c4bd9d"
+  },
+  {
+    "spec": "ssrSeoGuard.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "e89e5d39ed701972"
+  },
+  {
     "spec": "tagCommunityFeeds.spec.ts",
     "method": "bridge.account_notifications",
     "hash": "6cf994cdd94d6a87"

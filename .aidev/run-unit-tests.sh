@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
-# node:test suites of scripts/ci-helpers, packages/ui and packages/smart-signer (run through node's
-# TypeScript type stripping): the `baseline` slot and the `unit` suite
-# of the quick, full and canary slots.
+# node:test suites of scripts/ci-helpers, packages/ui, packages/smart-signer and
+# apps/blog (run through node's TypeScript type stripping): the `baseline` slot
+# and the `unit` suite of the quick, full and canary slots.
 # No I/O, no server. Each package writes junit (mocha's built-in xunit reporter)
 # to test-results/unit/, the per-test evidence AIDEV reads from the binding's
 # `artifacts:` path; the exit code is the verdict.
@@ -53,4 +53,10 @@ run_with_junit_fallback "$junit" middleware node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     packages/middleware/lib/matcher.test.ts < /dev/null || status=1
+echo "== node --test apps/blog" >&2
+junit="$PWD/test-results/unit/blog.xml"
+run_with_junit_fallback "$junit" blog node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    apps/blog/lib/canonical-url.test.ts < /dev/null || status=1
 exit "$status"
