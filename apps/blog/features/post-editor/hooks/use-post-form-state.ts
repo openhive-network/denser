@@ -40,7 +40,10 @@ export function usePostFormState({ username, editMode, post_s, categoryParam }: 
   const [storedPost, storePost, removePost] = useStorageWithTTL<AccountFormValues>(
     editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
     defaultValues,
-    StorageTTL.DRAFT
+    StorageTTL.DRAFT,
+    // Auto-save writes every 500ms while typing; the form already holds these values,
+    // so re-rendering PostForm from its own write is pure overhead.
+    { dispatchSameTab: false }
   );
 
   // Check if we have a draft with actual changes (different from original post)

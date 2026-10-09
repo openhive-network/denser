@@ -72,7 +72,7 @@ test.describe('Post creation — validation (§2.2)', () => {
 
   /**
    * POST-V01b: companion to V01 covering the Zod side of the title rule.
-   * Empty title (V01) trips the disable gate `!storedPost?.title`, but a
+   * Empty title (V01) trips the disable gate `!watchedValues.title`, but a
    * single character is truthy — the button is enabled and only Zod's
    * `title.min(2)` (types.ts:7) catches the short title at submit time
    * via FormMessage. Same negative outcome (no broadcast), different

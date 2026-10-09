@@ -343,8 +343,8 @@ export default function PostForm({
                   variant="redHover"
                   className="w-28"
                   disabled={
-                    !storedPost?.title ||
-                    !storedPost?.postArea ||
+                    !watchedValues.title ||
+                    !watchedValues.postArea ||
                     Boolean(tagsCheck) ||
                     Boolean(summaryCheck) ||
                     Boolean(altUsernameCheck) ||
@@ -370,16 +370,16 @@ export default function PostForm({
                 </Button>
               </div>
               {!postMutation.isPending &&
-                (!storedPost?.title || !storedPost?.postArea || tagsRequiredAndEmpty) && (
+                (!watchedValues.title || !watchedValues.postArea || tagsRequiredAndEmpty) && (
                   <p
                     className="text-xs text-muted-foreground"
                     data-testid="submit-requirements-hint"
                   >
-                    {!storedPost?.title && !storedPost?.postArea
+                    {!watchedValues.title && !watchedValues.postArea
                       ? t("submit_page.enter_title_and_content")
-                      : !storedPost?.title
+                      : !watchedValues.title
                         ? t("submit_page.enter_title")
-                        : !storedPost?.postArea
+                        : !watchedValues.postArea
                           ? t("submit_page.enter_content")
                           : t("submit_page.enter_tags")}
                   </p>

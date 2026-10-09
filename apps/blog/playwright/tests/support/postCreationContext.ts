@@ -246,10 +246,9 @@ export async function waitForAutosaveFlushed(page: Page): Promise<void> {
 
 /**
  * Click the editor's submit button. Waits for the button to be enabled
- * first — the submit gate in post-form.tsx keys off `storedPost` (the
- * localStorage-persisted draft, debounced 500 ms behind form state), so
- * a click immediately after a modal save can race the autosave effect
- * that ferries form changes into storedPost. Polling for `:enabled` is
+ * first — the submit gate in post-form.tsx keys off the watched form
+ * values, and the editor body reaches the form through a 300 ms debounce,
+ * so a click immediately after typing can race that sync. Polling for `:enabled` is
  * event-driven (Playwright auto-retries on the project expect timeout)
  * and beats a fixed waitForTimeout.
  */
