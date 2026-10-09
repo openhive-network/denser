@@ -6,6 +6,7 @@ import {
   HiveChain,
   IApiEndpoints,
   setAiEndpoint,
+  setAutoRpcEndpoint,
   setRpcEndpoint
 } from "@hive/common-hiveio-packages/wax";
 
@@ -22,6 +23,11 @@ export class HiveChainService {
 
   public async setHiveChainEndpoint(newEndpoint: string) {
     setRpcEndpoint(newEndpoint);
+  }
+
+  /** Switches to `newEndpoint` for this browser session only, keeping the user's stored choice. */
+  public setAutoHiveChainEndpoint(newEndpoint: string): void {
+    setAutoRpcEndpoint(newEndpoint);
   }
 
   public async setAiSearchEndpoint(newEndpoint: string) {

@@ -9,7 +9,9 @@ import { wrapChainWithLogging } from './chain-proxy';
 import { parseFallbackNodes, wrapChainWithServerFailover } from './server-failover';
 import { NodeHealth } from './node-health';
 import { createReadClient, IReadClient, IReadClientConfig } from './read-client';
-import { fetchReadTransport } from './read-transport';
+import { fetchReadTransport, ReadTransportError } from './read-transport';
+import { announceApiNodeSwitch } from './api-node-switch';
+import { configuredAllowedApiNodes, configuredImagesEndpoint } from '@ui/config/public-vars';
 
 export type Chain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
 
@@ -26,13 +28,31 @@ const isServer = typeof window === 'undefined';
 const getServerFallbackNodes = (): string[] =>
   parseFallbackNodes(process.env.REACT_APP_ALLOWED_HIVE_API_NODES, [process.env.REACT_APP_IMAGES_ENDPOINT]);
 
-// One record for the whole process: once any server call finds a node dead, every chain skips it.
-const serverNodeHealth = new NodeHealth();
+// The browser fails over across the nodes its CSP lets it call.
+const getBrowserFallbackNodes = (): string[] =>
+  parseFallbackNodes(configuredAllowedApiNodes, [configuredImagesEndpoint]);
 
-const withServerFailover = (baseChain: Chain): Chain =>
+const getFallbackNodes = (): string[] => (isServer ? getServerFallbackNodes() : getBrowserFallbackNodes());
+
+// One record for the whole process (or browser tab): once any call finds a node dead, every chain
+// skips it.
+const nodeHealth = new NodeHealth();
+
+// A call served by another node means the selected one is down: switch every later call to the node
+// that answered, for this browser session only, and let failed reads retry on it.
+const switchApiNode = (node: string): void => {
+  if (getHiveChainService().getApiEndpoints().apiEndpoint === node) return;
+  getHiveChainService().setAutoHiveChainEndpoint(node);
+  announceApiNodeSwitch(node);
+};
+
+const onFailover = isServer ? undefined : switchApiNode;
+
+const withFailover = (baseChain: Chain): Chain =>
   wrapChainWithServerFailover(baseChain, {
-    fallbackNodes: getServerFallbackNodes(),
-    health: serverNodeHealth,
+    fallbackNodes: getFallbackNodes(),
+    health: nodeHealth,
+    onFailover,
     createNodeChain: (node, timeoutMs) =>
       baseChain.extendConfig({
         chainId: baseChain.chainId,
@@ -46,7 +66,7 @@ export const getChain = (): Promise<Chain> => {
   if (chain) return chain;
 
   const hiveChain = getHiveChainService().getHiveChain().then(wrapChainWithLogging);
-  chain = (isServer ? hiveChain.then(withServerFailover) : hiveChain).catch((error) => {
+  chain = hiveChain.then(withFailover).catch((error) => {
     chain = undefined; // Clear cache so next call retries
     throw error;
   });
@@ -79,21 +99,22 @@ const createReadChain = (getConfig: () => IReadClientConfig): ReadChain =>
 /**
  * Client for read-only API calls (bridge, database_api, condenser_api, hivesense, ...). Unlike
  * `getChain()` it never loads wax's wasm, so pages an anonymous reader browses stay wasm-free.
- * It follows the same endpoint configuration as the chain, and on the server the same failover.
+ * It follows the same endpoint configuration and failover as the chain.
  * Signing, broadcasting and wasm-only computation still need `getChain()`.
  */
 export const getReadChain = (): ReadChain => {
   if (readChain) return readChain;
 
-  const baseReadChain = createReadChain(getReadClientConfig);
-  readChain = isServer
-    ? wrapChainWithServerFailover(baseReadChain, {
-        fallbackNodes: getServerFallbackNodes(),
-        health: serverNodeHealth,
-        createNodeChain: (node, timeoutMs) =>
-          createReadChain(() => ({ ...getReadClientConfig(), apiEndpoint: node, timeoutMs }))
-      })
-    : baseReadChain;
+  readChain = wrapChainWithServerFailover(createReadChain(getReadClientConfig), {
+    fallbackNodes: getFallbackNodes(),
+    health: nodeHealth,
+    // The read client fails only with ReadTransportError on transport; checking for it keeps
+    // a failing browser read from loading wax.
+    isTransportError: (error) => error instanceof ReadTransportError,
+    onFailover,
+    createNodeChain: (node, timeoutMs) =>
+      createReadChain(() => ({ ...getReadClientConfig(), apiEndpoint: node, timeoutMs }))
+  });
   return readChain;
 };
 

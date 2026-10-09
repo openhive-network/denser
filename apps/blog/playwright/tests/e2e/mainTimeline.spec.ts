@@ -363,6 +363,7 @@ test.describe('Home page tests', () => {
   });
 
   // Quarantined (#962): header shows classic search or AI-search depending on live hivesense health (#947).
+  // Kept as live smoke coverage; both header states are asserted offline in fixture/headerSearchMode.spec.ts.
   test('@flaky navigation search link is visible', async ({ page }) => {
     await homePage.goto();
 

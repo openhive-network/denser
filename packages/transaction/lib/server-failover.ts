@@ -14,8 +14,8 @@ export const FAILOVER_ATTEMPT_TIMEOUT_MS = 2_000;
 export const FAILOVER_BUDGET_MS = 8_000;
 
 // Loaded on the first failed call: `wax-errors` imports `@hiveio/wax`, which browser bundles of the
-// chain module must not pull in statically (the failover only runs on the server).
-const isTransportError = async (error: unknown): Promise<boolean> =>
+// chain module must not pull in statically.
+const isWaxTransportError = async (error: unknown): Promise<boolean> =>
   (await import('./wax-errors')).isTransportError(error);
 
 /** JSON-RPC namespaces that are not read-only; a failed broadcast must never be re-sent. */
@@ -33,6 +33,13 @@ export interface IServerFailoverOptions<T extends IFailoverChain> {
   createNodeChain: (node: string, timeoutMs: number) => T;
   /** Node health shared by every chain of the process, so a dead node is skipped by all of them. */
   health: NodeHealth;
+  /**
+   * Whether a failed call may be retried elsewhere. Defaults to wax's `isTransportError`; a chain
+   * whose errors are known without wax can pass its own check so a failure never loads wax.
+   */
+  isTransportError?: (error: unknown) => boolean | Promise<boolean>;
+  /** Called after a call failed on the primary node and was then served by `node`. */
+  onFailover?: (node: string) => void;
   /** Clock and sleep, injectable for tests. */
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
@@ -88,13 +95,22 @@ export function parseFallbackNodes(
  * retried. When every attempt fails, the last transport error is rethrown. Everything other than
  * `chain.api` is passed through untouched.
  *
- * Meant for the server, where one node blip would otherwise turn a whole page render into an error.
+ * On the server one node blip would otherwise turn a whole page render into an error; in the browser
+ * the selected node being unreachable would otherwise fail every client-side read.
  */
 export function wrapChainWithServerFailover<T extends IFailoverChain>(
   chain: T,
   options: IServerFailoverOptions<T>
 ): T {
-  const { fallbackNodes, createNodeChain, health, now = Date.now, sleep = defaultSleep } = options;
+  const {
+    fallbackNodes,
+    createNodeChain,
+    health,
+    isTransportError = isWaxTransportError,
+    onFailover,
+    now = Date.now,
+    sleep = defaultSleep
+  } = options;
   const attemptChains = new Map<string, T>();
 
   // Chains are cached per node: every wax chain instance allocates wasm state that is never freed.
@@ -146,6 +162,7 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
           const result = await callOn(target(), path, args);
           health.markUp(node);
           if (failures > 0) logger.warn('%s served by %s after %d failed attempt(s)', method, node, failures);
+          if (node !== primary) onFailover?.(node);
           return result;
         } catch (error) {
           if (!(await isTransportError(error))) {

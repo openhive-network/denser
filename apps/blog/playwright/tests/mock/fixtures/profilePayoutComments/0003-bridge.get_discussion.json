@@ -1,0 +1,131 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_discussion",
+    "params": {
+      "author": "nesbi94",
+      "permlink": "re-ibarra95-tmguqe",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "f3c40e2f35d12c41",
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "nesbi94",
+    "permlink": "re-ibarra95-tmguqe",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "nesbi94/re-ibarra95-tmguqe": {
+        "url": "/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature#@nesbi94/re-ibarra95-tmguqe",
+        "body": "Truly amazing waterfall. Thanks for sharing wonderful pictures of it and the place. There's a lot to see and experience😊. No wonder many people love to go there.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "RE: Visiting the Desparramaderos waterfall: Nature and peasant tradition in \"El Nicho\" Natural Park, Cienfuegos, Cuba. [ENG] [ESP]",
+        "author": "nesbi94",
+        "payout": 0.036,
+        "created": "2026-10-06T03:23:03",
+        "reblogs": 0,
+        "replies": [
+          "ibarra95/re-nesbi94-2026105t232445927z"
+        ],
+        "updated": "2026-10-06T03:23:03",
+        "category": "hive-163772",
+        "children": 1,
+        "permlink": "re-ibarra95-tmguqe",
+        "community": "hive-163772",
+        "payout_at": "2026-10-13T03:23:03",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 469831975408,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "ibarra95",
+            "rshares": 469831975408
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2026.7.5",
+          "tags": [
+            "hive-163772"
+          ],
+          "image": [],
+          "users": []
+        },
+        "parent_author": "ibarra95",
+        "community_title": "Worldmappin",
+        "parent_permlink": "visiting-the-desparramaderos-waterfall-nature",
+        "author_reputation": 65.73,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.036 HBD"
+      },
+      "ibarra95/re-nesbi94-2026105t232445927z": {
+        "url": "/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature#@ibarra95/re-nesbi94-2026105t232445927z",
+        "body": "Thanks you so much @nesbi94 for the support!! 😊☺️🫂🙏",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Visiting the Desparramaderos waterfall: Nature and peasant tradition in \"El Nicho\" Natural Park, Cienfuegos, Cuba. [ENG] [ESP]",
+        "author": "ibarra95",
+        "payout": 0,
+        "created": "2026-10-06T03:24:45",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-06T03:24:45",
+        "category": "hive-163772",
+        "children": 0,
+        "permlink": "re-nesbi94-2026105t232445927z",
+        "community": "hive-163772",
+        "payout_at": "2026-10-13T03:24:45",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "ecency/3.5.10-mobile",
+          "tags": [
+            "hive-163772"
+          ],
+          "type": "comment",
+          "links": [],
+          "format": "markdown+html"
+        },
+        "parent_author": "nesbi94",
+        "community_title": "Worldmappin",
+        "parent_permlink": "re-ibarra95-tmguqe",
+        "author_reputation": 76.02,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
