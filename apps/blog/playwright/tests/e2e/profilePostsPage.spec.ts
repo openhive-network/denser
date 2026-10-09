@@ -385,6 +385,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   // Quarantined (#962): depends on whether @gtg currently has pending comment payouts on mainnet.
+  // Kept as live smoke coverage; fixture/profilePayoutComments.spec.ts covers this card link offline.
   test('@flaky Tab Payouts - ReComment Card Header - Timestamp', async ({ page }) => {
     await profilePage.gotoPostsPayoutsProfilePage('@gtg');
 
@@ -411,6 +412,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   // Quarantined (#962): depends on whether @gtg currently has pending comment payouts on mainnet.
+  // Kept as live smoke coverage; fixture/profilePayoutComments.spec.ts covers this card link offline.
   test('@flaky Tab Payouts - ReComment Card - Title', async ({ page }) => {
     await profilePage.gotoPostsPayoutsProfilePage('@gtg');
 
@@ -436,6 +438,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   // Quarantined (#962): depends on whether @gtg currently has pending comment payouts on mainnet.
+  // Kept as live smoke coverage; fixture/profilePayoutComments.spec.ts covers this card link offline.
   test('@flaky Tab Payouts - ReComment Card - Description', async ({ page }) => {
     await profilePage.gotoPostsPayoutsProfilePage('@gtg');
 
@@ -461,6 +464,7 @@ test.describe('Profile page of @gtg', () => {
   });
 
   // Quarantined (#962): depends on whether @gtg currently has pending comment payouts on mainnet.
+  // Kept as live smoke coverage; fixture/profilePayoutComments.spec.ts covers this card link offline.
   test('@flaky Tab Payouts - ReComment Card Footer - Response', async ({ page }) => {
     await profilePage.gotoPostsPayoutsProfilePage('@gtg');
 
