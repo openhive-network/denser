@@ -26,6 +26,7 @@ import {
   TooltipContent
 } from '@hive/ui';
 import Step from '../step';
+import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 
@@ -87,6 +88,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
       }
     }));
 
+    const { t } = useSharedTranslation(i18nNamespace);
     const authClient = useRef<OnlineClient | undefined>(undefined);
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
@@ -342,16 +344,15 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                     htmlFor="strict"
                     className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    Direct Authority Mode
+                    {t('login_form.signin_safe_storage.strict_mode')}
                   </label>
                   <TooltipProvider>
                     <Tooltip>
-                      <TooltipTrigger>
+                      <TooltipTrigger type="button">
                         <Icons.info className="h-5 w-5" />
                       </TooltipTrigger>
                       <TooltipContent className="max-w-xs">
-                        When enabled, the app will only allow adding keys with account's own authority. If you
-                        want to add keys with other authority, please disable this mode.
+                        {t('login_form.signin_safe_storage.strict_mode_tooltip')}
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

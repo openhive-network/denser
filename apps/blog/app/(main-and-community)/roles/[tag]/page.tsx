@@ -1,4 +1,3 @@
-import { getQueryClient } from '@/blog/lib/react-query';
 import Content from './content';
 import { getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { getLogger } from '@ui/lib/logging';
@@ -7,16 +6,13 @@ const logger = getLogger('app');
 
 const Page = async (props: { params: Promise<{ tag: string }> }) => {
   const params = await props.params;
-  const queryClient = getQueryClient();
+  let initialData = null;
   try {
-    await queryClient.prefetchQuery({
-      queryKey: ['community', params.tag],
-      queryFn: () => getListCommunityRoles(params.tag)
-    });
+    initialData = (await getListCommunityRoles(params.tag)) ?? null;
   } catch (error) {
-    logger.error(error, 'Error in Page:');
+    logger.error(error, 'Error fetching community roles:');
   }
-  return <Content community={params.tag} />;
+  return <Content community={params.tag} initialData={initialData} />;
 };
 
 export default Page;

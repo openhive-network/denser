@@ -32,6 +32,8 @@ import {
   TooltipContent
 } from '@hive/ui';
 import Step from '../step';
+import MethodInfo from '../method-info';
+import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
@@ -93,6 +95,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     }));
 
+    const { t } = useSharedTranslation(i18nNamespace);
     const authClient = useRef<OnlineClient | undefined>(undefined);
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
@@ -304,7 +307,16 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
     return (
       <Step
-        title="Sign in with safe storage"
+        title={
+          <span className="flex items-center gap-1">
+            Sign in with safe storage
+            <MethodInfo
+              label={t('login_form.method_info.label', { method: 'Safe Storage' })}
+              info={t('login_form.method_info.safe_storage')}
+              testId="method-info-safe_storage"
+            />
+          </span>
+        }
         description={
           <div>
             <div data-testid="login-form-description">{description}</div>
@@ -487,16 +499,15 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                       htmlFor="strict"
                       className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
-                      Direct Authority Mode
+                      {t('login_form.signin_safe_storage.strict_mode')}
                     </label>
                     <TooltipProvider>
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger type="button">
                           <Icons.info className="h-5 w-5" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">
-                          When enabled, the app will only allow adding keys with account's own authority. If
-                          you want to add keys with other authority, please disable this mode.
+                          {t('login_form.signin_safe_storage.strict_mode_tooltip')}
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>

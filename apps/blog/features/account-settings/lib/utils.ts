@@ -3,6 +3,13 @@ import { TFunction } from 'i18next';
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { getLogger } from '@ui/lib/logging';
 import { processImageForUpload } from '@/blog/features/post-editor/lib/image-processing';
+import {
+  SOCIAL_KEYS,
+  type SocialHandles,
+  type SocialKey,
+  normalizeSocialHandle,
+  parseSocialHandles
+} from '@/blog/features/layouts/user-profile/lib/social-links';
 
 const logger = getLogger('account-settings/utils');
 
@@ -15,7 +22,10 @@ export interface Settings {
   website: string;
   blacklist_description: string;
   muted_list_description: string;
+  social: Record<SocialKey, string>;
 }
+
+const EMPTY_SOCIAL: Record<SocialKey, string> = { x: '', ig: '', yt: '', tg: '', bsky: '', dc: '', nostr: '' };
 
 export const DEFAULT_SETTINGS: Settings = {
   profile_image: '',
@@ -25,7 +35,8 @@ export const DEFAULT_SETTINGS: Settings = {
   location: '',
   website: '',
   blacklist_description: '',
-  muted_list_description: ''
+  muted_list_description: '',
+  social: EMPTY_SOCIAL
 };
 
 export const DEFAULT_AI_ENDPOINTS = [
@@ -66,6 +77,35 @@ export function validation(values: Settings, t: TFunction<'common_blog'>) {
         ? t('settings_page.description_is_too_long')
         : null
   };
+}
+
+/** Per-platform error message for each social field holding an invalid handle. */
+export function socialValidation(
+  social: Settings['social'],
+  t: TFunction<'common_blog'>
+): Partial<Record<SocialKey, string>> {
+  const errors: Partial<Record<SocialKey, string>> = {};
+  for (const key of SOCIAL_KEYS) {
+    if (social[key].trim() && !normalizeSocialHandle(key, social[key])) {
+      errors[key] = t('settings_page.invalid_social_handle');
+    }
+  }
+  return errors;
+}
+
+/** The form's social fields, prefilled from the handles in `posting_json_metadata`. */
+export function socialSettingsFromMetadata(postingJsonMetadata: string | undefined): Settings['social'] {
+  return { ...EMPTY_SOCIAL, ...parseSocialHandles(postingJsonMetadata) };
+}
+
+/** Normalized, sparse handles to save: empty fields are omitted. */
+export function socialHandlesToSave(social: Settings['social']): SocialHandles {
+  const handles: SocialHandles = {};
+  for (const key of SOCIAL_KEYS) {
+    const handle = normalizeSocialHandle(key, social[key]);
+    if (handle) handles[key] = handle;
+  }
+  return handles;
 }
 
 export const uploadImg = async (file: File, username: string, loadSigner: LoadSigner): Promise<string> => {

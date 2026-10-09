@@ -24,6 +24,7 @@ import {
  *   10 – Non-existent user → 404
  *   11 – Profile server HTML preloads only the first card image
  *   12 – Profile fetches the preloaded first card image only once
+ *   13 – Profile without on-chain `profile.social` shows no social links
  *
  * Record:  FIXTURE_MODE=record pnpm --filter @hive/blog test:fixture
  * Replay:  pnpm --filter @hive/blog test:fixture
@@ -195,5 +196,14 @@ test.describe('User Profile Tabs tests (fixture-based)', () => {
     await page.waitForLoadState('networkidle');
 
     expect(firstCardImageRequests).toHaveLength(1);
+  });
+
+  // ── ANON-PROF-13: No on-chain social links ───────────────────────────
+
+  test('ANON-PROF-13: profile without profile.social shows no social links', async () => {
+    await profilePage.gotoProfilePage(`@${user}`);
+
+    await expect(profilePage.profileName).toBeVisible();
+    await expect(profilePage.onChainSocialLinks).toHaveCount(0);
   });
 });

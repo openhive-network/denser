@@ -64,6 +64,17 @@
     "other_signin_options": "Inne opcje logowania",
     "other_signing_options_description": "Wprowadź swoją nazwę użytkownika i wybierz metodę logowania",
     "go_back_button": "Wróć",
+    "method_info": {
+      "label": "Czym jest {{method}}?",
+      "safe_storage": "Bezpieczny magazyn przechowuje Twój klucz prywatny w tej przeglądarce, zaszyfrowany hasłem. Klucz nigdy nie opuszcza Twojego urządzenia.",
+      "keychain": "Hive Keychain to rozszerzenie przeglądarki, które przechowuje Twoje klucze i podpisuje za Ciebie transakcje.",
+      "peakvault": "PeakVault to portfel w postaci rozszerzenia przeglądarki, który przechowuje Twoje klucze i podpisuje za Ciebie transakcje.",
+      "hiveauth": "HiveAuth pozwala zatwierdzać logowania i transakcje w mobilnej aplikacji portfela, więc Twoje klucze zostają w telefonie.",
+      "hivesigner": "HiveSigner to zewnętrzna usługa, która po autoryzacji tej aplikacji podpisuje transakcje w Twoim imieniu.",
+      "wif": "Wpisz bezpośrednio swój klucz prywatny (WIF). Służy tylko do podpisywania i nie jest zachowywany, chyba że zdecydujesz się go zapisać.",
+      "metamask": "Podpisuj kluczami Hive zarządzanymi przez Hive Snap w rozszerzeniu MetaMask.",
+      "google": "Przechowuj zaszyfrowane klucze na swoim Dysku Google i podpisuj nimi z dowolnego urządzenia."
+    },
     "signin_safe_storage": {
       "title": "Zaloguj się za pomocą Smart Signer",
       "description_unlock": "Odblokuj użytkownika za pomocą hasła",

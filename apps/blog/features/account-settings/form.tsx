@@ -6,7 +6,17 @@ import { getAccountFull } from '@transaction/lib/hive-api';
 import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { DEFAULT_SETTINGS, Settings, processAndUploadImg, validation } from './lib/utils';
+import {
+  DEFAULT_SETTINGS,
+  Settings,
+  processAndUploadImg,
+  socialHandlesToSave,
+  socialSettingsFromMetadata,
+  socialValidation,
+  validation
+} from './lib/utils';
+import SocialLinksFields from './social-links-fields';
+import { SOCIAL_KEYS, type SocialKey } from '@/blog/features/layouts/user-profile/lib/social-links';
 import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
@@ -45,6 +55,7 @@ const SettingsForm = ({ username }: { username: string }) => {
   const inputProfileRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const inputCoverRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
   const validationCheck = validation(settings, t);
+  const socialErrors = socialValidation(settings.social, t);
   const profileSettings: Settings = {
     profile_image: profileData?.profile_image ? profileData.profile_image : '',
     cover_image: profileData?.cover_image ? profileData.cover_image : '',
@@ -53,7 +64,8 @@ const SettingsForm = ({ username }: { username: string }) => {
     location: profileData?.location ? profileData.location : '',
     website: profileData?.website ? profileData.website : '',
     blacklist_description: profileData?.blacklist_description ? profileData.blacklist_description : '',
-    muted_list_description: profileData?.muted_list_description ? profileData.muted_list_description : ''
+    muted_list_description: profileData?.muted_list_description ? profileData.muted_list_description : '',
+    social: socialSettingsFromMetadata(data?.posting_json_metadata)
   };
 
   const updateProfileMutation = useUpdateProfileMutation();
@@ -66,9 +78,15 @@ const SettingsForm = ({ username }: { username: string }) => {
     profileSettings.website === settings.website &&
     profileSettings.about === settings.about &&
     profileSettings.blacklist_description === settings.blacklist_description &&
-    profileSettings.muted_list_description === settings.muted_list_description;
+    profileSettings.muted_list_description === settings.muted_list_description &&
+    SOCIAL_KEYS.every((key) => profileSettings.social[key] === settings.social[key]);
 
-  const disabledBtn = Object.values(validationCheck).some((value) => typeof value === 'string');
+  const disabledBtn =
+    Object.values(validationCheck).some((value) => typeof value === 'string') ||
+    Object.keys(socialErrors).length > 0;
+
+  const onSocialChange = (key: SocialKey, value: string) =>
+    setSettings((prev) => ({ ...prev, social: { ...prev.social, [key]: value } }));
 
   async function onSubmit() {
     const updateProfileParams = {
@@ -83,7 +101,8 @@ const SettingsForm = ({ username }: { username: string }) => {
       blacklist_description:
         settings.blacklist_description !== '' ? settings.blacklist_description : undefined,
       muted_list_description:
-        settings.muted_list_description !== '' ? settings.muted_list_description : undefined
+        settings.muted_list_description !== '' ? settings.muted_list_description : undefined,
+      social: socialHandlesToSave(settings.social)
     };
 
     try {
@@ -262,6 +281,7 @@ const SettingsForm = ({ username }: { username: string }) => {
             <span className="pt-2 text-xs text-destructive">{validationCheck.muted_list_description}</span>
           </div>
         </div>
+        <SocialLinksFields social={settings.social} errors={socialErrors} onChange={onSocialChange} />
         <Button
           onClick={() => onSubmit()}
           className="my-4 w-44"

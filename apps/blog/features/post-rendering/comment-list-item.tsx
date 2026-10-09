@@ -32,7 +32,7 @@ import ChangeTitleDialog from '../community-profile/change-title-dialog';
 import { AlertDialogFlag } from './alert-window-flag';
 import FlagTooltip from './flag-icon';
 import TimeAgo from '@hive/ui/components/time-ago';
-import { getUserAvatarUrl } from '@hive/ui';
+import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 import { UserPopoverCard } from './user-popover-card';
 import { useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
@@ -169,7 +169,7 @@ const CommentListItem = memo(function CommentListItem({
       {currentDepth < 8 ? (
         <li data-testid="comment-list-item" className="w-full min-w-0">
           <div className="flex w-full min-w-0" id={commentId} ref={ref}>
-            <img
+            <UserAvatarImg
               className={clsx('mr-3 hidden shrink-0 rounded-3xl sm:block', {
                 'mx-[15px] h-[25px] w-[25px] opacity-50': hiddenComment,
                 'h-[40px] w-[40px]': !hiddenComment,
@@ -210,7 +210,7 @@ const CommentListItem = memo(function CommentListItem({
                                     {t('global.publishing')}
                                   </span>
                                 )}
-                                <img
+                                <UserAvatarImg
                                   className=" h-[20px] w-[20px] rounded-3xl sm:hidden"
                                   height="20"
                                   width="20"

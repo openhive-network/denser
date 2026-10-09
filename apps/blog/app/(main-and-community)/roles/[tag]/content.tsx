@@ -11,7 +11,7 @@ import NoDataError from '@/blog/components/no-data-error';
 import { getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { useTranslation } from '@/blog/i18n/client';
 
-const Content = ({ community }: { community: string }) => {
+const Content = ({ community, initialData }: { community: string; initialData: string[][] | null }) => {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
 
@@ -19,6 +19,8 @@ const Content = ({ community }: { community: string }) => {
     queryKey: ['rolesList', community],
     queryFn: () => getListCommunityRoles(community),
     enabled: Boolean(community),
+    initialData: initialData ?? undefined,
+    initialDataUpdatedAt: initialData ? Date.now() : undefined,
     select: (list) =>
       list
         ? list.map((e) => ({
