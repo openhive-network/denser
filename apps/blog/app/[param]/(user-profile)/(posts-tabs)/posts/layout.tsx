@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
+import { profileCanonical } from '@/blog/lib/profile-canonical';
 
 export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
   const params = await props.params;
@@ -7,7 +8,8 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
   const title = `Posts by ${username}`;
 
   return {
-    title
+    title,
+    alternates: profileCanonical(params.param, 'posts')
   };
 }
 

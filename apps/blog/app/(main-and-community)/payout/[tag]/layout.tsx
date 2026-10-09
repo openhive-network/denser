@@ -7,7 +7,7 @@ import { isValidTagFormat, isCommunityFormat } from '@transaction/lib/validation
 
 export async function generateMetadata(props: { params: Promise<{ tag: string }> }): Promise<Metadata> {
   const params = await props.params;
-  return buildCommunityTagMetadata(params, 'pending');
+  return buildCommunityTagMetadata(params, 'payout', 'pending');
 }
 const Layout = async (props: { children: ReactNode; params: Promise<{ tag: string }> }) => {
   const params = await props.params;
