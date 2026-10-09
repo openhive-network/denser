@@ -50,16 +50,25 @@ export async function loginAndOpenEditor(page: Page) {
     );
   }
 
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
-  await expect(homePage.getNavCreatePost).toBeVisible({ timeout: 30000 });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  // nav-pencil is server-rendered, so it is visible before hydration wires its
+  // DialogLogin trigger. login-btn renders only on the client once the
+  // logged-out state is known, so its visibility means the pencil is live.
+  await expect(homePage.loginBtn).toBeVisible();
   await homePage.getNavCreatePost.click();
   await loginForm.validateDefaultLoginFormIsLoaded();
   await loginForm.usernameInput.fill(username);
   await loginForm.passwordInput.fill('testtest');
   await loginForm.wifInput.fill(wifPosting);
   await loginForm.saveSignInButton.click();
-  await expect(postEditorPage.getPostTitleInput).toBeVisible({ timeout: 30000 });
+
+  // Sign-in stores the user in the query cache, which swaps the pencil's
+  // DialogLogin for a plain link (closing the dialog), and the dialog's
+  // onComplete pushes /submit.html. The editor form renders only once the
+  // submit page reads a logged-in user, so each stage fails on its own.
+  await expect(loginForm.loginDialog).toBeHidden();
+  await expect(page).toHaveURL(/\/submit\.html(?:$|\?)/);
+  await postEditorPage.validateDefaultPostEditorIsLoaded();
 
   return { homePage, loginForm, postEditorPage };
 }
