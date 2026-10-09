@@ -4,6 +4,7 @@ import { LoginForm } from '../support/pages/loginForm';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { users } from '../support/loginHelper';
 import { PostEditorPage } from '../support/pages/postEditorPage';
+import { locatorSelector } from '../support/locatorSelector';
 
 // These tests were skipped due to issue with context after moving to the post editor page.
 // auth.setup.ts is not running before every tests now
@@ -31,7 +32,7 @@ test.describe.skip('Creating post tests and use store', () =>{
 
     await homePage.profileAvatarButton.click();
     // Validate User is logged in
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+    await page.waitForSelector(locatorSelector(profileMenu.profileMenuContent));
     await profileMenu.validateUserProfileManuIsOpen();
     await profileMenu.validateUserNameInProfileMenu(users.denserautotest4.username);
     // Click to close the profile menu

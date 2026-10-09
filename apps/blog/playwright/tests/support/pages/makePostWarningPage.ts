@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../locatorSelector';
 
 export class MakePostWarningPage {
   readonly page: Page;
@@ -12,7 +13,7 @@ export class MakePostWarningPage {
   async validateMakePostWarningPageIsLoadedOfSpecificCommunities(community: string){
     const message: string = 'Log in to make a post.';
 
-    await this.page.waitForSelector(this.logInToMakePostMessage['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.logInToMakePostMessage));
     await expect(this.page.url()).toContain(`submit.html?category=${community}`);
     await expect(this.logInToMakePostMessage).toHaveText(message);
   }

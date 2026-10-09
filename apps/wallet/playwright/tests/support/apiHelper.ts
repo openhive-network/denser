@@ -54,6 +54,26 @@ export interface RecentTradesResponse {
   result: RecentTradesResult;
 }
 
+export interface AccountHistoryOperation {
+  type: string;
+  value: { from?: string; to?: string };
+}
+
+export interface AccountHistoryEntry {
+  op: AccountHistoryOperation;
+  block: number;
+  trx_id: string;
+  timestamp: string;
+}
+
+export type AccountHistoryItem = [number, AccountHistoryEntry];
+
+export interface AccountHistoryResponse {
+  id: number;
+  jsonrpc: string;
+  result: AccountHistoryItem[];
+}
+
 export class ApiHelper {
   readonly page: Page;
 
@@ -297,7 +317,7 @@ export class ApiHelper {
   }
 
   // Get account history as json from API response using account_history_api
-  async getAccountHistoryAPI(account: string, start: number, limit: number) {
+  async getAccountHistoryAPI(account: string, start: number, limit: number): Promise<AccountHistoryResponse> {
     const url = process.env.REACT_APP_API_ENDPOINT;
 
     const responseGetAccountHistory = await this.page.request.post(`${url}/`, {

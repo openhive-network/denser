@@ -8,7 +8,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 # Install system deps and configure pnpm in single layer
 RUN apk add --no-cache libc6-compat && \
     corepack enable && \
-    corepack prepare pnpm@10.0.0 --activate && \
+    corepack prepare pnpm@10.14.0 --activate && \
     pnpm config set store-dir /pnpm/store
 
 # ============================================================================

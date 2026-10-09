@@ -12,6 +12,8 @@ export const STUB_ACCOUNT = 'gtg';
 export const STUB_PROPOSAL_SUBJECT = 'Stub proposal for the offline specs';
 export const STUB_DELEGATEE = 'stub-delegatee';
 export const STUB_TRANSFER_SENDER = 'stub-sender';
+/** The one account STUB_ACCOUNT follows: the transfer dialog suggests it as a recipient. */
+export const STUB_FOLLOWED = 'stub-followed';
 
 const hive = (amount: string) => ({ amount, precision: 3, nai: '@@000000021' });
 const hbd = (amount: string) => ({ amount, precision: 3, nai: '@@000000013' });
@@ -44,6 +46,7 @@ const fullAccount = (account: object & { name: string }) => ({
   savings_hbd_seconds: '0',
   next_vesting_withdrawal: '1969-12-31T23:59:59',
   vesting_shares: vests('1650000000000'),
+  post_voting_power: vests('1650000000000'),
   delegated_vesting_shares: vests('0'),
   received_vesting_shares: vests('0'),
   vesting_withdraw_rate: vests('0'),
@@ -98,6 +101,8 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
   'database_api.find_accounts': findAccounts,
   'database_api.get_dynamic_global_properties': () => ({
     ...(WITNESS_RESULTS['database_api.get_dynamic_global_properties']({}) as object),
+    time: '2026-10-01T12:00:00',
+    downvote_pool_percent: 2500,
     virtual_supply: hive('450000000000'),
     vesting_reward_percent: 1500,
     hbd_interest_rate: 1500
@@ -121,7 +126,17 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
     ]
   }),
   'rc_api.list_rc_direct_delegations': () => ({ rc_direct_delegations: [] }),
-  'condenser_api.get_following': () => [],
+  'rc_api.find_rc_accounts': ({ accounts = [] }) => ({
+    rc_accounts: accounts.map((account) => ({
+      account,
+      rc_manabar: manabar,
+      max_rc_creation_adjustment: vests('0'),
+      max_rc: '1000000000000',
+      delegated_rc: 0,
+      received_delegated_rc: 0
+    }))
+  }),
+  'condenser_api.get_following': () => [{ follower: STUB_ACCOUNT, following: STUB_FOLLOWED, what: ['blog'] }],
   'market_history_api.get_ticker': () => ({
     latest: '0.250000',
     lowest_ask: '0.251000',

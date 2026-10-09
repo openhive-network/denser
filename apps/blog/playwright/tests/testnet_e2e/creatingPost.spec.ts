@@ -4,6 +4,7 @@ import { LoginForm } from '../support/pages/loginForm';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { users } from '../support/loginHelper';
 import { PostEditorPage } from '../support/pages/postEditorPage';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Creating post tests', () =>{
   let homePage: HomePage;
@@ -33,7 +34,7 @@ test.describe('Creating post tests', () =>{
     await loginFormDefaut.page.waitForTimeout(3000);
     await homePage.profileAvatarButton.click();
     // Validate User is logged in
-    await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+    await page.waitForSelector(locatorSelector(profileMenu.profileMenuContent));
     await profileMenu.validateUserProfileManuIsOpen();
     await profileMenu.validateUserNameInProfileMenu(users.denserautotest4.username);
     // Click to close the profile menu

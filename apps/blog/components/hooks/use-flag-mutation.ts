@@ -1,35 +1,16 @@
-import { useMutation } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { toast } from '@ui/components/hooks/use-toast';
-import { getLogger } from '@ui/lib/logging';
-const logger = getLogger('app');
+import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-/**
- * Makes flag transaction.
- *
- * @export
- * @return {*}
- */
-export function useFlagMutation() {
-  const flagMutation = useMutation({
-    mutationFn: async (params: { community: string; username: string; permlink: string; notes: string }) => {
-      const { community, username, permlink, notes } = params;
-      const broadcastResult = await transactionService.flag(community, username, permlink, notes, {
-        observe: true
-      });
-      const response = { ...params, broadcastResult };
-      logger.info('Done flag transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      toast({
-        title: 'Flag transaction successful',
-        description: `You have flagged the post in ${data.community}.`,
-        variant: 'success'
-      });
-      logger.info('useFlagMutation onSuccess data: %o', data);
-    }
+type FlagParams = { community: string; username: string; permlink: string; notes: string };
+
+export const useFlagMutation = () =>
+  useOperationMutation({
+    name: 'useFlagMutation',
+    run: ({ community, username, permlink, notes }: FlagParams) =>
+      transactionService.flag(community, username, permlink, notes, OBSERVE),
+    successToast: (_data, { community }) => ({
+      title: 'Flag transaction successful',
+      description: `You have flagged the post in ${community}.`
+    }),
+    reportErrors: false
   });
-
-  return flagMutation;
-}

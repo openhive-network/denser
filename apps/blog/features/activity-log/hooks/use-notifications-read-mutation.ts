@@ -1,10 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { toast } from '@ui/components/hooks/use-toast';
-import { handleError } from '@ui/lib/handle-error';
 import { IUnreadNotifications } from '@hive/common-hiveio-packages/wax';
 import { getUnreadNotifications } from '@transaction/lib/bridge-api';
+import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
 
 /**
@@ -15,58 +13,44 @@ import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
  */
 const naiveUtcNow = (): string => new Date().toISOString().slice(0, -5);
 
-/**
- * Makes mark all notifications as read transaction.
- *
- * @export
- * @return {*}
- */
 export function useMarkAllNotificationsAsReadMutation() {
-  const queryClient = useQueryClient();
-  const { user } = useUserClient();
-  const markAllNotificationsAsReadMutation = useMutation({
-    mutationFn: async (params: { date: string }) => {
-      const { date } = params;
-      const broadcastResult = await transactionService.markAllNotificationAsRead(date, { observe: true });
-      const response = { ...params, broadcastResult };
-      return response;
-    },
-    onSettled: (data) => {
-      // The field is `lastread` (all lowercase) - see IUnreadNotifications and
-      // every reader of this cache entry. Typing the write keeps it that way:
-      // a mismatched key silently turned this optimistic update into a no-op.
-      queryClient.setQueryData<IUnreadNotifications>(['unreadNotifications', user.username], {
-        lastread: data?.date || naiveUtcNow(),
+  const { username } = useUserClient().user;
+  const queryKey = ['unreadNotifications', username];
+  return useOperationMutation({
+    name: 'useMarkAllNotificationsAsReadMutation',
+    // The field is `lastread` (all lowercase) - see IUnreadNotifications and
+    // every reader of this cache entry. Typing the write keeps it that way:
+    // a mismatched key silently turned this optimistic update into a no-op.
+    optimistic: async (params: { date: string }, queryClient) => {
+      await queryClient.cancelQueries({ queryKey });
+      const prevUnread = queryClient.getQueryData<IUnreadNotifications>(queryKey);
+      queryClient.setQueryData<IUnreadNotifications>(queryKey, {
+        lastread: params.date || naiveUtcNow(),
         unread: 0
       });
+      return { prevUnread };
     },
-    onSuccess: (_data, variables) => {
-      const { username } = user;
-      toast({
-        title: 'Notifications marked as read',
-        description: 'All notifications have been marked as read successfully.',
-        variant: 'success'
-      });
+    rollback: (context, _params, queryClient) => {
+      if (context?.prevUnread) queryClient.setQueryData(queryKey, context.prevUnread);
+    },
+    run: ({ date }: { date: string }) => transactionService.markAllNotificationAsRead(date, OBSERVE),
+    onSuccess: (_data, { date }, queryClient) => {
       // Hivemind indexes the read marker some seconds after the transaction is
       // on-chain. A blind invalidate can land inside that window and overwrite
       // the optimistic value with a pre-mark `lastread`, which makes every
       // already-read notification light up as unread again. Only accept a
       // response that actually reflects the mark we just broadcast.
-      const markedAt = new Date(variables.date).getTime();
+      const markedAt = new Date(date).getTime();
       scheduleValidatedRefetch<IUnreadNotifications | null>(
         queryClient,
-        ['unreadNotifications', username],
+        queryKey,
         () => getUnreadNotifications(username),
         (fresh) => !!fresh?.lastread && new Date(fresh.lastread).getTime() >= markedAt
       );
     },
-    onError: (error: any, variables) => {
-      handleError(error, {
-        method: 'useMarkAllNotificationsAsReadMutation',
-        params: variables
-      });
-    }
+    successToast: () => ({
+      title: 'Notifications marked as read',
+      description: 'All notifications have been marked as read successfully.'
+    })
   });
-
-  return markAllNotificationsAsReadMutation;
 }

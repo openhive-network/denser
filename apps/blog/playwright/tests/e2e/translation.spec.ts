@@ -8,6 +8,7 @@ import { CommunitiesExplorePage } from '../support/pages/communitiesExplorerPage
 import { WitnessPage } from '../support/pages/witnessesPage';
 import { WalletPage } from '../../../../wallet/playwright/tests/support/pages/walletPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
+import { locatorSelector } from '../support/locatorSelector';
 
 // Skipped due to move out translation from Denser
 test.describe.skip('Translation tests', () => {
@@ -35,7 +36,7 @@ test.describe.skip('Translation tests', () => {
     await homePage.goto();
     await expect(homePage.toggleLanguage).toBeVisible();
     await homePage.toggleLanguage.click();
-    await homePage.page.waitForSelector(homePage.languageMenu['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.languageMenu));
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
 
@@ -185,7 +186,7 @@ test.describe.skip('Translation tests', () => {
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
-    await homePage.page.waitForSelector(homePage.getHeaderLeoCommunities['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getHeaderLeoCommunities));
     await expect(homePage.getHeaderLeoCommunities).toBeVisible();
     await expect(await page.locator('[data-testid="community-name-unmoderated"]').textContent()).toBe(
       'Społeczność'
@@ -335,7 +336,7 @@ test.describe.skip('Translation tests', () => {
     await homePage.toggleLanguage.click();
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getTrendingCommunitiesSideBar));
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     await expect(page.getByText('Popularne Społeczności')).toBeVisible();
@@ -373,7 +374,7 @@ test.describe.skip('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getTrendingCommunitiesSideBar));
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate upvote button tooltip
@@ -395,7 +396,7 @@ test.describe.skip('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getTrendingCommunitiesSideBar));
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate post payouts button tooltip
@@ -415,7 +416,7 @@ test.describe.skip('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getTrendingCommunitiesSideBar));
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate post votes button tooltip
@@ -433,7 +434,7 @@ test.describe.skip('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getTrendingCommunitiesSideBar));
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Validate post votes button tooltip
@@ -451,7 +452,7 @@ test.describe.skip('Translation tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Load and validate the polish version of the home page is ready
-    await homePage.page.waitForSelector(homePage.getTrendingCommunitiesSideBar['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getTrendingCommunitiesSideBar));
     await expect(homePage.getTrendingCommunitiesSideBar).toBeVisible();
     await expect(page.getByRole('link', { name: 'Wszystkie posty' })).toBeVisible();
     // Navigate to first post page (reblog tooltip with "Reblog" text is only on post pages)
@@ -492,7 +493,7 @@ test.describe.skip('Translation tests', () => {
     // Wait for sidebar menu to be visible after language change
     await expect(homePage.getNavSidebarMenu).toBeVisible();
     await homePage.getNavSidebarMenu.click();
-    await homePage.page.waitForSelector(homePage.getNavSidebarMenuContent['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(homePage.getNavSidebarMenuContent));
     await expect(homePage.getNavSidebarMenuContent).toBeVisible();
     // li.text-foreground
     const menuItems = await page.$$('li.text-foreground');

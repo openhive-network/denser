@@ -1,51 +1,19 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { TransactionBroadcastResult } from '@transaction/index';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { toast } from '@ui/components/hooks/use-toast';
-import { handleError } from '@ui/lib/handle-error';
+import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-/**
- * Makes reblog transaction.
- *
- * @export
- * @return {*}
- */
-export function useReblogMutation() {
-  const queryClient = useQueryClient();
-  const reblogMutation = useMutation({
-    mutationFn: async (params: { author: string; permlink: string; username: string }) => {
-      const { author, permlink, username } = params;
+type ReblogParams = { author: string; permlink: string; username: string };
 
-      const broadcastResult: TransactionBroadcastResult = await transactionService.reblog(author, permlink, {
-        observe: true
-      });
-      const response = { author, permlink, username, broadcastResult };
-      return response;
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const { author, permlink, username } = data;
+export const useReblogMutation = () =>
+  useOperationMutation({
+    name: 'useReblogMutation',
+    run: ({ author, permlink }: ReblogParams) => transactionService.reblog(author, permlink, OBSERVE),
+    onSuccess: (_data, { author, permlink, username }, queryClient) => {
       queryClient.setQueriesData({ queryKey: ['PostRebloggedBy', author, permlink, username] }, true);
     },
-
-    onSuccess: (data) => {
-      const { author, permlink, username } = data;
-      toast({
-        title: 'Reblog successful',
-        description: `You have successfully reblogged the post.`,
-        variant: 'success'
-      });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['PostRebloggedBy', author, permlink, username] });
-      }, 4000);
-    },
-    onError: (error: any, variables) => {
-      handleError(error, {
-        method: 'useReblogMutation',
-        params: variables
-      });
-    }
+    successToast: () => ({
+      title: 'Reblog successful',
+      description: 'You have successfully reblogged the post.'
+    }),
+    invalidate: ({ author, permlink, username }) => [['PostRebloggedBy', author, permlink, username]],
+    invalidateDelays: [4000]
   });
-
-  return reblogMutation;
-}

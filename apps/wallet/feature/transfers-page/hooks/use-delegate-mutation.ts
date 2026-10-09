@@ -1,30 +1,20 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { toast } from '@ui/components/hooks/use-toast';
+import { useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-export const useDelegateRCMutation = () => {
-  const { user } = useUserClient();
-  const queryClient = useQueryClient();
-  const delegateMutation = useMutation({
-    mutationFn: async (params: { toAccount: string; amount: string }) => {
-      const { toAccount, amount } = params;
-      const broadcastResult = await transactionService.delegateRC(user.username, amount, toAccount, {
+export function useDelegateRCMutation() {
+  const { username } = useUserClient().user;
+  return useOperationMutation({
+    name: 'useDelegateRCMutation',
+    run: ({ toAccount, amount }: { toAccount: string; amount: string }) =>
+      transactionService.delegateRC(username, amount, toAccount, {
         observe: true,
         requiredKeyType: 'posting'
-      });
-      const response = { ...params, broadcastResult };
-      return response;
-    },
-    onSuccess: (data) => {
-      const { amount, toAccount } = data;
-      queryClient.invalidateQueries(['manabar', user.username]);
-      toast({
-        variant: 'success',
-        description: `Successfully delegated ${amount} RC to ${toAccount}`
-      });
-    }
+      }),
+    successToast: (_data, { amount, toAccount }) => ({
+      description: `Successfully delegated ${amount} RC to ${toAccount}`
+    }),
+    invalidate: () => [['manabar', username]],
+    reportErrors: false
   });
-
-  return delegateMutation;
-};
+}
