@@ -1,98 +1,47 @@
-import { asset, TNaiAssetSource } from '@hiveio/wax';
+import { asset } from '@hiveio/wax';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { TransactionBroadcastResult } from '@transaction/index';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { logger } from '@ui/lib/logger';
+import {
+  OBSERVE,
+  useOperationMutation,
+  withBroadcastResult
+} from '@ui/components/hooks/use-operation-mutation';
 import { createAsset } from '@transaction/lib/utils';
 
-/**
- * Makes transfer to vesting transaction
- *
- * @export
- * @returns {*}
- */
-export function usePowerUpMutation() {
-  const queryClient = useQueryClient();
-  const { user } = useUserClient();
-  const powerUpMutation = useMutation({
-    mutationFn: async (params: { fromAccount: string; toAccount: string; amount: asset }) => {
-      const { amount, fromAccount, toAccount } = params;
-      const broadcastResult = await transactionService.transferToVesting(amount, fromAccount, toAccount, {
-        observe: true
-      });
-      const response = { ...params, broadcastResult };
-      logger.info('Done transfer to vesting transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
-      queryClient.invalidateQueries({ queryKey: ['accountData', username] });
-      logger.info('usePowerUpMutation onSuccess data: %o', data);
-    }
-  });
+type PowerUpParams = { fromAccount: string; toAccount: string; amount: asset };
 
-  return powerUpMutation;
+/** Vesting mutation that refreshes the user's account data and history on settle. */
+function useVestingMutation<TVariables extends object>(
+  name: string,
+  broadcast: (variables: TVariables) => Promise<TransactionBroadcastResult>
+) {
+  const { username } = useUserClient().user;
+  return useOperationMutation({
+    name,
+    run: withBroadcastResult(broadcast),
+    invalidate: () => [
+      ['accountHistory', username],
+      ['accountData', username]
+    ],
+    reportErrors: false
+  });
 }
 
-/**
- * Makes withdraw from vesting transaction
- *
- * @exports
- * @returns {*}
- */
-export function usePowerDownMutation() {
-  const queryClient = useQueryClient();
-  const { user } = useUserClient();
-  const powerDownMutation = useMutation({
-    mutationFn: async (params: { account: string; hp: asset }) => {
-      const { account, hp } = params;
-      const broadcastResult = await transactionService.withdrawFromVesting(account, hp, { observe: true });
-      const response = { ...params, broadcastResult };
-      logger.info('Done withdraw from vesting trasaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
-      queryClient.invalidateQueries({ queryKey: ['accountData', username] });
-      logger.info('usePowerDownMutation onSuccess data: %o', data);
-    }
-  });
+/** Makes transfer to vesting transaction. */
+export const usePowerUpMutation = () =>
+  useVestingMutation('usePowerUpMutation', ({ amount, fromAccount, toAccount }: PowerUpParams) =>
+    transactionService.transferToVesting(amount, fromAccount, toAccount, OBSERVE)
+  );
 
-  return powerDownMutation;
-}
+/** Makes withdraw from vesting transaction. */
+export const usePowerDownMutation = () =>
+  useVestingMutation('usePowerDownMutation', ({ account, hp }: { account: string; hp: asset }) =>
+    transactionService.withdrawFromVesting(account, hp, OBSERVE)
+  );
 
-/**
- * Makes withdraw from vesting transaction to cancel power down
- *
- * @exports
- * @returns {*}
- */
-export function useCancelPowerDownMutation() {
-  const queryClient = useQueryClient();
-  const { user } = useUserClient();
-  const cancelPowerDownMutation = useMutation({
-    mutationFn: async (params: { account: string }) => {
-      const { account } = params;
-
-      const vestingShares = await createAsset('0', 'HIVE');
-
-      const broadcastResult = await transactionService.withdrawFromVesting(account, vestingShares, {
-        observe: true
-      });
-      const response = { ...params, vestingShares, broadcastResult };
-      logger.info('Done cancel power down transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
-      queryClient.invalidateQueries({ queryKey: ['accountData', username] });
-      logger.info('useCancelPowerDownMutation onSucces data: %o', data);
-    }
-  });
-
-  return cancelPowerDownMutation;
-}
+/** Cancels a power down by withdrawing zero vesting shares. */
+export const useCancelPowerDownMutation = () =>
+  useVestingMutation('useCancelPowerDownMutation', async ({ account }: { account: string }) =>
+    transactionService.withdrawFromVesting(account, await createAsset('0', 'HIVE'), OBSERVE)
+  );

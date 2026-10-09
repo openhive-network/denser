@@ -1,49 +1,22 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { toast } from '@ui/components/hooks/use-toast';
-import { logger } from '@ui/lib/logger';
+import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-/**
- * Makes witness vote transaction.
- *
- * @export
- * @returns
- */
+type WitnessVoteParams = { account: string; witness: string; approve: boolean };
+
+/** Makes witness vote transaction. */
 export function useWitnessVoteMutation() {
-  const queryClient = useQueryClient();
-  const { user } = useUserClient();
-
-  const witnessVoteMutation = useMutation({
-    mutationFn: async (params: { account: string; witness: string; approve: boolean }) => {
-      const { account, witness, approve } = params;
-      const broadcastResult = await transactionService.witnessVote(account, witness, approve, {
-        observe: true
-      });
-      const response = { ...params, broadcastResult };
-      logger.info('Done witness vote transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { approve, witness } = data;
-      logger.info('useWitnessVote onSuccess data: %o', data);
-      queryClient.invalidateQueries({
-        queryKey: ['listWitnessVotesData']
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['accountData', user.username]
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['witnesses']
-      });
-      toast({
-        variant: 'success',
-        description: approve
-          ? `You have voted for witness ${witness}`
-          : `You have removed vote for witness ${witness}`
-      });
-    }
+  const { username } = useUserClient().user;
+  return useOperationMutation({
+    name: 'useWitnessVoteMutation',
+    run: ({ account, witness, approve }: WitnessVoteParams) =>
+      transactionService.witnessVote(account, witness, approve, OBSERVE),
+    successToast: (_data, { approve, witness }) => ({
+      description: approve
+        ? `You have voted for witness ${witness}`
+        : `You have removed vote for witness ${witness}`
+    }),
+    invalidate: () => [['listWitnessVotesData'], ['accountData', username], ['witnesses']],
+    reportErrors: false
   });
-
-  return witnessVoteMutation;
 }

@@ -1,36 +1,18 @@
 import { AccountAuthorityUpdateOperation } from '@hiveio/wax';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { getLogger } from '@ui/lib/logging';
-
-const logger = getLogger('app');
-
-/**
- * Update Authority.
- *
- * @export
- * @return {*}
- */
+import { useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
 export function useUpdateAuthorityOperationMutation() {
-  const { user } = useUserClient();
-  const queryClient = useQueryClient();
-  const updateAuthorityMutation = useMutation({
-    mutationFn: async (operations: AccountAuthorityUpdateOperation) => {
-      const keyType = operations.role('owner').changed ? 'owner' : undefined;
-      const broadcastResult = await transactionService.updateAuthority(operations, {
+  const { username } = useUserClient().user;
+  return useOperationMutation({
+    name: 'useUpdateAuthorityOperationMutation',
+    run: (operations: AccountAuthorityUpdateOperation) =>
+      transactionService.updateAuthority(operations, {
         observe: true,
-        singleSignKeyType: keyType
-      });
-      const response = { username: user.username, broadcastResult };
-      return response;
-    },
-    onSuccess: (data) => {
-      const { username } = data;
-      queryClient.invalidateQueries(['authority', username]);
-      logger.info('useUpdateAuthorityOperationMutation onSuccess data: %o', data);
-    }
+        singleSignKeyType: operations.role('owner').changed ? 'owner' : undefined
+      }),
+    invalidate: () => [['authority', username]],
+    reportErrors: false
   });
-  return updateAuthorityMutation;
 }

@@ -1,258 +1,86 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Entry, EntryStat } from '@hive/common-hiveio-packages/wax';
-import { toast } from '@ui/components/hooks/use-toast';
-import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/handle-error';
-import { scheduleInvalidations } from '@/blog/lib/react-query';
+import {
+  OBSERVE,
+  useOperationMutation,
+  type OperationToast
+} from '@ui/components/hooks/use-operation-mutation';
 
-const logger = getLogger('app');
+type MutePostParams = {
+  community: string;
+  username: string;
+  permlink: string;
+  notes: string;
+  discussionPermlink: string;
+  discussionAuthor: string;
+};
 
-/**
- * Mute/Unmute posts in community.
- *
- * @export
- * @return {*}
- */
-export function useMutePostMutation() {
-  const queryClient = useQueryClient();
+const postDataKey = ({ username, permlink }: MutePostParams) => ['postData', username, permlink];
+const discussionKey = ({ discussionPermlink }: MutePostParams) => ['discussionData', discussionPermlink];
 
-  const mutePostMutation = useMutation({
-    onMutate: async (params: {
-      community: string;
-      username: string;
-      permlink: string;
-      notes: string;
-      discussionPermlink: string;
-      discussionAuthor: string;
-    }) => {
-      const { username, permlink, discussionPermlink } = params;
-      const postDataKey = ['postData', username, permlink];
-      const discussionKey = ['discussionData', discussionPermlink];
+const markTemporary = (post: Entry): Entry => ({
+  ...post,
+  stats: { ...post.stats, _temporary: true } as EntryStat
+});
 
-      await queryClient.cancelQueries({ queryKey: postDataKey });
-      await queryClient.cancelQueries({ queryKey: discussionKey });
-
-      const prevPostData: Entry | undefined = queryClient.getQueryData(postDataKey);
-      const prevDiscussionData: Record<string, Entry> | undefined = queryClient.getQueryData(discussionKey);
-
-      if (prevPostData) {
-        queryClient.setQueryData<Entry>(postDataKey, {
-          ...prevPostData,
-          stats: { ...prevPostData.stats, _temporary: true } as EntryStat
-        });
-      }
-
-      if (prevDiscussionData) {
-        const newDiscussionData: Record<string, Entry> = Object.fromEntries(
-          Object.entries(prevDiscussionData).map(([key, post]) => [
-            key,
-            post.author === username && post.permlink === permlink
-              ? { ...post, stats: { ...post.stats, _temporary: true } as EntryStat }
-              : post
-          ])
-        );
-        queryClient.setQueryData(discussionKey, newDiscussionData);
-      }
-
-      return { prevPostData, prevDiscussionData, postDataKey, discussionKey };
-    },
-
-    mutationFn: async (params: {
-      community: string;
-      username: string;
-      permlink: string;
-      notes: string;
-      discussionPermlink: string;
-      discussionAuthor: string;
-    }) => {
-      const { community, username, permlink, notes, discussionPermlink } = params;
-      const broadcastResult = await transactionService.mutePost(community, username, permlink, notes, {
-        observe: true
-      });
-      logger.info('Done mute post transaction: %o', { discussionPermlink, broadcastResult });
-      return { ...params, broadcastResult };
-    },
-
-    onSettled: (data) => {
-      if (!data) return;
-      const { username, permlink, discussionPermlink } = data;
-      const postData: Entry | undefined = queryClient.getQueryData(['postData', username, permlink]);
-      if (postData) {
-        queryClient.setQueryData<Entry>(['postData', username, permlink], {
-          ...postData,
-          stats: { ...postData.stats, _temporary: true } as EntryStat
-        });
-      }
-      const discussionData: Record<string, Entry> | undefined = queryClient.getQueryData([
-        'discussionData',
-        discussionPermlink
-      ]);
-      if (discussionData) {
-        const updated: Record<string, Entry> = Object.fromEntries(
-          Object.entries(discussionData).map(([key, post]) => [
-            key,
-            post.author === username && post.permlink === permlink
-              ? { ...post, stats: { ...post.stats, _temporary: true } as EntryStat }
-              : post
-          ])
-        );
-        queryClient.setQueryData(['discussionData', discussionPermlink], updated);
-      }
-    },
-
-    onSuccess: (data) => {
-      const { username, permlink, discussionPermlink } = data;
-      toast({
-        title: 'Post muted',
-        description: 'Post has been muted successfully.',
-        variant: 'success'
-      });
-      scheduleInvalidations(
-        queryClient,
-        [
-          ['postData', username, permlink],
-          ['discussionData', discussionPermlink]
-        ],
-        [4000, 10000, 20000]
-      );
-    },
-
-    onError: (error: unknown, variables, context) => {
-      if (context?.prevPostData) {
-        queryClient.setQueryData(context.postDataKey, context.prevPostData);
-      }
-      if (context?.prevDiscussionData) {
-        queryClient.setQueryData(context.discussionKey, context.prevDiscussionData);
-      }
-
-      handleError(error, {
-        method: 'useMutePostMutation',
-        params: variables
-      });
-    }
-  });
-  return mutePostMutation;
+function markPostTemporary(queryClient: QueryClient, params: MutePostParams) {
+  const { username, permlink } = params;
+  const postData: Entry | undefined = queryClient.getQueryData(postDataKey(params));
+  if (postData) queryClient.setQueryData<Entry>(postDataKey(params), markTemporary(postData));
+  const discussionData: Record<string, Entry> | undefined = queryClient.getQueryData(discussionKey(params));
+  if (discussionData) {
+    const updated: Record<string, Entry> = Object.fromEntries(
+      Object.entries(discussionData).map(([key, post]) => [
+        key,
+        post.author === username && post.permlink === permlink ? markTemporary(post) : post
+      ])
+    );
+    queryClient.setQueryData(discussionKey(params), updated);
+  }
 }
 
-export function useUnmutePostMutation() {
-  const queryClient = useQueryClient();
-
-  const unmutePostMutation = useMutation({
-    onMutate: async (params: {
-      community: string;
-      username: string;
-      permlink: string;
-      notes: string;
-      discussionPermlink: string;
-      discussionAuthor: string;
-    }) => {
-      const { username, permlink, discussionPermlink } = params;
-      const postDataKey = ['postData', username, permlink];
-      const discussionKey = ['discussionData', discussionPermlink];
-
-      await queryClient.cancelQueries({ queryKey: postDataKey });
-      await queryClient.cancelQueries({ queryKey: discussionKey });
-
-      const prevPostData: Entry | undefined = queryClient.getQueryData(postDataKey);
-      const prevDiscussionData: Record<string, Entry> | undefined = queryClient.getQueryData(discussionKey);
-
-      if (prevPostData) {
-        queryClient.setQueryData<Entry>(postDataKey, {
-          ...prevPostData,
-          stats: { ...prevPostData.stats, _temporary: true } as EntryStat
-        });
-      }
-
-      if (prevDiscussionData) {
-        const newDiscussionData: Record<string, Entry> = Object.fromEntries(
-          Object.entries(prevDiscussionData).map(([key, post]) => [
-            key,
-            post.author === username && post.permlink === permlink
-              ? { ...post, stats: { ...post.stats, _temporary: true } as EntryStat }
-              : post
-          ])
-        );
-        queryClient.setQueryData(discussionKey, newDiscussionData);
-      }
-
-      return { prevPostData, prevDiscussionData, postDataKey, discussionKey };
-    },
-
-    mutationFn: async (params: {
-      community: string;
-      username: string;
-      permlink: string;
-      notes: string;
-      discussionPermlink: string;
-      discussionAuthor: string;
-    }) => {
-      const { community, username, permlink, notes, discussionPermlink } = params;
-      const broadcastResult = await transactionService.unmutePost(community, username, permlink, notes, {
-        observe: true
-      });
-      logger.info('Done unmute post transaction: %o', { discussionPermlink, broadcastResult });
-      return { ...params, broadcastResult };
-    },
-
-    onSettled: (data) => {
-      if (!data) return;
-      const { username, permlink, discussionPermlink } = data;
-      const postData: Entry | undefined = queryClient.getQueryData(['postData', username, permlink]);
-      if (postData) {
-        queryClient.setQueryData<Entry>(['postData', username, permlink], {
-          ...postData,
-          stats: { ...postData.stats, _temporary: true } as EntryStat
-        });
-      }
-      const discussionData: Record<string, Entry> | undefined = queryClient.getQueryData([
-        'discussionData',
-        discussionPermlink
-      ]);
-      if (discussionData) {
-        const updated: Record<string, Entry> = Object.fromEntries(
-          Object.entries(discussionData).map(([key, post]) => [
-            key,
-            post.author === username && post.permlink === permlink
-              ? { ...post, stats: { ...post.stats, _temporary: true } as EntryStat }
-              : post
-          ])
-        );
-        queryClient.setQueryData(['discussionData', discussionPermlink], updated);
-      }
-    },
-
-    onSuccess: (data) => {
-      const { username, permlink, discussionPermlink } = data;
-      toast({
-        title: 'Post unmuted',
-        description: 'Post has been unmuted successfully.',
-        variant: 'success'
-      });
-      scheduleInvalidations(
-        queryClient,
-        [
-          ['postData', username, permlink],
-          ['discussionData', discussionPermlink]
-        ],
-        [4000, 10000, 20000]
+function useModeratePostMutation(
+  name: string,
+  broadcast: typeof transactionService.mutePost,
+  successToast: OperationToast
+) {
+  return useOperationMutation({
+    name,
+    optimistic: async (params: MutePostParams, queryClient) => {
+      await queryClient.cancelQueries({ queryKey: postDataKey(params) });
+      await queryClient.cancelQueries({ queryKey: discussionKey(params) });
+      const prevPostData: Entry | undefined = queryClient.getQueryData(postDataKey(params));
+      const prevDiscussionData: Record<string, Entry> | undefined = queryClient.getQueryData(
+        discussionKey(params)
       );
+      markPostTemporary(queryClient, params);
+      return { prevPostData, prevDiscussionData };
     },
+    run: ({ community, username, permlink, notes }: MutePostParams) =>
+      broadcast(community, username, permlink, notes, OBSERVE),
+    onSuccess: (_data, params, queryClient) => markPostTemporary(queryClient, params),
+    rollback: (context, params, queryClient) => {
+      if (context?.prevPostData) queryClient.setQueryData(postDataKey(params), context.prevPostData);
+      if (context?.prevDiscussionData)
+        queryClient.setQueryData(discussionKey(params), context.prevDiscussionData);
+    },
+    successToast: () => successToast,
+    invalidate: (params) => [postDataKey(params), discussionKey(params)],
+    invalidateDelays: [4000, 10000, 20000]
+  });
+}
 
-    onError: (error: unknown, variables, context) => {
-      if (context?.prevPostData) {
-        queryClient.setQueryData(context.postDataKey, context.prevPostData);
-      }
-      if (context?.prevDiscussionData) {
-        queryClient.setQueryData(context.discussionKey, context.prevDiscussionData);
-      }
-
-      handleError(error, {
-        method: 'useUnmutePostMutation',
-        params: variables
-      });
-    }
+/** Mutes a post in a community. */
+export const useMutePostMutation = () =>
+  useModeratePostMutation('useMutePostMutation', transactionService.mutePost, {
+    title: 'Post muted',
+    description: 'Post has been muted successfully.'
   });
 
-  return unmutePostMutation;
-}
+/** Unmutes a post in a community. */
+export const useUnmutePostMutation = () =>
+  useModeratePostMutation('useUnmutePostMutation', transactionService.unmutePost, {
+    title: 'Post unmuted',
+    description: 'Post has been unmuted successfully.'
+  });

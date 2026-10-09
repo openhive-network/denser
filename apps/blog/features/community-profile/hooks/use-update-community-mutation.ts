@@ -1,11 +1,9 @@
 import type { ESupportedLanguages } from '@hiveio/wax';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Community } from '@hive/common-hiveio-packages/wax';
-import { toast } from '@ui/components/hooks/use-toast';
-import { handleError } from '@ui/lib/handle-error';
+import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-interface UpdateCommunityMutationParams {
+interface UpdateCommunityParams {
   communityName: string;
   title: string;
   about: string;
@@ -16,13 +14,20 @@ interface UpdateCommunityMutationParams {
   description: string;
 }
 
-export function useUpdateCommunityMutation() {
-  const queryClient = useQueryClient();
-
-  const updateCommunityMutation = useMutation({
-    mutationFn: async (params: UpdateCommunityMutationParams) => {
-      const { communityName, title, about, editor, lang, nsfw, flagText, description } = params;
-      const response = await transactionService.updateCommunityProps(
+export const useUpdateCommunityMutation = () =>
+  useOperationMutation({
+    name: 'useUpdateCommunityMutation',
+    run: ({
+      communityName,
+      title,
+      about,
+      editor,
+      lang,
+      nsfw,
+      flagText,
+      description
+    }: UpdateCommunityParams) =>
+      transactionService.updateCommunityProps(
         communityName,
         title,
         about,
@@ -31,56 +36,34 @@ export function useUpdateCommunityMutation() {
         flagText,
         description,
         editor,
-        { observe: true }
-      );
+        OBSERVE
+      ),
+    onSuccess: (_data, { communityName, title, about, lang, nsfw, description, flagText }, queryClient) => {
       // The community page caches under ['community', name, observer]; match by
       // prefix to find that observer-keyed entry. A bare getQueryData(['community',
       // name]) never resolves it (React Query hashes the full key), so the
-      // optimistic write below silently no-oped and edits weren't reflected.
+      // optimistic write silently no-oped and edits weren't reflected.
       // Mirrors the lookup in use-subscribe-mutations.ts.
       const communityQueryEntry = queryClient
         .getQueriesData<Community>({ queryKey: ['community', communityName] })
         .find(([, data]) => !!data);
-      const prevCommunityData = communityQueryEntry?.[1];
-      const communityQueryKey = communityQueryEntry?.[0];
-      return { ...response, ...params, prevCommunityData, communityQueryKey };
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevCommunityData, communityQueryKey, title, about, lang, nsfw, description, flagText } = data;
-      if (!!prevCommunityData && communityQueryKey) {
-        const updatedCommunity = {
-          ...prevCommunityData,
-          title,
-          about,
-          lang,
-          description,
-          is_nsfw: nsfw,
-          flag_text: flagText,
-          _temporary: true
-        };
-
-        queryClient.setQueryData(communityQueryKey, updatedCommunity);
-      }
-    },
-    onSuccess: (data) => {
-      const { communityName } = data;
-      toast({
-        title: 'Community updated',
-        description: `You have successfully updated the community ${communityName}.`,
-        variant: 'success'
+      if (!communityQueryEntry) return;
+      const [communityQueryKey, prevCommunityData] = communityQueryEntry;
+      queryClient.setQueryData(communityQueryKey, {
+        ...prevCommunityData,
+        title,
+        about,
+        lang,
+        description,
+        is_nsfw: nsfw,
+        flag_text: flagText,
+        _temporary: true
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['community', communityName] });
-      }, 4000);
     },
-    onError: (error: any, variables) => {
-      handleError(error, {
-        method: 'useUpdateCommunityMutation',
-        params: variables
-      });
-    }
+    successToast: (_data, { communityName }) => ({
+      title: 'Community updated',
+      description: `You have successfully updated the community ${communityName}.`
+    }),
+    invalidate: ({ communityName }) => [['community', communityName]],
+    invalidateDelays: [4000]
   });
-
-  return updateCommunityMutation;
-}

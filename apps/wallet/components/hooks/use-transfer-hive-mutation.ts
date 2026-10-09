@@ -1,111 +1,51 @@
 import { asset } from '@hiveio/wax';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { logger } from '@ui/lib/logger';
+import {
+  OBSERVE,
+  useOperationMutation,
+  withBroadcastResult
+} from '@ui/components/hooks/use-operation-mutation';
 
-/**
- * Makes transfer transaction.
- *
- * @export
- * @returns
- */
-export function useTransferHiveMutation() {
-  const queryClient = useQueryClient();
-  const transferMutation = useMutation({
-    mutationFn: async (params: { fromAccount: string; toAccount: string; memo: string; amount: asset }) => {
-      const { amount, fromAccount, memo, toAccount } = params;
-      const broadcastResult = await transactionService.transfer(amount, fromAccount, memo, toAccount, {
-        observe: true
-      });
-      const response = { ...params, broadcastResult };
-      logger.info('Done transfer transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { fromAccount } = data;
-      queryClient.invalidateQueries({ queryKey: ['accountHistory', fromAccount] });
-      queryClient.invalidateQueries({ queryKey: ['accountData', fromAccount] });
-      logger.info('useTransferHive onSuccess data: %o', data);
-    }
+type TransferParams = { fromAccount: string; toAccount: string; memo: string; amount: asset };
+type WithdrawParams = TransferParams & { requestId: number };
+
+const accountKeys = ({ fromAccount }: TransferParams) => [
+  ['accountHistory', fromAccount],
+  ['accountData', fromAccount]
+];
+
+/** Makes transfer transaction. */
+export const useTransferHiveMutation = () =>
+  useOperationMutation({
+    name: 'useTransferHiveMutation',
+    run: withBroadcastResult(({ amount, fromAccount, memo, toAccount }: TransferParams) =>
+      transactionService.transfer(amount, fromAccount, memo, toAccount, OBSERVE)
+    ),
+    invalidate: accountKeys,
+    reportErrors: false
   });
 
-  return transferMutation;
-}
-
-/**
- * Makes transfer to savings transaction.
- *
- * @export
- * @returns
- */
-export function useTransferToSavingsMutation() {
-  const queryClient = useQueryClient();
-  const transferToSavingsMutation = useMutation({
-    mutationFn: async (params: { fromAccount: string; toAccount: string; memo: string; amount: asset }) => {
-      const { amount, fromAccount, memo, toAccount } = params;
-      const broadcastResult = await transactionService.transferToSavings(
-        amount,
-        fromAccount,
-        memo,
-        toAccount,
-        { observe: true }
-      );
-      const response = { ...params, broadcastResult };
-      logger.info('Done transfer to savings transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      const { fromAccount } = data;
-      queryClient.invalidateQueries({ queryKey: ['accountHistory', fromAccount] });
-      queryClient.invalidateQueries({ queryKey: ['accountData', fromAccount] });
-      logger.info('useTransferToSavings onSuccess data: %o', data);
-    }
+/** Makes transfer to savings transaction. */
+export const useTransferToSavingsMutation = () =>
+  useOperationMutation({
+    name: 'useTransferToSavingsMutation',
+    run: withBroadcastResult(({ amount, fromAccount, memo, toAccount }: TransferParams) =>
+      transactionService.transferToSavings(amount, fromAccount, memo, toAccount, OBSERVE)
+    ),
+    invalidate: accountKeys,
+    reportErrors: false
   });
 
-  return transferToSavingsMutation;
-}
-
-/**
- * Makes transfer from savings transaction
- *
- * @export
- * @returns
- */
+/** Makes transfer from savings transaction. */
 export function useWithdrawFromSavingsMutation() {
-  const queryClient = useQueryClient();
-  const { user } = useUserClient();
-  const withdrawFromSavingsMutation = useMutation({
-    mutationFn: async (params: {
-      fromAccount: string;
-      toAccount: string;
-      memo: string;
-      amount: asset;
-      requestId: number;
-    }) => {
-      const { amount, fromAccount, memo, toAccount, requestId } = params;
-
-      const broadcastResult = await transactionService.transferFromSavings(
-        amount,
-        fromAccount,
-        memo,
-        toAccount,
-        requestId,
-        { observe: true }
-      );
-      const response = { ...params, broadcastResult };
-      logger.info('Done transfer from savings transaction: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      logger.info('useWithdrawFromSavingsMutation onSuccess data: %o', data);
-      const { username } = user;
-      const { fromAccount } = data;
-      queryClient.invalidateQueries({ queryKey: ['savingsWithdrawalsFrom', username] });
-      queryClient.invalidateQueries({ queryKey: ['accountHistory', fromAccount] });
-      queryClient.invalidateQueries({ queryKey: ['accountData', fromAccount] });
-    }
+  const { username } = useUserClient().user;
+  return useOperationMutation({
+    name: 'useWithdrawFromSavingsMutation',
+    run: withBroadcastResult(({ amount, fromAccount, memo, toAccount, requestId }: WithdrawParams) =>
+      transactionService.transferFromSavings(amount, fromAccount, memo, toAccount, requestId, OBSERVE)
+    ),
+    invalidate: (params: WithdrawParams) => [['savingsWithdrawalsFrom', username], ...accountKeys(params)],
+    reportErrors: false
   });
-
-  return withdrawFromSavingsMutation;
 }
