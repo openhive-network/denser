@@ -49,6 +49,8 @@
     "clsx": "^1.2.1",
     "cmdk": "^1.1.1",
     "dayjs": "^1.11.10",
+    "i18next": "^23.7.9",
+    "i18next-resources-to-backend": "^1.2.1",
     "lucide-react": "^0.482.0",
     "multihashes": "^4.0.3",
     "next": "^16.3.8",
@@ -57,6 +59,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-hook-form": "^7.45.1",
+    "react-i18next": "^15.4.0",
     "react-spinners-kit": "^1.9.1",
     "tailwind-merge": "^1.13.2"
   },

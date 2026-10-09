@@ -1,68 +1,19 @@
 import { getLogger } from '@hive/ui/lib/logging';
 import { setStorageItem, getStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
+import {
+  CONDENSER_LOGIN_KEYS,
+  readCondenserLanguage,
+  removeCondenserKeys,
+  type CondenserMigrationProfile
+} from '@smart-signer/lib/condenser-migration';
 import { languages } from '@/blog/i18n/settings';
 import { setLanguage } from '@/blog/utils/language';
 
 // Direct localStorage access is intentional: we read/write Condenser's legacy
-// keys which have no TTL structure, plus one-time migration flags.
+// keys which have no TTL structure.
 /* eslint-disable no-restricted-globals */
 
 const logger = getLogger('app');
-
-const MIGRATION_FLAG_KEY = 'condenser-migrated';
-
-// Hive account names: 3-16 chars, start with letter, only lowercase + digits + dots + hyphens.
-const ACCOUNT_NAME_REGEX = /^[a-z][a-z0-9.-]{2,15}$/;
-
-export interface CondenserLoginData {
-  username: string;
-  postingWif: string;
-  loginWithKeychain: boolean;
-}
-
-/**
- * Decodes a hex-encoded string to UTF-8.
- * Condenser stores autopost2 as hex-encoded tab-separated data.
- */
-function hexToString(hex: string): string {
-  const bytes = new Uint8Array(
-    (hex.match(/.{1,2}/g) ?? []).map((byte) => parseInt(byte, 16))
-  );
-  return new TextDecoder().decode(bytes);
-}
-
-/**
- * Parses the Condenser `autopost2` localStorage entry.
- *
- * Format (hex-encoded, tab-separated):
- * [0] username
- * [1] postingWif
- * [2] memoWif
- * [3] login_owner_pubkey
- * [4] login_with_keychain ("true" / "")
- * [5-11] other flags (hivesigner, hiveauth, tokens)
- */
-export function parseAutopost2(): CondenserLoginData | null {
-  try {
-    const raw = localStorage.getItem('autopost2');
-    if (!raw) return null;
-
-    const decoded = hexToString(raw);
-    const fields = decoded.split('\t');
-
-    const username = fields[0]?.trim();
-    if (!username || !ACCOUNT_NAME_REGEX.test(username)) return null;
-
-    return {
-      username,
-      postingWif: fields[1] || '',
-      loginWithKeychain: fields[4] === 'true'
-    };
-  } catch (error) {
-    logger.error(error, 'Failed to parse Condenser autopost2');
-    return null;
-  }
-}
 
 // --- Condenser data format types ---
 
@@ -166,28 +117,16 @@ function convertPayoutType(condenserType: string | undefined): string {
 // --- Migration functions ---
 
 /**
- * Migrates language preference from Condenser's `language` key
- * (stored via the `store` npm package as raw JSON) to Denser's `NEXT_LOCALE`.
+ * Migrates language preference from Condenser's `language` key to Denser's `NEXT_LOCALE`.
  * Only migrates if NEXT_LOCALE doesn't already exist.
  */
-export function migrateLanguage(): void {
+function migrateLanguage(): void {
   try {
     // Skip if Denser already has a language set
     if (getStorageItem<string>('NEXT_LOCALE')) return;
 
-    const raw = localStorage.getItem('language');
-    if (!raw) return;
-
-    // The `store` npm package JSON.stringifies the value, so we parse it
-    let locale: string;
-    try {
-      locale = JSON.parse(raw);
-    } catch {
-      // If not valid JSON, try using the raw value
-      locale = raw;
-    }
-
-    if (typeof locale === 'string' && languages.includes(locale)) {
+    const locale = readCondenserLanguage(languages);
+    if (locale) {
       setLanguage(locale);
       logger.info('Condenser migration: language "%s" migrated to NEXT_LOCALE', locale);
     }
@@ -203,7 +142,7 @@ export function migrateLanguage(): void {
  * Condenser: { name, markdown, summary, altAuthor, community, beneficiaries: [{username, percent}] }
  * Denser:    { templateTitle, postArea, postSummary, author, category, beneficiaries: [{account, weight}] }
  */
-export function migrateTemplates(username: string): void {
+function migrateTemplates(username: string): void {
   try {
     const key = `hivePostTemplates-${username}`;
 
@@ -248,7 +187,7 @@ export function migrateTemplates(username: string): void {
  *
  * Only migrates if the denser draft key doesn't already exist.
  */
-export function migrateDraft(username: string): void {
+function migrateDraft(username: string): void {
   try {
     const denserKey = `postData-new-${username}`;
     // Skip if Denser already has a draft for this user
@@ -297,7 +236,7 @@ export function migrateDraft(username: string): void {
  *
  * Skips `replyEditorData-submitStory` (handled by `migrateDraft`) and `replyEditorData-rte` (not a draft).
  */
-export function migrateReplyDrafts(username: string): void {
+function migrateReplyDrafts(username: string): void {
   try {
     const prefix = 'replyEditorData-';
     const skipKeys = new Set([`${prefix}submitStory`, `${prefix}rte`]);
@@ -358,7 +297,7 @@ export function migrateReplyDrafts(username: string): void {
  *
  * Only migrates if `votesValues` doesn't already exist.
  */
-export function migrateVoteWeights(username: string): void {
+function migrateVoteWeights(username: string): void {
   try {
     // Skip if Denser already has vote values
     if (getStorageItem('votesValues')) return;
@@ -400,7 +339,7 @@ export function migrateVoteWeights(username: string): void {
 /**
  * Runs all data migrations that require a username.
  */
-export function migrateCondenserData(username: string): void {
+function migrateCondenserData(username: string): void {
   migrateTemplates(username);
   migrateDraft(username);
   migrateReplyDrafts(username);
@@ -409,56 +348,40 @@ export function migrateCondenserData(username: string): void {
 
 /**
  * Removes known Condenser localStorage keys that are no longer needed.
- * Includes keys from migrated data (drafts, vote weights, language).
+ * Includes keys from migrated data (drafts, vote weights).
  */
-export function cleanupCondenserStorage(username?: string): void {
-  const directKeys = [
-    'autopost2', 'autopost', 'saveLogin', 'bump', 'replyEditorData-rte',
-    'language',
-    'replyEditorData-submitStory'
-  ];
-
-  for (const key of directKeys) {
-    localStorage.removeItem(key);
-  }
-
-  // Remove user-specific condenser vote weight keys
-  if (username) {
-    localStorage.removeItem(`voteWeight-${username}`);
-    localStorage.removeItem(`voteWeightDown-${username}`);
-    localStorage.removeItem(`voteWeight-${username}-comment`);
-    localStorage.removeItem(`voteWeightDown-${username}-comment`);
-  }
-
-  // Remove pattern-based orphan keys
-  const patterns = [
-    /^showEditor-/,
-    /^reblogged_/,
-    /^featured-post-seen:/,
-    /^promoted-post-seen:/,
-    /_previous_owner_authority_last_valid_time$/,
-    /^replyEditorData-/,
-    /^voteWeight-/,
-    /^voteWeightDown-/
-  ];
-
-  const keysToRemove: string[] = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key && patterns.some((p) => p.test(key))) {
-      keysToRemove.push(key);
-    }
-  }
-
-  for (const key of keysToRemove) {
-    localStorage.removeItem(key);
-  }
+function cleanupCondenserStorage(username: string): void {
+  removeCondenserKeys(
+    [
+      'replyEditorData-rte',
+      'replyEditorData-submitStory',
+      `voteWeight-${username}`,
+      `voteWeightDown-${username}`,
+      `voteWeight-${username}-comment`,
+      `voteWeightDown-${username}-comment`
+    ],
+    [
+      /^showEditor-/,
+      /^reblogged_/,
+      /^featured-post-seen:/,
+      /^promoted-post-seen:/,
+      /^replyEditorData-/,
+      /^voteWeight-/,
+      /^voteWeightDown-/
+    ]
+  );
 }
 
-export function isAlreadyMigrated(): boolean {
-  return localStorage.getItem(MIGRATION_FLAG_KEY) === '1';
-}
-
-export function markMigrated(): void {
-  localStorage.setItem(MIGRATION_FLAG_KEY, '1');
-}
+export const BLOG_CONDENSER_MIGRATION: CondenserMigrationProfile = {
+  migratedFlagKey: 'condenser-migrated',
+  logLabel: 'Condenser migration',
+  migrateSettings: migrateLanguage,
+  // Templates, drafts and vote weights are migrated before the login attempt;
+  // these are synchronous and idempotent, so safe to run even if login retries later.
+  migrateUserData: migrateCondenserData,
+  // No autopost2 means no condenser login — only remove migration markers,
+  // not user data (replyEditorData-*, voteWeight-* etc.) which may belong to
+  // users who have drafts/templates but never logged in via condenser.
+  cleanupWithoutLogin: () => CONDENSER_LOGIN_KEYS.forEach((key) => localStorage.removeItem(key)),
+  cleanup: cleanupCondenserStorage
+};
