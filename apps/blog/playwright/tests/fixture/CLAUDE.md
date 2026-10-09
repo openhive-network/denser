@@ -826,6 +826,19 @@ so they go to `https://api.hive.blog`; with no network Chromium logs two
 stack has egress, so it doesn't show them. A spec that fails on any console error
 routes those URLs to a `200 {}` (AI search off), as `healthchecker.spec.ts` does.
 
+### Esc closes the topmost Radix layer, which may be a tooltip
+
+Radix dismisses one layer per Esc, the most recently opened first. A tooltip that opens
+while a dialog is open sits above it, so Esc closes the tooltip and the dialog stays.
+The sign-in form's buttons open tooltips on focus. A Tab-trap check
+(`expectFocusTrappedIn` in `support/uiPrimitives.ts`) that ends on one of them has to
+close the dialog another way. Also, never render a dialog inside a `TooltipTrigger`.
+React bubbles the dialog's focus and pointer events through the portal to the trigger,
+which then opens its tooltip over the dialog. The post page's reblog dialog did this
+until `UI-ALERT-01` caught it.
+`collectConsoleProblems` skips Chromium's `Failed to load resource` for hosts other than
+localhost. Images and other off-origin resources can't load offline.
+
 ### Asserting Set-Cookie: a fresh request context per request
 
 The middleware sets `blog_login_challenge_server`, `blog_login_challenge` and

@@ -28,7 +28,6 @@ export class CommentEditorPage {
 
 
     async validateEmptyCommentEditorIsLoaded() {
-        await this.page.waitForTimeout(3000);
         await expect(this.getReplayEditorElement).toBeVisible();
         await expect(this.getDisableSideBySideEditorHeader).toBeVisible();
         await expect(this.getTextAreaCommentEditor).toBeVisible();
@@ -37,7 +36,6 @@ export class CommentEditorPage {
     }
 
     async validateCommentEditorIsLoadedByEdit() {
-        await this.page.waitForTimeout(3000);
         await expect(this.getReplayEditorElement).toBeVisible();
         await expect(this.getDisableSideBySideEditorHeader).toBeVisible();
         await expect(this.getTextAreaCommentEditor).toBeVisible();
