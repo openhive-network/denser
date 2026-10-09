@@ -1,7 +1,13 @@
 import type { Server } from 'node:http';
-import { test, expect, type Locator, type Page } from '@playwright/test';
+import { test, expect, type Locator } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
-import { STUB_ACCOUNT, STUB_FOLLOWED, STUB_PROPOSAL_SUBJECT, startWalletApiStub } from '../support/walletApiStub';
+import {
+  STUB_ACCOUNT,
+  STUB_FOLLOWED,
+  STUB_PROPOSAL_SUBJECT,
+  logInAsStubAccount,
+  startWalletApiStub
+} from '../support/walletApiStub';
 
 /**
  * The wallet's `@hive/ui` Radix and cmdk primitives, driven with mouse and keyboard: the proposals
@@ -54,25 +60,6 @@ test.beforeEach(async ({ context, page }) => {
 test.afterEach(() => {
   expect(consoleProblems, consoleProblems.join('\n')).toEqual([]);
 });
-
-/** Logs STUB_ACCOUNT in on the client, as the blog's fixture seeder does: the stored user is what `useUser` starts from. */
-const logInAsStubAccount = (page: Page) =>
-  page.context().addInitScript((username) => {
-    window.localStorage.setItem(
-      'user',
-      JSON.stringify({
-        isLoggedIn: true,
-        username,
-        avatarUrl: '',
-        loginType: 'wif',
-        keyType: 'posting',
-        authenticateOnBackend: false,
-        chatAuthToken: '',
-        oauthConsent: {},
-        strict: false
-      })
-    );
-  }, STUB_ACCOUNT);
 
 /** Opens `opened` through `open`, retried: an action that lands before hydration attached the handlers is lost. */
 const openWith = async (open: () => Promise<void>, opened: Locator) => {

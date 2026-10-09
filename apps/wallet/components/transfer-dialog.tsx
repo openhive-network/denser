@@ -37,9 +37,15 @@ import { convertStringToBig } from '@ui/lib/helpers';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getAsset } from '@transaction/lib/utils';
+import { detectSecretInMemo } from '@ui/lib/memo-secret-check';
+import { MemoSecretWarning } from './memo-secret-warning';
 
 // After applying this operation, vesting_shares will be withdrawn at a rate of vesting_shares/13 per week for 13 weeks starting one week after this operation is included in the blockchain.
 const HIVE_VESTING_WITHDRAW_INTERVALS = 13;
+
+// wax is imported only once a broadcast has failed, so it stays out of the page's initial chunks.
+const isPrivateKeyLeak = async (error: unknown) =>
+  error instanceof (await import('@hiveio/wax')).WaxPrivateKeyLeakDetectedException;
 
 type Amount = {
   hive: string;
@@ -92,6 +98,15 @@ export function TransferDialog({
   const [advanced, setAdvanced] = useState(false);
   const [data, setData] = useState(defaultValue);
   const badActors = badActorList.includes(data.to);
+  const memoSecret = detectSecretInMemo(data.memo);
+  // The override covers only the memo it was given for: any edit has to be acknowledged again.
+  const [acknowledgedMemo, setAcknowledgedMemo] = useState<string | null>(null);
+  const memoSecretAcknowledged = acknowledgedMemo === data.memo;
+  const memoBlocked = memoSecret !== null && !memoSecretAcknowledged;
+  const onMemoSecretAcknowledgedChange = useCallback(
+    (acknowledged: boolean) => setAcknowledgedMemo(acknowledged ? data.memo : null),
+    [data.memo]
+  );
   const transferMutation = useTransferHiveMutation();
   const transferToSavingsMutation = useTransferToSavingsMutation();
   const powerUpMutation = usePowerUpMutation();
@@ -118,10 +133,14 @@ export function TransferDialog({
         await transaction(params);
         invalidateData();
       } catch (error) {
+        if (await isPrivateKeyLeak(error)) {
+          toast({ title: t('transfers_page.memo_secret_wif'), variant: 'destructive' });
+          return;
+        }
         handleError(error, { method, params });
       }
     },
-    [invalidateData]
+    [invalidateData, t]
   );
 
   switch (type) {
@@ -269,10 +288,12 @@ export function TransferDialog({
     }
   });
   const onSubmit: SubmitHandler<TransferFormValues> = () => {
+    if (memoBlocked) return;
     setNextOpen(true);
   };
 
   const onConfirm = () => {
+    if (memoBlocked) return;
     data.onSubmit();
   };
   useEffect(() => {
@@ -438,6 +459,13 @@ export function TransferDialog({
                   </div>
                 </div>
               )}
+              {memoSecret ? (
+                <MemoSecretWarning
+                  kind={memoSecret}
+                  acknowledged={memoSecretAcknowledged}
+                  onAcknowledgedChange={onMemoSecretAcknowledgedChange}
+                />
+              ) : null}
             </div>
           ) : (
             <div className="grid gap-4 py-4">
@@ -495,7 +523,7 @@ export function TransferDialog({
             <Button
               variant="redHover"
               className="w-fit"
-              disabled={badActors || powerDownMutation.isPending}
+              disabled={badActors || memoBlocked || powerDownMutation.isPending}
               onClick={type === 'powerDown' ? onConfirm : form.handleSubmit(onSubmit)}
             >
               {powerDownMutation.isPending ? (
