@@ -7,11 +7,13 @@ const logger = getLogger('app');
 
 export async function buildCommunityTagMetadata(
   params: { tag: string },
-  sectionLabel?: string
+  sort: string,
+  sectionLabel: string = sort
 ): Promise<Metadata> {
   const tag = params.tag;
+  const alternates = { canonical: `/${sort}/${tag}` };
 
-  if (!isCommunity(tag)) return { title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive` };
+  if (!isCommunity(tag)) return { title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`, alternates };
 
   try {
     const data = await getCommunity(tag);
@@ -25,6 +27,7 @@ export async function buildCommunityTagMetadata(
     return {
       title,
       description,
+      alternates,
       openGraph: {
         title,
         description,
@@ -43,6 +46,7 @@ export async function buildCommunityTagMetadata(
   return {
     title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`,
     description: `${tag} community. Hive: Communities Without Borders.`,
+    alternates,
     openGraph: {
       title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`,
       description: `${tag} community. Hive: Communities Without Borders.`,

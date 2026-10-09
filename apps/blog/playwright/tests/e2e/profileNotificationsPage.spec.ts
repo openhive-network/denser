@@ -4,6 +4,7 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { ApiHelper } from '../support/apiHelper';
 import { PostPage } from '../support/pages/postPage';
 import { CommentViewPage } from '../support/pages/commentViewPage';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Notifications Tab in Profile page of @gtg', () => {
   let homePage: HomePage;
@@ -93,22 +94,22 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
       ) {
         // await profilePage.page.waitForSelector(postPage.articleBody['_selector']);
         const firstSelectorResolvedPromiseResult = await Promise.race([
-          profilePage.page.waitForSelector(postPage.articleBody['_selector']),
-          profilePage.page.waitForSelector(page.getByText('Sorry! This page does not exist')['_selector'])
+          profilePage.page.waitForSelector(locatorSelector(postPage.articleBody)),
+          profilePage.page.waitForSelector(locatorSelector(page.getByText('Sorry! This page does not exist')))
         ]);
         await expect(profilePage.page.url()).toContain(firstNotificationUrlAPI);
       }
       if (firstNotificationTypeAPI == 'reply' || firstNotificationTypeAPI == 'reply_comment') {
         const firstSelectorResolvedPromiseResult = await Promise.race([
-          profilePage.page.waitForSelector(commentPage.getMainCommentAuthorData['_selector']),
-          profilePage.page.waitForSelector(page.getByText('Sorry! This page does not exist')['_selector'])
+          profilePage.page.waitForSelector(locatorSelector(commentPage.getMainCommentAuthorData)),
+          profilePage.page.waitForSelector(locatorSelector(page.getByText('Sorry! This page does not exist')))
         ]);
         await expect(profilePage.page.url()).toContain(firstNotificationUrlAPI);
       }
       if (firstNotificationTypeAPI == 'follow') {
         const firstSelectorResolvedPromiseResult = await Promise.race([
-          profilePage.page.waitForSelector(profilePage.profileInfo['_selector']),
-          profilePage.page.waitForSelector(page.getByText('Sorry! This page does not exist')['_selector'])
+          profilePage.page.waitForSelector(locatorSelector(profilePage.profileInfo)),
+          profilePage.page.waitForSelector(locatorSelector(page.getByText('Sorry! This page does not exist')))
         ]);
         await profilePage.page.waitForTimeout(5000);
         if (await profilePage.userHasNotStartedBloggingYetMsg.isVisible())
@@ -118,7 +119,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
         else await expect(profilePage.postBlogItem.first()).toBeVisible();
       }
       await profilePage.page.goBack();
-      await profilePage.page.waitForSelector(profilePage.notificationsMenuAllContent['_selector']);
+      await profilePage.page.waitForSelector(locatorSelector(profilePage.notificationsMenuAllContent));
       await profilePage.profileNotificationsTabIsSelected();
     }
   });
@@ -374,7 +375,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     // Move to the Reblog Tab
     await profilePage.notificationsMenuReblogsButton.click();
     if (await profilePage.page.locator('table').isVisible())
-      await profilePage.page.waitForSelector(await profilePage.notificationListItemInReblogs['_selector']);
+      await profilePage.page.waitForSelector(locatorSelector(profilePage.notificationListItemInReblogs));
 
     // Compare amount of the reblogs notifications with api response before clicking Load more
     const notificationListItemInReblogsArray = await profilePage.notificationListItemInReblogs.all();
@@ -383,7 +384,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
     // Compare amount of the reblogs notifications with api response after clicking Load more
     await profilePage.notificationLoadMoreButtonInReblogs.click();
     if (await profilePage.page.locator('table').isVisible())
-      await profilePage.page.waitForSelector(await profilePage.notificationListItemInReblogs['_selector']);
+      await profilePage.page.waitForSelector(locatorSelector(profilePage.notificationListItemInReblogs));
     const notificationListItemInReblogsArray2 = await profilePage.notificationListItemInReblogs.all();
     expect(await notificationListItemInReblogsArray2.length).toBe(
       amountNotificationsReblogType + amountNotificationsReblogType2

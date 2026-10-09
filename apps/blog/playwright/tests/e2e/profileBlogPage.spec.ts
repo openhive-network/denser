@@ -6,6 +6,7 @@ import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 import { LoginForm } from '../support/pages/loginForm';
 import { voteTooltipText } from '../support/testHelpers';
+import { locatorSelector } from '../support/locatorSelector';
 
 
 test.describe('Profile page of @gtg', () => {
@@ -96,7 +97,7 @@ test.describe('Profile page of @gtg', () => {
     const firstPostCardTitle: any = await profilePage.postTitle.first().textContent();
     const firstPostCardDescription: any = await profilePage.postDescription.first().textContent();
     await profilePage.postTitle.first().click();
-    await postPage.page.waitForSelector(await postPage.articleBody['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.articleBody));
     await expect(postPage.articleTitle).toHaveText(await firstPostCardTitle);
     await expect(postPage.articleBody).toBeVisible();
   });
@@ -106,7 +107,7 @@ test.describe('Profile page of @gtg', () => {
 
     const firstPostCardTitle: any = await profilePage.postTitle.first().textContent();
     await profilePage.postDescription.first().click();
-    await postPage.page.waitForSelector(await postPage.articleBody['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.articleBody));
     await expect(postPage.articleTitle).toHaveText(await firstPostCardTitle);
     await expect(postPage.articleBody).toBeVisible();
   });
@@ -172,7 +173,7 @@ test.describe('Profile page of @gtg', () => {
 
     await profilePage.postTimestamp.first().click();
 
-    await postPage.page.waitForSelector(await postPage.articleBody['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.articleBody));
     await expect(postPage.articleTitle).toHaveText(await firstPostCardTitle);
     await expect(postPage.articleBody).toBeVisible();
   });

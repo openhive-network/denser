@@ -6,7 +6,7 @@ import { createReadClient, JsonRpcApiError } from './read-client';
 import { fetchReadTransport, ReadTransportError } from './read-transport';
 import { calculateCurrentManabarValue, calculateManabarFullRegenerationTime } from './manabar-math';
 import { isTransportError } from './wax-errors';
-import { vestsToHiveSatoshis } from '../../ui/lib/asset-math';
+import { hiveToHbdSatoshis, vestsToHiveSatoshis } from '../../ui/lib/asset-math';
 import { formatAsset, formatOptionalAsset } from '../../ui/lib/asset-format';
 import { createNaiAsset } from '../../ui/lib/asset-constants';
 
@@ -38,6 +38,7 @@ interface IWaxChain {
   hbdSatoshis(amount: string): INaiAsset;
   formatter: IWaxFormatter;
   vestsToHp(vests: INaiAsset, totalVestingFundHive: INaiAsset, totalVestingShares: INaiAsset): INaiAsset;
+  hiveToHbd(amount: INaiAsset, base: INaiAsset, quote: INaiAsset): INaiAsset;
   calculateCurrentManabarValue(now: number, maxMana: string, currentMana: string, lastUpdateTime: number): IManabarValue;
   calculateManabarFullRegenerationTime(now: number, maxMana: string, currentMana: string, lastUpdateTime: number): number;
 }
@@ -361,6 +362,25 @@ describe('wasm-free reads, asset and manabar math are equivalent to wax', functi
       const expected = waxChain.vestsToHp(waxChain.vestsSatoshis(vests), waxChain.hiveSatoshis(fund), waxChain.vestsSatoshis(shares));
 
       expect(vestsToHiveSatoshis(BigInt(vests), BigInt(fund), BigInt(shares)).toString()).to.equal(expected.amount, vests);
+    }
+  });
+
+  it('hiveToHbdSatoshis matches wax hiveToHbd', () => {
+    const prices = [
+      ['250', '1000'],
+      ['57', '1000'],
+      ['1000', '3333'],
+      ['123456', '1000']
+    ];
+    for (const [base, quote] of prices) {
+      for (const hive of ['0', '1', '999', '123456789012', '-123456789012', '9007199254740993']) {
+        const expected = waxChain.hiveToHbd(waxChain.hiveSatoshis(hive), waxChain.hbdSatoshis(base), waxChain.hiveSatoshis(quote));
+
+        expect(hiveToHbdSatoshis(BigInt(hive), BigInt(base), BigInt(quote)).toString()).to.equal(
+          expected.amount,
+          `${hive} at ${base}/${quote}`
+        );
+      }
     }
   });
 

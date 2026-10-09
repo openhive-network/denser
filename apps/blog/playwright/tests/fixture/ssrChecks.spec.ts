@@ -186,12 +186,10 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
     await expectSsrMetaContent(page.locator('head meta[name="description"]'));
   });
 
-  // Gap: no route sets `alternates.canonical`, so Next emits no
-  // <link rel="canonical">. Hive posts are reachable under many tag/community
-  // prefixes (/trending/@u/p, /hive-x/@u/p, …), so a missing canonical lets
-  // crawlers treat each as a separate page (duplicate-content dilution).
+  // Hive posts are reachable under many tag/community prefixes (/trending/@u/p,
+  // /hive-x/@u/p, …); without a canonical crawlers treat each as a separate page
+  // (duplicate-content dilution). The exact URL is asserted by ssrSeoGuard.
   test('SSR-24 — post detail emits a canonical link in the server <head>', async ({ page }) => {
-    test.fail(!isRecordMode, 'SEO gap (#903): no canonical link is set (no alternates.canonical in metadata)');
     await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
     await expectSsrHref(page.locator('head link[rel="canonical"]'));
   });

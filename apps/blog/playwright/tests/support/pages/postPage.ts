@@ -1,15 +1,16 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { HomePage } from './homePage';
 import { TIMEOUTS } from '../constants';
+import { locatorSelector } from '../locatorSelector';
 
 export class PostPage {
   readonly page: Page;
-  readonly postListItemOnHomePage: any;
+  readonly postListItemOnHomePage: Locator;
   readonly firstPostImageOnHomePage: Locator;
   readonly firstPostTitleOnHomePage: Locator;
 
-  readonly articleTitle: any;
-  readonly articleBody: any;
+  readonly articleTitle: Locator;
+  readonly articleBody: Locator;
   readonly articleAuthorData: Locator;
   readonly articleAuthorName: Locator;
   readonly articleFooter: Locator;
@@ -301,7 +302,7 @@ export class PostPage {
   async gotoHomePage() {
     await this.page.goto('/');
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.postListItemOnHomePage['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.postListItemOnHomePage));
   }
 
   async gotoPostPage(communityCategoryName: string, author: string, permlink: string) {
@@ -312,7 +313,7 @@ export class PostPage {
     // can point to SSR-rendered nodes that get detached during hydration,
     // causing scrollIntoViewIfNeeded / getComputedStyle races.
     await this.page.waitForLoadState('load');
-    await this.page.waitForSelector(this.articleFooter['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.articleFooter));
   }
 
   async moveToTheFirstPostInHomePageByImage() {
@@ -324,7 +325,7 @@ export class PostPage {
     // console.log('Author HomePage: ' + firstPostAuthorAndReputation);
 
     await this.firstPostImageOnHomePage.click();
-    await this.page.waitForSelector(this.articleBody['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.articleBody));
 
     await expect(this.articleTitle).toBeVisible();
     // console.log('Author: ', await this.articleAuthorName.textContent())
@@ -343,7 +344,7 @@ export class PostPage {
       await this.page.getByText('Reveal this post').first().click();
     }
     await this.firstPostTitleOnHomePage.click();
-    await this.page.waitForSelector(this.articleBody['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.articleBody));
 
     await expect(this.articleTitle).toBeVisible();
     // expect(await this.articleAuthorName.textContent()).toBe(firstPostAuthorAndReputation);

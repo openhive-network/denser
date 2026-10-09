@@ -9,6 +9,7 @@ import { PostPage } from '../support/pages/postPage';
 import { waitForPostIsVisibleInUnmoderatedTagPage } from '../support/waitHelper';
 import { generateRandomString } from '../support/utils';
 import { AdvancedSettingsModal } from '../support/pages/advancedSettingsModal';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Creating post tests with POM and fixture users', () => {
   test('Validate creating the new post by clicking the nav pencil icon for denserautotest4', async ({
@@ -238,7 +239,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     const postContent1: Locator = homePage.page.getByText(postContentText1);
     // Move to the last created post
     await unmoderatedTagPage.firstPostTitle.click();
-    await homePage.page.waitForSelector(await postContent2['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(postContent2));
     // Add url to the array
     permlinks.push(homePage.page.url());
     // Go back
@@ -247,7 +248,7 @@ test.describe('Creating post tests with POM and fixture users', () => {
     await unmoderatedTagPage.validateUnmoderatedTagPageIsLoaded(postTag);
     // Move to the earlier created post with the same title
     await unmoderatedTagPage.secondPostTitle.click();
-    await homePage.page.waitForSelector(await postContent1['_selector']);
+    await homePage.page.waitForSelector(locatorSelector(postContent1));
     // Add url to the array
     permlinks.push(homePage.page.url());
     expect(permlinks[0]).not.toBe(permlinks[1]);

@@ -6,8 +6,7 @@ import { SavingsWithdrawals, IFollow, HiveOperation } from '@hive/common-hiveio-
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
-import Big from 'big.js';
-import { createNaiAsset, getPrecision } from '@ui/lib/asset-constants';
+import { createNaiAsset } from '@ui/lib/asset-constants';
 import { vestsToHiveSatoshis } from '@ui/lib/asset-math';
 import { formatAsset } from '@ui/lib/asset-format';
 
@@ -40,6 +39,13 @@ export function getCurrentHpApr(data: GetDynamicGlobalPropertiesResponse) {
   return virtualSupply.times(currentInflationRate).times(vestingRewardPercent).div(totalVestingFunds);
 }
 
+type OperationValue = HiveOperation['op']['value'];
+
+const SEARCHABLE_ACCOUNT_FIELDS = ['from', 'to', 'account', 'owner', 'author'] as const;
+
+const involvesSearchedAccount = (opValue: OperationValue, search: string) =>
+  SEARCHABLE_ACCOUNT_FIELDS.some((field) => opValue[field]?.includes(search));
+
 interface getFilterArgs {
   filter: TransferFilters;
   username: string;
@@ -50,17 +56,16 @@ export const getFilter =
   ({ op }: HiveOperation) => {
     const opValue = op?.value;
     if (!opValue) return false;
+    if (filter.search && !involvesSearchedAccount(opValue, filter.search)) return false;
     switch (op.type) {
       case 'transfer_operation':
         const incomingFromCurrent = opValue.to === username || opValue.from !== username;
         const outcomingFromCurrent = opValue.from === username || opValue.to !== username;
-        const inSearch = opValue.to?.includes(filter.search) || opValue.from?.includes(filter.search);
 
         return (
           !(filter.exlude && filterSmallerThanOne(opValue.amount)) &&
           (filter.incoming || !incomingFromCurrent) &&
-          (filter.outcoming || !outcomingFromCurrent) &&
-          inSearch
+          (filter.outcoming || !outcomingFromCurrent)
         );
       case 'claim_reward_balance_operation':
         if (
@@ -101,24 +106,10 @@ export const getFilter =
         break;
       case 'author_reward_operation':
         if (!filter.others) return false;
-        if (filter.search && !opValue.author?.includes(filter.search)) return false;
         break;
     }
     return true;
   };
-
-export const transformWithdraw = (
-  withdraw: Big,
-  total_vest_hive: Big,
-  total_vests: Big,
-  format: 'string' | 'big' | 'number'
-) => {
-  const divide = withdraw.div(total_vest_hive);
-  const multiplication = total_vests.times(divide);
-  if (format === 'big') return multiplication;
-  if (format === 'number') return multiplication.toNumber();
-  return numberWithCommas(multiplication.toFixed(getPrecision('VESTS')));
-};
 
 export const getAmountFromWithdrawal = (withdrawal: SavingsWithdrawals['withdrawals'][number]) => {
   const amount = Number(withdrawal.amount.amount) / 10 ** withdrawal.amount.precision;

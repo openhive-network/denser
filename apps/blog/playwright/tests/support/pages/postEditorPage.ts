@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../locatorSelector';
 
 export class PostEditorPage {
     readonly page: Page;
@@ -197,7 +198,7 @@ export class PostEditorPage {
     }
 
     async validateThePostEditorOfSpecificPostIsLoaded(postTitle: string, postContent: string, postSummary: string, postTags: string){
-        await this.page.waitForSelector(this.getSubmitPostButton['_selector']);
+        await this.page.waitForSelector(locatorSelector(this.getSubmitPostButton));
         await expect(this.getPostTitleInput).toHaveValue(postTitle);
         await expect(this.getFormContainer).toBeVisible();
         await expect(this.getPreviewContainer).toBeVisible();

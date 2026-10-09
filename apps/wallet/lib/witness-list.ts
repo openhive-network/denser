@@ -2,7 +2,8 @@ import Big from 'big.js';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import type { IWitness } from '@hive/common-hiveio-packages/wax';
 import { getAccounts, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
-import { convertStringToBig } from '@hive/ui/lib/helpers';
+import { createNaiAsset } from '@hive/ui/lib/asset-constants';
+import { convertToHP } from '@hive/ui/lib/utils';
 import { getWitnessesByVote } from '@/wallet/lib/hive';
 
 const WITNESS_LIST_LIMIT = 250;
@@ -104,9 +105,8 @@ export type RankedWitness = WitnessSummary & {
 
 /** Ranks the witnesses by vote and keeps the ones the table lists. */
 export const rankWitnesses = (list: WitnessList): RankedWitness[] => {
-  const totalVesting = convertStringToBig(list.totalVestingFundHive);
-  const totalShares = convertStringToBig(list.totalVestingShares);
-  const votesToHp = (votes: string) => totalVesting.times(Big(votes).div(totalShares)).div(1000000);
+  const votesToHp = (votes: string) =>
+    convertToHP(createNaiAsset('VESTS', votes), list.totalVestingShares, list.totalVestingFundHive);
 
   return list.witnesses
     .map((witness, i) => {

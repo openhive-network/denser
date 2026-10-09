@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../locatorSelector';
 
 export class WitnessPage {
   readonly page: Page;
@@ -89,7 +90,7 @@ export class WitnessPage {
   }
 
   async waitForWitnessListItemsLoaded() {
-    await this.page.waitForSelector(this.witnessesListItemInfo['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.witnessesListItemInfo));
   }
 
   async validateWitnessHeaderTitle() {

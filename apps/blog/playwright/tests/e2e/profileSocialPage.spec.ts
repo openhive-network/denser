@@ -3,6 +3,7 @@ import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 import { ApiHelper } from '../support/apiHelper';
+import { locatorSelector } from '../support/locatorSelector';
 
 // Skip annotation was added to these tests due to AxiosError with status code 500 in Peakd
 // Sometimes badges are not loaded
@@ -31,7 +32,7 @@ test.describe.skip('Social tab in the profile page of @gtg', () => {
         await expect(await profilePage.socialBadgesAchivementsLabel).toHaveText('Badges and achievements');
         // Text varies based on REACT_APP_ENABLE_THIRD_PARTY_API flag
         await expect(profilePage.socialBadgesAchivementsDescription).toBeVisible();
-        await profilePage.page.waitForSelector(await profilePage.socialBadgesAchievemntsMenuBar['_selector']);
+        await profilePage.page.waitForSelector(locatorSelector(profilePage.socialBadgesAchievemntsMenuBar));
         await expect(await profilePage.socialBadgesAchievemntsMenuBar).toBeVisible();
     });
 

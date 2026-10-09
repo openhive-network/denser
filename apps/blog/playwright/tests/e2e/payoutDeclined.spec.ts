@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Profile page of @hiveio', () => {
   let homePage: HomePage;
@@ -54,7 +55,7 @@ test.describe('Profile page of @hiveio', () => {
     expect(await postPage.articleTitle.textContent())
       .toBe("Join Hive at Web3 Berlin June 10-11, 2023: The Biggest Crypto Conference in Europe, Community Meetups, and more!");
     expect(await postPage.articleAuthorName.textContent()).toBe('hiveio');
-    await page.waitForSelector(await postPage.articleFooter['_selector']);
+    await page.waitForSelector(locatorSelector(postPage.articleFooter));
     await postPage.articleFooter.focus();
     // Validate style and title of the declined payout element in the post
     await expect(await page.locator('[data-testid="post-payout-decline"]')).toHaveAttribute('title', 'Payout Declined');
@@ -87,7 +88,7 @@ test.describe('Profile page of the muted @techcity', () => {
     expect(await postPage.articleTitle.textContent())
       .toBe("Cleaning and Descaling Your Vertuo Next Machine");
     expect(await postPage.articleAuthorName.textContent()).toBe('techcity');
-    await page.waitForSelector(await postPage.articleFooter['_selector']);
+    await page.waitForSelector(locatorSelector(postPage.articleFooter));
     await postPage.articleFooter.focus();
     // Validate style and title of the declined payout element in the post
     await expect(await page.locator('[data-testid="post-payout-decline"]')).toHaveAttribute('title', 'Payout Declined');

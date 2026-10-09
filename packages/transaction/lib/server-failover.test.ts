@@ -7,6 +7,7 @@ import {
   parseFallbackNodes,
   wrapChainWithServerFailover
 } from './server-failover';
+import { NODE_COOLDOWN_MS, NodeHealth } from './node-health';
 
 type Outcome = 'ok' | 'transport' | 'missing';
 
@@ -21,19 +22,27 @@ interface IFakeChain {
 
 /**
  * A fake wax chain per node. Each node answers from its own queue of outcomes (the last one
- * repeats) and every call takes `latencyMs` of fake time.
+ * repeats) and every call takes `latencyMs` of fake time, or the node's own `nodeLatencyMs`.
  */
+interface ISetupOptions {
+  latencyMs?: number;
+  nodeLatencyMs?: Record<string, number>;
+  primary?: string;
+}
+
 const setup = (
   outcomes: Record<string, Outcome[]>,
-  { latencyMs = 100, primary = 'https://primary' } = {}
+  { latencyMs = 100, nodeLatencyMs = {}, primary = 'https://primary' }: ISetupOptions = {}
 ) => {
   let clock = 0;
+  const now = () => clock;
+  const health = new NodeHealth({ now });
   const calls: string[] = [];
   const created: Array<{ node: string; timeoutMs: number }> = [];
 
   const answer = async (node: string, method: string, params: unknown) => {
     calls.push(`${node} ${method}`);
-    clock += latencyMs;
+    clock += nodeLatencyMs[node] ?? latencyMs;
     const queue = outcomes[node] ?? ['transport'];
     const outcome = queue.length > 1 ? queue.shift() : queue[0];
     if (outcome === 'transport') throw new WaxRequestError(`fetch failed: ${node}`);
@@ -59,13 +68,18 @@ const setup = (
       created.push({ node, timeoutMs });
       return makeChain(node);
     },
-    now: () => clock,
+    health,
+    now,
     sleep: async (ms) => {
       clock += ms;
     }
   });
 
-  return { chain, calls, created, elapsed: () => clock };
+  const advance = (ms: number) => {
+    clock += ms;
+  };
+
+  return { chain, calls, created, elapsed: () => clock, advance };
 };
 
 describe('wrapChainWithServerFailover', () => {
@@ -165,6 +179,109 @@ describe('wrapChainWithServerFailover', () => {
 
     expect(elapsed()).to.be.at.most(FAILOVER_BUDGET_MS);
     expect(calls.length).to.be.lessThan(4);
+  });
+
+  describe('remembering failed nodes', () => {
+    const ranked = 'bridge.get_ranked_posts';
+
+    it('sends later calls straight to the fallback once the primary timed out', async () => {
+      const { chain, calls, elapsed } = setup(
+        { 'https://primary': ['transport'], 'https://fallback-a': ['ok'] },
+        { nodeLatencyMs: { 'https://primary': FAILOVER_ATTEMPT_TIMEOUT_MS } }
+      );
+      await chain.api.bridge.get_ranked_posts({});
+      calls.length = 0;
+      const before = elapsed();
+
+      const results = [await chain.api.bridge.get_ranked_posts({}), await chain.api.bridge.get_ranked_posts({})];
+
+      expect(results.map((result) => (result as { node: string }).node)).to.deep.equal([
+        'https://fallback-a',
+        'https://fallback-a'
+      ]);
+      expect(calls).to.deep.equal([`https://fallback-a ${ranked}`, `https://fallback-a ${ranked}`]);
+      expect(elapsed() - before).to.equal(200);
+    });
+
+    it('probes the primary after the cooldown and prefers it again once it answers', async () => {
+      const { chain, calls, advance } = setup({
+        'https://primary': ['transport', 'transport', 'ok'],
+        'https://fallback-a': ['ok']
+      });
+      await chain.api.bridge.get_ranked_posts({});
+      calls.length = 0;
+
+      advance(NODE_COOLDOWN_MS / 2);
+      const duringCooldown = await chain.api.bridge.get_ranked_posts({});
+      advance(NODE_COOLDOWN_MS / 2);
+      const probed = await chain.api.bridge.get_ranked_posts({});
+      const next = await chain.api.bridge.get_ranked_posts({});
+
+      expect(duringCooldown).to.have.property('node', 'https://fallback-a');
+      expect(probed).to.have.property('node', 'https://primary');
+      expect(next).to.have.property('node', 'https://primary');
+      expect(calls).to.deep.equal([
+        `https://fallback-a ${ranked}`,
+        `https://primary ${ranked}`,
+        `https://primary ${ranked}`
+      ]);
+    });
+
+    it('restarts the cooldown when the probe fails, without retrying the primary', async () => {
+      const { chain, calls, advance } = setup({ 'https://fallback-a': ['ok'] });
+      await chain.api.bridge.get_ranked_posts({});
+      advance(NODE_COOLDOWN_MS);
+      calls.length = 0;
+
+      await chain.api.bridge.get_ranked_posts({});
+      advance(NODE_COOLDOWN_MS / 2);
+      await chain.api.bridge.get_ranked_posts({});
+
+      expect(calls).to.deep.equal([
+        `https://primary ${ranked}`,
+        `https://fallback-a ${ranked}`,
+        `https://fallback-a ${ranked}`
+      ]);
+    });
+
+    it('lets only one of concurrent calls probe a recovering node', async () => {
+      const { chain, calls, advance } = setup({ 'https://fallback-a': ['ok'] });
+      await chain.api.bridge.get_ranked_posts({});
+      advance(NODE_COOLDOWN_MS);
+      calls.length = 0;
+
+      await Promise.all([chain.api.bridge.get_ranked_posts({}), chain.api.bridge.get_ranked_posts({})]);
+
+      expect(calls.filter((call) => call.startsWith('https://primary'))).to.have.length(1);
+    });
+
+    it('tries every node again, as before, when all of them are down', async () => {
+      const { chain, calls } = setup({});
+      await chain.api.bridge.get_ranked_posts({}).catch(() => undefined);
+      calls.length = 0;
+
+      const error = await chain.api.bridge.get_ranked_posts({}).catch((e: unknown) => e);
+
+      expect(error)
+        .to.be.instanceOf(WaxRequestError)
+        .with.property('message', 'fetch failed: https://fallback-b');
+      expect(calls).to.deep.equal([
+        `https://primary ${ranked}`,
+        `https://primary ${ranked}`,
+        `https://fallback-a ${ranked}`,
+        `https://fallback-b ${ranked}`
+      ]);
+    });
+
+    it('keeps preferring the primary after a failure its retry recovered from', async () => {
+      const { chain, calls } = setup({ 'https://primary': ['transport', 'ok'] });
+      await chain.api.bridge.get_ranked_posts({});
+      calls.length = 0;
+
+      await chain.api.bridge.get_ranked_posts({});
+
+      expect(calls).to.deep.equal([`https://primary ${ranked}`]);
+    });
   });
 
   it('leaves everything other than chain.api untouched', () => {
