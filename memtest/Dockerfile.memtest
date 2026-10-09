@@ -11,7 +11,7 @@ USER root
 # Setup pnpm via corepack (emsdk image has nvm-based Node)
 ENV PNPM_HOME="/home/emscripten/.local/share/pnpm"
 ENV PATH="$PNPM_HOME:/home/emscripten/.nvm/versions/node/v22.21.1/bin:$PATH"
-RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.14.0 --activate
 
 WORKDIR /app
 COPY . .
