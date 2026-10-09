@@ -2,6 +2,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { IFollow } from '@hive/common-hiveio-packages/wax';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
+import { postSocialChanged } from '@/blog/lib/social-sync';
 import {
   filterFromAllPages,
   prependToFirstPage,
@@ -54,6 +55,7 @@ export function useFollowMutation() {
     run: ({ username: otherUsername }: FollowParams) => transactionService.follow(otherUsername, OBSERVE),
     rollback: (context, { username: otherUsername }, queryClient) =>
       rollbackFollowCaches(queryClient, username, otherUsername, context),
+    onSuccess: () => postSocialChanged(username),
     successToast: (_data, { username: otherUsername }) => ({
       title: 'Followed',
       description: `You are now following ${otherUsername}.`
@@ -93,6 +95,7 @@ export function useUnfollowMutation() {
     run: ({ username: otherUsername }: FollowParams) => transactionService.unfollow(otherUsername, OBSERVE),
     rollback: (context, { username: otherUsername }, queryClient) =>
       rollbackFollowCaches(queryClient, username, otherUsername, context),
+    onSuccess: () => postSocialChanged(username),
     successToast: (_data, { username: otherUsername }) => ({
       title: 'Unfollowed',
       description: `You have unfollowed ${otherUsername}.`

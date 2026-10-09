@@ -90,6 +90,20 @@ export function useUserCore(
     return () => window.removeEventListener('auth-storage-desync', handleDesync);
   }, [queryClient]);
 
+  // Another tab logged out. Mark the user query stale without refetching: `/api/users/me` may
+  // still answer with the session the other tab's logout request has not ended yet.
+  useEffect(() => {
+    const handleStorage = (event: StorageEvent) => {
+      if (!userLocalStorage.isLogoutStorageEvent(event)) return;
+      if (!queryClient.getQueryData<User>([QUERY_KEY.user])?.isLoggedIn) return;
+      queryClient.setQueryData([QUERY_KEY.user], defaultUser);
+      saveUserOnce(defaultUser);
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.user], refetchType: 'none' });
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [queryClient]);
+
   useEffect(() => {
     // If no redirect needed, just return (example: already on
     // /dashboard). If user data not yet there (fetch in progress,

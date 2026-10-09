@@ -11,6 +11,7 @@ import {
   snapshotList,
   type ListSnapshot
 } from '@/blog/lib/follow-list-cache';
+import { postSocialChanged } from '@/blog/lib/social-sync';
 
 /** The account's own follow lists, each cached under `[list, username]`. */
 export type FollowList = 'blacklisted' | 'muted' | 'follow_blacklist' | 'follow_muted';
@@ -55,6 +56,7 @@ function useFollowListMutation<TVariables>(
     onSuccess: (_data, variables, queryClient) => {
       onSuccess(queryClient, queryKey, variables);
       updateOwnListsAfterChange(username, addsAccount);
+      postSocialChanged(username);
     },
     rollback: (context, _variables, queryClient) => rollback(queryClient, queryKey, context),
     successToast: (_data, variables) => toast(variables),

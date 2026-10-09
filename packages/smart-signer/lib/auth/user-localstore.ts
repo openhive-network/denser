@@ -24,3 +24,14 @@ export function removeUser(): void {
     localStorage.removeItem(USER_LOCAL_STORAGE_KEY);
   }
 }
+
+/**
+ * Whether a `storage` event reports another tab logging out: the stored user removed (or all of
+ * localStorage cleared) or replaced with a logged-out user.
+ */
+export function isLogoutStorageEvent(event: StorageEvent): boolean {
+  if (!isStorageAvailable('localStorage') || event.storageArea !== localStorage) return false;
+  if (event.key !== null && event.key !== USER_LOCAL_STORAGE_KEY) return false;
+  if (event.newValue === null) return true;
+  return !safeJsonParse(event.newValue, defaultUser, USER_LOCAL_STORAGE_KEY).isLoggedIn;
+}
