@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getAccountMetadata } from '@transaction/lib/metadata';
-import CurationRewardsPage from './curation-rewards-page';
+import RewardsHistoryPage from '@/wallet/feature/rewards-page/rewards-history-page';
 
 interface PageProps {
   params: Promise<{ param: string }>;
@@ -32,5 +32,5 @@ export default async function Page(props: PageProps) {
     notFound();
   }
 
-  return <CurationRewardsPage username={param.replace('@', '')} />;
+  return <RewardsHistoryPage username={param.replace('@', '')} rewardType="curation" />;
 }

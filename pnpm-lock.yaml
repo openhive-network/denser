@@ -895,6 +895,12 @@ importers:
       dayjs:
         specifier: ^1.11.10
         version: 1.11.19
+      i18next:
+        specifier: ^23.7.9
+        version: 23.16.8
+      i18next-resources-to-backend:
+        specifier: ^1.2.1
+        version: 1.2.1
       lucide-react:
         specifier: ^0.482.0
         version: 0.482.0(react@19.3.0)
@@ -919,6 +925,9 @@ importers:
       react-hook-form:
         specifier: ^7.45.1
         version: 7.54.2(react@19.3.0)
+      react-i18next:
+        specifier: ^15.4.0
+        version: 15.4.0(i18next@23.16.8)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react-spinners-kit:
         specifier: ^1.9.1
         version: 1.9.1(styled-components@6.1.14(react-dom@19.3.0(react@19.3.0))(react@19.3.0))

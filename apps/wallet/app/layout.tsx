@@ -7,9 +7,9 @@ import Script from 'next/script';
 import { Providers } from './providers';
 import ClientEffects from './client-effects';
 import CondenserMigration from '../components/condenser-migration';
-import { getEnvVersion } from '../lib/env-version';
+import { getEnvVersion } from '@ui/lib/env-version';
 import { ImagesHostHints } from '@ui/components/images-host-hints';
-import { LocaleProvider } from '../i18n/locale-context';
+import { LocaleProvider } from '@ui/components/locale-context';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';

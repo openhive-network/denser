@@ -5,7 +5,7 @@ import { test, expect } from '../support/fixture-proxy-test';
  *
  * The server resolves the UI language from the `NEXT_LOCALE` cookie — both for
  * the `<html lang/dir>` attributes (app/layout.tsx) and for the body copy
- * (app/layout.tsx passes it to client components through i18n/locale-context.tsx).
+ * (app/layout.tsx passes it to client components through @ui/components/locale-context).
  * So the initial HTML a crawler / no-JS user gets must already be in the right
  * language and direction, and a locale-varying response must not be globally
  * cacheable (or a shared cache serves an es page to an en user).

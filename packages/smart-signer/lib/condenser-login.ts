@@ -8,7 +8,7 @@ import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain'
 import type { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { FetchError } from '@smart-signer/lib/fetch-json';
 import { getLogger } from '@hive/ui/lib/logging';
-import { cleanupCondenserStorage, markMigrated, type CondenserLoginData } from './condenser-migration';
+import { markMigrated, type CondenserLoginData, type CondenserMigrationProfile } from './condenser-migration';
 
 // Direct localStorage access is intentional: we read/write Condenser's legacy
 // WIF key format (same as signer-wif.ts).
@@ -17,13 +17,14 @@ import { cleanupCondenserStorage, markMigrated, type CondenserLoginData } from '
 const logger = getLogger('app');
 
 /**
- * Logs a user migrating from Condenser wallet into Denser wallet, by Keychain or with the posting
- * key Condenser stored. Signs a login challenge with wax, so it is loaded only when there is
- * Condenser login data. Marks the migration done unless it should be retried on the next page load.
+ * Logs a user migrating from Condenser into Denser, by Keychain or with the posting key Condenser
+ * stored. Signs a login challenge with wax, so it is loaded only when there is Condenser login data.
+ * Marks the migration done unless it should be retried on the next page load.
  */
 export async function loginCondenserUser(
   { username, postingWif, loginWithKeychain }: CondenserLoginData,
-  signIn: (data: PostLoginSchema) => Promise<unknown>
+  signIn: (data: PostLoginSchema) => Promise<unknown>,
+  profile: CondenserMigrationProfile
 ): Promise<void> {
   // Determine login type: Keychain takes priority (more secure)
   let loginType: LoginType;
@@ -35,8 +36,8 @@ export async function loginCondenserUser(
     window.localStorage.setItem(`wif.${username}@posting`, JSON.stringify(postingWif));
   } else {
     // No usable login method
-    cleanupCondenserStorage();
-    markMigrated();
+    profile.cleanup(username);
+    markMigrated(profile);
     return;
   }
 
@@ -45,7 +46,7 @@ export async function loginCondenserUser(
     if (!loginChallenge) {
       // Middleware should set this on every request. If missing,
       // don't mark migrated so we retry on next page load.
-      logger.warn('Condenser wallet migration: no login_challenge cookie');
+      logger.warn('%s: no login_challenge cookie', profile.logLabel);
       removeStoredWif(username, loginType);
       return;
     }
@@ -87,11 +88,11 @@ export async function loginCondenserUser(
       authenticateOnBackend: true
     });
 
-    logger.info('Condenser wallet migration: user %s logged in via %s', username, loginType);
-    cleanupCondenserStorage();
-    markMigrated();
+    logger.info('%s: user %s logged in via %s', profile.logLabel, username, loginType);
+    profile.cleanup(username);
+    markMigrated(profile);
   } catch (error) {
-    logger.error(error, 'Condenser wallet migration failed for user %s', username);
+    logger.error(error, '%s failed for user %s', profile.logLabel, username);
 
     // Network errors: don't mark migrated, retry on next page load
     if (isNetworkError(error)) {
@@ -101,8 +102,8 @@ export async function loginCondenserUser(
 
     // Signing/validation errors: clean up and give up
     removeStoredWif(username, loginType);
-    cleanupCondenserStorage();
-    markMigrated();
+    profile.cleanup(username);
+    markMigrated(profile);
   }
 }
 
