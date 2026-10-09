@@ -1,5 +1,6 @@
 import { defineConfig } from '@playwright/test';
 import { DESKTOP_BROWSER_PROJECTS, baseConfig, browserUse } from '../../playwright/shared-config';
+import { testTimeout } from '../../playwright/support/timeouts';
 require('dotenv').config({ path: '../../stack/mirrornet-stack.env' });
 require('dotenv').config({ path: '../.env.local' });
 require('dotenv').config({ path: './test.env' });
@@ -17,7 +18,7 @@ if (process.env.REACT_APP_API_ENDPOINT.substr(-1) != '/') process.env.REACT_APP_
 const mirrornet = defineConfig({
   ...baseConfig(),
   testDir: './playwright/tests/testnet_e2e',
-  timeout: 180 * 1000,
+  timeout: testTimeout('playwright:test-mirrornet', 180 * 1000),
   fullyParallel: true,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
@@ -59,7 +60,7 @@ export function fqdnStackConfig(host: string, withAuthSetup: boolean) {
   process.env.REACT_APP_API_ENDPOINT = `https://${host}:8083/`;
   return defineConfig({
     ...mirrornet,
-    timeout: 60 * 1000,
+    timeout: testTimeout('playwright:test', 60 * 1000),
     use: {
       ...mirrornet.use,
       baseURL: `https://${host}:3000/`,

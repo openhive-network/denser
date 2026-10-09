@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test';
+import { timed } from '../../../../../playwright/support/timeouts';
 
 export class ApiHelper {
   readonly page: Page;
@@ -235,15 +236,17 @@ export class ApiHelper {
   }
 
   waitForRequestToIntercept(requestUrl: string, requestMethod: string, jsonRpcMethod: string) {
-    const broadcastTransaction = this.page.waitForRequest(
-      (request) => {
-        return (
-          request.url() === requestUrl &&
-          request.method() === requestMethod &&
-          request.postDataJSON().method === jsonRpcMethod
-        );
-      },
-      { timeout: 120000 }
+    const broadcastTransaction = timed('broadcast-request', 120000, (timeout) =>
+      this.page.waitForRequest(
+        (request) => {
+          return (
+            request.url() === requestUrl &&
+            request.method() === requestMethod &&
+            request.postDataJSON().method === jsonRpcMethod
+          );
+        },
+        { timeout }
+      )
     );
     return broadcastTransaction;
   }

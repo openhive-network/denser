@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { timed } from '../../../../../../playwright/support/timeouts';
 import { locatorSelector } from '../locatorSelector';
 
 export class ProfilePage {
@@ -697,14 +698,14 @@ export class ProfilePage {
   }
 
   async validateCommentUpvoteButtonStructure() {
-    await expect(this.postBlogItem.first()).toBeVisible({ timeout: 15000 });
-    await expect(this.postUpvoteButton.first()).toBeVisible({ timeout: 10000 });
+    await timed('post-list-visible', 15000, (timeout) => expect(this.postBlogItem.first()).toBeVisible({ timeout }));
+    await timed('vote-button-visible', 10000, (timeout) => expect(this.postUpvoteButton.first()).toBeVisible({ timeout }));
     await expect(this.postUpvoteButton.first().locator('svg').first()).toBeVisible();
   }
 
   async validateCommentDownvoteButtonStructure() {
-    await expect(this.postBlogItem.first()).toBeVisible({ timeout: 15000 });
-    await expect(this.postDownvoteButton.first()).toBeVisible({ timeout: 10000 });
+    await timed('post-list-visible', 15000, (timeout) => expect(this.postBlogItem.first()).toBeVisible({ timeout }));
+    await timed('vote-button-visible', 10000, (timeout) => expect(this.postDownvoteButton.first()).toBeVisible({ timeout }));
     await expect(this.postDownvoteButton.first().locator('svg').first()).toBeVisible();
   }
 

@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { HomePage } from './homePage';
 import { TIMEOUTS } from '../constants';
+import { timed } from '../../../../../../playwright/support/timeouts';
 import { locatorSelector } from '../locatorSelector';
 
 export class PostPage {
@@ -356,7 +357,7 @@ export class PostPage {
     // Defensive wait: on webkit a locator captured before React hydration
     // can resolve to a detached SSR node, in which case getComputedStyle
     // returns an empty string. waitFor re-resolves to the live element.
-    await element.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+    await timed('element-visible', 5000, (timeout) => element.waitFor({ state: 'visible', timeout })).catch(() => {});
     const property = await element.evaluate((ele, css) => {
       return window.getComputedStyle(ele).getPropertyValue(css);
     }, cssProperty);

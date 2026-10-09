@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { timed } from '../../../../../../playwright/support/timeouts';
 import { PostPage } from './postPage';
 import { ProfilePage } from './profilePage';
 import { locatorSelector } from '../locatorSelector';
@@ -536,13 +537,13 @@ export class HomePage {
     await expect(this.getFirstPostPayout).toBeVisible();
     await expect(this.getFirstPostPayout).toHaveText(/\$\d+/);
     await this.getFirstPostPayout.hover();
-    await expect(this.getFirstPostPayoutTooltip).toBeVisible({ timeout: 15000 });
+    await timed('tooltip-visible', 15000, (timeout) => expect(this.getFirstPostPayoutTooltip).toBeVisible({ timeout }));
   }
 
   async validateFirstPostVotesWithTooltip() {
     await expect(this.getFirstPostVotes).toBeVisible();
     await this.getFirstPostVotes.hover();
-    await expect(this.getFirstPostVotesTooltip).toBeVisible({ timeout: 15000 });
+    await timed('tooltip-visible', 15000, (timeout) => expect(this.getFirstPostVotesTooltip).toBeVisible({ timeout }));
     const votes = await this.getFirstPostVotes.textContent();
     expect(await this.getFirstPostVotesTooltip.textContent()).toBe(votes + ' votes');
   }
@@ -551,7 +552,7 @@ export class HomePage {
     await expect(this.getFirstPostChildernCommentNumber).toBeVisible();
     await expect(this.getFirstPostChildernIcon).toBeVisible();
     await this.getFirstPostChildernCommentNumber.hover();
-    await expect(this.getFirstPostChildernTooltip).toBeVisible({ timeout: 15000 });
+    await timed('tooltip-visible', 15000, (timeout) => expect(this.getFirstPostChildernTooltip).toBeVisible({ timeout }));
     const n = await this.getFirstPostChildernCommentNumber.textContent();
     if (n === '0') {
       expect(await this.getFirstPostChildernTooltip.textContent()).toContain('No responses. Click to respond');
@@ -583,7 +584,7 @@ export class HomePage {
     await expect(this.getFirstPostUpvoteButton).toBeVisible();
     await expect(this.getFirstPostUpvoteButton.locator('svg')).toBeVisible();
     await this.getFirstPostUpvoteButton.hover();
-    await expect(this.getFirstPostUpvoteButtonTooltip).toBeVisible({ timeout: 15000 });
+    await timed('tooltip-visible', 15000, (timeout) => expect(this.getFirstPostUpvoteButtonTooltip).toBeVisible({ timeout }));
     expect(await this.getFirstPostUpvoteButtonTooltip.textContent()).toContain('Upvote');
   }
 
@@ -591,7 +592,7 @@ export class HomePage {
     await expect(this.getFirstPostDownvoteButton).toBeVisible();
     await expect(this.getFirstPostDownvoteButton.locator('svg')).toBeVisible();
     await this.getFirstPostDownvoteButton.hover();
-    await expect(this.getFirstPostDownvoteButtonTooltip).toBeVisible({ timeout: 15000 });
+    await timed('tooltip-visible', 15000, (timeout) => expect(this.getFirstPostDownvoteButtonTooltip).toBeVisible({ timeout }));
     expect(await this.getFirstPostDownvoteButtonTooltip.textContent()).toContain('Downvote');
   }
 
@@ -674,7 +675,7 @@ export class HomePage {
     await this.page.setViewportSize(MOBILE_VIEWPORT);
     await this.page.goto('/');
     await this.page.waitForLoadState('domcontentloaded');
-    await expect(this.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: 15000 });
+    await timed('post-list-visible', 15000, (timeout) => expect(this.getMainTimeLineOfPosts.first()).toBeVisible({ timeout }));
   }
 
   /**
@@ -684,7 +685,7 @@ export class HomePage {
     await this.page.setViewportSize(TABLET_VIEWPORT);
     await this.page.goto('/');
     await this.page.waitForLoadState('domcontentloaded');
-    await expect(this.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: 15000 });
+    await timed('post-list-visible', 15000, (timeout) => expect(this.getMainTimeLineOfPosts.first()).toBeVisible({ timeout }));
   }
 
   /**

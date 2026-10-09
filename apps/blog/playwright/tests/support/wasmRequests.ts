@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { testTimeout } from '../../../../../playwright/support/timeouts';
 
 /**
  * Helpers for asserting which pages download wax's wasm (`wax.common.<hash>.wasm`).
@@ -28,7 +29,8 @@ export const recordWasmRequests = (page: Page): string[] => {
 export const settleAfterLoad = async (page: Page): Promise<void> => {
   await page.waitForLoadState('load');
   await page.evaluate(
-    () => new Promise<void>((resolve) => window.requestIdleCallback(() => resolve(), { timeout: 5_000 }))
+    (timeout) => new Promise<void>((resolve) => window.requestIdleCallback(() => resolve(), { timeout })),
+    testTimeout('idle-callback', 5_000)
   );
   await page.waitForLoadState('networkidle');
 };

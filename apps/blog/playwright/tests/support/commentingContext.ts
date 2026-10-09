@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { TIMEOUTS } from './constants';
+import { testTimeout, timed } from '../../../../../playwright/support/timeouts';
 import { PostPage } from './pages/postPage';
 
 /**
@@ -188,11 +189,13 @@ async function clickUntilVisible(
   trigger: Locator,
   effect: Locator
 ): Promise<void> {
-  await expect(async () => {
-    if (await effect.first().isVisible()) return;
-    await trigger.click({ timeout: 2000 });
-    await expect(effect.first()).toBeVisible({ timeout: 2500 });
-  }).toPass({ timeout: 20000 });
+  await timed('click-until-visible', 20000, (timeout) =>
+    expect(async () => {
+      if (await effect.first().isVisible()) return;
+      await trigger.click({ timeout: testTimeout('retry-click', 2000) });
+      await expect(effect.first()).toBeVisible({ timeout: testTimeout('retry-click-effect', 2500) });
+    }).toPass({ timeout })
+  );
 }
 
 /**

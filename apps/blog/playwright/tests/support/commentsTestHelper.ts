@@ -2,6 +2,7 @@ import { expect, test, type Locator, type Page } from '@playwright/test';
 import { HomePage } from './pages/homePage';
 import { PostPage } from './pages/postPage';
 import { TIMEOUTS } from './constants';
+import { testTimeout, timed } from '../../../../../playwright/support/timeouts';
 
 /**
  * Configuration for finding posts with visible comments
@@ -133,9 +134,11 @@ export async function navigateToPostWithVisibleCommentsOrSkip(
  */
 export async function clickAndAwaitUrlChange(page: Page, trigger: Locator): Promise<void> {
   const from = page.url();
-  await expect(async () => {
-    await trigger.click({ timeout: 2000 });
-    await expect(page).not.toHaveURL(from, { timeout: 3000 });
-  }).toPass({ timeout: 20000 });
+  await timed('click-until-url-change', 20000, (timeout) =>
+    expect(async () => {
+      await trigger.click({ timeout: testTimeout('retry-click', 2000) });
+      await expect(page).not.toHaveURL(from, { timeout: testTimeout('retry-click-url-change', 3000) });
+    }).toPass({ timeout })
+  );
   await page.waitForLoadState('domcontentloaded');
 }

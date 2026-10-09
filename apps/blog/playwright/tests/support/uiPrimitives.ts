@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { TIMEOUTS } from './constants';
+import { testTimeout } from '../../../../../playwright/support/timeouts';
 
 /**
  * Helpers for the specs that drive the Radix and cmdk primitives of `@hive/ui` (dialogs, alert
@@ -44,7 +45,7 @@ export function collectConsoleProblems(page: Page): string[] {
 export async function clickUntilOpen(trigger: Locator, opened: Locator): Promise<void> {
   await expect(async () => {
     await trigger.click();
-    await expect(opened).toBeVisible({ timeout: 1000 });
+    await expect(opened).toBeVisible({ timeout: testTimeout('retry-open-visible', 1000) });
   }).toPass({ timeout: TIMEOUTS.HYDRATION });
 }
 
@@ -53,7 +54,7 @@ export async function pressUntilOpen(trigger: Locator, key: string, opened: Loca
   await expect(async () => {
     await trigger.focus();
     await trigger.press(key);
-    await expect(opened).toBeVisible({ timeout: 1000 });
+    await expect(opened).toBeVisible({ timeout: testTimeout('retry-open-visible', 1000) });
   }).toPass({ timeout: TIMEOUTS.HYDRATION });
 }
 
