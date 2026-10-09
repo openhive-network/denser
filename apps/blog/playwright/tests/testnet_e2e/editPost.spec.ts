@@ -12,6 +12,7 @@ import {
 } from '../support/waitHelper';
 import { CommentEditorPage } from '../support/pages/commentEditorPage';
 import { generateRandomString } from '../support/utils';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Creating a post and edit it with POM and fixture users', () => {
   test.describe.serial('Create a post and edit it in serial tests', () => {
@@ -75,7 +76,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(homePage.postDescription.first()).toContainText(postSummary);
       // Move inside the first post on the list of posts of denserautotest4
       await homePage.getFirstPostTitle.click();
-      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
+      await postPage.page.waitForSelector(locatorSelector(postPage.articleTitle));
       await postPage.validatePostTitle(postTitle);
       await postPage.validatePostContantContainText(postContentText, postContentText);
       // Click post edit button
@@ -116,7 +117,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(homePage.postDescription.first()).toContainText(postEditedSummary);
       // Move inside the first post on the list of posts of denserautotest4
       await homePage.getFirstPostTitle.click();
-      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
+      await postPage.page.waitForSelector(locatorSelector(postPage.articleTitle));
       await postPage.validatePostTitle(postEditedTitleText);
       // Click reply button
       await postPage.commentReplay.click();
@@ -198,7 +199,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(homePage.postDescription.first()).toContainText(postSummary);
       // Move inside the first post on the list of posts of denserautotest4
       await homePage.getFirstPostTitle.click();
-      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
+      await postPage.page.waitForSelector(locatorSelector(postPage.articleTitle));
       await postPage.validatePostTitle(postTitle);
       await postPage.validatePostContantContainText(postContentText, postContentText);
       // Click post edit button
@@ -239,7 +240,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await expect(homePage.postDescription.first()).toContainText(postEditedSummary);
       // Move inside the first post on the list of posts of denserautotest4
       await homePage.getFirstPostTitle.click();
-      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
+      await postPage.page.waitForSelector(locatorSelector(postPage.articleTitle));
       await postPage.validatePostTitle(postEditedTitleText);
       // Click reply button
       await postPage.commentReplay.click();
@@ -329,7 +330,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await communityPage.quickValidataCommunitiesPageIsLoaded('Lifestyle');
       // Find created post and move inside
       await denserAutoTest4Page.page.getByText(postTitle).click();
-      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
+      await postPage.page.waitForSelector(locatorSelector(postPage.articleTitle));
       await postPage.validatePostTitle(postTitle);
       await postPage.validatePostContantContainText(postContentText, postContentText);
       // Click post edit button
@@ -377,7 +378,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await communityPage.quickValidataCommunitiesPageIsLoaded('Lifestyle');
       // Find created post and move inside
       await denserAutoTest4Page.page.getByText(postEditedTitleText).click();
-      await postPage.page.waitForSelector(postPage.articleTitle['_selector']);
+      await postPage.page.waitForSelector(locatorSelector(postPage.articleTitle));
       await postPage.validatePostTitle(postEditedTitleText);
       await postPage.validatePostContantContainText(postEditedContentText, postEditedContentText);
       // Click post edit button
@@ -396,7 +397,7 @@ test.describe('Creating a post and edit it with POM and fixture users', () => {
       await loginForm.page.waitForTimeout(2000);
       await loginForm.putEnterYourPasswordToUnlockKeyIfNeeded(users.denserautotest4.safeStoragePassword);
       // Validate the post is edited
-      await postPage.page.waitForSelector(postEditorPage.getFormContainer['_selector'], {
+      await postPage.page.waitForSelector(locatorSelector(postEditorPage.getFormContainer), {
         state: 'detached'
       });
       await expect(await postPage.hashtagsPosts.textContent()).toBe(postDeletedTagsExpected);

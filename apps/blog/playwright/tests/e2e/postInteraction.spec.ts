@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, Locator, test } from '@playwright/test';
 import { PostPage } from '../support/pages/postPage';
 import { TIMEOUTS } from '../support/constants';
 import { chromiumOnly, assertDefined } from '../support/testHelpers';
@@ -10,7 +10,7 @@ import { chromiumOnly, assertDefined } from '../support/testHelpers';
 
 test.describe('Post content link styles and navigation', () => {
   let postPage: PostPage;
-  let userLink;
+  let userLink: Locator;
 
   test.beforeEach(async ({ page }) => {
     postPage = new PostPage(page);

@@ -10,10 +10,11 @@ import {
 } from './utils';
 import { UnmoderatedTagPage } from './pages/unmoderatedTagPage';
 import { CommunitiesExplorePage } from './pages/communitiesExplorerPage';
+import { locatorSelector } from './locatorSelector';
 
 export async function waitForCommunitySubscribeButton(page: Page) {
   const communityPage = new CommunitiesPage(page);
-  const selectorSubscribeButton = await communityPage.communitySubscribeButton['_selector'];
+  const selectorSubscribeButton = locatorSelector(communityPage.communitySubscribeButton);
   const timeout = 20000;
   const interval = 4000;
 
@@ -22,7 +23,7 @@ export async function waitForCommunitySubscribeButton(page: Page) {
 
 export async function waitForCommunityJoinedLeaveButton(page: Page) {
   const communityPage = new CommunitiesPage(page);
-  const selectorSubscribeButton = await communityPage.communityJoinedLeaveButton['_selector'];
+  const selectorSubscribeButton = locatorSelector(communityPage.communityJoinedLeaveButton);
   const timeout = 30000;
   const interval = 3000;
 
@@ -31,7 +32,7 @@ export async function waitForCommunityJoinedLeaveButton(page: Page) {
 
 export async function waitForLifestyleCommunitySubscribeButtonInCommunityExplorerPage(page: Page) {
   const communitiesExplorerPage = new CommunitiesExplorePage(page);
-  const selectorSubscribeButton = await communitiesExplorerPage.getLifestyleCommunityButton['_selector'];
+  const selectorSubscribeButton = locatorSelector(communitiesExplorerPage.getLifestyleCommunityButton);
   const timeout = 20000;
   const interval = 4000;
 
@@ -40,7 +41,7 @@ export async function waitForLifestyleCommunitySubscribeButtonInCommunityExplore
 
 export async function waitForLifestyleCommunityJoinedLeaveButtonInCommunityExplorerPage(page: Page) {
   const communitiesExplorerPage = new CommunitiesExplorePage(page);
-  const selectorJoinedLeaveButton = await communitiesExplorerPage.getLifestyleCommunityButton['_selector'];
+  const selectorJoinedLeaveButton = locatorSelector(communitiesExplorerPage.getLifestyleCommunityButton);
   const timeout = 30000;
   const interval = 3000;
 
@@ -49,7 +50,7 @@ export async function waitForLifestyleCommunityJoinedLeaveButtonInCommunityExplo
 
 export async function waitForCommentEditorIsLoaded(page: Page) {
   const commentEditorPage = new CommentEditorPage(page);
-  const commentRepleyEditor = await commentEditorPage.getReplayEditorElement['_selector'];
+  const commentRepleyEditor = locatorSelector(commentEditorPage.getReplayEditorElement);
   const timeout = 20000;
   const interval = 4000;
 
@@ -58,7 +59,7 @@ export async function waitForCommentEditorIsLoaded(page: Page) {
 
 export async function waitForCommunityCreatedPost(page: Page, postTitle: string) {
   const communityPage = new CommunitiesPage(page);
-  const selectorCreatedPost = await communityPage.page.getByText(postTitle)['_selector'];
+  const selectorCreatedPost = locatorSelector(communityPage.page.getByText(postTitle));
   const timeout = 20000;
   const interval = 4000;
 
@@ -67,7 +68,7 @@ export async function waitForCommunityCreatedPost(page: Page, postTitle: string)
 
 export async function waitForPostIsVisibleInUnmoderatedTagPage(page: Page, postTitle: string) {
   const unmoderatedTagPage = new UnmoderatedTagPage(page);
-  const selectorCreatedPost = await unmoderatedTagPage.page.getByText(postTitle).first()['_selector'];
+  const selectorCreatedPost = locatorSelector(unmoderatedTagPage.page.getByText(postTitle).first());
   const timeout = 20000;
   const interval = 4000;
 
@@ -83,7 +84,7 @@ export async function waitForCreatedCommentIsVisible(page: Page, commentContent:
 
 export async function waitForFirstBroadcastedUpvoteLightMode(page: Page) {
   const homePage = new HomePage(page);
-  const selectorFirstPostUpvoteButton = await homePage.firstPostCardUpvoteButtonLocator['_selector'];
+  const selectorFirstPostUpvoteButton = locatorSelector(homePage.firstPostCardUpvoteButtonLocator);
 
   const timeout = 20000;
   const interval = 4000;
@@ -94,7 +95,7 @@ export async function waitForFirstBroadcastedUpvoteLightMode(page: Page) {
 
 export async function waitForFirstProcessedUpvoteLightMode(page: Page) {
   const homePage = new HomePage(page);
-  const selectorFirstPostUpvoteButton = await homePage.firstPostCardUpvoteButtonLocator['_selector'];
+  const selectorFirstPostUpvoteButton = locatorSelector(homePage.firstPostCardUpvoteButtonLocator);
   const timeout = 20000;
   const interval = 4000;
   const lightModeWhiteColor = 'rgb(255, 255, 255)'; // upvote icon's color processed in the light mode
@@ -104,7 +105,7 @@ export async function waitForFirstProcessedUpvoteLightMode(page: Page) {
 
 export async function waitForFirstBroadcastedDownvoteLightMode(page: Page) {
   const homePage = new HomePage(page);
-  const selectorFirstPostDownvoteButton = await homePage.firstPostCardDownvoteButtonLocator['_selector'];
+  const selectorFirstPostDownvoteButton = locatorSelector(homePage.firstPostCardDownvoteButtonLocator);
 
   const timeout = 20000;
   const interval = 4000;
@@ -115,7 +116,7 @@ export async function waitForFirstBroadcastedDownvoteLightMode(page: Page) {
 
 export async function waitForFirstProcessedDownvoteLightMode(page: Page) {
   const homePage = new HomePage(page);
-  const selectorFirstPostDownvoteButton = await homePage.firstPostCardDownvoteButtonLocator['_selector'];
+  const selectorFirstPostDownvoteButton = locatorSelector(homePage.firstPostCardDownvoteButtonLocator);
   const timeout = 20000;
   const interval = 4000;
   const lightModeWhiteColor = 'rgb(255, 255, 255)'; // upvote icon's color processed in the light mode
@@ -125,7 +126,7 @@ export async function waitForFirstProcessedDownvoteLightMode(page: Page) {
 
 export async function waitForSecondBroadcastedDownvoteLightMode(page: Page) {
   const homePage = new HomePage(page);
-  const selectorFirstPostDownvoteButton = await homePage.getSecondPostDownvoteButtonIcon['_selector'];
+  const selectorFirstPostDownvoteButton = locatorSelector(homePage.getSecondPostDownvoteButtonIcon);
 
   const timeout = 20000;
   const interval = 4000;
@@ -136,7 +137,7 @@ export async function waitForSecondBroadcastedDownvoteLightMode(page: Page) {
 
 export async function waitForSecondProcessedDownvoteLightMode(page: Page) {
   const homePage = new HomePage(page);
-  const selectorFirstPostDownvoteButton = await homePage.getSecondPostDownvoteButtonIcon['_selector'];
+  const selectorFirstPostDownvoteButton = locatorSelector(homePage.getSecondPostDownvoteButtonIcon);
   const timeout = 20000;
   const interval = 4000;
   const lightModeWhiteColor = 'rgb(255, 255, 255)'; // upvote icon's color processed in the light mode
@@ -150,7 +151,7 @@ export async function waitForCircleSpinnerIsDetatched(page: Page) {
 
 export async function waitForLifestyleMySubscriptionsLink(page: Page) {
   const homePage = new HomePage(page);
-  const selectorLifestyleMySubscriptionLink = await homePage.getLifestyleCommunityLink['_selector'];
+  const selectorLifestyleMySubscriptionLink = locatorSelector(homePage.getLifestyleCommunityLink);
   const timeout = 20000;
   const interval = 4000;
 
