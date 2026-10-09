@@ -497,6 +497,9 @@ importers:
 
   packages/renderer:
     dependencies:
+      '@hive/ui':
+        specifier: workspace:*
+        version: link:../ui
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10

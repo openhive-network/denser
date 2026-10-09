@@ -17,6 +17,7 @@
     "test": "TS_NODE_PROJECT=tsconfig.test.json mocha 'src/**/*.test.ts'"
   },
   "dependencies": {
+    "@hive/ui": "workspace:*",
     "@xmldom/xmldom": "0.8.10",
     "ow": "0.28.2",
     "pino": "^8.17.1",
