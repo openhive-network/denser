@@ -1,4 +1,5 @@
 import { getLogger } from '@ui/lib/logging';
+import type { NodeHealth, TNodeAdmission } from './node-health';
 
 const logger = getLogger('app');
 
@@ -30,6 +31,8 @@ export interface IServerFailoverOptions<T extends IFailoverChain> {
   fallbackNodes: readonly string[];
   /** Builds a chain that sends JSON-RPC calls to `node` with the given request timeout. */
   createNodeChain: (node: string, timeoutMs: number) => T;
+  /** Node health shared by every chain of the process, so a dead node is skipped by all of them. */
+  health: NodeHealth;
   /** Clock and sleep, injectable for tests. */
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
@@ -79,9 +82,11 @@ export function parseFallbackNodes(
 /**
  * Wraps a chain so that each read-only JSON-RPC call on `chain.api` that fails at the transport level
  * (see `isTransportError`) is retried once on the primary node and then on each fallback node, within
- * `FAILOVER_BUDGET_MS`. A definitive API answer (e.g. "post does not exist") is never retried. When
- * every attempt fails, the last transport error is rethrown. Everything other than `chain.api` is
- * passed through untouched.
+ * `FAILOVER_BUDGET_MS`. A node whose attempts all failed is marked down in `health` and skipped by
+ * later calls until its cooldown ends, so they go straight to the first node still up; when every
+ * node is down, all are tried as usual. A definitive API answer (e.g. "post does not exist") is never
+ * retried. When every attempt fails, the last transport error is rethrown. Everything other than
+ * `chain.api` is passed through untouched.
  *
  * Meant for the server, where one node blip would otherwise turn a whole page render into an error.
  */
@@ -89,7 +94,7 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
   chain: T,
   options: IServerFailoverOptions<T>
 ): T {
-  const { fallbackNodes, createNodeChain, now = Date.now, sleep = defaultSleep } = options;
+  const { fallbackNodes, createNodeChain, health, now = Date.now, sleep = defaultSleep } = options;
   const attemptChains = new Map<string, T>();
 
   // Chains are cached per node: every wax chain instance allocates wasm state that is never freed.
@@ -108,28 +113,50 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
     return Reflect.apply(method, undefined, args);
   };
 
-  const failOver = async (
-    path: readonly string[],
-    args: unknown[],
-    firstError: unknown,
-    startedAt: number
-  ) => {
+  // A healthy primary is asked through the configured chain first and retried once after a pause; a
+  // probe of a recovering node, or a fallback, gets one short-timeout attempt.
+  const attemptsOn = (node: string, admission: TNodeAdmission): Array<() => T> =>
+    node === chain.endpointUrl && admission === 'healthy'
+      ? [() => chain, () => getAttemptChain(node)]
+      : [() => getAttemptChain(node)];
+
+  const callWithFailover = async (path: readonly string[], args: unknown[]) => {
+    if (NON_RETRYABLE_NAMESPACES.has(path[0])) return callOn(chain, path, args);
+
+    const startedAt = now();
     const method = path.join('.');
     const primary = chain.endpointUrl;
     const nodes = [primary, ...fallbackNodes.filter((node) => node !== primary)];
-    let lastError = firstError;
+    // Skipping every node would fail the call without asking anyone, so then all of them are tried.
+    const sweepAll = nodes.every((node) => health.isDown(node));
+    const outOfBudget = () => now() - startedAt + FAILOVER_ATTEMPT_TIMEOUT_MS > FAILOVER_BUDGET_MS;
+    let failures = 0;
+    let lastError: unknown;
 
-    for (const [index, node] of nodes.entries()) {
-      if (index === 0) await sleep(RETRY_DELAY_MS);
-      if (now() - startedAt + FAILOVER_ATTEMPT_TIMEOUT_MS > FAILOVER_BUDGET_MS) break;
-      try {
-        const result = await callOn(getAttemptChain(node), path, args);
-        logger.warn('%s served by %s after %d failed attempt(s)', method, node, index + 1);
-        return result;
-      } catch (error) {
-        if (!(await isTransportError(error))) throw error;
-        lastError = error;
+    for (const node of nodes) {
+      if (failures > 0 && outOfBudget()) break;
+      const admission = sweepAll ? 'healthy' : health.admit(node);
+      if (!admission) continue;
+      for (const [index, target] of attemptsOn(node, admission).entries()) {
+        if (index > 0) {
+          await sleep(RETRY_DELAY_MS);
+          if (outOfBudget()) break;
+        }
+        try {
+          const result = await callOn(target(), path, args);
+          health.markUp(node);
+          if (failures > 0) logger.warn('%s served by %s after %d failed attempt(s)', method, node, failures);
+          return result;
+        } catch (error) {
+          if (!(await isTransportError(error))) {
+            health.markUp(node);
+            throw error;
+          }
+          failures += 1;
+          lastError = error;
+        }
       }
+      health.markDown(node);
     }
 
     logger.error(
@@ -140,16 +167,6 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
       now() - startedAt
     );
     throw lastError;
-  };
-
-  const callWithFailover = async (path: readonly string[], args: unknown[]) => {
-    const startedAt = now();
-    try {
-      return await callOn(chain, path, args);
-    } catch (error) {
-      if (NON_RETRYABLE_NAMESPACES.has(path[0]) || !(await isTransportError(error))) throw error;
-      return failOver(path, args, error, startedAt);
-    }
   };
 
   // wax resolves `chain.api.<namespace>.<method>` lazily through its own proxy; mirror the access path
