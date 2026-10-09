@@ -67,7 +67,7 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
           }
         })();
   const isAmountValid = form.amount !== '' && bigAmountDisplay.gt(0) && bigAmountDisplay.lte(bigMaxDisplay);
-  const isFormValid = isAmountValid && form.toAccount.trim().length > 0 && !delegateMutation.isLoading;
+  const isFormValid = isAmountValid && form.toAccount.trim().length > 0 && !delegateMutation.isPending;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -85,7 +85,7 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
               To Account
             </Label>
             <Input
-              disabled={delegateMutation.isLoading}
+              disabled={delegateMutation.isPending}
               id="toAccount"
               value={form.toAccount}
               onChange={(e) => setForm({ ...form, toAccount: e.target.value })}
@@ -101,7 +101,7 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
                 min={0}
                 step="0.000000001"
                 max={bigMaxDisplay.toString()}
-                disabled={delegateMutation.isLoading}
+                disabled={delegateMutation.isPending}
                 id="amount"
                 value={form.amount}
                 onChange={(e) => {
@@ -163,7 +163,7 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
                     amount: formatDisplay(amt)
                   });
                 }}
-                disabled={delegateMutation.isLoading}
+                disabled={delegateMutation.isPending}
                 className="transition-all duration-200"
               >
                 {percent}%
@@ -172,13 +172,13 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
           </div>
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => setOpen(false)} disabled={delegateMutation.isLoading}>
+          <Button variant="ghost" onClick={() => setOpen(false)} disabled={delegateMutation.isPending}>
             Cancel
           </Button>
           <Button variant="redHover" onClick={onDelegate} disabled={!isFormValid}>
-            {delegateMutation.isLoading ? (
+            {delegateMutation.isPending ? (
               <span className="flex h-5 w-12 items-center justify-center">
-                <CircleSpinner loading={delegateMutation.isLoading} size={18} color="#dc2626" />
+                <CircleSpinner loading={delegateMutation.isPending} size={18} color="#dc2626" />
               </span>
             ) : (
               'Delegate RC'

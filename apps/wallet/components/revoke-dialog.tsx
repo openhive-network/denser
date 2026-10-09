@@ -32,7 +32,7 @@ const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: 
       });
     delegateMutation.isSuccess && setOpen(false);
   };
-  const loading = delegateMutation.isLoading;
+  const loading = delegateMutation.isPending;
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

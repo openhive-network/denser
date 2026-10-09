@@ -1,7 +1,7 @@
 import ProfileLayout from '@/blog/features/layouts/user-profile/profile-layout';
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getProfileAccount, getProfileGlobalProperties, getProfileReputations } from '@/blog/lib/profile-cache';
 import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
@@ -128,9 +128,9 @@ const Layout = async (props: { children: ReactNode; params: Promise<{ param: str
   const dehydratedState = dehydrate(queryClient);
   queryClient.clear();
   return (
-    <Hydrate state={dehydratedState}>
+    <HydrationBoundary state={dehydratedState}>
       <ProfileLayout>{children}</ProfileLayout>
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 

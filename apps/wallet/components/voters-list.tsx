@@ -13,9 +13,9 @@ function VotersList({
   totalShares: Big;
   totalVestingFund: Big;
 }) {
-  const { data: votersData, isLoading: votersIsLoading } = useProposalsVotersQuery(id);
+  const { data: votersData, isPending: votersIsLoading } = useProposalsVotersQuery(id);
   const usernames = votersData ? votersData.map((e) => e.voter) : [];
-  const { data: accData, isLoading: accIsLoading } = useAccountQuery(
+  const { data: accData, isPending: accIsLoading } = useAccountQuery(
     usernames,
     totalVestingFund,
     totalShares

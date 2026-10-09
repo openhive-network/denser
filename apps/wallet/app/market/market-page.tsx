@@ -49,7 +49,7 @@ const Box = ({
 
 export default function MarketPage() {
   const { t } = useTranslation('common_wallet');
-  const { data: tickerData, isLoading: tickerLoading } = useMarket();
+  const { data: tickerData, isPending: tickerLoading } = useMarket();
 
   if (!tickerData || tickerLoading) {
     return <Loading loading />;

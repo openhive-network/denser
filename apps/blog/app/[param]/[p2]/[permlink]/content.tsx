@@ -59,6 +59,7 @@ import dmcaUserList from '@ui/config/lists/dmca-user-list';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import { handleError } from '@ui/lib/handle-error';
+import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
 import parseDate from '@ui/lib/parse-date';
 import { buildSafePath } from '@ui/lib/sanitize-url';
 import { Clock, Link2, ShieldCheck, ShieldOff } from 'lucide-react';
@@ -164,16 +165,17 @@ const PostContent = () => {
   const [filterTooltipOpen, setFilterTooltipOpen] = useState(false);
   const filterTooltipContentRef = useRef<HTMLDivElement>(null);
   const postInCommunity = isCommunity(category);
-  const { data: postData, isLoading: postIsLoading } = useQuery({
+  const postQuery = useQuery({
     queryKey: ['postData', author, permlink, observer],
     queryFn: () => getPost(author, permlink, observer),
     enabled: !!author && !!permlink,
     initialData: initialPostData ?? undefined,
     initialDataUpdatedAt: initialPostData ? Date.now() : undefined,
-    staleTime: StaleTime.MEDIUM,
-    onError: (error) => {
-      handleError(error, { method: 'getPost', params: { author, permlink, observer } });
-    }
+    staleTime: StaleTime.MEDIUM
+  });
+  const { data: postData, isPending: postIsLoading } = postQuery;
+  useQueryErrorEffect(postQuery, (error) => {
+    handleError(error, { method: 'getPost', params: { author, permlink, observer } });
   });
   const [mutedPost, setMutedPost] = useState<boolean>(postData?.stats?.gray || false);
   // Single reblog query shared by header and footer ReblogTrigger components
@@ -217,16 +219,17 @@ const PostContent = () => {
   });
   const observerMatchesSSR = observer === ssrObserver;
   const useCommunityInitialData = initialCommunity && observerMatchesSSR;
-  const { data: communityData } = useQuery({
+  const communityQuery = useQuery({
     queryKey: ['community', category, observer],
     queryFn: () => getCommunity(category, observer),
     enabled: postInCommunity,
     initialData: useCommunityInitialData ? initialCommunity : undefined,
     initialDataUpdatedAt: useCommunityInitialData ? Date.now() : undefined,
-    staleTime: StaleTime.LONG,
-    onError: (error) => {
-      handleError(error, { method: 'getCommunity', params: { category, observer } });
-    }
+    staleTime: StaleTime.LONG
+  });
+  const communityData = communityQuery.data;
+  useQueryErrorEffect(communityQuery, (error) => {
+    handleError(error, { method: 'getCommunity', params: { category, observer } });
   });
 
   // SSR seeded only the first comments page, for ssrObserver - seed the cache only when the
@@ -235,22 +238,26 @@ const PostContent = () => {
   // Sort order the seeded page was built with; the seed holds the right entries only for it
   const [seededCommentSort] = useState(initialDiscussion?.sort);
   const [hasFullDiscussion, setHasFullDiscussion] = useState(false);
+  const discussionQuery = useQuery({
+    queryKey: ['discussionData', author, permlink, observer],
+    queryFn: async () => {
+      const discussion = await getDiscussion(author, permlink, observer);
+      // Set only by fetches, never by the seed or optimistic setQueryData updates
+      setHasFullDiscussion(true);
+      return discussion;
+    },
+    initialData: useDiscussionInitialData ? initialDiscussion.entries : undefined,
+    initialDataUpdatedAt: useDiscussionInitialData ? Date.now() : undefined,
+    staleTime: StaleTime.MEDIUM
+  });
   const {
     data: discussionData,
     refetch: refetchDiscussion,
     isFetching: discussionIsFetching
-  } = useQuery({
-    queryKey: ['discussionData', author, permlink, observer],
-    queryFn: () => getDiscussion(author, permlink, observer),
-    initialData: useDiscussionInitialData ? initialDiscussion.entries : undefined,
-    initialDataUpdatedAt: useDiscussionInitialData ? Date.now() : undefined,
-    staleTime: StaleTime.MEDIUM,
-    // Fires only for fetches, never for the seed or optimistic setQueryData updates
-    onSuccess: () => setHasFullDiscussion(true),
-    onError: (error) => {
-      handleError(error, { method: 'getDiscussion', params: { author, permlink, observer } });
-      setCommentsPage(1);
-    }
+  } = discussionQuery;
+  useQueryErrorEffect(discussionQuery, (error) => {
+    handleError(error, { method: 'getDiscussion', params: { author, permlink, observer } });
+    setCommentsPage(1);
   });
   const isPartialDiscussion = useDiscussionInitialData && !hasFullDiscussion;
   const commentSortOrder = parseCommentSort(commentSort);
@@ -288,16 +295,13 @@ const PostContent = () => {
   const commentSite = postDepth !== 0;
   const userFromDMCA = dmcaUserList.some((e) => e === postData?.author);
 
-  const { data: userCanModerate } = useQuery({
+  const rolesQuery = useQuery({
     queryKey: ['rolesList', category],
     queryFn: () => getListCommunityRoles(category),
     enabled: postInCommunity,
     initialData: initialCommunityRoles ?? undefined,
     initialDataUpdatedAt: initialCommunityRoles ? Date.now() : undefined,
     staleTime: StaleTime.LONG,
-    onError: (error) => {
-      handleError(error, { method: 'getListCommunityRoles', params: { category } });
-    },
     select: (data) => {
       const userRole = data?.find((e) => e[0] === user.username);
       const userCanModerate = userRole
@@ -305,6 +309,10 @@ const PostContent = () => {
         : false;
       return userCanModerate;
     }
+  });
+  const userCanModerate = rolesQuery.data;
+  useQueryErrorEffect(rolesQuery, (error) => {
+    handleError(error, { method: 'getListCommunityRoles', params: { category } });
   });
 
   const { data: mutedList } = useFollowListQuery(user.username, 'muted', initialMutedList);
@@ -700,10 +708,10 @@ const PostContent = () => {
                           >
                             {t('post_content.footer.reply')}
                           </button>
-                          {pinMutations.isLoading || unpinMutation.isLoading ? (
+                          {pinMutations.isPending || unpinMutation.isPending ? (
                             <div className="ml-2">
                               <CircleSpinner
-                                loading={pinMutations.isLoading || unpinMutation.isLoading}
+                                loading={pinMutations.isPending || unpinMutation.isPending}
                                 size={18}
                                 color="#dc2626"
                               />
@@ -773,13 +781,13 @@ const PostContent = () => {
                             label="Post"
                           >
                             <button
-                              disabled={edit || deletePostMutation.isLoading}
+                              disabled={edit || deletePostMutation.isPending}
                               className="flex items-center text-destructive"
                               data-testid="comment-card-footer-delete"
                             >
-                              {deletePostMutation.isLoading ? (
+                              {deletePostMutation.isPending ? (
                                 <CircleSpinner
-                                  loading={deletePostMutation.isLoading}
+                                  loading={deletePostMutation.isPending}
                                   size={18}
                                   color="#dc2626"
                                 />

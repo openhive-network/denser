@@ -6,7 +6,9 @@ import Big from 'big.js';
 import RCRow from './rc-row';
 
 const RCTable = ({ account }: { account: string }) => {
-  const { data, isLoading } = useQuery(['resourceCredits', account], () => getDirectDelegations(account), {
+  const { data, isPending } = useQuery({
+    queryKey: ['resourceCredits', account],
+    queryFn: () => getDirectDelegations(account),
     select: (data) => {
       return {
         list: data.rc_direct_delegations,
@@ -24,7 +26,7 @@ const RCTable = ({ account }: { account: string }) => {
       <div className="flex w-full flex-col gap-2">
         <table>
           <tbody>
-            {isLoading ? (
+            {isPending ? (
               <div className="flex h-48 items-center justify-center">
                 <CircleSpinner size={48} color="#dc2626" />
               </div>

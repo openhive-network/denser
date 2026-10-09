@@ -495,11 +495,11 @@ export function TransferDialog({
             <Button
               variant="redHover"
               className="w-fit"
-              disabled={badActors || powerDownMutation.isLoading}
+              disabled={badActors || powerDownMutation.isPending}
               onClick={type === 'powerDown' ? onConfirm : form.handleSubmit(onSubmit)}
             >
-              {powerDownMutation.isLoading ? (
-                <CircleSpinner loading={powerDownMutation.isLoading} size={18} color="#dc2626" />
+              {powerDownMutation.isPending ? (
+                <CircleSpinner loading={powerDownMutation.isPending} size={18} color="#dc2626" />
               ) : (
                 data.buttonTitle
               )}
@@ -641,25 +641,25 @@ export function TransferDialog({
               className="w-fit"
               onClick={onConfirm}
               disabled={
-                transferMutation.isLoading ||
-                transferToSavingsMutation.isLoading ||
-                powerUpMutation.isLoading ||
-                delegateMutation.isLoading ||
-                withdrawFromSavingsMutation.isLoading
+                transferMutation.isPending ||
+                transferToSavingsMutation.isPending ||
+                powerUpMutation.isPending ||
+                delegateMutation.isPending ||
+                withdrawFromSavingsMutation.isPending
               }
             >
-              {transferMutation.isLoading ||
-              transferToSavingsMutation.isLoading ||
-              powerUpMutation.isLoading ||
-              delegateMutation.isLoading ||
-              withdrawFromSavingsMutation.isLoading ? (
+              {transferMutation.isPending ||
+              transferToSavingsMutation.isPending ||
+              powerUpMutation.isPending ||
+              delegateMutation.isPending ||
+              withdrawFromSavingsMutation.isPending ? (
                 <CircleSpinner
                   loading={
-                    transferMutation.isLoading ||
-                    transferToSavingsMutation.isLoading ||
-                    powerUpMutation.isLoading ||
-                    delegateMutation.isLoading ||
-                    withdrawFromSavingsMutation.isLoading
+                    transferMutation.isPending ||
+                    transferToSavingsMutation.isPending ||
+                    powerUpMutation.isPending ||
+                    delegateMutation.isPending ||
+                    withdrawFromSavingsMutation.isPending
                   }
                   size={18}
                   color="#dc2626"

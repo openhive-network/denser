@@ -42,30 +42,34 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     StorageTTL.PERMANENT
   );
 
-  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isLoading } = useInfiniteQuery({
-    queryKey: ['entriesInfinite', sort, tag, observer],
-    queryFn: async ({ pageParam }) => {
-      const { author, permlink } = (pageParam as { author?: string; permlink?: string }) || {};
-      const postsData = await loadCardEntries(getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer));
-      return postsData ?? [];
-    },
-    getNextPageParam: (lastPage: CardEntry[]) => {
-      // A short page is the end of the feed; asking for more would only return it empty.
-      if (!Array.isArray(lastPage) || lastPage.length < DATA_LIMIT) return undefined;
-      const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
-      if (!last?.author || !last?.permlink) return undefined;
-      return { author: last.author, permlink: last.permlink };
-    },
-    // Don't fetch "my communities" for anonymous users — the API would return
-    // hive.blog's subscriptions which are meaningless to the actual user.
-    enabled: !(tag === 'my' && !user.isLoggedIn),
-    // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
-    // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
-    // initialData is only used when the query has no cached data (first load).
-    initialData: initialPosts ? { pages: [initialPosts], pageParams: [undefined] } : undefined,
-    initialDataUpdatedAt: initialPosts ? Date.now() : undefined,
-    staleTime: StaleTime.MEDIUM
-  });
+  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isPending } =
+    useInfiniteQuery({
+      queryKey: ['entriesInfinite', sort, tag, observer],
+      queryFn: async ({ pageParam }: { pageParam: { author?: string; permlink?: string } | undefined }) => {
+        const { author, permlink } = pageParam || {};
+        const postsData = await loadCardEntries(
+          getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer)
+        );
+        return postsData ?? [];
+      },
+      getNextPageParam: (lastPage: CardEntry[]) => {
+        // A short page is the end of the feed; asking for more would only return it empty.
+        if (!Array.isArray(lastPage) || lastPage.length < DATA_LIMIT) return undefined;
+        const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
+        if (!last?.author || !last?.permlink) return undefined;
+        return { author: last.author, permlink: last.permlink };
+      },
+      initialPageParam: undefined,
+      // Don't fetch "my communities" for anonymous users — the API would return
+      // hive.blog's subscriptions which are meaningless to the actual user.
+      enabled: !(tag === 'my' && !user.isLoggedIn),
+      // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
+      // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
+      // initialData is only used when the query has no cached data (first load).
+      initialData: initialPosts ? { pages: [initialPosts], pageParams: [undefined] } : undefined,
+      initialDataUpdatedAt: initialPosts ? Date.now() : undefined,
+      staleTime: StaleTime.MEDIUM
+    });
 
   // Auto-fetch the next page when either the prefetch sentinel (1500px ahead)
   // or the load-more button enters view. Guard on !isFetching so a single cycle
@@ -91,7 +95,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
 
   // Handle initial loading state (also show skeleton when refetching with no data,
   // e.g. during observer transition after hydration)
-  if (isLoading || (isFetching && !data?.pages?.[0]?.length)) {
+  if (isPending || (isFetching && !data?.pages?.[0]?.length)) {
     return <PostListSkeleton count={5} />;
   }
 

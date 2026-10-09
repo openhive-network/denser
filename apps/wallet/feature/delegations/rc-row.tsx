@@ -24,13 +24,13 @@ const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string
       <td className="py-2">
         {userOwner ? (
           <Button
-            disabled={undelegateMutation.isLoading}
+            disabled={undelegateMutation.isPending}
             variant="outlineRed"
             onClick={() => handleUndelegate(to)}
           >
-            {undelegateMutation.isLoading ? (
+            {undelegateMutation.isPending ? (
               <span className="flex h-5 w-12 items-center justify-center">
-                <CircleSpinner loading={undelegateMutation.isLoading} size={18} color="#dc2626" />
+                <CircleSpinner loading={undelegateMutation.isPending} size={18} color="#dc2626" />
               </span>
             ) : (
               'Revoke'

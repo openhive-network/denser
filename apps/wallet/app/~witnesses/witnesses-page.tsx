@@ -38,21 +38,18 @@ export default function WitnessesPage() {
   const highlight = searchParams?.get('highlight') ?? '';
   // value of input field for voting witness by name, not included in the list
   const [voteInput, setVoteInput] = useState(highlight);
-  const { data: observerData } = useQuery(
-    ['accountData', user?.username || ''],
-    () => getAccount(user?.username || ''),
-
-    { enabled: user?.isLoggedIn }
-  );
+  const { data: observerData } = useQuery({
+    queryKey: ['accountData', user?.username || ''],
+    queryFn: () => getAccount(user?.username || ''),
+    enabled: user?.isLoggedIn
+  });
   // value of input field for set proxy witness by name
   const [proxy, setProxy] = useState('');
-  const { data: listWitnessVotesData } = useQuery(
-    ['listWitnessVotesData', user?.username || ''],
-    () => getListWitnessVotes(user?.username, 30, 'by_account_witness'),
-    {
-      enabled: user?.isLoggedIn
-    }
-  );
+  const { data: listWitnessVotesData } = useQuery({
+    queryKey: ['listWitnessVotesData', user?.username || ''],
+    queryFn: () => getListWitnessVotes(user?.username, 30, 'by_account_witness'),
+    enabled: user?.isLoggedIn
+  });
 
   // Extract list of witnesses the user has voted for from listWitnessVotesData
   const userWitnessVotes = useMemo(() => {
@@ -62,7 +59,10 @@ export default function WitnessesPage() {
       .map((vote) => vote.witness);
   }, [listWitnessVotesData?.votes, user?.username]);
 
-  const { data: witnessList, isLoading: witnessesLoading } = useQuery(WITNESS_LIST_QUERY_KEY, getWitnessList);
+  const { data: witnessList, isPending: witnessesLoading } = useQuery({
+    queryKey: WITNESS_LIST_QUERY_KEY,
+    queryFn: getWitnessList
+  });
   const rankedWitnesses = useMemo(() => (witnessList ? rankWitnesses(witnessList) : undefined), [witnessList]);
 
   // Mutation for handle voting witness
@@ -176,7 +176,7 @@ export default function WitnessesPage() {
                     highlighted={highlight === element.owner}
                     voteEnabled={user?.isLoggedIn}
                     isVoted={userWitnessVotes.includes(element.owner)}
-                    voteLoading={voteMutation.isLoading && voteMutation.variables?.witness === element.owner}
+                    voteLoading={voteMutation.isPending && voteMutation.variables?.witness === element.owner}
                   />
                 ))
               )}
@@ -206,19 +206,19 @@ export default function WitnessesPage() {
                       className="h-fit"
                       variant="destructive"
                       onClick={() => onVote(voteInput, true)}
-                      disabled={voteMutation.isLoading}
+                      disabled={voteMutation.isPending}
                     >
-                      {voteMutation.isLoading ? (
-                        <CircleSpinner loading={voteMutation.isLoading} size={20} color="#fff" />
+                      {voteMutation.isPending ? (
+                        <CircleSpinner loading={voteMutation.isPending} size={20} color="#fff" />
                       ) : (
                         t('witnesses_page.vote')
                       )}
                     </Button>
                   ) : (
                     <WitnessRemoveVote onVote={() => onVote(voteInput, false)}>
-                      <Button className="h-fit" variant="destructive" disabled={voteMutation.isLoading}>
-                        {voteMutation.isLoading ? (
-                          <CircleSpinner loading={voteMutation.isLoading} size={20} color="#fff" />
+                      <Button className="h-fit" variant="destructive" disabled={voteMutation.isPending}>
+                        {voteMutation.isPending ? (
+                          <CircleSpinner loading={voteMutation.isPending} size={20} color="#fff" />
                         ) : (
                           t('witnesses_page.vote')
                         )}
@@ -248,7 +248,7 @@ export default function WitnessesPage() {
                     </DialogLogin>
                   ) : (
                     <ProxyDialog
-                      loading={proxyMutation.isLoading}
+                      loading={proxyMutation.isPending}
                       onSetProxy={() => onSetProxy(proxy)}
                       description={t('witnesses_page.proxy_form.set_proxy_to', { proxy: proxy })}
                       buttonTitle={t('witnesses_page.set_proxy')}
@@ -277,7 +277,7 @@ export default function WitnessesPage() {
               <Input value={observerData?.proxy} disabled className="block p-4 pl-10 pr-28 text-sm" />
               <div className="items absolute bottom-[1px] right-[1px]">
                 <ProxyDialog
-                  loading={proxyMutation.isLoading}
+                  loading={proxyMutation.isPending}
                   onSetProxy={() => onSetProxy('')}
                   description={t('witnesses_page.proxy_form.description')}
                   buttonTitle={t('witnesses_page.clear_proxy')}

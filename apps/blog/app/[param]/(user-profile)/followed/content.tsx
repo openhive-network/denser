@@ -92,7 +92,7 @@ const FollowedContent = ({
         hasPrevPage={page > 0}
         isLoading={followingData.isFetchingNextPage}
       />
-      {followingData.isLoading ? (
+      {followingData.isPending ? (
         <Loading loading />
       ) : (
         <div className="relative">

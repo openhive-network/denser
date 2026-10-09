@@ -17,12 +17,14 @@ export default function DelegationsPage({ username }: { username: string }) {
   const { t } = useTranslation('common_wallet');
   const { user } = useUserClient();
   const accoutOwner = user.isLoggedIn && user.username === username;
-  const { data: vestingData, isLoading: vestingLoading } = useQuery(['vestingDelegation', username], () =>
-    getVestingDelegations(username)
-  );
-  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalProperties'], () =>
-    getDynamicGlobalProperties()
-  );
+  const { data: vestingData, isPending: vestingLoading } = useQuery({
+    queryKey: ['vestingDelegation', username],
+    queryFn: () => getVestingDelegations(username)
+  });
+  const { data: dynamicData, isPending: dynamicLoading } = useQuery({
+    queryKey: ['dynamicGlobalProperties'],
+    queryFn: () => getDynamicGlobalProperties()
+  });
 
   if (dynamicLoading || vestingLoading) {
     return <Loading loading={dynamicLoading || vestingLoading} />;

@@ -193,7 +193,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
   const { t } = useTranslation('common_wallet');
   const [financialReportPeriod, setFinancialReportPeriod] = useState<FinancialReportPeriod>('last7days');
   const [selectedOpTypes, setSelectedOpTypes] = useState<Set<OpType>>(() => new Set(allOpTypes));
-  const { data: operationHistoryData, isLoading, isError, refetch } = useFinancialReportOperations(username);
+  const { data: operationHistoryData, isPending, isError, refetch } = useFinancialReportOperations(username);
 
   const matchCount = useMemo(() => {
     if (!operationHistoryData) return 0;
@@ -266,7 +266,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        {isLoading ? (
+        {isPending ? (
           <Loading loading={true} />
         ) : (
           operationHistoryData && (
@@ -275,7 +275,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
             </Button>
           )
         )}
-        {!isLoading && operationHistoryData && (
+        {!isPending && operationHistoryData && (
           <span className={`text-xs ${matchCount === 0 ? 'text-destructive' : 'text-primary/70'}`}>
             {matchCount === 0
               ? t('transfers_page.report_no_operations')

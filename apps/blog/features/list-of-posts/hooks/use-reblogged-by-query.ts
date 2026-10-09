@@ -12,8 +12,8 @@ export const useRebloggedByQuery = (author: string = '', permlink: string = '', 
     enabled: !!(username && author && permlink),
 
     // See https://www.codemzy.com/blog/react-query-cachetime-staletime
-    // A finite server cacheTime schedules a GC timer that retains the whole request
-    cacheTime: isServer ? Infinity : 1000 * 60 * 60 + 5000, // 1 hour 5 seconds
+    // A finite server gcTime schedules a GC timer that retains the whole request
+    gcTime: isServer ? Infinity : 1000 * 60 * 60 + 5000, // 1 hour 5 seconds
     staleTime: 1000 * 60 * 60 // 1 hour
   });
   // logger.info('Reblog data author: %s, permlink: %s, isReblogged: %o', author, permlink, isReblogged);

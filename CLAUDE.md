@@ -76,7 +76,7 @@ The dev stack is for fast feedback; `next dev` is not the production build. The 
 
 ### State Management
 - **Zustand**: client state
-- **TanStack React Query**: 4.x for server state / data fetching
+- **TanStack React Query**: 5.x for server state / data fetching
 
 ### Forms & Validation
 - **React Hook Form**: 7.x

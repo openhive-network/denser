@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { getLogger } from '@ui/lib/logging';
 import { getQueryClient } from '@/wallet/lib/react-query';
@@ -22,7 +22,10 @@ export default async function ParamLayout(props: { children: ReactNode; params: 
   const username = param.slice(1);
   const queryClient = getQueryClient();
   try {
-    await queryClient.fetchQuery(['profileData', username], () => getAccountFull(username));
+    await queryClient.fetchQuery({
+      queryKey: ['profileData', username],
+      queryFn: () => getAccountFull(username)
+    });
   } catch (error) {
     logger.error(error, 'Prefetching the profile of %s failed', username);
   }
@@ -30,8 +33,8 @@ export default async function ParamLayout(props: { children: ReactNode; params: 
   queryClient.clear();
 
   return (
-    <Hydrate state={dehydratedState}>
+    <HydrationBoundary state={dehydratedState}>
       <ProfileLayout>{props.children}</ProfileLayout>
-    </Hydrate>
+    </HydrationBoundary>
   );
 }

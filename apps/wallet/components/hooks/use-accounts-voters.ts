@@ -11,7 +11,9 @@ export const useAccountQuery = (username: string[], totalShares: Big, totalVesti
       return vesting_hivef.times(0.000001);
     }
   };
-  return useQuery(['accountData', username], () => getAccounts(username), {
+  return useQuery({
+    queryKey: ['accountData', username],
+    queryFn: () => getAccounts(username),
     enabled: Boolean(username),
     select: (users) => {
       return users.map((user) => ({

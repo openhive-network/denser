@@ -22,12 +22,12 @@ const HBD_PRINT_RATE_MAX = 10000;
 
 export default function PayoutHoverContent({ post }: { post: TrimmedEntry }) {
   const { t } = useTranslation('common_blog');
-  const { data, isLoading } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ['feedHistory'],
     queryFn: () => getFeedHistory()
   });
-  const { data: globalData, isLoading: globalDataLoading } = useDynamicGlobalData();
-  if (isLoading || !data || globalDataLoading || !globalData) {
+  const { data: globalData, isPending: globalDataLoading } = useDynamicGlobalData();
+  if (isPending || !data || globalDataLoading || !globalData) {
     return <Loading loading />;
   }
   const historyFeedArr = data?.price_history;

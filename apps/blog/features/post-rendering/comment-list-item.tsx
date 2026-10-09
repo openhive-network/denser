@@ -446,7 +446,7 @@ const CommentListItem = memo(function CommentListItem({
                           ) : null}
                           {user.isLoggedIn ? (
                             <button
-                              disabled={deleteCommentMutation.isLoading}
+                              disabled={deleteCommentMutation.isPending}
                               onClick={() => setReply(!reply)}
                               className="flex items-center hover:cursor-pointer hover:text-destructive"
                               data-testid="comment-card-footer-reply"
@@ -467,7 +467,7 @@ const CommentListItem = memo(function CommentListItem({
                             <>
                               <Separator orientation="vertical" className="h-5" />
                               <button
-                                disabled={deleteCommentMutation.isLoading}
+                                disabled={deleteCommentMutation.isPending}
                                 onClick={() => {
                                   setEdit(!edit);
                                 }}
@@ -490,13 +490,13 @@ const CommentListItem = memo(function CommentListItem({
                                 label="Comment"
                               >
                                 <button
-                                  disabled={edit || deleteCommentMutation.isLoading}
+                                  disabled={edit || deleteCommentMutation.isPending}
                                   className="flex items-center hover:cursor-pointer hover:text-destructive"
                                   data-testid="comment-card-footer-delete"
                                 >
-                                  {deleteCommentMutation.isLoading ? (
+                                  {deleteCommentMutation.isPending ? (
                                     <CircleSpinner
-                                      loading={deleteCommentMutation.isLoading}
+                                      loading={deleteCommentMutation.isPending}
                                       size={18}
                                       color="#dc2626"
                                     />

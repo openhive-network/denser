@@ -48,25 +48,29 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
     StorageTTL.PERMANENT
   );
 
-  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isLoading } = useInfiniteQuery({
-    queryKey: ['accountEntriesInfinite', username, query, observer],
-    queryFn: async ({ pageParam }: { pageParam?: Pick<Entry, 'author' | 'permlink'> }) => {
-      return await loadCardEntries(getAccountPosts(query, username, observer, pageParam?.author, pageParam?.permlink));
-    },
-    getNextPageParam: (lastPage) => {
-      if (lastPage && lastPage.length === PER_PAGE) {
-        return {
-          author: lastPage[lastPage.length - 1].author,
-          permlink: lastPage[lastPage.length - 1].permlink
-        };
-      }
-    },
-    enabled: Boolean(username),
-    // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
-    initialData: initialPosts ? { pages: [initialPosts], pageParams: [undefined] } : undefined,
-    initialDataUpdatedAt: initialPosts ? Date.now() : undefined,
-    staleTime: StaleTime.MEDIUM
-  });
+  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isPending } =
+    useInfiniteQuery({
+      queryKey: ['accountEntriesInfinite', username, query, observer],
+      queryFn: async ({ pageParam }: { pageParam: Pick<Entry, 'author' | 'permlink'> | undefined }) => {
+        return await loadCardEntries(
+          getAccountPosts(query, username, observer, pageParam?.author, pageParam?.permlink)
+        );
+      },
+      getNextPageParam: (lastPage) => {
+        if (lastPage && lastPage.length === PER_PAGE) {
+          return {
+            author: lastPage[lastPage.length - 1].author,
+            permlink: lastPage[lastPage.length - 1].permlink
+          };
+        }
+      },
+      initialPageParam: undefined,
+      enabled: Boolean(username),
+      // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
+      initialData: initialPosts ? { pages: [initialPosts], pageParams: [undefined] } : undefined,
+      initialDataUpdatedAt: initialPosts ? Date.now() : undefined,
+      staleTime: StaleTime.MEDIUM
+    });
 
   // Auto-fetch the next page when either the prefetch sentinel (1500px ahead)
   // or the load-more button enters view. Guard on !isFetching so a single cycle
@@ -97,7 +101,7 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   // inline retry at the bottom instead (see LoadMoreError below).
   if (isError && !data?.pages?.length) return <NoDataError />;
 
-  if (isLoading || (isFetching && !data?.pages?.[0]?.length)) {
+  if (isPending || (isFetching && !data?.pages?.[0]?.length)) {
     return <PostListSkeleton count={4} />;
   }
 

@@ -15,7 +15,7 @@
     "@hiveio/wax-signers-keychain": "catalog:hiveio-toolset",
     "@hiveio/wax-signers-peakvault": "catalog:hiveio-toolset",
     "@hiveio/wax-signers-metamask": "catalog:hiveio-toolset",
-    "@tanstack/react-query": "^4.36.1",
+    "@tanstack/react-query": "^5.104.1",
     "change-case": "^5.4.3",
     "cors": "^2.8.5",
     "hive-auth-client": "^0.1.5",

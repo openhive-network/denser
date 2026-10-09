@@ -103,16 +103,16 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
   return (
     <div className="flex items-center gap-1.5">
       {/* Upvote with slider - trigger */}
-      {clickedVoteButton === 'up' && voteMutation.isLoading ? (
+      {clickedVoteButton === 'up' && voteMutation.isPending ? (
         <CircleSpinner
-          loading={clickedVoteButton === 'up' && voteMutation.isLoading}
+          loading={clickedVoteButton === 'up' && voteMutation.isPending}
           size={20}
           color="#dc2626"
         />
       ) : user.isLoggedIn && !vote_upvoted ? (
         <WeightedVoteButton
           sliderEnabled={enable_slider}
-          loading={voteMutation.isLoading}
+          loading={voteMutation.isPending}
           tooltipText={t('cards.post_card.upvote')}
           dataTestId="upvote-button"
           sliderTestId="upvote-slider-modal"
@@ -125,14 +125,14 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
         >
           <div className="flex h-full items-center gap-2">
             <TooltipContainer
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending}
               text={t('cards.post_card.upvote')}
               dataTestId="upvote-button-slider"
               afterPayout={pastPayout && !vote_upvoted}
             >
               <button
                 className="flex h-full items-center justify-center"
-                disabled={voteMutation.isLoading}
+                disabled={voteMutation.isPending}
                 onClick={() => {
                   setClickedVoteButton('up');
                   submitVote(sliderUpvote[0] * 100);
@@ -173,7 +173,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
         >
           <span>
             <TooltipContainer
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending}
               text={
                 userVote && userVote.vote_percent === 10000 && !enable_slider
                   ? t('cards.post_card.undo_upvote')
@@ -193,7 +193,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
           <div className="flex items-center">
             <TooltipContainer
               text={t('cards.post_card.upvote')}
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending}
               dataTestId="upvote-button"
               afterPayout={pastPayout && !vote_upvoted}
             >
@@ -203,16 +203,16 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
         </DialogLogin>
       )}
       {/* Downvote with slider - trigger */}
-      {clickedVoteButton === 'down' && voteMutation.isLoading ? (
+      {clickedVoteButton === 'down' && voteMutation.isPending ? (
         <CircleSpinner
-          loading={clickedVoteButton === 'down' && voteMutation.isLoading}
+          loading={clickedVoteButton === 'down' && voteMutation.isPending}
           size={20}
           color="#dc2626"
         />
       ) : user.isLoggedIn && !vote_downvoted ? (
         <WeightedVoteButton
           sliderEnabled={enable_slider}
-          loading={voteMutation.isLoading}
+          loading={voteMutation.isPending}
           tooltipText={t('cards.post_card.downvote')}
           dataTestId="downvote-button"
           sliderTestId="downvote-slider-modal"
@@ -225,14 +225,14 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
         >
           <div className="flex h-full items-center gap-2">
             <TooltipContainer
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending}
               text={t('cards.post_card.downvote')}
               dataTestId="downvote-button-slider"
               afterPayout={pastPayout && !vote_downvoted}
             >
               <button
                 className="flex h-full items-center justify-center"
-                disabled={voteMutation.isLoading}
+                disabled={voteMutation.isPending}
                 onClick={() => {
                   setClickedVoteButton('down');
                   submitVote(-sliderDownvote[0] * 100);
@@ -282,7 +282,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
         >
           <span>
             <TooltipContainer
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending}
               text={
                 userVote && userVote.vote_percent === -10000 && !enable_slider
                   ? t('cards.post_card.undo_downvote')
@@ -302,7 +302,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
           <div className="flex items-center">
             <TooltipContainer
               text={t('cards.post_card.downvote')}
-              loading={voteMutation.isLoading}
+              loading={voteMutation.isPending}
               dataTestId="downvote-button"
               afterPayout={pastPayout && !vote_downvoted}
             >

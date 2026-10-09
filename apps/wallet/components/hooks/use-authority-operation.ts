@@ -72,17 +72,15 @@ const getAuthorityState = (operationsData?: AccountAuthorityUpdateOperation) => 
 export type AuthorityAction = Dispatch<Actions>;
 
 export const useAuthorityOperations = (username: string) => {
-  const { data: operationsData, isLoading } = useQuery(
-    ['authority', username],
-    () => getAuthority(username),
-    {
-      enabled: !!username,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
-      staleTime: Infinity
-    }
-  );
+  const { data: operationsData, isPending } = useQuery({
+    queryKey: ['authority', username],
+    queryFn: () => getAuthority(username),
+    enabled: !!username,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+    staleTime: Infinity
+  });
   const updateAuthorityMutation = useUpdateAuthorityOperationMutation();
 
   function reducer(
@@ -173,8 +171,8 @@ export const useAuthorityOperations = (username: string) => {
     state: state,
     actions: dispatch,
     handleSubmit,
-    isLoading,
-    isSubmitting: updateAuthorityMutation.isLoading,
+    isLoading: isPending,
+    isSubmitting: updateAuthorityMutation.isPending,
     error: handleAuthorityError(updateAuthorityMutation),
     submitSuccess: updateAuthorityMutation.isSuccess
   };
