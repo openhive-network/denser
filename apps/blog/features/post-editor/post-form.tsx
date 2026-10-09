@@ -10,13 +10,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@ui/co
 import { Separator } from "@ui/components";
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Entry } from "@hive/common-hiveio-packages/wax";
-import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
-import { getCommunity } from "@transaction/lib/bridge-api";
 import { DEFAULT_OBSERVER } from "@/blog/lib/utils";
 import { getLogger } from "@ui/lib/logging";
 import { configuredImagesEndpoint } from "@ui/config/public-vars";
-import { isCommunity } from "@ui/lib/utils";
 import { useTranslation } from "@/blog/i18n/client";
 import { useUserClient } from "@smart-signer/lib/auth/use-user-client";
 import { useSignerContext } from "@smart-signer/components/signer-provider";
@@ -36,6 +33,7 @@ import { imagePicker, validateTagInput, validateSummaryInput, validateAltUsernam
 import { usePostFormState } from "@/blog/features/post-editor/hooks/use-post-form-state";
 import { usePostFormActions } from "@/blog/features/post-editor/hooks/use-post-form-actions";
 import { useScrollSync } from "@/blog/features/post-editor/hooks/use-scroll-sync";
+import { useEditorCommunity } from "@/blog/features/post-editor/hooks/use-editor-community";
 import { PostFormHeader } from "@/blog/features/post-editor/PostFormHeader";
 import { PostMetadataSection } from "@/blog/features/post-editor/PostMetadataSection";
 import { PostPublishingSection } from "@/blog/features/post-editor/PostPublishingSection";
@@ -223,11 +221,7 @@ export default function PostForm({
   }, [proxyAuthToken, fetchProxyAuthToken]);
 
   // --- NSFW tag injection ---
-  const { data: communityData } = useQuery({
-    queryKey: ["community", categoryParam, observer],
-    queryFn: () => getCommunity(categoryParam ?? storedPost.category, observer),
-    enabled: isCommunity(categoryParam) || isCommunity(storedPost.category),
-  });
+  const { data: communityData } = useEditorCommunity(categoryParam, storedPost.category, observer);
   const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes("nsfw");
   useEffect(() => {
     form.setValue("tags", nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);

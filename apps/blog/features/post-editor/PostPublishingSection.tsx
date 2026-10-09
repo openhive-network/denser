@@ -14,14 +14,14 @@ import {
 import { FormControl, FormField, FormItem } from "@hive/ui/components/form";
 import { Progress } from "@ui/components/progress";
 import { withBasePath } from "@ui/lib/path-utils";
-import { isCommunity } from "@ui/lib/utils";
 import { DEFAULT_OBSERVER } from "@/blog/lib/utils";
-import { getCommunity, getSubscriptions } from "@transaction/lib/bridge-api";
+import { getSubscriptions } from "@transaction/lib/bridge-api";
 import { useTranslation } from "@/blog/i18n/client";
 import { AdvancedSettingsPostForm } from "@/blog/features/post-editor/advanced-settings-post-form";
 import { useLoggedUserContext } from "@/blog/features/votes/hooks/use-logged-user";
 import { Entry } from "@hive/common-hiveio-packages/wax";
 import { AccountFormValues } from "@/blog/features/post-editor/types";
+import { useEditorCommunity } from "@/blog/features/post-editor/hooks/use-editor-community";
 
 interface PostPublishingSectionProps {
   form: UseFormReturn<AccountFormValues>;
@@ -52,16 +52,13 @@ export function PostPublishingSection({
   const router = useRouter();
   const { manabarsData } = useLoggedUserContext();
 
-  const { data: communityData } = useQuery({
-    queryKey: ["community", categoryParam, observer],
-    queryFn: () => getCommunity(categoryParam ?? storedPost.category, observer),
-    enabled: isCommunity(categoryParam) || isCommunity(storedPost.category),
-  });
+  const { data: communityData } = useEditorCommunity(categoryParam, storedPost.category, observer);
 
   const { data: mySubsData } = useQuery({
     queryKey: ["subscriptions", observer],
     queryFn: () => getSubscriptions(observer),
     enabled: observer !== DEFAULT_OBSERVER,
+    refetchOnWindowFocus: false,
   });
 
   const communityPosting =
