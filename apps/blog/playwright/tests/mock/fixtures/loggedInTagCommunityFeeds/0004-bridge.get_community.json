@@ -6,15 +6,15 @@
     "method": "bridge.get_community",
     "params": {
       "name": "hive-139531",
-      "observer": ""
+      "observer": "hive.blog"
     },
     "id": 1
   },
-  "requestHash": "f92ffd2eaa3de7fb",
+  "requestHash": "524c7b749df7da46",
   "method": "bridge.get_community",
   "params": {
     "name": "hive-139531",
-    "observer": ""
+    "observer": "hive.blog"
   },
   "response": {
     "jsonrpc": "2.0",
@@ -151,7 +151,11 @@
       ],
       "about": "HiveDevs - A community of developers working on Hive related projects. Visit our Discord at https://discord.gg/cvnByhu",
       "title": "HiveDevs",
-      "context": {},
+      "context": {
+        "role": "guest",
+        "subscribed": false,
+        "title": ""
+      },
       "is_nsfw": false,
       "type_id": 1,
       "settings": {},

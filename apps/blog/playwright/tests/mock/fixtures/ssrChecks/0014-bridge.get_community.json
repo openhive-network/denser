@@ -6,22 +6,26 @@
     "method": "bridge.get_community",
     "params": {
       "name": "hive-160391",
-      "observer": ""
+      "observer": "hive.blog"
     },
     "id": 1
   },
-  "requestHash": "b43a9d048dbcd393",
+  "requestHash": "b49604161d1e1394",
   "method": "bridge.get_community",
   "params": {
     "name": "hive-160391",
-    "observer": ""
+    "observer": "hive.blog"
   },
   "response": {
     "id": 1,
     "jsonrpc": "2.0",
     "result": {
       "about": "Magic the Forkening, BlockCraft, Hashes of Creation, etc.",
-      "context": {},
+      "context": {
+        "role": "guest",
+        "subscribed": false,
+        "title": ""
+      },
       "created_at": "2019-10-26 15:19:33",
       "description": "Blockchain technology and beyond. Placeholder for Hive Pressure series.",
       "flag_text": "Don't post here unless you know what you are doing.",

@@ -1,0 +1,1163 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_account_posts",
+    "params": {
+      "sort": "blog",
+      "account": "guest4test",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "151ad11300b57a2e",
+  "method": "bridge.get_account_posts",
+  "params": {
+    "sort": "blog",
+    "account": "guest4test",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/spam/@guest4test/test-post-1772011775775",
+        "body": "This is a test post created using the Wax SDK.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Test Post",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2026-02-25T09:29:36",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-02-25T09:29:36",
+        "category": "spam",
+        "children": 0,
+        "permlink": "test-post-1772011775775",
+        "payout_at": "2026-03-04T09:29:36",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {},
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/test/@guest4test/test-con-den-before-dep",
+        "body": "Test before deployment",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "Test con - den - before dep",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2026-02-17T07:02:45",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-02-17T07:02:45",
+        "category": "test",
+        "children": 2,
+        "permlink": "test-con-den-before-dep",
+        "payout_at": "2026-02-24T07:02:45",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          },
+          {
+            "voter": "barddev",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "tags": [
+            "test"
+          ],
+          "format": "markdown"
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/test/@guest4test/test-template",
+        "body": "# Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6\n\n*italic*\n**bold**\nLove**is**bold\nI just love __bold text__.\nalso _italic_\n***bold-italic***\n~~strikethrough~~\n[link](http://example.com)\n\nLists:\n- Milk\n- Bread\n    - Wholegrain\n- Butter\n\n1. Tidy the kitchen  \n2. Prepare ingredients  \n3. Cook delicious things  \n\n![hive logo](https://cryptologos.cc/logos/hive-blockchain-hive-logo.png?v=035)\n\n![sample image](https://usermedia.actifit.io/9246fa02-cdf0-424f-b1e8-634b1c209042)\n\n<img src=\"https://images.hive.blog/0x0/https://pixabay.com/get/ga1c244ce6431365a20f00107112a940f237bebf510518ff4bbb105240cdb24f3c9a3032fe29f21cbea57dbaf288ca28e2fe12f6831f2f8ff1481531c13c58a96_640.jpg\">\n\n---\nblockquote:\n> To be or not to be, that is the question.\n\nMulti-paragraph blockquote:\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\nNested blockquote:\n> Dorothy followed her through many of the beautiful rooms in her castle.\n>\n>> The Witch bade her clean the pots and kettles and sweep the floor and keep the fire fed with wood.\n\nComplex blockquote:\n> #### The quarterly results look great!\n>\n> - Revenue was off the chart.\n> - Profits were higher than ever.\n>\n>  *Everything* is going according to **plan**.\n\nTable\n\nOne   | Two   | Three\n------|-------|------\nfour  | five  | six\nseven | eight | nine\n\nsample code:\nAt the command prompt, type `nano`.\n\n``Use `code` in your Markdown file.``\n\n    <html>\n      <head>\n      </head>\n    </html>\n\nLinks/Emails:\n<https://www.markdownguide.org>\n<fake@example.com>\n\n[link1](https://www.example.com/my%20great%20page)\n\n<a href=\"https://www.example.com/my great page\">link2</a>\n\nX/Twitter:\n[X link](https://x.com/ShouldHaveCat/status/1889804218132832323)\n\nhttps://x.com/ShouldHaveCat/status/1889804218132832323/asdasd\n\n\nInstagram emb:\n\nhttps://www.instagram.com/reel/DUflCf4DKB8\n\n\n\\* Without the backslash, this would be a bullet in an unordered list.\n\nSpoiler:\n>! [Hidden Spoiler Text] This is the spoiler content.\n> Optionally with more lines\n\nSpoiler Output:\n![image.png](https://usermedia.actifit.io/M20FVR8P5ZFXYEF49HN7QQH4KK8BJ9)\n\nCollapsible section:\n\n<details>\n<summary>Click to expand</summary>\n\nThese details <em>remain</em> <strong>hidden</strong> until expanded.\n\n<pre><code>PASTE LOGS HERE</code></pre>\n\n</details>\n\n3speak video (preferably displayed as embedded/playable video)\nhttps://3speak.tv/watch?v=jongolson/vhtttbyf\n\nSimilarly for youtube videos (sample video below)\nhttps://www.youtube.com/watch?v=a3ICNMQW7Ok\n\nFootnotes[^1] have a label[^@#$%] and the footnote's content.\n\n[^1]: This is a footnote content.\n[^@#$%]: A footnote on the label: \"@#$%\".\n\nText inside center tags should be centered.\n<center>\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more.\n</center>\n\nLink inside the blockquote should be visible.\n> Each day you post a gift that you would like to receive for Christmas. It needs to be precious metal related to qualify. The items can be something you’d like from our silvergoldstackers Secret Santa. Or they could also be something that you really truly wish was a possible gift. [source](/@silverd510/on-the-first-day-of)\n\nHive User links:\nHello Mr. @sketch.and.jam, how are you?\n\nTable with html special characters:<br>\n| Kod HTML   | Znak | Znaczenie                       |\n| ---------- | ---- | ------------------------------- |\n| &nbsp;   |      | Niełamliwa spacja               |\n| &lt;     | <  | Mniejszość (less than)          |\n| &gt;     | >  | Większość (greater than)        |\n| &amp;    | &  | Ampersand (znak „i” logiczne)   |\n| &quot;   | \"  | Cudzysłów (podwójny)            |\n| &apos;   | '  | Apostrof (pojedynczy cudzysłów) |\n| &copy;   | ©    | Symbol praw autorskich          |\n| &reg;    | ®    | Znak zarejestrowany             |\n| &euro;   | €    | Symbol euro                     |\n| &mdash;  | —    | Długa pauza (myślnik)           |\n| &hellip; | …    | Wielokropek                     |\n| &times;  | ×    | Znak mnożenia                   |\n| &divide; | ÷    | Znak dzielenia                  |\n| &deg;    | °    | Stopień (np. 30°C → 30°C)       |\n| &cent;   | ¢    | Cent                            |\n| &para;   | ¶    | Znak akapitu                    |\n\n\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Test template",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2026-02-09T13:46:03",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-02-09T13:46:03",
+        "category": "test",
+        "children": 0,
+        "permlink": "test-template",
+        "payout_at": "2026-02-16T13:46:03",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "test"
+          ],
+          "image": [
+            "https://images.hive.blog/0x0/https://pixabay.com/get/ga1c244ce6431365a20f00107112a940f237bebf510518ff4bbb105240cdb24f3c9a3032fe29f21cbea57dbaf288ca28e2fe12f6831f2f8ff1481531c13c58a96_640.jpg"
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": "another key"
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/test/@guest4test1/6rgsrg-test",
+        "body": "Test ![Gemini_Generated_Image_3fqvra3fqvra3fqv.png](https://images.hive.blog/DQmfWzrWYaH7MwDo5NQWBsJGMq6i7bSAu886EMvRC6UJvEZ/Gemini_Generated_Image_3fqvra3fqvra3fqv.png) ",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Test ",
+        "author": "guest4test1",
+        "payout": 0,
+        "created": "2026-01-22T09:36:12",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-01-22T09:36:12",
+        "category": "test",
+        "children": 1,
+        "permlink": "6rgsrg-test",
+        "payout_at": "2026-01-29T09:36:12",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "reblogged_by": [
+          "guest4test"
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "test"
+          ],
+          "image": [
+            "https://images.hive.blog/DQmfWzrWYaH7MwDo5NQWBsJGMq6i7bSAu886EMvRC6UJvEZ/Gemini_Generated_Image_3fqvra3fqvra3fqv.png"
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 43.24,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/asd",
+        "body": " ![1006-50x50.jpg](https://images.hive.blog/DQmcLzmW7qyN4DWfckkFpnpPwhMwmfRfpYz7GHpbKAaLjQJ/1006-50x50.jpg) \n\n\ntest123",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "asd",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2026-02-03T14:32:48",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-02-03T14:32:48",
+        "category": "spam",
+        "children": 1,
+        "permlink": "asd",
+        "payout_at": "2026-02-10T14:32:48",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test1",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 2000,
+            "account": "guest4test1"
+          }
+        ],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            "https://images.hive.blog/DQmcLzmW7qyN4DWfckkFpnpPwhMwmfRfpYz7GHpbKAaLjQJ/1006-50x50.jpg"
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/3fhxc-test",
+        "body": "test",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "Test",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2026-01-28T12:33:00",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-01-28T12:33:00",
+        "category": "spam",
+        "children": 7,
+        "permlink": "3fhxc-test",
+        "payout_at": "2026-02-04T12:33:00",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/testing-publication",
+        "body": "Be optimistic",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "Testing publication",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2026-01-28T12:27:03",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-28T12:27:03",
+        "category": "spam",
+        "children": 0,
+        "permlink": "testing-publication",
+        "payout_at": "2026-02-04T12:27:03",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/title",
+        "body": " ![640-100x100.jpg](https://images.hive.blog/DQmZdYqrUyXydiAAp76UeXGmFgU2ALnRA4j4YdP6WMkcF3M/640-100x100.jpg)  ![41-100x100.jpg](https://images.hive.blog/DQmRYsMPzABkiNrX9Ac1nMZKHnzb6G6Nb1sVJ9CZTdEck6W/41-100x100.jpg) \n\n ![239-100x100.jpg](https://images.hive.blog/DQmYo5tYGrYdPDdBLYyhjynNw6cN8JqHPfnoM2iroasdYzZ/239-100x100.jpg) \n\n\n\n# Hello\n# Hello\n# Hello\n# Hello\n# Hello\n# Hello\n\n\n# Hello\n# Hello ![41-100x100.jpg](https://images.hive.blog/DQmRYsMPzABkiNrX9Ac1nMZKHnzb6G6Nb1sVJ9CZTdEck6W/41-100x100.jpg) \n# Hello\n\n\n\n# Hello\n# Hello\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "Title",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2026-01-27T14:59:36",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-01-27T14:59:36",
+        "category": "spam",
+        "children": 0,
+        "permlink": "title",
+        "payout_at": "2026-02-03T14:59:36",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [
+          {
+            "weight": 2000,
+            "account": "guest4test1"
+          }
+        ],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "guest4test1222",
+          "format": "markdown+html",
+          "summary": "asddas as dad d SEO"
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-167922/@leofinance/inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc",
+        "body": " https://img.leopedia.io/DQmYZfK62fk1b2aEdzUaGZnHLxYVHihSLdUYJqDtBrSmVnW/image.png \n\n\nINLEO has been building in a very specific way over the past few years and especially in the past few months. Our focus has always been on external users in the broader crypto space. Many of these users utilize X on a daily basis for their social interactions.\n\nThe fact that they are crypto users and they are using a platform like X is something that we believe we can change with our technology on Hive. Our platform has emerged as something that looks & feels similar to X but **puts all their data on the Hive blockchain**. \n\nImmutable accounts and data. Put it all on chain. \n\nOver the past several weeks, we've been working with other projects within the Hive ecosystem to proliferate our technology as open source contributions to the Hive Ecosystem.\n\nThis is all a part of our [updated DHF proposal](https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed). Our regular updates will showcase the roadmap to open sourcing more of INLEO's technologies and also providing finalized products in the form of Plug & Play APIs that are open source and easily available to all Hive frontends, games and applications. \n\nIt's obvious to us now that our path forward on Hive is to Open Source our work and help all Hive projects grow alongside us.\n\nINLEO's passion is not only in building this technology but also marketing it to the broader crypto space. We've found a lot of success in collaboration with other ecosystems. You can see this with our Dash collaboration from November-December 2024. You'll see it in our upcoming collaborations with the Solana Network, Arbitrum Foundation, Litecoin Foundation, ChainLink and the many other HUGE crypto partners that we have lined up as part of our DHF Proposal. \n\nAs we continue to do these collaborations, we want to open source the many technologies that have made INLEO so successful. These technologies can be utilized either from the Open Source codebases we release or from the Plug & Play APIs that we release and manage. \n\nWe believe that INLEO's place on Hive is about to transition heavily into designing, developing, iterating and managing Open Source, Plug & Play APIs that can be utilized by all Hive projects. \n\nAs we do this, our collaborations will bring in a flood of new users to not only INLEO, but also every other Hive application that is out there. The more that we can spread our successful technology to other Hive UIs, the more that we can all grow together as these new users come into Hive and find an app that they want to use on a daily basis (or hopefully, many Hive apps that they use each day).\n\nI am reaching out to all Hive App Owners and asking them if they'd like to collaborate with us in any way. Whether it means getting early access to our Open Source codebases as we roll them out one-by-one or getting set up with our Plug & Play APIs so that they can start integrating our most successful features. \n\nIn this post, I want to outline some of our most successful features and the ones that we plan to Open Source as a part of our DHF Proposal. \n\n## INLEO's Onboarding Technology\n\n https://img.leopedia.io/DQmTF5pZqwdiQg6thbfR6WWRgdExe3YNGo997khs3DTN6Vq/image.png \n\n\n> March 2025 | Released ✅\n\nAs promised in our first [DHF Transparency Report and Roadmap](https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed), we released the Plug & Play APIs + Documentation for our Onboarding Technology on Thursday of last week.\n\n https://img.leopedia.io/DQmZqVWPzhNJtnwYmLLx2EzPnBirhSd5ZRDgrSKxCNJ5G8V/image.png \n\n https://img.leopedia.io/DQmW6WPPsWxXo4gjgVFwSEWT4owy25w8Rxe7mvNGENwqj5H/image.png \n\n\nAny Hive application can now integrate INLEO's onboarding technology in 3 forms:\n1. Keystore (Full Hive Account, Full Self-Custody)\n2. X Lite Accounts (Lite Account, Web2 Authentication)\n3. Google Lite Accounts (Lite Account, Web2 Authentication)\n\nWe're talking with about 8 different Hive UIs and applications who are working to integrate the APIs/Open Source tech into their framework so that they can allow these signup and login methods.  If you are a Hive app owner and want to integrate, you can read the [docs](https://inleo.io/@leofinance/inleos-onboarding-framework-is-now-open-source-x-google-hive-lite-accounts-and-keystore-7nw) and/or get in touch with our team. We're happy to help any Hive UI who wants to integrate. \n\nThe Plug & Play APIs offer an elegant and simple way to integrate these sign up / login methods.\n\n## Dynamic Resource Credit (RC) Delegation System + Account Creation Tokens\n\n> March 2025 | Released ✅\n\n\nAs a reminder, we also included our Resource Credit delegation system + use of our account creation tokens as part of the Open Source APIs we released for our onboarding technology.\n\nA UI has two options to utilize our tech:\n1. Look at the Open Source codebase, clone it and integrate it on their own\n2. Use our Plug & Play API to easily connect to LeoInfra V2 and allow signups and logins instantly\n\nIf any Hive app uses option #2, we also provide our onboarding resources to new account creations. So it costs the Hive app nothing. The signup APIs use:\n1. INLEO's account creation tokens to create the Hive accounts\n2. INLEO's Dynamic Resource Credit delegation system\n\nThe dynamic RC delegation system does exactly what the title suggests: it dynamically delegates RCs to new signups **based on need**. So if a new signup becomes heavily active, our system reads their RCs and continually delegates more RCs to them as they get more active. This ensures the new signups don't run out of RCs if they start blogging/threading/commenting/upvoting right after signing up. \n\nIf a signup becomes inactive or powers up Hive or for whatever reason no longer needs as many RCs, our system sees that their RCs are sitting above 80% for an extended period of time - then the delegation is slowly reduced. If the user suddenly runs low on RCs again at some point in the future, our system will re-delegate RCs to them.\n\nLong story short, new onboards have plenty of RCs to interact off the bat. Over time, they are encouraged to power up their own Hive so that they control their own pool of RCs. \n\n## HAFSQL Access\n\n> March 2025 | Early Access Release\n\nLast Friday, we released access to our HAFSQL database to a handful of other applications privately. After a bit more testing and refining with some of the people who have started privately accessing it, we are going to open source the APIs and allow anyone to access our instance of HAFSQL - which is extremely useful for pulling real-time, onchain data. \n\nHAFSQL has become an integral part of INLEO's UI. It allows us to serve complex data sets to our users in various parts of our interface (Leaderboard, Referrals, etc.). \n\nUse of HAFSQL can be extremely custom. What we are opening up here is the ability for other apps on Hive to tap into our resources that we use to run our own instance of HAFSQL. For free as part of our [DHF Proposal](https://peakd.com/me/proposals/332). \n\n## Accounts API\n\n> This Week!\n\n https://img.leopedia.io/DQmYDu74SXbREuqDed9aJCvNa6gCsudSbQfWG3HkpUozwuG/image.png \n\nINLEO maintains our own Accounts API that provides relevant, real-time information about users. Some of this data is very common on-chain. Other pieces of data include:\n\n1. Premium status\n2. Creator Subscriptions\n3. etc.\n\nWe are planning to release this Accounts API in the next few days. This will allow other Hive UIs to pull real-time data from our Accounts API. The API has a lot of standard Hive Account info but it also has many modifications that our team has added. These upgrades are vital to running things like INLEO Premium, Creator Subscriptions, Referrals, etc. \n\nHaving access to that data is extremely important if/when other applications want to integrate our Creator Subs, Premium, Referrals, etc. technologies.\n\nThis is why we've chosen to Open Source our Accounts API sooner than later. It lays some critical foundation needed for us to open source some of our other successful technologies if other applications want to integrate them down the road. \n\n## Ledger, Trustwallet, Trezor Support\n\n https://img.leopedia.io/DQmWcZSwXgUE6X6LneDTjLaG3pLk4VVug2vEqUEUtN6LdQQ/image.png \n\nINLEO has been building a wallet framework. This is currently in beta for our team and private testers. We're refining this framework and will begin releasing more signup and login options to Hive. Fully open sourced as part of our DHF Proposal. \n\nThese new wallet options are extremely important for our upcoming collaborations. Similar to how we onboarded Dash users, we want to give our Solana, Arbitrum, Litecoin, Chainlink, etc. partners the wallet sign-in options they need to seamlessly sign up and login to Hive. \n\nOur updated proposal now includes us open sourcing these signup and login methods (like we already did for Keystore, X & Google Lite Accounts) and releasing them **prior to the collabs going live**. \n\nDoing these releases before the collabs go live is a great way for other Hive applications to add the integrations they want to add and tap into the growth that INLEO brings to the Hive blockchain in the form of new users from these other ecosystems. This is a new generation of Hivers that are very familiar with crypto, are eager to invest in HIVE and are also eager to get active on chain. \n\n## Referral System API, Backend and Frontend\n\n https://img.leopedia.io/DQmX2YuPybPdEutKi7RYKRanvjviJg2B4GxLgLXkXDtgYFx/image.png \n\n https://img.leopedia.io/DQmddrcMPMBe7fgoYDTShrkbMNjgSo6sEh5e2CGWGWYF8nV/image.png \n\n\nOur Referral System has proven to be quite successful. We continue to refine it and have found that it **significantly improves new user retention**. \n\nAcquiring new users is important but keeping those users around is equally important. Our referral system has proven to do a really good job of this as the Referral Dashboard frontend that we built allows existing users to see exactly who has signed up through their referral links, track their activity on the Hive blockchain and encourage them to get more active. \n\nTo make all of this work, we have several layers of infrastructure:\n\n1. Tracking on-chain data related to the onboard via HAFSQL - how many posts, threads, comments, etc. they've made as well as other relevant data in our Accounts API (access to our HAFSQL node is opened up in Phase 2 of this roadmap)\n2. Affiliate link structure (we modeled this after Amazon's Affiliate link structure. Where if a user clicks on a blog post / thread you've shared, then it will give you the referral credit if they signup to Hive within 30 days of clicking your link). This deeply incentivizes sharing your Hive content outside of the ecosystem and aiming to get as many clicks on it as possible\n3. ...\n\nAs you can see, laying the groundwork by releasing our other APIs is critical for adding successful features like this to our open source contributions to Hive. \n\n## Creator Subscriptions\n\n https://img.leopedia.io/DQmemUDRBzRkuTTwRvb4GtYdAmVQ5rAnYsBpzx9Uk3NfBny/image.png \n\n\nCreator Subs have been a really exciting addition to the INLEO App. Now, users can have their own subscribers (very similar to substack). This offers a whole new way for authors to monetize their content. \n\nWhat we've created with Creator Subs is:\n1. A payments platform that uses HBD for creators and their subscribers\n2. Private content for creators and their subs - uses an encrypted container system we built that is 100% on-chain\n3. Value capture for the Hive economy through a small fee on every creator-subscriber transaction\n\nhttps://img.leopedia.io/DQmUDiguYH8ZVU8B4V7pCa2rxXA8xBW9NHMmAR8BpP23Y32/image.png \n\nWith an influx of new users coming from our collabs, we want to ensure that other Hive apps have the opportunity to add Creator Subs and encrypted on-chain content to their frontend as well. \n\nWe'll be open sourcing the APIs for Creator Subscriptions so that every frontend can integrate a seamless system for:\n1. Payments\n2. Encrypted on-chain containers (private content)\n3. Value capture for HIVE through creator-subscriber fees\n\n https://img.leopedia.io/DQmXjCXavfR5w9YM3ds6dUytW5CsPdxwrB5z26g8viEtEVY/image.png \n\n\nAs we continue to release the other infrastructure mentioned above that is needed to operate Creator Subs, we'll announce the release date of the Open API access. We want to ensure that other Hive UIs can have this live before our collaborations so that we can all benefit from the influx of new users that come into Hive. \n\nIt's important that we not only onboard new users and investors into the HIVE token, but that we also bring paying members of the Hive economy. Imagine that these new users not only buy and stake HIVE POWER but also subscribe to some of their favorite creators. This will get them familiar with buying, holding and spending HBD in the Hive economy. A simultaneous effect will be rewarding the hard work that existing Hive Creators have put into building their brand on the Hive blockchain. \n\nWins for everyone. \n\n## Cross-UI Bookmarks Framework\n\n https://img.leopedia.io/DQmYehYDSJcskfDcPr1BwoUhwKc6pYbNkejgFUJswU5ix2A/image.png \n\n\nWe've built a robust system for bookmarks that not only allows users to bookmark posts, comments and threads but also allows them to create folders and subfolders for those bookmarks to organize them better. This utilizes on-chain data to assign bookmarks and folders to a specific user's Hive account.\n\nAs we onboard new users, we want them to be able to access their bookmarks, folders, etc. from other interfaces in addition to INLEO. We believe that this will greatly improve the User Experience if a user likes to utilize INLEO for some things but Ecency for another (example). \n\nAs part of our shift to open sourcing more of INLEO's technologies so that all Hive UIs can benefit and all existing and future Hive Users can have a better User Experience, we'll be open sourcing our Bookmarks APIs so that every UI can have a simple-to-implement framework for Bookmarks. No more losing your place on-chain. Any UI that has it will be able to seamlessly offer bookmarks and folders across UIs and across devices. \n\n## More APIs, More Onboarding, More Hive Application Collaboration\n\nThe point of this post is to talk a bit about the APIs that we've already released and plan to release in the very near future as part of our [DHF Proposal](https://peakd.com/me/proposals/332). Our proposal is not just about marketing the platform so that we can grow Hive - it's about open sourcing INLEO's technologies so that as we do that marketing, all the new users we bring to Hive can proliferate to the various Hive Apps in our ecosystem.\n\nWe believe heavily in a collaborative approach to growth. We believe that there's a lack of collaboration amongst Hive teams right now and many of us have to re-invent the wheel when new features pop up or new desires from the Hive ecosystem emerge. INLEO has been a part of this problem in the past - by developing our features in a silo.\n\nWe want to be a part of the solution going forward. Developing our innovations not just as INLEO-only features, but as open source contributions to the Hive ecosystem as well as Plug & Play APIs that can be utilized easily by any interface, application or game. \n\nKeep an eye out this week for the next iteration of our Open Source contributions to Hive. **Our proposal is currently at 96% but we are not waiting to get funded in order to do this work. We believe in our mission and we believe in our ability to grow Hive. We are doing all of this work up front to show our commitment to growing Hive both now and in the many years to come.** This ecosystem means so much to us and we will not stop building here. Join us as we continue to put 110% of our effort into making Hive a top 10 blockchain. Where it belongs.\n\n\n\n\n\n\n\nPosted Using [INLEO](https://inleo.io/@leofinance/inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 566
+        },
+        "title": "INLEO's Vision for Hive | Open Sourcing Our Tech and Growth",
+        "author": "leofinance",
+        "payout": 28.549,
+        "created": "2025-03-18T15:07:24",
+        "reblogs": 29,
+        "replies": [],
+        "updated": "2025-03-18T15:07:24",
+        "category": "hive-167922",
+        "children": 36,
+        "permlink": "inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc",
+        "community": "hive-167922",
+        "payout_at": "2025-03-25T15:07:24",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "mod",
+        "net_rshares": 87094548317406,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "xeldal",
+            "rshares": 10424165235820
+          },
+          {
+            "voter": "adol",
+            "rshares": 2503262023962
+          },
+          {
+            "voter": "enki",
+            "rshares": 6418333439996
+          },
+          {
+            "voter": "simba",
+            "rshares": 136528745055
+          },
+          {
+            "voter": "ash",
+            "rshares": 816921688877
+          },
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "author_title": "",
+        "reblogged_by": [
+          "guest4test"
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "hive",
+            "hbd",
+            "dhf",
+            "growth",
+            "marketing",
+            "opensource",
+            "tech",
+            "palnet",
+            "neoxian"
+          ],
+          "links": [
+            "https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed).",
+            "https://inleo.io/@leofinance/dhf-report-1-transparency-apis-documentation-release-timeline-and-open-source-contributions-to-hive-5ed),",
+            "https://inleo.io/@leofinance/inleos-onboarding-framework-is-now-open-source-x-google-hive-lite-accounts-and-keystore-7nw)",
+            "https://peakd.com/me/proposals/332).",
+            "https://peakd.com/me/proposals/332).",
+            "https://inleo.io/@leofinance/inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmYZfK62fk1b2aEdzUaGZnHLxYVHihSLdUYJqDtBrSmVnW/image.png",
+            "https://img.leopedia.io/DQmTF5pZqwdiQg6thbfR6WWRgdExe3YNGo997khs3DTN6Vq/image.png",
+            "https://img.leopedia.io/DQmZqVWPzhNJtnwYmLLx2EzPnBirhSd5ZRDgrSKxCNJ5G8V/image.png",
+            "https://img.leopedia.io/DQmW6WPPsWxXo4gjgVFwSEWT4owy25w8Rxe7mvNGENwqj5H/image.png",
+            "https://img.leopedia.io/DQmYDu74SXbREuqDed9aJCvNa6gCsudSbQfWG3HkpUozwuG/image.png",
+            "https://img.leopedia.io/DQmWcZSwXgUE6X6LneDTjLaG3pLk4VVug2vEqUEUtN6LdQQ/image.png",
+            "https://img.leopedia.io/DQmX2YuPybPdEutKi7RYKRanvjviJg2B4GxLgLXkXDtgYFx/image.png",
+            "https://img.leopedia.io/DQmddrcMPMBe7fgoYDTShrkbMNjgSo6sEh5e2CGWGWYF8nV/image.png",
+            "https://img.leopedia.io/DQmemUDRBzRkuTTwRvb4GtYdAmVQ5rAnYsBpzx9Uk3NfBny/image.png",
+            "https://img.leopedia.io/DQmUDiguYH8ZVU8B4V7pCa2rxXA8xBW9NHMmAR8BpP23Y32/image.png",
+            "https://img.leopedia.io/DQmXjCXavfR5w9YM3ds6dUytW5CsPdxwrB5z26g8viEtEVY/image.png",
+            "https://img.leopedia.io/DQmYehYDSJcskfDcPr1BwoUhwKc6pYbNkejgFUJswU5ix2A/image.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@leofinance/inleos-vision-for-hive-open-sourcing-our-tech-and-growth-3xc"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 77.45,
+        "author_payout_value": "14.308 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "14.241 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-167922/@chronocrypto/ace-presale-dummy-walkthrough-chronocrypto-edition-buo",
+        "body": " https://img.leopedia.io/DQmPLjPBJ1Uymo3UfbpW8ccLZsWCE6B7yiyJDVjukVJN1SD/image.png \n\nA simple, plain English guide to buying $1,000 worth of ACE so you and everyone else can follow it.\n\nThis is a dummy walkthrough of what the ACE presale flow looks like and what the buttons mean. The main idea is that ACE is shown as an overcollateralized stablecoin with a presale price of $0.90 per ACE, plus a Peg Stability Module (PSM) that shows reserves in USDC and HBD.\n\n---\n\n## What you are buying\nACE is being sold in a presale at $0.90 per ACE. If the target live value is $1.00 later, the presale discount is why it says you save 10% during presale.\n\n### Quick math for $1,000\nAt $0.90 each, $1,000 buys about 1,111.11 ACE.\n\nSo in plain terms:\n- Spend: $1,000\n- Expected receive: about 1,111 ACE\n- Entry price: $0.90\n\n---\n\n## What you will see on the page (human translation)\nWhen you open the ACE page, you will usually see these areas:\n\n- Presale panel with price and a Join Presale or Join Now button.\n- PSM Swap tool (Peg Stability Module).\n- PSM Reserves showing USDC and HBD and a Total Reserves number.\n- Treasury Fees Earned (a running total of fees).\n- PSM Status (example: Operational).\n\nIn plain English, the dashboard is trying to show:\n- How much stable liquidity sits in the peg module (USDC and HBD).\n- That swaps or activity can generate fees that go to a treasury.\n- Whether the peg module is active.\n\n---\n\n## Step by step: buying $1,000 of ACE (dummy)\nThis is the do it on your phone without overthinking version.\n\n### 1) Verify you are on the real site\nMake sure you typed the official domain correctly and did not click a random link from DMs.\n\nRule:\n- If the domain looks off by even one letter, leave.\n\n### 2) Get your spending asset ready\nBecause the PSM and reserves are shown in USDC and HBD, those are the two stables being highlighted in the system.\n\nPractical takeaway:\n- Have USDC ready if you will pay with USDC.\n- Have HBD ready if you will pay with HBD.\n- Keep a little extra for fees.\n\n### 3) Use the “Calculate” mindset first\nBefore you press any final buttons, confirm the numbers make sense.\n\nYou want:\n- You spend: $1,000\n- You receive: about 1,111 ACE\n\nIf the calculator shows something wildly different, stop and figure out why before confirming.\n\n### 4) Tap Join Presale and connect\nWhen you hit Join Presale, you will usually need to connect a wallet or log in.\n\nDummy rule:\n- If you cannot see balances, you are not connected.\n- If the From balance is blank, connect first, then re check.\n\n### 5) Enter your amount\nEnter $1,000 (or the equivalent amount in the asset you are using).\n\nThen confirm:\n- The receive amount is close to 1,111 ACE at the $0.90 rate.\n\n### 6) Confirm approvals carefully\nThis is the part people mess up.\n\nBefore you approve or confirm:\n- Confirm the amount is correct.\n- Confirm the token you are spending is correct.\n- If your wallet asks for a spending approval, do not blindly approve unlimited if you do not need to.\n\nA safer habit is to approve close to the exact amount you plan to spend.\n\n### 7) Submit and save proof\nAfter the transaction is submitted:\n- Screenshot the confirmation screen.\n- Save the transaction hash or reference.\n- Note the time and amount you spent.\n\nThis makes it easier to track claims, troubleshoot, or prove purchase later.\n\n---\n\n## What the PSM means (simple version)\nPSM is a peg tool that helps a stablecoin stay near its target value by allowing swaps against reserve assets.\n\nSo when you see USDC and HBD reserves plus a total reserve number, think of it as:\n- The system’s liquidity buffer\n- The pool of stables used to support conversions\n- A visible indicator of capacity, not a guarantee\n\nImportant: reserves help, but they do not eliminate risk.\n\n---\n\n## Real risks to mention (keep it honest)\nEven with a clean interface, it is still crypto.\n\nMain risks:\n- Smart contract risk (bugs, exploits, admin controls).\n- Peg risk (ACE could trade under or over $1.00).\n- Liquidity risk (reserves can shrink, spreads can widen).\n- Platform risk (UI bugs, network issues, wrong chain selections).\n- Execution risk (user mistakes like wrong token, wrong address, wrong approval).\n\nOnly spend what you can afford to have locked up longer than expected.\nhttps://leostrategy.io/quests?ref=E35FF1B4\n---\n\n\n\n\n\nPosted Using [INLEO](https://inleo.io/@chronocrypto/ace-presale-dummy-walkthrough-chronocrypto-edition-buo)",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 3,
+          "total_votes": 406
+        },
+        "title": "ACE Presale Dummy Walkthrough (Chronocrypto Edition)",
+        "author": "chronocrypto",
+        "payout": 11.023,
+        "created": "2026-01-22T04:03:00",
+        "reblogs": 3,
+        "replies": [],
+        "updated": "2026-01-23T05:51:06",
+        "category": "hive-167922",
+        "children": 4,
+        "permlink": "ace-presale-dummy-walkthrough-chronocrypto-edition-buo",
+        "community": "hive-167922",
+        "payout_at": "2026-01-29T04:03:00",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 93351744306965,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "kevinwong",
+            "rshares": 49307741828
+          },
+          {
+            "voter": "jeffjagoe",
+            "rshares": 2721725382
+          },
+          {
+            "voter": "uwelang",
+            "rshares": 256844405604
+          },
+          {
+            "voter": "petrvl",
+            "rshares": 578437297705
+          },
+          {
+            "voter": "lucashunter",
+            "rshares": 7479102858
+          }
+        ],
+        "author_title": "",
+        "reblogged_by": [
+          "guest4test"
+        ],
+        "beneficiaries": [
+          {
+            "weight": 500,
+            "account": "leofinance"
+          }
+        ],
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "tags": [
+            "hive-167922",
+            "crypto",
+            "neoxian",
+            "guide",
+            "stepbystep",
+            "ace"
+          ],
+          "links": [
+            "https://leostrategy.io/quests?ref=E35FF1B4",
+            "https://inleo.io/@chronocrypto/ace-presale-dummy-walkthrough-chronocrypto-edition-buo)"
+          ],
+          "format": "markdown",
+          "images": [
+            "https://img.leopedia.io/DQmPLjPBJ1Uymo3UfbpW8ccLZsWCE6B7yiyJDVjukVJN1SD/image.png"
+          ],
+          "isPoll": false,
+          "dimensions": {},
+          "canonical_url": "https://inleo.io/@chronocrypto/ace-presale-dummy-walkthrough-chronocrypto-edition-buo"
+        },
+        "community_title": "LeoFinance",
+        "author_reputation": 76,
+        "author_payout_value": "5.522 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "5.501 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/blog/@guest4test/test-hf",
+        "body": "Test hf",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Test hf",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2025-10-02T12:49:51",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-10-02T12:49:51",
+        "category": "blog",
+        "children": 6,
+        "permlink": "test-hf",
+        "payout_at": "2025-10-09T12:49:51",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "tags": [
+            "blog"
+          ],
+          "format": "markdown"
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/test-cover-image",
+        "body": "**This is post for testing cover image**\n\n ![sumup-YKCU-5Faehc-unsplash.jpg](https://images.hive.blog/DQmZLJdcMXv8peFCZGBJMU3xJWV2ZT4KD5652sVnZNi8GQp/sumup-YKCU-5Faehc-unsplash.jpg) \n\n ![Screenshot 2025-08-13 at 13.48.40.png](https://images.hive.blog/DQmcsB4Wo3jNPubFWim2UcMGd7Cx8shmvqb8nJ7XbTqAL32/Screenshot%202025-08-13%20at%2013.48.40.png) ",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Test cover image",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2025-08-27T11:31:12",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-08-27T11:34:30",
+        "category": "spam",
+        "children": 0,
+        "permlink": "test-cover-image",
+        "payout_at": "2025-09-03T11:31:12",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            "https://images.hive.blog/DQmcsB4Wo3jNPubFWim2UcMGd7Cx8shmvqb8nJ7XbTqAL32/Screenshot%202025-08-13%20at%2013.48.40.png"
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/trip/@guest4test/hello-from-mlyn-jacka",
+        "body": "MATI !!! :)\n\nturek.\n\nptaszysko :-) &#128038;\n\ngreetings from thebeedevs travel\n\n\nMichał\nAdam\nLucius\nMarcin S\nBardDev\nABW\nkuba\nkuba\n@gtg was here\n@Serpent7776\nola\nMatta\n\nHola!\n Voila \n\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 4
+        },
+        "title": "hello from mlyn jacka",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2025-05-28T11:05:57",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-05-28T11:05:57",
+        "category": "trip",
+        "children": 1,
+        "permlink": "hello-from-mlyn-jacka",
+        "payout_at": "2025-06-04T11:05:57",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 7722972362,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "small.minion",
+            "rshares": 6670169806
+          },
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          },
+          {
+            "voter": "mtyszczak",
+            "rshares": 0
+          },
+          {
+            "voter": "serpent7776",
+            "rshares": 1052802556
+          },
+          {
+            "voter": "barddev",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "trip"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/my-test-for-defaults-3",
+        "body": "my test for defaults 3",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "my test for defaults 3",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2025-05-13T07:56:48",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-05-13T07:56:48",
+        "category": "spam",
+        "children": 2,
+        "permlink": "my-test-for-defaults-3",
+        "payout_at": "2025-05-20T07:56:48",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9, @hiveio/wax/1.27.6-rc7-250404091259",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/my-post-with-defaults-2",
+        "body": "my post with defaults 2",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "my post with defaults 2",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2025-05-13T05:49:00",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-05-13T05:49:00",
+        "category": "spam",
+        "children": 0,
+        "permlink": "my-post-with-defaults-2",
+        "payout_at": "2025-05-20T05:49:00",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9, @hiveio/wax/1.27.6-rc7-250404091259",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/my-post-with-defaults",
+        "body": "My post with defaults",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "My post with defaults",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2025-05-13T05:43:39",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-05-13T05:43:39",
+        "category": "spam",
+        "children": 0,
+        "permlink": "my-post-with-defaults",
+        "payout_at": "2025-05-20T05:43:39",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9, @hiveio/wax/1.27.6-rc7-250404091259",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/my-test-for",
+        "body": "123",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "my test for 3",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2025-05-07T07:56:06",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-05-07T08:30:57",
+        "category": "spam",
+        "children": 1,
+        "permlink": "my-test-for",
+        "payout_at": "2025-05-14T07:56:06",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "@hiveio/wax/1.27.6-rc7-stable.250314151849",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/spam/@guest4test/my-nice-test-post",
+        "body": "Hello thre",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "my nice test post!",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2025-04-16T09:34:12",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-04-16T09:34:12",
+        "category": "spam",
+        "children": 1,
+        "permlink": "my-nice-test-post",
+        "payout_at": "2025-04-23T09:34:12",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "@hiveio/wax/1.27.6-rc7-250404091259",
+          "tags": [
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/oneup/@astralwars/2024-review-and-2025-roadmap",
+        "body": "\n\n![THUMBNAIL_AstralWars.png](https://files.peakd.com/file/peakd-hive/astralwars/23uQNo44FNrsSSUAocawNrBeekv3DjfUS3F4nfnFCauCAZ2iNQtbh7pvBVPiL74GPbN31.png)\n\n\n*This post is the culmination of all the team's work in 2024. The second half of this post will briefly cover the roadmap of 2025.*\n\n![](https://files.peakd.com/file/peakd-hive/entrepidus/23tRr8SWC9rYU4MuBBuZvzGw8TvE6yjyEa9UMVy5Y6fzrUabu5L4DJZfWfRmiVPV2kvzK.png)\n\nA very **Happy New Year** from Surgent International FZ-LLC. We hope this year will be prosperous and may all your wishes come true. \n\nIt has been a very long time since we wrote this post. This was a conscious decision. The bear market is for building, and we have taken that seriously, which meant spending all our time focusing on building AND testing. We have wanted to make our games accessible to both Web2 and Web3 users. That meant creating a game that Web2 users would like to play. \n\nAnother reason for that was certain tech limitations of Hive that we had to work around and build for considering that we were building for multi-platform. That naturally took time, and while we haven't worked around all of them, we are in a position to positively say that our games belong on Hive as the go-to representation for a hybrid web2-web3 game.\n\nWe believe we have come closer to our vision; however, much must be done. This post will describe what we have done for Astral Wars. Please find a quick overview below.\n\n# Table of Contents\n\n- [Hive.io](#hiveio)\n- [Windows Launcher](#windows-launcher)\n- [Onchain Activities](#onchain-activities)\n- [Expanding our Game Economy](#expanding-our-game-economy)\n- [SSL Certificate](#ssl-certificate)\n- [Marketplace](#marketplace)\n  - [Conversion of Token to in-game currency](#conversion-of-token-to-in-game-currency)\n  - [Auctions](#auctions)\n  - [Collection](#collection)\n  - [Sale through Website](#sale-through-website)\n- [Game Patches](#game-patches)\n- [New Mechanics](#new-mechanics)\n  - [Password Recovery](#password-recovery)\n  - [Card UI Change](#card-ui-change)\n  - [In-Game UI](#in-game-ui)\n  - [Shop for In-Game Purchases with Google Play](#shop-for-in-game-purchases-with-google-play)\n- [Internal test for Google Play](#internal-test-for-google-play)\n- [Solo Mode](#solo-mode)\n- [Tutorial Mode](#tutorial-mode)\n- [Glossary](#glossary)\n- [VFX Showcase](#vfx-showcase)\n- [Foil Cards](#foil-cards)\n- [Global Passives](#global-passives)\n- [Airdrops](#airdrops)\n- [WE NEED YOU!!!](#we-need-you)\n- [Closing of the Alpha Server](#closing-of-the-alpha-server)\n- [Roadmap](#roadmap)\n- [How To Play](#how-to-play)\n- [Getting Involved](#getting-involved)\n\n\n These are the following things that have been worked on in the year 2024 for Astral Wars. Please note that while we worked on other projects in 2024, this post is only for our game Astral Wars.\n\n![](https://files.peakd.com/file/peakd-hive/entrepidus/23tRr8SWC9rYU4MuBBuZvzGw8TvE6yjyEa9UMVy5Y6fzrUabu5L4DJZfWfRmiVPV2kvzK.png)\n\n## Hive.io\n\nWe have finally been listed on Hive.io, which is a honor and the next step for us to get our names out there. While this did happen earlier in 2024, it is nonetheless something that we extremely value.  \n\n![hive.io.png](https://files.peakd.com/file/peakd-hive/astralwars/23tHXNKkK3eqToqwAZWFsBSZf8QeFqnkYhAiNEzqqtEAMorop8kRHd8UXRk4aD4U38iCX.png)\n\n---\n\n## Windows Launcher\n\nOur Windows launcher, which is downloadable from [here](https://surgentgaming.net/GameLauncher/Launcher/SurgentGameLauncherv1.00.zip), now supports the Spanish Language thanks to @newenx.\n\nFor those who don't know this launcher is capable of supporting multiple games. It automatically updates your games and if your account is linked it will load all the posts for that game. I invite any game dev reading this post to reach out to us to get their games on this launcher as it is the perfect distribution software. Much like Steam, but for hive.\n\n\n![launcher 2.png](https://files.peakd.com/file/peakd-hive/astralwars/23tGR5FvtJQqTyt4RFHbohaACdFfDgHytDB1Hu1VcvpTkh5jcH8LpzkRYVQfmVNWPV1nG.png)\n\n![Launcher 3.png](https://files.peakd.com/file/peakd-hive/astralwars/23tGR5FvtJQqPyBxRSso3AD4XLNpqbfUp3fX1VSHn3npTAZuY4xgCZjQoRKgno3VotafR.png)\n\n![launcher 4.png](https://files.peakd.com/file/peakd-hive/astralwars/EoCbSabQkjpJcqzm2HBcmhjDLcStpYN3K7tKKkCoxDTVWk9Mk34PckdPAVsjack859X.png)\n\n\n![launcher 5.png](https://files.peakd.com/file/peakd-hive/astralwars/Eo43ukPR79XxxoAcgwTVt4F45yC44PHNrB8H3zTkD2CFJ1X9DEa5EGJ2segMZjALwbd.png)\n\n![launcher 1.png](https://files.peakd.com/file/peakd-hive/astralwars/23uEoJ7zKjCnK5mYrky1pz423KbrVvnhCuk2Ad7J4q8TUGkcRpEAjibQWcqi3reATyZNo.png)\n\n---\n\n## On-chain Activities\nAll game activities in-game are on-chain [here](https://hivehub.dev/@aw-activities). Whether it is an account registration, playing a match, opening a crate, or buying/selling cards, it is on-chain, including what you have drawn from the crate. This means no one can fake any data, as it can be cross-referenced with the data [here](https://surgentgaming.com/activities). \n\n![activities 1.png](https://files.peakd.com/file/peakd-hive/astralwars/23tbJt3fgh1yh2uZyy4jGUJ4gakE9fBqbsfsKWgnYW6gMNvq4VegN1UPFG6QJy57HBhZu.png)\n\n---\n \n\n## Expanding our Game Economy\nWe have added two more tokens to support $STELLARUM: Crate Fragments and Card Essences.\n\nCrate Fragments are meant to be used to buy Crates in the game \"Astral Wars\" just like another in-game economy \"Coins\" which is a convertible resource with $STELLARUM. They are convertible from $CRF. \n\nCard Essences are meant to be used to buy Cards in the game \"Astral Wars\" just like another in-game economy \"Coins\" which is a convertible resource with $STELLARUM. They are convertible from $CE. \n\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23tSyz4Yx3tepHiozHqhCtUa6Px2pz79ME7NwQHvVCkYVeV6KVdQEBmM5gQCQLCcy8Y5z.png)\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23tSyz4Yx3tepJpAGzmid7n3h7P45CuTMvuGH1VxtnbmGGmgTeChxiDkNUMb6YtBJYPte.png)\n\n---\n\n## SSL Certificate\n\nAll of your data, from usernames, emails and passwords on our sites and game API is protected through SSL which is updated every 3 months. We take security very seriously and are glad to have accomplished this.\n\n![SSL Certificate.png](https://files.peakd.com/file/peakd-hive/astralwars/23tmmXSdNbkuzsozQGhSWtWwmDn3b4NcDVvnZJ1sDYgGeZB1wkCm16iZAKzwVrqMUyV5S.png)\n\n![](https://files.peakd.com/file/peakd-hive/entrepidus/23tRr8SWC9rYU4MuBBuZvzGw8TvE6yjyEa9UMVy5Y6fzrUabu5L4DJZfWfRmiVPV2kvzK.png)\n\n\n\n## Marketplace\n### Conversion of Token to in-game currency\n\nWhat use are tokens if they do not have utility? We are glad to announce that you can convert the $STELLARUM token into the in-game economy \"COINS\" which are used to buy card of auctions, buy cards from the market, buying crates and so on. For the purpose of clarity the below images show a step-by-step on converting STELLARUM to coins from our [website](https://surgentgaming.com/). Please note Crate Fragments and Card Essences can also be converted in a similar way like $CRF and $CE respectively.\n\n![conversion 1.png](https://files.peakd.com/file/peakd-hive/astralwars/23tGZbPKMnkAC1yBWGxwLkWpfufjWavYeGXdsMj174fuKh6rkxMEKETSdCnRasCD1QxHq.png)\n\n![conversion 2.png](https://files.peakd.com/file/peakd-hive/astralwars/23tbijW4WSCEsvswiCYWpzqaGQo2EzBZXve6ZFCLF5T98ZMWeW676sM8Whn5ubueKC5WU.png)\n\n![conversion 3.png](https://files.peakd.com/file/peakd-hive/astralwars/23vhPzhehE16VhHrs5eSwxNmnjB8hZT5r2e5P4rdLjxE31mm5RTSjD6Zm5vAzsnVkS6dr.png)\n\n![conversion 4.png](https://files.peakd.com/file/peakd-hive/astralwars/23tSua8VPG9C33FkDV9iE3RHVtvKRUHrRj1grrPHsF5U9uHskEuk29fWBD2WAfJKBquR6.png)\n\n\n![conversion 5.png](https://files.peakd.com/file/peakd-hive/astralwars/23tvAV4HuMqhm1aq4GFhgXwnN8PacZxXQzKRtwL1nyyJfYiibvBXxcjrSFVrzrRRiTSjz.png)\n\n---\n\n### Auctions\nIntroduced [Auctions](https://surgent-gaming-marketplace.vercel.app/auctions) as a way for users to bid their cards on the marketplace.\n\n![auction 1.png](https://files.peakd.com/file/peakd-hive/astralwars/23uEwkq1XWPFVgt5SQ3KsYy2PeBTKDmtKu3Lt4LibAHfFMJpGuk9Q5AcuGKToFso6v1M4.png)\n\n![auction 2.png](https://files.peakd.com/file/peakd-hive/astralwars/23tbJxRUHgueSfNd2rQkYgx3M3mverNsGmHtJ63h6wBsd2gUCnof9C6g8PRJX3X5TvHFG.png)\n\n![auction 3.png](https://files.peakd.com/file/peakd-hive/astralwars/23tkdDDk6vyGSJwyjH3C1RjWnRR5sbmXzE8HsvQAiXwhrh18TWAcLufCYE5xWYD6usSzN.png)\n\n![auction 4.png](https://files.peakd.com/file/peakd-hive/astralwars/23tknNs7MwhYd7NUpVMtsTAfHQposh8xFwaR5vCZKcSpxDcmenHhTcAttDr1Kk4o4BRzk.png)\n\n![auction 5.png](https://files.peakd.com/file/peakd-hive/astralwars/Eo1vQfq3JqaGC2USucmNpqpmUCMgpJbNXc3mysaWMMdZvU6FpVZeJe1DJ2F8upd8Gqp.png)\n![auction 6.png](https://files.peakd.com/file/peakd-hive/astralwars/23tGXuaHCU4MPqQMrAod5bWsf8Re2Ra4G37Veehxkc4wbgeNFEULY7cHZxR1mFLcwHoBg.png)\n\n---\n\n### Collection\nThe full [Collection](https://surgentgaming.com/pages/collections) of the base set of cards can be seen here.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23tbRL81vrZECkct93tQEizqG7RFxw72sfPtjvKPb4178CiQETRE8hhR4hdy3MBPGyVs1.png)\n\n\n---\n\n### Sale through Website\nWe launched a sale through our marketplace for our promo cards, eliminating any manual way of making sales. From here onwards, all our sales will be held at our marketplace on our [website](https://surgentgaming.com/).\n\n\n![sale 1.png](https://files.peakd.com/file/peakd-hive/astralwars/48HAKJrcVBMmUt9noTxkUbSUHrKjDVqRaykKdronaXQDjccZ1F4NNPfMVW5GqdPx1C.png)\n\n![sale 2.png](https://files.peakd.com/file/peakd-hive/astralwars/23tbH2RmU53zcpXdSjarR1hpCv6LnfHGKSEPoabQJJApEyjVdRLK6yyzcoZEoAH5UrUEY.png)\n\n\n![](https://files.peakd.com/file/peakd-hive/entrepidus/23tRr8SWC9rYU4MuBBuZvzGw8TvE6yjyEa9UMVy5Y6fzrUabu5L4DJZfWfRmiVPV2kvzK.png)\n \n\n## Game Patches\nVarious patches have been made, including nerfs, buffs, grammar changes and reworks. Of course, all of it is communicated in our discord [here](https://discord.gg/gbN7FFwxXZ).\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23t7DRYTR793tD2QXmkkvvLuer3CydAqGzLVtMctDfjn3Ris5hXwkN5eN69P4XjgKcjkT.png)\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23t7DYtHqiaBd4LFqU3akQxFpJ9wTixZSKMTjHqy5idTpgGe9hrbK5hXNt9Vvd16twmhq.png)\n\n\n\n---\n\n### New Mechanics\nWe introduced new mechanics(namely, Range and moving cards on the board) for our game to set it apart from other turn-based trading card games. These can be seen in the following tutorial [here](https://www.youtube.com/watch?v=woFEwtcyfng).\n\nThis was absolutely necessary for keeping the game different from other similar games like Hearthstone, Yu-Gi-Oh and so many others. It is the founding piece that keeps our games unique because mechanics such Range and moving make positioning a super important strategy.\n\n---\n\n### Password Recovery\n\nOne of the things that was noticed was that a lot of users were forgetting their passwords, so we introduced a forget password section that allowed the user to rest their password whenever they wanted.\n\n\n![password1.png](https://files.peakd.com/file/peakd-hive/astralwars/23t72xJ797ZfU8oaNxU94t4r6iMsZHPEKrfUad9DqCWUjW3kjj9sCDzzgeCrF22VBGwoh.png)\n\n![password2.png](https://files.peakd.com/file/peakd-hive/astralwars/23tRojhu2QLr6v72o4QM5YV7yyrP8ESXKPHz79mcaJkmkh5SEV6wEqa82Adkpku12cumJ.png)\n\n![Password Recovery.png](https://files.peakd.com/file/peakd-hive/astralwars/23yJdsiNmPVkt5dUhF86KJD9BUDMUe85zJTRUYNYv7DfL4QaQrodK8tWRM12GyLmh2zB1.png)\n\n![password3.png](https://files.peakd.com/file/peakd-hive/astralwars/23tRqvUM3E3ioePL9mJPVN8fgqWr21wYqrYN6PC17FNiBZaaxjs2k7dBhEtd9kt2vr8W1.png)\n\n--- \n\n### Card UI Changes\n\nBelow is a Before/After of a card\n\n\n**Before**\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23xAVTCFUZgT7agRPX8qmYNDKPyT4sM9HRiywMVuVepdxpeCngNZT5qZPNQYD9RoTvCEG.png) | \n\n**After**\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23xVH5EQAXNRbfLYk3rqRHuwgao9uimjEjM96jut5hifWdAYmb46Aa9PCFMBtwgKYGRVu.png)\n\n---\n\n### In-Game UI\n\nNumerous UI changes have been made to set the game apart. However, this is a work in progress, and we will be making regular changes as needed. Below is an image of the UI.\n\n**Before**\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23tbKEK5wJtsouko24t3Av52wC1r3UJ2zdq14nzR8u2RjuqE8j3axXgVzgHXyCR68tPzn.png)\n\n\n**After**\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23u5T25PnUAkx4Yacx57NBdtxvmBfogjQ1ciGPmpfdcwWPvV9jhgWxc2jK13GGJhCnTmT.png)\n\nOf course, the above image does not do it any justice, as many animations cannot be seen.\n\n\n![UI change 1.png](https://files.peakd.com/file/peakd-hive/astralwars/23t6xokwoyTEogAWP9yz3C5J7qvjGxMDt8w8ArUJMMBPYeXsuuNkwn9M2x56aPmnfyG4i.png)\n\n\n![UI change 2.png](https://files.peakd.com/file/peakd-hive/astralwars/23swZzAEfPskn1cVHSgsW6uFjTCfCMvfpX44efmHNWGfgNpDmEmnHGRd8YUe7Tgxk6wTZ.png)\n\n![UI change 3.png](https://files.peakd.com/file/peakd-hive/astralwars/23tbFA8ti4Y8fz4KHtehQcyPVyhiWLQX9qADqy2YYgfQCfzcPVD1CwC4hVRU9J8pdxPMZ.png)\n\n\n![UI change 4.png](https://files.peakd.com/file/peakd-hive/astralwars/23x154Z3BxqzXF8PKvwDZLHHe98dDCV7M3dvT7ZEajAR9uNbr8MBevuf5Rc29UjmRPHWY.png)\n\n![UI change 5.png](https://files.peakd.com/file/peakd-hive/astralwars/23tvAaK5sumMdkSAt4Tfg83KxTbH3P2mzZsaMBB9F3dhEGVAm8BiEwTxr6YE8QxGhn7UU.png)\n\n![UI change 6.png](https://files.peakd.com/file/peakd-hive/astralwars/23u5T9qhMFxwiRdEveYnUTaP3LYTMCVAVTcegB52Q1ZpjyoTGrPjA355rYoxW9BYu39jW.png)\n\n![UI change 7.png](https://files.peakd.com/file/peakd-hive/astralwars/23tv8iJndKV8vrZknhheN51UpiT7vFYhXMD2PZoTkf57hzSFU8VfjEjCrdsiaKRCqo1UB.png)\n\n---\n### Shop for In-Game Purchases with Google Play\n\nOne of the most important is the Fiat shop that works on Google Play. This is our connection of Hive with the web2 player base. This is the single biggest accomplishment that we have done, and just with this we have separated ourselves from 90% of the crypto games. \n\nBelow are the images of the shop:\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23t773pRnkhJ9wtxHv2xn9j2xCEdYa1qS2BuSvxGQVgS3NrsgXa6agRYsN2w7B81xoP4H.png)\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/EogRjSfdbWJWtdTJersr3ihKWwSif8sFR48urDCxj3zv4F7rg7WdAPqSCx9QstDnpYQ.png)\n\n---\n\n### Tutorial Mode\n\nSince our focus has been on readying ourselves for the global release, it is essential that our players know how to play the game, so we have worked on a series of basic interactive tutorials that you can see below.\n\n\n![tutorial.png](https://files.peakd.com/file/peakd-hive/astralwars/23t72sNdxExWQdZekNR4ijiNd8txXELEGP1kbpEAF2CJuN1R1iAgTMdbxxSMuiDfVTA4u.png)\n\n\n[Astral Wars Tutorial No 1 - Learn The Basics!](https://www.youtube.com/watch?v=MC87E7AgwW8) \n\n[Astral Wars Tutorial No 2 - Attacking cards on board](https://www.youtube.com/watch?v=kb2aFY13Mpg) \n\n[Astral Wars Tutorial No 3 - Armor, Range, & Positioning](https://www.youtube.com/watch?v=woFEwtcyfng) \n\n[Astral Wars Tutorial No 4 - Program Cards & Deterrent Strategies](https://www.youtube.com/watch?v=AMeG8ZVW80s) \n\n[Astral Wars Tutorial No 5 - Structures, Attachments, and Synergies!](https://www.youtube.com/watch?v=2sPIsjLTF8c)\n\n---\n\n### Challenge Mode\nThe Challenge Mode is for beginners to try to understand mechanics on a practical basis without any guidance. They act more as a training and a puzzle for you to learn the game.\n![challenge.png](https://files.peakd.com/file/peakd-hive/astralwars/Eo1vw1v7ac99oQuTgAvXweqv8WtdMcS36FNjqM3cULW8swb4H6qfHCsv1oY3qE7QFQU.png)\n\n---\n\n### Solo Mode\n\nSolo Mode comes with its own practice against a random deck with a deck of your choice. You are also given 3 starter decks to play with until you can earn enough \"COINS\" to buy crates and get enough cards for a deck. This mode is perfect for practicing your decks until you are good enough to face off against other players in Multiplayer mode.\n\n![solo.png](https://files.peakd.com/file/peakd-hive/astralwars/23tGVQsTrLgKLKjV6ziaWpYz1Aejzia6UAfvqy7Be6apPgtcPAqTory1DuegY4LQrkpF7.png)\n\n---\n\n### Glossary\n\nFor those who are want to look at what symbols mean or what certain terminology means there is a full fledged glossary that can be accessed between matches or in the main menu.\n\n\n![glossary 1.png](https://files.peakd.com/file/peakd-hive/astralwars/23t74jvAinnEQnNKTeWgjq2pnTft79xtV3fxJSqzzbgATwuUNXuTSvtgBuzeMRYbwUVSq.png)\n\n\n![glossary 2.png](https://files.peakd.com/file/peakd-hive/astralwars/23tkbboVwPGHxkEw6HXuE8WHUepFUNb1hyY2KP8XFoi311TxvykCgFfKjGif5maE76Ebf.png)\n\n\n![glossary 3.png](https://files.peakd.com/file/peakd-hive/astralwars/23tGRhSdXejPuWy6fcW4c1NKWMGxkePw1VYTExia9AhMcQFDhVrrHST4cjkM9rCfhekA7.png)\n\n\n![glossary 4.png](https://files.peakd.com/file/peakd-hive/astralwars/23tRrMV66NNjiuQ4PTFHPkBmjF5GmMCGs32Hg8prLwAEuFQHE2CJjSmx9yU6i9JMUZk9Q.png)\n\n\n![glossary 5.png](https://files.peakd.com/file/peakd-hive/astralwars/23tRojjRhUYwWjm4miQ14VH2ZXC9yYqUvgB4i4F3AcLUMc2Txe52wEDewBT979idLEcsn.png)\n\n---\n\n### VFX Showcase\n\nPlease see the wonderful visual effects created by a team member that accompany the wonderful cards created by our community members. \n\n[Astral Wars - Community Promo VFX Showcase](https://www.youtube.com/watch?v=JUM7ShATx9I)\n\n---\n\n### Foil Cards\n\nWhat is a game without collectibles? Well, this game has introduced gold and prismatic foils. The gold foil has a beautiful golden brown edge and is worth five times the price of the normal foil. The prismatic foil has a beautiful purplish blue gradient ingrained with a symbol language created for this gaming universe. They are worth 10 times the price of the normal foil.\n\nThey currently have no rewards attached to them, but we intend to introduce that down the line as more people get into the game. Do also keep in mind that gameplay-wise there is no difference between the normal foil and these foils.\n\n\n![gold 2.png](https://files.peakd.com/file/peakd-hive/astralwars/23z73AxA59PAR8bfrQNRfhhEw5XHYh8LVqg3Xpp1YBZyLWv4dx5drxSDHyzPS7pz3dg88.png)\n\n\n![gold.png](https://files.peakd.com/file/peakd-hive/astralwars/EoEq3HSzLTnhiPuFJKWGk3AQ5JbFQUMziTnWAS61LSRUnbENotQ9yMc7b9keQcyG1G7.png)\n\n\n![prismatic 2.png](https://files.peakd.com/file/peakd-hive/astralwars/23yT8xchXLg53KGkmwY2nUW3wYQr5gLCVLqQZGUWUJ4c15iAoM2Pbu1FGmZPEcQmXs8DN.png)\n\n\n![prismatic.png](https://files.peakd.com/file/peakd-hive/astralwars/23xousyWSP5JdSPTpGnY6Rb2UhJrZqX4wKEVSSZoeMcpQy6nj4jVhn32PYo6bFXZDYQJy.png)\n\n\n![the_1up_adventurer.png](https://files.peakd.com/file/peakd-hive/astralwars/23tmDV9JVwetMr5goQrDaTGe9EswdsiTAbLNRTqwv3jrkHToa4doRbZ9ZJjBXy1Laoq2Q.png)\n\n\n![the_1up_adventurer_GF.png](https://files.peakd.com/file/peakd-hive/astralwars/23uFPTj2PDsZZo7YzHcysrFSi7SuF9iSLQtfn8JbhYbGopfbrbuoSekYPbgwZ2cHAQ5id.png)\n\n\n![the_1up_adventurer_PF.png](https://files.peakd.com/file/peakd-hive/astralwars/23xKpQTTwpcxKKAEcb6vnjyoCypKefe3Qej3mdEKi54D1TMCeiuCKxpZw2aaBrHX3xHqR.png)\n\n---\n\n\n### Global Passives\n\nWe introduced Global Passives to give value to certain high-value cards. These passives essentially are active even when they are not in play, or even when they are not in the match.\n\n![global 1.png](https://files.peakd.com/file/peakd-hive/astralwars/23xKLZCDSy87QTLMqgVmyhxaQp35SrUr6FEtqgWEpiWarCnm8rangCNRyhhTAcKQWeVZF.png)\n\n\n![global 2.png](https://files.peakd.com/file/peakd-hive/astralwars/23xxwQQnPABqFhGgzhP5ioAsxrBRB9xc7zYt2xVSa4Rc5juL83YBoGjL66eWvtgg2oGhh.png)\n\n---\n### Airdrops\n\nTo date, we have airdropped over 2k Hive and 90 Million $STELLARUM to our $ASTRA stakers. 40 million of this $STELLARUM has been used to buy in-game items, allowing the account to have significant rewarding capability to users without having the need to mint.\n---\n\n### Internal test for Google Play\nPlease note that the mobile version and the game are still being tested, so the review process has not been completed. When we are ready, it will take 15 days to get it on Google Play with access to millions of people. In the meanwhile, check these cool ads we plan to host on our Google Play page.\n\n\n![googlead1.png](https://files.peakd.com/file/peakd-hive/astralwars/23tvVr9socaqHYHfK6b1Q8ZmqWwy8HcPoPUu2oW1u6538drz6E35JpFfjcrpxYZ6BqxSC.png)\n\n![googlead3.png](https://files.peakd.com/file/peakd-hive/astralwars/23tbiSXxHMuvqruRB8nrhKPJodcJjiBAF7ZMydwGqAmdXBjDSqRpzireWb8nruacsmw3w.png)\n\n![googlead2.png](https://files.peakd.com/file/peakd-hive/astralwars/23tvCb2idtCDpHoaiD2BFKicZnjWR8RpNB2cpv9CATv3Ugp4HoYvj2bGXcMKbLvarqk6K.png)\n\n\n![googlead4.png](https://files.peakd.com/file/peakd-hive/astralwars/23uFPTkevJdfLTjtk6FSPJ4sKcTSuyF34CtirfzrfjHWcwhK77t5QknPMGUprTSyhgxad.png)\n\n---\n\n\n## WE NEED YOU!!!\n\nWe need more testing on all types of mobiles. We cannot launch to the world without more information. So we invite you to please join our discord and help us to test te game. You don't have to play it if you don't want to. But whether game is downloading properly or whether it is launching properly is super useful info for us and we can work on fixing these issues.\n\n\n![Production Access.png](https://files.peakd.com/file/peakd-hive/astralwars/23tw7k2M1sm3L5DGYgPJn5D7pk5enwqDacNn1oyaD9yhfSedY9XSyaWKf9dTb563F6rvg.png)\n\n---\n\n## Closing of the Pre-Alpha Server\n\nThe first Pre-Alpha server has been closed. It was an honor for us to have initiated this and this is what gave us the confidence to keep on going. We thank all the wonderful testers who have stuck with us through thick and thin. This server is no longer is use and has been put to rest, though I have the backup if we ever wanted to revive this to see the leaderboards. There was a person there with 800 losses.\n\n\n![stats.png](https://files.peakd.com/file/peakd-hive/astralwars/23t7F8V8VnLTmQgyRUBExDqSxBw44r4iyLNmvX5r37iiNbpRitHCJbBjwtEr2GghjUg8E.png)\n\n![](https://files.peakd.com/file/peakd-hive/entrepidus/23tRr8SWC9rYU4MuBBuZvzGw8TvE6yjyEa9UMVy5Y6fzrUabu5L4DJZfWfRmiVPV2kvzK.png)\n\n\n## Roadmap\n\nNow, the roadmap is broken into weekly cells. This way, we will be able to get things done faster. Please note there will be other project cells mixed into this, but I will not state them here.\n\n~~Cell 1 - Fixing and optimizing tutorials and uploading them on you tube, as well as connecting them with our overall post (1 week)~~\n\nCell 2  - Apply for game review and release the game into global beta (5 weeks) (need 20 signups before this can be started, which we hope to get after Cell 32)\n\nCell 3 - Crates to be buyable with Crate Frags and Cards to be bought with Essences (1 week)\n\nCell 4 - Astranian and Numina cards to be completed and tested internally (1 week)\n\nCell 5 - Currency Exchange system (1 week) \n\n~~Cell 6 - Chat system and in-game systems to be optimized for Mobile (1 week)~~\n\nCell 7 - Achievements and Badge System (1 week)\n\nCell 8 - Friends System Overhaul (1 week)\n\nCell 9 - Lands Quest system (2 weeks)\n\nCell 10 - In-game Items and promotions shop sales (1 week)\n\nCell 11 - New Alt art for certain cards (1 week)\n\nCell 12 - Making an error crash system, that takes the burden of reporting details away from the user (1 week) \n\nCell 13 - Troubleshooting certain issues of the game launch on certain processor models for mobile. (2 weeks)\n\nCell 14 - Whitepaper (3 week)\n\nCell 15 - Tribes system (1 week)\n\nCell 16 - Tribes Boss and Shop (2 weeks)\n\nCell 17 - Tournaments Constructive (1 week)\n\nCell 18 - Tournaments with Random Decks (1 week)\n\nCell 19 - Implementation of Creation Relics (1 week)\n\nCell 20 - Card Upgrades (1 week)\n\nCell 21 - Dungeons Delving (1 week)\n\nCell 22 - Endless and Time Attack Modes (2 week)\n\nCell 23 - Battle and Level passes (1 week)\n\nCell 24 - Events (1 week)\n\nCell 25 - Faction Battle Modes (2 week)\n\nCell 26 - Campaign mode (1 week)\n\nCell 27 - Base building and Autoplay (1 week)\n\nCell 28 - Rebuild the Marketplace with a new stack (1 week)\n\nCell 29 - Migrate the site and test the site (1 week)\n\nCell 30 - Fix Launcher Bugs (1 week)\n\nCell 31 - Apply and register for the launcher to not be flagged by anti viruses (1 week)\n\n~~Cell 32 - Post for 2024 Review and 2025 Roadmap (5 weeks) (In Progress, delay due to data collection from parties)~~\n\nCell 33 - Exploration Mode (5 weeks) \n\nSome of the cells will be worked on simultaneously, so do not be surprised if things get done faster. We spent the whole last year optimizing, and we will just keep on doing so till we get there. Please also note the execution of the cells will not be in order but by priority and if there are any delay it will be mentioned within the #roadmap channel in the discord here.\n\nAs usual, thank you all for your patience.\n\n![](https://files.peakd.com/file/peakd-hive/entrepidus/23tRr8SWC9rYU4MuBBuZvzGw8TvE6yjyEa9UMVy5Y6fzrUabu5L4DJZfWfRmiVPV2kvzK.png)\n\n## How To Play\n\nThere are currently 2 ways to play Astral Wars.\na) You can go to our [website](https://surgentgaming.com/) and download our Windows Launcher for PC or you can use the following [link](https://surgentgaming.net/GameLauncher/Launcher/SurgentGameLauncherv1.00.zip). You can then install and play the game through the launcher.\n\n![howtoplay1.png](https://files.peakd.com/file/peakd-hive/astralwars/EoGpjUBXNLXFrxE4rHWZJyFBkyT93zLXFgktjGcAdU24qaEz44FXwjww9Z6hvMmXAtv.png)\n\n|![howtoplay2.png](https://files.peakd.com/file/peakd-hive/astralwars/23vhMLZAV7QCayWafeqM2Fv4riB4jNM6CFnDvDyJybS69LMRiDzCF5QqhfriQhjafLBi8.png)|![howtoplay4.png](https://files.peakd.com/file/peakd-hive/astralwars/23tbHLPCnn2wVRskDjacfEYbK7J5ECRNynvaL6RrHapYZHvXdRexy9C4X1DSb3f4qzi6A.png)|![howtoplay3.png](https://files.peakd.com/file/peakd-hive/astralwars/23uQCVpnzTjgcePHG2dofMqSgKQk3NKmViPdYDgNcobjpPBH6vbJWMCNs8SZtgwoNhfyD.png)|\n\nb) You can choose to play the mobile android version which is under Google play testing [here](https://play.google.com/apps/internaltest/4701189850814589729).\nYou will have to let us know the email address that you are using to access your Google Play Account so that you can download it. Please join our discord [here](https://discord.gg/sgyyYm5V9f) to let us know.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/astralwars/23tSzR6hgfq55Ueysq9FrF3oqTcekawT86wkmSdrZvAzw7RXWZQAShN5ECDPbb6qnMinB.png)\n\n![howtoplay5.png](https://files.peakd.com/file/peakd-hive/astralwars/23u6X11Y3nCo24UhY6iHFv4R9S8hFq8ax57SeJxDEn7YgAuyuyBCgoUX1DDjXPGBeGYPt.png)\n\n![](https://files.peakd.com/file/peakd-hive/entrepidus/23tRr8SWC9rYU4MuBBuZvzGw8TvE6yjyEa9UMVy5Y6fzrUabu5L4DJZfWfRmiVPV2kvzK.png)\n\n## Getting Involved\n\nIf you're just now learning about Astral Wars, come mingle in our [Discord](https://discord.gg/sgyyYm5V9f) to get regular updates, ask any questions you might have, and hang out with your fellow gamers!\n\nYou can also check out some of our earlier posts below:\n\n[INTRODUCING: Surgent Gaming — A Web3/Hive Game Development Studio](https://peakd.com/surgentgaming/@surgentgaming/introducing-surgent-gaming-a-web3hive-game-development-studio)\n[Astral Wars — Pre-Alpha Launch and $ASTRA Staking Event](https://peakd.com/surgentgaming/@astralwars/astral-wars-pre-alpha-launch-and-dollarastra-staking-event)\n[Astral Wars - Pre-Alpha Ending, Open Alpha and New Content](https://peakd.com/surgentgaming/@astralwars/astral-wars-closed-alpha-update-new-card-types-cards-and-land-update)\n[Astral Wars — Land Presale and Kusaku-Gun Art Preview](https://peakd.com/surgentgaming/@astralwars/astral-wars-land-presale-and-kusaku-gun-new-cards-reveal)\n[Astral Wars — Mobile Release, Land Details and Thuringian Art Preview](https://peakd.com/surgentgaming/@astralwars/astral-wars-mobile-release-land-details-and-thuringian-art-preview)\n\n---\n\n<center>Stay tuned for more Astral Wars news!\n[Discord](https://discord.gg/sgyyYm5V9f) — // — [Twitter](https://twitter.com/astralrevelati) — // — [LinkedIn](https://www.linkedin.com/company/surgent-gaming)</center>\n\n\n\n\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 525
+        },
+        "title": "2024 Review and 2025 Roadmap",
+        "author": "astralwars",
+        "payout": 100.746,
+        "created": "2025-03-12T19:49:00",
+        "reblogs": 21,
+        "replies": [],
+        "updated": "2025-03-12T19:49:00",
+        "category": "oneup",
+        "children": 13,
+        "permlink": "2024-review-and-2025-roadmap",
+        "payout_at": "2025-03-19T19:49:00",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 297024231162395,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "acidyo",
+            "rshares": 9467474691227
+          },
+          {
+            "voter": "roelandp",
+            "rshares": 8385426204
+          },
+          {
+            "voter": "ardina",
+            "rshares": 23235822328
+          },
+          {
+            "voter": "kaykunoichi",
+            "rshares": 1081100843
+          },
+          {
+            "voter": "timcliff",
+            "rshares": 107683575584
+          },
+          {
+            "voter": "guest4test",
+            "rshares": 0
+          }
+        ],
+        "reblogged_by": [
+          "guest4test"
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "peakd/2025.2.3",
+          "tags": [
+            "oneup",
+            "thgaming",
+            "tribes",
+            "archon",
+            "pimp",
+            "leofinance",
+            "surgentgaming",
+            "astralwars",
+            "proofofbrain",
+            "hivegaming"
+          ],
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/astralwars/23uQNo44FNrsSSUAocawNrBeekv3DjfUS3F4nfnFCauCAZ2iNQtbh7pvBVPiL74GPbN31.png",
+            "https://files.peakd.com/file/peakd-hive/entrepidus/23tRr8SWC9rYU4MuBBuZvzGw8TvE6yjyEa9UMVy5Y6fzrUabu5L4DJZfWfRmiVPV2kvzK.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23tHXNKkK3eqToqwAZWFsBSZf8QeFqnkYhAiNEzqqtEAMorop8kRHd8UXRk4aD4U38iCX.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23tGR5FvtJQqTyt4RFHbohaACdFfDgHytDB1Hu1VcvpTkh5jcH8LpzkRYVQfmVNWPV1nG.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23tGR5FvtJQqPyBxRSso3AD4XLNpqbfUp3fX1VSHn3npTAZuY4xgCZjQoRKgno3VotafR.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/EoCbSabQkjpJcqzm2HBcmhjDLcStpYN3K7tKKkCoxDTVWk9Mk34PckdPAVsjack859X.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/Eo43ukPR79XxxoAcgwTVt4F45yC44PHNrB8H3zTkD2CFJ1X9DEa5EGJ2segMZjALwbd.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23uEoJ7zKjCnK5mYrky1pz423KbrVvnhCuk2Ad7J4q8TUGkcRpEAjibQWcqi3reATyZNo.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23tbJt3fgh1yh2uZyy4jGUJ4gakE9fBqbsfsKWgnYW6gMNvq4VegN1UPFG6QJy57HBhZu.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23tSyz4Yx3tepHiozHqhCtUa6Px2pz79ME7NwQHvVCkYVeV6KVdQEBmM5gQCQLCcy8Y5z.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23tSyz4Yx3tepJpAGzmid7n3h7P45CuTMvuGH1VxtnbmGGmgTeChxiDkNUMb6YtBJYPte.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23tmmXSdNbkuzsozQGhSWtWwmDn3b4NcDVvnZJ1sDYgGeZB1wkCm16iZAKzwVrqMUyV5S.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23tGZbPKMnkAC1yBWGxwLkWpfufjWavYeGXdsMj174fuKh6rkxMEKETSdCnRasCD1QxHq.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23tbijW4WSCEsvswiCYWpzqaGQo2EzBZXve6ZFCLF5T98ZMWeW676sM8Whn5ubueKC5WU.png",
+            "https://files.peakd.com/file/peakd-hive/astralwars/23vhPzhehE16VhHrs5eSwxNmnjB8hZT5r2e5P4rdLjxE31mm5RTSjD6Zm5vAzsnVkS6dr.png"
+          ],
+          "users": [
+            "newenx.",
+            "aw-activities",
+            "surgentgaming",
+            "astralwars"
+          ],
+          "format": "markdown",
+          "description": "This is the 2024 Dev Review of the work done on the game \"Astral Wars\" as well as a roadmap for 2025."
+        },
+        "author_reputation": 63.33,
+        "author_payout_value": "50.402 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "50.344 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/test/@guest4test/6w4iag-test",
+        "body": "Teasd\n\n| Header | Header |\n|--------|--------|\n| Cell | Cell |\n| Cell | Cell |\n| Cell | Cell |\n\n ![Gemini_Generated_Image_kj1regkj1regkj1r.jpeg](https://images.hive.blog/DQmTWRkknd9z6nDLwgHJzyzNHm7E3he5G5sSYrqFS1VExw1/Gemini_Generated_Image_kj1regkj1regkj1r.jpeg) ",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Test",
+        "author": "guest4test",
+        "payout": 0,
+        "created": "2025-03-13T06:53:12",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-03-13T06:53:12",
+        "category": "test",
+        "children": 1,
+        "permlink": "6w4iag-test",
+        "payout_at": "2025-03-20T06:53:12",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "@hiveio/wax/1.27.6-rc7-250227151219",
+          "tags": [
+            "test",
+            "spam"
+          ],
+          "image": [
+            "https://images.hive.blog/DQmTWRkknd9z6nDLwgHJzyzNHm7E3he5G5sSYrqFS1VExw1/Gemini_Generated_Image_kj1regkj1regkj1r.jpeg"
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 34.15,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -21,6 +21,11 @@ const DEFAULT_USER: User = {
   strict: false
 };
 
+// Must match `transaction/lib/observer-lists.ts` (storage key prefix, cookie name, TTL).
+const OWN_LISTS_STORAGE_PREFIX = 'observer-own-lists-';
+const NO_OWN_LISTS_COOKIE = 'observer-no-own-lists';
+const OWN_LISTS_TTL_MS = 24 * 60 * 60 * 1000;
+
 /**
  * Pre-seeds logged-in state for the blog app without running the real login
  * flow. Two-sided: the iron-session and `observer` cookies satisfy server-side
@@ -32,11 +37,17 @@ const DEFAULT_USER: User = {
  * A session the context already holds (e.g. a pending OAuth request the
  * server stored) is kept, with the user replaced, as a real login keeps it.
  *
+ * `hasOwnLists` seeds the answer the login-time list check stores (see
+ * `observer-lists.ts`): true (the default) keeps every read on the username, as
+ * the recordings expect, and makes no check request; false makes feed and post
+ * reads send the default observer.
+ *
  * Call before any `page.goto(...)` in the test.
  */
 export async function seedAuthCookie(
   context: BrowserContext,
-  overrides: Partial<User> = {}
+  overrides: Partial<User> = {},
+  hasOwnLists = true
 ): Promise<User> {
   const user: User = { ...DEFAULT_USER, ...overrides, isLoggedIn: true };
 
@@ -70,7 +81,21 @@ export async function seedAuthCookie(
       httpOnly: false,
       secure: false,
       sameSite: 'Lax'
-    }
+    },
+    // What the list check sets for an account without lists of its own; server renders read it.
+    ...(hasOwnLists
+      ? []
+      : [
+          {
+            name: NO_OWN_LISTS_COOKIE,
+            value: user.username,
+            domain: 'localhost',
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            sameSite: 'Lax' as const
+          }
+        ])
   ]);
 
   // Runs before any page script on every navigation in this context.
@@ -86,18 +111,30 @@ export async function seedAuthCookie(
   const wifKey = `wif.${user.username}@${KeyType.posting}`;
   const wifValue = postingWif ? JSON.stringify(postingWif) : '';
 
+  // Shape must match `ui/lib/storage-with-ttl.ts`. Seeded only when absent: a list change in
+  // the test updates it, and later navigations must not undo that.
+  const ownListsKey = `${OWN_LISTS_STORAGE_PREFIX}${user.username}`;
+  const ownListsValue = JSON.stringify({
+    value: hasOwnLists,
+    expiresAt: Date.now() + OWN_LISTS_TTL_MS,
+    createdAt: Date.now()
+  });
+
   await context.addInitScript(
-    ({ userJson, wifKey, wifValue }) => {
+    ({ userJson, wifKey, wifValue, ownListsKey, ownListsValue }) => {
       try {
         window.localStorage.setItem('user', userJson);
         if (wifValue) {
           window.localStorage.setItem(wifKey, wifValue);
         }
+        if (window.localStorage.getItem(ownListsKey) === null) {
+          window.localStorage.setItem(ownListsKey, ownListsValue);
+        }
       } catch {
         /* storage may be unavailable in some edge contexts — ignore */
       }
     },
-    { userJson, wifKey, wifValue }
+    { userJson, wifKey, wifValue, ownListsKey, ownListsValue }
   );
 
   return user;

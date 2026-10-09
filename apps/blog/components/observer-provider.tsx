@@ -7,14 +7,26 @@ import type { DiscussionPageSeed } from '@/blog/features/post-rendering/lib/pagi
 import type { CardEntry } from '@/blog/features/list-of-posts/lib/card-entry';
 
 const ObserverContext = createContext<string>(DEFAULT_OBSERVER);
+const EffectiveObserverContext = createContext<string>(DEFAULT_OBSERVER);
 
 /**
- * Provides the SSR-resolved observer value to client components.
+ * Provides the SSR-resolved observer values to client components.
  * This ensures client-side query keys match SSR-prefetched cache keys,
  * preventing unnecessary refetches and skeleton flashes after hydration.
+ * `effectiveValue` is the observer of feed, post and search reads (defaults to `value`).
  */
-export const ObserverProvider = ({ value, children }: { value: string; children: ReactNode }) => (
-  <ObserverContext.Provider value={value}>{children}</ObserverContext.Provider>
+export const ObserverProvider = ({
+  value,
+  effectiveValue = value,
+  children
+}: {
+  value: string;
+  effectiveValue?: string;
+  children: ReactNode;
+}) => (
+  <ObserverContext.Provider value={value}>
+    <EffectiveObserverContext.Provider value={effectiveValue}>{children}</EffectiveObserverContext.Provider>
+  </ObserverContext.Provider>
 );
 
 /**
@@ -22,6 +34,9 @@ export const ObserverProvider = ({ value, children }: { value: string; children:
  * Use this as the initial observer for query keys to match SSR cache.
  */
 export const useSSRObserver = () => useContext(ObserverContext);
+
+/** Returns the observer the SSR feed, post and search reads used; see `useEffectiveObserver`. */
+export const useSSREffectiveObserver = () => useContext(EffectiveObserverContext);
 
 const InitialPostsContext = createContext<CardEntry[] | null>(null);
 

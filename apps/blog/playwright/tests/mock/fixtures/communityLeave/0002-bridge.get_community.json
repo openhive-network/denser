@@ -6,15 +6,15 @@
     "method": "bridge.get_community",
     "params": {
       "name": "hive-167922",
-      "observer": ""
+      "observer": "hive.blog"
     },
     "id": 1
   },
-  "requestHash": "15baebea9d88237c",
+  "requestHash": "cbb167e16d96f023",
   "method": "bridge.get_community",
   "params": {
     "name": "hive-167922",
-    "observer": ""
+    "observer": "hive.blog"
   },
   "response": {
     "jsonrpc": "2.0",
@@ -56,7 +56,11 @@
       ],
       "about": "LeoFinance is a community for crypto & finance. Powered by Hive and the LEO token economy.",
       "title": "LeoFinance",
-      "context": {},
+      "context": {
+        "role": "guest",
+        "subscribed": false,
+        "title": ""
+      },
       "is_nsfw": false,
       "type_id": 1,
       "settings": {},

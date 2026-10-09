@@ -105,6 +105,7 @@ const FollowedContent = ({
             {currentPageItems.map((e) => (
               <li
                 key={e.following}
+                data-testid="followed-list-item"
                 className="flex items-center justify-between bg-background-tertiary px-3 font-semibold text-destructive odd:bg-background"
               >
                 <BasePathLink href={`/@${e.following}`}>{e.following}</BasePathLink>
