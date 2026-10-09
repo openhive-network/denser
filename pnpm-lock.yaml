@@ -274,6 +274,9 @@ importers:
       '@types/http-errors':
         specifier: ^2.0.4
         version: 2.0.4
+      '@types/jsdom':
+        specifier: 21.1.7
+        version: 21.1.7
       '@types/qrcode':
         specifier: ^1.5.5
         version: 1.5.5
@@ -286,6 +289,9 @@ importers:
       express-http-proxy:
         specifier: ^2.1.2
         version: 2.1.2
+      jsdom:
+        specifier: 24.1.0
+        version: 24.1.0
       null-loader:
         specifier: ^4.0.1
         version: 4.0.1(webpack@5.97.1)

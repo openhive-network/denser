@@ -29,7 +29,7 @@ import { commentClassName } from '../post-rendering/comment-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
-import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
+import { useLoggedUserContext, useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-user';
 
 const MdEditor = dynamic(() => import('./md-editor'), {
   ssr: false,
@@ -111,7 +111,8 @@ export function ReplyTextbox({
   const lastSyncedDraftRef = useRef<string>('');
 
   // Get the logged-in user's reputation and manabars from context (fetched once via LoggedUserProvider)
-  const { reputation, manabarsData } = useLoggedUserContext();
+  const { reputation } = useLoggedUserContext();
+  const manabarsData = useLoggedUserManabars();
 
   const commentMutation = useCommentMutation();
   const updateCommentMutation = useUpdateCommentMutation();

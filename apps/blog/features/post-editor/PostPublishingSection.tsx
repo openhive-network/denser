@@ -18,7 +18,7 @@ import { DEFAULT_OBSERVER } from "@/blog/lib/utils";
 import { getSubscriptions } from "@transaction/lib/bridge-api";
 import { useTranslation } from "@/blog/i18n/client";
 import { AdvancedSettingsPostForm } from "@/blog/features/post-editor/advanced-settings-post-form";
-import { useLoggedUserContext } from "@/blog/features/votes/hooks/use-logged-user";
+import { useLoggedUserManabars } from "@/blog/features/votes/hooks/use-logged-user";
 import { Entry } from "@hive/common-hiveio-packages/wax";
 import { AccountFormValues } from "@/blog/features/post-editor/types";
 import { useEditorCommunity } from "@/blog/features/post-editor/hooks/use-editor-community";
@@ -50,7 +50,7 @@ export function PostPublishingSection({
 }: PostPublishingSectionProps) {
   const { t } = useTranslation("common_blog");
   const router = useRouter();
-  const { manabarsData } = useLoggedUserContext();
+  const manabarsData = useLoggedUserManabars();
 
   const { data: communityData } = useEditorCommunity(categoryParam, storedPost.category, observer);
 

@@ -17,7 +17,7 @@ import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
 import { getUserAvatarUrl } from '@hive/ui';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
-import { useLoggedUserContext } from '@/blog/features/votes/hooks/use-logged-user';
+import { useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import ModeToggle from '@/blog/features/layouts/mode-toggle';
 import LangToggle from '@/blog/features/layouts/lang-toggle';
@@ -39,7 +39,7 @@ const MainBar: FC = () => {
     setIsClient(true);
   }, []);
 
-  const { manabarsData } = useLoggedUserContext();
+  const manabarsData = useLoggedUserManabars();
   const { data } = useQuery({
     queryKey: ['unreadNotifications', user.username],
     queryFn: () => getUnreadNotifications(user.username),
