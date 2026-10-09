@@ -1,9 +1,10 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../locatorSelector';
 
 export class ProfilePage {
   readonly page: Page;
-  readonly profileNickName: any;
-  readonly profileInfo: any;
+  readonly profileNickName: Locator;
+  readonly profileInfo: Locator;
   readonly profileName: Locator;
   readonly profileAbout: Locator;
   readonly profileLastTimeActive: Locator;
@@ -24,7 +25,7 @@ export class ProfilePage {
   readonly profileWalletLink: Locator;
   readonly profileSettingsLink: Locator;
 
-  readonly postBlogItem: any;
+  readonly postBlogItem: Locator;
   readonly postsMenu: Locator;
   readonly postsPostAuthor: Locator;
   readonly postsMenuPostsButton: Locator;
@@ -60,7 +61,7 @@ export class ProfilePage {
   readonly postsCommentsListLocator: Locator;
   readonly postsPayoutsListLocator: Locator;
 
-  readonly repliesCommentListItem: any;
+  readonly repliesCommentListItem: Locator;
   readonly repliesCommentListItemLoadNewer: Locator;
   readonly repliesCommentListItemTitle: Locator;
   readonly repliesCommentListItemDescription: Locator;
@@ -81,7 +82,7 @@ export class ProfilePage {
   readonly repliesCommentListItemRespondTooltip: Locator;
   readonly repliesCommentListItemArticleTitle: Locator;
 
-  readonly notificationsMenu: any;
+  readonly notificationsMenu: Locator;
   readonly notificationsMenuAllButton: Locator;
   readonly notificationsMenuRepliesButton: Locator;
   readonly notificationsMenuMentionsButton: Locator;
@@ -110,7 +111,7 @@ export class ProfilePage {
   readonly notificationLoadMoreButtonInAll: Locator;
   readonly notificationLoadMoreButtonInReblogs: Locator;
 
-  readonly publicProfileSettings: any;
+  readonly publicProfileSettings: Locator;
   readonly publicProfileSettingsHeader: Locator;
   readonly apiEndpointCard: Locator;
   readonly apiSelectedNodeText: Locator;
@@ -159,7 +160,7 @@ export class ProfilePage {
   readonly thirdPartyAppPeakdLink: Locator;
   readonly thirdPartyAppHivebuzzLink: Locator;
 
-  readonly communitySubscriptionHeader: any;
+  readonly communitySubscriptionHeader: Locator;
 
   readonly profileNumberOfPosts: Locator;
   readonly profileHP: Locator;
@@ -481,27 +482,27 @@ export class ProfilePage {
   async gotoProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
   }
 
   async gotoPostsProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/posts`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
+    await this.page.waitForSelector(locatorSelector(this.profileBlogPostsList));
   }
 
   async gotoPostsCommentsProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/comments`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
+    await this.page.waitForSelector(locatorSelector(this.profileBlogPostsList));
   }
 
   async gotoPostsPayoutsProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/payout`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
     // Wait for either the posts list OR the "no payouts" message to appear.
     // Each fetched page renders its own list, so a second page may already be there.
     await this.profileBlogPostsList.first().or(this.userHasNotStartedBloggingYetMsg).waitFor();
@@ -510,42 +511,42 @@ export class ProfilePage {
   async gotoRepliesProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/replies`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.profileBlogPostsList['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
+    await this.page.waitForSelector(locatorSelector(this.profileBlogPostsList));
   }
 
   async gotoNotificationsProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/notifications`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForTimeout(3000);
-    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
   }
 
   async gotoSocialProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/communities`);
     await this.page.waitForLoadState('domcontentloaded');
     await this.page.waitForTimeout(1000);
-    await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.socialBadgesAchievemntsMenuBar['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
+    await this.page.waitForSelector(locatorSelector(this.socialBadgesAchievemntsMenuBar));
   }
 
   async gotoCommunitiesProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/communities`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.socialCommunitySubscriptionsLabel['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
+    await this.page.waitForSelector(locatorSelector(this.socialCommunitySubscriptionsLabel));
   }
 
   async gotoFollowedProfilePage(nickName: string) {
     await this.page.goto(`/@${nickName}/followed`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
   }
 
   async gotoFollowersProfilePage(nickName: string) {
     await this.page.goto(`/@${nickName}/followers`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
   }
 
   async gotoNonExistentProfilePage(nickName: string) {
@@ -556,19 +557,19 @@ export class ProfilePage {
   async gotoApiEndpointHealthcheckerProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/settings`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.apiEndpointButton['_selector']);
-    await this.page.waitForSelector(this.page.getByText('Condenser - Get accounts')['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
+    await this.page.waitForSelector(locatorSelector(this.apiEndpointButton));
+    await this.page.waitForSelector(locatorSelector(this.page.getByText('Condenser - Get accounts')));
   }
 
   async gotoAISearchApiEndpointHealthcheckerProfilePage(nickName: string) {
     await this.page.goto(`/${nickName}/settings`);
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.profileInfo['_selector']);
-    await this.page.waitForSelector(this.apiEndpointAISearchButton['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
+    await this.page.waitForSelector(locatorSelector(this.apiEndpointAISearchButton));
     // Click Endpoint for AI search
     await this.apiEndpointAISearchButton.click();
-    await this.page.waitForSelector(this.page.getByText('AI search').first()['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.page.getByText('AI search').first()));
     await this.page.waitForTimeout(1000);
   }
 
@@ -605,7 +606,7 @@ export class ProfilePage {
     profileAbout: string,
     userJoined: string
   ) {
-    await this.page.waitForSelector(this.profileInfo['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.profileInfo));
     await expect(this.profileInfo).toBeVisible();
     // expect(await this.profileNickName.textContent()).toMatch(nickName);
     expect(await this.profileName.textContent()).toMatch(profileName);
@@ -711,19 +712,19 @@ export class ProfilePage {
   }
 
   async profileBlogTabIsSelected() {
-    await this.page.waitForSelector(this.page.locator('main')['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.page.locator('main')));
     await expect(this.profileBlogLink).toBeVisible();
   }
 
   async profilePostsTabIsSelected() {
-    await this.page.waitForSelector(this.page.locator('main')['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.page.locator('main')));
     // await expect(this.postBlogItem).toHaveCount(20);
     await expect(this.page).toHaveURL(/.*posts/)
     await expect(this.postsMenu).toBeVisible();
   }
 
   async profilePostsTabIsNotSelected() {
-    await this.page.waitForSelector(this.postBlogItem['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.postBlogItem));
     await expect(this.page).not.toHaveURL(/.*posts/)
     await expect(this.postsMenu).not.toBeVisible();
   }
@@ -739,7 +740,7 @@ export class ProfilePage {
   }
 
   async profileSocialTabIsSelected() {
-    await this.page.waitForSelector(this.communitySubscriptionHeader['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.communitySubscriptionHeader));
     await expect(this.page).toHaveURL(/.*communities/)
     await expect(this.page.getByText('Community Subscriptions')).toBeVisible();
     await expect(
@@ -755,7 +756,7 @@ export class ProfilePage {
   }
 
   async profileNotificationsTabIsSelected() {
-    await this.page.waitForSelector(this.page.locator('main')['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.page.locator('main')));
     await expect(await this.page).toHaveURL(/.*notifications/);
     // await expect(await this.notificationsMenu).toBeVisible();
     // await expect(await this.notificationsMenu.locator('button')).toHaveCount(6);
@@ -767,7 +768,7 @@ export class ProfilePage {
   }
 
   async profileSettingsTabIsSelected() {
-    await this.page.waitForSelector(this.publicProfileSettings['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.publicProfileSettings));
     expect(await this.page.getByText('Public Profile Settings'));
     expect(await this.page.getByText('Preferences'));
     expect(await this.page.getByText('API Endpoint Options'));

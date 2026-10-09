@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
 import { WalletPage } from '../support/pages/walletPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
-import { ApiHelper } from '../support/apiHelper';
+import { AccountHistoryItem, ApiHelper } from '../support/apiHelper';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
+import { locatorSelector } from '../../../../blog/playwright/tests/support/locatorSelector';
 
 test.describe('Wallet page tests', () => {
   let walletPage: WalletPage;
@@ -53,7 +54,7 @@ test.describe('Wallet page of @gtg tests', () => {
   test('validate hive balances on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
     await expect(await walletPage.walletHiveDescription.textContent()).toContain(
       'Tradeable tokens that may be transferred anywhere at anytime.'
     );
@@ -63,7 +64,7 @@ test.describe('Wallet page of @gtg tests', () => {
   test('validate hive power balances on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
     await expect(await walletPage.walletHivePowerDescription.textContent()).toContain(
       "Part of gtg's HIVE POWER is currently delegated. Delegation is donated for influence or to help new users perform actions on Hive."
     );
@@ -73,7 +74,7 @@ test.describe('Wallet page of @gtg tests', () => {
   test('validate hive dollars balances on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
     await expect(await walletPage.walletHiveDollarsDescription.textContent()).toContain(
       'Tradeable tokens that may be transferred anywhere at anytime.'
     );
@@ -83,7 +84,7 @@ test.describe('Wallet page of @gtg tests', () => {
   test('validate hive savings balances on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
     const savingsDescription = await walletPage.walletSavingsDescription.textContent();
     await expect(savingsDescription).toMatch(
       /Balances subject to 3 day withdraw waiting period\. HBD interest rate: \d+(\.\d+)?% APR/
@@ -95,7 +96,7 @@ test.describe('Wallet page of @gtg tests', () => {
   test('validate estimated account value on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
     await expect(await walletPage.walletEstimatedAccountValueDescription.textContent()).toContain(
       'The estimated value is based on an average value of Hive in US dollars.'
     );
@@ -105,7 +106,7 @@ test.describe('Wallet page of @gtg tests', () => {
   test('validate filters on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
     await expect(walletPage.walletCheckboxOthers).not.toBeChecked();
     await expect(walletPage.walletCheckboxIncoming).not.toBeChecked();
     await expect(walletPage.walletCheckboxOutcoming).not.toBeChecked();
@@ -115,7 +116,7 @@ test.describe('Wallet page of @gtg tests', () => {
   test('validate search by user on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
     await expect(walletPage.walletSearchInput).toHaveAttribute('placeholder', 'username');
     await walletPage.walletSearchInput.fill('unknownuser');
     await expect(walletPage.walletSearchInput).toHaveAttribute('value', 'unknownuser');
@@ -125,7 +126,7 @@ test.describe('Wallet page of @gtg tests', () => {
   test('@flaky validate searching by unknown user on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
     // Wait until the account history actually finished loading. On webkit
     // testenv the fetch is slow enough that fill+assert can race the loader,
     // and HistoryTable only renders the no-transactions element once
@@ -149,7 +150,7 @@ test.describe('Wallet page of @gtg tests', () => {
     let apiHelper = new ApiHelper(page);
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
     const accountHistoryResult = await apiHelper.getAccountHistoryAPI('gtg', -1, 500);
     // History rows and the empty-state message render only after the history
     // query settles - wait for either before branching, otherwise the check
@@ -186,13 +187,12 @@ test.describe('Wallet page of @gtg tests', () => {
     const username: string = 'gtg';
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
 
     const accountHistoryResultAPI = await apiHelper.getAccountHistoryAPI(username, -1, 500);
-    let accountHistoryResult: any = null;
+    let accountHistoryResult: AccountHistoryItem[] = [];
 
-    if ((await accountHistoryResultAPI.result) != null)
-      accountHistoryResult = await accountHistoryResultAPI.result.reverse();
+    if (accountHistoryResultAPI.result != null) accountHistoryResult = accountHistoryResultAPI.result.reverse();
 
     // History rows and the empty-state message render only after the history
     // query settles - wait for either before branching
@@ -201,15 +201,16 @@ test.describe('Wallet page of @gtg tests', () => {
     ).toBeVisible({ timeout: 30000 });
 
     if (await walletPage.walletAccountHistoryRow.first().isVisible()) {
-      const firstAccountHistoryOperation = await accountHistoryResult[0][1].op;
-      const firstAccountHistoryOperationType: string = await firstAccountHistoryOperation[0];
+      const firstAccountHistoryOperation = accountHistoryResult[0][1].op;
+      // account_history_api names operations with an `_operation` suffix, e.g. `transfer_operation`
+      const firstAccountHistoryOperationType = firstAccountHistoryOperation.type.replace(/_operation$/, '');
       const firstAccountHistoryTransfer = await walletPage.walletAccountHistoryRow.first();
 
       if (firstAccountHistoryOperationType == 'claim_reward_balance') {
         await expect(firstAccountHistoryTransfer).toContainText('Claim rewards');
       } else if (firstAccountHistoryOperationType == 'transfer') {
-        const firstAccountHistoryOperationTo = await firstAccountHistoryOperation[1].to;
-        const firstAccountHistoryOperationFrom = await firstAccountHistoryOperation[1].from;
+        const firstAccountHistoryOperationTo = firstAccountHistoryOperation.value.to;
+        const firstAccountHistoryOperationFrom = firstAccountHistoryOperation.value.from;
         if (firstAccountHistoryOperationTo == username) {
           await expect(firstAccountHistoryTransfer).toContainText('Received');
         }
@@ -243,10 +244,10 @@ test.describe('Wallet page of @gtg tests', () => {
     const username: string = 'blocktrades';
     await walletPage.goToWalletPageOfUser(`@${username}`);
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@blocktrades\/transfers/);
-    await walletPage.page.waitForSelector(await walletPage.walletSearchInput['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
 
     await walletPage.delegationsTab.click();
-    await walletPage.page.waitForSelector(await walletPage.walletDelegationItem['_selector']);
+    await walletPage.page.waitForSelector(locatorSelector(walletPage.walletDelegationItem));
 
     const vestingDelegationAPI = await apiHelper.getVestingDelegationsAPI('blocktrades');
     const vestingDelegationAPILength = await vestingDelegationAPI.result.length;

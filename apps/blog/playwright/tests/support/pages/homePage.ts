@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { PostPage } from './postPage';
 import { ProfilePage } from './profilePage';
+import { locatorSelector } from '../locatorSelector';
 
 /**
  * Common viewport sizes for responsive testing
@@ -43,12 +44,12 @@ export class HomePage {
   readonly getNavSearchTagsInput: Locator;
   readonly getNavUserAvatar: Locator;
   readonly getNavCreatePost: Locator;
-  readonly getNavSidebarMenu: any;
-  readonly getNavProfileMenuContent: any;
+  readonly getNavSidebarMenu: Locator;
+  readonly getNavProfileMenuContent: Locator;
   readonly getNavSidebarMenuContent: Locator;
   readonly getNavSidebarMenuContentCloseButton: Locator;
   readonly getHeaderAllCommunities: Locator;
-  readonly getMainTimeLineOfPosts: any;
+  readonly getMainTimeLineOfPosts: Locator;
   readonly getPostCardAvatar: Locator;
   readonly getPostCardFooter: Locator;
   readonly getUpvoteButton: Locator;
@@ -76,7 +77,7 @@ export class HomePage {
   readonly getFirstPostCardCommunityLink: Locator;
   readonly getFirstPostCardCategoryLink: Locator;
   readonly getFirstPostCardTimestampLink: Locator;
-  readonly getFirstPostTitle: any;
+  readonly getFirstPostTitle: Locator;
   readonly getFirstPostPayout: Locator;
   readonly getFirstPostPayoutTooltip: Locator;
   readonly getFirstPostVotes: Locator;
@@ -296,7 +297,7 @@ export class HomePage {
   async goto() {
     await this.page.goto('/');
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.getMainTimeLineOfPosts['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.getMainTimeLineOfPosts));
   }
 
   async gotoSpecificUrl(url: string) {
@@ -332,10 +333,10 @@ export class HomePage {
     await this.getFirstPostAuthor.click();
 
     // Validate that you moved to the clicked post author profile page
-    await this.page.waitForSelector(profilePage.profileName['_selector']);
+    await this.page.waitForSelector(locatorSelector(profilePage.profileName));
     await expect(await profilePage.profileName).toBeVisible();
     await profilePage.profilePostsLink.click();
-    await this.page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+    await this.page.waitForSelector(locatorSelector(profilePage.page.locator('[data-testid="user-post-menu"]')));
     const firstPostAuthorNameProfilePage = await this.page.locator('[data-testid="post-author"]').first();
     await expect('@' + firstPostAuthorNick).toMatch(await firstPostAuthorNameProfilePage.innerText());
   }
@@ -347,10 +348,10 @@ export class HomePage {
     await this.getFirstPostCardAvatar.click();
 
     // Validate that you moved to the clicked post author profile page
-    await this.page.waitForSelector(profilePage.profileName['_selector']);
+    await this.page.waitForSelector(locatorSelector(profilePage.profileName));
     await expect(await profilePage.profileName).toBeVisible();
     await profilePage.profilePostsLink.click();
-    await this.page.waitForSelector(profilePage.page.locator('[data-testid="user-post-menu"]')['_selector']);
+    await this.page.waitForSelector(locatorSelector(profilePage.page.locator('[data-testid="user-post-menu"]')));
     const firstPostAuthorNameProfilePage = await this.page.locator('[data-testid="post-author"]').first();
     await expect('@' + firstPostAuthorNick).toMatch(await firstPostAuthorNameProfilePage.innerText());
   }
@@ -365,7 +366,7 @@ export class HomePage {
 
       await firstPostCardCommunityLink.click();
       await this.page.waitForSelector(
-        await this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
+        locatorSelector(this.page.locator('[data-testid="community-info-sidebar"]'))
       );
       expect(await this.page.locator('[data-testid="community-name"]').textContent()).toBe(
         await firstPostCardCommunityLinkText
@@ -379,7 +380,7 @@ export class HomePage {
 
       await firstPostCardCategoryLink.click();
       await this.page.waitForSelector(
-        this.page.locator('[data-testid="community-info-sidebar"]')['_selector']
+        locatorSelector(this.page.locator('[data-testid="community-info-sidebar"]'))
       );
       expect(await this.page.locator('[data-testid="community-name"]').textContent()).toBe(
         await firstPostCardCategoryLinkText
@@ -395,7 +396,7 @@ export class HomePage {
     const firstPostCardTitle = await this.getFirstPostTitle.textContent();
     // Click the post's timestamp link
     await this.getFirstPostCardTimestampLink.click();
-    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.page.locator('[data-testid="article-title"]')));
     expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }
 
@@ -403,7 +404,7 @@ export class HomePage {
     const firstPostCardTitle = await this.getFirstPostTitle.textContent();
     // Click the post's title link
     await this.postTitle.first().click();
-    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.page.locator('[data-testid="article-title"]')));
     expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }
 
@@ -411,7 +412,7 @@ export class HomePage {
     const firstPostCardTitle = await this.getFirstPostTitle.textContent();
     // Click the post's description link
     await this.postDescription.first().click();
-    await this.page.waitForSelector(this.page.locator('[data-testid="article-title"]')['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.page.locator('[data-testid="article-title"]')));
     expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }
 
@@ -447,7 +448,7 @@ export class HomePage {
 
     // Click the post's responses link
     await this.getFirstPostChildren.click();
-    await this.page.waitForSelector(await this.page.locator('[data-testid="article-title"]')['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.page.locator('[data-testid="article-title"]')));
     expect(await this.page.locator('[data-testid="article-title"]').textContent()).toBe(firstPostCardTitle);
   }
 
@@ -655,7 +656,7 @@ export class HomePage {
   // Tranding All Posts
   async validateAllPostspageIsLoaded() {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.getMainTimeLineOfPosts['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.getMainTimeLineOfPosts));
     await expect(this.getFilterPosts).toHaveText('Trending');
   }
 

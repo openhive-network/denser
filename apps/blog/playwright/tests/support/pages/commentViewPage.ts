@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../locatorSelector';
 
 export class CommentViewPage {
   readonly page: Page;
@@ -117,7 +118,7 @@ export class CommentViewPage {
 
   async validataCommentViewPageIsLoaded(postTitle: string) {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.getReArticleTitle['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.getReArticleTitle));
     await expect(this.page.getByText('You are viewing a single comment')).toBeVisible();
     // await expect(this.getReArticleTitle.textContent).toContain(postTitle);
   }

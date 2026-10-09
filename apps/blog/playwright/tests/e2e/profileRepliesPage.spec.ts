@@ -8,6 +8,7 @@ import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { LoginForm } from '../support/pages/loginForm';
 import { voteTooltipText } from '../support/testHelpers';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Replies Tab in Profile page of @gtg', () => {
   let homePage: HomePage;
@@ -66,7 +67,7 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
     // console.log('firstCommentCardDescriptionDots: ', firstCommentCardDescriptionDots);
     // console.log('firstCommentCardDescriptionWitoutSpaces: ', firstCommentCardDescriptionWitoutSpaces);
     await profilePage.postTitle.first().click();
-    await profilePage.page.waitForSelector(profilePage.repliesCommentListItemArticleTitle['_selector']);
+    await profilePage.page.waitForSelector(locatorSelector(profilePage.repliesCommentListItemArticleTitle));
     await expect(commentViewPage.getReArticleTitle).toHaveText(firstCommentCardTitle);
     // console.log('commentContentWithoutSpaces: ', await commentContentWithoutSpaces);
 
@@ -130,10 +131,10 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     // Click avatar of the first comment card
     await profilePage.postAvatar.first().click();
-    await profilePage.page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
+    await profilePage.page.waitForSelector(locatorSelector(profilePage.profileBlogPostsList));
 
     if (await profilePage.postBlogItem.first().isVisible()) {
-      await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
+      await profilePage.page.waitForSelector(locatorSelector(page.locator('[data-testid="post-list-item"]')));
       await profilePage.moveToPostsTab();
       await profilePage.profilePostsTabIsSelected();
       const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
@@ -158,10 +159,10 @@ test.describe('Replies Tab in Profile page of @gtg', () => {
 
     // Click nickname of the first comment card
     await profilePage.postsPostAuthor.first().click();
-    await profilePage.page.waitForSelector(profilePage.profileBlogPostsList['_selector']);
+    await profilePage.page.waitForSelector(locatorSelector(profilePage.profileBlogPostsList));
 
     if (await profilePage.postBlogItem.first().isVisible()) {
-      await profilePage.page.waitForSelector(page.locator('[data-testid="post-list-item"]')['_selector']);
+      await profilePage.page.waitForSelector(locatorSelector(page.locator('[data-testid="post-list-item"]')));
       await profilePage.moveToPostsTab();
       await profilePage.profilePostsTabIsSelected();
       const profilePagePostAuthor: any = await profilePage.postsPostAuthor.first().textContent();
