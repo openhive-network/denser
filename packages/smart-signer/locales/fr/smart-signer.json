@@ -64,6 +64,17 @@
     "other_signin_options": "Autres options de connexion",
     "other_signing_options_description": "Entrez votre nom d'utilisateur et sélectionnez une méthode de connexion",
     "go_back_button": "Retour",
+    "method_info": {
+      "label": "What is {{method}}?",
+      "safe_storage": "Safe Storage keeps your private key encrypted with a password in this browser. The key never leaves your device.",
+      "keychain": "Hive Keychain is a browser extension that stores your keys and signs transactions for you.",
+      "peakvault": "PeakVault is a browser extension wallet that stores your keys and signs transactions for you.",
+      "hiveauth": "HiveAuth lets you approve sign-ins and transactions in a mobile wallet app, so your keys stay on your phone.",
+      "hivesigner": "HiveSigner is an external service that signs transactions on your behalf after you authorize this app.",
+      "wif": "Enter your private key (WIF) directly. It is used only to sign and is not kept unless you choose to store it.",
+      "metamask": "Sign with your Hive keys managed by the Hive Snap in the MetaMask extension.",
+      "google": "Keep your encrypted keys in your Google Drive and sign with them from any device."
+    },
     "signin_safe_storage": {
       "title": "Connexion avec stockage sécurisé",
       "description_unlock": "Déverrouiller l'utilisateur avec un mot de passe",

@@ -8,6 +8,11 @@ import { isServer } from '@tanstack/react-query';
 import { useLocale } from '@ui/components/locale-context';
 
 export { Trans } from 'react-i18next';
+/**
+ * react-i18next's hook on the app's i18next instance, for shared packages: the namespace must be one
+ * the app's `NamespaceLoader` can load.
+ */
+export { useTranslation as useSharedTranslation } from 'react-i18next';
 
 /** The app's `i18n/settings` module. */
 interface I18nSettings {
