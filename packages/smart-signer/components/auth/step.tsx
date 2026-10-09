@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Icons } from "@hive/ui/components/icons";
 
 export interface StepProps {
-    title?: string;
+    title?: ReactNode;
     description?: ReactNode;
     footer?: ReactNode;
     loading?: boolean;
