@@ -26,6 +26,7 @@ import { getAccountNotifications, getUnreadNotifications } from '@transaction/li
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Icons } from '@hive/ui/components/icons';
+import { mergeNewNotifications } from './lib/merge-notifications';
 
 const NOTIFICATIONS_LIMIT = 50;
 
@@ -44,17 +45,21 @@ function EndOfNotificationsNotice({ t }: { t: (key: string) => string }) {
 
 const NotificationActivities = ({
   data,
-  username
+  username,
+  onNewNotifications
 }: {
   data: IAccountNotification[] | null | undefined;
   username: string;
+  /** Refetch the head page (`data`); called when the owner's unread count goes up. */
+  onNewNotifications?: () => void;
 }) => {
   const { t } = useTranslation('common_blog');
   const [state, setState] = useState(data);
   // Track the last ID we want to fetch MORE data after (for pagination)
   const [fetchAfterId, setFetchAfterId] = useState<number | null>(null);
   // Track if we've reached the end of available notifications
-  const [hasMoreData, setHasMoreData] = useState(true);
+  const [hasMoreData, setHasMoreData] = useState(() => (data?.length ?? 0) >= NOTIFICATIONS_LIMIT);
+  const previousUnreadRef = useRef<number | undefined>(undefined);
   const { user } = useUserClient();
   const markAllNotificationsAsReadMutation = useMarkAllNotificationsAsReadMutation();
   const claimRewardMutation = useClaimRewardsMutation();
@@ -100,14 +105,20 @@ const NotificationActivities = ({
   // Show button if loading OR if we have more data available
   const showButton = isFetching || (hasMoreData && state && state.length > 0);
 
-  // Sync initial data from props
+  // Merge (never replace): a refetched head page must not wipe the pages
+  // appended via "Load more".
   useEffect(() => {
-    if (data && data.length > 0) {
-      setState(data);
-      // Check if initial data suggests there might be more
-      setHasMoreData(data.length >= NOTIFICATIONS_LIMIT);
-    }
+    setState((prev) => mergeNewNotifications(prev, data));
   }, [data]);
+
+  const unreadCount = unreadNotifications?.unread;
+  useEffect(() => {
+    const previous = previousUnreadRef.current;
+    previousUnreadRef.current = unreadCount;
+    if (accountOwner && previous !== undefined && unreadCount !== undefined && unreadCount > previous) {
+      onNewNotifications?.();
+    }
+  }, [unreadCount, accountOwner, onNewNotifications]);
 
   // Process fetched more data
   useEffect(() => {
