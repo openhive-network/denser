@@ -177,10 +177,6 @@ apps/blog/
 │   ├── get-metadata.ts           # SEO metadata
 │   └── markdowns/                # Markdown utilities
 │
-├── store/                        # Zustand stores
-│   ├── app.ts                    # Main app store
-│   └── app-types.ts              # Store types
-│
 ├── i18n/                         # i18n configuration
 ├── locales/                      # Translation files (en, es, fr, etc.)
 ├── public/                       # Static assets

@@ -21,10 +21,7 @@ blockchain.
    `authenticateOnBackend` option to `true` in your login logic.
 5. Create your own login page or login dialog based on
    [SignInForm](../../packages/smart-signer/components/auth/form.tsx),
-   for instance. Other possibilities could be
-   [LoginPanel](../../packages/smart-signer/components/login-panel.tsx)
-   or
-   [SigninPanel](../../packages/smart-signer/components/signin-panel.tsx)
+   for instance.
 6. Use react hook function
    [../../packages/smart-signer/lib/auth/use-logout.ts](../../packages/smart-signer/lib/auth/use-logout.ts)
    to logout user, see
