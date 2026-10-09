@@ -20,9 +20,10 @@ import type { Locator, Page } from '@playwright/test';
  * (`$RC` never runs). For each recorded post we assert the link is in the raw
  * HTML, has no `hidden` / `<template>` ancestor and is visible.
  *
- * Head tags: `<title>`, meta description and OG tags are asserted in `<head>`.
- * No route sets a canonical link yet — that gap is tracked by ssrChecks SSR-24
- * (#903), so it is not asserted here.
+ * Head tags: `<title>`, meta description, OG tags and the canonical link are
+ * asserted in `<head>`. The canonical is the page's own absolute URL on the
+ * configured site domain (the root layout's `metadataBase`); a post's is the URL
+ * under its own category, whatever prefix the page was opened under.
  *
  * Node blips: a feed page must answer either with its posts (200) or with a
  * retryable 503 — never a 200 that only carries the loading skeleton, which a
@@ -63,6 +64,15 @@ function recordedPosts(recording: string): { title: string; href: string }[] {
   }));
 }
 
+// The site domain the server's root layout resolves canonical links against: the
+// fixture webServer inherits this process's env, so it sees the same value.
+const SITE_DOMAIN = process.env.REACT_APP_SITE_DOMAIN || 'https://hive.blog';
+
+/** Absolute URL of `pathname` on the configured site, base path included. */
+function siteUrl(pathname: string): string {
+  return `${SITE_DOMAIN.replace(/\/+$/, '')}${pathname}`;
+}
+
 const isRankedPostsCall = ({ method }: { method: string }) => method === 'bridge.get_ranked_posts';
 
 /** Navigates with JS off and returns the raw server HTML. */
@@ -88,6 +98,12 @@ async function expectHeadMeta(page: Page, selector: string): Promise<void> {
     'content',
     /\S/
   );
+}
+
+async function expectCanonical(page: Page, pathname: string): Promise<void> {
+  const canonical = page.locator('head link[rel="canonical"]');
+  await expect(canonical, 'one canonical link in <head>').toHaveCount(1);
+  await expect(canonical).toHaveAttribute('href', siteUrl(pathname));
 }
 
 async function expectSeoHead(page: Page, title: string | RegExp): Promise<void> {
@@ -126,6 +142,7 @@ test.describe('SEO guard — feeds in visible server HTML (JS disabled)', () => 
       await expect(list.getByTestId('post-title').first()).toHaveText(posts[0].title);
 
       await expectSeoHead(page, feed.title);
+      await expectCanonical(page, feed.url);
     });
   }
 });
@@ -169,7 +186,7 @@ test.describe('SEO guard — post and profile pages (JS disabled)', () => {
   const POST_URL = '/test/@guest4test1/test-ako-post';
   const PROFILE_URL = '/@guest4test1';
 
-  test('SEO-06 — post page serves the title and body text visibly, with SEO head tags', async ({
+  test('SEO-06 — post page serves the title and body text visibly, with SEO head tags and canonical', async ({
     page
   }) => {
     const html = await serverHtml(page, POST_URL);
@@ -183,11 +200,20 @@ test.describe('SEO guard — post and profile pages (JS disabled)', () => {
     );
 
     await expectSeoHead(page, /^Test ako post\s+- Hive$/);
+    await expectCanonical(page, POST_URL);
   });
 
-  test('SEO-07 — profile page emits SEO head tags', async ({ page }) => {
+  test('SEO-09 — post opened under another prefix points its canonical at its own category', async ({
+    page
+  }) => {
+    await serverHtml(page, '/trending/@guest4test1/test-ako-post');
+    await expectCanonical(page, POST_URL);
+  });
+
+  test('SEO-07 — profile page emits SEO head tags and canonical', async ({ page }) => {
     await serverHtml(page, PROFILE_URL);
     await expectSeoHead(page, 'Blog guest4test1 - Hive');
+    await expectCanonical(page, PROFILE_URL);
   });
 
   test('SEO-08 — profile page serves the account posts visibly', async ({ page }) => {
