@@ -1,5 +1,6 @@
 import type { Locator, Page } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
+import { serveImages } from '../support/bodyImages';
 import { PostEditorPage } from '../support/pages/postEditorPage';
 import { fillPostBody, gotoSubmitLoggedIn } from '../support/postCreationContext';
 
@@ -9,7 +10,8 @@ import { fillPostBody, gotoSubmitLoggedIn } from '../support/postCreationContext
  * live spec stays as an optional smoke test.
  *
  * Re-uses the `postCreate` fixture set: only the /submit.html page load
- * hits RPCs, scrolling is client-side.
+ * hits RPCs, scrolling is client-side. Body images are served locally at a
+ * fixed size, so the preview's heights are deterministic.
  *
  * Replay:  pnpm --filter @hive/blog test:fixture -- postCreateSyncScroll.spec
  */
@@ -52,6 +54,62 @@ async function wheelOver(page: Page, scroller: Locator, deltaY: number) {
   if (!box) throw new Error('editor scroller has no bounding box');
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   await page.mouse.wheel(0, deltaY);
+}
+
+const IMAGE_COUNT = 8;
+const IMAGE_SIZE = { width: 800, height: 600 } as const;
+const FILLER_PARAGRAPH_COUNT = 30;
+const IMAGE_BODY_LAST_LINE = `Filler paragraph ${FILLER_PARAGRAPH_COUNT}.`;
+// Each of these paragraphs sits directly below an image.
+const SYNCED_PARAGRAPHS = [2, 5, 8];
+// A line or two of slack for sub-pixel layout; a wrong anchor is off by an image height.
+const ALIGN_TOLERANCE_PX = 30;
+
+const imageParagraphText = (n: number) => `Image paragraph ${n} of the photo post.`;
+
+function imageHeavyBody(): string {
+  const blocks = ['# Photo post'];
+  for (let i = 1; i <= IMAGE_COUNT; i++) {
+    blocks.push(imageParagraphText(i), `![photo ${i}](https://example.com/sync-scroll-${i}.png)`);
+  }
+  for (let i = 1; i <= FILLER_PARAGRAPH_COUNT; i++) blocks.push(`Filler paragraph ${i}.`);
+  return blocks.join('\n\n');
+}
+
+async function openEditorWithImageHeavyBody(page: Page) {
+  await serveImages(page, IMAGE_SIZE);
+  await gotoSubmitLoggedIn(page);
+  const editor = new PostEditorPage(page);
+  await editor.validateDefaultPostEditorIsLoaded();
+  await fillPostBody(page, imageHeavyBody());
+  await expect(editor.getPreviewContainer).toContainText(IMAGE_BODY_LAST_LINE);
+  const previewImages = editor.getPreviewContainer.locator('img[alt^="photo"]');
+  await expect(previewImages).toHaveCount(IMAGE_COUNT);
+  await expect
+    .poll(() =>
+      previewImages.evaluateAll((imgs: HTMLImageElement[]) => imgs.every((img) => img.complete && img.naturalHeight > 0))
+    )
+    .toBe(true);
+  return editor;
+}
+
+/** Scrolls the editor so the line with exactly `text` is at the top of its viewport. */
+async function scrollEditorLineToTop(scroller: Locator, text: string) {
+  await scroller.evaluate((el, lineText) => {
+    const line = Array.from(el.querySelectorAll('.cm-content > .cm-line')).find((l) => l.textContent === lineText);
+    if (!line) throw new Error(`no editor line "${lineText}"`);
+    el.scrollTop += line.getBoundingClientRect().top - el.getBoundingClientRect().top;
+    el.dispatchEvent(new Event('scroll', { bubbles: true }));
+  }, text);
+}
+
+/** Distance from the preview viewport's top to the paragraph with exactly `text`. */
+async function previewParagraphOffset(scroller: Locator, text: string): Promise<number> {
+  return scroller.evaluate((el, paragraphText) => {
+    const paragraph = Array.from(el.querySelectorAll('p')).find((p) => p.textContent?.trim() === paragraphText);
+    if (!paragraph) throw new Error(`no preview paragraph "${paragraphText}"`);
+    return paragraph.getBoundingClientRect().top - el.getBoundingClientRect().top;
+  }, text);
 }
 
 async function clickSyncToggle(editor: PostEditorPage) {
@@ -106,5 +164,25 @@ test.describe('Post creation — sync scroll (§2.1)', () => {
     await expect
       .poll(() => scrollTop(previewScroller), { message: 'preview should sync after re-enabling' })
       .toBeGreaterThan(50);
+  });
+});
+
+test.describe('Post creation — sync scroll with images (§2.1)', () => {
+  test('POST-SYNC-SCROLL-IMG-01: preview shows the paragraph at the editor top when images are loaded', async ({
+    page
+  }) => {
+    const editor = await openEditorWithImageHeavyBody(page);
+    const editorScroller = editor.getEditorScroller;
+    const previewScroller = editor.getPreviewScroller;
+
+    for (const n of SYNCED_PARAGRAPHS) {
+      const text = imageParagraphText(n);
+      await scrollEditorLineToTop(editorScroller, text);
+      await expect
+        .poll(async () => Math.abs(await previewParagraphOffset(previewScroller, text)), {
+          message: `preview should show "${text}" at its top`
+        })
+        .toBeLessThanOrEqual(ALIGN_TOLERANCE_PX);
+    }
   });
 });
