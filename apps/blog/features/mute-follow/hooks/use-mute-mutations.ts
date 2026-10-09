@@ -1,5 +1,6 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
+import { updateOwnListsAfterChange } from '@transaction/lib/observer-lists';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 import type { InfiniteFollowData } from '../lib/follow-cache';
@@ -19,7 +20,10 @@ export function useMuteMutation() {
       return snapshot;
     },
     run: ({ username: otherUsername }: MuteParams) => transactionService.mute(otherUsername, '', OBSERVE),
-    onSuccess: (_data, params, queryClient) => applyMute(queryClient, username, params.username),
+    onSuccess: (_data, params, queryClient) => {
+      applyMute(queryClient, username, params.username);
+      updateOwnListsAfterChange(username, true);
+    },
     rollback: (context, _params, queryClient) => restoreList(queryClient, mutedQueryKey, context),
     successToast: (_data, params) => ({ title: 'Muted', description: `You have muted ${params.username}.` }),
     invalidate: ({ username: otherUsername }) => [
@@ -43,6 +47,7 @@ export function useUnmuteMutation() {
     run: ({ username: otherUsername }: MuteParams) => transactionService.unmute(otherUsername, OBSERVE),
     onSuccess: (_data, { username: otherUsername }, queryClient) => {
       removeFromListCache(queryClient, ['muted', username], otherUsername);
+      updateOwnListsAfterChange(username, false);
       const ignoreKey = ['followingData', username, 'ignore'];
       const prevFollowingData: InfiniteFollowData = queryClient.getQueryData(ignoreKey);
       if (prevFollowingData) {
@@ -79,6 +84,7 @@ export function useResetBlogListMutation() {
       return snapshot;
     },
     run: () => transactionService.resetBlogList(OBSERVE),
+    onSuccess: () => updateOwnListsAfterChange(username, false),
     rollback: (context, _params, queryClient) => restoreList(queryClient, mutedQueryKey, context),
     successToast: () => ({ title: 'Blog list reset', description: 'Your blog list has been reset.' }),
     invalidate: () => [mutedQueryKey, ['profileData', username], ['entriesInfinite']],

@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
 import type { IronSessionData } from '@smart-signer/types/common';
+import { getEffectiveObserver, NO_OWN_LISTS_COOKIE } from '@transaction/lib/observer-lists';
 import { DEFAULT_OBSERVER } from './utils';
 import { getLogger } from '@ui/lib/logging';
 
@@ -42,6 +43,19 @@ export const getObserver = cache(async (): Promise<string> => {
   }
 
   return DEFAULT_OBSERVER;
+});
+
+/**
+ * The observer of feed, post, discussion and search reads: the default observer when the
+ * signed-in account is known (from the cookie set on the client) to have no mute or blacklist
+ * lists of its own, else the same value as `getObserver()`.
+ */
+export const getEffectiveObserverFromCookies = cache(async (): Promise<string> => {
+  const observer = await getObserver();
+  if (observer === DEFAULT_OBSERVER) return observer;
+  const cookieStore = await cookies();
+  const hasNoOwnLists = cookieStore.get(NO_OWN_LISTS_COOKIE)?.value === observer;
+  return getEffectiveObserver(observer, hasNoOwnLists ? false : null);
 });
 
 // Backward-compatible alias — will be removed after all call sites update

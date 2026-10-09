@@ -14,9 +14,9 @@ import PostList from '../list-of-posts/posts-loader';
 import { CardEntry, loadCardEntries } from '../list-of-posts/lib/card-entry';
 import { useTranslation } from '@/blog/i18n/client';
 import NoDataError from '@/blog/components/no-data-error';
-import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { StaleTime } from '@/blog/lib/react-query';
-import { useSSRObserver } from '@/blog/components/observer-provider';
+import { useSSREffectiveObserver } from '@/blog/components/observer-provider';
+import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-observer';
 
 const AccountTopicResult = ({
   author,
@@ -31,13 +31,13 @@ const AccountTopicResult = ({
   nsfwPreferences: Preferences['nsfw'];
   initialData?: CardEntry[] | null;
 }) => {
-  const ssrObserver = useSSRObserver();
-  const { user, isHydrated } = useUserClient();
+  const ssrObserver = useSSREffectiveObserver();
+  const { isHydrated } = useUserClient();
   const { ref, inView } = useInView();
   // Use SSR observer (from cookie) before hydration to match the prefetched
   // initialData and avoid sending DEFAULT_OBSERVER for a logged-in user during
   // the brief pre-hydration window.
-  const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
+  const { effectiveObserver: clientObserver } = useEffectiveObserver();
   const observer = isHydrated ? clientObserver : ssrObserver;
   const { ref: prefetchRef, inView: prefetchInView } = useInView({
     // Start prefetching when element is 1500px from entering viewport

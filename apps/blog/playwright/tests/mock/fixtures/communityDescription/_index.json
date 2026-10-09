@@ -6,5 +6,5 @@
     "0003-bridge.get_community.json",
     "0004-bridge.get_community.json"
   ],
-  "note": "ssrSeoGuard with the hive-139531 community given a description that exercises the renderer: a markdown link, a bare URL, an image, a mention, a hashtag, inline code, a table, a YouTube link and a Vimeo iframe (0003/0004 patch the base's recordings). 0005/0006 add the sidebar's client-side reads of the community, copied verbatim from tagCommunityFeeds 0008/0009; `additive: true` because their keys are new to the base."
+  "note": "ssrSeoGuard with the hive-139531 community given a description that exercises the renderer: a markdown link, a bare URL, an image, a mention, a hashtag, inline code, a table, a YouTube link and a Vimeo iframe (0003 patches the base's recording). 0005/0006 add the sidebar's client-side reads of the community, copied verbatim from tagCommunityFeeds 0008/0009; `additive: true` because their keys are new to the base."
 }

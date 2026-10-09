@@ -875,6 +875,7 @@ export type ExtendedNodeApi = {
     unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
     get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
     get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
+    does_user_follow_any_lists: TWaxApiRequest<{ observer: string }, boolean>;
     get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
   };
   market_history_api: {

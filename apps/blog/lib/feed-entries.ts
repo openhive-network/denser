@@ -1,11 +1,16 @@
 import { Entry } from '@hive/common-hiveio-packages/wax';
 
-function keepEntryObserverVotes(entry: Entry, observer: string): Entry {
-  const trimmed = { ...entry, active_votes: entry.active_votes.filter((vote) => vote.voter === observer) };
-  if (entry.original_entry) {
-    trimmed.original_entry = keepEntryObserverVotes(entry.original_entry, observer);
-  }
-  return trimmed;
+interface IVotedEntry {
+  active_votes: Entry['active_votes'];
+  original_entry?: IVotedEntry;
+}
+
+function keepEntryObserverVotes<T extends IVotedEntry>(entry: T, observer: string): T {
+  return {
+    ...entry,
+    active_votes: entry.active_votes.filter((vote) => vote.voter === observer),
+    ...(entry.original_entry ? { original_entry: keepEntryObserverVotes(entry.original_entry, observer) } : {})
+  };
 }
 
 /**
@@ -15,6 +20,6 @@ function keepEntryObserverVotes(entry: Entry, observer: string): Entry {
  * roughly half of the server HTML (they are serialized into the RSC payload), which
  * delays everything the document carries, including the LCP image.
  */
-export function keepObserverVotes(entries: Entry[], observer: string): Entry[] {
+export function keepObserverVotes<T extends IVotedEntry>(entries: T[], observer: string): T[] {
   return entries.map((entry) => keepEntryObserverVotes(entry, observer));
 }

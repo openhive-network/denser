@@ -5,7 +5,7 @@ import { postCanonicalUrl } from '@/blog/lib/canonical-url';
 import { getCommunity, getDiscussion, getFollowList, getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
-import { getObserverFromCookies } from '@/blog/lib/auth-utils';
+import { getEffectiveObserverFromCookies, getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { isUsernameValid, isPermlinkValid, isValidUserParam } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
@@ -53,10 +53,10 @@ export async function generateMetadata(
   const permlink = params?.permlink;
   if (!(await isUsernameValid(author)) || !isPermlinkValid(permlink)) notFound();
 
-  const observer = await getObserverFromCookies();
+  const effectiveObserver = await getEffectiveObserverFromCookies();
   let post = null;
   try {
-    post = await getPostCached(author, permlink, observer);
+    post = await getPostCached(author, permlink, effectiveObserver);
   } catch (error) {
     if (isTransportError(error)) {
       // #926: a transport failure is not a 404. Fall through with fallback metadata
@@ -125,6 +125,7 @@ const PostPage = async (
   if (!isPermlinkValid(permlink)) notFound();
 
   const observer = await getObserverFromCookies();
+  const effectiveObserver = await getEffectiveObserverFromCookies();
 
   const isLoggedIn = observer !== DEFAULT_OBSERVER;
 
@@ -142,8 +143,8 @@ const PostPage = async (
     const [postResult, discussionResult, mutedListResult, communityResult, communityRolesResult] =
       await Promise.allSettled([
       // Use cached version — deduplicated with layout's generateMetadata within the same request
-      getPostCached(username, permlink, observer),
-      getDiscussion(username, permlink, observer),
+      getPostCached(username, permlink, effectiveObserver),
+      getDiscussion(username, permlink, effectiveObserver),
       // Prefetch the user's muted list so comments are filtered from the first render
       isLoggedIn ? getFollowList(observer, 'muted') : Promise.resolve(null),
       isCommunity(community) ? getCommunity(community, observer) : Promise.resolve(null),
@@ -220,7 +221,7 @@ const PostPage = async (
   // streaming SSR where dehydrated state doesn't reliably reach the browser
   // query client, causing unnecessary client-side refetches and spinners.
   return (
-    <ObserverProvider value={observer}>
+    <ObserverProvider value={observer} effectiveValue={effectiveObserver}>
       <InitialPostDataProvider value={postData}>
         <InitialDiscussionProvider value={discussionPageSeed}>
           <InitialCommunityProvider value={communityData}>

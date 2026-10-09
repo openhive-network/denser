@@ -56,6 +56,11 @@ export type FixtureAuthTestFixtures = {
    * individual fields. Leave undefined for anonymous tests.
    */
   authenticatedUser: Partial<User> | undefined;
+  /**
+   * Whether the seeded user has mute or blacklist lists of its own (see
+   * `seedAuthCookie`). Default true: every read sends the username.
+   */
+  authenticatedUserHasOwnLists: boolean;
 };
 
 export const isRecordMode = process.env.FIXTURE_MODE === 'record';
@@ -115,8 +120,9 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
   ],
 
   authenticatedUser: [undefined, { option: true }],
+  authenticatedUserHasOwnLists: [true, { option: true }],
 
-  context: async ({ context, authenticatedUser }, use) => {
+  context: async ({ context, authenticatedUser, authenticatedUserHasOwnLists }, use) => {
     // Every API call goes to the local fixture proxy, so the suite needs no
     // network — but on a host without one (e.g. `docker run --network none`)
     // Chromium reports navigator.onLine === false, and React Query then pauses
@@ -128,7 +134,7 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
       });
     });
     if (authenticatedUser !== undefined) {
-      await seedAuthCookie(context, authenticatedUser);
+      await seedAuthCookie(context, authenticatedUser, authenticatedUserHasOwnLists);
     }
     await use(context);
   }
