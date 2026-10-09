@@ -10,9 +10,11 @@ describe('AccountNameValidator', () => {
         });
     });
 
-    it('should return accountNameBadActor for bad actor account name', () => {
-        const actual = AccountNameValidator.validateAccountName('aalpha', Localization.DEFAULT);
-        expect(actual).to.be.equal(Localization.DEFAULT.accountNameBadActor);
+    ['aalpha', 'blocktrades.com', 'blocktrades.us', 'zenieix'].forEach((input) => {
+        it(`should return accountNameBadActor for bad actor account name (${input})`, () => {
+            const actual = AccountNameValidator.validateAccountName(input, Localization.DEFAULT);
+            expect(actual).to.be.equal(Localization.DEFAULT.accountNameBadActor);
+        });
     });
 
     ['something.', '.something', 'a..a', 'something.a', 'a.something', 'a.a.a', 'something.ab', '123', '3speak', 'something.123', '-something', 'something-'].forEach(
