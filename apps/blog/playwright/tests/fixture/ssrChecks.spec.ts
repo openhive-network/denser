@@ -204,33 +204,26 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
   });
 
   // User-profile SEO: generateMetadata (user-profile layout) sets og title +
-  // image from the account — these MUST be in the server <head> for crawlers,
-  // even though the profile BODY is client-only (see SSR-10).
+  // image from the account — these MUST be in the server <head> for crawlers.
   test('SSR-21 — /@user emits og:title + og:image in the server <head>', async ({ page }) => {
     await page.goto(`/@${SUBSCRIBED_USER}`);
     await expectSsrMetaContent(page.locator('head meta[property="og:title"]'));
     await expectSsrMetaContent(page.locator('head meta[property="og:image"]'));
   });
 
-  // Gap: the whole user-profile body renders client-only. With JS off the
-  // server HTML carries just the navbar shell — no post list — even though
-  // get_account_posts runs and returns 20 posts server-side.
+  // A route-level loading.tsx would stream the post list into a hidden
+  // Suspense segment that only client JS reveals, leaving a no-JS visitor
+  // with the skeleton fallback.
   test('SSR-10 — /@user (blog tab) renders the account post list in server HTML', async ({
     page
   }) => {
-    test.fail(!isRecordMode, 'SSR gap (#932): user-profile body is client-only (server HTML is navbar-only)');
     await page.goto(`/@${SUBSCRIBED_USER}`);
     await expectSsrNonEmpty(page.getByTestId('post-list-item').first());
   });
 
-  // Gap: classic search DOES fetch + server-render the results (find_text runs
-  // when both q and s are present — the 20 post-list-items are in the SSR HTML),
-  // but they sit inside a `display:none` container that only client JS reveals.
-  // So a crawler reading source sees them, yet a no-JS user sees nothing —
-  // toBeVisible() (correctly) fails. Verified empirically: count=20 but the
-  // first item's box is 0×0 under a `display:none` ancestor.
+  // Classic search fetches find_text server-side when both q and s are present;
+  // the results must be visible, not parked in a hidden streamed segment (see SSR-10).
   test('SSR-20 — /search renders classic results in server HTML', async ({ page }) => {
-    test.fail(!isRecordMode, 'SSR gap (#932): classic search results render client-only despite server-side fetch');
     await page.goto('/search?q=hive&s=relevance');
     await expectSsrNonEmpty(page.getByTestId('post-list-item').first());
   });
