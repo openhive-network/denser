@@ -7,6 +7,7 @@ import {
   IGetProposalsParams,
   IProposalVote,
   IVestingDelegation,
+  IVestingDelegationExpiration,
   OwnerHistory,
   IRecentTradesData,
   IOpenOrdersData,
@@ -165,6 +166,20 @@ export const getVestingDelegations = async (
   });
   // Filter to only include delegations where the user is the delegator
   return response.delegations.filter(d => d.delegator === username);
+};
+
+/**
+ * Fetches the user's removed delegations whose vesting shares have not returned yet,
+ * using database_api.find_vesting_delegation_expirations
+ * @param username - Account name (the delegator) to fetch expirations for
+ * @returns Expiring delegations with NaiAsset format for vesting_shares
+ */
+export const getExpiringVestingDelegations = async (
+  username: string
+): Promise<IVestingDelegationExpiration[]> => {
+  const chain = getReadChain();
+  const response = await chain.api.database_api.find_vesting_delegation_expirations({ account: username });
+  return response.delegations;
 };
 
 const walletOperations = [
