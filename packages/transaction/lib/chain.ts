@@ -7,6 +7,7 @@ import { getHiveChainService } from './hive-chain-service';
 import type { TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { wrapChainWithLogging } from './chain-proxy';
 import { parseFallbackNodes, wrapChainWithServerFailover } from './server-failover';
+import { NodeHealth } from './node-health';
 import { createReadClient, IReadClient, IReadClientConfig } from './read-client';
 import { fetchReadTransport } from './read-transport';
 
@@ -25,9 +26,13 @@ const isServer = typeof window === 'undefined';
 const getServerFallbackNodes = (): string[] =>
   parseFallbackNodes(process.env.REACT_APP_ALLOWED_HIVE_API_NODES, [process.env.REACT_APP_IMAGES_ENDPOINT]);
 
+// One record for the whole process: once any server call finds a node dead, every chain skips it.
+const serverNodeHealth = new NodeHealth();
+
 const withServerFailover = (baseChain: Chain): Chain =>
   wrapChainWithServerFailover(baseChain, {
     fallbackNodes: getServerFallbackNodes(),
+    health: serverNodeHealth,
     createNodeChain: (node, timeoutMs) =>
       baseChain.extendConfig({
         chainId: baseChain.chainId,
@@ -84,6 +89,7 @@ export const getReadChain = (): ReadChain => {
   readChain = isServer
     ? wrapChainWithServerFailover(baseReadChain, {
         fallbackNodes: getServerFallbackNodes(),
+        health: serverNodeHealth,
         createNodeChain: (node, timeoutMs) =>
           createReadChain(() => ({ ...getReadClientConfig(), apiEndpoint: node, timeoutMs }))
       })
