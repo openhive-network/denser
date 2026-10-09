@@ -88,12 +88,12 @@ export class HealthcheckerPage {
 
     async switchToHiveApiTab() {
         await this.hiveApiTab.click();
-        await this.page.waitForTimeout(500);
+        await this.validateHiveApiTabIsActive();
     }
 
     async switchToHiveSenseTab() {
         await this.hiveSenseApiTab.click();
-        await this.page.waitForTimeout(500);
+        await this.validateHiveSenseTabIsActive();
     }
 
     async validateHiveApiTabIsActive() {

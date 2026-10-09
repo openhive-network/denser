@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../locatorSelector';
 
 export class LoginToVoteDialog {
   readonly page: Page;
@@ -34,7 +35,7 @@ export class LoginToVoteDialog {
   }
 
   async validateLoginToVoteDialogIsVisible() {
-    await this.page.waitForSelector(this.getHeaderLoginDialog['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.getHeaderLoginDialog));
     await expect(this.getHeaderLoginDialog).toBeVisible();
     await expect(this.getUsernameInput).toHaveAttribute('placeholder', 'Enter your username');
     await expect(this.getPostingPrivateKeyInput).toHaveAttribute('placeholder', 'Posting private key');
@@ -49,7 +50,7 @@ export class LoginToVoteDialog {
   }
 
   async validateLoginDialogInPolishIsVisible() {
-    await this.page.waitForSelector(this.getHeaderLoginDialog['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.getHeaderLoginDialog));
     await expect(this.getHeaderLoginDialog).toBeVisible();
     await expect(this.getUsernameInput).toHaveAttribute('placeholder', 'Podaj nazwę użytkownika');
     await expect(this.getPostingPrivateKeyInput).toHaveAttribute('placeholder', 'Posting private key');

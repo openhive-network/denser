@@ -6,6 +6,7 @@ import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePa
 import { getRoundedAbbreveration } from '../../../../../packages/ui/lib/math-utils';
 import dayjs from 'dayjs';
 import Big from 'big.js';
+import { locatorSelector } from '../../../../blog/playwright/tests/support/locatorSelector';
 
 test.describe('Proposals page tests', () => {
   let proposalsPage: ProposalsPage;
@@ -59,7 +60,7 @@ test.describe('Proposals page tests', () => {
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
       expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
@@ -92,7 +93,7 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('started');
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
       expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
@@ -120,12 +121,12 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.proposalsFilterStatus.click();
     await proposalsPage.proposalsFilterStatusConntent.getByText(/^Inactive$/).click();
-    await proposalsPage.page.waitForSelector(proposalsPage.proposalsFilterStatus.getByText(/^Inactive$/)['_selector']);
+    await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalsFilterStatus.getByText(/^Inactive$/)));
     await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Inactive$/);
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('not started');
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
@@ -159,7 +160,7 @@ test.describe('Proposals page tests', () => {
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText('finished');
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
       expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
@@ -191,7 +192,7 @@ test.describe('Proposals page tests', () => {
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
       expect(amountProposalsItemUI).toBe(amountResListOfProposalsStatusAllAPI);
@@ -222,7 +223,7 @@ test.describe('Proposals page tests', () => {
 
       // Change descending votes to ascending votes
       await proposalsPage.proposalsFilterDirection.click();
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
 
       const firstProposalVotesValueOnPageAscending = await proposalsPage.voteProposalsValue
         .first()
@@ -267,7 +268,7 @@ test.describe('Proposals page tests', () => {
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
       expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByCreatorAPI);
@@ -305,7 +306,7 @@ test.describe('Proposals page tests', () => {
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
       expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByStartDateAPI);
@@ -343,7 +344,7 @@ test.describe('Proposals page tests', () => {
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
       expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByEndDateAPI);
@@ -381,7 +382,7 @@ test.describe('Proposals page tests', () => {
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
-      await proposalsPage.page.waitForSelector(proposalsPage.proposalListItem['_selector']);
+      await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalListItem));
       const amountProposalsItemUI = (await proposalsPage.proposalListItem.all()).length;
       // console.log("Amount of proposals in UI: ", amountProposalsItemUI);
       expect(amountProposalsItemUI).toBe(amountResListOfProposalsOrderByTotalVotesAPI);
@@ -809,7 +810,7 @@ test.describe('Proposals page tests', () => {
 
     // await test.setTimeout(120000);
     const newPage = await pagePromise;
-    await newPage.waitForSelector(newPage.locator('[data-testid="article-title"]')['_selector']);
+    await newPage.waitForSelector(locatorSelector(newPage.locator('[data-testid="article-title"]')));
     // console.log('Title of first proposal in the list: ', await titleProposalFirst.textContent());
     expect(await titleProposalFirst.textContent()).toContain(
       await newPage.locator('[data-testid="article-title"]').textContent()

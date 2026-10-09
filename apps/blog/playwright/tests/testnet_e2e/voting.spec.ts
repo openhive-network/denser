@@ -4,6 +4,7 @@ import { LoginForm } from '../support/pages/loginForm';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { users } from '../support/loginHelper';
 import { waitForFirstProcessedUpvoteLightMode, waitForFirstBroadcastedUpvoteLightMode } from '../support/waitHelper';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Voting tests', () =>{
   let homePage: HomePage;
@@ -28,7 +29,7 @@ test.describe('Voting tests', () =>{
       await loginFormDefaut.saveSignInButton.click();
       await homePage.profileAvatarButton.click();
       // Validate User is logged in
-      await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+      await page.waitForSelector(locatorSelector(profileMenu.profileMenuContent));
       await profileMenu.validateUserProfileManuIsOpen();
       await profileMenu.validateUserNameInProfileMenu(users.denserautotest4.username);
       // Click to close the profile menu
@@ -71,7 +72,7 @@ test.describe('Voting tests', () =>{
       await loginFormDefaut.saveSignInButton.click();
       await homePage.profileAvatarButton.click();
       // Validate User is logged in
-      await page.waitForSelector(profileMenu.profileMenuContent['_selector']);
+      await page.waitForSelector(locatorSelector(profileMenu.profileMenuContent));
       await profileMenu.validateUserProfileManuIsOpen();
       await profileMenu.validateUserNameInProfileMenu(users.denserautotest4.username);
       // Click to close the profile menu

@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { HomePage } from './homePage';
+import { locatorSelector } from '../locatorSelector';
 
 export class ProfileUserMenu {
     readonly page: Page;
@@ -59,7 +60,7 @@ export class ProfileUserMenu {
       // Click avatar of the user
       await this.homePage.profileAvatarButton.click();
       // Validate User is logged in
-      await this.page.waitForSelector(this.profileMenuContent['_selector']);
+      await this.page.waitForSelector(locatorSelector(this.profileMenuContent));
       // Click Theme button
       await this.themeModeButton.dispatchEvent('pointerdown');
       // Click Dark theme

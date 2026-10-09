@@ -66,12 +66,10 @@ export class UnmoderatedTagPage {
   }
 
   async validateUnmoderatedTagPageIsLoaded(postTag: string) {
-    //
-    await this.page.waitForTimeout(5000);
     await this.page.waitForLoadState('domcontentloaded');
     // Validate that user has been moved to the unmoderated tag page
-    expect(await this.unmoderatedTagHeader.textContent()).toBe('Unmoderated tag');
-    expect(await this.unmoderatedTag.textContent()).toBe(`#${postTag}`);
+    await expect(this.unmoderatedTagHeader).toHaveText('Unmoderated tag');
+    await expect(this.unmoderatedTag).toHaveText(`#${postTag}`);
   }
 
   async validateFirstPostInTheUnmoderatedTagList(author: string, postTitle: string, postSummary: string) {

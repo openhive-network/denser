@@ -4,6 +4,7 @@ import { HomePage } from '../support/pages/homePage';
 import { ApiHelper } from '../support/apiHelper';
 import { CommunitiesPage } from '../support/pages/communitiesPage';
 import { LoginForm } from '../support/pages/loginForm';
+import { locatorSelector } from '../support/locatorSelector';
 
 // Must match the truncation in the popover card component
 // (features/post-rendering/popover-card-data.tsx): the about is sliced to
@@ -122,7 +123,7 @@ test.describe('Post page tests', () => {
 
     await postPage.moveToTheFirstPostInHomePageByImage();
     await postPage.articleAuthorName.click();
-    await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
 
     const userFollowersAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
       .follower_count;
@@ -146,7 +147,7 @@ test.describe('Post page tests', () => {
 
     await postPage.moveToTheFirstPostInHomePageByImage();
     await postPage.articleAuthorName.click();
-    await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
 
     await validateUserAboutInPopover(postPage, apiHelper, firstPostAuthorName);
   });
@@ -156,7 +157,7 @@ test.describe('Post page tests', () => {
     await postPage.moveToTheFirstPostInHomePageByImage();
 
     await postPage.articleAuthorName.click();
-    await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -197,7 +198,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.articleAuthorName.click();
-    await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -238,7 +239,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.articleAuthorName.click();
-    await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
       'rgb(44, 48, 53)'
@@ -376,7 +377,7 @@ test.describe('Post page tests', () => {
       await expect(postPage.footerAuthorName).toBeVisible();
       await expect(postPage.footerAuthorName.getAttribute('href')).toBeTruthy();
       await postPage.footerAuthorNameFirst.click();
-      await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+      await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
       await expect(postPage.popoverCardUserAvatar).toBeVisible();
     });
 
@@ -454,7 +455,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
 
     expect(await postPage.getElementCssPropertyValue(postPage.userPopoverCard, 'background-color')).toBe(
       'rgb(44, 48, 53)'
@@ -482,7 +483,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
 
     // button styles
     expect(await postPage.getElementCssPropertyValue(postPage.buttonFollowPopoverCard, 'color')).toBe(
@@ -512,7 +513,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
 
     const userFollowersAPI = (await apiHelper.getFollowCountAPI(firstPostAuthorName))['result']
       .follower_count;
@@ -542,7 +543,7 @@ test.describe('Post page tests', () => {
     await homePage.validateThemeModeIsDark();
 
     await postPage.footerAuthorNameLink.click();
-    await postPage.page.waitForSelector(postPage.userPopoverCard['_selector']);
+    await postPage.page.waitForSelector(locatorSelector(postPage.userPopoverCard));
 
     await validateUserAboutInPopover(postPage, apiHelper, firstPostAuthorName);
   });

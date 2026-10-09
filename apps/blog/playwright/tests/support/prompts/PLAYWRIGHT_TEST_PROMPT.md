@@ -34,6 +34,7 @@ apps/blog/playwright/tests/
 
 ```typescript
 import { Locator, Page, expect } from '@playwright/test';
+import { locatorSelector } from '../locatorSelector';
 
 export class ExamplePage {
   // 1. Readonly fields with Locator type
@@ -52,7 +53,7 @@ export class ExamplePage {
   async goto() {
     await this.page.goto('/path');
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector(this.postListItem['_selector']);
+    await this.page.waitForSelector(locatorSelector(this.postListItem));
   }
 
   // 4. Action methods (click, fill, hover)

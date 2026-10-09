@@ -5,6 +5,7 @@ import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
 import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 import { ApiHelper } from '../support/apiHelper';
+import { locatorSelector } from '../support/locatorSelector';
 
 test.describe('Home page tests', () => {
   let homePage: HomePage;
@@ -422,7 +423,7 @@ test.describe('Home page tests', () => {
     );
 
     await homePage.getNavUserAvatar.click();
-    await page.waitForSelector(homePage.getNavProfileMenuContent['_selector']);
+    await page.waitForSelector(locatorSelector(homePage.getNavProfileMenuContent));
     await expect(homePage.getNavProfileMenuContent.getByText('My Account')).toBeVisible();
   });
 
@@ -437,7 +438,7 @@ test.describe('Home page tests', () => {
 
     await expect(homePage.getNavSidebarMenu).toBeVisible();
     await homePage.getNavSidebarMenu.click();
-    await page.waitForSelector(homePage.getNavSidebarMenu['_selector']);
+    await page.waitForSelector(locatorSelector(homePage.getNavSidebarMenu));
     await expect(homePage.getNavSidebarMenuContent).toBeVisible();
     await expect(homePage.getNavSidebarMenuContent.getByText('Welcome')).toBeVisible();
     await homePage.getNavSidebarMenuContentCloseButton.click();
