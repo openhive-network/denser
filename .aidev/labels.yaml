@@ -8,22 +8,67 @@
 # docs/architecture/issue-taxonomy.md for the three values.
 version: 1
 
+# Every label an open denser issue carries, plus every label AIDEV automation
+# writes here, is declared below. An undeclared label reads as `executive` and
+# the issue-authoring gateway (`aidev workitem`) withholds it; an issue whose
+# only type labels are undeclared is refused as untyped. Human-only labels
+# (board columns such as "To Do"/"Doing", area labels such as blog/Renderer)
+# stay undeclared on purpose: aidev never applies them and must not key off them.
+
 labels:
+  # ---- Type: what the work is. Combinable. ----
   - name: implement
     group: type
     color: "#1f75cb"
     description: "Implementation task (code change). implement + todo = approved for submit."
     authority: executive
-  # bug and enhancement are denser's existing labels, declared with their own
-  # colour and no description so the sync leaves them as they are.
+  - name: high-level
+    group: type
+    color: "#6699cc"
+    description: "Umbrella / decomposition parent (renames legacy 'meta'). Never combined with implement."
+    authority: executive
   - name: bug
     group: type
-    color: "#d9534f"
+    color: "#dd2b0e"
+    description: "Defect in existing behaviour."
     authority: executive
   - name: enhancement
     group: type
     color: "#a2eeef"
+    description: "New capability or improvement (denser's name for aidev's 'feature')."
     authority: executive
+  - name: documentation
+    group: type
+    color: "#f0ad4e"
+    description: "Docs-only change; bypasses tests, so it receives the hard content check."
+    authority: executive
+  - name: testing
+    group: type
+    color: "#6699cc"
+    description: "Test-suite work: new or ported specs, flake fixes, fixtures."
+    authority: descriptive
+  - name: cleanup
+    group: type
+    color: "#6699cc"
+    description: "Removing dead or duplicated code without changing behaviour."
+    authority: descriptive
+  - name: optimization
+    group: type
+    color: "#AD8D43"
+    description: "Performance, bundle-size or API-load improvement."
+    authority: descriptive
+  - name: tech-debt
+    group: type
+    color: "#6699cc"
+    description: "Paying down accumulated design or tooling debt."
+    authority: descriptive
+  - name: research
+    group: type
+    color: "#ad4363"
+    description: "Open-ended investigation that produces a report, not code."
+    authority: descriptive
+
+  # ---- Status: where the issue is in the AIDEV lifecycle. ----
   - name: todo
     group: status
     color: "#ff9500"
@@ -39,12 +84,65 @@ labels:
     color: "#8b0000"
     description: "Dispatch is withheld by an unsatisfied dependency trailer."
     authority: machine
+  - name: promotion-pending
+    group: status
+    color: "#6699cc"
+    description: "Landed on the session branch; waiting for the session to promote to aidev/integration."
+    authority: machine
+  - name: promoted
+    group: status
+    color: "#6699cc"
+    description: "Machine-set projection: the issue's commits reached the integration branch."
+    authority: machine
+
+  # ---- Priority. ----
+  - name: "priority::critical"
+    group: priority
+    color: "#b60205"
+    authority: descriptive
+  - name: "priority::high"
+    group: priority
+    color: "#d93f0b"
+    authority: descriptive
+  - name: "priority::medium"
+    group: priority
+    color: "#fbca04"
+    authority: descriptive
+  - name: "priority::low"
+    group: priority
+    color: "#c5def5"
+    authority: descriptive
+
+  # ---- Provenance: who filed it. ----
   - name: ai-filed
     group: provenance
     color: "#666666"
     description: "Filed by automation rather than by a person."
     authority: descriptive
+  - name: retry-candidate
+    group: provenance
+    color: "#e74c3c"
+    description: "Filed for a failed workflow whose branch still holds code worth retrying."
+    authority: descriptive
+  - name: partial-delivery-followup
+    group: provenance
+    color: "#f39c12"
+    description: "Filed by the spec-coverage gate for integration points a landed change missed."
+    authority: descriptive
 
 exclusive_groups:
   - name: status
     labels: [todo, in-progress]
+  - name: primary-type
+    labels: [implement, high-level]
+  - name: priority
+    labels: ["priority::critical", "priority::high", "priority::medium", "priority::low"]
+
+# Legacy denser labels that are plain duplicates of a declared one.
+# Deliberately NOT migrated: "To Do" (a human board column; mapping it to
+# `todo` would approve work for AI) and "BLOCKED" (`blocked` is owned by the
+# dispatch gate).
+migration:
+  Feature: enhancement
+  test: testing
+  meta: high-level
