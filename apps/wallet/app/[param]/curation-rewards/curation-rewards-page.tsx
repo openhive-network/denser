@@ -6,7 +6,7 @@ import AccountHistoryError from '@/wallet/components/account-history-error';
 import Loading from '@ui/components/loading';
 import { Link } from '@hive/ui';
 import { convertToHP } from '@ui/lib/utils';
-import { convertStringToBig } from '@ui/lib/helpers';
+import { isNaiAsset } from '@ui/lib/asset-format';
 import env from '@beam-australia/react-env';
 import { useState, useMemo } from 'react';
 import { Button } from '@ui/components/button';
@@ -37,11 +37,9 @@ export default function CurationRewardsPage({ username }: { username: string }) 
     return data
       .filter((reward) => new Date(reward.timestamp) > oneWeekAgo)
       .reduce((total, reward) => {
-        const rewardHP = convertToHP(
-          convertStringToBig(reward.op.reward ?? '0'),
-          dynamicData.total_vesting_shares,
-          dynamicData.total_vesting_fund_hive
-        );
+        const rewardHP = isNaiAsset(reward.op.reward)
+          ? convertToHP(reward.op.reward, dynamicData.total_vesting_shares, dynamicData.total_vesting_fund_hive)
+          : Big(0);
         return Number(Big(total).plus(rewardHP));
       }, 0);
   }, [data, dynamicData]);

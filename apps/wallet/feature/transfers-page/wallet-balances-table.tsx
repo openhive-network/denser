@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Big from 'big.js';
 import dayjs from 'dayjs';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
-import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
+import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { FullAccount, IFeedHistory, IOpenOrdersData } from '@hive/common-hiveio-packages/wax';
 import { Link } from '@hive/ui';
 import {
@@ -30,9 +29,10 @@ import { TransferDialog } from '@/wallet/components/transfer-dialog';
 import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { toast } from '@ui/components/hooks/use-toast';
-import { powerdownHive, convertToHP, numberWithCommas } from '@ui/lib/utils';
+import { powerdownHive, convertToHP, netDelegatedVests, numberWithCommas, vestsToHive } from '@ui/lib/utils';
 import { convertStringToBig, isHive } from '@ui/lib/helpers';
 import { createNaiAsset } from '@ui/lib/asset-constants';
+import { hiveToHbdSatoshis } from '@ui/lib/asset-math';
 import { formatAsset } from '@ui/lib/asset-format';
 import { getCurrentHpApr } from '@/wallet/lib/utils';
 import RCRow from './rc-row';
@@ -70,11 +70,6 @@ const WalletBalancesTable = ({
   const cancelPowerDownMutation = useCancelPowerDownMutation();
 
   // Calculate balances
-  const price_per_hive = Big(
-    Number(historyFeedData.current_median_history.base.amount) *
-      10 ** -historyFeedData.current_median_history.base.precision
-  );
-
   const hours = dayjs(accountData.next_vesting_withdrawal).diff(dayjs(), 'hour');
   const days = Math.floor(hours / 24);
   const remainingHours = hours % 24;
@@ -83,16 +78,15 @@ const WalletBalancesTable = ({
       ? `${remainingHours} ${t('global.time.hours')}`
       : `${days} ${t('global.time.days')} ${remainingHours} ${t('global.time.hours')}`;
 
-  const vesting_hive = convertToHP(
-    convertStringToBig(accountData.vesting_shares),
+  const vestingHiveNai = vestsToHive(
+    accountData.vesting_shares,
     dynamicData.total_vesting_shares,
     dynamicData.total_vesting_fund_hive
   );
+  const vesting_hive = convertStringToBig(vestingHiveNai);
 
   const delegated_hive = convertToHP(
-    convertStringToBig(accountData.delegated_vesting_shares).minus(
-      convertStringToBig(accountData.received_vesting_shares)
-    ),
+    netDelegatedVests(accountData),
     dynamicData.total_vesting_shares,
     dynamicData.total_vesting_fund_hive
   );
@@ -106,10 +100,6 @@ const WalletBalancesTable = ({
   const hbd_balance_savings = convertStringToBig(accountData.savings_hbd_balance);
   const balance_hive = convertStringToBig(accountData.balance);
 
-  const savings_hbd_pending = 0;
-  const conversionValue = 0;
-  const savings_pending = 0;
-
   const sumForSale = (assetFilter: (order: IOpenOrdersData) => boolean) =>
     (openOrders ?? []).filter(assetFilter).reduce((sum, order) => sum + order.for_sale, 0);
 
@@ -118,22 +108,24 @@ const WalletBalancesTable = ({
   const hiveOrders = convertStringToBig(hiveOrdersNai);
   const hbdOrders = convertStringToBig(hbdOrdersNai);
 
-  const total_hbd = hbd_balance
-    .plus(hbd_balance_savings)
-    .plus(savings_hbd_pending)
-    .plus(hbdOrders)
-    .plus(conversionValue);
+  const sumSatoshis = (assets: NaiAsset[]) => assets.reduce((sum, asset) => sum + BigInt(asset.amount), BigInt(0));
+  const totalHiveSatoshis = sumSatoshis([
+    vestingHiveNai,
+    accountData.balance,
+    accountData.savings_balance,
+    hiveOrdersNai
+  ]);
+  const totalHbdSatoshis = sumSatoshis([accountData.hbd_balance, accountData.savings_hbd_balance, hbdOrdersNai]);
+  const { base, quote } = historyFeedData.current_median_history;
+  const totalValueHbd = createNaiAsset(
+    'HBD',
+    hiveToHbdSatoshis(totalHiveSatoshis, BigInt(base.amount), BigInt(quote.amount)) + totalHbdSatoshis
+  );
 
-  const total_hive = vesting_hive
-    .plus(balance_hive)
-    .plus(saving_balance_hive)
-    .plus(savings_pending)
-    .plus(hiveOrders);
-
-  const total_value = numberWithCommas(total_hive.times(price_per_hive).plus(total_hbd).toFixed(2));
+  const total_value = numberWithCommas(convertStringToBig(totalValueHbd).toFixed(2));
 
   const delegatedVesting = convertToHP(
-    convertStringToBig(accountData.delegated_vesting_shares),
+    accountData.delegated_vesting_shares,
     dynamicData.total_vesting_shares,
     dynamicData.total_vesting_fund_hive
   );
@@ -148,16 +140,14 @@ const WalletBalancesTable = ({
     savingsHbd: '$' + numberWithCommas(hbd_balance_savings.toFixed(3)),
     delegatedVesting: delegatedVesting,
     to_withdraw: convertToHP(
-      Big(accountData.to_withdraw),
+      createNaiAsset('VESTS', accountData.to_withdraw),
       dynamicData.total_vesting_shares,
-      dynamicData.total_vesting_fund_hive,
-      1000000
+      dynamicData.total_vesting_fund_hive
     ),
     withdraw: convertToHP(
-      Big(accountData.withdrawn),
+      createNaiAsset('VESTS', accountData.withdrawn),
       dynamicData.total_vesting_shares,
-      dynamicData.total_vesting_fund_hive,
-      1000000
+      dynamicData.total_vesting_fund_hive
     )
   };
 

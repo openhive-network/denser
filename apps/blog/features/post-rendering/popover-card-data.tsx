@@ -1,11 +1,10 @@
 'use client';
 
 import { dateToShow } from '@ui/lib/parse-date';
-import { convertToHP, numberWithCommas } from '@ui/lib/utils';
+import { convertToHP, netDelegatedVests, numberWithCommas } from '@ui/lib/utils';
 import Big from 'big.js';
 import { Avatar, AvatarFallback, AvatarImage, getUserAvatarUrl } from '@ui/components';
 import userIllegalContent from '@hive/ui/config/lists/user-illegal-content';
-import { convertStringToBig } from '@ui/lib/helpers';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { compareDates } from '@/blog/lib/utils';
 import BasePathLink from '@/blog/components/base-path-link';
@@ -37,9 +36,7 @@ const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDat
   const delegated_hive =
     dynamicData && account
       ? convertToHP(
-          convertStringToBig(account.delegated_vesting_shares).minus(
-            convertStringToBig(account.received_vesting_shares)
-          ),
+          netDelegatedVests(account),
           dynamicData.total_vesting_shares,
           dynamicData.total_vesting_fund_hive
         )
@@ -47,7 +44,7 @@ const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDat
   const vesting_hive =
     dynamicData && account
       ? convertToHP(
-          convertStringToBig(account.vesting_shares),
+          account.vesting_shares,
           dynamicData.total_vesting_shares,
           dynamicData.total_vesting_fund_hive
         )

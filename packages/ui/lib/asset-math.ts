@@ -10,3 +10,12 @@ export function vestsToHiveSatoshis(
 ): bigint {
   return (vests * totalVestingFundHive) / totalVestingShares;
 }
+
+/**
+ * HBD satoshis that `hive` HIVE satoshis are worth at the price `base` HBD satoshis per `quote`
+ * HIVE satoshis (e.g. a feed's `current_median_history`): `hive * base / quote` in integer math,
+ * rounded toward zero, as wax's `hiveToHbd` computes it.
+ */
+export function hiveToHbdSatoshis(hive: bigint, base: bigint, quote: bigint): bigint {
+  return (hive * base) / quote;
+}

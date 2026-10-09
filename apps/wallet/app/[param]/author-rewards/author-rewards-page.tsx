@@ -37,11 +37,9 @@ export default function AuthorRewardsPage({ username }: { username: string }) {
       .filter((reward) => new Date(reward.timestamp) > oneWeekAgo)
       .reduce(
         (total, reward) => {
-          const rewardHP = convertToHP(
-            convertStringToBig(reward.op.vesting_payout ?? '0'),
-            dynamicData.total_vesting_shares,
-            dynamicData.total_vesting_fund_hive
-          );
+          const rewardHP = isNaiAsset(reward.op.vesting_payout)
+            ? convertToHP(reward.op.vesting_payout, dynamicData.total_vesting_shares, dynamicData.total_vesting_fund_hive)
+            : Big(0);
           const rewardHBD = convertStringToBig(reward.op.hbd_payout ?? '0');
           const rewardHIVE = convertStringToBig(reward.op.hive_payout ?? '0');
           return {
