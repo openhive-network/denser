@@ -6,7 +6,6 @@ import { hiveChainService } from '@transaction/lib/hive-chain-service';
 import { useHealthChecker } from '@ui/hooks/useHealthChecker';
 import { CircleCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getChain } from '@transaction/lib/chain';
 
 type NodeApiCheckers = [
   ApiChecker<{ accounts: ApiAccount[] }>,
@@ -20,7 +19,8 @@ const HealthCheckerWrapper = () => {
     const [walletApiCheckers, setWalletApiCheckers] = useState<NodeApiCheckers | undefined>(undefined);
 
     const createApiCheckers = async () => {
-      const hiveChain = await getChain();
+      // The bare chain: a checker must ask each provider itself, never fail over to another node.
+      const hiveChain = await hiveChainService.getHiveChain();
       const apiCheckers: NodeApiCheckers = [
         {
           title: "Database - Find accounts",
