@@ -5,7 +5,8 @@ import {
   FAILOVER_ATTEMPT_TIMEOUT_MS,
   FAILOVER_BUDGET_MS,
   parseFallbackNodes,
-  wrapChainWithServerFailover
+  wrapChainWithServerFailover,
+  type IServerFailoverOptions
 } from './server-failover';
 import { NODE_COOLDOWN_MS, NodeHealth } from './node-health';
 
@@ -28,11 +29,12 @@ interface ISetupOptions {
   latencyMs?: number;
   nodeLatencyMs?: Record<string, number>;
   primary?: string;
+  hooks?: Pick<IServerFailoverOptions<IFakeChain>, 'isTransportError' | 'onFailover'>;
 }
 
 const setup = (
   outcomes: Record<string, Outcome[]>,
-  { latencyMs = 100, nodeLatencyMs = {}, primary = 'https://primary' }: ISetupOptions = {}
+  { latencyMs = 100, nodeLatencyMs = {}, primary = 'https://primary', hooks = {} }: ISetupOptions = {}
 ) => {
   let clock = 0;
   const now = () => clock;
@@ -69,6 +71,7 @@ const setup = (
       return makeChain(node);
     },
     health,
+    ...hooks,
     now,
     sleep: async (ms) => {
       clock += ms;
@@ -282,6 +285,54 @@ describe('wrapChainWithServerFailover', () => {
 
       expect(calls).to.deep.equal([`https://primary ${ranked}`]);
     });
+  });
+
+  describe('onFailover', () => {
+    it('reports the node that served a call the primary failed', async () => {
+      const servedBy: string[] = [];
+      const { chain } = setup(
+        { 'https://primary': ['transport'], 'https://fallback-a': ['ok'] },
+        { hooks: { onFailover: (node) => servedBy.push(node) } }
+      );
+
+      await chain.api.bridge.get_ranked_posts({});
+
+      expect(servedBy).to.deep.equal(['https://fallback-a']);
+    });
+
+    it('stays silent when the primary answered, also after a retry', async () => {
+      const servedBy: string[] = [];
+      const { chain } = setup(
+        { 'https://primary': ['transport', 'ok'] },
+        { hooks: { onFailover: (node) => servedBy.push(node) } }
+      );
+
+      await chain.api.bridge.get_ranked_posts({});
+      await chain.api.bridge.get_ranked_posts({});
+
+      expect(servedBy).to.deep.equal([]);
+    });
+
+    it('stays silent when every node failed', async () => {
+      const servedBy: string[] = [];
+      const { chain } = setup({}, { hooks: { onFailover: (node) => servedBy.push(node) } });
+
+      await chain.api.bridge.get_ranked_posts({}).catch(() => undefined);
+
+      expect(servedBy).to.deep.equal([]);
+    });
+  });
+
+  it('decides what fails over with the given transport-error check instead of wax\'s', async () => {
+    const { chain, calls } = setup(
+      { 'https://primary': ['missing'], 'https://fallback-a': ['ok'] },
+      { hooks: { isTransportError: (error) => error instanceof Error && error.name === 'WaxChainApiError' } }
+    );
+
+    const result = await chain.api.bridge.get_ranked_posts({});
+
+    expect(result).to.deep.equal({ node: 'https://fallback-a', params: {} });
+    expect(calls).to.have.length(3);
   });
 
   it('leaves everything other than chain.api untouched', () => {
