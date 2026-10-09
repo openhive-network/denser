@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
-import type { Entry } from '@hive/common-hiveio-packages/wax';
 import PostContent from './content';
 import { getPostCached } from '@/blog/lib/cached-api';
+import { postCanonicalUrl } from '@/blog/lib/canonical-url';
 import { getCommunity, getDiscussion, getFollowList, getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
@@ -33,12 +33,6 @@ const FALLBACK_METADATA: Metadata = {
     description: 'Hive: Communities Without Borders.'
   }
 };
-
-// A post is reachable under any tag or community prefix; its canonical URL is the one
-// under its own category. Relative, so the root layout's metadataBase makes it absolute.
-function postCanonicalPath({ category, author, permlink }: Entry): string {
-  return `/${category}/@${author}/${permlink}`;
-}
 
 // generateMetadata lives on the PAGE (not the layout) on purpose: it resolves before
 // the route's loading boundary starts streaming, so notFound() here still controls the
@@ -92,7 +86,7 @@ export async function generateMetadata(
   return {
     title,
     description,
-    ...(post ? { alternates: { canonical: postCanonicalPath(post) } } : {}),
+    ...(post ? { alternates: { canonical: postCanonicalUrl(post) } } : {}),
     openGraph: {
       title,
       description,

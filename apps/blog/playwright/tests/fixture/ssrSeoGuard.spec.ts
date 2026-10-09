@@ -22,8 +22,10 @@ import type { Locator, Page } from '@playwright/test';
  *
  * Head tags: `<title>`, meta description, OG tags and the canonical link are
  * asserted in `<head>`. The canonical is the page's own absolute URL on the
- * configured site domain (the root layout's `metadataBase`); a post's is the URL
- * under its own category, whatever prefix the page was opened under.
+ * configured site domain (the root layout's `metadataBase`); a post's is, as in
+ * condenser, its `json_metadata.canonical_url`, else its URL on the reciprocating
+ * app that published it, else the URL under its own category, whatever prefix the
+ * page was opened under.
  *
  * Node blips: a feed page must answer either with its posts (200) or with a
  * retryable 503 — never a 200 that only carries the loading skeleton, which a
@@ -100,10 +102,14 @@ async function expectHeadMeta(page: Page, selector: string): Promise<void> {
   );
 }
 
-async function expectCanonical(page: Page, pathname: string): Promise<void> {
+async function expectCanonicalHref(page: Page, href: string): Promise<void> {
   const canonical = page.locator('head link[rel="canonical"]');
   await expect(canonical, 'one canonical link in <head>').toHaveCount(1);
-  await expect(canonical).toHaveAttribute('href', siteUrl(pathname));
+  await expect(canonical).toHaveAttribute('href', href);
+}
+
+async function expectCanonical(page: Page, pathname: string): Promise<void> {
+  await expectCanonicalHref(page, siteUrl(pathname));
 }
 
 async function expectSeoHead(page: Page, title: string | RegExp): Promise<void> {
@@ -186,6 +192,8 @@ test.describe('SEO guard — post and profile pages (JS disabled)', () => {
   const POST_URL = '/test/@guest4test1/test-ako-post';
   const PROFILE_URL = '/@guest4test1';
 
+  // The recorded post's app is "hive.blog/0.9", outside the reciprocating whitelist, and it
+  // has no canonical_url: its canonical is its own URL on the configured site.
   test('SEO-06 — post page serves the title and body text visibly, with SEO head tags and canonical', async ({
     page
   }) => {
@@ -208,6 +216,31 @@ test.describe('SEO guard — post and profile pages (JS disabled)', () => {
   }) => {
     await serverHtml(page, '/trending/@guest4test1/test-ako-post');
     await expectCanonical(page, POST_URL);
+  });
+
+  test('SEO-10 — cross-posted post points its canonical at json_metadata.canonical_url', async ({
+    page
+  }) => {
+    // Recorded with app "hivecomb/1.0" (not reciprocating) and a hivecomb.net canonical_url.
+    await serverHtml(
+      page,
+      '/pevo-blog/@pevo.science/publish-and-evaluate-openly-pevo-science-open-beta-officially-launched'
+    );
+    await expectCanonicalHref(
+      page,
+      'https://hivecomb.net/@pevo.science/publish-and-evaluate-openly-pevo-science-open-beta-officially-launched'
+    );
+  });
+
+  test('SEO-11 — post from a reciprocating app without canonical_url points its canonical at that app', async ({
+    page
+  }) => {
+    // Recorded with app "peakd/2026.3.4" and no canonical_url.
+    await serverHtml(page, '/trending/@dlmmqb/behind-the-scenes-and-more-coding-hive-engine-hive');
+    await expectCanonicalHref(
+      page,
+      'https://peakd.com/hive-153850/@dlmmqb/behind-the-scenes-and-more-coding-hive-engine-hive'
+    );
   });
 
   test('SEO-07 — profile page emits SEO head tags and canonical', async ({ page }) => {
