@@ -16,6 +16,8 @@
       "@hive/common-hiveio-packages/wax": ["lib/__test-stubs__/common-hiveio-packages-wax.ts"],
       "@hive/ui/lib/logging": ["lib/__test-stubs__/ui-logging.ts"],
       "@ui/lib/logging": ["lib/__test-stubs__/ui-logging.ts"],
+      "@ui/lib/common-variables": ["../ui/lib/common-variables.ts"],
+      "@ui/lib/storage-with-ttl": ["../ui/lib/storage-with-ttl.ts"],
       "@ui/config/public-vars": ["lib/__test-stubs__/ui-public-vars.ts"]
     }
   },

@@ -125,6 +125,7 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
       }
     ]
   }),
+  'database_api.find_vesting_delegation_expirations': () => ({ delegations: [] }),
   'rc_api.list_rc_direct_delegations': () => ({ rc_direct_delegations: [] }),
   'rc_api.find_rc_accounts': ({ accounts = [] }) => ({
     rc_accounts: accounts.map((account) => ({

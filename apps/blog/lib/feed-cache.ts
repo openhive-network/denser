@@ -25,11 +25,18 @@ const getFeedCache = (): IFeedCache<FeedPage> =>
   }));
 
 /**
- * The first page of a ranked feed as the server renders it: card entries with only the observer's own votes.
- * Anonymous requests are answered from a short-lived process cache (`DENSER_FEED_CACHE_*`);
- * requests with an observer always fetch. Rejects as `getPostsRanked` does.
+ * The first page of a ranked feed as the server renders it: card entries with only the viewer's own votes.
+ * `observer` is the one sent to the API (see `getEffectiveObserverFromCookies`); `viewer` is the
+ * signed-in user, or the default observer. Requests for the default observer are answered from a
+ * short-lived process cache (`DENSER_FEED_CACHE_*`); requests with another observer always fetch.
+ * Rejects as `getPostsRanked` does.
  */
-export async function getFeedFirstPage(sort: string, tag: string, observer: string): Promise<FeedPage> {
+export async function getFeedFirstPage(
+  sort: string,
+  tag: string,
+  observer: string,
+  viewer: string
+): Promise<FeedPage> {
   const chain = getReadChain();
   const request = {
     network: `${chain.chainId}|${chain.endpointUrl}`,
@@ -40,8 +47,10 @@ export async function getFeedFirstPage(sort: string, tag: string, observer: stri
     limit: DATA_LIMIT,
     observer
   };
-  return getFeedCache().get(request, async () => {
+  // Cached with every vote: one cached page serves every viewer that sends the default observer.
+  const page = await getFeedCache().get(request, async () => {
     const posts = await getPostsRanked(sort, tag, '', '', observer, DATA_LIMIT);
-    return posts ? toCardEntries(keepObserverVotes(posts, observer)) : null;
+    return posts ? toCardEntries(posts) : null;
   });
+  return page && keepObserverVotes(page, viewer);
 }

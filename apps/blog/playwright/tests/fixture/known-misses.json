@@ -375,6 +375,16 @@
     "hash": "4987c816a2e46259"
   },
   {
+    "spec": "socialUnmute.spec.ts",
+    "method": "bridge.does_user_follow_any_lists",
+    "hash": "d3614786e01e0963"
+  },
+  {
+    "spec": "socialUnmute.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "23c8aaf1693ef1a4"
+  },
+  {
     "spec": "ssrSeoGuard.spec.ts",
     "method": "bridge.get_discussion",
     "hash": "5a2c11f563c4bd9d"
