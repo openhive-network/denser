@@ -20,7 +20,7 @@ import { Separator } from '@hive/ui/components/separator';
 import TimeAgo from '@ui/components/time-ago';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToShow } from '@ui/lib/parse-date';
-import { convertToHP, numberWithCommas } from '@ui/lib/utils';
+import { convertToHP, netDelegatedVests, numberWithCommas } from '@ui/lib/utils';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -141,14 +141,12 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   }
 
   const delegated_hive = convertToHP(
-    convertStringToBig(profileData.delegated_vesting_shares).minus(
-      convertStringToBig(profileData.received_vesting_shares)
-    ),
+    netDelegatedVests(profileData),
     dynamicGlobalData.total_vesting_shares,
     dynamicGlobalData.total_vesting_fund_hive
   );
   const vesting_hive = convertToHP(
-    convertStringToBig(profileData.vesting_shares),
+    profileData.vesting_shares,
     dynamicGlobalData.total_vesting_shares,
     dynamicGlobalData.total_vesting_fund_hive
   );

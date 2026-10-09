@@ -6,8 +6,7 @@ import { SavingsWithdrawals, IFollow, HiveOperation } from '@hive/common-hiveio-
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
-import Big from 'big.js';
-import { createNaiAsset, getPrecision } from '@ui/lib/asset-constants';
+import { createNaiAsset } from '@ui/lib/asset-constants';
 import { vestsToHiveSatoshis } from '@ui/lib/asset-math';
 import { formatAsset } from '@ui/lib/asset-format';
 
@@ -106,19 +105,6 @@ export const getFilter =
     }
     return true;
   };
-
-export const transformWithdraw = (
-  withdraw: Big,
-  total_vest_hive: Big,
-  total_vests: Big,
-  format: 'string' | 'big' | 'number'
-) => {
-  const divide = withdraw.div(total_vest_hive);
-  const multiplication = total_vests.times(divide);
-  if (format === 'big') return multiplication;
-  if (format === 'number') return multiplication.toNumber();
-  return numberWithCommas(multiplication.toFixed(getPrecision('VESTS')));
-};
 
 export const getAmountFromWithdrawal = (withdrawal: SavingsWithdrawals['withdrawals'][number]) => {
   const amount = Number(withdrawal.amount.amount) / 10 ** withdrawal.amount.precision;
