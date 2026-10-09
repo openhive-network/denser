@@ -1,7 +1,7 @@
-import { QueryClient, QueryKey, UseInfiniteQueryResult } from '@tanstack/react-query';
+import { InfiniteData, QueryClient, QueryKey } from '@tanstack/react-query';
 import { IFollow, IFollowList, FullAccount } from '@hive/common-hiveio-packages/wax';
 
-export type InfiniteFollowData = UseInfiniteQueryResult<IFollow[]>['data'];
+export type InfiniteFollowData = InfiniteData<IFollow[]> | undefined;
 
 /** Filter a user from all pages of an infinite follow query. */
 export function filterFromAllPages(

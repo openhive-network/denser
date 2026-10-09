@@ -61,7 +61,7 @@ const CommunityLayout = ({ children, community }: { children: ReactNode; communi
   const observerMatchesSSR = observer === ssrObserver;
   const useInitialData = initialCommunity && observerMatchesSSR;
 
-  const { data: communityData, isLoading: isCommunityLoading } = useQuery({
+  const { data: communityData, isPending: isCommunityLoading } = useQuery({
     queryKey: ['community', community, observer],
     queryFn: () => getCommunity(community, observer),
     enabled: isCommunity,

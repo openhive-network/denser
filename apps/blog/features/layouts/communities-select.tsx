@@ -32,7 +32,7 @@ export function CommunitiesSelect({ title }: { title: string }) {
   const sort = 'rank';
   const query = null;
 
-  const { isLoading, data } = useQuery({
+  const { isPending, data } = useQuery({
     queryKey: ['communitiesList', sort, query, observer],
     queryFn: () => getCommunities(sort, query, observer),
     initialData: initialCommunities ?? undefined,
@@ -51,7 +51,7 @@ export function CommunitiesSelect({ title }: { title: string }) {
     ?.slice(0, 12)
     .filter((c) => !mySubsData?.map((my) => my[0]).includes(c.name));
 
-  if (isLoading) return <p>{t('global.loading')}...</p>;
+  if (isPending) return <p>{t('global.loading')}...</p>;
   return (
     <Select
       onValueChange={(e) => {

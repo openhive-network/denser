@@ -40,57 +40,55 @@ export default function ProposalsPage() {
   const [orderDirection, setOrderDirection] = useState<IGetProposalsParams['order_direction']>(
     DEFAULT_PARAMS_FOR_PROPOSALS.order_direction
   );
-  const { data: votes } = useQuery(['accountVotes', user.username], () => getUserVotes(user.username), {
+  const { data: votes } = useQuery({
+    queryKey: ['accountVotes', user.username],
+    queryFn: () => getUserVotes(user.username),
     enabled: !!user?.username
   });
-  const proposalsData = useInfiniteQuery(
-    ['proposals', filterStatus, sortOrder, orderDirection],
-    ({ pageParam: last_id }) =>
+  const proposalsData = useInfiniteQuery({
+    queryKey: ['proposals', filterStatus, sortOrder, orderDirection],
+    queryFn: ({ pageParam: last_id }: { pageParam: number | undefined }) =>
       getProposals({
         last_id,
         status: filterStatus,
         order: sortOrder,
         order_direction: orderDirection
       }),
-    {
-      getNextPageParam: (lastPage) => {
-        return lastPage.length >= DEFAULT_PARAMS_FOR_PROPOSALS.limit
-          ? lastPage[lastPage.length - 1].id
-          : undefined;
-      },
-
-      select: (proposals) => {
-        return {
-          ...proposals,
-          pages: proposals.pages.map((page) =>
-            page.map((proposal) => ({
-              ...proposal,
-              total_votes: new Big(parseFloat(proposal.total_votes).toFixed(2)),
-              daily_pay: {
-                amount: new Big(proposal.daily_pay.amount).div(1000)
-              },
-              start_date: dayjs(proposal.start_date).format('MMM D, YYYY'),
-              end_date: dayjs(proposal.end_date).format('MMM D, YYYY'),
-              status: timeStatus(proposal.status, t)
-            }))
-          )
-        };
-      }
+    initialPageParam: undefined,
+    getNextPageParam: (lastPage) => {
+      return lastPage.length >= DEFAULT_PARAMS_FOR_PROPOSALS.limit
+        ? lastPage[lastPage.length - 1].id
+        : undefined;
+    },
+    select: (proposals) => {
+      return {
+        ...proposals,
+        pages: proposals.pages.map((page) =>
+          page.map((proposal) => ({
+            ...proposal,
+            total_votes: new Big(parseFloat(proposal.total_votes).toFixed(2)),
+            daily_pay: {
+              amount: new Big(proposal.daily_pay.amount).div(1000)
+            },
+            start_date: dayjs(proposal.start_date).format('MMM D, YYYY'),
+            end_date: dayjs(proposal.end_date).format('MMM D, YYYY'),
+            status: timeStatus(proposal.status, t)
+          }))
+        )
+      };
     }
-  );
-  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(
-    ['dynamicGlobalProperties'],
-    () => getDynamicGlobalProperties(),
-    {
-      select: (data) => {
-        return {
-          ...data,
-          total_vesting_fund_hive: convertStringToBig(data.total_vesting_fund_hive),
-          total_vesting_shares: convertStringToBig(data.total_vesting_shares)
-        };
-      }
+  });
+  const { data: dynamicData, isPending: dynamicLoading } = useQuery({
+    queryKey: ['dynamicGlobalProperties'],
+    queryFn: () => getDynamicGlobalProperties(),
+    select: (data) => {
+      return {
+        ...data,
+        total_vesting_fund_hive: convertStringToBig(data.total_vesting_fund_hive),
+        total_vesting_shares: convertStringToBig(data.total_vesting_shares)
+      };
     }
-  );
+  });
 
   useEffect(() => {
     let fetching = false;
@@ -121,7 +119,7 @@ export default function ProposalsPage() {
         onOrderDirection={setOrderDirection}
       />
 
-      {proposalsData.isLoading || dynamicLoading ? (
+      {proposalsData.isPending || dynamicLoading ? (
         <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 p-5">
           <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
           <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />

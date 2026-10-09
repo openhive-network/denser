@@ -54,7 +54,7 @@ const AIResult = ({
   // Fetch all results in a single call
   const {
     data: searchResults,
-    isLoading,
+    isPending,
     isFetching,
     error
   } = useQuery({
@@ -177,8 +177,8 @@ const AIResult = ({
 
   if (!query) return null;
 
-  if (isLoading) {
-    return <Loading loading={isLoading} />;
+  if (isPending) {
+    return <Loading loading={isPending} />;
   }
 
   const classicHref = `/search?q=${encodeURIComponent(query)}&s=relevance`;

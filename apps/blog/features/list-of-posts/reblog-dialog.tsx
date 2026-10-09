@@ -40,7 +40,7 @@ export function ReblogDialog({
   // Check reblog status only when the dialog is open (lazy query).
   // Skip if the parent already provides the status via isRebloggedProp.
   const needsQuery = open && isRebloggedProp === undefined;
-  const { data: isRebloggedQuery, isLoading: isCheckingReblog } = useRebloggedByQuery(
+  const { data: isRebloggedQuery, isPending: isCheckingReblog } = useRebloggedByQuery(
     needsQuery ? author : '',
     needsQuery ? permlink : '',
     needsQuery ? user.username : ''

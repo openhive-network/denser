@@ -29,33 +29,39 @@ export default function TransfersPage({ username }: { username: string }) {
   const queryClient = useQueryClient();
   // The profile layout already holds this account (prefetched on the server): start from it instead
   // of a second find_accounts. Mutations still refresh it through the 'accountData' key.
-  const { data: accountData, isLoading: accountLoading } = useQuery(
-    ['accountData', username],
-    () => getAccount(username),
-    {
-      enabled: Boolean(username),
-      initialData: () => queryClient.getQueryData<FullAccount>(['profileData', username]),
-      initialDataUpdatedAt: () => queryClient.getQueryState(['profileData', username])?.dataUpdatedAt
-    }
-  );
-  const { data: dynamicData, isLoading: dynamicLoading } = useQuery(['dynamicGlobalPropertiesData'], () =>
-    getDynamicGlobalProperties()
-  );
+  const { data: accountData, isPending: accountLoading } = useQuery({
+    queryKey: ['accountData', username],
+    queryFn: () => getAccount(username),
+    enabled: Boolean(username),
+    initialData: () => queryClient.getQueryData<FullAccount>(['profileData', username]),
+    initialDataUpdatedAt: () => queryClient.getQueryState(['profileData', username])?.dataUpdatedAt
+  });
+  const { data: dynamicData, isPending: dynamicLoading } = useQuery({
+    queryKey: ['dynamicGlobalPropertiesData'],
 
-  const { data: followingData } = useQuery(['following', username], () =>
-    getFollowing({ account: username })
-  );
+    queryFn: () => getDynamicGlobalProperties()
+  });
+
+  const { data: followingData } = useQuery({
+    queryKey: ['following', username],
+    queryFn: () => getFollowing({ account: username })
+  });
 
   const accountHistory = useAccountHistory(username, user.username);
-  const { data: historyFeedData, isLoading: historyFeedLoading } = useQuery(['feedHistory'], () =>
-    getFeedHistory()
-  );
+  const { data: historyFeedData, isPending: historyFeedLoading } = useQuery({
+    queryKey: ['feedHistory'],
 
-  const { data: withdrawals } = useQuery(['savingsWithdrawalsFrom', username], () =>
-    getSavingsWithdrawals(username)
-  );
+    queryFn: () => getFeedHistory()
+  });
 
-  const { data: openOrders } = useQuery(['openOrders', username], () => getOpenOrder(username), {
+  const { data: withdrawals } = useQuery({
+    queryKey: ['savingsWithdrawalsFrom', username],
+    queryFn: () => getSavingsWithdrawals(username)
+  });
+
+  const { data: openOrders } = useQuery({
+    queryKey: ['openOrders', username],
+    queryFn: () => getOpenOrder(username),
     enabled: Boolean(username)
   });
 

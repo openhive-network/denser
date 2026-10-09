@@ -1,4 +1,4 @@
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import CommunityContent from './content';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getHivebuzzBadges, getPeakdBadges, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
@@ -45,9 +45,9 @@ const CommunitiesPage = async (props: { params: Promise<{ param: string }> }) =>
   const dehydratedState = dehydrate(queryClient);
   queryClient.clear();
   return (
-    <Hydrate state={dehydratedState}>
+    <HydrationBoundary state={dehydratedState}>
       <CommunityContent username={username} />
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 

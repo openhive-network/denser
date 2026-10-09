@@ -12,8 +12,9 @@ export const useFollowersInfiniteQuery = (
   return useInfiniteQuery({
     queryKey: ['followersData', account],
     queryFn: ({ pageParam: last_id }) => getFollowers({ account, start: last_id, limit }),
+    initialPageParam: '',
     enabled: Boolean(account),
-    initialData: initialPages ? { pages: [initialPages], pageParams: [undefined] } : undefined,
+    initialData: initialPages ? { pages: [initialPages], pageParams: [''] } : undefined,
     initialDataUpdatedAt: initialPages ? Date.now() : undefined,
     staleTime: StaleTime.NONE,
     getNextPageParam: (lastPage) => {

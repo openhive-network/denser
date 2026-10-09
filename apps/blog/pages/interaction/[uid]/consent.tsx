@@ -31,7 +31,7 @@ export default function ConsentPage({
     } else {
       setRunningAction('not');
     }
-    if (registerConsentMutation.isLoading) return;
+    if (registerConsentMutation.isPending) return;
     const data: PostConsentSchema = {
       oauthClientId: oidcClientDetails.clientId,
       consent

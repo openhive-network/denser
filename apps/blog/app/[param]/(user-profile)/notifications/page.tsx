@@ -1,4 +1,4 @@
-import { dehydrate, Hydrate } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import NotificationContent from './content';
 import { getAccountNotifications } from '@transaction/lib/bridge-api';
 import { getQueryClient } from '@/blog/lib/react-query';
@@ -27,9 +27,9 @@ const NotificationsPage = async (props: { params: Promise<{ param: string }> }) 
   const dehydratedState = dehydrate(queryClient);
   queryClient.clear();
   return (
-    <Hydrate state={dehydratedState}>
+    <HydrationBoundary state={dehydratedState}>
       <NotificationContent username={username} />
-    </Hydrate>
+    </HydrationBoundary>
   );
 };
 

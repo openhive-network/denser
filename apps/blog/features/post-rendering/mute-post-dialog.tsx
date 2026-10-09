@@ -84,8 +84,8 @@ const MutePostDialog = ({
           'animate-pulse cursor-not-allowed text-destructive': temporaryDisable
         })}
       >
-        {mutePost.isLoading || unmutePost.isLoading ? (
-          <CircleSpinner loading={mutePost.isLoading || unmutePost.isLoading} size={18} color="#dc2626" />
+        {mutePost.isPending || unmutePost.isPending ? (
+          <CircleSpinner loading={mutePost.isPending || unmutePost.isPending} size={18} color="#dc2626" />
         ) : (
           <button
             className={clsx('ml-2 flex items-center', {

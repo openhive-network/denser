@@ -5,6 +5,7 @@ import * as userLocalStorage from './user-localstore';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { getLogger } from '@ui/lib/logging';
+import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
 import { User } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
@@ -61,18 +62,17 @@ export function useUserCore(
 ): IUseUser {
   const queryClient = useQueryClient();
   const isPastHydration = useIsPastHydration();
-  const { data: user } = useQuery<User>({
+  const userQuery = useQuery<User>({
     queryKey: [QUERY_KEY.user],
     queryFn: async (): Promise<User> => getUser(),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     // Read once, when the query is created, not by every hook instance
-    initialData: () => userLocalStorage.getUser(),
-    onError: () => {
-      saveUserOnce(defaultUser);
-    }
+    initialData: () => userLocalStorage.getUser()
   });
+  const user = userQuery.data;
+  useQueryErrorEffect(userQuery, () => saveUserOnce(defaultUser));
 
   useEffect(() => {
     saveUserOnce(user || defaultUser);

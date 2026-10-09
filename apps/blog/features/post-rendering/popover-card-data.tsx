@@ -28,7 +28,7 @@ const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDat
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const follows = useFollowsQuery(author);
-  const { data: account, isLoading } = useAccountQuery(author);
+  const { data: account, isPending } = useAccountQuery(author);
   const following = useFollowingInfiniteQuery(user.username || '', 1000, 'blog', ['blog']);
   const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
   const about = account?.profile?.about ?? null;
@@ -54,7 +54,7 @@ const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDat
 
   return (
     <div>
-      {account && !isLoading && follows.data && !follows.isLoading ? (
+      {account && !isPending && follows.data && !follows.isPending ? (
         <>
           {/* Header with avatar and name */}
           <div className="flex items-start gap-3 border-b border-border p-4">

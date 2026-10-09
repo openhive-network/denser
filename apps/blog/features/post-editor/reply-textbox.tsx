@@ -356,12 +356,12 @@ export function ReplyTextbox({
               ref={btnRef}
               variant="redHover"
               className="w-24"
-              disabled={text === '' || commentMutation.isLoading || updateCommentMutation.isLoading}
+              disabled={text === '' || commentMutation.isPending || updateCommentMutation.isPending}
               onClick={() => postComment()}
             >
-              {commentMutation.isLoading || updateCommentMutation.isLoading ? (
+              {commentMutation.isPending || updateCommentMutation.isPending ? (
                 <CircleSpinner
-                  loading={commentMutation.isLoading || updateCommentMutation.isLoading}
+                  loading={commentMutation.isPending || updateCommentMutation.isPending}
                   size={18}
                   color="#dc2626"
                 />
@@ -371,7 +371,7 @@ export function ReplyTextbox({
             </Button>
             <Button
               variant="ghost"
-              disabled={commentMutation.isLoading || updateCommentMutation.isLoading}
+              disabled={commentMutation.isPending || updateCommentMutation.isPending}
               onClick={() => handleCancel()}
               className="text-foreground/60 hover:text-destructive"
             >

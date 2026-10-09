@@ -91,7 +91,9 @@ export default function BuyOrSellForm({
   const [dialogOpen, setDialogOpen] = useState(false);
   const { user } = useUserClient();
   const createBuyOrderMutation = useCreateMarketOrder();
-  const { data: accountData } = useQuery(['accountData', user.username], () => getAccount(user.username), {
+  const { data: accountData } = useQuery({
+    queryKey: ['accountData', user.username],
+    queryFn: () => getAccount(user.username),
     enabled: !!user.username
   });
   const queryClient = useQueryClient();

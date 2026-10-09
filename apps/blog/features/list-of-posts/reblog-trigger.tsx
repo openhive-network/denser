@@ -73,17 +73,17 @@ const ReblogTrigger = ({
     return (
       <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
         <button
-          disabled={isReblogged || reblogMutation.isLoading}
+          disabled={isReblogged || reblogMutation.isPending}
           className={cn(
             'flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-background-secondary hover:text-foreground',
             {
               'cursor-default text-destructive': isReblogged,
-              'cursor-not-allowed opacity-50': reblogMutation.isLoading
+              'cursor-not-allowed opacity-50': reblogMutation.isPending
             }
           )}
         >
-          {reblogMutation.isLoading ? (
-            <CircleSpinner loading={reblogMutation.isLoading} size={16} color="#dc2626" />
+          {reblogMutation.isPending ? (
+            <CircleSpinner loading={reblogMutation.isPending} size={16} color="#dc2626" />
           ) : (
             <Icons.forward
               className={cn('h-4 w-4', {
@@ -107,9 +107,9 @@ const ReblogTrigger = ({
     <TooltipProvider>
       <Tooltip>
         <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
-          <TooltipTrigger disabled={isReblogged || reblogMutation.isLoading}>
-            {reblogMutation.isLoading ? (
-              <CircleSpinner loading={reblogMutation.isLoading} size={18} color="#dc2626" />
+          <TooltipTrigger disabled={isReblogged || reblogMutation.isPending}>
+            {reblogMutation.isPending ? (
+              <CircleSpinner loading={reblogMutation.isPending} size={18} color="#dc2626" />
             ) : (
               <Icons.forward
                 className={cn('h-4 w-4 cursor-pointer', {

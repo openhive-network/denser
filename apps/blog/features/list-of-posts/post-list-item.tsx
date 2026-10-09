@@ -299,11 +299,10 @@ const PostListItem = memo(
                             <div className="flex items-center">
                               <ReblogDialog author={post.author} permlink={post.permlink} action={dialogAction}>
                                 <button
-                                  disabled={reblogMutation.isLoading}
-                                  className={cn(
-                                    'flex items-center cursor-pointer hover:text-destructive',
-                                    { 'cursor-not-allowed opacity-50': reblogMutation.isLoading }
-                                  )}
+                                  disabled={reblogMutation.isPending}
+                                  className={cn('flex cursor-pointer items-center hover:text-destructive', {
+                                    'cursor-not-allowed opacity-50': reblogMutation.isPending
+                                  })}
                                   data-testid="post-card-reblog-count"
                                 >
                                   <Icons.forward className="h-4 w-4 sm:mr-1" />

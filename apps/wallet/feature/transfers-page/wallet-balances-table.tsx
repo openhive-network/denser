@@ -309,11 +309,11 @@ const WalletBalancesTable = ({
                                 <Button
                                   variant="redHover"
                                   onClick={cancelPowerDown}
-                                  disabled={cancelPowerDownMutation.isLoading}
+                                  disabled={cancelPowerDownMutation.isPending}
                                 >
-                                  {cancelPowerDownMutation.isLoading ? (
+                                  {cancelPowerDownMutation.isPending ? (
                                     <CircleSpinner
-                                      loading={cancelPowerDownMutation.isLoading}
+                                      loading={cancelPowerDownMutation.isPending}
                                       size={18}
                                       color="#dc2626"
                                     />

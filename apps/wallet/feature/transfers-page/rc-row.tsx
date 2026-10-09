@@ -14,8 +14,13 @@ const RCRow = ({ username }: { username: string }) => {
   const queryClient = useQueryClient();
   // Shares the page's global properties query instead of requesting them a second time.
   const loadDynamicGlobalProperties = () =>
-    queryClient.fetchQuery(['dynamicGlobalPropertiesData'], () => getDynamicGlobalProperties());
-  const { data, isLoading } = useQuery(['manabar', username], () => getManabar(username, loadDynamicGlobalProperties), {
+    queryClient.fetchQuery({
+      queryKey: ['dynamicGlobalPropertiesData'],
+      queryFn: () => getDynamicGlobalProperties()
+    });
+  const { data, isPending } = useQuery({
+    queryKey: ['manabar', username],
+    queryFn: () => getManabar(username, loadDynamicGlobalProperties),
     select: (e) =>
       e
         ? {
@@ -55,7 +60,7 @@ const RCRow = ({ username }: { username: string }) => {
           </p>
         </div>
       </div>
-      {isLoading ? (
+      {isPending ? (
         <div className="flex h-full items-center justify-center">
           <CircleSpinner size={24} color="#dc2626" />
         </div>

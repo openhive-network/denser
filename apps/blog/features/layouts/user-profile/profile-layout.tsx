@@ -74,7 +74,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   const {
     data: profileData,
     isError: isProfileError,
-    isLoading: isProfilePending
+    isPending: isProfilePending
   } = useQuery({
     queryKey: ['profileData', username],
     queryFn: () => getAccountFull(username),
@@ -109,7 +109,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
   const {
     data: dynamicGlobalData,
     isError: isDynamicGlobalError,
-    isLoading: isDynamicGlobalPending
+    isPending: isDynamicGlobalPending
   } = useQuery({
     queryKey: ['dynamicGlobalData'],
     queryFn: () => getDynamicGlobalProperties()
