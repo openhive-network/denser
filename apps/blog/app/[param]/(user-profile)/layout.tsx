@@ -5,6 +5,7 @@ import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getQueryClient } from '@/blog/lib/react-query';
 import { getProfileAccount, getProfileGlobalProperties, getProfileReputations } from '@/blog/lib/profile-cache';
 import { getTwitterInfo, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
+import { parseSocialLinks } from '@/blog/features/layouts/user-profile/lib/social-links';
 import { isValidAccountNameFormat } from '@transaction/lib/validation';
 import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
@@ -111,8 +112,10 @@ const Layout = async (props: { children: ReactNode; params: Promise<{ param: str
       })
     ];
 
-    // Only prefetch Twitter data if third-party APIs are enabled
-    if (isThirdPartyApiEnabled()) {
+    // Only prefetch Twitter data if third-party APIs are enabled and the account
+    // has no on-chain X handle (the profile shows that one instead)
+    const hasOnChainX = parseSocialLinks(account.posting_json_metadata).some((link) => link.key === 'x');
+    if (isThirdPartyApiEnabled() && !hasOnChainX) {
       prefetchPromises.push(
         queryClient.prefetchQuery({
           queryKey: ['twitterData', username],

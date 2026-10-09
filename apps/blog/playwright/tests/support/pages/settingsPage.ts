@@ -30,6 +30,7 @@ export class SettingsPage {
   readonly websiteInput: Locator;
   readonly blacklistDescriptionInput: Locator;
   readonly mutedListDescriptionInput: Locator;
+  readonly socialXInput: Locator;
   readonly updateButton: Locator;
 
   // Preferences (SET-07..13)
@@ -55,6 +56,7 @@ export class SettingsPage {
     this.websiteInput = page.locator('#website');
     this.blacklistDescriptionInput = page.locator('#blacklistDescription');
     this.mutedListDescriptionInput = page.locator('#mutedListDescription');
+    this.socialXInput = page.locator('#social-x');
     this.updateButton = page.getByTestId('pps-update-button');
 
     this.preferencesContainer = page.getByTestId('settings-preferences');

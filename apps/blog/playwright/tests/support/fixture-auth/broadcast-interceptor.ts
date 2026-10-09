@@ -844,10 +844,12 @@ export function expectDeleteCommentOperation(
  *     account: <username>
  *     json_metadata: ""
  *     posting_json_metadata: JSON.stringify({
+ *       ...<the account's current posting_json_metadata>,
  *       profile: {
+ *         ...<current profile keys the form does not manage>,
  *         profile_image, cover_image, name, about, location, website,
  *         witness_owner, witness_description, blacklist_description,
- *         muted_list_description, version: 2
+ *         muted_list_description, social, version: 2
  *       }
  *     })
  *     extensions: []
@@ -858,6 +860,8 @@ export function expectDeleteCommentOperation(
  * value. Tests therefore assert a **subset match** on `profile`: only
  * the keys present in `expected.profile` are checked; other keys are
  * ignored. Pass `version: 2` explicitly when the upgrade flag matters.
+ * Values are compared deeply, so `social` and keys other frontends set
+ * (e.g. `redirect_uris`) can be asserted too.
  */
 export interface AccountUpdate2OperationExpectations {
   account: string;
@@ -872,8 +876,10 @@ export interface AccountUpdate2OperationExpectations {
     muted_list_description: string;
     witness_owner: string;
     witness_description: string;
+    social: Record<string, string>;
     version: number;
-  }>;
+  }> &
+    Record<string, unknown>;
 }
 
 export function expectAccountUpdate2Operation(
@@ -909,7 +915,7 @@ export function expectAccountUpdate2Operation(
 
   expect(parsed.profile, 'posting_json_metadata.profile').toBeDefined();
   for (const [key, expectedValue] of Object.entries(expected.profile)) {
-    expect(parsed.profile?.[key], `profile.${key}`).toBe(expectedValue);
+    expect(parsed.profile?.[key], `profile.${key}`).toEqual(expectedValue);
   }
 }
 

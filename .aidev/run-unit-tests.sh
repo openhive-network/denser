@@ -60,7 +60,8 @@ junit="$PWD/test-results/unit/blog.xml"
 run_with_junit_fallback "$junit" blog node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    apps/blog/lib/canonical-url.test.ts < /dev/null || status=1
+    apps/blog/lib/canonical-url.test.ts \
+    apps/blog/features/layouts/user-profile/lib/social-links.test.ts < /dev/null || status=1
 echo "== node --test apps/wallet" >&2
 junit="$PWD/test-results/unit/wallet.xml"
 run_with_junit_fallback "$junit" wallet node --test \

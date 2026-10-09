@@ -1,21 +1,18 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
+import type { ProfileMetadataUpdate } from '@transaction/index';
+import { mergePostingJsonMetadata } from '@transaction/lib/profile-metadata';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-type UpdateProfileParams = {
-  profile_image?: string;
-  cover_image?: string;
-  name?: string;
-  about?: string;
-  location?: string;
-  website?: string;
-  witness_owner?: string;
-  witness_description?: string;
-  blacklist_description?: string;
-  muted_list_description?: string;
-  version?: number;
-};
+type UpdateProfileParams = Omit<ProfileMetadataUpdate, 'version'> & { version?: number };
+
+const PROFILE_METADATA_VERSION = 2; // signals the upgrade to posting_json_metadata
+
+const withVersion = (params: UpdateProfileParams): ProfileMetadataUpdate => ({
+  ...params,
+  version: params.version ?? PROFILE_METADATA_VERSION
+});
 
 export function useUpdateProfileMutation() {
   const { user } = useUserClient();
@@ -23,25 +20,13 @@ export function useUpdateProfileMutation() {
   return useOperationMutation({
     name: 'useUpdateProfileMutation',
     run: (params: UpdateProfileParams) =>
-      transactionService.updateProfile(
-        params.profile_image,
-        params.cover_image,
-        params.name,
-        params.about,
-        params.location,
-        params.website,
-        params.witness_owner,
-        params.witness_description,
-        params.blacklist_description,
-        params.muted_list_description,
-        params.version,
-        OBSERVE
-      ),
+      transactionService.updateProfile(withVersion(params), OBSERVE),
     onSuccess: (_data, params, queryClient) => {
       const prevProfileData: FullAccount | undefined = queryClient.getQueryData(queryKey);
       if (!prevProfileData) return;
       queryClient.setQueryData(queryKey, {
         ...prevProfileData,
+        posting_json_metadata: mergePostingJsonMetadata(prevProfileData.posting_json_metadata, withVersion(params)),
         profile: {
           ...prevProfileData.profile,
           profile_image: params.profile_image,
