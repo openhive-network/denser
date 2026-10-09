@@ -36,6 +36,7 @@ export * from "./tooltip";
 export * from "./link";
 export * from "./storage-cleanup";
 export * from "./navigation-progress";
+export * from "./user-avatar-img";
 
 // utility exports
 export * from "../lib/avatar-utils";
