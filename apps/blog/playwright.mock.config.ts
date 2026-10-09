@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { baseConfig, browserUse } from '../../playwright/shared-config';
 require('dotenv').config({ path: './.env.local' });
 
 /**
@@ -16,28 +17,16 @@ const MOCK_SERVER_PORT = 8100;
 process.env.REACT_APP_API_ENDPOINT = `http://localhost:${MOCK_SERVER_PORT}`;
 
 export default defineConfig({
+  ...baseConfig(),
   testDir: './playwright/tests/mock',
-  timeout: 60 * 1000,
-  expect: {
-    timeout: 10 * 1000
-  },
   /* Disable parallelization - mock server is shared across tests */
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
   retries: 0,
   workers: 1,
   reporter: 'html',
   use: {
-    actionTimeout: 0,
-    baseURL: process.env.CI ? process.env.DENSER_URL : 'http://localhost:3000',
-    trace: {
-      mode: 'retain-on-failure',
-      screenshots: true,
-      snapshots: true,
-      sources: true
-    },
-    viewport: { width: 1920, height: 1080 },
-    ignoreHTTPSErrors: true
+    ...browserUse(true),
+    baseURL: process.env.CI ? process.env.DENSER_URL : 'http://localhost:3000'
   },
   projects: [
     {

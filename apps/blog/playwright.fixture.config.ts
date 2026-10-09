@@ -1,6 +1,12 @@
 import path from 'path';
 import { defineConfig, devices } from '@playwright/test';
 import {
+  baseConfig,
+  browserUse,
+  ownWebServerOptions,
+  standaloneServerCommand
+} from '../../playwright/shared-config';
+import {
   FIXTURE_APP_NAME,
   FIXTURE_COOKIE_PASSWORD,
   FIXTURE_OAUTH_CLIENT_SECRET
@@ -43,7 +49,6 @@ require('dotenv').config({ path: './.env.local' });
 const FIXTURE_PORT = 8200;
 const BASE_PATH = process.env.FIXTURE_BASE_PATH ?? '';
 const NEXT_DIR = process.env.FIXTURE_NEXT_DIR ?? '.next';
-const STANDALONE_APP_DIR = `${NEXT_DIR}/standalone/apps/blog`;
 
 // Point the app at the fixture proxy
 process.env.REACT_APP_API_ENDPOINT = `http://localhost:${FIXTURE_PORT}`;
@@ -83,6 +88,7 @@ const serverEnv = {
 };
 
 export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>({
+  ...baseConfig(),
   testDir: './playwright/tests/fixture',
   // Collect the fixture proxy's replay MISSes and fail on ones missing
   // from playwright/tests/fixture/known-misses.json.
@@ -90,13 +96,8 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
   // from another directory, and relative paths resolve against that one.
   globalSetup: path.join(__dirname, 'playwright/tests/support/fixture-misses/global-setup.ts'),
   globalTeardown: path.join(__dirname, 'playwright/tests/support/fixture-misses/global-teardown.ts'),
-  timeout: 60 * 1000,
-  expect: {
-    timeout: 10 * 1000
-  },
   /* Single worker — fixture proxy is shared and test-scoped */
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
   // 1 retry under CI absorbs runner-load flakes (e.g. job 3136334
   // where CodeMirror's `next/dynamic` chunk took >60s to mount on a
   // saturated runner — the warm retry hits a webserver-cached chunk
@@ -115,17 +116,9 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
       ]
     : [['list']],
   use: {
-    actionTimeout: 0,
+    ...browserUse(true),
     baseURL: `http://localhost:3000${BASE_PATH}`,
-    feedCacheBaseURL: `http://localhost:${FEED_CACHE_PORT}`,
-    trace: {
-      mode: 'retain-on-failure',
-      screenshots: true,
-      snapshots: true,
-      sources: true
-    },
-    viewport: { width: 1920, height: 1080 },
-    ignoreHTTPSErrors: true
+    feedCacheBaseURL: `http://localhost:${FEED_CACHE_PORT}`
   },
   projects: [
     {
@@ -135,36 +128,19 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
   ],
   webServer: [
     {
-      // `pnpm start:standalone` bakes the build-time __ENV.js into the
-      // standalone's public/ *before* react-env has a chance to write a fresh
-      // copy, so at runtime the client bundle loads stale values (e.g. the
-      // REACT_APP_API_ENDPOINT from .env.local points at api.fake.openhive
-      // .network instead of our fixture proxy on :8200). We repeat the same
-      // steps but copy the freshly-written __ENV.js into the standalone
-      // public/ right before starting node.
-      command: [
-        `rm -rf ${STANDALONE_APP_DIR}/.next/static ${STANDALONE_APP_DIR}/public`,
-        `cp -r ${NEXT_DIR}/static ${STANDALONE_APP_DIR}/.next/static`,
-        `cp -r public ${STANDALONE_APP_DIR}/public`,
-        `react-env -- sh -c "cp -f public/__ENV.js ${STANDALONE_APP_DIR}/public/__ENV.js && node ${STANDALONE_APP_DIR}/server.js"`
-      ].join(' && '),
+      // The standalone build in NEXT_DIR, with react-env writing __ENV.js from serverEnv.
+      command: standaloneServerCommand('blog', NEXT_DIR),
       // Not `/`: the fixture proxy only starts with the first worker, and a feed whose API is
       // unreachable answers 503, which Playwright does not count as ready.
       url: `http://127.0.0.1:3000${BASE_PATH}/api/health`,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
-      stdout: 'pipe',
-      stderr: 'pipe',
+      ...ownWebServerOptions(),
       env: { ...serverEnv, DENSER_FEED_CACHE_TTL_S: '0' }
     },
     // Started once the server above has put the build's static files in place.
     {
-      command: `node ${STANDALONE_APP_DIR}/server.js`,
+      command: `node ${NEXT_DIR}/standalone/apps/blog/server.js`,
       url: `http://127.0.0.1:${FEED_CACHE_PORT}${BASE_PATH}/api/health`,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
-      stdout: 'pipe',
-      stderr: 'pipe',
+      ...ownWebServerOptions(),
       env: {
         ...serverEnv,
         PORT: String(FEED_CACHE_PORT),
