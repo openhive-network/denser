@@ -15,12 +15,12 @@
 /* eslint-disable no-restricted-properties -- This hook needs direct localStorage access for StorageEvent */
 
 import { useCallback, useRef, useSyncExternalStore } from 'react';
+import { getStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 import {
-  getStorageItem,
-  setStorageItem,
-  removeStorageItem,
-  StorageTTL
-} from '@ui/lib/storage-with-ttl';
+  removeStorageItemAndNotify,
+  setStorageItemAndNotify,
+  type StorageNotifyOptions
+} from '@ui/lib/storage-with-ttl-notify';
 
 type SetValue<T> = T | ((prevValue: T) => T);
 
@@ -43,6 +43,9 @@ function isBrowser(): boolean {
  * @param key - Storage key (empty string disables the hook)
  * @param initialValue - Default value if key doesn't exist. Should be stable reference for objects.
  * @param ttl - Time to live in milliseconds. Use null for permanent storage.
+ * @param options - `dispatchSameTab: false` stops this hook's writes from notifying
+ *   same-tab listeners (including itself), so a component that only persists its own
+ *   state is not re-rendered by each write. Changes from other tabs are still received.
  * @returns Tuple of [value, setValue, removeValue]
  *
  * @example
@@ -65,7 +68,8 @@ function isBrowser(): boolean {
 export function useStorageWithTTL<T>(
   key: string,
   initialValue: T,
-  ttl: number | null = StorageTTL.DRAFT
+  ttl: number | null = StorageTTL.DRAFT,
+  { dispatchSameTab = true }: StorageNotifyOptions = {}
 ): [T, (value: SetValue<T>) => void, () => void] {
   // Store initial value in ref - only capture on first render to maintain stable reference
   // This is critical for object initialValues to prevent infinite re-renders
@@ -175,24 +179,9 @@ export function useStorageWithTTL<T>(
       const currentValue = getStorageItem<T>(key) ?? initialValueRef.current;
       const newValue = value instanceof Function ? value(currentValue) : value;
 
-      // Get old value for StorageEvent
-      const oldValue = window.localStorage.getItem(key);
-
-      // Write to storage (this will trigger storage event for other tabs)
-      // Note: setStorageItem already handles errors internally
-      setStorageItem(key, newValue, ttlRef.current);
-
-      // Dispatch custom event to notify same-tab listeners with full context
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          key,
-          newValue: window.localStorage.getItem(key),
-          oldValue,
-          storageArea: window.localStorage
-        })
-      );
+      setStorageItemAndNotify(key, newValue, ttlRef.current, { dispatchSameTab });
     },
-    [key]
+    [key, dispatchSameTab]
   );
 
   // Memoized remover
@@ -200,21 +189,8 @@ export function useStorageWithTTL<T>(
   const removeValue = useCallback(() => {
     if (!key || !isBrowser()) return;
 
-    // Get old value for StorageEvent
-    const oldValue = window.localStorage.getItem(key);
-
-    removeStorageItem(key);
-
-    // Dispatch event to notify listeners with full context
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key,
-        newValue: null,
-        oldValue,
-        storageArea: window.localStorage
-      })
-    );
-  }, [key]);
+    removeStorageItemAndNotify(key, { dispatchSameTab });
+  }, [key, dispatchSameTab]);
 
   // When disabled, return initial value but still return the real functions
   // (they will no-op internally when key is empty)

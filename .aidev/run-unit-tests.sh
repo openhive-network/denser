@@ -42,7 +42,8 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/time-ago.test.ts packages/ui/lib/server-query-cache.test.ts \
     packages/ui/lib/site-url.test.ts packages/ui/lib/operation-mutation.test.ts \
     packages/ui/lib/account-name-rules.test.ts \
-    packages/ui/lib/memo-secret-check.test.ts < /dev/null || status=1
+    packages/ui/lib/memo-secret-check.test.ts \
+    packages/ui/lib/storage-with-ttl-notify.test.ts < /dev/null || status=1
 echo "== node --test packages/smart-signer" >&2
 junit="$PWD/test-results/unit/smart-signer.xml"
 run_with_junit_fallback "$junit" smart-signer node --test \
