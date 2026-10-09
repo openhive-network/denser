@@ -1,6 +1,7 @@
 "use client";
 
 import { MutableRefObject, RefObject, useEffect, useRef } from "react";
+import { alignBlockKinds, type BlockKind } from "../lib/scroll-sync-anchors";
 
 interface UseScrollSyncParams {
   editorContainerRef: RefObject<HTMLDivElement | null>;
@@ -39,11 +40,48 @@ function consumeScrollEcho(el: HTMLElement, echoRef: MutableRefObject<number | n
   return expected !== null && el.scrollTop === expected;
 }
 
+const PREVIEW_BLOCK_KINDS: Record<string, BlockKind> = {
+  H1: "heading",
+  H2: "heading",
+  H3: "heading",
+  H4: "heading",
+  H5: "heading",
+  H6: "heading",
+  P: "paragraph",
+  PRE: "code",
+  UL: "list",
+  OL: "list",
+  BLOCKQUOTE: "quote",
+  TABLE: "table",
+  HR: "hr",
+  CENTER: "html",
+  DIV: "html",
+  FIGURE: "html",
+};
+
+/** Kind of a top-level preview element, or null when it is not a block. */
+function previewBlockKind(el: HTMLElement): BlockKind | null {
+  const kind = PREVIEW_BLOCK_KINDS[el.tagName] ?? null;
+  if (kind === "paragraph" && !el.textContent?.trim() && el.querySelector("img")) return "image";
+  return kind;
+}
+
+/** Kind of a single-line editor block that none of the multi-line rules took. */
+function singleLineKind(trimmed: string): BlockKind {
+  if (trimmed.startsWith("#")) return "heading";
+  if (/^!\[/.test(trimmed)) return "image";
+  if (/^(---|\*\*\*|___)$/.test(trimmed)) return "hr";
+  if (trimmed.startsWith("<")) return "html";
+  return "paragraph";
+}
+
 /**
  * Manages bidirectional scroll sync between CodeMirror editor and preview panel.
  * Uses block-level anchor mapping for proportional scroll: editor blocks
- * (separated by blank lines) are matched to preview blocks (top-level
- * HTML elements), then scroll positions are interpolated between anchors.
+ * (separated by blank lines) are aligned in document order with preview
+ * blocks (top-level HTML elements) of a compatible kind, then scroll positions
+ * are interpolated between anchors. Matching by order rather than by relative
+ * position keeps tall preview blocks such as images from skewing the map.
  */
 export function useScrollSync({
   editorContainerRef,
@@ -115,15 +153,10 @@ export function useScrollSync({
       let previewAnchors: number[] | null = null;
       let mapDirty = true;
 
-      const getOffsetIn = (el: HTMLElement, container: HTMLElement): number => {
-        let offset = 0;
-        let current: HTMLElement | null = el;
-        while (current && current !== container) {
-          offset += current.offsetTop;
-          current = current.offsetParent as HTMLElement | null;
-        }
-        return offset;
-      };
+      // Measured from layout boxes rather than offsetTop: the panes are not
+      // positioned, so an offsetParent chain runs past them up to <body>.
+      const getOffsetIn = (el: HTMLElement, container: HTMLElement): number =>
+        el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
 
       const buildMap = () => {
         const cmContent = editorScrollArea.querySelector(".cm-content") as HTMLElement | null;
@@ -140,6 +173,7 @@ export function useScrollSync({
         }
 
         interface LineGroup {
+          kind: BlockKind;
           editorTop: number;
           editorBottom: number;
         }
@@ -178,6 +212,7 @@ export function useScrollSync({
               if (closingCheck.startsWith("```")) break;
             }
             groups.push({
+              kind: "code",
               editorTop: getOffsetIn(startLine, editorScrollArea),
               editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
             });
@@ -211,6 +246,7 @@ export function useScrollSync({
               }
             }
             groups.push({
+              kind: "list",
               editorTop: getOffsetIn(startLine, editorScrollArea),
               editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
             });
@@ -230,6 +266,7 @@ export function useScrollSync({
               } else break;
             }
             groups.push({
+              kind: "quote",
               editorTop: getOffsetIn(startLine, editorScrollArea),
               editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
             });
@@ -249,6 +286,7 @@ export function useScrollSync({
               } else break;
             }
             groups.push({
+              kind: "table",
               editorTop: getOffsetIn(startLine, editorScrollArea),
               editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
             });
@@ -274,6 +312,7 @@ export function useScrollSync({
               idx++;
             }
             groups.push({
+              kind: "html",
               editorTop: getOffsetIn(startLine, editorScrollArea),
               editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
             });
@@ -293,6 +332,7 @@ export function useScrollSync({
               idx++;
             }
             groups.push({
+              kind: "paragraph",
               editorTop: getOffsetIn(startLine, editorScrollArea),
               editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
             });
@@ -301,64 +341,41 @@ export function useScrollSync({
 
           // Single line: heading, image, HR, etc.
           groups.push({
+            kind: singleLineKind(trimmed),
             editorTop: getOffsetIn(line, editorScrollArea),
             editorBottom: getOffsetIn(line, editorScrollArea) + line.offsetHeight,
           });
           idx++;
         }
 
-        // Phase 2: Match groups to preview block elements
-        const blockTags = new Set([
-          "P", "H1", "H2", "H3", "H4", "H5", "H6", "PRE", "UL", "OL",
-          "BLOCKQUOTE", "CENTER", "DIV", "TABLE", "HR", "FIGURE",
-        ]);
+        // Phase 2: Align groups with preview block elements
         const previewBlocks: HTMLElement[] = [];
+        const previewKinds: BlockKind[] = [];
         for (const child of Array.from(proseContainer.children) as HTMLElement[]) {
-          if (blockTags.has(child.tagName)) {
+          const kind = previewBlockKind(child);
+          if (kind) {
             previewBlocks.push(child);
+            previewKinds.push(kind);
           }
         }
 
-        const totalEditorHeight = editorScrollArea.scrollHeight;
-        const totalPreviewHeight = previewEl.scrollHeight;
-
-        const blockPos = previewBlocks.map((block) => {
-          const top = getOffsetIn(block, previewEl);
-          return { top, bottom: top + block.offsetHeight };
-        });
+        const pairs = alignBlockKinds(groups.map((g) => g.kind), previewKinds);
 
         // Phase 3: Build anchor arrays with top+bottom edge pairs
         const eAnchors: number[] = [0];
         const pAnchors: number[] = [0];
 
-        let searchStart = 0;
-        for (let j = 0; j < groups.length; j++) {
-          const g = groups[j];
-          const editorMid = (g.editorTop + g.editorBottom) / 2;
-          const targetPreviewMid =
-            totalEditorHeight > 0 ? (editorMid / totalEditorHeight) * totalPreviewHeight : 0;
-
-          let bestIdx = searchStart;
-          let bestDist = Infinity;
-          for (let k = searchStart; k < blockPos.length; k++) {
-            const blockMid = (blockPos[k].top + blockPos[k].bottom) / 2;
-            const dist = Math.abs(blockMid - targetPreviewMid);
-            if (dist <= bestDist) {
-              bestDist = dist;
-              bestIdx = k;
-            } else {
-              break;
-            }
-          }
-          searchStart = bestIdx;
-
-          const bp = blockPos[bestIdx];
+        for (const [groupIdx, blockIdx] of pairs) {
+          const g = groups[groupIdx];
+          const block = previewBlocks[blockIdx];
+          const blockTop = getOffsetIn(block, previewEl);
+          const blockBottom = blockTop + block.offsetHeight;
           eAnchors.push(g.editorTop);
-          pAnchors.push(bp.top);
+          pAnchors.push(blockTop);
 
-          if (g.editorBottom > g.editorTop && bp.bottom > bp.top) {
+          if (g.editorBottom > g.editorTop && blockBottom > blockTop) {
             eAnchors.push(g.editorBottom);
-            pAnchors.push(bp.bottom);
+            pAnchors.push(blockBottom);
           }
         }
 
