@@ -250,7 +250,6 @@ test.describe('SEO guard — post and profile pages (JS disabled)', () => {
   });
 
   test('SEO-08 — profile page serves the account posts visibly', async ({ page }) => {
-    test.fail(true, 'SSR gap (#932): the user-profile body is client-only (see ssrChecks SSR-10)');
     const [first] = recordedPosts('ssrChecks/0012-bridge.get_account_posts.json');
     await serverHtml(page, PROFILE_URL);
     await expectInVisibleServerHtml(
