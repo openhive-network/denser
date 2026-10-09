@@ -14,6 +14,7 @@ const OPERATIONS_URL = new RegExp(`/hivemind-api/accounts/${STUB_ACCOUNT}/operat
 const FIRST_PAGE_SIZE = '100';
 const NEWER_SENDER = 'newer-sender';
 const OLDER_SENDER = 'older-sender';
+const RECURRING_SENDER = 'recurring-sender';
 
 let stub: Server;
 
@@ -41,6 +42,18 @@ const operationsPage = (sender: string, page: number) => ({
   block_range: { from: 1, to: 100_000_000 },
   operations_result: [1, 2].map((index) => stubTransfer({ from: sender, operationId: `${page}0${index}` }))
 });
+
+const recurrentTransfer = (from: string, operationId: string) => {
+  const transfer = stubTransfer({ from, operationId });
+  return {
+    ...transfer,
+    op: {
+      type: 'recurrent_transfer_operation',
+      value: { ...transfer.op.value, recurrence: 24, executions: 5, extensions: [] }
+    },
+    op_type_id: 49
+  };
+};
 
 // The browser reads the operations from the API origin, so the answer needs the CORS header the API sends.
 const fulfillJson = (route: Route, json: unknown, status = 200) =>
@@ -116,5 +129,34 @@ test.describe('Wallet account history', () => {
     await expect(historyRows(page)).toHaveCount(2);
     await expect(page.getByTestId('wallet-account-history-error')).toHaveCount(0);
     expect(queries).toHaveLength(3);
+  });
+
+  test('WALLET-HISTORY-03 — the search hides every operation that does not involve the searched account', async ({
+    page
+  }) => {
+    await routeOperations(page, (_query, route) =>
+      fulfillJson(route, {
+        total_operations: 2,
+        total_pages: 1,
+        block_range: { from: 1, to: 100_000_000 },
+        operations_result: [
+          stubTransfer({ from: NEWER_SENDER, operationId: '101' }),
+          recurrentTransfer(RECURRING_SENDER, '102')
+        ]
+      })
+    );
+
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+    await expect(historyRows(page)).toHaveCount(2);
+
+    await page.getByTestId('wallet-search-input').fill('unknownuser');
+    await expect(page.getByTestId('wallet-account-history-no-transacions-found')).toHaveText(
+      'No transactions found'
+    );
+    await expect(historyRows(page)).toHaveCount(0);
+
+    await page.getByTestId('wallet-search-input').fill(RECURRING_SENDER);
+    await expect(historyRows(page)).toHaveCount(1);
+    await expect(historyRows(page)).toContainText(RECURRING_SENDER);
   });
 });
