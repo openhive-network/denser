@@ -6,6 +6,7 @@ import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operatio
 import type { InfiniteFollowData } from '../lib/follow-cache';
 import { addToListCache, removeFromListCache, restoreList, snapshotList } from '@/blog/lib/follow-list-cache';
 import { applyMute } from '../lib/mute-cache';
+import { postSocialChanged } from '@/blog/lib/social-sync';
 
 type MuteParams = { username: string };
 
@@ -23,6 +24,7 @@ export function useMuteMutation() {
     onSuccess: (_data, params, queryClient) => {
       applyMute(queryClient, username, params.username);
       updateOwnListsAfterChange(username, true);
+      postSocialChanged(username);
     },
     rollback: (context, _params, queryClient) => restoreList(queryClient, mutedQueryKey, context),
     successToast: (_data, params) => ({ title: 'Muted', description: `You have muted ${params.username}.` }),
@@ -48,6 +50,7 @@ export function useUnmuteMutation() {
     onSuccess: (_data, { username: otherUsername }, queryClient) => {
       removeFromListCache(queryClient, ['muted', username], otherUsername);
       updateOwnListsAfterChange(username, false);
+      postSocialChanged(username);
       const ignoreKey = ['followingData', username, 'ignore'];
       const prevFollowingData: InfiniteFollowData = queryClient.getQueryData(ignoreKey);
       if (prevFollowingData) {
@@ -84,7 +87,10 @@ export function useResetBlogListMutation() {
       return snapshot;
     },
     run: () => transactionService.resetBlogList(OBSERVE),
-    onSuccess: () => updateOwnListsAfterChange(username, false),
+    onSuccess: () => {
+      updateOwnListsAfterChange(username, false);
+      postSocialChanged(username);
+    },
     rollback: (context, _params, queryClient) => restoreList(queryClient, mutedQueryKey, context),
     successToast: () => ({ title: 'Blog list reset', description: 'Your blog list has been reset.' }),
     invalidate: () => [mutedQueryKey, ['profileData', username], ['entriesInfinite']],

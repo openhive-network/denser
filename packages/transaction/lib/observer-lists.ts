@@ -82,6 +82,11 @@ export function forgetOwnLists(username: string): void {
   listeners.forEach((listener) => listener());
 }
 
+/** Re-reads the stored answers in this tab, after another tab changed them. */
+export function reloadOwnLists(): void {
+  listeners.forEach((listener) => listener());
+}
+
 /**
  * Updates the stored answer once `username` changed one of its lists: after an addition it has
  * lists of its own; after a removal it is unknown, so it is checked again.

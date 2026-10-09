@@ -3,6 +3,7 @@ import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { updateOwnListsAfterChange } from '@transaction/lib/observer-lists';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
+import { postSocialChanged } from '@/blog/lib/social-sync';
 import { FOLLOW_LIST_REFRESH_DELAYS, type FollowList } from './use-follow-list-mutations';
 
 const ALL_LISTS: FollowList[] = ['blacklisted', 'muted', 'follow_blacklist', 'follow_muted'];
@@ -25,6 +26,7 @@ export function useResetAllListsMutation() {
     onSuccess: (_data, _params, queryClient) => {
       keys.forEach((key) => queryClient.setQueryData<IFollowList[]>(key, []));
       updateOwnListsAfterChange(username, false);
+      postSocialChanged(username);
     },
     rollback: (context, _params, queryClient) => {
       for (const [list, prevData] of Object.entries(context?.prevDataMap ?? {})) {

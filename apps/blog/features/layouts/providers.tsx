@@ -20,6 +20,7 @@ import {
   NavigationProgressHandler
 } from '@hive/ui';
 import RocketChatWidget from '@/blog/components/rocket-chat-widget';
+import { SocialSyncListener } from '@/blog/components/social-sync-listener';
 import { useTranslation } from '@/blog/i18n/client';
 
 export const Providers: FC<PropsWithChildren> = ({ children }) => {
@@ -53,6 +54,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
         <ReactQueryDevtools initialIsOpen={false} />
         <ModalContainer />
         <Toaster />
+        <SocialSyncListener />
       </QueryClientProvider>
     </>
   );

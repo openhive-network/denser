@@ -518,6 +518,20 @@ Used by `socialFollowOwnProfile.spec.ts` (FOL-04).
 
 ---
 
+## Recipe: two tabs of one browser
+
+Open both pages from the `context` fixture (`context.newPage()` twice): they
+share localStorage, cookies and BroadcastChannel, as two tabs do, and both get
+the seeded login. Routes are per page, so install the broadcast interceptor on
+the acting page and any "indexed" read override on the observing page.
+`socialTabSync.spec.ts` checks that a mute in one tab reaches the other's
+`/lists/muted` (the `denser-social` channel) and that a logout reaches the
+other's header (the `storage` event on `user`). The observing page's refetch
+serves the recording, so the spec answers its `bridge.get_follow_list` with
+the muted account once page A's broadcast is captured.
+
+---
+
 ## Recipe: the user should see a "previously voted" post
 
 SSR fetches post data server-side, so `page.route` cannot override
@@ -885,6 +899,15 @@ The middleware sets `blog_login_challenge_server`, `blog_login_challenge` and
 (the `request` fixture, or a page's) keeps and resends the cookies it was given.
 After the first page, "no Set-Cookie" proves nothing. `staticAssetCookies.spec.ts`
 makes each request from its own `playwright.request.newContext({ baseURL })`.
+
+### Dev-stack runs: stray feed misses can be the stack's, not the spec's
+
+`.aidev/dev-stack-spec.sh` points the shared dev stack's proxy at the test's
+proxy for the length of the run. A request the stack itself makes to the blog
+in that window (no browser request involved) shows up as
+`bridge.list_communities` / `bridge.get_ranked_posts` misses, more often the
+longer a test runs. A spec that only misses those under the dev stack needs no
+baseline entry; check it with the `full` slot's `fixture_e2e`.
 
 ### `fixtureTestName` is worker-scoped
 
