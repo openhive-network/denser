@@ -49,7 +49,7 @@ const NotificationContent = ({ username }: { username: string }) => {
       ) : null}
 
       {hasNotifications ? (
-        <NotificationActivities data={data} username={username} />
+        <NotificationActivities data={data} username={username} onNewNotifications={refetch} />
       ) : isError ? null : (
         <div
           key="empty"

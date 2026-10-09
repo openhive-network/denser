@@ -59,5 +59,6 @@ junit="$PWD/test-results/unit/blog.xml"
 run_with_junit_fallback "$junit" blog node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    apps/blog/lib/canonical-url.test.ts < /dev/null || status=1
+    apps/blog/lib/canonical-url.test.ts \
+    apps/blog/features/activity-log/lib/merge-notifications.test.ts < /dev/null || status=1
 exit "$status"
