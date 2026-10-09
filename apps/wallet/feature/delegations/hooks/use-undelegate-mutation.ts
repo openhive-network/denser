@@ -1,33 +1,18 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { toast } from '@ui/components/hooks/use-toast';
+import { useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-export const useUndelegateMutation = () => {
-  const queryClient = useQueryClient();
-  const { user } = useUserClient();
-
-  const undelegateMutation = useMutation({
-    mutationFn: async (toAccount: string) => {
-      const broadcastResult = await transactionService.undelegateRC(user.username, toAccount, {
-        observe: true,
-        requiredKeyType: 'posting'
-      });
-      const response = { toAccount, broadcastResult };
-      return response;
-    },
-    onSuccess: (data) => {
-      const { toAccount } = data;
-      queryClient.invalidateQueries({
-        queryKey: ['resourceCredits', user.username]
-      });
-      queryClient.invalidateQueries(['manabar', user.username]);
-      toast({
-        variant: 'success',
-        description: `Successfully undelegated RC from ${toAccount}`
-      });
-    }
+export function useUndelegateMutation() {
+  const { username } = useUserClient().user;
+  return useOperationMutation({
+    name: 'useUndelegateMutation',
+    run: (toAccount: string) =>
+      transactionService.undelegateRC(username, toAccount, { observe: true, requiredKeyType: 'posting' }),
+    successToast: (_data, toAccount) => ({ description: `Successfully undelegated RC from ${toAccount}` }),
+    invalidate: () => [
+      ['resourceCredits', username],
+      ['manabar', username]
+    ],
+    reportErrors: false
   });
-
-  return undelegateMutation;
-};
+}

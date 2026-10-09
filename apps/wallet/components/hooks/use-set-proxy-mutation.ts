@@ -1,41 +1,14 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { logger } from '@ui/lib/logger';
+import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-/**
- * Set proxy witness transaction.
- *
- * @export
- * @returns
- */
+/** Set proxy witness transaction. */
 export function useSetProxyMutation() {
-  const queryClient = useQueryClient();
-  const { user } = useUserClient();
-
-  const setProxyMutation = useMutation({
-    mutationFn: async (params: { witness: string }) => {
-      const { witness } = params;
-      const broadcastResult = await transactionService.witnessProxy(witness, {
-        observe: true
-      });
-      const response = { ...params, broadcastResult };
-      logger.info('Done set proxy: %o', response);
-      return response;
-    },
-    onSuccess: (data) => {
-      logger.info('setProxyMutation onSuccess data: %o', data);
-      queryClient.invalidateQueries({
-        queryKey: ['listWitnessVotesData']
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['accountData', user.username]
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['witnesses']
-      });
-    }
+  const { username } = useUserClient().user;
+  return useOperationMutation({
+    name: 'useSetProxyMutation',
+    run: ({ witness }: { witness: string }) => transactionService.witnessProxy(witness, OBSERVE),
+    invalidate: () => [['listWitnessVotesData'], ['accountData', username], ['witnesses']],
+    reportErrors: false
   });
-
-  return setProxyMutation;
 }

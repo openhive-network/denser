@@ -272,20 +272,61 @@ export class TransactionService {
     }, transactionOptions);
   }
 
-  async subscribe(community: string, transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new CommunityOperation().subscribe(community).authorize(this.signerOptions.username)
-      );
+  /** Broadcasts one community-plugin operation authorized by the signed-in account. */
+  private broadcastCommunityOperation(
+    build: (operation: CommunityOperation) => CommunityOperation,
+    transactionOptions: TransactionOptions
+  ) {
+    return this.processHiveAppOperation((builder) => {
+      builder.pushOperation(build(new CommunityOperation()).authorize(this.signerOptions.username));
     }, transactionOptions);
   }
 
-  async unsubscribe(community: string, transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new CommunityOperation().unsubscribe(community).authorize(this.signerOptions.username)
-      );
+  /** Broadcasts one follow-plugin operation the signed-in account performs and authorizes. */
+  private broadcastFollowOperation(
+    build: (operation: FollowOperation, account: string) => FollowOperation,
+    transactionOptions: TransactionOptions
+  ) {
+    return this.processHiveAppOperation((builder) => {
+      const account = this.signerOptions.username;
+      builder.pushOperation(build(new FollowOperation(), account).authorize(account));
     }, transactionOptions);
+  }
+
+  /** Adds the comma-separated `otherBlogs` (and `blog`) to one of the account's follow lists. */
+  private addToFollowList(
+    list: 'muteBlog' | 'blacklistBlog' | 'followBlacklistBlog' | 'followMutedBlog',
+    otherBlogs: string,
+    blog: string,
+    transactionOptions: TransactionOptions
+  ) {
+    return this.broadcastFollowOperation(
+      (operation, account) => operation[list](account, blog, ...otherBlogs.split(', ')),
+      transactionOptions
+    );
+  }
+
+  private removeFromFollowList(
+    list: 'unmuteBlog' | 'unblacklistBlog' | 'unfollowBlacklistBlog' | 'unfollowMutedBlog',
+    blog: string,
+    transactionOptions: TransactionOptions
+  ) {
+    return this.broadcastFollowOperation((operation, account) => operation[list](account, blog), transactionOptions);
+  }
+
+  private resetFollowList(
+    list: 'resetAllBlog' | 'resetBlacklistBlog' | 'resetFollowBlacklistBlog' | 'resetFollowMutedBlog',
+    transactionOptions: TransactionOptions
+  ) {
+    return this.broadcastFollowOperation((operation, account) => operation[list](account, 'all'), transactionOptions);
+  }
+
+  async subscribe(community: string, transactionOptions: TransactionOptions = {}) {
+    return await this.broadcastCommunityOperation((op) => op.subscribe(community), transactionOptions);
+  }
+
+  async unsubscribe(community: string, transactionOptions: TransactionOptions = {}) {
+    return await this.broadcastCommunityOperation((op) => op.unsubscribe(community), transactionOptions);
   }
 
   async flag(
@@ -295,13 +336,10 @@ export class TransactionService {
     notes: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new CommunityOperation()
-          .flagPost(community, username, permlink, notes)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.broadcastCommunityOperation(
+      (op) => op.flagPost(community, username, permlink, notes),
+      transactionOptions
+    );
   }
 
   async setRole(
@@ -310,38 +348,18 @@ export class TransactionService {
     role: EAvailableCommunityRoles,
     transactionOptions: TransactionOptions = {}
   ) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new CommunityOperation().setRole(community, username, role).authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.broadcastCommunityOperation((op) => op.setRole(community, username, role), transactionOptions);
   }
 
-  async pin(
-    community: string,
-    username: string,
-    permlink: string,
-    transactionOptions: TransactionOptions = {}
-  ) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new CommunityOperation().pinPost(community, username, permlink).authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+  async pin(community: string, username: string, permlink: string, transactionOptions: TransactionOptions = {}) {
+    return await this.broadcastCommunityOperation((op) => op.pinPost(community, username, permlink), transactionOptions);
   }
-  async unpin(
-    community: string,
-    username: string,
-    permlink: string,
-    transactionOptions: TransactionOptions = {}
-  ) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new CommunityOperation()
-          .unpinPost(community, username, permlink)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+
+  async unpin(community: string, username: string, permlink: string, transactionOptions: TransactionOptions = {}) {
+    return await this.broadcastCommunityOperation(
+      (op) => op.unpinPost(community, username, permlink),
+      transactionOptions
+    );
   }
 
   async mutePost(
@@ -351,13 +369,10 @@ export class TransactionService {
     notes: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new CommunityOperation()
-          .mutePost(community, username, permlink, notes)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.broadcastCommunityOperation(
+      (op) => op.mutePost(community, username, permlink, notes),
+      transactionOptions
+    );
   }
 
   async unmutePost(
@@ -367,13 +382,10 @@ export class TransactionService {
     notes: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new CommunityOperation()
-          .unmutePost(community, username, permlink, notes)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.broadcastCommunityOperation(
+      (op) => op.unmutePost(community, username, permlink, notes),
+      transactionOptions
+    );
   }
 
   async setUserTitle(
@@ -382,173 +394,80 @@ export class TransactionService {
     title: string,
     transactionOptions: TransactionOptions = {}
   ) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new CommunityOperation()
-          .setUserTitle(community, username, title)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.broadcastCommunityOperation(
+      (op) => op.setUserTitle(community, username, title),
+      transactionOptions
+    );
   }
 
   async reblog(username: string, permlink: string, transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .reblog(this.signerOptions.username, username, permlink)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.broadcastFollowOperation(
+      (op, account) => op.reblog(account, username, permlink),
+      transactionOptions
+    );
   }
 
   async follow(username: string, transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .followBlog(this.signerOptions.username, username)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.broadcastFollowOperation((op, account) => op.followBlog(account, username), transactionOptions);
   }
 
   async unfollow(username: string, transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .unfollowBlog(this.signerOptions.username, username)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.broadcastFollowOperation((op, account) => op.unfollowBlog(account, username), transactionOptions);
   }
 
   async mute(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .muteBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.addToFollowList('muteBlog', otherBlogs, blog, transactionOptions);
   }
 
   async unmute(blog: string, transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .unmuteBlog(this.signerOptions.username, blog)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.removeFromFollowList('unmuteBlog', blog, transactionOptions);
   }
 
   async resetBlogList(transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .resetBlogList(EFollowBlogAction.MUTE_BLOG, this.signerOptions.username, 'all')
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.broadcastFollowOperation(
+      (op, account) => op.resetBlogList(EFollowBlogAction.MUTE_BLOG, account, 'all'),
+      transactionOptions
+    );
   }
 
   async blacklistBlog(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .blacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.addToFollowList('blacklistBlog', otherBlogs, blog, transactionOptions);
   }
 
   async unblacklistBlog(blog: string, transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .unblacklistBlog(this.signerOptions.username, blog)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.removeFromFollowList('unblacklistBlog', blog, transactionOptions);
   }
 
   async followBlacklistBlog(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .followBlacklistBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.addToFollowList('followBlacklistBlog', otherBlogs, blog, transactionOptions);
   }
 
   async unfollowBlacklistBlog(blog: string, transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .unfollowBlacklistBlog(this.signerOptions.username, blog)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.removeFromFollowList('unfollowBlacklistBlog', blog, transactionOptions);
   }
 
   async followMutedBlog(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .followMutedBlog(this.signerOptions.username, blog, ...otherBlogs.split(', '))
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.addToFollowList('followMutedBlog', otherBlogs, blog, transactionOptions);
   }
 
   async resetAllBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .resetAllBlog(this.signerOptions.username, 'all')
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.resetFollowList('resetAllBlog', transactionOptions);
   }
 
   async resetBlacklistBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .resetBlacklistBlog(this.signerOptions.username, 'all')
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.resetFollowList('resetBlacklistBlog', transactionOptions);
   }
 
   async resetFollowBlacklistBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .resetFollowBlacklistBlog(this.signerOptions.username, 'all')
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.resetFollowList('resetFollowBlacklistBlog', transactionOptions);
   }
 
   async resetFollowMutedBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .resetFollowMutedBlog(this.signerOptions.username, 'all')
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.resetFollowList('resetFollowMutedBlog', transactionOptions);
   }
 
   async unfollowMutedBlog(blog: string, transactionOptions: TransactionOptions = {}) {
-    return await this.processHiveAppOperation((builder) => {
-      builder.pushOperation(
-        new FollowOperation()
-          .unfollowMutedBlog(this.signerOptions.username, blog)
-          .authorize(this.signerOptions.username)
-      );
-    }, transactionOptions);
+    return await this.removeFromFollowList('unfollowMutedBlog', blog, transactionOptions);
   }
 
   async comment(

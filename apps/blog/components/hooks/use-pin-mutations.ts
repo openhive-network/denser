@@ -1,117 +1,56 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { QueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Entry } from '@hive/common-hiveio-packages/wax';
-import { toast } from '@ui/components/hooks/use-toast';
-import { getLogger } from '@ui/lib/logging';
-import { handleError } from '@ui/lib/handle-error';
-const logger = getLogger('app');
+import {
+  OBSERVE,
+  useOperationMutation,
+  type OperationToast
+} from '@ui/components/hooks/use-operation-mutation';
 
-/**
- * Pin/Unpin posts in community.
- *
- * @export
- * @return {*}
- */
-export function usePinMutation() {
-  const queryClient = useQueryClient();
-  const pinMutation = useMutation({
-    mutationFn: async (params: { community: string; username: string; permlink: string }) => {
-      const { community, username, permlink } = params;
-      const broadcastResult = await transactionService.pin(community, username, permlink, {
-        observe: true
-      });
-      const prevDiscussionData: Record<string, Entry> | undefined = queryClient.getQueryData([
-        'discussionData',
-        permlink
-      ]);
-      const response = { ...params, broadcastResult, prevDiscussionData };
-      return response;
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevDiscussionData, username, permlink } = data;
-      if (!!prevDiscussionData) {
-        const list = [...Object.keys(prevDiscussionData).map((key) => prevDiscussionData[key])];
-        const updatedList = list.map((post) => {
-          if (post.author === username && post.permlink === permlink) {
-            return { ...post, stats: { ...post.stats, _temporary: true } };
-          }
-          return post;
-        });
-        const newDiscussionData = Object.fromEntries(updatedList.map((post) => [post.permlink, post]));
-        queryClient.setQueryData(['discussionData', permlink], newDiscussionData);
-      }
-    },
-    onSuccess: (data) => {
-      const { permlink } = data;
-      toast({
-        title: 'Pinned',
-        description: 'Post has been pinned successfully.',
-        variant: 'success'
-      });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
-      }, 4000);
-    },
-    onError: (error: any, variables) => {
-      handleError(error, {
-        method: 'usePinMutation',
-        params: variables
-      });
-    }
-  });
+type PinParams = { community: string; username: string; permlink: string };
 
-  return pinMutation;
+function markPinnedPostTemporary(queryClient: QueryClient, { username, permlink }: PinParams) {
+  const discussionData: Record<string, Entry> | undefined = queryClient.getQueryData([
+    'discussionData',
+    permlink
+  ]);
+  if (!discussionData) return;
+  const updatedList = Object.values(discussionData).map((post) =>
+    post.author === username && post.permlink === permlink
+      ? { ...post, stats: { ...post.stats, _temporary: true } }
+      : post
+  );
+  queryClient.setQueryData(
+    ['discussionData', permlink],
+    Object.fromEntries(updatedList.map((post) => [post.permlink, post]))
+  );
 }
 
-export function useUnpinMutation() {
-  const queryClient = useQueryClient();
-  const unpinMutation = useMutation({
-    mutationFn: async (params: { community: string; username: string; permlink: string }) => {
-      const { community, username, permlink } = params;
-      const broadcastResult = await transactionService.unpin(community, username, permlink, {
-        observe: true
-      });
-      const prevDiscussionData: Record<string, Entry> | undefined = queryClient.getQueryData([
-        'discussionData',
-        permlink
-      ]);
-      const response = { ...params, broadcastResult, prevDiscussionData };
-      return response;
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevDiscussionData, username, permlink } = data;
-      if (!!prevDiscussionData) {
-        const list = [...Object.keys(prevDiscussionData).map((key) => prevDiscussionData[key])];
-        const updatedList = list.map((post) => {
-          if (post.author === username && post.permlink === permlink) {
-            return { ...post, stats: { ...post.stats, _temporary: true } };
-          }
-          return post;
-        });
-        const newDiscussionData = Object.fromEntries(updatedList.map((post) => [post.permlink, post]));
-        queryClient.setQueryData(['discussionData', permlink], newDiscussionData);
-      }
-    },
-    onSuccess: (data) => {
-      const { permlink } = data;
-      toast({
-        title: 'Unpinned',
-        description: 'Post has been unpinned successfully.',
-        variant: 'success'
-      });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['discussionData', permlink] });
-      }, 4000);
-    },
-    onError: (error: any, variables) => {
-      handleError(error, {
-        method: 'useUnpinMutation',
-        params: variables
-      });
-    }
+function usePinStateMutation(
+  name: string,
+  broadcast: typeof transactionService.pin,
+  successToast: OperationToast
+) {
+  return useOperationMutation({
+    name,
+    run: ({ community, username, permlink }: PinParams) => broadcast(community, username, permlink, OBSERVE),
+    onSuccess: (_data, params, queryClient) => markPinnedPostTemporary(queryClient, params),
+    successToast: () => successToast,
+    invalidate: ({ permlink }) => [['discussionData', permlink]],
+    invalidateDelays: [4000]
+  });
+}
+
+/** Pins a post in a community. */
+export const usePinMutation = () =>
+  usePinStateMutation('usePinMutation', transactionService.pin, {
+    title: 'Pinned',
+    description: 'Post has been pinned successfully.'
   });
 
-  return unpinMutation;
-}
+/** Unpins a post in a community. */
+export const useUnpinMutation = () =>
+  usePinStateMutation('useUnpinMutation', transactionService.unpin, {
+    title: 'Unpinned',
+    description: 'Post has been unpinned successfully.'
+  });

@@ -1,35 +1,19 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { logger } from '@ui/lib/logger';
+import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
 export function useCancelTransferFromSavingsMutation() {
-  const queryClient = useQueryClient();
-  const { user } = useUserClient();
-  const cancelTransferFromSavingsMutation = useMutation({
-    mutationFn: async (params: { fromAccount: string; requestId: number }) => {
-      const broadcastResult = await transactionService.cancelTransferFromSavings(
-        params.fromAccount,
-        params.requestId,
-        {
-          observe: true
-        }
-      );
-
-      const response = { ...params, broadcastResult };
-
-      logger.info('Done cancel transfer from savings transaction: %o', response);
-    },
-    onSuccess: (data) => {
-      logger.info('useCancelTransferFromSavingsMutation onSuccess data: %o', data);
-      const { username } = user;
-      queryClient.invalidateQueries({ queryKey: ['savingsWithdrawalsFrom', username] });
-      queryClient.invalidateQueries({ queryKey: ['profileData', username] });
-      queryClient.invalidateQueries({ queryKey: ['accountData', username] });
-      queryClient.invalidateQueries({ queryKey: ['accountHistory', username] });
-      
-    }
+  const { username } = useUserClient().user;
+  return useOperationMutation({
+    name: 'useCancelTransferFromSavingsMutation',
+    run: ({ fromAccount, requestId }: { fromAccount: string; requestId: number }) =>
+      transactionService.cancelTransferFromSavings(fromAccount, requestId, OBSERVE),
+    invalidate: () => [
+      ['savingsWithdrawalsFrom', username],
+      ['profileData', username],
+      ['accountData', username],
+      ['accountHistory', username]
+    ],
+    reportErrors: false
   });
-
-  return cancelTransferFromSavingsMutation;
 }

@@ -1,65 +1,34 @@
 import { ApiAccount } from '@hiveio/wax';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { getLogger } from '@ui/lib/logging';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
-import { toast } from '@ui/components/hooks/use-toast';
-import { handleError } from '@ui/lib/handle-error';
-const logger = getLogger('app');
+import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-/**
- * Makes claim reward transaction.
- *
- * @export
- * @return {*}
- */
+const ZERO_HBD = { amount: '0', nai: '@@000000013', precision: 3 };
+const ZERO_HIVE = { amount: '0', nai: '@@000000021', precision: 3 };
+
 export function useClaimRewardsMutation() {
-  const queryClient = useQueryClient();
   const { user } = useUserClient();
   const queryKey = ['profileData', user.username];
-  const claimRewardMutation = useMutation({
-    mutationFn: async (params: { account: ApiAccount }) => {
-      const { account } = params;
-
-      const broadcstResult = await transactionService.claimRewards(account, { observe: true });
+  return useOperationMutation({
+    name: 'useClaimRewardsMutation',
+    run: ({ account }: { account: ApiAccount }) => transactionService.claimRewards(account, OBSERVE),
+    onSuccess: (_data, _params, queryClient) => {
       const prevData: FullAccount | undefined = queryClient.getQueryData(queryKey);
-      const response = { ...params, broadcstResult, prevData };
-
-      logger.info('Done claim reward tranasaction: %o', response);
-      return response;
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const { prevData } = data;
-      if (prevData) {
-        queryClient.setQueryData(queryKey, () => ({
-          ...prevData,
-          reward_hbd_balance: { amount: '0', nai: '@@000000013', precision: 3 },
-          reward_hive_balance: { amount: '0', nai: '@@000000021', precision: 3 },
-          reward_vesting_hive: { amount: '0', nai: '@@000000021', precision: 3 }
-        }));
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: 'Claim rewards',
-        description: 'Your rewards have been claimed successfully.',
-        variant: 'success'
+      if (!prevData) return;
+      queryClient.setQueryData(queryKey, {
+        ...prevData,
+        reward_hbd_balance: ZERO_HBD,
+        reward_hive_balance: ZERO_HIVE,
+        reward_vesting_hive: ZERO_HIVE
       });
-      // Invalidate after 60s — the API will have caught up by then.
-      // Until then, the component uses claimedBalances to suppress stale data.
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey });
-      }, 60000);
     },
-    onError: (error: any, variables) => {
-      handleError(error, {
-        method: 'useClaimRewardsMutation',
-        params: variables
-      });
-    }
+    successToast: () => ({
+      title: 'Claim rewards',
+      description: 'Your rewards have been claimed successfully.'
+    }),
+    invalidate: () => [queryKey],
+    // The API has caught up by then; until then the component uses claimedBalances to suppress stale data.
+    invalidateDelays: [60000]
   });
-
-  return claimRewardMutation;
 }

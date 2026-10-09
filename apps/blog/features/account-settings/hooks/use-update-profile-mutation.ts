@@ -1,118 +1,67 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
-import { toast } from '@ui/components/hooks/use-toast';
-import { handleError } from '@ui/lib/handle-error';
+import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 
-/**
- * Makes update profile transaction.
- *
- * @export
- * @return {*}
- */
+type UpdateProfileParams = {
+  profile_image?: string;
+  cover_image?: string;
+  name?: string;
+  about?: string;
+  location?: string;
+  website?: string;
+  witness_owner?: string;
+  witness_description?: string;
+  blacklist_description?: string;
+  muted_list_description?: string;
+  version?: number;
+};
+
 export function useUpdateProfileMutation() {
   const { user } = useUserClient();
-  const queryClient = useQueryClient();
-  const updateProfileMutation = useMutation({
-    mutationFn: async (params: {
-      profile_image?: string;
-      cover_image?: string;
-      name?: string;
-      about?: string;
-      location?: string;
-      website?: string;
-      witness_owner?: string;
-      witness_description?: string;
-      blacklist_description?: string;
-      muted_list_description?: string;
-      version?: number;
-    }) => {
-      const {
-        profile_image,
-        cover_image,
-        name,
-        about,
-        location,
-        website,
-        witness_owner,
-        witness_description,
-        blacklist_description,
-        muted_list_description,
-        version
-      } = params;
-      const broadcastResult = await transactionService.updateProfile(
-        profile_image,
-        cover_image,
-        name,
-        about,
-        location,
-        website,
-        witness_owner,
-        witness_description,
-        blacklist_description,
-        muted_list_description,
-        version,
-        { observe: true }
-      );
-      const prevProfileData: FullAccount | undefined = queryClient.getQueryData([
-        'profileData',
-        user.username
-      ]);
-
-      const response = { ...params, broadcastResult, prevProfileData };
-      return response;
-    },
-    onSettled: (data) => {
-      if (!data) return;
-      const {
-        prevProfileData,
-        profile_image,
-        cover_image,
-        name,
-        about,
-        location,
-        website,
-        blacklist_description,
-        muted_list_description,
-        version
-      } = data;
-      if (!!prevProfileData) {
-        queryClient.setQueryData(['profileData', user.username], {
-          ...prevProfileData,
-          profile: {
-            ...prevProfileData.profile,
-            profile_image,
-            name,
-            about,
-            location,
-            website,
-            blacklist_description,
-            muted_list_description,
-            cover_image,
-            version
-          },
-          _temporary: true
-        });
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: 'Profile updated successfully',
-        description: 'Your profile has been updated.',
-        variant: 'success'
+  const queryKey = ['profileData', user.username];
+  return useOperationMutation({
+    name: 'useUpdateProfileMutation',
+    run: (params: UpdateProfileParams) =>
+      transactionService.updateProfile(
+        params.profile_image,
+        params.cover_image,
+        params.name,
+        params.about,
+        params.location,
+        params.website,
+        params.witness_owner,
+        params.witness_description,
+        params.blacklist_description,
+        params.muted_list_description,
+        params.version,
+        OBSERVE
+      ),
+    onSuccess: (_data, params, queryClient) => {
+      const prevProfileData: FullAccount | undefined = queryClient.getQueryData(queryKey);
+      if (!prevProfileData) return;
+      queryClient.setQueryData(queryKey, {
+        ...prevProfileData,
+        profile: {
+          ...prevProfileData.profile,
+          profile_image: params.profile_image,
+          cover_image: params.cover_image,
+          name: params.name,
+          about: params.about,
+          location: params.location,
+          website: params.website,
+          blacklist_description: params.blacklist_description,
+          muted_list_description: params.muted_list_description,
+          version: params.version
+        },
+        _temporary: true
       });
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['profileData', user.username] });
-      }, 4000);
     },
-    onError: (error: any, variables) => {
-      handleError(error, {
-        method: 'useUpdateProfileMutation',
-        params: variables
-      });
-    }
+    successToast: () => ({
+      title: 'Profile updated successfully',
+      description: 'Your profile has been updated.'
+    }),
+    invalidate: () => [queryKey],
+    invalidateDelays: [4000]
   });
-
-  return updateProfileMutation;
 }
