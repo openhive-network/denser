@@ -1,7 +1,4 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import CommunityContent from './content';
-import { getQueryClient } from '@/blog/lib/react-query';
-import { getHivebuzzBadges, getPeakdBadges, isThirdPartyApiEnabled } from '@transaction/lib/custom-api';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
 import { extractUsernameFromParam } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
@@ -9,46 +6,23 @@ import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
 
+// Keep this segment outside any loading.tsx boundary: a pending Suspense fallback
+// streams the list into a hidden chunk that only client JS reveals, so crawlers
+// and no-JS visitors would never see it.
+
 const CommunitiesPage = async (props: { params: Promise<{ param: string }> }) => {
   const params = await props.params;
   const username = extractUsernameFromParam(params.param);
   if (!username) notFound();
 
-  const queryClient = getQueryClient();
-
+  let initialData = null;
   try {
-    const prefetchPromises = [
-      queryClient.prefetchQuery({
-        queryKey: ['listAllSubscription', username],
-        queryFn: () => getSubscriptions(username)
-      })
-    ];
-
-    // Only prefetch badge data if third-party APIs are enabled
-    if (isThirdPartyApiEnabled()) {
-      prefetchPromises.push(
-        queryClient.prefetchQuery({
-          queryKey: ['hivebuzz', username],
-          queryFn: () => getHivebuzzBadges(username)
-        }),
-        queryClient.prefetchQuery({
-          queryKey: ['peakd', username],
-          queryFn: () => getPeakdBadges(username)
-        })
-      );
-    }
-
-    await Promise.all(prefetchPromises);
+    initialData = (await getSubscriptions(username)) ?? null;
   } catch (error) {
-    logger.error(error, 'Error in CommunitiesPage:');
+    logger.error(error, 'Error fetching subscriptions:');
   }
-  const dehydratedState = dehydrate(queryClient);
-  queryClient.clear();
-  return (
-    <HydrationBoundary state={dehydratedState}>
-      <CommunityContent username={username} />
-    </HydrationBoundary>
-  );
+
+  return <CommunityContent username={username} initialData={initialData} />;
 };
 
 export default CommunitiesPage;

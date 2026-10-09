@@ -39,7 +39,7 @@ import {
  * not yet in scope.
  *
  * Settings page is gated on `user.isLoggedIn && user.username === username`
- * (apps/blog/app/[param]/(user-profile)/settings/content.tsx:12), so all
+ * (apps/blog/app/[param]/(user-profile)/(profile-skeleton)/settings/content.tsx:12), so all
  * specs navigate to `/@{SETTINGS_USER}/settings`.
  *
  * Record:  FIXTURE_MODE=record pnpm --filter @hive/blog exec \
