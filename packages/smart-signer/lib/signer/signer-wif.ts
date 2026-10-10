@@ -8,6 +8,7 @@ import { getLogger } from '@hive/ui/lib/logging';
 import { KeyAuthorityType } from '@hiveio/hb-auth';
 import { getChain } from '@hive/common-hiveio-packages';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
+import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 
 const logger = getLogger('app');
 
@@ -95,10 +96,11 @@ export class SignerWif extends SignerHbauth {
    * @memberof SignerWif
    */
   async getPasswordFromUser(): Promise<string> {
-    const { keyType } = this;
+    const { username, keyType } = this;
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.WIF,
       showInputStorePassword: true,
+      validatePassword: (wif) => validateKeyAuthority(username, keyType, wif),
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: `Your ${keyType} private key`,
         inputStorePasswordLabel: 'Store key',

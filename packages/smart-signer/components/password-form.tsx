@@ -2,7 +2,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { getLogger } from '@ui/lib/logging';
+import { useSharedTranslation } from '@ui/lib/i18n-client';
 
 const logger = getLogger('app');
 
@@ -68,6 +70,12 @@ export interface PasswordFormOptions {
   showInputStorePassword?: boolean;
   errorMessage?: string;
   onSubmit?: (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => any;
+  /**
+   * Checks the entered password once the form's own validation passed. Resolves with a
+   * smart-signer translation key to keep the form open with that error and the password cleared,
+   * or null to submit.
+   */
+  validatePassword?: (password: string) => Promise<string | null>;
   i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
 }
 
@@ -76,8 +84,11 @@ export function PasswordForm({
   showInputStorePassword = true,
   errorMessage = '',
   onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
+  validatePassword,
   i18nKeysForCaptions = {} // captions for inputs, buttons, form title etc.
 }: PasswordFormOptions) {
+  // Also rendered for transaction signing, where the namespace may not be loaded yet: don't suspend.
+  const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
   const randomValue = crypto.randomUUID();
 
   const defaultI18nKeysForCaptions = {
@@ -110,11 +121,23 @@ export function PasswordForm({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset
+    reset,
+    resetField,
+    setError
   } = useForm<PasswordFormSchemaHbauth | PasswordFormSchemaWif>({
     resolver: zodResolver(resolver),
     defaultValues: passwordFormDefaultValues
   });
+
+  const submitIfValid = async (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {
+    const errorKey = await validatePassword?.(data.password);
+    if (errorKey) {
+      resetField('password');
+      setError('password', { message: t(errorKey) });
+      return;
+    }
+    return onSubmit(data);
+  };
 
   return (
     <div
@@ -165,7 +188,7 @@ export function PasswordForm({
             <button
               type="submit"
               className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
-              onClick={handleSubmit(onSubmit)}
+              onClick={handleSubmit(submitIfValid)}
               data-testid="password-submit-button"
               disabled={isSubmitting}
             >
