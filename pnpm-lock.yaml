@@ -7,8 +7,8 @@ settings:
 catalogs:
   hiveio-toolset:
     '@hiveio/beekeeper':
-      specifier: 1.28.6-rc10-stable.260317081625
-      version: 1.28.6-rc10-stable.260317081625
+      specifier: 1.28.8-stable.261010131807
+      version: 1.28.8-stable.261010131807
     '@hiveio/hb-auth':
       specifier: 1.28.4-rc0-stable.260405141254
       version: 1.28.4-rc0-stable.260405141254
@@ -452,7 +452,7 @@ importers:
         version: 7.37.5(eslint@8.57.1)
       eslint-plugin-turbo:
         specifier: latest
-        version: 2.11.6(eslint@8.57.1)(turbo@2.3.3)
+        version: 2.11.7(eslint@8.57.1)(turbo@2.3.3)
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: 7.15.0
@@ -641,7 +641,7 @@ importers:
         version: link:../ui
       '@hiveio/beekeeper':
         specifier: catalog:hiveio-toolset
-        version: 1.28.6-rc10-stable.260317081625
+        version: 1.28.8-stable.261010131807
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
         version: 1.28.4-rc0-stable.260405141254(@hiveio/wax@1.28.6-rc10-stable.260326112051)
@@ -1917,6 +1917,10 @@ packages:
   '@hiveio/beekeeper@1.28.6-rc10-stable.260317081625':
     resolution: {integrity: sha1-+yve67Q2j4Tt2ptc9tGDhHBErjE=, tarball: https://gitlab.syncad.com/api/v4/projects/558/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.6-rc10-stable.260317081625.tgz}
     engines: {node: ^20.11 || >= 21.2}
+
+  '@hiveio/beekeeper@1.28.8-stable.261010131807':
+    resolution: {integrity: sha1-IlUZ2RnOru4WKXe/ffu+BEVPn/I=, tarball: https://gitlab.syncad.com/api/v4/projects/558/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.8-stable.261010131807.tgz}
+    engines: {node: '>=24'}
 
   '@hiveio/hb-auth@1.28.4-rc0-stable.260405141254':
     resolution: {integrity: sha1-XZlP1I+5oXzLuvkCuGAw2vNboso=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.260405141254.tgz}
@@ -5683,8 +5687,8 @@ packages:
   eslint-plugin-security@1.7.1:
     resolution: {integrity: sha512-sMStceig8AFglhhT2LqlU5r+/fn9OwsA72O5bBuQVTssPCdQAOQzL+oMn/ZcpeUY6KcNfLJArgcrsSULNjYYdQ==}
 
-  eslint-plugin-turbo@2.11.6:
-    resolution: {integrity: sha512-i9ZguxBGMrgiTMzFx2qWufS6imHLyI1UG9A+T2CzsCPtUdU+Mvs+8bCoSNMKum6WXmITL9vDvIrUmO4dVx6rOA==}
+  eslint-plugin-turbo@2.11.7:
+    resolution: {integrity: sha512-vFjI/0qxA9DFTMAOLhyVo7lFGh5kZ0wrWk+5tsQoafGPWqzTNmIMAjk7hsKLQGHOvLz42y8YIvrevHCbthFuZw==}
     peerDependencies:
       eslint: '>6.6.0'
       turbo: '>2.0.0'
@@ -11500,6 +11504,8 @@ snapshots:
 
   '@hiveio/beekeeper@1.28.6-rc10-stable.260317081625': {}
 
+  '@hiveio/beekeeper@1.28.8-stable.261010131807': {}
+
   '@hiveio/hb-auth@1.28.4-rc0-stable.260405141254(@hiveio/wax@1.28.6-rc10-stable.260326112051)':
     dependencies:
       '@hiveio/wax': 1.28.6-rc10-stable.260326112051
@@ -15857,7 +15863,7 @@ snapshots:
     dependencies:
       safe-regex: 2.1.1
 
-  eslint-plugin-turbo@2.11.6(eslint@8.57.1)(turbo@2.3.3):
+  eslint-plugin-turbo@2.11.7(eslint@8.57.1)(turbo@2.3.3):
     dependencies:
       dotenv: 16.0.3
       eslint: 8.57.1
