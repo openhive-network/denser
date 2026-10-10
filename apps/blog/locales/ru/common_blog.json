@@ -133,6 +133,11 @@
       "toggle_lang": "Язык",
       "wallet": "Кошелек",
       "logout": "Выйти",
+      "switch_account": "Сменить аккаунт",
+      "add_account": "Добавить аккаунт",
+      "remove_account": "Удалить {{username}}",
+      "switch_account_failed": "Не удалось переключиться на {{username}}. Войдите снова.",
+      "remove_account_failed": "Не удалось удалить {{username}}.",
       "logged_in_with": "Вход через {{method}}",
       "login_method": {
         "hbauth": "Безопасное хранилище",

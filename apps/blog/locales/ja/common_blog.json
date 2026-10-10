@@ -133,6 +133,11 @@
       "toggle_lang": "言語",
       "wallet": "ウォレット",
       "logout": "ログアウト",
+      "switch_account": "アカウントを切り替え",
+      "add_account": "アカウントを追加",
+      "remove_account": "{{username}} を削除",
+      "switch_account_failed": "{{username}} に切り替えられませんでした。もう一度ログインしてください。",
+      "remove_account_failed": "{{username}} を削除できませんでした。",
       "logged_in_with": "{{method}}でログイン",
       "login_method": {
         "hbauth": "セーフストレージ",

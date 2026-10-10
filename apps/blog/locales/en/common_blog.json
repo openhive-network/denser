@@ -146,6 +146,11 @@
       "toggle_lang": "Language",
       "wallet": "Wallet",
       "logout": "Logout",
+      "switch_account": "Switch account",
+      "add_account": "Add account",
+      "remove_account": "Remove {{username}}",
+      "switch_account_failed": "Could not switch to {{username}}. Please sign in again.",
+      "remove_account_failed": "Could not remove {{username}}.",
       "logged_in_with": "Logged in with {{method}}",
       "login_method": {
         "hbauth": "Safe Storage",

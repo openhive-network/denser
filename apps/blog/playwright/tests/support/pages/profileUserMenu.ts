@@ -19,6 +19,9 @@ export class ProfileUserMenu {
     readonly languageTypeButton: Locator;
     readonly walletLink: Locator;
     readonly logoutLink: Locator;
+    readonly accountSwitcherItems: Locator;
+    readonly accountSwitcherRemoveButtons: Locator;
+    readonly addAccountItem: Locator;
     readonly headerPostList: Locator;
     readonly profileLinkString: string;
 
@@ -39,6 +42,9 @@ export class ProfileUserMenu {
         this.languageTypeButton = page.locator('[data-testid="toggle-language"]');
         this.walletLink = page.locator('[data-testid="user-profile-menu-wallet-link"]');
         this.logoutLink = page.locator('[data-testid="user-profile-menu-logout-link"]');
+        this.accountSwitcherItems = page.locator('[data-testid="account-switcher-item"]');
+        this.accountSwitcherRemoveButtons = page.locator('[data-testid="account-switcher-remove"]');
+        this.addAccountItem = page.locator('[data-testid="account-switcher-add"]');
         this.headerPostList = page.getByTestId('community-name').locator('..').locator('..');
         this.profileLinkString = '[data-testid="user-profile-menu-profile-link"]'
     }

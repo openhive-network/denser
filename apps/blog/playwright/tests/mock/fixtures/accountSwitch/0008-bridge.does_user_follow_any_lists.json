@@ -1,0 +1,24 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.does_user_follow_any_lists",
+    "params": {
+      "observer": "gtg"
+    },
+    "id": 1
+  },
+  "requestHash": "64d2ebee55e9b9f3",
+  "method": "bridge.does_user_follow_any_lists",
+  "params": {
+    "observer": "gtg"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": false,
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

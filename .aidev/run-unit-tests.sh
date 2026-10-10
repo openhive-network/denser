@@ -61,7 +61,8 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/validators/key-role.test.ts \
     packages/smart-signer/lib/memo-crypto.test.ts \
     packages/smart-signer/lib/signer/keychain-memo-crypto.test.ts \
-    packages/smart-signer/lib/storage-mixin.test.ts < /dev/null || status=1
+    packages/smart-signer/lib/storage-mixin.test.ts \
+    packages/smart-signer/lib/auth/accounts.test.ts < /dev/null || status=1
 echo "== node --test packages/middleware" >&2
 junit="$PWD/test-results/unit/middleware.xml"
 run_with_junit_fallback "$junit" middleware node --test \

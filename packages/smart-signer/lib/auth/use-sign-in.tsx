@@ -6,8 +6,9 @@ import { User } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLogger } from '@ui/lib/logging';
-import { observerListsApi } from '@transaction/lib/bridge-api';
-import { ownListsQueryKey, refreshOwnLists } from '@transaction/lib/observer-lists';
+import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
+import { addAccount } from '@smart-signer/lib/auth/accounts';
+import { setAccounts, setActiveUser } from '@smart-signer/lib/auth/active-user';
 
 const logger = getLogger('app');
 
@@ -48,22 +49,9 @@ export function useSignIn() {
     },
     onSuccess: (data) => {
       const { user } = data;
-      queryClient.setQueryData([QUERY_KEY.user], user);
-
-      // Set observer cookie for SSR personalization
-      if (user.username) {
-        const secure = window.location.protocol === 'https:' ? '; Secure' : '';
-        document.cookie = `observer=${user.username}; path=/; SameSite=Lax${secure}`;
-        // Decides whether feed and post reads may send the default observer instead
-        queryClient.prefetchQuery({
-          queryKey: ownListsQueryKey(user.username),
-          queryFn: () => refreshOwnLists(user.username, observerListsApi)
-        });
-      }
-
-      // Invalidate observer-dependent queries to refetch with new user context
-      queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
-      queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
+      const previousUser = queryClient.getQueryData<User>([QUERY_KEY.user]);
+      setAccounts(queryClient, addAccount(userLocalStorage.getAccounts(), previousUser, user));
+      setActiveUser(queryClient, user);
     },
     onError: (error) => {
       throw error;

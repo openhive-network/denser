@@ -4,6 +4,7 @@ import { isStorageAvailable } from '@smart-signer/lib/utils';
 import { safeJsonParse } from '@smart-signer/lib/safe-json-parse';
 
 const USER_LOCAL_STORAGE_KEY = 'user';
+const ACCOUNTS_LOCAL_STORAGE_KEY = 'accounts';
 
 export function saveUser(user: User): void {
   if (isStorageAvailable('localStorage')) {
@@ -23,6 +24,21 @@ export function removeUser(): void {
   if (isStorageAvailable('localStorage')) {
     localStorage.removeItem(USER_LOCAL_STORAGE_KEY);
   }
+}
+
+export function saveAccounts(accounts: User[]): void {
+  if (isStorageAvailable('localStorage')) {
+    localStorage.setItem(ACCOUNTS_LOCAL_STORAGE_KEY, JSON.stringify(accounts));
+  }
+}
+
+export function getAccounts(): User[] {
+  if (isStorageAvailable('localStorage')) {
+    const accounts = localStorage.getItem(ACCOUNTS_LOCAL_STORAGE_KEY);
+    const parsed = safeJsonParse<unknown>(accounts, [], ACCOUNTS_LOCAL_STORAGE_KEY);
+    return Array.isArray(parsed) ? parsed : [];
+  }
+  return [];
 }
 
 /**

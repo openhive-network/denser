@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useRef, useCallback } from 'react';
+import { ReactNode, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from '@ui/components/dialog';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
@@ -16,15 +16,19 @@ const GOOGLE_GSI_SCRIPT_ID = 'google-gsi-script';
 const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
 interface DialogLoginProps {
-  children: ReactNode;
+  /** The trigger; omit it to open the dialog only through `open` */
+  children?: ReactNode;
   redirectTo?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-function DialogLogin({ children, redirectTo }: DialogLoginProps) {
+function DialogLogin({ children, redirectTo, open, onOpenChange }: DialogLoginProps) {
   const signInFormRef = useRef<SignInFormRef>(null);
   const router = useRouter();
 
   async function onComplete(_username: string) {
+    onOpenChange?.(false);
     if (redirectTo) {
       router.push(redirectTo);
     }
@@ -46,18 +50,23 @@ function DialogLogin({ children, redirectTo }: DialogLoginProps) {
     document.body.appendChild(script);
   }, []);
 
+  // Opening through `open` does not report to onOpenChange
+  useEffect(() => {
+    if (open) loadGoogleScript();
+  }, [open, loadGoogleScript]);
+
+  const handleOpenChange = async (isOpen: boolean) => {
+    onOpenChange?.(isOpen);
+    if (isOpen) {
+      loadGoogleScript();
+    } else {
+      await signInFormRef?.current?.cancel();
+    }
+  };
+
   return (
-    <Dialog
-      modal={true}
-      onOpenChange={async (open) => {
-        if (open) {
-          loadGoogleScript();
-        } else {
-          await signInFormRef?.current?.cancel();
-        }
-      }}
-    >
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog modal={true} open={open} onOpenChange={handleOpenChange}>
+      {children ? <DialogTrigger asChild>{children}</DialogTrigger> : null}
       <DialogContent
         className="mt-32 max-w-[380px] rounded-md p-0 sm:mt-auto sm:max-w-[450px] sm:px-0"
         data-testid="login-dialog"

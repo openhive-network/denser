@@ -8,6 +8,7 @@ import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { getLogger } from '@ui/lib/logging';
 import { oidc } from '@smart-signer/lib/oidc';
 import { logLogoutEvent, getClientIpFromApiRequest } from '@smart-signer/lib/event-logging';
+import { clearAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
 
 const logger = getLogger('app');
 
@@ -48,12 +49,8 @@ export const logoutUser: NextApiHandler<User> = async (req, res) => {
     logger.error('Logout: error when destroying app session: %s', error instanceof Error ? error.message : String(error));
   }
 
-  // Clear account_info cookie (mirrors iron-session destruction)
-  const securePart = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-  const existing = res.getHeader('Set-Cookie') || [];
-  const cookies = Array.isArray(existing) ? existing : [String(existing)];
-  cookies.push(`account_info=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${securePart}`);
-  res.setHeader('Set-Cookie', cookies);
+  // Mirrors iron-session destruction
+  clearAccountInfoCookie(res);
 
   res.json(defaultUser);
 };

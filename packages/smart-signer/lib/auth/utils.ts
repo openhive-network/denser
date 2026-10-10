@@ -48,4 +48,9 @@ export const postConsentSchema = z.object({
 });
 export type PostConsentSchema = z.infer<typeof postConsentSchema>;
 
+export const postAccountSchema = z.object({
+  username,
+});
+export type PostAccountSchema = z.infer<typeof postAccountSchema>;
+
 export type Signatures = PostLoginSchema["signatures"];
