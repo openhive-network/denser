@@ -3,6 +3,7 @@ import { TFunction } from 'i18next';
 import { Button } from '@ui/components';
 import type { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { createWalletOperationsFormatter } from './wallet-operations-formatter';
 import HistoryTableRow from './history-table-row';
 import AccountHistoryError from '@/wallet/components/account-history-error';
@@ -37,6 +38,8 @@ const HistoryTable = ({
   onRetry
 }: HistoryTableProps) => {
   const [visibleCount, setVisibleCount] = useState(HISTORY_PAGE_SIZE);
+  const { user } = useUserClient();
+  const isOwnAccount = user.isLoggedIn && user.username === username;
 
   const formatOperationDescription = useMemo(
     () => createWalletOperationsFormatter(username, dynamicData, t),
@@ -90,6 +93,8 @@ const HistoryTable = ({
                   key={element.operation_id}
                   operation={element}
                   formatOperationDescription={formatOperationDescription}
+                  username={username}
+                  isOwnAccount={isOwnAccount}
                 />
               )
           )}
