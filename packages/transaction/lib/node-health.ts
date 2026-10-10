@@ -22,6 +22,7 @@ export type TNodeAdmission = 'healthy' | 'probe';
  */
 export class NodeHealth {
   private readonly downUntil = new Map<string, number>();
+  private readonly lastUpAt = new Map<string, number>();
   private readonly cooldownMs: number;
   private readonly now: () => number;
 
@@ -52,6 +53,13 @@ export class NodeHealth {
   }
 
   markUp(node: string): void {
+    this.lastUpAt.set(node, this.now());
     if (this.downUntil.delete(node)) logger.info('API node %s recovered', node);
+  }
+
+  /** `nodes` with the most recently healthy first; nodes never seen healthy keep their order, last. */
+  byRecentHealth(nodes: readonly string[]): string[] {
+    const lastUp = (node: string) => this.lastUpAt.get(node) ?? Number.NEGATIVE_INFINITY;
+    return [...nodes].sort((a, b) => Number(lastUp(b) > lastUp(a)) - Number(lastUp(a) > lastUp(b)));
   }
 }
