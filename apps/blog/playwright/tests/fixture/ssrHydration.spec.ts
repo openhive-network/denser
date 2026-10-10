@@ -84,6 +84,20 @@ test.describe('Hydration — anonymous pages', () => {
   });
 });
 
+// The fixture server renders in UTC. A browser at UTC+14 sees the post's comment (created
+// 13:05 UTC) on the next calendar day, so any date the server formats in its own zone
+// diverges from the client render.
+test.describe('Hydration — browser in another time zone', () => {
+  test.use({ timezoneId: 'Pacific/Kiritimati' });
+
+  test('HYD-06 — post detail with comments hydrates with no mismatch at UTC+14', async ({ page }) => {
+    const errors = await gotoAndCollectHydrationErrors(page, POST_PATH);
+    if (isRecordMode) return;
+    expect(errors, errors.join('\n')).toEqual([]);
+    await expect(page.getByTestId('comment-timestamp-link').first()).toBeVisible();
+  });
+});
+
 test.describe('Hydration — logged-in personalized pages', () => {
   test.use({ authenticatedUser: { username: SUBSCRIBED_USER } });
 
