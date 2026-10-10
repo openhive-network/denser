@@ -106,6 +106,8 @@ first run local Denser App by `npm run dev`
 - `npm run pw:test:local:webkit` (to run tests on the Safari browser engine)
 - `npm run pw:test:local` (to run tests on the browser engines above)
 
+CI runs the live e2e suite on chromium only; see [playwright/README.md](playwright/README.md).
+
 ## Docker
 
 ### Build
