@@ -1,11 +1,12 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { isIncomingFromScamSender } from './scam-transfer-filter.ts';
+import { getHiddenTransferReason, type HiddenSenders } from './scam-transfer-filter.ts';
 
 const ACCOUNT = 'small.minion';
 const SCAMMER = 'appreciatorr';
+const MUTED = 'muted.account';
 const FRIEND = 'friend';
-const SCAM_SENDERS: ReadonlySet<string> = new Set([SCAMMER]);
+const HIDDEN_SENDERS: HiddenSenders = { badActors: new Set([SCAMMER]), muted: new Set([MUTED, SCAMMER]) };
 
 const hive = { amount: '1000', precision: 3, nai: '@@000000021' };
 
@@ -14,31 +15,36 @@ const transfer = (from: string, to: string) =>
   operation('transfer_operation', { from, to, amount: hive, memo: 'claim your reward at https://phish.example' });
 
 // The rows are the API's JSON, which HiveOperation types more strictly (dates, required asset fields).
-const isHidden = (row: object) =>
-  (isIncomingFromScamSender as (row: object, username: string, senders: ReadonlySet<string>) => boolean)(
+const reasonFor = (row: object) =>
+  (getHiddenTransferReason as (row: object, username: string, senders: HiddenSenders) => string | undefined)(
     row,
     ACCOUNT,
-    SCAM_SENDERS
+    HIDDEN_SENDERS
   );
 
-describe('isIncomingFromScamSender', () => {
-  it('matches a transfer from a scam sender to the account', () => {
-    assert.equal(isHidden(transfer(SCAMMER, ACCOUNT)), true);
+describe('getHiddenTransferReason', () => {
+  it('hides a transfer from a bad actor to the account as a bad actor one, even when also muted', () => {
+    assert.equal(reasonFor(transfer(SCAMMER, ACCOUNT)), 'badActor');
   });
 
-  it('does not match a transfer from any other sender', () => {
-    assert.equal(isHidden(transfer(FRIEND, ACCOUNT)), false);
+  it('hides a transfer from a muted account to the account as a muted one', () => {
+    assert.equal(reasonFor(transfer(MUTED, ACCOUNT)), 'muted');
   });
 
-  it('does not match a transfer the account sent to a scam account', () => {
-    assert.equal(isHidden(transfer(ACCOUNT, SCAMMER)), false);
+  it('does not hide a transfer from any other sender', () => {
+    assert.equal(reasonFor(transfer(FRIEND, ACCOUNT)), undefined);
   });
 
-  it('does not match a transfer between two other accounts', () => {
-    assert.equal(isHidden(transfer(SCAMMER, FRIEND)), false);
+  it('does not hide a transfer the account sent to a bad actor or a muted account', () => {
+    const outgoing = [transfer(ACCOUNT, SCAMMER), transfer(ACCOUNT, MUTED)];
+    assert.deepEqual(outgoing.map(reasonFor), [undefined, undefined]);
   });
 
-  it('matches the other incoming operations that carry a memo', () => {
+  it('does not hide a transfer between two other accounts', () => {
+    assert.equal(reasonFor(transfer(SCAMMER, FRIEND)), undefined);
+  });
+
+  it('hides the other incoming operations that carry a memo', () => {
     const recurrent = operation('recurrent_transfer_operation', {
       from: SCAMMER,
       to: ACCOUNT,
@@ -48,11 +54,11 @@ describe('isIncomingFromScamSender', () => {
       executions: 5
     });
     const toSavings = operation('transfer_to_savings_operation', { from: SCAMMER, to: ACCOUNT, amount: hive, memo: 'spam' });
-    assert.deepEqual([recurrent, toSavings].map(isHidden), [true, true]);
+    assert.deepEqual([recurrent, toSavings].map(reasonFor), ['badActor', 'badActor']);
   });
 
-  it('does not match operations without a sender', () => {
+  it('does not hide operations without a sender', () => {
     const interest = operation('interest_operation', { owner: ACCOUNT, interest: hive });
-    assert.deepEqual([interest, { op: undefined }].map(isHidden), [false, false]);
+    assert.deepEqual([interest, { op: undefined }].map(reasonFor), [undefined, undefined]);
   });
 });
