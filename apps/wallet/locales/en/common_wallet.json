@@ -389,7 +389,13 @@
   "delegations_page": {
     "returning_delegations": "Returning delegations",
     "returning_delegations_description": "Removed delegations stay locked for 5 days before the HIVE POWER returns to your account.",
-    "returns": "Returns"
+    "returns": "Returns",
+    "incoming_delegations": "Incoming delegations",
+    "incoming_delegations_unavailable": "Incoming delegations are unavailable on this API node.",
+    "since": "Since",
+    "previous_page": "Previous",
+    "next_page": "Next",
+    "page_of": "Page {{page}} of {{total}}"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Sorry! This page does not exist.",

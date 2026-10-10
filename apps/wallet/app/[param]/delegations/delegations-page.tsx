@@ -12,6 +12,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import TimeAgo from '@ui/components/time-ago';
 import RCTable from '@/wallet/feature/delegations/rc-table';
 import ReturningDelegationsTable from '@/wallet/feature/delegations/returning-delegations-table';
+import IncomingDelegationsTable from '@/wallet/feature/delegations/incoming-delegations-table';
 import { convertToFormattedHivePower } from '@/wallet/lib/utils';
 
 export default function DelegationsPage({ username }: { username: string }) {
@@ -73,6 +74,7 @@ export default function DelegationsPage({ username }: { username: string }) {
         </div>
         <RCTable account={username} />
       </div>
+      <IncomingDelegationsTable account={username} dynamicData={dynamicData} />
       <ReturningDelegationsTable account={username} dynamicData={dynamicData} />
     </div>
   );
