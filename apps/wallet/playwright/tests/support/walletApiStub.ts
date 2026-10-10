@@ -163,7 +163,8 @@ const REST_RESULTS: RestResults = {
     total_pages: 1,
     block_range: { from: 1, to: 100_000_000 },
     operations_result: [stubTransfer({ from: STUB_TRANSFER_SENDER, operationId: '429492434051907584' })]
-  })
+  }),
+  [`/balance-api/accounts/${STUB_ACCOUNT}/delegations`]: () => ({ outgoing_delegations: [], incoming_delegations: [] })
 };
 
 /**
