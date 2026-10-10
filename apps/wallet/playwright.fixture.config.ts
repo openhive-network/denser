@@ -23,7 +23,14 @@ export default defineConfig({
   testDir: './playwright/tests/fixture',
   retries: process.env.CI ? 1 : 0,
   workers: 1,
-  reporter: [['list']],
+  // Under CI also write junit (GitLab test report) and JSON (flake report), as the blog's does.
+  reporter: process.env.CI
+    ? [
+        ['list'],
+        ['junit', { outputFile: 'junit/fixture/results.xml' }],
+        ['json', { outputFile: 'junit/fixture/results.json' }]
+      ]
+    : [['list']],
   use: {
     baseURL: `http://localhost:${PORT}`
   },
