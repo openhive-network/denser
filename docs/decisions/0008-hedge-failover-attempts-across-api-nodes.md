@@ -5,7 +5,7 @@ decision-makers: []
 consulted: []
 informed: []
 
-id: DR-PENDING
+id: DR-008
 proposed_by: claude
 area: transaction/api-failover
 related_issues: [1105]
