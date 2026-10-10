@@ -1,0 +1,3096 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivemind-api/accounts/gtg/operations",
+  "requestQuery": {
+    "page-size": "100",
+    "operation-types": "2,3,4,55,54,32,33,27,34,31,28,29,50,57,39,51,49,83,84",
+    "observer-name": "hive.blog"
+  },
+  "requestHash": "f68c8d1da6b07e44",
+  "response": {
+    "total_operations": 1000,
+    "total_pages": 10,
+    "block_range": {
+      "from": 100774189,
+      "to": 110658779
+    },
+    "operations_result": [
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "77615623004",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110656157,
+        "trx_id": "bbc792e88f067d31dcaa034044a35c145192d943",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-10T16:14:39",
+        "virtual_op": false,
+        "operation_id": "475264575416041494",
+        "trx_in_block": 16
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "702758824918",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110643436,
+        "trx_id": "83785e8ecaac5824109506dde645eea6c98bb76e",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-10T05:36:30",
+        "virtual_op": false,
+        "operation_id": "475209939137069088",
+        "trx_in_block": 25
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "783067596",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110641616,
+        "trx_id": "2d5ecf0b047b975020019c76faac5ebc33868d99",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-10T04:05:18",
+        "virtual_op": false,
+        "operation_id": "475202122296590340",
+        "trx_in_block": 4
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "78352284535",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110630709,
+        "trx_id": "78b00f2f95a1a184b6def757eb7348db57dcbee5",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-09T18:58:21",
+        "virtual_op": false,
+        "operation_id": "475155277088292878",
+        "trx_in_block": 11
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "696395797093",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110614345,
+        "trx_id": "e033bb09f90afdce4cd7ea8aaec7e7fd69c3490c",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-09T05:17:51",
+        "virtual_op": false,
+        "operation_id": "475084994243461143",
+        "trx_in_block": 12
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "77610484898",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110601621,
+        "trx_id": "78de2cfea0c8f5c9c4155521f97904a63a93c345",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-08T18:39:42",
+        "virtual_op": false,
+        "operation_id": "475030345079586832",
+        "trx_in_block": 10
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "622753315284",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110585264,
+        "trx_id": "b0c2c69cf2fbd037e7d73e40d02c3a665da7f58b",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-08T04:59:12",
+        "virtual_op": false,
+        "operation_id": "474960092299526176",
+        "trx_in_block": 18
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "786401659",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110584355,
+        "trx_id": "4691c515a6d7b5dc081982cf4ac3d8cedf3efab1",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-08T04:13:36",
+        "virtual_op": false,
+        "operation_id": "474956188174254085",
+        "trx_in_block": 5
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "910272954",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110566188,
+        "trx_id": "9a02f6b5cc47e52ceb63954ea35b3c07c7bd1183",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-07T13:01:57",
+        "virtual_op": false,
+        "operation_id": "474878161503387676",
+        "trx_in_block": 26
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "1827",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "2938330608",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110560739,
+        "trx_id": "ef8728d20ed4dae02d46e8a9f5ea85bf1149c0ed",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-07T08:28:27",
+        "virtual_op": false,
+        "operation_id": "474854758226591752",
+        "trx_in_block": 8
+      },
+      {
+        "op": {
+          "type": "author_reward_operation",
+          "value": {
+            "author": "gtg",
+            "permlink": "re-stayoutoftherz-1790754838723",
+            "hbd_payout": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "hive_payout": {
+              "nai": "@@000000021",
+              "amount": "1827",
+              "precision": 3
+            },
+            "vesting_payout": {
+              "nai": "@@000000037",
+              "amount": "2938330608",
+              "precision": 6
+            },
+            "payout_must_be_claimed": true,
+            "curators_vesting_payout": {
+              "nai": "@@000000037",
+              "amount": "5871836369",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110560050,
+        "trx_id": null,
+        "op_pos": 8,
+        "op_type_id": 51,
+        "timestamp": "2026-10-07T07:53:57",
+        "virtual_op": true,
+        "operation_id": "474851798994124869",
+        "trx_in_block": -1
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "779087776792",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110557101,
+        "trx_id": "17874e6817e6c09201a775d168415454d2eb48fe",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-07T05:26:03",
+        "virtual_op": false,
+        "operation_id": "474839133135568905",
+        "trx_in_block": 7
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "82210254238",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110554373,
+        "trx_id": "1fb678db972c80100ab020a7db359f89623a6355",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-07T03:09:18",
+        "virtual_op": false,
+        "operation_id": "474827416464785418",
+        "trx_in_block": 5
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "792897429",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110553463,
+        "trx_id": "1c8d5a3d302a9c32a3d8891f00ff2d3dce0ce73b",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-07T02:23:39",
+        "virtual_op": false,
+        "operation_id": "474823508044546053",
+        "trx_in_block": 3
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "791292275",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110551645,
+        "trx_id": "ad1857ac35b7a6d7a52ec929ca84908eb975c5b5",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-07T00:52:27",
+        "virtual_op": false,
+        "operation_id": "474815699794001961",
+        "trx_in_block": 22
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "788082460",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110548919,
+        "trx_id": "a06e4b44fb8906359728eecb897de08fde1e06ee",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-06T22:35:39",
+        "virtual_op": false,
+        "operation_id": "474803991713153031",
+        "trx_in_block": 7
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "1886575186",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110548009,
+        "trx_id": "583fed5837688fe080f10c1f91dc3771b6a3bc3a",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-06T21:50:00",
+        "virtual_op": false,
+        "operation_id": "474800083292913668",
+        "trx_in_block": 4
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "92204466986",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110547100,
+        "trx_id": "c76a3683ec09196a9784d38d57693a23b160097d",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-06T21:04:24",
+        "virtual_op": false,
+        "operation_id": "474796179167641600",
+        "trx_in_block": 0
+      },
+      {
+        "op": {
+          "type": "author_reward_operation",
+          "value": {
+            "author": "gtg",
+            "permlink": "somebody-should-really-do-something-about-it",
+            "hbd_payout": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "hive_payout": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "vesting_payout": {
+              "nai": "@@000000037",
+              "amount": "0",
+              "precision": 6
+            },
+            "payout_must_be_claimed": true,
+            "curators_vesting_payout": {
+              "nai": "@@000000037",
+              "amount": "579954183415",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110546410,
+        "trx_id": null,
+        "op_pos": 632,
+        "op_type_id": 51,
+        "timestamp": "2026-10-06T20:29:48",
+        "virtual_op": true,
+        "operation_id": "474793215640208006",
+        "trx_in_block": -1
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "711351354578",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110528012,
+        "trx_id": "aee3ea117a444675a63b5ee85587e2777a4ea307",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-06T05:07:09",
+        "virtual_op": false,
+        "operation_id": "474714196831895553",
+        "trx_in_block": 1
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "81887345761",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110515285,
+        "trx_id": "486b7ea0a914d3f52b70d22b895709dc4425351d",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-05T18:28:54",
+        "virtual_op": false,
+        "operation_id": "474659534783119378",
+        "trx_in_block": 11
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "639400222146",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110499839,
+        "trx_id": "0a2b47f9400e969259b43f640f0b93faf325836a",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-05T05:34:00",
+        "virtual_op": false,
+        "operation_id": "474593194718265364",
+        "trx_in_block": 10
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "875494953286",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110470757,
+        "trx_id": "59caff68497442851a0be0ac67cc13ad1ce92639",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-04T05:15:30",
+        "virtual_op": false,
+        "operation_id": "474468288479363096",
+        "trx_in_block": 15
+      },
+      {
+        "op": {
+          "type": "transfer_operation",
+          "value": {
+            "to": "gtg",
+            "from": "hive-grove",
+            "memo": "🌿 HiveGrove: @curamax planted you a free tree! Water it within 24h at https://hivegrove.up.railway.app/",
+            "amount": {
+              "nai": "@@000000021",
+              "amount": "1",
+              "precision": 3
+            }
+          }
+        },
+        "block": 110442657,
+        "trx_id": "6c0cc8313c8616f312562b2ba15a72f84bcc7f2d",
+        "op_pos": 0,
+        "op_type_id": 2,
+        "timestamp": "2026-10-03T05:45:51",
+        "virtual_op": false,
+        "operation_id": "474347599898345510",
+        "trx_in_block": 24
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "157155263025",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110442591,
+        "trx_id": "78640efef36c31fd01310c6cc273a6544691fb7f",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-03T05:42:33",
+        "virtual_op": false,
+        "operation_id": "474347316430503941",
+        "trx_in_block": 5
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "638342926421",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110441679,
+        "trx_id": "fb02b6f1dfc6e60a412ebc2b466ba254897612e4",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-03T04:56:54",
+        "virtual_op": false,
+        "operation_id": "474343399420330000",
+        "trx_in_block": 13
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "108695566885",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110425317,
+        "trx_id": "f886c144279b26aa86359781187ea51bead0496a",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-02T15:16:30",
+        "virtual_op": false,
+        "operation_id": "474273125165432838",
+        "trx_in_block": 6
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "712845979589",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110413500,
+        "trx_id": "319658d74cfd963e60e36a02177ae1d5bafa6ddc",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-02T05:23:54",
+        "virtual_op": false,
+        "operation_id": "474222371536896013",
+        "trx_in_block": 7
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "794518894910",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110384430,
+        "trx_id": "0cd584016df23c4212ad3e7a07e64005c6f9e4d1",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-10-01T05:05:24",
+        "virtual_op": false,
+        "operation_id": "474097516837601291",
+        "trx_in_block": 10
+      },
+      {
+        "op": {
+          "type": "transfer_operation",
+          "value": {
+            "to": "gtg",
+            "from": "hive-grove",
+            "memo": "🌿 HiveGrove: @ryosai planted you a free tree! Water it within 24h at https://hivegrove.up.railway.app/",
+            "amount": {
+              "nai": "@@000000021",
+              "amount": "1",
+              "precision": 3
+            }
+          }
+        },
+        "block": 110381480,
+        "trx_id": "c99eb4c28ac6a3d11bec9ed7d89ded2f6ee9c511",
+        "op_pos": 0,
+        "op_type_id": 2,
+        "timestamp": "2026-10-01T02:37:33",
+        "virtual_op": false,
+        "operation_id": "474084846684078080",
+        "trx_in_block": 0
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "801045845304",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110356258,
+        "trx_id": "0cd4bf5fc23a83fc44af4b2d88fd712b3c2cd432",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-30T05:32:27",
+        "virtual_op": false,
+        "operation_id": "473976519018938379",
+        "trx_in_block": 9
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "811998662166",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110327173,
+        "trx_id": "cb3a848a5dda7567792bbffa65b522d23fe1c6f9",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-29T05:13:54",
+        "virtual_op": false,
+        "operation_id": "473851599895134209",
+        "trx_in_block": 1
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "808098451518",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110299003,
+        "trx_id": "9dc88cfd4e833a0f2083824de13ab0cb6bf44a84",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-28T05:40:48",
+        "virtual_op": false,
+        "operation_id": "473730610666405888",
+        "trx_in_block": 0
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "80760943624",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110280830,
+        "trx_id": "10a2b26bb136e7bdadd27e87151f154eee1df658",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-27T14:29:15",
+        "virtual_op": false,
+        "operation_id": "473652558225735683",
+        "trx_in_block": 2
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "729600560883",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110269924,
+        "trx_id": "95b1e7557060f349bdcb568a0ed9999634a3408b",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-27T05:22:15",
+        "virtual_op": false,
+        "operation_id": "473605717312405522",
+        "trx_in_block": 15
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "807999943",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110256299,
+        "trx_id": "4f4813443c782eb7e54f704ec540c026e5326572",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-26T17:58:33",
+        "virtual_op": false,
+        "operation_id": "473547198382997512",
+        "trx_in_block": 6
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "816175741282",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110240853,
+        "trx_id": "9e8de6585de79e463c220af9ac4846b2003dc066",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-26T05:03:45",
+        "virtual_op": false,
+        "operation_id": "473480858318143492",
+        "trx_in_block": 4
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "2931193348",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110232674,
+        "trx_id": "5cda96a24bc6438be07b57137232a3919b1cd436",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-25T22:13:30",
+        "virtual_op": false,
+        "operation_id": "473445729780629512",
+        "trx_in_block": 8
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "2746216707",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110213592,
+        "trx_id": "aa1876d120b19d4e691c019b795269ff4b46abf9",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-25T06:16:18",
+        "virtual_op": false,
+        "operation_id": "473363773214687236",
+        "trx_in_block": 4
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "823891632085",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110212683,
+        "trx_id": "2007106c11044e1cc8f463b5af4c1fd867c2a9e5",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-25T05:30:39",
+        "virtual_op": false,
+        "operation_id": "473359869089415172",
+        "trx_in_block": 3
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "828731782496",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110183609,
+        "trx_id": "86d33b503cc7ab97ceb8481a9dc83dfb5cde60a9",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-24T05:12:06",
+        "virtual_op": false,
+        "operation_id": "473234997210251270",
+        "trx_in_block": 5
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "1447275389",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110182700,
+        "trx_id": "58690b9ca21403189d7ad5cf9f4c9a5a1a04f94d",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-24T04:26:27",
+        "virtual_op": false,
+        "operation_id": "473231093084979223",
+        "trx_in_block": 16
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "822393358569",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110155446,
+        "trx_id": "e98d986d39dc6c230b8a55cc1813cf008f4b34ae",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-23T05:39:06",
+        "virtual_op": false,
+        "operation_id": "473114038046294020",
+        "trx_in_block": 2
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "823958056018",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110126369,
+        "trx_id": "c7c383cbbaa96d5bd671866edc95ab83e6b14ae6",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-22T05:20:36",
+        "virtual_op": false,
+        "operation_id": "472989153282228231",
+        "trx_in_block": 6
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "825513416560",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110097297,
+        "trx_id": "2cfa8e81dad5a5fd87ae0a1cffde48dbd1cd77d5",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-21T05:02:09",
+        "virtual_op": false,
+        "operation_id": "472864289992998920",
+        "trx_in_block": 5
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "738013276660",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110069131,
+        "trx_id": "2b2a08eda931eab34475276092244b786dc43e3f",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-20T05:29:12",
+        "virtual_op": false,
+        "operation_id": "472743317944139782",
+        "trx_in_block": 5
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "84603441788",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110053684,
+        "trx_id": "4a949ce29bd176f3b04feb2ed8707951bc44b0f5",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-19T16:34:21",
+        "virtual_op": false,
+        "operation_id": "472676973584318468",
+        "trx_in_block": 4
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "825219340935",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110040060,
+        "trx_id": "9cdd8e6ac3ab4a96f05a620ee5f0be9f6adc8747",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-19T05:10:42",
+        "virtual_op": false,
+        "operation_id": "472618458949877777",
+        "trx_in_block": 9
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "738759583239",
+              "precision": 6
+            }
+          }
+        },
+        "block": 110011890,
+        "trx_id": "d4d43286490dca0dca03e6d6ffaeb8dee4efb794",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-18T05:37:51",
+        "virtual_op": false,
+        "operation_id": "472497469721149484",
+        "trx_in_block": 24
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "896921558976",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109983514,
+        "trx_id": "d8443097785de444e200e6d16b63ba8876c4b4f5",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-17T05:19:24",
+        "virtual_op": false,
+        "operation_id": "472375595729158182",
+        "trx_in_block": 23
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "825318243444",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109955506,
+        "trx_id": "a03699ed938a179af1d89c0fb07b0a5ccb2037ee",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-16T05:00:54",
+        "virtual_op": false,
+        "operation_id": "472255302285131786",
+        "trx_in_block": 7
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "748238904902",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109928227,
+        "trx_id": "951ad68e4a4d72f687a51cffd8c6d7f7b3a93067",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-15T06:13:33",
+        "virtual_op": false,
+        "operation_id": "472138139872264225",
+        "trx_in_block": 20
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "917468468823",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109898728,
+        "trx_id": "60da898d209777dfcf0929f23c25e962969495be",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-14T05:35:09",
+        "virtual_op": false,
+        "operation_id": "472011442631999499",
+        "trx_in_block": 10
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "82494895638",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109882363,
+        "trx_id": "b4c5e51d91819ac873c134149ee2b072b2beaeb9",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-13T15:54:42",
+        "virtual_op": false,
+        "operation_id": "471941155492200450",
+        "trx_in_block": 2
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "751249232391",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109869628,
+        "trx_id": "5c36e0031347ddf960009e1200eaf1cc51e7f95b",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-13T05:16:33",
+        "virtual_op": false,
+        "operation_id": "471886459083685900",
+        "trx_in_block": 12
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "754918295386",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109840538,
+        "trx_id": "ab58d5ed1a1def61e4a1e186036f7133a85beca4",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-12T04:58:06",
+        "virtual_op": false,
+        "operation_id": "471761518485045251",
+        "trx_in_block": 2
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "83291763434",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109828715,
+        "trx_id": "ed36761a58a8c40d6b0f33058bf5d0d87b810ddc",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-11T19:05:33",
+        "virtual_op": false,
+        "operation_id": "471710739086704649",
+        "trx_in_block": 5
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "831457842728",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109812348,
+        "trx_id": "3afb37af900f60daba257e1e2ebc1b4e44285152",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-11T05:25:06",
+        "virtual_op": false,
+        "operation_id": "471640443356971017",
+        "trx_in_block": 8
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "753718413759",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109783249,
+        "trx_id": "d6d1f2df89647f296d9176e66381d6cf5fb49434",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-10T05:06:39",
+        "virtual_op": false,
+        "operation_id": "471515464103624714",
+        "trx_in_block": 8
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "21533177780",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109774159,
+        "trx_id": "2700b7a2de5b2cc7cd0579d78551d405b9e9a499",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-09T21:30:51",
+        "virtual_op": false,
+        "operation_id": "471476422850904093",
+        "trx_in_block": 16
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "84622967244",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109773249,
+        "trx_id": "89264dfd0fa9ac4bda7525d8589bc413904b8994",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-09T20:45:12",
+        "virtual_op": false,
+        "operation_id": "471472514430664719",
+        "trx_in_block": 10
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "677854229709",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109755059,
+        "trx_id": "d81ee675e83acd487bba199a55a17d10f62e3e86",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-09T05:33:36",
+        "virtual_op": false,
+        "operation_id": "471394388975550475",
+        "trx_in_block": 9
+      },
+      {
+        "op": {
+          "type": "transfer_operation",
+          "value": {
+            "to": "gandalf",
+            "from": "gtg",
+            "memo": "",
+            "amount": {
+              "nai": "@@000000021",
+              "amount": "25868",
+              "precision": 3
+            }
+          }
+        },
+        "block": 109741799,
+        "trx_id": "4f7149c3c3118fd07b6572876d3ba3d11b49c311",
+        "op_pos": 0,
+        "op_type_id": 2,
+        "timestamp": "2026-09-08T18:28:54",
+        "virtual_op": false,
+        "operation_id": "471337437709205518",
+        "trx_in_block": 12
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "934564435629",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109725963,
+        "trx_id": "4544eb8d65ddcdaa431b7e6a36743b32638d66a7",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-08T05:15:09",
+        "virtual_op": false,
+        "operation_id": "471269422607106057",
+        "trx_in_block": 8
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "422677675653",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109697776,
+        "trx_id": "8108eea86ef6f6c65fbbe7f0dff136a32f32189e",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-07T05:42:12",
+        "virtual_op": false,
+        "operation_id": "471148360363933725",
+        "trx_in_block": 17
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "430926229655",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109696864,
+        "trx_id": "b790d6afdda8a3f27e044b97687e45fa00f796ac",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-07T04:56:33",
+        "virtual_op": false,
+        "operation_id": "471144443353759753",
+        "trx_in_block": 7
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "857145918346",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109668670,
+        "trx_id": "7c6092f71b83c59841762d0237ee0c17bd5ebf94",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-06T05:23:33",
+        "virtual_op": false,
+        "operation_id": "471023351045816369",
+        "trx_in_block": 31
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "712564148",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109664123,
+        "trx_id": "2b5e69a88ae3b6c915041db32c7ab97af6e0149e",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-06T01:35:39",
+        "virtual_op": false,
+        "operation_id": "471003821829521415",
+        "trx_in_block": 5
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "856240190554",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109639577,
+        "trx_id": "3bb3edc9bba3ba64c05ce2d879f5c7141d6e545c",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-05T05:05:03",
+        "virtual_op": false,
+        "operation_id": "470898397562273794",
+        "trx_in_block": 1
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "12793494668",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109630484,
+        "trx_id": "02cfb069f8e5dd5bfce81abe0c79d981e724e19c",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-04T21:29:15",
+        "virtual_op": false,
+        "operation_id": "470859343424651268",
+        "trx_in_block": 3
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "853133727490",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109611391,
+        "trx_id": "b0b9cd368eaa5d47d1705b6ee21aaf6b62079ed7",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-04T05:32:06",
+        "virtual_op": false,
+        "operation_id": "470777339614068830",
+        "trx_in_block": 52
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "85053918703",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109585029,
+        "trx_id": "320c7b5717655b1da46b1e534bcff1bb311509b4",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-03T07:30:21",
+        "virtual_op": false,
+        "operation_id": "470664115686211584",
+        "trx_in_block": 0
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "172369944292",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109582303,
+        "trx_id": "3e467ecd29ba3a39f4f3e93ea8ff7afd183e9730",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-03T05:13:33",
+        "virtual_op": false,
+        "operation_id": "470652407605362698",
+        "trx_in_block": 8
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "635823992980",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109573212,
+        "trx_id": "db525b41180dcf2d5efb23212834e9028d185ab2",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-02T21:37:45",
+        "virtual_op": false,
+        "operation_id": "470613362057674753",
+        "trx_in_block": 1
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "8893326549",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109566847,
+        "trx_id": "0953ea38178dbf2ec791540a6395fbbfd393f6bc",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-02T16:18:39",
+        "virtual_op": false,
+        "operation_id": "470586024590835718",
+        "trx_in_block": 4
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "863243315299",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109554003,
+        "trx_id": "4d04622a36efc6ec87245ded4d3dcb0927044870",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-02T05:34:48",
+        "virtual_op": false,
+        "operation_id": "470530860030885900",
+        "trx_in_block": 9
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "12650033965",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109538544,
+        "trx_id": "bf333631c2005819169bc24dae31880c4a5095ef",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-01T16:39:57",
+        "virtual_op": false,
+        "operation_id": "470464464131457033",
+        "trx_in_block": 6
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "2525581407",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109525813,
+        "trx_id": "30769f51c0f9cdbd6c785a5418c70f51197c8419",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-01T06:01:51",
+        "virtual_op": false,
+        "operation_id": "470409784902811671",
+        "trx_in_block": 13
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "772590467188",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109524903,
+        "trx_id": "ff8fef3350ce48ce29c82edb4b3f5c74409cf32b",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-01T05:16:12",
+        "virtual_op": false,
+        "operation_id": "470405876482572300",
+        "trx_in_block": 11
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "13379536582",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109523087,
+        "trx_id": "fb5ea4d539b63650f922343f45ac6ecb6222bdce",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-09-01T03:45:00",
+        "virtual_op": false,
+        "operation_id": "470398076821962753",
+        "trx_in_block": 1
+      },
+      {
+        "op": {
+          "type": "transfer_operation",
+          "value": {
+            "to": "gtg",
+            "from": "lasseehlers",
+            "memo": "You have treated me with extreme disrespect in person and on chain, but I still donated some tokens for you.... if you want them to migrate you need to ACT very soon::: Recent LASSECASH activity on @gtg Straight from Hive-Engine, live. The result above is rebuilt periodically, so an action you took today may not be reflected in it yet — but if you can see it here, the chain has it.  date\toperation\tamount\tsigned by you? 2026-08-31\tstake\t937.10692131\tno — from @lasseehlers",
+            "amount": {
+              "nai": "@@000000021",
+              "amount": "3",
+              "precision": 3
+            }
+          }
+        },
+        "block": 109504648,
+        "trx_id": "65caa7d6f346ca658e424ad0694cdddfcd8f9e3c",
+        "op_pos": 0,
+        "op_type_id": 2,
+        "timestamp": "2026-08-31T12:20:54",
+        "virtual_op": false,
+        "operation_id": "470318881919991815",
+        "trx_in_block": 6
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "954124410447",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109495805,
+        "trx_id": "99b34828315a86541ba667f7601cebc64c45d635",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-31T04:57:42",
+        "virtual_op": false,
+        "operation_id": "470280901524193284",
+        "trx_in_block": 3
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "853592708723",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109467637,
+        "trx_id": "533f359023836106aed487f8560eea0ca7265c5c",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-30T05:24:45",
+        "virtual_op": false,
+        "operation_id": "470159920885399572",
+        "trx_in_block": 13
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "851066147901",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109438558,
+        "trx_id": "4dc98b255874fcf3e34e123a5d72e523adaafc9d",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-29T05:06:18",
+        "virtual_op": false,
+        "operation_id": "470035027531399168",
+        "trx_in_block": 0
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "841119684027",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109410385,
+        "trx_id": "d860554a9c1857c4a0e519b596f0f9cc08c0020c",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-28T05:33:27",
+        "virtual_op": false,
+        "operation_id": "469914025417768973",
+        "trx_in_block": 13
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "12548867359",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109389477,
+        "trx_id": "f93ee48ad22f9400453db2bcbf2fdc50a974560c",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-27T12:05:12",
+        "virtual_op": false,
+        "operation_id": "469824226241544305",
+        "trx_in_block": 12
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "758745210777",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109381299,
+        "trx_id": "6bb19ece81b85437e70d1861347fc2c2c410b5ee",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-27T05:14:57",
+        "virtual_op": false,
+        "operation_id": "469789101998997505",
+        "trx_in_block": 1
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "595783699658",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109353131,
+        "trx_id": "a772becbc28ea10693c41ab5ccf2a8b161837794",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-26T05:42:03",
+        "virtual_op": false,
+        "operation_id": "469668121360203790",
+        "trx_in_block": 8
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "262102625382",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109352220,
+        "trx_id": "a2a92be0c1aa385c68f1a8442f029f453e274a5d",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-26T04:56:24",
+        "virtual_op": false,
+        "operation_id": "469664208644997145",
+        "trx_in_block": 18
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "858583292825",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109324035,
+        "trx_id": "8fd5de2485166412065c4009925f4d165450ddc3",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-25T05:23:30",
+        "virtual_op": false,
+        "operation_id": "469543154991759385",
+        "trx_in_block": 18
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "13208303912",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109314031,
+        "trx_id": "3fbbe698fb8c830f6020a32016a435f7f137bf43",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-24T21:02:09",
+        "virtual_op": false,
+        "operation_id": "469500188138930178",
+        "trx_in_block": 2
+      },
+      {
+        "op": {
+          "type": "transfer_operation",
+          "value": {
+            "to": "gtg",
+            "from": "commentrewarder",
+            "memo": "!tip @gtg/re-sagarkothari88-1787045078507 @peak.snaps app:cr message:👍",
+            "amount": {
+              "nai": "@@000000021",
+              "amount": "213",
+              "precision": 3
+            }
+          }
+        },
+        "block": 109308642,
+        "trx_id": "cc9c7d3ece0077b3e222616ed36feb70c10d0181",
+        "op_pos": 38,
+        "op_type_id": 2,
+        "timestamp": "2026-08-24T16:31:48",
+        "virtual_op": false,
+        "operation_id": "469477042560172086",
+        "trx_in_block": 9
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "853999765159",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109294945,
+        "trx_id": "f484e8259697a5fe70beaadb5bcce2d015962a6d",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-24T05:05:00",
+        "virtual_op": false,
+        "operation_id": "469418214393118758",
+        "trx_in_block": 26
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "768320152407",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109266757,
+        "trx_id": "29612c3d801650572c3618d4f43d78a67620de3d",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-23T05:32:09",
+        "virtual_op": false,
+        "operation_id": "469297147854979082",
+        "trx_in_block": 10
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "932118684536",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109237663,
+        "trx_id": "0a0ca8a5a097202ff18894ab0ce09299e2720685",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-22T05:13:39",
+        "virtual_op": false,
+        "operation_id": "469172190076469258",
+        "trx_in_block": 8
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "840867644285",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109209483,
+        "trx_id": "b2f29a81857f4ab7b868dd71f3dc6d8b954d0b5c",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-21T05:40:51",
+        "virtual_op": false,
+        "operation_id": "469051157898068014",
+        "trx_in_block": 24
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "87018163792",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109203118,
+        "trx_id": "db16c6e919885d500d5b6ee37ae17d107963a9bd",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-21T00:21:42",
+        "virtual_op": false,
+        "operation_id": "469023820431228949",
+        "trx_in_block": 20
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "756209126199",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109180396,
+        "trx_id": "43f6f40326d727f423096eadfba7b6587e273b32",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-20T05:22:21",
+        "virtual_op": false,
+        "operation_id": "468926230184329220",
+        "trx_in_block": 3
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "845011653578",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109151299,
+        "trx_id": "35363bcf1ac8c3252f9245bf64cf299eaa3bf573",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-19T05:03:57",
+        "virtual_op": false,
+        "operation_id": "468801259520917508",
+        "trx_in_block": 4
+      },
+      {
+        "op": {
+          "type": "claim_reward_balance_operation",
+          "value": {
+            "account": "gtg",
+            "reward_hbd": {
+              "nai": "@@000000013",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_hive": {
+              "nai": "@@000000021",
+              "amount": "0",
+              "precision": 3
+            },
+            "reward_vests": {
+              "nai": "@@000000037",
+              "amount": "13613314680",
+              "precision": 6
+            }
+          }
+        },
+        "block": 109148569,
+        "trx_id": "269767601433bd1e0a5c3fc7efe6b0e15a24dbc4",
+        "op_pos": 0,
+        "op_type_id": 39,
+        "timestamp": "2026-08-19T02:47:09",
+        "virtual_op": false,
+        "operation_id": "468789534260199431",
+        "trx_in_block": 7
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json; charset=utf-8"
+}

@@ -1,0 +1,20 @@
+{
+  "testName": "gtgWalletHistory",
+  "recordedAt": "2026-10-10T18:26:26.323Z",
+  "totalRequests": 13,
+  "savedFixtures": 10,
+  "duplicatesSkipped": 3,
+  "methods": {
+    "database_api.find_accounts": 3,
+    "bridge.get_profile": 2,
+    "database_api.get_dynamic_global_properties": 1,
+    "database_api.get_feed_history": 1,
+    "rc_api.find_rc_accounts": 1,
+    "GET /hafah-api/operation-types": 1,
+    "database_api.find_savings_withdrawals": 1,
+    "condenser_api.get_following": 1,
+    "database_api.list_limit_orders": 1,
+    "GET /hivemind-api/accounts/gtg/operations": 1
+  },
+  "note": "Recorded live from api.hive.blog on 2026-10-10 (recordedAt) with FIXTURE_MODE=record (gtgWalletHistory.spec.ts): @gtg's /transfers page, server prefetches and browser reads. 0010 is the newest page of @gtg's wallet history then (100 of 1000 operations, 2026-08-19..2026-10-10), verbatim. One edit after recording: 0009 (list_limit_orders by_account from ['gtg', 0], which answers the next 1000 orders of any seller) is trimmed to the orders whose seller is gtg, the only ones the wallet keeps (getOpenOrder in apps/wallet/lib/hive.ts): 574 orders of other accounts, none of gtg's, so []. Re-record overwrites this dir and this note; redo the trim."
+}
