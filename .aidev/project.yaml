@@ -47,6 +47,16 @@ issues:
 # they never gate: the e2e specs a candidate changes run only as full's advisory
 # live_e2e suite, and smoke is not bound. Not bound either: mirrornet needs a HAF
 # stack; translation checks (lint:translations*) fail on existing debt.
+
+# Adaptive per-action test timeouts (ai/aidev#15386). aidev resolves each named
+# action from its recorded durations and the host's load, and hands the result to
+# every suite in AIDEV_TIMEOUTS_FILE. playwright/support/timeouts.ts (#1103) reads
+# it, never goes below the static default, and appends completed durations to
+# AIDEV_TIMEOUTS_OBSERVATIONS. Without the file (local runs, plain CI) every
+# timeout is its static default.
+timeouts:
+  enabled: true
+  max_scale: 3
 verification:
   # ~25 s: mocha unit suites of packages/renderer and packages/transaction
   # (~1,430 tests), plus lint and type check.
