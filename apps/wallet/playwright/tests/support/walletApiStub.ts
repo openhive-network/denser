@@ -82,10 +82,18 @@ const proposal = {
 };
 
 /** A `transfer_operation` of the account history, as the hivemind operations API returns it. */
-export const stubTransfer = ({ from, operationId }: { from: string; operationId: string }) => ({
+export const stubTransfer = ({
+  from,
+  operationId,
+  memo = ''
+}: {
+  from: string;
+  operationId: string;
+  memo?: string;
+}) => ({
   op: {
     type: 'transfer_operation',
-    value: { from, to: STUB_ACCOUNT, amount: hive('1000'), memo: '' }
+    value: { from, to: STUB_ACCOUNT, amount: hive('1000'), memo }
   },
   block: 99_999_000,
   trx_id: '0000000000000000000000000000000000000001',
@@ -173,21 +181,30 @@ const REST_RESULTS: RestResults = {
 export const startWalletApiStub = (port = FIXTURE_API_PORT, jsonRpc: JsonRpcResults = {}): Promise<Server> =>
   startApiStub({ jsonRpc: { ...JSON_RPC_RESULTS, ...jsonRpc }, rest: REST_RESULTS }, port);
 
-/** Logs STUB_ACCOUNT in on the client, as the blog's fixture seeder does: the stored user is what `useUser` starts from. */
-export const logInAsStubAccount = (page: Page) =>
-  page.context().addInitScript((username) => {
-    window.localStorage.setItem(
-      'user',
-      JSON.stringify({
-        isLoggedIn: true,
-        username,
-        avatarUrl: '',
-        loginType: 'wif',
-        keyType: 'posting',
-        authenticateOnBackend: false,
-        chatAuthToken: '',
-        oauthConsent: {},
-        strict: false
-      })
-    );
-  }, STUB_ACCOUNT);
+/**
+ * Logs `username` (STUB_ACCOUNT by default) in on the client, as the blog's fixture seeder does:
+ * the stored user is what `useUser` starts from.
+ */
+export const logInAsStubAccount = (
+  page: Page,
+  { username = STUB_ACCOUNT, loginType = 'wif' }: { username?: string; loginType?: 'wif' | 'keychain' } = {}
+) =>
+  page.context().addInitScript(
+    ({ username, loginType }) => {
+      window.localStorage.setItem(
+        'user',
+        JSON.stringify({
+          isLoggedIn: true,
+          username,
+          avatarUrl: '',
+          loginType,
+          keyType: 'posting',
+          authenticateOnBackend: false,
+          chatAuthToken: '',
+          oauthConsent: {},
+          strict: false
+        })
+      );
+    },
+    { username, loginType }
+  );
