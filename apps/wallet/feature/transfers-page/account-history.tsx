@@ -3,14 +3,15 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from '@/wallet/i18n/client';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
+import type { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import TransfersHistoryFilter, { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import useFilters from '@/wallet/components/hooks/use-filters';
 import { getFilter } from '@/wallet/lib/utils';
-import { isIncomingFromScamSender } from '@/wallet/lib/scam-transfer-filter';
+import { getHiddenTransferReason, type HiddenTransferReason } from '@/wallet/lib/scam-transfer-filter';
 import { IAccountHistory } from './hooks/use-account-history';
-import { useScamSenders } from './hooks/use-scam-senders';
+import { useHiddenSenders } from './hooks/use-hidden-senders';
 import HistoryTable from './history-table';
-import HiddenScamTransfersNotice from './hidden-scam-transfers-notice';
+import HiddenTransfersNotice from './hidden-transfers-notice';
 import AccountHistoryError from '@/wallet/components/account-history-error';
 
 const initialFilters: TransferFilters = {
@@ -34,28 +35,32 @@ const AccountHistory = ({ username, dynamicData, history }: AccountHistoryProps)
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
   const { operations, isLoading, isError, hasOlder, isFetchingOlder, loadOlder, retry } = history;
 
-  const scamSenders = useScamSenders();
-  const [scamTransfersShown, setScamTransfersShown] = useState(false);
-  const showScamTransfers = useCallback(() => setScamTransfersShown(true), []);
+  const hiddenSenders = useHiddenSenders();
+  const [hiddenTransfersShown, setHiddenTransfersShown] = useState(false);
+  const showHiddenTransfers = useCallback(() => setHiddenTransfersShown(true), []);
 
   const filteredHistoryList = useMemo(
     () => operations?.filter(getFilter({ filter, username })),
     [operations, filter, username]
   );
-  const scamTransfers = useMemo(
-    () =>
-      new Set(
-        filteredHistoryList?.filter((operation) => isIncomingFromScamSender(operation, username, scamSenders))
-      ),
-    [filteredHistoryList, username, scamSenders]
-  );
-  const hiddenScamCount = scamTransfersShown ? 0 : scamTransfers.size;
+  const { hiddenTransfers, hiddenCounts } = useMemo(() => {
+    const transfers = new Set<HiveOperation>();
+    const counts: Record<HiddenTransferReason, number> = { badActor: 0, muted: 0 };
+    filteredHistoryList?.forEach((operation) => {
+      const reason = getHiddenTransferReason(operation, username, hiddenSenders);
+      if (!reason) return;
+      transfers.add(operation);
+      counts[reason] += 1;
+    });
+    return { hiddenTransfers: transfers, hiddenCounts: counts };
+  }, [filteredHistoryList, username, hiddenSenders]);
+  const isHiding = !hiddenTransfersShown && hiddenTransfers.size > 0;
   const historyList = useMemo(
     () =>
-      hiddenScamCount > 0
-        ? filteredHistoryList?.filter((operation) => !scamTransfers.has(operation))
+      isHiding
+        ? filteredHistoryList?.filter((operation) => !hiddenTransfers.has(operation))
         : filteredHistoryList,
-    [filteredHistoryList, scamTransfers, hiddenScamCount]
+    [filteredHistoryList, hiddenTransfers, isHiding]
   );
 
   const content = (() => {
@@ -63,8 +68,13 @@ const AccountHistory = ({ username, dynamicData, history }: AccountHistoryProps)
     if (!operations) return <AccountHistoryError onRetry={retry} t={t} />;
     return (
       <>
-        {hiddenScamCount > 0 && (
-          <HiddenScamTransfersNotice count={hiddenScamCount} onShow={showScamTransfers} t={t} />
+        {isHiding && (
+          <HiddenTransfersNotice
+            badActorCount={hiddenCounts.badActor}
+            mutedCount={hiddenCounts.muted}
+            onShow={showHiddenTransfers}
+            t={t}
+          />
         )}
         <HistoryTable
           historyList={historyList}

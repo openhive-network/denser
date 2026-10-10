@@ -4,9 +4,9 @@ import { WALLET_BASE_PATH } from '../support/basePath';
 import { STUB_ACCOUNT, logInAsStubAccount, startWalletApiStub, stubTransfer } from '../support/walletApiStub';
 
 /**
- * Incoming transfers from known scam accounts (the shared bad-actor list, and the accounts the
- * viewer muted) are hidden from the account history behind one "Show" line; the transfers the
- * account sent to them stay listed.
+ * Incoming transfers from known scam accounts (the shared bad-actor list) and from the accounts the
+ * viewer muted are hidden from the account history behind one "Show" line that says which of the
+ * two they came from; the transfers the account sent to them stay listed.
  */
 
 const OPERATIONS_URL = new RegExp(`/hivemind-api/accounts/${STUB_ACCOUNT}/operations\\?`);
@@ -60,6 +60,8 @@ const routeOperations = (page: Page, operations: unknown[]) =>
 
 const historyRows = (page: Page) => page.getByTestId('wallet-account-history-row');
 const hiddenNotice = (page: Page) => page.getByTestId('wallet-account-history-scam-hidden');
+const noticeText = (page: Page) => page.getByTestId('wallet-account-history-scam-hidden-text');
+const showHidden = (page: Page) => page.getByTestId('wallet-account-history-scam-show').click();
 
 test.describe('Wallet account history from scam accounts', () => {
   test('WALLET-SCAM-01 — an incoming transfer from a bad actor is hidden behind Show, an outgoing one to it is not', async ({
@@ -76,10 +78,10 @@ test.describe('Wallet account history from scam accounts', () => {
     await expect(historyRows(page)).toHaveCount(2);
     await expect(historyRows(page).first()).toContainText(`from ${NORMAL_SENDER}`);
     await expect(historyRows(page).last()).toContainText(`to ${BAD_ACTOR}`);
-    await expect(hiddenNotice(page)).toContainText('Hidden transfers from known scam accounts: 1');
+    await expect(noticeText(page)).toHaveText('1 transfer from known scam accounts hidden');
     await expect(page.getByText(SCAM_MEMO)).toHaveCount(0);
 
-    await page.getByTestId('wallet-account-history-scam-show').click();
+    await showHidden(page);
 
     await expect(historyRows(page)).toHaveCount(3);
     const scamRow = historyRows(page).filter({ hasText: `from ${BAD_ACTOR}` });
@@ -87,20 +89,51 @@ test.describe('Wallet account history from scam accounts', () => {
     await expect(hiddenNotice(page)).toHaveCount(0);
   });
 
-  test('WALLET-SCAM-02 — logged in, an incoming transfer from an account the viewer muted is hidden too', async ({
+  test('WALLET-SCAM-02 — logged in, transfers from bad actors and muted accounts are hidden and counted apart', async ({
     page
   }) => {
     await logInAsStubAccount(page);
     await routeOperations(page, [
       stubTransfer({ from: MUTED_SENDER, operationId: '201', memo: SCAM_MEMO }),
       stubTransfer({ from: BAD_ACTOR, operationId: '202' }),
-      stubTransfer({ from: NORMAL_SENDER, operationId: '203' })
+      stubTransfer({ from: BAD_ACTOR, operationId: '203' }),
+      stubTransfer({ from: NORMAL_SENDER, operationId: '204' })
     ]);
 
     await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
 
-    await expect(hiddenNotice(page)).toContainText('Hidden transfers from known scam accounts: 2');
+    await expect(noticeText(page)).toHaveText(
+      '3 transfers hidden (2 from known scam accounts, 1 from accounts you muted)'
+    );
     await expect(historyRows(page)).toHaveCount(1);
     await expect(historyRows(page)).toContainText(`from ${NORMAL_SENDER}`);
+
+    await showHidden(page);
+
+    await expect(historyRows(page)).toHaveCount(4);
+    await expect(historyRows(page).filter({ hasText: `from ${MUTED_SENDER}` })).toContainText(SCAM_MEMO);
+    await expect(hiddenNotice(page)).toHaveCount(0);
+  });
+
+  test('WALLET-SCAM-03 — logged in, transfers only from muted accounts are not called scam', async ({
+    page
+  }) => {
+    await logInAsStubAccount(page);
+    await routeOperations(page, [
+      stubTransfer({ from: MUTED_SENDER, operationId: '301', memo: SCAM_MEMO }),
+      stubTransfer({ from: MUTED_SENDER, operationId: '302' }),
+      stubTransfer({ from: NORMAL_SENDER, operationId: '303' })
+    ]);
+
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+
+    await expect(noticeText(page)).toHaveText('2 transfers from accounts you muted hidden');
+    await expect(historyRows(page)).toHaveCount(1);
+
+    await showHidden(page);
+
+    await expect(historyRows(page)).toHaveCount(3);
+    await expect(historyRows(page).filter({ hasText: `from ${MUTED_SENDER}` })).toHaveCount(2);
+    await expect(hiddenNotice(page)).toHaveCount(0);
   });
 });
