@@ -249,6 +249,19 @@ test.describe('SEO guard — post and profile pages (JS disabled)', () => {
     await expectCanonical(page, PROFILE_URL);
   });
 
+  // Tabs outside the profile and posts-tabs layouts set their own metadata; each must
+  // still point its canonical at its own URL, not inherit none.
+  const PROFILE_TABS = [
+    { id: 'SEO-12', url: '/@hiveio/replies' },
+    { id: 'SEO-13', url: `${PROFILE_URL}/communities` }
+  ];
+  for (const tab of PROFILE_TABS) {
+    test(`${tab.id} — ${tab.url} emits its own canonical`, async ({ page }) => {
+      await serverHtml(page, tab.url);
+      await expectCanonical(page, tab.url);
+    });
+  }
+
   test('SEO-08 — profile page serves the account posts visibly', async ({ page }) => {
     const [first] = recordedPosts('ssrChecks/0012-bridge.get_account_posts.json');
     await serverHtml(page, PROFILE_URL);
