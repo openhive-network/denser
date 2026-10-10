@@ -18,7 +18,7 @@ interface SearchContentProps {
   classicQuery: string | undefined;
   userTopicQuery: string | undefined;
   topicQuery: string | undefined;
-  sortQuery: SearchSort | undefined;
+  sortQuery: SearchSort;
   initialAIResults?: Array<CardEntry | PostStub> | null;
   initialClassicResults?: CardEntry[] | null;
   initialTopicResults?: CardEntry[] | null;
@@ -56,7 +56,7 @@ const SearchContent = ({
       {!!aiParam ? (
         <AIResult query={aiParam} nsfwPreferences={preferences.nsfw} initialData={initialAIResults} />
       ) : null}
-      {!!classicQuery && !!sortQuery ? (
+      {!!classicQuery ? (
         <AccountTopicResult
           nsfwPreferences={preferences.nsfw}
           query={classicQuery}
@@ -64,7 +64,7 @@ const SearchContent = ({
           initialData={initialClassicResults}
         />
       ) : null}
-      {!!userTopicQuery && !!topicQuery && !!sortQuery ? (
+      {!!userTopicQuery && !!topicQuery ? (
         <AccountTopicResult
           author={userTopicQuery}
           query={userTopicQuery}
