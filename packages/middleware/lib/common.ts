@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { setLoginChallengeCookies } from '@hive/smart-signer/lib/middleware-challenge-cookies';
 import { logPageVisit } from './page-visit-logger';
-import { buildCsp, SECURITY_HEADERS, type CspConfig } from './csp';
+import { buildCsp, generateNonce, NONCE_HEADER, SECURITY_HEADERS, type CspConfig } from './csp';
 
 /**
  * Configuration options for the common middleware
@@ -19,7 +19,7 @@ export interface MiddlewareConfig {
 
   /**
    * CSP configuration for runtime evaluation
-   * If provided, CSP header will be set on all responses
+   * If provided, a CSP header with a fresh script nonce will be set on all responses
    */
   csp?: CspConfig;
 }
@@ -29,9 +29,6 @@ export interface MiddlewareConfig {
  * @param config - Optional configuration for app-specific behavior
  */
 export function createMiddleware(config: MiddlewareConfig = {}) {
-  // Build CSP once at startup (when middleware is created), not on every request
-  const cspHeader = config.csp ? buildCsp(config.csp) : null;
-
   return async function middleware(request: NextRequest): Promise<NextResponse> {
     const { pathname } = request.nextUrl;
     const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -43,10 +40,22 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
     // treated like any other content page.
     const isRootPath =
       pathname === '/' || pathname === `${basePath}` || pathname === `${basePath}/`;
+
+    // Next applies the nonce it finds in the request's CSP header to its own scripts;
+    // server code reads it from NONCE_HEADER. Both replace whatever the client sent.
+    const nonce = generateNonce();
+    const cspHeader = config.csp ? buildCsp(config.csp, nonce) : null;
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.delete(NONCE_HEADER);
+    if (cspHeader) {
+      requestHeaders.set(NONCE_HEADER, nonce);
+      requestHeaders.set('Content-Security-Policy', cspHeader);
+    }
+    const forward = { request: { headers: requestHeaders } };
     const res =
       config.rootRewrite && isRootPath
-        ? NextResponse.rewrite(new URL(`${basePath}${config.rootRewrite}`, request.url))
-        : NextResponse.next();
+        ? NextResponse.rewrite(new URL(`${basePath}${config.rootRewrite}`, request.url), forward)
+        : NextResponse.next(forward);
 
     // Apply CSP and security headers
     if (cspHeader) {

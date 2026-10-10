@@ -2,7 +2,8 @@ import '@hive/tailwindcss-config/globals.css';
 import * as Sentry from '@sentry/nextjs';
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import { NONCE_HEADER, parseNonce } from '@hive/middleware/lib/csp';
 import Script from 'next/script';
 import { Providers } from './providers';
 import ClientEffects from './client-effects';
@@ -64,6 +65,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
   const isRTL = locale === 'ar';
+  const nonce = parseNonce((await headers()).get(NONCE_HEADER));
 
   // Generate stable version hash for __ENV.js cache-busting
   // Only changes when REACT_APP_* env variables change
@@ -75,7 +77,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <head>
         {/* Use plain script tag for guaranteed synchronous loading of env globals */}
-        <script src={`${basePath}/__ENV.js?v=${envVersion}`} />
+        <script src={`${basePath}/__ENV.js?v=${envVersion}`} nonce={nonce} />
         <ImagesHostHints />
       </head>
       <body className="bg-background-secondary" suppressHydrationWarning>
@@ -85,10 +87,11 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <Script
             src="https://accounts.google.com/gsi/client"
             strategy="lazyOnload"
+            nonce={nonce}
           />
         )}
         <LocaleProvider locale={locale}>
-          <Providers>
+          <Providers nonce={nonce}>
             <CondenserMigration />
             <>{children}</>
           </Providers>

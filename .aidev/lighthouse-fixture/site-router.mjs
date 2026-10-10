@@ -43,6 +43,9 @@ const COMPRESSIBLE = /^(text\/|application\/(json|javascript|xhtml\+xml|atom\+xm
 const MIN_COMPRESS_BYTES = 512;
 const ENCODE_ORDER = ['zstd', 'gzip'];
 
+// The script nonce of the app's Content-Security-Policy (packages/middleware/lib/csp.ts).
+const CSP_NONCE = /'nonce-([A-Za-z0-9+/]+={0,2})'/;
+
 // Searched as latin1, which maps bytes one to one, so a UTF-8 character split across
 // chunks passes through intact.
 function injectAfterHead(snippet) {
@@ -102,7 +105,10 @@ function respond(req, upstream, res, injectClock) {
   res.writeHead(upstream.statusCode, headers);
   let stream = upstream;
   if (inject && sent) stream = stream.pipe(CODECS[sent][0]());
-  if (inject) stream = stream.pipe(injectAfterHead(browserClockScript(Date.now())));
+  if (inject) {
+    const nonce = CSP_NONCE.exec(String(upstream.headers['content-security-policy'] || ''))?.[1];
+    stream = stream.pipe(injectAfterHead(browserClockScript(Date.now(), nonce)));
+  }
   if (encoding && (inject || !sent)) stream = stream.pipe(CODECS[encoding][1](html));
   stream.pipe(res);
 }

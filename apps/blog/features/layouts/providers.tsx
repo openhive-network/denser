@@ -23,7 +23,8 @@ import RocketChatWidget from '@/blog/components/rocket-chat-widget';
 import { SocialSyncListener } from '@/blog/components/social-sync-listener';
 import { useTranslation } from '@/blog/i18n/client';
 
-export const Providers: FC<PropsWithChildren> = ({ children }) => {
+/** `nonce`: this response's CSP nonce, for the theme's inline init script */
+export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children, nonce }) => {
   const queryClient = useMemo(() => getQueryClient(), []);
   const { resolvedTheme } = useTheme();
   const { t } = useTranslation('common_blog');
@@ -34,7 +35,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
         <meta name="theme-color" content={resolvedTheme === 'dark' ? '#030711' : '#ffffff'} />
       </Head>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
           <NavigationProgressProvider>
             <NavigationProgress />
             <NavigationProgressHandler />

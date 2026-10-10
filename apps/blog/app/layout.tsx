@@ -2,7 +2,8 @@ import '@hive/tailwindcss-config/globals.css';
 import * as Sentry from '@sentry/nextjs';
 import { ReactNode } from 'react';
 import { Metadata } from 'next';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import { NONCE_HEADER, parseNonce } from '@hive/middleware/lib/csp';
 import MainBar from '../features/layouts/site-header/main-bar';
 import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
@@ -66,6 +67,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
   const isRTL = locale === 'ar';
+  const nonce = parseNonce((await headers()).get(NONCE_HEADER));
 
   // Generate stable version hash for __ENV.js cache-busting
   // Only changes when REACT_APP_* env variables change
@@ -75,13 +77,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <head>
         {/* Use plain script tag for guaranteed synchronous loading of env globals */}
-        <script src={`${basePath}/__ENV.js?v=${envVersion}`} />
+        <script src={`${basePath}/__ENV.js?v=${envVersion}`} nonce={nonce} />
         <ImagesHostHints />
       </head>
       <body className="bg-background-secondary">
         <LocaleProvider locale={locale}>
           <div className="min-h-screen">
-            <Providers>
+            <Providers nonce={nonce}>
               <>
                 <StorageCleanup />
                 <CondenserMigration />

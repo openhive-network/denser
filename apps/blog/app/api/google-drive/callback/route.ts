@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getLogger } from '@ui/lib/logging';
 import { safeJsonForScript } from '@hive/ui';
+import { NONCE_HEADER, parseNonce } from '@hive/middleware/lib/csp';
 
 const logger = getLogger('google-drive-callback');
 
@@ -22,6 +23,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   const code = searchParams.get('code');
   const state = searchParams.get('state');
   const error = searchParams.get('error');
+  const nonce = parseNonce(req.headers.get(NONCE_HEADER));
 
   logger.info('Google Drive OAuth callback received', {
     hasCode: !!code,
@@ -66,7 +68,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     <div class="spinner"></div>
     <p>Completing authorization...</p>
   </div>
-  <script>
+  <script${nonce ? ` nonce="${nonce}"` : ''}>
     (function() {
       var code = ${safeJsonForScript(code)};
       var state = ${safeJsonForScript(state)};

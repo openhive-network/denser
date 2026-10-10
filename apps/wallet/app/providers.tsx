@@ -16,13 +16,14 @@ import { TailwindIndicator } from '@/wallet/components/tailwind-indicator';
 // This must happen before any component calls useTranslation
 import '@/wallet/i18n/client';
 
-export const Providers: FC<PropsWithChildren> = ({ children }) => {
+/** `nonce`: this response's CSP nonce, for the theme's inline init script */
+export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children, nonce }) => {
   const queryClient = useMemo(() => getQueryClient(), []);
 
   return (
     <QueryClientProvider client={queryClient}>
       <SignerProviderClient>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
           <ThemeColorMeta />
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />
