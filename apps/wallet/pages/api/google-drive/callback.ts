@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getLogger } from '@ui/lib/logging';
 import { safeJsonForScript } from '@hive/ui';
+import { NONCE_HEADER, parseNonce } from '@hive/middleware/lib/csp';
 
 const logger = getLogger('google-drive-callback');
 
@@ -32,6 +33,8 @@ export default async function handler(
   const codeStr = Array.isArray(code) ? code[0] : code;
   const stateStr = Array.isArray(state) ? state[0] : state;
   const errorStr = Array.isArray(error) ? error[0] : error;
+  const nonceHeader = req.headers[NONCE_HEADER];
+  const nonce = parseNonce(Array.isArray(nonceHeader) ? nonceHeader[0] : nonceHeader);
 
   // Return an HTML page that stores the code and redirects back to the app
   const html = `<!DOCTYPE html>
@@ -70,7 +73,7 @@ export default async function handler(
     <div class="spinner"></div>
     <p>Completing authorization...</p>
   </div>
-  <script>
+  <script${nonce ? ` nonce="${nonce}"` : ''}>
     (function() {
       var code = ${safeJsonForScript(codeStr || null)};
       var state = ${safeJsonForScript(stateStr || null)};

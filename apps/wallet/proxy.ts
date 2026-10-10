@@ -1,6 +1,6 @@
 import { createMiddleware } from '@hive/middleware/lib/common';
 
-// Wallet middleware: no root redirect (stays at /), applies CSP at runtime
+// Wallet middleware: no root redirect (stays at /), applies a per-request nonce CSP at runtime
 export const proxy = createMiddleware({
   csp: {
     // Allow Google accounts for OAuth popup/iframe

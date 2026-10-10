@@ -5,8 +5,9 @@
 // the recording). So `Date` starts at that instant and advances at the real rate.
 //
 //   node --require clock.cjs ...       the app servers: DENSER_FIXTURE_CLOCK=<ISO instant>
-//   browserClockScript(now)            the same shift for a page, as an inline <script> the
-//                                      site router puts first in each document's <head>
+//   browserClockScript(now, nonce)     the same shift for a page, as an inline <script> the
+//                                      site router puts first in each document's <head>; it
+//                                      carries the page's CSP nonce, or the policy blocks it
 //
 // Only `Date` moves: timers, performance.now() and the event loop keep real time.
 'use strict';
@@ -27,8 +28,9 @@ function installShiftedDate(target, startMs) {
 }
 
 /** An inline script that starts the page's `Date` at `nowMs` (the server's shifted now). */
-function browserClockScript(nowMs) {
-  return `<script>(${installShiftedDate.toString()})(window,${Math.round(nowMs)})</script>`;
+function browserClockScript(nowMs, nonce) {
+  const nonceAttribute = nonce ? ` nonce="${nonce}"` : '';
+  return `<script${nonceAttribute}>(${installShiftedDate.toString()})(window,${Math.round(nowMs)})</script>`;
 }
 
 if (process.env.DENSER_FIXTURE_CLOCK) {

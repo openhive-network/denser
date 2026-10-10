@@ -102,15 +102,49 @@ function buildConnectSrcHosts(): Set<string> {
 }
 
 /**
+ * Request header that carries the per-request CSP nonce from the proxy to server components
+ * and route handlers (Next itself reads the nonce from the request's CSP header).
+ */
+export const NONCE_HEADER = 'x-nonce';
+
+const NONCE_PATTERN = /^[A-Za-z0-9+/]+={0,2}$/;
+
+/**
+ * Generate a fresh, base64-encoded nonce for one response
+ */
+export function generateNonce(): string {
+  return btoa(crypto.randomUUID());
+}
+
+/**
+ * Return the nonce from a NONCE_HEADER value, or undefined when it is missing or not base64.
+ * The value ends up in an HTML attribute, so anything else (e.g. a client-sent header on a
+ * path the proxy does not cover) is refused rather than echoed.
+ */
+export function parseNonce(value: string | null | undefined): string | undefined {
+  return value && NONCE_PATTERN.test(value) ? value : undefined;
+}
+
+/**
  * Build script-src directive
  */
-function buildScriptSrc(): string {
-  let scriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'";
+function buildScriptSrc(nonce: string): string {
+  // 'strict-dynamic' lets scripts loaded by nonced scripts (Next chunks, next/script) run, and makes
+  // CSP3 browsers ignore the host list below; the hosts remain for browsers without it.
+  // 'wasm-unsafe-eval' is needed for wax's WebAssembly; hb-auth's beekeeper (which uses new Function)
+  // runs in /auth/worker.js, served without this policy.
+  let scriptSrc = `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'`;
+
+  // React's dev build reconstructs server stacks with eval; never sent by a production build
+  if (process.env.NODE_ENV === 'development') {
+    scriptSrc += " 'unsafe-eval'";
+  }
 
   // platform.twitter.com widgets.js is no longer loaded (issue #934) - tweets render
   // inside their own platform.twitter.com iframe (frame-src), which needs no script-src
 
-  // Cloudflare Web Analytics beacon, auto-injected by zones with RUM enabled
+  // Cloudflare Web Analytics beacon, auto-injected by zones with RUM enabled. Under 'strict-dynamic'
+  // CSP3 browsers run the injected tag only if it carries the page's nonce; the host covers the rest.
   scriptSrc += ' https://static.cloudflareinsights.com';
 
   if (process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID) {
@@ -122,10 +156,11 @@ function buildScriptSrc(): string {
 
 /**
  * Build the full CSP header value at runtime
+ * @param nonce - this response's nonce (from generateNonce), allowed in script-src
  */
-export function buildCsp(config: CspConfig = {}): string {
+export function buildCsp(config: CspConfig, nonce: string): string {
   const connectSrcHosts = buildConnectSrcHosts();
-  const scriptSrc = buildScriptSrc();
+  const scriptSrc = buildScriptSrc(nonce);
 
   // Image proxy host — all external images are proxied through this
   let imagesHost = 'https://images.hive.blog';
@@ -160,7 +195,7 @@ export function buildCsp(config: CspConfig = {}): string {
   const directives = [
     // Default fallback for unspecified resource types
     "default-src 'self'",
-    // Scripts: self + inline (required for Next.js) + eval (required for HBAuth/Beekeeper WASM) + Google Sign-In
+    // Scripts: only those carrying this response's nonce, and what they load
     scriptSrc,
     // Styles: self + inline (required for React/Next.js styling)
     "style-src 'self' 'unsafe-inline'",
