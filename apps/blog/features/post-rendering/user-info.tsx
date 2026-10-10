@@ -1,5 +1,5 @@
 import { Link } from '@hive/ui';
-import parseDate from '@ui/lib/parse-date';
+import { formatUtcDate } from '@ui/lib/parse-date';
 import { Badge } from '@ui/components/badge';
 import { useTranslation } from '@/blog/i18n/client';
 
@@ -81,7 +81,7 @@ function UserInfo({
         {community_title || `#${category}`}
       </Link>
       <span className="text-muted-foreground">•</span>
-      <span className="text-muted-foreground" title={String(parseDate(created))}>
+      <span className="text-muted-foreground" title={formatUtcDate(created)}>
         <TimeAgo date={created} />
       </span>
     </div>
