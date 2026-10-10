@@ -1,7 +1,7 @@
 "use client";
 
 import { MutableRefObject, RefObject, useEffect, useRef } from "react";
-import { alignBlockKinds, type BlockKind } from "../lib/scroll-sync-anchors";
+import { alignBlockKinds, blockAnchorPairs, type BlockKind, type Span } from "../lib/scroll-sync-anchors";
 
 interface UseScrollSyncParams {
   editorContainerRef: RefObject<HTMLDivElement | null>;
@@ -66,10 +66,14 @@ function previewBlockKind(el: HTMLElement): BlockKind | null {
   return kind;
 }
 
+const IMAGE_LINE = /^!\[/;
+// Markdown image or raw <img>; a line holding more than one is left unanchored,
+// since its images may render side by side.
+const IMAGE_SOURCE = /!\[[^\]]*\]\(|<img[\s>]/gi;
+
 /** Kind of a single-line editor block that none of the multi-line rules took. */
 function singleLineKind(trimmed: string): BlockKind {
   if (trimmed.startsWith("#")) return "heading";
-  if (/^!\[/.test(trimmed)) return "image";
   if (/^(---|\*\*\*|___)$/.test(trimmed)) return "hr";
   if (trimmed.startsWith("<")) return "html";
   return "paragraph";
@@ -179,9 +183,10 @@ export function useScrollSync({
         }
         const groups: LineGroup[] = [];
 
-        const isPlainText = (t: string) =>
+        // Text and image lines; without a blank line between them they form one
+        // markdown paragraph, e.g. an image with its caption on the next line.
+        const isParagraphLine = (t: string) =>
           !t.startsWith("#") &&
-          !/^!\[/.test(t) &&
           !/^(---|\*\*\*|___)$/.test(t) &&
           !/^[-*+]\s|^\d+[.)]\s/.test(t) &&
           !t.startsWith(">") &&
@@ -320,19 +325,21 @@ export function useScrollSync({
           }
 
           // Paragraph continuation
-          if (isPlainText(trimmed)) {
+          if (isParagraphLine(trimmed)) {
             const startLine = cmLines[idx];
             let endLine = cmLines[idx];
+            let imagesOnly = IMAGE_LINE.test(trimmed);
             idx++;
             while (idx < cmLines.length) {
               const nextTrimmed = (cmLines[idx].textContent || "").trim();
               if (!nextTrimmed) break;
-              if (!isPlainText(nextTrimmed)) break;
+              if (!isParagraphLine(nextTrimmed)) break;
+              imagesOnly &&= IMAGE_LINE.test(nextTrimmed);
               endLine = cmLines[idx];
               idx++;
             }
             groups.push({
-              kind: "paragraph",
+              kind: imagesOnly ? "image" : "paragraph",
               editorTop: getOffsetIn(startLine, editorScrollArea),
               editorBottom: getOffsetIn(endLine, editorScrollArea) + endLine.offsetHeight,
             });
@@ -361,7 +368,19 @@ export function useScrollSync({
 
         const pairs = alignBlockKinds(groups.map((g) => g.kind), previewKinds);
 
-        // Phase 3: Build anchor arrays with top+bottom edge pairs
+        const editorImageLines = cmLines.flatMap((line) => {
+          const imageCount = (line.textContent || "").match(IMAGE_SOURCE)?.length ?? 0;
+          if (!imageCount) return [];
+          const top = getOffsetIn(line, editorScrollArea);
+          return [{ top, bottom: top + line.offsetHeight, imageCount }];
+        });
+        const measureImages = (block: HTMLElement): Span[] =>
+          (Array.from(block.querySelectorAll("img")) as HTMLElement[]).map((img) => {
+            const top = getOffsetIn(img, previewEl);
+            return { top, bottom: top + img.getBoundingClientRect().height };
+          });
+
+        // Phase 3: Build anchor arrays from each block's edges and its images' edges
         const eAnchors: number[] = [0];
         const pAnchors: number[] = [0];
 
@@ -369,13 +388,20 @@ export function useScrollSync({
           const g = groups[groupIdx];
           const block = previewBlocks[blockIdx];
           const blockTop = getOffsetIn(block, previewEl);
-          const blockBottom = blockTop + block.offsetHeight;
-          eAnchors.push(g.editorTop);
-          pAnchors.push(blockTop);
+          const groupImages = editorImageLines.filter(
+            (line) => line.top >= g.editorTop && line.top < g.editorBottom
+          );
+          const editorImages = groupImages.every((line) => line.imageCount === 1) ? groupImages : [];
 
-          if (g.editorBottom > g.editorTop && blockBottom > blockTop) {
-            eAnchors.push(g.editorBottom);
-            pAnchors.push(blockBottom);
+          const anchorPairs = blockAnchorPairs(
+            { top: g.editorTop, bottom: g.editorBottom },
+            { top: blockTop, bottom: blockTop + block.offsetHeight },
+            editorImages,
+            editorImages.length ? measureImages(block) : []
+          );
+          for (const [editorOffset, previewOffset] of anchorPairs) {
+            eAnchors.push(editorOffset);
+            pAnchors.push(previewOffset);
           }
         }
 

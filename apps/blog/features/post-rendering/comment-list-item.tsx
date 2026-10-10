@@ -1,7 +1,7 @@
 'use client';
 
 import { Icons } from '@hive/ui/components/icons';
-import parseDate from '@hive/ui/lib/parse-date';
+import { formatUtcDate } from '@hive/ui/lib/parse-date';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@hive/ui/components/card';
 import { cn } from '@hive/ui/lib/utils';
 import { Link } from '@hive/ui';
@@ -250,7 +250,7 @@ const CommentListItem = memo(function CommentListItem({
                                 <Link
                                   href={`#@${comment.author}/${comment.permlink}`}
                                   className="hover:text-destructive md:text-sm ml-1"
-                                  title={String(parseDate(comment.created))}
+                                  title={formatUtcDate(comment.created)}
                                   data-testid="comment-timestamp-link"
                                   onClick={() => {
                                     onCommnentLinkClick(`#@${comment.author}/${comment.permlink}`);

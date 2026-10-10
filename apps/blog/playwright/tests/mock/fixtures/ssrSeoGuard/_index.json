@@ -2,5 +2,5 @@
   "testName": "ssrSeoGuard",
   "base": "ssrChecks",
   "additive": true,
-  "note": "Replay-only corpus for ssrSeoGuard.spec.ts. Shares the anonymous /trending, post and profile recordings with ssrChecks and adds anonymous feeds copied verbatim from other recordings: /hot and /created (homeMainPage 0004/0005), the hive-139531 community feed with its pinned posts (tagCommunityFeeds 0001/0002/0005/0006/0007) and the #hive tag feed (searchRedirects 0007). `additive: true` because these keys are new, not patches."
+  "note": "Replay-only corpus for ssrSeoGuard.spec.ts. Shares the anonymous /trending, post and profile recordings with ssrChecks and adds anonymous feeds copied verbatim from other recordings: /hot and /created (homeMainPage 0004/0005), the hive-139531 community feed with its pinned posts (tagCommunityFeeds 0001/0002/0005/0006/0007), the #hive tag feed (searchRedirects 0007), and the @hiveio replies tab with its profile header (userProfileTabs 0001/0002/0008). `additive: true` because these keys are new, not patches."
 }
