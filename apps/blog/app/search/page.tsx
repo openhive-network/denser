@@ -4,7 +4,7 @@ import { searchPosts } from '@transaction/lib/hivesense-api';
 import { getByText } from '@transaction/lib/hive-api';
 import { getEffectiveObserverFromCookies, getObserverFromCookies } from '@/blog/lib/auth-utils';
 import { getLogger } from '@ui/lib/logging';
-import { parseSearchParams } from '@ui/lib/search-params';
+import { DEFAULT_SEARCH_SORT, parseSearchParams } from '@ui/lib/search-params';
 import { ObserverProvider } from '@/blog/components/observer-provider';
 import type { PostStub } from '@hive/common-hiveio-packages/wax';
 import type { CardEntry } from '@/blog/features/list-of-posts/lib/card-entry';
@@ -23,7 +23,7 @@ const SearchPage = async (props: SearchPageProps) => {
   const classicQuery = validatedParams.q;
   const userTopicQuery = validatedParams.a;
   const topicQuery = validatedParams.p;
-  const sortQuery = validatedParams.s as SearchSort | undefined;
+  const sortQuery: SearchSort = validatedParams.s ?? DEFAULT_SEARCH_SORT;
 
   const observer = await getEffectiveObserverFromCookies();
 
@@ -36,7 +36,7 @@ const SearchPage = async (props: SearchPageProps) => {
       aiParam
         ? searchPosts({ query: aiParam, observer, result_limit: 1000, full_posts: 20 })
         : Promise.resolve(null),
-      classicQuery && sortQuery
+      classicQuery
         ? getByText({
             pattern: classicQuery,
             observer,
@@ -46,7 +46,7 @@ const SearchPage = async (props: SearchPageProps) => {
             sort: sortQuery
           })
         : Promise.resolve(null),
-      userTopicQuery && topicQuery && sortQuery
+      userTopicQuery && topicQuery
         ? getByText({
             pattern: topicQuery,
             author: userTopicQuery,

@@ -28,6 +28,9 @@ export const searchParamsSchema = z.object({
 
 export type SearchParams = z.infer<typeof searchParamsSchema>;
 
+/** Sort applied when a search URL carries no valid `s` parameter. */
+export const DEFAULT_SEARCH_SORT: NonNullable<SearchParams['s']> = 'relevance';
+
 /**
  * Parses and validates search parameters from URL.
  * Returns validated params or null values for invalid fields.

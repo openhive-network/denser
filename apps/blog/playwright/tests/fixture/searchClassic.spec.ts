@@ -32,6 +32,12 @@ const CLASSIC_QUERY = 'hive';
 // q='hive'). Re-recording may change this — update alongside the fixture.
 const RELEVANCE_FIRST_AUTHOR = 'bradleyarrow';
 
+const POST_AUTHOR_PATTERN = /data-testid="post-author"[^>]*>([^<]+)</g;
+
+function serverRenderedAuthors(html: string): string[] {
+  return Array.from(html.matchAll(POST_AUTHOR_PATTERN), (match) => match[1]);
+}
+
 test.describe('§13 Search — classic text search', () => {
   let searchPage: SearchPage;
 
@@ -77,5 +83,20 @@ test.describe('§13 Search — classic text search', () => {
 
     await expect(page).toHaveURL(/[?&]s=created/);
     await expect(page).toHaveURL(/[?&]q=hive/);
+  });
+
+  // SRCH-06 — A shared or hand-typed URL without `s=` searches by relevance
+  // on the server, exactly like the app's own `&s=relevance` links.
+  test('SRCH-06 a query without a sort renders the relevance results in the server HTML', async ({ request }) => {
+    const withoutSort = await request.get(`/search?q=${CLASSIC_QUERY}`);
+    const withRelevance = await request.get(`/search?q=${CLASSIC_QUERY}&s=relevance`);
+    expect(withoutSort.status()).toBe(200);
+    expect(withRelevance.status()).toBe(200);
+
+    const authorsWithoutSort = serverRenderedAuthors(await withoutSort.text());
+    const authorsWithRelevance = serverRenderedAuthors(await withRelevance.text());
+
+    expect(authorsWithRelevance[0]).toBe(RELEVANCE_FIRST_AUTHOR);
+    expect(authorsWithoutSort).toEqual(authorsWithRelevance);
   });
 });
