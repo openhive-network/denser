@@ -4,6 +4,7 @@ import secureRandom from 'secure-random';
 import { getPostHeader } from './bridge-api';
 import type { EAssetName } from '@hiveio/wax';
 import { getChain } from './chain';
+import { decimalToSatoshis } from '@ui/lib/asset-math';
 
 // Re-export EAssetName for convenience
 export type { EAssetName };
@@ -72,6 +73,5 @@ export const getAsset = async (value: string, token: TokenType) => {
     throw new Error(`There should be maximum of ${precision} decimal places in ${token} amount`);
   }
 
-  const amount = Number(value).toFixed(precision).replace('.', '');
-  return createAsset(amount, token);
+  return createAsset(decimalToSatoshis(value, precision).toString(), token);
 };

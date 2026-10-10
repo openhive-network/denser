@@ -19,3 +19,12 @@ export function vestsToHiveSatoshis(
 export function hiveToHbdSatoshis(hive: bigint, base: bigint, quote: bigint): bigint {
   return (hive * base) / quote;
 }
+
+/**
+ * Satoshis of a decimal `value` (e.g. `'0.25'`) at the given precision: the integer wax's NaiAsset
+ * `amount` carries, so `'0.25'` at precision 3 is `250n`. `value` is parsed as `Number()` parses it
+ * and rounded to `precision` decimal places.
+ */
+export function decimalToSatoshis(value: string, precision: number): bigint {
+  return BigInt(Number(value).toFixed(precision).replace('.', ''));
+}
