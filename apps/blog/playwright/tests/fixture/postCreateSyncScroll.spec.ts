@@ -112,6 +112,65 @@ async function previewParagraphOffset(scroller: Locator, text: string): Promise<
   }, text);
 }
 
+const CAPTIONED_IMAGE_ALT = 'captioned photo';
+const CAPTIONED_IMAGE_LINE = `![${CAPTIONED_IMAGE_ALT}](https://example.com/sync-scroll-captioned.png)`;
+const CAPTION = 'Caption under the photo';
+// Image blocks whose source has more lines than the image alone, so mapping
+// the whole block proportionally misplaces the image inside it.
+const CAPTIONED_IMAGE_BLOCKS = {
+  'centered with a caption': `<center>\n${CAPTIONED_IMAGE_LINE}\n<sub>${CAPTION}</sub>\n</center>`,
+  'with a caption on the next line': `${CAPTIONED_IMAGE_LINE}\n${CAPTION}`
+};
+const LEAD_PARAGRAPH_COUNT = 6;
+
+function captionedImageBody(imageBlock: string): string {
+  const blocks = ['# Photo post'];
+  for (let i = 1; i <= LEAD_PARAGRAPH_COUNT; i++) blocks.push(`Lead paragraph ${i}.`);
+  blocks.push(imageBlock);
+  for (let i = 1; i <= FILLER_PARAGRAPH_COUNT; i++) blocks.push(`Filler paragraph ${i}.`);
+  return blocks.join('\n\n');
+}
+
+async function openEditorWithCaptionedImage(page: Page, imageBlock: string) {
+  await serveImages(page, IMAGE_SIZE);
+  await gotoSubmitLoggedIn(page);
+  const editor = new PostEditorPage(page);
+  await editor.validateDefaultPostEditorIsLoaded();
+  await fillPostBody(page, captionedImageBody(imageBlock));
+  await expect(editor.getPreviewContainer).toContainText(IMAGE_BODY_LAST_LINE);
+  const image = editor.getPreviewContainer.locator(`img[alt="${CAPTIONED_IMAGE_ALT}"]`);
+  await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.complete && img.naturalHeight > 0)).toBe(true);
+  return editor;
+}
+
+/** Scrolls the editor so its viewport top is `fraction` of the way down the line reading `text`, indent aside. */
+async function scrollEditorIntoLine(scroller: Locator, text: string, fraction: number) {
+  await scroller.evaluate(
+    (el, [lineText, f]) => {
+      const line = Array.from(el.querySelectorAll<HTMLElement>('.cm-content > .cm-line')).find(
+        (l) => l.textContent?.trim() === lineText
+      );
+      if (!line) throw new Error(`no editor line "${lineText}"`);
+      el.scrollTop += line.getBoundingClientRect().top - el.getBoundingClientRect().top + line.offsetHeight * f;
+      el.dispatchEvent(new Event('scroll', { bubbles: true }));
+    },
+    [text, fraction] as const
+  );
+}
+
+/** Distance from the preview viewport's top to the point `fraction` of the way down the image with `alt`. */
+async function previewImageDrift(scroller: Locator, alt: string, fraction: number): Promise<number> {
+  return scroller.evaluate(
+    (el, [imageAlt, f]) => {
+      const image = el.querySelector(`img[alt="${imageAlt}"]`);
+      if (!image) throw new Error(`no preview image "${imageAlt}"`);
+      const box = image.getBoundingClientRect();
+      return Math.abs(box.top + box.height * f - el.getBoundingClientRect().top);
+    },
+    [alt, fraction] as const
+  );
+}
+
 async function clickSyncToggle(editor: PostEditorPage) {
   await editor.getSyncScrollContainer.hover();
   await editor.getSyncScrollToggle.click();
@@ -185,4 +244,18 @@ test.describe('Post creation — sync scroll with images (§2.1)', () => {
         .toBeLessThanOrEqual(ALIGN_TOLERANCE_PX);
     }
   });
+
+  for (const [layout, imageBlock] of Object.entries(CAPTIONED_IMAGE_BLOCKS)) {
+    test(`POST-SYNC-SCROLL-IMG-02: preview tracks the editor inside an image ${layout}`, async ({ page }) => {
+      const editor = await openEditorWithCaptionedImage(page, imageBlock);
+      const midpoint = 0.5;
+
+      await scrollEditorIntoLine(editor.getEditorScroller, CAPTIONED_IMAGE_LINE, midpoint);
+      await expect
+        .poll(() => previewImageDrift(editor.getPreviewScroller, CAPTIONED_IMAGE_ALT, midpoint), {
+          message: "preview top should be at the image's midpoint"
+        })
+        .toBeLessThanOrEqual(ALIGN_TOLERANCE_PX);
+    });
+  }
 });

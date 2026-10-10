@@ -4,11 +4,13 @@ import { WaxRequestError } from '@hiveio/wax';
 import {
   FAILOVER_ATTEMPT_TIMEOUT_MS,
   FAILOVER_BUDGET_MS,
+  HEDGE_DELAY_MS,
   parseFallbackNodes,
   wrapChainWithServerFailover,
   type IServerFailoverOptions
 } from './server-failover';
 import { NODE_COOLDOWN_MS, NodeHealth } from './node-health';
+import { getLogger } from '@ui/lib/logging';
 
 type Outcome = 'ok' | 'transport' | 'missing';
 
@@ -21,9 +23,55 @@ interface IFakeChain {
   chainId: string;
 }
 
+/** Request timeout of the configured primary chain (wax's default `apiTimeout`). */
+const PRIMARY_TIMEOUT_MS = 5_000;
+
+/**
+ * Virtual time: `sleep` registers a timer, and `run` / `advance` fire due timers in order, letting
+ * every promise reaction run before the next one.
+ */
+const createFakeClock = () => {
+  let time = 0;
+  const timers: Array<{ at: number; resolve: () => void }> = [];
+  const flush = () => new Promise<void>((resolve) => setImmediate(resolve));
+
+  const fireTimersUntil = async (done: () => boolean, until: number) => {
+    for (;;) {
+      await flush();
+      if (done()) return;
+      timers.sort((a, b) => a.at - b.at);
+      const next = timers[0];
+      if (!next || next.at > until) return;
+      timers.shift();
+      time = next.at;
+      next.resolve();
+    }
+  };
+
+  return {
+    now: () => time,
+    sleep: (ms: number) => new Promise<void>((resolve) => timers.push({ at: time + ms, resolve })),
+    run: async <T>(promise: Promise<T>): Promise<T> => {
+      let settled = false;
+      const tracked = promise.finally(() => {
+        settled = true;
+      });
+      await fireTimersUntil(() => settled, Infinity);
+      if (!settled) throw new Error('call never settled');
+      return tracked;
+    },
+    advance: async (ms: number) => {
+      const until = time + ms;
+      await fireTimersUntil(() => false, until);
+      time = until;
+    }
+  };
+};
+
 /**
  * A fake wax chain per node. Each node answers from its own queue of outcomes (the last one
- * repeats) and every call takes `latencyMs` of fake time, or the node's own `nodeLatencyMs`.
+ * repeats) after `latencyMs` of fake time, or the node's own `nodeLatencyMs` (`Infinity`: it never
+ * answers); a call slower than the chain's request timeout fails with a transport error then.
  */
 interface ISetupOptions {
   latencyMs?: number;
@@ -36,60 +84,56 @@ const setup = (
   outcomes: Record<string, Outcome[]>,
   { latencyMs = 100, nodeLatencyMs = {}, primary = 'https://primary', hooks = {} }: ISetupOptions = {}
 ) => {
-  let clock = 0;
-  const now = () => clock;
-  const health = new NodeHealth({ now });
+  const clock = createFakeClock();
+  const health = new NodeHealth({ now: clock.now });
   const calls: string[] = [];
   const created: Array<{ node: string; timeoutMs: number }> = [];
 
-  const answer = async (node: string, method: string, params: unknown) => {
+  const answer = async (node: string, timeoutMs: number, method: string, params: unknown) => {
     calls.push(`${node} ${method}`);
-    clock += nodeLatencyMs[node] ?? latencyMs;
     const queue = outcomes[node] ?? ['transport'];
     const outcome = queue.length > 1 ? queue.shift() : queue[0];
-    if (outcome === 'transport') throw new WaxRequestError(`fetch failed: ${node}`);
+    const latency = nodeLatencyMs[node] ?? latencyMs;
+    await clock.sleep(Math.min(latency, timeoutMs));
+    if (latency > timeoutMs || outcome === 'transport') throw new WaxRequestError(`fetch failed: ${node}`);
     if (outcome === 'missing')
       throw Object.assign(new Error('Post does not exist'), { name: 'WaxChainApiError' });
     return { node, params };
   };
 
-  const makeChain = (node: string): IFakeChain => ({
+  const makeChain = (node: string, timeoutMs: number): IFakeChain => ({
     endpointUrl: node,
     chainId: 'beeab0de',
     api: {
-      bridge: { get_ranked_posts: (params) => answer(node, 'bridge.get_ranked_posts', params) },
+      bridge: { get_ranked_posts: (params) => answer(node, timeoutMs, 'bridge.get_ranked_posts', params) },
       network_broadcast_api: {
-        broadcast_transaction: (params) => answer(node, 'broadcast_transaction', params)
+        broadcast_transaction: (params) => answer(node, timeoutMs, 'broadcast_transaction', params)
       }
     }
   });
 
-  const chain = wrapChainWithServerFailover(makeChain(primary), {
+  const chain = wrapChainWithServerFailover(makeChain(primary, PRIMARY_TIMEOUT_MS), {
     fallbackNodes: ['https://fallback-a', primary, 'https://fallback-b'],
     createNodeChain: (node, timeoutMs) => {
       created.push({ node, timeoutMs });
-      return makeChain(node);
+      return makeChain(node, timeoutMs);
     },
     health,
     ...hooks,
-    now,
-    sleep: async (ms) => {
-      clock += ms;
-    }
+    now: clock.now,
+    sleep: clock.sleep
   });
 
-  const advance = (ms: number) => {
-    clock += ms;
-  };
+  const rankedPosts = (params: unknown = {}) => clock.run(chain.api.bridge.get_ranked_posts(params));
 
-  return { chain, calls, created, elapsed: () => clock, advance };
+  return { chain, rankedPosts, run: clock.run, calls, created, elapsed: clock.now, advance: clock.advance };
 };
 
 describe('wrapChainWithServerFailover', () => {
   it('passes a successful call through without any extra attempt', async () => {
-    const { chain, calls, created } = setup({ 'https://primary': ['ok'] });
+    const { rankedPosts, calls, created } = setup({ 'https://primary': ['ok'] });
 
-    const result = await chain.api.bridge.get_ranked_posts({ sort: 'trending' });
+    const result = await rankedPosts({ sort: 'trending' });
 
     expect(result).to.deep.equal({ node: 'https://primary', params: { sort: 'trending' } });
     expect(calls).to.deep.equal(['https://primary bridge.get_ranked_posts']);
@@ -97,9 +141,9 @@ describe('wrapChainWithServerFailover', () => {
   });
 
   it('retries the primary node once after a transient transport failure', async () => {
-    const { chain, calls, created } = setup({ 'https://primary': ['transport', 'ok'] });
+    const { rankedPosts, calls, created } = setup({ 'https://primary': ['transport', 'ok'] });
 
-    const result = await chain.api.bridge.get_ranked_posts({ sort: 'trending' });
+    const result = await rankedPosts({ sort: 'trending' });
 
     expect(result).to.deep.equal({ node: 'https://primary', params: { sort: 'trending' } });
     expect(calls).to.deep.equal([
@@ -110,13 +154,13 @@ describe('wrapChainWithServerFailover', () => {
   });
 
   it('fails over to the fallback nodes in order, skipping the primary in the list', async () => {
-    const { chain, calls } = setup({
+    const { rankedPosts, calls } = setup({
       'https://primary': ['transport'],
       'https://fallback-a': ['transport'],
       'https://fallback-b': ['ok']
     });
 
-    const result = await chain.api.bridge.get_ranked_posts({ sort: 'hot' });
+    const result = await rankedPosts({ sort: 'hot' });
 
     expect(result).to.deep.equal({ node: 'https://fallback-b', params: { sort: 'hot' } });
     expect(calls).to.deep.equal([
@@ -128,45 +172,45 @@ describe('wrapChainWithServerFailover', () => {
   });
 
   it('reuses one chain per node across calls', async () => {
-    const { chain, created } = setup({ 'https://primary': ['transport', 'ok', 'transport', 'ok'] });
+    const { rankedPosts, created } = setup({ 'https://primary': ['transport', 'ok', 'transport', 'ok'] });
 
-    await chain.api.bridge.get_ranked_posts({});
-    await chain.api.bridge.get_ranked_posts({});
+    await rankedPosts({});
+    await rankedPosts({});
 
     expect(created.map(({ node }) => node)).to.deep.equal(['https://primary']);
   });
 
   it('never retries a definitive API answer', async () => {
-    const { chain, calls } = setup({ 'https://primary': ['missing'] });
+    const { rankedPosts, calls } = setup({ 'https://primary': ['missing'] });
 
-    const error = await chain.api.bridge.get_ranked_posts({}).catch((e: unknown) => e);
+    const error = await rankedPosts({}).catch((e: unknown) => e);
 
     expect(error).to.be.instanceOf(Error).with.property('name', 'WaxChainApiError');
     expect(calls).to.have.length(1);
   });
 
   it('stops on a definitive answer from a fallback node instead of trying further nodes', async () => {
-    const { chain, calls } = setup({ 'https://primary': ['transport'], 'https://fallback-a': ['missing'] });
+    const { rankedPosts, calls } = setup({ 'https://primary': ['transport'], 'https://fallback-a': ['missing'] });
 
-    const error = await chain.api.bridge.get_ranked_posts({}).catch((e: unknown) => e);
+    const error = await rankedPosts({}).catch((e: unknown) => e);
 
     expect(error).to.have.property('name', 'WaxChainApiError');
     expect(calls).to.have.length(3);
   });
 
   it('never re-sends a broadcast', async () => {
-    const { chain, calls } = setup({ 'https://primary': ['transport', 'ok'] });
+    const { chain, run, calls } = setup({ 'https://primary': ['transport', 'ok'] });
 
-    const error = await chain.api.network_broadcast_api.broadcast_transaction({}).catch((e: unknown) => e);
+    const error = await run(chain.api.network_broadcast_api.broadcast_transaction({})).catch((e: unknown) => e);
 
     expect(error).to.be.instanceOf(WaxRequestError);
     expect(calls).to.deep.equal(['https://primary broadcast_transaction']);
   });
 
   it('rethrows the last transport error once every node failed', async () => {
-    const { chain, calls } = setup({});
+    const { rankedPosts, calls } = setup({});
 
-    const error = await chain.api.bridge.get_ranked_posts({}).catch((e: unknown) => e);
+    const error = await rankedPosts({}).catch((e: unknown) => e);
 
     expect(error)
       .to.be.instanceOf(WaxRequestError)
@@ -176,27 +220,116 @@ describe('wrapChainWithServerFailover', () => {
 
   it('does not start an attempt that could overrun the time budget', async () => {
     // Each failure takes a full attempt timeout, so only part of the node list fits the budget.
-    const { chain, calls, elapsed } = setup({}, { latencyMs: FAILOVER_ATTEMPT_TIMEOUT_MS });
+    const { rankedPosts, calls, elapsed } = setup({}, { latencyMs: FAILOVER_ATTEMPT_TIMEOUT_MS });
 
-    await chain.api.bridge.get_ranked_posts({}).catch(() => undefined);
+    await rankedPosts({}).catch(() => undefined);
 
     expect(elapsed()).to.be.at.most(FAILOVER_BUDGET_MS);
     expect(calls.length).to.be.lessThan(4);
   });
 
+  describe('a dead or slow node', () => {
+    const ranked = 'bridge.get_ranked_posts';
+
+    it('serves a cold first call through the fallback when the primary never answers', async () => {
+      const { rankedPosts, calls, elapsed } = setup(
+        { 'https://fallback-a': ['ok'] },
+        { nodeLatencyMs: { 'https://primary': Infinity } }
+      );
+
+      const first = await rankedPosts({});
+      const firstMs = elapsed();
+      calls.length = 0;
+      const second = await rankedPosts({});
+
+      expect(first).to.have.property('node', 'https://fallback-a');
+      expect(firstMs).to.equal(HEDGE_DELAY_MS + 100);
+      expect(firstMs).to.be.below(FAILOVER_BUDGET_MS);
+      expect(second).to.have.property('node', 'https://fallback-a');
+      expect(calls).to.deep.equal([`https://fallback-a ${ranked}`]);
+    });
+
+    it('does not mark a node down for one answer slower than the old 2 s attempt timeout', async () => {
+      const { rankedPosts, calls } = setup(
+        { 'https://primary': ['transport'], 'https://fallback-a': ['ok'] },
+        { nodeLatencyMs: { 'https://fallback-a': 2_100 } }
+      );
+
+      const first = await rankedPosts({});
+      calls.length = 0;
+      const second = await rankedPosts({});
+
+      expect(first).to.have.property('node', 'https://fallback-a');
+      expect(second).to.have.property('node', 'https://fallback-a');
+      expect(calls).to.deep.equal([`https://fallback-a ${ranked}`]);
+    });
+
+    it('takes a hedged-past node back once its late answer arrives', async () => {
+      const { rankedPosts, calls, advance } = setup(
+        { 'https://primary': ['ok'], 'https://fallback-a': ['ok'] },
+        { nodeLatencyMs: { 'https://primary': HEDGE_DELAY_MS + 1_000 } }
+      );
+
+      const first = await rankedPosts({});
+      await advance(1_000);
+      calls.length = 0;
+      await rankedPosts({});
+
+      expect(first).to.have.property('node', 'https://fallback-a');
+      expect(calls[0]).to.equal(`https://primary ${ranked}`);
+    });
+
+    it('asks the most recently healthy node first when every node is down', async () => {
+      const { rankedPosts, calls } = setup({
+        'https://primary': ['transport'],
+        'https://fallback-a': ['transport'],
+        'https://fallback-b': ['ok', 'transport', 'ok']
+      });
+      await rankedPosts({});
+      await rankedPosts({}).catch(() => undefined);
+      calls.length = 0;
+
+      const result = await rankedPosts({});
+
+      expect(result).to.have.property('node', 'https://fallback-b');
+      expect(calls).to.deep.equal([`https://fallback-b ${ranked}`]);
+    });
+
+    it('names only the nodes it tried when the call fails', async () => {
+      const logger = getLogger('app');
+      const originalError = logger.error;
+      const logged: unknown[][] = [];
+      logger.error = (...args: unknown[]) => {
+        logged.push(args);
+      };
+      try {
+        const { rankedPosts } = setup({ 'https://fallback-a': ['ok', 'transport'] });
+        await rankedPosts({});
+        logged.length = 0;
+
+        await rankedPosts({}).catch(() => undefined);
+      } finally {
+        logger.error = originalError;
+      }
+
+      expect(logged).to.have.length(1);
+      expect(logged[0][3]).to.equal('https://fallback-a, https://fallback-b');
+    });
+  });
+
   describe('remembering failed nodes', () => {
     const ranked = 'bridge.get_ranked_posts';
 
-    it('sends later calls straight to the fallback once the primary timed out', async () => {
-      const { chain, calls, elapsed } = setup(
+    it('sends later calls straight to the fallback once the primary stalled', async () => {
+      const { rankedPosts, calls, elapsed } = setup(
         { 'https://primary': ['transport'], 'https://fallback-a': ['ok'] },
         { nodeLatencyMs: { 'https://primary': FAILOVER_ATTEMPT_TIMEOUT_MS } }
       );
-      await chain.api.bridge.get_ranked_posts({});
+      await rankedPosts({});
       calls.length = 0;
       const before = elapsed();
 
-      const results = [await chain.api.bridge.get_ranked_posts({}), await chain.api.bridge.get_ranked_posts({})];
+      const results = [await rankedPosts({}), await rankedPosts({})];
 
       expect(results.map((result) => (result as { node: string }).node)).to.deep.equal([
         'https://fallback-a',
@@ -207,18 +340,18 @@ describe('wrapChainWithServerFailover', () => {
     });
 
     it('probes the primary after the cooldown and prefers it again once it answers', async () => {
-      const { chain, calls, advance } = setup({
+      const { rankedPosts, calls, advance } = setup({
         'https://primary': ['transport', 'transport', 'ok'],
         'https://fallback-a': ['ok']
       });
-      await chain.api.bridge.get_ranked_posts({});
+      await rankedPosts({});
       calls.length = 0;
 
-      advance(NODE_COOLDOWN_MS / 2);
-      const duringCooldown = await chain.api.bridge.get_ranked_posts({});
-      advance(NODE_COOLDOWN_MS / 2);
-      const probed = await chain.api.bridge.get_ranked_posts({});
-      const next = await chain.api.bridge.get_ranked_posts({});
+      await advance(NODE_COOLDOWN_MS / 2);
+      const duringCooldown = await rankedPosts({});
+      await advance(NODE_COOLDOWN_MS / 2);
+      const probed = await rankedPosts({});
+      const next = await rankedPosts({});
 
       expect(duringCooldown).to.have.property('node', 'https://fallback-a');
       expect(probed).to.have.property('node', 'https://primary');
@@ -231,14 +364,14 @@ describe('wrapChainWithServerFailover', () => {
     });
 
     it('restarts the cooldown when the probe fails, without retrying the primary', async () => {
-      const { chain, calls, advance } = setup({ 'https://fallback-a': ['ok'] });
-      await chain.api.bridge.get_ranked_posts({});
-      advance(NODE_COOLDOWN_MS);
+      const { rankedPosts, calls, advance } = setup({ 'https://fallback-a': ['ok'] });
+      await rankedPosts({});
+      await advance(NODE_COOLDOWN_MS);
       calls.length = 0;
 
-      await chain.api.bridge.get_ranked_posts({});
-      advance(NODE_COOLDOWN_MS / 2);
-      await chain.api.bridge.get_ranked_posts({});
+      await rankedPosts({});
+      await advance(NODE_COOLDOWN_MS / 2);
+      await rankedPosts({});
 
       expect(calls).to.deep.equal([
         `https://primary ${ranked}`,
@@ -248,22 +381,22 @@ describe('wrapChainWithServerFailover', () => {
     });
 
     it('lets only one of concurrent calls probe a recovering node', async () => {
-      const { chain, calls, advance } = setup({ 'https://fallback-a': ['ok'] });
-      await chain.api.bridge.get_ranked_posts({});
-      advance(NODE_COOLDOWN_MS);
+      const { chain, rankedPosts, run, calls, advance } = setup({ 'https://fallback-a': ['ok'] });
+      await rankedPosts({});
+      await advance(NODE_COOLDOWN_MS);
       calls.length = 0;
 
-      await Promise.all([chain.api.bridge.get_ranked_posts({}), chain.api.bridge.get_ranked_posts({})]);
+      await run(Promise.all([chain.api.bridge.get_ranked_posts({}), chain.api.bridge.get_ranked_posts({})]));
 
       expect(calls.filter((call) => call.startsWith('https://primary'))).to.have.length(1);
     });
 
     it('tries every node again, as before, when all of them are down', async () => {
-      const { chain, calls } = setup({});
-      await chain.api.bridge.get_ranked_posts({}).catch(() => undefined);
+      const { rankedPosts, calls } = setup({});
+      await rankedPosts({}).catch(() => undefined);
       calls.length = 0;
 
-      const error = await chain.api.bridge.get_ranked_posts({}).catch((e: unknown) => e);
+      const error = await rankedPosts({}).catch((e: unknown) => e);
 
       expect(error)
         .to.be.instanceOf(WaxRequestError)
@@ -277,11 +410,11 @@ describe('wrapChainWithServerFailover', () => {
     });
 
     it('keeps preferring the primary after a failure its retry recovered from', async () => {
-      const { chain, calls } = setup({ 'https://primary': ['transport', 'ok'] });
-      await chain.api.bridge.get_ranked_posts({});
+      const { rankedPosts, calls } = setup({ 'https://primary': ['transport', 'ok'] });
+      await rankedPosts({});
       calls.length = 0;
 
-      await chain.api.bridge.get_ranked_posts({});
+      await rankedPosts({});
 
       expect(calls).to.deep.equal([`https://primary ${ranked}`]);
     });
@@ -290,46 +423,46 @@ describe('wrapChainWithServerFailover', () => {
   describe('onFailover', () => {
     it('reports the node that served a call the primary failed', async () => {
       const servedBy: string[] = [];
-      const { chain } = setup(
+      const { rankedPosts } = setup(
         { 'https://primary': ['transport'], 'https://fallback-a': ['ok'] },
         { hooks: { onFailover: (node) => servedBy.push(node) } }
       );
 
-      await chain.api.bridge.get_ranked_posts({});
+      await rankedPosts({});
 
       expect(servedBy).to.deep.equal(['https://fallback-a']);
     });
 
     it('stays silent when the primary answered, also after a retry', async () => {
       const servedBy: string[] = [];
-      const { chain } = setup(
+      const { rankedPosts } = setup(
         { 'https://primary': ['transport', 'ok'] },
         { hooks: { onFailover: (node) => servedBy.push(node) } }
       );
 
-      await chain.api.bridge.get_ranked_posts({});
-      await chain.api.bridge.get_ranked_posts({});
+      await rankedPosts({});
+      await rankedPosts({});
 
       expect(servedBy).to.deep.equal([]);
     });
 
     it('stays silent when every node failed', async () => {
       const servedBy: string[] = [];
-      const { chain } = setup({}, { hooks: { onFailover: (node) => servedBy.push(node) } });
+      const { rankedPosts } = setup({}, { hooks: { onFailover: (node) => servedBy.push(node) } });
 
-      await chain.api.bridge.get_ranked_posts({}).catch(() => undefined);
+      await rankedPosts({}).catch(() => undefined);
 
       expect(servedBy).to.deep.equal([]);
     });
   });
 
   it('decides what fails over with the given transport-error check instead of wax\'s', async () => {
-    const { chain, calls } = setup(
+    const { rankedPosts, calls } = setup(
       { 'https://primary': ['missing'], 'https://fallback-a': ['ok'] },
       { hooks: { isTransportError: (error) => error instanceof Error && error.name === 'WaxChainApiError' } }
     );
 
-    const result = await chain.api.bridge.get_ranked_posts({});
+    const result = await rankedPosts({});
 
     expect(result).to.deep.equal({ node: 'https://fallback-a', params: {} });
     expect(calls).to.have.length(3);

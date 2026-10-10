@@ -4,10 +4,32 @@ import type { TransferFilters } from '@/wallet/components/transfers-history-filt
 
 type OperationValue = HiveOperation['op']['value'];
 
-const SEARCHABLE_ACCOUNT_FIELDS = ['from', 'to', 'account', 'owner', 'author'] as const;
+const SEARCHABLE_ACCOUNT_FIELDS = [
+  'from',
+  'to',
+  'account',
+  'owner',
+  'author',
+  'current_owner',
+  'open_owner'
+] as const;
 
 const involvesSearchedAccount = (opValue: OperationValue, search: string) =>
   SEARCHABLE_ACCOUNT_FIELDS.some((field) => opValue[field]?.includes(search));
+
+/**
+ * The filter the history is filtered with: with no direction ticked every direction is shown.
+ * The search narrows each direction by name and leaves the direction toggles as the user set them.
+ */
+export const resolveFilters = (rawFilter: TransferFilters): TransferFilters => {
+  const noFilters = !rawFilter.incoming && !rawFilter.outcoming && !rawFilter.others;
+  return {
+    ...rawFilter,
+    incoming: rawFilter.incoming || noFilters,
+    outcoming: rawFilter.outcoming || noFilters,
+    others: rawFilter.others || noFilters
+  };
+};
 
 interface getFilterArgs {
   filter: TransferFilters;

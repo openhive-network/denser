@@ -5,16 +5,19 @@ import { expect } from 'chai';
 import { createReadClient } from './read-client';
 import { fetchReadTransport } from './read-transport';
 import { NodeHealth } from './node-health';
-import { FAILOVER_ATTEMPT_TIMEOUT_MS, wrapChainWithServerFailover } from './server-failover';
+import { FAILOVER_BUDGET_MS, HEDGE_DELAY_MS, wrapChainWithServerFailover } from './server-failover';
 
 /**
  * The read chain the server uses, over real sockets: the primary accepts connections and never
- * answers, the fallback answers at once. Only the first call may pay for the dead primary.
+ * answers, the fallback answers at once. Only the first call may pay for the dead primary, and only
+ * its head start, not its request timeout.
  */
 
 type BridgeApi = { bridge: { get_profile: (params: unknown) => Promise<unknown> } };
 
-const BASE_TIMEOUT_MS = 500;
+/** wax's default `apiTimeout`: on its own it would leave the fallback too little of the budget. */
+const BASE_TIMEOUT_MS = 5_000;
+const FALLBACK_ROUND_TRIP_MS = 500;
 
 const listen = (server: Server | ReturnType<typeof createTcpServer>): Promise<string> =>
   new Promise((resolve) => {
@@ -64,7 +67,7 @@ describe('server failover with a black-holed primary', function () {
     await Promise.all([close(blackHole), close(fallback)]);
   });
 
-  it('pays the attempt timeout once, then serves every call in one fallback round trip', async () => {
+  it('serves a cold first call through the fallback after the head start, later calls at once', async () => {
     const chain = wrapChainWithServerFailover(createChain(primaryUrl, BASE_TIMEOUT_MS), {
       fallbackNodes: [primaryUrl, fallbackUrl],
       createNodeChain: createChain,
@@ -76,10 +79,11 @@ describe('server failover with a black-holed primary', function () {
     const later = [await timed(getProfile), await timed(getProfile), await timed(getProfile)];
 
     expect(first.result).to.deep.equal({ name: 'alice' });
-    expect(first.ms).to.be.at.least(BASE_TIMEOUT_MS + FAILOVER_ATTEMPT_TIMEOUT_MS);
+    expect(first.ms).to.be.at.least(HEDGE_DELAY_MS).and.below(HEDGE_DELAY_MS + FALLBACK_ROUND_TRIP_MS);
+    expect(first.ms).to.be.below(FAILOVER_BUDGET_MS);
     for (const { result, ms } of later) {
       expect(result).to.deep.equal({ name: 'alice' });
-      expect(ms).to.be.below(BASE_TIMEOUT_MS);
+      expect(ms).to.be.below(FALLBACK_ROUND_TRIP_MS);
     }
   });
 });

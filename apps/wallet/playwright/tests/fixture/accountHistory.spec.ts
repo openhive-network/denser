@@ -17,6 +17,8 @@ const OLDER_SENDER = 'older-sender';
 const RECURRING_SENDER = 'recurring-sender';
 const INTEREST = { amount: '1539', precision: 3, nai: '@@000000013' };
 const CANCELLED_REQUEST_ID = 1773083171;
+const REWARD_HIVE = { amount: '0', precision: 3, nai: '@@000000021' };
+const REWARD_VESTS = { amount: '0', precision: 6, nai: '@@000000037' };
 
 let stub: Server;
 
@@ -80,6 +82,44 @@ const cancelWithInterest = () => {
         value: { from: STUB_ACCOUNT, request_id: CANCELLED_REQUEST_ID }
       },
       op_type_id: 34
+    }
+  ];
+};
+
+// The reward virtual ops the history lists next to a transfer, each naming STUB_ACCOUNT in its own field.
+const rewardsOfStubAccount = () => {
+  const transfer = stubTransfer({ from: NEWER_SENDER, operationId: '301' });
+  return [
+    transfer,
+    {
+      ...transfer,
+      op: {
+        type: 'claim_reward_balance_operation',
+        value: {
+          account: STUB_ACCOUNT,
+          reward_hive: REWARD_HIVE,
+          reward_hbd: INTEREST,
+          reward_vests: REWARD_VESTS
+        }
+      },
+      op_type_id: 39,
+      operation_id: '302'
+    },
+    {
+      ...transfer,
+      op: {
+        type: 'author_reward_operation',
+        value: {
+          author: STUB_ACCOUNT,
+          permlink: 'a-post',
+          hbd_payout: INTEREST,
+          hive_payout: REWARD_HIVE,
+          vesting_payout: REWARD_VESTS
+        }
+      },
+      op_type_id: 51,
+      virtual_op: true,
+      operation_id: '303'
     }
   ];
 };
@@ -208,5 +248,38 @@ test.describe('Wallet account history', () => {
     await expect(historyRows(page).last()).toContainText(
       `Cancel transfer from savings (request ${CANCELLED_REQUEST_ID})`
     );
+  });
+
+  test('WALLET-HISTORY-05 — a search for the account keeps its reward operations, and unticking Others hides them', async ({
+    page
+  }) => {
+    await routeOperations(page, (_query, route) =>
+      fulfillJson(route, {
+        total_operations: 3,
+        total_pages: 1,
+        block_range: { from: 1, to: 100_000_000 },
+        operations_result: rewardsOfStubAccount()
+      })
+    );
+
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+    await expect(historyRows(page)).toHaveCount(3);
+
+    await page.getByTestId('wallet-search-input').fill(STUB_ACCOUNT);
+    await expect(historyRows(page)).toHaveCount(3);
+    await expect(historyRows(page).filter({ hasText: 'Claim rewards' })).toHaveCount(1);
+    await expect(historyRows(page).filter({ hasText: 'Author reward' })).toHaveCount(1);
+
+    await page.getByTestId('wallet-checkbox-others').click();
+    await expect(historyRows(page)).toHaveCount(2);
+    await expect(historyRows(page).filter({ hasText: `from ${NEWER_SENDER}` })).toHaveCount(0);
+
+    await page.getByTestId('wallet-checkbox-incoming').click();
+    await page.getByTestId('wallet-checkbox-others').click();
+    await expect(historyRows(page)).toHaveCount(1);
+    await expect(historyRows(page)).toContainText(`from ${NEWER_SENDER}`);
+
+    await page.getByTestId('wallet-search-input').fill('unrelated');
+    await expect(historyRows(page)).toHaveCount(0);
   });
 });
