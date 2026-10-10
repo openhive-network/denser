@@ -59,3 +59,48 @@ export function alignBlockKinds(editorKinds: BlockKind[], previewKinds: BlockKin
   }
   return pairs;
 }
+
+/** Vertical extent of an element, in its scroll container's coordinates. */
+export interface Span {
+  top: number;
+  bottom: number;
+}
+
+/**
+ * Scroll anchors for one aligned block, as `[editorOffset, previewOffset]`
+ * pairs: the block's top and bottom edges and, when both sides hold the same
+ * number of images, each image's edges in document order. A one-line image
+ * source renders hundreds of pixels tall, so without its own anchors the
+ * interpolation spreads it over the whole block and drifts inside it.
+ *
+ * Pairs never decrease on either side; one that would, or that repeats the
+ * previous pair, is dropped. Equal offsets on one side are kept, as an image
+ * at the very top of its block shares the block's preview offset.
+ */
+export function blockAnchorPairs(
+  editorBlock: Span,
+  previewBlock: Span,
+  editorImages: Span[],
+  previewImages: Span[]
+): Array<[number, number]> {
+  const candidates: Array<[number, number]> = [[editorBlock.top, previewBlock.top]];
+  if (editorImages.length === previewImages.length) {
+    editorImages.forEach((image, i) => {
+      candidates.push([image.top, previewImages[i].top], [image.bottom, previewImages[i].bottom]);
+    });
+  }
+  candidates.push([editorBlock.bottom, previewBlock.bottom]);
+
+  const pairs: Array<[number, number]> = [];
+  for (const pair of candidates) {
+    const last = pairs[pairs.length - 1];
+    if (!last) {
+      pairs.push(pair);
+      continue;
+    }
+    const monotonic = pair[0] >= last[0] && pair[1] >= last[1];
+    const repeated = pair[0] === last[0] && pair[1] === last[1];
+    if (monotonic && !repeated) pairs.push(pair);
+  }
+  return pairs;
+}

@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
-const { alignBlockKinds } = await import('./scroll-sync-anchors.ts');
+const { alignBlockKinds, blockAnchorPairs } = await import('./scroll-sync-anchors.ts');
 
 describe('alignBlockKinds', () => {
   it('pairs blocks one to one when both sides have the same structure', () => {
@@ -54,5 +54,54 @@ describe('alignBlockKinds', () => {
   it('never pairs incompatible kinds', () => {
     assert.deepEqual(alignBlockKinds(['code'], ['list']), []);
     assert.deepEqual(alignBlockKinds([], ['paragraph']), []);
+  });
+});
+
+describe('blockAnchorPairs', () => {
+  it('anchors each image inside a block to its rendered edges', () => {
+    // <center>, image line, caption, </center>: a 400px image above a caption
+    const pairs = blockAnchorPairs({ top: 100, bottom: 188 }, { top: 500, bottom: 960 }, [{ top: 122, bottom: 144 }], [
+      { top: 505, bottom: 905 }
+    ]);
+    assert.deepEqual(pairs, [
+      [100, 500],
+      [122, 505],
+      [144, 905],
+      [188, 960]
+    ]);
+  });
+
+  it('falls back to the block edges when the image counts differ', () => {
+    const pairs = blockAnchorPairs({ top: 100, bottom: 144 }, { top: 500, bottom: 1300 }, [{ top: 100, bottom: 122 }], [
+      { top: 500, bottom: 900 },
+      { top: 900, bottom: 1300 }
+    ]);
+    assert.deepEqual(pairs, [
+      [100, 500],
+      [144, 1300]
+    ]);
+  });
+
+  it('keeps an image anchor that shares the top edge of its block', () => {
+    const pairs = blockAnchorPairs({ top: 100, bottom: 188 }, { top: 500, bottom: 951 }, [{ top: 122, bottom: 144 }], [
+      { top: 500, bottom: 912 }
+    ]);
+    assert.deepEqual(pairs, [
+      [100, 500],
+      [122, 500],
+      [144, 912],
+      [188, 951]
+    ]);
+  });
+
+  it('drops repeated pairs and pairs that would run backwards', () => {
+    // a single-line image whose rendered image overflows its block
+    const pairs = blockAnchorPairs({ top: 100, bottom: 122 }, { top: 500, bottom: 900 }, [{ top: 100, bottom: 122 }], [
+      { top: 500, bottom: 912 }
+    ]);
+    assert.deepEqual(pairs, [
+      [100, 500],
+      [122, 912]
+    ]);
   });
 });
