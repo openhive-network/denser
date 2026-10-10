@@ -78,6 +78,14 @@ export interface IFixtureProxyHandle {
 const FIXTURES_ROOT = path.resolve(__dirname, '..', '..', 'mock', 'fixtures');
 
 /**
+ * Where the fixture dirs live. Default: the blog's `tests/mock/fixtures`. The wallet's recorded
+ * specs keep theirs under `apps/wallet/playwright/tests/mock/fixtures` and pass that root.
+ */
+export interface IFixtureRootOption {
+  fixturesRoot?: string;
+}
+
+/**
  * Fields that vary per-call and must be stripped before hashing so that
  * record and replay signatures match. Covers:
  *   - `id`: JSON-RPC request counter (increments per call)
@@ -173,16 +181,16 @@ function safeJsonParse(text: string): unknown {
 /**
  * Get the fixture directory for a given test name.
  */
-export function getFixtureDir(testName: string): string {
+export function getFixtureDir(testName: string, fixturesRoot: string = FIXTURES_ROOT): string {
   const safeName = testName.replace(/[^a-zA-Z0-9_-]/g, '_');
-  return path.join(FIXTURES_ROOT, safeName);
+  return path.join(fixturesRoot, safeName);
 }
 
 /**
  * Check if fixtures already exist for a test.
  */
-export function hasFixtures(testName: string): boolean {
-  const dir = getFixtureDir(testName);
+export function hasFixtures(testName: string, fixturesRoot: string = FIXTURES_ROOT): boolean {
+  const dir = getFixtureDir(testName, fixturesRoot);
   return fs.existsSync(path.join(dir, '_index.json'));
 }
 
@@ -201,11 +209,11 @@ export async function createFixtureProxy(
   options: {
     target?: string;
     port?: number;
-  } = {}
+  } & IFixtureRootOption = {}
 ): Promise<IFixtureProxyHandle> {
-  const { target = 'api.hive.blog', port = 8200 } = options;
+  const { target = 'api.hive.blog', port = 8200, fixturesRoot = FIXTURES_ROOT } = options;
 
-  const fixtureDir = getFixtureDir(testName);
+  const fixtureDir = getFixtureDir(testName, fixturesRoot);
 
   // Clean previous fixtures for this test
   if (fs.existsSync(fixtureDir)) {
@@ -478,7 +486,7 @@ function loadFixtureDir(
  * `generate-voted-variants.mjs`. The patch becomes a no-op (replay serves
  * the un-patched base response). Warn loudly so the drift is visible.
  */
-function loadFixtures(fixtureDir: string): Map<string, IFixtureEntry[]> {
+function loadFixtures(fixtureDir: string, fixturesRoot: string = FIXTURES_ROOT): Map<string, IFixtureEntry[]> {
   const fixtures = new Map<string, IFixtureEntry[]>();
 
   const indexPath = path.join(fixtureDir, '_index.json');
@@ -496,7 +504,7 @@ function loadFixtures(fixtureDir: string): Map<string, IFixtureEntry[]> {
   if (fs.existsSync(indexPath)) {
     const index = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
     if (typeof index.base === 'string' && index.base.length > 0) {
-      baseDir = path.join(FIXTURES_ROOT, index.base);
+      baseDir = path.join(fixturesRoot, index.base);
     }
     if (index.additive === true) {
       additive = true;
@@ -509,7 +517,7 @@ function loadFixtures(fixtureDir: string): Map<string, IFixtureEntry[]> {
     // Walking back via `loadFixtures` instead of `loadFixtureDir` lets
     // a chain of overlays compose correctly — without this, a 2-level
     // overlay loses every fixture from the root.
-    for (const [k, v] of loadFixtures(baseDir)) {
+    for (const [k, v] of loadFixtures(baseDir, fixturesRoot)) {
       fixtures.set(k, v);
     }
     const baseKeys = new Set(fixtures.keys());
@@ -552,11 +560,11 @@ export async function createReplayProxy(
   testName: string,
   options: {
     port?: number;
-  } = {}
+  } & IFixtureRootOption = {}
 ): Promise<IFixtureProxyHandle> {
-  const { port = 8200 } = options;
+  const { port = 8200, fixturesRoot = FIXTURES_ROOT } = options;
 
-  const fixtureDir = getFixtureDir(testName);
+  const fixtureDir = getFixtureDir(testName, fixturesRoot);
 
   if (!fs.existsSync(path.join(fixtureDir, '_index.json'))) {
     throw new Error(
@@ -565,7 +573,7 @@ export async function createReplayProxy(
     );
   }
 
-  const fixtures = loadFixtures(fixtureDir);
+  const fixtures = loadFixtures(fixtureDir, fixturesRoot);
   const callCounters = new Map<string, number>();
   let servedCount = 0;
   let missCount = 0;

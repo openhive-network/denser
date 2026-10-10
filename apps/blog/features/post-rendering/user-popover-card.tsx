@@ -25,7 +25,9 @@ export function UserPopoverCard({
       <PopoverTrigger data-testid="author-name-link" asChild>
         <button className="flex items-center gap-1 hover:cursor-pointer">
           {withImage && <UserAvatar username={author} size="normal" />}
-          <span className="font-semibold text-foreground hover:text-destructive">{author}</span>
+          <span className="font-semibold text-foreground hover:text-destructive" data-testid="author-name">
+            {author}
+          </span>
           <span
             title={t('post_content.reputation_title')}
             className="text-muted-foreground"

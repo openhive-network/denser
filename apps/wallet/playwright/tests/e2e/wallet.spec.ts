@@ -123,6 +123,7 @@ test.describe('Wallet page of @gtg tests', () => {
   });
 
   // Quarantined (#962): waits on live @gtg account history; a slow history API times out (#943).
+  // Kept as live smoke coverage; fixture/gtgWalletHistory.spec.ts covers it offline with a recorded @gtg history (#1084).
   test('@flaky validate searching by unknown user on @gtg wallet page is visible', async ({ page }) => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);

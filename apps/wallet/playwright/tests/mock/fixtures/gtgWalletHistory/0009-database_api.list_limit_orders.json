@@ -1,0 +1,36 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_limit_orders",
+    "params": {
+      "start": [
+        "gtg",
+        0
+      ],
+      "limit": 1000,
+      "order": "by_account"
+    },
+    "id": 1
+  },
+  "requestHash": "f8a882e7dc0efc50",
+  "method": "database_api.list_limit_orders",
+  "params": {
+    "start": [
+      "gtg",
+      0
+    ],
+    "limit": 1000,
+    "order": "by_account"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "orders": []
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
