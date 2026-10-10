@@ -1135,6 +1135,28 @@ export interface HiveOpTypeSchema {
   is_virtual: boolean;
 }
 
+/** An HP delegation as balance-api lists it; `amount` is VESTS satoshis (6 implied decimals). */
+export interface BalanceApiDelegation {
+  amount: string;
+  operation_id: string;
+  /** Block of the delegation's latest `delegate_vesting_shares_operation` */
+  block_num: number;
+}
+
+export interface BalanceApiIncomingDelegation extends BalanceApiDelegation {
+  delegator: string;
+}
+
+export interface BalanceApiOutgoingDelegation extends BalanceApiDelegation {
+  delegatee: string;
+}
+
+/** balance-api's delegations of an account, each list sorted by amount, largest first. */
+export interface BalanceApiAccountDelegations {
+  outgoing_delegations: BalanceApiOutgoingDelegation[];
+  incoming_delegations: BalanceApiIncomingDelegation[];
+}
+
 export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
@@ -1191,6 +1213,12 @@ Together with the author name, it uniquely identifies the post.
     'operation-types': {
       params: undefined;
       result: HiveOpTypeSchema[];
+    };
+  };
+  'balance-api': {
+    accountDelegations: {
+      params: { 'account-name': string };
+      result: BalanceApiAccountDelegations;
     };
   };
 };

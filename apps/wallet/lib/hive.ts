@@ -18,7 +18,8 @@ import {
   HiveOperation,
   HiveOpTypeSchema,
   IWitness,
-  GetOperationsByAccountParams
+  GetOperationsByAccountParams,
+  BalanceApiIncomingDelegation
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
 import { getLogger } from '@ui/lib/logging';
@@ -180,6 +181,18 @@ export const getExpiringVestingDelegations = async (
   const chain = getReadChain();
   const response = await chain.api.database_api.find_vesting_delegation_expirations({ account: username });
   return response.delegations;
+};
+
+/**
+ * Fetches the HP delegations `username` receives, from balance-api's account delegations.
+ * Rejects when the API node does not serve balance-api (it answers 404), as some nodes do not.
+ * @returns Incoming delegations, `amount` in VESTS satoshis
+ */
+export const getIncomingDelegations = async (username: string): Promise<BalanceApiIncomingDelegation[]> => {
+  const response = await retryReadOnce(() =>
+    getReadChain().restApi['balance-api'].accountDelegations({ 'account-name': username })
+  );
+  return response.incoming_delegations;
 };
 
 const walletOperations = [

@@ -37,6 +37,8 @@ import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 
 function getFormSchema() {
@@ -126,6 +128,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         setLoading(true);
         setError(null);
+        const keyAuthorityError = await validateKeyAuthority(username, keyType, wif);
+        if (keyAuthorityError) {
+          form.resetField('wif');
+          form.setError('wif', { message: t(keyAuthorityError, { ns: SMART_SIGNER_NAMESPACE }) });
+          setLoading(false);
+          return;
+        }
         await authClient.current?.register(username, password, wif, keyType, strict);
         await finalize(values);
         form.reset();
