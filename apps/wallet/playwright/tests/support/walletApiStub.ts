@@ -175,8 +175,8 @@ export const startWalletApiStub = (port = FIXTURE_API_PORT, jsonRpc: JsonRpcResu
   startApiStub({ jsonRpc: { ...JSON_RPC_RESULTS, ...jsonRpc }, rest: REST_RESULTS }, port);
 
 /** Logs STUB_ACCOUNT in on the client, as the blog's fixture seeder does: the stored user is what `useUser` starts from. */
-export const logInAsStubAccount = (page: Page) =>
-  page.context().addInitScript((username) => {
+export const logInAsStubAccount = (page: Page, keyType: 'posting' | 'active' = 'posting') =>
+  page.context().addInitScript(({ username, keyType }) => {
     window.localStorage.setItem(
       'user',
       JSON.stringify({
@@ -184,11 +184,21 @@ export const logInAsStubAccount = (page: Page) =>
         username,
         avatarUrl: '',
         loginType: 'wif',
-        keyType: 'posting',
+        keyType,
         authenticateOnBackend: false,
         chatAuthToken: '',
         oauthConsent: {},
         strict: false
       })
     );
-  }, STUB_ACCOUNT);
+  }, { username: STUB_ACCOUNT, keyType });
+
+/**
+ * Stores `wif` as STUB_ACCOUNT's `keyType` key where the WIF signer reads it
+ * (`wif.{username}@{keyType}`, smart-signer's signer-wif.ts), so signing asks for no key.
+ */
+export const storeStubAccountKey = (page: Page, keyType: 'posting' | 'active', wif: string) =>
+  page.context().addInitScript(
+    ({ storageKey, value }) => window.localStorage.setItem(storageKey, value),
+    { storageKey: `wif.${STUB_ACCOUNT}@${keyType}`, value: JSON.stringify(wif) }
+  );

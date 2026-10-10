@@ -39,7 +39,7 @@ junit="$PWD/test-results/unit/playwright-support.xml"
 run_with_junit_fallback "$junit" playwright-support node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    playwright/support/timeouts.test.ts < /dev/null || status=1
+    playwright/support/timeouts.test.ts playwright/support/broadcast/operations.test.ts < /dev/null || status=1
 
 echo "== node --test packages/ui" >&2
 junit="$PWD/test-results/unit/ui.xml"
@@ -81,5 +81,6 @@ run_with_junit_fallback "$junit" wallet node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     apps/wallet/lib/history-filter.test.ts \
-    apps/wallet/feature/delegations/lib/incoming-delegations.test.ts < /dev/null || status=1
+    apps/wallet/feature/delegations/lib/incoming-delegations.test.ts \
+    apps/wallet/playwright/tests/support/walletOperations.test.ts < /dev/null || status=1
 exit "$status"

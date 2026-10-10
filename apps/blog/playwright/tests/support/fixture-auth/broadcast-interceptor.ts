@@ -1,5 +1,14 @@
 import { expect, type Page } from '@playwright/test';
-import { testTimeout } from '../../../../../../playwright/support/timeouts';
+import {
+  BROADCAST_METHODS,
+  CANNED_RESULTS,
+  broadcastInterceptorOf,
+  fulfillCanned,
+  type BroadcastInterceptor,
+  type InterceptedBroadcast
+} from '../../../../../../playwright/support/broadcast/interceptor.ts';
+
+export type { BroadcastInterceptor, InterceptedBroadcast };
 
 const FIXTURE_PROXY_PORT = 8200;
 
@@ -130,53 +139,6 @@ function synthBlockWithTrx(
     signatures: [],
     transaction_ids: transactionIds
   };
-}
-
-/**
- * JSON-RPC methods whose responses depend on a freshly-built transaction
- * (ref_block_num, expiration, signature over the posted tx). The
- * fixture-proxy keys recordings by `sha256(method + params)`, so a recorded
- * reply will never match on replay — and mainnet responses are wrong for
- * our key-less seeded user anyway (`verify_authority` rightly reports
- * "missing posting authority" because the test WIF isn't on the real
- * account).
- *
- * We intercept these at the Playwright level and return a canned success,
- * bypassing the fixture-proxy entirely. Read-only calls still flow through
- * the proxy and get recorded/replayed normally.
- *
- * Each entry maps to the JSON-RPC `result` shape the wax client expects:
- *  - `broadcast_transaction*`: `null` — optimistic UI already applied.
- *  - `verify_authority`: `{ valid: true }` — pretend the signature checks
- *    out so the client proceeds to broadcast.
- */
-const CANNED_RESULTS: Record<string, unknown> = {
-  'network_broadcast_api.broadcast_transaction': null,
-  'condenser_api.broadcast_transaction': null,
-  'network_broadcast_api.broadcast_transaction_synchronous': null,
-  'condenser_api.broadcast_transaction_synchronous': null,
-  'database_api.verify_authority': { valid: true },
-  'condenser_api.verify_authority': true
-};
-
-const TRACKED_MUTATION_METHODS = new Set<string>([
-  'network_broadcast_api.broadcast_transaction',
-  'condenser_api.broadcast_transaction',
-  'network_broadcast_api.broadcast_transaction_synchronous',
-  'condenser_api.broadcast_transaction_synchronous'
-]);
-
-export interface InterceptedBroadcast {
-  method: string;
-  params: unknown;
-  rpcId: number | string | undefined;
-  at: number;
-}
-
-export interface BroadcastInterceptor {
-  calls: InterceptedBroadcast[];
-  /** Wait until at least `count` mutation calls have been intercepted. */
-  waitForCount: (count: number, timeoutMs?: number) => Promise<void>;
 }
 
 /**
@@ -1392,7 +1354,7 @@ export async function installBroadcastInterceptor(
       // Only broadcast-class methods count as "mutations" for assertions.
       // verify_authority is a pre-broadcast check — important to stub but
       // not what tests are proving happened.
-      if (TRACKED_MUTATION_METHODS.has(method)) {
+      if (BROADCAST_METHODS.has(method)) {
         calls.push({
           method,
           params: body?.params,
@@ -1523,30 +1485,9 @@ export async function installBroadcastInterceptor(
         }
       }
 
-      return route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: rpcId ?? 1,
-          result: CANNED_RESULTS[method]
-        })
-      });
+      return fulfillCanned(route, method, rpcId);
     }
   );
 
-  return {
-    calls,
-    async waitForCount(count, timeoutMs = testTimeout('broadcast-count', 10000)) {
-      const deadline = Date.now() + timeoutMs;
-      while (calls.length < count && Date.now() < deadline) {
-        await new Promise((r) => setTimeout(r, 50));
-      }
-      if (calls.length < count) {
-        throw new Error(
-          `Timed out waiting for ${count} mutation RPC(s); saw ${calls.length}`
-        );
-      }
-    }
-  };
+  return broadcastInterceptorOf(calls);
 }
