@@ -67,6 +67,25 @@ const findAccounts: JsonRpcResults[string] = (params) => {
   return { accounts: accounts.map(fullAccount) };
 };
 
+/**
+ * A `database_api.find_accounts` replacement, for `startWalletApiStub`'s `jsonRpc`, that gives
+ * STUB_ACCOUNT `fields` over its stub data.
+ */
+export const stubAccountWith = (fields: Record<string, unknown>): JsonRpcResults => ({
+  'database_api.find_accounts': (params) => {
+    const { accounts } = findAccounts(params) as { accounts: { name: string }[] };
+    return { accounts: accounts.map((account) => (account.name === STUB_ACCOUNT ? { ...account, ...fields } : account)) };
+  }
+});
+
+/** STUB_ACCOUNT's fields while it powers down 330,000 VESTS (180 HP) over 13 weeks, none withdrawn yet. */
+export const STUB_POWER_DOWN_FIELDS = {
+  to_withdraw: 330_000_000_000,
+  withdrawn: 0,
+  vesting_withdraw_rate: vests('25384615384'),
+  next_vesting_withdrawal: '2026-10-08T12:00:00'
+};
+
 const proposal = {
   id: 7,
   proposal_id: 7,
