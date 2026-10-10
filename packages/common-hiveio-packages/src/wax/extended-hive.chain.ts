@@ -554,6 +554,7 @@ export interface HiveOperation {
       'org-op-id'?: string;
       perspective?: 'incoming' | 'outgoing';
       current_owner?: string;
+      open_owner?: string;
       reward: NaiAsset;
       vesting_payout: NaiAsset;
       hbd_payout: NaiAsset;
