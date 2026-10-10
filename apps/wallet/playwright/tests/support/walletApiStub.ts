@@ -81,6 +81,30 @@ const proposal = {
   status: 'active'
 };
 
+/** STUB_ACCOUNT's witness votes, as `database_api.list_witness_votes` returns them. */
+export const stubWitnessVotes = (witnesses: string[]): JsonRpcResults => ({
+  'database_api.list_witness_votes': () => ({
+    votes: witnesses.map((witness, id) => ({ id, witness, account: STUB_ACCOUNT }))
+  })
+});
+
+/** STUB_ACCOUNT's votes on the stub proposal, as `database_api.list_proposal_votes` returns them. */
+export const stubProposalVotes = (voted: boolean): JsonRpcResults => ({
+  'database_api.list_proposal_votes': () => ({
+    proposal_votes: voted ? [{ id: 1, voter: STUB_ACCOUNT, proposal }] : []
+  })
+});
+
+/** STUB_ACCOUNT with `proxy` as its witness proxy. */
+export const stubAccountProxy = (proxy: string): JsonRpcResults => ({
+  'database_api.find_accounts': (params) => {
+    const { accounts } = findAccounts(params) as { accounts: { name: string }[] };
+    return {
+      accounts: accounts.map((account) => (account.name === STUB_ACCOUNT ? { ...account, proxy } : account))
+    };
+  }
+});
+
 /** A `transfer_operation` of the account history, as the hivemind operations API returns it. */
 export const stubTransfer = ({ from, operationId }: { from: string; operationId: string }) => ({
   op: {
@@ -117,6 +141,8 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
   'database_api.find_savings_withdrawals': () => ({ withdrawals: [] }),
   'database_api.list_limit_orders': () => ({ orders: [] }),
   'database_api.list_proposals': () => ({ proposals: [proposal] }),
+  ...stubProposalVotes(false),
+  ...stubWitnessVotes([]),
   'database_api.list_vesting_delegations': () => ({
     delegations: [
       {
