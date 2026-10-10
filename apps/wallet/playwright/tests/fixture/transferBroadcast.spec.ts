@@ -103,10 +103,6 @@ test.describe('Transfer broadcast', () => {
   });
 
   test('WALLET-TX-TRANSFER-03 — an amount below 1 is broadcast in its canonical NAI form', async ({ page }) => {
-    test.fail(
-      true,
-      "@transaction getAsset builds the satoshi string from toFixed() with the dot removed, so 0.250 HIVE is sent as amount '0250'"
-    );
     const broadcasts = await installBroadcastInterceptor(page);
     const dialog = await openTransferDialog(page, 'wallet-hive-value');
     await fillTransfer(dialog, '0.25', MEMO);
