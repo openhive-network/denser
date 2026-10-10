@@ -136,7 +136,9 @@ export class PostPage {
       hasText: /^Content (were hidden due to low ratings|hidden (by community moderators|because parent content is muted|due to low author reputation)|hidden: author (not allowed to post in this community|is muted in this community))\.Show$/
     }).getByRole('button');
     this.postListItemOnHomePage = page.locator('li[data-testid="post-list-item"]');
-    this.firstPostImageOnHomePage = page.locator('li[data-testid="post-list-item"]:nth-of-type(1) img');
+    this.firstPostImageOnHomePage = page.locator(
+      'li[data-testid="post-list-item"]:nth-of-type(1) [data-testid="post-image"] img[alt="Post image"]'
+    );
     this.firstPostTitleOnHomePage = page
       .locator('[data-testid="post-list-item"] [data-testid="post-title"] a')
       .first();
@@ -147,9 +149,8 @@ export class PostPage {
     this.articleAuthorData = page.locator('[data-testid="author-data"]');
     this.articleAuthor = '[data-testid="author-name-link"]'
     this.articleAuthorName = this.articleAuthorData
-      .locator('[data-testid="author-name-link"]')
-      .locator('span')
-      .nth(1);
+      .locator('[data-testid="author-name-link"] [data-testid="author-name"]')
+      .first();
     this.articleFooter = page.locator('[data-testid="author-data-post-footer"]');
     this.profileFollowBtn = '[data-testid="profile-follow-button"]';
     this.footerAuthorNameLink = this.articleFooter.locator('[data-testid="author-name-link"]');

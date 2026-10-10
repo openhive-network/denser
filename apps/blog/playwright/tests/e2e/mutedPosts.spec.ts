@@ -68,7 +68,7 @@ test.describe('Muted posts tests', () => {
 
     // check if post picture is visible
     const numberOfImagesInPostCard = await postPage.page
-      .locator('li[data-testid="post-list-item"]:nth-of-type(1):has(img)')
+      .locator('li[data-testid="post-list-item"]:nth-of-type(1):has([data-testid="post-image"] img[alt="Post image"])')
       .count();
     if (numberOfImagesInPostCard <= 0)
       await expect(postPage.firstPostImageOnHomePage).toHaveCount(0);
