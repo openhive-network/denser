@@ -175,6 +175,8 @@
     "see_faq_for_details": "Zobacz szczegóły.",
     "witnesses": "Witnesses",
     "account_history_description": "Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.",
+    "scam_transfers_hidden": "Ukryte przelewy od znanych kont oszustów: {{count}}",
+    "scam_transfers_show": "Pokaż",
     "no_transactions_found": "Nie znaleziono transakcji",
     "show_more_transactions": "Pokaż więcej",
     "the_next_power_down": "Następne zmniejszanie mocy odbędzie się za",

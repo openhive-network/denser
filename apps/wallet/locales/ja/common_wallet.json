@@ -146,6 +146,8 @@
     "see_faq_for_details": "See FAQ for details.",
     "witnesses": "Witnesses",
     "account_history_description": "送金メモのスパムやフィッシングに注意してください。信用していないユーザーからのリンクを開かないでください。第三者のウェブサイトに秘密キーを提供しないでください。 Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "scam_transfers_hidden": "既知の詐欺アカウントからの非表示の送金: {{count}}",
+    "scam_transfers_show": "表示",
     "no_transactions_found": "No transactions found",
     "show_more_transactions": "もっと見る",
     "the_next_power_down": "The next power down is scheduled to happen in ",
