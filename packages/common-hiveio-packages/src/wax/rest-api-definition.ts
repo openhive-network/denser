@@ -50,5 +50,10 @@ export const EXTENDED_REST_API_DEFINITION = {
     'operation-types': {
       urlPath: 'operation-types'
     }
+  },
+  'balance-api': {
+    accountDelegations: {
+      urlPath: 'accounts/{account-name}/delegations'
+    }
   }
 };
