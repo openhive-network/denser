@@ -57,7 +57,8 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     packages/smart-signer/lib/oauth/return-url.test.ts \
-    packages/smart-signer/lib/condenser-migration.test.ts < /dev/null || status=1
+    packages/smart-signer/lib/condenser-migration.test.ts \
+    packages/smart-signer/lib/validators/key-role.test.ts < /dev/null || status=1
 echo "== node --test packages/middleware" >&2
 junit="$PWD/test-results/unit/middleware.xml"
 run_with_junit_fallback "$junit" middleware node --test \
