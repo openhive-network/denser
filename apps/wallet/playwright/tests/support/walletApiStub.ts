@@ -125,10 +125,18 @@ export const stubAccountProxy = (proxy: string): JsonRpcResults => ({
 });
 
 /** A `transfer_operation` of the account history, as the hivemind operations API returns it. */
-export const stubTransfer = ({ from, operationId }: { from: string; operationId: string }) => ({
+export const stubTransfer = ({
+  from,
+  operationId,
+  memo = ''
+}: {
+  from: string;
+  operationId: string;
+  memo?: string;
+}) => ({
   op: {
     type: 'transfer_operation',
-    value: { from, to: STUB_ACCOUNT, amount: hive('1000'), memo: '' }
+    value: { from, to: STUB_ACCOUNT, amount: hive('1000'), memo }
   },
   block: 99_999_000,
   trx_id: '0000000000000000000000000000000000000001',
@@ -219,24 +227,40 @@ const REST_RESULTS: RestResults = {
 export const startWalletApiStub = (port = FIXTURE_API_PORT, jsonRpc: JsonRpcResults = {}): Promise<Server> =>
   startApiStub({ jsonRpc: { ...JSON_RPC_RESULTS, ...jsonRpc }, rest: REST_RESULTS }, port);
 
-/** Logs STUB_ACCOUNT in on the client, as the blog's fixture seeder does: the stored user is what `useUser` starts from. */
-export const logInAsStubAccount = (page: Page, keyType: 'posting' | 'active' = 'posting') =>
-  page.context().addInitScript(({ username, keyType }) => {
-    window.localStorage.setItem(
-      'user',
-      JSON.stringify({
-        isLoggedIn: true,
-        username,
-        avatarUrl: '',
-        loginType: 'wif',
-        keyType,
-        authenticateOnBackend: false,
-        chatAuthToken: '',
-        oauthConsent: {},
-        strict: false
-      })
-    );
-  }, { username: STUB_ACCOUNT, keyType });
+/**
+ * Logs a stub account in on the client, as the blog's fixture seeder does: the stored user is what
+ * `useUser` starts from. Pass a key type (`'posting'`/`'active'`) or options
+ * (`username`, `loginType`, `keyType`); defaults: STUB_ACCOUNT, `wif`, `posting`.
+ */
+export const logInAsStubAccount = (
+  page: Page,
+  options:
+    | 'posting'
+    | 'active'
+    | { username?: string; loginType?: 'wif' | 'keychain'; keyType?: 'posting' | 'active' } = {}
+) => {
+  const { username = STUB_ACCOUNT, loginType = 'wif', keyType = 'posting' } =
+    typeof options === 'string' ? { keyType: options } : options;
+  return page.context().addInitScript(
+    ({ username, loginType, keyType }) => {
+      window.localStorage.setItem(
+        'user',
+        JSON.stringify({
+          isLoggedIn: true,
+          username,
+          avatarUrl: '',
+          loginType,
+          keyType,
+          authenticateOnBackend: false,
+          chatAuthToken: '',
+          oauthConsent: {},
+          strict: false
+        })
+      );
+    },
+    { username, loginType, keyType }
+  );
+};
 
 /**
  * Stores `wif` as STUB_ACCOUNT's `keyType` key where the WIF signer reads it

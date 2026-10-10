@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   hiveio-toolset:
+    '@hiveio/beekeeper':
+      specifier: 1.28.6-rc10-stable.260317081625
+      version: 1.28.6-rc10-stable.260317081625
     '@hiveio/hb-auth':
       specifier: 1.28.4-rc0-stable.260405141254
       version: 1.28.4-rc0-stable.260405141254
@@ -13,6 +16,9 @@ catalogs:
       specifier: 2.0.2
       version: 2.0.2
     '@hiveio/wax':
+      specifier: 1.28.6-rc10-stable.260326112051
+      version: 1.28.6-rc10-stable.260326112051
+    '@hiveio/wax-signers-beekeeper':
       specifier: 1.28.6-rc10-stable.260326112051
       version: 1.28.6-rc10-stable.260326112051
     '@hiveio/wax-signers-external':
@@ -633,10 +639,16 @@ importers:
       '@hive/ui':
         specifier: workspace:*
         version: link:../ui
+      '@hiveio/beekeeper':
+        specifier: catalog:hiveio-toolset
+        version: 1.28.6-rc10-stable.260317081625
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
         version: 1.28.4-rc0-stable.260405141254(@hiveio/wax@1.28.6-rc10-stable.260326112051)
       '@hiveio/wax':
+        specifier: catalog:hiveio-toolset
+        version: 1.28.6-rc10-stable.260326112051
+      '@hiveio/wax-signers-beekeeper':
         specifier: catalog:hiveio-toolset
         version: 1.28.6-rc10-stable.260326112051
       '@hiveio/wax-signers-external':

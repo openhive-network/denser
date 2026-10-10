@@ -58,7 +58,10 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     --test-reporter=junit --test-reporter-destination="$junit" \
     packages/smart-signer/lib/oauth/return-url.test.ts \
     packages/smart-signer/lib/condenser-migration.test.ts \
-    packages/smart-signer/lib/validators/key-role.test.ts < /dev/null || status=1
+    packages/smart-signer/lib/validators/key-role.test.ts \
+    packages/smart-signer/lib/memo-crypto.test.ts \
+    packages/smart-signer/lib/signer/keychain-memo-crypto.test.ts \
+    packages/smart-signer/lib/storage-mixin.test.ts < /dev/null || status=1
 echo "== node --test packages/middleware" >&2
 junit="$PWD/test-results/unit/middleware.xml"
 run_with_junit_fallback "$junit" middleware node --test \
@@ -82,5 +85,6 @@ run_with_junit_fallback "$junit" wallet node --test \
     --test-reporter=junit --test-reporter-destination="$junit" \
     apps/wallet/lib/history-filter.test.ts \
     apps/wallet/feature/delegations/lib/incoming-delegations.test.ts \
-    apps/wallet/playwright/tests/support/walletOperations.test.ts < /dev/null || status=1
+    apps/wallet/playwright/tests/support/walletOperations.test.ts \
+    apps/wallet/lib/encrypted-memo.test.ts < /dev/null || status=1
 exit "$status"

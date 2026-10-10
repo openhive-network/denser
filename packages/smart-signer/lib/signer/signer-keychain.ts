@@ -1,10 +1,11 @@
-import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { EncryptMemo, SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { TTransactionPackType, IOnlineSignatureProvider } from '@hiveio/wax';
 import KeychainProvider from '@hiveio/wax-signers-keychain';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
+import { encryptMemoWithKeychain, decryptMemoWithKeychain } from '@smart-signer/lib/signer/keychain-memo-crypto';
 const logger = getLogger('app');
 
 // See https://github.com/hive-keychain/hive-keychain-extension/blob/master/documentation/README.md#requestsignbuffer
@@ -73,5 +74,15 @@ export class SignerKeychain extends Signer {
       logger.error('SignerKeychain.signTransaction error: %s', error instanceof Error ? error.message : String(error));
       throw error;
     }
+  }
+
+  /** Uses `encryptMemoWithKeychain`'s casing workaround, not a plain `KeychainProvider` call - see its docstring. */
+  async encryptData({ toAccount, memo }: EncryptMemo): Promise<string> {
+    return encryptMemoWithKeychain(this.username, toAccount, memo);
+  }
+
+  /** Decoding isn't affected by the casing bug above - see `decryptMemoWithKeychain` (keychain-memo-crypto.ts). */
+  async decryptData(encodedMemo: string): Promise<string> {
+    return decryptMemoWithKeychain(this.username, encodedMemo);
   }
 }
