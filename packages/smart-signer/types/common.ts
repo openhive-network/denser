@@ -41,6 +41,8 @@ export interface OAuthState {
 
 export interface IronSessionData {
     user?: User;
+    /** Every account signed in during this session, `user` among them */
+    accounts?: User[];
     oauthState?: OAuthState;
 }
 

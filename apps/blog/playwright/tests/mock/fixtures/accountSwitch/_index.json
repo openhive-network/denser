@@ -1,0 +1,18 @@
+{
+  "testName": "accountSwitch",
+  "recordedAt": "2026-10-10T18:35:54.295Z",
+  "totalRequests": 47,
+  "savedFixtures": 14,
+  "duplicatesSkipped": 33,
+  "methods": {
+    "bridge.list_communities": 4,
+    "bridge.get_ranked_posts": 4,
+    "rc_api.find_rc_accounts": 6,
+    "bridge.unread_notifications": 6,
+    "database_api.find_accounts": 12,
+    "database_api.get_dynamic_global_properties": 6,
+    "bridge.get_profile": 6,
+    "bridge.does_user_follow_any_lists": 1,
+    "bridge.get_follow_list": 2
+  }
+}

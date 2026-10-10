@@ -9,7 +9,7 @@ import {
 
 const DEFAULT_USERNAME = process.env.CI_TEST_USER || 'guest4test';
 
-const DEFAULT_USER: User = {
+export const DEFAULT_USER: User = {
   isLoggedIn: true,
   username: DEFAULT_USERNAME,
   avatarUrl: '',
@@ -138,4 +138,41 @@ export async function seedAuthCookie(
   );
 
   return user;
+}
+
+/**
+ * Pre-seeds the accounts remembered for switching (the session's `accounts` and
+ * `localStorage['accounts']`), as signing in to each of them in turn would. Call
+ * after `seedAuthCookie` (the `authenticatedUser` option) and before any
+ * `page.goto(...)`. The localStorage entry is written only when absent, so a
+ * change the test makes survives navigation.
+ */
+export async function seedRememberedAccounts(context: BrowserContext, accounts: User[]): Promise<void> {
+  const existing = (await context.cookies()).find((c) => c.name === FIXTURE_COOKIE_NAME);
+  if (!existing) throw new Error('seedRememberedAccounts: seed the logged-in user first');
+  const session = await unsealData<IronSessionData>(existing.value, { password: FIXTURE_COOKIE_PASSWORD });
+  const sealed = await sealData({ ...session, accounts }, { password: FIXTURE_COOKIE_PASSWORD });
+
+  await context.clearCookies({ name: FIXTURE_COOKIE_NAME });
+  await context.addCookies([
+    {
+      name: FIXTURE_COOKIE_NAME,
+      value: sealed,
+      domain: 'localhost',
+      path: '/',
+      httpOnly: true,
+      secure: false,
+      sameSite: 'Lax'
+    }
+  ]);
+
+  await context.addInitScript((accountsJson) => {
+    try {
+      if (window.localStorage.getItem('accounts') === null) {
+        window.localStorage.setItem('accounts', accountsJson);
+      }
+    } catch {
+      /* storage may be unavailable in some edge contexts — ignore */
+    }
+  }, JSON.stringify(accounts));
 }

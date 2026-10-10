@@ -135,6 +135,11 @@
       "toggle_lang": "Język",
       "wallet": "Portfel",
       "logout": "Wylogowuj",
+      "switch_account": "Przełącz konto",
+      "add_account": "Dodaj konto",
+      "remove_account": "Usuń {{username}}",
+      "switch_account_failed": "Nie udało się przełączyć na {{username}}. Zaloguj się ponownie.",
+      "remove_account_failed": "Nie udało się usunąć {{username}}.",
       "logged_in_with": "Zalogowano przez {{method}}",
       "login_method": {
         "hbauth": "Bezpieczne przechowywanie",

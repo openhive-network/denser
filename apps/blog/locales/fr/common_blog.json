@@ -133,6 +133,11 @@
       "toggle_lang": "Langue",
       "wallet": "Portefeuille",
       "logout": "Déconnexion",
+      "switch_account": "Changer de compte",
+      "add_account": "Ajouter un compte",
+      "remove_account": "Retirer {{username}}",
+      "switch_account_failed": "Impossible de passer à {{username}}. Veuillez vous reconnecter.",
+      "remove_account_failed": "Impossible de retirer {{username}}.",
       "logged_in_with": "Connecté avec {{method}}",
       "login_method": {
         "hbauth": "Stockage Sécurisé",

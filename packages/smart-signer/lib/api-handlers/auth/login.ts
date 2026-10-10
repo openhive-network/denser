@@ -16,6 +16,8 @@ import { getLogger } from '@hive/ui/lib/logging';
 import { siteConfig } from '@hive/ui/config/site';
 import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
 import { logLoginEvent, getClientIpFromApiRequest } from '@smart-signer/lib/event-logging';
+import { setAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
+import { addAccount } from '@smart-signer/lib/auth/accounts';
 
 const logger = getLogger('app');
 
@@ -123,18 +125,12 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     strict: verifiedUser?.strict ? true : false
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
+  session.accounts = addAccount(session.accounts ?? [], session.user, user);
   session.user = user;
   await session.save();
 
-  // Set account_info cookie for page visit logging in Edge Runtime middleware.
-  // This mirrors the verified identity from iron-session in a format readable
-  // without decryption. Set after verify_authority + session.save() so the
-  // values are trustworthy. Session cookie (no Max-Age) to match iron-session.
-  const securePart = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-  const existing = res.getHeader('Set-Cookie') || [];
-  const cookies = Array.isArray(existing) ? existing : [String(existing)];
-  cookies.push(`account_info=${username}:${loginType}; Path=/; HttpOnly; SameSite=Lax${securePart}`);
-  res.setHeader('Set-Cookie', cookies);
+  // Set after verify_authority + session.save() so the values are trustworthy
+  setAccountInfoCookie(res, username, loginType);
 
   // Log login event atomically with session creation
   const uid = req.cookies['session_uid'] || 'n/a';

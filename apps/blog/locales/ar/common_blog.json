@@ -134,6 +134,11 @@
       "toggle_lang": "تغيير اللغة",
       "wallet": "المحفظة",
       "logout": "خروج",
+      "switch_account": "تبديل الحساب",
+      "add_account": "إضافة حساب",
+      "remove_account": "إزالة {{username}}",
+      "switch_account_failed": "تعذر التبديل إلى {{username}}. يرجى تسجيل الدخول مرة أخرى.",
+      "remove_account_failed": "تعذرت إزالة {{username}}.",
       "logged_in_with": "تسجيل الدخول باستخدام {{method}}",
       "login_method": {
         "hbauth": "التخزين الآمن",

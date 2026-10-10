@@ -133,6 +133,11 @@
       "toggle_lang": "Idioma",
       "wallet": "Monedero",
       "logout": "Cerrar sesión",
+      "switch_account": "Cambiar de cuenta",
+      "add_account": "Añadir cuenta",
+      "remove_account": "Quitar {{username}}",
+      "switch_account_failed": "No se pudo cambiar a {{username}}. Vuelve a iniciar sesión.",
+      "remove_account_failed": "No se pudo quitar {{username}}.",
       "logged_in_with": "Conectado con {{method}}",
       "login_method": {
         "hbauth": "Almacenamiento Seguro",

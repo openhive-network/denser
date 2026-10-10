@@ -133,6 +133,11 @@
       "toggle_lang": "Lingua",
       "wallet": "Portafoglio",
       "logout": "Esci",
+      "switch_account": "Cambia account",
+      "add_account": "Aggiungi account",
+      "remove_account": "Rimuovi {{username}}",
+      "switch_account_failed": "Impossibile passare a {{username}}. Accedi di nuovo.",
+      "remove_account_failed": "Impossibile rimuovere {{username}}.",
       "logged_in_with": "Accesso con {{method}}",
       "login_method": {
         "hbauth": "Archiviazione Sicura",

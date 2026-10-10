@@ -1,0 +1,260 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_communities",
+    "params": {
+      "query": null,
+      "sort": "rank",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "3c9b21db67ad172c",
+  "method": "bridge.list_communities",
+  "params": {
+    "query": null,
+    "sort": "rank",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "id": 1341670,
+        "lang": "en",
+        "name": "hive-13323",
+        "about": "The Future of Web3 Gaming. Battle Trade and Earn",
+        "title": "Splinterlands",
+        "admins": [
+          "clove71",
+          "threespeak"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-11-26 17:34:36",
+        "num_authors": 176,
+        "num_pending": 1594,
+        "subscribers": 13519,
+        "sum_pending": 1183
+      },
+      {
+        "id": 1373301,
+        "lang": "zh",
+        "name": "hive-105017",
+        "about": "A community for sharing Chinese content on HIVE.",
+        "title": "HIVE CN 中文社区",
+        "admins": [
+          "sweetsssj"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2020-03-26 03:18:54",
+        "num_authors": 79,
+        "num_pending": 638,
+        "subscribers": 6295,
+        "sum_pending": 1016
+      },
+      {
+        "id": 1337539,
+        "lang": "en",
+        "name": "hive-163772",
+        "about": "The Hive travel community",
+        "title": "Worldmappin",
+        "admins": [
+          "detlev",
+          "lizanomadsoul",
+          "worldmappin"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-11-17 07:09:54",
+        "num_authors": 204,
+        "num_pending": 1237,
+        "subscribers": 18542,
+        "sum_pending": 841
+      },
+      {
+        "id": 2613772,
+        "lang": "en",
+        "name": "hive-110713",
+        "about": "Anything and everything about Media.",
+        "title": "Scrobble.life",
+        "admins": [
+          "acidyo"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2026-05-20 05:08:03",
+        "num_authors": 256,
+        "num_pending": 2168,
+        "subscribers": 438,
+        "sum_pending": 567
+      },
+      {
+        "id": 1344380,
+        "lang": "en",
+        "name": "hive-193552",
+        "about": "It pays to be fit",
+        "title": "Actifit",
+        "admins": [
+          "mcfarhat"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-12-04 09:15:24",
+        "num_authors": 359,
+        "num_pending": 2795,
+        "subscribers": 11558,
+        "sum_pending": 556
+      },
+      {
+        "id": 1342089,
+        "lang": "en",
+        "name": "hive-194913",
+        "about": "A place for photography lovers to share their work and photography tips.",
+        "title": "Photography Lovers",
+        "admins": [
+          "derangedvisions"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2019-11-27 23:22:51",
+        "num_authors": 221,
+        "num_pending": 1070,
+        "subscribers": 26087,
+        "sum_pending": 494
+      },
+      {
+        "id": 1549235,
+        "lang": "es",
+        "name": "hive-100067",
+        "about": "Comida - Recetas - Concursos | Food - Recipes - Contests",
+        "title": "Hive Food",
+        "admins": [
+          "hivefood",
+          "mariale07"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2021-08-12 11:45:09",
+        "num_authors": 119,
+        "num_pending": 499,
+        "subscribers": 6494,
+        "sum_pending": 448
+      },
+      {
+        "id": 1367073,
+        "lang": "en",
+        "name": "hive-142159",
+        "about": "Photography",
+        "title": "Black And White",
+        "admins": [
+          "brumest",
+          "ewkaw"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2020-02-19 23:55:27",
+        "num_authors": 122,
+        "num_pending": 693,
+        "subscribers": 11857,
+        "sum_pending": 417
+      },
+      {
+        "id": 2519960,
+        "lang": "en",
+        "name": "hive-124838",
+        "about": "Peak Snaps container community",
+        "title": "Snaps",
+        "admins": [
+          "asgarth",
+          "jarvie",
+          "peak.snaps",
+          "peakd",
+          "yozen"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 2,
+        "created_at": "2024-10-04 08:12:54",
+        "num_authors": 526,
+        "num_pending": 6938,
+        "subscribers": 518,
+        "sum_pending": 381
+      },
+      {
+        "id": 1434710,
+        "lang": "en",
+        "name": "hive-147010",
+        "about": "Supercharge your images with Likes!",
+        "title": "Liketu",
+        "admins": [
+          "elmerlin",
+          "has-k",
+          "liketu"
+        ],
+        "context": {
+          "role": "guest",
+          "title": "",
+          "subscribed": false
+        },
+        "is_nsfw": false,
+        "type_id": 1,
+        "created_at": "2021-02-07 02:54:24",
+        "num_authors": 185,
+        "num_pending": 567,
+        "subscribers": 9777,
+        "sum_pending": 368
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

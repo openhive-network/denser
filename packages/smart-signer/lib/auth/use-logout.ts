@@ -1,21 +1,24 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
 import { useUser } from '@smart-signer/lib/auth/use-user';
-import { useSigner } from '@smart-signer/lib/use-signer';
+import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
+import { findAccount } from '@smart-signer/lib/auth/accounts';
+import { destroyAccountSigner } from '@smart-signer/lib/auth/destroy-signer';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
-import { getLogger } from '@hive/ui/lib/logging';
 import { useRouter } from 'next/navigation';
-
-const logger = getLogger('app');
 
 export function useLogout(redirect?: string) {
   const signOut = useSignOut();
   const { user } = useUser();
-  const { signerOptions } = useSigner();
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const onLogout = async () => {
+    // Read before signing out clears them
+    const remembered = userLocalStorage.getAccounts();
+    const accounts =
+      user.isLoggedIn && !findAccount(remembered, user.username) ? [...remembered, user] : remembered;
+
     // Clear observer cookie immediately — SSR stops personalizing
     document.cookie = 'observer=; path=/; max-age=0';
 
@@ -44,18 +47,9 @@ export function useLogout(redirect?: string) {
       router.push(redirect);
     }
 
-    // Run cleanup operations in background (fire and forget)
-    if (user && user.isLoggedIn) {
-      // Signer cleanup
-      Promise.resolve().then(async () => {
-        try {
-          const { getSigner } = await import('@smart-signer/lib/signer/get-signer');
-          const signer = getSigner(signerOptions);
-          await signer.destroy();
-        } catch (error) {
-          logger.error(error, 'Failed to destroy signer during logout');
-        }
-      });
+    // Signer cleanup for every account the session ended, in background (fire and forget)
+    for (const account of accounts) {
+      void destroyAccountSigner(account);
     }
   };
   return onLogout;
