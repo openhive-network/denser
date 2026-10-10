@@ -748,7 +748,7 @@
           "value": {
             "to": "gtg",
             "from": "hive-grove",
-            "memo": "🌿 HiveGrove: @curamax planted you a free tree! Water it within 24h at https://hivegrove.up.railway.app/",
+            "memo": "fixture memo (redacted)",
             "amount": {
               "nai": "@@000000021",
               "amount": "1",
@@ -926,7 +926,7 @@
           "value": {
             "to": "gtg",
             "from": "hive-grove",
-            "memo": "🌿 HiveGrove: @ryosai planted you a free tree! Water it within 24h at https://hivegrove.up.railway.app/",
+            "memo": "fixture memo (redacted)",
             "amount": {
               "nai": "@@000000021",
               "amount": "1",
@@ -2491,7 +2491,7 @@
           "value": {
             "to": "gtg",
             "from": "lasseehlers",
-            "memo": "You have treated me with extreme disrespect in person and on chain, but I still donated some tokens for you.... if you want them to migrate you need to ACT very soon::: Recent LASSECASH activity on @gtg Straight from Hive-Engine, live. The result above is rebuilt periodically, so an action you took today may not be reflected in it yet — but if you can see it here, the chain has it.  date\toperation\tamount\tsigned by you? 2026-08-31\tstake\t937.10692131\tno — from @lasseehlers",
+            "memo": "fixture memo (redacted)",
             "amount": {
               "nai": "@@000000021",
               "amount": "3",
@@ -2824,7 +2824,7 @@
           "value": {
             "to": "gtg",
             "from": "commentrewarder",
-            "memo": "!tip @gtg/re-sagarkothari88-1787045078507 @peak.snaps app:cr message:👍",
+            "memo": "fixture memo (redacted)",
             "amount": {
               "nai": "@@000000021",
               "amount": "213",
