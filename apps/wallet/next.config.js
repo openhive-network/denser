@@ -1,4 +1,5 @@
 const path = require('path');
+const { waxSignersZodCoreAlias } = require('@hive/smart-signer/wax-signers-zod');
 
 // Get basePath from environment variable at build time
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -25,7 +26,11 @@ const nextConfig = {
     root: path.join(__dirname, '../..'),
     // wax, beekeeper and hb-auth import their emscripten .wasm dynamically
     rules: { '*.wasm': { type: 'asset' } },
-    resolveAlias: { fs: { browser: './empty.js' }, module: { browser: './empty.js' } }
+    resolveAlias: {
+      fs: { browser: './empty.js' },
+      module: { browser: './empty.js' },
+      ...waxSignersZodCoreAlias(__dirname)
+    }
   },
   transpilePackages: [
     '@hive/common-hiveio-packages',

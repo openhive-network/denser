@@ -954,6 +954,13 @@ checks that expect content to be MISSING). Two fixes, used together by
 - Mark known-failing cases `test.fail(!isRecordMode, '…')` — expected on
   replay (suite stays green, regression flips it red), no-op on record.
 
+### `networkidle` never comes once the sign-in dialog is open
+
+Opening the login dialog starts hb-auth's worker (`/auth/worker.js`), whose
+request stays open, so `page.waitForLoadState('networkidle')` (and
+`settleAfterLoad`) time out after it. Settle on a UI assertion plus a
+`requestIdleCallback` instead, as `cspNonce.spec.ts` CSP-03 does.
+
 ### SSR-correctness checks (ssrChecks.spec.ts)
 
 `ssrChecks.spec.ts` asserts what the SERVER renders into the initial HTML

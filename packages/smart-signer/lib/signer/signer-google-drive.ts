@@ -1,3 +1,4 @@
+import '@smart-signer/lib/signer/zod-jitless';
 import { SignChallenge, Signer, SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { THiveRoles, TTransactionPackType } from '@hiveio/wax';
 import { siteConfig } from "@hive/ui/config/site";
