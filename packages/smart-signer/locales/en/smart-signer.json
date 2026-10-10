@@ -122,7 +122,8 @@
       "no_wif": "No WIF key from user",
       "no_wif_key": "No WIF key",
       "password_required": "Password is required",
-      "wif_required": "WIF key is required"
+      "wif_required": "WIF key is required",
+      "posting_key_for_active": "The wallet needs your active key; a posting key can't sign transfers"
     },
     "signin_with_keychain": "Hive Keychain extension",
     "signin_with_peakvault": "Peakvault extension",

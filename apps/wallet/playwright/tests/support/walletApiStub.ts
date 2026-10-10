@@ -24,7 +24,7 @@ const authority = { weight_threshold: 1, account_auths: [], key_auths: [] };
 const manabar = { current_mana: '0', last_update_time: 1_759_000_000 };
 
 /** A database_api account with every field the wallet's account mapping reads. */
-const fullAccount = (account: object & { name: string }) => ({
+export const fullAccount = (account: { name: string; [field: string]: unknown }) => ({
   owner: authority,
   active: authority,
   posting: authority,
@@ -103,6 +103,8 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
   'database_api.get_dynamic_global_properties': () => ({
     ...(WITNESS_RESULTS['database_api.get_dynamic_global_properties']({}) as object),
     time: '2026-10-01T12:00:00',
+    // The reference block of the transactions the wallet builds (the sign-in challenge's).
+    head_block_id: '05f5e0ff00000000000000000000000000000000',
     downvote_pool_percent: 2500,
     virtual_supply: hive('450000000000'),
     vesting_reward_percent: 1500,
@@ -164,9 +166,12 @@ const REST_RESULTS: RestResults = {
   })
 };
 
-/** Starts the stub node with the wallet pages' reads; resolves with the server to close after the spec. */
-export const startWalletApiStub = (port = FIXTURE_API_PORT): Promise<Server> =>
-  startApiStub({ jsonRpc: JSON_RPC_RESULTS, rest: REST_RESULTS }, port);
+/**
+ * Starts the stub node with the wallet pages' reads, `jsonRpc` replacing some of them; resolves
+ * with the server to close after the spec.
+ */
+export const startWalletApiStub = (port = FIXTURE_API_PORT, jsonRpc: JsonRpcResults = {}): Promise<Server> =>
+  startApiStub({ jsonRpc: { ...JSON_RPC_RESULTS, ...jsonRpc }, rest: REST_RESULTS }, port);
 
 /** Logs STUB_ACCOUNT in on the client, as the blog's fixture seeder does: the stored user is what `useUser` starts from. */
 export const logInAsStubAccount = (page: Page) =>

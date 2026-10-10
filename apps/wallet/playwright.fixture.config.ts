@@ -41,6 +41,8 @@ export default defineConfig({
     env: {
       REACT_APP_API_ENDPOINT: FIXTURE_API,
       REACT_APP_ALLOWED_HIVE_API_NODES: FIXTURE_API,
+      // As the deployments: hb-auth loads its worker from under the base path.
+      REACT_APP_BASE_PATH: WALLET_BASE_PATH,
       HOSTNAME: '0.0.0.0',
       PORT: String(PORT)
     }
