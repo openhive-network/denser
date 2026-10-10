@@ -148,6 +148,8 @@
     "see_faq_for_details": "See FAQ for details.",
     "witnesses": "Witnesses",
     "account_history_description": "Остерегайтесь спама и фишинговых ссылок в передачах. Не открывайте ссылки от пользователей, которым вы не доверяете. Не предоставляйте свои личные ключи третьим сторонам. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",
+    "scam_transfers_hidden": "Скрытые переводы от известных мошеннических аккаунтов: {{count}}",
+    "scam_transfers_show": "Показать",
     "no_transactions_found": "No transactions found",
     "show_more_transactions": "Показать ещё",
     "the_next_power_down": "The next power down is scheduled to happen in ",

@@ -86,5 +86,6 @@ run_with_junit_fallback "$junit" wallet node --test \
     apps/wallet/lib/history-filter.test.ts \
     apps/wallet/feature/delegations/lib/incoming-delegations.test.ts \
     apps/wallet/playwright/tests/support/walletOperations.test.ts \
-    apps/wallet/lib/encrypted-memo.test.ts < /dev/null || status=1
+    apps/wallet/lib/encrypted-memo.test.ts \
+    apps/wallet/lib/scam-transfer-filter.test.ts < /dev/null || status=1
 exit "$status"

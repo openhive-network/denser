@@ -194,6 +194,7 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
     }))
   }),
   'condenser_api.get_following': () => [{ follower: STUB_ACCOUNT, following: STUB_FOLLOWED, what: ['blog'] }],
+  'bridge.get_follow_list': () => [],
   'market_history_api.get_ticker': () => ({
     latest: '0.250000',
     lowest_ask: '0.251000',
