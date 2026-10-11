@@ -20,22 +20,11 @@ async function signOutBackend(): Promise<User> {
   });
 }
 
-async function signOut(user: User): Promise<User> {
-  const { authenticateOnBackend } = user;
-  if (authenticateOnBackend) {
-    return signOutBackend();
-  } else {
-    return defaultUser;
-  }
-}
-
 export function useSignOut() {
   const queryClient = useQueryClient();
   const signOutMutation = useMutation({
-    mutationFn: (params: { user: User }) => {
-      const { user } = params;
-      return signOut(user);
-    },
+    // Whatever the current account, the server session may hold others signed in before it
+    mutationFn: signOutBackend,
     onMutate: () => {
       // Clear observer cookie immediately — SSR stops personalizing
       document.cookie = 'observer=; path=/; max-age=0';

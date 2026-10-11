@@ -536,6 +536,19 @@ on every navigation.
 
 ---
 
+## Recipe: sign in a client-only account through the login dialog
+
+The fixture app signs in without the backend (`LOGIN_AUTHENTICATE_ON_BACKEND`
+unset), so a WIF sign-in replays: "Other sign in options" → username → "Sign in
+with WIF (Legacy)" → `FIXTURE_POSTING_WIF` in the key dialog. Install
+`installBroadcastInterceptor(page)` first: the WIF signer calls
+`verify_authority`, which the throwaway key fails on chain. The first sign-in
+loads wax and the hb-auth worker, so wait for its effect with a longer timeout.
+`accountSwitchLogout.spec.ts` adds an account this way while a server-held one
+is seeded.
+
+---
+
 ## Recipe: the user should see a "previously voted" post
 
 SSR fetches post data server-side, so `page.route` cannot override

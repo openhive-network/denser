@@ -26,7 +26,7 @@ export function useLogout(redirect?: string) {
     // the Set-Cookie header (which clears iron-session) is processed
     // before any navigation occurs.
     try {
-      await signOut.mutateAsync({ user });
+      await signOut.mutateAsync();
     } catch {
       // Server logout may have failed, but proceed with local cleanup.
       // onMutate already applied optimistic update; onError may have rolled
