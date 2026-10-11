@@ -5,6 +5,7 @@ import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { getChain } from '@transaction/lib/chain';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
+import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
 import type { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { FetchError } from '@smart-signer/lib/fetch-json';
 import { getLogger } from '@hive/ui/lib/logging';
@@ -33,7 +34,7 @@ export async function loginCondenserUser(
   } else if (postingWif && postingWif !== 'none') {
     loginType = LoginType.wif;
     // Store WIF in Denser format so SignerWif can read it
-    window.localStorage.setItem(`wif.${username}@posting`, JSON.stringify(postingWif));
+    window.localStorage.setItem(wifCredentialKey(username, KeyType.posting), JSON.stringify(postingWif));
   } else {
     // No usable login method
     profile.cleanup(username);
@@ -119,6 +120,6 @@ function isNetworkError(error: unknown): boolean {
 
 function removeStoredWif(username: string, loginType: LoginType): void {
   if (loginType === LoginType.wif) {
-    window.localStorage.removeItem(`wif.${username}@posting`);
+    window.localStorage.removeItem(wifCredentialKey(username, KeyType.posting));
   }
 }

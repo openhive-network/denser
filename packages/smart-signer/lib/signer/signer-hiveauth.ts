@@ -3,6 +3,7 @@ import HiveAuthUtils from '@smart-signer/lib/hive-auth-utils';
 import { StorageMixin } from '@smart-signer/lib/storage-mixin';
 import { TTransactionPackType } from '@hiveio/wax';
 import { safeJsonParse } from '@smart-signer/lib/safe-json-parse';
+import { hiveAuthCredentialKey, readCredential } from '@smart-signer/lib/signer/credential-storage';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
@@ -32,7 +33,7 @@ export class SignerHiveauth extends StorageMixin(Signer) {
 
   async destroy() {
     HiveAuthUtils.logout();
-    this.storage.removeItem('hiveAuthData');
+    this.storage.removeItem(hiveAuthCredentialKey(this.username).key);
   }
 
   async signTransaction({ digest, transaction }: SignTransaction): Promise<string> {
@@ -41,7 +42,9 @@ export class SignerHiveauth extends StorageMixin(Signer) {
 
   setHiveAuthData() {
     // TODO check `expire` property - don't use expired token.
-    const data = this.storage.getItem('hiveAuthData');
+    const data = readCredential(this.storage, hiveAuthCredentialKey(this.username), (legacyData) =>
+      safeJsonParse(legacyData, HiveAuthUtils.initialHiveAuthData, 'hiveAuthData').username === this.username
+    );
     const hiveAuthData = safeJsonParse(data, HiveAuthUtils.initialHiveAuthData, 'hiveAuthData');
     HiveAuthUtils.setUsername(hiveAuthData?.username || '');
     HiveAuthUtils.setToken(hiveAuthData?.token || '');
@@ -67,7 +70,7 @@ export class SignerHiveauth extends StorageMixin(Signer) {
 
       if (authResponse.success && authResponse.hiveAuthData) {
         const { token, expire, key, challengeHex: signature } = authResponse.hiveAuthData;
-        this.storage.setItem('hiveAuthData', JSON.stringify({ username, token, expire, key }));
+        this.storage.setItem(hiveAuthCredentialKey(username).key, JSON.stringify({ username, token, expire, key }));
         logger.info('hiveauth', { signature });
         return signature as string;
       } else {

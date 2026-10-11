@@ -7,6 +7,7 @@ import { IronSessionData } from '@smart-signer/types/common';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { getLogger } from '@hive/ui/lib/logging';
 import { postConsentSchema, PostConsentSchema } from '@smart-signer/lib/auth/utils';
+import { setSessionUser } from '@smart-signer/lib/auth/accounts';
 
 const logger = getLogger('app');
 
@@ -38,7 +39,7 @@ export const registerConsent: NextApiHandler<User> = async (req, res) => {
   user.oauthConsent[data.oauthClientId] = data.consent;
 
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
-  session.user = user;
+  setSessionUser(session, user);
   await session.save();
   res.json(user);
 };

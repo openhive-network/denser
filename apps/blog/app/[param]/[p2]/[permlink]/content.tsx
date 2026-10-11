@@ -169,12 +169,14 @@ const PostContent = () => {
   const [filterTooltipOpen, setFilterTooltipOpen] = useState(false);
   const filterTooltipContentRef = useRef<HTMLDivElement>(null);
   const postInCommunity = isCommunity(category);
+  // The server read the post as ssrEffectiveObserver; another observer (e.g. after an account switch) fetches its own
+  const seedPostData = observer === ssrEffectiveObserver ? initialPostData : null;
   const postQuery = useQuery({
     queryKey: ['postData', author, permlink, observer],
     queryFn: () => getPost(author, permlink, observer),
     enabled: !!author && !!permlink,
-    initialData: initialPostData ?? undefined,
-    initialDataUpdatedAt: initialPostData ? Date.now() : undefined,
+    initialData: seedPostData ?? undefined,
+    initialDataUpdatedAt: seedPostData ? Date.now() : undefined,
     staleTime: StaleTime.MEDIUM
   });
   const { data: postData, isPending: postIsLoading } = postQuery;

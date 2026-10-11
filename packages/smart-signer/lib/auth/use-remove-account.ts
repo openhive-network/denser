@@ -7,6 +7,7 @@ import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { removeAccount } from '@smart-signer/lib/auth/accounts';
 import { setAccounts } from '@smart-signer/lib/auth/active-user';
 import { destroyAccountSigner } from '@smart-signer/lib/auth/destroy-signer';
+import { postAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -22,8 +23,8 @@ async function removeAccountBackend(data: PostAccountSchema): Promise<User[]> {
   });
 }
 
-/** Forget an account other than the current user, signing it out of its signer. */
-export function useRemoveAccount() {
+/** Forget an account other than the current user, signing it out of its signer and deleting its stored keys. */
+export function useRemoveAccount({ onError }: { onError?: (account: User) => void } = {}) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (params: { account: User }) => {
@@ -35,9 +36,12 @@ export function useRemoveAccount() {
     onSuccess: (_data, { account }) => {
       setAccounts(queryClient, removeAccount(userLocalStorage.getAccounts(), account.username));
       void destroyAccountSigner(account);
+      postAccountsChanged();
     },
+    // Here rather than in `mutate`'s callbacks: those do not run once the caller unmounted
     onError: (error, { account }) => {
       logger.error(error, 'Removing account %s failed', account.username);
+      onError?.(account);
     }
   });
 }

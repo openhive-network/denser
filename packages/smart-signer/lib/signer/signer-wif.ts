@@ -9,6 +9,7 @@ import { KeyAuthorityType } from '@hiveio/hb-auth';
 import { getChain } from '@hive/common-hiveio-packages';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
+import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
 
 const logger = getLogger('app');
 
@@ -131,7 +132,7 @@ export class SignerWif extends SignerHbauth {
   }
 
   private get storageKey() {
-    return `wif.${this.username}@${this.keyType}`;
+    return wifCredentialKey(this.username, this.keyType);
   }
 
   /**

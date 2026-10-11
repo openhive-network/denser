@@ -9,6 +9,7 @@ import { getLogger } from '@ui/lib/logging';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { addAccount } from '@smart-signer/lib/auth/accounts';
 import { setAccounts, setActiveUser } from '@smart-signer/lib/auth/active-user';
+import { postAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 
 const logger = getLogger('app');
 
@@ -52,6 +53,7 @@ export function useSignIn() {
       const previousUser = queryClient.getQueryData<User>([QUERY_KEY.user]);
       setAccounts(queryClient, addAccount(userLocalStorage.getAccounts(), previousUser, user));
       setActiveUser(queryClient, user);
+      postAccountsChanged();
     },
     onError: (error) => {
       throw error;

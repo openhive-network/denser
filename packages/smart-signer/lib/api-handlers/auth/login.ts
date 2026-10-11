@@ -17,7 +17,7 @@ import { siteConfig } from '@hive/ui/config/site';
 import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
 import { logLoginEvent, getClientIpFromApiRequest } from '@smart-signer/lib/event-logging';
 import { setAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
-import { addAccount } from '@smart-signer/lib/auth/accounts';
+import { addAccount, setSessionUser } from '@smart-signer/lib/auth/accounts';
 
 const logger = getLogger('app');
 
@@ -126,7 +126,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
   session.accounts = addAccount(session.accounts ?? [], session.user, user);
-  session.user = user;
+  setSessionUser(session, user);
   await session.save();
 
   // Set after verify_authority + session.save() so the values are trustworthy

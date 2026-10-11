@@ -25,11 +25,11 @@ const MainPageLayout = ({
   hidePostsHeader?: boolean;
 }) => {
   const ssrObserver = useSSRObserver();
-  const initialSubscriptions = useInitialSubscriptions();
   const { user, isHydrated } = useUserClient();
   const { t } = useTranslation('common_blog');
   const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const observer = isHydrated ? clientObserver : ssrObserver;
+  const initialSubscriptions = useInitialSubscriptions(observer);
   const { data } = useQuery({
     queryKey: ['subscriptions', observer],
     queryFn: () => getSubscriptions(observer),

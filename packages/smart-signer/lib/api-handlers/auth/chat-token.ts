@@ -8,6 +8,7 @@ import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { getLogger } from '@hive/ui/lib/logging';
 import { siteConfig } from '@hive/ui/config/site';
 import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
+import { setSessionUser } from '@smart-signer/lib/auth/accounts';
 
 const logger = getLogger('app');
 
@@ -52,7 +53,7 @@ export const getChatToken: NextApiHandler<User> = async (req, res) => {
     chatAuthToken,
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
-  session.user = user;
+  setSessionUser(session, user);
   await session.save();
   res.json(user);
 };

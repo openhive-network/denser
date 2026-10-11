@@ -1,0 +1,19 @@
+{
+  "testName": "accountSwitchSafety",
+  "recordedAt": "2026-10-10T23:45:17.796Z",
+  "totalRequests": 80,
+  "savedFixtures": 23,
+  "duplicatesSkipped": 57,
+  "methods": {
+    "bridge.list_communities": 6,
+    "bridge.get_ranked_posts": 7,
+    "bridge.unread_notifications": 8,
+    "rc_api.find_rc_accounts": 8,
+    "database_api.get_dynamic_global_properties": 8,
+    "database_api.find_accounts": 16,
+    "bridge.get_profile": 8,
+    "bridge.get_follow_list": 12,
+    "bridge.does_user_follow_any_lists": 5,
+    "bridge.list_all_subscriptions": 2
+  }
+}

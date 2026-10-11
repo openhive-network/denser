@@ -18,12 +18,12 @@ const CommunitiesSidebar: FC = () => {
   const sort = 'rank';
   const query = null;
   const ssrObserver = useSSRObserver();
-  const initialCommunities = useInitialCommunities();
   const { user, isHydrated } = useUserClient();
   // Use SSR observer before hydration to match prefetched cache keys,
   // then switch to client observer (which should be the same value for logged-in users)
   const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const observer = isHydrated ? clientObserver : ssrObserver;
+  const initialCommunities = useInitialCommunities(observer);
 
   const { data } = useQuery({
     queryKey: ['communitiesList', sort, query, observer],

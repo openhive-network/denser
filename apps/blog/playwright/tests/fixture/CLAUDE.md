@@ -529,6 +529,10 @@ the acting page and any "indexed" read override on the observing page.
 other's header (the `storage` event on `user`). The observing page's refetch
 serves the recording, so the spec answers its `bridge.get_follow_list` with
 the muted account once page A's broadcast is captured.
+`accountSwitchSafety.spec.ts` (ACCOUNT-SWITCH-09) checks that an account switch
+reaches the other tab's header (the `denser-accounts` channel). Open the second
+tab before the switch: the seeder's init script rewrites `localStorage['user']`
+on every navigation.
 
 ---
 

@@ -25,10 +25,10 @@ export function CommunitiesSelect({ title }: { title: string }) {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const ssrObserver = useSSRObserver();
-  const initialCommunities = useInitialCommunities();
-  const initialSubscriptions = useInitialSubscriptions();
   const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const observer = isHydrated ? clientObserver : ssrObserver;
+  const initialCommunities = useInitialCommunities(observer);
+  const initialSubscriptions = useInitialSubscriptions(observer);
   const sort = 'rank';
   const query = null;
 
