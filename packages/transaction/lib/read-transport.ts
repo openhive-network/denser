@@ -17,6 +17,22 @@ export class ReadTransportError extends Error {
   }
 }
 
+/**
+ * Statuses that reject the request itself, so every node would answer it the same. 404 is not one:
+ * a node without the REST API answers it.
+ */
+const isRequestRejected = (status: number): boolean =>
+  status >= 400 && status < 500 && status !== 404 && status !== 408 && status !== 429;
+
+/**
+ * Whether a failed REST call means this node cannot serve that REST API: it does not have it (404),
+ * is down or overloaded (5xx, 408, 429, timeout, network failure) or did not answer with JSON, so
+ * another node may serve it. False for a request the API rejected (any other 4xx) and for any error
+ * that is not a `ReadTransportError`.
+ */
+export const isRestApiUnavailable = (error: unknown): boolean =>
+  error instanceof ReadTransportError && (error.status === undefined || !isRequestRejected(error.status));
+
 const describeRequest = (request: IReadRequest): string => `"${request.method} ${request.endpoint + request.url}"`;
 
 const parseBody = (request: IReadRequest, status: number, text: string): unknown => {

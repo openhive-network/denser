@@ -185,7 +185,8 @@ export const getExpiringVestingDelegations = async (
 
 /**
  * Fetches the HP delegations `username` receives, from balance-api's account delegations.
- * Rejects when the API node does not serve balance-api (it answers 404), as some nodes do not.
+ * A node without balance-api (it answers 404) is passed over for another allowed node; rejects when
+ * no allowed node serves it.
  * @returns Incoming delegations, `amount` in VESTS satoshis
  */
 export const getIncomingDelegations = async (username: string): Promise<BalanceApiIncomingDelegation[]> => {

@@ -8,10 +8,13 @@ import { STUB_ACCOUNT, STUB_DELEGATEE, startWalletApiStub } from '../support/wal
  * /@account/delegations lists the HP delegations the account receives (balance-api), with their HP
  * and start date, largest first and paged; leaves the section out when there are none; and on a
  * node without balance-api shows an inline notice while the outgoing and returning sections still
- * render. The other reads come from the stub node (support/walletApiStub.ts); the delegations REST
- * call and the expirations call are answered by each test through `page.route`.
+ * render; a selected REST node without balance-api is passed over for the stub node, which has it.
+ * The other reads come from the stub node (support/walletApiStub.ts); the delegations REST call and
+ * the expirations call are answered by each test through `page.route`.
  */
 
+/** A REST node without balance-api, selected by the user; not an allowed node, hence `bypassCSP`. */
+const LACKING_REST_NODE = 'http://127.0.0.1:8298';
 const DELEGATIONS_PATH = `/balance-api/accounts/${STUB_ACCOUNT}/delegations`;
 const EXPIRATIONS_METHOD = 'database_api.find_vesting_delegation_expirations';
 const CORS = { 'access-control-allow-origin': '*' };
@@ -144,6 +147,37 @@ test.describe('Wallet incoming delegations', () => {
     await expect(incomingRows(page)).toHaveCount(1);
     await expect(incomingRows(page).nth(0)).toContainText('900.000 HP');
     await expect(unavailable).toHaveCount(0);
+  });
+
+  test.describe('with a selected REST node', () => {
+    test.use({ bypassCSP: true });
+
+    test('WALLET-INCOMING-05 — when the selected REST node lacks balance-api, the delegations come from another allowed node', async ({
+      context,
+      page
+    }) => {
+      const lackingNodeRequests: string[] = [];
+      await context.addInitScript((node) => {
+        window.localStorage.setItem('rest-node-endpoint', JSON.stringify(node));
+      }, LACKING_REST_NODE);
+      await context.route(`${LACKING_REST_NODE}/**`, (route) => {
+        lackingNodeRequests.push(new URL(route.request().url()).pathname);
+        return fulfillDelegations(route, { status: 404 });
+      });
+      const calls = await routeDelegations(page, () => ({
+        status: 200,
+        incoming: [incoming('stub-large', '1650000000000')]
+      }));
+
+      await page.goto(delegationsPage);
+
+      await expect(incomingRows(page)).toHaveCount(1);
+      await expect(incomingRows(page).nth(0)).toContainText('900.000 HP');
+      await expect(page.getByTestId('wallet-incoming-delegations-unavailable')).toHaveCount(0);
+      expect(calls.delegations).toBe(1);
+      // Asked once: a node that answered 404 is skipped for balance-api, not retried.
+      expect(lackingNodeRequests.filter((path) => path === DELEGATIONS_PATH)).toHaveLength(1);
+    });
   });
 
   test('WALLET-INCOMING-04 — hundreds of delegators are paged 25 at a time', async ({ page }) => {

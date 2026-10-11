@@ -9,7 +9,7 @@ import { wrapChainWithLogging } from './chain-proxy';
 import { parseFallbackNodes, wrapChainWithServerFailover } from './server-failover';
 import { NodeHealth } from './node-health';
 import { createReadClient, IReadClient, IReadClientConfig } from './read-client';
-import { fetchReadTransport, ReadTransportError } from './read-transport';
+import { fetchReadTransport, isRestApiUnavailable, ReadTransportError } from './read-transport';
 import { announceApiNodeSwitch } from './api-node-switch';
 import { configuredAllowedApiNodes, configuredImagesEndpoint } from '@ui/config/public-vars';
 
@@ -99,7 +99,8 @@ const createReadChain = (getConfig: () => IReadClientConfig): ReadChain =>
 /**
  * Client for read-only API calls (bridge, database_api, condenser_api, hivesense, ...). Unlike
  * `getChain()` it never loads wax's wasm, so pages an anonymous reader browses stay wasm-free.
- * It follows the same endpoint configuration and failover as the chain.
+ * It follows the same endpoint configuration and failover as the chain, and fails its REST reads
+ * over across the same nodes.
  * Signing, broadcasting and wasm-only computation still need `getChain()`.
  */
 export const getReadChain = (): ReadChain => {
@@ -111,9 +112,11 @@ export const getReadChain = (): ReadChain => {
     // The read client fails only with ReadTransportError on transport; checking for it keeps
     // a failing browser read from loading wax.
     isTransportError: (error) => error instanceof ReadTransportError,
+    // REST reads (balance-api, hafah-api, hivemind-api) fail over too: not every node serves them.
+    isRestApiUnavailable,
     onFailover,
     createNodeChain: (node, timeoutMs) =>
-      createReadChain(() => ({ ...getReadClientConfig(), apiEndpoint: node, timeoutMs }))
+      createReadChain(() => ({ ...getReadClientConfig(), apiEndpoint: node, restApiEndpoint: node, timeoutMs }))
   });
   return readChain;
 };
