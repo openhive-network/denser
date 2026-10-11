@@ -16,7 +16,7 @@ const PAGE_SIZE = 25;
 
 /**
  * HP delegations the account receives, paged; renders nothing when there are none and an inline
- * notice when the API node does not serve balance-api, so the rest of the page is unaffected.
+ * notice when no allowed API node serves balance-api, so the rest of the page is unaffected.
  */
 const IncomingDelegationsTable = ({
   account,
@@ -30,7 +30,7 @@ const IncomingDelegationsTable = ({
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: ['incomingDelegations', account],
     queryFn: () => getIncomingDelegations(account),
-    // A node without balance-api answers 404 every time; getIncomingDelegations already retries transient failures.
+    // getIncomingDelegations already fails over to nodes with balance-api and retries transient failures.
     retry: false
   });
   const rows = useMemo(() => (data ? toIncomingDelegationRows(data, dynamicData) : []), [data, dynamicData]);

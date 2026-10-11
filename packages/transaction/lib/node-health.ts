@@ -15,7 +15,8 @@ export interface INodeHealthOptions {
 export type TNodeAdmission = 'healthy' | 'probe';
 
 /**
- * Process-wide circuit breaker over API nodes, keyed by node URL. It holds no request data, only
+ * Process-wide circuit breaker over API nodes, keyed by node URL (or by the URL of one REST API of a
+ * node, e.g. `https://api.example.com/balance-api`). It holds no request data, only
  * when each failed node may be tried again. A node marked down is skipped until its cooldown ends;
  * the first caller after that is admitted as a probe while everyone else keeps skipping it, and the
  * probe's outcome either clears the node or restarts its cooldown.
