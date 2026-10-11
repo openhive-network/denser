@@ -25,3 +25,17 @@ export function removeAccount(accounts: User[], username: string): User[] {
 export function findAccount(accounts: User[], username: string): User | undefined {
   return accounts.find((account) => account.username === username);
 }
+
+/** The accounts with the one listed under `user`'s username, if any, replaced by `user`. */
+export function replaceAccount(accounts: User[], user: User): User[] {
+  return accounts.map((account) => (account.username === user.username ? user : account));
+}
+
+/**
+ * Make `user` the session's current user, replacing its entry in the remembered accounts too, so
+ * switching away and back restores this copy. Every assignment of the session's user goes through here.
+ */
+export function setSessionUser(session: { user?: User; accounts?: User[] }, user: User): void {
+  session.user = user;
+  session.accounts = replaceAccount(session.accounts ?? [], user);
+}

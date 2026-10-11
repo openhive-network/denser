@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import type { User } from '@smart-signer/types/common';
-import { addAccount, removeAccount, findAccount, MAX_ACCOUNTS } from './accounts.ts';
+import { addAccount, removeAccount, findAccount, replaceAccount, setSessionUser, MAX_ACCOUNTS } from './accounts.ts';
 
 function account(username: string, isLoggedIn = true): User {
   return {
@@ -58,5 +58,42 @@ describe('removeAccount', () => {
     const accounts = [account('alice'), account('bob'), account('carol')];
     assert.deepEqual(usernames(removeAccount(accounts, 'bob')), ['alice', 'carol']);
     assert.deepEqual(usernames(removeAccount(accounts, 'dave')), ['alice', 'bob', 'carol']);
+  });
+});
+
+describe('replaceAccount', () => {
+  it('replaces the account listed under the same username, and adds none', () => {
+    const accounts = [account('alice'), account('bob')];
+    const bobAgain = { ...account('bob'), strict: false };
+    assert.deepEqual(replaceAccount(accounts, bobAgain), [accounts[0], bobAgain]);
+    assert.deepEqual(usernames(replaceAccount(accounts, account('carol'))), ['alice', 'bob']);
+  });
+});
+
+describe('setSessionUser', () => {
+  /** What `/api/auth/switch` does with a session holding the account. */
+  function switchTo(session: { user?: User; accounts?: User[] }, username: string) {
+    const target = findAccount(session.accounts ?? [], username);
+    assert.ok(target, `${username} is remembered`);
+    setSessionUser(session, target);
+  }
+
+  it('keeps a change to the current user when switching away and back', () => {
+    const alice = { ...account('alice'), oauthConsent: { chat: true } };
+    const session = { user: alice, accounts: [alice, account('bob')] };
+
+    setSessionUser(session, { ...alice, oauthConsent: { chat: false } });
+    switchTo(session, 'bob');
+    switchTo(session, 'alice');
+
+    assert.equal(session.user.username, 'alice');
+    assert.deepEqual(session.user.oauthConsent, { chat: false });
+  });
+
+  it('sets the user of a session that remembers no accounts', () => {
+    const session: { user?: User; accounts?: User[] } = {};
+    setSessionUser(session, account('alice'));
+    assert.equal(session.user?.username, 'alice');
+    assert.deepEqual(session.accounts, []);
   });
 });

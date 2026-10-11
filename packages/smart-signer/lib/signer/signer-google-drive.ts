@@ -21,28 +21,43 @@ import {
   setOAuthDataWithTimestamp,
   clearOAuthData
 } from '@smart-signer/lib/google-oauth-constants';
+import {
+  googleEncryptionKeyWifCredentialKey,
+  googleRefreshTokenCredentialKey,
+  readCredential
+} from '@smart-signer/lib/signer/credential-storage';
+import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
+import { LoginType } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
 
 export const hasCompatibleGoogleDriveProvider = () => !!siteConfig.googleDrive.clientId;
 
-const GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY = 'google_refresh_token';
-const GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY = 'gdrive_encryption_key_wif';
+/**
+ * Whether the Google Drive credentials stored before they were kept per account are `username`'s:
+ * they belonged to whoever was signed in with Google Drive then, i.e. the stored current user.
+ */
+function ownsLegacyCredentials(username: string): boolean {
+  const currentUser = userLocalStorage.getUser();
+  return currentUser.isLoggedIn && currentUser.loginType === LoginType.google && currentUser.username === username;
+}
 
 /* eslint-disable no-restricted-properties -- WIF key is stored permanently without TTL (safe: WIF alone cannot access wallet without Google token) */
-function getStoredEncryptionKeyWif(): string | null {
+function getStoredEncryptionKeyWif(username: string): string | null {
   if (typeof window === 'undefined') return null;
-  return window.localStorage.getItem(GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY);
+  return readCredential(window.localStorage, googleEncryptionKeyWifCredentialKey(username), () =>
+    ownsLegacyCredentials(username)
+  );
 }
 
-function setStoredEncryptionKeyWif(wif: string): void {
+function setStoredEncryptionKeyWif(username: string, wif: string): void {
   if (typeof window === 'undefined') return;
-  window.localStorage.setItem(GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY, wif);
+  window.localStorage.setItem(googleEncryptionKeyWifCredentialKey(username).key, wif);
 }
 
-function clearStoredEncryptionKeyWif(): void {
+function clearStoredEncryptionKeyWif(username: string): void {
   if (typeof window === 'undefined') return;
-  window.localStorage.removeItem(GOOGLE_DRIVE_ENCRYPTION_KEY_WIF_LOCALSTORAGE_KEY);
+  window.localStorage.removeItem(googleEncryptionKeyWifCredentialKey(username).key);
 }
 /* eslint-enable no-restricted-properties */
 
@@ -100,7 +115,7 @@ export class SignerGoogleDrive extends Signer {
 
     const data = await response.json();
 
-    localStorage.setItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY, refreshToken);
+    localStorage.setItem(googleRefreshTokenCredentialKey(this.username).key, refreshToken);
 
     return data.accessToken;
   }
@@ -114,12 +129,14 @@ export class SignerGoogleDrive extends Signer {
     }
 
     // Check for saved refresh token first
-    const savedRefresh = localStorage.getItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
+    const savedRefresh = readCredential(localStorage, googleRefreshTokenCredentialKey(this.username), () =>
+      ownsLegacyCredentials(this.username)
+    );
     if (savedRefresh) {
       this._accessToken = this.getAccessTokenForRefreshToken(savedRefresh).catch((err) => {
         logger.error('Error refreshing Google Drive access token: %s', err instanceof Error ? err.message : String(err));
 
-        localStorage.removeItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
+        localStorage.removeItem(googleRefreshTokenCredentialKey(this.username).key);
 
         this.destroy().catch(() => {});
 
@@ -260,7 +277,7 @@ export class SignerGoogleDrive extends Signer {
     const data = await res.json();
 
     if (data.refreshToken) {
-      localStorage.setItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY, data.refreshToken);
+      localStorage.setItem(googleRefreshTokenCredentialKey(this.username).key, data.refreshToken);
     }
 
     return data.accessToken;
@@ -270,14 +287,14 @@ export class SignerGoogleDrive extends Signer {
     this._accessToken = undefined;
     this.passwordPromise = undefined;
     this.rawWallet = undefined;
-    localStorage.removeItem(GOOGLE_DRIVE_REFRESH_TOKEN_LOCALSTORAGE_KEY);
+    localStorage.removeItem(googleRefreshTokenCredentialKey(this.username).key);
     // Note: We do NOT remove the encryption key WIF here.
     // The WIF alone cannot access the wallet without the Google OAuth token.
   }
 
   private async getEncryptionCredentials(): Promise<{ password: string } | { encryptionKey: string }> {
     // Check for cached WIF key first
-    const cachedWif = getStoredEncryptionKeyWif();
+    const cachedWif = getStoredEncryptionKeyWif(this.username);
     if (cachedWif) {
       logger.info('Using cached encryption key WIF for Google Drive wallet');
       return { encryptionKey: cachedWif };
@@ -318,7 +335,7 @@ export class SignerGoogleDrive extends Signer {
       this.rawWallet = undefined;
       // Only clear WIF on forceLogin (explicit re-auth request)
       if (forceLogin) {
-        clearStoredEncryptionKeyWif();
+        clearStoredEncryptionKeyWif(this.username);
       }
     }
 
@@ -372,7 +389,7 @@ export class SignerGoogleDrive extends Signer {
         if (usedPassword) {
           try {
             const wif = wallet.getEncryptionKeyWif();
-            setStoredEncryptionKeyWif(wif);
+            setStoredEncryptionKeyWif(this.username, wif);
             logger.info('Cached encryption key WIF for Google Drive wallet');
           } catch (wifError) {
             logger.error('Failed to extract/cache encryption key WIF: %s', wifError instanceof Error ? wifError.message : String(wifError));
@@ -393,7 +410,7 @@ export class SignerGoogleDrive extends Signer {
         // Clear WIF and retry with password prompt
         if (usedCachedWif && !usedPassword) {
           logger.info('Wallet load failed with cached WIF, clearing and retrying with password prompt');
-          clearStoredEncryptionKeyWif();
+          clearStoredEncryptionKeyWif(this.username);
           this.passwordPromise = undefined;
           usedCachedWif = false;
 

@@ -20,6 +20,7 @@ import { getLogger } from '@hive/ui/lib/logging';
 import { proxifyImageSrc } from '@hive/ui/lib/proxify-images';
 import { joinSiteUrl } from '@hive/ui/lib/site-url';
 import { buildOAuthReturnUrl } from '@smart-signer/lib/oauth/return-url';
+import { setSessionUser } from '@smart-signer/lib/auth/accounts';
 
 /** Strip HTML tags and limit length for plain-text profile fields. */
 function sanitizeProfileText(value: string | undefined, maxLen = 160): string | undefined {
@@ -176,7 +177,7 @@ export const handleAuthorize: NextApiHandler = async (req, res) => {
     user.oauthConsent = {};
   }
   user.oauthConsent[clientId] = true;
-  session.user = user;
+  setSessionUser(session, user);
   await session.save();
 
   logger.info('OAuth authorize: issued code for user %s to client %s', user.username, clientId);

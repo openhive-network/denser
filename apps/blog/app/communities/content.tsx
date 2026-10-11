@@ -49,20 +49,17 @@ const CommunitiesContent = () => {
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const ssrObserver = useSSRObserver();
-  const initialCommunities = useInitialCommunities();
-  const initialSubscriptions = useInitialSubscriptions();
   const { user, isHydrated } = useUserClient();
   const [sort, setSort] = useState('rank');
   const [inputQuery, setInputQuery] = useState<string>('');
   const [query, setQuery] = useState<string | null>(null);
   const clientObserver = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const observer = isHydrated ? clientObserver : ssrObserver;
+  const initialCommunities = useInitialCommunities(observer);
+  const initialSubscriptions = useInitialSubscriptions(observer);
   // initialData only applies when sort/query match the SSR-prefetched values ('rank'/null)
-  // and the observer hasn't changed after hydration (SSR data has context.subscribed
-  // for the SSR observer, which may differ from the logged-in user's state)
   const isInitialQuery = sort === 'rank' && query === null;
-  const observerMatchesSSR = observer === ssrObserver;
-  const useInitialData = isInitialQuery && initialCommunities && observerMatchesSSR;
+  const useInitialData = isInitialQuery && initialCommunities;
   const { data: communitiesData, isFetching } = useQuery({
     queryKey: ['communitiesList', sort, query, observer],
     queryFn: async () => await getCommunities(sort, query, observer),

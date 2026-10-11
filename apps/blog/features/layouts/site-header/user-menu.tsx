@@ -16,33 +16,12 @@ import { Button } from '@ui/components';
 import LangToggle from '../lang-toggle';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import env from '@beam-australia/react-env';
-import { User, LoginType } from '@smart-signer/types/common';
+import { User } from '@smart-signer/types/common';
 import { useTranslation } from '@/blog/i18n/client';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import DialogLogin from '@/blog/components/dialog-login';
 import AccountSwitcher from './account-switcher';
-
-// Helper function to get login method icon
-const getLoginMethodIcon = (loginType: LoginType) => {
-  switch (loginType) {
-    case LoginType.google:
-      return <Icons.google className="h-4 w-4" />;
-    case LoginType.keychain:
-      return <Icons.hivekeychain className="h-4 w-4" />;
-    case LoginType.peakvault:
-      return <Icons.peakvault className="h-4 w-4" />;
-    case LoginType.metamask:
-      return <Icons.metamask className="h-4 w-4" />;
-    case LoginType.hiveauth:
-      return <Icons.hiveauth className="h-4 w-4" />;
-    case LoginType.hivesigner:
-      return <Icons.hivesigner className="h-4 w-4" />;
-    case LoginType.hbauth:
-    case LoginType.wif:
-    default:
-      return <Icons.keyRound className="h-4 w-4" />;
-  }
-};
+import LoginMethodIcon from './login-method-icon';
 
 const UserMenu = ({
   children,
@@ -73,7 +52,7 @@ const UserMenu = ({
                     className="flex items-center space-x-2"
                     data-testid="login-method-indicator"
                   >
-                    {getLoginMethodIcon(user.loginType)}
+                    <LoginMethodIcon loginType={user.loginType} />
                     <div className="flex flex-col text-sm font-semibold">
                       <span>Hive</span>
                       <span className="text-destructive">Blog</span>

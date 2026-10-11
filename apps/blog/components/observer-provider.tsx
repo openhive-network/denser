@@ -67,7 +67,12 @@ export const InitialCommunitiesProvider = ({
   children: ReactNode;
 }) => <InitialCommunitiesContext.Provider value={value}>{children}</InitialCommunitiesContext.Provider>;
 
-export const useInitialCommunities = () => useContext(InitialCommunitiesContext);
+/** The server-fetched communities list, or null when `observer` is not the one it was fetched for. */
+export const useInitialCommunities = (observer: string) => {
+  const ssrObserver = useSSRObserver();
+  const initialCommunities = useContext(InitialCommunitiesContext);
+  return observer === ssrObserver ? initialCommunities : null;
+};
 
 const InitialCommunityContext = createContext<Community | null>(null);
 
@@ -117,7 +122,12 @@ export const InitialSubscriptionsProvider = ({
   children: ReactNode;
 }) => <InitialSubscriptionsContext.Provider value={value}>{children}</InitialSubscriptionsContext.Provider>;
 
-export const useInitialSubscriptions = () => useContext(InitialSubscriptionsContext);
+/** The server-fetched subscriptions, or null when `observer` is not the one they were fetched for. */
+export const useInitialSubscriptions = (observer: string) => {
+  const ssrObserver = useSSRObserver();
+  const initialSubscriptions = useContext(InitialSubscriptionsContext);
+  return observer === ssrObserver ? initialSubscriptions : null;
+};
 
 const InitialPostDataContext = createContext<Entry | null>(null);
 

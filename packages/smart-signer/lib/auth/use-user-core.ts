@@ -7,6 +7,8 @@ import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { getLogger } from '@ui/lib/logging';
 import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
 import { User } from '@smart-signer/types/common';
+import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
+import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
 
 const logger = getLogger('app');
 
@@ -103,6 +105,9 @@ export function useUserCore(
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
   }, [queryClient]);
+
+  // Another tab switched or removed an account. Every hook instance hears it; following is idempotent
+  useEffect(() => subscribeAccountsChanged(() => followStoredAccounts(queryClient)), [queryClient]);
 
   useEffect(() => {
     // If no redirect needed, just return (example: already on

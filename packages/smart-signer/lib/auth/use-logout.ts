@@ -3,7 +3,7 @@ import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { findAccount } from '@smart-signer/lib/auth/accounts';
-import { destroyAccountSigner } from '@smart-signer/lib/auth/destroy-signer';
+import { clearStoredCredentials, destroyAccountSigner } from '@smart-signer/lib/auth/destroy-signer';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import { useRouter } from 'next/navigation';
 
@@ -32,6 +32,9 @@ export function useLogout(redirect?: string) {
       // onMutate already applied optimistic update; onError may have rolled
       // it back, but navigation below will load fresh state from the server.
     }
+
+    // Stored keys and tokens must not outlive the session, whichever account they belong to
+    clearStoredCredentials();
 
     // Redirect immediately if specified
     if (redirect) {

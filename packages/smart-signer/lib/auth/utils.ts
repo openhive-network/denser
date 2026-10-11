@@ -53,4 +53,10 @@ export const postAccountSchema = z.object({
 });
 export type PostAccountSchema = z.infer<typeof postAccountSchema>;
 
+export const postSwitchSchema = postAccountSchema.extend({
+  /** False for an account signed in on the client only, which the server session cannot hold */
+  authenticateOnBackend: z.boolean().default(true)
+});
+export type PostSwitchSchema = z.input<typeof postSwitchSchema>;
+
 export type Signatures = PostLoginSchema["signatures"];

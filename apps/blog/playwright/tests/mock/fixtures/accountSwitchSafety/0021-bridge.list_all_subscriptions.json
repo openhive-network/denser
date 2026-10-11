@@ -1,0 +1,67 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_all_subscriptions",
+    "params": {
+      "account": "gtg"
+    },
+    "id": 1
+  },
+  "requestHash": "3cf9e0478275943f",
+  "method": "bridge.list_all_subscriptions",
+  "params": {
+    "account": "gtg"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-139531",
+        "HiveDevs",
+        "admin",
+        "Wizard"
+      ],
+      [
+        "hive-160391",
+        "Blockchain Wizardry",
+        "mod",
+        "Wizard"
+      ],
+      [
+        "hive-102930",
+        "Hive Improvement",
+        "mod",
+        ""
+      ],
+      [
+        "hive-104647",
+        "Steemfest 4",
+        "mod",
+        "Blockchain Wizard"
+      ],
+      [
+        "hive-196387",
+        "StemSocial",
+        "guest",
+        ""
+      ],
+      [
+        "hive-106258",
+        "HiveFest",
+        "guest",
+        ""
+      ],
+      [
+        "hive-148309",
+        "BuzzParty Meet Hive!",
+        "guest",
+        ""
+      ]
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

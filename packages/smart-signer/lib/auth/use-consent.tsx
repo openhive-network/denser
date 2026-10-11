@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { QUERY_KEY } from '@smart-signer/lib/query-keys';
+import { updateActiveUser } from '@smart-signer/lib/auth/active-user';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { User } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
@@ -35,7 +35,7 @@ export function useConsent() {
     },
     onSuccess: (data) => {
       const { user } = data;
-      queryClient.setQueryData([QUERY_KEY.user], user);
+      updateActiveUser(queryClient, user);
     },
     onError: (error) => {
       throw error;

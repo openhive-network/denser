@@ -18,42 +18,28 @@ interface AccountSwitcherProps {
 const AccountSwitcher = ({ user, onAddAccount }: AccountSwitcherProps) => {
   const { t } = useTranslation('common_blog');
   const accounts = useAccounts();
-  const switchAccount = useSwitchAccount();
-  const removeAccount = useRemoveAccount();
+  const switchAccount = useSwitchAccount({
+    onError: (username) =>
+      toast({
+        title: t('navigation.user_menu.switch_account_failed', { username }),
+        variant: 'destructive'
+      })
+  });
+  const removeAccount = useRemoveAccount({
+    onError: (account) =>
+      toast({
+        title: t('navigation.user_menu.remove_account_failed', { username: account.username }),
+        variant: 'destructive'
+      })
+  });
   const otherAccounts = accounts.filter((account) => account.username !== user.username);
   const isPending = switchAccount.isPending || removeAccount.isPending;
 
-  const handleSwitch = useCallback(
-    (account: User) => {
-      switchAccount.mutate(
-        { username: account.username },
-        {
-          onError: () =>
-            toast({
-              title: t('navigation.user_menu.switch_account_failed', { username: account.username }),
-              variant: 'destructive'
-            })
-        }
-      );
-    },
-    [switchAccount, t]
-  );
+  const { mutate: mutateSwitch } = switchAccount;
+  const handleSwitch = useCallback((account: User) => mutateSwitch({ username: account.username }), [mutateSwitch]);
 
-  const handleRemove = useCallback(
-    (account: User) => {
-      removeAccount.mutate(
-        { account },
-        {
-          onError: () =>
-            toast({
-              title: t('navigation.user_menu.remove_account_failed', { username: account.username }),
-              variant: 'destructive'
-            })
-        }
-      );
-    },
-    [removeAccount, t]
-  );
+  const { mutate: mutateRemove } = removeAccount;
+  const handleRemove = useCallback((account: User) => mutateRemove({ account }), [mutateRemove]);
 
   return (
     <>
