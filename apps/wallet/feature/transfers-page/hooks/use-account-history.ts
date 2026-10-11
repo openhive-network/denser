@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { HiveOperation, IGetOperationsByAccountResponse } from '@hive/common-hiveio-packages/wax';
 import { getAccountOperations } from '@/wallet/lib/hive';
+import { AccountHistoryFailure, getAccountHistoryFailure } from '@/wallet/lib/account-history-failure';
 import { handleError } from '@ui/lib/handle-error';
 import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
 
@@ -15,6 +16,8 @@ export interface IAccountHistory {
   operations: HiveOperation[] | undefined;
   isLoading: boolean;
   isError: boolean;
+  /** Why the last request failed, while `isError`. */
+  failure: AccountHistoryFailure | undefined;
   hasOlder: boolean;
   isFetchingOlder: boolean;
   loadOlder: () => void;
@@ -41,16 +44,18 @@ export const useAccountHistory = (username: string, observer: string): IAccountH
   useQueryErrorEffect(query, (error) => {
     handleError(error, { method: 'getAccountOperations', params: { username } });
   });
-  const { data, isPending, isError, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } = query;
+  const { data, error, isPending, isError, hasNextPage, isFetchingNextPage, fetchNextPage, refetch } = query;
 
   const operations = useMemo(() => data?.pages.flatMap(({ operations_result }) => operations_result), [data]);
   const loadOlder = useCallback(() => void fetchNextPage(), [fetchNextPage]);
   const retry = useCallback(() => void (data ? fetchNextPage() : refetch()), [data, fetchNextPage, refetch]);
+  const failure = useMemo(() => (isError ? getAccountHistoryFailure(error) : undefined), [isError, error]);
 
   return {
     operations,
     isLoading: isPending,
     isError,
+    failure,
     hasOlder: Boolean(hasNextPage),
     isFetchingOlder: isFetchingNextPage,
     loadOlder,

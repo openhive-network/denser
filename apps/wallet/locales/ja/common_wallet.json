@@ -143,6 +143,8 @@
     "estimated_account_value_description": "推定値はHIVEの平均値に基いてUSドルで表されます。",
     "account_history_title": "履歴",
     "account_history_error": "アカウント履歴を読み込めませんでした。",
+    "account_history_unavailable": "アカウント履歴は一時的に利用できません。APIノードが時間内に応答しませんでした。しばらくしてから再試行してください。",
+    "account_history_not_served": "利用可能なAPIノードはアカウント履歴を提供していません。",
     "see_faq_for_details": "See FAQ for details.",
     "witnesses": "Witnesses",
     "account_history_description": "送金メモのスパムやフィッシングに注意してください。信用していないユーザーからのリンクを開かないでください。第三者のウェブサイトに秘密キーを提供しないでください。 Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",

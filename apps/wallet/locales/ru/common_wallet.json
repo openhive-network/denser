@@ -145,6 +145,8 @@
     "estimated_account_value_description": "Сметная стоимость основана на среднем значении %(LIQUID_TOKEN)s в долларах США.",
     "account_history_title": "ИСТОРИЯ",
     "account_history_error": "Не удалось загрузить историю аккаунта.",
+    "account_history_unavailable": "История аккаунта временно недоступна: узлы API не ответили вовремя. Повторите попытку через минуту.",
+    "account_history_not_served": "Ни один доступный узел API не предоставляет историю аккаунта.",
     "see_faq_for_details": "See FAQ for details.",
     "witnesses": "Witnesses",
     "account_history_description": "Остерегайтесь спама и фишинговых ссылок в передачах. Не открывайте ссылки от пользователей, которым вы не доверяете. Не предоставляйте свои личные ключи третьим сторонам. Transactions will not show until they are confirmed on the blockchain, which may take a few minutes.",

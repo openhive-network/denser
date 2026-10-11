@@ -21,6 +21,7 @@ interface IFakeChain {
   };
   endpointUrl: string;
   chainId: string;
+  withTimeout: (timeoutMs: number) => IFakeChain;
 }
 
 /** Request timeout of the configured primary chain (wax's default `apiTimeout`). */
@@ -104,6 +105,7 @@ const setup = (
   const makeChain = (node: string, timeoutMs: number): IFakeChain => ({
     endpointUrl: node,
     chainId: 'beeab0de',
+    withTimeout: (slowTimeoutMs) => makeChain(node, slowTimeoutMs),
     api: {
       bridge: { get_ranked_posts: (params) => answer(node, timeoutMs, 'bridge.get_ranked_posts', params) },
       network_broadcast_api: {
@@ -226,6 +228,52 @@ describe('wrapChainWithServerFailover', () => {
 
     expect(elapsed()).to.be.at.most(FAILOVER_BUDGET_MS);
     expect(calls.length).to.be.lessThan(4);
+  });
+
+  describe('a chain derived by withTimeout', () => {
+    const SLOW_TIMEOUT_MS = 15_000;
+    const ranked = 'bridge.get_ranked_posts';
+
+    it('fails over too, asking each node once with the derived timeout', async () => {
+      const { chain, run, calls, created } = setup({ 'https://primary': ['transport'], 'https://fallback-a': ['ok'] });
+
+      const result = await run(chain.withTimeout(SLOW_TIMEOUT_MS).api.bridge.get_ranked_posts({}));
+
+      expect(result).to.have.property('node', 'https://fallback-a');
+      expect(calls).to.deep.equal([`https://primary ${ranked}`, `https://fallback-a ${ranked}`]);
+      expect(created).to.deep.equal([{ node: 'https://fallback-a', timeoutMs: SLOW_TIMEOUT_MS }]);
+    });
+
+    it('waits for a slow node instead of asking the next one as well', async () => {
+      const slowMs = SLOW_TIMEOUT_MS - 1_000;
+      const { chain, run, calls } = setup({ 'https://primary': ['ok'] }, { latencyMs: slowMs });
+
+      const result = await run(chain.withTimeout(SLOW_TIMEOUT_MS).api.bridge.get_ranked_posts({}));
+
+      expect(result).to.have.property('node', 'https://primary');
+      expect(calls).to.deep.equal([`https://primary ${ranked}`]);
+    });
+
+    it('makes one failover attempt at most', async () => {
+      const { chain, run, calls } = setup({}, { latencyMs: SLOW_TIMEOUT_MS + 1 });
+
+      const error = await run(chain.withTimeout(SLOW_TIMEOUT_MS).api.bridge.get_ranked_posts({})).catch(
+        (e: unknown) => e
+      );
+
+      expect(error).to.be.instanceOf(WaxRequestError);
+      expect(calls).to.deep.equal([`https://primary ${ranked}`, `https://fallback-a ${ranked}`]);
+    });
+
+    it('shares node health with the chain it was derived from', async () => {
+      const { chain, rankedPosts, run, calls } = setup({ 'https://primary': ['transport'], 'https://fallback-a': ['ok'] });
+
+      await rankedPosts({});
+      calls.length = 0;
+      await run(chain.withTimeout(SLOW_TIMEOUT_MS).api.bridge.get_ranked_posts({}));
+
+      expect(calls).to.deep.equal([`https://fallback-a ${ranked}`]);
+    });
   });
 
   describe('a dead or slow node', () => {
