@@ -1,0 +1,18 @@
+{
+  "testName": "accountSwitchLogout",
+  "recordedAt": "2026-10-11T00:55:10.776Z",
+  "totalRequests": 36,
+  "savedFixtures": 14,
+  "duplicatesSkipped": 22,
+  "methods": {
+    "bridge.list_communities": 2,
+    "bridge.get_ranked_posts": 2,
+    "database_api.find_accounts": 8,
+    "bridge.unread_notifications": 4,
+    "rc_api.find_rc_accounts": 4,
+    "database_api.get_dynamic_global_properties": 6,
+    "bridge.get_profile": 4,
+    "bridge.get_follow_list": 4,
+    "bridge.does_user_follow_any_lists": 2
+  }
+}

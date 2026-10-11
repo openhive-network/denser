@@ -13,7 +13,7 @@ const logger = getLogger('app');
 
 const HTTP_UNAUTHORIZED = 401;
 
-async function switchAccountBackend(data: PostSwitchSchema): Promise<User> {
+export async function switchAccountBackend(data: PostSwitchSchema): Promise<User> {
   return await fetchJson('/api/auth/switch', {
     method: 'POST',
     headers: [

@@ -14,8 +14,8 @@ const logger = getLogger('app');
 
 /**
  * Make an account signed in earlier in this session the current user, without signing in again.
- * For an account signed in on the client only the session cannot hold, it stops acting as any user,
- * keeping the accounts it holds so the client can switch back to them.
+ * For an account signed in on the client only (switched to, or just signed in) the session cannot
+ * hold, it stops acting as any user, keeping the accounts it holds so the client can switch back to them.
  */
 export const switchAccount: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);

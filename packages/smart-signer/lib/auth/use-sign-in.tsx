@@ -10,6 +10,7 @@ import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { addAccount } from '@smart-signer/lib/auth/accounts';
 import { setAccounts, setActiveUser } from '@smart-signer/lib/auth/active-user';
 import { postAccountsChanged } from '@smart-signer/lib/auth/account-sync';
+import { switchAccountBackend } from '@smart-signer/lib/auth/use-switch-account';
 
 const logger = getLogger('app');
 
@@ -35,9 +36,11 @@ async function signIn(data: PostLoginSchema): Promise<User> {
   const { authenticateOnBackend } = data;
   if (authenticateOnBackend) {
     return signInBackend(data);
-  } else {
-    return verifyLogin(data);
   }
+  const user = await verifyLogin(data);
+  // The session cannot hold this account: it must stop acting as one signed in before it
+  await switchAccountBackend({ username: user.username, authenticateOnBackend: false });
+  return user;
 }
 
 export function useSignIn() {
