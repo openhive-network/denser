@@ -7,6 +7,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { createWalletOperationsFormatter } from './wallet-operations-formatter';
 import HistoryTableRow from './history-table-row';
 import AccountHistoryError from '@/wallet/components/account-history-error';
+import type { AccountHistoryFailure } from '@/wallet/lib/account-history-failure';
 
 type DynamicData = Pick<GetDynamicGlobalPropertiesResponse, 'total_vesting_fund_hive' | 'total_vesting_shares'>;
 
@@ -21,7 +22,8 @@ interface HistoryTableProps {
   dynamicData: DynamicData;
   hasOlder: boolean;
   isFetchingOlder: boolean;
-  olderFailed: boolean;
+  /** Why loading the older page failed; undefined unless it did. */
+  olderFailure: AccountHistoryFailure | undefined;
   onLoadOlder: () => void;
   onRetry: () => void;
 }
@@ -33,7 +35,7 @@ const HistoryTable = ({
   dynamicData,
   hasOlder,
   isFetchingOlder,
-  olderFailed,
+  olderFailure,
   onLoadOlder,
   onRetry
 }: HistoryTableProps) => {
@@ -58,7 +60,7 @@ const HistoryTable = ({
 
   const footer = (() => {
     if (isFetchingOlder) return <div className="p-2 text-center">{t('global.loading')}</div>;
-    if (olderFailed) return <AccountHistoryError onRetry={onRetry} t={t} />;
+    if (olderFailure) return <AccountHistoryError onRetry={onRetry} t={t} failure={olderFailure} />;
     if (historyList.length <= visibleCount && !hasOlder) return null;
     return (
       <div className="flex justify-center p-2">

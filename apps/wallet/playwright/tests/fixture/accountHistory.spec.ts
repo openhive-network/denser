@@ -1,15 +1,20 @@
 import type { Server } from 'node:http';
-import { test, expect, type Page, type Route } from '@playwright/test';
+import { test, expect, type BrowserContext, type Page, type Route } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
+import { FIXTURE_API_PORT } from '../support/apiStub';
 import { STUB_ACCOUNT, startWalletApiStub, stubTransfer } from '../support/walletApiStub';
 
 /**
  * The account history of /@account/transfers is read a small page at a time, older pages on
  * demand, and a failed read leaves an error with Retry in the section while the balances stay.
+ * A selected REST node that cannot serve the history is passed over for the allowed stub node, once.
  * The other reads come from the stub node (support/walletApiStub.ts); the operations requests are
  * answered by each test through `page.route`.
  */
 
+/** A REST node selected by the user; not an allowed node, hence `bypassCSP`. */
+const SELECTED_REST_NODE = 'http://127.0.0.1:8298';
+const STUB_NODE = `http://127.0.0.1:${FIXTURE_API_PORT}`;
 const OPERATIONS_URL = new RegExp(`/hivemind-api/accounts/${STUB_ACCOUNT}/operations\\?`);
 const FIRST_PAGE_SIZE = '100';
 const NEWER_SENDER = 'newer-sender';
@@ -124,6 +129,10 @@ const rewardsOfStubAccount = () => {
   ];
 };
 
+const STATEMENT_TIMEOUT = { message: 'canceling statement due to statement timeout' };
+const NOT_FOUND = { message: 'Not found' };
+const UNAVAILABLE_MESSAGE = 'Account history is temporarily unavailable';
+
 // The browser reads the operations from the API origin, so the answer needs the CORS header the API sends.
 const fulfillJson = (route: Route, json: unknown, status = 200) =>
   route.fulfill({ status, json, headers: { 'access-control-allow-origin': '*' } });
@@ -172,32 +181,41 @@ test.describe('Wallet account history', () => {
     await expect(page.getByTestId('wallet-account-history-older')).toHaveCount(0);
   });
 
-  test('WALLET-HISTORY-02 — a failing history shows an error with Retry next to the balances, and Retry loads the rows', async ({
+  test('WALLET-HISTORY-02 — a failing history shows it is temporarily unavailable with Retry next to the balances, and Retry loads the rows', async ({
     page
   }) => {
     let failing = true;
     const queries = await routeOperations(page, (_query, route) =>
-      failing
-        ? fulfillJson(route, { message: 'canceling statement due to statement timeout' }, 500)
-        : fulfillJson(route, operationsPage(NEWER_SENDER, 2))
+      failing ? fulfillJson(route, STATEMENT_TIMEOUT, 500) : fulfillJson(route, operationsPage(NEWER_SENDER, 2))
     );
 
     await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
 
-    await expect(page.getByTestId('wallet-account-history-error')).toContainText(
-      'Could not load account history.'
-    );
+    await expect(page.getByTestId('wallet-account-history-error')).toContainText(UNAVAILABLE_MESSAGE);
     await expect(page.getByTestId('wallet-hive-value')).toContainText('1,234.567 HIVE');
     await expect(historyRows(page)).toHaveCount(0);
-    // The failed read was repeated once before the error was shown
-    expect(queries).toHaveLength(2);
+    // The only allowed node was asked once: the slow query is not repeated on it
+    expect(queries).toHaveLength(1);
 
     failing = false;
     await page.getByTestId('wallet-account-history-retry').click();
 
     await expect(historyRows(page)).toHaveCount(2);
     await expect(page.getByTestId('wallet-account-history-error')).toHaveCount(0);
-    expect(queries).toHaveLength(3);
+    expect(queries).toHaveLength(2);
+  });
+
+  test('WALLET-HISTORY-06 — when no node serves the history, the error says so instead of asking to wait', async ({
+    page
+  }) => {
+    await routeOperations(page, (_query, route) => fulfillJson(route, NOT_FOUND, 404));
+
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+
+    await expect(page.getByTestId('wallet-account-history-error')).toContainText(
+      'No available API node serves account history.'
+    );
+    await expect(page.getByTestId('wallet-account-history-retry')).toBeVisible();
   });
 
   test('WALLET-HISTORY-03 — the search hides every operation that does not involve the searched account', async ({
@@ -281,5 +299,62 @@ test.describe('Wallet account history', () => {
 
     await page.getByTestId('wallet-search-input').fill('unrelated');
     await expect(historyRows(page)).toHaveCount(0);
+  });
+
+  test.describe('with a selected REST node', () => {
+    test.use({ bypassCSP: true });
+
+    /**
+     * Selects SELECTED_REST_NODE, answering its other requests with 404, and the operations
+     * requests of every node with `answer`. Resolves with the node of each operations request.
+     */
+    const selectRestNode = async (
+      context: BrowserContext,
+      page: Page,
+      answer: (node: string, route: Route) => Promise<void>
+    ) => {
+      await context.addInitScript((node) => {
+        window.localStorage.setItem('rest-node-endpoint', JSON.stringify(node));
+      }, SELECTED_REST_NODE);
+      await context.route(`${SELECTED_REST_NODE}/**`, (route) => fulfillJson(route, NOT_FOUND, 404));
+      const nodes: string[] = [];
+      await routeOperations(page, (_query, route) => {
+        const node = new URL(route.request().url()).origin;
+        nodes.push(node);
+        return answer(node, route);
+      });
+      return nodes;
+    };
+
+    test('WALLET-HISTORY-07 — when the selected REST node lacks the history API, the history comes from another allowed node', async ({
+      context,
+      page
+    }) => {
+      const nodes = await selectRestNode(context, page, (node, route) =>
+        node === SELECTED_REST_NODE
+          ? fulfillJson(route, NOT_FOUND, 404)
+          : fulfillJson(route, operationsPage(NEWER_SENDER, 2))
+      );
+
+      await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+
+      await expect(historyRows(page)).toHaveCount(2);
+      await expect(historyRows(page).first()).toContainText(`from ${NEWER_SENDER}`);
+      await expect(page.getByTestId('wallet-account-history-error')).toHaveCount(0);
+      expect(nodes).toEqual([SELECTED_REST_NODE, STUB_NODE]);
+    });
+
+    test('WALLET-HISTORY-08 — a statement timeout on every node shows the retryable state after one request per node', async ({
+      context,
+      page
+    }) => {
+      const nodes = await selectRestNode(context, page, (_node, route) => fulfillJson(route, STATEMENT_TIMEOUT, 500));
+
+      await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+
+      await expect(page.getByTestId('wallet-account-history-error')).toContainText(UNAVAILABLE_MESSAGE);
+      await expect(page.getByTestId('wallet-account-history-retry')).toBeVisible();
+      expect(nodes).toEqual([SELECTED_REST_NODE, STUB_NODE]);
+    });
   });
 });

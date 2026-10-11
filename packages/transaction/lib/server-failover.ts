@@ -30,13 +30,48 @@ const isWaxTransportError = async (error: unknown): Promise<boolean> =>
 /** JSON-RPC namespaces that are not read-only; a failed broadcast must never be re-sent. */
 const NON_RETRYABLE_NAMESPACES = new Set(['network_broadcast_api']);
 
-export interface IFailoverChain {
+export interface IFailoverChain<TSelf = unknown> {
   readonly api: object;
   readonly restApi?: object;
   readonly endpointUrl: string;
+  /** A chain for the same endpoints whose requests time out after `timeoutMs`; it fails over too. */
+  withTimeout?(timeoutMs: number): TSelf;
 }
 
-export interface IServerFailoverOptions<T extends IFailoverChain> {
+/** How many attempts, on how many nodes, one call may make. */
+interface IFailoverPolicy {
+  /** Request timeout of every retry / failover attempt. */
+  attemptTimeoutMs: number;
+  /** Whether a healthy primary is asked once more before the next node (JSON-RPC calls only). */
+  retriesPrimary: boolean;
+  /** Head start of a node before the next node is asked as well; without it nodes are asked in turn. */
+  hedgeDelayMs?: number;
+  /** Upper bound for one call, see FAILOVER_BUDGET_MS; without it `maxNodes` bounds the call. */
+  budgetMs?: number;
+  /** Most nodes one call asks; all of them when absent. */
+  maxNodes?: number;
+}
+
+const DEFAULT_POLICY: IFailoverPolicy = {
+  attemptTimeoutMs: FAILOVER_ATTEMPT_TIMEOUT_MS,
+  retriesPrimary: true,
+  hedgeDelayMs: HEDGE_DELAY_MS,
+  budgetMs: FAILOVER_BUDGET_MS
+};
+
+/**
+ * Policy of a chain derived by `withTimeout(timeoutMs)`, for calls known to be heavy: each node is
+ * asked once with the whole `timeoutMs`, a node still working is not raced by the next one, and
+ * after the primary one more node at most, so a query that overloads the API nodes is not run on
+ * every one of them.
+ */
+const slowCallPolicy = (timeoutMs: number): IFailoverPolicy => ({
+  attemptTimeoutMs: timeoutMs,
+  retriesPrimary: false,
+  maxNodes: 2
+});
+
+export interface IServerFailoverOptions<T extends IFailoverChain<T>> {
   /** Nodes to fail over to after the primary, in order of preference. */
   fallbackNodes: readonly string[];
   /** Builds a chain that sends JSON-RPC and REST calls to `node` with the given request timeout. */
@@ -142,12 +177,23 @@ export function parseFallbackNodes(
  * other call. A REST API with an endpoint of its own (one that is not `restApi.endpointUrl`) is not
  * failed over. Everything other than `chain.api` and `chain.restApi` is passed through untouched.
  *
+ * A chain derived by `withTimeout(timeoutMs)` fails over as well, sharing `health`, but each call
+ * asks a node once with `timeoutMs`, without hedging, and asks two nodes at most.
+ *
  * On the server one node blip would otherwise turn a whole page render into an error; in the browser
  * the selected node being unreachable would otherwise fail every client-side read.
  */
-export function wrapChainWithServerFailover<T extends IFailoverChain>(
+export function wrapChainWithServerFailover<T extends IFailoverChain<T>>(
   chain: T,
   options: IServerFailoverOptions<T>
+): T {
+  return wrapWithPolicy(chain, options, DEFAULT_POLICY);
+}
+
+function wrapWithPolicy<T extends IFailoverChain<T>>(
+  chain: T,
+  options: IServerFailoverOptions<T>,
+  policy: IFailoverPolicy
 ): T {
   const {
     fallbackNodes,
@@ -160,12 +206,13 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
     sleep = defaultSleep
   } = options;
   const attemptChains = new Map<string, T>();
+  const timeoutChains = new Map<number, T>();
 
   // Chains are cached per node: every wax chain instance allocates wasm state that is never freed.
   const getAttemptChain = (node: string): T => {
     let attemptChain = attemptChains.get(node);
     if (!attemptChain) {
-      attemptChain = createNodeChain(node, FAILOVER_ATTEMPT_TIMEOUT_MS);
+      attemptChain = createNodeChain(node, policy.attemptTimeoutMs);
       attemptChains.set(node, attemptChain);
     }
     return attemptChain;
@@ -200,7 +247,8 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
     const nodes = sweepAll
       ? health.byRecentHealth([...nodeByKey.keys()]).flatMap((key) => nodeByKey.get(key) ?? [])
       : configuredNodes;
-    const fitsBudget = () => now() - startedAt + FAILOVER_ATTEMPT_TIMEOUT_MS <= FAILOVER_BUDGET_MS;
+    const { budgetMs, maxNodes = Infinity } = policy;
+    const fitsBudget = () => budgetMs === undefined || now() - startedAt + policy.attemptTimeoutMs <= budgetMs;
     const tried: string[] = [];
     let settled = false;
     let failures = 0;
@@ -234,7 +282,7 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
     const running = new Map<string, Promise<{ node: string; outcome: TNodeOutcome }>>();
     let nextIndex = 0;
     const startNextNode = (): boolean => {
-      while (nextIndex < nodes.length) {
+      while (nextIndex < nodes.length && tried.length < maxNodes) {
         const node = nodes[nextIndex++];
         const admission = sweepAll ? 'healthy' : health.admit(healthKey(node));
         if (!admission) continue;
@@ -245,9 +293,10 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
       return false;
     };
 
+    const { hedgeDelayMs } = policy;
     let canHedge = startNextNode();
     while (running.size > 0) {
-      const hedge = canHedge ? [sleep(HEDGE_DELAY_MS).then(() => undefined)] : [];
+      const hedge = canHedge && hedgeDelayMs !== undefined ? [sleep(hedgeDelayMs).then(() => undefined)] : [];
       const finished = await Promise.race([...running.values(), ...hedge]);
       if (!finished) {
         canHedge = fitsBudget() && startNextNode();
@@ -298,7 +347,7 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
       healthKey: (node) => node,
       invoke: (target) => callOn(target.api, 'api', path, args),
       isNodeFailure: isTransportError,
-      retriesPrimary: true,
+      retriesPrimary: policy.retriesPrimary,
       onFailover
     });
   };
@@ -341,8 +390,21 @@ export function wrapChainWithServerFailover<T extends IFailoverChain>(
       apply: (_target, _thisArg, args: unknown[]) => onCall(path, args)
     });
 
+  // Cached per timeout, so the derived chain's per-node attempt chains are reused across calls.
+  const withTimeout = (timeoutMs: number): T => {
+    let timeoutChain = timeoutChains.get(timeoutMs);
+    if (!timeoutChain) {
+      const derived = chain.withTimeout?.(timeoutMs);
+      if (!derived) throw new TypeError('chain.withTimeout is not callable');
+      timeoutChain = wrapWithPolicy(derived, options, slowCallPolicy(timeoutMs));
+      timeoutChains.set(timeoutMs, timeoutChain);
+    }
+    return timeoutChain;
+  };
+
   return new Proxy(chain, {
     get: (target, prop, receiver) => {
+      if (prop === 'withTimeout' && typeof chain.withTimeout === 'function') return withTimeout;
       if (prop === 'api') return createApiProxy(() => chain.api, 'api', [], callJsonRpc);
       if (prop === 'restApi' && isRestApiUnavailable && chain.restApi) {
         return createApiProxy(() => chain.restApi, 'restApi', [], (path, args) =>

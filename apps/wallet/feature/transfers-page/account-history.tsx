@@ -33,7 +33,7 @@ interface AccountHistoryProps {
 const AccountHistory = ({ username, dynamicData, history }: AccountHistoryProps) => {
   const { t } = useTranslation('common_wallet');
   const [rawFilter, filter, setFilter] = useFilters(initialFilters);
-  const { operations, isLoading, isError, hasOlder, isFetchingOlder, loadOlder, retry } = history;
+  const { operations, isLoading, isError, failure, hasOlder, isFetchingOlder, loadOlder, retry } = history;
 
   const hiddenSenders = useHiddenSenders();
   const [hiddenTransfersShown, setHiddenTransfersShown] = useState(false);
@@ -65,7 +65,7 @@ const AccountHistory = ({ username, dynamicData, history }: AccountHistoryProps)
 
   const content = (() => {
     if (isLoading) return <div data-testid="wallet-account-history-loading">{t('global.loading')}</div>;
-    if (!operations) return <AccountHistoryError onRetry={retry} t={t} />;
+    if (!operations) return <AccountHistoryError onRetry={retry} t={t} failure={failure} />;
     return (
       <>
         {isHiding && (
@@ -83,7 +83,7 @@ const AccountHistory = ({ username, dynamicData, history }: AccountHistoryProps)
           t={t}
           hasOlder={hasOlder}
           isFetchingOlder={isFetchingOlder}
-          olderFailed={isError && !isFetchingOlder}
+          olderFailure={isFetchingOlder ? undefined : failure}
           onLoadOlder={loadOlder}
           onRetry={retry}
         />

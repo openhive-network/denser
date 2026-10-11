@@ -219,13 +219,15 @@ const walletOperations = [
 ];
 
 // Filtered operation queries of accounts with a long history can take the API several seconds,
-// well past the shared apiTimeout, and a repeated query is often answered much faster.
+// well past the shared apiTimeout.
 const ACCOUNT_OPERATIONS_TIMEOUT_MS = 15_000;
 
+/**
+ * A node without the history API (404) or failing it (5xx, timeout) is passed over for one other
+ * allowed node; the query is not repeated beyond that, as it can overload the API nodes.
+ */
 const readAccountOperations = (params: GetOperationsByAccountParams): Promise<IGetOperationsByAccountResponse> =>
-  retryReadOnce(() =>
-    getReadChain().withTimeout(ACCOUNT_OPERATIONS_TIMEOUT_MS).restApi['hivemind-api'].accountsOperations(params)
-  );
+  getReadChain().withTimeout(ACCOUNT_OPERATIONS_TIMEOUT_MS).restApi['hivemind-api'].accountsOperations(params);
 
 export const getAccountOperations = async (
   username: string,

@@ -145,6 +145,8 @@
     "estimated_account_value_description": "Il valore stimato si basa sul valore medio di HIVE in dollari US.",
     "account_history_title": "CRONOLOGIA",
     "account_history_error": "Impossibile caricare la cronologia dell'account.",
+    "account_history_unavailable": "La cronologia dell'account è temporaneamente non disponibile: i nodi API non hanno risposto in tempo. Riprova tra poco.",
+    "account_history_not_served": "Nessun nodo API disponibile fornisce la cronologia dell'account.",
     "see_faq_for_details": "See FAQ for details.",
     "witnesses": "Witnesses",
     "no_transactions_found": "No transactions found",

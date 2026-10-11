@@ -145,6 +145,8 @@
     "estimated_account_value_description": "El valor estimado está basado en el valor medio de 1HIVE en US dollars.",
     "account_history_title": "HISTORIA",
     "account_history_error": "No se pudo cargar el historial de la cuenta.",
+    "account_history_unavailable": "El historial de la cuenta no está disponible temporalmente: los nodos de la API no respondieron a tiempo. Inténtalo de nuevo en un momento.",
+    "account_history_not_served": "Ningún nodo de la API disponible ofrece el historial de la cuenta.",
     "see_faq_for_details": "See FAQ for details.",
     "no_transactions_found": "No transactions found",
     "show_more_transactions": "Mostrar más",

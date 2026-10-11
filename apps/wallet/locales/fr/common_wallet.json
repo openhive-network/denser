@@ -145,6 +145,8 @@
     "estimated_account_value_description": "La valeur estimée est basée sur la valeur moyenne de HIVE en dollars américains.",
     "account_history_title": "HISTORIQUE",
     "account_history_error": "Impossible de charger l'historique du compte.",
+    "account_history_unavailable": "L'historique du compte est temporairement indisponible : les nœuds de l'API n'ont pas répondu à temps. Réessayez dans un instant.",
+    "account_history_not_served": "Aucun nœud de l'API disponible ne fournit l'historique du compte.",
     "see_faq_for_details": "See FAQ for details.",
     "no_transactions_found": "No transactions found",
     "show_more_transactions": "Afficher plus",

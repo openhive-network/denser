@@ -224,6 +224,8 @@
     "please_vote_for_witnesses": "It looks like you have not yet voted for Witnesses, you can do so on the ",
     "open_orders": "Open Orders",
     "account_history_error": "Could not load account history.",
+    "account_history_unavailable": "Account history is temporarily unavailable: the API nodes could not answer in time. Try again in a moment.",
+    "account_history_not_served": "No available API node serves account history.",
     "recurrent_transfer_to": "Set up recurring transfer of {{value}} (every {{recurrence}} hours, {{executions}} executions) to ",
     "recurrent_transfer_from": "Recurring transfer of {{value}} (every {{recurrence}} hours, {{executions}} executions) set up by ",
     "recurrent_transfer_cancel_to": "Cancelled recurring transfer to ",
