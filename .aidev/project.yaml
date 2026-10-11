@@ -195,7 +195,7 @@ sandbox:
       - paths: ["pnpm-lock.yaml", "package.json", "apps/*/package.json", "packages/*/package.json"]
         action: restart
       # next.config.js and the env/middleware wiring are read once at startup.
-      - paths: ["apps/blog/next.config.js", "packages/middleware/**", ".aidev/dev-stack.compose.yml", ".aidev/fixture-proxy-serve.mjs"]
+      - paths: ["apps/blog/next.config.js", "packages/middleware/**", ".aidev/dev-stack.compose.yml", ".aidev/fixture-proxy-serve.mjs", ".aidev/blog-serve-dev.sh"]
         action: restart
 
 # No publish: section. The integration site (stack/integration,

@@ -62,7 +62,7 @@ not_run() { record "dev_stack not run" skip 0 "$1"; finish; exit 0; }
 # ---- applicable? ----------------------------------------------------------------
 
 applies() {
-    grep -E -x 'pnpm-lock\.yaml|(.+/)?package\.json|apps/[^/]+/next\.config\.js|packages/middleware/.+|\.aidev/dev-stack.*|\.aidev/runtime/.+|\.aidev/(pnpm-deps\.sh|check-node-modules\.mjs|fixture-proxy-serve\.mjs|blog-ready\.sh|run-dev-stack\.sh)'
+    grep -E -x 'pnpm-lock\.yaml|(.+/)?package\.json|apps/[^/]+/next\.config\.js|packages/middleware/.+|\.aidev/dev-stack.*|\.aidev/runtime/.+|\.aidev/(pnpm-deps\.sh|check-node-modules\.mjs|fixture-proxy-serve\.mjs|blog-ready\.sh|blog-serve-dev\.sh|run-dev-stack\.sh)'
 }
 
 base=""

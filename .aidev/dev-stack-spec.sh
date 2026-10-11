@@ -44,9 +44,13 @@ fetch("http://127.0.0.1:8200" + p, { method: m, body: b || undefined })
 }
 
 before="$(control GET /__aidev/status)"
+# A run killed before its trap leaves the proxy relaying to that run's gone worker
+# proxy (every request then answers 503); the recording the stack was started
+# with (FIXTURE_SET) is put back instead of that relay.
 restore() {
     local set
     set="$(printf '%s' "$before" | sed -n 's/.*"fixtureSet":"\([^"]*\)".*/\1/p')"
+    [ -n "$set" ] || set="$(docker exec "$proxy" printenv FIXTURE_SET 2> /dev/null || true)"
     if [ -n "$set" ]; then control PUT "/__aidev/fixture-set/$set" > /dev/null || true
     else control DELETE /__aidev/upstream > /dev/null || true; fi
 }

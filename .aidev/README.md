@@ -112,12 +112,19 @@ data check interactive behaviour with `.aidev/dev-stack-spec.sh`.
 `DENSER_DEV_API_ENDPOINT=https://api.hive.blog` and the blog talks to the live
 API (needs egress; fixture specs then no longer apply).
 
-**Known limitation: next dev is not the production build.** The stack is for
-looking at pages and quick spec checks; the gate stays the `full` slot's
-production-build run. For the integration site's own topology (blog and wallet
-production builds behind caddy's `/blog` and `/wallet` routing, rebuilt as the
-checkout moves), start `stack/integration/session-stack.sh up`; see "A session's
-stack" in `stack/integration/README.md`. What was seen while qualifying it (#966):
+**Mode: next dev, deliberately; it is not the production build.** The stack
+serves `next dev` (Turbopack) so that an edit is visible on the next request
+and a spec runs against it in seconds, with no build in between; a production
+build would cost minutes per edit. A route therefore compiles on its first
+request, and its timings say nothing about production. Use the stack for looking
+at pages and quick spec checks; the gate stays the `full` slot's
+production-build run (`fixture_e2e`). For production builds of this tree served
+live, in the integration site's own topology (blog and wallet behind caddy's
+`/blog` and `/wallet` routing, rebuilt as the checkout moves), start
+`stack/integration/session-stack.sh up`; see "A session's stack" in
+`stack/integration/README.md`. For deterministic timings, the `system` slot
+(below) measures production builds against recorded data. What was seen while
+qualifying the dev stack (#966):
 
 - Playwright output written under `apps/` or `packages/` (tailwind's content
   globs put both in next's watch set) triggers a recompile mid-test; the
@@ -129,8 +136,33 @@ stack" in `stack/integration/README.md`. What was seen while qualifying it (#966
   page); `blog-ready` warms the common ones, others pay it inside the spec.
 - next dev is Turbopack (Next 16). After postDetail the blog container holds
   about 1.9 GiB (4.2 GiB with 14.2's webpack); a cold compile of many routes
-  drives it to its 3 GiB `mem_limit`, which Turbopack absorbs without an OOM
-  kill (8 specs, 31 tests, from an empty `.next`, 2026-10-01).
+  drives it to its 3 GiB `mem_limit`, which Turbopack usually absorbs (8 specs,
+  31 tests, from an empty `.next`, 2026-10-01), but not always (below).
+
+**Staying up.** The blog's command is `.aidev/blog-serve-dev.sh`, not `pnpm dev`
+directly. next dev runs its server in a child process. When the kernel's OOM
+killer ends that child at the `mem_limit`, the parent neither restarts it nor
+fails: it exits 0. Turbopack's native memory is outside `--max-old-space-size`,
+so next's own heap-threshold restart does not prevent this. Up to #1132 that
+ended the container with status 0 and a "Compiling …" line as its last output.
+The stack monitor then recreated the blog, and it answered nothing for about a
+minute (seen at least three times, 2026-10-09/10). The script logs each end as
+`blog-serve-dev: next dev ended with status N after Ss; OOM kills in this
+container: …` and starts next dev again in the same container (about 10 s back
+to serving). Three runs in a row shorter than 120 s end the service with status
+1 instead, because a restart cannot fix that kind of failure. `docker logs <blog
+container> | grep blog-serve-dev` shows whether it happened.
+
+**Health.** `blog-ready` is healthy once `/trending` has answered 200 and the
+common routes are compiled, and from then on while the blog answers HTTP at
+all. After that first warm-up `/trending`'s status follows the fixture proxy,
+not the blog. A switched recording can turn it into an error page, and a
+`dev-stack-spec.sh` run killed before its cleanup leaves the proxy relaying to
+a worker proxy that is gone, so every API call answers 503. The next
+`dev-stack-spec.sh` run puts the stack's recording (`FIXTURE_SET`) back;
+`curl -X PUT "$DENSER_DEV_FIXTURE_URL/__aidev/fixture-set/ssrChecks"` does it
+by hand. Each start of next dev writes a new id to `.next/aidev-dev-boot`, and
+`blog-ready` warms the routes again for a restarted server.
 
 **When things change.** Source edits hot-reload. A change to `pnpm-lock.yaml` or a
 `package.json`, `next.config.js`, the middleware package or the stack's own files
