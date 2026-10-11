@@ -56,11 +56,18 @@ variables:
 # Branch pipelines (what the Workflows/Branch-Pipelines template did), except for
 # AIDEV-driven development: ai/<issue>-..., session/<name> and aidev/integration
 # are verified by the suites in .aidev/project.yaml, not by CI. A push to
-# aidev/integration runs no pipeline; one started by hand or through the API does
-# (`glab ci run -b aidev/integration`), which is how its MR into develop gets the
-# pipeline that develop's merge rule requires.
+# aidev/integration runs no branch pipeline (every promote pushes there). Its MR
+# into develop or main instead gets a merge-request pipeline, on opening and on
+# every push while it is open, so the "pipelines must succeed" rule is met
+# without a manual trigger. No other MR gets one. A merge-request pipeline runs
+# only jobs with explicit rules that match: the image builds and every .node-job
+# (unit, fixture and e2e suites), not the deploy/stop jobs (keyed on
+# $CI_COMMIT_BRANCH, unset there) or the rule-less Lighthouse jobs.
+# A pipeline started by hand or through the API (`glab ci run -b
+# aidev/integration`) still runs as a branch pipeline.
 workflow:
   rules:
+  - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "aidev/integration" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^(develop|main)$/
   - if: $CI_COMMIT_BRANCH =~ /^(ai|session)\//
     when: never
   - if: $CI_COMMIT_BRANCH == "aidev/integration" && $CI_PIPELINE_SOURCE !~ /^(web|api)$/
@@ -208,6 +215,10 @@ mirrornet-haf-binaries-extraction:
 # helper job just to prepare extended version of production image additionally holding .env file specific to test environment
 .docker-build-testenv-image:
   extends: .docker_image_builder_job_template
+  # Explicit rules so the job also runs in merge-request pipelines (see workflow:);
+  # a job without rules runs only in branch and tag pipelines.
+  rules:
+  - when: on_success
   variables:
     TURBO_APP_NAME: ""
     BASE_IMAGE_NAME: ""
@@ -471,6 +482,10 @@ mirrornet-haf-node-replay:
 
 .node-job:
   extends: .job-defaults
+  # Explicit rules so the job also runs in merge-request pipelines (see workflow:);
+  # a job without rules runs only in branch and tag pipelines.
+  rules:
+  - when: on_success
   interruptible: true
   image:
     name: node:24.21.0-alpine3.24
@@ -929,7 +944,8 @@ wallet-fixture-tests:
 .e2e_report_aggregate_template:
   extends: .node-job
   stage: test-report-aggregate
-  when: always
+  rules:
+  - when: always
   allow_failure: true
   image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
   script:
