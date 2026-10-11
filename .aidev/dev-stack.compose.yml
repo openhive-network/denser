@@ -81,7 +81,9 @@ services:
       start_period: 10s
 
   # `pnpm --filter @hive/blog dev` (react-env + next dev on :3000) with the env
-  # the fixture suite's webServer gets in playwright.fixture.config.ts.
+  # the fixture suite's webServer gets in playwright.fixture.config.ts, kept
+  # running by .aidev/blog-serve-dev.sh (next dev exits 0 when its server is
+  # OOM-killed; the script logs that and starts it again).
   blog:
     image: *image
     user: *user
@@ -113,19 +115,16 @@ services:
       # Inotify reaches containers through a bind mount on Linux; set to true on
       # a host where edits do not trigger a recompile.
       WATCHPACK_POLLING: ${WATCHPACK_POLLING:-}
-    command:
-      - bash
-      - -c
-      # On a restart (the pnpm-lock.yaml reload rule restarts both) fixture-proxy
-      # may be installing; pnpm-deps.sh waits on its lock, then verifies the tree.
-      - source .aidev/pnpm-deps.sh && cd apps/blog && exec pnpm dev
+    command: ["bash", ".aidev/blog-serve-dev.sh"]
     depends_on:
       fixture-proxy:
         condition: service_healthy
 
   # Healthy once the blog answers and the routes a spec usually opens first have
   # been compiled — next dev compiles a route on its first request, which can take
-  # longer than a spec's own navigation timeout. See .aidev/blog-ready.sh.
+  # longer than a spec's own navigation timeout — and then while the blog answers.
+  # Reads the blog's boot id from its .next to warm a restarted server again. See
+  # .aidev/blog-ready.sh.
   blog-ready:
     image: *image
     user: *user
@@ -133,6 +132,7 @@ services:
     network_mode: service:fixture-proxy
     volumes:
       - *checkout
+      - blog_next:/work/apps/blog/.next:ro
     command: ["sleep", "infinity"]
     depends_on:
       blog:
