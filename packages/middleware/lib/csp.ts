@@ -5,6 +5,8 @@
  * can be evaluated when the server starts, not at build time.
  */
 
+import { PICKER_API_NODES } from '@hive/ui/config/api-node-picker';
+
 /**
  * App-specific CSP configuration
  */
@@ -42,6 +44,9 @@ function buildConnectSrcHosts(): Set<string> {
       nodes.forEach((node) => hosts.add(node));
     }
   }
+
+  // Added on top of the configured nodes, so a node the user picks is reachable on every deployment
+  PICKER_API_NODES.forEach((node) => hosts.add(node));
 
   // Ensure the configured images endpoint is in connect-src for proxy-auth token fetch
   const imagesEndpoint = process.env.REACT_APP_IMAGES_ENDPOINT;
