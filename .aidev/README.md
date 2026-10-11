@@ -36,14 +36,26 @@ CI job builds this image. AIDEV-driven development doesn't use GitLab CI (see
 
 GitLab CI is not part of AIDEV-driven development. `ai/*` and `session/*` branches
 never run a pipeline, and a push to `aidev/integration` (every promote) doesn't
-either; the slots in `project.yaml` are the verification. CI still runs for
-`develop`, `main`, tags and other branches. Before merging the `aidev/integration`
-MR into `develop` (which requires a successful pipeline), start one by hand:
-`glab ci run -b aidev/integration`.
+start a branch pipeline either; the slots in `project.yaml` are the verification.
+CI still runs for `develop`, `main`, tags and other branches.
 
-CI's per-MR Lighthouse comment doesn't run for AIDEV work either. Instead the
-integration site measures every promoted revision itself: see "Lighthouse after each
-promote" in `stack/integration/README.md`.
+The one exception is the hand-off: an MR from `aidev/integration` into `develop`
+(or `main`) gets a merge-request pipeline when it is opened and again on every push
+to `aidev/integration` while it stays open. It runs the same gating jobs as a
+`develop` pipeline: the image builds, unit tests, the blog and wallet fixture
+suites and the stable e2e suites. It doesn't run the deploy jobs, which only run on
+`develop`/`main` branch pipelines. So "pipelines must succeed" is met and
+auto-merge fires on success with no manual trigger. With no such MR open, a promote
+runs no pipeline at all. `glab ci run -b aidev/integration` still starts a branch
+pipeline by hand when one is wanted.
+
+A job without `rules:` runs only in branch and tag pipelines. A new job that must
+gate this MR needs explicit rules, or must extend `.node-job`, which has them.
+
+CI's Lighthouse jobs (and the per-MR Lighthouse comment) have no rules, so they
+don't run in this pipeline. Instead the integration site measures every promoted
+revision itself: see "Lighthouse after each promote" in
+`stack/integration/README.md`.
 
 ## Live dev stack (`sandbox.dev`)
 
