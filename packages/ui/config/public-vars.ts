@@ -9,6 +9,9 @@ export const configuredApiEndpoint = (env('API_ENDPOINT') ?? 'https://api.hive.b
 export const configuredRestApiEndpoint = env('REST_API_ENDPOINT')?.replace(/\/+$/, '') || undefined;
 export const configuredBlogDomain = env('BLOG_DOMAIN') ?? 'https://hive.blog/';
 export const configuredSessionTime = env('APP_SESSION_TIME') ?? configuredSiteDomain.includes('wallet') ? 900 : 64800;
-/** API nodes the browser may call (the `connect-src` list); the default mirrors the CSP's own. */
+/**
+ * API nodes the browser fails over across; the default mirrors the CSP's own. The CSP `connect-src`
+ * allows them plus the node picker's nodes (`PICKER_API_NODES`), which are not failover targets.
+ */
 export const configuredAllowedApiNodes =
   env('ALLOWED_HIVE_API_NODES') ?? 'https://api.hive.blog https://api.syncad.com https://api.openhive.network';

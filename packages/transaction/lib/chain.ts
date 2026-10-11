@@ -28,8 +28,9 @@ const isServer = typeof window === 'undefined';
 const getServerFallbackNodes = (): string[] =>
   parseFallbackNodes(process.env.REACT_APP_ALLOWED_HIVE_API_NODES, [process.env.REACT_APP_IMAGES_ENDPOINT]);
 
-// The browser fails over across the nodes its CSP lets it call.
-const getBrowserFallbackNodes = (): string[] =>
+// The browser fails over across the operator-allowed API nodes only: the CSP also lets it call the
+// node picker's nodes, but not all of them serve the full API.
+export const getBrowserFallbackNodes = (): string[] =>
   parseFallbackNodes(configuredAllowedApiNodes, [configuredImagesEndpoint]);
 
 const getFallbackNodes = (): string[] => (isServer ? getServerFallbackNodes() : getBrowserFallbackNodes());
