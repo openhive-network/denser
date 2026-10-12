@@ -1,0 +1,91 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post",
+    "params": {
+      "author": "gtg",
+      "permlink": "re-blocktrades-1791329796495",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "f739ea1e9ac2d5a4",
+  "method": "bridge.get_post",
+  "params": {
+    "author": "gtg",
+    "permlink": "re-blocktrades-1791329796495",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "url": "/hive-139531/@blocktrades/haf-api-stack-1-28-8-release-notes-changes-since-1-28-6#@gtg/re-blocktrades-1791329796495",
+      "body": "1.28.8 binaries (built still on Ubuntu 24.04 LTS) are available at https://gtg.openhive.network\nAlso docker image is published to docker hub.\nReplay with \"exchanges-configuration\" (suitable for exchanges, but also consensus nodes, seed nodes, witness nodes, etc.) is in progress, so snapshot should be available later today (Wednesday).\nMy API endpoint still serves from 1.28.6 and I plan to keep it that way for at least 48 hours so in case of some compatibility issues people can fall back to it (I don't think any)",
+      "depth": 1,
+      "stats": {
+        "gray": false,
+        "hide": false,
+        "flag_weight": 0,
+        "total_votes": 13
+      },
+      "title": "RE: HAF API stack 1.28.8 release notes: changes since 1.28.6",
+      "author": "gtg",
+      "payout": 0.422,
+      "created": "2026-10-06T23:36:39",
+      "reblogs": 0,
+      "replies": [],
+      "updated": "2026-10-06T23:36:39",
+      "category": "hive-139531",
+      "children": 1,
+      "permlink": "re-blocktrades-1791329796495",
+      "community": "hive-139531",
+      "payout_at": "2026-10-13T23:36:39",
+      "blacklists": [],
+      "is_paidout": false,
+      "author_role": "admin",
+      "net_rshares": 5722220532885,
+      "percent_hbd": 10000,
+      "active_votes": [
+        {
+          "voter": "acidyo",
+          "rshares": 805298106262
+        },
+        {
+          "voter": "steevc",
+          "rshares": 359626575452
+        },
+        {
+          "voter": "drakos",
+          "rshares": 542639839832
+        },
+        {
+          "voter": "emrebeyler",
+          "rshares": 3430488151956
+        },
+        {
+          "voter": "guruvaj",
+          "rshares": 330916488160
+        }
+      ],
+      "author_title": "Wizard",
+      "beneficiaries": [],
+      "json_metadata": {
+        "app": "@hiveio/wax/1.28.6-rc10-stable.260326112051",
+        "format": "markdown+html"
+      },
+      "parent_author": "blocktrades",
+      "community_title": "HiveDevs",
+      "parent_permlink": "haf-api-stack-1-28-8-release-notes-changes-since-1-28-6",
+      "author_reputation": 76.17,
+      "author_payout_value": "0.000 HBD",
+      "max_accepted_payout": "1000000.000 HBD",
+      "curator_payout_value": "0.000 HBD",
+      "pending_payout_value": "0.422 HBD"
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

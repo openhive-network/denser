@@ -1,0 +1,49 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_profile",
+    "params": {
+      "account": "intishar"
+    },
+    "id": 1
+  },
+  "requestHash": "ce3fc31e88881c0e",
+  "method": "bridge.get_profile",
+  "params": {
+    "account": "intishar"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 1479893,
+      "name": "intishar",
+      "stats": {
+        "rank": 0,
+        "followers": 427,
+        "following": 139
+      },
+      "active": "2026-10-11T18:16:06",
+      "created": "2021-07-04T12:00:06",
+      "metadata": {
+        "profile": {
+          "name": "Intishar",
+          "about": "I am an ordinary person. ",
+          "website": "http://",
+          "location": "Bangladesh",
+          "cover_image": "",
+          "profile_image": "https://images.ecency.com/DQmW4T3FBcm7F55zFJ2bGpatFnxMujbuWrndyt7eVaWBA8w/2f49b8c9a641a00f0ec78485027880e8.jpg",
+          "blacklist_description": "",
+          "muted_list_description": ""
+        }
+      },
+      "blacklists": [],
+      "post_count": 50453,
+      "reputation": 76.29
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

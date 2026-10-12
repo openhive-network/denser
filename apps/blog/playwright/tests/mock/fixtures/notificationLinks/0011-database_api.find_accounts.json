@@ -1,0 +1,207 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.find_accounts",
+    "params": {
+      "accounts": [
+        "intishar"
+      ],
+      "delayed_votes_active": false
+    },
+    "id": 1
+  },
+  "requestHash": "0a7dcfd5737fd4d4",
+  "method": "database_api.find_accounts",
+  "params": {
+    "accounts": [
+      "intishar"
+    ],
+    "delayed_votes_active": false
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "accounts": [
+        {
+          "id": 1479892,
+          "name": "intishar",
+          "owner": {
+            "weight_threshold": 1,
+            "account_auths": [],
+            "key_auths": [
+              [
+                "STM89ghrhvhhW7zraexASzmzShecE5R74QMHAGCoK3iheCKZE8Bww",
+                1
+              ]
+            ]
+          },
+          "active": {
+            "weight_threshold": 1,
+            "account_auths": [],
+            "key_auths": [
+              [
+                "STM7Ssh3C4DGwKvDEEU9jFqTwPnJ95GefY7SLCzZmXZoaKVemBEcS",
+                1
+              ]
+            ]
+          },
+          "posting": {
+            "weight_threshold": 1,
+            "account_auths": [
+              [
+                "ecency.app",
+                1
+              ],
+              [
+                "hive.blog",
+                1
+              ],
+              [
+                "hivesuite.app",
+                1
+              ],
+              [
+                "peakd.app",
+                1
+              ],
+              [
+                "threespeak",
+                1
+              ]
+            ],
+            "key_auths": [
+              [
+                "STM5roMHZSo3a1xhetj8QXQKbtu8ue9sPysrDSR8VBfWVMHEkmYw4",
+                1
+              ]
+            ]
+          },
+          "memo_key": "STM6oHADrnkmhZcFNE4ERTgcaYGRZvA3bb4vJJZ7wUYJZZhdvsMh2",
+          "json_metadata": "{\"beneficiaries\":[]}",
+          "posting_json_metadata": "{\"profile\":{\"name\":\"Intishar\",\"about\":\"I am an ordinary person. \",\"cover_image\":\"\",\"profile_image\":\"https://images.ecency.com/DQmW4T3FBcm7F55zFJ2bGpatFnxMujbuWrndyt7eVaWBA8w/2f49b8c9a641a00f0ec78485027880e8.jpg\",\"website\":\"\",\"location\":\"Bangladesh\",\"pinned\":\"\",\"version\":2,\"badges\":{\"highlighted\":[\"badge-112233\",\"badge-500502\",\"badge-109288\",\"badge-185924\",\"badge-012345\",\"badge-912244\"],\"hidden\":[]},\"portfolio\":\"enabled\",\"reputation\":226793763546443,\"collections\":\"\",\"tokens\":[{\"symbol\":\"POINTS\",\"type\":\"HIVE\",\"meta\":{\"show\":true}},{\"symbol\":\"HIVE\",\"type\":\"HIVE\",\"meta\":{\"show\":true}},{\"symbol\":\"HP\",\"type\":\"HIVE\",\"meta\":{\"show\":true}},{\"symbol\":\"HBD\",\"type\":\"HIVE\",\"meta\":{\"show\":true}}],\"maps\":\"enabled\"}}",
+          "proxy": "",
+          "previous_owner_update": "2025-06-07T21:05:06",
+          "last_owner_update": "2025-06-07T21:12:18",
+          "last_account_update": "2026-10-05T20:41:48",
+          "created": "2021-07-04T12:00:09",
+          "mined": false,
+          "recovery_account": "ecency",
+          "last_account_recovery": "1970-01-01T00:00:00",
+          "reset_account": "null",
+          "comment_count": 0,
+          "lifetime_vote_count": 0,
+          "post_count": 50504,
+          "can_vote": true,
+          "voting_manabar": {
+            "current_mana": 19281927884602,
+            "last_update_time": 1791768099
+          },
+          "downvote_manabar": {
+            "current_mana": 3918060829242,
+            "last_update_time": 1791768099
+          },
+          "balance": {
+            "amount": "28179",
+            "precision": 3,
+            "nai": "@@000000021"
+          },
+          "savings_balance": {
+            "amount": "0",
+            "precision": 3,
+            "nai": "@@000000021"
+          },
+          "hbd_balance": {
+            "amount": "0",
+            "precision": 3,
+            "nai": "@@000000013"
+          },
+          "hbd_seconds": "0",
+          "hbd_seconds_last_update": "1970-01-01T00:00:00",
+          "hbd_last_interest_payment": "1970-01-01T00:00:00",
+          "savings_hbd_balance": {
+            "amount": "0",
+            "precision": 3,
+            "nai": "@@000000013"
+          },
+          "savings_hbd_seconds": "13466880",
+          "savings_hbd_seconds_last_update": "2025-11-02T18:41:30",
+          "savings_hbd_last_interest_payment": "2025-11-01T20:01:09",
+          "savings_withdraw_requests": 0,
+          "reward_hbd_balance": {
+            "amount": "0",
+            "precision": 3,
+            "nai": "@@000000013"
+          },
+          "reward_hive_balance": {
+            "amount": "0",
+            "precision": 3,
+            "nai": "@@000000021"
+          },
+          "reward_vesting_balance": {
+            "amount": "21149739655",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "reward_vesting_hive": {
+            "amount": "13155",
+            "precision": 3,
+            "nai": "@@000000021"
+          },
+          "vesting_shares": {
+            "amount": "28667353146449",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "delegated_vesting_shares": {
+            "amount": "8630924096855",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "received_vesting_shares": {
+            "amount": "83570598430",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "vesting_withdraw_rate": {
+            "amount": "0",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "post_voting_power": {
+            "amount": "20119999648024",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "next_vesting_withdrawal": "1969-12-31T23:59:59",
+          "withdrawn": 0,
+          "to_withdraw": 0,
+          "withdraw_routes": 0,
+          "pending_transfers": 0,
+          "curation_rewards": 967346,
+          "posting_rewards": 21845945,
+          "proxied_vsf_votes": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "witnesses_voted_for": 30,
+          "last_post": "2026-10-11T17:23:57",
+          "last_root_post": "2026-10-11T17:14:30",
+          "last_post_edit": "2026-10-11T17:23:57",
+          "last_vote_time": "2026-10-11T18:16:06",
+          "post_bandwidth": 0,
+          "pending_claimed_accounts": 45,
+          "open_recurrent_transfers": 0,
+          "is_smt": false,
+          "governance_vote_expiration_ts": "2027-07-29T19:49:42"
+        }
+      ]
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
