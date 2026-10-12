@@ -307,7 +307,7 @@ test.describe.skip('Translation tests', () => {
     await expect(postPage.twitterIcon).toHaveAttribute('title', `${expectedSocialTooltipText} Twitter`);
     await expect(postPage.linkedinIcon).toHaveAttribute('title', `${expectedSocialTooltipText} LinkedIn`);
     await expect(postPage.redditIcon).toHaveAttribute('title', `${expectedSocialTooltipText} Reddit`);
-    await expect(postPage.sharePostBtn.locator('..')).toHaveAttribute('title', 'Udostępnij post');
+    await expect(postPage.sharePostBtn).toHaveAttribute('title', 'Udostępnij post');
   });
 
   // Skipped due to failing only on CI

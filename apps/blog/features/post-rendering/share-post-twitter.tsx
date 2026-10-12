@@ -1,6 +1,7 @@
 import { Twitter } from 'lucide-react';
 import { useTranslation } from '@/blog/i18n/client';
 import { getPostShareUrl } from './lib/post-share-url';
+import { SharePostButton } from './share-post-button';
 
 export default function TwitterShare({ title, url }: { title: string; url: string }) {
   const { t } = useTranslation('common_blog');
@@ -19,13 +20,12 @@ export default function TwitterShare({ title, url }: { title: string; url: strin
     );
   };
   return (
-    <div
-      className="cursor-pointer text-muted-foreground transition-colors hover:text-destructive"
+    <SharePostButton
       onClick={openWindow}
-      title={t('post_content.footer.share_on') + `Twitter`}
+      label={t('post_content.footer.share_on') + `Twitter`}
       data-testid="share-on-twitter"
     >
-      <Twitter className="h-[18px] w-[18px]" />
-    </div>
+      <Twitter className="h-[18px] w-[18px]" aria-hidden />
+    </SharePostButton>
   );
 }
