@@ -10,7 +10,7 @@ import {
   rectangularSelection,
   crosshairCursor,
 } from "@codemirror/view";
-import { EditorState, Prec } from "@codemirror/state";
+import { Compartment, EditorState, Prec } from "@codemirror/state";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
@@ -25,8 +25,14 @@ import {
 import { wrapSelection } from "../lib/codemirror-commands";
 import { lightTheme, darkCompartment, isDarkMode } from "../lib/codemirror-theme";
 
+const labelCompartment = new Compartment();
+
+const labelAttributes = (ariaLabel: string) =>
+  EditorView.contentAttributes.of({ "aria-label": ariaLabel });
+
 interface UseCodemirrorConfig {
   placeholder?: string;
+  ariaLabel: string;
   windowheight: number;
   persistedValue: string;
   onChangeRef: React.MutableRefObject<(value: string) => void>;
@@ -38,6 +44,7 @@ interface UseCodemirrorConfig {
 export function useCodemirror(config: UseCodemirrorConfig) {
   const {
     placeholder,
+    ariaLabel,
     windowheight,
     persistedValue,
     onChangeRef,
@@ -245,6 +252,7 @@ export function useCodemirror(config: UseCodemirrorConfig) {
       crosshairCursor(),
       lightTheme,
       darkCompartment.of(isDarkMode() ? oneDark : []),
+      labelCompartment.of(labelAttributes(ariaLabel)),
       updateListener,
       pasteExtension,
       EditorView.lineWrapping,
@@ -298,11 +306,18 @@ export function useCodemirror(config: UseCodemirrorConfig) {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    viewRef.current?.dispatch({
+      effects: labelCompartment.reconfigure(labelAttributes(ariaLabel)),
+    });
+  }, [ariaLabel]);
+
   // Sync persistedValue from parent (form reset, template load, cross-tab sync).
   // Only runs when the editor is NOT focused -- user typing goes through the
   // updateListener and is never overwritten by the debounced echo from PostForm.
-  // Toolbar buttons use tabIndex={-1} so they don't steal focus; they dispatch
-  // directly to CodeMirror, not through persistedValue.
+  // Toolbar buttons don't take focus on mouse click and refocus the editor
+  // after acting; they dispatch directly to CodeMirror, not through
+  // persistedValue.
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;

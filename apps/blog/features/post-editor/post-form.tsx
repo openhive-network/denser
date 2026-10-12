@@ -292,6 +292,7 @@ export default function PostForm({
                         windowheight={500}
                         onChange={handlePostAreaChange}
                         persistedValue={field.value}
+                        ariaLabel={t("submit_page.post_body")}
                       />
                     </div>
                   </FormControl>

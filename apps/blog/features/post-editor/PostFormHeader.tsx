@@ -22,7 +22,6 @@ export function PostFormHeader({ sideBySide, setSideBySide, preview, setPreview 
         className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
         onClick={() => setSideBySide((prev) => !prev)}
         data-testid="enable-disable-side-by-side-editor"
-        tabIndex={-1}
       >
         {sideBySide ? t("submit_page.disable_side") : t("submit_page.enable_side")}
       </Button>
@@ -32,7 +31,6 @@ export function PostFormHeader({ sideBySide, setSideBySide, preview, setPreview 
         variant="ghost"
         className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
         data-testid="hide-show-preview"
-        tabIndex={-1}
       >
         {preview ? t("submit_page.hide_preview") : t("submit_page.show_preview")}
       </Button>
