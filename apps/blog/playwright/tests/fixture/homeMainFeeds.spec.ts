@@ -127,9 +127,9 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
     }).toPass({ timeout: 20000, intervals: [1000, 2000, 3000] });
 
     const menu = homePage.getNavSidebarMenuContent;
-    await expect(menu.getByRole('button', { name: 'FAQ' })).toBeVisible();
-    await expect(menu.getByRole('button', { name: 'Privacy Policy' })).toBeVisible();
-    await expect(menu.getByRole('button', { name: 'Terms of Service' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'FAQ' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Privacy Policy' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Terms of Service' })).toBeVisible();
   });
 
   // The wax wasm (~2.4 MB) is fetched when the chain is created. An anonymous reader never needs the
@@ -240,10 +240,39 @@ test.describe('Home & Main Feeds (fixture-based)', () => {
       await homePage.getNavSidebarMenuContent.waitFor({ state: 'visible', timeout: 5000 });
     }).toPass({ timeout: 20000, intervals: [1000, 2000, 3000] });
 
-    await homePage.getNavSidebarMenuContent.getByRole('button', { name: 'Terms of Service' }).click();
+    await homePage.getNavSidebarMenuContent.getByRole('link', { name: 'Terms of Service' }).click();
 
     await expect(page).toHaveURL(/\/tos\.html$/);
     await expect(new TOSPage(page).firstSubtitle).toHaveText('1. Privacy Policy');
     await expect(homePage.getNavSidebarMenuContent).toBeHidden();
+  });
+
+  test('ANON-HOME-17 — Sidebar menu items are single links, one Tab stop each', async ({ page }) => {
+    await page.goto('/trending', { waitUntil: 'domcontentloaded' });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+
+    await homePage.getNavSidebarMenu.waitFor({ state: 'visible' });
+    await expect(async () => {
+      await homePage.getNavSidebarMenu.click();
+      await homePage.getNavSidebarMenuContent.waitFor({ state: 'visible', timeout: 5000 });
+    }).toPass({ timeout: 20000, intervals: [1000, 2000, 3000] });
+
+    const menu = homePage.getNavSidebarMenuContent;
+    await expect(menu.locator('a button, button a, a a, button button')).toHaveCount(0);
+    const focusablePerItem = await menu
+      .locator('li')
+      .evaluateAll((items) =>
+        items.map((item) => item.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])').length)
+      );
+    expect(focusablePerItem.length).toBeGreaterThan(0);
+    expect(focusablePerItem.every((count) => count <= 1)).toBe(true);
+
+    await menu.getByRole('link', { name: 'Privacy Policy' }).focus();
+    await page.keyboard.press('Tab');
+    await expect(menu.getByRole('link', { name: 'Healthchecker' })).toBeFocused();
+
+    const developerPortal = menu.getByRole('link', { name: 'Developer Portal' });
+    await expect(developerPortal).toHaveAttribute('target', '_blank');
+    await expect(developerPortal).toHaveAttribute('rel', 'noopener noreferrer');
   });
 });
