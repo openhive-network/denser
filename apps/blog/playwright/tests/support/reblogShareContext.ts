@@ -39,3 +39,16 @@ export async function openSharePostDialog(page: Page): Promise<void> {
     timeout: TIMEOUTS.HYDRATION
   });
 }
+
+/**
+ * Assert that a URL the share dialog exposes is the absolute URL of the
+ * post: a single scheme, then the post path as the URL's last segments.
+ * The origin and any base path come from the configured blog domain.
+ */
+export function expectPostShareUrl(url: string): void {
+  expect(url).toMatch(/^https?:\/\/[^/]/);
+  expect(url).not.toMatch(/^https?:\/\/https?:/);
+  const { pathname } = new URL(url);
+  expect(pathname.endsWith(POST_SHARE_PATH)).toBe(true);
+  expect(pathname).not.toContain('//');
+}

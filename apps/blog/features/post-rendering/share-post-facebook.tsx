@@ -1,13 +1,13 @@
 import { Facebook } from 'lucide-react';
 import { useTranslation } from '@/blog/i18n/client';
-import { configuredBlogDomain } from '@hive/ui/config/public-vars';
+import { getPostShareUrl } from './lib/post-share-url';
 
 export default function FacebookShare({ url }: { url: string }) {
   const { t } = useTranslation('common_blog');
-  const href = `https://${configuredBlogDomain}${url}`;
+  const href = getPostShareUrl(url);
   const openWindow = () => {
     return window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${href}`,
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(href)}`,
       'fbshare',
       'width=600, height=400, scrollbars=no'
     );
