@@ -4,10 +4,11 @@ import { Link } from '@hive/ui';
 import ClipboardCopy from './copy-from-input';
 import { Icons } from '@ui/components/icons';
 import { useTranslation } from '@/blog/i18n/client';
-import { configuredBlogDomain } from '@hive/ui/config/public-vars';
+import { getPostShareUrl } from './lib/post-share-url';
 
 export function SharePost({ children, path, title }: { children: ReactNode; path: string; title: string }) {
   const { t } = useTranslation('common_blog');
+  const postUrl = getPostShareUrl(path);
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -21,12 +22,12 @@ export function SharePost({ children, path, title }: { children: ReactNode; path
         </DialogHeader>
         <div className="flex w-full flex-col gap-4">
           <ClipboardCopy
-            copyText={`https://${configuredBlogDomain}${path}`}
+            copyText={postUrl}
             label={t('post_content.footer.share_form.url_to_this_post')}
             testId="share-dialog-copy-url"
           />
           <ClipboardCopy
-            copyText={`[${title}](https://${configuredBlogDomain}${path})`}
+            copyText={`[${title}](${postUrl})`}
             label={t('post_content.footer.share_form.markdown_code_for_a_link_to_this_post')}
             testId="share-dialog-copy-markdown"
           />
