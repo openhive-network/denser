@@ -108,6 +108,7 @@
       "communities": "Communities"
     },
     "user_menu": {
+      "account_menu": "Account menu",
       "wallet": "Wallet",
       "toggle_theme": "Theme",
       "toggle_lang": "Language",

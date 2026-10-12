@@ -15,7 +15,7 @@ import UserMenu from './user-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
 import { findRcAccounts } from '../lib/hive';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@hive/ui/components/tooltip';
+import { TooltipContent } from '@hive/ui/components/tooltip';
 import type { RcAccount } from '@hiveio/wax';
 import { siteConfig } from '@ui/config/site';
 import WitnessVoteExpiryWarning from './witness-vote-expiry-warning';
@@ -118,26 +118,9 @@ const SiteHeader: FC = () => {
             {isClient && user?.isLoggedIn ? (
               <div className="relative inline-flex w-fit cursor-pointer items-center justify-center">
                 <WitnessVoteExpiryWarning expirationTime={accountData?.governance_vote_expiration_ts} />
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger data-testid="profile-avatar-button">
-                      <UserMenu user={user}>
-                        <div className="relative inline-flex w-fit cursor-pointer items-center justify-center">
-                          <div className="absolute cursor-pointer">
-                            <RcRingChart angle={chartAngle} />
-                          </div>
-                          <Avatar>
-                            <AvatarImage
-                              src={getUserAvatarUrl(user?.username || '', 'small')}
-                              alt="Profile picture"
-                            />
-                            <AvatarFallback>
-                              <Icons.user />
-                            </AvatarFallback>
-                          </Avatar>
-                        </div>
-                      </UserMenu>
-                    </TooltipTrigger>
+                <UserMenu
+                  user={user}
+                  tooltip={
                     <TooltipContent className="flex flex-col">
                       <span>Resource Credits</span>
                       <span>(RC) level: {stats.resourceCreditsPercent}%</span>
@@ -145,8 +128,25 @@ const SiteHeader: FC = () => {
                         <span>Full in {stats.resourceCreditsWaitTime / 3600}h</span>
                       ) : null}
                     </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                  }
+                >
+                  <button
+                    type="button"
+                    data-testid="profile-avatar-button"
+                    aria-label={t('navigation.user_menu.account_menu')}
+                    className="relative inline-flex w-fit cursor-pointer items-center justify-center rounded-full"
+                  >
+                    <div className="absolute cursor-pointer">
+                      <RcRingChart angle={chartAngle} />
+                    </div>
+                    <Avatar>
+                      <AvatarImage src={getUserAvatarUrl(user?.username || '', 'small')} alt="Profile picture" />
+                      <AvatarFallback>
+                        <Icons.user />
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </UserMenu>
               </div>
             ) : null}
             <Sidebar />

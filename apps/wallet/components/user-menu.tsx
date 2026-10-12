@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import ModeToggle from './mode-toggle';
 import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
@@ -17,16 +17,34 @@ import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import { getLogger } from '@ui/lib/logging';
 import { User } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
+import { Tooltip, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
 const logger = getLogger('app');
 
-const UserMenu = ({ children, user }: { children: ReactNode; user: User }) => {
+/**
+ * The header's account menu. `children` is its trigger: a single focusable element (a `<button>`)
+ * that opens the menu and shows `tooltip` (a `TooltipContent`) on hover and focus.
+ */
+const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User; tooltip?: ReactNode }) => {
   const onLogout = useLogout('/');
   const { t } = useTranslation('common_wallet');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
+  // One element is both triggers, so keyboard activation, aria-haspopup/aria-expanded and focus
+  // return all belong to the menu. The menu content stays outside the TooltipTrigger (React would
+  // bubble its focus events through the portal and open the tooltip above the menu, where it takes
+  // the first Esc), and the tooltip is held closed while the menu is open.
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+    <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+      <TooltipProvider>
+        <Tooltip open={isTooltipOpen && !isMenuOpen} onOpenChange={setIsTooltipOpen}>
+          <DropdownMenuTrigger asChild>
+            <TooltipTrigger asChild>{children}</TooltipTrigger>
+          </DropdownMenuTrigger>
+          {tooltip}
+        </Tooltip>
+      </TooltipProvider>
       <DropdownMenuContent className="w-56 ">
         <DropdownMenuLabel className="flex w-full items-center justify-between">
           <span>{user.username}</span>

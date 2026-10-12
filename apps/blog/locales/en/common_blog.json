@@ -138,6 +138,7 @@
       "retry": "Retry"
     },
     "user_menu": {
+      "account_menu": "Account menu",
       "profile": "Profile",
       "notifications": "Notifications",
       "comments": "Comments",
