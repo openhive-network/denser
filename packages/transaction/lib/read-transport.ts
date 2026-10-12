@@ -3,14 +3,16 @@ import type { IReadRequest, IReadTransport } from './read-client';
 /**
  * The read client failed to get a usable answer from the node: an HTTP non-2xx/3xx status, a
  * timeout, an aborted request, a network/CORS failure or a malformed-JSON body. `isTransportError`
- * recognises it like wax's `WaxRequestError` family, whose messages it reuses.
+ * recognises it like wax's `WaxRequestError` family, whose messages it reuses. For a non-2xx/3xx
+ * status, `body` is the parsed response body, so callers can tell apart the API's answers.
  */
 export class ReadTransportError extends Error {
   constructor(
     message: string,
     readonly request: IReadRequest,
     readonly status?: number,
-    cause?: unknown
+    cause?: unknown,
+    readonly body?: unknown
   ) {
     super(message, cause === undefined ? undefined : { cause });
     this.name = 'ReadTransportError';
@@ -89,7 +91,9 @@ export const fetchReadTransport: IReadTransport = {
         throw new ReadTransportError(
           `Received non 2xx-3xx http response code while requesting given resource ${describeRequest(request)}: #${response.status}`,
           request,
-          response.status
+          response.status,
+          undefined,
+          body
         );
       }
       return { response: body };

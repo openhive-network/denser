@@ -33,6 +33,15 @@ const SIMILAR_RECORDING = path.resolve(
   '0007-GET_hivesense-api_posts_gtg_hive-hardfork-25-jump-starter-kit_similar.json'
 );
 
+// React Query's first retry of a failed query fires 1 s after the failure.
+const PAST_FIRST_RETRY_MS = 2_500;
+const NO_EMBEDDING_RESPONSE = {
+  code: 'P0001',
+  details: null,
+  hint: null,
+  message: 'Post @gtg/hive-hardfork-25-jump-starter-kit has no stored embedding (too short or not yet processed)'
+};
+
 type SimilarPost = Record<string, unknown>;
 
 const recordedSimilarPosts = (): SimilarPost[] =>
@@ -92,6 +101,35 @@ test.describe('Post suggestions (fixture-based)', () => {
     await postPage.waitForPostHydration();
     await similarServed;
 
+    await expect(page.getByText('You Might Also Like')).toHaveCount(0);
+    await expect(postPage.suggestionsAllHiddenMessage).toHaveCount(0);
+  });
+
+  test('POST-SUGGEST-04: a post without a stored embedding asks for suggestions once and shows none', async ({
+    page
+  }) => {
+    await page.route(SIMILAR_ROUTE, (route) =>
+      route.fulfill({
+        status: 400,
+        json: NO_EMBEDDING_RESPONSE,
+        headers: { 'access-control-allow-origin': '*' }
+      })
+    );
+    const similarRequests: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes('/similar')) similarRequests.push(request.url());
+    });
+    const similarServed = page.waitForResponse((response) => response.url().includes('/similar'));
+
+    const postPage = new PostPage(page);
+    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await postPage.waitForPostHydration();
+    await similarServed;
+    // A retry leaves no trace in the page: wait past the moment React Query would send it.
+    await page.waitForTimeout(PAST_FIRST_RETRY_MS);
+
+    expect(similarRequests).toHaveLength(1);
+    await expect(postPage.articleBody).toBeVisible();
     await expect(page.getByText('You Might Also Like')).toHaveCount(0);
     await expect(postPage.suggestionsAllHiddenMessage).toHaveCount(0);
   });
