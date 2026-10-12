@@ -4,6 +4,7 @@ import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { User } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { getLogger } from '@ui/lib/logging';
+import { appApiPath } from '@ui/lib/app-api-path';
 import { postConsentSchema, PostConsentSchema } from '@smart-signer/lib/auth/utils';
 
 const logger = getLogger('app');
@@ -14,7 +15,7 @@ const logger = getLogger('app');
  * @returns {Promise<User>}
  */
 async function registerConsent(data: PostConsentSchema): Promise<User> {
-  const url = '/api/auth/consent';
+  const url = appApiPath('/api/auth/consent');
   return await fetchJson(url, {
     method: 'POST',
     headers: [

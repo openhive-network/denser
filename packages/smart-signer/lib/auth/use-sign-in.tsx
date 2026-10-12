@@ -6,6 +6,7 @@ import { User } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLogger } from '@ui/lib/logging';
+import { appApiPath } from '@ui/lib/app-api-path';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { addAccount } from '@smart-signer/lib/auth/accounts';
 import { setAccounts, setActiveUser } from '@smart-signer/lib/auth/active-user';
@@ -21,7 +22,7 @@ const logger = getLogger('app');
  * @returns {Promise<User>}
  */
 async function signInBackend(data: PostLoginSchema): Promise<User> {
-  const url = '/api/auth/login';
+  const url = appApiPath('/api/auth/login');
   return await fetchJson(url, {
     method: 'POST',
     headers: [

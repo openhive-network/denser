@@ -4,6 +4,7 @@ import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { User } from '@smart-signer/types/common';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { getLogger } from '@ui/lib/logging';
+import { appApiPath } from '@ui/lib/app-api-path';
 
 const logger = getLogger('app');
 
@@ -13,7 +14,7 @@ const logger = getLogger('app');
  * @returns {Promise<User>}
  */
 async function getChatAuthToken(): Promise<User> {
-  const url = '/api/auth/chat-token';
+  const url = appApiPath('/api/auth/chat-token');
   return await fetchJson(url, {
     method: 'POST',
     headers: [

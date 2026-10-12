@@ -1,4 +1,4 @@
-import { ErrorResponse } from '@smart-signer/lib/api';
+import type { ErrorResponse } from '@smart-signer/lib/api';
 
 /**
  * Error specific for our API server. You should not expect the same
@@ -36,6 +36,26 @@ export class FetchError extends Error {
   }
 }
 
+function statusMessage(response: Response): string {
+  return `Status: ${response.status || 'none'}. Status Text: ${response.statusText || 'none'}`;
+}
+
+/**
+ * A reply that is not JSON (e.g. an HTML error page from a proxy, or a route
+ * the app does not serve) fails as a FetchError naming what came back, rather
+ * than as a bare SyntaxError from the parser.
+ */
+async function parseJsonBody(response: Response) {
+  try {
+    return await response.json();
+  } catch (error) {
+    if (!(error instanceof SyntaxError)) throw error;
+    const contentType = response.headers.get('content-type') || 'no content type';
+    const message = `${statusMessage(response)}. Expected a JSON response from ${response.url}, got ${contentType}`;
+    throw new FetchError({ message, response, data: { error: { message } } });
+  }
+}
+
 export async function fetchJson<JSON = any>(
   input: string | Request | URL,
   init?: RequestInit,
@@ -48,9 +68,8 @@ export async function fetchJson<JSON = any>(
   const myInit = { ...init, signal };
   const response = await fetch(input, myInit);
 
-  // If the server replies, there's always some data in json.
   // If there's a network error, it will throw at the previous line.
-  const data = await response.json();
+  const data = await parseJsonBody(response);
 
   // response.ok is true when res.status is 2xx
   // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
@@ -59,7 +78,7 @@ export async function fetchJson<JSON = any>(
   }
 
   throw new FetchError({
-    message: `Status: ${response.status || 'none'}. Status Text: ${response.statusText || 'none'}`,
+    message: statusMessage(response),
     response,
     data,
   })

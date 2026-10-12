@@ -9,11 +9,12 @@ import { setAccounts } from '@smart-signer/lib/auth/active-user';
 import { destroyAccountSigner } from '@smart-signer/lib/auth/destroy-signer';
 import { postAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { getLogger } from '@ui/lib/logging';
+import { appApiPath } from '@ui/lib/app-api-path';
 
 const logger = getLogger('app');
 
 async function removeAccountBackend(data: PostAccountSchema): Promise<User[]> {
-  return await fetchJson('/api/auth/remove-account', {
+  return await fetchJson(appApiPath('/api/auth/remove-account'), {
     method: 'POST',
     headers: [
       ['content-type', 'application/json'],

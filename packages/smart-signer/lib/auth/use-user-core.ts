@@ -5,6 +5,7 @@ import * as userLocalStorage from './user-localstore';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { getLogger } from '@ui/lib/logging';
+import { appApiPath } from '@ui/lib/app-api-path';
 import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
 import { User } from '@smart-signer/types/common';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
@@ -24,7 +25,7 @@ export interface UseUserOptions {
 }
 
 async function getUser(): Promise<User> {
-  return await fetchJson(`/api/users/me`);
+  return await fetchJson(appApiPath('/api/users/me'));
 }
 
 // Every hook instance would write the same user on mount; write it once per change.

@@ -7,11 +7,12 @@ import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { setAccounts } from '@smart-signer/lib/auth/active-user';
 import { getLogger } from '@ui/lib/logging';
+import { appApiPath } from '@ui/lib/app-api-path';
 
 const logger = getLogger('app');
 
 async function signOutBackend(): Promise<User> {
-  return await fetchJson('/api/auth/logout', {
+  return await fetchJson(appApiPath('/api/auth/logout'), {
     method: 'POST',
     headers: [
       ['content-type', 'application/json'],
