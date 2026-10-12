@@ -1,8 +1,10 @@
 'use client';
 
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
+import { Popover, PopoverContent, PopoverTrigger } from '@hive/ui/components/popover';
 import { cn } from '@ui/lib/utils';
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode } from 'react';
+import { useHoverPopover } from '@/blog/components/hooks/use-hover-popover';
+import { useTranslation } from '@/blog/i18n/client';
 import type { TrimmedEntry } from './lib/card-entry';
 import PayoutHoverContent from './payout-hover-content';
 
@@ -14,20 +16,9 @@ type DetailsCardHoverProps = {
 };
 
 export default function DetailsCardHover({ post, children, decline, post_page }: DetailsCardHoverProps) {
-  const [open, setOpen] = useState(false);
-  const isHovering = useRef(false);
+  const { t } = useTranslation('common_blog');
+  const { rootProps, triggerProps, contentProps } = useHoverPopover();
 
-  const handleMouseEnter = () => {
-    isHovering.current = true;
-    setOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    isHovering.current = false;
-    setTimeout(() => {
-      if (!isHovering.current) setOpen(false);
-    }, 100);
-  };
   if (decline) {
     return (
       <div
@@ -51,23 +42,21 @@ export default function DetailsCardHover({ post, children, decline, post_page }:
   }
 
   return (
-    <HoverCard open={open}>
-      <HoverCardTrigger
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={() => setOpen(!open)}
-        asChild
+    <Popover {...rootProps}>
+      <PopoverTrigger
+        className="flex items-center"
+        aria-label={t('amount_hover_card.show_breakdown', { value: post.payout.toFixed(2) })}
+        {...triggerProps}
       >
         {children}
-      </HoverCardTrigger>
-      <HoverCardContent
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+      </PopoverTrigger>
+      <PopoverContent
         className="flex w-auto flex-col"
         data-testid="payout-post-card-tooltip"
+        {...contentProps}
       >
         <PayoutHoverContent post={post} />
-      </HoverCardContent>
-    </HoverCard>
+      </PopoverContent>
+    </Popover>
   );
 }

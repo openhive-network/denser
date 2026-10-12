@@ -247,7 +247,8 @@
     "past_payouts": "支払い済み ${{value}}",
     "author": "投稿者 ${{value}}",
     "curators": "キュレーター ${{value}}",
-    "max_accepted_payout": "Max accepted payout: ${{value}}"
+    "max_accepted_payout": "Max accepted payout: ${{value}}",
+    "show_breakdown": "支払い ${{value}}、内訳を表示"
   },
   "login_form": {
     "title": "再",
@@ -452,6 +453,7 @@
     },
     "footer": {
       "and_more": "and {{value}} more",
+      "show_voters": "{{label}}、投票者を表示",
       "in": "in",
       "by": "by",
       "upvote": "Upvote",

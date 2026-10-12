@@ -1,0 +1,7 @@
+{
+  "testName": "postDetail_footerPopovers",
+  "base": "postDetail_popover",
+  "additive": true,
+  "note": "Replay-only corpus for postFooterPopovers.spec.ts: postDetail_popover plus database_api.get_feed_history, which the payout breakdown reads, copied verbatim from lighthouse 0026. `additive: true` because the key is new, not a patch.",
+  "overlayFiles": ["0001-database_api.get_feed_history.json"]
+}

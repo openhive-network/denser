@@ -681,13 +681,15 @@ const PostContent = () => {
                       {postData.stats?.total_votes ? (
                         <>
                           <span className="h-4 w-px bg-border" />
-                          <DetailsCardVoters post={postData}>
-                            <span className="font-medium text-destructive">
-                              {postData.stats?.total_votes > 1
-                                ? t('post_content.footer.votes', { votes: postData.stats?.total_votes })
-                                : t('post_content.footer.vote')}
-                            </span>
-                          </DetailsCardVoters>
+                          <DetailsCardVoters
+                            post={postData}
+                            className="font-medium text-destructive"
+                            label={
+                              postData.stats.total_votes > 1
+                                ? t('post_content.footer.votes', { votes: postData.stats.total_votes })
+                                : t('post_content.footer.vote')
+                            }
+                          />
                         </>
                       ) : null}
                     </div>

@@ -247,7 +247,8 @@
     "past_payouts": "累计赏金${{value}}",
     "author": "作者收入${{value}}",
     "curators": "审查收入${{value}}",
-    "max_accepted_payout": "Max accepted payout: ${{value}}"
+    "max_accepted_payout": "Max accepted payout: ${{value}}",
+    "show_breakdown": "支付 ${{value}}，显示明细"
   },
   "login_form": {
     "title": "返回用户:",
@@ -452,6 +453,7 @@
     },
     "footer": {
       "and_more": "and {{value}} more",
+      "show_voters": "{{label}}，显示投票者",
       "in": "in",
       "by": "by",
       "upvote": "点赞",

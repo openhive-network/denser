@@ -270,7 +270,8 @@
     "past_payouts": "المدفوعات السابقة ${{value}}",
     "author": "المؤلف ${{value}}",
     "curators": "المنظمون ${{value}}",
-    "max_accepted_payout": "أقصى مبلغ مقبول للدفع: ${{value}}"
+    "max_accepted_payout": "أقصى مبلغ مقبول للدفع: ${{value}}",
+    "show_breakdown": "الدفع ${{value}}، عرض التفاصيل"
   },
   "login_form": {
     "cancel_button": "إلغاء",
@@ -499,6 +500,7 @@
     },
     "footer": {
       "and_more": "و{{value}} أكثر",
+      "show_voters": "{{label}}، عرض المصوتين",
       "in": "في",
       "by": "بواسطة",
       "upvote": "التصويت الإيجابي",
