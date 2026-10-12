@@ -197,8 +197,8 @@ export class HomePage {
     this.getFirstPostResponseButton = page.locator('[data-testid="post-card-response-link"]').first();
     this.getFirstPostResponseButtonTooltip = page.locator('[data-testid="post-card-responses"]');
     this.getFirstPostChildren = page.locator('[data-testid="post-children"]').first();
-    this.getFirstPostChildernIcon = this.getFirstPostChildren.locator('a:nth-of-type(1)');
-    this.getFirstPostChildernCommentNumber = this.getFirstPostChildren.locator('a:nth-of-type(2)');
+    this.getFirstPostChildernIcon = this.getFirstPostResponseButton.locator('svg');
+    this.getFirstPostChildernCommentNumber = this.getFirstPostResponseButton.locator('span');
     this.getFirstPostChildernTooltip = page.locator('[data-testid="post-card-responses"]');
     this.getPostChildren = page.locator('[data-testid="post-children"]');
     this.getPostCardFooter = page.locator('[data-testid="post-card-footer"]');
