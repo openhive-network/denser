@@ -12,7 +12,8 @@ const TooltipContainer = memo(function TooltipContainer({
 }) {
   return (
     <TooltipProvider>
-      <Tooltip>
+      {/* Plain labels: hoverable content only closes on a later pointermove, so it could stick open */}
+      <Tooltip disableHoverableContent>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent side="bottom">{title}</TooltipContent>
       </Tooltip>

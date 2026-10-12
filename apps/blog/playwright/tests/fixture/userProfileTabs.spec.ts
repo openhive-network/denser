@@ -21,6 +21,7 @@ import {
  *   07 – Followers list renders (or empty state)
  *   08 – Communities tab renders community subscriptions
  *   09 – Profile nav tabs structure (main + Posts sub-tabs)
+ *   09b – Posts sub-menu is a link nav with aria-current, not ARIA tabs
  *   10 – Non-existent user → 404
  *   11 – Profile server HTML preloads only the first card image
  *   12 – Profile fetches the preloaded first card image only once
@@ -166,6 +167,20 @@ test.describe('User Profile Tabs tests (fixture-based)', () => {
     await expect(profilePage.postsMenuPostsButton).toBeVisible();
     await expect(profilePage.postsMenuCommentsButton).toBeVisible();
     await expect(profilePage.postsMenuPayoutsButton).toBeVisible();
+  });
+
+  test('ANON-PROF-09b: Posts sub-menu is a link nav marking the current page', async () => {
+    await profilePage.gotoPostsCommentsProfilePage(`@${user}`);
+
+    await expect(profilePage.postsMenu).toHaveRole('navigation');
+    await expect(profilePage.postsMenu.getByRole('tab')).toHaveCount(0);
+    await expect(profilePage.postsMenu.locator('button a')).toHaveCount(0);
+
+    const links = profilePage.postsMenu.getByRole('link');
+    await expect(links).toHaveCount(3);
+    await expect(profilePage.postsMenuActiveTab).toHaveCount(1);
+    await expect(profilePage.postsMenuActiveTab).toHaveText('Comments');
+    await expect(profilePage.postsMenuActiveTab).toHaveAttribute('href', `/@${user}/comments`);
   });
 
   // ── ANON-PROF-10: Non-existent user ──────────────────────────────────

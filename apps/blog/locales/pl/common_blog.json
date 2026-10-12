@@ -103,6 +103,7 @@
       "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
+      "label": "Wpisy profilu",
       "posts": "Posty",
       "comments": "Komentarze",
       "payouts": "Wynagrodzenia"
