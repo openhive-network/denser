@@ -81,7 +81,9 @@
       "developer_portal": "Developer Portal",
       "hive_whitepaper": "Hive Whitepaper",
       "privacy_policy": "Privacy Policy",
-      "terms_of_service": "Terms of Service"
+      "terms_of_service": "Terms of Service",
+      "not_available_yet": "Not available yet",
+      "login_required": "Log in to use this option"
     },
     "communities_nav": {
       "my_friends": "My friends",
@@ -254,7 +256,10 @@
       "reason_community_type": "not allowed in this community",
       "reason_parent_muted": "parent content is muted",
       "reason_low_reputation": "low reputation",
-      "reason_community_role": "muted in community"
+      "reason_community_role": "muted in community",
+      "collapse_comment": "Collapse comment",
+      "expand_comment": "Expand comment",
+      "expand_comment_with_replies": "Expand comment, {{replies}}"
     }
   },
   "alert_dialog_reblog": {
@@ -262,7 +267,8 @@
     "cancel": "Cancel",
     "description": "This post will be added to your blog and shared with your followers.",
     "already_reblogged": "You have already reblogged this post.",
-    "title": "Reblog This Post"
+    "title": "Reblog This Post",
+    "close": "Close"
   },
   "vote_removal_dialog": {
     "remove_upvote_title": "Remove Upvote",

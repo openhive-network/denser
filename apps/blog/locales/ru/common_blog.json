@@ -77,7 +77,9 @@
       "developer_portal": "API-документация Hive",
       "hive_whitepaper": "Белая книга Hive",
       "privacy_policy": "Политика Конфиденциальности",
-      "terms_of_service": "Условия пользования"
+      "terms_of_service": "Условия пользования",
+      "not_available_yet": "Пока недоступно",
+      "login_required": "Войдите, чтобы использовать эту опцию"
     },
     "communities_nav": {
       "all_posts": "All posts",
@@ -232,7 +234,10 @@
       "reason_community_type": "не разрешено в этом сообществе",
       "reason_parent_muted": "родительский контент заглушен",
       "reason_low_reputation": "низкая репутация",
-      "reason_community_role": "заглушен в сообществе"
+      "reason_community_role": "заглушен в сообществе",
+      "collapse_comment": "Свернуть комментарий",
+      "expand_comment": "Развернуть комментарий",
+      "expand_comment_with_replies": "Развернуть комментарий, {{replies}}"
     }
   },
   "amount_hover_card": {

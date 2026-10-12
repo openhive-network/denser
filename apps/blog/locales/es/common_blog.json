@@ -77,7 +77,9 @@
       "developer_portal": "Documentos API de Hive",
       "hive_whitepaper": "Libro blanco de Hive",
       "privacy_policy": "Política de Privacidad",
-      "terms_of_service": "Términos del Servicio"
+      "terms_of_service": "Términos del Servicio",
+      "not_available_yet": "Aún no disponible",
+      "login_required": "Inicia sesión para usar esta opción"
     },
     "communities_nav": {
       "all_posts": "todos publican",
@@ -232,7 +234,10 @@
       "reason_community_type": "no permitido en esta comunidad",
       "reason_parent_muted": "el contenido padre está silenciado",
       "reason_low_reputation": "reputación baja",
-      "reason_community_role": "silenciado en la comunidad"
+      "reason_community_role": "silenciado en la comunidad",
+      "collapse_comment": "Contraer comentario",
+      "expand_comment": "Expandir comentario",
+      "expand_comment_with_replies": "Expandir comentario, {{replies}}"
     }
   },
   "amount_hover_card": {

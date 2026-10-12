@@ -77,7 +77,9 @@
       "developer_portal": "Hive API資料",
       "hive_whitepaper": "Hiveホワイトペーパー",
       "privacy_policy": "プライバシーポリシー",
-      "terms_of_service": "利用規約"
+      "terms_of_service": "利用規約",
+      "not_available_yet": "まだ利用できません",
+      "login_required": "このオプションを使用するにはログインしてください"
     },
     "communities_nav": {
       "all_posts": "All posts",
@@ -232,7 +234,10 @@
       "reason_community_type": "このコミュニティでは許可されていません",
       "reason_parent_muted": "親コンテンツがミュートされています",
       "reason_low_reputation": "低い評価",
-      "reason_community_role": "コミュニティでミュート"
+      "reason_community_role": "コミュニティでミュート",
+      "collapse_comment": "コメントを折りたたむ",
+      "expand_comment": "コメントを展開",
+      "expand_comment_with_replies": "コメントを展開、{{replies}}"
     }
   },
   "amount_hover_card": {

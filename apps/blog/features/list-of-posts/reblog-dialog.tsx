@@ -58,8 +58,12 @@ export function ReblogDialog({
             <AlertDialogTitle data-testid="reblog-dialog-header">
               {t('alert_dialog_reblog.title')}
             </AlertDialogTitle>
-            <AlertDialogCancel className="border-none hover:text-red-800" data-testid="reblog-dialog-close">
-              X
+            <AlertDialogCancel
+              className="border-none hover:text-red-800"
+              aria-label={t('alert_dialog_reblog.close')}
+              data-testid="reblog-dialog-close"
+            >
+              <span aria-hidden="true">X</span>
             </AlertDialogCancel>
           </div>
           <AlertDialogDescription data-testid="reblog-dialog-description">

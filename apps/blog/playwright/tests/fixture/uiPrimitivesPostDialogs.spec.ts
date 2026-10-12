@@ -50,6 +50,8 @@ test.describe('Radix primitives — post page dialogs, logged in', () => {
 
     await clickUntilOpen(postPage.footerReblogIcon, dialog);
     await expect(dialog).toHaveAccessibleName('Reblog This Post');
+    await expect(dialog).toHaveAttribute('aria-modal', 'true');
+    await expect(postPage.reblogDialogCloseBtn).toHaveAccessibleName('Close');
     await expect(postPage.reblogDialogOkBtn).toBeEnabled();
     await expectFocusTrappedIn(page, dialog);
     // Moving focus and the pointer inside the dialog must not open the icon's tooltip above it

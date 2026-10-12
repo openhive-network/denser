@@ -161,6 +161,15 @@ const CommentListItem = memo(function CommentListItem({
     }
   };
 
+  const repliesText = `${comment.children} ${
+    comment.children > 1 ? t('cards.comment_card.replies') : t('cards.comment_card.one_reply')
+  }`;
+  const toggleLabel = openState
+    ? t('cards.comment_card.collapse_comment')
+    : comment.children
+      ? t('cards.comment_card.expand_comment_with_replies', { replies: repliesText })
+      : t('cards.comment_card.expand_comment');
+
   if (userFromGDPR || parentFromGDPR) {
     return null;
   }
@@ -289,6 +298,7 @@ const CommentListItem = memo(function CommentListItem({
                               ) : null}
                               <AccordionTrigger
                                 className="pb-0 pt-1 !no-underline sm:hidden"
+                                aria-label={toggleLabel}
                                 onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                               />
                             </div>
@@ -353,12 +363,7 @@ const CommentListItem = memo(function CommentListItem({
                             {comment.children ? (
                               <>
                                 <Separator orientation="vertical" />
-                                <div className="flex items-center text-nowrap">
-                                  {comment.children}{' '}
-                                  {comment.children > 1
-                                    ? t('cards.comment_card.replies')
-                                    : t('cards.comment_card.one_reply')}
-                                </div>
+                                <div className="flex items-center text-nowrap">{repliesText}</div>
                               </>
                             ) : null}
                           </div>
@@ -367,6 +372,7 @@ const CommentListItem = memo(function CommentListItem({
                       {!hiddenComment ? (
                         <AccordionTrigger
                           className="mr-2 hidden pb-0 pt-1 !no-underline sm:block"
+                          aria-label={toggleLabel}
                           onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                         />
                       ) : null}

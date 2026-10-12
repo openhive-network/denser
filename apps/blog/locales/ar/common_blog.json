@@ -77,7 +77,9 @@
       "developer_portal": "بوابة المطور",
       "hive_whitepaper": "الورقة البيضاء لـ Hive",
       "privacy_policy": "سياسة الخصوصية",
-      "terms_of_service": "شروط الخدمة"
+      "terms_of_service": "شروط الخدمة",
+      "not_available_yet": "غير متاح بعد",
+      "login_required": "سجّل الدخول لاستخدام هذا الخيار"
     },
     "communities_nav": {
       "all_posts": "جميع المشاركات",
@@ -239,7 +241,10 @@
       "reason_community_type": "غير مسموح في هذا المجتمع",
       "reason_parent_muted": "المحتوى الأصلي مكتوم",
       "reason_low_reputation": "سمعة منخفضة",
-      "reason_community_role": "مكتوم في المجتمع"
+      "reason_community_role": "مكتوم في المجتمع",
+      "collapse_comment": "طي التعليق",
+      "expand_comment": "توسيع التعليق",
+      "expand_comment_with_replies": "توسيع التعليق، {{replies}}"
     }
   },
   "alert_dialog_reblog": {
@@ -247,7 +252,8 @@
     "already_reblogged": "لقد قمت بالفعل بإعادة نشر هذه المشاركة.",
     "cancel": "إلغاء",
     "description": "سيتم إضافة هذه المشاركة إلى مدونتك ومشاركتها مع متابعيك.",
-    "title": "إعادة نشر هذه المشاركة"
+    "title": "إعادة نشر هذه المشاركة",
+    "close": "إغلاق"
   },
   "vote_removal_dialog": {
     "remove_upvote_title": "Remove Upvote",

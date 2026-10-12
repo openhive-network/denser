@@ -1,6 +1,6 @@
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from '@ui/components/sheet';
 import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
 import { ReactNode } from 'react';
@@ -47,8 +47,14 @@ const Sidebar = () => {
     <Sheet>
       <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button">
-            <Icons.sidebarOpen className="h-5 w-5" />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-10 w-10 px-0"
+            aria-label={t('navigation.main_nav_bar.menu_panel')}
+            data-testid="nav-sidebar-menu-button"
+          >
+            <Icons.sidebarOpen className="h-5 w-5" aria-hidden="true" />
           </Button>
         </SheetTrigger>
       </TooltipContainer>
@@ -58,6 +64,7 @@ const Sidebar = () => {
         className="w-5/6 overflow-auto px-0 pt-12 md:w-2/6"
         data-testid="nav-sidebar-menu-content"
       >
+        <SheetTitle className="sr-only">{t('navigation.main_nav_bar.menu_panel')}</SheetTitle>
         <div className="flex flex-col">
           <ul className="flex flex-col">
             {!user?.isLoggedIn && (

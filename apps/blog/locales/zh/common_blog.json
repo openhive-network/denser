@@ -77,7 +77,9 @@
       "developer_portal": "Hive API文档",
       "hive_whitepaper": "Hive白皮书",
       "privacy_policy": "隐私政策",
-      "terms_of_service": "服务条款"
+      "terms_of_service": "服务条款",
+      "not_available_yet": "暂不可用",
+      "login_required": "请登录以使用此选项"
     },
     "communities_nav": {
       "all_posts": "All posts",
@@ -232,7 +234,10 @@
       "reason_community_type": "不允许在此社区发帖",
       "reason_parent_muted": "父级内容已被静音",
       "reason_low_reputation": "声誉低",
-      "reason_community_role": "在社区中被静音"
+      "reason_community_role": "在社区中被静音",
+      "collapse_comment": "折叠评论",
+      "expand_comment": "展开评论",
+      "expand_comment_with_replies": "展开评论，{{replies}}"
     }
   },
   "amount_hover_card": {

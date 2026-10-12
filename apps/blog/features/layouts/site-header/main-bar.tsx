@@ -159,14 +159,26 @@ const MainBar: FC = () => {
             <TooltipContainer title={t('navigation.main_nav_bar.create_post')}>
               {user?.isLoggedIn ? (
                 <Link href="/submit.html">
-                  <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
-                    <Icons.pencil className="h-5 w-5" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-10 w-10 px-0"
+                    aria-label={t('navigation.main_nav_bar.create_post')}
+                    data-testid="nav-pencil"
+                  >
+                    <Icons.pencil className="h-5 w-5" aria-hidden="true" />
                   </Button>
                 </Link>
               ) : (
                 <DialogLogin redirectTo="/submit.html">
-                  <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-pencil">
-                    <Icons.pencil className="h-5 w-5" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-10 w-10 px-0"
+                    aria-label={t('navigation.main_nav_bar.create_post')}
+                    data-testid="nav-pencil"
+                  >
+                    <Icons.pencil className="h-5 w-5" aria-hidden="true" />
                   </Button>
                 </DialogLogin>
               )}
@@ -193,7 +205,7 @@ const MainBar: FC = () => {
                     <Button variant="ghost" size="sm" className="h-10 w-full px-2" data-testid="theme-mode">
                       <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                       <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                      <span className="hidden">Theme</span>
+                      <span className="sr-only">{t('navigation.main_nav_bar.theme')}</span>
                     </Button>
                   </ModeToggle>
                 </div>
