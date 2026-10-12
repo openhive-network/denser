@@ -29,7 +29,7 @@ export const getAccountMetadata = async (
       const username = firstParam.split('@')[1];
       const data = await getAccountFull(username);
 
-      if (!data) {
+      if (!data?.name) {
         throw new Error(`Account ${username} not found`);
       }
 
