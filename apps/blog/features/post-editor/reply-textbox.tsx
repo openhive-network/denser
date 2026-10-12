@@ -337,6 +337,7 @@ export function ReplyTextbox({
             }}
             persistedValue={text}
             placeholder={t('post_content.footer.comment.reply')}
+            ariaLabel={t('post_content.footer.comment.reply')}
           />
           <div className="flex items-center rounded-b-md border-x border-b border-border bg-background-secondary/50 px-3 py-1.5 text-xs text-muted-foreground">
             {t('post_content.footer.comment.insert_images')} {t('post_content.footer.comment.selecting_them')}

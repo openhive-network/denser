@@ -39,10 +39,11 @@ interface MdEditorProps {
   onChange: (value: string) => void;
   persistedValue: string;
   placeholder?: string;
+  ariaLabel: string;
   windowheight: number;
 }
 
-const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, windowheight }) => {
+const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholder, ariaLabel, windowheight }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const { loadSigner } = useSignerContext();
@@ -201,6 +202,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
   const { viewRef, editorMountRef } = useCodemirror({
     placeholder,
+    ariaLabel,
     windowheight,
     persistedValue,
     onChangeRef,
@@ -317,10 +319,15 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     view.focus();
   }, [viewRef]);
 
-  // Focus editor on container click
-  const focusEditor = useCallback(() => {
-    viewRef.current?.focus();
-  }, [viewRef]);
+  // Focus editor on container click, except when the click toggles one of the
+  // toolbar option checkboxes, which keep focus for keyboard users.
+  const focusEditor = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (event.target instanceof Element && event.target.closest('label, input')) return;
+      viewRef.current?.focus();
+    },
+    [viewRef]
+  );
 
   const editorBody = (
     <div
