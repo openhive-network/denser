@@ -7,6 +7,7 @@ import {
   HIVE_SENSE_PROBE_TIMEOUT_MS,
   hiveSenseOpenApiLooksHealthy,
   hiveSenseSearchProbeLooksHealthy,
+  isHiveSenseNoEmbeddingError,
   isHiveSenseStub,
   isRenderableSearchEntry,
   promiseWithTimeout
@@ -14,7 +15,7 @@ import {
 
 const logStandarizedError = (methodName: string, error: unknown): null => {
   logger.error(error, `Error in ${methodName}`);
-  throw new Error(`Error in ${methodName}`);
+  throw new Error(`Error in ${methodName}`, { cause: error });
 };
 
 export const getHiveSenseStatus = async (): Promise<boolean> => {
@@ -108,6 +109,7 @@ export const getSimilarPostsByPost = async ({
     });
     return response;
   } catch (error) {
+    if (isHiveSenseNoEmbeddingError(error)) return null;
     return logStandarizedError('getSimilarPostsByPost', error);
   }
 };
