@@ -2,7 +2,7 @@
 
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { TooltipContent } from '@ui/components/tooltip';
 import { siteConfig } from '@ui/config/site';
 import { Link } from '@hive/ui';
 import React, { useState, FC, useEffect, useCallback } from 'react';
@@ -58,6 +58,30 @@ const MainBar: FC = () => {
   const upvotePercent = manabarsData?.upvote.percentageValue ?? 0;
   const downvotePercent = manabarsData?.downvote.percentageValue ?? 0;
   const rcPercent = manabarsData?.rc.percentageValue ?? 0;
+
+  const resourceCreditsTooltip = manabarsData ? (
+    <TooltipContent className="flex flex-col bg-background-tertiary">
+      <span>Resource Credits</span>
+      <div className="flex flex-col text-blue-600">
+        <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
+        {manabarsData.rc.percentageValue !== 100 ? (
+          <span>Full in: {hoursAndMinutes(manabarsData.rc.cooldown, t)}</span>
+        ) : null}
+      </div>
+      <div className="flex flex-col text-green-600">
+        <span> Voting Power: {manabarsData.upvote.percentageValue}%</span>
+        {manabarsData?.upvote.percentageValue !== 100 ? (
+          <span>Full in: {hoursAndMinutes(manabarsData.upvote.cooldown, t)}</span>
+        ) : null}
+      </div>
+      <div className="flex flex-col text-destructive">
+        <span> Downvote power: {manabarsData.downvote.percentageValue}%</span>
+        {manabarsData.downvote.percentageValue !== 100 ? (
+          <span>Full in: {hoursAndMinutes(manabarsData.downvote.cooldown, t)}</span>
+        ) : null}
+      </div>
+    </TooltipContent>
+  ) : null;
 
   const [isNavHidden, setIsNavHidden] = useState(false);
   let lastScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
@@ -188,89 +212,65 @@ const MainBar: FC = () => {
             ) : (
               <>
                 {user.isLoggedIn ? (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger data-testid="profile-avatar-button" className="cursor-pointer">
-                        <UserMenu user={user} notifications={data?.unread}>
-                          <div className="group relative inline-flex w-fit cursor-pointer items-center justify-center">
-                            {data && data.unread !== 0 ? (
-                              <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive-icon px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
-                                {data.unread}
-                              </div>
-                            ) : null}
-                            {/* Default state: RC ring only */}
-                            <ManabarRing
-                              percentage={rcPercent}
-                              color="#0088FE"
-                              size={48}
-                              thickness={6}
-                              className="absolute z-20 group-hover:invisible group-hover:delay-300 group-hover:duration-300 group-hover:animate-out group-hover:zoom-out-75"
-                            />
+                  <UserMenu user={user} notifications={data?.unread} tooltip={resourceCreditsTooltip}>
+                    <button
+                      type="button"
+                      data-testid="profile-avatar-button"
+                      aria-label={t('navigation.user_menu.account_menu')}
+                      className="group relative inline-flex w-fit cursor-pointer items-center justify-center rounded-full"
+                    >
+                      {data && data.unread !== 0 ? (
+                        <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-destructive-icon px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                          {data.unread}
+                        </div>
+                      ) : null}
+                      {/* Default state: RC ring only */}
+                      <ManabarRing
+                        percentage={rcPercent}
+                        color="#0088FE"
+                        size={48}
+                        thickness={6}
+                        className="absolute z-20 group-hover:invisible group-hover:delay-300 group-hover:duration-300 group-hover:animate-out group-hover:zoom-out-75"
+                      />
 
-                            {/* Hover state: Three concentric rings */}
-                            <ManabarRing
-                              percentage={downvotePercent}
-                              color="#C01000"
-                              size={43}
-                              thickness={3.5}
-                              className="invisible absolute z-20 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50"
-                            />
-                            <ManabarRing
-                              percentage={upvotePercent}
-                              color="#00C040"
-                              size={50}
-                              thickness={3.5}
-                              className="invisible absolute z-10 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50"
-                            />
-                            <ManabarRing
-                              percentage={rcPercent}
-                              color="#0088FE"
-                              size={57}
-                              thickness={3.5}
-                              className="invisible absolute group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50"
-                            />
-                            <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
-                              <AvatarImage
-                                className="h-full w-full object-cover"
-                                src={getUserAvatarUrl(user?.username || '', 'small')}
-                                alt="Profile picture"
-                              />
-                              <AvatarFallback>
-                                <img
-                                  className="h-full w-full object-cover"
-                                  src={getUserAvatarUrl(user?.username || '', 'small')}
-                                  alt="Profile picture"
-                                />
-                              </AvatarFallback>
-                            </Avatar>
-                          </div>
-                        </UserMenu>
-                      </TooltipTrigger>
-                      {manabarsData && (
-                        <TooltipContent className="flex flex-col bg-background-tertiary">
-                          <span>Resource Credits</span>
-                          <div className="flex flex-col text-blue-600">
-                            <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
-                            {manabarsData.rc.percentageValue !== 100 ? (
-                              <span>Full in: {hoursAndMinutes(manabarsData.rc.cooldown, t)}</span>
-                            ) : null}
-                          </div>
-                          <div className="flex flex-col text-green-600">
-                            <span> Voting Power: {manabarsData.upvote.percentageValue}%</span>
-                            {manabarsData?.upvote.percentageValue !== 100 ? (
-                              <span>Full in: {hoursAndMinutes(manabarsData.upvote.cooldown, t)}</span>
-                            ) : null}
-                          </div>
-                          <div className="flex flex-col text-destructive">
-                            <span> Downvote power: {manabarsData.downvote.percentageValue}%</span>
-                            {manabarsData.downvote.percentageValue !== 100 ? (
-                              <span>Full in: {hoursAndMinutes(manabarsData.downvote.cooldown, t)}</span>
-                            ) : null}
-                          </div>
-                        </TooltipContent>
-                      )}
-                    </Tooltip>
-                  </TooltipProvider>
+                      {/* Hover state: Three concentric rings */}
+                      <ManabarRing
+                        percentage={downvotePercent}
+                        color="#C01000"
+                        size={43}
+                        thickness={3.5}
+                        className="invisible absolute z-20 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50"
+                      />
+                      <ManabarRing
+                        percentage={upvotePercent}
+                        color="#00C040"
+                        size={50}
+                        thickness={3.5}
+                        className="invisible absolute z-10 group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50"
+                      />
+                      <ManabarRing
+                        percentage={rcPercent}
+                        color="#0088FE"
+                        size={57}
+                        thickness={3.5}
+                        className="invisible absolute group-hover:visible group-hover:delay-300 group-hover:duration-300 group-hover:animate-in group-hover:zoom-in-50"
+                      />
+                      <Avatar className="z-30 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
+                        <AvatarImage
+                          className="h-full w-full object-cover"
+                          src={getUserAvatarUrl(user?.username || '', 'small')}
+                          alt="Profile picture"
+                        />
+                        <AvatarFallback>
+                          <img
+                            className="h-full w-full object-cover"
+                            src={getUserAvatarUrl(user?.username || '', 'small')}
+                            alt="Profile picture"
+                          />
+                        </AvatarFallback>
+                      </Avatar>
+                    </button>
+                  </UserMenu>
                 ) : null}
               </>
             )}

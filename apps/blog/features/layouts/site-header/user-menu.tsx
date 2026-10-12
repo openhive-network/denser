@@ -23,25 +23,44 @@ import DialogLogin from '@/blog/components/dialog-login';
 import AccountSwitcher from './account-switcher';
 import LoginMethodIcon from './login-method-icon';
 
+/**
+ * The header's account menu. `children` is its trigger: a single focusable element (a `<button>`)
+ * that opens the menu and shows `tooltip` (a `TooltipContent`) on hover and focus.
+ */
 const UserMenu = ({
   children,
   user,
-  notifications
+  notifications,
+  tooltip
 }: {
   children: ReactNode;
   user: User;
   notifications?: number;
+  tooltip?: ReactNode;
 }) => {
   const onLogout = useLogout();
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const openAddAccount = useCallback(() => setIsAddAccountOpen(true), []);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
+  // One element is both triggers, so keyboard activation, aria-haspopup/aria-expanded and focus
+  // return all belong to the menu. The menu content stays outside the TooltipTrigger (React would
+  // bubble its focus events through the portal and open the tooltip above the menu, where it takes
+  // the first Esc), and the tooltip is held closed while the menu is open.
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+        <TooltipProvider>
+          <Tooltip open={isTooltipOpen && !isMenuOpen} onOpenChange={setIsTooltipOpen}>
+            <DropdownMenuTrigger asChild>
+              <TooltipTrigger asChild>{children}</TooltipTrigger>
+            </DropdownMenuTrigger>
+            {tooltip}
+          </Tooltip>
+        </TooltipProvider>
         <DropdownMenuContent className="w-56 bg-background-secondary" data-testid="user-profile-menu-content">
           <DropdownMenuLabel className="flex w-full items-center justify-between">
             <span data-testid="user-name-in-profile-menu">{user.username}</span>

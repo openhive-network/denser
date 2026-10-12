@@ -125,6 +125,7 @@
       "reblogs": "Reblogs"
     },
     "user_menu": {
+      "account_menu": "账户菜单",
       "profile": "个人资料",
       "notifications": "通知",
       "comments": "评论",

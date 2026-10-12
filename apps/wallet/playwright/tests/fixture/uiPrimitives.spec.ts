@@ -172,4 +172,44 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await recipient.press('Escape');
     await expect(dialog).toBeHidden();
   });
+
+  test('WALLET-UI-04 — the avatar is a menu button: Enter and Space open the account menu, one Esc or a click outside closes it, and focus returns to it', async ({
+    page
+  }) => {
+    await logInAsStubAccount(page);
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+    const trigger = page.getByTestId('profile-avatar-button');
+    const menu = page.getByRole('menu');
+    const firstItem = menu.getByRole('menuitem').first();
+
+    await expect(trigger).toHaveAccessibleName('Account menu');
+    await expect(trigger).toHaveAttribute('aria-haspopup', 'menu');
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+
+    await openWith(() => trigger.press('Enter'), menu);
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    await expect(firstItem).toBeFocused();
+    // The Resource Credits tooltip shares the trigger; open above the menu it would take the first Esc
+    await expect(page.getByRole('tooltip')).toHaveCount(0);
+    await page.keyboard.press('ArrowDown');
+    await expect(menu.getByRole('menuitem').nth(1)).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(menu).toBeHidden();
+    await expect(trigger).toBeFocused();
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+
+    await trigger.press(' ');
+    await expect(menu).toBeVisible();
+    await expect(firstItem).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(menu).toBeHidden();
+    await expect(trigger).toBeFocused();
+
+    await trigger.click();
+    await expect(menu).toBeVisible();
+    await expect(page.getByRole('tooltip')).toHaveCount(0);
+    await page.mouse.click(2, 2);
+    await expect(menu).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
 });
