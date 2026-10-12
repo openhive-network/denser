@@ -58,6 +58,11 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
     return <Loading loading={profileDataIsLoading} />;
   }
 
+  // `getAccountFull` resolves an account the chain does not have to an object without a name.
+  if (!profileData.name) {
+    notFound();
+  }
+
   return (
     <div>
       <div

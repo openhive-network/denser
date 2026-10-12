@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { notFound } from 'next/navigation';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { getLogger } from '@ui/lib/logging';
@@ -10,7 +11,7 @@ const logger = getLogger('app');
 /**
  * Fetches the account's profile on the server, so the profile header is part of the server HTML
  * instead of a spinner until the client has fetched it. When the fetch fails the client fetches
- * the profile itself, as without this prefetch.
+ * the profile itself, as without this prefetch. An account the chain does not have is a 404.
  */
 export default async function ParamLayout(props: { children: ReactNode; params: Promise<{ param: string }> }) {
   const params = await props.params;
@@ -21,13 +22,18 @@ export default async function ParamLayout(props: { children: ReactNode; params: 
 
   const username = param.slice(1);
   const queryClient = getQueryClient();
+  let accountExists = true;
   try {
-    await queryClient.fetchQuery({
+    const account = await queryClient.fetchQuery({
       queryKey: ['profileData', username],
       queryFn: () => getAccountFull(username)
     });
+    accountExists = Boolean(account.name);
   } catch (error) {
     logger.error(error, 'Prefetching the profile of %s failed', username);
+  }
+  if (!accountExists) {
+    notFound();
   }
   const dehydratedState = dehydrate(queryClient);
   queryClient.clear();
