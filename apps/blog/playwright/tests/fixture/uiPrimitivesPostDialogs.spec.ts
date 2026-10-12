@@ -16,8 +16,8 @@ import {
  * outside does not close it and that dismissing it broadcasts nothing), and that the page logs no
  * console error or warning on the way.
  *
- * The share dialog's trigger is an icon, not keyboard-reachable, so that dialog is opened with the
- * mouse and the keyboard is checked inside it.
+ * The share dialog is opened with the mouse here and the keyboard is checked inside it; opening it
+ * from the keyboard is covered by postShareControls.spec.
  *
  * Fixtures: reuses `reblogShare` (read-only on replay), whose RBL-01 / SHARE-01 open the same two
  * dialogs on the same post.

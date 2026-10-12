@@ -30,8 +30,8 @@ export { POST_AUTHOR, POST_PERMLINK, POST_PATH, VOTER, gotoPostLoggedIn };
 export const POST_SHARE_PATH = POST_PATH.replace(/\/$/, '');
 
 /**
- * Open the share-this-post dialog from the post footer. The footer Link2
- * icon is the trigger; the dialog is identified by `share-post-dialog`.
+ * Open the share-this-post dialog from the post footer. The footer `share-post`
+ * button is the trigger; the dialog is identified by `share-post-dialog`.
  */
 export async function openSharePostDialog(page: Page): Promise<void> {
   await page.getByTestId('share-post').click();

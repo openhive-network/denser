@@ -5,6 +5,7 @@ import ClipboardCopy from './copy-from-input';
 import { Icons } from '@ui/components/icons';
 import { useTranslation } from '@/blog/i18n/client';
 import { getPostShareUrl } from './lib/post-share-url';
+import { SharePostButton } from './share-post-button';
 
 export function SharePost({ children, path, title }: { children: ReactNode; path: string; title: string }) {
   const { t } = useTranslation('common_blog');
@@ -12,7 +13,9 @@ export function SharePost({ children, path, title }: { children: ReactNode; path
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div title={t('post_content.footer.share_form.share_this_link')}>{children}</div>
+        <SharePostButton label={t('post_content.footer.share_form.share_this_link')} data-testid="share-post">
+          {children}
+        </SharePostButton>
       </DialogTrigger>
       <DialogContent className="flex flex-col gap-4 sm:max-w-[600px]" data-testid="share-post-dialog">
         <DialogHeader>

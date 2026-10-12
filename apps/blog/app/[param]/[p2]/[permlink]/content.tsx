@@ -930,10 +930,7 @@ const PostContent = () => {
                       <LinkedInShare title={postData.title} url={postData.url} />
                       <RedditShare title={postData.title} url={postData.url} />
                       <SharePost path={postData.url} title={postData.title}>
-                        <Link2
-                          className="h-[18px] w-[18px] cursor-pointer text-muted-foreground transition-colors hover:text-destructive"
-                          data-testid="share-post"
-                        />
+                        <Link2 className="h-[18px] w-[18px]" aria-hidden />
                       </SharePost>
                     </div>
                   </div>

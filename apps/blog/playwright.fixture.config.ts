@@ -82,9 +82,15 @@ const serverEnv = {
   // Registers the `denser` OAuth client (smart-signer/lib/oauth/config.ts),
   // which the spec playing openhive.chat authenticates as.
   DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET: FIXTURE_OAUTH_CLIENT_SECRET,
-  // A subdirectory deployment's site URL carries its base path, and the
-  // server builds its redirects from it. The root pass keeps the default.
-  ...(BASE_PATH ? { REACT_APP_SITE_DOMAIN: `http://localhost:3000${BASE_PATH}` } : {})
+  // A subdirectory deployment's site and blog URLs carry its base path: the
+  // server builds its redirects from the first, post share links from the
+  // second. The root pass keeps the defaults.
+  ...(BASE_PATH
+    ? {
+        REACT_APP_SITE_DOMAIN: `http://localhost:3000${BASE_PATH}`,
+        REACT_APP_BLOG_DOMAIN: `http://localhost:3000${BASE_PATH}`
+      }
+    : {})
 };
 
 export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>({
