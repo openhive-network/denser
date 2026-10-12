@@ -3,50 +3,29 @@ import { getPost } from '@transaction/lib/bridge-api';
 import { getEffectiveObserverFromCookies } from '@/blog/lib/auth-utils';
 import { isPermlinkValid, isUsernameValid, isValidUserParam } from '@/blog/utils/validate-links';
 import { getLogger } from '@ui/lib/logging';
+import { getBasePath } from '@ui/lib/path-utils';
+import { inAppRedirectUrl } from '@/blog/lib/in-app-redirect-url';
 
 const logger = getLogger('app');
 
-function getOrigin(request: Request): string {
-  // Build absolute redirect URLs from the configured canonical site domain.
-  // The reverse proxy forwards its upstream block name as the Host header
-  // (e.g. "newblog" for new.hive.blog), not the public hostname, so deriving
-  // the origin from request headers produces broken URLs like https://newblog/... .
-  // The Host header is also client-controllable, so trusting it for redirects is
-  // an open-redirect risk. Request headers are used only as a local-dev fallback.
-  const siteDomain = process.env.REACT_APP_SITE_DOMAIN;
-  if (siteDomain) {
-    try {
-      return new URL(siteDomain).origin;
-    } catch {
-      // Misconfigured SITE_DOMAIN — fall through to other strategies.
-    }
-  }
-
-  const configuredBase = process.env.NEXT_PUBLIC_BASE_PATH;
-  if (configuredBase) {
-    try {
-      const tmp = new URL(configuredBase);
-      return tmp.origin;
-    } catch {
-      return `https://${configuredBase.replace(/\/+$/, '')}`;
-    }
-  }
-
-  const host = request.headers.get('host') ?? 'localhost:3000';
-  const forwardedProto = request.headers.get('x-forwarded-proto');
-  const scheme = forwardedProto ?? (process.env.NODE_ENV === 'production' ? 'https' : 'http');
-  return `${scheme}://${host}`;
+function redirectInApp(request: Request, path: string): NextResponse {
+  const url = inAppRedirectUrl(
+    path,
+    {
+      siteDomain: process.env.REACT_APP_SITE_DOMAIN,
+      basePath: getBasePath(),
+      production: process.env.NODE_ENV === 'production'
+    },
+    request.headers
+  );
+  return NextResponse.redirect(url, { status: 302 });
 }
 
 function notFoundRedirect(request: Request): NextResponse {
-  const origin = getOrigin(request);
-  return NextResponse.redirect(new URL('/404', origin), { status: 302 });
+  return redirectInApp(request, '/404');
 }
 
-export async function GET(
-  request: Request,
-  props: { params: Promise<{ user: string; permlink: string }> }
-) {
+export async function GET(request: Request, props: { params: Promise<{ user: string; permlink: string }> }) {
   const params = await props.params;
   try {
     if (!isValidUserParam(params?.user)) {
@@ -93,16 +72,12 @@ export async function GET(
       return notFoundRedirect(request);
     }
 
-    const origin = getOrigin(request);
     const cat = post.category ?? post.community ?? '';
     if (!/^[a-z0-9][a-z0-9-]*$/.test(cat)) {
       return notFoundRedirect(request);
     }
 
-    const path = `${cat}/@${post.author}/${post.permlink}`;
-    const finalUrl = new URL(path, origin);
-
-    return NextResponse.redirect(finalUrl.toString(), { status: 302 });
+    return redirectInApp(request, `/${cat}/@${post.author}/${post.permlink}`);
   } catch (err) {
     logger.error(err, 'Error in GET');
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

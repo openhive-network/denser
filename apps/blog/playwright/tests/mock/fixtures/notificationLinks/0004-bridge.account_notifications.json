@@ -1,0 +1,427 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.account_notifications",
+    "params": {
+      "account": "gtg",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "ae637897cb69572c",
+  "method": "bridge.account_notifications",
+  "params": {
+    "account": "gtg",
+    "limit": 50
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "id": "89328797383393282",
+        "msg": "@drakos voted on your post ($0.04)",
+        "url": "@gtg/re-blocktrades-1791329796495",
+        "date": "2026-10-10T05:41:42",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89321247636193284",
+        "msg": "@emrebeyler voted on your post ($0.25)",
+        "url": "@gtg/re-blocktrades-1791329796495",
+        "date": "2026-10-09T21:52:57",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "89300176790880258",
+        "msg": "@stayoutoftherz mentioned you and 1 other",
+        "url": "@stayoutoftherz/re-costanza-tmm5ju",
+        "date": "2026-10-09T00:04:42",
+        "type": "mention",
+        "score": 71
+      },
+      {
+        "id": "89292141448134658",
+        "msg": "@acidyo voted on your post ($0.06)",
+        "url": "@gtg/re-blocktrades-1791329796495",
+        "date": "2026-10-08T15:45:48",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89286704019537932",
+        "msg": "@steevc voted on your post ($0.03)",
+        "url": "@gtg/re-blocktrades-1791329796495",
+        "date": "2026-10-08T10:08:12",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89280896141623297",
+        "msg": "@intishar followed you",
+        "url": "@intishar",
+        "date": "2026-10-08T04:07:36",
+        "type": "follow",
+        "score": 68
+      },
+      {
+        "id": "89268376043520001",
+        "msg": "@realalexpmorris followed you",
+        "url": "@realalexpmorris",
+        "date": "2026-10-07T15:10:15",
+        "type": "follow",
+        "score": 25
+      },
+      {
+        "id": "89265050933526529",
+        "msg": "@mondoshawan followed you",
+        "url": "@mondoshawan",
+        "date": "2026-10-07T11:43:48",
+        "type": "follow",
+        "score": 60
+      },
+      {
+        "id": "89260496124903426",
+        "msg": "@blanchy mentioned you and 2 others",
+        "url": "@blanchy/who-would-you-regard-as-hives-leaders",
+        "date": "2026-10-07T07:01:00",
+        "type": "mention",
+        "score": 67
+      },
+      {
+        "id": "89253725113155590",
+        "msg": "@guruvaj voted on your post ($0.03)",
+        "url": "@gtg/re-blocktrades-1791329796495",
+        "date": "2026-10-07T00:00:36",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89228321719582722",
+        "msg": "@emrebeyler mentioned you and 13 others",
+        "url": "@emrebeyler/witness-node-update-to-0-19-11",
+        "date": "2026-10-05T21:43:21",
+        "type": "mention",
+        "score": 67
+      },
+      {
+        "id": "89221834171482118",
+        "msg": "@dalz mentioned you and 24 others",
+        "url": "@dalz/hive-witness-report-or-ranking-voting-missed-blocks-hbd-interest-changes-and-more-or-sep-2026",
+        "date": "2026-10-05T15:00:33",
+        "type": "mention",
+        "score": 72
+      },
+      {
+        "id": "89209832690679809",
+        "msg": "@hivebuzz mentioned you",
+        "url": "@hivebuzz/notify-1791167725",
+        "date": "2026-10-05T02:35:24",
+        "type": "mention",
+        "score": 66
+      },
+      {
+        "id": "89209832673902593",
+        "msg": "@hivebuzz replied to your post",
+        "url": "@hivebuzz/notify-1791167725",
+        "date": "2026-10-05T02:35:24",
+        "type": "reply",
+        "score": 66
+      },
+      {
+        "id": "89179615175639041",
+        "msg": "@nailaanees followed you",
+        "url": "@nailaanees",
+        "date": "2026-10-03T19:19:15",
+        "type": "follow",
+        "score": 46
+      },
+      {
+        "id": "89175374440693818",
+        "msg": "@solominer voted on your post ($3.54)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-03T14:55:57",
+        "type": "vote",
+        "score": 75
+      },
+      {
+        "id": "89175094185689089",
+        "msg": "@ersusoficial followed you",
+        "url": "@ersusoficial",
+        "date": "2026-10-03T14:38:33",
+        "type": "follow",
+        "score": 57
+      },
+      {
+        "id": "89167178837786626",
+        "msg": "@kryptodenno voted on your post ($0.36)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-03T06:27:06",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "89166355810484225",
+        "msg": "@hivebuzz mentioned you",
+        "url": "@hivebuzz/notify-1791005760",
+        "date": "2026-10-03T05:36:00",
+        "type": "mention",
+        "score": 66
+      },
+      {
+        "id": "89166355793707009",
+        "msg": "@hivebuzz replied to your post",
+        "url": "@hivebuzz/notify-1791005760",
+        "date": "2026-10-03T05:36:00",
+        "type": "reply",
+        "score": 66
+      },
+      {
+        "id": "89166161714872321",
+        "msg": "@sagarkothari88 replied to your post",
+        "url": "@sagarkothari88/4x8f18ek",
+        "date": "2026-10-03T05:23:57",
+        "type": "reply",
+        "score": 69
+      },
+      {
+        "id": "89166072342642689",
+        "msg": "@crimsonclad mentioned you and 2 others",
+        "url": "@crimsonclad/re-hg-msg-murtxy8z-murxyfk1",
+        "date": "2026-10-03T05:18:24",
+        "type": "mention",
+        "score": 66
+      },
+      {
+        "id": "89155778115534850",
+        "msg": "@hindavi voted on your post ($0.08)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-02T18:39:15",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89144125328195593",
+        "msg": "@quochuy mentioned you and 98 others",
+        "url": "@quochuy/witness-earnings-monthly-report-september-2026",
+        "date": "2026-10-02T06:35:45",
+        "type": "mention",
+        "score": 69
+      },
+      {
+        "id": "89139274972135426",
+        "msg": "@buttcoins voted on your post ($0.34)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-02T01:34:36",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "89134466487812100",
+        "msg": "@emrebeyler voted on your post ($0.26)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-01T20:36:03",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "89131887091515394",
+        "msg": "@build-it voted on your post ($0.05)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-01T17:55:54",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89128946100076545",
+        "msg": "@lanoican reblogged your post",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-01T14:53:18",
+        "type": "reblog",
+        "score": 65
+      },
+      {
+        "id": "89125468799762436",
+        "msg": "@drakos voted on your post ($0.05)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-01T11:17:24",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89123524769218561",
+        "msg": "@delowar41 replied to your post",
+        "url": "@delowar41/re-gtg-2026101t151639361z",
+        "date": "2026-10-01T09:16:42",
+        "type": "reply",
+        "score": 47
+      },
+      {
+        "id": "89120016863068161",
+        "msg": "@vellyn reblogged your post",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-01T05:38:54",
+        "type": "reblog",
+        "score": 46
+      },
+      {
+        "id": "89117929500573697",
+        "msg": "@angeluxx replied to your post",
+        "url": "@angeluxx/re-gtg-2026930t232917531z",
+        "date": "2026-10-01T03:29:18",
+        "type": "reply",
+        "score": 66
+      },
+      {
+        "id": "89117906167660546",
+        "msg": "@angeluxx voted on your post ($0.08)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-01T03:27:51",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89116186817593345",
+        "msg": "@offgridlife replied to your post",
+        "url": "@offgridlife/tm7goi",
+        "date": "2026-10-01T01:41:06",
+        "type": "reply",
+        "score": 65
+      },
+      {
+        "id": "89116121596166145",
+        "msg": "@offgridlife reblogged your post",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-01T01:37:03",
+        "type": "reblog",
+        "score": 65
+      },
+      {
+        "id": "89114948264787969",
+        "msg": "@encuentro reblogged your post",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-01T00:24:12",
+        "type": "reblog",
+        "score": 64
+      },
+      {
+        "id": "89114585889505282",
+        "msg": "@ace108 voted on your post ($0.05)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-10-01T00:01:42",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89114043918319618",
+        "msg": "@acidyo voted on your post ($0.31)",
+        "url": "@gtg/re-stayoutoftherz-1790754838723",
+        "date": "2026-09-30T23:28:03",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "89114027812192264",
+        "msg": "@nordics voted on your post ($0.14)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T23:27:03",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "89114027812192258",
+        "msg": "@bartman67 voted on your post ($0.05)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T23:27:03",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89114018148515842",
+        "msg": "@acidyo voted on your post ($3.14)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T23:26:27",
+        "type": "vote",
+        "score": 75
+      },
+      {
+        "id": "89112165138563080",
+        "msg": "@m31 voted on your post ($0.08)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T21:31:24",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89112158691917825",
+        "msg": "@daily-hive mentioned you and 21 others",
+        "url": "@daily-hive/hive-daily-mix-hive-2026-09-30",
+        "date": "2026-09-30T21:31:00",
+        "type": "mention",
+        "score": 62
+      },
+      {
+        "id": "89110856515715076",
+        "msg": "@ukulima voted on your post ($0.09)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T20:10:09",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89110241261649922",
+        "msg": "@bleujay voted on your post ($0.28)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T19:31:57",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "89109096115994648",
+        "msg": "@thelittlebank voted on your post ($0.26)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T18:20:51",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "89109088062930960",
+        "msg": "@meno voted on your post ($0.26)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T18:20:21",
+        "type": "vote",
+        "score": 50
+      },
+      {
+        "id": "89108602463191180",
+        "msg": "@tengolotodo voted on your post ($0.02)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T17:50:12",
+        "type": "vote",
+        "score": 25
+      },
+      {
+        "id": "89108600831606786",
+        "msg": "@tengolotodo replied to your post",
+        "url": "@tengolotodo/re-gtg-tm6uvf",
+        "date": "2026-09-30T17:50:06",
+        "type": "reply",
+        "score": 69
+      },
+      {
+        "id": "89108500189282310",
+        "msg": "@thekittygirl voted on your post ($0.08)",
+        "url": "@gtg/somebody-should-really-do-something-about-it",
+        "date": "2026-09-30T17:43:51",
+        "type": "vote",
+        "score": 25
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

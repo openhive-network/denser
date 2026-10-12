@@ -1,0 +1,18 @@
+{
+  "testName": "notificationLinks",
+  "recordedAt": "2026-10-12T01:53:51.287Z",
+  "totalRequests": 24,
+  "savedFixtures": 11,
+  "duplicatesSkipped": 17,
+  "methods": {
+    "database_api.find_accounts": 5,
+    "bridge.account_notifications": 4,
+    "bridge.get_profile": 6,
+    "database_api.get_dynamic_global_properties": 3,
+    "bridge.get_post": 2,
+    "bridge.get_discussion": 1,
+    "bridge.list_community_roles": 1,
+    "bridge.get_community": 1,
+    "bridge.get_account_posts": 1
+  }
+}
