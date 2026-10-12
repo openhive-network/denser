@@ -403,6 +403,13 @@ const PostContent = () => {
   }, []);
 
   const isPending = searchParams?.get('pending') === '1';
+  const responsesCount = postData?.children ?? 0;
+  const footerResponsesText =
+    responsesCount === 0
+      ? t('post_content.footer.no_responses')
+      : responsesCount === 1
+        ? t('post_content.footer.response')
+        : t('post_content.footer.responses', { responses: responsesCount });
   if (userFromGDPR) return <NoDataError />;
   if (!postData && !postIsLoading) {
     if (isPending) return <PendingIndexingMessage author={author} permlink={permlink} observer={observer} />;
@@ -823,27 +830,23 @@ const PostContent = () => {
                       <span className="text-border">|</span>
                       <TooltipProvider>
                         <Tooltip>
-                          <TooltipTrigger className="flex items-center" data-testid="comment-respons">
+                          <TooltipTrigger asChild>
                             <Link
-                              href={postData.url}
+                              href={`/${postData.category}/@${postData.author}/${postData.permlink}#comments`}
+                              aria-label={`${footerResponsesText}${t('cards.post_card.open_comments')}`}
                               className="flex cursor-pointer items-center text-muted-foreground transition-colors hover:text-foreground"
+                              data-testid="comment-respons"
                             >
                               {postData.children > 1 ? (
-                                <Icons.messagesSquare className="mr-1 h-4 w-4" />
+                                <Icons.messagesSquare className="mr-1 h-4 w-4" aria-hidden="true" />
                               ) : (
-                                <Icons.comment className="mr-1 h-4 w-4" />
+                                <Icons.comment className="mr-1 h-4 w-4" aria-hidden="true" />
                               )}
                               <span className="font-medium">{postData.children}</span>
                             </Link>
                           </TooltipTrigger>
                           <TooltipContent data-testid="post-footer-response-tooltip">
-                            <p>
-                              {postData.children === 0
-                                ? t('post_content.footer.no_responses')
-                                : postData.children === 1
-                                  ? t('post_content.footer.response')
-                                  : t('post_content.footer.responses', { responses: postData.children })}
-                            </p>
+                            <p>{footerResponsesText}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
