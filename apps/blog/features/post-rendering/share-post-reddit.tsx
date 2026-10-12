@@ -1,10 +1,10 @@
 import { useTranslation } from '@/blog/i18n/client';
-import { configuredBlogDomain } from '@ui/config/public-vars';
+import { getPostShareUrl } from './lib/post-share-url';
 
 export default function RedditShare({ title, url }: { title: string; url: string }) {
   const { t } = useTranslation('common_blog');
   const postTitle = title + ' — ' + 'Hive';
-  const fullUrl = `https://${configuredBlogDomain}${url}`;
+  const fullUrl = getPostShareUrl(url);
   const q = 'title=' + encodeURIComponent(postTitle) + '&url=' + encodeURIComponent(fullUrl);
 
   const openWindow = () => {
