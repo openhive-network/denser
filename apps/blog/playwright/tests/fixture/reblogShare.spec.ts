@@ -10,7 +10,8 @@ import {
   POST_PERMLINK,
   POST_SHARE_PATH,
   gotoPostLoggedIn,
-  openSharePostDialog
+  openSharePostDialog,
+  expectPostShareUrl
 } from '../support/reblogShareContext';
 
 /**
@@ -106,6 +107,7 @@ test.describe('Reblog & Share — fresh state (§7)', () => {
       // Sanity: the URL has to identify our post — guards against the
       // dialog rendering some unrelated path even if the env-config flips.
       expect(displayed).toContain(POST_SHARE_PATH);
+      expectPostShareUrl(displayed);
 
       await page.getByTestId('share-dialog-copy-url-button').click();
       // The button text flips to "Copied!" for 1.5s — proves the success
@@ -130,6 +132,7 @@ test.describe('Reblog & Share — fresh state (§7)', () => {
       expect(displayed).toMatch(/^\[.+\]\(.+\)$/);
       expect(displayed).toContain(POST_TITLE);
       expect(displayed).toContain(POST_SHARE_PATH);
+      expectPostShareUrl(displayed.slice(displayed.lastIndexOf('](') + 2, -1));
 
       await page.getByTestId('share-dialog-copy-markdown-button').click();
       await expect(

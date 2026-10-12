@@ -1,10 +1,10 @@
 import { Twitter } from 'lucide-react';
 import { useTranslation } from '@/blog/i18n/client';
-import { configuredBlogDomain } from '@ui/config/public-vars';
+import { getPostShareUrl } from './lib/post-share-url';
 
 export default function TwitterShare({ title, url }: { title: string; url: string }) {
   const { t } = useTranslation('common_blog');
-  const href = `https://${configuredBlogDomain}${url}`;
+  const href = getPostShareUrl(url);
   const postTitle = title + ' — ' + 'Hive';
   const winWidth = 640;
   const winHeight = 320;
