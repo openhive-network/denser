@@ -1,10 +1,10 @@
 import { Button } from '@ui/components/button';
 import { Icons } from '@ui/components/icons';
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle } from '@ui/components/sheet';
 import { Link } from '@hive/ui';
 import BasePathLink from '../../components/base-path-link';
 import { Separator } from '@ui/components/separator';
-import { ReactNode } from 'react';
+import { ReactNode, useId } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
 import env from '@beam-australia/react-env';
 import DialogLogin from '../../components/dialog-login';
@@ -17,19 +17,36 @@ const Item = ({
   href,
   children,
   target = false,
-  disabled = false
+  disabled = false,
+  disabledReason
 }: {
   href: string;
   children: ReactNode;
   target?: boolean;
   disabled?: boolean;
+  disabledReason?: string;
 }) => {
+  const reasonId = useId();
   return (
     <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
       {disabled ? (
-        <div className="flex h-full w-full cursor-not-allowed items-center gap-1 p-4 text-sm font-semibold opacity-50 hover:border-border">
-          {children}
-        </div>
+        <>
+          <span
+            role="link"
+            aria-disabled="true"
+            aria-describedby={disabledReason ? reasonId : undefined}
+            tabIndex={0}
+            title={disabledReason}
+            className="flex h-full w-full cursor-not-allowed items-center gap-1 p-4 text-sm font-semibold opacity-50 hover:border-border"
+          >
+            {children}
+          </span>
+          {disabledReason ? (
+            <span id={reasonId} className="sr-only">
+              {disabledReason}
+            </span>
+          ) : null}
+        </>
       ) : target ? (
         <a href={href} target="_blank" rel="noopener noreferrer">
           <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
@@ -57,8 +74,14 @@ const Sidebar = () => {
     <Sheet>
       <TooltipContainer title={t('navigation.main_nav_bar.menu_panel')}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-10 w-10 px-0" data-testid="nav-sidebar-menu-button">
-            <Icons.sidebarOpen className="h-5 w-5" />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-10 w-10 px-0"
+            aria-label={t('navigation.main_nav_bar.menu_panel')}
+            data-testid="nav-sidebar-menu-button"
+          >
+            <Icons.sidebarOpen className="h-5 w-5" aria-hidden="true" />
           </Button>
         </SheetTrigger>
       </TooltipContainer>
@@ -68,6 +91,7 @@ const Sidebar = () => {
         className="w-3/4 overflow-auto px-0 pt-12 md:w-1/4"
         data-testid="nav-sidebar-menu-content"
       >
+        <SheetTitle className="sr-only">{t('navigation.main_nav_bar.menu_panel')}</SheetTitle>
         <div className="flex flex-col">
           <ul className="flex flex-col">
             {!user?.isLoggedIn && (
@@ -97,11 +121,21 @@ const Sidebar = () => {
               <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
-            <Item href={`${walletHost}/recover_account_step_1`} target disabled={true}>
+            <Item
+              href={`${walletHost}/recover_account_step_1`}
+              target
+              disabled={true}
+              disabledReason={t('navigation.sidebar.not_available_yet')}
+            >
               {t('navigation.sidebar.stolen_account_recovery')}
               <Icons.forward className="w-4" />
             </Item>
-            <Item href={`${walletHost}/${user.username}/password`} target disabled={!user?.isLoggedIn}>
+            <Item
+              href={`${walletHost}/${user.username}/password`}
+              target
+              disabled={!user?.isLoggedIn}
+              disabledReason={t('navigation.sidebar.login_required')}
+            >
               {t('navigation.sidebar.change_account_password')}
               <Icons.forward className="w-4" />
             </Item>

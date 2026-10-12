@@ -29,6 +29,21 @@ export const getPlaceholder = (value: SearchMode) => {
   }
 };
 
+const getInputLabel = (value: SearchMode) => {
+  switch (value) {
+    case 'ai':
+      return 'AI search';
+    case 'account':
+      return 'Search users';
+    case 'userTopic':
+      return 'Username';
+    case 'tag':
+      return 'Search tags';
+    default:
+      return 'Search posts';
+  }
+};
+
 export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInputProps) {
   const { inputValue, setInputValue, secondInputValue, setSecondInputValue, mode, setMode, handleSearch } =
     useSearch();
@@ -78,6 +93,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
           ref={inputRef}
           type="text"
           placeholder={placeholder}
+          aria-label={getInputLabel(mode)}
           value={mode === 'userTopic' ? secondInputValue : inputValue}
           onChange={(e) =>
             mode === 'userTopic' ? setSecondInputValue(e.target.value) : setInputValue(e.target.value)
@@ -97,6 +113,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
               ref={topicInputRef}
               type="text"
               placeholder="Topic..."
+              aria-label="Topic"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               className="z-10 block h-8 w-full bg-transparent p-2 pl-0 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
@@ -111,7 +128,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable }: ModeInpu
           className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
           aria-label="Search"
         >
-          <Search className="h-4 w-4" />
+          <Search className="h-4 w-4" aria-hidden="true" />
         </button>
       </div>
       {searchPage && (mode === 'classic' || mode === 'userTopic') && (

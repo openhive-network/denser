@@ -77,8 +77,12 @@ const SiteHeader: FC = () => {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background shadow-sm">
       <div className="container flex h-14 w-full items-center justify-between px-0 pl-1 md:px-8">
-        <Link href="/" className="keychainify-checked flex items-center space-x-2 md:mr-6">
-          <Icons.walletlogo className="w-24 md:w-32" />
+        <Link
+          href="/"
+          className="keychainify-checked flex items-center space-x-2 md:mr-6"
+          aria-label={t('navigation.main_nav_bar.home')}
+        >
+          <Icons.walletlogo className="w-24 md:w-32" aria-hidden="true" />
           {siteConfig.chainEnv !== 'mainnet' && (
             <span className="hidden text-xs uppercase text-background md:block">{siteConfig.chainEnv}</span>
           )}
@@ -110,7 +114,7 @@ const SiteHeader: FC = () => {
                 <Button variant="ghost" size="sm" className="h-10 w-full px-0" data-testid="theme-mode">
                   <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                   <Icons.moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="hidden">Toggle theme</span>
+                  <span className="sr-only">{t('navigation.main_nav_bar.theme')}</span>
                 </Button>
               </ModeToggle>
             ) : null}

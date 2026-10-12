@@ -133,6 +133,22 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await expect(page.locator('html')).toHaveClass(/\blight\b/);
   });
 
+  test('WALLET-UI-04 — the header controls are named and the menu panel is a named modal dialog', async ({ page }) => {
+    await page.goto(`${WALLET_BASE_PATH}/proposals`);
+    const menuTrigger = page.getByTestId('nav-sidebar-menu-button');
+    const dialog = page.getByRole('dialog', { name: 'Menu Panel' });
+
+    await expect(page.getByRole('banner').getByRole('link').first()).toHaveAccessibleName('Hive Wallet home');
+    await expect(page.getByTestId('theme-mode')).toHaveAccessibleName('Theme');
+    await expect(menuTrigger).toHaveAccessibleName('Menu Panel');
+
+    await openWith(() => menuTrigger.click(), dialog);
+    await expect(dialog).toHaveAttribute('aria-modal', 'true');
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(menuTrigger).toBeFocused();
+  });
+
   test('WALLET-UI-03 — the balance menu opens the transfer dialog, whose cmdk autocompleter picks a recipient with the keyboard and the mouse', async ({
     page
   }) => {
