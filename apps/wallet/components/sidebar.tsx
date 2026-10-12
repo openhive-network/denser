@@ -3,7 +3,6 @@ import { Icons } from '@ui/components/icons';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@ui/components/sheet';
 import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
-import clsx from 'clsx';
 import { ReactNode } from 'react';
 import { useTranslation } from '@/wallet/i18n/client';
 import DialogLogin from './dialog-login';
@@ -12,6 +11,8 @@ import { getLogger } from '@ui/lib/logging';
 import { siteConfig } from '@ui/config/site';
 import TooltipContainer from '@ui/components/tooltip-container';
 import env from '@beam-australia/react-env';
+
+const ITEM_CONTENT_CLASS = 'flex h-full w-full items-center gap-1 p-4 text-sm font-semibold';
 
 const Item = ({
   href,
@@ -24,11 +25,15 @@ const Item = ({
 }) => {
   return (
     <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900">
-      <Link href={href} target={clsx(target ? '_blank' : '')}>
-        <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+      <SheetClose asChild className={ITEM_CONTENT_CLASS}>
+        <Link
+          href={href}
+          target={target ? '_blank' : undefined}
+          rel={target ? 'noopener noreferrer' : undefined}
+        >
           {children}
-        </SheetClose>
-      </Link>
+        </Link>
+      </SheetClose>
     </li>
   );
 };
@@ -58,20 +63,20 @@ const Sidebar = () => {
             {!user?.isLoggedIn && (
               <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900 sm:hidden">
                 <DialogLogin>
-                  <div className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+                  <button type="button" className={ITEM_CONTENT_CLASS}>
                     {t('navigation.main_nav_bar.login')}
-                  </div>
+                  </button>
                 </DialogLogin>
               </li>
             )}
             {!user?.isLoggedIn && (
               <li className="cursor-pointer border-b-2 border-white text-foreground hover:border-red-600 hover:bg-slate-100 dark:border-slate-950 dark:hover:border-red-600 dark:hover:bg-slate-900 sm:hidden">
-                <Link href="https://signup.hive.io/" target="_blank">
-                  <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+                <SheetClose asChild className={ITEM_CONTENT_CLASS}>
+                  <Link href="https://signup.hive.io/" target="_blank" rel="noopener noreferrer">
                     {t('navigation.main_nav_bar.sign_up')}
                     <Icons.forward className="w-4" />
-                  </SheetClose>
-                </Link>
+                  </Link>
+                </SheetClose>
               </li>
             )}
             {!user?.isLoggedIn && <Separator className="my-2 sm:hidden" />}

@@ -625,28 +625,28 @@ export class HomePage {
 
   async moveToWelcomePage() {
     await this.getNavSidebarMenu.click();
-    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Welcome' }).click();
+    await this.getNavSidebarMenuContent.getByRole('link', { name: 'Welcome' }).click();
     await expect(this.page.getByText('Welcome to Hive!')).toBeVisible();
     await expect(this.page).toHaveURL('welcome');
   }
 
   async moveToFaqPage() {
     await this.getNavSidebarMenu.click();
-    await this.getNavSidebarMenuContent.getByRole('button', { name: 'FAQ' }).click();
+    await this.getNavSidebarMenuContent.getByRole('link', { name: 'FAQ' }).click();
     await expect(this.page.getByRole('heading', { name: 'Hive.blog FAQ' })).toBeVisible();
     await expect(this.page).toHaveURL('faq.html');
   }
 
   async moveToPrivacyPolicyPage() {
     await this.getNavSidebarMenu.click();
-    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Privacy Policy' }).click();
+    await this.getNavSidebarMenuContent.getByRole('link', { name: 'Privacy Policy' }).click();
     await expect(this.page.locator('h1').getByText('Privacy Policy')).toBeVisible();
     await expect(this.page).toHaveURL('privacy.html');
   }
 
   async moveToTermsOfServicePage() {
     await this.getNavSidebarMenu.click();
-    await this.getNavSidebarMenuContent.getByRole('button', { name: 'Terms of Service' }).click();
+    await this.getNavSidebarMenuContent.getByRole('link', { name: 'Terms of Service' }).click();
     await expect(this.page).toHaveURL('tos.html');
     // The sidebar sheet closes on navigation and the page has no "Terms of Service" title of its own.
     await expect(this.page.locator('#articleBody h2').first()).toHaveText('1. Privacy Policy');
