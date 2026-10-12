@@ -108,6 +108,7 @@
       "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
+      "label": "Profile posts",
       "posts": "Posts",
       "comments": "Comments",
       "payouts": "Payouts"

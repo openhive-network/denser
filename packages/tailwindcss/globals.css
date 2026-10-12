@@ -39,7 +39,7 @@
 
     --link: 0, 70%, 45%;
 
-    --ring: 215 20.2% 65.1%;
+    --ring: 215 19.3% 34.5%; /* focus indicator: >= 6:1 against every light surface (WCAG 1.4.11) */
 
     --radius: 0.5rem;
   }
@@ -80,7 +80,7 @@
 
     --link: 0, 90%, 65%;
 
-    --ring: 216 34% 17%;
+    --ring: 215 20.2% 65.1%; /* focus indicator: >= 3.9:1 against every dark surface (WCAG 1.4.11) */
 
     --radius: 0.5rem;
   }

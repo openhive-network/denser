@@ -1,41 +1,57 @@
 'use client';
 
 import { useTranslation } from '@/blog/i18n/client';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { Link } from '@hive/ui';
+import { cn } from '@ui/lib/utils';
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
 
 type SortType = 'posts' | 'comments' | 'payout';
 
+const SORT_TYPES: readonly SortType[] = ['posts', 'comments', 'payout'];
+
+function isSortType(segment: string | undefined): segment is SortType {
+  return SORT_TYPES.some((sort) => sort === segment);
+}
+
+// These are page routes, so they are links with aria-current rather than ARIA tabs
 const AccountPostsTabs = ({ username, children }: { username: string; children: ReactNode }) => {
   const { t } = useTranslation('blog');
   const pathname = usePathname();
-  const SORT_TYPES: readonly SortType[] = ['posts', 'comments', 'payout'];
   const segment = pathname?.slice(pathname.lastIndexOf('/') + 1);
-  const sort: SortType = SORT_TYPES.includes(segment as SortType) ? (segment as SortType) : 'posts';
+  const activeSort: SortType = isSortType(segment) ? segment : 'posts';
+  const labels: Record<SortType, string> = {
+    posts: t('navigation.profile_posts_tab_navbar.posts'),
+    comments: t('navigation.profile_posts_tab_navbar.comments'),
+    payout: t('navigation.profile_posts_tab_navbar.payouts')
+  };
 
   return (
-    <Tabs value={sort} className="w-full">
-      <TabsList className="flex justify-start bg-background-tertiary" data-testid="user-post-menu">
-        <TabsTrigger value="posts" className="p-0">
-          <Link className="rounded-sm px-3 py-1.5" href={`/@${username}/posts`}>
-            {t('navigation.profile_posts_tab_navbar.posts')}
-          </Link>
-        </TabsTrigger>
-        <TabsTrigger value="comments" className="p-0">
-          <Link className="rounded-sm px-3 py-1.5" href={`/@${username}/comments`}>
-            {t('navigation.profile_posts_tab_navbar.comments')}
-          </Link>
-        </TabsTrigger>
-        <TabsTrigger value="payout" className="p-0">
-          <Link className="rounded-sm px-3 py-1.5" href={`/@${username}/payout`}>
-            {t('navigation.profile_posts_tab_navbar.payouts')}
-          </Link>
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value={sort}>{children}</TabsContent>
-    </Tabs>
+    <div className="w-full">
+      <nav
+        aria-label={t('navigation.profile_posts_tab_navbar.label')}
+        className="flex h-10 items-center justify-start rounded-md bg-background-tertiary p-1 text-muted-foreground"
+        data-testid="user-post-menu"
+      >
+        {SORT_TYPES.map((sort) => {
+          const isActive = sort === activeSort;
+          return (
+            <Link
+              key={sort}
+              href={`/@${username}/${sort}`}
+              aria-current={isActive ? 'page' : undefined}
+              className={cn(
+                'inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                isActive && 'bg-background text-foreground shadow-sm'
+              )}
+            >
+              {labels[sort]}
+            </Link>
+          );
+        })}
+      </nav>
+      <div className="mt-2">{children}</div>
+    </div>
   );
 };
 

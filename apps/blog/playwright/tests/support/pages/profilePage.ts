@@ -480,7 +480,7 @@ export class ProfilePage {
     this.followedFollowersListItems = this.followedFollowersList.locator('li');
 
     this.profileNavLinks = this.profileNav.locator('ul:first-child li a');
-    this.postsMenuActiveTab = this.postsMenu.locator('[data-state="active"]');
+    this.postsMenuActiveTab = this.postsMenu.locator('[aria-current="page"]');
     this.profileNavActiveLink = this.profileNav.locator('ul:first-child li a.active');
   }
 

@@ -38,21 +38,28 @@ export default function LangToggle({ logged, className }: { logged: Boolean; cla
     router.refresh();
   };
 
+  // The logged-in variant sits in the user menu next to a visible label, where a tooltip only swallows Esc
+  const trigger = (
+    <DropdownMenuTrigger asChild>
+      <Button
+        variant="ghost"
+        size="sm"
+        className={clsx('flex h-10 w-full p-0 text-start font-normal', className, { 'h-6': logged })}
+        data-testid="toggle-language"
+      >
+        <span>{lang ? languages.find((language) => language.locale === lang)?.label : null}</span>
+        {logged ? <span className="ml-2 w-full">{t('navigation.user_menu.toggle_lang')}</span> : null}
+      </Button>
+    </DropdownMenuTrigger>
+  );
+
   return (
     <DropdownMenu>
-      <TooltipContainer title={t('navigation.main_nav_bar.language')}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={clsx('flex h-10 w-full p-0 text-start font-normal', className, { 'h-6': logged })}
-            data-testid="toggle-language"
-          >
-            <span>{lang ? languages.find((language) => language.locale === lang)?.label : null}</span>
-            {logged ? <span className="ml-2 w-full">{t('navigation.user_menu.toggle_lang')}</span> : null}
-          </Button>
-        </DropdownMenuTrigger>
-      </TooltipContainer>
+      {logged ? (
+        trigger
+      ) : (
+        <TooltipContainer title={t('navigation.main_nav_bar.language')}>{trigger}</TooltipContainer>
+      )}
       <DropdownMenuContent align="end">
         {languages.map(({ locale, label }) => (
           <DropdownMenuItem key={label} onClick={() => handleLanguageChange(locale)}>

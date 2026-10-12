@@ -48,4 +48,31 @@ test.describe('Homepage — seeded logged-in user', () => {
     expect(body.isLoggedIn).toBe(true);
     expect(body.username).toBe(EXPECTED_USERNAME);
   });
+
+  test('Esc closes the Theme submenu first, then the profile menu', async ({ page }) => {
+    await page.goto('/');
+
+    const userMenu = page.getByTestId('user-profile-menu-content');
+    const themeButton = userMenu.getByTestId('theme-mode');
+    const themeItems = page.getByTestId('theme-mode-item');
+
+    await expect(async () => {
+      await page.getByTestId('profile-avatar-button').click();
+      await expect(userMenu).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 30000 });
+
+    await themeButton.click();
+    await expect(themeItems.first()).toBeVisible();
+    await page.mouse.move(0, 0);
+
+    await page.keyboard.press('Escape');
+    await expect(themeItems.first()).toBeHidden();
+    await expect(userMenu).toBeVisible();
+    await expect(themeButton).toBeFocused();
+    await expect(page.getByRole('tooltip')).toHaveCount(0);
+
+    await page.keyboard.press('Escape');
+    await expect(userMenu).toBeHidden();
+  });
 });
+
