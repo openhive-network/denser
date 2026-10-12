@@ -5,6 +5,7 @@ import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
 import env from "@beam-australia/react-env";
 import { getLogger } from '@ui/lib/logging';
+import { appApiPath } from '@ui/lib/app-api-path';
 
 const logger = getLogger('app');
 
@@ -59,7 +60,7 @@ function performDesyncLogout(): void {
 
   // POST to logout API to destroy server session (fire and forget)
   // Header value must match csrfHeaderName in @smart-signer/lib/csrf-protection.ts
-  fetch('/api/auth/logout', {
+  fetch(appApiPath('/api/auth/logout'), {
     method: 'POST',
     headers: {
       'content-type': 'application/json',

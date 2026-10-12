@@ -17,6 +17,10 @@ import type { User } from '@smart-signer/types/common';
  * The seeder's init script rewrites `localStorage['user']` on every navigation,
  * so the tests assert a switch without navigating afterwards.
  *
+ * Tagged @basepath: .aidev/run-fixture-e2e.sh runs it a second time against a
+ * build served under FIXTURE_BASE_PATH, where the client's `/api/auth/*` calls
+ * must carry the base path to reach the app.
+ *
  * Record:  FIXTURE_MODE=record pnpm exec playwright test \
  *            --config=playwright.fixture.config.ts accountSwitch
  * Replay:  pnpm --filter @hive/blog test:fixture -- accountSwitch
@@ -26,8 +30,16 @@ const CURRENT: User = { ...DEFAULT_USER, authenticateOnBackend: true };
 const OTHER: User = { ...CURRENT, username: 'gtg' };
 const NOT_SIGNED_IN = 'blocktrades';
 const CSRF_HEADERS = { 'x-csrf-token': '1' };
+const BASE_PATH = process.env.FIXTURE_BASE_PATH ?? '';
 // A page with the site header but no feed, to keep the recording small
-const PAGE_WITH_HEADER = '/faq.html';
+const PAGE_WITH_HEADER = withBase('/faq.html');
+const USERS_ME = withBase('/api/users/me');
+const AUTH_SWITCH = withBase('/api/auth/switch');
+
+/** A site path under the base path the server is served at. */
+function withBase(path: string): string {
+  return `${BASE_PATH}${path}`;
+}
 
 test.use({
   fixtureTestName: 'accountSwitch',
@@ -44,7 +56,7 @@ async function readStoredAccounts(page: Page): Promise<string[]> {
   );
 }
 
-test.describe('Account switching', () => {
+test.describe('Account switching', { tag: '@basepath' }, () => {
   let homePage: HomePage;
   let profileMenu: ProfileUserMenu;
 
@@ -66,7 +78,7 @@ test.describe('Account switching', () => {
     await profileMenu.accountSwitcherItems.click();
 
     await expect.poll(() => readStoredUsername(page)).toBe(OTHER.username);
-    const me = await (await context.request.get('/api/users/me')).json();
+    const me = await (await context.request.get(USERS_ME)).json();
     expect(me.username).toBe(OTHER.username);
     const observer = (await context.cookies()).find((cookie) => cookie.name === 'observer');
     expect(observer?.value).toBe(OTHER.username);
@@ -79,12 +91,12 @@ test.describe('Account switching', () => {
   test('ACCOUNT-SWITCH-02: the server refuses to switch to an account the session does not hold', async ({
     context
   }) => {
-    const res = await context.request.post('/api/auth/switch', {
+    const res = await context.request.post(AUTH_SWITCH, {
       headers: CSRF_HEADERS,
       data: { username: NOT_SIGNED_IN }
     });
     expect(res.status()).toBe(401);
-    const me = await (await context.request.get('/api/users/me')).json();
+    const me = await (await context.request.get(USERS_ME)).json();
     expect(me.username).toBe(CURRENT.username);
   });
 
@@ -94,7 +106,7 @@ test.describe('Account switching', () => {
     await expect(profileMenu.accountSwitcherItems).toHaveCount(0);
     await expect.poll(() => readStoredAccounts(page)).toEqual([CURRENT.username]);
     await profileMenu.validateUserNameInProfileMenu(CURRENT.username);
-    const res = await context.request.post('/api/auth/switch', {
+    const res = await context.request.post(AUTH_SWITCH, {
       headers: CSRF_HEADERS,
       data: { username: OTHER.username }
     });
@@ -103,13 +115,13 @@ test.describe('Account switching', () => {
 
   test('ACCOUNT-SWITCH-04: logging out forgets every signed-in account', async ({ page, context }) => {
     // The UI logs out optimistically: wait for the server to end the session too
-    const loggedOut = page.waitForResponse('**/api/auth/logout');
+    const loggedOut = page.waitForResponse(`**${withBase('/api/auth/logout')}`);
     await profileMenu.logoutLink.click();
     await loggedOut;
 
     await expect(homePage.loginBtn).toBeVisible();
     await expect.poll(() => readStoredAccounts(page)).toEqual([]);
-    const res = await context.request.post('/api/auth/switch', {
+    const res = await context.request.post(AUTH_SWITCH, {
       headers: CSRF_HEADERS,
       data: { username: OTHER.username }
     });

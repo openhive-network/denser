@@ -8,13 +8,14 @@ import { findAccount, removeAccount } from '@smart-signer/lib/auth/accounts';
 import { setAccounts, setActiveUser } from '@smart-signer/lib/auth/active-user';
 import { postAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { getLogger } from '@ui/lib/logging';
+import { appApiPath } from '@ui/lib/app-api-path';
 
 const logger = getLogger('app');
 
 const HTTP_UNAUTHORIZED = 401;
 
 export async function switchAccountBackend(data: PostSwitchSchema): Promise<User> {
-  return await fetchJson('/api/auth/switch', {
+  return await fetchJson(appApiPath('/api/auth/switch'), {
     method: 'POST',
     headers: [
       ['content-type', 'application/json'],
