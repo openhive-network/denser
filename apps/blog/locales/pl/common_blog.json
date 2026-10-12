@@ -242,7 +242,8 @@
     "past_payouts": "Wcześniejsze wypłaty ${{value}}",
     "author": "Autor ${{value}}",
     "curators": "Kuratorzy ${{value}}",
-    "max_accepted_payout": "Maksymalna wypłata: ${{value}}"
+    "max_accepted_payout": "Maksymalna wypłata: ${{value}}",
+    "show_breakdown": "Wypłata ${{value}}, pokaż szczegóły"
   },
   "login_form": {
     "title": "Powracający: ",
@@ -450,6 +451,7 @@
     },
     "footer": {
       "and_more": "i {{value}} więcej",
+      "show_voters": "{{label}}, pokaż głosujących",
       "in": "w",
       "by": "przez",
       "upvote": "Głos za",

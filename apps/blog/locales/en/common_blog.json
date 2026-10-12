@@ -277,7 +277,8 @@
     "past_payouts": "Past Payouts ${{value}}",
     "author": "Author ${{value}}",
     "curators": "Curators ${{value}}",
-    "max_accepted_payout": "Max accepted payout: ${{value}}"
+    "max_accepted_payout": "Max accepted payout: ${{value}}",
+    "show_breakdown": "Payout ${{value}}, show breakdown"
   },
   "login_form": {
     "cancel_button": "Cancel",
@@ -562,6 +563,7 @@
     },
     "footer": {
       "and_more": "and {{value}} more",
+      "show_voters": "{{label}}, show voters",
       "in": "in",
       "by": "by",
       "upvote": "Upvote",

@@ -240,7 +240,8 @@
     "past_payouts": "Pagos pasados ${{value}}",
     "author": "Autor ${{value}}",
     "curators": "Curador ${{value}}",
-    "max_accepted_payout": "Max accepted payout: ${{value}}"
+    "max_accepted_payout": "Max accepted payout: ${{value}}",
+    "show_breakdown": "Pago ${{value}}, mostrar desglose"
   },
   "login_form": {
     "title": "Usuarios: ",
@@ -445,6 +446,7 @@
     },
     "footer": {
       "and_more": "and {{value}} more",
+      "show_voters": "{{label}}, mostrar votantes",
       "in": "in",
       "by": "por",
       "upvote": "Votar",

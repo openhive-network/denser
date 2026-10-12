@@ -274,14 +274,14 @@ const PostListItem = memo(
                   <VotesComponentWrapper post={post} type="post" />
 
                   <DetailsCardHover post={post} decline={parseFloat(post.max_accepted_payout) === 0}>
-                    <div
+                    <span
                       className={`flex items-center hover:cursor-pointer hover:text-destructive ${
                         parseFloat(post.max_accepted_payout) === 0 ? 'text-gray-600 line-through' : ''
                       }`}
                       data-testid="post-payout"
                     >
                       ${post.payout.toFixed(2)}
-                    </div>
+                    </span>
                   </DetailsCardHover>
 
                   <Separator orientation="vertical" />

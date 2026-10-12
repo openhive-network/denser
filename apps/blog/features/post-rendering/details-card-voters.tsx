@@ -1,46 +1,35 @@
 'use client';
 
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@hive/ui/components/hover-card';
+import { Popover, PopoverContent, PopoverTrigger } from '@hive/ui/components/popover';
 import { Entry } from '@hive/common-hiveio-packages/wax';
-import { ReactNode, useRef, useState } from 'react';
+import { useHoverPopover } from '@/blog/components/hooks/use-hover-popover';
+import { useTranslation } from '@/blog/i18n/client';
 import VotersDetailsData from './votes-details-data';
 
-const DetailsCardVoters = ({ post, children }: { post: Entry; children: ReactNode }) => {
-  const [open, setOpen] = useState(false);
-  const isHovering = useRef(false);
+type DetailsCardVotersProps = {
+  post: Entry;
+  label: string;
+  className?: string;
+};
 
-  const handleMouseEnter = () => {
-    isHovering.current = true;
-    setOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    isHovering.current = false;
-    setTimeout(() => {
-      if (!isHovering.current) setOpen(false);
-    }, 100);
-  };
+const DetailsCardVoters = ({ post, label, className }: DetailsCardVotersProps) => {
+  const { t } = useTranslation('common_blog');
+  const { rootProps, triggerProps, contentProps } = useHoverPopover();
 
   return (
-    <HoverCard open={open}>
-      <HoverCardTrigger
-        asChild
-        className="hover:cursor-pointer"
+    <Popover {...rootProps}>
+      <PopoverTrigger
+        className={className}
         data-testid="comment-votes"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={() => setOpen(!open)}
+        aria-label={t('post_content.footer.show_voters', { label })}
+        {...triggerProps}
       >
-        {children}
-      </HoverCardTrigger>
-      <HoverCardContent
-        className="flex w-auto flex-col"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+        {label}
+      </PopoverTrigger>
+      <PopoverContent className="flex w-auto flex-col" {...contentProps}>
         <VotersDetailsData post={post} />
-      </HoverCardContent>
-    </HoverCard>
+      </PopoverContent>
+    </Popover>
   );
 };
 

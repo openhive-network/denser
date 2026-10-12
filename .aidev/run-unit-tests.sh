@@ -80,7 +80,8 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
     apps/blog/features/post-editor/lib/scroll-sync-anchors.test.ts \
-    apps/blog/features/votes/hooks/logged-user-contexts.test.ts < /dev/null || status=1
+    apps/blog/features/votes/hooks/logged-user-contexts.test.ts \
+    apps/blog/features/post-rendering/lib/votes-before-payout.test.ts < /dev/null || status=1
 echo "== node --test apps/wallet" >&2
 junit="$PWD/test-results/unit/wallet.xml"
 run_with_junit_fallback "$junit" wallet node --test \

@@ -415,7 +415,7 @@ const CommentListItem = memo(function CommentListItem({
                             post={comment}
                             decline={parseFloat(comment.max_accepted_payout) === 0}
                           >
-                            <div
+                            <span
                               data-testid="comment-card-footer-payout"
                               className={clsx(
                                 'flex items-center hover:cursor-pointer hover:text-destructive',
@@ -427,19 +427,21 @@ const CommentListItem = memo(function CommentListItem({
                             >
                               {'$'}
                               {comment.payout.toFixed(2)}
-                            </div>
+                            </span>
                           </DetailsCardHover>
                           <Separator orientation="vertical" className="h-5" />
                           {!!comment.stats && comment.stats.total_votes > 0 ? (
                             <>
                               <div className="flex items-center">
-                                <DetailsCardVoters post={comment}>
-                                  <span className="hover:text-destructive">
-                                    {!!comment.stats && comment.stats.total_votes > 1
+                                <DetailsCardVoters
+                                  post={comment}
+                                  className="hover:text-destructive"
+                                  label={
+                                    comment.stats.total_votes > 1
                                       ? t('cards.post_card.votes', { votes: comment.stats.total_votes })
-                                      : t('cards.post_card.vote')}
-                                  </span>
-                                </DetailsCardVoters>
+                                      : t('cards.post_card.vote')
+                                  }
+                                />
                               </div>
                               <Separator orientation="vertical" className="h-5" />
                             </>
