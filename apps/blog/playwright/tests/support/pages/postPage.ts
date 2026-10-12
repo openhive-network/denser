@@ -242,7 +242,7 @@ export class PostPage {
     this.postFooterVotes = page.locator(
       '[data-testid="author-data-post-footer"] [data-testid="comment-votes"]'
     );
-    this.postsCommentsTab = page.getByRole('tab', { name: 'Comments' });
+    this.postsCommentsTab = page.getByTestId('user-post-menu').getByRole('link', { name: 'Comments' });
     this.postsCommentsFirstAvatar = page.locator('[data-testid="post-card-avatar"]').first();
     this.mutedPostsBannedImageText = page.locator('#articleBody .text-red-500').first();
     this.userPostMenu = page.getByTestId('user-post-menu');
