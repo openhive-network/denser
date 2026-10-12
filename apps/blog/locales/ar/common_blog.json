@@ -211,6 +211,7 @@
       "response": "1 رد. ",
       "responses": "{{responses}} ردود. ",
       "click_to_respond": "انقر للرد",
+      "open_comments": "افتح التعليقات",
       "reblog": "إعادة النشر",
       "you_reblogged": "أعدت النشر",
       "you_upvoted": "أعطيت تصويتًا إيجابيًا بنسبة {{votePercent}}%",
