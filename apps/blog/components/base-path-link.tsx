@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports -- This is a wrapper component that needs direct access to next/link
 import Link from 'next/link';
-import { MouseEvent, ReactNode } from 'react';
+import { MouseEvent, ReactNode, Ref } from 'react';
 import { buildSafePath, isInternalPath } from '@ui/lib/sanitize-url';
 import { getLogger } from '@ui/lib/logging';
 
@@ -12,6 +12,8 @@ interface BasePathLinkProps {
   className?: string;
   'data-testid'?: string;
   prefetch?: boolean;
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
+  ref?: Ref<HTMLAnchorElement>;
 }
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
@@ -28,9 +30,12 @@ const BasePathLink = ({
   children,
   className,
   'data-testid': dataTestId,
-  prefetch = false
+  prefetch = false,
+  onClick,
+  ref
 }: BasePathLinkProps) => {
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    onClick?.(e);
     // Security: Validate that href is an internal path before navigation
     if (!isInternalPath(href)) {
       logger.warn({ href }, 'BasePathLink blocked potentially dangerous href');
@@ -62,6 +67,7 @@ const BasePathLink = ({
 
   return (
     <Link
+      ref={ref}
       href={href}
       className={className}
       data-testid={dataTestId}

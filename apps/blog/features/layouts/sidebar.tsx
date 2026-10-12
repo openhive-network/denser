@@ -13,6 +13,8 @@ import { siteConfig } from '@ui/config/site';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
+const ITEM_CONTENT_CLASS = 'flex h-full w-full items-center gap-1 p-4 text-sm font-semibold';
+
 const Item = ({
   href,
   children,
@@ -27,21 +29,17 @@ const Item = ({
   return (
     <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
       {disabled ? (
-        <div className="flex h-full w-full cursor-not-allowed items-center gap-1 p-4 text-sm font-semibold opacity-50 hover:border-border">
-          {children}
-        </div>
-      ) : target ? (
-        <a href={href} target="_blank" rel="noopener noreferrer">
-          <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
-            {children}
-          </SheetClose>
-        </a>
+        <div className={`${ITEM_CONTENT_CLASS} cursor-not-allowed opacity-50 hover:border-border`}>{children}</div>
       ) : (
-        <BasePathLink href={href}>
-          <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
-            {children}
-          </SheetClose>
-        </BasePathLink>
+        <SheetClose asChild className={ITEM_CONTENT_CLASS}>
+          {target ? (
+            <a href={href} target="_blank" rel="noopener noreferrer">
+              {children}
+            </a>
+          ) : (
+            <BasePathLink href={href}>{children}</BasePathLink>
+          )}
+        </SheetClose>
       )}
     </li>
   );
@@ -73,20 +71,20 @@ const Sidebar = () => {
             {!user?.isLoggedIn && (
               <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
                 <DialogLogin>
-                  <div className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+                  <button type="button" className={ITEM_CONTENT_CLASS}>
                     {t('navigation.main_nav_bar.login')}
-                  </div>
+                  </button>
                 </DialogLogin>
               </li>
             )}
             {!user?.isLoggedIn && (
               <li className="cursor-pointer border-b-2 border-border text-foreground hover:border-destructive hover:bg-background-secondary dark:hover:border-destructive">
-                <Link href="https://signup.hive.io/" target="_blank">
-                  <SheetClose className="flex h-full w-full items-center gap-1 p-4 text-sm font-semibold">
+                <SheetClose asChild className={ITEM_CONTENT_CLASS}>
+                  <Link href="https://signup.hive.io/" target="_blank" rel="noopener noreferrer">
                     {t('navigation.main_nav_bar.sign_up')}
                     <Icons.forward className="w-4" />
-                  </SheetClose>
-                </Link>
+                  </Link>
+                </SheetClose>
               </li>
             )}
             {!user?.isLoggedIn && <Separator className="my-2 sm:hidden" />}
