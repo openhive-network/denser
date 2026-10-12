@@ -102,6 +102,7 @@
       "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
+      "label": "Публикации профиля",
       "posts": "Посты",
       "comments": "Комментарии",
       "payouts": "Выплаты"

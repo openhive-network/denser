@@ -115,7 +115,7 @@ test.describe.skip('Translation tests', () => {
     await expect(postPage.userPostMenu).toBeVisible();
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible();
 
-    const userPostMenu = await page.$$('[role="tab"]');
+    const userPostMenu = await postPage.userPostMenu.getByRole('link').elementHandles();
 
     for (let i = 0; i < userPostMenu.length; i++) {
       const el = userPostMenu[i];

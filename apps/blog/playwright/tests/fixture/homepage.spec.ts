@@ -29,4 +29,26 @@ test.describe('Homepage — post list loads', () => {
     const postCount = await postListItems.count();
     expect(postCount).toBeGreaterThanOrEqual(1);
   });
+
+  test('header tooltip closes when the pointer leaves its trigger', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const menuButton = page.getByTestId('nav-sidebar-menu-button');
+    const tooltip = page.getByRole('tooltip', { name: 'Menu Panel' });
+
+    // Hovering before hydration opens nothing, so retry until the tooltip shows
+    await expect(async () => {
+      await page.mouse.move(0, 0);
+      await menuButton.hover();
+      await expect(tooltip).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 30000 });
+
+    const box = await menuButton.boundingBox();
+    if (!box) throw new Error('Menu Panel button has no bounding box');
+    // A single move out of the trigger, then no further pointer events: hoverable
+    // content waits for a later pointermove to leave its grace area, so it stuck open
+    await page.mouse.move(box.x - 300, box.y + 400);
+
+    await expect(tooltip).toBeHidden({ timeout: 2000 });
+  });
 });

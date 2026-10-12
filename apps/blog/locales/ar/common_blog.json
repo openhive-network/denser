@@ -103,6 +103,7 @@
       "block_explorer": "Block Explorer"
     },
     "profile_posts_tab_navbar": {
+      "label": "منشورات الملف الشخصي",
       "posts": "المشاركات",
       "comments": "التعليقات",
       "payouts": "المدفوعات"

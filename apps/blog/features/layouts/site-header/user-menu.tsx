@@ -102,7 +102,7 @@ const UserMenu = ({
               </DropdownMenuItem>
             </Link>
             <DropdownMenuItem className="cursor-pointer">
-              <ModeToggle>
+              <ModeToggle withTooltip={false}>
                 <Button
                   variant="ghost"
                   size="sm"
