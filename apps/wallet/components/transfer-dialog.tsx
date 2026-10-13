@@ -8,12 +8,11 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogTitle
 } from '@ui/components/dialog';
 import { Icons } from '@ui/components/icons';
 import { Input } from '@ui/components/input';
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Autocompleter } from './autocompleter';
 import EncryptMemoDialog from './encrypt-memo-dialog';
 import badActorList from '@ui/config/lists/bad-actor-list';
@@ -65,23 +64,29 @@ type Amount = {
   withdraw: Big;
 };
 
+export type TransferDialogType =
+  | 'transfers'
+  | 'transferTo'
+  | 'powerUp'
+  | 'delegate'
+  | 'withdrawHive'
+  | 'withdrawHiveDollars'
+  | 'powerDown';
+
 export function TransferDialog({
-  children,
+  open,
+  onOpenChange,
+  onCloseAutoFocus,
   type,
   amount,
   currency,
   username,
   suggestedUsers
 }: {
-  children: ReactNode;
-  type:
-    | 'transfers'
-    | 'transferTo'
-    | 'powerUp'
-    | 'delegate'
-    | 'withdrawHive'
-    | 'withdrawHiveDollars'
-    | 'powerDown';
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCloseAutoFocus?: (event: Event) => void;
+  type: TransferDialogType;
   amount: Amount;
   currency: 'HIVE' | 'HBD';
   username: string;
@@ -120,10 +125,8 @@ export function TransferDialog({
   const powerDownMutation = usePowerDownMutation();
   const delegateMutation = useDelegateMutation();
   const withdrawFromSavingsMutation = useWithdrawFromSavingsMutation();
-  const triggerRef = useRef(null);
   const confirmTitleRef = useRef<HTMLHeadingElement>(null);
   const [nextOpen, setNextOpen] = useState(false);
-  const [open, setOpen] = useState(false);
   const minDelegation = useMinDelegation(type === 'delegate' && open);
   const [encryptDialogOpen, setEncryptDialogOpen] = useState(false);
   // `data.memo` stays the plaintext, which the secret guard above checks; the ciphertext is kept apart.
@@ -375,7 +378,7 @@ export function TransferDialog({
       delegateMutation.isSuccess ||
       withdrawFromSavingsMutation.isSuccess
     ) {
-      setOpen(false);
+      onOpenChange(false);
       setNextOpen(false);
       setEncryptDialogOpen(false);
       toast({
@@ -399,7 +402,7 @@ export function TransferDialog({
         description: data.title,
         variant: 'success'
       });
-      setOpen(false);
+      onOpenChange(false);
     }
   }, [powerDownMutation.isSuccess]);
 
@@ -419,13 +422,8 @@ export function TransferDialog({
           setNextOpen(true);
         }}
       />
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
-            {children}
-          </div>
-        </DialogTrigger>
-        <DialogContent className="text-left sm:max-w-[425px]">
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="text-left sm:max-w-[425px]" onCloseAutoFocus={onCloseAutoFocus}>
           <form>
             <DialogHeader>
               <DialogTitle className="text-left text-2xl">{data.title}</DialogTitle>
@@ -460,6 +458,7 @@ export function TransferDialog({
                       {t('transfers_page.to')}
                       <div className="col-span-3 mb-6">
                         <Autocompleter
+                          label={t('transfers_page.to')}
                           items={suggestedUsers}
                           value={data.to}
                           onChange={(e) => {
@@ -487,6 +486,7 @@ export function TransferDialog({
                       <div className="absolute right-0">
                         <Select value={curr} onValueChange={(e: 'HIVE' | 'HBD') => setCurr(e)}>
                           <SelectTrigger
+                            aria-label={t('transfers_page.currency')}
                             disabled={type === 'delegate'}
                             className="my-[1.5px] mr-[1px] h-9 w-fit border-none focus:ring-0 focus:ring-offset-0"
                             onSelect={() => setCurr('HIVE')}
@@ -615,8 +615,6 @@ export function TransferDialog({
               </div>
             )}
             <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-              <DialogTrigger ref={triggerRef} className="absolute"></DialogTrigger>
-
               <Button
                 variant="redHover"
                 className="w-fit"

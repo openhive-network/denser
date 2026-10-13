@@ -1,7 +1,7 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import { ReactNode, useState, FC } from 'react';
+import { ReactNode, useId, useState, FC } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import {
   PasswordForm,
@@ -32,6 +32,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
     passwordFormDefaultValuesWif
   );
   const [errorMsg, setErrorMsg] = useState('');
+  const titleId = useId();
 
   const onSubmit = async (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {
     logger.info('onSubmit form data', data);
@@ -61,7 +62,11 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]" onInteractOutside={onInteractOutside}>
+      <DialogContent
+        className="sm:max-w-[600px]"
+        aria-labelledby={titleId}
+        onInteractOutside={onInteractOutside}
+      >
         <PasswordForm
           onSubmit={onSubmit}
           errorMessage={errorMsg}
@@ -69,6 +74,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
           showInputStorePassword={showInputStorePassword}
           validatePassword={validatePassword}
           i18nKeysForCaptions={i18nKeysForCaptions}
+          titleId={titleId}
         />
       </DialogContent>
     </Dialog>

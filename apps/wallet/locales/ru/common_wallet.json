@@ -332,6 +332,7 @@
     "our_homepage": "our homepage"
   },
   "transfers_page": {
+    "currency": "Валюта",
     "decode_memo": "Расшифровать",
     "decode_memo_encrypted_placeholder": "Зашифрованная заметка",
     "decode_memo_title": "Расшифровать сообщение MEMO",

@@ -319,6 +319,7 @@
     "our_homepage": "our homepage"
   },
   "transfers_page": {
+    "currency": "通貨",
     "decode_memo": "デコード",
     "decode_memo_encrypted_placeholder": "暗号化されたメモ",
     "decode_memo_title": "MEMOメッセージをデコード",

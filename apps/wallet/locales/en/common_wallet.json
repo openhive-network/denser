@@ -513,6 +513,7 @@
     "from": "From",
     "to": "To",
     "amount": "Amount",
+    "currency": "Currency",
     "memo": "Memo",
     "basic": "Basic",
     "advanced": "Advanced",

@@ -1,14 +1,16 @@
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@ui/components/command';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 type Item = {
   username: string;
   about: string;
 };
 export function Autocompleter({
+  label,
   value,
   onChange,
   items
 }: {
+  label: string;
   value: string;
   onChange: (e: string) => void;
   items?: Item[];
@@ -16,6 +18,11 @@ export function Autocompleter({
   const [isOpen, setIsOpen] = useState(true);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<HTMLDivElement | null>(null);
+  const expanded = isOpen && !!items?.length;
+  // cmdk hard-codes aria-expanded="true" on its input, so the real state is written over it.
+  useLayoutEffect(() => {
+    inputRef.current?.setAttribute('aria-expanded', String(expanded));
+  }, [expanded]);
   const handleInputFocus = () => {
     setIsOpen(true);
   };
@@ -46,7 +53,7 @@ export function Autocompleter({
   }, []);
 
   return (
-    <Command className="w-full border" ref={autocompleteRef}>
+    <Command className="w-full border" ref={autocompleteRef} label={label}>
       <CommandInput
         ref={inputRef}
         onFocus={handleInputFocus}

@@ -326,6 +326,7 @@
     "our_homepage": "our homepage"
   },
   "transfers_page": {
+    "currency": "Devise",
     "decode_memo": "Déchiffrer",
     "decode_memo_encrypted_placeholder": "Mémo chiffré",
     "decode_memo_title": "Déchiffrer le message MEMO",

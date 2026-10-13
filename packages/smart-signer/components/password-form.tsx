@@ -77,6 +77,8 @@ export interface PasswordFormOptions {
    */
   validatePassword?: (password: string) => Promise<string | null>;
   i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
+  /** Id given to the form's title, so a surrounding dialog can be labelled by it. */
+  titleId?: string;
 }
 
 export function PasswordForm({
@@ -85,7 +87,8 @@ export function PasswordForm({
   errorMessage = '',
   onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
   validatePassword,
-  i18nKeysForCaptions = {} // captions for inputs, buttons, form title etc.
+  i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
+  titleId
 }: PasswordFormOptions) {
   // Also rendered for transaction signing, where the namespace may not be loaded yet: don't suspend.
   const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
@@ -145,7 +148,7 @@ export function PasswordForm({
       data-testid="enter-password-to-unlock-key"
     >
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
-        <h2 className="w-full text-xl">{captionKey.title}</h2>
+        <h2 id={titleId} className="w-full text-xl">{captionKey.title}</h2>
         {captionKey.description && <p className="w-full">{captionKey.description}</p>}
 
         <form method="post" className="mt-6 w-full">
