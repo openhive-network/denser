@@ -6,10 +6,13 @@ import { cn } from '@ui/lib/utils';
 
 interface SliderProps extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
   dataTestId?: string;
+  /** The thumb is the element with role="slider": name it and phrase its value for assistive tech. */
+  thumbAriaLabel?: string;
+  thumbAriaValueText?: string;
 }
 
 const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, SliderProps>(
-  ({ className, dataTestId, ...props }, ref) => (
+  ({ className, dataTestId, thumbAriaLabel, thumbAriaValueText, ...props }, ref) => (
     <SliderPrimitive.Root
       ref={ref}
       className={cn('relative flex w-full touch-none select-none items-center', className)}
@@ -18,7 +21,12 @@ const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, S
       <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary" data-testid={`${dataTestId}-track`}>
         <SliderPrimitive.Range className="absolute h-full bg-primary" />
       </SliderPrimitive.Track>
-      <SliderPrimitive.Thumb className="block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" data-testid={`${dataTestId}-thumb`} />
+      <SliderPrimitive.Thumb
+        className="block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+        data-testid={`${dataTestId}-thumb`}
+        aria-label={thumbAriaLabel}
+        aria-valuetext={thumbAriaValueText}
+      />
     </SliderPrimitive.Root>
   )
 );

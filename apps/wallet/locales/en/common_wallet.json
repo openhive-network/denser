@@ -541,7 +541,19 @@
     "withdraw": "Withdraw",
     "to_lower": "to",
     "cancel_withdraw_request": "Cancel this withdraw request?",
-    "cancel_withdraw_from_savings": "Cancel withdraw from savings"
+    "cancel_withdraw_from_savings": "Cancel withdraw from savings",
+    "delegate_rc": {
+      "title": "Delegate RC",
+      "to_account": "To Account",
+      "amount_label": "RC amount (billions)",
+      "slider_label": "RC amount",
+      "readout": "{{amount}} bil / {{max}} bil RC",
+      "value_text": "{{amount}} billion RC, {{percent}}%",
+      "checking_account": "Checking account…",
+      "account_check_failed": "Could not check the account. Try again later.",
+      "almost_all_warning": "You are about to delegate {{percent}}% of your available RC. Your account may be left without enough RC for its own transactions.",
+      "submit": "Delegate RC"
+    }
   },
   "permissions": {
     "reveal": "Reveal",

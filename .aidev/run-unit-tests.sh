@@ -92,6 +92,7 @@ run_with_junit_fallback "$junit" wallet node --test \
     --test-reporter=junit --test-reporter-destination="$junit" \
     apps/wallet/lib/history-filter.test.ts \
     apps/wallet/feature/delegations/lib/incoming-delegations.test.ts \
+    apps/wallet/feature/transfers-page/lib/rc-amount.test.ts \
     apps/wallet/playwright/tests/support/walletOperations.test.ts \
     apps/wallet/lib/encrypted-memo.test.ts \
     apps/wallet/lib/min-delegation.test.ts \
