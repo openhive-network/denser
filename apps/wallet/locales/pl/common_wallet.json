@@ -412,7 +412,19 @@
     "withdraw": "Wypłata",
     "to_lower": "do",
     "cancel_withdraw_request": "Czy chcesz anulować wypłatę oszczędnośći?",
-    "cancel_withdraw_from_savings": "Anuluj wypłątę oszczędności"
+    "cancel_withdraw_from_savings": "Anuluj wypłątę oszczędności",
+    "delegate_rc": {
+      "title": "Deleguj RC",
+      "to_account": "Do konta",
+      "amount_label": "Ilość RC (w miliardach)",
+      "slider_label": "Ilość RC",
+      "readout": "{{amount}} bil / {{max}} bil RC",
+      "value_text": "{{amount}} mld RC, {{percent}}%",
+      "checking_account": "Sprawdzanie konta…",
+      "account_check_failed": "Nie udało się sprawdzić konta. Spróbuj ponownie później.",
+      "almost_all_warning": "Zamierzasz delegować {{percent}}% dostępnych RC. Twojemu kontu może zabraknąć RC na własne transakcje.",
+      "submit": "Deleguj RC"
+    }
   },
   "permissions": {
     "reveal": "Ujawnij",

@@ -10,42 +10,69 @@ import {
   Label
 } from '@ui/components';
 import { useDelegateRCMutation } from './hooks/use-delegate-mutation';
+import { useAccountLookup, type AccountLookupStatus } from './hooks/use-account-lookup';
 import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Slider } from '@ui/components/slider';
-import Big from 'big.js';
+import { useTranslation } from '@/wallet/i18n/client';
+import {
+  RC_INPUT_DECIMALS,
+  billionsToRawRc,
+  formatRcInput,
+  formatRcSummary,
+  parseRcBillions,
+  rawRcToBillions,
+  rcForPercent,
+  rcPercentOf
+} from './lib/rc-amount';
 
-const SCALE = new Big(1_000_000_000);
 const defaultForm = { toAccount: '', amount: '0' };
+const PERCENT_PRESETS = [25, 50, 75, 100];
+/** Arrow keys move the slider by 1 %, PageUp/PageDown by 10 % (Radix multiplies the step by 10). */
+const SLIDER_STEP_PERCENT = 1;
+/** From this share of the available RC up, the form warns that little is left for the account. */
+const ALMOST_ALL_RC_PERCENT = 90;
+const AMOUNT_INPUT_PATTERN = new RegExp(`^\\d*(\\.\\d{0,${RC_INPUT_DECIMALS}})?$`);
+const ACCOUNT_STATUS_ID = 'delegate-rc-account-status';
+
+const ACCOUNT_STATUS_KEYS: Partial<Record<AccountLookupStatus, string>> = {
+  checking: 'transfers_page.delegate_rc.checking_account',
+  not_found: 'transfers_page.error.not_found',
+  error: 'transfers_page.delegate_rc.account_check_failed'
+};
 
 const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
+  const { t } = useTranslation('common_wallet');
   const delegateMutation = useDelegateRCMutation();
   const [form, setForm] = useState(defaultForm);
-  const bigMaxRaw = new Big(maxRC || '0');
-  const bigMaxDisplay = bigMaxRaw.div(SCALE);
   const [open, setOpen] = useState(false);
+  const toAccount = form.toAccount.trim();
+  const accountStatus = useAccountLookup(toAccount);
+  const maxBillions = rawRcToBillions(maxRC);
+  const amountBillions = parseRcBillions(form.amount);
+  const percent = rcPercentOf(amountBillions, maxBillions);
 
-  const toRawUnits = (displayAmountStr: string) => {
-    if (displayAmountStr === '' || displayAmountStr === '0') return '0';
-    return new Big(displayAmountStr).times(SCALE).toFixed(0);
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next);
+    if (!next) setForm(defaultForm);
   };
 
-  const formatDisplay = (val: Big) => val.toFixed(9).replace(/\.?0+$/, ''); // show up to 9 decimals, trim trailing zeros
+  const setAmount = (billions: string) => setForm((prev) => ({ ...prev, amount: billions }));
+  const setPercent = (next: number) => setAmount(formatRcInput(rcForPercent(maxBillions, next)));
+
+  const onAmountInput = (input: string) => {
+    const typed = input.trim();
+    if (!AMOUNT_INPUT_PATTERN.test(typed)) return;
+    setAmount(parseRcBillions(typed).gt(maxBillions) ? formatRcInput(maxBillions) : typed);
+  };
 
   const onDelegate = async () => {
-    const displayAmt = form.amount === '' ? '0' : form.amount;
-    const rawToSend = toRawUnits(displayAmt);
+    const rawToSend = billionsToRawRc(amountBillions);
     try {
-      await delegateMutation.mutateAsync({
-        toAccount: form.toAccount,
-        amount: rawToSend
-      });
+      await delegateMutation.mutateAsync({ toAccount, amount: rawToSend });
     } catch (error) {
-      handleError(error, {
-        method: 'delegate',
-        params: { toAccount: form.toAccount, amount: rawToSend }
-      });
+      handleError(error, { method: 'delegate', params: { toAccount, amount: rawToSend } });
     }
   };
 
@@ -56,124 +83,108 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
     }
   }, [delegateMutation.isSuccess]);
 
-  const bigAmountDisplay =
-    form.amount === ''
-      ? new Big(0)
-      : (() => {
-          try {
-            return new Big(form.amount);
-          } catch {
-            return new Big(0);
-          }
-        })();
-  const isAmountValid = form.amount !== '' && bigAmountDisplay.gt(0) && bigAmountDisplay.lte(bigMaxDisplay);
-  const isFormValid = isAmountValid && form.toAccount.trim().length > 0 && !delegateMutation.isPending;
+  const isAmountValid = amountBillions.gt(0) && amountBillions.lte(maxBillions);
+  const isFormValid = isAmountValid && accountStatus === 'found' && !delegateMutation.isPending;
+  const accountStatusKey = ACCOUNT_STATUS_KEYS[accountStatus];
+  const summary = { amount: formatRcSummary(amountBillions), max: formatRcSummary(maxBillions) };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outlineRed">Delegate RC</Button>
+        <Button variant="outlineRed">{t('transfers_page.delegate_rc.title')}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delegate RC</DialogTitle>
+          <DialogTitle>{t('transfers_page.delegate_rc.title')}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-6">
           <div className="space-y-4">
             <Label htmlFor="toAccount" className="text-sm font-medium">
-              To Account
+              {t('transfers_page.delegate_rc.to_account')}
             </Label>
             <Input
               disabled={delegateMutation.isPending}
               id="toAccount"
+              autoComplete="off"
               value={form.toAccount}
+              aria-invalid={accountStatus === 'not_found' || accountStatus === 'error'}
+              aria-describedby={accountStatusKey ? ACCOUNT_STATUS_ID : undefined}
               onChange={(e) => setForm({ ...form, toAccount: e.target.value })}
             />
+            {accountStatusKey ? (
+              <p
+                id={ACCOUNT_STATUS_ID}
+                aria-live="polite"
+                className={accountStatus === 'checking' ? 'text-xs text-primary/70' : 'text-xs text-destructive'}
+              >
+                {t(accountStatusKey)}
+              </p>
+            ) : null}
           </div>
           <div className="space-y-4">
             <Label htmlFor="amount" className="text-sm font-medium">
-              RC Amount (displayed / 1B)
+              {t('transfers_page.delegate_rc.amount_label')}
             </Label>
             <div className="space-y-3">
               <Input
                 type="number"
                 min={0}
-                step="0.000000001"
-                max={bigMaxDisplay.toString()}
+                step={`0.${'0'.repeat(RC_INPUT_DECIMALS - 1)}1`}
+                max={maxBillions.toString()}
                 disabled={delegateMutation.isPending}
                 id="amount"
                 value={form.amount}
-                onChange={(e) => {
-                  const raw = e.target.value.trim();
-                  if (raw === '') {
-                    setForm({ ...form, amount: '' });
-                    return;
-                  }
-                  if (!/^\d*(\.\d{0,9})?$/.test(raw)) return;
-                  try {
-                    const b = new Big(raw || '0');
-                    if (b.gt(bigMaxDisplay)) {
-                      setForm({
-                        ...form,
-                        amount: formatDisplay(bigMaxDisplay)
-                      });
-                    } else {
-                      setForm({ ...form, amount: raw });
-                    }
-                  } catch {
-                    /* ignore invalid Big parse */
-                  }
-                }}
+                onChange={(e) => onAmountInput(e.target.value)}
               />
               <div className="space-y-2">
                 <Slider
-                  max={Number(bigMaxRaw.toString()) || 0}
-                  step={1}
-                  value={[Number(toRawUnits(form.amount === '' ? '0' : form.amount)) || 0]}
-                  onValueChange={(value) => {
-                    const rawVal = new Big(value[0] || 0);
-                    const clampedRaw = rawVal.gt(bigMaxRaw) ? bigMaxRaw : rawVal;
-                    const display = clampedRaw.div(SCALE);
-                    setForm({
-                      ...form,
-                      amount: formatDisplay(display)
-                    });
-                  }}
+                  thumbAriaLabel={t('transfers_page.delegate_rc.slider_label')}
+                  thumbAriaValueText={t('transfers_page.delegate_rc.value_text', {
+                    ...summary,
+                    percent: Math.round(percent)
+                  })}
+                  min={0}
+                  max={100}
+                  step={SLIDER_STEP_PERCENT}
+                  disabled={delegateMutation.isPending || maxBillions.lte(0)}
+                  value={[percent]}
+                  onValueChange={([next]) => setPercent(next ?? 0)}
                   className="w-full"
                 />
                 <div className="flex justify-center text-xs">
-                  <span className="font-medium">
-                    {formatDisplay(bigAmountDisplay)} / {formatDisplay(bigMaxDisplay)}
-                  </span>
+                  <span className="font-medium">{t('transfers_page.delegate_rc.readout', summary)}</span>
                 </div>
               </div>
             </div>
           </div>
           <div className="grid grid-cols-4 gap-2">
-            {[25, 50, 75, 100].map((percent) => (
+            {PERCENT_PRESETS.map((preset) => (
               <Button
-                key={percent}
+                key={preset}
                 variant="outline"
                 size="sm"
-                onClick={() => {
-                  const amt = bigMaxDisplay.times(percent).div(100);
-                  setForm({
-                    ...form,
-                    amount: formatDisplay(amt)
-                  });
-                }}
+                onClick={() => setPercent(preset)}
                 disabled={delegateMutation.isPending}
                 className="transition-all duration-200"
               >
-                {percent}%
+                {preset}%
               </Button>
             ))}
           </div>
+          {isAmountValid && percent >= ALMOST_ALL_RC_PERCENT ? (
+            <p role="alert" className="text-sm text-destructive">
+              {t('transfers_page.delegate_rc.almost_all_warning', { percent: Math.round(percent) })}
+            </p>
+          ) : null}
         </div>
         <DialogFooter>
-          <Button variant="ghost" onClick={() => setOpen(false)} disabled={delegateMutation.isPending}>
-            Cancel
+          <Button
+            variant="ghost"
+            onClick={() => handleOpenChange(false)}
+            disabled={delegateMutation.isPending}
+          >
+            {t('transfers_page.cancel')}
           </Button>
           <Button variant="redHover" onClick={onDelegate} disabled={!isFormValid}>
             {delegateMutation.isPending ? (
@@ -181,7 +192,7 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
                 <CircleSpinner loading={delegateMutation.isPending} size={18} color="#dc2626" />
               </span>
             ) : (
-              'Delegate RC'
+              t('transfers_page.delegate_rc.submit')
             )}
           </Button>
         </DialogFooter>
