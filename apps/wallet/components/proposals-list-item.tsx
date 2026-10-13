@@ -23,13 +23,13 @@ const TitleSetter = ({ start, end, status }: { start: string; end: string; statu
     case 'started':
       return (
         <div>
-          Started <TimeAgo date={start} /> and finish <TimeAgo date={end} />
+          Started <TimeAgo date={start} /> and finishes <TimeAgo date={end} />
         </div>
       );
     case 'not started':
       return (
         <div>
-          Start <TimeAgo date={start} /> and finish <TimeAgo date={end} />
+          Starts <TimeAgo date={start} /> and finishes <TimeAgo date={end} />
         </div>
       );
     case `finished`:
