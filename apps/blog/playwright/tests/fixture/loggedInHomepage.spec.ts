@@ -1,4 +1,5 @@
 import { test, expect } from '../support/fixture-proxy-test';
+import { clickSubmenuItem, hoverSubmenuItem } from '../support/uiPrimitives';
 
 /**
  * Logged-in homepage fixture test — demo of the auth-seeding flow.
@@ -63,7 +64,8 @@ test.describe('Homepage — seeded logged-in user', () => {
 
     await themeButton.click();
     await expect(themeItems.first()).toBeVisible();
-    await page.mouse.move(0, 0);
+    // Off the trigger, so the synthetic pointermove after the submenu closes cannot hover it open again
+    await hoverSubmenuItem(page, themeItems.first());
 
     await page.keyboard.press('Escape');
     await expect(themeItems.first()).toBeHidden();
@@ -74,5 +76,61 @@ test.describe('Homepage — seeded logged-in user', () => {
     await page.keyboard.press('Escape');
     await expect(userMenu).toBeHidden();
   });
-});
 
+  test('the Theme item is a keyboard submenu: ArrowRight, Enter and Space open it, ArrowLeft and Esc return to it, and Enter applies a theme', async ({
+    page
+  }) => {
+    await page.goto('/');
+
+    const avatar = page.getByTestId('profile-avatar-button');
+    const userMenu = page.getByTestId('user-profile-menu-content');
+    const theme = userMenu.getByRole('menuitem', { name: 'Theme' });
+    const submenu = page.getByRole('menu', { name: 'Theme' });
+    const light = submenu.getByRole('menuitemradio', { name: 'Light' });
+    const dark = submenu.getByRole('menuitemradio', { name: 'Dark' });
+
+    await expect(async () => {
+      await avatar.press('Enter');
+      await expect(userMenu).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 30000 });
+    await expect(theme).toHaveAttribute('aria-haspopup', 'menu');
+    await expect(theme.locator('button')).toHaveCount(0);
+    await expect(userMenu.getByRole('menuitem', { name: 'Language' })).toHaveAttribute('aria-haspopup', 'menu');
+
+    await expect(async () => {
+      await page.keyboard.press('ArrowDown');
+      await expect(theme).toBeFocused({ timeout: 200 });
+    }).toPass({ timeout: 10000 });
+
+    await page.keyboard.press('ArrowRight');
+    await expect(light).toBeFocused();
+    await expect(theme).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('ArrowLeft');
+    await expect(submenu).toBeHidden();
+    await expect(theme).toBeFocused();
+
+    await page.keyboard.press(' ');
+    await expect(light).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(submenu).toBeHidden();
+    await expect(userMenu).toBeVisible();
+    await expect(theme).toBeFocused();
+
+    await page.keyboard.press('Enter');
+    await expect(light).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(dark).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(userMenu).toBeHidden();
+    await expect(avatar).toBeFocused();
+    await expect(page.locator('html')).toHaveClass(/\bdark\b/);
+
+    await avatar.click();
+    await theme.click();
+    await expect(dark).toHaveAttribute('aria-checked', 'true');
+    await expect(light).toHaveAttribute('aria-checked', 'false');
+    await clickSubmenuItem(page, light);
+    await expect(userMenu).toBeHidden();
+    await expect(page.locator('html')).toHaveClass(/\blight\b/);
+  });
+});

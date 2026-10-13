@@ -215,7 +215,7 @@ const MainBar: FC = () => {
               <Skeleton className="h-9 w-9 rounded-full hidden sm:block" />
             ) : !user?.isLoggedIn ? (
               <div className="hidden sm:block">
-                <LangToggle logged={user ? user?.isLoggedIn : false} className="px-2" />
+                <LangToggle className="px-2" />
               </div>
             ) : null}
 

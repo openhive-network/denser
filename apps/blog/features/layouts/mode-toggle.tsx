@@ -12,23 +12,14 @@ import { Icons } from '@ui/components/icons';
 import { useTranslation } from '@/blog/i18n/client';
 import TooltipContainer from '@ui/components/tooltip-container';
 
-export default function ModeToggle({
-  children,
-  withTooltip = true
-}: {
-  children: React.ReactNode;
-  withTooltip?: boolean;
-}) {
+export default function ModeToggle({ children }: { children: React.ReactNode }) {
   const { setTheme } = useTheme();
   const { t } = useTranslation('common_blog');
-  const trigger = <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>;
   return (
     <DropdownMenu>
-      {withTooltip ? (
-        <TooltipContainer title={t('navigation.main_nav_bar.theme')}>{trigger}</TooltipContainer>
-      ) : (
-        trigger
-      )}
+      <TooltipContainer title={t('navigation.main_nav_bar.theme')}>
+        <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      </TooltipContainer>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')} data-testid="theme-mode-item">
           <Icons.sun className="mr-2 h-4 w-4" />

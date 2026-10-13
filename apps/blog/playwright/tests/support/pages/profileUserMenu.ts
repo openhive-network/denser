@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 import { HomePage } from './homePage';
 import { locatorSelector } from '../locatorSelector';
+import { clickSubmenuItem } from '../uiPrimitives';
 
 export class ProfileUserMenu {
     readonly page: Page;
@@ -68,8 +69,8 @@ export class ProfileUserMenu {
       // Validate User is logged in
       await this.page.waitForSelector(locatorSelector(this.profileMenuContent));
       // Click Theme button
-      await this.themeModeButton.dispatchEvent('pointerdown');
+      await this.themeModeButton.click();
       // Click Dark theme
-      await this.themeModeItem.locator(`span:text(\"${thememode}\")`).click();
+      await clickSubmenuItem(this.page, this.themeModeItem.filter({ hasText: thememode }));
     }
 }
