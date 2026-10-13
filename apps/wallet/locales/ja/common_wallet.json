@@ -139,7 +139,9 @@
   "profile": {
     "joined": "登録年月：",
     "hive_description": "いつでもどこへでも送ることができる取引可能なトークンです。HIVEはパワーアップによってHIVE POWERに変換できます。",
-    "hp_description": "投稿への支払額の制御権を持ち、キュレーション報酬を得ることが可能になる、プラットフォームにおける影響力を持つトークンです。現在のHIVE POWERの一部は委託されたものです。委託は影響力の寄付や、新規ユーザーがHiveでアクションを起こしやすくするために行われます。委託された額は変動する可能性があります。 HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
+    "hp_description": "投稿への支払額の制御権を持ち、キュレーション報酬を得ることが可能になる、プラットフォームにおける影響力を持つトークンです。",
+    "hp_delegated_description": "現在のHIVE POWERの一部は委託されたものです。委託は影響力の寄付や、新規ユーザーがHiveでアクションを起こしやすくするために行われます。委託された額は変動する可能性があります。",
+    "hp_apr_description": "HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
     "savings_title": "貯蓄口座",
     "savings_description": "引き出しに3日間の待ち時間が必要となる貯蓄口座です。HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)",

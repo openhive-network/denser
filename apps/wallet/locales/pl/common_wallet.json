@@ -169,7 +169,9 @@
     "withdraw_hive_dollars": "Wypłać HIVE DOLLARS",
     "joined": "Dołączono",
     "hive_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
-    "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowanie jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
+    "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści.",
+    "hp_delegated_description": "Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowanie jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie.",
+    "hp_apr_description": "HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie.",
     "savings_title": "Oszczędności",
     "savings_description": "Saldo zależy od 3-dniowego okresu karencji wymaganego do wycofania środków, HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)",
@@ -415,7 +417,10 @@
       "account_length_max": "Nazwa konta jest zbyt długa. Wpisz maksymalnie 16 znaków.",
       "required": "Nazwa konta 'Do' jest wymagana.",
       "insufficient_funds": "Niewystarczające środki.",
-      "not_found": "Nie znaleziono konta."
+      "not_found": "Nie znaleziono konta.",
+      "min_delegation": "Minimalna delegacja to {{min}} HP.",
+      "cannot_delegate": "Nie możesz jeszcze delegować: minimalna delegacja to {{min}} HP, a dostępne masz {{available}} HP.",
+      "delegation_below_minimum": "Delegacja odrzucona: minimum to {{min}} HP (próbowano {{amount}} HP)."
     },
     "cancel": "Anuluj",
     "pending_savings": "Oczekujące wypłąty z oszczędności",

@@ -251,10 +251,11 @@ const WalletBalancesTable = ({
                   className="text-xs leading-relaxed text-primary/70"
                   data-testid="wallet-hive-power-description"
                 >
-                  {t('profile.hp_description', {
-                    username: accountData.name,
-                    value: getCurrentHpApr(dynamicData).toFixed(2)
-                  })}
+                  {t('profile.hp_description')}{' '}
+                  {delegatedVesting.gt(0) ? (
+                    <>{t('profile.hp_delegated_description', { username: accountData.name })} </>
+                  ) : null}
+                  {t('profile.hp_apr_description', { value: getCurrentHpApr(dynamicData).toFixed(2) })}{' '}
                   <span className="font-semibold text-primary hover:text-destructive">
                     <Link href={`${blogURL}/faq.html#How_many_new_tokens_are_generated_by_the_blockchain`}>
                       {t('profile.see_faq_for_details')}
