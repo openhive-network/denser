@@ -30,7 +30,8 @@ test('a locale with every key, its own plural categories and matching placeholde
   assert.deepEqual(compareLocale(reference, getLeaves(complete), 'pl'), {
     missing: [],
     extra: [],
-    placeholders: []
+    placeholders: [],
+    untranslated: []
   });
 });
 
@@ -43,7 +44,12 @@ test('a locale with a single plural category only needs _other', () => {
       savings: '利率 {{rate}}%（<0>ウィットネス</0>）'
     }
   });
-  assert.deepEqual(compareLocale(reference, ja, 'ja'), { missing: [], extra: [], placeholders: [] });
+  assert.deepEqual(compareLocale(reference, ja, 'ja'), {
+    missing: [],
+    extra: [],
+    placeholders: [],
+    untranslated: []
+  });
 });
 
 test('missing keys, missing plural categories and keys outside the locale categories are reported', () => {
@@ -79,4 +85,21 @@ test('dropped, renamed or added placeholders and Trans tags are reported', () =>
     'profile.hidden_both_other: expected [{{count}} {{muted}}], got [{{count}}]',
     'profile.savings: expected [</0> <0> {{rate}}], got [{{rate}}]'
   ]);
+});
+
+test('sentences copied verbatim from English are reported as untranslated', () => {
+  const pl = getLeaves({
+    ...complete,
+    global: { ...complete.global, exclude_less_than_one: 'Exclude less than 1 HBD' },
+    profile: { ...complete.profile, hidden_both_other: '{{count}} hidden ({{muted}} muted)' }
+  });
+  assert.deepEqual(compareLocale(reference, pl, 'pl').untranslated, [
+    'global.exclude_less_than_one',
+    'profile.hidden_both_other'
+  ]);
+});
+
+test('short labels identical to English are not reported as untranslated', () => {
+  const pl = getLeaves({ ...complete, global: { ...complete.global, save: 'Save' } });
+  assert.deepEqual(compareLocale(reference, pl, 'pl').untranslated, []);
 });

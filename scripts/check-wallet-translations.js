@@ -8,6 +8,8 @@
  * - Extra keys (present in the locale but not in English)
  * - Strings whose interpolation placeholders ({{name}}) or <Trans> tags (<0>)
  *   differ from the English string's
+ * - Sentences (at least MIN_SENTENCE_WORDS words) copied verbatim from English,
+ *   i.e. left untranslated, unless the key is in IDENTICAL_TO_ENGLISH_ALLOWED
  *
  * i18next plural keys (`base_one`, `base_other`, ...) are matched by plural
  * category: a locale carries the categories its own plural rules define (ja/zh
@@ -24,6 +26,14 @@ const REFERENCE_LOCALE = 'en';
 const PLURAL_CATEGORIES = ['zero', 'one', 'two', 'few', 'many', 'other'];
 const PLURAL_KEY = new RegExp(`^(.+)_(${PLURAL_CATEGORIES.join('|')})$`);
 const MAX_LISTED = 10;
+const MIN_SENTENCE_WORDS = 4;
+
+/**
+ * Keys whose value may legitimately be identical to English in every locale
+ * (product names, units, codes). Each entry needs a comment saying why.
+ * Short labels are never checked, so only sentence-length values belong here.
+ */
+const IDENTICAL_TO_ENGLISH_ALLOWED = new Set([]);
 
 /**
  * Flatten a nested translation object into dot-notation leaf keys.
@@ -110,25 +120,43 @@ function getPlaceholders(value) {
 }
 
 /**
+ * Whether a translation is an untranslated copy of a sentence-length English
+ * string. Placeholders count as words, so `Paid {{value1}} for {{value2}}` is
+ * a sentence.
+ * @param {string} key
+ * @param {string} value
+ * @param {string} englishValue
+ * @returns {boolean}
+ */
+function isUntranslatedSentence(key, value, englishValue) {
+  if (typeof value !== 'string' || value !== englishValue) return false;
+  if (IDENTICAL_TO_ENGLISH_ALLOWED.has(key)) return false;
+  return value.trim().split(/\s+/).length >= MIN_SENTENCE_WORDS;
+}
+
+/**
  * Compare one locale's leaves against the reference.
  * @param {Map<string, string>} reference
  * @param {Map<string, string>} target
  * @param {string} locale
- * @returns {{ missing: string[], extra: string[], placeholders: string[] }}
+ * @returns {{ missing: string[], extra: string[], placeholders: string[], untranslated: string[] }}
  */
 function compareLocale(reference, target, locale) {
   const { required, allowed } = getExpectedKeys(reference, locale);
   const missing = [...required.keys()].filter((key) => !target.has(key));
   const extra = [...target.keys()].filter((key) => !allowed.has(key));
   const placeholders = [];
+  const untranslated = [];
 
   for (const [key, value] of target) {
     if (!allowed.has(key)) continue;
-    const expected = getPlaceholders(reference.get(allowed.get(key))).join(' ');
+    const englishValue = reference.get(allowed.get(key));
+    const expected = getPlaceholders(englishValue).join(' ');
     const actual = getPlaceholders(value).join(' ');
     if (expected !== actual) placeholders.push(`${key}: expected [${expected}], got [${actual}]`);
+    if (isUntranslatedSentence(key, value, englishValue)) untranslated.push(key);
   }
-  return { missing, extra, placeholders };
+  return { missing, extra, placeholders, untranslated };
 }
 
 function loadLeaves(filePath) {
@@ -166,19 +194,20 @@ function validateTranslations() {
         continue;
       }
       const target = loadLeaves(targetFilePath);
-      const { missing, extra, placeholders } = compareLocale(reference, target, locale);
-      if (missing.length + extra.length + placeholders.length === 0) {
+      const { missing, extra, placeholders, untranslated } = compareLocale(reference, target, locale);
+      if (missing.length + extra.length + placeholders.length + untranslated.length === 0) {
         console.log(`   ✅ ${locale}: OK (${target.size} keys)`);
         continue;
       }
       hasErrors = true;
       console.log(
         `   ⚠️  ${locale}: ${missing.length} missing, ${extra.length} extra, ` +
-          `${placeholders.length} placeholder mismatches`
+          `${placeholders.length} placeholder mismatches, ${untranslated.length} untranslated`
       );
       printList('Missing keys', missing);
       printList(`Extra keys (not in ${REFERENCE_LOCALE})`, extra);
       printList('Placeholder mismatches', placeholders);
+      printList(`Identical to ${REFERENCE_LOCALE} (untranslated)`, untranslated);
     }
     console.log('');
   }

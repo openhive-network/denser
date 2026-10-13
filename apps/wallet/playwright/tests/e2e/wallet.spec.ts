@@ -1,9 +1,23 @@
-import { expect, test } from '@playwright/test';
+import { expect, Locator, Page, test } from '@playwright/test';
 import { WalletPage } from '../support/pages/walletPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
 import { AccountHistoryItem, ApiHelper } from '../support/apiHelper';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
 import { locatorSelector } from '../../../../blog/playwright/tests/support/locatorSelector';
+
+// The delegated sentence is shown only while the account delegates, which changes over time.
+async function expectDelegatedSentenceToFollowAccount(
+  page: Page,
+  description: Locator,
+  username: string,
+  delegatedSentence: string
+) {
+  if (await new ApiHelper(page).isDelegatingHivePowerAPI(username)) {
+    await expect(description).toContainText(delegatedSentence);
+  } else {
+    await expect(description).not.toContainText(delegatedSentence);
+  }
+}
 
 test.describe('Wallet page tests', () => {
   let walletPage: WalletPage;
@@ -65,8 +79,18 @@ test.describe('Wallet page of @gtg tests', () => {
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
     await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
-    await expect(await walletPage.walletHivePowerDescription.textContent()).toContain(
-      "Part of gtg's HIVE POWER is currently delegated. Delegation is donated for influence or to help new users perform actions on Hive."
+    const description = walletPage.walletHivePowerDescription;
+    await expect(description).toContainText(
+      'Influence tokens which give you more control over post payouts and allow you to earn on curation rewards.'
+    );
+    await expect(description).toContainText(
+      /HIVE POWER increases at an APR of approximately \d+(\.\d+)?%, subject to blockchain variance\./
+    );
+    await expectDelegatedSentenceToFollowAccount(
+      page,
+      description,
+      'gtg',
+      "Part of gtg's HIVE POWER is currently delegated."
     );
     await expect(await walletPage.walletHivePowerValue).toBeVisible();
   });
@@ -269,8 +293,18 @@ test.describe('Wallet page of @gtg tests', () => {
     await expect(page.getByTestId('wallet-hive-description')).toHaveText(
       'Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.'
     );
-    await expect(page.getByTestId('wallet-hive-power-description')).toContainText(
-      'Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści. Część z Twoich jednostek wpływu HIVE POWER jest Ci oddelegowana. Delegowanie jednostek to czasowe użyczenie dla zwiększenia wpływu lub by pomóc nowym użytkownikom platformy w korzystaniu ze Hive. Kwota oddelegowanych jednostek może się zmieniać w czasie. '
+    const hivePowerDescription = page.getByTestId('wallet-hive-power-description');
+    await expect(hivePowerDescription).toContainText(
+      'Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści.'
+    );
+    await expect(hivePowerDescription).toContainText(
+      /HIVE POWER rośnie w tempie około \d+(\.\d+)?% w skali roku \(APR\), z zastrzeżeniem zmienności blockchaina\./
+    );
+    await expectDelegatedSentenceToFollowAccount(
+      page,
+      hivePowerDescription,
+      'gtg',
+      'Część HIVE POWER użytkownika gtg jest obecnie oddelegowana.'
     );
     await expect(page.getByTestId('wallet-account-history-description')).toContainText(
       'Uważaj na spam i linki phishingowe w notatkach transakcji. Nie otwieraj linków od użytkowników, którym nie ufasz. Nie udostępniaj swoich kluczy prywatnych żadnym stronom internetowym osób trzecich. Transakcje nie zostaną wyświetlone, dopóki nie zostaną potwierdzone w blockchain, co może zająć kilka minut.'
