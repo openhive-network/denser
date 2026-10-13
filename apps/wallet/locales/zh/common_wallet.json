@@ -285,6 +285,7 @@
     "new": "最新",
     "click_to_generate_password": "点击生成密码",
     "re_enter_generate_password": "重新输入生成的密码",
+    "show_password": "显示密码",
     "understand_that": "我知道Hive无法恢复丢失的密码",
     "i_saved_password": "我安全地保存了我生成的密码",
     "update_password": "修改密码",

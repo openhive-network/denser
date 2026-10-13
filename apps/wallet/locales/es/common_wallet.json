@@ -289,6 +289,7 @@
     "new": "nuevo",
     "click_to_generate_password": "Confirmar Contraseña",
     "re_enter_generate_password": "Reintroduce la contraseña generada",
+    "show_password": "Mostrar contraseña",
     "understand_that": "Entiendo que (nombre APP) no puede recuperar contraseñas perdidas",
     "i_saved_password": "He guardado con seguridad mi contraseña generada",
     "update_password": "Actualizar Contraseña",

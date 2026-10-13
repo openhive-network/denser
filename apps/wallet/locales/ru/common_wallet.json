@@ -296,6 +296,7 @@
     "new": "новое",
     "click_to_generate_password": "Нажмите, чтобы сгененировать пароль",
     "re_enter_generate_password": "Повторно введите пароль",
+    "show_password": "Показать пароль",
     "understand_that": "Я понимаю, что Hive не может восстановить потерянные пароли",
     "i_saved_password": "Я надежно сохранил сгенерированный пароль",
     "update_password": "Обновить пароль",

@@ -283,6 +283,7 @@
     "new": "新着",
     "click_to_generate_password": "クリックしてパスワードを生成",
     "re_enter_generate_password": "生成したパスワードを再入力してください",
+    "show_password": "パスワードを表示",
     "understand_that": "私はHiveが紛失したパスワードを回復できないことを理解しました",
     "i_saved_password": "私は生成したパスワードを安全なところに保存しました",
     "update_password": "パスワードを更新",
