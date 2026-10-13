@@ -290,6 +290,7 @@
     "new": "Nuovo",
     "click_to_generate_password": "Clicca per generare una password",
     "re_enter_generate_password": "Inserisci di nuovo la Password Generata",
+    "show_password": "Mostra password",
     "understand_that": "Ho capito che Hive non può recuperare le password perse",
     "i_saved_password": "Ho salvato in modo sicuro la mia password generata automaticamente",
     "update_password": "Aggiorna la password",

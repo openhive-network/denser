@@ -290,6 +290,7 @@
     "new": "nouveau",
     "click_to_generate_password": "Cliquer ici pour générer un mot de passe",
     "re_enter_generate_password": "Recopier le mot de passe généré",
+    "show_password": "Afficher le mot de passe",
     "understand_that": "Je comprends que Hive ne peut récupérer les mots de passe perdus",
     "i_saved_password": "J'ai sauvegardé mon mot de passe de façon sécuritaire",
     "update_password": "Mettre à jour le mot de passe",

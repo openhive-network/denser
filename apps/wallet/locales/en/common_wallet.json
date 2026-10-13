@@ -371,6 +371,7 @@
     "show": "Show",
     "click_to_generate_password": "Click to generate new master password",
     "re_enter_generate_password": "Re-enter Generated Master Password",
+    "show_password": "Show password",
     "understand_that": "I understand that Hive cannot recover lost passwords",
     "i_saved_password": "I have securely saved my generated password",
     "update_password": "Update Password",

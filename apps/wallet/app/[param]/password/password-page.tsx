@@ -11,6 +11,7 @@ import { Link } from '@hive/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from '@/wallet/i18n/client';
 import WalletMenu from '@/wallet/components/wallet-menu';
+import PasswordInput from '@/wallet/components/password-input';
 import { useChangePasswordMutation } from '@/wallet/components/hooks/use-change-password-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@ui/components/icons';
@@ -362,9 +363,9 @@ IMPORTANT:
                     </Link>
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       {...field}
-                      type="password"
+                      autoComplete="current-password"
                       placeholder={t('change_password_page.current_password')}
                     />
                   </FormControl>
@@ -396,7 +397,7 @@ IMPORTANT:
                 <FormItem>
                   <FormLabel>{t('change_password_page.re_enter_generate_password')}</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <PasswordInput {...field} autoComplete="new-password" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
