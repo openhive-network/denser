@@ -5,7 +5,7 @@ import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import { sanitizeHash } from '@ui/lib/sanitize-url';
-import { getEntryKey } from './lib/paginate-discussion';
+import { getEntryKey } from './lib/paginate-threads';
 
 /**
  * ThreadLine component for Reddit-style visual thread indicators
