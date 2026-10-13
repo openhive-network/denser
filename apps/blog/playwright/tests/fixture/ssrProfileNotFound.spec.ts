@@ -16,6 +16,7 @@ test.use({ fixtureTestName: 'userProfileTabs' });
 // A valid account name the userProfileTabs recording answers with no account.
 const NONEXISTENT_PROFILE_PATH = '/@nosuchuser1078';
 const PROFILE_PATH = '/@hiveio';
+const NOT_FOUND_TITLE = 'Page not found - Hive Blog';
 
 test('SAFE-13 — a nonexistent account renders the not-found page with a 404', async ({ page }) => {
   const response = await page.goto(NONEXISTENT_PROFILE_PATH);
@@ -23,7 +24,19 @@ test('SAFE-13 — a nonexistent account renders the not-found page with a 404', 
   expect(response?.status()).toBe(404);
   await expect(page.getByTestId('not-found-page')).toBeVisible();
   await expect(page.getByTestId('profile-load-error')).toHaveCount(0);
+  // toHaveTitle reads document.title, so it also fails when hydration rewrites the server's title.
+  await expect(page).toHaveTitle(NOT_FOUND_TITLE);
 });
+
+for (const path of ['/this-page-does-not-exist-xyz', `${NONEXISTENT_PROFILE_PATH}/posts`]) {
+  test(`SAFE-16 — ${path} renders the not-found page with the not-found title`, async ({ page }) => {
+    const response = await page.goto(path);
+
+    expect(response?.status()).toBe(404);
+    await expect(page.getByTestId('not-found-page')).toBeVisible();
+    await expect(page).toHaveTitle(NOT_FOUND_TITLE);
+  });
+}
 
 test('SAFE-14 — a failed account lookup renders the profile load error with a 503, not a 404', async ({
   page,

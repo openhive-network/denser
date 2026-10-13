@@ -1,4 +1,8 @@
+import type { Metadata } from 'next';
 import { Link } from '@ui/components/link';
+import { PAGE_NOT_FOUND_METADATA } from '@/blog/lib/not-found-metadata';
+
+export const metadata: Metadata = PAGE_NOT_FOUND_METADATA;
 
 export default function NotFound() {
   return (

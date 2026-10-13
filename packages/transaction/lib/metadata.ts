@@ -1,6 +1,5 @@
-import { getAccountFull } from './hive-api';
 import { getCommunity } from './bridge-api';
-import { MetadataProps } from '@hive/common-hiveio-packages/wax';
+import { FullAccount, MetadataProps } from '@hive/common-hiveio-packages/wax';
 
 // Re-export MetadataProps type for consumers
 export type { MetadataProps } from '@hive/common-hiveio-packages/wax';
@@ -8,49 +7,24 @@ export type { MetadataProps } from '@hive/common-hiveio-packages/wax';
 const DEFAULT_IMAGE = 'https://hive.blog/images/hive-blog-share.png';
 
 /**
- * Get metadata for a user account page
- * @param firstParam - The username with @ prefix (e.g. "@username")
+ * Build metadata for a user account page
+ * @param account - The account, as getAccountFull returns it
  * @param descriptionText - Text to prepend to description (e.g. "Posts by")
  * @returns MetadataProps for SEO
  */
-export const getAccountMetadata = async (
-  firstParam: string,
-  descriptionText: string
-): Promise<MetadataProps> => {
-  let metadata: MetadataProps = {
-    tabTitle: '',
-    description: '',
-    image: '',
-    title: firstParam
+export const buildAccountMetadata = (account: FullAccount, descriptionText: string): MetadataProps => {
+  const firstParam = `@${account.name}`;
+  const displayName = account.profile?.name || account.name;
+
+  return {
+    title: firstParam,
+    image: account.profile?.profile_image || DEFAULT_IMAGE,
+    tabTitle:
+      displayName === account.name
+        ? `${descriptionText} ${displayName} - Hive`
+        : `${descriptionText} ${displayName} (${firstParam}) - Hive`,
+    description: account.profile?.about || `${descriptionText} ${firstParam}. Hive: Communities Without Borders.`
   };
-
-  if (firstParam.startsWith('@')) {
-    try {
-      const username = firstParam.split('@')[1];
-      const data = await getAccountFull(username);
-
-      if (!data?.name) {
-        throw new Error(`Account ${username} not found`);
-      }
-
-      const displayName = data.profile?.name || data.name;
-
-      metadata = {
-        ...metadata,
-        image: data.profile?.profile_image || DEFAULT_IMAGE,
-        tabTitle:
-          displayName === username
-            ? `${descriptionText} ${displayName} - Hive`
-            : `${descriptionText} ${displayName} (${firstParam}) - Hive`,
-        description:
-          data.profile?.about || `${descriptionText} ${firstParam}. Hive: Communities Without Borders.`
-      };
-    } catch (error) {
-      console.error('Error fetching account:', error);
-    }
-  }
-
-  return metadata;
 };
 
 /**

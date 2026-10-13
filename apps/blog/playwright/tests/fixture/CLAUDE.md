@@ -1024,7 +1024,13 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   is not cached: the next anonymous read shows the real counts.
 - **`ssrProfileNotFound.spec.ts`** — JS on, `userProfileTabs` fixtures. SAFE-13:
   `/@nosuchuser1078` (a valid name recorded as having no account) is a 404 with
-  the not-found page. SAFE-14: with `database_api.find_accounts` dropped,
+  the not-found page and the `Page not found - Hive Blog` title. SAFE-16:
+  `/this-page-does-not-exist-xyz` (no `@`) and `/@nosuchuser1078/posts` are the
+  same 404 with the same title. `toHaveTitle` reads `document.title`: the server
+  HTML takes the title from `app/not-found.tsx`, the client from the profile
+  layout's `generateMetadata`, so both must return `PAGE_NOT_FOUND_METADATA`. The
+  `/posts` page prefetches the missing account's posts alongside the layout's
+  404; that unrecorded `bridge.get_account_posts` is an accepted miss. SAFE-14: with `database_api.find_accounts` dropped,
   `/@hiveio` answers 503 with the profile load error (`profile-load-error`) and
   its retry, not the not-found page. The account lookup runs in the profile
   layout, so its error is caught by `app/[param]/error.tsx`, which renders the

@@ -385,6 +385,11 @@
     "hash": "23c8aaf1693ef1a4"
   },
   {
+    "spec": "ssrProfileNotFound.spec.ts",
+    "method": "bridge.get_account_posts",
+    "hash": "fb3e39a61095401f"
+  },
+  {
     "spec": "ssrSeoGuard.spec.ts",
     "method": "bridge.get_discussion",
     "hash": "5a2c11f563c4bd9d"
