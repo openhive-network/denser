@@ -4,12 +4,14 @@ import BasePathLink from '../../components/base-path-link';
 import { useActiveVotesQuery } from '../../components/hooks/use-active-votes';
 import { useTranslation } from '@/blog/i18n/client';
 import { keepVotesBeforePayout } from './lib/votes-before-payout';
+import { countVotesAfterPayout } from './lib/votes-after-payout';
 
 const VotersDetailsData = ({ post }: { post: Entry }) => {
   const { t } = useTranslation('common_blog');
   const { data } = useActiveVotesQuery(post.author, post.permlink);
 
   const votes = data && prepareVotes(post, keepVotesBeforePayout(data, post.payout_at));
+  const votesAfterPayout = data && post.stats ? countVotesAfterPayout(data, post.stats.total_votes) : 0;
 
   const sliced =
     votes &&
@@ -42,6 +44,11 @@ const VotersDetailsData = ({ post }: { post: Entry }) => {
       {votes && votes.length > 20 ? (
         <li className="pt-1.5 text-sm text-gray-500">
           {t('post_content.footer.and_more', { value: votes.length - 20 })}
+        </li>
+      ) : null}
+      {votesAfterPayout > 0 ? (
+        <li className="pt-1.5 text-sm text-gray-500" data-testid="votes-after-payout">
+          {t('post_content.footer.votes_after_payout', { count: votesAfterPayout })}
         </li>
       ) : null}
     </ul>

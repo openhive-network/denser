@@ -461,6 +461,8 @@
     "footer": {
       "and_more": "and {{value}} more",
       "show_voters": "{{label}}, показать проголосовавших",
+      "votes_after_payout_one": "+{{count}} голос после выплаты (не учтён)",
+      "votes_after_payout": "Голоса после выплаты: +{{count}} (не учтены)",
       "in": "in",
       "by": "от",
       "upvote": "Голосовать за",

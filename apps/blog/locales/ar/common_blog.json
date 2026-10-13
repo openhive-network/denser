@@ -502,6 +502,8 @@
     "footer": {
       "and_more": "و{{value}} أكثر",
       "show_voters": "{{label}}، عرض المصوتين",
+      "votes_after_payout_one": "+{{count}} صوت بعد الدفع (غير محتسب)",
+      "votes_after_payout": "أصوات بعد الدفع: +{{count}} (غير محتسبة)",
       "in": "في",
       "by": "بواسطة",
       "upvote": "التصويت الإيجابي",

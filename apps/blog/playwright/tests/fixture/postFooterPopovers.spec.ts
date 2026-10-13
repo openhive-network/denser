@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 import { PostPage } from '../support/pages/postPage';
 
@@ -6,13 +7,24 @@ import { PostPage } from '../support/pages/postPage';
  * triggers, Enter opens them, Esc closes them and returns focus to the trigger. Mouse hover still
  * opens them.
  *
+ * The voters list ends with a line counting the votes cast after payout, which hivemind leaves out
+ * of the vote count: the chain's votes minus `stats.total_votes`.
+ *
  * Fixture set: `postDetail_footerPopovers` overlays `postDetail_popover` with the feed history
- * the payout breakdown reads.
+ * the payout breakdown reads and the `list_votes` of three comments (see its `_index.json`).
  */
 
 test.use({ fixtureTestName: 'postDetail_footerPopovers' });
 
 const POST_URL = '/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit/';
+
+// Opened from the keyboard: a pointer resting on the open list would prefetch a voter's profile,
+// which this fixture set does not record.
+async function openCommentVoters(page: Page, commentId: string, label: string) {
+  const footer = page.locator(`[id="${commentId}"]`).getByTestId('comment-card-footer').first();
+  await footer.getByRole('button', { name: `${label}, show voters` }).focus();
+  await page.keyboard.press('Enter');
+}
 
 test.describe('Post footer payout and voters popovers', () => {
   let postPage: PostPage;
@@ -70,5 +82,32 @@ test.describe('Post footer payout and voters popovers', () => {
 
     await expect(comment.getByRole('button', { name: 'Payout $0.29, show breakdown' })).toBeVisible();
     await expect(comment.getByRole('button', { name: '4 votes, show voters' })).toBeVisible();
+  });
+
+  test('FOOTER-POPOVER-04: a comment with a vote cast after payout lists the counted voter and the late vote', async ({
+    page
+  }) => {
+    await openCommentVoters(page, '@roelandp/re-gtg-qv66u2', '1 vote');
+
+    await expect(postPage.postVoterList.locator('li').first()).toContainText('gtg');
+    await expect(postPage.postVoterList).not.toContainText('ordosjc');
+    await expect(postPage.postVoterList.getByTestId('votes-after-payout')).toHaveText(
+      '+1 vote after payout (not counted)'
+    );
+  });
+
+  test('FOOTER-POPOVER-05: two votes cast after payout use the plural form', async ({ page }) => {
+    await openCommentVoters(page, '@steevc/re-gtg-quwy4z', '3 votes');
+
+    await expect(postPage.postVoterList.getByTestId('votes-after-payout')).toHaveText(
+      '+2 votes after payout (not counted)'
+    );
+  });
+
+  test('FOOTER-POPOVER-06: no after-payout line when the chain has as many votes as the count', async ({ page }) => {
+    await openCommentVoters(page, '@sicarius/re-gtg-qux0er', '4 votes');
+
+    await expect(postPage.postVoterList.locator('li')).toHaveCount(4);
+    await expect(postPage.postVoterList.getByTestId('votes-after-payout')).toHaveCount(0);
   });
 });

@@ -2,6 +2,11 @@
   "testName": "postDetail_footerPopovers",
   "base": "postDetail_popover",
   "additive": true,
-  "note": "Replay-only corpus for postFooterPopovers.spec.ts: postDetail_popover plus database_api.get_feed_history, which the payout breakdown reads, copied verbatim from lighthouse 0026. `additive: true` because the key is new, not a patch.",
-  "overlayFiles": ["0001-database_api.get_feed_history.json"]
+  "note": "Replay-only corpus for postFooterPopovers.spec.ts: postDetail_popover plus database_api.get_feed_history, which the payout breakdown reads, copied verbatim from lighthouse 0026, and database_api.list_votes for three comments of the discussion, built for the voters popover's after-payout line: 0002 @roelandp/re-gtg-qv66u2 (total_votes 1, the recorded active_votes gtg and ordosjc, ordosjc voting after payout_at), 0003 @steevc/re-gtg-quwy4z (total_votes 3, the recorded active_votes plus two zero-weight votes cast after payout_at), 0004 @sicarius/re-gtg-qux0er (total_votes 4, the recorded active_votes). Vote ids and timestamps are synthetic. `additive: true` because the keys are new, not patches.",
+  "overlayFiles": [
+    "0001-database_api.get_feed_history.json",
+    "0002-database_api.list_votes.json",
+    "0003-database_api.list_votes.json",
+    "0004-database_api.list_votes.json"
+  ]
 }
