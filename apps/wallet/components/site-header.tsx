@@ -118,7 +118,7 @@ const SiteHeader: FC = () => {
                 </Button>
               </ModeToggle>
             ) : null}
-            {isClient && !user?.isLoggedIn ? <LangToggle logged={user ? user?.isLoggedIn : false} /> : null}
+            {isClient && !user?.isLoggedIn ? <LangToggle /> : null}
             {isClient && user?.isLoggedIn ? (
               <div className="relative inline-flex w-fit cursor-pointer items-center justify-center">
                 <WitnessVoteExpiryWarning expirationTime={accountData?.governance_vote_expiration_ts} />

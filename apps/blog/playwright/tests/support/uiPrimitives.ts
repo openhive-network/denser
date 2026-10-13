@@ -92,3 +92,20 @@ export async function runZeroDelayTimersLate(page: Page, delayMs = 300): Promise
     window.setTimeout = Object.assign(setTimeoutLate, setTimeoutNow);
   }, delayMs);
 }
+
+/**
+ * Moves the mouse onto an item of an open dropdown submenu the way a mouse does. Radix keeps a
+ * submenu open while the pointer leaves its trigger only if the pointer moves towards it, which a
+ * one-step jump from the trigger does not register, so the submenu would close first.
+ */
+export async function hoverSubmenuItem(page: Page, item: Locator): Promise<void> {
+  const box = await item.boundingBox();
+  if (!box) throw new Error('hoverSubmenuItem: the submenu item is not visible');
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 10 });
+}
+
+/** Clicks an item of an open dropdown submenu, reaching it as `hoverSubmenuItem` does. */
+export async function clickSubmenuItem(page: Page, item: Locator): Promise<void> {
+  await hoverSubmenuItem(page, item);
+  await item.click();
+}

@@ -14,7 +14,48 @@ const DropdownMenuGroup = DropdownMenuPrimitive.Group;
 
 const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
 
-const DropdownMenuSub = DropdownMenuPrimitive.Sub;
+type DropdownMenuSubContextValue = {
+  triggerRef: React.MutableRefObject<HTMLDivElement | null>;
+  closeToTrigger: () => void;
+};
+
+const DropdownMenuSubContext = React.createContext<DropdownMenuSubContextValue | null>(null);
+
+/**
+ * Radix closes the whole menu tree on Esc inside a submenu. This wrapper lets Esc close only the
+ * submenu and return focus to its trigger, as ArrowLeft does (WAI-ARIA menu pattern).
+ */
+const DropdownMenuSub = ({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Sub>) => {
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
+  const triggerRef = React.useRef<HTMLDivElement | null>(null);
+  const setOpen = React.useCallback(
+    (open: boolean) => {
+      setUncontrolledOpen(open);
+      onOpenChange?.(open);
+    },
+    [onOpenChange]
+  );
+  const context = React.useMemo(
+    () => ({
+      triggerRef,
+      closeToTrigger: () => {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
+    }),
+    [setOpen]
+  );
+  return (
+    <DropdownMenuSubContext.Provider value={context}>
+      <DropdownMenuPrimitive.Sub open={openProp ?? uncontrolledOpen} onOpenChange={setOpen} {...props} />
+    </DropdownMenuSubContext.Provider>
+  );
+};
 
 const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
 
@@ -23,35 +64,57 @@ const DropdownMenuSubTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> & {
     inset?: boolean;
   }
->(({ className, inset, children, ...props }, ref) => (
-  <DropdownMenuPrimitive.SubTrigger
-    ref={ref}
-    className={cn(
-      'flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent',
-      inset && 'pl-8',
-      className
-    )}
-    {...props}
-  >
-    {children}
-    <ChevronRight className="ml-auto h-4 w-4" />
-  </DropdownMenuPrimitive.SubTrigger>
-));
+>(({ className, inset, children, ...props }, ref) => {
+  const sub = React.useContext(DropdownMenuSubContext);
+  const setRefs = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      if (sub) sub.triggerRef.current = node;
+      if (typeof ref === 'function') ref(node);
+      else if (ref) ref.current = node;
+    },
+    [sub, ref]
+  );
+  return (
+    <DropdownMenuPrimitive.SubTrigger
+      ref={setRefs}
+      className={cn(
+        'flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent',
+        inset && 'pl-8',
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <ChevronRight className="ml-auto h-4 w-4" aria-hidden="true" />
+    </DropdownMenuPrimitive.SubTrigger>
+  );
+});
 DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName;
 
 const DropdownMenuSubContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent>
->(({ className, ...props }, ref) => (
-  <DropdownMenuPrimitive.SubContent
-    ref={ref}
-    className={cn(
-      'text-on-popover z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 shadow-md animate-in data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1',
-      className
-    )}
-    {...props}
-  />
-));
+>(({ className, onEscapeKeyDown, ...props }, ref) => {
+  const sub = React.useContext(DropdownMenuSubContext);
+  const handleEscapeKeyDown = (event: KeyboardEvent) => {
+    onEscapeKeyDown?.(event);
+    if (event.defaultPrevented || !sub) return;
+    // Prevented, Radix skips its own handler, which would close the root menu
+    event.preventDefault();
+    sub.closeToTrigger();
+  };
+  return (
+    <DropdownMenuPrimitive.SubContent
+      ref={ref}
+      className={cn(
+        'text-on-popover z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 shadow-md animate-in data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1',
+        className
+      )}
+      onEscapeKeyDown={handleEscapeKeyDown}
+      {...props}
+    />
+  );
+});
 DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName;
 
 const DropdownMenuContent = React.forwardRef<

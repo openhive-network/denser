@@ -83,6 +83,18 @@ const runZeroDelayTimersLate = async (page: Page, delayMs = 300): Promise<void> 
   }, delayMs);
 };
 
+/**
+ * Clicks an item of an open dropdown submenu, reaching it the way a mouse does. Radix keeps a
+ * submenu open while the pointer leaves its trigger only if the pointer moves towards it, which a
+ * one-step `click()` jump from the trigger does not register, so the submenu would close first.
+ */
+const clickSubmenuItem = async (page: Page, item: Locator): Promise<void> => {
+  const box = await item.boundingBox();
+  if (!box) throw new Error('clickSubmenuItem: the submenu item is not visible');
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 10 });
+  await item.click();
+};
+
 const focusIsInside = (container: Locator) => container.evaluate((element) => element.contains(document.activeElement));
 
 test.describe('Wallet Radix and cmdk primitives', () => {
@@ -261,5 +273,69 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await page.mouse.click(2, 2);
     await expect(menu).toBeHidden();
     await expect(trigger).toBeFocused();
+  });
+
+  test('WALLET-UI-06 — the account menu Theme item is a submenu: ArrowRight, Enter and Space open it, ArrowLeft and Esc return to it, and Enter applies a theme', async ({
+    page
+  }) => {
+    await logInAsStubAccount(page);
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+    const trigger = page.getByTestId('profile-avatar-button');
+    const menu = page.getByRole('menu', { name: 'Account menu' });
+    const theme = menu.getByRole('menuitem', { name: 'Theme' });
+    const submenu = page.getByRole('menu', { name: 'Theme' });
+    const light = submenu.getByRole('menuitemradio', { name: 'Light' });
+    const dark = submenu.getByRole('menuitemradio', { name: 'Dark' });
+
+    await openWith(() => trigger.press('Enter'), menu);
+    await expect(menu.getByRole('menuitem').first()).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(theme).toBeFocused();
+    await expect(theme).toHaveAttribute('aria-haspopup', 'menu');
+    await expect(theme.locator('button')).toHaveCount(0);
+    await expect(menu.getByRole('menuitem', { name: 'Language' })).toHaveAttribute('aria-haspopup', 'menu');
+
+    await page.keyboard.press('ArrowRight');
+    await expect(light).toBeFocused();
+    await expect(theme).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('ArrowLeft');
+    await expect(submenu).toBeHidden();
+    await expect(theme).toBeFocused();
+
+    await page.keyboard.press(' ');
+    await expect(light).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(submenu).toBeHidden();
+    await expect(menu).toBeVisible();
+    await expect(theme).toBeFocused();
+
+    await page.keyboard.press('Enter');
+    await expect(light).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(dark).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(menu).toBeHidden();
+    await expect(trigger).toBeFocused();
+    await expect(page.locator('html')).toHaveClass(/\bdark\b/);
+
+    await trigger.press('Enter');
+    await expect(menu.getByRole('menuitem').first()).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(theme).toBeFocused();
+    await page.keyboard.press('ArrowRight');
+    await expect(dark).toHaveAttribute('aria-checked', 'true');
+    await expect(light).toHaveAttribute('aria-checked', 'false');
+    await page.keyboard.press('Escape');
+    await expect(submenu).toBeHidden();
+    await expect(theme).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(menu).toBeHidden();
+    await expect(trigger).toBeFocused();
+
+    await trigger.click();
+    await theme.click();
+    await clickSubmenuItem(page, light);
+    await expect(menu).toBeHidden();
+    await expect(page.locator('html')).toHaveClass(/\blight\b/);
   });
 });
