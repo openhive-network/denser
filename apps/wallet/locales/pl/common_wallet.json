@@ -497,7 +497,7 @@
       "comment_benefactor_reward_operation": "Benefactor Rewards",
       "interest_operation": "Interest",
       "proposal_pay_operation": "Proposal Pay",
-      "sps_fund_operation": "DHF Funding",
+      "dhf_funding_operation": "DHF Funding",
       "transfer_operation": "Transfers"
     },
     "report_operations_found": "{{count}} operations found",

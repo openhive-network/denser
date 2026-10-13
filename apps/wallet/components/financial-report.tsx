@@ -4,39 +4,27 @@ import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuTrigger
 } from '@ui/components';
 import { Checkbox } from '@ui/components/checkbox';
 import { useTranslation } from '@/wallet/i18n/client';
-import { useMemo, useState } from 'react';
-import { HiveOperation, OpType } from '@hive/common-hiveio-packages/wax';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import { formatAsset, isNaiAsset } from '@ui/lib/asset-format';
-import dayjs from 'dayjs';
 import { useFinancialReportOperations } from '@/wallet/components/hooks/use-financial-report-operations';
 import Loading from '@ui/components/loading';
+import {
+  FINANCIAL_REPORT_OP_TYPES,
+  FINANCIAL_REPORT_PERIODS,
+  FinancialReportOpType,
+  FinancialReportPeriod,
+  filterFinancialReportOperations
+} from '@/wallet/lib/financial-report';
 interface FinancialReportProps {
   username: string;
 }
-
-type FinancialReportPeriod = 'last7days' | 'last14days' | 'last30days' | 'last60days';
-const allReportPeriods: FinancialReportPeriod[] = ['last7days', 'last14days', 'last30days', 'last60days'];
-const allOpTypes: OpType[] = [
-  'curation_reward_operation',
-  'author_reward_operation',
-  'producer_reward_operation',
-  'comment_reward_operation',
-  'comment_benefactor_reward_operation',
-  'interest_operation',
-  'proposal_pay_operation',
-  'sps_fund_operation',
-  'transfer_operation'
-];
-
-const dateDiffInDays = (a: Date, b: Date) => {
-  return dayjs(b).diff(dayjs(a), 'day');
-};
 
 const escapeCSV = (value: string | number | undefined | null): string => {
   if (value === undefined || value === null) return '';
@@ -148,7 +136,6 @@ const convertHistoryToCSV = (transactions: HiveOperation[]) => {
         row.amount = formatAmount(value.payment);
         break;
 
-      case 'sps_fund_operation':
       case 'dhf_funding_operation':
         row.amount = formatAmount(value.additional_funds);
         break;
@@ -176,31 +163,34 @@ const downloadCSV = (csv: string) => {
   document.body.removeChild(link);
 };
 
-const filterOperations = (
-  operationHistoryData: HiveOperation[],
-  selectedOpTypes: Set<OpType>,
-  financialPeriod: FinancialReportPeriod
-) => {
-  const days = parseInt(financialPeriod.match(/\d+/)?.[0] ?? '0', 10);
-  const now = new Date();
-  return operationHistoryData.filter(
-    ({ op, timestamp }) =>
-      selectedOpTypes.has(op.type as OpType) && dateDiffInDays(new Date(timestamp), now) <= days
-  );
-};
+const isFinancialReportPeriod = (value: string): value is FinancialReportPeriod =>
+  FINANCIAL_REPORT_PERIODS.some((period) => period === value);
 
 const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
   const { t } = useTranslation('common_wallet');
   const [financialReportPeriod, setFinancialReportPeriod] = useState<FinancialReportPeriod>('last7days');
-  const [selectedOpTypes, setSelectedOpTypes] = useState<Set<OpType>>(() => new Set(allOpTypes));
+  const [selectedOpTypes, setSelectedOpTypes] = useState<Set<FinancialReportOpType>>(
+    () => new Set(FINANCIAL_REPORT_OP_TYPES)
+  );
+  const [isPeriodMenuOpen, setIsPeriodMenuOpen] = useState(false);
+  const selectedPeriodItemRef = useRef<HTMLDivElement>(null);
+  const matchStatusId = useId();
   const { data: operationHistoryData, isPending, isError, refetch } = useFinancialReportOperations(username);
 
   const matchCount = useMemo(() => {
     if (!operationHistoryData) return 0;
-    return filterOperations(operationHistoryData, selectedOpTypes, financialReportPeriod).length;
+    return filterFinancialReportOperations(operationHistoryData, selectedOpTypes, financialReportPeriod).length;
   }, [operationHistoryData, selectedOpTypes, financialReportPeriod]);
 
-  const handleToggleOpType = (opType: OpType) => {
+  useEffect(() => {
+    if (!isPeriodMenuOpen) return;
+    // Radix focuses the menu (or its first item) once the portalled content mounts; move focus to
+    // the current period after that.
+    const frame = requestAnimationFrame(() => selectedPeriodItemRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [isPeriodMenuOpen]);
+
+  const handleToggleOpType = (opType: FinancialReportOpType) => {
     setSelectedOpTypes((prev) => {
       const next = new Set(prev);
       if (next.has(opType)) {
@@ -212,9 +202,13 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
     });
   };
 
+  const handlePeriodChange = (value: string) => {
+    if (isFinancialReportPeriod(value)) setFinancialReportPeriod(value);
+  };
+
   const handleDownload = () => {
     if (!operationHistoryData) return;
-    const filtered = filterOperations(operationHistoryData, selectedOpTypes, financialReportPeriod);
+    const filtered = filterFinancialReportOperations(operationHistoryData, selectedOpTypes, financialReportPeriod);
     if (filtered.length === 0) return;
     downloadCSV(convertHistoryToCSV(filtered));
   };
@@ -229,7 +223,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
       <div className="mt-2">
         <span className="text-xs font-medium">{t('transfers_page.report_select_operation_types')}</span>
         <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
-          {allOpTypes.map((opType) => (
+          {FINANCIAL_REPORT_OP_TYPES.map((opType) => (
             <label key={opType} className="flex items-center gap-1.5 text-xs">
               <Checkbox
                 className="border-zinc-700"
@@ -243,7 +237,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
       </div>
 
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <DropdownMenu>
+        <DropdownMenu open={isPeriodMenuOpen} onOpenChange={setIsPeriodMenuOpen}>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative border border-white">
               <div className="w-28 text-left">
@@ -253,30 +247,39 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuGroup>
-              {allReportPeriods.map((reportPeriod) => (
-                <DropdownMenuItem
+            <DropdownMenuRadioGroup value={financialReportPeriod} onValueChange={handlePeriodChange}>
+              {FINANCIAL_REPORT_PERIODS.map((reportPeriod) => (
+                <DropdownMenuRadioItem
                   key={reportPeriod}
+                  value={reportPeriod}
+                  ref={reportPeriod === financialReportPeriod ? selectedPeriodItemRef : undefined}
                   className="cursor-pointer"
-                  onClick={() => setFinancialReportPeriod(reportPeriod)}
                 >
                   {t(`transfers_page.report_periods.${reportPeriod}`)}
-                </DropdownMenuItem>
+                </DropdownMenuRadioItem>
               ))}
-            </DropdownMenuGroup>
+            </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
         {isPending ? (
           <Loading loading={true} />
         ) : (
           operationHistoryData && (
-            <Button onClick={handleDownload} disabled={selectedOpTypes.size === 0 || matchCount === 0}>
+            <Button
+              onClick={handleDownload}
+              disabled={selectedOpTypes.size === 0 || matchCount === 0}
+              aria-describedby={matchCount === 0 ? matchStatusId : undefined}
+            >
               {t('transfers_page.download_report')}
             </Button>
           )
         )}
         {!isPending && operationHistoryData && (
-          <span className={`text-xs ${matchCount === 0 ? 'text-destructive' : 'text-primary/70'}`}>
+          <span
+            id={matchStatusId}
+            role="status"
+            className={`text-xs ${matchCount === 0 ? 'text-destructive' : 'text-primary/70'}`}
+          >
             {matchCount === 0
               ? t('transfers_page.report_no_operations')
               : t('transfers_page.report_operations_found', { count: matchCount })}

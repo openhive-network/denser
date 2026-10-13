@@ -25,6 +25,7 @@ import { commonVariables } from '@ui/lib/common-variables';
 import { getLogger } from '@ui/lib/logging';
 import { getReadChain } from '@transaction/lib/chain';
 import { retryReadOnce } from '@transaction/lib/read-retry';
+import { FINANCIAL_REPORT_OP_TYPES } from '@/wallet/lib/financial-report';
 
 const logger = getLogger('app');
 
@@ -278,23 +279,11 @@ export type ICurationReward = {
   vesting_payout?: string;
 };
 
-const financialReportOperations = [
-  'curation_reward_operation',
-  'author_reward_operation',
-  'producer_reward_operation',
-  'comment_reward_operation',
-  'comment_benefactor_reward_operation',
-  'interest_operation',
-  'proposal_pay_operation',
-  'dhf_funding_operation',
-  'transfer_operation'
-];
-
 export const getFinancialReportOperations = async (
   username: string,
   pageSize: number = 500
 ): Promise<HiveOperation[]> => {
-  const operationTypesIds = await getOperationTypeIds(financialReportOperations);
+  const operationTypesIds = await getOperationTypeIds([...FINANCIAL_REPORT_OP_TYPES]);
   const accountOperations = await readAccountOperations({
     'account-name': username,
     'operation-types': operationTypesIds.toString(),
