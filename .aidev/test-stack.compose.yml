@@ -1,15 +1,19 @@
 # AIDEV's shared test stack for denser (`sandbox.compose` in .aidev/project.yaml,
-# #967): the blog's production build served against the LIVE Hive API, for the
-# full slot's advisory live_e2e suite (.aidev/run-live-e2e.sh).
+# #967): the blog's and the wallet's production builds served against the LIVE
+# Hive API, for the full slot's advisory live_e2e suite (.aidev/run-live-e2e.sh).
 #
 # No image is built: every service runs the pinned test image (`environment.image`)
-# over the read-only checkout, and the build is the one fixture_e2e made
-# (.aidev/run-fixture-e2e.sh -> .aidev/run-blog-build.sh) before AIDEV started
-# this stack (it starts right before the first `stack: true` suite). Suites reach
+# over the read-only checkout, and the builds are the ones fixture_e2e
+# (.aidev/run-fixture-e2e.sh -> .aidev/run-blog-build.sh) and wallet_fixture
+# (.aidev/run-wallet-fixture-e2e.sh) made before AIDEV started this stack (it
+# starts right before the first `stack: true` suite). Suites reach
 # it over the stack network (AIDEV runs them with --network <project>_default,
 # which also gives them egress); nothing is published on the host.
 #
 #   blog-live      blog-live:3000 — the build with the app's default (live) API.
+#   wallet-live    wallet-live:4000 (alias walletlive) — the wallet build (base path
+#                  /wallet) with the app's default (live) API, its root paths
+#                  answered from under /wallet (.aidev/wallet-serve-standalone.sh).
 #
 # Profile `fixture-relay` (not started by AIDEV; sandbox.services names only
 # blog-live) is the opt-in DENSER_FIXTURE_VIA_STACK=1 path of run-fixture-e2e.sh:
@@ -23,6 +27,7 @@
 #
 # By hand, after .aidev/run-blog-build.sh:
 #   docker compose -f .aidev/test-stack.compose.yml -p denser-test up -d --wait blog-live
+# and after .aidev/run-wallet-fixture-e2e.sh, wallet-live likewise.
 name: denser-aidev-test
 
 x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:8cbf9c52e846bc8277bc1b49c852f074f7a06dc4812b7d5628f6f7516f7ccf68
@@ -103,3 +108,31 @@ services:
       PORT: "3000"
     command: ["bash", ".aidev/blog-serve-standalone.sh"]
     healthcheck: *blog-health
+
+  wallet-live:
+    image: *image
+    working_dir: /work
+    mem_limit: 2g
+    volumes:
+      - *checkout
+    # The live specs match page URLs against `[\w.]+` hosts, which a hyphen breaks;
+    # run-live-e2e.sh targets this alias.
+    networks:
+      default:
+        aliases: [walletlive]
+    environment:
+      # As the deployments: hb-auth loads its worker from under the base path.
+      REACT_APP_BASE_PATH: /wallet
+      PORT: "4000"
+    command: ["bash", ".aidev/wallet-serve-standalone.sh"]
+    # As x-blog-health, for the wallet's build and through the root-path front.
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('fs').existsSync('/work/apps/wallet/.next/aidev-build-complete') ? fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1),()=>process.exit(1)) : process.exit(0)"
+      interval: 2s
+      timeout: 5s
+      retries: 90
+      start_period: 5s

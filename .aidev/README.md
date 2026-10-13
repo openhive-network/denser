@@ -220,8 +220,8 @@ when the daemon sees the checkout at a different path.
 
 ## Test stack (`sandbox.compose`) and the `full` slot
 
-`full` runs `unit`, `static`, `fixture_e2e`, `dev_stack` (above) and the advisory
-`live_e2e`, in that order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
+`full` runs `unit`, `static`, `fixture_e2e`, `wallet_fixture`, `dev_stack` (above)
+and the advisory `live_e2e`, in that order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
 before the first `stack: true` suite. Only `live_e2e` declares one, so every
 suite before it runs with no stack up, under `--network none`.
 
@@ -235,19 +235,27 @@ app's server side must read that same proxy. A stack server could reach it only
 by relaying back into the suite container.
 
 **`live_e2e`** (`.aidev/run-live-e2e.sh`, always exits 0) runs the e2e specs the
-candidate's change reaches, `--retries=0`, against the stack's `blog-live`. That
-service serves `fixture_e2e`'s build against the live Hive API; no image is
-built. It selects the specs the candidate changed, the specs importing a changed
+candidate's change reaches, `--retries=0`, each app's against its stack server:
+`blog-live` serves `fixture_e2e`'s build and `wallet-live` `wallet_fixture`'s
+(base path `/wallet`), both against the live Hive API; no image is built. The
+wallet's live specs open root paths (`/@gtg/transfers`), so `wallet-live` puts
+`.aidev/base-path-front.mjs` in front of its server: a path outside `/wallet` is
+served from under it, and the specs reach it as `http://walletlive:4000` (their
+URL patterns admit no hyphen in the host). Wallet cases are recorded as
+`wallet › <name>` next to the blog's. It selects the specs the candidate changed, the specs importing a changed
 file (a page object, a helper, `playwright/support`; transitively, by
 `.aidev/live-e2e-importers.mjs`), and, when app source (`apps/<app>/**` outside
 `playwright/`, or `packages/**`) changed, that app's `SMOKE_SPECS`
-(`mainTimeline.spec.ts` and `postPage.spec.ts` for the blog). Those run
+(`mainTimeline.spec.ts` and `postPage.spec.ts` for the blog, `wallet.spec.ts`
+for the wallet). Those run
 `--repeat-each=3`; the smoke set alone runs once. The changed files come from
 `AIDEV_CHANGED_FILES_FILE`, which AIDEV's gates publish, else from `git diff`
 against `AIDEV_BASE_REF` or `origin/aidev/integration`. With nothing selected,
 or no change information, the suite reports a skipped "not applicable" case.
 `.aidev/run-live-e2e.test.mjs` (in the `unit` suite) covers the selection.
-It needs no build of its own; it serves the one `fixture_e2e` made.
+It needs no build of its own; it serves the ones `fixture_e2e` and
+`wallet_fixture` made (`wallet_fixture` writes `apps/wallet/.next/aidev-build-complete`
+for `wallet-live` to wait on, as `run-blog-build.sh` does for the blog).
 
 **Opt-in: the fixture suite through the stack.** Set
 `DENSER_FIXTURE_VIA_STACK=1`, and bring up the `fixture-relay` profile's

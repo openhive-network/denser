@@ -11,6 +11,11 @@
 # blog's (denser#1093, #799). A suite of its own gets its own wall, and a slow blog
 # pass can no longer starve it.
 #
+# The build's completion marker, apps/wallet/.next/aidev-build-complete, is what
+# the test stack's wallet-live waits for before serving the same build to
+# live_e2e (.aidev/wallet-serve-standalone.sh); `next build` empties .next first,
+# so a failed build leaves none behind.
+#
 # Arguments are passed to `playwright test`, so a run can be narrowed:
 #
 #   .aidev/run-wallet-fixture-e2e.sh playwright/tests/fixture/transferMemoSecret.spec.ts
@@ -26,4 +31,4 @@ export CI=1
 
 cd apps/wallet
 PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit" run_with_junit_fallback "$junit" wallet_fixture \
-    sh -c 'NEXT_PUBLIC_BASE_PATH=/wallet pnpm build < /dev/null && pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit "$@" < /dev/null' sh "$@"
+    sh -c 'NEXT_PUBLIC_BASE_PATH=/wallet pnpm build < /dev/null && date -u +%Y-%m-%dT%H:%M:%SZ > .next/aidev-build-complete && pnpm exec playwright test --config=playwright.fixture.config.ts --reporter=list,junit "$@" < /dev/null' sh "$@"

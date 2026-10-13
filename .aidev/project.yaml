@@ -74,7 +74,7 @@ verification:
   # quick, plus a production build of the blog and its fixture-replay Playwright
   # suite (fixture_e2e: recorded API responses, one worker), the wallet's build and
   # fixture suite (wallet_fixture), the dev stack boot check, then the advisory
-  # live_e2e against the blog build served by the test stack.
+  # live_e2e against those blog and wallet builds served by the test stack.
   full:
     suites:
       - name: unit
@@ -111,7 +111,8 @@ verification:
         stack: false
       # ADVISORY (always exits 0): the live-API e2e specs this candidate changed
       # or reaches through a changed import, plus the app's smoke specs when app
-      # source changed, against the stack's blog-live (fixture_e2e's build);
+      # source changed, against the stack's blog-live (fixture_e2e's build) and
+      # wallet-live (wallet_fixture's);
       # "not applicable" when it selects none or no change information reaches
       # the container. See .aidev/run-live-e2e.sh.
       - name: live_e2e
@@ -164,19 +165,20 @@ verification:
 # specs with .aidev/dev-stack-spec.sh; see .aidev/README.md.
 # Measured on steem-17: 64 s to healthy with no node_modules (the offline install
 # is ~7 s of it), 57 s warm; most of it is next dev compiling the warmed routes.
-# Shared test stack (#967): fixture_e2e's production build served against the
-# live Hive API, for the advisory live_e2e only (.aidev/test-stack.compose.yml).
+# Shared test stack (#967): fixture_e2e's and wallet_fixture's production builds
+# served against the live Hive API, for the advisory live_e2e only
+# (.aidev/test-stack.compose.yml).
 # fixture_e2e itself stays self-contained: its fixture proxy is per spec, inside
 # the Playwright process (see .aidev/run-fixture-e2e.sh). Only live_e2e declares
 # `stack: true`; every other binding says `stack: false`.
 sandbox:
   compose: .aidev/test-stack.compose.yml
-  # One Next.js server (2 GB limit): light, up to four per host. As heavy (#967) it
+  # One Next.js server per app (2 GB limit each): light, up to four per host. As heavy (#967) it
   # took the host's only heavy slot, shared with ratings, and a full run that landed
   # on a host already holding it waited 15 min, then failed without running a suite.
   resource_class: light
-  services: [blog-live]
-  # Copying the standalone build and starting the server takes ~10 s.
+  services: [blog-live, wallet-live]
+  # Copying a standalone build and starting its server takes ~10 s.
   readiness_timeout: 300
   dev:
     compose: .aidev/dev-stack.compose.yml
