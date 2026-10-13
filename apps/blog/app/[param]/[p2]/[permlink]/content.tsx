@@ -22,11 +22,8 @@ import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voter
 import FlagIcon from '@/blog/features/post-rendering/flag-icon';
 import MutePostDialog from '@/blog/features/post-rendering/mute-post-dialog';
 import PostBodySection from '@/blog/features/post-rendering/post-body-section';
-import {
-  paginateDiscussion,
-  parseCommentSort,
-  sortDiscussion
-} from '@/blog/features/post-rendering/lib/paginate-discussion';
+import { parseCommentSort, sortDiscussion } from '@/blog/features/post-rendering/lib/paginate-discussion';
+import { paginateDiscussion } from '@/blog/features/post-rendering/lib/paginate-threads';
 import { PostDeleteDialog } from '@/blog/features/post-rendering/post-delete-dialog';
 import { SharePost } from '@/blog/features/post-rendering/share-post-dialog';
 import FacebookShare from '@/blog/features/post-rendering/share-post-facebook';
