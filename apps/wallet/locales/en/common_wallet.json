@@ -258,6 +258,8 @@
     "trade_history": "Trade History",
     "newer": "Newer",
     "older": "Older",
+    "insufficient_balance": "Insufficient balance ({{available}} available)",
+    "use_price": "Use price {{price}}",
     "date": "Date",
     "buy": "Buy",
     "sell": "Sell",

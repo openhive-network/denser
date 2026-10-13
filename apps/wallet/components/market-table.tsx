@@ -28,6 +28,16 @@ type TradeHistory = {
   open_pays: NaiAsset;
 };
 const PAGE_SIZE = 10;
+
+/** Keyboard path to a row's price: its click bubbles to the row, which sets the price. */
+const UsePriceButton = ({ price }: { price: string }) => {
+  const { t } = useTranslation('common_wallet');
+  return (
+    <button type="button" className="font-semibold" aria-label={t('market_page.use_price', { price })}>
+      {price}
+    </button>
+  );
+};
 export function MarketTable({
   data,
   params,
@@ -49,7 +59,7 @@ export function MarketTable({
   return (
     <div className={clsx('mt-4 flex h-[342px] w-1/2 flex-col justify-between')} data-testid={`${testIdPrefix}-section`}>
       <div className="flex flex-col gap-2">
-        <div className="text-2xl" data-testid={`${testIdPrefix}-header`}>{label}</div>
+        <h2 className="text-2xl" data-testid={`${testIdPrefix}-header`}>{label}</h2>
         <table className="table-auto text-end text-xs" data-testid={`${testIdPrefix}-table`}>
           <thead>
             <tr className="bg-background-secondary">
@@ -72,12 +82,16 @@ export function MarketTable({
                     <td data-testid={`${testIdPrefix}-row-${index}-total`}>{e.total.toFixed(3)}</td>
                     <td data-testid={`${testIdPrefix}-row-${index}-hbd`}>{(e.hbd / 1000).toFixed(3)}</td>
                     <td data-testid={`${testIdPrefix}-row-${index}-hive`}>{(e.hive / 1000).toFixed(3)}</td>
-                    <td className="p-1 font-semibold" data-testid={`${testIdPrefix}-row-${index}-price`}>{Big(e.real_price).toFixed(6)}</td>
+                    <td className="p-1 font-semibold" data-testid={`${testIdPrefix}-row-${index}-price`}>
+                      <UsePriceButton price={Big(e.real_price).toFixed(6)} />
+                    </td>
                   </>
                 ) : null}
                 {type === 'sell' ? (
                   <>
-                    <td className="p-1 font-semibold" data-testid={`${testIdPrefix}-row-${index}-price`}>{Big(e.real_price).toFixed(6)}</td>
+                    <td className="p-1 font-semibold" data-testid={`${testIdPrefix}-row-${index}-price`}>
+                      <UsePriceButton price={Big(e.real_price).toFixed(6)} />
+                    </td>
                     <td data-testid={`${testIdPrefix}-row-${index}-hive`}>{(e.hive / 1000).toFixed(3)}</td>
                     <td data-testid={`${testIdPrefix}-row-${index}-hbd`}>{(e.hbd / 1000).toFixed(3)}</td>
                     <td data-testid={`${testIdPrefix}-row-${index}-total`}>{e.total.toFixed(3)}</td>
@@ -92,11 +106,11 @@ export function MarketTable({
         onNext={() => {
           setPage((prev) => prev + 1);
         }}
-        nextLabel={type === 'buy' ? t('market_page.higher') : t('market_page.lower')}
+        nextLabel={type === 'buy' ? t('market_page.lower') : t('market_page.higher')}
         onPrev={() => {
           setPage((prev) => prev - 1);
         }}
-        prevLabel={type === 'sell' ? t('market_page.higher') : t('market_page.lower')}
+        prevLabel={type === 'buy' ? t('market_page.higher') : t('market_page.lower')}
         page={page}
         totalPages={Math.ceil(data.length / PAGE_SIZE) - 1}
         testIdPrefix={testIdPrefix}
@@ -126,10 +140,10 @@ const TablePagination = ({
   return (
     <div className="flex w-full justify-between" data-testid={testIdPrefix ? `${testIdPrefix}-pagination` : undefined}>
       <Button variant="outlineRed" size="sm" onClick={onPrev} disabled={!page} data-testid={testIdPrefix ? `${testIdPrefix}-pagination-prev` : undefined}>
-        {nextLabel}
+        {prevLabel}
       </Button>
       <Button variant="outlineRed" size="sm" onClick={onNext} disabled={page === totalPages} data-testid={testIdPrefix ? `${testIdPrefix}-pagination-next` : undefined}>
-        {prevLabel}
+        {nextLabel}
       </Button>
     </div>
   );
@@ -144,7 +158,7 @@ export function HistoryTable({ data, params, label }: { data: any[]; params: str
   return (
     <div className={clsx('mt-4 flex h-[342px] w-1/2 flex-col justify-between')} data-testid={`${testIdPrefix}-section`}>
       <div className="flex flex-col gap-2">
-        <div className="text-2xl" data-testid={`${testIdPrefix}-header`}>{label}</div>
+        <h2 className="text-2xl" data-testid={`${testIdPrefix}-header`}>{label}</h2>
 
         <table className="table-auto text-end text-xs" data-testid={`${testIdPrefix}-table`}>
           <thead>
@@ -183,7 +197,7 @@ export function HistoryTable({ data, params, label }: { data: any[]; params: str
         onPrev={() => {
           setPage((prev) => prev - 1);
         }}
-        prevLabel={t('market_page.older')}
+        prevLabel={t('market_page.newer')}
         page={page}
         totalPages={Math.ceil(data.length / PAGE_SIZE) - 1}
         testIdPrefix={testIdPrefix}

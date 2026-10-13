@@ -202,6 +202,8 @@
     "trade_history": "Cronologia delle Transazioni",
     "newer": "Più recente",
     "older": "Meno recente",
+    "insufficient_balance": "Saldo insufficiente ({{available}} disponibile)",
+    "use_price": "Usa il prezzo {{price}}",
     "date": "Date"
   },
   "witnesses_page": {

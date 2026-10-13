@@ -206,6 +206,8 @@
     "trade_history": "История сделок",
     "newer": "Новее",
     "older": "Старее",
+    "insufficient_balance": "Недостаточно средств (доступно: {{available}})",
+    "use_price": "Использовать цену {{price}}",
     "date": "Date"
   },
   "witnesses_page": {
