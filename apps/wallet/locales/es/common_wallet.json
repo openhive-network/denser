@@ -201,6 +201,8 @@
     "trade_history": "Historia de compra venta",
     "newer": "Nuevo",
     "older": "Más viejo",
+    "insufficient_balance": "Saldo insuficiente ({{available}} disponible)",
+    "use_price": "Usar el precio {{price}}",
     "date": "Date"
   },
   "witnesses_page": {

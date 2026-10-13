@@ -38,7 +38,7 @@ const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
   return (
     <div className={clsx('mt-4 flex h-[342px] w-full flex-col justify-between')}>
       <div className="flex flex-col gap-2">
-        <div className="text-2xl ">{t('market_page.open_orders')}</div>
+        <h2 className="text-2xl ">{t('market_page.open_orders')}</h2>
         <table className="table-auto text-end text-xs">
           <thead>
             <tr className="bg-background-secondary">

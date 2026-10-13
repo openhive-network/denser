@@ -197,6 +197,8 @@
     "trade_history": "交易历史",
     "newer": "较新的",
     "older": "较旧的",
+    "insufficient_balance": "余额不足（可用：{{available}}）",
+    "use_price": "使用价格 {{price}}",
     "date": "Date"
   },
   "witnesses_page": {

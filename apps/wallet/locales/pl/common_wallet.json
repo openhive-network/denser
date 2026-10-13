@@ -240,6 +240,8 @@
     "trade_history": "Historia transakcji",
     "newer": "Nowsze",
     "older": "Starsze",
+    "insufficient_balance": "Niewystarczające saldo (dostępne: {{available}})",
+    "use_price": "Użyj ceny {{price}}",
     "date": "Data"
   },
   "witnesses_page": {

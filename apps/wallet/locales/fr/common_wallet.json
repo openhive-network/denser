@@ -202,6 +202,8 @@
     "trade_history": "Historique des échanges",
     "newer": "Plus récent",
     "older": "Plus ancien",
+    "insufficient_balance": "Solde insuffisant ({{available}} disponible)",
+    "use_price": "Utiliser le prix {{price}}",
     "date": "Date"
   },
   "witnesses_page": {

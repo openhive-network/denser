@@ -62,6 +62,7 @@ export default function MarketPage() {
   );
   return (
     <div className="flex flex-col items-center gap-4 px-4 pb-8" data-testid="market-page">
+      <h1 className="sr-only">{t('profile.market')}</h1>
       <div className="flex w-full flex-wrap justify-center gap-1" data-testid="market-statistics">
         <Box
           label={t('market_page.last_price')}

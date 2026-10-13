@@ -72,7 +72,7 @@ test.describe('Market limit order create broadcast', () => {
     page
   }) => {
     const broadcasts = await installBroadcastInterceptor(page);
-    await fillMarketForm(page, 'buy-form', '10', '2.510');
+    await fillMarketForm(page, 'buy-form', '9', '2.259');
     await expect(page.getByTestId('buy-form-price-input')).toHaveValue('0.251000');
     await confirmOrder(page, 'buy-form');
 
@@ -81,8 +81,8 @@ test.describe('Market limit order create broadcast', () => {
     expectLimitOrderCreateOperation(broadcasts.calls[0], {
       owner: STUB_ACCOUNT,
       orderid: ORDER_ID,
-      amount_to_sell: naiAsset('2.510 HBD'),
-      min_to_receive: naiAsset('10.000 HIVE'),
+      amount_to_sell: naiAsset('2.259 HBD'),
+      min_to_receive: naiAsset('9.000 HIVE'),
       fill_or_kill: false,
       expiration: EXPIRATION
     });
