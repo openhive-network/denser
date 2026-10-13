@@ -42,4 +42,16 @@ test.describe('Witnesses server HTML', () => {
 
     await expect(page.locator('table:has([data-testid="witness-table-body"])')).toHaveCSS('table-layout', 'fixed');
   });
+
+  test('WALLET-WITNESSES-SSR-03 — the page has a main landmark, a level-one heading and named row links', async ({
+    page
+  }) => {
+    await page.goto(`${WALLET_BASE_PATH}/~witnesses`);
+
+    const main = page.getByRole('main');
+    await expect(main.getByRole('heading', { level: 1, name: 'Witness Voting' })).toBeVisible();
+    for (const { owner } of STUB_WITNESSES) {
+      await expect(main.getByRole('link', { name: `Link to witness ${owner}`, exact: true })).toHaveCount(1);
+    }
+  });
 });

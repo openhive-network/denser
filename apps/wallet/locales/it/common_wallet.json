@@ -123,7 +123,8 @@
       "creator": "Creator",
       "start_date": "Start Date",
       "end_date": "End Date",
-      "total_votes": "Total Votes"
+      "total_votes": "Total Votes",
+      "sort_ascending": "Ordine crescente"
     }
   },
   "wallet_index": {
@@ -228,7 +229,7 @@
     "recently": "recently {{value}}",
     "witness_age": "Witness age: ",
     "open_external_site": "external site",
-    "open_witness_annoucement": "witness thread",
+    "open_witness_announcement": "witness thread",
     "hp_required_to_rank_up": "Need {{value}} to level up",
     "vote_description": "Se desideri votare un witness al di fuori della top 100, inserisci di seguito il nome account per effettuare il voto.",
     "proxy_description": "Puoi anche scegliere un proxy che voterà i witnesses per te. Questo resetterà la tua attuale selezione di testimoni.",
@@ -254,7 +255,9 @@
       "weeks_ago": " weeks ago",
       "months_ago": " months ago",
       "years_ago": " years ago"
-    }
+    },
+    "vote_for_witness": "Vota il witness {{witness}}",
+    "link_to_witness": "Link al witness {{witness}}"
   },
   "proposals_page": {
     "daily": "Daily",
@@ -265,7 +268,10 @@
     "refund": "refund",
     "burn": "burn",
     "by": "da",
-    "for": " per "
+    "for": " per ",
+    "vote_for_proposal": "Vota la proposta #{{id}}",
+    "votes_on_proposal": "Voti sulla proposta",
+    "voters_list": "Votanti"
   },
   "login_form": {
     "title": "Utenti di ritorno: ",

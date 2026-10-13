@@ -43,6 +43,7 @@ export default function WitnessesPage() {
     queryFn: () => getAccount(user?.username || ''),
     enabled: user?.isLoggedIn
   });
+  const [removeVoteOpen, setRemoveVoteOpen] = useState(false);
   // value of input field for set proxy witness by name
   const [proxy, setProxy] = useState('');
   const { data: listWitnessVotesData } = useQuery({
@@ -112,13 +113,13 @@ export default function WitnessesPage() {
   const votesLeft = MAX_VOTES - userWitnessVotes.length;
 
   return (
-    <>
+    <main>
       {!observerData || observerData.proxy === '' ? (
         <div className="mx-auto max-w-5xl">
           <div className="mx-2 flex flex-col gap-4">
-            <div className="text-xl md:text-4xl" data-testid="witness-header">
+            <h1 className="text-xl md:text-4xl" data-testid="witness-header">
               {t('witnesses_page.title')}
-            </div>
+            </h1>
             <p className="text-xs sm:text-sm" data-testid="witness-header-vote">
               <span className="font-semibold " data-testid="witness-header-vote-remaining">
                 {t('witnesses_page.you_have_votes_remaining.other', { value: votesLeft })}
@@ -215,15 +216,25 @@ export default function WitnessesPage() {
                       )}
                     </Button>
                   ) : (
-                    <WitnessRemoveVote onVote={() => onVote(voteInput, false)}>
-                      <Button className="h-fit" variant="destructive" disabled={voteMutation.isPending}>
+                    <>
+                      <Button
+                        className="h-fit"
+                        variant="destructive"
+                        onClick={() => setRemoveVoteOpen(true)}
+                        disabled={voteMutation.isPending}
+                      >
                         {voteMutation.isPending ? (
                           <CircleSpinner loading={voteMutation.isPending} size={20} color="#fff" />
                         ) : (
                           t('witnesses_page.vote')
                         )}
                       </Button>
-                    </WitnessRemoveVote>
+                      <WitnessRemoveVote
+                        open={removeVoteOpen}
+                        onOpenChange={setRemoveVoteOpen}
+                        onVote={() => onVote(voteInput, false)}
+                      />
+                    </>
                   )}
                 </div>
               </div>
@@ -262,7 +273,7 @@ export default function WitnessesPage() {
         </div>
       ) : (
         <div className="mx-auto flex max-w-5xl flex-col gap-5 p-5">
-          <h2 className="text-xl md:text-4xl">{t('witnesses_page.title')}</h2>
+          <h1 className="text-xl md:text-4xl">{t('witnesses_page.title')}</h1>
           <div className="flex flex-col gap-4 bg-white p-4 drop-shadow-xl dark:bg-slate-800 sm:p-6">
             <p className="text-sm sm:text-base">{t('witnesses_page.setted_proxy_description')}</p>
             <p className="text-sm font-semibold sm:text-base">
@@ -288,7 +299,7 @@ export default function WitnessesPage() {
           </div>
         </div>
       )}
-    </>
+    </main>
   );
 }
 

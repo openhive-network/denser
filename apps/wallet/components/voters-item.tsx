@@ -1,21 +1,38 @@
 import { Link } from '@hive/ui';
+import { numberWithCommas } from '@hive/ui/lib/utils';
 
-function VotersItem({ username, hp, proxy }: { username: string; hp: number; proxy: number }) {
+const formatHp = (value: number) => numberWithCommas(value.toFixed(2));
+
+function VotersItem({
+  username,
+  hp,
+  proxy,
+  tabIndex,
+  onFocus
+}: {
+  username: string;
+  hp: number;
+  proxy: number;
+  tabIndex: number;
+  onFocus: () => void;
+}) {
   return (
-    <div className="flex flex-col gap-1" data-testid="vote-list-item">
+    <li className="flex flex-col gap-1" data-testid="vote-list-item">
       <Link
         href={`/@${username}`}
         target="_blank"
         className="text-red-500"
         data-testid="proposal-voter-link-dialog"
+        tabIndex={tabIndex}
+        onFocus={onFocus}
       >
         {username}
       </Link>
       <div className="text-slate-500" data-testid="voter-values-dialog">
-        <span>{hp + ' HP'}</span>
-        <span>{proxy > 0 ? ' + ' + proxy + ' Proxy' : null}</span>
+        <span>{formatHp(hp) + ' HP'}</span>
+        <span>{proxy > 0 ? ' + ' + formatHp(proxy) + ' Proxy' : null}</span>
       </div>
-    </div>
+    </li>
   );
 }
 export default VotersItem;

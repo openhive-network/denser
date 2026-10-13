@@ -123,7 +123,8 @@
       "creator": "Creator",
       "start_date": "Start Date",
       "end_date": "End Date",
-      "total_votes": "Total Votes"
+      "total_votes": "Total Votes",
+      "sort_ascending": "升序排列"
     }
   },
   "wallet_index": {
@@ -223,7 +224,7 @@
     "recently": "recently {{value}}",
     "witness_age": "Witness age: ",
     "open_external_site": "Open external site",
-    "open_witness_annoucement": "见证人帖子",
+    "open_witness_announcement": "见证人帖子",
     "hp_required_to_rank_up": "Need {{value}} to level up",
     "vote_description": "如果你想为100名以外的见证人投票，请输入帐户名称进行投票",
     "proxy_description": "你也可以指定代理人来代替你给见证人投票。这将重置你当前的见证人选择。",
@@ -249,7 +250,9 @@
       "weeks_ago": " weeks ago",
       "months_ago": " months ago",
       "years_ago": " years ago"
-    }
+    },
+    "vote_for_witness": "为见证人 {{witness}} 投票",
+    "link_to_witness": "见证人 {{witness}} 的链接"
   },
   "proposals_page": {
     "daily": "Daily",
@@ -260,7 +263,10 @@
     "refund": "refund",
     "burn": "burn",
     "by": "by",
-    "for": " for "
+    "for": " for ",
+    "vote_for_proposal": "为提案 #{{id}} 投票",
+    "votes_on_proposal": "提案投票",
+    "voters_list": "投票者"
   },
   "login_form": {
     "title": "返回用户:",

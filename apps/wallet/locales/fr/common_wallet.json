@@ -123,7 +123,8 @@
       "creator": "Creator",
       "start_date": "Start Date",
       "end_date": "End Date",
-      "total_votes": "Total Votes"
+      "total_votes": "Total Votes",
+      "sort_ascending": "Tri croissant"
     }
   },
   "wallet_index": {
@@ -228,7 +229,7 @@
     "recently": "recently {{value}}",
     "witness_age": "Witness age: ",
     "open_external_site": "external site",
-    "open_witness_annoucement": "article introductif pour le témoin",
+    "open_witness_announcement": "article introductif pour le témoin",
     "hp_required_to_rank_up": "Need {{value}} to level up",
     "vote_description": "Si vous voulez voter pour un témoin en dehors du top 100, veuille entrer le nom du compte concerné ci-dessous afin de voter pour lui.",
     "proxy_description": "Vous pouvez aussi donner une procuration à quelqu'un qui votera pour les témoins en votre nom. Cela annulera votre choix de témoins actuels.",
@@ -254,7 +255,9 @@
       "weeks_ago": " weeks ago",
       "months_ago": " months ago",
       "years_ago": " years ago"
-    }
+    },
+    "vote_for_witness": "Voter pour le témoin {{witness}}",
+    "link_to_witness": "Lien vers le témoin {{witness}}"
   },
   "proposals_page": {
     "daily": "Daily",
@@ -265,7 +268,10 @@
     "refund": "refund",
     "burn": "burn",
     "by": "par",
-    "for": " pour "
+    "for": " pour ",
+    "vote_for_proposal": "Voter pour la proposition #{{id}}",
+    "votes_on_proposal": "Votes sur la proposition",
+    "voters_list": "Votants"
   },
   "login_form": {
     "title": "Utilisateurs de retour: ",

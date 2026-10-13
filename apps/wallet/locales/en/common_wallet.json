@@ -141,7 +141,8 @@
       "creator": "Creator",
       "start_date": "Start Date",
       "end_date": "End Date",
-      "total_votes": "Total Votes"
+      "total_votes": "Total Votes",
+      "sort_ascending": "Sort ascending"
     }
   },
   "wallet_index": {
@@ -305,7 +306,7 @@
     "recently": "recently {{value}}",
     "witness_age": "Witness age: ",
     "open_external_site": "Open external site",
-    "open_witness_annoucement": "Open witness annoucement",
+    "open_witness_announcement": "Open witness announcement",
     "hp_required_to_rank_up": "Need {{value}} to level up",
     "vote_description": "If you would like to vote for a witness outside of the top 200, enter the account name below to cast a vote.",
     "proxy_description": "You can also choose a proxy that will vote for witnesses for you. This will reset your current witness selection.",
@@ -332,7 +333,9 @@
       "weeks_ago": " weeks ago",
       "months_ago": " months ago",
       "years_ago": " years ago"
-    }
+    },
+    "vote_for_witness": "Vote for witness {{witness}}",
+    "link_to_witness": "Link to witness {{witness}}"
   },
   "proposals_page": {
     "daily": "Daily",
@@ -343,7 +346,10 @@
     "refund": "refund",
     "burn": "burn",
     "by": "by",
-    "for": " for "
+    "for": " for ",
+    "vote_for_proposal": "Vote for proposal #{{id}}",
+    "votes_on_proposal": "Votes on proposal",
+    "voters_list": "Voters"
   },
   "login_form": {
     "cancel_button": "Cancel",

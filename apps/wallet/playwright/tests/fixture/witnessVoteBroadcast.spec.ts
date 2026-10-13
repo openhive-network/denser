@@ -108,6 +108,30 @@ test.describe('Witness vote broadcast', () => {
     });
   });
 
+  test('WALLET-TX-WITNESS-VOTE-03 — the vote control is a named toggle button that Space votes with', async ({
+    page
+  }) => {
+    const broadcasts = await openWitnessesPage(page, { storeKey: true });
+
+    const button = page.getByRole('button', { name: `Vote for witness ${UNVOTED_WITNESS}`, exact: true });
+    await expect(button).toHaveAttribute('aria-pressed', 'false');
+    await expect(
+      page.getByRole('button', { name: `Vote for witness ${VOTED_WITNESS}`, exact: true })
+    ).toHaveAttribute('aria-pressed', 'true');
+    await voteUntilPending(witnessVote(page, UNVOTED_WITNESS), async () => {
+      await button.focus();
+      await page.keyboard.press('Space');
+    });
+
+    await broadcasts.waitForCount(1);
+    expectAccountWitnessVoteOperation(broadcasts.calls[0], {
+      account: STUB_ACCOUNT,
+      witness: UNVOTED_WITNESS,
+      approve: true
+    });
+    await expect(button).toBeFocused();
+  });
+
   test('WALLET-TX-WITNESS-VOTE-02 — a vote for an invalid account name fails validation and broadcasts nothing', async ({
     page
   }) => {

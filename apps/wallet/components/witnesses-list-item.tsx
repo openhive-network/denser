@@ -5,7 +5,7 @@ import { DISABLED_SIGNING_KEY } from '@/wallet/lib/constants';
 import { blockGap, getRoundedAbbreveration } from '@hive/ui/lib/utils';
 import { Icons } from '@hive/ui/components/icons';
 import { dateToRelative } from '@hive/ui/lib/parse-date';
-import { memo, useEffect, useRef } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import DialogLogin from './dialog-login';
 import { useTranslation } from '@/wallet/i18n/client';
 import { CircleSpinner } from '@ui/components/circle-spinner';
@@ -34,6 +34,8 @@ interface WitnessListItemProps {
 }
 
 const ONE_WEEK_IN_SEC = 604800;
+const VOTE_FOCUS_RING =
+  'rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2';
 
 function WitnessListItem({
   data,
@@ -79,7 +81,7 @@ function WitnessListItem({
           rel="noreferrer noopener"
           className="flex items-center gap-2 font-semibold hover:text-red-400 dark:hover:text-red-400"
         >
-          <span>{t('witnesses_page.open_witness_annoucement')}</span>
+          <span>{t('witnesses_page.open_witness_announcement')}</span>
           <Icons.forward className="text-red-600 dark:text-red-500" />
         </Link>
       );
@@ -98,6 +100,22 @@ function WitnessListItem({
   }
 
   const onVoteForWitness = (approve: boolean) => onVote(data.owner, approve);
+
+  const [removeVoteOpen, setRemoveVoteOpen] = useState(false);
+  const onVoteClick = () => (isVoted ? setRemoveVoteOpen(true) : onVoteForWitness(true));
+  const voteLabel = t('witnesses_page.vote_for_witness', { witness: data.owner });
+  const unvotedIcon = (
+    <Icons.arrowUpCircle
+      viewBox="1.7 1.7 20.7 20.7"
+      className={clsx(
+        'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
+        {
+          'bg-slate-100 dark:bg-slate-900': !highlighted,
+          'bg-rose-200  dark:bg-rose-800': highlighted
+        }
+      )}
+    />
+  );
 
   const ref = useRef<HTMLTableRowElement>(null);
   useEffect(() => {
@@ -120,47 +138,42 @@ function WitnessListItem({
           {voteEnabled ? (
             <div title={t('witnesses_page.vote')} className="group relative flex" data-testid="witness-vote">
               <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
-              {voteLoading ? (
-                <span className="relative rounded-full bg-white dark:bg-slate-900">
-                  <CircleSpinner loading={voteLoading} size={20} color="#dc2626" />
-                </span>
-              ) : !isVoted ? (
-                <Icons.arrowUpCircle
-                  onClick={() => onVoteForWitness(true)}
-                  viewBox="1.7 1.7 20.7 20.7"
-                  className={clsx(
-                    'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
-                    {
-                      'bg-slate-100 dark:bg-slate-900': !highlighted,
-                      'bg-rose-200  dark:bg-rose-800': highlighted
-                    }
-                  )}
-                />
-              ) : (
-                <WitnessRemoveVote onVote={onVoteForWitness}>
+              <button
+                type="button"
+                aria-label={voteLabel}
+                aria-pressed={isVoted}
+                aria-busy={voteLoading}
+                className={clsx('relative flex', VOTE_FOCUS_RING)}
+                onClick={voteLoading ? undefined : onVoteClick}
+              >
+                {voteLoading ? (
+                  <span className="relative rounded-full bg-white dark:bg-slate-900">
+                    <CircleSpinner loading={voteLoading} size={20} color="#dc2626" />
+                  </span>
+                ) : isVoted ? (
                   <Icons.arrowUpCircle className="relative inline-flex h-5 w-5 cursor-pointer rounded-full bg-rose-600 stroke-1 text-white dark:bg-rose-600 dark:text-white" />
-                </WitnessRemoveVote>
-              )}
+                ) : (
+                  unvotedIcon
+                )}
+              </button>
+              <WitnessRemoveVote
+                open={removeVoteOpen}
+                onOpenChange={setRemoveVoteOpen}
+                onVote={onVoteForWitness}
+              />
             </div>
           ) : (
             <DialogLogin>
-              <div
+              <button
+                type="button"
                 title={t('witnesses_page.vote')}
-                className="group relative flex"
+                aria-label={voteLabel}
+                className={clsx('group relative flex', VOTE_FOCUS_RING)}
                 data-testid="witness-vote"
               >
                 <span className="opocity-75 absolute inline-flex h-5 w-5 rounded-full bg-red-600 p-0 group-hover:animate-ping dark:bg-red-400"></span>
-                <Icons.arrowUpCircle
-                  viewBox="1.7 1.7 20.7 20.7"
-                  className={clsx(
-                    'relative inline-flex h-5 w-5 cursor-pointer rounded-full stroke-1 text-red-600 dark:text-red-500',
-                    {
-                      'bg-slate-100 dark:bg-slate-900': !highlighted,
-                      'bg-rose-200  dark:bg-rose-800': highlighted
-                    }
-                  )}
-                />
-              </div>
+                {unvotedIcon}
+              </button>
             </DialogLogin>
           )}
         </div>
@@ -220,12 +233,17 @@ function WitnessListItem({
                 scroll={false}
                 data-testid="witness-highlight-link"
                 title={t('witnesses_page.use_this_for_linking_title')}
+                aria-label={t('witnesses_page.link_to_witness', { witness: data.owner })}
               >
                 <Icons.link className="h-[1em] w-[1em]" />
               </Link>
             </div>
             {!disableUser && witnessDescription && (
-              <div className="mb-1 ml-4 hidden max-h-16 max-w-lg overflow-y-auto overflow-x-hidden border-b-[1px] border-dotted border-gray-400 p-1 italic sm:block">
+              // Focusable so keyboard users can scroll a description that overflows
+              <div
+                tabIndex={0}
+                className="mb-1 ml-4 hidden max-h-16 max-w-lg overflow-y-auto overflow-x-hidden border-b-[1px] border-dotted border-gray-400 p-1 italic sm:block"
+              >
                 {witnessDescription}
               </div>
             )}
@@ -274,7 +292,10 @@ function WitnessListItem({
       </td>
       <td className=" sm:p-2">
         <div className="font-medium" data-testid="witness-price-feed">
-          ${(Number(data.hbd_exchange_rate.base.amount) / Math.pow(10, data.hbd_exchange_rate.base.precision)).toFixed(3)}
+          $
+          {(
+            Number(data.hbd_exchange_rate.base.amount) / Math.pow(10, data.hbd_exchange_rate.base.precision)
+          ).toFixed(3)}
         </div>
         <div className="font-light">
           <TimeAgo date={data.last_hbd_exchange_update} />

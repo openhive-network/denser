@@ -123,7 +123,8 @@
       "creator": "Creator",
       "start_date": "Start Date",
       "end_date": "End Date",
-      "total_votes": "Total Votes"
+      "total_votes": "Total Votes",
+      "sort_ascending": "Сортировать по возрастанию"
     }
   },
   "wallet_index": {
@@ -234,7 +235,7 @@
     "recently": "recently {{value}}",
     "witness_age": "Witness age: ",
     "open_external_site": "Open external site",
-    "open_witness_annoucement": "пост делегата",
+    "open_witness_announcement": "пост делегата",
     "hp_required_to_rank_up": "Need {{value}} to level up",
     "vote_description": "Если вы хотите проголосовать за делегата вне top 100, введите имя аккаунта ниже.",
     "proxy_description": "Вы также можете выбрать прокси, который будет вместо вас голосовать за делегатов. Это сбросит ваш текущий выбор делегата.",
@@ -260,7 +261,9 @@
       "weeks_ago": " weeks ago",
       "months_ago": " months ago",
       "years_ago": " years ago"
-    }
+    },
+    "vote_for_witness": "Голосовать за делегата {{witness}}",
+    "link_to_witness": "Ссылка на делегата {{witness}}"
   },
   "proposals_page": {
     "daily": "Daily",
@@ -271,7 +274,10 @@
     "refund": "refund",
     "burn": "burn",
     "by": "by",
-    "for": " for "
+    "for": " for ",
+    "vote_for_proposal": "Голосовать за предложение #{{id}}",
+    "votes_on_proposal": "Голоса за предложение",
+    "voters_list": "Проголосовавшие"
   },
   "login_form": {
     "title": "Вернувшиеся пользователи: ",
