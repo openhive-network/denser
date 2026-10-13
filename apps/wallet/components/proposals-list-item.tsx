@@ -18,6 +18,9 @@ import TimeAgo from '@ui/components/time-ago';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 
+const VOTE_FOCUS_RING =
+  'rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2';
+
 const TitleSetter = ({ start, end, status }: { start: string; end: string; status: string }) => {
   switch (status) {
     case 'started':
@@ -71,6 +74,8 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund, 
   );
   const totalDays = dayjs(proposalData.end_date).diff(dayjs(proposalData.start_date), 'day');
 
+  const voteLabel = t('proposals_page.vote_for_proposal', { id: proposalData.proposal_id });
+
   const totalVotes = totalVestingFund.times(proposalData.total_votes).div(totalShares).times(0.000001);
 
   function getFundingType() {
@@ -86,7 +91,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund, 
     setVotesSuccess(voted);
   }, [voted]);
 
-  async function updateProposalVotes(e: React.MouseEvent<HTMLOrSVGElement>) {
+  async function updateProposalVotes() {
     const params = {
       proposal_ids: [String(proposalData.proposal_id)],
       approve: !voteSuccess,
@@ -164,7 +169,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund, 
           <div className="flex gap-2">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger type="button">
                   <Badge variant="red" data-testid="proposal-status-badge">
                     {proposalData.status}
                   </Badge>
@@ -232,34 +237,47 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund, 
             {getRoundedAbbreveration(totalVotes)}
           </div>
         </VoteProposals>
-        {loading ? (
-          <Icons.spinner className="animate-spin text-red-500" />
-        ) : user && user.isLoggedIn ? (
-          <div className="group relative flex">
-            <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
-            <Icons.arrowUpCircle
-              viewBox="1.7 1.7 20.7 20.7"
-              className={cn(
-                'relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800',
-                {
-                  '!bg-red-500 text-white': voteSuccess
-                }
-              )}
-              data-testid="voting-button-icon"
-              onClick={updateProposalVotes}
-            />
-          </div>
+        {user && user.isLoggedIn ? (
+          <button
+            type="button"
+            className={cn('group relative flex', VOTE_FOCUS_RING)}
+            aria-label={voteLabel}
+            aria-pressed={voteSuccess}
+            aria-busy={loading}
+            onClick={loading ? undefined : updateProposalVotes}
+          >
+            {loading ? (
+              <Icons.spinner className="animate-spin text-red-500" />
+            ) : (
+              <>
+                <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
+                <Icons.arrowUpCircle
+                  viewBox="1.7 1.7 20.7 20.7"
+                  className={cn(
+                    'relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800',
+                    {
+                      '!bg-red-500 text-white': voteSuccess
+                    }
+                  )}
+                  data-testid="voting-button-icon"
+                />
+              </>
+            )}
+          </button>
         ) : (
           <DialogLogin>
-            <div className="group relative flex">
+            <button
+              type="button"
+              className={cn('group relative flex', VOTE_FOCUS_RING)}
+              aria-label={voteLabel}
+            >
               <span className="opocity-75 absolute inline-flex h-6 w-6 rounded-full bg-red-500 p-0 group-hover:animate-ping dark:bg-red-400"></span>
               <Icons.arrowUpCircle
                 viewBox="1.7 1.7 20.7 20.7"
                 className="relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800"
                 data-testid="voting-button-icon"
-                onClick={() => console.log('You must login')}
               />
-            </div>
+            </button>
           </DialogLogin>
         )}
       </div>

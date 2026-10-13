@@ -136,7 +136,8 @@
       "creator": "Twórcy",
       "start_date": "Data startu",
       "end_date": "Data zakończenia",
-      "total_votes": "Suma głosów"
+      "total_votes": "Suma głosów",
+      "sort_ascending": "Sortuj rosnąco"
     }
   },
   "wallet_index": {
@@ -262,7 +263,7 @@
     "recently": "ostatnio {{value}}",
     "witness_age": "Wiek konta: ",
     "open_external_site": "Witryna zewnętrzna",
-    "open_witness_annoucement": "Wątek delegata",
+    "open_witness_announcement": "Wątek delegata",
     "hp_required_to_rank_up": "Potrzebuje {{value}} do awansu",
     "vote_description": "Jeśli chcesz zagłosować na delegata spoza pierwszej 100, podaj nazwę konta na które chcesz oddać głos.",
     "proxy_description": "Możesz również wybrać pełnomocnika, który zagłosuje na delegatów za ciebie. Wybór pełnomocnika wyczyści twoje bieżące głosy.",
@@ -288,7 +289,9 @@
       "weeks_ago": " tygodni_e temu",
       "months_ago": " miesięce_y temu",
       "years_ago": " lat_a temu"
-    }
+    },
+    "vote_for_witness": "Głosuj na delegata {{witness}}",
+    "link_to_witness": "Link do delegata {{witness}}"
   },
   "proposals_page": {
     "daily": "Dziennie",
@@ -299,7 +302,10 @@
     "refund": "zrefundowane",
     "burn": "spalone",
     "by": "przez",
-    "for": " dla "
+    "for": " dla ",
+    "vote_for_proposal": "Głosuj na propozycję #{{id}}",
+    "votes_on_proposal": "Głosy na propozycję",
+    "voters_list": "Głosujący"
   },
   "login_form": {
     "title": "Powracający: ",

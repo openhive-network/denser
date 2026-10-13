@@ -29,6 +29,10 @@ export function ProposalsFilter({
   onOrderDirection
 }: FilterProposalsProps) {
   const { t } = useTranslation('common_wallet');
+  const statusLabelId = React.useId();
+  const orderByLabelId = React.useId();
+  const statusTriggerId = React.useId();
+  const orderByTriggerId = React.useId();
   const handleDirectionToggle = () =>
     onOrderDirection(orderDirection === 'descending' ? 'ascending' : 'descending');
 
@@ -43,9 +47,14 @@ export function ProposalsFilter({
       <div className="flex justify-between" data-testid="proposals-sort-filter">
         <div className="flex gap-2 text-xs font-medium">
           <div>
-            <span>{t('select_sort.sort_proposals.status')}</span>
+            <span id={statusLabelId}>{t('select_sort.sort_proposals.status')}</span>
             <Select defaultValue="" value={filterStatus} onValueChange={onChangeFilterStatus}>
-              <SelectTrigger className="h-[35px] w-[100px]" data-testid="proposals-sort-filter-status">
+              <SelectTrigger
+                id={statusTriggerId}
+                aria-labelledby={`${statusLabelId} ${statusTriggerId}`}
+                className="h-[35px] w-[100px]"
+                data-testid="proposals-sort-filter-status"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent data-testid="proposals-sort-filter-status-conntent">
@@ -60,9 +69,14 @@ export function ProposalsFilter({
             </Select>
           </div>
           <div>
-            <span>{t('select_sort.sort_proposals.order_by')}</span>
+            <span id={orderByLabelId}>{t('select_sort.sort_proposals.order_by')}</span>
             <Select defaultValue="" value={orderValue} onValueChange={onChangeSortOrder}>
-              <SelectTrigger className="h-[35px] w-[120px]" data-testid="proposals-sort-filter-orderby">
+              <SelectTrigger
+                id={orderByTriggerId}
+                aria-labelledby={`${orderByLabelId} ${orderByTriggerId}`}
+                className="h-[35px] w-[120px]"
+                data-testid="proposals-sort-filter-orderby"
+              >
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
               <SelectContent data-testid="proposals-sort-filter-orderby-conntent">
@@ -79,6 +93,9 @@ export function ProposalsFilter({
           </div>
         </div>
         <button
+          type="button"
+          aria-label={t('select_sort.sort_proposals.sort_ascending')}
+          aria-pressed={orderDirection === 'ascending'}
           onClick={handleDirectionToggle}
           className={clsx('flex self-end transition-transform', {
             'rotate-180': orderDirection === 'ascending'

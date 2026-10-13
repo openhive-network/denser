@@ -119,7 +119,8 @@
       "creator": "Creator",
       "start_date": "Start Date",
       "end_date": "End Date",
-      "total_votes": "Total Votes"
+      "total_votes": "Total Votes",
+      "sort_ascending": "昇順で並べ替え"
     }
   },
   "wallet_index": {
@@ -217,7 +218,7 @@
     "recently": "recently {{value}}",
     "witness_age": "Witness age: ",
     "open_external_site": "external site",
-    "open_witness_annoucement": "証人スレッド",
+    "open_witness_announcement": "証人スレッド",
     "hp_required_to_rank_up": "Need {{value}} to level up",
     "vote_description": "トップ100外の証人に投票したい場合、以下の欄にアカウント名を入力して投票してください",
     "proxy_description": "証人への投票の代理人を選ぶこともできます。この操作はあなたの現在の証人選択をリセットします。",
@@ -243,7 +244,9 @@
       "weeks_ago": " weeks ago",
       "months_ago": " months ago",
       "years_ago": " years ago"
-    }
+    },
+    "vote_for_witness": "証人 {{witness}} に投票",
+    "link_to_witness": "証人 {{witness}} へのリンク"
   },
   "proposals_page": {
     "daily": "Daily",
@@ -254,7 +257,10 @@
     "refund": "refund",
     "burn": "burn",
     "by": "by",
-    "for": " for "
+    "for": " for ",
+    "vote_for_proposal": "提案 #{{id}} に投票",
+    "votes_on_proposal": "提案への投票",
+    "voters_list": "投票者"
   },
   "login_form": {
     "title": "再",

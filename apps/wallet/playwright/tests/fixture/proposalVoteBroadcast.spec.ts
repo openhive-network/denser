@@ -106,6 +106,32 @@ test.describe('Proposal vote broadcast: voting', () => {
     });
   });
 
+  test('WALLET-TX-PROPOSAL-VOTE-03 — the vote control is a named toggle button that Enter votes with and keeps focus', async ({
+    page
+  }) => {
+    const broadcasts = await openProposalsPage(page, { storeKey: true, voted: false });
+
+    const button = page.getByRole('button', { name: `Vote for proposal #${STUB_PROPOSAL_ID}`, exact: true });
+    await expect(button).toHaveAttribute('aria-pressed', 'false');
+    await expect(async () => {
+      await button.focus({ timeout: ATTEMPT_TIMEOUT });
+      await page.keyboard.press('Enter');
+      await expect(page.getByTestId('proposal-list-item').locator('.animate-spin')).toBeVisible({
+        timeout: ATTEMPT_TIMEOUT
+      });
+    }).toPass({ timeout: HYDRATION_TIMEOUT });
+
+    await broadcasts.waitForCount(1);
+    expectUpdateProposalVotesOperation(broadcasts.calls[0], {
+      voter: STUB_ACCOUNT,
+      proposal_ids: [STUB_PROPOSAL_ID],
+      approve: true,
+      extensions: []
+    });
+    await expect(button).toHaveAttribute('aria-busy', 'false');
+    await expect(button).toBeFocused();
+  });
+
   test('WALLET-TX-PROPOSAL-VOTE-02 — declining to give the active key for a vote broadcasts nothing', async ({
     page
   }) => {
@@ -137,6 +163,16 @@ test.describe('Proposal vote broadcast: removing the vote', () => {
       approve: false,
       extensions: []
     });
+  });
+
+  test('WALLET-TX-PROPOSAL-UNVOTE-03 — the vote control of a voted proposal reports its pressed state', async ({
+    page
+  }) => {
+    await openProposalsPage(page, { storeKey: true, voted: true });
+
+    await expect(
+      page.getByRole('button', { name: `Vote for proposal #${STUB_PROPOSAL_ID}`, exact: true })
+    ).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('WALLET-TX-PROPOSAL-UNVOTE-02 — declining to give the active key for a vote removal broadcasts nothing', async ({
