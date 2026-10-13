@@ -1,34 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import dayjs from 'dayjs';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { FullAccount, IFeedHistory, IOpenOrdersData } from '@hive/common-hiveio-packages/wax';
 import { Link } from '@hive/ui';
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogTrigger,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger
-} from '@ui/components';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@ui/components/dropdown-menu';
-import { CircleSpinner } from '@ui/components/circle-spinner';
-import { TransferDialog } from '@/wallet/components/transfer-dialog';
-import { useCancelPowerDownMutation } from '@/wallet/components/hooks/use-power-hive-mutation';
-import { handleError } from '@ui/lib/handle-error';
-import { toast } from '@ui/components/hooks/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components';
+import { TransferDialog, type TransferDialogType } from '@/wallet/components/transfer-dialog';
 import { powerdownHive, convertToHP, netDelegatedVests, numberWithCommas, vestsToHive } from '@ui/lib/utils';
 import { convertStringToBig, isHive } from '@ui/lib/helpers';
 import { createNaiAsset } from '@ui/lib/asset-constants';
@@ -36,6 +14,8 @@ import { hiveToHbdSatoshis } from '@ui/lib/asset-math';
 import { formatAsset } from '@ui/lib/asset-format';
 import { getCurrentHpApr } from '@/wallet/lib/utils';
 import RCRow from './rc-row';
+import { BalanceAction, BalanceMenu } from './balance-menu';
+import { CancelPowerDownDialog } from './cancel-power-down-dialog';
 
 interface SuggestedUser {
   username: string;
@@ -66,8 +46,6 @@ const WalletBalancesTable = ({
   openOrders
 }: WalletBalancesTableProps) => {
   const { t } = useTranslation('common_wallet');
-  const [open, setOpen] = useState(false);
-  const cancelPowerDownMutation = useCancelPowerDownMutation();
 
   // Calculate balances
   const hours = dayjs(accountData.next_vesting_withdrawal).diff(dayjs(), 'hour');
@@ -151,21 +129,32 @@ const WalletBalancesTable = ({
     )
   };
 
-  const cancelPowerDown = async () => {
-    const params = { account: username };
-    try {
-      await cancelPowerDownMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'withdraw_vesting', params });
-    } finally {
-      setOpen(false);
-      toast({
-        title: t('transfers_page.transaction_success'),
-        description: t('transfers_page.cancel_power_down'),
-        variant: 'success'
-      });
-    }
-  };
+  const transferAction = (type: TransferDialogType, currency: 'HIVE' | 'HBD', label: string): BalanceAction => ({
+    id: type,
+    label,
+    renderDialog: (dialogProps) => (
+      <TransferDialog
+        {...dialogProps}
+        suggestedUsers={listOfAccounts}
+        currency={currency}
+        amount={amount}
+        type={type}
+        username={currentUsername!}
+      />
+    )
+  });
+
+  const hivePowerActions = [
+    transferAction('powerDown', 'HIVE', t('profile.power_down')),
+    transferAction('delegate', 'HIVE', t('profile.delegate'))
+  ];
+  if (accountData.to_withdraw !== 0) {
+    hivePowerActions.push({
+      id: 'cancelPowerDown',
+      label: t('profile.cancel_power_down'),
+      renderDialog: (dialogProps) => <CancelPowerDownDialog {...dialogProps} username={username} />
+    });
+  }
 
   return (
     <>
@@ -181,52 +170,15 @@ const WalletBalancesTable = ({
               </td>
               <td className="whitespace-nowrap font-semibold" data-testid="wallet-hive-value">
                 {isOwner ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost">
-                        <div>
-                          <span className="text-destructive">{amount.hive}</span>
-                          <span className="m-1 text-xl">▾</span>
-                        </div>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                      <DropdownMenuGroup>
-                        <TransferDialog
-                          suggestedUsers={listOfAccounts}
-                          currency={'HIVE'}
-                          amount={amount}
-                          type="transfers"
-                          username={currentUsername!}
-                        >
-                          {t('profile.transfer')}
-                        </TransferDialog>
-                        <TransferDialog
-                          suggestedUsers={listOfAccounts}
-                          currency={'HIVE'}
-                          amount={amount}
-                          type="transferTo"
-                          username={currentUsername!}
-                        >
-                          {t('profile.transfer_to_savings')}
-                        </TransferDialog>
-                        <TransferDialog
-                          suggestedUsers={listOfAccounts}
-                          currency={'HIVE'}
-                          amount={amount}
-                          type="powerUp"
-                          username={currentUsername!}
-                        >
-                          {t('profile.power_up')}
-                        </TransferDialog>
-                        <DropdownMenuItem className="p-0">
-                          <Link href="/market" className="w-full px-2 py-1.5">
-                            {t('profile.market')}
-                          </Link>
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <BalanceMenu
+                    balance={amount.hive}
+                    withMarket
+                    actions={[
+                      transferAction('transfers', 'HIVE', t('profile.transfer')),
+                      transferAction('transferTo', 'HIVE', t('profile.transfer_to_savings')),
+                      transferAction('powerUp', 'HIVE', t('profile.power_up'))
+                    ]}
+                  />
                 ) : (
                   <div className="px-4 py-2">{amount.hive}</div>
                 )}
@@ -268,67 +220,7 @@ const WalletBalancesTable = ({
                 data-testid="wallet-hive-power"
               >
                 {isOwner ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost">
-                        <div>
-                          <span className="text-destructive">{hp}</span>
-                          <span className="m-1 text-xl">▾</span>
-                        </div>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                      <DropdownMenuGroup>
-                        <TransferDialog
-                          suggestedUsers={listOfAccounts}
-                          currency={'HIVE'}
-                          amount={amount}
-                          type="powerDown"
-                          username={currentUsername!}
-                        >
-                          <span>{t('profile.power_down')}</span>
-                        </TransferDialog>
-                        <TransferDialog
-                          suggestedUsers={listOfAccounts}
-                          currency={'HIVE'}
-                          amount={amount}
-                          type="delegate"
-                          username={currentUsername!}
-                        >
-                          <span>{t('profile.delegate')}</span>
-                        </TransferDialog>
-                        {accountData.to_withdraw === 0 ? null : (
-                          <Dialog open={open} onOpenChange={setOpen}>
-                            <DialogTrigger asChild>
-                              <div className="w-full cursor-pointer px-2 py-1.5 text-sm hover:bg-background-tertiary hover:text-primary">
-                                <span>{t('profile.cancel_power_down')}</span>
-                              </div>
-                            </DialogTrigger>
-                            <DialogContent className="text-left sm:max-w-[425px]">
-                              {t('profile.cancel_power_down_prompt')}
-                              <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-                                <Button
-                                  variant="redHover"
-                                  onClick={cancelPowerDown}
-                                  disabled={cancelPowerDownMutation.isPending}
-                                >
-                                  {cancelPowerDownMutation.isPending ? (
-                                    <CircleSpinner
-                                      loading={cancelPowerDownMutation.isPending}
-                                      size={18}
-                                      color="#dc2626"
-                                    />
-                                  ) : (
-                                    t('profile.cancel_power_down')
-                                  )}
-                                </Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-                        )}
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <BalanceMenu balance={hp} actions={hivePowerActions} />
                 ) : (
                   <div className="px-4 py-2">{hp}</div>
                 )}
@@ -356,44 +248,14 @@ const WalletBalancesTable = ({
               </td>
               <td className="whitespace-nowrap font-semibold" data-testid="wallet-hive-dallars-value">
                 {isOwner ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost">
-                        <div>
-                          <span className="text-destructive">{amount.hbd}</span>
-                          <span className="m-1 text-xl">▾</span>
-                        </div>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                      <DropdownMenuGroup>
-                        <TransferDialog
-                          suggestedUsers={listOfAccounts}
-                          currency={'HBD'}
-                          amount={amount}
-                          type="transfers"
-                          username={currentUsername!}
-                        >
-                          {t('profile.transfer')}
-                        </TransferDialog>
-                        <TransferDialog
-                          suggestedUsers={listOfAccounts}
-                          currency={'HBD'}
-                          amount={amount}
-                          type="transferTo"
-                          username={currentUsername!}
-                        >
-                          {t('profile.transfer_to_savings')}
-                        </TransferDialog>
-
-                        <DropdownMenuItem className="p-0">
-                          <Link href="/market" className="w-full px-2 py-1.5">
-                            {t('profile.market')}
-                          </Link>
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <BalanceMenu
+                    balance={amount.hbd}
+                    withMarket
+                    actions={[
+                      transferAction('transfers', 'HBD', t('profile.transfer')),
+                      transferAction('transferTo', 'HBD', t('profile.transfer_to_savings'))
+                    ]}
+                  />
                 ) : (
                   <div className="px-4 py-2">{amount.hbd}</div>
                 )}
@@ -438,52 +300,16 @@ const WalletBalancesTable = ({
               <td className="whitespace-nowrap bg-background-secondary font-semibold">
                 {isOwner ? (
                   <div className="flex w-fit flex-col items-start">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost">
-                          <div>
-                            <span className="text-destructive">{amount.savingsHive}</span>
-                            <span className="m-1 text-xl">▾</span>
-                          </div>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-56">
-                        <DropdownMenuGroup>
-                          <TransferDialog
-                            suggestedUsers={listOfAccounts}
-                            currency={'HIVE'}
-                            amount={amount}
-                            type="withdrawHive"
-                            username={currentUsername!}
-                          >
-                            <span>{t('profile.withdraw_hive')}</span>
-                          </TransferDialog>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost">
-                          <div>
-                            <span className="text-destructive">{amount.savingsHbd}</span>
-                            <span className="m-1 text-xl">▾</span>
-                          </div>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-56">
-                        <DropdownMenuGroup>
-                          <TransferDialog
-                            suggestedUsers={listOfAccounts}
-                            currency={'HBD'}
-                            amount={amount}
-                            type="withdrawHiveDollars"
-                            username={currentUsername!}
-                          >
-                            <span>{t('profile.withdraw_hive_dollars')}</span>
-                          </TransferDialog>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <BalanceMenu
+                      balance={amount.savingsHive}
+                      actions={[transferAction('withdrawHive', 'HIVE', t('profile.withdraw_hive'))]}
+                    />
+                    <BalanceMenu
+                      balance={amount.savingsHbd}
+                      actions={[
+                        transferAction('withdrawHiveDollars', 'HBD', t('profile.withdraw_hive_dollars'))
+                      ]}
+                    />
                   </div>
                 ) : (
                   <div className="px-4 py-2">

@@ -321,6 +321,7 @@
     "our_homepage": "our homepage"
   },
   "transfers_page": {
+    "currency": "货币",
     "decode_memo": "解码",
     "decode_memo_encrypted_placeholder": "已加密备注",
     "decode_memo_title": "解码 MEMO 消息",

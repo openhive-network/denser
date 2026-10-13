@@ -364,6 +364,7 @@
     "our_homepage": "naszej strony startowej"
   },
   "transfers_page": {
+    "currency": "Waluta",
     "decode_memo": "Odszyfruj",
     "decode_memo_encrypted_placeholder": "Zaszyfrowana notatka",
     "decode_memo_title": "Odszyfruj wiadomość MEMO",

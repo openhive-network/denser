@@ -188,7 +188,7 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     const suggestion = dialog.getByRole('option', { name: `${STUB_FOLLOWED} (Following)` });
 
     await openWith(() => menuTrigger.press('Enter'), menu);
-    await expect(page.getByRole('menuitem', { name: 'Market' })).toBeFocused();
+    await expect(page.getByRole('menuitem', { name: 'Transfer', exact: true })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(menu).toBeHidden();
     await expect(menuTrigger).toBeFocused();
