@@ -338,7 +338,7 @@ const WalletBalancesTable = ({
             </tr>
           </tbody>
         </table>
-        <RCRow username={username} />
+        <RCRow username={username} suggestedUsers={listOfAccounts} />
       </div>
       {powerdown_hive.gt(0) ? (
         <div className="p-2 text-sm sm:p-4">
