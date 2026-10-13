@@ -24,6 +24,7 @@ import {
 } from './hooks/use-transfer-hive-mutation';
 import { usePowerDownMutation, usePowerUpMutation } from './hooks/use-power-hive-mutation';
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
+import { useMinDelegation } from './hooks/use-min-delegation';
 import { handleError } from '@ui/lib/handle-error';
 import { useQueryClient } from '@tanstack/react-query';
 import type { TransactionBroadcastResult } from '@transaction/index';
@@ -41,6 +42,10 @@ import { getAsset } from '@transaction/lib/utils';
 import { detectSecretInMemo } from '@ui/lib/memo-secret-check';
 import { MemoSecretWarning } from './memo-secret-warning';
 import { type EncryptedMemo, hasEncryptedMemoMarker, memoToBroadcast } from '@/wallet/lib/encrypted-memo';
+import { rejectedMinDelegationVests } from '@/wallet/lib/min-delegation';
+import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
+import { createNaiAsset } from '@ui/lib/asset-constants';
+import { convertToHP } from '@ui/lib/utils';
 
 // After applying this operation, vesting_shares will be withdrawn at a rate of vesting_shares/13 per week for 13 weeks starting one week after this operation is included in the blockchain.
 const HIVE_VESTING_WITHDRAW_INTERVALS = 13;
@@ -116,8 +121,10 @@ export function TransferDialog({
   const delegateMutation = useDelegateMutation();
   const withdrawFromSavingsMutation = useWithdrawFromSavingsMutation();
   const triggerRef = useRef(null);
+  const confirmTitleRef = useRef<HTMLHeadingElement>(null);
   const [nextOpen, setNextOpen] = useState(false);
   const [open, setOpen] = useState(false);
+  const minDelegation = useMinDelegation(type === 'delegate' && open);
   const [encryptDialogOpen, setEncryptDialogOpen] = useState(false);
   // `data.memo` stays the plaintext, which the secret guard above checks; the ciphertext is kept apart.
   const [encryptedMemo, setEncryptedMemo] = useState<EncryptedMemo | null>(null);
@@ -132,7 +139,8 @@ export function TransferDialog({
     async <T,>(
       method: string,
       params: T,
-      transaction: (params: T) => Promise<T & { broadcastResult: TransactionBroadcastResult }>
+      transaction: (params: T) => Promise<T & { broadcastResult: TransactionBroadcastResult }>,
+      explainRejection?: (error: unknown) => string | null
     ) => {
       try {
         await transaction(params);
@@ -142,10 +150,36 @@ export function TransferDialog({
           toast({ title: t('transfers_page.memo_secret_wif'), variant: 'destructive' });
           return;
         }
+        const explanation = explainRejection?.(error);
+        if (explanation) {
+          toast({ title: explanation, variant: 'destructive' });
+          return;
+        }
         handleError(error, { method, params });
       }
     },
     [invalidateData, t]
+  );
+
+  // The transfers page holds the global properties, so the chain's minimum (in VESTS) can be told in HP.
+  const explainDelegationRejection = useCallback(
+    (error: unknown) => {
+      const minVests = rejectedMinDelegationVests(error);
+      const globals = queryClient.getQueryData<GetDynamicGlobalPropertiesResponse>([
+        'dynamicGlobalPropertiesData'
+      ]);
+      if (minVests === null || !globals) return null;
+      const minHp = convertToHP(
+        createNaiAsset('VESTS', minVests),
+        globals.total_vesting_shares,
+        globals.total_vesting_fund_hive
+      );
+      return t('transfers_page.error.delegation_below_minimum', {
+        min: minHp.toFixed(3),
+        amount: convertStringToBig(value).toFixed(3)
+      });
+    },
+    [queryClient, t, value]
   );
 
   switch (type) {
@@ -223,7 +257,7 @@ export function TransferDialog({
           delegatee: data.to,
           hp: await getAsset(value, 'HIVE')
         };
-        transfersTransaction('delegate', params, delegateMutation.mutateAsync);
+        transfersTransaction('delegate', params, delegateMutation.mutateAsync, explainDelegationRejection);
       };
       break;
 
@@ -283,11 +317,14 @@ export function TransferDialog({
           .refine((amount) => amount <= Number(data.amount.replaceAll(',', '').match(/[-+]?\d*\.?\d+/)), {
             message: t('transfers_page.error.insufficient_funds')
           })
+          .refine((amount) => !minDelegation || minDelegation.lte(amount), {
+            message: t('transfers_page.error.min_delegation', { min: minDelegation?.toFixed(3) })
+          })
           .refine((amount) => /^\d+(\.\d{1,3})?$/.test(amount.toString()), {
             message: t('transfers_page.error.precision')
           })
       }),
-    [data.amount, t]
+    [data.amount, minDelegation, t]
   );
   type TransferFormValues = z.infer<typeof transferSchema>;
 
@@ -311,6 +348,25 @@ export function TransferDialog({
     if (memoBlocked) return;
     data.onSubmit();
   };
+
+  const isBroadcasting =
+    transferMutation.isPending ||
+    transferToSavingsMutation.isPending ||
+    powerUpMutation.isPending ||
+    delegateMutation.isPending ||
+    withdrawFromSavingsMutation.isPending;
+
+  // OK is disabled while broadcasting, so the focus it held is lost: give it to the heading when a broadcast fails.
+  useEffect(() => {
+    if (!isBroadcasting && nextOpen) confirmTitleRef.current?.focus();
+  }, [isBroadcasting]);
+
+  const focusConfirmTitle = useCallback((event: Event) => {
+    event.preventDefault();
+    confirmTitleRef.current?.focus();
+  }, []);
+
+  const belowMinDelegation = minDelegation !== undefined && minDelegation.gt(amount.reducedHP);
   useEffect(() => {
     if (
       transferMutation.isSuccess ||
@@ -375,6 +431,14 @@ export function TransferDialog({
               <DialogTitle className="text-left text-2xl">{data.title}</DialogTitle>
               <DialogDescription className="text-left">{data.description} </DialogDescription>
             </DialogHeader>
+            {belowMinDelegation ? (
+              <p role="alert" className="pt-4 text-sm text-destructive">
+                {t('transfers_page.error.cannot_delegate', {
+                  min: minDelegation.toFixed(3),
+                  available: amount.reducedHP
+                })}
+              </p>
+            ) : null}
             {type !== 'powerDown' ? (
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -556,7 +620,7 @@ export function TransferDialog({
               <Button
                 variant="redHover"
                 className="w-fit"
-                disabled={badActors || memoBlocked || powerDownMutation.isPending}
+                disabled={badActors || memoBlocked || belowMinDelegation || powerDownMutation.isPending}
                 onClick={type === 'powerDown' ? onConfirm : form.handleSubmit(onSubmit)}
               >
                 {powerDownMutation.isPending ? (
@@ -599,8 +663,10 @@ export function TransferDialog({
           </form>
         </DialogContent>
         <Dialog open={nextOpen} onOpenChange={setNextOpen}>
-          <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
-            <DialogTitle>{t('transfers_page.confirm_transaction', { transaction: data.title })}</DialogTitle>
+          <DialogContent onOpenAutoFocus={focusConfirmTitle}>
+            <DialogTitle ref={confirmTitleRef} tabIndex={-1} className="focus:outline-none">
+              {t('transfers_page.confirm_transaction', { transaction: data.title })}
+            </DialogTitle>
             {type !== 'delegate' ? (
               <>
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -701,30 +767,10 @@ export function TransferDialog({
                 variant="redHover"
                 className="w-fit"
                 onClick={onConfirm}
-                disabled={
-                  transferMutation.isPending ||
-                  transferToSavingsMutation.isPending ||
-                  powerUpMutation.isPending ||
-                  delegateMutation.isPending ||
-                  withdrawFromSavingsMutation.isPending
-                }
+                disabled={isBroadcasting}
               >
-                {transferMutation.isPending ||
-                transferToSavingsMutation.isPending ||
-                powerUpMutation.isPending ||
-                delegateMutation.isPending ||
-                withdrawFromSavingsMutation.isPending ? (
-                  <CircleSpinner
-                    loading={
-                      transferMutation.isPending ||
-                      transferToSavingsMutation.isPending ||
-                      powerUpMutation.isPending ||
-                      delegateMutation.isPending ||
-                      withdrawFromSavingsMutation.isPending
-                    }
-                    size={18}
-                    color="#dc2626"
-                  />
+                {isBroadcasting ? (
+                  <CircleSpinner loading={isBroadcasting} size={18} color="#dc2626" />
                 ) : (
                   t('transfers_page.ok')
                 )}

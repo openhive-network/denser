@@ -161,6 +161,8 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
     vesting_reward_percent: 1500,
     hbd_interest_rate: 1500
   }),
+  // A 3.000 HIVE account creation fee: the smallest delegation is 1.000 HP.
+  'database_api.get_witness_schedule': () => ({ median_props: { account_creation_fee: hive('3000') } }),
   'database_api.get_feed_history': () => ({
     current_median_history: { base: hbd('250'), quote: hive('1000') },
     price_history: []

@@ -7,7 +7,8 @@ import {
   IFeedHistory,
   IFollow,
   IVote,
-  IVoteListItem
+  IVoteListItem,
+  IWitnessSchedule
 } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { getReadChain } from './chain';
@@ -310,6 +311,10 @@ export const getRebloggedBy = async (author: string, permlink: string): Promise<
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
   return getReadChain().api.database_api.get_feed_history();
+};
+
+export const getWitnessSchedule = async (): Promise<IWitnessSchedule> => {
+  return getReadChain().api.database_api.get_witness_schedule({});
 };
 
 // See https://developers.hive.io/apidefinitions/#database_api.list_votes

@@ -138,7 +138,9 @@
   "profile": {
     "joined": "Inscrit en",
     "hive_description": "Des jetons négociables peuvent être transférés n'importe où à tout moment. HIVE peuvent être convertis en HIVE POWER lors d'un processus appelé conversion en influence, ou power up.",
-    "hp_description": "Jetons d'influence qui vous donnent plus de contrôle sur les gains potentiels des articles et vous permettent d'augmenter vos gains de curation. Une partie de votre influence, ou HIVE POWER, est actuellement déléguée. La délégation est un don pour augmenter l'influence ou pour encourager les nouveaux utilisateurs à effectuer des actions sur Hive. Le montant délégué peut varier. HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
+    "hp_description": "Jetons d'influence qui vous donnent plus de contrôle sur les gains potentiels des articles et vous permettent d'augmenter vos gains de curation.",
+    "hp_delegated_description": "Une partie de votre influence, ou HIVE POWER, est actuellement déléguée. La délégation est un don pour augmenter l'influence ou pour encourager les nouveaux utilisateurs à effectuer des actions sur Hive. Le montant délégué peut varier.",
+    "hp_apr_description": "HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
     "hive_dolar_description": "Tradeable tokens that may be transferred anywhere at anytime.",
     "savings_title": "EPARGNE",
     "savings_description": "Le solde dépend de la période de 3 jours d'attente requise pour les retraits. HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)",
