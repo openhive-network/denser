@@ -97,7 +97,9 @@
     },
     "wallet_nav": {
       "balances": "Soldes",
-      "delegations": "Delegations"
+      "delegations": "Delegations",
+      "authorities": "Autorités",
+      "label": "Portefeuille"
     }
   },
   "select_sort": {

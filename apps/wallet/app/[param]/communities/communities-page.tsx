@@ -41,6 +41,12 @@ const getCommmunityName = () => {
 
 const COST_TOKEN = 1;
 const COST_HIVE = 3;
+// HIVE balances are reported in thousandths
+const HIVE_PRECISION = 1000;
+const OWNER_ACCOUNT_ID = 'community-owner-account';
+const OWNER_ACCOUNT_HINT_ID = 'community-owner-account-hint';
+const ADVANCED_FIELDS_ID = 'community-advanced-fields';
+const NO_PAYMENT_OPTION_ID = 'community-no-payment-option';
 
 interface CommunitiesPageProps {
   username: string;
@@ -55,6 +61,9 @@ export default function CommunitiesPage({ username, initialCommunityTag }: Commu
     enabled: user.isLoggedIn
   });
   const account = data?.accounts[0];
+  const canPayWithHive = Number(account?.balance.amount ?? 0) >= COST_HIVE * HIVE_PRECISION;
+  const canPayWithToken = Number(account?.pending_claimed_accounts ?? 0) >= COST_TOKEN;
+  const hasPaymentOption = canPayWithHive || canPayWithToken;
 
   const { t } = useTranslation('common_wallet');
   const [advanced, setAdvanced] = useState(false);
@@ -221,49 +230,58 @@ export default function CommunitiesPage({ username, initialCommunityTag }: Commu
                   )}
                 />
                 <div>
-                  <h3 className="text-sm">{t('communities.assigned_owner_account')}</h3>
-                  <Input value={communityTag} />
-                  <p className="text-xs">{t('communities.communities_are_built')}</p>
+                  <Label htmlFor={OWNER_ACCOUNT_ID}>{t('communities.assigned_owner_account')}</Label>
+                  <Input
+                    id={OWNER_ACCOUNT_ID}
+                    value={communityTag}
+                    readOnly
+                    aria-describedby={OWNER_ACCOUNT_HINT_ID}
+                  />
+                  <p id={OWNER_ACCOUNT_HINT_ID} className="text-xs">
+                    {t('communities.communities_are_built')}
+                  </p>
                 </div>
-                {advanced ? (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t('communities.description')}</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="flagText"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t('communities.flag_text')}</FormLabel>
-                          <FormControl>
-                            <Textarea {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="lang"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t('communities.lang')}</FormLabel>
-                          <FormControl>
+                <div id={ADVANCED_FIELDS_ID} className={advanced ? 'flex flex-col gap-4' : 'hidden'}>
+                  {advanced ? (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('communities.description')}</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="flagText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('communities.flag_text')}</FormLabel>
+                            <FormControl>
+                              <Textarea {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="lang"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t('communities.lang')}</FormLabel>
                             <Select {...field} onValueChange={field.onChange} defaultValue={field.value}>
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
                               <SelectContent>
                                 {Object.entries(ESupportedLanguages).map(([key, value]) => (
                                   <SelectItem key={key} value={value}>
@@ -272,28 +290,28 @@ export default function CommunitiesPage({ username, initialCommunityTag }: Commu
                                 ))}
                               </SelectContent>
                             </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="nsfw"
-                      render={({ field }) => (
-                        <FormItem>
-                          <div className="flex items-center gap-2">
-                            <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                            </FormControl>
-                            <FormLabel>{t('communities.nsfw')}</FormLabel>
-                          </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                ) : null}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="nsfw"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="flex items-center gap-2">
+                              <FormControl>
+                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              </FormControl>
+                              <FormLabel>{t('communities.nsfw')}</FormLabel>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  ) : null}
+                </div>
                 <FormField
                   control={form.control}
                   name="claimed"
@@ -305,8 +323,7 @@ export default function CommunitiesPage({ username, initialCommunityTag }: Commu
                         <div className="flex items-center space-x-2">
                           <FormControl>
                             <Input
-                              // multiply by 1000 to convert to hive
-                              disabled={COST_HIVE * 1000 > Number(account?.balance.amount ?? 0)}
+                              disabled={!canPayWithHive}
                               type="radio"
                               id="hive"
                               value="hive"
@@ -318,15 +335,14 @@ export default function CommunitiesPage({ username, initialCommunityTag }: Commu
                           <Label htmlFor="hive">
                             {t('communities.payment_confirm', {
                               amount: COST_HIVE,
-                              // 1000 is the precision of hive
-                              owned_hives: Number(account?.balance.amount) / 1000
+                              owned_hives: Number(account?.balance.amount) / HIVE_PRECISION
                             })}
                           </Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <FormControl>
                             <Input
-                              disabled={COST_TOKEN > Number(account?.pending_claimed_accounts)}
+                              disabled={!canPayWithToken}
                               type="radio"
                               id="claimed"
                               value="claimed"
@@ -367,9 +383,26 @@ export default function CommunitiesPage({ username, initialCommunityTag }: Commu
                     </FormItem>
                   )}
                 />
+                {hasPaymentOption ? null : (
+                  <p id={NO_PAYMENT_OPTION_ID} className="text-sm text-destructive">
+                    {t('communities.no_payment_option', { hive: COST_HIVE, tokens: COST_TOKEN })}
+                  </p>
+                )}
                 <div className="flex w-full items-center justify-between">
-                  <Button type="submit">{t('communities.create_community')}</Button>
-                  <Button type="button" variant="outline" onClick={() => setAdvanced((prev) => !prev)}>
+                  <Button
+                    type="submit"
+                    disabled={!hasPaymentOption}
+                    aria-describedby={hasPaymentOption ? undefined : NO_PAYMENT_OPTION_ID}
+                  >
+                    {t('communities.create_community')}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    aria-expanded={advanced}
+                    aria-controls={ADVANCED_FIELDS_ID}
+                    onClick={() => setAdvanced((prev) => !prev)}
+                  >
                     {advanced ? t('communities.basic') : t('communities.advanced')}
                   </Button>
                 </div>

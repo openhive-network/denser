@@ -106,7 +106,9 @@
       "delegations": "Delegations",
       "keys_and_permissions": "Keys & Permissions",
       "change_password": "Change Password",
-      "communities": "Communities"
+      "communities": "Communities",
+      "authorities": "Authorities",
+      "label": "Wallet"
     },
     "user_menu": {
       "account_menu": "Account menu",
@@ -426,7 +428,8 @@
     "threshold": "Threshold",
     "add": "Add",
     "cancel": "Cancel",
-    "add_item_title": "Add new {{id}} entry"
+    "add_item_title": "Add new {{id}} entry",
+    "edit_item": "Edit {{name}}"
   },
   "transfers_page": {
     "decode_memo": "Decode",
@@ -622,7 +625,8 @@
       "maximum_characters": "Maximum {{value}} characters",
       "minimum_characters": "Minimum {{value}} characters",
       "pick_one": "Pick one"
-    }
+    },
+    "no_payment_option": "You need {{hive}} HIVE or {{tokens}} account creation token to create a community"
   },
   "settings": {
     "preferences": "Preferences",

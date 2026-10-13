@@ -90,7 +90,7 @@ export default function PermissionsPage({ username }: { username: string }) {
         <Card
           className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}
         >
-          <h1 className="p-4 text-2xl font-semibold">{t('permissions.posting_key.name')}</h1>
+          <h2 className="p-4 text-2xl font-semibold">{t('permissions.posting_key.name')}</h2>
           <Separator />
           <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
             <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
@@ -109,7 +109,7 @@ export default function PermissionsPage({ username }: { username: string }) {
             </div>
 
             <div className="flex flex-col p-4">
-              <h1 className="text-lg font-semibold">{t('permissions.posting_key.permissions')}</h1>
+              <h3 className="text-lg font-semibold">{t('permissions.posting_key.permissions')}</h3>
               <span>{t('permissions.posting_key.to')}</span>
               <ul className="flex list-disc flex-col gap-2 px-5 pt-2">
                 <li>{t('permissions.posting_key.publish')}</li>
@@ -126,7 +126,7 @@ export default function PermissionsPage({ username }: { username: string }) {
         <Card
           className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}
         >
-          <h1 className="p-4 text-2xl font-semibold">{t('permissions.active_key.name')}</h1>
+          <h2 className="p-4 text-2xl font-semibold">{t('permissions.active_key.name')}</h2>
           <Separator />
           <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
             <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
@@ -144,7 +144,7 @@ export default function PermissionsPage({ username }: { username: string }) {
               ) : null}
             </div>
             <div className="flex flex-col p-4">
-              <h1 className="text-lg font-semibold">{t('permissions.active_key.permissions')}</h1>
+              <h3 className="text-lg font-semibold">{t('permissions.active_key.permissions')}</h3>
               <span>{t('permissions.active_key.to')}</span>
               <ul className="flex list-disc flex-col gap-2 px-5 pt-2 ">
                 <li>{t('permissions.active_key.transfer')}</li>
@@ -162,7 +162,7 @@ export default function PermissionsPage({ username }: { username: string }) {
         <Card
           className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}
         >
-          <h1 className="p-4 text-2xl font-semibold">{t('permissions.owner_key.name')}</h1>
+          <h2 className="p-4 text-2xl font-semibold">{t('permissions.owner_key.name')}</h2>
           <Separator />
           <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
             <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
@@ -179,7 +179,7 @@ export default function PermissionsPage({ username }: { username: string }) {
               ) : null}
             </div>
             <div className="flex flex-col p-4">
-              <h1 className="text-lg font-semibold">{t('permissions.owner_key.permissions')}</h1>
+              <h3 className="text-lg font-semibold">{t('permissions.owner_key.permissions')}</h3>
               <span>{t('permissions.owner_key.to')}</span>
               <ul className="flex list-disc flex-col gap-2 px-5 pt-2">
                 <li>{t('permissions.owner_key.reset')}</li>
@@ -193,7 +193,7 @@ export default function PermissionsPage({ username }: { username: string }) {
         <Card
           className={cn('flex flex-col text-sm drop-shadow-xl dark:bg-background/95 dark:text-white')}
         >
-          <h1 className="p-4 text-2xl font-semibold">{t('permissions.memo_key.name')}</h1>
+          <h2 className="p-4 text-2xl font-semibold">{t('permissions.memo_key.name')}</h2>
           <Separator />
           <div className="flex flex-col md:grid md:grid-cols-[1fr_400px]">
             <div className="border-bg-border flex flex-col gap-8 border-none p-4 md:border-r-2 md:border-solid">
@@ -211,7 +211,7 @@ export default function PermissionsPage({ username }: { username: string }) {
               ) : null}
             </div>
             <div className="flex flex-col p-4">
-              <h1 className="text-lg font-semibold">{t('permissions.memo_key.permissions')}</h1>
+              <h3 className="text-lg font-semibold">{t('permissions.memo_key.permissions')}</h3>
               <span>{t('permissions.memo_key.to')}</span>
               <ul className="flex list-disc flex-col gap-2 px-5 pt-2">
                 <li>{t('permissions.memo_key.send')}</li>
@@ -223,7 +223,7 @@ export default function PermissionsPage({ username }: { username: string }) {
 
         <Separator />
         <div className="flex flex-col gap-4 py-12 text-sm">
-          <h1 className="text-xl font-semibold">{t('permissions.public_keys')}</h1>
+          <h2 className="text-xl font-semibold">{t('permissions.public_keys')}</h2>
           <p>{t('permissions.public_info')}</p>
           <div>
             <p>{t('permissions.view_public')}</p>

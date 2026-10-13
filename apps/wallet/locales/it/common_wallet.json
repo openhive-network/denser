@@ -97,7 +97,9 @@
     },
     "wallet_nav": {
       "balances": "Saldi",
-      "delegations": "Delegations"
+      "delegations": "Delegations",
+      "authorities": "Autorità",
+      "label": "Portafoglio"
     }
   },
   "select_sort": {
