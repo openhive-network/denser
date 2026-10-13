@@ -1,3 +1,4 @@
+import type { Locator, Page } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 import {
   installBroadcastInterceptor,
@@ -158,11 +159,11 @@ test.describe('Post creation — payout & rewards combinations (§2.3, top-level
    *
    *   1. Selecting Decline Payout (`maxPayout === '0'`) auto-forces
    *      rewards to '50%' via a useEffect (lines 137-141).
-   *   2. Simultaneously, the 100% Power Up Checkbox is rendered with
+   *   2. Simultaneously, the 100% Power Up radio is rendered with
    *      `disabled={maxPayout === '0'}` (line 349) so the user CANNOT
    *      flip it back to 100% without first leaving Decline Payout.
    *
-   * The test asserts both the UI state (Checkbox `disabled` attribute) and
+   * The test asserts both the UI state (radio `disabled` attribute) and
    * the resulting broadcast (`percent_hbd: 10000`, not 0). If a future
    * refactor either drops the disabled gate or loosens the 50% lock,
    * the broadcast value will diverge and this test fails — preventing
@@ -192,13 +193,13 @@ test.describe('Post creation — payout & rewards combinations (§2.3, top-level
     await waitForAutosaveFlushed(page);
     await editor.getAdvancedSettingsButton.click();
     // See `configureAdvancedSettings` for why we click the `<label for>`
-    // instead of the Checkbox: the Checkbox is `display:none`. The Label
+    // instead of the radio: the radio is visually hidden. The Label
     // is the visible surface and HTML5 synthesizes a click on the
     // labeled control on Label clicks.
     await expect(modal.advancedSettingsTitleElement).toBeVisible();
     await modal.maxPayoutOptionLabel('0').click();
-    // PAY-04's invariant: the 100% PU Checkbox must be disabled once
-    // Decline is selected. Asserted on the testid the Checkbox carries
+    // PAY-04's invariant: the 100% PU radio must be disabled once
+    // Decline is selected. Asserted on the testid the radio carries
     // (the Label itself doesn't reflect the disabled state).
     await expect(modal.authorRewardsType100Button).toBeDisabled();
     await modal.saveButton.click();
@@ -579,5 +580,66 @@ test.describe('Post creation — payout & rewards combinations (§2.3, top-level
         { account: BENEFICIARY_B, weight: 1000 }
       ]
     });
+  });
+});
+
+/**
+ * Advanced settings dialog keyboard path (§2.3 PAY-A11Y-01): the trigger is
+ * a real button, each option set is a radio group (one Tab stop, arrows move
+ * the selection, `aria-checked` reflects it), the dialog is modal and opens
+ * on the first control, beneficiary rows carry accessible names, and Escape
+ * returns focus to the trigger.
+ */
+// Radix RadioGroup selects on arrow-driven focus only while the arrow key is
+// still down, and it moves focus in a timeout. `keyboard.press` releases the
+// key before that timeout fires, so hold the key until the selection lands.
+async function pressArrowAndExpectChecked(
+  page: Page,
+  key: 'ArrowLeft' | 'ArrowRight',
+  radio: Locator
+) {
+  await page.keyboard.down(key);
+  await expect(radio).toBeFocused();
+  await expect(radio).toHaveAttribute('aria-checked', 'true');
+  await page.keyboard.up(key);
+}
+
+test.describe('Post creation — advanced settings keyboard access (§2.3)', () => {
+  test('PAY-A11Y-01: dialog is operable with the keyboard alone', async ({ page }) => {
+    await gotoSubmitLoggedIn(page);
+    const editor = new PostEditorPage(page);
+    await editor.validateDefaultPostEditorIsLoaded();
+    const modal = new AdvancedSettingsModal(page);
+
+    await editor.getAdvancedSettingsButton.focus();
+    await page.keyboard.press('Enter');
+    await expect(modal.advancedSettingsTitleElement).toBeVisible();
+    await expect(page.getByRole('dialog')).toHaveAttribute('aria-modal', 'true');
+
+    await expect(modal.noLimitMaximumAcceptedPayoutButton).toBeFocused();
+    await expect(modal.noLimitMaximumAcceptedPayoutButton).toHaveAttribute('aria-checked', 'true');
+    await expect(page.getByRole('radiogroup', { name: 'Maximum Accepted Payout' })).toBeVisible();
+
+    await pressArrowAndExpectChecked(page, 'ArrowRight', modal.declinePayoutMaximumAcceptedPayoutButton);
+    await expect(modal.noLimitMaximumAcceptedPayoutButton).toHaveAttribute('aria-checked', 'false');
+    await expect(modal.authorRewardsType100Button).toBeDisabled();
+
+    await pressArrowAndExpectChecked(page, 'ArrowLeft', modal.noLimitMaximumAcceptedPayoutButton);
+
+    await page.keyboard.press('Tab');
+    await expect(modal.authorRewardsType50Button).toBeFocused();
+    await expect(modal.authorRewardsType50Button).toHaveAttribute('aria-checked', 'true');
+    await pressArrowAndExpectChecked(page, 'ArrowRight', modal.authorRewardsType100Button);
+
+    await modal.addBeneficiarAccount.click();
+    await expect(page.getByLabel('Beneficiary 1 share (%)')).toBeVisible();
+    await expect(page.getByLabel('Beneficiary 1 account')).toBeVisible();
+    await expect(page.getByLabel('Your share (%)')).toHaveAccessibleDescription(
+      /cannot be edited directly/
+    );
+
+    await page.keyboard.press('Escape');
+    await expect(modal.advancedSettingsTitleElement).toBeHidden();
+    await expect(editor.getAdvancedSettingsButton).toBeFocused();
   });
 });

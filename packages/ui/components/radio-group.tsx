@@ -25,8 +25,8 @@ const RadioGroupItem = React.forwardRef<
         'h-4 w-4 rounded-full border border-input ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}
-      {...props}
       data-testid="radio-button"
+      {...props}
     >
       <RadioGroupPrimitive.Indicator className="flex items-center justify-center">
         <Circle className="h-2.5 w-2.5 fill-primary text-primary" />

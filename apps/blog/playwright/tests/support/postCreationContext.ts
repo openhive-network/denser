@@ -355,7 +355,7 @@ export async function readSeededPostTemplates(
  * - `maxPayout: 'no_max'` → `data.maxAcceptedPayout = 1000000`
  *   (NaiAsset amount `"1000000000"` after the editor's `* 1000` step)
  * - `maxPayout: '0'` → `data.maxAcceptedPayout = 0` (NaiAsset `"0"`).
- *   Also auto-forces rewards to `50%` and disables the `100%` Checkbox
+ *   Also auto-forces rewards to `50%` and disables the `100%` radio
  *   (advanced-settings-post-form.tsx:137-141, :349).
  * - `maxPayout: 'custom'` → requires `customValue` (HBD whole units);
  *   the editor multiplies it by 1000 for the broadcast NaiAsset.
@@ -384,13 +384,11 @@ export interface AdvancedSettingsConfig {
  * §2.3-specific.
  *
  * Notes on quirks the dialog adds:
- *   - The Checkbox primitives are visually hidden (`className="hidden"`)
- *     but their `<Label>` siblings carry `cursor-pointer` and are the
- *     interactive surface; we click the Label-wrapping testid container
- *     via the existing POM locators which target the (hidden) Checkbox.
- *     Playwright dispatches a click event that bubbles through the Label
- *     wrap, so `onCheckedChange` fires.
- *   - When `maxPayout === '0'`, the 100% PU Checkbox is `disabled` and
+ *   - The radio items are visually hidden (sr-only) but their `<Label>`
+ *     siblings carry `cursor-pointer` and are the mouse surface; we click
+ *     the Labels via the POM's `maxPayoutOptionLabel` /
+ *     `payoutTypeOptionLabel`, which selects the labelled radio.
+ *   - When `maxPayout === '0'`, the 100% PU radio is `disabled` and
  *     rewards are forced to 50% on a `useEffect`. Callers that want
  *     `payoutType: '100%'` together with Decline should expect that
  *     forcing — PAY-04 asserts the disabled state instead of trying to
@@ -408,19 +406,15 @@ export async function configureAdvancedSettings(
   // tests that don't open the modal (e.g. POST-07 preview).
   await waitForAutosaveFlushed(page);
   await page.locator('[data-testid="advanced-settings-button"]').click();
-  // Wait on the DialogTitle (visible). We deliberately do NOT call the
-  // POM's `validateAdvancedSettingsModalIsLoaded` here because it asserts
-  // visibility on the max-payout / rewards Checkboxes — those carry
-  // `className="hidden"` (display:none), so they're never visible. The
-  // POM check would always time out on a healthy dialog.
+  // Wait on the DialogTitle (visible) — the cheapest signal the dialog
+  // has mounted.
   await expect(modal.advancedSettingsTitleElement).toBeVisible({
     timeout: TIMEOUTS.HYDRATION
   });
 
-  // The Checkbox primitives carry `className="hidden"` (display:none) —
-  // they're not directly clickable in any Playwright mode. The visible
-  // interactive surface is the `<Label htmlFor>` sibling, exposed via
-  // POM helpers `maxPayoutOptionLabel` / `payoutTypeOptionLabel`.
+  // The radio items are visually hidden (sr-only); the visible click
+  // surface is the `<Label htmlFor>` sibling, exposed via POM helpers
+  // `maxPayoutOptionLabel` / `payoutTypeOptionLabel`.
 
   // Max payout: order matters — switching to '0' triggers the useEffect
   // that resets rewards to '50%', so apply max payout before payout type
@@ -435,8 +429,8 @@ export async function configureAdvancedSettings(
     await modal.maxPayoutOptionLabel(config.maxPayout).click();
   }
 
-  // Rewards: when maxPayout is Decline ('0'), BOTH rewards Checkboxes
-  // carry `disabled={maxPayout === '0'}` (advanced-settings-post-form.tsx:349)
+  // Rewards: when maxPayout is Decline ('0'), the rewards radio group
+  // carries `disabled={maxPayout === '0'}` (advanced-settings-post-form.tsx)
   // and rewards is auto-forced to '50%' via a useEffect. Playwright treats
   // a `<label for>` as disabled when its target is disabled, so any click
   // attempt on the rewards Labels times out. Skip the click entirely —
