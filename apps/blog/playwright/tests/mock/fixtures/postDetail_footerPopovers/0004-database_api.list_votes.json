@@ -1,0 +1,83 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "sicarius",
+        "re-gtg-qux0er",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "6871400be1883b7f",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "sicarius",
+      "re-gtg-qux0er",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "sicarius",
+          "id": 669100011,
+          "last_update": "2021-06-18T20:50:12",
+          "num_changes": 0,
+          "permlink": "re-gtg-qux0er",
+          "rshares": 901313802403,
+          "vote_percent": 10000,
+          "voter": "blocktrades",
+          "weight": 0
+        },
+        {
+          "author": "sicarius",
+          "id": 669100014,
+          "last_update": "2021-06-19T06:52:10",
+          "num_changes": 0,
+          "permlink": "re-gtg-qux0er",
+          "rshares": 1867450191,
+          "vote_percent": 10000,
+          "voter": "chunchun123",
+          "weight": 0
+        },
+        {
+          "author": "sicarius",
+          "id": 669100012,
+          "last_update": "2021-06-18T21:02:44",
+          "num_changes": 0,
+          "permlink": "re-gtg-qux0er",
+          "rshares": 203499247410,
+          "vote_percent": 10000,
+          "voter": "gtg",
+          "weight": 0
+        },
+        {
+          "author": "sicarius",
+          "id": 669100013,
+          "last_update": "2021-06-18T21:30:05",
+          "num_changes": 0,
+          "permlink": "re-gtg-qux0er",
+          "rshares": 8822779787,
+          "vote_percent": 10000,
+          "voter": "xplosive",
+          "weight": 0
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

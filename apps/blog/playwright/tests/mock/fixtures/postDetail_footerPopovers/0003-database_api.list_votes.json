@@ -1,0 +1,94 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "steevc",
+        "re-gtg-quwy4z",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "415c0feda0c7c6c0",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "steevc",
+      "re-gtg-quwy4z",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "steevc",
+          "id": 669100003,
+          "last_update": "2021-06-19T06:50:21",
+          "num_changes": 0,
+          "permlink": "re-gtg-quwy4z",
+          "rshares": 1754871237,
+          "vote_percent": 10000,
+          "voter": "chunchun123",
+          "weight": 0
+        },
+        {
+          "author": "steevc",
+          "id": 669100001,
+          "last_update": "2021-06-18T20:05:03",
+          "num_changes": 0,
+          "permlink": "re-gtg-quwy4z",
+          "rshares": 203552813210,
+          "vote_percent": 10000,
+          "voter": "gtg",
+          "weight": 0
+        },
+        {
+          "author": "steevc",
+          "id": 671100004,
+          "last_update": "2021-07-02T11:00:00",
+          "num_changes": 0,
+          "permlink": "re-gtg-quwy4z",
+          "rshares": 0,
+          "vote_percent": 0,
+          "voter": "roelandp",
+          "weight": 0
+        },
+        {
+          "author": "steevc",
+          "id": 671100005,
+          "last_update": "2021-07-03T15:30:00",
+          "num_changes": 0,
+          "permlink": "re-gtg-quwy4z",
+          "rshares": 0,
+          "vote_percent": 0,
+          "voter": "sicarius",
+          "weight": 0
+        },
+        {
+          "author": "steevc",
+          "id": 669100002,
+          "last_update": "2021-06-18T20:31:40",
+          "num_changes": 0,
+          "permlink": "re-gtg-quwy4z",
+          "rshares": 8645609063,
+          "vote_percent": 10000,
+          "voter": "xplosive",
+          "weight": 0
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

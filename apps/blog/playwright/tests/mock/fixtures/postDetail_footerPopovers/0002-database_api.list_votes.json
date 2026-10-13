@@ -1,0 +1,61 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.list_votes",
+    "params": {
+      "start": [
+        "roelandp",
+        "re-gtg-qv66u2",
+        ""
+      ],
+      "limit": 1000,
+      "order": "by_comment_voter"
+    },
+    "id": 1
+  },
+  "requestHash": "e73bfd26fad894db",
+  "method": "database_api.list_votes",
+  "params": {
+    "start": [
+      "roelandp",
+      "re-gtg-qv66u2",
+      ""
+    ],
+    "limit": 1000,
+    "order": "by_comment_voter"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "votes": [
+        {
+          "author": "roelandp",
+          "id": 670900001,
+          "last_update": "2021-06-23T20:01:12",
+          "num_changes": 0,
+          "permlink": "re-gtg-qv66u2",
+          "rshares": 223504766152,
+          "vote_percent": 10000,
+          "voter": "gtg",
+          "weight": 0
+        },
+        {
+          "author": "roelandp",
+          "id": 671900002,
+          "last_update": "2021-07-14T08:12:45",
+          "num_changes": 0,
+          "permlink": "re-gtg-qv66u2",
+          "rshares": 0,
+          "vote_percent": 0,
+          "voter": "ordosjc",
+          "weight": 0
+        }
+      ]
+    }
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

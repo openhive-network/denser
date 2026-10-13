@@ -573,6 +573,8 @@
     "footer": {
       "and_more": "and {{value}} more",
       "show_voters": "{{label}}, show voters",
+      "votes_after_payout_one": "+{{count}} vote after payout (not counted)",
+      "votes_after_payout": "+{{count}} votes after payout (not counted)",
       "in": "in",
       "by": "by",
       "upvote": "Upvote",
