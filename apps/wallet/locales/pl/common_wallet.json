@@ -153,7 +153,7 @@
       "title": "Tokeny Hive",
       "liquid_platform_token": "Liquid platform token",
       "vesting_influence_token": "Vesting influence token",
-      "seeks_price_stability": "Seeks price stability with USD"
+      "seeks_price_stability": "Dąży do stabilności ceny względem USD"
     }
   },
   "profile": {
@@ -174,7 +174,7 @@
     "hive_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
     "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści.",
     "hp_delegated_description": "Część HIVE POWER użytkownika {{username}} jest obecnie oddelegowana. Delegowanie to użyczenie jednostek dla zwiększenia wpływu lub by pomóc nowym użytkownikom w korzystaniu z Hive. Kwota delegacji może się zmieniać w czasie.",
-    "hp_apr_description": "HIVE POWER increases at an APR of approximately {{value}}%, subject to blockchain variance.",
+    "hp_apr_description": "HIVE POWER rośnie w tempie około {{value}}% w skali roku (APR), z zastrzeżeniem zmienności blockchaina.",
     "hive_dolar_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie.",
     "savings_title": "Oszczędności",
     "savings_description": "Saldo zależy od 3-dniowego okresu karencji wymaganego do wycofania środków, HBD interest rate: {{rate}}% APR (as voted by the <0>Witnesses</0>)",
@@ -185,9 +185,9 @@
     "no_transactions_found": "Nie znaleziono transakcji",
     "show_more_transactions": "Pokaż więcej",
     "the_next_power_down": "Następne zmniejszanie mocy odbędzie się za",
-    "paid_for": "Paid {{value1}} for {{value2}}",
-    "cancel_transfer_from_savings": "Cancel transfer from savings (request {{number}})",
-    "receive_interest": "Received interest of {{number}}",
+    "paid_for": "Zapłacono {{value1}} za {{value2}}",
+    "cancel_transfer_from_savings": "Anuluj przelew z oszczędności (zlecenie {{number}})",
+    "receive_interest": "Otrzymano odsetki w wysokości {{number}}",
     "transfer_to": "Przelew {{value}} do ",
     "transfer_to_savings_to": "Przelew do oszczędności {{value}} do ",
     "transfer_hp_to": "Przekazanie {{value}} POWER do ",
@@ -501,7 +501,7 @@
       "transfer_operation": "Transfers"
     },
     "report_operations_found": "{{count}} operations found",
-    "report_no_operations": "No operations found in the selected period",
+    "report_no_operations": "Nie znaleziono operacji w wybranym okresie",
     "report_select_operation_types": "Include in report:",
     "current_rewards": "Aktualna nagroda: ",
     "redeem_rewards": "Odbierz nagrody (Trafia do salda)",
@@ -558,7 +558,7 @@
       "to_account": "Do konta",
       "amount_label": "Ilość RC (w miliardach)",
       "slider_label": "Ilość RC",
-      "readout": "{{amount}} bil / {{max}} bil RC",
+      "readout": "{{amount}} mld / {{max}} mld RC",
       "value_text": "{{amount}} mld RC, {{percent}}%",
       "checking_account": "Sprawdzanie konta…",
       "account_check_failed": "Nie udało się sprawdzić konta. Spróbuj ponownie później.",

@@ -102,6 +102,12 @@ export class ApiHelper {
     return { result: json.result?.accounts };
   }
 
+  // Whether the account currently delegates any of its HIVE POWER to others
+  async isDelegatingHivePowerAPI(username: string): Promise<boolean> {
+    const accounts = (await this.getAccountInfoAPI(username)).result;
+    return Number(accounts[0].delegated_vesting_shares.amount) > 0;
+  }
+
   // Get Follow count info as json from API response using bridge.get_profile
   async getFollowCountAPI(username: string) {
     const url = process.env.REACT_APP_API_ENDPOINT;
