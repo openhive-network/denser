@@ -459,6 +459,10 @@
     },
     "footer": {
       "and_more": "i {{value}} więcej",
+      "votes_after_payout_one": "+{{count}} głos po wypłacie (niewliczony)",
+      "votes_after_payout_few": "+{{count}} głosy po wypłacie (niewliczone)",
+      "votes_after_payout_many": "+{{count}} głosów po wypłacie (niewliczonych)",
+      "votes_after_payout": "+{{count}} głosu po wypłacie (niewliczone)",
       "show_voters": "{{label}}, pokaż głosujących",
       "in": "w",
       "by": "przez",

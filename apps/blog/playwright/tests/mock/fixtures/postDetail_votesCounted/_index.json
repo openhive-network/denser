@@ -1,0 +1,8 @@
+{
+  "testName": "postDetail_votesCounted",
+  "base": "postDetail_footerPopovers",
+  "note": "Overlay for the postVoters*.spec.ts specs: bridge.get_post with stats.total_votes set to 5, the number of rows the recorded database_api.list_votes returns, so every vote on chain is counted. Patched from postDetail 0001.",
+  "overlayFiles": [
+    "0001-bridge.get_post.json"
+  ]
+}

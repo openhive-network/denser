@@ -1,0 +1,8 @@
+{
+  "testName": "postDetail_voteAfterPayout",
+  "base": "postDetail_votesCounted",
+  "note": "Overlay for the postVoters*.spec.ts specs: database_api.list_votes with 1 vote(s) appended, cast after the post's payout_at (2021-06-25T19:31:45), so the chain has 6 votes against stats.total_votes 5. Patched from postDetail 0006.",
+  "overlayFiles": [
+    "0006-database_api.list_votes.json"
+  ]
+}

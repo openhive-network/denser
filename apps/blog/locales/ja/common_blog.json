@@ -454,6 +454,7 @@
     },
     "footer": {
       "and_more": "and {{value}} more",
+      "votes_after_payout": "支払い後の投票 +{{count}} 件（集計対象外）",
       "show_voters": "{{label}}、投票者を表示",
       "in": "in",
       "by": "by",

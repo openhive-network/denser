@@ -77,6 +77,20 @@ function getJsonFiles(locale) {
   return fs.readdirSync(localeDir).filter((file) => file.endsWith('.json'));
 }
 
+const PLURAL_SUFFIX = /_(zero|one|two|few|many|other)$/;
+
+/**
+ * Whether a key is an i18next plural form of a base key the other locale has. Languages use
+ * different plural categories (Polish adds `_few`/`_many`, Japanese has no `_one`), so these
+ * forms legitimately differ between locales.
+ * @param {string} key - Key that the other locale lacks
+ * @param {Set<string>} otherKeys - Keys of the other locale
+ * @returns {boolean}
+ */
+function isPluralFormOf(key, otherKeys) {
+  return PLURAL_SUFFIX.test(key) && otherKeys.has(key.replace(PLURAL_SUFFIX, ''));
+}
+
 /**
  * Compare keys between reference and target locale
  * @param {Set<string>} referenceKeys - Keys from reference locale
@@ -88,13 +102,13 @@ function compareKeys(referenceKeys, targetKeys) {
   const extra = [];
 
   referenceKeys.forEach((key) => {
-    if (!targetKeys.has(key)) {
+    if (!targetKeys.has(key) && !isPluralFormOf(key, targetKeys)) {
       missing.push(key);
     }
   });
 
   targetKeys.forEach((key) => {
-    if (!referenceKeys.has(key)) {
+    if (!referenceKeys.has(key) && !isPluralFormOf(key, referenceKeys)) {
       extra.push(key);
     }
   });

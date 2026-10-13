@@ -460,6 +460,10 @@
     },
     "footer": {
       "and_more": "and {{value}} more",
+      "votes_after_payout_one": "+{{count}} голос после выплаты (не учтён)",
+      "votes_after_payout_few": "+{{count}} голоса после выплаты (не учтены)",
+      "votes_after_payout_many": "+{{count}} голосов после выплаты (не учтены)",
+      "votes_after_payout": "+{{count}} голоса после выплаты (не учтены)",
       "show_voters": "{{label}}, показать проголосовавших",
       "in": "in",
       "by": "от",

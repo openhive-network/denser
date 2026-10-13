@@ -501,6 +501,11 @@
     },
     "footer": {
       "and_more": "و{{value}} أكثر",
+      "votes_after_payout_one": "+{{count}} صوت بعد الدفع (غير محتسب)",
+      "votes_after_payout_two": "+{{count}} صوتان بعد الدفع (غير محتسبين)",
+      "votes_after_payout_few": "+{{count}} أصوات بعد الدفع (غير محتسبة)",
+      "votes_after_payout_many": "+{{count}} صوتًا بعد الدفع (غير محتسبة)",
+      "votes_after_payout": "+{{count}} صوت بعد الدفع (غير محتسبة)",
       "show_voters": "{{label}}، عرض المصوتين",
       "in": "في",
       "by": "بواسطة",

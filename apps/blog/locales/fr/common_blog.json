@@ -454,6 +454,8 @@
     },
     "footer": {
       "and_more": "and {{value}} more",
+      "votes_after_payout_one": "+{{count}} vote après le paiement (non comptabilisé)",
+      "votes_after_payout": "+{{count}} votes après le paiement (non comptabilisés)",
       "show_voters": "{{label}}, afficher les votants",
       "in": "in",
       "by": "par",

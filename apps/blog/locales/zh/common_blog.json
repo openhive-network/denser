@@ -454,6 +454,7 @@
     },
     "footer": {
       "and_more": "and {{value}} more",
+      "votes_after_payout": "支付后的 +{{count}} 票（未计入）",
       "show_voters": "{{label}}，显示投票者",
       "in": "in",
       "by": "by",
