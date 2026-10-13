@@ -19,6 +19,7 @@ import env from '@beam-australia/react-env';
 import { User } from '@smart-signer/types/common';
 import { useTranslation } from '@/blog/i18n/client';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { useDismissOnPointerDownOutside } from '@ui/hooks/use-dismiss-on-pointer-down-outside';
 import DialogLogin from '@/blog/components/dialog-login';
 import AccountSwitcher from './account-switcher';
 import LoginMethodIcon from './login-method-icon';
@@ -45,6 +46,8 @@ const UserMenu = ({
   const openAddAccount = useCallback(() => setIsAddAccountOpen(true), []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const closeMenu = useCallback(() => setIsMenuOpen(false), []);
+  const menuPress = useDismissOnPointerDownOutside(isMenuOpen, closeMenu);
 
   // One element is both triggers, so keyboard activation, aria-haspopup/aria-expanded and focus
   // return all belong to the menu. The menu content stays outside the TooltipTrigger (React would
@@ -55,13 +58,17 @@ const UserMenu = ({
       <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <TooltipProvider>
           <Tooltip open={isTooltipOpen && !isMenuOpen} onOpenChange={setIsTooltipOpen}>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild {...menuPress}>
               <TooltipTrigger asChild>{children}</TooltipTrigger>
             </DropdownMenuTrigger>
             {tooltip}
           </Tooltip>
         </TooltipProvider>
-        <DropdownMenuContent className="w-56 bg-background-secondary" data-testid="user-profile-menu-content">
+        <DropdownMenuContent
+          className="w-56 bg-background-secondary"
+          data-testid="user-profile-menu-content"
+          {...menuPress}
+        >
           <DropdownMenuLabel className="flex w-full items-center justify-between">
             <span data-testid="user-name-in-profile-menu">{user.username}</span>
             <TooltipProvider>

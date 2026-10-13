@@ -78,3 +78,17 @@ export async function expectFocusTrappedIn(page: Page, container: Locator): Prom
 export async function clickOutside(page: Page): Promise<void> {
   await page.mouse.click(2, 2);
 }
+
+/**
+ * Makes the page's zero-delay `setTimeout` callbacks run `delayMs` late, as on a busy main thread, where
+ * Chromium dispatches queued input before them. Radix arms a popup's outside-press listener with
+ * such a timer, so a click outside that lands first must still close the popup.
+ */
+export async function runZeroDelayTimersLate(page: Page, delayMs = 300): Promise<void> {
+  await page.evaluate((delay) => {
+    const setTimeoutNow = window.setTimeout;
+    const setTimeoutLate = (handler: TimerHandler, timeout?: number, ...args: unknown[]) =>
+      setTimeoutNow(handler, timeout || delay, ...args);
+    window.setTimeout = Object.assign(setTimeoutLate, setTimeoutNow);
+  }, delayMs);
+}
