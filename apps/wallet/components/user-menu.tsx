@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useState } from 'react';
 import ModeToggle from './mode-toggle';
 import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
@@ -18,6 +18,7 @@ import { getLogger } from '@ui/lib/logging';
 import { User } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
 import { Tooltip, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { useDismissOnPointerDownOutside } from '@ui/hooks/use-dismiss-on-pointer-down-outside';
 
 const logger = getLogger('app');
 
@@ -30,6 +31,8 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
   const { t } = useTranslation('common_wallet');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+  const closeMenu = useCallback(() => setIsMenuOpen(false), []);
+  const menuPress = useDismissOnPointerDownOutside(isMenuOpen, closeMenu);
 
   // One element is both triggers, so keyboard activation, aria-haspopup/aria-expanded and focus
   // return all belong to the menu. The menu content stays outside the TooltipTrigger (React would
@@ -39,13 +42,13 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
     <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
       <TooltipProvider>
         <Tooltip open={isTooltipOpen && !isMenuOpen} onOpenChange={setIsTooltipOpen}>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger asChild {...menuPress}>
             <TooltipTrigger asChild>{children}</TooltipTrigger>
           </DropdownMenuTrigger>
           {tooltip}
         </Tooltip>
       </TooltipProvider>
-      <DropdownMenuContent className="w-56 ">
+      <DropdownMenuContent className="w-56 " {...menuPress}>
         <DropdownMenuLabel className="flex w-full items-center justify-between">
           <span>{user.username}</span>
           <Icons.walletlogo className=" w-20" />

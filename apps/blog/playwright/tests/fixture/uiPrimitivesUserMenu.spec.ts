@@ -2,7 +2,13 @@ import { test, expect, isRecordMode } from '../support/fixture-proxy-test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { gotoPostLoggedIn } from '../support/reblogShareContext';
-import { clickOutside, clickUntilOpen, collectConsoleProblems, pressUntilOpen } from '../support/uiPrimitives';
+import {
+  clickOutside,
+  clickUntilOpen,
+  collectConsoleProblems,
+  pressUntilOpen,
+  runZeroDelayTimersLate
+} from '../support/uiPrimitives';
 
 /**
  * The header's account menu (`@hive/ui` DropdownMenu) behind the avatar, whose button is also the
@@ -76,6 +82,25 @@ test.describe('Radix primitives — header account menu, logged in', () => {
     await expect(menu).toBeHidden();
     await expect(trigger).toBeFocused();
 
+    await trigger.click();
+    await expect(menu).toBeVisible();
+    await clickOutside(page);
+
+    await expect(menu).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
+
+  test('UI-MENU-USER-03 — a click outside closes the menu even when it lands before Radix arms its own outside-press listener', async ({
+    page
+  }) => {
+    const trigger = new HomePage(page).profileAvatarButton;
+    const menu = new ProfileUserMenu(page).profileMenuContent;
+
+    await clickUntilOpen(trigger, menu);
+    await clickOutside(page);
+    await expect(menu).toBeHidden();
+
+    await runZeroDelayTimersLate(page);
     await trigger.click();
     await expect(menu).toBeVisible();
     await clickOutside(page);

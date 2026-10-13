@@ -1,5 +1,5 @@
 import type { Server } from 'node:http';
-import { test, expect, type Locator } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import {
   STUB_ACCOUNT,
@@ -67,6 +67,20 @@ const openWith = async (open: () => Promise<void>, opened: Locator) => {
     await open();
     await expect(opened).toBeVisible({ timeout: 1000 });
   }).toPass({ timeout: HYDRATION_TIMEOUT });
+};
+
+/**
+ * Makes the page's zero-delay `setTimeout` callbacks run `delayMs` late, as on a busy main thread, where
+ * Chromium dispatches queued input before them. Radix arms a popup's outside-press listener with
+ * such a timer, so a click outside that lands first must still close the popup.
+ */
+const runZeroDelayTimersLate = async (page: Page, delayMs = 300): Promise<void> => {
+  await page.evaluate((delay) => {
+    const setTimeoutNow = window.setTimeout;
+    const setTimeoutLate = (handler: TimerHandler, timeout?: number, ...args: unknown[]) =>
+      setTimeoutNow(handler, timeout || delay, ...args);
+    window.setTimeout = Object.assign(setTimeoutLate, setTimeoutNow);
+  }, delayMs);
 };
 
 const focusIsInside = (container: Locator) => container.evaluate((element) => element.contains(document.activeElement));
@@ -224,6 +238,26 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await trigger.click();
     await expect(menu).toBeVisible();
     await expect(page.getByRole('tooltip')).toHaveCount(0);
+    await page.mouse.click(2, 2);
+    await expect(menu).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
+
+  test('WALLET-UI-05 — a click outside closes the account menu even when it lands before Radix arms its own outside-press listener', async ({
+    page
+  }) => {
+    await logInAsStubAccount(page);
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+    const trigger = page.getByTestId('profile-avatar-button');
+    const menu = page.getByRole('menu');
+
+    await openWith(() => trigger.click(), menu);
+    await page.mouse.click(2, 2);
+    await expect(menu).toBeHidden();
+
+    await runZeroDelayTimersLate(page);
+    await trigger.click();
+    await expect(menu).toBeVisible();
     await page.mouse.click(2, 2);
     await expect(menu).toBeHidden();
     await expect(trigger).toBeFocused();
