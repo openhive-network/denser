@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
-import { getAccountFull } from '@transaction/lib/hive-api';
 import { getLogger } from '@ui/lib/logging';
 import { getQueryClient } from '@/wallet/lib/react-query';
 import ProfileLayout from '@/wallet/components/profile-layout';
+import { getRouteAccount } from '@/wallet/lib/account-page-metadata';
 
 const logger = getLogger('app');
 
@@ -26,7 +26,7 @@ export default async function ParamLayout(props: { children: ReactNode; params: 
   try {
     const account = await queryClient.fetchQuery({
       queryKey: ['profileData', username],
-      queryFn: () => getAccountFull(username)
+      queryFn: () => getRouteAccount(username)
     });
     accountExists = Boolean(account.name);
   } catch (error) {

@@ -1,4 +1,11 @@
+import { Metadata } from 'next';
 import { redirect, notFound } from 'next/navigation';
+import { PAGE_NOT_FOUND_METADATA } from '@/wallet/lib/account-page-metadata';
+
+export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
+  const params = await props.params;
+  return decodeURIComponent(params.param).startsWith('@') ? {} : PAGE_NOT_FOUND_METADATA;
+}
 
 export default async function Page(props: { params: Promise<{ param: string }> }) {
   const params = await props.params;

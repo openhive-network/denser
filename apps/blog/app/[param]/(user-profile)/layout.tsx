@@ -11,6 +11,7 @@ import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
+import { PAGE_NOT_FOUND_METADATA } from '@/blog/lib/not-found-metadata';
 
 const logger = getLogger('app');
 
@@ -19,15 +20,18 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
   const raw = params.param;
   // Only process if it looks like a username (starts with @ or %40)
   if (!raw.startsWith('@') && !raw.startsWith('%40')) {
-    return {
-      title: 'Hive',
-      description: 'Hive: Communities Without Borders.'
-    };
+    return PAGE_NOT_FOUND_METADATA;
   }
   const username = raw.startsWith('%40') ? raw.replace('%40', '') : raw.replace('@', '');
+  if (!(await isValidAccountNameFormat(username))) {
+    return PAGE_NOT_FOUND_METADATA;
+  }
   try {
     // Deduplicated with Layout's prefetch within the same request
     const account = await getProfileAccount(username);
+    if (!account?.name) {
+      return PAGE_NOT_FOUND_METADATA;
+    }
     const image = account?.profile?.profile_image || 'https://hive.blog/images/hive-blog-share.png';
     const about = account?.profile?.about || `Profile of @${username} on Hive.`;
     const title = `Blog ${username}`;
@@ -52,7 +56,7 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
   } catch (error) {
     logger.error(error, 'Error in generateMetadata:');
     return {
-      title: 'Hive',
+      title: { absolute: 'Hive' },
       description: 'Hive: Communities Without Borders.',
       openGraph: {
         title: 'Hive',

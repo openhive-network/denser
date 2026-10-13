@@ -6,11 +6,13 @@ import { startWalletApiStub } from '../support/walletApiStub';
 
 /**
  * A wallet page of an account the chain does not have shows the not-found page, not the error
- * boundary (#1140). `find_accounts` answers it with no account, as the API nodes do.
+ * boundary (#1140). `find_accounts` answers it with no account, as the API nodes do. A server 404
+ * keeps the not-found title after hydration.
  */
 
 const MISSING_ACCOUNT = 'no-such-account';
 const NOT_FOUND_TEXT = 'Sorry! This page does not exist.';
+const NOT_FOUND_TITLE = 'Page not found - Hive Wallet';
 const NO_ACCOUNTS = { 'database_api.find_accounts': () => ({ accounts: [] }) };
 const CORS_HEADERS = {
   'access-control-allow-origin': '*',
@@ -43,9 +45,19 @@ test.describe('Account not found', () => {
 
       expect(response?.status()).toBe(404);
       await expectNotFoundPage(page);
+      // document.title: the client must not replace the server's not-found title after hydration.
+      await expect(page).toHaveTitle(NOT_FOUND_TITLE);
     } finally {
       await new Promise((resolve) => stub.close(resolve));
     }
+  });
+
+  test('WALLET-NOT-FOUND-03 — a path that is not an account is a 404 with the not-found title', async ({ page }) => {
+    const response = await page.goto(`${WALLET_BASE_PATH}/this-page-does-not-exist-xyz`);
+
+    expect(response?.status()).toBe(404);
+    await expectNotFoundPage(page);
+    await expect(page).toHaveTitle(NOT_FOUND_TITLE);
   });
 
   test('WALLET-NOT-FOUND-02 — a missing account read by the client shows the not-found page', async ({ page }) => {

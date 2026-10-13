@@ -93,6 +93,7 @@ test.describe('Logged-out wallet pages without wasm', () => {
     await expect(page.getByTestId('wallet-account-history-row')).toContainText(
       `Received 1.000 HIVE from ${STUB_TRANSFER_SENDER}`
     );
+    await expect(page).toHaveTitle(`Balances ${STUB_ACCOUNT} - Hive`);
     await page.waitForLoadState('networkidle');
 
     expect(wasmRequests).toEqual([]);
