@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # The advisory `live_e2e` suite of the full slot (#967): runs the live-API e2e
-# specs a candidate's change reaches, against the test stack's `blog-live` (this
-# tree's production build talking to api.hive.blog).
+# specs a candidate's change reaches, each app's against its test stack server:
+# `blog-live` and `wallet-live`, this tree's production builds talking to
+# api.hive.blog (.aidev/test-stack.compose.yml).
 #
 # ADVISORY: it always exits 0. The live specs judge mainnet data as much as the
 # change, so their verdict must not gate; their per-test results are recorded
-# from test-results/live-e2e/junit.xml and the log shows them.
+# from test-results/live-e2e/junit.xml and the log shows them. The blog's cases
+# keep Playwright's names; every other app's are prefixed "<app> › ".
 #
 # The changed files, first source that exists:
 #   1. $AIDEV_CHANGED_FILES_FILE (one path per line, a deletion as D<TAB>path),
@@ -24,7 +26,7 @@
 #     playwright/; packages/** counts for every app).
 # They run --retries=0 on chromium, --repeat-each=3, or SMOKE_REPEAT_EACH when
 # only the smoke set is selected. None selected is a skipped "not applicable"
-# testcase naming why.
+# testcase naming why. An app whose server does not answer is a failure testcase.
 #
 #   .aidev/run-live-e2e.sh                          # select from the diff
 #   .aidev/run-live-e2e.sh apps/blog/playwright/tests/e2e/faqPage.spec.ts   # these specs
@@ -38,16 +40,17 @@ mkdir -p "$out"
 junit="$PWD/$out/junit.xml"
 
 # One-case junit for an outcome that is not a Playwright run.
-report() { # STATUS(skipped|failure) NAME MESSAGE
-    JUNIT="$junit" KIND="$1" NAME="$2" MESSAGE="$3" node -e '
+report_to() { # FILE STATUS(skipped|failure) NAME MESSAGE
+    JUNIT="$1" KIND="$2" NAME="$3" MESSAGE="$4" node -e '
 const fs = require("fs");
 const esc = (s) => s.replace(/[<>&"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "\"": "&quot;" })[c]);
 const { JUNIT, KIND, NAME, MESSAGE } = process.env;
 const body = KIND === "skipped" ? `<skipped message="${esc(MESSAGE)}"/>` : `<failure message="${esc(MESSAGE)}"/>`;
 fs.writeFileSync(JUNIT, `<?xml version="1.0" encoding="UTF-8"?>\n<testsuite name="live_e2e" tests="1" failures="${KIND === "failure" ? 1 : 0}" skipped="${KIND === "skipped" ? 1 : 0}">\n<testcase classname="live_e2e" name="${esc(NAME)}">${body}</testcase>\n</testsuite>\n`);
 ' < /dev/null
-    echo "live_e2e: $2: $3" >&2
+    echo "live_e2e: $3: $4" >&2
 }
+report() { report_to "$junit" "$@"; }
 
 not_applicable() { report skipped "live_e2e not applicable" "$1"; exit 0; }
 
@@ -58,11 +61,20 @@ not_applicable() { report skipped "live_e2e not applicable" "$1"; exit 0; }
 # breaks their locators is caught even when no test file changed. Kept small and
 # to specs stable against mainnet data. Nothing but this set selected runs it
 # $SMOKE_REPEAT_EACH time(s): it checks locators, not flakiness, and the blog's at
-# --repeat-each=3 took 2.7 min (210 tests) on almost every candidate. The wallet
-# has none: the stack serves only the blog.
+# --repeat-each=3 took 2.7 min (210 tests) on almost every candidate.
 declare -A SMOKE_SPECS=(
     [blog]="apps/blog/playwright/tests/e2e/mainTimeline.spec.ts apps/blog/playwright/tests/e2e/postPage.spec.ts"
+    [wallet]="apps/wallet/playwright/tests/e2e/wallet.spec.ts"
 )
+# Each app's test stack server: its DENSER_URL, and the path that answers once it
+# serves. The wallet's alias has no hyphen (see wallet-live in the compose file).
+declare -A LIVE_URL=([blog]=http://blog-live:3000 [wallet]=http://walletlive:4000)
+declare -A LIVE_SERVICE=([blog]=blog-live [wallet]=wallet-live)
+declare -A PROBE_PATH=([blog]=/favicon.ico [wallet]=/api/health)
+# The order the apps run in: the blog's report is junit.xml itself, as before.
+LIVE_APPS=(blog wallet)
+# The suite whose build each app's server serves.
+declare -A BUILD_SUITE=([blog]=fixture_e2e [wallet]=wallet_fixture)
 SMOKE_REPEAT_EACH=1
 CHANGED_REPEAT_EACH=3
 
@@ -115,35 +127,60 @@ else
     echo "live_e2e: selected e2e specs, --repeat-each=$repeat_each: ${specs[*]}" >&2
 fi
 
-blog_specs=()
+declare -A app_specs=()
 for spec in "${specs[@]}"; do
+    app=
     case "$spec" in
-        apps/blog/playwright/tests/e2e/*) blog_specs+=("${spec#apps/blog/}") ;;
-        *) echo "live_e2e: $spec: not run, the stack serves only the blog" >&2 ;;
+        apps/*/playwright/tests/e2e/*) app=${spec#apps/}; app=${app%%/*} ;;
     esac
+    if [ -n "$app" ] && [ -n "${LIVE_URL[$app]:-}" ]; then
+        app_specs[$app]+="${spec#apps/"$app"/} "
+    else
+        echo "live_e2e: $spec: not run, the stack serves no app for it (${LIVE_APPS[*]})" >&2
+    fi
 done
-[ "${#blog_specs[@]}" -gt 0 ] || not_applicable "the selected e2e specs are not the blog's (${specs[*]}); the stack serves only the blog"
-
-# ---- the server -------------------------------------------------------------
+[ "${#app_specs[@]}" -gt 0 ] || not_applicable "the selected e2e specs are none of ${LIVE_APPS[*]}'s (${specs[*]}); the stack serves only those"
 
 [ "${DENSER_TEST_STACK:-}" = 1 ] || not_applicable "no test stack (DENSER_TEST_STACK is not 1): live_e2e runs only in AIDEV's full slot"
-if ! node -e "fetch('http://blog-live:3000/favicon.ico').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))" < /dev/null; then
-    [ -f apps/blog/.next/aidev-build-complete ] \
-        && report failure "live_e2e stack" "the test stack's blog-live does not answer" \
-        || report failure "live_e2e stack" "no blog build to serve (the fixture_e2e build failed or did not run)"
-    exit 0
-fi
 
 # ---- run ------------------------------------------------------------------------
 
+# shellcheck source=junit-helpers.sh
+source .aidev/junit-helpers.sh
 # shellcheck source=pnpm-deps.sh
 source .aidev/pnpm-deps.sh
 
-cd apps/blog
-status=0
-CI=1 DENSER_URL=http://blog-live:3000 PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit" \
-    pnpm exec playwright test --config=playwright.config.ts --project=chromium \
-    --repeat-each="$repeat_each" --retries=0 --reporter=list,junit "${blog_specs[@]}" < /dev/null || status=$?
-[ -s "$junit" ] || report failure "live_e2e run" "playwright exited $status without a report"
-echo "live_e2e: advisory; playwright exited $status" >&2
+# APP's selected specs against its stack server, reported to JUNIT_FILE: the
+# Playwright run's junit, or one failure case when the server does not answer.
+run_app() { # APP JUNIT_FILE
+    local app=$1 file=$2 url=${LIVE_URL[$1]} service=${LIVE_SERVICE[$1]} status=0
+    local -a app_spec_list
+    read -r -a app_spec_list <<< "${app_specs[$app]}"
+    if ! node -e "fetch(process.argv[1]).then(r=>process.exit(r.ok?0:1),()=>process.exit(1))" "$url${PROBE_PATH[$app]}" < /dev/null; then
+        if [ -f "apps/$app/.next/aidev-build-complete" ]; then
+            report_to "$file" failure "live_e2e stack" "the test stack's $service does not answer"
+        else
+            report_to "$file" failure "live_e2e stack" "no $app build to serve (the ${BUILD_SUITE[$app]} build failed or did not run)"
+        fi
+        return 0
+    fi
+    (
+        cd "apps/$app"
+        CI=1 DENSER_URL=$url PLAYWRIGHT_JUNIT_OUTPUT_NAME="$file" \
+            pnpm exec playwright test --config=playwright.config.ts --project=chromium \
+            --repeat-each="$repeat_each" --retries=0 --reporter=list,junit "${app_spec_list[@]}" < /dev/null
+    ) || status=$?
+    [ -s "$file" ] || report_to "$file" failure "live_e2e run" "playwright exited $status without a report"
+    echo "live_e2e: $app: advisory; playwright exited $status" >&2
+}
+
+for app in "${LIVE_APPS[@]}"; do
+    [ -n "${app_specs[$app]:-}" ] || continue
+    if [ "$app" = blog ]; then
+        run_app "$app" "$junit"
+    else
+        run_app "$app" "$PWD/$out/$app.xml"
+        junit_merge_prefixed "$junit" "$PWD/$out/$app.xml" "$app"
+    fi
+done
 exit 0

@@ -12,6 +12,8 @@ import { fileURLToPath } from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const E2E = 'apps/blog/playwright/tests/e2e';
 const SMOKE_SET = [`${E2E}/mainTimeline.spec.ts`, `${E2E}/postPage.spec.ts`];
+const WALLET_E2E = 'apps/wallet/playwright/tests/e2e';
+const WALLET_SMOKE_SET = [`${WALLET_E2E}/wallet.spec.ts`];
 
 function select(changedLines) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'live-e2e-select-'));
@@ -65,9 +67,32 @@ test('a changed blog component selects exactly the blog smoke set, once each', (
   assert.equal(repeatEach, 1);
 });
 
-test('a changed shared package selects the blog smoke set', () => {
+test('a changed shared package selects every app\'s smoke set', () => {
   const { specs } = select(['packages/ui/components/button.tsx']);
-  assert.deepEqual(specs, SMOKE_SET);
+  assert.deepEqual(specs, [...SMOKE_SET, ...WALLET_SMOKE_SET]);
+});
+
+test('a changed wallet component selects exactly the wallet smoke set, once each', () => {
+  const { specs, repeatEach } = select(['apps/wallet/feature/transfers-page/wallet-balances-table.tsx']);
+  assert.deepEqual(specs, WALLET_SMOKE_SET);
+  assert.equal(repeatEach, 1);
+});
+
+test('a changed wallet spec selects it at the full repeat', () => {
+  const { specs, repeatEach } = select([`${WALLET_E2E}/market.spec.ts`]);
+  assert.deepEqual(specs, [`${WALLET_E2E}/market.spec.ts`]);
+  assert.equal(repeatEach, 3);
+});
+
+test('a changed wallet page object selects the wallet specs importing it', () => {
+  const { specs, repeatEach } = select(['apps/wallet/playwright/tests/support/pages/walletPage.ts']);
+  assert.ok(specs.includes(`${WALLET_E2E}/wallet.spec.ts`), specs.join(' '));
+  assert.equal(repeatEach, 3);
+});
+
+test('selected wallet specs get past app selection to the stack check', () => {
+  const { junit } = select(['apps/wallet/feature/transfers-page/wallet-balances-table.tsx']);
+  assert.match(junit, /<skipped message="no test stack \(DENSER_TEST_STACK is not 1\)/);
 });
 
 test('a changed spec plus app source runs the union at the full repeat', () => {

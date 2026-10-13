@@ -39,7 +39,7 @@ junit="$PWD/test-results/unit/aidev.xml"
 run_with_junit_fallback "$junit" aidev node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    .aidev/run-live-e2e.test.mjs < /dev/null || status=1
+    .aidev/run-live-e2e.test.mjs .aidev/base-path-front.test.mjs < /dev/null || status=1
 
 echo "== node --test scripts/check-wallet-translations" >&2
 junit="$PWD/test-results/unit/wallet-translations.xml"
