@@ -1,26 +1,30 @@
 #!/usr/bin/env bash
-# The advisory `live_e2e` suite of the full slot (#967): runs only the live-API
-# e2e specs the candidate changed, against the test stack's `blog-live` (this
-# tree's production build talking to api.hive.blog), so an edit to
-# apps/blog/playwright/tests/e2e is executed by AIDEV at all.
+# The advisory `live_e2e` suite of the full slot (#967): runs the live-API e2e
+# specs a candidate's change reaches, against the test stack's `blog-live` (this
+# tree's production build talking to api.hive.blog).
 #
 # ADVISORY: it always exits 0. The live specs judge mainnet data as much as the
 # change, so their verdict must not gate; their per-test results are recorded
 # from test-results/live-e2e/junit.xml and the log shows them.
 #
-# Selection — the changed files, first source that exists:
-#   1. $AIDEV_CHANGED_FILES_FILE (one path per line), and
-#   2. `git diff --name-only --diff-filter=d <base>...HEAD` when git works in the
-#      workspace, <base> = $AIDEV_BASE_REF, else $DENSER_LIVE_E2E_BASE, else the
-#      first of origin/aidev/integration, aidev/integration, origin/develop;
-#   both proposed for every suite, containers included, by ai/aidev#14456. Until
-#   it lands an AIDEV run with the worktree backend has neither (the workspace's
-#   .git points outside the mounted /work, and no base is exported), so live_e2e
-#   reports "not applicable: no change information available"; the ZFS backend
-#   and runs by hand have git.
-# Of those, the specs under apps/*/playwright/tests/e2e run, --repeat-each=3
-# --retries=0 on chromium. None selected is a skipped "not applicable" testcase
-# naming why.
+# The changed files, first source that exists:
+#   1. $AIDEV_CHANGED_FILES_FILE (one path per line, a deletion as D<TAB>path),
+#      which AIDEV's gates publish with $AIDEV_BASE_REF (ai/aidev#14456), and
+#   2. `git diff --name-only <base>...HEAD` when git works in the workspace (AIDEV's
+#      runtime containers mount the worktree's git metadata read-only,
+#      ai/aidev#14661), <base> = $AIDEV_BASE_REF, else $DENSER_LIVE_E2E_BASE,
+#      else the first of origin/aidev/integration, aidev/integration,
+#      origin/develop.
+# With neither, the suite reports "not applicable: no change information".
+# The selected specs, the union of:
+#   - the e2e specs (apps/*/playwright/tests/e2e) changed, or importing a changed
+#     file directly or through other modules: a page object, a helper,
+#     playwright/support (.aidev/live-e2e-importers.mjs);
+#   - SMOKE_SPECS of each app whose source changed (apps/<app>/** outside
+#     playwright/; packages/** counts for every app).
+# They run --retries=0 on chromium, --repeat-each=3, or SMOKE_REPEAT_EACH when
+# only the smoke set is selected. None selected is a skipped "not applicable"
+# testcase naming why.
 #
 #   .aidev/run-live-e2e.sh                          # select from the diff
 #   .aidev/run-live-e2e.sh apps/blog/playwright/tests/e2e/faqPage.spec.ts   # these specs
@@ -49,28 +53,66 @@ not_applicable() { report skipped "live_e2e not applicable" "$1"; exit 0; }
 
 # ---- which specs --------------------------------------------------------------
 
+# The live specs every app-source change runs, per app: the ones driving the main
+# page objects (the feed's post cards, the post page), so a markup change that
+# breaks their locators is caught even when no test file changed. Kept small and
+# to specs stable against mainnet data. Nothing but this set selected runs it
+# $SMOKE_REPEAT_EACH time(s): it checks locators, not flakiness, and the blog's at
+# --repeat-each=3 took 2.7 min (210 tests) on almost every candidate. The wallet
+# has none: the stack serves only the blog.
+declare -A SMOKE_SPECS=(
+    [blog]="apps/blog/playwright/tests/e2e/mainTimeline.spec.ts apps/blog/playwright/tests/e2e/postPage.spec.ts"
+)
+SMOKE_REPEAT_EACH=1
+CHANGED_REPEAT_EACH=3
+
+# The smoke specs an app-source change selects: apps/<app>/** outside playwright/
+# selects that app's set, packages/** every app's.
+smoke_specs() { # < changed paths
+    local f app
+    declare -A apps=()
+    while read -r f; do
+        case "$f" in
+            packages/*) for app in "${!SMOKE_SPECS[@]}"; do apps[$app]=1; done ;;
+            apps/*/playwright/*) ;;
+            apps/*/*) app=${f#apps/}; apps[${app%%/*}]=1 ;;
+        esac
+    done
+    for app in "${!apps[@]}"; do
+        [ -n "${SMOKE_SPECS[$app]:-}" ] && printf '%s\n' ${SMOKE_SPECS[$app]}
+    done
+    return 0
+}
+
 if [ "$#" -gt 0 ]; then
     specs=("$@")
+    repeat_each=$CHANGED_REPEAT_EACH
 else
-    e2e_specs() { grep -E '^apps/[^/]+/playwright/tests/e2e/.+\.spec\.ts$' | sort -u; }
     if [ -n "${AIDEV_CHANGED_FILES_FILE:-}" ] && [ -r "$AIDEV_CHANGED_FILES_FILE" ]; then
         source_desc="AIDEV_CHANGED_FILES_FILE"
-        mapfile -t specs < <(while read -r f; do [ -e "$f" ] && echo "$f"; done < "$AIDEV_CHANGED_FILES_FILE" | e2e_specs)
+        mapfile -t changed < <(sed 's/^D\t//' "$AIDEV_CHANGED_FILES_FILE")
     else
         git rev-parse --git-dir > /dev/null 2>&1 \
-            || not_applicable "no change information available (no AIDEV_CHANGED_FILES_FILE, no git metadata in the workspace; ai/aidev#14456)"
+            || not_applicable "no change information available (no AIDEV_CHANGED_FILES_FILE, no git metadata in the workspace)"
         base="${AIDEV_BASE_REF:-${DENSER_LIVE_E2E_BASE:-}}"
         if [ -z "$base" ]; then
             for ref in origin/aidev/integration aidev/integration origin/develop; do
                 git rev-parse --verify -q "$ref^{commit}" > /dev/null && { base=$ref; break; }
             done
         fi
-        [ -n "$base" ] || not_applicable "no change information available (git works but no base ref; ai/aidev#14456)"
+        [ -n "$base" ] || not_applicable "no change information available (git works but no base ref)"
         source_desc="git diff against $base"
-        mapfile -t specs < <(git diff --name-only --diff-filter=d "$base...HEAD" | e2e_specs)
+        mapfile -t changed < <(git diff --name-only "$base...HEAD")
     fi
-    [ "${#specs[@]}" -gt 0 ] || not_applicable "the candidate changes no e2e spec ($source_desc)"
-    echo "live_e2e: changed e2e specs ($source_desc): ${specs[*]}" >&2
+    mapfile -t affected < <(printf '%s\n' "${changed[@]}" | node .aidev/live-e2e-importers.mjs)
+    mapfile -t smoke < <(printf '%s\n' "${changed[@]}" | smoke_specs | sort -u)
+    [ "${#affected[@]}" -gt 0 ] && echo "live_e2e: e2e specs changed or importing a changed file ($source_desc): ${affected[*]}" >&2
+    [ "${#smoke[@]}" -gt 0 ] && echo "live_e2e: smoke specs for the changed app source ($source_desc): ${smoke[*]}" >&2
+    mapfile -t specs < <(printf '%s\n' "${affected[@]}" "${smoke[@]}" | grep . | sort -u)
+    [ "${#specs[@]}" -gt 0 ] || not_applicable "the candidate changes no e2e spec, nothing one imports and no app source ($source_desc)"
+    repeat_each=$CHANGED_REPEAT_EACH
+    [ "${#affected[@]}" -gt 0 ] || repeat_each=$SMOKE_REPEAT_EACH
+    echo "live_e2e: selected e2e specs, --repeat-each=$repeat_each: ${specs[*]}" >&2
 fi
 
 blog_specs=()
@@ -80,7 +122,7 @@ for spec in "${specs[@]}"; do
         *) echo "live_e2e: $spec: not run, the stack serves only the blog" >&2 ;;
     esac
 done
-[ "${#blog_specs[@]}" -gt 0 ] || not_applicable "the changed e2e specs are not the blog's (${specs[*]}); the stack serves only the blog"
+[ "${#blog_specs[@]}" -gt 0 ] || not_applicable "the selected e2e specs are not the blog's (${specs[*]}); the stack serves only the blog"
 
 # ---- the server -------------------------------------------------------------
 
@@ -101,7 +143,7 @@ cd apps/blog
 status=0
 CI=1 DENSER_URL=http://blog-live:3000 PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit" \
     pnpm exec playwright test --config=playwright.config.ts --project=chromium \
-    --repeat-each=3 --retries=0 --reporter=list,junit "${blog_specs[@]}" < /dev/null || status=$?
+    --repeat-each="$repeat_each" --retries=0 --reporter=list,junit "${blog_specs[@]}" < /dev/null || status=$?
 [ -s "$junit" ] || report failure "live_e2e run" "playwright exited $status without a report"
 echo "live_e2e: advisory; playwright exited $status" >&2
 exit 0

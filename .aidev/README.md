@@ -235,14 +235,19 @@ app's server side must read that same proxy. A stack server could reach it only
 by relaying back into the suite container.
 
 **`live_e2e`** (`.aidev/run-live-e2e.sh`, always exits 0) runs the e2e specs the
-candidate changed, `--repeat-each=3 --retries=0`, against the stack's
-`blog-live`. That service serves `fixture_e2e`'s build against the live Hive
-API; no image is built. The changed files come from `AIDEV_CHANGED_FILES_FILE`,
-else from `git diff` against `AIDEV_BASE_REF` or `origin/aidev/integration`.
-With no e2e spec changed, or no change information, the suite reports a skipped
-"not applicable" case. With the worktree backend that happens until
-ai/aidev#14456 lands, because the workspace has no git and no base reaches the
-container. It needs no build of its own; it serves the one `fixture_e2e` made.
+candidate's change reaches, `--retries=0`, against the stack's `blog-live`. That
+service serves `fixture_e2e`'s build against the live Hive API; no image is
+built. It selects the specs the candidate changed, the specs importing a changed
+file (a page object, a helper, `playwright/support`; transitively, by
+`.aidev/live-e2e-importers.mjs`), and, when app source (`apps/<app>/**` outside
+`playwright/`, or `packages/**`) changed, that app's `SMOKE_SPECS`
+(`mainTimeline.spec.ts` and `postPage.spec.ts` for the blog). Those run
+`--repeat-each=3`; the smoke set alone runs once. The changed files come from
+`AIDEV_CHANGED_FILES_FILE`, which AIDEV's gates publish, else from `git diff`
+against `AIDEV_BASE_REF` or `origin/aidev/integration`. With nothing selected,
+or no change information, the suite reports a skipped "not applicable" case.
+`.aidev/run-live-e2e.test.mjs` (in the `unit` suite) covers the selection.
+It needs no build of its own; it serves the one `fixture_e2e` made.
 
 **Opt-in: the fixture suite through the stack.** Set
 `DENSER_FIXTURE_VIA_STACK=1`, and bring up the `fixture-relay` profile's
