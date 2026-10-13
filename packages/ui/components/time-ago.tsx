@@ -1,4 +1,10 @@
-import { getMinuteClockNow, getTimeAgoString, getTimeAgoTitle, subscribeMinuteClock } from '@ui/lib/time-ago';
+import {
+  getMinuteClockNow,
+  getTimeAgoDateTime,
+  getTimeAgoString,
+  getTimeAgoTitle,
+  subscribeMinuteClock
+} from '@ui/lib/time-ago';
 import { FC, useSyncExternalStore } from 'react';
 import { useLocale } from './locale-context';
 
@@ -24,7 +30,9 @@ const TimeAgo: FC<TimeAgoProps> = ({ date, lang }) => {
 
   return (
     <span title={isHydrating ? undefined : getTimeAgoTitle(date, userLang)} suppressHydrationWarning>
-      {isHydrating ? '' : getTimeAgoString(date, userLang, now)}
+      <time dateTime={getTimeAgoDateTime(date)} suppressHydrationWarning>
+        {isHydrating ? '' : getTimeAgoString(date, userLang, now)}
+      </time>
     </span>
   );
 };

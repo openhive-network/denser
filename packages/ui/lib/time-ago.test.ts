@@ -1,6 +1,12 @@
 import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { getMinuteClockNow, getTimeAgoString, getTimeAgoTitle, subscribeMinuteClock } from './time-ago.ts';
+import {
+  getMinuteClockNow,
+  getTimeAgoDateTime,
+  getTimeAgoString,
+  getTimeAgoTitle,
+  subscribeMinuteClock
+} from './time-ago.ts';
 
 const NOW = Date.UTC(2026, 9, 6, 12, 0, 0);
 const MINUTE = 60000;
@@ -14,7 +20,12 @@ describe('getTimeAgoString', () => {
     ['2026-09-20T12:00:00', 'en', '2 weeks ago'],
     ['2024-10-06T12:00:00', 'en', '2 years ago'],
     ['2026-10-06T12:00:00', 'en', 'now'],
-    ['2026-10-06T12:05:00', 'en', 'now'],
+    ['2026-10-06T12:00:30', 'en', 'now'],
+    ['2026-10-06T12:05:00', 'en', 'in 5 minutes'],
+    ['2026-10-07T12:00:00', 'en', 'tomorrow'],
+    ['2026-10-09T11:57:09', 'en', 'in 3 days'],
+    ['2027-05-15T00:00:00', 'en', 'in 7 months'],
+    ['2026-10-09T11:57:09', 'pl', 'za 3 dni'],
     ['2026-10-06T09:15:00', 'es', 'hace 2 horas'],
     ['2026-10-05T11:00:00', 'pl', 'wczoraj'],
     ['2026-10-06T11:58:30.000Z', 'en', '1 minute ago']
@@ -48,16 +59,41 @@ describe('getTimeAgoString', () => {
 });
 
 describe('getTimeAgoTitle', () => {
-  it('matches Date.prototype.toLocaleString for each locale', () => {
+  it('matches Date.prototype.toLocaleString of the UTC instant for each locale', () => {
     for (const lang of ['en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh', 'ar']) {
-      for (const date of ['2026-10-06T09:15:07', '2019-01-31T23:59:59', NOW]) {
-        assert.equal(getTimeAgoTitle(date, lang), new Date(date).toLocaleString(lang), `${lang} ${date}`);
+      for (const [date, instant] of [
+        ['2026-10-06T09:15:07', Date.UTC(2026, 9, 6, 9, 15, 7)],
+        ['2019-01-31T23:59:59', Date.UTC(2019, 0, 31, 23, 59, 59)],
+        [NOW, NOW]
+      ] as const) {
+        assert.equal(getTimeAgoTitle(date, lang), new Date(instant).toLocaleString(lang), `${lang} ${date}`);
       }
+    }
+  });
+
+  it('shows a zoneless Hive timestamp in the local timezone', () => {
+    const originalTz = process.env.TZ;
+    process.env.TZ = 'Europe/Warsaw';
+    try {
+      assert.equal(getTimeAgoTitle('2026-10-16T07:57:09', 'en-GB'), '16/10/2026, 09:57:09');
+    } finally {
+      process.env.TZ = originalTz;
     }
   });
 
   it('matches toLocaleString for an invalid date', () => {
     assert.equal(getTimeAgoTitle('not a date', 'en'), new Date('not a date').toLocaleString('en'));
+  });
+});
+
+describe('getTimeAgoDateTime', () => {
+  it('gives the UTC instant of a zoneless Hive timestamp with its zone designator', () => {
+    assert.equal(getTimeAgoDateTime('2026-10-16T07:57:09'), '2026-10-16T07:57:09.000Z');
+    assert.equal(getTimeAgoDateTime(NOW), '2026-10-06T12:00:00.000Z');
+  });
+
+  it('gives undefined for an unparsable date', () => {
+    assert.equal(getTimeAgoDateTime('not a date'), undefined);
   });
 });
 
