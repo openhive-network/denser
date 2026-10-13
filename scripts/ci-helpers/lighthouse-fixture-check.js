@@ -12,6 +12,12 @@
  * the integration check's shape plus `hermetic` and, given a baseline, `comparison`
  * (lighthouse-compare.js).
  *
+ * The LCP and TBT budgets get a slow-host allowance (lighthouse-host-budget.js): when a
+ * route's median CPU benchmark is below the baseline's for that route, those budgets
+ * are multiplied by baselineBenchmark / hostBenchmark. Without a baseline, or on a host
+ * at least as fast, every budget applies as written; the other budgets never scale.
+ * Each route records its `hostSpeed` and the `allowances` the scale forgave.
+ *
  * Exit: 0 hermetic, within thresholds and (with a baseline) no regression;
  *       2 any of those failed; 1 nothing measured (bad usage, unreachable site).
  *
@@ -27,7 +33,8 @@ const fs = require('fs');
 const path = require('path');
 const { parseArgs } = require('util');
 const { RUNS_PER_ROUTE, runLighthouse } = require('./lighthouse-runner');
-const { extractRunMetrics, summarizeRuns, findBreaches } = require('./lighthouse-median');
+const { extractRunMetrics, summarizeRuns } = require('./lighthouse-median');
+const { evaluateBudgets } = require('./lighthouse-host-budget');
 const { extractResourceTotals, offHostRequests } = require('./lighthouse-resources');
 const { compareResults, formatComparison } = require('./lighthouse-compare');
 const store = require('./lighthouse-integration-store');
@@ -82,7 +89,7 @@ function runMetrics(report, error, allowedHosts) {
   };
 }
 
-async function measureRoute(options, route, thresholds) {
+async function measureRoute(options, route, thresholds, baselineMedian) {
   const url = `${options.site}${route}`;
   const runs = [];
   let lighthouseVersion;
@@ -96,7 +103,7 @@ async function measureRoute(options, route, thresholds) {
   }
   const median = summarizeRuns(runs);
   const offHost = [...new Set(runs.flatMap((run) => run.offHost || []))];
-  return { route, url, thresholds, median, breaches: findBreaches(median, thresholds), offHost, runs, lighthouseVersion };
+  return { route, url, thresholds, median, ...evaluateBudgets(median, thresholds, baselineMedian), offHost, runs, lighthouseVersion };
 }
 
 async function readMisses(counters) {
@@ -124,11 +131,16 @@ function statusOf(routes, hermetic, comparison) {
   return comparison?.status === 'regression' ? 'regression' : 'pass';
 }
 
+function scaleNote(breach, hostSpeed) {
+  if (!breach.scale) return '';
+  return ` (budget ${breach.budget} x ${breach.scale.toFixed(2)}, CPU benchmark ${Math.round(hostSpeed.benchmark)} vs baseline ${Math.round(hostSpeed.baselineBenchmark)})`;
+}
+
 function routeCaseLines(result) {
   const lines = [];
   for (const r of result.routes) {
     const problems = [
-      ...r.breaches.map((b) => `${b.metric} ${b.value} breaches ${b.threshold}`),
+      ...r.breaches.map((b) => `${b.metric} ${b.value} breaches ${b.threshold}${scaleNote(b, r.hostSpeed)}`),
       ...(result.comparison?.regressions || []).filter((x) => x.route === r.route).map((x) => `${x.metric} regressed ${x.baseline} -> ${x.current}`),
       ...r.offHost.map((url) => `request left the host: ${url}`),
     ];
@@ -136,6 +148,7 @@ function routeCaseLines(result) {
     for (const metric of ['largest-contentful-paint', 'observed-largest-contentful-paint', 'total-blocking-time', 'script-transfer-bytes', 'image-transfer-bytes', 'request-count']) {
       lines.push(['property', `${r.route} ${metric}`, r.median[metric] ?? ''].join('\t'));
     }
+    lines.push(['property', `${r.route} host-budget-scale`, r.hostSpeed.scale].join('\t'));
   }
   const leakedMisses = Object.entries(result.hermetic.misses).filter(([, n]) => n !== 0);
   lines.push(['case', 'no unrecorded request reached a replay server', leakedMisses.length ? 'fail' : 'pass', 0,
@@ -154,7 +167,13 @@ function printSummary(result) {
       continue;
     }
     console.log(`  ${icon} ${route.route}: perf ${m.performance}, LCP ${Math.round(m['largest-contentful-paint'])} ms (observed ${Math.round(m['observed-largest-contentful-paint'])} ms), TBT ${Math.round(m['total-blocking-time'])} ms, CLS ${m['cumulative-layout-shift']?.toFixed(3)}, JS ${m['script-transfer-bytes']} B, images ${m['image-transfer-bytes']} B, ${m['request-count']} requests`);
-    for (const b of route.breaches) console.log(`      breach: ${b.metric} = ${b.value} (threshold ${b.threshold})${b.simulatedOnly ? `, simulated-only: observed ${Math.round(b.observed)} ms` : ''}`);
+    const { benchmark, baselineBenchmark, scale } = route.hostSpeed;
+    if (typeof benchmark === 'number') {
+      const against = typeof baselineBenchmark === 'number' ? ` vs baseline ${Math.round(baselineBenchmark)}` : '';
+      console.log(`      CPU benchmark ${Math.round(benchmark)}${against}: LCP/TBT budgets x ${scale.toFixed(2)}`);
+    }
+    for (const b of route.breaches) console.log(`      breach: ${b.metric} = ${b.value} (threshold ${b.threshold})${scaleNote(b, route.hostSpeed)}${b.simulatedOnly ? `, simulated-only: observed ${Math.round(b.observed)} ms` : ''}`);
+    for (const a of route.allowances) console.log(`      slow-host allowance: ${a.metric} = ${a.value} is over its budget ${a.budget} but within ${Math.round(a.threshold)}${scaleNote(a, route.hostSpeed)}`);
     for (const url of route.offHost) console.log(`      left the host: ${url}`);
   }
   console.log(`Hermetic: ${result.hermetic.status}; replay misses ${JSON.stringify(result.hermetic.misses)}`);
@@ -168,8 +187,11 @@ async function main() {
   const routes = selectRoutes(options.route);
   fs.mkdirSync(options.out, { recursive: true });
 
+  const baseline = options.baseline ? JSON.parse(fs.readFileSync(options.baseline, 'utf8')) : undefined;
+  const baselineMedians = new Map((baseline?.routes || []).map((r) => [r.route, r.median]));
+
   const measured = [];
-  for (const [route, thresholds] of routes) measured.push(await measureRoute(options, route, thresholds));
+  for (const [route, thresholds] of routes) measured.push(await measureRoute(options, route, thresholds, baselineMedians.get(route)));
   const hermetic = hermeticOf(measured, await readMisses(options.missCounters));
   const result = {
     revision: options.revision,
@@ -182,7 +204,7 @@ async function main() {
     hermetic,
     routes: measured.map(({ lighthouseVersion: _version, ...route }) => route),
   };
-  if (options.baseline) result.comparison = compareResults(result, JSON.parse(fs.readFileSync(options.baseline, 'utf8')));
+  if (baseline) result.comparison = compareResults(result, baseline);
   result.status = result.verdict = statusOf(result.routes, hermetic, result.comparison);
 
   store.writeJson(path.join(options.out, 'result.json'), result);
