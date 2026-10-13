@@ -97,7 +97,9 @@
     },
     "wallet_nav": {
       "balances": "Балансы",
-      "delegations": "Delegations"
+      "delegations": "Delegations",
+      "authorities": "Полномочия",
+      "label": "Кошелёк"
     }
   },
   "select_sort": {

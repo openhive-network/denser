@@ -95,7 +95,9 @@
     },
     "wallet_nav": {
       "balances": "残高",
-      "delegations": "Delegations"
+      "delegations": "Delegations",
+      "authorities": "権限",
+      "label": "ウォレット"
     }
   },
   "select_sort": {

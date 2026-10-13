@@ -353,15 +353,15 @@ IMPORTANT:
               name="curr_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex justify-between">
-                    <span>{t('change_password_page.current_password')}</span>{' '}
+                  <div className="flex justify-between">
+                    <FormLabel>{t('change_password_page.current_password')}</FormLabel>
                     <Link
-                      className="pointer-events-none text-destructive opacity-70"
+                      className="pointer-events-none text-sm text-destructive opacity-70"
                       href="/recover_account_step_1"
                     >
                       {t('change_password_page.recover_password')}
                     </Link>
-                  </FormLabel>
+                  </div>
                   <FormControl>
                     <PasswordInput
                       {...field}

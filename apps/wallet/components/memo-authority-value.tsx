@@ -38,7 +38,7 @@ const MemoAuthorityValue = ({
     <div className="flex justify-between pl-2 text-xs hover:bg-foreground/20 sm:text-base">
       <div className="grid w-full grid-cols-[max-content_1fr_max-content_5rem] gap-1">
         <span className="flex items-center">
-          <FileKey className="size-5" />
+          <FileKey className="size-5" aria-hidden="true" />
         </span>
         {editMode ? (
           <Input

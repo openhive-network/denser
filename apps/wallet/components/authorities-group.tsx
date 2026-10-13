@@ -43,6 +43,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
   const [thresholdValue, setThresholdValue] = useState({ threshold: data.weight_threshold });
   const level = data.level as Exclude<LevelAuthority, 'memo'>;
   const authorityList = [...data.account_auths, ...data.key_auths].map((e) => e.keyOrAccount);
+  const title = `${level.charAt(0).toUpperCase() + level.slice(1)} Authority`;
   useEffect(() => {
     if (authorityUpdated) {
       setEditMode(false);
@@ -85,9 +86,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
     <div className="sm:container">
       <AccordionItem value={level} className="mt-6">
         <div className="flex items-center justify-between">
-          <AccordionTrigger>
-            <h2>{`${level.charAt(0).toUpperCase() + level.slice(1)} Authority`}</h2>
-          </AccordionTrigger>
+          <AccordionTrigger data-testid={`authority-toggle-${level}`}>{title}</AccordionTrigger>
           <div className="flex items-center gap-2">
             <span className="justify-self-end font-medium">{t('authorities_page.threshold')}:</span>
             <div className="w-12">
@@ -138,6 +137,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
                 <Button
                   disabled={isDisabled}
                   className="w-full rounded-none"
+                  aria-label={t('authorities_page.edit_item', { name: title })}
                   onClick={() => {
                     setEditMode(true);
                     accordionControl((prev) => (prev.includes(level) ? prev : [...prev, level]));

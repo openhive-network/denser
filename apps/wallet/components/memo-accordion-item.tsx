@@ -35,8 +35,8 @@ const MemoAccordionItem = ({
     <div className="sm:container">
       <AccordionItem value="memo" className="mt-6">
         <div className="flex items-center justify-between">
-          <AccordionTrigger>
-            <h2>{t('authorities_page.memo_key')}</h2>
+          <AccordionTrigger data-testid="authority-toggle-memo">
+            {t('authorities_page.memo_key')}
           </AccordionTrigger>
           <div>
             {!canEdit ? null : editMode ? (
@@ -58,6 +58,7 @@ const MemoAccordionItem = ({
               <Button
                 className="w-20 rounded-none"
                 disabled={isDisabled}
+                aria-label={t('authorities_page.edit_item', { name: t('authorities_page.memo_key') })}
                 onClick={() => {
                   setEditMode(true);
                   accordionControl((prev) => (prev.includes('memo') ? prev : [...prev, 'memo']));

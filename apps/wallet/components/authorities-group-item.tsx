@@ -33,7 +33,7 @@ const AuthoritiesGroupItem: FC<{
   return (
     <div className="col-span-4 grid grid-cols-subgrid pl-2 text-xs hover:bg-foreground/20 sm:text-base">
       <div className="flex items-center">
-        <Icon className="size-5" />
+        <Icon className="size-5" aria-hidden="true" />
       </div>
       <div className="flex items-center">
         {editMode ? (
@@ -74,8 +74,14 @@ const AuthoritiesGroupItem: FC<{
       <div className="flex w-20 items-center justify-end">
         {editMode ? (
           <ButtonTooltip label={t('authorities_page.delete')}>
-            <Button disabled={disabled} variant="ghost" size="sm" onClick={onDeleteAuthority}>
-              <Trash className="h-5 w-5" />
+            <Button
+              disabled={disabled}
+              variant="ghost"
+              size="sm"
+              aria-label={t('authorities_page.delete')}
+              onClick={onDeleteAuthority}
+            >
+              <Trash className="h-5 w-5" aria-hidden="true" />
             </Button>
           </ButtonTooltip>
         ) : (

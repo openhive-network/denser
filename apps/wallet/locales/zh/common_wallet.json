@@ -97,7 +97,9 @@
     },
     "wallet_nav": {
       "balances": "余额",
-      "delegations": "Delegations"
+      "delegations": "Delegations",
+      "authorities": "权限",
+      "label": "钱包"
     }
   },
   "select_sort": {

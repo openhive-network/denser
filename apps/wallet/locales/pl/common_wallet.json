@@ -103,7 +103,9 @@
       "delegations": "Delegacje",
       "keys_and_permissions": "Klucze & Permisje",
       "change_password": "Zmiana Hasła",
-      "communities": "Społeczności"
+      "communities": "Społeczności",
+      "authorities": "Uprawnienia",
+      "label": "Portfel"
     },
     "user_menu": {
       "account_menu": "Menu konta",
@@ -481,7 +483,8 @@
     "i_have_saved_password": "Bezpiecznie zapisałem swoją nazwę społecznośći i hasło.",
     "errors": {
       "required": "Wymagane"
-    }
+    },
+    "no_payment_option": "Aby utworzyć społeczność, potrzebujesz {{hive}} HIVE lub {{tokens}} tokenu tworzenia konta"
   },
   "settings": {
     "preferences": "Preferencje",
