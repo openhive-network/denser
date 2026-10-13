@@ -5,7 +5,8 @@ import { STUB_ACCOUNT, STUB_FOLLOWED, logInAsStubAccount, startWalletApiStub, st
 
 /**
  * The Delegate RC dialog of the Resource Credits row: its slider moves in percent of the available
- * RC, the recipient is looked up on chain, and closing the dialog forgets what was entered.
+ * RC, the recipient autocompletes from the transfer suggestions and is looked up on chain, and
+ * closing the dialog forgets what was entered.
  * STUB_ACCOUNT's RC manabar has fully regenerated to its max_rc of 1,000,000,000,000 RC
  * (1000 billion) at the stub's head block time. Nothing is broadcast.
  */
@@ -132,5 +133,37 @@ test.describe('Delegate RC dialog', () => {
     await expect(dialog).toBeHidden();
     await trigger.click();
     await expect(recipient).toHaveValue('');
+  });
+
+  test('WALLET-RC-04 — the recipient is a combobox whose suggestions the keyboard picks, and Esc closes only the suggestions', async ({
+    page
+  }) => {
+    await gotoTransfers(page);
+    const { dialog } = await openDelegateRcDialog(page);
+    const recipient = dialog.getByRole('combobox', { name: 'To Account' });
+    const suggestion = dialog.getByRole('option', { name: `${STUB_FOLLOWED} (Following)` });
+    const submit = dialog.getByRole('button', { name: DIALOG_NAME, exact: true });
+
+    await dialog.getByRole('button', { name: '25%' }).click();
+    await recipient.fill('stub-f');
+    await expect(suggestion).toBeVisible();
+    await recipient.press('Escape');
+    await expect(suggestion).toBeHidden();
+    await expect(dialog).toBeVisible();
+    await expect(recipient).toHaveValue('stub-f');
+
+    await recipient.fill('stub-fo');
+    await recipient.press('ArrowDown');
+    await recipient.press('ArrowUp');
+    await expect(suggestion).toHaveAttribute('aria-selected', 'true');
+    await recipient.press('Enter');
+    await expect(recipient).toHaveValue(STUB_FOLLOWED);
+    await expect(suggestion).toBeHidden();
+    await expect(dialog).toBeVisible();
+    await expect(submit).toBeEnabled();
+    await expect(dialog.getByText('Account not found.')).toBeHidden();
+
+    await recipient.press('Escape');
+    await expect(dialog).toBeHidden();
   });
 });

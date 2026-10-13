@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Slider } from '@ui/components/slider';
+import { Autocompleter } from '@/wallet/components/autocompleter';
 import { useTranslation } from '@/wallet/i18n/client';
 import {
   RC_INPUT_DECIMALS,
@@ -42,7 +43,13 @@ const ACCOUNT_STATUS_KEYS: Partial<Record<AccountLookupStatus, string>> = {
   error: 'transfers_page.delegate_rc.account_check_failed'
 };
 
-const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
+const DelegateRCDialog = ({
+  maxRC,
+  suggestedUsers
+}: {
+  maxRC: string;
+  suggestedUsers: { username: string; about: string }[];
+}) => {
   const { t } = useTranslation('common_wallet');
   const delegateMutation = useDelegateRCMutation();
   const [form, setForm] = useState(defaultForm);
@@ -58,6 +65,7 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
     if (!next) setForm(defaultForm);
   };
 
+  const setToAccount = (toAccount: string) => setForm((prev) => ({ ...prev, toAccount }));
   const setAmount = (billions: string) => setForm((prev) => ({ ...prev, amount: billions }));
   const setPercent = (next: number) => setAmount(formatRcInput(rcForPercent(maxBillions, next)));
 
@@ -100,17 +108,20 @@ const DelegateRCDialog = ({ maxRC }: { maxRC: string }) => {
 
         <div className="space-y-6">
           <div className="space-y-4">
-            <Label htmlFor="toAccount" className="text-sm font-medium">
+            {/* The combobox is named by the autocompleter's own label; this is its visible twin. */}
+            <p aria-hidden className="text-sm font-medium leading-none">
               {t('transfers_page.delegate_rc.to_account')}
-            </Label>
-            <Input
-              disabled={delegateMutation.isPending}
-              id="toAccount"
-              autoComplete="off"
+            </p>
+            <Autocompleter
+              items={suggestedUsers}
               value={form.toAccount}
-              aria-invalid={accountStatus === 'not_found' || accountStatus === 'error'}
-              aria-describedby={accountStatusKey ? ACCOUNT_STATUS_ID : undefined}
-              onChange={(e) => setForm({ ...form, toAccount: e.target.value })}
+              label={t('transfers_page.delegate_rc.to_account')}
+              inputProps={{
+                disabled: delegateMutation.isPending,
+                'aria-invalid': accountStatus === 'not_found' || accountStatus === 'error',
+                'aria-describedby': accountStatusKey ? ACCOUNT_STATUS_ID : undefined
+              }}
+              onChange={setToAccount}
             />
             {accountStatusKey ? (
               <p

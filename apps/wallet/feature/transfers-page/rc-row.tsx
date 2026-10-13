@@ -10,7 +10,13 @@ import dynamic from 'next/dynamic';
 // recharts draws the manabar rings only once the manabars are fetched: keep it out of page-load chunks.
 const RCStats = dynamic(() => import('./rc-stats'), { ssr: false });
 
-const RCRow = ({ username }: { username: string }) => {
+const RCRow = ({
+  username,
+  suggestedUsers
+}: {
+  username: string;
+  suggestedUsers: { username: string; about: string }[];
+}) => {
   const queryClient = useQueryClient();
   // Shares the page's global properties query instead of requesting them a second time.
   const loadDynamicGlobalProperties = () =>
@@ -108,7 +114,7 @@ const RCRow = ({ username }: { username: string }) => {
       )}
       {user.username === username && !!data ? (
         <div className="my-4 flex justify-center">
-          <DelegateRCDialog maxRC={data.maxAvailableRC} />
+          <DelegateRCDialog maxRC={data.maxAvailableRC} suggestedUsers={suggestedUsers} />
         </div>
       ) : null}
     </div>

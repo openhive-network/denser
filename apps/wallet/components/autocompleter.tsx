@@ -1,19 +1,34 @@
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@ui/components/command';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { cn } from '@ui/lib/utils';
+import { type ComponentPropsWithoutRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
 type Item = {
   username: string;
   about: string;
 };
+type InputProps = Pick<
+  ComponentPropsWithoutRef<typeof CommandInput>,
+  'disabled' | 'aria-invalid' | 'aria-describedby'
+>;
+// cmdk renders only the items matching the input, so an empty filter result counts as closed.
+const hasVisibleSuggestions = (root: HTMLElement | null, target: EventTarget | null) =>
+  !!root &&
+  target instanceof Node &&
+  root.contains(target) &&
+  root.querySelector('[cmdk-group][data-state="open"] [cmdk-item]') !== null;
+
 export function Autocompleter({
-  label,
   value,
   onChange,
-  items
+  items,
+  label,
+  inputProps
 }: {
-  label: string;
   value: string;
   onChange: (e: string) => void;
   items?: Item[];
+  /** Accessible name of the input: cmdk labels it with its own hidden label, so a `<label for>` cannot. */
+  label?: string;
+  inputProps?: InputProps;
 }) {
   const [isOpen, setIsOpen] = useState(true);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -44,37 +59,49 @@ export function Autocompleter({
         setIsOpen(false);
       }
     };
+    // Capture phase on `window` runs before the surrounding dialog's own Escape listener on the
+    // document, so an Escape that closes the suggestions does not also close the dialog.
+    const onEscapeCapture = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || !hasVisibleSuggestions(autocompleteRef.current, e.target)) return;
+      e.stopPropagation();
+      setIsOpen(false);
+    };
     document.addEventListener('mousedown', handleClickOutside);
     window.addEventListener('keydown', onKey);
+    window.addEventListener('keydown', onEscapeCapture, true);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('keydown', onEscapeCapture, true);
     };
   }, []);
 
   return (
     <Command className="w-full border" ref={autocompleteRef} label={label}>
       <CommandInput
+        {...inputProps}
         ref={inputRef}
         onFocus={handleInputFocus}
         value={value}
         onValueChange={handleValueChange}
       />
       <CommandList className="z-20 bg-primary">
-        {isOpen && (
-          <CommandGroup className="absolute max-h-36 overflow-scroll bg-background-secondary">
-            {items?.map((item) => (
-              <CommandItem key={item.username} className="p-0" onSelect={() => onChange(item.username)}>
-                <div
-                  onClick={() => onChange(item.username)}
-                  className="w-56 px-2 py-1 even:bg-background-tertiary"
-                >
-                  {`${item.username} (${item.about})`}
-                </div>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        )}
+        {/* Hidden rather than unmounted: cmdk does not re-filter items that remount under a search. */}
+        <CommandGroup
+          data-state={isOpen ? 'open' : 'closed'}
+          className={cn('absolute max-h-36 overflow-scroll bg-background-secondary', !isOpen && 'hidden')}
+        >
+          {items?.map((item) => (
+            <CommandItem key={item.username} className="p-0" onSelect={() => onChange(item.username)}>
+              <div
+                onClick={() => onChange(item.username)}
+                className="w-56 px-2 py-1 even:bg-background-tertiary"
+              >
+                {`${item.username} (${item.about})`}
+              </div>
+            </CommandItem>
+          ))}
+        </CommandGroup>
       </CommandList>
     </Command>
   );
