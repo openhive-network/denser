@@ -104,13 +104,14 @@ export function PostPublishingSection({
             updateForm={(e) => handleLoadTemplate(e)}
             data={watchedValues}
           >
-            <span
-              className="w-fit cursor-pointer text-xs text-destructive hover:underline"
+            <button
+              type="button"
+              className="w-fit cursor-pointer rounded-sm text-left text-xs text-destructive hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               title={t("submit_page.advanced_tooltip")}
               data-testid="advanced-settings-button"
             >
               {t("submit_page.advanced_settings")}
-            </span>
+            </button>
           </AdvancedSettingsPostForm>
         </div>
       ) : (

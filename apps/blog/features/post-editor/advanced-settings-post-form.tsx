@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox, Input, Label, ScrollArea, Separator } from '@ui/components';
+import { Input, ScrollArea, Separator } from '@ui/components';
 import { Button } from '@ui/components/button';
 import {
   Dialog,
@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@ui/components/dialog';
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useId, useMemo, useState } from 'react';
 import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
@@ -22,6 +22,7 @@ import clsx from 'clsx';
 import { useTranslation } from '@/blog/i18n/client';
 import { Beneficiary } from './beneficiary-item';
 import { maxAcceptedPayout } from './lib/utils';
+import { PostOptionRadioGroup } from './post-option-radio-group';
 
 type AccountFormValues = {
   title: string;
@@ -40,6 +41,13 @@ type AccountFormValues = {
 type Template = AccountFormValues & {
   templateTitle: string;
 };
+type MaxPayoutOption = 'no_max' | '0' | 'custom';
+
+const MAX_PAYOUT_OPTIONS: readonly string[] = ['no_max', '0', 'custom'];
+
+function isMaxPayoutOption(value: string): value is MaxPayoutOption {
+  return MAX_PAYOUT_OPTIONS.includes(value);
+}
 
 export function AdvancedSettingsPostForm({
   children,
@@ -53,6 +61,10 @@ export function AdvancedSettingsPostForm({
   updateForm: (data: AccountFormValues) => void;
 }) {
   const { t } = useTranslation('common_blog');
+  const idPrefix = useId();
+  const maxPayoutHeadingId = `${idPrefix}-max-payout`;
+  const authorRewardsHeadingId = `${idPrefix}-author-rewards`;
+  const ownShareHintId = `${idPrefix}-own-share-hint`;
   // Username is guaranteed here since this is only accessible when logged in
   const [preferences] = useStorageWithTTL<Preferences>(
     `user-preferences-${username}`,
@@ -74,7 +86,7 @@ export function AdvancedSettingsPostForm({
     preferences.blog_rewards !== '100%' ? '50%' : preferences.blog_rewards
   );
   const [templateTitle, setTemplateTitle] = useState('');
-  const [maxPayout, setMaxPayout] = useState<'no_max' | '0' | 'custom'>(
+  const [maxPayout, setMaxPayout] = useState<MaxPayoutOption>(
     preferences.blog_rewards === '100%' || preferences.blog_rewards === '50%' ? 'no_max' : '0'
   );
   const [selectTemplate, setSelectTemplate] = useState('/');
@@ -139,6 +151,10 @@ export function AdvancedSettingsPostForm({
       setRewards('50%');
     }
   }, [maxPayout]);
+
+  const handleMaxPayoutChange = (value: string) => {
+    if (isMaxPayoutOption(value)) setMaxPayout(value);
+  };
 
   const handleAddAccount = () => {
     setBeneficiaries((prev) => [...prev, { weight: '0', account: '' }]);
@@ -284,6 +300,7 @@ export function AdvancedSettingsPostForm({
     <Dialog open={open} onOpenChange={() => setOpen((prev) => !prev)}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
+        aria-modal="true"
         className="max-h-[90vh] overflow-y-auto sm:max-w-[425px]"
         onInteractOutside={(e) => e.preventDefault()}
       >
@@ -295,37 +312,24 @@ export function AdvancedSettingsPostForm({
         </DialogHeader>
         <div className="flex flex-col gap-4 text-xs">
           <div className="flex flex-col gap-3">
-            <span className="text-lg font-bold">
+            <span id={maxPayoutHeadingId} className="text-lg font-bold">
               {t('submit_page.advanced_settings_dialog.maximum_accepted_payout')}
             </span>
             <span>{t('submit_page.advanced_settings_dialog.value_of_the_maximum')}</span>
             <div className="flex flex-col gap-1">
-              <div className="my-3 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:justify-center">
-                {maxPayoutOptions.map((e) => (
-                  <div key={e.value} className="text-center">
-                    <Checkbox
-                      id={e.value}
-                      className="hidden"
-                      onCheckedChange={() => setMaxPayout(e.value as 'no_max' | '0' | 'custom')}
-                      data-testid={`maximum-accepted-payout-${e.value}`}
-                    />
-                    <Label
-                      htmlFor={e.value}
-                      className={clsx('inline-block cursor-pointer rounded-lg border p-2', {
-                        'border-destructive bg-border': maxPayout === e.value,
-                        'text-muted-foreground': maxPayout !== e.value
-                      })}
-                    >
-                      {e.label}
-                    </Label>
-                  </div>
-                ))}
-              </div>
+              <PostOptionRadioGroup
+                labelledBy={maxPayoutHeadingId}
+                options={maxPayoutOptions}
+                value={maxPayout}
+                onValueChange={handleMaxPayoutChange}
+                testIdPrefix="maximum-accepted-payout"
+              />
               {maxPayout === 'custom' ? (
                 <>
                   <Input
                     type="number"
                     value={customValue}
+                    aria-labelledby={maxPayoutHeadingId}
                     onChange={(e) => setCustomValue(e.target.value)}
                     data-testid="maximum-accepted-payout-custom-value-input"
                   />
@@ -341,32 +345,18 @@ export function AdvancedSettingsPostForm({
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            <span className="text-lg font-bold">
+            <span id={authorRewardsHeadingId} className="text-lg font-bold">
               {t('submit_page.advanced_settings_dialog.author_rewards')}
             </span>
             <span>{t('submit_page.advanced_settings_dialog.what_type_of_tokens')}</span>
-            <div className="my-3 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap sm:justify-center">
-              {authorRewardsOptions.map((e) => (
-                <div key={e.value} className="text-center">
-                  <Checkbox
-                    id={e.value}
-                    className="hidden"
-                    onCheckedChange={() => setRewards(e.value)}
-                    disabled={maxPayout === '0'}
-                    data-testid={`autor-rewards-${e.value}`}
-                  />
-                  <Label
-                    htmlFor={e.value}
-                    className={clsx('inline-block cursor-pointer rounded-lg border p-2', {
-                      'border-destructive bg-border': rewards === e.value,
-                      'text-muted-foreground': rewards !== e.value
-                    })}
-                  >
-                    {e.label}
-                  </Label>
-                </div>
-              ))}
-            </div>
+            <PostOptionRadioGroup
+              labelledBy={authorRewardsHeadingId}
+              options={authorRewardsOptions}
+              value={rewards}
+              onValueChange={setRewards}
+              disabled={maxPayout === '0'}
+              testIdPrefix="autor-rewards"
+            />
             <span>
               {t('submit_page.advanced_settings_dialog.default')}
               {authorRewardsText(preferences.blog_rewards)}
@@ -378,19 +368,35 @@ export function AdvancedSettingsPostForm({
           <div>
             <ul className="flex flex-col gap-2">
               <li className="flex items-center gap-5">
-                <Input value={splitRewards + '%'} disabled className="w-16" />
+                <Input
+                  value={splitRewards + '%'}
+                  disabled
+                  className="w-16"
+                  aria-label={t('submit_page.advanced_settings_dialog.own_share_label')}
+                  aria-describedby={ownShareHintId}
+                />
                 <div className="relative col-span-3">
-                  <Input disabled value={username} className="block w-full px-3 py-2.5 pl-11" />
+                  <Input
+                    disabled
+                    value={username}
+                    className="block w-full px-3 py-2.5 pl-11"
+                    aria-label={t('submit_page.advanced_settings_dialog.own_account_label')}
+                    aria-describedby={ownShareHintId}
+                  />
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <Icons.atSign className="h-5 w-5" />
                   </div>
                 </div>
+              </li>
+              <li id={ownShareHintId} className="text-muted-foreground">
+                {t('submit_page.advanced_settings_dialog.own_share_hint')}
               </li>
               {beneficiaries.map((item, index) => (
                 <div className="flex" key={index}>
                   <Beneficiary
                     onChangeBeneficiary={(weight, account) => handleEditBeneficiary(index, weight, account)}
                     beneficiary={item}
+                    position={index + 1}
                   />
                   <Button
                     variant="link"
