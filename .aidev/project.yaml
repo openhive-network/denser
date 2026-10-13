@@ -109,10 +109,11 @@ verification:
         args: [".aidev/run-dev-stack.sh"]
         artifacts: ["test-results/dev-stack-suite/"]
         stack: false
-      # ADVISORY (always exits 0): the live-API e2e specs this candidate changed,
-      # --repeat-each=3, against the stack's blog-live (fixture_e2e's build);
-      # "not applicable" when it changes none or no change information reaches
-      # the container (ai/aidev#14456). See .aidev/run-live-e2e.sh.
+      # ADVISORY (always exits 0): the live-API e2e specs this candidate changed
+      # or reaches through a changed import, plus the app's smoke specs when app
+      # source changed, against the stack's blog-live (fixture_e2e's build);
+      # "not applicable" when it selects none or no change information reaches
+      # the container. See .aidev/run-live-e2e.sh.
       - name: live_e2e
         adapter: command
         args: [".aidev/run-live-e2e.sh"]
