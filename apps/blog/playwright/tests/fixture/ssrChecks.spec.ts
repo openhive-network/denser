@@ -1,5 +1,6 @@
 import { test, expect, isRecordMode } from '../support/fixture-proxy-test';
 import type { Locator } from '@playwright/test';
+import { testTimeout } from '../../../../../playwright/support/timeouts';
 
 /**
  * SSR correctness checks — does the SERVER render real content into the
@@ -65,6 +66,17 @@ const REGULAR_BROWSER_USER_AGENT =
 const SSR_LOADING_PLACEHOLDER = /^(loading\.{0,3}|please wait|busy, please wait)$/i;
 
 /**
+ * `expect` for the server-HTML assertions. With JavaScript disabled nothing can
+ * change the DOM once `page.goto` has resolved, so polling for the default
+ * expect timeout (10 s) only delays a result that is already final, and every
+ * expected-failure gap marker (`test.fail`) would spend the full 10 s before
+ * reporting. Playwright runs the first check of an assertion without a deadline,
+ * so this short timeout never cuts that check short; it only bounds the
+ * pointless re-polling.
+ */
+const ssrExpect = expect.configure({ timeout: testTimeout('ssr:static-dom', 1_000) });
+
+/**
  * Assert SSR presence AND non-empty, non-placeholder content — the single
  * body-content helper (assertions run only on replay; see header note on
  * recording).
@@ -85,21 +97,21 @@ const SSR_LOADING_PLACEHOLDER = /^(loading\.{0,3}|please wait|busy, please wait)
  */
 async function expectSsrNonEmpty(locator: Locator): Promise<void> {
   if (isRecordMode) return;
-  await expect(locator).toBeVisible();
-  await expect(locator).toContainText(/\S/);
-  await expect(locator).not.toHaveText(SSR_LOADING_PLACEHOLDER);
+  await ssrExpect(locator).toBeVisible();
+  await ssrExpect(locator).toContainText(/\S/);
+  await ssrExpect(locator).not.toHaveText(SSR_LOADING_PLACEHOLDER);
 }
 
 /** Assert a server-rendered <head> meta tag carries non-empty content. */
 async function expectSsrMetaContent(locator: Locator): Promise<void> {
   if (isRecordMode) return;
-  await expect(locator).toHaveAttribute('content', /.+/);
+  await ssrExpect(locator).toHaveAttribute('content', /.+/);
 }
 
 /** Assert a server-rendered <head> link tag carries a non-empty href. */
 async function expectSsrHref(locator: Locator): Promise<void> {
   if (isRecordMode) return;
-  await expect(locator).toHaveAttribute('href', /.+/);
+  await ssrExpect(locator).toHaveAttribute('href', /.+/);
 }
 
 test.use({ fixtureTestName: 'ssrChecks' });
@@ -134,7 +146,7 @@ test.describe('SSR — anonymous feed & sidebar (JS disabled)', () => {
   }) => {
     await page.goto('/trending/my');
     if (isRecordMode) return;
-    await expect(page.getByTestId('post-list-item')).toHaveCount(0);
+    await ssrExpect(page.getByTestId('post-list-item')).toHaveCount(0);
   });
 });
 
