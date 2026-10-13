@@ -557,6 +557,7 @@
   "permissions": {
     "reveal": "显示",
     "keys_and_permissions": "密钥与权限",
+    "graphic_alt": "Hive 密钥及其权限示意图",
     "any_password": "任何密码或密钥使用得越频繁，就越容易被泄露。因此 Hive 采用分层密钥系统来保护你的安全。你拥有四个权限各不相同的密钥。例如，Posting 密钥（用于日常频繁使用）只具有一组有限的社交操作权限，对安全性要求较低。你需要更加谨慎地对待 Active 密钥，因为它拥有执行钱包相关操作的权限",
     "note": "请记下下方列出的 Hive 密钥。最好使用密码管理器（如 1Password 或 LastPass），或安全地保存一份离线副本（写在纸上或存放在 U 盘的文件中）。",
     "posting_key": {

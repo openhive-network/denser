@@ -562,6 +562,7 @@
   "permissions": {
     "reveal": "Mostra",
     "keys_and_permissions": "Chiavi e permessi",
+    "graphic_alt": "Diagramma delle chiavi di Hive e dei relativi permessi",
     "any_password": "Qualsiasi password o chiave ha più probabilità di essere compromessa quanto più viene usata. Per questo Hive usa un sistema di chiavi gerarchico per proteggerti. Ti vengono fornite quattro chiavi con permessi diversi. Ad esempio, la chiave Posting (pensata per un uso frequente) ha un insieme limitato di permessi per le azioni social che richiedono meno sicurezza. Dovrai fare più attenzione con la chiave Active, poiché ha i permessi per eseguire le azioni relative al wallet",
     "note": "Prendi nota delle tue chiavi Hive elencate qui sotto. Idealmente, usa un gestore di password (come 1Password o LastPass) oppure conserva al sicuro una copia offline (su un foglio di carta o in un file su una chiavetta USB).",
     "posting_key": {

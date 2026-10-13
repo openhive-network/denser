@@ -562,6 +562,7 @@
   "permissions": {
     "reveal": "Mostrar",
     "keys_and_permissions": "Claves y permisos",
+    "graphic_alt": "Diagrama de las claves de Hive y sus permisos",
     "any_password": "Cuanto más se usa una contraseña o clave, más probable es que se vea comprometida. Por eso Hive usa un sistema jerárquico de claves para mantenerte seguro. Se te entregan cuatro claves con permisos diferentes. Por ejemplo, la clave de publicación (pensada para usarse con frecuencia) tiene un conjunto limitado de permisos para acciones sociales que requieren menos seguridad. Debes tener más cuidado con tu clave activa, ya que tiene permisos para realizar acciones relacionadas con el monedero",
     "note": "Toma nota de tus claves de Hive que aparecen a continuación. Lo ideal es usar un gestor de contraseñas (como 1Password o LastPass) o guardar una copia sin conexión en un lugar seguro (en un papel o en un archivo en una memoria USB).",
     "posting_key": {
