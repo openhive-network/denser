@@ -351,7 +351,10 @@
     "for": " for ",
     "vote_for_proposal": "Vote for proposal #{{id}}",
     "votes_on_proposal": "Votes on proposal",
-    "voters_list": "Voters"
+    "voters_list": "Voters",
+    "status_tooltip_started": "Started <start/> and finishes <end/>",
+    "status_tooltip_not_started": "Starts <start/> and finishes <end/>",
+    "status_tooltip_finished": "Finished <end/>"
   },
   "login_form": {
     "cancel_button": "Cancel",

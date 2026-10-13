@@ -12,21 +12,7 @@ import { ProposalListItem } from '@/wallet/components/proposals-list-item';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { Skeleton } from '@ui/components/skeleton';
 import { useTranslation } from '@/wallet/i18n/client';
-import { TFunction } from 'i18next';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-
-function timeStatus(status: string, t: TFunction<'common_wallet', undefined>) {
-  switch (status) {
-    case 'active':
-      return t('proposals_page.started');
-    case 'inactive':
-      return t('proposals_page.not_started');
-    case 'expired':
-      return t('proposals_page.finished');
-    default:
-      return '';
-  }
-}
 
 export default function ProposalsPage() {
   const { user } = useUserClient();
@@ -71,8 +57,7 @@ export default function ProposalsPage() {
               amount: new Big(proposal.daily_pay.amount).div(1000)
             },
             start_date: dayjs(proposal.start_date).format('MMM D, YYYY'),
-            end_date: dayjs(proposal.end_date).format('MMM D, YYYY'),
-            status: timeStatus(proposal.status, t)
+            end_date: dayjs(proposal.end_date).format('MMM D, YYYY')
           }))
         )
       };

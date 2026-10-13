@@ -354,7 +354,10 @@
     "for": " per ",
     "vote_for_proposal": "Vota la proposta #{{id}}",
     "votes_on_proposal": "Voti sulla proposta",
-    "voters_list": "Votanti"
+    "voters_list": "Votanti",
+    "status_tooltip_started": "Iniziata <start/> e termina <end/>",
+    "status_tooltip_not_started": "Inizia <start/> e termina <end/>",
+    "status_tooltip_finished": "Terminata <end/>"
   },
   "login_form": {
     "cancel_button": "Cancella",

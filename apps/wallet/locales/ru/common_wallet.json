@@ -358,7 +358,10 @@
     "for": " for ",
     "vote_for_proposal": "Голосовать за предложение #{{id}}",
     "votes_on_proposal": "Голоса за предложение",
-    "voters_list": "Проголосовавшие"
+    "voters_list": "Проголосовавшие",
+    "status_tooltip_started": "Началось <start/> и завершится <end/>",
+    "status_tooltip_not_started": "Начнётся <start/> и завершится <end/>",
+    "status_tooltip_finished": "Завершилось <end/>"
   },
   "login_form": {
     "cancel_button": "Отмена",
