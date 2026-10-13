@@ -178,6 +178,25 @@ export class ApiHelper {
     return response.json();
   }
 
+  // Get a single post as json from API response
+  async getPostAPI(author: string, permlink: string, observer: string = '') {
+    const url = process.env.REACT_APP_API_ENDPOINT;
+
+    const response = await this.page.request.post(`${url}/`, {
+      data: {
+        id: 0,
+        jsonrpc: '2.0',
+        method: 'bridge.get_post',
+        params: { author, permlink, observer }
+      },
+      headers: {
+        Accept: 'application/json, text/plain, */*'
+      }
+    });
+
+    return response.json();
+  }
+
   // Get community subscribers as json from API response
   async getCommunitySubscribersAPI(account: string, limit: number = 50, lastId: number = 0) {
     const url = process.env.REACT_APP_API_ENDPOINT;

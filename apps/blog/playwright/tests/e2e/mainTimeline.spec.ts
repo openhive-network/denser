@@ -148,8 +148,8 @@ test.describe('Home page tests', () => {
     await homePage.validateFirstPostHeaderElements();
   });
 
-  // @flaky kept (#964): 42 CI fail/flaky since May, last 2026-09-30; 9/10 locally (new post races the API check).
-  test('@flaky validate the first post (for New filter)', async ({ page, request, browserName }) => {
+  test('validate the first post (for New filter)', async ({ page }) => {
+    const apiHelper = new ApiHelper(page);
     await homePage.goto();
 
     // Wait for posts to load before interacting with filter
@@ -160,37 +160,41 @@ test.describe('Home page tests', () => {
     await expect(homePage.getPostListNew).toBeVisible();
     await expect(homePage.getFilterPosts).toHaveText('New');
 
-    const url = process.env.REACT_APP_API_ENDPOINT;
+    // New posts arrive every few seconds, so fetch the post the card shows rather than the API's newest post.
+    // NSFW-tagged cards hide their title behind a warning, so take the first card that renders one.
+    const firstPostCard = homePage.getPostListNew
+      .locator('li[data-testid="post-list-item"]')
+      .filter({ has: page.locator('h3 a') })
+      .first();
+    const firstPostTitle = firstPostCard.locator('h3 a');
+    const postHref = await firstPostTitle.getAttribute('href');
+    const postLinkMatch = postHref?.match(/\/@([^/]+)\/([^/?#]+)/);
+    expect(postLinkMatch, `post link href: ${postHref}`).toBeTruthy();
+    const [, author, permlink] = postLinkMatch ?? [];
 
-    const response = await request.post(`${url}/`, {
-      data: {
-        id: 0,
-        jsonrpc: '2.0',
-        method: 'bridge.get_ranked_posts',
-        params: { sort: 'created', start_author: '', start_permlink: '', limit: 20, tag: '', observer: '' }
-      },
-      headers: {
-        Accept: 'application/json, text/plain, */*'
-      }
-    });
+    const post = (await apiHelper.getPostAPI(author, permlink)).result;
+    expect(post, `bridge.get_post ${author}/${permlink}`).toBeTruthy();
 
-    // console.log((await response.json()).result[0])
-    const postAuthor = (await response.json()).result[0].author;
-    // console.log("Post author: ", await postAuthor)
-    const postAuthorReputation = (await response.json()).result[0].author_reputation;
-    // console.log("Post author reputation: ", await postAuthorReputation)
-    const postTitle = (await response.json()).result[0].title;
-    // console.log("Post title: ", await postTitle)
-    const postPayout = (await response.json()).result[0].payout.toFixed(2);
-    // console.log("Post payout: ", await postPayout)
+    // A cross-post card shows the original post's author and reputation
+    const { original_author: originalAuthor, original_permlink: originalPermlink, tags } = post.json_metadata ?? {};
+    const isCrossPost = Boolean(originalAuthor && originalPermlink && tags?.[0] === 'cross-post');
+    const shownAuthorEntry = isCrossPost ? (await apiHelper.getPostAPI(originalAuthor, originalPermlink)).result : post;
 
-    await expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
-    await expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
-    await expect(homePage.getFirstPostTitle).toHaveText(postTitle);
-    await expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
+    await expect(firstPostCard.getByTestId('post-author')).toHaveText(shownAuthorEntry.author);
+    await expect(firstPostCard.getByTestId('post-author-reputation')).toContainText(
+      '(' + Math.floor(shownAuthorEntry.author_reputation) + ')'
+    );
+    await expect(firstPostTitle).toHaveText(post.title);
 
-    // Vote count can change between API fetch and UI check, so just verify it's a number
-    const firstPostTotalVotes = (await homePage.getFirstPostVotes.allInnerTexts()).at(0);
+    // Payout can move between render and fetch on a new post, so allow a few cents of drift
+    const payoutText = await firstPostCard.getByTestId('post-payout').innerText();
+    expect(payoutText).toMatch(/^\$\d+\.\d{2}$/);
+    const maxPayoutDriftCents = 5;
+    const payoutDriftCents = Math.abs(Math.round(parseFloat(payoutText.slice(1)) * 100) - Math.round(post.payout * 100));
+    expect(payoutDriftCents).toBeLessThanOrEqual(maxPayoutDriftCents);
+
+    // Vote count can change between render and API fetch, so just verify it's a number
+    const firstPostTotalVotes = await firstPostCard.getByTestId('post-total-votes').first().innerText();
     expect(firstPostTotalVotes).toMatch(/^\d+$/);
   });
 
