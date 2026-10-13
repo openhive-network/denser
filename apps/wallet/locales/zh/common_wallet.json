@@ -268,7 +268,10 @@
     "for": " for ",
     "vote_for_proposal": "为提案 #{{id}} 投票",
     "votes_on_proposal": "提案投票",
-    "voters_list": "投票者"
+    "voters_list": "投票者",
+    "status_tooltip_started": "已于<start/>开始，将于<end/>结束",
+    "status_tooltip_not_started": "将于<start/>开始，<end/>结束",
+    "status_tooltip_finished": "已于<end/>结束"
   },
   "login_form": {
     "title": "返回用户:",

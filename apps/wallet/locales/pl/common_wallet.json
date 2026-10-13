@@ -311,7 +311,10 @@
     "for": " dla ",
     "vote_for_proposal": "Głosuj na propozycję #{{id}}",
     "votes_on_proposal": "Głosy na propozycję",
-    "voters_list": "Głosujący"
+    "voters_list": "Głosujący",
+    "status_tooltip_started": "Rozpoczęta <start/>, kończy się <end/>",
+    "status_tooltip_not_started": "Rozpocznie się <start/>, kończy się <end/>",
+    "status_tooltip_finished": "Zakończona <end/>"
   },
   "login_form": {
     "title": "Powracający: ",

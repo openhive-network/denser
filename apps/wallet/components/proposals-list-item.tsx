@@ -6,7 +6,7 @@ import { Icons } from '@hive/ui/components/icons';
 import dayjs from 'dayjs';
 import { Badge } from '@ui/components/badge';
 import VoteProposals from './votes-proposals-dialog';
-import { useTranslation } from '@/wallet/i18n/client';
+import { useTranslation, Trans } from '@/wallet/i18n/client';
 import { TFunction } from 'i18next';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from './dialog-login';
@@ -21,29 +21,26 @@ import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 const VOTE_FOCUS_RING =
   'rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2';
 
+const STATUS_TOOLTIP_KEYS: Record<string, string> = {
+  active: 'proposals_page.status_tooltip_started',
+  inactive: 'proposals_page.status_tooltip_not_started',
+  expired: 'proposals_page.status_tooltip_finished'
+};
+
+const STATUS_LABEL_KEYS: Record<string, string> = {
+  active: 'proposals_page.started',
+  inactive: 'proposals_page.not_started',
+  expired: 'proposals_page.finished'
+};
+
 const TitleSetter = ({ start, end, status }: { start: string; end: string; status: string }) => {
-  switch (status) {
-    case 'started':
-      return (
-        <div>
-          Started <TimeAgo date={start} /> and finishes <TimeAgo date={end} />
-        </div>
-      );
-    case 'not started':
-      return (
-        <div>
-          Starts <TimeAgo date={start} /> and finishes <TimeAgo date={end} />
-        </div>
-      );
-    case `finished`:
-      return (
-        <div>
-          Finished <TimeAgo date={end} />
-        </div>
-      );
-    default:
-      return <div></div>;
-  }
+  const i18nKey = STATUS_TOOLTIP_KEYS[status];
+  if (!i18nKey) return <div></div>;
+  return (
+    <div>
+      <Trans i18nKey={i18nKey} components={{ start: <TimeAgo date={start} />, end: <TimeAgo date={end} /> }} />
+    </div>
+  );
 };
 function translateShorDate(data: string, t: TFunction<'common_wallet', undefined>) {
   const dd = data
@@ -75,6 +72,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund, 
   const totalDays = dayjs(proposalData.end_date).diff(dayjs(proposalData.start_date), 'day');
 
   const voteLabel = t('proposals_page.vote_for_proposal', { id: proposalData.proposal_id });
+  const statusLabelKey = STATUS_LABEL_KEYS[proposalData.status];
 
   const totalVotes = totalVestingFund.times(proposalData.total_votes).div(totalShares).times(0.000001);
 
@@ -171,7 +169,7 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund, 
               <Tooltip>
                 <TooltipTrigger type="button">
                   <Badge variant="red" data-testid="proposal-status-badge">
-                    {proposalData.status}
+                    {statusLabelKey ? t(statusLabelKey) : ''}
                   </Badge>
                 </TooltipTrigger>
                 <TooltipContent>
