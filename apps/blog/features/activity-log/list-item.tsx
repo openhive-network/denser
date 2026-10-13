@@ -7,6 +7,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { usePathname } from 'next/navigation';
 import { Link } from '@hive/ui';
 import { cn } from '@ui/lib/utils';
+import { getImageSrc } from '@ui/lib/path-utils';
 import { useTranslation } from '@/blog/i18n/client';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 
@@ -107,7 +108,7 @@ const NotificationListItem = ({
               <img
                 className="h-10 w-10 rounded-full"
                 alt={`${avatarUsername} profile picture`}
-                src="/defaultavatar.png"
+                src={getImageSrc('/defaultavatar.png')}
               />
             </AvatarFallback>
           </Avatar>

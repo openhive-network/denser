@@ -2,6 +2,7 @@ import QRCode from 'qrcode';
 import { HasClient } from 'hive-auth-client';
 
 import { getLogger } from '@hive/ui/lib/logging';
+import { getImageSrc } from '@hive/ui/lib/path-utils';
 const logger = getLogger('app');
 
 //
@@ -400,7 +401,7 @@ const login = async (
     {
       name: 'Hive Blog',
       description: 'Hive Blog',
-      icon: `${window.location.origin}/smart-signer/images/hive-blog-twshare.png`
+      icon: `${window.location.origin}${getImageSrc('/smart-signer/images/hive-blog-twshare.png')}`
     },
     challengeData
   );

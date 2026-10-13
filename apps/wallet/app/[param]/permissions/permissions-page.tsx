@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card, Separator } from '@ui/components';
 import { Link } from '@hive/ui';
 import { cn } from '@ui/lib/utils';
+import { getImageSrc } from '@ui/lib/path-utils';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import env from '@beam-australia/react-env';
@@ -84,7 +85,11 @@ export default function PermissionsPage({ username }: { username: string }) {
             <p>{t('permissions.any_password')}</p>
             <p>{t('permissions.note')}</p>
           </div>
-          <img className="w-[300px]" src="/permissions.png" alt="Permmisions info graphic" />
+          <img
+            className="w-[300px]"
+            src={getImageSrc('/permissions.png')}
+            alt={t('permissions.graphic_alt')}
+          />
         </div>
 
         <Card

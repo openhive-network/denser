@@ -17,6 +17,7 @@ import { RadioGroup, RadioGroupItem } from '@ui/components/radio-group';
 import { radioGroupItems, IRadioGroupItem } from '@smart-signer/components/radio-group-item';
 import { pascalCase } from 'change-case';
 import { getLogger } from '@ui/lib/logging';
+import { getImageSrc } from '@ui/lib/path-utils';
 
 const logger = getLogger('app');
 
@@ -144,7 +145,7 @@ export default function LoginForm({
         >
           <img
             className="mr-1 h-4 w-4"
-            src={loginTypeDetails[loginType].logo}
+            src={getImageSrc(loginTypeDetails[loginType].logo)}
             alt={`${pascalCase(loginType)} Logo`}
           />
           {loginType === 'hbauth'
