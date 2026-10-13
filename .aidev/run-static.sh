@@ -5,8 +5,9 @@
 # package in the workspace.
 #
 # ESLint runs with --quiet: the rules added for gradual adoption are warnings, and
-# the existing ~200 of them must not fail a change; an error does. Translation
-# checks (lint:translations*) are not here: they fail on existing debt today.
+# the existing ~200 of them must not fail a change; an error does. The wallet
+# locale key/placeholder sync check runs here; the blog's translation checks
+# (lint:translations*) do not: they fail on existing debt today.
 #
 # The Playwright code (apps/*/playwright) is excluded from the apps' ESLint and
 # tsconfig, so it is checked on its own: its tsconfig, and its .eslintrc.js, which
@@ -33,4 +34,6 @@ for app in blog wallet; do
     echo "== tsc apps/$app/playwright" >&2
     pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false -p playwright < /dev/null || status=1
 done
+echo "== wallet translation sync" >&2
+pnpm --filter @hive/wallet lint:translations < /dev/null || status=1
 exit "$status"
