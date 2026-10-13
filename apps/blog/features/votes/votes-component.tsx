@@ -16,6 +16,7 @@ import { useVoteMutation } from './hooks/use-vote-mutation';
 import { VoteRemovalDialog } from './vote-removal-dialog';
 import { TooltipContainer } from './vote-tooltip-container';
 import WeightedVoteButton from './weighted-vote-button';
+import LoggedOutVoteButton from './logged-out-vote-button';
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
 
@@ -190,16 +191,16 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
         </VoteRemovalDialog>
       ) : (
         <DialogLogin>
-          <div className="flex items-center">
-            <TooltipContainer
-              text={t('cards.post_card.upvote')}
-              loading={voteMutation.isPending}
-              dataTestId="upvote-button"
-              afterPayout={pastPayout && !vote_upvoted}
-            >
-              <Icons.arrowUpCircle className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white" />
-            </TooltipContainer>
-          </div>
+          <LoggedOutVoteButton
+            label={t('cards.post_card.upvote')}
+            dataTestId="upvote-button"
+            afterPayout={pastPayout}
+          >
+            <Icons.arrowUpCircle
+              aria-hidden="true"
+              className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white"
+            />
+          </LoggedOutVoteButton>
         </DialogLogin>
       )}
       {/* Downvote with slider - trigger */}
@@ -299,16 +300,16 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
         </VoteRemovalDialog>
       ) : (
         <DialogLogin>
-          <div className="flex items-center">
-            <TooltipContainer
-              text={t('cards.post_card.downvote')}
-              loading={voteMutation.isPending}
-              dataTestId="downvote-button"
-              afterPayout={pastPayout && !vote_downvoted}
-            >
-              <Icons.arrowDownCircle className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />
-            </TooltipContainer>
-          </div>
+          <LoggedOutVoteButton
+            label={t('cards.post_card.downvote')}
+            dataTestId="downvote-button"
+            afterPayout={pastPayout}
+          >
+            <Icons.arrowDownCircle
+              aria-hidden="true"
+              className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white"
+            />
+          </LoggedOutVoteButton>
         </DialogLogin>
       )}
     </div>
