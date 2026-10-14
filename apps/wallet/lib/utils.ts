@@ -175,8 +175,10 @@ export function createListWithSuggestions(
   return [...transfers, ...following];
 }
 
-export const prepareRC = (rc: string): string => {
-  return `${numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))}bil`;
+export const prepareRC = (rc: string, t: TFunction<'common_wallet', undefined>): string => {
+  return t('resource_credits.amount_billions', {
+    amount: numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))
+  });
 };
 type VestsToHiveSatoshis = typeof vestsToHiveSatoshis;
 

@@ -36,20 +36,6 @@
       "eleventh": "November",
       "twelfth": "December"
     },
-    "months_short_form": {
-      "first": "Jan",
-      "second": "Feb",
-      "third": "Mar",
-      "fourth": "Apr",
-      "fifth": "May",
-      "sixth": "Jun",
-      "seventh": "Jul",
-      "eighth": "Aug",
-      "ninth": "Sep",
-      "tenth": "Oct",
-      "eleventh": "Nov",
-      "twelfth": "Dec"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -64,7 +50,8 @@
       "years": " years",
       "a_year": " a year"
     },
-    "retry": "重试"
+    "retry": "重试",
+    "close": "关闭"
   },
   "navigation": {
     "main_nav_bar": {
@@ -222,6 +209,7 @@
     "potential_curation_reward_title": "潜在审查奖励：",
     "by": " 作者 ",
     "governance_expiry_warning": "见证人投票会在你最后一次治理交易后 {{duration}} 自动失效。你当前的投票将于 {{date}} 失效。请",
+    "governance_expiry_duration": "1 年",
     "update_your_witness_votes": "更新你的见证人投票",
     "governance_expired": "你的见证人投票已于 {{date}} 失效。请",
     "to_reset": "以重置。",
@@ -419,7 +407,11 @@
     "since": "起始时间",
     "previous_page": "上一页",
     "next_page": "下一页",
-    "page_of": "第 {{page}} 页，共 {{total}} 页"
+    "page_of": "第 {{page}} 页，共 {{total}} 页",
+    "revoke": "撤销",
+    "revoke_rc_confirm": "确定要撤销对 @{{account}} 的 RC 委托吗？",
+    "confirm_revoke": "确认委托 Vesting Shares",
+    "revoke_failed": "撤销委托失败"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "抱歉！此页面不存在。",
@@ -440,7 +432,11 @@
     "add": "添加",
     "cancel": "取消",
     "add_item_title": "添加新的 {{id}} 条目",
-    "edit_item": "编辑 {{name}}"
+    "edit_item": "编辑 {{name}}",
+    "owner_authority": "所有者权限",
+    "active_authority": "活跃权限",
+    "posting_authority": "发帖权限",
+    "owner_threshold_warning": "更改所有者权限阈值可能会使你失去对此账户的独立访问权。\n\n确定要继续吗？"
   },
   "transfers_page": {
     "currency": "货币",
@@ -491,7 +487,7 @@
       "dhf_funding_operation": "DHF Funding",
       "transfer_operation": "Transfers"
     },
-    "report_operations_found": "{{count}} operations found",
+    "report_operations_found_other": "找到 {{count}} 个操作",
     "report_no_operations": "在所选期间内未找到任何操作",
     "report_select_operation_types": "Include in report:",
     "current_rewards": "你当前的奖励：",
@@ -660,5 +656,22 @@
   "settings": {
     "preferences": "偏好设置",
     "choose_api": "选择你偏好的 API 节点"
+  },
+  "resource_credits": {
+    "title": "资源积分",
+    "description": "内容投票和策展奖励的计算方式如同这是用户自己的 Hive Power。但用户无法对委托的 Hive Power 进行 Power Down 或兑现，因为它仍属于原所有者。",
+    "upvote": "赞成票",
+    "downvote": "反对票",
+    "rc": "RC",
+    "max": "最大：",
+    "current": "当前：",
+    "fully_restored_in": "完全恢复还需：",
+    "no_data": "暂无数据",
+    "no_delegations": "未找到委托",
+    "total": "合计：{{amount}}",
+    "amount_billions": "{{amount}} 十亿",
+    "hours_other": "{{count}} 小时",
+    "minutes_other": "{{count}} 分钟",
+    "hours_and_minutes": "{{hours}} {{minutes}}"
   }
 }

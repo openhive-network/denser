@@ -43,7 +43,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
   const [thresholdValue, setThresholdValue] = useState({ threshold: data.weight_threshold });
   const level = data.level as Exclude<LevelAuthority, 'memo'>;
   const authorityList = [...data.account_auths, ...data.key_auths].map((e) => e.keyOrAccount);
-  const title = `${level.charAt(0).toUpperCase() + level.slice(1)} Authority`;
+  const title = t(`authorities_page.${level}_authority`);
   useEffect(() => {
     if (authorityUpdated) {
       setEditMode(false);
@@ -99,9 +99,7 @@ const AuthoritesGroup: FC<GroupProps> = ({
                   }}
                   onBlur={() => {
                     if (thresholdValue.threshold > 1 && level === 'owner') {
-                      confirm(
-                        'By changing Owner Authority threshold, you may lose the independent access to this account.\n\n Are you sure you want to continue'
-                      )
+                      confirm(t('authorities_page.owner_threshold_warning'))
                         ? handleUpdateThreshold()
                         : setThresholdValue({ threshold: data.weight_threshold });
                     } else {

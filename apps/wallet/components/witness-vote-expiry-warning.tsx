@@ -1,15 +1,14 @@
 import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { useTranslation } from '@/wallet/i18n/client';
+import { useLocale } from '@ui/components/locale-context';
 import { Link } from '@hive/ui';
 import HoverClickTooltip from './hover-click-tooltip';
-
-dayjs.extend(localizedFormat);
 
 const HIVE_NULL_DATE = 2016; // The year when the Hive blockchain was created
 
 const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string }) => {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
   const governanceVoteExpirationTime =
     expirationTime ??
     new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('.')[0];
@@ -22,6 +21,8 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
   if (expiryDiff > 3 || !expiryDiff || !expiryDate) {
     return null;
   }
+  const date = new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(expiryDate.toDate());
+  const duration = t('profile.governance_expiry_duration');
 
   return (
     <HoverClickTooltip
@@ -33,8 +34,8 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
         {expiryYear >= HIVE_NULL_DATE && expiryDiff > 0 && (
           <span>
             {t('profile.governance_expiry_warning', {
-              date: expiryDate.format('ll'),
-              duration: '1 year'
+              date,
+              duration
             })}
             <Link className="text-destructive" href="/~witnesses">
               {t('profile.update_your_witness_votes')}
@@ -45,8 +46,8 @@ const WitnessVoteExpiryWarning = ({ expirationTime }: { expirationTime?: string 
         {expiryYear >= HIVE_NULL_DATE && expiryDiff <= 0 && (
           <span>
             {t('profile.governance_expired', {
-              date: expiryDate.format('ll'),
-              duration: '1 year'
+              date,
+              duration
             })}
             <Link className="text-destructive" href="/~witnesses">
               {t('profile.update_your_witness_votes')}

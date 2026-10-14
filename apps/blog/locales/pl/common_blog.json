@@ -57,7 +57,7 @@
     "main_nav_bar": {
       "posts": "Posty",
       "proposals": "Propozycje",
-      "witnesses": "Delegaci",
+      "witnesses": "Świadkowie",
       "out_dapps": "Nasze dApps",
       "login": "Zaloguj się",
       "sign_up": "Zapisz się",
@@ -70,7 +70,7 @@
       "welcome": "Witaj",
       "stolen_account_recovery": "Odzyskiwanie skradzionego konta",
       "change_account_password": "Zmiana hasła konta",
-      "vote_for_witnesses": "Głosuj na delegatów",
+      "vote_for_witnesses": "Głosuj na świadków",
       "faq": "FAQ",
       "hive_proposals": "Hive, Propozycje",
       "openhive_chat": "OpenHive Czat",
@@ -91,7 +91,7 @@
       "what_is_hive": "Czym jest Hive",
       "hive_dapps": "Hive dApps",
       "blockexplorer": "Blockexplorer",
-      "vote_for_witnesses": "Głosuj na delegatów",
+      "vote_for_witnesses": "Głosuj na świadków",
       "hive_proposals": "Hive, Propozycje"
     },
     "profile_navbar": {
@@ -138,7 +138,7 @@
       "toggle_theme": "Motyw",
       "toggle_lang": "Język",
       "wallet": "Portfel",
-      "logout": "Wylogowuj",
+      "logout": "Wyloguj",
       "switch_account": "Przełącz konto",
       "add_account": "Dodaj konto",
       "remove_account": "Usuń {{username}}",

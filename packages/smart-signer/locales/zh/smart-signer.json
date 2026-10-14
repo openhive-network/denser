@@ -127,6 +127,7 @@
     "password_placeholder": "密码",
     "password_form_title": "输入您的密码",
     "store_key_label": "存储密钥",
-    "store_password_label": "存储密码"
+    "store_password_label": "存储密码",
+    "google_drive_password_placeholder": "解锁 Google Drive 钱包的密码"
   }
 }

@@ -101,7 +101,7 @@ const DelegateRCDialog = ({
       <DialogTrigger asChild>
         <Button variant="outlineRed">{t('transfers_page.delegate_rc.title')}</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent closeLabel={t('global.close')}>
         <DialogHeader>
           <DialogTitle>{t('transfers_page.delegate_rc.title')}</DialogTitle>
         </DialogHeader>

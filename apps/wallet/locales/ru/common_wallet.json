@@ -36,20 +36,6 @@
       "eleventh": "November",
       "twelfth": "December"
     },
-    "months_short_form": {
-      "first": "Jan",
-      "second": "Feb",
-      "third": "Mar",
-      "fourth": "Apr",
-      "fifth": "May",
-      "sixth": "Jun",
-      "seventh": "Jul",
-      "eighth": "Aug",
-      "ninth": "Sep",
-      "tenth": "Oct",
-      "eleventh": "Nov",
-      "twelfth": "Dec"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -64,7 +50,8 @@
       "years": " years",
       "a_year": " a year"
     },
-    "retry": "Повторить"
+    "retry": "Повторить",
+    "close": "Закрыть"
   },
   "navigation": {
     "main_nav_bar": {
@@ -231,6 +218,7 @@
     "potential_curation_reward_title": "Потенциальное кураторское вознаграждение за: ",
     "by": " от ",
     "governance_expiry_warning": "Голоса за делегатов автоматически истекают через {{duration}} после вашей последней транзакции управления. Ваши текущие голоса истекут {{date}}. Пожалуйста, ",
+    "governance_expiry_duration": "1 год",
     "update_your_witness_votes": "обновите свои голоса за делегатов",
     "governance_expired": "Ваши голоса за делегатов истекли {{date}}. Пожалуйста, ",
     "to_reset": ", чтобы возобновить их.",
@@ -428,7 +416,11 @@
     "since": "С",
     "previous_page": "Назад",
     "next_page": "Далее",
-    "page_of": "Страница {{page}} из {{total}}"
+    "page_of": "Страница {{page}} из {{total}}",
+    "revoke": "Отозвать",
+    "revoke_rc_confirm": "Вы уверены, что хотите отозвать делегирование RC для @{{account}}?",
+    "confirm_revoke": "Подтвердите делегирование Vesting Shares",
+    "revoke_failed": "Не удалось отозвать делегирование"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Извините! Такой страницы не существует.",
@@ -449,7 +441,11 @@
     "add": "Добавить",
     "cancel": "Отмена",
     "add_item_title": "Добавить запись {{id}}",
-    "edit_item": "Изменить {{name}}"
+    "edit_item": "Изменить {{name}}",
+    "owner_authority": "Полномочия владельца (Owner)",
+    "active_authority": "Активные полномочия (Active)",
+    "posting_authority": "Полномочия публикации (Posting)",
+    "owner_threshold_warning": "Изменив порог полномочий владельца (Owner), вы можете потерять независимый доступ к этому аккаунту.\n\nВы уверены, что хотите продолжить?"
   },
   "transfers_page": {
     "currency": "Валюта",
@@ -500,7 +496,10 @@
       "dhf_funding_operation": "DHF Funding",
       "transfer_operation": "Transfers"
     },
-    "report_operations_found": "{{count}} operations found",
+    "report_operations_found_one": "Найдена {{count}} операция",
+    "report_operations_found_few": "Найдено {{count}} операции",
+    "report_operations_found_many": "Найдено {{count}} операций",
+    "report_operations_found_other": "Найдено {{count}} операции",
     "report_no_operations": "За выбранный период операции не найдены",
     "report_select_operation_types": "Include in report:",
     "current_rewards": "Ваши текущие вознаграждения: ",
@@ -669,5 +668,28 @@
   "settings": {
     "preferences": "Настройки",
     "choose_api": "Выберите предпочтительный узел API"
+  },
+  "resource_credits": {
+    "title": "Ресурсные кредиты",
+    "description": "Голоса за контент и кураторские вознаграждения рассчитываются так, как если бы это была их собственная Сила Голоса. Однако пользователи не могут уменьшить или вывести делегированную Силу Голоса, поскольку она по-прежнему принадлежит первоначальному владельцу.",
+    "upvote": "Голос за",
+    "downvote": "Голос против",
+    "rc": "RC",
+    "max": "Макс.:",
+    "current": "Текущее:",
+    "fully_restored_in": "Полное восстановление через:",
+    "no_data": "Нет данных",
+    "no_delegations": "Делегирования не найдены",
+    "total": "всего: {{amount}}",
+    "amount_billions": "{{amount}} млрд",
+    "hours_one": "{{count}} час",
+    "hours_few": "{{count}} часа",
+    "hours_many": "{{count}} часов",
+    "hours_other": "{{count}} часа",
+    "minutes_one": "{{count}} минуту",
+    "minutes_few": "{{count}} минуты",
+    "minutes_many": "{{count}} минут",
+    "minutes_other": "{{count}} минуты",
+    "hours_and_minutes": "{{hours}} и {{minutes}}"
   }
 }

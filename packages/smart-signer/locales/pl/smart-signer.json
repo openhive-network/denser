@@ -60,7 +60,7 @@
     "use_keychain": "Użyj Keychain",
     "use_wif": "Użyj WIF",
     "username_placeholder": "Wprowadź swoją nazwę użytkownika",
-    "working": "Pracuje…",
+    "working": "Przetwarzanie…",
     "other_signin_options": "Inne opcje logowania",
     "other_signing_options_description": "Wprowadź swoją nazwę użytkownika i wybierz metodę logowania",
     "go_back_button": "Wróć",
@@ -127,6 +127,7 @@
     "password_placeholder": "Hasło",
     "password_form_title": "Wprowadź swoje hasło",
     "store_key_label": "Zapisz klucz",
-    "store_password_label": "Zapisz hasło"
+    "store_password_label": "Zapisz hasło",
+    "google_drive_password_placeholder": "Hasło do odblokowania portfela Google Drive"
   }
 }

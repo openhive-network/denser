@@ -7,7 +7,6 @@ import dayjs from 'dayjs';
 import { Badge } from '@ui/components/badge';
 import VoteProposals from './votes-proposals-dialog';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
-import { TFunction } from 'i18next';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from './dialog-login';
 import { useUpdateProposalVotesMutation } from '@hive/wallet/components/hooks/use-update-proposal-votes-mutation';
@@ -17,6 +16,7 @@ import { handleError } from '@ui/lib/handle-error';
 import TimeAgo from '@ui/components/time-ago';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
+import { useLocale } from '@ui/components/locale-context';
 
 const VOTE_FOCUS_RING =
   'rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2';
@@ -42,25 +42,12 @@ const TitleSetter = ({ start, end, status }: { start: string; end: string; statu
     </div>
   );
 };
-function translateShorDate(data: string, t: TFunction<'common_wallet', undefined>) {
-  const dd = data
-    .replace('Jan', t('global.months_short_form.first'))
-    .replace('Feb', t('global.months_short_form.second'))
-    .replace('Mar', t('global.months_short_form.third'))
-    .replace('Apr', t('global.months_short_form.fourth'))
-    .replace('May', t('global.months_short_form.fifth'))
-    .replace('Jun', t('global.months_short_form.sixth'))
-    .replace('Jul', t('global.months_short_form.seventh'))
-    .replace('Aug', t('global.months_short_form.eighth'))
-    .replace('Sep', t('global.months_short_form.ninth'))
-    .replace('Oct', t('global.months_short_form.tenth'))
-    .replace('Nov', t('global.months_short_form.eleventh'))
-    .replace('Dec', t('global.months_short_form.twelfth'));
-  return dd;
-}
+const PROPOSAL_DATE_FORMAT: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
 
 export function ProposalListItem({ proposalData, totalShares, totalVestingFund, voted }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
+  const { locale } = useLocale();
+  const dateFormat = new Intl.DateTimeFormat(locale, PROPOSAL_DATE_FORMAT);
   const { user } = useUserClient();
   const updateProposalVotesMutation = useUpdateProposalVotesMutation();
   const [loading, setLoading] = useState(false);
@@ -147,9 +134,9 @@ export function ProposalListItem({ proposalData, totalShares, totalVestingFund, 
         </TooltipProvider>
         <div className="flex w-fit flex-col gap-3 py-3 text-xs min-[900px]:flex-row min-[900px]:items-center">
           <span className="whitespace-nowrap text-slate-500" data-testid="proposal-date">
-            {translateShorDate(proposalData.start_date, t)}
+            {dateFormat.format(dayjs(proposalData.start_date).toDate())}
             {' - '}
-            {translateShorDate(proposalData.end_date, t)} {'('}
+            {dateFormat.format(dayjs(proposalData.end_date).toDate())} {'('}
             {totalDays !== 1 ? totalDays + t('global.time.days') : t('global.time.a_day')}
             {')'}
           </span>

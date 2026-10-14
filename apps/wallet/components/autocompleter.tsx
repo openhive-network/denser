@@ -1,6 +1,15 @@
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@ui/components/command';
 import { cn } from '@ui/lib/utils';
-import { type ComponentPropsWithoutRef, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  type ComponentPropsWithoutRef,
+  type FocusEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type MouseEvent as ReactMouseEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from 'react';
 type Item = {
   username: string;
   about: string;
@@ -31,6 +40,7 @@ export function Autocompleter({
   inputProps?: InputProps;
 }) {
   const [isOpen, setIsOpen] = useState(true);
+  const [highlighted, setHighlighted] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<HTMLDivElement | null>(null);
   const expanded = isOpen && !!items?.length;
@@ -38,6 +48,14 @@ export function Autocompleter({
   useLayoutEffect(() => {
     inputRef.current?.setAttribute('aria-expanded', String(expanded));
   }, [expanded]);
+  // cmdk marks the highlighted item aria-selected but leaves the input's aria-activedescendant empty.
+  useLayoutEffect(() => {
+    const option = expanded
+      ? autocompleteRef.current?.querySelector(`[cmdk-item][data-value="${CSS.escape(highlighted)}"]`)
+      : null;
+    if (option?.id) inputRef.current?.setAttribute('aria-activedescendant', option.id);
+    else inputRef.current?.removeAttribute('aria-activedescendant');
+  }, [expanded, highlighted]);
   const handleInputFocus = () => {
     setIsOpen(true);
   };
@@ -45,6 +63,14 @@ export function Autocompleter({
     setIsOpen(true);
     onChange(next);
   };
+  const handleInputBlur = (event: FocusEvent<HTMLInputElement>) => {
+    if (!autocompleteRef.current?.contains(event.relatedTarget)) setIsOpen(false);
+  };
+  const handleInputKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') setIsOpen(true);
+  };
+  // Keeps the focus in the input, so picking a suggestion with the mouse does not blur it first.
+  const keepInputFocus = (event: ReactMouseEvent) => event.preventDefault();
 
   // `mousedown`, not `click`: the click that opens the surrounding dialog mounts this component
   // and still bubbles to the document afterwards, which would close the list as it opens.
@@ -77,11 +103,19 @@ export function Autocompleter({
   }, []);
 
   return (
-    <Command className="w-full border" ref={autocompleteRef} label={label}>
+    <Command
+      className="relative w-full overflow-visible border"
+      ref={autocompleteRef}
+      label={label}
+      value={highlighted}
+      onValueChange={setHighlighted}
+    >
       <CommandInput
         {...inputProps}
         ref={inputRef}
         onFocus={handleInputFocus}
+        onBlur={handleInputBlur}
+        onKeyDown={handleInputKeyDown}
         value={value}
         onValueChange={handleValueChange}
       />
@@ -89,13 +123,17 @@ export function Autocompleter({
         {/* Hidden rather than unmounted: cmdk does not re-filter items that remount under a search. */}
         <CommandGroup
           data-state={isOpen ? 'open' : 'closed'}
-          className={cn('absolute max-h-36 overflow-scroll bg-background-secondary', !isOpen && 'hidden')}
+          onMouseDown={keepInputFocus}
+          className={cn(
+            'absolute inset-x-0 max-h-36 overflow-y-auto overflow-x-hidden bg-background-secondary',
+            !isOpen && 'hidden'
+          )}
         >
           {items?.map((item) => (
             <CommandItem key={item.username} className="p-0" onSelect={() => onChange(item.username)}>
               <div
                 onClick={() => onChange(item.username)}
-                className="w-56 px-2 py-1 even:bg-background-tertiary"
+                className="w-full truncate px-2 py-1 even:bg-background-tertiary"
               >
                 {`${item.username} (${item.about})`}
               </div>

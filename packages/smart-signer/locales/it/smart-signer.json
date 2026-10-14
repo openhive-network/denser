@@ -127,6 +127,7 @@
     "password_placeholder": "Password",
     "password_form_title": "Inserisci la tua password",
     "store_key_label": "Conserva chiave",
-    "store_password_label": "Conserva password"
+    "store_password_label": "Conserva password",
+    "google_drive_password_placeholder": "Password per sbloccare il portafoglio Google Drive"
   }
 }

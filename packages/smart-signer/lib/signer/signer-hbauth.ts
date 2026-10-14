@@ -63,7 +63,7 @@ export class SignerHbauth extends Signer {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
       i18nKeysForCaptions: {
-        inputPasswordPlaceholder: 'Password to unlock key'
+        inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder'
       }
     };
 
@@ -186,8 +186,8 @@ export class SignerHbauth extends Signer {
         mode: PasswordFormMode.HBAUTH,
         showInputStorePassword: false,
         i18nKeysForCaptions: {
-          title: `This operation requires your ${singleSignKeyType} key for one time signing.`,
-          inputPasswordPlaceholder: 'Enter your WIF key'
+          title: `login_form.this_operation_requires_your_key_for_single_sign_${singleSignKeyType}`,
+          inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
         }
       };
 
@@ -274,8 +274,8 @@ export class SignerHbauth extends Signer {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
       i18nKeysForCaptions: {
-        title: `This operation requires your ${keyType} key. Enter your key and keep it in safe storage.`,
-        inputPasswordPlaceholder: 'Enter your WIF key'
+        title: `login_form.this_operation_requires_your_${keyType}_key_enter_key_and_keep_it_in_safe_storage`,
+        inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
       }
     };
     // If key is not registered in safe storage, ask user to enter it

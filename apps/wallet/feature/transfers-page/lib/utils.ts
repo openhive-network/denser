@@ -1,5 +1,6 @@
 import { TransferFilters } from '@/wallet/components/transfers-history-filter';
 import dayjs from 'dayjs';
+import { TFunction } from 'i18next';
 
 export const initialFilters: TransferFilters = {
   search: '',
@@ -86,13 +87,15 @@ export type Operation =
   | WithdrawVesting;
 
 
-export function hoursAndMinutes(date: Date) {
+/** Time left until `date`, e.g. "15 hours and 50 minutes"; empty once it has passed. */
+export function formatRestoreTime(date: Date, t: TFunction<'common_wallet', undefined>): string {
   const today = dayjs();
-  const cooldownMin = dayjs(date).diff(today, 'minute') % 60;
-  const cooldownH = dayjs(date).diff(today, 'hour');
-  return (
-    (cooldownH === 1 ? 'an hour' : cooldownH > 1 ? cooldownH + ' hours' : '') +
-    (cooldownH && cooldownMin ? ' and ' : '') +
-    (cooldownMin === 1 ? 'a minute' : cooldownMin > 0 ? cooldownMin + ' minutes' : '')
-  );
+  const minutes = dayjs(date).diff(today, 'minute') % 60;
+  const hours = dayjs(date).diff(today, 'hour');
+  const hoursText = hours > 0 ? t('resource_credits.hours', { count: hours }) : '';
+  const minutesText = minutes > 0 ? t('resource_credits.minutes', { count: minutes }) : '';
+  if (hoursText && minutesText) {
+    return t('resource_credits.hours_and_minutes', { hours: hoursText, minutes: minutesText });
+  }
+  return hoursText || minutesText;
 }

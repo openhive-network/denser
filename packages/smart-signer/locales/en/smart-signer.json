@@ -139,6 +139,7 @@
     "password_placeholder": "Password",
     "password_form_title": "Enter your password",
     "store_key_label": "Store key",
-    "store_password_label": "Store password"
+    "store_password_label": "Store password",
+    "google_drive_password_placeholder": "Password to unlock Google Drive wallet"
   }
 }

@@ -54,7 +54,7 @@ export const passwordFormDefaultValuesWif = {
   storePassword: false
 };
 
-// captions for inputs, buttons, form title etc.
+// smart-signer translation keys of the captions for inputs, buttons, form title etc.
 export interface PasswordFormI18nKeysForCaptions {
   title?: string;
   description?: string;
@@ -77,6 +77,8 @@ export interface PasswordFormOptions {
    */
   validatePassword?: (password: string) => Promise<string | null>;
   i18nKeysForCaptions?: PasswordFormI18nKeysForCaptions;
+  /** Interpolation values of the caption translations, e.g. `{ keyType: 'active' }` */
+  i18nValues?: Record<string, string>;
   /** Id given to the form's title, so a surrounding dialog can be labelled by it. */
   titleId?: string;
 }
@@ -88,6 +90,7 @@ export function PasswordForm({
   onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
   validatePassword,
   i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
+  i18nValues,
   titleId
 }: PasswordFormOptions) {
   // Also rendered for transaction signing, where the namespace may not be loaded yet: don't suspend.
@@ -95,18 +98,19 @@ export function PasswordForm({
   const randomValue = crypto.randomUUID();
 
   const defaultI18nKeysForCaptions = {
-    title: 'Enter your password',
+    title: 'password_form.password_form_title',
     description: '',
-    inputPasswordPlaceholder: 'Password',
-    inputStorePasswordLabel: 'Store password',
-    submitButtonName: 'Submit',
-    submitButtonNameWhenWorking: 'Working…',
-    resetButtonName: 'Reset'
+    inputPasswordPlaceholder: 'password_form.password_placeholder',
+    inputStorePasswordLabel: 'password_form.store_password_label',
+    submitButtonName: 'login_form.login_button',
+    submitButtonNameWhenWorking: 'login_form.working',
+    resetButtonName: 'login_form.reset_button'
   };
   const captionKey: Required<PasswordFormI18nKeysForCaptions> = {
     ...defaultI18nKeysForCaptions,
     ...i18nKeysForCaptions
   };
+  const caption = (key: string) => (key ? t(key, i18nValues) : '');
 
   let resolver;
   let passwordFormDefaultValues;
@@ -148,15 +152,15 @@ export function PasswordForm({
       data-testid="enter-password-to-unlock-key"
     >
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
-        <h2 id={titleId} className="w-full text-xl">{captionKey.title}</h2>
-        {captionKey.description && <p className="w-full">{captionKey.description}</p>}
+        <h2 id={titleId} className="w-full text-xl">{caption(captionKey.title)}</h2>
+        {captionKey.description && <p className="w-full">{caption(captionKey.description)}</p>}
 
         <form method="post" className="mt-6 w-full">
           <div className="relative mb-5">
             <input
               type="password"
               className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
-              placeholder={captionKey.inputPasswordPlaceholder}
+              placeholder={caption(captionKey.inputPasswordPlaceholder)}
               autoComplete="current-password"
               {...register('password')}
               data-testid="posting-private-key-input"
@@ -181,7 +185,7 @@ export function PasswordForm({
                 htmlFor={`store-password-${randomValue}`}
                 className="ml-2 flex items-center text-sm font-medium text-gray-900 dark:text-slate-300"
               >
-                {captionKey.inputStorePasswordLabel}
+                {caption(captionKey.inputStorePasswordLabel)}
               </label>
             </div>
           )}
@@ -195,8 +199,8 @@ export function PasswordForm({
               data-testid="password-submit-button"
               disabled={isSubmitting}
             >
-              {!isSubmitting && captionKey.submitButtonName}
-              {isSubmitting && captionKey.submitButtonNameWhenWorking}
+              {!isSubmitting && caption(captionKey.submitButtonName)}
+              {isSubmitting && caption(captionKey.submitButtonNameWhenWorking)}
             </button>
 
             {/* Reset Button */}
@@ -206,7 +210,7 @@ export function PasswordForm({
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
               data-testid="password-reset-button"
             >
-              {captionKey.resetButtonName}
+              {caption(captionKey.resetButtonName)}
             </button>
           </div>
 

@@ -48,7 +48,7 @@ test.describe.skip('Translation tests', () => {
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible();
     await expect(postsTabText).toBe('Posty');
     await expect(proposalsTabText).toBe('Propozycje');
-    await expect(witnessesTabText).toBe('Delegaci');
+    await expect(witnessesTabText).toBe('Świadkowie');
     await expect(dappsTabText).toBe('Nasze dApps');
   });
 
@@ -477,7 +477,7 @@ test.describe.skip('Translation tests', () => {
       'Block Explorer',
       'Odzyskiwanie skradzionego konta',
       'Zmiana hasła konta',
-      'Głosuj na delegatów',
+      'Głosuj na świadków',
       'Hive, Propozycje',
       'OpenHive Czat ',
       'Dokumentacja Hive API ',
