@@ -12,7 +12,7 @@ import {
 } from '@ui/components/dialog';
 import { Icons } from '@ui/components/icons';
 import { Input } from '@ui/components/input';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Autocompleter } from './autocompleter';
 import EncryptMemoDialog from './encrypt-memo-dialog';
 import badActorList from '@ui/config/lists/bad-actor-list';
@@ -32,6 +32,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from '@/wallet/i18n/client';
 import { getAccount } from '@transaction/lib/hive-api';
+import { type AccountNameFormatError, checkAccountNameFormat } from '@ui/lib/account-name-rules';
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -48,6 +49,16 @@ import { convertToHP } from '@ui/lib/utils';
 
 // After applying this operation, vesting_shares will be withdrawn at a rate of vesting_shares/13 per week for 13 weeks starting one week after this operation is included in the blockchain.
 const HIVE_VESTING_WITHDRAW_INTERVALS = 13;
+
+const ACCOUNT_FORMAT_ERROR_KEYS: Record<AccountNameFormatError, string> = {
+  empty: 'transfers_page.error.required',
+  too_short: 'transfers_page.error.account_length_min',
+  too_long: 'transfers_page.error.account_length_max',
+  segment_charset: 'transfers_page.error.not_found',
+  segment_start: 'transfers_page.error.not_found',
+  segment_end: 'transfers_page.error.not_found',
+  segment_too_short: 'transfers_page.error.not_found'
+};
 
 // wax is imported only once a broadcast has failed, so it stays out of the page's initial chunks.
 const isPrivateKeyLeak = async (error: unknown) =>
@@ -93,6 +104,14 @@ export function TransferDialog({
   suggestedUsers: { username: string; about: string }[];
 }) {
   const { t } = useTranslation('common_wallet');
+  const fieldIdPrefix = useId();
+  const fieldIds = {
+    from: `${fieldIdPrefix}-from`,
+    toError: `${fieldIdPrefix}-to-error`,
+    amount: `${fieldIdPrefix}-amount`,
+    amountError: `${fieldIdPrefix}-amount-error`,
+    memo: `${fieldIdPrefix}-memo`
+  };
   const defaultValue = {
     title: '',
     description: '',
@@ -302,18 +321,26 @@ export function TransferDialog({
   const transferSchema = useMemo(
     () =>
       z.object({
-        to: z
-          .string({ message: t('transfers_page.error.required') })
-          .min(3, { message: t('transfers_page.error.account_length_min') })
-          .max(16, { message: t('transfers_page.error.account_length_max') })
-          .refine(
-            async (to) => {
-              // Skip validation on server-side to avoid SSR issues
-              if (typeof window === 'undefined') return true;
-              return !!(await getAccount(to));
-            },
-            { message: t('transfers_page.error.not_found') }
-          ),
+        // A malformed name never reaches the node: find_accounts throws on one longer than 16 characters.
+        to: z.string({ message: t('transfers_page.error.required') }).superRefine(async (to, ctx) => {
+          const formatError = checkAccountNameFormat(to);
+          if (formatError) {
+            ctx.addIssue({ code: z.ZodIssueCode.custom, message: t(ACCOUNT_FORMAT_ERROR_KEYS[formatError]) });
+            return;
+          }
+          // Skip validation on server-side to avoid SSR issues
+          if (typeof window === 'undefined') return;
+          try {
+            if (!(await getAccount(to))) {
+              ctx.addIssue({ code: z.ZodIssueCode.custom, message: t('transfers_page.error.not_found') });
+            }
+          } catch {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('transfers_page.error.account_check_failed')
+            });
+          }
+        }),
         amount: z
           .number({ message: t('transfers_page.error.amount_empty') })
           .positive({ message: t('transfers_page.error.amount_not_positive') })
@@ -338,6 +365,9 @@ export function TransferDialog({
       to: data.to
     }
   });
+  const toError = form.formState.errors.to?.message;
+  const amountError = form.formState.errors.amount?.message;
+
   const onSubmit: SubmitHandler<TransferFormValues> = () => {
     if (memoBlocked) return;
     if (type === 'transfers' && memoToBroadcast(data.memo, data.to, encryptedMemo) === null) {
@@ -440,9 +470,10 @@ export function TransferDialog({
             {type !== 'powerDown' ? (
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
-                  {t('transfers_page.from')}
+                  <label htmlFor={fieldIds.from}>{t('transfers_page.from')}</label>
                   <div className="relative col-span-3">
                     <Input
+                      id={fieldIds.from}
                       disabled
                       defaultValue={username}
                       className="text-stale-900 block w-full px-3 py-2.5 pl-11"
@@ -461,11 +492,20 @@ export function TransferDialog({
                           label={t('transfers_page.to')}
                           items={suggestedUsers}
                           value={data.to}
+                          inputProps={{
+                            'aria-invalid': !!toError,
+                            'aria-describedby': toError ? fieldIds.toError : undefined
+                          }}
                           onChange={(e) => {
                             setData({ ...data, to: e });
                             form.setValue('to', e);
                           }}
                         />
+                        {toError ? (
+                          <p id={fieldIds.toError} className="pt-1 text-sm text-destructive">
+                            {toError}
+                          </p>
+                        ) : null}
                       </div>
                     </div>
                     {badActors ? (
@@ -480,10 +520,24 @@ export function TransferDialog({
                   </div>
                 ) : null}
                 <div className="grid grid-cols-4 items-center gap-4">
-                  {t('transfers_page.amount')}
+                  <label htmlFor={fieldIds.amount}>{t('transfers_page.amount')}</label>
                   <div className="relative col-span-3">
+                    <Input
+                      {...form.register('amount', {
+                        valueAsNumber: true,
+                        onChange: (e) => setValue(e.target.value)
+                      })}
+                      id={fieldIds.amount}
+                      aria-invalid={!!amountError}
+                      aria-describedby={amountError ? fieldIds.amountError : undefined}
+                      placeholder={t('transfers_page.amount')}
+                      className="text-stale-900 block w-full px-3 py-2.5"
+                      type="number"
+                      step="any"
+                    />
+                    {/* After the amount in the DOM, so Tab reaches it in its visual order. */}
                     {data.selectCurr && (
-                      <div className="absolute right-0">
+                      <div className="absolute right-0 top-0">
                         <Select value={curr} onValueChange={(e: 'HIVE' | 'HBD') => setCurr(e)}>
                           <SelectTrigger
                             aria-label={t('transfers_page.currency')}
@@ -502,26 +556,15 @@ export function TransferDialog({
                         </Select>
                       </div>
                     )}
-                    <Input
-                      {...form.register('amount', {
-                        valueAsNumber: true,
-                        onChange: (e) => setValue(e.target.value)
-                      })}
-                      placeholder="Amount"
-                      className="text-stale-900 block w-full px-3 py-2.5"
-                      type="number"
-                      step="any"
-                    />
                   </div>
                 </div>
-                <div>
-                  {form.formState.errors.amount && (
-                    <div className="text-sm text-destructive">{form.formState.errors.amount.message}</div>
-                  )}
-                  {form.formState.errors.to && (
-                    <div className="text-sm text-destructive">{form.formState.errors.to.message}</div>
-                  )}
-                </div>
+                {amountError ? (
+                  <div className="grid grid-cols-4 gap-4">
+                    <p id={fieldIds.amountError} className="col-span-3 col-start-2 text-sm text-destructive">
+                      {amountError}
+                    </p>
+                  </div>
+                ) : null}
                 <div className="grid grid-cols-4 items-center gap-4">
                   <div className=" col-span-1"></div>
                   <Button
@@ -546,9 +589,10 @@ export function TransferDialog({
                       </div>
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                      {t('transfers_page.memo')}
+                      <label htmlFor={fieldIds.memo}>{t('transfers_page.memo')}</label>
                       <Input
-                        placeholder="Memo"
+                        id={fieldIds.memo}
+                        placeholder={t('transfers_page.memo')}
                         className="col-span-3"
                         value={data.memo}
                         onChange={(e) => setData({ ...data, memo: e.target.value })}
@@ -583,7 +627,7 @@ export function TransferDialog({
                       valueAsNumber: true,
                       onChange: (e) => setValue(e.target.value)
                     })}
-                    placeholder="Amount"
+                    placeholder={t('transfers_page.amount')}
                     className="text-stale-900 z-10 block w-full px-3 py-2.5"
                     type="number"
                     step="any"

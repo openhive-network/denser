@@ -516,7 +516,8 @@
       "precision": "Używaj maksymalnie 3 miejsc po przecinku",
       "min_delegation": "Minimalna delegacja to {{min}} HP.",
       "cannot_delegate": "Nie możesz jeszcze delegować: minimalna delegacja to {{min}} HP, a dostępne masz {{available}} HP.",
-      "delegation_below_minimum": "Delegacja odrzucona: minimum to {{min}} HP (próbowano {{amount}} HP)."
+      "delegation_below_minimum": "Delegacja odrzucona: minimum to {{min}} HP (próbowano {{amount}} HP).",
+      "account_check_failed": "Nie udało się sprawdzić konta. Spróbuj ponownie później."
     },
     "confirm_transaction": "Potwierdź {{transaction}}",
     "ok": "OK",

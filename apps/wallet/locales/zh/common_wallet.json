@@ -507,7 +507,8 @@
       "precision": "最多只能使用 3 位小数",
       "min_delegation": "最低代理数量为 {{min}} HP。",
       "cannot_delegate": "你暂时无法代理：最低代理数量为 {{min}} HP，而你可用的只有 {{available}} HP。",
-      "delegation_below_minimum": "代理被拒绝：最低数量为 {{min}} HP（你尝试代理 {{amount}} HP）。"
+      "delegation_below_minimum": "代理被拒绝：最低数量为 {{min}} HP（你尝试代理 {{amount}} HP）。",
+      "account_check_failed": "无法检查该账户，请稍后重试。"
     },
     "confirm_transaction": "确认{{transaction}}",
     "ok": "确定",
