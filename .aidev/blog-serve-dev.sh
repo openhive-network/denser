@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# Command of the `blog` service in .aidev/dev-stack.compose.yml: installs
-# node_modules (.aidev/pnpm-deps.sh), then runs `pnpm dev` (react-env + next dev
-# on :3000), and starts it again in the same container when it ends.
+# Command of the `blog` and `wallet` services in .aidev/dev-stack.compose.yml:
+# installs node_modules (.aidev/pnpm-deps.sh), then runs the app's `pnpm dev`
+# (react-env + next dev, the blog on :3000, the wallet on :4000), and starts it
+# again in the same container when it ends.
+#
+#   bash .aidev/blog-serve-dev.sh [blog|wallet]    (default: blog)
 #
 # next dev's parent process forks the server and, when that server dies by a
 # signal, neither restarts it nor fails: its event loop empties and it exits 0
@@ -13,19 +16,35 @@
 # next dev is started again; QUICK_ENDS runs shorter than MIN_RUN_S in a row end
 # the service non-zero rather than looping on a failure a restart cannot fix.
 #
-# Every start writes a new id to .next/aidev-dev-boot (the blog_next volume);
-# blog-ready (.aidev/blog-ready.sh) warms the routes again for each new id.
+# Every start writes a new id to the app's .next/aidev-dev-boot (its `.next`
+# volume); its ready service (.aidev/blog-ready.sh) warms the routes again for
+# each new id.
+#
+# With DENSER_DEV_START_ON_REQUEST set (the wallet), next dev starts only once
+# something connects to $PORT: until then a placeholder listens there, marked by
+# .next/aidev-dev-on-request, and drops that first connection, which the edge
+# (.aidev/dev-stack.Caddyfile) retries until next dev answers. Two cold next dev
+# compiles at once take the stack past its admission memory; a wallet nobody
+# opens costs nothing.
 set -uo pipefail
 
 cd "$(dirname "$0")/.."
+
+app="${1:-blog}"
+case "$app" in
+    blog | wallet) ;;
+    *) echo "blog-serve-dev: unknown app '$app' (blog or wallet)" >&2; exit 2 ;;
+esac
+log="$app-serve-dev"
 
 # On a restart (the pnpm-lock.yaml reload rule restarts both) fixture-proxy may be
 # installing; pnpm-deps.sh waits on its lock, then verifies the tree.
 # shellcheck source=pnpm-deps.sh
 source .aidev/pnpm-deps.sh || exit 1
-cd apps/blog
+cd "apps/$app"
 
 readonly BOOT_FILE=.next/aidev-dev-boot
+readonly ON_REQUEST_FILE=.next/aidev-dev-on-request
 readonly MIN_RUN_S=120
 readonly QUICK_ENDS=3
 
@@ -38,6 +57,23 @@ stop() {
     [ -n "$pid" ] && kill -TERM -- "-$pid" 2> /dev/null
 }
 trap stop TERM INT
+
+if [ -n "${DENSER_DEV_START_ON_REQUEST:-}" ]; then
+    : > "$ON_REQUEST_FILE"
+    echo "$log: next dev starts on the first request to :${PORT:?}" >&2
+    setsid node -e '
+const server = require("net").createServer((socket) => { socket.destroy(); server.close(); });
+server.listen(Number(process.argv[1]));
+' "$PORT" &
+    pid=$!
+    wait "$pid"
+    if [ -n "$stopping" ]; then
+        wait "$pid"
+        exit 0
+    fi
+    rm -f "$ON_REQUEST_FILE"
+    echo "$log: first request on :$PORT; starting next dev" >&2
+fi
 
 quick=0
 while :; do
@@ -56,13 +92,13 @@ while :; do
     fi
     kill -KILL -- "-$pid" 2> /dev/null
     ran=$((SECONDS - started))
-    echo "blog-serve-dev: next dev ended with status $status after ${ran}s; OOM kills in this container: ${oom_before:-?} before, $(oom_kills) now" >&2
+    echo "$log: next dev ended with status $status after ${ran}s; OOM kills in this container: ${oom_before:-?} before, $(oom_kills) now" >&2
 
     if [ "$ran" -lt "$MIN_RUN_S" ]; then quick=$((quick + 1)); else quick=0; fi
     if [ "$quick" -ge "$QUICK_ENDS" ]; then
-        echo "blog-serve-dev: next dev ended within ${MIN_RUN_S}s $QUICK_ENDS times in a row; giving up" >&2
+        echo "$log: next dev ended within ${MIN_RUN_S}s $QUICK_ENDS times in a row; giving up" >&2
         exit 1
     fi
-    echo "blog-serve-dev: starting next dev again" >&2
+    echo "$log: starting next dev again" >&2
     sleep 2
 done
