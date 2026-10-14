@@ -210,7 +210,7 @@
     "older": "Older",
     "estimated_curation_rewards_last_week": "上周预估策展奖励：",
     "curation_rewards_history": "Curation Rewards History",
-    "start_power_down": "开始 Power Down {{amount}} HIVE",
+    "start_power_down": "开始 Power Down {{amount}}",
     "stop_power_down": "停止 Power Down",
     "delegated_tooltip": "代理给此账户或由此账户代理出的 HIVE POWER",
     "previous_transfers": "以往转账",

@@ -6,7 +6,7 @@ import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
 import { createNaiAsset } from '@ui/lib/asset-constants';
-import { vestsToHiveSatoshis } from '@ui/lib/asset-math';
+import { vestsToHiveSatoshis, vestsToNearestHiveSatoshis } from '@ui/lib/asset-math';
 import { formatAsset } from '@ui/lib/asset-format';
 
 export { getFilter } from './history-filter';
@@ -179,10 +179,26 @@ export function createListWithSuggestions(
 export const prepareRC = (rc: string): string => {
   return `${numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))}bil`;
 };
-export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined): string {
+type VestsToHiveSatoshis = typeof vestsToHiveSatoshis;
+
+const formatVestsAsHivePower = (
+  toHiveSatoshis: VestsToHiveSatoshis,
+  vests: NaiAsset | undefined,
+  totalVestingFund: NaiAsset | undefined,
+  totalVestingShares: NaiAsset | undefined
+): string => {
   const hiveSatoshis =
     vests && totalVestingFund && totalVestingShares
-      ? vestsToHiveSatoshis(BigInt(vests.amount), BigInt(totalVestingFund.amount), BigInt(totalVestingShares.amount))
+      ? toHiveSatoshis(BigInt(vests.amount), BigInt(totalVestingFund.amount), BigInt(totalVestingShares.amount))
       : 0;
   return formatAsset(createNaiAsset('HIVE', hiveSatoshis)).replace("HIVE", "HIVE POWER");
+};
+
+export function convertToFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined): string {
+  return formatVestsAsHivePower(vestsToHiveSatoshis, vests, totalVestingFund, totalVestingShares);
+}
+
+/** `convertToFormattedHivePower` rounded to the nearest satoshi, for VESTS converted from an amount entered in HP. */
+export function convertToNearestFormattedHivePower(vests: NaiAsset | undefined, totalVestingFund: NaiAsset | undefined, totalVestingShares: NaiAsset | undefined): string {
+  return formatVestsAsHivePower(vestsToNearestHiveSatoshis, vests, totalVestingFund, totalVestingShares);
 }

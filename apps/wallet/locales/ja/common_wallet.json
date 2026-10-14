@@ -210,7 +210,7 @@
     "older": "Older",
     "estimated_curation_rewards_last_week": "先週の推定キュレーション報酬：",
     "curation_rewards_history": "Curation Rewards History",
-    "start_power_down": "{{amount}} HIVEのパワーダウンを開始",
+    "start_power_down": "{{amount}}のパワーダウンを開始",
     "stop_power_down": "パワーダウンを停止",
     "delegated_tooltip": "このアカウントへ/からの委託されたHIVE POWER",
     "previous_transfers": "過去の送金",

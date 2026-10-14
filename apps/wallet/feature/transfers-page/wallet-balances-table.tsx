@@ -17,6 +17,8 @@ import RCRow from './rc-row';
 import { BalanceAction, BalanceMenu } from './balance-menu';
 import { CancelPowerDownDialog } from './cancel-power-down-dialog';
 
+const MIN_HIVE_AMOUNT = '0.001';
+
 interface SuggestedUser {
   username: string;
   about: string;
@@ -70,6 +72,13 @@ const WalletBalancesTable = ({
   );
 
   const powerdown_hive = powerdownHive(accountData, dynamicData);
+  const isPoweringDown =
+    BigInt(accountData.vesting_withdraw_rate.amount) > 0n &&
+    BigInt(accountData.to_withdraw) > BigInt(accountData.withdrawn);
+  // A small power down's weekly installment can be worth less than the smallest HIVE amount.
+  const nextPowerDownHive = powerdown_hive.gte(MIN_HIVE_AMOUNT)
+    ? `~${numberWithCommas(powerdown_hive.toFixed(3))}`
+    : `< ${MIN_HIVE_AMOUNT}`;
   const received_power_balance =
     (delegated_hive.lt(0) ? '+' : '') + numberWithCommas((-delegated_hive).toFixed(3));
 
@@ -340,9 +349,9 @@ const WalletBalancesTable = ({
         </table>
         <RCRow username={username} suggestedUsers={listOfAccounts} />
       </div>
-      {powerdown_hive.gt(0) ? (
+      {isPoweringDown ? (
         <div className="p-2 text-sm sm:p-4">
-          {`${t('profile.the_next_power_down')} ${totalTime} (~${numberWithCommas(powerdown_hive.toFixed(3))} HIVE)`}
+          {`${t('profile.the_next_power_down')} ${totalTime} (${nextPowerDownHive} HIVE)`}
         </div>
       ) : null}
     </>

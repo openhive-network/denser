@@ -8,6 +8,7 @@ import {
   withBroadcastResult
 } from '@ui/components/hooks/use-operation-mutation';
 import { createAsset } from '@transaction/lib/utils';
+import { ACCOUNT_HISTORY_REFRESH_DELAYS } from '@/wallet/lib/constants';
 
 type PowerUpParams = { fromAccount: string; toAccount: string; amount: asset };
 
@@ -24,6 +25,7 @@ function useVestingMutation<TVariables extends object>(
       ['accountHistory', username],
       ['accountData', username]
     ],
+    invalidateDelays: ACCOUNT_HISTORY_REFRESH_DELAYS,
     reportErrors: false
   });
 }
