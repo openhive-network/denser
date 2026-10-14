@@ -516,7 +516,8 @@
       "precision": "Используйте не более 3 знаков после запятой",
       "min_delegation": "Минимальное делегирование: {{min}} HP.",
       "cannot_delegate": "Вы пока не можете делегировать: минимальное делегирование — {{min}} HP, а у вас доступно {{available}} HP.",
-      "delegation_below_minimum": "Делегирование отклонено: минимум — {{min}} HP (вы указали {{amount}} HP)."
+      "delegation_below_minimum": "Делегирование отклонено: минимум — {{min}} HP (вы указали {{amount}} HP).",
+      "account_check_failed": "Не удалось проверить аккаунт. Повторите попытку позже."
     },
     "confirm_transaction": "Подтвердить: {{transaction}}",
     "ok": "OK",

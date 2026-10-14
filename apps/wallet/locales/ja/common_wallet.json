@@ -507,7 +507,8 @@
       "precision": "小数点以下は3桁までにしてください",
       "min_delegation": "委託の最小額は{{min}} HPです。",
       "cannot_delegate": "まだ委託できません: 委託の最小額は{{min}} HPですが、利用可能額は{{available}} HPです。",
-      "delegation_below_minimum": "委託が拒否されました: 最小額は{{min}} HPです（入力額: {{amount}} HP）。"
+      "delegation_below_minimum": "委託が拒否されました: 最小額は{{min}} HPです（入力額: {{amount}} HP）。",
+      "account_check_failed": "アカウントを確認できませんでした。しばらくしてから再試行してください。"
     },
     "confirm_transaction": "{{transaction}}の確認",
     "ok": "OK",

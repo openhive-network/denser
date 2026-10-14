@@ -512,7 +512,8 @@
       "precision": "Usa solo 3 decimales de precisión",
       "min_delegation": "La delegación mínima es de {{min}} HP.",
       "cannot_delegate": "Aún no puedes delegar: la delegación mínima es de {{min}} HP y tienes {{available}} HP disponibles.",
-      "delegation_below_minimum": "Delegación rechazada: el mínimo es {{min}} HP (intentaste {{amount}} HP)."
+      "delegation_below_minimum": "Delegación rechazada: el mínimo es {{min}} HP (intentaste {{amount}} HP).",
+      "account_check_failed": "No se pudo comprobar la cuenta. Inténtalo más tarde."
     },
     "confirm_transaction": "Confirmar {{transaction}}",
     "ok": "OK",
