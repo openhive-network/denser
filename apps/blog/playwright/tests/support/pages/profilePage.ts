@@ -242,7 +242,7 @@ export class ProfilePage {
     this.followButton = page.locator('[data-testid="profile-follow-button"]');
     this.muteButton = page.locator('[data-testid="profile-mute-button"]');
     this.userLinks = page.locator('[data-testid="user-links"]');
-    this.profileBlogPostsList = page.getByTestId('post-list-profile-blog-list');
+    this.profileBlogPostsList = page.getByTestId('post-list-profile-blog-list').filter({ visible: true });
 
     this.profileNav = page.locator('[data-testid="profile-navigation"]');
     this.profileBlogLink = page
@@ -274,7 +274,7 @@ export class ProfilePage {
       .locator('a[href$="/settings"]')
       .first();
 
-    this.postBlogItem = page.locator('[data-testid="post-list-item"]');
+    this.postBlogItem = page.locator('[data-testid="post-list-item"]').filter({ visible: true });
     this.postsMenu = page.locator('[data-testid="user-post-menu"]');
     this.postsPostAuthor = page.locator('[data-testid="post-author"]');
     this.postsMenuPostsButton = page.locator('[data-testid="user-post-menu"]').getByText('Posts');
@@ -307,9 +307,9 @@ export class ProfilePage {
     this.crossPostBanner = page.getByTestId('cross-post-banner');
     this.crossPostAuthorLink = page.getByTestId('cross-post-author-link');
     this.crossPostOriginalLink = page.getByTestId('cross-post-original-link');
-    this.postsPostListLocator = page.getByTestId('post-list-user-posts');
+    this.postsPostListLocator = page.getByTestId('post-list-user-posts').filter({ visible: true });
     this.postsCommentsListLocator = page.getByTestId('comment-list-replies');
-    this.postsPayoutsListLocator = page.getByTestId('post-list-user-payouts');
+    this.postsPayoutsListLocator = page.getByTestId('post-list-user-payouts').filter({ visible: true });
 
     this.repliesCommentListItem = page.locator('[data-testid="comment-list-item"]');
     this.repliesCommentListItemLoadNewer = page.locator('[div > button]').getByText('Load Newer');
@@ -332,25 +332,15 @@ export class ProfilePage {
     this.repliesCommentListItemRespondTooltip = page.locator('[data-testid="comment-respond-tooltip"]');
     this.repliesCommentListItemArticleTitle = page.locator('[data-testid="article-title"]');
 
-    this.notificationsMenu = page.locator('[data-testid="notifications-local-menu"]');
-    this.notificationsMenuAllButton = page
-      .locator('[data-testid="notifications-local-menu"]')
-      .getByText('All');
-    this.notificationsMenuRepliesButton = page
-      .locator('[data-testid="notifications-local-menu"]')
-      .getByText('Replies');
-    this.notificationsMenuMentionsButton = page
-      .locator('[data-testid="notifications-local-menu"]')
-      .getByText('Mentions');
-    this.notificationsMenuFollowsButton = page
-      .locator('[data-testid="notifications-local-menu"]')
-      .getByText('Follows');
-    this.notificationsMenuUpvotesButton = page
-      .locator('[data-testid="notifications-local-menu"]')
-      .getByText('Upvotes');
-    this.notificationsMenuReblogsButton = page
-      .locator('[data-testid="notifications-local-menu"]')
-      .getByText('Reblogs');
+    // A direct load can briefly keep React's hidden streamed copy (`<div hidden id="S:n">`) of
+    // the page next to the client-rendered one, so these locators match only the visible copy.
+    this.notificationsMenu = page.locator('[data-testid="notifications-local-menu"]').filter({ visible: true });
+    this.notificationsMenuAllButton = this.notificationsMenu.getByText('All');
+    this.notificationsMenuRepliesButton = this.notificationsMenu.getByText('Replies');
+    this.notificationsMenuMentionsButton = this.notificationsMenu.getByText('Mentions');
+    this.notificationsMenuFollowsButton = this.notificationsMenu.getByText('Follows');
+    this.notificationsMenuUpvotesButton = this.notificationsMenu.getByText('Upvotes');
+    this.notificationsMenuReblogsButton = this.notificationsMenu.getByText('Reblogs');
     this.notificationsMenuAllContent = page.locator('[data-testid="notifications-content-all"]');
     this.notificationsMenuRepliesContent = page.locator('[data-testid="notifications-content-replies"]');
     this.notificationListItemInReplies = this.notificationsMenuRepliesContent.locator('[data-testid="notification-list-item"]');

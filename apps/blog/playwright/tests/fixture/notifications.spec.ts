@@ -6,6 +6,8 @@ import {
 } from '../support/fixture-auth/broadcast-interceptor';
 import { TIMEOUTS } from '../support/constants';
 import { NotificationsPage } from '../support/pages/notificationsPage';
+import { ProfilePage } from '../support/pages/profilePage';
+import { prependHiddenStreamedCopy } from '../support/hiddenStreamedCopy';
 
 /**
  * Notifications fixture suite — §14 Notifications (NOTIF-01, NOTIF-03, NOTIF-04).
@@ -139,6 +141,22 @@ test.describe('§14 Notifications', () => {
       timeout: TIMEOUTS.HYDRATION
     });
     expect(await notifications.notificationItems.count()).toBeGreaterThanOrEqual(1);
+  });
+
+  // NOTIF-06 — A direct load can briefly hold React's hidden streamed copy of the page next
+  // to the client-rendered one; the tab bar locators must resolve to the visible copy alone,
+  // however early a spec asserts.
+  test('NOTIF-06 tab bar resolves to one visible copy right after domcontentloaded', async ({ page }) => {
+    const profilePage = new ProfilePage(page);
+    await page.goto(`/@${OWNER}/notifications`, { waitUntil: 'domcontentloaded' });
+    await expect(notifications.localMenu).toBeVisible();
+
+    await prependHiddenStreamedCopy(page, 'notifications-local-menu');
+
+    await expect(notifications.localMenu).toHaveCount(1);
+    await expect(notifications.localMenu).toBeVisible();
+    await expect(profilePage.notificationsMenu).toHaveCount(1);
+    await expect(profilePage.notificationsMenuUpvotesButton).toBeVisible();
   });
 
   // NOTIF-04 — Notification types: the type tabs filter and display

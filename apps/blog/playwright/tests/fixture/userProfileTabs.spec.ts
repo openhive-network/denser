@@ -6,6 +6,7 @@ import {
   getFirstCardImageUrl,
   recordImageRequests
 } from '../support/cardImagePreload';
+import { prependHiddenStreamedCopy } from '../support/hiddenStreamedCopy';
 
 /**
  * User Profile Tabs fixture tests — Section 1.4 of the Test Plan:
@@ -26,6 +27,7 @@ import {
  *   11 – Profile server HTML preloads only the first card image
  *   12 – Profile fetches the preloaded first card image only once
  *   13 – Profile without on-chain `profile.social` shows no social links
+ *   14 – Post list locators resolve to the visible copy right after domcontentloaded
  *
  * Record:  FIXTURE_MODE=record pnpm --filter @hive/blog test:fixture
  * Replay:  pnpm --filter @hive/blog test:fixture
@@ -220,5 +222,25 @@ test.describe('User Profile Tabs tests (fixture-based)', () => {
 
     await expect(profilePage.profileName).toBeVisible();
     await expect(profilePage.onChainSocialLinks).toHaveCount(0);
+  });
+
+  // ── ANON-PROF-14: Hidden streamed copy ───────────────────────────────
+  // A direct load can briefly hold React's hidden streamed copy of the page next to the
+  // client-rendered one; post list locators must resolve to the visible copy alone.
+
+  test('ANON-PROF-14: post list locators resolve to the visible copy right after domcontentloaded', async ({
+    page
+  }) => {
+    await page.goto(`/@${user}/posts`, { waitUntil: 'domcontentloaded' });
+    await expect(profilePage.profileBlogPostsList.first()).toBeVisible();
+    const lists = await profilePage.profileBlogPostsList.count();
+    const items = await profilePage.postBlogItem.count();
+
+    await prependHiddenStreamedCopy(page, 'post-list-profile-blog-list');
+
+    await expect(profilePage.profileBlogPostsList).toHaveCount(lists);
+    await expect(profilePage.postBlogItem).toHaveCount(items);
+    await expect(profilePage.postBlogItem.first()).toBeVisible();
+    await expect(profilePage.profileBlogPostsList.first().or(profilePage.userHasNotStartedBloggingYetMsg)).toBeVisible();
   });
 });
