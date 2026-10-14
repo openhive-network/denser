@@ -2,7 +2,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { getLogger } from '@ui/lib/logging';
 import { siteConfig } from '@ui/config/site';
-import { withBasePath } from '@ui/lib/path-utils';
 
 const logger = getLogger('app');
 
@@ -12,7 +11,7 @@ export default function InteractionPage({
   const router = useRouter();
 
   if (redirectTo) {
-    router.push(withBasePath(redirectTo));
+    router.push(redirectTo);
   }
 
   return (

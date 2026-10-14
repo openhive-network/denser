@@ -4,7 +4,6 @@ import { Dispatch, MutableRefObject, RefObject, SetStateAction, useCallback, use
 import { UseFormReturn } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { createAsset, createPermlink } from "@transaction/lib/utils";
-import { withBasePath } from "@ui/lib/path-utils";
 import { getLogger } from "@ui/lib/logging";
 import { handleError } from "@ui/lib/handle-error";
 import { Entry } from "@hive/common-hiveio-packages/wax";
@@ -170,7 +169,7 @@ export function usePostFormActions({
         }
       } else {
         const postUrl = `/${postParams.category}/@${username}/${postParams.permlink}?pending=1`;
-        await router.push(withBasePath(postUrl), undefined);
+        await router.push(postUrl, undefined);
       }
       if (btnRef.current) {
         btnRef.current.disabled = false;
