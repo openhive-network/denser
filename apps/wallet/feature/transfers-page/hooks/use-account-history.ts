@@ -31,7 +31,7 @@ export interface IAccountHistory {
  */
 export const useAccountHistory = (username: string, observer: string): IAccountHistory => {
   const query = useInfiniteQuery({
-    queryKey: ['Operations', username],
+    queryKey: ['accountHistory', username, 'walletOperations'],
     queryFn: async ({ pageParam }: { pageParam: number | undefined }): Promise<AccountHistoryPage> => {
       const response = await getAccountOperations(username, pageParam, ACCOUNT_HISTORY_PAGE_SIZE, observer);
       return { ...response, page: pageParam ?? response.total_pages };

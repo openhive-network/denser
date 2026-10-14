@@ -219,7 +219,7 @@
     "older": "Starsze",
     "estimated_curation_rewards_last_week": "Szacunkowe nagrody kuratorskie w zeszłym tygodniu:",
     "curation_rewards_history": "Historia nagród kuratorskich",
-    "start_power_down": "Rozpoczęto zmniejszanie mocy o {{amount}} HIVE",
+    "start_power_down": "Rozpoczęto zmniejszanie mocy o {{amount}}",
     "stop_power_down": "Zatrzymano zmniejszanie mocy",
     "delegated_tooltip": "HIVE POWER delegowane do/z tego konta",
     "previous_transfers": "Poprzednie przelewy",

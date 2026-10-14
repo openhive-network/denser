@@ -6,6 +6,7 @@ import {
   useOperationMutation,
   withBroadcastResult
 } from '@ui/components/hooks/use-operation-mutation';
+import { ACCOUNT_HISTORY_REFRESH_DELAYS } from '@/wallet/lib/constants';
 
 type TransferParams = { fromAccount: string; toAccount: string; memo: string; amount: asset };
 type WithdrawParams = TransferParams & { requestId: number };
@@ -23,6 +24,7 @@ export const useTransferHiveMutation = () =>
       transactionService.transfer(amount, fromAccount, memo, toAccount, OBSERVE)
     ),
     invalidate: accountKeys,
+    invalidateDelays: ACCOUNT_HISTORY_REFRESH_DELAYS,
     reportErrors: false
   });
 
@@ -34,6 +36,7 @@ export const useTransferToSavingsMutation = () =>
       transactionService.transferToSavings(amount, fromAccount, memo, toAccount, OBSERVE)
     ),
     invalidate: accountKeys,
+    invalidateDelays: ACCOUNT_HISTORY_REFRESH_DELAYS,
     reportErrors: false
   });
 
@@ -46,6 +49,7 @@ export function useWithdrawFromSavingsMutation() {
       transactionService.transferFromSavings(amount, fromAccount, memo, toAccount, requestId, OBSERVE)
     ),
     invalidate: (params: WithdrawParams) => [['savingsWithdrawalsFrom', username], ...accountKeys(params)],
+    invalidateDelays: ACCOUNT_HISTORY_REFRESH_DELAYS,
     reportErrors: false
   });
 }

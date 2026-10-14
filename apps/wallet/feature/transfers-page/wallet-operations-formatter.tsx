@@ -19,7 +19,7 @@ import type { HiveOperation } from '@hive/common-hiveio-packages/wax';
 import { TFunction } from 'i18next';
 import { Link } from '@hive/ui';
 import { formatOptionalAsset } from '@ui/lib/asset-format';
-import { convertToFormattedHivePower } from '@/wallet/lib/utils';
+import { convertToFormattedHivePower, convertToNearestFormattedHivePower } from '@/wallet/lib/utils';
 
 type DynamicData = Pick<GetDynamicGlobalPropertiesResponse, 'total_vesting_fund_hive' | 'total_vesting_shares'>;
 
@@ -135,7 +135,13 @@ export function createWalletOperationsFormatter(
       return (
         <span>
           {hasAmount
-            ? t('profile.start_power_down', { amount: formatHivePower(op.vesting_shares) })
+            ? t('profile.start_power_down', {
+                amount: convertToNearestFormattedHivePower(
+                  op.vesting_shares,
+                  dynamicData.total_vesting_fund_hive,
+                  dynamicData.total_vesting_shares
+                )
+              })
             : t('profile.stop_power_down')}
         </span>
       );

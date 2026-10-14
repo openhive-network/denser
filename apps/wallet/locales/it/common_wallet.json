@@ -215,7 +215,7 @@
     "older": "Older",
     "estimated_curation_rewards_last_week": "Ricompense di curation stimate della settimana scorsa:",
     "curation_rewards_history": "Curation Rewards History",
-    "start_power_down": "Avvia il power down di {{amount}} HIVE",
+    "start_power_down": "Avvia il power down di {{amount}}",
     "stop_power_down": "Interrompi il power down",
     "delegated_tooltip": "HIVE POWER delegato a/da questo account",
     "previous_transfers": "Trasferimenti precedenti",

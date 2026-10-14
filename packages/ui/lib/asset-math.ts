@@ -12,6 +12,19 @@ export function vestsToHiveSatoshis(
 }
 
 /**
+ * HIVE satoshis that `vests` VESTS satoshis are worth at the given vesting totals, rounded to the
+ * nearest satoshi: an amount entered in HIVE and converted to VESTS converts back to what was entered,
+ * where `vestsToHiveSatoshis` would round it down.
+ */
+export function vestsToNearestHiveSatoshis(
+  vests: bigint,
+  totalVestingFundHive: bigint,
+  totalVestingShares: bigint
+): bigint {
+  return (2n * vests * totalVestingFundHive + totalVestingShares) / (2n * totalVestingShares);
+}
+
+/**
  * HBD satoshis that `hive` HIVE satoshis are worth at the price `base` HBD satoshis per `quote`
  * HIVE satoshis (e.g. a feed's `current_median_history`): `hive * base / quote` in integer math,
  * rounded toward zero, as wax's `hiveToHbd` computes it.

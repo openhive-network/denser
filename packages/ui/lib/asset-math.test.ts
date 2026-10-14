@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { decimalToSatoshis } from './asset-math.ts';
+import { decimalToSatoshis, vestsToHiveSatoshis, vestsToNearestHiveSatoshis } from './asset-math.ts';
 
 const PRECISION = { HIVE: 3, HBD: 3, VESTS: 6 } as const;
 
@@ -30,4 +30,25 @@ describe('decimalToSatoshis', () => {
       assert.equal(decimalToSatoshis(value, PRECISION[token]).toString(), amount);
     });
   }
+});
+
+describe('vestsToNearestHiveSatoshis', () => {
+  // 1 HIVE satoshi (0.001 HIVE) = 1_606_838.5 VESTS satoshis (~1.606838 VESTS) at these totals.
+  const FUND = 2n;
+  const SHARES = 3_213_677n;
+
+  it('converts an amount entered as 0.001 HIVE back to 0.001 HIVE where rounding down gives 0.000', () => {
+    assert.equal(vestsToHiveSatoshis(1_606_838n, FUND, SHARES), 0n);
+    assert.equal(vestsToNearestHiveSatoshis(1_606_838n, FUND, SHARES), 1n);
+  });
+
+  it('rounds below half a satoshi down and from half a satoshi up', () => {
+    assert.equal(vestsToNearestHiveSatoshis(803_419n, FUND, SHARES), 0n);
+    assert.equal(vestsToNearestHiveSatoshis(803_420n, FUND, SHARES), 1n);
+  });
+
+  it('keeps exact conversions exact', () => {
+    assert.equal(vestsToNearestHiveSatoshis(3_213_677_000n, FUND, SHARES), 2_000n);
+    assert.equal(vestsToNearestHiveSatoshis(0n, FUND, SHARES), 0n);
+  });
 });

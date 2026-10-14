@@ -219,7 +219,7 @@
     "older": "Older",
     "estimated_curation_rewards_last_week": "Ожидаемые кураторские вознаграждения за прошлую неделю:",
     "curation_rewards_history": "Curation Rewards History",
-    "start_power_down": "Начато уменьшение Силы Голоса на {{amount}} HIVE",
+    "start_power_down": "Начато уменьшение Силы Голоса на {{amount}}",
     "stop_power_down": "Уменьшение Силы Голоса остановлено",
     "delegated_tooltip": "HIVE POWER, делегированная этим аккаунтом или этому аккаунту",
     "previous_transfers": "Предыдущие переводы",
