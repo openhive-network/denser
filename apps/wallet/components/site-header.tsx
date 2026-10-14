@@ -22,6 +22,8 @@ import WitnessVoteExpiryWarning from './witness-vote-expiry-warning';
 import { getAccount } from '@transaction/lib/hive-api';
 import { getUserAvatarUrl } from '@hive/ui';
 import dynamic from 'next/dynamic';
+import LoginKeyBadge from './login-key-badge';
+import { useLoginAuthorityLabels } from './use-login-authority-labels';
 
 // recharts is shown to logged-in users only: keep it out of the chunks every page loads.
 const RcRingChart = dynamic(() => import('./rc-ring-chart'), { ssr: false });
@@ -52,6 +54,7 @@ const calculateRcStats = (userRc: RcAccount[]) => {
 const SiteHeader: FC = () => {
   const { t } = useTranslation('common_wallet');
   const { user } = useUserClient();
+  const loginAuthority = useLoginAuthorityLabels(user);
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
@@ -137,7 +140,7 @@ const SiteHeader: FC = () => {
                   <button
                     type="button"
                     data-testid="profile-avatar-button"
-                    aria-label={t('navigation.user_menu.account_menu')}
+                    aria-label={loginAuthority.accountMenu}
                     className="relative inline-flex w-fit cursor-pointer items-center justify-center rounded-full"
                   >
                     <div className="absolute cursor-pointer">
@@ -149,6 +152,7 @@ const SiteHeader: FC = () => {
                         <Icons.user />
                       </AvatarFallback>
                     </Avatar>
+                    <LoginKeyBadge authority={loginAuthority.authority} />
                   </button>
                 </UserMenu>
               </div>

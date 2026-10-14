@@ -98,13 +98,34 @@
       "label": "Portefeuille"
     },
     "user_menu": {
-      "account_menu": "Menu du compte",
+      "account_menu_key": {
+        "posting": "Menu du compte {{username}}, clé de publication",
+        "active": "Menu du compte {{username}}, clé active"
+      },
+      "account_menu_signer": "Menu du compte {{username}}, {{method}}",
       "wallet": "Portefeuille",
       "toggle_theme": "Thème",
       "toggle_lang": "Langue",
       "change_password": "Changer le mot de passe",
       "settings": "Paramètres",
-      "logout": "Se déconnecter"
+      "logout": "Se déconnecter",
+      "key_type": {
+        "posting": "Clé de publication",
+        "active": "Clé active"
+      },
+      "active_key_badge": "Connecté avec la clé active",
+      "log_in_with_active_key": "Se connecter avec la clé active",
+      "switch_to_posting_key": "Passer à la clé de publication",
+      "login_method": {
+        "hbauth": "Stockage Sécurisé",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "Clé WIF",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {

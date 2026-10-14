@@ -128,7 +128,11 @@
       "reblogs": "Reblogs"
     },
     "user_menu": {
-      "account_menu": "Menu du compte",
+      "account_menu_key": {
+        "posting": "Menu du compte {{username}}, clé de publication",
+        "active": "Menu du compte {{username}}, clé active"
+      },
+      "account_menu_signer": "Menu du compte {{username}}, {{method}}",
       "profile": "Profil",
       "notifications": "Notifications",
       "comments": "Commentaires",
@@ -152,7 +156,14 @@
         "hiveauth": "HiveAuth",
         "wif": "Clé WIF",
         "hivesigner": "HiveSigner"
-      }
+      },
+      "key_type": {
+        "posting": "Clé de publication",
+        "active": "Clé active"
+      },
+      "active_key_badge": "Connecté avec la clé active",
+      "log_in_with_active_key": "Se connecter avec la clé active",
+      "switch_to_posting_key": "Passer à la clé de publication"
     }
   },
   "select_sort": {

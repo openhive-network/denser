@@ -21,9 +21,20 @@ interface DialogLoginProps {
   redirectTo?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  /** The key to sign in with */
+  keyType?: KeyType;
+  /** The account to sign in; defaults to the last one signed in */
+  username?: string;
 }
 
-function DialogLogin({ children, redirectTo, open, onOpenChange }: DialogLoginProps) {
+function DialogLogin({
+  children,
+  redirectTo,
+  open,
+  onOpenChange,
+  keyType = KeyType.posting,
+  username
+}: DialogLoginProps) {
   const signInFormRef = useRef<SignInFormRef>(null);
   const router = useRouter();
 
@@ -80,7 +91,8 @@ function DialogLogin({ children, redirectTo, open, onOpenChange }: DialogLoginPr
         </VisuallyHidden>
         <SignInForm
           ref={signInFormRef}
-          preferredKeyTypes={[KeyType.posting]}
+          preferredKeyTypes={[keyType]}
+          username={username}
           onComplete={onComplete}
           authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
           strict={!siteConfig.allowNonStrictLogin}

@@ -2,6 +2,7 @@ import { test, expect, isRecordMode } from '../support/fixture-proxy-test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { gotoPostLoggedIn } from '../support/reblogShareContext';
+import { DEFAULT_USER } from '../support/fixture-auth/seeder';
 import {
   clickOutside,
   clickUntilOpen,
@@ -44,7 +45,7 @@ test.describe('Radix primitives — header account menu, logged in', () => {
     const menu = new ProfileUserMenu(page).profileMenuContent;
     const firstItem = menu.getByRole('menuitem').first();
 
-    await expect(trigger).toHaveAccessibleName('Account menu');
+    await expect(trigger).toHaveAccessibleName(`${DEFAULT_USER.username} account menu, posting key`);
     await expect(trigger).toHaveAttribute('aria-haspopup', 'menu');
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 

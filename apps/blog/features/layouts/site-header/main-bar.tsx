@@ -28,11 +28,14 @@ import { usePathname } from 'next/navigation';
 import { MainNav } from './main-nav';
 import SearchButton from './search-button';
 import { useIdleAfterLoad } from '@/blog/components/hooks/use-idle-after-load';
+import LoginKeyBadge from './login-key-badge';
+import { useLoginAuthorityLabels } from './use-login-authority-labels';
 
 const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');
   const pathname = usePathname();
   const { user } = useUserClient();
+  const loginAuthority = useLoginAuthorityLabels(user);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -228,7 +231,7 @@ const MainBar: FC = () => {
                     <button
                       type="button"
                       data-testid="profile-avatar-button"
-                      aria-label={t('navigation.user_menu.account_menu')}
+                      aria-label={loginAuthority.accountMenu}
                       className="group relative inline-flex w-fit cursor-pointer items-center justify-center rounded-full"
                     >
                       {data && data.unread !== 0 ? (
@@ -281,6 +284,7 @@ const MainBar: FC = () => {
                           />
                         </AvatarFallback>
                       </Avatar>
+                      <LoginKeyBadge authority={loginAuthority.authority} />
                     </button>
                   </UserMenu>
                 ) : null}

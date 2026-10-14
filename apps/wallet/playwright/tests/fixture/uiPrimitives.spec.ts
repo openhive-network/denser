@@ -224,7 +224,7 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     const menu = page.getByRole('menu');
     const firstItem = menu.getByRole('menuitem').first();
 
-    await expect(trigger).toHaveAccessibleName('Account menu');
+    await expect(trigger).toHaveAccessibleName(`${STUB_ACCOUNT} account menu, active key`);
     await expect(trigger).toHaveAttribute('aria-haspopup', 'menu');
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
@@ -281,7 +281,7 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await logInAsStubAccount(page);
     await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
     const trigger = page.getByTestId('profile-avatar-button');
-    const menu = page.getByRole('menu', { name: 'Account menu' });
+    const menu = page.getByRole('menu', { name: `${STUB_ACCOUNT} account menu, active key` });
     const theme = menu.getByRole('menuitem', { name: 'Theme' });
     const submenu = page.getByRole('menu', { name: 'Theme' });
     const light = submenu.getByRole('menuitemradio', { name: 'Light' });
@@ -289,6 +289,9 @@ test.describe('Wallet Radix and cmdk primitives', () => {
 
     await openWith(() => trigger.press('Enter'), menu);
     await expect(menu.getByRole('menuitem').first()).toBeFocused();
+    // Past the active session's "Switch to posting key" and Wallet; Radix moves focus after the keydown
+    await page.keyboard.press('ArrowDown');
+    await expect(menu.getByRole('menuitem').nth(1)).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(theme).toBeFocused();
     await expect(theme).toHaveAttribute('aria-haspopup', 'menu');
@@ -320,6 +323,8 @@ test.describe('Wallet Radix and cmdk primitives', () => {
 
     await trigger.press('Enter');
     await expect(menu.getByRole('menuitem').first()).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(menu.getByRole('menuitem').nth(1)).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(theme).toBeFocused();
     await page.keyboard.press('ArrowRight');

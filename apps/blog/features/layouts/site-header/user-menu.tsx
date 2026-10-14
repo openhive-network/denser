@@ -15,13 +15,18 @@ import { Icons } from '@ui/components/icons';
 import LangSubmenu from '../lang-submenu';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import env from '@beam-australia/react-env';
-import { User } from '@smart-signer/types/common';
+import { KeyType, User } from '@smart-signer/types/common';
 import { useTranslation } from '@/blog/i18n/client';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useDismissOnPointerDownOutside } from '@ui/hooks/use-dismiss-on-pointer-down-outside';
 import DialogLogin from '@/blog/components/dialog-login';
 import AccountSwitcher from './account-switcher';
 import LoginMethodIcon from './login-method-icon';
+import LoginKeyAction from './login-key-action';
+import { useLoginAuthorityLabels } from './use-login-authority-labels';
+
+/** What the login dialog opened from the menu signs in: any account, or this one with a given key */
+type LoginDialogTarget = { username?: string; keyType?: KeyType };
 
 /**
  * The header's account menu. `children` is its trigger: a single focusable element (a `<button>`)
@@ -41,8 +46,21 @@ const UserMenu = ({
   const onLogout = useLogout();
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
-  const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
-  const openAddAccount = useCallback(() => setIsAddAccountOpen(true), []);
+  const { authority, chip } = useLoginAuthorityLabels(user);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  // Kept when the dialog closes, so its content does not change while it animates out
+  const [loginTarget, setLoginTarget] = useState<LoginDialogTarget>({});
+  const openAddAccount = useCallback(() => {
+    setLoginTarget({});
+    setIsLoginOpen(true);
+  }, []);
+  const openKeyLogin = useCallback(
+    (keyType: KeyType) => {
+      setLoginTarget({ username: user.username, keyType });
+      setIsLoginOpen(true);
+    },
+    [user.username]
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
@@ -69,7 +87,15 @@ const UserMenu = ({
           {...menuPress}
         >
           <DropdownMenuLabel className="flex w-full items-center justify-between">
-            <span data-testid="user-name-in-profile-menu">{user.username}</span>
+            <div className="flex flex-col items-start gap-1">
+              <span data-testid="user-name-in-profile-menu">{user.username}</span>
+              <span
+                className="rounded-full border px-2 py-0.5 text-xs font-normal text-muted-foreground"
+                data-testid="login-authority-chip"
+              >
+                {chip}
+              </span>
+            </div>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -94,6 +120,7 @@ const UserMenu = ({
               </Tooltip>
             </TooltipProvider>
           </DropdownMenuLabel>
+          <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} />
 
           <AccountSwitcher user={user} onAddAccount={openAddAccount} />
 
@@ -157,7 +184,12 @@ const UserMenu = ({
         </DropdownMenuContent>
       </DropdownMenu>
       {/* Outside the menu, which unmounts its content when it closes */}
-      <DialogLogin open={isAddAccountOpen} onOpenChange={setIsAddAccountOpen} />
+      <DialogLogin
+        open={isLoginOpen}
+        onOpenChange={setIsLoginOpen}
+        username={loginTarget.username}
+        keyType={loginTarget.keyType}
+      />
     </>
   );
 };

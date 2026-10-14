@@ -98,13 +98,34 @@
       "label": "Кошелёк"
     },
     "user_menu": {
-      "account_menu": "Меню аккаунта",
+      "account_menu_key": {
+        "posting": "Меню аккаунта {{username}}, ключ публикации",
+        "active": "Меню аккаунта {{username}}, активный ключ"
+      },
+      "account_menu_signer": "Меню аккаунта {{username}}, {{method}}",
       "wallet": "Кошелёк",
       "toggle_theme": "Тема",
       "toggle_lang": "Язык",
       "change_password": "Сменить пароль",
       "settings": "Настройки",
-      "logout": "Выйти"
+      "logout": "Выйти",
+      "key_type": {
+        "posting": "Ключ публикации",
+        "active": "Активный ключ"
+      },
+      "active_key_badge": "Вход выполнен с активным ключом",
+      "log_in_with_active_key": "Войти с активным ключом",
+      "switch_to_posting_key": "Перейти на ключ публикации",
+      "login_method": {
+        "hbauth": "Безопасное хранилище",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "WIF ключ",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {

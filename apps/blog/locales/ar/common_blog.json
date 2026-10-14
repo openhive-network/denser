@@ -129,7 +129,11 @@
       "reblogs": "إعادة النشر"
     },
     "user_menu": {
-      "account_menu": "قائمة الحساب",
+      "account_menu_key": {
+        "posting": "قائمة حساب {{username}}، مفتاح النشر",
+        "active": "قائمة حساب {{username}}، المفتاح النشط"
+      },
+      "account_menu_signer": "قائمة حساب {{username}}، {{method}}",
       "profile": "الملف الشخصي",
       "notifications": "الإشعارات",
       "comments": "التعليقات",
@@ -153,7 +157,14 @@
         "hiveauth": "HiveAuth",
         "wif": "مفتاح WIF",
         "hivesigner": "HiveSigner"
-      }
+      },
+      "key_type": {
+        "posting": "مفتاح النشر",
+        "active": "المفتاح النشط"
+      },
+      "active_key_badge": "تم تسجيل الدخول بالمفتاح النشط",
+      "log_in_with_active_key": "تسجيل الدخول بالمفتاح النشط",
+      "switch_to_posting_key": "التبديل إلى مفتاح النشر"
     }
   },
   "select_sort": {

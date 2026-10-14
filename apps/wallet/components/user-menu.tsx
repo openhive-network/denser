@@ -14,10 +14,13 @@ import { Icons } from '@ui/components/icons';
 import LangSubmenu from './lang-submenu';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import { getLogger } from '@ui/lib/logging';
-import { User } from '@smart-signer/types/common';
+import { KeyType, User } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
 import { Tooltip, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useDismissOnPointerDownOutside } from '@ui/hooks/use-dismiss-on-pointer-down-outside';
+import DialogLogin from './dialog-login';
+import LoginKeyAction from './login-key-action';
+import { useLoginAuthorityLabels } from './use-login-authority-labels';
 
 const logger = getLogger('app');
 
@@ -28,6 +31,14 @@ const logger = getLogger('app');
 const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User; tooltip?: ReactNode }) => {
   const onLogout = useLogout('/');
   const { t } = useTranslation('common_wallet');
+  const { authority, chip } = useLoginAuthorityLabels(user);
+  const [isKeyLoginOpen, setIsKeyLoginOpen] = useState(false);
+  // Kept when the dialog closes, so its content does not change while it animates out
+  const [keyLoginType, setKeyLoginType] = useState<KeyType>(KeyType.active);
+  const openKeyLogin = useCallback((keyType: KeyType) => {
+    setKeyLoginType(keyType);
+    setIsKeyLoginOpen(true);
+  }, []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
@@ -38,54 +49,72 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
   // bubble its focus events through the portal and open the tooltip above the menu, where it takes
   // the first Esc), and the tooltip is held closed while the menu is open.
   return (
-    <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-      <TooltipProvider>
-        <Tooltip open={isTooltipOpen && !isMenuOpen} onOpenChange={setIsTooltipOpen}>
-          <DropdownMenuTrigger asChild {...menuPress}>
-            <TooltipTrigger asChild>{children}</TooltipTrigger>
-          </DropdownMenuTrigger>
-          {tooltip}
-        </Tooltip>
-      </TooltipProvider>
-      <DropdownMenuContent className="w-56 " {...menuPress}>
-        <DropdownMenuLabel className="flex w-full items-center justify-between">
-          <span>{user.username}</span>
-          <Icons.walletlogo className=" w-20" />
-        </DropdownMenuLabel>
+    <>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+        <TooltipProvider>
+          <Tooltip open={isTooltipOpen && !isMenuOpen} onOpenChange={setIsTooltipOpen}>
+            <DropdownMenuTrigger asChild {...menuPress}>
+              <TooltipTrigger asChild>{children}</TooltipTrigger>
+            </DropdownMenuTrigger>
+            {tooltip}
+          </Tooltip>
+        </TooltipProvider>
+        <DropdownMenuContent className="w-56 " {...menuPress}>
+          <DropdownMenuLabel className="flex w-full items-center justify-between">
+            <div className="flex flex-col items-start gap-1">
+              <span>{user.username}</span>
+              <span
+                className="rounded-full border px-2 py-0.5 text-xs font-normal text-muted-foreground"
+                data-testid="login-authority-chip"
+              >
+                {chip}
+              </span>
+            </div>
+            <Icons.walletlogo className=" w-20" />
+          </DropdownMenuLabel>
+          <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} />
 
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <Link href={`/@${user.username}/transfers`}>
-            <DropdownMenuItem className="flex w-full cursor-pointer items-center">
-              <Icons.wallet className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.wallet')}</span>
-            </DropdownMenuItem>
-          </Link>
-          <ThemeSubmenu />
-          <LangSubmenu />
-
-          <Link href={`/@${user.username}/password`}>
-            <DropdownMenuItem className="flex w-full cursor-pointer items-center">
-              <Icons.keyRound className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.change_password')}</span>
-            </DropdownMenuItem>
-          </Link>
-          <DropdownMenuItem className="cursor-pointer">
-            <Link
-              href=""
-              onClick={async (e) => {
-                e.preventDefault();
-                await onLogout();
-              }}
-              className="flex w-full items-center"
-            >
-              <Icons.doorOpen className="mr-2" />
-              <span className="w-full">{t('navigation.user_menu.logout')}</span>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <Link href={`/@${user.username}/transfers`}>
+              <DropdownMenuItem className="flex w-full cursor-pointer items-center">
+                <Icons.wallet className="mr-2" />
+                <span className="w-full">{t('navigation.user_menu.wallet')}</span>
+              </DropdownMenuItem>
             </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <ThemeSubmenu />
+            <LangSubmenu />
+
+            <Link href={`/@${user.username}/password`}>
+              <DropdownMenuItem className="flex w-full cursor-pointer items-center">
+                <Icons.keyRound className="mr-2" />
+                <span className="w-full">{t('navigation.user_menu.change_password')}</span>
+              </DropdownMenuItem>
+            </Link>
+            <DropdownMenuItem className="cursor-pointer">
+              <Link
+                href=""
+                onClick={async (e) => {
+                  e.preventDefault();
+                  await onLogout();
+                }}
+                className="flex w-full items-center"
+              >
+                <Icons.doorOpen className="mr-2" />
+                <span className="w-full">{t('navigation.user_menu.logout')}</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {/* Outside the menu, which unmounts its content when it closes */}
+      <DialogLogin
+        open={isKeyLoginOpen}
+        onOpenChange={setIsKeyLoginOpen}
+        username={user.username}
+        keyType={keyLoginType}
+      />
+    </>
   );
 };
 export default UserMenu;

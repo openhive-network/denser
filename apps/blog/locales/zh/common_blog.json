@@ -128,7 +128,11 @@
       "reblogs": "Reblogs"
     },
     "user_menu": {
-      "account_menu": "账户菜单",
+      "account_menu_key": {
+        "posting": "{{username}} 的账户菜单，发帖密钥",
+        "active": "{{username}} 的账户菜单，活动密钥"
+      },
+      "account_menu_signer": "{{username}} 的账户菜单，{{method}}",
       "profile": "个人资料",
       "notifications": "通知",
       "comments": "评论",
@@ -152,7 +156,14 @@
         "hiveauth": "HiveAuth",
         "wif": "WIF密钥",
         "hivesigner": "HiveSigner"
-      }
+      },
+      "key_type": {
+        "posting": "发帖密钥",
+        "active": "活动密钥"
+      },
+      "active_key_badge": "已使用活动密钥登录",
+      "log_in_with_active_key": "使用活动密钥登录",
+      "switch_to_posting_key": "切换到发帖密钥"
     }
   },
   "select_sort": {
