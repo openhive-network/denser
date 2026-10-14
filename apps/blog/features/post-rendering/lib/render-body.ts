@@ -1,4 +1,4 @@
-import type { DefaultRenderer } from '@hive/renderer';
+import { containsHighlightableCode, getSyntaxHighlighter, type DefaultRenderer } from '@hive/renderer';
 import { getRenderer, getPreviewRenderer } from './renderer';
 import { insertFacadeThumbnails } from './facade-thumbnails';
 import { toCommunityDescriptionHtml } from './community-description-html';
@@ -13,6 +13,8 @@ export interface RenderBodyOptions {
   /** editor preview: images bypass the image proxy's whitelist with this token */
   proxyAuthToken?: string;
 }
+
+export { loadSyntaxHighlighter } from '@hive/renderer';
 
 let previewRenderer: { key: string; renderer: DefaultRenderer } | undefined;
 
@@ -33,4 +35,12 @@ export function renderBody(
   const html = renderer.render(body, postContext);
   if (communityDescription) return toCommunityDescriptionHtml(html);
   return insertFacadeThumbnails(html, { prioritizeLeading: mainPost, proxyAuthToken });
+}
+
+/**
+ * Whether `html` from renderBody has code blocks left plain only because the syntax highlighter
+ * isn't loaded yet: render again once loadSyntaxHighlighter resolves true.
+ */
+export function awaitsSyntaxHighlighter(html: string): boolean {
+  return !getSyntaxHighlighter() && containsHighlightableCode(html);
 }

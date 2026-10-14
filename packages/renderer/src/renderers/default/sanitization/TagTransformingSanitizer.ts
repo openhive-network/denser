@@ -95,7 +95,10 @@ export class TagTransformingSanitizer {
                 a: ['href', 'rel', 'title', 'class', 'target', 'id'],
 
                 // start attribute allows ordered lists to continue numbering after interruption
-                ol: ['start']
+                ol: ['start'],
+
+                // language of a fenced code block, restricted to ^language-X$ (below)
+                code: ['class']
             },
             allowedSchemes: ['http', 'https', 'hive'],
             transformTags: {
@@ -180,6 +183,15 @@ export class TagTransformingSanitizer {
                     }
                     atts.decoding = 'async';
                     const retTag: sanitize.Tag = {tagName, attribs: atts};
+                    return retTag;
+                },
+                code: (tagName, attribs) => {
+                    const attys: sanitize.Attributes = {};
+                    const klass = attribs.class || '';
+                    if (/^language-[a-z0-9_+-]{1,30}$/i.test(klass)) {
+                        attys.class = klass.toLowerCase();
+                    }
+                    const retTag: sanitize.Tag = {tagName, attribs: attys};
                     return retTag;
                 },
                 div: (tagName, attribs) => {

@@ -1,4 +1,4 @@
-import { DefaultRenderer } from '@hive/renderer';
+import { DefaultRenderer, SyntaxHighlightPlugin } from '@hive/renderer';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { BODY_IMAGE_SIZES, getBodyImageSrcSet } from './body-image-sources';
 import { RENDERER_PLUGINS } from './renderer-plugins';
@@ -9,6 +9,9 @@ import imageUserBlocklist from '@hive/ui/config/lists/image-user-blocklist';
 import { configuredSiteDomain } from '@hive/ui/config/public-vars';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
+// One instance for every renderer, so they share its cache of highlighted code blocks.
+const syntaxHighlightPlugin = new SyntaxHighlightPlugin();
 
 const renderDefaultOptions = {
   baseUrl: configuredSiteDomain,
@@ -23,7 +26,7 @@ const renderDefaultOptions = {
   ipfsPrefix: '',
   assetsWidth: 640,
   assetsHeight: 480,
-  plugins: [...RENDERER_PLUGINS],
+  plugins: [...RENDERER_PLUGINS, syntaxHighlightPlugin],
   imageProxyFn: (url: string) => proxifyImageSrc(url, 1536, 0),
   imageSrcSetFn: (url: string) => getBodyImageSrcSet(url),
   imageSizes: BODY_IMAGE_SIZES,

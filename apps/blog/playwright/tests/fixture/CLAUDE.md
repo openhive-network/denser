@@ -1083,6 +1083,16 @@ Three sibling specs extend the SSR coverage beyond "what renders":
   renderer chunk. Replay-only: `communityDescription` overlays `ssrSeoGuard`,
   giving hive-139531 a description with links, an image, code, a table and
   embeds (see its `_index.json`); `initialChunksTag.spec.ts` uses it too.
+- **`syntaxHighlight{Post,Editor,Comment}.spec.ts`** — fenced code blocks
+  tagged with a language are highlighted by Shiki (`pre.shiki`; helpers in
+  `support/syntaxHighlightContext.ts`). `Post` reuses `communityModeratePostFeed`
+  (gtg's HF28 post, 16 `bash`/`ini` blocks): server HTML, hard load, client
+  navigation from the community feed, no Shiki script loaded, the theme switch
+  recolouring in place. `Editor` (`postCreate`) and `Comment` (`commenting`)
+  type cpp/python/html/untagged/unknown blocks and check the client render of
+  the preview and of the posted reply. Every body on a post page carries
+  `id="articleBody"`: scope post-body checks with `PostPage.articleBody` (the
+  first), or comments' blocks are counted too.
 - **`feedNavigation.spec.ts`** — JS **enabled**; replay-only on the
   `homeMainPage` recording. Holds the `/hot` feed call (see "observe a pending
   state" recipe), asserts the `feed-navigation-pending` skeleton, then the Hot

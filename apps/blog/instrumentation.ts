@@ -9,6 +9,11 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     const { ServerResponse } = await import('node:http');
     installServiceUnavailableStatus(ServerResponse);
+
+    // Before the first request: the server renders bodies synchronously, so a code block rendered
+    // before the highlighter is ready would be served plain.
+    const { loadSyntaxHighlighter, warmUpSyntaxHighlighter } = await import('@hive/renderer');
+    if (await loadSyntaxHighlighter()) warmUpSyntaxHighlighter();
   }
 
   if (!!process.env.REACT_APP_SENTRY_DSN && process.env.NEXT_RUNTIME === 'nodejs') {
