@@ -1,48 +1,59 @@
 /**
- * Calculates human-readable reputation score from Hive blockchain reputation value.
+ * Hive reputation comes in two shapes that must not be guessed from magnitude.
  *
- * The reputation on Hive blockchain is stored as a large number that needs to be
- * converted to a human-readable score (typically between -25 and 75+).
+ * - Calibrated (bridge / hivemind `author_reputation` and `get_profile.reputation`):
+ *   already on the display scale, including values above 100 (e.g. 100.99).
+ * - Raw (`condenser_api.get_account_reputations` share_type): an integer.
+ *   Anything below 1e9 displays as 25, so `abs(input) < 1e9` is NOT a calibrated score.
  *
- * Formula: reputation = (log10(abs(raw_reputation)) - 9) * 9 + 25
- *
- * @param input - Raw reputation value from blockchain (string or number)
- * @returns Human-readable reputation score (integer)
- *
- * @example
- * accountReputation('95832978796820') // returns 72
- * accountReputation(0) // returns 25 (default for new accounts)
- * accountReputation(-1000000000) // returns negative score
+ * Call {@link accountReputation} for calibrated values and {@link rawAccountReputation}
+ * for raw share_type. A raw value passed to accountReputation is not converted.
  */
-const isHumanReadable = (input: number): boolean => {
-  return Math.abs(input) > 0 && Math.abs(input) <= 100;
-};
 
-export const accountReputation = (input: string | number): number => {
-  if (typeof input === 'number' && isHumanReadable(input)) {
-    return Math.floor(input);
-  }
-
+const floorCalibrated = (input: string | number): number => {
   if (typeof input === 'string') {
     input = Number(input);
-
-    if (isHumanReadable(input)) {
-      return Math.floor(input);
-    }
   }
 
-  if (input === 0) {
+  if (!Number.isFinite(input) || input === 0) {
     return 25;
   }
 
-  let neg = false;
+  return Math.floor(input);
+};
 
-  if (input < 0) neg = true;
+/**
+ * Display score for an already-calibrated reputation.
+ *
+ * @example
+ * accountReputation(100.99) // 100
+ * accountReputation(0) // 25
+ */
+export const accountReputation = (input: string | number): number => {
+  return floorCalibrated(input);
+};
 
+/**
+ * Display score for a raw reputation share_type.
+ * Formula: (log10(abs(raw)) - 9) * 9 + 25, with the pre-sign clamp used by condenser.
+ *
+ * @example
+ * rawAccountReputation('95832978796820') // 69
+ * rawAccountReputation(36150048) // 25 (raw below 1e9, not the integer 36150048)
+ * rawAccountReputation(0) // 25
+ */
+export const rawAccountReputation = (input: string | number): number => {
+  if (typeof input === 'string') {
+    input = Number(input);
+  }
+
+  if (!Number.isFinite(input) || input === 0) {
+    return 25;
+  }
+
+  const neg = input < 0;
   let reputationLevel = Math.log10(Math.abs(input));
   reputationLevel = Math.max(reputationLevel - 9, 0);
-
-  if (reputationLevel < 0) reputationLevel = 0;
 
   if (neg) reputationLevel *= -1;
 
