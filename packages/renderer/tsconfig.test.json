@@ -8,7 +8,14 @@
     "skipLibCheck": true,
     "noEmit": true,
     "strict": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    // node10 resolution ignores package.json `exports`, which is how shiki publishes its entries
+    "baseUrl": ".",
+    "paths": {
+      "shiki/core": ["node_modules/shiki/dist/core.d.mts"],
+      "shiki/engine/javascript": ["node_modules/shiki/dist/engine-javascript.d.mts"],
+      "shiki/*": ["node_modules/shiki/dist/*"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]

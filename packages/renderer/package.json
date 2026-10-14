@@ -23,6 +23,7 @@
     "pino": "^8.17.1",
     "remarkable": "2.0.1",
     "sanitize-html": "2.13.0",
+    "shiki": "4.0.2",
     "typescript-chained-error": "1.6.0"
   },
   "devDependencies": {

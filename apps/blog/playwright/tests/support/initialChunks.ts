@@ -34,6 +34,8 @@ export const CHUNK_MARKERS = {
   remarkable: 'footnote_reference_open',
   /** sanitize-html, the renderer's sanitizer: one of its options */
   sanitizeHtml: 'allowProtocolRelative',
+  /** Shiki, the syntax highlighter: the name of its error class */
+  shiki: 'ShikiError',
   /** zod: one of its issue codes */
   zod: 'invalid_intersection_types',
   /** cmdk, behind @hive/ui's Command, which the blog never renders: one of its item selectors */

@@ -16,13 +16,15 @@ async function loadRenderBody(): Promise<RenderBodyModule> {
 
 /**
  * Renders `body` in the browser, for bodies the server didn't render (edits, replies just posted,
- * previews). Returns undefined until the renderer has loaded, or when there is no body.
+ * previews). Returns undefined until the renderer has loaded, or when there is no body. Code
+ * blocks are plain until the syntax highlighter has loaded, then the body is rendered again.
  */
 export function useClientRenderedBody(
   body: string | undefined,
   { author, permlink, mainPost, communityDescription, proxyAuthToken }: RenderBodyOptions
 ): string | undefined {
   const [loaded, setLoaded] = useState(() => Boolean(renderBodyModule));
+  const [highlighterLoads, setHighlighterLoads] = useState(0);
 
   useEffect(() => {
     if (!body || loaded) return;
@@ -37,11 +39,26 @@ export function useClientRenderedBody(
     };
   }, [body, loaded]);
 
-  return useMemo(
+  const html = useMemo(
     () =>
       body && loaded && renderBodyModule
         ? renderBodyModule.renderBody(body, { author, permlink, mainPost, communityDescription, proxyAuthToken })
         : undefined,
-    [body, loaded, author, permlink, mainPost, communityDescription, proxyAuthToken]
+    // highlighterLoads: render again once the highlighter has loaded
+    [body, loaded, author, permlink, mainPost, communityDescription, proxyAuthToken, highlighterLoads]
   );
+  const awaitsHighlighter = useMemo(() => Boolean(html && renderBodyModule?.awaitsSyntaxHighlighter(html)), [html]);
+
+  useEffect(() => {
+    if (!awaitsHighlighter || !renderBodyModule) return;
+    let active = true;
+    renderBodyModule.loadSyntaxHighlighter().then((ready) => {
+      if (active && ready) setHighlighterLoads((count) => count + 1);
+    });
+    return () => {
+      active = false;
+    };
+  }, [awaitsHighlighter]);
+
+  return html;
 }
