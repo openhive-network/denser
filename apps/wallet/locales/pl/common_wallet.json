@@ -98,13 +98,34 @@
       "label": "Portfel"
     },
     "user_menu": {
-      "account_menu": "Menu konta",
+      "account_menu_key": {
+        "posting": "Menu konta {{username}}, klucz publikowania",
+        "active": "Menu konta {{username}}, klucz aktywny"
+      },
+      "account_menu_signer": "Menu konta {{username}}, {{method}}",
       "wallet": "Portfel",
       "toggle_theme": "Motyw",
       "toggle_lang": "Język",
       "change_password": "Zmień hasło",
       "settings": "Ustawienia",
-      "logout": "Wyloguj"
+      "logout": "Wyloguj",
+      "key_type": {
+        "posting": "Klucz publikowania",
+        "active": "Klucz aktywny"
+      },
+      "active_key_badge": "Zalogowano kluczem aktywnym",
+      "log_in_with_active_key": "Zaloguj się kluczem aktywnym",
+      "switch_to_posting_key": "Przełącz na klucz publikowania",
+      "login_method": {
+        "hbauth": "Bezpieczne przechowywanie",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "Klucz WIF",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {

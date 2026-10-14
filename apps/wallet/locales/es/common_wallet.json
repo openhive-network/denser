@@ -98,13 +98,34 @@
       "label": "Billetera"
     },
     "user_menu": {
-      "account_menu": "Menú de la cuenta",
+      "account_menu_key": {
+        "posting": "Menú de la cuenta {{username}}, clave de publicación",
+        "active": "Menú de la cuenta {{username}}, clave activa"
+      },
+      "account_menu_signer": "Menú de la cuenta {{username}}, {{method}}",
       "wallet": "Monedero",
       "toggle_theme": "Tema",
       "toggle_lang": "Idioma",
       "change_password": "Cambiar contraseña",
       "settings": "Ajustes",
-      "logout": "Cerrar sesión"
+      "logout": "Cerrar sesión",
+      "key_type": {
+        "posting": "Clave de publicación",
+        "active": "Clave activa"
+      },
+      "active_key_badge": "Sesión iniciada con la clave activa",
+      "log_in_with_active_key": "Iniciar sesión con la clave activa",
+      "switch_to_posting_key": "Cambiar a la clave de publicación",
+      "login_method": {
+        "hbauth": "Almacenamiento Seguro",
+        "keychain": "Hive Keychain",
+        "peakvault": "PeakVault",
+        "metamask": "MetaMask",
+        "google": "Google Drive",
+        "hiveauth": "HiveAuth",
+        "wif": "Clave WIF",
+        "hivesigner": "HiveSigner"
+      }
     }
   },
   "select_sort": {

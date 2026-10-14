@@ -128,7 +128,11 @@
       "reblogs": "Reblogs"
     },
     "user_menu": {
-      "account_menu": "アカウントメニュー",
+      "account_menu_key": {
+        "posting": "{{username}} のアカウントメニュー、投稿キー",
+        "active": "{{username}} のアカウントメニュー、アクティブキー"
+      },
+      "account_menu_signer": "{{username}} のアカウントメニュー、{{method}}",
       "profile": "プロフィール",
       "notifications": "通知",
       "comments": "コメント",
@@ -152,7 +156,14 @@
         "hiveauth": "HiveAuth",
         "wif": "WIFキー",
         "hivesigner": "HiveSigner"
-      }
+      },
+      "key_type": {
+        "posting": "投稿キー",
+        "active": "アクティブキー"
+      },
+      "active_key_badge": "アクティブキーでログイン中",
+      "log_in_with_active_key": "アクティブキーでログイン",
+      "switch_to_posting_key": "投稿キーに切り替える"
     }
   },
   "select_sort": {

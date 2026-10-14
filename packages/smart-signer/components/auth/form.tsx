@@ -13,6 +13,8 @@ export interface SignInFormProps {
   authenticateOnBackend?: boolean;
   strict?: boolean; // if true use strict authentication
   i18nNamespace?: string;
+  /** The account to sign in; defaults to the last one signed in */
+  username?: string;
 }
 
 export type SignInFormRef = { cancel: () => Promise<void> };
@@ -30,7 +32,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       onComplete,
       authenticateOnBackend = false,
       strict = false,
-      i18nNamespace = 'smart-signer'
+      i18nNamespace = 'smart-signer',
+      username: initialUsername
     }: SignInFormProps,
     ref
   ) => {
@@ -38,7 +41,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
-    const [username, setUsername] = useState<string>(lastLoggedInUser);
+    const [username, setUsername] = useState<string>(initialUsername ?? lastLoggedInUser);
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({

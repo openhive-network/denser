@@ -49,6 +49,12 @@ const IDENTICAL_TO_ENGLISH_ALLOWED = {
     'navigation.sidebar.ionomy',
     'navigation.profile_navbar.blog',
     'login_form.title_hbauth_form',
+    'navigation.user_menu.login_method.keychain',
+    'navigation.user_menu.login_method.peakvault',
+    'navigation.user_menu.login_method.metamask',
+    'navigation.user_menu.login_method.google',
+    'navigation.user_menu.login_method.hiveauth',
+    'navigation.user_menu.login_method.hivesigner',
     // Abbreviations
     'navigation.sidebar.faq',
     'communities.nsfw',
