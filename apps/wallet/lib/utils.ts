@@ -5,6 +5,7 @@ import { SavingsWithdrawals, IFollow, HiveOperation } from '@hive/common-hiveio-
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
+import { joinSiteUrl } from '@ui/lib/site-url';
 import { createNaiAsset } from '@ui/lib/asset-constants';
 import { vestsToHiveSatoshis } from '@ui/lib/asset-math';
 import { formatAsset } from '@ui/lib/asset-format';
@@ -58,9 +59,7 @@ export const getExternalLink = (path: string, baseUrl?: string) => {
     baseUrl = envBlogUrl;
   }
 
-  const url = new URL(path, baseUrl);
-
-  return url.toString();
+  return joinSiteUrl(baseUrl, path).toString();
 };
 export const cutPublicKey = (publicKey?: string, width?: number, firstCut: number = 720): string => {
   if (!publicKey) return '';
