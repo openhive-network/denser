@@ -305,7 +305,7 @@ export class SignerGoogleDrive extends Signer {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
       i18nKeysForCaptions: {
-        inputPasswordPlaceholder: 'Password to unlock Google Drive wallet',
+        inputPasswordPlaceholder: 'password_form.google_drive_password_placeholder'
       }
     };
 

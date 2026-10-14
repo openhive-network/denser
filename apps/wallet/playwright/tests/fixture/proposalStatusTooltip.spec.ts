@@ -66,7 +66,18 @@ test.describe('Proposal status tooltip', () => {
   }) => {
     const tooltip = await openStatusTooltip(page, baseURL, 'pl');
 
-    await expect(page.getByTestId('proposal-status-badge')).toHaveText('rozpoczęte');
+    await expect(page.getByTestId('proposal-status-badge')).toHaveText('rozpoczęta');
     await expect(tooltip).toHaveText(/^Rozpoczęta \d+ miesi\S+ temu, kończy się za \d+ miesi\S+$/);
+  });
+
+  test('WALLET-PROPOSAL-DATE-01 — the proposal dates are written in the format of the wallet language', async ({
+    page,
+    baseURL
+  }) => {
+    await openStatusTooltip(page, baseURL, 'pl');
+    await expect(page.getByTestId('proposal-date')).toContainText('1 sty 2026 - 1 sty 2027');
+
+    await openStatusTooltip(page, baseURL, 'en');
+    await expect(page.getByTestId('proposal-date')).toContainText('Jan 1, 2026 - Jan 1, 2027');
   });
 });

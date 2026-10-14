@@ -36,20 +36,6 @@
       "eleventh": "November",
       "twelfth": "December"
     },
-    "months_short_form": {
-      "first": "Jan",
-      "second": "Feb",
-      "third": "Mar",
-      "fourth": "Apr",
-      "fifth": "May",
-      "sixth": "Jun",
-      "seventh": "Jul",
-      "eighth": "Aug",
-      "ninth": "Sep",
-      "tenth": "Oct",
-      "eleventh": "Nov",
-      "twelfth": "Dec"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -64,7 +50,8 @@
       "years": " years",
       "a_year": " a year"
     },
-    "retry": "Riprova"
+    "retry": "Riprova",
+    "close": "Chiudi"
   },
   "navigation": {
     "main_nav_bar": {
@@ -227,6 +214,7 @@
     "potential_curation_reward_title": "Potenziale ricompensa da curatore per: ",
     "by": " di ",
     "governance_expiry_warning": "I voti ai Witness scadono automaticamente {{duration}} dopo la tua ultima transazione di governance. I tuoi voti attuali scadranno il {{date}}. Per favore ",
+    "governance_expiry_duration": "1 anno",
     "update_your_witness_votes": "aggiorna i tuoi voti ai Witness",
     "governance_expired": "I tuoi voti ai Witness sono scaduti il {{date}}. Per favore ",
     "to_reset": " per reimpostarli.",
@@ -424,7 +412,11 @@
     "since": "Dal",
     "previous_page": "Precedente",
     "next_page": "Successiva",
-    "page_of": "Pagina {{page}} di {{total}}"
+    "page_of": "Pagina {{page}} di {{total}}",
+    "revoke": "Revoca",
+    "revoke_rc_confirm": "Vuoi davvero revocare la delega di RC a @{{account}}?",
+    "confirm_revoke": "Conferma delega di Vesting Shares",
+    "revoke_failed": "Impossibile revocare la delega"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Spiacenti! Questa pagina non esiste.",
@@ -445,7 +437,11 @@
     "add": "Aggiungi",
     "cancel": "Annulla",
     "add_item_title": "Aggiungi nuova voce {{id}}",
-    "edit_item": "Modifica {{name}}"
+    "edit_item": "Modifica {{name}}",
+    "owner_authority": "Autorità Owner",
+    "active_authority": "Autorità Active",
+    "posting_authority": "Autorità Posting",
+    "owner_threshold_warning": "Modificando la soglia dell'autorità Owner potresti perdere l'accesso indipendente a questo account.\n\nVuoi davvero continuare?"
   },
   "transfers_page": {
     "currency": "Valuta",
@@ -496,7 +492,9 @@
       "dhf_funding_operation": "DHF Funding",
       "transfer_operation": "Transfers"
     },
-    "report_operations_found": "{{count}} operations found",
+    "report_operations_found_one": "{{count}} operazione trovata",
+    "report_operations_found_many": "{{count}} operazioni trovate",
+    "report_operations_found_other": "{{count}} operazioni trovate",
     "report_no_operations": "Nessuna operazione trovata nel periodo selezionato",
     "report_select_operation_types": "Include in report:",
     "current_rewards": "Le tue ricompense attuali: ",
@@ -665,5 +663,26 @@
   "settings": {
     "preferences": "Preferenze",
     "choose_api": "Scegli il tuo nodo API preferito"
+  },
+  "resource_credits": {
+    "title": "Crediti risorse",
+    "description": "I voti sui contenuti e le ricompense di curation vengono calcolati come se fosse il proprio Hive Power. Gli utenti non possono però effettuare il power down né incassare l'Hive Power delegato, perché appartiene ancora al proprietario originale.",
+    "upvote": "Voto positivo",
+    "downvote": "Voto negativo",
+    "rc": "RC",
+    "max": "Max:",
+    "current": "Attuale:",
+    "fully_restored_in": "Completamente ripristinato tra:",
+    "no_data": "Nessun dato disponibile",
+    "no_delegations": "Nessuna delega trovata",
+    "total": "totale: {{amount}}",
+    "amount_billions": "{{amount}} mld",
+    "hours_one": "{{count}} ora",
+    "hours_many": "{{count}} ore",
+    "hours_other": "{{count}} ore",
+    "minutes_one": "{{count}} minuto",
+    "minutes_many": "{{count}} minuti",
+    "minutes_other": "{{count}} minuti",
+    "hours_and_minutes": "{{hours}} e {{minutes}}"
   }
 }

@@ -36,20 +36,6 @@
       "eleventh": "November",
       "twelfth": "December"
     },
-    "months_short_form": {
-      "first": "Jan",
-      "second": "Feb",
-      "third": "Mar",
-      "fourth": "Apr",
-      "fifth": "May",
-      "sixth": "Jun",
-      "seventh": "Jul",
-      "eighth": "Aug",
-      "ninth": "Sep",
-      "tenth": "Oct",
-      "eleventh": "Nov",
-      "twelfth": "Dec"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -64,7 +50,8 @@
       "years": " years",
       "a_year": " a year"
     },
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "close": "Fermer"
   },
   "navigation": {
     "main_nav_bar": {
@@ -227,6 +214,7 @@
     "potential_curation_reward_title": "Gain de curation potentiel pour : ",
     "by": " par ",
     "governance_expiry_warning": "Les votes pour les témoins expirent automatiquement {{duration}} après votre dernière transaction de gouvernance. Vos votes actuels expireront le {{date}}. Veuillez ",
+    "governance_expiry_duration": "1 an",
     "update_your_witness_votes": "mettre à jour vos votes pour les témoins",
     "governance_expired": "Vos votes pour les témoins ont expiré le {{date}}. Veuillez ",
     "to_reset": " pour les réinitialiser.",
@@ -424,7 +412,11 @@
     "since": "Depuis",
     "previous_page": "Précédent",
     "next_page": "Suivant",
-    "page_of": "Page {{page}} sur {{total}}"
+    "page_of": "Page {{page}} sur {{total}}",
+    "revoke": "Révoquer",
+    "revoke_rc_confirm": "Voulez-vous vraiment révoquer la délégation de RC à @{{account}} ?",
+    "confirm_revoke": "Confirmer la délégation de Vesting Shares",
+    "revoke_failed": "Impossible de révoquer la délégation"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Désolé ! Cette page n'existe pas.",
@@ -445,7 +437,11 @@
     "add": "Ajouter",
     "cancel": "Annuler",
     "add_item_title": "Ajouter une entrée {{id}}",
-    "edit_item": "Modifier {{name}}"
+    "edit_item": "Modifier {{name}}",
+    "owner_authority": "Autorité propriétaire (Owner)",
+    "active_authority": "Autorité active (Active)",
+    "posting_authority": "Autorité de publication (Posting)",
+    "owner_threshold_warning": "En modifiant le seuil de l'autorité propriétaire (Owner), vous pourriez perdre l'accès indépendant à ce compte.\n\nVoulez-vous vraiment continuer ?"
   },
   "transfers_page": {
     "currency": "Devise",
@@ -496,7 +492,9 @@
       "dhf_funding_operation": "DHF Funding",
       "transfer_operation": "Transfers"
     },
-    "report_operations_found": "{{count}} operations found",
+    "report_operations_found_one": "{{count}} opération trouvée",
+    "report_operations_found_many": "{{count}} opérations trouvées",
+    "report_operations_found_other": "{{count}} opérations trouvées",
     "report_no_operations": "Aucune opération trouvée sur la période sélectionnée",
     "report_select_operation_types": "Include in report:",
     "current_rewards": "Vos gains actuels : ",
@@ -665,5 +663,26 @@
   "settings": {
     "preferences": "Préférences",
     "choose_api": "Choisissez votre nœud d'API préféré"
+  },
+  "resource_credits": {
+    "title": "Crédits de ressources",
+    "description": "Les votes sur le contenu et les récompenses de curation sont calculés comme s'il s'agissait de leur propre Hive Power. Les utilisateurs ne peuvent toutefois pas effectuer de power down ni encaisser le Hive Power délégué, car il appartient toujours à son propriétaire d'origine.",
+    "upvote": "Vote positif",
+    "downvote": "Vote négatif",
+    "rc": "RC",
+    "max": "Max :",
+    "current": "Actuel :",
+    "fully_restored_in": "Entièrement restauré dans :",
+    "no_data": "Aucune donnée disponible",
+    "no_delegations": "Aucune délégation trouvée",
+    "total": "total : {{amount}}",
+    "amount_billions": "{{amount}} Md",
+    "hours_one": "{{count}} heure",
+    "hours_many": "{{count}} heures",
+    "hours_other": "{{count}} heures",
+    "minutes_one": "{{count}} minute",
+    "minutes_many": "{{count}} minutes",
+    "minutes_other": "{{count}} minutes",
+    "hours_and_minutes": "{{hours}} et {{minutes}}"
   }
 }

@@ -127,6 +127,7 @@
     "password_placeholder": "Contraseña",
     "password_form_title": "Ingrese su contraseña",
     "store_key_label": "Guardar clave",
-    "store_password_label": "Guardar contraseña"
+    "store_password_label": "Guardar contraseña",
+    "google_drive_password_placeholder": "Contraseña para desbloquear la billetera de Google Drive"
   }
 }

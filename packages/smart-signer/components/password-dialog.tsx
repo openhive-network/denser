@@ -57,7 +57,8 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
     e.preventDefault();
   };
 
-  const { mode, showInputStorePassword, validatePassword, i18nKeysForCaptions } = passwordFormOptions;
+  const { mode, showInputStorePassword, validatePassword, i18nKeysForCaptions, i18nValues } =
+    passwordFormOptions;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -74,6 +75,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
           showInputStorePassword={showInputStorePassword}
           validatePassword={validatePassword}
           i18nKeysForCaptions={i18nKeysForCaptions}
+          i18nValues={i18nValues}
           titleId={titleId}
         />
       </DialogContent>

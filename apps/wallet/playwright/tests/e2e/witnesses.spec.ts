@@ -459,9 +459,9 @@ test.describe('Witnesses page tests', () => {
     await expect(homePage.languageMenu.first()).toBeVisible();
     await homePage.languageMenuPl.click();
     // Wait for translation to load by checking for Polish text
-    await expect(witnessPage.witnessHeaderTitle).toHaveText('Głosowanie na delegatów');
+    await expect(witnessPage.witnessHeaderTitle).toHaveText('Głosowanie na świadków');
     await expect(witnessPage.witnessHeaderDescription).toHaveText(
-      'Na poniższej liście znajduje sie 100 pierwszych delegatów, aktywnych jak również nieaktywnych. Każdy delegat powyżej 100 pozycji jest filtrowany i nie wyświetlany jeśli nie wyprodukował bloku w ostatnich 30 dniach.'
+      'Uwaga: pierwszych 100 świadków na poniższej liście nie jest filtrowanych – są wśród nich świadkowie aktywni i nieaktywni. Świadkowie spoza pierwszej setki są pomijani, jeśli nie wyprodukowali żadnego bloku w ciągu ostatnich 30 dni.'
     );
     await expect(page.getByRole('button', { name: 'Zagłosuj' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Ustaw pełnomocnika' })).toBeVisible();

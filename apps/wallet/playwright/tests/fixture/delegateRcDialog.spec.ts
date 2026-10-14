@@ -166,4 +166,51 @@ test.describe('Delegate RC dialog', () => {
     await recipient.press('Escape');
     await expect(dialog).toBeHidden();
   });
+
+  test('WALLET-RC-05 — the suggestions close when the focus leaves the recipient, span its width and expose the highlighted one', async ({
+    page
+  }) => {
+    await gotoTransfers(page);
+    const { dialog } = await openDelegateRcDialog(page);
+    const recipient = dialog.getByRole('combobox', { name: 'To Account' });
+    const suggestion = dialog.getByRole('option', { name: `${STUB_FOLLOWED} (Following)` });
+
+    await recipient.fill('stub-fo');
+    await expect(suggestion).toBeVisible();
+    const [inputBox, optionBox] = await Promise.all([
+      recipient.locator('xpath=..').boundingBox(),
+      suggestion.boundingBox()
+    ]);
+    // Within the suggestion group's padding of the input's width.
+    expect(optionBox?.width).toBeGreaterThanOrEqual((inputBox?.width ?? 0) - 16);
+
+    await recipient.press('ArrowDown');
+    await expect(recipient).toHaveAttribute('aria-activedescendant', (await suggestion.getAttribute('id')) ?? '');
+
+    await recipient.press('Tab');
+    await expect(suggestion).toBeHidden();
+    await expect(recipient).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('WALLET-RC-06 — in Polish the Resource Credits block and the dialog are Polish', async ({ page, baseURL }) => {
+    await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'pl', url: baseURL }]);
+    await logInAsStubAccount(page);
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+    await expect(page.getByRole('heading', { name: 'Punkty zasobów (RC)' })).toBeVisible({
+      timeout: HYDRATION_TIMEOUT
+    });
+    await expect(page.getByRole('heading', { name: 'Głos za', exact: true })).toBeVisible();
+    await expect(page.getByText('Maks.:').first()).toBeVisible();
+
+    const trigger = page.getByRole('button', { name: 'Deleguj RC', exact: true });
+    const dialog = page.getByRole('dialog', { name: 'Deleguj RC', exact: true });
+    await expect(async () => {
+      await trigger.click();
+      await expect(dialog).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: HYDRATION_TIMEOUT });
+    await expect(dialog.getByText('0.00 mld / 1000.00 mld RC')).toBeVisible();
+    await dialog.getByRole('combobox', { name: 'Do konta' }).fill('stub-fo');
+    await expect(dialog.getByRole('option', { name: `${STUB_FOLLOWED} (obserwujesz)` })).toBeVisible();
+    await expect(dialog.getByRole('button', { name: 'Zamknij', exact: true })).toBeVisible();
+  });
 });

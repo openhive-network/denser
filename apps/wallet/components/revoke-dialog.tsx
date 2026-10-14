@@ -14,8 +14,10 @@ import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { toast } from '@ui/components/hooks/use-toast';
 import { getAsset } from '@transaction/lib/utils';
+import { useTranslation } from '@/wallet/i18n/client';
 
 const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: string }) => {
+  const { t } = useTranslation('common_wallet');
   const [open, setOpen] = useState(false);
   const delegateMutation = useDelegateMutation();
   const onRevoke = async () => {
@@ -27,8 +29,8 @@ const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: 
     delegateMutation.isError &&
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to revoke delegation'
+        title: t('global.something_went_wrong'),
+        description: t('delegations_page.revoke_failed')
       });
     delegateMutation.isSuccess && setOpen(false);
   };
@@ -36,19 +38,19 @@ const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outlineRed">Revoke</Button>
+        <Button variant="outlineRed">{t('delegations_page.revoke')}</Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent closeLabel={t('global.close')}>
         <DialogHeader>
-          <DialogTitle>Confirm Delegate Vesting Shares</DialogTitle>
+          <DialogTitle>{t('delegations_page.confirm_revoke')}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Delegator</Label>
+            <Label className="text-right">{t('transfers_page.delegator')}</Label>
             <Input disabled value={delegator} className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Delegatee</Label>
+            <Label className="text-right">{t('transfers_page.delegatee')}</Label>
             <Input disabled value={delegatee} className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -58,11 +60,11 @@ const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: 
         </div>
         <DialogFooter>
           <Button variant="redHover" className="px-6" onClick={onRevoke} disabled={loading}>
-            {loading ? <CircleSpinner loading={loading} size={18} color="#dc2626" /> : 'Ok'}
+            {loading ? <CircleSpinner loading={loading} size={18} color="#dc2626" /> : t('transfers_page.ok')}
           </Button>
           <div className="flex-grow" />
           <Button variant="link" onClick={() => setOpen(false)} disabled={loading}>
-            Cancel
+            {t('transfers_page.cancel')}
           </Button>
         </DialogFooter>
       </DialogContent>

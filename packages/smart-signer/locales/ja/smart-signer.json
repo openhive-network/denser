@@ -127,6 +127,7 @@
     "password_placeholder": "パスワード",
     "password_form_title": "パスワードを入力してください",
     "store_key_label": "キーを保存",
-    "store_password_label": "パスワードを保存"
+    "store_password_label": "パスワードを保存",
+    "google_drive_password_placeholder": "Google ドライブのウォレットを解除するパスワード"
   }
 }

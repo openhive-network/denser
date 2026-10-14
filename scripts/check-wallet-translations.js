@@ -8,8 +8,11 @@
  * - Extra keys (present in the locale but not in English)
  * - Strings whose interpolation placeholders ({{name}}) or <Trans> tags (<0>)
  *   differ from the English string's
- * - Sentences (at least MIN_SENTENCE_WORDS words) copied verbatim from English,
- *   i.e. left untranslated, unless the key is in IDENTICAL_TO_ENGLISH_ALLOWED
+ * - Strings copied verbatim from English, i.e. left untranslated, unless the
+ *   key is allowed to stay identical (IDENTICAL_TO_ENGLISH_ALLOWED). In a
+ *   locale of REVIEWED_LOCALES every such string counts; in the others only
+ *   sentences (at least MIN_SENTENCE_WORDS words), as their short labels have
+ *   not been reviewed yet.
  *
  * i18next plural keys (`base_one`, `base_other`, ...) are matched by plural
  * category: a locale carries the categories its own plural rules define (ja/zh
@@ -29,11 +32,39 @@ const MAX_LISTED = 10;
 const MIN_SENTENCE_WORDS = 4;
 
 /**
- * Keys whose value may legitimately be identical to English in every locale
- * (product names, units, codes). Each entry needs a comment saying why.
- * Short labels are never checked, so only sentence-length values belong here.
+ * Locales whose every string has been reviewed by a native speaker: a short
+ * label identical to English is reported there too.
  */
-const IDENTICAL_TO_ENGLISH_ALLOWED = new Set([]);
+const REVIEWED_LOCALES = new Set(['pl']);
+
+/**
+ * Keys whose value may legitimately be identical to English, per locale ('*'
+ * for every locale): product names, abbreviations and words the language
+ * borrows unchanged. Each entry needs a comment saying why.
+ */
+const IDENTICAL_TO_ENGLISH_ALLOWED = {
+  '*': new Set([
+    // Product, site and exchange names
+    'navigation.sidebar.blocktrades',
+    'navigation.sidebar.ionomy',
+    'navigation.profile_navbar.blog',
+    'login_form.title_hbauth_form',
+    // Abbreviations
+    'navigation.sidebar.faq',
+    'communities.nsfw',
+    'resource_credits.rc',
+    // Acknowledgement buttons
+    'market_page.ok',
+    'witnesses_page.ok',
+    'witnesses_page.proxy_form.ok',
+    'transfers_page.ok'
+  ]),
+  pl: new Set([
+    // Polish uses the same words
+    'select_sort.sort_proposals.status',
+    'market_page.spread'
+  ])
+};
 
 /**
  * Flatten a nested translation object into dot-notation leaf keys.
@@ -120,18 +151,19 @@ function getPlaceholders(value) {
 }
 
 /**
- * Whether a translation is an untranslated copy of a sentence-length English
- * string. Placeholders count as words, so `Paid {{value1}} for {{value2}}` is
- * a sentence.
+ * Whether a translation is an untranslated copy of the English string: any
+ * copy in a reviewed locale, a sentence-length one elsewhere. Placeholders
+ * count as words, so `Paid {{value1}} for {{value2}}` is a sentence.
  * @param {string} key
  * @param {string} value
  * @param {string} englishValue
+ * @param {string} locale
  * @returns {boolean}
  */
-function isUntranslatedSentence(key, value, englishValue) {
+function isUntranslated(key, value, englishValue, locale) {
   if (typeof value !== 'string' || value !== englishValue) return false;
-  if (IDENTICAL_TO_ENGLISH_ALLOWED.has(key)) return false;
-  return value.trim().split(/\s+/).length >= MIN_SENTENCE_WORDS;
+  if (IDENTICAL_TO_ENGLISH_ALLOWED['*'].has(key) || IDENTICAL_TO_ENGLISH_ALLOWED[locale]?.has(key)) return false;
+  return REVIEWED_LOCALES.has(locale) || value.trim().split(/\s+/).length >= MIN_SENTENCE_WORDS;
 }
 
 /**
@@ -154,7 +186,7 @@ function compareLocale(reference, target, locale) {
     const expected = getPlaceholders(englishValue).join(' ');
     const actual = getPlaceholders(value).join(' ');
     if (expected !== actual) placeholders.push(`${key}: expected [${expected}], got [${actual}]`);
-    if (isUntranslatedSentence(key, value, englishValue)) untranslated.push(key);
+    if (isUntranslated(key, value, englishValue, locale)) untranslated.push(key);
   }
   return { missing, extra, placeholders, untranslated };
 }

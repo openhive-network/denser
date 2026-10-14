@@ -12,6 +12,7 @@ import {
 } from '@ui/components/dialog';
 import { Icons } from '@ui/components/icons';
 import { Input } from '@ui/components/input';
+import { Label } from '@ui/components/label';
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Autocompleter } from './autocompleter';
 import EncryptMemoDialog from './encrypt-memo-dialog';
@@ -453,7 +454,11 @@ export function TransferDialog({
         }}
       />
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="text-left sm:max-w-[425px]" onCloseAutoFocus={onCloseAutoFocus}>
+        <DialogContent
+          className="text-left sm:max-w-[425px]"
+          onCloseAutoFocus={onCloseAutoFocus}
+          closeLabel={t('global.close')}
+        >
           <form>
             <DialogHeader>
               <DialogTitle className="text-left text-2xl">{data.title}</DialogTitle>
@@ -470,7 +475,9 @@ export function TransferDialog({
             {type !== 'powerDown' ? (
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <label htmlFor={fieldIds.from}>{t('transfers_page.from')}</label>
+                  <Label htmlFor={fieldIds.from} className="font-normal">
+                    {t('transfers_page.from')}
+                  </Label>
                   <div className="relative col-span-3">
                     <Input
                       id={fieldIds.from}
@@ -520,7 +527,9 @@ export function TransferDialog({
                   </div>
                 ) : null}
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <label htmlFor={fieldIds.amount}>{t('transfers_page.amount')}</label>
+                  <Label htmlFor={fieldIds.amount} className="font-normal">
+                    {t('transfers_page.amount')}
+                  </Label>
                   <div className="relative col-span-3">
                     <Input
                       {...form.register('amount', {
@@ -589,7 +598,9 @@ export function TransferDialog({
                       </div>
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
-                      <label htmlFor={fieldIds.memo}>{t('transfers_page.memo')}</label>
+                      <Label htmlFor={fieldIds.memo} className="font-normal">
+                        {t('transfers_page.memo')}
+                      </Label>
                       <Input
                         id={fieldIds.memo}
                         placeholder={t('transfers_page.memo')}
@@ -705,7 +716,7 @@ export function TransferDialog({
           </form>
         </DialogContent>
         <Dialog open={nextOpen} onOpenChange={setNextOpen}>
-          <DialogContent onOpenAutoFocus={focusConfirmTitle}>
+          <DialogContent onOpenAutoFocus={focusConfirmTitle} closeLabel={t('global.close')}>
             <DialogTitle ref={confirmTitleRef} tabIndex={-1} className="focus:outline-none">
               {t('transfers_page.confirm_transaction', { transaction: data.title })}
             </DialogTitle>

@@ -392,7 +392,7 @@ test.describe('Market Page - Internationalization', () => {
     await expect(marketPage.volumeBox).toContainText('Wolumen 24h');
     await expect(marketPage.buyFormLabel).toContainText('Kup HIVE');
     await expect(marketPage.sellFormLabel).toContainText('Sprzedaj HIVE');
-    await expect(marketPage.buyOrdersHeader).toContainText('Oferty zakupu');
+    await expect(marketPage.buyOrdersHeader).toContainText('Oferty kupna');
     await expect(marketPage.sellOrdersHeader).toContainText('Oferty sprzedaży');
     await expect(marketPage.tradeHistoryHeader).toContainText('Historia transakcji');
   });

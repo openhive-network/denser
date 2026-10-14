@@ -127,6 +127,7 @@
     "password_placeholder": "Пароль",
     "password_form_title": "Введите ваш пароль",
     "store_key_label": "Сохранить ключ",
-    "store_password_label": "Сохранить пароль"
+    "store_password_label": "Сохранить пароль",
+    "google_drive_password_placeholder": "Пароль для разблокировки кошелька Google Drive"
   }
 }

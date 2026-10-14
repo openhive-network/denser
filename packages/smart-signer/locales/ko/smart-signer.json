@@ -127,6 +127,7 @@
     "password_placeholder": "비밀번호",
     "password_form_title": "비밀번호를 입력하십시오",
     "store_key_label": "키 저장",
-    "store_password_label": "비밀번호 저장"
+    "store_password_label": "비밀번호 저장",
+    "google_drive_password_placeholder": "Google 드라이브 지갑 잠금 해제 비밀번호"
   }
 }

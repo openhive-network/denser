@@ -4,8 +4,10 @@ import { CircleSpinner } from '@ui/components/circle-spinner';
 import { prepareRC } from '@/wallet/lib/utils';
 import Big from 'big.js';
 import RCRow from './rc-row';
+import { useTranslation } from '@/wallet/i18n/client';
 
 const RCTable = ({ account }: { account: string }) => {
+  const { t } = useTranslation('common_wallet');
   const { data, isPending } = useQuery({
     queryKey: ['resourceCredits', account],
     queryFn: () => getDirectDelegations(account),
@@ -22,7 +24,7 @@ const RCTable = ({ account }: { account: string }) => {
 
   return (
     <div className="flex w-full flex-col items-center">
-      <h2 className="text-lg font-bold underline">Resource Credits</h2>
+      <h2 className="text-lg font-bold underline">{t('resource_credits.title')}</h2>
       <div className="flex w-full flex-col gap-2">
         <table>
           <tbody>
@@ -34,7 +36,7 @@ const RCTable = ({ account }: { account: string }) => {
               data.list.length === 0 ? (
                 <tr>
                   <td colSpan={2} className="px-1 py-2 text-center text-sm sm:px-4">
-                    No delegations found
+                    {t('resource_credits.no_delegations')}
                   </td>
                 </tr>
               ) : (
@@ -44,7 +46,9 @@ const RCTable = ({ account }: { account: string }) => {
               )
             ) : null}
           </tbody>
-          <span className="text-sm">total: {prepareRC(data?.total ?? '0')}</span>
+          <span className="text-sm">
+            {t('resource_credits.total', { amount: prepareRC(data?.total ?? '0', t) })}
+          </span>
         </table>
       </div>
     </div>

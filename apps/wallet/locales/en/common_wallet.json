@@ -36,20 +36,6 @@
       "eleventh": "November",
       "twelfth": "December"
     },
-    "months_short_form": {
-      "first": "Jan",
-      "second": "Feb",
-      "third": "Mar",
-      "fourth": "Apr",
-      "fifth": "May",
-      "sixth": "Jun",
-      "seventh": "Jul",
-      "eighth": "Aug",
-      "ninth": "Sep",
-      "tenth": "Oct",
-      "eleventh": "Nov",
-      "twelfth": "Dec"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -64,7 +50,8 @@
       "years": " years",
       "a_year": " a year"
     },
-    "retry": "Retry"
+    "retry": "Retry",
+    "close": "Close"
   },
   "navigation": {
     "main_nav_bar": {
@@ -224,6 +211,7 @@
     "potential_curation_reward_title": "Potential Curation Reward for: ",
     "by": " by ",
     "governance_expiry_warning": "Witness votes auto-expire {{duration}} after your last governance transaction. Your present votes will expire on {{date}}. Please ",
+    "governance_expiry_duration": "1 year",
     "update_your_witness_votes": "update your Witness votes",
     "governance_expired": "Your Witnesses votes have expired on {{date}}. Please ",
     "to_reset": " to reset.",
@@ -421,7 +409,11 @@
     "since": "Since",
     "previous_page": "Previous",
     "next_page": "Next",
-    "page_of": "Page {{page}} of {{total}}"
+    "page_of": "Page {{page}} of {{total}}",
+    "revoke": "Revoke",
+    "revoke_rc_confirm": "Are you sure you want to revoke RC delegation to @{{account}}?",
+    "confirm_revoke": "Confirm Delegate Vesting Shares",
+    "revoke_failed": "Failed to revoke delegation"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Sorry! This page does not exist.",
@@ -442,7 +434,11 @@
     "add": "Add",
     "cancel": "Cancel",
     "add_item_title": "Add new {{id}} entry",
-    "edit_item": "Edit {{name}}"
+    "edit_item": "Edit {{name}}",
+    "owner_authority": "Owner Authority",
+    "active_authority": "Active Authority",
+    "posting_authority": "Posting Authority",
+    "owner_threshold_warning": "By changing Owner Authority threshold, you may lose the independent access to this account.\n\n Are you sure you want to continue"
   },
   "transfers_page": {
     "decode_memo": "Decode",
@@ -492,7 +488,8 @@
       "dhf_funding_operation": "DHF Funding",
       "transfer_operation": "Transfers"
     },
-    "report_operations_found": "{{count}} operations found",
+    "report_operations_found_one": "{{count}} operation found",
+    "report_operations_found_other": "{{count}} operations found",
     "report_no_operations": "No operations found in the selected period",
     "report_select_operation_types": "Include in report:",
     "current_rewards": "Your current rewards: ",
@@ -662,5 +659,24 @@
   "settings": {
     "preferences": "Preferences",
     "choose_api": "Choose Your Preferred API Node"
+  },
+  "resource_credits": {
+    "title": "Resource Credits",
+    "description": "Content votes, and curation rewards are calculated as if it were their own Hive Power. Users are not able to power down or cash out delegated Hive Power however, as it still belongs to the original owner.",
+    "upvote": "Upvote",
+    "downvote": "Downvote",
+    "rc": "RC",
+    "max": "Max:",
+    "current": "Current:",
+    "fully_restored_in": "Fully restored in:",
+    "no_data": "No data available",
+    "no_delegations": "No delegations found",
+    "total": "total: {{amount}}",
+    "amount_billions": "{{amount}}bil",
+    "hours_one": "{{count}} hour",
+    "hours_other": "{{count}} hours",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes",
+    "hours_and_minutes": "{{hours}} and {{minutes}}"
   }
 }

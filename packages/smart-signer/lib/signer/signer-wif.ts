@@ -103,10 +103,11 @@ export class SignerWif extends SignerHbauth {
       showInputStorePassword: true,
       validatePassword: (wif) => validateKeyAuthority(username, keyType, wif),
       i18nKeysForCaptions: {
-        inputPasswordPlaceholder: `Your ${keyType} private key`,
-        inputStorePasswordLabel: 'Store key',
-        title: 'Enter your WIF key'
-      }
+        inputPasswordPlaceholder: 'login_form.private_key_placeholder',
+        inputStorePasswordLabel: 'password_form.store_key_label',
+        title: 'login_form.title_wif_dialog_password'
+      },
+      i18nValues: { keyType }
     };
 
     try {

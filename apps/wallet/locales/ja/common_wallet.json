@@ -36,20 +36,6 @@
       "eleventh": "November",
       "twelfth": "December"
     },
-    "months_short_form": {
-      "first": "Jan",
-      "second": "Feb",
-      "third": "Mar",
-      "fourth": "Apr",
-      "fifth": "May",
-      "sixth": "Jun",
-      "seventh": "Jul",
-      "eighth": "Aug",
-      "ninth": "Sep",
-      "tenth": "Oct",
-      "eleventh": "Nov",
-      "twelfth": "Dec"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -64,7 +50,8 @@
       "years": " years",
       "a_year": " a year"
     },
-    "retry": "再試行"
+    "retry": "再試行",
+    "close": "閉じる"
   },
   "navigation": {
     "main_nav_bar": {
@@ -222,6 +209,7 @@
     "potential_curation_reward_title": "見込みキュレーション報酬の対象: ",
     "by": " 作成者: ",
     "governance_expiry_warning": "証人への投票は、最後のガバナンス取引から{{duration}}後に自動的に失効します。現在の投票は{{date}}に失効します。リセットするには",
+    "governance_expiry_duration": "1年",
     "update_your_witness_votes": "証人への投票を更新",
     "governance_expired": "証人への投票は{{date}}に失効しました。リセットするには",
     "to_reset": "してください。",
@@ -419,7 +407,11 @@
     "since": "開始日",
     "previous_page": "前へ",
     "next_page": "次へ",
-    "page_of": "{{page}} / {{total}} ページ"
+    "page_of": "{{page}} / {{total}} ページ",
+    "revoke": "取り消す",
+    "revoke_rc_confirm": "@{{account}} への RC の委任を取り消してもよろしいですか？",
+    "confirm_revoke": "Vesting Shares の委任を確認",
+    "revoke_failed": "委任を取り消せませんでした"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "申し訳ありません。このページは存在しません。",
@@ -440,7 +432,11 @@
     "add": "追加",
     "cancel": "キャンセル",
     "add_item_title": "新しい{{id}}エントリを追加",
-    "edit_item": "{{name}}を編集"
+    "edit_item": "{{name}}を編集",
+    "owner_authority": "オーナー権限",
+    "active_authority": "アクティブ権限",
+    "posting_authority": "投稿権限",
+    "owner_threshold_warning": "オーナー権限のしきい値を変更すると、このアカウントに単独でアクセスできなくなる可能性があります。\n\n続行してもよろしいですか？"
   },
   "transfers_page": {
     "currency": "通貨",
@@ -491,7 +487,7 @@
       "dhf_funding_operation": "DHF Funding",
       "transfer_operation": "Transfers"
     },
-    "report_operations_found": "{{count}} operations found",
+    "report_operations_found_other": "{{count}}件の操作が見つかりました",
     "report_no_operations": "選択した期間に操作は見つかりませんでした",
     "report_select_operation_types": "Include in report:",
     "current_rewards": "現在の報酬: ",
@@ -660,5 +656,22 @@
   "settings": {
     "preferences": "設定",
     "choose_api": "使用するAPIノードを選択"
+  },
+  "resource_credits": {
+    "title": "リソースクレジット",
+    "description": "コンテンツへの投票とキュレーション報酬は、自分の Hive Power であるかのように計算されます。ただし、委任された Hive Power は元の所有者に属したままなので、パワーダウンや換金はできません。",
+    "upvote": "賛成票",
+    "downvote": "反対票",
+    "rc": "RC",
+    "max": "最大:",
+    "current": "現在:",
+    "fully_restored_in": "完全回復まで:",
+    "no_data": "データがありません",
+    "no_delegations": "委任が見つかりません",
+    "total": "合計: {{amount}}",
+    "amount_billions": "{{amount}}×10億",
+    "hours_other": "{{count}}時間",
+    "minutes_other": "{{count}}分",
+    "hours_and_minutes": "{{hours}}{{minutes}}"
   }
 }

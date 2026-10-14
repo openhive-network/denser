@@ -127,6 +127,7 @@
     "password_placeholder": "Mot de passe",
     "password_form_title": "Entrez votre mot de passe",
     "store_key_label": "Enregistrer la clé",
-    "store_password_label": "Enregistrer le mot de passe"
+    "store_password_label": "Enregistrer le mot de passe",
+    "google_drive_password_placeholder": "Mot de passe pour déverrouiller le portefeuille Google Drive"
   }
 }

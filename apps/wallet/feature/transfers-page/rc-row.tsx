@@ -1,11 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getDynamicGlobalProperties, getManabar } from '@transaction/lib/hive-api';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { hoursAndMinutes } from './lib/utils';
+import { formatRestoreTime } from './lib/utils';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { prepareRC } from '@/wallet/lib/utils';
 import DelegateRCDialog from './delegate-rc-dialog';
 import dynamic from 'next/dynamic';
+import { useTranslation } from '@/wallet/i18n/client';
 
 // recharts draws the manabar rings only once the manabars are fetched: keep it out of page-load chunks.
 const RCStats = dynamic(() => import('./rc-stats'), { ssr: false });
@@ -17,6 +18,7 @@ const RCRow = ({
   username: string;
   suggestedUsers: { username: string; about: string }[];
 }) => {
+  const { t } = useTranslation('common_wallet');
   const queryClient = useQueryClient();
   // Shares the page's global properties query instead of requesting them a second time.
   const loadDynamicGlobalProperties = () =>
@@ -31,22 +33,22 @@ const RCRow = ({
       e
         ? {
             upvote: {
-              current: prepareRC(e.upvote.current),
-              max: prepareRC(e.upvote.max),
+              current: prepareRC(e.upvote.current, t),
+              max: prepareRC(e.upvote.max, t),
               percentageValue: e.upvote.percentageValue,
-              cooldown: hoursAndMinutes(e.upvote.cooldown)
+              cooldown: formatRestoreTime(e.upvote.cooldown, t)
             },
             downvote: {
-              current: prepareRC(e.downvote.current),
-              max: prepareRC(e.downvote.max),
+              current: prepareRC(e.downvote.current, t),
+              max: prepareRC(e.downvote.max, t),
               percentageValue: e.downvote.percentageValue,
-              cooldown: hoursAndMinutes(e.downvote.cooldown)
+              cooldown: formatRestoreTime(e.downvote.cooldown, t)
             },
             rc: {
-              current: prepareRC(e.rc.current),
-              max: prepareRC(e.rc.max),
+              current: prepareRC(e.rc.current, t),
+              max: prepareRC(e.rc.max, t),
               percentageValue: e.rc.percentageValue,
-              cooldown: hoursAndMinutes(e.rc.cooldown)
+              cooldown: formatRestoreTime(e.rc.cooldown, t)
             },
             maxAvailableRC: e.rc.current
           }
@@ -58,12 +60,8 @@ const RCRow = ({
     <div className="flex w-full flex-col bg-background-secondary sm:table-row">
       <div className="flex gap-4 p-4">
         <div>
-          <h2 className="font-semibold">Resource Credits</h2>
-          <p className="text-xs leading-relaxed text-primary/70">
-            Content votes, and curation rewards are calculated as if it were their own Hive Power. Users are
-            not able to power down or cash out delegated Hive Power however, as it still belongs to the
-            original owner.
-          </p>
+          <h2 className="font-semibold">{t('resource_credits.title')}</h2>
+          <p className="text-xs leading-relaxed text-primary/70">{t('resource_credits.description')}</p>
         </div>
       </div>
       {isPending ? (
@@ -76,7 +74,7 @@ const RCRow = ({
             <RCStats
               current={data.upvote.current}
               max={data.upvote.max}
-              title="Upvote"
+              title={t('resource_credits.upvote')}
               angle={(360 * data.upvote.percentageValue) / 100}
               color="#00C040"
               restoreTime={data.upvote.cooldown}
@@ -88,7 +86,7 @@ const RCRow = ({
             <RCStats
               current={data.rc.current}
               max={data.rc.max}
-              title="RC"
+              title={t('resource_credits.rc')}
               angle={(360 * data.rc.percentageValue) / 100}
               color="#0088FE"
               restoreTime={data.rc.cooldown}
@@ -99,7 +97,7 @@ const RCRow = ({
             <RCStats
               current={data.downvote.current}
               max={data.downvote.max}
-              title="Downvote"
+              title={t('resource_credits.downvote')}
               angle={(360 * data.downvote.percentageValue) / 100}
               color="#C01000"
               restoreTime={data.downvote.cooldown}
@@ -109,7 +107,7 @@ const RCRow = ({
         </div>
       ) : (
         <div className="flex h-full items-center justify-center">
-          <p>No data available</p>
+          <p>{t('resource_credits.no_data')}</p>
         </div>
       )}
       {user.username === username && !!data ? (

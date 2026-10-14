@@ -1,5 +1,6 @@
 import { numberWithCommas } from '@ui/lib/utils';
 import { PieChart, Pie } from 'recharts';
+import { useTranslation } from '@/wallet/i18n/client';
 
 const chart = [{ name: '', value: 1 }];
 
@@ -20,15 +21,16 @@ const RCStats = ({
   restoreTime: string;
   percentageValue: number;
 }) => {
+  const { t } = useTranslation('common_wallet');
   return (
     <div className="flex w-fit flex-col">
       <h4 className="text-center font-semibold">{title}</h4>
       <div className="flex justify-between gap-1">
-        <span>Max:</span>
+        <span>{t('resource_credits.max')}</span>
         <span>{max}</span>
       </div>
       <div className="flex justify-between gap-1">
-        <span>Current:</span>
+        <span>{t('resource_credits.current')}</span>
         <span>{current}</span>
       </div>
       <div className="flex items-center justify-center gap-2">
@@ -50,7 +52,7 @@ const RCStats = ({
       </div>
       {!!restoreTime ? (
         <div className="flex flex-col justify-center">
-          <span>{'Fully restored in: '}</span>
+          <span>{t('resource_credits.fully_restored_in')}</span>
           <span>{restoreTime}</span>
         </div>
       ) : null}
