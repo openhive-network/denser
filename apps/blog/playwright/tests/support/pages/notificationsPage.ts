@@ -22,7 +22,7 @@ export class NotificationsPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.localMenu = page.getByTestId('notifications-local-menu');
+    this.localMenu = page.getByTestId('notifications-local-menu').filter({ visible: true });
     this.notificationItems = page.getByTestId('notification-list-item');
     this.firstNotificationItem = this.notificationItems.first();
     this.markAllAsReadButton = page.getByRole('button', { name: 'Mark all as read' });

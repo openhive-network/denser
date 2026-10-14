@@ -98,7 +98,9 @@ export class CommunitiesPage {
     this.activityLogButton = this.communityInfoSidebar.getByText('Activity Log');
 
     this.subscribersNotificationContent = page.locator('[data-testid="notifications-content-all"]');
-    this.subscribersNotificationLocalMenu = page.locator('[data-testid="notifications-local-menu"]');
+    this.subscribersNotificationLocalMenu = page
+      .locator('[data-testid="notifications-local-menu"]')
+      .filter({ visible: true });
     this.subscriberName = page.locator('[data-testid="subscriber-name"]');
     this.subscriberRow = this.subscribersNotificationContent.locator('tr');
     this.subscribersRowsEven = this.subscribersNotificationContent.locator('[data-testid="notification-list-item"]:nth-of-type(even)');
