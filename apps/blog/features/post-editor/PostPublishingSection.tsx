@@ -13,7 +13,6 @@ import {
 } from "@hive/ui/components/select";
 import { FormControl, FormField, FormItem } from "@hive/ui/components/form";
 import { Progress } from "@ui/components/progress";
-import { withBasePath } from "@ui/lib/path-utils";
 import { DEFAULT_OBSERVER } from "@/blog/lib/utils";
 import { getSubscriptions } from "@transaction/lib/bridge-api";
 import { useTranslation } from "@/blog/i18n/client";
@@ -215,7 +214,7 @@ export function PostPublishingSection({
                       form.setValue("category", e);
                       storePost({ ...storedPost, category: e });
                       if (categoryParam) {
-                        router.replace(withBasePath("/submit.html"));
+                        router.replace("/submit.html");
                       }
                     }}
                   >

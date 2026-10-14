@@ -12,7 +12,6 @@ import {
 } from '@ui/components/select';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from '@/blog/i18n/client';
-import { withBasePath } from '@ui/lib/path-utils';
 import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
 import { useRouter } from 'next/navigation';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
@@ -56,11 +55,11 @@ export function CommunitiesSelect({ title }: { title: string }) {
     <Select
       onValueChange={(e) => {
         if (e === 'communities') {
-          router.push(withBasePath('/communities'));
+          router.push('/communities');
         } else if (e.startsWith('/') || e.startsWith('@')) {
-          router.push(withBasePath(e));
+          router.push(e);
         } else {
-          router.push(withBasePath(`/trending/${e}`));
+          router.push(`/trending/${e}`);
         }
       }}
     >
