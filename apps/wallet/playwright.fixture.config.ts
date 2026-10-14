@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import { baseConfig, ownWebServerOptions, standaloneServerCommand } from '../../playwright/shared-config';
 import { FIXTURE_API_PORT } from './playwright/tests/support/apiStub';
-import { WALLET_BASE_PATH } from './playwright/tests/support/basePath';
+import { FIXTURE_BLOG_URL, WALLET_BASE_PATH } from './playwright/tests/support/basePath';
 
 /**
  * Playwright config for the wallet's offline specs (playwright/tests/fixture): a production build
@@ -50,6 +50,8 @@ export default defineConfig({
       REACT_APP_ALLOWED_HIVE_API_NODES: FIXTURE_API,
       // As the deployments: hb-auth loads its worker from under the base path.
       REACT_APP_BASE_PATH: WALLET_BASE_PATH,
+      // As the single-host deployments: the blog is served under a base path on the same host.
+      REACT_APP_BLOG_DOMAIN: FIXTURE_BLOG_URL,
       HOSTNAME: '0.0.0.0',
       PORT: String(PORT)
     }
