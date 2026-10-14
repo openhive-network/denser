@@ -21,7 +21,7 @@ import {
 const HYDRATION_TIMEOUT = 30_000;
 
 /** Randomly generated, of no account. */
-const POSTING_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';
+const ACTIVE_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';
 
 interface RewardBalances {
   reward_hive_balance: NaiAsset;
@@ -65,8 +65,8 @@ test.beforeEach(async ({ context }) => {
 });
 
 const openOwnTransfersPage = async (page: Page) => {
-  await logInAsStubAccount(page, 'posting');
-  await storeStubAccountKey(page, 'posting', POSTING_WIF);
+  await logInAsStubAccount(page, 'active');
+  await storeStubAccountKey(page, 'active', ACTIVE_WIF);
   await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
 };
 

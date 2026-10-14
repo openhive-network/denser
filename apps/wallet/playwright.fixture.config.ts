@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import { baseConfig, ownWebServerOptions, standaloneServerCommand } from '../../playwright/shared-config';
 import { FIXTURE_API_PORT } from './playwright/tests/support/apiStub';
 import { FIXTURE_BLOG_URL, WALLET_BASE_PATH } from './playwright/tests/support/basePath';
+import { FIXTURE_COOKIE_PASSWORD } from '../blog/playwright/tests/support/fixture-auth/constants';
 
 /**
  * Playwright config for the wallet's offline specs (playwright/tests/fixture): a production build
@@ -52,6 +53,8 @@ export default defineConfig({
       REACT_APP_BASE_PATH: WALLET_BASE_PATH,
       // As the single-host deployments: the blog is served under a base path on the same host.
       REACT_APP_BLOG_DOMAIN: FIXTURE_BLOG_URL,
+      // The session routes a sign-in calls need iron-session's password; no spec reads the cookie
+      DENSER_SERVER_SECRET_COOKIE_PASSWORD: FIXTURE_COOKIE_PASSWORD,
       HOSTNAME: '0.0.0.0',
       PORT: String(PORT)
     }

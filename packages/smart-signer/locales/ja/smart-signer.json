@@ -129,5 +129,10 @@
     "store_key_label": "キーを保存",
     "store_password_label": "パスワードを保存",
     "google_drive_password_placeholder": "Google ドライブのウォレットを解除するパスワード"
+  },
+  "broadcast_error": {
+    "missing_owner_authority": "この操作にはオーナーキー（owner）が必要です。オーナーキーでログインして、もう一度お試しください。",
+    "missing_active_authority": "この操作にはアクティブキー（active）が必要です。アクティブキーでログインして、もう一度お試しください。",
+    "missing_posting_authority": "この操作には投稿キー（posting）が必要です。投稿キーでログインして、もう一度お試しください。"
   }
 }

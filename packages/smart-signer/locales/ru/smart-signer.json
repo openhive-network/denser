@@ -129,5 +129,10 @@
     "store_key_label": "Сохранить ключ",
     "store_password_label": "Сохранить пароль",
     "google_drive_password_placeholder": "Пароль для разблокировки кошелька Google Drive"
+  },
+  "broadcast_error": {
+    "missing_owner_authority": "Для этой операции нужен ключ владельца (owner). Войдите с ним и повторите попытку.",
+    "missing_active_authority": "Для этой операции нужен активный ключ (active). Войдите с активным ключом и повторите попытку.",
+    "missing_posting_authority": "Для этой операции нужен ключ публикации (posting). Войдите с ним и повторите попытку."
   }
 }
