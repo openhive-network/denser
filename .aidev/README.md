@@ -49,6 +49,47 @@ auto-merge fires on success with no manual trigger. With no such MR open, a prom
 runs no pipeline at all. `glab ci run -b aidev/integration` still starts a branch
 pipeline by hand when one is wanted.
 
+### Handing a wave to `develop`
+
+`project.yaml` declares `develop` as the main line, reached by merge request
+(`branches.mainline: develop`, `mainline_via: merge_request`). After a promote, hand
+the wave over with
+
+```sh
+aidev release denser --session <name>      # --dry-run first to see what it would do
+```
+
+Don't open or re-arm the MR by hand. The command:
+
+1. **Syncs.** When `develop` has commits `aidev/integration` lacks (someone merged
+   straight to `develop`), it merges `develop` into `session/<name>` as
+   `Merge develop into aidev/integration`, lands that with `aidev merge-queue land`
+   and promotes the session. Neither branch is rewritten, so there is no GitLab
+   rebase and no `need_rebase` stall. A conflicting merge refuses, naming the
+   files, and lands nothing.
+2. **Opens or updates the MR** `aidev/integration` → `develop`, listing the issues
+   and commits it carries.
+3. **Starts the pipeline** on `aidev/integration`, unless the MR's head pipeline
+   already runs or passed on that SHA.
+4. **Sets auto-merge** pinned to the integration tip.
+
+`--dry-run` reads GitLab, reports whether `develop` is in sync (or the commits it
+would merge) and changes nothing. `aidev release status denser` shows the open MR,
+its auto-merge state and its pipeline. The `develop` → `main` hop is unchanged and
+stays the project's own process.
+
+**The promote hold.** GitLab cancels auto-merge silently when the source branch
+moves, so a promote into `aidev/integration` first checks for that MR. While its
+auto-merge is pending on a running (or just-passed) pipeline, the promote waits,
+re-checking every minute, and proceeds once the MR merged, closed, lost its
+auto-merge or its pipeline failed; after an hour it refuses as
+`mainline_merge_pending`. An armed MR that won't merge on its own (failed
+pipeline, conflict, `need_rebase`, ...) doesn't hold, and the promote's advance
+cancels its auto-merge: re-arm it with `aidev release denser`.
+`aidev session promote --allow-pending-mainline-merge` skips the hold.
+
+### Jobs in the hand-off pipeline
+
 A job without `rules:` runs only in branch and tag pipelines. A new job that must
 gate this MR needs explicit rules, or must extend `.node-job`, which has them.
 

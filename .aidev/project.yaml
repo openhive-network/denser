@@ -15,11 +15,14 @@ gitlab:
   path: "hive/denser"
   id: 399
 
-# AIDEV integrates into its own branch; people merge it into develop through
-# merge requests, so `stable` is omitted and `aidev release` never moves
-# develop or main.
+# AIDEV integrates into its own branch. `develop` is protected, fast-forward
+# only and gated by CI, so it is reached through a merge request that
+# `aidev release denser --session <name>` opens and keeps current; AIDEV never
+# pushes develop or main, and `stable` (which this replaces) stays omitted.
 branches:
   integration: "aidev/integration"
+  mainline: develop
+  mainline_via: merge_request
 
 # How this project's suites execute (#13892): one kind, stated once.
 environment:
