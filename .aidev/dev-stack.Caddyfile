@@ -1,0 +1,27 @@
+# The dev stack's one-origin edge (service `edge` in .aidev/dev-stack.compose.yml):
+# the wallet under /wallet, everything else the blog at the root, as one origin, so
+# links between them and a login's cookies stay on it. Caddy passes the Host header
+# through and upgrades next dev's HMR websockets (/_next/hmr) as they are.
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+:8080 {
+	# While an app's next dev restarts (a reload rule, an OOM restart) a request
+	# waits for it rather than failing. The wallet's next dev starts on its first
+	# request, which its placeholder drops (.aidev/blog-serve-dev.sh): Caddy retries
+	# a GET whose connection failed, and the wallet takes ~20 s to listen.
+	@wallet path /wallet /wallet/*
+	handle @wallet {
+		reverse_proxy 127.0.0.1:4000 {
+			lb_try_duration 120s
+		}
+	}
+	handle {
+		reverse_proxy 127.0.0.1:3000 {
+			lb_try_duration 30s
+		}
+	}
+}

@@ -25,6 +25,23 @@ function notFoundRedirect(request: Request): NextResponse {
   return redirectInApp(request, '/404');
 }
 
+// REACT_APP_WALLET_ENDPOINT is an absolute URL, or a path when the wallet shares the blog's
+// origin (`/wallet`); a path is resolved on the origin in-app redirects use.
+function walletTransfersRedirect(request: Request, username: string): NextResponse | undefined {
+  const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
+  if (!walletEndpoint) return undefined;
+  const walletPath = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
+  const blogOrigin = inAppRedirectUrl(
+    '/',
+    {
+      siteDomain: process.env.REACT_APP_SITE_DOMAIN,
+      production: process.env.NODE_ENV === 'production'
+    },
+    request.headers
+  );
+  return NextResponse.redirect(new URL(walletPath, blogOrigin), { status: 302 });
+}
+
 export async function GET(request: Request, props: { params: Promise<{ user: string; permlink: string }> }) {
   const params = await props.params;
   try {
@@ -49,11 +66,8 @@ export async function GET(request: Request, props: { params: Promise<{ user: str
 
       // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
       if (params?.permlink === 'transfers') {
-        const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
-        if (walletEndpoint) {
-          const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
-          return NextResponse.redirect(walletUrl, { status: 302 });
-        }
+        const walletRedirect = walletTransfersRedirect(request, username);
+        if (walletRedirect) return walletRedirect;
       }
 
       return notFoundRedirect(request);
@@ -62,11 +76,8 @@ export async function GET(request: Request, props: { params: Promise<{ user: str
     if (!post) {
       // Special case: if permlink is "transfers" and post doesn't exist, redirect to wallet
       if (params?.permlink === 'transfers') {
-        const walletEndpoint = process.env.REACT_APP_WALLET_ENDPOINT;
-        if (walletEndpoint) {
-          const walletUrl = `${walletEndpoint.replace(/\/+$/, '')}/@${username}/transfers`;
-          return NextResponse.redirect(walletUrl, { status: 302 });
-        }
+        const walletRedirect = walletTransfersRedirect(request, username);
+        if (walletRedirect) return walletRedirect;
       }
 
       return notFoundRedirect(request);

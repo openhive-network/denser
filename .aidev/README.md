@@ -59,16 +59,18 @@ revision itself: see "Lighthouse after each promote" in
 
 ## Live dev stack (`sandbox.dev`)
 
-An AIDEV implement session gets a running blog built from its own working tree:
-`next dev` with hot reload, against the fixture replay proxy (recorded Hive API
-responses, no network). It comes from the pinned image with the checkout
-bind-mounted; no image is built. Compose file: `.aidev/dev-stack.compose.yml`.
+An AIDEV implement session gets a running blog and wallet built from its own
+working tree: `next dev` with hot reload, against the fixture replay proxy
+(recorded Hive API responses, no network). It comes from the pinned image with
+the checkout bind-mounted; no image is built. Compose file:
+`.aidev/dev-stack.compose.yml`.
 
 The session's shell has:
 
 | Variable | What |
 |---|---|
 | `DENSER_DEV_BLOG_URL` | the blog, `http://127.0.0.1:<port>` |
+| `DENSER_DEV_UI_URL` | the blog and the wallet on one origin, `http://127.0.0.1:<port>/` (below) |
 | `DENSER_DEV_FIXTURE_URL` | the fixture proxy's control address |
 | `DENSER_DEV_STACK_PROJECT` | the stack's compose project |
 | `DENSER_DEV_CHECKOUT` | the checkout as the docker daemon sees it |
@@ -108,8 +110,52 @@ apps' `allowedDevOrigins` let next dev serve `/_next/hmr` to `127.0.0.1`, and th
 in-page data from a browser on the host needs live data (below); for fixture
 data check interactive behaviour with `.aidev/dev-stack-spec.sh`.
 
+**Blog and wallet on one origin (`DENSER_DEV_UI_URL`).** The `edge` service
+(caddy, `.aidev/dev-stack.Caddyfile`) routes `/wallet` and `/wallet/*` to the
+wallet's next dev (`NEXT_PUBLIC_BASE_PATH=/wallet`, on `:4000`) and everything else
+to the blog, which stays at the root with no base path. Through it:
+
+```bash
+curl -s "${DENSER_DEV_UI_URL}trending"                        # the blog
+curl -s "${DENSER_DEV_UI_URL}wallet/@guest4test1/transfers"   # the wallet
+```
+
+The blog's Wallet links are `/wallet/…` (`REACT_APP_WALLET_ENDPOINT=/wallet`), so
+they stay on whatever origin the page was opened at. The wallet's Blog links go
+through `new URL()` and must be absolute: `REACT_APP_BLOG_DOMAIN` is the edge's
+address, `http://127.0.0.1:<UI port>`, or `DENSER_DEV_UI_ORIGIN` when that is set.
+Both apps share the origin, so what a sign-in on the blog stores (cookies,
+`localStorage`) is the wallet's too, as on the integration site.
+
+- **The wallet starts on its first request.** Until something opens `/wallet`, a
+  placeholder holds `:4000` (`.aidev/blog-serve-dev.sh`, `DENSER_DEV_START_ON_REQUEST`)
+  and `wallet-ready` is healthy without asking. The first request starts next dev;
+  the edge retries it for up to 120 s, and it is answered in ~15 s, cold. Then
+  `wallet-ready` warms the wallet's profile pages, proposals and witnesses.
+  Measured on steem-3 (2026-10-14, `docker stats` usage, sampled every second, cold
+  `.next`): with both apps compiling at boot, blog and wallet each reached their
+  3 GiB `mem_limit` and the stack peaked at 6.2 GiB, past the 5.5 GiB a dev stack
+  is admitted for (`sandbox.dev.memory`, default). Started lazily, the stack peaked
+  at 3.2 GiB up to ready and 4.6 GiB with the wallet started, both apps' pages
+  open in a browser and postDetail run; settled, ~1.2 GiB blog and ~1 GiB wallet.
+  No OOM kill.
+- **Opened at another host or port** (a forwarded port, a routable name): next dev
+  serves its HMR socket and dev chunks only to `localhost`, `127.0.0.1` and the host
+  names in `DENSER_DEV_ALLOWED_ORIGINS` (comma- or space-separated, read by both
+  apps' `next.config.js`); for others it logs `Blocked cross-origin request` and
+  HMR fails. Start the stack with, e.g.,
+  `DENSER_DEV_ALLOWED_ORIGINS=devbox.example DENSER_DEV_UI_ORIGIN=http://devbox.example:9400`
+  so the wallet's Blog links name that address too. A forwarded port on
+  `localhost` needs only `DENSER_DEV_UI_ORIGIN`.
+- **Wallet fixture specs** do not run against this stack: they serve the wallet with
+  every API on a closed port that a spec opens a stub on
+  (`apps/wallet/playwright.fixture.config.ts`), while here the wallet reads the
+  fixture proxy. The `full` slot's `wallet_fixture` suite runs them.
+- `DENSER_DEV_BLOG_URL`, `.aidev/dev-stack-spec.sh` and the fixture-set switch are
+  unchanged and reach the blog directly, not through the edge.
+
 **Live data instead.** Start the stack with
-`DENSER_DEV_API_ENDPOINT=https://api.hive.blog` and the blog talks to the live
+`DENSER_DEV_API_ENDPOINT=https://api.hive.blog` and both apps talk to the live
 API (needs egress; fixture specs then no longer apply).
 
 **Mode: next dev, deliberately; it is not the production build.** The stack
@@ -166,7 +212,8 @@ by hand. Each start of next dev writes a new id to `.next/aidev-dev-boot`, and
 
 **When things change.** Source edits hot-reload. A change to `pnpm-lock.yaml` or a
 `package.json`, `next.config.js`, the middleware package or the stack's own files
-restarts the stack's services (`reload` in the profile), which reinstalls
+restarts the stack's services (`reload` in the profile; either app's
+`next.config.js` and the edge's Caddyfile too), which reinstalls
 `node_modules` from the image's store when the lockfile or the image moved, or
 when an app no longer resolves the `next`/`react` the lockfile pins
 (`.aidev/pnpm-deps.sh`). An install that fails stops the service rather than
@@ -202,8 +249,9 @@ project, and is torn down afterwards:
   state the stack met on 2026-10-01.
 
 Each boot must be ready within `sandbox.dev.readiness_timeout`. `/trending`, a
-post and a community must then answer 200 with their recorded titles, and
-postDetail's ANON-POST-01 must pass. Every container with a `mem_limit` must stay
+post and a community must then answer 200 with their recorded titles, as must
+`/trending` and a wallet profile through the edge (the wallet's first request,
+which starts it), and postDetail's ANON-POST-01 must pass. Every container with a `mem_limit` must stay
 under 90% of it; the measured bytes are junit properties. Any other change gets a
 skipped "not applicable" case. Junit and logs go to `test-results/dev-stack-suite/`.
 

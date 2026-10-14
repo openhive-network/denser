@@ -1,19 +1,22 @@
 # AIDEV live dev stack for denser (`sandbox.dev` in .aidev/project.yaml, #966).
 #
-# `next dev` of the blog, hot-reloading from the bind-mounted checkout, against
-# the fixture replay proxy — so the stack needs no network and no chain. Every
-# service runs the project's pinned test image (`environment.image`); nothing is
-# built. node_modules come from `pnpm install --offline` out of the image's store
+# `next dev` of the blog and of the wallet, hot-reloading from the bind-mounted
+# checkout, against the fixture replay proxy — so the stack needs no network and
+# no chain. Both are served from one origin by `edge` (the wallet under /wallet,
+# the blog at the root); the blog's own port stays as it was. Every service but
+# `edge` (caddy) runs the project's pinned test image (`environment.image`);
+# nothing is built. node_modules come from `pnpm install --offline` out of the image's store
 # (.aidev/pnpm-deps.sh), written into the checkout like every other suite does,
 # and skipped while pnpm-lock.yaml and the image are unchanged and the tree checks out.
 #
-# Network: the blog shares the fixture proxy's network namespace, so inside it
-# http://localhost:8200 is the proxy — the address playwright.fixture.config.ts
-# gives the app, and the one the broadcast interceptor matches in the browser.
-# Both published ports therefore sit on `fixture-proxy`.
+# Network: the blog, the wallet and the edge share the fixture proxy's network
+# namespace, so inside it http://localhost:8200 is the proxy — the address
+# playwright.fixture.config.ts gives the app, and the one the broadcast
+# interceptor matches in the browser — and the edge reaches the blog on :3000 and
+# the wallet on :4000. Every published port therefore sits on `fixture-proxy`.
 #
 # By hand (AIDEV sets these itself):
-#   AIDEV_PORT_BLOG=3300 AIDEV_PORT_FIXTURE=8300 \
+#   AIDEV_PORT_BLOG=3300 AIDEV_PORT_FIXTURE=8300 AIDEV_PORT_UI=3400 \
 #     docker compose -f .aidev/dev-stack.compose.yml -p denser-dev up -d --wait
 #
 # How an agent uses it: .aidev/README.md.
@@ -27,6 +30,18 @@ x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:f93176
 x-user: &user "${AIDEV_UID:-1000}:${AIDEV_GID:-1000}"
 
 x-checkout: &checkout ${AIDEV_HOST_CHECKOUT:-${PWD}}:/work
+
+# The API both apps use, server side and in the browser. Fixture data by default;
+# DENSER_DEV_API_ENDPOINT=https://api.hive.blog (set when starting the stack)
+# points them at the live API instead.
+x-api-env: &api-env
+  REACT_APP_API_ENDPOINT: ${DENSER_DEV_API_ENDPOINT:-http://localhost:8200}
+  REACT_APP_ALLOWED_HIVE_API_NODES: ${DENSER_DEV_API_ENDPOINT:-http://localhost:8200}
+
+# What the edge's origin is called where a link must be absolute (the wallet's
+# blog links go through new URL()). DENSER_DEV_UI_ORIGIN names it when the stack
+# is opened through another host or port, e.g. http://localhost:9400.
+x-ui-origin: &ui-origin ${DENSER_DEV_UI_ORIGIN:-http://127.0.0.1:${AIDEV_PORT_UI:-3400}}
 
 networks:
   default:
@@ -45,10 +60,13 @@ services:
     volumes:
       - *checkout
       - blog_next:/next
+      - wallet_next:/wallet-next
     command:
       - sh
       - -c
-      - mkdir -p /work/apps/blog/.next && chown "${AIDEV_UID:-1000}:${AIDEV_GID:-1000}" /work/apps/blog/.next /next
+      - >-
+        mkdir -p /work/apps/blog/.next /work/apps/wallet/.next
+        && chown "${AIDEV_UID:-1000}:${AIDEV_GID:-1000}" /work/apps/blog/.next /work/apps/wallet/.next /next /wallet-next
     restart: "no"
 
   # Installs node_modules (once per lockfile), then serves the recording named by
@@ -70,6 +88,7 @@ services:
     ports:
       - "127.0.0.1:${AIDEV_PORT_BLOG:-3300}:3000"
       - "127.0.0.1:${AIDEV_PORT_FIXTURE:-8300}:8200"
+      - "127.0.0.1:${AIDEV_PORT_UI:-3400}:8080"
     depends_on:
       init:
         condition: service_completed_successfully
@@ -94,10 +113,10 @@ services:
       - *checkout
       - blog_next:/work/apps/blog/.next
     environment:
-      # Fixture data by default. DENSER_DEV_API_ENDPOINT=https://api.hive.blog
-      # (set when starting the stack) points the blog at the live API instead.
-      REACT_APP_API_ENDPOINT: ${DENSER_DEV_API_ENDPOINT:-http://localhost:8200}
-      REACT_APP_ALLOWED_HIVE_API_NODES: ${DENSER_DEV_API_ENDPOINT:-http://localhost:8200}
+      <<: *api-env
+      # The wallet links (Wallet in the profile, the user menu, proposals,
+      # witnesses) stay on whatever origin the page was opened at: the edge's.
+      REACT_APP_WALLET_ENDPOINT: /wallet
       REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
       # playwright/tests/support/fixture-auth/constants.ts: the app seals the
       # session cookie with what the seeder seals it with.
@@ -112,10 +131,13 @@ services:
       HOSTNAME: 0.0.0.0
       PORT: "3000"
       NODE_OPTIONS: --max-old-space-size=2048
+      # Host names besides localhost and 127.0.0.1 a browser may open the stack
+      # at (comma- or space-separated); next.config.js reads it.
+      DENSER_DEV_ALLOWED_ORIGINS: ${DENSER_DEV_ALLOWED_ORIGINS:-}
       # Inotify reaches containers through a bind mount on Linux; set to true on
       # a host where edits do not trigger a recompile.
       WATCHPACK_POLLING: ${WATCHPACK_POLLING:-}
-    command: ["bash", ".aidev/blog-serve-dev.sh"]
+    command: ["bash", ".aidev/blog-serve-dev.sh", "blog"]
     depends_on:
       fixture-proxy:
         condition: service_healthy
@@ -138,11 +160,87 @@ services:
       blog:
         condition: service_started
     healthcheck:
-      test: ["CMD", "sh", ".aidev/blog-ready.sh", "http://127.0.0.1:3000"]
+      test: ["CMD", "sh", ".aidev/blog-ready.sh", "http://127.0.0.1:3000", "blog"]
       interval: 5s
       timeout: 300s
       retries: 120
       start_period: 20s
 
+  # `pnpm --filter @hive/wallet dev` (next dev on :4000) under its deployments'
+  # base path, /wallet, which the edge routes to it; kept running as the blog is.
+  # It starts on the first request to /wallet (DENSER_DEV_START_ON_REQUEST): two
+  # cold compiles at once peak at ~6.2 GiB, past the stack's 5.5 GiB admission.
+  wallet:
+    image: *image
+    user: *user
+    working_dir: /work
+    mem_limit: 3g
+    network_mode: service:fixture-proxy
+    volumes:
+      - *checkout
+      - wallet_next:/work/apps/wallet/.next
+    environment:
+      <<: *api-env
+      NEXT_PUBLIC_BASE_PATH: /wallet
+      # As the deployments: hb-auth loads its worker from under the base path.
+      REACT_APP_BASE_PATH: /wallet
+      # The Blog links: absolute, since the wallet resolves them with new URL().
+      REACT_APP_BLOG_DOMAIN: *ui-origin
+      REACT_APP_SITE_DOMAIN: ${DENSER_DEV_UI_ORIGIN:-http://127.0.0.1:${AIDEV_PORT_UI:-3400}}/wallet
+      REACT_APP_IMAGES_ENDPOINT: https://images.hive.blog/
+      # The blog's: the two apps share the origin and so the session cookie.
+      DENSER_SERVER_SECRET_COOKIE_PASSWORD: fixture-tests-dummy-cookie-password-not-a-secret
+      HOSTNAME: 0.0.0.0
+      PORT: "4000"
+      NODE_OPTIONS: --max-old-space-size=2048
+      DENSER_DEV_ALLOWED_ORIGINS: ${DENSER_DEV_ALLOWED_ORIGINS:-}
+      DENSER_DEV_START_ON_REQUEST: "1"
+      WATCHPACK_POLLING: ${WATCHPACK_POLLING:-}
+    command: ["bash", ".aidev/blog-serve-dev.sh", "wallet"]
+    depends_on:
+      fixture-proxy:
+        condition: service_healthy
+
+  # As blog-ready, for the wallet: healthy while next dev waits for its first
+  # request, then once it answers and its profile pages and the pages the blog
+  # links to are compiled.
+  wallet-ready:
+    image: *image
+    user: *user
+    working_dir: /work
+    network_mode: service:fixture-proxy
+    volumes:
+      - *checkout
+      - wallet_next:/work/apps/wallet/.next:ro
+    command: ["sleep", "infinity"]
+    depends_on:
+      wallet:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "sh", ".aidev/blog-ready.sh", "http://127.0.0.1:4000", "wallet"]
+      interval: 5s
+      timeout: 300s
+      retries: 120
+      start_period: 20s
+
+  # The one origin (DENSER_DEV_UI_URL): /wallet to the wallet, the rest to the
+  # blog (.aidev/dev-stack.Caddyfile), on the fixture proxy's published :8080.
+  edge:
+    image: caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d
+    mem_limit: 128m
+    network_mode: service:fixture-proxy
+    volumes:
+      - ${AIDEV_HOST_CHECKOUT:-${PWD}}/.aidev/dev-stack.Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      fixture-proxy:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/api/health"]
+      interval: 5s
+      timeout: 10s
+      retries: 120
+      start_period: 10s
+
 volumes:
   blog_next:
+  wallet_next:

@@ -21,9 +21,11 @@
 #            over a Next 14 install whose marker claims it is current. The
 #            candidate's stack must find that out and reinstall.
 # Each boots within sandbox.dev.readiness_timeout, then: /trending, a post and a
-# community answer 200 with recorded titles in the server-rendered HTML; a
-# browser on the post at 127.0.0.1 (the host DENSER_DEV_BLOG_URL names) makes a
-# client API call and next dev logs no "Blocked cross-origin request";
+# community answer 200 with recorded titles in the server-rendered HTML, and
+# through the one-origin edge so do /trending and a wallet profile (the wallet's
+# first request, which starts its next dev); in a browser at 127.0.0.1 (the host
+# DENSER_DEV_BLOG_URL names) the post and the wallet page hydrate and open their
+# HMR websockets, and next dev logs no "Blocked cross-origin request";
 # postDetail's ANON-POST-01 passes through .aidev/dev-stack-spec.sh; and each
 # memory-limited container uses at most 90% of its mem_limit (recorded as junit
 # properties).
@@ -136,7 +138,7 @@ in_image "$image" "$work/probe" test -f seen \
 compose() { # DIR PROJECT ARGS...
     local dir="$1" project="$2"
     shift 2
-    AIDEV_HOST_CHECKOUT="$host_root/$dir" AIDEV_PORT_BLOG=0 AIDEV_PORT_FIXTURE=0 \
+    AIDEV_HOST_CHECKOUT="$host_root/$dir" AIDEV_PORT_BLOG=0 AIDEV_PORT_FIXTURE=0 AIDEV_PORT_UI=0 \
         AIDEV_UID="$uid" AIDEV_GID="$gid" AIDEV_STACK_SUBNET="$subnet" \
         DENSER_DEV_FIXTURE_SET=ssrChecks DENSER_DEV_API_ENDPOINT= \
         docker compose -f "$dir/.aidev/dev-stack.compose.yml" -p "$project" "$@"
@@ -156,20 +158,23 @@ boot() { # DIR PROJECT LOG
 
 # Server-rendered HTML through the stack's own network, as the probes need no
 # published port. The community page renders its posts only in the browser, so
-# its probe is the recorded community's title.
+# its probe is the recorded community's title; the wallet's is its page title,
+# as the default recording holds no wallet data.
 probe_pages() { # PROXY_CONTAINER
     docker run --rm --network "container:$1" --user "$uid:$gid" "$image" node -e '
 const probes = [
-  ["/trending", "The Critical Role of Digital Preservation in Gaming History"],
-  ["/test/@guest4test1/test-ako-post", "Test ako post"],
-  ["/trending/hive-160391", "Blockchain Wizardry"],
+  ["http://127.0.0.1:3000/trending", "The Critical Role of Digital Preservation in Gaming History"],
+  ["http://127.0.0.1:3000/test/@guest4test1/test-ako-post", "Test ako post"],
+  ["http://127.0.0.1:3000/trending/hive-160391", "Blockchain Wizardry"],
+  ["http://127.0.0.1:8080/trending", "The Critical Role of Digital Preservation in Gaming History"],
+  ["http://127.0.0.1:8080/wallet/@guest4test1/transfers", "Balances guest4test1"],
 ];
 (async () => {
   let failed = 0;
   for (const [path, text] of probes) {
     let line;
     try {
-      const r = await fetch("http://127.0.0.1:3000" + path, { signal: AbortSignal.timeout(280000) });
+      const r = await fetch(path, { signal: AbortSignal.timeout(280000) });
       const html = await r.text();
       const ok = r.status === 200 && html.includes(text);
       line = `${path}: ${r.status}, ${html.includes(text) ? "has" : "lacks"} "${text}"`;
@@ -185,25 +190,35 @@ const probes = [
 '
 }
 
-# The post in a browser at 127.0.0.1, not the localhost the specs use: next dev
-# serves /_next/hmr only to localhost and allowedDevOrigins, and a page refused it
-# server-renders but never makes a client-side API call (to the proxy, :8200).
+# The post, and a wallet page through the edge, in a browser at 127.0.0.1, not the
+# localhost the specs use: next dev serves its dev resources only to localhost and
+# allowedDevOrigins. Each page must hydrate (React's fiber on <body>) and open its
+# HMR websocket; a refused one does not. (The post page makes no client-side API
+# call after load since ANON-POST-09, so that no longer shows hydration.)
 probe_browser() { # PROXY_CONTAINER DIR
     docker run --rm --network "container:$1" --user "$uid:$gid" -v "$host_root/$2:/work" -w /work/apps/blog "$image" node -e '
 const { chromium } = require("@playwright/test");
-const isApi = (r) => new URL(r.url()).port === "8200";
+const pages = ["http://127.0.0.1:3000/test/@guest4test1/test-ako-post", "http://127.0.0.1:8080/wallet/@guest4test1/transfers"];
 (async () => {
   const browser = await chromium.launch();
+  let failed = 0;
   try {
-    const page = await browser.newPage();
-    const api = page.waitForRequest(isApi, { timeout: 120000 });
-    const r = await page.goto("http://127.0.0.1:3000/test/@guest4test1/test-ako-post", { timeout: 280000 });
-    console.log(`status ${r.status()}`);
-    console.log(`first client API request: ${(await api).url()}`);
-    process.exitCode = r.status() === 200 ? 0 : 1;
+    for (const url of pages) {
+      const page = await browser.newPage();
+      const hmr = page.waitForEvent("websocket", { predicate: (w) => w.url().includes("/_next/hmr"), timeout: 120000 });
+      const r = await page.goto(url, { timeout: 280000 });
+      const hydrated = await page
+        .waitForFunction(() => Object.keys(document.body).some((k) => k.startsWith("__react")), null, { timeout: 120000 })
+        .then(() => true, () => false);
+      const socket = await hmr.then((w) => w.url(), (e) => String(e).split("\n")[0]);
+      console.log(`${url}: status ${r.status()}, ${hydrated ? "hydrated" : "not hydrated"}, HMR ${socket}`);
+      if (r.status() !== 200 || !hydrated || !socket.startsWith("ws")) failed++;
+      await page.close();
+    }
   } finally {
     await browser.close();
   }
+  process.exitCode = failed ? 1 : 0;
 })().catch((e) => { console.log(String(e).split("\n")[0]); process.exit(1); });
 '
 }
@@ -258,11 +273,11 @@ run_stack() { # SCENARIO DIR
     t=$SECONDS
     status=0
     probe_browser "$proxy" "$dir" > "$out/$scenario-browser.log" 2>&1 || status=$?
-    compose "$dir" "$project" logs --no-color blog 2>&1 | grep 'Blocked cross-origin request' >> "$out/$scenario-browser.log" && status=1
+    compose "$dir" "$project" logs --no-color blog wallet 2>&1 | grep 'Blocked cross-origin request' >> "$out/$scenario-browser.log" && status=1
     if [ "$status" = 0 ]; then
         record "$scenario: browser" pass $((SECONDS - t)) ""
     else
-        record "$scenario: browser" fail $((SECONDS - t)) "a browser at 127.0.0.1 made no client API call or was refused a dev resource: $(tail -1 "$out/$scenario-browser.log")" "$out/$scenario-browser.log"
+        record "$scenario: browser" fail $((SECONDS - t)) "a page at 127.0.0.1 did not hydrate or was refused a dev resource: $(grep -v -E 'hydrated, HMR ws' "$out/$scenario-browser.log" | head -1)" "$out/$scenario-browser.log"
     fi
 
     # Judged by the test's own result, not playwright's exit status: the fixture
