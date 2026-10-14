@@ -129,5 +129,10 @@
     "store_key_label": "Enregistrer la clé",
     "store_password_label": "Enregistrer le mot de passe",
     "google_drive_password_placeholder": "Mot de passe pour déverrouiller le portefeuille Google Drive"
+  },
+  "broadcast_error": {
+    "missing_owner_authority": "Cette opération nécessite votre clé propriétaire (owner). Connectez-vous avec celle-ci et réessayez.",
+    "missing_active_authority": "Cette opération nécessite votre clé active. Connectez-vous avec votre clé active et réessayez.",
+    "missing_posting_authority": "Cette opération nécessite votre clé de publication (posting). Connectez-vous avec celle-ci et réessayez."
   }
 }

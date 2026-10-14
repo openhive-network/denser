@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from 'react';
+import { useContext, useEffect, useSyncExternalStore } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
@@ -10,6 +10,7 @@ import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
 import { User } from '@smart-signer/types/common';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
+import { RequiredKeyTypeContext, lacksRequiredKeyType } from '@smart-signer/lib/auth/required-key-type';
 
 const logger = getLogger('app');
 
@@ -17,6 +18,11 @@ export interface IUseUser {
   user: User;
   /** True when user state from localStorage is stable (after hydration completes) */
   isHydrated: boolean;
+  /**
+   * True when a session exists but was signed in with a weaker key than the app's
+   * `RequiredKeyTypeContext`; `user` is then the logged-out user.
+   */
+  lacksRequiredKey: boolean;
 }
 
 export interface UseUserOptions {
@@ -64,6 +70,7 @@ export function useUserCore(
   waitForHydration = false
 ): IUseUser {
   const queryClient = useQueryClient();
+  const requiredKeyType = useContext(RequiredKeyTypeContext);
   const isPastHydration = useIsPastHydration();
   const userQuery = useQuery<User>({
     queryKey: [QUERY_KEY.user],
@@ -75,6 +82,9 @@ export function useUserCore(
     initialData: () => userLocalStorage.getUser()
   });
   const user = userQuery.data;
+  // The stored session is kept as it is (another app on this origin may use it); only this app's view changes
+  const lacksRequiredKey = !!user && lacksRequiredKeyType(user, requiredKeyType);
+  const appUser = lacksRequiredKey ? defaultUser : user;
   useQueryErrorEffect(userQuery, () => saveUserOnce(defaultUser));
 
   useEffect(() => {
@@ -114,27 +124,28 @@ export function useUserCore(
     // If no redirect needed, just return (example: already on
     // /dashboard). If user data not yet there (fetch in progress,
     // logged in or not) then don't do anything yet.
-    if (!redirectTo || !user) {
+    if (!redirectTo || !appUser) {
       return;
     }
 
     if (
       // If redirectTo is set, redirect if the user was not found.
-      (redirectTo && !redirectIfFound && !user?.isLoggedIn) ||
+      (redirectTo && !redirectIfFound && !appUser?.isLoggedIn) ||
       // If redirectIfFound is also set, redirect if the user was found.
-      (redirectIfFound && user?.isLoggedIn)
+      (redirectIfFound && appUser?.isLoggedIn)
     ) {
       onRedirect(redirectTo);
     }
-  }, [user, redirectIfFound, redirectTo, onRedirect]);
+  }, [appUser, redirectIfFound, redirectTo, onRedirect]);
 
   // Server uses cookies, client uses localStorage - these may differ during hydration,
   // so hydration renders the logged-out user the server rendered
   const isHydrated = !waitForHydration || isPastHydration;
-  const resolvedUser = isHydrated && user ? user : defaultUser;
+  const resolvedUser = isHydrated && appUser ? appUser : defaultUser;
 
   return {
     user: resolvedUser,
-    isHydrated
+    isHydrated,
+    lacksRequiredKey: isHydrated && lacksRequiredKey
   };
 }

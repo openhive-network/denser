@@ -5,9 +5,12 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { FC, PropsWithChildren, useEffect, useMemo } from 'react';
 import { useTheme } from 'next-themes';
 import { SignerProviderClient } from '@smart-signer/components/signer-provider-client';
+import { RequiredKeyTypeContext } from '@smart-signer/lib/auth/required-key-type';
+import { KeyType } from '@smart-signer/types/common';
 import { getQueryClient } from '@/wallet/lib/react-query';
 import { ThemeProvider } from '@/wallet/components/theme-provider';
 import SiteHeader from '@/wallet/components/site-header';
+import { ActiveKeyRequiredNotice } from '@/wallet/components/active-key-required-notice';
 import { ModalContainer } from '@smart-signer/components/modal-container';
 import { Toaster } from '@ui/components/toaster';
 import { TailwindIndicator } from '@/wallet/components/tailwind-indicator';
@@ -22,16 +25,20 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SignerProviderClient>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
-          <ThemeColorMeta />
-          <div className="relative flex min-h-screen flex-col">
-            <SiteHeader />
-            <div className="flex-1">{children}</div>
-          </div>
-        </ThemeProvider>
-      </SignerProviderClient>
-      <ModalContainer />
+      {/* The wallet signs with the active key: a posting-key session from the blog on this origin is not a wallet login */}
+      <RequiredKeyTypeContext.Provider value={KeyType.active}>
+        <SignerProviderClient>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem nonce={nonce}>
+            <ThemeColorMeta />
+            <div className="relative flex min-h-screen flex-col">
+              <SiteHeader />
+              <ActiveKeyRequiredNotice />
+              <div className="flex-1">{children}</div>
+            </div>
+          </ThemeProvider>
+        </SignerProviderClient>
+        <ModalContainer />
+      </RequiredKeyTypeContext.Provider>
       <Toaster />
       <ReactQueryDevtools initialIsOpen={false} />
       <TailwindIndicator />

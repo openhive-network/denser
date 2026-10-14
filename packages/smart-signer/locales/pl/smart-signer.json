@@ -129,5 +129,10 @@
     "store_key_label": "Zapisz klucz",
     "store_password_label": "Zapisz hasło",
     "google_drive_password_placeholder": "Hasło do odblokowania portfela Google Drive"
+  },
+  "broadcast_error": {
+    "missing_owner_authority": "Ta operacja wymaga klucza właściciela (owner). Zaloguj się nim i spróbuj ponownie.",
+    "missing_active_authority": "Ta operacja wymaga klucza aktywnego (active). Zaloguj się kluczem aktywnym i spróbuj ponownie.",
+    "missing_posting_authority": "Ta operacja wymaga klucza publikowania (posting). Zaloguj się nim i spróbuj ponownie."
   }
 }

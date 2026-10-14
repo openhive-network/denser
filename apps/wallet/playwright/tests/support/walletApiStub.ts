@@ -233,7 +233,8 @@ export const startWalletApiStub = (port = FIXTURE_API_PORT, jsonRpc: JsonRpcResu
 /**
  * Logs a stub account in on the client, as the blog's fixture seeder does: the stored user is what
  * `useUser` starts from. Pass a key type (`'posting'`/`'active'`) or options
- * (`username`, `loginType`, `keyType`); defaults: STUB_ACCOUNT, `wif`, `posting`.
+ * (`username`, `loginType`, `keyType`); defaults: STUB_ACCOUNT, `wif`, `active`. The wallet counts
+ * only an active-key session as logged in; a `posting` one is the blog's session on a shared origin.
  */
 export const logInAsStubAccount = (
   page: Page,
@@ -242,7 +243,7 @@ export const logInAsStubAccount = (
     | 'active'
     | { username?: string; loginType?: 'wif' | 'keychain'; keyType?: 'posting' | 'active' } = {}
 ) => {
-  const { username = STUB_ACCOUNT, loginType = 'wif', keyType = 'posting' } =
+  const { username = STUB_ACCOUNT, loginType = 'wif', keyType = 'active' } =
     typeof options === 'string' ? { keyType: options } : options;
   return page.context().addInitScript(
     ({ username, loginType, keyType }) => {

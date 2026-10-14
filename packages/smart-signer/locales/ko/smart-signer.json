@@ -129,5 +129,10 @@
     "store_key_label": "키 저장",
     "store_password_label": "비밀번호 저장",
     "google_drive_password_placeholder": "Google 드라이브 지갑 잠금 해제 비밀번호"
+  },
+  "broadcast_error": {
+    "missing_owner_authority": "이 작업에는 소유자 키(owner)가 필요합니다. 해당 키로 로그인한 후 다시 시도하세요.",
+    "missing_active_authority": "이 작업에는 액티브 키(active)가 필요합니다. 액티브 키로 로그인한 후 다시 시도하세요.",
+    "missing_posting_authority": "이 작업에는 포스팅 키(posting)가 필요합니다. 해당 키로 로그인한 후 다시 시도하세요."
   }
 }

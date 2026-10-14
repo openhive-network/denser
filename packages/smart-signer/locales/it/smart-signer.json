@@ -129,5 +129,10 @@
     "store_key_label": "Conserva chiave",
     "store_password_label": "Conserva password",
     "google_drive_password_placeholder": "Password per sbloccare il portafoglio Google Drive"
+  },
+  "broadcast_error": {
+    "missing_owner_authority": "Questa operazione richiede la tua chiave proprietario (owner). Accedi con essa e riprova.",
+    "missing_active_authority": "Questa operazione richiede la tua chiave attiva (active). Accedi con la tua chiave attiva e riprova.",
+    "missing_posting_authority": "Questa operazione richiede la tua chiave di pubblicazione (posting). Accedi con essa e riprova."
   }
 }

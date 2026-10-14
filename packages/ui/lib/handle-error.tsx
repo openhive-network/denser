@@ -1,6 +1,8 @@
 'use client';
 
 import { transformError } from '@hive/transaction/lib/transform-error';
+import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
+import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
 import env from "@beam-australia/react-env";
@@ -94,6 +96,18 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     toast({
       description: 'Your secure key storage was cleared by your browser. Please sign in again.',
       variant: 'default',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // A broadcast signed with too weak a key: say which key it needs, keep the node's answer in the log only
+  const missingAuthority = findMissingAuthority(error);
+  if (missingAuthority) {
+    logger.error(error, 'Broadcast in %s lacks %s authority', ctx?.method, missingAuthority);
+    toast({
+      description: <MissingAuthorityMessage role={missingAuthority} />,
+      variant: 'destructive',
       ...toastOptions
     });
     return;

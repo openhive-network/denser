@@ -129,5 +129,10 @@
     "store_key_label": "Guardar clave",
     "store_password_label": "Guardar contraseña",
     "google_drive_password_placeholder": "Contraseña para desbloquear la billetera de Google Drive"
+  },
+  "broadcast_error": {
+    "missing_owner_authority": "Esta operación necesita tu clave de propietario (owner). Inicia sesión con ella e inténtalo de nuevo.",
+    "missing_active_authority": "Esta operación necesita tu clave activa (active). Inicia sesión con tu clave activa e inténtalo de nuevo.",
+    "missing_posting_authority": "Esta operación necesita tu clave de publicación (posting). Inicia sesión con ella e inténtalo de nuevo."
   }
 }
