@@ -52,7 +52,7 @@ export function ProposalsFilter({
               <SelectTrigger
                 id={statusTriggerId}
                 aria-labelledby={`${statusLabelId} ${statusTriggerId}`}
-                className="h-[35px] w-[100px]"
+                className="h-[35px] w-auto min-w-[100px] gap-2"
                 data-testid="proposals-sort-filter-status"
               >
                 <SelectValue />
@@ -74,7 +74,7 @@ export function ProposalsFilter({
               <SelectTrigger
                 id={orderByTriggerId}
                 aria-labelledby={`${orderByLabelId} ${orderByTriggerId}`}
-                className="h-[35px] w-[120px]"
+                className="h-[35px] w-auto min-w-[120px] gap-2"
                 data-testid="proposals-sort-filter-orderby"
               >
                 <SelectValue placeholder="Select..." />
