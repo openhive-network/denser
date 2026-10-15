@@ -74,7 +74,8 @@ export function createI18nClient(
 
   function useTranslation(ns: string, options?: Parameters<typeof useTranslationOrg>[1]) {
     const { locale } = useLocale();
-    const lng = isServer ? locale : getLanguageFromCookie();
+    const cookieLng = getLanguageFromCookie();
+    const lng = isServer ? locale : languages.includes(cookieLng) ? cookieLng : defaultLocale;
     const ret = useTranslationOrg(ns, options);
 
     const { i18n } = ret;

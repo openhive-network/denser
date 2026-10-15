@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from '@ui/components/locale-context';
 import { ensureLocaleCookie } from '@ui/lib/locale-cookie';
-import { defaultLocale } from '@/blog/i18n/settings';
+import { defaultLocale, resolveLocale } from '@/blog/i18n/settings';
 import { takeLegacyStoredLanguage } from '@/blog/utils/language';
 
 export default function ClientEffects() {
@@ -12,7 +12,8 @@ export default function ClientEffects() {
   const { locale: renderedLocale } = useLocale();
 
   useEffect(() => {
-    const locale = ensureLocaleCookie(takeLegacyStoredLanguage() ?? defaultLocale);
+    // Keeps a language only another app of the origin supports, so that app still shows it
+    const locale = resolveLocale(ensureLocaleCookie(takeLegacyStoredLanguage() ?? defaultLocale));
     // A language migrated after the server rendered (Condenser, older builds' localStorage)
     if (locale !== renderedLocale) {
       document.documentElement.lang = locale;

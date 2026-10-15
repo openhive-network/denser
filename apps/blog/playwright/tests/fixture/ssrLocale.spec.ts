@@ -49,6 +49,15 @@ test.describe('SSR locale — body translation & cache isolation', () => {
     expect(html, 'English copy should not leak through on an es request').not.toContain(ALL_POSTS_EN);
   });
 
+  // The cookie is shared with the wallet, which supports languages the blog has no texts for.
+  test('LOCALE-05 — a locale the blog does not support renders English texts with <html lang="en">', async ({
+    request
+  }) => {
+    const html = await (await request.get(FEED_PATH, { headers: { cookie: 'NEXT_LOCALE=ko' } })).text();
+    expect(html).toMatch(/<html[^>]*lang="en"/);
+    expect(html).toContain(ALL_POSTS_EN);
+  });
+
   // Cache-correctness (sibling of SAFE-05/06 for the observer cookie): the feed
   // is rendered per NEXT_LOCALE, so it must not be publicly cacheable — otherwise
   // a shared cache serves one user's language to another.
