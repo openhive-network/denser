@@ -192,13 +192,20 @@ const probes = [
 
 # The post, and a wallet page through the edge, in a browser at 127.0.0.1, not the
 # localhost the specs use: next dev serves its dev resources only to localhost and
-# allowedDevOrigins. Each page must hydrate (React's fiber on <body>) and open its
-# HMR websocket; a refused one does not. (The post page makes no client-side API
-# call after load since ANON-POST-09, so that no longer shows hydration.)
+# allowedDevOrigins. Then the blog and the wallet through the edge at localhost, the
+# origin `aidev session devstack open` forwards to. Each page must hydrate (React's
+# fiber on <body>) and open its HMR websocket; a refused one does not. (The post
+# page makes no client-side API call after load since ANON-POST-09, so that no
+# longer shows hydration.)
 probe_browser() { # PROXY_CONTAINER DIR
     docker run --rm --network "container:$1" --user "$uid:$gid" -v "$host_root/$2:/work" -w /work/apps/blog "$image" node -e '
 const { chromium } = require("@playwright/test");
-const pages = ["http://127.0.0.1:3000/test/@guest4test1/test-ako-post", "http://127.0.0.1:8080/wallet/@guest4test1/transfers"];
+const pages = [
+  "http://127.0.0.1:3000/test/@guest4test1/test-ako-post",
+  "http://127.0.0.1:8080/wallet/@guest4test1/transfers",
+  "http://localhost:8080/trending",
+  "http://localhost:8080/wallet/@guest4test1/transfers",
+];
 (async () => {
   const browser = await chromium.launch();
   let failed = 0;
@@ -277,7 +284,7 @@ run_stack() { # SCENARIO DIR
     if [ "$status" = 0 ]; then
         record "$scenario: browser" pass $((SECONDS - t)) ""
     else
-        record "$scenario: browser" fail $((SECONDS - t)) "a page at 127.0.0.1 did not hydrate or was refused a dev resource: $(grep -v -E 'hydrated, HMR ws' "$out/$scenario-browser.log" | head -1)" "$out/$scenario-browser.log"
+        record "$scenario: browser" fail $((SECONDS - t)) "a page at 127.0.0.1 or localhost did not hydrate or was refused a dev resource: $(grep -v -E 'hydrated, HMR ws' "$out/$scenario-browser.log" | head -1)" "$out/$scenario-browser.log"
     fi
 
     # Judged by the test's own result, not playwright's exit status: the fixture
