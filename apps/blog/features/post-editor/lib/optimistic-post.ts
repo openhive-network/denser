@@ -1,5 +1,6 @@
 import { NaiAsset } from '@hiveio/wax';
 import { PUBLISHING_APP } from '@transaction/lib/publishing-app';
+import { getPostCategory, getPostPath } from '@transaction/lib/post-category';
 import { Beneficiarie } from '@hive/common-hiveio-packages/wax';
 import { formatNaiAsset } from '@ui/lib/helpers';
 
@@ -32,7 +33,7 @@ export function buildOptimisticPost(params: PostParams, username: string) {
     permlink,
     title,
     body,
-    category,
+    category: getPostCategory(category, tags),
     tags,
     json_metadata: { tags, image: image ? [image] : [], description: summary, app: PUBLISHING_APP },
     created: now,
@@ -47,7 +48,7 @@ export function buildOptimisticPost(params: PostParams, username: string) {
     payout_at: new Date(Date.now() + PAYOUT_WINDOW_MS).toISOString(),
     is_paidout: false,
     net_rshares: 0,
-    url: `/${category}/@${username}/${permlink}`,
+    url: getPostPath(username, permlink, category, tags),
     // Use actual user-selected values for payout settings (e.g. "1000000.000 HBD")
     max_accepted_payout: maxAcceptedPayout ? formatNaiAsset(maxAcceptedPayout) : '1000000.000 HBD',
     beneficiaries: beneficiaries ?? [],

@@ -27,6 +27,7 @@ import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
 import { getChain } from './lib/chain';
 import { PUBLISHING_APP } from './lib/publishing-app';
+import { getPostCategory } from './lib/post-category';
 import { subscribeToSignerOptions } from './lib/signer-options';
 import { getFindAccounts } from './lib/hive-api';
 import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/profile-metadata';
@@ -553,7 +554,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     const blogPost = new BlogPostOperation({
-      category: category !== 'blog' ? category : tags[0],
+      category: getPostCategory(category, tags),
       beneficiaries,
       maxAcceptedPayout,
       percentHbd,
@@ -585,7 +586,7 @@ export class TransactionService {
     transactionOptions: TransactionOptions = {}
   ) {
     const blogPost = new BlogPostOperation({
-      category: category !== 'blog' ? category : tags[0],
+      category: getPostCategory(category, tags),
       tags,
       author: this.signerOptions.username,
       title,

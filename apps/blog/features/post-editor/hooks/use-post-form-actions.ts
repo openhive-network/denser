@@ -4,6 +4,7 @@ import { Dispatch, MutableRefObject, RefObject, SetStateAction, useCallback, use
 import { UseFormReturn } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { createAsset, createPermlink } from "@transaction/lib/utils";
+import { getPostPath } from "@transaction/lib/post-category";
 import { getLogger } from "@ui/lib/logging";
 import { handleError } from "@ui/lib/handle-error";
 import { Entry } from "@hive/common-hiveio-packages/wax";
@@ -168,7 +169,7 @@ export function usePostFormActions({
           refreshPage();
         }
       } else {
-        const postUrl = `/${postParams.category}/@${username}/${postParams.permlink}?pending=1`;
+        const postUrl = `${getPostPath(username, postParams.permlink, postParams.category, tags)}?pending=1`;
         await router.push(postUrl, undefined);
       }
       if (btnRef.current) {
