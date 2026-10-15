@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
-# node:test suites of scripts/ci-helpers, .aidev, scripts/check-wallet-translations, playwright/support, packages/ui, packages/smart-signer,
+# node:test suites of scripts/ci-helpers, .aidev, scripts/check-wallet-translations (with scripts/korean-translations), playwright/support, packages/ui, packages/smart-signer,
 # apps/blog and apps/wallet (run through node's TypeScript type stripping): the `baseline` slot
 # and the `unit` suite of the quick, full and canary slots.
 # No I/O, no server. Each package writes junit (mocha's built-in xunit reporter)
@@ -46,7 +46,7 @@ junit="$PWD/test-results/unit/wallet-translations.xml"
 run_with_junit_fallback "$junit" wallet-translations node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    scripts/check-wallet-translations.test.js < /dev/null || status=1
+    scripts/check-wallet-translations.test.js scripts/korean-translations.test.js < /dev/null || status=1
 
 echo "== node --test playwright/support" >&2
 junit="$PWD/test-results/unit/playwright-support.xml"
