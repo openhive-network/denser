@@ -143,7 +143,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "{{username}} account menu, posting key",
-        "active": "{{username}} account menu, active key"
+        "active": "{{username}} account menu, active key",
+        "posting_and_active": "{{username}} account menu, posting and active keys"
       },
       "account_menu_signer": "{{username}} account menu, {{method}}",
       "profile": "Profile",
@@ -172,10 +173,13 @@
       },
       "key_type": {
         "posting": "Posting key",
-        "active": "Active key"
+        "active": "Active key",
+        "posting_and_active": "Posting + active key"
       },
       "active_key_badge": "Logged in with active key",
       "log_in_with_active_key": "Log in with active key",
+      "add_active_key": "Add active key",
+      "add_posting_key": "Add posting key",
       "switch_to_posting_key": "Switch to posting key"
     }
   },

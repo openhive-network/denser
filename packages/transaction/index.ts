@@ -30,6 +30,7 @@ import { PUBLISHING_APP } from './lib/publishing-app';
 import { subscribeToSignerOptions } from './lib/signer-options';
 import { getFindAccounts } from './lib/hive-api';
 import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/profile-metadata';
+import { resolveRequiredKeyType } from './lib/required-key-type';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
 export type { ProfileMetadataUpdate } from './lib/profile-metadata';
@@ -96,7 +97,9 @@ export class TransactionService {
    * When you want to observe transaction and resolve after applying it
    * in blockchain, pass `options.observe` set to true. Then method
    * `TransactionService.broadcastAndObserveTransaction` will be run and
-   * this resolves after applying transaction in blockchain.
+   * this resolves after applying transaction in blockchain. Unless the
+   * caller names a key in `transactionOptions`, the signer is asked for the
+   * key the transaction's operations require (`resolveRequiredKeyType`).
    *
    * @param {(opBuilder: ITransaction) => void} cb
    * @param {TransactionOptions} [transactionOptions={}]
@@ -126,7 +129,11 @@ export class TransactionService {
     // Validate transaction
     txBuilder.validate();
 
-    const signature = await this.signTransaction(txBuilder, singleSignKeyType, requiredKeyType);
+    const signature = await this.signTransaction(
+      txBuilder,
+      singleSignKeyType,
+      resolveRequiredKeyType({ singleSignKeyType, requiredKeyType }, txBuilder.requiredAuthorities)
+    );
 
     // Add signature to transaction
     txBuilder.addSignature(signature);

@@ -100,7 +100,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "Меню аккаунта {{username}}, ключ публикации",
-        "active": "Меню аккаунта {{username}}, активный ключ"
+        "active": "Меню аккаунта {{username}}, активный ключ",
+        "posting_and_active": "Меню аккаунта {{username}}, ключи публикации и активный"
       },
       "account_menu_signer": "Меню аккаунта {{username}}, {{method}}",
       "wallet": "Кошелёк",
@@ -111,10 +112,13 @@
       "logout": "Выйти",
       "key_type": {
         "posting": "Ключ публикации",
-        "active": "Активный ключ"
+        "active": "Активный ключ",
+        "posting_and_active": "Ключ публикации + активный"
       },
       "active_key_badge": "Вход выполнен с активным ключом",
       "log_in_with_active_key": "Войти с активным ключом",
+      "add_active_key": "Добавить активный ключ",
+      "add_posting_key": "Добавить ключ публикации",
       "switch_to_posting_key": "Перейти на ключ публикации",
       "login_method": {
         "hbauth": "Безопасное хранилище",

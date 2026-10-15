@@ -143,7 +143,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "Menu du compte {{username}}, clé de publication",
-        "active": "Menu du compte {{username}}, clé active"
+        "active": "Menu du compte {{username}}, clé active",
+        "posting_and_active": "Menu du compte {{username}}, clés de publication et active"
       },
       "account_menu_signer": "Menu du compte {{username}}, {{method}}",
       "profile": "Profil",
@@ -172,10 +173,13 @@
       },
       "key_type": {
         "posting": "Clé de publication",
-        "active": "Clé active"
+        "active": "Clé active",
+        "posting_and_active": "Clé de publication + active"
       },
       "active_key_badge": "Connecté avec la clé active",
       "log_in_with_active_key": "Se connecter avec la clé active",
+      "add_active_key": "Ajouter la clé active",
+      "add_posting_key": "Ajouter la clé de publication",
       "switch_to_posting_key": "Passer à la clé de publication"
     }
   },

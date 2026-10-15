@@ -10,6 +10,7 @@ import { getChain } from '@hive/common-hiveio-packages';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
+import { MissingAuthorityError } from '@transaction/lib/missing-authority';
 
 const logger = getLogger('app');
 
@@ -29,6 +30,10 @@ export class SignerWif extends SignerHbauth {
   }
 
   override async signTransaction({ digest, transaction, singleSignKeyType, requiredKeyType }: SignTransaction): Promise<string> {
+    // The session holds one key: refuse an operation needing the other one instead of letting the node reject it
+    if (!singleSignKeyType && requiredKeyType && requiredKeyType !== this.keyType) {
+      throw new MissingAuthorityError(requiredKeyType);
+    }
     const wax = await getChain();
     const txBuilder = wax.createTransactionFromProto(transaction);
     if (digest !== txBuilder.sigDigest) {

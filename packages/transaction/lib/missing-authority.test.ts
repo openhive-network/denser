@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { findMissingAuthority } from './missing-authority';
+import { findMissingAuthority, MissingAuthorityError } from './missing-authority';
 
 // The shape of the node's answer to a transfer signed with a posting key, as wax rethrows it.
 const missingActiveAuthAnswer = JSON.stringify({
@@ -27,6 +27,11 @@ describe('findMissingAuthority', () => {
 
   it('finds the role from the message alone, in any case', () => {
     expect(findMissingAuthority(new Error('Missing required Active authority: alice'))).to.equal('active');
+  });
+
+  it('finds the role of a refusal raised before signing', () => {
+    expect(findMissingAuthority(new MissingAuthorityError('active'))).to.equal('active');
+    expect(findMissingAuthority(new MissingAuthorityError('posting'))).to.equal('posting');
   });
 
   it('reads plain objects', () => {

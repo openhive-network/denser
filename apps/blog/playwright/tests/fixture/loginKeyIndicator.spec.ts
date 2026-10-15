@@ -13,8 +13,10 @@ import plBlog from '../../../locales/pl/common_blog.json';
 /**
  * The header tells how powerful the login is: a key badge on the avatar while a safe-storage or WIF
  * session holds the active key, the key (or, for a signer that picks the key per operation, the
- * signer's name) in the account menu and in the avatar button's accessible name, and a menu item that
- * moves a one-key session to the other key by opening the login dialog for the same account.
+ * signer's name) in the account menu and in the avatar button's accessible name, and a menu item for
+ * the key the session lacks: a safe-storage session adds it next to its key, a WIF session moves to
+ * it by opening the login dialog for the same account. The seeded safe-storage sessions have no keys
+ * in safe storage, so they hold only the key they signed in with.
  *
  * Fixtures: reuses `reblogShare` (read-only on replay); the header is the same on every page.
  *
@@ -47,7 +49,7 @@ async function expectKeyLoginDialog(page: Page, keyType: KeyType) {
 test.describe('Safe storage session with the active key', () => {
   test.use({ authenticatedUser: { loginType: LoginType.hbauth, keyType: KeyType.active } });
 
-  test('LOGIN-KEY-01 — the avatar carries the key badge and names the active key, and the menu switches to the posting key', async ({
+  test('LOGIN-KEY-01 — the avatar carries the key badge and names the active key, and the menu adds the posting key', async ({
     page
   }) => {
     await gotoPostLoggedIn(page);
@@ -60,10 +62,7 @@ test.describe('Safe storage session with the active key', () => {
 
     const menu = await openAccountMenu(page);
     await expect(menu.getByTestId('login-authority-chip')).toHaveText(EN_MENU.key_type.active);
-    const action = menu.getByTestId('login-key-action');
-    await expect(action).toHaveText(EN_MENU.switch_to_posting_key);
-    await action.click();
-    await expectKeyLoginDialog(page, KeyType.posting);
+    await expect(menu.getByTestId('login-key-action')).toHaveText(EN_MENU.add_posting_key);
   });
 
   test('LOGIN-KEY-02 — the badge does not move the avatar at mobile or desktop width', async ({ page }) => {
@@ -96,16 +95,14 @@ test.describe('Safe storage session with the active key', () => {
     await expect(avatar.getByTestId('login-key-badge')).toHaveAttribute('title', plMenu.active_key_badge);
     const menu = await openAccountMenu(page);
     await expect(menu.getByTestId('login-authority-chip')).toHaveText(plMenu.key_type.active);
-    await expect(menu.getByTestId('login-key-action')).toHaveText(plMenu.switch_to_posting_key);
+    await expect(menu.getByTestId('login-key-action')).toHaveText(plMenu.add_posting_key);
   });
 });
 
 test.describe('Safe storage session with the posting key', () => {
   test.use({ authenticatedUser: { loginType: LoginType.hbauth, keyType: KeyType.posting } });
 
-  test('LOGIN-KEY-04 — no badge, the posting key named, and the menu leads to an active-key login of the account', async ({
-    page
-  }) => {
+  test('LOGIN-KEY-04 — no badge, the posting key named, and the menu adds the active key', async ({ page }) => {
     await gotoPostLoggedIn(page);
     const avatar = new HomePage(page).profileAvatarButton;
 
@@ -114,6 +111,36 @@ test.describe('Safe storage session with the posting key', () => {
 
     const menu = await openAccountMenu(page);
     await expect(menu.getByTestId('login-authority-chip')).toHaveText(EN_MENU.key_type.posting);
+    await expect(menu.getByTestId('login-key-action')).toHaveText(EN_MENU.add_active_key);
+  });
+});
+
+test.describe('WIF session with the active key', () => {
+  test.use({ authenticatedUser: { loginType: LoginType.wif, keyType: KeyType.active } });
+
+  test('LOGIN-KEY-06 — the badge names the active key, and the menu switches to the posting key', async ({ page }) => {
+    await gotoPostLoggedIn(page);
+    const avatar = new HomePage(page).profileAvatarButton;
+
+    await expect(avatar).toHaveAccessibleName(`${USERNAME} account menu, active key`);
+    await expect(avatar.getByTestId('login-key-badge')).toHaveAttribute('title', EN_MENU.active_key_badge);
+
+    const menu = await openAccountMenu(page);
+    const action = menu.getByTestId('login-key-action');
+    await expect(action).toHaveText(EN_MENU.switch_to_posting_key);
+    await action.click();
+    await expectKeyLoginDialog(page, KeyType.posting);
+  });
+});
+
+test.describe('WIF session with the posting key', () => {
+  test.use({ authenticatedUser: { loginType: LoginType.wif, keyType: KeyType.posting } });
+
+  test('LOGIN-KEY-07 — the menu leads to an active-key login of the account', async ({ page }) => {
+    await gotoPostLoggedIn(page);
+    await expect(new HomePage(page).profileAvatarButton.getByTestId('login-key-badge')).toHaveCount(0);
+
+    const menu = await openAccountMenu(page);
     const action = menu.getByTestId('login-key-action');
     await expect(action).toHaveText(EN_MENU.log_in_with_active_key);
     await action.click();

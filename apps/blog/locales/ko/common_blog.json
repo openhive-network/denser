@@ -143,7 +143,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "{{username}} 계정 메뉴, 포스팅 키",
-        "active": "{{username}} 계정 메뉴, 액티브 키"
+        "active": "{{username}} 계정 메뉴, 액티브 키",
+        "posting_and_active": "{{username}} 계정 메뉴, 포스팅 키와 액티브 키"
       },
       "account_menu_signer": "{{username}} 계정 메뉴, {{method}}",
       "profile": "프로필",
@@ -172,10 +173,13 @@
       },
       "key_type": {
         "posting": "포스팅 키",
-        "active": "액티브 키"
+        "active": "액티브 키",
+        "posting_and_active": "포스팅 키 + 액티브 키"
       },
       "active_key_badge": "액티브 키로 로그인됨",
       "log_in_with_active_key": "액티브 키로 로그인",
+      "add_active_key": "액티브 키 추가",
+      "add_posting_key": "포스팅 키 추가",
       "switch_to_posting_key": "포스팅 키로 전환"
     }
   },

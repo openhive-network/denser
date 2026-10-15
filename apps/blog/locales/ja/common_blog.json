@@ -143,7 +143,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "{{username}} のアカウントメニュー、投稿キー",
-        "active": "{{username}} のアカウントメニュー、アクティブキー"
+        "active": "{{username}} のアカウントメニュー、アクティブキー",
+        "posting_and_active": "{{username}} のアカウントメニュー、投稿キーとアクティブキー"
       },
       "account_menu_signer": "{{username}} のアカウントメニュー、{{method}}",
       "profile": "プロフィール",
@@ -172,10 +173,13 @@
       },
       "key_type": {
         "posting": "投稿キー",
-        "active": "アクティブキー"
+        "active": "アクティブキー",
+        "posting_and_active": "投稿キー + アクティブキー"
       },
       "active_key_badge": "アクティブキーでログイン中",
       "log_in_with_active_key": "アクティブキーでログイン",
+      "add_active_key": "アクティブキーを追加",
+      "add_posting_key": "投稿キーを追加",
       "switch_to_posting_key": "投稿キーに切り替える"
     }
   },

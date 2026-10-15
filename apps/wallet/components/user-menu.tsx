@@ -21,6 +21,7 @@ import { useDismissOnPointerDownOutside } from '@ui/hooks/use-dismiss-on-pointer
 import DialogLogin from './dialog-login';
 import LoginKeyAction from './login-key-action';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
+import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storage-key';
 
 const logger = getLogger('app');
 
@@ -32,6 +33,7 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
   const onLogout = useLogout('/');
   const { t } = useTranslation('common_wallet');
   const { authority, chip } = useLoginAuthorityLabels(user);
+  const addKey = useAddSafeStorageKey(user);
   const [isKeyLoginOpen, setIsKeyLoginOpen] = useState(false);
   // Kept when the dialog closes, so its content does not change while it animates out
   const [keyLoginType, setKeyLoginType] = useState<KeyType>(KeyType.active);
@@ -72,7 +74,7 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
             </div>
             <Icons.walletlogo className=" w-20" />
           </DropdownMenuLabel>
-          <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} />
+          <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} onAddKey={addKey} />
 
           <DropdownMenuSeparator />
           <DropdownMenuGroup>

@@ -1,10 +1,11 @@
 import type { User } from '@smart-signer/types/common';
-import { getLoginAuthority, type LoginAuthority } from '@smart-signer/lib/auth/login-authority';
+import type { LoginAuthority } from '@smart-signer/lib/auth/login-authority';
+import { useLoginAuthority } from '@smart-signer/lib/auth/use-login-authority';
 import { useTranslation } from '@/blog/i18n/client';
 
 export interface LoginAuthorityLabels {
   authority: LoginAuthority;
-  /** The key the session holds, or the signer's name */
+  /** The keys the session holds, or the signer's name */
   chip: string;
   /** The account menu button's accessible name */
   accountMenu: string;
@@ -14,12 +15,14 @@ export interface LoginAuthorityLabels {
 export function useLoginAuthorityLabels(user: User): LoginAuthorityLabels {
   const { t } = useTranslation('common_blog');
   const { username } = user;
-  const authority = getLoginAuthority(user);
+  const authority = useLoginAuthority(user);
   if (authority.kind === 'key') {
+    // One key's name, or `posting_and_active`
+    const keys = authority.keyTypes.join('_and_');
     return {
       authority,
-      chip: t(`navigation.user_menu.key_type.${authority.keyType}`),
-      accountMenu: t(`navigation.user_menu.account_menu_key.${authority.keyType}`, { username })
+      chip: t(`navigation.user_menu.key_type.${keys}`),
+      accountMenu: t(`navigation.user_menu.account_menu_key.${keys}`, { username })
     };
   }
   const method = t(`navigation.user_menu.login_method.${authority.loginType}`);

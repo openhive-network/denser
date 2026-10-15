@@ -24,6 +24,7 @@ import AccountSwitcher from './account-switcher';
 import LoginMethodIcon from './login-method-icon';
 import LoginKeyAction from './login-key-action';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
+import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storage-key';
 
 /** What the login dialog opened from the menu signs in: any account, or this one with a given key */
 type LoginDialogTarget = { username?: string; keyType?: KeyType };
@@ -47,6 +48,7 @@ const UserMenu = ({
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const { authority, chip } = useLoginAuthorityLabels(user);
+  const addKey = useAddSafeStorageKey(user);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   // Kept when the dialog closes, so its content does not change while it animates out
   const [loginTarget, setLoginTarget] = useState<LoginDialogTarget>({});
@@ -120,7 +122,7 @@ const UserMenu = ({
               </Tooltip>
             </TooltipProvider>
           </DropdownMenuLabel>
-          <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} />
+          <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} onAddKey={addKey} />
 
           <AccountSwitcher user={user} onAddAccount={openAddAccount} />
 

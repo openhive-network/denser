@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { KeyType } from '@smart-signer/types/common';
 import { test, expect } from '../support/fixture-proxy-test';
 import { ProfilePage } from '../support/pages/profilePage';
 import { FOLLOWER, gotoProfileLoggedIn } from '../support/followMuteContext';
@@ -7,7 +8,8 @@ import { FOLLOWER, gotoProfileLoggedIn } from '../support/followMuteContext';
  * A broadcast the node rejects for a missing authority (`tx_missing_active_auth`) shows a message
  * naming the key it needs, in the UI language, and none of the node's answer. Reuses MUTE-01's
  * recording (`socialMute`) and flow; the broadcast is answered with hived's rejection instead of
- * the canned success, so WorkerBee never polls for a block.
+ * the canned success, so WorkerBee never polls for a block. A session whose signer holds only
+ * another key than the operation needs gets the same message before anything is broadcast.
  */
 
 const FIXTURE_PROXY_PORT = 8200;
@@ -18,6 +20,8 @@ const MISSING_ACTIVE_AUTH_ERROR = {
   message: `missing required active authority:Missing Active Authority ${FOLLOWER}`,
   data: { code: 3010000, name: 'tx_missing_active_auth', message: 'missing required active authority' }
 };
+
+const POSTING_KEY_MESSAGE = 'This operation needs your posting key. Sign in with it and try again.';
 
 const MESSAGES = [
   { locale: 'en', message: 'This operation needs your active key. Sign in with your active key and try again.' },
@@ -79,3 +83,18 @@ for (const { locale, message } of MESSAGES) {
     await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
   });
 }
+
+test.describe('A WIF session holding only the active key', () => {
+  test.use({ authenticatedUser: { keyType: KeyType.active } });
+
+  test('AUTH-ERR-02 — a posting operation is refused before broadcast, naming the posting key', async ({ page }) => {
+    const broadcasts = await rejectBroadcasts(page, MISSING_ACTIVE_AUTH_ERROR);
+    await gotoProfileLoggedIn(page);
+
+    await new ProfilePage(page).muteButton.click();
+
+    await expect(page.getByTestId('missing-authority-message')).toHaveText(POSTING_KEY_MESSAGE);
+    expect(broadcasts.count).toBe(0);
+    await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
+  });
+});
