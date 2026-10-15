@@ -1,21 +1,24 @@
 'use client';
 
 import { useEffect } from 'react';
-import { getCookie } from '@ui/lib/utils';
-import { getLanguage } from '@/blog/utils/language';
+import { useRouter } from 'next/navigation';
+import { useLocale } from '@ui/components/locale-context';
+import { ensureLocaleCookie } from '@ui/lib/locale-cookie';
+import { defaultLocale } from '@/blog/i18n/settings';
+import { takeLegacyStoredLanguage } from '@/blog/utils/language';
 
 export default function ClientEffects() {
-  useEffect(() => {
-    // Handle locale cookie setting
-    if (typeof window !== 'undefined' && !getCookie('NEXT_LOCALE')) {
-      document.cookie = `NEXT_LOCALE=en; SameSite=Lax`;
-    }
+  const router = useRouter();
+  const { locale: renderedLocale } = useLocale();
 
-    // Handle language setting from localStorage/cookies
-    const savedLang = getLanguage();
-    if (savedLang) {
-      document.documentElement.lang = savedLang;
+  useEffect(() => {
+    const locale = ensureLocaleCookie(takeLegacyStoredLanguage() ?? defaultLocale);
+    // A language migrated after the server rendered (Condenser, older builds' localStorage)
+    if (locale !== renderedLocale) {
+      document.documentElement.lang = locale;
+      router.refresh();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Global handler for browser back/forward navigation in subdirectory deployments

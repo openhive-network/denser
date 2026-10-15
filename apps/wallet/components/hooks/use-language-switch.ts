@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getCookie } from '@ui/lib/utils';
+import { readLocaleCookie, writeLocaleCookie } from '@ui/lib/locale-cookie';
 
 export const LANGUAGES = [
   { locale: 'ar', label: 'عر' },
@@ -23,7 +23,7 @@ export function useLanguageSwitch() {
   const [lang, setLang] = useState<string | null>(null);
 
   useEffect(() => {
-    const savedLang = getCookie('NEXT_LOCALE') || 'en';
+    const savedLang = readLocaleCookie() || 'en';
     if (!lang) {
       setLang(savedLang);
     }
@@ -31,10 +31,7 @@ export function useLanguageSwitch() {
   }, []);
 
   const changeLanguage = (locale: string) => {
-    // Delete any existing NEXT_LOCALE cookies first
-    document.cookie = 'NEXT_LOCALE=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
-    // Set new cookie with proper path and attributes
-    document.cookie = `NEXT_LOCALE=${locale}; path=/; SameSite=Lax`;
+    writeLocaleCookie(locale);
     setLang(locale);
 
     // In App Router, reload the page to apply the new locale

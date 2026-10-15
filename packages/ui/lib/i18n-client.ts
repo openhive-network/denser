@@ -6,6 +6,7 @@ import { initReactI18next, useTranslation as useTranslationOrg } from 'react-i18
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { isServer } from '@tanstack/react-query';
 import { useLocale } from '@ui/components/locale-context';
+import { readLocaleCookie } from '@ui/lib/locale-cookie';
 
 export { Trans } from 'react-i18next';
 /**
@@ -35,29 +36,11 @@ export function createI18nClient(
   loadNamespace: NamespaceLoader
 ) {
   /**
-   * Reads the language from `document.cookie`. Client-only: during SSR the
-   * language comes from `LocaleProvider`, set by the root layout.
+   * Reads the language from `document.cookie`, the copy the server resolves. Client-only: during SSR
+   * the language comes from `LocaleProvider`, set by the root layout.
    * Returns the language code or empty string if not found
    */
-  const getLanguageFromCookie = (): string => {
-    if (typeof document === 'undefined') {
-      return '';
-    }
-
-    const name = cookieName + '=';
-    const decodedCookie = decodeURIComponent(document.cookie);
-    const ca = decodedCookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) === ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return '';
-  };
+  const getLanguageFromCookie = (): string => readLocaleCookie(cookieName);
 
   function getInitialLanguage(): string {
     if (typeof document === 'undefined') {

@@ -1,21 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import { getCookie } from '@ui/lib/utils';
-import { languages, defaultLocale, cookieName } from '@/wallet/i18n/settings';
+import { ensureLocaleCookie } from '@ui/lib/locale-cookie';
+import { languages, defaultLocale } from '@/wallet/i18n/settings';
 
 export default function ClientEffects() {
-  // Set default locale cookie if missing or invalid
+  // Set default locale cookie if missing or invalid, and the document direction for RTL languages
   useEffect(() => {
-    const currentLocale = getCookie(cookieName);
-    if (!currentLocale || !languages.includes(currentLocale)) {
-      document.cookie = `${cookieName}=${defaultLocale}; path=/; SameSite=Lax`;
-    }
-  }, []);
-
-  // Set document direction for RTL languages
-  useEffect(() => {
-    const locale = getCookie(cookieName);
+    const locale = ensureLocaleCookie(defaultLocale, languages);
     document.body.setAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr');
   }, []);
 
