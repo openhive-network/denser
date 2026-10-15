@@ -51,7 +51,10 @@
       "a_year": " a year"
     },
     "retry": "Retry",
-    "close": "Close"
+    "close": "Close",
+    "profile_picture": "Profile picture",
+    "notifications_region": "Notifications ({hotkey})",
+    "select_placeholder": "Select..."
   },
   "navigation": {
     "main_nav_bar": {
@@ -703,5 +706,21 @@
     "minutes_one": "{{count}} minute",
     "minutes_other": "{{count}} minutes",
     "hours_and_minutes": "{{hours}} and {{minutes}}"
+  },
+  "page_titles": {
+    "home": "Home",
+    "proposals": "Proposals",
+    "market": "Market",
+    "witnesses": "Witnesses",
+    "healthchecker": "Healthchecker",
+    "page_not_found": "Page not found",
+    "balances": "Balances",
+    "delegations": "Delegations",
+    "curation_rewards": "Curation Rewards",
+    "author_rewards": "Author Rewards",
+    "permissions": "Permissions",
+    "authorities": "Authorities",
+    "change_password": "Change Password",
+    "create_communities": "Create Communities"
   }
 }

@@ -51,7 +51,10 @@
       "a_year": " a year"
     },
     "retry": "Повторить",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "profile_picture": "Фото профиля",
+    "notifications_region": "Уведомления ({hotkey})",
+    "select_placeholder": "Выберите..."
   },
   "navigation": {
     "main_nav_bar": {
@@ -716,5 +719,21 @@
     "minutes_many": "{{count}} минут",
     "minutes_other": "{{count}} минуты",
     "hours_and_minutes": "{{hours}} и {{minutes}}"
+  },
+  "page_titles": {
+    "home": "Главная",
+    "proposals": "Предложения",
+    "market": "Биржа",
+    "witnesses": "Делегаты",
+    "healthchecker": "Проверка узлов",
+    "page_not_found": "Страница не найдена",
+    "balances": "Балансы",
+    "delegations": "Делегирования",
+    "curation_rewards": "Кураторские вознаграждения",
+    "author_rewards": "Авторские вознаграждения",
+    "permissions": "Разрешения",
+    "authorities": "Полномочия",
+    "change_password": "Сменить пароль",
+    "create_communities": "Создание сообществ"
   }
 }

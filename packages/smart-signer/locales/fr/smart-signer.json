@@ -66,14 +66,14 @@
     "go_back_button": "Retour",
     "method_info": {
       "label": "What is {{method}}?",
-      "safe_storage": "Safe Storage keeps your private key encrypted with a password in this browser. The key never leaves your device.",
-      "keychain": "Hive Keychain is a browser extension that stores your keys and signs transactions for you.",
-      "peakvault": "PeakVault is a browser extension wallet that stores your keys and signs transactions for you.",
-      "hiveauth": "HiveAuth lets you approve sign-ins and transactions in a mobile wallet app, so your keys stay on your phone.",
-      "hivesigner": "HiveSigner is an external service that signs transactions on your behalf after you authorize this app.",
-      "wif": "Enter your private key (WIF) directly. It is used only to sign and is not kept unless you choose to store it.",
-      "metamask": "Sign with your Hive keys managed by the Hive Snap in the MetaMask extension.",
-      "google": "Keep your encrypted keys in your Google Drive and sign with them from any device."
+      "safe_storage": "Le stockage sécurisé conserve votre clé privée chiffrée par un mot de passe dans ce navigateur. La clé ne quitte jamais votre appareil.",
+      "keychain": "Hive Keychain est une extension de navigateur qui stocke vos clés et signe les transactions à votre place.",
+      "peakvault": "PeakVault est un portefeuille sous forme d'extension de navigateur qui stocke vos clés et signe les transactions à votre place.",
+      "hiveauth": "HiveAuth vous permet d'approuver les connexions et les transactions dans une application de portefeuille mobile, afin que vos clés restent sur votre téléphone.",
+      "hivesigner": "HiveSigner est un service externe qui signe les transactions en votre nom une fois que vous avez autorisé cette application.",
+      "wif": "Entrez directement votre clé privée (WIF). Elle sert uniquement à signer et n'est pas conservée, sauf si vous choisissez de l'enregistrer.",
+      "metamask": "Signez avec vos clés Hive gérées par Hive Snap dans l'extension MetaMask.",
+      "google": "Conservez vos clés chiffrées dans votre Google Drive et signez avec elles depuis n'importe quel appareil."
     },
     "signin_safe_storage": {
       "title": "Connexion avec stockage sécurisé",
@@ -87,7 +87,6 @@
       "button_signin": "Se connecter",
       "button_unlock": "Déverrouiller hors ligne",
       "button_save": "Enregistrer et se connecter",
-      "button_other": "Autres options de connexion",
       "button_cancel": "Annuler",
       "button_sign_auth": "Signer l'autorisation tx",
       "button_signin_unlocked": "Se connecter avec tx signé",
@@ -112,12 +111,24 @@
       "keytype_required": "Le type de clé est requis",
       "invalid_wif": "Clé WIF invalide",
       "no_wif": "Aucune clé WIF fournie",
-      "no_wif_key": "Aucune clé WIF"
+      "no_wif_key": "Aucune clé WIF",
+      "password_required": "Le mot de passe est requis",
+      "wif_required": "La clé WIF est requise",
+      "posting_key_for_active": "Le portefeuille a besoin de votre clé active ; une clé de publication ne peut pas signer de transferts"
     },
     "signin_with_keychain": "Extension Hive Keychain",
     "signin_with_wif": "Se connecter avec WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",
-    "signin_with_hivesigner": "HiveSigner"
+    "signin_with_hivesigner": "HiveSigner",
+    "this_operation_requires_your_key_for_single_sign": "Cette opération nécessite votre clé {{authType}} pour une signature unique.",
+    "this_operation_requires_your_key_for_single_sign_posting": "Cette opération nécessite votre clé de publication pour une signature unique.",
+    "this_operation_requires_your_key_for_single_sign_active": "Cette opération nécessite votre clé active pour une signature unique.",
+    "this_operation_requires_your_key_for_single_sign_owner": "Cette opération nécessite votre clé propriétaire pour une signature unique.",
+    "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "Cette opération nécessite votre clé de publication. Saisissez votre clé et conservez-la dans le stockage sécurisé.",
+    "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "Cette opération nécessite votre clé active. Saisissez votre clé et conservez-la dans le stockage sécurisé.",
+    "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "Cette opération nécessite votre clé propriétaire. Saisissez votre clé et conservez-la dans le stockage sécurisé.",
+    "use_peakvault": "Utiliser Peakvault",
+    "signin_with_peakvault": "Extension Peakvault"
   },
   "pageLogin": {
     "loginFailed": "Échec de la connexion",

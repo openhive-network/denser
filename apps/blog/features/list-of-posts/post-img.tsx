@@ -5,8 +5,10 @@ import clsx from 'clsx';
 import { Link } from '@hive/ui';
 import { getDefaultImageUrl } from '@ui/lib/avatar-utils';
 import type { CardEntry } from './lib/card-entry';
+import { useTranslation } from '@/blog/i18n/client';
 
 export default function PostImage({ post, isPriority = false }: { post: CardEntry; isPriority?: boolean }) {
+  const { t } = useTranslation('common_blog');
   const [image, setImage] = useState<string>(post.cardImage);
 
   return (
@@ -26,7 +28,7 @@ export default function PostImage({ post, isPriority = false }: { post: CardEntr
               />
               <img
                 srcSet={image}
-                alt="Post image"
+                alt={t('cards.post_image')}
                 loading={isPriority ? 'eager' : 'lazy'}
                 fetchPriority={isPriority ? 'high' : undefined}
                 className="w-full"

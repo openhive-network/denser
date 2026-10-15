@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-
-const PAGE_NOT_FOUND_TITLE = 'Page not found - Hive Blog';
+import { getTranslation } from '@/blog/i18n/server';
 
 /**
  * The metadata of every 404 page. A layout that answers 404 returns it from its own generateMetadata
@@ -8,6 +7,8 @@ const PAGE_NOT_FOUND_TITLE = 'Page not found - Hive Blog';
  * route's own metadata after hydration. The title template holds no `%s`, so a nested route's own
  * title (e.g. "Posts by alice") resolves to the not-found title too.
  */
-export const PAGE_NOT_FOUND_METADATA: Metadata = {
-  title: { absolute: PAGE_NOT_FOUND_TITLE, template: PAGE_NOT_FOUND_TITLE }
-};
+export async function getPageNotFoundMetadata(): Promise<Metadata> {
+  const { t } = await getTranslation('common_blog');
+  const title = `${t('page_titles.page_not_found')} - Hive Blog`;
+  return { title: { absolute: title, template: title } };
+}

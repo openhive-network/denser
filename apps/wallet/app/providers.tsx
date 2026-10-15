@@ -15,13 +15,14 @@ import { ModalContainer } from '@smart-signer/components/modal-container';
 import { Toaster } from '@ui/components/toaster';
 import { TailwindIndicator } from '@/wallet/components/tailwind-indicator';
 
-// Side-effect import: initializes i18next for client components
-// This must happen before any component calls useTranslation
-import '@/wallet/i18n/client';
+// Importing the module initializes i18next for client components; it must happen before any
+// component calls useTranslation
+import { useTranslation } from '@/wallet/i18n/client';
 
 /** `nonce`: this response's CSP nonce, for the theme's inline init script */
 export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children, nonce }) => {
   const queryClient = useMemo(() => getQueryClient(), []);
+  const { t } = useTranslation('common_wallet');
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -39,7 +40,7 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
         </SignerProviderClient>
         <ModalContainer />
       </RequiredKeyTypeContext.Provider>
-      <Toaster />
+      <Toaster label={t('global.notifications_region')} />
       <ReactQueryDevtools initialIsOpen={false} />
       <TailwindIndicator />
     </QueryClientProvider>

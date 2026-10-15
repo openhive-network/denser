@@ -54,7 +54,21 @@ module.exports = {
     // Prefer const over let when variable is never reassigned
     'prefer-const': 'warn',
     // Discourage console.log in production code - use logger instead
-    'no-console': ['warn', { allow: ['warn', 'error'] }]
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    // User-facing attribute text must come from t() so every locale can translate it
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector:
+          'JSXAttribute[name.name=/^(aria-label|placeholder|title|alt)$/] > Literal[value=/[A-Za-z]/]',
+        message: 'Translate user-facing attribute text with t() instead of a string literal.'
+      },
+      {
+        selector:
+          'JSXAttribute[name.name=/^(aria-label|placeholder|title|alt)$/] > JSXExpressionContainer > :matches(Literal[value=/[A-Za-z]/], TemplateLiteral[expressions.length=0])',
+        message: 'Translate user-facing attribute text with t() instead of a string literal.'
+      }
+    ]
   },
   overrides: [
     {

@@ -9,7 +9,7 @@ interface PageProps {
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
-  return getAccountPageMetadata(params.param, 'Permissions');
+  return getAccountPageMetadata(params.param, 'page_titles.permissions');
 }
 
 export default async function Page(props: PageProps) {

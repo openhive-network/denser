@@ -1,15 +1,20 @@
 import { Metadata } from 'next';
 import HealthCheckerWrapper from '@/wallet/components/healthchecker-wrapper';
+import { getTranslation } from '@/wallet/i18n/server';
 
-export const metadata: Metadata = {
-  title: {
-    absolute: 'Healthchecker'
-  },
-  openGraph: {
-    title: 'Healthchecker',
-    description: 'Health checker for wallet APIs'
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslation('common_wallet');
+  const title = t('page_titles.healthchecker');
+  return {
+    title: {
+      absolute: title
+    },
+    openGraph: {
+      title,
+      description: 'Health checker for wallet APIs'
+    }
+  };
+}
 
 export default function Page() {
   return (

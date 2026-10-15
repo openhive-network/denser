@@ -10,7 +10,8 @@ import {
 } from '@ui/components/toast';
 import { useToast } from './hooks/use-toast';
 
-export function Toaster() {
+/** `label`: the notification region's accessible name; Radix replaces `{hotkey}` in it with the focus hotkey (F8). */
+export function Toaster({ label }: { label: string }) {
   const { toasts } = useToast();
 
   return (
@@ -27,7 +28,7 @@ export function Toaster() {
           </Toast>
         );
       })}
-      <ToastViewport />
+      <ToastViewport label={label} />
     </ToastProvider>
   );
 }

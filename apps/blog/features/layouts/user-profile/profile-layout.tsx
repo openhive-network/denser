@@ -199,13 +199,13 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                   <AvatarImage
                     className="h-full w-full object-cover"
                     src={getUserAvatarUrl(profileData?.name || '', 'large')}
-                    alt="Profile picture"
+                    alt={t('global.profile_picture')}
                   />
                   <AvatarFallback>
                     <img
                       className="h-full w-full object-cover"
                       src={proxifyImageSrc(getDefaultImageUrl(), AVATAR_FALLBACK_SIZE, AVATAR_FALLBACK_SIZE)}
-                      alt="Profile picture"
+                      alt={t('global.profile_picture')}
                       fetchPriority="low"
                     />
                   </AvatarFallback>
@@ -492,7 +492,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                     <DropdownMenuTrigger asChild>
                       <button
                         className="flex h-12 items-center px-3 text-white/70 transition-colors hover:text-white/90"
-                        aria-label="More options"
+                        aria-label={t('user_profile.more_options')}
                       >
                         <MoreHorizontal className="h-5 w-5" />
                       </button>

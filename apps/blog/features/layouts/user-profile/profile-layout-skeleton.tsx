@@ -1,9 +1,11 @@
 import { Skeleton } from '@ui/components/skeletons/skeleton';
+import { useTranslation } from '@/blog/i18n/client';
 
 const ProfileLayoutSkeleton = () => {
+  const { t } = useTranslation('common_blog');
   return (
-    <div role="status" aria-label="Loading profile">
-      <span className="sr-only">Loading...</span>
+    <div role="status" aria-label={t('user_profile.loading_profile')}>
+      <span className="sr-only">{t('global.loading')}</span>
       {/* Cover area */}
       <div className="relative w-full bg-slate-800 text-sm leading-6">
         <div className="relative min-h-[280px] sm:min-h-[320px]">

@@ -1,4 +1,5 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { useTranslation } from '@/blog/i18n/client';
 
 interface PostCardUpvotesTooltipProps {
   blacklistCheck: boolean;
@@ -6,6 +7,7 @@ interface PostCardUpvotesTooltipProps {
 }
 
 const PostCardBlacklistMark = ({ blacklistCheck, blacklists }: PostCardUpvotesTooltipProps) => {
+  const { t } = useTranslation('common_blog');
   return blacklists && blacklists[0] ? (
     <TooltipProvider>
       <Tooltip>
@@ -16,7 +18,7 @@ const PostCardBlacklistMark = ({ blacklistCheck, blacklists }: PostCardUpvotesTo
       </Tooltip>
     </TooltipProvider>
   ) : blacklistCheck ? (
-    <span className="text-destructive" title="My blacklist">
+    <span className="text-destructive" title={t('cards.my_blacklist')}>
       (1)
     </span>
   ) : null;

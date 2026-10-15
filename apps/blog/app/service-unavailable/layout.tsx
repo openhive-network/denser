@@ -1,9 +1,13 @@
 import { Metadata } from 'next';
 import { PropsWithChildren } from 'react';
+import { getTranslation } from '@/blog/i18n/server';
 
-export const metadata: Metadata = {
-  title: 'Service Unavailable'
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslation('common_blog');
+  return {
+    title: t('page_titles.service_unavailable')
+  };
+}
 
 export default function Layout({ children }: PropsWithChildren) {
   return <>{children}</>;

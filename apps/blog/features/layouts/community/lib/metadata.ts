@@ -2,15 +2,28 @@ import { Metadata } from 'next';
 import { getCommunity } from '@transaction/lib/bridge-api';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
+import { getTranslation } from '@/blog/i18n/server';
 
 const logger = getLogger('app');
+
+const SECTION_TITLE_KEYS: Record<string, string> = {
+  trending: 'page_titles.sections.trending',
+  hot: 'page_titles.sections.hot',
+  created: 'page_titles.sections.created',
+  muted: 'page_titles.sections.muted',
+  pending: 'page_titles.sections.pending',
+  roles: 'page_titles.sections.roles'
+};
 
 export async function buildCommunityTagMetadata(
   params: { tag: string },
   sort: string,
-  sectionLabel: string = sort
+  section: string = sort
 ): Promise<Metadata> {
   const tag = params.tag;
+  const { t } = await getTranslation('common_blog');
+  const sectionKey = SECTION_TITLE_KEYS[section];
+  const sectionLabel = sectionKey ? t(sectionKey) : section;
   const alternates = { canonical: `/${sort}/${tag}` };
 
   if (!isCommunity(tag)) return { title: `#${tag}${sectionLabel ? ` / ${sectionLabel}` : ''} - Hive`, alternates };

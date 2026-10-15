@@ -51,7 +51,9 @@
       "a_month": " miesiąc",
       "years": " lat_a",
       "a_year": " rok"
-    }
+    },
+    "profile_picture": "Zdjęcie profilowe",
+    "notifications_region": "Powiadomienia ({hotkey})"
   },
   "navigation": {
     "main_nav_bar": {
@@ -89,7 +91,9 @@
       "my_friends": "Moi znajomi",
       "all_posts": "Wszystkie posty",
       "trending_communities": "Popularne Społeczności",
-      "explore_communities": "Pokaż więcej społeczności..."
+      "explore_communities": "Pokaż więcej społeczności...",
+      "my_communities": "Moje społeczności",
+      "my_subscriptions": "Moje subskrypcje"
     },
     "explore_nav": {
       "explore_hive": " Dowiedz się więcej o Hive",
@@ -194,7 +198,8 @@
     "communitie_sort": {
       "rank": "Ranking",
       "subscribers": "Subskrybcje",
-      "new": "Nowe"
+      "new": "Nowe",
+      "select_a_filter": "Wybierz filtr"
     },
     "sort_comments": {
       "sort": "Sortuj po:",
@@ -280,7 +285,12 @@
       "collapse_comment": "Zwiń komentarz",
       "expand_comment": "Rozwiń komentarz",
       "expand_comment_with_replies": "Rozwiń komentarz, {{replies}}"
-    }
+    },
+    "content_marked_nsfw": "Treść oznaczona jako NSFW",
+    "reveal_nsfw_post": "Pokaż ten post NSFW",
+    "my_blacklist": "Moja czarna lista",
+    "post_image": "Obraz posta",
+    "payout_declined": "Odrzucono wynagrodzenie"
   },
   "alert_dialog_reblog": {
     "action": "Potwierdź",
@@ -427,7 +437,8 @@
         "last_button": "Ostatnia",
         "viewing_page": "Strona numer {{current}} z {{total}}",
         "users_on_list": "Użytkowników na Liście jest: {{number}}"
-      }
+      },
+      "username_placeholder": "nazwa użytkownika"
     },
     "social_tab": {
       "community_subscriptions_title": "Subskrypcje społeczności",
@@ -451,7 +462,9 @@
     "check_node_status": "Sprawdź status węzła",
     "load_failed_title": "Nie udało się wczytać tego profilu",
     "load_failed_description": "API Hive nie odpowiedziało. Zwykle jest to chwilowe.",
-    "go_home": "Strona główna"
+    "go_home": "Strona główna",
+    "more_options": "Więcej opcji",
+    "loading_profile": "Wczytywanie profilu"
   },
   "communities": {
     "set_title_for_user": "Ustaw tytuł dla @{{username}}",
@@ -552,7 +565,8 @@
         "maximum_characters": "Maksymalna liczba znaków: {{value}}",
         "minimum_characters": "Minimalna liczba znaków: {{value}}"
       }
-    }
+    },
+    "create_a_community": "Utwórz społeczność"
   },
   "post_content": {
     "close_post_editor": "Czy na pewno chcesz zamknąć edytor postów?",
@@ -655,8 +669,11 @@
       "sorry": "Przepraszamy",
       "all_hidden_low_ratings": "Wszystkie sugerowane posty zostały ukryte z powodu niskich ocen.",
       "show_all": "Pokaż wszystkie",
-      "hide": "Ukryj"
-    }
+      "hide": "Ukryj",
+      "you_might_also_like": "Może Ci się również spodobać",
+      "title": "Propozycje"
+    },
+    "browse_to_original_post": "Przejdź do oryginalnego posta autorstwa @{{author}}"
   },
   "submit_page": {
     "log_in_to_post": "Zaloguj się, aby opublikować post.",
@@ -780,7 +797,25 @@
     "shadow_draft_found": "Znaleziono niezapisany post",
     "shadow_draft_description": "Post został wysłany, ale mógł jeszcze nie zostać zindeksowany. Czy chcesz odzyskać jego treść?",
     "shadow_draft_recover": "Przywróć",
-    "shadow_draft_discard": "Odrzuć"
+    "shadow_draft_discard": "Odrzuć",
+    "cover_image_alt": "Obraz okładki",
+    "select_category": "Wybierz kategorię",
+    "toolbar": {
+      "bold": "Pogrubienie",
+      "italic": "Kursywa",
+      "strikethrough": "Przekreślenie",
+      "horizontal_rule": "Linia pozioma",
+      "heading": "Nagłówek",
+      "link": "Odnośnik",
+      "quote": "Cytat",
+      "inline_code": "Kod w linii",
+      "code_block": "Blok kodu",
+      "image": "Obraz",
+      "table": "Tabela",
+      "unordered_list": "Lista punktowana",
+      "ordered_list": "Lista numerowana",
+      "task_list": "Lista zadań"
+    }
   },
   "search_page": {
     "placeholder": "Szukaj",
@@ -864,6 +899,88 @@
     "new_posts": "nowe posty",
     "hot_posts": "gorące posty",
     "trending_posts": "trendingowe posty",
-    "muted_posts": "wyciszone posty"
+    "muted_posts": "wyciszone posty",
+    "page_not_found": "Nie znaleziono strony",
+    "page_may_have_moved": "Strona, której szukasz, nie istnieje lub została przeniesiona.",
+    "go_home": "Strona główna",
+    "browse_trending": "Przeglądaj popularne"
+  },
+  "page_titles": {
+    "page_not_found": "Nie znaleziono strony",
+    "blog": "Blog",
+    "user_blog": "Blog użytkownika {{username}}",
+    "healthcheckers": "Kontrola węzłów",
+    "service_unavailable": "Usługa niedostępna",
+    "my_friends": "Moi znajomi",
+    "pending_posts": "Oczekujące posty",
+    "muted_posts": "Wyciszone posty",
+    "new_posts": "Nowe posty",
+    "hot_posts": "Posty na czasie",
+    "trending_posts": "Popularne posty",
+    "my_community_pending": "Moja społeczność / Oczekujące",
+    "my_community_muted": "Moja społeczność / Wyciszone",
+    "my_community_new": "Moja społeczność / Nowe",
+    "my_community_hot": "Moja społeczność / Na czasie",
+    "my_community_trending": "Moja społeczność / Popularne",
+    "communities": "Społeczności",
+    "search": "Szukaj",
+    "terms_of_service": "Warunki korzystania z usługi",
+    "welcome": "Witaj",
+    "create_a_post": "Utwórz post",
+    "faq": "FAQ",
+    "privacy_policy": "Polityka prywatności",
+    "replies_by": "Odpowiedzi użytkownika {{username}}",
+    "comments_by": "Komentarze użytkownika {{username}}",
+    "payouts_for": "Wynagrodzenia użytkownika {{username}}",
+    "posts_by": "Posty użytkownika {{username}}",
+    "people_followed_by": "Osoby obserwowane przez {{username}}",
+    "people_following": "Osoby obserwujące {{username}}",
+    "notifications_for": "Powiadomienia użytkownika {{username}}",
+    "settings": "Ustawienia użytkownika {{username}}",
+    "user_communities": "Społeczności użytkownika {{username}}",
+    "manage_lists": "Zarządzaj listami",
+    "sections": {
+      "trending": "popularne",
+      "hot": "na czasie",
+      "created": "nowe",
+      "muted": "wyciszone",
+      "pending": "oczekujące",
+      "roles": "role"
+    }
+  },
+  "chat_widget": {
+    "chat": "Czat",
+    "set_up_account": "Skonfiguruj konto czatu",
+    "set_up_account_tooltip": "Skonfiguruj swoje konto czatu na openhive.chat",
+    "close_widget": "Zamknij widżet czatu",
+    "open_app": "Otwórz aplikację czatu",
+    "open_widget": "Otwórz widżet czatu"
+  },
+  "search_mode": {
+    "search": "Szukaj",
+    "select_label": "Tryb wyszukiwania: {{mode}}",
+    "placeholder": {
+      "ai": "Wyszukiwanie AI...",
+      "classic": "Szukaj...",
+      "account": "Szukaj użytkowników...",
+      "user_topic": "Nazwa użytkownika...",
+      "tag": "Szukaj tagów...",
+      "topic": "Temat..."
+    },
+    "input_label": {
+      "ai": "Wyszukiwanie AI",
+      "classic": "Szukaj postów",
+      "account": "Szukaj użytkowników",
+      "user_topic": "Nazwa użytkownika",
+      "tag": "Szukaj tagów",
+      "topic": "Temat"
+    },
+    "mode": {
+      "classic": "Posty",
+      "ai": "Wyszukiwanie AI",
+      "account": "Użytkownicy",
+      "user_topic": "Posty użytkownika według tematu",
+      "tag": "Tagi"
+    }
   }
 }

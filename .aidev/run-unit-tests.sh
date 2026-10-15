@@ -47,7 +47,7 @@ run_with_junit_fallback "$junit" translations node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     scripts/check-wallet-translations.test.js scripts/check-blog-translations.test.js \
-    scripts/korean-translations.test.js < /dev/null || status=1
+    scripts/check-smart-signer-translations.test.js scripts/korean-translations.test.js < /dev/null || status=1
 
 echo "== node --test playwright/support" >&2
 junit="$PWD/test-results/unit/playwright-support.xml"

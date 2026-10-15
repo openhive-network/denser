@@ -95,7 +95,6 @@
       "button_signin": "Sign in",
       "button_unlock": "Unlock offline",
       "button_save": "Save and sign in",
-      "button_other": "Other sign in options",
       "button_cancel": "Cancel",
       "button_sign_auth": "Sign auth tx",
       "button_signin_unlocked": "Sign in with signed tx",

@@ -4,6 +4,7 @@ import { Link } from '@hive/ui';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { useState } from 'react';
 import { getDefaultImageUrl } from '@hive/ui';
+import { useTranslation } from '@/blog/i18n/client';
 
 const truncateTitle = (title: string, maxLength: number = 50) => {
   return title.length > maxLength ? `${title.substring(0, maxLength)}...` : title;
@@ -15,6 +16,7 @@ interface SuggestionsCardProps {
 }
 
 const SuggestionsCard = ({ entry, horizontal }: SuggestionsCardProps) => {
+  const { t } = useTranslation('common_blog');
   const cardImage = find_first_img(entry);
   const [image, setImage] = useState<string>(cardImage);
 
@@ -26,7 +28,7 @@ const SuggestionsCard = ({ entry, horizontal }: SuggestionsCardProps) => {
             <div className="h-24 overflow-hidden bg-transparent">
               <img
                 src={proxifyImageSrc(image, 256, 512)}
-                alt="Post image"
+                alt={t('cards.post_image')}
                 loading="lazy"
                 className="h-full w-full object-cover"
                 onError={() => setImage(getDefaultImageUrl())}
@@ -59,7 +61,7 @@ const SuggestionsCard = ({ entry, horizontal }: SuggestionsCardProps) => {
               />
               <img
                 srcSet={image}
-                alt="Post image"
+                alt={t('cards.post_image')}
                 loading="lazy"
                 className="h-full w-full object-cover"
                 onError={() => setImage(getDefaultImageUrl())}

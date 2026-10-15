@@ -51,7 +51,10 @@
       "a_year": " a year"
     },
     "retry": "再試行",
-    "close": "閉じる"
+    "close": "閉じる",
+    "profile_picture": "プロフィール画像",
+    "notifications_region": "通知 ({hotkey})",
+    "select_placeholder": "選択..."
   },
   "navigation": {
     "main_nav_bar": {
@@ -698,5 +701,21 @@
     "hours_other": "{{count}}時間",
     "minutes_other": "{{count}}分",
     "hours_and_minutes": "{{hours}}{{minutes}}"
+  },
+  "page_titles": {
+    "home": "ホーム",
+    "proposals": "提案",
+    "market": "マーケット",
+    "witnesses": "証人",
+    "healthchecker": "ヘルスチェッカー",
+    "page_not_found": "ページが見つかりません",
+    "balances": "残高",
+    "delegations": "委任",
+    "curation_rewards": "キュレーション報酬",
+    "author_rewards": "投稿者報酬",
+    "permissions": "権限",
+    "authorities": "権限設定",
+    "change_password": "パスワードの変更",
+    "create_communities": "コミュニティを作成"
   }
 }

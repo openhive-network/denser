@@ -34,7 +34,7 @@ const CommunitiesSelectFilter = ({
         className="w-fit bg-white dark:bg-background/95 dark:text-white"
         data-testid="communities-filter"
       >
-        <SelectValue placeholder="Select a filter" />
+        <SelectValue placeholder={t('select_sort.communitie_sort.select_a_filter')} />
       </SelectTrigger>
       <SelectContent data-testid="communities-filter-item">
         <SelectGroup>

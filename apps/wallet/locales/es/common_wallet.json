@@ -51,7 +51,10 @@
       "a_year": " a year"
     },
     "retry": "Reintentar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "profile_picture": "Foto de perfil",
+    "notifications_region": "Notificaciones ({hotkey})",
+    "select_placeholder": "Seleccionar..."
   },
   "navigation": {
     "main_nav_bar": {
@@ -709,5 +712,21 @@
     "minutes_many": "{{count}} minutos",
     "minutes_other": "{{count}} minutos",
     "hours_and_minutes": "{{hours}} y {{minutes}}"
+  },
+  "page_titles": {
+    "home": "Inicio",
+    "proposals": "Propuestas",
+    "market": "Mercado",
+    "witnesses": "Testigos",
+    "healthchecker": "Comprobador de estado",
+    "page_not_found": "Página no encontrada",
+    "balances": "Saldos",
+    "delegations": "Delegaciones",
+    "curation_rewards": "Recompensas de curación",
+    "author_rewards": "Recompensas de autor",
+    "permissions": "Permisos",
+    "authorities": "Autoridades",
+    "change_password": "Cambiar contraseña",
+    "create_communities": "Crear comunidades"
   }
 }

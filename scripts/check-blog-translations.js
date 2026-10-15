@@ -40,13 +40,15 @@ const POLICY = {
       'user_profile.social.platforms.nostr',
       // Abbreviations
       'navigation.sidebar.faq',
+      'page_titles.faq',
       'communities.edit_props_dialog.nsfw',
       // Example input format (a Nostr public key prefix), not text
       'settings_page.social_placeholders.nostr'
     ]),
     pl: new Set([
       // Polish uses the same word
-      'communities.mod'
+      'communities.mod',
+      'page_titles.blog'
     ])
   }
 };

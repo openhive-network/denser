@@ -3,6 +3,7 @@ import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { Drawer } from '@ui/components/drawer';
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from '@/blog/i18n/client';
 import { siteConfig } from '@ui/config/site';
 import { LoginType } from '@smart-signer/types/common';
 import { Link } from '@hive/ui';
@@ -84,8 +85,8 @@ export const chatLogout = (iframeRef: React.RefObject<HTMLIFrameElement | null>)
 const RocketChatWidget = () => {
   // Use layout=embedded to prevent OAuth redirect and enable postMessage login
   const iframeSrc = `${siteConfig.openhiveChatUri}/channel/general?layout=embedded`;
-  const iframeTitle = 'Chat';
-  const tooltip = 'Chat';
+  const { t } = useTranslation('common_blog');
+  const chatLabel = t('chat_widget.chat');
   const { user } = useUserClient();
   const { loginType, chatAuthToken, oauthConsent } = user;
   const [init, setInit] = useState(true);
@@ -234,14 +235,14 @@ const RocketChatWidget = () => {
             <div className="fixed bottom-10 right-10 block">
               <TooltipTrigger
                 type="button"
-                aria-label="Set up chat account"
+                aria-label={t('chat_widget.set_up_account')}
                 onClick={() =>
                   window.open(siteConfig.openhiveChatUri, '_blank', 'noopener,noreferrer')
                 }
               >
                 <Icons.messageSquareText className="h-12 w-12 opacity-50" />
               </TooltipTrigger>
-              <TooltipContent>Set up your chat account on openhive.chat</TooltipContent>
+              <TooltipContent>{t('chat_widget.set_up_account_tooltip')}</TooltipContent>
             </div>
           </Tooltip>
         </TooltipProvider>
@@ -262,7 +263,7 @@ const RocketChatWidget = () => {
             border: 'none',
             display: 'block'
           }}
-          title={iframeTitle}
+          title={chatLabel}
           ref={iframeRef}
           onLoad={onIframeLoad}
         />
@@ -273,8 +274,8 @@ const RocketChatWidget = () => {
             className="flex-1 hover:text-red-600"
             variant="outline"
             size="sm"
-            title="Close Chat Widget"
-            aria-label="Close Chat Widget"
+            title={t('chat_widget.close_widget')}
+            aria-label={t('chat_widget.close_widget')}
             onClick={() => setOpen(false)}
           >
             <Icons.close />
@@ -284,8 +285,8 @@ const RocketChatWidget = () => {
           <Link
             href={iframeSrc}
             className="px-4 hover:cursor-pointer hover:text-red-600"
-            aria-label="Open Chat App"
-            title="Open Chat App"
+            aria-label={t('chat_widget.open_app')}
+            title={t('chat_widget.open_app')}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -301,7 +302,7 @@ const RocketChatWidget = () => {
             <div className="fixed bottom-10 right-10 block">
               <TooltipTrigger
                 type="button"
-                aria-label="Open Chat Widget"
+                aria-label={t('chat_widget.open_widget')}
                 onClick={() => setOpen(!open)}
                 disabled={disabled}
               >
@@ -315,7 +316,7 @@ const RocketChatWidget = () => {
                 </div>
               ) : null}
             </div>
-            <TooltipContent>{tooltip}</TooltipContent>
+            <TooltipContent>{chatLabel}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>

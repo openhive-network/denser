@@ -24,7 +24,7 @@ export default function DetailsCardHover({ post, children, decline, post_page }:
       <div
         className={cn(`flex items-center line-through opacity-50`, { 'text-red-500': post_page })}
         data-testid="post-payout-decline"
-        title="Payout Declined"
+        title={t('cards.payout_declined')}
       >
         {'$'}
         {post.payout.toFixed(2)}
