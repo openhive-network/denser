@@ -16,19 +16,15 @@ import {
 /**
  * Post creation — redirect URL for non-community post (§2.1 POST-17).
  *
- * Wiki POST-17 reads "After creating post with category, verify redirect
- * to created/new tag page". The actual code (use-post-form-actions.ts)
- * builds `/${postParams.category}/@${username}/${permlink}?pending=1`
- * where `postParams.category` is the FORM's category field — for a
- * non-community submit that field defaults to `'blog'` (from the form's
- * defaultValues). It is NOT the user-typed first tag, and the URL is
- * the post page, not a tag-feed list page. So neither the "tag" nor
- * the "list" interpretation in the wiki phrasing matches the code.
+ * After a non-community ("My blog") submit the app navigates to the new
+ * post under the category it was broadcast with: the comment operation's
+ * `parent_permlink`, i.e. the first tag. The form's `category` field is
+ * the literal `'blog'` for "My blog", and building the URL from it gave
+ * `/blog/@user/...` (`/blog/blog/@user/...` under a `/blog` base path),
+ * hive/denser#1215.
  *
  * What this spec proves (the regression target):
- *  - The post-submit redirect URL composition is intact:
- *    `/{form.category}/@{user}/{permlink}?pending=1` with form.category
- *    defaulting to `'blog'` for a non-community submit.
+ *  - The redirect is `/{first tag}/@{user}/{permlink}?pending=1`.
  *  - The destination renders the new post — the optimistic React-Query
  *    cache (seeded by usePostMutation.onMutate before the broadcast)
  *    feeds the post page so it short-circuits the
@@ -42,7 +38,7 @@ import {
 test.use({ fixtureTestName: 'postCreate', authenticatedUser: {} });
 
 test.describe('Post creation — non-community redirect URL (§2.1)', () => {
-  test('POST-17: post submit redirects to /{form.category}/@{user}/{permlink}?pending=1', async ({
+  test('POST-17: post submit redirects to /{first tag}/@{user}/{permlink}?pending=1', async ({
     page
   }) => {
     const broadcast = await installBroadcastInterceptor(page, undefined, {
@@ -71,11 +67,12 @@ test.describe('Post creation — non-community redirect URL (§2.1)', () => {
     });
 
     await expect(editor.getPostSubmittedToast).toBeVisible();
-    // form.category defaults to 'blog' for a non-community submit, so
-    // the URL prefix is `/blog/`, not the user-typed first tag.
+    // The post is broadcast under its first tag, so that is its category
+    // in the URL — not the form's 'blog' placeholder for "My blog".
     await page.waitForURL(
-      new RegExp(`/blog/@${POST_AUTHOR}/post-01-fixture-test-post.*pending=1`)
+      new RegExp(`/${DEFAULT_TAG}/@${POST_AUTHOR}/post-01-fixture-test-post.*pending=1`)
     );
+    expect(new URL(page.url()).pathname).not.toContain('/blog/@');
     await expect(new PostPage(page).articleTitle).toHaveText(title);
   });
 });
