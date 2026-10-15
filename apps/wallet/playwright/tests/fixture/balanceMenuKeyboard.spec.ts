@@ -1,7 +1,7 @@
 import type { Server } from 'node:http';
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
-import { STUB_ACCOUNT, logInAsStubAccount, startWalletApiStub } from '../support/walletApiStub';
+import { STUB_ACCOUNT, STUB_FOLLOWED, logInAsStubAccount, startWalletApiStub } from '../support/walletApiStub';
 
 /**
  * The owner's balance menus on the transfers page follow the WAI-ARIA menu pattern: every action is
@@ -115,8 +115,17 @@ test.describe('Balance menus from the keyboard', () => {
     await expect(dialog).toBeVisible();
     await expect(dialog).toHaveAttribute('aria-modal', 'true');
     await expect(page.getByRole('menu')).toBeHidden();
-    await expect(dialog.getByRole('combobox', { name: 'To', exact: true })).toBeVisible();
+    const recipient = dialog.getByRole('combobox', { name: 'To', exact: true });
+    await expect(recipient).toBeVisible();
     await expect(dialog.getByRole('combobox', { name: 'Currency', exact: true })).toBeVisible();
+
+    // The dialog focuses the recipient, whose suggestions open once the followed accounts load; an
+    // Escape while they are open closes only them (autocompleter.tsx), so wait for them first.
+    await expect(recipient).toBeFocused();
+    await expect(dialog.getByRole('option', { name: `${STUB_FOLLOWED} (Following)` })).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(recipient).toHaveAttribute('aria-expanded', 'false');
+    await expect(dialog).toBeVisible();
 
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
