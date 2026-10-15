@@ -3,12 +3,13 @@ import { KeyType } from '@smart-signer/types/common';
 import { test, expect } from '../support/fixture-proxy-test';
 import { ProfilePage } from '../support/pages/profilePage';
 import { FOLLOWER, gotoProfileLoggedIn } from '../support/followMuteContext';
+import { DEFAULT_USER } from '../support/fixture-auth/seeder';
 
 /**
  * A broadcast the node rejects for a missing authority (`tx_missing_active_auth`) shows a message
  * naming the key it needs, in the UI language, and none of the node's answer. Reuses MUTE-01's
  * recording (`socialMute`) and flow; the broadcast is answered with hived's rejection instead of
- * the canned success, so WorkerBee never polls for a block. A session whose signer holds only
+ * the canned success, so WorkerBee never polls for a block. A WIF session that holds only
  * another key than the operation needs gets the same message before anything is broadcast.
  */
 
@@ -88,6 +89,10 @@ test.describe('A WIF session holding only the active key', () => {
   test.use({ authenticatedUser: { keyType: KeyType.active } });
 
   test('AUTH-ERR-02 — a posting operation is refused before broadcast, naming the posting key', async ({ page }) => {
+    // The seeder stores a posting WIF, with which the session would sign; this one holds no posting key
+    await page
+      .context()
+      .addInitScript((key) => window.localStorage.removeItem(key), `wif.${DEFAULT_USER.username}@posting`);
     const broadcasts = await rejectBroadcasts(page, MISSING_ACTIVE_AUTH_ERROR);
     await gotoProfileLoggedIn(page);
 
