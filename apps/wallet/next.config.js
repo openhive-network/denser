@@ -19,11 +19,15 @@ const nextConfig = {
   // assetPrefix must match basePath for proper asset serving
   assetPrefix: basePath,
   outputFileTracingRoot: path.join(__dirname, '../..'),
-  // next dev serves its dev resources (/_next/hmr) only to localhost and these
-  // hosts; AIDEV's dev stack hands out http://127.0.0.1:<port>, and names any other
-  // host it is opened at in DENSER_DEV_ALLOWED_ORIGINS (comma- or space-separated).
-  // No effect on builds.
-  allowedDevOrigins: ['127.0.0.1', ...(process.env.DENSER_DEV_ALLOWED_ORIGINS ?? '').split(/[\s,]+/).filter(Boolean)],
+  // next dev serves its dev resources (/_next/hmr) only to these hosts. AIDEV's dev
+  // stack hands out http://127.0.0.1:<port>, `aidev session devstack open` forwards it
+  // to http://localhost:<port>, and any other host it is opened at is named in
+  // DENSER_DEV_ALLOWED_ORIGINS (comma- or space-separated). No effect on builds.
+  allowedDevOrigins: [
+    '127.0.0.1',
+    'localhost',
+    ...(process.env.DENSER_DEV_ALLOWED_ORIGINS ?? '').split(/[\s,]+/).filter(Boolean)
+  ],
   turbopack: {
     root: path.join(__dirname, '../..'),
     // wax, beekeeper and hb-auth import their emscripten .wasm dynamically

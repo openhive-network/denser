@@ -104,7 +104,8 @@ Recordings are the directories of `apps/blog/playwright/tests/mock/fixtures/`.
 
 **Open it in a browser.** A browser (e.g. ad-hoc Playwright) on
 `$DENSER_DEV_BLOG_URL` hydrates the page and makes its client API calls: both
-apps' `allowedDevOrigins` let next dev serve `/_next/hmr` to `127.0.0.1`, and the
+apps' `allowedDevOrigins` let next dev serve `/_next/hmr` to `127.0.0.1` and
+`localhost`, and the
 `dev_stack` suite checks it. With fixture data those calls go to
 `http://localhost:8200`, which is the proxy only inside the stack's network, so
 in-page data from a browser on the host needs live data (below); for fixture
@@ -139,11 +140,25 @@ Both apps share the origin, so what a sign-in on the blog stores (cookies,
   at 3.2 GiB up to ready and 4.6 GiB with the wallet started, both apps' pages
   open in a browser and postDetail run; settled, ~1.2 GiB blog and ~1 GiB wallet.
   No OOM kill.
-- **Opened at another host or port** (a forwarded port, a routable name): next dev
-  serves its HMR socket and dev chunks only to `localhost`, `127.0.0.1` and the host
-  names in `DENSER_DEV_ALLOWED_ORIGINS` (comma- or space-separated, read by both
-  apps' `next.config.js`); for others it logs `Blocked cross-origin request` and
-  HMR fails. Start the stack with, e.g.,
+- **Viewing a session's stack from another machine.** The profile declares the
+  edge as the stack's UI (`sandbox.dev.ui: {port: UI, path: /}`). On your own
+  machine, with ssh access to the session host:
+
+  ```bash
+  aidev session devstack <session> open    # forwards the UI port over ssh, prints http://localhost:<port>/
+  aidev session devstack <session> close   # ends the forward (also: open --stop)
+  ```
+
+  The blog is at that URL's `/` and the wallet at `/wallet`. `aidev session
+  devstack <session> status` shows the declared `ui:`. Both apps admit `localhost`
+  as a dev origin, so the forwarded pages hydrate and get HMR; the wallet's Blog
+  links still name `127.0.0.1:<UI port>` unless the session's stack sets
+  `DENSER_DEV_UI_ORIGIN` (`aidev session devstack <session> env set`).
+- **Opened at another host or port** (a routable name): next dev serves its HMR
+  socket and dev chunks only to `localhost`, `127.0.0.1` and the host names in
+  `DENSER_DEV_ALLOWED_ORIGINS` (comma- or space-separated, read by both apps'
+  `next.config.js`, which list `localhost` and `127.0.0.1` themselves); for others
+  it logs `Blocked cross-origin request` and HMR fails. Start the stack with, e.g.,
   `DENSER_DEV_ALLOWED_ORIGINS=devbox.example DENSER_DEV_UI_ORIGIN=http://devbox.example:9400`
   so the wallet's Blog links name that address too. A forwarded port on
   `localhost` needs only `DENSER_DEV_UI_ORIGIN`.
@@ -251,7 +266,10 @@ project, and is torn down afterwards:
 Each boot must be ready within `sandbox.dev.readiness_timeout`. `/trending`, a
 post and a community must then answer 200 with their recorded titles, as must
 `/trending` and a wallet profile through the edge (the wallet's first request,
-which starts it), and postDetail's ANON-POST-01 must pass. Every container with a `mem_limit` must stay
+which starts it), and postDetail's ANON-POST-01 must pass. In a browser, the post
+at `127.0.0.1` and the blog and a wallet page through the edge at both `127.0.0.1`
+and `localhost` (what `open` forwards to) must hydrate and open their HMR socket,
+with no `Blocked cross-origin request` in either app's log. Every container with a `mem_limit` must stay
 under 90% of it; the measured bytes are junit properties. Any other change gets a
 skipped "not applicable" case. Junit and logs go to `test-results/dev-stack-suite/`.
 

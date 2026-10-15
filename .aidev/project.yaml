@@ -190,6 +190,9 @@ sandbox:
     services: [init, fixture-proxy, blog, blog-ready, wallet, wallet-ready, edge]
     readiness_timeout: 600
     ports: [BLOG, FIXTURE, UI]
+    # What `aidev session devstack <name> open` forwards to a person's machine: the
+    # edge, with the blog at / and the wallet at /wallet.
+    ui: {port: UI, path: /}
     env:
       DENSER_DEV_BLOG_URL: http://127.0.0.1:${AIDEV_PORT_BLOG}
       DENSER_DEV_UI_URL: http://127.0.0.1:${AIDEV_PORT_UI}/

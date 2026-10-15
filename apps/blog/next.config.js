@@ -17,11 +17,15 @@ const nextConfig = {
   basePath: basePath,
   assetPrefix: basePath,
   outputFileTracingRoot: path.join(__dirname, '../..'),
-  // next dev serves its dev resources (/_next/hmr) only to localhost and these
-  // hosts; AIDEV's dev stack hands out http://127.0.0.1:<port>, and names any other
-  // host it is opened at in DENSER_DEV_ALLOWED_ORIGINS (comma- or space-separated).
-  // No effect on builds.
-  allowedDevOrigins: ['127.0.0.1', ...(process.env.DENSER_DEV_ALLOWED_ORIGINS ?? '').split(/[\s,]+/).filter(Boolean)],
+  // next dev serves its dev resources (/_next/hmr) only to these hosts. AIDEV's dev
+  // stack hands out http://127.0.0.1:<port>, `aidev session devstack open` forwards it
+  // to http://localhost:<port>, and any other host it is opened at is named in
+  // DENSER_DEV_ALLOWED_ORIGINS (comma- or space-separated). No effect on builds.
+  allowedDevOrigins: [
+    '127.0.0.1',
+    'localhost',
+    ...(process.env.DENSER_DEV_ALLOWED_ORIGINS ?? '').split(/[\s,]+/).filter(Boolean)
+  ],
   // Metadata blocks for every user agent, so title/og/twitter tags are always in the
   // server <head>. Next otherwise streams it to non-bots, and whenever generateMetadata
   // resolves after the shell flushes the tags land in <body>, where link-preview
