@@ -17,7 +17,7 @@ export const LANGUAGES = [
 ];
 
 /**
- * The current UI locale (the cookie value the server rendered the page in), its flag label, and a
+ * The current UI locale (the language the server rendered the page in), its flag label, and a
  * function that switches to another locale.
  */
 export function useLanguageSwitch() {

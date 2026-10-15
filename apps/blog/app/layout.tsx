@@ -12,6 +12,7 @@ import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '@ui/lib/env-version';
 import { ImagesHostHints } from '@ui/components/images-host-hints';
 import { LocaleProvider } from '@ui/components/locale-context';
+import { cookieName, resolveLocale } from '../i18n/settings';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -65,7 +66,7 @@ export function generateMetadata(): Metadata {
 export default async function RootLayout({ children }: { children: ReactNode }) {
   // Server-side locale and language handling
   const cookieStore = await cookies();
-  const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
+  const locale = resolveLocale(cookieStore.get(cookieName)?.value);
   const isRTL = locale === 'ar';
   const nonce = parseNonce((await headers()).get(NONCE_HEADER));
 

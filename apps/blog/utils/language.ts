@@ -1,13 +1,13 @@
 import { getStorageItem, removeStorageItem } from '@ui/lib/storage-with-ttl';
 import { readLocaleCookie, writeLocaleCookie } from '@ui/lib/locale-cookie';
-import { defaultLocale, languages } from '@/blog/i18n/settings';
+import { defaultLocale, languages, resolveLocale } from '@/blog/i18n/settings';
 
 /** localStorage key older builds also kept the language in; the cookie is the only source now. */
 const LEGACY_STORAGE_KEY = 'NEXT_LOCALE';
 
 export const getLanguage = () => {
   if (typeof window === 'undefined') return defaultLocale;
-  return readLocaleCookie() || defaultLocale;
+  return resolveLocale(readLocaleCookie());
 };
 
 export const setLanguage = (locale: string) => {
