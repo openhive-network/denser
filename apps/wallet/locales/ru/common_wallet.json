@@ -105,6 +105,7 @@
       },
       "account_menu_signer": "Меню аккаунта {{username}}, {{method}}",
       "wallet": "Кошелёк",
+      "blog": "Блог",
       "toggle_theme": "Тема",
       "toggle_lang": "Язык",
       "change_password": "Сменить пароль",

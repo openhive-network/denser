@@ -105,6 +105,7 @@
       },
       "account_menu_signer": "Menu konta {{username}}, {{method}}",
       "wallet": "Portfel",
+      "blog": "Blog",
       "toggle_theme": "Motyw",
       "toggle_lang": "Język",
       "change_password": "Zmień hasło",

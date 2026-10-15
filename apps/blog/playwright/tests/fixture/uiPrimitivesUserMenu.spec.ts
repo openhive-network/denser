@@ -109,4 +109,27 @@ test.describe('Radix primitives — header account menu, logged in', () => {
     await expect(menu).toBeHidden();
     await expect(trigger).toBeFocused();
   });
+
+  test('UI-MENU-USER-04 — Enter on the Wallet item opens the account\'s wallet in a new tab', async ({
+    page,
+    context
+  }) => {
+    const trigger = new HomePage(page).profileAvatarButton;
+    const userMenu = new ProfileUserMenu(page);
+    // Nothing serves the wallet here; only the URL the new tab asks for matters
+    await context.route(`**/@${DEFAULT_USER.username}/transfers`, (route) =>
+      route.fulfill({ status: 200, contentType: 'text/html', body: '' })
+    );
+
+    await pressUntilOpen(trigger, 'Enter', userMenu.profileMenuContent);
+    // Wallet is the item just above Logout, the last one
+    await page.keyboard.press('End');
+    await page.keyboard.press('ArrowUp');
+    await expect(userMenu.walletLink).toBeFocused();
+    await expect(userMenu.walletLink).toHaveRole('menuitem');
+
+    const [walletTab] = await Promise.all([context.waitForEvent('page'), page.keyboard.press('Enter')]);
+    await walletTab.waitForURL(new RegExp(`/@${DEFAULT_USER.username}/transfers$`));
+    await expect(userMenu.profileMenuContent).toBeHidden();
+  });
 });

@@ -105,6 +105,7 @@
       },
       "account_menu_signer": "{{username}} のアカウントメニュー、{{method}}",
       "wallet": "ウォレット",
+      "blog": "ブログ",
       "toggle_theme": "テーマ",
       "toggle_lang": "言語",
       "change_password": "パスワードの変更",

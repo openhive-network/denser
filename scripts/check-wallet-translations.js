@@ -27,6 +27,7 @@ const POLICY = {
       'navigation.sidebar.blocktrades',
       'navigation.sidebar.ionomy',
       'navigation.profile_navbar.blog',
+      'navigation.user_menu.blog',
       'login_form.title_hbauth_form',
       'navigation.user_menu.login_method.keychain',
       'navigation.user_menu.login_method.peakvault',

@@ -289,9 +289,11 @@ test.describe('Wallet Radix and cmdk primitives', () => {
 
     await openWith(() => trigger.press('Enter'), menu);
     await expect(menu.getByRole('menuitem').first()).toBeFocused();
-    // Past the active session's "Switch to posting key" and Wallet; Radix moves focus after the keydown
+    // Past the active session's "Switch to posting key", Wallet and Blog; Radix moves focus after the keydown
     await page.keyboard.press('ArrowDown');
     await expect(menu.getByRole('menuitem').nth(1)).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(menu.getByRole('menuitem', { name: 'Blog' })).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(theme).toBeFocused();
     await expect(theme).toHaveAttribute('aria-haspopup', 'menu');
@@ -325,6 +327,8 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await expect(menu.getByRole('menuitem').first()).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(menu.getByRole('menuitem').nth(1)).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(menu.getByRole('menuitem', { name: 'Blog' })).toBeFocused();
     await page.keyboard.press('ArrowDown');
     await expect(theme).toBeFocused();
     await page.keyboard.press('ArrowRight');

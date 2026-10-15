@@ -105,6 +105,7 @@
       },
       "account_menu_signer": "{{username}} 계정 메뉴, {{method}}",
       "wallet": "지갑",
+      "blog": "블로그",
       "toggle_theme": "테마",
       "toggle_lang": "언어",
       "change_password": "비밀번호 변경",

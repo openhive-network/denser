@@ -13,6 +13,7 @@ import { Link } from '@hive/ui';
 import { Icons } from '@ui/components/icons';
 import LangSubmenu from './lang-submenu';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
+import env from '@beam-australia/react-env';
 import { getLogger } from '@ui/lib/logging';
 import { KeyType, User } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
@@ -31,6 +32,7 @@ const logger = getLogger('app');
  */
 const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User; tooltip?: ReactNode }) => {
   const onLogout = useLogout('/');
+  const blogHost = env('BLOG_DOMAIN');
   const { t } = useTranslation('common_wallet');
   const { authority, chip } = useLoginAuthorityLabels(user);
   const addKey = useAddSafeStorageKey(user);
@@ -84,6 +86,18 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
                 <span className="w-full">{t('navigation.user_menu.wallet')}</span>
               </DropdownMenuItem>
             </Link>
+            {/* The link itself is the menu item, so Enter on it follows the link */}
+            <DropdownMenuItem className="cursor-pointer" asChild>
+              <Link
+                target="_blank"
+                href={`${blogHost}/@${user.username}`}
+                className="flex w-full items-center"
+                data-testid="user-menu-blog-link"
+              >
+                <Icons.post className="mr-2" />
+                <span className="w-full">{t('navigation.user_menu.blog')}</span>
+              </Link>
+            </DropdownMenuItem>
             <ThemeSubmenu />
             <LangSubmenu />
 
