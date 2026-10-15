@@ -26,7 +26,7 @@ const CommentSelectFilter = () => {
       }}
     >
       <SelectTrigger className="h-5 w-fit border-none bg-transparent text-red-600" data-testid="posts-filter">
-        <SelectValue placeholder="Sort:" />
+        <SelectValue placeholder={t('select_sort.sort_comments.sort')} />
       </SelectTrigger>
       <SelectContent data-testid="posts-filter-list">
         <SelectGroup>

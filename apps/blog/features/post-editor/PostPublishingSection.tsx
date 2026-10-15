@@ -223,7 +223,7 @@ export function PostPublishingSection({
                         className="w-auto min-w-[140px]"
                         data-testid="posting-to-list-trigger"
                       >
-                        <SelectValue placeholder="Select category" />
+                        <SelectValue placeholder={t('submit_page.select_category')} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>

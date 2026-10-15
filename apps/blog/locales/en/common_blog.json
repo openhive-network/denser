@@ -51,7 +51,9 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "profile_picture": "Profile picture",
+    "notifications_region": "Notifications ({hotkey})"
   },
   "navigation": {
     "main_nav_bar": {
@@ -89,7 +91,9 @@
       "my_friends": "My friends",
       "all_posts": "All posts",
       "trending_communities": "Trending Communities",
-      "explore_communities": "Explore communities..."
+      "explore_communities": "Explore communities...",
+      "my_communities": "My communities",
+      "my_subscriptions": "My subscriptions"
     },
     "explore_nav": {
       "explore_hive": "Explore Hive",
@@ -194,7 +198,8 @@
     "communitie_sort": {
       "rank": "Rank",
       "subscribers": "Subscribers",
-      "new": "New"
+      "new": "New",
+      "select_a_filter": "Select a filter"
     },
     "sort_comments": {
       "sort": "Sort:",
@@ -280,7 +285,12 @@
       "collapse_comment": "Collapse comment",
       "expand_comment": "Expand comment",
       "expand_comment_with_replies": "Expand comment, {{replies}}"
-    }
+    },
+    "content_marked_nsfw": "Content marked as NSFW",
+    "reveal_nsfw_post": "Reveal this NSFW post",
+    "my_blacklist": "My blacklist",
+    "post_image": "Post image",
+    "payout_declined": "Payout Declined"
   },
   "alert_dialog_reblog": {
     "action": "OK",
@@ -427,7 +437,8 @@
         "last_button": "Last",
         "viewing_page": "Viewing Page {{current}} of {{total}}",
         "users_on_list": "Users On List: {{number}}"
-      }
+      },
+      "username_placeholder": "username"
     },
     "social_tab": {
       "community_subscriptions_title": "Community Subscriptions",
@@ -451,7 +462,9 @@
     "check_node_status": "Check Node Status",
     "load_failed_title": "Couldn't load this profile",
     "load_failed_description": "The Hive API did not answer. This is usually temporary.",
-    "go_home": "Go home"
+    "go_home": "Go home",
+    "more_options": "More options",
+    "loading_profile": "Loading profile"
   },
   "communities": {
     "set_title_for_user": "Set Title for @{{username}}",
@@ -552,7 +565,8 @@
         "maximum_characters": "Maximum {{value}} characters",
         "minimum_characters": "Minimum {{value}} characters"
       }
-    }
+    },
+    "create_a_community": "Create a Community"
   },
   "post_content": {
     "close_post_editor": "Are you sure you want to close the post editor?",
@@ -655,8 +669,11 @@
       "sorry": "Sorry",
       "all_hidden_low_ratings": "All suggested posts were hidden due to low ratings.",
       "show_all": "Show all",
-      "hide": "Hide"
-    }
+      "hide": "Hide",
+      "you_might_also_like": "You Might Also Like",
+      "title": "Suggestions"
+    },
+    "browse_to_original_post": "Browse to the original post by @{{author}}"
   },
   "submit_page": {
     "log_in_to_post": "Log in to make a post.",
@@ -780,7 +797,25 @@
     "shadow_draft_found": "Unsaved post found",
     "shadow_draft_description": "A post was broadcast but may not have been indexed yet. Would you like to recover the content?",
     "shadow_draft_recover": "Recover",
-    "shadow_draft_discard": "Discard"
+    "shadow_draft_discard": "Discard",
+    "cover_image_alt": "Cover image",
+    "select_category": "Select category",
+    "toolbar": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "strikethrough": "Strikethrough",
+      "horizontal_rule": "Horizontal Rule",
+      "heading": "Heading",
+      "link": "Link",
+      "quote": "Quote",
+      "inline_code": "Inline Code",
+      "code_block": "Code Block",
+      "image": "Image",
+      "table": "Table",
+      "unordered_list": "Unordered List",
+      "ordered_list": "Ordered List",
+      "task_list": "Task List"
+    }
   },
   "search_page": {
     "placeholder": "Search",
@@ -864,6 +899,88 @@
     "new_posts": "new posts",
     "hot_posts": "hot posts",
     "trending_posts": "trending posts",
-    "muted_posts": "muted posts"
+    "muted_posts": "muted posts",
+    "page_not_found": "Page Not Found",
+    "page_may_have_moved": "The page you're looking for doesn't exist or may have been moved.",
+    "go_home": "Go Home",
+    "browse_trending": "Browse Trending"
+  },
+  "page_titles": {
+    "page_not_found": "Page not found",
+    "blog": "Blog",
+    "user_blog": "Blog {{username}}",
+    "healthcheckers": "Healthcheckers",
+    "service_unavailable": "Service Unavailable",
+    "my_friends": "My Friends",
+    "pending_posts": "Pending posts",
+    "muted_posts": "Muted posts",
+    "new_posts": "New posts",
+    "hot_posts": "Hot posts",
+    "trending_posts": "Trending posts",
+    "my_community_pending": "My Community / Pending",
+    "my_community_muted": "My Community / Muted",
+    "my_community_new": "My Community / New",
+    "my_community_hot": "My Community / Hot",
+    "my_community_trending": "My Community / Trending",
+    "communities": "Communities",
+    "search": "Search",
+    "terms_of_service": "Terms of Service",
+    "welcome": "Welcome",
+    "create_a_post": "Create a post",
+    "faq": "FAQ",
+    "privacy_policy": "Privacy Policy",
+    "replies_by": "Replies by {{username}}",
+    "comments_by": "Comments by {{username}}",
+    "payouts_for": "Payouts for {{username}}",
+    "posts_by": "Posts by {{username}}",
+    "people_followed_by": "People followed by {{username}}",
+    "people_following": "People following {{username}}",
+    "notifications_for": "Notifications for {{username}}",
+    "settings": "Settings {{username}}",
+    "user_communities": "Communities {{username}}",
+    "manage_lists": "Manage Lists",
+    "sections": {
+      "trending": "trending",
+      "hot": "hot",
+      "created": "created",
+      "muted": "muted",
+      "pending": "pending",
+      "roles": "roles"
+    }
+  },
+  "chat_widget": {
+    "chat": "Chat",
+    "set_up_account": "Set up chat account",
+    "set_up_account_tooltip": "Set up your chat account on openhive.chat",
+    "close_widget": "Close Chat Widget",
+    "open_app": "Open Chat App",
+    "open_widget": "Open Chat Widget"
+  },
+  "search_mode": {
+    "search": "Search",
+    "select_label": "Search mode: {{mode}}",
+    "placeholder": {
+      "ai": "AI Search...",
+      "classic": "Search...",
+      "account": "Search users...",
+      "user_topic": "Username...",
+      "tag": "Search tags...",
+      "topic": "Topic..."
+    },
+    "input_label": {
+      "ai": "AI search",
+      "classic": "Search posts",
+      "account": "Search users",
+      "user_topic": "Username",
+      "tag": "Search tags",
+      "topic": "Topic"
+    },
+    "mode": {
+      "classic": "Posts",
+      "ai": "AI search",
+      "account": "Users",
+      "user_topic": "User posts by topic",
+      "tag": "Tags"
+    }
   }
 }

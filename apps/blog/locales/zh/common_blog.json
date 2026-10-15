@@ -51,7 +51,9 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "profile_picture": "头像",
+    "notifications_region": "通知 ({hotkey})"
   },
   "navigation": {
     "main_nav_bar": {
@@ -89,7 +91,9 @@
       "my_friends": "我的好友",
       "all_posts": "All posts",
       "trending_communities": "Trending Communities",
-      "explore_communities": "显示更多的主题..."
+      "explore_communities": "显示更多的主题...",
+      "my_communities": "我的社群",
+      "my_subscriptions": "我的订阅"
     },
     "explore_nav": {
       "explore_hive": "Explore Hive",
@@ -194,7 +198,8 @@
     "communitie_sort": {
       "rank": "Rank",
       "subscribers": "Subscribers",
-      "new": "New"
+      "new": "New",
+      "select_a_filter": "选择筛选条件"
     },
     "sort_comments": {
       "sort": "Sort:",
@@ -280,7 +285,12 @@
       "collapse_comment": "折叠评论",
       "expand_comment": "展开评论",
       "expand_comment_with_replies": "展开评论，{{replies}}"
-    }
+    },
+    "content_marked_nsfw": "内容已标记为 NSFW",
+    "reveal_nsfw_post": "显示此 NSFW 帖子",
+    "my_blacklist": "我的黑名单",
+    "post_image": "帖子图片",
+    "payout_declined": "已拒绝收益"
   },
   "alert_dialog_reblog": {
     "action": "确定",
@@ -427,7 +437,8 @@
         "last_button": "Last",
         "viewing_page": "正在查看第 {{current}} 页，共 {{total}} 页",
         "users_on_list": "列表中的用户：{{number}}"
-      }
+      },
+      "username_placeholder": "用户名"
     },
     "social_tab": {
       "community_subscriptions_title": "Community Subscriptions",
@@ -451,7 +462,9 @@
     "check_node_status": "Check Node Status",
     "load_failed_title": "无法加载此个人资料",
     "load_failed_description": "Hive API 没有响应。这通常是暂时的。",
-    "go_home": "返回首页"
+    "go_home": "返回首页",
+    "more_options": "更多选项",
+    "loading_profile": "正在加载个人资料"
   },
   "communities": {
     "set_title_for_user": "为 @{{username}} 设置标题",
@@ -552,7 +565,8 @@
         "maximum_characters": "最多 {{value}} 个字符",
         "minimum_characters": "至少 {{value}} 个字符"
       }
-    }
+    },
+    "create_a_community": "创建社区"
   },
   "post_content": {
     "close_post_editor": "您确定要关闭帖子编辑器吗？",
@@ -655,8 +669,11 @@
       "sorry": "抱歉",
       "all_hidden_low_ratings": "由于评分较低，所有推荐帖子均已隐藏。",
       "show_all": "全部显示",
-      "hide": "隐藏"
-    }
+      "hide": "隐藏",
+      "you_might_also_like": "您可能还喜欢",
+      "title": "推荐"
+    },
+    "browse_to_original_post": "查看 @{{author}} 的原帖"
   },
   "submit_page": {
     "log_in_to_post": "登录后才能发布帖子。",
@@ -780,7 +797,25 @@
     "shadow_draft_found": "Unsaved post found",
     "shadow_draft_description": "有一篇帖子已广播，但可能尚未被索引。是否要恢复其内容？",
     "shadow_draft_recover": "Recover",
-    "shadow_draft_discard": "Discard"
+    "shadow_draft_discard": "Discard",
+    "cover_image_alt": "封面图片",
+    "select_category": "选择分类",
+    "toolbar": {
+      "bold": "粗体",
+      "italic": "斜体",
+      "strikethrough": "删除线",
+      "horizontal_rule": "水平分割线",
+      "heading": "标题",
+      "link": "链接",
+      "quote": "引用",
+      "inline_code": "行内代码",
+      "code_block": "代码块",
+      "image": "图片",
+      "table": "表格",
+      "unordered_list": "无序列表",
+      "ordered_list": "有序列表",
+      "task_list": "任务列表"
+    }
   },
   "search_page": {
     "placeholder": "搜索",
@@ -864,6 +899,88 @@
     "new_posts": "最新帖子",
     "hot_posts": "热门帖子",
     "trending_posts": "趋势帖子",
-    "muted_posts": "静音帖子"
+    "muted_posts": "静音帖子",
+    "page_not_found": "页面未找到",
+    "page_may_have_moved": "您要查找的页面不存在或已被移动。",
+    "go_home": "返回首页",
+    "browse_trending": "浏览流行内容"
+  },
+  "page_titles": {
+    "page_not_found": "页面未找到",
+    "blog": "博客",
+    "user_blog": "{{username}} 的博客",
+    "healthcheckers": "节点健康检查",
+    "service_unavailable": "服务不可用",
+    "my_friends": "我的好友",
+    "pending_posts": "待定帖子",
+    "muted_posts": "已静音帖子",
+    "new_posts": "最新帖子",
+    "hot_posts": "热门帖子",
+    "trending_posts": "流行帖子",
+    "my_community_pending": "我的社区 / 待定",
+    "my_community_muted": "我的社区 / 已静音",
+    "my_community_new": "我的社区 / 最新",
+    "my_community_hot": "我的社区 / 热门",
+    "my_community_trending": "我的社区 / 流行",
+    "communities": "社区",
+    "search": "搜索",
+    "terms_of_service": "服务条款",
+    "welcome": "欢迎",
+    "create_a_post": "发布帖子",
+    "faq": "常见问题",
+    "privacy_policy": "隐私政策",
+    "replies_by": "{{username}} 的回复",
+    "comments_by": "{{username}} 的评论",
+    "payouts_for": "{{username}} 的收益",
+    "posts_by": "{{username}} 的帖子",
+    "people_followed_by": "{{username}} 关注的人",
+    "people_following": "关注 {{username}} 的人",
+    "notifications_for": "{{username}} 的通知",
+    "settings": "{{username}} 的设置",
+    "user_communities": "{{username}} 的社区",
+    "manage_lists": "管理列表",
+    "sections": {
+      "trending": "流行",
+      "hot": "热门",
+      "created": "最新",
+      "muted": "已静音",
+      "pending": "待定",
+      "roles": "角色"
+    }
+  },
+  "chat_widget": {
+    "chat": "聊天",
+    "set_up_account": "设置聊天账户",
+    "set_up_account_tooltip": "在 openhive.chat 上设置您的聊天账户",
+    "close_widget": "关闭聊天窗口",
+    "open_app": "打开聊天应用",
+    "open_widget": "打开聊天窗口"
+  },
+  "search_mode": {
+    "search": "搜索",
+    "select_label": "搜索模式：{{mode}}",
+    "placeholder": {
+      "ai": "AI 搜索...",
+      "classic": "搜索...",
+      "account": "搜索用户...",
+      "user_topic": "用户名...",
+      "tag": "搜索标签...",
+      "topic": "主题..."
+    },
+    "input_label": {
+      "ai": "AI 搜索",
+      "classic": "搜索帖子",
+      "account": "搜索用户",
+      "user_topic": "用户名",
+      "tag": "搜索标签",
+      "topic": "主题"
+    },
+    "mode": {
+      "classic": "帖子",
+      "ai": "AI 搜索",
+      "account": "用户",
+      "user_topic": "按主题查看用户帖子",
+      "tag": "标签"
+    }
   }
 }

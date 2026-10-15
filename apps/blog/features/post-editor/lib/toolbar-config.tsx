@@ -28,39 +28,39 @@ export function getToolbarButtons(
     {
       name: "bold",
       icon: <Icons.bold className={ICON_CLASS} />,
-      title: "Bold",
+      title: t("submit_page.toolbar.bold"),
       action: (v) => wrapSelection(v, "**", "**"),
       shortcut: "Ctrl+B",
     },
     {
       name: "italic",
       icon: <Icons.italic className={ICON_CLASS} />,
-      title: "Italic",
+      title: t("submit_page.toolbar.italic"),
       action: (v) => wrapSelection(v, "*", "*"),
       shortcut: "Ctrl+I",
     },
     {
       name: "strikethrough",
       icon: <Icons.strikethrough className={ICON_CLASS} />,
-      title: "Strikethrough",
+      title: t("submit_page.toolbar.strikethrough"),
       action: (v) => wrapSelection(v, "~~", "~~"),
     },
     {
       name: "hr",
       icon: <Icons.horizontalRule className={ICON_CLASS} />,
-      title: "Horizontal Rule",
+      title: t("submit_page.toolbar.horizontal_rule"),
       action: (v) => insertAtCursor(v, "\n---\n"),
     },
     {
       name: "title",
       icon: <Icons.heading className={ICON_CLASS} />,
-      title: "Heading",
+      title: t("submit_page.toolbar.heading"),
       action: cycleHeading,
     },
     {
       name: "link",
       icon: <Icons.link className={ICON_CLASS} />,
-      title: "Link",
+      title: t("submit_page.toolbar.link"),
       action: (v) => {
         const { from, to } = v.state.selection.main;
         const selected = v.state.sliceDoc(from, to);
@@ -79,25 +79,25 @@ export function getToolbarButtons(
     {
       name: "quote",
       icon: <Icons.quote className={ICON_CLASS} />,
-      title: "Quote",
+      title: t("submit_page.toolbar.quote"),
       action: (v) => prefixLines(v, "> "),
     },
     {
       name: "code",
       icon: <Icons.code className={ICON_CLASS} />,
-      title: "Inline Code",
+      title: t("submit_page.toolbar.inline_code"),
       action: (v) => wrapSelection(v, "`", "`"),
     },
     {
       name: "codeBlock",
       icon: <Icons.codeBlock className={ICON_CLASS} />,
-      title: "Code Block",
+      title: t("submit_page.toolbar.code_block"),
       action: (v) => wrapSelection(v, "```\n", "\n```"),
     },
     {
       name: "image",
       icon: <Icons.imageIcon className={ICON_CLASS} />,
-      title: "Image",
+      title: t("submit_page.toolbar.image"),
       action: (v) => {
         const { from, to } = v.state.selection.main;
         const selected = v.state.sliceDoc(from, to);
@@ -115,25 +115,25 @@ export function getToolbarButtons(
     {
       name: "table",
       icon: <Icons.table className={ICON_CLASS} />,
-      title: "Table",
+      title: t("submit_page.toolbar.table"),
       action: insertTable,
     },
     {
       name: "unordered-list",
       icon: <Icons.list className={ICON_CLASS} />,
-      title: "Unordered List",
+      title: t("submit_page.toolbar.unordered_list"),
       action: (v) => prefixLines(v, "- "),
     },
     {
       name: "ordered-list",
       icon: <Icons.listOrdered className={ICON_CLASS} />,
-      title: "Ordered List",
+      title: t("submit_page.toolbar.ordered_list"),
       action: numberedList,
     },
     {
       name: "checked-list",
       icon: <Icons.listChecks className={ICON_CLASS} />,
-      title: "Task List",
+      title: t("submit_page.toolbar.task_list"),
       action: (v) => prefixLines(v, "- [ ] "),
     },
   ];

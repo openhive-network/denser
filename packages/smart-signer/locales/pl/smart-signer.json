@@ -87,7 +87,6 @@
       "button_signin": "Zaloguj się",
       "button_unlock": "Odblokuj offline",
       "button_save": "Zapisz i zaloguj się",
-      "button_other": "Inne opcje logowania",
       "button_cancel": "Anuluj",
       "button_sign_auth": "Podpisz transakcję autoryzacji",
       "button_signin_unlocked": "Zaloguj się z podpisaną transakcją",
@@ -112,12 +111,24 @@
       "keytype_required": "Wymagany jest typ klucza",
       "invalid_wif": "Nieprawidłowy klucz WIF",
       "no_wif": "Brak klucza WIF od użytkownika",
-      "no_wif_key": "Brak klucza WIF"
+      "no_wif_key": "Brak klucza WIF",
+      "password_required": "Hasło jest wymagane",
+      "wif_required": "Klucz WIF jest wymagany",
+      "posting_key_for_active": "Portfel potrzebuje Twojego klucza aktywnego; klucz publikowania nie może podpisywać przelewów"
     },
     "signin_with_keychain": "Rozszerzenie Hive Keychain",
     "signin_with_wif": "Zaloguj się za pomocą WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",
-    "signin_with_hivesigner": "HiveSigner"
+    "signin_with_hivesigner": "HiveSigner",
+    "this_operation_requires_your_key_for_single_sign": "Ta operacja wymaga Twojego klucza {{authType}} do jednorazowego podpisania.",
+    "this_operation_requires_your_key_for_single_sign_posting": "Ta operacja wymaga Twojego klucza publikowania do jednorazowego podpisania.",
+    "this_operation_requires_your_key_for_single_sign_active": "Ta operacja wymaga Twojego klucza aktywnego do jednorazowego podpisania.",
+    "this_operation_requires_your_key_for_single_sign_owner": "Ta operacja wymaga Twojego klucza właściciela do jednorazowego podpisania.",
+    "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "Ta operacja wymaga Twojego klucza publikowania. Wprowadź klucz i przechowuj go w bezpiecznym miejscu.",
+    "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "Ta operacja wymaga Twojego klucza aktywnego. Wprowadź klucz i przechowuj go w bezpiecznym miejscu.",
+    "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "Ta operacja wymaga Twojego klucza właściciela. Wprowadź klucz i przechowuj go w bezpiecznym miejscu.",
+    "use_peakvault": "Użyj Peakvault",
+    "signin_with_peakvault": "Rozszerzenie Peakvault"
   },
   "pageLogin": {
     "loginFailed": "Logowanie nie powiodło się",

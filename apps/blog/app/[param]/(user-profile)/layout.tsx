@@ -11,7 +11,8 @@ import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
-import { PAGE_NOT_FOUND_METADATA } from '@/blog/lib/not-found-metadata';
+import { getPageNotFoundMetadata } from '@/blog/lib/not-found-metadata';
+import { getTranslation } from '@/blog/i18n/server';
 
 const logger = getLogger('app');
 
@@ -20,21 +21,22 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
   const raw = params.param;
   // Only process if it looks like a username (starts with @ or %40)
   if (!raw.startsWith('@') && !raw.startsWith('%40')) {
-    return PAGE_NOT_FOUND_METADATA;
+    return getPageNotFoundMetadata();
   }
   const username = raw.startsWith('%40') ? raw.replace('%40', '') : raw.replace('@', '');
   if (!(await isValidAccountNameFormat(username))) {
-    return PAGE_NOT_FOUND_METADATA;
+    return getPageNotFoundMetadata();
   }
   try {
     // Deduplicated with Layout's prefetch within the same request
     const account = await getProfileAccount(username);
     if (!account?.name) {
-      return PAGE_NOT_FOUND_METADATA;
+      return getPageNotFoundMetadata();
     }
     const image = account?.profile?.profile_image || 'https://hive.blog/images/hive-blog-share.png';
     const about = account?.profile?.about || `Profile of @${username} on Hive.`;
-    const title = `Blog ${username}`;
+    const { t } = await getTranslation('common_blog');
+    const title = t('page_titles.user_blog', { username });
     return {
       title: {
         default: title,

@@ -51,7 +51,9 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "profile_picture": "Фото профиля",
+    "notifications_region": "Уведомления ({hotkey})"
   },
   "navigation": {
     "main_nav_bar": {
@@ -89,7 +91,9 @@
       "my_friends": "Мои друзья",
       "all_posts": "All posts",
       "trending_communities": "Trending Communities",
-      "explore_communities": "Показать больше тем..."
+      "explore_communities": "Показать больше тем...",
+      "my_communities": "Мои сообщества",
+      "my_subscriptions": "Мои подписки"
     },
     "explore_nav": {
       "explore_hive": "Explore Hive",
@@ -194,7 +198,8 @@
     "communitie_sort": {
       "rank": "Rank",
       "subscribers": "Subscribers",
-      "new": "New"
+      "new": "New",
+      "select_a_filter": "Выберите фильтр"
     },
     "sort_comments": {
       "sort": "Sort:",
@@ -280,7 +285,12 @@
       "collapse_comment": "Свернуть комментарий",
       "expand_comment": "Развернуть комментарий",
       "expand_comment_with_replies": "Развернуть комментарий, {{replies}}"
-    }
+    },
+    "content_marked_nsfw": "Контент помечен как NSFW",
+    "reveal_nsfw_post": "Показать этот NSFW-пост",
+    "my_blacklist": "Мой чёрный список",
+    "post_image": "Изображение поста",
+    "payout_declined": "Выплата отклонена"
   },
   "alert_dialog_reblog": {
     "action": "ОК",
@@ -427,7 +437,8 @@
         "last_button": "Last",
         "viewing_page": "Страница {{current}} из {{total}}",
         "users_on_list": "Пользователей в списке: {{number}}"
-      }
+      },
+      "username_placeholder": "имя пользователя"
     },
     "social_tab": {
       "community_subscriptions_title": "Community Subscriptions",
@@ -451,7 +462,9 @@
     "check_node_status": "Check Node Status",
     "load_failed_title": "Не удалось загрузить этот профиль",
     "load_failed_description": "API Hive не ответил. Обычно это временно.",
-    "go_home": "На главную"
+    "go_home": "На главную",
+    "more_options": "Другие параметры",
+    "loading_profile": "Загрузка профиля"
   },
   "communities": {
     "set_title_for_user": "Установить заголовок для @{{username}}",
@@ -552,7 +565,8 @@
         "maximum_characters": "Максимум символов: {{value}}",
         "minimum_characters": "Минимум символов: {{value}}"
       }
-    }
+    },
+    "create_a_community": "Создать сообщество"
   },
   "post_content": {
     "close_post_editor": "Вы уверены, что хотите закрыть редактор постов?",
@@ -655,8 +669,11 @@
       "sorry": "Извините",
       "all_hidden_low_ratings": "Все предложенные посты скрыты из-за низких оценок.",
       "show_all": "Показать все",
-      "hide": "Скрыть"
-    }
+      "hide": "Скрыть",
+      "you_might_also_like": "Вам также может понравиться",
+      "title": "Рекомендации"
+    },
+    "browse_to_original_post": "Перейти к оригинальному посту @{{author}}"
   },
   "submit_page": {
     "log_in_to_post": "Войдите, чтобы опубликовать сообщение.",
@@ -780,7 +797,25 @@
     "shadow_draft_found": "Unsaved post found",
     "shadow_draft_description": "Пост был отправлен в сеть, но, возможно, ещё не проиндексирован. Хотите восстановить содержимое?",
     "shadow_draft_recover": "Recover",
-    "shadow_draft_discard": "Discard"
+    "shadow_draft_discard": "Discard",
+    "cover_image_alt": "Обложка",
+    "select_category": "Выберите категорию",
+    "toolbar": {
+      "bold": "Жирный",
+      "italic": "Курсив",
+      "strikethrough": "Зачёркнутый",
+      "horizontal_rule": "Горизонтальная линия",
+      "heading": "Заголовок",
+      "link": "Ссылка",
+      "quote": "Цитата",
+      "inline_code": "Встроенный код",
+      "code_block": "Блок кода",
+      "image": "Изображение",
+      "table": "Таблица",
+      "unordered_list": "Маркированный список",
+      "ordered_list": "Нумерованный список",
+      "task_list": "Список задач"
+    }
   },
   "search_page": {
     "placeholder": "Поиск",
@@ -864,6 +899,88 @@
     "new_posts": "новые посты",
     "hot_posts": "популярные посты",
     "trending_posts": "трендовые посты",
-    "muted_posts": "приглушенные посты"
+    "muted_posts": "приглушенные посты",
+    "page_not_found": "Страница не найдена",
+    "page_may_have_moved": "Страница, которую вы ищете, не существует или была перемещена.",
+    "go_home": "На главную",
+    "browse_trending": "Смотреть популярное"
+  },
+  "page_titles": {
+    "page_not_found": "Страница не найдена",
+    "blog": "Блог",
+    "user_blog": "Блог {{username}}",
+    "healthcheckers": "Проверка узлов",
+    "service_unavailable": "Сервис недоступен",
+    "my_friends": "Мои друзья",
+    "pending_posts": "Ожидающие посты",
+    "muted_posts": "Заглушённые посты",
+    "new_posts": "Новые посты",
+    "hot_posts": "Актуальные посты",
+    "trending_posts": "Популярные посты",
+    "my_community_pending": "Моё сообщество / Ожидающие",
+    "my_community_muted": "Моё сообщество / Заглушённые",
+    "my_community_new": "Моё сообщество / Новое",
+    "my_community_hot": "Моё сообщество / Актуальное",
+    "my_community_trending": "Моё сообщество / Популярное",
+    "communities": "Сообщества",
+    "search": "Поиск",
+    "terms_of_service": "Условия использования",
+    "welcome": "Добро пожаловать",
+    "create_a_post": "Создать пост",
+    "faq": "ЧаВО",
+    "privacy_policy": "Политика конфиденциальности",
+    "replies_by": "Ответы {{username}}",
+    "comments_by": "Комментарии {{username}}",
+    "payouts_for": "Выплаты {{username}}",
+    "posts_by": "Посты {{username}}",
+    "people_followed_by": "Подписки {{username}}",
+    "people_following": "Подписчики {{username}}",
+    "notifications_for": "Уведомления {{username}}",
+    "settings": "Настройки {{username}}",
+    "user_communities": "Сообщества {{username}}",
+    "manage_lists": "Управление списками",
+    "sections": {
+      "trending": "популярное",
+      "hot": "актуальное",
+      "created": "новое",
+      "muted": "заглушённое",
+      "pending": "ожидающее",
+      "roles": "роли"
+    }
+  },
+  "chat_widget": {
+    "chat": "Чат",
+    "set_up_account": "Настроить аккаунт чата",
+    "set_up_account_tooltip": "Настройте свой аккаунт чата на openhive.chat",
+    "close_widget": "Закрыть виджет чата",
+    "open_app": "Открыть приложение чата",
+    "open_widget": "Открыть виджет чата"
+  },
+  "search_mode": {
+    "search": "Поиск",
+    "select_label": "Режим поиска: {{mode}}",
+    "placeholder": {
+      "ai": "ИИ-поиск...",
+      "classic": "Поиск...",
+      "account": "Поиск пользователей...",
+      "user_topic": "Имя пользователя...",
+      "tag": "Поиск тегов...",
+      "topic": "Тема..."
+    },
+    "input_label": {
+      "ai": "ИИ-поиск",
+      "classic": "Поиск постов",
+      "account": "Поиск пользователей",
+      "user_topic": "Имя пользователя",
+      "tag": "Поиск тегов",
+      "topic": "Тема"
+    },
+    "mode": {
+      "classic": "Посты",
+      "ai": "ИИ-поиск",
+      "account": "Пользователи",
+      "user_topic": "Посты пользователя по теме",
+      "tag": "Теги"
+    }
   }
 }

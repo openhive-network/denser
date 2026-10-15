@@ -1,10 +1,14 @@
 import { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
+import { getTranslation } from '@/blog/i18n/server';
 
-export const metadata: Metadata = {
-  title: 'Muted posts',
-  alternates: { canonical: '/muted' }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslation('common_blog');
+  return {
+    title: t('page_titles.muted_posts'),
+    alternates: { canonical: '/muted' }
+  };
+}
 
 export default function Layout({ children }: PropsWithChildren) {
   return <>{children}</>;

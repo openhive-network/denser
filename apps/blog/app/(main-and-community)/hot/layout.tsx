@@ -1,10 +1,14 @@
 import { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
+import { getTranslation } from '@/blog/i18n/server';
 
-export const metadata: Metadata = {
-  title: 'Hot posts',
-  alternates: { canonical: '/hot' }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslation('common_blog');
+  return {
+    title: t('page_titles.hot_posts'),
+    alternates: { canonical: '/hot' }
+  };
+}
 
 export default function Layout({ children }: PropsWithChildren) {
   return <>{children}</>;

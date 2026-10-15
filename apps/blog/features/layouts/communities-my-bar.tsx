@@ -23,18 +23,18 @@ const CommunitiesMyBar = ({ data }: { data: string[][] }) => {
       </CardTitle>
       <CardTitle>
         <Link href={`/@${user.username}/feed`} className="text-base hover:text-destructive">
-          My friends
+          {t('navigation.communities_nav.my_friends')}
         </Link>
       </CardTitle>
       <CardTitle>
         <FeedLink href="/trending/my" className="text-base hover:text-destructive">
-          My communities
+          {t('navigation.communities_nav.my_communities')}
         </FeedLink>
       </CardTitle>
 
       {data && data?.length > 0 ? (
         <CardContent className="px-0 py-2">
-          <span className="text-sm opacity-60">My subscriptions</span>
+          <span className="text-sm opacity-60">{t('navigation.communities_nav.my_subscriptions')}</span>
           <ul>
             {data.map((e) => (
               <li key={e[0]}>

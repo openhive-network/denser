@@ -98,7 +98,7 @@ const CommunitiesContent = () => {
             className="text-sm font-medium text-red-600 dark:hover:text-red-800"
             href={`${walletHost}/@${user.username}/communities`}
           >
-            Create a Community
+            {t('communities.create_a_community')}
           </Link>
         ) : null}
       </div>

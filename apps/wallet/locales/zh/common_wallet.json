@@ -51,7 +51,10 @@
       "a_year": " a year"
     },
     "retry": "重试",
-    "close": "关闭"
+    "close": "关闭",
+    "profile_picture": "头像",
+    "notifications_region": "通知 ({hotkey})",
+    "select_placeholder": "请选择..."
   },
   "navigation": {
     "main_nav_bar": {
@@ -699,5 +702,21 @@
     "hours_other": "{{count}} 小时",
     "minutes_other": "{{count}} 分钟",
     "hours_and_minutes": "{{hours}} {{minutes}}"
+  },
+  "page_titles": {
+    "home": "首页",
+    "proposals": "提案",
+    "market": "市场",
+    "witnesses": "见证人",
+    "healthchecker": "节点健康检查",
+    "page_not_found": "页面未找到",
+    "balances": "余额",
+    "delegations": "委托",
+    "curation_rewards": "审查奖励",
+    "author_rewards": "作者奖励",
+    "permissions": "权限",
+    "authorities": "授权",
+    "change_password": "修改密码",
+    "create_communities": "创建社区"
   }
 }

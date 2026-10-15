@@ -3,6 +3,7 @@ import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { imagePicker } from './lib/utils';
+import { useTranslation } from '@/blog/i18n/client';
 
 interface SelectImageItemTypes {
   data: string;
@@ -12,6 +13,7 @@ interface SelectImageItemTypes {
 }
 
 const SelectImageItem: React.FC<SelectImageItemTypes> = ({ data, onChange, value, proxyAuthToken }) => {
+  const { t } = useTranslation('common_blog');
   const [invalidImages, setInvalidImages] = useState(false);
 
   return (
@@ -27,7 +29,7 @@ const SelectImageItem: React.FC<SelectImageItemTypes> = ({ data, onChange, value
       >
         <img
           src={proxifyImageSrc(imagePicker(data), 0, 0, 'match', proxyAuthToken)}
-          alt="cover img"
+          alt={t('submit_page.cover_image_alt')}
           onError={() => setInvalidImages(true)}
           loading="lazy"
           className={clsx(

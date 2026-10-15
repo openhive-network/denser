@@ -177,7 +177,7 @@ const ListArea = ({
           <div className="flex w-full gap-2">
             <Input
               className="bg-background"
-              placeholder="username"
+              placeholder={t('user_profile.lists.username_placeholder')}
               value={addValue}
               onChange={(e) => setAddValue(e.target.value.trim())}
               disabled={resetListIsLoading || resetAllListsMutation.isPending}

@@ -63,13 +63,13 @@ const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDat
                 <AvatarImage
                   className="h-full w-full object-cover"
                   src={getUserAvatarUrl(author, 'medium')}
-                  alt="Profile picture"
+                  alt={t('global.profile_picture')}
                 />
                 <AvatarFallback>
                   <img
                     className="h-full w-full object-cover"
                     src="https://images.hive.blog/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4"
-                    alt="default img"
+                    alt={t('global.profile_picture')}
                   />
                 </AvatarFallback>
               </Avatar>

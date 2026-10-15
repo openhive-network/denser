@@ -51,7 +51,10 @@
       "a_year": " rok"
     },
     "retry": "Spróbuj ponownie",
-    "close": "Zamknij"
+    "close": "Zamknij",
+    "profile_picture": "Zdjęcie profilowe",
+    "notifications_region": "Powiadomienia ({hotkey})",
+    "select_placeholder": "Wybierz..."
   },
   "navigation": {
     "main_nav_bar": {
@@ -717,5 +720,21 @@
     "minutes_many": "{{count}} minut",
     "minutes_other": "{{count}} minuty",
     "hours_and_minutes": "{{hours}} i {{minutes}}"
+  },
+  "page_titles": {
+    "home": "Strona główna",
+    "proposals": "Propozycje",
+    "market": "Giełda",
+    "witnesses": "Świadkowie",
+    "healthchecker": "Kontrola węzłów",
+    "page_not_found": "Nie znaleziono strony",
+    "balances": "Salda",
+    "delegations": "Delegacje",
+    "curation_rewards": "Wynagrodzenia kuratorskie",
+    "author_rewards": "Wynagrodzenia autorskie",
+    "permissions": "Uprawnienia",
+    "authorities": "Upoważnienia",
+    "change_password": "Zmiana hasła",
+    "create_communities": "Tworzenie społeczności"
   }
 }

@@ -66,14 +66,14 @@
     "go_back_button": "返回",
     "method_info": {
       "label": "What is {{method}}?",
-      "safe_storage": "Safe Storage keeps your private key encrypted with a password in this browser. The key never leaves your device.",
-      "keychain": "Hive Keychain is a browser extension that stores your keys and signs transactions for you.",
-      "peakvault": "PeakVault is a browser extension wallet that stores your keys and signs transactions for you.",
-      "hiveauth": "HiveAuth lets you approve sign-ins and transactions in a mobile wallet app, so your keys stay on your phone.",
-      "hivesigner": "HiveSigner is an external service that signs transactions on your behalf after you authorize this app.",
-      "wif": "Enter your private key (WIF) directly. It is used only to sign and is not kept unless you choose to store it.",
-      "metamask": "Sign with your Hive keys managed by the Hive Snap in the MetaMask extension.",
-      "google": "Keep your encrypted keys in your Google Drive and sign with them from any device."
+      "safe_storage": "安全存储会在此浏览器中用密码加密保存您的私钥。密钥永远不会离开您的设备。",
+      "keychain": "Hive Keychain 是一款浏览器扩展，可为您保存密钥并代您签署交易。",
+      "peakvault": "PeakVault 是一款浏览器扩展钱包，可为您保存密钥并代您签署交易。",
+      "hiveauth": "HiveAuth 让您在移动钱包应用中批准登录和交易，因此您的密钥始终保留在手机上。",
+      "hivesigner": "HiveSigner 是一项外部服务，在您授权此应用后代表您签署交易。",
+      "wif": "直接输入您的私钥（WIF）。它仅用于签名，除非您选择保存，否则不会被保留。",
+      "metamask": "使用 MetaMask 扩展中由 Hive Snap 管理的 Hive 密钥进行签名。",
+      "google": "将加密后的密钥保存在您的 Google Drive 中，并可在任何设备上使用它们签名。"
     },
     "signin_safe_storage": {
       "title": "使用安全存储登录",
@@ -87,7 +87,6 @@
       "button_signin": "登录",
       "button_unlock": "离线解锁",
       "button_save": "保存并登录",
-      "button_other": "其他登录选项",
       "button_cancel": "取消",
       "button_sign_auth": "签署授权交易",
       "button_signin_unlocked": "使用已签署交易登录",
@@ -112,12 +111,24 @@
       "keytype_required": "需要密钥类型",
       "invalid_wif": "无效的WIF密钥",
       "no_wif": "用户没有提供WIF密钥",
-      "no_wif_key": "没有WIF密钥"
+      "no_wif_key": "没有WIF密钥",
+      "password_required": "密码为必填项",
+      "wif_required": "WIF 密钥为必填项",
+      "posting_key_for_active": "钱包需要您的 Active 密钥；Posting 密钥无法签署转账"
     },
     "signin_with_keychain": "Hive密钥链扩展",
     "signin_with_wif": "使用WIF登录（传统）",
     "signin_with_hiveauth": "HiveAuth登录",
-    "signin_with_hivesigner": "HiveSigner登录"
+    "signin_with_hivesigner": "HiveSigner登录",
+    "this_operation_requires_your_key_for_single_sign": "此操作需要您的{{authType}}密钥进行一次性签名。",
+    "this_operation_requires_your_key_for_single_sign_posting": "此操作需要您的 Posting 密钥进行一次性签名。",
+    "this_operation_requires_your_key_for_single_sign_active": "此操作需要您的 Active 密钥进行一次性签名。",
+    "this_operation_requires_your_key_for_single_sign_owner": "此操作需要您的 Owner 密钥进行一次性签名。",
+    "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "此操作需要您的 Posting 密钥。请输入密钥并妥善保管。",
+    "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "此操作需要您的 Active 密钥。请输入密钥并妥善保管。",
+    "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "此操作需要您的 Owner 密钥。请输入密钥并妥善保管。",
+    "use_peakvault": "使用 Peakvault",
+    "signin_with_peakvault": "Peakvault 扩展程序"
   },
   "pageLogin": {
     "loginFailed": "登录失败",

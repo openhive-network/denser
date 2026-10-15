@@ -147,7 +147,7 @@ const SiteHeader: FC = () => {
                       <RcRingChart angle={chartAngle} />
                     </div>
                     <Avatar>
-                      <AvatarImage src={getUserAvatarUrl(user?.username || '', 'small')} alt="Profile picture" />
+                      <AvatarImage src={getUserAvatarUrl(user?.username || '', 'small')} alt={t('global.profile_picture')} />
                       <AvatarFallback>
                         <Icons.user />
                       </AvatarFallback>

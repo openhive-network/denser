@@ -66,14 +66,14 @@
     "go_back_button": "戻る",
     "method_info": {
       "label": "What is {{method}}?",
-      "safe_storage": "Safe Storage keeps your private key encrypted with a password in this browser. The key never leaves your device.",
-      "keychain": "Hive Keychain is a browser extension that stores your keys and signs transactions for you.",
-      "peakvault": "PeakVault is a browser extension wallet that stores your keys and signs transactions for you.",
-      "hiveauth": "HiveAuth lets you approve sign-ins and transactions in a mobile wallet app, so your keys stay on your phone.",
-      "hivesigner": "HiveSigner is an external service that signs transactions on your behalf after you authorize this app.",
-      "wif": "Enter your private key (WIF) directly. It is used only to sign and is not kept unless you choose to store it.",
-      "metamask": "Sign with your Hive keys managed by the Hive Snap in the MetaMask extension.",
-      "google": "Keep your encrypted keys in your Google Drive and sign with them from any device."
+      "safe_storage": "安全な保管は、プライベートキーをパスワードで暗号化してこのブラウザに保存します。キーがお使いのデバイスの外に出ることはありません。",
+      "keychain": "Hive Keychainは、キーを保存してトランザクションに代わりに署名するブラウザ拡張機能です。",
+      "peakvault": "PeakVaultは、キーを保存してトランザクションに代わりに署名するブラウザ拡張機能のウォレットです。",
+      "hiveauth": "HiveAuthを使うと、モバイルウォレットアプリでサインインやトランザクションを承認できるため、キーはスマートフォンに保管されたままです。",
+      "hivesigner": "HiveSignerは、このアプリを承認した後、あなたに代わってトランザクションに署名する外部サービスです。",
+      "wif": "プライベートキー（WIF）を直接入力します。署名にのみ使用され、保存を選択しない限り保持されません。",
+      "metamask": "MetaMask拡張機能のHive Snapで管理されているHiveキーで署名します。",
+      "google": "暗号化したキーをGoogle Driveに保管し、どのデバイスからでもそのキーで署名できます。"
     },
     "signin_safe_storage": {
       "title": "安全な保管でサインイン",
@@ -87,7 +87,6 @@
       "button_signin": "サインイン",
       "button_unlock": "オフライン解除",
       "button_save": "保存してサインイン",
-      "button_other": "他のサインインオプション",
       "button_cancel": "キャンセル",
       "button_sign_auth": "署名されたtxを送信",
       "button_signin_unlocked": "署名されたtxでサインイン",
@@ -112,12 +111,24 @@
       "keytype_required": "キータイプが必要です",
       "invalid_wif": "無効なWIFキー",
       "no_wif": "ユーザーからWIFキーが指定されていません",
-      "no_wif_key": "WIFキーがありません"
+      "no_wif_key": "WIFキーがありません",
+      "password_required": "パスワードは必須です",
+      "wif_required": "WIFキーは必須です",
+      "posting_key_for_active": "ウォレットにはアクティブキーが必要です。投稿キーでは送金に署名できません"
     },
     "signin_with_keychain": "Hive Keychain拡張機能",
     "signin_with_wif": "WIFでサインイン（レガシー）",
     "signin_with_hiveauth": "HiveAuth",
-    "signin_with_hivesigner": "HiveSigner"
+    "signin_with_hivesigner": "HiveSigner",
+    "this_operation_requires_your_key_for_single_sign": "この操作には、1回限りの署名のために{{authType}}キーが必要です。",
+    "this_operation_requires_your_key_for_single_sign_posting": "この操作には、1回限りの署名のために投稿キーが必要です。",
+    "this_operation_requires_your_key_for_single_sign_active": "この操作には、1回限りの署名のためにアクティブキーが必要です。",
+    "this_operation_requires_your_key_for_single_sign_owner": "この操作には、1回限りの署名のためにオーナーキーが必要です。",
+    "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "この操作には投稿キーが必要です。キーを入力し、安全な保管に保存してください。",
+    "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "この操作にはアクティブキーが必要です。キーを入力し、安全な保管に保存してください。",
+    "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "この操作にはオーナーキーが必要です。キーを入力し、安全な保管に保存してください。",
+    "use_peakvault": "Peakvaultを使用",
+    "signin_with_peakvault": "Peakvault拡張機能"
   },
   "pageLogin": {
     "loginFailed": "ログインに失敗しました",

@@ -51,7 +51,9 @@
       "a_month": " a month",
       "years": " years",
       "a_year": " a year"
-    }
+    },
+    "profile_picture": "プロフィール画像",
+    "notifications_region": "通知 ({hotkey})"
   },
   "navigation": {
     "main_nav_bar": {
@@ -89,7 +91,9 @@
       "my_friends": "マイフレンド",
       "all_posts": "All posts",
       "trending_communities": "Trending Communities",
-      "explore_communities": "すべてのタグを見る"
+      "explore_communities": "すべてのタグを見る",
+      "my_communities": "私のコミュニティ",
+      "my_subscriptions": "購読中"
     },
     "explore_nav": {
       "explore_hive": "Explore Hive",
@@ -194,7 +198,8 @@
     "communitie_sort": {
       "rank": "Rank",
       "subscribers": "Subscribers",
-      "new": "New"
+      "new": "New",
+      "select_a_filter": "フィルターを選択"
     },
     "sort_comments": {
       "sort": "Sort:",
@@ -280,7 +285,12 @@
       "collapse_comment": "コメントを折りたたむ",
       "expand_comment": "コメントを展開",
       "expand_comment_with_replies": "コメントを展開、{{replies}}"
-    }
+    },
+    "content_marked_nsfw": "NSFWとしてマークされたコンテンツ",
+    "reveal_nsfw_post": "このNSFW投稿を表示",
+    "my_blacklist": "マイブラックリスト",
+    "post_image": "投稿画像",
+    "payout_declined": "報酬辞退"
   },
   "alert_dialog_reblog": {
     "action": "確認",
@@ -427,7 +437,8 @@
         "last_button": "Last",
         "viewing_page": "{{total}} ページ中 {{current}} ページを表示中",
         "users_on_list": "リストのユーザー: {{number}}"
-      }
+      },
+      "username_placeholder": "ユーザー名"
     },
     "social_tab": {
       "community_subscriptions_title": "Community Subscriptions",
@@ -451,7 +462,9 @@
     "check_node_status": "Check Node Status",
     "load_failed_title": "このプロフィールを読み込めませんでした",
     "load_failed_description": "Hive API が応答しませんでした。通常は一時的なものです。",
-    "go_home": "ホームへ"
+    "go_home": "ホームへ",
+    "more_options": "その他のオプション",
+    "loading_profile": "プロフィールを読み込み中"
   },
   "communities": {
     "set_title_for_user": "@{{username}}のタイトルを設定",
@@ -552,7 +565,8 @@
         "maximum_characters": "最大{{value}}文字",
         "minimum_characters": "最小{{value}}文字"
       }
-    }
+    },
+    "create_a_community": "コミュニティを作成"
   },
   "post_content": {
     "close_post_editor": "投稿エディタを閉じてもよろしいですか？",
@@ -655,8 +669,11 @@
       "sorry": "申し訳ありません",
       "all_hidden_low_ratings": "おすすめの投稿はすべて低評価のため非表示になりました。",
       "show_all": "すべて表示",
-      "hide": "非表示"
-    }
+      "hide": "非表示",
+      "you_might_also_like": "こちらもおすすめ",
+      "title": "おすすめ"
+    },
+    "browse_to_original_post": "@{{author}} による元の投稿を見る"
   },
   "submit_page": {
     "log_in_to_post": "投稿するにはログインしてください。",
@@ -780,7 +797,25 @@
     "shadow_draft_found": "Unsaved post found",
     "shadow_draft_description": "投稿はブロードキャストされましたが、まだインデックスされていない可能性があります。内容を復元しますか？",
     "shadow_draft_recover": "Recover",
-    "shadow_draft_discard": "Discard"
+    "shadow_draft_discard": "Discard",
+    "cover_image_alt": "カバー画像",
+    "select_category": "カテゴリーを選択",
+    "toolbar": {
+      "bold": "太字",
+      "italic": "斜体",
+      "strikethrough": "取り消し線",
+      "horizontal_rule": "水平線",
+      "heading": "見出し",
+      "link": "リンク",
+      "quote": "引用",
+      "inline_code": "インラインコード",
+      "code_block": "コードブロック",
+      "image": "画像",
+      "table": "表",
+      "unordered_list": "箇条書きリスト",
+      "ordered_list": "番号付きリスト",
+      "task_list": "タスクリスト"
+    }
   },
   "search_page": {
     "placeholder": "検索",
@@ -864,6 +899,88 @@
     "new_posts": "新しい投稿",
     "hot_posts": "人気の投稿",
     "trending_posts": "トレンド投稿",
-    "muted_posts": "ミュートされた投稿"
+    "muted_posts": "ミュートされた投稿",
+    "page_not_found": "ページが見つかりません",
+    "page_may_have_moved": "お探しのページは存在しないか、移動された可能性があります。",
+    "go_home": "ホームへ戻る",
+    "browse_trending": "トレンドを見る"
+  },
+  "page_titles": {
+    "page_not_found": "ページが見つかりません",
+    "blog": "ブログ",
+    "user_blog": "{{username}} のブログ",
+    "healthcheckers": "ヘルスチェッカー",
+    "service_unavailable": "サービスを利用できません",
+    "my_friends": "マイフレンド",
+    "pending_posts": "保留中の投稿",
+    "muted_posts": "ミュートされた投稿",
+    "new_posts": "新着投稿",
+    "hot_posts": "ホットな投稿",
+    "trending_posts": "トレンドの投稿",
+    "my_community_pending": "マイコミュニティ / 保留中",
+    "my_community_muted": "マイコミュニティ / ミュート",
+    "my_community_new": "マイコミュニティ / 新着",
+    "my_community_hot": "マイコミュニティ / ホット",
+    "my_community_trending": "マイコミュニティ / トレンド",
+    "communities": "コミュニティ",
+    "search": "検索",
+    "terms_of_service": "利用規約",
+    "welcome": "ようこそ",
+    "create_a_post": "投稿を作成",
+    "faq": "FAQ",
+    "privacy_policy": "プライバシーポリシー",
+    "replies_by": "{{username}} の返信",
+    "comments_by": "{{username}} のコメント",
+    "payouts_for": "{{username}} の報酬",
+    "posts_by": "{{username}} の投稿",
+    "people_followed_by": "{{username}} がフォロー中のユーザー",
+    "people_following": "{{username}} のフォロワー",
+    "notifications_for": "{{username}} の通知",
+    "settings": "{{username}} の設定",
+    "user_communities": "{{username}} のコミュニティ",
+    "manage_lists": "リストの管理",
+    "sections": {
+      "trending": "トレンド",
+      "hot": "ホット",
+      "created": "新着",
+      "muted": "ミュート",
+      "pending": "保留中",
+      "roles": "役割"
+    }
+  },
+  "chat_widget": {
+    "chat": "チャット",
+    "set_up_account": "チャットアカウントを設定",
+    "set_up_account_tooltip": "openhive.chat でチャットアカウントを設定する",
+    "close_widget": "チャットウィジェットを閉じる",
+    "open_app": "チャットアプリを開く",
+    "open_widget": "チャットウィジェットを開く"
+  },
+  "search_mode": {
+    "search": "検索",
+    "select_label": "検索モード: {{mode}}",
+    "placeholder": {
+      "ai": "AI検索...",
+      "classic": "検索...",
+      "account": "ユーザーを検索...",
+      "user_topic": "ユーザー名...",
+      "tag": "タグを検索...",
+      "topic": "トピック..."
+    },
+    "input_label": {
+      "ai": "AI検索",
+      "classic": "投稿を検索",
+      "account": "ユーザーを検索",
+      "user_topic": "ユーザー名",
+      "tag": "タグを検索",
+      "topic": "トピック"
+    },
+    "mode": {
+      "classic": "投稿",
+      "ai": "AI検索",
+      "account": "ユーザー",
+      "user_topic": "トピック別のユーザー投稿",
+      "tag": "タグ"
+    }
   }
 }

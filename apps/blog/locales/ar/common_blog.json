@@ -51,7 +51,9 @@
       "a_month": " شهر واحد",
       "years": " سنة",
       "a_year": " سنة واحدة"
-    }
+    },
+    "profile_picture": "صورة الملف الشخصي",
+    "notifications_region": "الإشعارات ({hotkey})"
   },
   "navigation": {
     "main_nav_bar": {
@@ -89,7 +91,9 @@
       "my_friends": "أصدقائي",
       "all_posts": "جميع المشاركات",
       "trending_communities": "المجتمعات الرائجة",
-      "explore_communities": "استكشف المجتمعات..."
+      "explore_communities": "استكشف المجتمعات...",
+      "my_communities": "مجتمعاتي",
+      "my_subscriptions": "اشتراكاتي"
     },
     "explore_nav": {
       "explore_hive": "استكشف Hive",
@@ -194,7 +198,8 @@
     "communitie_sort": {
       "rank": "الترتيب",
       "subscribers": "المشتركين",
-      "new": "جديد"
+      "new": "جديد",
+      "select_a_filter": "اختر عامل تصفية"
     },
     "sort_comments": {
       "sort": "الفرز:",
@@ -280,7 +285,12 @@
       "collapse_comment": "طي التعليق",
       "expand_comment": "توسيع التعليق",
       "expand_comment_with_replies": "توسيع التعليق، {{replies}}"
-    }
+    },
+    "content_marked_nsfw": "محتوى مصنف NSFW",
+    "reveal_nsfw_post": "إظهار هذه المشاركة المصنفة NSFW",
+    "my_blacklist": "قائمتي السوداء",
+    "post_image": "صورة المشاركة",
+    "payout_declined": "تم رفض الدفع"
   },
   "alert_dialog_reblog": {
     "action": "موافق",
@@ -427,7 +437,8 @@
         "last_button": "الأخير",
         "viewing_page": "عرض الصفحة {{current}} من {{total}}",
         "users_on_list": "المستخدمون في القائمة: {{number}}"
-      }
+      },
+      "username_placeholder": "اسم المستخدم"
     },
     "social_tab": {
       "community_subscriptions_title": "الاشتراكات المجتمعية",
@@ -451,7 +462,9 @@
     "check_node_status": "Check Node Status",
     "load_failed_title": "تعذر تحميل هذا الملف الشخصي",
     "load_failed_description": "لم تستجب واجهة Hive البرمجية. عادةً ما يكون هذا مؤقتًا.",
-    "go_home": "الصفحة الرئيسية"
+    "go_home": "الصفحة الرئيسية",
+    "more_options": "خيارات إضافية",
+    "loading_profile": "جارٍ تحميل الملف الشخصي"
   },
   "communities": {
     "set_title_for_user": "تعيين العنوان لـ @{{username}}",
@@ -552,7 +565,8 @@
         "maximum_characters": "{{value}} حرفًا كحد أقصى",
         "minimum_characters": "{{value}} أحرف كحد أدنى"
       }
-    }
+    },
+    "create_a_community": "إنشاء مجتمع"
   },
   "post_content": {
     "close_post_editor": "هل أنت متأكد من أنك تريد إغلاق محرر المشاركة؟",
@@ -655,8 +669,11 @@
       "sorry": "عذرًا",
       "all_hidden_low_ratings": "تم إخفاء جميع المنشورات المقترحة بسبب التقييمات المنخفضة.",
       "show_all": "عرض الكل",
-      "hide": "إخفاء"
-    }
+      "hide": "إخفاء",
+      "you_might_also_like": "قد يعجبك أيضًا",
+      "title": "اقتراحات"
+    },
+    "browse_to_original_post": "الانتقال إلى المشاركة الأصلية بواسطة @{{author}}"
   },
   "submit_page": {
     "log_in_to_post": "تسجيل الدخول لنشر مشاركة.",
@@ -780,7 +797,25 @@
     "shadow_draft_found": "Unsaved post found",
     "shadow_draft_description": "تم بث مشاركة لكن ربما لم تتم فهرستها بعد. هل تريد استعادة المحتوى؟",
     "shadow_draft_recover": "Recover",
-    "shadow_draft_discard": "Discard"
+    "shadow_draft_discard": "Discard",
+    "cover_image_alt": "صورة الغلاف",
+    "select_category": "اختر الفئة",
+    "toolbar": {
+      "bold": "عريض",
+      "italic": "مائل",
+      "strikethrough": "يتوسطه خط",
+      "horizontal_rule": "خط أفقي",
+      "heading": "عنوان",
+      "link": "رابط",
+      "quote": "اقتباس",
+      "inline_code": "رمز مضمّن",
+      "code_block": "كتلة رمز",
+      "image": "صورة",
+      "table": "جدول",
+      "unordered_list": "قائمة نقطية",
+      "ordered_list": "قائمة مرقمة",
+      "task_list": "قائمة مهام"
+    }
   },
   "search_page": {
     "placeholder": "البحث",
@@ -864,6 +899,88 @@
     "new_posts": "المشاركات الجديدة",
     "hot_posts": "المشاركات الساخنة",
     "trending_posts": "المشاركات الرائجة",
-    "muted_posts": "المشاركات الصامتة"
+    "muted_posts": "المشاركات الصامتة",
+    "page_not_found": "الصفحة غير موجودة",
+    "page_may_have_moved": "الصفحة التي تبحث عنها غير موجودة أو ربما تم نقلها.",
+    "go_home": "العودة إلى الرئيسية",
+    "browse_trending": "تصفح الرائج"
+  },
+  "page_titles": {
+    "page_not_found": "الصفحة غير موجودة",
+    "blog": "المدونة",
+    "user_blog": "مدونة {{username}}",
+    "healthcheckers": "فاحصو الحالة",
+    "service_unavailable": "الخدمة غير متاحة",
+    "my_friends": "أصدقائي",
+    "pending_posts": "المشاركات المعلقة",
+    "muted_posts": "المشاركات الصامتة",
+    "new_posts": "المشاركات الجديدة",
+    "hot_posts": "المشاركات الساخنة",
+    "trending_posts": "المشاركات الرائجة",
+    "my_community_pending": "مجتمعي / المعلقة",
+    "my_community_muted": "مجتمعي / الصامتة",
+    "my_community_new": "مجتمعي / الجديدة",
+    "my_community_hot": "مجتمعي / الساخنة",
+    "my_community_trending": "مجتمعي / الرائجة",
+    "communities": "المجتمعات",
+    "search": "البحث",
+    "terms_of_service": "شروط الخدمة",
+    "welcome": "مرحبا",
+    "create_a_post": "إنشاء مشاركة",
+    "faq": "الأسئلة الشائعة",
+    "privacy_policy": "سياسة الخصوصية",
+    "replies_by": "ردود {{username}}",
+    "comments_by": "تعليقات {{username}}",
+    "payouts_for": "مدفوعات {{username}}",
+    "posts_by": "مشاركات {{username}}",
+    "people_followed_by": "الأشخاص الذين يتابعهم {{username}}",
+    "people_following": "الأشخاص الذين يتابعون {{username}}",
+    "notifications_for": "إشعارات {{username}}",
+    "settings": "إعدادات {{username}}",
+    "user_communities": "مجتمعات {{username}}",
+    "manage_lists": "إدارة القوائم",
+    "sections": {
+      "trending": "الرائجة",
+      "hot": "الساخنة",
+      "created": "الجديدة",
+      "muted": "الصامتة",
+      "pending": "المعلقة",
+      "roles": "الأدوار"
+    }
+  },
+  "chat_widget": {
+    "chat": "المحادثة",
+    "set_up_account": "إعداد حساب المحادثة",
+    "set_up_account_tooltip": "أعدّ حساب المحادثة الخاص بك على openhive.chat",
+    "close_widget": "إغلاق أداة المحادثة",
+    "open_app": "فتح تطبيق المحادثة",
+    "open_widget": "فتح أداة المحادثة"
+  },
+  "search_mode": {
+    "search": "البحث",
+    "select_label": "وضع البحث: {{mode}}",
+    "placeholder": {
+      "ai": "البحث بالذكاء الاصطناعي...",
+      "classic": "البحث...",
+      "account": "البحث عن مستخدمين...",
+      "user_topic": "اسم المستخدم...",
+      "tag": "البحث عن وسوم...",
+      "topic": "الموضوع..."
+    },
+    "input_label": {
+      "ai": "البحث بالذكاء الاصطناعي",
+      "classic": "البحث في المشاركات",
+      "account": "البحث عن مستخدمين",
+      "user_topic": "اسم المستخدم",
+      "tag": "البحث عن وسوم",
+      "topic": "الموضوع"
+    },
+    "mode": {
+      "classic": "المشاركات",
+      "ai": "البحث بالذكاء الاصطناعي",
+      "account": "المستخدمون",
+      "user_topic": "مشاركات المستخدم حسب الموضوع",
+      "tag": "الوسوم"
+    }
   }
 }

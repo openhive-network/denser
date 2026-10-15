@@ -51,7 +51,9 @@
       "a_month": " 1개월",
       "years": " 년",
       "a_year": " 1년"
-    }
+    },
+    "profile_picture": "프로필 사진",
+    "notifications_region": "알림 ({hotkey})"
   },
   "navigation": {
     "main_nav_bar": {
@@ -89,7 +91,9 @@
       "my_friends": "내 친구",
       "all_posts": "모든 게시물",
       "trending_communities": "트렌딩 커뮤니티",
-      "explore_communities": "커뮤니티 탐색..."
+      "explore_communities": "커뮤니티 탐색...",
+      "my_communities": "내 커뮤니티",
+      "my_subscriptions": "내 구독"
     },
     "explore_nav": {
       "explore_hive": "Hive 탐색",
@@ -194,7 +198,8 @@
     "communitie_sort": {
       "rank": "순위",
       "subscribers": "구독자",
-      "new": "최신"
+      "new": "최신",
+      "select_a_filter": "필터 선택"
     },
     "sort_comments": {
       "sort": "정렬:",
@@ -280,7 +285,12 @@
       "collapse_comment": "댓글 접기",
       "expand_comment": "댓글 펼치기",
       "expand_comment_with_replies": "댓글 펼치기, {{replies}}"
-    }
+    },
+    "content_marked_nsfw": "NSFW로 표시된 콘텐츠",
+    "reveal_nsfw_post": "이 NSFW 게시물 보기",
+    "my_blacklist": "내 블랙리스트",
+    "post_image": "게시물 이미지",
+    "payout_declined": "보상 거절됨"
   },
   "alert_dialog_reblog": {
     "action": "확인",
@@ -427,7 +437,8 @@
         "last_button": "마지막",
         "viewing_page": "{{total}}페이지 중 {{current}}페이지 보기",
         "users_on_list": "목록의 사용자: {{number}}"
-      }
+      },
+      "username_placeholder": "사용자 이름"
     },
     "social_tab": {
       "community_subscriptions_title": "커뮤니티 구독",
@@ -451,7 +462,9 @@
     "check_node_status": "노드 상태 확인",
     "load_failed_title": "이 프로필을 불러올 수 없습니다",
     "load_failed_description": "Hive API가 응답하지 않았습니다. 대개 일시적인 현상입니다.",
-    "go_home": "홈으로 이동"
+    "go_home": "홈으로 이동",
+    "more_options": "더 보기",
+    "loading_profile": "프로필 불러오는 중"
   },
   "communities": {
     "set_title_for_user": "@{{username}}의 칭호 설정",
@@ -552,7 +565,8 @@
         "maximum_characters": "최대 {{value}}자",
         "minimum_characters": "최소 {{value}}자"
       }
-    }
+    },
+    "create_a_community": "커뮤니티 만들기"
   },
   "post_content": {
     "close_post_editor": "게시물 편집기를 닫으시겠습니까?",
@@ -655,8 +669,11 @@
       "sorry": "죄송합니다",
       "all_hidden_low_ratings": "낮은 평가로 인해 모든 추천 게시물이 숨겨졌습니다.",
       "show_all": "모두 보기",
-      "hide": "숨기기"
-    }
+      "hide": "숨기기",
+      "you_might_also_like": "추천 게시물",
+      "title": "추천"
+    },
+    "browse_to_original_post": "@{{author}} 님의 원본 게시물로 이동"
   },
   "submit_page": {
     "log_in_to_post": "게시물을 작성하려면 로그인하세요.",
@@ -780,7 +797,25 @@
     "shadow_draft_found": "저장되지 않은 게시물이 있습니다",
     "shadow_draft_description": "게시물이 브로드캐스트되었지만 아직 인덱싱되지 않았을 수 있습니다. 내용을 복구하시겠습니까?",
     "shadow_draft_recover": "복구",
-    "shadow_draft_discard": "버리기"
+    "shadow_draft_discard": "버리기",
+    "cover_image_alt": "커버 이미지",
+    "select_category": "카테고리 선택",
+    "toolbar": {
+      "bold": "굵게",
+      "italic": "기울임꼴",
+      "strikethrough": "취소선",
+      "horizontal_rule": "가로줄",
+      "heading": "제목",
+      "link": "링크",
+      "quote": "인용",
+      "inline_code": "인라인 코드",
+      "code_block": "코드 블록",
+      "image": "이미지",
+      "table": "표",
+      "unordered_list": "글머리 기호 목록",
+      "ordered_list": "번호 매기기 목록",
+      "task_list": "할 일 목록"
+    }
   },
   "search_page": {
     "placeholder": "검색",
@@ -864,6 +899,88 @@
     "new_posts": "최신 게시물",
     "hot_posts": "인기 게시물",
     "trending_posts": "트렌딩 게시물",
-    "muted_posts": "뮤트된 게시물"
+    "muted_posts": "뮤트된 게시물",
+    "page_not_found": "페이지를 찾을 수 없습니다",
+    "page_may_have_moved": "찾으시는 페이지가 존재하지 않거나 이동되었을 수 있습니다.",
+    "go_home": "홈으로 가기",
+    "browse_trending": "트렌딩 둘러보기"
+  },
+  "page_titles": {
+    "page_not_found": "페이지를 찾을 수 없음",
+    "blog": "블로그",
+    "user_blog": "{{username}}의 블로그",
+    "healthcheckers": "상태 점검",
+    "service_unavailable": "서비스를 사용할 수 없음",
+    "my_friends": "내 친구",
+    "pending_posts": "대기 중인 게시물",
+    "muted_posts": "뮤트된 게시물",
+    "new_posts": "최신 게시물",
+    "hot_posts": "인기 게시물",
+    "trending_posts": "트렌딩 게시물",
+    "my_community_pending": "내 커뮤니티 / 대기 중",
+    "my_community_muted": "내 커뮤니티 / 뮤트됨",
+    "my_community_new": "내 커뮤니티 / 최신",
+    "my_community_hot": "내 커뮤니티 / 인기",
+    "my_community_trending": "내 커뮤니티 / 트렌딩",
+    "communities": "커뮤니티",
+    "search": "검색",
+    "terms_of_service": "서비스 약관",
+    "welcome": "환영합니다",
+    "create_a_post": "게시물 작성",
+    "faq": "FAQ",
+    "privacy_policy": "개인정보 처리방침",
+    "replies_by": "{{username}} 님의 답글",
+    "comments_by": "{{username}} 님의 댓글",
+    "payouts_for": "{{username}} 님의 보상",
+    "posts_by": "{{username}} 님의 게시물",
+    "people_followed_by": "{{username}} 님이 팔로우하는 사람",
+    "people_following": "{{username}} 님을 팔로우하는 사람",
+    "notifications_for": "{{username}} 님의 알림",
+    "settings": "{{username}} 님의 설정",
+    "user_communities": "{{username}} 님의 커뮤니티",
+    "manage_lists": "목록 관리",
+    "sections": {
+      "trending": "트렌딩",
+      "hot": "인기",
+      "created": "최신",
+      "muted": "뮤트됨",
+      "pending": "대기 중",
+      "roles": "역할"
+    }
+  },
+  "chat_widget": {
+    "chat": "채팅",
+    "set_up_account": "채팅 계정 설정",
+    "set_up_account_tooltip": "openhive.chat에서 채팅 계정을 설정하세요",
+    "close_widget": "채팅 위젯 닫기",
+    "open_app": "채팅 앱 열기",
+    "open_widget": "채팅 위젯 열기"
+  },
+  "search_mode": {
+    "search": "검색",
+    "select_label": "검색 모드: {{mode}}",
+    "placeholder": {
+      "ai": "AI 검색...",
+      "classic": "검색...",
+      "account": "사용자 검색...",
+      "user_topic": "사용자 이름...",
+      "tag": "태그 검색...",
+      "topic": "주제..."
+    },
+    "input_label": {
+      "ai": "AI 검색",
+      "classic": "게시물 검색",
+      "account": "사용자 검색",
+      "user_topic": "사용자 이름",
+      "tag": "태그 검색",
+      "topic": "주제"
+    },
+    "mode": {
+      "classic": "게시물",
+      "ai": "AI 검색",
+      "account": "사용자",
+      "user_topic": "주제별 사용자 게시물",
+      "tag": "태그"
+    }
   }
 }

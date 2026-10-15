@@ -155,7 +155,7 @@ const MainBar: FC = () => {
               {pathname === '/search' ? (
                 <SearchButton aiTag={!!hiveSense} />
               ) : (
-                <ModeSwitchInput aiAvailable={!!hiveSense} />
+                <ModeSwitchInput aiAvailable={!!hiveSense} t={t} />
               )}
             </div>
             <SearchButton aiTag={!!hiveSense} className="lg:hidden" />
@@ -274,13 +274,13 @@ const MainBar: FC = () => {
                         <AvatarImage
                           className="h-full w-full object-cover"
                           src={getUserAvatarUrl(user?.username || '', 'small')}
-                          alt="Profile picture"
+                          alt={t('global.profile_picture')}
                         />
                         <AvatarFallback>
                           <img
                             className="h-full w-full object-cover"
                             src={getUserAvatarUrl(user?.username || '', 'small')}
-                            alt="Profile picture"
+                            alt={t('global.profile_picture')}
                           />
                         </AvatarFallback>
                       </Avatar>

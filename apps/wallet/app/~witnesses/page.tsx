@@ -4,12 +4,16 @@ import { getLogger } from '@ui/lib/logging';
 import { getQueryClient } from '@/wallet/lib/react-query';
 import { getWitnessList, WITNESS_LIST_QUERY_KEY } from '@/wallet/lib/witness-list';
 import WitnessesPage from './witnesses-page';
+import { getTranslation } from '@/wallet/i18n/server';
 
 const logger = getLogger('app');
 
-export const metadata: Metadata = {
-  title: { absolute: 'Hive Wallet - Witnesses' }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslation('common_wallet');
+  return {
+    title: { absolute: `Hive Wallet - ${t('page_titles.witnesses')}` }
+  };
+}
 
 /**
  * Fetches the witness list on the server, so its rows are part of the server HTML. When the fetch

@@ -77,7 +77,7 @@ export function ProposalsFilter({
                 className="h-[35px] w-auto min-w-[120px] gap-2"
                 data-testid="proposals-sort-filter-orderby"
               >
-                <SelectValue placeholder="Select..." />
+                <SelectValue placeholder={t('global.select_placeholder')} />
               </SelectTrigger>
               <SelectContent data-testid="proposals-sort-filter-orderby-conntent">
                 <SelectGroup>

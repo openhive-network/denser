@@ -12,6 +12,7 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import type { PostStub } from '@hive/common-hiveio-packages/wax';
 import type { CardEntry } from '@/blog/features/list-of-posts/lib/card-entry';
+import { useTranslation } from '@/blog/i18n/client';
 
 interface SearchContentProps {
   aiParam: string | undefined;
@@ -34,6 +35,7 @@ const SearchContent = ({
   initialClassicResults,
   initialTopicResults
 }: SearchContentProps) => {
+  const { t } = useTranslation('common_blog');
   const { data: hiveSense } = useQuery({
     queryKey: ['hivesense-api'],
     queryFn: () => getHiveSenseStatus(),
@@ -50,7 +52,7 @@ const SearchContent = ({
     <div className="m-auto flex max-w-4xl flex-col gap-12 px-4 py-8">
       <div className="flex flex-col gap-4">
         <div className="w-full">
-          <ModeSwitchInput searchPage aiAvailable={!!hiveSense} />
+          <ModeSwitchInput searchPage aiAvailable={!!hiveSense} t={t} />
         </div>
       </div>
       {!!aiParam ? (

@@ -5,9 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles } from 'lucide-react';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
+import { useTranslation } from '@/blog/i18n/client';
 
 const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
   const { user } = useUserClient();
+  const { t } = useTranslation('common_blog');
   const [showSuggestions, storeShowSuggestions] = useStorageWithTTL<boolean>(
     `showSuggestions${user.username ? `-${user.username}` : ''}`,
     true,
@@ -27,7 +29,7 @@ const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
             className="flex min-h-0 flex-col"
           >
             <div className="flex shrink-0 items-center justify-between px-4 pb-3 pt-1">
-              <h2 className="font-sanspro text-lg font-semibold">You Might Also Like</h2>
+              <h2 className="font-sanspro text-lg font-semibold">{t('post_content.suggestions.you_might_also_like')}</h2>
               <button
                 type="button"
                 onClick={() => storeShowSuggestions(false)}
@@ -55,7 +57,7 @@ const AnimatedList = ({ suggestions }: { suggestions: Entry[] }) => {
               className="flex items-center gap-2 rounded-full border border-border px-3 py-1.5 text-sm text-muted-foreground transition-all hover:border-foreground/20 hover:text-foreground hover:shadow-sm"
             >
               <Sparkles className="h-3.5 w-3.5" />
-              Suggestions
+              {t('post_content.suggestions.title')}
             </button>
           </motion.div>
         )}

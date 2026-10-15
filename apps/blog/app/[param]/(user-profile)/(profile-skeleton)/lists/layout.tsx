@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
-
-const title = `Manage Lists`;
+import { getTranslation } from '@/blog/i18n/server';
 
 export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslation('common_blog');
   return {
-    title
+    title: t('page_titles.manage_lists')
   };
 }
 

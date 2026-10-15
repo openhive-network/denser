@@ -2,6 +2,7 @@ import { User } from '@smart-signer/types/common';
 import { Badge } from '@ui/components';
 import { Link } from '@hive/ui';
 import { useEffect, useState } from 'react';
+import { useTranslation } from '@/blog/i18n/client';
 
 interface PostCardHiddenProps {
   user: User;
@@ -9,6 +10,7 @@ interface PostCardHiddenProps {
 }
 
 const PostCardHidden = ({ user, revealPost }: PostCardHiddenProps) => {
+  const { t } = useTranslation('common_blog');
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -29,7 +31,7 @@ const PostCardHidden = ({ user, revealPost }: PostCardHiddenProps) => {
         <Badge
           variant="outline"
           className="mx-1 border-destructive text-destructive"
-          aria-label="Content marked as NSFW"
+          aria-label={t('cards.content_marked_nsfw')}
         >
           NSFW
         </Badge>
@@ -37,7 +39,7 @@ const PostCardHidden = ({ user, revealPost }: PostCardHiddenProps) => {
           type="button"
           onClick={revealPost}
           className="cursor-pointer text-destructive underline-offset-2 hover:underline"
-          aria-label="Reveal this NSFW post"
+          aria-label={t('cards.reveal_nsfw_post')}
         >
           Reveal this post
         </button>{' '}
@@ -54,7 +56,7 @@ const PostCardHidden = ({ user, revealPost }: PostCardHiddenProps) => {
       <Badge
         variant="outline"
         className="mx-1 border-destructive text-destructive"
-        aria-label="Content marked as NSFW"
+        aria-label={t('cards.content_marked_nsfw')}
       >
         NSFW
       </Badge>
@@ -62,7 +64,7 @@ const PostCardHidden = ({ user, revealPost }: PostCardHiddenProps) => {
         type="button"
         onClick={revealPost}
         className="cursor-pointer text-destructive underline-offset-2 hover:underline"
-        aria-label="Reveal this NSFW post"
+        aria-label={t('cards.reveal_nsfw_post')}
       >
         Reveal this post
       </button>{' '}

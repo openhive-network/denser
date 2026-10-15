@@ -407,6 +407,20 @@ function MyComponent() {
 }
 ```
 
+**Server code** (server components, `generateMetadata` page titles) can't use the hook; use the app's `i18n/server`:
+```tsx
+import { getTranslation } from '@/blog/i18n/server';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getTranslation('common_blog');
+  return { title: t('page_titles.trending_posts') };
+}
+```
+
+**Shared packages** (`@hive/ui`) don't own locale files: take the app's `t` as a prop (see `ModeSwitchInput`) or the translated text (see `Toaster`'s `label`).
+
+ESLint (`no-restricted-syntax`, an error) rejects a string literal in `aria-label`, `placeholder`, `title` or `alt`.
+
 ### Translation Keys Validation
 
 #### 1. Cross-locale key sync
@@ -423,7 +437,7 @@ pnpm --filter @hive/blog lint:translations
 - Values identical to English (untranslated): every one in a reviewed locale (`pl`), sentences of 4+ words elsewhere. Brand names and other legitimate copies go in the allow-list in `scripts/check-blog-translations.js`
 - Missing translation files
 
-Both blog checks run in the `static` verification suite (`.aidev/run-static.sh`).
+Both blog checks run in the `static` verification suite (`.aidev/run-static.sh`), with the same sync check for the smart-signer package's locales (`node scripts/check-smart-signer-translations.js`).
 
 #### 2. Translation usage validation
 Validates that all `t('key')` and `<Trans i18nKey="key">` calls in code reference existing translation keys.

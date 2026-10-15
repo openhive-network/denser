@@ -952,14 +952,16 @@ const PostContent = () => {
                     <Link
                       href={`/@${postData.json_metadata.original_author}/${postData.json_metadata.original_permlink}`}
                     >
-                      <Button variant="redHover">{`Browse to the original post by @${postData.json_metadata.original_author}`}</Button>
+                      <Button variant="redHover">{t('post_content.browse_to_original_post', {
+                          author: postData.json_metadata.original_author
+                        })}</Button>
                     </Link>
                   </div>
                 ) : null}
                 <div className="md:hidden">
                   {!!suggestionData ? (
                     <div className="mt-6 border-t border-border pt-4">
-                      <h2 className="mb-3 px-4 font-sanspro text-lg font-bold">You Might Also Like</h2>
+                      <h2 className="mb-3 px-4 font-sanspro text-lg font-bold">{t('post_content.suggestions.you_might_also_like')}</h2>
                       <SuggestionsList suggestions={suggestionData} horizontal />
                     </div>
                   ) : null}

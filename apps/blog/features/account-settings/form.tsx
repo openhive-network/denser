@@ -313,7 +313,7 @@ const SettingsForm = ({ username }: { username: string }) => {
               name="not-safe-for-work-content"
             >
               <SelectTrigger>
-                <SelectValue placeholder="Not safe for work (NSFW) content" />
+                <SelectValue placeholder={t('settings_page.not_safe_for_work_nsfw_content')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
@@ -379,7 +379,7 @@ const SettingsForm = ({ username }: { username: string }) => {
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Referral System" />
+                <SelectValue placeholder={t('settings_page.default_beneficiaries')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
