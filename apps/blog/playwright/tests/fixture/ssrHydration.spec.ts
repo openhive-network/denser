@@ -119,7 +119,7 @@ test.describe('Hydration — logged-in personalized pages', () => {
 // Both sides must agree, or the Spanish SSR copy flips to English on hydrate.
 test.describe('Hydration — localized pages', () => {
   /** `navigation.communities_nav.all_posts` in es / en. */
-  const ALL_POSTS_ES = 'todos publican';
+  const ALL_POSTS_ES = 'Todas las publicaciones';
   const ALL_POSTS_EN = 'All posts';
 
   test('HYD-05 — NEXT_LOCALE=es /trending is Spanish in SSR and hydrates with no mismatch', async ({
