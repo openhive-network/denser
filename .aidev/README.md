@@ -32,6 +32,21 @@ The workflow (or person) that changes an input runs `build.sh --push` itself; no
 CI job builds this image. AIDEV-driven development doesn't use GitLab CI (see
 "CI" below).
 
+## Hand-off to develop
+
+`develop` is protected, fast-forward only and needs a green pipeline, so AIDEV
+never pushes it. The profile declares `branches.handoff: develop`, and
+`aidev handoff denser --session <name>` hands `aidev/integration` off to it: it
+merges `develop` back into the session first if `develop` has moved, promotes,
+then opens or updates the MR to `develop`, starts its pipeline and arms
+auto-merge. `aidev handoff status denser` shows where that MR stands; `--dry-run`
+changes nothing. While the MR is open, a promote waits for it (see the aidev
+`project-handoff.md` operations doc).
+
+`develop` is the development branch, not the release. `main` is denser's
+release; people sync it from `develop` by their own process, and AIDEV never
+touches it.
+
 ## CI
 
 GitLab CI is not part of AIDEV-driven development. `ai/*` and `session/*` branches
@@ -40,7 +55,7 @@ start a branch pipeline either; the slots in `project.yaml` are the verification
 CI still runs for `develop`, `main`, tags and other branches.
 
 The one exception is the hand-off: an MR from `aidev/integration` into `develop`
-(or `main`) gets a merge-request pipeline when it is opened and again on every push
+gets a merge-request pipeline when it is opened and again on every push
 to `aidev/integration` while it stays open. It runs the same gating jobs as a
 `develop` pipeline: the image builds, unit tests, the blog and wallet fixture
 suites and the stable e2e suites. It doesn't run the deploy jobs, which only run on
