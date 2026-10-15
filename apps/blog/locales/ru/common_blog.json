@@ -89,7 +89,7 @@
     },
     "communities_nav": {
       "my_friends": "Мои друзья",
-      "all_posts": "All posts",
+      "all_posts": "Все посты",
       "trending_communities": "Trending Communities",
       "explore_communities": "Показать больше тем...",
       "my_communities": "Мои сообщества",
@@ -189,9 +189,9 @@
   },
   "select_sort": {
     "posts_sort": {
-      "trending": "популярное",
-      "hot": "актуальное",
-      "new": "новое",
+      "trending": "Популярное",
+      "hot": "Актуальное",
+      "new": "Новое",
       "payouts": "Выплаты",
       "muted": "Muted"
     },
@@ -203,9 +203,9 @@
     },
     "sort_comments": {
       "sort": "Sort:",
-      "trending": "популярное",
-      "votes": "голосов",
-      "age": "возраст",
+      "trending": "Популярное",
+      "votes": "Голоса",
+      "age": "Возраст",
       "filter_label": "Comment filtering",
       "filter_short_label": "Фильтр скрытых",
       "filter_off": "выкл.",
@@ -431,10 +431,10 @@
         "reset_followed_muted_list": "Сбросить отслеживаемые списки заглушённых",
         "reset_all_lists": "Reset All Follows/Lists",
         "busy_button": "BUSY, PLEASE WAIT",
-        "first_button": "First",
+        "first_button": "Первый",
         "previous_button": "Предыдущий",
         "next_button": "Следующий",
-        "last_button": "Last",
+        "last_button": "Последний",
         "viewing_page": "Страница {{current}} из {{total}}",
         "users_on_list": "Пользователей в списке: {{number}}"
       },
@@ -500,7 +500,7 @@
     "description_member": "указан в списке команды руководства",
     "description_guest": "по умолчанию; может публиковать посты и комментарии",
     "description_muted": "новые посты автоматически заглушаются",
-    "admin": "admin",
+    "admin": "Админ",
     "admins": "admins",
     "subscribers": "subscribers",
     "authors": "authors",

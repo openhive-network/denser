@@ -89,7 +89,7 @@
     },
     "communities_nav": {
       "my_friends": "Mes amis",
-      "all_posts": "All posts",
+      "all_posts": "Tous les articles",
       "trending_communities": "Trending Communities",
       "explore_communities": "Révéler plus de sujets...",
       "my_communities": "Mes communautés",
@@ -191,7 +191,7 @@
     "posts_sort": {
       "trending": "En vogue",
       "hot": "Chaud",
-      "new": "nouveau",
+      "new": "Nouveau",
       "payouts": "Gains",
       "muted": "Ignorés"
     },
@@ -431,10 +431,10 @@
         "reset_followed_muted_list": "Réinitialiser les listes de comptes masqués suivies",
         "reset_all_lists": "Reset All Follows/Lists",
         "busy_button": "BUSY, PLEASE WAIT",
-        "first_button": "First",
-        "previous_button": "Previous",
-        "next_button": "Next",
-        "last_button": "Last",
+        "first_button": "Première",
+        "previous_button": "Précédente",
+        "next_button": "Suivante",
+        "last_button": "Dernière",
         "viewing_page": "Page {{current}} sur {{total}}",
         "users_on_list": "Utilisateurs dans la liste : {{number}}"
       },
@@ -500,7 +500,7 @@
     "description_member": "listé dans l'équipe dirigeante",
     "description_guest": "par défaut ; peut publier et commenter",
     "description_muted": "nouveaux articles automatiquement masqués",
-    "admin": "admin",
+    "admin": "Admin",
     "admins": "admins",
     "subscribers": "subscribers",
     "authors": "authors",

@@ -89,7 +89,7 @@
     },
     "communities_nav": {
       "my_friends": "I miei amici",
-      "all_posts": "All posts",
+      "all_posts": "Tutti i post",
       "trending_communities": "Trending Communities",
       "explore_communities": "Vedi più argomenti...",
       "my_communities": "Le mie community",
@@ -189,8 +189,8 @@
   },
   "select_sort": {
     "posts_sort": {
-      "trending": "Trending",
-      "hot": "Hot",
+      "trending": "Di tendenza",
+      "hot": "Popolari",
       "new": "Nuovo",
       "payouts": "Pagamenti",
       "muted": "Muted"
@@ -203,9 +203,9 @@
     },
     "sort_comments": {
       "sort": "Sort:",
-      "trending": "Trending",
+      "trending": "Di tendenza",
       "votes": "Votes",
-      "age": "età",
+      "age": "Data",
       "filter_label": "Comment filtering",
       "filter_short_label": "Filtro nascosti",
       "filter_off": "disattivato",
@@ -431,10 +431,10 @@
         "reset_followed_muted_list": "Reimposta le liste di account silenziati seguite",
         "reset_all_lists": "Reset All Follows/Lists",
         "busy_button": "BUSY, PLEASE WAIT",
-        "first_button": "First",
+        "first_button": "Primo",
         "previous_button": "Precedente",
         "next_button": "Prossimo",
-        "last_button": "Last",
+        "last_button": "Ultimo",
         "viewing_page": "Pagina {{current}} di {{total}}",
         "users_on_list": "Utenti nella lista: {{number}}"
       },
@@ -500,7 +500,7 @@
     "description_member": "elencato nel team di gestione",
     "description_guest": "predefinito; può pubblicare e commentare",
     "description_muted": "i nuovi post vengono silenziati automaticamente",
-    "admin": "admin",
+    "admin": "Admin",
     "admins": "admins",
     "subscribers": "subscribers",
     "authors": "authors",

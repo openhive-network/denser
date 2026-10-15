@@ -89,7 +89,7 @@
     },
     "communities_nav": {
       "my_friends": "Mis amigos",
-      "all_posts": "todos publican",
+      "all_posts": "Todas las publicaciones",
       "trending_communities": "Trending Communities",
       "explore_communities": "Mostrar más temas...",
       "my_communities": "Mis comunidades",
@@ -189,8 +189,8 @@
   },
   "select_sort": {
     "posts_sort": {
-      "trending": "tendencia",
-      "hot": "en alza",
+      "trending": "Tendencia",
+      "hot": "En alza",
       "new": "Nuevo",
       "payouts": "Pagos",
       "muted": "Muted"
@@ -203,9 +203,9 @@
     },
     "sort_comments": {
       "sort": "Sort:",
-      "trending": "tendencia",
+      "trending": "Tendencia",
       "votes": "Votos",
-      "age": "edad",
+      "age": "Antigüedad",
       "filter_label": "Comment filtering",
       "filter_short_label": "Filtro de ocultos",
       "filter_off": "desactivado",
@@ -431,10 +431,10 @@
         "reset_followed_muted_list": "Restablecer listas de silenciados seguidas",
         "reset_all_lists": "Reset All Follows/Lists",
         "busy_button": "OCUPADO, ESPERA POR FAVOR",
-        "first_button": "Primer",
+        "first_button": "Primero",
         "previous_button": "Anterior",
         "next_button": "Próximo",
-        "last_button": "último",
+        "last_button": "Último",
         "viewing_page": "Viendo la página {{current}} de {{total}}",
         "users_on_list": "Usuarios en la lista: {{number}}"
       },
@@ -500,7 +500,7 @@
     "description_member": "aparece en el equipo de liderazgo",
     "description_guest": "predeterminado; puede publicar y comentar",
     "description_muted": "nuevas publicaciones silenciadas automáticamente",
-    "admin": "admin",
+    "admin": "Admin",
     "admins": "admins",
     "subscribers": "subscribers",
     "authors": "authors",
@@ -686,7 +686,7 @@
     "disable_sync_scroll": "Desactivar desplazamiento sincronizado",
     "enable_sync_scroll": "Activar desplazamiento sincronizado",
     "string_must_contain": "La cadena debe contener al menos {{num}} caracteres",
-    "must_contain_only": "debe contener solo letras y números",
+    "must_contain_only": "Debe contener solo letras y números",
     "hide_preview": "Ocultar vista previa",
     "show_preview": "Mostrar vista previa",
     "preview_placeholder": "Empieza a escribir para ver una vista previa de tu publicación",
