@@ -105,6 +105,7 @@
       },
       "account_menu_signer": "{{username}} 的账户菜单，{{method}}",
       "wallet": "钱包",
+      "blog": "博客",
       "toggle_theme": "主题",
       "toggle_lang": "语言",
       "change_password": "修改密码",

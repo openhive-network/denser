@@ -157,7 +157,8 @@ const UserMenu = ({
             </Link>
             <ThemeSubmenu />
             <LangSubmenu />
-            <DropdownMenuItem className="cursor-pointer">
+            {/* The link itself is the menu item, so Enter on it follows the link */}
+            <DropdownMenuItem className="cursor-pointer" asChild>
               <Link
                 target="_blank"
                 href={`${walletHost}/@${user.username}/transfers`}
