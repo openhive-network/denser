@@ -20,7 +20,7 @@ import { test, expect } from '../support/fixture-proxy-test';
 const FEED_PATH = '/trending';
 /** `navigation.communities_nav.all_posts` — SSR'd in the sidebar (SSR-06). */
 const ALL_POSTS_EN = 'All posts';
-const ALL_POSTS_ES = 'todos publican';
+const ALL_POSTS_ES = 'Todas las publicaciones';
 
 test.use({ fixtureTestName: 'ssrChecks' });
 
