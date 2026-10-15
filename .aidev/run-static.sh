@@ -34,6 +34,10 @@ for app in blog wallet; do
     echo "== tsc apps/$app/playwright" >&2
     pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false -p playwright < /dev/null || status=1
 done
-echo "== wallet translation sync" >&2
-pnpm --filter @hive/wallet lint:translations < /dev/null || status=1
+for app in blog wallet; do
+    echo "== $app translation sync" >&2
+    pnpm --filter "@hive/$app" lint:translations < /dev/null || status=1
+done
+echo "== blog translation usage" >&2
+pnpm --filter @hive/blog lint:translations:usage < /dev/null || status=1
 exit "$status"

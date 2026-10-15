@@ -3,10 +3,10 @@
     "no_rewards": "Brak nagród oczekujących na wykorzystanie.",
     "loading": "Wczytywanie",
     "publishing": "Publikowanie...",
-    "confirmed_indexing": "Confirmed on blockchain. Waiting for indexing...",
-    "indexing_slow": "Indexing is taking longer than usual. This is normal during high traffic.",
-    "indexing_timeout": "Post indexing timed out. Your post may still appear shortly — try reloading the page.",
-    "reload_page": "Reload page",
+    "confirmed_indexing": "Potwierdzono w blockchainie. Oczekiwanie na indeksowanie...",
+    "indexing_slow": "Indeksowanie trwa dłużej niż zwykle. To normalne przy dużym ruchu.",
+    "indexing_timeout": "Upłynął limit czasu indeksowania posta. Twój post może wkrótce się pojawić — spróbuj odświeżyć stronę.",
+    "reload_page": "Odśwież stronę",
     "reconnecting": "Ponowne łączenie…",
     "something_went_wrong": "Coś poszło nie tak",
     "unavailable_for_legal_reasons": "Niedostępne z przyczyn prawnych",
@@ -64,7 +64,11 @@
       "search": "Szukaj...",
       "light": "Tryb jasny",
       "dark": "Tryb ciemny",
-      "system": "Domyślny z systemu"
+      "system": "Domyślny z systemu",
+      "create_post": "Utwórz post",
+      "theme": "Motyw",
+      "language": "Język",
+      "menu_panel": "Panel menu"
     },
     "sidebar": {
       "welcome": "Witaj",
@@ -82,6 +86,7 @@
       "login_required": "Zaloguj się, aby użyć tej opcji"
     },
     "communities_nav": {
+      "my_friends": "Moi znajomi",
       "all_posts": "Wszystkie posty",
       "trending_communities": "Popularne Społeczności",
       "explore_communities": "Pokaż więcej społeczności..."
@@ -89,8 +94,8 @@
     "explore_nav": {
       "explore_hive": " Dowiedz się więcej o Hive",
       "what_is_hive": "Czym jest Hive",
-      "hive_dapps": "Hive dApps",
-      "blockexplorer": "Blockexplorer",
+      "hive_dapps": "Aplikacje Hive (dApps)",
+      "blockexplorer": "Eksplorator bloków",
       "vote_for_witnesses": "Głosuj na świadków",
       "hive_proposals": "Hive, Propozycje"
     },
@@ -102,7 +107,7 @@
       "notifications": "Powiadomienia",
       "wallet": "Portfel",
       "settings": "Ustawienia",
-      "block_explorer": "Block Explorer"
+      "block_explorer": "Eksplorator bloków"
     },
     "profile_posts_tab_navbar": {
       "label": "Wpisy profilu",
@@ -127,7 +132,13 @@
       "mentions": "Wzmianki",
       "follows": "Obserwacje",
       "upvotes": "Głosy za",
-      "reblogs": "Reblogi"
+      "reblogs": "Reblogi",
+      "end_of_notifications": "Koniec powiadomień",
+      "notifications_90_day_limit": "Powiadomienia są dostępne tylko z ostatnich 90 dni.",
+      "notification_score": "Wynik powiadomienia",
+      "refresh_failed": "Nie udało się wczytać powiadomień.",
+      "refresh_failed_showing_cached": "Nie udało się odświeżyć powiadomień - wyświetlane są wcześniej wczytane wyniki.",
+      "retry": "Spróbuj ponownie"
     },
     "user_menu": {
       "account_menu_key": {
@@ -186,10 +197,10 @@
       "trending": "Popularność",
       "votes": "Liczba głosów",
       "age": "Wiek",
-      "filter_label": "Comment filtering",
+      "filter_label": "Filtrowanie komentarzy",
       "filter_short_label": "Filtr ukrytych",
       "filter_off": "wył.",
-      "filtered_count": "{{count}} filtered",
+      "filtered_count": "Odfiltrowane: {{count}}",
       "filter_tooltip": "Ukryj komentarze od kont z czarnej listy lub o niskiej reputacji",
       "filter_tooltip_click_show": "Kliknij, aby pokazać",
       "filter_tooltip_click_hide": "Kliknij, aby ukryć"
@@ -229,7 +240,16 @@
       "click_to_respond": "Kliknij by odpowiedzieć",
       "open_comments": "Otwórz komentarze",
       "reblog": "Rebloguj",
-      "powered_up_100": "100% Hive Power"
+      "you_reblogged": "Zreblogowałeś",
+      "no_reblogs": "brak reblogów",
+      "reblog_count_one": "Reblogi: 1",
+      "reblog_count": "Reblogi: {{count}}",
+      "you_upvoted": "Twój głos za: {{votePercent}}%",
+      "you_downvoted": "Twój głos przeciw: {{votePercent}}%",
+      "you_voted": "Twój głos: {{votePercent}}%",
+      "vote_polling_error_message_title": "Ostrzeżenie",
+      "vote_polling_error_message_description": "Nie udało się sprawdzić, czy głos użytkownika został uwzględniony.",
+      "powered_up_100": "100% w Hive Power"
     },
     "comment_card": {
       "reveal_comment": "Pokaż komentarz",
@@ -254,6 +274,22 @@
       "expand_comment_with_replies": "Rozwiń komentarz, {{replies}}"
     }
   },
+  "alert_dialog_reblog": {
+    "action": "Potwierdź",
+    "cancel": "Anuluj",
+    "description": "Ten post zostanie dodany do Twojego bloga i udostępniony Twoim obserwującym.",
+    "already_reblogged": "Ten post został już przez Ciebie zreblogowany.",
+    "title": "Rebloguj ten post",
+    "close": "Zamknij"
+  },
+  "vote_removal_dialog": {
+    "remove_upvote_title": "Usuń głos za",
+    "remove_upvote_description": "Usunięcie głosu wyzeruje Twoje nagrody kuratorskie za ten post.",
+    "remove_downvote_title": "Usuń głos przeciw",
+    "remove_downvote_description": "Usuwanie Twojego głosu.",
+    "confirm": "Potwierdź",
+    "cancel": "Anuluj"
+  },
   "amount_hover_card": {
     "pending_payout_amount": "Wypłacana kwota: ${{value}}",
     "breakdown": "Podział:",
@@ -265,9 +301,7 @@
     "show_breakdown": "Wypłata ${{value}}, pokaż szczegóły"
   },
   "login_form": {
-    "title": "Powracający: ",
     "title_action_login": "Zaloguj się",
-    "title_action_login_to_vote": "Zaloguj się, aby zagłosować",
     "username_placeholder": "Podaj nazwę użytkownika",
     "password_placeholder": "Hasło lub WIF",
     "use_keychain": "Użyj Keychain",
@@ -275,13 +309,15 @@
     "use_hbauth": "Użyj HB Auth",
     "keep_me_logged_in": "Nie wylogowuj mnie",
     "more_login_methods": "więcej metod logowania",
-    "select_a_key_type": "Wybierz typ klucza",
-    "key_type": "Typ klucza",
-    "authorize_button": "Autoryzuj",
     "login_button": "Zaloguj się",
     "reset_button": "Wyczyść formularz",
     "cancel_button": "Anuluj",
+    "password_hbauth_placeholder": "Hasło Hbauth do odblokowania klucza",
     "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga twojego klucza {{authType}} lub hasła głównego.",
+    "title_action_unlock_key": "Odblokuj klucz",
+    "title_action_add_key": "Dodaj klucz",
+    "title_hbauth_form": "Hbauth: ",
+    "use_peakvault": "Użyj PeakVault",
     "other_signin_options": "Inne opcje logowania",
     "other_signin_description": "Wprowadź nazwę użytkownika i wybierz metodę logowania",
     "google_password_placeholder": "Hasło do odblokowania portfela Google Drive",
@@ -292,7 +328,7 @@
     "google_key_not_found_title": "Nie znaleziono klucza w portfelu",
     "google_key_not_found_description": "Nie znaleziono klucza {{keyType}} Hive dla użytkownika {{username}} w portfelu Google Drive.",
     "go_to_hive_bridge": "Przejdź do Hive Bridge",
-    "completing_google_auth": "Completing Google authorization..."
+    "completing_google_auth": "Kończenie autoryzacji Google..."
   },
   "user_profile": {
     "reputation": "Reputacja",
@@ -303,6 +339,19 @@
     "hive_buzz_badge_title": "To poziom odznaki użytkownika {{username}} zdobytą z programu Hivebuzz",
     "user_level_title": "{{username}} jest {{level}} (na podstawie zdeponowanych VESTS). Kliknij po więcej statystyk na HiveBuzz.",
     "twitter_badge_title": "By otrzymać odznakę Twittera, podlinkuj twoje konto na HivePosh.com",
+    "social": {
+      "unverified_title": "{{platform}}: {{handle}}. Dodane przez właściciela konta, niezweryfikowane",
+      "copied": "Skopiowano",
+      "platforms": {
+        "x": "X (dawniej Twitter)",
+        "ig": "Instagram",
+        "yt": "YouTube",
+        "tg": "Telegram",
+        "bsky": "Bluesky",
+        "dc": "Discord",
+        "nostr": "Nostr"
+      }
+    },
     "joined": "Dołączono",
     "active": "Ostatnia aktywność",
     "no_posts_yet": "Wygląda na to, że @{{username}} nie opublikował jeszcze żadnych wpisów!",
@@ -310,6 +359,7 @@
     "no_pending_payouts": "Brak wynagrodzeń.",
     "load_newer": "Załaduj więcej",
     "nothing_more_to_load": "Wszystko zostało już wyświetlone",
+    "empty_feed_not_following": "Nie obserwujesz jeszcze nikogo! Obserwuj innych użytkowników, aby zobaczyć tutaj ich posty.",
     "no_replies_yet": "@{{username}} nie ma jeszcze żadnych odpowiedzi.",
     "no_notifications_yet": "@{{username}} nie ma żadnych powiadomień.",
     "lists": {
@@ -344,8 +394,8 @@
         "unfollow_blacklist": "przestań obserwować czarną listę",
         "unfollow_muted_list": "przestań obserwować wyciszoną listę",
         "what_is_this": "Co to jest?",
-        "show_or_hide_descripton_one": "This is the new decentralized list system. From here you can manage your own mute list or blacklist, as well as subscribe to the mute lists and blacklists of other users. There are some new fields on the ",
-        "show_or_hide_descripton_two": " page where you can set a description of how you choose who you've added to your lists and if there are any actions that account can take to get removed from them. You can see the descriptions of the lists of other accounts by browsing directly to their personal blacklist or mute list page. These links can be found on their profile page below the follower information. To get started, we recommend that you follow the blacklists/mute lists of these accounts: hive.blog",
+        "show_or_hide_descripton_one": "To nowy, zdecentralizowany system list. Tutaj możesz zarządzać własną listą wyciszonych lub czarną listą, a także subskrybować listy wyciszonych i czarne listy innych użytkowników. Na stronie ",
+        "show_or_hide_descripton_two": " pojawiły się nowe pola, w których możesz opisać, jak wybierasz osoby dodawane do swoich list, oraz czy konto może podjąć jakieś działania, aby zostać z nich usunięte. Opisy list innych kont możesz zobaczyć, przechodząc bezpośrednio na stronę ich osobistej czarnej listy lub listy wyciszonych. Linki do nich znajdują się na stronie profilu, pod informacjami o obserwujących. Na początek zalecamy obserwowanie czarnych list/list wyciszonych tych kont: hive.blog",
         "settings": "Ustawienia",
         "list_description": "Opis listy: ",
         "add_account_to_list": "Dodaj konto/konta do listy",
@@ -376,7 +426,7 @@
       "the_author_has_subscribed_to_the_following": "Autor zasubskrybował poniższe Społeczności Hive",
       "badges_and_achievements_title": "Odznaki i osiągnięcia",
       "these_are_badges_received_by_the_author": "Są to odznaki otrzymane przez autora za pośrednictwem zewnętrznych aplikacji ",
-      "view_badges_on": "View badges on",
+      "view_badges_on": "Zobacz odznaki na",
       "you_dont_have_any_subscriptions": "Witaj! Nie masz jeszcze żadnej subscrypcji."
     },
     "notifications_tab": {
@@ -398,6 +448,7 @@
   "communities": {
     "set_title_for_user": "Ustaw tytuł dla @{{username}}",
     "mute": "Wycisz post",
+    "save": "Zapisz",
     "unmute": "Wyłącz wyciszenie posta",
     "post_comment": " post/komentarz",
     "please_provide_a_note": "Podaj notatkę dotyczącą decyzji o wyciszeniu tej treści.",
@@ -405,6 +456,29 @@
     "pin": "Przypnij",
     "unpin": "Odepnij",
     "edit_title": "Edytuj tytuł",
+    "edit_roles": "Edytuj role",
+    "edit_props": "Ustawienia",
+    "roles": "Role",
+    "user_roles": "Role użytkowników",
+    "account": "Konto",
+    "role": "Rola",
+    "title": "Tytuł",
+    "add_user": "Dodaj użytkownika",
+    "add_user_role": "Dodaj rolę użytkownika",
+    "set_the_role_of_a_user_in_this_community": "Ustaw rolę użytkownika w tej społeczności.",
+    "username": "Nazwa użytkownika",
+    "role_permissions": "Uprawnienia ról",
+    "owner": "Właściciel",
+    "mod": "Moderator",
+    "member": "Członek",
+    "guest": "Gość",
+    "muted": "Wyciszony",
+    "description_owner": "przydziela administratorów",
+    "description_admin": "edytuje ustawienia, przydziela moderatorów",
+    "description_mod": "wycisza, przypina, nadaje tytuły użytkownikom",
+    "description_member": "widoczny w zespole kierowniczym",
+    "description_guest": "domyślna; może publikować i komentować",
+    "description_muted": "nowe posty automatycznie wyciszane",
     "admin": "administrator",
     "admins": "administratorzy",
     "subscribers": "subskrybentów",
@@ -431,6 +505,45 @@
       "description": "Opis",
       "rules": "Zasady",
       "language": "Języki"
+    },
+    "edit_props_dialog": {
+      "community_settings": "Ustawienia społeczności",
+      "title": "Tytuł*",
+      "save": "Zapisz",
+      "cancel": "Anuluj",
+      "about": "O społeczności",
+      "description": "Opis",
+      "flag_text": "Zasady (jedna na linię)",
+      "lang": "Język",
+      "sav": "Zapisz",
+      "community_settings_description": "Co reprezentuje Twoja społeczność?",
+      "assigned_owner_account": "Przypisane konto właściciela",
+      "communities_are_built": "Społeczności są budowane na specjalnym koncie Hive",
+      "next": "Dalej",
+      "nsfw": "NSFW",
+      "i_have_saved_password": "Bezpiecznie zapisałem nazwę właściciela i hasło.",
+      "payment_confirm": "Ta operacja będzie kosztować 3 HIVE. Rozumiem*",
+      "manage_confirm": "Rozumiem, że do zarządzania kontem {{communityName}} muszę używać kluczy {{username}}*",
+      "go_to_community": "Przejdź do swojej społeczności ",
+      "community_created": "Społeczność utworzona!!!",
+      "languages": {
+        "en": "Angielski",
+        "kr": "Koreański",
+        "zh": "Chiński",
+        "ms": "Malajski",
+        "pl": "Polski",
+        "pt": "Portugalski",
+        "ru": "Rosyjski",
+        "it": "Włoski",
+        "de": "Niemiecki",
+        "es": "Hiszpański",
+        "sv": "Szwedzki"
+      },
+      "errors": {
+        "required": "Wymagane",
+        "maximum_characters": "Maksymalna liczba znaków: {{value}}",
+        "minimum_characters": "Minimalna liczba znaków: {{value}}"
+      }
     }
   },
   "post_content": {
@@ -484,6 +597,7 @@
       "response": "1 odpowiedź. ",
       "responses": "{{responses}} odpowiedzi. ",
       "reblog": "Rebloguj",
+      "you_reblogged": "Zreblogowałeś",
       "reply": "Odpowiedz",
       "edit": "Edytuj",
       "share_on": "Udostępnij na ",
@@ -508,8 +622,8 @@
         "preview": "Podgląd",
         "markdown_styling_guide": "Przewodnik po stylach posta",
         "exit_editor": "Jesteś pewien że chcesz opuścić tę stronę i anulować pisanie komentarza?",
-        "exit_editor_description": "Your draft will be discarded and cannot be recovered.",
-        "discard": "Discard",
+        "exit_editor_description": "Twój szkic zostanie odrzucony i nie będzie można go odzyskać.",
+        "discard": "Odrzuć",
         "power_up": "Wzmocnij 100%",
         "decline_payout": "Odrzuć Wypłatę",
         "rewards": "Wynagrodzenie: ",
@@ -517,9 +631,9 @@
         "resource_credits": "Resource Credits (RC) level: {{value}} %",
         "update_settings": "Zaktualizuj ustawienia",
         "full_in": "Pełny za: ",
-        "shadow_draft_found": "An unsaved reply was found for this thread.",
-        "shadow_draft_recover": "Recover",
-        "shadow_draft_discard": "Discard"
+        "shadow_draft_found": "Znaleziono niezapisaną odpowiedź w tym wątku.",
+        "shadow_draft_recover": "Przywróć",
+        "shadow_draft_discard": "Odrzuć"
       }
     },
     "flag": {
@@ -527,7 +641,7 @@
       "flag_description": "Proszę podać powód zgłoszenia tego postu, zostanie on sprawdzony przez moderatorów społeczności.",
       "community_rules": "Zasady społeczności",
       "cancel": "Anuluj",
-      "ok": "OK"
+      "ok": "Dobrze"
     },
     "suggestions": {
       "sorry": "Przepraszamy",
@@ -550,7 +664,7 @@
     "must_contain_only": "Może zawierać tylko litery i liczby",
     "hide_preview": "Schowaj podgląd",
     "show_preview": "Pokaż podgląd",
-    "preview_placeholder": "Start typing to see a preview of your post",
+    "preview_placeholder": "Zacznij pisać, aby zobaczyć podgląd posta",
     "metadata_section": "Metadane",
     "publishing_section": "Publikacja",
     "title": "Tytuł",
@@ -569,7 +683,7 @@
     "advanced_settings": "Ustawienia zaawansowane",
     "account_stats": "Statystyki konta:",
     "resource_credits": "Resource Credits (RC) level: {{value}} %",
-    "posting_to": "Posting to:",
+    "posting_to": "Publikowanie w:",
     "my_blog": "Mój blog",
     "preview": "Podgląd",
     "submit": "Wyślij",
@@ -579,26 +693,26 @@
     "enter_tags": "Wprowadź przynajmniej jeden tag, aby wysłać",
     "clean": "Wyczyść",
     "cancel": "Anuluj",
-    "confirm": "Confirm",
-    "cancel_confirmation_description": "Your changes will be discarded and cannot be recovered.",
+    "confirm": "Potwierdź",
+    "cancel_confirmation_description": "Twoje zmiany zostaną odrzucone i nie będzie można ich odzyskać.",
     "markdown_styling_guide": "Przewodnik formatowania z użyciem Markdown",
     "power_up": "Wzmocnij o 100%",
     "maximum_characters": "Maksymalnie {{num}} znaków",
     "markdown_not_supported": "Markdown nie jest obsługiwany tutaj",
     "html_not_supported": "HTML nie jest obsługiwany tutaj",
-    "hive_link_converted": "Blog link converted",
-    "hive_link_converted_count": "{{count}} Hive blog link(s) converted to relative path",
-    "undo": "Undo",
-    "convert_hive_links": "Convert Hive links",
+    "hive_link_converted": "Przekonwertowano link do bloga",
+    "hive_link_converted_count": "Przekonwertowane linki do blogów Hive na ścieżki względne: {{count}}",
+    "undo": "Cofnij",
+    "convert_hive_links": "Konwertuj linki Hive",
     "formatting_toolbar": "Formatowanie",
-    "spoiler": "Spoiler",
+    "spoiler": "Spojler",
     "post_body": "Treść posta",
-    "convert_hive_links_tooltip": "Automatically converts pasted links from Hive blog frontends to frontend-agnostic relative paths, so your post works on any Hive app",
-    "optimize_images": "Optimize images",
-    "optimize_images_tooltip": "Resize and compress images before upload for faster uploads and smaller file sizes. Converts unsupported formats (HEIC/HEIF) automatically.",
-    "uploading_images": "Uploading {{count}} images...",
-    "image_processing_failed": "failed",
-    "image_too_large_gif": "GIF is too large. Maximum size is 15MB.",
+    "convert_hive_links_tooltip": "Automatycznie konwertuje wklejone linki z frontendów blogów Hive na niezależne od frontendu ścieżki względne, dzięki czemu Twój post działa w każdej aplikacji Hive",
+    "optimize_images": "Optymalizuj obrazy",
+    "optimize_images_tooltip": "Zmienia rozmiar i kompresuje obrazy przed przesłaniem, co przyspiesza przesyłanie i zmniejsza rozmiar plików. Automatycznie konwertuje nieobsługiwane formaty (HEIC/HEIF).",
+    "uploading_images": "Przesyłanie obrazów ({{count}})...",
+    "image_processing_failed": "niepowodzenie",
+    "image_too_large_gif": "GIF jest za duży. Maksymalny rozmiar to 15MB.",
     "advanced_tooltip": "Tutaj możesz ustawić opcje posta, takie jak podział nagród dla autora, maksymalna akceptowana wypłata, beneficjenci i szablony postów",
     "advanced_settings_dialog": {
       "load": "Załaduj",
@@ -655,10 +769,10 @@
       "must_not_include_hivemind_community_owner": "Post już ma domyślnie tag 'hive', proszę nie dodawać innego tagu 'hive-'",
       "tags_cannot_be_repeated": "Tagi nie mogą się powtarzać"
     },
-    "shadow_draft_found": "Unsaved post found",
-    "shadow_draft_description": "A post was broadcast but may not have been indexed yet. Would you like to recover the content?",
-    "shadow_draft_recover": "Recover",
-    "shadow_draft_discard": "Discard"
+    "shadow_draft_found": "Znaleziono niezapisany post",
+    "shadow_draft_description": "Post został wysłany, ale mógł jeszcze nie zostać zindeksowany. Czy chcesz odzyskać jego treść?",
+    "shadow_draft_recover": "Przywróć",
+    "shadow_draft_discard": "Odrzuć"
   },
   "search_page": {
     "placeholder": "Szukaj",
@@ -679,6 +793,18 @@
     "witness_owner_is_too_long": "Nazwa właściciela jest za długa",
     "witness_description_is_too_long": "Opis jest za długi",
     "description_is_too_long": "Opis jest za długi",
+    "invalid_social_handle": "Nieprawidłowa nazwa dla tej platformy",
+    "social_links": "Linki społecznościowe",
+    "social_links_description": "Tylko nazwy użytkownika, bez adresów URL. Są wyświetlane w Twoim profilu jako dodane przez Ciebie i niezweryfikowane.",
+    "social_placeholders": {
+      "x": "nazwa",
+      "ig": "nazwa",
+      "yt": "nazwa",
+      "tg": "nazwa użytkownika",
+      "bsky": "nazwa.bsky.social",
+      "dc": "nazwa użytkownika",
+      "nostr": "npub1…"
+    },
     "preferences": "Preferencje",
     "not_safe_for_work_nsfw_content": "Treść niebezpieczna dla pracy (NSFW)",
     "always_hide": "Zawsze ukrywaj",
@@ -711,7 +837,7 @@
     "default_beneficiaries_disabled": "Wyłącz system poleceń",
     "advanced": "Zaawansowane",
     "api_endpoint_options": "Opcje endpoint interfejsu API",
-    "endpoint": "Endpoint",
+    "endpoint": "Punkt końcowy",
     "preferred": "Preferowany?",
     "remove": "Usuń",
     "add_api_endpoint": "Dodaj endpoint interfejsu API",

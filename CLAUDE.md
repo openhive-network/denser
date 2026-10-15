@@ -416,10 +416,14 @@ Validates that all locales have the same keys as English reference.
 pnpm --filter @hive/blog lint:translations
 ```
 
-**What it checks:**
-- Missing keys (present in English but missing in other locales)
+**What it checks** (same validator as the Wallet's `lint:translations`, `scripts/translation-validator.js`):
+- Missing keys (present in English but missing in other locales; i18next plural keys per the locale's own plural categories)
 - Extra keys (present in other locales but not in English reference)
+- Interpolation placeholders (`{{name}}`) and `<Trans>` tags that differ from English
+- Values identical to English (untranslated): every one in a reviewed locale (`pl`), sentences of 4+ words elsewhere. Brand names and other legitimate copies go in the allow-list in `scripts/check-blog-translations.js`
 - Missing translation files
+
+Both blog checks run in the `static` verification suite (`.aidev/run-static.sh`).
 
 #### 2. Translation usage validation
 Validates that all `t('key')` and `<Trans i18nKey="key">` calls in code reference existing translation keys.
@@ -445,7 +449,7 @@ pnpm --filter @hive/blog lint:translations:usage -- --unused
 2. Missing keys in locales: Copy from English and translate
 3. Extra keys: Remove outdated keys or add to English if valid
 
-**Scripts location:** `scripts/check-blog-translations.js`, `scripts/check-blog-translation-usage.js`
+**Scripts location:** `scripts/check-blog-translations.js` (policy) + `scripts/translation-validator.js` (shared with Wallet), `scripts/check-blog-translation-usage.js`
 
 **Translations location:** `apps/blog/locales/[lang]/common_blog.json`
 
