@@ -11,6 +11,7 @@ export const LANGUAGES = [
   { locale: 'fr', label: '🇫🇷' },
   { locale: 'it', label: '🇮🇹' },
   { locale: 'ja', label: '🇯🇵' },
+  { locale: 'ko', label: '🇰🇷' },
   { locale: 'pl', label: '🇵🇱' },
   { locale: 'ru', label: '🇷🇺' },
   { locale: 'zh', label: '🇨🇳' }

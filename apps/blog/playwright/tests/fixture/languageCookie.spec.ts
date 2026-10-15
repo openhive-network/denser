@@ -111,12 +111,12 @@ test('LANG-COOKIE-05: switching replaces a path-scoped copy with the one origin-
   expect(await localeCookies(context)).toEqual([{ value: 'pl', path: '/' }]);
 });
 
-test('LANG-COOKIE-06: a language only the wallet supports is shown as English and kept in the cookie', async ({
+test('LANG-COOKIE-06: a language the blog has no texts for is shown as English and kept in the cookie', async ({
   page,
   context,
   baseURL
 }) => {
-  await context.addCookies([{ name: LOCALE_COOKIE, value: 'ko', url: baseURL ?? '' }]);
+  await context.addCookies([{ name: LOCALE_COOKIE, value: 'de', url: baseURL ?? '' }]);
 
   await loadFeed(page);
 
@@ -124,5 +124,5 @@ test('LANG-COOKIE-06: a language only the wallet supports is shown as English an
   // Past the start-up effects, which would otherwise flip `<html lang>` or rewrite the cookie
   await page.waitForLoadState('networkidle');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  expect(await localeCookies(context)).toEqual([{ value: 'ko', path: '/' }]);
+  expect(await localeCookies(context)).toEqual([{ value: 'de', path: '/' }]);
 });

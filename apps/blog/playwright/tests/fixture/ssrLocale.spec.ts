@@ -49,11 +49,11 @@ test.describe('SSR locale — body translation & cache isolation', () => {
     expect(html, 'English copy should not leak through on an es request').not.toContain(ALL_POSTS_EN);
   });
 
-  // The cookie is shared with the wallet, which supports languages the blog has no texts for.
+  // The cookie is shared with the other apps of the origin, which may set a language the blog has no texts for.
   test('LOCALE-05 — a locale the blog does not support renders English texts with <html lang="en">', async ({
     request
   }) => {
-    const html = await (await request.get(FEED_PATH, { headers: { cookie: 'NEXT_LOCALE=ko' } })).text();
+    const html = await (await request.get(FEED_PATH, { headers: { cookie: 'NEXT_LOCALE=de' } })).text();
     expect(html).toMatch(/<html[^>]*lang="en"/);
     expect(html).toContain(ALL_POSTS_EN);
   });
