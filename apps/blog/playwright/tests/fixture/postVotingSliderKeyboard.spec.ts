@@ -53,4 +53,26 @@ test.describe('Vote weight slider keyboard access', () => {
     await expect(popover).toBeHidden();
     await expect(downvote).toBeFocused();
   });
+
+  test('VOTE-KB-03: Esc right after tabbing back from the submit button closes the popover', async ({ page }) => {
+    await gotoTrendingLoggedIn(page);
+    await expectFirstPostSliderEnabled(page, 'downvote');
+
+    const downvote = page
+      .getByTestId('downvote-button')
+      .first()
+      .getByRole('button', { name: 'Downvote', exact: true });
+    await downvote.focus();
+    await page.keyboard.press('Enter');
+    const popover = page.getByRole('dialog', { name: 'Downvote weight' });
+    await expect(popover.getByRole('slider', { name: 'Downvote weight' })).toBeFocused();
+
+    // No waits between the keys: the submit button's tooltip closes on the Tab before its enter
+    // animation has started, and must not linger as the layer that takes the Esc.
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Escape');
+    await expect(popover).toBeHidden();
+    await expect(downvote).toBeFocused();
+  });
 });

@@ -20,9 +20,13 @@ export const TooltipContainer = ({
         <TooltipTrigger data-testid={dataTestId} disabled={loading} asChild>
           <span className="cursor-pointer">{children}</span>
         </TooltipTrigger>
+        {/* A tooltip closed a frame after it opened, before its enter animation started, is kept
+            mounted by Radix until that animation ends. It is then still the topmost layer, so an Esc
+            meant for the weight popover or removal dialog under it would be swallowed. Without an
+            animation once closed it unmounts at once. */}
         <TooltipContent
           data-testid={dataTestId + '-tooltip'}
-          className="flex flex-col items-center justify-center"
+          className="flex flex-col items-center justify-center data-[state=closed]:animate-none"
         >
           <div className="font-bold">{text}</div>
           {afterPayout && (
