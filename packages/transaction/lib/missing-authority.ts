@@ -5,6 +5,20 @@ export type AuthorityRole = 'owner' | 'active' | 'posting';
 const MISSING_AUTHORITY_PATTERN =
   /tx_missing_(owner|active|posting)_auth|missing required (owner|active|posting) authority/i;
 
+/**
+ * Thrown before signing when the signer cannot sign with the key `role` an operation needs. Its
+ * message reads like the node's rejection, so `findMissingAuthority` reports the same role.
+ */
+export class MissingAuthorityError extends Error {
+  readonly role: AuthorityRole;
+
+  constructor(role: AuthorityRole) {
+    super(`missing required ${role} authority`);
+    this.name = 'MissingAuthorityError';
+    this.role = role;
+  }
+}
+
 function describeError(error: unknown): string {
   if (error instanceof Error) return `${error.name}: ${error.message}`;
   if (typeof error === 'string') return error;

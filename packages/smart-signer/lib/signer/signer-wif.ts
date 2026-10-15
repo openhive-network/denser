@@ -10,6 +10,7 @@ import { getChain } from '@hive/common-hiveio-packages';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
+import { MissingAuthorityError } from '@transaction/lib/missing-authority';
 
 const logger = getLogger('app');
 
@@ -29,16 +30,25 @@ export class SignerWif extends SignerHbauth {
   }
 
   override async signTransaction({ digest, transaction, singleSignKeyType, requiredKeyType }: SignTransaction): Promise<string> {
+    const signingKeyType = !singleSignKeyType && requiredKeyType ? requiredKeyType : this.keyType;
+    // Another key than the session's signs only when its WIF is stored too; otherwise refuse the
+    // operation instead of letting the node reject it
+    const otherWif = signingKeyType === this.keyType ? '' : this.getStoredWif(signingKeyType);
+    if (signingKeyType !== this.keyType && !otherWif) {
+      throw new MissingAuthorityError(signingKeyType);
+    }
     const wax = await getChain();
     const txBuilder = wax.createTransactionFromProto(transaction);
     if (digest !== txBuilder.sigDigest) {
       throw new Error('Digests do not match');
     }
 
-    const signature = await this.signDigest(digest, '', singleSignKeyType, requiredKeyType);
+    const signature = otherWif
+      ? await (await this.hbAuthClient).singleSign(this.username, digest, otherWif, signingKeyType)
+      : await this.signDigest(digest, '', singleSignKeyType, requiredKeyType);
     txBuilder.addSignature(signature);
 
-    await verifyAuthorityOrThrow(txBuilder.toApiJson(), this.pack, this.keyType, 'WIF');
+    await verifyAuthorityOrThrow(txBuilder.toApiJson(), this.pack, signingKeyType, 'WIF');
 
     return signature;
   }
@@ -65,9 +75,9 @@ export class SignerWif extends SignerHbauth {
     try {
       let wif = explicitPassword;
 
-      const keyFromStorage = window.localStorage.getItem(this.storageKey);
+      const keyFromStorage = this.getStoredWif(keyType);
       if (keyFromStorage)
-        wif = JSON.parse(keyFromStorage);
+        wif = keyFromStorage;
 
       if (!wif)
         wif = await this.getPasswordFromUser();
@@ -130,6 +140,12 @@ export class SignerWif extends SignerHbauth {
       logger.error('Error in getPasswordFromUser: %s', error instanceof Error ? error.message : String(error));
       throw new Error('No WIF key from user');
     }
+  }
+
+  /** The WIF key of `keyType` stored for this account, or '' when none is stored. */
+  private getStoredWif(keyType: string): string {
+    const stored = window.localStorage.getItem(wifCredentialKey(this.username, keyType));
+    return stored ? JSON.parse(stored) : '';
   }
 
   private get storageKey() {

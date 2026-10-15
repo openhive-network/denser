@@ -143,7 +143,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "قائمة حساب {{username}}، مفتاح النشر",
-        "active": "قائمة حساب {{username}}، المفتاح النشط"
+        "active": "قائمة حساب {{username}}، المفتاح النشط",
+        "posting_and_active": "قائمة حساب {{username}}، مفتاح النشر والمفتاح النشط"
       },
       "account_menu_signer": "قائمة حساب {{username}}، {{method}}",
       "profile": "الملف الشخصي",
@@ -172,10 +173,13 @@
       },
       "key_type": {
         "posting": "مفتاح النشر",
-        "active": "المفتاح النشط"
+        "active": "المفتاح النشط",
+        "posting_and_active": "مفتاح النشر + المفتاح النشط"
       },
       "active_key_badge": "تم تسجيل الدخول بالمفتاح النشط",
       "log_in_with_active_key": "تسجيل الدخول بالمفتاح النشط",
+      "add_active_key": "إضافة المفتاح النشط",
+      "add_posting_key": "إضافة مفتاح النشر",
       "switch_to_posting_key": "التبديل إلى مفتاح النشر"
     }
   },

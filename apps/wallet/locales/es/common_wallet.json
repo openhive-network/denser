@@ -100,7 +100,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "Menú de la cuenta {{username}}, clave de publicación",
-        "active": "Menú de la cuenta {{username}}, clave activa"
+        "active": "Menú de la cuenta {{username}}, clave activa",
+        "posting_and_active": "Menú de la cuenta {{username}}, claves de publicación y activa"
       },
       "account_menu_signer": "Menú de la cuenta {{username}}, {{method}}",
       "wallet": "Monedero",
@@ -111,10 +112,13 @@
       "logout": "Cerrar sesión",
       "key_type": {
         "posting": "Clave de publicación",
-        "active": "Clave activa"
+        "active": "Clave activa",
+        "posting_and_active": "Clave de publicación + activa"
       },
       "active_key_badge": "Sesión iniciada con la clave activa",
       "log_in_with_active_key": "Iniciar sesión con la clave activa",
+      "add_active_key": "Añadir clave activa",
+      "add_posting_key": "Añadir clave de publicación",
       "switch_to_posting_key": "Cambiar a la clave de publicación",
       "login_method": {
         "hbauth": "Almacenamiento Seguro",

@@ -100,7 +100,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "Menu dell'account {{username}}, chiave di pubblicazione",
-        "active": "Menu dell'account {{username}}, chiave attiva"
+        "active": "Menu dell'account {{username}}, chiave attiva",
+        "posting_and_active": "Menu dell'account {{username}}, chiavi di pubblicazione e attiva"
       },
       "account_menu_signer": "Menu dell'account {{username}}, {{method}}",
       "wallet": "Wallet",
@@ -111,10 +112,13 @@
       "logout": "Esci",
       "key_type": {
         "posting": "Chiave di pubblicazione",
-        "active": "Chiave attiva"
+        "active": "Chiave attiva",
+        "posting_and_active": "Chiave di pubblicazione + attiva"
       },
       "active_key_badge": "Accesso effettuato con la chiave attiva",
       "log_in_with_active_key": "Accedi con la chiave attiva",
+      "add_active_key": "Aggiungi la chiave attiva",
+      "add_posting_key": "Aggiungi la chiave di pubblicazione",
       "switch_to_posting_key": "Passa alla chiave di pubblicazione",
       "login_method": {
         "hbauth": "Archiviazione Sicura",

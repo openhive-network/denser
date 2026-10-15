@@ -15,13 +15,16 @@ import {
  * Redeeming rewards from the transfers page's rewards banner signs and broadcasts one
  * `claim_reward_balance_operation` carrying the account's pending reward balances as the node
  * reports them. Reads come from the stub node (support/walletApiStub.ts), its accounts holding
- * `rewards`; the broadcast and `verify_authority` are answered by the interceptor.
+ * `rewards`; the broadcast and `verify_authority` are answered by the interceptor. Claiming needs
+ * the posting key, so the active-key WIF session stores the account's posting key as well.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
 
 /** Randomly generated, of no account. */
 const ACTIVE_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';
+/** Randomly generated, of no account. */
+const POSTING_WIF = '5JSTSDF5nUcChE6SeyWG28ktUevv1Bg6rUnmueRQw2cxyGqE4oT';
 
 interface RewardBalances {
   reward_hive_balance: NaiAsset;
@@ -67,6 +70,7 @@ test.beforeEach(async ({ context }) => {
 const openOwnTransfersPage = async (page: Page) => {
   await logInAsStubAccount(page, 'active');
   await storeStubAccountKey(page, 'active', ACTIVE_WIF);
+  await storeStubAccountKey(page, 'posting', POSTING_WIF);
   await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
 };
 

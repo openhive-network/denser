@@ -142,6 +142,8 @@ test.describe('A posting-key session on the wallet', () => {
 
     const notice = page.getByTestId('active-key-required-notice');
     await expect(notice).toContainText(ACTIVE_KEY_PROMPT, { timeout: HYDRATION_TIMEOUT });
+    // A WIF session holds one key: it can sign in with the active key, not add it
+    await expect(page.getByTestId('active-key-required-add-key')).toHaveCount(0);
     await expect(page.getByTestId('wallet-balances-link')).toBeVisible();
     for (const testId of OWNER_TAB_TEST_IDS) await expect(page.getByTestId(testId)).toHaveCount(0);
     // No balance menu: a transfer cannot be started, let alone reach signing

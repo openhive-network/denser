@@ -100,7 +100,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "Menu konta {{username}}, klucz publikowania",
-        "active": "Menu konta {{username}}, klucz aktywny"
+        "active": "Menu konta {{username}}, klucz aktywny",
+        "posting_and_active": "Menu konta {{username}}, klucze publikowania i aktywny"
       },
       "account_menu_signer": "Menu konta {{username}}, {{method}}",
       "wallet": "Portfel",
@@ -111,10 +112,13 @@
       "logout": "Wyloguj",
       "key_type": {
         "posting": "Klucz publikowania",
-        "active": "Klucz aktywny"
+        "active": "Klucz aktywny",
+        "posting_and_active": "Klucz publikowania + aktywny"
       },
       "active_key_badge": "Zalogowano kluczem aktywnym",
       "log_in_with_active_key": "Zaloguj się kluczem aktywnym",
+      "add_active_key": "Dodaj klucz aktywny",
+      "add_posting_key": "Dodaj klucz publikowania",
       "switch_to_posting_key": "Przełącz na klucz publikowania",
       "login_method": {
         "hbauth": "Bezpieczne przechowywanie",

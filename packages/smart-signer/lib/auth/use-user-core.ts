@@ -10,7 +10,9 @@ import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
 import { User } from '@smart-signer/types/common';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
-import { RequiredKeyTypeContext, lacksRequiredKeyType } from '@smart-signer/lib/auth/required-key-type';
+import { RequiredKeyTypeContext } from '@smart-signer/lib/auth/required-key-type';
+import { lacksRequiredKeyType } from '@smart-signer/lib/auth/login-authority';
+import { useSafeStorageKeyTypes } from '@smart-signer/lib/auth/use-login-authority';
 
 const logger = getLogger('app');
 
@@ -19,10 +21,12 @@ export interface IUseUser {
   /** True when user state from localStorage is stable (after hydration completes) */
   isHydrated: boolean;
   /**
-   * True when a session exists but was signed in with a weaker key than the app's
-   * `RequiredKeyTypeContext`; `user` is then the logged-out user.
+   * True when a session exists but cannot sign with the app's `RequiredKeyTypeContext` key;
+   * `user` is then the logged-out user.
    */
   lacksRequiredKey: boolean;
+  /** The session on this origin, also while `lacksRequiredKey` hides it from `user` */
+  sessionUser: User;
 }
 
 export interface UseUserOptions {
@@ -82,8 +86,11 @@ export function useUserCore(
     initialData: () => userLocalStorage.getUser()
   });
   const user = userQuery.data;
+  const safeStorageKeys = useSafeStorageKeyTypes(user ?? defaultUser);
   // The stored session is kept as it is (another app on this origin may use it); only this app's view changes
-  const lacksRequiredKey = !!user && lacksRequiredKeyType(user, requiredKeyType);
+  const lacksRequiredKey = !!user && lacksRequiredKeyType(user, requiredKeyType, safeStorageKeys.keyTypes);
+  // Until safe storage says whether it holds the required key, the session is neither shown nor refused
+  const isKeyCheckPending = lacksRequiredKey && safeStorageKeys.isPending;
   const appUser = lacksRequiredKey ? defaultUser : user;
   useQueryErrorEffect(userQuery, () => saveUserOnce(defaultUser));
 
@@ -140,12 +147,13 @@ export function useUserCore(
 
   // Server uses cookies, client uses localStorage - these may differ during hydration,
   // so hydration renders the logged-out user the server rendered
-  const isHydrated = !waitForHydration || isPastHydration;
+  const isHydrated = (!waitForHydration || isPastHydration) && !isKeyCheckPending;
   const resolvedUser = isHydrated && appUser ? appUser : defaultUser;
 
   return {
     user: resolvedUser,
     isHydrated,
-    lacksRequiredKey: isHydrated && lacksRequiredKey
+    lacksRequiredKey: isHydrated && lacksRequiredKey,
+    sessionUser: user ?? defaultUser
   };
 }

@@ -7,6 +7,7 @@ import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/
 import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
+import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
 
 const logger = getLogger('app');
 
@@ -270,6 +271,34 @@ export class SignerHbauth extends Signer {
     const auths = await authClient.getRegisteredUserByUsername(username);
     if (!auths) throw new Error('User not found');
 
+    // If key is not registered in safe storage, ask user to enter it
+    if (!auths.registeredKeyTypes.includes(keyType)) {
+      await this.registerKey(keyType, password);
+    }
+    // Sign with the required key
+    return await authClient.sign(username, digest, keyType);
+  }
+
+  /**
+   * Asks for the `keyType` key and keeps it in safe storage next to the session's key, so later
+   * operations needing it sign without asking. Does nothing when safe storage already holds it.
+   *
+   * @throws {AuthStorageMissingError} when safe storage does not know the account
+   */
+  async addKey(keyType: KeyAuthorityType): Promise<void> {
+    const authClient = await this.hbAuthClient;
+    const auth = await authClient.getRegisteredUserByUsername(this.username);
+    if (!auth) throw new AuthStorageMissingError(this.username, keyType);
+    if (auth.registeredKeyTypes.includes(keyType)) return;
+    await this.registerKey(keyType, '');
+  }
+
+  /**
+   * Asks for the `keyType` key and registers it in safe storage. `password` is the safe storage
+   * password when this flow already has it; otherwise it is asked for, once per signer.
+   */
+  private async registerKey(keyType: KeyAuthorityType, password: string): Promise<void> {
+    const authClient = await this.hbAuthClient;
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
@@ -278,26 +307,19 @@ export class SignerHbauth extends Signer {
         inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
       }
     };
-    // If key is not registered in safe storage, ask user to enter it
-    if (!auths.registeredKeyTypes.includes(keyType)) {
-      // If password is not provided, ask user to enter it
-      if (!password) password = await this.getPasswordFromUser();
-      try {
-        // Ask user to enter key for required keyType
-        const { password: keyToUse } = await PasswordDialogModalPromise({
-          isOpen: true,
-          passwordFormOptions
-        });
-        // Import other key to safe storage
-        await authClient.register(username, password, keyToUse, keyType);
-      } catch (error) {
-        logger.error('Error in requireOtherKey: %s', error instanceof Error ? error.message : String(error));
-        // Preserve the actual error message instead of generic "Invalid key"
-        const { message } = parseAuthError(error, 'Invalid key');
-        throw new Error(message, { cause: error });
-      }
+    if (!password) password = await this.getPasswordFromUser();
+    try {
+      const { password: keyToUse } = await PasswordDialogModalPromise({
+        isOpen: true,
+        passwordFormOptions
+      });
+      await authClient.register(this.username, password, keyToUse, keyType);
+    } catch (error) {
+      logger.error('Error in registerKey: %s', error instanceof Error ? error.message : String(error));
+      // Preserve the actual error message instead of generic "Invalid key"
+      const { message } = parseAuthError(error, 'Invalid key');
+      throw new Error(message, { cause: error });
     }
-    // Sign with the required key
-    return await authClient.sign(username, digest, keyType);
+    notifySafeStorageKeysChanged();
   }
 }

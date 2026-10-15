@@ -100,7 +100,8 @@
     "user_menu": {
       "account_menu_key": {
         "posting": "{{username}} 的账户菜单，发帖密钥",
-        "active": "{{username}} 的账户菜单，活动密钥"
+        "active": "{{username}} 的账户菜单，活动密钥",
+        "posting_and_active": "{{username}} 的账户菜单，发帖密钥和活动密钥"
       },
       "account_menu_signer": "{{username}} 的账户菜单，{{method}}",
       "wallet": "钱包",
@@ -111,10 +112,13 @@
       "logout": "退出登录",
       "key_type": {
         "posting": "发帖密钥",
-        "active": "活动密钥"
+        "active": "活动密钥",
+        "posting_and_active": "发帖密钥 + 活动密钥"
       },
       "active_key_badge": "已使用活动密钥登录",
       "log_in_with_active_key": "使用活动密钥登录",
+      "add_active_key": "添加活动密钥",
+      "add_posting_key": "添加发帖密钥",
       "switch_to_posting_key": "切换到发帖密钥",
       "login_method": {
         "hbauth": "安全存储",
