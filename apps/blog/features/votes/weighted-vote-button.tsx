@@ -9,7 +9,10 @@ interface WeightedVoteButtonProps {
   /** Opens the weight slider (`children`) on click instead of voting at full weight. */
   sliderEnabled: boolean;
   loading: boolean;
+  /** The button's accessible name and tooltip; the `icon` should be `aria-hidden`. */
   tooltipText: string;
+  /** Accessible name of the slider popover. */
+  popoverLabel: string;
   dataTestId: string;
   sliderTestId: string;
   afterPayout: boolean;
@@ -33,6 +36,7 @@ const WeightedVoteButton = ({
   sliderEnabled,
   loading,
   tooltipText,
+  popoverLabel,
   dataTestId,
   sliderTestId,
   afterPayout,
@@ -58,6 +62,16 @@ const WeightedVoteButton = ({
     if (event.target instanceof Node && buttonRef.current?.contains(event.target)) event.preventDefault();
   };
 
+  // Radix would focus the first focusable element, the submit button, so a second Enter
+  // would broadcast the vote straight away; start on the slider instead.
+  const focusSlider = (event: Event) => {
+    if (!(event.currentTarget instanceof HTMLElement)) return;
+    const slider = event.currentTarget.querySelector<HTMLElement>('[role="slider"]');
+    if (!slider) return;
+    event.preventDefault();
+    slider.focus();
+  };
+
   const focusButton = (event: Event) => {
     event.preventDefault();
     buttonRef.current?.focus();
@@ -71,6 +85,7 @@ const WeightedVoteButton = ({
           ref={buttonRef}
           className="flex h-full items-center justify-center"
           disabled={loading}
+          aria-label={tooltipText}
           aria-haspopup={sliderEnabled ? 'dialog' : undefined}
           aria-expanded={sliderEnabled ? open : undefined}
           onClick={handleClick}
@@ -84,6 +99,8 @@ const WeightedVoteButton = ({
         align="start"
         alignOffset={SLIDER_POPOVER_ALIGN_OFFSET}
         data-testid={sliderTestId}
+        aria-label={popoverLabel}
+        onOpenAutoFocus={focusSlider}
         onInteractOutside={ignoreButtonPress}
         onCloseAutoFocus={focusButton}
       >
