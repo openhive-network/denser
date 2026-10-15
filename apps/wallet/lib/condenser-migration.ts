@@ -5,6 +5,7 @@ import {
   removeCondenserKeys,
   type CondenserMigrationProfile
 } from '@smart-signer/lib/condenser-migration';
+import { readLocaleCookie, writeLocaleCookie } from '@ui/lib/locale-cookie';
 import { cookieName, languages } from '@/wallet/i18n/settings';
 
 // Direct localStorage access is intentional: we write Denser's legacy `node-endpoint`
@@ -20,11 +21,11 @@ const logger = getLogger('app');
 function migrateLanguage(): void {
   try {
     // Skip if Denser already has a language set via cookie
-    if (getCookie(cookieName)) return;
+    if (readLocaleCookie()) return;
 
     const locale = readCondenserLanguage(languages);
     if (locale) {
-      document.cookie = `${cookieName}=${locale}; path=/; SameSite=Lax`;
+      writeLocaleCookie(locale);
       logger.info('Condenser wallet migration: language "%s" migrated to %s cookie', locale, cookieName);
     }
   } catch (error) {

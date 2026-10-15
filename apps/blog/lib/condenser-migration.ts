@@ -1,5 +1,6 @@
 import { getLogger } from '@hive/ui/lib/logging';
 import { setStorageItem, getStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
+import { readLocaleCookie } from '@ui/lib/locale-cookie';
 import {
   CONDENSER_LOGIN_KEYS,
   readCondenserLanguage,
@@ -117,13 +118,13 @@ function convertPayoutType(condenserType: string | undefined): string {
 // --- Migration functions ---
 
 /**
- * Migrates language preference from Condenser's `language` key to Denser's `NEXT_LOCALE`.
- * Only migrates if NEXT_LOCALE doesn't already exist.
+ * Migrates language preference from Condenser's `language` key to Denser's `NEXT_LOCALE` cookie.
+ * Only migrates if NEXT_LOCALE cookie doesn't already exist.
  */
 function migrateLanguage(): void {
   try {
-    // Skip if Denser already has a language set
-    if (getStorageItem<string>('NEXT_LOCALE')) return;
+    // Skip if Denser already has a language set via cookie
+    if (readLocaleCookie()) return;
 
     const locale = readCondenserLanguage(languages);
     if (locale) {

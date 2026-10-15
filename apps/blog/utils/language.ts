@@ -1,19 +1,26 @@
-import { getCookie } from '@ui/lib/utils';
+import { getStorageItem, removeStorageItem } from '@ui/lib/storage-with-ttl';
+import { readLocaleCookie, writeLocaleCookie } from '@ui/lib/locale-cookie';
+import { defaultLocale, languages } from '@/blog/i18n/settings';
 
-import { getStorageItem, setStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
-import { languages } from '@/blog/i18n/settings';
-
-export const LOCALE_KEY = 'NEXT_LOCALE';
+/** localStorage key older builds also kept the language in; the cookie is the only source now. */
+const LEGACY_STORAGE_KEY = 'NEXT_LOCALE';
 
 export const getLanguage = () => {
-  if (typeof window === 'undefined') return 'en';
-  // Language preference is permanent (no TTL)
-  return getStorageItem<string>(LOCALE_KEY) || getCookie(LOCALE_KEY) || 'en';
+  if (typeof window === 'undefined') return defaultLocale;
+  return readLocaleCookie() || defaultLocale;
 };
 
 export const setLanguage = (locale: string) => {
   if (!languages.includes(locale)) return;
-  document.cookie = `${LOCALE_KEY}=${locale}; SameSite=Lax; path=/`;
-  // Language preference is permanent (no TTL)
-  setStorageItem(LOCALE_KEY, locale, StorageTTL.PERMANENT);
+  writeLocaleCookie(locale);
+};
+
+/**
+ * Removes the language older builds stored in localStorage and returns it when it is a supported
+ * locale, so it can stand in for a missing cookie once.
+ */
+export const takeLegacyStoredLanguage = (): string | null => {
+  const stored = getStorageItem<string>(LEGACY_STORAGE_KEY);
+  removeStorageItem(LEGACY_STORAGE_KEY);
+  return stored && languages.includes(stored) ? stored : null;
 };

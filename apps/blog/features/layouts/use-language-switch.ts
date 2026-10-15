@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getLanguage, setLanguage } from '../../utils/language';
+import { useLocale } from '@ui/components/locale-context';
+import { setLanguage } from '../../utils/language';
 
 export const LANGUAGES = [
   { locale: 'ar', label: 'عر' },
@@ -16,14 +16,17 @@ export const LANGUAGES = [
   { locale: 'zh', label: '🇨🇳' }
 ];
 
-/** The current UI locale, its flag label, and a function that switches to another locale. */
+/**
+ * The current UI locale (the cookie value the server rendered the page in), its flag label, and a
+ * function that switches to another locale.
+ */
 export function useLanguageSwitch() {
   const router = useRouter();
-  const [lang, setLang] = useState(getLanguage());
+  const { locale: lang } = useLocale();
 
   const changeLanguage = (locale: string) => {
     setLanguage(locale);
-    setLang(locale);
+    // Re-renders the root layout, which hands the new cookie value to LocaleProvider
     router.refresh();
   };
 
