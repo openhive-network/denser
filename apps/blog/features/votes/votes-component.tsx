@@ -16,7 +16,7 @@ import { useVoteMutation } from './hooks/use-vote-mutation';
 import { VoteRemovalDialog } from './vote-removal-dialog';
 import { TooltipContainer } from './vote-tooltip-container';
 import WeightedVoteButton from './weighted-vote-button';
-import LoggedOutVoteButton from './logged-out-vote-button';
+import VoteDialogButton from './vote-dialog-button';
 
 const VOTE_WEIGHT_DROPDOWN_THRESHOLD = 1.0 * 1000.0 * 1000.0;
 
@@ -91,6 +91,21 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
     }
   }, [userVotes]);
 
+  const upvoteSliderText = `${sliderUpvote[0]}%`;
+  const downvoteSliderText = `-${sliderDownvote[0]}%`;
+  const upvoteRemovalLabel =
+    userVote && userVote.vote_percent === 10000 && !enable_slider
+      ? t('cards.post_card.undo_upvote')
+      : t('cards.post_card.undo_upvote_percent', {
+          votePercent: ((userVote?.vote_percent ?? 0) / 100).toFixed(2)
+        });
+  const downvoteRemovalLabel =
+    userVote && userVote.vote_percent === -10000 && !enable_slider
+      ? t('cards.post_card.undo_downvote')
+      : t('cards.post_card.undo_downvote_percent', {
+          votePercent: (-(userVote?.vote_percent ?? 0) / 100).toFixed(2)
+        });
+
   const submitVote = async (weight: number) => {
     const { author, permlink } = post;
     try {
@@ -115,10 +130,11 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
           sliderEnabled={enable_slider}
           loading={voteMutation.isPending}
           tooltipText={t('cards.post_card.upvote')}
+          popoverLabel={t('cards.post_card.upvote_weight')}
           dataTestId="upvote-button"
           sliderTestId="upvote-slider-modal"
           afterPayout={pastPayout && !vote_upvoted}
-          icon={<Icons.arrowUpCircle className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white" />}
+          icon={<Icons.arrowUpCircle aria-hidden="true" className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white" />}
           onFullWeightVote={() => {
             setClickedVoteButton('up');
             submitVote(10000);
@@ -132,8 +148,10 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
               afterPayout={pastPayout && !vote_upvoted}
             >
               <button
+                type="button"
                 className="flex h-full items-center justify-center"
                 disabled={voteMutation.isPending}
+                aria-label={t('cards.post_card.submit_upvote_percent', { votePercent: sliderUpvote[0] })}
                 onClick={() => {
                   setClickedVoteButton('up');
                   submitVote(sliderUpvote[0] * 100);
@@ -147,12 +165,15 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
                 }}
               >
                 <Icons.arrowUpCircle
+                  aria-hidden="true"
                   className="h-[24px] w-[24px] cursor-pointer rounded-xl text-destructive hover:bg-destructive-icon hover:text-white sm:mr-1"
                 />
               </button>
             </TooltipContainer>
             <Slider
               dataTestId="upvote-slider"
+              thumbAriaLabel={t('cards.post_card.upvote_weight')}
+              thumbAriaValueText={upvoteSliderText}
               defaultValue={sliderUpvote}
               value={sliderUpvote}
               min={1}
@@ -160,7 +181,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
               onValueChange={(e: number[]) => setSliderUpvote(e)}
             />
             <div className="w-fit" data-testid="upvote-slider-percentage-value">
-              {sliderUpvote}%
+              {upvoteSliderText}
             </div>
           </div>
         </WeightedVoteButton>
@@ -172,26 +193,13 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
             submitVote(0);
           }}
         >
-          <span>
-            <TooltipContainer
-              loading={voteMutation.isPending}
-              text={
-                userVote && userVote.vote_percent === 10000 && !enable_slider
-                  ? t('cards.post_card.undo_upvote')
-                  : t('cards.post_card.undo_upvote_percent', {
-                      votePercent: ((userVote?.vote_percent ?? 0) / 100).toFixed(2)
-                    })
-              }
-              dataTestId="upvote-button"
-              afterPayout={pastPayout && !vote_upvoted}
-            >
-              <Icons.arrowUpCircle className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white hover:bg-destructive-icon hover:text-white" />
-            </TooltipContainer>
-          </span>
+          <VoteDialogButton label={upvoteRemovalLabel} dataTestId="upvote-button" afterPayout={false}>
+            <Icons.arrowUpCircle aria-hidden="true" className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white hover:bg-destructive-icon hover:text-white" />
+          </VoteDialogButton>
         </VoteRemovalDialog>
       ) : (
         <DialogLogin>
-          <LoggedOutVoteButton
+          <VoteDialogButton
             label={t('cards.post_card.upvote')}
             dataTestId="upvote-button"
             afterPayout={pastPayout}
@@ -200,7 +208,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
               aria-hidden="true"
               className="h-5 w-5 rounded-xl text-destructive hover:bg-destructive-icon hover:text-white"
             />
-          </LoggedOutVoteButton>
+          </VoteDialogButton>
         </DialogLogin>
       )}
       {/* Downvote with slider - trigger */}
@@ -215,10 +223,11 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
           sliderEnabled={enable_slider}
           loading={voteMutation.isPending}
           tooltipText={t('cards.post_card.downvote')}
+          popoverLabel={t('cards.post_card.downvote_weight')}
           dataTestId="downvote-button"
           sliderTestId="downvote-slider-modal"
           afterPayout={pastPayout && !vote_downvoted}
-          icon={<Icons.arrowDownCircle className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />}
+          icon={<Icons.arrowDownCircle aria-hidden="true" className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white" />}
           onFullWeightVote={() => {
             setClickedVoteButton('down');
             submitVote(-10000);
@@ -232,8 +241,10 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
               afterPayout={pastPayout && !vote_downvoted}
             >
               <button
+                type="button"
                 className="flex h-full items-center justify-center"
                 disabled={voteMutation.isPending}
+                aria-label={t('cards.post_card.submit_downvote_percent', { votePercent: -sliderDownvote[0] })}
                 onClick={() => {
                   setClickedVoteButton('down');
                   submitVote(-sliderDownvote[0] * 100);
@@ -247,12 +258,15 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
                 }}
               >
                 <Icons.arrowDownCircle
+                  aria-hidden="true"
                   className="h-[24px] w-[24px] cursor-pointer rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white sm:mr-1"
                 />
               </button>
             </TooltipContainer>
             <Slider
               dataTestId="downvote-slider"
+              thumbAriaLabel={t('cards.post_card.downvote_weight')}
+              thumbAriaValueText={downvoteSliderText}
               defaultValue={sliderDownvote}
               value={sliderDownvote}
               min={1}
@@ -260,7 +274,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
               onValueChange={(e: number[]) => setSliderDownvote(e)}
             />
             <div className="w-fit text-destructive" data-testid="downvote-slider-percentage-value">
-              -{sliderDownvote}%
+              {downvoteSliderText}
             </div>
           </div>
           <div className="flex flex-col gap-1 pt-2 text-sm" data-testid="downvote-description-content">
@@ -281,26 +295,13 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
             submitVote(0);
           }}
         >
-          <span>
-            <TooltipContainer
-              loading={voteMutation.isPending}
-              text={
-                userVote && userVote.vote_percent === -10000 && !enable_slider
-                  ? t('cards.post_card.undo_downvote')
-                  : t('cards.post_card.undo_downvote_percent', {
-                      votePercent: (-(userVote?.vote_percent ?? 0) / 100).toFixed(2)
-                    })
-              }
-              dataTestId="downvote-button"
-              afterPayout={pastPayout && !vote_downvoted}
-            >
-              <Icons.arrowDownCircle className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white opacity-80 hover:bg-gray-600 hover:text-white" />
-            </TooltipContainer>
-          </span>
+          <VoteDialogButton label={downvoteRemovalLabel} dataTestId="downvote-button" afterPayout={false}>
+            <Icons.arrowDownCircle aria-hidden="true" className="h-5 w-5 cursor-pointer rounded-xl bg-destructive-icon text-white opacity-80 hover:bg-gray-600 hover:text-white" />
+          </VoteDialogButton>
         </VoteRemovalDialog>
       ) : (
         <DialogLogin>
-          <LoggedOutVoteButton
+          <VoteDialogButton
             label={t('cards.post_card.downvote')}
             dataTestId="downvote-button"
             afterPayout={pastPayout}
@@ -309,7 +310,7 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
               aria-hidden="true"
               className="h-5 w-5 rounded-xl text-gray-600 hover:bg-gray-600 hover:text-white"
             />
-          </LoggedOutVoteButton>
+          </VoteDialogButton>
         </DialogLogin>
       )}
     </div>
