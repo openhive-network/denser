@@ -3,9 +3,9 @@
     "no_rewards": "لا توجد مكافآت معلقة للاسترداد.",
     "loading": "جار التحميل",
     "publishing": "جاري النشر...",
-    "confirmed_indexing": "Confirmed on blockchain. Waiting for indexing...",
-    "indexing_slow": "Indexing is taking longer than usual. This is normal during high traffic.",
-    "indexing_timeout": "Post indexing timed out. Your post may still appear shortly — try reloading the page.",
+    "confirmed_indexing": "تم التأكيد على البلوكشين. في انتظار الفهرسة...",
+    "indexing_slow": "تستغرق الفهرسة وقتًا أطول من المعتاد. هذا أمر طبيعي أثناء الازدحام.",
+    "indexing_timeout": "انتهت مهلة فهرسة المشاركة. قد تظهر مشاركتك قريبًا — حاول إعادة تحميل الصفحة.",
     "reload_page": "Reload page",
     "reconnecting": "جارٍ إعادة الاتصال…",
     "something_went_wrong": "حدث خطأ ما",
@@ -64,7 +64,11 @@
       "search": "بحث...",
       "light": "فاتح",
       "dark": "غامق",
-      "system": "النظام"
+      "system": "النظام",
+      "create_post": "إنشاء مشاركة",
+      "theme": "المظهر",
+      "language": "اللغة",
+      "menu_panel": "لوحة القائمة"
     },
     "sidebar": {
       "welcome": "مرحبا",
@@ -82,6 +86,7 @@
       "login_required": "سجّل الدخول لاستخدام هذا الخيار"
     },
     "communities_nav": {
+      "my_friends": "أصدقائي",
       "all_posts": "جميع المشاركات",
       "trending_communities": "المجتمعات الرائجة",
       "explore_communities": "استكشف المجتمعات..."
@@ -119,6 +124,7 @@
     },
     "profile_notifications_tab_navbar": {
       "unclaimed_rewards": "المكافآت غير المستردة: ",
+      "no_notifications_yet": "لا توجد إشعارات بعد",
       "redeem": "استرداد",
       "mark_all": "وضع علامة على الكل كقراءة",
       "all": "الكل",
@@ -126,7 +132,13 @@
       "mentions": "الذكر",
       "follows": "المتابعة",
       "upvotes": "التصويتات الإيجابية",
-      "reblogs": "إعادة النشر"
+      "reblogs": "إعادة النشر",
+      "end_of_notifications": "نهاية الإشعارات",
+      "notifications_90_day_limit": "الإشعارات متاحة لآخر 90 يومًا فقط.",
+      "notification_score": "نقاط الإشعار",
+      "refresh_failed": "تعذر تحميل الإشعارات.",
+      "refresh_failed_showing_cached": "تعذر تحديث الإشعارات - يتم عرض النتائج المحملة سابقًا.",
+      "retry": "إعادة المحاولة"
     },
     "user_menu": {
       "account_menu_key": {
@@ -229,6 +241,9 @@
       "open_comments": "افتح التعليقات",
       "reblog": "إعادة النشر",
       "you_reblogged": "أعدت النشر",
+      "no_reblogs": "لا توجد إعادات نشر",
+      "reblog_count_one": "إعادة نشر واحدة",
+      "reblog_count": "{{count}} إعادة نشر",
       "you_upvoted": "أعطيت تصويتًا إيجابيًا بنسبة {{votePercent}}%",
       "you_downvoted": "أعطيت تصويتًا سلبيًا بنسبة {{votePercent}}%",
       "you_voted": "صوتت بنسبة {{votePercent}}%",
@@ -269,7 +284,7 @@
   },
   "vote_removal_dialog": {
     "remove_upvote_title": "Remove Upvote",
-    "remove_upvote_description": "Removing your vote will reset your curation rewards for this post.",
+    "remove_upvote_description": "ستؤدي إزالة صوتك إلى إعادة تعيين مكافآت التنسيق الخاصة بك لهذه المشاركة.",
     "remove_downvote_title": "Remove Downvote",
     "remove_downvote_description": "Removing your vote.",
     "confirm": "OK",
@@ -301,6 +316,7 @@
     "use_hbauth": "استخدام Hbauth",
     "use_hiveauth": "استخدام HiveAuth",
     "use_keychain": "استخدام Keychain",
+    "use_peakvault": "استخدم PeakVault",
     "username_placeholder": "أدخل اسم المستخدم الخاص بك",
     "other_signin_options": "خيارات تسجيل دخول أخرى",
     "other_signin_description": "أدخل اسم المستخدم الخاص بك واختر طريقة تسجيل الدخول",
@@ -321,7 +337,21 @@
     "unfollow_button": "إلغاء المتابعة",
     "follow_button": "متابعة",
     "hive_buzz_badge_title": "هذه هي شارة مستوى {{username}} المكتسبة من برامج Hivebuzz",
+    "user_level_title": "{{username}} في مستوى {{level}} (بناءً على VESTS المحجوزة). انقر لمزيد من الإحصائيات على HiveBuzz.",
     "twitter_badge_title": "للحصول على شارة Twitter، قم بربط حسابك على HivePosh.com",
+    "social": {
+      "unverified_title": "{{platform}}: {{handle}}. أضافه صاحب الحساب، غير موثق",
+      "copied": "تم النسخ",
+      "platforms": {
+        "x": "X (تويتر)",
+        "ig": "إنستغرام",
+        "yt": "يوتيوب",
+        "tg": "تيليغرام",
+        "bsky": "بلوسكاي",
+        "dc": "ديسكورد",
+        "nostr": "نوستر"
+      }
+    },
     "joined": "انضم في",
     "active": "نشط",
     "no_posts_yet": "يبدو أن @{{username}} لم ينشر أي مشاركات بعد!",
@@ -329,6 +359,7 @@
     "no_pending_payouts": "لا توجد مدفوعات معلقة.",
     "load_newer": "تحميل الأحدث",
     "nothing_more_to_load": "لا يوجد المزيد لتحميله",
+    "empty_feed_not_following": "لم تتابع أي شخص بعد! تابع مستخدمين آخرين لرؤية مشاركاتهم هنا.",
     "no_replies_yet": "@{{username}} ليس لديه أي ردود حتى الآن.",
     "no_notifications_yet": "@{{username}} ليس لديه أي إشعارات حتى الآن.",
     "lists": {
@@ -407,7 +438,7 @@
       "mentioned_you_and_others": "@{{username}} ذكرك و{{others}} آخرين",
       "subscribed_to": "@{{username}} اشترك في {{community}}"
     },
-    "load_more_failed": "Couldn't load more posts.",
+    "load_more_failed": "تعذر تحميل المزيد من المشاركات.",
     "load_more_retry": "Retry",
     "check_node_status": "Check Node Status",
     "load_failed_title": "تعذر تحميل هذا الملف الشخصي",
@@ -435,6 +466,7 @@
     "set_the_role_of_a_user_in_this_community": "تعيين دور المستخدم في هذا المجتمع.",
     "username": "اسم المستخدم",
     "save": "حفظ",
+    "edit_props": "الإعدادات",
     "role_permissions": "أذونات الدور",
     "owner": "المالك",
     "mod": "المشرف",
@@ -473,6 +505,45 @@
       "description": "الوصف",
       "rules": "القواعد",
       "language": "اللغة"
+    },
+    "edit_props_dialog": {
+      "community_settings": "إعدادات المجتمع",
+      "title": "العنوان*",
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "about": "نبذة",
+      "description": "الوصف",
+      "flag_text": "القواعد (واحدة في كل سطر)",
+      "lang": "اللغة",
+      "sav": "حفظ",
+      "community_settings_description": "ما الذي يمثله مجتمعك؟",
+      "assigned_owner_account": "حساب المالك المعيّن",
+      "communities_are_built": "تُبنى المجتمعات على حساب Hive خاص",
+      "next": "التالي",
+      "nsfw": "NSFW (محتوى للبالغين)",
+      "i_have_saved_password": "لقد حفظت اسم المالك وكلمة المرور بشكل آمن.",
+      "payment_confirm": "ستكلف هذه العملية 3 HIVE. أنا أفهم ذلك*",
+      "manage_confirm": "أفهم أنه لإدارة حساب {{communityName}} يجب علي استخدام مفاتيح {{username}}*",
+      "go_to_community": "انتقل إلى مجتمعك ",
+      "community_created": "تم إنشاء المجتمع!!!",
+      "languages": {
+        "en": "الإنجليزية",
+        "kr": "الكورية",
+        "zh": "الصينية",
+        "ms": "الملايوية",
+        "pl": "البولندية",
+        "pt": "البرتغالية",
+        "ru": "الروسية",
+        "it": "الإيطالية",
+        "de": "الألمانية",
+        "es": "الإسبانية",
+        "sv": "السويدية"
+      },
+      "errors": {
+        "required": "مطلوب",
+        "maximum_characters": "{{value}} حرفًا كحد أقصى",
+        "minimum_characters": "{{value}} أحرف كحد أدنى"
+      }
     }
   },
   "post_content": {
@@ -551,7 +622,7 @@
         "preview": "معاينة",
         "markdown_styling_guide": "دليل أسلوب Markdown",
         "exit_editor": "هل أنت متأكد أنك تريد الخروج من محرر التعليق؟",
-        "exit_editor_description": "Your draft will be discarded and cannot be recovered.",
+        "exit_editor_description": "سيتم تجاهل مسودتك ولا يمكن استعادتها.",
         "discard": "Discard",
         "power_up": "زيادة الطاقة بنسبة 100%",
         "decline_payout": "رفض الدفعة",
@@ -560,7 +631,7 @@
         "resource_credits": "رصيد الموارد (RC) المستوى: {{value}}%",
         "update_settings": "تحديث الإعدادات",
         "full_in": "ملء: ",
-        "shadow_draft_found": "An unsaved reply was found for this thread.",
+        "shadow_draft_found": "تم العثور على رد غير محفوظ في هذا النقاش.",
         "shadow_draft_recover": "Recover",
         "shadow_draft_discard": "Discard"
       }
@@ -593,7 +664,7 @@
     "must_contain_only": "يجب أن يحتوي على أحرف وأرقام فقط",
     "hide_preview": "إخفاء المعاينة",
     "show_preview": "إظهار المعاينة",
-    "preview_placeholder": "Start typing to see a preview of your post",
+    "preview_placeholder": "ابدأ الكتابة لرؤية معاينة لمشاركتك",
     "metadata_section": "البيانات الوصفية",
     "publishing_section": "النشر",
     "title": "العنوان",
@@ -623,25 +694,25 @@
     "clean": "تنظيف",
     "cancel": "إلغاء",
     "confirm": "Confirm",
-    "cancel_confirmation_description": "Your changes will be discarded and cannot be recovered.",
+    "cancel_confirmation_description": "سيتم تجاهل تغييراتك ولا يمكن استعادتها.",
     "markdown_styling_guide": "دليل أسلوب Markdown",
     "power_up": "زيادة الطاقة بنسبة 100%",
     "maximum_characters": "أقصى عدد من الأحرف {{num}}",
     "markdown_not_supported": "Markdown غير مدعوم هنا",
     "html_not_supported": "HTML غير مدعوم هنا",
     "hive_link_converted": "Blog link converted",
-    "hive_link_converted_count": "{{count}} Hive blog link(s) converted to relative path",
+    "hive_link_converted_count": "تم تحويل {{count}} من روابط مدونة Hive إلى مسار نسبي",
     "undo": "Undo",
     "convert_hive_links": "Convert Hive links",
     "formatting_toolbar": "التنسيق",
     "spoiler": "حرق الأحداث",
     "post_body": "نص المنشور",
-    "convert_hive_links_tooltip": "Automatically converts pasted links from Hive blog frontends to frontend-agnostic relative paths, so your post works on any Hive app",
+    "convert_hive_links_tooltip": "يحوّل تلقائيًا الروابط الملصقة من واجهات مدونات Hive إلى مسارات نسبية مستقلة عن الواجهة، بحيث تعمل مشاركتك على أي تطبيق Hive",
     "optimize_images": "Optimize images",
-    "optimize_images_tooltip": "Resize and compress images before upload for faster uploads and smaller file sizes. Converts unsupported formats (HEIC/HEIF) automatically.",
+    "optimize_images_tooltip": "تغيير حجم الصور وضغطها قبل الرفع لتسريع الرفع وتقليل حجم الملفات. يحوّل الصيغ غير المدعومة (HEIC/HEIF) تلقائيًا.",
     "uploading_images": "Uploading {{count}} images...",
     "image_processing_failed": "failed",
-    "image_too_large_gif": "GIF is too large. Maximum size is 15MB.",
+    "image_too_large_gif": "ملف GIF كبير جدًا. الحد الأقصى للحجم هو 15MB.",
     "advanced_tooltip": "هنا يمكنك تعيين خيارات المشاركة مثل تقسيم مكافآت المؤلف، الحد الأقصى للمبلغ المقبول للدفع، المستفيدين وقوالب المشاركة",
     "advanced_settings_dialog": {
       "load": "تحميل",
@@ -699,7 +770,7 @@
       "tags_cannot_be_repeated": "لا يمكن تكرار العلامات"
     },
     "shadow_draft_found": "Unsaved post found",
-    "shadow_draft_description": "A post was broadcast but may not have been indexed yet. Would you like to recover the content?",
+    "shadow_draft_description": "تم بث مشاركة لكن ربما لم تتم فهرستها بعد. هل تريد استعادة المحتوى؟",
     "shadow_draft_recover": "Recover",
     "shadow_draft_discard": "Discard"
   },
@@ -722,6 +793,18 @@
     "witness_owner_is_too_long": "اسم المستخدم الخاص بمالك الشاهد طويل جدًا",
     "witness_description_is_too_long": "وصف الشاهد طويل جدًا",
     "description_is_too_long": "الوصف طويل جدًا",
+    "invalid_social_handle": "معرّف غير صالح لهذه المنصة",
+    "social_links": "روابط التواصل الاجتماعي",
+    "social_links_description": "المعرّفات فقط، بدون روابط URL. تُعرض في ملفك الشخصي على أنها مضافة من قبلك وغير موثقة.",
+    "social_placeholders": {
+      "x": "المعرّف",
+      "ig": "المعرّف",
+      "yt": "المعرّف",
+      "tg": "اسم المستخدم",
+      "bsky": "الاسم.bsky.social",
+      "dc": "اسم المستخدم",
+      "nostr": "npub1… (مفتاح عام)"
+    },
     "preferences": "التفضيلات",
     "not_safe_for_work_nsfw_content": "محتوى غير مناسب للعمل (NSFW)",
     "always_hide": "إخفاء دائمًا",

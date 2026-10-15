@@ -49,7 +49,7 @@ issues:
 # mainnet data rather than the change and are the flaky part of denser's CI, so
 # they never gate: the e2e specs a candidate changes run only as full's advisory
 # live_e2e suite, and smoke is not bound. Not bound either: mirrornet needs a HAF
-# stack; translation checks (lint:translations*) fail on existing debt.
+# stack.
 
 # Adaptive per-action test timeouts (ai/aidev#15386). aidev resolves each named
 # action from its recorded durations and the host's load, and hands the result to

@@ -1,6 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { compareLocale, getLeaves } = require('./check-wallet-translations');
+const { getLeaves } = require('./translation-validator');
+const { compareLocale } = require('./check-wallet-translations');
 
 const reference = getLeaves({
   global: { save: 'Save', exclude_less_than_one: 'Exclude less than 1 HBD' },
