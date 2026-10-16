@@ -48,8 +48,14 @@ const storage = new MemoryStorage();
 const fakeWindow = Object.assign(new EventTarget(), { localStorage: storage });
 Object.assign(globalThis, { window: fakeWindow });
 
-const { getSafeStorageGeneration, getWorkerGeneration, renewSafeStorageGeneration, subscribeSafeStorageGeneration } =
-  await import('./safe-storage-generation.ts');
+const {
+  getAppWorkerGenerations,
+  getSafeStorageGeneration,
+  getWorkerGeneration,
+  recordAppWorkerGeneration,
+  renewSafeStorageGeneration,
+  subscribeSafeStorageGeneration
+} = await import('./safe-storage-generation.ts');
 
 const BLOG = '';
 const WALLET = '/wallet';
@@ -92,12 +98,49 @@ describe('safe storage generation', () => {
   });
 
   it('keeps the writing app on its own worker, and names the new generation to every other app', () => {
-    const writerWorker = renewSafeStorageGeneration(WALLET, null);
-    const generation = renewSafeStorageGeneration(BLOG, 'blog-worker');
+    const blogWorker = renewSafeStorageGeneration(WALLET, null);
+    const generation = renewSafeStorageGeneration(BLOG, blogWorker);
 
-    assert.equal(getWorkerGeneration(BLOG), 'blog-worker');
+    assert.equal(getWorkerGeneration(BLOG), blogWorker);
     assert.equal(getWorkerGeneration(WALLET), generation);
-    assert.notEqual(getWorkerGeneration(WALLET), writerWorker);
+    assert.notEqual(generation, blogWorker);
+  });
+
+  it("refuses a write through a worker the app's clients no longer name, keeping the current generation", () => {
+    const blogWorker = renewSafeStorageGeneration(WALLET, null);
+    renewSafeStorageGeneration(BLOG, blogWorker);
+    const current = renewSafeStorageGeneration(WALLET, getWorkerGeneration(WALLET));
+
+    assert.equal(renewSafeStorageGeneration(BLOG, null), null);
+    assert.equal(renewSafeStorageGeneration(WALLET, blogWorker), null);
+    assert.equal(getSafeStorageGeneration(), current);
+    assert.equal(getWorkerGeneration(BLOG), current);
+  });
+
+  it("lists the worker generations each app's clients were created with, after the one naming none", () => {
+    assert.deepEqual(getAppWorkerGenerations(BLOG), [null]);
+
+    recordAppWorkerGeneration(BLOG, null);
+    recordAppWorkerGeneration(BLOG, 'first');
+    recordAppWorkerGeneration(WALLET, 'wallet');
+    recordAppWorkerGeneration(BLOG, 'second');
+    recordAppWorkerGeneration(BLOG, 'first');
+
+    assert.deepEqual(getAppWorkerGenerations(BLOG), [null, 'first', 'second']);
+    assert.deepEqual(getAppWorkerGenerations(WALLET), [null, 'wallet']);
+  });
+
+  it('keeps only the most recent worker generations of an app', () => {
+    for (let index = 0; index < 8; index++) recordAppWorkerGeneration(BLOG, `generation-${index}`);
+
+    assert.deepEqual(getAppWorkerGenerations(BLOG), [
+      null,
+      'generation-3',
+      'generation-4',
+      'generation-5',
+      'generation-6',
+      'generation-7'
+    ]);
   });
 
   it('names a bare generation, as stored before writers were recorded, to every app', () => {
