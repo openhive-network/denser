@@ -970,26 +970,26 @@
   },
   "lite_account": {
     "badge_prefix": "lite account",
-    "badge_tooltip": "Posted through a relay on behalf of a lite account (attribution pending on-chain verification)",
-    "reply_as_guest": "Reply without an account — you'll pick a name when you post.",
-    "replying_as": "Replying as lite account {{name}}",
+    "badge_tooltip": "نُشر عبر مُرحِّل نيابةً عن حساب خفيف (الإسناد بانتظار التحقق على السلسلة)",
+    "reply_as_guest": "رُدّ بدون حساب — ستختار اسمًا عند النشر.",
+    "replying_as": "الرد كحساب خفيف {{name}}",
     "name_dialog": {
-      "title": "Pick a name for your lite account",
-      "description": "No sign-up needed. This name is how your replies will be attributed.",
+      "title": "اختر اسمًا لحسابك الخفيف",
+      "description": "لا حاجة للتسجيل. ستُنسب ردودك إلى هذا الاسم.",
       "label": "Name",
       "suggest_another": "Suggest another",
-      "invalid_name": "3–63 lowercase letters, digits or hyphens; no leading/trailing hyphen.",
-      "disposable_note": "Your identity is kept in this browser only until you save it.",
-      "confirm": "Post as this name",
+      "invalid_name": "من 3 إلى 16 حرفًا: أحرف لاتينية صغيرة وأرقام وشرطات؛ يبدأ بحرف وينتهي بحرف أو رقم.",
+      "disposable_note": "تُحفظ هويتك في هذا المتصفح فقط إلى أن تحفظها.",
+      "confirm": "النشر بهذا الاسم",
       "cancel": "Cancel"
     },
     "posted": {
       "title": "Reply posted",
-      "description": "Your reply was posted as lite account {{name}}."
+      "description": "نُشر ردك كحساب خفيف {{name}}."
     },
     "save_identity": {
       "title": "Save this identity?",
-      "description": "It lives only in this browser for now. Add a passkey or sign in with a social account to keep it (coming soon)."
+      "description": "توجد حاليًا في هذا المتصفح فقط. أضف مفتاح مرور أو سجّل الدخول بحساب اجتماعي للاحتفاظ بها (قريبًا)."
     }
   }
 }

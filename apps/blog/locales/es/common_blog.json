@@ -970,26 +970,26 @@
   },
   "lite_account": {
     "badge_prefix": "lite account",
-    "badge_tooltip": "Posted through a relay on behalf of a lite account (attribution pending on-chain verification)",
-    "reply_as_guest": "Reply without an account — you'll pick a name when you post.",
-    "replying_as": "Replying as lite account {{name}}",
+    "badge_tooltip": "Publicado a través de un relé en nombre de una cuenta lite (atribución pendiente de verificación en la cadena)",
+    "reply_as_guest": "Responde sin cuenta: elegirás un nombre al publicar.",
+    "replying_as": "Respondiendo como cuenta lite {{name}}",
     "name_dialog": {
-      "title": "Pick a name for your lite account",
-      "description": "No sign-up needed. This name is how your replies will be attributed.",
+      "title": "Elige un nombre para tu cuenta lite",
+      "description": "Sin registro. Tus respuestas se atribuirán a este nombre.",
       "label": "Name",
       "suggest_another": "Suggest another",
-      "invalid_name": "3–63 lowercase letters, digits or hyphens; no leading/trailing hyphen.",
-      "disposable_note": "Your identity is kept in this browser only until you save it.",
-      "confirm": "Post as this name",
+      "invalid_name": "De 3 a 16 caracteres: letras minúsculas, dígitos y guiones; empieza por una letra y termina en letra o dígito.",
+      "disposable_note": "Tu identidad se guarda solo en este navegador hasta que la guardes.",
+      "confirm": "Publicar con este nombre",
       "cancel": "Cancel"
     },
     "posted": {
       "title": "Reply posted",
-      "description": "Your reply was posted as lite account {{name}}."
+      "description": "Tu respuesta se publicó como cuenta lite {{name}}."
     },
     "save_identity": {
       "title": "Save this identity?",
-      "description": "It lives only in this browser for now. Add a passkey or sign in with a social account to keep it (coming soon)."
+      "description": "Por ahora solo existe en este navegador. Añade una passkey o inicia sesión con una cuenta social para conservarla (próximamente)."
     }
   }
 }

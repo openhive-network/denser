@@ -970,26 +970,26 @@
   },
   "lite_account": {
     "badge_prefix": "lite account",
-    "badge_tooltip": "Posted through a relay on behalf of a lite account (attribution pending on-chain verification)",
-    "reply_as_guest": "Reply without an account — you'll pick a name when you post.",
-    "replying_as": "Replying as lite account {{name}}",
+    "badge_tooltip": "Pubblicato tramite un relay per conto di un account lite (attribuzione in attesa di verifica sulla chain)",
+    "reply_as_guest": "Rispondi senza account: sceglierai un nome al momento della pubblicazione.",
+    "replying_as": "Rispondi come account lite {{name}}",
     "name_dialog": {
-      "title": "Pick a name for your lite account",
-      "description": "No sign-up needed. This name is how your replies will be attributed.",
+      "title": "Scegli un nome per il tuo account lite",
+      "description": "Nessuna registrazione necessaria. Le tue risposte saranno attribuite a questo nome.",
       "label": "Name",
       "suggest_another": "Suggest another",
-      "invalid_name": "3–63 lowercase letters, digits or hyphens; no leading/trailing hyphen.",
-      "disposable_note": "Your identity is kept in this browser only until you save it.",
-      "confirm": "Post as this name",
+      "invalid_name": "Da 3 a 16 caratteri: lettere minuscole, cifre e trattini; inizia con una lettera e termina con una lettera o una cifra.",
+      "disposable_note": "La tua identità resta solo in questo browser finché non la salvi.",
+      "confirm": "Pubblica con questo nome",
       "cancel": "Cancel"
     },
     "posted": {
       "title": "Reply posted",
-      "description": "Your reply was posted as lite account {{name}}."
+      "description": "La tua risposta è stata pubblicata come account lite {{name}}."
     },
     "save_identity": {
       "title": "Save this identity?",
-      "description": "It lives only in this browser for now. Add a passkey or sign in with a social account to keep it (coming soon)."
+      "description": "Per ora esiste solo in questo browser. Aggiungi una passkey o accedi con un account social per conservarla (in arrivo)."
     }
   }
 }

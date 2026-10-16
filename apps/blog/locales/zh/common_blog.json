@@ -970,26 +970,26 @@
   },
   "lite_account": {
     "badge_prefix": "lite account",
-    "badge_tooltip": "Posted through a relay on behalf of a lite account (attribution pending on-chain verification)",
-    "reply_as_guest": "Reply without an account — you'll pick a name when you post.",
-    "replying_as": "Replying as lite account {{name}}",
+    "badge_tooltip": "通过中继代表轻账号发布（归属待链上验证）",
+    "reply_as_guest": "无需账号即可回复，发布时选择一个名字。",
+    "replying_as": "以轻账号 {{name}} 的身份回复",
     "name_dialog": {
-      "title": "Pick a name for your lite account",
-      "description": "No sign-up needed. This name is how your replies will be attributed.",
+      "title": "为你的轻账号选一个名字",
+      "description": "无需注册。你的回复将归属于这个名字。",
       "label": "Name",
       "suggest_another": "Suggest another",
-      "invalid_name": "3–63 lowercase letters, digits or hyphens; no leading/trailing hyphen.",
-      "disposable_note": "Your identity is kept in this browser only until you save it.",
-      "confirm": "Post as this name",
+      "invalid_name": "3 到 16 个字符：小写字母、数字和连字符；以字母开头，以字母或数字结尾。",
+      "disposable_note": "在你保存之前，你的身份仅保存在此浏览器中。",
+      "confirm": "以此名字发布",
       "cancel": "Cancel"
     },
     "posted": {
       "title": "Reply posted",
-      "description": "Your reply was posted as lite account {{name}}."
+      "description": "你的回复已以轻账号 {{name}} 的身份发布。"
     },
     "save_identity": {
       "title": "Save this identity?",
-      "description": "It lives only in this browser for now. Add a passkey or sign in with a social account to keep it (coming soon)."
+      "description": "目前它仅存在于此浏览器中。添加通行密钥或使用社交账号登录即可保留（即将推出）。"
     }
   }
 }

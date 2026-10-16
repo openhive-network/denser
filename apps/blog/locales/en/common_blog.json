@@ -978,7 +978,7 @@
       "description": "No sign-up needed. This name is how your replies will be attributed.",
       "label": "Name",
       "suggest_another": "Suggest another",
-      "invalid_name": "3–63 lowercase letters, digits or hyphens; no leading/trailing hyphen.",
+      "invalid_name": "3–16 characters: lowercase letters, digits and hyphens, starting with a letter and ending with a letter or digit.",
       "disposable_note": "Your identity is kept in this browser only until you save it.",
       "confirm": "Post as this name",
       "cancel": "Cancel"

@@ -967,5 +967,29 @@
       "user_topic": "주제별 사용자 게시물",
       "tag": "태그"
     }
+  },
+  "lite_account": {
+    "badge_prefix": "라이트 계정",
+    "badge_tooltip": "라이트 계정을 대신해 릴레이를 통해 게시됨 (온체인 검증 대기 중)",
+    "reply_as_guest": "계정 없이 답글을 남기세요. 게시할 때 이름을 고릅니다.",
+    "replying_as": "라이트 계정 {{name}}(으)로 답글 작성 중",
+    "name_dialog": {
+      "title": "라이트 계정 이름을 선택하세요",
+      "description": "가입이 필요 없습니다. 답글은 이 이름으로 표시됩니다.",
+      "label": "이름",
+      "suggest_another": "다른 이름 추천",
+      "invalid_name": "3~16자: 소문자 영문, 숫자, 하이픈. 영문으로 시작하고 영문 또는 숫자로 끝나야 합니다.",
+      "disposable_note": "저장하기 전까지 신원은 이 브라우저에만 보관됩니다.",
+      "confirm": "이 이름으로 게시",
+      "cancel": "취소"
+    },
+    "posted": {
+      "title": "답글이 게시되었습니다",
+      "description": "답글이 라이트 계정 {{name}}(으)로 게시되었습니다."
+    },
+    "save_identity": {
+      "title": "이 신원을 저장할까요?",
+      "description": "지금은 이 브라우저에만 존재합니다. 패스키를 추가하거나 소셜 계정으로 로그인하면 보관할 수 있습니다 (곧 지원 예정)."
+    }
   }
 }
