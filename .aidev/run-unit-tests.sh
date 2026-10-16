@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
-# node:test suites of scripts/ci-helpers, .aidev, scripts/check-*-translations (with scripts/korean-translations), playwright/support, packages/ui, packages/smart-signer,
+# node:test suites of scripts/ci-helpers, .aidev, scripts/check-*-translations (with scripts/korean-translations), scripts/check-beekeeper-lockfile, playwright/support, packages/ui, packages/smart-signer,
 # apps/blog and apps/wallet (run through node's TypeScript type stripping): the `baseline` slot
 # and the `unit` suite of the quick, full and canary slots.
 # No I/O, no server. Each package writes junit (mocha's built-in xunit reporter)
@@ -48,6 +48,13 @@ run_with_junit_fallback "$junit" translations node --test \
     --test-reporter=junit --test-reporter-destination="$junit" \
     scripts/check-wallet-translations.test.js scripts/check-blog-translations.test.js \
     scripts/check-smart-signer-translations.test.js scripts/korean-translations.test.js < /dev/null || status=1
+
+echo "== node --test scripts/check-beekeeper-lockfile" >&2
+junit="$PWD/test-results/unit/beekeeper-lockfile.xml"
+run_with_junit_fallback "$junit" beekeeper-lockfile node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    scripts/check-beekeeper-lockfile.test.js < /dev/null || status=1
 
 echo "== node --test playwright/support" >&2
 junit="$PWD/test-results/unit/playwright-support.xml"

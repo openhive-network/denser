@@ -15,3 +15,9 @@ catalogs:
     '@hiveio/workerbee': 1.28.4-rc1-stable.260317120349
     '@hiveio/hb-auth': 1.28.4-rc0-stable.260405141254
     '@hiveio/healthchecker-component': 2.0.2
+
+# wax-signers-external, wax-signers-beekeeper and hb-auth pin an older @hiveio/beekeeper
+# whose embind glue uses new Function, which the nonce CSP (no 'unsafe-eval') blocks
+# on the page; every consumer gets the catalog's CSP-safe build.
+overrides:
+  '@hiveio/beekeeper': 'catalog:hiveio-toolset'
