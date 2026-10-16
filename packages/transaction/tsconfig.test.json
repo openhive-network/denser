@@ -17,6 +17,8 @@
       "@hive/ui/lib/logging": ["lib/__test-stubs__/ui-logging.ts"],
       "@ui/lib/logging": ["lib/__test-stubs__/ui-logging.ts"],
       "@ui/lib/logger": ["../ui/lib/logger.ts"],
+      "@ui/lib/utils": ["lib/__test-stubs__/ui-utils.ts"],
+      "@hive/ui/lib/sentry-scrub": ["../ui/lib/sentry-scrub.ts"],
       "@ui/lib/common-variables": ["../ui/lib/common-variables.ts"],
       "@ui/lib/storage-with-ttl": ["../ui/lib/storage-with-ttl.ts"],
       "@ui/config/public-vars": ["lib/__test-stubs__/ui-public-vars.ts"]
