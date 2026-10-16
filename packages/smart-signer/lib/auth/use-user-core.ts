@@ -12,7 +12,7 @@ import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
 import { RequiredKeyTypeContext } from '@smart-signer/lib/auth/required-key-type';
 import { lacksRequiredKeyType } from '@smart-signer/lib/auth/login-authority';
-import { useSafeStorageKeyTypes } from '@smart-signer/lib/auth/use-login-authority';
+import { useStoredKeyTypes } from '@smart-signer/lib/auth/use-login-authority';
 
 const logger = getLogger('app');
 
@@ -86,11 +86,11 @@ export function useUserCore(
     initialData: () => userLocalStorage.getUser()
   });
   const user = userQuery.data;
-  const safeStorageKeys = useSafeStorageKeyTypes(user ?? defaultUser);
+  const storedKeys = useStoredKeyTypes(user ?? defaultUser);
   // The stored session is kept as it is (another app on this origin may use it); only this app's view changes
-  const lacksRequiredKey = !!user && lacksRequiredKeyType(user, requiredKeyType, safeStorageKeys.keyTypes);
-  // Until safe storage says whether it holds the required key, the session is neither shown nor refused
-  const isKeyCheckPending = lacksRequiredKey && safeStorageKeys.isPending;
+  const lacksRequiredKey = !!user && lacksRequiredKeyType(user, requiredKeyType, storedKeys.keyTypes);
+  // Until the stored keys say whether the session holds the required key, it is neither shown nor refused
+  const isKeyCheckPending = lacksRequiredKey && storedKeys.isPending;
   const appUser = lacksRequiredKey ? defaultUser : user;
   useQueryErrorEffect(userQuery, () => saveUserOnce(defaultUser));
 

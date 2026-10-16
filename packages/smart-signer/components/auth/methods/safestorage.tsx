@@ -40,6 +40,8 @@ import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
+import { registerSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
+import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 
 function getFormSchema() {
   return z
@@ -135,7 +137,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           setLoading(false);
           return;
         }
-        await authClient.current?.register(username, password, wif, keyType, strict);
+        if (authClient.current) {
+          await registerSafeStorageKey(
+            authClient.current,
+            { username, password, wif, keyType, strict },
+            SHARED_KEY_LOOKUP
+          );
+        }
         await finalize(values);
         form.reset();
       } catch (error) {

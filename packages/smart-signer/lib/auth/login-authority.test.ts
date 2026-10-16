@@ -16,7 +16,12 @@ const SIGNERS = ['keychain', 'peakvault', 'metamask', 'google', 'hiveauth', 'hiv
 describe('getLoginAuthority', () => {
   for (const keyType of ['posting', 'active']) {
     it(`wif holds the ${keyType} key it signed in with, and no other`, () => {
-      assert.deepEqual(getLoginAuthority(session('wif', keyType), ['posting', 'active']), {
+      assert.deepEqual(getLoginAuthority(session('wif', keyType)), {
+        kind: 'key',
+        keyTypes: [keyType],
+        canAddKey: false
+      });
+      assert.deepEqual(getLoginAuthority(session('wif', keyType), [keyType]), {
         kind: 'key',
         keyTypes: [keyType],
         canAddKey: false
@@ -38,6 +43,16 @@ describe('getLoginAuthority', () => {
         kind: 'key',
         keyTypes: ['posting', 'active'],
         canAddKey: true
+      });
+    }
+  });
+
+  it('wif holds both keys when its key is stored as the posting and the active key', () => {
+    for (const keyType of ['posting', 'active']) {
+      assert.deepEqual(getLoginAuthority(session('wif', keyType), ['posting', 'active']), {
+        kind: 'key',
+        keyTypes: ['posting', 'active'],
+        canAddKey: false
       });
     }
   });
@@ -72,8 +87,14 @@ describe('lacksRequiredKeyType', () => {
     assert.equal(lacksRequiredKeyType(session('hbauth', 'posting'), 'active', ['posting', 'active']), false);
   });
 
-  it('refuses a wif posting session even when other keys are stored', () => {
-    assert.equal(lacksRequiredKeyType(session('wif', 'posting'), 'active', ['active']), true);
+  it('refuses a wif posting session whose key is stored as the posting key only', () => {
+    assert.equal(lacksRequiredKeyType(session('wif', 'posting'), 'active', ['posting']), true);
+    assert.equal(lacksRequiredKeyType(session('wif', 'posting'), 'active'), true);
+  });
+
+  it('accepts a wif session whose key is stored as both keys', () => {
+    assert.equal(lacksRequiredKeyType(session('wif', 'posting'), 'active', ['posting', 'active']), false);
+    assert.equal(lacksRequiredKeyType(session('wif', 'active'), 'posting', ['posting', 'active']), false);
   });
 
   it('accepts a posting session of a signer holding every key', () => {
