@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
-# node:test suites of scripts/ci-helpers, .aidev, scripts/check-*-translations (with scripts/korean-translations), scripts/check-beekeeper-lockfile, playwright/support, packages/ui, packages/smart-signer,
+# node:test suites of scripts/ci-helpers, .aidev, scripts/check-*-translations (with scripts/korean-translations), scripts/check-beekeeper-lockfile, playwright/support, packages/ui, packages/smart-signer, packages/common-hiveio-packages,
 # apps/blog and apps/wallet (run through node's TypeScript type stripping): the `baseline` slot
 # and the `unit` suite of the quick, full and canary slots.
 # No I/O, no server. Each package writes junit (mocha's built-in xunit reporter)
@@ -91,6 +91,12 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/auth/accounts.test.ts \
     packages/smart-signer/lib/auth/login-authority.test.ts \
     packages/smart-signer/lib/fetch-json.test.ts < /dev/null || status=1
+echo "== node --test packages/common-hiveio-packages" >&2
+junit="$PWD/test-results/unit/common-hiveio-packages.xml"
+run_with_junit_fallback "$junit" common-hiveio-packages node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    packages/common-hiveio-packages/src/hb-auth/safe-storage-generation.test.ts < /dev/null || status=1
 echo "== node --test packages/middleware" >&2
 junit="$PWD/test-results/unit/middleware.xml"
 run_with_junit_fallback "$junit" middleware node --test \
