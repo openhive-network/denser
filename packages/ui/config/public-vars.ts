@@ -9,7 +9,10 @@ export const configuredImagesEndpoint = (env('IMAGES_ENDPOINT') ?? 'https://imag
 export const configuredApiEndpoint = (env('API_ENDPOINT') ?? 'https://api.hive.blog').replace(/\/+$/, '');
 export const configuredRestApiEndpoint = env('REST_API_ENDPOINT')?.replace(/\/+$/, '') || undefined;
 export const configuredBlogDomain = env('BLOG_DOMAIN') ?? 'https://hive.blog/';
-export const configuredSessionTime = resolveSessionTime(env('APP_SESSION_TIME'), configuredSiteDomain);
+export const configuredSessionTime = resolveSessionTime(
+  env('APP_SESSION_TIME'),
+  process.env.DENSER_APP === 'wallet' ? 'wallet' : 'blog'
+);
 /**
  * API nodes the browser fails over across; the default mirrors the CSP's own. The CSP `connect-src`
  * allows them plus the node picker's nodes (`PICKER_API_NODES`), which are not failover targets.
