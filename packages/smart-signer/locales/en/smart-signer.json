@@ -149,6 +149,7 @@
   "broadcast_error": {
     "missing_owner_authority": "This operation needs your owner key. Sign in with it and try again.",
     "missing_active_authority": "This operation needs your active key. Sign in with your active key and try again.",
-    "missing_posting_authority": "This operation needs your posting key. Sign in with it and try again."
+    "missing_posting_authority": "This operation needs your posting key. Sign in with it and try again.",
+    "safe_storage_missing_account": "Safe storage in this browser holds no keys for your account. Please sign in again."
   }
 }

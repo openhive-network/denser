@@ -149,6 +149,7 @@
   "broadcast_error": {
     "missing_owner_authority": "此操作需要您的所有者密钥（owner）。请使用该密钥登录后重试。",
     "missing_active_authority": "此操作需要您的活动密钥（active）。请使用活动密钥登录后重试。",
-    "missing_posting_authority": "此操作需要您的发帖密钥（posting）。请使用该密钥登录后重试。"
+    "missing_posting_authority": "此操作需要您的发帖密钥（posting）。请使用该密钥登录后重试。",
+    "safe_storage_missing_account": "此浏览器的安全存储中没有您账户的密钥。请重新登录。"
   }
 }

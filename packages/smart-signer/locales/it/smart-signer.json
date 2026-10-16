@@ -149,6 +149,7 @@
   "broadcast_error": {
     "missing_owner_authority": "Questa operazione richiede la tua chiave proprietario (owner). Accedi con essa e riprova.",
     "missing_active_authority": "Questa operazione richiede la tua chiave attiva (active). Accedi con la tua chiave attiva e riprova.",
-    "missing_posting_authority": "Questa operazione richiede la tua chiave di pubblicazione (posting). Accedi con essa e riprova."
+    "missing_posting_authority": "Questa operazione richiede la tua chiave di pubblicazione (posting). Accedi con essa e riprova.",
+    "safe_storage_missing_account": "L'archivio sicuro di questo browser non contiene chiavi del tuo account. Accedi di nuovo."
   }
 }
