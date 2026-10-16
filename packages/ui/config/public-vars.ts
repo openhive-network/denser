@@ -1,4 +1,5 @@
 import env from '@beam-australia/react-env';
+import { resolveSessionTime } from '@hive/ui/lib/session-time';
 
 /// Contains list of public variables which can have safely set defaults and allow application build without explicit env. definition
 
@@ -8,7 +9,7 @@ export const configuredImagesEndpoint = (env('IMAGES_ENDPOINT') ?? 'https://imag
 export const configuredApiEndpoint = (env('API_ENDPOINT') ?? 'https://api.hive.blog').replace(/\/+$/, '');
 export const configuredRestApiEndpoint = env('REST_API_ENDPOINT')?.replace(/\/+$/, '') || undefined;
 export const configuredBlogDomain = env('BLOG_DOMAIN') ?? 'https://hive.blog/';
-export const configuredSessionTime = env('APP_SESSION_TIME') ?? configuredSiteDomain.includes('wallet') ? 900 : 64800;
+export const configuredSessionTime = resolveSessionTime(env('APP_SESSION_TIME'), configuredSiteDomain);
 /**
  * API nodes the browser fails over across; the default mirrors the CSP's own. The CSP `connect-src`
  * allows them plus the node picker's nodes (`PICKER_API_NODES`), which are not failover targets.
