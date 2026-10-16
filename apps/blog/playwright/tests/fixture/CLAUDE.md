@@ -906,6 +906,15 @@ close the dialog another way. Also, never render a dialog inside a `TooltipTrigg
 React bubbles the dialog's focus and pointer events through the portal to the trigger,
 which then opens its tooltip over the dialog. The post page's reblog dialog did this
 until `UI-ALERT-01` caught it.
+A *closed* tooltip still counts as a layer while Radix's `Presence` keeps it mounted
+for an exit animation. A tooltip closed a frame after it opened, before its enter
+animation started, lingers that way and swallows the next Esc (VOTE-KB-02's
+intermittent failure). The vote arrows' tooltips (`features/votes/vote-tooltip-container.tsx`)
+drop their animation once closed, so they unmount at once; VOTE-KB-03 presses
+Shift+Tab, Tab, Esc back to back to catch a regression. The shared `TooltipContent`
+still lingers, and RESP-A11Y-02 depends on it: focusing an off-screen link scrolls the
+page, Radix closes the tooltip on that scroll, and only the lingering closed tooltip is
+left to show.
 `collectConsoleProblems` skips Chromium's `Failed to load resource` for hosts other than
 localhost. Images and other off-origin resources can't load offline.
 
