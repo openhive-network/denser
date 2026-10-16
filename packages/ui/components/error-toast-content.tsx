@@ -1,10 +1,10 @@
 import { cn } from '@ui/lib/utils';
 import { Button } from './button';
 import { ChevronDown, ClipboardCopy } from 'lucide-react';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 interface ErrorToastContentProps {
-  errorTitle: string;
+  errorTitle: ReactNode;
   fullError: string;
   displayControls?: boolean;
   className?: string;

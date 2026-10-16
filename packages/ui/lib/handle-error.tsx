@@ -3,6 +3,7 @@
 import { transformError } from '@hive/transaction/lib/transform-error';
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
+import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
 import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
@@ -129,14 +130,18 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     return;
   }
 
-  const { errorTitle, fullError, isWellKnownError } = transformError<T>(error, ctx);
+  const { errorTitle, fullError, isWellKnownError, isKeychainMessageMissing } = transformError<T>(error, ctx);
 
   if (!!env('SENTRY_DSN') && !isWellKnownError)
     reportToSentry(fullError);
 
   toast({
     description: (
-      <ErrorToastContent errorTitle={errorTitle} fullError={fullError} displayControls={!isWellKnownError} />
+      <ErrorToastContent
+        errorTitle={isKeychainMessageMissing ? <KeychainErrorFallbackTitle /> : errorTitle}
+        fullError={fullError}
+        displayControls={!isWellKnownError}
+      />
     ),
     variant: 'destructive',
     ...toastOptions
