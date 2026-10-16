@@ -19,6 +19,9 @@ const nextConfig = {
   // assetPrefix must match basePath for proper asset serving
   assetPrefix: basePath,
   outputFileTracingRoot: path.join(__dirname, '../..'),
+  // Inlined at build time: shared code picks app-specific defaults (e.g. the safe-storage
+  // unlock time) from this, since blog and wallet can share one SITE_DOMAIN.
+  env: { DENSER_APP: 'wallet' },
   // next dev serves its dev resources (/_next/hmr) only to these hosts. AIDEV's dev
   // stack hands out http://127.0.0.1:<port>, `aidev session devstack open` forwards it
   // to http://localhost:<port>, and any other host it is opened at is named in
