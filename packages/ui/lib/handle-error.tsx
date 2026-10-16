@@ -2,9 +2,11 @@
 
 import { transformError } from '@hive/transaction/lib/transform-error';
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
+import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
 import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
+import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-message';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
 import env from "@beam-australia/react-env";
@@ -109,6 +111,18 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     logger.error(error, 'Broadcast in %s lacks %s authority', ctx?.method, missingAuthority);
     toast({
       description: <MissingAuthorityMessage role={missingAuthority} />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // The account is short of Resource Credits: say so with the node's amounts, keep its answer in the log only
+  const notEnoughRc = findNotEnoughRc(error);
+  if (notEnoughRc) {
+    logger.error(error, 'Broadcast in %s rejected for lack of RC', ctx?.method);
+    toast({
+      description: <NotEnoughRcMessage {...notEnoughRc} />,
       variant: 'destructive',
       ...toastOptions
     });
