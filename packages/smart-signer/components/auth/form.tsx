@@ -74,6 +74,11 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       await onComplete(username);
     }
 
+    async function signIn(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
+      await sign(loginType, username, keyType);
+      await submit(username);
+    }
+
     return (
       <div className="flex max-h-[calc(100dvh-10rem)] overflow-y-auto pb-4">
         {step === Steps.SAFE_STORAGE_LOGIN && (
@@ -81,8 +86,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             ref={safeStorageRef}
             preferredKeyTypes={preferredKeyTypes}
             onSetStep={setStep}
-            sign={sign}
-            submit={submit}
+            signIn={signIn}
             i18nNamespace={i18nNamespace}
             isSigned={isSigned}
             username={username}
@@ -97,8 +101,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             preferredKeyTypes={preferredKeyTypes}
             username={username}
             onUsernameChange={(username) => setUsername(username)}
-            sign={sign}
-            submit={submit}
+            signIn={signIn}
           />
         )}
 

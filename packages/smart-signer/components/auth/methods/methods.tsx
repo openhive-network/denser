@@ -24,12 +24,11 @@ import MethodInfo from '../method-info';
 import { username } from '@smart-signer/lib/auth/utils';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { handleError } from '@ui/lib/handle-error';
-import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { hasCompatibleGoogleDriveProvider } from '@smart-signer/lib/signer/signer-google-drive';
 import { hasCompatibleMetaMask } from '@smart-signer/lib/signer/signer-metamask';
-import { hasCompatiblePeakvault } from '@smart-signer/lib/signer/signer-peakvault';
 import { logger } from '@ui/lib/logger';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
+import { useInjectedExtensions } from './use-injected-extensions';
 
 export interface MethodsProps {
   onSetStep: (step: Steps) => void;
@@ -37,8 +36,7 @@ export interface MethodsProps {
   preferredKeyTypes: KeyType[];
   username: string;
   onUsernameChange: (username: string) => void;
-  sign: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
-  submit: (username: string) => Promise<void>;
+  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
 }
 
 const formSchema = z.object({
@@ -62,8 +60,7 @@ const Methods: FC<MethodsProps> = ({
   preferredKeyTypes,
   username,
   onUsernameChange,
-  sign,
-  submit
+  signIn
 }) => {
   const { t } = useSharedTranslation(i18nNamespace);
   const [loading, setLoading] = useState(false);
@@ -77,14 +74,11 @@ const Methods: FC<MethodsProps> = ({
     mode: 'onChange'
   });
 
-  const [isKeychainSupported, setIsKeychainSupported] = useState(false);
-  const [isPeakvaultSupported, setIsPeakvaultSupported] = useState(false);
+  const { keychain: isKeychainSupported, peakvault: isPeakvaultSupported } = useInjectedExtensions();
   const [isMetaMaskSupported, setIsMetaMaskSupported] = useState(false);
   const [isGoogleSupported, setIsGoogleSupported] = useState(false);
 
   useEffect(() => {
-    setIsKeychainSupported(hasCompatibleKeychain());
-    setIsPeakvaultSupported(hasCompatiblePeakvault());
     setIsGoogleSupported(hasCompatibleGoogleDriveProvider());
     hasCompatibleMetaMask().then((supported) => {
       setIsMetaMaskSupported(supported);
@@ -116,8 +110,7 @@ const Methods: FC<MethodsProps> = ({
 
       const { username, keyType, loginType } = form.getValues();
 
-      await sign(loginType, username, keyType);
-      await submit(username);
+      await signIn(loginType, username, keyType);
     } catch (error: unknown) {
       handleError(error);
     } finally {
