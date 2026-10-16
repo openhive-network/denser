@@ -7,6 +7,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import Methods from './methods/methods';
 import SafeStorageKeyUpdate from './methods/safestorage-key-update';
 import { getLogger } from '@hive/ui/lib/logging';
+import { runExclusiveSignIn } from '@smart-signer/lib/auth/sign-in-lock';
 
 const logger = getLogger('app');
 
@@ -45,7 +46,6 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
     const [username, setUsername] = useState<string>(initialUsername ?? lastLoggedInUser);
-    const signInInFlightRef = useRef(false);
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({
@@ -78,20 +78,12 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       await onComplete(username);
     }
 
-    // One sign-in at a time: a second signing request sent to an extension while the first
-    // is pending makes it drop the first one ("User ignored this transaction").
     async function signIn(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
-      if (signInInFlightRef.current) {
-        logger.info('Sign-in with %s ignored: another sign-in is in progress', loginType);
-        return;
-      }
-      signInInFlightRef.current = true;
-      try {
+      const ran = await runExclusiveSignIn(async () => {
         await sign(loginType, username, keyType);
         await submit(username);
-      } finally {
-        signInInFlightRef.current = false;
-      }
+      });
+      if (!ran) logger.info('Sign-in with %s not sent: waited for another sign-in in progress', loginType);
     }
 
     return (

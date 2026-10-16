@@ -152,6 +152,7 @@
     "missing_posting_authority": "Questa operazione richiede la tua chiave di pubblicazione (posting). Accedi con essa e riprova.",
     "safe_storage_missing_account": "L'archivio sicuro di questo browser non contiene chiavi del tuo account. Accedi di nuovo.",
     "not_enough_rc": "Crediti risorse (RC) insufficienti per questa transazione. Attendi che i tuoi RC si ricarichino o fai power up di HIVE.",
-    "not_enough_rc_amounts": "Hai {{current}} RC; questa transazione ne richiede {{needed}}."
+    "not_enough_rc_amounts": "Hai {{current}} RC; questa transazione ne richiede {{needed}}.",
+    "keychain_no_message": "Hive Keychain non è riuscito a completare la richiesta e non ha indicato il motivo."
   }
 }

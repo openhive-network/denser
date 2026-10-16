@@ -152,6 +152,7 @@
     "missing_posting_authority": "Для этой операции нужен ключ публикации (posting). Войдите с ним и повторите попытку.",
     "safe_storage_missing_account": "В защищённом хранилище этого браузера нет ключей вашей учётной записи. Войдите снова.",
     "not_enough_rc": "Недостаточно ресурсных кредитов (RC) для этой транзакции. Дождитесь восстановления RC или сделайте power up HIVE.",
-    "not_enough_rc_amounts": "У вас {{current}} RC; для этой транзакции нужно {{needed}} RC."
+    "not_enough_rc_amounts": "У вас {{current}} RC; для этой транзакции нужно {{needed}} RC.",
+    "keychain_no_message": "Hive Keychain не смог выполнить запрос и не сообщил причину."
   }
 }

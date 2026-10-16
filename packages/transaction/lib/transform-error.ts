@@ -59,8 +59,13 @@ const wellKnownErrorDescriptions = [
 /**
  * Wax's Keychain provider prefixes the extension's own answer with this; the
  * answer is written for the user ("User ignored this transaction"), so it is shown as is.
+ * Wax interpolates the answer unchecked, so a missing one arrives as "undefined".
  */
-const KEYCHAIN_ERROR_PATTERN = /Keychain error: (.+)/;
+const KEYCHAIN_ERROR_PATTERN = /Keychain error:(.*)/;
+const MISSING_KEYCHAIN_MESSAGES = ['', 'undefined', 'null'];
+
+/** Keychain's answer when the user rejects the request: their own choice, nothing to report */
+const KEYCHAIN_USER_CANCEL_PATTERN = /cancell?ed by the user/i;
 
 // TODO: Refactor this function to use the new error handling mechanism
 // This is not working as expected and it isn't configurable to show UI errors
@@ -70,13 +75,15 @@ const KEYCHAIN_ERROR_PATTERN = /Keychain error: (.+)/;
  *
  * @param {*} e
  * @param {{ method: string, params: T }} ctx
- * @returns error description
+ * @returns error description; `isWellKnownError` marks one not worth reporting,
+ * `isKeychainMessageMissing` a Keychain error that came without the extension's answer
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   logger.error('in transformError: got error (will be swallowed): %o on method: %s', e, ctx?.method);
 
   let description = 'Error';
   let isWellKnownError = false;
+  let isKeychainMessageMissing = false;
 
   if (e instanceof Error) {
     e = `${e.name}: ${e.message}`;
@@ -100,17 +107,21 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
     if (wellKnownErrorDescription) {
       description = wellKnownErrorDescription;
       isWellKnownError = true;
-    } else if (keychainMessage) {
-      description = keychainMessage;
-      isWellKnownError = true;
-    } else {
+    } else if (keychainMessage === undefined) {
       description = errorDescription;
+    } else if (MISSING_KEYCHAIN_MESSAGES.includes(keychainMessage)) {
+      description = errorDescription;
+      isKeychainMessageMissing = true;
+    } else {
+      description = keychainMessage;
+      isWellKnownError = KEYCHAIN_USER_CANCEL_PATTERN.test(keychainMessage);
     }
   }
 
   return {
     errorTitle: defaultDescription ?? description,
     fullError: scrubSensitiveData(e.toString()),
-    isWellKnownError
+    isWellKnownError,
+    isKeychainMessageMissing
   };
 }

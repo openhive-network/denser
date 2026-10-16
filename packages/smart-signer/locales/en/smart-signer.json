@@ -152,6 +152,7 @@
     "missing_posting_authority": "This operation needs your posting key. Sign in with it and try again.",
     "safe_storage_missing_account": "Safe storage in this browser holds no keys for your account. Please sign in again.",
     "not_enough_rc": "Not enough Resource Credits (RC) for this transaction. Wait for your RC to recharge or power up HIVE.",
-    "not_enough_rc_amounts": "You have {{current}} RC; this transaction needs {{needed}} RC."
+    "not_enough_rc_amounts": "You have {{current}} RC; this transaction needs {{needed}} RC.",
+    "keychain_no_message": "Hive Keychain could not complete the request and gave no reason."
   }
 }
