@@ -1,6 +1,9 @@
 import type { KeyAuthorityType } from '@hiveio/hb-auth';
 
-/** Dispatched on `window` after a key was added to safe storage */
+/**
+ * Dispatched on `window` after the keys a session holds changed: a key added to safe storage, or a
+ * stored WIF key stored for another key type too
+ */
 export const SAFE_STORAGE_KEYS_CHANGED_EVENT = 'safe-storage-keys-changed';
 
 export function notifySafeStorageKeysChanged(): void {

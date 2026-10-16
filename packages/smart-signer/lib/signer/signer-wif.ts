@@ -11,6 +11,8 @@ import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authorit
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
 import { MissingAuthorityError } from '@transaction/lib/missing-authority';
+import { findSharedKeyTypes } from '@smart-signer/lib/auth/shared-key-types';
+import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
 
 const logger = getLogger('app');
 
@@ -129,6 +131,7 @@ export class SignerWif extends SignerHbauth {
           });
           if (storeKey) {
             await this.storePassword(wif);
+            await this.storeSharedKey(wif);
           }
           return wif;
         };
@@ -140,6 +143,19 @@ export class SignerWif extends SignerHbauth {
       logger.error('Error in getPasswordFromUser: %s', error instanceof Error ? error.message : String(error));
       throw new Error('No WIF key from user');
     }
+  }
+
+  /**
+   * Stores `wif`, just stored as the session's key, as the key of every other key type it is also
+   * the key of, so operations needing those sign with it without asking.
+   */
+  private async storeSharedKey(wif: string): Promise<void> {
+    const sharedKeyTypes = await findSharedKeyTypes(this.username, this.keyType, wif);
+    if (!sharedKeyTypes.length) return;
+    for (const keyType of sharedKeyTypes) {
+      window.localStorage.setItem(wifCredentialKey(this.username, keyType), JSON.stringify(wif));
+    }
+    notifySafeStorageKeysChanged();
   }
 
   /** The WIF key of `keyType` stored for this account, or '' when none is stored. */

@@ -7,6 +7,7 @@ import {
   googleRefreshTokenCredentialKey,
   hiveAuthCredentialKey,
   readCredential,
+  storedWifKeyTypes,
   wifCredentialKey
 } from './credential-storage.ts';
 
@@ -120,5 +121,34 @@ describe('clearAllCredentials', () => {
     clearAllCredentials(storage);
 
     assert.deepEqual(storage.keys(), ['accounts', 'user']);
+  });
+});
+
+describe('storedWifKeyTypes', () => {
+  it('finds one key stored as both the posting and the active key', () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('shared-wif'));
+    storage.setItem(wifCredentialKey('alice', 'active'), JSON.stringify('shared-wif'));
+
+    assert.deepEqual(storedWifKeyTypes(storage, 'alice', 'posting'), ['posting', 'active']);
+    assert.deepEqual(storedWifKeyTypes(storage, 'alice', 'active'), ['posting', 'active']);
+  });
+
+  it('keeps distinct keys to their own key types', () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('posting-wif'));
+    storage.setItem(wifCredentialKey('alice', 'active'), JSON.stringify('active-wif'));
+
+    assert.deepEqual(storedWifKeyTypes(storage, 'alice', 'posting'), ['posting']);
+    assert.deepEqual(storedWifKeyTypes(storage, 'alice', 'active'), ['active']);
+  });
+
+  it('finds nothing when the key type has no stored key, and ignores other accounts', () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('shared-wif'));
+    storage.setItem(wifCredentialKey('bob', 'active'), JSON.stringify('shared-wif'));
+
+    assert.deepEqual(storedWifKeyTypes(storage, 'alice', 'active'), []);
+    assert.deepEqual(storedWifKeyTypes(storage, 'alice', 'posting'), ['posting']);
   });
 });

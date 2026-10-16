@@ -8,6 +8,8 @@ import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
+import { registerAddedSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
+import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 
 const logger = getLogger('app');
 
@@ -275,6 +277,9 @@ export class SignerHbauth extends Signer {
     if (!auths.registeredKeyTypes.includes(keyType)) {
       await this.registerKey(keyType, password);
     }
+    // The account holding authority over this one, when the required key is one of its keys
+    const settings = await authClient.getUserSettings(username);
+    this.authorityUsername = settings?.authorizedAccounts?.[keyType];
     // Sign with the required key
     return await authClient.sign(username, digest, keyType);
   }
@@ -294,8 +299,10 @@ export class SignerHbauth extends Signer {
   }
 
   /**
-   * Asks for the `keyType` key and registers it in safe storage. `password` is the safe storage
-   * password when this flow already has it; otherwise it is asked for, once per signer.
+   * Asks for the `keyType` key and registers it in safe storage, in the Direct Authority Mode the
+   * session's key was registered with, and for the session's key type too when it is that key as
+   * well. `password` is the safe storage password when this flow already has it; otherwise it is
+   * asked for, once per signer.
    */
   private async registerKey(keyType: KeyAuthorityType, password: string): Promise<void> {
     const authClient = await this.hbAuthClient;
@@ -313,7 +320,12 @@ export class SignerHbauth extends Signer {
         isOpen: true,
         passwordFormOptions
       });
-      await authClient.register(this.username, password, keyToUse, keyType);
+      await registerAddedSafeStorageKey(
+        authClient,
+        { username: this.username, password, wif: keyToUse, keyType },
+        this.keyType,
+        SHARED_KEY_LOOKUP
+      );
     } catch (error) {
       logger.error('Error in registerKey: %s', error instanceof Error ? error.message : String(error));
       // Preserve the actual error message instead of generic "Invalid key"

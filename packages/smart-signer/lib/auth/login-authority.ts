@@ -16,15 +16,16 @@ const KEY_TYPES: readonly KeyTypeName[] = ['posting', 'active'];
 
 // Values of LoginType.hbauth and LoginType.wif. Their signers sign with the keys they hold: hbauth
 // with any key in safe storage, which can take in another one (signer-hbauth.ts `requireOtherKey`),
-// wif with the session's key only (signer-wif.ts). Every other signer either asks for the
-// operation's required key (keychain, peakvault, metamask, google) or leaves the choice to the
-// external app (hiveauth, hivesigner).
+// wif with the session's key, which signs for every key type it is stored as (signer-wif.ts). Every
+// other signer either asks for the operation's required key (keychain, peakvault, metamask, google)
+// or leaves the choice to the external app (hiveauth, hivesigner).
 const SAFE_STORAGE_LOGIN_TYPE: `${LoginType}` = 'hbauth';
 const KEY_LOGIN_TYPES: ReadonlySet<string> = new Set<`${LoginType}`>([SAFE_STORAGE_LOGIN_TYPE, 'wif']);
 
 /**
- * @param storedKeyTypes the key types safe storage holds for the account, for an hbauth session;
- * the session's own key counts as held whether or not they are known
+ * @param storedKeyTypes the key types the session's signer holds keys of: what safe storage holds
+ * for the account, for an hbauth session; what the session's stored key is stored as, for a wif
+ * session. The session's own key counts as held whether or not they are known
  */
 export function getLoginAuthority(
   { loginType, keyType }: Pick<User, 'loginType' | 'keyType'>,
@@ -32,7 +33,7 @@ export function getLoginAuthority(
 ): LoginAuthority {
   if (!KEY_LOGIN_TYPES.has(loginType)) return { kind: 'signer', loginType };
   const canAddKey = loginType === SAFE_STORAGE_LOGIN_TYPE;
-  const held = canAddKey ? [keyType, ...storedKeyTypes] : [keyType];
+  const held = [keyType, ...storedKeyTypes];
   return { kind: 'key', keyTypes: KEY_TYPES.filter((type) => held.includes(type)), canAddKey };
 }
 
@@ -44,7 +45,8 @@ export function missingKeyType(authority: LoginAuthority): KeyTypeName | null {
 
 /**
  * True when `user` is signed in, but its signer cannot sign with `requiredKeyType`: a session that
- * holds another key than the one required, and has not added it to safe storage.
+ * holds another key than the one required, and has neither added it to safe storage nor stored its
+ * own key as that key too.
  */
 export function lacksRequiredKeyType(
   user: User,

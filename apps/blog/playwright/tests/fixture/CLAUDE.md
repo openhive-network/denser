@@ -545,7 +545,10 @@ with WIF (Legacy)" → `FIXTURE_POSTING_WIF` in the key dialog. Install
 `verify_authority`, which the throwaway key fails on chain. The first sign-in
 loads wax and the hb-auth worker, so wait for its effect with a longer timeout.
 `accountSwitchLogout.spec.ts` adds an account this way while a server-held one
-is seeded.
+is seeded. `sharedPostingActiveKey.spec.ts` repeats that sign-in on the same
+recording and answers the browser's recorded `find_accounts` for the account
+with a patched copy (`route.fetch()`, then `route.fulfill({ response, json })`)
+whose posting and active authorities list the key's public key.
 
 ---
 

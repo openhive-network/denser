@@ -35,6 +35,8 @@ import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { KeyAuthorityType } from '@smart-signer/lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleAuthError } from '@smart-signer/lib/auth-error';
+import { registerSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
+import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -170,8 +172,14 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         // Invalidate the existing key
         await authClient.current?.invalidateExistingKey(username, keyType as KeyAuthorityType);
 
-        // Import the new key
-        await authClient.current?.register(username, password, wif, keyType as KeyAuthorityType, isStrict);
+        // Import the new key, and for the other key type too when it is that key as well
+        if (authClient.current) {
+          await registerSafeStorageKey(
+            authClient.current,
+            { username, password, wif, keyType: keyType as KeyAuthorityType, strict: isStrict },
+            SHARED_KEY_LOOKUP
+          );
+        }
 
         setUpdateSuccess(true);
 

@@ -4,6 +4,8 @@
  */
 
 const WIF_KEY_PREFIX = 'wif.';
+/** The key types a WIF session signs with; the owner key is never stored */
+const WIF_KEY_TYPES = ['posting', 'active'];
 const LEGACY_HIVEAUTH_KEY = 'hiveAuthData';
 const LEGACY_GOOGLE_REFRESH_TOKEN_KEY = 'google_refresh_token';
 const LEGACY_GOOGLE_ENCRYPTION_KEY_WIF_KEY = 'gdrive_encryption_key_wif';
@@ -17,6 +19,16 @@ export interface CredentialKey {
 
 export function wifCredentialKey(username: string, keyType: string): string {
   return `${WIF_KEY_PREFIX}${username}@${keyType}`;
+}
+
+/**
+ * The key types the WIF key stored as `username`'s `keyType` key is stored as, `keyType` among
+ * them: more than one for an account using one key pair for several. None when no key is stored.
+ */
+export function storedWifKeyTypes(storage: Storage, username: string, keyType: string): string[] {
+  const wif = storage.getItem(wifCredentialKey(username, keyType));
+  if (wif === null) return [];
+  return WIF_KEY_TYPES.filter((type) => storage.getItem(wifCredentialKey(username, type)) === wif);
 }
 
 export function hiveAuthCredentialKey(username: string): CredentialKey {
