@@ -136,8 +136,9 @@ export function parseNonce(value: string | null | undefined): string | undefined
 function buildScriptSrc(nonce: string): string {
   // 'strict-dynamic' lets scripts loaded by nonced scripts (Next chunks, next/script) run, and makes
   // CSP3 browsers ignore the host list below; the hosts remain for browsers without it.
-  // 'wasm-unsafe-eval' is needed for wax's WebAssembly; hb-auth's beekeeper (which uses new Function)
-  // runs in /auth/worker.js, served without this policy.
+  // 'wasm-unsafe-eval' is needed for wax's and beekeeper's WebAssembly. Beekeeper also runs on the
+  // page (Google Drive's external wallet, memo crypto), so the policy relies on every package
+  // resolving the CSP-safe beekeeper build without new Function (the pnpm-workspace.yaml override).
   let scriptSrc = `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'`;
 
   // React's dev build reconstructs server stacks with eval; never sent by a production build

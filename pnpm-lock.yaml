@@ -6,9 +6,6 @@ settings:
 
 catalogs:
   hiveio-toolset:
-    '@hiveio/beekeeper':
-      specifier: 1.28.8-stable.261010131807
-      version: 1.28.8-stable.261010131807
     '@hiveio/hb-auth':
       specifier: 1.28.4-rc0-stable.260405141254
       version: 1.28.4-rc0-stable.260405141254
@@ -36,6 +33,9 @@ catalogs:
     '@hiveio/workerbee':
       specifier: 1.28.4-rc1-stable.260317120349
       version: 1.28.4-rc1-stable.260317120349
+
+overrides:
+  '@hiveio/beekeeper': 1.28.8-stable.261010131807
 
 importers:
 
@@ -643,7 +643,7 @@ importers:
         specifier: workspace:*
         version: link:../ui
       '@hiveio/beekeeper':
-        specifier: catalog:hiveio-toolset
+        specifier: 1.28.8-stable.261010131807
         version: 1.28.8-stable.261010131807
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
@@ -1916,10 +1916,6 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
-
-  '@hiveio/beekeeper@1.28.6-rc10-stable.260317081625':
-    resolution: {integrity: sha1-+yve67Q2j4Tt2ptc9tGDhHBErjE=, tarball: https://gitlab.syncad.com/api/v4/projects/558/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.6-rc10-stable.260317081625.tgz}
-    engines: {node: ^20.11 || >= 21.2}
 
   '@hiveio/beekeeper@1.28.8-stable.261010131807':
     resolution: {integrity: sha1-IlUZ2RnOru4WKXe/ffu+BEVPn/I=, tarball: https://gitlab.syncad.com/api/v4/projects/558/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.8-stable.261010131807.tgz}
@@ -11646,8 +11642,6 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
-  '@hiveio/beekeeper@1.28.6-rc10-stable.260317081625': {}
-
   '@hiveio/beekeeper@1.28.8-stable.261010131807': {}
 
   '@hiveio/hb-auth@1.28.4-rc0-stable.260405141254(@hiveio/wax@1.28.6-rc10-stable.260326112051)':
@@ -11666,12 +11660,12 @@ snapshots:
 
   '@hiveio/wax-signers-beekeeper@1.28.6-rc10-stable.260326112051':
     dependencies:
-      '@hiveio/beekeeper': 1.28.6-rc10-stable.260317081625
+      '@hiveio/beekeeper': 1.28.8-stable.261010131807
       '@hiveio/wax': 1.28.6-rc10-stable.260326112051
 
   '@hiveio/wax-signers-external@1.28.6-rc10-stable.260326112051':
     dependencies:
-      '@hiveio/beekeeper': 1.28.6-rc10-stable.260317081625
+      '@hiveio/beekeeper': 1.28.8-stable.261010131807
       '@hiveio/wax': 1.28.6-rc10-stable.260326112051
       '@hiveio/wax-signers-beekeeper': 1.28.6-rc10-stable.260326112051
       zod: 4.1.13
