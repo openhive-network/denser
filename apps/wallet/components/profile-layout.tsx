@@ -7,7 +7,7 @@ import Loading from '@ui/components/loading';
 import { useQuery } from '@tanstack/react-query';
 import { getAccountFull } from '@transaction/lib/hive-api';
 import { Icons } from '@hive/ui/components/icons';
-import { dateToShow } from '@hive/ui/lib/parse-date';
+import { formatMonthYear } from '@hive/ui/lib/month-year';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { escapeCssUrl, isSafeImageUrl } from '@ui/lib/css-utils';
 import clsx from 'clsx';
@@ -37,7 +37,7 @@ const getCoverImageStyle = (profileData: { posting_json_metadata?: string } | nu
 };
 
 export default function ProfileLayout({ children }: { children: ReactNode }) {
-  const { t } = useTranslation('common_wallet');
+  const { t, i18n } = useTranslation('common_wallet');
   const params = useParams<{ param: string }>();
   const pathname = usePathname();
   // Decode URL-encoded param (e.g., %40gtg -> @gtg)
@@ -121,7 +121,9 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
               <li className="flex items-center">
                 <Icons.calendarHeart className="m-1" />
                 <span data-testid="user-joined">
-                  {t('profile.joined')} {profileData?.created ? dateToShow(profileData.created, t) : null}
+                  {profileData?.created
+                    ? t('profile.joined_date', { date: formatMonthYear(profileData.created, i18n.language) })
+                    : null}
                 </span>
               </li>
             </ul>

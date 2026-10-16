@@ -24,20 +24,6 @@
       "years": " سنوات مضت",
       "a_year": " سنة واحدة مضت"
     },
-    "months": {
-      "first": "يناير",
-      "second": "فبراير",
-      "third": "مارس",
-      "fourth": "أبريل",
-      "fifth": "مايو",
-      "sixth": "يونيو",
-      "seventh": "يوليو",
-      "eighth": "أغسطس",
-      "ninth": "سبتمبر",
-      "tenth": "أكتوبر",
-      "eleventh": "نوفمبر",
-      "twelfth": "ديسمبر"
-    },
     "time": {
       "a_few_seconds": "بضع ثوان",
       "seconds": " ثانية",
@@ -370,7 +356,7 @@
         "nostr": "نوستر"
       }
     },
-    "joined": "انضم في",
+    "joined_date": "انضم في {{date}}",
     "active": "نشط",
     "no_posts_yet": "يبدو أن @{{username}} لم ينشر أي مشاركات بعد!",
     "no_blogging_yet": "يبدو أن @{{username}} لم يبدأ في التدوين بعد!",
@@ -583,8 +569,7 @@
       "hover_author": {
         "follow_button": "متابعة",
         "followers": "المتابعون",
-        "following": "متابعة",
-        "joined": "انضم"
+        "following": "متابعة"
       },
       "edited": "محرر"
     },

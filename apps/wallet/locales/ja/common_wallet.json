@@ -22,20 +22,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -186,7 +172,7 @@
     "cancel_power_down_prompt": "パワーダウンをキャンセルしてもよろしいですか？",
     "withdraw_hive": "HIVEを引き出す",
     "withdraw_hive_dollars": "HIVE DOLLARSを引き出す",
-    "joined": "登録年月：",
+    "joined_date": "{{date}}に登録",
     "hive_description": "いつでもどこへでも送ることができる取引可能なトークンです。HIVEはパワーアップによってHIVE POWERに変換できます。",
     "hp_description": "投稿への支払額の制御権を持ち、キュレーション報酬を得ることが可能になる、プラットフォームにおける影響力を持つトークンです。",
     "hp_delegated_description": "{{username}}のHIVE POWERの一部は現在委託されています。委託は影響力の寄付や、新規ユーザーがHiveでアクションを起こしやすくするために行われます。委託額は変動する可能性があります。",

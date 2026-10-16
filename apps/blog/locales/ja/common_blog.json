@@ -24,20 +24,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -370,7 +356,7 @@
         "nostr": "Nostr"
       }
     },
-    "joined": "登録年月：",
+    "joined_date": "{{date}}に登録",
     "active": "アクティブ",
     "no_posts_yet": "@{{username}} はまだ投稿していないようです！",
     "no_blogging_yet": "@{{username}} はまだブログを始めていないようです！",
@@ -583,8 +569,7 @@
       "hover_author": {
         "follow_button": "フォロー",
         "followers": "フォロワー",
-        "following": "Following",
-        "joined": "登録年月："
+        "following": "Following"
       },
       "edited": "edited"
     },

@@ -22,20 +22,6 @@
       "years": " 년 전",
       "a_year": " 1년 전"
     },
-    "months": {
-      "first": "1월",
-      "second": "2월",
-      "third": "3월",
-      "fourth": "4월",
-      "fifth": "5월",
-      "sixth": "6월",
-      "seventh": "7월",
-      "eighth": "8월",
-      "ninth": "9월",
-      "tenth": "10월",
-      "eleventh": "11월",
-      "twelfth": "12월"
-    },
     "time": {
       "a_few_seconds": " 몇 초",
       "seconds": " 초",
@@ -186,7 +172,7 @@
     "cancel_power_down_prompt": "파워 다운을 취소하시겠습니까?",
     "withdraw_hive": "HIVE 출금",
     "withdraw_hive_dollars": "HIVE DOLLARS 출금",
-    "joined": "가입일",
+    "joined_date": "{{date}} 가입",
     "hive_description": "언제 어디로든 송금할 수 있는 거래 가능한 토큰입니다. Hive는 파워 업이라는 과정을 통해 HIVE POWER로 변환할 수 있습니다.",
     "hp_description": "게시물 지급에 더 큰 영향력을 행사하고 큐레이션 보상을 받을 수 있게 해 주는 영향력 토큰입니다.",
     "hp_delegated_description": "{{username}}의 HIVE POWER 일부가 현재 위임되어 있습니다. 위임은 영향력을 위해, 또는 새 사용자가 Hive에서 활동할 수 있도록 돕기 위해 제공됩니다. 위임 금액은 변동될 수 있습니다.",

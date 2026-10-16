@@ -24,20 +24,6 @@
       "years": " 년 전",
       "a_year": " 1년 전"
     },
-    "months": {
-      "first": "1월",
-      "second": "2월",
-      "third": "3월",
-      "fourth": "4월",
-      "fifth": "5월",
-      "sixth": "6월",
-      "seventh": "7월",
-      "eighth": "8월",
-      "ninth": "9월",
-      "tenth": "10월",
-      "eleventh": "11월",
-      "twelfth": "12월"
-    },
     "time": {
       "a_few_seconds": " 몇 초",
       "seconds": " 초",
@@ -370,7 +356,7 @@
         "nostr": "Nostr"
       }
     },
-    "joined": "가입일",
+    "joined_date": "{{date}} 가입",
     "active": "활동",
     "no_posts_yet": "@{{username}} 님은 아직 게시물을 작성하지 않았습니다!",
     "no_blogging_yet": "@{{username}} 님은 아직 블로그를 시작하지 않았습니다!",
@@ -583,8 +569,7 @@
       "hover_author": {
         "follow_button": "팔로우",
         "followers": "팔로워",
-        "following": "팔로잉",
-        "joined": "가입일"
+        "following": "팔로잉"
       },
       "edited": "수정됨"
     },
