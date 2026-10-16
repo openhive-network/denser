@@ -149,6 +149,7 @@
   "broadcast_error": {
     "missing_owner_authority": "Ta operacja wymaga klucza właściciela (owner). Zaloguj się nim i spróbuj ponownie.",
     "missing_active_authority": "Ta operacja wymaga klucza aktywnego (active). Zaloguj się kluczem aktywnym i spróbuj ponownie.",
-    "missing_posting_authority": "Ta operacja wymaga klucza publikowania (posting). Zaloguj się nim i spróbuj ponownie."
+    "missing_posting_authority": "Ta operacja wymaga klucza publikowania (posting). Zaloguj się nim i spróbuj ponownie.",
+    "safe_storage_missing_account": "Bezpieczny magazyn w tej przeglądarce nie zawiera kluczy Twojego konta. Zaloguj się ponownie."
   }
 }

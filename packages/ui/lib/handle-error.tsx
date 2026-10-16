@@ -3,6 +3,8 @@
 import { transformError } from '@hive/transaction/lib/transform-error';
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
+import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
+import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
 import env from "@beam-australia/react-env";
@@ -71,7 +73,7 @@ function performDesyncLogout(): void {
   }).catch(err => logger.error('Desync logout API call failed: %o', err));
 
   // Dispatch event so React Query invalidates user state
-  window.dispatchEvent(new CustomEvent('auth-storage-desync'));
+  dispatchAuthStorageDesync();
 }
 
 // A dynamic import() keeps the Sentry SDK out of the initial chunks of every page that can show an error toast.
@@ -94,7 +96,7 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     logger.warn('Auth storage desync detected in %s — triggering auto-logout', ctx?.method);
     performDesyncLogout();
     toast({
-      description: 'Your secure key storage was cleared by your browser. Please sign in again.',
+      description: <SafeStorageMissingMessage />,
       variant: 'default',
       ...toastOptions
     });
