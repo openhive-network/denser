@@ -113,13 +113,16 @@ test.describe('An active-key WIF session whose key is stored as the posting key 
   test.use({ authenticatedUser: { authenticateOnBackend: true, keyType: KeyType.active } });
 
   test('SHARED-KEY-02 — the header names both keys instead of offering the posting key', async ({ page }) => {
-    // The seeder stores FIXTURE_POSTING_WIF as the posting key
-    await page
-      .context()
-      .addInitScript(
-        ({ key, wif }) => window.localStorage.setItem(key, JSON.stringify(wif)),
-        { key: `wif.${DEFAULT_USER.username}@active`, wif: FIXTURE_POSTING_WIF }
-      );
+    // One key stored as both. The seeder's posting key is the account's real one when CI sets it, so
+    // both entries are written here; this script runs after the seeder's and overrides its posting key
+    await page.context().addInitScript(
+      ({ username, wif }) => {
+        for (const keyType of ['posting', 'active']) {
+          window.localStorage.setItem(`wif.${username}@${keyType}`, JSON.stringify(wif));
+        }
+      },
+      { username: DEFAULT_USER.username, wif: FIXTURE_POSTING_WIF }
+    );
     await page.goto(PAGE_WITH_HEADER);
 
     await expectBothKeysHeld(page, DEFAULT_USER.username);
