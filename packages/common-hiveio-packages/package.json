@@ -15,7 +15,8 @@
     ".": "./src/index.ts",
     "./package.json": "./package.json",
     "./wax": "./src/wax/index.ts",
-    "./src/hb-auth": "./src/hb-auth/index.ts"
+    "./src/hb-auth": "./src/hb-auth/index.ts",
+    "./safe-storage-generation": "./src/hb-auth/safe-storage-generation.ts"
   },
   "devDependencies": {
     "@types/node": "^24",
