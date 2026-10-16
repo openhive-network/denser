@@ -1,4 +1,4 @@
-import { CONTENT_ALG, DEFAULT_LITE_APP_IDS, type LiteAppIds } from '@hive/lite-account';
+import { CONTENT_ALG, DEFAULT_LITE_APP_IDS, type LiteAppIds } from '@hiveio/lite-account';
 
 export type LiteAttribution = { attester: string; alg: string };
 

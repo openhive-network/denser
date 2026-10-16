@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { CircleSpinner } from 'react-spinners-kit';
-import { buildLiteReplyRequest, type LiteIdentity } from '@hive/lite-account';
+import { buildLiteReplyRequest, type LiteIdentity } from '@hiveio/lite-account';
 import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';

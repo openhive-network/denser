@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { generateLiteName, isValidLiteName } from '@hive/lite-account';
+import { generateLiteName, isValidLiteName } from '@hiveio/lite-account';
 import { Button } from '@ui/components/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@ui/components/dialog';
 import { Input } from '@ui/components/input';

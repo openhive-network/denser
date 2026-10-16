@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { bridgedCommentMetadata, postLiteReply, type BuiltLiteReply, type LiteAppIds } from '@hive/lite-account';
+import { bridgedCommentMetadata, postLiteReply, type BuiltLiteReply, type LiteAppIds } from '@hiveio/lite-account';
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { getDiscussion } from '@transaction/lib/bridge-api';
 import { toast } from '@ui/components/hooks/use-toast';

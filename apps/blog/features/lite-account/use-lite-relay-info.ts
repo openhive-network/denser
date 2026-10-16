@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { DEFAULT_LITE_APP_IDS, type LiteAppIds } from '@hive/lite-account';
+import { DEFAULT_LITE_APP_IDS, type LiteAppIds } from '@hiveio/lite-account';
 
 export const LITE_RELAY_ENDPOINT = '/api/lite-reply';
 

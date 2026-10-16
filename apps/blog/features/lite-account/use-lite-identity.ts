@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { createLiteIdentity, type LiteIdentity } from '@hive/lite-account';
+import { createLiteIdentity, type LiteIdentity } from '@hiveio/lite-account';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
