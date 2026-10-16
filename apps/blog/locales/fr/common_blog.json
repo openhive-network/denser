@@ -24,20 +24,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -370,7 +356,7 @@
         "nostr": "Nostr"
       }
     },
-    "joined": "Inscrit en",
+    "joined_date": "Inscrit en {{date}}",
     "active": "Active",
     "no_posts_yet": "On dirait que @{{username}} n'a encore publié aucun article !",
     "no_pending_payouts": "No pending payouts.",
@@ -583,8 +569,7 @@
       "hover_author": {
         "follow_button": "S'abonner",
         "followers": "Followers",
-        "following": "Following",
-        "joined": "Inscrit en"
+        "following": "Following"
       },
       "edited": "edited"
     },

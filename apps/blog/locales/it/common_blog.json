@@ -24,20 +24,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -370,7 +356,7 @@
         "nostr": "Nostr"
       }
     },
-    "joined": "Connesso",
+    "joined_date": "Iscritto a {{date}}",
     "active": "Attivo",
     "no_posts_yet": "Sembra che @{{username}} non abbia ancora pubblicato alcun post!",
     "no_blogging_yet": "Sembra che @{{username}} non abbia ancora iniziato a scrivere sul blog!",
@@ -583,8 +569,7 @@
       "hover_author": {
         "follow_button": "Segui",
         "followers": "Followers",
-        "following": "Following",
-        "joined": "Connesso"
+        "following": "Following"
       },
       "edited": "edited"
     },

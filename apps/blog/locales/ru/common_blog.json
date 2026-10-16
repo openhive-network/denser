@@ -24,20 +24,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -370,7 +356,7 @@
         "nostr": "Ностр"
       }
     },
-    "joined": "Присоединился",
+    "joined_date": "Дата регистрации: {{date}}",
     "active": "Активный",
     "no_posts_yet": "Похоже, @{{username}} ещё не опубликовал ни одного поста!",
     "no_blogging_yet": "Похоже, @{{username}} ещё не начал вести блог!",
@@ -583,8 +569,7 @@
       "hover_author": {
         "follow_button": "Подписаться",
         "followers": "Подписчики",
-        "following": "Following",
-        "joined": "Присоединился"
+        "following": "Following"
       },
       "edited": "edited"
     },

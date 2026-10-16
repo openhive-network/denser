@@ -8,26 +8,6 @@ dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 
-export const dateToShow = (d: string, t: TFunction<'common_wallet', undefined>): string => {
-  const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
-  const dm = dayjs(new Date(isTimeZoned)).format('MMMM YYYY');
-  const dd = dm
-    .replace('January', t('global.months.first'))
-    .replace('February', t('global.months.second'))
-    .replace('March', t('global.months.third'))
-    .replace('April', t('global.months.fourth'))
-    .replace('May', t('global.months.fifth'))
-    .replace('June', t('global.months.sixth'))
-    .replace('July', t('global.months.seventh'))
-    .replace('August', t('global.months.eighth'))
-    .replace('September', t('global.months.ninth'))
-    .replace('October', t('global.months.tenth'))
-    .replace('November', t('global.months.eleventh'))
-    .replace('December', t('global.months.twelfth'));
-
-  return dd;
-};
-
 export const dateToRelative = (d: string, t: TFunction<'common_wallet', undefined>): string => {
   const isTimeZoned = d.indexOf('.') !== -1 || d.indexOf('+') !== -1 ? d : `${d}.000Z`;
   const dm = dayjs(new Date(isTimeZoned));

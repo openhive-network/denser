@@ -22,20 +22,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -186,7 +172,7 @@
     "cancel_power_down_prompt": "Voulez-vous vraiment annuler le Power Down ?",
     "withdraw_hive": "Retirer des HIVE",
     "withdraw_hive_dollars": "Retirer des HIVE DOLLARS",
-    "joined": "Inscrit en",
+    "joined_date": "Inscrit en {{date}}",
     "hive_description": "Des jetons négociables peuvent être transférés n'importe où à tout moment. HIVE peuvent être convertis en HIVE POWER lors d'un processus appelé conversion en influence, ou power up.",
     "hp_description": "Jetons d'influence qui vous donnent plus de contrôle sur les gains potentiels des articles et vous permettent d'augmenter vos gains de curation.",
     "hp_delegated_description": "Une partie du HIVE POWER de {{username}} est actuellement déléguée. La délégation est un don pour augmenter l'influence ou pour aider les nouveaux utilisateurs à effectuer des actions sur Hive. Le montant de votre délégation peut varier.",

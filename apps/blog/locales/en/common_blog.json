@@ -24,20 +24,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -370,7 +356,7 @@
         "nostr": "Nostr"
       }
     },
-    "joined": "Joined",
+    "joined_date": "Joined {{date}}",
     "active": "Active",
     "no_posts_yet": "Looks like @{{username}} hasn't made any posts yet!",
     "no_blogging_yet": "Looks like @{{username}} hasn't started blogging yet!",
@@ -583,8 +569,7 @@
       "hover_author": {
         "follow_button": "Follow",
         "followers": "Followers",
-        "following": "Following",
-        "joined": "Joined"
+        "following": "Following"
       },
       "edited": "edited"
     },

@@ -22,20 +22,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -186,7 +172,7 @@
     "cancel_power_down_prompt": "Вы уверены, что хотите отменить уменьшение Силы Голоса?",
     "withdraw_hive": "Вывести HIVE",
     "withdraw_hive_dollars": "Вывести HIVE DOLLARS",
-    "joined": "Присоединился",
+    "joined_date": "Дата регистрации: {{date}}",
     "hive_description": "Ликвидные цифровые токены, которые могут переданы куда угодно в любой момент. HIVE может быть конвертирован в HIVE POWER, этот процесс называется \"увеличение Силы Голоса\".",
     "hp_description": "Токены дают вам возможность влиять на вознаграждения за контент, а также возможность зарабатывать на курации контента.",
     "hp_delegated_description": "Часть HIVE POWER пользователя {{username}} сейчас делегирована. Делегирование предоставляется ради влияния или чтобы помочь новым пользователям выполнять действия в Hive. Сумма вашего делегирования может меняться.",

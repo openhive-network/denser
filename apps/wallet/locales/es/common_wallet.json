@@ -22,20 +22,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -186,7 +172,7 @@
     "cancel_power_down_prompt": "¿Seguro que quieres cancelar el Power Down?",
     "withdraw_hive": "Retirar HIVE",
     "withdraw_hive_dollars": "Retirar HIVE DOLLARS",
-    "joined": "Unió",
+    "joined_date": "Se unió en {{date}}",
     "hive_description": "Tokens canjeables pueden ser transferidos a cualquier sitio en cualquier momento.1 HIVE y pueden ser convertidos a HIVE POWER en un proceso llamado power up.",
     "hp_description": "Tokens con influencia te dan más control sobre los pagos de los posts y te permiten ganar recompensas de curación.",
     "hp_delegated_description": "Parte del HIVE POWER de {{username}} está delegado actualmente. La delegación se dona para influencia o para ayudar a nuevos usuarios a realizar acciones en Hive. La cantidad delegada puede variar.",

@@ -22,20 +22,6 @@
       "years": " lat temu",
       "a_year": " rok temu"
     },
-    "months": {
-      "first": "styczeń",
-      "second": "luty",
-      "third": "marzec",
-      "fourth": "kwiecień",
-      "fifth": "maj",
-      "sixth": "czerwiec",
-      "seventh": "lipiec",
-      "eighth": "sierpień",
-      "ninth": "wrzesień",
-      "tenth": "październik",
-      "eleventh": "listopad",
-      "twelfth": "grudzień"
-    },
     "time": {
       "a_few_seconds": " Za kilka sekund",
       "seconds": " sekund",
@@ -186,7 +172,7 @@
     "cancel_power_down_prompt": "Czy na pewno chcesz anulować zmniejszanie mocy?",
     "withdraw_hive": "Wypłać HIVE",
     "withdraw_hive_dollars": "Wypłać HIVE DOLLARS",
-    "joined": "Data dołączenia:",
+    "joined_date": "Data dołączenia: {{date}}",
     "hive_description": "Zbywalne tokeny, które mogą być przesłane gdziekolwiek w dowolnym momencie. HIVE mogą zostać również przekonwertowane na HIVE POWER w procesie nazywanym zwiększenie mocy.",
     "hp_description": "Tokeny wpływu, które zwiększają Twój wpływ na podział wypłat za publikowanie treści, oraz pozwalają Ci zarabiać na głosowaniu na treści.",
     "hp_delegated_description": "Część HIVE POWER użytkownika {{username}} jest obecnie oddelegowana. Delegowanie to użyczenie jednostek dla zwiększenia wpływu lub by pomóc nowym użytkownikom w korzystaniu z Hive. Kwota delegacji może się zmieniać w czasie.",

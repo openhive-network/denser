@@ -49,7 +49,7 @@ const getTitleFormat = (lang: string): Intl.DateTimeFormat => {
   return format;
 };
 
-const parseUtcTimestamp = (date: string | number | Date): number => {
+export const parseUtcTimestamp = (date: string | number | Date): number => {
   if (typeof date === 'string' && ZONELESS_DATE_TIME.test(date)) {
     return Date.parse(`${date}Z`);
   }

@@ -22,20 +22,6 @@
       "years": " years ago",
       "a_year": " a year ago"
     },
-    "months": {
-      "first": "January",
-      "second": "February",
-      "third": "March",
-      "fourth": "April",
-      "fifth": "May",
-      "sixth": "June",
-      "seventh": "July",
-      "eighth": "August",
-      "ninth": "September",
-      "tenth": "October",
-      "eleventh": "November",
-      "twelfth": "December"
-    },
     "time": {
       "a_few_seconds": " a few seconds",
       "seconds": " seconds",
@@ -186,7 +172,7 @@
     "cancel_power_down_prompt": "Are you sure you want to cancel Power Down?",
     "withdraw_hive": "Withdraw HIVE",
     "withdraw_hive_dollars": "Withdraw HIVE DOLLARS",
-    "joined": "Joined",
+    "joined_date": "Joined {{date}}",
     "hive_description": "Tradeable tokens that may be transferred anywhere at anytime. Hive can be converted to HIVE POWER in a process called powering up.",
     "hp_description": "Influence tokens which give you more control over post payouts and allow you to earn on curation rewards.",
     "hp_delegated_description": "Part of {{username}}'s HIVE POWER is currently delegated. Delegation is donated for influence or to help new users perform actions on Hive. Your delegation amount can fluctuate.",

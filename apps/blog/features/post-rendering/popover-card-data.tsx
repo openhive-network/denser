@@ -1,6 +1,6 @@
 'use client';
 
-import { dateToShow } from '@ui/lib/parse-date';
+import { formatMonthYear } from '@ui/lib/month-year';
 import { convertToHP, netDelegatedVests, numberWithCommas } from '@ui/lib/utils';
 import Big from 'big.js';
 import { Avatar, AvatarFallback, AvatarImage, getUserAvatarUrl } from '@ui/components';
@@ -25,7 +25,7 @@ interface PopoverCardDataProps {
 }
 
 const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDataProps) => {
-  const { t } = useTranslation('common_blog');
+  const { t, i18n } = useTranslation('common_blog');
   const { user } = useUserClient();
   const follows = useFollowsQuery(author);
   const { data: account, isPending } = useAccountQuery(author);
@@ -138,7 +138,11 @@ const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDat
 
               {/* Footer with dates */}
               <div className="flex items-center justify-center gap-2 p-3 text-xs text-muted-foreground">
-                <span>{t('post_content.header.hover_author.joined')} {dateToShow(account.created, t)}</span>
+                <span data-testid="hover-card-user-joined">
+                  {t('user_profile.joined_date', {
+                    date: formatMonthYear(account.created, i18n.language)
+                  })}
+                </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">
                   {t('user_profile.active')}

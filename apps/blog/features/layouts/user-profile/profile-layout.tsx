@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage, proxifyImageSrc, getUserAvatarUrl,
 import { Separator } from '@hive/ui/components/separator';
 import TimeAgo from '@ui/components/time-ago';
 import { Icons } from '@hive/ui/components/icons';
-import { dateToShow } from '@ui/lib/parse-date';
+import { formatMonthYear } from '@ui/lib/month-year';
 import { convertToHP, netDelegatedVests, numberWithCommas } from '@ui/lib/utils';
 import userIllegalContent from '@ui/config/lists/user-illegal-content';
 import gdprUserList from '@ui/config/lists/gdpr-user-list';
@@ -64,7 +64,7 @@ const getCoverImageStyle = (profileData: { posting_json_metadata?: string } | nu
 
 const ProfileLayout = ({ children }: { children: ReactNode }) => {
   const { user } = useUserClient();
-  const { t } = useTranslation('common_blog');
+  const { t, i18n } = useTranslation('common_blog');
   const pathname = usePathname();
   const username = pathname?.split('/')[1].replace('@', '') ?? '';
   const currentTab = pathname?.split('/')[2] ?? 'blog';
@@ -366,8 +366,11 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                     <div className="flex items-center gap-1">
                       <Icons.calendarHeart className="h-4 w-4" />
                       <span data-testid="user-joined">
-                        {t('user_profile.joined')}{' '}
-                        {profileData?.created ? dateToShow(profileData.created, t) : null}
+                        {profileData?.created
+                          ? t('user_profile.joined_date', {
+                              date: formatMonthYear(profileData.created, i18n.language)
+                            })
+                          : null}
                       </span>
                     </div>
                     <div className="flex items-center gap-1">
