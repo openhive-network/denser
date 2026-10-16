@@ -17,10 +17,16 @@ export class OnlineClient {
     return workers.get(this.options.workerUrl);
   }
   async initialize() { this.worker; return this; }
-  async register(username) { this.worker.unlocked.add(username); return { ok: true }; }
+  async register(username) {
+    const worker = this.worker;
+    await globalThis.fakeHbAuthRegistration;
+    worker.unlocked.add(username);
+    return { ok: true };
+  }
   async authenticate(username) { this.worker.unlocked.add(username); return { ok: true }; }
   async importKey() { return 'STM-public-key'; }
   async invalidateExistingKey() {}
+  async logout(username) { this.worker.unlocked.delete(username); }
   async lock() {
     if (!this.worker.unlocked.size) throw new Error('There is no existing user session');
     this.worker.unlocked.clear();
@@ -84,10 +90,24 @@ Object.assign(globalThis, {
   fakeEnv
 });
 
+/** Holds every registration in the stand-in hb-auth, as its on-chain verification does, until released */
+function holdRegistrations(): () => void {
+  let release = () => {};
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  Object.assign(globalThis, { fakeHbAuthRegistration: held });
+  return () => {
+    Object.assign(globalThis, { fakeHbAuthRegistration: undefined });
+    release();
+  };
+}
+
 const BLOG = '/blog';
 const WALLET = '/wallet';
 
 type HbAuthService = typeof import('./hbauth-service.ts');
+type OnlineClient = Awaited<ReturnType<HbAuthService['getOnlineClient']>>;
 let pageCount = 0;
 
 /** A page of the app at `basePath`: a module instance of its own, as a reload or another tab has */
@@ -102,7 +122,12 @@ async function openPage(basePath: string) {
     register: (username: string) =>
       onPage(async () => (await service.getOnlineClient()).register(username, 'password', 'wif', 'posting')),
     importKey: (username: string) =>
-      onPage(async () => (await service.getOnlineClient()).importKey(username, 'wif', 'active'))
+      onPage(async () => (await service.getOnlineClient()).importKey(username, 'wif', 'active')),
+    registerThrough: (client: OnlineClient, username: string) =>
+      onPage(() => client.register(username, 'password', 'wif', 'posting')),
+    withOnlineClient: <T>(operation: (client: OnlineClient) => Promise<T>) =>
+      onPage(() => service.withOnlineClient(operation)),
+    logout: (username: string) => onPage(() => service.logoutFromEveryWorker(username))
   };
 }
 
@@ -181,5 +206,90 @@ describe('hb-auth online client', () => {
 
     assert.equal(await blog.getOnlineClient(), blogClient);
     assert.notEqual(await wallet.getOnlineClient(), walletClient);
+  });
+
+  it("writes through the app's current client when the writing one's worker was superseded", async () => {
+    const blog = await openPage(BLOG);
+    const staleClient = await blog.getOnlineClient();
+    const wallet = await openPage(WALLET);
+    await wallet.importKey('alice');
+
+    await blog.registerThrough(staleClient, 'alice');
+    const currentClient = await blog.getOnlineClient();
+    await settle();
+
+    assert.notEqual(currentClient, staleClient);
+    assert.deepEqual([...workerOf(currentClient).worker.unlocked], ['alice']);
+    assert.deepEqual([...workerOf(staleClient).worker.unlocked], []);
+    const otherBlogTab = await openPage(BLOG);
+    assert.equal(workerOf(await otherBlogTab.getOnlineClient()).url, workerOf(currentClient).url);
+  });
+
+  it("keeps the app on its current worker, unlocked, when a write superseded during it lands", async () => {
+    const blogTabA = await openPage(BLOG);
+    const staleClient = await blogTabA.getOnlineClient();
+    const releaseRegistrations = holdRegistrations();
+    const staleWrite = blogTabA.register('alice');
+    await settle();
+
+    const wallet = await openPage(WALLET);
+    await wallet.importKey('alice');
+    const blogTabB = await openPage(BLOG);
+    const currentClient = await blogTabB.getOnlineClient();
+    const currentWorker = workerOf(currentClient);
+    currentWorker.worker.unlocked.add('alice');
+    releaseRegistrations();
+    await staleWrite;
+    await settle();
+
+    assert.notEqual(currentWorker.url, workerOf(staleClient).url);
+    assert.equal(await blogTabB.getOnlineClient(), currentClient);
+    assert.deepEqual([...currentWorker.worker.unlocked], ['alice']);
+    const otherBlogTab = await openPage(BLOG);
+    assert.equal(workerOf(await otherBlogTab.getOnlineClient()).url, currentWorker.url);
+  });
+
+  it("logs out of every worker the app's pages were given, not only the current one", async () => {
+    const wallet = await openPage(WALLET);
+    await wallet.importKey('alice');
+    const idleBlogTab = await openPage(BLOG);
+    await idleBlogTab.register('alice');
+    const idleWorker = workerOf(await idleBlogTab.getOnlineClient());
+    await wallet.importKey('alice');
+    const blog = await openPage(BLOG);
+    await blog.register('alice');
+    const currentWorker = workerOf(await blog.getOnlineClient());
+    assert.notEqual(currentWorker.url, idleWorker.url);
+    assert.deepEqual([...idleWorker.worker.unlocked], ['alice']);
+
+    await blog.logout('alice');
+
+    assert.deepEqual([...idleWorker.worker.unlocked], []);
+    assert.deepEqual([...currentWorker.worker.unlocked], []);
+  });
+
+  it('locks a replaced worker only once the operations running with it settle', async () => {
+    const blog = await openPage(BLOG);
+    await blog.register('alice');
+    const signingWorker = workerOf(await blog.getOnlineClient());
+    let finishSigning = () => {};
+    const signing = blog.withOnlineClient(
+      () =>
+        new Promise<void>((resolve) => {
+          finishSigning = resolve;
+        })
+    );
+    const wallet = await openPage(WALLET);
+    await wallet.importKey('alice');
+
+    const freshClient = await blog.getOnlineClient();
+    await settle();
+
+    assert.notEqual(workerOf(freshClient).url, signingWorker.url);
+    assert.deepEqual([...signingWorker.worker.unlocked], ['alice']);
+    finishSigning();
+    await signing;
+    await settle();
+    assert.deepEqual([...signingWorker.worker.unlocked], []);
   });
 });
