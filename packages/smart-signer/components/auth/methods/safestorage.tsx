@@ -254,10 +254,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     }
 
     async function signInWithExtension(loginType: LoginType.keychain | LoginType.peakvault) {
-      if (!(await form.trigger('username'))) return;
-      const { username, keyType } = form.getValues();
+      // Cover the form before validating, or a second click lands while validation is pending
+      setLoading(true);
       try {
-        setLoading(true);
+        if (!(await form.trigger('username'))) return;
+        const { username, keyType } = form.getValues();
         await signIn(loginType, username, keyType);
       } catch (error) {
         handleError(error);

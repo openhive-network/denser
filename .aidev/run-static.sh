@@ -19,6 +19,11 @@ cd "$(dirname "$0")/.."
 # shellcheck source=pnpm-deps.sh
 source .aidev/pnpm-deps.sh
 
+# tsc of an app needs a ~1.5 GiB heap. Node otherwise sizes its heap from the
+# container's memory cap, which the suite budget sets from past runs: under a
+# ~3 GiB cap the derived limit is ~1.5 GiB and tsc aborts out of memory.
+export NODE_OPTIONS="${NODE_OPTIONS:+$NODE_OPTIONS }--max-old-space-size=4096"
+
 status=0
 for app in blog wallet; do
     echo "== eslint apps/$app" >&2

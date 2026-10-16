@@ -56,6 +56,12 @@ const wellKnownErrorDescriptions = [
   'No password from user'
 ];
 
+/**
+ * Wax's Keychain provider prefixes the extension's own answer with this; the
+ * answer is written for the user ("User ignored this transaction"), so it is shown as is.
+ */
+const KEYCHAIN_ERROR_PATTERN = /Keychain error: (.+)/;
+
 // TODO: Refactor this function to use the new error handling mechanism
 // This is not working as expected and it isn't configurable to show UI errors
 /**
@@ -89,8 +95,13 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
       }
     }
 
+    const keychainMessage = KEYCHAIN_ERROR_PATTERN.exec(e)?.[1]?.trim();
+
     if (wellKnownErrorDescription) {
       description = wellKnownErrorDescription;
+      isWellKnownError = true;
+    } else if (keychainMessage) {
+      description = keychainMessage;
       isWellKnownError = true;
     } else {
       description = errorDescription;
