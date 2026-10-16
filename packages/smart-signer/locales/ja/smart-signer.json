@@ -150,6 +150,8 @@
     "missing_owner_authority": "この操作にはオーナーキー（owner）が必要です。オーナーキーでログインして、もう一度お試しください。",
     "missing_active_authority": "この操作にはアクティブキー（active）が必要です。アクティブキーでログインして、もう一度お試しください。",
     "missing_posting_authority": "この操作には投稿キー（posting）が必要です。投稿キーでログインして、もう一度お試しください。",
-    "safe_storage_missing_account": "このブラウザーの安全なストレージには、お使いのアカウントのキーがありません。もう一度ログインしてください。"
+    "safe_storage_missing_account": "このブラウザーの安全なストレージには、お使いのアカウントのキーがありません。もう一度ログインしてください。",
+    "not_enough_rc": "このトランザクションに必要なリソースクレジット（RC）が不足しています。RC が回復するまで待つか、HIVE をパワーアップしてください。",
+    "not_enough_rc_amounts": "現在の RC は {{current}} で、このトランザクションには {{needed}} RC が必要です。"
   }
 }

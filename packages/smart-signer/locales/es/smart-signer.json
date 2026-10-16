@@ -150,6 +150,8 @@
     "missing_owner_authority": "Esta operación necesita tu clave de propietario (owner). Inicia sesión con ella e inténtalo de nuevo.",
     "missing_active_authority": "Esta operación necesita tu clave activa (active). Inicia sesión con tu clave activa e inténtalo de nuevo.",
     "missing_posting_authority": "Esta operación necesita tu clave de publicación (posting). Inicia sesión con ella e inténtalo de nuevo.",
-    "safe_storage_missing_account": "El almacenamiento seguro de este navegador no contiene claves de tu cuenta. Inicia sesión de nuevo."
+    "safe_storage_missing_account": "El almacenamiento seguro de este navegador no contiene claves de tu cuenta. Inicia sesión de nuevo.",
+    "not_enough_rc": "No tienes suficientes Créditos de Recursos (RC) para esta transacción. Espera a que tus RC se recarguen o haz power up de HIVE.",
+    "not_enough_rc_amounts": "Tienes {{current}} RC; esta transacción necesita {{needed}} RC."
   }
 }
