@@ -122,8 +122,10 @@ test.describe('Radix primitives — header account menu, logged in', () => {
     );
 
     await pressUntilOpen(trigger, 'Enter', userMenu.profileMenuContent);
-    // Wallet is the item just above Logout, the last one
+    // Wallet is the item just above Logout, the last one. Radix moves focus in a timeout after the
+    // keydown, so a key sent before that focus move lands on the item the previous key left.
     await page.keyboard.press('End');
+    await expect(userMenu.profileMenuContent.getByRole('menuitem').last()).toBeFocused();
     await page.keyboard.press('ArrowUp');
     await expect(userMenu.walletLink).toBeFocused();
     await expect(userMenu.walletLink).toHaveRole('menuitem');
