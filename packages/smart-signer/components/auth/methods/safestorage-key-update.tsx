@@ -160,9 +160,13 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
           return;
         }
 
+        // Write through this app's current worker: the one held since mount may have been replaced
+        const client = await hbauthService.getOnlineClient();
+        authClient.current = client;
+
         // Try to unlock the wallet with the provided password
         try {
-          await authClient.current?.unlock(username, password);
+          await client.unlock(username, password);
           logger.info('Wallet unlocked successfully for user: %s', username);
         } catch (unlockError) {
           // If unlock fails, we'll continue with the key update process
@@ -170,16 +174,14 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         }
 
         // Invalidate the existing key
-        await authClient.current?.invalidateExistingKey(username, keyType as KeyAuthorityType);
+        await client.invalidateExistingKey(username, keyType as KeyAuthorityType);
 
         // Import the new key, and for the other key type too when it is that key as well
-        if (authClient.current) {
-          await registerSafeStorageKey(
-            authClient.current,
-            { username, password, wif, keyType: keyType as KeyAuthorityType, strict: isStrict },
-            SHARED_KEY_LOOKUP
-          );
-        }
+        await registerSafeStorageKey(
+          client,
+          { username, password, wif, keyType: keyType as KeyAuthorityType, strict: isStrict },
+          SHARED_KEY_LOOKUP
+        );
 
         setUpdateSuccess(true);
 

@@ -78,6 +78,17 @@ async function openLoginDialog(page: Page): Promise<LoginForm> {
   return loginForm;
 }
 
+/** Signs in with safe storage, saving the shared key with SAFE_STORAGE_PASSWORD */
+async function signInWithSafeStorage(page: Page) {
+  const loginForm = await openLoginDialog(page);
+  await expect(loginForm.wifInput).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+  await loginForm.usernameInput.fill(STUB_ACCOUNT);
+  await loginForm.passwordInput.fill(SAFE_STORAGE_PASSWORD);
+  await loginForm.wifInput.fill(SHARED_WIF);
+  await loginForm.saveSignInButton.click();
+  await expect(loginForm.loginDialog).toHaveCount(0, { timeout: HYDRATION_TIMEOUT });
+}
+
 /** The header names both keys and offers none to add */
 async function expectBothKeysHeld(page: Page) {
   const avatar = page.getByTestId('profile-avatar-button');
@@ -126,14 +137,7 @@ test.describe('An account whose posting and active keys are one key', () => {
     page
   }) => {
     const broadcasts = await installBroadcastInterceptor(page);
-    const loginForm = await openLoginDialog(page);
-
-    await expect(loginForm.wifInput).toBeVisible({ timeout: HYDRATION_TIMEOUT });
-    await loginForm.usernameInput.fill(STUB_ACCOUNT);
-    await loginForm.passwordInput.fill(SAFE_STORAGE_PASSWORD);
-    await loginForm.wifInput.fill(SHARED_WIF);
-    await loginForm.saveSignInButton.click();
-    await expect(loginForm.loginDialog).toHaveCount(0, { timeout: HYDRATION_TIMEOUT });
+    await signInWithSafeStorage(page);
 
     await expectBothKeysHeld(page);
     await transferWithoutKeyPrompt(page, broadcasts);
@@ -170,5 +174,21 @@ test.describe('An account whose posting and active keys are one key', () => {
 
     await expectBothKeysHeld(page);
     await transferWithoutKeyPrompt(page, broadcasts);
+  });
+
+  test('WALLET-SHARED-KEY-04 — another tab of the wallet signs with the safe-storage sign-in\'s unlocked key', async ({
+    context,
+    page
+  }) => {
+    await signInWithSafeStorage(page);
+
+    // The sign-in wrote safe storage; this tab's hb-auth worker must be the one it unlocked
+    const otherTab = await context.newPage();
+    const broadcasts = await installBroadcastInterceptor(otherTab);
+    await otherTab.goto(ownTransfersPage);
+
+    await expectBothKeysHeld(otherTab);
+    await transferWithoutKeyPrompt(otherTab, broadcasts);
+    await expect(new LoginForm(otherTab).enterYourPasswordForm).toHaveCount(0);
   });
 });
