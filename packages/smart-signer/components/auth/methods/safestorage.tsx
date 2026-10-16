@@ -128,6 +128,12 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     });
 
+    /** The client of this app's current worker: the one held since mount may have been replaced */
+    async function getAuthClient(): Promise<OnlineClient> {
+      authClient.current = await hbauthService.getOnlineClient();
+      return authClient.current;
+    }
+
     async function onSave(values: SafeStorageForm) {
       const { username, password, wif, keyType, strict } = values;
       try {
@@ -140,13 +146,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           setLoading(false);
           return;
         }
-        if (authClient.current) {
-          await registerSafeStorageKey(
-            authClient.current,
-            { username, password, wif, keyType, strict },
-            SHARED_KEY_LOOKUP
-          );
-        }
+        await registerSafeStorageKey(
+          await getAuthClient(),
+          { username, password, wif, keyType, strict },
+          SHARED_KEY_LOOKUP
+        );
         await finalize(values);
         form.reset();
       } catch (error) {
@@ -161,7 +165,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         setLoading(true);
         setError(null);
-        await authClient.current?.authenticate(username, password, keyType);
+        await (await getAuthClient()).authenticate(username, password, keyType);
 
         // Check passkey support BEFORE finalize — finalize closes the dialog
         // and may unmount this component, so state updates after it are lost.
@@ -657,7 +661,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 className="bg-blue-600 text-white hover:bg-blue-500"
                 onClick={async () => {
                   try {
-                    await authClient.current?.registerPasskey(
+                    await (await getAuthClient()).registerPasskey(
                       form.getValues().username,
                       lastAuthPassword
                     );

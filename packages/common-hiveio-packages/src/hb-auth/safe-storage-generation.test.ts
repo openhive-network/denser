@@ -48,9 +48,11 @@ const storage = new MemoryStorage();
 const fakeWindow = Object.assign(new EventTarget(), { localStorage: storage });
 Object.assign(globalThis, { window: fakeWindow });
 
-const { getSafeStorageGeneration, renewSafeStorageGeneration, subscribeSafeStorageGeneration } = await import(
-  './safe-storage-generation.ts'
-);
+const { getSafeStorageGeneration, getWorkerGeneration, renewSafeStorageGeneration, subscribeSafeStorageGeneration } =
+  await import('./safe-storage-generation.ts');
+
+const BLOG = '';
+const WALLET = '/wallet';
 
 describe('safe storage generation', () => {
   beforeEach(() => {
@@ -61,15 +63,15 @@ describe('safe storage generation', () => {
   it('is null until renewed, then the renewed one', () => {
     assert.equal(getSafeStorageGeneration(), null);
 
-    const generation = renewSafeStorageGeneration();
+    const generation = renewSafeStorageGeneration(BLOG, null);
 
     assert.equal(typeof generation, 'string');
     assert.equal(getSafeStorageGeneration(), generation);
   });
 
   it('changes on every renewal', () => {
-    const first = renewSafeStorageGeneration();
-    const second = renewSafeStorageGeneration();
+    const first = renewSafeStorageGeneration(BLOG, null);
+    const second = renewSafeStorageGeneration(BLOG, null);
 
     assert.notEqual(first, second);
     assert.equal(getSafeStorageGeneration(), second);
@@ -78,14 +80,39 @@ describe('safe storage generation', () => {
   it('stays null when localStorage cannot keep it, so clients are not replaced on every call', () => {
     storage.full = true;
 
-    assert.equal(renewSafeStorageGeneration(), null);
+    assert.equal(renewSafeStorageGeneration(BLOG, null), null);
     assert.equal(getSafeStorageGeneration(), null);
+    assert.equal(getWorkerGeneration(BLOG), null);
+  });
+
+  it('names no worker generation while there is none, and reading it creates none', () => {
+    assert.equal(getWorkerGeneration(BLOG), null);
+    assert.equal(getWorkerGeneration(WALLET), null);
+    assert.equal(getSafeStorageGeneration(), null);
+  });
+
+  it('keeps the writing app on its own worker, and names the new generation to every other app', () => {
+    const writerWorker = renewSafeStorageGeneration(WALLET, null);
+    const generation = renewSafeStorageGeneration(BLOG, 'blog-worker');
+
+    assert.equal(getWorkerGeneration(BLOG), 'blog-worker');
+    assert.equal(getWorkerGeneration(WALLET), generation);
+    assert.notEqual(getWorkerGeneration(WALLET), writerWorker);
+  });
+
+  it('names a bare generation, as stored before writers were recorded, to every app', () => {
+    const legacy = { value: 'legacy-generation', expiresAt: null, createdAt: Date.now() };
+    storage.setItem('hbauth-safe-storage-generation', JSON.stringify(legacy));
+
+    assert.equal(getSafeStorageGeneration(), 'legacy-generation');
+    assert.equal(getWorkerGeneration(BLOG), 'legacy-generation');
+    assert.equal(getWorkerGeneration(WALLET), 'legacy-generation');
   });
 
   it('tells subscribers of another tab renewing it, until they unsubscribe', () => {
     let calls = 0;
     const unsubscribe = subscribeSafeStorageGeneration(() => calls++);
-    renewSafeStorageGeneration();
+    renewSafeStorageGeneration(BLOG, null);
     const generationKey = storage.key(0) ?? '';
 
     fakeWindow.dispatchEvent(storageEvent('postData-new-alice'));
