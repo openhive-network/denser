@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { username } from '@smart-signer/lib/auth/utils';
 import { hbauthService } from '@smart-signer/lib/hbauth-service';
+import { handleError } from '@ui/lib/handle-error';
 import { Icons } from '@hive/ui/components/icons';
 import {
   Input,
@@ -40,6 +41,8 @@ import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
+import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
+import { useInjectedExtensions } from './use-injected-extensions';
 
 function getFormSchema() {
   return z
@@ -78,8 +81,7 @@ export interface SafeStorageProps {
   preferredKeyTypes: KeyType[];
   i18nNamespace: string;
   isSigned?: boolean;
-  sign: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
-  submit: (username: string) => Promise<void>;
+  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
   username: string;
   onUsernameChange: (username: string) => void;
 }
@@ -88,7 +90,7 @@ type SafeStorageForm = z.infer<ReturnType<typeof getFormSchema>>;
 
 const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
   (
-    { onSetStep, sign, submit, preferredKeyTypes, i18nNamespace, isSigned, username, onUsernameChange },
+    { onSetStep, signIn, preferredKeyTypes, i18nNamespace, isSigned, username, onUsernameChange },
     ref
   ) => {
     useImperativeHandle(ref, () => ({
@@ -110,6 +112,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       wif: false
     });
     const [authUsers, setAuthUsers] = useState<AuthUser[]>([]);
+    const extensions = useInjectedExtensions();
     const form = useForm<SafeStorageForm>({
       mode: 'onChange',
       resolver: zodResolver(getFormSchema()),
@@ -228,8 +231,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     async function finalize({ username, keyType }: SafeStorageForm) {
       try {
         setLoading(true);
-        await sign(LoginType.hbauth, username, KeyType[keyType]);
-        await submit(username);
+        await signIn(LoginType.hbauth, username, KeyType[keyType]);
         // Request persistent storage to reduce risk of browser evicting IndexedDB keys.
         // This is a best-effort hint — browsers may ignore it.
         if (navigator.storage?.persist) {
@@ -238,6 +240,19 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       } catch (error) {
         const errorMessage = handleAuthError(error, 'finalize');
         setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function signInWithExtension(loginType: LoginType.keychain | LoginType.peakvault) {
+      if (!(await form.trigger('username'))) return;
+      const { username, keyType } = form.getValues();
+      try {
+        setLoading(true);
+        await signIn(loginType, username, keyType);
+      } catch (error) {
+        handleError(error);
       } finally {
         setLoading(false);
       }
@@ -387,6 +402,15 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 </FormItem>
               )}
             />
+
+            {hasInjectedExtension(extensions) && (
+              <ExtensionSignIn
+                extensions={extensions}
+                i18nNamespace={i18nNamespace}
+                disabled={loading}
+                onSignIn={signInWithExtension}
+              />
+            )}
 
             {/* Password */}
             <FormField

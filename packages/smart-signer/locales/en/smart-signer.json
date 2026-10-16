@@ -128,7 +128,12 @@
     "signin_with_peakvault": "Peakvault extension",
     "signin_with_wif": "Sign in with WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",
-    "signin_with_hivesigner": "HiveSigner"
+    "signin_with_hivesigner": "HiveSigner",
+    "extension_sign_in": {
+      "keychain": "Sign in with Hive Keychain",
+      "peakvault": "Sign in with PeakVault",
+      "or_safe_storage": "or use safe storage"
+    }
   },
   "pageLogin": {
     "loginFailed": "Login failed",

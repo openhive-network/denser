@@ -128,7 +128,12 @@
     "signin_with_peakvault": "PeakVault 확장",
     "signin_with_wif": "WIF로 로그인 (구버전)",
     "signin_with_hiveauth": "HiveAuth",
-    "signin_with_hivesigner": "HiveSigner"
+    "signin_with_hivesigner": "HiveSigner",
+    "extension_sign_in": {
+      "keychain": "Hive Keychain으로 로그인",
+      "peakvault": "PeakVault로 로그인",
+      "or_safe_storage": "또는 안전한 저장소 사용"
+    }
   },
   "pageLogin": {
     "loginFailed": "로그인 실패",

@@ -128,7 +128,12 @@
     "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "Esta operación requiere su clave activa. Introduzca su clave y guárdela en el almacenamiento seguro.",
     "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "Esta operación requiere su clave de propietario. Introduzca su clave y guárdela en el almacenamiento seguro.",
     "use_peakvault": "Usar Peakvault",
-    "signin_with_peakvault": "Extensión Peakvault"
+    "signin_with_peakvault": "Extensión Peakvault",
+    "extension_sign_in": {
+      "keychain": "Iniciar sesión con Hive Keychain",
+      "peakvault": "Iniciar sesión con PeakVault",
+      "or_safe_storage": "o usa el almacenamiento seguro"
+    }
   },
   "pageLogin": {
     "loginFailed": "Error de inicio de sesión",
