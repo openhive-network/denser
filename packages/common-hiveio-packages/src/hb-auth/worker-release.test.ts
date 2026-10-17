@@ -97,4 +97,24 @@ describe('hb-auth worker release', () => {
 
     assert.deepEqual(endedWorkers, [ABSOLUTE_WORKER_URL, ABSOLUTE_WORKER_URL]);
   });
+
+  it('holds a running worker only while another page holds it, without connecting to one that is not running', async () => {
+    const page = await openPage();
+    const otherPage = await openPage();
+    assert.equal(await page.holdRunningWorker(WORKER_URL), null);
+    await settle();
+    assert.deepEqual(retireMessages, []);
+
+    const otherRelease = await otherPage.holdWorker(WORKER_URL);
+    assert.deepEqual(await page.otherRunningWorkers('/blog/auth/releasable-worker.js'), [ABSOLUTE_WORKER_URL]);
+    const release = await page.holdRunningWorker(WORKER_URL);
+    assert.ok(release && otherRelease);
+    release();
+    otherRelease();
+    await settle();
+
+    assert.deepEqual(endedWorkers, [ABSOLUTE_WORKER_URL]);
+    assert.deepEqual(await page.otherRunningWorkers('/blog/auth/releasable-worker.js'), []);
+  });
 });
+

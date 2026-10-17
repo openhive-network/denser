@@ -71,43 +71,6 @@ export function renewSafeStorageGeneration(basePath: string, writerWorker: strin
   return getSafeStorageGeneration();
 }
 
-/**
- * The worker generations each app's clients were created with, which pages of that app may still be
- * signing with: SharedWorkers keep running while any page holds them.
- */
-const APP_WORKER_GENERATIONS_KEY = 'hbauth-app-worker-generations';
-const MAX_RECORDED_WORKER_GENERATIONS = 5;
-
-function readAppWorkerGenerations(): Record<string, string[]> {
-  const stored = getStorageItem<unknown>(APP_WORKER_GENERATIONS_KEY);
-  if (typeof stored !== 'object' || stored === null) return {};
-  return Object.fromEntries(
-    Object.entries(stored).filter(
-      (entry): entry is [string, string[]] =>
-        Array.isArray(entry[1]) && entry[1].every((generation) => typeof generation === 'string')
-    )
-  );
-}
-
-/** Records that a client of the app at `basePath` was created with the worker named by `generation`. */
-export function recordAppWorkerGeneration(basePath: string, generation: string | null): void {
-  // The worker URL naming no generation is every app's first, so it needs no record
-  if (generation === null) return;
-  const recorded = readAppWorkerGenerations();
-  const appGenerations = recorded[basePath] ?? [];
-  if (appGenerations.includes(generation)) return;
-  recorded[basePath] = [...appGenerations, generation].slice(-MAX_RECORDED_WORKER_GENERATIONS);
-  setStorageItem(APP_WORKER_GENERATIONS_KEY, recorded, StorageTTL.SESSION);
-}
-
-/**
- * The worker generations clients of the app at `basePath` were created with, most recent last,
- * starting with null: the worker URL naming none.
- */
-export function getAppWorkerGenerations(basePath: string): (string | null)[] {
-  return [null, ...(readAppWorkerGenerations()[basePath] ?? [])];
-}
-
 /** Calls `onChange` when a page in another tab renews the generation. Returns the unsubscribe. */
 export function subscribeSafeStorageGeneration(onChange: () => void): () => void {
   const handleStorage = (event: StorageEvent) => {

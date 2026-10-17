@@ -6,6 +6,7 @@
  */
 const RETIRE_WORKER_MESSAGE = 'denser:retire-worker';
 const WORKER_LOCK_PREFIX = 'denser:hb-auth-worker:';
+const WORKER_START_LOCK_PREFIX = 'denser:hb-auth-worker-start:';
 
 interface WorkerHold {
   clients: number;
@@ -16,6 +17,8 @@ interface WorkerHold {
 const heldWorkers = new Map<string, WorkerHold>();
 
 const absoluteUrl = (workerUrl: string): string => new URL(workerUrl, window.location.href).href;
+
+const workerLockName = (url: string): string => `${WORKER_LOCK_PREFIX}${url}`;
 
 const isWorkerReleasable = (): boolean =>
   typeof window !== 'undefined' && typeof SharedWorker !== 'undefined' && Boolean(navigator.locks);
@@ -39,26 +42,27 @@ const retireWorker = (url: string): void => {
 
 const UNTRACKED = (): void => {};
 
-/**
- * Holds the worker at `workerUrl` for a client of this page, before the client connects to it.
- * Resolves to the release, to call once the client no longer uses the worker: when none of this
- * page's clients do, the worker is retired, and ends as soon as no other page holds it. Resolves to
- * null while the worker is being retired, which may end under a client connecting now; its keys were
- * locked before. Where workers cannot be released the release does nothing.
- */
-export async function holdWorker(workerUrl: string): Promise<(() => void) | null> {
-  if (!isWorkerReleasable()) return UNTRACKED;
+/** The number of holds of the lock named `name`, by any page */
+const countHolders = async (name: string): Promise<number> =>
+  ((await navigator.locks.query()).held ?? []).filter((lock) => lock.name === name).length;
+
+const hold = async (workerUrl: string, runningOnly: boolean): Promise<(() => void) | null> => {
+  if (!isWorkerReleasable()) return runningOnly ? null : UNTRACKED;
   const url = absoluteUrl(workerUrl);
   let held = heldWorkers.get(url);
   if (!held) {
-    const releaseLock = await holdSharedLock(`${WORKER_LOCK_PREFIX}${url}`);
+    const name = workerLockName(url);
+    const releaseLock = await holdSharedLock(name);
+    // Held by no other page, the worker is not running: connecting to it would start it
+    const notRunning = runningOnly && releaseLock !== null && (await countHolders(name)) < 2;
     // Another client of this page may have held it meanwhile
     held = heldWorkers.get(url);
-    if (held) releaseLock?.();
-    else if (releaseLock) {
+    if (held || notRunning) releaseLock?.();
+    if (!held) {
+      if (!releaseLock || notRunning) return null;
       held = { clients: 0, release: releaseLock };
       heldWorkers.set(url, held);
-    } else return null;
+    }
   }
   held.clients += 1;
   const hold = held;
@@ -72,4 +76,48 @@ export async function holdWorker(workerUrl: string): Promise<(() => void) | null
     retireWorker(url);
     hold.release();
   };
+};
+
+/**
+ * Holds the worker at `workerUrl` for a client of this page, before the client connects to it.
+ * Resolves to the release, to call once the client no longer uses the worker: when none of this
+ * page's clients do, the worker is retired, and ends as soon as no other page holds it. Resolves to
+ * null while the worker is being retired, which may end under a client connecting now; its keys were
+ * locked before. Where workers cannot be released the release does nothing.
+ */
+export function holdWorker(workerUrl: string): Promise<(() => void) | null> {
+  return hold(workerUrl, false);
+}
+
+/**
+ * Holds the worker at `workerUrl` as `holdWorker` does, only while it runs: resolves to null when
+ * no page holds it, so a client connecting to it would start it, and where workers cannot be released.
+ */
+export function holdRunningWorker(workerUrl: string): Promise<(() => void) | null> {
+  return hold(workerUrl, true);
+}
+
+/**
+ * The absolute URLs of the running workers of the worker script `workerUrl` names, with any query,
+ * other than `workerUrl`'s own worker: those some page holds. None where workers cannot be released.
+ */
+export async function otherRunningWorkers(workerUrl: string): Promise<string[]> {
+  if (!isWorkerReleasable()) return [];
+  const own = absoluteUrl(workerUrl);
+  const script = own.split('?')[0];
+  const urls = ((await navigator.locks.query()).held ?? []).flatMap(({ name }) =>
+    name?.startsWith(WORKER_LOCK_PREFIX) ? [name.slice(WORKER_LOCK_PREFIX.length)] : []
+  );
+  return [...new Set(urls)].filter((url) => url !== own && (url === script || url.startsWith(`${script}?`)));
+}
+
+/**
+ * Runs `start`, which starts a client of the worker at `workerUrl`, once the clients pages of this
+ * origin are starting with that worker have started: hb-auth's worker instantiates beekeeper's WASM
+ * for every client that reaches it before the first one started its session, so the first client to
+ * start does so alone, and the others reach the beekeeper it started.
+ */
+export function startWithWorker<T>(workerUrl: string, start: () => Promise<T>): Promise<T> {
+  if (!isWorkerReleasable()) return start();
+  return navigator.locks.request(`${WORKER_START_LOCK_PREFIX}${absoluteUrl(workerUrl)}`, { mode: 'exclusive' }, start);
 }

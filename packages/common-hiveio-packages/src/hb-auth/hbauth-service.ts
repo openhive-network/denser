@@ -11,13 +11,8 @@ import { getLogger } from '@hive/ui/lib/logging';
 import { configuredSessionTime } from '@hive/ui/config/public-vars';
 import env from '@beam-australia/react-env';
 import { getChain } from '../wax';
-import {
-  getAppWorkerGenerations,
-  getWorkerGeneration,
-  recordAppWorkerGeneration,
-  renewSafeStorageGeneration
-} from './safe-storage-generation';
-import { holdWorker } from './worker-release';
+import { getWorkerGeneration, renewSafeStorageGeneration } from './safe-storage-generation';
+import { holdRunningWorker, holdWorker, otherRunningWorkers, startWithWorker } from './worker-release';
 
 const logger = getLogger('app');
 
@@ -63,7 +58,7 @@ const getDefaultClientOptions = (generation: string | null): ClientOptions => {
   };
 };
 
-let onlineClientPromise: Promise<OnlineClient> | undefined = undefined;
+let onlineClientPromise: Promise<GenerationRenewingOnlineClient> | undefined = undefined;
 // The safe storage generation the cached online client's worker URL names
 let onlineClientGeneration: string | null = null;
 // This should be just a reference retrieved from the onlineClientPromise.
@@ -74,10 +69,6 @@ let offlineClientPromise: Promise<OfflineClient> | undefined = undefined;
 // Lets go of the worker each online client holds (worker-release.ts)
 const workerReleases = new WeakMap<OnlineClient, () => void>();
 
-// The operations running with each online client (withOnlineClient), which a replaced client's worker
-// is locked only after
-const clientOperations = new Map<Promise<OnlineClient>, Set<Promise<unknown>>>();
-
 /** The safe storage generation this app's clients name in their worker URL */
 const currentWorkerGeneration = (): string | null => getWorkerGeneration(getBasePath());
 
@@ -86,14 +77,42 @@ const currentWorkerGeneration = (): string | null => getWorkerGeneration(getBase
  * generation as this app's worker's: the app's pages keep sharing that worker, and whatever it has
  * unlocked, while other apps' clients are replaced when next asked for. A client whose worker another
  * write superseded writes through the app's current client instead, as its worker would write back
- * wallet files older than that write.
+ * wallet files older than that write. The writes of the operations running with the client
+ * (withOnlineClient) renew the generation once, when the last of them settles.
  */
 class GenerationRenewingOnlineClient extends OnlineClient {
   readonly #generation: string | null;
+  #operations = 0;
+  #wroteInOperations = false;
+  #onIdle: (() => void)[] = [];
 
   constructor(clientOptions: ClientOptions, generation: string | null) {
     super(clientOptions);
     this.#generation = generation;
+  }
+
+  /** Whether its worker is the app's current one */
+  get isCurrent(): boolean {
+    return this.#generation === currentWorkerGeneration();
+  }
+
+  beginOperation(): void {
+    this.#operations += 1;
+  }
+
+  endOperation(): void {
+    if (--this.#operations > 0) return;
+    if (this.#wroteInOperations) {
+      this.#wroteInOperations = false;
+      this.renewGeneration();
+    }
+    this.#onIdle.splice(0).forEach((resolve) => resolve());
+  }
+
+  /** Resolves once no operation runs with the client */
+  whenIdle(): Promise<void> {
+    if (!this.#operations) return Promise.resolve();
+    return new Promise((resolve) => this.#onIdle.push(resolve));
   }
 
   override async register(
@@ -106,7 +125,7 @@ class GenerationRenewingOnlineClient extends OnlineClient {
     const current = await this.currentClient();
     if (current !== this) return current.register(username, password, wifKey, keyType, strict);
     const status = await super.register(username, password, wifKey, keyType, strict);
-    this.renewGeneration();
+    this.wroteFiles();
     return status;
   }
 
@@ -114,7 +133,7 @@ class GenerationRenewingOnlineClient extends OnlineClient {
     const current = await this.currentClient();
     if (current !== this) return current.importKey(username, wifKey, keyType);
     const publicKey = await super.importKey(username, wifKey, keyType);
-    this.renewGeneration();
+    this.wroteFiles();
     return publicKey;
   }
 
@@ -122,14 +141,19 @@ class GenerationRenewingOnlineClient extends OnlineClient {
     const current = await this.currentClient();
     if (current !== this) return current.invalidateExistingKey(username, keyType);
     await super.invalidateExistingKey(username, keyType);
-    this.renewGeneration();
+    this.wroteFiles();
   }
 
   /** This client while its worker is the app's current one; otherwise the app's current client */
   private currentClient(): Promise<OnlineClient> {
-    if (this.#generation === currentWorkerGeneration()) return Promise.resolve(this);
+    if (this.isCurrent) return Promise.resolve(this);
     logger.info('Safe storage changed since this HB-Auth client was created; writing through the current one');
     return getOnlineClient();
+  }
+
+  private wroteFiles(): void {
+    if (this.#operations) this.#wroteInOperations = true;
+    else this.renewGeneration();
   }
 
   private renewGeneration(): void {
@@ -140,17 +164,22 @@ class GenerationRenewingOnlineClient extends OnlineClient {
 }
 
 /**
- * Initializes `client`, and starts its worker's session with a single call: hb-auth's worker starts
- * beekeeper, and instantiates its WASM, for every call that reaches it before the first start
- * finished, and keeps only the last one.
+ * Initializes `client`, and starts its worker's session with a single call, after the clients other
+ * pages are starting with that worker: hb-auth's worker starts beekeeper, and instantiates its WASM,
+ * for every call that reaches it before the first start finished, and keeps only the last one.
  */
-const startClient = async (client: OnlineClient | OfflineClient, chain: Awaited<ReturnType<typeof getChain>>) => {
-  await client.initialize(chain);
-  await client.getRegisteredUsers();
-};
+const startClient = (
+  client: OnlineClient | OfflineClient,
+  chain: Awaited<ReturnType<typeof getChain>>,
+  workerUrl: string
+): Promise<void> =>
+  startWithWorker(workerUrl, async () => {
+    await client.initialize(chain);
+    await client.getRegisteredUsers();
+  });
 
 // This is intentionally non-async method as we don't want any race condition for onlineClientPromise !== undefined check
-const setOnlineClient = async (generation: string | null): Promise<OnlineClient> => {
+const setOnlineClient = async (generation: string | null): Promise<GenerationRenewingOnlineClient> => {
   const clientOptions = getDefaultClientOptions(generation);
   logger.info('Creating instance of HB-Auth OnlineClient with options: %o', clientOptions);
 
@@ -161,7 +190,7 @@ const setOnlineClient = async (generation: string | null): Promise<OnlineClient>
   const client = new GenerationRenewingOnlineClient(clientOptions, generation);
 
   try {
-    await startClient(client, chain);
+    await startClient(client, chain, clientOptions.workerUrl);
   } catch (error) {
     releaseWorker();
     throw error;
@@ -182,7 +211,7 @@ const setOfflineClient = async (): Promise<OfflineClient> => {
 
   const client = new OfflineClient(clientOptions);
 
-  await startClient(client, chain);
+  await startClient(client, chain, clientOptions.workerUrl);
 
   return client;
 };
@@ -201,10 +230,10 @@ const lockReplacedWorker = async (client: OnlineClient): Promise<void> => {
  * Locks the worker of a replaced client once the operations running with it settle, and lets go of
  * it, so it ends, with its WASM, once no page uses it.
  */
-const retireReplacedClient = (clientPromise: Promise<OnlineClient>): void => {
-  Promise.allSettled(clientOperations.get(clientPromise) ?? [])
-    .then(() => clientPromise)
+const retireReplacedClient = (clientPromise: Promise<GenerationRenewingOnlineClient>): void => {
+  clientPromise
     .then(async (client) => {
+      await client.whenIdle();
       await lockReplacedWorker(client);
       workerReleases.get(client)?.();
     })
@@ -219,7 +248,9 @@ const retireReplacedClient = (clientPromise: Promise<OnlineClient>): void => {
  * wallet files since it was created: the new worker reads them, and starts with every key locked. The
  * replaced worker is locked, so no page of this app keeps signing with it, and released.
  */
-export const getOnlineClient = (): Promise<OnlineClient> => {
+export const getOnlineClient = (): Promise<OnlineClient> => getRenewingOnlineClient();
+
+const getRenewingOnlineClient = (): Promise<GenerationRenewingOnlineClient> => {
   const generation = currentWorkerGeneration();
   if (onlineClientPromise && generation === onlineClientGeneration)
     return onlineClientPromise;
@@ -229,7 +260,6 @@ export const getOnlineClient = (): Promise<OnlineClient> => {
     retireReplacedClient(onlineClientPromise);
   }
   onlineClientGeneration = generation;
-  recordAppWorkerGeneration(getBasePath(), generation);
   const clientPromise = setOnlineClient(generation).catch((error) => {
     // Clear cache so next call retries, unless a newer client replaced it already
     if (onlineClientPromise === clientPromise) onlineClientPromise = undefined;
@@ -239,53 +269,95 @@ export const getOnlineClient = (): Promise<OnlineClient> => {
   return clientPromise;
 };
 
+// The client methods that write the wallet files
+const WRITE_METHODS = new Set<PropertyKey>(['register', 'importKey', 'invalidateExistingKey']);
+
+/**
+ * The client an operation runs with: the online client it started with, until a write finds that
+ * client's worker superseded. The write, and every call after it, then go to the app's current client,
+ * so a key the operation registers is in the worker it signs with.
+ */
+class OnlineClientOperation {
+  #client: GenerationRenewingOnlineClient;
+  readonly client: OnlineClient;
+
+  constructor(client: GenerationRenewingOnlineClient) {
+    this.#client = client;
+    this.client = new Proxy<OnlineClient>(client, {
+      get: (_target, property) => {
+        const value: unknown = Reflect.get(this.#client, property, this.#client);
+        if (typeof value !== 'function') return value;
+        if (!WRITE_METHODS.has(property)) return value.bind(this.#client);
+        return async (...args: unknown[]) => {
+          await this.followCurrentClient();
+          return Reflect.apply(Reflect.get(this.#client, property, this.#client), this.#client, args);
+        };
+      }
+    });
+  }
+
+  end(): void {
+    this.#client.endOperation();
+  }
+
+  private async followCurrentClient(): Promise<void> {
+    if (this.#client.isCurrent) return;
+    const current = await getRenewingOnlineClient();
+    if (current === this.#client) return;
+    current.beginOperation();
+    this.#client.endOperation();
+    this.#client = current;
+  }
+}
+
 /**
  * Runs `operation` with the online client, which keeps its worker unlocked until `operation` settles
- * even when another app's write replaces it meanwhile. Resolves and rejects as `operation` does.
+ * even when another app's write replaces it meanwhile; once a write of `operation` finds it replaced,
+ * `operation` continues with the current one. The writes of `operation` renew the safe storage
+ * generation once, when it settles. Resolves and rejects as `operation` does.
  */
 export const withOnlineClient = async <T>(operation: (client: OnlineClient) => Promise<T>): Promise<T> => {
-  const clientPromise = getOnlineClient();
-  const running = clientPromise.then(operation);
-  const operations = clientOperations.get(clientPromise) ?? new Set<Promise<unknown>>();
-  clientOperations.set(clientPromise, operations);
-  operations.add(running);
+  // Begun as the client resolves, before a replacement can retire it
+  const running = await getRenewingOnlineClient().then((client) => {
+    client.beginOperation();
+    return new OnlineClientOperation(client);
+  });
   try {
-    return await running;
+    return await operation(running.client);
   } finally {
-    operations.delete(running);
-    if (!operations.size) clientOperations.delete(clientPromise);
+    running.end();
   }
 };
 
-/** Logs `username` out of the worker of a client this app no longer creates */
-const logoutFromReplacedWorker = async (generation: string | null, username: string): Promise<void> => {
-  const clientOptions = getDefaultClientOptions(generation);
-  let releaseWorker: (() => void) | null = null;
+/** Logs `username` out of the running worker at `workerUrl`, of a client this app no longer creates */
+const logoutFromReplacedWorker = async (workerUrl: string, username: string): Promise<void> => {
+  const releaseWorker = await holdRunningWorker(workerUrl);
+  // No page holds it, so it does not run, or a page is retiring it, locking it first
+  if (!releaseWorker) return;
   try {
     const chain = await getChain();
-    releaseWorker = await holdWorker(clientOptions.workerUrl);
-    // A page retired it, locking it first
-    if (!releaseWorker) return;
-    const client = new OnlineClient(clientOptions);
-    await client.initialize(chain);
-    await client.logout(username);
+    const client = new OnlineClient({ ...getDefaultClientOptions(null), workerUrl });
+    await startWithWorker(workerUrl, async () => {
+      await client.initialize(chain);
+      await client.logout(username);
+    });
   } catch (error: unknown) {
     logger.info('Did not log out of a replaced HB-Auth worker: %s', error instanceof Error ? error.message : String(error));
   } finally {
-    releaseWorker?.();
+    releaseWorker();
   }
 };
 
 /**
- * Logs `username` out of the online client's worker, and out of every worker this app's clients were
- * created with before: a page that has not asked for a client since keeps signing with its own.
- * Rejects as the online client's logout does.
+ * Logs `username` out of the online client's worker, and out of every other running worker of this
+ * app: a page that has not asked for a client since keeps signing with its own. A worker no page
+ * holds is not running, and is not started to be logged out of. Rejects as the online client's
+ * logout does.
  */
 export const logoutFromEveryWorker = async (username: string): Promise<void> => {
   const clientPromise = getOnlineClient();
-  const currentGeneration = onlineClientGeneration;
-  const replaced = getAppWorkerGenerations(getBasePath()).filter((generation) => generation !== currentGeneration);
-  await Promise.all(replaced.map((generation) => logoutFromReplacedWorker(generation, username)));
+  const replaced = await otherRunningWorkers(getWorkerUrl(onlineClientGeneration));
+  await Promise.all(replaced.map((workerUrl) => logoutFromReplacedWorker(workerUrl, username)));
   await (await clientPromise).logout(username);
 };
 
