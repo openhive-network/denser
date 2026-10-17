@@ -4,19 +4,21 @@ import { registerHooks } from 'node:module';
 
 /**
  * hb-auth stood in by clients sharing one worker per worker URL, as a SharedWorker is shared: each
- * worker keeps the users unlocked in it, and the keys registered through it. As hb-auth's, a worker
+ * worker keeps the users unlocked in it, and the keys of the wallet files (fakeHbAuthFiles) it read
+ * when it started; a write changes its keys and writes them all back to the files. As hb-auth's, a worker
  * starts beekeeper on its first call, once for every call that reaches it before that start finished.
  * A client connecting to a worker that does not run starts it (fakeHbAuthStarts lists those).
  */
 const FAKE_HB_AUTH = `
 const workers = new Map();
 const starts = [];
+globalThis.fakeHbAuthFiles = new Set();
 globalThis.fakeHbAuthWorkers = workers;
 globalThis.fakeHbAuthStarts = starts;
 globalThis.connectFakeHbAuthWorker = (url) => {
   if (!workers.has(url)) {
     starts.push(url);
-    workers.set(url, { unlocked: new Set(), keys: new Set(), beekeepers: 0, started: false });
+    workers.set(url, { unlocked: new Set(), keys: new Set(globalThis.fakeHbAuthFiles), beekeepers: 0, started: false });
   }
   return workers.get(url);
 };
@@ -42,6 +44,7 @@ export class OnlineClient {
     await globalThis.fakeHbAuthRegistration;
     worker.unlocked.add(username);
     worker.keys.add(username + ':' + keyType);
+    globalThis.fakeHbAuthFiles = new Set(worker.keys);
     return { ok: true };
   }
   async sign(username, digest, keyType) {
@@ -50,8 +53,17 @@ export class OnlineClient {
     return 'signed in ' + this.options.workerUrl;
   }
   async authenticate(username) { (await this.startBeekeeper()).unlocked.add(username); return { ok: true }; }
-  async importKey() { await this.startBeekeeper(); return 'STM-public-key'; }
-  async invalidateExistingKey() { await this.startBeekeeper(); }
+  async importKey(username, wif, keyType) {
+    const worker = await this.startBeekeeper();
+    worker.keys.add(username + ':' + keyType);
+    globalThis.fakeHbAuthFiles = new Set(worker.keys);
+    return 'STM-public-key';
+  }
+  async invalidateExistingKey(username, keyType) {
+    const worker = await this.startBeekeeper();
+    worker.keys.delete(username + ':' + keyType);
+    globalThis.fakeHbAuthFiles = new Set(worker.keys);
+  }
   async logout(username) { (await this.startBeekeeper()).unlocked.delete(username); }
   async lock() {
     const worker = await this.startBeekeeper();
@@ -114,8 +126,9 @@ interface FakeWorker {
   retiring?: boolean;
 }
 
-/** The stand-in hb-auth's workers, by URL, the URLs of those it started, and its connection to one */
+/** The stand-in hb-auth's wallet files, its workers, by URL, the URLs of those it started, and its connection to one */
 const fakeHbAuth = globalThis as typeof globalThis & {
+  fakeHbAuthFiles: Set<string>;
   fakeHbAuthWorkers: Map<string, FakeWorker>;
   fakeHbAuthStarts: string[];
   connectFakeHbAuthWorker: (url: string) => FakeWorker;
@@ -224,6 +237,7 @@ describe('hb-auth online client', () => {
   beforeEach(() => {
     storage.clear();
     storage.generationWrites = 0;
+    fakeHbAuth.fakeHbAuthFiles = new Set();
   });
 
   it('starts no generation when there is none, so apps loading together keep their workers', async () => {
@@ -419,7 +433,7 @@ describe('hb-auth online client', () => {
     await blog.withOnlineClient(async (client) => {
       for (const keyType of ['posting', 'active', 'owner'] as const)
         await client.register('alice', 'password', 'wif', keyType);
-      assert.equal(storage.generationWrites, 0);
+      assert.equal(storage.generationWrites, 1);
     });
 
     assert.equal(storage.generationWrites, 1);
@@ -458,5 +472,79 @@ describe('hb-auth online client', () => {
     const workers = await Promise.all(tabs.map(async (tab) => workerOf(await tab.getOnlineClient()).worker));
     assert.equal(new Set(workers).size, 1);
     assert.equal(workers[0].beekeepers, 1);
+  });
+
+  it("keeps a key registered in an operation when another app writes before the operation settles", async () => {
+    const blog = await openPage(BLOG);
+    const wallet = await openPage(WALLET);
+    await wallet.getOnlineClient();
+
+    await blog.withOnlineClient(async (client) => {
+      await blog.act(() => client.register('bob', 'password', 'wif', 'posting'));
+      await wallet.importKey('bob');
+      return blog.act(() => client.getRegisteredUsers());
+    });
+
+    const { worker } = workerOf(await blog.getOnlineClient());
+    assert.deepEqual(
+      ['bob:posting', 'bob:active'].filter((key) => worker.keys.has(key)),
+      ['bob:posting', 'bob:active']
+    );
+  });
+
+  it('renews the safe storage generation right after a write made outside an operation, while one is pending', async () => {
+    const blog = await openPage(BLOG);
+    const wallet = await openPage(WALLET);
+    const walletClient = await wallet.getOnlineClient();
+    let finishSigning = () => {};
+    const signing = blog.withOnlineClient(
+      () =>
+        new Promise<void>((resolve) => {
+          finishSigning = resolve;
+        })
+    );
+
+    await blog.register('dave');
+
+    assert.equal(storage.generationWrites, 1);
+    assert.notEqual(await wallet.getOnlineClient(), walletClient);
+    finishSigning();
+    await signing;
+    assert.equal(storage.generationWrites, 1);
+  });
+
+  it('starts no stopped worker when two pages log out of it at once', async () => {
+    const wallet = await openPage(WALLET);
+    await wallet.importKey('erin');
+    const tabs = [await openPage(BLOG), await openPage(BLOG)];
+    await Promise.all(tabs.map((tab) => tab.getOnlineClient()));
+    // A tab of the app on an older worker, which closes, ending it, once the tabs logging out listed it
+    const idleUrl = 'https://hive.blog/blog/auth/releasable-worker.js?storage=idle';
+    fakeHbAuth.connectFakeHbAuthWorker(idleUrl);
+    let closeIdleTab = () => {};
+    void navigator.locks.request(
+      `denser:hb-auth-worker:${idleUrl}`,
+      { mode: 'shared' },
+      () => new Promise<void>((resolve) => (closeIdleTab = resolve))
+    );
+    const query = navigator.locks.query.bind(navigator.locks);
+    const startsBefore = fakeHbAuth.fakeHbAuthStarts.length;
+    Object.assign(navigator.locks, {
+      query: async () => {
+        const snapshot = await query();
+        closeIdleTab();
+        fakeHbAuth.fakeHbAuthWorkers.delete(idleUrl);
+        return snapshot;
+      }
+    });
+
+    try {
+      await Promise.all(tabs.map((tab) => tab.logout('erin')));
+    } finally {
+      Reflect.deleteProperty(navigator.locks, 'query');
+    }
+    await settle();
+
+    assert.deepEqual(fakeHbAuth.fakeHbAuthStarts.slice(startsBefore), []);
   });
 });

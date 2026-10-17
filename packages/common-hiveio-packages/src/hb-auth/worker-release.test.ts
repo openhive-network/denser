@@ -1,4 +1,4 @@
-import { beforeEach, describe, it } from 'node:test';
+import { beforeEach, describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 
 /**
@@ -41,6 +41,9 @@ let pageCount = 0;
 
 /** A page: a module instance of its own, as another tab has */
 const openPage = (): Promise<WorkerRelease> => import(`./worker-release.ts?page=${++pageCount}`);
+
+// worker-release.ts's bound on how long one start keeps the others of its worker waiting
+const START_LOCK_TIMEOUT_MS = 10_000;
 
 /** Lets lock grants and the worker's end settle */
 const settle = () => new Promise((resolve) => setTimeout(resolve, 10));
@@ -116,5 +119,27 @@ describe('hb-auth worker release', () => {
     assert.deepEqual(endedWorkers, [ABSOLUTE_WORKER_URL]);
     assert.deepEqual(await page.otherRunningWorkers('/blog/auth/releasable-worker.js'), []);
   });
-});
 
+  it('lets the next start of a worker run once a start that does not settle held it long enough', async () => {
+    const page = await openPage();
+    const otherPage = await openPage();
+    mock.timers.enable({ apis: ['setTimeout'] });
+    try {
+      const wedged = page.startWithWorker(WORKER_URL, () => new Promise<never>(() => {}));
+      let started = false;
+      const next = otherPage.startWithWorker(WORKER_URL, async () => {
+        started = true;
+        return 'started';
+      });
+      await new Promise((resolve) => setImmediate(resolve));
+      assert.equal(started, false);
+
+      mock.timers.tick(START_LOCK_TIMEOUT_MS);
+
+      assert.equal(await next, 'started');
+      void wedged;
+    } finally {
+      mock.timers.reset();
+    }
+  });
+});
