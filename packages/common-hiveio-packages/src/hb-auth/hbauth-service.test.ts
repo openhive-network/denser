@@ -4,7 +4,8 @@ import { registerHooks } from 'node:module';
 
 /**
  * hb-auth stood in by clients sharing one worker per worker URL, as a SharedWorker is shared: each
- * worker keeps the users unlocked in it.
+ * worker keeps the users unlocked in it. As hb-auth's, a worker starts beekeeper on its first call,
+ * once for every call that reaches it before that start finished.
  */
 const FAKE_HB_AUTH = `
 const workers = new Map();
@@ -13,23 +14,35 @@ export const DEFAULT_INIT_TIMEOUT = 30000;
 export class OnlineClient {
   constructor(options) { this.options = options; }
   get worker() {
-    if (!workers.has(this.options.workerUrl)) workers.set(this.options.workerUrl, { unlocked: new Set() });
+    if (!workers.has(this.options.workerUrl))
+      workers.set(this.options.workerUrl, { unlocked: new Set(), beekeepers: 0, started: false });
     return workers.get(this.options.workerUrl);
   }
-  async initialize() { this.worker; return this; }
-  async register(username) {
+  async startBeekeeper() {
     const worker = this.worker;
+    if (worker.started) return worker;
+    worker.beekeepers += 1;
+    await new Promise((resolve) => setImmediate(resolve));
+    worker.started = true;
+    return worker;
+  }
+  async initialize() { this.worker; return this; }
+  async getRegisteredUsers() { await this.startBeekeeper(); return []; }
+  async getRegisteredUserByUsername() { await this.startBeekeeper(); return null; }
+  async register(username) {
+    const worker = await this.startBeekeeper();
     await globalThis.fakeHbAuthRegistration;
     worker.unlocked.add(username);
     return { ok: true };
   }
-  async authenticate(username) { this.worker.unlocked.add(username); return { ok: true }; }
-  async importKey() { return 'STM-public-key'; }
-  async invalidateExistingKey() {}
-  async logout(username) { this.worker.unlocked.delete(username); }
+  async authenticate(username) { (await this.startBeekeeper()).unlocked.add(username); return { ok: true }; }
+  async importKey() { await this.startBeekeeper(); return 'STM-public-key'; }
+  async invalidateExistingKey() { await this.startBeekeeper(); }
+  async logout(username) { (await this.startBeekeeper()).unlocked.delete(username); }
   async lock() {
-    if (!this.worker.unlocked.size) throw new Error('There is no existing user session');
-    this.worker.unlocked.clear();
+    const worker = await this.startBeekeeper();
+    if (!worker.unlocked.size) throw new Error('There is no existing user session');
+    worker.unlocked.clear();
   }
 }
 export class OfflineClient extends OnlineClient {}
@@ -45,7 +58,8 @@ const STUBS: Record<string, string> = {
 };
 const MODULES: Record<string, string> = {
   '@hive/ui/lib/storage-with-ttl': new URL('../../../ui/lib/storage-with-ttl.ts', import.meta.url).href,
-  './safe-storage-generation': new URL('./safe-storage-generation.ts', import.meta.url).href
+  './safe-storage-generation': new URL('./safe-storage-generation.ts', import.meta.url).href,
+  './worker-release': new URL('./worker-release.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -81,6 +95,7 @@ class MemoryStorage {
 
 interface FakeWorker {
   unlocked: Set<string>;
+  beekeepers: number;
 }
 
 const storage = new MemoryStorage();
@@ -123,6 +138,8 @@ async function openPage(basePath: string) {
       onPage(async () => (await service.getOnlineClient()).register(username, 'password', 'wif', 'posting')),
     importKey: (username: string) =>
       onPage(async () => (await service.getOnlineClient()).importKey(username, 'wif', 'active')),
+    readUser: (username: string) =>
+      onPage(async () => (await service.getOnlineClient()).getRegisteredUserByUsername(username)),
     registerThrough: (client: OnlineClient, username: string) =>
       onPage(() => client.register(username, 'password', 'wif', 'posting')),
     withOnlineClient: <T>(operation: (client: OnlineClient) => Promise<T>) =>
@@ -152,8 +169,8 @@ describe('hb-auth online client', () => {
     const blogClient = await blog.getOnlineClient();
     const walletClient = await wallet.getOnlineClient();
 
-    assert.equal(workerOf(blogClient).url, 'https://hive.blog/blog/auth/worker.js');
-    assert.equal(workerOf(walletClient).url, 'https://hive.blog/wallet/auth/worker.js');
+    assert.equal(workerOf(blogClient).url, 'https://hive.blog/blog/auth/releasable-worker.js');
+    assert.equal(workerOf(walletClient).url, 'https://hive.blog/wallet/auth/releasable-worker.js');
     assert.equal(await blog.getOnlineClient(), blogClient);
     assert.equal(await wallet.getOnlineClient(), walletClient);
     assert.equal(storage.length, 0);
@@ -187,7 +204,7 @@ describe('hb-auth online client', () => {
     const stale = workerOf(staleClient);
     const fresh = workerOf(freshClient);
     assert.notEqual(fresh.url, stale.url);
-    assert.match(fresh.url, /^https:\/\/hive\.blog\/blog\/auth\/worker\.js\?storage=/);
+    assert.match(fresh.url, /^https:\/\/hive\.blog\/blog\/auth\/releasable-worker\.js\?storage=/);
     assert.deepEqual([...fresh.worker.unlocked], []);
     assert.deepEqual([...stale.worker.unlocked], []);
     const otherBlogTab = await openPage(BLOG);
@@ -266,6 +283,24 @@ describe('hb-auth online client', () => {
 
     assert.deepEqual([...idleWorker.worker.unlocked], []);
     assert.deepEqual([...currentWorker.worker.unlocked], []);
+  });
+
+  it("starts one beekeeper in each worker the page moves to, however many calls reach it at once", async () => {
+    const blog = await openPage(BLOG);
+    const wallet = await openPage(WALLET);
+    const workers: FakeWorker[] = [];
+
+    for (let change = 0; change < 5; change++) {
+      await wallet.importKey('alice');
+      await Promise.all(Array.from({ length: 5 }, () => blog.readUser('alice')));
+      workers.push(workerOf(await blog.getOnlineClient()).worker);
+    }
+
+    assert.equal(new Set(workers).size, 5);
+    assert.deepEqual(
+      workers.map((worker) => worker.beekeepers),
+      [1, 1, 1, 1, 1]
+    );
   });
 
   it('locks a replaced worker only once the operations running with it settle', async () => {

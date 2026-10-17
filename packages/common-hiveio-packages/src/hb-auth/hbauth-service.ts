@@ -17,17 +17,21 @@ import {
   recordAppWorkerGeneration,
   renewSafeStorageGeneration
 } from './safe-storage-generation';
+import { holdWorker } from './worker-release';
 
 const logger = getLogger('app');
 
 const getBasePath = (): string => env('BASE_PATH') || '';
+
+// The apps' entry for hb-auth's worker, which ends once released (worker-release.ts)
+const WORKER_PATH = '/auth/releasable-worker.js';
 
 // Get the worker URL with proper basePath handling, naming the safe storage generation the worker
 // reads (safe-storage-generation.ts)
 const getWorkerUrl = (generation: string | null): string => {
   // Only run in browser context
   if (typeof window === 'undefined') {
-    return '/auth/worker.js';
+    return WORKER_PATH;
   }
 
   const query = generation ? `?storage=${encodeURIComponent(generation)}` : '';
@@ -38,14 +42,14 @@ const getWorkerUrl = (generation: string | null): string => {
   if (basePath) {
     // Use the current origin to construct an absolute URL
     const origin = window.location.origin;
-    const workerUrl = `${origin}${basePath}/auth/worker.js${query}`;
+    const workerUrl = `${origin}${basePath}${WORKER_PATH}${query}`;
     logger.debug('Worker URL (absolute) computed as: %s (basePath: %s)', workerUrl, basePath);
 
     return workerUrl;
   }
 
   // For root deployments, use relative path
-  const workerUrl = `/auth/worker.js${query}`;
+  const workerUrl = `${WORKER_PATH}${query}`;
   logger.debug('Worker URL (relative) computed as: %s', workerUrl);
 
   return workerUrl;
@@ -66,6 +70,9 @@ let onlineClientGeneration: string | null = null;
 let onlineClient: OnlineClient | undefined = undefined;
 
 let offlineClientPromise: Promise<OfflineClient> | undefined = undefined;
+
+// Lets go of the worker each online client holds (worker-release.ts)
+const workerReleases = new WeakMap<OnlineClient, () => void>();
 
 // The operations running with each online client (withOnlineClient), which a replaced client's worker
 // is locked only after
@@ -132,16 +139,34 @@ class GenerationRenewingOnlineClient extends OnlineClient {
   }
 }
 
+/**
+ * Initializes `client`, and starts its worker's session with a single call: hb-auth's worker starts
+ * beekeeper, and instantiates its WASM, for every call that reaches it before the first start
+ * finished, and keeps only the last one.
+ */
+const startClient = async (client: OnlineClient | OfflineClient, chain: Awaited<ReturnType<typeof getChain>>) => {
+  await client.initialize(chain);
+  await client.getRegisteredUsers();
+};
+
 // This is intentionally non-async method as we don't want any race condition for onlineClientPromise !== undefined check
 const setOnlineClient = async (generation: string | null): Promise<OnlineClient> => {
   const clientOptions = getDefaultClientOptions(generation);
   logger.info('Creating instance of HB-Auth OnlineClient with options: %o', clientOptions);
 
   const chain = await getChain();
+  // The app's current worker is retired only after its pages moved to another one
+  const releaseWorker = (await holdWorker(clientOptions.workerUrl)) ?? (() => {});
 
   const client = new GenerationRenewingOnlineClient(clientOptions, generation);
 
-  await client.initialize(chain);
+  try {
+    await startClient(client, chain);
+  } catch (error) {
+    releaseWorker();
+    throw error;
+  }
+  workerReleases.set(client, releaseWorker);
 
   return client;
 };
@@ -152,32 +177,47 @@ const setOfflineClient = async (): Promise<OfflineClient> => {
   logger.info('Creating instance of HB-Auth OfflineClient with options: %o', clientOptions);
 
   const chain = await getChain();
+  // Held while the page lives: the offline client is never replaced
+  await holdWorker(clientOptions.workerUrl);
 
   const client = new OfflineClient(clientOptions);
 
-  await client.initialize(chain);
+  await startClient(client, chain);
 
   return client;
 };
 
+/** Locks the worker of a replaced client, which no page of this app is to sign with any more. */
+const lockReplacedWorker = async (client: OnlineClient): Promise<void> => {
+  try {
+    await client.lock();
+  } catch (error: unknown) {
+    // hb-auth rejects locking a worker that has no unlocked session
+    logger.info('Did not lock the replaced HB-Auth worker: %s', error instanceof Error ? error.message : String(error));
+  }
+};
+
 /**
- * Locks the worker of a replaced client, which no page of this app is to sign with any more, once the
- * operations running with it settle.
+ * Locks the worker of a replaced client once the operations running with it settle, and lets go of
+ * it, so it ends, with its WASM, once no page uses it.
  */
-const lockReplacedClient = (clientPromise: Promise<OnlineClient>): void => {
+const retireReplacedClient = (clientPromise: Promise<OnlineClient>): void => {
   Promise.allSettled(clientOperations.get(clientPromise) ?? [])
     .then(() => clientPromise)
-    .then((client) => client.lock())
+    .then(async (client) => {
+      await lockReplacedWorker(client);
+      workerReleases.get(client)?.();
+    })
     .catch((error: unknown) => {
-      // hb-auth rejects locking a worker that has no unlocked session
-      logger.info('Did not lock the replaced HB-Auth worker: %s', error instanceof Error ? error.message : String(error));
+      // The client failed to initialize, and let go of its worker then
+      logger.info('Replaced an HB-Auth client that did not start: %s', error instanceof Error ? error.message : String(error));
     });
 };
 
 /**
  * The online client, replaced by one with another worker when another app changed safe storage's
  * wallet files since it was created: the new worker reads them, and starts with every key locked. The
- * replaced worker is locked, so no page of this app keeps signing with it.
+ * replaced worker is locked, so no page of this app keeps signing with it, and released.
  */
 export const getOnlineClient = (): Promise<OnlineClient> => {
   const generation = currentWorkerGeneration();
@@ -186,7 +226,7 @@ export const getOnlineClient = (): Promise<OnlineClient> => {
 
   if (onlineClientPromise) {
     logger.info('Safe storage changed in another app; starting a new HB-Auth worker');
-    lockReplacedClient(onlineClientPromise);
+    retireReplacedClient(onlineClientPromise);
   }
   onlineClientGeneration = generation;
   recordAppWorkerGeneration(getBasePath(), generation);
@@ -219,12 +259,20 @@ export const withOnlineClient = async <T>(operation: (client: OnlineClient) => P
 
 /** Logs `username` out of the worker of a client this app no longer creates */
 const logoutFromReplacedWorker = async (generation: string | null, username: string): Promise<void> => {
+  const clientOptions = getDefaultClientOptions(generation);
+  let releaseWorker: (() => void) | null = null;
   try {
-    const client = new OnlineClient(getDefaultClientOptions(generation));
-    await client.initialize(await getChain());
+    const chain = await getChain();
+    releaseWorker = await holdWorker(clientOptions.workerUrl);
+    // A page retired it, locking it first
+    if (!releaseWorker) return;
+    const client = new OnlineClient(clientOptions);
+    await client.initialize(chain);
     await client.logout(username);
   } catch (error: unknown) {
     logger.info('Did not log out of a replaced HB-Auth worker: %s', error instanceof Error ? error.message : String(error));
+  } finally {
+    releaseWorker?.();
   }
 };
 

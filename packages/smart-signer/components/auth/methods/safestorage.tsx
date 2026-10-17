@@ -273,8 +273,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
     async function cancelAuth(username: string): Promise<void> {
       form.reset();
-      await authClient?.current?.logout(username);
-      const users = (await authClient.current?.getAuths()) || [];
+      const client = await getAuthClient();
+      await client.logout(username);
+      const users = await client.getAuths();
       setAuthUsers(users);
       setLoading(false);
     }

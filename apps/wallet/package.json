@@ -4,7 +4,7 @@
   "private": false,
   "scripts": {
     "clean": "rm -rf ./public/auth/* && rm -rf ./public/locales/* && rm -rf ./public/smart-signer/*",
-    "copy:public": "mkdir -p public/auth/assets public/locales public/smart-signer && cp ../../node_modules/@hiveio/hb-auth/dist/worker.js public/auth/ && cp -r ../../node_modules/@hiveio/hb-auth/dist/assets/. public/auth/assets/ && cp -r locales/. public/locales/ && cp -r ../../packages/smart-signer/locales/. public/locales/ && cp -r ../../packages/smart-signer/public/smart-signer/. public/smart-signer/",
+    "copy:public": "mkdir -p public/auth/assets public/locales public/smart-signer && cp ../../node_modules/@hiveio/hb-auth/dist/worker.js ../../packages/common-hiveio-packages/public/auth/releasable-worker.js public/auth/ && cp -r ../../node_modules/@hiveio/hb-auth/dist/assets/. public/auth/assets/ && cp -r locales/. public/locales/ && cp -r ../../packages/smart-signer/locales/. public/locales/ && cp -r ../../packages/smart-signer/public/smart-signer/. public/smart-signer/",
     "predev": "pnpm run clean && pnpm run copy:public",
     "dev": "react-env -- next dev -p 4000",
     "predevssl": "pnpm run copy:public",

@@ -48,7 +48,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/auth/worker.js',
+        source: '/auth/:file(worker\\.js|releasable-worker\\.js)',
         headers: [
           {
             key: 'Content-Type',
