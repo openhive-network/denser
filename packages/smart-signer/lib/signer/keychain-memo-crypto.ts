@@ -23,7 +23,7 @@ function requestKeychain(
   return new Promise((resolve, reject) => {
     invoke((response) => {
       if (!response.success || response.error || response.result === undefined) {
-        reject(new Error(response.error ?? 'Keychain request failed'));
+        reject(new Error(response.error ?? 'Keychain request failed', { cause: response }));
       } else {
         resolve(response.result);
       }

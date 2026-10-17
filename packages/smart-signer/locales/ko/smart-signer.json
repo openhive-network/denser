@@ -133,7 +133,9 @@
       "keychain": "Hive Keychain으로 로그인",
       "peakvault": "PeakVault로 로그인",
       "or_safe_storage": "또는 안전한 저장소 사용"
-    }
+    },
+    "sign_in_pending": "다른 로그인이 아직 응답을 기다리고 있습니다. 지갑 확장 프로그램에서 완료하거나 거부하거나, 취소한 후 다시 시작하세요.",
+    "cancel_pending_sign_in": "대기 중인 로그인 취소"
   },
   "pageLogin": {
     "loginFailed": "로그인 실패",

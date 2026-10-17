@@ -7,7 +7,16 @@ import { useLocalStorage } from 'usehooks-ts';
 import Methods from './methods/methods';
 import SafeStorageKeyUpdate from './methods/safestorage-key-update';
 import { getLogger } from '@hive/ui/lib/logging';
-import { runExclusiveSignIn } from '@smart-signer/lib/auth/sign-in-lock';
+import {
+  abandonPendingSignIn,
+  cancelPendingSignIn,
+  runExclusiveSignIn,
+  SignInPendingError
+} from '@smart-signer/lib/auth/sign-in-lock';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
+import { toast } from '@ui/components/hooks/use-toast';
+import { ToastAction } from '@ui/components/toast';
+import { useSharedTranslation } from '@ui/lib/i18n-client';
 
 const logger = getLogger('app');
 
@@ -46,6 +55,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
     const [username, setUsername] = useState<string>(initialUsername ?? lastLoggedInUser);
+    const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE);
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({
@@ -53,6 +63,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       // when cancel sign in flow
       async cancel() {
         // set cancelled state
+        abandonPendingSignIn();
         await safeStorageRef.current?.cancel();
       }
     }));
@@ -78,12 +89,28 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       await onComplete(username);
     }
 
-    async function signIn(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
-      const ran = await runExclusiveSignIn(async () => {
-        await sign(loginType, username, keyType);
-        await submit(username);
+    function reportSignInPending(error: SignInPendingError): void {
+      toast({
+        description: t(error.translationKey),
+        action: (
+          <ToastAction altText={t('login_form.cancel_pending_sign_in')} onClick={cancelPendingSignIn}>
+            {t('login_form.cancel_pending_sign_in')}
+          </ToastAction>
+        )
       });
-      if (!ran) logger.info('Sign-in with %s not sent: waited for another sign-in in progress', loginType);
+    }
+
+    async function signIn(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
+      try {
+        await runExclusiveSignIn(async () => {
+          await sign(loginType, username, keyType);
+          await submit(username);
+        });
+      } catch (error) {
+        if (!(error instanceof SignInPendingError)) throw error;
+        logger.info('Sign-in with %s not sent: another sign-in is in progress', loginType);
+        reportSignInPending(error);
+      }
     }
 
     return (

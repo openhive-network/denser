@@ -133,7 +133,9 @@
       "keychain": "使用 Hive Keychain 登录",
       "peakvault": "使用 PeakVault 登录",
       "or_safe_storage": "或使用安全存储"
-    }
+    },
+    "sign_in_pending": "另一个登录仍在等待响应。请在钱包扩展中完成或拒绝它，或取消后重新开始。",
+    "cancel_pending_sign_in": "取消待处理的登录"
   },
   "pageLogin": {
     "loginFailed": "登录失败",

@@ -64,8 +64,22 @@ const wellKnownErrorDescriptions = [
 const KEYCHAIN_ERROR_PATTERN = /Keychain error:(.*)/;
 const MISSING_KEYCHAIN_MESSAGES = ['', 'undefined', 'null'];
 
-/** Keychain's answer when the user rejects the request: their own choice, nothing to report */
-const KEYCHAIN_USER_CANCEL_PATTERN = /cancell?ed by the user/i;
+/**
+ * Keychain's code for a request the user rejected: their own choice, nothing to report. The message
+ * beside it is translated to the extension's language, so only the code identifies it. Wax keeps
+ * Keychain's response as the `cause` of the error it throws.
+ */
+const KEYCHAIN_USER_CANCEL_CODE = 'user_cancel';
+const MAX_CAUSE_DEPTH = 5;
+
+function isKeychainUserCancel(error: unknown): boolean {
+  let current = error;
+  for (let depth = 0; depth < MAX_CAUSE_DEPTH && typeof current === 'object' && current !== null; depth++) {
+    if ('error' in current && current.error === KEYCHAIN_USER_CANCEL_CODE) return true;
+    current = 'cause' in current ? current.cause : undefined;
+  }
+  return false;
+}
 
 // TODO: Refactor this function to use the new error handling mechanism
 // This is not working as expected and it isn't configurable to show UI errors
@@ -84,6 +98,7 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
   let description = 'Error';
   let isWellKnownError = false;
   let isKeychainMessageMissing = false;
+  const isUserCancel = isKeychainUserCancel(e);
 
   if (e instanceof Error) {
     e = `${e.name}: ${e.message}`;
@@ -114,9 +129,9 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
       isKeychainMessageMissing = true;
     } else {
       description = keychainMessage;
-      isWellKnownError = KEYCHAIN_USER_CANCEL_PATTERN.test(keychainMessage);
     }
   }
+  isWellKnownError ||= isUserCancel;
 
   return {
     errorTitle: defaultDescription ?? description,

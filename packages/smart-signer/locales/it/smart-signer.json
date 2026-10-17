@@ -133,7 +133,9 @@
       "keychain": "Accedi con Hive Keychain",
       "peakvault": "Accedi con PeakVault",
       "or_safe_storage": "oppure usa l'archivio sicuro"
-    }
+    },
+    "sign_in_pending": "Un altro accesso è ancora in attesa di risposta. Completalo o rifiutalo nell'estensione del tuo portafoglio, oppure annullalo per ricominciare.",
+    "cancel_pending_sign_in": "Annulla l'accesso in sospeso"
   },
   "pageLogin": {
     "loginFailed": "Accesso fallito",

@@ -133,7 +133,9 @@
       "keychain": "Zaloguj się przez Hive Keychain",
       "peakvault": "Zaloguj się przez PeakVault",
       "or_safe_storage": "lub użyj bezpiecznego magazynu"
-    }
+    },
+    "sign_in_pending": "Inne logowanie wciąż czeka na odpowiedź. Dokończ je lub odrzuć w rozszerzeniu portfela albo anuluj je, aby zacząć od nowa.",
+    "cancel_pending_sign_in": "Anuluj oczekujące logowanie"
   },
   "pageLogin": {
     "loginFailed": "Logowanie nie powiodło się",
