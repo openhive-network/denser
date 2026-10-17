@@ -13,11 +13,14 @@ import { getStorageItem, removeStorageItem, setStorageItem, StorageTTL } from '@
 const SAFE_STORAGE_GENERATION_KEY = 'hbauth-safe-storage-generation';
 
 /**
- * The app (its base path) whose operation is writing safe storage's wallet files, while it does: the
- * other apps start a worker for the generation once it ended. Expires in case its page closed meanwhile.
+ * The apps (their base paths) whose operations are writing safe storage's wallet files, while they
+ * do, each with the time its mark expires, in case its page closed meanwhile: the other apps start a
+ * worker for the generation once every one of them ended.
  */
 const SAFE_STORAGE_WRITING_KEY = 'hbauth-safe-storage-writing';
 const SAFE_STORAGE_WRITING_TTL = 10_000;
+
+type WritingApps = Record<string, number>;
 /** How long the generation has to stay unchanged before the other apps start a worker for it */
 const SAFE_STORAGE_QUIET_PERIOD = 150;
 
@@ -89,19 +92,37 @@ export function subscribeSafeStorageGeneration(onChange: () => void): () => void
   return () => window.removeEventListener('storage', handleStorage);
 }
 
-/** Records that an operation of the app at `basePath` writes the wallet files, until it ends */
-export function markSafeStorageWriting(basePath: string): void {
-  setStorageItem(SAFE_STORAGE_WRITING_KEY, basePath, SAFE_STORAGE_WRITING_TTL);
+/** The apps marked as writing, without those whose marks expired */
+function readWritingApps(): WritingApps {
+  const stored = getStorageItem<unknown>(SAFE_STORAGE_WRITING_KEY);
+  // A bare base path, as marked before each app was recorded on its own, expires on its own
+  if (typeof stored !== 'object' || stored === null) return {};
+  const now = Date.now();
+  return Object.fromEntries(
+    Object.entries(stored).filter(
+      (entry): entry is [string, number] => typeof entry[1] === 'number' && entry[1] > now
+    )
+  );
 }
 
-/** Records that the writing operation of the app at `basePath` ended, unless another app's writes since */
+function storeWritingApps(apps: WritingApps): void {
+  if (Object.keys(apps).length) setStorageItem(SAFE_STORAGE_WRITING_KEY, apps, SAFE_STORAGE_WRITING_TTL);
+  else removeStorageItem(SAFE_STORAGE_WRITING_KEY);
+}
+
+/** Records that an operation of the app at `basePath` writes the wallet files, until it ends */
+export function markSafeStorageWriting(basePath: string): void {
+  storeWritingApps({ ...readWritingApps(), [basePath]: Date.now() + SAFE_STORAGE_WRITING_TTL });
+}
+
+/** Records that the writing operation of the app at `basePath` ended, keeping the other apps' marks */
 export function endSafeStorageWriting(basePath: string): void {
-  if (getStorageItem<unknown>(SAFE_STORAGE_WRITING_KEY) === basePath) removeStorageItem(SAFE_STORAGE_WRITING_KEY);
+  const { [basePath]: ended, ...others } = readWritingApps();
+  if (ended !== undefined) storeWritingApps(others);
 }
 
 function isAnotherAppWriting(basePath: string): boolean {
-  const writer = getStorageItem<unknown>(SAFE_STORAGE_WRITING_KEY);
-  return typeof writer === 'string' && writer !== basePath;
+  return Object.keys(readWritingApps()).some((app) => app !== basePath);
 }
 
 /**

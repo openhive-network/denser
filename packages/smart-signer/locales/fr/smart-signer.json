@@ -146,7 +146,8 @@
     "password_form_title": "Entrez votre mot de passe",
     "store_key_label": "Enregistrer la clé",
     "store_password_label": "Enregistrer le mot de passe",
-    "google_drive_password_placeholder": "Mot de passe pour déverrouiller le portefeuille Google Drive"
+    "google_drive_password_placeholder": "Mot de passe pour déverrouiller le portefeuille Google Drive",
+    "safe_storage_recovery_description": "Un autre onglet a modifié le stockage sécurisé pendant l'enregistrement d'une clé de @{{username}}. Saisissez le mot de passe du stockage sécurisé de @{{username}} pour terminer l'enregistrement."
   },
   "broadcast_error": {
     "missing_owner_authority": "Cette opération nécessite votre clé propriétaire (owner). Connectez-vous avec celle-ci et réessayez.",
@@ -155,6 +156,7 @@
     "safe_storage_missing_account": "Le stockage sécurisé de ce navigateur ne contient aucune clé de votre compte. Veuillez vous reconnecter.",
     "not_enough_rc": "Crédits de ressources (RC) insuffisants pour cette transaction. Attendez que vos RC se rechargent ou faites un power up de HIVE.",
     "not_enough_rc_amounts": "Vous avez {{current}} RC ; cette transaction nécessite {{needed}} RC.",
-    "keychain_no_message": "Hive Keychain n'a pas pu traiter la demande et n'a donné aucune raison."
+    "keychain_no_message": "Hive Keychain n'a pas pu traiter la demande et n'a donné aucune raison.",
+    "superseded_key_write": "Un autre onglet a interrompu l'enregistrement de la clé {{keyType}} de @{{username}} dans le stockage sécurisé. Ajoutez de nouveau la clé {{keyType}} au stockage sécurisé."
   }
 }

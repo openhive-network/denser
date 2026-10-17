@@ -35,6 +35,8 @@ import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { KeyAuthorityType } from '@smart-signer/lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleAuthError } from '@smart-signer/lib/auth-error';
+import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { registerSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { getLogger } from '@ui/lib/logging';
@@ -201,7 +203,10 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
           onSetStep(Steps.SAFE_STORAGE_LOGIN);
         }, 2000);
       } catch (error) {
-        const errorMessage = handleAuthError(error, 'onUpdateKey');
+        const supersededKeyWrite = findSupersededKeyWrite(error);
+        const errorMessage = supersededKeyWrite
+          ? t(SUPERSEDED_KEY_WRITE_MESSAGE, { ns: SMART_SIGNER_NAMESPACE, ...supersededKeyWrite })
+          : handleAuthError(error, 'onUpdateKey');
         setError(errorMessage);
         setLoading(false);
       }

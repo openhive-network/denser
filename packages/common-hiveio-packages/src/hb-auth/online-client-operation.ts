@@ -1,4 +1,4 @@
-import { OnlineClient, type AuthStatus, type KeyAuthorityType } from '@hiveio/hb-auth';
+import { OnlineClient, type AuthStatus, type AuthUser, type KeyAuthorityType } from '@hiveio/hb-auth';
 
 import { getChain } from '../wax';
 import { endSafeStorageWriting, markSafeStorageWriting } from './safe-storage-generation';
@@ -23,17 +23,15 @@ const MAX_WRITE_REPEATS = 3;
 
 /**
  * A write to safe storage that another app's writes kept superseding, or that could not be repeated
- * in the worker the app moved to: the key it wrote is to be added to safe storage again.
+ * in the worker the app moved to: the key it wrote is to be added to safe storage again. Its message
+ * is for logs; the user is told in their language from `username` and `keyType`.
  */
 export class SupersededKeyWriteError extends Error {
   readonly username: string;
   readonly keyType: KeyAuthorityType;
 
   constructor(username: string, keyType: KeyAuthorityType, options?: ErrorOptions) {
-    super(
-      `Saving your ${keyType} key to safe storage was interrupted by another tab. Add the ${keyType} key to safe storage again.`,
-      options
-    );
+    super(`Saving the ${keyType} key of ${username} to safe storage was superseded by another app's write`, options);
     this.name = 'SupersededKeyWriteError';
     this.username = username;
     this.keyType = keyType;
@@ -82,7 +80,11 @@ class OnlineClientOperation {
       register: (username, password, wifKey, keyType, strict) =>
         this.register(username, password, wifKey, keyType, strict),
       importKey: (username, wifKey, keyType) =>
-        this.write(username, keyType, (writer, recovering) => this.importKeyIn(writer, recovering, username, wifKey, keyType)),
+        this.write(username, keyType, (writer, recovering) =>
+          recovering
+            ? this.recoverWrite(writer, recovering, username, wifKey, keyType, {})
+            : OnlineClient.prototype.importKey.call(writer, username, wifKey, keyType)
+        ),
       invalidateExistingKey: (username, keyType) =>
         this.write(username, keyType, (writer) => OnlineClient.prototype.invalidateExistingKey.call(writer, username, keyType)),
       authenticate: async (username, password, keyType) => {
@@ -106,6 +108,7 @@ class OnlineClientOperation {
 
   end(): void {
     this.#client.endOperation();
+    this.#passwords.clear();
     if (this.#writingApp !== undefined) endSafeStorageWriting(this.#writingApp);
   }
 
@@ -116,9 +119,12 @@ class OnlineClientOperation {
     keyType: KeyAuthorityType,
     strict?: boolean
   ): Promise<AuthStatus> {
-    const status = await this.write(username, keyType, async (writer, recovering) => {
-      if (recovering === 'repeat') await this.removeStaleAlias(writer, username, keyType);
-      return OnlineClient.prototype.register.call(writer, username, password, wifKey, keyType, strict);
+    const status = await this.write(username, keyType, async (writer, recovering): Promise<AuthStatus> => {
+      if (recovering !== 'repeat')
+        return OnlineClient.prototype.register.call(writer, username, password, wifKey, keyType, strict);
+      // The superseded write passed hb-auth's check of the key on chain already
+      await this.recoverWrite(writer, recovering, username, wifKey, keyType, { password, strict: strict ?? true });
+      return { ok: true };
     });
     this.#passwords.set(username, password);
     return status;
@@ -159,32 +165,85 @@ class OnlineClientOperation {
   }
 
   /**
-   * Imports the key; in a worker the operation moved to that does not have `username` unlocked, by
-   * registering it with the operation's password, which unlocks the wallet as it imports the key.
+   * Writes the key in a worker the operation moved to, which starts locked, or repeats a superseded
+   * write there. The worker is unlocked first, which checks the password, and the alias the
+   * superseded write left is removed only then, right before importKey writes the key without
+   * checking it on chain: a failed unlock leaves the alias, and the key it names, in place. `given`
+   * holds the password and Direct Authority Mode setting of a register.
    */
-  private async importKeyIn(
+  private async recoverWrite(
     writer: OperationClient,
-    recovering: 'repeat' | 'moved' | undefined,
+    recovering: 'repeat' | 'moved',
     username: string,
     wifKey: string,
-    keyType: KeyAuthorityType
+    keyType: KeyAuthorityType,
+    given: { password?: string; strict?: boolean }
   ): Promise<string> {
-    if (!recovering) return OnlineClient.prototype.importKey.call(writer, username, wifKey, keyType);
-    const unlocked = (await writer.getRegisteredUserByUsername(username))?.unlocked ?? false;
-    const password = unlocked ? '' : await this.passwordOf(username, keyType);
+    const user = await writer.getRegisteredUserByUsername(username);
+    if (!user) return this.registerFirstKey(writer, recovering, username, wifKey, keyType, given);
+    if (!user.unlocked) await this.unlockIn(writer, user, keyType, given.password);
     if (recovering === 'repeat') await this.removeStaleAlias(writer, username, keyType);
-    if (unlocked) return OnlineClient.prototype.importKey.call(writer, username, wifKey, keyType);
-    const strict = (await writer.getUserSettings(username))?.strict[keyType] ?? true;
+    const publicKey = await OnlineClient.prototype.importKey.call(writer, username, wifKey, keyType);
+    if (given.strict !== undefined) await writer.setUserSettings(username, { strict: given.strict }, keyType);
+    return publicKey;
+  }
+
+  /**
+   * Registers the key of a user safe storage has no wallet of in `writer`'s worker, which a register
+   * creates: there is no stored key to lose. An import of such a user's key cannot be repeated.
+   */
+  private async registerFirstKey(
+    writer: OperationClient,
+    recovering: 'repeat' | 'moved',
+    username: string,
+    wifKey: string,
+    keyType: KeyAuthorityType,
+    { password, strict }: { password?: string; strict?: boolean }
+  ): Promise<string> {
+    if (password === undefined || strict === undefined) throw new SupersededKeyWriteError(username, keyType);
+    if (recovering === 'repeat') await this.removeStaleAlias(writer, username, keyType);
     await OnlineClient.prototype.register.call(writer, username, password, wifKey, keyType, strict);
+    this.#passwords.set(username, password);
     return (await getChain()).calculatePublicKey(wifKey);
   }
 
-  /** The password the operation unlocked `username` with; otherwise asks for it, once */
-  private async passwordOf(username: string, keyType: KeyAuthorityType): Promise<string> {
-    const password = this.#passwords.get(username) ?? (await this.#requestPassword?.(username));
+  /**
+   * Unlocks `user` in `writer`'s worker with `given`, or the password the operation unlocked with, or
+   * else the one it asks for, remembering it once it unlocked. hb-auth unlocks only a user the worker
+   * has a session of; in a worker without one the user is authenticated, with each key type safe
+   * storage holds, `keyType` last, as the key a superseded write left may not be on chain yet.
+   */
+  private async unlockIn(
+    writer: OperationClient,
+    user: AuthUser,
+    keyType: KeyAuthorityType,
+    given: string | undefined
+  ): Promise<void> {
+    const { username } = user;
+    const password = given ?? this.#passwords.get(username) ?? (await this.#requestPassword?.(username));
     if (!password) throw new SupersededKeyWriteError(username, keyType);
+    if (user.authorized) {
+      await writer.unlock(username, password);
+    } else {
+      const keyTypes = [...user.registeredKeyTypes.filter((type) => type !== keyType), keyType];
+      await this.authenticateWithAny(writer, username, password, keyTypes);
+    }
     this.#passwords.set(username, password);
-    return password;
+  }
+
+  /** Authenticates `username` in `writer`'s worker with the first of `keyTypes` that succeeds */
+  private async authenticateWithAny(
+    writer: OperationClient,
+    username: string,
+    password: string,
+    [keyType, ...others]: KeyAuthorityType[]
+  ): Promise<void> {
+    try {
+      await writer.authenticate(username, password, keyType);
+    } catch (error: unknown) {
+      if (!others.length) throw error;
+      await this.authenticateWithAny(writer, username, password, others);
+    }
   }
 
   /** Removes the key alias the superseded write left, which hb-auth refuses to write over */
@@ -196,7 +255,7 @@ class OnlineClientOperation {
   private async followCurrentClient(): Promise<boolean> {
     const left = this.#client;
     if (left.isCurrent) return false;
-    // Let go of first: the replacement may wait for the worker this client holds to be retired
+    // Let go of first, so the replaced worker this client holds is retired once the operation moved
     left.endOperation();
     try {
       this.#client = await this.#currentClient(left.basePath).then((current) => {

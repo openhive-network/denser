@@ -146,7 +146,8 @@
     "password_form_title": "Enter your password",
     "store_key_label": "Store key",
     "store_password_label": "Store password",
-    "google_drive_password_placeholder": "Password to unlock Google Drive wallet"
+    "google_drive_password_placeholder": "Password to unlock Google Drive wallet",
+    "safe_storage_recovery_description": "Another tab changed safe storage while a key of @{{username}} was being saved. Enter the safe storage password of @{{username}} to finish saving it."
   },
   "broadcast_error": {
     "missing_owner_authority": "This operation needs your owner key. Sign in with it and try again.",
@@ -155,6 +156,7 @@
     "safe_storage_missing_account": "Safe storage in this browser holds no keys for your account. Please sign in again.",
     "not_enough_rc": "Not enough Resource Credits (RC) for this transaction. Wait for your RC to recharge or power up HIVE.",
     "not_enough_rc_amounts": "You have {{current}} RC; this transaction needs {{needed}} RC.",
-    "keychain_no_message": "Hive Keychain could not complete the request and gave no reason."
+    "keychain_no_message": "Hive Keychain could not complete the request and gave no reason.",
+    "superseded_key_write": "Another tab interrupted saving the {{keyType}} key of @{{username}} to safe storage. Add the {{keyType}} key to safe storage again."
   }
 }

@@ -146,7 +146,8 @@
     "password_form_title": "输入您的密码",
     "store_key_label": "存储密钥",
     "store_password_label": "存储密码",
-    "google_drive_password_placeholder": "解锁 Google Drive 钱包的密码"
+    "google_drive_password_placeholder": "解锁 Google Drive 钱包的密码",
+    "safe_storage_recovery_description": "保存 @{{username}} 的密钥时，另一个标签页更改了安全存储。请输入 @{{username}} 的安全存储密码以完成保存。"
   },
   "broadcast_error": {
     "missing_owner_authority": "此操作需要您的所有者密钥（owner）。请使用该密钥登录后重试。",
@@ -155,6 +156,7 @@
     "safe_storage_missing_account": "此浏览器的安全存储中没有您账户的密钥。请重新登录。",
     "not_enough_rc": "资源积分（RC）不足，无法完成此交易。请等待 RC 恢复，或为 HIVE 增能（power up）。",
     "not_enough_rc_amounts": "您当前有 {{current}} RC；此交易需要 {{needed}} RC。",
-    "keychain_no_message": "Hive Keychain 未能完成请求，也未说明原因。"
+    "keychain_no_message": "Hive Keychain 未能完成请求，也未说明原因。",
+    "superseded_key_write": "另一个标签页中断了将 @{{username}} 的 {{keyType}} 密钥保存到安全存储的操作。请再次将 {{keyType}} 密钥添加到安全存储。"
   }
 }

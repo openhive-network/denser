@@ -6,6 +6,8 @@ import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
+import { SupersededKeyWriteMessage } from '@smart-signer/components/superseded-key-write-message';
+import { findSupersededKeyWrite } from '@smart-signer/lib/superseded-key-write';
 import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
 import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-message';
 import ErrorToastContent from '@ui/components/error-toast-content';
@@ -88,6 +90,18 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     toast({
       description: <SafeStorageMissingMessage />,
       variant: 'default',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // Another tab interrupted saving a key to safe storage: say which key to add again
+  const supersededKeyWrite = findSupersededKeyWrite(error);
+  if (supersededKeyWrite) {
+    logger.error(error, 'Key write in %s was superseded by another app', ctx?.method);
+    toast({
+      description: <SupersededKeyWriteMessage {...supersededKeyWrite} />,
+      variant: 'destructive',
       ...toastOptions
     });
     return;

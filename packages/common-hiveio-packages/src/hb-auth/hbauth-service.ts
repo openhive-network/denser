@@ -67,7 +67,7 @@ let onlineClient: OnlineClient | undefined = undefined;
 
 // The client replacing the online client, started once safe storage settles
 let replacementPromise: Promise<GenerationRenewingOnlineClient> | undefined = undefined;
-// Resolves once the worker the last replacement retired was let go of
+// Resolves once the worker the last replacement retired was let go of, or found held by an operation
 let lastRetirement: Promise<void> = Promise.resolve();
 // Whether an operation waits for the pending replacement, which then does not wait for other apps' operations
 let operationAwaitsReplacement = false;
@@ -116,6 +116,11 @@ class GenerationRenewingOnlineClient extends OnlineClient implements OperationCl
   endOperation(): void {
     if (--this.#operations > 0) return;
     this.#onIdle.splice(0).forEach((resolve) => resolve());
+  }
+
+  /** Whether no operation runs with the client */
+  get isIdle(): boolean {
+    return !this.#operations;
   }
 
   /** Resolves once no operation runs with the client */
@@ -223,14 +228,18 @@ const lockReplacedWorker = async (client: OnlineClient): Promise<void> => {
 
 /**
  * Locks the worker of a replaced client once the operations running with it settle, and lets go of
- * it, so it ends, with its WASM, once no page uses it. Resolves once it let go of it.
+ * it, so it ends, with its WASM, once no page uses it. Resolves once it let go of it, or, when an
+ * operation runs with the client, right away: that operation may wait on the user, and the next
+ * replacement is not to wait for it.
  */
 const retireReplacedClient = (clientPromise: Promise<GenerationRenewingOnlineClient>): Promise<void> =>
   clientPromise
-    .then(async (client) => {
-      await client.whenIdle();
-      await lockReplacedWorker(client);
-      workerReleases.get(client)?.();
+    .then((client) => {
+      const released = client.whenIdle().then(async () => {
+        await lockReplacedWorker(client);
+        workerReleases.get(client)?.();
+      });
+      return client.isIdle ? released : undefined;
     })
     .catch((error: unknown) => {
       // The client failed to initialize, and let go of its worker then
@@ -259,7 +268,8 @@ const startOnlineClient = (generation: string | null, basePath: string): Promise
  * Replaces `replaced` with a client for the generation safe storage settles at, so the writes of
  * another app's operation start a single worker here. That worker starts only once `replaced`
  * started, and the worker the previous replacement retired was let go of, so the page runs two
- * workers at most.
+ * workers at most, besides those operations still run with: a replacement never waits for an
+ * operation, which may wait on the user.
  */
 const replaceOnlineClient = async (
   replaced: Promise<GenerationRenewingOnlineClient>,

@@ -146,7 +146,8 @@
     "password_form_title": "비밀번호를 입력하십시오",
     "store_key_label": "키 저장",
     "store_password_label": "비밀번호 저장",
-    "google_drive_password_placeholder": "Google 드라이브 지갑 잠금 해제 비밀번호"
+    "google_drive_password_placeholder": "Google 드라이브 지갑 잠금 해제 비밀번호",
+    "safe_storage_recovery_description": "@{{username}}의 키를 저장하는 동안 다른 탭에서 안전한 저장소를 변경했습니다. 저장을 완료하려면 @{{username}}의 안전한 저장소 비밀번호를 입력하세요."
   },
   "broadcast_error": {
     "missing_owner_authority": "이 작업에는 소유자 키(owner)가 필요합니다. 해당 키로 로그인한 후 다시 시도하세요.",
@@ -155,6 +156,7 @@
     "safe_storage_missing_account": "이 브라우저의 안전한 저장소에 계정의 키가 없습니다. 다시 로그인하세요.",
     "not_enough_rc": "이 트랜잭션에 필요한 리소스 크레딧(RC)이 부족합니다. RC가 충전될 때까지 기다리거나 HIVE를 파워업하세요.",
     "not_enough_rc_amounts": "현재 RC는 {{current}}이며, 이 트랜잭션에는 {{needed}} RC가 필요합니다.",
-    "keychain_no_message": "Hive Keychain이 요청을 완료하지 못했으며 이유를 알려 주지 않았습니다."
+    "keychain_no_message": "Hive Keychain이 요청을 완료하지 못했으며 이유를 알려 주지 않았습니다.",
+    "superseded_key_write": "다른 탭 때문에 @{{username}}의 {{keyType}} 키를 안전한 저장소에 저장하는 작업이 중단되었습니다. {{keyType}} 키를 안전한 저장소에 다시 추가하세요."
   }
 }

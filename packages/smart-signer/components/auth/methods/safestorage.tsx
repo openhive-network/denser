@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 
 import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
 import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-signer/lib/auth-error';
+import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { username } from '@smart-signer/lib/auth/utils';
@@ -171,7 +172,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         await finalize(values);
         form.reset();
       } catch (error) {
-        const errorMessage = handleAuthError(error, 'onSave');
+        const supersededKeyWrite = findSupersededKeyWrite(error);
+        const errorMessage = supersededKeyWrite
+          ? t(SUPERSEDED_KEY_WRITE_MESSAGE, { ns: SMART_SIGNER_NAMESPACE, ...supersededKeyWrite })
+          : handleAuthError(error, 'onSave');
         setError(errorMessage);
         setLoading(false);
       }
