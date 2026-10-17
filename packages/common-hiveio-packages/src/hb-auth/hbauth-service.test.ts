@@ -340,6 +340,7 @@ describe('hb-auth online client', () => {
     assert.notEqual(currentWorker.url, workerOf(staleClient).url);
     assert.equal(await blogTabB.getOnlineClient(), currentClient);
     assert.deepEqual([...currentWorker.worker.unlocked], ['alice']);
+    assert.equal(currentWorker.worker.keys.has('alice:posting'), true);
     const otherBlogTab = await openPage(BLOG);
     assert.equal(workerOf(await otherBlogTab.getOnlineClient()).url, currentWorker.url);
   });
@@ -425,21 +426,65 @@ describe('hb-auth online client', () => {
     assert.equal(fakeHbAuth.fakeHbAuthWorkers.has(retiredUrl), false);
   });
 
-  it('renews the safe storage generation once for all the writes of one operation', async () => {
+  it('renews the safe storage generation after every write of one operation, keeping the writer on its worker', async () => {
     const blog = await openPage(BLOG);
     const wallet = await openPage(WALLET);
     const walletClient = await wallet.getOnlineClient();
+    const blogClient = await blog.getOnlineClient();
 
     await blog.withOnlineClient(async (client) => {
       for (const keyType of ['posting', 'active', 'owner'] as const)
         await client.register('alice', 'password', 'wif', keyType);
-      assert.equal(storage.generationWrites, 1);
+      assert.equal(storage.generationWrites, 3);
     });
 
-    assert.equal(storage.generationWrites, 1);
-    const replacedOnce = await wallet.getOnlineClient();
-    assert.notEqual(replacedOnce, walletClient);
-    assert.equal(await wallet.getOnlineClient(), replacedOnce);
+    assert.equal(storage.generationWrites, 3);
+    assert.equal(await blog.getOnlineClient(), blogClient);
+    const replaced = await wallet.getOnlineClient();
+    assert.notEqual(replaced, walletClient);
+    assert.equal(await wallet.getOnlineClient(), replaced);
+  });
+
+  it("keeps an operation's later key when another app starts a worker while the operation waits between writes", async () => {
+    const blog = await openPage(BLOG);
+    const wallet = await openPage(WALLET);
+
+    await blog.withOnlineClient(async (client) => {
+      await blog.act(() => client.register('frank', 'password', 'wif', 'posting'));
+      // The shared key types' lookup on the network, during which the wallet loads
+      await wallet.getOnlineClient();
+      await blog.act(() => client.register('frank', 'password', 'wif', 'owner'));
+    });
+    await wallet.importKey('frank');
+
+    assert.deepEqual(
+      ['frank:posting', 'frank:owner', 'frank:active'].filter((key) => fakeHbAuth.fakeHbAuthFiles.has(key)),
+      ['frank:posting', 'frank:owner', 'frank:active']
+    );
+  });
+
+  it("repeats an operation's write in the app's current worker when another app's write superseded it meanwhile", async () => {
+    const blog = await openPage(BLOG);
+    const startedOn = workerOf(await blog.getOnlineClient()).url;
+    const wallet = await openPage(WALLET);
+    const releaseRegistrations = holdRegistrations();
+
+    const signature = await blog.withOnlineClient(async (client) => {
+      const write = blog.act(() => client.register('grace', 'password', 'wif', 'posting'));
+      await settle();
+      await wallet.importKey('grace');
+      await blog.act(() => {
+        releaseRegistrations();
+        return write;
+      });
+      return blog.act(() => client.sign('grace', 'digest', 'posting'));
+    });
+
+    const current = workerOf(await blog.getOnlineClient());
+    assert.notEqual(current.url, startedOn);
+    assert.equal(signature, `signed in ${current.url}`);
+    assert.equal(current.worker.keys.has('grace:posting'), true);
+    assert.equal(fakeHbAuth.fakeHbAuthFiles.has('grace:posting'), true);
   });
 
   it('signs with the worker a key was registered in, when another app replaced the worker during the operation', async () => {

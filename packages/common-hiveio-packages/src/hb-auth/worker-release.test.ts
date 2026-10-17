@@ -43,7 +43,9 @@ let pageCount = 0;
 const openPage = (): Promise<WorkerRelease> => import(`./worker-release.ts?page=${++pageCount}`);
 
 // worker-release.ts's bound on how long one start keeps the others of its worker waiting
-const START_LOCK_TIMEOUT_MS = 10_000;
+const START_LOCK_TIMEOUT_MS = 30_000;
+// A cold start's WASM download and compilation, which outlasts a shorter bound on a slow connection
+const COLD_START_MS = 10_000;
 
 /** Lets lock grants and the worker's end settle */
 const settle = () => new Promise((resolve) => setTimeout(resolve, 10));
@@ -134,12 +136,38 @@ describe('hb-auth worker release', () => {
       await new Promise((resolve) => setImmediate(resolve));
       assert.equal(started, false);
 
-      mock.timers.tick(START_LOCK_TIMEOUT_MS);
+      mock.timers.tick(COLD_START_MS);
+      await new Promise((resolve) => setImmediate(resolve));
+      assert.equal(started, false);
+
+      mock.timers.tick(START_LOCK_TIMEOUT_MS - COLD_START_MS);
 
       assert.equal(await next, 'started');
       void wedged;
     } finally {
       mock.timers.reset();
     }
+  });
+
+  it('lets go of a running worker it took a hold of when it cannot count the holds', async () => {
+    const page = await openPage();
+    const otherPage = await openPage();
+    const otherRelease = await otherPage.holdWorker(WORKER_URL);
+    assert.ok(otherRelease);
+    Object.assign(navigator.locks, {
+      query: async () => {
+        throw new Error('query failed');
+      }
+    });
+
+    try {
+      await assert.rejects(page.holdRunningWorker(WORKER_URL), /query failed/);
+    } finally {
+      Reflect.deleteProperty(navigator.locks, 'query');
+    }
+    otherRelease();
+    await settle();
+
+    assert.deepEqual(endedWorkers, [ABSOLUTE_WORKER_URL]);
   });
 });

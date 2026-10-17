@@ -8,8 +8,11 @@ const RETIRE_WORKER_MESSAGE = 'denser:retire-worker';
 const WORKER_LOCK_PREFIX = 'denser:hb-auth-worker:';
 const WORKER_START_LOCK_PREFIX = 'denser:hb-auth-worker-start:';
 const WORKER_CHECK_LOCK_PREFIX = 'denser:hb-auth-worker-check:';
-/** How long a client's start keeps the other clients of its worker waiting, at most */
-const WORKER_START_LOCK_TIMEOUT_MS = 10_000;
+/**
+ * How long a client's start keeps the other clients of its worker waiting, at most: as long as
+ * hb-auth's init timeout, as a start on a cold cache downloads and compiles beekeeper's WASM
+ */
+const WORKER_START_LOCK_TIMEOUT_MS = 30_000;
 
 interface WorkerHold {
   clients: number;
@@ -57,7 +60,12 @@ const countHolders = async (name: string): Promise<number> =>
 const holdSharedLockIfHeld = (url: string, name: string): Promise<(() => void) | null> =>
   navigator.locks.request(`${WORKER_CHECK_LOCK_PREFIX}${url}`, { mode: 'exclusive' }, async () => {
     const releaseLock = await holdSharedLock(name);
-    if (!releaseLock || (await countHolders(name)) >= 2) return releaseLock;
+    if (!releaseLock) return null;
+    const holders = await countHolders(name).catch((error: unknown) => {
+      releaseLock();
+      throw error;
+    });
+    if (holders >= 2) return releaseLock;
     releaseLock();
     return null;
   });
