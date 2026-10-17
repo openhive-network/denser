@@ -13,25 +13,12 @@ import { toast, Toast } from '@ui/components/hooks/use-toast';
 import env from "@beam-australia/react-env";
 import { getLogger } from '@ui/lib/logging';
 import { appApiPath } from '@ui/lib/app-api-path';
+import { isUserCancelled } from '@ui/lib/user-cancelled';
 
 const logger = getLogger('app');
 
-/** Patterns for user-cancelled operations — not errors, no toast needed */
-const USER_CANCELLED_PATTERNS = [
-  'No password from user',
-  'rejected',
-  'user rejected',
-  'user denied',
-  'user cancelled'
-];
-
 /** Pattern for auth storage desync (IndexedDB cleared while session cookie remains) */
 const AUTH_STORAGE_DESYNC_PATTERN = /Auth for user .+ not found|AuthStorageMissingError/i;
-
-function isUserCancelled(error: unknown): boolean {
-  const msg = error instanceof Error ? error.message : String(error);
-  return USER_CANCELLED_PATTERNS.some(p => msg.toLowerCase().includes(p.toLowerCase()));
-}
 
 function isAuthStorageDesync(error: unknown): boolean {
   if (error && typeof error === 'object' && 'name' in error && error.name === 'AuthStorageMissingError') {

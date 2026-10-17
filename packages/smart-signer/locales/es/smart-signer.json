@@ -133,7 +133,9 @@
       "keychain": "Iniciar sesión con Hive Keychain",
       "peakvault": "Iniciar sesión con PeakVault",
       "or_safe_storage": "o usa el almacenamiento seguro"
-    }
+    },
+    "sign_in_pending": "Otro inicio de sesión sigue esperando respuesta. Complétalo o recházalo en tu extensión de billetera, o cancélalo para empezar de nuevo.",
+    "cancel_pending_sign_in": "Cancelar inicio de sesión pendiente"
   },
   "pageLogin": {
     "loginFailed": "Error de inicio de sesión",

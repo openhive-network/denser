@@ -133,7 +133,9 @@
       "keychain": "Se connecter avec Hive Keychain",
       "peakvault": "Se connecter avec PeakVault",
       "or_safe_storage": "ou utilisez le stockage sécurisé"
-    }
+    },
+    "sign_in_pending": "Une autre connexion attend encore une réponse. Terminez-la ou refusez-la dans votre extension de portefeuille, ou annulez-la pour recommencer.",
+    "cancel_pending_sign_in": "Annuler la connexion en attente"
   },
   "pageLogin": {
     "loginFailed": "Échec de la connexion",
