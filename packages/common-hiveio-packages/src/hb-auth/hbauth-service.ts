@@ -73,17 +73,15 @@ const workerReleases = new WeakMap<OnlineClient, () => void>();
 const currentWorkerGeneration = (): string | null => getWorkerGeneration(getBasePath());
 
 /**
- * Its worker holds the wallet files it writes, so after each write the client renews the safe storage
- * generation as this app's worker's: the app's pages keep sharing that worker, and whatever it has
- * unlocked, while other apps' clients are replaced when next asked for. A client whose worker another
- * write superseded writes through the app's current client instead, as its worker would write back
- * wallet files older than that write. The writes of the operations running with the client
- * (withOnlineClient) renew the generation once, when the last of them settles.
+ * Its worker holds the wallet files it writes, so right after each write the client renews the safe
+ * storage generation as this app's worker's: the app's pages keep sharing that worker, and whatever it
+ * has unlocked, while other apps' clients are replaced when next asked for. A client whose worker
+ * another write superseded writes through the app's current client instead, as its worker would write
+ * back wallet files older than that write.
  */
 class GenerationRenewingOnlineClient extends OnlineClient {
   readonly #generation: string | null;
   #operations = 0;
-  #wroteInOperations = false;
   #onIdle: (() => void)[] = [];
 
   constructor(clientOptions: ClientOptions, generation: string | null) {
@@ -102,10 +100,6 @@ class GenerationRenewingOnlineClient extends OnlineClient {
 
   endOperation(): void {
     if (--this.#operations > 0) return;
-    if (this.#wroteInOperations) {
-      this.#wroteInOperations = false;
-      this.renewGeneration();
-    }
     this.#onIdle.splice(0).forEach((resolve) => resolve());
   }
 
@@ -125,7 +119,7 @@ class GenerationRenewingOnlineClient extends OnlineClient {
     const current = await this.currentClient();
     if (current !== this) return current.register(username, password, wifKey, keyType, strict);
     const status = await super.register(username, password, wifKey, keyType, strict);
-    this.wroteFiles();
+    this.renewGeneration();
     return status;
   }
 
@@ -133,7 +127,7 @@ class GenerationRenewingOnlineClient extends OnlineClient {
     const current = await this.currentClient();
     if (current !== this) return current.importKey(username, wifKey, keyType);
     const publicKey = await super.importKey(username, wifKey, keyType);
-    this.wroteFiles();
+    this.renewGeneration();
     return publicKey;
   }
 
@@ -141,7 +135,7 @@ class GenerationRenewingOnlineClient extends OnlineClient {
     const current = await this.currentClient();
     if (current !== this) return current.invalidateExistingKey(username, keyType);
     await super.invalidateExistingKey(username, keyType);
-    this.wroteFiles();
+    this.renewGeneration();
   }
 
   /** This client while its worker is the app's current one; otherwise the app's current client */
@@ -151,12 +145,8 @@ class GenerationRenewingOnlineClient extends OnlineClient {
     return getOnlineClient();
   }
 
-  private wroteFiles(): void {
-    if (this.#operations) this.#wroteInOperations = true;
-    else this.renewGeneration();
-  }
-
-  private renewGeneration(): void {
+  /** Records the wallet files this client's worker wrote as the app's current generation */
+  renewGeneration(): void {
     // Another write renewed the generation while this one ran: its worker wrote files older than that
     if (renewSafeStorageGeneration(getBasePath(), this.#generation) === null)
       logger.warn('Did not renew the safe storage generation after a write through a replaced HB-Auth worker');
@@ -275,10 +265,13 @@ const WRITE_METHODS = new Set<PropertyKey>(['register', 'importKey', 'invalidate
 /**
  * The client an operation runs with: the online client it started with, until a write finds that
  * client's worker superseded. The write, and every call after it, then go to the app's current client,
- * so a key the operation registers is in the worker it signs with.
+ * so a key the operation registers is in the worker it signs with. The first write with a client
+ * renews the safe storage generation; the operation's later writes with it, to the worker that is
+ * already the app's current one, do not.
  */
 class OnlineClientOperation {
   #client: GenerationRenewingOnlineClient;
+  #renewedWith: GenerationRenewingOnlineClient | undefined;
   readonly client: OnlineClient;
 
   constructor(client: GenerationRenewingOnlineClient) {
@@ -290,7 +283,14 @@ class OnlineClientOperation {
         if (!WRITE_METHODS.has(property)) return value.bind(this.#client);
         return async (...args: unknown[]) => {
           await this.followCurrentClient();
-          return Reflect.apply(Reflect.get(this.#client, property, this.#client), this.#client, args);
+          const writer = this.#client;
+          // OnlineClient's own write, which leaves renewing the generation to the operation
+          const result: unknown = await Reflect.apply(Reflect.get(OnlineClient.prototype, property), writer, args);
+          if (this.#renewedWith !== writer) {
+            this.#renewedWith = writer;
+            writer.renewGeneration();
+          }
+          return result;
         };
       }
     });
@@ -313,8 +313,8 @@ class OnlineClientOperation {
 /**
  * Runs `operation` with the online client, which keeps its worker unlocked until `operation` settles
  * even when another app's write replaces it meanwhile; once a write of `operation` finds it replaced,
- * `operation` continues with the current one. The writes of `operation` renew the safe storage
- * generation once, when it settles. Resolves and rejects as `operation` does.
+ * `operation` continues with the current one. The first write of `operation` to a worker renews the
+ * safe storage generation, its later writes to that worker do not. Resolves and rejects as `operation` does.
  */
 export const withOnlineClient = async <T>(operation: (client: OnlineClient) => Promise<T>): Promise<T> => {
   // Begun as the client resolves, before a replacement can retire it
