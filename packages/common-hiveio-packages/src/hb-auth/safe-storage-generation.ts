@@ -1,4 +1,4 @@
-import { getStorageItem, setStorageItem, StorageTTL } from '@hive/ui/lib/storage-with-ttl';
+import { getStorageItem, removeStorageItem, setStorageItem, StorageTTL } from '@hive/ui/lib/storage-with-ttl';
 
 /**
  * Names the state of safe storage's wallet files, which every hb-auth worker reads from IndexedDB
@@ -11,6 +11,15 @@ import { getStorageItem, setStorageItem, StorageTTL } from '@hive/ui/lib/storage
  * reads the files anew.
  */
 const SAFE_STORAGE_GENERATION_KEY = 'hbauth-safe-storage-generation';
+
+/**
+ * The app (its base path) whose operation is writing safe storage's wallet files, while it does: the
+ * other apps start a worker for the generation once it ended. Expires in case its page closed meanwhile.
+ */
+const SAFE_STORAGE_WRITING_KEY = 'hbauth-safe-storage-writing';
+const SAFE_STORAGE_WRITING_TTL = 10_000;
+/** How long the generation has to stay unchanged before the other apps start a worker for it */
+const SAFE_STORAGE_QUIET_PERIOD = 150;
 
 interface SafeStorageGeneration {
   generation: string;
@@ -78,4 +87,34 @@ export function subscribeSafeStorageGeneration(onChange: () => void): () => void
   };
   window.addEventListener('storage', handleStorage);
   return () => window.removeEventListener('storage', handleStorage);
+}
+
+/** Records that an operation of the app at `basePath` writes the wallet files, until it ends */
+export function markSafeStorageWriting(basePath: string): void {
+  setStorageItem(SAFE_STORAGE_WRITING_KEY, basePath, SAFE_STORAGE_WRITING_TTL);
+}
+
+/** Records that the writing operation of the app at `basePath` ended, unless another app's writes since */
+export function endSafeStorageWriting(basePath: string): void {
+  if (getStorageItem<unknown>(SAFE_STORAGE_WRITING_KEY) === basePath) removeStorageItem(SAFE_STORAGE_WRITING_KEY);
+}
+
+function isAnotherAppWriting(basePath: string): boolean {
+  const writer = getStorageItem<unknown>(SAFE_STORAGE_WRITING_KEY);
+  return typeof writer === 'string' && writer !== basePath;
+}
+
+/**
+ * Resolves once the generation settled for the app at `basePath`: it stayed unchanged for a quiet
+ * period, and no other app's operation writes the wallet files, unless `isUrgent` says not to wait
+ * for that.
+ */
+export async function whenSafeStorageSettles(basePath: string, isUrgent: () => boolean): Promise<void> {
+  let seen = getSafeStorageGeneration();
+  for (;;) {
+    await new Promise((resolve) => setTimeout(resolve, SAFE_STORAGE_QUIET_PERIOD));
+    const latest = getSafeStorageGeneration();
+    if (latest === seen && (isUrgent() || !isAnotherAppWriting(basePath))) return;
+    seen = latest;
+  }
 }
