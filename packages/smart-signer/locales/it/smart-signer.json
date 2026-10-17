@@ -146,7 +146,8 @@
     "password_form_title": "Inserisci la tua password",
     "store_key_label": "Conserva chiave",
     "store_password_label": "Conserva password",
-    "google_drive_password_placeholder": "Password per sbloccare il portafoglio Google Drive"
+    "google_drive_password_placeholder": "Password per sbloccare il portafoglio Google Drive",
+    "safe_storage_recovery_description": "Un'altra scheda ha modificato l'archivio sicuro mentre veniva salvata una chiave di @{{username}}. Inserisci la password dell'archivio sicuro di @{{username}} per completare il salvataggio."
   },
   "broadcast_error": {
     "missing_owner_authority": "Questa operazione richiede la tua chiave proprietario (owner). Accedi con essa e riprova.",
@@ -155,6 +156,7 @@
     "safe_storage_missing_account": "L'archivio sicuro di questo browser non contiene chiavi del tuo account. Accedi di nuovo.",
     "not_enough_rc": "Crediti risorse (RC) insufficienti per questa transazione. Attendi che i tuoi RC si ricarichino o fai power up di HIVE.",
     "not_enough_rc_amounts": "Hai {{current}} RC; questa transazione ne richiede {{needed}}.",
-    "keychain_no_message": "Hive Keychain non è riuscito a completare la richiesta e non ha indicato il motivo."
+    "keychain_no_message": "Hive Keychain non è riuscito a completare la richiesta e non ha indicato il motivo.",
+    "superseded_key_write": "Un'altra scheda ha interrotto il salvataggio della chiave {{keyType}} di @{{username}} nell'archivio sicuro. Aggiungi di nuovo la chiave {{keyType}} all'archivio sicuro."
   }
 }

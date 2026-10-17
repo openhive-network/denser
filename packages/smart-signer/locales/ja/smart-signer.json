@@ -146,7 +146,8 @@
     "password_form_title": "パスワードを入力してください",
     "store_key_label": "キーを保存",
     "store_password_label": "パスワードを保存",
-    "google_drive_password_placeholder": "Google ドライブのウォレットを解除するパスワード"
+    "google_drive_password_placeholder": "Google ドライブのウォレットを解除するパスワード",
+    "safe_storage_recovery_description": "@{{username}} のキーを保存している間に、別のタブが安全なストレージを変更しました。保存を完了するには、@{{username}} の安全なストレージのパスワードを入力してください。"
   },
   "broadcast_error": {
     "missing_owner_authority": "この操作にはオーナーキー（owner）が必要です。オーナーキーでログインして、もう一度お試しください。",
@@ -155,6 +156,7 @@
     "safe_storage_missing_account": "このブラウザーの安全なストレージには、お使いのアカウントのキーがありません。もう一度ログインしてください。",
     "not_enough_rc": "このトランザクションに必要なリソースクレジット（RC）が不足しています。RC が回復するまで待つか、HIVE をパワーアップしてください。",
     "not_enough_rc_amounts": "現在の RC は {{current}} で、このトランザクションには {{needed}} RC が必要です。",
-    "keychain_no_message": "Hive Keychain はリクエストを完了できず、理由も返しませんでした。"
+    "keychain_no_message": "Hive Keychain はリクエストを完了できず、理由も返しませんでした。",
+    "superseded_key_write": "別のタブにより、@{{username}} の {{keyType}} キーの安全なストレージへの保存が中断されました。{{keyType}} キーをもう一度安全なストレージに追加してください。"
   }
 }

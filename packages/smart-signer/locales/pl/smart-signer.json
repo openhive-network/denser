@@ -146,7 +146,8 @@
     "password_form_title": "Wprowadź swoje hasło",
     "store_key_label": "Zapisz klucz",
     "store_password_label": "Zapisz hasło",
-    "google_drive_password_placeholder": "Hasło do odblokowania portfela Google Drive"
+    "google_drive_password_placeholder": "Hasło do odblokowania portfela Google Drive",
+    "safe_storage_recovery_description": "Inna karta zmieniła bezpieczny magazyn podczas zapisywania klucza @{{username}}. Wpisz hasło bezpiecznego magazynu @{{username}}, aby dokończyć zapisywanie."
   },
   "broadcast_error": {
     "missing_owner_authority": "Ta operacja wymaga klucza właściciela (owner). Zaloguj się nim i spróbuj ponownie.",
@@ -155,6 +156,7 @@
     "safe_storage_missing_account": "Bezpieczny magazyn w tej przeglądarce nie zawiera kluczy Twojego konta. Zaloguj się ponownie.",
     "not_enough_rc": "Za mało Resource Credits (RC) na tę transakcję. Poczekaj, aż RC się odnowią, albo zrób power up HIVE.",
     "not_enough_rc_amounts": "Masz {{current}} RC; ta transakcja wymaga {{needed}} RC.",
-    "keychain_no_message": "Hive Keychain nie zdołał wykonać żądania i nie podał przyczyny."
+    "keychain_no_message": "Hive Keychain nie zdołał wykonać żądania i nie podał przyczyny.",
+    "superseded_key_write": "Inna karta przerwała zapisywanie klucza {{keyType}} konta @{{username}} w bezpiecznym magazynie. Dodaj klucz {{keyType}} do bezpiecznego magazynu ponownie."
   }
 }

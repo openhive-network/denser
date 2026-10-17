@@ -155,6 +155,20 @@ describe('safe storage generation', () => {
     await blogSettles;
   });
 
+  it('waits for every app writing at once, whichever of them ends first', async () => {
+    const SHOP = '/shop';
+    markSafeStorageWriting(WALLET);
+    markSafeStorageWriting(SHOP);
+    let blogSettled = false;
+    const blogSettles = whenSafeStorageSettles(BLOG, () => false).then(() => (blogSettled = true));
+
+    endSafeStorageWriting(SHOP);
+    await whenSafeStorageSettles(SHOP, () => true);
+    assert.equal(blogSettled, false);
+    endSafeStorageWriting(WALLET);
+    await blogSettles;
+  });
+
   it('settles for an urgent wait while another app writes, once the generation stays unchanged', async () => {
     markSafeStorageWriting(WALLET);
     let urgent = false;

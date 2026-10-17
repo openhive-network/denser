@@ -8,8 +8,8 @@ import {
   type OnlineClientOperationOptions
 } from "@hive/common-hiveio-packages";
 
-/** Asks for the safe storage password in the dialog signing asks for it in */
-async function requestSafeStoragePassword(): Promise<string> {
+/** Asks for the safe storage password of `username` in the dialog signing asks for it in */
+async function requestSafeStoragePassword(username: string): Promise<string> {
   // The dialog loads only for the operations that need it
   const [{ PasswordDialogModalPromise }, { PasswordFormMode }] = await Promise.all([
     import('@smart-signer/components/password-dialog'),
@@ -21,8 +21,10 @@ async function requestSafeStoragePassword(): Promise<string> {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
       i18nKeysForCaptions: {
+        description: 'password_form.safe_storage_recovery_description',
         inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder'
-      }
+      },
+      i18nValues: { username }
     }
   });
   return password;
