@@ -985,10 +985,23 @@ checks that expect content to be MISSING). Two fixes, used together by
 
 ### `networkidle` never comes once the sign-in dialog is open
 
-Opening the login dialog starts hb-auth's worker (`/auth/worker.js`), whose
-request stays open, so `page.waitForLoadState('networkidle')` (and
-`settleAfterLoad`) time out after it. Settle on a UI assertion plus a
+Opening the login dialog starts hb-auth's worker (`/auth/releasable-worker.js`,
+which imports hb-auth's `/auth/worker.js`), whose request stays open, so
+`page.waitForLoadState('networkidle')` (and `settleAfterLoad`) time out after it. Settle on a UI assertion plus a
 `requestIdleCallback` instead, as `cspNonce.spec.ts` CSP-03 does.
+
+### Counting hb-auth workers and their WASM: CDP targets, and a counter in the script
+
+A page's hb-auth SharedWorkers are not in `page.workers()`, and a `.wasm` route or
+page-side `WebAssembly` patch never sees beekeeper, which runs in the worker.
+`hbAuthWorkerRelease.spec.ts` lists the running workers from a browser CDP session
+(`Target.setDiscoverTargets`, `shared_worker` targets) and appends a WASM counter to
+`releasable-worker.js` with `context.route` + `route.fetch()`, read over a
+`SharedWorker` connection from the page. It plays another app's write by writing
+`hbauth-safe-storage-generation` from a second page that runs no app code
+(`/auth/worker.js`): a blog page there would be another blog tab, which keeps its
+worker running. Don't attach to a shared worker target and call
+`Runtime.queryObjects`: it crashed the renderer.
 
 ### SSR-correctness checks (ssrChecks.spec.ts)
 
