@@ -4,19 +4,27 @@ import { registerHooks } from 'node:module';
 
 /**
  * hb-auth stood in by clients sharing one worker per worker URL, as a SharedWorker is shared: each
- * worker keeps the users unlocked in it. As hb-auth's, a worker starts beekeeper on its first call,
- * once for every call that reaches it before that start finished.
+ * worker keeps the users unlocked in it, and the keys registered through it. As hb-auth's, a worker
+ * starts beekeeper on its first call, once for every call that reaches it before that start finished.
+ * A client connecting to a worker that does not run starts it (fakeHbAuthStarts lists those).
  */
 const FAKE_HB_AUTH = `
 const workers = new Map();
+const starts = [];
 globalThis.fakeHbAuthWorkers = workers;
+globalThis.fakeHbAuthStarts = starts;
+globalThis.connectFakeHbAuthWorker = (url) => {
+  if (!workers.has(url)) {
+    starts.push(url);
+    workers.set(url, { unlocked: new Set(), keys: new Set(), beekeepers: 0, started: false });
+  }
+  return workers.get(url);
+};
 export const DEFAULT_INIT_TIMEOUT = 30000;
 export class OnlineClient {
   constructor(options) { this.options = options; }
   get worker() {
-    if (!workers.has(this.options.workerUrl))
-      workers.set(this.options.workerUrl, { unlocked: new Set(), beekeepers: 0, started: false });
-    return workers.get(this.options.workerUrl);
+    return globalThis.connectFakeHbAuthWorker(this.options.workerUrl);
   }
   async startBeekeeper() {
     const worker = this.worker;
@@ -29,11 +37,17 @@ export class OnlineClient {
   async initialize() { this.worker; return this; }
   async getRegisteredUsers() { await this.startBeekeeper(); return []; }
   async getRegisteredUserByUsername() { await this.startBeekeeper(); return null; }
-  async register(username) {
+  async register(username, password, wif, keyType) {
     const worker = await this.startBeekeeper();
     await globalThis.fakeHbAuthRegistration;
     worker.unlocked.add(username);
+    worker.keys.add(username + ':' + keyType);
     return { ok: true };
+  }
+  async sign(username, digest, keyType) {
+    const worker = await this.startBeekeeper();
+    if (!worker.keys.has(username + ':' + keyType)) throw new Error('missing authority');
+    return 'signed in ' + this.options.workerUrl;
   }
   async authenticate(username) { (await this.startBeekeeper()).unlocked.add(username); return { ok: true }; }
   async importKey() { await this.startBeekeeper(); return 'STM-public-key'; }
@@ -95,13 +109,59 @@ class MemoryStorage {
 
 interface FakeWorker {
   unlocked: Set<string>;
+  keys: Set<string>;
   beekeepers: number;
+  retiring?: boolean;
 }
 
-const storage = new MemoryStorage();
+/** The stand-in hb-auth's workers, by URL, the URLs of those it started, and its connection to one */
+const fakeHbAuth = globalThis as typeof globalThis & {
+  fakeHbAuthWorkers: Map<string, FakeWorker>;
+  fakeHbAuthStarts: string[];
+  connectFakeHbAuthWorker: (url: string) => FakeWorker;
+};
+
+/**
+ * A connection to the fake hb-auth worker at `url`, speaking public/auth/releasable-worker.js's
+ * protocol: on the retire message the worker waits for the exclusive lock named after it, then ends.
+ */
+class FakeSharedWorker {
+  readonly port: { postMessage: (message: unknown) => void };
+
+  constructor(url: string) {
+    const worker = fakeHbAuth.connectFakeHbAuthWorker(url);
+    this.port = {
+      postMessage: (message) => {
+        if (typeof message !== 'object' || message === null || !('type' in message)) return;
+        if (message.type !== 'denser:retire-worker' || worker.retiring) return;
+        worker.retiring = true;
+        navigator.locks.request(`denser:hb-auth-worker:${url}`, { mode: 'exclusive' }, () => {
+          fakeHbAuth.fakeHbAuthWorkers.delete(url);
+        });
+      }
+    };
+  }
+}
+
+const GENERATION_KEY = 'hbauth-safe-storage-generation';
+
+/** localStorage, counting the safe storage generation's writes */
+class CountingStorage extends MemoryStorage {
+  generationWrites = 0;
+  override setItem(key: string, value: string) {
+    if (key === GENERATION_KEY) this.generationWrites += 1;
+    super.setItem(key, value);
+  }
+}
+
+const storage = new CountingStorage();
 const fakeEnv: Record<string, string> = {};
 Object.assign(globalThis, {
-  window: Object.assign(new EventTarget(), { localStorage: storage, location: { origin: 'https://hive.blog' } }),
+  window: Object.assign(new EventTarget(), {
+    localStorage: storage,
+    location: { origin: 'https://hive.blog', href: 'https://hive.blog/blog/trending' }
+  }),
+  SharedWorker: FakeSharedWorker,
   fakeEnv
 });
 
@@ -138,10 +198,13 @@ async function openPage(basePath: string) {
       onPage(async () => (await service.getOnlineClient()).register(username, 'password', 'wif', 'posting')),
     importKey: (username: string) =>
       onPage(async () => (await service.getOnlineClient()).importKey(username, 'wif', 'active')),
+    getRegisteredUsers: () => onPage(async () => (await service.getOnlineClient()).getRegisteredUsers()),
     readUser: (username: string) =>
       onPage(async () => (await service.getOnlineClient()).getRegisteredUserByUsername(username)),
     registerThrough: (client: OnlineClient, username: string) =>
       onPage(() => client.register(username, 'password', 'wif', 'posting')),
+    /** Runs `action` as code of this page */
+    act: onPage,
     withOnlineClient: <T>(operation: (client: OnlineClient) => Promise<T>) =>
       onPage(() => service.withOnlineClient(operation)),
     logout: (username: string) => onPage(() => service.logoutFromEveryWorker(username))
@@ -154,12 +217,13 @@ function workerOf(client: unknown): { url: string; worker: FakeWorker } {
   return { url: options.workerUrl, worker };
 }
 
-/** Lets the replaced client's lock, which is not awaited, settle */
-const settle = () => new Promise((resolve) => setImmediate(resolve));
+/** Lets the replaced client's lock, and its worker's release, which are not awaited, settle */
+const settle = () => new Promise((resolve) => setTimeout(resolve, 10));
 
 describe('hb-auth online client', () => {
   beforeEach(() => {
     storage.clear();
+    storage.generationWrites = 0;
   });
 
   it('starts no generation when there is none, so apps loading together keep their workers', async () => {
@@ -326,5 +390,73 @@ describe('hb-auth online client', () => {
     await signing;
     await settle();
     assert.deepEqual([...signingWorker.worker.unlocked], []);
+  });
+
+  it('logs out of no worker that stopped running, and starts none to log out of it', async () => {
+    const wallet = await openPage(WALLET);
+    await wallet.importKey('alice');
+    const blog = await openPage(BLOG);
+    await blog.register('alice');
+    const retiredUrl = workerOf(await blog.getOnlineClient()).url;
+    await wallet.importKey('alice');
+    await blog.register('alice');
+    await settle();
+    assert.equal(fakeHbAuth.fakeHbAuthWorkers.has(retiredUrl), false);
+    const startsBefore = fakeHbAuth.fakeHbAuthStarts.length;
+
+    await blog.logout('alice');
+    await settle();
+
+    assert.deepEqual(fakeHbAuth.fakeHbAuthStarts.slice(startsBefore), []);
+    assert.equal(fakeHbAuth.fakeHbAuthWorkers.has(retiredUrl), false);
+  });
+
+  it('renews the safe storage generation once for all the writes of one operation', async () => {
+    const blog = await openPage(BLOG);
+    const wallet = await openPage(WALLET);
+    const walletClient = await wallet.getOnlineClient();
+
+    await blog.withOnlineClient(async (client) => {
+      for (const keyType of ['posting', 'active', 'owner'] as const)
+        await client.register('alice', 'password', 'wif', keyType);
+      assert.equal(storage.generationWrites, 0);
+    });
+
+    assert.equal(storage.generationWrites, 1);
+    const replacedOnce = await wallet.getOnlineClient();
+    assert.notEqual(replacedOnce, walletClient);
+    assert.equal(await wallet.getOnlineClient(), replacedOnce);
+  });
+
+  it('signs with the worker a key was registered in, when another app replaced the worker during the operation', async () => {
+    const blog = await openPage(BLOG);
+    await blog.register('carol');
+    const startedOn = workerOf(await blog.getOnlineClient()).url;
+    const wallet = await openPage(WALLET);
+
+    const signature = await blog.withOnlineClient(async (client) => {
+      await wallet.importKey('carol');
+      return blog.act(async () => {
+        await client.register('carol', 'password', 'wif', 'active');
+        return client.sign('carol', 'digest', 'active');
+      });
+    });
+
+    const currentUrl = workerOf(await blog.getOnlineClient()).url;
+    assert.notEqual(currentUrl, startedOn);
+    assert.equal(signature, `signed in ${currentUrl}`);
+  });
+
+  it("starts one beekeeper in the worker every tab of the app moves to at once", async () => {
+    const tabs = await Promise.all([openPage(BLOG), openPage(BLOG), openPage(BLOG)]);
+    await Promise.all(tabs.map((tab) => tab.getOnlineClient()));
+    const wallet = await openPage(WALLET);
+
+    await wallet.importKey('alice');
+    await Promise.all(tabs.map((tab) => tab.getRegisteredUsers()));
+
+    const workers = await Promise.all(tabs.map(async (tab) => workerOf(await tab.getOnlineClient()).worker));
+    assert.equal(new Set(workers).size, 1);
+    assert.equal(workers[0].beekeepers, 1);
   });
 });

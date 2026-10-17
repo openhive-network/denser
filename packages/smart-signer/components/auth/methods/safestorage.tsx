@@ -134,6 +134,25 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       return authClient.current;
     }
 
+    async function shouldOfferPasskey(client: OnlineClient, username: string): Promise<boolean> {
+      try {
+        const supported = await client.isPasskeySupported();
+        const hasPasskey = await client.hasPasskey(username);
+        const dismissedRaw = localStorage.getItem(`passkey-dismissed-${username}`);
+        let dismissed = false;
+        if (dismissedRaw === 'never') {
+          dismissed = true;
+        } else if (dismissedRaw) {
+          // Timestamp-based dismiss — re-ask after 8 hours
+          dismissed = Date.now() - Number(dismissedRaw) < 8 * 60 * 60 * 1000;
+        }
+        return supported && !hasPasskey && !dismissed;
+      } catch {
+        // Non-critical — silently skip passkey prompt on any error
+        return false;
+      }
+    }
+
     async function onSave(values: SafeStorageForm) {
       const { username, password, wif, keyType, strict } = values;
       try {
@@ -146,10 +165,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           setLoading(false);
           return;
         }
-        await registerSafeStorageKey(
-          await getAuthClient(),
-          { username, password, wif, keyType, strict },
-          SHARED_KEY_LOOKUP
+        await hbauthService.withOnlineClient((client) =>
+          registerSafeStorageKey(client, { username, password, wif, keyType, strict }, SHARED_KEY_LOOKUP)
         );
         await finalize(values);
         form.reset();
@@ -165,29 +182,12 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         setLoading(true);
         setError(null);
-        await (await getAuthClient()).authenticate(username, password, keyType);
-
         // Check passkey support BEFORE finalize — finalize closes the dialog
         // and may unmount this component, so state updates after it are lost.
-        let shouldPromptPasskey = false;
-        try {
-          const client = authClient.current;
-          if (client) {
-            const supported = await client.isPasskeySupported();
-            const hasPasskey = await client.hasPasskey(username);
-            const dismissedRaw = localStorage.getItem(`passkey-dismissed-${username}`);
-            let dismissed = false;
-            if (dismissedRaw === 'never') {
-              dismissed = true;
-            } else if (dismissedRaw) {
-              // Timestamp-based dismiss — re-ask after 8 hours
-              dismissed = Date.now() - Number(dismissedRaw) < 8 * 60 * 60 * 1000;
-            }
-            shouldPromptPasskey = supported && !hasPasskey && !dismissed;
-          }
-        } catch {
-          // Non-critical — silently skip passkey prompt on any error
-        }
+        const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
+          await client.authenticate(username, password, keyType);
+          return shouldOfferPasskey(client, username);
+        });
 
         if (shouldPromptPasskey) {
           setLastAuthPassword(password);

@@ -10,23 +10,16 @@ type ChangePasswordParams = {
 };
 
 /** Re-imports the new keys of every key type the account keeps in safe storage. */
-async function replaceStoredKeys({ account, keys, wifs }: ChangePasswordParams) {
-  const registeredSafeStorageUser = await (
-    await hbauthService.getOnlineClient()
-  ).getRegisteredUserByUsername(account);
-  for (const keyType in keys) {
-    if (
-      registeredSafeStorageUser?.registeredKeyTypes.includes(keyType as KeyAuthorityType) &&
-      wifs[keyType]
-    ) {
-      await (
-        await hbauthService.getOnlineClient()
-      ).invalidateExistingKey(account, keyType as KeyAuthorityType);
-      await (
-        await hbauthService.getOnlineClient()
-      ).importKey(account, wifs[keyType], keyType as KeyAuthorityType);
+function replaceStoredKeys({ account, keys, wifs }: ChangePasswordParams) {
+  return hbauthService.withOnlineClient(async (client) => {
+    const registeredSafeStorageUser = await client.getRegisteredUserByUsername(account);
+    for (const keyType in keys) {
+      if (registeredSafeStorageUser?.registeredKeyTypes.includes(keyType as KeyAuthorityType) && wifs[keyType]) {
+        await client.invalidateExistingKey(account, keyType as KeyAuthorityType);
+        await client.importKey(account, wifs[keyType], keyType as KeyAuthorityType);
+      }
     }
-  }
+  });
 }
 
 /** Makes change master password transaction. */
