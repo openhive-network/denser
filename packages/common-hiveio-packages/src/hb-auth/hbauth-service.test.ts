@@ -3,16 +3,23 @@ import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
 
 /**
- * hb-auth stood in by clients sharing one worker per worker URL, as a SharedWorker is shared: each
- * worker keeps the users unlocked in it, and the keys of the wallet files (fakeHbAuthFiles) it read
- * when it started; a write changes its keys and writes them all back to the files. As hb-auth's, a worker
- * starts beekeeper on its first call, once for every call that reaches it before that start finished.
- * A client connecting to a worker that does not run starts it (fakeHbAuthStarts lists those).
+ * hb-auth 1.28.4 stood in by clients sharing one worker per worker URL, as a SharedWorker is shared:
+ * each worker keeps the users unlocked in it, and the keys of the wallet files (fakeHbAuthFiles) it
+ * read when it started; a key write changes its keys and writes them all back to the files. Key
+ * aliases (fakeHbAuthAliases) live in an IndexedDB store every worker reads and writes per record:
+ * register and importKey refuse a key type an alias exists for, invalidateExistingKey removes it.
+ * importKey and sign need the user unlocked in the worker, which register and authenticate do with
+ * the user's password (fakeHbAuthPasswords). As hb-auth's, a worker starts beekeeper on its first
+ * call, once for every call that reaches it before that start finished. A client connecting to a
+ * worker that does not run starts it (fakeHbAuthStarts lists those). fakeHbAuthWrite, when set, is
+ * awaited by every key write before it lands, as hb-auth's on-chain verification is.
  */
 const FAKE_HB_AUTH = `
 const workers = new Map();
 const starts = [];
 globalThis.fakeHbAuthFiles = new Set();
+globalThis.fakeHbAuthAliases = new Set();
+globalThis.fakeHbAuthPasswords = new Map();
 globalThis.fakeHbAuthWorkers = workers;
 globalThis.fakeHbAuthStarts = starts;
 globalThis.connectFakeHbAuthWorker = (url) => {
@@ -22,6 +29,7 @@ globalThis.connectFakeHbAuthWorker = (url) => {
   }
   return workers.get(url);
 };
+const alias = (username, keyType) => username + '@' + keyType;
 export const DEFAULT_INIT_TIMEOUT = 30000;
 export class OnlineClient {
   constructor(options) { this.options = options; }
@@ -36,33 +44,57 @@ export class OnlineClient {
     worker.started = true;
     return worker;
   }
-  async initialize() { this.worker; return this; }
-  async getRegisteredUsers() { await this.startBeekeeper(); return []; }
-  async getRegisteredUserByUsername() { await this.startBeekeeper(); return null; }
-  async register(username, password, wif, keyType) {
-    const worker = await this.startBeekeeper();
-    await globalThis.fakeHbAuthRegistration;
-    worker.unlocked.add(username);
+  async writeKey(worker, username, keyType) {
+    await globalThis.fakeHbAuthWrite?.();
+    if (globalThis.fakeHbAuthAliases.has(alias(username, keyType)))
+      throw new Error("This user is already registered with '" + keyType + "' authority");
     worker.keys.add(username + ':' + keyType);
     globalThis.fakeHbAuthFiles = new Set(worker.keys);
+    globalThis.fakeHbAuthAliases.add(alias(username, keyType));
+  }
+  async initialize() { this.worker; return this; }
+  async getRegisteredUsers() { await this.startBeekeeper(); return []; }
+  async getRegisteredUserByUsername(username) {
+    const worker = await this.startBeekeeper();
+    const registeredKeyTypes = [...globalThis.fakeHbAuthAliases]
+      .filter((key) => key.startsWith(username + '@'))
+      .map((key) => key.slice(username.length + 1));
+    if (!registeredKeyTypes.length) return null;
+    return { username, unlocked: worker.unlocked.has(username), registeredKeyTypes };
+  }
+  async getUserSettings() { await this.startBeekeeper(); return null; }
+  async register(username, password, wif, keyType) {
+    const worker = await this.startBeekeeper();
+    const known = globalThis.fakeHbAuthPasswords.get(username);
+    if (known !== undefined && known !== password) throw new Error('Invalid credentials');
+    globalThis.fakeHbAuthPasswords.set(username, password);
+    await this.writeKey(worker, username, keyType);
+    worker.unlocked.add(username);
     return { ok: true };
   }
   async sign(username, digest, keyType) {
     const worker = await this.startBeekeeper();
-    if (!worker.keys.has(username + ':' + keyType)) throw new Error('missing authority');
+    if (!worker.unlocked.has(username)) throw new Error('Not authorized');
+    if (!worker.keys.has(username + ':' + keyType) || !globalThis.fakeHbAuthAliases.has(alias(username, keyType)))
+      throw new Error('Not authorized, missing authority');
     return 'signed in ' + this.options.workerUrl;
   }
-  async authenticate(username) { (await this.startBeekeeper()).unlocked.add(username); return { ok: true }; }
+  async authenticate(username, password, keyType) {
+    const worker = await this.startBeekeeper();
+    if (globalThis.fakeHbAuthPasswords.get(username) !== password) throw new Error('Invalid credentials');
+    if (!worker.keys.has(username + ':' + keyType)) throw new Error('Not authorized, missing authority');
+    worker.unlocked.add(username);
+    return { ok: true };
+  }
   async importKey(username, wif, keyType) {
     const worker = await this.startBeekeeper();
-    worker.keys.add(username + ':' + keyType);
-    globalThis.fakeHbAuthFiles = new Set(worker.keys);
+    if (!worker.unlocked.has(username)) throw new Error('User is not logged in. Please login for importing key');
+    await this.writeKey(worker, username, keyType);
     return 'STM-public-key';
   }
   async invalidateExistingKey(username, keyType) {
-    const worker = await this.startBeekeeper();
-    worker.keys.delete(username + ':' + keyType);
-    globalThis.fakeHbAuthFiles = new Set(worker.keys);
+    await this.startBeekeeper();
+    globalThis.fakeHbAuthAliases.delete(alias(username, keyType));
   }
   async logout(username) { (await this.startBeekeeper()).unlocked.delete(username); }
   async lock() {
@@ -80,12 +112,13 @@ const STUBS: Record<string, string> = {
   './logging': SILENT_LOGGER,
   '@hive/ui/config/public-vars': 'export const configuredSessionTime = 900;',
   '@beam-australia/react-env': 'export default (name) => globalThis.fakeEnv[name];',
-  '../wax': 'export const getChain = async () => ({});'
+  '../wax': "export const getChain = async () => ({ calculatePublicKey: () => 'STM-public-key' });"
 };
 const MODULES: Record<string, string> = {
   '@hive/ui/lib/storage-with-ttl': new URL('../../../ui/lib/storage-with-ttl.ts', import.meta.url).href,
   './safe-storage-generation': new URL('./safe-storage-generation.ts', import.meta.url).href,
-  './worker-release': new URL('./worker-release.ts', import.meta.url).href
+  './worker-release': new URL('./worker-release.ts', import.meta.url).href,
+  './online-client-operation': new URL('./online-client-operation.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -126,9 +159,14 @@ interface FakeWorker {
   retiring?: boolean;
 }
 
-/** The stand-in hb-auth's wallet files, its workers, by URL, the URLs of those it started, and its connection to one */
+/**
+ * The stand-in hb-auth's wallet files, key aliases, users' passwords, its workers, by URL, the URLs
+ * of those it started, and its connection to one
+ */
 const fakeHbAuth = globalThis as typeof globalThis & {
   fakeHbAuthFiles: Set<string>;
+  fakeHbAuthAliases: Set<string>;
+  fakeHbAuthPasswords: Map<string, string>;
   fakeHbAuthWorkers: Map<string, FakeWorker>;
   fakeHbAuthStarts: string[];
   connectFakeHbAuthWorker: (url: string) => FakeWorker;
@@ -178,17 +216,22 @@ Object.assign(globalThis, {
   fakeEnv
 });
 
-/** Holds every registration in the stand-in hb-auth, as its on-chain verification does, until released */
-function holdRegistrations(): () => void {
+/** Holds the next key write in the stand-in hb-auth, as its on-chain verification does, until released */
+function holdNextWrite(): () => void {
   let release = () => {};
   const held = new Promise<void>((resolve) => {
     release = resolve;
   });
-  Object.assign(globalThis, { fakeHbAuthRegistration: held });
-  return () => {
-    Object.assign(globalThis, { fakeHbAuthRegistration: undefined });
-    release();
-  };
+  setBeforeEveryWrite(() => {
+    setBeforeEveryWrite(undefined);
+    return held;
+  });
+  return release;
+}
+
+/** Has the stand-in hb-auth await `beforeWrite` before every key write lands */
+function setBeforeEveryWrite(beforeWrite: (() => Promise<void>) | undefined): void {
+  Object.assign(globalThis, { fakeHbAuthWrite: beforeWrite });
 }
 
 const BLOG = '/blog';
@@ -207,10 +250,23 @@ async function openPage(basePath: string) {
   };
   return {
     getOnlineClient: () => onPage(() => service.getOnlineClient()),
+    /** Adds the user's posting key to safe storage, again when it has it */
     register: (username: string) =>
-      onPage(async () => (await service.getOnlineClient()).register(username, 'password', 'wif', 'posting')),
+      onPage(() =>
+        service.withOnlineClient(async (client) => {
+          await client.invalidateExistingKey(username, 'posting');
+          return client.register(username, 'password', 'wif', 'posting');
+        })
+      ),
+    /** Adds the active key of the user, logged in to the page's worker, to safe storage, again when it has it */
     importKey: (username: string) =>
-      onPage(async () => (await service.getOnlineClient()).importKey(username, 'wif', 'active')),
+      onPage(() =>
+        service.withOnlineClient(async (client) => {
+          workerOf(client).worker.unlocked.add(username);
+          await client.invalidateExistingKey(username, 'active');
+          return client.importKey(username, 'wif', 'active');
+        })
+      ),
     getRegisteredUsers: () => onPage(async () => (await service.getOnlineClient()).getRegisteredUsers()),
     readUser: (username: string) =>
       onPage(async () => (await service.getOnlineClient()).getRegisteredUserByUsername(username)),
@@ -218,8 +274,11 @@ async function openPage(basePath: string) {
       onPage(() => client.register(username, 'password', 'wif', 'posting')),
     /** Runs `action` as code of this page */
     act: onPage,
-    withOnlineClient: <T>(operation: (client: OnlineClient) => Promise<T>) =>
-      onPage(() => service.withOnlineClient(operation)),
+    withOnlineClient: <T>(
+      operation: (client: OnlineClient) => Promise<T>,
+      options?: Parameters<HbAuthService['withOnlineClient']>[1]
+    ) => onPage(() => service.withOnlineClient(operation, options)),
+    SupersededKeyWriteError: service.SupersededKeyWriteError,
     logout: (username: string) => onPage(() => service.logoutFromEveryWorker(username))
   };
 }
@@ -238,6 +297,9 @@ describe('hb-auth online client', () => {
     storage.clear();
     storage.generationWrites = 0;
     fakeHbAuth.fakeHbAuthFiles = new Set();
+    fakeHbAuth.fakeHbAuthAliases = new Set();
+    fakeHbAuth.fakeHbAuthPasswords = new Map();
+    setBeforeEveryWrite(undefined);
   });
 
   it('starts no generation when there is none, so apps loading together keep their workers', async () => {
@@ -323,7 +385,7 @@ describe('hb-auth online client', () => {
   it("keeps the app on its current worker, unlocked, when a write superseded during it lands", async () => {
     const blogTabA = await openPage(BLOG);
     const staleClient = await blogTabA.getOnlineClient();
-    const releaseRegistrations = holdRegistrations();
+    const releaseWrite = holdNextWrite();
     const staleWrite = blogTabA.register('alice');
     await settle();
 
@@ -333,7 +395,7 @@ describe('hb-auth online client', () => {
     const currentClient = await blogTabB.getOnlineClient();
     const currentWorker = workerOf(currentClient);
     currentWorker.worker.unlocked.add('alice');
-    releaseRegistrations();
+    releaseWrite();
     await staleWrite;
     await settle();
 
@@ -467,14 +529,14 @@ describe('hb-auth online client', () => {
     const blog = await openPage(BLOG);
     const startedOn = workerOf(await blog.getOnlineClient()).url;
     const wallet = await openPage(WALLET);
-    const releaseRegistrations = holdRegistrations();
+    const releaseWrite = holdNextWrite();
 
     const signature = await blog.withOnlineClient(async (client) => {
       const write = blog.act(() => client.register('grace', 'password', 'wif', 'posting'));
       await settle();
       await wallet.importKey('grace');
       await blog.act(() => {
-        releaseRegistrations();
+        releaseWrite();
         return write;
       });
       return blog.act(() => client.sign('grace', 'digest', 'posting'));
@@ -496,8 +558,8 @@ describe('hb-auth online client', () => {
     const signature = await blog.withOnlineClient(async (client) => {
       await wallet.importKey('carol');
       return blog.act(async () => {
-        await client.register('carol', 'password', 'wif', 'active');
-        return client.sign('carol', 'digest', 'active');
+        await client.register('carol', 'password', 'wif', 'owner');
+        return client.sign('carol', 'digest', 'owner');
       });
     });
 
@@ -549,7 +611,7 @@ describe('hb-auth online client', () => {
         })
     );
 
-    await blog.register('dave');
+    await blog.registerThrough(await blog.getOnlineClient(), 'dave');
 
     assert.equal(storage.generationWrites, 1);
     assert.notEqual(await wallet.getOnlineClient(), walletClient);
@@ -591,5 +653,160 @@ describe('hb-auth online client', () => {
     await settle();
 
     assert.deepEqual(fakeHbAuth.fakeHbAuthStarts.slice(startsBefore), []);
+  });
+
+  /**
+   * Runs `write` on `page` while `otherApp` adds a key to safe storage, so `write` lands in a worker
+   * another app's write superseded meanwhile
+   */
+  async function writeSupersededBy<T>(
+    page: Awaited<ReturnType<typeof openPage>>,
+    otherApp: Awaited<ReturnType<typeof openPage>>,
+    username: string,
+    write: () => Promise<T>
+  ): Promise<T> {
+    const releaseWrite = holdNextWrite();
+    const landing = page.act(write);
+    await settle();
+    await otherApp.importKey(username);
+    releaseWrite();
+    return landing;
+  }
+
+  it("repeats a superseded key import in the current worker, unlocked with the operation's password", async () => {
+    const blog = await openPage(BLOG);
+    await blog.register('heidi');
+    const startedOn = workerOf(await blog.getOnlineClient()).url;
+    const wallet = await openPage(WALLET);
+    let prompts = 0;
+    const requestPassword = async () => {
+      prompts += 1;
+      return 'password';
+    };
+
+    const signature = await blog.withOnlineClient(async (client) => {
+      await blog.act(() => client.authenticate('heidi', 'password', 'posting'));
+      await writeSupersededBy(blog, wallet, 'heidi', () => client.importKey('heidi', 'wif', 'owner'));
+      return blog.act(() => client.sign('heidi', 'digest', 'owner'));
+    }, { requestPassword });
+
+    const current = workerOf(await blog.getOnlineClient());
+    assert.notEqual(current.url, startedOn);
+    assert.equal(signature, `signed in ${current.url}`);
+    assert.equal(prompts, 0);
+    assert.equal(fakeHbAuth.fakeHbAuthFiles.has('heidi:owner'), true);
+  });
+
+  it('asks for the password once to repeat a superseded key import when the operation did not unlock', async () => {
+    const blog = await openPage(BLOG);
+    await blog.register('ivan');
+    const wallet = await openPage(WALLET);
+    const asked: string[] = [];
+    const requestPassword = async (username: string) => {
+      asked.push(username);
+      return 'password';
+    };
+
+    await blog.withOnlineClient(async (client) => {
+      await writeSupersededBy(blog, wallet, 'ivan', () => client.importKey('ivan', 'wif', 'owner'));
+      await writeSupersededBy(blog, wallet, 'ivan', () => client.importKey('ivan', 'wif', 'memo'));
+    }, { requestPassword });
+
+    assert.deepEqual(asked, ['ivan']);
+    const { worker } = workerOf(await blog.getOnlineClient());
+    assert.deepEqual(
+      ['ivan:owner', 'ivan:memo'].filter((key) => worker.keys.has(key)),
+      ['ivan:owner', 'ivan:memo']
+    );
+  });
+
+  it('rejects a superseded key import it cannot unlock for with a message to add the key again', async () => {
+    const blog = await openPage(BLOG);
+    await blog.register('judy');
+    const wallet = await openPage(WALLET);
+
+    const importing = blog.withOnlineClient((client) =>
+      writeSupersededBy(blog, wallet, 'judy', () => client.importKey('judy', 'wif', 'owner'))
+    );
+
+    await assert.rejects(importing, (error: unknown) => {
+      assert.ok(error instanceof blog.SupersededKeyWriteError);
+      assert.match(error.message, /Add the owner key to safe storage again/);
+      assert.doesNotMatch(error.message, /already registered/);
+      return true;
+    });
+  });
+
+  it('gives up on a write another app keeps superseding after three repeats', async () => {
+    const blog = await openPage(BLOG);
+    await blog.getOnlineClient();
+    const wallet = await openPage(WALLET);
+    let attempts = 0;
+    let superseding = false;
+    setBeforeEveryWrite(async () => {
+      if (superseding) return;
+      superseding = true;
+      attempts += 1;
+      await wallet.importKey('ken');
+      superseding = false;
+    });
+
+    const registering = blog.withOnlineClient((client) =>
+      blog.act(() => client.register('ken', 'password', 'wif', 'posting'))
+    );
+
+    await assert.rejects(registering, (error: unknown) => error instanceof blog.SupersededKeyWriteError);
+    assert.equal(attempts, 4);
+  });
+
+  it("starts one worker for another app's operation however many times its writes renew the generation", async () => {
+    const blog = await openPage(BLOG);
+    await blog.getOnlineClient();
+    const wallet = await openPage(WALLET);
+    const startsBefore = fakeHbAuth.fakeHbAuthStarts.length;
+    const asked: Promise<OnlineClient>[] = [];
+
+    await wallet.withOnlineClient(async (client) => {
+      workerOf(client).worker.unlocked.add('liam');
+      for (const keyType of ['posting', 'active', 'owner', 'memo'] as const) {
+        await wallet.act(() => client.invalidateExistingKey('liam', keyType));
+        asked.push(blog.getOnlineClient());
+        await wallet.act(() => client.importKey('liam', 'wif', keyType));
+        asked.push(blog.getOnlineClient());
+      }
+    });
+    const clients = await Promise.all(asked);
+
+    assert.equal(storage.generationWrites, 8);
+    const blogStarts = fakeHbAuth.fakeHbAuthStarts.slice(startsBefore).filter((url) => url.includes(BLOG));
+    assert.equal(blogStarts.length, 1);
+    assert.equal(new Set(clients).size, 1);
+    assert.equal(workerOf(clients[0]).worker.keys.has('liam:memo'), true);
+  });
+
+  it('starts no third worker while an operation holds a replaced one', async () => {
+    const blog = await openPage(BLOG);
+    await blog.register('mia');
+    let finishSigning = () => {};
+    const signing = blog.withOnlineClient(
+      () =>
+        new Promise<void>((resolve) => {
+          finishSigning = resolve;
+        })
+    );
+    const wallet = await openPage(WALLET);
+    await wallet.importKey('mia');
+    await blog.getOnlineClient();
+    const startsBefore = fakeHbAuth.fakeHbAuthStarts.length;
+
+    await wallet.importKey('mia');
+    const asking = blog.getOnlineClient();
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    assert.deepEqual(fakeHbAuth.fakeHbAuthStarts.slice(startsBefore).filter((url) => url.includes(BLOG)), []);
+    finishSigning();
+    await signing;
+    const current = workerOf(await asking);
+    assert.deepEqual(fakeHbAuth.fakeHbAuthStarts.slice(startsBefore), [current.url]);
   });
 });

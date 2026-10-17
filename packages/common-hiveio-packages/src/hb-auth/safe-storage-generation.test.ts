@@ -49,10 +49,13 @@ const fakeWindow = Object.assign(new EventTarget(), { localStorage: storage });
 Object.assign(globalThis, { window: fakeWindow });
 
 const {
+  endSafeStorageWriting,
   getSafeStorageGeneration,
+  markSafeStorageWriting,
   getWorkerGeneration,
   renewSafeStorageGeneration,
-  subscribeSafeStorageGeneration
+  subscribeSafeStorageGeneration,
+  whenSafeStorageSettles
 } = await import('./safe-storage-generation.ts');
 
 const BLOG = '';
@@ -136,5 +139,30 @@ describe('safe storage generation', () => {
     fakeWindow.dispatchEvent(storageEvent(generationKey));
 
     assert.equal(calls, 1);
+  });
+
+  it("settles for an app once another app's writing operation ended, but not for that app's own", async () => {
+    markSafeStorageWriting(WALLET);
+    let blogSettled = false;
+    const blogSettles = whenSafeStorageSettles(BLOG, () => false).then(() => (blogSettled = true));
+
+    await whenSafeStorageSettles(WALLET, () => false);
+    assert.equal(blogSettled, false);
+    endSafeStorageWriting(BLOG);
+    await whenSafeStorageSettles(WALLET, () => false);
+    assert.equal(blogSettled, false);
+    endSafeStorageWriting(WALLET);
+    await blogSettles;
+  });
+
+  it('settles for an urgent wait while another app writes, once the generation stays unchanged', async () => {
+    markSafeStorageWriting(WALLET);
+    let urgent = false;
+    const settling = whenSafeStorageSettles(BLOG, () => urgent);
+    renewSafeStorageGeneration(WALLET, null);
+
+    urgent = true;
+    await settling;
+    assert.notEqual(getSafeStorageGeneration(), null);
   });
 });
