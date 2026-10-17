@@ -77,7 +77,7 @@ const currentWorkerGeneration = (): string | null => getWorkerGeneration(getBase
  * storage generation as this app's worker's: the app's pages keep sharing that worker, and whatever it
  * has unlocked, while other apps' clients are replaced when next asked for. A client whose worker
  * another write superseded writes through the app's current client instead, as its worker would write
- * back wallet files older than that write.
+ * back wallet files older than that write; so does a write another app's write superseded while it ran.
  */
 class GenerationRenewingOnlineClient extends OnlineClient {
   readonly #generation: string | null;
@@ -119,23 +119,21 @@ class GenerationRenewingOnlineClient extends OnlineClient {
     const current = await this.currentClient();
     if (current !== this) return current.register(username, password, wifKey, keyType, strict);
     const status = await super.register(username, password, wifKey, keyType, strict);
-    this.renewGeneration();
-    return status;
+    return this.renewGeneration() ? status : this.register(username, password, wifKey, keyType, strict);
   }
 
   override async importKey(username: string, wifKey: string, keyType: KeyAuthorityType): Promise<string> {
     const current = await this.currentClient();
     if (current !== this) return current.importKey(username, wifKey, keyType);
     const publicKey = await super.importKey(username, wifKey, keyType);
-    this.renewGeneration();
-    return publicKey;
+    return this.renewGeneration() ? publicKey : this.importKey(username, wifKey, keyType);
   }
 
   override async invalidateExistingKey(username: string, keyType: KeyAuthorityType): Promise<void> {
     const current = await this.currentClient();
     if (current !== this) return current.invalidateExistingKey(username, keyType);
     await super.invalidateExistingKey(username, keyType);
-    this.renewGeneration();
+    if (!this.renewGeneration()) await this.invalidateExistingKey(username, keyType);
   }
 
   /** This client while its worker is the app's current one; otherwise the app's current client */
@@ -145,11 +143,16 @@ class GenerationRenewingOnlineClient extends OnlineClient {
     return getOnlineClient();
   }
 
-  /** Records the wallet files this client's worker wrote as the app's current generation */
-  renewGeneration(): void {
-    // Another write renewed the generation while this one ran: its worker wrote files older than that
-    if (renewSafeStorageGeneration(getBasePath(), this.#generation) === null)
-      logger.warn('Did not renew the safe storage generation after a write through a replaced HB-Auth worker');
+  /**
+   * Records the wallet files this client's worker wrote as the app's current generation. False when
+   * another write renewed the generation while this one ran: the write is to be repeated through the
+   * app's current client, as this client's worker holds files older than that write.
+   */
+  renewGeneration(): boolean {
+    // Null also where localStorage cannot keep a generation, which leaves the client current
+    if (renewSafeStorageGeneration(getBasePath(), this.#generation) !== null || this.isCurrent) return true;
+    logger.warn('Safe storage changed during a write through this HB-Auth worker; repeating it through the current one');
+    return false;
   }
 }
 
@@ -259,19 +262,20 @@ const getRenewingOnlineClient = (): Promise<GenerationRenewingOnlineClient> => {
   return clientPromise;
 };
 
-// The client methods that write the wallet files
+// The client methods that write the wallet files. Not the passkey methods: hb-auth keeps passkeys in
+// an IndexedDB database of their own, written and read by the page rather than the worker.
 const WRITE_METHODS = new Set<PropertyKey>(['register', 'importKey', 'invalidateExistingKey']);
 
 /**
  * The client an operation runs with: the online client it started with, until a write finds that
- * client's worker superseded. The write, and every call after it, then go to the app's current client,
- * so a key the operation registers is in the worker it signs with. The first write with a client
- * renews the safe storage generation; the operation's later writes with it, to the worker that is
- * already the app's current one, do not.
+ * client's worker superseded, or another app's write supersedes it during a write. The write, and
+ * every call after it, then go to the app's current client, so a key the operation registers is in
+ * the worker it signs with. Every write renews the safe storage generation, so a worker another app
+ * started between two writes of the operation is replaced before it writes back files without the
+ * later one.
  */
 class OnlineClientOperation {
   #client: GenerationRenewingOnlineClient;
-  #renewedWith: GenerationRenewingOnlineClient | undefined;
   readonly client: OnlineClient;
 
   constructor(client: GenerationRenewingOnlineClient) {
@@ -281,23 +285,21 @@ class OnlineClientOperation {
         const value: unknown = Reflect.get(this.#client, property, this.#client);
         if (typeof value !== 'function') return value;
         if (!WRITE_METHODS.has(property)) return value.bind(this.#client);
-        return async (...args: unknown[]) => {
-          await this.followCurrentClient();
-          const writer = this.#client;
-          // OnlineClient's own write, which leaves renewing the generation to the operation
-          const result: unknown = await Reflect.apply(Reflect.get(OnlineClient.prototype, property), writer, args);
-          if (this.#renewedWith !== writer) {
-            this.#renewedWith = writer;
-            writer.renewGeneration();
-          }
-          return result;
-        };
+        return (...args: unknown[]) => this.write(property, args);
       }
     });
   }
 
   end(): void {
     this.#client.endOperation();
+  }
+
+  private async write(method: PropertyKey, args: unknown[]): Promise<unknown> {
+    await this.followCurrentClient();
+    const writer = this.#client;
+    // OnlineClient's own write, which leaves renewing the generation to the operation
+    const result: unknown = await Reflect.apply(Reflect.get(OnlineClient.prototype, method), writer, args);
+    return writer.renewGeneration() ? result : this.write(method, args);
   }
 
   private async followCurrentClient(): Promise<void> {
@@ -313,8 +315,9 @@ class OnlineClientOperation {
 /**
  * Runs `operation` with the online client, which keeps its worker unlocked until `operation` settles
  * even when another app's write replaces it meanwhile; once a write of `operation` finds it replaced,
- * `operation` continues with the current one. The first write of `operation` to a worker renews the
- * safe storage generation, its later writes to that worker do not. Resolves and rejects as `operation` does.
+ * `operation` continues with the current one, as it does when another app's write supersedes the
+ * client during a write of `operation`, which is repeated there. Every write of `operation` renews the
+ * safe storage generation. Resolves and rejects as `operation` does.
  */
 export const withOnlineClient = async <T>(operation: (client: OnlineClient) => Promise<T>): Promise<T> => {
   // Begun as the client resolves, before a replacement can retire it
