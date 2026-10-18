@@ -7,8 +7,8 @@ settings:
 catalogs:
   hiveio-toolset:
     '@hiveio/hb-auth':
-      specifier: 1.28.4-rc0-stable.260405141254
-      version: 1.28.4-rc0-stable.260405141254
+      specifier: 1.28.4-rc0-stable.261018041051
+      version: 1.28.4-rc0-stable.261018041051
     '@hiveio/healthchecker-component':
       specifier: 2.0.2
       version: 2.0.2
@@ -421,7 +421,7 @@ importers:
         version: link:../ui
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.260405141254(@hiveio/wax@1.28.6-rc10-stable.260326112051)
+        version: 1.28.4-rc0-stable.261018041051(@hiveio/wax@1.28.6-rc10-stable.260326112051)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.6-rc10-stable.260326112051
@@ -647,7 +647,7 @@ importers:
         version: 1.28.8-stable.261010131807
       '@hiveio/hb-auth':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc0-stable.260405141254(@hiveio/wax@1.28.6-rc10-stable.260326112051)
+        version: 1.28.4-rc0-stable.261018041051(@hiveio/wax@1.28.6-rc10-stable.260326112051)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.6-rc10-stable.260326112051
@@ -1921,9 +1921,9 @@ packages:
     resolution: {integrity: sha1-IlUZ2RnOru4WKXe/ffu+BEVPn/I=, tarball: https://gitlab.syncad.com/api/v4/projects/558/packages/npm/@hiveio/beekeeper/-/@hiveio/beekeeper-1.28.8-stable.261010131807.tgz}
     engines: {node: '>=24'}
 
-  '@hiveio/hb-auth@1.28.4-rc0-stable.260405141254':
-    resolution: {integrity: sha1-XZlP1I+5oXzLuvkCuGAw2vNboso=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.260405141254.tgz}
-    engines: {node: ^20.11 || >= 21.2}
+  '@hiveio/hb-auth@1.28.4-rc0-stable.261018041051':
+    resolution: {integrity: sha1-ZIBq+M0xomVWml/7G4l6Gu/Q1IM=, tarball: https://gitlab.syncad.com/api/v4/projects/429/packages/npm/@hiveio/hb-auth/-/@hiveio/hb-auth-1.28.4-rc0-stable.261018041051.tgz}
+    engines: {node: '>=24'}
     peerDependencies:
       '@hiveio/wax': '>= 2.0.0 < 2.1.0'
 
@@ -11644,7 +11644,7 @@ snapshots:
 
   '@hiveio/beekeeper@1.28.8-stable.261010131807': {}
 
-  '@hiveio/hb-auth@1.28.4-rc0-stable.260405141254(@hiveio/wax@1.28.6-rc10-stable.260326112051)':
+  '@hiveio/hb-auth@1.28.4-rc0-stable.261018041051(@hiveio/wax@1.28.6-rc10-stable.260326112051)':
     dependencies:
       '@hiveio/wax': 1.28.6-rc10-stable.260326112051
       comlink: 4.4.2
