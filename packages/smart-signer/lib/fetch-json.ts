@@ -56,6 +56,29 @@ async function parseJsonBody(response: Response) {
   }
 }
 
+/**
+ * The request `fetchJson` gave up on after its timeout. Carries the endpoint and the time
+ * waited, so a log tells a slow backend from a client that never sent the request.
+ */
+export class FetchTimeoutError extends Error {
+  url: string;
+  timeoutMs: number;
+  elapsedMs: number;
+
+  constructor({ url, timeoutMs, elapsedMs }: { url: string; timeoutMs: number; elapsedMs: number }) {
+    super(`No response from ${url} within ${timeoutMs} ms`);
+    this.name = 'FetchTimeoutError';
+    this.url = url;
+    this.timeoutMs = timeoutMs;
+    this.elapsedMs = elapsedMs;
+  }
+}
+
+function requestUrl(input: string | Request | URL): string {
+  if (typeof input === 'string') return input;
+  return input instanceof URL ? input.href : input.url;
+}
+
 export async function fetchJson<JSON = any>(
   input: string | Request | URL,
   init?: RequestInit,
@@ -64,22 +87,31 @@ export async function fetchJson<JSON = any>(
   // See https://developer.chrome.com/blog/abortable-fetch
   const controller = new AbortController();
   const signal = controller.signal;
-  setTimeout(() => controller.abort(), timeout);
+  const startedAt = Date.now();
+  const timer = setTimeout(() => {
+    const url = requestUrl(input);
+    controller.abort(new FetchTimeoutError({ url, timeoutMs: timeout, elapsedMs: Date.now() - startedAt }));
+  }, timeout);
   const myInit = { ...init, signal };
-  const response = await fetch(input, myInit);
+  try {
+    const response = await fetch(input, myInit);
 
-  // If there's a network error, it will throw at the previous line.
-  const data = await parseJsonBody(response);
+    // If there's a network error, it will throw at the previous line.
+    const data = await parseJsonBody(response);
 
-  // response.ok is true when res.status is 2xx
-  // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
-  if (response.ok) {
-    return data;
+    // response.ok is true when res.status is 2xx
+    // https://developer.mozilla.org/en-US/docs/Web/API/Response/ok
+    if (response.ok) {
+      return data;
+    }
+
+    throw new FetchError({
+      message: statusMessage(response),
+      response,
+      data,
+    })
+  } finally {
+    clearTimeout(timer);
   }
-
-  throw new FetchError({
-    message: statusMessage(response),
-    response,
-    data,
-  })
 }
+

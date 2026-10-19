@@ -78,4 +78,35 @@ test.describe('Login dialog — sign-in method info', () => {
       plSmartSigner.login_form.method_info.safe_storage
     );
   });
+
+  test('LOGIN-INFO-04 — the tooltip shows outside the scrolling sign-in form, on focus and on click', async ({
+    page
+  }) => {
+    await openLoginDialog(page);
+
+    const tooltip = await openMethodInfo(page, 'safe_storage');
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toBeInViewport({ ratio: 1 });
+    // Portalled to the body, so the form's scroll container cannot clip it
+    expect(await tooltip.evaluate((element) => element.closest('[role="dialog"]') === null)).toBe(true);
+
+    await page.keyboard.press('Escape');
+    await expect(tooltip).toBeHidden();
+    await page.getByTestId('method-info-safe_storage').click();
+    await expect(tooltip).toBeVisible();
+  });
+});
+
+test.describe('Login dialog — sign-in method info on a touch screen', () => {
+  test.use({ hasTouch: true });
+
+  test('LOGIN-INFO-05 — a tap on the info trigger shows the tooltip', async ({ page }) => {
+    await openLoginDialog(page);
+
+    await page.getByTestId('method-info-safe_storage').tap();
+
+    const tooltip = page.getByTestId('method-info-safe_storage-content');
+    await expect(tooltip).toBeVisible();
+    await expect(tooltip).toHaveText(EN_METHOD_INFO.safe_storage);
+  });
 });

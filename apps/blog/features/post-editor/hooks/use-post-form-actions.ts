@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { createAsset, createPermlink } from "@transaction/lib/utils";
 import { getPostPath } from "@transaction/lib/post-category";
 import { getLogger } from "@ui/lib/logging";
-import { handleError } from "@ui/lib/handle-error";
 import { Entry } from "@hive/common-hiveio-packages/wax";
 import { parseTags } from "@/blog/features/post-editor/lib/utils";
 import { usePostMutation } from "@/blog/features/post-editor/hooks/use-post-mutation";
@@ -151,10 +150,13 @@ export function usePostFormActions({
       };
       try {
         await postMutation.mutateAsync(postParams);
-      } catch (error) {
+      } catch {
+        // usePostMutation has reported the failure
         setIsSubmitting(false);
-        handleError(error, { method: "post", params: postParams });
-        throw error;
+        if (btnRef.current) {
+          btnRef.current.disabled = false;
+        }
+        return;
       }
 
       hasSubmittedRef.current = true;

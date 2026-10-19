@@ -158,5 +158,8 @@
     "not_enough_rc_amounts": "Hai {{current}} RC; questa transazione ne richiede {{needed}}.",
     "keychain_no_message": "Hive Keychain non è riuscito a completare la richiesta e non ha indicato il motivo.",
     "superseded_key_write": "Un'altra scheda ha interrotto il salvataggio della chiave {{keyType}} di @{{username}} nell'archivio sicuro. Aggiungi di nuovo la chiave {{keyType}} all'archivio sicuro."
+  },
+  "request_error": {
+    "timeout": "Il server non ha risposto in tempo. Riprova."
   }
 }
