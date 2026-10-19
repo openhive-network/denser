@@ -19,6 +19,10 @@ cd "$(dirname "$0")/.."
 # shellcheck source=pnpm-deps.sh
 source .aidev/pnpm-deps.sh
 
+# Each app's type check needs ~1.8 GB of heap; in the suite's memory-capped container V8's
+# default limit stops it at ~1.5 GB. 3 GB stays under the suite's cap.
+tsc_heap="--max-old-space-size=3072"
+
 status=0
 for app in blog wallet; do
     echo "== eslint apps/$app" >&2
@@ -26,13 +30,13 @@ for app in blog wallet; do
     echo "== tsc apps/$app" >&2
     # --incremental false: the shared tsconfig enables incremental builds, which
     # would leave a .tsbuildinfo in the tree.
-    pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false < /dev/null || status=1
+    NODE_OPTIONS="${NODE_OPTIONS:-} $tsc_heap" pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false < /dev/null || status=1
     echo "== eslint apps/$app/playwright" >&2
     # --no-ignore: the app's .eslintignore excludes playwright/. The eslintrc
     # format is forced because wallet's eslint.config.mjs would select flat config.
     ESLINT_USE_FLAT_CONFIG=false pnpm --filter "@hive/$app" exec eslint --no-ignore --ext .ts playwright --quiet < /dev/null || status=1
     echo "== tsc apps/$app/playwright" >&2
-    pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false -p playwright < /dev/null || status=1
+    NODE_OPTIONS="${NODE_OPTIONS:-} $tsc_heap" pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false -p playwright < /dev/null || status=1
 done
 for app in blog wallet; do
     echo "== $app translation sync" >&2
