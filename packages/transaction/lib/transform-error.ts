@@ -81,6 +81,25 @@ function isKeychainUserCancel(error: unknown): boolean {
   return false;
 }
 
+/**
+ * Peak Vault rejects a request with its own response, a plain object (`{ success: false, error, message }`)
+ * rather than an Error. Its `message` is written for the user, like Keychain's answer.
+ */
+function findWalletResponseMessage(error: unknown): string | undefined {
+  if (typeof error !== 'object' || error === null || error instanceof Error) return undefined;
+  if (!('success' in error) || error.success !== false) return undefined;
+  const message = 'message' in error && typeof error.message === 'string' ? error.message.trim() : '';
+  return message || undefined;
+}
+
+function stringifyError(error: unknown): string {
+  try {
+    return JSON.stringify(error) ?? String(error);
+  } catch {
+    return String(error);
+  }
+}
+
 // TODO: Refactor this function to use the new error handling mechanism
 // This is not working as expected and it isn't configurable to show UI errors
 /**
@@ -99,9 +118,12 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
   let isWellKnownError = false;
   let isKeychainMessageMissing = false;
   const isUserCancel = isKeychainUserCancel(e);
+  const walletResponseMessage = findWalletResponseMessage(e);
 
   if (e instanceof Error) {
     e = `${e.name}: ${e.message}`;
+  } else if (typeof e !== 'string') {
+    e = stringifyError(e);
   } else if (isJSON(e)) {
     e = JSON.stringify(e);
   }
@@ -122,6 +144,8 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
     if (wellKnownErrorDescription) {
       description = wellKnownErrorDescription;
       isWellKnownError = true;
+    } else if (walletResponseMessage) {
+      description = walletResponseMessage;
     } else if (keychainMessage === undefined) {
       description = errorDescription;
     } else if (MISSING_KEYCHAIN_MESSAGES.includes(keychainMessage)) {
