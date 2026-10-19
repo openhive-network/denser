@@ -4,6 +4,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@ui/components/popover'
 import PopoverCardData from './popover-card-data';
 import { useTranslation } from '@/blog/i18n/client';
 import { AlertTriangle } from 'lucide-react';
+import LiteAccountCard from '../lite-account/lite-account-card';
+import LiteDidBadge from '../lite-account/lite-did-badge';
+import { authorDisplayName, isLiteDid } from '../lite-account/lite-did';
 
 export interface UserPopoverCardProps {
   author: string;
@@ -19,6 +22,7 @@ export function UserPopoverCard({
   withImage = false
 }: UserPopoverCardProps) {
   const { t } = useTranslation('common_blog');
+  const isLite = isLiteDid(author);
 
   return (
     <Popover>
@@ -26,7 +30,7 @@ export function UserPopoverCard({
         <button className="flex items-center gap-1 hover:cursor-pointer">
           {withImage && <UserAvatar username={author} size="normal" />}
           <span className="font-semibold text-foreground hover:text-destructive" data-testid="author-name">
-            {author}
+            {authorDisplayName(author)}
           </span>
           <span
             title={t('post_content.reputation_title')}
@@ -35,6 +39,7 @@ export function UserPopoverCard({
           >
             ({accountReputation(author_reputation)})
           </span>
+          {isLite ? <LiteDidBadge /> : null}
           {blacklist && blacklist[0] ? (
             <span title={blacklist[0]}>
               <AlertTriangle className="ml-1 h-4 w-4 text-destructive" />
@@ -43,7 +48,11 @@ export function UserPopoverCard({
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 border border-border bg-background p-0 shadow-lg" data-testid="user-popover-card-content">
-        <PopoverCardData author={author} blacklist={blacklist} authorReputation={author_reputation} />
+        {isLite ? (
+          <LiteAccountCard author={author} />
+        ) : (
+          <PopoverCardData author={author} blacklist={blacklist} authorReputation={author_reputation} />
+        )}
       </PopoverContent>
     </Popover>
   );

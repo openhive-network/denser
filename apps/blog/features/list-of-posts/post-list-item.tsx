@@ -31,6 +31,9 @@ import PostSummary from './summary';
 import { Preferences } from '@/blog/lib/utils';
 import { useTranslation } from '@/blog/i18n/client';
 import VotesComponentWrapper from '@/blog/features/votes/votes-component-wrapper';
+import AuthorProfileLink from '@/blog/features/lite-account/author-profile-link';
+import LiteDidBadge from '@/blog/features/lite-account/lite-did-badge';
+import { authorDisplayName, isLiteDid } from '@/blog/features/lite-account/lite-did';
 
 interface PostListItemProps {
   post: CardEntry;
@@ -159,23 +162,24 @@ const PostListItem = memo(
           <CardHeader className="px-0 py-1">
             <div className="md:text-md flex items-center text-sm">
               {nsfw === 'show' && post.blacklists.length < 1 && !blacklistCheck ? (
-                <Link href={`/@${displayAuthor}`} data-testid="post-card-avatar">
+                <AuthorProfileLink author={displayAuthor} data-testid="post-card-avatar">
                   <UserAvatarImg
                     className="mr-3 h-[24px] w-[24px] rounded-3xl object-cover"
                     src={getUserAvatarUrl(displayAuthor, 'small')}
                     alt=""
                     fetchPriority="low"
                   />
-                </Link>
+                </AuthorProfileLink>
               ) : null}
               <div className="flex flex-wrap items-center gap-0.5 md:flex-nowrap">
-                <Link
-                  href={`/@${displayAuthor}`}
+                <AuthorProfileLink
+                  author={displayAuthor}
                   className="font-medium text-primary hover:cursor-pointer hover:text-destructive"
                   data-testid="post-author"
                 >
-                  {displayAuthor}
-                </Link>{' '}
+                  {authorDisplayName(displayAuthor)}
+                </AuthorProfileLink>{' '}
+                {isLiteDid(displayAuthor) ? <LiteDidBadge /> : null}
                 <span
                   title={t('post_content.reputation_title')}
                   className="mr-1 block font-normal"

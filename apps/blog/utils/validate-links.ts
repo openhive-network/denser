@@ -1,4 +1,5 @@
 import { isHiveAccountNameValid } from '@transaction/lib/validate-hive-account';
+import { postAuthorKind } from '@/blog/features/lite-account/lite-did';
 
 export function isPermlinkValid(permlink: string): boolean {
   if (typeof permlink !== 'string') return false;
@@ -28,6 +29,18 @@ export function extractUsernameFromParam(param: string): string | null {
   if (param.startsWith('@')) return param.slice(1);
   return null;
 }
+
+/**
+ * Validates the author of a post route: a Hive account name, or a lite account DID
+ * (`did:lite:<name>`), which a lite-aware API node resolves. Any other `did:` form is invalid.
+ */
+export async function isPostAuthorValid(author: string): Promise<boolean> {
+  const kind = postAuthorKind(author);
+  if (kind === 'account') return isHiveAccountNameValid(author);
+  return kind === 'lite';
+}
+
+export { postAuthorFromParam } from '@/blog/features/lite-account/lite-did';
 
 // Re-export from @hive/transaction for backwards compatibility
 export { isHiveAccountNameValid as isUsernameValid };

@@ -122,6 +122,21 @@ export const getReadChain = (): ReadChain => {
   return readChain;
 };
 
+const nodeReadChains = new Map<string, ReadChain>();
+
+/**
+ * Read client of one API node, without failover: for a question about that node itself (such as
+ * which APIs it serves), which another node must not answer in its place.
+ */
+export const getNodeReadChain = (node: string): ReadChain => {
+  let nodeChain = nodeReadChains.get(node);
+  if (!nodeChain) {
+    nodeChain = createReadChain(() => ({ ...getReadClientConfig(), apiEndpoint: node, restApiEndpoint: node }));
+    nodeReadChains.set(node, nodeChain);
+  }
+  return nodeChain;
+};
+
 /**
  * Reset the transaction-layer chain cache.
  * Must be called alongside resetChain() from hive-chain-service

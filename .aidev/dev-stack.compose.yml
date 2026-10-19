@@ -128,6 +128,8 @@ services:
       # Feed cache off: one server answers spec after spec (or fixture set after
       # fixture set), and a cached feed would carry the previous one's data.
       DENSER_FEED_CACHE_TTL_S: "0"
+      # Same for whether the node behind the endpoint serves lite.* (a recording does or not).
+      DENSER_LITE_PROBE_TTL_S: "0"
       HOSTNAME: 0.0.0.0
       PORT: "3000"
       NODE_OPTIONS: --max-old-space-size=2048

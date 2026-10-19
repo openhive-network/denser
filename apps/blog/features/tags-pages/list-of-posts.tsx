@@ -18,6 +18,7 @@ import { isCommunity } from '@ui/lib/utils';
 import { PostListSkeleton } from '@hive/ui';
 import { useSSREffectiveObserver, useInitialPosts } from '@/blog/components/observer-provider';
 import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-observer';
+import { usePostsNamespace } from '@/blog/features/lite-account/use-lite-api-info';
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const ssrObserver = useSSREffectiveObserver();
@@ -47,9 +48,10 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     StorageTTL.PERMANENT
   );
 
+  const postsNamespace = usePostsNamespace();
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isPending } =
     useInfiniteQuery({
-      queryKey: ['entriesInfinite', sort, tag, observer],
+      queryKey: ['entriesInfinite', sort, tag, observer, postsNamespace],
       queryFn: async ({ pageParam }: { pageParam: { author?: string; permlink?: string } | undefined }) => {
         const { author, permlink } = pageParam || {};
         const postsData = await loadCardEntries(

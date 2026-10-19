@@ -17,6 +17,7 @@ import { Badge } from '@ui/components/badge';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '../../components/dialog-login';
 import LiteAuthorBadge from '../lite-account/lite-author-badge';
+import { isLiteDid } from '../lite-account/lite-did';
 import { LiteReplyBox } from '../lite-account/lite-reply-box';
 import LiteReplyTrigger from '../lite-account/lite-reply-trigger';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
@@ -241,7 +242,9 @@ const CommentListItem = memo(function CommentListItem({
                                   author_reputation={comment.author_reputation}
                                   blacklist={comment.blacklists}
                                 />
-                                <LiteAuthorBadge jsonMetadata={comment.json_metadata} />
+                                {isLiteDid(comment.author) ? null : (
+                                  <LiteAuthorBadge jsonMetadata={comment.json_metadata} />
+                                )}
                                 {comment.author_title ? (
                                   <Badge
                                     variant="outline"

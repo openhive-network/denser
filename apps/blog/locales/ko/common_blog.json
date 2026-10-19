@@ -971,6 +971,8 @@
   "lite_account": {
     "badge_prefix": "라이트 계정",
     "badge_tooltip": "라이트 계정을 대신해 릴레이를 통해 게시됨 (온체인 검증 대기 중)",
+    "badge_native_tooltip": "라이트 계정: Hive 계정 없이 게시하며, lite posts 앱이 귀속을 확인합니다",
+    "card_description": "라이트 계정은 Hive 계정 없이 게시합니다. 프로필은 lite 소셜 앱과 함께 제공될 예정입니다.",
     "reply_as_guest": "계정 없이 답글을 남기세요. 게시할 때 이름을 고릅니다.",
     "replying_as": "라이트 계정 {{name}}(으)로 답글 작성 중",
     "name_dialog": {

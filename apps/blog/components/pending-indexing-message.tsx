@@ -8,6 +8,7 @@ import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Icons } from '@ui/components/icons';
 import { Button } from '@ui/components/button';
 import { useTranslation } from '@/blog/i18n/client';
+import { usePostsNamespace } from '@/blog/features/lite-account/use-lite-api-info';
 
 /**
  * Shown when navigating to a just-created post (?pending=1) but
@@ -38,8 +39,9 @@ export default function PendingIndexingMessage({
 
   const hasTimedOut = elapsedSeconds >= 180;
 
+  const postsNamespace = usePostsNamespace();
   const { data: postData } = useQuery({
-    queryKey: ['pendingPostPoll', author, permlink, observer],
+    queryKey: ['pendingPostPoll', author, permlink, observer, postsNamespace],
     queryFn: () => getPost(author, permlink, observer),
     refetchInterval: hasTimedOut ? false : 10000,
     enabled: !hasTimedOut

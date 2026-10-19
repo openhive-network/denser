@@ -971,6 +971,8 @@
   "lite_account": {
     "badge_prefix": "lite account",
     "badge_tooltip": "通过中继代表轻账号发布（归属待链上验证）",
+    "badge_native_tooltip": "轻账号：无需 Hive 账号即可发布，归属由 lite posts 应用确认",
+    "card_description": "轻账号无需 Hive 账号即可发布。其个人资料将随 lite 社交应用推出。",
     "reply_as_guest": "无需账号即可回复，发布时选择一个名字。",
     "replying_as": "以轻账号 {{name}} 的身份回复",
     "name_dialog": {

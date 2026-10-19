@@ -3,6 +3,7 @@ import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
 import { getPost } from '@transaction/lib/bridge-api';
+import { currentPostsNamespace } from '@transaction/lib/lite-api';
 import { setStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 import { buildOptimisticPost, type PostParams } from '../lib/optimistic-post';
 import { broadcastPost } from '../lib/broadcast-post';
@@ -10,6 +11,15 @@ import { broadcastPost } from '../lib/broadcast-post';
 const FEED_REFRESH_DELAYS = [8000, 16000, 30000];
 
 const shadowPostKey = (username: string, permlink: string) => `shadow-post-${username}-${permlink}`;
+
+// The key the post page reads its own post under: observer is username when logged in (required to post)
+const ownPostKey = (username: string, permlink: string) => [
+  'postData',
+  username,
+  permlink,
+  username,
+  currentPostsNamespace()
+];
 
 /** Makes post transaction; a new post's page is available from the cache right after broadcast. */
 export function usePostMutation() {
@@ -19,11 +29,7 @@ export function usePostMutation() {
     optimistic: (params: PostParams, queryClient) => {
       const { permlink, title, body, tags, category, summary, editMode } = params;
       if (!editMode) {
-        // Observer is username when logged in (required to post)
-        queryClient.setQueryData(
-          ['postData', username, permlink, username],
-          buildOptimisticPost(params, username)
-        );
+        queryClient.setQueryData(ownPostKey(username, permlink), buildOptimisticPost(params, username));
         // Shadow draft: insurance against a tab crash before Hivemind indexes the post
         setStorageItem(
           shadowPostKey(username, permlink),
@@ -38,7 +44,7 @@ export function usePostMutation() {
       // Validated refetch: a stale Hivemind response must not overwrite the optimistic post
       scheduleValidatedRefetch(
         queryClient,
-        ['postData', username, permlink, username],
+        ownPostKey(username, permlink),
         () => getPost(username, permlink, username),
         (freshData) => freshData != null && !freshData._optimistic,
         undefined,
@@ -48,7 +54,7 @@ export function usePostMutation() {
     rollback: (context, { editMode }, queryClient) => {
       if (!context || editMode) return;
       queryClient.removeQueries({
-        queryKey: ['postData', context.username, context.permlink, context.username]
+        queryKey: ownPostKey(context.username, context.permlink)
       });
       removeStorageItem(shadowPostKey(context.username, context.permlink));
     },

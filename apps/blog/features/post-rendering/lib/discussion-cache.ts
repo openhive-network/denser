@@ -1,6 +1,7 @@
 import type { MutableRefObject } from 'react';
 import type { QueryClient, QueryKey } from '@tanstack/react-query';
 import { getDiscussion } from '@transaction/lib/bridge-api';
+import { currentPostsNamespace } from '@transaction/lib/lite-api';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 
 export type Discussion = Record<string, Entry>;
@@ -10,7 +11,8 @@ export const discussionKey = ({ discussionAuthor, discussionPermlink, observer }
   'discussionData',
   discussionAuthor,
   discussionPermlink,
-  observer
+  observer,
+  currentPostsNamespace()
 ];
 
 export const fetchDiscussion = ({ discussionAuthor, discussionPermlink, observer }: DiscussionParams) =>

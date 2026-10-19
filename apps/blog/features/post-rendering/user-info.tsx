@@ -6,6 +6,8 @@ import { useTranslation } from '@/blog/i18n/client';
 import ChangeTitleDialog from '../community-profile/change-title-dialog';
 import TimeAgo from '@hive/ui/components/time-ago';
 import { UserPopoverCard, UserPopoverCardProps } from './user-popover-card';
+import AuthorProfileLink from '../lite-account/author-profile-link';
+import { authorDisplayName } from '../lite-account/lite-did';
 
 interface UserInfoProps extends UserPopoverCardProps {
   permlink: string;
@@ -65,9 +67,9 @@ function UserInfo({
       {authored && (
         <span className="text-muted-foreground">
           (authored by{' '}
-          <Link className="hover:cursor-pointer hover:text-destructive" href={`/@${authored}`}>
-            @{authored}
-          </Link>
+          <AuthorProfileLink className="hover:cursor-pointer hover:text-destructive" author={authored}>
+            @{authorDisplayName(authored)}
+          </AuthorProfileLink>
           )
         </span>
       )}
