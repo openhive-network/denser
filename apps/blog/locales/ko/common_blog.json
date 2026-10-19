@@ -36,7 +36,10 @@
       "months": " 개월",
       "a_month": " 1개월",
       "years": " 년",
-      "a_year": " 1년"
+      "a_year": " 1년",
+      "hours_count_other": "{{count}}시간",
+      "minutes_count_other": "{{count}}분",
+      "hours_and_minutes": "{{hours}} {{minutes}}"
     },
     "profile_picture": "프로필 사진",
     "notifications_region": "알림 ({hotkey})"

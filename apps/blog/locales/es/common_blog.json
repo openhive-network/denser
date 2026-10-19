@@ -36,7 +36,14 @@
       "months": " months",
       "a_month": " a month",
       "years": " years",
-      "a_year": " a year"
+      "a_year": " a year",
+      "hours_count_one": "{{count}} hora",
+      "hours_count_many": "{{count}} horas",
+      "hours_count_other": "{{count}} horas",
+      "minutes_count_one": "{{count}} minuto",
+      "minutes_count_many": "{{count}} minutos",
+      "minutes_count_other": "{{count}} minutos",
+      "hours_and_minutes": "{{hours}} y {{minutes}}"
     },
     "profile_picture": "Foto de perfil",
     "notifications_region": "Notificaciones ({hotkey})"

@@ -36,7 +36,10 @@
       "months": " months",
       "a_month": " a month",
       "years": " years",
-      "a_year": " a year"
+      "a_year": " a year",
+      "hours_count_other": "{{count}}小时",
+      "minutes_count_other": "{{count}}分钟",
+      "hours_and_minutes": "{{hours}}{{minutes}}"
     },
     "profile_picture": "头像",
     "notifications_region": "通知 ({hotkey})"

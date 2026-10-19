@@ -36,7 +36,20 @@
       "months": " شهر",
       "a_month": " شهر واحد",
       "years": " سنة",
-      "a_year": " سنة واحدة"
+      "a_year": " سنة واحدة",
+      "hours_count_zero": "{{count}} ساعة",
+      "hours_count_one": "{{count}} ساعة",
+      "hours_count_two": "{{count}} ساعتان",
+      "hours_count_few": "{{count}} ساعات",
+      "hours_count_many": "{{count}} ساعة",
+      "hours_count_other": "{{count}} ساعة",
+      "minutes_count_zero": "{{count}} دقيقة",
+      "minutes_count_one": "{{count}} دقيقة",
+      "minutes_count_two": "{{count}} دقيقتان",
+      "minutes_count_few": "{{count}} دقائق",
+      "minutes_count_many": "{{count}} دقيقة",
+      "minutes_count_other": "{{count}} دقيقة",
+      "hours_and_minutes": "{{hours}} و{{minutes}}"
     },
     "profile_picture": "صورة الملف الشخصي",
     "notifications_region": "الإشعارات ({hotkey})"
