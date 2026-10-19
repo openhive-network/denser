@@ -152,24 +152,17 @@ export function extractPictureFromPostBody(urls: string[]): string[] {
   return picturesFromPostBody;
 }
 
+/** Time left until `date`, e.g. "15 hours and 50 minutes"; empty once it has passed. */
 export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefined>) {
   const today = dayjs();
   const cooldownMin = dayjs(date).diff(today, 'minute') % 60;
   const cooldownH = dayjs(date).diff(today, 'hour');
-
-  return (
-    (cooldownH === 1
-      ? t('global.time.an_hour')
-      : cooldownH > 1
-        ? cooldownH + ' ' + t('global.time.hours')
-        : '') +
-    (cooldownH && cooldownMin ? ' and ' : '') +
-    (cooldownMin === 1
-      ? t('global.time.a_minute')
-      : cooldownMin > 0
-        ? cooldownMin + ' ' + t('global.time.minutes')
-        : '')
-  );
+  const hoursText = cooldownH > 0 ? t('global.time.hours_count', { count: cooldownH }) : '';
+  const minutesText = cooldownMin > 0 ? t('global.time.minutes_count', { count: cooldownMin }) : '';
+  if (hoursText && minutesText) {
+    return t('global.time.hours_and_minutes', { hours: hoursText, minutes: minutesText });
+  }
+  return hoursText || minutesText;
 }
 
 export function getRewardsString(account: FullAccount, t: TFunction<'common_blog', undefined>): string {

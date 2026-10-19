@@ -36,7 +36,16 @@
       "months": " months",
       "a_month": " a month",
       "years": " years",
-      "a_year": " a year"
+      "a_year": " a year",
+      "hours_count_one": "{{count}} час",
+      "hours_count_few": "{{count}} часа",
+      "hours_count_many": "{{count}} часов",
+      "hours_count_other": "{{count}} часа",
+      "minutes_count_one": "{{count}} минута",
+      "minutes_count_few": "{{count}} минуты",
+      "minutes_count_many": "{{count}} минут",
+      "minutes_count_other": "{{count}} минуты",
+      "hours_and_minutes": "{{hours}} и {{minutes}}"
     },
     "profile_picture": "Фото профиля",
     "notifications_region": "Уведомления ({hotkey})"
