@@ -20,6 +20,7 @@ const LOCALES_DIR = path.join(BLOG_DIR, 'locales');
 const REFERENCE_LOCALE = 'en';
 const SOURCE_DIRS = ['app', 'components', 'features', 'lib', 'pages'];
 const SOURCE_EXTENSIONS = ['.tsx', '.ts', '.jsx', '.js'];
+const PLURAL_OTHER_SUFFIX = '_other';
 
 // Patterns to match translation function calls
 // Matches: t('key'), t("key"), t(`key`), <Trans i18nKey="key">
@@ -72,6 +73,8 @@ function loadTranslationKeys() {
       const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
       const fileKeys = getAllKeys(content);
       fileKeys.forEach((k) => keys.add(k));
+      // i18next resolves t('base', { count }) to the plural forms `base_one`, `base_other`, ...
+      fileKeys.forEach((k) => k.endsWith(PLURAL_OTHER_SUFFIX) && keys.add(k.slice(0, -PLURAL_OTHER_SUFFIX.length)));
     } catch (error) {
       console.error(`Error loading ${filePath}: ${error.message}`);
     }
