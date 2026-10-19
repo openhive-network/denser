@@ -710,6 +710,8 @@
     "enter_content": "Wprowadź treść, aby wysłać",
     "enter_title_and_content": "Wprowadź tytuł i treść, aby wysłać",
     "enter_tags": "Wprowadź przynajmniej jeden tag, aby wysłać",
+    "image_upload_unavailable": "Przesyłanie obrazów jest niedostępne po zalogowaniu przez {{method}}. Wklej adres URL obrazu albo zaloguj się inną metodą.",
+    "remove_failed_uploads": "Usuń nieudane przesłania obrazów (UPLOAD FAILED) przed wysłaniem.",
     "clean": "Wyczyść",
     "cancel": "Anuluj",
     "confirm": "Potwierdź",
