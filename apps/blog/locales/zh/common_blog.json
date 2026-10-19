@@ -1002,6 +1002,46 @@
       "try_again_in": "请在 {{seconds}} 秒后重试。",
       "draft_kept": "您的草稿已保留。",
       "post_wait": "等待 {{seconds}} 秒"
+    },
+    "root_post": {
+      "write_as_guest": "没有账户？以访客身份写文章——先选一个名字。",
+      "start_as_guest": "以访客身份撰写",
+      "posting_as": "以轻账户 {{name}} 发布",
+      "will_queue_title": "你的文章将进入队列",
+      "will_queue": "所有网关账户都在忙；你的文章预计约 {{minutes}} 分钟后发布。",
+      "unavailable_title": "访客发文暂不可用",
+      "failed_title": "发布失败",
+      "posted_title": "文章已发布",
+      "posted_description": "你的文章已以轻账户 {{name}} 发布。",
+      "queue": {
+        "queued": "你的文章正在网关队列中等待。请保持此页面打开，或稍后再回来。",
+        "position": "队列位置：{{position}}",
+        "due_in": "预计 {{wait}} 后发布",
+        "due_now": "即将发布",
+        "ready": "已为你的文章预留网关账户——正在发布…",
+        "ended_title": "排队的文章未能发布",
+        "cancel": "取消",
+        "cancel_failed": "无法取消排队的文章",
+        "retry": "重试",
+        "back_to_editor": "返回编辑器",
+        "cancelled_title": "已取消排队的文章",
+        "cancelled_description": "草稿已保留，今日配额已退还。"
+      },
+      "errors": {
+        "quota_exceeded": "已达到今日访客发文上限。请明天再试。",
+        "pool_busy": "所有网关账户都在忙且队列已满。请稍后再试。",
+        "rate_limited": "请求过多。请稍等片刻后重试。",
+        "captcha_required": "此网关要求 CAPTCHA，本站暂时无法显示。",
+        "body_too_large": "文章超出网关允许的长度。",
+        "banned": "此轻账户不能通过此网关发布。",
+        "invalid_request": "网关以无效为由拒绝了这篇文章。",
+        "permlink_taken": "该文章地址已被占用。请重试。",
+        "broadcast_failed": "网关无法将文章发布到 Hive。请重试。",
+        "relay_unavailable": "无法连接轻账户网关。",
+        "sign_window_elapsed": "已为你的文章预留网关账户，但文章未能及时签名。",
+        "wait_exceeded": "文章在队列中等待的时间超过了网关允许的上限。",
+        "unknown": "出了点问题。"
+      }
     }
   }
 }

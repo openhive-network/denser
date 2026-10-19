@@ -1002,6 +1002,46 @@
       "try_again_in": "Spróbuj ponownie za {{seconds}} s.",
       "draft_kept": "Twój szkic został zachowany.",
       "post_wait": "Czekaj {{seconds}} s"
+    },
+    "root_post": {
+      "write_as_guest": "Nie masz konta? Napisz post jako gość — najpierw wybierzesz nazwę.",
+      "start_as_guest": "Napisz jako gość",
+      "posting_as": "Publikujesz jako konto lite {{name}}",
+      "will_queue_title": "Twój post trafi do kolejki",
+      "will_queue": "Wszystkie konta bramki są zajęte; post powinien zostać opublikowany za około {{minutes}} min.",
+      "unavailable_title": "Posty gości są teraz niedostępne",
+      "failed_title": "Nie udało się opublikować posta",
+      "posted_title": "Post opublikowany",
+      "posted_description": "Twój post został opublikowany jako konto lite {{name}}.",
+      "queue": {
+        "queued": "Twój post czeka w kolejce bramki. Nie zamykaj tej strony albo wróć do niej później.",
+        "position": "Pozycja w kolejce: {{position}}",
+        "due_in": "Przewidywana publikacja za {{wait}}",
+        "due_now": "Publikacja lada chwila",
+        "ready": "Konto bramki jest zarezerwowane dla Twojego posta — publikowanie…",
+        "ended_title": "Post z kolejki nie został opublikowany",
+        "cancel": "Anuluj",
+        "cancel_failed": "Nie udało się anulować posta w kolejce",
+        "retry": "Spróbuj ponownie",
+        "back_to_editor": "Wróć do edytora",
+        "cancelled_title": "Post w kolejce anulowany",
+        "cancelled_description": "Szkic został zachowany, a dzisiejszy limit zwrócony."
+      },
+      "errors": {
+        "quota_exceeded": "Osiągnięto dzisiejszy limit postów gościa. Spróbuj jutro.",
+        "pool_busy": "Wszystkie konta bramki są zajęte, a kolejka jest pełna. Spróbuj później.",
+        "rate_limited": "Zbyt wiele żądań. Poczekaj chwilę i spróbuj ponownie.",
+        "captcha_required": "Ta bramka wymaga CAPTCHA, której ta strona nie potrafi jeszcze wyświetlić.",
+        "body_too_large": "Post jest za długi dla bramki.",
+        "banned": "To konto lite nie może publikować przez tę bramkę.",
+        "invalid_request": "Bramka odrzuciła post jako nieprawidłowy.",
+        "permlink_taken": "Ten adres posta jest już zajęty. Spróbuj ponownie.",
+        "broadcast_failed": "Bramka nie mogła opublikować posta na Hive. Spróbuj ponownie.",
+        "relay_unavailable": "Brak połączenia z bramką kont lite.",
+        "sign_window_elapsed": "Konto bramki było zarezerwowane dla Twojego posta, ale post nie został podpisany na czas.",
+        "wait_exceeded": "Post czekał w kolejce dłużej, niż pozwala bramka.",
+        "unknown": "Coś poszło nie tak."
+      }
     }
   }
 }

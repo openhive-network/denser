@@ -19,6 +19,7 @@ import { getUserAvatarUrl } from '@hive/ui';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
 import { useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-user';
 import DialogLogin from '@/blog/components/dialog-login';
+import GuestWritePostTrigger from '@/blog/features/lite-account/guest-write-post-trigger';
 import ModeToggle from '@/blog/features/layouts/mode-toggle';
 import LangToggle from '@/blog/features/layouts/lang-toggle';
 import { hoursAndMinutes } from '@/blog/lib/utils';
@@ -173,17 +174,20 @@ const MainBar: FC = () => {
                   </Button>
                 </Link>
               ) : (
-                <DialogLogin redirectTo="/submit.html">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-10 w-10 px-0"
-                    aria-label={t('navigation.main_nav_bar.create_post')}
-                    data-testid="nav-pencil"
-                  >
-                    <Icons.pencil className="h-5 w-5" aria-hidden="true" />
-                  </Button>
-                </DialogLogin>
+                <GuestWritePostTrigger>
+                  {(onClick) => (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-10 w-10 px-0"
+                      aria-label={t('navigation.main_nav_bar.create_post')}
+                      onClick={onClick}
+                      data-testid="nav-pencil"
+                    >
+                      <Icons.pencil className="h-5 w-5" aria-hidden="true" />
+                    </Button>
+                  )}
+                </GuestWritePostTrigger>
               )}
             </TooltipContainer>
             {!isClient ? (

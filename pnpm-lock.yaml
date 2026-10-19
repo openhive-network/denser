@@ -16,8 +16,8 @@ catalogs:
       specifier: 2.0.2
       version: 2.0.2
     '@hiveio/lite-account':
-      specifier: 0.2.0-rc1
-      version: 0.2.0-rc1
+      specifier: 0.2.0-rc1-stable.261019192833
+      version: 0.2.0-rc1-stable.261019192833
     '@hiveio/wax':
       specifier: 1.28.6-rc10-stable.260326112051
       version: 1.28.6-rc10-stable.260326112051
@@ -116,7 +116,7 @@ importers:
         version: 2.0.2(@hiveio/wax@1.28.6-rc10-stable.260326112051)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(tailwindcss@3.4.6(ts-node@10.9.2(@types/node@24.19.1)(typescript@5.3.3)))
       '@hiveio/lite-account':
         specifier: catalog:hiveio-toolset
-        version: 0.2.0-rc1
+        version: 0.2.0-rc1-stable.261019192833
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.6-rc10-stable.260326112051
@@ -1949,8 +1949,8 @@ packages:
   '@hiveio/hivescript@1.3.3':
     resolution: {integrity: sha512-nOeGespwSujSaEl4R09u9FXGgMyOywtWWQiJdiWsmJDknCUqXXxTfs3KICssPTjkDlbGp2gkg3WjUyrlxm28Qg==, tarball: https://registry.npmjs.org/@hiveio/hivescript/-/hivescript-1.3.3.tgz}
 
-  '@hiveio/lite-account@0.2.0-rc1':
-    resolution: {integrity: sha1-VUJCnFvb/d9LZTgxONn9IvT0Qvw=, tarball: https://gitlab.syncad.com/api/v4/projects/626/packages/npm/@hiveio/lite-account/-/@hiveio/lite-account-0.2.0-rc1.tgz}
+  '@hiveio/lite-account@0.2.0-rc1-stable.261019192833':
+    resolution: {integrity: sha1-kxQwmTsNvWl6w/fdzhORjEKgGXQ=, tarball: https://gitlab.syncad.com/api/v4/projects/626/packages/npm/@hiveio/lite-account/-/@hiveio/lite-account-0.2.0-rc1-stable.261019192833.tgz}
 
   '@hiveio/wax-signers-beekeeper@1.28.6-rc10-stable.260326112051':
     resolution: {integrity: sha1-v81VpWUFnEobM2KTMZvIVK009Fw=, tarball: https://gitlab.syncad.com/api/v4/projects/419/packages/npm/@hiveio/wax-signers-beekeeper/-/@hiveio/wax-signers-beekeeper-1.28.6-rc10-stable.260326112051.tgz}
@@ -11661,7 +11661,7 @@ snapshots:
 
   '@hiveio/hivescript@1.3.3': {}
 
-  '@hiveio/lite-account@0.2.0-rc1':
+  '@hiveio/lite-account@0.2.0-rc1-stable.261019192833':
     dependencies:
       '@noble/curves': 1.4.2
       '@noble/hashes': 1.4.0

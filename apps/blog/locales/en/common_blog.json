@@ -1002,6 +1002,46 @@
       "try_again_in": "Try again in {{seconds}} s.",
       "draft_kept": "Your draft is kept.",
       "post_wait": "Wait {{seconds}} s"
+    },
+    "root_post": {
+      "write_as_guest": "No account? Write a post as a guest — you'll pick a name first.",
+      "start_as_guest": "Write as a guest",
+      "posting_as": "Posting as lite account {{name}}",
+      "will_queue_title": "Your post will be queued",
+      "will_queue": "All gate accounts are busy; your post should go out in about {{minutes}} min.",
+      "unavailable_title": "Guest posts are unavailable right now",
+      "failed_title": "Post failed",
+      "posted_title": "Post published",
+      "posted_description": "Your post was published as lite account {{name}}.",
+      "queue": {
+        "queued": "Your post is waiting in the gateway's queue. Keep this page open, or come back to it later.",
+        "position": "Position in the queue: {{position}}",
+        "due_in": "Expected to go out in {{wait}}",
+        "due_now": "Should go out any moment now",
+        "ready": "A gate account is reserved for your post — publishing it…",
+        "ended_title": "Your queued post was not published",
+        "cancel": "Cancel",
+        "cancel_failed": "Could not cancel the queued post",
+        "retry": "Try again",
+        "back_to_editor": "Back to the editor",
+        "cancelled_title": "Queued post cancelled",
+        "cancelled_description": "Your draft is kept and today's quota was refunded."
+      },
+      "errors": {
+        "quota_exceeded": "You have reached today's limit of guest posts. Try again tomorrow.",
+        "pool_busy": "All gate accounts are busy and the queue is full. Try again later.",
+        "rate_limited": "Too many requests. Wait a moment and try again.",
+        "captcha_required": "This gateway asks for a CAPTCHA, which this site cannot show yet.",
+        "body_too_large": "The post is too long for the gateway.",
+        "banned": "This lite account may not post through this gateway.",
+        "invalid_request": "The gateway refused the post as invalid.",
+        "permlink_taken": "That post address is already taken. Try again.",
+        "broadcast_failed": "The gateway could not publish the post on Hive. Try again.",
+        "relay_unavailable": "The lite-account gateway cannot be reached.",
+        "sign_window_elapsed": "A gate account was reserved for your post, but the post was not signed in time.",
+        "wait_exceeded": "The post waited in the queue longer than the gateway allows.",
+        "unknown": "Something went wrong."
+      }
     }
   }
 }
