@@ -70,7 +70,6 @@ export default function LoginForm({ oauthReturn }: LoginFormProps) {
           preferredKeyTypes={[KeyType.posting]}
           onComplete={onComplete}
           authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
-          strict={!siteConfig.allowNonStrictLogin}
         />
       </div>
     </div>

@@ -34,7 +34,6 @@ export default function LoginPage({ redirectTo }: { redirectTo?: string }) {
           preferredKeyTypes={[KeyType.posting]}
           onComplete={onComplete}
           authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
-          strict={!siteConfig.allowNonStrictLogin}
         />
       </div>
     </div>

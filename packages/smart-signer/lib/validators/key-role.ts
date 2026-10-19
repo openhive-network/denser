@@ -37,3 +37,11 @@ export function isKeyOfOtherRole(
   if (keyType === 'active') return roles[0] === 'posting';
   return roles.length > 0 && !roles.includes('posting');
 }
+
+/**
+ * True when there is at least one key and every one of them is listed by one of the account's own
+ * authorities: none of them belongs to an account the account grants its authority to.
+ */
+export function areOwnKeys(account: AccountAuthorities, publicKeys: readonly string[]): boolean {
+  return publicKeys.length > 0 && publicKeys.every((key) => findKeyRole(account, key) !== null);
+}

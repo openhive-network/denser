@@ -29,7 +29,6 @@ export const siteConfig = {
     twitter: '/',
     github: '/'
   },
-  allowNonStrictLogin: env('ALLOW_NON_STRICT_LOGIN') === 'yes' ? true : false,
   loginAuthenticateOnBackend: env('LOGIN_AUTHENTICATE_ON_BACKEND') === 'yes' ? true : false,
 
   googleDrive: {

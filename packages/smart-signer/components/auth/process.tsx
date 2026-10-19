@@ -18,7 +18,7 @@ export interface LoginFormSchema extends SignInFormSchema {
   keyType: KeyType;
 }
 
-export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) => {
+export const useProcessAuth = (authenticateOnBackend: boolean) => {
   const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>;
   const [loginChallenge, setLoginChallenge] = useState('');
   const [isSigned, setIsSigned] = useState(false);
@@ -83,7 +83,6 @@ export const useProcessAuth = (authenticateOnBackend: boolean, strict: boolean) 
         keyType,
         txJSON: txBuilder.toApi(),
         pack,
-        strict,
         signatures,
         authenticateOnBackend
       };

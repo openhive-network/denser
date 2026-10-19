@@ -23,7 +23,6 @@ const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
 interface GoogleOAuthRedirectHandlerProps {
   authenticateOnBackend?: boolean;
-  strict?: boolean;
   onComplete?: (username: string) => void;
   /**
    * Text to display while completing authorization.
@@ -42,12 +41,11 @@ interface GoogleOAuthRedirectHandlerProps {
  */
 export function GoogleOAuthRedirectHandler({
   authenticateOnBackend = false,
-  strict = false,
   onComplete,
   loadingText = 'Completing Google authorization...'
 }: GoogleOAuthRedirectHandlerProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const { signAuth, submitAuth } = useProcessAuth(authenticateOnBackend, strict);
+  const { signAuth, submitAuth } = useProcessAuth(authenticateOnBackend);
 
   // Clean up stale OAuth data on mount
   useEffect(() => {

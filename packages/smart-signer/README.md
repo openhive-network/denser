@@ -81,8 +81,7 @@ application](../../apps/blog) to learn how it could be done. Generally:
    and
    [../../apps/blog/pages/api/users/me.ts](../../apps/blog/pages/api/users/me.ts)
    to the same paths in your application. Set `authenticateOnBackend`
-   option to `true` in your login logic. Set `strict` option to `true`,
-   too.
+   option to `true` in your login logic.
 2. Create API endpoint for OAUTH server module – just copy directory
    [../../apps/blog/pages/api/oidc](../../apps/blog/pages/api/oidc) to
    the same path in your application.
@@ -113,7 +112,9 @@ Both Oauth server and Rocket Chat integration need
 `REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND` variable set to `"yes"`.
 
 By default Outh server doesn't allow non-strict login (when user
-authenticates with third party key). You can allow non-strict login by
+authenticates with third party key: the login is signed with a key of an
+account the user's authority is granted to, not with one of the user's
+own keys). You can allow non-strict login by
 setting property `urn:custom:client:allow-non-strict-login` to `true` in
 Oauth client options.
 

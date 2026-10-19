@@ -24,7 +24,6 @@ export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
   onComplete: (arg0: any) => Promise<any>;
   authenticateOnBackend?: boolean;
-  strict?: boolean; // if true use strict authentication
   i18nNamespace?: string;
   /** The account to sign in; defaults to the last one signed in */
   username?: string;
@@ -44,7 +43,6 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       preferredKeyTypes,
       onComplete,
       authenticateOnBackend = false,
-      strict = false,
       i18nNamespace = 'smart-signer',
       username: initialUsername
     }: SignInFormProps,
@@ -71,7 +69,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     // Final form handlers.
     // TODO Some arguments for useProcessAuth should be read from env variables.
     // TODO: replace with function
-    const { submitAuth, signAuth, isSigned } = useProcessAuth(authenticateOnBackend, strict);
+    const { submitAuth, signAuth, isSigned } = useProcessAuth(authenticateOnBackend);
 
     async function sign(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
       const schema: LoginFormSchema = {

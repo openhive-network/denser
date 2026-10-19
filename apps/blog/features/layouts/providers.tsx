@@ -42,7 +42,6 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
             <SignerProvider>
               <LazyGoogleOAuthRedirectHandler
                 authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
-                strict={!siteConfig.allowNonStrictLogin}
                 loadingText={t('login_form.completing_google_auth')}
               />
               <LoggedUserProvider>
