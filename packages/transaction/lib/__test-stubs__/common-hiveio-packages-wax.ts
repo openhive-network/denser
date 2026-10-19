@@ -4,7 +4,26 @@
  * common-hiveio-packages.ts for why the real package is stubbed.
  */
 export * from './common-hiveio-packages';
-export type ExtendedNodeApi = object;
+
+type PostsRead = (params: object) => Promise<unknown>;
+interface IPostsApi {
+  get_discussion: PostsRead;
+  get_post: PostsRead;
+  get_ranked_posts: PostsRead;
+  get_account_posts: PostsRead;
+}
+/** The post reads of `lite-api.ts`; the other JSON-RPC APIs stay untyped. */
+export type ExtendedNodeApi = {
+  lite: IPostsApi & { get_info: PostsRead };
+  bridge: IPostsApi;
+};
+export interface ILiteApiInfo {
+  version: string;
+  modes: string[];
+  render_base: string;
+  apps: { posts: string };
+  methods: string[];
+}
 // Plain data with no imports, so the real definition loads under mocha.
 export { EXTENDED_REST_API_DEFINITION } from '../../../common-hiveio-packages/src/wax/rest-api-definition';
 

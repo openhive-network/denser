@@ -971,6 +971,8 @@
   "lite_account": {
     "badge_prefix": "lite account",
     "badge_tooltip": "نُشر عبر مُرحِّل نيابةً عن حساب خفيف (الإسناد بانتظار التحقق على السلسلة)",
+    "badge_native_tooltip": "حساب خفيف: ينشر دون حساب Hive، ويتولى تطبيق lite posts الإسناد",
+    "card_description": "تنشر الحسابات الخفيفة دون حساب Hive. ستتوفر ملفاتها الشخصية مع تطبيق lite الاجتماعي.",
     "reply_as_guest": "رُدّ بدون حساب — ستختار اسمًا عند النشر.",
     "replying_as": "الرد كحساب خفيف {{name}}",
     "name_dialog": {

@@ -140,7 +140,7 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
       // unreachable answers 503, which Playwright does not count as ready.
       url: `http://127.0.0.1:3000${BASE_PATH}/api/health`,
       ...ownWebServerOptions(),
-      env: { ...serverEnv, DENSER_FEED_CACHE_TTL_S: '0' }
+      env: { ...serverEnv, DENSER_FEED_CACHE_TTL_S: '0', DENSER_LITE_PROBE_TTL_S: '0' }
     },
     // Started once the server above has put the build's static files in place.
     {

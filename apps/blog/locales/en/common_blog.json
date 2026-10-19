@@ -971,6 +971,8 @@
   "lite_account": {
     "badge_prefix": "lite account",
     "badge_tooltip": "Posted through a relay on behalf of a lite account (attribution pending on-chain verification)",
+    "badge_native_tooltip": "A lite account: posts without a Hive account, attributed by the lite posts app",
+    "card_description": "Lite accounts post without a Hive account. Their profiles will come with the lite social app.",
     "reply_as_guest": "Reply without an account — you'll pick a name when you post.",
     "replying_as": "Replying as lite account {{name}}",
     "name_dialog": {

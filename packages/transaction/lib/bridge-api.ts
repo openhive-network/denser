@@ -11,6 +11,7 @@ import {
 import { commonVariables } from '@ui/lib/common-variables';
 import { getReadChain } from './chain';
 import type { IObserverListsApi } from './observer-lists';
+import { readPosts } from './lite-api';
 
 export const DATA_LIMIT = 20;
 
@@ -53,8 +54,8 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return getReadChain().api.bridge
-    .get_ranked_posts({
+  return readPosts((api) =>
+    api.get_ranked_posts({
       sort,
       start_author,
       start_permlink,
@@ -62,15 +63,15 @@ export const getPostsRanked = async (
       tag,
       observer
     })
-    .then((resp) => {
-      // logger.info('getPostsRanked result: %o', resp);
-      if (resp) {
-        return resolvePosts(resp, observer);
-      }
-      console.log('response', resp);
+  ).then((resp) => {
+    // logger.info('getPostsRanked result: %o', resp);
+    if (resp) {
+      return resolvePosts(resp, observer);
+    }
+    console.log('response', resp);
 
-      return resp;
-    });
+    return resp;
+  });
 };
 
 const resolvePosts = (posts: Entry[], observer: string): Promise<Entry[]> => {
@@ -109,19 +110,19 @@ export const getPost = async (
   permlink: string = '',
   observer: string = commonVariables.defaultObserver
 ): Promise<Entry | null> => {
-  return getReadChain().api.bridge
-    .get_post({
+  return readPosts((api) =>
+    api.get_post({
       author,
       permlink,
       observer
     })
-    .then((resp) => {
-      if (resp) {
-        return resolvePost(resp, observer);
-      }
+  ).then((resp) => {
+    if (resp) {
+      return resolvePost(resp, observer);
+    }
 
-      return resp;
-    });
+    return resp;
+  });
 };
 
 export const getAccountPosts = async (
@@ -132,8 +133,8 @@ export const getAccountPosts = async (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return getReadChain().api.bridge
-    .get_account_posts({
+  return readPosts((api) =>
+    api.get_account_posts({
       sort,
       account,
       start_author,
@@ -141,13 +142,13 @@ export const getAccountPosts = async (
       limit,
       observer
     })
-    .then((resp) => {
-      if (resp) {
-        return resolvePosts(resp, observer);
-      }
+  ).then((resp) => {
+    if (resp) {
+      return resolvePosts(resp, observer);
+    }
 
-      return resp;
-    });
+    return resp;
+  });
 };
 
 export const getFollowList = async (
@@ -203,9 +204,11 @@ export const getDiscussion = async (
   permlink: string,
   observer: string = commonVariables.defaultObserver
 ): Promise<Record<string, Entry> | null> => {
-  return getReadChain().api.bridge.get_discussion({
-    author,
-    permlink,
-    observer
-  });
+  return readPosts((api) =>
+    api.get_discussion({
+      author,
+      permlink,
+      observer
+    })
+  );
 };

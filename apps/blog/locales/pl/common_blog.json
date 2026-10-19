@@ -971,6 +971,8 @@
   "lite_account": {
     "badge_prefix": "konto lite",
     "badge_tooltip": "Opublikowane przez przekaźnik w imieniu konta lite (atrybucja czeka na weryfikację w łańcuchu)",
+    "badge_native_tooltip": "Konto lite: publikuje bez konta Hive, atrybucję zapewnia aplikacja lite posts",
+    "card_description": "Konta lite publikują bez konta Hive. Ich profile pojawią się wraz z aplikacją społecznościową lite.",
     "reply_as_guest": "Odpowiedz bez konta — nazwę wybierzesz przy publikacji.",
     "replying_as": "Odpowiadasz jako konto lite {{name}}",
     "name_dialog": {

@@ -47,7 +47,9 @@ apps/blog/
 Config uses three ports:
 
 - `:3000` — the blog app (standalone Next.js server), server-side feed cache
-  off (`DENSER_FEED_CACHE_TTL_S=0`)
+  off (`DENSER_FEED_CACHE_TTL_S=0`), and the API node's `lite.get_info` asked
+  before every post read (`DENSER_LITE_PROBE_TTL_S=0`): a recording made against
+  a lite-aware node (`litePost`) answers it, every other one does not
 - `:3001` — the same build again with the feed cache on and a TTL of a few
   seconds; only `feedCache.spec.ts` uses it (`feedCacheBaseURL`)
 - `:8200` — the fixture proxy (record → mainnet; replay → committed JSON)

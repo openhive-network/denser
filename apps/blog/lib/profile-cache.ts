@@ -3,6 +3,7 @@ import type { FullAccount, IAccountReputations } from '@hive/common-hiveio-packa
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { getAccountPosts } from '@transaction/lib/bridge-api';
 import { getReadChain } from '@transaction/lib/chain';
+import { getPostsNamespace } from '@transaction/lib/lite-api';
 import { readFeedCacheConfig } from '@transaction/lib/feed-cache';
 import { createProfileCache, type IProfileCache } from '@transaction/lib/profile-cache';
 import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
@@ -52,7 +53,8 @@ const getCaches = (): IProfileCaches =>
 
 const profileRequest = async (read: string, account: string) => {
   const chain = getReadChain();
-  return { network: `${chain.chainId}|${chain.endpointUrl}`, read, account, observer: await getObserver() };
+  const network = `${chain.chainId}|${chain.endpointUrl}|${await getPostsNamespace()}`;
+  return { network, read, account, observer: await getObserver() };
 };
 
 /*

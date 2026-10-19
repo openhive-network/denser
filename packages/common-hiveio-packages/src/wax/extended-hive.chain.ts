@@ -849,55 +849,82 @@ export interface IGetOperationsByAccountResponse {
   operations_result: HiveOperation[];
 }
 
+/**
+ * `lite.get_info`: the capability probe of a node serving lite posts natively. A node without
+ * that support answers the call with a JSON-RPC error.
+ */
+export interface ILiteApiInfo {
+  version: string;
+  modes: string[];
+  render_base: string;
+  /** Custom_json ids of the lite apps the node reads, e.g. `{ posts: 'lite_posts' }`. */
+  apps: { posts: string };
+  methods: string[];
+}
+
+type TBridgeApi = {
+  get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
+  get_ranked_posts: TWaxApiRequest<
+    {
+      sort: string;
+      tag: string;
+      start_author: string;
+      start_permlink: string;
+      limit: number;
+      observer: string;
+    },
+    Entry[] | null
+  >;
+  get_account_posts: TWaxApiRequest<
+    {
+      sort: string;
+      account: string;
+      start_author: string;
+      start_permlink: string;
+      limit: number;
+      observer: string;
+    },
+    Entry[] | null
+  >;
+  get_post: TWaxApiRequest<{ author: string; permlink: string; observer: string }, Entry | null>;
+  account_notifications: TWaxApiRequest<
+    { account: string; lastId?: number; limit: number },
+    IAccountNotification[] | null
+  >;
+  get_discussion: TWaxApiRequest<
+    { author: string; permlink: string; observer?: string },
+    Record<string, Entry> | null
+  >;
+  get_community: TWaxApiRequest<{ name: string; observer?: string }, Community | null>;
+  list_community_roles: TWaxApiRequest<{ community: string }, string[][] | null>;
+  list_communities: TWaxApiRequest<
+    { sort: string; query?: string | null; observer: string },
+    Community[] | null
+  >;
+  normalize_post: TWaxApiRequest<{ post: Entry }, Entry | null>;
+  list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
+  list_subscribers: TWaxApiRequest<{ community: string }, string[][] | null>;
+  unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
+  get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
+  get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
+  does_user_follow_any_lists: TWaxApiRequest<{ observer: string }, boolean>;
+  get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
+};
+
+type TBridgePostsApi = Pick<
+  TBridgeApi,
+  'get_discussion' | 'get_post' | 'get_ranked_posts' | 'get_account_posts'
+>;
+
 export type ExtendedNodeApi = {
-  bridge: {
-    get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
-    get_ranked_posts: TWaxApiRequest<
-      {
-        sort: string;
-        tag: string;
-        start_author: string;
-        start_permlink: string;
-        limit: number;
-        observer: string;
-      },
-      Entry[] | null
-    >;
-    get_account_posts: TWaxApiRequest<
-      {
-        sort: string;
-        account: string;
-        start_author: string;
-        start_permlink: string;
-        limit: number;
-        observer: string;
-      },
-      Entry[] | null
-    >;
-    get_post: TWaxApiRequest<{ author: string; permlink: string; observer: string }, Entry | null>;
-    account_notifications: TWaxApiRequest<
-      { account: string; lastId?: number; limit: number },
-      IAccountNotification[] | null
-    >;
-    get_discussion: TWaxApiRequest<
-      { author: string; permlink: string; observer?: string },
-      Record<string, Entry> | null
-    >;
-    get_community: TWaxApiRequest<{ name: string; observer?: string }, Community | null>;
-    list_community_roles: TWaxApiRequest<{ community: string }, string[][] | null>;
-    list_communities: TWaxApiRequest<
-      { sort: string; query?: string | null; observer: string },
-      Community[] | null
-    >;
-    normalize_post: TWaxApiRequest<{ post: Entry }, Entry | null>;
-    list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
-    list_subscribers: TWaxApiRequest<{ community: string }, string[][] | null>;
-    unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
-    get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
-    get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
-    does_user_follow_any_lists: TWaxApiRequest<{ observer: string }, boolean>;
-    get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
+  /**
+   * The `bridge` post reads, answered with lite posts under their lite identity: `author` (and
+   * `parent_author`, the `get_discussion` keys and `replies`) is `did:lite:<name>`.
+   */
+  lite: TBridgePostsApi & {
+    get_info: TWaxApiRequest<Record<string, never>, ILiteApiInfo>;
   };
+  bridge: TBridgeApi;
   market_history_api: {
     get_ticker: TWaxApiRequest<Record<string, never>, IMarketStatistics>;
     get_order_book: TWaxApiRequest<{ limit: number }, IOrdersData>;

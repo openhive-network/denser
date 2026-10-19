@@ -19,7 +19,7 @@ export class WaxRequestError extends Error {
 
 /** Minimal chain shape for modules that only reference wax chain types. */
 export type TWaxExtended<_NodeApi, RestApi> = {
-  api: object;
+  api: _NodeApi & object;
   restApi: RestApi & { endpointUrl: string };
   readonly chainId: string;
   readonly endpointUrl: string;

@@ -17,6 +17,8 @@ import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
 import { LiteReplyBox } from '@/blog/features/lite-account/lite-reply-box';
 import LiteReplyTrigger from '@/blog/features/lite-account/lite-reply-trigger';
+import { postAuthorFromParam } from '@/blog/features/lite-account/lite-did';
+import { usePostsNamespace } from '@/blog/features/lite-account/use-lite-api-info';
 import { AlertDialogFlag } from '@/blog/features/post-rendering/alert-window-flag';
 import CommentsSection from '@/blog/features/post-rendering/comments-section';
 import ContextLinks from '@/blog/features/post-rendering/context-links';
@@ -95,7 +97,7 @@ const PostContent = () => {
   const router = useRouter();
   const pathname = usePathname();
   const commentSort = searchParams?.get('sort') || 'trending';
-  const author = params?.p2.replace('%40', '') ?? '';
+  const author = postAuthorFromParam(params?.p2) ?? '';
   const category = params?.param ?? '';
   const permlink = params?.permlink ?? '';
   const { user, isHydrated } = useUserClient();
@@ -175,8 +177,9 @@ const PostContent = () => {
   const postInCommunity = isCommunity(category);
   // The server read the post as ssrEffectiveObserver; another observer (e.g. after an account switch) fetches its own
   const seedPostData = observer === ssrEffectiveObserver ? initialPostData : null;
+  const postsNamespace = usePostsNamespace();
   const postQuery = useQuery({
-    queryKey: ['postData', author, permlink, observer],
+    queryKey: ['postData', author, permlink, observer, postsNamespace],
     queryFn: () => getPost(author, permlink, observer),
     enabled: !!author && !!permlink,
     initialData: seedPostData ?? undefined,
@@ -205,7 +208,8 @@ const PostContent = () => {
       'postData',
       postData?.json_metadata.original_author,
       postData?.json_metadata.original_permlink,
-      observer
+      observer,
+      postsNamespace
     ],
     queryFn: () =>
       getPost(postData?.json_metadata.original_author, postData?.json_metadata.original_permlink, observer),
@@ -249,7 +253,7 @@ const PostContent = () => {
   const [seededCommentSort] = useState(initialDiscussion?.sort);
   const [hasFullDiscussion, setHasFullDiscussion] = useState(false);
   const discussionQuery = useQuery({
-    queryKey: ['discussionData', author, permlink, observer],
+    queryKey: ['discussionData', author, permlink, observer, postsNamespace],
     queryFn: async () => {
       const discussion = await getDiscussion(author, permlink, observer);
       // Set only by fetches, never by the seed or optimistic setQueryData updates

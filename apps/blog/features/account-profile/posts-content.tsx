@@ -22,6 +22,7 @@ import { useInView } from 'react-intersection-observer';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { QueryTypes } from './lib/utils';
+import { usePostsNamespace } from '@/blog/features/lite-account/use-lite-api-info';
 
 const PostsContent = ({ query }: { query: QueryTypes }) => {
   const params = useParams<{ param: string }>();
@@ -53,9 +54,10 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
     StorageTTL.PERMANENT
   );
 
+  const postsNamespace = usePostsNamespace();
   const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isPending } =
     useInfiniteQuery({
-      queryKey: ['accountEntriesInfinite', username, query, observer],
+      queryKey: ['accountEntriesInfinite', username, query, observer, postsNamespace],
       queryFn: async ({ pageParam }: { pageParam: Pick<Entry, 'author' | 'permlink'> | undefined }) => {
         return await loadCardEntries(
           getAccountPosts(query, username, observer, pageParam?.author, pageParam?.permlink)

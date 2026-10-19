@@ -4,6 +4,7 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { CircleSpinner } from 'react-spinners-kit';
 import { buildLiteReplyRequest, type LiteIdentity } from '@hiveio/lite-account';
+import { currentPostsNamespace } from '@transaction/lib/lite-api';
 import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
@@ -69,7 +70,8 @@ export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, d
         parentPermlink,
         discussionAuthor,
         discussionPermlink,
-        observer
+        observer,
+        native: currentPostsNamespace() === 'lite'
       });
     } catch {
       return; // the mutation's onError already rolled back and toasted
