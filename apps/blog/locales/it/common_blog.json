@@ -701,6 +701,8 @@
     "enter_content": "Inserisci contenuto per inviare",
     "enter_title_and_content": "Inserisci un titolo e contenuto per inviare",
     "enter_tags": "Inserisci almeno un tag per inviare",
+    "image_upload_unavailable": "Il caricamento delle immagini non è disponibile con l'accesso tramite {{method}}. Incolla l'URL di un'immagine o accedi con un altro metodo.",
+    "remove_failed_uploads": "Rimuovi le immagini non caricate (UPLOAD FAILED) prima di inviare.",
     "clean": "Pulisci",
     "cancel": "Annulla",
     "confirm": "Confirm",

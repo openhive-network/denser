@@ -9,6 +9,7 @@ import { getLogger } from "@ui/lib/logging";
 import { handleError } from "@ui/lib/handle-error";
 import { Entry } from "@hive/common-hiveio-packages/wax";
 import { parseTags } from "@/blog/features/post-editor/lib/utils";
+import { hasFailedUploadPlaceholder } from "@/blog/features/post-editor/lib/image-markdown";
 import { usePostMutation } from "@/blog/features/post-editor/hooks/use-post-mutation";
 import { AccountFormValues } from "@/blog/features/post-editor/types";
 
@@ -95,6 +96,10 @@ export function usePostFormActions({
     // Flush pending debounce - use the latest editor value which may not have synced to form yet
     clearTimeout(postAreaSyncTimerRef.current);
     const postBody = latestPostAreaRef.current || data.postArea;
+    if (hasFailedUploadPlaceholder(postBody)) {
+      form.setValue("postArea", postBody);
+      return;
+    }
 
     const tags = parseTags(data.tags);
     const maxAcceptedPayout = await createAsset((data.maxAcceptedPayout * 1000).toString(), "HBD");

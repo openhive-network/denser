@@ -705,6 +705,8 @@
     "enter_content": "Enter content to submit",
     "enter_title_and_content": "Enter a title and content to submit",
     "enter_tags": "Enter at least one tag to submit",
+    "image_upload_unavailable": "Image upload isn't available when signed in with {{method}}. Paste an image URL instead, or sign in with another method.",
+    "remove_failed_uploads": "Remove the failed image uploads (UPLOAD FAILED) before submitting.",
     "markdown_styling_guide": "Markdown Styling Guide",
     "power_up": " Power up 100%",
     "maximum_characters": "Maximum {{num}} characters",

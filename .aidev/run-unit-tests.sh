@@ -85,6 +85,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/validators/key-role.test.ts \
     packages/smart-signer/lib/memo-crypto.test.ts \
     packages/smart-signer/lib/signer/keychain-memo-crypto.test.ts \
+    packages/smart-signer/lib/signer/binary-challenge.test.ts \
     packages/smart-signer/lib/storage-mixin.test.ts \
     packages/smart-signer/lib/signer/credential-storage.test.ts \
     packages/smart-signer/lib/signer/safe-storage-registration.test.ts \
@@ -117,6 +118,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
     apps/blog/features/post-editor/lib/scroll-sync-anchors.test.ts \
+    apps/blog/features/post-editor/lib/image-markdown.test.ts \
     apps/blog/features/votes/hooks/logged-user-contexts.test.ts \
     apps/blog/features/post-rendering/lib/votes-before-payout.test.ts \
     apps/blog/features/post-rendering/lib/votes-after-payout.test.ts \

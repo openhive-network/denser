@@ -30,6 +30,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { useLoggedUserContext, useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-user';
+import { hasFailedUploadPlaceholder } from './lib/image-markdown';
 
 const MdEditor = dynamic(() => import('./md-editor'), {
   ssr: false,
@@ -217,7 +218,10 @@ export function ReplyTextbox({
     setCancelDialogOpen(false);
   };
 
+  const hasFailedUpload = hasFailedUploadPlaceholder(text);
+
   const postComment = async () => {
+    if (hasFailedUpload) return;
     try {
       if (btnRef.current) {
         btnRef.current.disabled = true;
@@ -350,6 +354,11 @@ export function ReplyTextbox({
               </Tooltip>
             </TooltipProvider>
           </div>
+          {hasFailedUpload && (
+            <p className="mt-1 text-xs text-destructive" data-testid="failed-upload-hint">
+              {t('submit_page.remove_failed_uploads')}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -358,7 +367,7 @@ export function ReplyTextbox({
               ref={btnRef}
               variant="redHover"
               className="w-24"
-              disabled={text === '' || commentMutation.isPending || updateCommentMutation.isPending}
+              disabled={text === '' || hasFailedUpload || commentMutation.isPending || updateCommentMutation.isPending}
               onClick={() => postComment()}
             >
               {commentMutation.isPending || updateCommentMutation.isPending ? (

@@ -21,6 +21,7 @@ import { Icons } from '@ui/components/icons';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { useTranslation } from '@/blog/i18n/client';
+import { useImageUploadAvailability } from '@/blog/components/hooks/use-image-upload-availability';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import {
@@ -111,6 +112,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
   }, []);
 
   const isBlockedUser = imageUserBlocklist?.includes(user.username);
+  const { canUploadImages, notifyUploadUnavailable, preventFilePicker } = useImageUploadAvailability();
 
   // Paste handler (images + Hive URL conversion)
   const handlePaste = useCallback(
@@ -128,6 +130,10 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       }
       if (hasImage && !isBlockedUser) {
         event.preventDefault();
+        if (!canUploadImages) {
+          notifyUploadUnavailable();
+          return true;
+        }
         const cursorPos = view.state.selection.main.head;
         onImagePaste(
           event.clipboardData, insertTextAtPosition, user.username, loadSigner,
@@ -191,7 +197,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
 
       return true;
     },
-    [setMarkdownAdapter, loadSigner, user.username, isBlockedUser, t]
+    [setMarkdownAdapter, loadSigner, user.username, isBlockedUser, canUploadImages, notifyUploadUnavailable, t]
   );
 
   // Stable ref for paste handler so extension doesn't need to be re-created
@@ -215,6 +221,10 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       const fileList = event.target.files;
       if (!fileList || fileList.length === 0) return;
       setInsertImg('');
+      if (!canUploadImages) {
+        notifyUploadUnavailable();
+        return;
+      }
       const cursorPos = viewRef.current?.state.selection.main.head;
 
       if (fileList.length === 1) {
@@ -260,7 +270,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
         }, cursorPos, processingOptions);
       }
     },
-    [insertTextAtPosition, loadSigner, user.username, processingOptions, viewRef]
+    [insertTextAtPosition, loadSigner, user.username, processingOptions, viewRef, canUploadImages, notifyUploadUnavailable]
   );
 
   // Drag handlers
@@ -282,13 +292,17 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
       event.preventDefault();
       event.stopPropagation();
       setIsDrag(false);
+      if (!canUploadImages) {
+        if (event.dataTransfer.files.length > 0) notifyUploadUnavailable();
+        return;
+      }
       const cursorPos = viewRef.current?.state.selection.main.head;
       await onImageDrop(
         event.dataTransfer, insertTextAtPosition, user.username, loadSigner,
         setIsUploading, cursorPos, processingOptions
       );
     },
-    [insertTextAtPosition, loadSigner, user.username, processingOptions, viewRef]
+    [insertTextAtPosition, loadSigner, user.username, processingOptions, viewRef, canUploadImages, notifyUploadUnavailable]
   );
 
   // Toolbar buttons
@@ -404,6 +418,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
           multiple
           name="images"
           value={insertImg}
+          onClick={preventFilePicker}
           onChange={inputImageHandler}
         />
       )}
