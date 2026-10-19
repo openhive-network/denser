@@ -10,6 +10,7 @@ import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smar
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
 import { registerAddedSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
+import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
 
 const logger = getLogger('app');
 
@@ -138,7 +139,7 @@ export class SignerHbauth extends Signer {
     requiredKeyType?: KeyAuthorityType
   ): Promise<string> {
     const { username, keyType } = this;
-    const checkAuthResult = await this.checkAuth(authClient, username, keyType);
+    const checkAuthResult = await this.checkAuth(authClient, username, keyType, requiredKeyType);
 
     if (!checkAuthResult) {
       let authStatus: AuthStatus = { ok: false };
@@ -238,7 +239,12 @@ export class SignerHbauth extends Signer {
     }
   }
 
-  async checkAuth(authClient: OnlineClient, username: string, keyType: string): Promise<boolean> {
+  async checkAuth(
+    authClient: OnlineClient,
+    username: string,
+    keyType: string,
+    requiredKeyType?: KeyAuthorityType
+  ): Promise<boolean> {
     const auths = await authClient.getRegisteredUsers();
     logger.info('auths in safe storage %o', auths);
     const auth = await authClient.getRegisteredUserByUsername(username);
@@ -264,7 +270,11 @@ export class SignerHbauth extends Signer {
           return true;
         }
       } else {
-        logger.info('User %s exists but is not authorized. Hint: unlock key %s', username, keyType);
+        logger.info(
+          'User %s exists but is not authorized. Hint: %s',
+          username,
+          unlockHint(keyType, requiredKeyType)
+        );
         // We should tell to unlock wallet.
         return false;
       }

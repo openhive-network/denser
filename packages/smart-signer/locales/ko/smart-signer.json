@@ -158,5 +158,8 @@
     "not_enough_rc_amounts": "현재 RC는 {{current}}이며, 이 트랜잭션에는 {{needed}} RC가 필요합니다.",
     "keychain_no_message": "Hive Keychain이 요청을 완료하지 못했으며 이유를 알려 주지 않았습니다.",
     "superseded_key_write": "다른 탭 때문에 @{{username}}의 {{keyType}} 키를 안전한 저장소에 저장하는 작업이 중단되었습니다. {{keyType}} 키를 안전한 저장소에 다시 추가하세요."
+  },
+  "request_error": {
+    "timeout": "서버가 제때 응답하지 않았습니다. 다시 시도해 주세요."
   }
 }

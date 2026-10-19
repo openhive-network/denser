@@ -22,9 +22,7 @@ import { Separator } from '@ui/components';
 import { DEFAULT_PREFERENCES, hoursAndMinutes, Preferences } from '@/blog/lib/utils';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 import RendererContainer from '../post-rendering/rendererContainer';
-import { getLogger } from '@ui/lib/logging';
 import { useCommentMutation, useUpdateCommentMutation } from '../post-rendering/hooks/use-comment-mutations';
-import { handleError } from '@ui/lib/handle-error';
 import { commentClassName } from '../post-rendering/comment-list-item';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
@@ -39,8 +37,6 @@ const MdEditor = dynamic(() => import('./md-editor'), {
     </div>
   )
 });
-
-const logger = getLogger('app');
 
 export function ReplyTextbox({
   onSetReply,
@@ -234,12 +230,7 @@ export function ReplyTextbox({
           discussionPermlink,
           observer
         };
-        try {
-          await updateCommentMutation.mutateAsync(updateCommentParams);
-        } catch (error) {
-          handleError(error, { method: 'updateComment', params: updateCommentParams });
-          throw error;
-        }
+        await updateCommentMutation.mutateAsync(updateCommentParams);
       } else {
         const commentParams = {
           parentAuthor: username,
@@ -251,12 +242,7 @@ export function ReplyTextbox({
           discussionPermlink,
           observer
         };
-        try {
-          await commentMutation.mutateAsync(commentParams);
-        } catch (error) {
-          handleError(error, { method: 'comment', params: commentParams });
-          throw error;
-        }
+        await commentMutation.mutateAsync(commentParams);
       }
       setText('');
       removePost(); // Remove stored comment text
@@ -265,11 +251,11 @@ export function ReplyTextbox({
       if (btnRef.current) {
         btnRef.current.disabled = true;
       }
-    } catch (error) {
+    } catch {
+      // The comment mutations have reported the failure
       if (btnRef.current) {
         btnRef.current.disabled = false;
       }
-      logger.error(error);
     }
   };
 

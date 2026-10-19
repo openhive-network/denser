@@ -10,6 +10,8 @@ import { SupersededKeyWriteMessage } from '@smart-signer/components/superseded-k
 import { findSupersededKeyWrite } from '@smart-signer/lib/superseded-key-write';
 import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
 import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-message';
+import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-message';
+import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
 import env from "@beam-australia/react-env";
@@ -125,6 +127,24 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     logger.error(error, 'Broadcast in %s rejected for lack of RC', ctx?.method);
     toast({
       description: <NotEnoughRcMessage {...notEnoughRc} />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // The app's server did not answer in time: ask for a retry, keep where and how long it waited in the log
+  if (error instanceof FetchTimeoutError) {
+    logger.error(
+      error,
+      'Request in %s to %s timed out after %d ms (limit %d ms)',
+      ctx?.method,
+      error.url,
+      error.elapsedMs,
+      error.timeoutMs
+    );
+    toast({
+      description: <RequestTimeoutMessage />,
       variant: 'destructive',
       ...toastOptions
     });

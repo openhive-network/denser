@@ -158,5 +158,8 @@
     "not_enough_rc_amounts": "You have {{current}} RC; this transaction needs {{needed}} RC.",
     "keychain_no_message": "Hive Keychain could not complete the request and gave no reason.",
     "superseded_key_write": "Another tab interrupted saving the {{keyType}} key of @{{username}} to safe storage. Add the {{keyType}} key to safe storage again."
+  },
+  "request_error": {
+    "timeout": "The server did not respond in time. Please try again."
   }
 }

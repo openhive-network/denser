@@ -158,5 +158,8 @@
     "not_enough_rc_amounts": "現在の RC は {{current}} で、このトランザクションには {{needed}} RC が必要です。",
     "keychain_no_message": "Hive Keychain はリクエストを完了できず、理由も返しませんでした。",
     "superseded_key_write": "別のタブにより、@{{username}} の {{keyType}} キーの安全なストレージへの保存が中断されました。{{keyType}} キーをもう一度安全なストレージに追加してください。"
+  },
+  "request_error": {
+    "timeout": "サーバーが時間内に応答しませんでした。もう一度お試しください。"
   }
 }

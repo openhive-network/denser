@@ -5,6 +5,11 @@ import { useForm } from 'react-hook-form';
 import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
 import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-signer/lib/auth-error';
 import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
+import {
+  declinePasskeyPrompt,
+  isPasskeyPromptDismissed,
+  snoozePasskeyPrompt
+} from '@smart-signer/lib/auth/passkey-prompt-dismissal';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { username } from '@smart-signer/lib/auth/utils';
@@ -139,15 +144,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         const supported = await client.isPasskeySupported();
         const hasPasskey = await client.hasPasskey(username);
-        const dismissedRaw = localStorage.getItem(`passkey-dismissed-${username}`);
-        let dismissed = false;
-        if (dismissedRaw === 'never') {
-          dismissed = true;
-        } else if (dismissedRaw) {
-          // Timestamp-based dismiss — re-ask after 8 hours
-          dismissed = Date.now() - Number(dismissedRaw) < 8 * 60 * 60 * 1000;
-        }
-        return supported && !hasPasskey && !dismissed;
+        return supported && !hasPasskey && !isPasskeyPromptDismissed(username);
       } catch {
         // Non-critical — silently skip passkey prompt on any error
         return false;
@@ -689,10 +686,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 size="sm"
                 variant="ghost"
                 onClick={async () => {
-                  localStorage.setItem(
-                    `passkey-dismissed-${form.getValues().username}`,
-                    String(Date.now())
-                  );
+                  snoozePasskeyPrompt(form.getValues().username);
                   setShowPasskeyPrompt(false);
                   setLastAuthPassword('');
                   if (pendingFinalizeRef.current) {
@@ -708,10 +702,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 variant="ghost"
                 className="text-muted-foreground"
                 onClick={async () => {
-                  localStorage.setItem(
-                    `passkey-dismissed-${form.getValues().username}`,
-                    'never'
-                  );
+                  declinePasskeyPrompt(form.getValues().username);
                   setShowPasskeyPrompt(false);
                   setLastAuthPassword('');
                   if (pendingFinalizeRef.current) {
