@@ -56,6 +56,38 @@ describe('transformError', () => {
     expect(transformError(error).isWellKnownError).to.equal(false);
   });
 
+  /** What Peak Vault rejects a request with: its own response, not an Error */
+  function peakVaultRejection(response: { error: string; message?: string }) {
+    return { success: false, account: 'guest4test1', ...response };
+  }
+
+  it("shows Peak Vault's own answer to a rejected request instead of failing on it", () => {
+    const rejection = peakVaultRejection({ error: 'sign_error', message: 'Could not sign the transaction' });
+    const { errorTitle, fullError, isWellKnownError } = transformError(rejection);
+    expect(errorTitle).to.equal('Could not sign the transaction');
+    expect(fullError).to.contain('"error":"sign_error"');
+    expect(isWellKnownError).to.equal(false);
+  });
+
+  it('keeps a request the user cancelled in Peak Vault quiet', () => {
+    const rejection = peakVaultRejection({ error: 'user_cancel', message: 'Request was canceled by the user.' });
+    const { errorTitle, isWellKnownError } = transformError(rejection);
+    expect(errorTitle).to.equal('Request was canceled by the user.');
+    expect(isWellKnownError).to.equal(true);
+  });
+
+  it('keeps the generic title for a Peak Vault rejection without a message', () => {
+    const { errorTitle, isWellKnownError } = transformError(peakVaultRejection({ error: 'sign_error' }));
+    expect(errorTitle).to.equal('Error');
+    expect(isWellKnownError).to.equal(false);
+  });
+
+  for (const value of [{ status: 500 }, 42, undefined, null]) {
+    it(`does not fail on a thrown value that is neither an Error nor a string (${String(value)})`, () => {
+      expect(transformError(value).errorTitle).to.equal('Error');
+    });
+  }
+
   for (const message of ['undefined', '', '   ']) {
     it(`flags a Keychain error without an answer (${JSON.stringify(message)}) instead of showing it`, () => {
       const error = new WaxKeychainProviderError(`Keychain error: ${message}`);
