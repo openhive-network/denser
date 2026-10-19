@@ -28,7 +28,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
 
-  const { username, loginType, signatures, keyType, authenticateOnBackend, strict } = data;
+  const { username, loginType, signatures, keyType, authenticateOnBackend } = data;
   let hiveUserProfile;
   let chainAccount;
   try {
@@ -81,7 +81,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
     // Create User object from verified login data.
     try {
-      verifiedUser = await verifyLogin(data);
+      verifiedUser = await verifyLogin(data, chainAccount);
       result = verifiedUser.isLoggedIn;
     } catch (error) {
       logger.error(error, 'Failed to create user object for %s', username);

@@ -35,7 +35,6 @@ export const postLoginSchema = z.object({
         active: z.string(),
     }),
     pack: z.nativeEnum(TTransactionPackType),
-    strict: z.boolean(),
     txJSON: z.string(),
     authenticateOnBackend: z.boolean(),
     username,

@@ -95,7 +95,6 @@ function DialogLogin({
           username={username}
           onComplete={onComplete}
           authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
-          strict={!siteConfig.allowNonStrictLogin}
         />
       </DialogContent>
     </Dialog>

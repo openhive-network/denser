@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { findKeyRole, findKeyRoles, isKeyOfOtherRole, type AccountAuthorities } from './key-role.ts';
+import { areOwnKeys, findKeyRole, findKeyRoles, isKeyOfOtherRole, type AccountAuthorities } from './key-role.ts';
 
 const OWNER_KEY = 'STM8OwnerKeyOfTheStubAccount';
 const ACTIVE_KEY = 'STM7ActiveKeyOfTheStubAccount';
@@ -91,5 +91,24 @@ describe('isKeyOfOtherRole', () => {
   it('leaves a key of no authority to the on-chain verification', () => {
     assert.equal(isKeyOfOtherRole(account, OTHER_KEY, 'posting'), false);
     assert.equal(isKeyOfOtherRole(account, OTHER_KEY, 'active'), false);
+  });
+});
+
+describe('areOwnKeys', () => {
+  it('accepts a key of one of the account authorities', () => {
+    assert.equal(areOwnKeys(account, [POSTING_KEY]), true);
+    assert.equal(areOwnKeys(account, [OWNER_KEY]), true);
+  });
+
+  it('rejects a key of no authority of the account, such as an authority account key', () => {
+    assert.equal(areOwnKeys(account, [OTHER_KEY]), false);
+  });
+
+  it('rejects keys of which any one is not the account own', () => {
+    assert.equal(areOwnKeys(account, [ACTIVE_KEY, OTHER_KEY]), false);
+  });
+
+  it('rejects no keys at all', () => {
+    assert.equal(areOwnKeys(account, []), false);
   });
 });

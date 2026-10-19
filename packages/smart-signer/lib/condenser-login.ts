@@ -84,7 +84,6 @@ export async function loginCondenserUser(
       keyType: KeyType.posting,
       txJSON: txBuilder.toApi(),
       pack: signer.pack,
-      strict: false,
       signatures,
       authenticateOnBackend: true
     });
