@@ -76,7 +76,7 @@
       "google": "Przechowuj zaszyfrowane klucze na swoim Dysku Google i podpisuj nimi z dowolnego urządzenia."
     },
     "signin_safe_storage": {
-      "title": "Zaloguj się za pomocą Smart Signer",
+      "title": "Zaloguj się za pomocą bezpiecznego magazynu",
       "description_unlock": "Odblokuj użytkownika za pomocą hasła",
       "description_unlocked": "Odblokowany kluczem {{keyType}}",
       "description_save": "Zapisz swój klucz {{keyType}}, wypełniając poniższy formularz",
@@ -136,7 +136,17 @@
       "or_safe_storage": "lub użyj bezpiecznego magazynu"
     },
     "sign_in_pending": "Inne logowanie wciąż czeka na odpowiedź. Dokończ je lub odrzuć w rozszerzeniu portfela albo anuluj je, aby zacząć od nowa.",
-    "cancel_pending_sign_in": "Anuluj oczekujące logowanie"
+    "cancel_pending_sign_in": "Anuluj oczekujące logowanie",
+    "safe_storage_name": "Bezpieczny magazyn",
+    "signin_with_metamask": "Rozszerzenie MetaMask",
+    "signin_with_google": "Konto Google",
+    "passkey_prompt": {
+      "title": "Włączyć odblokowywanie biometryczne?",
+      "description": "Odblokowuj odciskiem palca, Face ID lub kodem PIN urządzenia zamiast wpisywać hasło.",
+      "enable": "Włącz",
+      "not_now": "Nie teraz",
+      "never_ask_again": "Nie pytaj więcej"
+    }
   },
   "pageLogin": {
     "loginFailed": "Logowanie nie powiodło się",
@@ -162,5 +172,13 @@
   },
   "request_error": {
     "timeout": "Serwer nie odpowiedział na czas. Spróbuj ponownie."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "Nie znaleziono portfela",
+    "wallet_not_found_description": "Na Twoim Dysku Google nie znaleziono portfela Hive. Najpierw utwórz portfel za pomocą Hive Bridge.",
+    "key_not_found_title": "Nie znaleziono klucza",
+    "key_not_found_description": "Klucza {{keyType}} dla @{{username}} nie znaleziono w portfelu na Dysku Google. Dodaj ten klucz za pomocą Hive Bridge.",
+    "bridge_info": "Hive Bridge pozwala bezpiecznie przechowywać klucze Hive na Dysku Google.",
+    "go_to_bridge": "Przejdź do Hive Bridge"
   }
 }

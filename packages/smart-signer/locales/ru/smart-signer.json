@@ -65,7 +65,7 @@
     "other_signing_options_description": "Введите ваше имя пользователя и выберите способ входа",
     "go_back_button": "Назад",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "Что такое {{method}}?",
       "safe_storage": "Безопасное хранилище хранит ваш приватный ключ в этом браузере в зашифрованном паролем виде. Ключ никогда не покидает ваше устройство.",
       "keychain": "Hive Keychain — это расширение браузера, которое хранит ваши ключи и подписывает транзакции за вас.",
       "peakvault": "PeakVault — это кошелёк в виде расширения браузера, который хранит ваши ключи и подписывает транзакции за вас.",
@@ -136,7 +136,17 @@
       "or_safe_storage": "или используйте безопасное хранилище"
     },
     "sign_in_pending": "Другой вход всё ещё ожидает ответа. Завершите или отклоните его в расширении кошелька либо отмените, чтобы начать заново.",
-    "cancel_pending_sign_in": "Отменить ожидающий вход"
+    "cancel_pending_sign_in": "Отменить ожидающий вход",
+    "safe_storage_name": "Безопасное хранилище",
+    "signin_with_metamask": "Расширение MetaMask",
+    "signin_with_google": "Аккаунт Google",
+    "passkey_prompt": {
+      "title": "Включить биометрическую разблокировку?",
+      "description": "Разблокируйте отпечатком пальца, Face ID или PIN-кодом устройства вместо ввода пароля.",
+      "enable": "Включить",
+      "not_now": "Не сейчас",
+      "never_ask_again": "Больше не спрашивать"
+    }
   },
   "pageLogin": {
     "loginFailed": "Не удалось войти",
@@ -162,5 +172,13 @@
   },
   "request_error": {
     "timeout": "Сервер не ответил вовремя. Попробуйте ещё раз."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "Кошелёк не найден",
+    "wallet_not_found_description": "В вашем Google Диске не найден кошелёк Hive. Сначала создайте кошелёк с помощью Hive Bridge.",
+    "key_not_found_title": "Ключ не найден",
+    "key_not_found_description": "Ключ {{keyType}} для @{{username}} не найден в кошельке на Google Диске. Добавьте этот ключ с помощью Hive Bridge.",
+    "bridge_info": "Hive Bridge позволяет безопасно хранить ключи Hive в Google Диске.",
+    "go_to_bridge": "Перейти в Hive Bridge"
   }
 }

@@ -1,20 +1,22 @@
 import { useState, useEffect, useRef, MutableRefObject } from 'react';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { getCookie } from '@ui/lib/utils';
-import { KeyType } from '@smart-signer/types/common';
+import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { useSigner } from '@smart-signer/lib/use-signer';
-import { LoginFormSchema as SignInFormSchema } from '../signin-form';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
 import { getChain } from '@transaction/lib/chain';
 import { operation } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 const logger = getLogger('app');
-export interface LoginFormSchema extends SignInFormSchema {
+export interface LoginFormSchema {
+  username: string;
+  loginType: LoginType;
+  remember: boolean;
   keyType: KeyType;
 }
 

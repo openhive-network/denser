@@ -12,11 +12,6 @@ const { compareLocale, validateTranslations } = require('./translation-validator
 
 const POLICY = {
   /**
-   * Locales whose every string has been reviewed by a native speaker: a short
-   * label identical to English is reported there too.
-   */
-  reviewedLocales: new Set(['pl']),
-  /**
    * Keys whose value may legitimately be identical to English, per locale ('*'
    * for every locale): product names, abbreviations and words the language
    * borrows unchanged. Each entry needs a comment saying why.
@@ -38,17 +33,68 @@ const POLICY = {
       'user_profile.social.platforms.bsky',
       'user_profile.social.platforms.dc',
       'user_profile.social.platforms.nostr',
+      'user_profile.social.platforms.x',
+      'navigation.sidebar.openhive_chat',
       // Abbreviations
       'navigation.sidebar.faq',
       'page_titles.faq',
       'communities.edit_props_dialog.nsfw',
-      // Example input format (a Nostr public key prefix), not text
-      'settings_page.social_placeholders.nostr'
+      // Acknowledgement buttons
+      'post_content.flag.ok',
+      'vote_removal_dialog.confirm',
+      // Example input formats (a Nostr public key prefix, a Bluesky handle), not text
+      'settings_page.social_placeholders.nostr',
+      'settings_page.social_placeholders.bsky'
     ]),
     pl: new Set([
       // Polish uses the same word
       'communities.mod',
       'page_titles.blog'
+    ]),
+    es: new Set([
+      // Spanish uses the same word
+      'page_titles.blog',
+      'chat_widget.chat',
+      'submit_page.spoiler',
+      'navigation.profile_navbar.social',
+      'navigation.profile_social_tab_navbar.personal',
+      'communities.roles',
+      'page_titles.sections.roles'
+    ]),
+    fr: new Set([
+      // French uses the same word
+      'page_titles.blog',
+      'submit_page.spoiler',
+      'submit_page.toolbar.image',
+      'global.time.minutes',
+      'global.time.minutes_count_one',
+      'global.time.minutes_count_many',
+      'global.time.minutes_count_other',
+      'global.notifications_region',
+      'navigation.profile_navbar.social',
+      'navigation.profile_navbar.notifications',
+      'navigation.user_menu.notifications',
+      'navigation.profile_social_tab_navbar.badges',
+      'navigation.profile_notifications_tab_navbar.mentions',
+      'communities.notes',
+      'communities.titles.description',
+      'post_content.suggestions.title',
+      'select_sort.sort_comments.votes',
+      'cards.post_card.vote',
+      'cards.post_card.votes',
+      'post_content.footer.vote',
+      'post_content.footer.votes'
+    ]),
+    it: new Set([
+      // Italian uses the same word
+      'page_titles.blog',
+      'chat_widget.chat',
+      'submit_page.spoiler',
+      'settings_page.endpoint',
+      'cards.post_card.in',
+      'post_content.in',
+      'post_content.footer.in',
+      'user_profile.lists.post_count.one'
     ])
   }
 };

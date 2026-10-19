@@ -136,7 +136,17 @@
       "or_safe_storage": "또는 안전한 저장소 사용"
     },
     "sign_in_pending": "다른 로그인이 아직 응답을 기다리고 있습니다. 지갑 확장 프로그램에서 완료하거나 거부하거나, 취소한 후 다시 시작하세요.",
-    "cancel_pending_sign_in": "대기 중인 로그인 취소"
+    "cancel_pending_sign_in": "대기 중인 로그인 취소",
+    "safe_storage_name": "안전 저장소",
+    "signin_with_metamask": "MetaMask 확장",
+    "signin_with_google": "Google 계정",
+    "passkey_prompt": {
+      "title": "생체 인식 잠금 해제를 사용하시겠습니까?",
+      "description": "비밀번호를 입력하는 대신 지문, Face ID 또는 기기 PIN으로 잠금을 해제하세요.",
+      "enable": "사용",
+      "not_now": "나중에",
+      "never_ask_again": "다시 묻지 않기"
+    }
   },
   "pageLogin": {
     "loginFailed": "로그인 실패",
@@ -162,5 +172,13 @@
   },
   "request_error": {
     "timeout": "서버가 제때 응답하지 않았습니다. 다시 시도해 주세요."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "지갑을 찾을 수 없음",
+    "wallet_not_found_description": "Google Drive에서 Hive 지갑을 찾을 수 없습니다. 먼저 Hive Bridge로 지갑을 만드세요.",
+    "key_not_found_title": "키를 찾을 수 없음",
+    "key_not_found_description": "Google Drive 지갑에서 @{{username}}의 {{keyType}} 키를 찾을 수 없습니다. Hive Bridge로 이 키를 추가하세요.",
+    "bridge_info": "Hive Bridge를 사용하면 Hive 키를 Google Drive에 안전하게 보관할 수 있습니다.",
+    "go_to_bridge": "Hive Bridge로 이동"
   }
 }

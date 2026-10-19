@@ -65,7 +65,7 @@
     "other_signing_options_description": "Inserisci il tuo nome utente e seleziona un metodo di accesso",
     "go_back_button": "Torna indietro",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "Che cos'è {{method}}?",
       "safe_storage": "La conservazione sicura mantiene la tua chiave privata cifrata con una password in questo browser. La chiave non lascia mai il tuo dispositivo.",
       "keychain": "Hive Keychain è un'estensione del browser che conserva le tue chiavi e firma le transazioni al posto tuo.",
       "peakvault": "PeakVault è un wallet sotto forma di estensione del browser che conserva le tue chiavi e firma le transazioni al posto tuo.",
@@ -136,7 +136,17 @@
       "or_safe_storage": "oppure usa l'archivio sicuro"
     },
     "sign_in_pending": "Un altro accesso è ancora in attesa di risposta. Completalo o rifiutalo nell'estensione del tuo portafoglio, oppure annullalo per ricominciare.",
-    "cancel_pending_sign_in": "Annulla l'accesso in sospeso"
+    "cancel_pending_sign_in": "Annulla l'accesso in sospeso",
+    "safe_storage_name": "Conservazione sicura",
+    "signin_with_metamask": "Estensione MetaMask",
+    "signin_with_google": "Account Google",
+    "passkey_prompt": {
+      "title": "Attivare lo sblocco biometrico?",
+      "description": "Usa l’impronta digitale, Face ID o il PIN del dispositivo per sbloccare invece di digitare la password.",
+      "enable": "Attiva",
+      "not_now": "Non ora",
+      "never_ask_again": "Non chiedere più"
+    }
   },
   "pageLogin": {
     "loginFailed": "Accesso fallito",
@@ -162,5 +172,13 @@
   },
   "request_error": {
     "timeout": "Il server non ha risposto in tempo. Riprova."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "Portafoglio non trovato",
+    "wallet_not_found_description": "Nessun portafoglio Hive trovato nel tuo Google Drive. Crea prima un portafoglio con Hive Bridge.",
+    "key_not_found_title": "Chiave non trovata",
+    "key_not_found_description": "La chiave {{keyType}} di @{{username}} non è stata trovata nel tuo portafoglio Google Drive. Aggiungi questa chiave con Hive Bridge.",
+    "bridge_info": "Hive Bridge ti consente di conservare in modo sicuro le tue chiavi Hive su Google Drive.",
+    "go_to_bridge": "Vai a Hive Bridge"
   }
 }

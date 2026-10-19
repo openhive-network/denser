@@ -24,12 +24,8 @@ const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 interface GoogleOAuthRedirectHandlerProps {
   authenticateOnBackend?: boolean;
   onComplete?: (username: string) => void;
-  /**
-   * Text to display while completing authorization.
-   * Should be a translated string from the consuming app.
-   * @default 'Completing Google authorization...'
-   */
-  loadingText?: string;
+  /** Text to display while completing authorization, translated by the consuming app. */
+  loadingText: string;
 }
 
 /**
@@ -42,7 +38,7 @@ interface GoogleOAuthRedirectHandlerProps {
 export function GoogleOAuthRedirectHandler({
   authenticateOnBackend = false,
   onComplete,
-  loadingText = 'Completing Google authorization...'
+  loadingText
 }: GoogleOAuthRedirectHandlerProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const { signAuth, submitAuth } = useProcessAuth(authenticateOnBackend);

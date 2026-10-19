@@ -7,18 +7,15 @@
  * - Strings whose interpolation placeholders ({{name}}) or <Trans> tags (<0>)
  *   differ from the English string's
  * - Strings copied verbatim from English, i.e. left untranslated, unless the
- *   key is allowed to stay identical (policy.identicalToEnglishAllowed). In a
- *   locale of policy.reviewedLocales every such string counts; in the others
- *   only sentences (at least MIN_SENTENCE_WORDS words), as their short labels
- *   have not been reviewed yet.
+ *   key is allowed to stay identical (policy.identicalToEnglishAllowed). A
+ *   one-word label counts as much as a sentence.
  *
  * i18next plural keys (`base_one`, `base_other`, ...) are matched by plural
  * category: a locale carries the categories its own plural rules define (ja/zh
  * only `_other`, ru/pl `_one`/`_few`/`_many`/`_other`), not English's.
  *
  * Each app's check-<app>-translations.js supplies its locales directory and
- * its policy: { reviewedLocales: Set<locale>, identicalToEnglishAllowed:
- * { '*' | locale: Set<key> } }.
+ * its policy: { identicalToEnglishAllowed: { '*' | locale: Set<key> } }.
  */
 
 const fs = require('fs');
@@ -28,7 +25,6 @@ const REFERENCE_LOCALE = 'en';
 const PLURAL_CATEGORIES = ['zero', 'one', 'two', 'few', 'many', 'other'];
 const PLURAL_KEY = new RegExp(`^(.+)_(${PLURAL_CATEGORIES.join('|')})$`);
 const MAX_LISTED = 10;
-const MIN_SENTENCE_WORDS = 4;
 
 /**
  * Flatten a nested translation object into dot-notation leaf keys.
@@ -115,9 +111,8 @@ function getPlaceholders(value) {
 }
 
 /**
- * Whether a translation is an untranslated copy of the English string: any
- * copy in a reviewed locale, a sentence-length one elsewhere. Placeholders
- * count as words, so `Paid {{value1}} for {{value2}}` is a sentence.
+ * Whether a translation is an untranslated copy of the English string that the
+ * policy does not allow for this key and locale.
  * @param {string} key
  * @param {string} value
  * @param {string} englishValue
@@ -128,8 +123,7 @@ function getPlaceholders(value) {
 function isUntranslated(key, value, englishValue, locale, policy) {
   if (typeof value !== 'string' || value !== englishValue) return false;
   const allowed = policy.identicalToEnglishAllowed;
-  if (allowed['*']?.has(key) || allowed[locale]?.has(key)) return false;
-  return policy.reviewedLocales.has(locale) || value.trim().split(/\s+/).length >= MIN_SENTENCE_WORDS;
+  return !allowed['*']?.has(key) && !allowed[locale]?.has(key);
 }
 
 /**

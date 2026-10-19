@@ -126,7 +126,7 @@
       "active_key_for_posting": "This key doesn't have posting authority. Blog sign-in requires the posting key"
     },
     "signin_with_keychain": "Hive Keychain extension",
-    "signin_with_peakvault": "Peakvault extension",
+    "signin_with_peakvault": "PeakVault extension",
     "signin_with_wif": "Sign in with WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",
     "signin_with_hivesigner": "HiveSigner",
@@ -136,7 +136,17 @@
       "or_safe_storage": "or use safe storage"
     },
     "sign_in_pending": "Another sign-in is still waiting for an answer. Finish or reject it in your wallet extension, or cancel it to start over.",
-    "cancel_pending_sign_in": "Cancel pending sign-in"
+    "cancel_pending_sign_in": "Cancel pending sign-in",
+    "safe_storage_name": "Safe Storage",
+    "signin_with_metamask": "MetaMask extension",
+    "signin_with_google": "Google Account",
+    "passkey_prompt": {
+      "title": "Enable biometric unlock?",
+      "description": "Use fingerprint, Face ID, or device PIN to unlock instead of typing your password.",
+      "enable": "Enable",
+      "not_now": "Not now",
+      "never_ask_again": "Never ask again"
+    }
   },
   "pageLogin": {
     "loginFailed": "Login failed",
@@ -162,5 +172,13 @@
   },
   "request_error": {
     "timeout": "The server did not respond in time. Please try again."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "Wallet Not Found",
+    "wallet_not_found_description": "No Hive wallet was found in your Google Drive. Please create a wallet first using Hive Bridge.",
+    "key_not_found_title": "Key Not Found",
+    "key_not_found_description": "The {{keyType}} key for @{{username}} was not found in your Google Drive wallet. Please add this key using Hive Bridge.",
+    "bridge_info": "Hive Bridge allows you to securely store your Hive keys in Google Drive.",
+    "go_to_bridge": "Go to Hive Bridge"
   }
 }

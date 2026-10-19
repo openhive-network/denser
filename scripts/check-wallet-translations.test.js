@@ -100,13 +100,13 @@ test('sentences copied verbatim from English are reported as untranslated', () =
   ]);
 });
 
-test('short labels identical to English are reported in a reviewed locale only', () => {
+test('short labels identical to English are reported in every locale', () => {
   const copied = { ...complete, global: { ...complete.global, save: 'Save' } };
   assert.deepEqual(compareLocale(reference, getLeaves(copied), 'pl').untranslated, ['global.save']);
-  assert.deepEqual(compareLocale(reference, getLeaves(copied), 'es').untranslated, []);
+  assert.deepEqual(compareLocale(reference, getLeaves(copied), 'es').untranslated, ['global.save']);
 });
 
-test('allow-listed keys may stay identical to English in a reviewed locale', () => {
+test('allow-listed keys may stay identical to English', () => {
   const english = getLeaves({
     global: { save: 'Save' },
     communities: { nsfw: 'NSFW' },

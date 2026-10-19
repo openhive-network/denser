@@ -12,19 +12,19 @@ const { compareLocale, validateTranslations } = require('./translation-validator
 
 const POLICY = {
   /**
-   * Locales whose every string has been reviewed by a native speaker: a short
-   * label identical to English is reported there too.
-   */
-  reviewedLocales: new Set(['pl']),
-  /**
    * Keys whose value may legitimately be identical to English, per locale ('*'
-   * for every locale): product names. Each entry needs a comment saying why.
+   * for every locale): product names and words the language borrows unchanged.
+   * Each entry needs a comment saying why.
    */
   identicalToEnglishAllowed: {
     '*': new Set([
       // Signing service names
       'login_form.signin_with_hiveauth',
       'login_form.signin_with_hivesigner'
+    ]),
+    it: new Set([
+      // Italian uses the same word
+      'password_form.password_placeholder'
     ])
   }
 };
