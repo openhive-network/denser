@@ -992,6 +992,16 @@
     "save_identity": {
       "title": "Save this identity?",
       "description": "It lives only in this browser for now. Add a passkey or sign in with a social account to keep it (coming soon)."
+    },
+    "gateway": {
+      "unavailable_title": "Guest replies are unavailable right now",
+      "reason_down": "The lite-account gateway is down.",
+      "reason_degraded": "The lite-account gateway is having problems.",
+      "reason_busy": "The lite-account gateway is busy.",
+      "reason_hived": "The lite-account gateway's Hive node is behind the chain.",
+      "try_again_in": "Try again in {{seconds}} s.",
+      "draft_kept": "Your draft is kept.",
+      "post_wait": "Wait {{seconds}} s"
     }
   }
 }

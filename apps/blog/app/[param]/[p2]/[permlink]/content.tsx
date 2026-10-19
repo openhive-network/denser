@@ -785,6 +785,7 @@ const PostContent = () => {
                         </>
                       ) : (
                         <LiteReplyTrigger
+                          open={reply}
                           onToggle={() => setReply(!reply)}
                           className="flex items-center text-destructive"
                           testId="comment-reply"

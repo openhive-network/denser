@@ -992,6 +992,16 @@
     "save_identity": {
       "title": "Save this identity?",
       "description": "Por ahora solo existe en este navegador. Añade una passkey o inicia sesión con una cuenta social para conservarla (próximamente)."
+    },
+    "gateway": {
+      "unavailable_title": "Las respuestas de invitado no están disponibles ahora",
+      "reason_down": "La pasarela de cuentas lite no funciona.",
+      "reason_degraded": "La pasarela de cuentas lite tiene problemas.",
+      "reason_busy": "La pasarela de cuentas lite está ocupada.",
+      "reason_hived": "El nodo Hive de la pasarela de cuentas lite va retrasado respecto a la cadena.",
+      "try_again_in": "Vuelve a intentarlo en {{seconds}} s.",
+      "draft_kept": "Tu borrador se ha guardado.",
+      "post_wait": "Espera {{seconds}} s"
     }
   }
 }

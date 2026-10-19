@@ -11,9 +11,11 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useTranslation } from '@/blog/i18n/client';
 import LiteNameDialog from './lite-name-dialog';
+import { readiness, readinessText, useLiteGatewayHealth, type LiteReadiness } from './use-lite-gateway-health';
 import { useLiteIdentity } from './use-lite-identity';
 import { useLiteRelayInfo } from './use-lite-relay-info';
 import { useLiteReplyMutation } from './use-lite-reply-mutation';
+import { useRetryCountdown } from './use-retry-countdown';
 
 const MdEditor = dynamic(() => import('../post-editor/md-editor'), {
   ssr: false,
@@ -23,6 +25,9 @@ const MdEditor = dynamic(() => import('../post-editor/md-editor'), {
     </div>
   )
 });
+
+// How long Post stays disabled when the gateway is not ready and names no wait of its own.
+const DEFAULT_RETRY_S = 10;
 
 type Props = {
   parentAuthor: string;
@@ -36,7 +41,8 @@ type Props = {
 /**
  * Reply box for readers who are NOT logged in (instant-comment flow, design doc §2):
  * type → (first time) pick a suggested name → a device key signs the attestation →
- * the relay posts it on L1. No sign-up ceremony.
+ * the relay posts it on L1. No sign-up ceremony. The gateway is asked once more right before
+ * posting: when it cannot take the reply the draft stays, and Post waits out the gateway's delay.
  */
 export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, discussionPermlink, observer, onSetReply }: Props) {
   const { t } = useTranslation('common_blog');
@@ -44,13 +50,44 @@ export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, d
   const { identity, create, markRegistered, ensureClientId } = useLiteIdentity();
   const [text, setText, removeText] = useStorageWithTTL<string>(`lite-replyTo-/${parentAuthor}/${parentPermlink}`, '', StorageTTL.DRAFT);
   const [nameDialogOpen, setNameDialogOpen] = useState(false);
+  const health = useLiteGatewayHealth(true);
+  const [checking, setChecking] = useState(false);
+  const [notReady, setNotReady] = useState<LiteReadiness | null>(null);
+  const countdown = useRetryCountdown();
   const mutation = useLiteReplyMutation(() => {
     markRegistered();
     toast({ title: t('lite_account.save_identity.title'), description: t('lite_account.save_identity.description') });
   });
 
+  const waitingForGateway = countdown.secondsLeft !== null && !readiness(health.data, 'reply').ok;
+
+  const gatewayReady = async (): Promise<boolean> => {
+    setChecking(true);
+    const fresh = await health.refetch();
+    setChecking(false);
+    const ready = readiness(fresh.data, 'reply');
+    if (ready.ok) {
+      setNotReady(null);
+      countdown.clear();
+      return true;
+    }
+    if (ready.reason === 'down') {
+      setNotReady(null);
+      toast({
+        title: t('lite_account.gateway.unavailable_title'),
+        description: `${readinessText(t, ready)} ${t('lite_account.gateway.draft_kept')}`,
+        variant: 'destructive'
+      });
+    } else {
+      setNotReady(ready);
+      countdown.start(ready.availableInS ?? DEFAULT_RETRY_S);
+    }
+    return false;
+  };
+
   const submit = async (who: LiteIdentity) => {
     if (!relay.data?.enabled) return;
+    if (!(await gatewayReady())) return;
     const built = buildLiteReplyRequest({
       identity: who,
       gateAccount: relay.data.gate_account,
@@ -86,6 +123,10 @@ export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, d
     else setNameDialogOpen(true);
   };
 
+  const postLabel = waitingForGateway
+    ? t('lite_account.gateway.post_wait', { seconds: countdown.secondsLeft })
+    : t('post_content.footer.comment.post');
+
   return (
     <div className="mb-4 flex w-full flex-col gap-4 rounded-lg border border-border bg-background p-4 text-primary shadow-sm" data-testid="lite-reply-editor">
       <p className="text-xs text-muted-foreground">
@@ -93,13 +134,24 @@ export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, d
       </p>
       <MdEditor onChange={setText} persistedValue={text} placeholder={t('post_content.footer.comment.reply')} ariaLabel={t('post_content.footer.comment.reply')} windowheight={200} />
       <div className="flex items-center gap-3">
-        <Button size="sm" className="w-24" disabled={text === '' || mutation.isPending} onClick={onPost} data-testid="lite-reply-post">
-          {mutation.isPending ? <CircleSpinner loading size={18} color="#dc2626" /> : t('post_content.footer.comment.post')}
+        <Button
+          size="sm"
+          className="min-w-24"
+          disabled={text === '' || mutation.isPending || checking || waitingForGateway}
+          onClick={onPost}
+          data-testid="lite-reply-post"
+        >
+          {mutation.isPending || checking ? <CircleSpinner loading size={18} color="#dc2626" /> : postLabel}
         </Button>
         <Button size="sm" variant="ghost" disabled={mutation.isPending} onClick={() => onSetReply(false)} className="text-foreground/60 hover:text-destructive">
           {t('post_content.footer.comment.cancel')}
         </Button>
       </div>
+      {waitingForGateway && notReady ? (
+        <p className="text-xs text-muted-foreground" data-testid="lite-reply-gateway-wait">
+          {readinessText(t, { ...notReady, availableInS: undefined })}
+        </p>
+      ) : null}
       <LiteNameDialog
         open={nameDialogOpen}
         onOpenChange={setNameDialogOpen}

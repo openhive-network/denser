@@ -992,6 +992,16 @@
     "save_identity": {
       "title": "이 신원을 저장할까요?",
       "description": "지금은 이 브라우저에만 존재합니다. 패스키를 추가하거나 소셜 계정으로 로그인하면 보관할 수 있습니다 (곧 지원 예정)."
+    },
+    "gateway": {
+      "unavailable_title": "지금은 게스트 답글을 사용할 수 없습니다",
+      "reason_down": "라이트 계정 게이트웨이가 중단되었습니다.",
+      "reason_degraded": "라이트 계정 게이트웨이에 문제가 있습니다.",
+      "reason_busy": "라이트 계정 게이트웨이가 사용 중입니다.",
+      "reason_hived": "라이트 계정 게이트웨이의 Hive 노드가 체인보다 뒤처져 있습니다.",
+      "try_again_in": "{{seconds}}초 후에 다시 시도하세요.",
+      "draft_kept": "초안은 보관되었습니다.",
+      "post_wait": "{{seconds}}초 대기"
     }
   }
 }

@@ -992,6 +992,16 @@
     "save_identity": {
       "title": "Save this identity?",
       "description": "Пока она существует только в этом браузере. Добавьте passkey или войдите через соцсеть, чтобы сохранить её (скоро)."
+    },
+    "gateway": {
+      "unavailable_title": "Гостевые ответы сейчас недоступны",
+      "reason_down": "Шлюз lite-аккаунтов не работает.",
+      "reason_degraded": "У шлюза lite-аккаунтов проблемы.",
+      "reason_busy": "Шлюз lite-аккаунтов занят.",
+      "reason_hived": "Узел Hive шлюза lite-аккаунтов отстаёт от цепочки.",
+      "try_again_in": "Повторите через {{seconds}} с.",
+      "draft_kept": "Ваш черновик сохранён.",
+      "post_wait": "Ждите {{seconds}} с"
     }
   }
 }
