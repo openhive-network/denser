@@ -992,6 +992,16 @@
     "save_identity": {
       "title": "Save this identity?",
       "description": "Per ora esiste solo in questo browser. Aggiungi una passkey o accedi con un account social per conservarla (in arrivo)."
+    },
+    "gateway": {
+      "unavailable_title": "Le risposte come ospite non sono disponibili al momento",
+      "reason_down": "Il gateway degli account lite non è attivo.",
+      "reason_degraded": "Il gateway degli account lite ha dei problemi.",
+      "reason_busy": "Il gateway degli account lite è occupato.",
+      "reason_hived": "Il nodo Hive del gateway degli account lite è in ritardo rispetto alla catena.",
+      "try_again_in": "Riprova tra {{seconds}} s.",
+      "draft_kept": "La tua bozza è stata conservata.",
+      "post_wait": "Attendi {{seconds}} s"
     }
   }
 }

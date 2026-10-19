@@ -476,6 +476,7 @@ const CommentListItem = memo(function CommentListItem({
                             </button>
                           ) : (
                             <LiteReplyTrigger
+                              open={reply}
                               onToggle={() => setReply(!reply)}
                               className="flex items-center hover:cursor-pointer hover:text-destructive"
                               testId="comment-card-footer-reply"

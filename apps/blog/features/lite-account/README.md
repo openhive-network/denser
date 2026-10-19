@@ -48,3 +48,19 @@ on a lite-aware node and under the gate account on a stock node.
 
 Not covered yet: voting on, and replying to, a DID-authored post or comment — both need the gate
 account the node does not name in native output.
+
+## Guest posting preflight
+
+The gateway is `DENSER_SERVER_LITE_GATEWAY_URL` (`lib/lite-relay/gateway.ts`, `.env.blog.example`).
+`/api/lite-reply` relays its `/info` and `/reply`; `/api/lite-reply/health` relays its `/health`
+(status, hived lag, per-pool `reply` / `root` readiness), shared by all requests for 5 s and always
+answered 200 — a missing or unreachable gateway reads `{"status":"down"}`.
+
+Guest replying is offered only when the relay is enabled, the API node is lite-aware
+(`useLiteApiInfo`) and the last health answer (`useLiteGatewayHealth`, fresh for 10 s, re-asked on
+window focus) is not `down`; otherwise the Reply button opens the sign-in dialog as for any other
+reader. Health is re-asked when the button opens the box and again right before posting.
+`readiness(health, kind, pool)` turns an answer into ok / `down` | `degraded` | `busy` | `hived`:
+the button toasts the reason instead of opening, and the box keeps the draft and disables Post for
+the gateway's `available_in_s` (10 s when it names none), or toasts and keeps the draft when the
+gateway is down.

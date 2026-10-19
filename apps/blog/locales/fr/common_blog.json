@@ -992,6 +992,16 @@
     "save_identity": {
       "title": "Save this identity?",
       "description": "Pour l'instant, elle n'existe que dans ce navigateur. Ajoutez une passkey ou connectez-vous avec un compte social pour la conserver (bientôt disponible)."
+    },
+    "gateway": {
+      "unavailable_title": "Les réponses invité sont indisponibles pour le moment",
+      "reason_down": "La passerelle des comptes lite est hors service.",
+      "reason_degraded": "La passerelle des comptes lite rencontre des problèmes.",
+      "reason_busy": "La passerelle des comptes lite est occupée.",
+      "reason_hived": "Le nœud Hive de la passerelle des comptes lite est en retard sur la chaîne.",
+      "try_again_in": "Réessayez dans {{seconds}} s.",
+      "draft_kept": "Votre brouillon est conservé.",
+      "post_wait": "Patientez {{seconds}} s"
     }
   }
 }

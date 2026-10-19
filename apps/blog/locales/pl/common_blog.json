@@ -992,6 +992,16 @@
     "save_identity": {
       "title": "Zapisać tę tożsamość?",
       "description": "Na razie istnieje tylko w tej przeglądarce. Dodaj passkey lub zaloguj się kontem społecznościowym, aby ją zachować (wkrótce)."
+    },
+    "gateway": {
+      "unavailable_title": "Odpowiedzi gościa są teraz niedostępne",
+      "reason_down": "Bramka kont lite nie działa.",
+      "reason_degraded": "Bramka kont lite ma problemy.",
+      "reason_busy": "Bramka kont lite jest zajęta.",
+      "reason_hived": "Węzeł Hive bramki kont lite jest opóźniony względem łańcucha.",
+      "try_again_in": "Spróbuj ponownie za {{seconds}} s.",
+      "draft_kept": "Twój szkic został zachowany.",
+      "post_wait": "Czekaj {{seconds}} s"
     }
   }
 }

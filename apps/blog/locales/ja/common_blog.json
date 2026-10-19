@@ -992,6 +992,16 @@
     "save_identity": {
       "title": "Save this identity?",
       "description": "現在はこのブラウザにのみ存在します。パスキーを追加するかソーシャルアカウントでログインして保持できます（近日対応）。"
+    },
+    "gateway": {
+      "unavailable_title": "ゲスト返信は現在利用できません",
+      "reason_down": "ライトアカウントゲートウェイが停止しています。",
+      "reason_degraded": "ライトアカウントゲートウェイに問題が発生しています。",
+      "reason_busy": "ライトアカウントゲートウェイが混雑しています。",
+      "reason_hived": "ライトアカウントゲートウェイのHiveノードがチェーンに遅れています。",
+      "try_again_in": "{{seconds}}秒後に再試行してください。",
+      "draft_kept": "下書きは保存されています。",
+      "post_wait": "{{seconds}}秒待機"
     }
   }
 }

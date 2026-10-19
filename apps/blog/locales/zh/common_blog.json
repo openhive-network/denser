@@ -992,6 +992,16 @@
     "save_identity": {
       "title": "Save this identity?",
       "description": "目前它仅存在于此浏览器中。添加通行密钥或使用社交账号登录即可保留（即将推出）。"
+    },
+    "gateway": {
+      "unavailable_title": "访客回复目前不可用",
+      "reason_down": "轻账户网关已停止服务。",
+      "reason_degraded": "轻账户网关出现问题。",
+      "reason_busy": "轻账户网关繁忙。",
+      "reason_hived": "轻账户网关的 Hive 节点落后于链。",
+      "try_again_in": "请在 {{seconds}} 秒后重试。",
+      "draft_kept": "您的草稿已保留。",
+      "post_wait": "等待 {{seconds}} 秒"
     }
   }
 }
