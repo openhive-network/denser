@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { findKeyRole, findKeyRoles, type AccountAuthorities } from './key-role.ts';
+import { findKeyRole, findKeyRoles, isKeyOfOtherRole, type AccountAuthorities } from './key-role.ts';
 
 const OWNER_KEY = 'STM8OwnerKeyOfTheStubAccount';
 const ACTIVE_KEY = 'STM7ActiveKeyOfTheStubAccount';
@@ -60,5 +60,36 @@ describe('findKeyRoles', () => {
 
   it('is empty for a key of no authority', () => {
     assert.deepEqual(findKeyRoles(account, OTHER_KEY), []);
+  });
+});
+
+describe('isKeyOfOtherRole', () => {
+  it('refuses the posting key as the active key', () => {
+    assert.equal(isKeyOfOtherRole(account, POSTING_KEY, 'active'), true);
+  });
+
+  it('accepts the active and owner keys as the active key', () => {
+    assert.equal(isKeyOfOtherRole(account, ACTIVE_KEY, 'active'), false);
+    assert.equal(isKeyOfOtherRole(account, OWNER_KEY, 'active'), false);
+  });
+
+  it('refuses the active and owner keys as the posting key', () => {
+    assert.equal(isKeyOfOtherRole(account, ACTIVE_KEY, 'posting'), true);
+    assert.equal(isKeyOfOtherRole(account, OWNER_KEY, 'posting'), true);
+  });
+
+  it('accepts the posting key as the posting key', () => {
+    assert.equal(isKeyOfOtherRole(account, POSTING_KEY, 'posting'), false);
+  });
+
+  it('accepts a key that is both the posting and the active key for either role', () => {
+    const shared = { ...account, active: authority(POSTING_KEY) };
+    assert.equal(isKeyOfOtherRole(shared, POSTING_KEY, 'posting'), false);
+    assert.equal(isKeyOfOtherRole(shared, POSTING_KEY, 'active'), false);
+  });
+
+  it('leaves a key of no authority to the on-chain verification', () => {
+    assert.equal(isKeyOfOtherRole(account, OTHER_KEY, 'posting'), false);
+    assert.equal(isKeyOfOtherRole(account, OTHER_KEY, 'active'), false);
   });
 });

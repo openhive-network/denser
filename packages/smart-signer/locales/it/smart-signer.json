@@ -114,7 +114,8 @@
       "no_wif_key": "Nessuna chiave WIF",
       "password_required": "La password è obbligatoria",
       "wif_required": "La chiave WIF è obbligatoria",
-      "posting_key_for_active": "Il wallet richiede la tua chiave attiva; una chiave di pubblicazione non può firmare i trasferimenti"
+      "posting_key_for_active": "Il wallet richiede la tua chiave attiva; una chiave di pubblicazione non può firmare i trasferimenti",
+      "active_key_for_posting": "Questa chiave non ha l'autorità di pubblicazione. L'accesso al blog richiede la chiave di pubblicazione"
     },
     "signin_with_keychain": "Estensione Hive Keychain",
     "signin_with_wif": "Accedi con WIF (Legacy)",
