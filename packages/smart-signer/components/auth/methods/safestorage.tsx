@@ -332,18 +332,20 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
       if (found?.username) {
         if (found?.unlocked) {
-          setDescription(`Unlocked with ${form.getValues().keyType} key`);
+          setDescription(
+            t('login_form.signin_safe_storage.description_unlocked', { keyType: form.getValues().keyType })
+          );
         } else {
-          setDescription('Unlock user with password');
+          setDescription(t('login_form.signin_safe_storage.description_unlock'));
         }
       } else {
-        setDescription(`Save your ${form.getValues().keyType} key by filling form below`);
+        setDescription(t('login_form.signin_safe_storage.description_save', { keyType: form.getValues().keyType }));
       }
 
       form.setValue('userFound', found ? true : false);
       return found;
       /* eslint-disable react-hooks/exhaustive-deps */
-    }, [form.watch('username'), authUsers]);
+    }, [form.watch('username'), authUsers, t]);
 
     if (loading === undefined) return <Step loading={true}></Step>;
 
@@ -351,9 +353,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       <Step
         title={
           <span className="flex items-center gap-1">
-            Sign in with safe storage
+            {t('login_form.signin_safe_storage.title')}
             <MethodInfo
-              label={t('login_form.method_info.label', { method: 'Safe Storage' })}
+              label={t('login_form.method_info.label', { method: t('login_form.safe_storage_name') })}
               info={t('login_form.method_info.safe_storage')}
               testId="method-info-safe_storage"
             />
@@ -379,7 +381,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
                     <div className="relative flex">
                       <Input
-                        placeholder="Username"
+                        placeholder={t('login_form.signin_safe_storage.placeholder_username')}
                         type="text"
                         autoComplete="username"
                         data-testid="username-input"
@@ -439,7 +441,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder="Safe storage password"
+                        placeholder={t('login_form.signin_safe_storage.placeholder_password')}
                         type={show.password ? 'text' : 'password'}
                         autoComplete="current-password"
                         data-testid="password-input"
@@ -472,7 +474,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     <FormControl>
                       <div className="relative">
                         <Input
-                          placeholder={`WIF ${form.getValues().keyType} private key`}
+                          placeholder={t('login_form.signin_safe_storage.placeholder_wif', { keyType: form.getValues().keyType })}
                           type={show.wif ? 'text' : 'password'}
                           data-testid="wif-input"
                           {...field}
@@ -572,7 +574,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   onClick={() => onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE)}
                   className="max-w-max cursor-pointer text-xs text-destructive hover:opacity-80 active:opacity-60"
                 >
-                  Add new key
+                  {t('login_form.signin_safe_storage.key_update')}
                 </span>
               </div>
             )}
@@ -586,7 +588,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     disabled={!form.formState.isValid}
                     onClick={form.handleSubmit(onAuthenticate)}
                   >
-                    Sign in
+                    {t('login_form.signin_safe_storage.button_signin')}
                   </Button>
                   {/* TODO: Re-work offline flow */}
                   {/* <Button
@@ -607,7 +609,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   disabled={!form.formState.isValid}
                   onClick={form.handleSubmit(onSave)}
                 >
-                  Save and sign in
+                  {t('login_form.signin_safe_storage.button_save')}
                 </Button>
               )}
             </div>
@@ -625,7 +627,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               }}
             >
               <Icons.keyRound className="mr-2 h-4 w-4" />
-              Other sign in options
+              {t('login_form.other_signin_options')}
             </Button>
           </form>
 
@@ -656,10 +658,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         {/* Passkey enrollment prompt — shown after successful password login */}
         {showPasskeyPrompt && (
           <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
-            <p className="mb-2 text-sm font-medium">Enable biometric unlock?</p>
-            <p className="mb-3 text-xs text-muted-foreground">
-              Use fingerprint, Face ID, or device PIN to unlock instead of typing your password.
-            </p>
+            <p className="mb-2 text-sm font-medium">{t('login_form.passkey_prompt.title')}</p>
+            <p className="mb-3 text-xs text-muted-foreground">{t('login_form.passkey_prompt.description')}</p>
             <div className="flex gap-2">
               <Button
                 size="sm"
@@ -683,7 +683,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   }
                 }}
               >
-                Enable
+                {t('login_form.passkey_prompt.enable')}
               </Button>
               <Button
                 size="sm"
@@ -701,7 +701,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   }
                 }}
               >
-                Not now
+                {t('login_form.passkey_prompt.not_now')}
               </Button>
               <Button
                 size="sm"
@@ -720,7 +720,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   }
                 }}
               >
-                Never ask again
+                {t('login_form.passkey_prompt.never_ask_again')}
               </Button>
             </div>
           </div>

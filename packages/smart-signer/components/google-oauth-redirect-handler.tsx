@@ -25,12 +25,8 @@ interface GoogleOAuthRedirectHandlerProps {
   authenticateOnBackend?: boolean;
   strict?: boolean;
   onComplete?: (username: string) => void;
-  /**
-   * Text to display while completing authorization.
-   * Should be a translated string from the consuming app.
-   * @default 'Completing Google authorization...'
-   */
-  loadingText?: string;
+  /** Text to display while completing authorization, translated by the consuming app. */
+  loadingText: string;
 }
 
 /**
@@ -44,7 +40,7 @@ export function GoogleOAuthRedirectHandler({
   authenticateOnBackend = false,
   strict = false,
   onComplete,
-  loadingText = 'Completing Google authorization...'
+  loadingText
 }: GoogleOAuthRedirectHandlerProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const { signAuth, submitAuth } = useProcessAuth(authenticateOnBackend, strict);

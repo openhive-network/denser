@@ -65,7 +65,7 @@
     "other_signing_options_description": "ユーザー名を入力し、サインイン方法を選択してください",
     "go_back_button": "戻る",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "{{method}}とは？",
       "safe_storage": "安全な保管は、プライベートキーをパスワードで暗号化してこのブラウザに保存します。キーがお使いのデバイスの外に出ることはありません。",
       "keychain": "Hive Keychainは、キーを保存してトランザクションに代わりに署名するブラウザ拡張機能です。",
       "peakvault": "PeakVaultは、キーを保存してトランザクションに代わりに署名するブラウザ拡張機能のウォレットです。",
@@ -135,7 +135,17 @@
       "or_safe_storage": "または安全なストレージを使用"
     },
     "sign_in_pending": "別のサインインが応答を待っています。ウォレット拡張機能で完了または拒否するか、キャンセルしてやり直してください。",
-    "cancel_pending_sign_in": "保留中のサインインをキャンセル"
+    "cancel_pending_sign_in": "保留中のサインインをキャンセル",
+    "safe_storage_name": "安全な保管",
+    "signin_with_metamask": "MetaMask拡張機能",
+    "signin_with_google": "Googleアカウント",
+    "passkey_prompt": {
+      "title": "生体認証によるロック解除を有効にしますか？",
+      "description": "パスワードを入力する代わりに、指紋、Face ID、またはデバイスのPINでロックを解除できます。",
+      "enable": "有効にする",
+      "not_now": "今はしない",
+      "never_ask_again": "今後表示しない"
+    }
   },
   "pageLogin": {
     "loginFailed": "ログインに失敗しました",
@@ -158,5 +168,13 @@
     "not_enough_rc_amounts": "現在の RC は {{current}} で、このトランザクションには {{needed}} RC が必要です。",
     "keychain_no_message": "Hive Keychain はリクエストを完了できず、理由も返しませんでした。",
     "superseded_key_write": "別のタブにより、@{{username}} の {{keyType}} キーの安全なストレージへの保存が中断されました。{{keyType}} キーをもう一度安全なストレージに追加してください。"
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "ウォレットが見つかりません",
+    "wallet_not_found_description": "Google DriveにHiveウォレットが見つかりませんでした。まずHive Bridgeでウォレットを作成してください。",
+    "key_not_found_title": "キーが見つかりません",
+    "key_not_found_description": "@{{username}}の{{keyType}}キーがGoogle Driveのウォレットに見つかりませんでした。Hive Bridgeでこのキーを追加してください。",
+    "bridge_info": "Hive Bridgeを使うと、HiveのキーをGoogle Driveに安全に保管できます。",
+    "go_to_bridge": "Hive Bridgeへ移動"
   }
 }

@@ -65,7 +65,7 @@
     "other_signing_options_description": "Ingrese su nombre de usuario y seleccione un método de inicio de sesión",
     "go_back_button": "Regresar",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "¿Qué es {{method}}?",
       "safe_storage": "El almacenamiento seguro guarda su clave privada cifrada con una contraseña en este navegador. La clave nunca sale de su dispositivo.",
       "keychain": "Hive Keychain es una extensión del navegador que almacena sus claves y firma las transacciones por usted.",
       "peakvault": "PeakVault es una billetera en forma de extensión del navegador que almacena sus claves y firma las transacciones por usted.",
@@ -135,7 +135,17 @@
       "or_safe_storage": "o usa el almacenamiento seguro"
     },
     "sign_in_pending": "Otro inicio de sesión sigue esperando respuesta. Complétalo o recházalo en tu extensión de billetera, o cancélalo para empezar de nuevo.",
-    "cancel_pending_sign_in": "Cancelar inicio de sesión pendiente"
+    "cancel_pending_sign_in": "Cancelar inicio de sesión pendiente",
+    "safe_storage_name": "Almacenamiento seguro",
+    "signin_with_metamask": "Extensión MetaMask",
+    "signin_with_google": "Cuenta de Google",
+    "passkey_prompt": {
+      "title": "¿Activar el desbloqueo biométrico?",
+      "description": "Usa tu huella dactilar, Face ID o el PIN del dispositivo para desbloquear en lugar de escribir tu contraseña.",
+      "enable": "Activar",
+      "not_now": "Ahora no",
+      "never_ask_again": "No volver a preguntar"
+    }
   },
   "pageLogin": {
     "loginFailed": "Error de inicio de sesión",
@@ -158,5 +168,13 @@
     "not_enough_rc_amounts": "Tienes {{current}} RC; esta transacción necesita {{needed}} RC.",
     "keychain_no_message": "Hive Keychain no pudo completar la solicitud y no indicó el motivo.",
     "superseded_key_write": "Otra pestaña interrumpió el guardado de la clave {{keyType}} de @{{username}} en el almacenamiento seguro. Vuelve a añadir la clave {{keyType}} al almacenamiento seguro."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "Monedero no encontrado",
+    "wallet_not_found_description": "No se encontró ningún monedero de Hive en tu Google Drive. Crea primero un monedero con Hive Bridge.",
+    "key_not_found_title": "Clave no encontrada",
+    "key_not_found_description": "La clave {{keyType}} de @{{username}} no se encontró en tu monedero de Google Drive. Añade esta clave con Hive Bridge.",
+    "bridge_info": "Hive Bridge te permite guardar de forma segura tus claves de Hive en Google Drive.",
+    "go_to_bridge": "Ir a Hive Bridge"
   }
 }

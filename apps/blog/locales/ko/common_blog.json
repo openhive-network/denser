@@ -251,7 +251,7 @@
       "you_voted": "{{votePercent}}% 보팅했습니다",
       "vote_polling_error_message_title": "경고",
       "vote_polling_error_message_description": "사용자의 보팅이 반영되었는지 확인하지 못했습니다.",
-      "powered_up_100": "100% Hive Power"
+      "powered_up_100": "Hive Power 100%"
     },
     "comment_card": {
       "reveal_comment": "댓글 보기",
@@ -335,7 +335,9 @@
     "google_key_not_found_title": "지갑에서 키를 찾을 수 없음",
     "google_key_not_found_description": "Google Drive 지갑에 {{username}} 사용자의 Hive {{keyType}} 키가 저장되어 있지 않습니다.",
     "go_to_hive_bridge": "Hive Bridge로 이동",
-    "completing_google_auth": "Google 인증을 완료하는 중..."
+    "completing_google_auth": "Google 인증을 완료하는 중...",
+    "dialog_title": "로그인",
+    "dialog_description": "게시 키로 계정에 로그인하세요."
   },
   "user_profile": {
     "reputation": "평판",

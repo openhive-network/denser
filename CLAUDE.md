@@ -434,7 +434,7 @@ pnpm --filter @hive/blog lint:translations
 - Missing keys (present in English but missing in other locales; i18next plural keys per the locale's own plural categories)
 - Extra keys (present in other locales but not in English reference)
 - Interpolation placeholders (`{{name}}`) and `<Trans>` tags that differ from English
-- Values identical to English (untranslated): every one in a reviewed locale (`pl`), sentences of 4+ words elsewhere. Brand names and other legitimate copies go in the allow-list in `scripts/check-blog-translations.js`
+- Values identical to English (untranslated), in every locale, a one-word label as much as a sentence. Brand names and other legitimate copies go in the allow-list in `scripts/check-blog-translations.js`
 - Missing translation files
 
 Both blog checks run in the `static` verification suite (`.aidev/run-static.sh`), with the same sync check for the smart-signer package's locales (`node scripts/check-smart-signer-translations.js`).

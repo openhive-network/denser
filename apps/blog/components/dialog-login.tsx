@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 import type { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
 import { siteConfig } from '@ui/config/site';
+import { useTranslation } from '@/blog/i18n/client';
 
 // The sign-in form brings the signers, wax and the form validation: load it when the dialog opens.
 const SignInForm = dynamic(() => import('@smart-signer/components/auth/form'), { ssr: false });
@@ -35,6 +36,7 @@ function DialogLogin({
   keyType = KeyType.posting,
   username
 }: DialogLoginProps) {
+  const { t } = useTranslation('common_blog');
   const signInFormRef = useRef<SignInFormRef>(null);
   const router = useRouter();
 
@@ -84,10 +86,10 @@ function DialogLogin({
         onInteractOutside={(e) => e.preventDefault()}
       >
         <VisuallyHidden>
-          <DialogTitle>Sign In</DialogTitle>
+          <DialogTitle>{t('login_form.dialog_title')}</DialogTitle>
         </VisuallyHidden>
         <VisuallyHidden>
-          <DialogDescription>Sign in to your account using your posting key.</DialogDescription>
+          <DialogDescription>{t('login_form.dialog_description')}</DialogDescription>
         </VisuallyHidden>
         <SignInForm
           ref={signInFormRef}

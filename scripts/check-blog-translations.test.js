@@ -9,7 +9,7 @@ const reference = getLeaves({
   communities: { mod: 'Moderator' }
 });
 
-test('a label left in English is reported in Polish, a reviewed locale', () => {
+test('a label left in English is reported in Polish; a Polish word spelled like English is not', () => {
   const pl = getLeaves({
     navigation: { main_nav_bar: { create_post: 'Create Post' }, sidebar: { faq: 'FAQ' } },
     submit_page: { preview_placeholder: 'Zacznij pisać, aby zobaczyć podgląd posta' },
@@ -23,14 +23,15 @@ test('a label left in English is reported in Polish, a reviewed locale', () => {
   });
 });
 
-test('elsewhere only missing keys and English sentences are reported', () => {
+test('a short label left in English is reported in a locale without a review, as is a sentence', () => {
   const es = getLeaves({
     navigation: { main_nav_bar: { create_post: 'Create Post' }, sidebar: { faq: 'FAQ' } },
-    submit_page: { preview_placeholder: 'Start typing to see a preview of your post' }
+    submit_page: { preview_placeholder: 'Start typing to see a preview of your post' },
+    communities: { mod: 'Moderator' }
   });
-  const { missing, untranslated } = compareLocale(reference, es, 'es');
-  assert.deepEqual({ missing, untranslated }, {
-    missing: ['communities.mod'],
-    untranslated: ['submit_page.preview_placeholder']
-  });
+  assert.deepEqual(compareLocale(reference, es, 'es').untranslated, [
+    'navigation.main_nav_bar.create_post',
+    'submit_page.preview_placeholder',
+    'communities.mod'
+  ]);
 });

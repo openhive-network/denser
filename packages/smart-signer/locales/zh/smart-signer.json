@@ -65,7 +65,7 @@
     "other_signing_options_description": "输入用户名并选择登录方法",
     "go_back_button": "返回",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "什么是 {{method}}？",
       "safe_storage": "安全存储会在此浏览器中用密码加密保存您的私钥。密钥永远不会离开您的设备。",
       "keychain": "Hive Keychain 是一款浏览器扩展，可为您保存密钥并代您签署交易。",
       "peakvault": "PeakVault 是一款浏览器扩展钱包，可为您保存密钥并代您签署交易。",
@@ -135,7 +135,17 @@
       "or_safe_storage": "或使用安全存储"
     },
     "sign_in_pending": "另一个登录仍在等待响应。请在钱包扩展中完成或拒绝它，或取消后重新开始。",
-    "cancel_pending_sign_in": "取消待处理的登录"
+    "cancel_pending_sign_in": "取消待处理的登录",
+    "safe_storage_name": "安全存储",
+    "signin_with_metamask": "MetaMask 扩展程序",
+    "signin_with_google": "Google 账户",
+    "passkey_prompt": {
+      "title": "启用生物识别解锁？",
+      "description": "使用指纹、面容 ID 或设备 PIN 解锁，无需输入密码。",
+      "enable": "启用",
+      "not_now": "以后再说",
+      "never_ask_again": "不再询问"
+    }
   },
   "pageLogin": {
     "loginFailed": "登录失败",
@@ -158,5 +168,13 @@
     "not_enough_rc_amounts": "您当前有 {{current}} RC；此交易需要 {{needed}} RC。",
     "keychain_no_message": "Hive Keychain 未能完成请求，也未说明原因。",
     "superseded_key_write": "另一个标签页中断了将 @{{username}} 的 {{keyType}} 密钥保存到安全存储的操作。请再次将 {{keyType}} 密钥添加到安全存储。"
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "未找到钱包",
+    "wallet_not_found_description": "在您的 Google 云端硬盘中未找到 Hive 钱包。请先使用 Hive Bridge 创建钱包。",
+    "key_not_found_title": "未找到密钥",
+    "key_not_found_description": "在您的 Google 云端硬盘钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥。",
+    "bridge_info": "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google 云端硬盘中。",
+    "go_to_bridge": "前往 Hive Bridge"
   }
 }

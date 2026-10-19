@@ -6,7 +6,7 @@
     "confirmed_indexing": "تم التأكيد على البلوكشين. في انتظار الفهرسة...",
     "indexing_slow": "تستغرق الفهرسة وقتًا أطول من المعتاد. هذا أمر طبيعي أثناء الازدحام.",
     "indexing_timeout": "انتهت مهلة فهرسة المشاركة. قد تظهر مشاركتك قريبًا — حاول إعادة تحميل الصفحة.",
-    "reload_page": "Reload page",
+    "reload_page": "إعادة تحميل الصفحة",
     "reconnecting": "جارٍ إعادة الاتصال…",
     "something_went_wrong": "حدث خطأ ما",
     "unavailable_for_legal_reasons": "غير متوفر لأسباب قانونية",
@@ -110,7 +110,7 @@
       "notifications": "الإشعارات",
       "wallet": "المحفظة",
       "settings": "الإعدادات",
-      "block_explorer": "Block Explorer"
+      "block_explorer": "مستكشف الكتل"
     },
     "profile_posts_tab_navbar": {
       "label": "منشورات الملف الشخصي",
@@ -205,10 +205,10 @@
       "trending": "الرائجة",
       "votes": "الأصوات",
       "age": "العمر",
-      "filter_label": "Comment filtering",
+      "filter_label": "تصفية التعليقات",
       "filter_short_label": "فلتر المخفية",
       "filter_off": "معطل",
-      "filtered_count": "{{count}} filtered",
+      "filtered_count": "تمت تصفية {{count}}",
       "filter_tooltip": "إخفاء التعليقات من الحسابات المدرجة في القائمة السوداء أو ذات السمعة المنخفضة",
       "filter_tooltip_click_show": "انقر للإظهار",
       "filter_tooltip_click_hide": "انقر للإخفاء"
@@ -261,7 +261,7 @@
       "you_voted": "صوتت بنسبة {{votePercent}}%",
       "vote_polling_error_message_title": "تحذير",
       "vote_polling_error_message_description": "فشل في التحقق مما إذا تم تضمين تصويت المستخدم.",
-      "powered_up_100": "100% Hive Power"
+      "powered_up_100": "Hive Power بنسبة 100%"
     },
     "comment_card": {
       "reveal_comment": "كشف التعليق",
@@ -300,10 +300,10 @@
     "close": "إغلاق"
   },
   "vote_removal_dialog": {
-    "remove_upvote_title": "Remove Upvote",
+    "remove_upvote_title": "إزالة التصويت الإيجابي",
     "remove_upvote_description": "ستؤدي إزالة صوتك إلى إعادة تعيين مكافآت التنسيق الخاصة بك لهذه المشاركة.",
-    "remove_downvote_title": "Remove Downvote",
-    "remove_downvote_description": "Removing your vote.",
+    "remove_downvote_title": "إزالة التصويت السلبي",
+    "remove_downvote_description": "جارٍ إزالة صوتك.",
     "confirm": "OK",
     "cancel": "إلغاء"
   },
@@ -345,7 +345,9 @@
     "google_key_not_found_title": "المفتاح غير موجود في المحفظة",
     "google_key_not_found_description": "لم يتم العثور على مفتاح {{keyType}} لـ Hive للمستخدم {{username}} في محفظة Google Drive.",
     "go_to_hive_bridge": "اذهب إلى Hive Bridge",
-    "completing_google_auth": "Completing Google authorization..."
+    "completing_google_auth": "جارٍ إكمال التفويض عبر Google...",
+    "dialog_title": "تسجيل الدخول",
+    "dialog_description": "سجّل الدخول إلى حسابك باستخدام مفتاح النشر."
   },
   "user_profile": {
     "reputation": "السمعة",
@@ -444,7 +446,7 @@
       "the_author_has_subscribed_to_the_following": "قام المؤلف بالاشتراك في المجتمعات التالية من Hive",
       "badges_and_achievements_title": "الشارات والإنجازات",
       "these_are_badges_received_by_the_author": "هذه هي الشارات التي حصل عليها المؤلف من خلال تطبيقات الطرف الثالث",
-      "view_badges_on": "View badges on",
+      "view_badges_on": "عرض الشارات على",
       "you_dont_have_any_subscriptions": "مرحبا! ليس لديك أي اشتراكات حتى الآن."
     },
     "notifications_tab": {
@@ -457,8 +459,8 @@
       "subscribed_to": "@{{username}} اشترك في {{community}}"
     },
     "load_more_failed": "تعذر تحميل المزيد من المشاركات.",
-    "load_more_retry": "Retry",
-    "check_node_status": "Check Node Status",
+    "load_more_retry": "إعادة المحاولة",
+    "check_node_status": "التحقق من حالة العقدة",
     "load_failed_title": "تعذر تحميل هذا الملف الشخصي",
     "load_failed_description": "لم تستجب واجهة Hive البرمجية. عادةً ما يكون هذا مؤقتًا.",
     "go_home": "الصفحة الرئيسية",
@@ -643,7 +645,7 @@
         "markdown_styling_guide": "دليل أسلوب Markdown",
         "exit_editor": "هل أنت متأكد أنك تريد الخروج من محرر التعليق؟",
         "exit_editor_description": "سيتم تجاهل مسودتك ولا يمكن استعادتها.",
-        "discard": "Discard",
+        "discard": "تجاهل",
         "power_up": "زيادة الطاقة بنسبة 100%",
         "decline_payout": "رفض الدفعة",
         "rewards": "المكافآت: ",
@@ -652,8 +654,8 @@
         "update_settings": "تحديث الإعدادات",
         "full_in": "ملء: ",
         "shadow_draft_found": "تم العثور على رد غير محفوظ في هذا النقاش.",
-        "shadow_draft_recover": "Recover",
-        "shadow_draft_discard": "Discard"
+        "shadow_draft_recover": "استعادة",
+        "shadow_draft_discard": "تجاهل"
       }
     },
     "flag": {
@@ -716,25 +718,25 @@
     "enter_tags": "أدخل علامة واحدة على الأقل للإرسال",
     "clean": "تنظيف",
     "cancel": "إلغاء",
-    "confirm": "Confirm",
+    "confirm": "تأكيد",
     "cancel_confirmation_description": "سيتم تجاهل تغييراتك ولا يمكن استعادتها.",
     "markdown_styling_guide": "دليل أسلوب Markdown",
     "power_up": "زيادة الطاقة بنسبة 100%",
     "maximum_characters": "أقصى عدد من الأحرف {{num}}",
     "markdown_not_supported": "Markdown غير مدعوم هنا",
     "html_not_supported": "HTML غير مدعوم هنا",
-    "hive_link_converted": "Blog link converted",
+    "hive_link_converted": "تم تحويل رابط المدونة",
     "hive_link_converted_count": "تم تحويل {{count}} من روابط مدونة Hive إلى مسار نسبي",
-    "undo": "Undo",
-    "convert_hive_links": "Convert Hive links",
+    "undo": "تراجع",
+    "convert_hive_links": "تحويل روابط Hive",
     "formatting_toolbar": "التنسيق",
     "spoiler": "حرق الأحداث",
     "post_body": "نص المنشور",
     "convert_hive_links_tooltip": "يحوّل تلقائيًا الروابط الملصقة من واجهات مدونات Hive إلى مسارات نسبية مستقلة عن الواجهة، بحيث تعمل مشاركتك على أي تطبيق Hive",
-    "optimize_images": "Optimize images",
+    "optimize_images": "تحسين الصور",
     "optimize_images_tooltip": "تغيير حجم الصور وضغطها قبل الرفع لتسريع الرفع وتقليل حجم الملفات. يحوّل الصيغ غير المدعومة (HEIC/HEIF) تلقائيًا.",
-    "uploading_images": "Uploading {{count}} images...",
-    "image_processing_failed": "failed",
+    "uploading_images": "جارٍ رفع {{count}} صور...",
+    "image_processing_failed": "فشل",
     "image_too_large_gif": "ملف GIF كبير جدًا. الحد الأقصى للحجم هو 15MB.",
     "advanced_tooltip": "هنا يمكنك تعيين خيارات المشاركة مثل تقسيم مكافآت المؤلف، الحد الأقصى للمبلغ المقبول للدفع، المستفيدين وقوالب المشاركة",
     "advanced_settings_dialog": {
@@ -792,10 +794,10 @@
       "must_not_include_hivemind_community_owner": "المشاركة تحتوي بالفعل على علامة hive بشكل افتراضي، يرجى عدم تضمين علامة 'hive-' أخرى.",
       "tags_cannot_be_repeated": "لا يمكن تكرار العلامات"
     },
-    "shadow_draft_found": "Unsaved post found",
+    "shadow_draft_found": "تم العثور على منشور غير محفوظ",
     "shadow_draft_description": "تم بث مشاركة لكن ربما لم تتم فهرستها بعد. هل تريد استعادة المحتوى؟",
-    "shadow_draft_recover": "Recover",
-    "shadow_draft_discard": "Discard",
+    "shadow_draft_recover": "استعادة",
+    "shadow_draft_discard": "تجاهل",
     "cover_image_alt": "صورة الغلاف",
     "select_category": "اختر الفئة",
     "toolbar": {

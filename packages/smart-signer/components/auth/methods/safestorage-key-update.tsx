@@ -157,7 +157,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         setError(null);
 
         if (!registeredUser) {
-          setError('User not found in safe storage');
+          setError(t('login_form.signin_safe_storage.user_not_found'));
           setLoading(false);
           return;
         }
@@ -188,8 +188,8 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         setUpdateSuccess(true);
 
         toast({
-          title: 'Key Added',
-          description: 'Your key has been added successfully',
+          title: t('login_form.signin_safe_storage.key_updated_title'),
+          description: t('login_form.signin_safe_storage.key_updated_description'),
           variant: 'success'
         });
 
@@ -216,23 +216,26 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
 
     return (
       <Step
-        title="Add New Key to Safe Storage"
+        title={t('login_form.signin_safe_storage.update_key_title')}
         description={
           <div>
             <div data-testid="login-form-description">
               {registeredUser
-                ? `Add new ${form.getValues().keyType} key for user ${username}`
-                : 'User not found in safe storage'}
+                ? t('login_form.signin_safe_storage.update_key_description', {
+                    keyType: form.getValues().keyType,
+                    username
+                  })
+                : t('login_form.signin_safe_storage.user_not_found')}
             </div>
             {registeredUser && (
               <div className="text-xs text-muted-foreground">
-                First, add the key to the appropriate authority in your wallet.
+                {t('login_form.signin_safe_storage.add_key_info')}
               </div>
             )}
             {error && <div className="text-sm text-destructive">{error}</div>}
             {updateSuccess && (
               <div className="text-sm text-green-500">
-                Key added successfully! Now you can sign in again.
+                {t('login_form.signin_safe_storage.key_updated_success')}
               </div>
             )}
           </div>
@@ -250,7 +253,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                     <Input
                       {...field}
                       disabled={true}
-                      placeholder="Enter your username"
+                      placeholder={t('login_form.username_placeholder')}
                       data-testid="login-form-username"
                     />
                   </FormControl>
@@ -300,7 +303,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                       <Input
                         {...field}
                         type={showPassword ? 'text' : 'password'}
-                        placeholder="Safe storage password"
+                        placeholder={t('login_form.signin_safe_storage.placeholder_password')}
                         disabled={!registeredUser}
                         data-testid="login-form-password"
                       />
@@ -330,7 +333,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                     <Input
                       {...field}
                       type="password"
-                      placeholder={`WIF ${form.getValues().keyType} private key`}
+                      placeholder={t('login_form.signin_safe_storage.placeholder_wif', { keyType: form.getValues().keyType })}
                       disabled={!registeredUser}
                       data-testid="login-form-wif"
                     />
@@ -382,10 +385,10 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
                 onClick={() => onSetStep(Steps.SAFE_STORAGE_LOGIN)}
                 data-testid="login-form-back"
               >
-                Back
+                {t('login_form.signin_safe_storage.back')}
               </Button>
               <Button type="submit" disabled={loading || updateSuccess || !registeredUser} data-testid="login-form-update-key">
-                Add Key
+                {t('login_form.signin_safe_storage.update_key_button')}
               </Button>
             </div>
           </form>

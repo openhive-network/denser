@@ -337,7 +337,9 @@
     "google_key_not_found_title": "Key Not Found in Wallet",
     "google_key_not_found_description": "No stored Hive {{keyType}} key found for user {{username}} in Google Drive wallet.",
     "go_to_hive_bridge": "Go to Hive Bridge",
-    "completing_google_auth": "Completing Google authorization..."
+    "completing_google_auth": "Completing Google authorization...",
+    "dialog_title": "Sign In",
+    "dialog_description": "Sign in to your account using your posting key."
   },
   "user_profile": {
     "reputation": "Reputation",
