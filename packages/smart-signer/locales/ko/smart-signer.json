@@ -122,7 +122,8 @@
       "no_wif_key": "WIF 키가 없습니다",
       "password_required": "비밀번호를 입력해야 합니다",
       "wif_required": "WIF 키를 입력해야 합니다",
-      "posting_key_for_active": "지갑에는 액티브 키가 필요합니다. 포스팅 키로는 송금에 서명할 수 없습니다"
+      "posting_key_for_active": "지갑에는 액티브 키가 필요합니다. 포스팅 키로는 송금에 서명할 수 없습니다",
+      "active_key_for_posting": "이 키에는 포스팅 권한이 없습니다. 블로그 로그인에는 포스팅 키가 필요합니다"
     },
     "signin_with_keychain": "Hive Keychain 확장",
     "signin_with_peakvault": "PeakVault 확장",
