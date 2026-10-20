@@ -1,5 +1,6 @@
 {
   "global": {
+    "close": "Fermer",
     "no_rewards": "Aucune récompense en attente d'échange.",
     "loading": "Chargement",
     "publishing": "Publication...",

@@ -1,5 +1,6 @@
 {
   "global": {
+    "close": "Close",
     "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
     "publishing": "Publishing...",

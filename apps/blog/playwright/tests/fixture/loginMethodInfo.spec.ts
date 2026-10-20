@@ -66,6 +66,29 @@ test.describe('Login dialog — sign-in method info', () => {
     await expect(loginForm.otherSignInOptionsDescription).toBeVisible();
   });
 
+  test('LOGIN-INFO-07 — a hovered method tooltip leaves the neighbouring info icons uncovered', async ({ page }) => {
+    const loginForm = await openLoginDialog(page);
+    await loginForm.otherSignInOptionsButton.click();
+    await expect(loginForm.otherSignInOptionsDescription).toBeVisible();
+
+    const trigger = page.getByTestId('method-info-keychain');
+    const tooltip = page.getByTestId('method-info-keychain-content');
+    await trigger.hover();
+    await expect(tooltip).toBeVisible();
+
+    const tooltipBox = await tooltip.boundingBox();
+    const triggerBox = await trigger.boundingBox();
+    expect(tooltipBox).not.toBeNull();
+    expect(triggerBox).not.toBeNull();
+    if (!tooltipBox || !triggerBox) return;
+    // Opened to the left, it ends before the column of info icons
+    expect(tooltipBox.x + tooltipBox.width).toBeLessThanOrEqual(triggerBox.x);
+
+    // The pointer leaving the icon, even over the tooltip, closes it
+    await page.mouse.move(tooltipBox.x + tooltipBox.width / 2, tooltipBox.y + tooltipBox.height / 2);
+    await expect(tooltip).toBeHidden();
+  });
+
   test('LOGIN-INFO-03 — the Direct Authority Mode label and help follow the UI language', async ({
     page,
     baseURL
@@ -91,6 +114,7 @@ test.describe('Login dialog — sign-in method info', () => {
     const dialog = page.getByRole('dialog', { name: plBlog.login_form.dialog_title });
     await expect(dialog).toBeVisible();
     await expect(dialog).toHaveAccessibleDescription(plBlog.login_form.dialog_description);
+    await expect(loginForm.closeDialog).toHaveAccessibleName(plBlog.global.close);
     await expect(dialog).toContainText(pl.signin_safe_storage.title);
     await expect(loginForm.saveSignInButton).toHaveText(pl.signin_safe_storage.button_save);
     await expect(loginForm.otherSignInOptionsButton).toHaveText(pl.other_signin_options);

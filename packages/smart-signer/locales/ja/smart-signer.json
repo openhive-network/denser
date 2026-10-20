@@ -128,8 +128,8 @@
     "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "この操作には投稿キーが必要です。キーを入力し、安全な保管に保存してください。",
     "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "この操作にはアクティブキーが必要です。キーを入力し、安全な保管に保存してください。",
     "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "この操作にはオーナーキーが必要です。キーを入力し、安全な保管に保存してください。",
-    "use_peakvault": "Peakvaultを使用",
-    "signin_with_peakvault": "Peakvault拡張機能",
+    "use_peakvault": "PeakVaultを使用",
+    "signin_with_peakvault": "PeakVault拡張機能",
     "extension_sign_in": {
       "keychain": "Hive Keychainでサインイン",
       "peakvault": "PeakVaultでサインイン",

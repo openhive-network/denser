@@ -1,5 +1,6 @@
 {
   "global": {
+    "close": "Cerrar",
     "no_rewards": "No hay recompensas pendientes de canjear.",
     "loading": "Cargando",
     "publishing": "Publicando...",

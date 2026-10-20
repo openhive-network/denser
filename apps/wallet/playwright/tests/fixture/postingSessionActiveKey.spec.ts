@@ -47,7 +47,7 @@ const LOCALES = [
     amount: 'Kwota',
     next: 'Dalej',
     confirm: 'Potwierdź Przelew na konto',
-    message: 'Ta operacja wymaga klucza aktywnego (active). Zaloguj się kluczem aktywnym i spróbuj ponownie.'
+    message: 'Ta operacja wymaga klucza Active. Zaloguj się kluczem Active i spróbuj ponownie.'
   }
 ];
 type LocaleLabels = (typeof LOCALES)[number];

@@ -1,5 +1,6 @@
 {
   "global": {
+    "close": "Chiudi",
     "no_rewards": "Nessun premio in attesa di riscatto.",
     "loading": "Caricamento",
     "publishing": "Pubblicazione...",

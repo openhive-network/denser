@@ -84,6 +84,7 @@ function DialogLogin({
         className="mt-32 max-w-[380px] rounded-md p-0 sm:mt-auto sm:max-w-[450px] sm:px-0"
         data-testid="login-dialog"
         onInteractOutside={(e) => e.preventDefault()}
+        closeLabel={t('global.close')}
       >
         <VisuallyHidden>
           <DialogTitle>{t('login_form.dialog_title')}</DialogTitle>

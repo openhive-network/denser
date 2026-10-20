@@ -1,5 +1,6 @@
 {
   "global": {
+    "close": "닫기",
     "no_rewards": "받을 보상이 없습니다.",
     "loading": "불러오는 중",
     "publishing": "게시 중...",

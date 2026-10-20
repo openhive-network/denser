@@ -14,7 +14,8 @@ export interface MethodInfoProps {
  * inside it: a disabled button swallows the pointer events its tooltip needs.
  *
  * The tooltip opens on hover and focus, and also on click, so a tap opens it on touch screens.
- * It is portalled to the body: the sign-in form scrolls, and would clip it.
+ * It is portalled to the body: the sign-in form scrolls, and would clip it. It opens to the left and
+ * closes as soon as the pointer leaves the icon, so it never covers the info icon of the next method.
  */
 const MethodInfo: FC<MethodInfoProps> = ({ label, info, testId }) => {
   const [open, setOpen] = useState(false);
@@ -27,7 +28,7 @@ const MethodInfo: FC<MethodInfoProps> = ({ label, info, testId }) => {
 
   return (
     <TooltipProvider>
-      <Tooltip open={open} onOpenChange={setOpen}>
+      <Tooltip open={open} onOpenChange={setOpen} disableHoverableContent>
         <TooltipTrigger
           type="button"
           aria-label={label}
@@ -38,7 +39,7 @@ const MethodInfo: FC<MethodInfoProps> = ({ label, info, testId }) => {
           <Icons.info className="h-4 w-4" />
         </TooltipTrigger>
         <TooltipPortal>
-          <TooltipContent className="max-w-xs" data-testid={`${testId}-content`}>
+          <TooltipContent side="left" className="max-w-xs" data-testid={`${testId}-content`}>
             {info}
           </TooltipContent>
         </TooltipPortal>

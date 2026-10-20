@@ -1,5 +1,6 @@
 {
   "global": {
+    "close": "Zamknij",
     "no_rewards": "Brak nagród oczekujących na wykorzystanie.",
     "loading": "Wczytywanie",
     "publishing": "Publikowanie...",
@@ -141,9 +142,9 @@
     },
     "user_menu": {
       "account_menu_key": {
-        "posting": "Menu konta {{username}}, klucz publikowania",
-        "active": "Menu konta {{username}}, klucz aktywny",
-        "posting_and_active": "Menu konta {{username}}, klucze publikowania i aktywny"
+        "posting": "Menu konta {{username}}, klucz Posting",
+        "active": "Menu konta {{username}}, klucz Active",
+        "posting_and_active": "Menu konta {{username}}, klucze Posting i Active"
       },
       "account_menu_signer": "Menu konta {{username}}, {{method}}",
       "profile": "Profil",
@@ -171,15 +172,15 @@
         "hivesigner": "HiveSigner"
       },
       "key_type": {
-        "posting": "Klucz publikowania",
-        "active": "Klucz aktywny",
-        "posting_and_active": "Klucz publikowania + aktywny"
+        "posting": "Klucz Posting",
+        "active": "Klucz Active",
+        "posting_and_active": "Klucz Posting + Active"
       },
-      "active_key_badge": "Zalogowano kluczem aktywnym",
-      "log_in_with_active_key": "Zaloguj się kluczem aktywnym",
-      "add_active_key": "Dodaj klucz aktywny",
-      "add_posting_key": "Dodaj klucz publikowania",
-      "switch_to_posting_key": "Przełącz na klucz publikowania"
+      "active_key_badge": "Zalogowano kluczem Active",
+      "log_in_with_active_key": "Zaloguj się kluczem Active",
+      "add_active_key": "Dodaj klucz Active",
+      "add_posting_key": "Dodaj klucz Posting",
+      "switch_to_posting_key": "Przełącz na klucz Posting"
     }
   },
   "select_sort": {
@@ -343,7 +344,7 @@
     "go_to_hive_bridge": "Przejdź do Hive Bridge",
     "completing_google_auth": "Kończenie autoryzacji Google...",
     "dialog_title": "Logowanie",
-    "dialog_description": "Zaloguj się na swoje konto za pomocą klucza publikowania."
+    "dialog_description": "Zaloguj się na swoje konto za pomocą klucza Posting."
   },
   "user_profile": {
     "reputation": "Reputacja",
