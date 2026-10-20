@@ -1042,6 +1042,34 @@
         "wait_exceeded": "게시물이 게이트웨이가 허용하는 시간보다 오래 대기열에 있었습니다.",
         "unknown": "문제가 발생했습니다."
       }
+    },
+    "manage": {
+      "save": "저장",
+      "cancel": "취소",
+      "edited_title": "변경 사항 저장됨",
+      "edited_description": "수정 내용이 라이트 계정 게이트웨이를 통해 게시되었습니다.",
+      "edit_failed_title": "수정 실패",
+      "delete_post_title": "이 게시물을 삭제할까요?",
+      "delete_comment_title": "이 댓글을 삭제할까요?",
+      "delete_tombstone_note": "답글이나 투표가 있는 게시물 또는 댓글은 Hive에서 제거할 수 없습니다. 작성자가 삭제했다는 표시(툼스톤)로 남습니다.",
+      "delete_confirm": "삭제",
+      "deleted_title": "삭제됨",
+      "deleted_l1_delete": "Hive에서 제거되었습니다.",
+      "deleted_tombstone": "답글이나 투표가 있어 삭제되었다는 표시(툼스톤)로 Hive에 남습니다.",
+      "delete_failed_title": "삭제 실패",
+      "deleted_by_author": "작성자가 삭제했습니다.",
+      "errors": {
+        "not_owner": "이 브라우저의 라이트 계정이 작성한 것이 아니거나, 서명한 키를 더 이상 갖고 있지 않습니다.",
+        "not_found": "게이트웨이가 이 게시물을 알지 못합니다.",
+        "edits_disabled": "이 게이트웨이는 지금 수정과 삭제를 받지 않습니다.",
+        "rate_limited": "요청이 너무 많습니다. 잠시 후 다시 시도하세요.",
+        "banned": "이 라이트 계정은 이 게이트웨이를 통해 게시할 수 없습니다.",
+        "body_too_large": "텍스트가 게이트웨이에 비해 너무 깁니다.",
+        "invalid_request": "게이트웨이가 변경을 유효하지 않다며 거부했습니다.",
+        "broadcast_failed": "게이트웨이가 Hive에 변경을 게시하지 못했습니다. 다시 시도하세요.",
+        "relay_unavailable": "라이트 계정 게이트웨이에 연결할 수 없습니다.",
+        "unknown": "문제가 발생했습니다."
+      }
     }
   }
 }

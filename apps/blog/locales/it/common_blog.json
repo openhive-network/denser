@@ -1042,6 +1042,34 @@
         "wait_exceeded": "Il post è rimasto in coda più a lungo di quanto consenta il gateway.",
         "unknown": "Qualcosa è andato storto."
       }
+    },
+    "manage": {
+      "save": "Salva",
+      "cancel": "Annulla",
+      "edited_title": "Modifiche salvate",
+      "edited_description": "La tua modifica è stata pubblicata tramite il gateway degli account lite.",
+      "edit_failed_title": "Modifica non riuscita",
+      "delete_post_title": "Eliminare questo post?",
+      "delete_comment_title": "Eliminare questo commento?",
+      "delete_tombstone_note": "Un post o un commento con risposte o voti non può essere rimosso da Hive: resta come lapide che indica che il suo autore lo ha eliminato.",
+      "delete_confirm": "Elimina",
+      "deleted_title": "Eliminato",
+      "deleted_l1_delete": "È stato rimosso da Hive.",
+      "deleted_tombstone": "Ha risposte o voti, quindi resta su Hive come lapide che indica che è stato eliminato.",
+      "delete_failed_title": "Eliminazione non riuscita",
+      "deleted_by_author": "Eliminato dall'autore.",
+      "errors": {
+        "not_owner": "L'account lite di questo browser non lo ha scritto, o non ha più la chiave che lo ha firmato.",
+        "not_found": "Il gateway non conosce questo post.",
+        "edits_disabled": "Questo gateway al momento non accetta modifiche né eliminazioni.",
+        "rate_limited": "Troppe richieste. Attendi un momento e riprova.",
+        "banned": "Questo account lite non può pubblicare tramite questo gateway.",
+        "body_too_large": "Il testo è troppo lungo per il gateway.",
+        "invalid_request": "Il gateway ha rifiutato la modifica come non valida.",
+        "broadcast_failed": "Il gateway non è riuscito a pubblicare la modifica su Hive. Riprova.",
+        "relay_unavailable": "Il gateway degli account lite non è raggiungibile.",
+        "unknown": "Qualcosa è andato storto."
+      }
     }
   }
 }

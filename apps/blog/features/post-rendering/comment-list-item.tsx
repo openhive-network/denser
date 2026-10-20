@@ -8,6 +8,7 @@ import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import { memo, useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import { ReplyTextbox } from '../post-editor/reply-textbox';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
@@ -20,6 +21,10 @@ import LiteAuthorBadge from '../lite-account/lite-author-badge';
 import { isLiteDid } from '../lite-account/lite-did';
 import { LiteReplyBox } from '../lite-account/lite-reply-box';
 import LiteReplyTrigger from '../lite-account/lite-reply-trigger';
+import { LiteOwnerActions } from '../lite-account/lite-owner-actions';
+import { liteL1Author } from '../lite-account/lite-ownership';
+import { LiteTombstoneNotice } from '../lite-account/lite-tombstone-notice';
+import { useIsLiteTombstone } from '../lite-account/use-lite-owner';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
@@ -56,6 +61,9 @@ interface CommentListProps {
   onCommnentLinkClick: (hash: string) => void;
   children?: ReactNode;
 }
+// The lite editor pulls in the post editor's helpers (and the renderer); load it only when editing.
+const LiteEditForm = dynamic(() => import('../lite-account/lite-edit-form').then((m) => m.LiteEditForm), { ssr: false });
+
 export const commentClassName =
   'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:max-w-full prose-img:h-auto prose-img:max-h-[400px]';
 
@@ -110,6 +118,8 @@ const CommentListItem = memo(function CommentListItem({
   // Guests have no storage key (empty replyStorageId disables the hook), so the lite
   // reply box keeps its open/closed state in memory instead.
   const [guestReply, setGuestReply] = useState(false);
+  const [liteEdit, setLiteEdit] = useState(false);
+  const liteTombstone = useIsLiteTombstone(comment);
 
   // Wrapper to match expected interface and handle storage
   const setReply = useCallback(
@@ -398,6 +408,16 @@ const CommentListItem = memo(function CommentListItem({
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (
                         <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
+                      ) : liteEdit && !user.isLoggedIn ? (
+                        <LiteEditForm
+                          entry={comment}
+                          onClose={() => setLiteEdit(false)}
+                          discussionAuthor={discussionAuthor}
+                          discussionPermlink={discussionPermlink}
+                          observer={observer}
+                        />
+                      ) : liteTombstone ? (
+                        <LiteTombstoneNotice />
                       ) : edit && comment.parent_permlink && comment.parent_author ? (
                         <ReplyTextbox
                           editMode={edit}
@@ -484,6 +504,18 @@ const CommentListItem = memo(function CommentListItem({
                               {t('post_content.footer.reply')}
                             </LiteReplyTrigger>
                           )}
+                          {!user.isLoggedIn ? (
+                            <LiteOwnerActions
+                              entry={comment}
+                              editing={liteEdit}
+                              onToggleEdit={() => setLiteEdit((prev) => !prev)}
+                              separator={<Separator orientation="vertical" className="h-5" />}
+                              className="flex items-center hover:cursor-pointer hover:text-destructive"
+                              discussionAuthor={discussionAuthor}
+                              discussionPermlink={discussionPermlink}
+                              observer={observer}
+                            />
+                          ) : null}
                           {user && user.isLoggedIn && comment.author === user.username ? (
                             <>
                               <Separator orientation="vertical" className="h-5" />
@@ -547,6 +579,7 @@ const CommentListItem = memo(function CommentListItem({
                       <div className="px-2 pb-2">
                         <LiteReplyBox
                           parentAuthor={comment.author}
+                          l1ParentAuthor={liteL1Author(comment)}
                           parentPermlink={comment.permlink}
                           discussionAuthor={discussionAuthor}
                           discussionPermlink={discussionPermlink}

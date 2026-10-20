@@ -1042,6 +1042,34 @@
         "wait_exceeded": "Post czekał w kolejce dłużej, niż pozwala bramka.",
         "unknown": "Coś poszło nie tak."
       }
+    },
+    "manage": {
+      "save": "Zapisz",
+      "cancel": "Anuluj",
+      "edited_title": "Zmiany zapisane",
+      "edited_description": "Twoja edycja została opublikowana przez bramkę kont lite.",
+      "edit_failed_title": "Edycja nie powiodła się",
+      "delete_post_title": "Usunąć ten wpis?",
+      "delete_comment_title": "Usunąć ten komentarz?",
+      "delete_tombstone_note": "Wpisu ani komentarza z odpowiedziami lub głosami nie można usunąć z Hive: zostaje jako nagrobek z informacją, że autor go usunął.",
+      "delete_confirm": "Usuń",
+      "deleted_title": "Usunięto",
+      "deleted_l1_delete": "Usunięto go z Hive.",
+      "deleted_tombstone": "Ma odpowiedzi lub głosy, więc zostaje na Hive jako nagrobek z informacją o usunięciu.",
+      "delete_failed_title": "Usuwanie nie powiodło się",
+      "deleted_by_author": "Usunięte przez autora.",
+      "errors": {
+        "not_owner": "Konto lite tej przeglądarki tego nie napisało albo nie ma już klucza, którym to podpisano.",
+        "not_found": "Bramka nie zna tego wpisu.",
+        "edits_disabled": "Ta bramka nie przyjmuje teraz edycji ani usunięć.",
+        "rate_limited": "Zbyt wiele żądań. Odczekaj chwilę i spróbuj ponownie.",
+        "banned": "To konto lite nie może publikować przez tę bramkę.",
+        "body_too_large": "Tekst jest za długi dla bramki.",
+        "invalid_request": "Bramka odrzuciła zmianę jako nieprawidłową.",
+        "broadcast_failed": "Bramka nie mogła opublikować zmiany na Hive. Spróbuj ponownie.",
+        "relay_unavailable": "Nie można połączyć się z bramką kont lite.",
+        "unknown": "Coś poszło nie tak."
+      }
     }
   }
 }

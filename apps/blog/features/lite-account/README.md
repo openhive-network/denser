@@ -46,8 +46,10 @@ resolves it. On a stock node such URLs never arise; a pasted one is a normal not
 The guest reply box writes its optimistic entry under the DID (key `did:lite:<name>/<permlink>`)
 on a lite-aware node and under the gate account on a stock node.
 
-Not covered yet: voting on, and replying to, a DID-authored post or comment — both need the gate
-account the node does not name in native output.
+Native output names the gate account only in `url` (`/<category>/@<gate>/<permlink>`, a comment
+`…#@<gate>/<permlink>`); `liteL1Author` (`lite-ownership.ts`) reads it from there. A guest reply to a
+DID-authored post or comment sends that gate account as the L1 `parent_author` while the cache
+keeps the DID. Not covered yet: voting on a DID-authored post or comment.
 
 ## Guest posting preflight
 
@@ -68,8 +70,8 @@ gateway is down.
 ## Guest root posts
 
 `/api/lite-gateway/<path>` (`app/api/lite-gateway/[...path]/route.ts`) passes an allow-list through
-to the gateway (`lib/lite-relay/gateway-paths.ts`): `POST reply`, `POST post`, `GET|DELETE
-queue/<id>` and `POST queue/<id>/post`; anything else answers 404 `not_found`. Bodies and statuses
+to the gateway (`lib/lite-relay/gateway-paths.ts`): `POST reply`, `POST post`, `POST edit`, `POST
+delete`, `GET|DELETE queue/<id>` and `POST queue/<id>/post`; anything else answers 404 `not_found`. Bodies and statuses
 are relayed as the gateway answers them, with the client IP forwarded and a 15 s timeout; a non-JSON
 answer becomes 502 `relay_unavailable`. `/api/lite-reply` stays the alias of `/info` (GET) and
 `/reply` (POST).
@@ -100,3 +102,33 @@ explained, with Try again and Back to the editor.
 `playwright/tests/fixture/liteRootPost.spec.ts` posts as a guest against a real gateway. It runs on a
 dev stack started with `DENSER_SERVER_LITE_GATEWAY_URL` (the steem-16 test namespace,
 `https://steem-16.syncad.com/lite-gateway-api`) and skips everywhere else, the fixture suite included.
+
+## Editing and deleting own posts
+
+A post or comment is the guest's own (`useIsLiteOwner`, `lite-ownership.ts`) when its author is
+`did:lite:<identity name>` (lite-aware node) or, on a compat node, when the json_metadata marker of the
+relay's namespace names the identity as attester. The gateway checks the claim: it must have relayed
+the post for that lite account, signed by the same device key. For the owner, and only for a reader
+who is not logged in, the post page and the comment footer show Edit when `/info.features.edits` and
+Delete when `/info.features.deletes` (without `tombstone_deletes`, only where hived would delete: no
+replies, no net-positive votes, before payout). Both need the post's L1 location (gate account and
+permlink); a guest's optimistic reply has one once the gateway answered its `/reply` (its `url` gets
+the `#@<gate>/<permlink>` the node will serve).
+
+Edit opens `lite-edit-form.tsx` with the current content: title, body and tags for a root post (its
+category stays first; hived does not move a post), the body for a comment (posted without a title,
+like every guest reply). Saving (`use-lite-manage-mutations.ts`) signs `buildLiteEditRequest` (same
+permlink, same L1 parent) and POSTs `/api/lite-gateway/edit`; the cached discussion and post show the
+edit at once and a validated refetch replaces them once the node shows the new body. A failure
+restores the cache and toasts `lite_account.manage.errors.*`; the editor keeps the text.
+
+Delete asks first (`lite-delete-dialog.tsx`, which says a post with replies or votes stays as a
+tombstone) and POSTs `buildLiteDeleteRequest` (with the tombstone attestation) to `/delete`. By the
+answer's `mode`: `l1_delete` takes the entry out of the cached discussion (the open post navigates to
+its parent, or to `/created/<category>` for a root post); `tombstone` keeps it with the tombstone
+content. A tombstone (`isLiteTombstone`: the marker says `deleted: true`) renders like a deleted post,
+"Deleted by the author." in place of the body, without Edit or Delete.
+
+`playwright/tests/fixture/liteManage.spec.ts` runs edit and delete against a mocked gateway in the
+fixture suite, and against a real one (LITE-MANAGE-04: reply, edit, delete) on a dev stack started
+with `DENSER_SERVER_LITE_GATEWAY_URL`.

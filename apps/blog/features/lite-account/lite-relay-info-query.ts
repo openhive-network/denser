@@ -14,9 +14,19 @@ export type LiteRelayLimits = {
   root_queue?: { depth?: number; max_wait_s?: number; sign_window_s?: number };
 };
 
+/** The gateway's `/info.features`: which changes to a relayed post it takes. Absent means none. */
+export type LiteRelayFeatures = { edits?: boolean; deletes?: boolean; tombstone_deletes?: boolean };
+
 export type LiteRelayInfo =
   | { enabled: false }
-  | { enabled: true; gate_account: string; chain_id: string; apps: LiteAppIds; limits?: LiteRelayLimits };
+  | {
+      enabled: true;
+      gate_account: string;
+      chain_id: string;
+      apps: LiteAppIds;
+      limits?: LiteRelayLimits;
+      features?: LiteRelayFeatures;
+    };
 
 function isAppIds(value: unknown): value is LiteAppIds {
   return typeof value === 'object' && value !== null && 'account' in value && 'posts' in value

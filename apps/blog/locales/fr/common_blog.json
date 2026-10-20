@@ -1042,6 +1042,34 @@
         "wait_exceeded": "L'article a attendu dans la file plus longtemps que la passerelle ne le permet.",
         "unknown": "Une erreur s'est produite."
       }
+    },
+    "manage": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "edited_title": "Modifications enregistrées",
+      "edited_description": "Votre modification a été publiée via la passerelle des comptes lite.",
+      "edit_failed_title": "Échec de la modification",
+      "delete_post_title": "Supprimer cette publication ?",
+      "delete_comment_title": "Supprimer ce commentaire ?",
+      "delete_tombstone_note": "Une publication ou un commentaire ayant des réponses ou des votes ne peut pas être retiré de Hive : il reste sous forme de pierre tombale indiquant que son auteur l'a supprimé.",
+      "delete_confirm": "Supprimer",
+      "deleted_title": "Supprimé",
+      "deleted_l1_delete": "Il a été retiré de Hive.",
+      "deleted_tombstone": "Il a des réponses ou des votes, il reste donc sur Hive sous forme de pierre tombale indiquant sa suppression.",
+      "delete_failed_title": "Échec de la suppression",
+      "deleted_by_author": "Supprimé par l'auteur.",
+      "errors": {
+        "not_owner": "Le compte lite de ce navigateur ne l'a pas écrit, ou ne détient plus la clé qui l'a signé.",
+        "not_found": "La passerelle ne connaît pas cette publication.",
+        "edits_disabled": "Cette passerelle n'accepte pas de modifications ni de suppressions pour le moment.",
+        "rate_limited": "Trop de requêtes. Patientez un instant et réessayez.",
+        "banned": "Ce compte lite ne peut pas publier via cette passerelle.",
+        "body_too_large": "Le texte est trop long pour la passerelle.",
+        "invalid_request": "La passerelle a refusé la modification comme invalide.",
+        "broadcast_failed": "La passerelle n'a pas pu publier la modification sur Hive. Réessayez.",
+        "relay_unavailable": "La passerelle des comptes lite est injoignable.",
+        "unknown": "Une erreur s'est produite."
+      }
     }
   }
 }

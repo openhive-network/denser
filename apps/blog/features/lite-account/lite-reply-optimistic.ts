@@ -97,3 +97,15 @@ export function hasIndexedReply(fresh: Discussion | null, v: LiteReplyVariables,
   }
   return Object.values(fresh).some((e) => e.author === author && e.permlink === permlink && !e._optimistic);
 }
+
+/**
+ * `prev` with the optimistic reply located on L1 once the gateway posted it, as a node names a
+ * comment: `/<category>/@<discussion author>/<discussion permlink>#@<gate account>/<permlink>`.
+ */
+export function withRelayedReply(prev: Discussion | undefined, v: LiteReplyVariables, l1Author: string): Discussion | undefined {
+  const key = optimisticKey(v);
+  const entry = prev?.[key];
+  if (!prev || !entry?._optimistic) return prev;
+  const url = `/${entry.category}/@${v.discussionAuthor}/${v.discussionPermlink}#@${l1Author}/${entry.permlink}`;
+  return { ...prev, [key]: { ...entry, url } };
+}

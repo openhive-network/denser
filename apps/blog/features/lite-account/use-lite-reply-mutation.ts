@@ -8,7 +8,7 @@ import { getLogger } from '@ui/lib/logging';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
 import { discussionKey, fetchDiscussion } from '../post-rendering/lib/discussion-cache';
 import { LITE_RELAY_ENDPOINT } from './use-lite-relay-info';
-import { hasIndexedReply, withOptimisticReply, type Discussion, type LiteReplyVariables } from './lite-reply-optimistic';
+import { hasIndexedReply, withOptimisticReply, withRelayedReply, type Discussion, type LiteReplyVariables } from './lite-reply-optimistic';
 
 const logger = getLogger('app');
 
@@ -34,6 +34,7 @@ export function useLiteReplyMutation(onFirstPostSucceeded: () => void) {
     },
     onSuccess: (data) => {
       if (data.built.request.register_tx) onFirstPostSucceeded();
+      queryClient.setQueryData<Discussion>(discussionKey(data), (prev: Discussion | undefined) => withRelayedReply(prev, data, data.result.l1_author));
       cleanupRef.current = scheduleValidatedRefetch(
         queryClient,
         discussionKey(data),
