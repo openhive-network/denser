@@ -136,6 +136,7 @@
       "or_safe_storage": "or use safe storage"
     },
     "sign_in_pending": "Another sign-in is still waiting for an answer. Finish or reject it in your wallet extension, or cancel it to start over.",
+    "sign_in_pending_generic": "Another sign-in is still waiting for an answer. Finish or cancel it to start over.",
     "cancel_pending_sign_in": "Cancel pending sign-in",
     "safe_storage_name": "Safe Storage",
     "signin_with_metamask": "MetaMask extension",

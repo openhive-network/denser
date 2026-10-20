@@ -19,13 +19,25 @@ function deferred() {
   return { promise, resolve, reject };
 }
 
-/** What a mounted sign-in form does with the lock: one request per call it is allowed to make. */
-function mountForm(requests: string[], name: string) {
+/**
+ * What a mounted sign-in form does with the lock: one request per call it is allowed to make,
+ * answered in a wallet extension unless `inWalletExtension` is false.
+ */
+function mountForm(requests: string[], name: string, inWalletExtension = true) {
   return (request: Promise<void>) =>
     runExclusiveSignIn(async () => {
       requests.push(name);
       await request;
-    });
+    }, inWalletExtension);
+}
+
+async function refusalOf(signIn: Promise<void>): Promise<SignInPendingError> {
+  const refusal = await signIn.then(
+    () => assert.fail('the second sign-in was not refused'),
+    (error: unknown) => error
+  );
+  assert.ok(refusal instanceof SignInPendingError);
+  return refusal;
 }
 
 /** A sign-in the extension never answers */
@@ -62,18 +74,30 @@ describe('runExclusiveSignIn', () => {
 
   it('gives a refused sign-in a message translated in every smart-signer locale', async () => {
     mountForm([], 'first form')(NEVER_ANSWERED);
-    const refusal = await mountForm([], 'remounted form')(Promise.resolve()).then(
-      () => assert.fail('the second sign-in was not refused'),
-      (error: unknown) => error
-    );
-    assert.ok(refusal instanceof SignInPendingError);
+    const extensionRefusal = await refusalOf(mountForm([], 'remounted form')(Promise.resolve()));
+    cancelPendingSignIn();
+    mountForm([], 'Google form', false)(NEVER_ANSWERED);
+    const otherRefusal = await refusalOf(mountForm([], 'remounted form')(Promise.resolve()));
 
-    assert.match(String(translate('en', refusal.translationKey)), /^Another sign-in is still waiting for an answer/);
-    for (const locale of readdirSync(LOCALES_DIR)) {
-      const message = translate(locale, refusal.translationKey);
-      assert.equal(typeof message, 'string', `${locale} lacks ${refusal.translationKey}`);
-      assert.notEqual(message, '');
+    for (const refusal of [extensionRefusal, otherRefusal]) {
+      assert.match(String(translate('en', refusal.translationKey)), /^Another sign-in is still waiting for an answer/);
+      for (const locale of readdirSync(LOCALES_DIR)) {
+        const message = translate(locale, refusal.translationKey);
+        assert.equal(typeof message, 'string', `${locale} lacks ${refusal.translationKey}`);
+        assert.notEqual(message, '');
+      }
     }
+  });
+
+  it('mentions the wallet extension only when the pending sign-in waits for one', async () => {
+    mountForm([], 'Keychain form')(NEVER_ANSWERED);
+    const extensionRefusal = await refusalOf(mountForm([], 'Google form', false)(Promise.resolve()));
+    assert.match(String(translate('en', extensionRefusal.translationKey)), /wallet extension/);
+
+    cancelPendingSignIn();
+    mountForm([], 'Google form', false)(NEVER_ANSWERED);
+    const otherRefusal = await refusalOf(mountForm([], 'Keychain form')(Promise.resolve()));
+    assert.doesNotMatch(String(translate('en', otherRefusal.translationKey)), /extension/);
   });
 
   it('frees the lock when the pending request fails, leaving its error to its own caller', async () => {

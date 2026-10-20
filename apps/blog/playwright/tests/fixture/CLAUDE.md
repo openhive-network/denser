@@ -552,6 +552,21 @@ whose posting and active authorities list the key's public key.
 
 ---
 
+## Recipe: sign in with a stubbed Google account
+
+The fixture app has no Google client ID, so its Google button is disabled. To
+enable it, `loginGoogleWalletNotFound.spec.ts` appends
+`window.__ENV.REACT_APP_GOOGLE_DRIVE_CLIENT_ID` to `__ENV.js` (the URL carries
+a `?v=` query, so route `**/__ENV.js?*`). It also stubs `window.google` in an
+init script, with a `requestCode` that answers at once and counts the consent
+requests, and blanks the GSI script (`accounts.google.com`). It answers
+`/api/google-drive/auth` with an access token and the Drive API
+(`www.googleapis.com`) with `{ files: [] }`, i.e. no wallet. The build's CSP
+leaves Google out, so the spec sets `bypassCSP: true`. None of it reaches the
+Hive API, so the spec reuses the `accountSwitchLogout` recording.
+
+---
+
 ## Recipe: the user should see a "previously voted" post
 
 SSR fetches post data server-side, so `page.route` cannot override

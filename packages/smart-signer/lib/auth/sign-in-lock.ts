@@ -5,14 +5,17 @@ export const ABANDONED_SIGN_IN_TIMEOUT_MS = 3 * 60 * 1000;
 export class SignInPendingError extends Error {
   name = 'SignInPendingError';
   /** smart-signer translation key of the message for the user */
-  readonly translationKey = 'login_form.sign_in_pending';
+  readonly translationKey: string;
 
-  constructor() {
+  /** `inWalletExtension`: whether the pending sign-in waits for an answer in a wallet extension */
+  constructor(inWalletExtension: boolean) {
     super('Another sign-in is still pending');
+    this.translationKey = inWalletExtension ? 'login_form.sign_in_pending' : 'login_form.sign_in_pending_generic';
   }
 }
 
 let pendingSignIn: Promise<void> | null = null;
+let pendingInWalletExtension = false;
 let abandonTimer: ReturnType<typeof setTimeout> | undefined;
 
 function releaseLock(): void {
@@ -30,12 +33,14 @@ function releaseLock(): void {
  * Resolves once `signIn` succeeds, or rejects with its error. A call made while a sign-in is pending
  * sends nothing and rejects at once with `SignInPendingError`; the pending sign-in's own caller handles
  * its outcome. The lock is freed when the pending sign-in settles, by `cancelPendingSignIn`, or
- * `ABANDONED_SIGN_IN_TIMEOUT_MS` after `abandonPendingSignIn`.
+ * `ABANDONED_SIGN_IN_TIMEOUT_MS` after `abandonPendingSignIn`. `inWalletExtension` tells whether
+ * `signIn` waits for an answer in a wallet extension, for the message of a sign-in refused meanwhile.
  */
-export async function runExclusiveSignIn(signIn: () => Promise<void>): Promise<void> {
-  if (pendingSignIn) throw new SignInPendingError();
+export async function runExclusiveSignIn(signIn: () => Promise<void>, inWalletExtension: boolean): Promise<void> {
+  if (pendingSignIn) throw new SignInPendingError(pendingInWalletExtension);
   const run = signIn();
   pendingSignIn = run;
+  pendingInWalletExtension = inWalletExtension;
   try {
     await run;
   } finally {

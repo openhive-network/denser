@@ -136,6 +136,7 @@
       "or_safe_storage": "ou utilisez le stockage sécurisé"
     },
     "sign_in_pending": "Une autre connexion attend encore une réponse. Terminez-la ou refusez-la dans votre extension de portefeuille, ou annulez-la pour recommencer.",
+    "sign_in_pending_generic": "Une autre connexion attend encore une réponse. Terminez-la ou annulez-la pour recommencer.",
     "cancel_pending_sign_in": "Annuler la connexion en attente",
     "safe_storage_name": "Stockage sécurisé",
     "signin_with_metamask": "Extension MetaMask",
