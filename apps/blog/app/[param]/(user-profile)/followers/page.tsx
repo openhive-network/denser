@@ -1,6 +1,6 @@
 import FollowersContent from './content';
 import { getFollowers } from '@transaction/lib/hive-api';
-import { extractUsernameFromParam } from '@/blog/utils/validate-links';
+import { extractHiveAccountFromParam } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 
@@ -9,7 +9,7 @@ const LIMIT = 50;
 
 const FollowersPage = async (props: { params: Promise<{ param: string }> }) => {
   const params = await props.params;
-  const username = extractUsernameFromParam(params.param);
+  const username = extractHiveAccountFromParam(params.param);
   if (!username) notFound();
 
   let initialFollowers = null;

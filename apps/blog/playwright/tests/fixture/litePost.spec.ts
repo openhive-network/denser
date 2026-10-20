@@ -7,9 +7,9 @@ import { PostPage } from '../support/pages/postPage';
  * `lite.*`): the node answers `lite.get_info`, so post reads go through `lite.*` and name lite
  * authors as `did:lite:<name>`.
  *
- *   LITE-POST-01 – the post's author renders by lite name with the badge, without a profile link
+ *   LITE-POST-01 – the post's author renders by lite name with the badge
  *   LITE-POST-02 – DID reply authors render the same way; their links keep the DID
- *   LITE-POST-03 – the author popover is the lite account card, without follow/mute
+ *   LITE-POST-03 – the author popover is the lite account card, linking the lite profile, without follow/mute
  *   LITE-POST-04 – the post's DID URL renders the same post
  *   LITE-POST-05 – the browser takes the server's lite.get_info answer: loading and navigating
  *                  client-side to a lite post ask the node no lite.get_info from the browser
@@ -52,7 +52,7 @@ test.describe('Lite account post (fixture-based, lite-aware node)', () => {
     postPage = new PostPage(page);
   });
 
-  test('LITE-POST-01: the author renders by lite name with the badge and no profile link', async ({ page }) => {
+  test('LITE-POST-01: the author renders by lite name with the badge', async ({ page }) => {
     await page.goto(`/${CATEGORY}/@${GATE}/${PERMLINK}/`, { waitUntil: 'domcontentloaded' });
     await postPage.waitForPostHydration();
 
@@ -61,7 +61,7 @@ test.describe('Lite account post (fixture-based, lite-aware node)', () => {
     await expect(postPage.articleAuthorData.getByTestId('lite-author-badge')).toBeVisible();
     await expect(postPage.articleAuthorData.getByTestId('author-reputation')).toHaveText('(25)');
     await expect(postPage.articleAuthorData.getByTestId('user-avatar')).toHaveAttribute('src', /\/defaultavatar\.png$/);
-    await expect(page.locator(`a[href$="/@${LITE_DID}"], a[href$="/@${LITE_NAME}"]`)).toHaveCount(0);
+    await expect(page.locator(`a[href$="/@${LITE_NAME}"]`)).toHaveCount(0);
   });
 
   test('LITE-POST-02: DID reply authors render by lite name and their links keep the DID', async ({ page }) => {
@@ -82,6 +82,7 @@ test.describe('Lite account post (fixture-based, lite-aware node)', () => {
     await postPage.articleAuthorName.click();
 
     await expect(postPage.userPopoverCard.getByTestId('lite-account-card-name')).toHaveText(LITE_NAME);
+    await expect(postPage.userPopoverCard.getByTestId('lite-account-card-name')).toHaveAttribute('href', new RegExp(`/@${LITE_DID}$`));
     await expect(postPage.userPopoverCard.getByTestId('lite-author-badge')).toBeVisible();
     await expect(postPage.userPopoverCardFollowButton).toHaveCount(0);
     await expect(postPage.userPopoverCard.locator('button', { hasText: 'Mute' })).toHaveCount(0);

@@ -1,0 +1,53 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_profile",
+    "params": {
+      "account": "test-gateway-1"
+    },
+    "id": 1
+  },
+  "requestHash": "141c5a0ca1818dd9",
+  "method": "lite.get_profile",
+  "params": {
+    "account": "test-gateway-1"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 2621359,
+      "lite": {
+        "pools": [],
+        "gateway": true
+      },
+      "name": "test-gateway-1",
+      "stats": {
+        "rank": 0,
+        "followers": 1,
+        "following": 0
+      },
+      "active": "2026-10-20T00:22:39",
+      "created": "2026-10-15T22:21:36",
+      "metadata": {
+        "profile": {
+          "name": "",
+          "about": "",
+          "website": "",
+          "location": "",
+          "cover_image": "",
+          "profile_image": "",
+          "blacklist_description": "",
+          "muted_list_description": ""
+        }
+      },
+      "blacklists": [],
+      "post_count": 3,
+      "reputation": 25
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

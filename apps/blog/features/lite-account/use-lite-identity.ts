@@ -4,9 +4,7 @@ import { useCallback } from 'react';
 import { createLiteIdentity, type LiteIdentity } from '@hiveio/lite-account';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
-
-export const LITE_IDENTITY_STORAGE_KEY = 'lite-identity';
-const LITE_CLIENT_ID_STORAGE_KEY = 'lite-client-id';
+import { LITE_CLIENT_ID_STORAGE_KEY, LITE_IDENTITY_STORAGE_KEY } from './lite-storage';
 
 /**
  * The device-held lite identity (design doc §3): a throwaway-grade key pair kept in

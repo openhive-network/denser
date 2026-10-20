@@ -1,6 +1,6 @@
 import SettingsContent from './content';
 import { getFollowList } from '@transaction/lib/bridge-api';
-import { extractUsernameFromParam } from '@/blog/utils/validate-links';
+import { extractHiveAccountFromParam } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 import { InitialFollowListProvider } from '@/blog/components/observer-provider';
@@ -9,7 +9,7 @@ const logger = getLogger('app');
 
 const SettingsPage = async (props: { params: Promise<{ param: string }> }) => {
   const params = await props.params;
-  const username = extractUsernameFromParam(params.param);
+  const username = extractHiveAccountFromParam(params.param);
   if (!username) notFound();
 
   // Fetch muted list on server and pass via context.

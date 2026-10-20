@@ -14,7 +14,7 @@ interface IPostsApi {
 }
 /** The post reads of `lite-api.ts`; the other JSON-RPC APIs stay untyped. */
 export type ExtendedNodeApi = {
-  lite: IPostsApi & { get_info: PostsRead };
+  lite: IPostsApi & { get_info: PostsRead; get_profile: (params: object) => Promise<ILiteProfile | null> };
   bridge: IPostsApi;
 };
 export interface ILiteApiInfo {
@@ -23,6 +23,19 @@ export interface ILiteApiInfo {
   render_base: string;
   apps: { posts: string };
   methods: string[];
+}
+/** `lite.get_profile`'s answer, reduced to the fields the tests build. */
+export interface ILiteProfile {
+  id: number;
+  name: string;
+  created: string;
+  active: string;
+  post_count: number;
+  reputation: number;
+  blacklists: string[];
+  stats: { rank: number; followers: number; following: number };
+  metadata: { profile?: { name?: string; about?: string } };
+  lite?: { gateway?: boolean; pools?: unknown[] };
 }
 // Plain data with no imports, so the real definition loads under mocha.
 export { EXTENDED_REST_API_DEFINITION } from '../../../common-hiveio-packages/src/wax/rest-api-definition';

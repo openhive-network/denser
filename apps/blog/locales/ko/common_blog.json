@@ -972,7 +972,7 @@
     "badge_prefix": "라이트 계정",
     "badge_tooltip": "라이트 계정을 대신해 릴레이를 통해 게시됨 (온체인 검증 대기 중)",
     "badge_native_tooltip": "라이트 계정: Hive 계정 없이 게시하며, lite posts 앱이 귀속을 확인합니다",
-    "card_description": "라이트 계정은 Hive 계정 없이 게시합니다. 프로필은 lite 소셜 앱과 함께 제공될 예정입니다.",
+    "card_description": "라이트 계정은 Hive 계정 없이 게시합니다. 팔로우와 뮤트는 lite 소셜 앱과 함께 제공될 예정입니다.",
     "reply_as_guest": "계정 없이 답글을 남기세요. 게시할 때 이름을 고릅니다.",
     "replying_as": "라이트 계정 {{name}}(으)로 답글 작성 중",
     "reply": {
@@ -1082,6 +1082,27 @@
         "relay_unavailable": "라이트 계정 게이트웨이에 연결할 수 없습니다.",
         "unknown": "문제가 발생했습니다."
       }
+    },
+    "profile": {
+      "page_title": "{{name}} (라이트 계정)",
+      "kind": "라이트 계정",
+      "tabs": {
+        "posts": "게시물",
+        "comments": "댓글",
+        "replies": "답글"
+      },
+      "gateway_note": "라이트 계정 게이트웨이",
+      "gateway_tooltip": "이 Hive 계정은 라이트 계정을 대신해 게시합니다"
+    },
+    "identity": {
+      "menu_label": "라이트 계정 {{name}}",
+      "held_here": "이 브라우저에 보관된 라이트 계정",
+      "view_profile": "프로필 보기",
+      "sign_in": "Hive 계정으로 로그인",
+      "forget": "이 라이트 계정 지우기",
+      "forget_title": "라이트 계정 {{name}}을(를) 지울까요?",
+      "forget_description": "키는 이 브라우저에만 보관됩니다. 지우면 누구도 이 라이트 계정으로 다시 게시, 수정, 삭제할 수 없습니다. 초안과 대기 중인 게시물도 삭제되며, 이미 게시된 글은 남습니다.",
+      "forget_confirm": "지우기"
     }
   }
 }

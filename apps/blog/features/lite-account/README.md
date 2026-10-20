@@ -38,8 +38,9 @@ are `'bridge'` until the probe has answered. The server's feed and profile cache
 `lite-did.ts` recognises `did:lite:<name>`. Names follow `isValidLiteName`, whose pattern is copied
 there, not imported: the package has one entry point, which would bundle its signing code into every
 feed page. A DID author is shown by its bare name with `LiteDidBadge` (`LiteAuthorBadge` stays the
-json_metadata badge of compat output), has no profile link, follow or mute (the author popover
-shows `LiteAccountCard` instead), and gets the local placeholder avatar. Post URLs keep the DID
+json_metadata badge of compat output), links its lite profile (`AuthorProfileLink`, `/@did:lite:<name>`),
+has no follow or mute (the author popover shows `LiteAccountCard` instead, whose name links the
+profile), and gets the local placeholder avatar. Post URLs keep the DID
 (`/<category>/@did:lite:<name>/<permlink>`); the post route accepts it and asks the node, which
 resolves it. On a stock node such URLs never arise; a pasted one is a normal not-found.
 
@@ -50,6 +51,40 @@ Native output names the gate account only in `url` (`/<category>/@<gate>/<permli
 `…#@<gate>/<permlink>`); `liteL1Author` (`lite-ownership.ts`) reads it from there. A guest reply to a
 DID-authored post or comment sends that gate account as the L1 `parent_author` while the cache
 keeps the DID. Not covered yet: voting on a DID-authored post or comment.
+
+## Lite profile
+
+`/@did:lite:<name>` is the `[param]` profile route. Its layout (`(user-profile)/layout.tsx`) hands a
+DID to `LiteProfileRoute` (`lite-profile-route.tsx`), which reads `lite.get_profile` through
+`getProfileLiteAccount` (the server's profile cache, keyed by node and namespace). `getLiteProfile`
+(`packages/transaction/lib/lite-api.ts`) asks only a node whose `lite.get_info` lists `get_profile`;
+any JSON-RPC error (e.g. "account does not exist") is null, a transport failure is thrown (503). Null
+renders the not-found page, so a node without lite support answers 404 for every DID route.
+
+`LiteProfileLayout` shows the card (name, badge, "Lite account", joined date, post count; no follow,
+mute or wallet) and the Posts / Comments / Replies tabs, which are the L1 tab pages
+(`posts`, `comments`, `replies`) reading `getAccountPosts` with the DID through `readPosts`, so server
+and browser go to `lite.get_account_posts`. `/@did:lite:<name>` redirects to its Posts; the
+`(posts-tabs)` layout drops the Payouts sub-tabs for a DID. The sub-routes only Hive accounts have
+(followers, followed, notifications, communities, payout, settings, lists, feed) use
+`HiveAccountLayout` (`lib/hive-account-route.tsx`): not-found for a DID, from the segment's layout so the
+404 is a real one (a page under a `loading.tsx` would stream a 200).
+
+A Hive account's profile shows "Lite-account gateway" (`LiteGatewayNote`) when its `lite.get_profile`
+answer carries `lite.gateway = true`; the browser asks only when the node's known `lite.get_info` lists
+the method. `liteProfile.spec.ts` covers both (recorded from steem-16).
+
+## The browser's lite account in the header
+
+For a reader who is not signed in, `LiteIdentityMenu` (in the header's avatar slot) shows the stored
+identity: placeholder avatar, name and badge, with View profile, Sign in with a Hive account (the
+sign-in dialog) and Forget this lite account. It reads `lite-identity` with `useStorageWithTTL`, not
+`useLiteIdentity`, so the header does not bundle the signing package, and the identity written by the
+name dialog shows at once (same-tab storage event). Forget (`lite-forget-dialog.tsx`) says the key is
+only in this browser and runs `forgetLiteAccount` (`lite-storage.ts`): it removes every `lite-*` key
+(identity, reply and root-post drafts, the root queue, the sign-in mark) except the device's
+`lite-client-id`. Signing in shows the normal user menu; the identity stays stored.
+`liteIdentity.spec.ts` covers it.
 
 ## Guest posting preflight
 

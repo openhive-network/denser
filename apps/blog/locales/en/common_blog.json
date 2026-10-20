@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "Posted through a relay on behalf of a lite account (attribution pending on-chain verification)",
     "badge_native_tooltip": "A lite account: posts without a Hive account, attributed by the lite posts app",
-    "card_description": "Lite accounts post without a Hive account. Their profiles will come with the lite social app.",
+    "card_description": "Lite accounts post without a Hive account. Follows and mutes will come with the lite social app.",
     "reply_as_guest": "Reply without an account — you'll pick a name when you post.",
     "replying_as": "Replying as lite account {{name}}",
     "reply": {
@@ -1082,6 +1082,27 @@
         "relay_unavailable": "The lite-account gateway cannot be reached.",
         "unknown": "Something went wrong."
       }
+    },
+    "profile": {
+      "page_title": "{{name}} (lite account)",
+      "kind": "Lite account",
+      "tabs": {
+        "posts": "Posts",
+        "comments": "Comments",
+        "replies": "Replies"
+      },
+      "gateway_note": "Lite-account gateway",
+      "gateway_tooltip": "This Hive account posts on behalf of lite accounts"
+    },
+    "identity": {
+      "menu_label": "Lite account {{name}}",
+      "held_here": "Lite account held in this browser",
+      "view_profile": "View profile",
+      "sign_in": "Sign in with a Hive account",
+      "forget": "Forget this lite account",
+      "forget_title": "Forget lite account {{name}}?",
+      "forget_description": "Its key is kept only in this browser: once it is forgotten, nobody can post, edit or delete as this lite account again. Its lite drafts and queued posts are removed too; its published posts stay.",
+      "forget_confirm": "Forget"
     }
   }
 }

@@ -20,6 +20,7 @@ import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
 import { useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-user';
 import DialogLogin from '@/blog/components/dialog-login';
 import GuestWritePostTrigger from '@/blog/features/lite-account/guest-write-post-trigger';
+import LiteIdentityMenu from '@/blog/features/lite-account/lite-identity-menu';
 import ModeToggle from '@/blog/features/layouts/mode-toggle';
 import LangToggle from '@/blog/features/layouts/lang-toggle';
 import { hoursAndMinutes } from '@/blog/lib/utils';
@@ -291,7 +292,9 @@ const MainBar: FC = () => {
                       <LoginKeyBadge authority={loginAuthority.authority} />
                     </button>
                   </UserMenu>
-                ) : null}
+                ) : (
+                  <LiteIdentityMenu />
+                )}
               </>
             )}
 
