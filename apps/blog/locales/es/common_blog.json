@@ -975,6 +975,9 @@
     "card_description": "Las cuentas lite publican sin una cuenta de Hive. Sus perfiles llegarán con la aplicación social lite.",
     "reply_as_guest": "Responde sin cuenta: elegirás un nombre al publicar.",
     "replying_as": "Respondiendo como cuenta lite {{name}}",
+    "reply": {
+      "or_sign_in": "o inicia sesión"
+    },
     "name_dialog": {
       "title": "Elige un nombre para tu cuenta lite",
       "description": "Sin registro. Tus respuestas se atribuirán a este nombre.",
@@ -990,7 +993,9 @@
       "check_failed": "No se pudo comprobar el nombre: la pasarela de cuentas lite no responde. Puedes continuar; un nombre ocupado se rechaza al publicar.",
       "disposable_note": "Tu identidad se guarda solo en este navegador hasta que la guardes.",
       "confirm": "Publicar con este nombre",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "sign_in_reply": "Inicia sesión y responde con tu cuenta de Hive",
+      "sign_in_post": "Inicia sesión y publica con tu cuenta de Hive"
     },
     "posted": {
       "title": "Reply posted",

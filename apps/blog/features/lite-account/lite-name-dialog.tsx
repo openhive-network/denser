@@ -14,6 +14,15 @@ type Props = {
   onConfirm: (name: string) => void;
   /** A name the gateway refused as taken at posting time: the dialog reopens on it, saying so. */
   takenName?: string;
+  /** What the guest is about to post: names the "sign in instead" action. */
+  purpose: 'reply' | 'post';
+  /** Leaves the guest flow for the sign-in dialog; whatever the guest typed is kept. */
+  onSignIn: () => void;
+};
+
+const SIGN_IN_KEYS: Record<Props['purpose'], string> = {
+  reply: 'lite_account.name_dialog.sign_in_reply',
+  post: 'lite_account.name_dialog.sign_in_post'
 };
 
 const STATE_MESSAGE_KEYS: Record<LiteNameState, string> = {
@@ -71,7 +80,7 @@ function LiteNameForm({ onCancel, onConfirm, takenName }: { onCancel: () => void
  * First-post name prompt: a suggested adjective-noun-number handle the gateway says is free,
  * overridable, with the name's availability checked as the user types (design doc §2 step 3).
  */
-export default function LiteNameDialog({ open, onOpenChange, onConfirm, takenName }: Props) {
+export default function LiteNameDialog({ open, onOpenChange, onConfirm, takenName, purpose, onSignIn }: Props) {
   const { t } = useTranslation('common_blog');
 
   return (
@@ -82,6 +91,9 @@ export default function LiteNameDialog({ open, onOpenChange, onConfirm, takenNam
           <DialogDescription>{t('lite_account.name_dialog.description')}</DialogDescription>
         </DialogHeader>
         <LiteNameForm onCancel={() => onOpenChange(false)} onConfirm={onConfirm} takenName={takenName} />
+        <Button type="button" variant="link" className="h-auto justify-start whitespace-normal p-0 text-left text-sm" onClick={onSignIn} data-testid="lite-name-sign-in">
+          {t(SIGN_IN_KEYS[purpose])}
+        </Button>
       </DialogContent>
     </Dialog>
   );

@@ -975,6 +975,9 @@
     "card_description": "Gli account lite pubblicano senza un account Hive. I loro profili arriveranno con l'app social lite.",
     "reply_as_guest": "Rispondi senza account: sceglierai un nome al momento della pubblicazione.",
     "replying_as": "Rispondi come account lite {{name}}",
+    "reply": {
+      "or_sign_in": "oppure accedi"
+    },
     "name_dialog": {
       "title": "Scegli un nome per il tuo account lite",
       "description": "Nessuna registrazione necessaria. Le tue risposte saranno attribuite a questo nome.",
@@ -990,7 +993,9 @@
       "check_failed": "Impossibile verificare il nome: il gateway degli account lite non è raggiungibile. Puoi continuare; un nome già preso viene rifiutato alla pubblicazione.",
       "disposable_note": "La tua identità resta solo in questo browser finché non la salvi.",
       "confirm": "Pubblica con questo nome",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "sign_in_reply": "Accedi e rispondi con il tuo account Hive",
+      "sign_in_post": "Accedi e pubblica con il tuo account Hive"
     },
     "posted": {
       "title": "Reply posted",

@@ -1,6 +1,8 @@
 'use client';
 
 import { LitePostEntry } from '@/blog/features/lite-account/lite-post-entry';
+import { useAdoptedLiteRootDraft } from '@/blog/features/lite-account/use-lite-sign-in-handoff';
+import { newPostDraftKey } from '@/blog/features/post-editor/hooks/use-post-form-state';
 import PostForm from '@/blog/features/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { useTranslation } from '@/blog/i18n/client';
@@ -13,6 +15,7 @@ const SubmitContent = () => {
   const { user } = useUserClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const categoryParam = useSearchParams()?.get('category') ?? undefined;
+  const draftReady = useAdoptedLiteRootDraft(user?.username ? newPostDraftKey(user.username) : '');
 
   // Draft is saved automatically by PostForm via useStorageWithTTL
   // and cleared only when:
@@ -23,12 +26,14 @@ const SubmitContent = () => {
     <>
       <div className="px-4 py-8">
         {user?.username ? (
-          <PostForm
-            username={user.username}
-            editMode={false}
-            sideBySidePreview={true}
-            setIsSubmitting={setIsSubmitting}
-          />
+          draftReady ? (
+            <PostForm
+              username={user.username}
+              editMode={false}
+              sideBySidePreview={true}
+              setIsSubmitting={setIsSubmitting}
+            />
+          ) : null
         ) : (
           <LitePostEntry
             categoryParam={categoryParam}

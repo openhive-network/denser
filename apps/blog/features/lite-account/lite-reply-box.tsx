@@ -9,9 +9,11 @@ import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
+import DialogLogin from '@/blog/components/dialog-login';
 import { useTranslation } from '@/blog/i18n/client';
 import { isLiteNameTaken } from './lite-name-availability';
 import LiteNameDialog from './lite-name-dialog';
+import { liteReplyDraftKey, markLiteReplySignIn } from './lite-sign-in-handoff';
 import { readiness, readinessText, useLiteGatewayHealth, type LiteReadiness } from './use-lite-gateway-health';
 import { useLiteIdentity } from './use-lite-identity';
 import { useLiteRelayInfo } from './use-lite-relay-info';
@@ -52,8 +54,9 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
   const { t } = useTranslation('common_blog');
   const relay = useLiteRelayInfo();
   const { identity, create, markRegistered, clear, ensureClientId } = useLiteIdentity();
-  const [text, setText, removeText] = useStorageWithTTL<string>(`lite-replyTo-/${parentAuthor}/${parentPermlink}`, '', StorageTTL.DRAFT);
+  const [text, setText, removeText] = useStorageWithTTL<string>(liteReplyDraftKey(parentAuthor, parentPermlink), '', StorageTTL.DRAFT);
   const [nameDialogOpen, setNameDialogOpen] = useState(false);
+  const [signInOpen, setSignInOpen] = useState(false);
   const [takenName, setTakenName] = useState<string>();
   const health = useLiteGatewayHealth(true);
   const [checking, setChecking] = useState(false);
@@ -129,6 +132,13 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
     toast({ title: t('lite_account.posted.title'), description: t('lite_account.posted.description', { name: who.name }), variant: 'success' });
   };
 
+  // The draft stays in storage: the signed-in reply box adopts it and reopens for this parent.
+  const signIn = () => {
+    markLiteReplySignIn(parentAuthor, parentPermlink);
+    setNameDialogOpen(false);
+    setSignInOpen(true);
+  };
+
   const onPost = () => {
     if (identity) void submit(identity);
     else setNameDialogOpen(true);
@@ -141,7 +151,10 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
   return (
     <div className="mb-4 flex w-full flex-col gap-4 rounded-lg border border-border bg-background p-4 text-primary shadow-sm" data-testid="lite-reply-editor">
       <p className="text-xs text-muted-foreground">
-        {identity ? t('lite_account.replying_as', { name: identity.name }) : t('lite_account.reply_as_guest')}
+        {identity ? t('lite_account.replying_as', { name: identity.name }) : t('lite_account.reply_as_guest')}{' '}
+        <button type="button" className="underline hover:text-destructive" onClick={signIn} data-testid="lite-reply-sign-in">
+          {t('lite_account.reply.or_sign_in')}
+        </button>
       </p>
       <MdEditor onChange={setText} persistedValue={text} placeholder={t('post_content.footer.comment.reply')} ariaLabel={t('post_content.footer.comment.reply')} windowheight={200} />
       <div className="flex items-center gap-3">
@@ -167,12 +180,15 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
         open={nameDialogOpen}
         onOpenChange={setNameDialogOpen}
         takenName={takenName}
+        purpose="reply"
+        onSignIn={signIn}
         onConfirm={(name) => {
           setNameDialogOpen(false);
           setTakenName(undefined);
           void submit(create(name));
         }}
       />
+      <DialogLogin open={signInOpen} onOpenChange={setSignInOpen} />
     </div>
   );
 }

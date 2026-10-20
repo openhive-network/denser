@@ -25,6 +25,7 @@ import { LiteOwnerActions } from '../lite-account/lite-owner-actions';
 import { liteL1Author } from '../lite-account/lite-ownership';
 import { LiteTombstoneNotice } from '../lite-account/lite-tombstone-notice';
 import { useIsLiteTombstone } from '../lite-account/use-lite-owner';
+import { useReopenReplyAfterSignIn } from '../lite-account/use-lite-sign-in-handoff';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
@@ -136,6 +137,9 @@ const CommentListItem = memo(function CommentListItem({
     },
     [user.isLoggedIn, setStoredReply, removeStoredReply]
   );
+
+  const openReply = useCallback(() => setReply(true), [setReply]);
+  useReopenReplyAfterSignIn(comment.author, comment.permlink, user.isLoggedIn, openReply);
 
   const setEdit = useCallback(
     (value: boolean) => {

@@ -30,6 +30,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { useLoggedUserContext, useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-user';
+import { adoptLiteReplyDraft } from '@/blog/features/lite-account/lite-sign-in-handoff';
 
 const MdEditor = dynamic(() => import('./md-editor'), {
   ssr: false,
@@ -133,6 +134,12 @@ export function ReplyTextbox({
       lastSyncedDraftRef.current = storedDraft;
     }
   }, [storedDraft, editMode, commentBody]);
+
+  // A reply the reader typed as a guest before signing in becomes this draft, when there is none
+  useEffect(() => {
+    if (editMode || !replyStorageKey) return;
+    adoptLiteReplyDraft(username, permlink, replyStorageKey);
+  }, [editMode, replyStorageKey, username, permlink]);
 
   // Shadow reply recovery — check for orphaned shadow draft from crashed session
   const [shadowReplyRecovery, setShadowReplyRecovery] = useState<{
