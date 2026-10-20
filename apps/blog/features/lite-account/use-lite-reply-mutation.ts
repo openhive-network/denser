@@ -7,7 +7,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { getLogger } from '@ui/lib/logging';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
 import { discussionKey, fetchDiscussion } from '../post-rendering/lib/discussion-cache';
-import { LITE_RELAY_ENDPOINT } from './use-lite-relay-info';
+import { liteRelayEndpoint } from './lite-endpoints';
 import { hasIndexedReply, withOptimisticReply, withRelayedReply, type Discussion, type LiteReplyVariables } from './lite-reply-optimistic';
 
 const logger = getLogger('app');
@@ -28,7 +28,7 @@ export function useLiteReplyMutation(onFirstPostSucceeded: () => void) {
       return { prevData, queryKey };
     },
     mutationFn: async (v: LiteReplyVariables) => {
-      const result = await postLiteReply(LITE_RELAY_ENDPOINT, v.built.request);
+      const result = await postLiteReply(liteRelayEndpoint(), v.built.request);
       logger.info('Lite reply relayed: %o', result);
       return { ...v, result };
     },

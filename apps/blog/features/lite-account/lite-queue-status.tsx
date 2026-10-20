@@ -19,7 +19,7 @@ import {
   type PersistedLiteQueue
 } from './lite-root-post';
 import { useLiteIdentity } from './use-lite-identity';
-import { LITE_GATEWAY_ENDPOINT } from './use-lite-relay-info';
+import { liteGatewayEndpoint } from './lite-endpoints';
 import { useLiteRootPostBuilder } from './use-lite-root-post-mutation';
 
 const logger = getLogger('app');
@@ -72,7 +72,7 @@ export function LiteQueueStatus({ pending, onPosted, onCancelled, onClose }: Pro
 
   const entry = useQuery({
     queryKey: ['liteQueueEntry', queueId],
-    queryFn: () => getLiteQueueEntry(LITE_GATEWAY_ENDPOINT, queueId),
+    queryFn: () => getLiteQueueEntry(liteGatewayEndpoint(), queueId),
     refetchInterval: POSITION_POLL_MS,
     enabled: waiting,
     retry: false
@@ -89,7 +89,7 @@ export function LiteQueueStatus({ pending, onPosted, onCancelled, onClose }: Pro
       if (!request) throw new Error('no lite identity or gateway info to re-sign the queued post with');
       return request;
     };
-    waitForLiteQueue(LITE_GATEWAY_ENDPOINT, pending.queued, { resign, signal: controller.signal }).then(
+    waitForLiteQueue(liteGatewayEndpoint(), pending.queued, { resign, signal: controller.signal }).then(
       (result) => {
         dispatch({ type: 'posted', result });
         latest.current.onPosted(result);
@@ -109,7 +109,7 @@ export function LiteQueueStatus({ pending, onPosted, onCancelled, onClose }: Pro
   const cancel = async () => {
     setCancelling(true);
     try {
-      await cancelLiteQueued(LITE_GATEWAY_ENDPOINT, queueId);
+      await cancelLiteQueued(liteGatewayEndpoint(), queueId);
       dispatch({ type: 'cancelled' });
       onCancelled();
     } catch (error) {

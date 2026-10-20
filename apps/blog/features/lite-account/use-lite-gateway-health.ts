@@ -2,8 +2,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 import type { TFunction } from 'i18next';
+import { liteGatewayHealthEndpoint } from './lite-endpoints.ts';
 
-export const LITE_GATEWAY_HEALTH_ENDPOINT = '/api/lite-reply/health';
 const HEALTH_STALE_MS = 10_000;
 
 type PoolState = {
@@ -68,7 +68,7 @@ export function readinessText(t: TFunction<'common_blog'>, r: LiteReadiness): st
 
 async function fetchLiteGatewayHealth(): Promise<LiteGatewayHealth> {
   try {
-    const response = await fetch(LITE_GATEWAY_HEALTH_ENDPOINT, { method: 'GET', cache: 'no-store' });
+    const response = await fetch(liteGatewayHealthEndpoint(), { method: 'GET', cache: 'no-store' });
     if (!response.ok) return GATEWAY_DOWN;
     const payload: unknown = await response.json();
     return isHealth(payload) ? payload : GATEWAY_DOWN;

@@ -29,7 +29,8 @@ import {
   type Discussion
 } from './lite-manage-cache';
 import { useLiteIdentity } from './use-lite-identity';
-import { LITE_GATEWAY_ENDPOINT, useLiteRelayInfo } from './use-lite-relay-info';
+import { liteGatewayEndpoint } from './lite-endpoints';
+import { useLiteRelayInfo } from './use-lite-relay-info';
 
 const logger = getLogger('app');
 
@@ -123,7 +124,7 @@ export function useLiteEditMutation() {
         clientId: ctx.clientId,
         content: { parent_author: ctx.parent.author, parent_permlink: ctx.parent.permlink, title: v.title, body: v.body, tags: v.tags }
       });
-      const result = await postLiteEdit(`${LITE_GATEWAY_ENDPOINT}/edit`, request);
+      const result = await postLiteEdit(liteGatewayEndpoint('/edit'), request);
       logger.info('Lite edit relayed: %o', result);
       return result;
     },
@@ -171,7 +172,7 @@ export function useLiteDeleteMutation() {
         parentAuthor: ctx.parent.author,
         parentPermlink: ctx.parent.permlink
       });
-      const result = await postLiteDelete(`${LITE_GATEWAY_ENDPOINT}/delete`, request);
+      const result = await postLiteDelete(liteGatewayEndpoint('/delete'), request);
       logger.info('Lite delete relayed: %o', result);
       return { mode: result.mode, apps: ctx.apps, attester: ctx.identity.name };
     },

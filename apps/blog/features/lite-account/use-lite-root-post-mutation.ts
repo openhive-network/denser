@@ -17,7 +17,8 @@ import { useTranslation } from '@/blog/i18n/client';
 import { relayErrorCode, rootPostErrorKey, rootPostExpirationMinutes } from './lite-root-post';
 import { readiness, readinessText, useLiteGatewayHealth, type LiteReadiness } from './use-lite-gateway-health';
 import { useLiteIdentity } from './use-lite-identity';
-import { LITE_GATEWAY_ENDPOINT, useLiteRelayInfo } from './use-lite-relay-info';
+import { liteGatewayEndpoint } from './lite-endpoints';
+import { useLiteRelayInfo } from './use-lite-relay-info';
 
 const logger = getLogger('app');
 
@@ -86,7 +87,7 @@ export function useLiteRootPostMutation() {
         const minutes = Math.ceil(ready.queueWaitS / SECONDS_PER_MINUTE);
         toast({ title: t('lite_account.root_post.will_queue_title'), description: t('lite_account.root_post.will_queue', { minutes }) });
       }
-      const answer = await postLiteRootPost(`${LITE_GATEWAY_ENDPOINT}/post`, request);
+      const answer = await postLiteRootPost(liteGatewayEndpoint('/post'), request);
       logger.info('Lite root post relayed: %o', answer);
       return answer.ok ? { kind: 'posted', result: answer, comment } : { kind: 'queued', queued: answer, comment };
     },
