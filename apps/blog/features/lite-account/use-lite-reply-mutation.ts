@@ -8,6 +8,7 @@ import { getLogger } from '@ui/lib/logging';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
 import { discussionKey, fetchDiscussion } from '../post-rendering/lib/discussion-cache';
 import { liteRelayEndpoint } from './lite-endpoints';
+import { isLiteNameTaken } from './lite-name-availability';
 import { hasIndexedReply, withOptimisticReply, withRelayedReply, type Discussion, type LiteReplyVariables } from './lite-reply-optimistic';
 
 const logger = getLogger('app');
@@ -46,6 +47,7 @@ export function useLiteReplyMutation(onFirstPostSucceeded: () => void) {
       if (context?.prevData) queryClient.setQueryData(context.queryKey, context.prevData);
       else if (context?.queryKey) queryClient.removeQueries({ queryKey: context.queryKey, exact: true });
       logger.error(error);
+      if (isLiteNameTaken(error)) return; // the reply box reopens the name dialog instead
       toast({ title: 'Reply failed', description: error instanceof Error ? error.message : 'unknown error', variant: 'destructive' });
     }
   });

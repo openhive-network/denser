@@ -67,11 +67,27 @@ the button toasts the reason instead of opening, and the box keeps the draft and
 the gateway's `available_in_s` (10 s when it names none), or toasts and keeps the draft when the
 gateway is down.
 
+## Picking a lite name
+
+The name dialog (`lite-name-dialog.tsx`, from the guest reply box and the guest post entry) checks
+names with the gateway's `GET /names/{name}/availability` through `/api/lite-gateway`
+(`checkLiteNameAvailability`, `lite-name-availability.ts`). The grammar is checked first; a
+grammatical name is asked 300 ms after typing pauses (`lite-name-checker.ts`), and each new name or
+suggestion aborts the request before it, so an answer never lands on a newer name. The dialog says
+checking, available, taken by a lite account, taken by a Hive account, not a valid Hive name, or that
+the gateway could not be asked; Confirm takes an available name, and also an unchecked one when the
+gateway is unreachable (it still refuses a taken name at posting time). The first name offered and
+"Suggest another" generate up to 5 names until one is available. When a reply or post is still
+refused with `name_taken` (someone took the name meanwhile), the identity is dropped and the dialog
+reopens on that name, marked taken; the draft is kept. `playwright/tests/fixture/liteName.spec.ts`
+covers it with the gateway answered in the browser.
+
 ## Guest root posts
 
 `/api/lite-gateway/<path>` (`app/api/lite-gateway/[...path]/route.ts`) passes an allow-list through
 to the gateway (`lib/lite-relay/gateway-paths.ts`): `POST reply`, `POST post`, `POST edit`, `POST
-delete`, `GET|DELETE queue/<id>` and `POST queue/<id>/post`; anything else answers 404 `not_found`. Bodies and statuses
+delete`, `GET|DELETE queue/<id>`, `POST queue/<id>/post` and `GET names/<name>/availability` (a name in
+the lite grammar only); anything else answers 404 `not_found`. Bodies and statuses
 are relayed as the gateway answers them, with the client IP forwarded and a 15 s timeout; a non-JSON
 answer becomes 502 `relay_unavailable`. `/api/lite-reply` stays the alias of `/info` (GET) and
 `/reply` (POST).

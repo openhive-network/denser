@@ -981,6 +981,13 @@
       "label": "Name",
       "suggest_another": "Suggest another",
       "invalid_name": "3〜16文字：小文字の英字、数字、ハイフン。先頭は英字、末尾は英字または数字。",
+      "checking": "この名前が使えるか確認中…",
+      "available": "この名前は使用できます。",
+      "taken": "この名前はたった今使用されました。別の名前を選んでください。",
+      "taken_lite": "この名前は別の lite アカウントが使用しています。",
+      "taken_l1": "この名前は Hive アカウントが使用しています。",
+      "invalid_l1": "有効な Hive アカウント名ではありません。",
+      "check_failed": "名前を確認できませんでした：lite アカウントのゲートウェイに接続できません。続行できますが、使用済みの名前は投稿時に拒否されます。",
       "disposable_note": "保存するまで、あなたのIDはこのブラウザにのみ保持されます。",
       "confirm": "この名前で投稿",
       "cancel": "Cancel"

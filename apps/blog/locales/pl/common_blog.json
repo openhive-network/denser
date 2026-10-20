@@ -981,6 +981,13 @@
       "label": "Nazwa",
       "suggest_another": "Zaproponuj inną",
       "invalid_name": "Od 3 do 16 znaków: małe litery, cyfry i myślniki; zaczyna się literą, kończy literą lub cyfrą.",
+      "checking": "Sprawdzamy, czy ta nazwa jest wolna…",
+      "available": "Ta nazwa jest dostępna.",
+      "taken": "Ta nazwa została właśnie zajęta. Wybierz inną.",
+      "taken_lite": "Ta nazwa należy do innego konta lite.",
+      "taken_l1": "Ta nazwa należy do konta Hive.",
+      "invalid_l1": "To nie jest poprawna nazwa konta Hive.",
+      "check_failed": "Nie udało się sprawdzić nazwy: bramka kont lite jest nieosiągalna. Możesz kontynuować; zajęta nazwa zostanie odrzucona przy publikacji.",
       "disposable_note": "Twoja tożsamość jest przechowywana tylko w tej przeglądarce, dopóki jej nie zapiszesz.",
       "confirm": "Opublikuj pod tą nazwą",
       "cancel": "Anuluj"
