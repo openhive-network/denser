@@ -1,18 +1,19 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { getReadChain } from '@transaction/lib/chain';
-import { getLiteApiInfo, LITE_PROBE_TTL_MS, type TPostsNamespace } from '@transaction/lib/lite-api';
+import { useSyncExternalStore } from 'react';
+import type { ILiteApiInfo } from '@hive/common-hiveio-packages/wax';
+import { peekLiteApiInfo, subscribeLiteApiInfo, type TPostsNamespace } from '@transaction/lib/lite-api';
 
-/** `lite.get_info` of the API node reads go to: null while unknown or when it is not lite-aware. */
-export function useLiteApiInfo() {
-  const endpoint = getReadChain().endpointUrl;
-  return useQuery({
-    queryKey: ['liteApiInfo', endpoint],
-    queryFn: getLiteApiInfo,
-    staleTime: LITE_PROBE_TTL_MS,
-    retry: false
-  });
+// The server renders as before any answer, so hydration matches whatever the browser knows.
+const getServerSnapshot = (): undefined => undefined;
+
+/**
+ * `lite.get_info` of the API node reads go to as far as it is known: undefined until the server's
+ * answer is seeded or the first post read probes the node, null when it is not lite-aware. Never
+ * asks the node itself, so a server-rendered page makes no browser request for it.
+ */
+export function useLiteApiInfo(): ILiteApiInfo | null | undefined {
+  return useSyncExternalStore(subscribeLiteApiInfo, peekLiteApiInfo, getServerSnapshot);
 }
 
 /**
@@ -20,6 +21,5 @@ export function useLiteApiInfo() {
  * probe has answered, so a node without lite support keeps the keys and reads it always had.
  */
 export function usePostsNamespace(): TPostsNamespace {
-  const { data } = useLiteApiInfo();
-  return data ? 'lite' : 'bridge';
+  return useLiteApiInfo() ? 'lite' : 'bridge';
 }

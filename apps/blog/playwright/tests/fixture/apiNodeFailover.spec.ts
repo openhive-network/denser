@@ -222,6 +222,9 @@ test('API-FAILOVER-04: a client-side navigation first in a session fails over wi
   await expect(page.getByRole('link', { name: 'Replies', exact: true })).toBeVisible({
     timeout: TIMEOUTS.HYDRATION
   });
+  // A request the load sent the stalled node keeps the network busy until it times out: once the
+  // network is idle, every request of the load has been counted.
+  await page.waitForLoadState('networkidle');
   expect(deadNodeRequests).toHaveLength(0);
 
   const restoreReplies = await failServerReads(context, fixtureProxy, isRepliesRead);

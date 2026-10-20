@@ -1,6 +1,6 @@
 import '@hive/tailwindcss-config/globals.css';
 import * as Sentry from '@sentry/nextjs';
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 import { Metadata } from 'next';
 import { cookies, headers } from 'next/headers';
 import { NONCE_HEADER, parseNonce } from '@hive/middleware/lib/csp';
@@ -13,6 +13,7 @@ import { getEnvVersion } from '@ui/lib/env-version';
 import { ImagesHostHints } from '@ui/components/images-host-hints';
 import { LocaleProvider } from '@ui/components/locale-context';
 import { cookieName, resolveLocale } from '../i18n/settings';
+import LiteApiSeed from '../features/lite-account/lite-api-seed';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -82,6 +83,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <ImagesHostHints />
       </head>
       <body className="bg-background-secondary">
+        <Suspense fallback={null}>
+          <LiteApiSeed />
+        </Suspense>
         <LocaleProvider locale={locale}>
           <div className="min-h-screen">
             <Providers nonce={nonce}>
