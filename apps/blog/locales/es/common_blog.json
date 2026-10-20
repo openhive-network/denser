@@ -1002,6 +1002,46 @@
       "try_again_in": "Vuelve a intentarlo en {{seconds}} s.",
       "draft_kept": "Tu borrador se ha guardado.",
       "post_wait": "Espera {{seconds}} s"
+    },
+    "root_post": {
+      "write_as_guest": "¿No tienes cuenta? Escribe una publicación como invitado: primero elegirás un nombre.",
+      "start_as_guest": "Escribir como invitado",
+      "posting_as": "Publicando como cuenta lite {{name}}",
+      "will_queue_title": "Tu publicación entrará en la cola",
+      "will_queue": "Todas las cuentas de la pasarela están ocupadas; tu publicación debería salir en unos {{minutes}} min.",
+      "unavailable_title": "Las publicaciones de invitados no están disponibles ahora",
+      "failed_title": "La publicación falló",
+      "posted_title": "Publicación publicada",
+      "posted_description": "Tu publicación se publicó como cuenta lite {{name}}.",
+      "queue": {
+        "queued": "Tu publicación espera en la cola de la pasarela. Mantén esta página abierta o vuelve más tarde.",
+        "position": "Posición en la cola: {{position}}",
+        "due_in": "Saldrá previsiblemente en {{wait}}",
+        "due_now": "Saldrá en cualquier momento",
+        "ready": "Hay una cuenta de la pasarela reservada para tu publicación; publicándola…",
+        "ended_title": "Tu publicación en cola no se publicó",
+        "cancel": "Cancelar",
+        "cancel_failed": "No se pudo cancelar la publicación en cola",
+        "retry": "Reintentar",
+        "back_to_editor": "Volver al editor",
+        "cancelled_title": "Publicación en cola cancelada",
+        "cancelled_description": "Tu borrador se conserva y se devolvió la cuota de hoy."
+      },
+      "errors": {
+        "quota_exceeded": "Has alcanzado el límite diario de publicaciones de invitado. Inténtalo mañana.",
+        "pool_busy": "Todas las cuentas de la pasarela están ocupadas y la cola está llena. Inténtalo más tarde.",
+        "rate_limited": "Demasiadas solicitudes. Espera un momento y vuelve a intentarlo.",
+        "captcha_required": "Esta pasarela pide un CAPTCHA que este sitio aún no puede mostrar.",
+        "body_too_large": "La publicación es demasiado larga para la pasarela.",
+        "banned": "Esta cuenta lite no puede publicar a través de esta pasarela.",
+        "invalid_request": "La pasarela rechazó la publicación por no ser válida.",
+        "permlink_taken": "Esa dirección de publicación ya está en uso. Inténtalo de nuevo.",
+        "broadcast_failed": "La pasarela no pudo publicar en Hive. Inténtalo de nuevo.",
+        "relay_unavailable": "No se puede contactar con la pasarela de cuentas lite.",
+        "sign_window_elapsed": "Se reservó una cuenta de la pasarela para tu publicación, pero no se firmó a tiempo.",
+        "wait_exceeded": "La publicación esperó en la cola más de lo que permite la pasarela.",
+        "unknown": "Algo salió mal."
+      }
     }
   }
 }

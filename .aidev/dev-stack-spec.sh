@@ -61,7 +61,10 @@ control POST /__aidev/upstream '{"url":"http://127.0.0.1:8201"}' > /dev/null
 status=0
 # Traces go to test-results/dev-stack at the checkout root: anything written under
 # apps/ or packages/ is inside next's watched tree and triggers a recompile.
+# A spec that needs a lite gateway (liteRootPost.spec.ts) runs only when this names the one the
+# stack's blog was started with; elsewhere it skips.
 in_stack env CI=1 DENSER_BLOG_URL=http://localhost:3000 DENSER_FIXTURE_WORKER_PORT=8201 \
+    DENSER_SERVER_LITE_GATEWAY_URL="${DENSER_SERVER_LITE_GATEWAY_URL:-}" \
     DENSER_PLAYWRIGHT_OUTPUT_DIR=/work/test-results/dev-stack \
     pnpm exec playwright test --config=../../.aidev/playwright.fixture-stack.config.ts \
     --tsconfig=tsconfig.json --reporter=list "$@" || status=$?

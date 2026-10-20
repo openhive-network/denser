@@ -64,3 +64,39 @@ reader. Health is re-asked when the button opens the box and again right before 
 the button toasts the reason instead of opening, and the box keeps the draft and disables Post for
 the gateway's `available_in_s` (10 s when it names none), or toasts and keeps the draft when the
 gateway is down.
+
+## Guest root posts
+
+`/api/lite-gateway/<path>` (`app/api/lite-gateway/[...path]/route.ts`) passes an allow-list through
+to the gateway (`lib/lite-relay/gateway-paths.ts`): `POST reply`, `POST post`, `GET|DELETE
+queue/<id>` and `POST queue/<id>/post`; anything else answers 404 `not_found`. Bodies and statuses
+are relayed as the gateway answers them, with the client IP forwarded and a 15 s timeout; a non-JSON
+answer becomes 502 `relay_unavailable`. `/api/lite-reply` stays the alias of `/info` (GET) and
+`/reply` (POST).
+
+A reader who is not logged in gets the guest editor on `/submit.html` (`lite-post-entry.tsx`) when the
+deployment's gateway is enabled; the header's pencil asks `/api/lite-reply` on click and opens the
+editor there, the sign-in dialog elsewhere. Without an identity in this browser, the lite name dialog
+comes first. The editor (`lite-post-form.tsx`) takes a title, the body, tags and "My blog" (the first
+tag is the category) or the community the page was opened for (`?category=hive-…`). Its draft is
+`lite-postData-new` (30 days) and survives every failure.
+
+Submitting (`use-lite-root-post-mutation.ts`) re-asks `/health`: `readiness(health, 'root')` refuses a
+down gateway or a busy lane that cannot queue (toast, draft kept); a lane that can queue goes ahead
+and toasts the estimated wait. The request is `buildLiteReplyRequest` in root form (`parent_author`
+'', `parent_permlink` = the category) for `/info.gate_account`, with the gateway's
+`max_expiration_minutes`, so the attestation outlives a normal queue wait. A 200 goes to the post:
+`/<category>/@did:lite:<name>/<permlink>?pending=1` when the API node is lite-aware, under the
+gate account (`l1_author`) otherwise. Gateway errors map to `lite_account.root_post.errors.*`
+(`lite-root-post.ts`).
+
+A 202 shows the queue panel (`lite-queue-status.tsx`) instead of the editor: position (asked every
+20 s), a countdown to `due_at`, and Cancel (`DELETE queue/<id>`, which refunds the quota). It runs
+`waitForLiteQueue`, whose `resign` signs the same content again for the gate the gateway reserved. The
+ticket and the exact content are kept as `lite-root-queue` for `max_wait_s` + `sign_window_s`, so a
+reload resumes the wait. An expiry (`sign_window_elapsed` | `wait_exceeded`) or another failure is
+explained, with Try again and Back to the editor.
+
+`playwright/tests/fixture/liteRootPost.spec.ts` posts as a guest against a real gateway. It runs on a
+dev stack started with `DENSER_SERVER_LITE_GATEWAY_URL` (the steem-16 test namespace,
+`https://steem-16.syncad.com/lite-gateway-api`) and skips everywhere else, the fixture suite included.

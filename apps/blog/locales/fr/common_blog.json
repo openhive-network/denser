@@ -1002,6 +1002,46 @@
       "try_again_in": "Réessayez dans {{seconds}} s.",
       "draft_kept": "Votre brouillon est conservé.",
       "post_wait": "Patientez {{seconds}} s"
+    },
+    "root_post": {
+      "write_as_guest": "Pas de compte ? Écrivez un article en tant qu'invité — vous choisirez d'abord un nom.",
+      "start_as_guest": "Écrire en tant qu'invité",
+      "posting_as": "Publication en tant que compte lite {{name}}",
+      "will_queue_title": "Votre article sera mis en file d'attente",
+      "will_queue": "Tous les comptes de la passerelle sont occupés ; votre article devrait partir dans environ {{minutes}} min.",
+      "unavailable_title": "Les articles d'invités sont indisponibles pour le moment",
+      "failed_title": "Échec de la publication",
+      "posted_title": "Article publié",
+      "posted_description": "Votre article a été publié en tant que compte lite {{name}}.",
+      "queue": {
+        "queued": "Votre article attend dans la file de la passerelle. Gardez cette page ouverte ou revenez-y plus tard.",
+        "position": "Position dans la file : {{position}}",
+        "due_in": "Départ prévu dans {{wait}}",
+        "due_now": "Départ d'un instant à l'autre",
+        "ready": "Un compte de la passerelle est réservé pour votre article — publication en cours…",
+        "ended_title": "Votre article en file d'attente n'a pas été publié",
+        "cancel": "Annuler",
+        "cancel_failed": "Impossible d'annuler l'article en file d'attente",
+        "retry": "Réessayer",
+        "back_to_editor": "Retour à l'éditeur",
+        "cancelled_title": "Article en file d'attente annulé",
+        "cancelled_description": "Votre brouillon est conservé et le quota du jour a été rendu."
+      },
+      "errors": {
+        "quota_exceeded": "Vous avez atteint la limite quotidienne d'articles d'invité. Réessayez demain.",
+        "pool_busy": "Tous les comptes de la passerelle sont occupés et la file est pleine. Réessayez plus tard.",
+        "rate_limited": "Trop de requêtes. Patientez un instant puis réessayez.",
+        "captcha_required": "Cette passerelle demande un CAPTCHA que ce site ne peut pas encore afficher.",
+        "body_too_large": "L'article est trop long pour la passerelle.",
+        "banned": "Ce compte lite n'est pas autorisé à publier via cette passerelle.",
+        "invalid_request": "La passerelle a refusé l'article comme invalide.",
+        "permlink_taken": "Cette adresse d'article est déjà prise. Réessayez.",
+        "broadcast_failed": "La passerelle n'a pas pu publier l'article sur Hive. Réessayez.",
+        "relay_unavailable": "La passerelle des comptes lite est injoignable.",
+        "sign_window_elapsed": "Un compte de la passerelle était réservé pour votre article, mais il n'a pas été signé à temps.",
+        "wait_exceeded": "L'article a attendu dans la file plus longtemps que la passerelle ne le permet.",
+        "unknown": "Une erreur s'est produite."
+      }
     }
   }
 }

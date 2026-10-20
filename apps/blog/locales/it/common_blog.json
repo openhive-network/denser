@@ -1002,6 +1002,46 @@
       "try_again_in": "Riprova tra {{seconds}} s.",
       "draft_kept": "La tua bozza è stata conservata.",
       "post_wait": "Attendi {{seconds}} s"
+    },
+    "root_post": {
+      "write_as_guest": "Non hai un account? Scrivi un post come ospite: prima sceglierai un nome.",
+      "start_as_guest": "Scrivi come ospite",
+      "posting_as": "Pubblichi come account lite {{name}}",
+      "will_queue_title": "Il tuo post verrà messo in coda",
+      "will_queue": "Tutti gli account del gateway sono occupati; il post dovrebbe uscire tra circa {{minutes}} min.",
+      "unavailable_title": "I post degli ospiti non sono disponibili al momento",
+      "failed_title": "Pubblicazione non riuscita",
+      "posted_title": "Post pubblicato",
+      "posted_description": "Il tuo post è stato pubblicato come account lite {{name}}.",
+      "queue": {
+        "queued": "Il tuo post è in attesa nella coda del gateway. Tieni aperta questa pagina o tornaci più tardi.",
+        "position": "Posizione in coda: {{position}}",
+        "due_in": "Uscita prevista tra {{wait}}",
+        "due_now": "Uscirà a momenti",
+        "ready": "Un account del gateway è riservato al tuo post: pubblicazione in corso…",
+        "ended_title": "Il post in coda non è stato pubblicato",
+        "cancel": "Annulla",
+        "cancel_failed": "Impossibile annullare il post in coda",
+        "retry": "Riprova",
+        "back_to_editor": "Torna all'editor",
+        "cancelled_title": "Post in coda annullato",
+        "cancelled_description": "La bozza è conservata e la quota di oggi è stata restituita."
+      },
+      "errors": {
+        "quota_exceeded": "Hai raggiunto il limite giornaliero di post come ospite. Riprova domani.",
+        "pool_busy": "Tutti gli account del gateway sono occupati e la coda è piena. Riprova più tardi.",
+        "rate_limited": "Troppe richieste. Attendi un momento e riprova.",
+        "captcha_required": "Questo gateway richiede un CAPTCHA che questo sito non può ancora mostrare.",
+        "body_too_large": "Il post è troppo lungo per il gateway.",
+        "banned": "Questo account lite non può pubblicare tramite questo gateway.",
+        "invalid_request": "Il gateway ha rifiutato il post perché non valido.",
+        "permlink_taken": "Questo indirizzo del post è già in uso. Riprova.",
+        "broadcast_failed": "Il gateway non è riuscito a pubblicare il post su Hive. Riprova.",
+        "relay_unavailable": "Il gateway degli account lite non è raggiungibile.",
+        "sign_window_elapsed": "Un account del gateway era riservato al tuo post, ma il post non è stato firmato in tempo.",
+        "wait_exceeded": "Il post è rimasto in coda più a lungo di quanto consenta il gateway.",
+        "unknown": "Qualcosa è andato storto."
+      }
     }
   }
 }

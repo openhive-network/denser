@@ -1,15 +1,18 @@
 'use client';
 
+import { LitePostEntry } from '@/blog/features/lite-account/lite-post-entry';
 import PostForm from '@/blog/features/post-editor/post-form';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 const SubmitContent = () => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const categoryParam = useSearchParams()?.get('category') ?? undefined;
 
   // Draft is saved automatically by PostForm via useStorageWithTTL
   // and cleared only when:
@@ -27,12 +30,17 @@ const SubmitContent = () => {
             setIsSubmitting={setIsSubmitting}
           />
         ) : (
-          <div
-            className="block bg-green-50 px-4 py-6 text-sm font-light shadow-sm dark:bg-slate-800"
-            data-testid="log-in-to-make-post-message"
-          >
-            {t('submit_page.log_in_to_post')}
-          </div>
+          <LitePostEntry
+            categoryParam={categoryParam}
+            signInPrompt={
+              <div
+                className="block bg-green-50 px-4 py-6 text-sm font-light shadow-sm dark:bg-slate-800"
+                data-testid="log-in-to-make-post-message"
+              >
+                {t('submit_page.log_in_to_post')}
+              </div>
+            }
+          />
         )}
       </div>
       <PostingLoader isSubmitting={isSubmitting} />

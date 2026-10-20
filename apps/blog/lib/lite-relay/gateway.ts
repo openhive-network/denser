@@ -9,6 +9,7 @@
  *                                    an empty value disables the feature.
  */
 import { getLogger } from '@ui/lib/logging';
+import type { GatewayMethod } from './gateway-paths';
 
 export const DEFAULT_LITE_GATEWAY_URL = 'https://api.hive.blog/lite-gateway-api';
 
@@ -30,7 +31,7 @@ export type GatewayResult = { status: number; body: string };
 export async function callGateway(
   base: string,
   path: string,
-  init: { method: 'GET' | 'POST'; body?: string; clientIp?: string; timeoutMs?: number }
+  init: { method: GatewayMethod; body?: string; clientIp?: string; timeoutMs?: number }
 ): Promise<GatewayResult> {
   const headers: Record<string, string> = { accept: 'application/json' };
   if (init.body !== undefined) headers['content-type'] = 'application/json';
@@ -50,6 +51,43 @@ export function clientIp(request: Request): string | undefined {
   const forwarded = request.headers.get('x-forwarded-for');
   const first = forwarded?.split(',')[0]?.trim();
   return first && first.length > 0 ? first : request.headers.get('x-real-ip') ?? undefined;
+}
+
+const JSON_HEADERS = { 'content-type': 'application/json' };
+
+function looksLikeJson(body: string): boolean {
+  const first = body.trimStart()[0];
+  return first === '{' || first === '[';
+}
+
+/** Relay the gateway's answer; a non-JSON body (a proxy error page, say) becomes a JSON error. */
+export function relayed(result: GatewayResult): Response {
+  if (!looksLikeJson(result.body)) {
+    logger.warn({ status: result.status }, 'lite gateway answered with a non-JSON body');
+    const message = `lite gateway answered ${result.status} without a JSON body`;
+    return Response.json({ ok: false, code: 'relay_unavailable', message }, { status: 502 });
+  }
+  return new Response(result.body, { status: result.status, headers: JSON_HEADERS });
+}
+
+const relayUnavailable = (message: string) =>
+  Response.json({ ok: false, code: 'relay_unavailable', message }, { status: 503 });
+
+/**
+ * Proxy one client request to the gateway's `path` as is: same body (POST only), same response
+ * body and status. Validation, quotas, the root-post queue and the L1 broadcast all happen in the
+ * gateway; an unconfigured or unreachable gateway answers 503 `relay_unavailable`.
+ */
+export async function forwardToGateway(request: Request, path: string, method: GatewayMethod): Promise<Response> {
+  const base = liteGatewayUrl();
+  if (!base) return relayUnavailable('lite gateway is not configured');
+  const body = method === 'POST' ? await request.text() : undefined;
+  try {
+    return relayed(await callGateway(base, path, { method, body, clientIp: clientIp(request) }));
+  } catch (error) {
+    logger.error(error, 'lite gateway request failed');
+    return relayUnavailable('lite gateway unreachable');
+  }
 }
 
 export type GatewayHealth = { status: string } & Record<string, unknown>;
