@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "Pubblicato tramite un relay per conto di un account lite (attribuzione in attesa di verifica sulla chain)",
     "badge_native_tooltip": "Un account lite: pubblica senza un account Hive, con attribuzione dell'app lite posts",
-    "card_description": "Gli account lite pubblicano senza un account Hive. I loro profili arriveranno con l'app social lite.",
+    "card_description": "Gli account lite pubblicano senza un account Hive. Follow e silenziamenti arriveranno con l'app social lite.",
     "reply_as_guest": "Rispondi senza account: sceglierai un nome al momento della pubblicazione.",
     "replying_as": "Rispondi come account lite {{name}}",
     "reply": {
@@ -1082,6 +1082,27 @@
         "relay_unavailable": "Il gateway degli account lite non è raggiungibile.",
         "unknown": "Qualcosa è andato storto."
       }
+    },
+    "profile": {
+      "page_title": "{{name}} (account lite)",
+      "kind": "Account lite",
+      "tabs": {
+        "posts": "Post",
+        "comments": "Commenti",
+        "replies": "Risposte"
+      },
+      "gateway_note": "Gateway di account lite",
+      "gateway_tooltip": "Questo account Hive pubblica per conto di account lite"
+    },
+    "identity": {
+      "menu_label": "Account lite {{name}}",
+      "held_here": "Account lite conservato in questo browser",
+      "view_profile": "Visualizza profilo",
+      "sign_in": "Accedi con un account Hive",
+      "forget": "Dimentica questo account lite",
+      "forget_title": "Dimenticare l'account lite {{name}}?",
+      "forget_description": "La sua chiave è conservata solo in questo browser: una volta dimenticato, nessuno potrà più pubblicare, modificare o eliminare come questo account lite. Vengono rimosse anche le sue bozze e i post in coda; i post già pubblicati restano.",
+      "forget_confirm": "Dimentica"
     }
   }
 }

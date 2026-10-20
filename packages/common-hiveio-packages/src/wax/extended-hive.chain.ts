@@ -862,6 +862,14 @@ export interface ILiteApiInfo {
   methods: string[];
 }
 
+/**
+ * `lite.get_profile`: the profile of a lite account (`name` is its `did:lite:<name>`) or of a Hive
+ * account. `lite` is set for an account with a role in the lite system, e.g. a gate account.
+ */
+export interface ILiteProfile extends IProfile {
+  lite?: { gateway?: boolean; pools?: unknown[] };
+}
+
 type TBridgeApi = {
   get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
   get_ranked_posts: TWaxApiRequest<
@@ -923,6 +931,7 @@ export type ExtendedNodeApi = {
    */
   lite: TBridgePostsApi & {
     get_info: TWaxApiRequest<Record<string, never>, ILiteApiInfo>;
+    get_profile: TWaxApiRequest<{ account: string; observer?: string }, ILiteProfile | null>;
   };
   bridge: TBridgeApi;
   market_history_api: {

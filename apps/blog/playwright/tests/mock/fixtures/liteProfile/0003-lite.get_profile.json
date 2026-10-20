@@ -1,0 +1,43 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_profile",
+    "params": {
+      "account": "did:lite:lite-smoke-1016"
+    },
+    "id": 1
+  },
+  "requestHash": "c328c70455e4edc1",
+  "method": "lite.get_profile",
+  "params": {
+    "account": "did:lite:lite-smoke-1016"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": -101421770,
+      "name": "did:lite:lite-smoke-1016",
+      "stats": {
+        "rank": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "active": "2026-10-16T19:54:18",
+      "created": "2026-10-16T18:37:48",
+      "metadata": {
+        "profile": {
+          "name": "lite-smoke-1016",
+          "about": "Lite account (via test-gateway-1, test-gateway-4, test-gateway-5)"
+        }
+      },
+      "blacklists": [],
+      "post_count": 4,
+      "reputation": 25
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

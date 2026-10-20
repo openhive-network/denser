@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha';
+import type { ILiteProfile } from '@hive/common-hiveio-packages/wax';
 import { expect } from 'chai';
-import { createLiteApiProbe, createPostsReader, LITE_PROBE_TTL_MS, readLiteProbeTtlMs, type TPostsApi } from './lite-api';
+import { createLiteApiProbe, createLiteProfileReader, createPostsReader, LITE_PROBE_TTL_MS, readLiteProbeTtlMs, type TPostsApi } from './lite-api';
 import { JsonRpcApiError } from './read-client';
 import { ReadTransportError } from './read-transport';
 
@@ -236,5 +237,71 @@ describe('createPostsReader', () => {
 
     expect(error).to.equal(missing);
     expect(calls).to.have.length(1);
+  });
+});
+
+describe('createLiteProfileReader', () => {
+  const PROFILE: ILiteProfile = {
+    id: -1,
+    name: 'did:lite:bob',
+    created: '2026-10-16T18:37:48',
+    active: '2026-10-16T19:54:18',
+    post_count: 4,
+    reputation: 25,
+    blacklists: [],
+    stats: { rank: 0, followers: 0, following: 0 },
+    metadata: { profile: { name: 'bob' } }
+  };
+  const PROFILE_INFO = { ...LITE_INFO, methods: [...LITE_INFO.methods, 'get_profile'] };
+
+  /** A chain whose `lite.get_profile` records its calls and answers with `answer` (an Error is thrown). */
+  const setupProfileReader = (probeAnswers: Record<string, unknown>, answer: ILiteProfile | Error = PROFILE) => {
+    const calls: string[] = [];
+    const chain = {
+      endpointUrl: LITE_NODE,
+      api: {
+        lite: {
+          get_profile: async (params: { account: string }): Promise<ILiteProfile> => {
+            calls.push(params.account);
+            if (answer instanceof Error) throw answer;
+            return answer;
+          }
+        }
+      }
+    };
+    const { probe } = setupProbe(probeAnswers);
+    return { read: createLiteProfileReader(() => chain, probe), calls };
+  };
+
+  it('asks a node that lists lite.get_profile', async () => {
+    const { read, calls } = setupProfileReader({ [LITE_NODE]: PROFILE_INFO });
+
+    expect(await read('did:lite:bob')).to.deep.equal(PROFILE);
+    expect(calls).to.deep.equal(['did:lite:bob']);
+  });
+
+  it('answers null without asking a node that is not lite-aware or does not list the method', async () => {
+    for (const info of [apiNotFound('lite.get_info'), LITE_INFO]) {
+      const { read, calls } = setupProfileReader({ [LITE_NODE]: info });
+
+      expect(await read('did:lite:bob')).to.equal(null);
+      expect(calls).to.deep.equal([]);
+    }
+  });
+
+  it('answers null for an API error such as an account that does not exist', async () => {
+    const missing = new JsonRpcApiError('lite.get_profile', {
+      error: { code: -32602, message: 'Assert Exception:[{"did:lite:bob": "account does not exist"}]' }
+    });
+    const { read } = setupProfileReader({ [LITE_NODE]: PROFILE_INFO }, missing);
+
+    expect(await read('did:lite:bob')).to.equal(null);
+  });
+
+  it('rejects with a transport failure, which says nothing about the account', async () => {
+    const failure = new ReadTransportError('timeout', { method: 'POST', endpoint: LITE_NODE, url: '', timeout: 1, responseType: 'json' });
+    const { read } = setupProfileReader({ [LITE_NODE]: PROFILE_INFO }, failure);
+
+    expect(await read('did:lite:bob').catch((e: unknown) => e)).to.equal(failure);
   });
 });

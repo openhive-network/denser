@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "Publié via un relais au nom d'un compte lite (attribution en attente de vérification sur la chaîne)",
     "badge_native_tooltip": "Un compte lite : publie sans compte Hive, attribution par l'application lite posts",
-    "card_description": "Les comptes lite publient sans compte Hive. Leurs profils arriveront avec l'application sociale lite.",
+    "card_description": "Les comptes lite publient sans compte Hive. Les abonnements et les masquages arriveront avec l'application sociale lite.",
     "reply_as_guest": "Répondez sans compte : vous choisirez un nom au moment de publier.",
     "replying_as": "Réponse en tant que compte lite {{name}}",
     "reply": {
@@ -1082,6 +1082,27 @@
         "relay_unavailable": "La passerelle des comptes lite est injoignable.",
         "unknown": "Une erreur s'est produite."
       }
+    },
+    "profile": {
+      "page_title": "{{name}} (compte lite)",
+      "kind": "Compte lite",
+      "tabs": {
+        "posts": "Articles",
+        "comments": "Commentaires",
+        "replies": "Réponses"
+      },
+      "gateway_note": "Passerelle de comptes lite",
+      "gateway_tooltip": "Ce compte Hive publie au nom de comptes lite"
+    },
+    "identity": {
+      "menu_label": "Compte lite {{name}}",
+      "held_here": "Compte lite conservé dans ce navigateur",
+      "view_profile": "Voir le profil",
+      "sign_in": "Se connecter avec un compte Hive",
+      "forget": "Oublier ce compte lite",
+      "forget_title": "Oublier le compte lite {{name}} ?",
+      "forget_description": "Sa clé n'est conservée que dans ce navigateur : une fois oublié, plus personne ne pourra publier, modifier ou supprimer en tant que ce compte lite. Ses brouillons et publications en file d'attente sont aussi supprimés ; ses publications déjà parues restent.",
+      "forget_confirm": "Oublier"
     }
   }
 }

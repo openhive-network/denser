@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "ライトアカウントの代わりにリレー経由で投稿されました（帰属はオンチェーン検証待ち）",
     "badge_native_tooltip": "ライトアカウント：Hiveアカウントなしで投稿し、帰属はlite postsアプリが確認します",
-    "card_description": "ライトアカウントはHiveアカウントなしで投稿します。プロフィールはliteソーシャルアプリで提供される予定です。",
+    "card_description": "ライトアカウントはHiveアカウントなしで投稿します。フォローとミュートはliteソーシャルアプリで提供される予定です。",
     "reply_as_guest": "アカウントなしで返信できます。投稿時に名前を選びます。",
     "replying_as": "ライトアカウント {{name}} として返信",
     "reply": {
@@ -1082,6 +1082,27 @@
         "relay_unavailable": "ライトアカウントゲートウェイに接続できません。",
         "unknown": "問題が発生しました。"
       }
+    },
+    "profile": {
+      "page_title": "{{name}}（ライトアカウント）",
+      "kind": "ライトアカウント",
+      "tabs": {
+        "posts": "投稿",
+        "comments": "コメント",
+        "replies": "返信"
+      },
+      "gateway_note": "ライトアカウントのゲートウェイ",
+      "gateway_tooltip": "このHiveアカウントはライトアカウントの代わりに投稿します"
+    },
+    "identity": {
+      "menu_label": "ライトアカウント {{name}}",
+      "held_here": "このブラウザに保存されたライトアカウント",
+      "view_profile": "プロフィールを表示",
+      "sign_in": "Hiveアカウントでログイン",
+      "forget": "このライトアカウントを削除",
+      "forget_title": "ライトアカウント {{name}} を削除しますか？",
+      "forget_description": "鍵はこのブラウザにのみ保存されています。削除すると、このライトアカウントとして投稿・編集・削除することは誰にもできなくなります。下書きと待機中の投稿も削除されますが、公開済みの投稿は残ります。",
+      "forget_confirm": "削除"
     }
   }
 }

@@ -1,5 +1,5 @@
 import { isHiveAccountNameValid } from '@transaction/lib/validate-hive-account';
-import { postAuthorKind } from '@/blog/features/lite-account/lite-did';
+import { postAuthorFromParam, postAuthorKind } from '@/blog/features/lite-account/lite-did';
 
 export function isPermlinkValid(permlink: string): boolean {
   if (typeof permlink !== 'string') return false;
@@ -19,15 +19,22 @@ export function isValidUserParam(param: string | undefined): boolean {
 
 /**
  * Validates that a route param starts with @ or %40 and strips the prefix.
- * Returns the clean username, or null if the param is not a valid user route.
+ * Returns the clean (URL-decoded) username, or null if the param is not a valid user route.
  *
  * This combines prefix validation and stripping in one step to prevent
  * the common bug where pages strip %40 but forget @ (or vice versa).
  */
 export function extractUsernameFromParam(param: string): string | null {
-  if (param.startsWith('%40')) return param.slice(3);
-  if (param.startsWith('@')) return param.slice(1);
-  return null;
+  return postAuthorFromParam(param);
+}
+
+/**
+ * The Hive account of a profile route's param, as `extractUsernameFromParam`, or null for a lite
+ * account DID or another `did:` form: for the profile pages a lite account does not have.
+ */
+export function extractHiveAccountFromParam(param: string): string | null {
+  const username = extractUsernameFromParam(param);
+  return username !== null && postAuthorKind(username) === 'account' ? username : null;
 }
 
 /**

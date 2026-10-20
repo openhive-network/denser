@@ -23,10 +23,11 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { QueryTypes } from './lib/utils';
 import { usePostsNamespace } from '@/blog/features/lite-account/use-lite-api-info';
+import { authorDisplayName, postAuthorFromParam } from '@/blog/features/lite-account/lite-did';
 
 const PostsContent = ({ query }: { query: QueryTypes }) => {
   const params = useParams<{ param: string }>();
-  const username = params?.param.replace('%40', '') ?? '';
+  const username = postAuthorFromParam(params?.param) ?? '';
   const legalBlockedUser = userIllegalContent.includes(username);
   const ssrObserver = useSSREffectiveObserver();
   const initialPosts = useInitialPosts();
@@ -95,12 +96,13 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   const totalPosts = data?.pages?.reduce((acc, page) => acc + (page?.length || 0), 0) || 0;
 
   const getNoContentMessage = () => {
+    const name = authorDisplayName(username);
     if (query === 'posts' || query === 'comments')
-      return t('user_profile.no_posts_yet', { username: username });
+      return t('user_profile.no_posts_yet', { username: name });
     if (query === 'payout') return t('user_profile.no_pending_payouts');
-    if (query === 'replies') return t('user_profile.no_replies_yet', { username: username });
+    if (query === 'replies') return t('user_profile.no_replies_yet', { username: name });
     if (query === 'feed') return t('user_profile.empty_feed_not_following');
-    return t('user_profile.no_blogging_yet', { username: username });
+    return t('user_profile.no_blogging_yet', { username: name });
   };
 
   // Only replace the whole list when there is nothing to show. A failed

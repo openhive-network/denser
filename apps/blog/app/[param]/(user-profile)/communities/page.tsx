@@ -1,6 +1,6 @@
 import CommunityContent from './content';
 import { getSubscriptions } from '@transaction/lib/bridge-api';
-import { extractUsernameFromParam } from '@/blog/utils/validate-links';
+import { extractHiveAccountFromParam } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 
@@ -12,7 +12,7 @@ const logger = getLogger('app');
 
 const CommunitiesPage = async (props: { params: Promise<{ param: string }> }) => {
   const params = await props.params;
-  const username = extractUsernameFromParam(params.param);
+  const username = extractHiveAccountFromParam(params.param);
   if (!username) notFound();
 
   let initialData = null;

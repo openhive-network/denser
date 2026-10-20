@@ -940,6 +940,15 @@ in that window (no browser request involved) shows up as
 longer a test runs. A spec that only misses those under the dev stack needs no
 baseline entry; check it with the `full` slot's `fixture_e2e`.
 
+### Recording through the dev stack
+
+`.aidev/dev-stack-spec.sh` passes no `FIXTURE_MODE`, so it always replays. To record a spec
+against another node from an AIDEV session (e.g. `liteProfile` from steem-16, whose `lite.*`
+the fixture suite needs), run a copy of the script whose `in_stack env` line adds
+`FIXTURE_MODE=record FIXTURE_UPSTREAM=<host>`: the stack's proxy relays the blog's server
+calls to the worker's recording proxy too, so one run records both sides. Keep it to one
+worker and a passing spec (see "A FAILING assertion during record wipes earlier fixtures").
+
 ### `fixtureTestName` is worker-scoped
 
 You cannot switch fixture dirs per `test.describe` in one file. Each

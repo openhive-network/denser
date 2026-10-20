@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "Publicado a través de un relé en nombre de una cuenta lite (atribución pendiente de verificación en la cadena)",
     "badge_native_tooltip": "Una cuenta lite: publica sin una cuenta de Hive, con atribución de la aplicación lite posts",
-    "card_description": "Las cuentas lite publican sin una cuenta de Hive. Sus perfiles llegarán con la aplicación social lite.",
+    "card_description": "Las cuentas lite publican sin una cuenta de Hive. Seguir y silenciar llegarán con la aplicación social lite.",
     "reply_as_guest": "Responde sin cuenta: elegirás un nombre al publicar.",
     "replying_as": "Respondiendo como cuenta lite {{name}}",
     "reply": {
@@ -1082,6 +1082,27 @@
         "relay_unavailable": "No se puede contactar con la pasarela de cuentas lite.",
         "unknown": "Algo salió mal."
       }
+    },
+    "profile": {
+      "page_title": "{{name}} (cuenta lite)",
+      "kind": "Cuenta lite",
+      "tabs": {
+        "posts": "Publicaciones",
+        "comments": "Comentarios",
+        "replies": "Respuestas"
+      },
+      "gateway_note": "Pasarela de cuentas lite",
+      "gateway_tooltip": "Esta cuenta de Hive publica en nombre de cuentas lite"
+    },
+    "identity": {
+      "menu_label": "Cuenta lite {{name}}",
+      "held_here": "Cuenta lite guardada en este navegador",
+      "view_profile": "Ver perfil",
+      "sign_in": "Iniciar sesión con una cuenta de Hive",
+      "forget": "Olvidar esta cuenta lite",
+      "forget_title": "¿Olvidar la cuenta lite {{name}}?",
+      "forget_description": "Su clave solo se guarda en este navegador: una vez olvidada, nadie podrá volver a publicar, editar ni eliminar como esta cuenta lite. También se eliminan sus borradores y publicaciones en cola; sus publicaciones ya publicadas se mantienen.",
+      "forget_confirm": "Olvidar"
     }
   }
 }

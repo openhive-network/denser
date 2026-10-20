@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "通过中继代表轻账号发布（归属待链上验证）",
     "badge_native_tooltip": "轻账号：无需 Hive 账号即可发布，归属由 lite posts 应用确认",
-    "card_description": "轻账号无需 Hive 账号即可发布。其个人资料将随 lite 社交应用推出。",
+    "card_description": "轻账号无需 Hive 账号即可发布。关注和屏蔽功能将随 lite 社交应用推出。",
     "reply_as_guest": "无需账号即可回复，发布时选择一个名字。",
     "replying_as": "以轻账号 {{name}} 的身份回复",
     "reply": {
@@ -1082,6 +1082,27 @@
         "relay_unavailable": "无法连接轻账户网关。",
         "unknown": "出了点问题。"
       }
+    },
+    "profile": {
+      "page_title": "{{name}}（轻账号）",
+      "kind": "轻账号",
+      "tabs": {
+        "posts": "文章",
+        "comments": "评论",
+        "replies": "回复"
+      },
+      "gateway_note": "轻账号网关",
+      "gateway_tooltip": "此 Hive 账号代表轻账号发布内容"
+    },
+    "identity": {
+      "menu_label": "轻账号 {{name}}",
+      "held_here": "保存在此浏览器中的轻账号",
+      "view_profile": "查看个人资料",
+      "sign_in": "使用 Hive 账号登录",
+      "forget": "忘记此轻账号",
+      "forget_title": "忘记轻账号 {{name}}？",
+      "forget_description": "其密钥仅保存在此浏览器中：忘记后，任何人都无法再以此轻账号发布、编辑或删除内容。其草稿和排队中的帖子也会被删除；已发布的帖子会保留。",
+      "forget_confirm": "忘记"
     }
   }
 }

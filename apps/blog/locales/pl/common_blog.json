@@ -972,7 +972,7 @@
     "badge_prefix": "konto lite",
     "badge_tooltip": "Opublikowane przez przekaźnik w imieniu konta lite (atrybucja czeka na weryfikację w łańcuchu)",
     "badge_native_tooltip": "Konto lite: publikuje bez konta Hive, atrybucję zapewnia aplikacja lite posts",
-    "card_description": "Konta lite publikują bez konta Hive. Ich profile pojawią się wraz z aplikacją społecznościową lite.",
+    "card_description": "Konta lite publikują bez konta Hive. Obserwowanie i wyciszanie pojawią się wraz z aplikacją społecznościową lite.",
     "reply_as_guest": "Odpowiedz bez konta — nazwę wybierzesz przy publikacji.",
     "replying_as": "Odpowiadasz jako konto lite {{name}}",
     "reply": {
@@ -1082,6 +1082,27 @@
         "relay_unavailable": "Nie można połączyć się z bramką kont lite.",
         "unknown": "Coś poszło nie tak."
       }
+    },
+    "profile": {
+      "page_title": "{{name}} (konto lite)",
+      "kind": "Konto lite",
+      "tabs": {
+        "posts": "Posty",
+        "comments": "Komentarze",
+        "replies": "Odpowiedzi"
+      },
+      "gateway_note": "Bramka kont lite",
+      "gateway_tooltip": "To konto Hive publikuje w imieniu kont lite"
+    },
+    "identity": {
+      "menu_label": "Konto lite {{name}}",
+      "held_here": "Konto lite przechowywane w tej przeglądarce",
+      "view_profile": "Zobacz profil",
+      "sign_in": "Zaloguj się kontem Hive",
+      "forget": "Zapomnij to konto lite",
+      "forget_title": "Zapomnieć konto lite {{name}}?",
+      "forget_description": "Jego klucz jest przechowywany tylko w tej przeglądarce: po zapomnieniu nikt nie będzie już mógł publikować, edytować ani usuwać jako to konto lite. Usunięte zostaną też jego szkice i posty w kolejce; opublikowane posty pozostaną.",
+      "forget_confirm": "Zapomnij"
     }
   }
 }

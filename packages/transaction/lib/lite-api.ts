@@ -1,7 +1,7 @@
-import type { ILiteApiInfo } from '@hive/common-hiveio-packages/wax';
+import type { ILiteApiInfo, ILiteProfile } from '@hive/common-hiveio-packages/wax';
 import { getLogger } from '@ui/lib/logging';
 import { getNodeReadChain, getReadChain, type ReadChain } from './chain';
-import { isApiNotServedError } from './read-client';
+import { isApiNotServedError, JsonRpcApiError } from './read-client';
 
 const logger = getLogger('lite-api');
 
@@ -29,6 +29,11 @@ export type TPostsApi = Pick<
 >;
 
 const NATIVE_MODE = 'native';
+const PROFILE_METHOD = 'get_profile';
+
+/** Whether a node's `lite.get_info` answer lists `lite.get_profile`. */
+export const servesLiteProfile = (info: ILiteApiInfo | null | undefined): boolean =>
+  !!info?.methods.includes(PROFILE_METHOD);
 
 const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === 'string');
@@ -155,6 +160,31 @@ export function createPostsReader(getChain: () => IPostsChain, probe: ILiteApiPr
   };
 }
 
+interface IProfileChain {
+  readonly endpointUrl: string;
+  readonly api: { lite: { get_profile: (params: { account: string }) => Promise<ILiteProfile | null> } };
+}
+
+/**
+ * `lite.get_profile` of `account` (a `did:lite:<name>` or a Hive account name) on the chain's
+ * current node, or null when the node does not serve it (not lite-aware, or `lite.get_info` does
+ * not list the method) or answers with an error, e.g. for an account that does not exist. A
+ * transport failure is thrown.
+ */
+export function createLiteProfileReader(getChain: () => IProfileChain, probe: ILiteApiProbe) {
+  return async (account: string): Promise<ILiteProfile | null> => {
+    const chain = getChain();
+    const info = await probe.getInfo(chain.endpointUrl);
+    if (!servesLiteProfile(info)) return null;
+    try {
+      return await chain.api.lite.get_profile({ account });
+    } catch (error) {
+      if (error instanceof JsonRpcApiError) return null;
+      throw error;
+    }
+  };
+}
+
 // Asked of the configured node itself: answered through failover, another node's capabilities
 // would be recorded as this one's.
 const liteApiProbe = createLiteApiProbe({
@@ -194,3 +224,6 @@ export const currentPostsNamespace = (): TPostsNamespace => (peekLiteApiInfo() ?
 
 /** Runs a post read on the namespace of the current API node, see `createPostsReader`. */
 export const readPosts = createPostsReader(getReadChain, liteApiProbe);
+
+/** Runs `lite.get_profile` on the current API node, see `createLiteProfileReader`. */
+export const getLiteProfile = createLiteProfileReader(getReadChain, liteApiProbe);

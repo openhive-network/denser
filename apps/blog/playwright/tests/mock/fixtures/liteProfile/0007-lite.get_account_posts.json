@@ -1,0 +1,211 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_account_posts",
+    "params": {
+      "sort": "replies",
+      "account": "did:lite:lite-smoke-1016",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "e8db6dd59cb1e281",
+  "method": "lite.get_account_posts",
+  "params": {
+    "sort": "replies",
+    "account": "did:lite:lite-smoke-1016",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/lite-test/@test-gateway-1/re-lite-test-478380rd5v#@test-gateway-5/re-test-gateway-1-re-lite-test-478380rd5v-18b2eakbap",
+        "body": "Fourth smoke reply (after the l2 driver fix). Safe to ignore.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: lite gateway smoke test",
+        "author": "did:lite:lite-smoke-1016",
+        "payout": 0,
+        "created": "2026-10-16T19:54:15",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-16T19:54:15",
+        "category": "lite-test",
+        "children": 0,
+        "permlink": "re-test-gateway-1-re-lite-test-478380rd5v-18b2eakbap",
+        "payout_at": "2026-10-23T19:54:15",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "@hiveio/wax/1.28.6-rc10-stable.260326112051",
+          "tags": [],
+          "format": "markdown+html",
+          "lite_posts_test": {
+            "alg": "lite-comment-v1",
+            "attester": "lite-smoke-1016"
+          }
+        },
+        "parent_author": "did:lite:lite-smoke-1016",
+        "parent_permlink": "re-lite-test-478380rd5v",
+        "author_reputation": 25,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/lite-test/@test-gateway-1/re-lite-test-478380rd5v#@test-gateway-4/re-test-gateway-1-re-lite-test-478380rd5v-74a620iys9",
+        "body": "Third smoke reply (tracing the live-loop lag). Safe to ignore.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: lite gateway smoke test",
+        "author": "did:lite:lite-smoke-1016",
+        "payout": 0,
+        "created": "2026-10-16T19:46:51",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-16T19:46:51",
+        "category": "lite-test",
+        "children": 0,
+        "permlink": "re-test-gateway-1-re-lite-test-478380rd5v-74a620iys9",
+        "payout_at": "2026-10-23T19:46:51",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "@hiveio/wax/1.28.6-rc10-stable.260326112051",
+          "tags": [],
+          "format": "markdown+html",
+          "lite_posts_test": {
+            "alg": "lite-comment-v1",
+            "attester": "lite-smoke-1016"
+          }
+        },
+        "parent_author": "did:lite:lite-smoke-1016",
+        "parent_permlink": "re-lite-test-478380rd5v",
+        "author_reputation": 25,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/lite-test/@test-gateway-1/re-lite-test-478380rd5v#@test-gateway-2/re-test-gateway-1-re-lite-test-478380rd5v-d30f04n44o",
+        "body": "Guest reply through the Denser proxy to the steem-16 gateway (test namespace). Safe to ignore.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: lite gateway smoke test",
+        "author": "did:lite:warm-zebra-201",
+        "payout": 0,
+        "created": "2026-10-16T19:38:57",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-16T19:38:57",
+        "category": "lite-test",
+        "children": 0,
+        "permlink": "re-test-gateway-1-re-lite-test-478380rd5v-d30f04n44o",
+        "payout_at": "2026-10-23T19:38:57",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "@hiveio/wax/1.28.6-rc10-stable.260326112051",
+          "tags": [],
+          "format": "markdown+html",
+          "lite_posts_test": {
+            "alg": "lite-comment-v1",
+            "attester": "warm-zebra-201"
+          }
+        },
+        "parent_author": "did:lite:lite-smoke-1016",
+        "parent_permlink": "re-lite-test-478380rd5v",
+        "author_reputation": 25,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/lite-test/@test-gateway-1/re-lite-test-478380rd5v#@test-gateway-1/re-test-gateway-1-re-lite-test-478380rd5v-a48dfe507j",
+        "body": "Smoke-test reply from the same lite identity.",
+        "depth": 1,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: lite gateway smoke test",
+        "author": "did:lite:lite-smoke-1016",
+        "payout": 0,
+        "created": "2026-10-16T18:37:57",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-16T18:37:57",
+        "category": "lite-test",
+        "children": 0,
+        "permlink": "re-test-gateway-1-re-lite-test-478380rd5v-a48dfe507j",
+        "payout_at": "2026-10-23T18:37:57",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "@hiveio/wax/1.28.6-rc10-stable.260326112051",
+          "tags": [],
+          "format": "markdown+html",
+          "lite_posts_test": {
+            "alg": "lite-comment-v1",
+            "attester": "lite-smoke-1016"
+          }
+        },
+        "parent_author": "did:lite:lite-smoke-1016",
+        "parent_permlink": "re-lite-test-478380rd5v",
+        "author_reputation": 25,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
