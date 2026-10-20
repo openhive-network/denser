@@ -10,6 +10,7 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { useTranslation } from '@/blog/i18n/client';
+import { isLiteNameTaken } from './lite-name-availability';
 import LiteNameDialog from './lite-name-dialog';
 import { readiness, readinessText, useLiteGatewayHealth, type LiteReadiness } from './use-lite-gateway-health';
 import { useLiteIdentity } from './use-lite-identity';
@@ -50,9 +51,10 @@ type Props = {
 export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, discussionAuthor, discussionPermlink, observer, onSetReply }: Props) {
   const { t } = useTranslation('common_blog');
   const relay = useLiteRelayInfo();
-  const { identity, create, markRegistered, ensureClientId } = useLiteIdentity();
+  const { identity, create, markRegistered, clear, ensureClientId } = useLiteIdentity();
   const [text, setText, removeText] = useStorageWithTTL<string>(`lite-replyTo-/${parentAuthor}/${parentPermlink}`, '', StorageTTL.DRAFT);
   const [nameDialogOpen, setNameDialogOpen] = useState(false);
+  const [takenName, setTakenName] = useState<string>();
   const health = useLiteGatewayHealth(true);
   const [checking, setChecking] = useState(false);
   const [notReady, setNotReady] = useState<LiteReadiness | null>(null);
@@ -113,8 +115,14 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
         observer,
         native: currentPostsNamespace() === 'lite'
       });
-    } catch {
-      return; // the mutation's onError already rolled back and toasted
+    } catch (error) {
+      // The mutation's onError already rolled back (and toasted anything but a taken name).
+      if (isLiteNameTaken(error)) {
+        clear();
+        setTakenName(who.name);
+        setNameDialogOpen(true);
+      }
+      return;
     }
     removeText();
     onSetReply(false);
@@ -158,8 +166,10 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
       <LiteNameDialog
         open={nameDialogOpen}
         onOpenChange={setNameDialogOpen}
+        takenName={takenName}
         onConfirm={(name) => {
           setNameDialogOpen(false);
+          setTakenName(undefined);
           void submit(create(name));
         }}
       />

@@ -981,6 +981,13 @@
       "label": "Name",
       "suggest_another": "Suggest another",
       "invalid_name": "De 3 a 16 caracteres: letras minúsculas, dígitos y guiones; empieza por una letra y termina en letra o dígito.",
+      "checking": "Comprobando si este nombre está libre…",
+      "available": "Este nombre está disponible.",
+      "taken": "Este nombre acaba de ser ocupado. Elige otro.",
+      "taken_lite": "Este nombre pertenece a otra cuenta lite.",
+      "taken_l1": "Este nombre pertenece a una cuenta de Hive.",
+      "invalid_l1": "No es un nombre de cuenta de Hive válido.",
+      "check_failed": "No se pudo comprobar el nombre: la pasarela de cuentas lite no responde. Puedes continuar; un nombre ocupado se rechaza al publicar.",
       "disposable_note": "Tu identidad se guarda solo en este navegador hasta que la guardes.",
       "confirm": "Publicar con este nombre",
       "cancel": "Cancel"

@@ -52,10 +52,14 @@ const attestedPermlink = (request: Request): string => {
   return body.attest_tx.operations[0].args.permlink;
 };
 
-/** Answers the gateway in the browser: /info, /health, /reply, and /edit and /delete as `deleteMode`. */
+/** Answers the gateway in the browser: /info, /health, name availability, /reply, and /edit and /delete as `deleteMode`. */
 async function mockGateway(page: Page, deleteMode: 'l1_delete' | 'tombstone') {
   const calls: { reply: Json[]; edit: Json[]; delete: Json[] } = { reply: [], edit: [], delete: [] };
   await page.route('**/api/lite-reply/health', (route) => route.fulfill({ json: HEALTH }));
+  await page.route('**/api/lite-gateway/names/*/availability', (route) => {
+    const name = decodeURIComponent(route.request().url().split('/names/')[1].split('/')[0]);
+    return route.fulfill({ json: { name, available: true, lite_grammar_ok: true, l1_grammar_ok: true, lite_taken: false, l1_taken: false } });
+  });
   await page.route('**/api/lite-reply', (route) => {
     if (route.request().method() === 'GET') return route.fulfill({ json: INFO });
     calls.reply.push(route.request().postDataJSON() as Json);

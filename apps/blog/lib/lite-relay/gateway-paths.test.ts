@@ -24,8 +24,21 @@ describe('allowedGatewayPath', () => {
     assert.equal(allowedGatewayPath('DELETE', ['queue', 'q_1-AB', 'post']), null);
   });
 
+  it('relays a name availability check: GET only, for a name in the lite grammar', () => {
+    assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'availability']), '/names/brave-otter-482/availability');
+    assert.equal(allowedGatewayPath('GET', ['names', 'lite.smoke-1016', 'availability']), '/names/lite.smoke-1016/availability');
+    assert.equal(allowedGatewayPath('POST', ['names', 'brave-otter-482', 'availability']), null);
+    assert.equal(allowedGatewayPath('DELETE', ['names', 'brave-otter-482', 'availability']), null);
+    for (const name of ['ab', 'x'.repeat(17), 'Brave-otter', '1brave', 'brave-', 'a..b', '..', 'a/b', 'a?x=1', 'brave otter', '']) {
+      assert.equal(allowedGatewayPath('GET', ['names', name, 'availability']), null, name);
+    }
+    assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482']), null);
+    assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'other']), null);
+    assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'availability', 'more']), null);
+  });
+
   it('refuses everything else: other gateway endpoints, odd queue ids, extra segments', () => {
-    for (const segments of [['info'], ['health'], ['gates', 'next'], ['edit', 'x'], ['toString'], []]) {
+    for (const segments of [['info'], ['health'], ['names'], ['gates', 'next'], ['edit', 'x'], ['toString'], []]) {
       assert.equal(allowedGatewayPath('POST', segments), null, segments.join('/'));
       assert.equal(allowedGatewayPath('GET', segments), null, segments.join('/'));
     }

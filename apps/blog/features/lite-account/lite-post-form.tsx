@@ -19,6 +19,7 @@ import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { useEditorCommunity } from '../post-editor/hooks/use-editor-community';
 import { parseTags, validateTagInput } from '../post-editor/lib/utils';
 import { LiteQueueStatus } from './lite-queue-status';
+import { isLiteNameTaken } from './lite-name-availability';
 import { isPersistedLiteQueue, liteRootPostPath, persistedQueueTtlMs, type PersistedLiteQueue } from './lite-root-post';
 import { useLiteIdentity } from './use-lite-identity';
 import { useLiteRelayInfo } from './use-lite-relay-info';
@@ -46,12 +47,19 @@ function toComment(draft: LiteRootDraft): CommentContent {
   return { parent_author: '', parent_permlink: getPostCategory(draft.category, tags), title: draft.title, body: draft.body, tags };
 }
 
+type Props = {
+  identity: LiteIdentity;
+  categoryParam?: string;
+  /** The gateway refused to register the identity's name as taken. */
+  onNameTaken: (name: string) => void;
+};
+
 /**
  * The post editor of a guest with a lite identity: title, body, tags and "My blog" or the
  * community the page was opened for. Posting goes through the lite gateway; a queued post shows
  * the queue panel instead of the editor, also after a reload. The draft is kept until the post is up.
  */
-export function LitePostForm({ identity, categoryParam }: { identity: LiteIdentity; categoryParam?: string }) {
+export function LitePostForm({ identity, categoryParam, onNameTaken }: Props) {
   const { t } = useTranslation('common_blog');
   const router = useRouter();
   const relay = useLiteRelayInfo();
@@ -82,8 +90,11 @@ export function LitePostForm({ identity, categoryParam }: { identity: LiteIdenti
   };
 
   const submit = async () => {
-    const outcome = await mutation.mutateAsync({ identity, comment: toComment(draft) }).catch(() => null);
-    if (!outcome) return; // the mutation toasted; the draft stays
+    const outcome = await mutation.mutateAsync({ identity, comment: toComment(draft) }).catch((error: unknown) => {
+      if (isLiteNameTaken(error)) onNameTaken(identity.name);
+      return null;
+    });
+    if (!outcome) return; // the mutation toasted (or the name dialog reopened); the draft stays
     if (outcome.kind === 'queued') setQueue({ queued: outcome.queued, comment: outcome.comment });
     else await finish(outcome.result, outcome.comment);
   };

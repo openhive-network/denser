@@ -981,6 +981,13 @@
       "label": "Name",
       "suggest_another": "Suggest another",
       "invalid_name": "3 到 16 个字符：小写字母、数字和连字符；以字母开头，以字母或数字结尾。",
+      "checking": "正在检查此名称是否可用…",
+      "available": "此名称可用。",
+      "taken": "此名称刚刚被占用，请另选一个。",
+      "taken_lite": "此名称已被其他 lite 账户使用。",
+      "taken_l1": "此名称属于一个 Hive 账户。",
+      "invalid_l1": "这不是有效的 Hive 账户名。",
+      "check_failed": "无法检查此名称：lite 账户网关无法访问。你仍可继续；已被占用的名称会在发布时被拒绝。",
       "disposable_note": "在你保存之前，你的身份仅保存在此浏览器中。",
       "confirm": "以此名字发布",
       "cancel": "Cancel"

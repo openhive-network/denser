@@ -18,6 +18,7 @@ import { relayErrorCode, rootPostErrorKey, rootPostExpirationMinutes } from './l
 import { readiness, readinessText, useLiteGatewayHealth, type LiteReadiness } from './use-lite-gateway-health';
 import { useLiteIdentity } from './use-lite-identity';
 import { liteGatewayEndpoint } from './lite-endpoints';
+import { isLiteNameTaken } from './lite-name-availability';
 import { useLiteRelayInfo } from './use-lite-relay-info';
 
 const logger = getLogger('app');
@@ -96,6 +97,7 @@ export function useLiteRootPostMutation() {
     },
     onError: (error: unknown) => {
       logger.error(error, 'Lite root post failed');
+      if (isLiteNameTaken(error)) return; // the post entry reopens the name dialog instead
       const draftKept = t('lite_account.gateway.draft_kept');
       if (error instanceof LiteGatewayNotReadyError) {
         const description = `${readinessText(t, error.readiness)} ${draftKept}`;

@@ -981,6 +981,13 @@
       "label": "Name",
       "suggest_another": "Suggest another",
       "invalid_name": "3–16 characters: lowercase letters, digits and hyphens, starting with a letter and ending with a letter or digit.",
+      "checking": "Checking whether this name is free…",
+      "available": "This name is available.",
+      "taken": "This name was just taken. Pick another one.",
+      "taken_lite": "This name belongs to another lite account.",
+      "taken_l1": "This name belongs to a Hive account.",
+      "invalid_l1": "This is not a valid Hive account name.",
+      "check_failed": "Couldn't check this name: the lite-account gateway is unreachable. You can still continue; a taken name is refused when you post.",
       "disposable_note": "Your identity is kept in this browser only until you save it.",
       "confirm": "Post as this name",
       "cancel": "Cancel"

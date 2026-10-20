@@ -110,6 +110,8 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/lite-account/lite-root-post.test.ts \
     apps/blog/features/lite-account/lite-ownership.test.ts \
     apps/blog/features/lite-account/lite-manage-cache.test.ts \
+    apps/blog/features/lite-account/lite-name-availability.test.ts \
+    apps/blog/features/lite-account/lite-name-checker.test.ts \
     apps/blog/lib/lite-relay/gateway-paths.test.ts < /dev/null || status=1
 echo "== node --test apps/wallet" >&2
 junit="$PWD/test-results/unit/wallet.xml"
