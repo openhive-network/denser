@@ -73,6 +73,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       var code = ${safeJsonForScript(code)};
       var state = ${safeJsonForScript(state)};
       var error = ${safeJsonForScript(error)};
+      // The app's home, under its base path, for a missing or rejected return URL
+      var appHome = ${safeJsonForScript(process.env.NEXT_PUBLIC_BASE_PATH || '/')};
 
       // URL-safe base64 decode helper
       function decodeUrlSafeBase64(str) {
@@ -108,7 +110,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       }
 
       // Parse state and validate CSRF nonce
-      var returnUrl = '/';
+      var returnUrl = appHome;
       var stateNonce = null;
       try {
         if (state) {

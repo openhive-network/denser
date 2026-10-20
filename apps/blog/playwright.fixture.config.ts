@@ -84,11 +84,13 @@ const serverEnv = {
   DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET: FIXTURE_OAUTH_CLIENT_SECRET,
   // A subdirectory deployment's site and blog URLs carry its base path: the
   // server builds its redirects from the first, post share links from the
-  // second. The root pass keeps the defaults.
+  // second. The browser loads hb-auth's worker from under REACT_APP_BASE_PATH,
+  // so the sign-in dialog needs it too. The root pass keeps the defaults.
   ...(BASE_PATH
     ? {
         REACT_APP_SITE_DOMAIN: `http://localhost:3000${BASE_PATH}`,
-        REACT_APP_BLOG_DOMAIN: `http://localhost:3000${BASE_PATH}`
+        REACT_APP_BLOG_DOMAIN: `http://localhost:3000${BASE_PATH}`,
+        REACT_APP_BASE_PATH: BASE_PATH
       }
     : {})
 };

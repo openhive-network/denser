@@ -563,7 +563,9 @@ requests, and blanks the GSI script (`accounts.google.com`). It answers
 `/api/google-drive/auth` with an access token and the Drive API
 (`www.googleapis.com`) with `{ files: [] }`, i.e. no wallet. The build's CSP
 leaves Google out, so the spec sets `bypassCSP: true`. None of it reaches the
-Hive API, so the spec reuses the `accountSwitchLogout` recording.
+Hive API, so the spec reuses the `accountSwitchLogout` recording. It is tagged
+@basepath, and GOOGLE-WNF-03 checks the token exchange is POSTed under
+FIXTURE_BASE_PATH (the route glob matches with or without it).
 
 ---
 

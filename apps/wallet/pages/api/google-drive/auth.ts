@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getGoogleDriveOAuth2Client } from '@/wallet/lib/google-drive-client';
 import { getLogger } from '@ui/lib/logging';
+import { googleDriveCallbackUri, googleDriveServerOrigin } from '@smart-signer/lib/google-drive-urls';
 
 const logger = getLogger('google-drive-auth');
 
@@ -30,14 +31,18 @@ export default async function handler(
       return res.status(400).json({ error: 'Invalid code format' });
     }
 
-    // If the client signals redirect mode was used, construct the callback
-    // URI from request headers instead of accepting a client-provided value
-    let callbackUri: string | undefined;
-    if (req.body['redirectUri']) {
-      const host = req.headers['host'];
-      const proto = req.headers['x-forwarded-proto'] || 'https';
-      callbackUri = `${proto}://${host}/api/google-drive/callback`;
-    }
+    // If the client signals redirect mode was used, reconstruct the callback
+    // URI server-side (never trust a client-provided value), on the canonical
+    // site domain rather than the request Host header (#924).
+    const forwardedProto = req.headers['x-forwarded-proto'];
+    const callbackUri = req.body['redirectUri']
+      ? googleDriveCallbackUri(
+          googleDriveServerOrigin(process.env.REACT_APP_SITE_DOMAIN, {
+            host: req.headers['host'],
+            forwardedProto: Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto
+          })
+        )
+      : undefined;
 
     const oauth2Client = getGoogleDriveOAuth2Client(callbackUri);
 

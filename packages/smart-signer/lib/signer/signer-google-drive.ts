@@ -28,6 +28,12 @@ import {
   readCredential
 } from '@smart-signer/lib/signer/credential-storage';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
+import {
+  GOOGLE_DRIVE_AUTH_PATH,
+  GOOGLE_DRIVE_REFRESH_PATH,
+  googleDriveApiUrl,
+  googleDriveCallbackUri
+} from '@smart-signer/lib/google-drive-urls';
 import { LoginType } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
@@ -129,7 +135,7 @@ export class SignerGoogleDrive extends Signer {
   private currentKeyType?: keyof THiveRoles;
 
   private getAccessTokenForRefreshToken = async (refreshToken: string): Promise<string> => {
-    const response = await fetch(`${window.location.origin}/api/google-drive/refresh`, {
+    const response = await fetch(googleDriveApiUrl(window.location.origin, GOOGLE_DRIVE_REFRESH_PATH), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -223,7 +229,7 @@ export class SignerGoogleDrive extends Signer {
     const returnUrl = window.location.href;
     // Use URL-safe base64 encoding and include nonce for CSRF protection
     const state = encodeUrlSafeBase64(JSON.stringify({ returnUrl, nonce }));
-    const redirectUri = `${window.location.origin}/api/google-drive/callback`;
+    const redirectUri = googleDriveCallbackUri(window.location.origin);
 
     const tokenClient = window.google.accounts.oauth2.initCodeClient({
       client_id: siteConfig.googleDrive.clientId,
@@ -287,10 +293,10 @@ export class SignerGoogleDrive extends Signer {
 
     // For redirect mode, include the redirect_uri that was used during authorization
     if (isRedirectMode) {
-      body.redirectUri = `${window.location.origin}/api/google-drive/callback`;
+      body.redirectUri = googleDriveCallbackUri(window.location.origin);
     }
 
-    const res = await fetch(`${window.location.origin}/api/google-drive/auth`, {
+    const res = await fetch(googleDriveApiUrl(window.location.origin, GOOGLE_DRIVE_AUTH_PATH), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
