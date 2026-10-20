@@ -1,5 +1,6 @@
 {
   "global": {
+    "close": "关闭",
     "no_rewards": "没有等待兑换的奖励",
     "loading": "加载中",
     "publishing": "发布中...",

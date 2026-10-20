@@ -108,4 +108,23 @@ test.describe('Comment creation — fresh state (§5)', () => {
       findNestedReplyByBody(postPage, parentItem, body)
     ).toBeVisible();
   });
+
+  test('CMT-03: a double-click on the disabled Post button does not select its label', async ({ page }) => {
+    await gotoPostLoggedIn(page);
+    await openReplyEditor(postReplyTrigger(page), page.getByTestId('reply-editor'));
+
+    const postButton = page
+      .getByTestId('reply-editor')
+      .getByRole('button', { name: 'Post', exact: true });
+    await expect(postButton).toBeDisabled();
+    // A disabled button lets the pointer through, so dispatch at its position like a user would
+    const box = await postButton.boundingBox();
+    expect(box).not.toBeNull();
+    if (!box) return;
+    await page.mouse.dblclick(box.x + box.width / 2, box.y + box.height / 2);
+
+    expect(
+      await postButton.evaluate((button) => window.getSelection()?.containsNode(button, true) ?? false)
+    ).toBe(false);
+  });
 });

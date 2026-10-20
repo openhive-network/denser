@@ -65,7 +65,7 @@
     "use_hbauth": "Use safe storage",
     "use_hiveauth": "Use HiveAuth",
     "use_keychain": "Use Keychain",
-    "use_peakvault": "Use Peakvault",
+    "use_peakvault": "Use PeakVault",
     "use_wif": "Use WIF",
     "username_placeholder": "Enter your username",
     "working": "Working…",

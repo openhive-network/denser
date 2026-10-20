@@ -28,7 +28,7 @@ const MESSAGES = [
   { locale: 'en', message: 'This operation needs your active key. Sign in with your active key and try again.' },
   {
     locale: 'pl',
-    message: 'Ta operacja wymaga klucza aktywnego (active). Zaloguj się kluczem aktywnym i spróbuj ponownie.'
+    message: 'Ta operacja wymaga klucza Active. Zaloguj się kluczem Active i spróbuj ponownie.'
   }
 ];
 

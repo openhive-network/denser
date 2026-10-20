@@ -128,8 +128,8 @@
     "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "Для этой операции требуется ваш ключ публикации. Введите ключ и храните его в надёжном месте.",
     "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "Для этой операции требуется ваш активный ключ. Введите ключ и храните его в надёжном месте.",
     "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "Для этой операции требуется ваш ключ владельца. Введите ключ и храните его в надёжном месте.",
-    "use_peakvault": "Использовать Peakvault",
-    "signin_with_peakvault": "Расширение Peakvault",
+    "use_peakvault": "Использовать PeakVault",
+    "signin_with_peakvault": "Расширение PeakVault",
     "extension_sign_in": {
       "keychain": "Войти через Hive Keychain",
       "peakvault": "Войти через PeakVault",
