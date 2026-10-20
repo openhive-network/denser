@@ -17,6 +17,11 @@ import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
 import { LiteReplyBox } from '@/blog/features/lite-account/lite-reply-box';
 import LiteReplyTrigger from '@/blog/features/lite-account/lite-reply-trigger';
+import { liteDeletedPostDestination } from '@/blog/features/lite-account/lite-manage-cache';
+import { liteL1Author } from '@/blog/features/lite-account/lite-ownership';
+import { LiteOwnerActions } from '@/blog/features/lite-account/lite-owner-actions';
+import { LiteTombstoneNotice } from '@/blog/features/lite-account/lite-tombstone-notice';
+import { useIsLiteTombstone } from '@/blog/features/lite-account/use-lite-owner';
 import { postAuthorFromParam } from '@/blog/features/lite-account/lite-did';
 import { usePostsNamespace } from '@/blog/features/lite-account/use-lite-api-info';
 import { AlertDialogFlag } from '@/blog/features/post-rendering/alert-window-flag';
@@ -86,6 +91,9 @@ import { StaleTime } from '@/blog/lib/react-query';
 
 // The post editor (its form schema and transaction helpers) is needed only when editing the post.
 const PostForm = dynamic(() => import('@/blog/features/post-editor/post-form'), { ssr: false });
+const LiteEditForm = dynamic(() => import('@/blog/features/lite-account/lite-edit-form').then((m) => m.LiteEditForm), {
+  ssr: false
+});
 
 // Stable empty fallback for mutedList — an inline [] would create a new reference
 // every render and invalidate mutedList-dependent useMemo in the comments tree.
@@ -140,6 +148,7 @@ const PostContent = () => {
   // Guests have no storage key (see replyStorageId), so the lite reply box keeps its
   // open/closed state in memory instead.
   const [guestReply, setGuestReply] = useState(false);
+  const [liteEdit, setLiteEdit] = useState(false);
   // Use stored values directly - no useState needed
   // This ensures proper hydration and cross-tab sync
   const reply = user.isLoggedIn ? storedReply : guestReply;
@@ -187,6 +196,7 @@ const PostContent = () => {
     staleTime: StaleTime.MEDIUM
   });
   const { data: postData, isPending: postIsLoading } = postQuery;
+  const liteTombstone = useIsLiteTombstone(postData);
   useQueryErrorEffect(postQuery, (error) => {
     handleError(error, { method: 'getPost', params: { author, permlink, observer } });
   });
@@ -543,6 +553,16 @@ const PostContent = () => {
                 </div>
                 {postIsLoading ? (
                   <Loading loading={postIsLoading} />
+                ) : liteEdit && !user.isLoggedIn ? (
+                  <LiteEditForm
+                    entry={postData}
+                    onClose={() => setLiteEdit(false)}
+                    discussionAuthor={author}
+                    discussionPermlink={permlink}
+                    observer={observer}
+                  />
+                ) : liteTombstone ? (
+                  <LiteTombstoneNotice />
                 ) : edit && commentSite && postData.parent_author && postData.parent_permlink ? (
                   <ReplyTextbox
                     editMode={edit}
@@ -784,14 +804,29 @@ const PostContent = () => {
                           ) : null}
                         </>
                       ) : (
-                        <LiteReplyTrigger
-                          open={reply}
-                          onToggle={() => setReply(!reply)}
-                          className="flex items-center text-destructive"
-                          testId="comment-reply"
-                        >
-                          {t('post_content.footer.reply')}
-                        </LiteReplyTrigger>
+                        <>
+                          <LiteReplyTrigger
+                            open={reply}
+                            onToggle={() => setReply(!reply)}
+                            className="flex items-center text-destructive"
+                            testId="comment-reply"
+                          >
+                            {t('post_content.footer.reply')}
+                          </LiteReplyTrigger>
+                          <LiteOwnerActions
+                            entry={postData}
+                            editing={liteEdit}
+                            onToggleEdit={() => setLiteEdit((prev) => !prev)}
+                            onDeleted={(mode) => {
+                              if (mode === 'l1_delete') router.push(liteDeletedPostDestination(postData));
+                            }}
+                            separator={<span className="mx-1">|</span>}
+                            className="flex items-center text-destructive"
+                            discussionAuthor={author}
+                            discussionPermlink={permlink}
+                            observer={observer}
+                          />
+                        </>
                       )}
                       {postData.children === 0 &&
                       user.isLoggedIn &&
@@ -950,6 +985,7 @@ const PostContent = () => {
                   <div className="mt-4 px-4">
                     <LiteReplyBox
                       parentAuthor={postData.author}
+                      l1ParentAuthor={liteL1Author(postData)}
                       parentPermlink={permlink}
                       discussionAuthor={author}
                       discussionPermlink={permlink}

@@ -7,6 +7,7 @@ import { liteRelayInfoQuery, type LiteRelayInfo } from './lite-relay-info-query'
 export {
   LITE_GATEWAY_ENDPOINT,
   LITE_RELAY_ENDPOINT,
+  type LiteRelayFeatures,
   type LiteRelayInfo,
   type LiteRelayLimits
 } from './lite-relay-info-query';

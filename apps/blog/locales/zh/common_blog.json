@@ -1042,6 +1042,34 @@
         "wait_exceeded": "文章在队列中等待的时间超过了网关允许的上限。",
         "unknown": "出了点问题。"
       }
+    },
+    "manage": {
+      "save": "保存",
+      "cancel": "取消",
+      "edited_title": "更改已保存",
+      "edited_description": "你的编辑已通过轻账户网关发布。",
+      "edit_failed_title": "编辑失败",
+      "delete_post_title": "删除这篇帖子？",
+      "delete_comment_title": "删除这条评论？",
+      "delete_tombstone_note": "有回复或投票的帖子或评论无法从 Hive 移除：它会作为墓碑保留，注明已被作者删除。",
+      "delete_confirm": "删除",
+      "deleted_title": "已删除",
+      "deleted_l1_delete": "已从 Hive 移除。",
+      "deleted_tombstone": "它有回复或投票，因此作为注明已删除的墓碑保留在 Hive 上。",
+      "delete_failed_title": "删除失败",
+      "deleted_by_author": "已被作者删除。",
+      "errors": {
+        "not_owner": "这不是本浏览器的轻账户写的，或者它已不再持有签名所用的密钥。",
+        "not_found": "网关不认识这篇帖子。",
+        "edits_disabled": "此网关目前不接受编辑或删除。",
+        "rate_limited": "请求过多。请稍候再试。",
+        "banned": "此轻账户不能通过此网关发布。",
+        "body_too_large": "文本对网关来说太长。",
+        "invalid_request": "网关以无效为由拒绝了此更改。",
+        "broadcast_failed": "网关无法在 Hive 上发布此更改。请重试。",
+        "relay_unavailable": "无法连接轻账户网关。",
+        "unknown": "出了点问题。"
+      }
     }
   }
 }

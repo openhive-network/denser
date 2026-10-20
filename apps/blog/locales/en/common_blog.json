@@ -1042,6 +1042,34 @@
         "wait_exceeded": "The post waited in the queue longer than the gateway allows.",
         "unknown": "Something went wrong."
       }
+    },
+    "manage": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "edited_title": "Changes saved",
+      "edited_description": "Your edit was published through the lite-account gateway.",
+      "edit_failed_title": "Edit failed",
+      "delete_post_title": "Delete this post?",
+      "delete_comment_title": "Delete this comment?",
+      "delete_tombstone_note": "A post or comment that has replies or votes cannot be removed from Hive: it stays as a tombstone that says it was deleted by its author.",
+      "delete_confirm": "Delete",
+      "deleted_title": "Deleted",
+      "deleted_l1_delete": "It was removed from Hive.",
+      "deleted_tombstone": "It has replies or votes, so it stays on Hive as a tombstone that says it was deleted.",
+      "delete_failed_title": "Delete failed",
+      "deleted_by_author": "Deleted by the author.",
+      "errors": {
+        "not_owner": "This browser's lite account did not write it, or no longer holds the key that did.",
+        "not_found": "The gateway does not know this post.",
+        "edits_disabled": "This gateway does not take edits or deletes right now.",
+        "rate_limited": "Too many requests. Wait a moment and try again.",
+        "banned": "This lite account may not post through this gateway.",
+        "body_too_large": "The text is too long for the gateway.",
+        "invalid_request": "The gateway refused the change as invalid.",
+        "broadcast_failed": "The gateway could not publish the change on Hive. Try again.",
+        "relay_unavailable": "The lite-account gateway cannot be reached.",
+        "unknown": "Something went wrong."
+      }
     }
   }
 }

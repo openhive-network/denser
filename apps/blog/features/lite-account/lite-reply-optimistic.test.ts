@@ -1,7 +1,8 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
-const { hasIndexedReply, optimisticReplyAuthor, withOptimisticReply } = await import('./lite-reply-optimistic.ts');
+const { hasIndexedReply, optimisticReplyAuthor, withOptimisticReply, withRelayedReply } = await import('./lite-reply-optimistic.ts');
+const { liteL1Author } = await import('./lite-ownership.ts');
 
 type Variables = Parameters<typeof withOptimisticReply>[1];
 
@@ -58,5 +59,21 @@ describe('guest reply optimistic entry', () => {
     assert.equal(hasIndexedReply(fresh('test-gateway-1/re-post-abc', compatEntry), compat, 're-post-abc'), true);
     assert.equal(hasIndexedReply(withOptimisticReply(discussion(), native), native, 're-post-abc'), false);
     assert.equal(hasIndexedReply(null, compat, 're-post-abc'), false);
+  });
+
+  it('names its L1 location once the gateway posted it, as the node will', () => {
+    const v = variables(true);
+    const pending = withOptimisticReply(discussion(), v);
+    const key = 'did:lite:lite-smoke-1016/re-post-abc';
+    assert.equal(liteL1Author(pending[key]), undefined);
+
+    const entry = withRelayedReply(pending, v, 'test-gateway-3')?.[key];
+    assert.ok(entry);
+    assert.equal(entry.url, '/lite-test/@alice/post#@test-gateway-3/re-post-abc');
+    assert.equal(liteL1Author(entry), 'test-gateway-3');
+    assert.equal(entry._optimistic, true);
+
+    const indexed = discussion();
+    assert.equal(withRelayedReply(indexed, v, 'test-gateway-3'), indexed);
   });
 });

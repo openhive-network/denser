@@ -1042,6 +1042,34 @@
         "wait_exceeded": "投稿がゲートウェイの許容時間を超えて待ち行列にありました。",
         "unknown": "問題が発生しました。"
       }
+    },
+    "manage": {
+      "save": "保存",
+      "cancel": "キャンセル",
+      "edited_title": "変更を保存しました",
+      "edited_description": "編集はライトアカウントゲートウェイ経由で公開されました。",
+      "edit_failed_title": "編集に失敗しました",
+      "delete_post_title": "この投稿を削除しますか？",
+      "delete_comment_title": "このコメントを削除しますか？",
+      "delete_tombstone_note": "返信や投票のある投稿・コメントは Hive から削除できません。作成者が削除したことを示す墓標として残ります。",
+      "delete_confirm": "削除",
+      "deleted_title": "削除しました",
+      "deleted_l1_delete": "Hive から削除されました。",
+      "deleted_tombstone": "返信または投票があるため、削除済みを示す墓標として Hive に残ります。",
+      "delete_failed_title": "削除に失敗しました",
+      "deleted_by_author": "作成者により削除されました。",
+      "errors": {
+        "not_owner": "このブラウザのライトアカウントが書いたものではないか、署名した鍵をもう持っていません。",
+        "not_found": "ゲートウェイはこの投稿を認識していません。",
+        "edits_disabled": "このゲートウェイは現在、編集と削除を受け付けていません。",
+        "rate_limited": "リクエストが多すぎます。少し待ってからもう一度お試しください。",
+        "banned": "このライトアカウントはこのゲートウェイから投稿できません。",
+        "body_too_large": "テキストがゲートウェイの上限を超えています。",
+        "invalid_request": "ゲートウェイは変更を無効として拒否しました。",
+        "broadcast_failed": "ゲートウェイは Hive に変更を公開できませんでした。もう一度お試しください。",
+        "relay_unavailable": "ライトアカウントゲートウェイに接続できません。",
+        "unknown": "問題が発生しました。"
+      }
     }
   }
 }

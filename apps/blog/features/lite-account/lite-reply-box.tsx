@@ -30,7 +30,10 @@ const MdEditor = dynamic(() => import('../post-editor/md-editor'), {
 const DEFAULT_RETRY_S = 10;
 
 type Props = {
+  /** The parent as the page's discussion names it (a DID on a lite-aware node). */
   parentAuthor: string;
+  /** The parent's L1 author, when it differs from `parentAuthor`: the gate account of a DID parent. */
+  l1ParentAuthor?: string;
   parentPermlink: string;
   discussionAuthor: string;
   discussionPermlink: string;
@@ -44,7 +47,7 @@ type Props = {
  * the relay posts it on L1. No sign-up ceremony. The gateway is asked once more right before
  * posting: when it cannot take the reply the draft stays, and Post waits out the gateway's delay.
  */
-export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, discussionPermlink, observer, onSetReply }: Props) {
+export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, discussionAuthor, discussionPermlink, observer, onSetReply }: Props) {
   const { t } = useTranslation('common_blog');
   const relay = useLiteRelayInfo();
   const { identity, create, markRegistered, ensureClientId } = useLiteIdentity();
@@ -93,7 +96,7 @@ export function LiteReplyBox({ parentAuthor, parentPermlink, discussionAuthor, d
       gateAccount: relay.data.gate_account,
       chainId: relay.data.chain_id,
       apps: relay.data.apps,
-      comment: { parent_author: parentAuthor, parent_permlink: parentPermlink, title: '', body: text, tags: [] },
+      comment: { parent_author: l1ParentAuthor ?? parentAuthor, parent_permlink: parentPermlink, title: '', body: text, tags: [] },
       clientId: ensureClientId()
     });
     try {

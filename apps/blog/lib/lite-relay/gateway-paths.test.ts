@@ -7,8 +7,12 @@ describe('allowedGatewayPath', () => {
   it('relays the posting endpoints, POST only', () => {
     assert.equal(allowedGatewayPath('POST', ['reply']), '/reply');
     assert.equal(allowedGatewayPath('POST', ['post']), '/post');
+    assert.equal(allowedGatewayPath('POST', ['edit']), '/edit');
+    assert.equal(allowedGatewayPath('POST', ['delete']), '/delete');
     assert.equal(allowedGatewayPath('GET', ['post']), null);
+    assert.equal(allowedGatewayPath('GET', ['edit']), null);
     assert.equal(allowedGatewayPath('DELETE', ['reply']), null);
+    assert.equal(allowedGatewayPath('DELETE', ['delete']), null);
   });
 
   it('relays a queue entry: GET and DELETE on it, POST on its /post', () => {
@@ -21,7 +25,7 @@ describe('allowedGatewayPath', () => {
   });
 
   it('refuses everything else: other gateway endpoints, odd queue ids, extra segments', () => {
-    for (const segments of [['info'], ['health'], ['edit'], ['delete'], ['gates', 'next'], []]) {
+    for (const segments of [['info'], ['health'], ['gates', 'next'], ['edit', 'x'], ['toString'], []]) {
       assert.equal(allowedGatewayPath('POST', segments), null, segments.join('/'));
       assert.equal(allowedGatewayPath('GET', segments), null, segments.join('/'));
     }

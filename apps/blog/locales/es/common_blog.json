@@ -1042,6 +1042,34 @@
         "wait_exceeded": "La publicación esperó en la cola más de lo que permite la pasarela.",
         "unknown": "Algo salió mal."
       }
+    },
+    "manage": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "edited_title": "Cambios guardados",
+      "edited_description": "Tu edición se publicó a través de la pasarela de cuentas lite.",
+      "edit_failed_title": "La edición falló",
+      "delete_post_title": "¿Eliminar esta publicación?",
+      "delete_comment_title": "¿Eliminar este comentario?",
+      "delete_tombstone_note": "Una publicación o comentario con respuestas o votos no se puede quitar de Hive: queda como una lápida que indica que su autor lo eliminó.",
+      "delete_confirm": "Eliminar",
+      "deleted_title": "Eliminado",
+      "deleted_l1_delete": "Se quitó de Hive.",
+      "deleted_tombstone": "Tiene respuestas o votos, así que queda en Hive como una lápida que indica que se eliminó.",
+      "delete_failed_title": "La eliminación falló",
+      "deleted_by_author": "Eliminado por el autor.",
+      "errors": {
+        "not_owner": "La cuenta lite de este navegador no lo escribió, o ya no tiene la clave con que se firmó.",
+        "not_found": "La pasarela no conoce esta publicación.",
+        "edits_disabled": "Esta pasarela no acepta ediciones ni eliminaciones ahora mismo.",
+        "rate_limited": "Demasiadas solicitudes. Espera un momento e inténtalo de nuevo.",
+        "banned": "Esta cuenta lite no puede publicar a través de esta pasarela.",
+        "body_too_large": "El texto es demasiado largo para la pasarela.",
+        "invalid_request": "La pasarela rechazó el cambio por no ser válido.",
+        "broadcast_failed": "La pasarela no pudo publicar el cambio en Hive. Inténtalo de nuevo.",
+        "relay_unavailable": "No se puede contactar con la pasarela de cuentas lite.",
+        "unknown": "Algo salió mal."
+      }
     }
   }
 }
