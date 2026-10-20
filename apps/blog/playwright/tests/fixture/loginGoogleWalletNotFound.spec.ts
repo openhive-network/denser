@@ -15,14 +15,19 @@ import enSmartSigner from '@smart-signer/locales/en/smart-signer.json';
  * (`/api/google-drive/auth`) answers with an access token, and the Google Drive API finds no file.
  * The CSP of the fixture build, configured without Google, is bypassed for that.
  *
+ * Tagged @basepath: .aidev/run-fixture-e2e.sh runs it a second time against a build served under
+ * FIXTURE_BASE_PATH, where the token exchange has to be sent under the base path too.
+ *
  * Fixtures: reuses `accountSwitchLogout`, which opens the sign-in dialog on the same page.
  */
 
 test.use({ fixtureTestName: 'accountSwitchLogout', bypassCSP: true });
 
+const BASE_PATH = process.env.FIXTURE_BASE_PATH ?? '';
 const USERNAME = 'gtg';
 // A page with the site header but no feed, to keep the recording small
-const PAGE_WITH_HEADER = '/faq.html';
+const PAGE_WITH_HEADER = `${BASE_PATH}/faq.html`;
+const TOKEN_EXCHANGE_PATH = `${BASE_PATH}/api/google-drive/auth`;
 // The sign-in loads the signing stack (wax) first
 const SIGN_IN_TIMEOUT_MS = 30_000;
 const GOOGLE_CLIENT_ID = 'fixture-client.apps.googleusercontent.com';
@@ -94,7 +99,7 @@ async function expectSignInAgainAllowed(page: Page): Promise<void> {
   await expect(page.getByText(EN.login_form.sign_in_pending_generic)).toHaveCount(0);
 }
 
-test.describe('Google sign-in — Wallet Not Found', () => {
+test.describe('Google sign-in — Wallet Not Found', { tag: '@basepath' }, () => {
   test.beforeEach(async ({ page }) => {
     await stubGoogle(page);
   });
@@ -124,5 +129,16 @@ test.describe('Google sign-in — Wallet Not Found', () => {
     await expect(walletNotFoundDialog(page)).toBeHidden();
     expect(await consentRequests(page)).toBe(1);
     await expectSignInAgainAllowed(page);
+  });
+
+  test('GOOGLE-WNF-03 — the token exchange is sent to the app API under its base path', async ({ page }) => {
+    await openGoogleSignIn(page);
+    const tokenExchange = page.waitForRequest('**/api/google-drive/auth');
+    await signInWithGoogle(page);
+
+    const request = await tokenExchange;
+    const origin = new URL(page.url()).origin;
+    expect(request.method()).toBe('POST');
+    expect(request.url()).toBe(`${origin}${TOKEN_EXCHANGE_PATH}`);
   });
 });
