@@ -106,6 +106,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/lite-account/lite-did.test.ts \
     apps/blog/features/lite-account/lite-reply-optimistic.test.ts \
     apps/blog/features/lite-account/use-lite-gateway-health.test.ts \
+    apps/blog/features/lite-account/lite-endpoints.test.ts \
     apps/blog/features/lite-account/lite-root-post.test.ts \
     apps/blog/features/lite-account/lite-ownership.test.ts \
     apps/blog/features/lite-account/lite-manage-cache.test.ts \

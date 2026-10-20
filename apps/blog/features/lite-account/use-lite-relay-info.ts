@@ -5,8 +5,6 @@ import { DEFAULT_LITE_APP_IDS, type LiteAppIds } from '@hiveio/lite-account';
 import { liteRelayInfoQuery, type LiteRelayInfo } from './lite-relay-info-query';
 
 export {
-  LITE_GATEWAY_ENDPOINT,
-  LITE_RELAY_ENDPOINT,
   type LiteRelayFeatures,
   type LiteRelayInfo,
   type LiteRelayLimits

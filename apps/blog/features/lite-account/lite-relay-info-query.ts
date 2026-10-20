@@ -1,11 +1,8 @@
 import type { LiteAppIds } from '@hiveio/lite-account';
+import { liteRelayEndpoint } from './lite-endpoints.ts';
 
 // No runtime import of @hiveio/lite-account here: the site header asks this query, and the
 // package's signing code must stay out of every page's bundle.
-
-export const LITE_RELAY_ENDPOINT = '/api/lite-reply';
-/** Base of the allow-listed gateway pass-through (`/post`, `/queue/<id>`, …). */
-export const LITE_GATEWAY_ENDPOINT = '/api/lite-gateway';
 
 /** The gateway's `/info.limits`; only the fields the UI reads are typed, none is guaranteed. */
 export type LiteRelayLimits = {
@@ -40,7 +37,7 @@ function isRelayInfo(value: unknown): value is LiteRelayInfo {
 }
 
 async function fetchLiteRelayInfo(): Promise<LiteRelayInfo> {
-  const response = await fetch(LITE_RELAY_ENDPOINT, { method: 'GET' });
+  const response = await fetch(liteRelayEndpoint(), { method: 'GET' });
   if (!response.ok) return { enabled: false };
   const payload: unknown = await response.json().catch(() => null);
   return isRelayInfo(payload) ? payload : { enabled: false };
