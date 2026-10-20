@@ -57,6 +57,10 @@ export interface ILiteApiProbe {
   peek(endpoint: string): ILiteApiInfo | null | undefined;
   /** Treats `endpoint` as not lite-aware until the TTL ends, e.g. after it stopped serving `lite.*`. */
   markUnavailable(endpoint: string): void;
+  /** Takes `info` as the answer of `endpoint` until the TTL ends, without asking it (e.g. a known verdict). */
+  seed(endpoint: string, info: unknown): void;
+  /** Calls `listener` whenever an answer is recorded; returns the unsubscribe function. */
+  subscribe(listener: () => void): () => void;
 }
 
 /**
@@ -71,6 +75,12 @@ export function createLiteApiProbe({
 }: ILiteApiProbeOptions): ILiteApiProbe {
   const cache = new Map<string, { expiresAt: number; info: Promise<ILiteApiInfo | null> }>();
   const answers = new Map<string, ILiteApiInfo | null>();
+  const listeners = new Set<() => void>();
+
+  const record = (endpoint: string, answer: ILiteApiInfo | null) => {
+    answers.set(endpoint, answer);
+    listeners.forEach((listener) => listener());
+  };
 
   const probe = async (endpoint: string): Promise<ILiteApiInfo | null> => {
     let answer: unknown;
@@ -91,7 +101,7 @@ export function createLiteApiProbe({
     const entry = { expiresAt: now() + ttlMs, info };
     cache.set(endpoint, entry);
     void info.then((answer) => {
-      if (cache.get(endpoint) === entry) answers.set(endpoint, answer);
+      if (cache.get(endpoint) === entry) record(endpoint, answer);
     });
     return info;
   };
@@ -106,6 +116,15 @@ export function createLiteApiProbe({
     markUnavailable: (endpoint) => {
       answers.set(endpoint, null);
       remember(endpoint, Promise.resolve(null));
+    },
+    seed: (endpoint, info) => {
+      const answer = isLiteApiInfo(info) ? info : null;
+      remember(endpoint, Promise.resolve(answer));
+      record(endpoint, answer);
+    },
+    subscribe: (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
     }
   };
 }
@@ -152,12 +171,26 @@ export const isLiteAware = async (): Promise<boolean> => (await getLiteApiInfo()
 /** The namespace post reads of the current API node go to; part of every cache key of their results. */
 export const getPostsNamespace = async (): Promise<TPostsNamespace> => ((await isLiteAware()) ? 'lite' : 'bridge');
 
+/** `lite.get_info` of the current API node as far as it is known, without asking it; undefined before. */
+export const peekLiteApiInfo = (): ILiteApiInfo | null | undefined => liteApiProbe.peek(getReadChain().endpointUrl);
+
+/** Calls `listener` whenever the probe records an answer of any node; returns the unsubscribe function. */
+export const subscribeLiteApiInfo = (listener: () => void): (() => void) => liteApiProbe.subscribe(listener);
+
+/**
+ * Takes the server render's `lite.get_info` answer of `endpoint` when the browser reads from that
+ * same node and has no answer of its own yet; a browser on another node keeps probing its own.
+ */
+export const seedLiteApiInfo = (endpoint: string, info: unknown): void => {
+  if (getReadChain().endpointUrl !== endpoint || liteApiProbe.peek(endpoint) !== undefined) return;
+  liteApiProbe.seed(endpoint, info);
+};
+
 /**
  * The namespace of the current API node as far as it is known, without asking it: `bridge` until
- * its probe has answered. For cache keys built outside React, after the page has probed the node.
+ * its probe has answered (or the server's answer was seeded). For cache keys built outside React.
  */
-export const currentPostsNamespace = (): TPostsNamespace =>
-  liteApiProbe.peek(getReadChain().endpointUrl) ? 'lite' : 'bridge';
+export const currentPostsNamespace = (): TPostsNamespace => (peekLiteApiInfo() ? 'lite' : 'bridge');
 
 /** Runs a post read on the namespace of the current API node, see `createPostsReader`. */
 export const readPosts = createPostsReader(getReadChain, liteApiProbe);

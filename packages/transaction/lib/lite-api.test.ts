@@ -97,6 +97,41 @@ describe('createLiteApiProbe', () => {
 
     expect(requests).to.deep.equal([LITE_NODE, STOCK_NODE]);
   });
+  it('answers a seeded endpoint without asking it, and asks every other endpoint itself', async () => {
+    const { probe, requests } = setupProbe({ [LITE_NODE]: LITE_INFO, [STOCK_NODE]: apiNotFound('lite.get_info') });
+
+    probe.seed(LITE_NODE, LITE_INFO);
+
+    expect(probe.peek(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(probe.peek(STOCK_NODE)).to.equal(undefined);
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(await probe.getInfo(STOCK_NODE)).to.equal(null);
+    expect(requests).to.deep.equal([STOCK_NODE]);
+  });
+
+  it('takes a malformed seed as not lite-aware and asks the node again once the seed expires', async () => {
+    const { probe, requests, advance } = setupProbe({ [LITE_NODE]: LITE_INFO });
+
+    probe.seed(LITE_NODE, { ...LITE_INFO, modes: ['compat'] });
+
+    expect(await probe.getInfo(LITE_NODE)).to.equal(null);
+    advance(LITE_PROBE_TTL_MS);
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(requests).to.deep.equal([LITE_NODE]);
+  });
+
+  it('notifies subscribers of a seed and of an answer, until they unsubscribe', async () => {
+    const { probe } = setupProbe({ [LITE_NODE]: LITE_INFO, [STOCK_NODE]: apiNotFound('lite.get_info') });
+    const seen: unknown[] = [];
+    const unsubscribe = probe.subscribe(() => seen.push(probe.peek(LITE_NODE)));
+
+    await probe.getInfo(LITE_NODE);
+    expect(seen).to.deep.equal([LITE_INFO]);
+
+    unsubscribe();
+    await probe.getInfo(STOCK_NODE);
+    expect(seen).to.have.length(1);
+  });
 });
 
 describe('readLiteProbeTtlMs', () => {
@@ -135,7 +170,7 @@ describe('createPostsReader', () => {
       api: { lite: postsApi('lite', () => liteAnswer), bridge: postsApi('bridge', () => 'compat') }
     };
     const { probe, requests } = setupProbe(probeAnswers);
-    return { read: createPostsReader(() => chain, probe), calls, probeRequests: requests };
+    return { read: createPostsReader(() => chain, probe), calls, probeRequests: requests, probe };
   };
 
   const getPost = (api: TPostsApi) => api.get_post({ author: 'did:lite:bob', permlink: 'p', observer: 'hive.blog' });
@@ -166,6 +201,31 @@ describe('createPostsReader', () => {
 
     expect(calls.map((call) => call.split(' ')[0])).to.deep.equal(['lite.get_post', 'bridge.get_post', 'bridge.get_post']);
     expect(probeRequests).to.deep.equal([LITE_NODE]);
+  });
+
+  it('probes the node once, on the first read, and notifies its answer', async () => {
+    const { read, calls, probeRequests, probe } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO });
+    let notified = 0;
+    probe.subscribe(() => notified++);
+
+    expect(probeRequests).to.deep.equal([]);
+    await read(getPost);
+    await read(getPost);
+
+    expect(probeRequests).to.deep.equal([LITE_NODE]);
+    expect(notified).to.be.greaterThan(0);
+    expect(probe.peek(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(calls.map((call) => call.split(' ')[0])).to.deep.equal(['lite.get_post', 'lite.get_post']);
+  });
+
+  it('reads a seeded lite-aware node through lite.* without probing it', async () => {
+    const { read, calls, probeRequests, probe } = setupReader(LITE_NODE, { [LITE_NODE]: apiNotFound('lite.get_info') });
+    probe.seed(LITE_NODE, LITE_INFO);
+
+    await read(getPost);
+
+    expect(probeRequests).to.deep.equal([]);
+    expect(calls.map((call) => call.split(' ')[0])).to.deep.equal(['lite.get_post']);
   });
 
   it('rejects with the lite.* answer when it is an answer of the API itself', async () => {

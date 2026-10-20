@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { CircleSpinner } from 'react-spinners-kit';
 import type { CommentContent, LiteIdentity, LiteRelayOk } from '@hiveio/lite-account';
+import { getLiteApiInfo } from '@transaction/lib/lite-api';
 import { getPostCategory } from '@transaction/lib/post-category';
 import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -19,7 +20,6 @@ import { useEditorCommunity } from '../post-editor/hooks/use-editor-community';
 import { parseTags, validateTagInput } from '../post-editor/lib/utils';
 import { LiteQueueStatus } from './lite-queue-status';
 import { isPersistedLiteQueue, liteRootPostPath, persistedQueueTtlMs, type PersistedLiteQueue } from './lite-root-post';
-import { useLiteApiInfo } from './use-lite-api-info';
 import { useLiteIdentity } from './use-lite-identity';
 import { useLiteRelayInfo } from './use-lite-relay-info';
 import { useLiteRootPostMutation } from './use-lite-root-post-mutation';
@@ -56,8 +56,6 @@ export function LitePostForm({ identity, categoryParam }: { identity: LiteIdenti
   const router = useRouter();
   const relay = useLiteRelayInfo();
   const limits = relay.data?.enabled ? relay.data.limits : undefined;
-  // Asked here because the editor reads no post: nothing else would probe the node.
-  const liteApi = useLiteApiInfo();
   const { markRegistered } = useLiteIdentity();
   const mutation = useLiteRootPostMutation();
   const [draft, setDraft, removeDraft] = useStorageWithTTL<LiteRootDraft>(LITE_POST_DRAFT_KEY, EMPTY_DRAFT, StorageTTL.DRAFT);
@@ -73,11 +71,13 @@ export function LitePostForm({ identity, categoryParam }: { identity: LiteIdenti
   const tagsCheck = validateTagInput(draft.tags, draft.category === MY_BLOG, t);
   const communityName = [categoryParam, draft.category].find((name) => isCommunity(name));
 
-  const finish = (result: LiteRelayOk, comment: CommentContent) => {
+  const finish = async (result: LiteRelayOk, comment: CommentContent) => {
     removeDraft();
     removeQueue();
     toast({ title: t('lite_account.root_post.posted_title'), description: t('lite_account.root_post.posted_description', { name: identity.name }), variant: 'success' });
-    const path = liteRootPostPath({ category: comment.parent_permlink, attester: identity.name, native: !!liteApi.data, result });
+    // Asked once posted, as the editor reads no post that would have probed the node.
+    const native = (await getLiteApiInfo()) !== null;
+    const path = liteRootPostPath({ category: comment.parent_permlink, attester: identity.name, native, result });
     router.push(`${path}?pending=1`);
   };
 
@@ -85,7 +85,7 @@ export function LitePostForm({ identity, categoryParam }: { identity: LiteIdenti
     const outcome = await mutation.mutateAsync({ identity, comment: toComment(draft) }).catch(() => null);
     if (!outcome) return; // the mutation toasted; the draft stays
     if (outcome.kind === 'queued') setQueue({ queued: outcome.queued, comment: outcome.comment });
-    else finish(outcome.result, outcome.comment);
+    else await finish(outcome.result, outcome.comment);
   };
 
   if (pending) {
@@ -94,7 +94,7 @@ export function LitePostForm({ identity, categoryParam }: { identity: LiteIdenti
         pending={pending}
         onPosted={(result) => {
           if (!identity.registered) markRegistered();
-          finish(result, pending.comment);
+          void finish(result, pending.comment);
         }}
         onCancelled={() => {
           removeQueue();
