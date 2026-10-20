@@ -975,6 +975,9 @@
     "card_description": "轻账号无需 Hive 账号即可发布。其个人资料将随 lite 社交应用推出。",
     "reply_as_guest": "无需账号即可回复，发布时选择一个名字。",
     "replying_as": "以轻账号 {{name}} 的身份回复",
+    "reply": {
+      "or_sign_in": "或登录"
+    },
     "name_dialog": {
       "title": "为你的轻账号选一个名字",
       "description": "无需注册。你的回复将归属于这个名字。",
@@ -990,7 +993,9 @@
       "check_failed": "无法检查此名称：lite 账户网关无法访问。你仍可继续；已被占用的名称会在发布时被拒绝。",
       "disposable_note": "在你保存之前，你的身份仅保存在此浏览器中。",
       "confirm": "以此名字发布",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "sign_in_reply": "改为登录并用你的 Hive 账号回复",
+      "sign_in_post": "改为登录并用你的 Hive 账号发布"
     },
     "posted": {
       "title": "Reply posted",

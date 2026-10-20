@@ -975,6 +975,9 @@
     "card_description": "라이트 계정은 Hive 계정 없이 게시합니다. 프로필은 lite 소셜 앱과 함께 제공될 예정입니다.",
     "reply_as_guest": "계정 없이 답글을 남기세요. 게시할 때 이름을 고릅니다.",
     "replying_as": "라이트 계정 {{name}}(으)로 답글 작성 중",
+    "reply": {
+      "or_sign_in": "또는 로그인"
+    },
     "name_dialog": {
       "title": "라이트 계정 이름을 선택하세요",
       "description": "가입이 필요 없습니다. 답글은 이 이름으로 표시됩니다.",
@@ -990,7 +993,9 @@
       "check_failed": "이름을 확인할 수 없습니다: lite 계정 게이트웨이에 연결할 수 없습니다. 계속할 수 있지만, 사용 중인 이름은 게시할 때 거부됩니다.",
       "disposable_note": "저장하기 전까지 신원은 이 브라우저에만 보관됩니다.",
       "confirm": "이 이름으로 게시",
-      "cancel": "취소"
+      "cancel": "취소",
+      "sign_in_reply": "대신 로그인하여 Hive 계정으로 답글 달기",
+      "sign_in_post": "대신 로그인하여 Hive 계정으로 게시하기"
     },
     "posted": {
       "title": "답글이 게시되었습니다",

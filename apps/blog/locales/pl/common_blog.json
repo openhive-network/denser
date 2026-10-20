@@ -975,6 +975,9 @@
     "card_description": "Konta lite publikują bez konta Hive. Ich profile pojawią się wraz z aplikacją społecznościową lite.",
     "reply_as_guest": "Odpowiedz bez konta — nazwę wybierzesz przy publikacji.",
     "replying_as": "Odpowiadasz jako konto lite {{name}}",
+    "reply": {
+      "or_sign_in": "lub zaloguj się"
+    },
     "name_dialog": {
       "title": "Wybierz nazwę swojego konta lite",
       "description": "Bez rejestracji. Twoje odpowiedzi będą przypisane do tej nazwy.",
@@ -990,7 +993,9 @@
       "check_failed": "Nie udało się sprawdzić nazwy: bramka kont lite jest nieosiągalna. Możesz kontynuować; zajęta nazwa zostanie odrzucona przy publikacji.",
       "disposable_note": "Twoja tożsamość jest przechowywana tylko w tej przeglądarce, dopóki jej nie zapiszesz.",
       "confirm": "Opublikuj pod tą nazwą",
-      "cancel": "Anuluj"
+      "cancel": "Anuluj",
+      "sign_in_reply": "Zamiast tego zaloguj się i odpowiedz swoim kontem Hive",
+      "sign_in_post": "Zamiast tego zaloguj się i opublikuj swoim kontem Hive"
     },
     "posted": {
       "title": "Odpowiedź opublikowana",

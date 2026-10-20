@@ -975,6 +975,9 @@
     "card_description": "ライトアカウントはHiveアカウントなしで投稿します。プロフィールはliteソーシャルアプリで提供される予定です。",
     "reply_as_guest": "アカウントなしで返信できます。投稿時に名前を選びます。",
     "replying_as": "ライトアカウント {{name}} として返信",
+    "reply": {
+      "or_sign_in": "またはサインイン"
+    },
     "name_dialog": {
       "title": "ライトアカウントの名前を選んでください",
       "description": "登録は不要です。あなたの返信はこの名前で表示されます。",
@@ -990,7 +993,9 @@
       "check_failed": "名前を確認できませんでした：lite アカウントのゲートウェイに接続できません。続行できますが、使用済みの名前は投稿時に拒否されます。",
       "disposable_note": "保存するまで、あなたのIDはこのブラウザにのみ保持されます。",
       "confirm": "この名前で投稿",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "sign_in_reply": "代わりにサインインして Hive アカウントで返信する",
+      "sign_in_post": "代わりにサインインして Hive アカウントで投稿する"
     },
     "posted": {
       "title": "Reply posted",

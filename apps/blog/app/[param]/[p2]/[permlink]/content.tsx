@@ -20,6 +20,7 @@ import LiteReplyTrigger from '@/blog/features/lite-account/lite-reply-trigger';
 import { liteDeletedPostDestination } from '@/blog/features/lite-account/lite-manage-cache';
 import { liteL1Author } from '@/blog/features/lite-account/lite-ownership';
 import { LiteOwnerActions } from '@/blog/features/lite-account/lite-owner-actions';
+import { useReopenReplyAfterSignIn } from '@/blog/features/lite-account/use-lite-sign-in-handoff';
 import { LiteTombstoneNotice } from '@/blog/features/lite-account/lite-tombstone-notice';
 import { useIsLiteTombstone } from '@/blog/features/lite-account/use-lite-owner';
 import { postAuthorFromParam } from '@/blog/features/lite-account/lite-did';
@@ -196,6 +197,8 @@ const PostContent = () => {
     staleTime: StaleTime.MEDIUM
   });
   const { data: postData, isPending: postIsLoading } = postQuery;
+  const openReply = useCallback(() => setReply(true), [setReply]);
+  useReopenReplyAfterSignIn(postData?.author ?? '', permlink, user.isLoggedIn, openReply);
   const liteTombstone = useIsLiteTombstone(postData);
   useQueryErrorEffect(postQuery, (error) => {
     handleError(error, { method: 'getPost', params: { author, permlink, observer } });

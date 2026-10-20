@@ -975,6 +975,9 @@
     "card_description": "Lite accounts post without a Hive account. Their profiles will come with the lite social app.",
     "reply_as_guest": "Reply without an account — you'll pick a name when you post.",
     "replying_as": "Replying as lite account {{name}}",
+    "reply": {
+      "or_sign_in": "or sign in"
+    },
     "name_dialog": {
       "title": "Pick a name for your lite account",
       "description": "No sign-up needed. This name is how your replies will be attributed.",
@@ -990,7 +993,9 @@
       "check_failed": "Couldn't check this name: the lite-account gateway is unreachable. You can still continue; a taken name is refused when you post.",
       "disposable_note": "Your identity is kept in this browser only until you save it.",
       "confirm": "Post as this name",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "sign_in_reply": "Sign in and reply with your Hive account instead",
+      "sign_in_post": "Sign in and post with your Hive account instead"
     },
     "posted": {
       "title": "Reply posted",

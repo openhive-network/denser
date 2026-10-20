@@ -20,6 +20,7 @@ import { useEditorCommunity } from '../post-editor/hooks/use-editor-community';
 import { parseTags, validateTagInput } from '../post-editor/lib/utils';
 import { LiteQueueStatus } from './lite-queue-status';
 import { isLiteNameTaken } from './lite-name-availability';
+import { LITE_POST_DRAFT_KEY, type LiteRootDraft } from './lite-sign-in-handoff';
 import { isPersistedLiteQueue, liteRootPostPath, persistedQueueTtlMs, type PersistedLiteQueue } from './lite-root-post';
 import { useLiteIdentity } from './use-lite-identity';
 import { useLiteRelayInfo } from './use-lite-relay-info';
@@ -36,10 +37,8 @@ const MdEditor = dynamic(() => import('../post-editor/md-editor'), {
 
 /** The editor's "My blog" category: the post's category is then its first tag. */
 const MY_BLOG = 'blog';
-const LITE_POST_DRAFT_KEY = 'lite-postData-new';
 const LITE_ROOT_QUEUE_KEY = 'lite-root-queue';
 
-type LiteRootDraft = { title: string; body: string; tags: string; category: string };
 const EMPTY_DRAFT: LiteRootDraft = { title: '', body: '', tags: '', category: MY_BLOG };
 
 function toComment(draft: LiteRootDraft): CommentContent {
