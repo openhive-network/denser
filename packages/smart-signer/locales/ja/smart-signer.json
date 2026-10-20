@@ -136,6 +136,7 @@
       "or_safe_storage": "または安全なストレージを使用"
     },
     "sign_in_pending": "別のサインインが応答を待っています。ウォレット拡張機能で完了または拒否するか、キャンセルしてやり直してください。",
+    "sign_in_pending_generic": "別のサインインが応答を待っています。完了するか、キャンセルしてやり直してください。",
     "cancel_pending_sign_in": "保留中のサインインをキャンセル",
     "safe_storage_name": "安全な保管",
     "signin_with_metamask": "MetaMask拡張機能",

@@ -20,6 +20,13 @@ import { useSharedTranslation } from '@ui/lib/i18n-client';
 
 const logger = getLogger('app');
 
+/** Sign-in methods answered in a browser wallet extension */
+const WALLET_EXTENSION_LOGIN_TYPES: ReadonlySet<LoginType> = new Set([
+  LoginType.keychain,
+  LoginType.peakvault,
+  LoginType.metamask
+]);
+
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
   onComplete: (arg0: any) => Promise<any>;
@@ -103,7 +110,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
         await runExclusiveSignIn(async () => {
           await sign(loginType, username, keyType);
           await submit(username);
-        });
+        }, WALLET_EXTENSION_LOGIN_TYPES.has(loginType));
       } catch (error) {
         if (!(error instanceof SignInPendingError)) throw error;
         logger.info('Sign-in with %s not sent: another sign-in is in progress', loginType);

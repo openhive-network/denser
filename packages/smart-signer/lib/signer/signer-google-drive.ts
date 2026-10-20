@@ -10,6 +10,7 @@ import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authorit
 import { createExternalWallet, IExternalWallet, IExternalWalletContent } from '@hiveio/wax-signers-external';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
+import type { GoogleDriveErrorDialogProps } from '@smart-signer/components/google-drive-error-dialog';
 import {
   GOOGLE_OAUTH_CODE_KEY,
   GOOGLE_OAUTH_ERROR_KEY,
@@ -60,6 +61,31 @@ function clearStoredEncryptionKeyWif(username: string): void {
   window.localStorage.removeItem(googleEncryptionKeyWifCredentialKey(username).key);
 }
 /* eslint-enable no-restricted-properties */
+
+/**
+ * The user closed a dialog saying the Google Drive wallet lacks what the sign-in needs. The message
+ * says "user cancelled" so that it is not reported as a failure.
+ */
+class GoogleDriveSignInCancelledError extends Error {
+  name = 'GoogleDriveSignInCancelledError';
+
+  constructor(reason: string) {
+    super(`User cancelled Google Drive sign-in: ${reason}`);
+  }
+}
+
+/**
+ * Shows the dialog pointing the user to Hive Bridge and resolves, once it is closed (by Cancel, ✕
+ * or going to Hive Bridge), with the error that ends the sign-in.
+ */
+async function waitForGoogleDriveErrorDialog(props: GoogleDriveErrorDialogProps): Promise<GoogleDriveSignInCancelledError> {
+  const { GoogleDriveErrorDialogPromise } = await import('@smart-signer/components/google-drive-error-dialog');
+  const closedBy = await GoogleDriveErrorDialogPromise({ isOpen: true, ...props }).then(
+    () => 'dialog',
+    (reason: unknown) => String(reason)
+  );
+  return new GoogleDriveSignInCancelledError(`${props.errorType} (${closedBy})`);
+}
 
 declare global {
   interface Window {
@@ -353,14 +379,7 @@ export class SignerGoogleDrive extends Signer {
           () => this.getAccessToken(),
           async (missingStorageFile) => {
             if (missingStorageFile) {
-              // Show error dialog with link to Hive Bridge
-              const { GoogleDriveErrorDialogPromise } = await import('@smart-signer/components/google-drive-error-dialog');
-              await GoogleDriveErrorDialogPromise({
-                isOpen: true,
-                errorType: 'wallet_not_found'
-              });
-              // Dialog will reject if user closes it, but if we somehow get here, still throw
-              throw new Error('Google Drive wallet file not found');
+              throw await waitForGoogleDriveErrorDialog({ errorType: 'wallet_not_found' });
             }
 
             const credentials = await this.getEncryptionCredentials();
@@ -433,19 +452,26 @@ export class SignerGoogleDrive extends Signer {
     return this.walletInstance;
   }
 
+  /**
+   * Gets the wallet, signing in to Google again (`forceLogin`) if that fails, unless the user
+   * cancelled the sign-in: then rejects with `GoogleDriveSignInCancelledError`.
+   */
+  private async getWalletOrSignInAgain(username: string, keyType: keyof THiveRoles): Promise<IExternalWalletContent> {
+    try {
+      return await this.getWallet(username, keyType);
+    } catch (error) {
+      if (error instanceof GoogleDriveSignInCancelledError) throw error;
+      logger.error('Error obtaining Google Drive wallet: %s Retrying with forceLogin=true', error instanceof Error ? error.message : String(error));
+
+      return this.getWallet(username, keyType, true);
+    }
+  }
+
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
     logger.info('in SignerGoogleDrive.signChallenge %o', { message, username, keyType });
     try {
-      let provider: IExternalWalletContent;
-
-      try {
-        provider = await this.getWallet(username, keyType);
-      } catch (error) {
-        logger.error('Error obtaining Google Drive wallet: %s Retrying with forceLogin=true', error instanceof Error ? error.message : String(error));
-
-        provider = await this.getWallet(username, keyType, true);
-      }
+      const provider = await this.getWalletOrSignInAgain(username, keyType);
 
       let pk: string | null = null;
       for(const key of provider.enumStoredHiveKeys(username, keyType)) {
@@ -453,16 +479,7 @@ export class SignerGoogleDrive extends Signer {
         break;
       }
       if (!pk) {
-        // Show error dialog with link to Hive Bridge
-        const { GoogleDriveErrorDialogPromise } = await import('@smart-signer/components/google-drive-error-dialog');
-        await GoogleDriveErrorDialogPromise({
-          isOpen: true,
-          errorType: 'key_not_found',
-          username,
-          keyType
-        });
-        // Dialog will reject if user closes it, but if we somehow get here, still throw
-        throw new Error(`No stored Hive ${keyType} key found for user ${username} in Google Drive wallet`);
+        throw await waitForGoogleDriveErrorDialog({ errorType: 'key_not_found', username, keyType });
       }
 
       if (typeof message !== "string")
@@ -484,15 +501,7 @@ export class SignerGoogleDrive extends Signer {
     try {
       const authTx = (await getChain()).createTransactionFromProto(transaction);
 
-      let provider: IExternalWalletContent;
-
-      try {
-        provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType);
-      } catch (error) {
-        logger.error('Error obtaining Google Drive wallet: %s Retrying with forceLogin=true', error instanceof Error ? error.message : String(error));
-
-        provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType, true);
-      }
+      const provider = await this.getWalletOrSignInAgain(this.username, requiredKeyType ?? this.keyType);
 
       await provider.signTransaction(authTx);
 

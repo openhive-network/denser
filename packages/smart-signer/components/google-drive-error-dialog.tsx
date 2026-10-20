@@ -10,7 +10,7 @@ import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 
 const HIVE_BRIDGE_URL = 'https://auth.openhive.network';
 
-interface GoogleDriveErrorDialogProps {
+export interface GoogleDriveErrorDialogProps {
   errorType: 'wallet_not_found' | 'key_not_found';
   username?: string;
   keyType?: string;
@@ -35,8 +35,10 @@ export const GoogleDriveErrorDialog: FC<GoogleDriveErrorDialogProps & InstancePr
     e.preventDefault();
   };
 
+  // Ends the sign-in: the user signs in again once the wallet is set up on Hive Bridge
   const handleGoToBridge = () => {
     window.open(HIVE_BRIDGE_URL, '_blank', 'noopener,noreferrer');
+    onReject?.('User went to Hive Bridge');
   };
 
   const handleClose = () => {
