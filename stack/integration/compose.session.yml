@@ -3,7 +3,7 @@
 # no sites-router. session-stack.sh brings it up; see README.md.
 #
 # What differs from the site:
-#   - caddy serves plain HTTP on 127.0.0.1:${DENSER_SESSION_PORT} (Caddyfile.session,
+#   - caddy serves plain HTTP on 127.0.0.1:${DENSER_SESSION_PORT} (caddy/Caddyfile.session,
 #     the same routes), on the stack's own network only;
 #   - the follower runs as a service (the `watch` profile), polling the checkout and
 #     rebuilding what a commit changed, instead of being run by upgrade.sh;
@@ -33,13 +33,11 @@ services:
     ports: !override
       - 127.0.0.1:${DENSER_SESSION_PORT:?session-stack.sh picks it}:80
     environment: !override
+      DENSER_CADDYFILE: /etc/caddy/Caddyfile.session
       DENSER_STATIC_FROM: releases
     networks: !override [default]
     volumes: !override
-      - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.session:/etc/caddy/Caddyfile:ro
-      - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.routes:/etc/caddy/Caddyfile.routes:ro
-      - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.static.next:/etc/caddy/Caddyfile.static.next:ro
-      - ${DENSER_SOURCE_DIR}/stack/integration/Caddyfile.static.releases:/etc/caddy/Caddyfile.static.releases:ro
+      - ${DENSER_SOURCE_DIR}/stack/integration/caddy:/etc/caddy:ro
       - ${DENSER_SOURCE_DIR}/stack/integration/status:/srv/status:ro
       - ${DENSER_SOURCE_DIR}/stack/integration/releases:/srv/releases:ro
 

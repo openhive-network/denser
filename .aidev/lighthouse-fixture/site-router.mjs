@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // The one origin of the deterministic Lighthouse pass (.aidev/run-lighthouse-fixture.sh):
-// the integration site's routing (stack/integration/Caddyfile.routes) without caddy,
+// the integration site's routing (stack/integration/caddy/Caddyfile.routes) without caddy,
 // which the suite's image does not carry.
 //
 //   node site-router.mjs --port 8000 --blog 3000 --wallet 4000 \
@@ -38,7 +38,7 @@ const CODECS = {
   br: [() => zlib.createBrotliDecompress(), (streamed) => zlib.createBrotliCompress(streamed ? { flush: zlib.constants.BROTLI_OPERATION_FLUSH } : {})],
 };
 // caddy's encode defaults: the types it compresses, the size below which it does not,
-// and the order of `encode zstd gzip` (stack/integration/Caddyfile.session).
+// and the order of `encode zstd gzip` (stack/integration/caddy/Caddyfile.session).
 const COMPRESSIBLE = /^(text\/|application\/(json|javascript|xhtml\+xml|atom\+xml|rss\+xml|wasm)|image\/svg\+xml)/;
 const MIN_COMPRESS_BYTES = 512;
 const ENCODE_ORDER = ['zstd', 'gzip'];

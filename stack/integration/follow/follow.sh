@@ -123,7 +123,7 @@ _package() {
 }
 
 # releases/<app>/static: every release's /_next/static files, which caddy serves
-# (Caddyfile.static.releases). Filled before the swap, so the new release's pages
+# (caddy/Caddyfile.static.releases). Filled before the swap, so the new release's pages
 # never name a file caddy lacks, and kept after it, so a page of an earlier release
 # still loads its lazy chunks. cp without -a stamps each file with the time it was
 # last published; _prune drops what no release published for static_keep_days.

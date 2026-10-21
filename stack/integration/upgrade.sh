@@ -16,14 +16,19 @@
 #                     and is tried again on the next run.
 #   images            pull the published images at DENSER_TAG (compose.yml alone).
 #
+# Either way caddy then loads a changed caddy/ (caddy-apply.sh): validated first,
+# and a config it refuses leaves the previous one serving.
+#
 # Exit: 0 upgraded or nothing to do; 1 an app could not be brought to the tip
-# (ROLLED-BACK); 3 the checkout was REFUSED.
+# (ROLLED-BACK); 3 the checkout was REFUSED; 4 caddy refused the checkout's caddy/.
 set -euo pipefail
 cd "$(dirname "$0")"
 
 quiet=false
 [ "${1:-}" = --quiet ] && quiet=true
 say() { $quiet || echo "$@"; }
+quiet_args=()
+$quiet && quiet_args+=(--quiet)
 
 env_value() { sed -n "s/^$1=//p" .env 2>/dev/null | tail -n 1; }
 
@@ -32,6 +37,7 @@ mode=${mode:-follow}
 branch=$(env_value DENSER_SOURCE_BRANCH)
 branch=${branch:-aidev/integration}
 apps="blog:/blog wallet:/wallet"
+caddy_rc=0
 
 # Before compose up: caddy bind-mounts status/, and docker would create it root-owned.
 mkdir -p status releases
@@ -69,6 +75,7 @@ print(" ".join(sorted(r.get("ID", "") for r in rows)))'; }
         docker compose ps >&2
     }
     after=$(ids)
+    ./caddy-apply.sh "${quiet_args[@]}" || caddy_rc=4
 
     python3 - "$(git rev-parse HEAD)" <<'EOF' > status/deployed.json.tmp
 import json, subprocess, sys, datetime
@@ -213,6 +220,7 @@ follow_upgrade() {
         echo "upgrade: not every app has a build yet; the running containers keep serving" >&2
     fi
     follow_write_status OK
+    ./caddy-apply.sh "${quiet_args[@]}" || caddy_rc=4
     if [ "$build_rc" != 0 ]; then
         echo "upgrade: ROLLED-BACK: an app could not be built or started at $(git rev-parse --short HEAD); see status/deployed.json" >&2
         exit 1
@@ -262,6 +270,7 @@ esac
 # status/lighthouse/ and here, never by failing the upgrade or rolling it back.
 oauth_check || echo "upgrade: see status/oauth.json" >&2
 
-lighthouse_args=()
-$quiet && lighthouse_args+=(--quiet)
-./lighthouse.sh "${lighthouse_args[@]}" || echo "upgrade: lighthouse check exited $?; see status/lighthouse/latest.json" >&2
+./lighthouse.sh "${quiet_args[@]}" || echo "upgrade: lighthouse check exited $?; see status/lighthouse/latest.json" >&2
+
+# After the checks, which a refused caddy/ does not stop: the apps may have moved.
+exit "$caddy_rc"

@@ -6,6 +6,7 @@
 # that follows the session branch. See README.md, "A session's stack".
 #
 #   stack/integration/session-stack.sh up       # start, or apply changed settings
+#                                               # and a changed caddy/
 #   stack/integration/session-stack.sh status   # services and status/deployed.json
 #   stack/integration/session-stack.sh logs [SERVICE...]
 #   stack/integration/session-stack.sh down
@@ -61,6 +62,7 @@ case "${1:-}" in
     up)
         docker image inspect "$DENSER_FOLLOW_IMAGE" > /dev/null 2>&1 || docker pull -q "$DENSER_FOLLOW_IMAGE" > /dev/null
         docker compose up -d --remove-orphans
+        ./caddy-apply.sh
         echo "session stack $COMPOSE_PROJECT_NAME: $url/blog, $url/wallet, $url/status/deployed.json"
         echo "The first builds take several minutes; follow them with: $0 logs follower"
         ;;

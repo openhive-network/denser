@@ -7,7 +7,7 @@ each a production (`output: 'standalone'`) build with that base path.
 
 - **URL:** https://denser.discuss.peerverity.info/blog (wallet: `/wallet`, status:
   `/status/deployed.json`).
-- **Routing** (`Caddyfile.routes`): any other path redirects (302) to the same path
+- **Routing** (`caddy/Caddyfile.routes`): any other path redirects (302) to the same path
   and query under `/blog`, so a hive.blog link with only the host changed opens
   the same page: `/@user` → `/blog/@user`, `/hive-163772/@user/permlink?x=1` →
   `/blog/hive-163772/@user/permlink?x=1`. `/` goes to `/blog`. A post whose
@@ -52,14 +52,14 @@ The site runs from this checkout; no image is built or pulled for the apps.
    each compressible file of the release's `.next/static`
    (`scripts/precompress-static.mjs`; the production `Dockerfile` does the same).
    Before the swap the release's files are copied into `releases/<app>/static`,
-   which caddy serves at `/<app>/_next/static/*` itself (`Caddyfile.static.releases`):
+   which caddy serves at `/<app>/_next/static/*` itself (`caddy/Caddyfile.static.releases`):
    the precompressed sidecar the browser accepts, `Cache-Control: public,
    max-age=31536000, immutable`, a 404 for a file no release published (never a
    request to Next). The directory keeps every release's files for 7 days
    (`FOLLOW_STATIC_KEEP_DAYS`), and those of the served and previous releases
    whatever their age, so a page opened before a swap still loads its lazy chunks
    after it. In images mode (`DENSER_STATIC_FROM` unset) caddy proxies them to the
-   app as before (`Caddyfile.static.next`).
+   app as before (`caddy/Caddyfile.static.next`).
 
    The public/ files the build generates (`copy:public`: hb-auth's `auth/worker.js`
    and `auth/assets/`, `locales/`, `smart-signer/`) get the same sidecars, and caddy
@@ -75,7 +75,17 @@ The site runs from this checkout; no image is built or pulled for the apps.
    failed commit and its log (`releases/<app>/logs/`), the unit exits 1, and the next
    run tries again. A checkout with local changes, on another branch, or behind a
    rewritten branch is `REFUSED` (exit 3) and nothing changes.
-6. `status/deployed.json` reports each app's `revision` (the checkout's commit when
+6. Caddy config: caddy mounts `caddy/` as a directory (a single-file mount keeps
+   showing the file git replaced), so the container sees a changed `Caddyfile*` at
+   once, and `upgrade.sh` makes caddy load it in the same run (`caddy-apply.sh`, in
+   both modes): when `caddy/` differs from what caddy last loaded
+   (`status/.caddy-applied`), `caddy validate` and then `caddy reload` in the
+   running container. A config caddy refuses is not loaded: the site keeps serving
+   the previous one, and every run prints `caddy-apply: REFUSED` with caddy's error
+   and exits 4 until a commit fixes `caddy/`. The new files are in the container
+   all the same, so restarting or recreating caddy before then would start it on
+   the refused config.
+7. `status/deployed.json` reports each app's `revision` (the checkout's commit when
    its build is that commit's build), its `release`, `source: follow:<branch>` and
    its state. `upgrade.sh` then checks the blog's OAuth2 provider, and once every
    app reports the checkout's HEAD runs `lighthouse.sh` (both below).
@@ -215,7 +225,7 @@ above) shortens the timer to 2 minutes. By hand, compose needs the same file lis
 ## A session's stack (`session-stack.sh`)
 
 The same follow mode, on a session's checkout: blog and wallet production builds
-behind caddy's `/blog` and `/wallet` routing (`Caddyfile.routes`, shared with the
+behind caddy's `/blog` and `/wallet` routing (`caddy/Caddyfile.routes`, shared with the
 site), on one loopback port, against the live Hive API (`DENSER_NETWORK`). This is
 the topology the site runs, which the AIDEV dev stack (`next dev` of the blog alone,
 `.aidev/dev-stack.compose.yml`) is not: subdirectory routing, both apps, production
@@ -232,7 +242,9 @@ stack/integration/session-stack.sh down
 site-specific (TLS, the sites-router, public URLs) and runs the follower as a
 service (`follow.sh watch`): every 20 seconds it re-keys the apps and rebuilds the one
 whose build inputs changed, so a commit reaching the checkout is served without a
-restart. Run it on a checkout that follows the session branch, such as the
+restart. `caddy/` is mounted as on the site; `session-stack.sh up` loads a changed
+`caddy/Caddyfile.session` or its imports the same way (`caddy-apply.sh`), so rerun it
+after changing them. Run it on a checkout that follows the session branch, such as the
 session's dev-stack checkout, which AIDEV fast-forwards on every push. Its builds
 write `apps/*/.next` in that checkout, like the `fixture_e2e` suite does. From inside
 a container whose paths differ from the docker host's, set `DENSER_SOURCE_DIR` to
