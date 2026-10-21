@@ -238,7 +238,7 @@ run_test "f1-baseline" "blog-crawler.js" \
 # ============================================================================
 # F2: Node.js version comparison
 # F2 is N/A in this setup — the emsdk builder image ships its own Node.
-# The Dockerfile.memtest runner stage uses node:24.21.0-alpine3.24.
+# The Dockerfile.memtest runner stage uses node:24.22.1-alpine3.24.
 # Comparing Node versions would need one runner image per version.
 # We run F2 as a single test with the runner's Node 24.
 # ============================================================================
