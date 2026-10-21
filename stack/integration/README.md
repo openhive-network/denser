@@ -7,6 +7,12 @@ each a production (`output: 'standalone'`) build with that base path.
 
 - **URL:** https://denser.discuss.peerverity.info/blog (wallet: `/wallet`, status:
   `/status/deployed.json`).
+- **Routing** (`Caddyfile.routes`): any other path redirects (302) to the same path
+  and query under `/blog`, so a hive.blog link with only the host changed opens
+  the same page: `/@user` → `/blog/@user`, `/hive-163772/@user/permlink?x=1` →
+  `/blog/hive-163772/@user/permlink?x=1`. `/` goes to `/blog`. A post whose
+  category is `blog` (`/blog/@user/permlink` on hive.blog) can't be told from the
+  prefix and is left as it is: the blog gets it as its own `/@user/permlink`.
 - **Host:** predicate-testing.syncad.com, `~/denser-integration/stack/integration`,
   behind `~/sites-router` (haproxy on 192.168.50.199 that routes by TLS SNI). The site's
   caddy listens on 127.0.0.4 and takes the client address from the router's PROXY
