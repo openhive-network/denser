@@ -1,0 +1,38 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_following",
+    "params": {
+      "account": "did:lite:lite-smoke-1016",
+      "start": null,
+      "type": "blog",
+      "limit": 1000
+    },
+    "id": 1
+  },
+  "requestHash": "81c587c632e12f5d",
+  "method": "lite.get_following",
+  "params": {
+    "account": "did:lite:lite-smoke-1016",
+    "start": null,
+    "type": "blog",
+    "limit": 1000
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "did:lite:lite-smoke-1016",
+        "following": "did:hive:test-gateway-1"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

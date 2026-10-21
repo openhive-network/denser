@@ -206,7 +206,8 @@ follow counts and the `set_profile` fields (`metadata.profile`).
 
 **Observer.** For a reader who is not signed in and holds a lite identity, on such a node,
 `useEffectiveObserver().liteObserver` is the DID; post, discussion, profile-posts and ranked-post reads
-(including `tag=my`) send it, so the lite account's mutes apply. Suggestions, search and community
+(including `tag=my`, which a guest without one does not read at all) send it, so the lite account's
+mutes apply. Suggestions, search and community
 reads keep the account observer. The server does not know the identity (it is in localStorage): those
 pages render as before and the browser reads again with the DID.
 
@@ -236,7 +237,10 @@ validated refetch (4, 10 and 20 s) replaces them once the node shows the op. A f
 toasts `lite_account.social.errors.*`; `rate_limited` also disables the button for `retry_after_s`
 (`useRetryCountdown`). A reblog has no cached state: it toasts and closes the dialog.
 
-`playwright/tests/fixture/liteSocial.spec.ts` (LITE-SOCIAL-01, -05, -06, -07, -09, recorded from steem-16,
-with `/l2` answered in the browser) and LITE-SOCIAL-08 in `liteProfile.spec.ts` (a node without the
-social app) cover it. Not covered by a spec: a mute hiding posts and a reblog on the Blog tab, which need
-a registered lite account's real ops on the chain.
+`playwright/tests/fixture/liteSocial.spec.ts` (recorded from steem-16, with `/l2` answered in the
+browser) and LITE-SOCIAL-08 in `liteProfile.spec.ts` (a node without the social app) cover it.
+LITE-SOCIAL-02, -03 and -04 read the on-chain ops of `lite-smoke-1016` in `lite_social_test`: its mute of
+`swarmpost` (a `hive-107705` feed is empty for it, the post is grayed), its reblog of a root post by
+`crisp-koala-499` (the Blog tab) and its subscription to `hive-13323` (`/created/my`, Joined). steem-16
+times out `lite.get_ranked_posts` with `sort=trending, tag=my`, so the spec reads `/created/my`. The lite
+profile has no communities list.

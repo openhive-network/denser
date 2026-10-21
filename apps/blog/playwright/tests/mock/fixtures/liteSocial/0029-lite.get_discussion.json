@@ -1,0 +1,199 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_discussion",
+    "params": {
+      "author": "swarmpost",
+      "permlink": "swarm-post-2026-10-19",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "0def3bd00b19d6b6",
+  "method": "lite.get_discussion",
+  "params": {
+    "author": "swarmpost",
+    "permlink": "swarm-post-2026-10-19",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "lett/re-1792576030": {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-10-19#@lett/re-1792576030",
+        "body": "This comment is a **SCAM**. Hive is not running this airdrop, so please do not click any links!!!",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Swarm Post — 2026-10-19",
+        "author": "lett",
+        "payout": 0,
+        "created": "2026-10-21T09:47:09",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-21T09:47:09",
+        "category": "hive-107705",
+        "children": 0,
+        "permlink": "re-1792576030",
+        "community": "hive-107705",
+        "payout_at": "2026-10-28T09:47:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hellene8",
+        "community_title": "HiveInvite.com",
+        "parent_permlink": "re-swarmpost-swarm-post-2026-10-19-1792575442820",
+        "author_reputation": 70.05,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "swarmpost/swarm-post-2026-10-19": {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-10-19",
+        "body": "# Hive Swarm Post — 2026-10-19\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 55 |\n| Trust root voters | 5 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@contentcreation**\n- Creator: @hivepostify\n- Onboarder trust: 246864.69\n- Activity weight: 0.2891\n- Score: 71359.8986\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @contentcreation | 50.0% |\n| @hivepostify | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-10-19T00:00:00.000Z`\n- Bitcoin block: height `972077`, hash `00000000000000000001e66b29883257a8cde5fbfe049ce13f8ec3a34574e217`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000001e66b29883257a8cde5fbfe049ce13f8ec3a34574e217hive-swarm-post2026-10-191\")`\n- Result: `24e14c0cc7945e8b6a47a43ecf04ca6d169ee045729fee6f701cc0f2d3b6903e`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 5
+        },
+        "title": "Hive Swarm Post — 2026-10-19",
+        "author": "swarmpost",
+        "payout": 0.568,
+        "created": "2026-10-19T19:39:06",
+        "reblogs": 0,
+        "replies": [
+          "hellene8/re-swarmpost-swarm-post-2026-10-19-1792575442820"
+        ],
+        "updated": "2026-10-19T19:39:06",
+        "category": "hive-107705",
+        "children": 2,
+        "permlink": "swarm-post-2026-10-19",
+        "community": "hive-107705",
+        "payout_at": "2026-10-26T19:39:06",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 8581758068016,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 7311186524455
+          },
+          {
+            "voter": "wuhotan",
+            "rshares": 1188875203826
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "hivehbdmarket",
+            "rshares": 80490953102
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "contentcreation"
+          },
+          {
+            "weight": 5000,
+            "account": "hivepostify"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.568 HBD"
+      },
+      "hellene8/re-swarmpost-swarm-post-2026-10-19-1792575442820": {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-10-19#@hellene8/re-swarmpost-swarm-post-2026-10-19-1792575442820",
+        "body": "⚡ NEW AIRDROP ALERT: DON'T SLEEP ON THIS! ⚡\n\nRumors are true—Hive is rewarding the community big time! If you missed the last major drop, consider this your redemption arc. 📈🔥\n\nLimited allocations are up for grabs for active holders, staking, curators, and delegators. High potential, zero heavy lifting.\n\n⏳ Clock is ticking! Head over to the official [claim page](https://t.co/8eD7gFzqKd) now\n\nProve you're early. Claim yours today! 💎🙌",
+        "depth": 1,
+        "stats": {
+          "gray": true,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0,
+          "muted_reasons": [
+            3
+          ]
+        },
+        "title": "RE: Hive Swarm Post — 2026-10-19",
+        "author": "hellene8",
+        "payout": 0,
+        "created": "2026-10-21T09:37:24",
+        "reblogs": 0,
+        "replies": [
+          "lett/re-1792576030"
+        ],
+        "updated": "2026-10-21T09:37:24",
+        "category": "hive-107705",
+        "children": 1,
+        "permlink": "re-swarmpost-swarm-post-2026-10-19-1792575442820",
+        "community": "hive-107705",
+        "payout_at": "2026-10-28T09:37:24",
+        "blacklists": [
+          "reputation-0"
+        ],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive-instant-commenter/1.2"
+        },
+        "parent_author": "swarmpost",
+        "community_title": "HiveInvite.com",
+        "parent_permlink": "swarm-post-2026-10-19",
+        "author_reputation": -7.77,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

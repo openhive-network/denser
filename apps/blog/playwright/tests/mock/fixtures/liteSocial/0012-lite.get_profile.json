@@ -3,14 +3,14 @@
   "requestPath": "/",
   "requestBody": {
     "jsonrpc": "2.0",
-    "method": "bridge.get_profile",
+    "method": "lite.get_profile",
     "params": {
       "account": "test-gateway-1"
     },
     "id": 1
   },
-  "requestHash": "349d565b8cd7a092",
-  "method": "bridge.get_profile",
+  "requestHash": "141c5a0ca1818dd9",
+  "method": "lite.get_profile",
   "params": {
     "account": "test-gateway-1"
   },
@@ -18,10 +18,14 @@
     "jsonrpc": "2.0",
     "result": {
       "id": 2621359,
+      "lite": {
+        "pools": [],
+        "gateway": true
+      },
       "name": "test-gateway-1",
       "stats": {
         "rank": 0,
-        "followers": 1,
+        "followers": 0,
         "following": 0
       },
       "active": "2026-10-20T00:22:39",

@@ -1,0 +1,35 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.list_community_roles",
+    "params": {
+      "community": "hive-107705"
+    },
+    "id": 1
+  },
+  "requestHash": "29b3f7fb6d5617d4",
+  "method": "bridge.list_community_roles",
+  "params": {
+    "community": "hive-107705"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-107705",
+        "owner",
+        ""
+      ],
+      [
+        "demotruk",
+        "admin",
+        ""
+      ]
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
