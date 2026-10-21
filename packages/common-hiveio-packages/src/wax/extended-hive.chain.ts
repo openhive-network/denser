@@ -857,8 +857,11 @@ export interface ILiteApiInfo {
   version: string;
   modes: string[];
   render_base: string;
-  /** Custom_json ids of the lite apps the node reads, e.g. `{ posts: 'lite_posts' }`. */
-  apps: { posts: string };
+  /**
+   * Custom_json ids of the lite apps the node reads, e.g. `{ posts: 'lite_posts' }`; `social` is
+   * set where the node indexes lite social ops (follows, mutes, reblogs, subscriptions, profiles).
+   */
+  apps: { posts: string; social?: string };
   methods: string[];
 }
 
@@ -868,6 +871,28 @@ export interface ILiteApiInfo {
  */
 export interface ILiteProfile extends IProfile {
   lite?: { gateway?: boolean; pools?: unknown[] };
+}
+
+/** A row of `lite.get_followers` / `lite.get_following`: a lite identity is named by its DID. */
+export interface ILiteFollow {
+  follower: string;
+  following: string;
+  what: string[];
+}
+
+/** `lite.get_follow_count`: the counts include lite followers and follows. */
+export interface ILiteFollowCount {
+  account: string;
+  follower_count: number;
+  following_count: number;
+}
+
+/** The params of `lite.get_followers` / `lite.get_following`; `account` and `start` may be DIDs. */
+export interface ILiteFollowParams {
+  account: string;
+  start: string | null;
+  type: string;
+  limit: number;
 }
 
 type TBridgeApi = {
@@ -932,6 +957,11 @@ export type ExtendedNodeApi = {
   lite: TBridgePostsApi & {
     get_info: TWaxApiRequest<Record<string, never>, ILiteApiInfo>;
     get_profile: TWaxApiRequest<{ account: string; observer?: string }, ILiteProfile | null>;
+    get_followers: TWaxApiRequest<ILiteFollowParams, ILiteFollow[]>;
+    get_following: TWaxApiRequest<ILiteFollowParams, ILiteFollow[]>;
+    get_follow_count: TWaxApiRequest<{ account: string }, ILiteFollowCount>;
+    list_subscribers: TWaxApiRequest<{ community: string; last?: string; limit?: number }, string[][] | null>;
+    list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
   };
   bridge: TBridgeApi;
   market_history_api: {

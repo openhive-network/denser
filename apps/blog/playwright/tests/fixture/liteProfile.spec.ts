@@ -10,6 +10,9 @@ import { PostPage } from '../support/pages/postPage';
  *   LITE-PROFILE-02 – the Comments and Replies tabs list the account's DID-authored entries
  *   LITE-PROFILE-03 – on the post page, the lite author's card links to the profile, which opens
  *   LITE-PROFILE-04 – the profile pages a lite account does not have answer not-found
+ *   LITE-SOCIAL-08  – this node advertises no `apps.social`: a guest holding a registered lite
+ *                     account, on a deployment whose gateway relays L2 social ops, gets no lite
+ *                     Follow / Mute, no Blog or social tabs and no "My feed"
  *   LITE-PROFILE-05 – a gate account's (Hive) profile shows the lite-account gateway note
  *
  * Record:  FIXTURE_MODE=record FIXTURE_UPSTREAM=steem-16.syncad.com pnpm --filter @hive/blog test:fixture liteProfile
@@ -103,6 +106,41 @@ test.describe('Lite account profile (fixture-based, lite-aware node)', () => {
     const unknown = await page.goto('/@did:lite:no-such-lite-1', { waitUntil: 'domcontentloaded' });
     expect(unknown?.status()).toBe(404);
     await expect(page).toHaveTitle(NOT_FOUND_TITLE);
+  });
+
+  test('LITE-SOCIAL-08: no lite social UI on a node without the social app', async ({ page }) => {
+    const identity = { name: REPLY_LITE_NAME, registered: true, ownerPublicKey: '', postingPublicKey: '', ownerWif: '', postingWif: '', createdAt: '' };
+    await page.addInitScript((value) => {
+      window.localStorage.setItem('lite-identity', JSON.stringify({ value, expiresAt: null, createdAt: Date.now() }));
+    }, identity);
+    const l2 = { apps: { lite_social_test: ['follow', 'unfollow', 'mute', 'unmute', 'set_profile'] } };
+    await page.route('**/api/lite-reply', (route) =>
+      route.fulfill({
+        json: {
+          enabled: true,
+          gate_account: GATE,
+          chain_id: 'beeab0de00000000000000000000000000000000000000000000000000000000',
+          apps: { account: 'lite_account_test', posts: 'lite_posts_test' },
+          limits: { l2 }
+        }
+      })
+    );
+
+    await page.goto(`/@${GATE}`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('lite-identity-button')).toBeVisible();
+    // The Hive author's Follow stays the sign-in one, with no Mute beside it.
+    await expect(page.getByTestId('profile-follow-button').first()).toBeVisible();
+    await expect(page.getByTestId('profile-mute-button')).toHaveCount(0);
+    await page.getByTestId('lite-identity-button').click();
+    await expect(page.getByTestId('lite-identity-profile')).toBeVisible();
+    await expect(page.getByTestId('lite-identity-feed')).toHaveCount(0);
+    await page.keyboard.press('Escape');
+
+    await page.goto(`/@${LITE_DID}/posts`, { waitUntil: 'domcontentloaded' });
+    const nav = page.getByTestId('profile-navigation');
+    await expect(nav.getByRole('link')).toHaveText(['Posts', 'Comments', 'Replies']);
+    await expect(page.getByTestId('lite-profile-card').getByTestId('profile-follow-button')).toHaveCount(0);
+    await expect(page.getByTestId('lite-profile-followers')).toHaveCount(0);
   });
 
   test('LITE-PROFILE-05: a gate account profile shows the lite-account gateway note', async ({ page }) => {

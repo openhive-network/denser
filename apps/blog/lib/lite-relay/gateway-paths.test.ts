@@ -9,6 +9,8 @@ describe('allowedGatewayPath', () => {
     assert.equal(allowedGatewayPath('POST', ['post']), '/post');
     assert.equal(allowedGatewayPath('POST', ['edit']), '/edit');
     assert.equal(allowedGatewayPath('POST', ['delete']), '/delete');
+    assert.equal(allowedGatewayPath('POST', ['l2']), '/l2');
+    assert.equal(allowedGatewayPath('GET', ['l2']), null);
     assert.equal(allowedGatewayPath('GET', ['post']), null);
     assert.equal(allowedGatewayPath('GET', ['edit']), null);
     assert.equal(allowedGatewayPath('DELETE', ['reply']), null);

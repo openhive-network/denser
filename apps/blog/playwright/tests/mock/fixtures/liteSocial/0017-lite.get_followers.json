@@ -1,0 +1,45 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_followers",
+    "params": {
+      "account": "test-gateway-1",
+      "start": null,
+      "type": "blog",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "ada91f2e7ec7c3d3",
+  "method": "lite.get_followers",
+  "params": {
+    "account": "test-gateway-1",
+    "start": null,
+    "type": "blog",
+    "limit": 50
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "did:lite:lite-smoke-1016",
+        "following": "test-gateway-1"
+      },
+      {
+        "what": [
+          "blog"
+        ],
+        "follower": "swarmpost",
+        "following": "test-gateway-1"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

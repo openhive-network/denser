@@ -1,6 +1,8 @@
 'use client';
 
 import BasePathLink from '@/blog/components/base-path-link';
+import AccountNameLink from '@/blog/features/lite-account/account-name-link';
+import { isLiteDid } from '@/blog/features/lite-account/lite-did';
 import { useFollowersInfiniteQuery } from '@/blog/features/account-lists/hooks/use-followers-infinitequery';
 import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import PrevNextButtons from '@/blog/features/account-lists/prev-next-buttons';
@@ -84,8 +86,13 @@ const FollowersContent = ({
                 key={e.follower}
                 className="flex items-center justify-between bg-background-tertiary px-3 font-semibold text-destructive odd:bg-background"
               >
-                <BasePathLink href={`/@${e.follower}`}>{e.follower}</BasePathLink>
-                {!user.isLoggedIn || user.username === e.follower ? null : (
+                {isLiteDid(e.follower) ? (
+                  <AccountNameLink account={e.follower} />
+                ) : (
+                  <BasePathLink href={`/@${e.follower}`}>{e.follower}</BasePathLink>
+                )}
+                {/* A Hive account's follow names Hive accounts: lite accounts are followed as a lite account */}
+                {!user.isLoggedIn || user.username === e.follower || isLiteDid(e.follower) ? null : (
                   <div>
                     <ButtonsContainer
                       username={e.follower}

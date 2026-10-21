@@ -28,7 +28,8 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   // Use SSR observer before hydration to match prefetched cache keys,
   // then switch to client observer (which should be the same value for logged-in users).
   // "my" lists the user's subscriptions, so it always sends the username.
-  const clientObserver = tag === 'my' ? observers.observer : observers.effectiveObserver;
+  // A guest's lite account observes too: its mutes apply, and `my` lists its subscriptions.
+  const clientObserver = observers.liteObserver ?? (tag === 'my' ? observers.observer : observers.effectiveObserver);
   const observer = isHydrated ? clientObserver : ssrObserver;
   // The server read its posts as ssrObserver; another observer (e.g. after a list change) fetches its own
   const seedPosts = observer === ssrObserver ? initialPosts : null;

@@ -21,11 +21,13 @@ import LiteDidBadge from './lite-did-badge';
 import { LITE_DID_PREFIX } from './lite-did';
 import { LiteForgetDialog } from './lite-forget-dialog';
 import { forgetLiteAccount, LITE_IDENTITY_STORAGE_KEY } from './lite-storage';
+import { liteSocialApp } from '@transaction/lib/lite-api';
+import { useLiteApiInfo } from './use-lite-api-info';
 
 /**
  * The header's indicator of the lite account this browser holds, for a reader who is not signed
- * in: its avatar, name and badge, with a menu to view its profile, sign in with a Hive account
- * instead, or forget it. Nothing when the browser holds none. Reads the stored identity directly,
+ * in: its avatar, name and badge, with a menu to view its profile (and its feed, where the node
+ * serves the lite social graph), sign in with a Hive account instead, or forget it. Nothing when the browser holds none. Reads the stored identity directly,
  * so the header does not load the lite signing code (`useLiteIdentity`).
  */
 export default function LiteIdentityMenu() {
@@ -33,6 +35,7 @@ export default function LiteIdentityMenu() {
   const [identity] = useStorageWithTTL<LiteIdentity | null>(LITE_IDENTITY_STORAGE_KEY, null, StorageTTL.PERMANENT);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isForgetOpen, setIsForgetOpen] = useState(false);
+  const social = liteSocialApp(useLiteApiInfo()) !== null;
 
   if (!identity?.name) return null;
   const { name } = identity;
@@ -71,6 +74,14 @@ export default function LiteIdentityMenu() {
               <span className="w-full">{t('lite_account.identity.view_profile')}</span>
             </Link>
           </DropdownMenuItem>
+          {social ? (
+            <DropdownMenuItem className="cursor-pointer" asChild>
+              <Link href={`/@${did}/feed`} className="flex w-full items-center" data-testid="lite-identity-feed">
+                <Icons.list className="mr-2" />
+                <span className="w-full">{t('lite_account.identity.my_feed')}</span>
+              </Link>
+            </DropdownMenuItem>
+          ) : null}
           <DropdownMenuItem className="cursor-pointer" onSelect={() => setIsLoginOpen(true)} data-testid="lite-identity-sign-in">
             <Icons.doorOpen className="mr-2" />
             <span className="w-full">{t('lite_account.identity.sign_in')}</span>

@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "Publicado a través de un relé en nombre de una cuenta lite (atribución pendiente de verificación en la cadena)",
     "badge_native_tooltip": "Una cuenta lite: publica sin una cuenta de Hive, con atribución de la aplicación lite posts",
-    "card_description": "Las cuentas lite publican sin una cuenta de Hive. Seguir y silenciar llegarán con la aplicación social lite.",
+    "card_description": "Las cuentas lite publican sin una cuenta de Hive.",
     "reply_as_guest": "Responde sin cuenta: elegirás un nombre al publicar.",
     "replying_as": "Respondiendo como cuenta lite {{name}}",
     "reply": {
@@ -1089,10 +1089,14 @@
       "tabs": {
         "posts": "Publicaciones",
         "comments": "Comentarios",
-        "replies": "Respuestas"
+        "replies": "Respuestas",
+        "blog": "Blog",
+        "feed": "Feed"
       },
       "gateway_note": "Pasarela de cuentas lite",
-      "gateway_tooltip": "Esta cuenta de Hive publica en nombre de cuentas lite"
+      "gateway_tooltip": "Esta cuenta de Hive publica en nombre de cuentas lite",
+      "edit": "Editar perfil",
+      "edit_title": "Edita tu perfil lite"
     },
     "identity": {
       "menu_label": "Cuenta lite {{name}}",
@@ -1102,7 +1106,22 @@
       "forget": "Olvidar esta cuenta lite",
       "forget_title": "¿Olvidar la cuenta lite {{name}}?",
       "forget_description": "Su clave solo se guarda en este navegador: una vez olvidada, nadie podrá volver a publicar, editar ni eliminar como esta cuenta lite. También se eliminan sus borradores y publicaciones en cola; sus publicaciones ya publicadas se mantienen.",
-      "forget_confirm": "Olvidar"
+      "forget_confirm": "Olvidar",
+      "my_feed": "Mi feed"
+    },
+    "social": {
+      "failed_title": "La cuenta lite no pudo hacerlo",
+      "reblogged_title": "Compartido como tu cuenta lite",
+      "profile_saved_title": "Perfil guardado",
+      "errors": {
+        "rate_limited": "Demasiadas acciones por ahora. Inténtalo de nuevo en {{seconds}} s.",
+        "identity": "La pasarela no acepta la clave que este navegador guarda para tu cuenta lite.",
+        "not_relayed": "Esta pasarela no retransmite esa acción.",
+        "too_large": "El perfil es demasiado grande.",
+        "busy": "La pasarela está ocupada. Inténtalo de nuevo en un momento.",
+        "unavailable": "La pasarela no está disponible ahora.",
+        "unknown": "Algo salió mal. Inténtalo de nuevo."
+      }
     }
   }
 }

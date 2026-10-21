@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "Publié via un relais au nom d'un compte lite (attribution en attente de vérification sur la chaîne)",
     "badge_native_tooltip": "Un compte lite : publie sans compte Hive, attribution par l'application lite posts",
-    "card_description": "Les comptes lite publient sans compte Hive. Les abonnements et les masquages arriveront avec l'application sociale lite.",
+    "card_description": "Les comptes lite publient sans compte Hive.",
     "reply_as_guest": "Répondez sans compte : vous choisirez un nom au moment de publier.",
     "replying_as": "Réponse en tant que compte lite {{name}}",
     "reply": {
@@ -1089,10 +1089,14 @@
       "tabs": {
         "posts": "Articles",
         "comments": "Commentaires",
-        "replies": "Réponses"
+        "replies": "Réponses",
+        "blog": "Blog",
+        "feed": "Fil"
       },
       "gateway_note": "Passerelle de comptes lite",
-      "gateway_tooltip": "Ce compte Hive publie au nom de comptes lite"
+      "gateway_tooltip": "Ce compte Hive publie au nom de comptes lite",
+      "edit": "Modifier le profil",
+      "edit_title": "Modifier votre profil lite"
     },
     "identity": {
       "menu_label": "Compte lite {{name}}",
@@ -1102,7 +1106,22 @@
       "forget": "Oublier ce compte lite",
       "forget_title": "Oublier le compte lite {{name}} ?",
       "forget_description": "Sa clé n'est conservée que dans ce navigateur : une fois oublié, plus personne ne pourra publier, modifier ou supprimer en tant que ce compte lite. Ses brouillons et publications en file d'attente sont aussi supprimés ; ses publications déjà parues restent.",
-      "forget_confirm": "Oublier"
+      "forget_confirm": "Oublier",
+      "my_feed": "Mon fil"
+    },
+    "social": {
+      "failed_title": "Le compte lite n'a pas pu le faire",
+      "reblogged_title": "Repartagé avec votre compte lite",
+      "profile_saved_title": "Profil enregistré",
+      "errors": {
+        "rate_limited": "Trop d'actions pour l'instant. Réessayez dans {{seconds}} s.",
+        "identity": "La passerelle n'accepte pas la clé que ce navigateur conserve pour votre compte lite.",
+        "not_relayed": "Cette passerelle ne relaie pas cette action.",
+        "too_large": "Le profil est trop volumineux.",
+        "busy": "La passerelle est occupée. Réessayez dans un instant.",
+        "unavailable": "La passerelle est indisponible pour le moment.",
+        "unknown": "Une erreur s'est produite. Réessayez."
+      }
     }
   }
 }

@@ -153,8 +153,9 @@ const PostListItem = memo(
                   className="cursor-pointer hover:text-destructive"
                   data-testid="reblogged-author-link"
                 >
-                  {post.reblogged_by[0]}
-                </Link>{' '}
+                  {authorDisplayName(post.reblogged_by[0])}
+                </Link>
+                {isLiteDid(post.reblogged_by[0]) ? <LiteDidBadge /> : ' '}
                 {t('cards.reblogged')}
               </span>
             </div>
@@ -302,7 +303,7 @@ const PostListItem = memo(
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div className="flex items-center">
-                              <ReblogDialog author={post.author} permlink={post.permlink} action={dialogAction}>
+                              <ReblogDialog author={post.author} permlink={post.permlink} action={dialogAction} url={post.url}>
                                 <button
                                   disabled={reblogMutation.isPending}
                                   className={cn('flex cursor-pointer items-center hover:text-destructive', {

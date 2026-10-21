@@ -1,6 +1,7 @@
 import type { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-packages/wax';
 import { getPostSummary } from '@/blog/lib/post-summary';
 import { find_first_img } from './card-image';
+import { isLiteDid } from '@/blog/features/lite-account/lite-did';
 import type { CardEntry, TrimmedEntry } from './card-entry';
 
 function trimEntry(entry: Entry): TrimmedEntry {
@@ -32,6 +33,7 @@ function trimEntry(entry: Entry): TrimmedEntry {
     title: entry.title
   };
   if (entry.original_entry) trimmed.original_entry = trimEntry(entry.original_entry);
+  if (isLiteDid(entry.author)) trimmed.url = entry.url;
   return trimmed;
 }
 

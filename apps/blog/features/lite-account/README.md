@@ -39,8 +39,9 @@ are `'bridge'` until the probe has answered. The server's feed and profile cache
 there, not imported: the package has one entry point, which would bundle its signing code into every
 feed page. A DID author is shown by its bare name with `LiteDidBadge` (`LiteAuthorBadge` stays the
 json_metadata badge of compat output), links its lite profile (`AuthorProfileLink`, `/@did:lite:<name>`),
-has no follow or mute (the author popover shows `LiteAccountCard` instead, whose name links the
-profile), and gets the local placeholder avatar. Post URLs keep the DID
+and gets the local placeholder avatar. The author popover shows `LiteAccountCard` (its name links the
+profile); a guest acting as a lite account gets Follow / Mute there (see "Lite social" below), a
+signed-in Hive user none. Post URLs keep the DID
 (`/<category>/@did:lite:<name>/<permlink>`); the post route accepts it and asks the node, which
 resolves it. On a stock node such URLs never arise; a pasted one is a normal not-found.
 
@@ -61,14 +62,15 @@ DID to `LiteProfileRoute` (`lite-profile-route.tsx`), which reads `lite.get_prof
 any JSON-RPC error (e.g. "account does not exist") is null, a transport failure is thrown (503). Null
 renders the not-found page, so a node without lite support answers 404 for every DID route.
 
-`LiteProfileLayout` shows the card (name, badge, "Lite account", joined date, post count; no follow,
-mute or wallet) and the Posts / Comments / Replies tabs, which are the L1 tab pages
+`LiteProfileLayout` shows the card (`lite-profile-card.tsx`: name, badge, "Lite account", joined date,
+post count; no wallet) and the Posts / Comments / Replies tabs, which are the L1 tab pages
 (`posts`, `comments`, `replies`) reading `getAccountPosts` with the DID through `readPosts`, so server
-and browser go to `lite.get_account_posts`. `/@did:lite:<name>` redirects to its Posts; the
-`(posts-tabs)` layout drops the Payouts sub-tabs for a DID. The sub-routes only Hive accounts have
-(followers, followed, notifications, communities, payout, settings, lists, feed) use
+and browser go to `lite.get_account_posts`. On a node without the social app `/@did:lite:<name>`
+redirects to its Posts; the `(posts-tabs)` layout drops the Payouts sub-tabs for a DID. The sub-routes
+only Hive accounts have (notifications, communities, payout, settings, the lists but `muted`) use
 `HiveAccountLayout` (`lib/hive-account-route.tsx`): not-found for a DID, from the segment's layout so the
-404 is a real one (a page under a `loading.tsx` would stream a 200).
+404 is a real one (a page under a `loading.tsx` would stream a 200). Followers, followed, `lists/muted`
+and feed use `SocialAccountLayout`: a DID passes only where the node serves the social graph.
 
 A Hive account's profile shows "Lite-account gateway" (`LiteGatewayNote`) when its `lite.get_profile`
 answer carries `lite.gateway = true`; the browser asks only when the node's known `lite.get_info` lists
@@ -183,3 +185,58 @@ content. A tombstone (`isLiteTombstone`: the marker says `deleted: true`) render
 `playwright/tests/fixture/liteManage.spec.ts` runs edit and delete against a mocked gateway in the
 fixture suite, and against a real one (LITE-MANAGE-04: reply, edit, delete) on a dev stack started
 with `DENSER_SERVER_LITE_GATEWAY_URL`.
+
+## Lite social
+
+The node's `lite.get_info` names the lite social app in `apps.social` (`lite_social`, or
+`lite_social_test` in the test namespace). Every social feature is gated on it (`liteSocialApp`,
+`packages/transaction/lib/lite-api.ts`): a lite-aware node without it shows none of what follows.
+
+**Reads.** `readLiteSocial` runs a read on the current node only when it advertises the app, else
+resolves null and the caller keeps its stock read (`lite-social-api.ts`). On such a node
+`getFollowers` / `getFollowing` (`hive-api.ts`) read `lite.get_followers` / `lite.get_following`
+(lite followers appear as `did:lite:<name>` rows; `did:hive:<name>` is turned back into the bare
+name), and the profile's follow counts come from `lite.get_follow_count`, which counts lite follows
+(`lite.get_profile`'s and `bridge.get_profile`'s `stats` do not). The follower / followed lists show
+a DID by name with the badge (`AccountNameLink`), with no Hive follow buttons. A lite profile on such a
+node opens on its Blog (`sort=blog`: its root posts and reblogs, which carry `reblogged_by: [did]`),
+adds Followers / Following / Muted Users (`LiteFollowList`) and, for the browser's own lite account,
+Feed (`/@did:lite:<name>/feed`, `sort=feed`, also the header menu's "My feed"); its card shows the
+follow counts and the `set_profile` fields (`metadata.profile`).
+
+**Observer.** For a reader who is not signed in and holds a lite identity, on such a node,
+`useEffectiveObserver().liteObserver` is the DID; post, discussion, profile-posts and ranked-post reads
+(including `tag=my`) send it, so the lite account's mutes apply. Suggestions, search and community
+reads keep the account observer. The server does not know the identity (it is in localStorage): those
+pages render as before and the browser reads again with the DID.
+
+**Writes.** A social op is one L2 transaction (`lite-social.ts`): `{ method, args: { actor:
+did:lite:<name>, … } }` (`follow|unfollow|mute|unmute { target }` with targets as DIDs,
+`did:hive:<name>` for a Hive account; `reblog { author, permlink }` naming an attested post by its
+gate, `liteL1Author`; `subscribe { community }`; `set_profile { profile }`, at most 8192 bytes of JCS),
+signed with the identity's posting key over `l2Digest(signed fields, /info.chain_id)` with the
+package's `signL2Transaction`, `app` = the node's social app, 10 minutes' expiration. It is POSTed as
+`{ tx }` to `/api/lite-gateway/l2` (allow-listed), which relays the gateway's `POST /l2`: a 202
+`{ trx_id, gate, app }`, or `{ ok: false, code, message }` (`rate_limited` with `retry_after_s`,
+`auth_failed`, `wrong_signer`, …). `lite-social.ts` imports the signing package and is loaded on the
+first click only; the buttons read the identity from storage (`useStoredLiteIdentity`).
+
+The buttons (Follow / Mute in `ButtonsContainer` for a guest and on `LiteAccountCard` and the lite
+profile card, Subscribe in `SubscribeCommunity`, the reblog dialog's OK for root posts, Edit profile for
+the owner) are offered when `useLiteSocialAccess(method)` holds: the node advertises the app, the
+deployment's gateway lists the method for it in `/info.limits.l2.apps`, and the identity is
+`registered`. The gateway refuses ops of a lite account it has no posting authority on record for
+(`auth_failed`), and an account is registered only by its first reply or post (there is no L2
+registration through `/l2`), so an identity that has not posted yet gets the sign-in buttons as before.
+Elsewhere the guest gets the sign-in buttons too, and a signed-in Hive user's buttons are unchanged.
+
+`use-lite-social-mutation.ts` changes the cached relations of the lite account
+(`['liteSocialRelations', did]`: follows, mutes, subscriptions) and the follow counts at once, and a
+validated refetch (4, 10 and 20 s) replaces them once the node shows the op. A failure restores them and
+toasts `lite_account.social.errors.*`; `rate_limited` also disables the button for `retry_after_s`
+(`useRetryCountdown`). A reblog has no cached state: it toasts and closes the dialog.
+
+`playwright/tests/fixture/liteSocial.spec.ts` (LITE-SOCIAL-01, -05, -06, -07, -09, recorded from steem-16,
+with `/l2` answered in the browser) and LITE-SOCIAL-08 in `liteProfile.spec.ts` (a node without the
+social app) cover it. Not covered by a spec: a mute hiding posts and a reblog on the Blog tab, which need
+a registered lite account's real ops on the chain.

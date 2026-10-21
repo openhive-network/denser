@@ -11,6 +11,7 @@ import { Button } from '@hive/ui';
 import DialogLogin from '@/blog/components/dialog-login';
 import { handleError } from '@ui/lib/handle-error';
 import { useTranslation } from '@/blog/i18n/client';
+import LiteSocialButtons from '@/blog/features/lite-account/lite-social-buttons';
 
 const ButtonsContainer = ({
   username,
@@ -119,16 +120,22 @@ const ButtonsContainer = ({
           />
         </>
       ) : (
-        <DialogLogin>
-          <Button
-            className=" hover:text-destructive "
-            variant={variant}
-            size="sm"
-            data-testid="profile-follow-button"
-          >
-            {t('user_profile.follow_button')}
-          </Button>
-        </DialogLogin>
+        <LiteSocialButtons
+          target={username}
+          variant={variant}
+          fallback={
+            <DialogLogin>
+              <Button
+                className=" hover:text-destructive "
+                variant={variant}
+                size="sm"
+                data-testid="profile-follow-button"
+              >
+                {t('user_profile.follow_button')}
+              </Button>
+            </DialogLogin>
+          }
+        />
       )}
     </>
   );

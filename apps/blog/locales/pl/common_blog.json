@@ -972,7 +972,7 @@
     "badge_prefix": "konto lite",
     "badge_tooltip": "Opublikowane przez przekaźnik w imieniu konta lite (atrybucja czeka na weryfikację w łańcuchu)",
     "badge_native_tooltip": "Konto lite: publikuje bez konta Hive, atrybucję zapewnia aplikacja lite posts",
-    "card_description": "Konta lite publikują bez konta Hive. Obserwowanie i wyciszanie pojawią się wraz z aplikacją społecznościową lite.",
+    "card_description": "Konta lite publikują bez konta Hive.",
     "reply_as_guest": "Odpowiedz bez konta — nazwę wybierzesz przy publikacji.",
     "replying_as": "Odpowiadasz jako konto lite {{name}}",
     "reply": {
@@ -1089,10 +1089,14 @@
       "tabs": {
         "posts": "Posty",
         "comments": "Komentarze",
-        "replies": "Odpowiedzi"
+        "replies": "Odpowiedzi",
+        "blog": "Wpisy i udostępnienia",
+        "feed": "Kanał"
       },
       "gateway_note": "Bramka kont lite",
-      "gateway_tooltip": "To konto Hive publikuje w imieniu kont lite"
+      "gateway_tooltip": "To konto Hive publikuje w imieniu kont lite",
+      "edit": "Edytuj profil",
+      "edit_title": "Edytuj swój profil lite"
     },
     "identity": {
       "menu_label": "Konto lite {{name}}",
@@ -1102,7 +1106,22 @@
       "forget": "Zapomnij to konto lite",
       "forget_title": "Zapomnieć konto lite {{name}}?",
       "forget_description": "Jego klucz jest przechowywany tylko w tej przeglądarce: po zapomnieniu nikt nie będzie już mógł publikować, edytować ani usuwać jako to konto lite. Usunięte zostaną też jego szkice i posty w kolejce; opublikowane posty pozostaną.",
-      "forget_confirm": "Zapomnij"
+      "forget_confirm": "Zapomnij",
+      "my_feed": "Mój kanał"
+    },
+    "social": {
+      "failed_title": "Konto lite nie mogło tego zrobić",
+      "reblogged_title": "Udostępniono jako Twoje konto lite",
+      "profile_saved_title": "Profil zapisany",
+      "errors": {
+        "rate_limited": "Zbyt wiele działań naraz. Spróbuj ponownie za {{seconds}} s.",
+        "identity": "Bramka nie akceptuje klucza, który ta przeglądarka przechowuje dla Twojego konta lite.",
+        "not_relayed": "Ta bramka nie przekazuje tego działania.",
+        "too_large": "Profil jest za duży.",
+        "busy": "Bramka jest zajęta. Spróbuj ponownie za chwilę.",
+        "unavailable": "Bramka jest teraz niedostępna.",
+        "unknown": "Coś poszło nie tak. Spróbuj ponownie."
+      }
     }
   }
 }
