@@ -98,7 +98,11 @@ test.describe('Login dialog — sign-in method info', () => {
 
     const plSafeStorage = plSmartSigner.login_form.signin_safe_storage;
     expect(plSafeStorage.strict_mode).not.toBe(enSmartSigner.login_form.signin_safe_storage.strict_mode);
-    await expect(page.locator('label[for="strict"]')).toHaveText(plSafeStorage.strict_mode);
+    await expect(page.locator('label[for="strict"]')).toHaveText(
+      `${plSafeStorage.strict_mode} ${plSafeStorage.strict_mode_scope}`
+    );
+    await page.getByTestId('strict-mode-info').focus();
+    await expect(page.getByTestId('strict-mode-info-content')).toHaveText(plSafeStorage.strict_mode_tooltip);
     await expect(await openMethodInfo(page, 'safe_storage')).toHaveText(
       plSmartSigner.login_form.method_info.safe_storage
     );

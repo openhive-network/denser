@@ -25,6 +25,7 @@ const PAGE_WITH_HEADER = '/faq.html';
 // The sign-in loads the signing stack (wax, the hb-auth worker) first
 const SIGN_IN_TIMEOUT_MS = 30_000;
 const EN_EXTENSION_SIGN_IN = enSmartSigner.login_form.extension_sign_in;
+const EN_SAFE_STORAGE = enSmartSigner.login_form.signin_safe_storage;
 
 /** A well-formed (65-byte, hex) signature; verify_authority is stubbed, so it need not be valid. */
 const KEYCHAIN_SIGNATURE = `1f${'ab'.repeat(64)}`;
@@ -124,5 +125,25 @@ test.describe('Login dialog — extension sign-in on the first page', () => {
 
     await expect(loginForm.saveSignInButton).toBeVisible();
     await expect(page.getByTestId('extension-sign-in')).toHaveCount(0);
+  });
+
+  test('LOGIN-EXT-05 — Direct Authority Mode is scoped to safe storage and absent from other sign in options', async ({
+    page
+  }) => {
+    await installKeychainStub(page);
+    const loginForm = await openLoginDialog(page);
+    const strictMode = page.getByTestId('strict-mode');
+
+    await expect(page.getByRole('button', { name: EN_EXTENSION_SIGN_IN.keychain })).toBeVisible();
+    await expect(strictMode.getByRole('checkbox', { name: EN_SAFE_STORAGE.strict_mode })).toBeChecked();
+    await expect(page.getByTestId('strict-mode-scope')).toHaveText(EN_SAFE_STORAGE.strict_mode_scope);
+    await page.getByTestId('strict-mode-info').focus();
+    await expect(page.getByTestId('strict-mode-info-content')).toHaveText(
+      EN_SAFE_STORAGE.strict_mode_tooltip
+    );
+
+    await loginForm.otherSignInOptionsButton.click();
+    await expect(loginForm.hiveKeychainExtensionButton).toBeVisible();
+    await expect(strictMode).toHaveCount(0);
   });
 });
