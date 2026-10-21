@@ -806,6 +806,19 @@ under CPU load) with the comment body's `<p>` as the event target, not Edit.
 CMT-03/04/05 go through `openReplyEditor` / `openDeleteDialog` (unforced
 click, retried until the editor or dialog is visible).
 
+### Clicking a disabled control: scroll it in, wait for a settled box
+
+Playwright's actions refuse a disabled element, so a check of what a click on
+one does (CMT-03: a double-click on the disabled Post button selects no text)
+dispatches `page.mouse` at its `boundingBox()`. That skips Playwright's own
+scrolling and stability checks. In the production build the reply editor's
+Post button starts below the 720px viewport, and the editor keeps growing for
+a moment after it opens. A point taken too early lands off-screen or on
+whatever moved there, and selects text the fix was meant to protect. Call
+`scrollIntoViewIfNeeded()`, then poll `boundingBox()` until two reads agree
+before dispatching. `next dev` lays the page out differently, so a dev-stack
+pass doesn't prove the point is right; check with `fixture_e2e`.
+
 ### `list_votes` race on "undo" flows — wait for the filled icon
 
 `login-btn` hides as soon as `user.isLoggedIn` is true, which does *not*
