@@ -16,7 +16,7 @@
 #   wallet    next release when the follower swaps it in. The previous release
 #             serves for as long as a build runs.
 #   caddy     serves /<app>/_next/static/* itself, precompressed, from
-#             releases/<app>/static (Caddyfile.static.releases): the static files
+#             releases/<app>/static (caddy/Caddyfile.static.releases): the static files
 #             of every release follow.sh published in the last 7 days, so a page
 #             of an earlier release still loads its chunks after a swap; and the
 #             generated public/ files (auth/, locales/, smart-signer/) from

@@ -79,14 +79,16 @@ services:
       - ${HTTP_PORT:-80}:80
       - ${HTTPS_PORT:-443}:443
     environment:
+      # The config caddy runs, and caddy-apply.sh validates and reloads.
+      DENSER_CADDYFILE: /etc/caddy/Caddyfile
       SITE_HOST: ${SITE_HOST}
       CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:?the Cloudflare token for the hostname's zone}
       CADDY_PROXY_PROTOCOL_ALLOW: ${CADDY_PROXY_PROTOCOL_ALLOW:-127.0.0.1/32}
+    command: [sh, -c, 'exec caddy run --config "$$DENSER_CADDYFILE" --adapter caddyfile']
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./Caddyfile.routes:/etc/caddy/Caddyfile.routes:ro
-      - ./Caddyfile.static.next:/etc/caddy/Caddyfile.static.next:ro
-      - ./Caddyfile.static.releases:/etc/caddy/Caddyfile.static.releases:ro
+      # The directory, not each file: git replaces a changed file with a new one,
+      # which a single-file mount would never show. caddy-apply.sh loads it.
+      - ./caddy:/etc/caddy:ro
       - ./status:/srv/status:ro
       - caddy_data:/data
       - caddy_config:/config

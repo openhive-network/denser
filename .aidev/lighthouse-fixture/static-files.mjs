@@ -1,4 +1,4 @@
-// site-router.mjs's counterpart of stack/integration/Caddyfile.static.releases:
+// site-router.mjs's counterpart of stack/integration/caddy/Caddyfile.static.releases:
 // /<app>/_next/static/<file> served from a directory, with the .br/.zst sidecars
 // scripts/precompress-static.mjs wrote, the immutable cache header on a hit, and a
 // 404 (never the app) on a miss.
