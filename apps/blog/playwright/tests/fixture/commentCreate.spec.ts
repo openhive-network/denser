@@ -109,7 +109,7 @@ test.describe('Comment creation — fresh state (§5)', () => {
     ).toBeVisible();
   });
 
-  test('CMT-03: a double-click on the disabled Post button does not select its label', async ({ page }) => {
+  test('CMT-03: a double-click on the disabled Post button selects no text', async ({ page }) => {
     await gotoPostLoggedIn(page);
     await openReplyEditor(postReplyTrigger(page), page.getByTestId('reply-editor'));
 
@@ -117,14 +117,22 @@ test.describe('Comment creation — fresh state (§5)', () => {
       .getByTestId('reply-editor')
       .getByRole('button', { name: 'Post', exact: true });
     await expect(postButton).toBeDisabled();
-    // A disabled button lets the pointer through, so dispatch at its position like a user would
-    const box = await postButton.boundingBox();
+    // Playwright won't double-click a disabled element, so dispatch at its position like a user would.
+    // The reply editor keeps growing for a moment after it opens: wait until the button stops moving.
+    await postButton.scrollIntoViewIfNeeded();
+    let box = await postButton.boundingBox();
+    await expect
+      .poll(async () => {
+        const previous = box;
+        box = await postButton.boundingBox();
+        return JSON.stringify(previous) === JSON.stringify(box);
+      })
+      .toBe(true);
     expect(box).not.toBeNull();
     if (!box) return;
     await page.mouse.dblclick(box.x + box.width / 2, box.y + box.height / 2);
 
-    expect(
-      await postButton.evaluate((button) => window.getSelection()?.containsNode(button, true) ?? false)
-    ).toBe(false);
+    // Not only its own label: a neighbouring label (Cancel) must not be selected either
+    expect(await page.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('');
   });
 });

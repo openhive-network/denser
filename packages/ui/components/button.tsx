@@ -3,9 +3,10 @@ import { VariantProps, cva } from 'class-variance-authority';
 
 import { cn } from '@ui/lib/utils';
 
-// A disabled button lets clicks through to its parent, where a double-click would select the label.
+// A disabled button stays the pointer target (no pointer-events: none): letting a double-click through
+// to its parent would select the nearest word there, e.g. a neighbouring button's label.
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none disabled:select-none ring-offset-background',
+  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:select-none ring-offset-background',
   {
     variants: {
       variant: {
