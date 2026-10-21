@@ -4,13 +4,21 @@ const RESPONSIVE_IMAGE_SELECTOR = 'img[srcset]';
 // A video facade's thumbnail covers the whole player box, whatever its pixel width.
 const FACADE_THUMBNAIL_SELECTOR = '.embed-facade img';
 
+// A fixed width with a capped height would squash the image: under a `max-height` (comments),
+// narrow the width to what keeps the aspect ratio at that height.
+function widthWithinMaxHeight(image: HTMLImageElement, naturalWidth: number, naturalHeight: number) {
+  const maxHeight = parseFloat(getComputedStyle(image).maxHeight);
+  if (!Number.isFinite(maxHeight) || naturalHeight <= maxHeight) return naturalWidth;
+  return (maxHeight * naturalWidth) / naturalHeight;
+}
+
 function pinToNaturalWidth(image: HTMLImageElement) {
   if (!image.currentSrc) return;
   // A srcset-less copy of the cached candidate reports its pixel width, not the
   // descriptor-scaled width the srcset image is laid out at.
   const probe = new Image();
   probe.onload = () => {
-    image.style.width = `${probe.naturalWidth}px`;
+    image.style.width = `${widthWithinMaxHeight(image, probe.naturalWidth, probe.naturalHeight)}px`;
   };
   probe.src = image.currentSrc;
 }
@@ -23,7 +31,8 @@ function handleImageLoad(event: Event) {
  * Body images with a `srcset` are laid out at the width their `w` descriptor implies, but the
  * image proxy never enlarges: an original narrower than the chosen candidate would render
  * smaller than its real size. Once each one loads, pin it to its pixel width (CSS keeps
- * `max-width: 100%`), which is how an image without a `srcset` renders.
+ * `max-width: 100%`), narrowed to keep its aspect ratio under a CSS `max-height`, which is how
+ * an image without a `srcset` renders.
  */
 export function useResponsiveImageNaturalWidth(containerRef: RefObject<HTMLElement | null>, html: string | undefined) {
   useEffect(() => {
