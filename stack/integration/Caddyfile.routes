@@ -36,6 +36,15 @@ handle_path /status/* {
 	file_server
 }
 
-handle {
+handle /status {
+	redir * /status/ 302
+}
+
+# Any other path is the blog's: a hive.blog link with only the host changed opens
+# the same page under /blog. {uri} keeps the query string.
+handle / {
 	redir * /blog 302
+}
+handle {
+	redir * /blog{uri} 302
 }
