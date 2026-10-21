@@ -488,7 +488,7 @@ mirrornet-haf-node-replay:
   - when: on_success
   interruptible: true
   image:
-    name: node:24.21.0-alpine3.24
+    name: node:24.22.1-alpine3.24
     entrypoint: []
   stage: test
   before_script:
@@ -552,7 +552,7 @@ flake-report-unit-tests:
   extends: .job-defaults
   interruptible: true
   image:
-    name: node:24.21.0-alpine3.24
+    name: node:24.22.1-alpine3.24
     entrypoint: []
   stage: test
   needs: []
@@ -1142,7 +1142,7 @@ lighthouse-metrics-wallet:
 lighthouse-mr-comment:
   extends: .job-defaults
   stage: test-report-aggregate
-  image: node:24.21.0-alpine3.24
+  image: node:24.22.1-alpine3.24
   needs:
   - job: lighthouse-metrics-blog
     optional: true
@@ -1158,7 +1158,7 @@ lighthouse-mr-comment:
 
 publish:
   image:
-    name: node:24.21.0-alpine3.24
+    name: node:24.22.1-alpine3.24
     entrypoint: ['']
   extends: .job-defaults
   stage: publish

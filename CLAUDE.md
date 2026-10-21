@@ -55,7 +55,7 @@ The dev stack is for fast feedback; `next dev` is not the production build. The 
 
 ### Core
 - **Monorepo**: Turborepo with pnpm workspaces
-- **Node**: >=24 (24.21.0 pinned via Volta)
+- **Node**: >=24 (24.22.1 pinned via Volta)
 - **pnpm**: >=9.5.0 (packageManager: pnpm@10.14.0)
 - **TypeScript**: 5.3.3
 
