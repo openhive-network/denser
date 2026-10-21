@@ -18,16 +18,12 @@ import {
   FormField,
   FormItem,
   FormControl,
-  FormMessage,
-  Checkbox,
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent
+  FormMessage
 } from '@hive/ui';
 import Step from '../step';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { Steps } from '../form';
+import StrictModeCheckbox from './strict-mode-checkbox';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
@@ -347,34 +343,11 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
               control={form.control}
               name="isStrict"
               render={({ field }) => (
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="strict"
-                    onCheckedChange={async (isStrict) => {
-                      field.onChange(isStrict);
-                    }}
-                    {...field}
-                    checked={field.value}
-                    value={field.value as unknown as string}
-                  />
-
-                  <label
-                    htmlFor="strict"
-                    className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {t('login_form.signin_safe_storage.strict_mode')}
-                  </label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger type="button">
-                        <Icons.info className="h-5 w-5" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        {t('login_form.signin_safe_storage.strict_mode_tooltip')}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
+                <StrictModeCheckbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  i18nNamespace={i18nNamespace}
+                />
               )}
             />
 
