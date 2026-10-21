@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_following",
+    "params": {
+      "account": "did:lite:crisp-koala-499",
+      "start": null,
+      "type": "blog",
+      "limit": 1000
+    },
+    "id": 1
+  },
+  "requestHash": "b89c850558b5dd43",
+  "method": "lite.get_following",
+  "params": {
+    "account": "did:lite:crisp-koala-499",
+    "start": null,
+    "type": "blog",
+    "limit": 1000
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

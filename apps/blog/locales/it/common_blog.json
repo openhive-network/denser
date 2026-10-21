@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "Pubblicato tramite un relay per conto di un account lite (attribuzione in attesa di verifica sulla chain)",
     "badge_native_tooltip": "Un account lite: pubblica senza un account Hive, con attribuzione dell'app lite posts",
-    "card_description": "Gli account lite pubblicano senza un account Hive. Follow e silenziamenti arriveranno con l'app social lite.",
+    "card_description": "Gli account lite pubblicano senza un account Hive.",
     "reply_as_guest": "Rispondi senza account: sceglierai un nome al momento della pubblicazione.",
     "replying_as": "Rispondi come account lite {{name}}",
     "reply": {
@@ -1089,10 +1089,14 @@
       "tabs": {
         "posts": "Post",
         "comments": "Commenti",
-        "replies": "Risposte"
+        "replies": "Risposte",
+        "blog": "Blog",
+        "feed": "Feed"
       },
       "gateway_note": "Gateway di account lite",
-      "gateway_tooltip": "Questo account Hive pubblica per conto di account lite"
+      "gateway_tooltip": "Questo account Hive pubblica per conto di account lite",
+      "edit": "Modifica profilo",
+      "edit_title": "Modifica il tuo profilo lite"
     },
     "identity": {
       "menu_label": "Account lite {{name}}",
@@ -1102,7 +1106,22 @@
       "forget": "Dimentica questo account lite",
       "forget_title": "Dimenticare l'account lite {{name}}?",
       "forget_description": "La sua chiave è conservata solo in questo browser: una volta dimenticato, nessuno potrà più pubblicare, modificare o eliminare come questo account lite. Vengono rimosse anche le sue bozze e i post in coda; i post già pubblicati restano.",
-      "forget_confirm": "Dimentica"
+      "forget_confirm": "Dimentica",
+      "my_feed": "Il mio feed"
+    },
+    "social": {
+      "failed_title": "L'account lite non ha potuto farlo",
+      "reblogged_title": "Condiviso come il tuo account lite",
+      "profile_saved_title": "Profilo salvato",
+      "errors": {
+        "rate_limited": "Troppe azioni per ora. Riprova tra {{seconds}} s.",
+        "identity": "Il gateway non accetta la chiave che questo browser conserva per il tuo account lite.",
+        "not_relayed": "Questo gateway non inoltra questa azione.",
+        "too_large": "Il profilo è troppo grande.",
+        "busy": "Il gateway è occupato. Riprova tra poco.",
+        "unavailable": "Il gateway non è disponibile in questo momento.",
+        "unknown": "Qualcosa è andato storto. Riprova."
+      }
     }
   }
 }

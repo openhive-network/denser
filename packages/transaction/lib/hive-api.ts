@@ -20,6 +20,7 @@ import {
 } from './manabar-math';
 import { DATA_LIMIT } from './bridge-api';
 import { getLogger } from '@ui/lib/logging';
+import { getLiteFollowCount, getLiteFollowers, getLiteFollowing } from './lite-social-api';
 
 const logger = getLogger('hive-api');
 
@@ -247,13 +248,17 @@ export const getAccount = (username: string): Promise<FullAccount> =>
   getAccounts([username]).then((resp) => resp[0]);
 
 /**
- * Fetches follow stats and reputation from bridge.get_profile.
- * Returns both values from a single API call.
+ * Fetches follow stats and reputation from bridge.get_profile. On a node serving the lite social
+ * graph the follow counts come from `lite.get_follow_count`, which counts lite followers too.
  */
 export const getProfileInfo = async (
   username: string
 ): Promise<{ follow_stats: AccountFollowStats; reputation: number }> => {
-  const profile = await getReadChain().api.bridge.get_profile({ account: username });
+  const [profile, liteCounts] = await Promise.all([
+    getReadChain().api.bridge.get_profile({ account: username }),
+    getLiteFollowCount(username)
+  ]);
+  if (liteCounts) return { follow_stats: { ...liteCounts, account: username }, reputation: profile?.reputation ?? 25 };
   if (!profile || !profile.stats) {
     return {
       follow_stats: {
@@ -353,6 +358,8 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
     const type = params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type;
     const limit = params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit;
 
+    const lite = await getLiteFollowing({ account, start, type, limit });
+    if (lite) return lite;
     return getReadChain().api.condenser_api.get_following([
       account,
       start,
@@ -392,6 +399,8 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
     const type = params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type;
     const limit = params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit;
 
+    const lite = await getLiteFollowers({ account, start, type, limit });
+    if (lite) return lite;
     return getReadChain().api.condenser_api.get_followers([
       account,
       start,

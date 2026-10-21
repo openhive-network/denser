@@ -30,7 +30,8 @@ const ReblogTrigger = ({
   dataTestidTooltipContent,
   dataTestidTooltipIcon,
   isReblogged: isRebloggedProp,
-  showLabel = false
+  showLabel = false,
+  url
 }: {
   author: string;
   permlink: string;
@@ -40,6 +41,8 @@ const ReblogTrigger = ({
   isReblogged?: boolean;
   /** Show label with styled button wrapper */
   showLabel?: boolean;
+  /** The post's `url`, see `ReblogDialog`. */
+  url?: string;
 }) => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
@@ -71,7 +74,7 @@ const ReblogTrigger = ({
 
   if (showLabel) {
     return (
-      <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
+      <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged} url={url}>
         <button
           disabled={isReblogged || reblogMutation.isPending}
           className={cn(
@@ -106,7 +109,7 @@ const ReblogTrigger = ({
   return (
     <TooltipProvider>
       <Tooltip>
-        <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged}>
+        <ReblogDialog author={author} permlink={permlink} action={dialogAction} isReblogged={isReblogged} url={url}>
           <TooltipTrigger disabled={isReblogged || reblogMutation.isPending}>
             {reblogMutation.isPending ? (
               <CircleSpinner loading={reblogMutation.isPending} size={18} color="#dc2626" />

@@ -14,7 +14,7 @@ async function proxy(request: Request, context: Context, method: GatewayMethod):
 
 /**
  * /api/lite-gateway/<path> — an allow-listed pass-through to the lite-account gateway:
- * POST reply, post, edit and delete, GET|DELETE queue/<id>, POST queue/<id>/post and
+ * POST reply, post, edit, delete and l2, GET|DELETE queue/<id>, POST queue/<id>/post and
  * GET names/<name>/availability. Any other path or method answers 404 `not_found`.
  */
 export function GET(request: Request, context: Context): Promise<Response> {

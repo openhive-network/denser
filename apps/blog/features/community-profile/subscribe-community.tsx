@@ -5,6 +5,7 @@ import { User } from '@smart-signer/types/common';
 import { useSubscribeMutation, useUnsubscribeMutation } from './hooks/use-subscribe-mutations';
 import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from '@ui/components/circle-spinner';
+import LiteSubscribeButton from '@/blog/features/lite-account/lite-subscribe-button';
 
 const SubscribeCommunity = ({
   user,
@@ -82,15 +83,20 @@ const SubscribeCommunity = ({
           )}
         </>
       ) : (
-        <DialogLogin>
-          <Button
-            size="sm"
-            className="w-full bg-blue-600 text-center text-slate-50 hover:bg-blue-700"
-            data-testid="community-subscribe-button"
-          >
-            {t('communities.buttons.subscribe')}
-          </Button>
-        </DialogLogin>
+        <LiteSubscribeButton
+          community={community}
+          fallback={
+            <DialogLogin>
+              <Button
+                size="sm"
+                className="w-full bg-blue-600 text-center text-slate-50 hover:bg-blue-700"
+                data-testid="community-subscribe-button"
+              >
+                {t('communities.buttons.subscribe')}
+              </Button>
+            </DialogLogin>
+          }
+        />
       )}
     </>
   );

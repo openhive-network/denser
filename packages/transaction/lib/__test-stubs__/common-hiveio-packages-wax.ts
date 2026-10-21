@@ -14,15 +14,50 @@ interface IPostsApi {
 }
 /** The post reads of `lite-api.ts`; the other JSON-RPC APIs stay untyped. */
 export type ExtendedNodeApi = {
-  lite: IPostsApi & { get_info: PostsRead; get_profile: (params: object) => Promise<ILiteProfile | null> };
+  lite: IPostsApi & {
+    get_info: PostsRead;
+    get_profile: (params: object) => Promise<ILiteProfile | null>;
+    get_followers: (params: ILiteFollowParams) => Promise<ILiteFollow[]>;
+    get_following: (params: ILiteFollowParams) => Promise<ILiteFollow[]>;
+    get_follow_count: (params: { account: string }) => Promise<ILiteFollowCount>;
+    list_subscribers: (params: { community: string; last?: string; limit?: number }) => Promise<string[][] | null>;
+    list_all_subscriptions: (params: { account: string }) => Promise<string[][] | null>;
+  };
   bridge: IPostsApi;
 };
 export interface ILiteApiInfo {
   version: string;
   modes: string[];
   render_base: string;
-  apps: { posts: string };
+  apps: { posts: string; social?: string };
   methods: string[];
+}
+export interface ILiteFollow {
+  follower: string;
+  following: string;
+  what: string[];
+}
+export interface ILiteFollowCount {
+  account: string;
+  follower_count: number;
+  following_count: number;
+}
+export interface ILiteFollowParams {
+  account: string;
+  start: string | null;
+  type: string;
+  limit: number;
+}
+/** condenser's follow row and follow counts, as `lite-social-api.ts` returns them. */
+export interface IFollow {
+  follower: string;
+  following: string;
+  what: string[];
+}
+export interface AccountFollowStats {
+  follower_count: number;
+  following_count: number;
+  account: string;
 }
 /** `lite.get_profile`'s answer, reduced to the fields the tests build. */
 export interface ILiteProfile {

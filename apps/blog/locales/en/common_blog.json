@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "Posted through a relay on behalf of a lite account (attribution pending on-chain verification)",
     "badge_native_tooltip": "A lite account: posts without a Hive account, attributed by the lite posts app",
-    "card_description": "Lite accounts post without a Hive account. Follows and mutes will come with the lite social app.",
+    "card_description": "Lite accounts post without a Hive account.",
     "reply_as_guest": "Reply without an account — you'll pick a name when you post.",
     "replying_as": "Replying as lite account {{name}}",
     "reply": {
@@ -1089,10 +1089,14 @@
       "tabs": {
         "posts": "Posts",
         "comments": "Comments",
-        "replies": "Replies"
+        "replies": "Replies",
+        "blog": "Blog",
+        "feed": "Feed"
       },
       "gateway_note": "Lite-account gateway",
-      "gateway_tooltip": "This Hive account posts on behalf of lite accounts"
+      "gateway_tooltip": "This Hive account posts on behalf of lite accounts",
+      "edit": "Edit profile",
+      "edit_title": "Edit your lite profile"
     },
     "identity": {
       "menu_label": "Lite account {{name}}",
@@ -1102,7 +1106,22 @@
       "forget": "Forget this lite account",
       "forget_title": "Forget lite account {{name}}?",
       "forget_description": "Its key is kept only in this browser: once it is forgotten, nobody can post, edit or delete as this lite account again. Its lite drafts and queued posts are removed too; its published posts stay.",
-      "forget_confirm": "Forget"
+      "forget_confirm": "Forget",
+      "my_feed": "My feed"
+    },
+    "social": {
+      "failed_title": "The lite account could not do that",
+      "reblogged_title": "Reblogged as your lite account",
+      "profile_saved_title": "Profile saved",
+      "errors": {
+        "rate_limited": "Too many actions for now. Try again in {{seconds}} s.",
+        "identity": "The gateway does not accept the key this browser holds for your lite account.",
+        "not_relayed": "This gateway does not relay that action.",
+        "too_large": "The profile is too large.",
+        "busy": "The gateway is busy. Try again in a moment.",
+        "unavailable": "The gateway is unavailable right now.",
+        "unknown": "Something went wrong. Try again."
+      }
     }
   }
 }

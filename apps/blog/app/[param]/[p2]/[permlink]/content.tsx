@@ -119,10 +119,16 @@ const PostContent = () => {
   const initialMutedList = useInitialFollowList();
   // Use SSR observer before hydration to match prefetched cache keys,
   // then switch to client observer (which should be the same value for logged-in users)
-  const { observer: clientObserver, effectiveObserver: clientEffectiveObserver } = useEffectiveObserver();
+  const {
+    observer: clientObserver,
+    effectiveObserver: clientEffectiveObserver,
+    liteObserver
+  } = useEffectiveObserver();
   const communityObserver = isHydrated ? clientObserver : ssrObserver;
-  // Post, discussion and suggestion reads; community reads use the username
-  const observer = isHydrated ? clientEffectiveObserver : ssrEffectiveObserver;
+  // Suggestion reads; community reads use the username
+  const accountObserver = isHydrated ? clientEffectiveObserver : ssrEffectiveObserver;
+  // Post and discussion reads: a guest's lite account where it has one, so its mutes apply
+  const observer = isHydrated ? (liteObserver ?? clientEffectiveObserver) : ssrEffectiveObserver;
   // Use empty key when user is not logged in to disable storage hooks
   const replyStorageId = user.username ? `replybox-/${author}/${permlink}-${user.username}` : '';
   const editStorageId = user.username ? `editbox-/${author}/${permlink}-${user.username}` : '';
@@ -230,12 +236,12 @@ const PostContent = () => {
   });
 
   const { data: suggestionData } = useQuery({
-    queryKey: ['suggestions', author, permlink, observer],
+    queryKey: ['suggestions', author, permlink, accountObserver],
     queryFn: async () => {
       const results = await getSimilarPostsByPost({
         author,
         permlink,
-        observer,
+        observer: accountObserver,
         result_limit: 10, // Only get 10 suggestions
         full_posts: 10 // Get all as full posts
       });
@@ -546,6 +552,7 @@ const PostContent = () => {
                       <ReblogTrigger
                         author={postData.author}
                         permlink={postData.permlink}
+                        url={postData.url}
                         dataTestidTooltipContent="post-header-reblog-tooltip"
                         dataTestidTooltipIcon="post-header-reblog-icon"
                         isReblogged={isReblogged}
@@ -738,6 +745,7 @@ const PostContent = () => {
                       <ReblogTrigger
                         author={postData.author}
                         permlink={postData.permlink}
+                        url={postData.url}
                         dataTestidTooltipContent="post-footer-reblog-tooltip"
                         dataTestidTooltipIcon="post-footer-reblog-icon"
                         isReblogged={isReblogged}

@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import {
   AlertDialog,
@@ -19,12 +20,16 @@ import DialogLogin from '@/blog/components/dialog-login';
 import { useTranslation } from '@/blog/i18n/client';
 import { useRebloggedByQuery } from './hooks/use-reblogged-by-query';
 
+// Loaded when a guest opens the dialog: it reads lite ownership, which needs the lite package.
+const LiteReblogAction = dynamic(() => import('@/blog/features/lite-account/lite-reblog-action'));
+
 export function ReblogDialog({
   children,
   author,
   permlink,
   action,
-  isReblogged: isRebloggedProp
+  isReblogged: isRebloggedProp,
+  url
 }: {
   children: ReactNode;
   author: string;
@@ -32,6 +37,8 @@ export function ReblogDialog({
   action: (dialogResponse: boolean) => void;
   /** Optional: skip the query if reblog status is already known */
   isReblogged?: boolean;
+  /** The post's `url`: where a DID-authored post lives on L1, for a guest's lite reblog. */
+  url?: string;
 }) {
   const { user } = useUserClient();
   const { t } = useTranslation('common_blog');
@@ -98,9 +105,15 @@ export function ReblogDialog({
               )}
             </AlertDialogAction>
           ) : (
-            <DialogLogin>
-              <Button data-testid="reblog-dialog-ok">{t('alert_dialog_reblog.action')}</Button>
-            </DialogLogin>
+            <LiteReblogAction
+              post={{ author, permlink, url: url ?? '' }}
+              onDone={() => setOpen(false)}
+              fallback={
+                <DialogLogin>
+                  <Button data-testid="reblog-dialog-ok">{t('alert_dialog_reblog.action')}</Button>
+                </DialogLogin>
+              }
+            />
           )}
         </AlertDialogFooter>
       </AlertDialogContent>

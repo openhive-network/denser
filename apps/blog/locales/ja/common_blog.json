@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "ライトアカウントの代わりにリレー経由で投稿されました（帰属はオンチェーン検証待ち）",
     "badge_native_tooltip": "ライトアカウント：Hiveアカウントなしで投稿し、帰属はlite postsアプリが確認します",
-    "card_description": "ライトアカウントはHiveアカウントなしで投稿します。フォローとミュートはliteソーシャルアプリで提供される予定です。",
+    "card_description": "ライトアカウントは Hive アカウントなしで投稿できます。",
     "reply_as_guest": "アカウントなしで返信できます。投稿時に名前を選びます。",
     "replying_as": "ライトアカウント {{name}} として返信",
     "reply": {
@@ -1089,10 +1089,14 @@
       "tabs": {
         "posts": "投稿",
         "comments": "コメント",
-        "replies": "返信"
+        "replies": "返信",
+        "blog": "ブログ",
+        "feed": "フィード"
       },
       "gateway_note": "ライトアカウントのゲートウェイ",
-      "gateway_tooltip": "このHiveアカウントはライトアカウントの代わりに投稿します"
+      "gateway_tooltip": "このHiveアカウントはライトアカウントの代わりに投稿します",
+      "edit": "プロフィールを編集",
+      "edit_title": "ライトプロフィールを編集"
     },
     "identity": {
       "menu_label": "ライトアカウント {{name}}",
@@ -1102,7 +1106,22 @@
       "forget": "このライトアカウントを削除",
       "forget_title": "ライトアカウント {{name}} を削除しますか？",
       "forget_description": "鍵はこのブラウザにのみ保存されています。削除すると、このライトアカウントとして投稿・編集・削除することは誰にもできなくなります。下書きと待機中の投稿も削除されますが、公開済みの投稿は残ります。",
-      "forget_confirm": "削除"
+      "forget_confirm": "削除",
+      "my_feed": "マイフィード"
+    },
+    "social": {
+      "failed_title": "ライトアカウントでは実行できませんでした",
+      "reblogged_title": "ライトアカウントでリブログしました",
+      "profile_saved_title": "プロフィールを保存しました",
+      "errors": {
+        "rate_limited": "操作が多すぎます。{{seconds}} 秒後にもう一度お試しください。",
+        "identity": "ゲートウェイは、このブラウザが保持しているライトアカウントの鍵を受け付けません。",
+        "not_relayed": "このゲートウェイはその操作を中継しません。",
+        "too_large": "プロフィールが大きすぎます。",
+        "busy": "ゲートウェイが混雑しています。しばらくしてからお試しください。",
+        "unavailable": "ゲートウェイは現在利用できません。",
+        "unknown": "問題が発生しました。もう一度お試しください。"
+      }
     }
   }
 }

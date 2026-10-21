@@ -1,7 +1,18 @@
 import { describe, it } from 'mocha';
 import type { ILiteProfile } from '@hive/common-hiveio-packages/wax';
 import { expect } from 'chai';
-import { createLiteApiProbe, createLiteProfileReader, createPostsReader, LITE_PROBE_TTL_MS, readLiteProbeTtlMs, type TPostsApi } from './lite-api';
+import {
+  createLiteApiProbe,
+  createLiteProfileReader,
+  createLiteSocialReader,
+  createPostsReader,
+  liteSocialApp,
+  LITE_PROBE_TTL_MS,
+  readLiteProbeTtlMs,
+  type ILiteSocialApi,
+  type TPostsApi
+} from './lite-api';
+import { accountOfDid, toFollow } from './lite-social-api';
 import { JsonRpcApiError } from './read-client';
 import { ReadTransportError } from './read-transport';
 
@@ -303,5 +314,66 @@ describe('createLiteProfileReader', () => {
     const { read } = setupProfileReader({ [LITE_NODE]: PROFILE_INFO }, failure);
 
     expect(await read('did:lite:bob').catch((e: unknown) => e)).to.equal(failure);
+  });
+});
+
+describe('createLiteSocialReader', () => {
+  const SOCIAL_INFO = { ...LITE_INFO, apps: { posts: 'lite_posts_test', social: 'lite_social_test' } };
+  const ROWS = [{ what: ['blog'], follower: 'did:lite:bob', following: 'alice' }];
+
+  /** A chain whose `lite.get_followers` records its calls and answers ROWS. */
+  const setupSocialReader = (probeAnswers: Record<string, unknown>) => {
+    const calls: unknown[] = [];
+    const unused = async (): Promise<never> => {
+      throw new Error('not asked');
+    };
+    const lite: ILiteSocialApi = {
+      get_followers: async (params) => {
+        calls.push(params);
+        return ROWS;
+      },
+      get_following: unused,
+      get_follow_count: unused,
+      list_subscribers: unused,
+      list_all_subscriptions: unused
+    };
+    const { probe } = setupProbe(probeAnswers);
+    return { read: createLiteSocialReader(() => ({ endpointUrl: LITE_NODE, api: { lite } }), probe), calls };
+  };
+  const params = { account: 'alice', start: null, type: 'blog', limit: 50 };
+
+  it('reads the social graph of a node whose lite.get_info advertises apps.social', async () => {
+    const { read, calls } = setupSocialReader({ [LITE_NODE]: SOCIAL_INFO });
+
+    expect(await read((api) => api.get_followers(params))).to.deep.equal(ROWS);
+    expect(calls).to.deep.equal([params]);
+  });
+
+  it('answers null without asking a lite-aware node without the social app, or a stock node', async () => {
+    for (const info of [LITE_INFO, { ...LITE_INFO, apps: { posts: 'lite_posts', social: '' } }, apiNotFound('lite.get_info')]) {
+      const { read, calls } = setupSocialReader({ [LITE_NODE]: info });
+
+      expect(await read((api) => api.get_followers(params))).to.equal(null);
+      expect(calls).to.deep.equal([]);
+    }
+  });
+
+  it('names the social app only when it is advertised', () => {
+    expect(liteSocialApp(SOCIAL_INFO)).to.equal('lite_social_test');
+    expect(liteSocialApp(LITE_INFO)).to.equal(null);
+    expect(liteSocialApp(null)).to.equal(null);
+  });
+});
+
+describe('lite social rows', () => {
+  it('name Hive accounts by name and keep lite DIDs', () => {
+    expect(accountOfDid('did:hive:test-gateway-1')).to.equal('test-gateway-1');
+    expect(accountOfDid('did:lite:bob')).to.equal('did:lite:bob');
+    expect(accountOfDid('alice')).to.equal('alice');
+    expect(toFollow({ what: ['blog'], follower: 'did:lite:bob', following: 'did:hive:alice' })).to.deep.equal({
+      follower: 'did:lite:bob',
+      following: 'alice',
+      what: ['blog']
+    });
   });
 });

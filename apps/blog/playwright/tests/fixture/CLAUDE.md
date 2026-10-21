@@ -949,6 +949,16 @@ the fixture suite needs), run a copy of the script whose `in_stack env` line add
 calls to the worker's recording proxy too, so one run records both sides. Keep it to one
 worker and a passing spec (see "A FAILING assertion during record wipes earlier fixtures").
 
+### Lite identities in specs: an account the node knows, written as stored
+
+A guest's lite identity lives in localStorage (`lite-identity`, `{ value, expiresAt: null }`); a
+spec writes it with `addInitScript` (`liteSocial.spec.ts`'s `holdLiteIdentity`). The spec cannot
+create one: `@hiveio/lite-account` is ESM-only and Playwright's loader cannot import it, so the
+key pair is a fixed throwaway one. On a node with the lite social app the browser reads the
+identity's follows (`lite.get_following` with its DID), and the node refuses a DID it does not know
+("Account did:lite:… does not exist"): name an existing lite account (on steem-16 e.g.
+`crisp-koala-499`), or the read fails in record and replay alike.
+
 ### `fixtureTestName` is worker-scoped
 
 You cannot switch fixture dirs per `test.describe` in one file. Each

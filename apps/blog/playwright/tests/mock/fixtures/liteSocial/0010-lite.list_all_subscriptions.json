@@ -1,0 +1,24 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.list_all_subscriptions",
+    "params": {
+      "account": "did:lite:crisp-koala-499"
+    },
+    "id": 1
+  },
+  "requestHash": "82597d0e947a782a",
+  "method": "lite.list_all_subscriptions",
+  "params": {
+    "account": "did:lite:crisp-koala-499"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

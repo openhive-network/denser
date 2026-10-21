@@ -45,7 +45,8 @@ const PostsContent = ({ query }: { query: QueryTypes }) => {
   // Use SSR observer before hydration to match prefetched cache keys,
   // then switch to client observer (which should be the same value for logged-in users).
   // "feed" lists the posts of accounts the user follows, so it always sends the username.
-  const clientObserver = query === 'feed' ? observers.observer : observers.effectiveObserver;
+  // A guest's lite account observes its reads too, so its mutes apply.
+  const clientObserver = observers.liteObserver ?? (query === 'feed' ? observers.observer : observers.effectiveObserver);
   const observer = isHydrated ? clientObserver : ssrObserver;
   // The server read its posts as ssrObserver; another observer (e.g. after a list change) fetches its own
   const seedPosts = observer === ssrObserver ? initialPosts : null;

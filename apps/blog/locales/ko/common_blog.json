@@ -972,7 +972,7 @@
     "badge_prefix": "라이트 계정",
     "badge_tooltip": "라이트 계정을 대신해 릴레이를 통해 게시됨 (온체인 검증 대기 중)",
     "badge_native_tooltip": "라이트 계정: Hive 계정 없이 게시하며, lite posts 앱이 귀속을 확인합니다",
-    "card_description": "라이트 계정은 Hive 계정 없이 게시합니다. 팔로우와 뮤트는 lite 소셜 앱과 함께 제공될 예정입니다.",
+    "card_description": "라이트 계정은 Hive 계정 없이 게시합니다.",
     "reply_as_guest": "계정 없이 답글을 남기세요. 게시할 때 이름을 고릅니다.",
     "replying_as": "라이트 계정 {{name}}(으)로 답글 작성 중",
     "reply": {
@@ -1089,10 +1089,14 @@
       "tabs": {
         "posts": "게시물",
         "comments": "댓글",
-        "replies": "답글"
+        "replies": "답글",
+        "blog": "블로그",
+        "feed": "피드"
       },
       "gateway_note": "라이트 계정 게이트웨이",
-      "gateway_tooltip": "이 Hive 계정은 라이트 계정을 대신해 게시합니다"
+      "gateway_tooltip": "이 Hive 계정은 라이트 계정을 대신해 게시합니다",
+      "edit": "프로필 편집",
+      "edit_title": "라이트 프로필 편집"
     },
     "identity": {
       "menu_label": "라이트 계정 {{name}}",
@@ -1102,7 +1106,22 @@
       "forget": "이 라이트 계정 지우기",
       "forget_title": "라이트 계정 {{name}}을(를) 지울까요?",
       "forget_description": "키는 이 브라우저에만 보관됩니다. 지우면 누구도 이 라이트 계정으로 다시 게시, 수정, 삭제할 수 없습니다. 초안과 대기 중인 게시물도 삭제되며, 이미 게시된 글은 남습니다.",
-      "forget_confirm": "지우기"
+      "forget_confirm": "지우기",
+      "my_feed": "내 피드"
+    },
+    "social": {
+      "failed_title": "라이트 계정으로 할 수 없었습니다",
+      "reblogged_title": "라이트 계정으로 리블로그했습니다",
+      "profile_saved_title": "프로필이 저장되었습니다",
+      "errors": {
+        "rate_limited": "작업이 너무 많습니다. {{seconds}}초 후에 다시 시도하세요.",
+        "identity": "게이트웨이가 이 브라우저에 저장된 라이트 계정 키를 받아들이지 않습니다.",
+        "not_relayed": "이 게이트웨이는 해당 작업을 전달하지 않습니다.",
+        "too_large": "프로필이 너무 큽니다.",
+        "busy": "게이트웨이가 바쁩니다. 잠시 후 다시 시도하세요.",
+        "unavailable": "지금은 게이트웨이를 사용할 수 없습니다.",
+        "unknown": "문제가 발생했습니다. 다시 시도하세요."
+      }
     }
   }
 }

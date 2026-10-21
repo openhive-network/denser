@@ -1,4 +1,10 @@
-import type { ILiteApiInfo, ILiteProfile } from '@hive/common-hiveio-packages/wax';
+import type {
+  ILiteApiInfo,
+  ILiteFollow,
+  ILiteFollowCount,
+  ILiteFollowParams,
+  ILiteProfile
+} from '@hive/common-hiveio-packages/wax';
 import { getLogger } from '@ui/lib/logging';
 import { getNodeReadChain, getReadChain, type ReadChain } from './chain';
 import { isApiNotServedError, JsonRpcApiError } from './read-client';
@@ -34,6 +40,15 @@ const PROFILE_METHOD = 'get_profile';
 /** Whether a node's `lite.get_info` answer lists `lite.get_profile`. */
 export const servesLiteProfile = (info: ILiteApiInfo | null | undefined): boolean =>
   !!info?.methods.includes(PROFILE_METHOD);
+
+/**
+ * The lite social app a node's `lite.get_info` advertises (`apps.social`), or null: a lite-aware
+ * node without it serves no lite follows, mutes, reblogs, subscriptions or profile edits.
+ */
+export const liteSocialApp = (info: ILiteApiInfo | null | undefined): string | null => {
+  const social = info?.apps.social;
+  return typeof social === 'string' && social !== '' ? social : null;
+};
 
 const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === 'string');
@@ -185,6 +200,33 @@ export function createLiteProfileReader(getChain: () => IProfileChain, probe: IL
   };
 }
 
+/** The `lite.*` reads of the social graph, see `createLiteSocialReader`. */
+export interface ILiteSocialApi {
+  get_followers: (params: ILiteFollowParams) => Promise<ILiteFollow[]>;
+  get_following: (params: ILiteFollowParams) => Promise<ILiteFollow[]>;
+  get_follow_count: (params: { account: string }) => Promise<ILiteFollowCount>;
+  list_subscribers: (params: { community: string; last?: string; limit?: number }) => Promise<string[][] | null>;
+  list_all_subscriptions: (params: { account: string }) => Promise<string[][] | null>;
+}
+
+interface ISocialChain {
+  readonly endpointUrl: string;
+  readonly api: { lite: ILiteSocialApi };
+}
+
+/**
+ * Runs a read of the lite social graph on the chain's current node when its `lite.get_info`
+ * advertises the social app, else resolves null so the caller keeps its stock read. Errors of
+ * the read itself are thrown.
+ */
+export function createLiteSocialReader(getChain: () => ISocialChain, probe: ILiteApiProbe) {
+  return async <T>(read: (api: ILiteSocialApi) => Promise<T>): Promise<T | null> => {
+    const chain = getChain();
+    if (!liteSocialApp(await probe.getInfo(chain.endpointUrl))) return null;
+    return read(chain.api.lite);
+  };
+}
+
 // Asked of the configured node itself: answered through failover, another node's capabilities
 // would be recorded as this one's.
 const liteApiProbe = createLiteApiProbe({
@@ -227,3 +269,6 @@ export const readPosts = createPostsReader(getReadChain, liteApiProbe);
 
 /** Runs `lite.get_profile` on the current API node, see `createLiteProfileReader`. */
 export const getLiteProfile = createLiteProfileReader(getReadChain, liteApiProbe);
+
+/** Runs a lite social graph read on the current API node, see `createLiteSocialReader`. */
+export const readLiteSocial = createLiteSocialReader(getReadChain, liteApiProbe);

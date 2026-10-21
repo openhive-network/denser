@@ -972,7 +972,7 @@
     "badge_prefix": "lite account",
     "badge_tooltip": "通过中继代表轻账号发布（归属待链上验证）",
     "badge_native_tooltip": "轻账号：无需 Hive 账号即可发布，归属由 lite posts 应用确认",
-    "card_description": "轻账号无需 Hive 账号即可发布。关注和屏蔽功能将随 lite 社交应用推出。",
+    "card_description": "轻量账户无需 Hive 账户即可发帖。",
     "reply_as_guest": "无需账号即可回复，发布时选择一个名字。",
     "replying_as": "以轻账号 {{name}} 的身份回复",
     "reply": {
@@ -1089,10 +1089,14 @@
       "tabs": {
         "posts": "文章",
         "comments": "评论",
-        "replies": "回复"
+        "replies": "回复",
+        "blog": "博客",
+        "feed": "动态"
       },
       "gateway_note": "轻账号网关",
-      "gateway_tooltip": "此 Hive 账号代表轻账号发布内容"
+      "gateway_tooltip": "此 Hive 账号代表轻账号发布内容",
+      "edit": "编辑资料",
+      "edit_title": "编辑你的轻量资料"
     },
     "identity": {
       "menu_label": "轻账号 {{name}}",
@@ -1102,7 +1106,22 @@
       "forget": "忘记此轻账号",
       "forget_title": "忘记轻账号 {{name}}？",
       "forget_description": "其密钥仅保存在此浏览器中：忘记后，任何人都无法再以此轻账号发布、编辑或删除内容。其草稿和排队中的帖子也会被删除；已发布的帖子会保留。",
-      "forget_confirm": "忘记"
+      "forget_confirm": "忘记",
+      "my_feed": "我的动态"
+    },
+    "social": {
+      "failed_title": "轻量账户无法完成此操作",
+      "reblogged_title": "已用你的轻量账户转发",
+      "profile_saved_title": "资料已保存",
+      "errors": {
+        "rate_limited": "操作过于频繁。请在 {{seconds}} 秒后重试。",
+        "identity": "网关不接受此浏览器为你的轻量账户保存的密钥。",
+        "not_relayed": "此网关不转发该操作。",
+        "too_large": "资料过大。",
+        "busy": "网关繁忙，请稍后重试。",
+        "unavailable": "网关当前不可用。",
+        "unknown": "出了点问题，请重试。"
+      }
     }
   }
 }
