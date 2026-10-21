@@ -1,0 +1,149 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_community",
+    "params": {
+      "name": "hive-13323",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "aa7d491e4deca770",
+  "method": "bridge.get_community",
+  "params": {
+    "name": "hive-13323",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 1341670,
+      "lang": "en",
+      "name": "hive-13323",
+      "team": [
+        [
+          "hive-13323",
+          "owner",
+          ""
+        ],
+        [
+          "threespeak",
+          "admin",
+          ""
+        ],
+        [
+          "clove71",
+          "admin",
+          ""
+        ],
+        [
+          "underlock",
+          "mod",
+          ""
+        ],
+        [
+          "cieliss",
+          "mod",
+          "Curator"
+        ],
+        [
+          "bdvoter.cur",
+          "mod",
+          ""
+        ],
+        [
+          "libertycrypto27",
+          "mod",
+          ""
+        ],
+        [
+          "mango-juice",
+          "mod",
+          ""
+        ],
+        [
+          "peakmonsters",
+          "mod",
+          ""
+        ],
+        [
+          "alokkumar121",
+          "mod",
+          ""
+        ],
+        [
+          "yonilkar",
+          "mod",
+          ""
+        ],
+        [
+          "zaku",
+          "mod",
+          "BDVoter"
+        ],
+        [
+          "jarvie",
+          "mod",
+          ""
+        ],
+        [
+          "castleberry",
+          "mod",
+          ""
+        ],
+        [
+          "libertycrypto",
+          "mod",
+          ""
+        ],
+        [
+          "rehan12",
+          "mod",
+          ""
+        ],
+        [
+          "ty2nicerva",
+          "mod",
+          ""
+        ],
+        [
+          "lenonmc21",
+          "mod",
+          ""
+        ],
+        [
+          "isaria",
+          "mod",
+          ""
+        ],
+        [
+          "clayboyn",
+          "mod",
+          ""
+        ]
+      ],
+      "about": "The Future of Web3 Gaming. Battle Trade and Earn",
+      "title": "Splinterlands",
+      "context": {
+        "role": "guest",
+        "title": "",
+        "subscribed": false
+      },
+      "is_nsfw": false,
+      "type_id": 1,
+      "settings": {},
+      "flag_text": "Splinterlands content only.\nContent must be your own original work.",
+      "created_at": "2019-11-26 17:34:36",
+      "description": "Splinterlands is a Digital Collectible Card Game Powered by the HIVE Blockchain Technology.\n\n Splinterlands is powering the future of Web3 Gaming.\n\nGo to splinterlandsgame.com to get started today\n\n Watch Splinterlands Live Streams on Twitch at:  clove71",
+      "num_authors": 202,
+      "num_pending": 1730,
+      "subscribers": 13541,
+      "sum_pending": 1120
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

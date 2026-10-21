@@ -1,0 +1,1882 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_ranked_posts",
+    "params": {
+      "sort": "created",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "hive-107705",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "5cc034e6e3cf632d",
+  "method": "lite.get_ranked_posts",
+  "params": {
+    "sort": "created",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "hive-107705",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-10-19",
+        "body": "# Hive Swarm Post — 2026-10-19\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 55 |\n| Trust root voters | 5 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@contentcreation**\n- Creator: @hivepostify\n- Onboarder trust: 246864.69\n- Activity weight: 0.2891\n- Score: 71359.8986\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @contentcreation | 50.0% |\n| @hivepostify | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-10-19T00:00:00.000Z`\n- Bitcoin block: height `972077`, hash `00000000000000000001e66b29883257a8cde5fbfe049ce13f8ec3a34574e217`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000001e66b29883257a8cde5fbfe049ce13f8ec3a34574e217hive-swarm-post2026-10-191\")`\n- Result: `24e14c0cc7945e8b6a47a43ecf04ca6d169ee045729fee6f701cc0f2d3b6903e`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 5
+        },
+        "title": "Hive Swarm Post — 2026-10-19",
+        "author": "swarmpost",
+        "payout": 0.568,
+        "created": "2026-10-19T19:39:06",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-19T19:39:06",
+        "category": "hive-107705",
+        "children": 2,
+        "permlink": "swarm-post-2026-10-19",
+        "community": "hive-107705",
+        "payout_at": "2026-10-26T19:39:06",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 8581758068016,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 7311186524455
+          },
+          {
+            "voter": "wuhotan",
+            "rshares": 1188875203826
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "hivehbdmarket",
+            "rshares": 80490953102
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "contentcreation"
+          },
+          {
+            "weight": 5000,
+            "account": "hivepostify"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.568 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-10-02",
+        "body": "# Hive Swarm Post — 2026-10-02\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 55 |\n| Trust root voters | 5 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@anoshnaeem**\n- Creator: @hivepostify\n- Onboarder trust: 231171.87\n- Activity weight: 0.6712\n- Score: 155159.7256\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @anoshnaeem | 50.0% |\n| @hivepostify | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-10-02T00:00:00.000Z`\n- Bitcoin block: height `969505`, hash `000000000000000000002490b872fca30690f35bf2f273ad32c08e9cf4e86fa4`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"000000000000000000002490b872fca30690f35bf2f273ad32c08e9cf4e86fa4hive-swarm-post2026-10-021\")`\n- Result: `da1a0a309c8c48a4a14b82426b5fdefd2687de3b1627c6585c5a5751be1fa5c8`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 5
+        },
+        "title": "Hive Swarm Post — 2026-10-02",
+        "author": "swarmpost",
+        "payout": 0.698,
+        "created": "2026-10-02T02:39:36",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-02T02:39:36",
+        "category": "hive-107705",
+        "children": 1,
+        "permlink": "swarm-post-2026-10-02",
+        "community": "hive-107705",
+        "payout_at": "2026-10-09T02:39:36",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 9332674846479,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 6817039264258
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "tatakai",
+            "rshares": 2514319352097
+          },
+          {
+            "voter": "zilyhaya",
+            "rshares": 110843491
+          },
+          {
+            "voter": "flyboiilii",
+            "rshares": 0
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "anoshnaeem"
+          },
+          {
+            "weight": 5000,
+            "account": "hivepostify"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.349 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.349 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-09-14",
+        "body": "# Hive Swarm Post — 2026-09-14\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 36 |\n| Trust root voters | 11 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@ezico**\n- Creator: @hivepostify\n- Onboarder trust: 252950.75\n- Activity weight: 0.5781\n- Score: 146238.3303\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @ezico | 50.0% |\n| @hivepostify | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-09-14T00:00:00.000Z`\n- Bitcoin block: height `966888`, hash `000000000000000000008ca65a5215b4271249adef63f35b8ffad6d481430522`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"000000000000000000008ca65a5215b4271249adef63f35b8ffad6d481430522hive-swarm-post2026-09-141\")`\n- Result: `ca9084476208cc465ef283f3bd15fb8f902edf4475aec41f9b951580cc21f452`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 3
+        },
+        "title": "Hive Swarm Post — 2026-09-14",
+        "author": "swarmpost",
+        "payout": 0.58,
+        "created": "2026-09-14T03:53:00",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-09-14T03:53:00",
+        "category": "hive-107705",
+        "children": 2,
+        "permlink": "swarm-post-2026-09-14",
+        "community": "hive-107705",
+        "payout_at": "2026-09-21T03:53:00",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 7529874994325,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 7528669607692
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "kumailr",
+            "rshares": 0
+          },
+          {
+            "voter": "fatima1234",
+            "rshares": 0
+          },
+          {
+            "voter": "fizzyhere2113",
+            "rshares": 0
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "ezico"
+          },
+          {
+            "weight": 5000,
+            "account": "hivepostify"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.290 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.290 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-09-12",
+        "body": "# Hive Swarm Post — 2026-09-12\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 55 |\n| Trust root voters | 5 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@instituto.topia**\n- Creator: @danielvehe\n- Onboarder trust: 252868.23\n- Activity weight: 0.2891\n- Score: 73095.3101\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @danielvehe | 50.0% |\n| @instituto.topia | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-09-12T00:00:00.000Z`\n- Bitcoin block: height `966580`, hash `0000000000000000000129d920b21dc267d36f1a83241e1e126ac7de6b7c7788`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"0000000000000000000129d920b21dc267d36f1a83241e1e126ac7de6b7c7788hive-swarm-post2026-09-121\")`\n- Result: `f1ca6e693b8c202c91d2bf7ea6fb9a2fd7ddee698b3907e15e542e79aa28f3b2`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 11
+        },
+        "title": "Hive Swarm Post — 2026-09-12",
+        "author": "swarmpost",
+        "payout": 0.754,
+        "created": "2026-09-12T21:42:45",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-09-12T21:42:45",
+        "category": "hive-107705",
+        "children": 0,
+        "permlink": "swarm-post-2026-09-12",
+        "community": "hive-107705",
+        "payout_at": "2026-09-19T21:42:45",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 10307887843898,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 7526828885226
+          },
+          {
+            "voter": "joeyarnoldvn",
+            "rshares": 983041433
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 1366753167385
+          },
+          {
+            "voter": "steemulant",
+            "rshares": 215087847
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 13987534551
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 1391261918506
+          },
+          {
+            "voter": "pocketjs",
+            "rshares": 201671533
+          },
+          {
+            "voter": "steemtelly",
+            "rshares": 4651008303
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "emilypino",
+            "rshares": 1800142481
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "danielvehe"
+          },
+          {
+            "weight": 5000,
+            "account": "instituto.topia"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.377 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.377 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-09-04",
+        "body": "# Hive Swarm Post — 2026-09-04\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 3 |\n| Active onboarders | 36 |\n| Trust root voters | 10 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@mahasultan**\n- Creator: @hivepostify\n- Onboarder trust: 252094.68\n- Activity weight: 0.6712\n- Score: 169202.8574\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @hivepostify | 50.0% |\n| @mahasultan | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-09-04T00:00:00.000Z`\n- Bitcoin block: height `965396`, hash `0000000000000000000157b1961f2910a9968ecaf7f589ee3b7fe59fac35ba8f`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"0000000000000000000157b1961f2910a9968ecaf7f589ee3b7fe59fac35ba8fhive-swarm-post2026-09-041\")`\n- Result: `fd1c18c98415b9e0a87d1f67fe0a67ad902e4534adb859e45611595f9c6e2d8d`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 11
+        },
+        "title": "Hive Swarm Post — 2026-09-04",
+        "author": "swarmpost",
+        "payout": 0.689,
+        "created": "2026-09-04T01:30:27",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-09-04T01:30:27",
+        "category": "hive-107705",
+        "children": 2,
+        "permlink": "swarm-post-2026-09-04",
+        "community": "hive-107705",
+        "payout_at": "2026-09-11T01:30:27",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 10141903180384,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 8129646662128
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 933648403864
+          },
+          {
+            "voter": "steemulant",
+            "rshares": 131485103
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 9545199811
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 1062100504126
+          },
+          {
+            "voter": "pocketjs",
+            "rshares": 122304112
+          },
+          {
+            "voter": "steemtelly",
+            "rshares": 3162700613
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "emilypino",
+            "rshares": 1199852415
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "hivepostify"
+          },
+          {
+            "weight": 5000,
+            "account": "mahasultan"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.345 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.344 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-09-01",
+        "body": "# Hive Swarm Post — 2026-09-01\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 4 |\n| Active onboarders | 36 |\n| Trust root voters | 14 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@irish2026**\n- Creator: @antonette\n- Onboarder trust: 251884.52\n- Activity weight: 1.0000\n- Score: 251884.5219\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @antonette | 50.0% |\n| @irish2026 | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-09-01T00:00:00.000Z`\n- Bitcoin block: height `964957`, hash `00000000000000000000833bec4323c45a2d24ce5a48357203a292bb7546d086`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000000833bec4323c45a2d24ce5a48357203a292bb7546d086hive-swarm-post2026-09-011\")`\n- Result: `cc5dc1081cf00f74da7faf01cd918ed982d2b3a9a9beaf2eeb0af1866f68925a`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 10
+        },
+        "title": "Hive Swarm Post — 2026-09-01",
+        "author": "swarmpost",
+        "payout": 0.752,
+        "created": "2026-09-01T00:49:09",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-09-01T00:49:09",
+        "category": "hive-107705",
+        "children": 0,
+        "permlink": "swarm-post-2026-09-01",
+        "community": "hive-107705",
+        "payout_at": "2026-09-08T00:49:09",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 10895824624558,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 8124041088566
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 1363256823823
+          },
+          {
+            "voter": "steemulant",
+            "rshares": 215075170
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 13953855719
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 1386646491498
+          },
+          {
+            "voter": "pocketjs",
+            "rshares": 201671533
+          },
+          {
+            "voter": "steemtelly",
+            "rshares": 4638661244
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "emilypino",
+            "rshares": 1665570372
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "antonette"
+          },
+          {
+            "weight": 5000,
+            "account": "irish2026"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.376 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.376 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-08-28",
+        "body": "# Hive Swarm Post — 2026-08-28\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 5 |\n| Active onboarders | 36 |\n| Trust root voters | 9 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@irene26**\n- Creator: @antonette\n- Onboarder trust: 251571.58\n- Activity weight: 1.0000\n- Score: 251571.5811\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @antonette | 50.0% |\n| @irene26 | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-08-28T00:00:00.000Z`\n- Bitcoin block: height `964364`, hash `00000000000000000001113222081d904abeb7fc9f6bfa24fb17443267f443e0`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000001113222081d904abeb7fc9f6bfa24fb17443267f443e0hive-swarm-post2026-08-281\")`\n- Result: `73db84e808cc5e00565a7736b40c252091bfbc843448cd4ba212995a71e488aa`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 14
+        },
+        "title": "Hive Swarm Post — 2026-08-28",
+        "author": "swarmpost",
+        "payout": 0.794,
+        "created": "2026-08-28T05:31:36",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-08-28T05:31:36",
+        "category": "hive-107705",
+        "children": 1,
+        "permlink": "swarm-post-2026-08-28",
+        "community": "hive-107705",
+        "payout_at": "2026-09-04T05:31:36",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 12248068473675,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 8114557245260
+          },
+          {
+            "voter": "deepresearch",
+            "rshares": 507576897546
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 1347653187455
+          },
+          {
+            "voter": "fw206",
+            "rshares": 772431959961
+          },
+          {
+            "voter": "steemulant",
+            "rshares": 212378576
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 13797706707
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 1386646491498
+          },
+          {
+            "voter": "pocketjs",
+            "rshares": 199111294
+          },
+          {
+            "voter": "steemtelly",
+            "rshares": 4586459494
+          },
+          {
+            "voter": "socbez1",
+            "rshares": 83525371731
+          },
+          {
+            "voter": "szukamnemo",
+            "rshares": 11903609676
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "ceszianne",
+            "rshares": 3772667844
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "antonette"
+          },
+          {
+            "weight": 5000,
+            "account": "irene26"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.397 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.397 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-08-25",
+        "body": "# Hive Swarm Post — 2026-08-25\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 4 |\n| Active onboarders | 36 |\n| Trust root voters | 11 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@albertjen13**\n- Creator: @antonette\n- Onboarder trust: 251392.68\n- Activity weight: 1.0000\n- Score: 251392.6798\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @albertjen13 | 50.0% |\n| @antonette | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-08-25T00:00:00.000Z`\n- Bitcoin block: height `963924`, hash `00000000000000000001f7dda38db2ac9d7f0711ce1b70dbce93c8de7db2284b`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000001f7dda38db2ac9d7f0711ce1b70dbce93c8de7db2284bhive-swarm-post2026-08-251\")`\n- Result: `bd9edb0cf19602def80d9b06fe7cb691012d9cf2eb4ea6cd48c7a547890c9e0e`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 9
+        },
+        "title": "Hive Swarm Post — 2026-08-25",
+        "author": "swarmpost",
+        "payout": 0.622,
+        "created": "2026-08-25T01:00:33",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-08-25T01:00:33",
+        "category": "hive-107705",
+        "children": 1,
+        "permlink": "swarm-post-2026-08-25",
+        "community": "hive-107705",
+        "payout_at": "2026-09-01T01:00:33",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 9518479001147,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 8110672031722
+          },
+          {
+            "voter": "joeyarnoldvn",
+            "rshares": 976350029
+          },
+          {
+            "voter": "steemulant",
+            "rshares": 215075170
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 13930979807
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 1386646491498
+          },
+          {
+            "voter": "pocketjs",
+            "rshares": 201671533
+          },
+          {
+            "voter": "steemtelly",
+            "rshares": 4631014755
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "albertjen13"
+          },
+          {
+            "weight": 5000,
+            "account": "antonette"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.311 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.311 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-08-22",
+        "body": "# Hive Swarm Post — 2026-08-22\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 36 |\n| Trust root voters | 3 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@alizasiraj**\n- Creator: @hivepostify\n- Onboarder trust: 263903.48\n- Activity weight: 1.0000\n- Score: 263903.4788\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @alizasiraj | 50.0% |\n| @hivepostify | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-08-22T00:00:00.000Z`\n- Bitcoin block: height `963498`, hash `00000000000000000000cc762fa03733f2e2b32429f6602284f7d63ada20066f`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000000cc762fa03733f2e2b32429f6602284f7d63ada20066fhive-swarm-post2026-08-221\")`\n- Result: `fd673be75a72676e3670f3da988a644d3675ff64bcf0fd9e3f11ad6b5ff80434`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 11
+        },
+        "title": "Hive Swarm Post — 2026-08-22",
+        "author": "swarmpost",
+        "payout": 0.652,
+        "created": "2026-08-22T01:03:03",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-08-22T01:03:03",
+        "category": "hive-107705",
+        "children": 0,
+        "permlink": "swarm-post-2026-08-22",
+        "community": "hive-107705",
+        "payout_at": "2026-08-29T01:03:03",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 10104009906145,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 8108512148987
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 917196735503
+          },
+          {
+            "voter": "steemulant",
+            "rshares": 128784169
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 9375453366
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 1062100504126
+          },
+          {
+            "voter": "pocketjs",
+            "rshares": 119743872
+          },
+          {
+            "voter": "steemtelly",
+            "rshares": 3106048690
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "emilypino",
+            "rshares": 1125237099
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "alizasiraj"
+          },
+          {
+            "weight": 5000,
+            "account": "hivepostify"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.326 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.326 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-08-18",
+        "body": "# Hive Swarm Post — 2026-08-18\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 36 |\n| Trust root voters | 16 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@mehreen56**\n- Creator: @hivepostify\n- Onboarder trust: 243711.20\n- Activity weight: 0.5781\n- Score: 140896.6741\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @hivepostify | 50.0% |\n| @mehreen56 | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-08-18T00:00:00.000Z`\n- Bitcoin block: height `962962`, hash `000000000000000000011ae3d9a6af68a13759581b3f214d7afce4818f13c79a`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"000000000000000000011ae3d9a6af68a13759581b3f214d7afce4818f13c79ahive-swarm-post2026-08-181\")`\n- Result: `18301705718d636ace3acb9a68b4723468956ef443809850cad20cf489353f99`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 4
+        },
+        "title": "Hive Swarm Post — 2026-08-18",
+        "author": "swarmpost",
+        "payout": 0.478,
+        "created": "2026-08-18T16:42:45",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-08-18T16:42:45",
+        "category": "hive-107705",
+        "children": 0,
+        "permlink": "swarm-post-2026-08-18",
+        "community": "hive-107705",
+        "payout_at": "2026-08-25T16:42:45",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 7456942319188,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 7455736932555
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "kanzahwrites",
+            "rshares": 0
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "hivepostify"
+          },
+          {
+            "weight": 5000,
+            "account": "mehreen56"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.239 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.239 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-08-15",
+        "body": "# Hive Swarm Post — 2026-08-15\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 5 |\n| Active onboarders | 55 |\n| Trust root voters | 5 |\n| Trust declarations | 61 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@sadii**\n- Creator: @hivepostify\n- Onboarder trust: 256299.32\n- Activity weight: 0.7472\n- Score: 191512.4209\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @hivepostify | 50.0% |\n| @sadii | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-08-15T00:00:00.000Z`\n- Bitcoin block: height `962498`, hash `00000000000000000000c1187bde3911ea51920ca5cfc743e9a1d814d1a4acbc`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000000c1187bde3911ea51920ca5cfc743e9a1d814d1a4acbchive-swarm-post2026-08-151\")`\n- Result: `2cfdb73b2e381c8065ef07ae696f4e31d8256e0fa243f79e020a92386acf7b59`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 16
+        },
+        "title": "Hive Swarm Post — 2026-08-15",
+        "author": "swarmpost",
+        "payout": 0.742,
+        "created": "2026-08-15T22:42:30",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-08-15T22:42:30",
+        "category": "hive-107705",
+        "children": 7,
+        "permlink": "swarm-post-2026-08-15",
+        "community": "hive-107705",
+        "payout_at": "2026-08-22T22:42:30",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 11705487598249,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 7863088797103
+          },
+          {
+            "voter": "ammonite",
+            "rshares": 291023816623
+          },
+          {
+            "voter": "abbak7",
+            "rshares": 647756977425
+          },
+          {
+            "voter": "chekohler",
+            "rshares": 179405153136
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 1342965647548
+          },
+          {
+            "voter": "steemulant",
+            "rshares": 212378576
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 13755476420
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 1357142310828
+          },
+          {
+            "voter": "pocketjs",
+            "rshares": 199111294
+          },
+          {
+            "voter": "steemtelly",
+            "rshares": 4573339803
+          },
+          {
+            "voter": "bigtooth",
+            "rshares": 1280316244
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "emilypino",
+            "rshares": 1739410352
+          },
+          {
+            "voter": "sadii",
+            "rshares": 0
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "hivepostify"
+          },
+          {
+            "weight": 5000,
+            "account": "sadii"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.371 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.371 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-07-27",
+        "body": "# Hive Swarm Post — 2026-07-27\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 35 |\n| Trust root voters | 4 |\n| Trust declarations | 60 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@dianalyn08**\n- Creator: @antonette\n- Onboarder trust: 238726.93\n- Activity weight: 0.4582\n- Score: 109374.3918\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @antonette | 50.0% |\n| @dianalyn08 | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-07-27T00:00:00.000Z`\n- Bitcoin block: height `959763`, hash `00000000000000000000e1228db3f23606dfe700b9eadfaa3dd8e9d7461c7288`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000000e1228db3f23606dfe700b9eadfaa3dd8e9d7461c7288hive-swarm-post2026-07-271\")`\n- Result: `69bf6accf22fac703829a115cc0e056a24fe3c1262a97237222865e7436efc26`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 5
+        },
+        "title": "Hive Swarm Post — 2026-07-27",
+        "author": "swarmpost",
+        "payout": 0.438,
+        "created": "2026-07-27T02:18:42",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-07-27T02:18:42",
+        "category": "hive-107705",
+        "children": 0,
+        "permlink": "swarm-post-2026-07-27",
+        "community": "hive-107705",
+        "payout_at": "2026-08-03T02:18:42",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 7137218425709,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 6897928033357
+          },
+          {
+            "voter": "wuhotan",
+            "rshares": 2020964656
+          },
+          {
+            "voter": "akdx",
+            "rshares": 236064041063
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "antonette"
+          },
+          {
+            "weight": 5000,
+            "account": "dianalyn08"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.219 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.219 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-07-22",
+        "body": "# Hive Swarm Post — 2026-07-22\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 3 |\n| Active onboarders | 54 |\n| Trust root voters | 5 |\n| Trust declarations | 60 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@caroscope**\n- Creator: @antonette\n- Onboarder trust: 238437.90\n- Activity weight: 1.0000\n- Score: 238437.8951\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @antonette | 50.0% |\n| @caroscope | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-07-22T00:00:00.000Z`\n- Bitcoin block: height `959078`, hash `000000000000000000005552e626e4446be604b87295879f4309d645840e4b9b`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"000000000000000000005552e626e4446be604b87295879f4309d645840e4b9bhive-swarm-post2026-07-221\")`\n- Result: `fb24f777bfa130a45c734d96e9995a5292cf8248589d62a913ff165ae6cc4489`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 4
+        },
+        "title": "Hive Swarm Post — 2026-07-22",
+        "author": "swarmpost",
+        "payout": 0.45,
+        "created": "2026-07-22T21:20:48",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-07-22T21:20:48",
+        "category": "hive-107705",
+        "children": 3,
+        "permlink": "swarm-post-2026-07-22",
+        "community": "hive-107705",
+        "payout_at": "2026-07-29T21:20:48",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 7315492313781,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 7302057018406
+          },
+          {
+            "voter": "botto",
+            "rshares": 12229908742
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "antonette"
+          },
+          {
+            "weight": 5000,
+            "account": "caroscope"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.225 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.225 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-07-12",
+        "body": "# Hive Swarm Post — 2026-07-12\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 54 |\n| Trust root voters | 5 |\n| Trust declarations | 60 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@damaris07**\n- Creator: @rutablockchain\n- Onboarder trust: 235487.01\n- Activity weight: 0.5781\n- Score: 136142.0221\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @damaris07 | 50.0% |\n| @rutablockchain | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-07-12T00:00:00.000Z`\n- Bitcoin block: height `957630`, hash `00000000000000000000299931ae2ea7e15332bade842b900d124853f19869b4`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000000299931ae2ea7e15332bade842b900d124853f19869b4hive-swarm-post2026-07-121\")`\n- Result: `88051d90f64f8e301272a96f9395989ba29e48829786e30fc609a4917c7094b4`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 10
+        },
+        "title": "Hive Swarm Post — 2026-07-12",
+        "author": "swarmpost",
+        "payout": 0.583,
+        "created": "2026-07-12T00:06:27",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-07-12T00:06:27",
+        "category": "hive-107705",
+        "children": 1,
+        "permlink": "swarm-post-2026-07-12",
+        "community": "hive-107705",
+        "payout_at": "2026-07-19T00:06:27",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 8367971845830,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 7212757988488
+          },
+          {
+            "voter": "ammonite",
+            "rshares": 285849051737
+          },
+          {
+            "voter": "abbak7",
+            "rshares": 616934755347
+          },
+          {
+            "voter": "akdx",
+            "rshares": 235051904875
+          },
+          {
+            "voter": "chunkysoupsvc",
+            "rshares": 893359658
+          },
+          {
+            "voter": "steemadventures",
+            "rshares": 790773875
+          },
+          {
+            "voter": "bigtooth",
+            "rshares": 1280316244
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "ladyaryastark",
+            "rshares": 13208308973
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "damaris07"
+          },
+          {
+            "weight": 5000,
+            "account": "rutablockchain"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.292 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.291 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-07-04",
+        "body": "# Hive Swarm Post — 2026-07-04\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 53 |\n| Trust root voters | 5 |\n| Trust declarations | 59 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@lacerdaskt**\n- Creator: @blessskateshop\n- Onboarder trust: 248315.28\n- Activity weight: 0.2891\n- Score: 71779.2131\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @blessskateshop | 50.0% |\n| @lacerdaskt | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-07-04T00:00:00.000Z`\n- Bitcoin block: height `956565`, hash `000000000000000000010b6829102bc349f7324985c5292a518eac3dd7d05685`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"000000000000000000010b6829102bc349f7324985c5292a518eac3dd7d05685hive-swarm-post2026-07-041\")`\n- Result: `70a075198dd202eda2224d38bf154b9567344bbfadf16d9766615f94d9a9ccc3`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 10
+        },
+        "title": "Hive Swarm Post — 2026-07-04",
+        "author": "swarmpost",
+        "payout": 0.645,
+        "created": "2026-07-04T21:06:00",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-07-04T21:06:00",
+        "category": "hive-107705",
+        "children": 0,
+        "permlink": "swarm-post-2026-07-04",
+        "community": "hive-107705",
+        "payout_at": "2026-07-11T21:06:00",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 9137481113443,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 7078315816146
+          },
+          {
+            "voter": "fw206",
+            "rshares": 1635167545078
+          },
+          {
+            "voter": "fredsilva007",
+            "rshares": 1589860214
+          },
+          {
+            "voter": "perfilbrasil",
+            "rshares": 12802283394
+          },
+          {
+            "voter": "hafsaputul",
+            "rshares": 4916675491
+          },
+          {
+            "voter": "cryptogalo",
+            "rshares": 1642470888
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "blessskateshop",
+            "rshares": 401801243802
+          },
+          {
+            "voter": "hive-124221",
+            "rshares": 39831797
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "blessskateshop"
+          },
+          {
+            "weight": 5000,
+            "account": "lacerdaskt"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.323 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.322 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-06-22",
+        "body": "# Hive Swarm Post — 2026-06-22\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 34 |\n| Trust root voters | 18 |\n| Trust declarations | 59 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@louiosity**\n- Creator: @ninaeatshere\n- Onboarder trust: 224878.51\n- Activity weight: 0.5781\n- Score: 130008.9377\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @louiosity | 50.0% |\n| @ninaeatshere | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-06-22T00:00:00.000Z`\n- Bitcoin block: height `954760`, hash `00000000000000000001b0a37c91434260280ffe78356175a5138355535ae2c8`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000001b0a37c91434260280ffe78356175a5138355535ae2c8hive-swarm-post2026-06-221\")`\n- Result: `98d8ca9efd55739f118cff9ddff1e81653a332aa05f498dc1fa9e80143f2ec34`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 10
+        },
+        "title": "Hive Swarm Post — 2026-06-22",
+        "author": "swarmpost",
+        "payout": 0.808,
+        "created": "2026-06-22T21:04:54",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-06-22T21:04:54",
+        "category": "hive-107705",
+        "children": 1,
+        "permlink": "swarm-post-2026-06-22",
+        "community": "hive-107705",
+        "payout_at": "2026-06-29T21:04:54",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 11142164319409,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 6879748227352
+          },
+          {
+            "voter": "ammonite",
+            "rshares": 285527800105
+          },
+          {
+            "voter": "abbak7",
+            "rshares": 613209602575
+          },
+          {
+            "voter": "fw206",
+            "rshares": 2173206452107
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 559130161125
+          },
+          {
+            "voter": "hafsaputul",
+            "rshares": 9245597216
+          },
+          {
+            "voter": "bigtooth",
+            "rshares": 1280316244
+          },
+          {
+            "voter": "pishio",
+            "rshares": 619610776052
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "louiosity"
+          },
+          {
+            "weight": 5000,
+            "account": "ninaeatshere"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.404 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.404 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-06-19",
+        "body": "# Hive Swarm Post — 2026-06-19\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 34 |\n| Trust root voters | 14 |\n| Trust declarations | 59 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@opponent**\n- Creator: @angeluxx\n- Vouched by: @demotruk\n- Onboarder trust: 188180.96\n- Activity weight: 1.0000\n- Score: 188180.9624\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @angeluxx | 50.0% |\n| @opponent | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-06-19T00:00:00.000Z`\n- Bitcoin block: height `954320`, hash `00000000000000000000b535961ccc6499b39135e39d24726815ecb2eb77516a`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000000b535961ccc6499b39135e39d24726815ecb2eb77516ahive-swarm-post2026-06-191\")`\n- Result: `397ad7539974852c33cfac7c51532fd1c1bbe19c3e4dc2a2a58a2fb07d7eb0fa`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 11
+        },
+        "title": "Hive Swarm Post — 2026-06-19",
+        "author": "swarmpost",
+        "payout": 0.676,
+        "created": "2026-06-19T07:04:51",
+        "reblogs": 1,
+        "replies": [],
+        "updated": "2026-06-19T07:04:51",
+        "category": "hive-107705",
+        "children": 0,
+        "permlink": "swarm-post-2026-06-19",
+        "community": "hive-107705",
+        "payout_at": "2026-06-26T07:04:51",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 9937806913045,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 5691506860729
+          },
+          {
+            "voter": "natord",
+            "rshares": 15184153847
+          },
+          {
+            "voter": "joeyarnoldvn",
+            "rshares": 949161962
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 1298205462157
+          },
+          {
+            "voter": "fw206",
+            "rshares": 1737434382035
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 13443694954
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 559130161125
+          },
+          {
+            "voter": "pishio",
+            "rshares": 619610776052
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "angeluxx"
+          },
+          {
+            "weight": 5000,
+            "account": "opponent"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.338 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.338 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-06-17",
+        "body": "# Hive Swarm Post — 2026-06-17\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 33 |\n| Trust root voters | 42 |\n| Trust declarations | 58 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@anji29**\n- Creator: @antonette\n- Onboarder trust: 186767.30\n- Activity weight: 1.0000\n- Score: 186767.2968\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @anji29 | 50.0% |\n| @antonette | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-06-17T00:00:00.000Z`\n- Bitcoin block: height `954023`, hash `00000000000000000001436abf54e51a15c6ec82deb59c1c7defbc235ce099d1`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000001436abf54e51a15c6ec82deb59c1c7defbc235ce099d1hive-swarm-post2026-06-171\")`\n- Result: `956aeb6196abc0bf41a8eefe2eba60588c471180b45d08396baf3ed1ece8b942`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 14
+        },
+        "title": "Hive Swarm Post — 2026-06-17",
+        "author": "swarmpost",
+        "payout": 1.946,
+        "created": "2026-06-17T04:05:27",
+        "reblogs": 2,
+        "replies": [],
+        "updated": "2026-06-17T04:05:27",
+        "category": "hive-107705",
+        "children": 2,
+        "permlink": "swarm-post-2026-06-17",
+        "community": "hive-107705",
+        "payout_at": "2026-06-24T04:05:27",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 27431707128643,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 5647189027674
+          },
+          {
+            "voter": "fredrikaa",
+            "rshares": 2904221082919
+          },
+          {
+            "voter": "stayoutoftherz",
+            "rshares": 15797270169182
+          },
+          {
+            "voter": "shahinalom",
+            "rshares": 157240863452
+          },
+          {
+            "voter": "fw206",
+            "rshares": 2279451329488
+          },
+          {
+            "voter": "steemulant",
+            "rshares": 204261320
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 13436913905
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 560348418556
+          },
+          {
+            "voter": "newsposter",
+            "rshares": 2037969349
+          },
+          {
+            "voter": "hafsaputul",
+            "rshares": 8951857148
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "marabuzal",
+            "rshares": 60149849017
+          },
+          {
+            "voter": "repreit",
+            "rshares": 0
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "anji29"
+          },
+          {
+            "weight": 5000,
+            "account": "antonette"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.973 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.973 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-06-14",
+        "body": "- ",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 2,
+          "total_votes": 2
+        },
+        "title": "Duplicate post, please ignore",
+        "author": "swarmpost",
+        "payout": 0,
+        "created": "2026-06-14T18:16:09",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-06-14T20:51:57",
+        "category": "hive-107705",
+        "children": 2,
+        "permlink": "swarm-post-2026-06-14",
+        "community": "hive-107705",
+        "payout_at": "2026-06-21T18:16:09",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": -1049551348006,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": -1049579040371
+          },
+          {
+            "voter": "hive-124221",
+            "rshares": 27692365
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "blessskateshop"
+          },
+          {
+            "weight": 5000,
+            "account": "hallszn"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies",
+            "hive-107705"
+          ],
+          "image": [],
+          "users": [],
+          "format": "markdown"
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-06-12",
+        "body": "# Hive Swarm Post — 2026-06-12\n\n![swarm-post-header](https://files.peakd.com/file/peakd-hive/demotruk/23vhMrK7JCfo54PqqJ198PXNbcmd9kT3LJiCSLNk6P8F2KX6aE9LspF4tqNeSehAGEqZa.png)\n\nThe Swarm Post distributes author rewards to newly onboarded Hive users, selected via a trust-weighted lottery with verifiable randomness.\n\n## Today's Pool\n\n| Metric | Value |\n|---|---|\n| Eligible newbies | 1 |\n| Active onboarders | 32 |\n| Trust root voters | 37 |\n| Trust declarations | 57 |\n\n## How It Works\n\n- 10 lottery rounds at fixed times: 00:00, 02:24, 04:48, 07:12, 09:36, 12:00, 14:24, 16:48, 19:12, 21:36 UTC\n- **Round 1 is this post.** Rounds 2–10 are posted as comments below.\n- Each round selects 1 newbie as beneficiary alongside their onboarder(s)\n- Selection is weighted by onboarder trust and newbie activity\n- Randomness sourced from the Bitcoin block at each round's **scheduled** time (not posting time)\n- This means the operator cannot influence outcomes by delaying a post\n- [Full documentation](https://github.com/Demotruk/HiveSwarmPost)\n\n## How to Help New Users Enter the Lottery\n\nIf you're part of the [trust network](https://hiveinvite.com/trust), you can help new Hive users become eligible for the lottery:\n\n**Vouch** — If you know who onboarded a new user but their on-chain creator is a service account (like @hiveonboard), comment on their introduction post:\n\n> `!vouch @realcreator`\n\nThis tells the system who really brought them to Hive. The attested creator receives the onboarder's share of the rewards.\n\n**Sponsor** — If a new user has no trusted onboarder at all but you believe they are a real person worth supporting, comment on their introduction post:\n\n> `!sponsor`\n\nThis makes you responsible for that account. You receive the onboarder's share of the rewards. Sponsoring requires a higher trust score than vouching.\n\n## Support\n\nUpvote this post and its comments to fund new Hive users. Your vote weight counts toward the trust graph.\n\n## Round 1 — Selected Newbies\n\n**@nanisleepy**\n- Creator: @eborosa\n- Vouched by: @demotruk\n- Onboarder trust: 174299.75\n- Activity weight: 0.6712\n- Score: 116987.8584\n\n### Beneficiaries\n\n| Account | Share |\n|---|---|\n| @eborosa | 50.0% |\n| @nanisleepy | 50.0% |\n\n### Verification\n\n- Scheduled time: `2026-06-12T00:00:00.000Z`\n- Bitcoin block: height `953294`, hash `00000000000000000000222eafec2004b29c25a88edffd99f20f9b49d164f8ac`\n- Block selection rule: latest BTC block at or before the scheduled time\n- Seed: `SHA256(\"00000000000000000000222eafec2004b29c25a88edffd99f20f9b49d164f8achive-swarm-post2026-06-121\")`\n- Result: `1b4e0c851355397c3572aec424b91670077382ae7ab790fbaf3761c899ad8810`\n\nThe block used for randomness is determined by the round's scheduled time, not the actual posting time. This prevents the operator from influencing the outcome by delaying the post. Anyone can independently verify this selection by looking up the BTC block at the scheduled timestamp.\n\n---\n*Posted by [@swarmpost](/@swarmpost) — [source code](https://github.com/Demotruk/HiveSwarmPost)*\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 11
+        },
+        "title": "Hive Swarm Post — 2026-06-12",
+        "author": "swarmpost",
+        "payout": 0.71,
+        "created": "2026-06-12T18:57:39",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-06-12T18:57:39",
+        "category": "hive-107705",
+        "children": 2,
+        "permlink": "swarm-post-2026-06-12",
+        "community": "hive-107705",
+        "payout_at": "2026-06-19T18:57:39",
+        "blacklists": [],
+        "is_paidout": true,
+        "author_role": "guest",
+        "net_rshares": 9867409685567,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "demotruk",
+            "rshares": 5244176191249
+          },
+          {
+            "voter": "quochuy",
+            "rshares": 3362610753315
+          },
+          {
+            "voter": "steemulant",
+            "rshares": 624876374
+          },
+          {
+            "voter": "teamvn",
+            "rshares": 34971364235
+          },
+          {
+            "voter": "smartvote",
+            "rshares": 587810534612
+          },
+          {
+            "voter": "pocketjs",
+            "rshares": 590827921
+          },
+          {
+            "voter": "steemtelly",
+            "rshares": 11690948114
+          },
+          {
+            "voter": "pishio",
+            "rshares": 620097344683
+          },
+          {
+            "voter": "claraxmas",
+            "rshares": 602693322
+          },
+          {
+            "voter": "giovannixmas",
+            "rshares": 602693311
+          },
+          {
+            "voter": "eborosa",
+            "rshares": 3631458431
+          }
+        ],
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "weight": 5000,
+            "account": "eborosa"
+          },
+          {
+            "weight": 5000,
+            "account": "nanisleepy"
+          }
+        ],
+        "json_metadata": {
+          "app": "swarmpost/1.0.0",
+          "tags": [
+            "hive-107705",
+            "hive-swarm-post",
+            "swarmpost",
+            "onboarding",
+            "newbies"
+          ]
+        },
+        "community_title": "HiveInvite.com",
+        "author_reputation": 61.43,
+        "author_payout_value": "0.355 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.355 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

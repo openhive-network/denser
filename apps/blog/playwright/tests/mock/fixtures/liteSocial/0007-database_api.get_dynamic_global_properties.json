@@ -14,19 +14,19 @@
     "jsonrpc": "2.0",
     "result": {
       "id": 0,
-      "head_block_number": 110971992,
-      "head_block_id": "069d4c58e0a236677a2fceb71b8113a4ef702da4",
-      "time": "2026-10-21T16:44:27",
-      "current_witness": "ocd-witness",
+      "head_block_number": 110973598,
+      "head_block_id": "069d529e82f302fd9f478ce12e76657f02be0ef4",
+      "time": "2026-10-21T18:05:12",
+      "current_witness": "gtg",
       "total_pow": 514415,
       "num_pow_witnesses": 172,
       "virtual_supply": {
-        "amount": "1244113755057",
+        "amount": "1244121552585",
         "precision": 3,
         "nai": "@@000000021"
       },
       "current_supply": {
-        "amount": "592119703874",
+        "amount": "592122694728",
         "precision": 3,
         "nai": "@@000000021"
       },
@@ -36,51 +36,51 @@
         "nai": "@@000000013"
       },
       "current_hbd_supply": {
-        "amount": "31947708508",
+        "amount": "31947944035",
         "precision": 3,
         "nai": "@@000000013"
       },
       "total_vesting_fund_hive": {
-        "amount": "217294650494",
+        "amount": "217290984751",
         "precision": 3,
         "nai": "@@000000021"
       },
       "total_vesting_shares": {
-        "amount": "348963056360817982",
+        "amount": "348955654596370353",
         "precision": 6,
         "nai": "@@000000037"
       },
       "pending_rewarded_vesting_shares": {
-        "amount": "1424371842155692",
+        "amount": "1423745585795889",
         "precision": 6,
         "nai": "@@000000037"
       },
       "pending_rewarded_vesting_hive": {
-        "amount": "807515841",
+        "amount": "807126320",
         "precision": 3,
         "nai": "@@000000021"
       },
       "hbd_interest_rate": 1000,
       "hbd_print_rate": 0,
       "maximum_block_size": 65536,
-      "current_aslot": 111255289,
+      "current_aslot": 111256904,
       "recent_slots_filled": "340282366920938463463374607431768211455",
       "participation_count": 128,
-      "last_irreversible_block_num": 110971992,
+      "last_irreversible_block_num": 110973598,
       "vote_power_reserve_rate": 10,
       "delegation_return_period": 432000,
       "reverse_auction_seconds": 0,
-      "available_account_subsidies": 5498008,
+      "available_account_subsidies": 6221306,
       "hbd_stop_percent": 2000,
       "hbd_start_percent": 2000,
-      "next_maintenance_time": "2026-10-21T17:38:09",
-      "last_budget_time": "2026-10-21T16:38:09",
+      "next_maintenance_time": "2026-10-21T18:38:09",
+      "last_budget_time": "2026-10-21T17:38:09",
       "next_daily_maintenance_time": "2026-10-21T19:31:33",
       "content_reward_percent": 6500,
       "vesting_reward_percent": 1500,
       "proposal_fund_percent": 1000,
       "dhf_interval_ledger": {
-        "amount": "2394",
+        "amount": "10241",
         "precision": 3,
         "nai": "@@000000013"
       },

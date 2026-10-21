@@ -29,13 +29,6 @@
         ],
         "follower": "did:lite:lite-smoke-1016",
         "following": "test-gateway-1"
-      },
-      {
-        "what": [
-          "blog"
-        ],
-        "follower": "swarmpost",
-        "following": "test-gateway-1"
       }
     ],
     "id": 1

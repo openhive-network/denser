@@ -7,6 +7,12 @@ import { test, expect } from '../support/fixture-proxy-test';
  *
  *   LITE-SOCIAL-01 – a guest acting as its lite account follows a Hive author: the button and the
  *                    follower count change at once, and one signed `follow` op goes to /l2
+ *   LITE-SOCIAL-02 – the lite account's mute (of `swarmpost`, on chain) hides that author's posts from
+ *                    a feed and grays its post for a browser holding the identity; its Muted tab lists it
+ *   LITE-SOCIAL-03 – the lite profile's Blog tab shows the account's reblog (on chain) with the marker
+ *                    and the DID author; its Posts tab does not
+ *   LITE-SOCIAL-04 – the lite account's subscription (on chain): `/created/my` lists only that
+ *                    community's posts, and the community page shows Joined
  *   LITE-SOCIAL-05 – the lite account's owner edits its profile (`set_profile`); the card shows it
  *   LITE-SOCIAL-06 – the lite profile has the Blog, Followers, Following and Muted tabs and counts;
  *                    its Following list names the Hive account it follows
@@ -28,6 +34,13 @@ const LITE_DID = `did:lite:${LITE_NAME}`;
 // A lite account steem-16 knows (the node refuses reads of an unknown DID), following nobody at record time.
 const GUEST_NAME = 'crisp-koala-499';
 const SOCIAL_APP = 'lite_social_test';
+// On-chain state of LITE_NAME at record time (all applied by lite_social_test on steem-16).
+const MUTED_AUTHOR = 'swarmpost';
+const MUTED_AUTHOR_COMMUNITY = 'hive-107705';
+const MUTED_POST_URL = `/${MUTED_AUTHOR_COMMUNITY}/@${MUTED_AUTHOR}/swarm-post-2026-10-19`;
+const REBLOGGED_TITLE = 'Denser guest root post check 2026-10-19T22:56';
+const OWN_ROOT_TITLE = 'lite gateway smoke test';
+const SUBSCRIBED_COMMUNITY = 'hive-13323';
 const CHAIN_ID = 'beeab0de00000000000000000000000000000000000000000000000000000000';
 
 const INFO = {
@@ -77,6 +90,13 @@ async function mockGateway(page: Page, answer: { status: number; json: Record<st
 }
 
 const ACCEPTED = { status: 202, json: { trx_id: '0'.repeat(40), gate: 'test-gateway-4', app: SOCIAL_APP } };
+
+/** Waits for the browser's ranked-posts read sent with the lite account as observer. */
+const liteRankedRead = (page: Page) =>
+  page.waitForResponse((response) => {
+    const body = response.request().postData() ?? '';
+    return body.includes('"lite.get_ranked_posts"') && body.includes(`"observer":"${LITE_DID}"`);
+  });
 
 /** The follower count of the Hive profile's stats grid. */
 const followerCount = (page: Page) => page.getByTestId('profile-stats').getByRole('link').first().locator('span').first();
@@ -171,5 +191,66 @@ test.describe('Lite social for guests (fixture-based, node with lite_social)', (
       method: 'set_profile',
       args: { actor: LITE_DID, profile: { about, location: 'Tbilisi' } }
     });
+  });
+
+  test('LITE-SOCIAL-02: a lite account mute hides the author from its browser', async ({ page }) => {
+    const feed = `/created/${MUTED_AUTHOR_COMMUNITY}`;
+    const authors = page.getByTestId('post-list-item').getByTestId('post-author');
+
+    // Without the identity, the community feed is the muted author's.
+    await page.goto(feed, { waitUntil: 'domcontentloaded' });
+    await expect(authors.first()).toHaveText(MUTED_AUTHOR);
+
+    await holdLiteIdentity(page, LITE_NAME);
+    await mockGateway(page, ACCEPTED);
+    const read = liteRankedRead(page);
+    await page.goto(feed, { waitUntil: 'domcontentloaded' });
+    await read;
+    await expect(page.getByTestId('post-list-item')).toHaveCount(0);
+
+    await page.goto(MUTED_POST_URL, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByText('Content were hidden due to low ratings.')).toBeVisible();
+
+    await page.goto(`/@${LITE_DID}/lists/muted`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('lite-follow-list-muted').getByTestId('account-name-link')).toHaveText([MUTED_AUTHOR]);
+  });
+
+  test('LITE-SOCIAL-03: the lite Blog tab shows the reblog, the Posts tab does not', async ({ page }) => {
+    await page.goto(`/@${LITE_DID}`, { waitUntil: 'domcontentloaded' });
+
+    const cards = page.getByTestId('post-list-item');
+    // Newest first: the reblog is the account's latest entry.
+    await expect(cards.getByTestId('post-title')).toHaveText([REBLOGGED_TITLE, OWN_ROOT_TITLE]);
+    const reblog = cards.first();
+    await expect(reblog.getByTestId('reblogged-author-link')).toHaveText(LITE_NAME);
+    await expect(reblog.getByTestId('reblogged-author-link')).toHaveAttribute('href', new RegExp(`/@${LITE_DID}$`));
+    await expect(reblog.getByTestId('post-author')).toHaveText(GUEST_NAME);
+    await expect(reblog.getByTestId('post-author')).toHaveAttribute('href', new RegExp(`/@did:lite:${GUEST_NAME}$`));
+    await expect(reblog.getByTestId('lite-author-badge')).toHaveCount(2);
+    await expect(cards.nth(1).getByTestId('reblogged-label')).toHaveCount(0);
+
+    await page.getByTestId('profile-navigation').getByRole('link', { name: 'Posts', exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`/@${LITE_DID}/posts$`));
+    await expect(cards.getByTestId('post-title')).toHaveText([OWN_ROOT_TITLE]);
+  });
+
+  test('LITE-SOCIAL-04: a lite subscription feeds /created/my and shows Joined', async ({ page }) => {
+    await holdLiteIdentity(page, LITE_NAME);
+    await mockGateway(page, ACCEPTED);
+
+    const read = liteRankedRead(page);
+    await page.goto('/created/my', { waitUntil: 'domcontentloaded' });
+    await read;
+    const cards = page.getByTestId('post-list-item');
+    await expect(cards.first()).toBeVisible();
+    const links = cards.getByTestId('post-card-community');
+    const hrefs = await links.evaluateAll((anchors) => anchors.map((a) => a.getAttribute('href')));
+    expect(hrefs.length).toBe(await cards.count());
+    expect(new Set(hrefs)).toEqual(new Set([`/trending/${SUBSCRIBED_COMMUNITY}`]));
+
+    await page.goto(`/trending/${SUBSCRIBED_COMMUNITY}`, { waitUntil: 'domcontentloaded' });
+    const sidebar = page.getByTestId('community-info-sidebar');
+    await expect(sidebar.getByTestId('community-join-leave-button')).toContainText('Joined');
+    await expect(sidebar.getByTestId('community-subscribe-button')).toHaveCount(0);
   });
 });

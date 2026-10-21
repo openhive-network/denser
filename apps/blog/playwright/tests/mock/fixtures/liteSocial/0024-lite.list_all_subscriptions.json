@@ -1,0 +1,31 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.list_all_subscriptions",
+    "params": {
+      "account": "did:lite:lite-smoke-1016"
+    },
+    "id": 1
+  },
+  "requestHash": "6beaf8e1e3b870fb",
+  "method": "lite.list_all_subscriptions",
+  "params": {
+    "account": "did:lite:lite-smoke-1016"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      [
+        "hive-13323",
+        "Splinterlands",
+        "guest",
+        ""
+      ]
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

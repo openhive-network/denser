@@ -1,0 +1,59 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_community",
+    "params": {
+      "name": "hive-107705",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "b0af24ffc0e98527",
+  "method": "bridge.get_community",
+  "params": {
+    "name": "hive-107705",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 2611173,
+      "lang": "en",
+      "name": "hive-107705",
+      "team": [
+        [
+          "hive-107705",
+          "owner",
+          ""
+        ],
+        [
+          "demotruk",
+          "admin",
+          ""
+        ]
+      ],
+      "about": "Guides, support and discussion for onboarding new Hive users with HiveInvite.com",
+      "title": "HiveInvite.com",
+      "context": {
+        "role": "guest",
+        "title": "",
+        "subscribed": false
+      },
+      "is_nsfw": false,
+      "type_id": 1,
+      "settings": {},
+      "flag_text": "",
+      "created_at": "2026-04-06 08:54:18",
+      "description": "",
+      "num_authors": 3,
+      "num_pending": 3,
+      "subscribers": 8,
+      "sum_pending": 1
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
