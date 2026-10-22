@@ -185,3 +185,37 @@ export async function getChatAuthToken(username = '') {
       error: 'Error code 1'
   };
 }
+
+/** Bound on each Rocket.Chat call made to revoke a token; nobody waits on them. */
+const CHAT_LOGOUT_TIMEOUT_MS = 5000;
+
+/**
+ * Log `username`'s chat account out of the session `authToken` belongs to, through Rocket.Chat's
+ * REST `logout`, which removes that login token on the server. A browser holding it (the embedded
+ * chat, or openhive.chat opened directly) is logged out with it; the account's other sessions are not.
+ *
+ * @throws {Error} when the account cannot be found or Rocket.Chat refuses or does not answer
+ */
+export async function revokeChatAuthToken(username: string, authToken: string): Promise<void> {
+  const infoUrl = new URL(`${siteConfig.openhiveChatApiUri}/users.info`);
+  infoUrl.searchParams.append('username', username);
+  const info = await fetchJson(
+    infoUrl,
+    { method: 'GET', headers: { 'Content-Type': 'application/json', ...rocketChatAdminUserAuthHeaders } },
+    CHAT_LOGOUT_TIMEOUT_MS
+  );
+  const userId = info?.user?._id;
+  if (!info?.success || !userId) {
+    throw new Error(`Rocket.Chat user ${username} not found`);
+  }
+  await fetchJson(
+    `${siteConfig.openhiveChatApiUri}/logout`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-User-Id': userId, 'X-Auth-Token': authToken } },
+    CHAT_LOGOUT_TIMEOUT_MS
+  );
+  logger.info('Rocket.Chat session of %s logged out', username);
+}
+
+export function reportChatRevocationFailure(username: string, reason: string): void {
+  logger.error('Rocket.Chat logout of %s failed: %s', username, reason);
+}

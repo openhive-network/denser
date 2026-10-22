@@ -1,0 +1,171 @@
+import { afterEach, beforeEach, describe, it, mock } from 'node:test';
+import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
+import type { User } from '@smart-signer/types/common';
+
+const CHAT_API = 'https://chat.test/api/v1';
+
+/** What the stand-in modules below read and record; they cannot import the test. */
+interface Harness {
+  session: { user?: User; accounts?: User[]; destroyed: boolean; destroy(): void };
+  errors: unknown[][];
+}
+const harness: Harness = { session: { destroyed: false, destroy() {} }, errors: [] };
+Object.assign(globalThis, { logoutTestHarness: harness });
+
+function stub(source: string): string {
+  return `data:text/javascript,${encodeURIComponent(`const h = globalThis.logoutTestHarness;\n${source}`)}`;
+}
+
+const STUBS: Record<string, string> = {
+  'iron-session': stub('export const getIronSession = async () => h.session;'),
+  '@smart-signer/lib/session': stub('export const sessionOptions = {};'),
+  '@smart-signer/lib/auth/default-user': stub('export const defaultUser = { isLoggedIn: false, username: "" };'),
+  '@smart-signer/lib/csrf-protection': stub('export const checkCsrfHeader = () => {};'),
+  '@smart-signer/lib/oidc': stub('export const oidc = undefined;'),
+  '@smart-signer/lib/event-logging': stub(
+    'export const logLogoutEvent = () => {}; export const getClientIpFromApiRequest = () => "";'
+  ),
+  '@smart-signer/lib/account-info-cookie': stub('export const clearAccountInfoCookie = () => {};'),
+  '@ui/lib/logging': stub(
+    'export const getLogger = () => ({ info() {}, error: (...args) => h.errors.push(args) });'
+  ),
+  '@hive/ui/lib/logging': stub(
+    'export const getLogger = () => ({ info() {}, error: (...args) => h.errors.push(args) });'
+  ),
+  '@ui/config/site': stub(
+    `export const siteConfig = { openhiveChatApiUri: '${CHAT_API}', openhiveChatAdminUserId: 'admin-id', openhiveChatAdminUserToken: 'admin-token' };`
+  )
+};
+const REAL: Record<string, string> = {
+  '@smart-signer/lib/auth/chat-session': '../../auth/chat-session.ts',
+  '@smart-signer/lib/auth/accounts': '../../auth/accounts.ts',
+  '@smart-signer/lib/rocket-chat': '../../rocket-chat.ts',
+  './fetch-json': './fetch-json.ts'
+};
+
+// Under node's type stripping the `@smart-signer/` alias does not resolve
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (STUBS[specifier]) return { url: STUBS[specifier], shortCircuit: true };
+    if (REAL[specifier]) {
+      const base = specifier.startsWith('./') ? context.parentURL : import.meta.url;
+      return { url: new URL(REAL[specifier], base).href, shortCircuit: true };
+    }
+    return nextResolve(specifier, context);
+  }
+});
+
+const { logoutUser } = await import('./logout.ts');
+
+function account(username: string, chatAuthToken: string): User {
+  return {
+    isLoggedIn: true,
+    username,
+    avatarUrl: '',
+    loginType: 'keychain' as User['loginType'],
+    keyType: 'posting' as User['keyType'],
+    authenticateOnBackend: true,
+    chatAuthToken,
+    oauthConsent: { openhive_chat: true },
+    strict: true
+  };
+}
+
+interface ChatCall {
+  url: string;
+  method: string;
+  headers: Record<string, string>;
+}
+
+/** Stands in Rocket.Chat; `logout` answers as `answerLogout` says. */
+function chatServer(answerLogout: () => Promise<Response>): ChatCall[] {
+  const calls: ChatCall[] = [];
+  mock.method(globalThis, 'fetch', (input: string | URL, init: RequestInit = {}) => {
+    const url = String(input);
+    calls.push({ url, method: init.method ?? 'GET', headers: { ...(init.headers as Record<string, string>) } });
+    if (url.startsWith(`${CHAT_API}/users.info`)) {
+      return Promise.resolve(Response.json({ success: true, user: { _id: 'rc-alice', active: true } }));
+    }
+    return answerLogout();
+  });
+  return calls;
+}
+
+async function signOut(): Promise<unknown> {
+  let body: unknown;
+  const res = { json: (value: unknown) => (body = value) };
+  // @ts-expect-error - the handler reads only `cookies` from the request and `json` from the response
+  await logoutUser({ cookies: {} }, res);
+  return body;
+}
+
+function settle(): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, 10));
+}
+
+describe('logoutUser', () => {
+  beforeEach(() => {
+    harness.errors = [];
+  });
+
+  afterEach(() => {
+    mock.restoreAll();
+  });
+
+  function signedIn(user: User, accounts: User[] = [user]) {
+    harness.session = {
+      user,
+      accounts,
+      destroyed: false,
+      destroy() {
+        this.destroyed = true;
+      }
+    };
+  }
+
+  it("logs the user's chat session out through Rocket.Chat's REST logout, once", async () => {
+    const calls = chatServer(() => Promise.resolve(Response.json({ status: 'success' })));
+    signedIn(account('alice', 'token-a'));
+
+    assert.deepEqual(await signOut(), { isLoggedIn: false, username: '' });
+    await settle();
+
+    assert.equal(harness.session.destroyed, true);
+    const logouts = calls.filter((call) => call.url === `${CHAT_API}/logout`);
+    assert.equal(logouts.length, 1);
+    assert.equal(logouts[0].method, 'POST');
+    assert.equal(logouts[0].headers['X-User-Id'], 'rc-alice');
+    assert.equal(logouts[0].headers['X-Auth-Token'], 'token-a');
+    assert.equal(calls[0].headers['X-Auth-Token'], 'admin-token');
+    assert.deepEqual(harness.errors, []);
+  });
+
+  it('does not call Rocket.Chat for a user who never had chat access', async () => {
+    const calls = chatServer(() => Promise.resolve(Response.json({ status: 'success' })));
+    signedIn(account('carol', ''));
+
+    await signOut();
+    await settle();
+
+    assert.equal(harness.session.destroyed, true);
+    assert.deepEqual(calls, []);
+  });
+
+  it('signs out without waiting for an unreachable Rocket.Chat, and logs the failure without the token', { timeout: 2000 }, async () => {
+    let refuse: (error: Error) => void = () => {};
+    chatServer(() => new Promise<Response>((_resolve, reject) => (refuse = reject)));
+    signedIn(account('alice', 'token-a'));
+
+    assert.deepEqual(await signOut(), { isLoggedIn: false, username: '' });
+    assert.equal(harness.session.destroyed, true);
+
+    // The logout request is now waiting on Rocket.Chat, which then fails
+    await settle();
+    refuse(new TypeError('fetch failed'));
+    await settle();
+    assert.equal(harness.errors.length, 1);
+    assert.match(String(harness.errors[0][0]), /Rocket\.Chat logout/);
+    assert.ok(!JSON.stringify(harness.errors).includes('token-a'));
+  });
+});

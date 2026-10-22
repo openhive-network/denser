@@ -91,6 +91,8 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/signer/credential-storage.test.ts \
     packages/smart-signer/lib/signer/safe-storage-registration.test.ts \
     packages/smart-signer/lib/auth/accounts.test.ts \
+    packages/smart-signer/lib/auth/chat-session.test.ts \
+    packages/smart-signer/lib/api-handlers/auth/logout.test.ts \
     packages/smart-signer/lib/auth/auth-storage-desync.test.ts \
     packages/smart-signer/lib/auth/login-authority.test.ts \
     packages/smart-signer/lib/auth/sign-in-lock.test.ts \

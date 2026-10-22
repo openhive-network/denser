@@ -9,6 +9,8 @@ import { findAccount, removeAccount, setSessionUser } from '@smart-signer/lib/au
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
 import { clearAccountInfoCookie, setAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
 import { getLogger } from '@hive/ui/lib/logging';
+import { endCurrentChatSession } from '@smart-signer/lib/auth/chat-session';
+import { reportChatRevocationFailure, revokeChatAuthToken } from '@smart-signer/lib/rocket-chat';
 
 const logger = getLogger('app');
 
@@ -22,8 +24,13 @@ export const switchAccount: NextApiHandler<User> = async (req, res) => {
   const { username, authenticateOnBackend } = await postSwitchSchema.parseAsync(req.body);
 
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
+  const endPreviousChatSession = () => {
+    if (session.user?.username === username) return;
+    endCurrentChatSession(session, revokeChatAuthToken, reportChatRevocationFailure);
+  };
   if (!authenticateOnBackend) {
     logger.info('Switching account from %s to client-only %s', session.user?.username, username);
+    endPreviousChatSession();
     delete session.user;
     await session.save();
     clearAccountInfoCookie(res);
@@ -37,6 +44,7 @@ export const switchAccount: NextApiHandler<User> = async (req, res) => {
   }
 
   logger.info('Switching account from %s to %s', session.user?.username, username);
+  endPreviousChatSession();
   setSessionUser(session, account);
   await session.save();
   setAccountInfoCookie(res, account.username, account.loginType);
