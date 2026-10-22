@@ -1,4 +1,4 @@
-import { PUBLISHING_APP } from '@transaction/lib/publishing-app';
+import { buildCommentJsonMetadata, type CommentBodyMetadata } from '@transaction/lib/comment-metadata';
 import { Entry } from '@hive/common-hiveio-packages/wax';
 
 const PAYOUT_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
@@ -9,6 +9,7 @@ interface OptimisticReply {
   parentAuthor: string;
   parentPermlink: string;
   body: string;
+  bodyMetadata: CommentBodyMetadata;
 }
 
 /**
@@ -17,13 +18,15 @@ interface OptimisticReply {
  */
 export function withOptimisticReply(
   prevData: Record<string, Entry> | undefined,
-  { username, reputation, parentAuthor, parentPermlink, body }: OptimisticReply
+  { username, reputation, parentAuthor, parentPermlink, body, bodyMetadata }: OptimisticReply
 ) {
   const tempPermlink = `re-${parentAuthor}-${Date.now()}`;
   const isParent = (post: Entry) => post.author === parentAuthor && post.permlink === parentPermlink;
   // A reply to the main post has no parent in discussionData
   const parentPost = prevData ? Object.values(prevData).find(isParent) : undefined;
   const now = new Date().toISOString();
+  // What the broadcast writes; Entry's JsonMetadata (a string `image`) doesn't describe it
+  const jsonMetadata: unknown = buildCommentJsonMetadata(bodyMetadata);
   const newComment = {
     active_votes: [],
     author: username,
@@ -40,7 +43,7 @@ export function withOptimisticReply(
     curator_payout_value: '0.000 HBD',
     depth: (parentPost?.depth ?? 0) + 1,
     is_paidout: false,
-    json_metadata: { images: [], author: username, image: '', app: PUBLISHING_APP },
+    json_metadata: jsonMetadata,
     max_accepted_payout: '1000000.000 HBD',
     net_rshares: 0,
     payout: 0,

@@ -1,3 +1,5 @@
+import { isJsonObject, parseJsonObject, type JsonObject } from './json-object';
+
 /** Profile fields written by the profile settings form; `social` holds sparse handles by platform key. */
 export interface ProfileMetadataUpdate {
   profile_image?: string;
@@ -29,22 +31,6 @@ const MANAGED_PROFILE_KEYS: ReadonlyArray<keyof ProfileMetadataUpdate> = [
   'social',
   'version'
 ];
-
-type JsonObject = Record<string, unknown>;
-
-function isJsonObject(value: unknown): value is JsonObject {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function parseJsonObject(raw: string | undefined): JsonObject {
-  if (!raw) return {};
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    return isJsonObject(parsed) ? parsed : {};
-  } catch {
-    return {};
-  }
-}
 
 /**
  * Returns the `posting_json_metadata` string to broadcast: `current` with `update`

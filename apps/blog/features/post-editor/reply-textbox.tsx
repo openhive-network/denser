@@ -230,6 +230,7 @@ export function ReplyTextbox({
           parentPermlink,
           permlink,
           body: text,
+          jsonMetadata: comment.json_metadata,
           discussionAuthor,
           discussionPermlink,
           observer
