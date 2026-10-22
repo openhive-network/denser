@@ -1,6 +1,8 @@
 import sanitize from 'sanitize-html';
-import { JsonMetadata } from '@hive/common-hiveio-packages/wax';
-import remarkableStripper from './remmarkable-stripper';
+import type { JsonMetadata } from '@hive/common-hiveio-packages/wax';
+import remarkableStripper from './remmarkable-stripper.ts';
+
+const MAX_SUMMARY_LENGTH = 200;
 
 function extractBodySummary(body: string, stripQuotes = false) {
   let desc = body;
@@ -17,8 +19,8 @@ function extractBodySummary(body: string, stripQuotes = false) {
   // eslint-disable-next-line prefer-destructuring
   desc = desc.trim().split('\n')[0];
 
-  if (desc.length > 200) {
-    desc = desc.substring(0, 200).trim();
+  if (desc.length > MAX_SUMMARY_LENGTH) {
+    desc = desc.substring(0, MAX_SUMMARY_LENGTH).trim();
 
     // Truncate, remove the last (likely partial) word (along with random punctuation), and add ellipses
     desc = desc
@@ -30,9 +32,15 @@ function extractBodySummary(body: string, stripQuotes = false) {
   return desc;
 }
 
+// Some clients write a whole markdown body into the description; a card must still show a short line.
+function isMalformedDescription(description: string) {
+  return description.includes('\n') || description.length > MAX_SUMMARY_LENGTH;
+}
+
 /**
  * The text a post card shows: the metadata description or summary, else the first line of the body
- * as plain text. Renders the body with Remarkable, so client code must load this module lazily.
+ * as plain text. A multi-line or over-long description is cleaned like a body, falling back to the
+ * body when nothing remains. Renders markdown with Remarkable, so client code must load this module lazily.
  */
 export function getPostSummary(jsonMetadata: JsonMetadata, body: string, stripQuotes = false) {
   const shortDescription = jsonMetadata?.description ? jsonMetadata?.description : jsonMetadata?.summary;
@@ -41,7 +49,11 @@ export function getPostSummary(jsonMetadata: JsonMetadata, body: string, stripQu
     return extractBodySummary(body, stripQuotes);
   }
 
-  return shortDescription;
+  if (!isMalformedDescription(shortDescription)) {
+    return shortDescription;
+  }
+
+  return extractBodySummary(shortDescription, stripQuotes) || extractBodySummary(body, stripQuotes);
 }
 
 const htmlDecode = (txt: string) =>
