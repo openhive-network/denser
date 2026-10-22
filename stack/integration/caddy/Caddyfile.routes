@@ -40,6 +40,19 @@ handle /status {
 	redir * /status/ 302
 }
 
+# A wallet.hive.blog link with only the host changed opens the same page under
+# /wallet: the wallet's top-level pages (apps/wallet/app) and the account tabs only
+# it has. /@user itself and the tabs both apps have (communities) stay the blog's.
+# The matcher compares the unescaped path, so /%7Ewitnesses and /%40user match too.
+@wallet {
+	path /market /proposals /recovery_step_1 /~witnesses
+	path /@*/author-rewards /@*/authorities /@*/curation-rewards /@*/delegations
+	path /@*/password /@*/permissions /@*/transfers /@*/wallet
+}
+handle @wallet {
+	redir * /wallet{uri} 302
+}
+
 # Any other path is the blog's: a hive.blog link with only the host changed opens
 # the same page under /blog. {uri} keeps the query string.
 handle / {
