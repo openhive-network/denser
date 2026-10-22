@@ -348,3 +348,22 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await expect(page.locator('html')).toHaveClass(/\blight\b/);
   });
 });
+
+// For a touch pointer Radix Select opens and selects on the `click` the browser derives from a tap,
+// which a cancelled `touchend` suppresses; mouse clicks and synthetic pointer events fire no touch events.
+test.describe('Wallet Radix Select on a touch screen', () => {
+  test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
+
+  test('WALLET-UI-07 — tapping a proposals status option applies it', async ({ page }) => {
+    await page.goto(`${WALLET_BASE_PATH}/proposals`);
+    await expect(page.getByTestId('proposal-title')).toContainText(STUB_PROPOSAL_SUBJECT);
+    const trigger = page.getByTestId('proposals-sort-filter-status');
+    const list = page.getByTestId('proposals-sort-filter-status-conntent');
+    await expect(trigger).toHaveText('Votable');
+
+    await openWith(() => trigger.tap(), list);
+    await page.getByRole('option', { name: 'Expired', exact: true }).tap();
+    await expect(list).toBeHidden();
+    await expect(trigger).toHaveText('Expired');
+  });
+});
