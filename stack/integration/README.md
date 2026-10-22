@@ -13,6 +13,11 @@ each a production (`output: 'standalone'`) build with that base path.
   `/blog/hive-163772/@user/permlink?x=1`. `/` goes to `/blog`. A post whose
   category is `blog` (`/blog/@user/permlink` on hive.blog) can't be told from the
   prefix and is left as it is: the blog gets it as its own `/@user/permlink`.
+  A wallet.hive.blog path goes to the same path and query under `/wallet` instead:
+  the wallet's top-level pages (`/proposals`, `/~witnesses`, `/market`, ...) and the
+  account tabs only the wallet has (`/@user/transfers`, `/@user/permissions`, ...).
+  When `apps/wallet/app` gains a page, add it to `@wallet` there.
+  `./test-routes.sh` loads `caddy/` into a throwaway caddy and checks these redirects.
 - **Host:** predicate-testing.syncad.com, `~/denser-integration/stack/integration`,
   behind `~/sites-router` (haproxy on 192.168.50.199 that routes by TLS SNI). The site's
   caddy listens on 127.0.0.4 and takes the client address from the router's PROXY
