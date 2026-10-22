@@ -732,6 +732,7 @@
     "convert_hive_links_tooltip": "Converte automaticamente i link incollati dai frontend dei blog Hive in percorsi relativi indipendenti dal frontend, così il tuo post funziona su qualsiasi app Hive",
     "optimize_images": "Ottimizza le immagini",
     "optimize_images_tooltip": "Ridimensiona e comprimi le immagini prima del caricamento per caricamenti più veloci e file più piccoli. Converte automaticamente i formati non supportati (HEIC/HEIF).",
+    "image_decode_failed": "Impossibile leggere questa immagine. Prova un altro file o disattiva l'ottimizzazione delle immagini.",
     "uploading_images": "Caricamento di {{count}} immagini...",
     "image_processing_failed": "non riuscito",
     "image_too_large_gif": "La GIF è troppo grande. La dimensione massima è 15MB.",

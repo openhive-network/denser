@@ -111,7 +111,7 @@
       "add_posting_key": "Dodaj klucz Posting",
       "switch_to_posting_key": "Przełącz na klucz Posting",
       "login_method": {
-        "hbauth": "Bezpieczne przechowywanie",
+        "hbauth": "Bezpieczny magazyn",
         "keychain": "Hive Keychain",
         "peakvault": "PeakVault",
         "metamask": "MetaMask",

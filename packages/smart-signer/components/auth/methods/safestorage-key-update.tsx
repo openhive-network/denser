@@ -351,7 +351,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
               )}
             />
 
-            <div className="flex justify-between">
+            <div className="flex select-none justify-between">
               <Button
                 type="button"
                 variant="outline"

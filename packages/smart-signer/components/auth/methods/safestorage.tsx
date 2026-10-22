@@ -549,7 +549,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               </div>
             )}
             {/* Show this for new user, otherwise show unlock then authorize */}
-            <div className="flex">
+            <div className="flex select-none">
               {userFound ? (
                 <>
                   <Button
@@ -630,7 +630,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
             <p className="mb-2 text-sm font-medium">{t('login_form.passkey_prompt.title')}</p>
             <p className="mb-3 text-xs text-muted-foreground">{t('login_form.passkey_prompt.description')}</p>
-            <div className="flex gap-2">
+            <div className="flex select-none gap-2">
               <Button
                 size="sm"
                 className="bg-blue-600 text-white hover:bg-blue-500"

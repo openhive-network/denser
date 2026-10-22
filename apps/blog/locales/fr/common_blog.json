@@ -732,6 +732,7 @@
     "convert_hive_links_tooltip": "Convertit automatiquement les liens collés provenant des interfaces de blog Hive en chemins relatifs indépendants de l'interface, afin que votre article fonctionne sur n'importe quelle application Hive",
     "optimize_images": "Optimiser les images",
     "optimize_images_tooltip": "Redimensionne et compresse les images avant l'envoi pour des envois plus rapides et des fichiers plus légers. Convertit automatiquement les formats non pris en charge (HEIC/HEIF).",
+    "image_decode_failed": "Impossible de lire cette image. Essayez un autre fichier ou désactivez l'optimisation des images.",
     "uploading_images": "Envoi de {{count}} images...",
     "image_processing_failed": "échec",
     "image_too_large_gif": "Le GIF est trop volumineux. La taille maximale est de 15 MB.",

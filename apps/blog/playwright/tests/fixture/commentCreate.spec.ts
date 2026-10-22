@@ -135,4 +135,36 @@ test.describe('Comment creation — fresh state (§5)', () => {
     // Not only its own label: a neighbouring label (Cancel) must not be selected either
     expect(await page.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('');
   });
+
+  test('CMT-04: a double- or triple-click between the Post and Cancel buttons selects no text', async ({ page }) => {
+    await gotoPostLoggedIn(page);
+    const editor = page.getByTestId('reply-editor');
+    await openReplyEditor(postReplyTrigger(page), editor);
+
+    const postButton = editor.getByRole('button', { name: 'Post', exact: true });
+    const cancelButton = editor.getByRole('button', { name: 'Cancel', exact: true });
+    await cancelButton.scrollIntoViewIfNeeded();
+    // The reply editor keeps growing for a moment after it opens: wait until the row stops moving.
+    let cancelBox = await cancelButton.boundingBox();
+    await expect
+      .poll(async () => {
+        const previous = cancelBox;
+        cancelBox = await cancelButton.boundingBox();
+        return JSON.stringify(previous) === JSON.stringify(cancelBox);
+      })
+      .toBe(true);
+    const postBox = await postButton.boundingBox();
+    expect(postBox).not.toBeNull();
+    expect(cancelBox).not.toBeNull();
+    if (!postBox || !cancelBox) return;
+    expect(cancelBox.x - (postBox.x + postBox.width), 'the buttons are apart').toBeGreaterThan(0);
+    const gapX = (postBox.x + postBox.width + cancelBox.x) / 2;
+    const gapY = cancelBox.y + cancelBox.height / 2;
+
+    const selectedText = () => page.evaluate(() => window.getSelection()?.toString() ?? '');
+    await page.mouse.dblclick(gapX, gapY);
+    expect(await selectedText()).toBe('');
+    await page.mouse.click(gapX, gapY, { clickCount: 3 });
+    expect(await selectedText()).toBe('');
+  });
 });
