@@ -12,6 +12,7 @@ import {
   openReplyEditor,
   postReplyTrigger,
   typeIntoReplyEditor,
+  waitForEditorMounted,
   submitReply,
   findCommentByIdent,
   findCommentCardByBody,
@@ -112,6 +113,7 @@ test.describe('Comment creation — fresh state (§5)', () => {
   test('CMT-03: a double-click on the disabled Post button selects no text', async ({ page }) => {
     await gotoPostLoggedIn(page);
     await openReplyEditor(postReplyTrigger(page), page.getByTestId('reply-editor'));
+    await waitForEditorMounted(page.getByTestId('reply-editor'));
 
     const postButton = page
       .getByTestId('reply-editor')
@@ -140,6 +142,7 @@ test.describe('Comment creation — fresh state (§5)', () => {
     await gotoPostLoggedIn(page);
     const editor = page.getByTestId('reply-editor');
     await openReplyEditor(postReplyTrigger(page), editor);
+    await waitForEditorMounted(editor);
 
     const postButton = editor.getByRole('button', { name: 'Post', exact: true });
     const cancelButton = editor.getByRole('button', { name: 'Cancel', exact: true });
