@@ -287,7 +287,7 @@ export function ReplyTextbox({
         {shadowReplyRecovery && (
           <div className="flex items-center justify-between rounded-md bg-amber-50 px-3 py-2 text-sm dark:bg-amber-900/20">
             <span className="text-foreground/80">{t('post_content.footer.comment.shadow_draft_found')}</span>
-            <div className="flex gap-2">
+            <div className="flex select-none gap-2">
               <Button
                 type="button"
                 variant="ghost"
@@ -349,7 +349,7 @@ export function ReplyTextbox({
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex select-none items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Button
               ref={btnRef}

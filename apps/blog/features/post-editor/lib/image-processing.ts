@@ -16,6 +16,29 @@ const DEFAULT_JPEG_QUALITY = 0.85;
 const DEFAULT_MAX_FILE_SIZE = 6_000_000; // 6MB
 const IMAGEHOSTER_MAX_SIZE = 15_000_000; // 15MB hard limit
 
+/** The browser could not decode the image's pixels (corrupt file or a format it doesn't support). */
+export class ImageDecodeError extends Error {
+  constructor(fileName: string, options?: ErrorOptions) {
+    super(`The browser could not decode image ${fileName}`, options);
+    this.name = 'ImageDecodeError';
+  }
+}
+
+/**
+ * createImageBitmap that reports an undecodable image as ImageDecodeError.
+ * Browsers reject with a DOMException named InvalidStateError for that case.
+ */
+async function decodeBitmap(source: Blob, fileName: string, options?: ImageBitmapOptions): Promise<ImageBitmap> {
+  try {
+    return await createImageBitmap(source, options);
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'InvalidStateError') {
+      throw new ImageDecodeError(fileName, { cause: error });
+    }
+    throw error;
+  }
+}
+
 /**
  * Detect image format from magic bytes (first 12 bytes of file).
  * More reliable than MIME type or file extension.
@@ -100,9 +123,10 @@ async function decodeHeic(blob: Blob): Promise<Blob> {
  */
 async function resizeImage(
   source: Blob,
+  fileName: string,
   maxDimension: number
 ): Promise<{ bitmap: ImageBitmap; width: number; height: number } | null> {
-  const bitmap = await createImageBitmap(source);
+  const bitmap = await decodeBitmap(source, fileName);
   const { width, height } = bitmap;
 
   if (width <= maxDimension && height <= maxDimension) {
@@ -115,7 +139,7 @@ async function resizeImage(
   const newHeight = Math.round(height * scale);
   bitmap.close();
 
-  const resized = await createImageBitmap(source, {
+  const resized = await decodeBitmap(source, fileName, {
     resizeWidth: newWidth,
     resizeHeight: newHeight,
     resizeQuality: 'high'
@@ -230,15 +254,27 @@ export async function processImageForUpload(
         ? 'image/webp'
         : 'image/jpeg';
 
+  const overweight = file.size > maxFileSize;
+  const wasConverted = format === 'heic' || format === 'heif';
+
   // 6. Check if we need to resize/encode
-  const bitmap = await createImageBitmap(sourceBlob);
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await decodeBitmap(sourceBlob, file.name);
+  } catch (error) {
+    // Without a decode only the dimension check is lost: upload the file as it is
+    // unless something else requires re-encoding it
+    if (error instanceof ImageDecodeError && !optimize && !wasConverted && !overweight) {
+      logger.warn('Cannot decode %s to check its dimensions, uploading it unprocessed: %o', file.name, error.cause);
+      return passthrough;
+    }
+    throw error;
+  }
   const origW = bitmap.width;
   const origH = bitmap.height;
   bitmap.close();
 
   const oversized = origW > maxDimension || origH > maxDimension;
-  const overweight = file.size > maxFileSize;
-  const wasConverted = format === 'heic' || format === 'heif';
 
   // Only process when there's a reason to:
   // - optimize mode is on (user wants all images compressed)
@@ -253,11 +289,11 @@ export async function processImageForUpload(
   // 7. Resize if needed
   let finalBitmap: ImageBitmap;
   if (oversized) {
-    const resizeResult = await resizeImage(sourceBlob, maxDimension);
+    const resizeResult = await resizeImage(sourceBlob, file.name, maxDimension);
     // resizeImage returns null if already within bounds, but we checked oversized above
     finalBitmap = resizeResult!.bitmap;
   } else {
-    finalBitmap = await createImageBitmap(sourceBlob);
+    finalBitmap = await decodeBitmap(sourceBlob, file.name);
   }
 
   // 8. Encode to output format

@@ -162,7 +162,7 @@
       "remove_account_failed": "Nie udało się usunąć {{username}}.",
       "logged_in_with": "Zalogowano przez {{method}}",
       "login_method": {
-        "hbauth": "Bezpieczne przechowywanie",
+        "hbauth": "Bezpieczny magazyn",
         "keychain": "Hive Keychain",
         "peakvault": "PeakVault",
         "metamask": "MetaMask",
@@ -734,6 +734,7 @@
     "convert_hive_links_tooltip": "Automatycznie konwertuje wklejone linki z frontendów blogów Hive na niezależne od frontendu ścieżki względne, dzięki czemu Twój post działa w każdej aplikacji Hive",
     "optimize_images": "Optymalizuj obrazy",
     "optimize_images_tooltip": "Zmienia rozmiar i kompresuje obrazy przed przesłaniem, co przyspiesza przesyłanie i zmniejsza rozmiar plików. Automatycznie konwertuje nieobsługiwane formaty (HEIC/HEIF).",
+    "image_decode_failed": "Nie udało się odczytać tego obrazu. Wybierz inny plik lub wyłącz optymalizację obrazów.",
     "uploading_images": "Przesyłanie obrazów ({{count}})...",
     "image_processing_failed": "niepowodzenie",
     "image_too_large_gif": "GIF jest za duży. Maksymalny rozmiar to 15MB.",

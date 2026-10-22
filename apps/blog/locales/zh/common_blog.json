@@ -728,6 +728,7 @@
     "convert_hive_links_tooltip": "自动将从 Hive 博客前端粘贴的链接转换为与前端无关的相对路径，使你的帖子可在任何 Hive 应用中正常显示",
     "optimize_images": "优化图片",
     "optimize_images_tooltip": "上传前调整图片尺寸并压缩，以加快上传速度并减小文件大小。会自动转换不受支持的格式（HEIC/HEIF）。",
+    "image_decode_failed": "无法读取此图片。请尝试其他文件或关闭图片优化。",
     "uploading_images": "正在上传 {{count}} 张图片...",
     "image_processing_failed": "失败",
     "image_too_large_gif": "GIF 文件过大。最大为 15MB。",

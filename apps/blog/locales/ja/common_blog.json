@@ -728,6 +728,7 @@
     "convert_hive_links_tooltip": "Hiveブログのフロントエンドから貼り付けたリンクを、フロントエンドに依存しない相対パスに自動変換し、どのHiveアプリでも投稿が正しく機能するようにします",
     "optimize_images": "画像を最適化",
     "optimize_images_tooltip": "アップロード前に画像をリサイズ・圧縮して、アップロードを高速化しファイルサイズを小さくします。非対応の形式（HEIC/HEIF）は自動的に変換されます。",
+    "image_decode_failed": "この画像を読み込めませんでした。別のファイルを試すか、画像の最適化をオフにしてください。",
     "uploading_images": "{{count}}枚の画像をアップロード中...",
     "image_processing_failed": "失敗",
     "image_too_large_gif": "GIFが大きすぎます。最大サイズは15MBです。",

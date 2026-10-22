@@ -728,6 +728,7 @@
     "convert_hive_links_tooltip": "Hive 블로그 프론트엔드에서 붙여넣은 링크를 프론트엔드에 의존하지 않는 상대 경로로 자동 변환하여, 게시물이 모든 Hive 앱에서 작동하도록 합니다",
     "optimize_images": "이미지 최적화",
     "optimize_images_tooltip": "업로드 전에 이미지 크기를 조정하고 압축하여 업로드 속도를 높이고 파일 크기를 줄입니다. 지원되지 않는 형식(HEIC/HEIF)은 자동으로 변환됩니다.",
+    "image_decode_failed": "이 이미지를 읽을 수 없습니다. 다른 파일을 사용하거나 이미지 최적화를 끄세요.",
     "uploading_images": "이미지 {{count}}개 업로드 중...",
     "image_processing_failed": "실패",
     "image_too_large_gif": "GIF가 너무 큽니다. 최대 크기는 15MB입니다.",
