@@ -1,14 +1,15 @@
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
-import { User } from '@smart-signer/types/common';
-import { IronSessionData } from '@smart-signer/types/common';
+import type { User, IronSessionData } from '@smart-signer/types/common';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { getLogger } from '@ui/lib/logging';
 import { oidc } from '@smart-signer/lib/oidc';
 import { logLogoutEvent, getClientIpFromApiRequest } from '@smart-signer/lib/event-logging';
 import { clearAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
+import { endAllChatSessions } from '@smart-signer/lib/auth/chat-session';
+import { reportChatRevocationFailure, revokeChatAuthToken } from '@smart-signer/lib/rocket-chat';
 
 const logger = getLogger('app');
 
@@ -42,6 +43,7 @@ export const logoutUser: NextApiHandler<User> = async (req, res) => {
       const uid = req.cookies['session_uid'] || 'n/a';
       logLogoutEvent(getClientIpFromApiRequest(req), username, loginType, uid);
 
+      endAllChatSessions(session, revokeChatAuthToken, reportChatRevocationFailure);
       logger.info('Logout: destroying app session for user: %s', username);
       session.destroy();
     }
