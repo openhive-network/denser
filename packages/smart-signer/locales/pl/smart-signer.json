@@ -179,7 +179,9 @@
     "wallet_not_found_title": "Nie znaleziono portfela",
     "wallet_not_found_description": "Na Twoim Dysku Google nie znaleziono portfela Hive. Najpierw utwórz portfel za pomocą Hive Bridge.",
     "key_not_found_title": "Nie znaleziono klucza",
-    "key_not_found_description": "Klucza {{keyType}} dla @{{username}} nie znaleziono w portfelu na Dysku Google. Dodaj ten klucz za pomocą Hive Bridge.",
+    "key_not_found_description": "Klucza {{keyType}} dla @{{username}} nie znaleziono w portfelu na Dysku Google. Dodaj ten klucz za pomocą Hive Bridge lub użyj innej metody logowania.",
+    "account_not_found_title": "Nie znaleziono kluczy",
+    "account_not_found_description": "Portfel na Dysku Google nie zawiera żadnych kluczy dla @{{username}}. Dodaj je za pomocą Hive Bridge lub użyj innej metody logowania.",
     "bridge_info": "Hive Bridge pozwala bezpiecznie przechowywać klucze Hive na Dysku Google.",
     "go_to_bridge": "Przejdź do Hive Bridge"
   }

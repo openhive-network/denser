@@ -179,7 +179,9 @@
     "wallet_not_found_title": "Portafoglio non trovato",
     "wallet_not_found_description": "Nessun portafoglio Hive trovato nel tuo Google Drive. Crea prima un portafoglio con Hive Bridge.",
     "key_not_found_title": "Chiave non trovata",
-    "key_not_found_description": "La chiave {{keyType}} di @{{username}} non è stata trovata nel tuo portafoglio Google Drive. Aggiungi questa chiave con Hive Bridge.",
+    "key_not_found_description": "La chiave {{keyType}} di @{{username}} non è stata trovata nel tuo portafoglio Google Drive. Aggiungi questa chiave con Hive Bridge o usa un altro metodo di accesso.",
+    "account_not_found_title": "Nessuna chiave trovata",
+    "account_not_found_description": "Il tuo portafoglio Google Drive non contiene chiavi per @{{username}}. Aggiungile con Hive Bridge o usa un altro metodo di accesso.",
     "bridge_info": "Hive Bridge ti consente di conservare in modo sicuro le tue chiavi Hive su Google Drive.",
     "go_to_bridge": "Vai a Hive Bridge"
   }

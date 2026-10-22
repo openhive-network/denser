@@ -179,7 +179,9 @@
     "wallet_not_found_title": "ウォレットが見つかりません",
     "wallet_not_found_description": "Google DriveにHiveウォレットが見つかりませんでした。まずHive Bridgeでウォレットを作成してください。",
     "key_not_found_title": "キーが見つかりません",
-    "key_not_found_description": "@{{username}}の{{keyType}}キーがGoogle Driveのウォレットに見つかりませんでした。Hive Bridgeでこのキーを追加してください。",
+    "key_not_found_description": "@{{username}}の{{keyType}}キーがGoogle Driveのウォレットに見つかりませんでした。Hive Bridgeでこのキーを追加するか、別のサインイン方法を使用してください。",
+    "account_not_found_title": "キーがありません",
+    "account_not_found_description": "Google Driveのウォレットに@{{username}}のキーがありません。Hive Bridgeでキーを追加するか、別のサインイン方法を使用してください。",
     "bridge_info": "Hive Bridgeを使うと、HiveのキーをGoogle Driveに安全に保管できます。",
     "go_to_bridge": "Hive Bridgeへ移動"
   }

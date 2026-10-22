@@ -179,7 +179,9 @@
     "wallet_not_found_title": "Portefeuille introuvable",
     "wallet_not_found_description": "Aucun portefeuille Hive n’a été trouvé dans votre Google Drive. Créez d’abord un portefeuille avec Hive Bridge.",
     "key_not_found_title": "Clé introuvable",
-    "key_not_found_description": "La clé {{keyType}} de @{{username}} est introuvable dans votre portefeuille Google Drive. Ajoutez cette clé avec Hive Bridge.",
+    "key_not_found_description": "La clé {{keyType}} de @{{username}} est introuvable dans votre portefeuille Google Drive. Ajoutez cette clé avec Hive Bridge ou utilisez une autre méthode de connexion.",
+    "account_not_found_title": "Aucune clé trouvée",
+    "account_not_found_description": "Votre portefeuille Google Drive ne contient aucune clé pour @{{username}}. Ajoutez-les avec Hive Bridge ou utilisez une autre méthode de connexion.",
     "bridge_info": "Hive Bridge vous permet de stocker vos clés Hive en toute sécurité dans Google Drive.",
     "go_to_bridge": "Aller sur Hive Bridge"
   }

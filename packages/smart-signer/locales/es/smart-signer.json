@@ -179,7 +179,9 @@
     "wallet_not_found_title": "Monedero no encontrado",
     "wallet_not_found_description": "No se encontró ningún monedero de Hive en tu Google Drive. Crea primero un monedero con Hive Bridge.",
     "key_not_found_title": "Clave no encontrada",
-    "key_not_found_description": "La clave {{keyType}} de @{{username}} no se encontró en tu monedero de Google Drive. Añade esta clave con Hive Bridge.",
+    "key_not_found_description": "La clave {{keyType}} de @{{username}} no se encontró en tu monedero de Google Drive. Añade esta clave con Hive Bridge o usa otro método de inicio de sesión.",
+    "account_not_found_title": "No se encontraron claves",
+    "account_not_found_description": "Tu monedero de Google Drive no tiene claves de @{{username}}. Añádelas con Hive Bridge o usa otro método de inicio de sesión.",
     "bridge_info": "Hive Bridge te permite guardar de forma segura tus claves de Hive en Google Drive.",
     "go_to_bridge": "Ir a Hive Bridge"
   }
