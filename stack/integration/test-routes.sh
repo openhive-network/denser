@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# Check the redirects of caddy/Caddyfile.routes: caddy/ is loaded, as a session stack
-# loads it (Caddyfile.session, plain HTTP), into a throwaway caddy container, and each
-# path below must redirect (302) to the Location given. Needs docker and the
+# Check the routes of caddy/Caddyfile.routes: caddy/ is loaded, as a session stack
+# loads it (Caddyfile.session, plain HTTP), into a throwaway caddy container. Each
+# path in expectations must redirect (302) to the Location given, and each in
+# robots_paths must answer 200, text/plain, with robots_body. Needs docker and the
 # caddy:2.10.0-alpine image compose.session.yml runs.
 #
 #   ./test-routes.sh
 #
-# Exit: 0 every path redirects as expected; 1 one did not, or caddy refused the config.
+# Exit: 0 every path answers as expected; 1 one did not, or caddy refused the config.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -30,6 +31,8 @@ expectations=(
     '/search?q=x /blog/search?q=x'
     '/ /blog'
 )
+robots_paths=(/robots.txt /blog/robots.txt /wallet/robots.txt)
+robots_body=$'User-agent: *\nDisallow: /'
 
 name="denser-test-routes-$$"
 trap 'docker rm -f "$name" >/dev/null 2>&1 || true' EXIT
@@ -57,6 +60,17 @@ for expectation in "${expectations[@]}"; do
         echo "ok   $path -> $want"
     else
         echo "FAIL $path: want 302 $want, got $got"
+        failed=1
+    fi
+done
+for path in "${robots_paths[@]}"; do
+    response=$(curl -s -w '\n%{http_code} %{content_type}' "http://127.0.0.1:$port$path")
+    status=${response##*$'\n'}
+    body=${response%$'\n'*}
+    if [ "$status" = "200 text/plain; charset=utf-8" ] && [ "$body" = "$robots_body" ]; then
+        echo "ok   $path -> robots.txt"
+    else
+        echo "FAIL $path: want 200 text/plain disallow-all, got $status: $body"
         failed=1
     fi
 done

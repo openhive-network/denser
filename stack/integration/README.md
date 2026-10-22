@@ -17,7 +17,9 @@ each a production (`output: 'standalone'`) build with that base path.
   the wallet's top-level pages (`/proposals`, `/~witnesses`, `/market`, ...) and the
   account tabs only the wallet has (`/@user/transfers`, `/@user/permissions`, ...).
   When `apps/wallet/app` gains a page, add it to `@wallet` there.
-  `./test-routes.sh` loads `caddy/` into a throwaway caddy and checks these redirects.
+  `/robots.txt` (and `/blog/robots.txt`, `/wallet/robots.txt`) is answered by caddy
+  itself, not redirected: a disallow-all, as new.hive.blog and wallet.hive.blog serve.
+  `./test-routes.sh` loads `caddy/` into a throwaway caddy and checks these routes.
 - **Host:** predicate-testing.syncad.com, `~/denser-integration/stack/integration`,
   behind `~/sites-router` (haproxy on 192.168.50.199 that routes by TLS SNI). The site's
   caddy listens on 127.0.0.4 and takes the client address from the router's PROXY
