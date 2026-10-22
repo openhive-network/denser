@@ -51,6 +51,19 @@ describe('getPostSummary', () => {
     assert.ok(summary.length <= 200, `length ${summary.length}`);
     assert.ok(summary.endsWith('…'));
     assert.doesNotMatch(summary, /\n|https?:|[#*!\[\]]/);
+    assert.doesNotMatch(summary, /\s{2}/);
+  });
+
+  it('joins the blocks of a markdown body with single spaces', () => {
+    const body = '# Snaps Feed\n\nImproved the **scroll-to-top** behaviour.\n\n- Reliable scrolling\n- Fewer jumps';
+    const summary = getPostSummary(metadata({}), body);
+
+    assert.equal(summary, 'Snaps Feed Improved the scroll-to-top behaviour. Reliable scrolling Fewer jumps');
+  });
+
+  it('returns a well-formed description with a double space unchanged', () => {
+    const description = 'Two  spaces stay as written';
+    assert.equal(getPostSummary(metadata({ description }), BODY), description);
   });
 
   it('truncates an over-long single-line description', () => {
