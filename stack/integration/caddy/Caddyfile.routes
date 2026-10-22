@@ -6,6 +6,18 @@
 import Caddyfile.static.{$DENSER_STATIC_FROM:next} blog
 import Caddyfile.static.{$DENSER_STATIC_FROM:next} wallet
 
+# A test deployment mirroring hive.blog's content: keep crawlers out, as
+# new.hive.blog and wallet.hive.blog do. Answered here, not by an app, and under
+# each app's prefix too in case a crawler asks there.
+@robots path /robots.txt /blog/robots.txt /wallet/robots.txt
+handle @robots {
+	header Content-Type "text/plain; charset=utf-8"
+	respond <<TXT
+		User-agent: *
+		Disallow: /
+		TXT 200
+}
+
 # lb_try_duration: while an app's server restarts (follow mode swapping in a new
 # build, or a container being recreated) a request waits for it rather than failing.
 handle /blog {
