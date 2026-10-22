@@ -119,6 +119,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/lib/canonical-url.test.ts \
     apps/blog/lib/in-app-redirect-url.test.ts \
     apps/blog/lib/post-summary.test.ts \
+    apps/blog/components/hooks/use-chat-token-request.test.ts \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
     apps/blog/features/post-editor/lib/scroll-sync-anchors.test.ts \
