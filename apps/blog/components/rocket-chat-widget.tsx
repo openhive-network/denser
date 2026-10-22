@@ -11,6 +11,7 @@ import { Button } from '@ui/components/button';
 import { inIframe } from '@smart-signer/lib/utils';
 import clsx from 'clsx';
 import { useGetChatAuthToken } from '@smart-signer/lib/auth/use-chat-token';
+import { useChatTokenRequest } from '@/blog/components/hooks/use-chat-token-request';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const logger = getLogger('app');
@@ -89,7 +90,6 @@ const RocketChatWidget = () => {
   const chatLabel = t('chat_widget.chat');
   const { user } = useUserClient();
   const { loginType, chatAuthToken, oauthConsent } = user;
-  const [init, setInit] = useState(true);
   const [badgeContent, setBadgeContent] = useState(0);
   // Enable button when we have chatAuthToken - user can open drawer to trigger iframe load
   const [disabled, setDisabled] = useState(!chatAuthToken);
@@ -160,9 +160,15 @@ const RocketChatWidget = () => {
     }
   };
 
-  const removeIframeListener = () => {
-    window.removeEventListener('message', onMessageReceivedFromIframe);
-  };
+  // The window listener is added once; it reads the handler of the latest render
+  const onMessageRef = useRef(onMessageReceivedFromIframe);
+  onMessageRef.current = onMessageReceivedFromIframe;
+
+  useEffect(() => {
+    const listener = (event: MessageEvent) => onMessageRef.current(event);
+    window.addEventListener('message', listener);
+    return () => window.removeEventListener('message', listener);
+  }, []);
 
   // Enable button when chatAuthToken becomes available
   useEffect(() => {
@@ -172,41 +178,38 @@ const RocketChatWidget = () => {
     }
   }, [chatAuthToken]);
 
+  // Signing out unmounts the iframe; the next one has to report it is ready again
   useEffect(() => {
-    const addIframeListener = () => {
-      window.addEventListener('message', onMessageReceivedFromIframe);
-    };
+    if (!user.isLoggedIn) {
+      setIsIframeLoaded(false);
+    }
+  }, [user.isLoggedIn]);
 
-    logger.info('RocketChatWidget useEffect: init=%s, chatAuthToken=%s, isIframeLoaded=%s, isLoggedIn=%s',
-      init, !!chatAuthToken, isIframeLoaded, user.isLoggedIn);
+  useEffect(() => {
+    logger.info('RocketChatWidget useEffect: chatAuthToken=%s, isIframeLoaded=%s, isLoggedIn=%s',
+      !!chatAuthToken, isIframeLoaded, user.isLoggedIn);
 
-    // `init` is true when component operates on initial, default
-    // values.
-    if (!init) {
-      if (chatAuthToken) {
-        logger.info('RocketChatWidget: have chatAuthToken, setting loggedIn=true');
-        setLoggedIn(true);
-        if (isIframeLoaded) {
-          logger.info('RocketChatWidget: iframe loaded, calling chatLogin');
-          chatLogin({ chatAuthToken, loginType }, iframeRef);
-        } else {
-          logger.info('RocketChatWidget: waiting for iframe to load');
-        }
+    if (chatAuthToken) {
+      logger.info('RocketChatWidget: have chatAuthToken, setting loggedIn=true');
+      setLoggedIn(true);
+      if (isIframeLoaded) {
+        logger.info('RocketChatWidget: iframe loaded, calling chatLogin');
+        chatLogin({ chatAuthToken, loginType }, iframeRef);
       } else {
-        logger.info('RocketChatWidget: no chatAuthToken');
-        if (isIframeLoaded && user.isLoggedIn) {
-          logger.info('RocketChatWidget: calling getChatAuthToken API');
-          getChatAuthToken.mutateAsync().catch(logger.error);
-          // chatLogout(iframeRef);
-        }
+        logger.info('RocketChatWidget: waiting for iframe to load');
       }
     } else {
-      addIframeListener();
-      setInit(false);
+      logger.info('RocketChatWidget: no chatAuthToken');
     }
+  }, [chatAuthToken, isIframeLoaded, loginType, user.isLoggedIn]);
 
-    return removeIframeListener;
-  }, [chatAuthToken, init, isIframeLoaded, loginType]);
+  useChatTokenRequest(
+    { isIframeLoaded, isLoggedIn: user.isLoggedIn, username: user.username, chatAuthToken },
+    () => {
+      logger.info('RocketChatWidget: calling getChatAuthToken API');
+      getChatAuthToken.mutateAsync().catch(logger.error);
+    }
+  );
 
   const onIframeLoad = () => {
     logger.info('Chat iframe has been loaded');
