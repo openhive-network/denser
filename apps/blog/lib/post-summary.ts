@@ -1,13 +1,17 @@
 import sanitize from 'sanitize-html';
 import type { JsonMetadata } from '@hive/common-hiveio-packages/wax';
-import remarkableStripper from './remmarkable-stripper.ts';
+import remarkableStripper, { BLOCK_BREAK } from './remmarkable-stripper.ts';
 
 const MAX_SUMMARY_LENGTH = 200;
+// Ends a block in a way that already separates it from the next: sentence punctuation (ASCII or
+// full-width) or a comma, optionally followed by closing quotes or brackets.
+const SENTENCE_END = /[.!?:;…,。！？：；，]['"’”)\]」』]*$/;
 
 function extractBodySummary(body: string, stripQuotes = false) {
   let desc = body;
 
   if (stripQuotes) desc = desc.replace(/^\s*>[\s\S]*?.*\s*/g, '');
+  desc = desc.replaceAll(BLOCK_BREAK, '');
   desc = remarkableStripper.render(desc); // render markdown to html
   desc = sanitize(desc, { allowedTags: [] }); // remove all html, leaving text
   desc = htmlDecode(desc);
@@ -15,8 +19,7 @@ function extractBodySummary(body: string, stripQuotes = false) {
   // Strip any raw URLs from preview text
   desc = desc.replace(/https?:\/\/[^\s]+/g, '');
 
-  // The stripper joins blocks with a space each, and the card keeps whitespace as written.
-  desc = desc.replace(/[^\S\n]+/g, ' ');
+  desc = joinBlocks(desc.split(BLOCK_BREAK).map((block) => block.replace(/[^\S\n]+/g, ' ').trim()));
 
   // Grab only the first line (not working as expected. does rendering/sanitizing strip newlines?)
   desc = desc.trim().split('\n')[0].trim();
@@ -32,6 +35,14 @@ function extractBodySummary(body: string, stripQuotes = false) {
   }
 
   return desc;
+}
+
+// Ends each block that isn't already a sentence with a period, so headings and list items don't run on.
+function joinBlocks(blocks: string[]) {
+  return blocks
+    .filter(Boolean)
+    .map((block, i, nonEmpty) => (i === nonEmpty.length - 1 || SENTENCE_END.test(block) ? block : `${block}.`))
+    .join(' ');
 }
 
 // Some clients write a whole markdown body into the description; a card must still show a short line.

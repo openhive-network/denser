@@ -6,9 +6,9 @@ import expectedCardSummaries from '../fixture/cardSummaries.expected.json';
 /**
  * Helpers for checking that post lists send card summaries, not post bodies, to the client.
  *
- * `cardSummaries.expected.json` holds, per page, the summary of every card in its recording as the
- * client computed it from the full body before summaries moved to the server. Regenerate it only
- * together with the recording it describes.
+ * `cardSummaries.expected.json` holds, per page, the summary of every card in its recording as
+ * `getPostSummary` computes it. Regenerate it from the recording, never by hand, when the recording
+ * or the summary rules change.
  */
 
 export type CardSummaryPage = keyof typeof expectedCardSummaries;
