@@ -54,11 +54,52 @@ describe('getPostSummary', () => {
     assert.doesNotMatch(summary, /\s{2}/);
   });
 
-  it('joins the blocks of a markdown body with single spaces', () => {
+  it('ends each block of a markdown body that is not already a sentence with a period', () => {
     const body = '# Snaps Feed\n\nImproved the **scroll-to-top** behaviour.\n\n- Reliable scrolling\n- Fewer jumps';
     const summary = getPostSummary(metadata({}), body);
 
-    assert.equal(summary, 'Snaps Feed Improved the scroll-to-top behaviour. Reliable scrolling Fewer jumps');
+    assert.equal(summary, 'Snaps Feed. Improved the scroll-to-top behaviour. Reliable scrolling. Fewer jumps');
+  });
+
+  it('separates consecutive headings and the paragraph after them', () => {
+    const body = '# HiveSuite Development\n\n## Snaps Feed\n\nImproved the experience';
+    const summary = getPostSummary(metadata({}), body);
+
+    assert.equal(summary, 'HiveSuite Development. Snaps Feed. Improved the experience');
+  });
+
+  it('adds no period after a heading that already ends in sentence punctuation', () => {
+    const body = '# What is new?\n\n## Setup:\n\n## Done;\n\nText';
+    assert.equal(getPostSummary(metadata({}), body), 'What is new? Setup: Done; Text');
+  });
+
+  it('adds no period after a block ending in a comma or full-width punctuation', () => {
+    const body = 'Hey All,\n\n终于发布了。\n\n可以参考：\n\nText';
+    assert.equal(getPostSummary(metadata({}), body), 'Hey All, 终于发布了。 可以参考： Text');
+  });
+
+  it('adds no separator around emphasis and links inside a paragraph', () => {
+    const body = 'Some *soft* and **bold** words with a [link](https://example.com/a) inside';
+    assert.equal(getPostSummary(metadata({}), body), 'Some soft and bold words with a link inside');
+  });
+
+  it('adds no separator for a block that is only a URL or an image', () => {
+    const body = 'https://www.youtube.com/watch?v=x\n\n![](https://images.hive.blog/a.png)\n\n# Title\n\nText';
+    assert.equal(getPostSummary(metadata({}), body), 'Title. Text');
+  });
+
+  it('separates the blocks of a malformed description', () => {
+    const description = '# Heading\n\nFirst paragraph';
+    assert.equal(getPostSummary(metadata({ description }), BODY), 'Heading. First paragraph');
+  });
+
+  it('counts the separators against the length limit', () => {
+    const body = Array.from({ length: 30 }, (_, i) => `## Heading ${i}`).join('\n\n');
+    const summary = getPostSummary(metadata({}), body);
+
+    assert.ok(summary.length <= 200, `length ${summary.length}`);
+    assert.ok(summary.startsWith('Heading 0. Heading 1. Heading 2.'), summary);
+    assert.ok(summary.endsWith('…'));
   });
 
   it('returns a well-formed description with a double space unchanged', () => {
