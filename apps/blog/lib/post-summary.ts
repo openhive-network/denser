@@ -15,9 +15,11 @@ function extractBodySummary(body: string, stripQuotes = false) {
   // Strip any raw URLs from preview text
   desc = desc.replace(/https?:\/\/[^\s]+/g, '');
 
+  // The stripper joins blocks with a space each, and the card keeps whitespace as written.
+  desc = desc.replace(/[^\S\n]+/g, ' ');
+
   // Grab only the first line (not working as expected. does rendering/sanitizing strip newlines?)
-  // eslint-disable-next-line prefer-destructuring
-  desc = desc.trim().split('\n')[0];
+  desc = desc.trim().split('\n')[0].trim();
 
   if (desc.length > MAX_SUMMARY_LENGTH) {
     desc = desc.substring(0, MAX_SUMMARY_LENGTH).trim();
