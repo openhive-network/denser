@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Preferences, Entry } from '@hive/common-hiveio-packages/wax';
+import type { CommentBodyMetadata } from '@transaction/lib/comment-metadata';
 import { getLogger } from '@ui/lib/logging';
 import { useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
@@ -34,8 +35,16 @@ type UpdateCommentParams = DiscussionParams & {
   parentPermlink: string;
   permlink: string;
   body: string;
+  /** The edited comment's json_metadata; keys denser doesn't write are kept */
+  jsonMetadata: unknown;
 };
 type DeleteCommentParams = DiscussionParams & { permlink: string };
+
+// The renderer is loaded on demand, as for post bodies, to keep it off the page's initial bundle
+async function extractBodyMetadata(body: string): Promise<CommentBodyMetadata> {
+  const { extractContentMetadata } = await import('@hive/renderer');
+  return extractContentMetadata(body);
+}
 
 /** Makes comment transaction; the reply shows, fully interactive, before the broadcast. */
 export function useCommentMutation() {
@@ -49,7 +58,8 @@ export function useCommentMutation() {
     optimistic: async (params: CommentParams, queryClient) => {
       const { parentAuthor, parentPermlink, body } = params;
       const snapshot = await snapshotDiscussion(queryClient, params, cleanupRef);
-      const reply = { username, reputation: params.reputation, parentAuthor, parentPermlink, body };
+      const bodyMetadata = await extractBodyMetadata(body);
+      const reply = { username, reputation: params.reputation, parentAuthor, parentPermlink, body, bodyMetadata };
       const { updatedData, tempPermlink } = withOptimisticReply(snapshot.prevData, reply);
       queryClient.setQueryData<Discussion>(snapshot.queryKey, updatedData);
       logger.info('Optimistic comment added: %o', { tempPermlink, queryKey: snapshot.queryKey });
@@ -57,8 +67,15 @@ export function useCommentMutation() {
       setStorageItem(shadowKey(params), { body, parentAuthor, parentPermlink }, StorageTTL.SHADOW_DRAFT);
       return snapshot;
     },
-    run: ({ parentAuthor, parentPermlink, body, preferences }: CommentParams) =>
-      transactionService.comment(parentAuthor, parentPermlink, body, preferences, BROADCAST_ONLY),
+    run: async ({ parentAuthor, parentPermlink, body, preferences }: CommentParams) =>
+      transactionService.comment(
+        parentAuthor,
+        parentPermlink,
+        body,
+        await extractBodyMetadata(body),
+        preferences,
+        BROADCAST_ONLY
+      ),
     onSuccess: (_data, params, queryClient) => {
       const { parentPermlink } = params;
       const isOwnReply = (e: Entry) => e.author === username && e.parent_permlink === parentPermlink;
@@ -104,8 +121,16 @@ export function useUpdateCommentMutation() {
       );
       return snapshot;
     },
-    run: ({ parentAuthor, parentPermlink, permlink, body }: UpdateCommentParams) =>
-      transactionService.updateComment(parentAuthor, parentPermlink, permlink, body, BROADCAST_ONLY),
+    run: async ({ parentAuthor, parentPermlink, permlink, body, jsonMetadata }: UpdateCommentParams) =>
+      transactionService.updateComment(
+        parentAuthor,
+        parentPermlink,
+        permlink,
+        body,
+        await extractBodyMetadata(body),
+        jsonMetadata,
+        BROADCAST_ONLY
+      ),
     onSuccess: (_data, params, queryClient) => {
       const { permlink, body } = params;
       cleanupRef.current = scheduleValidatedRefetch(

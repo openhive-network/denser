@@ -14,6 +14,8 @@ export {InstagramResizePlugin} from './renderers/default/plugins/InstagramResize
 export {SyntaxHighlightPlugin, containsHighlightableCode} from './renderers/default/plugins/SyntaxHighlightPlugin';
 export {getSyntaxHighlighter, loadSyntaxHighlighter, warmUpSyntaxHighlighter} from './renderers/default/plugins/syntax-highlight/SyntaxHighlighterLoader';
 export {TablePlugin} from './renderers/default/plugins/TablePlugin';
+export {extractContentMetadata} from './renderers/default/ContentMetadata';
+export type {ContentMetadata} from './renderers/default/ContentMetadata';
 export type {RendererPlugin} from './renderers/default/plugins/RendererPlugin';
 export type {PostContext} from './renderers/default/sanitization/TagTransformingSanitizer';
 

@@ -31,6 +31,7 @@ import { getPostCategory } from './lib/post-category';
 import { subscribeToSignerOptions } from './lib/signer-options';
 import { getFindAccounts } from './lib/hive-api';
 import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/profile-metadata';
+import { buildCommentJsonMetadata, type CommentBodyMetadata } from './lib/comment-metadata';
 import { resolveRequiredKeyType } from './lib/required-key-type';
 import { getOperationNames } from './lib/operation-names';
 
@@ -494,6 +495,7 @@ export class TransactionService {
     parentAuthor: string,
     parentPermlink: string,
     body: string,
+    bodyMetadata: CommentBodyMetadata,
     preferences: Preferences,
     transactionOptions: TransactionOptions = {}
   ) {
@@ -503,9 +505,7 @@ export class TransactionService {
       author: this.signerOptions.username,
       body,
       permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`,
-      jsonMetadata: {
-        app: PUBLISHING_APP
-      }
+      jsonMetadata: buildCommentJsonMetadata(bodyMetadata)
     };
 
     if (preferences.comment_rewards === '100%') {
@@ -530,6 +530,8 @@ export class TransactionService {
     parentPermlink: string,
     permlink: string,
     body: string,
+    bodyMetadata: CommentBodyMetadata,
+    currentJsonMetadata: unknown,
     transactionOptions: TransactionOptions = {}
   ) {
     const reply = new ReplyOperation({
@@ -537,9 +539,7 @@ export class TransactionService {
       parentPermlink,
       author: this.signerOptions.username,
       body,
-      jsonMetadata: {
-        app: PUBLISHING_APP
-      },
+      jsonMetadata: buildCommentJsonMetadata(bodyMetadata, currentJsonMetadata),
       permlink
     });
 
