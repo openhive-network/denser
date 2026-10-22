@@ -38,7 +38,7 @@ const SelectContent = React.forwardRef<
 >(({ className, children, position = 'popper', ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
-      ref={(ref) => ref?.addEventListener('touchend', (e) => e.preventDefault())}
+      ref={ref}
       className={cn(
         'relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-background text-popover-foreground shadow-md animate-in fade-in-80',
         position === 'popper' && 'translate-y-1',
@@ -119,7 +119,7 @@ const CustomSelectContent = React.forwardRef<
 >(({ className, children, position = 'popper', ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
-      ref={(ref) => ref?.addEventListener('touchend', (e) => e.preventDefault())}
+      ref={ref}
       className={cn(
         'relative z-50  overflow-hidden rounded-md border bg-background text-popover-foreground shadow-md animate-in fade-in-80',
         position === 'popper' && 'translate-y-1',
