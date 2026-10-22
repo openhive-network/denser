@@ -92,6 +92,16 @@ function findWalletResponseMessage(error: unknown): string | undefined {
   return message || undefined;
 }
 
+/**
+ * The error's message without the rest of it: a wallet's response or wax's error can carry the
+ * transaction the user signed, which the always-on error log must not print.
+ */
+export function summarizeErrorForLog(error: unknown): string {
+  if (error instanceof Error) return scrubSensitiveData(`${error.name}: ${error.message}`);
+  if (typeof error === 'string') return scrubSensitiveData(error);
+  return findWalletResponseMessage(error) ?? 'non-Error value';
+}
+
 function stringifyError(error: unknown): string {
   try {
     return JSON.stringify(error) ?? String(error);
@@ -112,13 +122,18 @@ function stringifyError(error: unknown): string {
  * `isKeychainMessageMissing` a Keychain error that came without the extension's answer
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
-  logger.error('in transformError: got error (will be swallowed): %o on method: %s', e, ctx?.method);
-
   let description = 'Error';
   let isWellKnownError = false;
   let isKeychainMessageMissing = false;
   const isUserCancel = isKeychainUserCancel(e);
   const walletResponseMessage = findWalletResponseMessage(e);
+
+  logger.error(
+    'in transformError: got error (will be swallowed) on method %s: %s',
+    ctx?.method,
+    summarizeErrorForLog(e)
+  );
+  logger.debug('in transformError: full error: %o', e);
 
   if (e instanceof Error) {
     e = `${e.name}: ${e.message}`;

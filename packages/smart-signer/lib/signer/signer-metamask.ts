@@ -33,7 +33,7 @@ export class SignerMetaMask extends Signer {
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
-    logger.info('in SignerMetaMask.signChallenge %o', { message, username, keyType });
+    logger.debug('in SignerMetaMask.signChallenge %o', { message, username, keyType });
     try {
       const provider = await MetaMaskProvider.for(
         0, // Explicitly always use first MetaMask account
@@ -47,7 +47,7 @@ export class SignerMetaMask extends Signer {
 
       const signature = await provider.encryptData(message, key);
 
-      logger.info('metamask', { signature });
+      logger.debug('metamask signature: %s', signature);
       return signature;
     } catch (error) {
       throw error;
@@ -69,7 +69,7 @@ export class SignerMetaMask extends Signer {
       await provider.signTransaction(authTx);
 
       await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.HF_26, this.keyType, 'MetaMask');
-      logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
+      logger.debug('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
       logger.error('SignerMetaMask.signTransaction error: %s', error instanceof Error ? error.message : String(error));

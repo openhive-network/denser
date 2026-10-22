@@ -475,7 +475,7 @@ export class SignerGoogleDrive extends Signer {
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
-    logger.info('in SignerGoogleDrive.signChallenge %o', { message, username, keyType });
+    logger.debug('in SignerGoogleDrive.signChallenge %o', { message, username, keyType });
     try {
       const provider = await this.getWalletOrSignInAgain(username, keyType);
 
@@ -496,7 +496,7 @@ export class SignerGoogleDrive extends Signer {
 
       const signature = await provider.encryptData(message, pk);
 
-      logger.info('google', { signature });
+      logger.debug('google signature: %s', signature);
       return signature;
     } catch (error) {
       throw error;
@@ -512,7 +512,7 @@ export class SignerGoogleDrive extends Signer {
       await provider.signTransaction(authTx);
 
       await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.HF_26, this.keyType, 'Google Drive');
-      logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
+      logger.debug('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
       logger.error('SignerGoogleDrive.signTransaction error: %s', error instanceof Error ? error.message : String(error));

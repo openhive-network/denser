@@ -16,7 +16,7 @@ const logger = getLogger('app');
  */
 export async function verifyLogin(data: PostLoginSchema, account?: AccountAuthorities): Promise<User> {
   const { username, keyType, loginType } = data;
-  logger.info('verifyLogin argument data: %o', data);
+  logger.debug('verifyLogin argument data: %o', data);
 
   try {
     // Loaded on sign-in only: it brings wax, which a signed-in user's page must not load

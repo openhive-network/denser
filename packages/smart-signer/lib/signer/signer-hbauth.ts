@@ -120,7 +120,7 @@ export class SignerHbauth extends Signer {
     requiredKeyType?: KeyAuthorityType
   ) {
     const { username, keyType } = this;
-    logger.info('signDigest args: %o', { digest, username, keyType });
+    logger.debug('signDigest args: %o', { digest, username, keyType });
 
     if (!VALID_KEY_TYPES.includes(keyType)) {
       throw new Error(`Unsupported keyType: ${keyType}`);
@@ -186,7 +186,7 @@ export class SignerHbauth extends Signer {
         }
       }
 
-      logger.info('authStatus', { authStatus });
+      logger.debug('authStatus: %o', authStatus);
       if (!authStatus.ok) {
         throw new Error(`Unlocking key failed`);
       }
@@ -234,7 +234,7 @@ export class SignerHbauth extends Signer {
       return signature;
     } else {
       const signature = await authClient.sign(username, digest, keyType);
-      logger.info('hbauth: %o', { digest, signature });
+      logger.debug('hbauth: %o', { digest, signature });
       return signature;
     }
   }
@@ -246,7 +246,7 @@ export class SignerHbauth extends Signer {
     requiredKeyType?: KeyAuthorityType
   ): Promise<boolean> {
     const auths = await authClient.getRegisteredUsers();
-    logger.info('auths in safe storage %o', auths);
+    logger.debug('auths in safe storage %o', auths);
     const auth = await authClient.getRegisteredUserByUsername(username);
     const settings = await authClient.getUserSettings(username);
 
@@ -254,7 +254,7 @@ export class SignerHbauth extends Signer {
     this.authorityUsername = settings?.authorizedAccounts?.[keyType as KeyAuthorityType];
 
     if (auth) {
-      logger.info('Found auth for user %s: %o', username, auth);
+      logger.debug('Found auth for user %s: %o', username, auth);
       if (auth.unlocked) {
         if (auth.loggedInKeyType === keyType) {
           logger.info('User %s is authorized and we are ready to proceed', username);
