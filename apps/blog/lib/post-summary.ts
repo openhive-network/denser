@@ -37,13 +37,18 @@ function isMalformedDescription(description: string) {
   return description.includes('\n') || description.length > MAX_SUMMARY_LENGTH;
 }
 
+function nonEmptyString(value: unknown): string | undefined {
+  return typeof value === 'string' && value ? value : undefined;
+}
+
 /**
- * The text a post card shows: the metadata description or summary, else the first line of the body
- * as plain text. A multi-line or over-long description is cleaned like a body, falling back to the
- * body when nothing remains. Renders markdown with Remarkable, so client code must load this module lazily.
+ * The text a post card shows: the metadata description or summary, whichever is first a non-empty
+ * string, else the first line of the body as plain text. A multi-line or over-long description is
+ * cleaned like a body, falling back to the body when nothing remains. Renders markdown with Remarkable, so client code must load this module lazily.
  */
 export function getPostSummary(jsonMetadata: JsonMetadata, body: string, stripQuotes = false) {
-  const shortDescription = jsonMetadata?.description ? jsonMetadata?.description : jsonMetadata?.summary;
+  // json_metadata is client-written JSON, so the declared string types are not guaranteed at runtime.
+  const shortDescription = nonEmptyString(jsonMetadata?.description) ?? nonEmptyString(jsonMetadata?.summary);
 
   if (!shortDescription) {
     return extractBodySummary(body, stripQuotes);

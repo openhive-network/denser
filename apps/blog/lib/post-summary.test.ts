@@ -11,6 +11,9 @@ const metadata = (fields: Partial<JsonMetadata>): JsonMetadata => ({
   ...fields
 });
 
+// Parsed like real client-written json_metadata, so fields may hold any JSON type.
+const parsedMetadata = (json: string): JsonMetadata => ({ ...metadata({}), ...JSON.parse(json) });
+
 const BODY = 'First paragraph of the body.';
 const BODY_SUMMARY = 'First paragraph of the body.';
 
@@ -67,5 +70,26 @@ describe('getPostSummary', () => {
 
   it('strips leading quotes from a malformed description when asked', () => {
     assert.equal(getPostSummary(metadata({ description: '> quoted line\n\nOwn words' }), BODY, true), 'Own words');
+  });
+
+  it('ignores a numeric description and uses the body', () => {
+    assert.equal(getPostSummary(parsedMetadata('{"description": 42}'), BODY), BODY_SUMMARY);
+  });
+
+  it('ignores an object description and uses the body', () => {
+    assert.equal(getPostSummary(parsedMetadata('{"description": {"text": "x"}}'), BODY), BODY_SUMMARY);
+  });
+
+  it('ignores an array description and uses the body', () => {
+    assert.equal(getPostSummary(parsedMetadata('{"description": ["a\\nb"]}'), BODY), BODY_SUMMARY);
+  });
+
+  it('uses a string summary when the description is not a string', () => {
+    const json = '{"description": 7, "summary": "A_short summary"}';
+    assert.equal(getPostSummary(parsedMetadata(json), BODY), 'A_short summary');
+  });
+
+  it('ignores a non-string summary and uses the body', () => {
+    assert.equal(getPostSummary(parsedMetadata('{"summary": {"a": 1}}'), BODY), BODY_SUMMARY);
   });
 });
