@@ -1,6 +1,6 @@
 'use client';
 
-import { transformError } from '@hive/transaction/lib/transform-error';
+import { summarizeErrorForLog, transformError } from '@hive/transaction/lib/transform-error';
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
@@ -112,7 +112,8 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   // A broadcast signed with too weak a key: say which key it needs, keep the node's answer in the log only
   const missingAuthority = findMissingAuthority(error);
   if (missingAuthority) {
-    logger.error(error, 'Broadcast in %s lacks %s authority', ctx?.method, missingAuthority);
+    logger.error('Broadcast in %s lacks %s authority: %s', ctx?.method, missingAuthority, summarizeErrorForLog(error));
+    logger.debug(error, 'Broadcast in %s lacks %s authority', ctx?.method, missingAuthority);
     toast({
       description: <MissingAuthorityMessage role={missingAuthority} />,
       variant: 'destructive',
@@ -124,7 +125,8 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   // The account is short of Resource Credits: say so with the node's amounts, keep its answer in the log only
   const notEnoughRc = findNotEnoughRc(error);
   if (notEnoughRc) {
-    logger.error(error, 'Broadcast in %s rejected for lack of RC', ctx?.method);
+    logger.error('Broadcast in %s rejected for lack of RC: %s', ctx?.method, summarizeErrorForLog(error));
+    logger.debug(error, 'Broadcast in %s rejected for lack of RC', ctx?.method);
     toast({
       description: <NotEnoughRcMessage {...notEnoughRc} />,
       variant: 'destructive',

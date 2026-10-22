@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { transformError } from './transform-error';
+import { summarizeErrorForLog, transformError } from './transform-error';
 
 class WaxKeychainProviderError extends Error {
   name = 'WaxKeychainProviderError';
@@ -110,5 +110,32 @@ describe('transformError', () => {
     expect(errorTitle).to.equal('Error');
     expect(isWellKnownError).to.equal(false);
     expect(isKeychainMessageMissing).to.equal(false);
+  });
+});
+
+describe('summarizeErrorForLog', () => {
+  it("keeps an Error's name and message but not its cause", () => {
+    const error = new Error('Missing Posting Authority alice', {
+      cause: { request: { trx: { signatures: ['1f00deadbeef'] } } }
+    });
+    error.name = 'WaxChainApiError';
+
+    expect(summarizeErrorForLog(error)).to.equal('WaxChainApiError: Missing Posting Authority alice');
+  });
+
+  it("logs only a wallet response's message, not the request it answers", () => {
+    const response = { success: false, message: 'Request was canceled by the user.', data: { operations: [['vote', {}]] } };
+
+    expect(summarizeErrorForLog(response)).to.equal('Request was canceled by the user.');
+  });
+
+  it('logs no field of an unknown object', () => {
+    expect(summarizeErrorForLog({ trx: { signatures: ['1f00deadbeef'] } })).to.equal('non-Error value');
+  });
+
+  it('redacts a WIF key in the message', () => {
+    const wif = '5JdeC9P7Pbd1uGdFVEsJ41EkEnADbbHGq6p1BwFxm6txNBsQnsw';
+
+    expect(summarizeErrorForLog(new Error(`Invalid key ${wif}`))).to.equal('Error: Invalid key [REDACTED]');
   });
 });

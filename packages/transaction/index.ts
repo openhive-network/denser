@@ -32,6 +32,7 @@ import { subscribeToSignerOptions } from './lib/signer-options';
 import { getFindAccounts } from './lib/hive-api';
 import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/profile-metadata';
 import { resolveRequiredKeyType } from './lib/required-key-type';
+import { getOperationNames } from './lib/operation-names';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
 export type { ProfileMetadataUpdate } from './lib/profile-metadata';
@@ -178,7 +179,8 @@ export class TransactionService {
   async broadcastTransaction(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
     // Do broadcast
     const transactionId = txBuilder.id;
-    logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
+    logger.info('Broadcasting transaction id: %s', transactionId);
+    logger.debug('Transaction %s body: %o', transactionId, txBuilder.toApi());
     await (
       await getChain()
     ).api.network_broadcast_api.broadcast_transaction({ max_block_age: -1, trx: txBuilder.toApiJson() });
@@ -224,14 +226,21 @@ export class TransactionService {
 
       // Do broadcast
       const transactionId = txBuilder.id;
-      logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
+      logger.info('Broadcasting transaction id: %s', transactionId);
+      logger.debug('Transaction %s body: %o', transactionId, txBuilder.toApi());
 
       // Broadcast and wait for block inclusion (irreversible with OBI)
       await this.bot.broadcast(txBuilder, { verifySignatures: true, expireInMs: 10_000 });
 
       return { transactionId };
     } catch (error) {
-      logger.error('Got error, logging and rethrowing it: %o', error);
+      logger.error(
+        'Broadcasting %s of %s failed: %s',
+        getOperationNames(txBuilder.transaction.operations).join(', '),
+        this.signerOptions.username,
+        error instanceof Error ? error.message : String(error)
+      );
+      logger.debug('Broadcast error: %o', error);
       throw error;
     } finally {
       if (--this.observedTransactionsCounter === 0) {

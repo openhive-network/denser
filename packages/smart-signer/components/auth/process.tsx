@@ -32,7 +32,7 @@ export const useProcessAuth = (authenticateOnBackend: boolean) => {
   }, []);
 
   const signAuth = async (data: LoginFormSchema): Promise<void> => {
-    logger.info('onSubmit form data', data);
+    logger.debug('onSubmit form data: %o', data);
     const { loginType, username, keyType } = data;
     const signatures: Signatures = { posting: '', active: '' };
     let hivesignerToken = '';
@@ -68,11 +68,11 @@ export const useProcessAuth = (authenticateOnBackend: boolean) => {
         transaction: tx
       });
 
-      logger.info('signature: %s', signature);
+      logger.debug('signature: %s', signature);
       txBuilder.addSignature(signature);
       signatures[keyType] = signature;
 
-      logger.info('transaction: %o', {
+      logger.debug('transaction: %o', {
         pack,
         toApi: txBuilder.toApi(),
         toApiParsed: JSON.parse(txBuilder.toApi())

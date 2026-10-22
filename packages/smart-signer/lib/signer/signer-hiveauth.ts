@@ -54,7 +54,7 @@ export class SignerHiveauth extends StorageMixin(Signer) {
 
   async signChallenge({ message, translateFn = (v) => v }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
-    logger.info('in SignerHiveauth.signChallenge %o', { message, username, keyType });
+    logger.debug('in SignerHiveauth.signChallenge %o', { message, username, keyType });
     try {
       this.setHiveAuthData();
       const authResponse: any = await new Promise((resolve) => {
@@ -71,7 +71,7 @@ export class SignerHiveauth extends StorageMixin(Signer) {
       if (authResponse.success && authResponse.hiveAuthData) {
         const { token, expire, key, challengeHex: signature } = authResponse.hiveAuthData;
         this.storage.setItem(hiveAuthCredentialKey(username).key, JSON.stringify({ username, token, expire, key }));
-        logger.info('hiveauth', { signature });
+        logger.debug('hiveauth signature: %s', signature);
         return signature as string;
       } else {
         throw new Error('Hiveauth login failed');

@@ -32,13 +32,13 @@ export class SignerPeakvault extends Signer {
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
-    logger.info('in SignerPeakvault.signChallenge %o', { message, username, keyType });
+    logger.debug('in SignerPeakvault.signChallenge %o', { message, username, keyType });
     try {
       const provider = PeakVaultProvider.for(this.username, keyType);
 
       const signature = provider.encryptData(message, username);
 
-      logger.info('peakvault', { signature });
+      logger.debug('peakvault signature: %s', signature);
       return signature;
     } catch (error) {
       throw error;
@@ -56,7 +56,7 @@ export class SignerPeakvault extends Signer {
       await provider.signTransaction(authTx);
 
       await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.LEGACY, this.keyType, 'Peakvault');
-      logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
+      logger.debug('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
       logger.error('SignerPeakvault.signTransaction error: %s', error instanceof Error ? error.message : String(error));

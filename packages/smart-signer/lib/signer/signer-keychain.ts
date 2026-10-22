@@ -44,13 +44,13 @@ export class SignerKeychain extends Signer {
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
-    logger.info('in SignerKeychain.signChallenge %o', { message, username, keyType });
+    logger.debug('in SignerKeychain.signChallenge %o', { message, username, keyType });
     try {
       const provider = KeychainProvider.for(this.username, keyType);
 
       const signature = provider.encryptData(message, username);
 
-      logger.info('keychain', { signature });
+      logger.debug('keychain signature: %s', signature);
       return signature;
     } catch (error) {
       throw error;
@@ -68,7 +68,7 @@ export class SignerKeychain extends Signer {
       await provider.signTransaction(authTx);
 
       await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.LEGACY, this.keyType, 'Keychain');
-      logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
+      logger.debug('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
       logger.error('SignerKeychain.signTransaction error: %s', error instanceof Error ? error.message : String(error));
