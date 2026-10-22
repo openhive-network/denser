@@ -146,6 +146,11 @@
   padding: 0;
 }
 
+/* Columns stay in source order in the DOM; `order` places them as hive.blog's floats do. */
+.pull-columns > .pull-right {
+  order: 1;
+}
+
 @media (max-width: 640px) {
   .pull-columns {
     flex-direction: column;
