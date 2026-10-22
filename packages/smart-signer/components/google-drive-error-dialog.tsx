@@ -11,7 +11,7 @@ import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 const HIVE_BRIDGE_URL = 'https://auth.openhive.network';
 
 export interface GoogleDriveErrorDialogProps {
-  errorType: 'wallet_not_found' | 'key_not_found';
+  errorType: 'wallet_not_found' | 'key_not_found' | 'account_not_found';
   username?: string;
   keyType?: string;
 }

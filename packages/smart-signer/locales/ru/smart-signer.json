@@ -179,7 +179,9 @@
     "wallet_not_found_title": "Кошелёк не найден",
     "wallet_not_found_description": "В вашем Google Диске не найден кошелёк Hive. Сначала создайте кошелёк с помощью Hive Bridge.",
     "key_not_found_title": "Ключ не найден",
-    "key_not_found_description": "Ключ {{keyType}} для @{{username}} не найден в кошельке на Google Диске. Добавьте этот ключ с помощью Hive Bridge.",
+    "key_not_found_description": "Ключ {{keyType}} для @{{username}} не найден в кошельке на Google Диске. Добавьте этот ключ с помощью Hive Bridge или используйте другой способ входа.",
+    "account_not_found_title": "Ключи не найдены",
+    "account_not_found_description": "В кошельке на Google Диске нет ключей для @{{username}}. Добавьте их с помощью Hive Bridge или используйте другой способ входа.",
     "bridge_info": "Hive Bridge позволяет безопасно хранить ключи Hive в Google Диске.",
     "go_to_bridge": "Перейти в Hive Bridge"
   }

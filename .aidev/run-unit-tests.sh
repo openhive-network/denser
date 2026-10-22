@@ -95,7 +95,8 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/auth/login-authority.test.ts \
     packages/smart-signer/lib/auth/sign-in-lock.test.ts \
     packages/smart-signer/lib/fetch-json.test.ts \
-    packages/smart-signer/lib/signer/unlock-hint.test.ts < /dev/null || status=1
+    packages/smart-signer/lib/signer/unlock-hint.test.ts \
+    packages/smart-signer/lib/signer/google-drive-missing-key.test.ts < /dev/null || status=1
 echo "== node --test packages/common-hiveio-packages" >&2
 junit="$PWD/test-results/unit/common-hiveio-packages.xml"
 run_with_junit_fallback "$junit" common-hiveio-packages node --test \

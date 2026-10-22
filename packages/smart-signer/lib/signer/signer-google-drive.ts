@@ -11,6 +11,7 @@ import { createExternalWallet, IExternalWallet, IExternalWalletContent } from '@
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import type { GoogleDriveErrorDialogProps } from '@smart-signer/components/google-drive-error-dialog';
+import { missingKeyDialogProps } from '@smart-signer/lib/signer/google-drive-missing-key';
 import {
   GOOGLE_OAUTH_CODE_KEY,
   GOOGLE_OAUTH_ERROR_KEY,
@@ -406,21 +407,22 @@ export class SignerGoogleDrive extends Signer {
         this.rawWallet = wallet;
 
         // Load the wallet for the specified key type
-        const provider = await wallet.loadForHiveKey(username, keyType);
+        let provider: IExternalWalletContent;
+        try {
+          provider = await wallet.loadForHiveKey(username, keyType);
+        } catch (loadError) {
+          const dialogProps = missingKeyDialogProps(loadError, username, keyType);
+          if (!dialogProps) throw loadError;
+          logger.error('Google Drive wallet lacks a key: %s', loadError instanceof Error ? loadError.message : String(loadError));
+          // The password decrypted the wallet, so it is kept: adding the key in Hive Bridge needs no new one
+          if (usedPassword) this.cacheEncryptionKeyWif(wallet);
+          throw await waitForGoogleDriveErrorDialog(dialogProps);
+        }
 
         logger.info('Obtained Google Drive wallet for user %s with key type %s', username, keyType);
 
         // If we used a password (not cached WIF), extract and cache the WIF now
-        if (usedPassword) {
-          try {
-            const wif = wallet.getEncryptionKeyWif();
-            setStoredEncryptionKeyWif(this.username, wif);
-            logger.info('Cached encryption key WIF for Google Drive wallet');
-          } catch (wifError) {
-            logger.error('Failed to extract/cache encryption key WIF: %s', wifError instanceof Error ? wifError.message : String(wifError));
-            // Non-fatal: wallet is already loaded, just won't have cached WIF next time
-          }
-        }
+        if (usedPassword) this.cacheEncryptionKeyWif(wallet);
 
         this.currentKeyType = keyType;
 
@@ -433,7 +435,7 @@ export class SignerGoogleDrive extends Signer {
       } catch (error) {
         // If we used cached WIF and it failed, it might be from a different Google account
         // Clear WIF and retry with password prompt
-        if (usedCachedWif && !usedPassword) {
+        if (usedCachedWif && !usedPassword && !(error instanceof GoogleDriveSignInCancelledError)) {
           logger.info('Wallet load failed with cached WIF, clearing and retrying with password prompt');
           clearStoredEncryptionKeyWif(this.username);
           this.passwordPromise = undefined;
@@ -455,7 +457,24 @@ export class SignerGoogleDrive extends Signer {
       }
     });
 
-    return this.walletInstance;
+    // A failed load is not kept, so the next operation tries again (e.g. after adding the key in Hive Bridge)
+    const walletInstance = this.walletInstance;
+    walletInstance.catch(() => {
+      if (this.walletInstance === walletInstance) this.walletInstance = undefined;
+    });
+
+    return walletInstance;
+  }
+
+  private cacheEncryptionKeyWif(wallet: IExternalWallet): void {
+    try {
+      const wif = wallet.getEncryptionKeyWif();
+      setStoredEncryptionKeyWif(this.username, wif);
+      logger.info('Cached encryption key WIF for Google Drive wallet');
+    } catch (wifError) {
+      logger.error('Failed to extract/cache encryption key WIF: %s', wifError instanceof Error ? wifError.message : String(wifError));
+      // Non-fatal: wallet is already loaded, just won't have cached WIF next time
+    }
   }
 
   /**

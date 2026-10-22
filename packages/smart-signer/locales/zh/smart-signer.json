@@ -179,7 +179,9 @@
     "wallet_not_found_title": "未找到钱包",
     "wallet_not_found_description": "在您的 Google 云端硬盘中未找到 Hive 钱包。请先使用 Hive Bridge 创建钱包。",
     "key_not_found_title": "未找到密钥",
-    "key_not_found_description": "在您的 Google 云端硬盘钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥。",
+    "key_not_found_description": "在您的 Google 云端硬盘钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥，或使用其他登录方式。",
+    "account_not_found_title": "未找到任何密钥",
+    "account_not_found_description": "您的 Google 云端硬盘钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。",
     "bridge_info": "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google 云端硬盘中。",
     "go_to_bridge": "前往 Hive Bridge"
   }
