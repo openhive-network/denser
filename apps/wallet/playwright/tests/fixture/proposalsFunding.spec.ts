@@ -9,7 +9,7 @@ import { WCAG_AA_TEXT_CONTRAST, textContrast } from '../support/contrast';
 /**
  * The proposals page's DHF information: the fund's budget, the line between the proposals its next
  * round of payouts funds and the rest, each proposal's progress, the voters button, the status tabs
- * (a select on phones) and the search, and the contrast of its text in dark mode. The stub node
+ * (a select on phones) and the search, and the contrast of its text in dark and light mode. The stub node
  * (support/proposalsApiStub.ts) funds #11, the stabilizer's #12 and the return proposal #0.
  */
 
@@ -269,6 +269,16 @@ const lowContrastTexts = async (page: Page, root: Locator = page.getByTestId('pr
     .filter(({ contrast }) => contrast < WCAG_AA_TEXT_CONTRAST)
     .map(({ where, text, color, contrast }) => `${where} "${text}" ${color}: ${contrast.toFixed(2)}`);
 
+/** Checks the page's text contrast in the list's own order, then in another order, where the funding badges show. */
+const expectReadableTexts = async (page: Page, proposalsPage: ProposalsPage) => {
+  expect(await lowContrastTexts(page)).toEqual([]);
+
+  await proposalsPage.proposalsFilterOrderBy.click();
+  await page.getByRole('option', { name: 'Creator', exact: true }).click();
+  await expect(proposalsPage.proposalFundingBadge.first()).toBeVisible();
+  expect(await lowContrastTexts(page)).toEqual([]);
+};
+
 test.describe('Proposals page in dark mode', () => {
   test.use({ colorScheme: 'dark' });
 
@@ -278,13 +288,21 @@ test.describe('Proposals page in dark mode', () => {
     const proposalsPage = await openProposals(page);
     await expect(page.locator('html')).toHaveClass(/\bdark\b/);
 
-    expect(await lowContrastTexts(page)).toEqual([]);
+    await expectReadableTexts(page, proposalsPage);
+  });
+});
 
-    // The funding badges show in other orders.
-    await proposalsPage.proposalsFilterOrderBy.click();
-    await page.getByRole('option', { name: 'Creator', exact: true }).click();
-    await expect(proposalsPage.proposalFundingBadge.first()).toBeVisible();
-    expect(await lowContrastTexts(page)).toEqual([]);
+test.describe('Proposals page in light mode', () => {
+  test.use({ colorScheme: 'light' });
+
+  test('WALLET-PROPOSALS-DHF-11 — every text of the cards, the filter bar and the summary reaches 4.5:1', async ({
+    page
+  }) => {
+    const proposalsPage = await openProposals(page);
+    await expect(page.locator('html')).not.toHaveClass(/\bdark\b/);
+    await expect(proposalsPage.proposalCard(burn).getByText('burn', { exact: true })).toBeVisible();
+
+    await expectReadableTexts(page, proposalsPage);
   });
 });
 

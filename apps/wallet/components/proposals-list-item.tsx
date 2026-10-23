@@ -120,7 +120,7 @@ export function ProposalListItem({
             <TooltipTrigger asChild>
               <Link href={`${env('BLOG_DOMAIN')}/${postPath}`} target="_blank" rel="noopener noreferrer">
                 <span
-                  className="text-red-500 hover:text-red-300 dark:text-red-400 dark:hover:text-red-300 md:text-lg"
+                  className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 md:text-lg"
                   data-testid="proposal-title"
                 >
                   {proposalData.subject}
@@ -151,7 +151,7 @@ export function ProposalListItem({
           <div className="whitespace-nowrap text-slate-500 dark:text-slate-400" data-testid="proposal-amount">
             <span
               title={numberWithCommas(totalHBD.toFixed(2)) + ' HBD'}
-              className="font-semibold text-red-500 dark:text-red-200"
+              className="font-semibold text-red-600 dark:text-red-200"
             >
               {getRoundedAbbreveration(totalHBD)} {' HBD'}
             </span>{' '}
@@ -218,7 +218,7 @@ export function ProposalListItem({
             rel="noopener noreferrer"
           >
             <span
-              className="text-red-500 dark:text-red-400 dark:hover:text-red-300"
+              className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
               data-testid="proposal-creator"
             >
               {proposalData.creator}
@@ -233,7 +233,7 @@ export function ProposalListItem({
                 rel="noopener noreferrer"
               >
                 <span
-                  className="text-red-500 dark:text-red-400 dark:hover:text-red-300"
+                  className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                   data-testid="proposal-receiver"
                 >
                   {proposalData.receiver}
