@@ -136,6 +136,8 @@ export default function ProposalsPage() {
       data-testid="proposals-body"
     >
       <ProposalsFilter
+        status={filterStatus}
+        onStatusChange={handleStatusChange}
         search={search}
         onSearchChange={setSearch}
         onChangeSortOrder={setSortOrder}

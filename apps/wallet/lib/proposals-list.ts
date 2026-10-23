@@ -7,6 +7,15 @@ export type ProposalStatusTab = (typeof PROPOSAL_STATUS_TABS)[number];
 export const isProposalStatusTab = (value: string): value is ProposalStatusTab =>
   PROPOSAL_STATUS_TABS.some((tab) => tab === value);
 
+/** The translation key of each status's label, shared by the status tabs and the status select. */
+export const PROPOSAL_STATUS_LABEL_KEYS: Record<ProposalStatusTab, string> = {
+  all: 'select_sort.sort_proposals.all',
+  active: 'select_sort.sort_proposals.active',
+  inactive: 'select_sort.sort_proposals.upcoming',
+  expired: 'select_sort.sort_proposals.expired',
+  votable: 'select_sort.sort_proposals.votable'
+};
+
 /**
  * Whole days, rounded up, from `now` (ms since the epoch) to `endDate`, a Hive API timestamp (UTC
  * without a zone designator); 0 once it has passed.

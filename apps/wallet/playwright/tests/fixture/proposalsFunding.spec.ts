@@ -1,5 +1,5 @@
 import type { Server } from 'node:http';
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { STUB_ACCOUNT, startWalletApiStub } from '../support/walletApiStub';
 import { PROPOSALS_PAGE_RESULTS, STUB_PROPOSALS } from '../support/proposalsApiStub';
@@ -9,12 +9,13 @@ import { WCAG_AA_TEXT_CONTRAST, textContrast } from '../support/contrast';
 /**
  * The proposals page's DHF information: the fund's budget, the line between the proposals its next
  * round of payouts funds and the rest, each proposal's progress, the voters button, the status tabs
- * and the search, and the contrast of its text in dark mode. The stub node
+ * (a select on phones) and the search, and the contrast of its text in dark mode. The stub node
  * (support/proposalsApiStub.ts) funds #11, the stabilizer's #12 and the return proposal #0.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
 const NOW = new Date('2026-06-01T00:00:00Z');
+const PHONE_VIEWPORT = { width: 390, height: 844 };
 const { funded, stabilizer, returnProposal, belowLine, upcoming, expired, burn } = STUB_PROPOSALS;
 
 let stub: Server;
@@ -165,6 +166,15 @@ test.describe('Proposals page DHF funding', () => {
     await expect(proposalsPage.fundingLine).toHaveCount(1);
   });
 
+  test('WALLET-PROPOSALS-DHF-08 — on a wide screen the status is a tablist, not a select', async ({ page }) => {
+    const proposalsPage = await openProposals(page);
+
+    await expect(proposalsPage.proposalsStatusTabs).toBeVisible();
+    await expect(proposalsPage.proposalsStatusSelect).toBeHidden();
+    await expect(page.getByRole('tablist', { name: 'Status' })).toHaveCount(1);
+    await expect(page.getByRole('combobox', { name: /^Status/ })).toHaveCount(0);
+  });
+
   test('WALLET-PROPOSALS-DHF-06 — in another order each active proposal carries a funded or not funded badge', async ({
     page
   }) => {
@@ -185,9 +195,48 @@ test.describe('Proposals page DHF funding', () => {
   });
 });
 
-/** Every visible text of the proposals page body: its color and the background colors behind it, innermost first. */
-const collectTexts = (page: Page) =>
-  page.getByTestId('proposals-body').evaluate((body) => {
+test.describe('Proposals page on a phone', () => {
+  test.use({ viewport: PHONE_VIEWPORT });
+
+  test('WALLET-PROPOSALS-DHF-09 — the status is a select, not a tablist, that filters the list and survives a resize', async ({
+    page
+  }) => {
+    const proposalsPage = await openProposals(page);
+
+    await expect(proposalsPage.proposalsStatusSelect).toBeVisible();
+    await expect(proposalsPage.proposalsStatusTabs).toBeHidden();
+    await expect(page.getByRole('tablist')).toHaveCount(0);
+    const select = page.getByRole('combobox', { name: /^Status/ });
+    await expect(select).toHaveCount(1);
+    await expect(proposalsPage.proposalsStatusSelect).toHaveText('Votable');
+
+    await proposalsPage.proposalsStatusSelect.click();
+    await expect(proposalsPage.proposalsStatusSelectContent.getByRole('option')).toHaveText([
+      'All',
+      'Active',
+      'Upcoming',
+      'Expired',
+      'Votable'
+    ]);
+    await proposalsPage.proposalsStatusSelectContent.getByRole('option', { name: 'Active', exact: true }).click();
+    await expect(proposalsPage.proposalsStatusSelect).toHaveText('Active');
+    await expect
+      .poll(() => proposalsPage.listedProposalIds())
+      .toEqual([funded, stabilizer, returnProposal, belowLine, burn]);
+
+    await proposalsPage.selectStatus('Upcoming');
+    await expect.poll(() => proposalsPage.listedProposalIds()).toEqual([upcoming]);
+
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await expect(proposalsPage.proposalsStatusSelect).toBeHidden();
+    await expect(proposalsPage.statusTab('Upcoming')).toHaveAttribute('aria-selected', 'true');
+    await expect.poll(() => proposalsPage.listedProposalIds()).toEqual([upcoming]);
+  });
+});
+
+/** Every visible text under `root`: its color and the background colors behind it, innermost first. */
+const collectTexts = (root: Locator) =>
+  root.evaluate((body) => {
     const texts: { where: string; text: string; color: string; backgrounds: string[] }[] = [];
     const walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
@@ -213,9 +262,9 @@ const collectTexts = (page: Page) =>
     return texts;
   });
 
-/** The texts of the page below WCAG AA contrast, described for the failure message. */
-const lowContrastTexts = async (page: Page) =>
-  (await collectTexts(page))
+/** The texts under `root` (by default the page body) below WCAG AA contrast, described for the failure message. */
+const lowContrastTexts = async (page: Page, root: Locator = page.getByTestId('proposals-body')) =>
+  (await collectTexts(root))
     .map((text) => ({ ...text, contrast: textContrast(text.color, text.backgrounds) }))
     .filter(({ contrast }) => contrast < WCAG_AA_TEXT_CONTRAST)
     .map(({ where, text, color, contrast }) => `${where} "${text}" ${color}: ${contrast.toFixed(2)}`);
@@ -238,3 +287,23 @@ test.describe('Proposals page in dark mode', () => {
     expect(await lowContrastTexts(page)).toEqual([]);
   });
 });
+
+for (const colorScheme of ['light', 'dark'] as const) {
+  test.describe(`Proposals status select in ${colorScheme} mode`, () => {
+    test.use({ colorScheme, viewport: PHONE_VIEWPORT });
+
+    test(`WALLET-PROPOSALS-DHF-10 — the status select and its options reach 4.5:1 (${colorScheme})`, async ({
+      page
+    }) => {
+      const proposalsPage = await openProposals(page);
+      const html = expect(page.locator('html'));
+      await (colorScheme === 'dark' ? html : html.not).toHaveClass(/\bdark\b/);
+
+      expect(await lowContrastTexts(page, proposalsPage.proposalsSortAndFilterBlock)).toEqual([]);
+
+      await proposalsPage.proposalsStatusSelect.click();
+      await expect(proposalsPage.proposalsStatusSelectContent).toBeVisible();
+      expect(await lowContrastTexts(page, proposalsPage.proposalsStatusSelectContent)).toEqual([]);
+    });
+  });
+}
