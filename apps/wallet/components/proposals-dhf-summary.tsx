@@ -4,12 +4,11 @@ import { Link } from '@hive/ui';
 import { numberWithCommas } from '@hive/ui/lib/utils';
 import { Skeleton } from '@ui/components/skeleton';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
+import { DHF_FAQ_ANCHOR } from '@/wallet/lib/dhf-faq';
 import type { DhfFunding } from './hooks/use-dhf-funding';
 
 const HBD_PRECISION = 3;
 const HBD_SATOSHIS_PER_UNIT = BigInt(10 ** HBD_PRECISION);
-// The FAQ section on the new tokens, of which the DHF receives its share.
-const DHF_FAQ_ANCHOR = '#How_many_new_tokens_are_generated_by_the_blockchain';
 
 /** `satoshis` HBD written exactly, with thousands separators, e.g. `23,223,141.076 HBD`. */
 const hbdText = (satoshis: bigint) => {

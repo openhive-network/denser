@@ -102,6 +102,17 @@
 - <a href="#Are_there_fees_for_Powering_Up__Powering_Down__trading_on_the_internal_market__or_converting_HBD_to_HIVE">Are there fees for Powering Up, Powering Down, trading on the internal market, or converting HBD to HIVE?</a>
 - <a href="#How_long_does_it_take_to_transfer_HIVE_or_HBD_tokens_between_users">How long does it take to transfer HIVE or HBD tokens between users?</a>
 
+### <span id="Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">Decentralized Hive Fund and Proposals</span>
+
+- <a href="#What_is_the_Decentralized_Hive_Fund__DHF">What is the Decentralized Hive Fund (DHF)?</a>
+- <a href="#What_is_a_proposal">What is a proposal?</a>
+- <a href="#How_are_proposals_paid">How are proposals paid?</a>
+- <a href="#What_is_the_return_proposal">What is the return proposal?</a>
+- <a href="#What_is_the_HBD_stabilizer">What is the HBD stabilizer?</a>
+- <a href="#How_do_votes_on_proposals_work">How do votes on proposals work?</a>
+- <a href="#How_do_I_vote__see_who_voted__or_create_a_proposal_on_this_site">How do I vote, see who voted, or create a proposal on this site?</a>
+- <a href="#What_do_the_figures_on_the_proposals_page_mean">What do the figures on the proposals page mean?</a>
+
 ### <span id="Table_of_Contents_Voting_and_Curating">Voting and Curating</span>
 
 - <a href="#What_is_my_voting_mana">What is my voting mana?</a>
@@ -631,7 +642,7 @@ Out of the new tokens that are generated:
 
 - 65% go to the reward pool, which is split between authors and curators.
 - 15% of the new tokens are awarded to holders of Hive Power.
-- 10% of the new tokens are awarded to the Hive Proposal System.
+- 10% of the new tokens are awarded to the <a href="#What_is_the_Decentralized_Hive_Fund__DHF">Decentralized Hive Fund (DHF)</a>, which pays for proposals.
 - The remaining 10% pays for the witnesses to power the blockchain.
 
 <a href="#Table_of_Contents_Economics">^</a>
@@ -837,6 +848,100 @@ No. None of these actions incur any fees.
 A transfer of tokens between accounts typically takes 3 seconds. This is far faster than most blockchain tokens.
 
 <a href="#Table_of_Contents_Economics">^</a>
+
+# Decentralized Hive Fund and Proposals
+
+## <span id="What_is_the_Decentralized_Hive_Fund__DHF">What is the Decentralized Hive Fund (DHF)?</span>
+
+The Decentralized Hive Fund is the blockchain's treasury. It is held by the account @hive.fund, and it pays for work the community votes for through proposals.
+
+Its money comes from:
+
+- its share of the new tokens: 10% of them, issued directly as Hive Dollars (HBD);
+- the fees paid to create proposals;
+- anything sent to @hive.fund: HBD is kept as it is, and HIVE is converted to HBD at the blockchain's price feed as it arrives;
+- post rewards that authors route to @hive.fund as a beneficiary, which are converted to HBD.
+
+HIVE the fund still holds is converted to HBD over time: once a day, 0.05% of its HIVE balance is converted.
+
+<a href="#Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">^</a>
+
+## <span id="What_is_a_proposal">What is a proposal?</span>
+
+A proposal is a request to be paid by the DHF. Any account can create one. It names:
+
+- a **creator**, the account that creates it and pays the fee, and a **receiver**, the account that gets paid. They can be the same account or different ones;
+- a **start date** and an **end date**. The proposal can be paid only between them;
+- a **daily pay** in HBD, the most it can receive per day;
+- a title and a **post**, written by the creator or the receiver, that describes the proposal. The title on the proposals page links to that post.
+
+Creating a proposal costs 10 HBD, plus 1 HBD for each day it runs beyond 60 days. The fee goes to the DHF and is not refunded.
+
+After creating it, the creator can lower the daily pay, change the title and the post, move the end date earlier, or remove the proposal. The daily pay can't be raised and the end date can't be moved later.
+
+<a href="#Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">^</a>
+
+## <span id="How_are_proposals_paid">How are proposals paid?</span>
+
+The DHF pays proposals every hour. Its budget is 1% of its HBD balance per day, so each hourly payment can spend about a twenty-fourth of that.
+
+At each payment, the active proposals are ranked by their total votes, the most voted first (on a tie, the older proposal first). They are paid in that order, each its daily pay for the time that has passed, until the budget runs out: the proposal that reaches the limit gets what is left, and the proposals below it get nothing. A proposal with no votes gets nothing.
+
+<a href="#Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">^</a>
+
+## <span id="What_is_the_return_proposal">What is the return proposal?</span>
+
+Proposal #0, the "Return Proposal", pays the DHF itself: its receiver is the fund's former account @steem.dao, whose balance the blockchain moves to @hive.fund in every block. Its daily pay is larger than the fund's daily budget, so everything left when payments reach it goes back to the fund.
+
+As a result, proposals with fewer votes than the return proposal get nothing. Voting for the return proposal raises the number of votes a proposal needs to be paid.
+
+<a href="#Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">^</a>
+
+## <span id="What_is_the_HBD_stabilizer">What is the HBD stabilizer?</span>
+
+The HBD stabilizer is a proposal paying the @hbdstabilizer account. According to its proposal post, its funding is used only for trading that helps keep HBD close to $1: it sells HBD when HBD trades above $1, and the HBD and profits that result are returned to the DHF.
+
+<a href="#Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">^</a>
+
+## <span id="How_do_votes_on_proposals_work">How do votes on proposals work?</span>
+
+A vote on a proposal is an approval: you either support a proposal or you don't, and there are no votes against. You can vote for as many proposals as you like and remove a vote at any time.
+
+Votes are weighted by Hive Power, including the Hive Power other accounts have proxied to you. Hive Power that was powered up in the last 30 days does not count yet. If you have set a witness voting proxy, it applies to proposals too: your own proposal votes are not counted, and your Hive Power counts through your proxy's votes instead.
+
+Total votes are recounted every hour, at each payment. The blockchain does not allow voting for a proposal that has ended.
+
+If an account does not vote for a witness or a proposal, or set a proxy, for a year, its proposal and witness votes expire and its proxy is cleared.
+
+Voting for a proposal needs your active key.
+
+<a href="#Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">^</a>
+
+## <span id="How_do_I_vote__see_who_voted__or_create_a_proposal_on_this_site">How do I vote, see who voted, or create a proposal on this site?</span>
+
+Visit https://wallet.hive.blog/proposals. Use the vote button next to a proposal to vote for it, or press it again to remove your vote. The button with a proposal's total votes in Hive Power opens the list of its voters.
+
+This site does not create proposals. A proposal can be created with any Hive application that broadcasts a create proposal operation, signed with the creator's active key.
+
+<a href="#Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">^</a>
+
+## <span id="What_do_the_figures_on_the_proposals_page_mean">What do the figures on the proposals page mean?</span>
+
+The box at the top of the proposals page shows:
+
+- **Total budget**: the DHF's HBD balance.
+- **Max daily budget**: 1% of that balance, the most the DHF can pay in a day.
+- **Daily funded**: what the DHF will pay per day to the proposals that are funded, not counting the return proposal and the HBD stabilizer.
+- **HBD stabilizer**: what the DHF will pay per day to the HBD stabilizer.
+
+In the list of proposals:
+
+- **funded** / **not funded** tells whether a proposal is paid in the next round of payments, if votes do not change.
+- The **Funded in the next round** / **Not funded in the next round** line separates the proposals that are paid from those that are not.
+- **N days left** is how long an active proposal has until its end date.
+- **refund** marks a proposal whose receiver is the DHF, such as the return proposal, and **burn** one whose receiver is @null, where the payment is destroyed.
+
+<a href="#Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">^</a>
 
 # Voting and Curating
 
