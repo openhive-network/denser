@@ -1,6 +1,12 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { fundingMarks, isProposalStatusTab, matchesProposalSearch, remainingDays } from './proposals-list.ts';
+import {
+  fundingMarks,
+  isProposalStatusTab,
+  matchesProposalSearch,
+  remainingDays,
+  uniqueProposals
+} from './proposals-list.ts';
 
 const NOW = Date.parse('2026-06-01T12:00:00Z');
 
@@ -33,6 +39,28 @@ describe('matchesProposalSearch', () => {
 
   it('matches every proposal on a blank query', () => {
     assert.equal(matchesProposalSearch(proposal, '  '), true);
+  });
+});
+
+describe('uniqueProposals', () => {
+  const proposal = (id: number) => ({ proposal_id: id });
+
+  it('keeps the first of a proposal repeated across page boundaries, in page order', () => {
+    const pages = [
+      [proposal(1), proposal(309)],
+      [proposal(309), proposal(158)],
+      [proposal(158), proposal(2)]
+    ];
+
+    assert.deepEqual(
+      uniqueProposals(pages).map((p) => p.proposal_id),
+      [1, 309, 158, 2]
+    );
+  });
+
+  it('keeps pages without repeats as they are', () => {
+    assert.deepEqual(uniqueProposals([[proposal(3)], [proposal(4)]]), [proposal(3), proposal(4)]);
+    assert.deepEqual(uniqueProposals([]), []);
   });
 });
 
