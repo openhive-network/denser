@@ -48,14 +48,24 @@ export function resolveMatrixChatConfig(read: ReadPublicEnv): MatrixChatConfig {
   };
 }
 
-/** The Element origin a page must be allowed to frame, or undefined when Matrix is not in use. */
-export function matrixFrameOrigin(provider: ChatProvider, matrix: MatrixChatConfig): string | undefined {
-  if (provider !== 'matrix' || !matrix.elementUrl) return undefined;
+function originOf(url: string): string | undefined {
   try {
-    return new URL(matrix.elementUrl).origin;
+    return new URL(url).origin;
   } catch {
     return undefined;
   }
+}
+
+/**
+ * The origins a page must allow its chat frame to load, or none when Matrix is not in use:
+ * Element's, and the homeserver's, which the frame passes through during SSO sign-in.
+ */
+export function matrixFrameOrigins(provider: ChatProvider, matrix: MatrixChatConfig): string[] {
+  if (provider !== 'matrix' || !matrix.elementUrl) return [];
+  const elementOrigin = originOf(matrix.elementUrl);
+  if (!elementOrigin) return [];
+  const homeserverOrigin = originOf(matrix.homeserverUrl);
+  return [...new Set(homeserverOrigin ? [elementOrigin, homeserverOrigin] : [elementOrigin])];
 }
 
 export function matrixUserId(username: string, matrix: MatrixChatConfig): string {

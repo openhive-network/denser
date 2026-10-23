@@ -6,7 +6,7 @@
  */
 
 import { PICKER_API_NODES } from '@hive/ui/config/api-node-picker';
-import { matrixFrameOrigin, resolveChatProvider, resolveMatrixChatConfig } from '@hive/ui/config/chat';
+import { matrixFrameOrigins, resolveChatProvider, resolveMatrixChatConfig } from '@hive/ui/config/chat';
 
 /**
  * App-specific CSP configuration
@@ -184,12 +184,11 @@ export function buildCsp(config: CspConfig, nonce: string): string {
   // at runtime so it is correct per deployment (blog.openhive.network, new.hive.blog, hive.blog) instead
   // of a hardcoded host; skip when 'self' is already listed, and fall back to 'self' if the var is unset.
   const frameSrcHosts = new Set(config.frameSrc ?? []);
-  // The Matrix chat widget embeds Element from its own origin
-  const elementOrigin = matrixFrameOrigin(
+  // The Matrix chat widget embeds Element, and its sign-in navigates the frame through the homeserver
+  matrixFrameOrigins(
     resolveChatProvider(process.env.REACT_APP_CHAT_PROVIDER),
     resolveMatrixChatConfig((key) => process.env[`REACT_APP_${key}`])
-  );
-  if (elementOrigin) frameSrcHosts.add(elementOrigin);
+  ).forEach((origin) => frameSrcHosts.add(origin));
   if (frameSrcHosts.size > 0 && !frameSrcHosts.has("'self'")) {
     const siteDomain = process.env.REACT_APP_SITE_DOMAIN;
     let siteOrigin = "'self'";

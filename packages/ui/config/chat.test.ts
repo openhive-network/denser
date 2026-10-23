@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   chatAppUrl,
-  matrixFrameOrigin,
+  matrixFrameOrigins,
   matrixSessionPageUrl,
   resolveChatProvider,
   resolveMatrixChatConfig
@@ -84,14 +84,21 @@ describe('matrixSessionPageUrl', () => {
 describe('chat app URL and frame origin', () => {
   it('point at Element in Matrix mode', () => {
     assert.equal(chatAppUrl('matrix', MATRIX, ROCKET_CHAT_URL), 'https://chat.example.org');
-    assert.equal(matrixFrameOrigin('matrix', MATRIX), 'https://chat.example.org');
+    assert.deepEqual(matrixFrameOrigins('matrix', MATRIX), ['https://chat.example.org', 'https://matrix.example.org']);
+  });
+
+  it('list one origin when Element and the homeserver share it', () => {
+    const shared = resolveMatrixChatConfig(
+      readFrom({ MATRIX_ELEMENT_URL: 'https://example.org/element/', MATRIX_HOMESERVER_URL: 'https://example.org' })
+    );
+    assert.deepEqual(matrixFrameOrigins('matrix', shared), ['https://example.org']);
   });
 
   it('keep Rocket.Chat in Rocket.Chat mode, and when Matrix has no Element URL', () => {
     assert.equal(chatAppUrl('rocketchat', MATRIX, ROCKET_CHAT_URL), ROCKET_CHAT_URL);
-    assert.equal(matrixFrameOrigin('rocketchat', MATRIX), undefined);
+    assert.deepEqual(matrixFrameOrigins('rocketchat', MATRIX), []);
     const noElement = resolveMatrixChatConfig(readFrom({}));
     assert.equal(chatAppUrl('matrix', noElement, ROCKET_CHAT_URL), ROCKET_CHAT_URL);
-    assert.equal(matrixFrameOrigin('matrix', noElement), undefined);
+    assert.deepEqual(matrixFrameOrigins('matrix', noElement), []);
   });
 });
