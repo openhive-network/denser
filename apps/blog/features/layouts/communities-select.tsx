@@ -66,15 +66,7 @@ export function CommunitiesSelect({ title }: { title: string }) {
       <SelectTrigger className="bg-white dark:bg-background/95 dark:text-white">
         <SelectValue placeholder={title} />
       </SelectTrigger>
-      <SelectContent
-        className="max-h-96 overflow-y-auto"
-        ref={(ref) => {
-          if (!ref) return;
-          ref.ontouchstart = (e) => {
-            e.preventDefault();
-          };
-        }}
-      >
+      <SelectContent className="max-h-96 overflow-y-auto">
         <SelectGroup>
           <SelectItem value="/trending">{t('navigation.communities_nav.all_posts')}</SelectItem>
         </SelectGroup>
