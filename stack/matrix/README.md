@@ -44,19 +44,21 @@ joined to it, and Synapse does not create it (`autocreate_auto_join_rooms: false
 ## denser's side
 
 On the integration site, in `../integration/.env` (its compose passes them to the blog and wallet
-as `REACT_APP_CHAT_PROVIDER`, `REACT_APP_MATRIX_ELEMENT_URL`, `REACT_APP_MATRIX_HOMESERVER_URL`), then
-`./upgrade.sh` there:
+as `REACT_APP_CHAT_PROVIDER`, `REACT_APP_MATRIX_ELEMENT_URL`, `REACT_APP_MATRIX_HOMESERVER_URL`,
+`REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND`), then `./upgrade.sh` there:
 
 ```bash
 CHAT_PROVIDER=matrix
+# Required: the widget shows, and denser's OAuth authorizes, only a user the server signed in.
+LOGIN_AUTHENTICATE_ON_BACKEND=yes
 MATRIX_ELEMENT_URL=https://chat.discuss.peerverity.info
 MATRIX_HOMESERVER_URL=https://matrix.discuss.peerverity.info
 DENSER_SERVER_OAUTH_MATRIX_SECRET=<DENSER_OAUTH_MATRIX_SECRET of this .env>
 ```
 
 Elsewhere the app settings are `REACT_APP_CHAT_PROVIDER`, `REACT_APP_MATRIX_ELEMENT_URL`,
-`REACT_APP_MATRIX_HOMESERVER_URL`, `REACT_APP_MATRIX_SERVER_NAME` (default: the homeserver's
-host), `REACT_APP_MATRIX_IDP_ID` (default `oidc-denser`), and on the blog's server
+`REACT_APP_MATRIX_HOMESERVER_URL`, `REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND=yes`,
+`REACT_APP_MATRIX_SERVER_NAME` (default: the homeserver's host), `REACT_APP_MATRIX_IDP_ID` (default `oidc-denser`), and on the blog's server
 `DENSER_SERVER_OAUTH_MATRIX_SECRET` and, optionally, `DENSER_SERVER_OAUTH_MATRIX_REDIRECT_URI`
 (default `<homeserver>/_synapse/client/oidc/callback`).
 
