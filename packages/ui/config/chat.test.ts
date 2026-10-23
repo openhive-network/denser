@@ -42,11 +42,12 @@ describe('resolveMatrixChatConfig', () => {
       elementUrl: 'https://chat.example.org',
       homeserverUrl: 'https://matrix.example.org',
       serverName: 'matrix.example.org',
-      idpId: 'oidc-denser'
+      idpId: 'oidc-denser',
+      defaultRoom: '#general:matrix.example.org'
     });
   });
 
-  it('uses an explicit server name and IdP id', () => {
+  it('uses an explicit server name and IdP id, and the general room of that server', () => {
     const matrix = resolveMatrixChatConfig(
       readFrom({
         MATRIX_HOMESERVER_URL: 'https://matrix.example.org',
@@ -56,6 +57,14 @@ describe('resolveMatrixChatConfig', () => {
     );
     assert.equal(matrix.serverName, 'example.org');
     assert.equal(matrix.idpId, 'oidc-hive');
+    assert.equal(matrix.defaultRoom, '#general:example.org');
+  });
+
+  it('uses an explicit default room', () => {
+    const matrix = resolveMatrixChatConfig(
+      readFrom({ MATRIX_HOMESERVER_URL: 'https://matrix.example.org', MATRIX_DEFAULT_ROOM: ' #lobby:example.org ' })
+    );
+    assert.equal(matrix.defaultRoom, '#lobby:example.org');
   });
 
   it('leaves everything but the IdP empty when nothing is configured', () => {
@@ -63,17 +72,24 @@ describe('resolveMatrixChatConfig', () => {
       elementUrl: '',
       homeserverUrl: '',
       serverName: '',
-      idpId: 'oidc-denser'
+      idpId: 'oidc-denser',
+      defaultRoom: ''
     });
   });
 });
 
 describe('matrixSessionPageUrl', () => {
-  it("starts at Element's session page with the expected Matrix user and the IdP", () => {
+  it("starts at Element's session page with the expected Matrix user, the IdP and the room to open", () => {
     const url = new URL(matrixSessionPageUrl(MATRIX, 'alice'));
     assert.equal(url.origin + url.pathname, 'https://chat.example.org/denser-session.html');
     assert.equal(url.searchParams.get('user'), '@alice:matrix.example.org');
     assert.equal(url.searchParams.get('idp'), 'oidc-denser');
+    assert.equal(url.searchParams.get('room'), '#general:matrix.example.org');
+  });
+
+  it('names no room when none is configured', () => {
+    const url = new URL(matrixSessionPageUrl({ ...MATRIX, defaultRoom: '' }, 'alice'));
+    assert.equal(url.searchParams.has('room'), false);
   });
 
   it('names no user for ending the session only', () => {

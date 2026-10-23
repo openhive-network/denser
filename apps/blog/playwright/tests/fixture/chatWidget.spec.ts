@@ -29,6 +29,8 @@ const SERVER_NAME = 'matrix.matrix.test';
 const IDP_ID = 'oidc-denser';
 const SESSION_PAGE = `${ELEMENT}/denser-session.html`;
 const SSO_REDIRECT = `${HOMESERVER}/_matrix/client/v3/login/sso/redirect/${IDP_ID}`;
+/** Element's screen for the default room, `#general` of the server */
+const DEFAULT_ROOM_SCREEN = `#/room/${encodeURIComponent(`#general:${SERVER_NAME}`)}`;
 const ROCKET_CHAT = 'https://rocket.chat.test';
 const OPENHIVE_CHAT = 'https://openhive.chat';
 const SESSION_PAGE_SOURCE = fs.readFileSync(
@@ -70,10 +72,13 @@ async function stubMatrix(page: Page): Promise<string[]> {
   });
   await page.route(`${HOMESERVER}/**`, (route) => {
     ssoRedirects.push(route.request().url());
+    // As Synapse does: the login token joins redirectUrl's query, its fragment stays
+    const back = new URL(new URL(route.request().url()).searchParams.get('redirectUrl') ?? `${ELEMENT}/`);
+    back.searchParams.set('loginToken', 'login-token');
     // A fulfilled redirect does not navigate a frame: send it on from a page
     return route.fulfill({
       contentType: 'text/html',
-      body: `<script>location.replace(${JSON.stringify(`${ELEMENT}/?loginToken=login-token`)})</script>`
+      body: `<script>location.replace(${JSON.stringify(back.href)})</script>`
     });
   });
   return ssoRedirects;
@@ -140,7 +145,7 @@ test.describe('Chat widget in Matrix mode', () => {
     openhiveChatRequests = recordRequests(page, OPENHIVE_CHAT);
   });
 
-  test('CHAT-MATRIX-01: the drawer signs in to Element through the SSO redirect of the configured IdP', async ({
+  test('CHAT-MATRIX-01: the drawer signs in to Element through the SSO redirect of the configured IdP, into the default room', async ({
     page,
     context
   }) => {
@@ -156,8 +161,12 @@ test.describe('Chat widget in Matrix mode', () => {
     expect(`${src.origin}${src.pathname}`).toBe(SESSION_PAGE);
     expect(src.searchParams.get('user')).toBe(`@${USERNAME}:${SERVER_NAME}`);
     expect(src.searchParams.get('idp')).toBe(IDP_ID);
+    expect(src.searchParams.get('room')).toBe(`#general:${SERVER_NAME}`);
     const frame = await elementFrame(page);
-    expect(ssoRedirects).toEqual([`${SSO_REDIRECT}?redirectUrl=${encodeURIComponent(`${ELEMENT}/`)}`]);
+    expect(ssoRedirects).toEqual([
+      `${SSO_REDIRECT}?redirectUrl=${encodeURIComponent(`${ELEMENT}/${DEFAULT_ROOM_SCREEN}`)}`
+    ]);
+    expect(new URL(frame.url()).hash).toBe(DEFAULT_ROOM_SCREEN);
     // Element's token login reads the homeserver from there
     expect(await readElementStorage(frame)).toEqual({ userId: null, ssoHomeserver: HOMESERVER });
     expect(openhiveChatRequests.map((request) => request.url())).toEqual([]);
@@ -172,7 +181,7 @@ test.describe('Chat widget in Matrix mode', () => {
     expect(await readElementStorage(frame)).toEqual({ userId: null, ssoHomeserver: HOMESERVER });
   });
 
-  test("CHAT-MATRIX-03: the user's own Element session continues without signing in again", async ({
+  test("CHAT-MATRIX-03: the user's own Element session continues in the default room without signing in again", async ({
     page,
     context
   }) => {
@@ -181,7 +190,7 @@ test.describe('Chat widget in Matrix mode', () => {
 
     await expect
       .poll(() => page.frames().map((frame) => frame.url()))
-      .toContain(`${ELEMENT}/`);
+      .toContain(`${ELEMENT}/${DEFAULT_ROOM_SCREEN}`);
     expect(ssoRedirects).toEqual([]);
   });
 

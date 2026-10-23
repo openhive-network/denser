@@ -14,11 +14,12 @@ import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLoginChallengeFromTransactionForLogin } from '@smart-signer/lib/login-operation';
 import { getLogger } from '@hive/ui/lib/logging';
 import { siteConfig } from '@hive/ui/config/site';
-import { getChatAuthToken, reportChatRevocationFailure, revokeChatAuthToken } from '@smart-signer/lib/rocket-chat';
+import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
 import { logLoginEvent, getClientIpFromApiRequest } from '@smart-signer/lib/event-logging';
 import { setAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
 import { addAccount, setSessionUser } from '@smart-signer/lib/auth/accounts';
 import { endCurrentChatSession } from '@smart-signer/lib/auth/chat-session';
+import { chatSessionEnder } from '@smart-signer/lib/auth/chat-session-ender';
 
 const logger = getLogger('app');
 
@@ -127,7 +128,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     strict: verifiedUser?.strict ? true : false
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
-  endCurrentChatSession(session, revokeChatAuthToken, reportChatRevocationFailure);
+  // The same user signing in again keeps their Matrix devices, which Element in the drawer still uses
+  endCurrentChatSession(session, chatSessionEnder(), user);
   session.accounts = addAccount(session.accounts ?? [], session.user, user);
   setSessionUser(session, user);
   await session.save();

@@ -4,13 +4,21 @@ import { registerHooks } from 'node:module';
 import type { User } from '@smart-signer/types/common';
 
 const CHAT_API = 'https://chat.test/api/v1';
+const HOMESERVER = 'https://matrix.test';
+const MATRIX_ADMIN_TOKEN = 'syt_matrix_admin';
 
 /** What the stand-in modules below read and record; they cannot import the test. */
 interface Harness {
   session: { user?: User; accounts?: User[]; destroyed: boolean; destroy(): void };
   errors: unknown[][];
+  /** The chat settings the site config reads at sign-out */
+  chat: { provider: string; matrixAdminToken: string };
 }
-const harness: Harness = { session: { destroyed: false, destroy() {} }, errors: [] };
+const harness: Harness = {
+  session: { destroyed: false, destroy() {} },
+  errors: [],
+  chat: { provider: 'rocketchat', matrixAdminToken: '' }
+};
 Object.assign(globalThis, { logoutTestHarness: harness });
 
 function stub(source: string): string {
@@ -34,13 +42,22 @@ const STUBS: Record<string, string> = {
     'export const getLogger = () => ({ info() {}, error: (...args) => h.errors.push(args) });'
   ),
   '@ui/config/site': stub(
-    `export const siteConfig = { openhiveChatApiUri: '${CHAT_API}', openhiveChatAdminUserId: 'admin-id', openhiveChatAdminUserToken: 'admin-token' };`
+    `export const siteConfig = {
+      openhiveChatApiUri: '${CHAT_API}', openhiveChatAdminUserId: 'admin-id', openhiveChatAdminUserToken: 'admin-token',
+      get chatProvider() { return h.chat.provider; },
+      get matrixAdminToken() { return h.chat.matrixAdminToken; },
+      matrixChat: { homeserverUrl: '${HOMESERVER}', serverName: 'matrix.test' }
+    };`
   )
 };
 const REAL: Record<string, string> = {
   '@smart-signer/lib/auth/chat-session': '../../auth/chat-session.ts',
   '@smart-signer/lib/auth/accounts': '../../auth/accounts.ts',
+  '@smart-signer/lib/auth/chat-session-ender': '../../auth/chat-session-ender.ts',
+  '@smart-signer/lib/auth/matrix-devices': '../../auth/matrix-devices.ts',
   '@smart-signer/lib/rocket-chat': '../../rocket-chat.ts',
+  '@smart-signer/lib/fetch-json': '../../fetch-json.ts',
+  '@ui/config/chat': '../../../../ui/config/chat.ts',
   './fetch-json': './fetch-json.ts'
 };
 
@@ -107,6 +124,7 @@ function settle(): Promise<void> {
 describe('logoutUser', () => {
   beforeEach(() => {
     harness.errors = [];
+    harness.chat = { provider: 'rocketchat', matrixAdminToken: '' };
   });
 
   afterEach(() => {
@@ -167,5 +185,83 @@ describe('logoutUser', () => {
     assert.equal(harness.errors.length, 1);
     assert.match(String(harness.errors[0][0]), /Rocket\.Chat logout/);
     assert.ok(!JSON.stringify(harness.errors).includes('token-a'));
+  });
+
+  describe('in Matrix mode', () => {
+    const ALICE_DEVICES = `${HOMESERVER}/_synapse/admin/v2/users/${encodeURIComponent('@alice:matrix.test')}`;
+
+    beforeEach(() => {
+      harness.chat = { provider: 'matrix', matrixAdminToken: MATRIX_ADMIN_TOKEN };
+    });
+
+    /** Stands in for Synapse's admin API; `answerDelete` answers `delete_devices`. */
+    function synapse(answerDelete: () => Promise<Response>) {
+      const calls: { url: string; method: string; body: unknown; authorization: string }[] = [];
+      mock.method(globalThis, 'fetch', (input: string | URL, init: RequestInit = {}) => {
+        const url = String(input);
+        calls.push({
+          url,
+          method: init.method ?? 'GET',
+          body: init.body ? JSON.parse(String(init.body)) : undefined,
+          authorization: new Headers(init.headers).get('Authorization') ?? ''
+        });
+        if (url.endsWith('/devices')) {
+          return Promise.resolve(Response.json({ devices: [{ device_id: 'D1' }, { device_id: 'D2' }], total: 2 }));
+        }
+        return answerDelete();
+      });
+      return calls;
+    }
+
+    it("deletes each signed-in account's Matrix devices once, and nothing on Rocket.Chat", async () => {
+      const calls = synapse(() => Promise.resolve(Response.json({})));
+      const alice = account('alice', '');
+      signedIn(alice, [alice, account('bob', '')]);
+
+      await signOut();
+      await settle();
+
+      assert.equal(harness.session.destroyed, true);
+      const bobDevices = `${HOMESERVER}/_synapse/admin/v2/users/${encodeURIComponent('@bob:matrix.test')}`;
+      assert.deepEqual(
+        calls.map(({ url, method, body }) => ({ url, method, body })),
+        [
+          { url: `${ALICE_DEVICES}/devices`, method: 'GET', body: undefined },
+          { url: `${bobDevices}/devices`, method: 'GET', body: undefined },
+          { url: `${ALICE_DEVICES}/delete_devices`, method: 'POST', body: { devices: ['D1', 'D2'] } },
+          { url: `${bobDevices}/delete_devices`, method: 'POST', body: { devices: ['D1', 'D2'] } }
+        ]
+      );
+      assert.ok(calls.every((call) => call.authorization === `Bearer ${MATRIX_ADMIN_TOKEN}`));
+      assert.deepEqual(harness.errors, []);
+    });
+
+    it('signs out without waiting for a failing Synapse, and logs the failure without the admin token', { timeout: 2000 }, async () => {
+      let refuse: (response: Response) => void = () => {};
+      synapse(() => new Promise<Response>((resolve) => (refuse = resolve)));
+      signedIn(account('alice', ''));
+
+      assert.deepEqual(await signOut(), { isLoggedIn: false, username: '' });
+      assert.equal(harness.session.destroyed, true);
+
+      await settle();
+      refuse(Response.json({ errcode: 'M_UNKNOWN', error: `bad ${MATRIX_ADMIN_TOKEN}` }, { status: 500 }));
+      await settle();
+      assert.equal(harness.errors.length, 1);
+      assert.match(String(harness.errors[0][0]), /Matrix devices/);
+      assert.ok(!JSON.stringify(harness.errors).includes(MATRIX_ADMIN_TOKEN));
+    });
+
+    it('calls no chat server without an admin token', async () => {
+      harness.chat.matrixAdminToken = '';
+      const calls = synapse(() => Promise.resolve(Response.json({})));
+      signedIn(account('alice', ''));
+
+      await signOut();
+      await settle();
+
+      assert.equal(harness.session.destroyed, true);
+      assert.deepEqual(calls, []);
+    });
   });
 });

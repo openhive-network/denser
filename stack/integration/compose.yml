@@ -38,6 +38,10 @@ x-app: &app
     REACT_APP_CHAT_PROVIDER: ${CHAT_PROVIDER:-}
     REACT_APP_MATRIX_ELEMENT_URL: ${MATRIX_ELEMENT_URL:-}
     REACT_APP_MATRIX_HOMESERVER_URL: ${MATRIX_HOMESERVER_URL:-}
+    # The room Element opens in (default: #general of the homeserver)
+    REACT_APP_MATRIX_DEFAULT_ROOM: ${MATRIX_DEFAULT_ROOM:-}
+    # A Synapse admin's access token: sign-out and account switches delete the user's Matrix devices. Empty: never.
+    DENSER_SERVER_MATRIX_ADMIN_TOKEN: ${DENSER_SERVER_MATRIX_ADMIN_TOKEN:-}
     # yes: sign-ins authenticate on the server, needed for Matrix chat and OAuth (see ../matrix/README.md)
     REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND: ${LOGIN_AUTHENTICATE_ON_BACKEND:-}
 

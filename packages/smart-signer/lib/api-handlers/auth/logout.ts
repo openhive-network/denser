@@ -9,7 +9,7 @@ import { oidc } from '@smart-signer/lib/oidc';
 import { logLogoutEvent, getClientIpFromApiRequest } from '@smart-signer/lib/event-logging';
 import { clearAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
 import { endAllChatSessions } from '@smart-signer/lib/auth/chat-session';
-import { reportChatRevocationFailure, revokeChatAuthToken } from '@smart-signer/lib/rocket-chat';
+import { chatSessionEnder } from '@smart-signer/lib/auth/chat-session-ender';
 
 const logger = getLogger('app');
 
@@ -43,7 +43,7 @@ export const logoutUser: NextApiHandler<User> = async (req, res) => {
       const uid = req.cookies['session_uid'] || 'n/a';
       logLogoutEvent(getClientIpFromApiRequest(req), username, loginType, uid);
 
-      endAllChatSessions(session, revokeChatAuthToken, reportChatRevocationFailure);
+      endAllChatSessions(session, chatSessionEnder());
       logger.info('Logout: destroying app session for user: %s', username);
       session.destroy();
     }

@@ -11,7 +11,7 @@ registerHooks({
   }
 });
 
-const { endAllChatSessions, endCurrentChatSession } = await import('./chat-session.ts');
+const { endAllChatSessions, endCurrentChatSession, rocketChatSessionEnder } = await import('./chat-session.ts');
 
 function account(username: string, chatAuthToken: string): User {
   return {
@@ -34,21 +34,23 @@ function recorder() {
   return {
     revoked,
     failures,
-    revoke: async (username: string, token: string) => {
-      revoked.push(`${username}:${token}`);
-    },
-    onFailure: (username: string, reason: string) => failures.push(`${username}: ${reason}`)
+    ender: rocketChatSessionEnder(
+      async (username: string, token: string) => {
+        revoked.push(`${username}:${token}`);
+      },
+      (username: string, reason: string) => failures.push(`${username}: ${reason}`)
+    )
   };
 }
 
 describe('endCurrentChatSession', () => {
   it("revokes the outgoing user's token once and forgets it, so switching back requests a new one", () => {
-    const { revoked, failures, revoke, onFailure } = recorder();
+    const { revoked, failures, ender } = recorder();
     const alice = account('alice', 'token-a');
     const bob = account('bob', '');
     const session = { user: alice, accounts: [alice, bob] };
 
-    endCurrentChatSession(session, revoke, onFailure);
+    endCurrentChatSession(session, ender);
     // What the switch handler does next
     session.user = bob;
 
@@ -57,17 +59,17 @@ describe('endCurrentChatSession', () => {
     assert.deepEqual(failures, []);
 
     // Switching away from bob, who has no chat token, revokes nothing more
-    endCurrentChatSession(session, revoke, onFailure);
+    endCurrentChatSession(session, ender);
     assert.deepEqual(revoked, ['alice:token-a']);
   });
 
   it('does nothing for a user who never had chat access, or no user', () => {
-    const { revoked, revoke, onFailure } = recorder();
+    const { revoked, ender } = recorder();
     const carol = account('carol', '');
     const session = { user: carol, accounts: [carol] };
 
-    endCurrentChatSession(session, revoke, onFailure);
-    endCurrentChatSession({}, revoke, onFailure);
+    endCurrentChatSession(session, ender);
+    endCurrentChatSession({}, ender);
 
     assert.deepEqual(revoked, []);
     assert.equal(session.user, carol);
@@ -80,8 +82,10 @@ describe('endCurrentChatSession', () => {
 
     endCurrentChatSession(
       session,
-      () => new Promise<void>((_resolve, reject) => (fail = reject)),
-      (username, reason) => failures.push(`${username}: ${reason}`)
+      rocketChatSessionEnder(
+        () => new Promise<void>((_resolve, reject) => (fail = reject)),
+        (username, reason) => failures.push(`${username}: ${reason}`)
+      )
     );
     assert.equal(session.user.chatAuthToken, '');
 
@@ -89,15 +93,38 @@ describe('endCurrentChatSession', () => {
     await new Promise((resolve) => setImmediate(resolve));
     assert.deepEqual(failures, ['alice: refused [redacted]']);
   });
+
+  it('revokes the token of a user signing in again, who receives a new one', () => {
+    const { revoked, ender } = recorder();
+    const session = { user: account('alice', 'token-a') };
+
+    endCurrentChatSession(session, ender, account('alice', 'token-a2'));
+
+    assert.deepEqual(revoked, ['alice:token-a']);
+  });
+
+  it('keeps a session the incoming user holds too', () => {
+    const ended: string[] = [];
+    const byUsername = { sessionOf: (user: User) => user.username, end: (user: User) => ended.push(user.username) };
+    const alice = account('alice', '');
+    const session = { user: alice };
+
+    endCurrentChatSession(session, byUsername, account('alice', ''));
+    assert.deepEqual(ended, []);
+
+    endCurrentChatSession(session, byUsername, account('bob', ''));
+    assert.deepEqual(ended, ['alice']);
+    assert.equal(session.user, alice);
+  });
 });
 
 describe('endAllChatSessions', () => {
   it('revokes each token the session holds once', () => {
-    const { revoked, revoke, onFailure } = recorder();
+    const { revoked, ender } = recorder();
     const alice = account('alice', 'token-a');
     const session = { user: alice, accounts: [alice, account('bob', 'token-b'), account('carol', '')] };
 
-    endAllChatSessions(session, revoke, onFailure);
+    endAllChatSessions(session, ender);
 
     assert.deepEqual(revoked, ['alice:token-a', 'bob:token-b']);
   });

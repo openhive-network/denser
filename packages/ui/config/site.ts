@@ -60,6 +60,8 @@ export const siteConfig = {
   chatAppUrl: chatAppUrl(chatProvider, matrixChat, openhiveChatUri),
   // Element Web + Synapse, signing in through denser's OAuth server
   matrixChat,
+  // A Synapse admin's access token, for deleting a user's Matrix devices at sign-out (empty: never)
+  matrixAdminToken: process.env[`${SERVER_VAR_PREFIX}MATRIX_ADMIN_TOKEN`]?.trim() || '',
 
   // Rocket Chat Widget
   openhiveChatClientId: env('OPENHIVE_CHAT_CLIENT_ID') || 'openhive_chat',
