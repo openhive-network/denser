@@ -351,6 +351,8 @@
   },
   "proposals_page": {
     "daily": "Dziennie",
+    "paid": "Wypłacono",
+    "to_pay": "Do wypłaty",
     "proposals": "Propozycje",
     "started": "rozpoczęta",
     "finished": "zakończona",

@@ -342,6 +342,8 @@
   },
   "proposals_page": {
     "daily": "每日",
+    "paid": "已支付",
+    "to_pay": "待支付",
     "proposals": "提案",
     "started": "已开始",
     "finished": "已结束",

@@ -2,7 +2,7 @@ import type { Server } from 'node:http';
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { STUB_ACCOUNT, startWalletApiStub } from '../support/walletApiStub';
-import { PROPOSALS_PAGE_RESULTS, STUB_PROPOSALS } from '../support/proposalsApiStub';
+import { PROPOSALS_PAGE_REST_RESULTS, PROPOSALS_PAGE_RESULTS, STUB_PROPOSALS } from '../support/proposalsApiStub';
 import { ProposalsPage } from '../support/pages/proposalsPage';
 import { WCAG_AA_TEXT_CONTRAST, textContrast } from '../support/contrast';
 
@@ -21,7 +21,7 @@ const { funded, stabilizer, returnProposal, belowLine, upcoming, expired, burn }
 let stub: Server;
 
 test.beforeAll(async () => {
-  stub = await startWalletApiStub(undefined, PROPOSALS_PAGE_RESULTS);
+  stub = await startWalletApiStub(undefined, PROPOSALS_PAGE_RESULTS, PROPOSALS_PAGE_REST_RESULTS);
 });
 
 test.afterAll(async () => {

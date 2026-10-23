@@ -54,6 +54,9 @@ export const EXTENDED_REST_API_DEFINITION = {
   'balance-api': {
     accountDelegations: {
       urlPath: 'accounts/{account-name}/delegations'
+    },
+    proposalsPayments: {
+      urlPath: 'proposals/payments'
     }
   }
 };

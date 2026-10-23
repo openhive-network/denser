@@ -342,6 +342,8 @@
   },
   "proposals_page": {
     "daily": "1日あたり",
+    "paid": "支払い済み",
+    "to_pay": "未払い",
     "proposals": "提案",
     "started": "開始済み",
     "finished": "終了",

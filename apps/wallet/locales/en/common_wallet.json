@@ -344,6 +344,8 @@
   },
   "proposals_page": {
     "daily": "Daily",
+    "paid": "Paid",
+    "to_pay": "To pay",
     "proposals": "Proposals",
     "started": "started",
     "finished": "finished",

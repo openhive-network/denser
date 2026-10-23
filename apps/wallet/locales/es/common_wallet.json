@@ -347,6 +347,8 @@
   },
   "proposals_page": {
     "daily": "Diario",
+    "paid": "Pagado",
+    "to_pay": "Por pagar",
     "proposals": "Propuestas",
     "started": "iniciada",
     "finished": "finalizada",

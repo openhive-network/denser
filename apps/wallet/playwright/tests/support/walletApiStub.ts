@@ -224,11 +224,15 @@ const REST_RESULTS: RestResults = {
 };
 
 /**
- * Starts the stub node with the wallet pages' reads, `jsonRpc` replacing some of them; resolves
- * with the server to close after the spec.
+ * Starts the stub node with the wallet pages' reads, `jsonRpc` and `rest` adding to or replacing
+ * some of them; resolves with the server to close after the spec.
  */
-export const startWalletApiStub = (port = FIXTURE_API_PORT, jsonRpc: JsonRpcResults = {}): Promise<Server> =>
-  startApiStub({ jsonRpc: { ...JSON_RPC_RESULTS, ...jsonRpc }, rest: REST_RESULTS }, port);
+export const startWalletApiStub = (
+  port = FIXTURE_API_PORT,
+  jsonRpc: JsonRpcResults = {},
+  rest: RestResults = {}
+): Promise<Server> =>
+  startApiStub({ jsonRpc: { ...JSON_RPC_RESULTS, ...jsonRpc }, rest: { ...REST_RESULTS, ...rest } }, port);
 
 /**
  * Logs a stub account in on the client, as the blog's fixture seeder does: the stored user is what

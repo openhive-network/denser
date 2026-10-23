@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { Badge } from '@ui/components/badge';
 import { ProposalVotesButton } from './proposal-votes-button';
 import { ProposalFundingBadge } from './proposal-funding-badge';
+import { ProposalPaidAmounts } from './proposal-paid-amounts';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from './dialog-login';
@@ -52,7 +53,8 @@ export function ProposalListItem({
   totalVestingFund,
   voted,
   funding,
-  isReturnProposal
+  isReturnProposal,
+  paid
 }: IListItemProps) {
   const { t } = useTranslation('common_wallet');
   const { locale } = useLocale();
@@ -159,6 +161,12 @@ export function ProposalListItem({
             {t('proposals_page.daily')} {getRoundedAbbreveration(proposalData.daily_pay.amount)}
             {' HBD)'}
           </div>
+          <ProposalPaidAmounts
+            status={proposalData.status}
+            dailyPay={proposalData.daily_pay.amount}
+            totalDays={totalDays}
+            paid={paid}
+          />
           {daysLeft !== null ? (
             <span
               className="whitespace-nowrap text-slate-500 dark:text-slate-400"
