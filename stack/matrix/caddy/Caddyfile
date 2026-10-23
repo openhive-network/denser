@@ -33,6 +33,14 @@ matrix.discuss.peerverity.info {
 	handle /_matrix/* {
 		reverse_proxy synapse:8008
 	}
+	# Synapse admin API: only for denser on this LAN (device cleanup at sign-out); token-gated too.
+	@admin {
+		path /_synapse/admin/*
+		remote_ip private_ranges
+	}
+	handle @admin {
+		reverse_proxy synapse:8008
+	}
 	handle /_synapse/client/* {
 		reverse_proxy synapse:8008
 	}

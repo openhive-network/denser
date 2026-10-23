@@ -3,8 +3,8 @@
 A closed Matrix homeserver and Element Web for denser's chat widget in Matrix mode
 (`CHAT_PROVIDER=matrix`), next to the integration site (`../integration`).
 
-- **https://matrix.discuss.peerverity.info**: Synapse (`/_matrix`, `/_synapse`) with
-  PostgreSQL. No federation, no open registration. Ordinary users sign in only through
+- **https://matrix.discuss.peerverity.info**: Synapse (`/_matrix`, `/_synapse/client`, and
+  `/_synapse/admin` from private addresses only) with PostgreSQL. No federation, no open registration. Ordinary users sign in only through
   SSO with denser's OAuth server (IdP `oidc-denser`, client `matrix`), as
   `@<hive name>:matrix.discuss.peerverity.info`, and join `#general` on their first sign-in.
 - **https://chat.discuss.peerverity.info**: Element Web, which only denser's site may frame.
@@ -54,6 +54,11 @@ curl -s https://matrix.discuss.peerverity.info/_matrix/client/v3/login \
 
 Keep that device: logging it out (or deleting it) revokes the token.
 
+caddy routes the admin API (`/_synapse/admin/*`), which that cleanup calls, only for
+private client addresses (`remote_ip private_ranges`): denser's blog and wallet reach it from
+this LAN, and caddy sees an internet client's real, public address through the router's PROXY
+header, so it gets the catch-all 404. The admin token still gates every call.
+
 ## Encryption is off
 
 The chat rooms are public and unencrypted, so end-to-end encryption protects nothing here,
@@ -64,8 +69,8 @@ clears Element's storage) stop at a blocking "Confirm your digital identity" scr
 encrypted rooms and no cross-signing keys. An account that already has cross-signing keys
 still gets the blocking screen until those keys are reset.
 
-Element has no setting for its "Verify this device" toast, which can still show once after a
-sign-in; it is dismissable. `UIFeature.BulkUnverifiedSessionsReminder: false` in
+Element's "Verify this device" toast still shows on every drawer sign-in, even for an account
+with no cross-signing keys. Element has no setting for it; it is dismissable and blocks nothing. `UIFeature.BulkUnverifiedSessionsReminder: false` in
 `element/config.json` hides the reminder about the account's other unverified sessions, and
 denser's device cleanup at sign-out leaves none.
 
