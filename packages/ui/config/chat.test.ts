@@ -92,8 +92,20 @@ describe('matrixSessionPageUrl', () => {
     assert.equal(url.searchParams.has('room'), false);
   });
 
+  it("passes denser's resolved theme", () => {
+    assert.equal(new URL(matrixSessionPageUrl(MATRIX, 'alice', 'dark')).searchParams.get('theme'), 'dark');
+    assert.equal(new URL(matrixSessionPageUrl(MATRIX, 'alice', 'light')).searchParams.get('theme'), 'light');
+  });
+
+  it('names no theme when none is known, or for anything but light and dark', () => {
+    for (const theme of [undefined, '', 'system', 'Dark', 'dark&user=@mallory:matrix.example.org']) {
+      assert.equal(new URL(matrixSessionPageUrl(MATRIX, 'alice', theme)).searchParams.has('theme'), false, theme);
+    }
+  });
+
   it('names no user for ending the session only', () => {
     assert.equal(matrixSessionPageUrl(MATRIX), 'https://chat.example.org/denser-session.html');
+    assert.equal(matrixSessionPageUrl(MATRIX, undefined, 'dark'), 'https://chat.example.org/denser-session.html');
   });
 });
 

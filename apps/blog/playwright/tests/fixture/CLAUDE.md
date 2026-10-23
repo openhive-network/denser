@@ -584,6 +584,9 @@ not navigate an iframe (it ends at `chrome-error://`). A
 Element holds (`mx_user_id`), and `frame.evaluate` reads the chat origin's
 `localStorage` afterwards: the frame's storage is partitioned under
 `localhost`, so a separate page on the chat origin would not see it.
+denser's theme follows the system's (`defaultTheme="system"`), so
+`page.emulateMedia({ colorScheme })` sets it, before the page loads or while
+the drawer is open, and the widget's session URL follows with `theme=`.
 
 ---
 

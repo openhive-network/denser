@@ -16,7 +16,9 @@ import enBlog from '../../../locales/en/common_blog.json';
  * Matrix: Element's origin serves the session page committed in stack/matrix/chat-origin, as
  * that stack's caddy does, with Element's `config.json`; the homeserver's SSO redirect stands in
  * for Synapse → denser → Synapse by sending the frame back to Element with a login token. An init
- * script plays a session Element already holds (`mx_user_id`) when the session page loads.
+ * script plays a session Element already holds (`mx_user_id`), and its device settings
+ * (`mx_local_settings`), when the session page loads. denser's theme is the system's
+ * (`defaultTheme="system"`), set through the emulated color scheme.
  *
  * Fixtures: reuses `accountSwitchLogout`, which loads the same page for a signed-in user.
  */
@@ -84,15 +86,23 @@ async function stubMatrix(page: Page): Promise<string[]> {
   return ssoRedirects;
 }
 
-/** Element holds `userId`'s session when the session page loads; empty for none. */
-async function elementHoldsSession(context: BrowserContext, userId: string): Promise<void> {
+/**
+ * Element holds `userId`'s session when the session page loads, empty for none, with
+ * `localSettings` as its device settings when given.
+ */
+async function elementHoldsSession(
+  context: BrowserContext,
+  userId: string,
+  localSettings?: Record<string, unknown>
+): Promise<void> {
   await context.addInitScript(
-    ({ sessionPage, held }) => {
+    ({ sessionPage, held, settings }) => {
       if (`${location.origin}${location.pathname}` !== sessionPage) return;
       localStorage.clear();
       if (held) localStorage.setItem('mx_user_id', held);
+      if (settings) localStorage.setItem('mx_local_settings', JSON.stringify(settings));
     },
-    { sessionPage: SESSION_PAGE, held: userId }
+    { sessionPage: SESSION_PAGE, held: userId, settings: localSettings }
   );
 }
 
@@ -123,6 +133,12 @@ async function waitForFrame(page: Page, matches: (url: string) => boolean): Prom
 
 /** Element, reached with a login token from the SSO */
 const elementFrame = (page: Page) => waitForFrame(page, (url) => url.startsWith(`${ELEMENT}/?loginToken=`));
+
+const readElementSettings = (frame: Frame): Promise<unknown> =>
+  frame.evaluate(() => JSON.parse(localStorage.getItem('mx_local_settings') ?? 'null'));
+
+const chatIframeTheme = async (page: Page) =>
+  new URL((await chatIframe(page).getAttribute('src')) ?? '').searchParams.get('theme');
 
 const readElementStorage = (frame: Frame) =>
   frame.evaluate(() => ({
@@ -218,6 +234,50 @@ test.describe('Chat widget in Matrix mode', () => {
     await homePage.getNavSidebarMenu.click();
     const link = homePage.getNavSidebarMenuContent.getByRole('link', { name: EN.chat_widget.chat });
     await expect(link).toHaveAttribute('href', ELEMENT);
+  });
+
+  test("CHAT-MATRIX-06: Element signs in with denser's resolved theme, dark or light", async ({ page, context }) => {
+    await elementHoldsSession(context, '');
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await openChat(page);
+
+    expect(await chatIframeTheme(page)).toBe('dark');
+    const frame = await elementFrame(page);
+    expect(ssoRedirects).toHaveLength(1);
+    // Set after clearing Element's storage, before the SSO
+    expect(await readElementSettings(frame)).toEqual({ theme: 'dark', use_system_theme: false });
+
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.reload();
+    await expect(chatButton(page)).toBeEnabled({ timeout: TIMEOUTS.HYDRATION });
+    await chatButton(page).click();
+    expect(await chatIframeTheme(page)).toBe('light');
+  });
+
+  test("CHAT-MATRIX-07: changing denser's theme with the drawer open reloads Element in it, in the same session", async ({
+    page,
+    context
+  }) => {
+    const heldSettings = { layout: 'irc', theme: 'light', use_system_theme: true };
+    await elementHoldsSession(context, `@${USERNAME}:${SERVER_NAME}`, heldSettings);
+    const sessionPageRequests = recordRequests(page, SESSION_PAGE);
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await openChat(page);
+    const roomScreen = `${ELEMENT}/${DEFAULT_ROOM_SCREEN}`;
+    const settingsInRoom = async () => {
+      const frame = page.frames().find((candidate) => candidate.url() === roomScreen);
+      return frame ? readElementSettings(frame).catch(() => null) : null;
+    };
+    await expect.poll(settingsInRoom).toEqual({ layout: 'irc', theme: 'dark', use_system_theme: false });
+
+    await page.emulateMedia({ colorScheme: 'light' });
+
+    await expect.poll(() => chatIframeTheme(page)).toBe('light');
+    await expect
+      .poll(() => sessionPageRequests.map((request) => new URL(request.url()).searchParams.get('theme')))
+      .toEqual(['dark', 'light']);
+    await expect.poll(settingsInRoom).toEqual({ layout: 'irc', theme: 'light', use_system_theme: false });
+    expect(ssoRedirects).toEqual([]);
   });
 });
 

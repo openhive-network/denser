@@ -69,13 +69,18 @@ clears Element's storage) stop at a blocking "Confirm your digital identity" scr
 encrypted rooms and no cross-signing keys. An account that already has cross-signing keys
 still gets the blocking screen until those keys are reset.
 
-Element's "Verify this device" toast still shows on every drawer sign-in, even for an account
-with no cross-signing keys. Element has no setting for it; it is dismissable and blocks nothing. `UIFeature.BulkUnverifiedSessionsReminder: false` in
+Element has no setting for its "Verify this device" toast, which can still show once after a
+sign-in; it is dismissable. `UIFeature.BulkUnverifiedSessionsReminder: false` in
 `element/config.json` hides the reminder about the account's other unverified sessions, and
 denser's device cleanup at sign-out leaves none.
 
-Element defaults to the dark theme (`default_theme` and `use_system_theme: false` in
-`element/config.json`); a user's own theme choice lasts until their next drawer sign-in.
+In the drawer, Element follows denser's light or dark theme: the widget passes denser's resolved
+theme to the session page (`theme=light|dark`), which sets it, with "use system theme" off, in
+Element's device settings (`localStorage` `mx_local_settings`, merged into the settings there)
+before continuing into Element or SSO. A change of denser's theme loads the session page again
+with the new theme, keeping the same user's session. Element opened on its own, outside the
+drawer, defaults to the dark theme (`default_theme` and `use_system_theme: false` in
+`element/config.json`).
 
 ## denser's side
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTheme } from 'next-themes';
 import { siteConfig } from '@ui/config/site';
 import { matrixSessionPageUrl } from '@ui/config/chat';
 import { inIframe } from '@smart-signer/lib/utils';
@@ -17,10 +18,15 @@ const HIDDEN_FRAME_STYLE = { display: 'none' } as const;
  *
  * Element keeps its session in its own origin's storage: when the chat user signs out or another
  * account becomes current, the session page is loaded without a user, which ends that session.
+ *
+ * Element follows denser's resolved theme: the session page sets it in Element, and a change of
+ * theme loads the session page again, which keeps the session of the same user.
  */
 const MatrixChatWidget = () => {
   const { t } = useTranslation('common_blog');
   const { user } = useUserClient();
+  // Undefined until next-themes knows it on the client
+  const { resolvedTheme } = useTheme();
   const [open, setOpen] = useState(false);
   // Element loads on the first opening of the drawer, not on every page view
   const [opened, setOpened] = useState(false);
@@ -67,11 +73,16 @@ const MatrixChatWidget = () => {
 
   if (!chatUser) return sessionEnd;
 
-  const sessionPage = matrixSessionPageUrl(matrix, chatUser);
+  const sessionPage = matrixSessionPageUrl(matrix, chatUser, resolvedTheme);
   return (
     <>
       {sessionEnd}
-      <ChatDrawer open={open} setOpen={toggle} iframeSrc={opened ? sessionPage : undefined} appUrl={sessionPage} />
+      <ChatDrawer
+        open={open}
+        setOpen={toggle}
+        iframeSrc={opened && resolvedTheme ? sessionPage : undefined}
+        appUrl={sessionPage}
+      />
     </>
   );
 };

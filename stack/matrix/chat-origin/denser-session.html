@@ -1,7 +1,9 @@
 <!doctype html>
 <!--
   Served from Element's origin, where Element keeps its session. denser's chat widget loads it
-  first, as /denser-session.html?user=<Matrix user id>&idp=<Synapse IdP id>[&room=<alias or ID>]:
+  first, as /denser-session.html?user=<Matrix user id>&idp=<Synapse IdP id>[&room=<alias or ID>]
+  [&theme=light|dark]. With a theme, it sets that theme in Element's device settings first, in
+  both cases below, so Element shows denser's theme.
   - Element holds that user's session: continue into Element, in the room when one is given.
   - Otherwise: clear Element's storage (another user's session), remember the homeserver for
     Element's token login, and sign in through Synapse's SSO, which goes through denser's OAuth
@@ -22,6 +24,11 @@
   // token login (?loginToken=) uses, which it otherwise only stores when it starts the SSO itself
   const USER_ID_KEY = 'mx_user_id';
   const SSO_HOMESERVER_KEY = 'mx_sso_hs_url';
+  // Element's device-level settings (DeviceSettingsHandler): a JSON object of setting values. Its
+  // ThemeWatcher takes an explicit device-level use_system_theme, then theme, over account and
+  // config settings.
+  const LOCAL_SETTINGS_KEY = 'mx_local_settings';
+  const THEMES = ['light', 'dark'];
   // For browsers without indexedDB.databases()
   const ELEMENT_DATABASES = [
     'matrix-js-sdk:riot-web-sync',
@@ -54,6 +61,22 @@
     await Promise.all([...names].map(deleteDatabase));
   }
 
+  function storedLocalSettings() {
+    try {
+      const settings = JSON.parse(localStorage.getItem(LOCAL_SETTINGS_KEY));
+      return settings && typeof settings === 'object' && !Array.isArray(settings) ? settings : {};
+    } catch {
+      // Not JSON, which Element could not read either: start from no settings
+      return {};
+    }
+  }
+
+  function setElementTheme(theme) {
+    if (!theme) return;
+    const settings = { ...storedLocalSettings(), theme, use_system_theme: false };
+    localStorage.setItem(LOCAL_SETTINGS_KEY, JSON.stringify(settings));
+  }
+
   async function homeserverUrl() {
     const response = await fetch('/config.json', { cache: 'no-store' });
     const config = await response.json();
@@ -64,24 +87,27 @@
   const expectedUser = params.get('user') || '';
   const idp = params.get('idp') || '';
   const room = params.get('room') || '';
+  const theme = params.get('theme') || '';
 
   if (!expectedUser) {
     await clearElementStorage();
     status('Signed out of chat.');
     return;
   }
-  if (!USER_ID.test(expectedUser) || !IDP_ID.test(idp) || (room && !ROOM.test(room))) {
+  if (!USER_ID.test(expectedUser) || !IDP_ID.test(idp) || (room && !ROOM.test(room)) || (theme && !THEMES.includes(theme))) {
     status('Invalid chat sign-in request.');
     return;
   }
   // Element's screen for a room; Synapse keeps the fragment when it adds the login token
   const elementUrl = `${location.origin}/${room ? `#/room/${encodeURIComponent(room)}` : ''}`;
   if (localStorage.getItem(USER_ID_KEY) === expectedUser) {
+    setElementTheme(theme);
     location.replace(elementUrl);
     return;
   }
 
   await clearElementStorage();
+  setElementTheme(theme);
   try {
     const homeserver = await homeserverUrl();
     localStorage.setItem(SSO_HOMESERVER_KEY, homeserver);
