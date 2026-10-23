@@ -10,7 +10,7 @@
   "brand": "Denser Chat",
   "default_theme": "light",
   "room_directory": { "servers": ["matrix.discuss.peerverity.info"] },
-  "setting_defaults": { "breadcrumbs": true },
+  "setting_defaults": { "breadcrumbs": true, "UIFeature.BulkUnverifiedSessionsReminder": false },
   "element_call": { "use_exclusively": false },
   "show_labs_settings": false
 }

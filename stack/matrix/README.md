@@ -41,11 +41,40 @@ docker compose exec synapse register_new_matrix_user -c /config/homeserver.yaml 
 Create `#general:matrix.discuss.peerverity.info` as that admin once; new users are
 joined to it, and Synapse does not create it (`autocreate_auto_join_rooms: false`).
 
+denser deletes a user's Matrix devices when they sign out of denser or switch account
+(`DENSER_SERVER_MATRIX_ADMIN_TOKEN` below), since Element's sign-out in the browser leaves
+them, with their access tokens, on Synapse. That needs an access token of the admin, from a
+password login:
+
+```bash
+curl -s https://matrix.discuss.peerverity.info/_matrix/client/v3/login \
+  -d '{"type":"m.login.password","identifier":{"type":"m.id.user","user":"admin"},"password":"<admin password>","device_id":"denser-admin-api"}' \
+  | jq -r .access_token
+```
+
+Keep that device: logging it out (or deleting it) revokes the token.
+
+## Encryption is off
+
+The chat rooms are public and unencrypted, so end-to-end encryption protects nothing here,
+while Element's cross-signing makes every drawer sign-in (a new device, as the session page
+clears Element's storage) stop at a blocking "Confirm your digital identity" screen.
+`/.well-known/matrix/client` (caddy) therefore carries
+`"io.element.e2ee": {"default": false, "force_disable": true}`: Element creates no
+encrypted rooms and no cross-signing keys. An account that already has cross-signing keys
+still gets the blocking screen until those keys are reset.
+
+Element has no setting for its "Verify this device" toast, which can still show once after a
+sign-in; it is dismissable. `UIFeature.BulkUnverifiedSessionsReminder: false` in
+`element/config.json` hides the reminder about the account's other unverified sessions, and
+denser's device cleanup at sign-out leaves none.
+
 ## denser's side
 
 On the integration site, in `../integration/.env` (its compose passes them to the blog and wallet
 as `REACT_APP_CHAT_PROVIDER`, `REACT_APP_MATRIX_ELEMENT_URL`, `REACT_APP_MATRIX_HOMESERVER_URL`,
-`REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND`), then `./upgrade.sh` there:
+`REACT_APP_MATRIX_DEFAULT_ROOM`, `REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND`, and
+`DENSER_SERVER_MATRIX_ADMIN_TOKEN` as is), then `./upgrade.sh` there:
 
 ```bash
 CHAT_PROVIDER=matrix
@@ -54,13 +83,24 @@ LOGIN_AUTHENTICATE_ON_BACKEND=yes
 MATRIX_ELEMENT_URL=https://chat.discuss.peerverity.info
 MATRIX_HOMESERVER_URL=https://matrix.discuss.peerverity.info
 DENSER_SERVER_OAUTH_MATRIX_SECRET=<DENSER_OAUTH_MATRIX_SECRET of this .env>
+# Optional: deletes the user's Matrix devices at sign-out (the admin token above)
+DENSER_SERVER_MATRIX_ADMIN_TOKEN=<admin access token>
+# Optional: the room the drawer opens in; default #general:matrix.discuss.peerverity.info
+MATRIX_DEFAULT_ROOM=
 ```
 
 Elsewhere the app settings are `REACT_APP_CHAT_PROVIDER`, `REACT_APP_MATRIX_ELEMENT_URL`,
 `REACT_APP_MATRIX_HOMESERVER_URL`, `REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND=yes`,
-`REACT_APP_MATRIX_SERVER_NAME` (default: the homeserver's host), `REACT_APP_MATRIX_IDP_ID` (default `oidc-denser`), and on the blog's server
+`REACT_APP_MATRIX_SERVER_NAME` (default: the homeserver's host), `REACT_APP_MATRIX_IDP_ID` (default `oidc-denser`),
+`REACT_APP_MATRIX_DEFAULT_ROOM` (the room alias or ID the drawer opens in, after SSO and when
+Element already holds the session; default `#general:<server name>`), and on the blog's server
 `DENSER_SERVER_OAUTH_MATRIX_SECRET` and, optionally, `DENSER_SERVER_OAUTH_MATRIX_REDIRECT_URI`
-(default `<homeserver>/_synapse/client/oidc/callback`).
+(default `<homeserver>/_synapse/client/oidc/callback`). On the blog's and wallet's servers,
+`DENSER_SERVER_MATRIX_ADMIN_TOKEN` (the admin token above; empty: no device cleanup) makes
+sign-out and account switches delete the user's Matrix devices
+(`GET /_synapse/admin/v2/users/<user id>/devices`, then `POST .../delete_devices`), in the
+background with a 5 s bound per call; a failure is logged, without the token, and does not hold
+up the sign-out. Signing in again as the same user keeps the devices.
 
 The widget shows for a user the server signed in (strict login, or any with
 `REACT_APP_OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN=yes`), limited to

@@ -18,9 +18,18 @@
 
 matrix.discuss.peerverity.info {
 	import tls
-	header /.well-known/matrix/* Access-Control-Allow-Origin *
-	respond /.well-known/matrix/client `{"m.homeserver":{"base_url":"https://matrix.discuss.peerverity.info"}}` 200
-	respond /.well-known/matrix/server `{"m.server":"matrix.discuss.peerverity.info:443"}` 200
+	# handle, not bare respond: Caddy orders handle before respond, so the catch-all below would win.
+	# E2EE is off for these public rooms (see ../README.md).
+	handle /.well-known/matrix/client {
+		header Access-Control-Allow-Origin *
+		header Content-Type application/json
+		respond `{"m.homeserver":{"base_url":"https://matrix.discuss.peerverity.info"},"io.element.e2ee":{"default":false,"force_disable":true}}` 200
+	}
+	handle /.well-known/matrix/server {
+		header Access-Control-Allow-Origin *
+		header Content-Type application/json
+		respond `{"m.server":"matrix.discuss.peerverity.info:443"}` 200
+	}
 	handle /_matrix/* {
 		reverse_proxy synapse:8008
 	}
