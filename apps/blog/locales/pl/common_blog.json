@@ -1091,7 +1091,8 @@
         "comments": "Komentarze",
         "replies": "Odpowiedzi",
         "blog": "Wpisy i udostępnienia",
-        "feed": "Kanał"
+        "feed": "Kanał",
+        "devices": "Urządzenia"
       },
       "gateway_note": "Bramka kont lite",
       "gateway_tooltip": "To konto Hive publikuje w imieniu kont lite",
@@ -1107,7 +1108,9 @@
       "forget_title": "Zapomnieć konto lite {{name}}?",
       "forget_description": "Jego klucz jest przechowywany tylko w tej przeglądarce: po zapomnieniu nikt nie będzie już mógł publikować, edytować ani usuwać jako to konto lite. Usunięte zostaną też jego szkice i posty w kolejce; opublikowane posty pozostaną.",
       "forget_confirm": "Zapomnij",
-      "my_feed": "Mój kanał"
+      "my_feed": "Mój kanał",
+      "forget_description_unsecured": "To konto istnieje tylko w tej przeglądarce: po zapomnieniu nikt już nie opublikuje, nie edytuje ani nie usunie niczego jako to konto lite. Aby je zachować, najpierw zabezpiecz je kluczem dostępu. Usunięte zostaną też jego szkice lite i posty w kolejce; opublikowane posty zostają.",
+      "forget_description_secured": "Ta przeglądarka zapomni konto, jego szkice i posty w kolejce. Konto pozostaje Twoje: zaloguj się ponownie kluczem dostępu. Klucz tego urządzenia pozostaje na koncie do czasu wygaśnięcia; Wyloguj usuwa go od razu."
     },
     "social": {
       "failed_title": "Konto lite nie mogło tego zrobić",
@@ -1122,6 +1125,72 @@
         "unavailable": "Bramka jest teraz niedostępna.",
         "unknown": "Coś poszło nie tak. Spróbuj ponownie."
       }
+    },
+    "passkey": {
+      "failed_title": "Operacja z kluczem dostępu nie powiodła się",
+      "pick_signer": "Wybierz serwis podpisujący, który przechowuje Twój klucz dostępu",
+      "secured_title": "Konto zabezpieczone",
+      "secured_description": "Twój klucz dostępu jest teraz właścicielem tego konta lite. Ta przeglądarka przechowuje już tylko jego klucz publikowania.",
+      "device_label": "Nazwa tego urządzenia",
+      "record_signer": "Zapisz adres serwisu podpisującego w łańcuchu, aby Twoje inne urządzenia wiedziały, gdzie podpisywać",
+      "working": "Czekam na serwis podpisujący i łańcuch…",
+      "secure_confirm": "Utwórz klucz dostępu i zabezpiecz",
+      "secure_title": "Zabezpiecz to konto kluczem dostępu",
+      "secure_description": "To konto lite istnieje tylko w tej przeglądarce. Klucz dostępu przechowywany przez serwis podpisujący staje się jego kluczem właściciela: zalogujesz się na innych urządzeniach, a utrata tej przeglądarki nie oznacza już utraty konta.",
+      "continue": "Dalej",
+      "signed_in_title": "Zalogowano jako {{name}}",
+      "signer_is": "Twój klucz dostępu przechowuje {{host}}.",
+      "sign_in_confirm": "Zaloguj się kluczem dostępu",
+      "sign_in_title": "Zaloguj się na tym urządzeniu",
+      "sign_in_description": "Używaj w tej przeglądarce konta lite zabezpieczonego kluczem dostępu. To urządzenie dostaje własny klucz, ważny 90 dni.",
+      "signed_out_title": "Wylogowano z {{name}}",
+      "sign_out_title": "Wylogować z {{name}}?",
+      "sign_out_description": "Klucz tego urządzenia zostanie usunięty z konta, a ta przeglądarka go zapomni. Konto pozostaje Twoje: zaloguj się ponownie kluczem dostępu.",
+      "sign_out_confirm": "Wyloguj",
+      "sign_out": "Wyloguj się",
+      "warning_unsecured": "To konto istnieje tylko w tej przeglądarce. Zabezpiecz je kluczem dostępu.",
+      "warning_add_backup": "To konto zabezpiecza tylko jeden klucz dostępu. Rozważ dodanie zapasowego.",
+      "secure_action": "Zabezpiecz to konto",
+      "prompt_title": "Twoje konto lite jest już w łańcuchu",
+      "prompt_dismiss": "Zamknij",
+      "sign_in_on_device": "Masz już konto lite zabezpieczone kluczem dostępu? Zaloguj się na tym urządzeniu"
+    },
+    "signer_errors": {
+      "popup_blocked": "Przeglądarka zablokowała okno serwisu podpisującego. Zezwól na wyskakujące okna dla tej strony i spróbuj ponownie.",
+      "signer_unavailable": "Serwis podpisujący nie odpowiedział. Sprawdź połączenie i spróbuj ponownie.",
+      "key_not_found": "Ten klucz dostępu nie zawiera klucza konta. Użyj klucza dostępu, którym zabezpieczono to konto.",
+      "owner_blind_signing": "Serwis podpisujący odmówił podpisania w ciemno kluczem właściciela.",
+      "prf_unsupported": "Ten klucz dostępu lub ta przeglądarka nie potrafi wyprowadzać kluczy (brak obsługi PRF). Spróbuj innej przeglądarki lub dostawcy kluczy.",
+      "webauthn_unavailable": "Klucze dostępu nie są dostępne w tej przeglądarce.",
+      "busy": "Okno serwisu podpisującego obsługuje inne żądanie. Zamknij je i spróbuj ponownie.",
+      "invalid_request": "Serwis podpisujący odrzucił żądanie jako nieprawidłowe.",
+      "internal": "Serwis podpisujący zawiódł. Spróbuj ponownie."
+    },
+    "authority_errors": {
+      "rate_limited": "Na razie zbyt wiele zmian konta. Spróbuj później.",
+      "auth_failed": "Łańcuch nie przyjął tego klucza dla tej zmiany.",
+      "not_relayed": "Bramka nie przekazuje zmian konta.",
+      "not_found": "Nie ma konta lite o tej nazwie.",
+      "not_secured": "To konto lite nie jest zabezpieczone kluczem dostępu. Zaloguj się z przeglądarki, która je przechowuje.",
+      "not_applied": "Zmiana została wysłana, ale jeszcze nie widać jej w łańcuchu. Sprawdź ponownie za minutę.",
+      "not_owner": "Ta przeglądarka nie przechowuje klucza właściciela konta.",
+      "unavailable": "Usługa kont lite jest niedostępna. Spróbuj później."
+    },
+    "devices": {
+      "title": "Urządzenia",
+      "description": "Wszystkie urządzenia, które mogą publikować jako to konto. Każdy klucz wygasa; odnów klucz tego urządzenia kluczem dostępu, zanim wygaśnie.",
+      "unlabelled": "Urządzenie bez nazwy",
+      "this_device": "(to urządzenie)",
+      "valid_until": "Ważny do {{date}}",
+      "expired_on": "Wygasł {{date}}",
+      "no_expiry": "Bez terminu ważności",
+      "renew": "Odnów",
+      "remove": "Usuń",
+      "removed": "Usunięto urządzenie",
+      "renewed": "Odnowiono klucz tego urządzenia",
+      "not_owner": "Urządzenia tego konta widzi tylko przeglądarka zalogowana na nie.",
+      "expiry_banner": "Klucz tego urządzenia dla {{name}} wygasa {{date}}.",
+      "expiry_banner_action": "Odnów go kluczem dostępu"
     }
   }
 }

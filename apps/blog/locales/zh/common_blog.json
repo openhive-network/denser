@@ -1091,7 +1091,8 @@
         "comments": "评论",
         "replies": "回复",
         "blog": "博客",
-        "feed": "动态"
+        "feed": "动态",
+        "devices": "设备"
       },
       "gateway_note": "轻账号网关",
       "gateway_tooltip": "此 Hive 账号代表轻账号发布内容",
@@ -1107,7 +1108,9 @@
       "forget_title": "忘记轻账号 {{name}}？",
       "forget_description": "其密钥仅保存在此浏览器中：忘记后，任何人都无法再以此轻账号发布、编辑或删除内容。其草稿和排队中的帖子也会被删除；已发布的帖子会保留。",
       "forget_confirm": "忘记",
-      "my_feed": "我的动态"
+      "my_feed": "我的动态",
+      "forget_description_unsecured": "此账户仅存在于此浏览器中：一旦忘记，任何人都无法再以此轻账户发布、编辑或删除内容。若要保留，请先用通行密钥保护它。其轻草稿和排队的帖子也会被删除；已发布的帖子会保留。",
+      "forget_description_secured": "此浏览器将忘记该账户及其草稿和排队的帖子。账户仍归你所有：可用通行密钥重新登录。此设备的密钥会保留在账户上直到过期；“退出登录”会立即将其移除。"
     },
     "social": {
       "failed_title": "轻量账户无法完成此操作",
@@ -1122,6 +1125,72 @@
         "unavailable": "网关当前不可用。",
         "unknown": "出了点问题，请重试。"
       }
+    },
+    "passkey": {
+      "failed_title": "通行密钥操作失败",
+      "pick_signer": "选择保管你通行密钥的签名服务",
+      "secured_title": "账户已受保护",
+      "secured_description": "你的通行密钥现在是此轻账户的所有者。此浏览器只保留其发帖密钥。",
+      "device_label": "此设备的名称",
+      "record_signer": "将签名服务地址记录到链上，让你的其他设备知道去哪里签名",
+      "working": "正在等待签名服务和区块链…",
+      "secure_confirm": "创建通行密钥并保护",
+      "secure_title": "用通行密钥保护此账户",
+      "secure_description": "此轻账户仅存在于此浏览器中。由签名服务保管的通行密钥将成为其所有者密钥：你可以在其他设备上登录，丢失此浏览器也不会再丢失账户。",
+      "continue": "继续",
+      "signed_in_title": "已登录为 {{name}}",
+      "signer_is": "你的通行密钥由 {{host}} 保管。",
+      "sign_in_confirm": "用通行密钥登录",
+      "sign_in_title": "在此设备上登录",
+      "sign_in_description": "在此浏览器中使用受通行密钥保护的轻账户。此设备会获得自己的密钥，有效期 90 天。",
+      "signed_out_title": "已退出 {{name}}",
+      "sign_out_title": "退出 {{name}}？",
+      "sign_out_description": "此设备的密钥将从账户中移除，此浏览器也会忘记它。账户仍归你所有：可用通行密钥重新登录。",
+      "sign_out_confirm": "退出登录",
+      "sign_out": "退出登录",
+      "warning_unsecured": "此账户仅存在于此浏览器中。请用通行密钥保护它。",
+      "warning_add_backup": "此账户仅由一个通行密钥保护。建议添加备份。",
+      "secure_action": "保护此账户",
+      "prompt_title": "你的轻账户已上链",
+      "prompt_dismiss": "关闭",
+      "sign_in_on_device": "已用通行密钥保护过轻账户？在此设备上登录"
+    },
+    "signer_errors": {
+      "popup_blocked": "浏览器拦截了签名窗口。请允许此网站的弹出窗口后重试。",
+      "signer_unavailable": "签名服务没有响应。请检查网络连接后重试。",
+      "key_not_found": "此通行密钥不包含该账户的密钥。请使用保护此账户时所用的通行密钥。",
+      "owner_blind_signing": "签名服务拒绝用所有者密钥进行盲签。",
+      "prf_unsupported": "此通行密钥或浏览器无法派生密钥（不支持 PRF）。请尝试其他浏览器或通行密钥提供商。",
+      "webauthn_unavailable": "此浏览器不支持通行密钥。",
+      "busy": "签名窗口正在处理另一个请求。请关闭后重试。",
+      "invalid_request": "签名服务以请求无效为由拒绝了它。",
+      "internal": "签名服务出错。请重试。"
+    },
+    "authority_errors": {
+      "rate_limited": "账户更改过于频繁。请稍后再试。",
+      "auth_failed": "区块链不接受用此密钥进行该更改。",
+      "not_relayed": "网关不转发账户更改。",
+      "not_found": "没有使用此名称的轻账户。",
+      "not_secured": "此轻账户未受通行密钥保护。请在保存它的浏览器中登录。",
+      "not_applied": "更改已发送，但尚未出现在链上。请一分钟后再查看。",
+      "not_owner": "此浏览器没有该账户的所有者密钥。",
+      "unavailable": "轻账户服务不可用。请稍后再试。"
+    },
+    "devices": {
+      "title": "设备",
+      "description": "所有可以以此账户发帖的设备。每个密钥都会过期；请在过期前用通行密钥续期此设备的密钥。",
+      "unlabelled": "未命名设备",
+      "this_device": "（此设备）",
+      "valid_until": "有效期至 {{date}}",
+      "expired_on": "已于 {{date}} 过期",
+      "no_expiry": "永不过期",
+      "renew": "续期",
+      "remove": "移除",
+      "removed": "设备已移除",
+      "renewed": "此设备的密钥已续期",
+      "not_owner": "只有登录此账户的浏览器才能看到其设备。",
+      "expiry_banner": "此设备用于 {{name}} 的密钥将于 {{date}} 过期。",
+      "expiry_banner_action": "用通行密钥续期"
     }
   }
 }

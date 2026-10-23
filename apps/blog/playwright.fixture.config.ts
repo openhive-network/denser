@@ -68,6 +68,10 @@ const serverEnv = {
   // installImageUploadStub can intercept it (job 3142272 saw exactly
   // this for POST-08/09/18).
   REACT_APP_IMAGES_ENDPOINT: 'https://images.hive.blog/',
+  // The steem-16 deployment's passkey signer, the one the lite passkey specs' recordings and
+  // stub signer stand for; a spec needing another list rewrites it in __ENV.js
+  // (`configureSigners` in support/litePasskeyContext.ts).
+  REACT_APP_PASSKEY_SIGNERS: JSON.stringify(['https://signer.syncad.com']),
   HOSTNAME: '0.0.0.0',
   PORT: '3000',
   // Pin APP_NAME so iron-session's cookieName matches what the seeder

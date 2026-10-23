@@ -12,10 +12,23 @@ import {
 } from '@ui/components/alert-dialog';
 import { useTranslation } from '@/blog/i18n/client';
 
-type Props = { name: string; open: boolean; onOpenChange: (open: boolean) => void; onConfirm: () => void };
+/**
+ * What forgetting means: `plain` where passkeys are not offered (the key exists only here),
+ * `unsecured` (forgetting destroys the account; securing it first keeps it), `secured` (the
+ * account lives on; this browser's key stays on it until it expires, Sign out removes it now).
+ */
+export type LiteForgetVariant = 'plain' | 'unsecured' | 'secured';
 
-/** Confirms forgetting the browser's lite account, and says its key exists only in this browser. */
-export function LiteForgetDialog({ name, open, onOpenChange, onConfirm }: Props) {
+const DESCRIPTION_KEYS: Record<LiteForgetVariant, string> = {
+  plain: 'lite_account.identity.forget_description',
+  unsecured: 'lite_account.identity.forget_description_unsecured',
+  secured: 'lite_account.identity.forget_description_secured'
+};
+
+type Props = { name: string; variant?: LiteForgetVariant; open: boolean; onOpenChange: (open: boolean) => void; onConfirm: () => void };
+
+/** Confirms forgetting the browser's lite account, saying what it costs. */
+export function LiteForgetDialog({ name, variant = 'plain', open, onOpenChange, onConfirm }: Props) {
   const { t } = useTranslation('common_blog');
 
   return (
@@ -23,7 +36,7 @@ export function LiteForgetDialog({ name, open, onOpenChange, onConfirm }: Props)
       <AlertDialogContent className="flex flex-col gap-6 sm:rounded-r-xl" data-testid="lite-forget-dialog">
         <AlertDialogHeader className="gap-2">
           <AlertDialogTitle>{t('lite_account.identity.forget_title', { name })}</AlertDialogTitle>
-          <AlertDialogDescription>{t('lite_account.identity.forget_description')}</AlertDialogDescription>
+          <AlertDialogDescription data-variant={variant}>{t(DESCRIPTION_KEYS[variant])}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="gap-2 sm:flex-row-reverse">
           <AlertDialogCancel data-testid="lite-forget-cancel">{t('lite_account.manage.cancel')}</AlertDialogCancel>

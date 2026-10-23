@@ -1091,7 +1091,8 @@
         "comments": "Comentarios",
         "replies": "Respuestas",
         "blog": "Blog",
-        "feed": "Feed"
+        "feed": "Feed",
+        "devices": "Dispositivos"
       },
       "gateway_note": "Pasarela de cuentas lite",
       "gateway_tooltip": "Esta cuenta de Hive publica en nombre de cuentas lite",
@@ -1107,7 +1108,9 @@
       "forget_title": "¿Olvidar la cuenta lite {{name}}?",
       "forget_description": "Su clave solo se guarda en este navegador: una vez olvidada, nadie podrá volver a publicar, editar ni eliminar como esta cuenta lite. También se eliminan sus borradores y publicaciones en cola; sus publicaciones ya publicadas se mantienen.",
       "forget_confirm": "Olvidar",
-      "my_feed": "Mi feed"
+      "my_feed": "Mi feed",
+      "forget_description_unsecured": "Esta cuenta solo existe en este navegador: una vez olvidada, nadie podrá volver a publicar, editar ni borrar como esta cuenta lite. Para conservarla, protégela antes con una passkey. También se eliminan sus borradores lite y publicaciones en cola; sus publicaciones publicadas se quedan.",
+      "forget_description_secured": "Este navegador olvida la cuenta, sus borradores y sus publicaciones en cola. La cuenta sigue siendo tuya: vuelve a iniciar sesión con tu passkey. La clave de este dispositivo sigue en la cuenta hasta que caduque; Cerrar sesión la elimina ahora."
     },
     "social": {
       "failed_title": "La cuenta lite no pudo hacerlo",
@@ -1122,6 +1125,72 @@
         "unavailable": "La pasarela no está disponible ahora.",
         "unknown": "Algo salió mal. Inténtalo de nuevo."
       }
+    },
+    "passkey": {
+      "failed_title": "La acción con la passkey ha fallado",
+      "pick_signer": "Elige el firmante que guarda tu passkey",
+      "secured_title": "Cuenta protegida",
+      "secured_description": "Tu passkey es ahora la propietaria de esta cuenta lite. Este navegador solo guarda su clave de publicación.",
+      "device_label": "Nombre de este dispositivo",
+      "record_signer": "Registrar la dirección del firmante en la cadena, para que tus otros dispositivos sepan dónde firmar",
+      "working": "Esperando al firmante y a la cadena…",
+      "secure_confirm": "Crear la passkey y proteger",
+      "secure_title": "Protege esta cuenta con una passkey",
+      "secure_description": "Esta cuenta lite solo existe en este navegador. Una passkey guardada por un sitio firmante se convierte en su clave de propietario: podrás iniciar sesión en otros dispositivos y perder este navegador ya no significará perder la cuenta.",
+      "continue": "Continuar",
+      "signed_in_title": "Sesión iniciada como {{name}}",
+      "signer_is": "Tu passkey la guarda {{host}}.",
+      "sign_in_confirm": "Iniciar sesión con la passkey",
+      "sign_in_title": "Iniciar sesión en este dispositivo",
+      "sign_in_description": "Usa en este navegador tu cuenta lite protegida con passkey. Este dispositivo recibe su propia clave, válida durante 90 días.",
+      "signed_out_title": "Sesión cerrada en {{name}}",
+      "sign_out_title": "¿Cerrar sesión en {{name}}?",
+      "sign_out_description": "La clave de este dispositivo se elimina de la cuenta y este navegador la olvida. La cuenta sigue siendo tuya: vuelve a iniciar sesión con tu passkey.",
+      "sign_out_confirm": "Cerrar sesión",
+      "sign_out": "Cerrar sesión",
+      "warning_unsecured": "Esta cuenta solo existe en este navegador. Protégela con una passkey.",
+      "warning_add_backup": "Esta cuenta está protegida por una sola passkey. Considera añadir una copia de seguridad.",
+      "secure_action": "Proteger esta cuenta",
+      "prompt_title": "Tu cuenta lite ya está en la cadena",
+      "prompt_dismiss": "Descartar",
+      "sign_in_on_device": "¿Ya protegiste una cuenta lite con una passkey? Inicia sesión en este dispositivo"
+    },
+    "signer_errors": {
+      "popup_blocked": "El navegador bloqueó la ventana del firmante. Permite las ventanas emergentes para este sitio e inténtalo de nuevo.",
+      "signer_unavailable": "El sitio firmante no respondió. Comprueba tu conexión e inténtalo de nuevo.",
+      "key_not_found": "Esta passkey no contiene la clave de la cuenta. Usa la passkey con la que se protegió esta cuenta.",
+      "owner_blind_signing": "El firmante se negó a firmar a ciegas con una clave de propietario.",
+      "prf_unsupported": "Esta passkey o este navegador no pueden derivar claves (sin soporte PRF). Prueba otro navegador u otro proveedor de passkeys.",
+      "webauthn_unavailable": "Las passkeys no están disponibles en este navegador.",
+      "busy": "La ventana del firmante está ocupada con otra solicitud. Ciérrala e inténtalo de nuevo.",
+      "invalid_request": "El firmante rechazó la solicitud por no ser válida.",
+      "internal": "El firmante ha fallado. Inténtalo de nuevo."
+    },
+    "authority_errors": {
+      "rate_limited": "Demasiados cambios en la cuenta por ahora. Inténtalo más tarde.",
+      "auth_failed": "La cadena no aceptó esta clave para el cambio.",
+      "not_relayed": "La pasarela no retransmite cambios de cuenta.",
+      "not_found": "No existe ninguna cuenta lite con este nombre.",
+      "not_secured": "Esta cuenta lite no está protegida con una passkey. Inicia sesión desde el navegador que la guarda.",
+      "not_applied": "El cambio se envió pero aún no aparece en la cadena. Vuelve a comprobarlo en un minuto.",
+      "not_owner": "Este navegador no guarda la clave de propietario de la cuenta.",
+      "unavailable": "El servicio de cuentas lite no está disponible. Inténtalo más tarde."
+    },
+    "devices": {
+      "title": "Dispositivos",
+      "description": "Todos los dispositivos que pueden publicar como esta cuenta. Cada clave caduca; renueva la clave de este dispositivo con tu passkey antes de que lo haga.",
+      "unlabelled": "Dispositivo sin nombre",
+      "this_device": "(este dispositivo)",
+      "valid_until": "Válida hasta el {{date}}",
+      "expired_on": "Caducó el {{date}}",
+      "no_expiry": "Sin caducidad",
+      "renew": "Renovar",
+      "remove": "Eliminar",
+      "removed": "Dispositivo eliminado",
+      "renewed": "Se renovó la clave de este dispositivo",
+      "not_owner": "Solo un navegador con sesión iniciada en esta cuenta ve sus dispositivos.",
+      "expiry_banner": "La clave de este dispositivo para {{name}} caduca el {{date}}.",
+      "expiry_banner_action": "Renuévala con tu passkey"
     }
   }
 }
