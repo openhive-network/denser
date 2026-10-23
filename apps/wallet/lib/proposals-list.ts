@@ -48,6 +48,10 @@ export const uniqueProposals = <T extends { proposal_id: number }>(pages: readon
   });
 };
 
+/** Whether the proposal pays back into the DHF, the proposals the list marks "refund". */
+export const isRefundProposal = (proposal: { receiver: string }, refundAccounts: readonly string[]): boolean =>
+  refundAccounts.includes(proposal.receiver);
+
 type FundedSet = Pick<ReadonlyMap<number, unknown>, 'has'>;
 
 export type ProposalFundingBadge = 'funded' | 'not_funded';
@@ -69,15 +73,18 @@ const lastFundedIndex = (proposals: readonly { proposal_id: number }[], funded: 
 /**
  * How the list marks the next round of DHF payouts. `withLine` (a list in vote order) draws a line
  * after the last `funded` proposal, and badges "not funded" any proposal above it that is not;
- * otherwise, or when no listed proposal is funded, every active proposal gets a badge.
+ * otherwise, or when no listed proposal is funded, every active proposal gets a badge. A refund
+ * proposal (receiver in `refundAccounts`) never gets one: what it is paid goes back to the DHF.
  */
 export function fundingMarks(
-  proposals: readonly { proposal_id: number; status: string }[],
+  proposals: readonly { proposal_id: number; status: string; receiver: string }[],
   funded: FundedSet,
-  withLine: boolean
+  withLine: boolean,
+  refundAccounts: readonly string[]
 ): FundingMarks {
   const lineIndex = withLine ? lastFundedIndex(proposals, funded) : -1;
   const badges = proposals.map((proposal, index): ProposalFundingBadge | undefined => {
+    if (isRefundProposal(proposal, refundAccounts)) return undefined;
     const isFunded = funded.has(proposal.proposal_id);
     if (lineIndex >= 0) return index < lineIndex && !isFunded ? 'not_funded' : undefined;
     if (proposal.status !== 'active') return undefined;

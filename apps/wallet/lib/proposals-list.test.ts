@@ -65,36 +65,51 @@ describe('uniqueProposals', () => {
 });
 
 describe('fundingMarks', () => {
-  const active = (id: number) => ({ proposal_id: id, status: 'active' });
-  const upcoming = (id: number) => ({ proposal_id: id, status: 'inactive' });
+  const active = (id: number) => ({ proposal_id: id, status: 'active', receiver: `receiver${id}` });
+  const upcoming = (id: number) => ({ proposal_id: id, status: 'inactive', receiver: `receiver${id}` });
+  const refund = (id: number) => ({ proposal_id: id, status: 'active', receiver: 'hive.fund' });
   const funded = new Set([3, 5, 0]);
+  const REFUND_ACCOUNTS = ['hive.fund'];
 
   it('draws the line after the last funded proposal, with no badges', () => {
-    const marks = fundingMarks([active(3), active(5), active(0), active(7)], funded, true);
+    const marks = fundingMarks([active(3), active(5), active(0), active(7)], funded, true, REFUND_ACCOUNTS);
 
     assert.equal(marks.lineIndex, 2);
     assert.deepEqual(marks.badges, [undefined, undefined, undefined, undefined]);
   });
 
   it('badges an unfunded proposal listed above the line', () => {
-    const marks = fundingMarks([active(3), upcoming(9), active(0), active(7)], funded, true);
+    const marks = fundingMarks([active(3), upcoming(9), active(0), active(7)], funded, true, REFUND_ACCOUNTS);
 
     assert.equal(marks.lineIndex, 2);
     assert.deepEqual(marks.badges, [undefined, 'not_funded', undefined, undefined]);
   });
 
   it('badges each active proposal when the list is not in vote order', () => {
-    const marks = fundingMarks([active(7), upcoming(9), active(3)], funded, false);
+    const marks = fundingMarks([active(7), upcoming(9), active(3)], funded, false, REFUND_ACCOUNTS);
 
     assert.equal(marks.lineIndex, -1);
     assert.deepEqual(marks.badges, ['not_funded', undefined, 'funded']);
   });
 
   it('falls back to badges when no listed proposal is funded', () => {
-    const marks = fundingMarks([active(7), active(8)], funded, true);
+    const marks = fundingMarks([active(7), active(8)], funded, true, REFUND_ACCOUNTS);
 
     assert.equal(marks.lineIndex, -1);
     assert.deepEqual(marks.badges, ['not_funded', 'not_funded']);
+  });
+
+  it('gives a refund proposal no badge, funded or not, while the proposals around it keep theirs', () => {
+    const marks = fundingMarks([active(3), refund(0), active(7), refund(8)], funded, false, REFUND_ACCOUNTS);
+
+    assert.deepEqual(marks.badges, ['funded', undefined, 'not_funded', undefined]);
+  });
+
+  it('gives an unfunded refund proposal above the line no badge', () => {
+    const marks = fundingMarks([active(3), refund(9), upcoming(4), active(5)], funded, true, REFUND_ACCOUNTS);
+
+    assert.equal(marks.lineIndex, 3);
+    assert.deepEqual(marks.badges, [undefined, undefined, 'not_funded', undefined]);
   });
 });
 

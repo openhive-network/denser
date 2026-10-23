@@ -102,7 +102,8 @@ export default function ProposalsPage() {
         ? fundingMarks(
             proposals,
             funding.payouts,
-            sortOrder === 'by_total_votes' && orderDirection === 'descending' && !search.trim()
+            sortOrder === 'by_total_votes' && orderDirection === 'descending' && !search.trim(),
+            REFUND_ACCOUNTS
           )
         : NO_FUNDING_MARKS,
     [proposals, funding, sortOrder, orderDirection, search]
