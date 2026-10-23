@@ -148,5 +148,8 @@ run_with_junit_fallback "$junit" wallet node --test \
     apps/wallet/lib/min-delegation.test.ts \
     apps/wallet/lib/scam-transfer-filter.test.ts \
     apps/wallet/lib/market-order-form.test.ts \
-    apps/wallet/lib/financial-report.test.ts < /dev/null || status=1
+    apps/wallet/lib/financial-report.test.ts \
+    apps/wallet/lib/dhf-funding.test.ts \
+    apps/wallet/lib/proposals-list.test.ts \
+    apps/wallet/playwright/tests/support/contrast.test.ts < /dev/null || status=1
 exit "$status"

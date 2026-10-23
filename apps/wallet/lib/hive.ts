@@ -26,6 +26,7 @@ import { getLogger } from '@ui/lib/logging';
 import { getReadChain } from '@transaction/lib/chain';
 import { retryReadOnce } from '@transaction/lib/read-retry';
 import { FINANCIAL_REPORT_OP_TYPES } from '@/wallet/lib/financial-report';
+import type { ProposalFundingBadge } from '@/wallet/lib/proposals-list';
 
 const logger = getLogger('app');
 
@@ -146,6 +147,9 @@ export interface IListItemProps {
   totalShares: Big;
   totalVestingFund: Big;
   voted: boolean;
+  /** The proposal's badge in the next round of DHF payouts; none where the list shows the funding line instead. */
+  funding?: ProposalFundingBadge;
+  isReturnProposal?: boolean;
 }
 
 /**

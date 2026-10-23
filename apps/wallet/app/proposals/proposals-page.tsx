@@ -1,18 +1,31 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import { DEFAULT_PARAMS_FOR_PROPOSALS, getProposals, getUserVotes } from '@/wallet/lib/hive';
 import { IGetProposalsParams } from '@hive/common-hiveio-packages/wax';
 import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { ProposalsFilter } from '@/wallet/components/proposals-filter';
-import dayjs from 'dayjs';
 import { ProposalListItem } from '@/wallet/components/proposals-list-item';
+import { ProposalsDhfSummary } from '@/wallet/components/proposals-dhf-summary';
+import { ProposalsFundingLine } from '@/wallet/components/proposals-funding-line';
+import { useDhfFundingQuery } from '@/wallet/components/hooks/use-dhf-funding';
+import { REFUND_ACCOUNTS } from '@/wallet/lib/constants';
+import { isReturnProposal } from '@/wallet/lib/dhf-funding';
+import {
+  fundingMarks,
+  isProposalStatusTab,
+  matchesProposalSearch,
+  type FundingMarks
+} from '@/wallet/lib/proposals-list';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { Skeleton } from '@ui/components/skeleton';
+import { Tabs, TabsContent } from '@ui/components/tabs';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+
+const NO_FUNDING_MARKS: FundingMarks = { lineIndex: -1, badges: [] };
 
 export default function ProposalsPage() {
   const { user } = useUserClient();
@@ -26,11 +39,13 @@ export default function ProposalsPage() {
   const [orderDirection, setOrderDirection] = useState<IGetProposalsParams['order_direction']>(
     DEFAULT_PARAMS_FOR_PROPOSALS.order_direction
   );
+  const [search, setSearch] = useState('');
   const { data: votes } = useQuery({
     queryKey: ['accountVotes', user.username],
     queryFn: () => getUserVotes(user.username),
     enabled: !!user?.username
   });
+  const { data: funding, isPending: fundingLoading } = useDhfFundingQuery();
   const proposalsData = useInfiniteQuery({
     queryKey: ['proposals', filterStatus, sortOrder, orderDirection],
     queryFn: ({ pageParam: last_id }: { pageParam: number | undefined }) =>
@@ -55,9 +70,7 @@ export default function ProposalsPage() {
             total_votes: new Big(parseFloat(proposal.total_votes).toFixed(2)),
             daily_pay: {
               amount: new Big(proposal.daily_pay.amount).div(1000)
-            },
-            start_date: dayjs(proposal.start_date).format('MMM D, YYYY'),
-            end_date: dayjs(proposal.end_date).format('MMM D, YYYY')
+            }
           }))
         )
       };
@@ -74,6 +87,23 @@ export default function ProposalsPage() {
       };
     }
   });
+
+  const proposals = useMemo(
+    () =>
+      (proposalsData.data?.pages.flat() ?? []).filter((proposal) => matchesProposalSearch(proposal, search)),
+    [proposalsData.data, search]
+  );
+  const marks = useMemo(
+    () =>
+      funding
+        ? fundingMarks(
+            proposals,
+            funding.payouts,
+            sortOrder === 'by_total_votes' && orderDirection === 'descending' && !search.trim()
+          )
+        : NO_FUNDING_MARKS,
+    [proposals, funding, sortOrder, orderDirection, search]
+  );
 
   useEffect(() => {
     let fetching = false;
@@ -93,47 +123,66 @@ export default function ProposalsPage() {
       document.removeEventListener('scroll', handleScroll);
     };
   }, [proposalsData, proposalsData.fetchNextPage, proposalsData.hasNextPage]);
+
+  const handleStatusChange = (value: string) => {
+    if (isProposalStatusTab(value)) setFilterStatus(value);
+  };
+
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-5 p-5" data-testid="proposals-body">
+    <Tabs
+      value={filterStatus}
+      onValueChange={handleStatusChange}
+      className="mx-auto flex max-w-5xl flex-col gap-5 p-5"
+      data-testid="proposals-body"
+    >
       <ProposalsFilter
-        onChangeFilterStatus={setFilterStatus}
-        filterStatus={filterStatus}
+        search={search}
+        onSearchChange={setSearch}
         onChangeSortOrder={setSortOrder}
         orderValue={sortOrder}
         orderDirection={orderDirection}
         onOrderDirection={setOrderDirection}
       />
+      <ProposalsDhfSummary funding={funding} isPending={fundingLoading} />
 
-      {proposalsData.isPending || dynamicLoading ? (
-        <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 p-5">
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-          <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
-        </div>
-      ) : proposalsData.data?.pages[0].length === 0 || !dynamicData ? (
-        <main>
-          <p className="mt-32 text-center text-3xl" data-testid="cannot-show-you-any-proposals">
-            {t('global.sorry_cant_show')}
+      <TabsContent value={filterStatus} className="mt-0 flex flex-col gap-5">
+        {proposalsData.isPending || dynamicLoading ? (
+          <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-5 p-5">
+            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+            <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
+          </div>
+        ) : proposalsData.data?.pages[0].length === 0 || !dynamicData ? (
+          <main>
+            <p className="mt-32 text-center text-3xl" data-testid="cannot-show-you-any-proposals">
+              {t('global.sorry_cant_show')}
+            </p>
+            <p className="text-center text-xl text-gray-400">{t('global.its_probably')}</p>
+          </main>
+        ) : proposals.length === 0 ? (
+          <p className="mt-16 text-center text-xl" data-testid="proposals-no-search-results">
+            {t('proposals_page.no_search_results')}
           </p>
-          <p className="text-center text-xl text-gray-400">{t('global.its_probably')}</p>
-        </main>
-      ) : (
-        proposalsData.data?.pages.map((page) =>
-          page.map((proposal) => (
-            <ProposalListItem
-              voted={
-                votes?.find((vote) => vote.proposal.proposal_id === proposal.proposal_id) ? true : false
-              }
-              totalVestingFund={dynamicData.total_vesting_fund_hive}
-              totalShares={dynamicData.total_vesting_shares}
-              proposalData={proposal}
-              key={proposal.proposal_id}
-            />
+        ) : (
+          proposals.map((proposal, index) => (
+            <Fragment key={proposal.proposal_id}>
+              <ProposalListItem
+                voted={
+                  votes?.find((vote) => vote.proposal.proposal_id === proposal.proposal_id) ? true : false
+                }
+                totalVestingFund={dynamicData.total_vesting_fund_hive}
+                totalShares={dynamicData.total_vesting_shares}
+                proposalData={proposal}
+                funding={marks.badges[index]}
+                isReturnProposal={isReturnProposal(proposal, REFUND_ACCOUNTS)}
+              />
+              {index === marks.lineIndex ? <ProposalsFundingLine /> : null}
+            </Fragment>
           ))
-        )
-      )}
-    </div>
+        )}
+      </TabsContent>
+    </Tabs>
   );
 }
