@@ -35,6 +35,19 @@ export const matchesProposalSearch = (
   );
 };
 
+/**
+ * The proposals of every loaded page in order, each once: a `list_proposals` page starts at the
+ * cursor it was given, so it can repeat the last proposal of the page before it.
+ */
+export const uniqueProposals = <T extends { proposal_id: number }>(pages: readonly (readonly T[])[]): T[] => {
+  const seen = new Set<number>();
+  return pages.flat().filter((proposal) => {
+    if (seen.has(proposal.proposal_id)) return false;
+    seen.add(proposal.proposal_id);
+    return true;
+  });
+};
+
 type FundedSet = Pick<ReadonlyMap<number, unknown>, 'has'>;
 
 export type ProposalFundingBadge = 'funded' | 'not_funded';

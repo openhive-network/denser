@@ -17,6 +17,7 @@ import {
   fundingMarks,
   isProposalStatusTab,
   matchesProposalSearch,
+  uniqueProposals,
   type FundingMarks
 } from '@/wallet/lib/proposals-list';
 import { convertStringToBig } from '@ui/lib/helpers';
@@ -90,7 +91,9 @@ export default function ProposalsPage() {
 
   const proposals = useMemo(
     () =>
-      (proposalsData.data?.pages.flat() ?? []).filter((proposal) => matchesProposalSearch(proposal, search)),
+      uniqueProposals(proposalsData.data?.pages ?? []).filter((proposal) =>
+        matchesProposalSearch(proposal, search)
+      ),
     [proposalsData.data, search]
   );
   const marks = useMemo(
