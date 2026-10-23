@@ -69,6 +69,9 @@ sign-in; it is dismissable. `UIFeature.BulkUnverifiedSessionsReminder: false` in
 `element/config.json` hides the reminder about the account's other unverified sessions, and
 denser's device cleanup at sign-out leaves none.
 
+Element defaults to the dark theme (`default_theme` and `use_system_theme: false` in
+`element/config.json`); a user's own theme choice lasts until their next drawer sign-in.
+
 ## denser's side
 
 On the integration site, in `../integration/.env` (its compose passes them to the blog and wallet
