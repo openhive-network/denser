@@ -262,7 +262,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         const { username, keyType } = form.getValues();
         await signIn(loginType, username, keyType);
       } catch (error) {
-        handleError(error);
+        handleError(error, { method: 'signIn', params: { loginType } });
       } finally {
         setLoading(false);
       }

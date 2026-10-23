@@ -104,15 +104,13 @@ const Methods: FC<MethodsProps> = ({
   }, [form.getValues('username'), onUsernameChange]);
 
   async function onSubmit(_loginType: LoginType) {
+    form.setValue('loginType', _loginType);
+    const { username, keyType, loginType } = form.getValues();
     try {
       setLoading(true);
-      form.setValue('loginType', _loginType);
-
-      const { username, keyType, loginType } = form.getValues();
-
       await signIn(loginType, username, keyType);
     } catch (error: unknown) {
-      handleError(error);
+      handleError(error, { method: 'signIn', params: { loginType, username, keyType } });
     } finally {
       setLoading(false);
     }

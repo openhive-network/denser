@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, MutableRefObject } from 'react';
 import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { getCookie } from '@ui/lib/utils';
+import { isUserCancelled } from '@ui/lib/user-cancelled';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
@@ -89,7 +90,8 @@ export const useProcessAuth = (authenticateOnBackend: boolean) => {
         authenticateOnBackend
       };
     } catch (error) {
-      logger.error(error, 'onSubmit error in signLoginChallenge');
+      // The caller logs a cancel once; only a real failure gets its stack here
+      if (!isUserCancelled(error)) logger.error(error, 'onSubmit error in signLoginChallenge');
       return Promise.reject(error);
     }
 
