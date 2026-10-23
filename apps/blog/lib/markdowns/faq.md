@@ -936,7 +936,7 @@ The box at the top of the proposals page shows:
 
 In the list of proposals:
 
-- **funded** / **not funded** tells whether a proposal is paid in the next round of payments, if votes do not change.
+- **funded** / **not funded** tells whether a proposal is paid in the next round of payments, if votes do not change. A **refund** proposal, such as the return proposal, has neither: what it is paid goes back to the DHF.
 - The **Funded in the next round** / **Not funded in the next round** line separates the proposals that are paid from those that are not.
 - **N days left** is how long an active proposal has until its end date.
 - **refund** marks a proposal whose receiver is the DHF, such as the return proposal, and **burn** one whose receiver is @null, where the payment is destroyed.

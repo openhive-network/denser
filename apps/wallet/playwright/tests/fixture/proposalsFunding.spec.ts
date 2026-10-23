@@ -175,7 +175,7 @@ test.describe('Proposals page DHF funding', () => {
     await expect(page.getByRole('combobox', { name: /^Status/ })).toHaveCount(0);
   });
 
-  test('WALLET-PROPOSALS-DHF-06 — in another order each active proposal carries a funded or not funded badge', async ({
+  test('WALLET-PROPOSALS-DHF-06 — in another order each active proposal but the refund one carries a funded or not funded badge', async ({
     page
   }) => {
     const proposalsPage = await openProposals(page);
@@ -188,7 +188,9 @@ test.describe('Proposals page DHF funding', () => {
       proposalsPage.proposalCard(proposalId).getByTestId('proposal-funding-badge');
     await expect(badge(funded)).toHaveText('funded');
     await expect(badge(stabilizer)).toHaveText('funded');
-    await expect(badge(returnProposal)).toHaveText('funded');
+    // What the return proposal is paid goes back to the DHF, so it shows only "refund".
+    await expect(proposalsPage.proposalCard(returnProposal).getByText('refund', { exact: true })).toBeVisible();
+    await expect(badge(returnProposal)).toHaveCount(0);
     await expect(badge(belowLine)).toHaveText('not funded');
     await expect(badge(burn)).toHaveText('not funded');
     await expect(badge(upcoming)).toHaveCount(0);

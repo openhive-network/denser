@@ -2,7 +2,7 @@ import { Link } from '@hive/ui';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { IListItemProps } from '@/wallet/lib/hive';
 import { cn, getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
-import { remainingDays } from '@/wallet/lib/proposals-list';
+import { isRefundProposal, remainingDays } from '@/wallet/lib/proposals-list';
 import { Icons } from '@hive/ui/components/icons';
 import dayjs from 'dayjs';
 import { Badge } from '@ui/components/badge';
@@ -75,7 +75,7 @@ export function ProposalListItem({
   const totalVotes = totalVestingFund.times(proposalData.total_votes).div(totalShares).times(0.000001);
 
   function getFundingType() {
-    if (REFUND_ACCOUNTS.includes(proposalData.receiver))
+    if (isRefundProposal(proposalData, REFUND_ACCOUNTS))
       return <Badge variant="lime">{t('proposals_page.refund')}</Badge>;
 
     if (BURN_ACCOUNTS.includes(proposalData.receiver))
