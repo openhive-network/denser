@@ -5,6 +5,7 @@ import { useProcessAuth, LoginFormSchema } from './auth/process';
 import { LoginType } from '@smart-signer/types/common';
 import { siteConfig } from '@ui/config/site';
 import { handleError } from '@ui/lib/handle-error';
+import { isUserCancelled } from '@ui/lib/user-cancelled';
 import { getLogger } from '@ui/lib/logging';
 import {
   GOOGLE_OAUTH_CODE_KEY,
@@ -146,8 +147,10 @@ export function GoogleOAuthRedirectHandler({
       logger.info('Google OAuth redirect login completed successfully for %s', storedUsername);
       onComplete?.(storedUsername);
     } catch (error) {
-      logger.error('Google OAuth redirect continuation failed: %s', error instanceof Error ? error.message : String(error));
-      handleError(error);
+      if (!isUserCancelled(error)) {
+        logger.error('Google OAuth redirect continuation failed: %s', error instanceof Error ? error.message : String(error));
+      }
+      handleError(error, { method: 'signIn', params: { loginType: LoginType.google } });
     } finally {
       setIsProcessing(false);
     }

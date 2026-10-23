@@ -26,6 +26,7 @@ import { usePowerDownMutation, usePowerUpMutation } from './hooks/use-power-hive
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { useMinDelegation } from './hooks/use-min-delegation';
 import { handleError } from '@ui/lib/handle-error';
+import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
 import { useQueryClient } from '@tanstack/react-query';
 import type { TransactionBroadcastResult } from '@transaction/index';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -179,9 +180,15 @@ export function TransferDialog({
           return;
         }
         handleError(error, { method, params });
+        // OK would only bring the Google Drive dialog back: this sign-in method cannot sign the operation
+        if (error instanceof GoogleDriveSignInCancelledError) {
+          setNextOpen(false);
+          setEncryptDialogOpen(false);
+          onOpenChange(false);
+        }
       }
     },
-    [invalidateData, t]
+    [invalidateData, onOpenChange, t]
   );
 
   // The transfers page holds the global properties, so the chain's minimum (in VESTS) can be told in HP.

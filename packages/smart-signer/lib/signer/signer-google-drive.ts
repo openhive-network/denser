@@ -12,6 +12,7 @@ import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import type { GoogleDriveErrorDialogProps } from '@smart-signer/components/google-drive-error-dialog';
 import { missingKeyDialogProps } from '@smart-signer/lib/signer/google-drive-missing-key';
+import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
 import {
   GOOGLE_OAUTH_CODE_KEY,
   GOOGLE_OAUTH_ERROR_KEY,
@@ -68,18 +69,6 @@ function clearStoredEncryptionKeyWif(username: string): void {
   window.localStorage.removeItem(googleEncryptionKeyWifCredentialKey(username).key);
 }
 /* eslint-enable no-restricted-properties */
-
-/**
- * The user closed a dialog saying the Google Drive wallet lacks what the sign-in needs. The message
- * says "user cancelled" so that it is not reported as a failure.
- */
-class GoogleDriveSignInCancelledError extends Error {
-  name = 'GoogleDriveSignInCancelledError';
-
-  constructor(reason: string) {
-    super(`User cancelled Google Drive sign-in: ${reason}`);
-  }
-}
 
 /**
  * Shows the dialog pointing the user to Hive Bridge and resolves, once it is closed (by Cancel, ✕
@@ -413,7 +402,7 @@ export class SignerGoogleDrive extends Signer {
         } catch (loadError) {
           const dialogProps = missingKeyDialogProps(loadError, username, keyType);
           if (!dialogProps) throw loadError;
-          logger.error('Google Drive wallet lacks a key: %s', loadError instanceof Error ? loadError.message : String(loadError));
+          logger.debug('Google Drive wallet lacks a key: %s', loadError instanceof Error ? loadError.message : String(loadError));
           // The password decrypted the wallet, so it is kept: adding the key in Hive Bridge needs no new one
           if (usedPassword) this.cacheEncryptionKeyWif(wallet);
           throw await waitForGoogleDriveErrorDialog(dialogProps);
@@ -446,13 +435,17 @@ export class SignerGoogleDrive extends Signer {
             resolve(provider);
             return;
           } catch (retryError) {
-            logger.error('Error in getWallet retry: %s', retryError instanceof Error ? retryError.message : String(retryError));
+            if (!(retryError instanceof GoogleDriveSignInCancelledError)) {
+              logger.error('Error in getWallet retry: %s', retryError instanceof Error ? retryError.message : String(retryError));
+            }
             reject(retryError);
             return;
           }
         }
 
-        logger.error('Error in getWallet: %s', error instanceof Error ? error.message : String(error));
+        if (!(error instanceof GoogleDriveSignInCancelledError)) {
+          logger.error('Error in getWallet: %s', error instanceof Error ? error.message : String(error));
+        }
         reject(error);
       }
     });
@@ -534,7 +527,9 @@ export class SignerGoogleDrive extends Signer {
       logger.debug('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      logger.error('SignerGoogleDrive.signTransaction error: %s', error instanceof Error ? error.message : String(error));
+      if (!(error instanceof GoogleDriveSignInCancelledError)) {
+        logger.error('SignerGoogleDrive.signTransaction error: %s', error instanceof Error ? error.message : String(error));
+      }
       throw error;
     }
   }
