@@ -1,0 +1,80 @@
+# Synapse for the denser chat test. Secrets are filled in by setup.sh from .env.
+server_name: matrix.discuss.peerverity.info
+public_baseurl: https://matrix.discuss.peerverity.info/
+pid_file: /data/homeserver.pid
+signing_key_path: /data/matrix.discuss.peerverity.info.signing.key
+media_store_path: /data/media_store
+log_config: /config/log.config
+report_stats: false
+
+listeners:
+  - port: 8008
+    type: http
+    tls: false
+    x_forwarded: true
+    bind_addresses: ['0.0.0.0']
+    resources:
+      - names: [client]
+        compress: false
+
+database:
+  name: psycopg2
+  args:
+    user: synapse
+    password: "@POSTGRES_PASSWORD@"
+    database: synapse
+    host: db
+    cp_min: 2
+    cp_max: 10
+
+# A closed test server: no federation, no open registration. Accounts come from
+# denser sign-in (SSO below); admins are made with register_new_matrix_user.
+federation_domain_whitelist: []
+enable_registration: false
+registration_shared_secret: "@REGISTRATION_SHARED_SECRET@"
+macaroon_secret_key: "@MACAROON_SECRET_KEY@"
+form_secret: "@FORM_SECRET@"
+trusted_key_servers: []
+suppress_key_server_warning: true
+max_upload_size: 20M
+media_retention:
+  remote_media_lifetime: 14d
+
+# denser's OAuth2 server (/api/oauth/*) as the only way in: a Hive account
+# signs in on denser, and its Matrix user is @<hive name>:matrix.discuss.peerverity.info.
+# Plain OAuth2 (no "openid" scope): denser issues no id_token, Synapse reads userinfo.
+oidc_providers:
+  - idp_id: denser
+    idp_name: Hive (denser)
+    discover: false
+    issuer: https://denser.discuss.peerverity.info
+    client_id: matrix
+    client_secret: "@DENSER_OAUTH_MATRIX_SECRET@"
+    client_auth_method: client_secret_basic
+    scopes: [profile]
+    pkce_method: never
+    authorization_endpoint: https://denser.discuss.peerverity.info/blog/api/oauth/authorize
+    token_endpoint: https://denser.discuss.peerverity.info/blog/api/oauth/token
+    userinfo_endpoint: https://denser.discuss.peerverity.info/blog/api/oauth/userinfo
+    user_profile_method: userinfo_endpoint
+    allow_existing_users: true
+    user_mapping_provider:
+      config:
+        subject_template: "{{ user.sub }}"
+        localpart_template: "{{ user.preferred_username }}"
+        display_name_template: "{{ user.name or user.preferred_username }}"
+        confirm_localpart: false
+
+sso:
+  client_whitelist:
+    - https://chat.discuss.peerverity.info/
+    - https://denser.discuss.peerverity.info/
+  update_profile_information: true
+
+password_config:
+  enabled: true   # admin accounts only; ordinary users have no password
+
+# New (SSO-created) users land in the general room.
+auto_join_rooms:
+  - "#general:matrix.discuss.peerverity.info"
+autocreate_auto_join_rooms: false

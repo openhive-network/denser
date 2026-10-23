@@ -1,0 +1,4 @@
+# Secrets, and what setup.sh makes from them
+.env
+synapse/homeserver.yaml
+synapse/log.config

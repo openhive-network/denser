@@ -1,0 +1,97 @@
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  chatAppUrl,
+  matrixFrameOrigin,
+  matrixSessionPageUrl,
+  resolveChatProvider,
+  resolveMatrixChatConfig
+} from './chat.ts';
+
+const ROCKET_CHAT_URL = 'https://openhive.chat';
+
+const readFrom =
+  (values: Record<string, string>) =>
+  (key: string): string | undefined =>
+    values[key];
+
+const MATRIX = resolveMatrixChatConfig(
+  readFrom({
+    MATRIX_ELEMENT_URL: 'https://chat.example.org/',
+    MATRIX_HOMESERVER_URL: 'https://matrix.example.org/'
+  })
+);
+
+describe('resolveChatProvider', () => {
+  it('keeps Rocket.Chat unless Matrix is asked for', () => {
+    assert.equal(resolveChatProvider(undefined), 'rocketchat');
+    assert.equal(resolveChatProvider(''), 'rocketchat');
+    assert.equal(resolveChatProvider('rocketchat'), 'rocketchat');
+    assert.equal(resolveChatProvider('slack'), 'rocketchat');
+  });
+
+  it('selects Matrix for "matrix", in any case', () => {
+    assert.equal(resolveChatProvider('matrix'), 'matrix');
+    assert.equal(resolveChatProvider(' Matrix '), 'matrix');
+  });
+});
+
+describe('resolveMatrixChatConfig', () => {
+  it('drops trailing slashes, takes the server name from the homeserver host, and defaults the IdP', () => {
+    assert.deepEqual(MATRIX, {
+      elementUrl: 'https://chat.example.org',
+      homeserverUrl: 'https://matrix.example.org',
+      serverName: 'matrix.example.org',
+      idpId: 'oidc-denser'
+    });
+  });
+
+  it('uses an explicit server name and IdP id', () => {
+    const matrix = resolveMatrixChatConfig(
+      readFrom({
+        MATRIX_HOMESERVER_URL: 'https://matrix.example.org',
+        MATRIX_SERVER_NAME: 'example.org',
+        MATRIX_IDP_ID: 'oidc-hive'
+      })
+    );
+    assert.equal(matrix.serverName, 'example.org');
+    assert.equal(matrix.idpId, 'oidc-hive');
+  });
+
+  it('leaves everything but the IdP empty when nothing is configured', () => {
+    assert.deepEqual(resolveMatrixChatConfig(readFrom({})), {
+      elementUrl: '',
+      homeserverUrl: '',
+      serverName: '',
+      idpId: 'oidc-denser'
+    });
+  });
+});
+
+describe('matrixSessionPageUrl', () => {
+  it("starts at Element's session page with the expected Matrix user and the IdP", () => {
+    const url = new URL(matrixSessionPageUrl(MATRIX, 'alice'));
+    assert.equal(url.origin + url.pathname, 'https://chat.example.org/denser-session.html');
+    assert.equal(url.searchParams.get('user'), '@alice:matrix.example.org');
+    assert.equal(url.searchParams.get('idp'), 'oidc-denser');
+  });
+
+  it('names no user for ending the session only', () => {
+    assert.equal(matrixSessionPageUrl(MATRIX), 'https://chat.example.org/denser-session.html');
+  });
+});
+
+describe('chat app URL and frame origin', () => {
+  it('point at Element in Matrix mode', () => {
+    assert.equal(chatAppUrl('matrix', MATRIX, ROCKET_CHAT_URL), 'https://chat.example.org');
+    assert.equal(matrixFrameOrigin('matrix', MATRIX), 'https://chat.example.org');
+  });
+
+  it('keep Rocket.Chat in Rocket.Chat mode, and when Matrix has no Element URL', () => {
+    assert.equal(chatAppUrl('rocketchat', MATRIX, ROCKET_CHAT_URL), ROCKET_CHAT_URL);
+    assert.equal(matrixFrameOrigin('rocketchat', MATRIX), undefined);
+    const noElement = resolveMatrixChatConfig(readFrom({}));
+    assert.equal(chatAppUrl('matrix', noElement, ROCKET_CHAT_URL), ROCKET_CHAT_URL);
+    assert.equal(matrixFrameOrigin('matrix', noElement), undefined);
+  });
+});

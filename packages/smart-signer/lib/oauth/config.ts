@@ -1,8 +1,9 @@
 /**
- * OAuth2 configuration for openhive.chat SSO integration.
+ * OAuth2 configuration for chat SSO integration.
  *
  * This is a minimal OAuth2 authorization server implementation for
- * Rocket.Chat SSO using Hive blockchain authentication.
+ * Rocket.Chat (openhive.chat) and Matrix (Synapse) SSO using Hive
+ * blockchain authentication.
  */
 
 import { timingSafeEqual } from 'crypto';
@@ -35,8 +36,31 @@ export const getJwtSecret = (): string => {
 };
 
 // OAuth2 clients configuration
-// Currently only openhive.chat is supported
 const OPENHIVE_CHAT_SECRET = process.env.DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET;
+
+const MATRIX_CLIENT_ID = 'matrix';
+// Where Synapse's OIDC provider receives the authorization code
+const SYNAPSE_OIDC_CALLBACK_PATH = '/_synapse/client/oidc/callback';
+
+/** The explicit redirect URI, or the homeserver's OIDC callback; undefined when neither is set. */
+function matrixRedirectUri(): string | undefined {
+  const explicit = process.env.DENSER_SERVER_OAUTH_MATRIX_REDIRECT_URI?.trim();
+  if (explicit) return explicit;
+  const homeserver = process.env.REACT_APP_MATRIX_HOMESERVER_URL?.trim().replace(/\/+$/, '');
+  return homeserver ? `${homeserver}${SYNAPSE_OIDC_CALLBACK_PATH}` : undefined;
+}
+
+function matrixClient(): OAuthClient | undefined {
+  const clientSecret = process.env.DENSER_SERVER_OAUTH_MATRIX_SECRET;
+  const redirectUri = matrixRedirectUri();
+  if (!clientSecret || !redirectUri) return undefined;
+  return {
+    clientId: MATRIX_CLIENT_ID,
+    clientSecret,
+    redirectUris: [redirectUri],
+    clientName: 'Matrix',
+  };
+}
 
 export const getOAuthClients = (): OAuthClient[] => {
   const clients: OAuthClient[] = [];
@@ -51,6 +75,9 @@ export const getOAuthClients = (): OAuthClient[] => {
       clientName: 'Denser',
     });
   }
+
+  const matrix = matrixClient();
+  if (matrix) clients.push(matrix);
 
   return clients;
 };

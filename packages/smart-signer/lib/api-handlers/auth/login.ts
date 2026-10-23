@@ -103,6 +103,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     siteConfig.openhiveChatAllowNonStrictLogin
   );
   if (
+    siteConfig.chatProvider === 'rocketchat' &&
     siteConfig.openhiveChatIframeIntegrationEnable &&
     (verifiedUser?.strict || siteConfig.openhiveChatAllowNonStrictLogin)
   ) {

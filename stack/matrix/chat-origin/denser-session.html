@@ -1,0 +1,92 @@
+<!doctype html>
+<!--
+  Served from Element's origin, where Element keeps its session. denser's chat widget loads it
+  first, as /denser-session.html?user=<Matrix user id>&idp=<Synapse IdP id>:
+  - Element holds that user's session: continue into Element.
+  - Otherwise: clear Element's storage (another user's session), remember the homeserver for
+    Element's token login, and sign in through Synapse's SSO, which goes through denser's OAuth
+    server and comes back to Element with a login token.
+  Without a user (denser signed out, or switched account) it only clears Element's storage.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
+<title>Chat</title>
+</head>
+<body>
+<p id="status" style="font-family: sans-serif; color: #666">…</p>
+<script>
+(async () => {
+  // Element's own keys (matrix-react-sdk Lifecycle): its signed-in user, and the homeserver its
+  // token login (?loginToken=) uses, which it otherwise only stores when it starts the SSO itself
+  const USER_ID_KEY = 'mx_user_id';
+  const SSO_HOMESERVER_KEY = 'mx_sso_hs_url';
+  // For browsers without indexedDB.databases()
+  const ELEMENT_DATABASES = [
+    'matrix-js-sdk:riot-web-sync',
+    'matrix-js-sdk:crypto',
+    'matrix-js-sdk::matrix-sdk-crypto',
+    'matrix-js-sdk::matrix-sdk-crypto-meta',
+    'matrix-react-sdk'
+  ];
+  const USER_ID = /^@[a-z0-9._=\-/+]+:[A-Za-z0-9.\-]+(:[0-9]+)?$/;
+  const IDP_ID = /^[A-Za-z0-9._~-]{1,255}$/;
+
+  const status = (text) => {
+    document.getElementById('status').textContent = text;
+  };
+
+  const deleteDatabase = (name) =>
+    new Promise((resolve) => {
+      const request = indexedDB.deleteDatabase(name);
+      // Blocked: an Element tab still has it open; it is deleted once that tab lets go
+      request.onsuccess = request.onerror = request.onblocked = resolve;
+    });
+
+  async function clearElementStorage() {
+    localStorage.clear();
+    sessionStorage.clear();
+    const listed = indexedDB.databases ? (await indexedDB.databases()).map(({ name }) => name) : [];
+    const names = new Set([...listed, ...ELEMENT_DATABASES].filter(Boolean));
+    await Promise.all([...names].map(deleteDatabase));
+  }
+
+  async function homeserverUrl() {
+    const response = await fetch('/config.json', { cache: 'no-store' });
+    const config = await response.json();
+    return config.default_server_config['m.homeserver'].base_url.replace(/\/+$/, '');
+  }
+
+  const params = new URLSearchParams(location.search);
+  const expectedUser = params.get('user') || '';
+  const idp = params.get('idp') || '';
+
+  if (!expectedUser) {
+    await clearElementStorage();
+    status('Signed out of chat.');
+    return;
+  }
+  if (!USER_ID.test(expectedUser) || !IDP_ID.test(idp)) {
+    status('Invalid chat sign-in request.');
+    return;
+  }
+  if (localStorage.getItem(USER_ID_KEY) === expectedUser) {
+    location.replace('/');
+    return;
+  }
+
+  await clearElementStorage();
+  try {
+    const homeserver = await homeserverUrl();
+    localStorage.setItem(SSO_HOMESERVER_KEY, homeserver);
+    const sso = new URL(`${homeserver}/_matrix/client/v3/login/sso/redirect/${encodeURIComponent(idp)}`);
+    sso.searchParams.set('redirectUrl', `${location.origin}/`);
+    location.replace(sso.toString());
+  } catch (error) {
+    status('Chat is unavailable: ' + error);
+  }
+})();
+</script>
+</body>
+</html>

@@ -74,13 +74,16 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/memo-secret-check.test.ts \
     packages/ui/lib/storage-with-ttl-notify.test.ts packages/ui/lib/app-api-path.test.ts \
     packages/ui/lib/locale-cookie.test.ts packages/ui/lib/month-year.test.ts \
-    packages/ui/lib/session-time.test.ts packages/ui/lib/user-cancelled.test.ts < /dev/null || status=1
+    packages/ui/lib/session-time.test.ts packages/ui/lib/user-cancelled.test.ts \
+    packages/ui/config/chat.test.ts < /dev/null || status=1
 echo "== node --test packages/smart-signer" >&2
 junit="$PWD/test-results/unit/smart-signer.xml"
 run_with_junit_fallback "$junit" smart-signer node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     packages/smart-signer/lib/oauth/return-url.test.ts \
+    packages/smart-signer/lib/oauth/config.test.ts \
+    packages/smart-signer/lib/oauth/handlers.test.ts \
     packages/smart-signer/lib/google-drive-urls.test.ts \
     packages/smart-signer/lib/condenser-migration.test.ts \
     packages/smart-signer/lib/validators/key-role.test.ts \
@@ -121,6 +124,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/lib/canonical-url.test.ts \
     apps/blog/lib/in-app-redirect-url.test.ts \
     apps/blog/lib/post-summary.test.ts \
+    apps/blog/lib/chat-eligibility.test.ts \
     apps/blog/components/hooks/use-chat-token-request.test.ts \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
