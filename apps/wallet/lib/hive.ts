@@ -26,6 +26,7 @@ import { commonVariables } from '@ui/lib/common-variables';
 import { getLogger } from '@ui/lib/logging';
 import { getReadChain } from '@transaction/lib/chain';
 import { retryReadOnce } from '@transaction/lib/read-retry';
+import { ReadTransportError } from '@transaction/lib/read-transport';
 import { FINANCIAL_REPORT_OP_TYPES } from '@/wallet/lib/financial-report';
 import type { ProposalFundingBadge } from '@/wallet/lib/proposals-list';
 
@@ -204,17 +205,37 @@ export const getIncomingDelegations = async (username: string): Promise<BalanceA
   return response.incoming_delegations;
 };
 
+// A node without the proposal payments endpoint will not have it for a long while yet.
+const PROPOSALS_PAYMENTS_MISSING_TTL_MS = 60 * 60 * 1000;
+
+let proposalsPaymentsMissing: { node: string; until: number; error: ReadTransportError } | undefined;
+
 /**
  * Fetches what the DHF has paid each of `proposalIds` (at most 1000), from balance-api's proposal
- * payments, failing over like `getIncomingDelegations`; rejects when no allowed node serves it.
+ * payments. A node down or without balance-api is passed over like in `getIncomingDelegations`.
+ * A node that answers 404, lacking just this endpoint, is not: the call rejects with that 404, and
+ * so does every call to the same node for PROPOSALS_PAYMENTS_MISSING_TTL_MS without asking it again.
  * @returns One entry per distinct id, in ascending id order
  */
 export const getProposalsPayments = async (
   proposalIds: readonly number[]
-): Promise<BalanceApiProposalPaymentTotals[]> =>
-  retryReadOnce(() =>
-    getReadChain().restApi['balance-api'].proposalsPayments({ 'proposal-ids': proposalIds.join(',') })
-  );
+): Promise<BalanceApiProposalPaymentTotals[]> => {
+  const balanceApi = getReadChain().restApi['balance-api'];
+  const missing = proposalsPaymentsMissing;
+  if (missing && missing.node === balanceApi.endpointUrl && Date.now() < missing.until) throw missing.error;
+  try {
+    return await retryReadOnce(() => balanceApi.proposalsPayments({ 'proposal-ids': proposalIds.join(',') }));
+  } catch (error) {
+    if (error instanceof ReadTransportError && error.status === 404) {
+      proposalsPaymentsMissing = {
+        node: error.request.endpoint,
+        until: Date.now() + PROPOSALS_PAYMENTS_MISSING_TTL_MS,
+        error
+      };
+    }
+    throw error;
+  }
+};
 
 const walletOperations = [
   'transfer_operation',

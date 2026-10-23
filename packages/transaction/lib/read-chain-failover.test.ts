@@ -7,9 +7,10 @@ import { getHiveChainService } from './hive-chain-service';
 import { ReadTransportError } from './read-transport';
 
 /**
- * `getReadChain().withTimeout(n)` as the wallet reads account history with it: over real sockets,
- * between two allowed API nodes. Each case reads a different REST API, so the node health one case
- * leaves behind (shared by every read chain of the process) does not decide another.
+ * `getReadChain()` and `getReadChain().withTimeout(n)` as the wallet reads with them: over real
+ * sockets, between two allowed API nodes. The node health a case leaves behind is shared by every
+ * read chain of the process, so a case that needs a healthy primary runs before any case that may
+ * mark the primary's REST API down.
  */
 
 const SLOW_CALL_TIMEOUT_MS = 3_000;
@@ -19,6 +20,8 @@ interface IStubNode {
   requests: string[];
   /** Status answered to every request of a REST API, by API name; any other API is served. */
   statusByApi: Record<string, number>;
+  /** Status answered to one request path (without its query), overriding `statusByApi`. */
+  statusByPath: Record<string, number>;
 }
 
 const listen = (server: Server): Promise<string> =>
@@ -30,11 +33,11 @@ const listen = (server: Server): Promise<string> =>
   });
 
 const startStubNode = async (): Promise<{ node: IStubNode; server: Server }> => {
-  const node: IStubNode = { url: '', requests: [], statusByApi: {} };
+  const node: IStubNode = { url: '', requests: [], statusByApi: {}, statusByPath: {} };
   const handle = (request: IncomingMessage, response: ServerResponse) => {
     const path = request.url ?? '/';
     node.requests.push(path);
-    const status = node.statusByApi[path.split('/')[1]] ?? 200;
+    const status = node.statusByPath[path.split('?')[0]] ?? node.statusByApi[path.split('/')[1]] ?? 200;
     response.writeHead(status, { 'content-type': 'application/json' });
     response.end(JSON.stringify(status === 200 ? { node: node.url } : { message: 'Not served' }));
   };
@@ -45,7 +48,7 @@ const startStubNode = async (): Promise<{ node: IStubNode; server: Server }> => 
   return { node, server };
 };
 
-describe('getReadChain().withTimeout', function () {
+describe('getReadChain() REST failover', function () {
   this.timeout(15_000);
 
   let servers: Server[] = [];
@@ -80,7 +83,25 @@ describe('getReadChain().withTimeout', function () {
     for (const node of [primary, second]) {
       node.requests.length = 0;
       node.statusByApi = {};
+      node.statusByPath = {};
     }
+  });
+
+  it('takes a 404 of proposal payments as the primary lacking the endpoint, still asking it for the rest of balance-api', async () => {
+    primary.statusByPath['/balance-api/proposals/payments'] = 404;
+
+    const error = await getReadChain()
+      .restApi['balance-api'].proposalsPayments({ 'proposal-ids': '1,2' })
+      .catch((e: unknown) => e);
+    const delegations = await getReadChain().restApi['balance-api'].accountDelegations({ 'account-name': 'alice' });
+
+    expect(error).to.be.instanceOf(ReadTransportError).with.property('status', 404);
+    expect(delegations).to.deep.equal({ node: primary.url });
+    expect(primary.requests).to.deep.equal([
+      '/balance-api/proposals/payments?proposal-ids=1%2C2',
+      '/balance-api/accounts/alice/delegations'
+    ]);
+    expect(second.requests).to.deep.equal([]);
   });
 
   const slowChain = () => getReadChain().withTimeout(SLOW_CALL_TIMEOUT_MS);

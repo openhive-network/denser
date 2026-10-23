@@ -85,10 +85,11 @@ export interface IServerFailoverOptions<T extends IFailoverChain<T>> {
   isTransportError?: (error: unknown) => boolean | Promise<boolean>;
   /**
    * When given, `chain.restApi` calls fail over as well, and this tells whether a failed REST call
-   * means the node cannot serve that REST API (so the next node is asked) rather than a definitive
-   * answer. Without it `chain.restApi` is passed through untouched.
+   * of `path` (e.g. `['balance-api', 'accountDelegations']`) means the node cannot serve that REST
+   * API (so the next node is asked) rather than a definitive answer. Without it `chain.restApi` is
+   * passed through untouched.
    */
-  isRestApiUnavailable?: (error: unknown) => boolean;
+  isRestApiUnavailable?: (error: unknown, path: readonly string[]) => boolean;
   /** Called after a call failed on the primary node and was then served by `node`. */
   onFailover?: (node: string) => void;
   /** Clock and sleep, injectable for tests. */
@@ -353,7 +354,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
   };
 
   const callRest = (
-    isUnavailable: (error: unknown) => boolean,
+    isUnavailable: (error: unknown, path: readonly string[]) => boolean,
     path: readonly string[],
     args: unknown[]
   ): Promise<unknown> => {
@@ -366,7 +367,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
       primary,
       healthKey: (node) => `${node}/${apiName}`,
       invoke: (target) => callOn(target.restApi, 'restApi', path, args),
-      isNodeFailure: isUnavailable,
+      isNodeFailure: (error) => isUnavailable(error, path),
       retriesPrimary: false
     });
   };

@@ -27,13 +27,24 @@ const isRequestRejected = (status: number): boolean =>
   status >= 400 && status < 500 && status !== 404 && status !== 408 && status !== 429;
 
 /**
+ * REST endpoints (`<api>.<method>`) newer than the rest of their API, which nodes serving the API
+ * may not have yet: their 404 means the node lacks the endpoint, not the API.
+ */
+const ENDPOINTS_NOT_ON_EVERY_NODE = new Set(['balance-api.proposalsPayments']);
+
+/**
  * Whether a failed REST call means this node cannot serve that REST API: it does not have it (404),
  * is down or overloaded (5xx, 408, 429, timeout, network failure) or did not answer with JSON, so
- * another node may serve it. False for a request the API rejected (any other 4xx) and for any error
- * that is not a `ReadTransportError`.
+ * another node may serve it. False for a request the API rejected (any other 4xx), for a 404 of an
+ * endpoint at `path` (e.g. `['balance-api', 'proposalsPayments']`) that not every node has, and for
+ * any error that is not a `ReadTransportError`.
  */
-export const isRestApiUnavailable = (error: unknown): boolean =>
-  error instanceof ReadTransportError && (error.status === undefined || !isRequestRejected(error.status));
+export const isRestApiUnavailable = (error: unknown, path: readonly string[] = []): boolean => {
+  if (!(error instanceof ReadTransportError)) return false;
+  if (error.status === undefined) return true;
+  if (error.status === 404 && ENDPOINTS_NOT_ON_EVERY_NODE.has(path.join('.'))) return false;
+  return !isRequestRejected(error.status);
+};
 
 const describeRequest = (request: IReadRequest): string => `"${request.method} ${request.endpoint + request.url}"`;
 
