@@ -569,6 +569,24 @@ FIXTURE_BASE_PATH (the route glob matches with or without it).
 
 ---
 
+## Recipe: the chat widget of a chat provider
+
+The chat provider and its URLs are client settings, so `chatWidget.spec.ts`
+appends `REACT_APP_CHAT_PROVIDER` and the Matrix or Rocket.Chat URLs to
+`__ENV.js`, as the Google recipe above does, and sets `bypassCSP: true`: the
+fixture build's CSP frames neither chat origin. It answers every chat origin
+with `page.route`. For Matrix, Element's origin serves the real session page
+from `stack/matrix/chat-origin/` (the whole checkout is mounted on the dev
+stack too) and a `config.json`; the homeserver's SSO redirect answers with a
+page that sends the frame on to `Element/?loginToken=…`. A fulfilled 302 does
+not navigate an iframe (it ends at `chrome-error://`). A
+`context.addInitScript` limited to the session page's URL plays the session
+Element holds (`mx_user_id`), and `frame.evaluate` reads the chat origin's
+`localStorage` afterwards: the frame's storage is partitioned under
+`localhost`, so a separate page on the chat origin would not see it.
+
+---
+
 ## Recipe: the user should see a "previously voted" post
 
 SSR fetches post data server-side, so `page.route` cannot override

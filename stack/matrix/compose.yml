@@ -1,0 +1,65 @@
+# A Matrix test deployment for denser's chat (the Rocket.Chat replacement study).
+#   matrix.discuss.peerverity.info  Synapse (client API, /_matrix and /_synapse)
+#   chat.discuss.peerverity.info    Element Web, the client denser embeds
+# Behind the host's sites-router (~/sites-router), like denser-integration.
+name: matrix-test
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: synapse
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: synapse
+      # Synapse refuses a database whose collation isn't C.
+      POSTGRES_INITDB_ARGS: --encoding=UTF8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD, pg_isready, -U, synapse]
+      interval: 5s
+      retries: 20
+
+  synapse:
+    image: matrixdotorg/synapse:v1.163.1
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SYNAPSE_CONFIG_PATH: /config/homeserver.yaml
+    volumes:
+      - ./synapse:/config:ro
+      - synapse_data:/data
+
+  element:
+    image: vectorim/element-web:v1.12.32
+    restart: unless-stopped
+    volumes:
+      - ./element/config.json:/app/config.json:ro
+
+  caddy:
+    image: registry.gitlab.syncad.com/peerverity/ratings-stack/caddy:2.10.0-alpine
+    restart: unless-stopped
+    depends_on: [synapse, element]
+    ports:
+      - 127.0.0.5:80:80
+      - 127.0.0.5:443:443
+    environment:
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:?}
+    volumes:
+      - ./caddy:/etc/caddy:ro
+      - ./chat-origin:/srv/chat-origin:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [default, sites]
+
+networks:
+  sites:
+    external: true
+
+volumes:
+  db:
+  synapse_data:
+  caddy_data:
+  caddy_config:

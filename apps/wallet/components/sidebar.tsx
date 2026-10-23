@@ -105,7 +105,7 @@ const Sidebar = () => {
               <Icons.forward className="w-4" />
             </Item>
             <Separator className="my-2" />
-            <Item href={siteConfig.openhiveChatUri} target>
+            <Item href={siteConfig.chatAppUrl} target>
               {t('navigation.sidebar.openhive_chat')} <Icons.forward className="w-4" />
             </Item>
             <Item href="https://hiveprojects.io/" target>

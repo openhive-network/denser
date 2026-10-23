@@ -1,0 +1,48 @@
+{
+	servers :443 {
+		listener_wrappers {
+			proxy_protocol {
+				allow 172.31.201.2/32
+			}
+			tls
+		}
+	}
+}
+
+(tls) {
+	tls {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+	}
+	encode zstd gzip
+}
+
+matrix.discuss.peerverity.info {
+	import tls
+	header /.well-known/matrix/* Access-Control-Allow-Origin *
+	respond /.well-known/matrix/client `{"m.homeserver":{"base_url":"https://matrix.discuss.peerverity.info"}}` 200
+	respond /.well-known/matrix/server `{"m.server":"matrix.discuss.peerverity.info:443"}` 200
+	handle /_matrix/* {
+		reverse_proxy synapse:8008
+	}
+	handle /_synapse/client/* {
+		reverse_proxy synapse:8008
+	}
+	handle {
+		respond 404
+	}
+}
+
+chat.discuss.peerverity.info {
+	import tls
+	# denser embeds Element in an iframe; only denser's sites may frame it.
+	header Content-Security-Policy "frame-ancestors 'self' https://denser.discuss.peerverity.info"
+	# denser's widget starts here: it replaces another user's Element session, then signs in (SSO)
+	handle /denser-session.html {
+		header Cache-Control no-store
+		root * /srv/chat-origin
+		file_server
+	}
+	handle {
+		reverse_proxy element:80
+	}
+}
