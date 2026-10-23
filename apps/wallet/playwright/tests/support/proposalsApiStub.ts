@@ -1,5 +1,5 @@
 import type { JsonRpcResults, RestResults } from './apiStub';
-import { STUB_ACCOUNT, fullAccount } from './walletApiStub';
+import { PROPOSALS_PAYMENTS_PATH, STUB_ACCOUNT, fullAccount, stubProposalsPayments } from './walletApiStub';
 
 /**
  * A proposals page with a DHF to fund it, for `startWalletApiStub`'s `jsonRpc`: seven proposals,
@@ -141,28 +141,10 @@ export const STUB_PROPOSALS_PAID: Record<number, string> = {
   [STUB_PROPOSALS.expired]: '1510000'
 };
 
-/** balance-api's proposal payments, one entry per distinct requested id in ascending order, as the node answers. */
-const proposalsPayments: RestResults[string] = (query) =>
-  [...new Set((query.get('proposal-ids') ?? '').split(',').filter(Boolean).map(Number))]
-    .sort((a, b) => a - b)
-    .map((id) => {
-      const paid = STUB_PROPOSALS_PAID[id];
-      const receiver = PROPOSALS.find((item) => item.proposal_id === id)?.receiver;
-      return {
-        proposal_id: id,
-        receiver: paid ? receiver : null,
-        total_paid: hbd(paid ?? '0'),
-        payment_count: paid ? 151 : 0,
-        first_payment_block: paid ? 90_000_000 : null,
-        first_payment_time: paid ? '2026-01-01T00:00:00' : null,
-        last_payment_block: paid ? 95_000_000 : null,
-        last_payment_time: paid ? '2026-06-01T00:00:00' : null
-      };
-    });
-
-export const PROPOSALS_PAYMENTS_PATH = '/balance-api/proposals/payments';
-
 /** The proposals page's REST reads, for `startWalletApiStub`'s `rest`. */
 export const PROPOSALS_PAGE_REST_RESULTS: RestResults = {
-  [PROPOSALS_PAYMENTS_PATH]: proposalsPayments
+  [PROPOSALS_PAYMENTS_PATH]: stubProposalsPayments(
+    STUB_PROPOSALS_PAID,
+    (id) => PROPOSALS.find((item) => item.proposal_id === id)?.receiver
+  )
 };

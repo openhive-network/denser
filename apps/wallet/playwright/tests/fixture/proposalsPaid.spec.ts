@@ -2,13 +2,8 @@ import type { Server } from 'node:http';
 import { test, expect, type ConsoleMessage, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { FIXTURE_API_PORT } from '../support/apiStub';
-import { startWalletApiStub } from '../support/walletApiStub';
-import {
-  PROPOSALS_PAGE_REST_RESULTS,
-  PROPOSALS_PAGE_RESULTS,
-  PROPOSALS_PAYMENTS_PATH,
-  STUB_PROPOSALS
-} from '../support/proposalsApiStub';
+import { PROPOSALS_PAYMENTS_PATH, startWalletApiStub } from '../support/walletApiStub';
+import { PROPOSALS_PAGE_REST_RESULTS, PROPOSALS_PAGE_RESULTS, STUB_PROPOSALS } from '../support/proposalsApiStub';
 import { ProposalsPage } from '../support/pages/proposalsPage';
 
 /**
