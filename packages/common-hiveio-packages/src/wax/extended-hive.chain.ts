@@ -1157,6 +1157,23 @@ export interface BalanceApiAccountDelegations {
   incoming_delegations: BalanceApiIncomingDelegation[];
 }
 
+/**
+ * What the DHF has paid one proposal so far, as balance-api's proposal payments list it. A proposal
+ * never paid (or that does not exist) has a zero `total_paid`, `payment_count` 0 and null
+ * `receiver`, payment blocks and times.
+ */
+export interface BalanceApiProposalPaymentTotals {
+  proposal_id: number;
+  receiver: string | null;
+  /** HBD, `amount` in satoshis */
+  total_paid: NaiAsset;
+  payment_count: number;
+  first_payment_block: number | null;
+  first_payment_time: string | null;
+  last_payment_block: number | null;
+  last_payment_time: string | null;
+}
+
 export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
@@ -1219,6 +1236,12 @@ Together with the author name, it uniquely identifies the post.
     accountDelegations: {
       params: { 'account-name': string };
       result: BalanceApiAccountDelegations;
+    };
+    proposalsPayments: {
+      /** Comma-separated proposal ids, at most 1000 */
+      params: { 'proposal-ids': string };
+      /** One entry per distinct requested id, in ascending id order */
+      result: BalanceApiProposalPaymentTotals[];
     };
   };
 };

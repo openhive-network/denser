@@ -1,5 +1,5 @@
-import type { JsonRpcResults } from './apiStub';
-import { STUB_ACCOUNT, fullAccount } from './walletApiStub';
+import type { JsonRpcResults, RestResults } from './apiStub';
+import { PROPOSALS_PAYMENTS_PATH, STUB_ACCOUNT, fullAccount, stubProposalsPayments } from './walletApiStub';
 
 /**
  * A proposals page with a DHF to fund it, for `startWalletApiStub`'s `jsonRpc`: seven proposals,
@@ -133,4 +133,18 @@ export const PROPOSALS_PAGE_RESULTS: JsonRpcResults = {
     )
   }),
   'database_api.list_proposal_votes': listProposalVotes
+};
+
+/** HBD satoshis paid so far to the proposals that have been paid; every other id has had nothing. */
+export const STUB_PROPOSALS_PAID: Record<number, string> = {
+  [STUB_PROPOSALS.funded]: '30200000',
+  [STUB_PROPOSALS.expired]: '1510000'
+};
+
+/** The proposals page's REST reads, for `startWalletApiStub`'s `rest`. */
+export const PROPOSALS_PAGE_REST_RESULTS: RestResults = {
+  [PROPOSALS_PAYMENTS_PATH]: stubProposalsPayments(
+    STUB_PROPOSALS_PAID,
+    (id) => PROPOSALS.find((item) => item.proposal_id === id)?.receiver
+  )
 };

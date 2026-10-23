@@ -347,6 +347,8 @@
   },
   "proposals_page": {
     "daily": "Quotidien",
+    "paid": "Payé",
+    "to_pay": "Reste à payer",
     "proposals": "Propositions",
     "started": "commencée",
     "finished": "terminée",

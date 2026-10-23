@@ -19,7 +19,8 @@ import {
   HiveOpTypeSchema,
   IWitness,
   GetOperationsByAccountParams,
-  BalanceApiIncomingDelegation
+  BalanceApiIncomingDelegation,
+  BalanceApiProposalPaymentTotals
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
 import { getLogger } from '@ui/lib/logging';
@@ -150,6 +151,8 @@ export interface IListItemProps {
   /** The proposal's badge in the next round of DHF payouts; none where the list shows the funding line instead. */
   funding?: ProposalFundingBadge;
   isReturnProposal?: boolean;
+  /** HBD the DHF has paid the proposal so far; unknown while loading or on a node without the figure. */
+  paid?: Big;
 }
 
 /**
@@ -200,6 +203,18 @@ export const getIncomingDelegations = async (username: string): Promise<BalanceA
   );
   return response.incoming_delegations;
 };
+
+/**
+ * Fetches what the DHF has paid each of `proposalIds` (at most 1000), from balance-api's proposal
+ * payments, failing over like `getIncomingDelegations`; rejects when no allowed node serves it.
+ * @returns One entry per distinct id, in ascending id order
+ */
+export const getProposalsPayments = async (
+  proposalIds: readonly number[]
+): Promise<BalanceApiProposalPaymentTotals[]> =>
+  retryReadOnce(() =>
+    getReadChain().restApi['balance-api'].proposalsPayments({ 'proposal-ids': proposalIds.join(',') })
+  );
 
 const walletOperations = [
   'transfer_operation',

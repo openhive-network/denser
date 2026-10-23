@@ -939,6 +939,9 @@ In the list of proposals:
 - **funded** / **not funded** tells whether a proposal is paid in the next round of payments, if votes do not change. A **refund** proposal, such as the return proposal, has neither: what it is paid goes back to the DHF.
 - The **Funded in the next round** / **Not funded in the next round** line separates the proposals that are paid from those that are not.
 - **N days left** is how long an active proposal has until its end date.
+- **Paid** is the HBD the DHF has paid a proposal so far.
+- **To pay** is what is left of an active or upcoming proposal's maximum: its daily pay over its whole duration, less what it has been paid. It is the most the proposal can still receive, not a promise: a proposal below the funding line is not paid, so it may end with less. An expired proposal shows only **Paid**.
+- Paid and To pay come from the API node's balance tracker; on a node that does not serve proposal payments yet, the cards show neither.
 - **refund** marks a proposal whose receiver is the DHF, such as the return proposal, and **burn** one whose receiver is @null, where the payment is destroyed.
 
 <a href="#Table_of_Contents_Decentralized_Hive_Fund_and_Proposals">^</a>

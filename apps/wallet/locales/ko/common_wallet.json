@@ -342,6 +342,8 @@
   },
   "proposals_page": {
     "daily": "일일",
+    "paid": "지급됨",
+    "to_pay": "지급 예정",
     "proposals": "제안",
     "started": "시작됨",
     "finished": "종료됨",

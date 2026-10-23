@@ -351,6 +351,8 @@
   },
   "proposals_page": {
     "daily": "В день",
+    "paid": "Выплачено",
+    "to_pay": "К выплате",
     "proposals": "Предложения",
     "started": "начато",
     "finished": "завершено",

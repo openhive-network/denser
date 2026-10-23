@@ -11,8 +11,8 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 export const FIXTURE_API_PORT = 8201;
 
 export type JsonRpcResults = Record<string, (params: { accounts?: string[] }) => unknown>;
-/** REST answers keyed by URL path (`/hafah-api/operation-types`). */
-export type RestResults = Record<string, () => unknown>;
+/** REST answers keyed by URL path (`/hafah-api/operation-types`), given the request's query. */
+export type RestResults = Record<string, (query: URLSearchParams) => unknown>;
 
 export interface IApiStubResults {
   jsonRpc: JsonRpcResults;
@@ -41,9 +41,10 @@ const handle = ({ jsonRpc, rest = {} }: IApiStubResults, request: IncomingMessag
   if (request.method === 'OPTIONS') return respond(response, 204);
   if (request.method === 'POST') return respond(response, 200, answerJsonRpc(jsonRpc, body));
 
-  const restResult = rest[new URL(request.url ?? '/', 'http://stub').pathname];
+  const url = new URL(request.url ?? '/', 'http://stub');
+  const restResult = rest[url.pathname];
   if (!restResult) return respond(response, 404, { message: `Not served by the stub: ${request.url}` });
-  return respond(response, 200, restResult());
+  return respond(response, 200, restResult(url.searchParams));
 };
 
 /** Starts the stub on 127.0.0.1; resolves with the server to close after the spec. */

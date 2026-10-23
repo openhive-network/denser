@@ -11,6 +11,7 @@ import { ProposalListItem } from '@/wallet/components/proposals-list-item';
 import { ProposalsDhfSummary } from '@/wallet/components/proposals-dhf-summary';
 import { ProposalsFundingLine } from '@/wallet/components/proposals-funding-line';
 import { useDhfFundingQuery } from '@/wallet/components/hooks/use-dhf-funding';
+import { useProposalsPaid } from '@/wallet/components/hooks/use-proposals-paid';
 import { REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { isReturnProposal } from '@/wallet/lib/dhf-funding';
 import {
@@ -89,13 +90,16 @@ export default function ProposalsPage() {
     }
   });
 
+  const loadedProposals = useMemo(() => uniqueProposals(proposalsData.data?.pages ?? []), [proposalsData.data]);
   const proposals = useMemo(
-    () =>
-      uniqueProposals(proposalsData.data?.pages ?? []).filter((proposal) =>
-        matchesProposalSearch(proposal, search)
-      ),
-    [proposalsData.data, search]
+    () => loadedProposals.filter((proposal) => matchesProposalSearch(proposal, search)),
+    [loadedProposals, search]
   );
+  const loadedProposalIds = useMemo(
+    () => loadedProposals.map((proposal) => proposal.proposal_id),
+    [loadedProposals]
+  );
+  const paidById = useProposalsPaid(loadedProposalIds);
   const marks = useMemo(
     () =>
       funding
@@ -183,6 +187,7 @@ export default function ProposalsPage() {
                 proposalData={proposal}
                 funding={marks.badges[index]}
                 isReturnProposal={isReturnProposal(proposal, REFUND_ACCOUNTS)}
+                paid={paidById.get(proposal.proposal_id)}
               />
               {index === marks.lineIndex ? <ProposalsFundingLine /> : null}
             </Fragment>

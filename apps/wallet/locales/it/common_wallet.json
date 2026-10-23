@@ -347,6 +347,8 @@
   },
   "proposals_page": {
     "daily": "Giornaliero",
+    "paid": "Pagato",
+    "to_pay": "Da pagare",
     "proposals": "Proposte",
     "started": "iniziata",
     "finished": "terminata",
