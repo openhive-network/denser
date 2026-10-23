@@ -77,17 +77,22 @@ export function matrixUserId(username: string, matrix: Pick<MatrixChatConfig, 's
   return `@${username}:${matrix.serverName}`;
 }
 
+/** The themes the session page sets in Element, as `next-themes` resolves denser's. */
+const MATRIX_THEMES: ReadonlySet<string> = new Set(['light', 'dark']);
+
 /**
  * Where the widget's iframe starts for `username`: the session page on Element's origin, which
  * signs that user in through `idpId` unless Element already holds their session, then opens
- * `defaultRoom`. Without a username it only ends whatever Element session the browser holds.
+ * `defaultRoom`, in `theme` when that is `light` or `dark` (otherwise Element keeps its own).
+ * Without a username it only ends whatever Element session the browser holds.
  */
-export function matrixSessionPageUrl(matrix: MatrixChatConfig, username?: string): string {
+export function matrixSessionPageUrl(matrix: MatrixChatConfig, username?: string, theme?: string): string {
   const url = new URL(`${matrix.elementUrl}${MATRIX_SESSION_PAGE_PATH}`);
   if (username) {
     url.searchParams.set('user', matrixUserId(username, matrix));
     url.searchParams.set('idp', matrix.idpId);
     if (matrix.defaultRoom) url.searchParams.set('room', matrix.defaultRoom);
+    if (theme && MATRIX_THEMES.has(theme)) url.searchParams.set('theme', theme);
   }
   return url.toString();
 }
