@@ -58,7 +58,7 @@ test.describe('Proposals page DHF funding', () => {
     await expect(proposalsPage.dhfMaxDailyBudget).toHaveText('500.000 HBD');
     await expect(proposalsPage.dhfTotalBudget).toHaveText('50,000.000 HBD');
     const faqLink = proposalsPage.dhfSummary.getByRole('link', { name: 'Read more in the FAQ' });
-    await expect(faqLink).toHaveAttribute('href', /\/faq\.html#/);
+    await expect(faqLink).toHaveAttribute('href', /\/faq\.html#What_is_the_Decentralized_Hive_Fund__DHF$/);
   });
 
   test('WALLET-PROPOSALS-DHF-02 — in vote order the funding line follows the last funded proposal, the return proposal', async ({
