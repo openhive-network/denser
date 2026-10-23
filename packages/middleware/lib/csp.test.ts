@@ -108,7 +108,12 @@ const frameSrcOf = (policy: string): string[] =>
     ?.slice(1) ?? [];
 
 const withChatEnv = (values: Record<string, string>, run: () => void) => {
-  const keys = ['REACT_APP_CHAT_PROVIDER', 'REACT_APP_MATRIX_ELEMENT_URL', 'REACT_APP_SITE_DOMAIN'];
+  const keys = [
+    'REACT_APP_CHAT_PROVIDER',
+    'REACT_APP_MATRIX_ELEMENT_URL',
+    'REACT_APP_MATRIX_HOMESERVER_URL',
+    'REACT_APP_SITE_DOMAIN'
+  ];
   const saved = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
   for (const key of keys) {
     if (key in values) process.env[key] = values[key];
@@ -126,16 +131,18 @@ const withChatEnv = (values: Record<string, string>, run: () => void) => {
 
 const BLOG_FRAME_SRC = { frameSrc: ['https://www.youtube.com', 'https://openhive.chat'] };
 
-test("frame-src admits Element's origin in Matrix mode, keeping the app's list and its own origin", () => {
+test("frame-src admits Element's and the homeserver's origins in Matrix mode, keeping the app's list and its own origin", () => {
   withChatEnv(
     {
       REACT_APP_CHAT_PROVIDER: 'matrix',
       REACT_APP_MATRIX_ELEMENT_URL: 'https://chat.example.org/',
+      REACT_APP_MATRIX_HOMESERVER_URL: 'https://matrix.example.org/',
       REACT_APP_SITE_DOMAIN: 'https://denser.example.org/blog'
     },
     () => {
       const frameSrc = frameSrcOf(buildCsp(BLOG_FRAME_SRC, 'bm9uY2U='));
       assert.ok(frameSrc.includes('https://chat.example.org'), frameSrc.join(' '));
+      assert.ok(frameSrc.includes('https://matrix.example.org'), frameSrc.join(' '));
       assert.ok(frameSrc.includes('https://www.youtube.com'), frameSrc.join(' '));
       assert.ok(frameSrc.includes('https://denser.example.org'), frameSrc.join(' '));
     }
@@ -148,10 +155,30 @@ test("frame-src keeps 'self' next to Element for an app with no frame list", () 
   });
 });
 
-test('frame-src leaves Element out unless the chat provider is Matrix', () => {
-  withChatEnv({ REACT_APP_MATRIX_ELEMENT_URL: 'https://chat.example.org' }, () => {
-    const frameSrc = frameSrcOf(buildCsp(BLOG_FRAME_SRC, 'bm9uY2U='));
-    assert.ok(!frameSrc.includes('https://chat.example.org'), frameSrc.join(' '));
-    assert.ok(frameSrc.includes('https://openhive.chat'), frameSrc.join(' '));
-  });
+test('frame-src lists Element and the homeserver once when they share an origin', () => {
+  withChatEnv(
+    {
+      REACT_APP_CHAT_PROVIDER: 'matrix',
+      REACT_APP_MATRIX_ELEMENT_URL: 'https://example.org/element',
+      REACT_APP_MATRIX_HOMESERVER_URL: 'https://example.org'
+    },
+    () => {
+      assert.deepEqual(frameSrcOf(buildCsp({}, 'bm9uY2U=')), ['https://example.org', "'self'"]);
+    }
+  );
+});
+
+test('frame-src leaves Matrix out unless the chat provider is Matrix', () => {
+  withChatEnv(
+    {
+      REACT_APP_MATRIX_ELEMENT_URL: 'https://chat.example.org',
+      REACT_APP_MATRIX_HOMESERVER_URL: 'https://matrix.example.org'
+    },
+    () => {
+      const frameSrc = frameSrcOf(buildCsp(BLOG_FRAME_SRC, 'bm9uY2U='));
+      assert.ok(!frameSrc.includes('https://chat.example.org'), frameSrc.join(' '));
+      assert.ok(!frameSrc.includes('https://matrix.example.org'), frameSrc.join(' '));
+      assert.ok(frameSrc.includes('https://openhive.chat'), frameSrc.join(' '));
+    }
+  );
 });
