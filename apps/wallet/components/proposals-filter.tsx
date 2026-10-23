@@ -129,7 +129,7 @@ export function ProposalsFilter({
           onChange={handleSearchChange}
           placeholder={t('proposals_page.search_placeholder')}
           aria-label={t('proposals_page.search_label')}
-          className="h-[35px] sm:max-w-xs"
+          className="h-[35px] placeholder:text-slate-600 dark:placeholder:text-muted-foreground sm:max-w-xs"
           data-testid="proposals-search"
         />
       </div>
