@@ -11,6 +11,8 @@ export class ProposalsPage {
   readonly proposalsHeaderName: Locator;
   readonly proposalsSortAndFilterBlock: Locator;
   readonly proposalsStatusTabs: Locator;
+  readonly proposalsStatusSelect: Locator;
+  readonly proposalsStatusSelectContent: Locator;
   readonly proposalsSearch: Locator;
   readonly proposalsFilterOrderByConntent: Locator;
   readonly proposalsFilterOrderBy: Locator;
@@ -55,6 +57,8 @@ export class ProposalsPage {
       '[data-testid="proposals-sort-filter"]'
     );
     this.proposalsStatusTabs = page.locator('[data-testid="proposals-status-tabs"]');
+    this.proposalsStatusSelect = page.locator('[data-testid="proposals-status-select"]');
+    this.proposalsStatusSelectContent = page.locator('[data-testid="proposals-status-select-content"]');
     this.proposalsSearch = page.locator('[data-testid="proposals-search"]');
     this.proposalsFilterOrderByConntent = page.locator('[data-testid="proposals-sort-filter-orderby-conntent"]');
     this.proposalsFilterOrderBy = page.locator(
@@ -110,6 +114,12 @@ export class ProposalsPage {
   /** The status tab named `name` (All, Active, Upcoming, Expired, Votable). */
   statusTab(name: string): Locator {
     return this.proposalsStatusTabs.getByRole('tab', { name, exact: true });
+  }
+
+  /** Picks the status `name` (All, Active, Upcoming, Expired, Votable) in the narrow screens' status select. */
+  async selectStatus(name: string) {
+    await this.proposalsStatusSelect.click();
+    await this.proposalsStatusSelectContent.getByRole('option', { name, exact: true }).click();
   }
 
   /** The card of proposal `proposalId`. */

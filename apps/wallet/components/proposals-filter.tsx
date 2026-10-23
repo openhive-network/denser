@@ -13,17 +13,16 @@ import { Input } from '@ui/components/input';
 import { TabsList, TabsTrigger } from '@ui/components/tabs';
 import { IGetProposalsParams } from '@hive/common-hiveio-packages/wax';
 import { useTranslation } from '@/wallet/i18n/client';
-import { PROPOSAL_STATUS_TABS, type ProposalStatusTab } from '@/wallet/lib/proposals-list';
-
-const STATUS_TAB_LABEL_KEYS: Record<ProposalStatusTab, string> = {
-  all: 'select_sort.sort_proposals.all',
-  active: 'select_sort.sort_proposals.active',
-  inactive: 'select_sort.sort_proposals.upcoming',
-  expired: 'select_sort.sort_proposals.expired',
-  votable: 'select_sort.sort_proposals.votable'
-};
+import {
+  PROPOSAL_STATUS_LABEL_KEYS,
+  PROPOSAL_STATUS_TABS,
+  type ProposalStatusTab
+} from '@/wallet/lib/proposals-list';
+import { ProposalsStatusSelect } from '@/wallet/components/proposals-status-select';
 
 export interface FilterProposalsProps {
+  status: ProposalStatusTab;
+  onStatusChange: (value: string) => void;
   search: string;
   onSearchChange: (value: string) => void;
   orderValue: IGetProposalsParams['order'];
@@ -33,9 +32,13 @@ export interface FilterProposalsProps {
 }
 /**
  * The proposals page's filter bar. Its status tabs are the triggers of the page's `Tabs`, whose
- * value is the status filter, so the bar renders inside them.
+ * value is the status filter, so the bar renders inside them. Below `md` a select bound to the same
+ * status replaces the tabs, which wrap there; `display: none` keeps the hidden one out of the
+ * accessibility tree.
  */
 export function ProposalsFilter({
+  status,
+  onStatusChange,
   search,
   onSearchChange,
   onChangeSortOrder,
@@ -62,6 +65,7 @@ export function ProposalsFilter({
         </h1>
         <div className="flex justify-between" data-testid="proposals-sort-filter">
           <div className="flex gap-2 text-xs font-medium">
+            <ProposalsStatusSelect value={status} onValueChange={onStatusChange} className="md:hidden" />
             <div>
               <span id={orderByLabelId}>{t('select_sort.sort_proposals.order_by')}</span>
               <Select defaultValue="" value={orderValue} onValueChange={onChangeSortOrder}>
@@ -105,17 +109,17 @@ export function ProposalsFilter({
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <TabsList
           aria-label={t('select_sort.sort_proposals.status')}
-          className="h-auto flex-wrap justify-start bg-slate-200 dark:bg-slate-900"
+          className="hidden h-auto flex-wrap justify-start bg-slate-200 dark:bg-slate-900 md:inline-flex"
           data-testid="proposals-status-tabs"
         >
-          {PROPOSAL_STATUS_TABS.map((status) => (
+          {PROPOSAL_STATUS_TABS.map((tab) => (
             <TabsTrigger
-              key={status}
-              value={status}
+              key={tab}
+              value={tab}
               className="text-slate-700 data-[state=active]:bg-white data-[state=active]:text-slate-950 dark:text-slate-300 dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white"
-              data-testid={`proposals-status-tab-${status}`}
+              data-testid={`proposals-status-tab-${tab}`}
             >
-              {t(STATUS_TAB_LABEL_KEYS[status])}
+              {t(PROPOSAL_STATUS_LABEL_KEYS[tab])}
             </TabsTrigger>
           ))}
         </TabsList>
