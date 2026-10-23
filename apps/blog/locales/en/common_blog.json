@@ -1091,7 +1091,8 @@
         "comments": "Comments",
         "replies": "Replies",
         "blog": "Blog",
-        "feed": "Feed"
+        "feed": "Feed",
+        "devices": "Devices"
       },
       "gateway_note": "Lite-account gateway",
       "gateway_tooltip": "This Hive account posts on behalf of lite accounts",
@@ -1107,7 +1108,9 @@
       "forget_title": "Forget lite account {{name}}?",
       "forget_description": "Its key is kept only in this browser: once it is forgotten, nobody can post, edit or delete as this lite account again. Its lite drafts and queued posts are removed too; its published posts stay.",
       "forget_confirm": "Forget",
-      "my_feed": "My feed"
+      "my_feed": "My feed",
+      "forget_description_unsecured": "This account lives only in this browser: once it is forgotten, nobody can post, edit or delete as this lite account again. To keep it, secure it with a passkey first. Its lite drafts and queued posts are removed too; its published posts stay.",
+      "forget_description_secured": "This browser forgets the account, its drafts and its queued posts. The account stays yours: sign in again with your passkey. This device's key stays on the account until it expires; Sign out removes it now."
     },
     "social": {
       "failed_title": "The lite account could not do that",
@@ -1122,6 +1125,72 @@
         "unavailable": "The gateway is unavailable right now.",
         "unknown": "Something went wrong. Try again."
       }
+    },
+    "passkey": {
+      "failed_title": "The passkey action failed",
+      "pick_signer": "Choose the signer that keeps your passkey",
+      "secured_title": "Account secured",
+      "secured_description": "Your passkey now owns this lite account. This browser keeps only its posting key.",
+      "device_label": "Name of this device",
+      "record_signer": "Record the signer's address on chain, so your other devices know where to sign",
+      "working": "Waiting for the signer and the chain…",
+      "secure_confirm": "Create the passkey and secure",
+      "secure_title": "Secure this account with a passkey",
+      "secure_description": "This lite account lives only in this browser. A passkey kept by a signer site becomes its owner key: you can sign in on other devices, and losing this browser no longer loses the account.",
+      "continue": "Continue",
+      "signed_in_title": "Signed in as {{name}}",
+      "signer_is": "Your passkey is kept by {{host}}.",
+      "sign_in_confirm": "Sign in with the passkey",
+      "sign_in_title": "Sign in on this device",
+      "sign_in_description": "Use your passkey-secured lite account in this browser. This device gets its own key, valid for 90 days.",
+      "signed_out_title": "Signed out of {{name}}",
+      "sign_out_title": "Sign out of {{name}}?",
+      "sign_out_description": "This device's key is removed from the account and this browser forgets it. The account stays yours: sign in again with your passkey.",
+      "sign_out_confirm": "Sign out",
+      "sign_out": "Sign out",
+      "warning_unsecured": "This account lives only in this browser. Secure it with a passkey.",
+      "warning_add_backup": "This account is secured by a single passkey. Consider adding a backup.",
+      "secure_action": "Secure this account",
+      "prompt_title": "Your lite account is on chain",
+      "prompt_dismiss": "Dismiss",
+      "sign_in_on_device": "Already secured a lite account with a passkey? Sign in on this device"
+    },
+    "signer_errors": {
+      "popup_blocked": "The browser blocked the signer window. Allow pop-ups for this site and try again.",
+      "signer_unavailable": "The signer site did not answer. Check your connection and try again.",
+      "key_not_found": "This passkey does not hold the account's key. Use the passkey this account was secured with.",
+      "owner_blind_signing": "The signer refused to sign blind with an owner key.",
+      "prf_unsupported": "This passkey or browser cannot derive keys (no PRF support). Try another browser or passkey provider.",
+      "webauthn_unavailable": "Passkeys are not available in this browser.",
+      "busy": "The signer window is busy with another request. Close it and try again.",
+      "invalid_request": "The signer refused the request as invalid.",
+      "internal": "The signer failed. Try again."
+    },
+    "authority_errors": {
+      "rate_limited": "Too many account changes for now. Try again later.",
+      "auth_failed": "The chain did not accept this key for the change.",
+      "not_relayed": "The gateway does not relay account changes.",
+      "not_found": "There is no lite account with this name.",
+      "not_secured": "This lite account is not secured with a passkey. Sign in from the browser that holds it.",
+      "not_applied": "The change was sent but has not shown up on chain yet. Check again in a minute.",
+      "not_owner": "This browser does not hold the account's owner key.",
+      "unavailable": "The lite account service is unavailable. Try again later."
+    },
+    "devices": {
+      "title": "Devices",
+      "description": "Every device that can post as this account. Each key expires; renew this device's key with your passkey before it does.",
+      "unlabelled": "Unnamed device",
+      "this_device": "(this device)",
+      "valid_until": "Valid until {{date}}",
+      "expired_on": "Expired on {{date}}",
+      "no_expiry": "No expiry",
+      "renew": "Renew",
+      "remove": "Remove",
+      "removed": "Device removed",
+      "renewed": "This device's key was renewed",
+      "not_owner": "Only a browser signed in to this account sees its devices.",
+      "expiry_banner": "This device's key for {{name}} expires on {{date}}.",
+      "expiry_banner_action": "Renew it with your passkey"
     }
   }
 }

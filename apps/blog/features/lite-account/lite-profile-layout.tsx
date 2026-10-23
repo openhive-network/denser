@@ -1,12 +1,17 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import type { ILiteProfile } from '@hive/common-hiveio-packages/wax';
 import ListItem from '@/blog/features/layouts/user-profile/list-item';
 import { useTranslation } from '@/blog/i18n/client';
 import LiteProfileCard from './lite-profile-card';
-import { useIsLiteIdentity } from './use-stored-lite-identity';
+import LiteSecurityNotice from './lite-security-notice';
+import { useLitePasskeyAccess, useLiteSecurityWarning } from './use-lite-passkey';
+import { useIsLiteIdentity, useStoredLiteIdentity } from './use-stored-lite-identity';
+
+const LiteSecureDialog = dynamic(() => import('./lite-secure-dialog'), { ssr: false });
 
 /** The tabs every lite-aware node serves: `lite.get_account_posts` sorts, each one a profile sub-route. */
 const POST_TABS = ['posts', 'comments', 'replies'] as const;
@@ -15,7 +20,7 @@ const SOCIAL_TABS = ['followers', 'followed', 'lists/muted'] as const;
 
 type Tab = { path: string; label: string };
 
-function useTabs(did: string, social: boolean, isOwner: boolean): Tab[] {
+function useTabs(did: string, social: boolean, isOwner: boolean, devices: boolean): Tab[] {
   const { t } = useTranslation('common_blog');
   const posts = POST_TABS.map((tab) => ({ segment: tab, label: t(`lite_account.profile.tabs.${tab}`) }));
   const lists: Record<(typeof SOCIAL_TABS)[number], string> = {
@@ -31,13 +36,17 @@ function useTabs(did: string, social: boolean, isOwner: boolean): Tab[] {
         ...(isOwner ? [{ segment: 'feed', label: t('lite_account.profile.tabs.feed') }] : [])
       ]
     : posts;
-  return tabs.map(({ segment, label }) => ({ path: segment ? `/@${did}/${segment}` : `/@${did}`, label }));
+  const all: { segment: string; label: string }[] = devices
+    ? [...tabs, { segment: 'devices', label: t('lite_account.profile.tabs.devices') }]
+    : tabs;
+  return all.map(({ segment, label }) => ({ path: segment ? `/@${did}/${segment}` : `/@${did}`, label }));
 }
 
 /**
  * A lite account's profile: its card and the tabs of its posts, comments and replies; on a node
  * serving the lite social graph also its blog (with reblogs), followers, follows and mutes, and
- * for the browser's own lite account its feed. No wallet: a lite account has none.
+ * for the browser's own lite account its feed. Where the gateway relays authority edits, the owner
+ * also gets its Devices tab and the account's security notice. No wallet: a lite account has none.
  */
 export default function LiteProfileLayout({
   profile,
@@ -50,12 +59,22 @@ export default function LiteProfileLayout({
 }) {
   const pathname = usePathname() ?? '';
   const isOwner = useIsLiteIdentity(profile.name);
-  const tabs = useTabs(profile.name, social, isOwner);
+  const identity = useStoredLiteIdentity();
+  const passkey = useLitePasskeyAccess().available && isOwner && !!identity?.registered;
+  const warning = useLiteSecurityWarning(isOwner ? identity : null, isOwner);
+  const [isSecureOpen, setIsSecureOpen] = useState(false);
+  const tabs = useTabs(profile.name, social, isOwner, passkey);
   const current = decodeURIComponent(pathname).replace(/\/+$/, '');
 
   return (
     <div>
       <LiteProfileCard profile={profile} social={social} isOwner={isOwner} />
+      {warning ? (
+        <div className="container mx-auto max-w-screen-xl px-4 pb-2 sm:px-8">
+          <LiteSecurityNotice warning={warning} onSecure={() => setIsSecureOpen(true)} />
+        </div>
+      ) : null}
+      {passkey && isSecureOpen ? <LiteSecureDialog open onOpenChange={setIsSecureOpen} /> : null}
       <div className="flex flex-col pb-8 md:pb-4">
         <div className="bg-gray-700" data-testid="profile-navigation">
           <div className="container mx-auto max-w-screen-xl px-0 sm:px-8">

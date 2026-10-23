@@ -1,36 +1,40 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { createLiteIdentity, type LiteIdentity } from '@hiveio/lite-account';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
+import { readStoredLiteIdentity, signingIdentity, storedFromCreated, type StoredLiteIdentity } from './lite-identity-record';
 import { LITE_CLIENT_ID_STORAGE_KEY, LITE_IDENTITY_STORAGE_KEY } from './lite-storage';
 
 /**
- * The device-held lite identity (design doc §3): a throwaway-grade key pair kept in
- * origin-scoped storage. Cross-device durability comes later, via the "save this
- * identity" upgrade (passkey / social login), not from this storage.
+ * The device-held lite identity (design doc §3): a key pair kept in origin-scoped storage. Until
+ * it is secured with a passkey (`lite-secure-dialog`) this storage holds its only owner key; once
+ * secured it holds a posting key only. `identity` is what the post builders sign with.
  */
 export function useLiteIdentity() {
-  const [identity, setIdentity, clear] = useStorageWithTTL<LiteIdentity | null>(
-    LITE_IDENTITY_STORAGE_KEY,
-    null,
-    StorageTTL.PERMANENT
-  );
+  const [raw, setRaw, clear] = useStorageWithTTL<unknown>(LITE_IDENTITY_STORAGE_KEY, null, StorageTTL.PERMANENT);
   const [clientId, setClientId] = useStorageWithTTL<string>(LITE_CLIENT_ID_STORAGE_KEY, '', StorageTTL.PERMANENT);
+  const stored = useMemo(() => readStoredLiteIdentity(raw), [raw]);
+  const identity = useMemo(() => (stored ? signingIdentity(stored) : null), [stored]);
 
   const create = useCallback(
     (name: string): LiteIdentity => {
       const created = createLiteIdentity(name);
-      setIdentity(created);
+      setRaw(storedFromCreated(created));
       return created;
     },
-    [setIdentity]
+    [setRaw]
   );
 
+  const store = useCallback((next: StoredLiteIdentity) => setRaw(next), [setRaw]);
+
   const markRegistered = useCallback(() => {
-    setIdentity((prev) => (prev ? { ...prev, registered: true } : prev));
-  }, [setIdentity]);
+    setRaw((prev: unknown) => {
+      const current = readStoredLiteIdentity(prev);
+      return current ? { ...current, registered: true } : prev;
+    });
+  }, [setRaw]);
 
   const ensureClientId = useCallback((): string => {
     if (clientId) return clientId;
@@ -39,5 +43,5 @@ export function useLiteIdentity() {
     return fresh;
   }, [clientId, setClientId]);
 
-  return { identity, create, markRegistered, clear, ensureClientId };
+  return { identity, stored, create, store, markRegistered, clear, ensureClientId };
 }

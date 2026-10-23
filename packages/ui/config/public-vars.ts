@@ -1,4 +1,5 @@
 import env from '@beam-australia/react-env';
+import { parsePasskeySigners } from '../lib/passkey-signers';
 
 /// Contains list of public variables which can have safely set defaults and allow application build without explicit env. definition
 
@@ -15,3 +16,8 @@ export const configuredSessionTime = env('APP_SESSION_TIME') ?? configuredSiteDo
  */
 export const configuredAllowedApiNodes =
   env('ALLOWED_HIVE_API_NODES') ?? 'https://api.hive.blog https://api.syncad.com https://api.openhive.network';
+/**
+ * Passkey signer sites (origins) a lite account can be secured with, in order. One configured: it
+ * is used without asking; several: the guest picks one when securing the account.
+ */
+export const configuredPasskeySigners = parsePasskeySigners(env('PASSKEY_SIGNERS'));

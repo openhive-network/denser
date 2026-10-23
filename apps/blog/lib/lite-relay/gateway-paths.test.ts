@@ -26,6 +26,13 @@ describe('allowedGatewayPath', () => {
     assert.equal(allowedGatewayPath('DELETE', ['queue', 'q_1-AB', 'post']), null);
   });
 
+  it('relays a lite account authority read: GET only, for a name in the lite grammar', () => {
+    assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'authority']), '/names/brave-otter-482/authority');
+    assert.equal(allowedGatewayPath('POST', ['names', 'brave-otter-482', 'authority']), null);
+    assert.equal(allowedGatewayPath('GET', ['names', 'Not A Name', 'authority']), null);
+    assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'authority', 'owner']), null);
+  });
+
   it('relays a name availability check: GET only, for a name in the lite grammar', () => {
     assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'availability']), '/names/brave-otter-482/availability');
     assert.equal(allowedGatewayPath('GET', ['names', 'lite.smoke-1016', 'availability']), '/names/lite.smoke-1016/availability');
@@ -35,6 +42,7 @@ describe('allowedGatewayPath', () => {
       assert.equal(allowedGatewayPath('GET', ['names', name, 'availability']), null, name);
     }
     assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482']), null);
+    assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'toString']), null);
     assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'other']), null);
     assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'availability', 'more']), null);
   });

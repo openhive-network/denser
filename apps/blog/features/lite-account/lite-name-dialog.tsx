@@ -4,7 +4,10 @@ import { Button } from '@ui/components/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@ui/components/dialog';
 import { Input } from '@ui/components/input';
 import { cn } from '@ui/lib/utils';
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useTranslation } from '@/blog/i18n/client';
+import { useLitePasskeyAccess } from './use-lite-passkey';
 import { canConfirmLiteName, type LiteNameState } from './lite-name-availability';
 import { useLiteNameField } from './use-lite-name-field';
 
@@ -19,6 +22,8 @@ type Props = {
   /** Leaves the guest flow for the sign-in dialog; whatever the guest typed is kept. */
   onSignIn: () => void;
 };
+
+const LiteSignInDialog = dynamic(() => import('./lite-sign-in-dialog'), { ssr: false });
 
 const SIGN_IN_KEYS: Record<Props['purpose'], string> = {
   reply: 'lite_account.name_dialog.sign_in_reply',
@@ -79,22 +84,44 @@ function LiteNameForm({ onCancel, onConfirm, takenName }: { onCancel: () => void
 /**
  * First-post name prompt: a suggested adjective-noun-number handle the gateway says is free,
  * overridable, with the name's availability checked as the user types (design doc §2 step 3).
+ * Where the gateway relays authority edits, a guest whose lite account is secured with a passkey
+ * signs in to it on this device instead.
  */
 export default function LiteNameDialog({ open, onOpenChange, onConfirm, takenName, purpose, onSignIn }: Props) {
   const { t } = useTranslation('common_blog');
+  const passkey = useLitePasskeyAccess().available;
+  const [isPasskeySignInOpen, setIsPasskeySignInOpen] = useState(false);
+  const signInOnDevice = () => {
+    onOpenChange(false);
+    setIsPasskeySignInOpen(true);
+  };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[420px]" data-testid="lite-name-dialog">
-        <DialogHeader>
-          <DialogTitle>{t('lite_account.name_dialog.title')}</DialogTitle>
-          <DialogDescription>{t('lite_account.name_dialog.description')}</DialogDescription>
-        </DialogHeader>
-        <LiteNameForm onCancel={() => onOpenChange(false)} onConfirm={onConfirm} takenName={takenName} />
-        <Button type="button" variant="link" className="h-auto justify-start whitespace-normal p-0 text-left text-sm" onClick={onSignIn} data-testid="lite-name-sign-in">
-          {t(SIGN_IN_KEYS[purpose])}
-        </Button>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-[420px]" data-testid="lite-name-dialog">
+          <DialogHeader>
+            <DialogTitle>{t('lite_account.name_dialog.title')}</DialogTitle>
+            <DialogDescription>{t('lite_account.name_dialog.description')}</DialogDescription>
+          </DialogHeader>
+          <LiteNameForm onCancel={() => onOpenChange(false)} onConfirm={onConfirm} takenName={takenName} />
+          <Button type="button" variant="link" className="h-auto justify-start whitespace-normal p-0 text-left text-sm" onClick={onSignIn} data-testid="lite-name-sign-in">
+            {t(SIGN_IN_KEYS[purpose])}
+          </Button>
+          {passkey ? (
+            <Button
+              type="button"
+              variant="link"
+              className="h-auto justify-start whitespace-normal p-0 text-left text-sm"
+              onClick={signInOnDevice}
+              data-testid="lite-name-sign-in-device"
+            >
+              {t('lite_account.passkey.sign_in_on_device')}
+            </Button>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+      {passkey && isPasskeySignInOpen ? <LiteSignInDialog open onOpenChange={setIsPasskeySignInOpen} /> : null}
+    </>
   );
 }

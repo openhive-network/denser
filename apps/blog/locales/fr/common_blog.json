@@ -1091,7 +1091,8 @@
         "comments": "Commentaires",
         "replies": "Réponses",
         "blog": "Blog",
-        "feed": "Fil"
+        "feed": "Fil",
+        "devices": "Appareils"
       },
       "gateway_note": "Passerelle de comptes lite",
       "gateway_tooltip": "Ce compte Hive publie au nom de comptes lite",
@@ -1107,7 +1108,9 @@
       "forget_title": "Oublier le compte lite {{name}} ?",
       "forget_description": "Sa clé n'est conservée que dans ce navigateur : une fois oublié, plus personne ne pourra publier, modifier ou supprimer en tant que ce compte lite. Ses brouillons et publications en file d'attente sont aussi supprimés ; ses publications déjà parues restent.",
       "forget_confirm": "Oublier",
-      "my_feed": "Mon fil"
+      "my_feed": "Mon fil",
+      "forget_description_unsecured": "Ce compte n'existe que dans ce navigateur : une fois oublié, plus personne ne pourra publier, modifier ni supprimer en tant que ce compte lite. Pour le garder, sécurisez-le d'abord avec une passkey. Ses brouillons lite et ses publications en attente sont aussi supprimés ; ses publications publiées restent.",
+      "forget_description_secured": "Ce navigateur oublie le compte, ses brouillons et ses publications en attente. Le compte reste le vôtre : reconnectez-vous avec votre passkey. La clé de cet appareil reste sur le compte jusqu'à son expiration ; Se déconnecter la retire maintenant."
     },
     "social": {
       "failed_title": "Le compte lite n'a pas pu le faire",
@@ -1122,6 +1125,72 @@
         "unavailable": "La passerelle est indisponible pour le moment.",
         "unknown": "Une erreur s'est produite. Réessayez."
       }
+    },
+    "passkey": {
+      "failed_title": "L'action avec la passkey a échoué",
+      "pick_signer": "Choisissez le signataire qui conserve votre passkey",
+      "secured_title": "Compte sécurisé",
+      "secured_description": "Votre passkey possède désormais ce compte lite. Ce navigateur ne garde que sa clé de publication.",
+      "device_label": "Nom de cet appareil",
+      "record_signer": "Inscrire l'adresse du signataire sur la chaîne, pour que vos autres appareils sachent où signer",
+      "working": "En attente du signataire et de la chaîne…",
+      "secure_confirm": "Créer la passkey et sécuriser",
+      "secure_title": "Sécuriser ce compte avec une passkey",
+      "secure_description": "Ce compte lite n'existe que dans ce navigateur. Une passkey conservée par un site signataire devient sa clé de propriétaire : vous pourrez vous connecter sur d'autres appareils, et perdre ce navigateur ne fera plus perdre le compte.",
+      "continue": "Continuer",
+      "signed_in_title": "Connecté en tant que {{name}}",
+      "signer_is": "Votre passkey est conservée par {{host}}.",
+      "sign_in_confirm": "Se connecter avec la passkey",
+      "sign_in_title": "Se connecter sur cet appareil",
+      "sign_in_description": "Utilisez dans ce navigateur votre compte lite sécurisé par passkey. Cet appareil reçoit sa propre clé, valable 90 jours.",
+      "signed_out_title": "Déconnecté de {{name}}",
+      "sign_out_title": "Se déconnecter de {{name}} ?",
+      "sign_out_description": "La clé de cet appareil est retirée du compte et ce navigateur l'oublie. Le compte reste le vôtre : reconnectez-vous avec votre passkey.",
+      "sign_out_confirm": "Se déconnecter",
+      "sign_out": "Se déconnecter",
+      "warning_unsecured": "Ce compte n'existe que dans ce navigateur. Sécurisez-le avec une passkey.",
+      "warning_add_backup": "Ce compte est sécurisé par une seule passkey. Pensez à ajouter une sauvegarde.",
+      "secure_action": "Sécuriser ce compte",
+      "prompt_title": "Votre compte lite est sur la chaîne",
+      "prompt_dismiss": "Ignorer",
+      "sign_in_on_device": "Vous avez déjà sécurisé un compte lite avec une passkey ? Connectez-vous sur cet appareil"
+    },
+    "signer_errors": {
+      "popup_blocked": "Le navigateur a bloqué la fenêtre du signataire. Autorisez les fenêtres surgissantes pour ce site et réessayez.",
+      "signer_unavailable": "Le site signataire n'a pas répondu. Vérifiez votre connexion et réessayez.",
+      "key_not_found": "Cette passkey ne contient pas la clé du compte. Utilisez la passkey avec laquelle ce compte a été sécurisé.",
+      "owner_blind_signing": "Le signataire a refusé de signer à l'aveugle avec une clé de propriétaire.",
+      "prf_unsupported": "Cette passkey ou ce navigateur ne peut pas dériver de clés (pas de prise en charge PRF). Essayez un autre navigateur ou fournisseur de passkeys.",
+      "webauthn_unavailable": "Les passkeys ne sont pas disponibles dans ce navigateur.",
+      "busy": "La fenêtre du signataire traite une autre demande. Fermez-la et réessayez.",
+      "invalid_request": "Le signataire a refusé la demande comme invalide.",
+      "internal": "Le signataire a échoué. Réessayez."
+    },
+    "authority_errors": {
+      "rate_limited": "Trop de modifications du compte pour l'instant. Réessayez plus tard.",
+      "auth_failed": "La chaîne n'a pas accepté cette clé pour la modification.",
+      "not_relayed": "La passerelle ne relaie pas les modifications de compte.",
+      "not_found": "Aucun compte lite ne porte ce nom.",
+      "not_secured": "Ce compte lite n'est pas sécurisé par une passkey. Connectez-vous depuis le navigateur qui le détient.",
+      "not_applied": "La modification a été envoyée mais n'apparaît pas encore sur la chaîne. Revérifiez dans une minute.",
+      "not_owner": "Ce navigateur ne détient pas la clé de propriétaire du compte.",
+      "unavailable": "Le service des comptes lite est indisponible. Réessayez plus tard."
+    },
+    "devices": {
+      "title": "Appareils",
+      "description": "Tous les appareils qui peuvent publier en tant que ce compte. Chaque clé expire ; renouvelez celle de cet appareil avec votre passkey avant son expiration.",
+      "unlabelled": "Appareil sans nom",
+      "this_device": "(cet appareil)",
+      "valid_until": "Valable jusqu'au {{date}}",
+      "expired_on": "Expirée le {{date}}",
+      "no_expiry": "Sans expiration",
+      "renew": "Renouveler",
+      "remove": "Retirer",
+      "removed": "Appareil retiré",
+      "renewed": "La clé de cet appareil a été renouvelée",
+      "not_owner": "Seul un navigateur connecté à ce compte voit ses appareils.",
+      "expiry_banner": "La clé de cet appareil pour {{name}} expire le {{date}}.",
+      "expiry_banner_action": "La renouveler avec votre passkey"
     }
   }
 }

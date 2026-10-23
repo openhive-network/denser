@@ -62,7 +62,8 @@ export function liteSocialOperation(actorName: string, action: LiteSocialAction)
 }
 
 export type BuildLiteSocialParams = {
-  identity: LiteIdentity;
+  /** The acting lite account and its posting key. */
+  identity: Pick<LiteIdentity, 'name' | 'postingWif'>;
   /** The node's social app id (`lite.get_info.apps.social`), the transaction's `app`. */
   app: string;
   /** The gateway's chain id (`/info.chain_id`), bound into the signature. */

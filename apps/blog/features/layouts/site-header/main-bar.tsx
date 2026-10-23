@@ -21,6 +21,7 @@ import { useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-us
 import DialogLogin from '@/blog/components/dialog-login';
 import GuestWritePostTrigger from '@/blog/features/lite-account/guest-write-post-trigger';
 import LiteIdentityMenu from '@/blog/features/lite-account/lite-identity-menu';
+import LiteDeviceExpiryBanner from '@/blog/features/lite-account/lite-device-expiry-banner';
 import ModeToggle from '@/blog/features/layouts/mode-toggle';
 import LangToggle from '@/blog/features/layouts/lang-toggle';
 import { hoursAndMinutes } from '@/blog/lib/utils';
@@ -302,6 +303,7 @@ const MainBar: FC = () => {
           </nav>
         </div>
       </div>
+      <LiteDeviceExpiryBanner />
     </header>
   );
 };

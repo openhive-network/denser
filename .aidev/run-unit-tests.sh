@@ -66,7 +66,8 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/account-name-rules.test.ts packages/ui/lib/asset-math.test.ts \
     packages/ui/lib/memo-secret-check.test.ts \
     packages/ui/lib/storage-with-ttl-notify.test.ts packages/ui/lib/app-api-path.test.ts \
-    packages/ui/lib/locale-cookie.test.ts packages/ui/lib/month-year.test.ts < /dev/null || status=1
+    packages/ui/lib/locale-cookie.test.ts packages/ui/lib/month-year.test.ts \
+    packages/ui/lib/passkey-signers.test.ts < /dev/null || status=1
 echo "== node --test packages/smart-signer" >&2
 junit="$PWD/test-results/unit/smart-signer.xml"
 run_with_junit_fallback "$junit" smart-signer node --test \
@@ -116,6 +117,9 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/lite-account/lite-storage.test.ts \
     apps/blog/features/lite-account/lite-social.test.ts \
     apps/blog/features/lite-account/lite-social-state.test.ts \
+    apps/blog/features/lite-account/signer-client.test.ts \
+    apps/blog/features/lite-account/lite-identity-record.test.ts \
+    apps/blog/features/lite-account/lite-authority-state.test.ts \
     apps/blog/lib/lite-relay/gateway-paths.test.ts < /dev/null || status=1
 echo "== node --test apps/wallet" >&2
 junit="$PWD/test-results/unit/wallet.xml"

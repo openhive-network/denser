@@ -959,6 +959,15 @@ identity's follows (`lite.get_following` with its DID), and the node refuses a D
 ("Account did:lite:… does not exist"): name an existing lite account (on steem-16 e.g.
 `crisp-koala-499`), or the read fails in record and replay alike.
 
+### Popups: route them on the context, not the page
+
+`page.route` does not reach a popup the page opens with `window.open`; `context.route` does. The lite
+passkey specs (`liteIdentityPasskey*.spec.ts`) serve the passkey signer's `/sign/` page this way with a
+stub speaking its popup protocol (`stubSigners` in `support/litePasskeyContext.ts`), and change the
+deployment's signer list (`REACT_APP_PASSKEY_SIGNERS`) per test by appending to the served `__ENV.js`
+(`configureSigners`). An `addInitScript` runs again on every navigation and reload: a spec that needs a
+different stored identity after a reload needs another test.
+
 ### `fixtureTestName` is worker-scoped
 
 You cannot switch fixture dirs per `test.describe` in one file. Each

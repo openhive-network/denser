@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import type { LiteIdentity } from '@hiveio/lite-account';
+import { useCallback, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Link } from '@hive/ui';
 import {
   DropdownMenu,
@@ -12,38 +12,64 @@ import {
   DropdownMenuTrigger
 } from '@ui/components/dropdown-menu';
 import { Icons } from '@ui/components/icons';
-import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
-import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import DialogLogin from '@/blog/components/dialog-login';
 import UserAvatar from '@/blog/features/post-rendering/user-avatar';
 import { useTranslation } from '@/blog/i18n/client';
 import LiteDidBadge from './lite-did-badge';
 import { LITE_DID_PREFIX } from './lite-did';
 import { LiteForgetDialog } from './lite-forget-dialog';
-import { forgetLiteAccount, LITE_IDENTITY_STORAGE_KEY } from './lite-storage';
+import type { StoredLiteIdentity } from './lite-identity-record';
+import LiteSecurityNotice from './lite-security-notice';
+import { forgetLiteAccount } from './lite-storage';
 import { liteSocialApp } from '@transaction/lib/lite-api';
 import { useLiteApiInfo } from './use-lite-api-info';
+import { useLitePasskeyAccess, useLiteSecurityWarning } from './use-lite-passkey';
+import LiteSecurePrompt, { useLiteSecurePrompt } from './lite-secure-prompt';
+import { useStoredLiteIdentity } from './use-stored-lite-identity';
+
+// The passkey dialogs are loaded when opened: the header is on every page.
+const LiteSecureDialog = dynamic(() => import('./lite-secure-dialog'), { ssr: false });
+const LiteSignOutDialog = dynamic(() => import('./lite-sign-out-dialog').then((m) => m.LiteSignOutDialog), { ssr: false });
+
+/** The menu's security notice: mounted with the open menu, so the authority is read only then. */
+function MenuSecurityNotice({ identity, onSecure }: { identity: StoredLiteIdentity; onSecure: () => void }) {
+  const warning = useLiteSecurityWarning(identity, true);
+  return <LiteSecurityNotice warning={warning} onSecure={onSecure} className="mx-2 mb-2" />;
+}
 
 /**
  * The header's indicator of the lite account this browser holds, for a reader who is not signed
  * in: its avatar, name and badge, with a menu to view its profile (and its feed, where the node
- * serves the lite social graph), sign in with a Hive account instead, or forget it. Nothing when the browser holds none. Reads the stored identity directly,
- * so the header does not load the lite signing code (`useLiteIdentity`).
+ * serves the lite social graph), sign in with a Hive account instead, or forget it. Where the
+ * gateway relays authority edits it also secures the account with a passkey (and says when it is
+ * not), or signs a secured one out. Nothing when the browser holds none. Reads the stored identity
+ * directly, so the header does not load the lite signing code (`useLiteIdentity`).
  */
 export default function LiteIdentityMenu() {
   const { t } = useTranslation('common_blog');
-  const [identity] = useStorageWithTTL<LiteIdentity | null>(LITE_IDENTITY_STORAGE_KEY, null, StorageTTL.PERMANENT);
+  const identity = useStoredLiteIdentity();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isForgetOpen, setIsForgetOpen] = useState(false);
+  const [isSecureOpen, setIsSecureOpen] = useState(false);
+  const [isSignOutOpen, setIsSignOutOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const social = liteSocialApp(useLiteApiInfo()) !== null;
+  const passkeyRelay = useLitePasskeyAccess().available;
+  const openSecure = useCallback(() => setIsSecureOpen(true), []);
+  const prompt = useLiteSecurePrompt(identity, passkeyRelay);
 
-  if (!identity?.name) return null;
-  const { name } = identity;
+  if (!identity) return null;
+  const { name, secured } = identity;
+  const secureFromMenu = () => {
+    setIsMenuOpen(false);
+    openSecure();
+  };
+  const passkey = passkeyRelay && identity.registered;
   const did = `${LITE_DID_PREFIX}${name}`;
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <DropdownMenuTrigger asChild>
           <button
             type="button"
@@ -68,6 +94,7 @@ export default function LiteIdentityMenu() {
             <span className="text-xs font-normal text-muted-foreground">{t('lite_account.identity.held_here')}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          {passkey ? <MenuSecurityNotice identity={identity} onSecure={secureFromMenu} /> : null}
           <DropdownMenuItem className="cursor-pointer" asChild>
             <Link href={`/@${did}`} className="flex w-full items-center" data-testid="lite-identity-profile">
               <Icons.user className="mr-2" />
@@ -86,6 +113,18 @@ export default function LiteIdentityMenu() {
             <Icons.doorOpen className="mr-2" />
             <span className="w-full">{t('lite_account.identity.sign_in')}</span>
           </DropdownMenuItem>
+          {passkey && !secured && identity.ownerWif ? (
+            <DropdownMenuItem className="cursor-pointer" onSelect={openSecure} data-testid="lite-identity-secure">
+              <Icons.keyRound className="mr-2" />
+              <span className="w-full">{t('lite_account.passkey.secure_action')}</span>
+            </DropdownMenuItem>
+          ) : null}
+          {passkey && secured ? (
+            <DropdownMenuItem className="cursor-pointer" onSelect={() => setIsSignOutOpen(true)} data-testid="lite-identity-sign-out">
+              <Icons.doorOpen className="mr-2" />
+              <span className="w-full">{t('lite_account.passkey.sign_out')}</span>
+            </DropdownMenuItem>
+          ) : null}
           <DropdownMenuItem
             className="cursor-pointer text-destructive"
             onSelect={() => setIsForgetOpen(true)}
@@ -98,7 +137,24 @@ export default function LiteIdentityMenu() {
       </DropdownMenu>
       {/* Outside the menu, which unmounts its content when it closes */}
       <DialogLogin open={isLoginOpen} onOpenChange={setIsLoginOpen} />
-      <LiteForgetDialog name={name} open={isForgetOpen} onOpenChange={setIsForgetOpen} onConfirm={forgetLiteAccount} />
+      <LiteForgetDialog
+        name={name}
+        variant={passkey ? (secured ? 'secured' : 'unsecured') : 'plain'}
+        open={isForgetOpen}
+        onOpenChange={setIsForgetOpen}
+        onConfirm={forgetLiteAccount}
+      />
+      {prompt.prompting ? (
+        <LiteSecurePrompt
+          onDismiss={prompt.dismiss}
+          onSecure={() => {
+            prompt.dismiss();
+            openSecure();
+          }}
+        />
+      ) : null}
+      {passkey && isSecureOpen ? <LiteSecureDialog open onOpenChange={setIsSecureOpen} /> : null}
+      {passkey && isSignOutOpen ? <LiteSignOutDialog open onOpenChange={setIsSignOutOpen} /> : null}
     </>
   );
 }
