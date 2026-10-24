@@ -30,7 +30,7 @@
 # and after .aidev/run-wallet-fixture-e2e.sh, wallet-live likewise.
 name: denser-aidev-test
 
-x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:20bbbc86740ea0e9e6e6427d3ea1bbe2409b6f0563cf17f72947e52a10db7dfa
+x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:5f8c79d01f6bb2bf1160a25f9fa42df127c4116f9caa9e098e66fa7e7b8f4212
 
 x-checkout: &checkout ${AIDEV_HOST_CHECKOUT:-${PWD}}:/work:ro
 

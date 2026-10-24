@@ -41,6 +41,9 @@ const nextConfig = {
     resolveAlias: {
       fs: { browser: './empty.js' },
       module: { browser: './empty.js' },
+      // The Matrix chat client runs without crypto: its lazy rust-crypto import (initRustCrypto,
+      // never called) would otherwise emit the 7.8 MB wasm
+      '@matrix-org/matrix-sdk-crypto-wasm': './empty.js',
       ...waxSignersZodCoreAlias(__dirname)
     }
   },

@@ -1,3 +1,4 @@
+import { useId, type ReactNode } from 'react';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { Drawer } from '@ui/components/drawer';
@@ -13,16 +14,18 @@ interface ChatDrawerProps {
   iframeSrc?: string;
   iframeRef?: React.RefObject<HTMLIFrameElement | null>;
   onIframeLoad?: () => void;
-  /** Where "open chat app" leads, in a new tab */
+  /** Where "open chat app" leads, in a new tab; no link without one */
   appUrl: string;
   disabled?: boolean;
   /** Unread messages; no badge for 0 or none */
   badgeContent?: number;
   /** Called when the pointer enters, focuses or presses the chat button, ahead of a click */
   onButtonIntent?: () => void;
+  /** The drawer's own chat client, shown when there is no iframe */
+  children?: ReactNode;
 }
 
-/** The chat drawer with its iframe and the fixed button toggling it, for any chat server. */
+/** The chat drawer with its iframe or client and the fixed button toggling it, for any chat server. */
 export function ChatDrawer({
   open,
   setOpen,
@@ -32,10 +35,12 @@ export function ChatDrawer({
   appUrl,
   disabled = false,
   badgeContent,
-  onButtonIntent
+  onButtonIntent,
+  children
 }: ChatDrawerProps) {
   const { t } = useTranslation('common_blog');
   const chatLabel = t('chat_widget.chat');
+  const badgeId = useId();
 
   return (
     <div>
@@ -58,7 +63,11 @@ export function ChatDrawer({
             tabIndex={open ? undefined : -1}
             inert={!open}
           />
-        ) : null}
+        ) : (
+          <div className="flex min-h-0 flex-1 flex-col" aria-hidden={!open} inert={!open}>
+            {children}
+          </div>
+        )}
 
         <div className="flex">
           {/* Button closing drawer */}
@@ -74,16 +83,18 @@ export function ChatDrawer({
           </Button>
 
           {/* Link to open chat app in new tab */}
-          <Link
-            href={appUrl}
-            className="px-4 hover:cursor-pointer hover:text-red-600"
-            aria-label={t('chat_widget.open_app')}
-            title={t('chat_widget.open_app')}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Icons.externalLink />
-          </Link>
+          {appUrl ? (
+            <Link
+              href={appUrl}
+              className="px-4 hover:cursor-pointer hover:text-red-600"
+              aria-label={t('chat_widget.open_app')}
+              title={t('chat_widget.open_app')}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icons.externalLink />
+            </Link>
+          ) : null}
         </div>
       </Drawer>
 
@@ -95,6 +106,7 @@ export function ChatDrawer({
               <TooltipTrigger
                 type="button"
                 aria-label={t('chat_widget.open_widget')}
+                aria-describedby={badgeContent ? badgeId : undefined}
                 onClick={() => setOpen(!open)}
                 onPointerEnter={onButtonIntent}
                 onFocus={onButtonIntent}
@@ -106,8 +118,12 @@ export function ChatDrawer({
 
               {/* Badge showing unread messages */}
               {badgeContent ? (
-                <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
-                  {badgeContent}
+                <div
+                  id={badgeId}
+                  data-testid="chat-unread-badge"
+                  className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
+                  <span aria-hidden>{badgeContent}</span>
+                  <span className="sr-only">{t('chat_widget.unread_count', { number: badgeContent })}</span>
                 </div>
               ) : null}
             </div>

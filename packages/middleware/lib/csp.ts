@@ -6,7 +6,12 @@
  */
 
 import { PICKER_API_NODES } from '@hive/ui/config/api-node-picker';
-import { matrixFrameOrigins, resolveChatProvider, resolveMatrixChatConfig } from '@hive/ui/config/chat';
+import {
+  matrixClientOrigins,
+  matrixFrameOrigins,
+  resolveChatProvider,
+  resolveMatrixChatConfig
+} from '@hive/ui/config/chat';
 
 /**
  * App-specific CSP configuration
@@ -99,6 +104,12 @@ function buildConnectSrcHosts(): Set<string> {
       hosts.add('https://*.ingest.us.sentry.io');
     }
   }
+
+  // The native Matrix chat client talks to the homeserver from the page
+  matrixClientOrigins(
+    resolveChatProvider(process.env.REACT_APP_CHAT_PROVIDER),
+    resolveMatrixChatConfig((key) => process.env[`REACT_APP_${key}`])
+  ).forEach((origin) => hosts.add(origin));
 
   // Cloudflare Web Analytics beacon posts its measurements here when the
   // zone auto-injects it; harmless for deployments not behind Cloudflare

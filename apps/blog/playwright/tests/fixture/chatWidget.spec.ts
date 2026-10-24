@@ -6,10 +6,12 @@ import { HomePage } from '../support/pages/homePage';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
 import { DEFAULT_USER } from '../support/fixture-auth/seeder';
 import { TIMEOUTS } from '../support/constants';
+import { configureChat } from '../support/chatSettings';
 import enBlog from '../../../locales/en/common_blog.json';
 
 /**
- * The chat widget of each chat provider. The provider and its URLs are client settings: the
+ * The chat widget of each chat provider, with Matrix's Element client (`MATRIX_CHAT_CLIENT=element`;
+ * the native client is chatNative.spec.ts). The provider and its URLs are client settings: the
  * spec appends them to `__ENV.js`, and bypasses the fixture build's CSP, which frames neither
  * chat origin. Every chat origin is answered by `page.route`; nothing leaves the browser.
  *
@@ -51,6 +53,7 @@ const SESSION_PAGE_SOURCE = fs.readFileSync(
 const EN = enBlog;
 const MATRIX_SETTINGS = {
   CHAT_PROVIDER: 'matrix',
+  MATRIX_CHAT_CLIENT: 'element',
   OPENHIVE_CHAT_URI: OPENHIVE_CHAT,
   MATRIX_ELEMENT_URL: ELEMENT,
   MATRIX_HOMESERVER_URL: HOMESERVER
@@ -64,16 +67,6 @@ test.use({
   bypassCSP: true,
   authenticatedUser: { strict: true, authenticateOnBackend: true, oauthConsent: { openhive_chat: true } }
 });
-
-async function configureChat(page: Page, settings: Record<string, string>): Promise<void> {
-  await page.route('**/__ENV.js?*', async (route) => {
-    const response = await route.fetch();
-    const assignments = Object.entries(settings)
-      .map(([key, value]) => `window.__ENV.REACT_APP_${key} = ${JSON.stringify(value)};`)
-      .join('\n');
-    await route.fulfill({ response, body: `${await response.text()}\n${assignments}` });
-  });
-}
 
 /** Element's origin and the homeserver; resolves to the SSO redirects the frame was sent to. */
 async function stubMatrix(page: Page): Promise<string[]> {

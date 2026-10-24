@@ -74,7 +74,7 @@ export const Drawer = ({
             >
               <div
                 className={clsx(
-                  "flex flex-col h-full overflow-y-scroll bg-white p-1 shadow-xl rounded-lg"
+                  "flex flex-col h-full overflow-y-scroll bg-background p-1 shadow-xl rounded-lg"
                 )}
               >
                 {children}
