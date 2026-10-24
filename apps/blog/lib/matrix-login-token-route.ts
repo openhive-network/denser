@@ -15,7 +15,11 @@ export interface MatrixLoginTokenRouteSettings {
   mint: (username: string) => Promise<MatrixLoginTokenResult>;
 }
 
-type Answer = { loginToken: string } | { error: string };
+type Answer = { loginToken: string } | { error: string; retry_after_ms?: number };
+
+/** The longest wait a rate-limited answer passes on, a little over Synapse's minute per token */
+const MAX_RETRY_AFTER_MS = 70_000;
+const MS_PER_SECOND = 1000;
 
 function headerValue(headers: IncomingHttpHeaders, name: string): string | undefined {
   const value = headers[name];
@@ -46,7 +50,8 @@ function isSameOrigin(headers: IncomingHttpHeaders): boolean {
  * `POST /api/chat/matrix-login-token`: a Synapse login token for the chat user the server signed
  * in, with which the session page signs Element in without the SSO redirects. Answers `200
  * { loginToken }`; `404` when the user has no Matrix account yet and `503` when no token could be
- * minted, on which the session page signs in through SSO; `403` to a cross-origin request or a
+ * minted, on which the session page signs in through SSO; `429 { retry_after_ms }` (and
+ * `Retry-After`) when Synapse rate-limits the mint, with its wait capped at 70 s; `403` to a cross-origin request or a
  * user who may not chat; `401` without a server sign-in; `404` unless Matrix is the chat provider
  * with an admin token. Never cached.
  */
@@ -75,6 +80,10 @@ export function matrixLoginTokenHandler(settings: MatrixLoginTokenRouteSettings)
       res.status(200).json({ loginToken: result.loginToken });
     } else if (result.kind === 'unknown-user') {
       res.status(404).json({ error: 'No Matrix account yet' });
+    } else if (result.kind === 'rate-limited') {
+      const retryAfterMs = Math.min(Math.max(Math.ceil(result.retryAfterMs), 0), MAX_RETRY_AFTER_MS);
+      res.setHeader('Retry-After', String(Math.ceil(retryAfterMs / MS_PER_SECOND)));
+      res.status(429).json({ error: 'Rate-limited', retry_after_ms: retryAfterMs });
     } else {
       res.status(503).json({ error: 'No login token' });
     }

@@ -1,6 +1,8 @@
 import {
   ClientEvent,
   createClient,
+  HttpApiEvent,
+  MatrixError,
   Method,
   NotificationCountType,
   RoomEvent,
@@ -12,12 +14,14 @@ import {
 import { toMessageView } from './message-view.ts';
 import type { MatrixSdkLogger } from './sdk-logger-type.ts';
 import type { ChatMessageView, ChatRoomView, ChatSession } from './chat-view-types.ts';
+import { StoredSessionRejectedError, type MatrixCredentials, type StartedChatSession } from './matrix-chat-sign-in.ts';
 
 /** Messages per room in the first sync, and per page scrolling back */
 const TIMELINE_PAGE_SIZE = 20;
 const AVATAR_SIZE_PX = 64;
 const DEVICE_DISPLAY_NAME = 'denser chat';
 const JOINED = 'join';
+const UNAUTHORIZED = 401;
 /** Room events that change what the drawer shows; a sync brings the new unread counts */
 const CHANGES = [
   RoomEvent.Timeline,
@@ -28,17 +32,26 @@ const CHANGES = [
   RoomEvent.MyMembership
 ] as const;
 
-export interface MatrixChatSessionOptions {
+interface SessionOptions {
   homeserverUrl: string;
+  /** Alias or ID of the room the drawer opens in */
+  defaultRoom: string;
+  logger: MatrixSdkLogger;
+  /** Called once when the homeserver signs a started session out (`M_UNKNOWN_TOKEN`) */
+  onLoggedOut?: () => void;
+  fetchFn?: typeof fetch;
+}
+
+export interface MatrixChatSessionOptions extends SessionOptions {
   /** The Matrix user denser's server minted `loginToken` for */
   userId: string;
   loginToken: string;
   /** This browser's device, so that signing in again reuses it */
   deviceId: string;
-  /** Alias or ID of the room the drawer opens in */
-  defaultRoom: string;
-  logger: MatrixSdkLogger;
-  fetchFn?: typeof fetch;
+}
+
+export interface ResumedMatrixChatSessionOptions extends SessionOptions {
+  credentials: MatrixCredentials;
 }
 
 class MatrixChatSession implements ChatSession {
@@ -53,15 +66,27 @@ class MatrixChatSession implements ChatSession {
   private readonly messagesCache = new Map<string, { version: number; messages: ChatMessageView[] }>();
   private readonly avatars = new Map<string, Promise<string | null>>();
   private readonly readUpTo = new Map<string, string>();
+  private readonly onLoggedOut: (() => void) | undefined;
+  private started = false;
+  private loggedOut = false;
 
-  constructor(client: MatrixClient, fetchFn: typeof fetch, logger: MatrixSdkLogger) {
+  constructor(client: MatrixClient, fetchFn: typeof fetch, logger: MatrixSdkLogger, onLoggedOut?: () => void) {
     this.client = client;
     this.fetchFn = fetchFn;
     this.logger = logger;
+    this.onLoggedOut = onLoggedOut;
     this.userId = client.getSafeUserId();
     client.on(ClientEvent.Sync, this.notify);
+    client.on(HttpApiEvent.SessionLoggedOut, this.loggedOutByHomeserver);
     for (const change of CHANGES) client.on(change, this.notify);
   }
+
+  private readonly loggedOutByHomeserver = () => {
+    if (this.loggedOut) return;
+    this.loggedOut = true;
+    this.client.stopClient();
+    if (this.started) this.onLoggedOut?.();
+  };
 
   private readonly notify = () => {
     this.changes++;
@@ -71,13 +96,19 @@ class MatrixChatSession implements ChatSession {
   /** Resolves after the first sync, or rejects when it fails */
   async start(defaultRoom: string): Promise<void> {
     const synced = new Promise<void>((resolve, reject) => {
-      const onSync = (state: SyncState) => {
-        if (state === SyncState.Prepared || state === SyncState.Syncing) resolve();
-        else if (state === SyncState.Error) reject(new Error('The first Matrix sync failed'));
-        else return;
+      const settle = (outcome: () => void) => {
         this.client.off(ClientEvent.Sync, onSync);
+        this.client.off(HttpApiEvent.SessionLoggedOut, onLoggedOut);
+        outcome();
       };
+      const onSync = (state: SyncState) => {
+        if (state === SyncState.Prepared || state === SyncState.Syncing) settle(resolve);
+        else if (state === SyncState.Error) settle(() => reject(new Error('The first Matrix sync failed')));
+      };
+      const onLoggedOut = () =>
+        settle(() => reject(new StoredSessionRejectedError('The homeserver signed the session out')));
       this.client.on(ClientEvent.Sync, onSync);
+      this.client.on(HttpApiEvent.SessionLoggedOut, onLoggedOut);
     });
     await this.client.startClient({
       initialSyncLimit: TIMELINE_PAGE_SIZE,
@@ -87,6 +118,7 @@ class MatrixChatSession implements ChatSession {
     });
     await synced;
     this.defaultRoom = await this.resolveRoomId(defaultRoom);
+    this.started = true;
     this.notify();
   }
 
@@ -210,22 +242,28 @@ class MatrixChatSession implements ChatSession {
   }
 
   async end(): Promise<void> {
-    this.listeners.clear();
-    this.client.off(ClientEvent.Sync, this.notify);
-    for (const change of CHANGES) this.client.off(change, this.notify);
     try {
       // Deletes the device; denser's server-side cleanup covers it when this fails
-      await this.client.logout(true);
+      if (!this.loggedOut) await this.client.logout(true);
     } catch (error) {
       this.logger.warn('Matrix sign-out failed', error);
     } finally {
-      this.client.stopClient();
-      this.client.removeAllListeners();
-      const avatars = await Promise.all(this.avatars.values());
-      for (const url of avatars) if (url) URL.revokeObjectURL(url);
-      this.avatars.clear();
-      this.messagesCache.clear();
+      await this.stop();
     }
+  }
+
+  /** Stops the client and drops its state, leaving the device and access token signed in */
+  async stop(): Promise<void> {
+    this.listeners.clear();
+    this.client.off(ClientEvent.Sync, this.notify);
+    this.client.off(HttpApiEvent.SessionLoggedOut, this.loggedOutByHomeserver);
+    for (const change of CHANGES) this.client.off(change, this.notify);
+    this.client.stopClient();
+    this.client.removeAllListeners();
+    const avatars = await Promise.all(this.avatars.values());
+    for (const url of avatars) if (url) URL.revokeObjectURL(url);
+    this.avatars.clear();
+    this.messagesCache.clear();
   }
 }
 
@@ -243,35 +281,76 @@ function viewInputOf(event: MatrixEvent) {
   };
 }
 
+function fetchOf(options: SessionOptions): typeof fetch {
+  return options.fetchFn ?? globalThis.fetch.bind(globalThis);
+}
+
+/** A session, not yet started, of a client with `credentials` */
+function newSession(options: SessionOptions, credentials: MatrixCredentials) {
+  const fetchFn = fetchOf(options);
+  const client = createClient({
+    baseUrl: options.homeserverUrl,
+    fetchFn,
+    logger: options.logger,
+    userId: credentials.userId,
+    deviceId: credentials.deviceId,
+    accessToken: credentials.accessToken,
+    timelineSupport: true,
+    disableVoip: true
+  });
+  return { client, session: new MatrixChatSession(client, fetchFn, options.logger, options.onLoggedOut) };
+}
+
 /**
  * Signs `options.userId` in with a login token on this browser's device, without crypto, and
- * resolves once the first sync is in. A token for another user, or a failed first sync, signs
- * that device out again and rejects.
+ * resolves once the first sync is in, with the session's credentials for resuming it later. A
+ * token for another user, or a failed first sync, signs that device out again and rejects.
  */
-export async function startMatrixChatSession(options: MatrixChatSessionOptions): Promise<ChatSession> {
-  const fetchFn = options.fetchFn ?? globalThis.fetch.bind(globalThis);
-  const base = { baseUrl: options.homeserverUrl, fetchFn, logger: options.logger };
+export async function startMatrixChatSession(options: MatrixChatSessionOptions): Promise<StartedChatSession> {
+  const base = { baseUrl: options.homeserverUrl, fetchFn: fetchOf(options), logger: options.logger };
   const login = await createClient(base).loginRequest({
     type: 'm.login.token',
     token: options.loginToken,
     device_id: options.deviceId,
     initial_device_display_name: DEVICE_DISPLAY_NAME
   });
-  const client = createClient({
-    ...base,
-    userId: login.user_id,
-    deviceId: login.device_id,
-    accessToken: login.access_token,
-    timelineSupport: true,
-    disableVoip: true
-  });
-  const session = new MatrixChatSession(client, fetchFn, options.logger);
+  const credentials = { userId: login.user_id, deviceId: login.device_id, accessToken: login.access_token };
+  const { session } = newSession(options, credentials);
   try {
     if (login.user_id !== options.userId) throw new Error(`Signed in as ${login.user_id}, not ${options.userId}`);
     await session.start(options.defaultRoom);
-    return session;
+    return { session, credentials };
   } catch (error) {
     await session.end();
+    throw error;
+  }
+}
+
+function isRejectedToken(error: unknown): boolean {
+  return error instanceof MatrixError && (error.errcode === 'M_UNKNOWN_TOKEN' || error.httpStatus === UNAUTHORIZED);
+}
+
+/**
+ * Starts a session with stored credentials, checked first with `/account/whoami`, and resolves
+ * once the first sync is in. Rejects with `StoredSessionRejectedError` when the homeserver no
+ * longer accepts the access token or names another user or device for it; on any failure the
+ * device stays signed in.
+ */
+export async function resumeMatrixChatSession(options: ResumedMatrixChatSessionOptions): Promise<ChatSession> {
+  const { credentials } = options;
+  const { client, session } = newSession(options, credentials);
+  try {
+    const whoami = await client.whoami().catch((error: unknown) => {
+      if (!isRejectedToken(error)) throw error;
+      throw new StoredSessionRejectedError('The homeserver rejects the stored access token');
+    });
+    if (whoami.user_id !== credentials.userId || whoami.device_id !== credentials.deviceId) {
+      throw new StoredSessionRejectedError(`The stored access token is ${whoami.user_id}'s on ${whoami.device_id}`);
+    }
+    await session.start(options.defaultRoom);
+    return session;
+  } catch (error) {
+    await session.stop();
     throw error;
   }
 }

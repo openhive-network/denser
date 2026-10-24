@@ -1,10 +1,24 @@
 'use client';
 
+/**
+ * The browser keeps the chat's Matrix session (user, device, access token) in localStorage, as
+ * Element does, not in memory: a session in memory had to be signed in again with a freshly
+ * minted login token on every page load, a reload or a new tab, and Synapse allows about one
+ * login token per user per minute, so a second page load within a minute failed to sign in.
+ */
+
 import { useCallback, useEffect, useState } from 'react';
 import { getLogger } from '@ui/lib/logging';
-import { fetchMatrixLoginToken } from '@/blog/lib/fetch-matrix-login-token';
+import { requestMatrixLoginToken } from '@/blog/lib/fetch-matrix-login-token';
 import type { ChatSession } from '@/blog/features/matrix-chat/lib/chat-view-types';
 import { chatDeviceId } from '@/blog/features/matrix-chat/lib/device-id';
+import {
+  forgetMatrixSession,
+  hasNewerMatrixSession,
+  signInToMatrixChat,
+  type StartedChatSession
+} from '@/blog/features/matrix-chat/lib/matrix-chat-sign-in';
+import { browserMatrixSessionStore } from '@/blog/features/matrix-chat/lib/stored-session';
 import { matrixSdkLogger } from '@/blog/features/matrix-chat/lib/sdk-logger';
 
 const logger = getLogger('app');
@@ -25,6 +39,11 @@ interface MatrixChatSessionOptions {
   defaultRoom: string;
 }
 
+interface OpenSessionOptions extends Omit<MatrixChatSessionOptions, 'start'> {
+  onLoggedOut: () => void;
+  signal: AbortSignal;
+}
+
 const IDLE: ChatSessionState = { status: 'idle', session: null };
 
 // One sign-in or sign-out at a time: an ending session deletes its device, which the next
@@ -36,27 +55,27 @@ function inTurn<T>(task: () => Promise<T>): Promise<T> {
   return run;
 }
 
-async function openSession({ userId, homeserverUrl, defaultRoom }: MatrixChatSessionOptions): Promise<ChatSession> {
-  // The SDK's chunk loads while denser's server mints the login token
-  const [{ startMatrixChatSession }, loginToken] = await Promise.all([
-    import('@/blog/features/matrix-chat/lib/matrix-chat-session'),
-    fetchMatrixLoginToken()
-  ]);
-  if (!loginToken) throw new Error('denser minted no Matrix login token');
-  return startMatrixChatSession({
-    homeserverUrl,
+function openSession({ userId, homeserverUrl, defaultRoom, onLoggedOut, signal }: OpenSessionOptions) {
+  // The SDK's chunk loads while the stored session is read or denser's server mints a login token
+  const sdk = import('@/blog/features/matrix-chat/lib/matrix-chat-session');
+  const common = { homeserverUrl, defaultRoom, logger: matrixSdkLogger, onLoggedOut };
+  return signInToMatrixChat({
     userId,
-    loginToken,
-    deviceId: chatDeviceId(userId),
-    defaultRoom,
-    logger: matrixSdkLogger
+    store: browserMatrixSessionStore,
+    requestLoginToken: requestMatrixLoginToken,
+    logIn: async (loginToken) =>
+      (await sdk).startMatrixChatSession({ ...common, userId, loginToken, deviceId: chatDeviceId(userId) }),
+    resume: async (credentials) => (await sdk).resumeMatrixChatSession({ ...common, credentials }),
+    signal
   });
 }
 
 /**
- * The native chat client's Matrix session for `userId`, signed in once `start` is set. A change
- * of user (sign-out, account switch, the end of denser's session) or unmounting ends it: the
- * client stops, its state is dropped and its device signed out.
+ * The native chat client's Matrix session for `userId`, signed in once `start` is set: with the
+ * session the browser stored, else with a login token denser's server mints. A change of user
+ * (sign-out, account switch, the end of denser's session) or unmounting ends it: the client
+ * stops, its state and stored session are dropped and its device signed out. A session the
+ * homeserver signs out is dropped too; the session another tab stored since is then resumed.
  */
 export function useMatrixChatSession(options: MatrixChatSessionOptions) {
   const { userId, start, homeserverUrl, defaultRoom } = options;
@@ -66,23 +85,40 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
   useEffect(() => {
     if (!userId || !start) return;
     let current = true;
+    let started: StartedChatSession | null = null;
+    const aborted = new AbortController();
+    const onLoggedOut = () => {
+      if (!started) return;
+      forgetMatrixSession(browserMatrixSessionStore, started.credentials);
+      if (!current) return;
+      logger.info('The homeserver signed the Matrix chat session out');
+      if (hasNewerMatrixSession(browserMatrixSessionStore, started.credentials)) setAttempt((count) => count + 1);
+      else setState({ status: 'failed', session: null });
+    };
     setState({ status: 'starting', session: null });
-    const opening = inTurn(() => openSession({ userId, start, homeserverUrl, defaultRoom }));
+    const opening = inTurn(() =>
+      openSession({ userId, homeserverUrl, defaultRoom, onLoggedOut, signal: aborted.signal })
+    );
     opening.then(
-      (session) => {
-        if (current) setState({ status: 'ready', session });
+      (opened) => {
+        started = opened;
+        if (current) setState({ status: 'ready', session: opened.session });
       },
       (error: unknown) => {
+        if (aborted.signal.aborted) return;
         logger.error(error, 'The Matrix chat could not sign in');
         if (current) setState({ status: 'failed', session: null });
       }
     );
     return () => {
       current = false;
+      aborted.abort();
       setState(IDLE);
       void inTurn(async () => {
-        const session = await opening.catch(() => null);
-        await session?.end();
+        const opened = await opening.catch(() => null);
+        if (!opened) return;
+        forgetMatrixSession(browserMatrixSessionStore, opened.credentials);
+        await opened.session.end();
       });
     };
   }, [userId, start, homeserverUrl, defaultRoom, attempt]);

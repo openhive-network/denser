@@ -31,9 +31,10 @@ interface SynapseCall {
   timeoutMs: number;
 }
 
-function httpError(status: number): Error {
+function httpError(status: number, body: object = {}, headers: Record<string, string> = {}): Error {
   const message = `Status: ${status}. Status Text: none`;
-  return new FetchError({ message, response: new Response(null, { status }), data: { error: { message } } });
+  const response = new Response(null, { status, headers });
+  return new FetchError({ message, response, data: { error: { message }, ...body } });
 }
 
 /** Stands in for Synapse; `answers` replies by URL, a successful exchange unless overridden. */
@@ -165,5 +166,36 @@ describe('mintMatrixLoginToken', () => {
 
     assert.deepEqual(await mintMatrixLoginToken('alice', SETTINGS, request, report), { kind: 'failed' });
     assert.deepEqual(lines, ['@alice:example.org: minting a login token: Synapse answered without login_token']);
+  });
+
+  it("answers rate-limited with Synapse's retry_after_ms on a 429 of get_token, without a report", async () => {
+    const limited = httpError(429, { errcode: 'M_LIMIT_EXCEEDED', retry_after_ms: 41_500 });
+    const { calls, request } = synapse({ [GET_TOKEN]: () => Promise.reject(limited) });
+    const { lines, report } = failureLog();
+
+    assert.deepEqual(await mintMatrixLoginToken('alice', SETTINGS, request, report), {
+      kind: 'rate-limited',
+      retryAfterMs: 41_500
+    });
+    assert.deepEqual(
+      calls.map((call) => call.url),
+      [ADMIN_LOGIN, GET_TOKEN, LOGOUT]
+    );
+    assert.deepEqual(lines, []);
+  });
+
+  it('takes the wait of a 429 from Retry-After, or a minute, when the answer names none', async () => {
+    const withHeader = synapse({ [GET_TOKEN]: () => Promise.reject(httpError(429, {}, { 'Retry-After': '12' })) });
+    const bare = synapse({ [GET_TOKEN]: () => Promise.reject(httpError(429)) });
+    const { report } = failureLog();
+
+    assert.deepEqual(await mintMatrixLoginToken('alice', SETTINGS, withHeader.request, report), {
+      kind: 'rate-limited',
+      retryAfterMs: 12_000
+    });
+    assert.deepEqual(await mintMatrixLoginToken('alice', SETTINGS, bare.request, report), {
+      kind: 'rate-limited',
+      retryAfterMs: 60_000
+    });
   });
 });

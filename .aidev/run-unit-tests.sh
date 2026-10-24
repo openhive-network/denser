@@ -141,6 +141,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/matrix-chat/lib/message-view.test.ts \
     apps/blog/features/matrix-chat/lib/outbox.test.ts \
     apps/blog/features/matrix-chat/lib/back-pagination.test.ts \
+    apps/blog/features/matrix-chat/lib/matrix-chat-sign-in.test.ts \
     apps/blog/features/matrix-chat/lib/matrix-chat-session.test.ts < /dev/null || status=1
 echo "== node --test apps/wallet" >&2
 junit="$PWD/test-results/unit/wallet.xml"

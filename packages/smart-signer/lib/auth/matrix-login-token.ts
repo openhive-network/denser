@@ -10,17 +10,23 @@ export type MatrixLoginTokenSettings = Pick<MatrixDeviceCleanupSettings, 'homese
 
 /**
  * A login token (`m.login.token`) for the user; `unknown-user` when Synapse has no account for
- * them yet; `failed` on any other trouble, reported first.
+ * them yet; `rate-limited` when Synapse refused with a 429, with the wait it asked for;
+ * `failed` on any other trouble, reported first.
  */
 export type MatrixLoginTokenResult =
   | { kind: 'token'; loginToken: string }
   | { kind: 'unknown-user' }
+  | { kind: 'rate-limited'; retryAfterMs: number }
   | { kind: 'failed' };
 
 /** How long the temporary access token the login token is minted with stays valid */
 const TEMPORARY_SESSION_LIFETIME_MS = 60_000;
 
 const NOT_FOUND = 404;
+const TOO_MANY_REQUESTS = 429;
+/** The wait on a 429 that names none: Synapse allows about one login token per user per minute */
+const DEFAULT_RETRY_AFTER_MS = 60_000;
+const MS_PER_SECOND = 1000;
 
 /** The HTTP status of a failed request, as `fetchJson`'s `FetchError` carries it */
 function statusOf(error: unknown): number | undefined {
@@ -29,6 +35,19 @@ function statusOf(error: unknown): number | undefined {
   return typeof response === 'object' && response !== null && 'status' in response && typeof response.status === 'number'
     ? response.status
     : undefined;
+}
+
+/**
+ * The wait a 429 asks for: Synapse's `retry_after_ms`, as `fetchJson`'s `FetchError` carries the
+ * answer, else its `Retry-After` header in seconds
+ */
+function retryAfterMsOf(error: unknown): number {
+  const data: unknown = typeof error === 'object' && error !== null ? Reflect.get(error, 'data') : undefined;
+  const fromBody: unknown = typeof data === 'object' && data !== null ? Reflect.get(data, 'retry_after_ms') : undefined;
+  if (typeof fromBody === 'number' && Number.isFinite(fromBody) && fromBody >= 0) return fromBody;
+  const response: unknown = typeof error === 'object' && error !== null ? Reflect.get(error, 'response') : undefined;
+  const header = response instanceof Response ? Number(response.headers.get('retry-after') ?? NaN) : NaN;
+  return Number.isFinite(header) && header >= 0 ? header * MS_PER_SECOND : DEFAULT_RETRY_AFTER_MS;
 }
 
 function stringField(answer: unknown, field: string): string {
@@ -83,6 +102,7 @@ export async function mintMatrixLoginToken(
     return { kind: 'token', loginToken };
   } catch (error) {
     if (!temporaryToken && statusOf(error) === NOT_FOUND) return { kind: 'unknown-user' };
+    if (statusOf(error) === TOO_MANY_REQUESTS) return { kind: 'rate-limited', retryAfterMs: retryAfterMsOf(error) };
     onFailure(userId, `minting a login token: ${reasonOf(error, secrets)}`);
     return { kind: 'failed' };
   } finally {
