@@ -15,7 +15,10 @@ import enBlog from '../../../locales/en/common_blog.json';
  *
  * Matrix: Element's origin serves the session page committed in stack/matrix/chat-origin, as
  * that stack's caddy does, with Element's `config.json`; the homeserver's SSO redirect stands in
- * for Synapse → denser → Synapse by sending the frame back to Element with a login token. An init
+ * for Synapse → denser → Synapse by sending the frame back to Element with a login token. denser's
+ * login token route, which the session page asks for a token through the widget first, answers
+ * that the user has no Matrix account yet, so the session page falls back to that SSO, unless a
+ * test has it mint one. An init
  * script plays a session Element already holds (`mx_user_id`), and its device settings
  * (`mx_local_settings`), when the session page loads. denser's theme is the system's
  * (`defaultTheme="system"`), set through the emulated color scheme.
@@ -35,6 +38,8 @@ const SERVER_NAME = 'matrix.matrix.test';
 const IDP_ID = 'oidc-denser';
 const SESSION_PAGE = `${ELEMENT}/denser-session.html`;
 const SSO_REDIRECT = `${HOMESERVER}/_matrix/client/v3/login/sso/redirect/${IDP_ID}`;
+const LOGIN_TOKEN_ROUTE = '**/api/chat/matrix-login-token';
+const MINTED_LOGIN_TOKEN = 'syl_minted_login_token';
 /** Element's screen for the default room, `#general` of the server */
 const DEFAULT_ROOM_SCREEN = `#/room/${encodeURIComponent(`#general:${SERVER_NAME}`)}`;
 const ROCKET_CHAT = 'https://rocket.chat.test';
@@ -73,6 +78,7 @@ async function configureChat(page: Page, settings: Record<string, string>): Prom
 /** Element's origin and the homeserver; resolves to the SSO redirects the frame was sent to. */
 async function stubMatrix(page: Page): Promise<string[]> {
   const ssoRedirects: string[] = [];
+  await page.route(LOGIN_TOKEN_ROUTE, (route) => route.fulfill({ status: 404, json: { error: 'No Matrix account yet' } }));
   await page.route(`${ELEMENT}/**`, (route) => {
     const url = new URL(route.request().url());
     if (url.pathname === '/denser-session.html') {
@@ -289,6 +295,66 @@ test.describe('Chat widget in Matrix mode', () => {
       .poll(() => sessionPageRequests.map((request) => new URL(request.url()).searchParams.get('theme')))
       .toEqual(['dark', 'light']);
     await expect.poll(settingsInRoom).toEqual({ layout: 'irc', theme: 'light', use_system_theme: false });
+    expect(ssoRedirects).toEqual([]);
+  });
+});
+
+test.describe('Chat widget in Matrix mode: sign-in with a login token from denser', () => {
+  let ssoRedirects: string[];
+  let loginTokenRequests: Request[];
+
+  test.beforeEach(async ({ page, context }) => {
+    await configureChat(page, MATRIX_SETTINGS);
+    ssoRedirects = await stubMatrix(page);
+    loginTokenRequests = [];
+    page.on('request', (request) => {
+      if (new URL(request.url()).pathname.endsWith('/api/chat/matrix-login-token')) loginTokenRequests.push(request);
+    });
+    await elementHoldsSession(context, `@previous-user:${SERVER_NAME}`);
+  });
+
+  test('CHAT-MATRIX-TOKEN-01: with a minted login token, Element signs in with it, without the SSO redirect', async ({
+    page
+  }) => {
+    await page.route(LOGIN_TOKEN_ROUTE, (route) => route.fulfill({ json: { loginToken: MINTED_LOGIN_TOKEN } }));
+    await openChat(page);
+
+    const frame = await elementFrame(page);
+    const url = new URL(frame.url());
+    expect(url.searchParams.get('loginToken')).toBe(MINTED_LOGIN_TOKEN);
+    expect(url.hash).toBe(DEFAULT_ROOM_SCREEN);
+    expect(ssoRedirects).toEqual([]);
+    expect(await readElementStorage(frame)).toEqual({ userId: null, ssoHomeserver: HOMESERVER });
+    expect(loginTokenRequests.map((request) => request.method())).toEqual(['POST']);
+    // The token never rides in the session page's address
+    expect((await chatIframe(page).getAttribute('src')) ?? '').not.toContain(MINTED_LOGIN_TOKEN);
+  });
+
+  test('CHAT-MATRIX-TOKEN-02: when denser mints no login token, the session page signs in through the SSO', async ({
+    page
+  }) => {
+    await page.route(LOGIN_TOKEN_ROUTE, (route) => route.fulfill({ status: 503, json: { error: 'No login token' } }));
+    await openChat(page);
+
+    const frame = await elementFrame(page);
+    expect(loginTokenRequests).toHaveLength(1);
+    expect(ssoRedirects).toEqual([
+      `${SSO_REDIRECT}?redirectUrl=${encodeURIComponent(`${ELEMENT}/${DEFAULT_ROOM_SCREEN}`)}`
+    ]);
+    expect(new URL(frame.url()).searchParams.get('loginToken')).toBe('login-token');
+  });
+
+  test("CHAT-MATRIX-TOKEN-03: the user's own Element session continues without asking for a login token", async ({
+    page,
+    context
+  }) => {
+    await elementHoldsSession(context, `@${USERNAME}:${SERVER_NAME}`);
+    await openChat(page);
+
+    await expect
+      .poll(() => page.frames().map((frame) => frame.url()))
+      .toContain(`${ELEMENT}/${DEFAULT_ROOM_SCREEN}`);
+    expect(loginTokenRequests).toEqual([]);
     expect(ssoRedirects).toEqual([]);
   });
 });

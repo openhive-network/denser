@@ -71,6 +71,16 @@ sso:
     - https://denser.discuss.peerverity.info/
   update_profile_information: true
 
+# denser mints a login token for a chat user's drawer sign-in (MSC3882, POST
+# /_matrix/client/v1/login/get_token) with a one-minute session the admin API
+# opens for that user, then logs that session out: the session page signs
+# Element in with it, skipping the SSO redirects. No UI auth, as that session
+# has no password to confirm; a token is good for two minutes.
+login_via_existing_session:
+  enabled: true
+  require_ui_auth: false
+  token_timeout: 2m
+
 password_config:
   enabled: true   # admin accounts only; ordinary users have no password
 

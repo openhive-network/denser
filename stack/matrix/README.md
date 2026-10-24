@@ -10,7 +10,8 @@ A closed Matrix homeserver and Element Web for denser's chat widget in Matrix mo
 - **https://chat.discuss.peerverity.info**: Element Web, which only denser's site may frame.
   It also serves `/denser-session.html` (`chat-origin/`), where denser's widget starts: it
   keeps Element's session when it is the expected user's, and otherwise clears Element's
-  storage and signs in through SSO. Loaded without a user, it only clears that storage;
+  storage and signs in with a login token denser's server mints (below), or, without one,
+  through SSO. Loaded without a user, it only clears that storage;
   the widget does so when its user signs out or switches account.
 - **Host:** predicate-testing.syncad.com, `~/matrix-test`, behind `~/sites-router`. caddy
   listens on 127.0.0.5 and takes the client address from the router's PROXY header.
@@ -98,7 +99,8 @@ LOGIN_AUTHENTICATE_ON_BACKEND=yes
 MATRIX_ELEMENT_URL=https://chat.discuss.peerverity.info
 MATRIX_HOMESERVER_URL=https://matrix.discuss.peerverity.info
 DENSER_SERVER_OAUTH_MATRIX_SECRET=<DENSER_OAUTH_MATRIX_SECRET of this .env>
-# Optional: deletes the user's Matrix devices at sign-out (the admin token above)
+# Optional: deletes the user's Matrix devices at sign-out, and mints the drawer's login
+# tokens (the admin token above)
 DENSER_SERVER_MATRIX_ADMIN_TOKEN=<admin access token>
 # Optional: the room the drawer opens in; default #general:matrix.discuss.peerverity.info
 MATRIX_DEFAULT_ROOM=
@@ -120,6 +122,17 @@ sign-out and account switches delete the user's Matrix devices
 (`GET /_synapse/admin/v2/users/<user id>/devices`, then `POST .../delete_devices`), in the
 background with a 5 s bound per call; a failure is logged, without the token, and does not hold
 up the sign-out. Signing in again as the same user keeps the devices.
+
+With that admin token the blog also mints the drawer's sign-in: when the session page has to sign
+a user in, it asks the widget (by `postMessage`) for a login token, which the widget gets from
+`POST /blog/api/chat/matrix-login-token` (same-origin, for a chat user the server signed in) and
+posts back to Element's origin. The server logs in as the user through the admin API
+(`POST /_synapse/admin/v1/users/<user id>/login`, valid for a minute), asks that session for a
+login token (`POST /_matrix/client/v1/login/get_token`, which needs `login_via_existing_session`
+in `homeserver.yaml`), and logs it out, each call bounded to 5 s. Element then signs in with
+`/?loginToken=`, skipping the three SSO hops. A user Synapse does not know yet (the admin login
+answers 404), a failure, or no answer within 8 s sends the session page through SSO, which creates
+the account and joins `#general`.
 
 The widget shows for a user the server signed in (strict login, or any with
 `REACT_APP_OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN=yes`), limited to
