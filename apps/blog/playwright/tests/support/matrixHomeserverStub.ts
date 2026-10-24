@@ -4,7 +4,8 @@ import type { Page, Route } from '@playwright/test';
  * A Matrix homeserver for the native chat client, answered with `page.route`: sign-in with a login
  * token, a first sync of two rooms (`#general` with unread messages and history before them, and
  * `#lobby`), long polls that answer what a test queues, `/messages`, sending, read receipts (which
- * clear the room's unread count in the next sync) and sign-out. Every request is recorded.
+ * clear the room's unread count in the next sync), `/account/whoami` for the access tokens it
+ * issued and has not signed out, and sign-out. Every request is recorded.
  */
 
 export const HOMESERVER = 'https://matrix.matrix.test';
@@ -74,6 +75,9 @@ export class MatrixHomeserverStub {
   private readonly queued: Json[] = [];
   private batch = 1;
   private failSends = 0;
+  /** Device of each access token issued and not signed out */
+  private readonly sessions = new Map<string, string>();
+  private issued = 0;
 
   constructor(userId: string) {
     this.userId = userId;
@@ -131,8 +135,24 @@ export class MatrixHomeserverStub {
     }
     if (url.pathname === '/_matrix/client/versions') return json({ versions: ['v1.11'] });
     if (path === '/login' && method === 'POST') {
-      const deviceId = typeof body === 'object' && body !== null ? Reflect.get(body, 'device_id') : undefined;
-      return json({ user_id: this.userId, access_token: 'stub-access-token', device_id: deviceId ?? 'STUBDEVICE' });
+      const requested = typeof body === 'object' && body !== null ? Reflect.get(body, 'device_id') : undefined;
+      const deviceId = typeof requested === 'string' ? requested : 'STUBDEVICE';
+      // As Synapse does: signing a device in again ends its previous access token
+      for (const [token, device] of this.sessions) if (device === deviceId) this.sessions.delete(token);
+      const accessToken = `stub-access-token-${++this.issued}`;
+      this.sessions.set(accessToken, deviceId);
+      return json({ user_id: this.userId, access_token: accessToken, device_id: deviceId });
+    }
+    const accessToken = request.headers()['authorization']?.replace(/^Bearer /, '') ?? '';
+    if (path === '/account/whoami') {
+      const deviceId = this.sessions.get(accessToken);
+      return deviceId
+        ? json({ user_id: this.userId, device_id: deviceId })
+        : json({ errcode: 'M_UNKNOWN_TOKEN', error: 'Invalid access token passed.' }, 401);
+    }
+    if (path === '/logout' && method === 'POST') {
+      this.sessions.delete(accessToken);
+      return json({});
     }
     if (path.endsWith('/filter') && method === 'POST') return json({ filter_id: 'stub-filter' });
     if (path === '/sync') return json(await this.nextSync(url.searchParams.has('since')));
@@ -150,6 +170,10 @@ export class MatrixHomeserverStub {
       return json({});
     }
     if (path === '/capabilities') return json({ capabilities: {} });
+    // No default rules, as from a Synapse older than the SDK: the SDK adds its own, warning of each
+    if (path === '/pushrules/') {
+      return json({ global: { override: [], content: [], room: [], sender: [], underride: [] } });
+    }
     if (path.startsWith('/media/')) return json({ errcode: 'M_NOT_FOUND' }, 404);
     return json({});
   }

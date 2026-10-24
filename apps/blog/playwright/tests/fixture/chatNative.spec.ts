@@ -42,6 +42,9 @@ const NATIVE_SETTINGS = {
 };
 /** Past the idle warm-up's start (see chatWidget.spec.ts), with the sign-in and first sync */
 const SIGNED_IN_TIMEOUT_MS = 20_000;
+const STORED_SESSION_KEY = `matrix-chat-session-${USER_ID}`;
+/** The wait a rate-limited token route names in CHAT-NATIVE-10 */
+const RETRY_AFTER_MS = 500;
 
 test.use({
   fixtureTestName: 'accountSwitchLogout',
@@ -55,17 +58,30 @@ const panel = (page: Page) => page.getByTestId('matrix-chat-panel');
 const messages = (page: Page) => panel(page).getByTestId('chat-message');
 const composer = (page: Page) => panel(page).getByRole('textbox', { name: EN.composer_label });
 
-async function usesNativeChat(page: Page, settings: Record<string, string> = NATIVE_SETTINGS) {
+interface NativeChat {
+  homeserver: MatrixHomeserverStub;
+  loginTokenRequests: Request[];
+  /** How many of the first token requests are answered 429 */
+  rateLimited: number;
+}
+
+/** Routes `page`'s chat to the stubbed homeserver and token route of `chat`, a new one by default */
+async function usesNativeChat(page: Page, settings: Record<string, string> = NATIVE_SETTINGS, chat?: NativeChat) {
   await configureChat(page, settings);
-  const homeserver = new MatrixHomeserverStub(USER_ID);
-  await homeserver.install(page);
-  const loginTokenRequests: Request[] = [];
+  const routed = chat ?? { homeserver: new MatrixHomeserverStub(USER_ID), loginTokenRequests: [], rateLimited: 0 };
+  await routed.homeserver.install(page);
   await page.route('**/api/chat/matrix-login-token', (route) => {
-    loginTokenRequests.push(route.request());
+    routed.loginTokenRequests.push(route.request());
+    if (routed.loginTokenRequests.length <= routed.rateLimited) {
+      return route.fulfill({ status: 429, json: { error: 'Rate-limited', retry_after_ms: RETRY_AFTER_MS } });
+    }
     return route.fulfill({ json: { loginToken: LOGIN_TOKEN } });
   });
-  return { homeserver, loginTokenRequests };
+  return routed;
 }
+
+const storedSession = (page: Page) =>
+  page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? 'null')?.value ?? null, STORED_SESSION_KEY);
 
 async function openPage(page: Page): Promise<void> {
   await page.goto(PAGE_WITH_HEADER);
@@ -102,13 +118,7 @@ test.describe('Native Matrix chat client', () => {
     await expect(panel(page).getByRole('button', { name: /general/ })).toHaveAttribute('aria-current', 'true');
     // No crypto: the client never fetches matrix-sdk-crypto-wasm
     expect(wasmRequests.filter((url) => url.includes('matrix'))).toEqual([]);
-
-    // The same device again after a reload
-    await page.reload();
-    await chatButton(page).click();
-    await expect(messages(page).first()).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
-    const logins = homeserver.requestsTo('/login', 'POST');
-    expect(logins.map((request) => Reflect.get(Object(request.body), 'device_id'))).toEqual([deviceId, deviceId]);
+    expect(await storedSession(page)).toMatchObject({ userId: USER_ID, deviceId });
   });
 
   test('CHAT-NATIVE-02: a sent message shows as sending, then in the timeline; a failed one can be retried', async ({
@@ -183,6 +193,7 @@ test.describe('Native Matrix chat client', () => {
   test('CHAT-NATIVE-05: signing out stops the client and signs its device out', async ({ page }) => {
     const { homeserver } = await usesNativeChat(page);
     await openChat(page);
+    expect(await storedSession(page)).toMatchObject({ userId: USER_ID });
     await page.getByRole('button', { name: EN.close_widget }).click();
 
     await new HomePage(page).profileAvatarButton.click();
@@ -190,6 +201,7 @@ test.describe('Native Matrix chat client', () => {
 
     await expect(chatButton(page)).toHaveCount(0);
     await expect.poll(() => homeserver.requestsTo('/logout', 'POST').length).toBe(1);
+    expect(await storedSession(page)).toBeNull();
     const syncs = homeserver.requestsTo('/sync').length;
     await page.waitForTimeout(1_500);
     expect(homeserver.requestsTo('/sync').length).toBe(syncs);
@@ -227,5 +239,54 @@ test.describe('Native Matrix chat client', () => {
     const loaded = await Promise.all(chunks);
     expect(loaded.filter((chunk) => chunk.code.includes(CHUNK_MARKERS.matrixSdk))).toHaveLength(1);
     expect(loaded.filter((chunk) => chunk.code.includes('matrix_sdk_crypto_wasm')).map((chunk) => chunk.url)).toEqual([]);
+  });
+
+  test('CHAT-NATIVE-09: a reload and a second tab resume the stored session, with no second token or sign-in', async ({
+    page
+  }) => {
+    const chat = await usesNativeChat(page);
+    await openChat(page);
+    const stored = await storedSession(page);
+
+    await page.reload();
+    await chatButton(page).click();
+    await expect(messages(page).first()).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+
+    const secondTab = await page.context().newPage();
+    await usesNativeChat(secondTab, NATIVE_SETTINGS, chat);
+    await openChat(secondTab);
+
+    expect(chat.loginTokenRequests).toHaveLength(1);
+    expect(chat.homeserver.requestsTo('/login', 'POST')).toHaveLength(1);
+    expect(chat.homeserver.requestsTo('/account/whoami', 'GET')).toHaveLength(2);
+    expect(chat.homeserver.requestsTo('/logout')).toEqual([]);
+    expect(await storedSession(secondTab)).toEqual(stored);
+  });
+
+  test('CHAT-NATIVE-10: a rate-limited token request is retried once after the wait the route names', async ({
+    page
+  }) => {
+    const chat = await usesNativeChat(page);
+    chat.rateLimited = 1;
+    await openChat(page);
+
+    expect(chat.loginTokenRequests).toHaveLength(2);
+    expect(chat.homeserver.requestsTo('/login', 'POST')).toHaveLength(1);
+    await expect(panel(page).getByText(EN.sign_in_failed)).toHaveCount(0);
+  });
+
+  test('CHAT-NATIVE-11: the SDK logs no console warning at the default log level', async ({ page }) => {
+    // The stub's push rules have none of the defaults, of each of which the SDK warns
+    const warnings: string[] = [];
+    page.on('console', (message) => {
+      if (['warning', 'error'].includes(message.type()) && message.text().includes('Matrix chat')) {
+        warnings.push(message.text());
+      }
+    });
+    const { homeserver } = await usesNativeChat(page, { ...NATIVE_SETTINGS, LOGGING_BROWSER_ENABLED: 'true' });
+    await openChat(page);
+    await expect.poll(() => homeserver.requestsTo('/pushrules/').length).toBeGreaterThan(0);
+
+    expect(warnings).toEqual([]);
   });
 });

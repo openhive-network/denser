@@ -1,8 +1,9 @@
 import { describe, it, afterEach, before, after, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import type { MatrixSdkLogger } from './sdk-logger-type.ts';
-import { startMatrixChatSession } from './matrix-chat-session.ts';
+import { resumeMatrixChatSession, startMatrixChatSession } from './matrix-chat-session.ts';
 import type { ChatSession } from './chat-view-types.ts';
+import { StoredSessionRejectedError, type MatrixCredentials } from './matrix-chat-sign-in.ts';
 
 const HOMESERVER = 'https://matrix.example.org';
 const USER = '@alice:example.org';
@@ -56,8 +57,15 @@ interface Request {
   body: unknown;
 }
 
+interface HomeserverOptions {
+  /** Who `/account/whoami` says the access token is, or its error answer */
+  whoami?: { user_id: string; device_id: string } | { status: number; errcode: string };
+  /** The long poll after the first sync answers `M_UNKNOWN_TOKEN` */
+  signOutAfterFirstSync?: boolean;
+}
+
 /** A homeserver answering the client API from `rooms`, recording every request */
-function fakeHomeserver() {
+function fakeHomeserver(options: HomeserverOptions = {}) {
   const requests: Request[] = [];
   let syncs = 0;
   const later: Array<() => void> = [];
@@ -75,6 +83,14 @@ function fakeHomeserver() {
     }
     if (path === '/versions' || url.pathname === '/_matrix/client/versions') return json({ versions: ['v1.11'] });
     if (path.endsWith('/filter')) return json({ filter_id: 'filter' });
+    if (path === '/account/whoami') {
+      const whoami = options.whoami ?? { user_id: USER, device_id: 'DENSERDEVICE' };
+      return 'status' in whoami ? json({ errcode: whoami.errcode, error: 'stub' }, whoami.status) : json(whoami);
+    }
+    if (path === '/sync' && syncs > 0 && options.signOutAfterFirstSync) {
+      syncs++;
+      return json({ errcode: 'M_UNKNOWN_TOKEN', error: 'Invalid access token passed.', soft_logout: true }, 401);
+    }
     if (path === '/sync') {
       if (syncs++ === 0) {
         return json({
@@ -109,13 +125,27 @@ describe('startMatrixChatSession', () => {
 
   const start = async (defaultRoom = '#general:example.org') => {
     homeserver = fakeHomeserver();
-    session = await startMatrixChatSession({
+    ({ session } = await startMatrixChatSession({
       homeserverUrl: HOMESERVER,
       userId: USER,
       loginToken: 'login-token',
       deviceId: 'DENSERDEVICE',
       defaultRoom,
       logger: quiet,
+      fetchFn: homeserver.fetchFn
+    }));
+    return session;
+  };
+
+  const STORED: MatrixCredentials = { userId: USER, deviceId: 'DENSERDEVICE', accessToken: 'stored-access' };
+  const resume = async (options: HomeserverOptions = {}, onLoggedOut?: () => void) => {
+    homeserver = fakeHomeserver(options);
+    session = await resumeMatrixChatSession({
+      homeserverUrl: HOMESERVER,
+      credentials: STORED,
+      defaultRoom: '#general:example.org',
+      logger: quiet,
+      onLoggedOut,
       fetchFn: homeserver.fetchFn
     });
     return session;
@@ -213,5 +243,53 @@ describe('startMatrixChatSession', () => {
     await chat.end();
     session = undefined;
     assert.ok(homeserver.requests.some((request) => request.method === 'POST' && request.path.endsWith('/logout')));
+  });
+
+  it('returns the credentials it signed in with, for resuming the session later', async () => {
+    homeserver = fakeHomeserver();
+    const started = await startMatrixChatSession({
+      homeserverUrl: HOMESERVER,
+      userId: USER,
+      loginToken: 'login-token',
+      deviceId: 'DENSERDEVICE',
+      defaultRoom: '#general:example.org',
+      logger: quiet,
+      fetchFn: homeserver.fetchFn
+    });
+    session = started.session;
+    assert.deepEqual(started.credentials, { userId: USER, deviceId: 'DENSERDEVICE', accessToken: 'access' });
+  });
+
+  it('resumes stored credentials the homeserver confirms, without signing in again', async () => {
+    const chat = await resume();
+    assert.equal(chat.defaultRoomId(), GENERAL);
+    assert.deepEqual(
+      homeserver.requests
+        .filter((request) => /\/(login|account\/whoami)$/.test(request.path))
+        .map((request) => request.path),
+      ['/_matrix/client/v3/account/whoami']
+    );
+  });
+
+  it('rejects stored credentials the homeserver no longer accepts, or names another user or device for', async () => {
+    const answers: HomeserverOptions['whoami'][] = [
+      { status: 401, errcode: 'M_UNKNOWN_TOKEN' },
+      { user_id: '@bob:example.org', device_id: 'DENSERDEVICE' },
+      { user_id: USER, device_id: 'OTHERDEVICE' }
+    ];
+    for (const whoami of answers) {
+      await assert.rejects(resume({ whoami }), StoredSessionRejectedError, JSON.stringify(whoami));
+      assert.ok(!homeserver.requests.some((request) => /\/(sync|logout)$/.test(request.path)));
+    }
+  });
+
+  it('stops, without signing out, and tells when the homeserver signs a running session out', async () => {
+    let loggedOut = 0;
+    await resume({ signOutAfterFirstSync: true }, () => loggedOut++);
+    for (let tick = 0; tick < 20 && loggedOut === 0; tick++) await new Promise((resolve) => setImmediate(resolve));
+    assert.equal(loggedOut, 1);
+    await session?.end();
+    session = undefined;
+    assert.ok(!homeserver.requests.some((request) => request.path.endsWith('/logout')));
   });
 });

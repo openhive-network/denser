@@ -143,4 +143,18 @@ describe('matrixLoginTokenHandler', () => {
     assert.equal(failed.status, 503);
     assert.ok(!('loginToken' in Object(failed.body)));
   });
+
+  it("passes Synapse's rate limit on as a 429 with retry_after_ms, capped at 70 s", async () => {
+    const limited = await call({ user: signedIn() }, { kind: 'rate-limited', retryAfterMs: 41_500 });
+    assert.deepEqual(limited, {
+      status: 429,
+      body: { error: 'Rate-limited', retry_after_ms: 41_500 },
+      headers: { 'cache-control': 'no-store', 'retry-after': '42' },
+      mintedFor: ['alice']
+    });
+    const long = await call({ user: signedIn() }, { kind: 'rate-limited', retryAfterMs: 3_600_000 });
+    assert.equal(long.status, 429);
+    assert.equal(Reflect.get(Object(long.body), 'retry_after_ms'), 70_000);
+    assert.equal(long.headers['retry-after'], '70');
+  });
 });
