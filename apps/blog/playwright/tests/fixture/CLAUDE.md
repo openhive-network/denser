@@ -587,6 +587,12 @@ Element holds (`mx_user_id`), and `frame.evaluate` reads the chat origin's
 denser's theme follows the system's (`defaultTheme="system"`), so
 `page.emulateMedia({ colorScheme })` sets it, before the page loads or while
 the drawer is open, and the widget's session URL follows with `theme=`.
+The widget warms Element up in the closed drawer (`MATRIX_CHAT_PRELOAD`,
+default `idle`: a few seconds after load, or on hovering, focusing or pressing
+the chat button), so `#chat-iframe` can exist before any click. A check that it
+has *not* loaded waits past the idle warm-up's latest start
+(`PAST_IDLE_WARM_UP_MS`); keep that in step with `WARM_UP_DELAY_MS` in
+`matrix-chat-widget.tsx` and the idle timeout of `useIdleAfterLoad`.
 
 ---
 

@@ -53,6 +53,9 @@ chat.discuss.peerverity.info {
 	import tls
 	# denser embeds Element in an iframe; only denser's sites may frame it.
 	header Content-Security-Policy "frame-ancestors 'self' https://denser.discuss.peerverity.info"
+	# Element's bundles and fonts have content-hashed names; everything else keeps its own headers
+	@hashed path /bundles/* /fonts/*
+	header @hashed >Cache-Control "public, max-age=31536000, immutable"
 	# denser's widget starts here: it replaces another user's Element session, then signs in (SSO)
 	handle /denser-session.html {
 		header Cache-Control no-store

@@ -7,8 +7,17 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { ChatDrawer } from '@/blog/components/chat-drawer';
 import { isEligibleForChat } from '@/blog/lib/chat-eligibility';
 import { useTranslation } from '@/blog/i18n/client';
+import { useIdleAfterLoad } from '@/blog/components/hooks/use-idle-after-load';
 
 const HIDDEN_FRAME_STYLE = { display: 'none' } as const;
+/** How long after the page's load an idle warm-up waits before it waits for idle */
+const WARM_UP_DELAY_MS = 2_000;
+
+/** The browser's Save-Data preference (`navigator.connection`, Chromium only) */
+function prefersSavingData(): boolean {
+  const connection: unknown = Reflect.get(navigator, 'connection');
+  return typeof connection === 'object' && connection !== null && 'saveData' in connection && connection.saveData === true;
+}
 
 /**
  * Element (Matrix) in the chat drawer. Its iframe starts at the session page on Element's origin,
@@ -21,6 +30,11 @@ const HIDDEN_FRAME_STYLE = { display: 'none' } as const;
  *
  * Element follows denser's resolved theme: the session page sets it in Element, and a change of
  * theme loads the session page again, which keeps the session of the same user.
+ *
+ * Element is warmed up in the closed drawer, as `siteConfig.matrixChat.preload` says, so that
+ * the first opening shows it already signed in: the iframe stays where it is, off-screen with the
+ * drawer, and opening only slides it in. No idle warm-up under Save-Data, nor after this page
+ * ended a session, which the next user's session page must not race; intent still loads.
  */
 const MatrixChatWidget = () => {
   const { t } = useTranslation('common_blog');
@@ -28,10 +42,11 @@ const MatrixChatWidget = () => {
   // Undefined until next-themes knows it on the client
   const { resolvedTheme } = useTheme();
   const [open, setOpen] = useState(false);
-  // Element loads on the first opening of the drawer, not on every page view
-  const [opened, setOpened] = useState(false);
+  // Element was asked for: by intent to use the chat button, or by opening the drawer
+  const [requested, setRequested] = useState(false);
   const [sessionEnds, setSessionEnds] = useState(0);
   const chatUserRef = useRef('');
+  const idle = useIdleAfterLoad(WARM_UP_DELAY_MS);
 
   const matrix = siteConfig.matrixChat;
   const eligible =
@@ -50,14 +65,20 @@ const MatrixChatWidget = () => {
     chatUserRef.current = chatUser;
     if (!previous || previous === chatUser) return;
     setOpen(false);
-    setOpened(false);
+    setRequested(false);
     setSessionEnds((count) => count + 1);
   }, [chatUser]);
 
   const toggle = (next: boolean) => {
-    if (next) setOpened(true);
+    if (next) setRequested(true);
     setOpen(next);
   };
+
+  const warmUpOnIntent = () => {
+    if (matrix.preload !== 'off') setRequested(true);
+  };
+
+  const warmedUpOnIdle = idle && matrix.preload === 'idle' && sessionEnds === 0 && !prefersSavingData();
 
   const sessionEnd =
     sessionEnds > 0 ? (
@@ -80,8 +101,9 @@ const MatrixChatWidget = () => {
       <ChatDrawer
         open={open}
         setOpen={toggle}
-        iframeSrc={opened && resolvedTheme ? sessionPage : undefined}
+        iframeSrc={(requested || warmedUpOnIdle) && resolvedTheme ? sessionPage : undefined}
         appUrl={sessionPage}
+        onButtonIntent={warmUpOnIntent}
       />
     </>
   );

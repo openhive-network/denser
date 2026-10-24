@@ -1,6 +1,13 @@
 /** Which chat server the chat widget and the "chat" links use. */
 export type ChatProvider = 'rocketchat' | 'matrix';
 
+/**
+ * When the chat widget loads Element, hidden, ahead of the drawer's first opening: once the page
+ * is idle after loading or on intent to use the chat button (`idle`), on that intent only
+ * (`intent`), or not before the drawer opens (`off`).
+ */
+export type MatrixChatPreload = 'idle' | 'intent' | 'off';
+
 export interface MatrixChatConfig {
   /** Element Web, the client the widget embeds, without a trailing slash */
   elementUrl: string;
@@ -12,6 +19,7 @@ export interface MatrixChatConfig {
   idpId: string;
   /** Alias or ID of the room Element opens in; `#general` of the server unless set */
   defaultRoom: string;
+  preload: MatrixChatPreload;
 }
 
 /** Reads a public setting by its unprefixed name, as `@beam-australia/react-env`'s `env()` does. */
@@ -19,6 +27,7 @@ export type ReadPublicEnv = (key: string) => string | undefined;
 
 const DEFAULT_MATRIX_IDP_ID = 'oidc-denser';
 const DEFAULT_MATRIX_ROOM_ALIAS = '#general';
+const MATRIX_CHAT_PRELOADS: readonly MatrixChatPreload[] = ['idle', 'intent', 'off'];
 
 /**
  * Page served from Element's origin (stack/matrix/chat-origin) that the widget loads first: it
@@ -41,6 +50,12 @@ export function resolveChatProvider(value: string | undefined): ChatProvider {
   return value?.trim().toLowerCase() === 'matrix' ? 'matrix' : 'rocketchat';
 }
 
+/** `MATRIX_CHAT_PRELOAD`: `idle`, `intent` or `off`, in any case; anything else, or nothing, is `idle`. */
+function resolveMatrixChatPreload(value: string | undefined): MatrixChatPreload {
+  const preload = value?.trim().toLowerCase();
+  return MATRIX_CHAT_PRELOADS.find((known) => known === preload) ?? 'idle';
+}
+
 export function resolveMatrixChatConfig(read: ReadPublicEnv): MatrixChatConfig {
   const homeserverUrl = withoutTrailingSlash(read('MATRIX_HOMESERVER_URL')?.trim() || '');
   const serverName = read('MATRIX_SERVER_NAME')?.trim() || hostOf(homeserverUrl);
@@ -49,7 +64,8 @@ export function resolveMatrixChatConfig(read: ReadPublicEnv): MatrixChatConfig {
     homeserverUrl,
     serverName,
     idpId: read('MATRIX_IDP_ID')?.trim() || DEFAULT_MATRIX_IDP_ID,
-    defaultRoom: read('MATRIX_DEFAULT_ROOM')?.trim() || (serverName ? `${DEFAULT_MATRIX_ROOM_ALIAS}:${serverName}` : '')
+    defaultRoom: read('MATRIX_DEFAULT_ROOM')?.trim() || (serverName ? `${DEFAULT_MATRIX_ROOM_ALIAS}:${serverName}` : ''),
+    preload: resolveMatrixChatPreload(read('MATRIX_CHAT_PRELOAD'))
   };
 }
 
