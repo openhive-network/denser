@@ -6,8 +6,13 @@
   both cases below, so Element shows denser's theme.
   - Element holds that user's session: continue into Element, in the room when one is given.
   - Otherwise: clear Element's storage (another user's session), remember the homeserver for
-    Element's token login, and sign in through Synapse's SSO, which goes through denser's OAuth
-    server and comes back to Element with a login token, keeping the room in Element's fragment.
+    Element's token login, and ask the parent page (denser's widget) for a login token, posting
+    {type: 'denser-matrix-login-token-request', user}. The widget answers to Element's origin with
+    {type: 'denser-matrix-login-token', loginToken} (null for none), minted by denser's server: a
+    token continues into Element's token login (/?loginToken=…, as the SSO ends), keeping the
+    room in Element's fragment; the session page's own URL, kept in history, never carries it.
+    Without a token, a parent or an answer in time, sign in through Synapse's SSO, which goes
+    through denser's OAuth server and comes back to Element with a login token the same way.
   Without a user (denser signed out, or switched account) it only clears Element's storage.
 -->
 <html lang="en">
@@ -41,6 +46,12 @@
   const IDP_ID = /^[A-Za-z0-9._~-]{1,255}$/;
   // A room alias (#) or ID (!) on a server
   const ROOM = /^[#!][^\s:#/?]+:[A-Za-z0-9.\-]+(:[0-9]+)?$/;
+  const LOGIN_TOKEN_REQUEST = 'denser-matrix-login-token-request';
+  const LOGIN_TOKEN_ANSWER = 'denser-matrix-login-token';
+  // Synapse's login tokens are URL-safe; anything else is not one
+  const LOGIN_TOKEN = /^[A-Za-z0-9._~+/=-]{1,1024}$/;
+  // Past denser's bound on minting one, so a slow mint falls back to the SSO
+  const LOGIN_TOKEN_WAIT_MS = 8000;
 
   const status = (text) => {
     document.getElementById('status').textContent = text;
@@ -77,6 +88,27 @@
     localStorage.setItem(LOCAL_SETTINGS_KEY, JSON.stringify(settings));
   }
 
+  // The login token the parent page answers with, or '' for none, no parent or no answer in time
+  function loginTokenFromParent(user) {
+    if (window.parent === window) return Promise.resolve('');
+    return new Promise((resolve) => {
+      const done = (token) => {
+        clearTimeout(timer);
+        window.removeEventListener('message', onMessage);
+        resolve(token);
+      };
+      const onMessage = (event) => {
+        if (event.source !== window.parent || event.data?.type !== LOGIN_TOKEN_ANSWER) return;
+        const token = event.data.loginToken;
+        done(typeof token === 'string' && LOGIN_TOKEN.test(token) ? token : '');
+      };
+      const timer = setTimeout(() => done(''), LOGIN_TOKEN_WAIT_MS);
+      window.addEventListener('message', onMessage);
+      // Not secret: whichever page frames this one may know who is expected
+      window.parent.postMessage({ type: LOGIN_TOKEN_REQUEST, user }, '*');
+    });
+  }
+
   async function homeserverUrl() {
     const response = await fetch('/config.json', { cache: 'no-store' });
     const config = await response.json();
@@ -99,18 +131,26 @@
     return;
   }
   // Element's screen for a room; Synapse keeps the fragment when it adds the login token
-  const elementUrl = `${location.origin}/${room ? `#/room/${encodeURIComponent(room)}` : ''}`;
+  const roomScreen = room ? `#/room/${encodeURIComponent(room)}` : '';
+  const elementUrl = `${location.origin}/${roomScreen}`;
   if (localStorage.getItem(USER_ID_KEY) === expectedUser) {
     setElementTheme(theme);
     location.replace(elementUrl);
     return;
   }
 
+  // Asked for while the storage is cleared
+  const loginToken = loginTokenFromParent(expectedUser);
   await clearElementStorage();
   setElementTheme(theme);
   try {
     const homeserver = await homeserverUrl();
     localStorage.setItem(SSO_HOMESERVER_KEY, homeserver);
+    const token = await loginToken;
+    if (token) {
+      location.replace(`${location.origin}/?loginToken=${encodeURIComponent(token)}${roomScreen}`);
+      return;
+    }
     const sso = new URL(`${homeserver}/_matrix/client/v3/login/sso/redirect/${encodeURIComponent(idp)}`);
     sso.searchParams.set('redirectUrl', elementUrl);
     location.replace(sso.toString());

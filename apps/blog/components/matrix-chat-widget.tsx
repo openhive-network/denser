@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { siteConfig } from '@ui/config/site';
-import { matrixSessionPageUrl } from '@ui/config/chat';
+import { matrixSessionPageUrl, matrixUserId, originOf } from '@ui/config/chat';
 import { inIframe } from '@smart-signer/lib/utils';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { ChatDrawer } from '@/blog/components/chat-drawer';
 import { isEligibleForChat } from '@/blog/lib/chat-eligibility';
 import { useTranslation } from '@/blog/i18n/client';
 import { useIdleAfterLoad } from '@/blog/components/hooks/use-idle-after-load';
+import { useMatrixLoginTokenAnswer } from '@/blog/components/hooks/use-matrix-login-token-answer';
 
 const HIDDEN_FRAME_STYLE = { display: 'none' } as const;
 /** How long after the page's load an idle warm-up waits before it waits for idle */
@@ -21,8 +22,9 @@ function prefersSavingData(): boolean {
 
 /**
  * Element (Matrix) in the chat drawer. Its iframe starts at the session page on Element's origin,
- * which signs the current user in through SSO via denser's OAuth server unless Element already
- * holds their session, so denser's browser code holds no Matrix credentials. Element posts no
+ * which signs the current user in unless Element already holds their session: with a login token
+ * it asks this widget for, which denser's server mints and the widget posts to Element's origin
+ * without keeping it, or else through SSO via denser's OAuth server. Element posts no
  * unread count to its parent, so there is no badge.
  *
  * Element keeps its session in its own origin's storage: when the chat user signs out or another
@@ -46,6 +48,7 @@ const MatrixChatWidget = () => {
   const [requested, setRequested] = useState(false);
   const [sessionEnds, setSessionEnds] = useState(0);
   const chatUserRef = useRef('');
+  const frameRef = useRef<HTMLIFrameElement>(null);
   const idle = useIdleAfterLoad(WARM_UP_DELAY_MS);
 
   const matrix = siteConfig.matrixChat;
@@ -59,6 +62,7 @@ const MatrixChatWidget = () => {
     }) &&
     !inIframe();
   const chatUser = eligible ? user.username : '';
+  useMatrixLoginTokenAnswer(frameRef, originOf(matrix.elementUrl), chatUser ? matrixUserId(chatUser, matrix) : '');
 
   useEffect(() => {
     const previous = chatUserRef.current;
@@ -102,6 +106,7 @@ const MatrixChatWidget = () => {
         open={open}
         setOpen={toggle}
         iframeSrc={(requested || warmedUpOnIdle) && resolvedTheme ? sessionPage : undefined}
+        iframeRef={frameRef}
         appUrl={sessionPage}
         onButtonIntent={warmUpOnIntent}
       />

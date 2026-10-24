@@ -96,6 +96,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/auth/accounts.test.ts \
     packages/smart-signer/lib/auth/chat-session.test.ts \
     packages/smart-signer/lib/auth/matrix-devices.test.ts \
+    packages/smart-signer/lib/auth/matrix-login-token.test.ts \
     packages/smart-signer/lib/api-handlers/auth/logout.test.ts \
     packages/smart-signer/lib/auth/auth-storage-desync.test.ts \
     packages/smart-signer/lib/auth/login-authority.test.ts \
@@ -127,6 +128,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/lib/in-app-redirect-url.test.ts \
     apps/blog/lib/post-summary.test.ts \
     apps/blog/lib/chat-eligibility.test.ts \
+    apps/blog/lib/matrix-login-token-route.test.ts \
     apps/blog/components/hooks/use-chat-token-request.test.ts \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \

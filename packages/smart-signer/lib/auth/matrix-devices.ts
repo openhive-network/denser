@@ -18,8 +18,8 @@ export type MatrixAdminRequest = (url: string, init: RequestInit, timeoutMs: num
 /** Reports a cleanup that failed. `reason` never contains the admin token. */
 export type MatrixCleanupFailureReporter = (userId: string, reason: string) => void;
 
-/** Bound on each admin API call; nobody waits on them. */
-const MATRIX_ADMIN_TIMEOUT_MS = 5000;
+/** Bound on each call to Synapse's admin and client APIs */
+export const MATRIX_ADMIN_TIMEOUT_MS = 5000;
 
 function deviceIdsOf(answer: unknown): string[] {
   const devices: unknown = typeof answer === 'object' && answer !== null && 'devices' in answer ? answer.devices : [];

@@ -69,7 +69,8 @@ export function resolveMatrixChatConfig(read: ReadPublicEnv): MatrixChatConfig {
   };
 }
 
-function originOf(url: string): string | undefined {
+/** The origin of `url`, or undefined for one that does not parse */
+export function originOf(url: string): string | undefined {
   try {
     return new URL(url).origin;
   } catch {
