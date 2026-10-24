@@ -42,6 +42,10 @@ const SESSION_PAGE = `${ELEMENT}/denser-session.html`;
 const SSO_REDIRECT = `${HOMESERVER}/_matrix/client/v3/login/sso/redirect/${IDP_ID}`;
 const LOGIN_TOKEN_ROUTE = '**/api/chat/matrix-login-token';
 const MINTED_LOGIN_TOKEN = 'syl_minted_login_token';
+const FORGED_LOGIN_TOKEN = 'syl_forged_login_token';
+const OTHER_ORIGIN = 'https://other.example.test';
+/** Past the session page's wait for a login token answer (LOGIN_TOKEN_WAIT_MS) */
+const PAST_LOGIN_TOKEN_WAIT_MS = 15_000;
 /** Element's screen for the default room, `#general` of the server */
 const DEFAULT_ROOM_SCREEN = `#/room/${encodeURIComponent(`#general:${SERVER_NAME}`)}`;
 const ROCKET_CHAT = 'https://rocket.chat.test';
@@ -319,8 +323,10 @@ test.describe('Chat widget in Matrix mode: sign-in with a login token from dense
     expect(ssoRedirects).toEqual([]);
     expect(await readElementStorage(frame)).toEqual({ userId: null, ssoHomeserver: HOMESERVER });
     expect(loginTokenRequests.map((request) => request.method())).toEqual(['POST']);
-    // The token never rides in the session page's address
-    expect((await chatIframe(page).getAttribute('src')) ?? '').not.toContain(MINTED_LOGIN_TOKEN);
+    // The token never rides in the session page's address, which names denser's origin as its parent
+    const src = new URL((await chatIframe(page).getAttribute('src')) ?? '');
+    expect(src.href).not.toContain(MINTED_LOGIN_TOKEN);
+    expect(src.searchParams.get('parent')).toBe(new URL(page.url()).origin);
   });
 
   test('CHAT-MATRIX-TOKEN-02: when denser mints no login token, the session page signs in through the SSO', async ({
@@ -350,6 +356,48 @@ test.describe('Chat widget in Matrix mode: sign-in with a login token from dense
     expect(loginTokenRequests).toEqual([]);
     expect(ssoRedirects).toEqual([]);
   });
+});
+
+test.describe('Chat widget in Matrix mode: a login token answer from another origin', () => {
+  let ssoRedirects: string[];
+
+  test.beforeEach(async ({ page, context }) => {
+    ssoRedirects = await stubMatrix(page);
+    await elementHoldsSession(context, `@previous-user:${SERVER_NAME}`);
+  });
+
+  const cases = [
+    { name: 'naming denser as the parent, with its own referrer', referrerPolicy: 'strict-origin-when-cross-origin' },
+    { name: 'naming denser as the parent, with no referrer', referrerPolicy: 'no-referrer' }
+  ];
+  for (const [index, { name, referrerPolicy }] of cases.entries()) {
+    test(`CHAT-MATRIX-TOKEN-0${index + 4}: is ignored from a page framing the session page ${name}, which signs in through the SSO`, async ({
+      page,
+      baseURL
+    }) => {
+      const sessionPage = new URL(SESSION_PAGE);
+      sessionPage.searchParams.set('user', `@${USERNAME}:${SERVER_NAME}`);
+      sessionPage.searchParams.set('idp', IDP_ID);
+      sessionPage.searchParams.set('parent', new URL(baseURL ?? '').origin);
+      // Answers a forged token, over and over, whether or not it is asked
+      await page.route(`${OTHER_ORIGIN}/**`, (route) =>
+        route.fulfill({
+          contentType: 'text/html',
+          body: `<iframe id="session" referrerpolicy="${referrerPolicy}" src="${sessionPage.href}"></iframe>
+<script>
+  setInterval(() => document.getElementById('session').contentWindow.postMessage(
+    { type: 'denser-matrix-login-token', loginToken: ${JSON.stringify(FORGED_LOGIN_TOKEN)} }, '*'), 50);
+</script>`
+        })
+      );
+      await page.goto(`${OTHER_ORIGIN}/`);
+
+      await expect.poll(() => ssoRedirects, { timeout: PAST_LOGIN_TOKEN_WAIT_MS }).toHaveLength(1);
+      const frame = await elementFrame(page);
+      expect(new URL(frame.url()).searchParams.get('loginToken')).toBe('login-token');
+      expect(page.frames().map((each) => each.url()).join(' ')).not.toContain(FORGED_LOGIN_TOKEN);
+    });
+  }
 });
 
 test.describe('Chat widget in Matrix mode: Element warm-up', () => {

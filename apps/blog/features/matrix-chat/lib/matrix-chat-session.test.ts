@@ -176,6 +176,16 @@ describe('startMatrixChatSession', () => {
     assert.deepEqual(roomFilter.state, { lazy_load_members: true });
   });
 
+  it('asks the homeserver nothing about MatrixRTC, which denser does not use', async () => {
+    await start();
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.ok(homeserver.requests.some((request) => request.path.endsWith('/sync')));
+    assert.deepEqual(
+      homeserver.requests.filter((request) => request.path.includes('/rtc/')),
+      []
+    );
+  });
+
   it('opens in the default room, with its messages, senders and the unread count from the sync', async () => {
     const chat = await start();
     assert.equal(chat.defaultRoomId(), GENERAL);

@@ -12,6 +12,7 @@ import {
   type Room
 } from 'matrix-js-sdk';
 import { toMessageView } from './message-view.ts';
+import { withLocalRtcTransportsAnswer } from './rtc-transports-probe.ts';
 import type { MatrixSdkLogger } from './sdk-logger-type.ts';
 import type { ChatMessageView, ChatRoomView, ChatSession } from './chat-view-types.ts';
 import { StoredSessionRejectedError, type MatrixCredentials, type StartedChatSession } from './matrix-chat-sign-in.ts';
@@ -282,7 +283,7 @@ function viewInputOf(event: MatrixEvent) {
 }
 
 function fetchOf(options: SessionOptions): typeof fetch {
-  return options.fetchFn ?? globalThis.fetch.bind(globalThis);
+  return withLocalRtcTransportsAnswer(options.fetchFn ?? globalThis.fetch.bind(globalThis));
 }
 
 /** A session, not yet started, of a client with `credentials` */

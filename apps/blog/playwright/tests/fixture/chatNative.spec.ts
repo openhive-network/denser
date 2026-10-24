@@ -289,4 +289,34 @@ test.describe('Native Matrix chat client', () => {
 
     expect(warnings).toEqual([]);
   });
+
+  test('CHAT-NATIVE-12: no MatrixRTC request leaves the page, and a reload with the drawer open logs no chat error', async ({
+    page
+  }) => {
+    const rtcRequests: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes('/rtc/transports')) rtcRequests.push(request.url());
+    });
+    const problems: string[] = [];
+    page.on('console', (message) => {
+      const fromChat = message.text().includes('Matrix chat') || message.location().url.startsWith(HOMESERVER);
+      if (['warning', 'error'].includes(message.type()) && fromChat) problems.push(message.text());
+    });
+    const { homeserver } = await usesNativeChat(page, { ...NATIVE_SETTINGS, LOGGING_BROWSER_ENABLED: 'true' });
+    await openChat(page);
+    await expect.poll(() => homeserver.requestsTo('/sync').length).toBeGreaterThan(1);
+    // As the browser does once the reload starts: the client's long poll fails in the old page
+    page.on('request', (request) => {
+      if (request.isNavigationRequest() && request.frame() === page.mainFrame()) homeserver.cutOffLongPolls();
+    });
+
+    await page.reload();
+    await chatButton(page).click();
+    await expect(messages(page).first()).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+    await expect.poll(() => homeserver.requestsTo('/sync').length).toBeGreaterThan(3);
+
+    expect(rtcRequests).toEqual([]);
+    expect(homeserver.requestsWith('/rtc/')).toEqual([]);
+    expect(problems).toEqual([]);
+  });
 });
