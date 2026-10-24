@@ -142,7 +142,9 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/matrix-chat/lib/outbox.test.ts \
     apps/blog/features/matrix-chat/lib/back-pagination.test.ts \
     apps/blog/features/matrix-chat/lib/matrix-chat-sign-in.test.ts \
-    apps/blog/features/matrix-chat/lib/matrix-chat-session.test.ts < /dev/null || status=1
+    apps/blog/features/matrix-chat/lib/matrix-chat-session.test.ts \
+    apps/blog/features/matrix-chat/lib/rtc-transports-probe.test.ts \
+    apps/blog/features/matrix-chat/lib/sdk-log-routing.test.ts < /dev/null || status=1
 echo "== node --test apps/wallet" >&2
 junit="$PWD/test-results/unit/wallet.xml"
 run_with_junit_fallback "$junit" wallet node --test \

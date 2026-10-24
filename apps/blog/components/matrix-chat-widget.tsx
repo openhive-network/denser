@@ -22,6 +22,8 @@ const HIDDEN_FRAME_STYLE = { display: 'none' } as const;
  * Element follows denser's resolved theme: the session page sets it in Element, and a change of
  * theme loads the session page again, which keeps the session of the same user.
  *
+ * The frame's session page takes a login token only from this page's origin, which it is given.
+ *
  * Element is warmed up in the closed drawer, as `siteConfig.matrixChat.preload` says, so that
  * the first opening shows it already signed in: the iframe stays where it is, off-screen with the
  * drawer, and opening only slides it in. No idle warm-up under Save-Data, nor after this page
@@ -70,13 +72,18 @@ const MatrixChatWidget = () => {
   if (!chatUser) return sessionEnd;
 
   const sessionPage = matrixSessionPageUrl(matrix, chatUser, resolvedTheme);
+  // Client-only, as resolvedTheme is
+  const framedSessionPage =
+    warmUp.warm && resolvedTheme
+      ? matrixSessionPageUrl(matrix, chatUser, resolvedTheme, window.location.origin)
+      : undefined;
   return (
     <>
       {sessionEnd}
       <ChatDrawer
         open={open}
         setOpen={toggle}
-        iframeSrc={warmUp.warm && resolvedTheme ? sessionPage : undefined}
+        iframeSrc={framedSessionPage}
         iframeRef={frameRef}
         appUrl={sessionPage}
         onButtonIntent={warmUp.requestOnIntent}

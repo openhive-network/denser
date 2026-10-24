@@ -3,7 +3,7 @@ import type { Page, Route } from '@playwright/test';
 /**
  * A Matrix homeserver for the native chat client, answered with `page.route`: sign-in with a login
  * token, a first sync of two rooms (`#general` with unread messages and history before them, and
- * `#lobby`), long polls that answer what a test queues, `/messages`, sending, read receipts (which
+ * `#lobby`), long polls that answer what a test queues (or fail once it cuts them off), `/messages`, sending, read receipts (which
  * clear the room's unread count in the next sync), `/account/whoami` for the access tokens it
  * issued and has not signed out, and sign-out. Every request is recorded.
  */
@@ -75,6 +75,8 @@ export class MatrixHomeserverStub {
   private readonly queued: Json[] = [];
   private batch = 1;
   private failSends = 0;
+  /** Long polls fail until a client starts again with a first sync */
+  private cuttingOff = false;
   /** Device of each access token issued and not signed out */
   private readonly sessions = new Map<string, string>();
   private issued = 0;
@@ -102,6 +104,14 @@ export class MatrixHomeserverStub {
   /** The next long poll answers a room's notification count */
   queueUnread(roomId: string, unread: number): void {
     this.queued.push({ [roomId]: { unread_notifications: { notification_count: unread, highlight_count: 0 } } });
+  }
+
+  /**
+   * The long polls in flight, and any until a client starts again, fail as the browser fails a
+   * page's requests when it leaves the page
+   */
+  cutOffLongPolls(): void {
+    this.cuttingOff = true;
   }
 
   /** The next `count` sends fail */
@@ -155,7 +165,10 @@ export class MatrixHomeserverStub {
       return json({});
     }
     if (path.endsWith('/filter') && method === 'POST') return json({ filter_id: 'stub-filter' });
-    if (path === '/sync') return json(await this.nextSync(url.searchParams.has('since')));
+    if (path === '/sync') {
+      const answer = await this.nextSync(url.searchParams.has('since'));
+      return answer ? json(answer) : route.abort('aborted').catch(() => undefined);
+    }
     if (path.endsWith('/messages')) return json(this.olderMessages(path, url.searchParams));
     if (path.includes('/send/m.room.message/')) {
       if (this.failSends > 0) {
@@ -178,8 +191,10 @@ export class MatrixHomeserverStub {
     return json({});
   }
 
-  private async nextSync(longPoll: boolean): Promise<Json> {
+  /** The sync's answer, or none for a long poll cut off */
+  private async nextSync(longPoll: boolean): Promise<Json | null> {
     if (!longPoll) {
+      this.cuttingOff = false;
       return sync(this.batch++, {
         [GENERAL_ROOM]: room(
           `#general:${SERVER_NAME}`,
@@ -192,9 +207,10 @@ export class MatrixHomeserverStub {
         [LOBBY_ROOM]: room(`#lobby:${SERVER_NAME}`, 'lobby', this.userId, [message('$lobby.1', LOBBY_MESSAGE, 500)], UNREAD.lobby)
       });
     }
-    for (let waited = 0; waited < LONG_POLL_MS && this.queued.length === 0; waited += POLL_STEP_MS) {
+    for (let waited = 0; waited < LONG_POLL_MS && this.queued.length === 0 && !this.cuttingOff; waited += POLL_STEP_MS) {
       await new Promise((resolve) => setTimeout(resolve, POLL_STEP_MS));
     }
+    if (this.cuttingOff) return null;
     return sync(this.batch++, this.queued.shift() ?? {});
   }
 

@@ -2,17 +2,22 @@
 <!--
   Served from Element's origin, where Element keeps its session. denser's chat widget loads it
   first, as /denser-session.html?user=<Matrix user id>&idp=<Synapse IdP id>[&room=<alias or ID>]
-  [&theme=light|dark]. With a theme, it sets that theme in Element's device settings first, in
-  both cases below, so Element shows denser's theme.
+  [&theme=light|dark][&parent=<denser's origin>]. With a theme, it sets that theme in Element's
+  device settings first, in both cases below, so Element shows denser's theme.
   - Element holds that user's session: continue into Element, in the room when one is given.
   - Otherwise: clear Element's storage (another user's session), remember the homeserver for
     Element's token login, and ask the parent page (denser's widget) for a login token, posting
-    {type: 'denser-matrix-login-token-request', user}. The widget answers to Element's origin with
-    {type: 'denser-matrix-login-token', loginToken} (null for none), minted by denser's server: a
+    {type: 'denser-matrix-login-token-request', user} to the parent origin. The widget answers to
+    Element's origin with {type: 'denser-matrix-login-token', loginToken} (null for none), minted
+    by denser's server, and only an answer from the parent window and origin counts: a
     token continues into Element's token login (/?loginToken=…, as the SSO ends), keeping the
     room in Element's fragment; the session page's own URL, kept in history, never carries it.
-    Without a token, a parent or an answer in time, sign in through Synapse's SSO, which goes
-    through denser's OAuth server and comes back to Element with a login token the same way.
+    The parent origin is the one the widget names in `parent` (window.location.origin), when the
+    frame's referrer, if the browser sends one, is a page of it: a page of another origin framing
+    this one gets no request and its answer is ignored, unless it names itself and withholds the
+    referrer, which the server's frame-ancestors still stops. Without a token, a parent origin or
+    an answer in time, sign in through Synapse's SSO, which goes through denser's OAuth server
+    and comes back to Element with a login token the same way.
   Without a user (denser signed out, or switched account) it only clears Element's storage.
 -->
 <html lang="en">
@@ -88,9 +93,24 @@
     localStorage.setItem(LOCAL_SETTINGS_KEY, JSON.stringify(settings));
   }
 
-  // The login token the parent page answers with, or '' for none, no parent or no answer in time
-  function loginTokenFromParent(user) {
-    if (window.parent === window) return Promise.resolve('');
+  // `named`, the parent's origin as the widget names it, if it is one and the referrer, when the
+  // browser sent one, is a page of it; else ''
+  function parentOrigin(named) {
+    let origin;
+    try {
+      origin = new URL(named).origin;
+    } catch {
+      return '';
+    }
+    if (origin !== named || !/^https?:/.test(origin)) return '';
+    if (document.referrer && new URL(document.referrer).origin !== origin) return '';
+    return origin;
+  }
+
+  // The login token the parent page at `origin` answers with, or '' for none, no parent or
+  // origin, or no answer in time
+  function loginTokenFromParent(user, origin) {
+    if (window.parent === window || !origin) return Promise.resolve('');
     return new Promise((resolve) => {
       const done = (token) => {
         clearTimeout(timer);
@@ -98,14 +118,16 @@
         resolve(token);
       };
       const onMessage = (event) => {
-        if (event.source !== window.parent || event.data?.type !== LOGIN_TOKEN_ANSWER) return;
+        if (event.source !== window.parent || event.origin !== origin || event.data?.type !== LOGIN_TOKEN_ANSWER) {
+          return;
+        }
         const token = event.data.loginToken;
         done(typeof token === 'string' && LOGIN_TOKEN.test(token) ? token : '');
       };
       const timer = setTimeout(() => done(''), LOGIN_TOKEN_WAIT_MS);
       window.addEventListener('message', onMessage);
-      // Not secret: whichever page frames this one may know who is expected
-      window.parent.postMessage({ type: LOGIN_TOKEN_REQUEST, user }, '*');
+      // Not secret, but only for the parent origin: another page framing this one gets nothing
+      window.parent.postMessage({ type: LOGIN_TOKEN_REQUEST, user }, origin);
     });
   }
 
@@ -120,6 +142,7 @@
   const idp = params.get('idp') || '';
   const room = params.get('room') || '';
   const theme = params.get('theme') || '';
+  const parent = parentOrigin(params.get('parent') || '');
 
   if (!expectedUser) {
     await clearElementStorage();
@@ -140,7 +163,7 @@
   }
 
   // Asked for while the storage is cleared
-  const loginToken = loginTokenFromParent(expectedUser);
+  const loginToken = loginTokenFromParent(expectedUser, parent);
   await clearElementStorage();
   setElementTheme(theme);
   try {

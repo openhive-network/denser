@@ -131,9 +131,21 @@ describe('matrixSessionPageUrl', () => {
     }
   });
 
+  it('names the parent origin the session page takes a login token from, when given', () => {
+    const parentOf = (parentOrigin?: string) =>
+      new URL(matrixSessionPageUrl(MATRIX, 'alice', 'dark', parentOrigin)).searchParams.get('parent');
+    assert.equal(parentOf('https://denser.example.org'), 'https://denser.example.org');
+    assert.equal(parentOf(undefined), null);
+    assert.equal(parentOf(''), null);
+  });
+
   it('names no user for ending the session only', () => {
     assert.equal(matrixSessionPageUrl(MATRIX), 'https://chat.example.org/denser-session.html');
     assert.equal(matrixSessionPageUrl(MATRIX, undefined, 'dark'), 'https://chat.example.org/denser-session.html');
+    assert.equal(
+      matrixSessionPageUrl(MATRIX, undefined, 'dark', 'https://denser.example.org'),
+      'https://chat.example.org/denser-session.html'
+    );
   });
 });
 
