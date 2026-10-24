@@ -8,6 +8,9 @@ export type ChatProvider = 'rocketchat' | 'matrix';
  */
 export type MatrixChatPreload = 'idle' | 'intent' | 'off';
 
+/** What the chat drawer shows: denser's own client (`native`) or Element in an iframe (`element`). */
+export type MatrixChatClient = 'native' | 'element';
+
 export interface MatrixChatConfig {
   /** Element Web, the client the widget embeds, without a trailing slash */
   elementUrl: string;
@@ -20,6 +23,7 @@ export interface MatrixChatConfig {
   /** Alias or ID of the room Element opens in; `#general` of the server unless set */
   defaultRoom: string;
   preload: MatrixChatPreload;
+  client: MatrixChatClient;
 }
 
 /** Reads a public setting by its unprefixed name, as `@beam-australia/react-env`'s `env()` does. */
@@ -50,6 +54,11 @@ export function resolveChatProvider(value: string | undefined): ChatProvider {
   return value?.trim().toLowerCase() === 'matrix' ? 'matrix' : 'rocketchat';
 }
 
+/** `MATRIX_CHAT_CLIENT`: `element` keeps Element's iframe; anything else, or nothing, is `native`. */
+function resolveMatrixChatClient(value: string | undefined): MatrixChatClient {
+  return value?.trim().toLowerCase() === 'element' ? 'element' : 'native';
+}
+
 /** `MATRIX_CHAT_PRELOAD`: `idle`, `intent` or `off`, in any case; anything else, or nothing, is `idle`. */
 function resolveMatrixChatPreload(value: string | undefined): MatrixChatPreload {
   const preload = value?.trim().toLowerCase();
@@ -65,7 +74,8 @@ export function resolveMatrixChatConfig(read: ReadPublicEnv): MatrixChatConfig {
     serverName,
     idpId: read('MATRIX_IDP_ID')?.trim() || DEFAULT_MATRIX_IDP_ID,
     defaultRoom: read('MATRIX_DEFAULT_ROOM')?.trim() || (serverName ? `${DEFAULT_MATRIX_ROOM_ALIAS}:${serverName}` : ''),
-    preload: resolveMatrixChatPreload(read('MATRIX_CHAT_PRELOAD'))
+    preload: resolveMatrixChatPreload(read('MATRIX_CHAT_PRELOAD')),
+    client: resolveMatrixChatClient(read('MATRIX_CHAT_CLIENT'))
   };
 }
 
@@ -79,15 +89,25 @@ export function originOf(url: string): string | undefined {
 }
 
 /**
- * The origins a page must allow its chat frame to load, or none when Matrix is not in use:
+ * The origins a page must allow its chat frame to load, or none when Element is not in use:
  * Element's, and the homeserver's, which the frame passes through during SSO sign-in.
  */
 export function matrixFrameOrigins(provider: ChatProvider, matrix: MatrixChatConfig): string[] {
-  if (provider !== 'matrix' || !matrix.elementUrl) return [];
+  if (provider !== 'matrix' || matrix.client !== 'element' || !matrix.elementUrl) return [];
   const elementOrigin = originOf(matrix.elementUrl);
   if (!elementOrigin) return [];
   const homeserverOrigin = originOf(matrix.homeserverUrl);
   return [...new Set(homeserverOrigin ? [elementOrigin, homeserverOrigin] : [elementOrigin])];
+}
+
+/**
+ * The origins the page itself must reach for the native chat client, or none when it is not in
+ * use: the homeserver's, for the client API and the media its avatars are fetched from.
+ */
+export function matrixClientOrigins(provider: ChatProvider, matrix: MatrixChatConfig): string[] {
+  if (provider !== 'matrix' || matrix.client !== 'native') return [];
+  const homeserverOrigin = originOf(matrix.homeserverUrl);
+  return homeserverOrigin ? [homeserverOrigin] : [];
 }
 
 export function matrixUserId(username: string, matrix: Pick<MatrixChatConfig, 'serverName'>): string {

@@ -573,8 +573,14 @@ FIXTURE_BASE_PATH (the route glob matches with or without it).
 
 The chat provider and its URLs are client settings, so `chatWidget.spec.ts`
 appends `REACT_APP_CHAT_PROVIDER` and the Matrix or Rocket.Chat URLs to
-`__ENV.js`, as the Google recipe above does, and sets `bypassCSP: true`: the
-fixture build's CSP frames neither chat origin. It answers every chat origin
+`__ENV.js` (`configureChat` in `support/chatSettings.ts`), as the Google recipe
+above does, and sets `bypassCSP: true`: the fixture build's CSP frames neither
+chat origin. Matrix's drawer shows denser's native client unless
+`MATRIX_CHAT_CLIENT=element`, which `chatWidget.spec.ts` sets for Element.
+`chatNative.spec.ts` covers the native client: `support/matrixHomeserverStub.ts`
+answers the homeserver's client API with `page.route` (login, a first sync of
+`#general` and `#lobby`, long polls answering what a test queues within
+500 ms, `/messages`, sends, read receipts, logout) and records every request. It answers every chat origin
 with `page.route`. For Matrix, Element's origin serves the real session page
 from `stack/matrix/chat-origin/` (the whole checkout is mounted on the dev
 stack too) and a `config.json`; the homeserver's SSO redirect answers with a

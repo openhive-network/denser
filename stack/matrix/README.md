@@ -134,6 +134,19 @@ in `homeserver.yaml`), and logs it out, each call bounded to 5 s. Element then s
 answers 404), a failure, or no answer within 8 s sends the session page through SSO, which creates
 the account and joins `#general`.
 
+`REACT_APP_MATRIX_CHAT_CLIENT` chooses what the drawer shows. `native` (the default) is denser's own
+client on matrix-js-sdk, without crypto: its code loads with the warm-up above (or on opening), it
+signs in with the same minted login token (`m.login.token`, on one device per browser and user,
+so signing in again reuses it), keeps the access token in memory only, and syncs the user's joined
+rooms with lazy-loaded members. It needs `DENSER_SERVER_MATRIX_ADMIN_TOKEN`, and the user's Matrix
+account: it creates none, so a user Synapse does not know yet gets "Open full chat", whose Element
+SSO creates it. The page reaches the homeserver itself (the CSP's `connect-src`, and Synapse's
+CORS), and fetches avatars as authenticated media. The chat button shows the unread count of the
+sync; opening a room sends read receipts. Encrypted rooms and events it cannot show get a line
+linking to Element (`REACT_APP_MATRIX_ELEMENT_URL`, which stays the full chat app). Sign-out, an
+account switch or the end of denser's session stop the client and sign its device out. `element`
+keeps Element in the drawer's iframe, as described above.
+
 The widget shows for a user the server signed in (strict login, or any with
 `REACT_APP_OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN=yes`), limited to
 `REACT_APP_OPENHIVE_CHAT_ALLOWED_USERS` when that is set. denser's `authorize` issues the

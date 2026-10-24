@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   chatAppUrl,
+  matrixClientOrigins,
   matrixFrameOrigins,
   matrixSessionPageUrl,
   resolveChatProvider,
@@ -21,6 +22,7 @@ const MATRIX = resolveMatrixChatConfig(
     MATRIX_HOMESERVER_URL: 'https://matrix.example.org/'
   })
 );
+const MATRIX_ELEMENT: typeof MATRIX = { ...MATRIX, client: 'element' };
 
 describe('resolveChatProvider', () => {
   it('keeps Rocket.Chat unless Matrix is asked for', () => {
@@ -44,7 +46,8 @@ describe('resolveMatrixChatConfig', () => {
       serverName: 'matrix.example.org',
       idpId: 'oidc-denser',
       defaultRoom: '#general:matrix.example.org',
-      preload: 'idle'
+      preload: 'idle',
+      client: 'native'
     });
   });
 
@@ -75,7 +78,8 @@ describe('resolveMatrixChatConfig', () => {
       serverName: '',
       idpId: 'oidc-denser',
       defaultRoom: '',
-      preload: 'idle'
+      preload: 'idle',
+      client: 'native'
     });
   });
 
@@ -89,6 +93,15 @@ describe('resolveMatrixChatConfig', () => {
   it('preloads on idle for an empty or unknown setting', () => {
     for (const value of ['', ' ', 'always', 'no', 'intent,off']) {
       assert.equal(resolveMatrixChatConfig(readFrom({ MATRIX_CHAT_PRELOAD: value })).preload, 'idle', value);
+    }
+  });
+
+  it('keeps Element only for "element", in any case, and the native client otherwise', () => {
+    const clientOf = (value: string) => resolveMatrixChatConfig(readFrom({ MATRIX_CHAT_CLIENT: value })).client;
+    assert.equal(clientOf('element'), 'element');
+    assert.equal(clientOf(' Element '), 'element');
+    for (const value of ['', 'native', 'NATIVE', 'iframe', 'element,native']) {
+      assert.equal(clientOf(value), 'native', value);
     }
   });
 });
@@ -127,21 +140,39 @@ describe('matrixSessionPageUrl', () => {
 describe('chat app URL and frame origin', () => {
   it('point at Element in Matrix mode', () => {
     assert.equal(chatAppUrl('matrix', MATRIX, ROCKET_CHAT_URL), 'https://chat.example.org');
-    assert.deepEqual(matrixFrameOrigins('matrix', MATRIX), ['https://chat.example.org', 'https://matrix.example.org']);
+    assert.deepEqual(matrixFrameOrigins('matrix', MATRIX_ELEMENT), [
+      'https://chat.example.org',
+      'https://matrix.example.org'
+    ]);
   });
 
   it('list one origin when Element and the homeserver share it', () => {
     const shared = resolveMatrixChatConfig(
-      readFrom({ MATRIX_ELEMENT_URL: 'https://example.org/element/', MATRIX_HOMESERVER_URL: 'https://example.org' })
+      readFrom({
+        MATRIX_ELEMENT_URL: 'https://example.org/element/',
+        MATRIX_HOMESERVER_URL: 'https://example.org',
+        MATRIX_CHAT_CLIENT: 'element'
+      })
     );
     assert.deepEqual(matrixFrameOrigins('matrix', shared), ['https://example.org']);
   });
 
   it('keep Rocket.Chat in Rocket.Chat mode, and when Matrix has no Element URL', () => {
     assert.equal(chatAppUrl('rocketchat', MATRIX, ROCKET_CHAT_URL), ROCKET_CHAT_URL);
-    assert.deepEqual(matrixFrameOrigins('rocketchat', MATRIX), []);
-    const noElement = resolveMatrixChatConfig(readFrom({}));
+    assert.deepEqual(matrixFrameOrigins('rocketchat', MATRIX_ELEMENT), []);
+    const noElement = resolveMatrixChatConfig(readFrom({ MATRIX_CHAT_CLIENT: 'element' }));
     assert.equal(chatAppUrl('matrix', noElement, ROCKET_CHAT_URL), ROCKET_CHAT_URL);
     assert.deepEqual(matrixFrameOrigins('matrix', noElement), []);
+  });
+
+  it('frame nothing for the native client, which reaches the homeserver from the page instead', () => {
+    assert.deepEqual(matrixFrameOrigins('matrix', MATRIX), []);
+    assert.deepEqual(matrixClientOrigins('matrix', MATRIX), ['https://matrix.example.org']);
+  });
+
+  it('reach no homeserver from the page for Element, Rocket.Chat or a homeserver URL that does not parse', () => {
+    assert.deepEqual(matrixClientOrigins('matrix', MATRIX_ELEMENT), []);
+    assert.deepEqual(matrixClientOrigins('rocketchat', MATRIX), []);
+    assert.deepEqual(matrixClientOrigins('matrix', { ...MATRIX, homeserverUrl: '' }), []);
   });
 });

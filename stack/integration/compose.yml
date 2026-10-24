@@ -34,12 +34,14 @@ x-app: &app
     # JavaScript origin is https://${SITE_HOST}. Empty leaves the method disabled.
     REACT_APP_GOOGLE_DRIVE_CLIENT_ID: ${GOOGLE_DRIVE_CLIENT_ID:-}
     GOOGLE_DRIVE_CLIENT_SECRET: ${GOOGLE_DRIVE_CLIENT_SECRET:-}
-    # Chat (optional): CHAT_PROVIDER=matrix embeds Element from ../matrix instead of openhive.chat
+    # Chat (optional): CHAT_PROVIDER=matrix chats on ../matrix's Synapse instead of openhive.chat
     REACT_APP_CHAT_PROVIDER: ${CHAT_PROVIDER:-}
     REACT_APP_MATRIX_ELEMENT_URL: ${MATRIX_ELEMENT_URL:-}
     REACT_APP_MATRIX_HOMESERVER_URL: ${MATRIX_HOMESERVER_URL:-}
-    # The room Element opens in (default: #general of the homeserver)
+    # The room the drawer opens in (default: #general of the homeserver)
     REACT_APP_MATRIX_DEFAULT_ROOM: ${MATRIX_DEFAULT_ROOM:-}
+    # The drawer's client: native (default; signs in with the admin token's login tokens) or element
+    REACT_APP_MATRIX_CHAT_CLIENT: ${MATRIX_CHAT_CLIENT:-}
     # A Synapse admin's access token: sign-out and account switches delete the user's Matrix devices. Empty: never.
     DENSER_SERVER_MATRIX_ADMIN_TOKEN: ${DENSER_SERVER_MATRIX_ADMIN_TOKEN:-}
     # yes: sign-ins authenticate on the server, needed for Matrix chat and OAuth (see ../matrix/README.md)

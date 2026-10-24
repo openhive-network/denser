@@ -112,6 +112,7 @@ const withChatEnv = (values: Record<string, string>, run: () => void) => {
     'REACT_APP_CHAT_PROVIDER',
     'REACT_APP_MATRIX_ELEMENT_URL',
     'REACT_APP_MATRIX_HOMESERVER_URL',
+    'REACT_APP_MATRIX_CHAT_CLIENT',
     'REACT_APP_SITE_DOMAIN'
   ];
   const saved = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
@@ -135,6 +136,7 @@ test("frame-src admits Element's and the homeserver's origins in Matrix mode, ke
   withChatEnv(
     {
       REACT_APP_CHAT_PROVIDER: 'matrix',
+      REACT_APP_MATRIX_CHAT_CLIENT: 'element',
       REACT_APP_MATRIX_ELEMENT_URL: 'https://chat.example.org/',
       REACT_APP_MATRIX_HOMESERVER_URL: 'https://matrix.example.org/',
       REACT_APP_SITE_DOMAIN: 'https://denser.example.org/blog'
@@ -150,15 +152,23 @@ test("frame-src admits Element's and the homeserver's origins in Matrix mode, ke
 });
 
 test("frame-src keeps 'self' next to Element for an app with no frame list", () => {
-  withChatEnv({ REACT_APP_CHAT_PROVIDER: 'matrix', REACT_APP_MATRIX_ELEMENT_URL: 'https://chat.example.org' }, () => {
-    assert.deepEqual(frameSrcOf(buildCsp({}, 'bm9uY2U=')), ['https://chat.example.org', "'self'"]);
-  });
+  withChatEnv(
+    {
+      REACT_APP_CHAT_PROVIDER: 'matrix',
+      REACT_APP_MATRIX_CHAT_CLIENT: 'element',
+      REACT_APP_MATRIX_ELEMENT_URL: 'https://chat.example.org'
+    },
+    () => {
+      assert.deepEqual(frameSrcOf(buildCsp({}, 'bm9uY2U=')), ['https://chat.example.org', "'self'"]);
+    }
+  );
 });
 
 test('frame-src lists Element and the homeserver once when they share an origin', () => {
   withChatEnv(
     {
       REACT_APP_CHAT_PROVIDER: 'matrix',
+      REACT_APP_MATRIX_CHAT_CLIENT: 'element',
       REACT_APP_MATRIX_ELEMENT_URL: 'https://example.org/element',
       REACT_APP_MATRIX_HOMESERVER_URL: 'https://example.org'
     },
@@ -181,4 +191,32 @@ test('frame-src leaves Matrix out unless the chat provider is Matrix', () => {
       assert.ok(frameSrc.includes('https://openhive.chat'), frameSrc.join(' '));
     }
   );
+});
+
+test("the native chat client reaches the homeserver from the page (connect-src) and frames no Matrix origin", () => {
+  withChatEnv(
+    {
+      REACT_APP_CHAT_PROVIDER: 'matrix',
+      REACT_APP_MATRIX_ELEMENT_URL: 'https://chat.example.org',
+      REACT_APP_MATRIX_HOMESERVER_URL: 'https://matrix.example.org/'
+    },
+    () => {
+      const policy = buildCsp(BLOG_FRAME_SRC, 'bm9uY2U=');
+      assert.ok(connectSrcOf(policy).includes('https://matrix.example.org'), connectSrcOf(policy).join(' '));
+      const frameSrc = frameSrcOf(policy);
+      assert.ok(!frameSrc.includes('https://chat.example.org'), frameSrc.join(' '));
+      assert.ok(!frameSrc.includes('https://matrix.example.org'), frameSrc.join(' '));
+    }
+  );
+});
+
+test('connect-src leaves the homeserver out for Element and for Rocket.Chat', () => {
+  for (const values of [
+    { REACT_APP_CHAT_PROVIDER: 'matrix', REACT_APP_MATRIX_CHAT_CLIENT: 'element' },
+    { REACT_APP_CHAT_PROVIDER: 'rocketchat' }
+  ]) {
+    withChatEnv({ ...values, REACT_APP_MATRIX_HOMESERVER_URL: 'https://matrix.example.org' }, () => {
+      assert.ok(!connectSrcOf(buildCsp({}, 'bm9uY2U=')).includes('https://matrix.example.org'));
+    });
+  }
 });

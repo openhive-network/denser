@@ -2,23 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { siteConfig } from '@ui/config/site';
 import { matrixSessionPageUrl, matrixUserId, originOf } from '@ui/config/chat';
-import { inIframe } from '@smart-signer/lib/utils';
-import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { ChatDrawer } from '@/blog/components/chat-drawer';
-import { isEligibleForChat } from '@/blog/lib/chat-eligibility';
 import { useTranslation } from '@/blog/i18n/client';
-import { useIdleAfterLoad } from '@/blog/components/hooks/use-idle-after-load';
+import { useChatWarmUp, useMatrixChatUser } from '@/blog/components/hooks/use-matrix-chat-drawer';
 import { useMatrixLoginTokenAnswer } from '@/blog/components/hooks/use-matrix-login-token-answer';
 
 const HIDDEN_FRAME_STYLE = { display: 'none' } as const;
-/** How long after the page's load an idle warm-up waits before it waits for idle */
-const WARM_UP_DELAY_MS = 2_000;
-
-/** The browser's Save-Data preference (`navigator.connection`, Chromium only) */
-function prefersSavingData(): boolean {
-  const connection: unknown = Reflect.get(navigator, 'connection');
-  return typeof connection === 'object' && connection !== null && 'saveData' in connection && connection.saveData === true;
-}
 
 /**
  * Element (Matrix) in the chat drawer. Its iframe starts at the session page on Element's origin,
@@ -40,28 +29,16 @@ function prefersSavingData(): boolean {
  */
 const MatrixChatWidget = () => {
   const { t } = useTranslation('common_blog');
-  const { user } = useUserClient();
   // Undefined until next-themes knows it on the client
   const { resolvedTheme } = useTheme();
   const [open, setOpen] = useState(false);
-  // Element was asked for: by intent to use the chat button, or by opening the drawer
-  const [requested, setRequested] = useState(false);
   const [sessionEnds, setSessionEnds] = useState(0);
   const chatUserRef = useRef('');
   const frameRef = useRef<HTMLIFrameElement>(null);
-  const idle = useIdleAfterLoad(WARM_UP_DELAY_MS);
 
   const matrix = siteConfig.matrixChat;
-  const eligible =
-    !!matrix.elementUrl &&
-    // The SSO authorizes only a user the server signed in
-    user.authenticateOnBackend &&
-    isEligibleForChat(user, {
-      allowNonStrictLogin: siteConfig.openhiveChatAllowNonStrictLogin,
-      allowedUsers: siteConfig.openhiveChatAllowedUsers
-    }) &&
-    !inIframe();
-  const chatUser = eligible ? user.username : '';
+  const chatUser = useMatrixChatUser(!!matrix.elementUrl);
+  const { reset: resetWarmUp, ...warmUp } = useChatWarmUp(matrix.preload, sessionEnds === 0);
   useMatrixLoginTokenAnswer(frameRef, originOf(matrix.elementUrl), chatUser ? matrixUserId(chatUser, matrix) : '');
 
   useEffect(() => {
@@ -69,20 +46,14 @@ const MatrixChatWidget = () => {
     chatUserRef.current = chatUser;
     if (!previous || previous === chatUser) return;
     setOpen(false);
-    setRequested(false);
+    resetWarmUp();
     setSessionEnds((count) => count + 1);
-  }, [chatUser]);
+  }, [chatUser, resetWarmUp]);
 
   const toggle = (next: boolean) => {
-    if (next) setRequested(true);
+    if (next) warmUp.request();
     setOpen(next);
   };
-
-  const warmUpOnIntent = () => {
-    if (matrix.preload !== 'off') setRequested(true);
-  };
-
-  const warmedUpOnIdle = idle && matrix.preload === 'idle' && sessionEnds === 0 && !prefersSavingData();
 
   const sessionEnd =
     sessionEnds > 0 ? (
@@ -105,10 +76,10 @@ const MatrixChatWidget = () => {
       <ChatDrawer
         open={open}
         setOpen={toggle}
-        iframeSrc={(requested || warmedUpOnIdle) && resolvedTheme ? sessionPage : undefined}
+        iframeSrc={warmUp.warm && resolvedTheme ? sessionPage : undefined}
         iframeRef={frameRef}
         appUrl={sessionPage}
-        onButtonIntent={warmUpOnIntent}
+        onButtonIntent={warmUp.requestOnIntent}
       />
     </>
   );
