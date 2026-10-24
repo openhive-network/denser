@@ -43,7 +43,8 @@ describe('resolveMatrixChatConfig', () => {
       homeserverUrl: 'https://matrix.example.org',
       serverName: 'matrix.example.org',
       idpId: 'oidc-denser',
-      defaultRoom: '#general:matrix.example.org'
+      defaultRoom: '#general:matrix.example.org',
+      preload: 'idle'
     });
   });
 
@@ -73,8 +74,22 @@ describe('resolveMatrixChatConfig', () => {
       homeserverUrl: '',
       serverName: '',
       idpId: 'oidc-denser',
-      defaultRoom: ''
+      defaultRoom: '',
+      preload: 'idle'
     });
+  });
+
+  it('reads when Element is preloaded, in any case', () => {
+    const preloadOf = (value: string) => resolveMatrixChatConfig(readFrom({ MATRIX_CHAT_PRELOAD: value })).preload;
+    assert.equal(preloadOf('idle'), 'idle');
+    assert.equal(preloadOf(' Intent '), 'intent');
+    assert.equal(preloadOf('OFF'), 'off');
+  });
+
+  it('preloads on idle for an empty or unknown setting', () => {
+    for (const value of ['', ' ', 'always', 'no', 'intent,off']) {
+      assert.equal(resolveMatrixChatConfig(readFrom({ MATRIX_CHAT_PRELOAD: value })).preload, 'idle', value);
+    }
   });
 });
 

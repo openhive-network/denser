@@ -20,6 +20,10 @@ import enBlog from '../../../locales/en/common_blog.json';
  * (`mx_local_settings`), when the session page loads. denser's theme is the system's
  * (`defaultTheme="system"`), set through the emulated color scheme.
  *
+ * Element's warm-up (`MATRIX_CHAT_PRELOAD`) loads the frame hidden in the closed drawer: on idle,
+ * a few seconds after the page loads, or on intent to use the chat button. A check that it has
+ * not loaded waits past the idle warm-up's latest start.
+ *
  * Fixtures: reuses `accountSwitchLogout`, which loads the same page for a signed-in user.
  */
 
@@ -40,6 +44,15 @@ const SESSION_PAGE_SOURCE = fs.readFileSync(
   'utf-8'
 );
 const EN = enBlog;
+const MATRIX_SETTINGS = {
+  CHAT_PROVIDER: 'matrix',
+  OPENHIVE_CHAT_URI: OPENHIVE_CHAT,
+  MATRIX_ELEMENT_URL: ELEMENT,
+  MATRIX_HOMESERVER_URL: HOMESERVER
+};
+/** Past the idle warm-up's latest start after hydration: its 2 s delay and 3 s idle timeout */
+const PAST_IDLE_WARM_UP_MS = 7_000;
+const IDLE_WARM_UP_TIMEOUT_MS = 15_000;
 
 test.use({
   fixtureTestName: 'accountSwitchLogout',
@@ -116,11 +129,23 @@ function recordRequests(page: Page, ...origins: string[]): Request[] {
 
 const chatButton = (page: Page) => page.getByRole('button', { name: EN.chat_widget.open_widget });
 const chatIframe = (page: Page) => page.locator('#chat-iframe');
+const closeButton = (page: Page) => page.getByRole('button', { name: EN.chat_widget.close_widget });
 
-async function openChat(page: Page): Promise<void> {
+async function openPage(page: Page): Promise<void> {
   await page.goto(PAGE_WITH_HEADER);
   await expect(chatButton(page)).toBeEnabled({ timeout: TIMEOUTS.HYDRATION });
+}
+
+async function openChat(page: Page): Promise<void> {
+  await openPage(page);
   await chatButton(page).click();
+}
+
+async function signOut(page: Page): Promise<void> {
+  const homePage = new HomePage(page);
+  const profileMenu = new ProfileUserMenu(page);
+  await homePage.profileAvatarButton.click();
+  await profileMenu.logoutLink.click();
 }
 
 /** The first frame `matches` accepts, once there is one. */
@@ -151,12 +176,7 @@ test.describe('Chat widget in Matrix mode', () => {
   let openhiveChatRequests: Request[];
 
   test.beforeEach(async ({ page }) => {
-    await configureChat(page, {
-      CHAT_PROVIDER: 'matrix',
-      OPENHIVE_CHAT_URI: OPENHIVE_CHAT,
-      MATRIX_ELEMENT_URL: ELEMENT,
-      MATRIX_HOMESERVER_URL: HOMESERVER
-    });
+    await configureChat(page, MATRIX_SETTINGS);
     ssoRedirects = await stubMatrix(page);
     openhiveChatRequests = recordRequests(page, OPENHIVE_CHAT);
   });
@@ -166,12 +186,7 @@ test.describe('Chat widget in Matrix mode', () => {
     context
   }) => {
     await elementHoldsSession(context, '');
-    await page.goto(PAGE_WITH_HEADER);
-    await expect(chatButton(page)).toBeEnabled({ timeout: TIMEOUTS.HYDRATION });
-    // Element loads with the first opening of the drawer
-    await expect(chatIframe(page)).toHaveCount(0);
-
-    await chatButton(page).click();
+    await openChat(page);
 
     const src = new URL((await chatIframe(page).getAttribute('src')) ?? '');
     expect(`${src.origin}${src.pathname}`).toBe(SESSION_PAGE);
@@ -213,12 +228,9 @@ test.describe('Chat widget in Matrix mode', () => {
   test("CHAT-MATRIX-04: signing out ends the browser's Element session", async ({ page, context }) => {
     await elementHoldsSession(context, `@${USERNAME}:${SERVER_NAME}`);
     await openChat(page);
-    await page.getByRole('button', { name: EN.chat_widget.close_widget }).click();
+    await closeButton(page).click();
 
-    const homePage = new HomePage(page);
-    const profileMenu = new ProfileUserMenu(page);
-    await homePage.profileAvatarButton.click();
-    await profileMenu.logoutLink.click();
+    await signOut(page);
 
     await expect(chatButton(page)).toHaveCount(0);
     const sessionEnd = await waitForFrame(page, (url) => url === SESSION_PAGE);
@@ -278,6 +290,126 @@ test.describe('Chat widget in Matrix mode', () => {
       .toEqual(['dark', 'light']);
     await expect.poll(settingsInRoom).toEqual({ layout: 'irc', theme: 'light', use_system_theme: false });
     expect(ssoRedirects).toEqual([]);
+  });
+});
+
+test.describe('Chat widget in Matrix mode: Element warm-up', () => {
+  const ROOM_SCREEN = `${ELEMENT}/${DEFAULT_ROOM_SCREEN}`;
+  let sessionPageRequests: Request[];
+
+  const usesElement = async (page: Page, preload?: string) => {
+    await configureChat(page, preload ? { ...MATRIX_SETTINGS, MATRIX_CHAT_PRELOAD: preload } : MATRIX_SETTINGS);
+    await stubMatrix(page);
+    sessionPageRequests = recordRequests(page, SESSION_PAGE);
+  };
+
+  /** No session page has been asked for once the idle warm-up would have started */
+  const expectNoWarmUp = async (page: Page) => {
+    await page.waitForTimeout(PAST_IDLE_WARM_UP_MS);
+    expect(sessionPageRequests).toEqual([]);
+    await expect(chatIframe(page)).toHaveCount(0);
+  };
+
+  const expectSessionPageRequests = (count: number) =>
+    expect.poll(() => sessionPageRequests.length, { timeout: IDLE_WARM_UP_TIMEOUT_MS }).toBe(count);
+
+  test.beforeEach(async ({ context }) => {
+    // The user's own session, so the session page continues into the room without the SSO
+    await elementHoldsSession(context, `@${USERNAME}:${SERVER_NAME}`);
+  });
+
+  test('CHAT-MATRIX-WARM-01: by default, Element loads hidden in the closed drawer once the page is idle', async ({
+    page
+  }) => {
+    await usesElement(page);
+    await openPage(page);
+
+    await expectSessionPageRequests(1);
+    expect(new URL(sessionPageRequests[0].url()).searchParams.get('user')).toBe(`@${USERNAME}:${SERVER_NAME}`);
+    await waitForFrame(page, (url) => url === ROOM_SCREEN);
+    const iframe = chatIframe(page);
+    await expect(iframe).toHaveAttribute('aria-hidden', 'true');
+    await expect(iframe).toHaveAttribute('tabindex', '-1');
+    await expect(iframe).toHaveAttribute('inert', '');
+    await expect(iframe).not.toBeInViewport();
+    await expect(closeButton(page)).not.toBeInViewport();
+  });
+
+  for (const { name, preload, saveData } of [
+    { name: 'with MATRIX_CHAT_PRELOAD=intent', preload: 'intent', saveData: false },
+    { name: 'under Save-Data', preload: undefined, saveData: true }
+  ]) {
+    test(`CHAT-MATRIX-WARM-02: ${name}, Element loads on pointing at the chat button, not before`, async ({
+      page,
+      context
+    }) => {
+      if (saveData) {
+        await context.addInitScript(() => {
+          Object.defineProperty(Navigator.prototype, 'connection', { get: () => ({ saveData: true }) });
+        });
+      }
+      await usesElement(page, preload);
+      await openPage(page);
+      await expectNoWarmUp(page);
+
+      await chatButton(page).hover();
+
+      await expectSessionPageRequests(1);
+      await expect(chatIframe(page)).toHaveAttribute('aria-hidden', 'true');
+      await expect(closeButton(page)).not.toBeInViewport();
+    });
+  }
+
+  test('CHAT-MATRIX-WARM-03: with MATRIX_CHAT_PRELOAD=off, Element loads only on opening the drawer', async ({
+    page
+  }) => {
+    await usesElement(page, 'off');
+    await openPage(page);
+    await chatButton(page).hover();
+    await expectNoWarmUp(page);
+
+    await chatButton(page).click();
+
+    await expectSessionPageRequests(1);
+    await waitForFrame(page, (url) => url === ROOM_SCREEN);
+  });
+
+  test('CHAT-MATRIX-WARM-04: opening the drawer shows the warmed-up frame without loading it again', async ({
+    page
+  }) => {
+    await usesElement(page);
+    await openPage(page);
+    const warmed = await waitForFrame(page, (url) => url === ROOM_SCREEN);
+    // A global of the document: gone with any reload of the frame
+    await warmed.evaluate(() => Reflect.set(window, 'warmedUp', true));
+
+    await chatButton(page).click();
+
+    const iframe = chatIframe(page);
+    await expect(iframe).toBeInViewport();
+    await expect(iframe).not.toHaveAttribute('aria-hidden', 'true');
+    await expect(iframe).not.toHaveAttribute('inert');
+    await expect(iframe).not.toHaveAttribute('tabindex', '-1');
+    const shown = await (await iframe.elementHandle())?.contentFrame();
+    expect(await shown?.evaluate(() => Reflect.get(window, 'warmedUp'))).toBe(true);
+    expect(shown?.url()).toBe(ROOM_SCREEN);
+    expect(sessionPageRequests).toHaveLength(1);
+  });
+
+  test('CHAT-MATRIX-WARM-05: signing out drops the warmed-up frame and ends the Element session', async ({ page }) => {
+    await usesElement(page);
+    await openPage(page);
+    await waitForFrame(page, (url) => url === ROOM_SCREEN);
+
+    await signOut(page);
+
+    await expect(chatButton(page)).toHaveCount(0);
+    await expect(chatIframe(page)).toHaveCount(0);
+    const sessionEnd = await waitForFrame(page, (url) => url === SESSION_PAGE);
+    await expect.poll(() => sessionEnd.evaluate(() => document.getElementById('status')?.textContent)).not.toBe('…');
+    expect(await readElementStorage(sessionEnd)).toEqual({ userId: null, ssoHomeserver: null });
+    expect(sessionPageRequests.map((request) => request.url())).toEqual([expect.stringContaining('?user='), SESSION_PAGE]);
+    expect(page.frames().some((frame) => frame.url() === ROOM_SCREEN)).toBe(false);
   });
 });
 

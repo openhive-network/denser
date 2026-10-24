@@ -14,6 +14,8 @@ A closed Matrix homeserver and Element Web for denser's chat widget in Matrix mo
   the widget does so when its user signs out or switches account.
 - **Host:** predicate-testing.syncad.com, `~/matrix-test`, behind `~/sites-router`. caddy
   listens on 127.0.0.5 and takes the client address from the router's PROXY header.
+  The host uses BBR congestion control (`/etc/sysctl.d/90-bbr.conf`, plus `sysctls:` on the
+  router's haproxy service), because clients in Poland are 134 ms away.
 
 ## Setup
 
@@ -106,7 +108,11 @@ Elsewhere the app settings are `REACT_APP_CHAT_PROVIDER`, `REACT_APP_MATRIX_ELEM
 `REACT_APP_MATRIX_HOMESERVER_URL`, `REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND=yes`,
 `REACT_APP_MATRIX_SERVER_NAME` (default: the homeserver's host), `REACT_APP_MATRIX_IDP_ID` (default `oidc-denser`),
 `REACT_APP_MATRIX_DEFAULT_ROOM` (the room alias or ID the drawer opens in, after SSO and when
-Element already holds the session; default `#general:<server name>`), and on the blog's server
+Element already holds the session; default `#general:<server name>`),
+`REACT_APP_MATRIX_CHAT_PRELOAD` (when the widget loads Element, hidden in the closed drawer, so the
+first opening is as fast as a reopen: `idle`, the default, a few seconds after the page loads and
+on pointing at, focusing or pressing the chat button; `intent`, on the button only; `off`, on
+opening the drawer; never on idle under the browser's Save-Data), and on the blog's server
 `DENSER_SERVER_OAUTH_MATRIX_SECRET` and, optionally, `DENSER_SERVER_OAUTH_MATRIX_REDIRECT_URI`
 (default `<homeserver>/_synapse/client/oidc/callback`). On the blog's and wallet's servers,
 `DENSER_SERVER_MATRIX_ADMIN_TOKEN` (the admin token above; empty: no device cleanup) makes

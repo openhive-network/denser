@@ -18,6 +18,8 @@ interface ChatDrawerProps {
   disabled?: boolean;
   /** Unread messages; no badge for 0 or none */
   badgeContent?: number;
+  /** Called when the pointer enters, focuses or presses the chat button, ahead of a click */
+  onButtonIntent?: () => void;
 }
 
 /** The chat drawer with its iframe and the fixed button toggling it, for any chat server. */
@@ -29,7 +31,8 @@ export function ChatDrawer({
   onIframeLoad,
   appUrl,
   disabled = false,
-  badgeContent
+  badgeContent,
+  onButtonIntent
 }: ChatDrawerProps) {
   const { t } = useTranslation('common_blog');
   const chatLabel = t('chat_widget.chat');
@@ -50,6 +53,10 @@ export function ChatDrawer({
             title={chatLabel}
             ref={iframeRef}
             onLoad={onIframeLoad}
+            // Loaded in the closed drawer, off-screen at its size: out of reach until it opens
+            aria-hidden={!open}
+            tabIndex={open ? undefined : -1}
+            inert={!open}
           />
         ) : null}
 
@@ -89,6 +96,9 @@ export function ChatDrawer({
                 type="button"
                 aria-label={t('chat_widget.open_widget')}
                 onClick={() => setOpen(!open)}
+                onPointerEnter={onButtonIntent}
+                onFocus={onButtonIntent}
+                onPointerDown={onButtonIntent}
                 disabled={disabled}
               >
                 <Icons.messageSquareText className={clsx('h-12 w-12', { 'opacity-25': disabled })} />
