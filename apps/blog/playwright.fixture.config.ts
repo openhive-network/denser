@@ -16,6 +16,7 @@ import {
   FEED_CACHE_STALE_S,
   FEED_CACHE_TTL_S
 } from './playwright/tests/support/feed-cache-server';
+import { FIXTURE_FYP_API_URL } from './playwright/tests/support/fypApiStub';
 import type {
   FixtureAuthTestFixtures,
   FixtureProxyWorkerFixtures
@@ -68,6 +69,9 @@ const serverEnv = {
   // installImageUploadStub can intercept it (job 3142272 saw exactly
   // this for POST-08/09/18).
   REACT_APP_IMAGES_ENDPOINT: 'https://images.hive.blog/',
+  // The For You feed is on, as on a deployment that sets it; specs answer it with page.route
+  // (fypApiStub.ts). The feed-cache server leaves it unset, the default.
+  REACT_APP_FYP_API_URL: FIXTURE_FYP_API_URL,
   HOSTNAME: '0.0.0.0',
   PORT: '3000',
   // Pin APP_NAME so iron-session's cookieName matches what the seeder
@@ -152,6 +156,7 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
       env: {
         ...serverEnv,
         PORT: String(FEED_CACHE_PORT),
+        REACT_APP_FYP_API_URL: '',
         DENSER_FEED_CACHE_TTL_S: String(FEED_CACHE_TTL_S),
         DENSER_FEED_CACHE_STALE_S: String(FEED_CACHE_STALE_S)
       }

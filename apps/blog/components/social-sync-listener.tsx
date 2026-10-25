@@ -5,7 +5,7 @@ import { useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { reloadOwnLists } from '@transaction/lib/observer-lists';
 import { subscribeSocialChanged } from '@/blog/lib/social-sync';
 
-const SOCIAL_LIST_QUERIES = ['followingData', 'muted', 'blacklisted', 'follow_blacklist', 'follow_muted'];
+const SOCIAL_LIST_QUERIES = ['followingData', 'muted', 'blacklisted', 'follow_blacklist', 'follow_muted', 'hiddenAuthors'];
 
 // The other tab reports a change once it is in a block; the API indexes it a little later.
 const REFRESH_DELAYS = [0, 4000, 10000, 20000];

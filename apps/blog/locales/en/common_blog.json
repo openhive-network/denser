@@ -185,7 +185,8 @@
       "hot": "Hot",
       "new": "New",
       "payouts": "Payouts",
-      "muted": "Muted"
+      "muted": "Muted",
+      "for_you": "For You"
     },
     "communitie_sort": {
       "rank": "Rank",
@@ -942,7 +943,8 @@
       "muted": "muted",
       "pending": "pending",
       "roles": "roles"
-    }
+    },
+    "for_you_posts": "For You"
   },
   "chat_widget": {
     "chat": "Chat",
@@ -998,5 +1000,8 @@
       "user_topic": "User posts by topic",
       "tag": "Tags"
     }
+  },
+  "for_you_feed": {
+    "sign_in_prompt": "Sign in to see your feed."
   }
 }

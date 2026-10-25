@@ -183,7 +183,8 @@
       "hot": "인기",
       "new": "최신",
       "payouts": "지급",
-      "muted": "뮤트됨"
+      "muted": "뮤트됨",
+      "for_you": "추천"
     },
     "communitie_sort": {
       "rank": "순위",
@@ -940,7 +941,8 @@
       "muted": "뮤트됨",
       "pending": "대기 중",
       "roles": "역할"
-    }
+    },
+    "for_you_posts": "추천"
   },
   "chat_widget": {
     "chat": "채팅",
@@ -996,5 +998,8 @@
       "user_topic": "주제별 사용자 게시물",
       "tag": "태그"
     }
+  },
+  "for_you_feed": {
+    "sign_in_prompt": "로그인하면 내 피드를 볼 수 있습니다."
   }
 }

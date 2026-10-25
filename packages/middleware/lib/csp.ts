@@ -71,6 +71,14 @@ function buildConnectSrcHosts(): Set<string> {
     } catch { /* invalid URL, skip */ }
   }
 
+  // The blog's For You feed (haf_fyp), read from the page; only when the feed is on
+  const fypApiUrl = process.env.REACT_APP_FYP_API_URL;
+  if (fypApiUrl) {
+    try {
+      hosts.add(new URL(fypApiUrl).origin);
+    } catch { /* invalid URL, skip */ }
+  }
+
   // Hivesense (AI search) endpoint - not deployed on every API node; mirror
   // the client-side default from public-vars (configuredAIDomain)
   try {

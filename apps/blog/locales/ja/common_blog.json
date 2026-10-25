@@ -183,7 +183,8 @@
       "hot": "ホット",
       "new": "新着",
       "payouts": "支払額",
-      "muted": "ミュート中"
+      "muted": "ミュート中",
+      "for_you": "おすすめ"
     },
     "communitie_sort": {
       "rank": "ランク",
@@ -940,7 +941,8 @@
       "muted": "ミュート",
       "pending": "保留中",
       "roles": "役割"
-    }
+    },
+    "for_you_posts": "おすすめ"
   },
   "chat_widget": {
     "chat": "チャット",
@@ -996,5 +998,8 @@
       "user_topic": "トピック別のユーザー投稿",
       "tag": "タグ"
     }
+  },
+  "for_you_feed": {
+    "sign_in_prompt": "ログインすると、あなたのフィードが表示されます。"
   }
 }

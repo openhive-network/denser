@@ -183,7 +183,8 @@
       "hot": "热门",
       "new": "最新",
       "payouts": "赏金",
-      "muted": "已静音"
+      "muted": "已静音",
+      "for_you": "为你推荐"
     },
     "communitie_sort": {
       "rank": "排名",
@@ -940,7 +941,8 @@
       "muted": "已静音",
       "pending": "待定",
       "roles": "角色"
-    }
+    },
+    "for_you_posts": "为你推荐"
   },
   "chat_widget": {
     "chat": "聊天",
@@ -996,5 +998,8 @@
       "user_topic": "按主题查看用户帖子",
       "tag": "标签"
     }
+  },
+  "for_you_feed": {
+    "sign_in_prompt": "登录后即可查看你的推荐内容。"
   }
 }

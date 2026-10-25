@@ -187,7 +187,8 @@
       "hot": "En alza",
       "new": "Nuevo",
       "payouts": "Pagos",
-      "muted": "Silenciadas"
+      "muted": "Silenciadas",
+      "for_you": "Para ti"
     },
     "communitie_sort": {
       "rank": "Rango",
@@ -944,7 +945,8 @@
       "muted": "silenciado",
       "pending": "pendiente",
       "roles": "roles"
-    }
+    },
+    "for_you_posts": "Para ti"
   },
   "chat_widget": {
     "chat": "Chat",
@@ -1000,5 +1002,8 @@
       "user_topic": "Publicaciones de un usuario por tema",
       "tag": "Etiquetas"
     }
+  },
+  "for_you_feed": {
+    "sign_in_prompt": "Inicia sesión para ver tu feed."
   }
 }

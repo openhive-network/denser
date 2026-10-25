@@ -12,6 +12,7 @@ import {
   type ListSnapshot
 } from '@/blog/lib/follow-list-cache';
 import { postSocialChanged } from '@/blog/lib/social-sync';
+import { hiddenAuthorsQueryKey } from '@/blog/components/hooks/use-hidden-authors';
 
 /** The account's own follow lists, each cached under `[list, username]`. */
 export type FollowList = 'blacklisted' | 'muted' | 'follow_blacklist' | 'follow_muted';
@@ -60,7 +61,7 @@ function useFollowListMutation<TVariables>(
     },
     rollback: (context, _variables, queryClient) => rollback(queryClient, queryKey, context),
     successToast: (_data, variables) => toast(variables),
-    invalidate: () => [queryKey, ['entriesInfinite']],
+    invalidate: () => [queryKey, hiddenAuthorsQueryKey(username), ['entriesInfinite']],
     invalidateDelays: FOLLOW_LIST_REFRESH_DELAYS
   });
 }
