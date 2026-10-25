@@ -1,0 +1,6 @@
+{
+  "testName": "socialUnfollowAll",
+  "base": "socialFollowOwnProfile",
+  "additive": true,
+  "note": "Replay-only corpus for socialUnfollowAll.spec.ts. Reuses socialFollowOwnProfile (the seeded user's own followed page: 4 accounts) through its base chain. 0001 condenser_api.get_following [hiveio, '', 'blog', 50] (another account's followed page; hiveio follows nobody) is copied verbatim from userProfileTabs/0010. `additive: true` because every file is a new key."
+}

@@ -38,7 +38,8 @@ export class UserListPage {
     // list-area.tsx:191. Locator handle is fine to create up-front;
     // Playwright auto-waits for it to appear after the input is filled.
     this.addAccountSubmit = this.area.getByRole('button', { name: /^add to list$/i });
-    this.resetAllButton = page.getByRole('button', { name: /reset all lists/i });
+    // The removed "Reset All Follows/Lists" button; kept as a locator so specs can pin its absence.
+    this.resetAllButton = page.getByRole('button', { name: /^reset all/i });
   }
 
   async gotoListPage(username: string, slug: string): Promise<void> {
@@ -91,11 +92,7 @@ export class UserListPage {
     return this.itemRow(name).getByRole('button');
   }
 
-  /**
-   * Per-variant "Reset <list>" button (list-area.tsx:231-244 — the
-   * first button in the "Reset options" section). The all-lists reset
-   * (`resetAllButton`) is the second button there and stays separate.
-   */
+  /** Per-variant "Reset <list>" button, the only button in the "Reset options" section. */
   resetButton(
     variant: 'muted' | 'blacklisted' | 'followed_blacklists' | 'followed_muted_lists'
   ): Locator {

@@ -429,14 +429,22 @@
         "reset_muted_list": "Restablecer lista de silenciados",
         "reset_followed_blacklists": "Restablecer listas negras seguidas",
         "reset_followed_muted_list": "Restablecer listas de silenciados seguidas",
-        "reset_all_lists": "Restablecer todos los seguimientos/listas",
         "busy_button": "OCUPADO, ESPERA POR FAVOR",
         "first_button": "Primero",
         "previous_button": "Anterior",
         "next_button": "Próximo",
         "last_button": "Último",
         "viewing_page": "Viendo la página {{current}} de {{total}}",
-        "users_on_list": "Usuarios en la lista: {{number}}"
+        "users_on_list": "Usuarios en la lista: {{number}}",
+        "unfollow_all": {
+          "button": "Dejar de seguir a todos",
+          "title": "¿Dejar de seguir a todas las cuentas?",
+          "description_one": "Dejarás de seguir la {{count}} cuenta que sigues. No se puede deshacer.",
+          "description_many": "Dejarás de seguir las {{count}} cuentas que sigues. No se puede deshacer.",
+          "description_other": "Dejarás de seguir las {{count}} cuentas que sigues. No se puede deshacer.",
+          "confirm_prompt": "Escribe el nombre de tu cuenta ({{username}}) para confirmar.",
+          "cancel": "Cancelar"
+        }
       },
       "username_placeholder": "nombre de usuario"
     },

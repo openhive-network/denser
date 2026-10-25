@@ -425,14 +425,20 @@
         "reset_muted_list": "뮤트 목록 초기화",
         "reset_followed_blacklists": "팔로우한 블랙리스트 초기화",
         "reset_followed_muted_list": "팔로우한 뮤트 목록 초기화",
-        "reset_all_lists": "모든 팔로우/목록 초기화",
         "busy_button": "처리 중입니다. 잠시 기다려 주세요",
         "first_button": "처음",
         "previous_button": "이전",
         "next_button": "다음",
         "last_button": "마지막",
         "viewing_page": "{{total}}페이지 중 {{current}}페이지 보기",
-        "users_on_list": "목록의 사용자: {{number}}"
+        "users_on_list": "목록의 사용자: {{number}}",
+        "unfollow_all": {
+          "button": "모두 언팔로우",
+          "title": "모든 계정을 언팔로우할까요?",
+          "description_other": "팔로우 중인 계정 {{count}}개를 모두 언팔로우합니다. 되돌릴 수 없습니다.",
+          "confirm_prompt": "확인하려면 계정 이름({{username}})을 입력하세요.",
+          "cancel": "취소"
+        }
       },
       "username_placeholder": "사용자 이름"
     },
