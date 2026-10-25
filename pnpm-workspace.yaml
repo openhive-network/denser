@@ -15,6 +15,14 @@ catalogs:
     '@hiveio/workerbee': 1.28.4-rc1-stable.260317120349
     '@hiveio/hb-auth': 1.28.4-rc0-stable.261018041051
     '@hiveio/healthchecker-component': 2.0.2
+  # Playwright as common-ci-configuration's pnpm-config catalog has it: its CI
+  # images ship only that version's browsers.
+  playwright-toolset:
+    '@playwright/test': 1.64.1
+  # TypeScript 5.x, the newest typescript-eslint 8 (<6.0.0) and Next.js's type
+  # check accept; TypeScript 7 lacks the compiler JS API both use.
+  typescript-toolset:
+    typescript: 5.9.3
 
 # wax-signers-external and wax-signers-beekeeper pin an older @hiveio/beekeeper
 # whose embind glue uses new Function, which the nonce CSP (no 'unsafe-eval') blocks

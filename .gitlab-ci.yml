@@ -9,12 +9,6 @@ stages:
 - cleanup
 
 variables:
-  # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: '9f5e12cd984bf12746ce9af081868e09ced8068f'
-  DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
-  DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
-  IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
-
   # Git configuration
   # Fetch strategy reuses workspace between jobs, reducing GitLab server load.
   # Full clone (depth 0) enables efficient incremental fetches - shallow clones
@@ -50,7 +44,6 @@ variables:
 
   # Other settings
   CADDY_TAG: '2.7.6'
-  PLAYWRIGHT_TAG: 'v1.63.0-jammy'
 
   HAF_COMMIT: 8de693b2812a040aa5c4365c232ebab8036a1d11
 # Branch pipelines (what the Workflows/Branch-Pipelines template did), except for
@@ -488,31 +481,10 @@ mirrornet-haf-node-replay:
   - when: on_success
   interruptible: true
   image:
-    name: node:24.21.0-alpine3.24
+    name: ${NODE_TEST_TOOLS_IMAGE}
     entrypoint: []
   stage: test
   before_script:
-  - corepack enable
-  - |
-    # Retry corepack prepare with exponential backoff to handle transient npm registry failures
-    max_attempts=5
-    attempt=1
-    delay=5
-    while [ $attempt -le $max_attempts ]; do
-      echo "Attempting to prepare pnpm (attempt $attempt/$max_attempts)..."
-      if corepack prepare pnpm@9.6.0 --activate; then
-        echo "Successfully prepared pnpm"
-        break
-      fi
-      if [ $attempt -eq $max_attempts ]; then
-        echo "Failed to prepare pnpm after $max_attempts attempts"
-        exit 1
-      fi
-      echo "Attempt $attempt failed, retrying in ${delay}s..."
-      sleep $delay
-      attempt=$((attempt + 1))
-      delay=$((delay * 2))
-    done
   - pnpm config set store-dir .pnpm-store
   script:
   - |
@@ -552,7 +524,7 @@ flake-report-unit-tests:
   extends: .job-defaults
   interruptible: true
   image:
-    name: node:24.21.0-alpine3.24
+    name: ${NODE_TEST_TOOLS_IMAGE}
     entrypoint: []
   stage: test
   needs: []
@@ -566,7 +538,7 @@ flake-report-unit-tests:
 
 .e2e_tests_template:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   variables:
     CI_DEBUG_SERVICES: true
     FF_NETWORK_PER_BUILD: 1
@@ -616,7 +588,7 @@ mirrornet-based-tests:
   - docker-build-wallet-mirrornet-testenv
   - mirrornet-replay-data-copy
   - block_log_processing
-  image: 'mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}'
+  image: '${NODE_TEST_TOOLS_IMAGE}'
   allow_failure: true
   services:
   - !reference [.haf_api_node_test, services]
@@ -837,7 +809,7 @@ e2e-tests-wallet-flaky:
 
 smoke-tests-blog:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   stage: test
   allow_failure: true
   # smoke-runner.mjs stops starting attempts after 25 min (SMOKE_RUN_BUDGET_MS)
@@ -891,7 +863,7 @@ smoke-tests-blog:
 
 blog-fixture-tests:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   stage: test
   needs: []
   variables:
@@ -917,7 +889,7 @@ blog-fixture-tests:
 
 wallet-fixture-tests:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   stage: test
   needs: []
   variables:
@@ -947,7 +919,7 @@ wallet-fixture-tests:
   rules:
   - when: always
   allow_failure: true
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   script:
   - !reference [.node-job, script]
   - |

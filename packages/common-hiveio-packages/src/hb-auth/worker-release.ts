@@ -57,8 +57,8 @@ const countHolders = async (name: string): Promise<number> =>
  * The checks of all pages are serialized, so a hold one of them took is never counted by another as a
  * page's: each was taken while a page held the lock, so the worker runs while it is held.
  */
-const holdSharedLockIfHeld = (url: string, name: string): Promise<(() => void) | null> =>
-  navigator.locks.request(`${WORKER_CHECK_LOCK_PREFIX}${url}`, { mode: 'exclusive' }, async () => {
+const holdSharedLockIfHeld = async (url: string, name: string): Promise<(() => void) | null> =>
+  await navigator.locks.request(`${WORKER_CHECK_LOCK_PREFIX}${url}`, { mode: 'exclusive' }, async () => {
     const releaseLock = await holdSharedLock(name);
     if (!releaseLock) return null;
     const holders = await countHolders(name).catch((error: unknown) => {

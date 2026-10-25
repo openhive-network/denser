@@ -4,14 +4,13 @@
 # Build: docker build -f memtest/Dockerfile.memtest -t denser-memtest:latest .
 # Run:   docker run -d -p 3000:3000 -e NODE_OPTIONS="--expose-gc" denser-memtest:latest
 
-FROM registry.gitlab.syncad.com/hive/common-ci-configuration/emsdk:5.0.2-1 AS builder
+FROM registry.gitlab.syncad.com/hive/common-ci-configuration/emsdk:5.0.2-6 AS builder
 
 USER root
 
-# Setup pnpm via corepack (emsdk image has nvm-based Node)
+# The emsdk image ships nvm-based Node (NODEJS_VERSION) and pnpm
 ENV PNPM_HOME="/home/emscripten/.local/share/pnpm"
-ENV PATH="$PNPM_HOME:/home/emscripten/.nvm/versions/node/v22.21.1/bin:$PATH"
-RUN corepack enable && corepack prepare pnpm@10.14.0 --activate
+ENV PATH="$PNPM_HOME:/home/emscripten/.nvm/versions/node/${NODEJS_VERSION}/bin:$PATH"
 
 WORKDIR /app
 COPY . .
