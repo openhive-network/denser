@@ -104,7 +104,6 @@ export const promiseWithTimeout = <T>(promise: Promise<T>, ms: number, label: st
 
 const NO_EMBEDDING_ERROR_CODE = 'P0001';
 const NO_EMBEDDING_MESSAGE = /has no stored embedding/;
-const MAX_HIVE_SENSE_QUERY_RETRIES = 3;
 
 /**
  * Whether HiveSense refused a similar-posts request because the post has no stored embedding (too
@@ -120,19 +119,4 @@ export const isHiveSenseNoEmbeddingError = (error: unknown): boolean => {
     typeof body.message === 'string' &&
     NO_EMBEDDING_MESSAGE.test(body.message)
   );
-};
-
-const httpStatusOf = (error: unknown): number | undefined => {
-  if (error instanceof ReadTransportError) return error.status;
-  return error instanceof Error ? httpStatusOf(error.cause) : undefined;
-};
-
-/**
- * React Query `retry` for HiveSense reads: retries a 5xx, timeout or network failure (also when
- * wrapped as an error's `cause`) up to three times, never a 4xx, which every retry would get again.
- */
-export const shouldRetryHiveSenseQuery = (failureCount: number, error: unknown): boolean => {
-  const status = httpStatusOf(error);
-  const rejected = status !== undefined && status >= 400 && status < 500;
-  return !rejected && failureCount < MAX_HIVE_SENSE_QUERY_RETRIES;
 };

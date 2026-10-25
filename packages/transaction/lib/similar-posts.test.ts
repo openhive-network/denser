@@ -5,11 +5,10 @@ import { expect } from 'chai';
 import { logger } from '@ui/lib/logger';
 import { getSimilarPostsByPost } from './hivesense-api';
 import { getHiveChainService } from './hive-chain-service';
-import { shouldRetryHiveSenseQuery } from './hivesense-search';
 
 /**
  * `getSimilarPostsByPost` over a real socket, against a HiveSense node that answers every request
- * with the status and body a case sets.
+ * with the status and body a case sets, after the delay it sets.
  *
  * The read chain is a process-wide singleton that fixes its fallback nodes when first created, and
  * `read-chain-failover.test.ts` needs to create it: this file's name keeps it loading after that one.
@@ -27,15 +26,18 @@ interface IStubHiveSense {
   requests: string[];
   status: number;
   body: unknown;
+  delayMs: number;
 }
 
 const startStubHiveSense = (): Promise<{ node: IStubHiveSense; server: Server }> => {
-  const node: IStubHiveSense = { url: '', requests: [], status: 200, body: [] };
+  const node: IStubHiveSense = { url: '', requests: [], status: 200, body: [], delayMs: 0 };
   const server = createServer((request, response) => {
     request.resume().on('end', () => {
       node.requests.push(request.url ?? '/');
-      response.writeHead(node.status, { 'content-type': 'application/json' });
-      response.end(JSON.stringify(node.body));
+      setTimeout(() => {
+        response.writeHead(node.status, { 'content-type': 'application/json' });
+        response.end(JSON.stringify(node.body));
+      }, node.delayMs);
     });
   });
   return new Promise((resolve) => {
@@ -47,6 +49,8 @@ const startStubHiveSense = (): Promise<{ node: IStubHiveSense; server: Server }>
   });
 };
 
+const CONFIGURED_TIMEOUT_MS = 2_000;
+
 describe('getSimilarPostsByPost', function () {
   this.timeout(15_000);
 
@@ -54,6 +58,7 @@ describe('getSimilarPostsByPost', function () {
   let hiveSense: IStubHiveSense;
   let originalGetApiEndpoints: ReturnType<typeof getHiveChainService>['getApiEndpoints'];
   let loggedErrors: unknown[][];
+  let loggedWarnings: unknown[][];
 
   const getSimilar = () => getSimilarPostsByPost({ author: 'alice', permlink: 'short-post', observer: 'hive.blog' });
 
@@ -64,7 +69,7 @@ describe('getSimilarPostsByPost', function () {
       chainId: 'beeab0de',
       apiEndpoint: hiveSense.url,
       restApiEndpoint: hiveSense.url,
-      apiTimeout: 2_000,
+      apiTimeout: CONFIGURED_TIMEOUT_MS,
       aiEndpoint: hiveSense.url
     });
   });
@@ -77,15 +82,22 @@ describe('getSimilarPostsByPost', function () {
 
   beforeEach(() => {
     hiveSense.requests.length = 0;
+    hiveSense.delayMs = 0;
     loggedErrors = [];
+    loggedWarnings = [];
     Object.defineProperty(logger, 'error', {
       configurable: true,
       value: (...args: unknown[]) => loggedErrors.push(args)
+    });
+    Object.defineProperty(logger, 'warn', {
+      configurable: true,
+      value: (...args: unknown[]) => loggedWarnings.push(args)
     });
   });
 
   afterEach(() => {
     delete (logger as { error?: unknown }).error;
+    delete (logger as { warn?: unknown }).warn;
   });
 
   it('returns the similar posts HiveSense answers', async () => {
@@ -106,26 +118,31 @@ describe('getSimilarPostsByPost', function () {
     expect(loggedErrors).to.deep.equal([]);
   });
 
-  it('rejects and logs any other 400, and the query does not retry it', async () => {
+  it('waits for a cold query past the configured request timeout', async () => {
+    hiveSense.status = 200;
+    hiveSense.body = [{ author: 'bob', permlink: 'similar' }];
+    hiveSense.delayMs = CONFIGURED_TIMEOUT_MS + 500;
+
+    expect(await getSimilar()).to.deep.equal([{ author: 'bob', permlink: 'similar' }]);
+    expect(hiveSense.requests).to.have.length(1);
+  });
+
+  it('returns no results and warns on any other 400', async () => {
     hiveSense.status = 400;
     hiveSense.body = { code: 'P0001', details: null, hint: null, message: 'Invalid result_limit' };
 
-    const error = await getSimilar().catch((e: unknown) => e);
-
-    expect(error).to.be.instanceOf(Error).with.property('message', 'Error in getSimilarPostsByPost');
-    expect(loggedErrors).to.have.length(1);
-    expect(shouldRetryHiveSenseQuery(0, error)).to.equal(false);
+    expect(await getSimilar()).to.equal(null);
+    expect(loggedWarnings).to.have.length(1);
+    expect(loggedErrors).to.deep.equal([]);
   });
 
-  it('rejects and logs a 5xx, and the query retries it', async () => {
+  it('returns no results and warns on a 5xx', async () => {
     hiveSense.status = 503;
     hiveSense.body = { message: 'Service unavailable' };
 
-    const error = await getSimilar().catch((e: unknown) => e);
-
-    expect(error).to.be.instanceOf(Error).with.property('message', 'Error in getSimilarPostsByPost');
-    expect(loggedErrors).to.have.length(1);
-    expect(shouldRetryHiveSenseQuery(0, error)).to.equal(true);
-    expect(shouldRetryHiveSenseQuery(3, error)).to.equal(false);
+    expect(await getSimilar()).to.equal(null);
+    expect(loggedWarnings).to.have.length(1);
+    expect(loggedWarnings[0][0]).to.be.instanceOf(Error).with.property('status', 503);
+    expect(loggedErrors).to.deep.equal([]);
   });
 });

@@ -42,7 +42,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 import { getSimilarPostsByPost } from '@transaction/lib/hivesense-api';
-import { isRenderableSearchEntry, shouldRetryHiveSenseQuery } from '@transaction/lib/hivesense-search';
+import { isRenderableSearchEntry } from '@transaction/lib/hivesense-search';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
@@ -218,8 +218,7 @@ const PostContent = () => {
 
       const fullPosts = results?.filter((post): post is Entry => isRenderableSearchEntry(post)) ?? [];
       return fullPosts.length > 0 ? fullPosts : null;
-    },
-    retry: shouldRetryHiveSenseQuery
+    }
   });
   const useCommunityInitialData = initialCommunity && communityObserver === ssrObserver;
   const communityQuery = useQuery({

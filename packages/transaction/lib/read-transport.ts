@@ -49,6 +49,16 @@ const ENDPOINTS_NOT_ON_EVERY_NODE = new Set([
   ].map((endpoint) => `hivemind-api.${endpoint}`)
 ]);
 
+/**
+ * REST endpoints (`<api>.<method path>`) whose cold query can outlast the request timeout on a healthy
+ * node: their timeout is that node's answer, not a sign that it cannot serve the API.
+ */
+const ENDPOINTS_SLOWER_THAN_A_TIMEOUT = new Set(['hivesense-api.posts.author.permlink.similar']);
+
+/** Whether the request was aborted by its own timeout. */
+const isRequestTimeout = (error: ReadTransportError): boolean =>
+  error.cause instanceof Error && error.cause.name === 'TimeoutError';
+
 /** PostgREST's code for a request naming no SQL function the node has. */
 const POSTGREST_FUNCTION_NOT_FOUND = 'PGRST202';
 
@@ -68,12 +78,14 @@ export const isEndpointMissing = (error: unknown): boolean => {
  * is down or overloaded (5xx, 408, 429, timeout, network failure) or did not answer with JSON, so
  * another node may serve it. False for a request the API rejected (any other 4xx), for a missing
  * endpoint (see `isEndpointMissing`) at `path` (e.g. `['balance-api', 'proposalsPayments']`) that
- * not every node has, and for any error that is not a `ReadTransportError`.
+ * not every node has, for a timeout of an endpoint whose cold query may take longer, and for any error
+ * that is not a `ReadTransportError`.
  */
 export const isRestApiUnavailable = (error: unknown, path: readonly string[] = []): boolean => {
   if (!(error instanceof ReadTransportError)) return false;
-  if (error.status === undefined) return true;
-  if (isEndpointMissing(error) && ENDPOINTS_NOT_ON_EVERY_NODE.has(path.join('.'))) return false;
+  const endpoint = path.join('.');
+  if (error.status === undefined) return !(isRequestTimeout(error) && ENDPOINTS_SLOWER_THAN_A_TIMEOUT.has(endpoint));
+  if (isEndpointMissing(error) && ENDPOINTS_NOT_ON_EVERY_NODE.has(endpoint)) return false;
   return !isRequestRejected(error.status);
 };
 
@@ -95,7 +107,9 @@ const parseBody = (request: IReadRequest, status: number, text: string): unknown
 const toTransportError = (request: IReadRequest, error: unknown): ReadTransportError => {
   if (error instanceof ReadTransportError) return error;
   const name = error instanceof Error ? error.name : undefined;
-  if (name === 'TimeoutError') return new ReadTransportError(`Request timed out: ${describeRequest(request)}`, request);
+  if (name === 'TimeoutError') {
+    return new ReadTransportError(`Request timed out: ${describeRequest(request)}`, request, undefined, error);
+  }
   if (name === 'AbortError') {
     return new ReadTransportError(`Request aborted by user action: ${describeRequest(request)}`, request);
   }

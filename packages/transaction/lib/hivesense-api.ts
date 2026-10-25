@@ -13,6 +13,12 @@ import {
   promiseWithTimeout
 } from './hivesense-search';
 
+/**
+ * Request timeout of the similar-posts call. A cold HiveSense similar-posts query took a healthy node
+ * up to ~9 s before its cache warmed, well past the read chain's per-attempt timeout.
+ */
+const SIMILAR_POSTS_TIMEOUT_MS = 15_000;
+
 const logStandarizedError = (methodName: string, error: unknown): null => {
   logger.error(error, `Error in ${methodName}`);
   throw new Error(`Error in ${methodName}`, { cause: error });
@@ -82,6 +88,10 @@ export const searchPosts = async ({
   }
 };
 
+/**
+ * Posts HiveSense finds similar to @author/permlink; `null` when there are none, the post has no
+ * embedding yet, or the call failed (logged as a warning). Never rejects.
+ */
 export const getSimilarPostsByPost = async ({
   author,
   permlink,
@@ -98,7 +108,7 @@ export const getSimilarPostsByPost = async ({
   observer: string;
 }): Promise<MixedPostsResponse | null> => {
   try {
-    const chain = getReadChain();
+    const chain = getReadChain().withTimeout(SIMILAR_POSTS_TIMEOUT_MS);
     const response = await chain.restApi['hivesense-api'].posts.author.permlink.similar({
       author,
       permlink,
@@ -110,7 +120,9 @@ export const getSimilarPostsByPost = async ({
     return response;
   } catch (error) {
     if (isHiveSenseNoEmbeddingError(error)) return null;
-    return logStandarizedError('getSimilarPostsByPost', error);
+    // Suggestions are optional: a failure only means there are none to show.
+    logger.warn(error, 'getSimilarPostsByPost failed, showing no suggestions');
+    return null;
   }
 };
 
