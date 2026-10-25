@@ -4,3 +4,4 @@
  */
 export const configuredAllowedApiNodes = 'https://api.hive.blog https://api.syncad.com https://api.openhive.network';
 export const configuredImagesEndpoint = 'https://images.hive.blog';
+export const configuredHivemindRestNodes = '';

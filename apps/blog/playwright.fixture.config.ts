@@ -17,6 +17,10 @@ import {
   FEED_CACHE_TTL_S
 } from './playwright/tests/support/feed-cache-server';
 import { FIXTURE_FYP_API_URL } from './playwright/tests/support/fypApiStub';
+import {
+  HIVEMIND_REST_BLOG_PORT,
+  HIVEMIND_REST_STUB_URL
+} from './playwright/tests/support/hivemindRestStub';
 import type {
   FixtureAuthTestFixtures,
   FixtureProxyWorkerFixtures
@@ -130,7 +134,8 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
   use: {
     ...browserUse(true),
     baseURL: `http://localhost:3000${BASE_PATH}`,
-    feedCacheBaseURL: `http://localhost:${FEED_CACHE_PORT}`
+    feedCacheBaseURL: `http://localhost:${FEED_CACHE_PORT}`,
+    hivemindRestBaseURL: `http://localhost:${HIVEMIND_REST_BLOG_PORT}`
   },
   projects: [
     {
@@ -159,6 +164,19 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
         REACT_APP_FYP_API_URL: '',
         DENSER_FEED_CACHE_TTL_S: String(FEED_CACHE_TTL_S),
         DENSER_FEED_CACHE_STALE_S: String(FEED_CACHE_STALE_S)
+      }
+    },
+    // Reads feeds, profiles and communities from the hivemind REST stub (hivemindRest.spec.ts).
+    {
+      command: `node ${NEXT_DIR}/standalone/apps/blog/server.js`,
+      url: `http://127.0.0.1:${HIVEMIND_REST_BLOG_PORT}${BASE_PATH}/api/health`,
+      ...ownWebServerOptions(),
+      env: {
+        ...serverEnv,
+        PORT: String(HIVEMIND_REST_BLOG_PORT),
+        REACT_APP_FYP_API_URL: '',
+        REACT_APP_HIVEMIND_REST_NODES: HIVEMIND_REST_STUB_URL,
+        DENSER_FEED_CACHE_TTL_S: '0'
       }
     }
   ]

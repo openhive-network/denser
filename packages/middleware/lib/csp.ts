@@ -79,6 +79,13 @@ function buildConnectSrcHosts(): Set<string> {
     } catch { /* invalid URL, skip */ }
   }
 
+  // hivemind REST nodes the browser reads feeds, profiles and communities from; none by default
+  for (const node of (process.env.REACT_APP_HIVEMIND_REST_NODES ?? '').split(/[\s,]+/).filter(Boolean)) {
+    try {
+      hosts.add(new URL(node).origin);
+    } catch { /* invalid URL, skip */ }
+  }
+
   // Hivesense (AI search) endpoint - not deployed on every API node; mirror
   // the client-side default from public-vars (configuredAIDomain)
   try {

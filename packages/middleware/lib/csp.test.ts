@@ -251,3 +251,17 @@ test('connect-src has no For You origin when FYP_API_URL is unset, empty or inva
     });
   }
 });
+
+test('connect-src admits every hivemind REST node of HIVEMIND_REST_NODES, skipping invalid entries', () => {
+  const saved = process.env.REACT_APP_HIVEMIND_REST_NODES;
+  process.env.REACT_APP_HIVEMIND_REST_NODES = 'https://hm1.example.org/ not-a-url,https://hm2.example.org';
+  try {
+    const connectSrc = connectSrcOf(buildCsp({}, 'bm9uY2U='));
+    assert.ok(connectSrc.includes('https://hm1.example.org'), connectSrc.join(' '));
+    assert.ok(connectSrc.includes('https://hm2.example.org'), connectSrc.join(' '));
+    assert.ok(!connectSrc.includes('not-a-url'), connectSrc.join(' '));
+  } finally {
+    if (saved === undefined) delete process.env.REACT_APP_HIVEMIND_REST_NODES;
+    else process.env.REACT_APP_HIVEMIND_REST_NODES = saved;
+  }
+});

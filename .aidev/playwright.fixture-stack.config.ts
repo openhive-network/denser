@@ -16,6 +16,10 @@
  *   DENSER_FEED_CACHE_BLOG_URL  a blog serving with the feed cache on, as the base
  *                               config's second webServer does; unset skips
  *                               feedCache.spec.ts.
+ *   DENSER_HIVEMIND_REST_BLOG_URL a blog serving with HIVEMIND_REST_NODES naming the
+ *                               hivemind REST stub (support/hivemindRestStub.ts), as
+ *                               the base config's third webServer does; unset skips
+ *                               hivemindRest.spec.ts.
  *   DENSER_PLAYWRIGHT_OUTPUT_DIR traces and screenshots, default apps/blog/test-results.
  *                               Against `next dev` keep it outside apps/ and
  *                               packages/: tailwind's content globs make next
@@ -39,6 +43,7 @@ export default {
     ...base.use,
     baseURL: process.env.DENSER_BLOG_URL || 'http://localhost:3000',
     fixturePort: Number(process.env.DENSER_FIXTURE_WORKER_PORT || 8200),
-    feedCacheBaseURL: process.env.DENSER_FEED_CACHE_BLOG_URL
+    feedCacheBaseURL: process.env.DENSER_FEED_CACHE_BLOG_URL,
+    hivemindRestBaseURL: process.env.DENSER_HIVEMIND_REST_BLOG_URL
   }
 };
