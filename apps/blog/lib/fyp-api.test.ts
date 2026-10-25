@@ -1,6 +1,6 @@
 import { afterEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { FYP_PAGE_SIZE, FypApiError, getFypFeedPage, nextFypPage } from './fyp-api.ts';
+import { FYP_PAGE_SIZE, FypApiError, getFypFeedPage, nextFypPage, retryFypRead } from './fyp-api.ts';
 
 const BASE_URL = 'https://fyp.example.org/haf-fyp-api/';
 // Larger than Number.MAX_SAFE_INTEGER: it would not survive as a JSON number
@@ -86,5 +86,31 @@ describe('nextFypPage', () => {
   it('ends the feed after a short page', () => {
     assert.equal(nextFypPage(new Array(FYP_PAGE_SIZE - 1).fill(post('a')), 2), undefined);
     assert.equal(nextFypPage([], 1), undefined);
+  });
+});
+
+/** The error `getFypFeedPage` rejects with when the API answers as `answer` does. */
+async function feedError(answer: () => Promise<Response>): Promise<unknown> {
+  serve(answer);
+  return getFypFeedPage(BASE_URL, 'alice', 1).then(
+    () => assert.fail('the read succeeded'),
+    (error: unknown) => error
+  );
+}
+
+describe('retryFypRead', () => {
+  it('does not retry when haf_fyp is unreachable or answers a server error', async () => {
+    const unreachable = await feedError(() => Promise.reject(new TypeError('fetch failed')));
+    assert.equal(retryFypRead(0, unreachable), false);
+    assert.equal(retryFypRead(0, await feedError(async () => new Response('down', { status: 503 }))), false);
+  });
+
+  it('retries any other failure once', async () => {
+    const notFound = await feedError(async () => new Response('missing', { status: 404 }));
+    const badBody = await feedError(async () => Response.json({ posts: [] }));
+    for (const error of [notFound, badBody, new Error('bridge API failed')]) {
+      assert.equal(retryFypRead(0, error), true);
+      assert.equal(retryFypRead(1, error), false);
+    }
   });
 });

@@ -42,14 +42,23 @@ export function asFypPage(posts: FypPost[], firstRank = 1): FypPost[] {
   }));
 }
 
+/** How a failing For You feed fails: an HTTP status, or no answer at all. */
+export type FypFailure = number | 'connectionrefused';
+
 /**
  * Answers the For You feed of `page` with `pages` (page N is `pages[N - 1]`, a missing one empty);
- * `status` other than 200 fails every request instead. Returns the feed requests the page sent.
+ * a `status` other than 200 fails every request instead. Returns the feed requests the page sent.
+ * A later call takes over from an earlier one.
  */
-export async function serveFypFeed(page: Page, pages: FypPost[][], status = 200): Promise<Request[]> {
+export async function serveFypFeed(
+  page: Page,
+  pages: FypPost[][],
+  status: FypFailure = 200
+): Promise<Request[]> {
   const requests: Request[] = [];
   await page.route(FEED_ROUTE, (route) => {
     requests.push(route.request());
+    if (status === 'connectionrefused') return route.abort('connectionrefused');
     if (status !== 200)
       return route.fulfill({ status, headers: CORS_HEADERS, json: { error: 'unavailable' } });
     const pageNumber = Number(new URL(route.request().url()).searchParams.get('page') ?? '1');

@@ -1003,6 +1003,10 @@
     }
   },
   "for_you_feed": {
-    "sign_in_prompt": "登录后即可查看你的推荐内容。"
+    "sign_in_prompt": "登录后即可查看你的推荐内容。",
+    "unavailable": "你的推荐内容暂时无法显示。",
+    "service_not_responding": "推荐服务没有响应。",
+    "data_not_loaded": "无法加载推荐内容所需的部分数据。",
+    "go_to_trending": "查看热门帖子"
   }
 }
