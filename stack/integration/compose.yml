@@ -56,6 +56,8 @@ services:
       REACT_APP_APP_NAME: blog
       REACT_APP_BASE_PATH: /blog
       NODE_OPTIONS: --max-old-space-size=3072
+      # The haf_fyp API (e.g. https://api.syncad.com/haf-fyp-api) turns on the For You feed. Empty: off.
+      REACT_APP_FYP_API_URL: ${FYP_API_URL:-}
       # Registers the `denser` OAuth client ("Sign in with Denser" for openhive.chat).
       DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET: ${DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET:?set it in .env (32+ random characters)}
       # Registers the `matrix` OAuth client (Synapse's "Continue with Hive (denser)"), with MATRIX_HOMESERVER_URL.
