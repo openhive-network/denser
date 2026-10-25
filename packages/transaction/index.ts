@@ -34,6 +34,7 @@ import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/prof
 import { buildCommentJsonMetadata, type CommentBodyMetadata } from './lib/comment-metadata';
 import { resolveRequiredKeyType } from './lib/required-key-type';
 import { getOperationNames } from './lib/operation-names';
+import { WorkerBeeSession } from './lib/workerbee-session';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
 export type { ProfileMetadataUpdate } from './lib/profile-metadata';
@@ -70,21 +71,14 @@ export class TransactionService {
   signerOptions!: SignerOptions;
 
   /**
-   * The number of transactions observed.
+   * WorkerBee block scanner shared by observed broadcasts, stopped after a minute without one.
    *
    * @memberof TransactionService
    */
-  observedTransactionsCounter = 0;
-
-  // WorkerBee instance for scanning Hive blockchain blocks.
-
-  /**
-   * Instance of WorkerBee Block Scanner.
-   *
-   * @type {(IWorkerBee | undefined)}
-   * @memberof TransactionService
-   */
-  bot!: IWorkerBee | undefined;
+  private readonly workerBeeSession = new WorkerBeeSession<IHiveChainInterface, IWorkerBee>({
+    getChain: () => this.getChain(),
+    createBot: (hiveChain) => new WorkerBee(hiveChain)
+  });
 
   setSignerOptions(signerOptions: SignerOptions) {
     this.signerOptions = signerOptions;
@@ -197,43 +191,29 @@ export class TransactionService {
   }
 
   /**
-   * Create and start bot (block scanner) if needed, broadcast
-   * transaction, wait until bot reports applying transaction into Hive
-   * blockchain, stop and destroy bot if needed, then resolve. When bot
-   * doesn't find the transaction, it will throw after transaction
-   * expiration time plus `throwAfter`.
+   * Broadcast transaction with the session's bot (block scanner, created
+   * and started if needed), wait until bot reports applying transaction
+   * into Hive blockchain, then resolve. The bot stays running for further
+   * observed broadcasts and is stopped after a minute without any. When
+   * bot doesn't find the transaction, it will throw after transaction
+   * expiration time.
    *
    * @param {ITransaction} txBuilder
-   * @param {number} [throwAfter=60 * 1000]
    * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
-  async broadcastAndObserveTransaction(
-    txBuilder: ITransaction,
-    throwAfter = 60 * 1000
-  ): Promise<TransactionBroadcastResult> {
+  async broadcastAndObserveTransaction(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
     try {
-      // Create bot
-      if (!this.bot) {
-        logger.info('Creating bot');
-        const hiveChain = await this.getChain();
-        this.bot = new WorkerBee(hiveChain);
-      }
-      // Start bot
-      if (this.observedTransactionsCounter++ === 0) {
-        logger.info('Starting bot');
-        this.bot.start();
-      }
+      return await this.workerBeeSession.use(async (bot) => {
+        const transactionId = txBuilder.id;
+        logger.info('Broadcasting transaction id: %s', transactionId);
+        logger.debug('Transaction %s body: %o', transactionId, txBuilder.toApi());
 
-      // Do broadcast
-      const transactionId = txBuilder.id;
-      logger.info('Broadcasting transaction id: %s', transactionId);
-      logger.debug('Transaction %s body: %o', transactionId, txBuilder.toApi());
+        // Broadcast and wait for block inclusion (irreversible with OBI)
+        await bot.broadcast(txBuilder, { verifySignatures: true, expireInMs: 10_000 });
 
-      // Broadcast and wait for block inclusion (irreversible with OBI)
-      await this.bot.broadcast(txBuilder, { verifySignatures: true, expireInMs: 10_000 });
-
-      return { transactionId };
+        return { transactionId };
+      });
     } catch (error) {
       logger.error(
         'Broadcasting %s of %s failed: %s',
@@ -243,17 +223,6 @@ export class TransactionService {
       );
       logger.debug('Broadcast error: %o', error);
       throw error;
-    } finally {
-      if (--this.observedTransactionsCounter === 0) {
-        // Stop bot
-        if (this.bot) {
-          logger.info('Stopping bot');
-          this.bot.stop();
-        }
-        // Destroy bot
-        logger.info('Destroying bot');
-        this.bot = undefined;
-      }
     }
   }
 
