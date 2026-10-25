@@ -1,0 +1,10 @@
+[Unit]
+Description=Lighthouse-check a newly deployed tip of the denser integration site in %f
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=2min
+RandomizedDelaySec=20s
+
+[Install]
+WantedBy=timers.target

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Median-of-5 Lighthouse check of this site, once per revision of aidev/integration.
-# Run by upgrade.sh after it rewrites status/deployed.json; safe to run by hand.
+# Run every 2 minutes by systemd/denser-integration-lighthouse@.timer, apart from the
+# upgrade unit, so a measurement never holds up a deploy; safe to run by hand.
 #
 # Each route is measured logged out and, for the routes of `integrationLoggedIn` in
 # lighthouse-thresholds.json, logged in as LIGHTHOUSE_OBSERVER (.env, default
@@ -29,6 +30,11 @@
 #   ./lighthouse.sh            # measure the tip if it is deployed and not yet measured
 #   ./lighthouse.sh --quiet    # print nothing when there is nothing to measure
 #   ./lighthouse.sh --force    # measure the deployed tip again
+#
+# A check that is killed writes no result: the result files are each written to a
+# .tmp and renamed, and these builds are marked measured only after the check
+# exited 0 or 2. The next run removes the killed check's container and .tmp files
+# and measures the revision again from the start.
 #
 # Exit: 0 measured within thresholds, or nothing to measure; 2 a threshold breached;
 #       anything else, the check could not measure.
@@ -69,9 +75,12 @@ for node in $(sed -n 's/^REACT_APP_API_ENDPOINT=//p' "$network_env") \
 done
 [ "${#api_node_args[@]}" -gt 0 ] || { echo "lighthouse: no REACT_APP_API_ENDPOINT in $network_env" >&2; exit 1; }
 
+[ -e status/deployed.json ] || { say "lighthouse: no status/deployed.json yet; nothing measured"; exit 0; }
+
 # "yes <builds>" when every app serves $revision, <builds> naming what they serve
 # (follow mode's releases, or the images' digests).
-served=$(python3 - "$revision" <<'EOF'
+served_builds() {
+    python3 - "$revision" <<'EOF'
 import hashlib, json, sys
 services = json.load(open("status/deployed.json")).get("services") or {}
 revisions = {name: (svc or {}).get("revision") for name, svc in services.items()}
@@ -81,7 +90,8 @@ if revisions and all(r == sys.argv[1] for r in revisions.values()):
 else:
     print(revisions)
 EOF
-)
+}
+served=$(served_builds)
 if [ "${served%% *}" != yes ]; then
     say "lighthouse: the site does not serve $revision yet ($served); nothing measured"
     exit 0
@@ -100,9 +110,19 @@ mkdir -p "$OUT/builds"
 exec 9>"$OUT/.lock"
 flock -n 9 || { say "lighthouse: another check is running"; exit 0; }
 
+# One name per site directory: a container of a check killed before it could remove
+# it would otherwise keep running Chrome and writing into $OUT.
+container=denser-lighthouse-$(printf %s "$PWD" | sha256sum | cut -c1-12)
+docker rm -f "$container" > /dev/null 2>&1 || true
+find "$OUT" -name '*.tmp' -delete
+trap 'docker rm -f "$container" > /dev/null 2>&1 || true' EXIT
+trap 'exit 143' TERM INT
+
 echo "lighthouse: measuring $revision on https://$site_host"
+started=$SECONDS
 rc=0
-docker run --rm --cpus 2 --memory 2g \
+# In the background so a SIGTERM (the unit stopped or timed out) runs the traps at once.
+docker run --rm --name "$container" --cpus 2 --memory 2g \
     --user "$(id -u):$(id -g)" -e HOME=/tmp \
     -v "$PWD/../../scripts/ci-helpers:/check:ro" \
     -v "$PWD/$OUT:/out" \
@@ -110,9 +130,15 @@ docker run --rm --cpus 2 --memory 2g \
     "$LIGHTHOUSE_IMAGE" \
     node lighthouse-integration-check.js \
         --site "https://$site_host" --revision "$revision" --out /out --wait-timeout 300 \
-        "${api_node_args[@]}" "${observer_args[@]}" || rc=$?
+        "${api_node_args[@]}" "${observer_args[@]}" 9>&- &
+wait $! || rc=$?
+echo "lighthouse: $revision checked in $((SECONDS - started)) s, exit $rc"
+# A promote is deployed while a check runs; the routes measured after it saw its builds.
+[ "$(served_builds)" = "$served" ] \
+    || echo "lighthouse: the site stopped serving $revision's builds during the check; its result mixes builds" >&2
 # 0 within thresholds, 2 a breach: either way these builds have their result.
 if [ "$rc" = 0 ] || [ "$rc" = 2 ]; then
-    echo "$revision" > "$OUT/builds/$builds"
+    echo "$revision" > "$OUT/builds/$builds.tmp"
+    mv "$OUT/builds/$builds.tmp" "$OUT/builds/$builds"
 fi
 exit "$rc"

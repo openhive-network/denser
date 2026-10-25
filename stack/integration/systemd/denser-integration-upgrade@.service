@@ -13,7 +13,7 @@ Group=syncad
 WorkingDirectory=%f
 ExecStart=%f/upgrade.sh --quiet
 # In follow mode, a production build of blog and wallet (a few minutes each; both only
-# when a shared package or the image changed), compose's 300 s readiness wait, then a
-# Lighthouse check of a new tip: up to 300 s waiting for the deploy, then 18 runs of at
-# most 120 s each (about 7 minutes in practice). A timer tick while this runs is skipped.
+# when a shared package or the image changed), compose's 300 s readiness wait and up to
+# 120 s for the servers to swap. The Lighthouse check of a new tip is not part of this
+# budget: denser-integration-lighthouse@ runs it. A timer tick while this runs is skipped.
 TimeoutStartSec=5400
