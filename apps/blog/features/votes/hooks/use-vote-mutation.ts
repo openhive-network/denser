@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
-import { useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
+import { CONFIRM_IN_BACKGROUND, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
+import { useBackgroundConfirmation } from '@/blog/components/hooks/use-background-confirmation';
 import { scheduleInvalidations, scheduleValidatedRefetch } from '@/blog/lib/react-query';
 import { optimisticUpdateTotalVotes } from '../lib/optimistic-total-votes';
 
@@ -23,6 +24,7 @@ const voteDescription = (weight: number) =>
 /** Makes vote transaction; the vote shows in the cache before the broadcast. */
 export function useVoteMutation() {
   const cleanupRef = useRef<(() => void) | null>(null);
+  const confirmInBackground = useBackgroundConfirmation('vote');
 
   return useOperationMutation({
     name: 'useVoteMutation',
@@ -50,10 +52,11 @@ export function useVoteMutation() {
       const prevCacheSnapshots = optimisticUpdateTotalVotes(queryClient, author, permlink, voteDelta);
       return { prevVoteData, queryKey, prevCacheSnapshots };
     },
-    // Not observed: a successful broadcast guarantees inclusion in the blockchain
+    // Not awaited: the vote shows at once, a warning follows if no block includes it
     run: ({ author, permlink, weight }: VoteParams) =>
-      transactionService.upVote(author, permlink, weight, { observe: false }),
-    onSuccess: (_data, { voter, author, permlink, weight }, queryClient) => {
+      transactionService.upVote(author, permlink, weight, CONFIRM_IN_BACKGROUND),
+    onSuccess: (data, { voter, author, permlink, weight }, queryClient) => {
+      confirmInBackground(data);
       // Validated refetch: a stale Hivemind response must not overwrite the optimistic vote
       cleanupRef.current = scheduleValidatedRefetch(
         queryClient,

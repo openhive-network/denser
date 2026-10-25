@@ -21,6 +21,9 @@ const effects: OperationEffects = {
 /** Observed broadcast: resolves once the transaction is in a block. */
 export const OBSERVE = { observe: true } as const;
 
+/** Broadcast that resolves at once, with `included` reporting later whether a block took it. */
+export const CONFIRM_IN_BACKGROUND = { observe: false, confirmInBackground: true } as const;
+
 /** Wraps `broadcast` so the mutation's data is its variables together with the broadcast result. */
 export function withBroadcastResult<TVariables extends object, TResult>(
   broadcast: (variables: TVariables) => Promise<TResult>

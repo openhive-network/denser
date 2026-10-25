@@ -35,6 +35,7 @@ import { buildCommentJsonMetadata, type CommentBodyMetadata } from './lib/commen
 import { resolveRequiredKeyType } from './lib/required-key-type';
 import { getOperationNames } from './lib/operation-names';
 import { WorkerBeeSession } from './lib/workerbee-session';
+import { type IInclusionWatch, watchInclusion } from './lib/transaction-inclusion';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
 export type { ProfileMetadataUpdate } from './lib/profile-metadata';
@@ -47,12 +48,19 @@ export type TransactionBroadcastCallback = (txBuilder: ITransaction) => Promise<
 
 export interface TransactionOptions {
   observe?: boolean;
+  /** Broadcast without waiting, but watch blocks for the transaction; see `TransactionBroadcastResult.included`. */
+  confirmInBackground?: boolean;
   singleSignKeyType?: SignTransaction['singleSignKeyType'];
   requiredKeyType?: SignTransaction['requiredKeyType'];
 }
 
 export interface TransactionBroadcastResult {
   transactionId: string;
+  /**
+   * With `confirmInBackground`: true once a block includes the transaction, false when none did
+   * within `INCLUSION_TIMEOUT_MS`; rejects when blocks could not be scanned.
+   */
+  included?: Promise<boolean>;
 }
 
 export interface Authorizes {
@@ -113,7 +121,7 @@ export class TransactionService {
       transactionOptions: undefined
     };
 
-    const { observe, singleSignKeyType, requiredKeyType } = {
+    const { observe, confirmInBackground, singleSignKeyType, requiredKeyType } = {
       ...defaultTransactionOptions,
       ...transactionOptions
     };
@@ -137,6 +145,8 @@ export class TransactionService {
 
     if (observe) {
       return await this.broadcastAndObserveTransaction(txBuilder);
+    } else if (confirmInBackground) {
+      return await this.broadcastAndConfirmInBackground(txBuilder);
     } else {
       return await this.broadcastTransaction(txBuilder);
     }
@@ -224,6 +234,47 @@ export class TransactionService {
       logger.debug('Broadcast error: %o', error);
       throw error;
     }
+  }
+
+  /**
+   * Broadcast transaction like `broadcastTransaction`, resolving after
+   * sending it, with `included` reporting whether the session's bot saw
+   * it in a block. The bot watches from before the broadcast, so the
+   * transaction cannot land in a block it skipped. When the bot cannot
+   * be set up, the transaction is broadcast without `included`.
+   *
+   * @param {ITransaction} txBuilder
+   * @return {*}  {Promise<TransactionBroadcastResult>}
+   * @memberof TransactionService
+   */
+  async broadcastAndConfirmInBackground(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
+    let watch: IInclusionWatch | undefined;
+    try {
+      watch = await this.watchTransactionInclusion(txBuilder.id);
+    } catch (error) {
+      logger.error(error, 'Cannot watch blocks for transaction %s', txBuilder.id);
+    }
+    try {
+      const result = await this.broadcastTransaction(txBuilder);
+      return watch ? { ...result, included: watch.included } : result;
+    } catch (error) {
+      watch?.cancel();
+      throw error;
+    }
+  }
+
+  /** Subscribes the session's bot to `transactionId`, holding the bot until the watch settles. */
+  private watchTransactionInclusion(transactionId: string): Promise<IInclusionWatch> {
+    return new Promise((resolve, reject) => {
+      this.workerBeeSession
+        .use(async (bot) => {
+          const watch = watchInclusion(bot, transactionId);
+          resolve(watch);
+          await watch.included;
+        })
+        // Before `resolve` this is a setup failure; after it, `watch.included` carries the error
+        .catch(reject);
+    });
   }
 
   async upVote(
