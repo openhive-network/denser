@@ -1,6 +1,7 @@
 import { afterEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { FYP_PAGE_SIZE, FypApiError, getFypFeedPage, nextFypPage, retryFypRead } from './fyp-api.ts';
+import { FypApiError, getFypFeedPage, retryFypRead } from './fyp-api.ts';
+import { FYP_PAGE_SIZE, nextFypPage } from './fyp-paging.ts';
 
 const BASE_URL = 'https://fyp.example.org/haf-fyp-api/';
 // Larger than Number.MAX_SAFE_INTEGER: it would not survive as a JSON number

@@ -1,7 +1,6 @@
 import type { Entry } from '@hive/common-hiveio-packages/wax';
+import { FYP_PAGE_SIZE } from './fyp-paging.ts';
 
-/** Posts per page of the For You feed; a shorter page is its last one. */
-export const FYP_PAGE_SIZE = 20;
 /** How long a feed page may take before the request is abandoned. */
 export const FYP_REQUEST_TIMEOUT_MS = 10_000;
 /** Cards only show a summary, so the bodies are cut server-side to keep a page small. */
@@ -85,12 +84,4 @@ export async function getFypFeedPage(
     throw new FypApiError(`For You feed answered an unexpected body: ${url}`);
   }
   return body;
-}
-
-/**
- * The page after `pageNumber`, whose posts were `lastPage`; undefined when `lastPage` was short,
- * the end of the feed.
- */
-export function nextFypPage(lastPage: readonly unknown[], pageNumber: number): number | undefined {
-  return lastPage.length < FYP_PAGE_SIZE ? undefined : pageNumber + 1;
 }

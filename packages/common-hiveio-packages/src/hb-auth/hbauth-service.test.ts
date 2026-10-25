@@ -134,6 +134,7 @@ const STUBS: Record<string, string> = {
 const MODULES: Record<string, string> = {
   '@hive/ui/lib/storage-with-ttl': new URL('../../../ui/lib/storage-with-ttl.ts', import.meta.url).href,
   './safe-storage-generation': new URL('./safe-storage-generation.ts', import.meta.url).href,
+  './safe-storage-generation-subscription': new URL('./safe-storage-generation-subscription.ts', import.meta.url).href,
   './worker-release': new URL('./worker-release.ts', import.meta.url).href,
   './online-client-operation': new URL('./online-client-operation.ts', import.meta.url).href
 };
