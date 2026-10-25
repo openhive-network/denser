@@ -1267,6 +1267,18 @@ Together with the author name, it uniquely identifies the post.
       params: { author: string; permlink: string; 'page-size'?: number; 'start-voter'?: string };
       result: HivemindRestPostVote[];
     };
+    postDiscussion: {
+      params: { author: string; permlink: string; observer?: string };
+      result: Record<string, Entry> | null;
+    };
+    postHeader: {
+      params: { author: string; permlink: string };
+      result: IGetPostHeader;
+    };
+    postRebloggedBy: {
+      params: { author: string; permlink: string };
+      result: string[];
+    };
     accountPosts: {
       params: HivemindRestPostPage & { 'account-name': string; sort: string; community?: string };
       result: Entry[] | null;
@@ -1286,6 +1298,22 @@ Together with the author name, it uniquely identifies the post.
     accountNotifications: {
       params: { 'account-name': string; 'page-size'?: number; 'last-id'?: number };
       result: IAccountNotification[] | null;
+    };
+    accountUnreadNotifications: {
+      params: { 'account-name': string; 'min-score'?: number };
+      result: IUnreadNotifications | null;
+    };
+    accountFollowList: {
+      params: { 'account-name': string; type: FollowListType };
+      result: IFollowList[];
+    };
+    accountFollowsAnyLists: {
+      params: { 'account-name': string };
+      result: boolean;
+    };
+    accountSubscriptions: {
+      params: { 'account-name': string };
+      result: string[][] | null;
     };
     communities: {
       params: { sort: string; query?: string; observer?: string; 'page-size'?: number; last?: string };

@@ -28,7 +28,7 @@ export interface IHivemindRestStub {
 
 interface IJsonRpcCall {
   method: string;
-  params: Record<string, unknown>;
+  params: Record<string, unknown> | unknown[];
 }
 
 type TQuery = URLSearchParams;
@@ -61,6 +61,21 @@ const ROUTES: Array<{ pattern: RegExp; toCall: (match: string[], query: TQuery) 
     })
   },
   {
+    pattern: /^\/posts\/([^/]+)\/([^/]+)\/discussion$/,
+    toCall: ([, author, permlink], query) => ({
+      method: 'bridge.get_discussion',
+      params: { author, permlink, observer: query.get('observer') ?? undefined }
+    })
+  },
+  {
+    pattern: /^\/posts\/([^/]+)\/([^/]+)\/header$/,
+    toCall: ([, author, permlink]) => ({ method: 'bridge.get_post_header', params: { author, permlink } })
+  },
+  {
+    pattern: /^\/posts\/([^/]+)\/([^/]+)\/reblogged-by$/,
+    toCall: ([, author, permlink]) => ({ method: 'condenser_api.get_reblogged_by', params: [author, permlink] })
+  },
+  {
     pattern: /^\/accounts\/([^/]+)\/posts$/,
     toCall: ([, account], query) => ({
       method: 'bridge.get_account_posts',
@@ -88,6 +103,28 @@ const ROUTES: Array<{ pattern: RegExp; toCall: (match: string[], query: TQuery) 
         last_id: query.has('last-id') ? Number(query.get('last-id')) : undefined
       }
     })
+  },
+  {
+    pattern: /^\/accounts\/([^/]+)\/notifications\/unread$/,
+    toCall: ([, account], query) => ({
+      method: 'bridge.unread_notifications',
+      params: { account, min_score: query.has('min-score') ? Number(query.get('min-score')) : undefined }
+    })
+  },
+  {
+    pattern: /^\/accounts\/([^/]+)\/follow-lists\/([^/]+)$/,
+    toCall: ([, observer, followType]) => ({
+      method: 'bridge.get_follow_list',
+      params: { observer, follow_type: followType }
+    })
+  },
+  {
+    pattern: /^\/accounts\/([^/]+)\/follows-any-lists$/,
+    toCall: ([, observer]) => ({ method: 'bridge.does_user_follow_any_lists', params: { observer } })
+  },
+  {
+    pattern: /^\/accounts\/([^/]+)\/subscriptions$/,
+    toCall: ([, account]) => ({ method: 'bridge.list_all_subscriptions', params: { account } })
   },
   {
     pattern: /^\/communities$/,

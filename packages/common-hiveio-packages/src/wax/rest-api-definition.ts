@@ -54,6 +54,15 @@ export const EXTENDED_REST_API_DEFINITION = {
     postVotes: {
       urlPath: 'posts/{author}/{permlink}/votes'
     },
+    postDiscussion: {
+      urlPath: 'posts/{author}/{permlink}/discussion'
+    },
+    postHeader: {
+      urlPath: 'posts/{author}/{permlink}/header'
+    },
+    postRebloggedBy: {
+      urlPath: 'posts/{author}/{permlink}/reblogged-by'
+    },
     accountPosts: {
       urlPath: 'accounts/{account-name}/posts'
     },
@@ -68,6 +77,18 @@ export const EXTENDED_REST_API_DEFINITION = {
     },
     accountNotifications: {
       urlPath: 'accounts/{account-name}/notifications'
+    },
+    accountUnreadNotifications: {
+      urlPath: 'accounts/{account-name}/notifications/unread'
+    },
+    accountFollowList: {
+      urlPath: 'accounts/{account-name}/follow-lists/{type}'
+    },
+    accountFollowsAnyLists: {
+      urlPath: 'accounts/{account-name}/follows-any-lists'
+    },
+    accountSubscriptions: {
+      urlPath: 'accounts/{account-name}/subscriptions'
     },
     communities: {
       urlPath: 'communities'
