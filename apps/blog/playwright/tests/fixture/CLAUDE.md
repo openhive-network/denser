@@ -49,7 +49,9 @@ Config uses three ports:
 - `:3000` — the blog app (standalone Next.js server), server-side feed cache
   off (`DENSER_FEED_CACHE_TTL_S=0`)
 - `:3001` — the same build again with the feed cache on and a TTL of a few
-  seconds; only `feedCache.spec.ts` uses it (`feedCacheBaseURL`)
+  seconds, and with the For You feed off (`FYP_API_URL` unset, which `:3000`
+  sets); `feedCache.spec.ts` uses it, and `forYouFeed.spec.ts` FYP-05
+  (`feedCacheBaseURL`)
 - `:8200` — the fixture proxy (record → mainnet; replay → committed JSON)
 
 ---
@@ -599,6 +601,24 @@ the chat button), so `#chat-iframe` can exist before any click. A check that it
 has *not* loaded waits past the idle warm-up's latest start
 (`PAST_IDLE_WARM_UP_MS`); keep that in step with `WARM_UP_DELAY_MS` in
 `matrix-chat-widget.tsx` and the idle timeout of `useIdleAfterLoad`.
+
+---
+
+## Recipe: the For You feed (haf_fyp)
+
+The main server sets `REACT_APP_FYP_API_URL` to `FIXTURE_FYP_API_URL`
+(`support/fypApiStub.ts`), an origin no network answers; only the browser reads
+the feed, so `serveFypFeed(page, pages)` answers it with `page.route`, built
+from recorded `bridge.get_ranked_posts` posts (`recordedRankedPosts` +
+`asFypPage`), or fails it with a status. The feed takes no observer, so the app
+reads the reader's mute and blacklist lists itself (`bridge.get_follow_list`
+for `muted`, `blacklisted`, `follow_muted`, `follow_blacklist`, then the
+followed lists); `serveFollowLists(page, lists)` answers those browser reads.
+`forYouFeed.spec.ts` (signed in, `loggedInHomeFeeds`) and
+`forYouFeedSignedOut.spec.ts` (`homeMainPage`) use them; FYP-05 checks the
+setting unset on the `:3001` server. Both servers serve the `__ENV.js` the main
+server writes, so FYP-05 also unsets it in the browser
+(`unsetFypApiUrlInBrowser`).
 
 ---
 

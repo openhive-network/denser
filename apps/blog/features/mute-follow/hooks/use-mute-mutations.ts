@@ -7,6 +7,7 @@ import type { InfiniteFollowData } from '../lib/follow-cache';
 import { addToListCache, removeFromListCache, restoreList, snapshotList } from '@/blog/lib/follow-list-cache';
 import { applyMute } from '../lib/mute-cache';
 import { postSocialChanged } from '@/blog/lib/social-sync';
+import { hiddenAuthorsQueryKey } from '@/blog/components/hooks/use-hidden-authors';
 
 type MuteParams = { username: string };
 
@@ -36,6 +37,7 @@ export function useMuteMutation() {
       ['profileData', username],
       ['profileData', otherUsername],
       ['discussionData'],
+      hiddenAuthorsQueryKey(username),
       ['entriesInfinite']
     ],
     invalidateDelays: [4000]
@@ -70,6 +72,7 @@ export function useUnmuteMutation() {
       ['profileData', username],
       ['profileData', otherUsername],
       ['discussionData'],
+      hiddenAuthorsQueryKey(username),
       ['entriesInfinite']
     ],
     invalidateDelays: [4000]
@@ -93,7 +96,12 @@ export function useResetBlogListMutation() {
     },
     rollback: (context, _params, queryClient) => restoreList(queryClient, mutedQueryKey, context),
     successToast: () => ({ title: 'Blog list reset', description: 'Your blog list has been reset.' }),
-    invalidate: () => [mutedQueryKey, ['profileData', username], ['entriesInfinite']],
+    invalidate: () => [
+      mutedQueryKey,
+      ['profileData', username],
+      hiddenAuthorsQueryKey(username),
+      ['entriesInfinite']
+    ],
     invalidateDelays: [4000]
   });
 }

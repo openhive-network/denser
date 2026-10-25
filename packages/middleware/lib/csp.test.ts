@@ -220,3 +220,34 @@ test('connect-src leaves the homeserver out for Element and for Rocket.Chat', ()
     });
   }
 });
+
+const withFypApiUrl = (value: string | undefined, run: () => void) => {
+  const saved = process.env.REACT_APP_FYP_API_URL;
+  if (value === undefined) delete process.env.REACT_APP_FYP_API_URL;
+  else process.env.REACT_APP_FYP_API_URL = value;
+  try {
+    run();
+  } finally {
+    if (saved === undefined) delete process.env.REACT_APP_FYP_API_URL;
+    else process.env.REACT_APP_FYP_API_URL = saved;
+  }
+};
+
+test("connect-src admits the For You feed's origin when FYP_API_URL is set", () => {
+  withFypApiUrl('https://fyp.example.org/haf-fyp-api', () => {
+    const connectSrc = connectSrcOf(buildCsp({}, 'bm9uY2U='));
+    assert.ok(connectSrc.includes('https://fyp.example.org'), connectSrc.join(' '));
+  });
+});
+
+test('connect-src has no For You origin when FYP_API_URL is unset, empty or invalid', () => {
+  for (const value of [undefined, '', 'not a url']) {
+    withFypApiUrl(value, () => {
+      const withoutFyp = connectSrcOf(buildCsp({}, 'bm9uY2U='));
+      withFypApiUrl(undefined, () => {
+        assert.deepEqual(withoutFyp, connectSrcOf(buildCsp({}, 'bm9uY2U=')));
+      });
+      assert.ok(!withoutFyp.includes('https://fyp.example.org'), withoutFyp.join(' '));
+    });
+  }
+});

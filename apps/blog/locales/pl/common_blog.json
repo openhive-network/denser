@@ -189,7 +189,8 @@
       "hot": "Na czasie",
       "new": "Nowe",
       "payouts": "Wynagrodzenia",
-      "muted": "Wyciszone"
+      "muted": "Wyciszone",
+      "for_you": "Dla Ciebie"
     },
     "communitie_sort": {
       "rank": "Ranking",
@@ -946,7 +947,8 @@
       "muted": "wyciszone",
       "pending": "oczekujące",
       "roles": "role"
-    }
+    },
+    "for_you_posts": "Dla Ciebie"
   },
   "chat_widget": {
     "chat": "Czat",
@@ -1002,5 +1004,8 @@
       "user_topic": "Posty użytkownika według tematu",
       "tag": "Tagi"
     }
+  },
+  "for_you_feed": {
+    "sign_in_prompt": "Zaloguj się, aby zobaczyć swój kanał."
   }
 }

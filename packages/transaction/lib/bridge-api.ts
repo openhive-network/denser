@@ -11,6 +11,7 @@ import {
 import { commonVariables } from '@ui/lib/common-variables';
 import { getReadChain } from './chain';
 import type { IObserverListsApi } from './observer-lists';
+import type { IHiddenAuthorsApi } from './hidden-authors';
 
 export const DATA_LIMIT = 20;
 
@@ -73,13 +74,14 @@ export const getPostsRanked = async (
     });
 };
 
-const resolvePosts = (posts: Entry[], observer: string): Promise<Entry[]> => {
+/** `posts` with each cross-post's original post (`original_entry`) read as `observer`. */
+export const resolvePosts = <T extends Entry>(posts: T[], observer: string): Promise<T[]> => {
   const promises = posts.map((p) => resolvePost(p, observer));
 
   return Promise.all(promises);
 };
 
-const resolvePost = (post: Entry, observer: string): Promise<Entry> => {
+const resolvePost = <T extends Entry>(post: T, observer: string): Promise<T> => {
   const { json_metadata: json } = post;
 
   if (json.original_author && json.original_permlink && json.tags && json.tags[0] === 'cross-post') {
@@ -165,6 +167,8 @@ export const doesUserFollowAnyLists = async (observer: string): Promise<boolean>
 };
 
 export const observerListsApi: IObserverListsApi = { getFollowList, doesUserFollowAnyLists };
+
+export const hiddenAuthorsApi: IHiddenAuthorsApi = { getFollowList };
 
 export const getSubscribers = async (community: string): Promise<string[][] | null> => {
   return getReadChain().api.bridge.list_subscribers({
