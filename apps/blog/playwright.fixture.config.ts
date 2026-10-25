@@ -166,7 +166,7 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
         DENSER_FEED_CACHE_STALE_S: String(FEED_CACHE_STALE_S)
       }
     },
-    // Reads feeds, profiles and communities from the hivemind REST stub (hivemindRest.spec.ts).
+    // Reads hivemind's data from the hivemind REST stub (hivemindRest*.spec.ts).
     {
       command: `node ${NEXT_DIR}/standalone/apps/blog/server.js`,
       url: `http://127.0.0.1:${HIVEMIND_REST_BLOG_PORT}${BASE_PATH}/api/health`,

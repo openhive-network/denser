@@ -230,5 +230,160 @@
       "last_update": "2026-10-21T08:00:03",
       "num_changes": 1
     }
+  ],
+  "discussion": {
+    "guest4test1/re-guest4test1-1773061513344": {
+      "active_votes": [],
+      "author": "guest4test1",
+      "author_payout_value": "0.000 HBD",
+      "author_reputation": 43.24,
+      "beneficiaries": [],
+      "blacklists": [],
+      "body": "Test Comment \n ![ChatGPT Image Feb 10, 2026, 01_09_02 PM.png](https://images.hive.blog/DQmcf9zvbtoKy7RaSeaeRRFCxQzHKa3XAvdXGxqy9uRPrrc/ChatGPT%20Image%20Feb%201",
+      "category": "test",
+      "children": 0,
+      "created": "2026-03-09T13:05:12",
+      "curator_payout_value": "0.000 HBD",
+      "depth": 1,
+      "is_paidout": true,
+      "json_metadata": {
+        "app": "@hiveio/wax/2.0.1",
+        "format": "markdown+html"
+      },
+      "max_accepted_payout": "1000000.000 HBD",
+      "net_rshares": 0,
+      "parent_author": "guest4test1",
+      "parent_permlink": "test-ako-post",
+      "payout": 0,
+      "payout_at": "2026-03-16T13:05:12",
+      "pending_payout_value": "0.000 HBD",
+      "percent_hbd": 10000,
+      "permlink": "re-guest4test1-1773061513344",
+      "post_id": 149298914,
+      "reblogs": 0,
+      "replies": [],
+      "stats": {
+        "flag_weight": 0,
+        "gray": false,
+        "hide": false,
+        "total_votes": 0
+      },
+      "title": "RE: Test ako post",
+      "updated": "2026-03-09T13:05:12",
+      "url": "/test/@guest4test1/test-ako-post#@guest4test1/re-guest4test1-1773061513344"
+    },
+    "guest4test1/test-ako-post": {
+      "active_votes": [
+        {
+          "rshares": 59921846914,
+          "voter": "fernandosoder"
+        },
+        {
+          "rshares": 0,
+          "voter": "guest4test2"
+        }
+      ],
+      "author": "guest4test1",
+      "author_payout_value": "0.000 HBD",
+      "author_reputation": 43.24,
+      "beneficiaries": [],
+      "blacklists": [],
+      "body": "# Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6\n\n*italic*\n**bold**\nLove**is**bold\nI just love __bold text__.\nalso _italic",
+      "category": "test",
+      "children": 1,
+      "created": "2026-03-09T11:49:36",
+      "curator_payout_value": "0.000 HBD",
+      "depth": 0,
+      "is_paidout": true,
+      "json_metadata": {
+        "app": "hive.blog/0.9",
+        "author": "",
+        "format": "markdown+html",
+        "image": [
+          "https://images.hive.blog//p/ADdPNihJzmPcLkHtjKRVWu2N2uvBRfNLKJYb8XFwTcV1q64qPux1eA7AWjLBbhTDCkbmyf9TQn9sVrz23gWt8KVwf?format=match&mode=fit&width=1536"
+        ],
+        "summary": "",
+        "tags": [
+          "test"
+        ]
+      },
+      "max_accepted_payout": "1000000.000 HBD",
+      "net_rshares": 72864692595,
+      "payout": 0,
+      "payout_at": "2026-03-16T11:49:36",
+      "pending_payout_value": "0.000 HBD",
+      "percent_hbd": 10000,
+      "permlink": "test-ako-post",
+      "post_id": 149298381,
+      "reblogs": 0,
+      "replies": [
+        "guest4test1/re-guest4test1-1773061513344"
+      ],
+      "stats": {
+        "flag_weight": 0,
+        "gray": false,
+        "hide": false,
+        "total_votes": 4
+      },
+      "title": "Test ako post",
+      "updated": "2026-03-09T11:49:36",
+      "url": "/test/@guest4test1/test-ako-post"
+    }
+  },
+  "followList": [
+    {
+      "name": "hiveio",
+      "blacklist_description": "",
+      "muted_list_description": ""
+    },
+    {
+      "name": "ned",
+      "blacklist_description": "",
+      "muted_list_description": ""
+    },
+    {
+      "name": "dan",
+      "blacklist_description": "",
+      "muted_list_description": ""
+    }
+  ],
+  "subscriptions": [
+    [
+      "hive-163772",
+      "Worldmappin",
+      "guest",
+      ""
+    ],
+    [
+      "hive-167922",
+      "LeoFinance",
+      "guest",
+      ""
+    ],
+    [
+      "hive-137823",
+      "Testing Zone",
+      "guest",
+      ""
+    ]
+  ],
+  "unreadNotifications": {
+    "lastread": "2026-02-09 13:44:03",
+    "unread": 2
+  },
+  "postHeader": {
+    "author": "guest4test",
+    "permlink": "post-05-fixture-test-same-title-post",
+    "category": "test"
+  },
+  "rebloggedBy": [
+    "arlettemsalase",
+    "hattaarshavin",
+    "hivetoday",
+    "jonsnow1983",
+    "shmoogleosukami",
+    "ssekulji",
+    "steevc",
+    "wagnertamanaha"
   ]
 }

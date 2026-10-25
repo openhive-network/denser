@@ -11,8 +11,9 @@ export const configuredRestApiEndpoint = env('REST_API_ENDPOINT')?.replace(/\/+$
 /** The haf_fyp API root of the blog's For You feed; the feed is off when it is unset. */
 export const configuredFypApiUrl = env('FYP_API_URL')?.replace(/\/+$/, '') || undefined;
 /**
- * hivemind REST nodes (whitespace/comma-separated) that feeds, profiles and communities are read
- * from, failing over across them; while empty those reads use JSON-RPC.
+ * hivemind REST nodes (whitespace/comma-separated) that feeds, profiles, communities, post
+ * discussions and follow lists are read from, failing over across them; while empty those reads
+ * use JSON-RPC.
  */
 export const configuredHivemindRestNodes = env('HIVEMIND_REST_NODES') ?? '';
 export const configuredBlogDomain = env('BLOG_DOMAIN') ?? 'https://hive.blog/';

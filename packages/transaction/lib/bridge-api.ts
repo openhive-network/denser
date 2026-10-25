@@ -18,15 +18,25 @@ export const DATA_LIMIT = 20;
 
 const logger = getLogger('bridge');
 export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
-  return getReadChain().api.bridge.get_post_header({
-    author,
-    permlink
-  });
+  return readFromHivemind(
+    'postHeader',
+    (api) => api.postHeader({ author, permlink }),
+    () =>
+      getReadChain().api.bridge.get_post_header({
+        author,
+        permlink
+      })
+  );
 };
 export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
-  return getReadChain().api.bridge.unread_notifications({
-    account
-  });
+  return readFromHivemind(
+    'accountUnreadNotifications',
+    (api) => api.accountUnreadNotifications({ 'account-name': account }),
+    () =>
+      getReadChain().api.bridge.unread_notifications({
+        account
+      })
+  );
 };
 
 export const getCommunities = async (
@@ -47,9 +57,14 @@ export const getCommunities = async (
 };
 
 export const getSubscriptions = async (account: string): Promise<string[][] | null> => {
-  return getReadChain().api.bridge.list_all_subscriptions({
-    account
-  });
+  return readFromHivemind(
+    'accountSubscriptions',
+    (api) => api.accountSubscriptions({ 'account-name': account }),
+    () =>
+      getReadChain().api.bridge.list_all_subscriptions({
+        account
+      })
+  );
 };
 
 export const getPostsRanked = async (
@@ -187,14 +202,23 @@ export const getFollowList = async (
   observer: string,
   follow_type: FollowListType
 ): Promise<IFollowList[]> => {
-  return getReadChain().api.bridge.get_follow_list({
-    observer,
-    follow_type
-  });
+  return readFromHivemind(
+    'accountFollowList',
+    (api) => api.accountFollowList({ 'account-name': observer, type: follow_type }),
+    () =>
+      getReadChain().api.bridge.get_follow_list({
+        observer,
+        follow_type
+      })
+  );
 };
 
 export const doesUserFollowAnyLists = async (observer: string): Promise<boolean> => {
-  return getReadChain().api.bridge.does_user_follow_any_lists({ observer });
+  return readFromHivemind(
+    'accountFollowsAnyLists',
+    (api) => api.accountFollowsAnyLists({ 'account-name': observer }),
+    () => getReadChain().api.bridge.does_user_follow_any_lists({ observer })
+  );
 };
 
 export const observerListsApi: IObserverListsApi = { getFollowList, doesUserFollowAnyLists };
@@ -256,9 +280,14 @@ export const getDiscussion = async (
   permlink: string,
   observer: string = commonVariables.defaultObserver
 ): Promise<Record<string, Entry> | null> => {
-  return getReadChain().api.bridge.get_discussion({
-    author,
-    permlink,
-    observer
-  });
+  return readFromHivemind(
+    'postDiscussion',
+    (api) => api.postDiscussion({ author, permlink, observer }),
+    () =>
+      getReadChain().api.bridge.get_discussion({
+        author,
+        permlink,
+        observer
+      })
+  );
 };

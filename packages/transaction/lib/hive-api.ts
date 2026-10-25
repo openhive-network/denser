@@ -317,7 +317,11 @@ export const getFollowCount = async (username: string): Promise<AccountFollowSta
  * @returns
  */
 export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
-  return getReadChain().api.condenser_api.get_reblogged_by([ author, permlink ]);
+  return readFromHivemind(
+    'postRebloggedBy',
+    (api) => api.postRebloggedBy({ author, permlink }),
+    () => getReadChain().api.condenser_api.get_reblogged_by([ author, permlink ])
+  );
 };
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {

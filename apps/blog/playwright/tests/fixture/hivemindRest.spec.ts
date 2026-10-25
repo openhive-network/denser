@@ -1,14 +1,16 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
-import { startHivemindRestStub, type IHivemindRestStub } from '../support/hivemindRestStub';
+import { useHivemindRestStub } from '../support/hivemindRestSpec';
 
 /**
- * Feeds, profiles, communities and search read from hivemind REST GETs (HIVEMIND_REST_NODES).
+ * Feeds, profiles, communities, a user's subscriptions and search read from hivemind REST GETs
+ * (HIVEMIND_REST_NODES).
  * The suite's third blog server names the hivemind REST stub (support/hivemindRestStub.ts), which
  * answers each REST path from the JSON-RPC recording it wraps; the main server leaves the setting
  * empty. Each page must render the same on both, from REST requests the stub served, and the main
  * server must make no REST request at all. Server HTML only (JavaScript off), so only the servers'
- * reads reach the stub.
+ * reads reach the stub. The post page and the lists pages, which need other recordings, are
+ * checked the same way by hivemindRestDiscussion.spec.ts and hivemindRestLists.spec.ts.
  *
  * Replay:  pnpm --filter @hive/blog test:fixture -- hivemindRest
  */
@@ -39,32 +41,15 @@ async function renderedPage(page: Page, url: string, textTestIds: string[] = [])
   return { posts, text };
 }
 
-let stub: IHivemindRestStub | undefined;
-let restBaseURL = '';
-
-test.beforeAll(async ({ hivemindRestBaseURL, fixtureProxy: _fixtureProxy, fixturePort }) => {
-  if (!hivemindRestBaseURL) return;
-  restBaseURL = hivemindRestBaseURL;
-  stub = await startHivemindRestStub(`http://localhost:${fixturePort}`);
-});
-
-test.afterAll(async () => {
-  await stub?.close();
-});
-
-test.beforeEach(({ hivemindRestBaseURL }) => {
-  test.skip(!hivemindRestBaseURL, 'no blog serves with HIVEMIND_REST_NODES set');
-  if (stub) stub.requests.length = 0;
-});
-
-const servedRestRequests = () => stub?.requests.filter(({ status }) => status === 200).map(({ url }) => url) ?? [];
+const rest = useHivemindRestStub();
+const { servedRestRequests } = rest;
 
 test.describe('anonymous', () => {
   test('HIVEMIND-REST-01 — trending renders the same from /posts as from JSON-RPC', async ({ page }) => {
     const overJsonRpc = await renderedPage(page, '/trending');
-    expect(stub?.requests, 'the server without HIVEMIND_REST_NODES makes no REST request').toEqual([]);
+    expect(rest.requests, 'the server without HIVEMIND_REST_NODES makes no REST request').toEqual([]);
 
-    const overRest = await renderedPage(page, `${restBaseURL}/trending`);
+    const overRest = await renderedPage(page, `${rest.restBaseURL}/trending`);
 
     expect(overJsonRpc.posts.length).toBeGreaterThan(0);
     expect(overRest).toEqual(overJsonRpc);
@@ -74,7 +59,7 @@ test.describe('anonymous', () => {
 
   test("HIVEMIND-REST-02 — a profile's posts render the same from /accounts/{name}/posts", async ({ page }) => {
     const overJsonRpc = await renderedPage(page, `/@${USER}`, ['profile-name']);
-    const overRest = await renderedPage(page, `${restBaseURL}/@${USER}`, ['profile-name']);
+    const overRest = await renderedPage(page, `${rest.restBaseURL}/@${USER}`, ['profile-name']);
 
     expect(overJsonRpc.posts.length).toBeGreaterThan(0);
     expect(overRest).toEqual(overJsonRpc);
@@ -88,13 +73,30 @@ test.describe('anonymous', () => {
 
   test('HIVEMIND-REST-03 — search results render the same from /search/posts', async ({ page }) => {
     const overJsonRpc = await renderedPage(page, '/search?q=hive&s=relevance');
-    const overRest = await renderedPage(page, `${restBaseURL}/search?q=hive&s=relevance`);
+    const overRest = await renderedPage(page, `${rest.restBaseURL}/search?q=hive&s=relevance`);
 
     expect(overJsonRpc.posts.length).toBeGreaterThan(0);
     expect(overRest).toEqual(overJsonRpc);
     expect(servedRestRequests()).toContain(
       '/hivemind-api/search/posts?q=hive&sort=relevance&observer=hive.blog&page-size=20'
     );
+  });
+
+  test("HIVEMIND-REST-05 — a user's communities render the same from /accounts/{name}/subscriptions", async ({
+    page
+  }) => {
+    const subscriptions = (url: string) =>
+      page
+        .goto(url)
+        .then(() => page.getByTestId('author-community-subscribed-list-item').allInnerTexts());
+
+    const overJsonRpc = await subscriptions(`/@${USER}/communities`);
+    expect(rest.requests, 'the server without HIVEMIND_REST_NODES makes no REST request').toEqual([]);
+    const overRest = await subscriptions(`${rest.restBaseURL}/@${USER}/communities`);
+
+    expect(overJsonRpc.length).toBeGreaterThan(0);
+    expect(overRest).toEqual(overJsonRpc);
+    expect(servedRestRequests()).toContain(`/hivemind-api/accounts/${USER}/subscriptions`);
   });
 });
 
@@ -105,7 +107,7 @@ test.describe('signed in', () => {
     page
   }) => {
     const overJsonRpc = await renderedPage(page, `/trending/${COMMUNITY}`, ['community-info-sidebar']);
-    const overRest = await renderedPage(page, `${restBaseURL}/trending/${COMMUNITY}`, ['community-info-sidebar']);
+    const overRest = await renderedPage(page, `${rest.restBaseURL}/trending/${COMMUNITY}`, ['community-info-sidebar']);
 
     expect(overJsonRpc.posts.length).toBeGreaterThan(0);
     expect(overRest).toEqual(overJsonRpc);

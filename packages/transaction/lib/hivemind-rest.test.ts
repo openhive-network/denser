@@ -5,16 +5,22 @@ import { join } from 'node:path';
 import { after, before, beforeEach, describe, it } from 'mocha';
 import { expect } from 'chai';
 import {
+  doesUserFollowAnyLists,
   getAccountNotifications,
   getAccountPosts,
   getCommunities,
   getCommunity,
+  getDiscussion,
+  getFollowList,
   getListCommunityRoles,
   getPost,
+  getPostHeader,
   getPostsRanked,
-  getSubscribers
+  getSubscribers,
+  getSubscriptions,
+  getUnreadNotifications
 } from './bridge-api';
-import { getActiveVotes, getByText, getFollowers, getFollowing, getProfileInfo } from './hive-api';
+import { getActiveVotes, getByText, getFollowers, getFollowing, getProfileInfo, getRebloggedBy } from './hive-api';
 import { getHiveChainService } from './hive-chain-service';
 
 /**
@@ -26,6 +32,7 @@ import { getHiveChainService } from './hive-chain-service';
 
 const fixtures = JSON.parse(readFileSync(join(__dirname, '__fixtures__/hivemind-rest.json'), 'utf8'));
 const [post] = fixtures.rankedPosts;
+const discussionRoot = fixtures.discussion['guest4test1/test-ako-post'];
 
 interface IJsonRpcNode {
   url: string;
@@ -305,6 +312,138 @@ describe('hivemind REST reads', function () {
       reputation: 0
     });
     expect(votes[0]).to.include({ voter: 'voter0000', rshares: 1879215360, weight: 1146353766 });
+  });
+
+  it("reads a post's whole discussion from /posts/{author}/{permlink}/discussion in one request", async () => {
+    const { author, permlink } = discussionRoot;
+    rest.routes[`/hivemind-api/posts/${author}/${permlink}/discussion`] = { body: fixtures.discussion };
+
+    const discussion = await getDiscussion(author, permlink, 'alice');
+
+    expect(discussion).to.deep.equal(fixtures.discussion);
+    expect(discussion?.[`${author}/${permlink}`].replies).to.deep.equal(discussionRoot.replies);
+    expect(rest.requests).to.deep.equal([`/hivemind-api/posts/${author}/${permlink}/discussion?observer=alice`]);
+    expect(rpc.calls).to.deep.equal([]);
+  });
+
+  it("reads an account's follow lists and whether it follows any from /accounts/{name}/follow-lists", async () => {
+    rest.routes['/hivemind-api/accounts/guest4test/follow-lists/blacklisted'] = { body: fixtures.followList };
+    rest.routes['/hivemind-api/accounts/guest4test/follow-lists/follow_muted'] = { body: [] };
+    rest.routes['/hivemind-api/accounts/guest4test/follows-any-lists'] = { body: false };
+
+    expect(await getFollowList('guest4test', 'blacklisted')).to.deep.equal(fixtures.followList);
+    expect(await getFollowList('guest4test', 'follow_muted')).to.deep.equal([]);
+    expect(await doesUserFollowAnyLists('guest4test')).to.equal(false);
+    expect(rest.requests).to.deep.equal([
+      '/hivemind-api/accounts/guest4test/follow-lists/blacklisted',
+      '/hivemind-api/accounts/guest4test/follow-lists/follow_muted',
+      '/hivemind-api/accounts/guest4test/follows-any-lists'
+    ]);
+    expect(rpc.calls).to.deep.equal([]);
+  });
+
+  it("reads an account's subscriptions and unread notification count", async () => {
+    rest.routes['/hivemind-api/accounts/guest4test/subscriptions'] = { body: fixtures.subscriptions };
+    rest.routes['/hivemind-api/accounts/guest4test/notifications/unread'] = { body: fixtures.unreadNotifications };
+
+    expect(await getSubscriptions('guest4test')).to.deep.equal(fixtures.subscriptions);
+    expect(await getUnreadNotifications('guest4test')).to.deep.equal(fixtures.unreadNotifications);
+    // No min-score: JSON-RPC's call leaves it to hivemind's default too.
+    expect(rest.requests).to.deep.equal([
+      '/hivemind-api/accounts/guest4test/subscriptions',
+      '/hivemind-api/accounts/guest4test/notifications/unread'
+    ]);
+    expect(rpc.calls).to.deep.equal([]);
+  });
+
+  it("reads a post's header and rebloggers", async () => {
+    const { author, permlink } = fixtures.postHeader;
+    rest.routes[`/hivemind-api/posts/${author}/${permlink}/header`] = { body: fixtures.postHeader };
+    rest.routes['/hivemind-api/posts/hiveio/hive-at-blockchain-rio/reblogged-by'] = { body: fixtures.rebloggedBy };
+
+    expect(await getPostHeader(author, permlink)).to.deep.equal(fixtures.postHeader);
+    expect(await getRebloggedBy('hiveio', 'hive-at-blockchain-rio')).to.deep.equal(fixtures.rebloggedBy);
+    expect(rest.requests).to.deep.equal([
+      `/hivemind-api/posts/${author}/${permlink}/header`,
+      '/hivemind-api/posts/hiveio/hive-at-blockchain-rio/reblogged-by'
+    ]);
+    expect(rpc.calls).to.deep.equal([]);
+  });
+
+  // Runs after the cases above: each endpoint it makes fall back stays on JSON-RPC from then on.
+  it('reads each of them over JSON-RPC, with its JSON-RPC arguments, from a node lacking it, still asking the node for others', async () => {
+    const pgrst202 = { status: 404, body: { code: 'PGRST202', message: 'Could not find the function' } };
+    const cases: Array<{ path: string; method: string; params: unknown; result: unknown; read: () => Promise<unknown> }> = [
+      {
+        path: '/hivemind-api/posts/alice/thread/discussion',
+        method: 'bridge.get_discussion',
+        params: { author: 'alice', permlink: 'thread', observer: 'bob' },
+        result: fixtures.discussion,
+        read: () => getDiscussion('alice', 'thread', 'bob')
+      },
+      {
+        path: '/hivemind-api/accounts/alice/follow-lists/muted',
+        method: 'bridge.get_follow_list',
+        params: { observer: 'alice', follow_type: 'muted' },
+        result: fixtures.followList,
+        read: () => getFollowList('alice', 'muted')
+      },
+      {
+        path: '/hivemind-api/accounts/alice/follows-any-lists',
+        method: 'bridge.does_user_follow_any_lists',
+        params: { observer: 'alice' },
+        result: true,
+        read: () => doesUserFollowAnyLists('alice')
+      },
+      {
+        path: '/hivemind-api/accounts/alice/subscriptions',
+        method: 'bridge.list_all_subscriptions',
+        params: { account: 'alice' },
+        result: fixtures.subscriptions,
+        read: () => getSubscriptions('alice')
+      },
+      {
+        path: '/hivemind-api/accounts/alice/notifications/unread',
+        method: 'bridge.unread_notifications',
+        params: { account: 'alice' },
+        result: fixtures.unreadNotifications,
+        read: () => getUnreadNotifications('alice')
+      },
+      {
+        path: '/hivemind-api/posts/alice/thread/header',
+        method: 'bridge.get_post_header',
+        params: { author: 'alice', permlink: 'thread' },
+        result: fixtures.postHeader,
+        read: () => getPostHeader('alice', 'thread')
+      },
+      {
+        path: '/hivemind-api/posts/alice/thread/reblogged-by',
+        method: 'condenser_api.get_reblogged_by',
+        params: ['alice', 'thread'],
+        result: fixtures.rebloggedBy,
+        read: () => getRebloggedBy('alice', 'thread')
+      }
+    ];
+
+    for (const [index, { path, method, params, result, read }] of cases.entries()) {
+      rpc.calls.length = 0;
+      rest.requests.length = 0;
+      rpc.results[method] = result;
+      // Alternate a path PostgREST does not know (PGRST125) with a function it lacks (PGRST202).
+      if (index % 2 === 1) rest.routes[path] = pgrst202;
+
+      expect(await read(), method).to.deep.equal(result);
+      expect(await read(), `${method} again`).to.deep.equal(result);
+      expect(rest.requests.map((request) => request.split('?')[0]), method).to.deep.equal([path]);
+      expect(rpc.calls, method).to.deep.equal([
+        { method, params },
+        { method, params }
+      ]);
+    }
+
+    // None of those 404s marked the node down.
+    rest.routes['/hivemind-api/communities/hive-4'] = { body: fixtures.community };
+    expect(await getCommunity('hive-4')).to.deep.equal(fixtures.community);
   });
 
   it('falls back to JSON-RPC when the node lacks the endpoint, without marking the node down', async () => {
