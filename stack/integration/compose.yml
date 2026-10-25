@@ -46,6 +46,9 @@ x-app: &app
     DENSER_SERVER_MATRIX_ADMIN_TOKEN: ${DENSER_SERVER_MATRIX_ADMIN_TOKEN:-}
     # yes: sign-ins authenticate on the server, needed for Matrix chat and OAuth (see ../matrix/README.md)
     REACT_APP_LOGIN_AUTHENTICATE_ON_BACKEND: ${LOGIN_AUTHENTICATE_ON_BACKEND:-}
+    # Hivemind REST nodes serving /hivemind-api (space- or comma-separated): feeds, profiles,
+    # communities and follows are read over REST GETs. Empty: JSON-RPC only.
+    REACT_APP_HIVEMIND_REST_NODES: ${HIVEMIND_REST_NODES:-}
 
 services:
   blog:
