@@ -216,7 +216,7 @@ const CommentListItem = memo(function CommentListItem({
                                 {comment._optimistic && (
                                   <span className="mr-2 flex items-center gap-1 text-xs text-blue-500">
                                     <CircleSpinner size={10} color="#3b82f6" loading />
-                                    {t('global.publishing')}
+                                    {comment._confirmed ? t('global.confirmed_indexing') : t('global.publishing')}
                                   </span>
                                 )}
                                 <UserAvatarImg

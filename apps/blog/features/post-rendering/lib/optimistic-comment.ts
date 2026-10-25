@@ -69,3 +69,20 @@ export function withOptimisticReply(
   updatedData[tempPermlink] = newComment as Entry;
   return { updatedData, tempPermlink };
 }
+
+/** Discussion data with the matching optimistic reply marked `_confirmed`: its transaction is in a block. */
+export function withConfirmedReply(
+  data: Record<string, Entry> | undefined,
+  { username, parentAuthor, parentPermlink, body }: Omit<OptimisticReply, 'reputation' | 'bodyMetadata'>
+) {
+  if (!data) return data;
+  const isReply = (post: Entry) =>
+    post._optimistic &&
+    post.author === username &&
+    post.parent_author === parentAuthor &&
+    post.parent_permlink === parentPermlink &&
+    post.body === body;
+  return Object.fromEntries(
+    Object.entries(data).map(([key, post]) => [key, isReply(post) ? { ...post, _confirmed: true } : post])
+  );
+}

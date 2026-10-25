@@ -4,10 +4,11 @@ import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Preferences, Entry } from '@hive/common-hiveio-packages/wax';
 import type { CommentBodyMetadata } from '@transaction/lib/comment-metadata';
 import { getLogger } from '@ui/lib/logging';
-import { useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
+import { CONFIRM_IN_BACKGROUND, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
+import { useBackgroundConfirmation } from '@/blog/components/hooks/use-background-confirmation';
 import { setStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
-import { withOptimisticReply } from '../lib/optimistic-comment';
+import { withConfirmedReply, withOptimisticReply } from '../lib/optimistic-comment';
 import {
   type Discussion,
   type DiscussionParams,
@@ -19,9 +20,6 @@ import {
 } from '../lib/discussion-cache';
 
 const logger = getLogger('app');
-
-// Not observed: a successful broadcast guarantees inclusion in the blockchain
-const BROADCAST_ONLY = { observe: false };
 
 type CommentParams = DiscussionParams & {
   parentAuthor: string;
@@ -50,6 +48,7 @@ async function extractBodyMetadata(body: string): Promise<CommentBodyMetadata> {
 export function useCommentMutation() {
   const { username } = useUserClient().user;
   const cleanupRef = useRef<(() => void) | null>(null);
+  const confirmInBackground = useBackgroundConfirmation('comment');
   const shadowKey = ({ parentAuthor, parentPermlink }: CommentParams) =>
     `shadow-reply-${username}-${parentAuthor}-${parentPermlink}`;
 
@@ -74,10 +73,15 @@ export function useCommentMutation() {
         body,
         await extractBodyMetadata(body),
         preferences,
-        BROADCAST_ONLY
+        CONFIRM_IN_BACKGROUND
       ),
-    onSuccess: (_data, params, queryClient) => {
-      const { parentPermlink } = params;
+    onSuccess: (data, params, queryClient) => {
+      const { parentAuthor, parentPermlink, body } = params;
+      confirmInBackground(data, () =>
+        queryClient.setQueryData<Discussion>(discussionKey(params), (discussion: Discussion | undefined) =>
+          withConfirmedReply(discussion, { username, parentAuthor, parentPermlink, body })
+        )
+      );
       const isOwnReply = (e: Entry) => e.author === username && e.parent_permlink === parentPermlink;
       const prevData = queryClient.getQueryData<Discussion>(discussionKey(params));
       const prevRealCommentCount = Object.values(prevData ?? {}).filter(
@@ -110,6 +114,7 @@ export function useCommentMutation() {
 export function useUpdateCommentMutation() {
   const { username } = useUserClient().user;
   const cleanupRef = useRef<(() => void) | null>(null);
+  const confirmInBackground = useBackgroundConfirmation('comment');
 
   return useOperationMutation({
     name: 'useUpdateCommentMutation',
@@ -129,10 +134,11 @@ export function useUpdateCommentMutation() {
         body,
         await extractBodyMetadata(body),
         jsonMetadata,
-        BROADCAST_ONLY
+        CONFIRM_IN_BACKGROUND
       ),
-    onSuccess: (_data, params, queryClient) => {
+    onSuccess: (data, params, queryClient) => {
       const { permlink, body } = params;
+      confirmInBackground(data);
       cleanupRef.current = scheduleValidatedRefetch(
         queryClient,
         discussionKey(params),
@@ -158,6 +164,7 @@ export function useUpdateCommentMutation() {
 
 export function useDeleteCommentMutation() {
   const cleanupRef = useRef<(() => void) | null>(null);
+  const confirmInBackground = useBackgroundConfirmation('comment');
 
   return useOperationMutation({
     name: 'useDeleteCommentMutation',
@@ -168,8 +175,9 @@ export function useDeleteCommentMutation() {
       );
       return snapshot;
     },
-    run: ({ permlink }: DeleteCommentParams) => transactionService.deleteComment(permlink, BROADCAST_ONLY),
-    onSuccess: (_data, params, queryClient) => {
+    run: ({ permlink }: DeleteCommentParams) => transactionService.deleteComment(permlink, CONFIRM_IN_BACKGROUND),
+    onSuccess: (data, params, queryClient) => {
+      confirmInBackground(data);
       cleanupRef.current = scheduleValidatedRefetch(
         queryClient,
         discussionKey(params),

@@ -88,6 +88,8 @@ export interface Entry {
   //added only when using optimistic update, not backend property
   _temporary?: boolean;
   _optimistic?: boolean;
+  /** An optimistic entry whose transaction a block included; Hivemind has yet to index it */
+  _confirmed?: boolean;
 }
 
 export interface JsonMetadata {
