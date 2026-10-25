@@ -9,6 +9,11 @@
 			tls
 		}
 	}
+	# The cache-origin listener's one client is varnish, which forwards the
+	# X-Forwarded-* this site set.
+	servers :8081 {
+		trusted_proxies static private_ranges
+	}
 }
 
 {$SITE_HOST} {
@@ -21,3 +26,5 @@
 
 	import Caddyfile.routes
 }
+
+import Caddyfile.cache-origin

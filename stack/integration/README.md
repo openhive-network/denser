@@ -28,6 +28,8 @@ each a production (`output: 'standalone'`) build with that base path.
   (api.fake.openhive.network); see `networks/`. Switching is a restart, not a rebuild:
   edit `.env`, then `./upgrade.sh`.
   On mainnet, logging in signs **real** transactions.
+- **HTML cache** (optional, `DENSER_HTML_CACHE=varnish`): varnish between caddy and the
+  blog stores the anonymous pages the blog marks public; see "Shared HTML cache" below.
 
 ## How it updates (follow mode)
 
@@ -102,6 +104,78 @@ No GitLab CI is involved. `DENSER_MODE=images` in `.env` runs the
 instead (`compose.yml` alone), e.g. to pin a version. Promotes no longer build
 `:integration` images (`.aidev/project.yaml` has no `publish:` section since the site
 switched to follow mode), so in images mode pin a tag CI builds from develop/main.
+
+## Shared HTML cache (optional)
+
+A shared cache for the blog's anonymous pages, to measure hit rate and staleness here
+before doing the same on a CDN. The blog marks a page shareable itself: `Cache-Control:
+public, s-maxage=30, stale-while-revalidate=60, stale-if-error=300` and no `Set-Cookie`
+only for a page that renders the same for every anonymous reader
+(`packages/middleware/lib/public-cache.ts`); everything else it sends `private, no-store`.
+
+- **What:** varnish (`compose.cache.yml`, rules in `varnish/default.vcl`), not a caddy
+  cache module: the site's caddy is a prebuilt image (ratings-stack's, with the
+  cloudflare DNS and PROXY-protocol modules), so a module would mean building and
+  keeping our own caddy for both the site and session stacks, and VCL states the key,
+  bypass and grace rules below directly.
+- **Where:** `caddy:/blog -> varnish:80 -> caddy:8081 -> blog:80`. Caddy keeps TLS,
+  compression, the redirects and the static files; only the `/blog` route goes to
+  varnish (`DENSER_BLOG_UPSTREAM`, which `compose.cache.yml` sets). Varnish's backend is
+  caddy's cache-origin listener (`caddy/Caddyfile.cache-origin`), which holds a request
+  while follow mode restarts the blog's server (`lb_try_duration`), as the `/blog` route
+  does without the cache. That listener trusts the `X-Forwarded-*` varnish forwards, so
+  the blog still sees the client's address first. The wallet stays direct: it marks no
+  page public.
+- **Looked up** only for a GET or HEAD with no `RSC`, `Next-Router-State-Tree`,
+  `Next-Router-Prefetch` or `Next-Router-Segment-Prefetch` header, no `_rsc` query, no
+  `Authorization`, not under `/blog/api/` or `/blog/_next/`, and none of the cookies
+  `*_session`, `observer`, `observer-no-own-lists`, `account_info`. Any other request
+  passes to the blog untouched (`X-Cache: BYPASS`).
+- **Key:** host, path, the query without `utm_*`, `fbclid` and `gclid` and with the rest
+  sorted (the blog gets that URL too), and the language: the `NEXT_LOCALE` cookie when it
+  is one of `ar en es fr it ja ko pl ru zh`, else `en` (the blog's `resolveLocale`). A
+  looked-up request reaches the blog with no cookie but `NEXT_LOCALE` for a language
+  other than `en`; theme, NSFW and every other cookie are dropped and stay out of the key.
+  The blog sends `private` for a request with `NEXT_LOCALE` today, so only `en` pages
+  are stored; the key keeps the languages apart should that change.
+- **Stored** only when the response is a 200 (or a 404) whose `Cache-Control` is
+  `public` with an `s-maxage` above 0 and no `private`/`no-store`/`no-cache`, with no
+  `Set-Cookie` and no `Vary: *`. It is fresh for its `s-maxage`. For its
+  `stale-while-revalidate` after that it is served while one background fetch
+  refreshes it; for its `stale-if-error` it is served only when the blog fails: while
+  varnish's probe (`/blog/api/health` every 5 s) says the blog is down, or when the
+  fetch to refresh it answers 5xx or not at all. A 404 is kept 30 s at most and never
+  served stale; no other status is stored (the blog sends `private` on every non-200
+  today, so 404s are not stored either). A response that is not stored makes the key a
+  hit-for-miss for 30 s: those requests go to the blog uncoalesced (`BYPASS`).
+- **Headers:** `X-Cache: HIT` (stored, fresh or stale), `MISS` (fetched and stored) or
+  `BYPASS` (passed, or the response was not storable), and `Age`.
+- **Deploys:** in follow mode nothing is purged. A cached page names its build's hashed
+  `/_next/static` files, which caddy keeps serving for 7 days after a swap (step 4
+  above), and a page is cached for at most `s-maxage` + `stale-if-error` (330 s). In
+  images mode a new image serves only its own build's files, so `upgrade.sh` bans every
+  cached object when an image changed. By hand:
+  `docker compose exec varnish varnishadm ban 'obj.status != 0'`.
+- **Changing the VCL:** `upgrade.sh` (and `session-stack.sh up`) loads a changed
+  `varnish/` with `varnish-apply.sh` (`varnishreload`, which keeps the running VCL when
+  the new one fails to compile: `varnish-apply: REFUSED` and exit 5 until a commit fixes
+  it). As with caddy, restarting varnish before then starts it on the refused file.
+- **Turning it on and off:** `DENSER_HTML_CACHE=varnish` in `.env`, then `./upgrade.sh`:
+  compose adds varnish and recreates caddy with the new upstream. Removing it (or
+  `DENSER_HTML_CACHE=off`) and `./upgrade.sh` again puts caddy back on the blog and
+  removes the varnish container. The cache's memory is `DENSER_HTML_CACHE_SIZE`
+  (default `256M`). For a session stack, `DENSER_HTML_CACHE=varnish
+  stack/integration/session-stack.sh up`.
+- **Checking it:** `./test-cache.sh` runs caddy (`caddy/`) and varnish (`varnish/`) in
+  front of a stub blog and checks the rules above from `X-Cache` and the bodies:
+  MISS then HIT, BYPASS for each cookie and router header, campaign parameters,
+  sorted queries and other cookies on the same object, `NEXT_LOCALE=pl` on its own,
+  `Set-Cookie` and 500 responses never stored. `./test-cache.sh https://$SITE_HOST`
+  runs the checks that need no stub against a running site.
+- **Measuring:** `docker compose exec varnish varnishstat -1 -f MAIN.cache_hit
+  -f MAIN.cache_hitmiss -f MAIN.cache_miss -f MAIN.s_pass -f MAIN.backend_req`
+  (hits, misses and passes since varnish started; `backend_req` is what reached the
+  blog), or `varnishncsa -F '%U%q %{Varnish:handling}x %s'` for a request log.
 
 ## OAuth2 check after each deploy
 
@@ -209,6 +283,8 @@ routes. `lcp-lazy-loaded: false` there flags a route whose LCP image is
 
 ## Setup (done once per host)
 
+The shared HTML cache is off unless `.env` says `DENSER_HTML_CACHE=varnish` (above).
+
 ```bash
 git clone --branch aidev/integration git@gitlab.syncad.com:hive/denser.git ~/denser-integration
 cd ~/denser-integration/stack/integration
@@ -251,7 +327,8 @@ service (`follow.sh watch`): every 20 seconds it re-keys the apps and rebuilds t
 whose build inputs changed, so a commit reaching the checkout is served without a
 restart. `caddy/` is mounted as on the site; `session-stack.sh up` loads a changed
 `caddy/Caddyfile.session` or its imports the same way (`caddy-apply.sh`), so rerun it
-after changing them. Run it on a checkout that follows the session branch, such as the
+after changing them. `DENSER_HTML_CACHE=varnish` in its environment adds the shared
+HTML cache, as on the site. Run it on a checkout that follows the session branch, such as the
 session's dev-stack checkout, which AIDEV fast-forwards on every push. Its builds
 write `apps/*/.next` in that checkout, like the `fixture_e2e` suite does. From inside
 a container whose paths differ from the docker host's, set `DENSER_SOURCE_DIR` to

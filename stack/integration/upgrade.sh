@@ -17,10 +17,13 @@
 #   images            pull the published images at DENSER_TAG (compose.yml alone).
 #
 # Either way caddy then loads a changed caddy/ (caddy-apply.sh): validated first,
-# and a config it refuses leaves the previous one serving.
+# and a config it refuses leaves the previous one serving. DENSER_HTML_CACHE=varnish
+# in .env adds the shared HTML cache (compose.cache.yml), which loads a changed
+# varnish/ the same way (varnish-apply.sh).
 #
 # Exit: 0 upgraded or nothing to do; 1 an app could not be brought to the tip
-# (ROLLED-BACK); 3 the checkout was REFUSED; 4 caddy refused the checkout's caddy/.
+# (ROLLED-BACK); 3 the checkout was REFUSED; 4 caddy refused the checkout's caddy/;
+# 5 varnish refused the checkout's varnish/.
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -38,6 +41,19 @@ branch=$(env_value DENSER_SOURCE_BRANCH)
 branch=${branch:-aidev/integration}
 apps="blog:/blog wallet:/wallet"
 caddy_rc=0
+varnish_rc=0
+
+html_cache=$(env_value DENSER_HTML_CACHE)
+case "${html_cache:-off}" in
+    off) cache_compose="" ;;
+    varnish) cache_compose=:compose.cache.yml ;;
+    *) echo "upgrade: DENSER_HTML_CACHE=$html_cache is neither varnish nor off" >&2; exit 64 ;;
+esac
+
+# Loads a changed varnish/ when the cache runs.
+apply_varnish() {
+    [ -z "$cache_compose" ] || ./varnish-apply.sh "${quiet_args[@]}" || varnish_rc=5
+}
 
 # Before compose up: caddy bind-mounts status/, and docker would create it root-owned.
 mkdir -p status releases
@@ -57,7 +73,7 @@ images_sync_checkout() {
 }
 
 images_upgrade() {
-    export COMPOSE_FILE=compose.yml
+    export COMPOSE_FILE=compose.yml$cache_compose
     images_sync_checkout
 
     ids() { docker compose images --format json 2>/dev/null | python3 -c '
@@ -76,6 +92,13 @@ print(" ".join(sorted(r.get("ID", "") for r in rows)))'; }
     }
     after=$(ids)
     ./caddy-apply.sh "${quiet_args[@]}" || caddy_rc=4
+    apply_varnish
+    # A new image serves only its own build's /_next/static, so a cached page of the
+    # previous build would load chunks that are gone. (Follow mode keeps them.)
+    if [ -n "$cache_compose" ] && [ "$before" != "$after" ]; then
+        docker compose exec -T varnish varnishadm ban 'obj.status != 0' > /dev/null \
+            || echo "upgrade: purging the HTML cache failed; cached pages expire within their s-maxage + stale-if-error" >&2
+    fi
 
     python3 - "$(git rev-parse HEAD)" <<'EOF' > status/deployed.json.tmp
 import json, subprocess, sys, datetime
@@ -182,7 +205,7 @@ follow_write_status() {
 
 follow_upgrade() {
     local image build_rc=0
-    export COMPOSE_FILE=compose.yml:compose.follow.yml
+    export COMPOSE_FILE=compose.yml:compose.follow.yml$cache_compose
     export DENSER_SOURCE_BRANCH=$branch DENSER_UID DENSER_GID
     DENSER_UID=$(id -u)
     DENSER_GID=$(id -g)
@@ -221,6 +244,7 @@ follow_upgrade() {
     fi
     follow_write_status OK
     ./caddy-apply.sh "${quiet_args[@]}" || caddy_rc=4
+    apply_varnish
     if [ "$build_rc" != 0 ]; then
         echo "upgrade: ROLLED-BACK: an app could not be built or started at $(git rev-parse --short HEAD); see status/deployed.json" >&2
         exit 1
@@ -272,5 +296,7 @@ oauth_check || echo "upgrade: see status/oauth.json" >&2
 
 ./lighthouse.sh "${quiet_args[@]}" || echo "upgrade: lighthouse check exited $?; see status/lighthouse/latest.json" >&2
 
-# After the checks, which a refused caddy/ does not stop: the apps may have moved.
-exit "$caddy_rc"
+# After the checks, which a refused caddy/ or varnish/ does not stop: the apps may
+# have moved.
+[ "$caddy_rc" != 0 ] && exit "$caddy_rc"
+exit "$varnish_rc"

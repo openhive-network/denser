@@ -1,6 +1,16 @@
 # A session stack (compose.session.yml): plain HTTP on a loopback port, the
 # integration site's routes.
+{
+	# The cache-origin listener's one client is varnish, which forwards the
+	# X-Forwarded-* the :80 site set.
+	servers :8081 {
+		trusted_proxies static private_ranges
+	}
+}
+
 :80 {
 	encode zstd gzip
 	import Caddyfile.routes
 }
+
+import Caddyfile.cache-origin
