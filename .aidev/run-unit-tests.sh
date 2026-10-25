@@ -98,6 +98,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/auth/matrix-devices.test.ts \
     packages/smart-signer/lib/auth/matrix-login-token.test.ts \
     packages/smart-signer/lib/api-handlers/auth/logout.test.ts \
+    packages/smart-signer/lib/api-handlers/auth/challenge.test.ts \
     packages/smart-signer/lib/auth/auth-storage-desync.test.ts \
     packages/smart-signer/lib/auth/login-authority.test.ts \
     packages/smart-signer/lib/auth/sign-in-lock.test.ts \
@@ -118,7 +119,8 @@ junit="$PWD/test-results/unit/middleware.xml"
 run_with_junit_fallback "$junit" middleware node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    packages/middleware/lib/matcher.test.ts packages/middleware/lib/csp.test.ts < /dev/null || status=1
+    packages/middleware/lib/matcher.test.ts packages/middleware/lib/csp.test.ts \
+    packages/middleware/lib/public-cache.test.ts < /dev/null || status=1
 echo "== node --test apps/blog" >&2
 junit="$PWD/test-results/unit/blog.xml"
 run_with_junit_fallback "$junit" blog node --test \

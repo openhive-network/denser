@@ -987,11 +987,17 @@ localhost. Images and other off-origin resources can't load offline.
 
 ### Asserting Set-Cookie: a fresh request context per request
 
-The middleware sets `blog_login_challenge_server`, `blog_login_challenge` and
-`session_uid` only when the request lacks them, and a Playwright request context
-(the `request` fixture, or a page's) keeps and resends the cookies it was given.
-After the first page, "no Set-Cookie" proves nothing. `staticAssetCookies.spec.ts`
-makes each request from its own `playwright.request.newContext({ baseURL })`.
+Pages set no cookie: an anonymous page is sent `public, s-maxage=…` for shared
+caches (`anonymousPageCache.spec.ts`). The login challenge cookie
+(`blog_login_challenge_server`, HttpOnly) comes from `GET /api/auth/challenge`
+when signing starts, and is set only when the request lacks it; `session_uid`
+is set by `/api/auth/login`. A Playwright request context (the `request`
+fixture, or a page's) keeps and resends the cookies it was given, and a cookie
+it sends can change the answer (a session or observer cookie makes a page
+no-store). `staticAssetCookies.spec.ts`, `anonymousPageCache.spec.ts` and
+`loginChallenge.spec.ts` make each request from its own
+`playwright.request.newContext({ baseURL })`. The page's `Cache-Control` can only
+be checked on the production build: `next dev` sends its own.
 
 ### Dev-stack runs: stray feed misses can be the stack's, not the spec's
 

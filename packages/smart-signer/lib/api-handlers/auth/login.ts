@@ -7,7 +7,6 @@ import { getChain } from '@transaction/lib/chain';
 import { postLoginSchema, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
-import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
@@ -20,13 +19,15 @@ import { setAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
 import { addAccount, setSessionUser } from '@smart-signer/lib/auth/accounts';
 import { endCurrentChatSession } from '@smart-signer/lib/auth/chat-session';
 import { chatSessionEnder } from '@smart-signer/lib/auth/chat-session-ender';
+import { ensureSessionUid } from '@smart-signer/lib/session-uid-cookie';
+import { LOGIN_CHALLENGE_COOKIE } from '@smart-signer/lib/api-handlers/auth/challenge';
 
 const logger = getLogger('app');
 
 export const loginUser: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
 
-  const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
+  const loginChallenge = req.cookies[LOGIN_CHALLENGE_COOKIE] || '';
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
 
@@ -138,7 +139,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   setAccountInfoCookie(res, username, loginType);
 
   // Log login event atomically with session creation
-  const uid = req.cookies['session_uid'] || 'n/a';
+  const uid = ensureSessionUid(req, res);
   logLoginEvent(getClientIpFromApiRequest(req), username, loginType, uid);
 
   res.json(user);

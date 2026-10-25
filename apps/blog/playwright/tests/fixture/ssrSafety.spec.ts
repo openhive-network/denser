@@ -24,8 +24,8 @@ const SUBSCRIBED_USER = 'guest4test1';
 const POST_LIST_ITEM = 'data-testid="post-list-item"';
 
 /**
- * Every page renders per request (the root layout reads cookies), so none may
- * tell a shared cache (CDN/proxy) to store it.
+ * A page rendered for a signed-in observer must not tell a shared cache
+ * (CDN/proxy) to store it.
  */
 function expectNotSharedCacheable(res: APIResponse, what: string) {
   const cacheControl = (res.headers()['cache-control'] ?? '').toLowerCase();
@@ -100,25 +100,35 @@ test.describe('SSR safety — cache headers & per-user isolation', () => {
     expectNotSharedCacheable(res, 'personalized feed');
   });
 
-  // Every other page is rendered on demand too (ƒ in the build's route table),
-  // and the response must keep saying so. Next 15 changed caching defaults;
-  // these pin the headers Next 14 sent. The community feed is requested as the
-  // observer it was recorded for.
-  const PAGES = [
+  // Every page is rendered on demand (ƒ in the build's route table). One rendered
+  // without personalizing cookies is the same for every visitor, so it may be
+  // stored by a shared cache for a short time and sets no cookie
+  // (anonymousPageCache.spec.ts); one rendered for an observer must not be.
+  // The community feed is requested as the observer it was recorded for.
+  const ANONYMOUS_PAGES = [
     { what: 'feed', path: '/trending' },
     { what: 'post', path: `/test/@${SUBSCRIBED_USER}/test-ako-post` },
-    { what: 'profile', path: `/@${SUBSCRIBED_USER}` },
-    { what: 'community feed', path: '/trending/hive-160391', observer: SUBSCRIBED_USER }
+    { what: 'profile', path: `/@${SUBSCRIBED_USER}` }
   ];
-  for (const { what, path, observer } of PAGES) {
-    test(`SAFE-09 — ${what} ${path} is not publicly cacheable`, async ({ request }) => {
-      const res = await request.get(path, {
-        headers: observer ? { cookie: `observer=${observer}` } : {}
-      });
+  for (const { what, path } of ANONYMOUS_PAGES) {
+    test(`SAFE-09 — anonymous ${what} ${path} is cacheable for a short time only, and sets no cookie`, async ({
+      request
+    }) => {
+      const res = await request.get(path);
       expect(res.status()).toBe(200);
-      expectNotSharedCacheable(res, what);
+      expect(res.headers()['cache-control']).toMatch(/^public, s-maxage=\d+, stale-while-revalidate=\d+/);
+      expect(res.headers()['set-cookie']).toBeUndefined();
     });
   }
+  test('SAFE-09 — community feed /trending/hive-160391 for an observer is not publicly cacheable', async ({
+    request
+  }) => {
+    const res = await request.get('/trending/hive-160391', {
+      headers: { cookie: `observer=${SUBSCRIBED_USER}` }
+    });
+    expect(res.status()).toBe(200);
+    expectNotSharedCacheable(res, 'community feed');
+  });
 
   // /api/health is a static route handler. Next 15+ gives static handlers
   // `s-maxage=31536000` by default, which would let a proxy cache keep

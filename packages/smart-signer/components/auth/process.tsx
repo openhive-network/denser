@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef, MutableRefObject } from 'react';
-import { cookieNamePrefix } from '@smart-signer/lib/session';
-import { getCookie } from '@ui/lib/utils';
+import { useState, useRef, MutableRefObject } from 'react';
 import { isUserCancelled } from '@ui/lib/user-cancelled';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useSignIn } from '@smart-signer/lib/auth/use-sign-in';
+import { fetchLoginChallenge } from '@smart-signer/lib/auth/login-challenge';
 import { Signatures, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
@@ -23,14 +22,9 @@ export interface LoginFormSchema {
 
 export const useProcessAuth = (authenticateOnBackend: boolean) => {
   const authDataRef = useRef<PostLoginSchema | null>(null) as MutableRefObject<PostLoginSchema | null>;
-  const [loginChallenge, setLoginChallenge] = useState('');
   const [isSigned, setIsSigned] = useState(false);
   const { signerOptions } = useSigner();
   const signIn = useSignIn();
-
-  useEffect(() => {
-    setLoginChallenge(getCookie(`${cookieNamePrefix}login_challenge`));
-  }, []);
 
   const signAuth = async (data: LoginFormSchema): Promise<void> => {
     logger.debug('onSubmit form data: %o', data);
@@ -49,10 +43,7 @@ export const useProcessAuth = (authenticateOnBackend: boolean) => {
     };
 
     try {
-      const hiveChain = await getChain();
-      // Read challenge directly from cookie — React state may not have updated yet
-      // if signAuth is called early (e.g., biometric auto-unlock on page load).
-      const challenge = loginChallenge || getCookie(`${cookieNamePrefix}login_challenge`) || '';
+      const [hiveChain, challenge] = await Promise.all([getChain(), fetchLoginChallenge()]);
       const operation: operation = await getOperationForLogin(username, keyType, challenge, loginType);
 
       const expr = new Date();

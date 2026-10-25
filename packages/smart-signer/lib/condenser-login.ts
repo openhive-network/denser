@@ -1,8 +1,7 @@
 import { LoginType, KeyType } from '@smart-signer/types/common';
-import { getCookie } from '@ui/lib/utils';
-import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { getOperationForLogin } from '@smart-signer/lib/login-operation';
+import { fetchLoginChallenge } from '@smart-signer/lib/auth/login-challenge';
 import { getChain } from '@transaction/lib/chain';
 import { hasCompatibleKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
@@ -42,16 +41,17 @@ export async function loginCondenserUser(
     return;
   }
 
+  let loginChallenge: string;
   try {
-    const loginChallenge = getCookie(`${cookieNamePrefix}login_challenge`);
-    if (!loginChallenge) {
-      // Middleware should set this on every request. If missing,
-      // don't mark migrated so we retry on next page load.
-      logger.warn('%s: no login_challenge cookie', profile.logLabel);
-      removeStoredWif(username, loginType);
-      return;
-    }
+    loginChallenge = await fetchLoginChallenge();
+  } catch (error) {
+    // Not marked migrated: the next page load tries again
+    logger.warn(error, '%s: could not get a login challenge', profile.logLabel);
+    removeStoredWif(username, loginType);
+    return;
+  }
 
+  try {
     const hiveChain = await getChain();
     const operation = await getOperationForLogin(username, KeyType.posting, loginChallenge, loginType);
 

@@ -1,5 +1,5 @@
 import type { Community } from '@hive/common-hiveio-packages/wax';
-import { getCommunity } from '@transaction/lib/bridge-api';
+import { getCommunities, getCommunity } from '@transaction/lib/bridge-api';
 import { getReadChain } from '@transaction/lib/chain';
 import { readFeedCacheConfig } from '@transaction/lib/feed-cache';
 import { createProfileCache, type IProfileCache } from '@transaction/lib/profile-cache';
@@ -18,16 +18,23 @@ export interface CommunityPageData {
 declare global {
   // One cache per server process: route bundles and dev-mode reloads may each evaluate this module.
   var denserCommunityCache: IProfileCache<CommunityPageData> | undefined;
+  var denserCommunityListCache: IProfileCache<Community[] | null> | undefined;
 }
 
 // A community is an account: its reads share the profile cache's settings and keys.
-const getCommunityCache = (): IProfileCache<CommunityPageData> =>
-  (globalThis.denserCommunityCache ??= createProfileCache<CommunityPageData>({
+const createCommunityCache = <T,>(): IProfileCache<T> =>
+  createProfileCache<T>({
     config: readFeedCacheConfig(process.env),
     anonymousObserver: DEFAULT_OBSERVER,
     onRevalidateError: (error, key) =>
       logger.warn(error, 'Community cache: reloading %s failed, serving the stale value', key)
-  }));
+  });
+
+const getCommunityCache = (): IProfileCache<CommunityPageData> =>
+  (globalThis.denserCommunityCache ??= createCommunityCache<CommunityPageData>());
+
+const getCommunityListCache = (): IProfileCache<Community[] | null> =>
+  (globalThis.denserCommunityListCache ??= createCommunityCache<Community[] | null>());
 
 /**
  * A community as its pages' server render needs it: its data and its description rendered.
@@ -42,4 +49,14 @@ export async function getCommunityPageData(name: string, observer: string): Prom
     const community = (await getCommunity(name, observer)) ?? null;
     return { community, renderedDescription: community ? renderCommunityDescription(community) : null };
   });
+}
+
+/**
+ * The communities listed in `sort` order (no search query), from the same short-lived process cache
+ * for anonymous requests; requests with an observer always fetch. Rejects as `getCommunities` does.
+ */
+export async function getCommunityList(sort: string, observer: string): Promise<Community[] | null> {
+  const chain = getReadChain();
+  const request = { network: `${chain.chainId}|${chain.endpointUrl}`, read: `communities:${sort}`, account: '', observer };
+  return getCommunityListCache().get(request, async () => (await getCommunities(sort, null, observer)) ?? null);
 }

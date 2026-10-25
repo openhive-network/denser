@@ -10,10 +10,9 @@ export const proxy = createMiddleware({
   }
 });
 
-// No middleware for build assets and public files: it would put Set-Cookie on them,
-// which keeps shared caches from storing them. Paths with an @ (or %40) are account
-// pages, whose names may end in what looks like a file extension. Next reads this
-// statically, so it is a literal here and in the other app's proxy.ts.
+// No middleware for build assets and public files: they need none of its headers. Paths
+// with an @ (or %40) are account pages, whose names may end in what looks like a file
+// extension. Next reads this statically, so it is a literal here and in the other app's proxy.ts.
 export const config = {
   matcher: [
     // The root on its own: under a base path Next does not match `/wallet` (no trailing

@@ -1,6 +1,7 @@
 import {commonRegister} from '@hive/ui/lib/common-instrumentation';
 import * as Sentry from '@sentry/nextjs';
 import type { Instrumentation } from 'next';
+import { installPublicCacheGuard } from '@hive/middleware/lib/public-cache';
 import { installServiceUnavailableStatus, markServiceUnavailableRequest } from './lib/service-unavailable';
 
 export async function register() {
@@ -9,6 +10,7 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     const { ServerResponse } = await import('node:http');
     installServiceUnavailableStatus(ServerResponse);
+    installPublicCacheGuard(ServerResponse);
 
     // Before the first request: the server renders bodies synchronously, so a code block rendered
     // before the highlighter is ready would be served plain.
