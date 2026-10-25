@@ -20,13 +20,14 @@ handle @robots {
 
 # lb_try_duration: while an app's server restarts (follow mode swapping in a new
 # build, or a container being recreated) a request waits for it rather than failing.
+# DENSER_BLOG_UPSTREAM is varnish:80 when the shared HTML cache runs (compose.cache.yml).
 handle /blog {
-	reverse_proxy blog:80 {
+	reverse_proxy {$DENSER_BLOG_UPSTREAM:blog:80} {
 		lb_try_duration 15s
 	}
 }
 handle /blog/* {
-	reverse_proxy blog:80 {
+	reverse_proxy {$DENSER_BLOG_UPSTREAM:blog:80} {
 		lb_try_duration 15s
 	}
 }

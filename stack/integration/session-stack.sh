@@ -17,6 +17,8 @@
 #   DENSER_SOURCE_DIR    the checkout as the docker daemon sees it (default:
 #                        $DENSER_DEV_CHECKOUT, $AIDEV_HOST_CHECKOUT, or this checkout)
 #   DENSER_SESSION_PROJECT  the compose project (default: one per checkout)
+#   DENSER_HTML_CACHE    varnish: put the shared HTML cache in front of the blog
+#                        (compose.cache.yml); off (default) leaves it out
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -49,6 +51,11 @@ export DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET=${DENSER_SERVER_OAUTH_OPENHIVE_C
 DENSER_FOLLOW_IMAGE=$(follow/environment-image.sh)
 export DENSER_FOLLOW_IMAGE
 export COMPOSE_FILE=compose.yml:compose.follow.yml:compose.session.yml
+case "${DENSER_HTML_CACHE:-off}" in
+    off) ;;
+    varnish) COMPOSE_FILE=$COMPOSE_FILE:compose.cache.yml ;;
+    *) echo "DENSER_HTML_CACHE=$DENSER_HTML_CACHE is neither varnish nor off" >&2; exit 64 ;;
+esac
 export COMPOSE_PROFILES=watch
 export COMPOSE_PROJECT_NAME=${DENSER_SESSION_PROJECT:-denser-session-$(printf %s "$DENSER_SOURCE_DIR" | sha256sum | cut -c1-8)}
 # compose.yml's site settings, which compose.session.yml replaces.
@@ -63,6 +70,7 @@ case "${1:-}" in
         docker image inspect "$DENSER_FOLLOW_IMAGE" > /dev/null 2>&1 || docker pull -q "$DENSER_FOLLOW_IMAGE" > /dev/null
         docker compose up -d --remove-orphans
         ./caddy-apply.sh
+        [ "${DENSER_HTML_CACHE:-off}" = off ] || ./varnish-apply.sh
         echo "session stack $COMPOSE_PROJECT_NAME: $url/blog, $url/wallet, $url/status/deployed.json"
         echo "The first builds take several minutes; follow them with: $0 logs follower"
         ;;

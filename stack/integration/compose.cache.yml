@@ -1,0 +1,30 @@
+# The shared HTML cache (optional): varnish between caddy's /blog route and the blog,
+# storing the anonymous pages the blog marks public (varnish/default.vcl). An overlay,
+# last in COMPOSE_FILE: upgrade.sh adds it when .env says DENSER_HTML_CACHE=varnish,
+# session-stack.sh when the environment does. Without it caddy proxies to the blog
+# directly. See README.md, "Shared HTML cache".
+#
+#   caddy:/blog -> varnish:80 -> caddy:8081 (Caddyfile.cache-origin) -> blog:80
+#
+# The wallet stays direct: it marks no page public.
+
+services:
+  varnish:
+    image: varnish:7.7-alpine
+    restart: unless-stopped
+    depends_on:
+      caddy:
+        condition: service_started
+        # varnish resolves its backend's address when it loads the VCL, so it starts
+        # again whenever compose recreates caddy.
+        restart: true
+    environment:
+      VARNISH_SIZE: ${DENSER_HTML_CACHE_SIZE:-256M}
+    volumes:
+      # The directory, as caddy/ is mounted; varnish-apply.sh loads a changed VCL.
+      - ${DENSER_SOURCE_DIR:-../..}/stack/integration/varnish:/etc/varnish:ro
+    networks: [default]
+
+  caddy:
+    environment:
+      DENSER_BLOG_UPSTREAM: varnish:80
