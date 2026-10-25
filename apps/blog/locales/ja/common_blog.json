@@ -1003,6 +1003,10 @@
     }
   },
   "for_you_feed": {
-    "sign_in_prompt": "ログインすると、あなたのフィードが表示されます。"
+    "sign_in_prompt": "ログインすると、あなたのフィードが表示されます。",
+    "unavailable": "現在、おすすめフィードを表示できません。",
+    "service_not_responding": "おすすめサービスが応答しませんでした。",
+    "data_not_loaded": "フィードに必要なデータの一部を読み込めませんでした。",
+    "go_to_trending": "トレンドの投稿を見る"
   }
 }

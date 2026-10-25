@@ -11,6 +11,7 @@ import {
   serveFollowLists,
   serveFypFeed,
   unsetFypApiUrlInBrowser,
+  type FypFailure,
   type FypPost
 } from '../support/fypApiStub';
 import enBlog from '../../../locales/en/common_blog.json';
@@ -41,8 +42,8 @@ const LAST_PAGE = asFypPage(
 );
 const MUTED_AUTHOR = 'worldmappin';
 const BLACKLISTED_AUTHOR = 'ecency';
-// The feed's first page is answered with an error until React Query stops retrying it
-const ERROR_TIMEOUT_MS = 30_000;
+// How soon after its first feed request the page says the feed is down
+const ERROR_TIMEOUT_MS = 5_000;
 
 const postLink = (page: Page, post: FypPost) =>
   page.locator(`li[data-testid="post-list-item"] a[href*="/@${post.author}/${post.permlink}"]`).first();
@@ -87,21 +88,47 @@ test.describe('For You feed — signed in', () => {
     for (const post of hidden) await expect(postLink(page, post)).toHaveCount(0);
   });
 
-  test('FYP-03 — a failing FYP API shows the error state with a retry, and Trending still works', async ({
-    page
-  }) => {
-    await serveFollowLists(page, {});
-    await serveFypFeed(page, [], 502);
-    await gotoLoggedIn(page, '/for-you');
+  for (const [label, failure] of [
+    ['an unreachable', 'connectionrefused'],
+    ['a 503', 503]
+  ] satisfies [string, FypFailure][]) {
+    test(`FYP-03 — ${label} FYP API shows the For You error at once, and Trending still works`, async ({
+      page
+    }) => {
+      await serveFollowLists(page, {});
+      const feedRequests = await serveFypFeed(page, [], failure);
+      await gotoLoggedIn(page, '/for-you');
 
-    const error = page.getByTestId('for-you-error');
-    await expect(error).toBeVisible({ timeout: ERROR_TIMEOUT_MS });
-    await expect(error.getByRole('button', { name: enBlog.user_profile.load_more_retry })).toBeEnabled();
+      await expect.poll(() => feedRequests.length, { timeout: TIMEOUTS.HYDRATION }).toBeGreaterThan(0);
+      const error = page.getByTestId('for-you-error');
+      await expect(error).toBeVisible({ timeout: ERROR_TIMEOUT_MS });
+      await expect(error).toContainText(enBlog.for_you_feed.unavailable);
+      await expect(error).toContainText(enBlog.for_you_feed.service_not_responding);
+      await expect(error.getByRole('button', { name: enBlog.user_profile.load_more_retry })).toBeEnabled();
+      expect(feedRequests).toHaveLength(1);
 
-    await page.goto('/trending');
-    await expect(new HomePage(page).getMainTimeLineOfPosts.first()).toBeVisible({
-      timeout: TIMEOUTS.HYDRATION
+      await error.getByRole('link', { name: enBlog.for_you_feed.go_to_trending }).click();
+      await expect(page).toHaveURL(/\/trending$/);
+      await expect(new HomePage(page).getMainTimeLineOfPosts.first()).toBeVisible({
+        timeout: TIMEOUTS.HYDRATION
+      });
     });
+  }
+
+  test('FYP-06 — Retry reads the feed again and lists it once the FYP API answers', async ({ page }) => {
+    await serveFollowLists(page, {});
+    const failedRequests = await serveFypFeed(page, [], 503);
+    await gotoLoggedIn(page, '/for-you');
+    const error = page.getByTestId('for-you-error');
+    await expect(error).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+
+    const retriedRequests = await serveFypFeed(page, [FIRST_PAGE]);
+    await error.getByRole('button', { name: enBlog.user_profile.load_more_retry }).click();
+
+    await expect(postLink(page, FIRST_PAGE[0])).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    await expect(error).toBeHidden();
+    expect(failedRequests).toHaveLength(1);
+    expect(retriedRequests.map((request) => new URL(request.url()).searchParams.get('page'))).toEqual(['1']);
   });
 
   test('FYP-05 — with FYP_API_URL unset there is no For You sort and /for-you is not found', async ({

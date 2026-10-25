@@ -1005,6 +1005,10 @@
     }
   },
   "for_you_feed": {
-    "sign_in_prompt": "Sign in to see your feed."
+    "sign_in_prompt": "Sign in to see your feed.",
+    "unavailable": "Your For You feed isn't available right now.",
+    "service_not_responding": "The recommendation service didn't respond.",
+    "data_not_loaded": "Some of the data the feed needs couldn't be loaded.",
+    "go_to_trending": "See Trending posts"
   }
 }

@@ -1007,6 +1007,10 @@
     }
   },
   "for_you_feed": {
-    "sign_in_prompt": "Inicia sesión para ver tu feed."
+    "sign_in_prompt": "Inicia sesión para ver tu feed.",
+    "unavailable": "Tu feed Para ti no está disponible en este momento.",
+    "service_not_responding": "El servicio de recomendaciones no respondió.",
+    "data_not_loaded": "No se pudieron cargar algunos datos que necesita el feed.",
+    "go_to_trending": "Ver publicaciones en tendencia"
   }
 }

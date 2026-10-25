@@ -1007,6 +1007,10 @@
     }
   },
   "for_you_feed": {
-    "sign_in_prompt": "Connectez-vous pour voir votre fil."
+    "sign_in_prompt": "Connectez-vous pour voir votre fil.",
+    "unavailable": "Votre fil Pour vous n'est pas disponible pour le moment.",
+    "service_not_responding": "Le service de recommandations n'a pas répondu.",
+    "data_not_loaded": "Certaines données nécessaires au fil n'ont pas pu être chargées.",
+    "go_to_trending": "Voir les publications tendance"
   }
 }

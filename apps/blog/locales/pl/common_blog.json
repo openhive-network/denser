@@ -1009,6 +1009,10 @@
     }
   },
   "for_you_feed": {
-    "sign_in_prompt": "Zaloguj się, aby zobaczyć swój kanał."
+    "sign_in_prompt": "Zaloguj się, aby zobaczyć swój kanał.",
+    "unavailable": "Twój kanał Dla Ciebie jest teraz niedostępny.",
+    "service_not_responding": "Usługa rekomendacji nie odpowiedziała.",
+    "data_not_loaded": "Nie udało się wczytać części danych potrzebnych do kanału.",
+    "go_to_trending": "Zobacz popularne posty"
   }
 }

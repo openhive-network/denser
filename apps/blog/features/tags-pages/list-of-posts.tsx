@@ -8,7 +8,7 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_PREFERENCES, FOR_YOU_SORT, Preferences, SortTypes } from '@/blog/lib/utils';
-import { nextFypPage } from '@/blog/lib/fyp-api';
+import { FypApiError, nextFypPage, retryFypRead } from '@/blog/lib/fyp-api';
 import { StaleTime } from '@/blog/lib/react-query';
 import { useTranslation } from '@/blog/i18n/client';
 import PostList from '../list-of-posts/posts-loader';
@@ -69,34 +69,44 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   const forYouAccount = isForYou && isHydrated && user.isLoggedIn ? user.username : '';
   const hiddenAuthors = useHiddenAuthors(observer, Boolean(forYouAccount));
 
-  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isPending, refetch } =
-    useInfiniteQuery({
-      queryKey: ['entriesInfinite', sort, tag, observer, ...(isForYou ? [forYouAccount] : [])],
-      queryFn: async ({ pageParam }: { pageParam: PageParam }) => {
-        if (isForYou) {
-          const page = typeof pageParam === 'number' ? pageParam : 1;
-          // Loaded with the first For You page, so the other feeds don't carry the FYP client
-          const { getForYouPosts } = await import('./lib/for-you-posts');
-          return (await loadCardEntries(getForYouPosts(forYouAccount, page, observer))) ?? [];
-        }
-        const { author, permlink } = typeof pageParam === 'object' ? pageParam : { author: '', permlink: '' };
-        const postsData = await loadCardEntries(getPostsRanked(sort, tag, author, permlink, observer));
-        return postsData ?? [];
-      },
-      // Pages keep every post the feed sent, so a short page still marks the end of a filtered feed
-      getNextPageParam: (lastPage: CardEntry[], allPages: CardEntry[][]): PageParam =>
-        isForYou ? nextFypPage(lastPage, allPages.length) : nextRankedPage(lastPage),
-      initialPageParam: undefined as PageParam,
-      // Don't fetch "my communities" for anonymous users — the API would return
-      // hive.blog's subscriptions which are meaningless to the actual user.
-      enabled: isForYou ? Boolean(forYouAccount) : !(tag === 'my' && !user.isLoggedIn),
-      // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
-      // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
-      // initialData is only used when the query has no cached data (first load).
-      initialData: seedPosts ? { pages: [seedPosts], pageParams: [undefined] } : undefined,
-      initialDataUpdatedAt: seedPosts ? Date.now() : undefined,
-      staleTime: StaleTime.MEDIUM
-    });
+  const {
+    data,
+    error,
+    isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isPending,
+    refetch
+  } = useInfiniteQuery({
+    queryKey: ['entriesInfinite', sort, tag, observer, ...(isForYou ? [forYouAccount] : [])],
+    queryFn: async ({ pageParam }: { pageParam: PageParam }) => {
+      if (isForYou) {
+        const page = typeof pageParam === 'number' ? pageParam : 1;
+        // Loaded with the first For You page, so the other feeds don't carry the FYP client
+        const { getForYouPosts } = await import('./lib/for-you-posts');
+        return (await loadCardEntries(getForYouPosts(forYouAccount, page, observer))) ?? [];
+      }
+      const { author, permlink } = typeof pageParam === 'object' ? pageParam : { author: '', permlink: '' };
+      const postsData = await loadCardEntries(getPostsRanked(sort, tag, author, permlink, observer));
+      return postsData ?? [];
+    },
+    // Pages keep every post the feed sent, so a short page still marks the end of a filtered feed
+    getNextPageParam: (lastPage: CardEntry[], allPages: CardEntry[][]): PageParam =>
+      isForYou ? nextFypPage(lastPage, allPages.length) : nextRankedPage(lastPage),
+    initialPageParam: undefined as PageParam,
+    // Don't fetch "my communities" for anonymous users — the API would return
+    // hive.blog's subscriptions which are meaningless to the actual user.
+    enabled: isForYou ? Boolean(forYouAccount) : !(tag === 'my' && !user.isLoggedIn),
+    // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
+    // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
+    // initialData is only used when the query has no cached data (first load).
+    initialData: seedPosts ? { pages: [seedPosts], pageParams: [undefined] } : undefined,
+    initialDataUpdatedAt: seedPosts ? Date.now() : undefined,
+    staleTime: StaleTime.MEDIUM,
+    ...(isForYou && { retry: retryFypRead })
+  });
 
   // Auto-fetch the next page when either the prefetch sentinel (1500px ahead)
   // or the load-more button enters view. Guard on !isFetching so a single cycle
@@ -125,7 +135,13 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   const forYouFailed =
     isForYou && ((isError && !data?.pages?.length) || (hiddenAuthors.isError && !hiddenAuthors.data));
   if (forYouFailed) {
-    return <ForYouError onRetry={retryForYou} isRetrying={isFetching || hiddenAuthors.isFetching} />;
+    return (
+      <ForYouError
+        onRetry={retryForYou}
+        isRetrying={isFetching || hiddenAuthors.isFetching}
+        serviceFailed={error instanceof FypApiError}
+      />
+    );
   }
 
   // Only replace the whole list when there is nothing to show. A failed

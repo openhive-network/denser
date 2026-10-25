@@ -19,7 +19,22 @@ export interface FypRanking {
 export type FypEntry = Entry & { fyp: FypRanking };
 
 /** The For You feed could not be read: unreachable, timed out, an HTTP error or an unexpected body. */
-export class FypApiError extends Error {}
+export class FypApiError extends Error {
+  /** haf_fyp did not answer in time, or answered with a server error: asking again at once won't help. */
+  readonly serviceDown: boolean;
+
+  constructor(message: string, options?: ErrorOptions & { serviceDown?: boolean }) {
+    super(message, options);
+    this.serviceDown = options?.serviceDown ?? false;
+  }
+}
+
+/**
+ * React Query's `retry` for a For You feed read: one retry, none when haf_fyp is down, so a
+ * failure shows within one request timeout instead of after a backoff of several.
+ */
+export const retryFypRead = (failureCount: number, error: unknown): boolean =>
+  !(error instanceof FypApiError && error.serviceDown) && failureCount < 1;
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
@@ -53,10 +68,12 @@ export async function getFypFeedPage(
   try {
     response = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
   } catch (error) {
-    throw new FypApiError(`For You feed request failed: ${url}`, { cause: error });
+    throw new FypApiError(`For You feed request failed: ${url}`, { cause: error, serviceDown: true });
   }
   if (!response.ok) {
-    throw new FypApiError(`For You feed answered HTTP ${response.status}: ${url}`);
+    throw new FypApiError(`For You feed answered HTTP ${response.status}: ${url}`, {
+      serviceDown: response.status >= 500
+    });
   }
   let body: unknown;
   try {
