@@ -3,8 +3,7 @@
 # systemd/denser-integration-upgrade@.timer; safe to run by hand.
 #
 #   ./upgrade.sh            # upgrade, rewrite status/deployed.json, check the blog's
-#                           # OAuth2 provider (status/oauth.json), then
-#                           # Lighthouse-check a newly deployed tip (lighthouse.sh)
+#                           # OAuth2 provider (status/oauth.json)
 #   ./upgrade.sh --quiet    # print nothing when nothing changed (the timer's mode)
 #
 # DENSER_MODE in .env picks how:
@@ -20,6 +19,10 @@
 # and a config it refuses leaves the previous one serving. DENSER_HTML_CACHE=varnish
 # in .env adds the shared HTML cache (compose.cache.yml), which loads a changed
 # varnish/ the same way (varnish-apply.sh).
+#
+# The Lighthouse check of a deployed tip is not part of a run: lighthouse.sh has its
+# own unit (systemd/denser-integration-lighthouse@.timer), so a deploy never waits
+# for a measurement.
 #
 # Exit: 0 upgraded or nothing to do; 1 an app could not be brought to the tip
 # (ROLLED-BACK); 3 the checkout was REFUSED; 4 caddy refused the checkout's caddy/;
@@ -290,13 +293,11 @@ case "$mode" in
     *) echo "upgrade: DENSER_MODE=$mode is neither follow nor images" >&2; exit 64 ;;
 esac
 
-# Advisory: a failed check or a breach is reported in status/oauth.json,
-# status/lighthouse/ and here, never by failing the upgrade or rolling it back.
+# Advisory: a failed check is reported in status/oauth.json and here, never by
+# failing the upgrade or rolling it back.
 oauth_check || echo "upgrade: see status/oauth.json" >&2
 
-./lighthouse.sh "${quiet_args[@]}" || echo "upgrade: lighthouse check exited $?; see status/lighthouse/latest.json" >&2
-
-# After the checks, which a refused caddy/ or varnish/ does not stop: the apps may
+# After the check, which a refused caddy/ or varnish/ does not stop: the apps may
 # have moved.
 [ "$caddy_rc" != 0 ] && exit "$caddy_rc"
 exit "$varnish_rc"

@@ -96,8 +96,14 @@ The site runs from this checkout; no image is built or pulled for the apps.
    the refused config.
 7. `status/deployed.json` reports each app's `revision` (the checkout's commit when
    its build is that commit's build), its `release`, `source: follow:<branch>` and
-   its state. `upgrade.sh` then checks the blog's OAuth2 provider, and once every
-   app reports the checkout's HEAD runs `lighthouse.sh` (both below).
+   its state. `upgrade.sh` then checks the blog's OAuth2 provider (below), and the
+   run ends.
+8. Measuring is a separate unit: `systemd/denser-integration-lighthouse@.timer` runs
+   `lighthouse.sh --quiet` every 2 minutes, which measures once every app reports the
+   checkout's HEAD and those builds have no result yet (below). An upgrade never waits
+   for it: a commit promoted while a check runs is deployed by the next upgrade run,
+   and measured by the first tick after the running check ends. Its journal is
+   `journalctl -u 'denser-integration-lighthouse@*'`.
 
 No GitLab CI is involved. `DENSER_MODE=images` in `.env` runs the
 `registry.gitlab.syncad.com/hive/denser/{blog,wallet}-subdirectory:$DENSER_TAG` images
@@ -199,7 +205,9 @@ base path.
 ## Lighthouse after each promote
 
 `lighthouse.sh` measures each revision of `aidev/integration` once, after the site
-serves it: it waits for `https://$SITE_HOST/status/deployed.json` to report the
+serves it, from its own unit (`systemd/denser-integration-lighthouse@.{timer,service}`,
+`TimeoutStartSec` 3 hours) rather than the upgrade's, so a measurement neither holds
+up a deploy nor is killed by the upgrade's timeout. It waits for `https://$SITE_HOST/status/deployed.json` to report the
 revision for blog and wallet, then runs Lighthouse (mobile, in the pinned
 `gitlab-ci-utils/lighthouse` image, 2 CPUs, one run at a time) 5 times on each route
 and compares the median performance score, LCP, TBT, CLS, transferred JS and
@@ -230,8 +238,9 @@ routes. `lcp-lazy-loaded: false` there flags a route whose LCP image is
 
 - **Results:** `https://$SITE_HOST/status/lighthouse/<revision>.json` and
   `/status/lighthouse/latest.json`, with `"status": "pass"` or `"breach"` and each
-  breach named per route. A breach is also logged in the upgrade unit's journal
-  (`journalctl -u 'denser-integration-upgrade@*'`). The status page of the last
+  breach named per route. A breach is also logged in the Lighthouse unit's journal
+  (`journalctl -u 'denser-integration-lighthouse@*'`), with one line per check:
+  `lighthouse: <revision> checked in <seconds> s, exit <code>`. The status page of the last
   passes is `https://$SITE_HOST/status/lighthouse/` (`index.html`).
 - **Backend timing:** each run, and each route's median, also keeps what the report
   says about the backend (`backend`): the document's TTFB (`server-response-time`),
@@ -265,7 +274,16 @@ routes. `lcp-lazy-loaded: false` there flags a route whose LCP image is
   revision that never deploys, or that a later promote overtakes before it is
   served, is not measured. In images mode with `DENSER_TAG` pinned the site never
   serves the tip, so nothing is measured.
-- **By hand:** `./lighthouse.sh --force` measures the deployed tip again.
+- **Killed or failed:** a check that is stopped, times out or fails writes no result:
+  each result file is written to a `.tmp` and renamed, and the builds count as
+  measured only once the check exits 0 or 2. The next tick removes the killed
+  check's container (`denser-lighthouse-<hash of this directory>`) and any `.tmp`,
+  then measures the revision again from the start.
+- **A promote during a check:** the check carries on, and the routes measured after
+  the deploy see the new builds; the journal then says `its result mixes builds`.
+  The new revision is measured by the next tick.
+- **By hand:** `./lighthouse.sh --force` measures the deployed tip again (it skips,
+  printing `another check is running`, while the unit's check runs).
 - **Comparing two commits:** this check follows the live API and image proxy, so a
   before/after of two revisions mixes code with upstream latency. The deterministic
   pass measures the same routes on recorded data with no network
@@ -294,15 +312,18 @@ cp .env.example .env    # fill in CLOUDFLARE_API_TOKEN (the zone of SITE_HOST),
 ./upgrade.sh
 # route the name: one line in ~/sites-router/sites.map, then ./render.sh there
 #   denser.discuss.peerverity.info    denser-integration-caddy-1
-sudo cp systemd/denser-integration-upgrade@.* /etc/systemd/system/
+sudo cp systemd/denser-integration-*@.* /etc/systemd/system/
 inst=$(systemd-escape --path "$PWD")
-sudo systemctl daemon-reload && sudo systemctl enable --now "denser-integration-upgrade@${inst}.timer"
+sudo systemctl daemon-reload && sudo systemctl enable --now \
+    "denser-integration-upgrade@${inst}.timer" "denser-integration-lighthouse@${inst}.timer"
 ```
 
 A site set up in images mode switches to follow mode by itself: the first
 `upgrade.sh` that has `compose.follow.yml` builds both apps while the image
 containers keep serving, then replaces them. Copying the units again (the commands
-above) shortens the timer to 2 minutes. By hand, compose needs the same file list:
+above) shortens the timer to 2 minutes, and on a site whose `upgrade.sh` still ran
+`lighthouse.sh` itself, installs the Lighthouse unit that now does: until it is
+enabled, nothing is measured. By hand, compose needs the same file list:
 `COMPOSE_FILE=compose.yml:compose.follow.yml DENSER_FOLLOW_IMAGE=$(follow/environment-image.sh) docker compose ps`.
 
 ## A session's stack (`session-stack.sh`)

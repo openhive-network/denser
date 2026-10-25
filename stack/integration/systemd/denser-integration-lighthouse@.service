@@ -1,0 +1,21 @@
+# One instance per site directory, as denser-integration-upgrade@ (the escaped path of
+# stack/integration):
+#   inst=$(systemd-escape --path /home/syncad/denser-integration/stack/integration)
+#   sudo systemctl enable --now "denser-integration-lighthouse@${inst}.timer"
+[Unit]
+Description=Lighthouse-check the denser integration site in %f
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=syncad
+Group=syncad
+WorkingDirectory=%f
+ExecStart=%f/lighthouse.sh --quiet
+# A breach is advisory: reported in status/lighthouse/ and the journal, not a failure.
+SuccessExitStatus=2
+# One check of a new tip: up to 300 s waiting for caddy to serve it, then 75 runs
+# (about 30 minutes in practice, at most 120 s each). A check killed here writes no
+# result, and the next tick measures again. A timer tick while this runs is skipped.
+TimeoutStartSec=10800
