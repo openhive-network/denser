@@ -32,15 +32,6 @@ export default function DetailsCardHover({ post, children, decline, post_page }:
     );
   }
 
-  if (post.payout <= 0) {
-    return (
-      <div className="flex items-center" data-testid="post-payout">
-        {'$'}
-        {post.payout.toFixed(2)}
-      </div>
-    );
-  }
-
   return (
     <Popover {...rootProps}>
       <PopoverTrigger

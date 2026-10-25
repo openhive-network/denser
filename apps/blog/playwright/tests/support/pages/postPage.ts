@@ -189,7 +189,9 @@ export class PostPage {
     this.commentCardsFooterUpvotes = this.commentCardsFooters.locator('[data-testid="upvote-button"]');
     this.commentCardsFooterDownvotes = this.commentCardsFooters.locator('[data-testid="downvote-button"]');
     this.commentCardsFooterPayoutNonZero = page.locator('[data-testid="comment-card-footer-payout"]');
-    this.commentCardsFooterPayoutZero = page.locator('[data-testid="post-payout"]');
+    this.commentCardsFooterPayoutZero = page
+      .locator('[data-testid="comment-card-footer-payout"]')
+      .filter({ hasText: '$0.00' });
     this.commentCardsFooterVotes = this.commentCardsFooters.locator('[data-testid="comment-votes"]');
     this.postVoterList = page.locator('[data-testid="list-of-voters"]');
     this.commentCardsFooterReply = this.commentCardsFooters.locator(

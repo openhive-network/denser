@@ -355,7 +355,10 @@ const CommentListItem = memo(function CommentListItem({
                               post={comment}
                               decline={parseFloat(comment.max_accepted_payout) === 0}
                             >
-                              <div className="flex items-center hover:cursor-pointer hover:text-destructive ">
+                              <div
+                                className="flex items-center hover:cursor-pointer hover:text-destructive "
+                                data-testid="comment-card-footer-payout"
+                              >
                                 {'$'}
                                 {comment.payout.toFixed(2)}
                               </div>
