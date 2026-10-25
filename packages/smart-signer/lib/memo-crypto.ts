@@ -1,4 +1,4 @@
-import type { TPublicKey } from '@hiveio/wax';
+import type { AEncryptionProvider, TPublicKey } from '@hiveio/wax';
 import type { BeekeeperProvider as IBeekeeperProvider } from '@hiveio/wax-signers-beekeeper';
 import type { IBeekeeperInstance, IBeekeeperSession } from '@hiveio/beekeeper';
 
@@ -8,12 +8,32 @@ const logger = getLogger('app');
 
 // hive-js convention: leading `#` marks "encrypt this" but isn't itself
 // encrypted - strip before encrypt, re-prepend after decrypt. Keychain does
-// this internally; wax's BeekeeperProvider doesn't, so it's applied here
-// only around the WIF/Beekeeper path.
+// this internally; wax's BeekeeperProvider and MetaMaskProvider pass the
+// buffer through untouched, so it's applied around those by the
+// `*MemoWithProvider` wrappers below.
 const ENCRYPTED_MEMO_MARKER = '#';
 
 export function stripEncryptedMemoMarker(memo: string): string {
   return memo.startsWith(ENCRYPTED_MEMO_MARKER) ? memo.slice(ENCRYPTED_MEMO_MARKER.length) : memo;
+}
+
+export type MemoEncryptionProvider = Pick<AEncryptionProvider, 'encryptData' | 'decryptData'>;
+
+/** Encrypts `memo` for `toAccountMemoPublicKey` through a provider that doesn't strip the `#` marker itself. */
+export async function encryptMemoWithProvider(
+  provider: MemoEncryptionProvider,
+  toAccountMemoPublicKey: TPublicKey,
+  memo: string
+): Promise<string> {
+  return provider.encryptData(stripEncryptedMemoMarker(memo), toAccountMemoPublicKey);
+}
+
+/** Decrypts `encodedMemo` through a provider that doesn't re-prepend the `#` marker itself. */
+export async function decryptMemoWithProvider(
+  provider: MemoEncryptionProvider,
+  encodedMemo: string
+): Promise<string> {
+  return ENCRYPTED_MEMO_MARKER + (await provider.decryptData(encodedMemo));
 }
 
 /** Caches an async factory's result; a rejection isn't cached, so the next call retries. */
@@ -92,10 +112,7 @@ export async function decryptMemoWithPrivateKey(
   memoPrivateKeyWif: string,
   encodedMemo: string
 ): Promise<string> {
-  const decrypted = await withEphemeralMemoProvider(memoPrivateKeyWif, (provider) =>
-    provider.decryptData(encodedMemo)
-  );
-  return ENCRYPTED_MEMO_MARKER + decrypted;
+  return withEphemeralMemoProvider(memoPrivateKeyWif, (provider) => decryptMemoWithProvider(provider, encodedMemo));
 }
 
 /** Encrypts a memo with a user-supplied MEMO WIF for a recipient's MEMO public key; strips the marker first. */
@@ -105,6 +122,6 @@ export async function encryptMemoWithPrivateKey(
   memo: string
 ): Promise<string> {
   return withEphemeralMemoProvider(memoPrivateKeyWif, (provider) =>
-    provider.encryptData(stripEncryptedMemoMarker(memo), toAccountMemoPublicKey)
+    encryptMemoWithProvider(provider, toAccountMemoPublicKey, memo)
   );
 }

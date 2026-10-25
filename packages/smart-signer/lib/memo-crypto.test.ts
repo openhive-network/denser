@@ -12,8 +12,14 @@ registerHooks({
   }
 });
 
-const { createLazyAsyncSingleton, decryptMemoWithPrivateKey, encryptMemoWithPrivateKey, stripEncryptedMemoMarker } =
-  await import('./memo-crypto.ts');
+const {
+  createLazyAsyncSingleton,
+  decryptMemoWithPrivateKey,
+  decryptMemoWithProvider,
+  encryptMemoWithPrivateKey,
+  encryptMemoWithProvider,
+  stripEncryptedMemoMarker
+} = await import('./memo-crypto.ts');
 
 /**
  * Generated key pairs of no real account:
@@ -106,5 +112,57 @@ describe('memo-crypto: # marker stripping (hive-js convention, WIF/Beekeeper pat
   it('leaves text without a leading # untouched', () => {
     assert.equal(stripEncryptedMemoMarker('secret'), 'secret');
     assert.equal(stripEncryptedMemoMarker(''), '');
+  });
+});
+
+/**
+ * A pass-through provider like wax's MetaMaskProvider, whose snap gets the buffer
+ * untouched: "encrypts" to `#` + the plaintext reversed, so the test can see
+ * exactly which plaintext reached the provider and which came back.
+ */
+const createPassThroughProvider = () => {
+  const received: { encrypt?: [string, string]; decrypt?: string } = {};
+  const provider = {
+    encryptData: async (buffer: unknown, recipient: string) => {
+      assert.equal(typeof buffer, 'string');
+      received.encrypt = [String(buffer), recipient];
+      return '#' + [...String(buffer)].reverse().join('');
+    },
+    decryptData: async (buffer: string) => {
+      received.decrypt = buffer;
+      return [...buffer.slice(1)].reverse().join('');
+    }
+  };
+  return { provider, received };
+};
+
+describe('memo-crypto: # marker around a pass-through provider (MetaMask path)', () => {
+  it('strips the marker before the provider encrypts', async () => {
+    const { provider, received } = createPassThroughProvider();
+
+    assert.equal(await encryptMemoWithProvider(provider, RECIPIENT_MEMO_PUBLIC_KEY, '#hello'), '#olleh');
+    assert.deepEqual(received.encrypt, ['hello', RECIPIENT_MEMO_PUBLIC_KEY]);
+  });
+
+  it('re-prepends the marker after the provider decrypts, round-tripping to a single #', async () => {
+    const { provider, received } = createPassThroughProvider();
+    const encrypted = await encryptMemoWithProvider(provider, RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
+
+    assert.equal(await decryptMemoWithProvider(provider, encrypted), '#hello');
+    assert.equal(received.decrypt, '#olleh');
+  });
+
+  it('propagates a provider rejection', async () => {
+    const provider = {
+      encryptData: async () => {
+        throw new Error('snap rejected');
+      },
+      decryptData: async () => {
+        throw new Error('snap rejected');
+      }
+    };
+
+    await assert.rejects(encryptMemoWithProvider(provider, RECIPIENT_MEMO_PUBLIC_KEY, '#hello'), /snap rejected/);
+    await assert.rejects(decryptMemoWithProvider(provider, '#olleh'), /snap rejected/);
   });
 });
