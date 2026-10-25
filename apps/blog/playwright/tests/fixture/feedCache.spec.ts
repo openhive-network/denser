@@ -52,8 +52,8 @@ test('FEED-CACHE-01 — two anonymous loads within the TTL make one get_ranked_p
     expect(second.status).toBe(200);
     expect(second.html, 'the cached feed is server-rendered').toContain(POST_CARD);
     expect(calls.count()).toBe(1);
-    // Only the data is cached, never the page.
-    expect(second.headers['cache-control']).toContain('no-store');
+    // This cache holds the data: the page is still rendered for each request that reaches the server.
+    expect(second.headers['cache-control']).toMatch(/^public, s-maxage=/);
   } finally {
     calls.stop();
   }

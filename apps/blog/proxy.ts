@@ -1,9 +1,12 @@
 import { createMiddleware } from '@hive/middleware/lib/common';
+import { readPublicCacheConfig } from '@hive/middleware/lib/public-cache';
 
 // Blog-specific middleware: serves /trending at the root path (rewrite, no redirect),
-// applies a per-request nonce CSP at runtime
+// applies a per-request nonce CSP at runtime, and marks anonymous pages cacheable by shared
+// caches (instrumentation.ts installs the guard that takes that back for other statuses)
 export const proxy = createMiddleware({
   rootRewrite: '/trending',
+  publicCache: readPublicCacheConfig(process.env),
   csp: {
     // Embedded content whitelist for blog posts
     // Note: 3speak.online/co removed (compromised/spam). Embeds render via play.3speak.tv,
@@ -28,10 +31,9 @@ export const proxy = createMiddleware({
   }
 });
 
-// No middleware for build assets and public files: it would put Set-Cookie on them,
-// which keeps shared caches from storing them. Paths with an @ (or %40) are account
-// pages, whose names may end in what looks like a file extension. Next reads this
-// statically, so it is a literal here and in the other app's proxy.ts.
+// No middleware for build assets and public files: they need none of its headers. Paths
+// with an @ (or %40) are account pages, whose names may end in what looks like a file
+// extension. Next reads this statically, so it is a literal here and in the other app's proxy.ts.
 export const config = {
   matcher: [
     // The root on its own: under a base path Next does not match `/blog` (no trailing

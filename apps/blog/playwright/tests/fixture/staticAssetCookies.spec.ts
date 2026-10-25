@@ -2,17 +2,17 @@ import type { APIResponse } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 
 /**
- * Static asset responses carry no cookies.
+ * Static asset and page responses carry no cookies.
  *
- * The middleware (proxy.ts, packages/middleware) sets the login challenge and
- * session_uid cookies on every response it runs on. A Set-Cookie on a build asset
- * or a public file keeps shared caches and CDNs from storing it, so proxy.ts's
- * matcher leaves /_next/static, /_next/image and public files out. Pages, including
- * the .html ones and account pages whose names end in what looks like an
- * extension, still get the cookies and the CSP.
+ * A Set-Cookie keeps shared caches and CDNs from storing a response. The
+ * middleware (proxy.ts, packages/middleware) sets none; the login challenge
+ * comes from /api/auth/challenge (loginChallenge.spec.ts). proxy.ts's matcher
+ * leaves /_next/static, /_next/image and public files out of the middleware.
+ * Pages, including the .html ones and account pages whose names end in what
+ * looks like an extension, still get its CSP.
  *
- * Each request is made from a fresh context: one that kept the page's cookies
- * would send them back, and the middleware sets no cookie a request already has.
+ * Each request is made from a fresh context: one that kept a response's cookies
+ * would send them back.
  *
  * Reads server responses only, so it reuses the trending feed recording.
  */
@@ -27,8 +27,8 @@ const setCookieNames = (response: APIResponse): string[] =>
     .filter(({ name }) => name.toLowerCase() === 'set-cookie')
     .map(({ value }) => value.split('=')[0]);
 
-test.describe('Static assets — no middleware cookies', () => {
-  test('STATIC-COOKIES-01 — a page sets the challenge cookies; its /_next/static chunks and public files set none', async ({
+test.describe('Static assets and pages — no cookies', () => {
+  test('STATIC-COOKIES-01 — neither a page nor its /_next/static chunks and public files set a cookie', async ({
     playwright,
     baseURL
   }) => {
@@ -44,7 +44,7 @@ test.describe('Static assets — no middleware cookies', () => {
 
     const page = await get('/trending');
     expect(page.status).toBe(200);
-    expect(page.cookies).toEqual(expect.arrayContaining(['blog_login_challenge_server', 'session_uid']));
+    expect(page.cookies).toEqual([]);
     expect(page.headers['content-security-policy']).toBeTruthy();
 
     const assets = [...new Set(page.body.match(CHUNK_URL_PATTERN) ?? [])];
@@ -53,6 +53,7 @@ test.describe('Static assets — no middleware cookies', () => {
       const asset = await get(path);
       expect(asset.status, path).toBe(200);
       expect(asset.cookies, path).toEqual([]);
+      expect(asset.headers['content-security-policy'], path).toBeUndefined();
     }
   });
 
@@ -66,7 +67,8 @@ test.describe('Static assets — no middleware cookies', () => {
       const context = await playwright.request.newContext({ baseURL });
       try {
         const response = await context.get(path, { maxRedirects: 0 });
-        expect(setCookieNames(response), path).toContain('blog_login_challenge_server');
+        expect(response.headers()['content-security-policy'], path).toBeTruthy();
+        expect(setCookieNames(response), path).toEqual([]);
       } finally {
         await context.dispose();
       }

@@ -9,8 +9,9 @@ blockchain.
    [../../apps/blog/package.json](../../apps/blog/package.json).
 2. Implement `@tanstack/react-query` provider in your application, see
    [../../apps/auth/components/common/providers.tsx](../../apps/auth/components/common/providers.tsx).
-3. Add function `setLoginChallengeCookies` to your `middleware.ts`, see
-   [../../apps/auth/middleware.ts](../../apps/auth/middleware.ts).
+3. Add the API endpoint the login form gets its login challenge from:
+   copy [../../apps/blog/pages/api/auth/challenge.ts](../../apps/blog/pages/api/auth/challenge.ts)
+   to the same path in your application.
 4. When you need authentication and session on back-end side, add API
    endpoints for login, logout and user info — just copy files
    [../../apps/auth/pages/api/auth/login.ts](../../apps/auth/pages/api/auth/login.ts),

@@ -121,11 +121,30 @@ The first page of a ranked feed (trending/hot/created/payout/muted, tag and comm
 | `DENSER_FEED_CACHE_STALE_S` | 30 | Seconds past the TTL it is still served while reloaded in the background |
 | `DENSER_FEED_CACHE_MAX_MB` | 32 | Memory cap; least recently used feeds are dropped first |
 
-A failed fetch is never stored. While a background reload fails the stale feed keeps being served (logged as a warning); past the stale window a failed fetch answers 503 as before. Only the data is cached: pages stay `private, no-store`. The cache is per process, so every server replica keeps its own.
+A failed fetch is never stored. While a background reload fails the stale feed keeps being served (logged as a warning); past the stale window a failed fetch answers 503 as before. The cache is per process, so every server replica keeps its own. The pages themselves may be stored by a shared cache only as described under *Anonymous Page Responses* below.
 
 ### Anonymous Profile Cache (`lib/profile-cache.ts`)
 
 The profile layout's server reads (account, reputation, dynamic global properties) and the first page of a profile tab's posts use the same settings and the same anonymous-only rule, keyed by read, account and the chain id + API node (`packages/transaction/lib/profile-cache.ts`). The stale window is capped at the TTL, so profile data is served at most one TTL past fresh. Each of the four reads has its own cache with its own `DENSER_FEED_CACHE_MAX_MB` cap. `getProfileAccount` is also wrapped in React `cache()`, deduplicating `generateMetadata` and the layout within a request.
+
+The sort layout's community list (`bridge.list_communities`, `getCommunityList` in `lib/community-cache.ts`) and a community page's data (`getCommunityPageData`) use the same profile-cache rules.
+
+### Anonymous Page Responses (`packages/middleware/lib/public-cache.ts`)
+
+A page requested without a personalizing cookie renders the same for every visitor, so the origin marks it for shared caches: `Cache-Control: public, s-maxage=30, stale-while-revalidate=60, stale-if-error=300`. Next.js keeps a `Cache-Control` the middleware set on a dynamic page; every other response keeps Next's `private, no-cache, no-store, max-age=0, must-revalidate`. The rule fails closed:
+
+- The middleware (`isPublicCacheableRequest`) marks only a GET or HEAD of a page (not `/api/*`, not `/_next/*`), without the `RSC` header, a `Next-Router-*` header or the `_rsc` query, and without any of the cookies `*_session` (iron-session, OIDC), `observer`, `observer-no-own-lists`, `account_info` or `NEXT_LOCALE`. Without them the server renders for the default observer and the default language.
+- The status is known only once the page renders: `installPublicCacheGuard` (installed by `instrumentation.ts`) sends `no-store` instead for any status other than 200, for any response that sets a cookie, and for a request with `_rsc` in its URL (Next removes `_rsc` from the URL the middleware sees).
+- No page sets a cookie. The login challenge comes from `GET /api/auth/challenge` when signing starts (an HttpOnly `<app>_login_challenge_server` cookie and the JSON body, `no-store`), and `session_uid`, the log-correlation id, is set by `/api/auth/login`. Page-visit log lines show `uuid=n/a` for a browser that never logged in.
+- A cached copy shares its render's CSP nonce for its life (at most `s-maxage` + `stale-while-revalidate`).
+
+A shared cache in front of the blog must not serve a stored page to a request carrying one of those cookies: the responses do not `Vary: Cookie`.
+
+| Env | Default | Meaning |
+|-----|---------|---------|
+| `DENSER_PUBLIC_CACHE_S_MAXAGE_S` | 30 | `s-maxage`; `0` marks no page public |
+| `DENSER_PUBLIC_CACHE_STALE_WHILE_REVALIDATE_S` | 60 | `stale-while-revalidate` |
+| `DENSER_PUBLIC_CACHE_STALE_IF_ERROR_S` | 300 | `stale-if-error` |
 
 ### React Query Configuration (`lib/react-query.ts`)
 
