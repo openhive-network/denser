@@ -1,0 +1,234 @@
+{
+  "_comment": "hivemind REST response bodies, built from recorded JSON-RPC results (hivemind's REST paths return the same objects); bodies and vote lists trimmed.",
+  "rankedPosts": [
+    {
+      "url": "/hive-105017/@oflyhigh/2ienh2",
+      "body": "\u4eca\u5929\u53bb\u533b\u9662\u7ed9\u6bcd\u4eb2\u529e\u7406\u624b\u672f\u540e\u590d\u67e5\u9884\u7ea6\u4ee5\u53ca\u5f00\u4e0b\u4e2a\u6708\u7684\u5965\u897f\u66ff\u5c3c\u9776\u5411\u836f\uff0c\u539f\u672c\u4ee5\u4e3a\u5f88\u5feb\u5c31\u80fd\u529e\u5b8c\uff0c\u7ed3\u679c\u5374\u6298\u817e\u4e86\u5927\u534a\u5929\uff0c\u533b\u9662\u7684\u51e0\u4e2a\u697c\u4e4b\u95f4\u6765\u56de\u8dd1\uff0c\u7d2f\u5230\u54ed\u3002\n\n![20261010_092407.jpg](https://images.hive.blog/DQmb8695KLcNW6bTPBKcEvkfCcGyN7wnxFrchEqwT",
+      "depth": 0,
+      "stats": {
+        "gray": false,
+        "hide": false,
+        "flag_weight": 0,
+        "total_votes": 207
+      },
+      "title": "\u590d\u67e5\u9884\u7ea6\u548c\u7279\u836f\uff1a\u4eca\u5929\u80fd\u8d70\u5341\u4e07\u6b65\uff0c\u7d2f\u54ed",
+      "author": "oflyhigh",
+      "payout": 15.695,
+      "created": "2026-10-10T11:00:39",
+      "reblogs": 0,
+      "replies": [],
+      "updated": "2026-10-10T11:00:39",
+      "category": "hive-105017",
+      "children": 1,
+      "permlink": "2ienh2",
+      "community": "hive-105017",
+      "payout_at": "2026-10-17T11:00:39",
+      "blacklists": [],
+      "is_paidout": false,
+      "author_role": "mod",
+      "net_rshares": 212363049932680,
+      "percent_hbd": 10000,
+      "active_votes": [
+        {
+          "voter": "abit",
+          "rshares": 36141830229138
+        },
+        {
+          "voter": "team",
+          "rshares": 31870857051
+        }
+      ],
+      "author_title": "O\u54e5\ud83d\udc31",
+      "beneficiaries": [
+        {
+          "weight": 5000,
+          "account": "cutehive.com"
+        }
+      ],
+      "json_metadata": {
+        "app": "hiveblog/0.1",
+        "tags": [
+          "cn",
+          "life",
+          "blog"
+        ],
+        "image": [
+          "https://images.hive.blog/DQmb8695KLcNW6bTPBKcEvkfCcGyN7wnxFrchEqwT9BRJuz/20261010_092407.jpg",
+          "https://images.hive.blog/DQmPxsaDzKybwmEydzrfk5kgB3FCu1YBdq68ZqdcZPJ3Va3/20261010_092438.jpg",
+          "https://images.hive.blog/DQmYjNzkoFPfRc6UiCLfLoXK2r3bisjx3AczBpyFWseRvcK/20261010_092531.jpg",
+          "https://images.hive.blog/DQmPm369Y5EfFbE5R57hWBVVQkx16cwftHLYSzziUfpXG4m/20261010_093009.jpg",
+          "https://images.hive.blog/DQmYEdbPC5CYH6c8DgmXrAx2ACEy1zcMvqdYeiNjSDwAmWz/20261010_093037.jpg",
+          "https://images.hive.blog/DQmV5pq3PWpaWHCFNrkmJcBiUYQJXciYJRT1F92CxhV9prB/20261010_102729.jpg",
+          "https://images.hive.blog/DQmbw3aPAGshBUxACoVs94xaHt1y68yRiWnnGedzXJGgzUz/20261010_120546.jpg",
+          "https://images.hive.blog/DQmcgu1v3TkfNcmNe1br58TKwYXZ1cVvY8fJZXfrvG96msB/20261010_120549.jpg",
+          "https://images.hive.blog/DQmUYEMU5P4zfbA5A1SuFGEJutrRy3PiwGLxv1pm6kaWY2b/20261010_120732.jpg",
+          "https://images.hive.blog/DQmSAMprV4Dj8qZerdJsvP7Rum1ivtkr6htJSrQmzErVM5u/20261010_120758.jpg",
+          "https://images.hive.blog/DQmShtNxeGU5HZS7vy7CXFBzuBjcV81KkXyxhcqLY9DE9Rm/20261010_122027.jpg",
+          "https://images.hive.blog/DQmQs2LT4JHRENmCdc38cLJLdeYjJpD3JibggNBuWXzBTXw/20261010_122157.jpg",
+          "https://images.hive.blog/DQmYzGoy2kFdajvDk2Q5zab3SJKhUZPcXsy4iJArgXvACKf/20261010_122735.jpg",
+          "https://images.hive.blog/DQmRcD23DJFDmLToxYDHwW5as8XMXzpRzTPbN8krdSkkPyF/20261010_123256.jpg"
+        ],
+        "format": "markdown"
+      },
+      "community_title": "HIVE CN \u4e2d\u6587\u793e\u533a",
+      "author_reputation": 86.54,
+      "author_payout_value": "0.000 HBD",
+      "max_accepted_payout": "1000000.000 HBD",
+      "curator_payout_value": "0.000 HBD",
+      "pending_payout_value": "15.695 HBD"
+    },
+    {
+      "url": "/solar/@solominer/solos-solar-array-production-stats-september-2026",
+      "body": "<center>\n\n\n\n\n\n![20261001_095306.jpg](https://files.peakd.com/file/peakd-hive/solominer/EoAaCqCVtbTChZhgJP4PAUfU2h2NFVapCM9MAqh9VfoyrExwtHvp7fyeTjL7XtD68sn.jpg)\n",
+      "depth": 0,
+      "stats": {
+        "gray": false,
+        "hide": false,
+        "flag_weight": 0,
+        "total_votes": 292
+      },
+      "title": "Solos Solar Array production stats - September 2026",
+      "author": "solominer",
+      "payout": 12.174,
+      "created": "2026-10-10T14:54:51",
+      "reblogs": 0,
+      "replies": [],
+      "updated": "2026-10-10T14:54:51",
+      "category": "solar",
+      "children": 6,
+      "permlink": "solos-solar-array-production-stats-september-2026",
+      "payout_at": "2026-10-17T14:54:51",
+      "blacklists": [],
+      "is_paidout": false,
+      "net_rshares": 164569671124818,
+      "percent_hbd": 0,
+      "active_votes": [
+        {
+          "voter": "flemingfarm",
+          "rshares": 314309850540
+        },
+        {
+          "voter": "leprechaun",
+          "rshares": 6331345145
+        }
+      ],
+      "beneficiaries": [],
+      "json_metadata": {
+        "app": "peakd/2026.7.5",
+        "tags": [
+          "solar",
+          "offgrid",
+          "report",
+          "mining",
+          "bitcoin",
+          "cryptocurrency",
+          "blog",
+          "life",
+          "journal",
+          "sustainability"
+        ],
+        "image": [
+          "https://files.peakd.com/file/peakd-hive/solominer/EoAaCqCVtbTChZhgJP4PAUfU2h2NFVapCM9MAqh9VfoyrExwtHvp7fyeTjL7XtD68sn.jpg",
+          "https://files.peakd.com/file/peakd-hive/solominer/AKDkUragHSPwH6WsML7LM43cDKhuyUrmGNF7TmRVzEZaYW8BiF9Js1h9vZRUVx4.png",
+          "https://files.peakd.com/file/peakd-hive/solominer/242Dd9C2jF4NEnMg18iUNqcEwcDz5zrMyWaB4xWassopgTZoFzXmS5hxTovrH5f3p23h8.jpg"
+        ],
+        "users": [
+          "solominer"
+        ],
+        "format": "markdown"
+      },
+      "author_reputation": 81.66,
+      "author_payout_value": "0.000 HBD",
+      "max_accepted_payout": "1000000.000 HBD",
+      "curator_payout_value": "0.000 HBD",
+      "pending_payout_value": "12.174 HBD"
+    }
+  ],
+  "profile": {
+    "id": 1398402,
+    "name": "guest4test",
+    "stats": {
+      "rank": 0,
+      "followers": 1,
+      "following": 4
+    },
+    "active": "2026-09-08T10:06:18",
+    "created": "2020-07-13T11:25:51",
+    "metadata": {
+      "profile": {
+        "name": "guest4test",
+        "about": "TestOps",
+        "website": "",
+        "location": "KTW",
+        "cover_image": "https://images.hive.blog/DQmeG1ftxpBkMeVT5qFsCtbzZXU2AXe2gggCdPd2RZouHmJ/ChatGPT%20Image%20Feb%2010,%202026,%2001_07_21%20PM.png",
+        "profile_image": "https://images.hive.blog/DQmet7qXQ71GGcFMi9yw9tHtjv1VTWFXGAGju15zNtiLG2B/g0-green.png",
+        "blacklist_description": "",
+        "muted_list_description": ""
+      }
+    },
+    "blacklists": [],
+    "post_count": 58,
+    "reputation": 34.15
+  },
+  "community": {
+    "about": "Magic the Forkening, BlockCraft, Hashes of Creation, etc.",
+    "context": {
+      "role": "guest",
+      "subscribed": false,
+      "title": ""
+    },
+    "created_at": "2019-10-26 15:19:33",
+    "description": "Blockchain technology and beyond. Placeholder for Hive Pressure series.",
+    "flag_text": "Don't post here unless you know what you are doing.",
+    "id": 1331990,
+    "is_nsfw": false,
+    "lang": "en",
+    "name": "hive-160391",
+    "num_authors": 3,
+    "num_pending": 4,
+    "settings": {},
+    "subscribers": 302,
+    "sum_pending": 0,
+    "team": [
+      [
+        "hive-160391",
+        "owner",
+        ""
+      ],
+      [
+        "gandalf",
+        "admin",
+        ""
+      ],
+      [
+        "gtg",
+        "mod",
+        "Wizard"
+      ]
+    ],
+    "title": "Blockchain Wizardry",
+    "type_id": 1
+  },
+  "postVotes": [
+    {
+      "voter": "bob",
+      "author": "alice",
+      "permlink": "hello",
+      "weight": "1146353766",
+      "rshares": "1879215360",
+      "vote_percent": 10000,
+      "last_update": "2026-10-20T19:47:21",
+      "num_changes": 0
+    },
+    {
+      "voter": "carol",
+      "author": "alice",
+      "permlink": "hello",
+      "weight": "0",
+      "rshares": "-52000000000",
+      "vote_percent": -2500,
+      "last_update": "2026-10-21T08:00:03",
+      "num_changes": 1
+    }
+  ]
+}

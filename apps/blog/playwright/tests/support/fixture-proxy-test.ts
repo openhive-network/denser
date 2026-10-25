@@ -44,6 +44,8 @@ export type FixtureProxyWorkerFixtures = {
   fixtureProxy: IFixtureProxyHandle;
   /** The blog server with the feed cache on (support/feed-cache-server.ts); unset when none runs. */
   feedCacheBaseURL: string | undefined;
+  /** The blog server reading from the hivemind REST stub (support/hivemindRestStub.ts); unset when none runs. */
+  hivemindRestBaseURL: string | undefined;
 };
 
 export type FixtureAuthTestFixtures = {
@@ -69,6 +71,7 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
   fixtureTestName: ['', { option: true, scope: 'worker' }],
   fixturePort: [8200, { option: true, scope: 'worker' }],
   feedCacheBaseURL: [undefined, { option: true, scope: 'worker' }],
+  hivemindRestBaseURL: [undefined, { option: true, scope: 'worker' }],
 
   fixtureProxy: [
     async ({ fixtureTestName, fixturePort }, use) => {

@@ -1174,6 +1174,34 @@ export interface BalanceApiProposalPaymentTotals {
   last_payment_time: string | null;
 }
 
+/** Paging and observer of a hivemind REST post list: `page-size` posts after `start-author`/`start-permlink`. */
+export interface HivemindRestPostPage {
+  'page-size'?: number;
+  'start-author'?: string;
+  'start-permlink'?: string;
+  observer?: string;
+}
+
+/** Paging of a hivemind REST follower / following list: `page-size` accounts from `start` on. */
+export interface HivemindRestFollowPage {
+  'account-name': string;
+  type?: string;
+  'page-size'?: number;
+  start?: string;
+}
+
+/** A post's vote as hivemind REST lists it: database_api's vote, `weight` and `rshares` as decimal strings. */
+export interface HivemindRestPostVote {
+  voter: string;
+  author: string;
+  permlink: string;
+  weight: string;
+  rshares: string;
+  vote_percent: number;
+  last_update: string;
+  num_changes: number;
+}
+
 export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
@@ -1224,6 +1252,58 @@ Together with the author name, it uniquely identifies the post.
     accountsOperations: {
       params: GetOperationsByAccountParams;
       result: IGetOperationsByAccountResponse;
+    };
+    rankedPosts: {
+      params: HivemindRestPostPage & { sort: string; tag?: string };
+      result: Entry[] | null;
+    };
+    post: {
+      params: { author: string; permlink: string; observer?: string };
+      result: Entry | null;
+    };
+    postVotes: {
+      params: { author: string; permlink: string; 'page-size'?: number; 'start-voter'?: string };
+      result: HivemindRestPostVote[];
+    };
+    accountPosts: {
+      params: HivemindRestPostPage & { 'account-name': string; sort: string; community?: string };
+      result: Entry[] | null;
+    };
+    accountProfile: {
+      params: { 'account-name': string; observer?: string };
+      result: IProfile | null;
+    };
+    accountFollowers: {
+      params: HivemindRestFollowPage;
+      result: IFollow[];
+    };
+    accountFollowing: {
+      params: HivemindRestFollowPage;
+      result: IFollow[];
+    };
+    accountNotifications: {
+      params: { 'account-name': string; 'page-size'?: number; 'last-id'?: number };
+      result: IAccountNotification[] | null;
+    };
+    communities: {
+      params: { sort: string; query?: string; observer?: string; 'page-size'?: number; last?: string };
+      result: Community[] | null;
+    };
+    community: {
+      params: { name: string; observer?: string };
+      result: Community | null;
+    };
+    communityRoles: {
+      params: { name: string; 'page-size'?: number; last?: string };
+      result: string[][] | null;
+    };
+    communitySubscribers: {
+      params: { name: string; 'page-size'?: number; last?: string };
+      result: string[][] | null;
+    };
+    searchPosts: {
+      params: HivemindRestPostPage & { q: string; sort?: string; author?: string };
+      result: Entry[];
     };
   };
   'hafah-api': {

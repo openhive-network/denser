@@ -130,7 +130,7 @@ describe('getReadChain() REST failover', function () {
     second.statusByApi['hafah-api'] = 500;
 
     const error = await slowChain()
-      .restApi['hafah-api']['operation-types']({})
+      .restApi['hafah-api']['operation-types'](undefined)
       .catch((e: unknown) => e);
 
     expect(error).to.be.instanceOf(ReadTransportError).with.property('status', 500);

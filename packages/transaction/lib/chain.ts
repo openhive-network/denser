@@ -6,12 +6,16 @@ import {
 import { getHiveChainService } from './hive-chain-service';
 import type { TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { wrapChainWithLogging } from './chain-proxy';
-import { parseFallbackNodes, wrapChainWithServerFailover } from './server-failover';
+import { parseFallbackNodes, restApiHealthKey, wrapChainWithServerFailover } from './server-failover';
 import { NodeHealth } from './node-health';
 import { createReadClient, IReadClient, IReadClientConfig } from './read-client';
 import { fetchReadTransport, isRestApiUnavailable, ReadTransportError } from './read-transport';
 import { announceApiNodeSwitch } from './api-node-switch';
-import { configuredAllowedApiNodes, configuredImagesEndpoint } from '@ui/config/public-vars';
+import {
+  configuredAllowedApiNodes,
+  configuredHivemindRestNodes,
+  configuredImagesEndpoint
+} from '@ui/config/public-vars';
 
 export type Chain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
 
@@ -19,7 +23,8 @@ export type Chain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestA
 export type ReadChain = IReadClient<Chain['api'], Pick<Chain['restApi'], keyof ExtendedRestApi>>;
 
 let chain: Promise<Chain> | undefined = undefined;
-let readChain: ReadChain | undefined = undefined;
+let readChain: { fallbackNodes: string; chain: ReadChain } | undefined = undefined;
+let hivemindRestChain: { nodes: string; chain: ReadChain } | undefined = undefined;
 
 const isServer = typeof window === 'undefined';
 
@@ -101,14 +106,16 @@ const createReadChain = (getConfig: () => IReadClientConfig): ReadChain =>
  * Client for read-only API calls (bridge, database_api, condenser_api, hivesense, ...). Unlike
  * `getChain()` it never loads wax's wasm, so pages an anonymous reader browses stay wasm-free.
  * It follows the same endpoint configuration and failover as the chain, and fails its REST reads
- * over across the same nodes.
+ * over across the same nodes. It is created again when the allowed API nodes change.
  * Signing, broadcasting and wasm-only computation still need `getChain()`.
  */
 export const getReadChain = (): ReadChain => {
-  if (readChain) return readChain;
+  const fallbackNodes = getFallbackNodes();
+  const key = fallbackNodes.join(' ');
+  if (readChain?.fallbackNodes === key) return readChain.chain;
 
-  readChain = wrapChainWithServerFailover(createReadChain(getReadClientConfig), {
-    fallbackNodes: getFallbackNodes(),
+  const chain = wrapChainWithServerFailover(createReadChain(getReadClientConfig), {
+    fallbackNodes,
     health: nodeHealth,
     // The read client fails only with ReadTransportError on transport; checking for it keeps
     // a failing browser read from loading wax.
@@ -119,7 +126,52 @@ export const getReadChain = (): ReadChain => {
     createNodeChain: (node, timeoutMs) =>
       createReadChain(() => ({ ...getReadClientConfig(), apiEndpoint: node, restApiEndpoint: node, timeoutMs }))
   });
-  return readChain;
+  readChain = { fallbackNodes: key, chain };
+  return chain;
+};
+
+export type HivemindRestApi = ReadChain['restApi']['hivemind-api'];
+
+const HIVEMIND_REST_API = 'hivemind-api';
+
+// Read on every call on the server, like its fallback nodes, so the setting needs no rebuild.
+const getHivemindRestNodes = (): string[] =>
+  parseFallbackNodes(isServer ? process.env.REACT_APP_HIVEMIND_REST_NODES : configuredHivemindRestNodes);
+
+const createHivemindRestChain = (nodes: readonly string[]): ReadChain => {
+  const configFor = (node: string, timeoutMs?: number) => (): IReadClientConfig => {
+    const config = getReadClientConfig();
+    return {
+      ...config,
+      apiEndpoint: node,
+      restApiEndpoint: node,
+      restEndpoints: undefined,
+      timeoutMs: timeoutMs ?? config.timeoutMs
+    };
+  };
+  return wrapChainWithServerFailover(createReadChain(configFor(nodes[0])), {
+    fallbackNodes: nodes.slice(1),
+    health: nodeHealth,
+    isTransportError: (error) => error instanceof ReadTransportError,
+    isRestApiUnavailable,
+    createNodeChain: (node, timeoutMs) => createReadChain(configFor(node, timeoutMs))
+  });
+};
+
+/**
+ * The `hivemind-api` REST API of the hivemind REST nodes (`HIVEMIND_REST_NODES`), failing over
+ * across them as `getReadChain()` does. `undefined` while none is configured, or while every one
+ * is marked down, so that the caller reads over JSON-RPC instead of waiting on dead nodes.
+ */
+export const getHivemindRestApi = (): HivemindRestApi | undefined => {
+  const nodes = getHivemindRestNodes();
+  if (nodes.length === 0) return undefined;
+  if (nodes.every((node) => nodeHealth.isDown(restApiHealthKey(node, HIVEMIND_REST_API)))) return undefined;
+  const key = nodes.join(' ');
+  if (hivemindRestChain?.nodes !== key) {
+    hivemindRestChain = { nodes: key, chain: createHivemindRestChain(nodes) };
+  }
+  return hivemindRestChain.chain.restApi[HIVEMIND_REST_API];
 };
 
 /**

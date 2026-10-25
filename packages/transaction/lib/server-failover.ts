@@ -135,6 +135,9 @@ const resolveApiPath = (api: object | undefined, path: readonly string[], rootNa
 
 const endpointOf = (apiNode: object): unknown => Reflect.get(apiNode, 'endpointUrl');
 
+/** The `health` key recording whether `node` serves the REST API `apiName`, e.g. `https://api.example.com/balance-api`. */
+export const restApiHealthKey = (node: string, apiName: string): string => `${node}/${apiName}`;
+
 /**
  * Parses a whitespace/comma-separated node list (the `REACT_APP_ALLOWED_HIVE_API_NODES` format) into
  * distinct origins, dropping `excluded` entries (e.g. the images host, which is listed for CSP but is
@@ -365,7 +368,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     return callWithFailover({
       label: path.join('.'),
       primary,
-      healthKey: (node) => `${node}/${apiName}`,
+      healthKey: (node) => restApiHealthKey(node, apiName),
       invoke: (target) => callOn(target.restApi, 'restApi', path, args),
       isNodeFailure: (error) => isUnavailable(error, path),
       retriesPrimary: false

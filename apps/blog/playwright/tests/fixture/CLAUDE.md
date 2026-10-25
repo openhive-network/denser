@@ -44,7 +44,7 @@ apps/blog/
             └── generate-voted-variants.mjs                # fixture-dir post-processor
 ```
 
-Config uses three ports:
+Config uses five ports:
 
 - `:3000` — the blog app (standalone Next.js server), server-side feed cache
   off (`DENSER_FEED_CACHE_TTL_S=0`)
@@ -52,7 +52,13 @@ Config uses three ports:
   seconds, and with the For You feed off (`FYP_API_URL` unset, which `:3000`
   sets); `feedCache.spec.ts` uses it, and `forYouFeed.spec.ts` FYP-05
   (`feedCacheBaseURL`)
+- `:3002` — the same build reading feeds, profiles, communities and search
+  from hivemind REST GETs (`HIVEMIND_REST_NODES` naming `:8201`);
+  `hivemindRest.spec.ts` uses it (`hivemindRestBaseURL`)
 - `:8200` — the fixture proxy (record → mainnet; replay → committed JSON)
+- `:8201` — the hivemind REST stub (`support/hivemindRestStub.ts`), started by
+  `hivemindRest.spec.ts`: it answers each REST path with the JSON-RPC call it
+  wraps, asked of the fixture proxy, so REST reads replay the same recordings
 
 ---
 

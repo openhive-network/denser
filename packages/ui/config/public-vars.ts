@@ -10,6 +10,11 @@ export const configuredApiEndpoint = (env('API_ENDPOINT') ?? 'https://api.hive.b
 export const configuredRestApiEndpoint = env('REST_API_ENDPOINT')?.replace(/\/+$/, '') || undefined;
 /** The haf_fyp API root of the blog's For You feed; the feed is off when it is unset. */
 export const configuredFypApiUrl = env('FYP_API_URL')?.replace(/\/+$/, '') || undefined;
+/**
+ * hivemind REST nodes (whitespace/comma-separated) that feeds, profiles and communities are read
+ * from, failing over across them; while empty those reads use JSON-RPC.
+ */
+export const configuredHivemindRestNodes = env('HIVEMIND_REST_NODES') ?? '';
 export const configuredBlogDomain = env('BLOG_DOMAIN') ?? 'https://hive.blog/';
 /** Whether search engines may index the site (robots.txt); off unless `yes`, so a non-production site stays out. */
 export const configuredSeoAllowIndexing = env('SEO_ALLOW_INDEXING') === 'yes';

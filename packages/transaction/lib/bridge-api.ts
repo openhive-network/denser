@@ -10,6 +10,7 @@ import {
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
 import { getReadChain } from './chain';
+import { nonEmpty, readFromHivemind } from './hivemind-rest';
 import type { IObserverListsApi } from './observer-lists';
 import type { IHiddenAuthorsApi } from './hidden-authors';
 
@@ -33,11 +34,16 @@ export const getCommunities = async (
   query?: string | null,
   observer: string = commonVariables.defaultObserver
 ): Promise<Community[] | null> => {
-  return getReadChain().api.bridge.list_communities({
-    query,
-    sort,
-    observer
-  });
+  return readFromHivemind(
+    'communities',
+    (api) => api.communities({ sort, query: nonEmpty(query), observer }),
+    () =>
+      getReadChain().api.bridge.list_communities({
+        query,
+        sort,
+        observer
+      })
+  );
 };
 
 export const getSubscriptions = async (account: string): Promise<string[][] | null> => {
@@ -54,24 +60,35 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return getReadChain().api.bridge
-    .get_ranked_posts({
-      sort,
-      start_author,
-      start_permlink,
-      limit,
-      tag,
-      observer
-    })
-    .then((resp) => {
-      // logger.info('getPostsRanked result: %o', resp);
-      if (resp) {
-        return resolvePosts(resp, observer);
-      }
-      console.log('response', resp);
+  return readFromHivemind(
+    'rankedPosts',
+    (api) =>
+      api.rankedPosts({
+        sort,
+        tag: nonEmpty(tag),
+        observer,
+        'page-size': limit,
+        'start-author': nonEmpty(start_author),
+        'start-permlink': nonEmpty(start_permlink)
+      }),
+    () =>
+      getReadChain().api.bridge.get_ranked_posts({
+        sort,
+        start_author,
+        start_permlink,
+        limit,
+        tag,
+        observer
+      })
+  ).then((resp) => {
+    // logger.info('getPostsRanked result: %o', resp);
+    if (resp) {
+      return resolvePosts(resp, observer);
+    }
+    console.log('response', resp);
 
-      return resp;
-    });
+    return resp;
+  });
 };
 
 /** `posts` with each cross-post's original post (`original_entry`) read as `observer`. */
@@ -111,19 +128,22 @@ export const getPost = async (
   permlink: string = '',
   observer: string = commonVariables.defaultObserver
 ): Promise<Entry | null> => {
-  return getReadChain().api.bridge
-    .get_post({
-      author,
-      permlink,
-      observer
-    })
-    .then((resp) => {
-      if (resp) {
-        return resolvePost(resp, observer);
-      }
+  return readFromHivemind(
+    'post',
+    (api) => api.post({ author, permlink, observer }),
+    () =>
+      getReadChain().api.bridge.get_post({
+        author,
+        permlink,
+        observer
+      })
+  ).then((resp) => {
+    if (resp) {
+      return resolvePost(resp, observer);
+    }
 
-      return resp;
-    });
+    return resp;
+  });
 };
 
 export const getAccountPosts = async (
@@ -134,22 +154,33 @@ export const getAccountPosts = async (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return getReadChain().api.bridge
-    .get_account_posts({
-      sort,
-      account,
-      start_author,
-      start_permlink,
-      limit,
-      observer
-    })
-    .then((resp) => {
-      if (resp) {
-        return resolvePosts(resp, observer);
-      }
+  return readFromHivemind(
+    'accountPosts',
+    (api) =>
+      api.accountPosts({
+        'account-name': account,
+        sort,
+        observer,
+        'page-size': limit,
+        'start-author': nonEmpty(start_author),
+        'start-permlink': nonEmpty(start_permlink)
+      }),
+    () =>
+      getReadChain().api.bridge.get_account_posts({
+        sort,
+        account,
+        start_author,
+        start_permlink,
+        limit,
+        observer
+      })
+  ).then((resp) => {
+    if (resp) {
+      return resolvePosts(resp, observer);
+    }
 
-      return resp;
-    });
+    return resp;
+  });
 };
 
 export const getFollowList = async (
@@ -171,9 +202,14 @@ export const observerListsApi: IObserverListsApi = { getFollowList, doesUserFoll
 export const hiddenAuthorsApi: IHiddenAuthorsApi = { getFollowList };
 
 export const getSubscribers = async (community: string): Promise<string[][] | null> => {
-  return getReadChain().api.bridge.list_subscribers({
-    community
-  });
+  return readFromHivemind(
+    'communitySubscribers',
+    (api) => api.communitySubscribers({ name: community }),
+    () =>
+      getReadChain().api.bridge.list_subscribers({
+        community
+      })
+  );
 };
 
 export const getAccountNotifications = async (
@@ -189,17 +225,30 @@ export const getAccountNotifications = async (
   if (lastId) {
     params.last_id = lastId;
   }
-  return getReadChain().api.bridge.account_notifications(params);
+  return readFromHivemind(
+    'accountNotifications',
+    (api) =>
+      api.accountNotifications({ 'account-name': account, 'page-size': limit, 'last-id': params.last_id }),
+    () => getReadChain().api.bridge.account_notifications(params)
+  );
 };
 
 export const getCommunity = async (
   name: string,
   observer: string = commonVariables.defaultObserver
 ): Promise<Community | null> => {
-  return getReadChain().api.bridge.get_community({ name, observer });
+  return readFromHivemind(
+    'community',
+    (api) => api.community({ name, observer }),
+    () => getReadChain().api.bridge.get_community({ name, observer })
+  );
 };
 export const getListCommunityRoles = async (community: string): Promise<string[][] | null> => {
-  return getReadChain().api.bridge.list_community_roles({ community });
+  return readFromHivemind(
+    'communityRoles',
+    (api) => api.communityRoles({ name: community }),
+    () => getReadChain().api.bridge.list_community_roles({ community })
+  );
 };
 
 export const getDiscussion = async (

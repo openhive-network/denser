@@ -44,6 +44,45 @@ export const EXTENDED_REST_API_DEFINITION = {
   'hivemind-api': {
     accountsOperations: {
       urlPath: 'accounts/{account-name}/operations'
+    },
+    rankedPosts: {
+      urlPath: 'posts'
+    },
+    post: {
+      urlPath: 'posts/{author}/{permlink}'
+    },
+    postVotes: {
+      urlPath: 'posts/{author}/{permlink}/votes'
+    },
+    accountPosts: {
+      urlPath: 'accounts/{account-name}/posts'
+    },
+    accountProfile: {
+      urlPath: 'accounts/{account-name}/profile'
+    },
+    accountFollowers: {
+      urlPath: 'accounts/{account-name}/followers'
+    },
+    accountFollowing: {
+      urlPath: 'accounts/{account-name}/following'
+    },
+    accountNotifications: {
+      urlPath: 'accounts/{account-name}/notifications'
+    },
+    communities: {
+      urlPath: 'communities'
+    },
+    community: {
+      urlPath: 'communities/{name}'
+    },
+    communityRoles: {
+      urlPath: 'communities/{name}/roles'
+    },
+    communitySubscribers: {
+      urlPath: 'communities/{name}/subscribers'
+    },
+    searchPosts: {
+      urlPath: 'search/posts'
     }
   },
   'hafah-api': {
