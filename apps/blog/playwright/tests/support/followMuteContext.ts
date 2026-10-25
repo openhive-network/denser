@@ -13,7 +13,7 @@ import { TIMEOUTS } from './constants';
  *
  * Toast literals come from the React Query mutation hooks
  * (`features/mute-follow/hooks/use-{follow,mute}-mutations.ts` and
- * `components/hooks/use-{blacklist,follow-blacklist,follow-muted-list,reset}-mutation*.ts`),
+ * `components/hooks/use-{blacklist,follow-blacklist,follow-muted-list}-mutation*.ts`),
  * not from translation keys. Keep them aligned when those hooks change.
  */
 
@@ -47,12 +47,13 @@ export const WHAT_UNFOLLOW_BLACKLIST: string[] = ['unfollow_blacklist'];
 export const WHAT_FOLLOW_MUTED: string[] = ['follow_muted'];
 export const WHAT_UNFOLLOW_MUTED: string[] = ['unfollow_muted'];
 // `resetBlogList()` in transactionService maps to RESET_MUTED_LIST via
-// EFollowBlogAction.MUTE_BLOG (transaction/index.ts:444). Not a "reset
-// blog list" misnomer despite the wrapper name.
+// EFollowBlogAction.MUTE_BLOG (transaction/lib/follow-list-reset.ts). Not a
+// "reset blog list" misnomer despite the wrapper name.
 export const WHAT_RESET_MUTED_LIST: string[] = ['reset_muted_list'];
 export const WHAT_RESET_BLACKLIST: string[] = ['reset_blacklist'];
 export const WHAT_RESET_FOLLOW_BLACKLIST: string[] = ['reset_follow_blacklist'];
 export const WHAT_RESET_FOLLOW_MUTED: string[] = ['reset_follow_muted_list'];
+export const WHAT_RESET_FOLLOWING_LIST: string[] = ['reset_following_list'];
 
 /**
  * Wax's `transactionService.X(otherBlogs, blog?)` wrappers
@@ -64,7 +65,7 @@ export const WHAT_RESET_FOLLOW_MUTED: string[] = ['reset_follow_muted_list'];
 export const followingFromOtherBlogs = (target: string): string[] => ['', target];
 
 /**
- * Reset wrappers (resetBlogList / resetBlacklistBlog /
+ * Reset wrappers (resetFollowingBlog / resetBlogList / resetBlacklistBlog /
  * resetFollowBlacklistBlog / resetFollowMutedBlog in transactionService)
  * pass `blog='all'` and no rest args, so wax emits `following: 'all'`
  * (single string, not an array).
@@ -81,6 +82,7 @@ export const TOAST_MUTED = (target: string): string =>
 export const TOAST_UNMUTED = (target: string): string =>
   `You have unmuted ${target}.`;
 export const TOAST_RESET_BLOG_LIST = 'Your blog list has been reset.';
+export const TOAST_UNFOLLOWED_ALL = 'You no longer follow anyone.';
 
 /** Owner-only list-page slugs under `/@{owner}/lists/{slug}`. */
 export type OwnerListSlug =

@@ -43,6 +43,21 @@ export function updateProfileFollowCounts(
   }
 }
 
+/** Empties every cached list of the accounts `username` follows (not its mute lists) and zeroes its count. */
+export function clearFollowingCaches(queryClient: QueryClient, username: string) {
+  for (const [key, data] of queryClient.getQueriesData<InfiniteFollowData>({ queryKey: ['followingData', username] })) {
+    if (!data || key[2] === 'ignore') continue;
+    queryClient.setQueryData(key, { pages: [[]], pageParams: data.pageParams.slice(0, 1) });
+  }
+  const profile: FullAccount | undefined = queryClient.getQueryData(['profileData', username]);
+  if (profile?.follow_stats) {
+    queryClient.setQueryData(['profileData', username], {
+      ...profile,
+      follow_stats: { ...profile.follow_stats, following_count: 0 }
+    });
+  }
+}
+
 /** Cancels the affected queries and snapshots them for rollback. */
 export async function snapshotFollowCaches(
   queryClient: QueryClient,

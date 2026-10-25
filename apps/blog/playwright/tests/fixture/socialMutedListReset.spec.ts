@@ -37,6 +37,8 @@ test('MUTE-05 — Reset muted list clears all entries with one broadcast', async
   const userList = new UserListPage(page);
   await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length);
 
+  await expect(userList.resetButton('muted')).toBeVisible();
+  await expect(userList.resetAllButton).toHaveCount(0);
   await userList.resetButton('muted').click();
   await broadcast.waitForCount(1);
 
