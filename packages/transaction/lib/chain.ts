@@ -102,6 +102,21 @@ const createReadChain = (getConfig: () => IReadClientConfig): ReadChain =>
     })
   );
 
+// A REST API served by the REST node (only those fail over) moves with it to `node`; one with an
+// endpoint of its own stays there.
+const readClientConfigOn = (node: string, timeoutMs: number): IReadClientConfig => {
+  const config = getReadClientConfig();
+  const restEndpoints =
+    config.restEndpoints &&
+    Object.fromEntries(
+      Object.entries(config.restEndpoints).map(([path, endpoint]) => [
+        path,
+        endpoint === config.restApiEndpoint ? node : endpoint
+      ])
+    );
+  return { ...config, apiEndpoint: node, restApiEndpoint: node, restEndpoints, timeoutMs };
+};
+
 /**
  * Client for read-only API calls (bridge, database_api, condenser_api, hivesense, ...). Unlike
  * `getChain()` it never loads wax's wasm, so pages an anonymous reader browses stay wasm-free.
@@ -123,8 +138,7 @@ export const getReadChain = (): ReadChain => {
     // REST reads (balance-api, hafah-api, hivemind-api) fail over too: not every node serves them.
     isRestApiUnavailable,
     onFailover,
-    createNodeChain: (node, timeoutMs) =>
-      createReadChain(() => ({ ...getReadClientConfig(), apiEndpoint: node, restApiEndpoint: node, timeoutMs }))
+    createNodeChain: (node, timeoutMs) => createReadChain(() => readClientConfigOn(node, timeoutMs))
   });
   readChain = { fallbackNodes: key, chain };
   return chain;

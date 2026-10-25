@@ -14,6 +14,7 @@ import { ReadTransportError } from './read-transport';
  */
 
 const SLOW_CALL_TIMEOUT_MS = 3_000;
+const SHORT_TIMEOUT_MS = 200;
 
 interface IStubNode {
   url: string;
@@ -22,6 +23,8 @@ interface IStubNode {
   statusByApi: Record<string, number>;
   /** Status answered to one request path (without its query), overriding `statusByApi`. */
   statusByPath: Record<string, number>;
+  /** How long the answer to one request path (without its query) is held back, in ms. */
+  delayByPath: Record<string, number>;
 }
 
 const listen = (server: Server): Promise<string> =>
@@ -33,16 +36,20 @@ const listen = (server: Server): Promise<string> =>
   });
 
 const startStubNode = async (): Promise<{ node: IStubNode; server: Server }> => {
-  const node: IStubNode = { url: '', requests: [], statusByApi: {}, statusByPath: {} };
+  const node: IStubNode = { url: '', requests: [], statusByApi: {}, statusByPath: {}, delayByPath: {} };
   const handle = (request: IncomingMessage, response: ServerResponse) => {
     const path = request.url ?? '/';
-    node.requests.push(path);
     const status = node.statusByPath[path.split('?')[0]] ?? node.statusByApi[path.split('/')[1]] ?? 200;
     response.writeHead(status, { 'content-type': 'application/json' });
     response.end(JSON.stringify(status === 200 ? { node: node.url } : { message: 'Not served' }));
   };
   const server = createServer((request, response) => {
-    request.resume().on('end', () => handle(request, response));
+    request.resume().on('end', () => {
+      const path = request.url ?? '/';
+      node.requests.push(path);
+      const delayMs = node.delayByPath[path.split('?')[0]] ?? 0;
+      setTimeout(() => handle(request, response), delayMs);
+    });
   });
   node.url = await listen(server);
   return { node, server };
@@ -65,7 +72,7 @@ describe('getReadChain() REST failover', function () {
       apiEndpoint: primary.url,
       restApiEndpoint: primary.url,
       apiTimeout: 2_000,
-      aiEndpoint: `${primary.url}/hivesense-api`
+      aiEndpoint: primary.url
     });
   });
 
@@ -84,6 +91,7 @@ describe('getReadChain() REST failover', function () {
       node.requests.length = 0;
       node.statusByApi = {};
       node.statusByPath = {};
+      node.delayByPath = {};
     }
   });
 
@@ -100,6 +108,24 @@ describe('getReadChain() REST failover', function () {
     expect(primary.requests).to.deep.equal([
       '/balance-api/proposals/payments?proposal-ids=1%2C2',
       '/balance-api/accounts/alice/delegations'
+    ]);
+    expect(second.requests).to.deep.equal([]);
+  });
+
+  it('takes a timeout of similar posts as the primary answer, keeping its hivesense-api for search', async () => {
+    primary.delayByPath['/hivesense-api/posts/alice/cold-post/similar'] = SHORT_TIMEOUT_MS * 3;
+
+    const error = await getReadChain()
+      .withTimeout(SHORT_TIMEOUT_MS)
+      .restApi['hivesense-api'].posts.author.permlink.similar({ author: 'alice', permlink: 'cold-post' })
+      .catch((e: unknown) => e);
+    const found = await getReadChain().restApi['hivesense-api'].posts.search({ q: 'hive' });
+
+    expect(error).to.be.instanceOf(ReadTransportError).with.property('message').that.match(/^Request timed out/);
+    expect(found).to.deep.equal({ node: primary.url });
+    expect(primary.requests).to.deep.equal([
+      '/hivesense-api/posts/alice/cold-post/similar',
+      '/hivesense-api/posts/search?q=hive'
     ]);
     expect(second.requests).to.deep.equal([]);
   });
@@ -136,5 +162,18 @@ describe('getReadChain() REST failover', function () {
     expect(error).to.be.instanceOf(ReadTransportError).with.property('status', 500);
     expect(primary.requests).to.deep.equal(['/hafah-api/operation-types']);
     expect(second.requests).to.deep.equal(['/hafah-api/operation-types']);
+  });
+
+  // Last: it leaves the primary's hivesense-api marked down.
+  it('fails a timed-out search over to the next node, which serves hivesense-api itself', async () => {
+    primary.delayByPath['/hivesense-api/posts/search'] = SHORT_TIMEOUT_MS * 3;
+
+    const found = await getReadChain()
+      .withTimeout(SHORT_TIMEOUT_MS)
+      .restApi['hivesense-api'].posts.search({ q: 'hive' });
+
+    expect(found).to.deep.equal({ node: second.url });
+    expect(primary.requests).to.deep.equal(['/hivesense-api/posts/search?q=hive']);
+    expect(second.requests).to.deep.equal(['/hivesense-api/posts/search?q=hive']);
   });
 });
