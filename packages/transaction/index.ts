@@ -2,7 +2,6 @@ import {
   ApiAccount,
   BlogPostOperation,
   CommunityOperation,
-  EFollowBlogAction,
   FollowOperation,
   type IArticle,
   type IReplyData,
@@ -36,6 +35,7 @@ import { resolveRequiredKeyType } from './lib/required-key-type';
 import { getOperationNames } from './lib/operation-names';
 import { WorkerBeeSession } from './lib/workerbee-session';
 import { type IInclusionWatch, watchInclusion } from './lib/transaction-inclusion';
+import { buildFollowListReset, type FollowListReset } from './lib/follow-list-reset';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
 export type { ProfileMetadataUpdate } from './lib/profile-metadata';
@@ -355,11 +355,11 @@ export class TransactionService {
     return this.broadcastFollowOperation((operation, account) => operation[list](account, blog), transactionOptions);
   }
 
-  private resetFollowList(
-    list: 'resetAllBlog' | 'resetBlacklistBlog' | 'resetFollowBlacklistBlog' | 'resetFollowMutedBlog',
-    transactionOptions: TransactionOptions
-  ) {
-    return this.broadcastFollowOperation((operation, account) => operation[list](account, 'all'), transactionOptions);
+  private resetFollowList(list: FollowListReset, transactionOptions: TransactionOptions) {
+    return this.broadcastFollowOperation(
+      (operation, account) => buildFollowListReset(list, operation, account),
+      transactionOptions
+    );
   }
 
   async subscribe(community: string, transactionOptions: TransactionOptions = {}) {
@@ -465,10 +465,12 @@ export class TransactionService {
   }
 
   async resetBlogList(transactionOptions: TransactionOptions = {}) {
-    return await this.broadcastFollowOperation(
-      (op, account) => op.resetBlogList(EFollowBlogAction.MUTE_BLOG, account, 'all'),
-      transactionOptions
-    );
+    return await this.resetFollowList('muted', transactionOptions);
+  }
+
+  /** Unfollows every account the signed-in account follows (`reset_following_list`). */
+  async resetFollowingBlog(transactionOptions: TransactionOptions = {}) {
+    return await this.resetFollowList('following', transactionOptions);
   }
 
   async blacklistBlog(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
@@ -491,20 +493,16 @@ export class TransactionService {
     return await this.addToFollowList('followMutedBlog', otherBlogs, blog, transactionOptions);
   }
 
-  async resetAllBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.resetFollowList('resetAllBlog', transactionOptions);
-  }
-
   async resetBlacklistBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.resetFollowList('resetBlacklistBlog', transactionOptions);
+    return await this.resetFollowList('blacklist', transactionOptions);
   }
 
   async resetFollowBlacklistBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.resetFollowList('resetFollowBlacklistBlog', transactionOptions);
+    return await this.resetFollowList('followBlacklist', transactionOptions);
   }
 
   async resetFollowMutedBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.resetFollowList('resetFollowMutedBlog', transactionOptions);
+    return await this.resetFollowList('followMuted', transactionOptions);
   }
 
   async unfollowMutedBlog(blog: string, transactionOptions: TransactionOptions = {}) {

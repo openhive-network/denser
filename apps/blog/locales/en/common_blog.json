@@ -427,14 +427,21 @@
         "reset_muted_list": "Reset Muted List",
         "reset_followed_blacklists": "Reset Followed Blacklists",
         "reset_followed_muted_list": "Reset Followed Muted Lists",
-        "reset_all_lists": "Reset All Follows/Lists",
         "busy_button": "BUSY, PLEASE WAIT",
         "first_button": "First",
         "previous_button": "Previous",
         "next_button": "Next",
         "last_button": "Last",
         "viewing_page": "Viewing Page {{current}} of {{total}}",
-        "users_on_list": "Users On List: {{number}}"
+        "users_on_list": "Users On List: {{number}}",
+        "unfollow_all": {
+          "button": "Unfollow all",
+          "title": "Unfollow all accounts?",
+          "description_one": "This will unfollow the {{count}} account you follow. It can't be undone.",
+          "description_other": "This will unfollow all {{count}} accounts you follow. It can't be undone.",
+          "confirm_prompt": "Type your account name ({{username}}) to confirm.",
+          "cancel": "Cancel"
+        }
       },
       "username_placeholder": "username"
     },

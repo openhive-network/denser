@@ -425,14 +425,20 @@
         "reset_muted_list": "重置屏蔽列表",
         "reset_followed_blacklists": "重置已关注的黑名单",
         "reset_followed_muted_list": "重置已关注的静音列表",
-        "reset_all_lists": "重置所有关注/列表",
         "busy_button": "处理中，请稍候",
         "first_button": "首页",
         "previous_button": "以前",
         "next_button": "下一个",
         "last_button": "末页",
         "viewing_page": "正在查看第 {{current}} 页，共 {{total}} 页",
-        "users_on_list": "列表中的用户：{{number}}"
+        "users_on_list": "列表中的用户：{{number}}",
+        "unfollow_all": {
+          "button": "取消关注所有人",
+          "title": "取消关注所有账户？",
+          "description_other": "这将取消关注您关注的全部 {{count}} 个账户。此操作无法撤销。",
+          "confirm_prompt": "请输入您的账户名（{{username}}）以确认。",
+          "cancel": "取消"
+        }
       },
       "username_placeholder": "用户名"
     },

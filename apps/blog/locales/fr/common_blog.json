@@ -429,14 +429,22 @@
         "reset_muted_list": "Réinitialiser la liste des comptes masqués",
         "reset_followed_blacklists": "Réinitialiser les listes noires suivies",
         "reset_followed_muted_list": "Réinitialiser les listes de comptes masqués suivies",
-        "reset_all_lists": "Réinitialiser tous les abonnements/listes",
         "busy_button": "OCCUPÉ, VEUILLEZ PATIENTER",
         "first_button": "Première",
         "previous_button": "Précédente",
         "next_button": "Suivante",
         "last_button": "Dernière",
         "viewing_page": "Page {{current}} sur {{total}}",
-        "users_on_list": "Utilisateurs dans la liste : {{number}}"
+        "users_on_list": "Utilisateurs dans la liste : {{number}}",
+        "unfollow_all": {
+          "button": "Ne plus suivre personne",
+          "title": "Ne plus suivre aucun compte ?",
+          "description_one": "Vous ne suivrez plus le {{count}} compte que vous suivez. Cette action est irréversible.",
+          "description_many": "Vous ne suivrez plus aucun des {{count}} comptes que vous suivez. Cette action est irréversible.",
+          "description_other": "Vous ne suivrez plus aucun des {{count}} comptes que vous suivez. Cette action est irréversible.",
+          "confirm_prompt": "Saisissez le nom de votre compte ({{username}}) pour confirmer.",
+          "cancel": "Annuler"
+        }
       },
       "username_placeholder": "nom d'utilisateur"
     },

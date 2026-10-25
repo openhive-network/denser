@@ -1,14 +1,16 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
-import { IFollow } from '@hive/common-hiveio-packages/wax';
+import { FullAccount, IFollow } from '@hive/common-hiveio-packages/wax';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 import { postSocialChanged } from '@/blog/lib/social-sync';
 import {
+  clearFollowingCaches,
   filterFromAllPages,
   prependToFirstPage,
   rollbackFollowCaches,
   snapshotFollowCaches,
-  updateProfileFollowCounts
+  updateProfileFollowCounts,
+  type InfiniteFollowData
 } from '../lib/follow-cache';
 
 type FollowParams = { username: string };
@@ -107,6 +109,43 @@ export function useUnfollowMutation() {
       ['profileData', username],
       ['profileData', otherUsername]
     ],
+    invalidateDelays: FOLLOW_REFRESH_DELAYS
+  });
+}
+
+/** Unfollows every account the signed-in user follows, in one `reset_following_list` operation. */
+export function useResetFollowingMutation() {
+  const { username } = useUserClient().user;
+  const followingKey = ['followingData', username];
+  const profileKey = ['profileData', username];
+  return useOperationMutation({
+    name: 'useResetFollowingMutation',
+    mutationKey: ['unfollowAll'],
+    optimistic: async (_params: void, queryClient) => {
+      await Promise.all([followingKey, profileKey].map((queryKey) => queryClient.cancelQueries({ queryKey })));
+      const snapshot = {
+        prevFollowingAll: queryClient.getQueriesData<InfiniteFollowData>({ queryKey: followingKey }),
+        prevProfile: queryClient.getQueryData<FullAccount>(profileKey)
+      };
+      clearFollowingCaches(queryClient, username);
+      return snapshot;
+    },
+    run: () => transactionService.resetFollowingBlog(OBSERVE),
+    // Re-applied after the broadcast: a refetch during an observed broadcast can overwrite the optimistic write.
+    onSuccess: (_data, _params, queryClient) => {
+      clearFollowingCaches(queryClient, username);
+      postSocialChanged(username);
+    },
+    rollback: (context, _params, queryClient) => {
+      if (!context) return;
+      for (const [key, data] of context.prevFollowingAll) queryClient.setQueryData(key, data);
+      if (context.prevProfile !== undefined) queryClient.setQueryData(profileKey, context.prevProfile);
+    },
+    successToast: () => ({
+      title: 'Unfollowed all',
+      description: 'You no longer follow anyone.'
+    }),
+    invalidate: () => [followingKey, profileKey],
     invalidateDelays: FOLLOW_REFRESH_DELAYS
   });
 }

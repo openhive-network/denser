@@ -60,3 +60,16 @@ export enum EAssetName {
   HBD = 'HBD',
   VESTS = 'VESTS'
 }
+
+/** The follow-plugin builder surface `follow-list-reset.ts` uses; the test drives the real class. */
+export enum EFollowBlogAction {
+  FOLLOW_BLOG = 0,
+  MUTE_BLOG = 1,
+  BOTH = 2
+}
+export interface FollowOperation {
+  resetBlogList(action: EFollowBlogAction, workingAccount: string, blog: string): FollowOperation;
+  resetBlacklistBlog(workingAccount: string, blog: string): FollowOperation;
+  resetFollowBlacklistBlog(workingAccount: string, blog: string): FollowOperation;
+  resetFollowMutedBlog(workingAccount: string, blog: string): FollowOperation;
+}

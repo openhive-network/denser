@@ -6,9 +6,7 @@ import clsx from 'clsx';
 import { IFollowList } from '@hive/common-hiveio-packages/wax';
 import { useEffect, useState } from 'react';
 import { useTranslation } from '@/blog/i18n/client';
-import { handleError } from '@ui/lib/handle-error';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { useResetAllListsMutation } from '@/blog/components/hooks/use-reset-mutations';
 import { Search, UserPlus } from 'lucide-react';
 import ListItem from './list-item';
 
@@ -42,24 +40,16 @@ const ListArea = ({
   onSearchChange: (e: string) => void;
 }) => {
   const { t } = useTranslation('common_blog');
-  const resetAllListsMutation = useResetAllListsMutation();
   const [disabled, setDisabled] = useState(false);
   useEffect(() => {
-    if (resetAllListsMutation.isPending || resetListIsLoading) {
+    if (resetListIsLoading) {
       setDisabled(true);
     } else {
       setTimeout(() => {
         setDisabled(false);
       }, 3000);
     }
-  }, [resetAllListsMutation.isPending, resetListIsLoading]);
-  const resetAll = async () => {
-    try {
-      await resetAllListsMutation.mutateAsync();
-    } catch (error) {
-      handleError(error, { method: 'resetAll', params: {} });
-    }
-  };
+  }, [resetListIsLoading]);
   const [page, setPage] = useState(0);
   const [addValue, setAddValue] = useState('');
   const totalItems = data?.filter((e) => e.name !== 'null').length ?? 0;
@@ -180,7 +170,7 @@ const ListArea = ({
               placeholder={t('user_profile.lists.username_placeholder')}
               value={addValue}
               onChange={(e) => setAddValue(e.target.value.trim())}
-              disabled={resetListIsLoading || resetAllListsMutation.isPending}
+              disabled={resetListIsLoading}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && addValue && !isLoading && !disabled) {
                   handleAdd(addValue);
@@ -237,22 +227,10 @@ const ListArea = ({
               className="min-w-[120px] text-xs"
               disabled={disabled}
             >
-              {resetListIsLoading || resetAllListsMutation.isPending ? (
+              {resetListIsLoading ? (
                 <CircleSpinner loading={disabled} size={18} color="#dc2626" />
               ) : (
                 resetTitle
-              )}
-            </Button>
-            <Button
-              disabled={disabled}
-              onClick={resetAll}
-              size="sm"
-              className="min-w-[120px] text-xs"
-            >
-              {resetAllListsMutation.isPending ? (
-                <CircleSpinner loading={resetAllListsMutation.isPending} size={18} color="#dc2626" />
-              ) : (
-                t('user_profile.lists.list.reset_all_lists')
               )}
             </Button>
           </div>

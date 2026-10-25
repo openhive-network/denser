@@ -58,6 +58,8 @@ test('FML-04 — Reset followed muted lists with one broadcast', async ({ page }
   const userList = new UserListPage(page);
   await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length);
 
+  await expect(userList.resetButton('followed_muted_lists')).toBeVisible();
+  await expect(userList.resetAllButton).toHaveCount(0);
   await userList.resetButton('followed_muted_lists').click();
   await broadcast.waitForCount(1);
 

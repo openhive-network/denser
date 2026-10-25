@@ -63,6 +63,8 @@ test('BL-04 — Reset blacklist clears all entries with one broadcast', async ({
   const userList = new UserListPage(page);
   await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length);
 
+  await expect(userList.resetButton('blacklisted')).toBeVisible();
+  await expect(userList.resetAllButton).toHaveCount(0);
   await userList.resetButton('blacklisted').click();
   await broadcast.waitForCount(1);
 

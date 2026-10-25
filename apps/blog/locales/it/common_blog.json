@@ -429,14 +429,22 @@
         "reset_muted_list": "Azzera la lista dei silenziati",
         "reset_followed_blacklists": "Azzera le liste nere seguite",
         "reset_followed_muted_list": "Reimposta le liste di account silenziati seguite",
-        "reset_all_lists": "Azzera tutti i seguiti/liste",
         "busy_button": "OCCUPATO, ATTENDERE",
         "first_button": "Primo",
         "previous_button": "Precedente",
         "next_button": "Prossimo",
         "last_button": "Ultimo",
         "viewing_page": "Pagina {{current}} di {{total}}",
-        "users_on_list": "Utenti nella lista: {{number}}"
+        "users_on_list": "Utenti nella lista: {{number}}",
+        "unfollow_all": {
+          "button": "Smetti di seguire tutti",
+          "title": "Smettere di seguire tutti gli account?",
+          "description_one": "Smetterai di seguire l'{{count}} account che segui. L'operazione non può essere annullata.",
+          "description_many": "Smetterai di seguire tutti i {{count}} account che segui. L'operazione non può essere annullata.",
+          "description_other": "Smetterai di seguire tutti i {{count}} account che segui. L'operazione non può essere annullata.",
+          "confirm_prompt": "Digita il nome del tuo account ({{username}}) per confermare.",
+          "cancel": "Annulla"
+        }
       },
       "username_placeholder": "nome utente"
     },

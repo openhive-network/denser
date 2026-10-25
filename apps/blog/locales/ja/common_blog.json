@@ -425,14 +425,20 @@
         "reset_muted_list": "ミュートリストをリセット",
         "reset_followed_blacklists": "フォロー中のブラックリストをリセット",
         "reset_followed_muted_list": "フォロー中のミュートリストをリセット",
-        "reset_all_lists": "すべてのフォロー/リストをリセット",
         "busy_button": "処理中です。お待ちください",
         "first_button": "最初",
         "previous_button": "前へ",
         "next_button": "次へ",
         "last_button": "最後",
         "viewing_page": "{{total}} ページ中 {{current}} ページを表示中",
-        "users_on_list": "リストのユーザー: {{number}}"
+        "users_on_list": "リストのユーザー: {{number}}",
+        "unfollow_all": {
+          "button": "すべてフォロー解除",
+          "title": "すべてのアカウントのフォローを解除しますか？",
+          "description_other": "フォロー中の{{count}}件のアカウントをすべてフォロー解除します。この操作は元に戻せません。",
+          "confirm_prompt": "確認のためアカウント名（{{username}}）を入力してください。",
+          "cancel": "キャンセル"
+        }
       },
       "username_placeholder": "ユーザー名"
     },
