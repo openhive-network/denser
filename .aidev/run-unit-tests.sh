@@ -125,6 +125,10 @@ run_with_junit_fallback "$junit" blog node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     apps/blog/lib/canonical-url.test.ts \
+    apps/blog/lib/json-ld.test.ts \
+    apps/blog/lib/structured-data.test.ts \
+    apps/blog/lib/seo-robots.test.ts \
+    apps/blog/lib/sitemap-entries.test.ts \
     apps/blog/lib/in-app-redirect-url.test.ts \
     apps/blog/lib/post-summary.test.ts \
     apps/blog/lib/chat-eligibility.test.ts \

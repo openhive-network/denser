@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
 import { getTranslation } from '@/blog/i18n/server';
+import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
 
 export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
   const params = await props.params;
@@ -10,7 +11,8 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
   const title = t('page_titles.settings', { username });
 
   return {
-    title
+    title,
+    robots: NOINDEX_ROBOTS
   };
 }
 

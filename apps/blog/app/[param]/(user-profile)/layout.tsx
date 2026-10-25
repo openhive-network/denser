@@ -44,6 +44,9 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
       },
       description: about,
       openGraph: {
+        type: 'profile',
+        siteName: 'Hive',
+        username,
         title,
         description: about,
         images: [image]

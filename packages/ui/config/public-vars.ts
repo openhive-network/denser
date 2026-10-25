@@ -9,6 +9,8 @@ export const configuredImagesEndpoint = (env('IMAGES_ENDPOINT') ?? 'https://imag
 export const configuredApiEndpoint = (env('API_ENDPOINT') ?? 'https://api.hive.blog').replace(/\/+$/, '');
 export const configuredRestApiEndpoint = env('REST_API_ENDPOINT')?.replace(/\/+$/, '') || undefined;
 export const configuredBlogDomain = env('BLOG_DOMAIN') ?? 'https://hive.blog/';
+/** Whether search engines may index the site (robots.txt); off unless `yes`, so a non-production site stays out. */
+export const configuredSeoAllowIndexing = env('SEO_ALLOW_INDEXING') === 'yes';
 export const configuredSessionTime = resolveSessionTime(
   env('APP_SESSION_TIME'),
   process.env.DENSER_APP === 'wallet' ? 'wallet' : 'blog'

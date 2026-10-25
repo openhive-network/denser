@@ -13,6 +13,10 @@ import { getEnvVersion } from '@ui/lib/env-version';
 import { ImagesHostHints } from '@ui/components/images-host-hints';
 import { LocaleProvider } from '@ui/components/locale-context';
 import { cookieName, resolveLocale } from '../i18n/settings';
+import { JsonLd } from '../components/json-ld';
+import { INDEX_ROBOTS } from '../lib/seo-robots';
+import { SITE_URL } from '../lib/site-url';
+import { websiteJsonLd } from '../lib/structured-data';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -21,12 +25,13 @@ const SITE_DESC =
   'Communities without borders. A social network owned and operated by its users, powered by Hive.';
 
 const metadata = {
-  metadataBase: new URL(process.env.REACT_APP_SITE_DOMAIN || 'https://hive.blog'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Hive',
     template: '%s - Hive'
   },
   description: SITE_DESC,
+  robots: INDEX_ROBOTS,
   icons: {
     icon: `${basePath}/favicon.ico`
   },
@@ -43,9 +48,6 @@ const metadata = {
     title: '#Hive.io',
     description: SITE_DESC,
     images: ['https://hive.blog/images/hive-blog-twshare.png']
-  },
-  other: {
-    'fb:app_id': 'YOUR_FB_APP_ID'
   }
 } as const satisfies Metadata;
 
@@ -56,10 +58,7 @@ export function generateMetadata(): Metadata {
 
   return {
     ...metadata,
-    other: {
-      ...metadata.other,
-      ...Sentry.getTraceData()
-    }
+    other: { ...Sentry.getTraceData() }
   };
 };
 
@@ -82,6 +81,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <ImagesHostHints />
       </head>
       <body className="bg-background-secondary">
+        <JsonLd data={websiteJsonLd()} />
         <LocaleProvider locale={locale}>
           <div className="min-h-screen">
             <Providers nonce={nonce}>

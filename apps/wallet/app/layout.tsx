@@ -40,9 +40,6 @@ const metadata = {
     title: '#Hive',
     description: SITE_DESC,
     images: ['https://hive.blog/images/hive-blog-share.png']
-  },
-  other: {
-    'fb:app_id': 'YOUR_FB_APP_ID'
   }
 } as const satisfies Metadata;
 
@@ -53,10 +50,7 @@ export function generateMetadata(): Metadata {
 
   return {
     ...metadata,
-    other: {
-      ...metadata.other,
-      ...Sentry.getTraceData()
-    }
+    other: { ...Sentry.getTraceData() }
   };
 }
 

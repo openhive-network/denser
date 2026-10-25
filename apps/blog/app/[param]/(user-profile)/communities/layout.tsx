@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import React, { PropsWithChildren } from 'react';
 import { profileCanonical } from '@/blog/lib/profile-canonical';
 import { getTranslation } from '@/blog/i18n/server';
+import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
 
 export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
   const params = await props.params;
@@ -11,7 +12,8 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
 
   return {
     title,
-    alternates: profileCanonical(params.param, 'communities')
+    alternates: profileCanonical(params.param, 'communities'),
+    robots: NOINDEX_ROBOTS
   };
 }
 
