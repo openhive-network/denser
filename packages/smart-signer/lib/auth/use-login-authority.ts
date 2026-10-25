@@ -5,7 +5,7 @@ import { LoginType, type User } from '@smart-signer/types/common';
 import { getLoginAuthority, type LoginAuthority } from '@smart-signer/lib/auth/login-authority';
 import { SAFE_STORAGE_KEYS_CHANGED_EVENT, getSafeStorageKeyTypes } from '@smart-signer/lib/signer/safe-storage-keys';
 import { storedWifKeyTypes } from '@smart-signer/lib/signer/credential-storage';
-import { subscribeSafeStorageGeneration } from '@hive/common-hiveio-packages/safe-storage-generation';
+import { subscribeSafeStorageGeneration } from '@hive/common-hiveio-packages/safe-storage-generation-subscription';
 
 export interface StoredKeyTypes {
   /** The key types the session's signer holds keys of; undefined until read, and for other signers */

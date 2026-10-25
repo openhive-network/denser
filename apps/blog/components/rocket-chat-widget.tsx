@@ -2,6 +2,7 @@ import { getLogger } from '@ui/lib/logging';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useState, useRef, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useTranslation } from '@/blog/i18n/client';
 import { siteConfig } from '@ui/config/site';
 import { LoginType } from '@smart-signer/types/common';
@@ -9,10 +10,14 @@ import { inIframe } from '@smart-signer/lib/utils';
 import { useGetChatAuthToken } from '@smart-signer/lib/auth/use-chat-token';
 import { useChatTokenRequest } from '@/blog/components/hooks/use-chat-token-request';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { ChatDrawer } from '@/blog/components/chat-drawer';
 import { isEligibleForChat } from '@/blog/lib/chat-eligibility';
 
 const logger = getLogger('app');
+
+// A chunk of its own: only a user eligible for chat, with an account on it, gets the drawer
+const ChatDrawer = dynamic(() => import('@/blog/components/chat-drawer').then((mod) => mod.ChatDrawer), {
+  ssr: false
+});
 
 /**
  * Login to Rocket Chat via iframe using postMessage.
