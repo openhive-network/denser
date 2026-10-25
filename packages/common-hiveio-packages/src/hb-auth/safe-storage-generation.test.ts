@@ -7,10 +7,12 @@ import { registerHooks } from 'node:module';
 const SILENT_LOGGER_MODULE =
   'data:text/javascript,const noop = () => {}; export const getLogger = () => ({ error: noop, warn: noop, info: noop });';
 const STORAGE_WITH_TTL_URL = new URL('../../../ui/lib/storage-with-ttl.ts', import.meta.url).href;
+const SUBSCRIPTION_URL = new URL('./safe-storage-generation-subscription.ts', import.meta.url).href;
 registerHooks({
   resolve(specifier, context, nextResolve) {
     if (specifier === './logging') return { url: SILENT_LOGGER_MODULE, shortCircuit: true };
     if (specifier === '@hive/ui/lib/storage-with-ttl') return { url: STORAGE_WITH_TTL_URL, shortCircuit: true };
+    if (specifier === './safe-storage-generation-subscription') return { url: SUBSCRIPTION_URL, shortCircuit: true };
     return nextResolve(specifier, context);
   }
 });
@@ -54,9 +56,9 @@ const {
   markSafeStorageWriting,
   getWorkerGeneration,
   renewSafeStorageGeneration,
-  subscribeSafeStorageGeneration,
   whenSafeStorageSettles
 } = await import('./safe-storage-generation.ts');
+const { subscribeSafeStorageGeneration } = await import('./safe-storage-generation-subscription.ts');
 
 const BLOG = '';
 const WALLET = '/wallet';

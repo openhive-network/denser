@@ -1,16 +1,5 @@
 import { getStorageItem, removeStorageItem, setStorageItem, StorageTTL } from '@hive/ui/lib/storage-with-ttl';
-
-/**
- * Names the state of safe storage's wallet files, which every hb-auth worker reads from IndexedDB
- * only when it starts. The apps on one origin each run their own worker, and a SharedWorker outlives
- * its pages, so a worker started before another app wrote a key keeps signing with the wallet files
- * it read, while the key aliases it reads live already list that key. Each write renews the
- * generation, and records the writing app's worker as holding it: that worker wrote the files, and
- * all of that app's pages share it, so they keep using it, unlocked. A client of any other app is
- * created with the generation in its worker URL, so one created after the write starts a worker that
- * reads the files anew.
- */
-const SAFE_STORAGE_GENERATION_KEY = 'hbauth-safe-storage-generation';
+import { SAFE_STORAGE_GENERATION_KEY } from './safe-storage-generation-subscription';
 
 /**
  * The apps (their base paths) whose operations are writing safe storage's wallet files, while they
@@ -81,15 +70,6 @@ export function renewSafeStorageGeneration(basePath: string, writerWorker: strin
   const renewed: SafeStorageGeneration = { generation, writer: basePath, writerWorker };
   setStorageItem(SAFE_STORAGE_GENERATION_KEY, renewed, StorageTTL.PERMANENT);
   return getSafeStorageGeneration();
-}
-
-/** Calls `onChange` when a page in another tab renews the generation. Returns the unsubscribe. */
-export function subscribeSafeStorageGeneration(onChange: () => void): () => void {
-  const handleStorage = (event: StorageEvent) => {
-    if (event.key === SAFE_STORAGE_GENERATION_KEY) onChange();
-  };
-  window.addEventListener('storage', handleStorage);
-  return () => window.removeEventListener('storage', handleStorage);
 }
 
 /** The apps marked as writing, without those whose marks expired */
