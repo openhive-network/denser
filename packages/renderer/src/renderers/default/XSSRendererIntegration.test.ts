@@ -595,6 +595,112 @@ describe('XSS End-to-End Integration Tests', function () {
             expect(output).to.match(/href="[^"]*validtag[^"]*"/);
         });
     });
+
+    describe('12. HTML Preprocessing Rearrangement', function () {
+        // Attack: payloads inside markup that preprocessHtml() rewrites (pull columns,
+        // center extraction, details) before the sanitizer sees it. Each test also asserts
+        // the rearranged structure, so it fails if the payload stops reaching that path.
+
+        function expectNoXSS(output: string): void {
+            const issues = detectXSSInOutput(output);
+            expect(issues, `XSS found in output: ${output}`).to.be.empty;
+        }
+
+        it('neutralizes event handlers in pull-column content', function () {
+            const input = '<div class=pull-left><img src=x onerror=alert(1)></div>\n' +
+                '<div class=pull-right>safe</div>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.match(/onerror/i);
+            expect(output).to.include('<div class="pull-columns">');
+        });
+
+        it('strips script tags from pull-column content', function () {
+            const input = '<div class="pull-left"><script>alert(1)</script></div>\n' +
+                '<div class="pull-right">safe</div>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.include('alert');
+            expect(output).to.include('<div class="pull-columns">');
+        });
+
+        it('strips script tags inside center rearrangement of inline wrappers', function () {
+            const input = '<p><strong><center><script>alert(1)</script></center></strong></p>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.include('alert');
+            expect(output).to.include('<center><strong>');
+        });
+
+        it('strips script tags from markdown-bold center blocks', function () {
+            const input = '**<center><script>alert(1)</script></center>**';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.include('alert');
+            expect(output).to.include('<center><strong>');
+        });
+
+        it('strips event handlers from unquoted div class attributes', function () {
+            const input = '<div class=pull-left onclick=alert(1)>content</div>\n' +
+                '<div class=pull-right>other</div>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.match(/onclick/i);
+            expect(output).to.include('<div class="pull-left">content</div>');
+        });
+
+        it('neutralizes javascript: URLs in pull-column content', function () {
+            const input = '<div class="pull-left"><a href="javascript:alert(1)">click</a></div>\n' +
+                '<div class="pull-right">safe</div>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.match(/href="javascript:/i);
+            expect(output).to.include('<div class="pull-columns">');
+        });
+
+        it('strips event handlers from inline tags wrapping center', function () {
+            const input = '<p><span onmouseover="alert(1)"><center>content</center></span></p>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.match(/onmouseover/i);
+            expect(output).to.include('<center>content</center>');
+        });
+
+        it('strips SVG tags from pull-column content', function () {
+            const input = '<div class="pull-left"><svg onload="alert(1)"></svg></div>\n' +
+                '<div class="pull-right">safe</div>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.include('<svg');
+            expect(output).to.not.match(/onload/i);
+            expect(output).to.include('<div class="pull-columns">');
+        });
+
+        it('neutralizes event handlers in inline tags straddling the pull-column boundary', function () {
+            const input = '<div class="text-justify"><div class="pull-left"><i>left <img src=x onerror=alert(1)>' +
+                '</div><div class="pull-right">right</i></div></div>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.match(/onerror/i);
+            expect(output).to.include('<div class="pull-columns">');
+        });
+
+        it('neutralizes event handlers moved out of details after pre', function () {
+            const input = '<details><summary>s</summary><pre>code</pre><img src=x onerror=alert(1)></details>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.match(/onerror/i);
+            expect(output).to.include('<pre>code</pre></details>');
+        });
+
+        it('neutralizes event handlers in center opened inside a paragraph', function () {
+            const input = '<p>text<center><img src=x onerror=alert(1)></p>';
+            const output = renderer.render(input);
+            expectNoXSS(output);
+            expect(output).to.not.match(/onerror/i);
+            expect(output).to.include('<p>text</p>');
+        });
+    });
 });
 
 describe('XSS Integration - Allowlist Verification', function () {
