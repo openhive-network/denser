@@ -49,8 +49,8 @@ function isSameOrigin(headers: IncomingHttpHeaders): boolean {
 /**
  * `POST /api/chat/matrix-login-token`: a Synapse login token for the chat user the server signed
  * in, with which the session page signs Element in without the SSO redirects. Answers `200
- * { loginToken }`; `404` when the user has no Matrix account yet and `503` when no token could be
- * minted, on which the session page signs in through SSO; `429 { retry_after_ms }` (and
+ * { loginToken }`; `404` when `mint` leaves the user without a Matrix account and `503` when no
+ * token could be minted, on which the session page signs in through SSO; `429 { retry_after_ms }` (and
  * `Retry-After`) when Synapse rate-limits the mint, with its wait capped at 70 s; `403` to a cross-origin request or a
  * user who may not chat; `401` without a server sign-in; `404` unless Matrix is the chat provider
  * with an admin token. Never cached.

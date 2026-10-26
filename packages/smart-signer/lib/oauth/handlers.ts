@@ -21,12 +21,8 @@ import { proxifyImageSrc } from '@hive/ui/lib/proxify-images';
 import { joinSiteUrl } from '@hive/ui/lib/site-url';
 import { buildOAuthReturnUrl } from '@smart-signer/lib/oauth/return-url';
 import { setSessionUser } from '@smart-signer/lib/auth/accounts';
+import { oauthDisplayName, sanitizeProfileText } from './profile-text';
 
-/** Strip HTML tags and limit length for plain-text profile fields. */
-function sanitizeProfileText(value: string | undefined, maxLen = 160): string | undefined {
-  if (!value) return undefined;
-  return value.replace(/<[^>]*>/g, '').slice(0, maxLen).trim() || undefined;
-}
 import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import {
   findClient,
@@ -361,7 +357,7 @@ export const handleUserInfo: NextApiHandler = async (req, res) => {
     sub: username,
     username: username,
     preferred_username: username,
-    name: sanitizeProfileText(hiveProfile.name, 100) || username,
+    name: oauthDisplayName(hiveProfile, username),
     picture: pictureUrl,
   };
 

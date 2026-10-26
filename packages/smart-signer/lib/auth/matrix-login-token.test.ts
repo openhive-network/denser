@@ -11,7 +11,7 @@ registerHooks({
   }
 });
 
-const { mintMatrixLoginToken } = await import('./matrix-login-token.ts');
+const { mintMatrixLoginToken, mintMatrixLoginTokenCreatingAccount } = await import('./matrix-login-token.ts');
 const { FetchError, FetchTimeoutError } = await import('../fetch-json.ts');
 
 const HOMESERVER = 'https://matrix.example.org';
@@ -22,6 +22,10 @@ const SETTINGS = { homeserverUrl: HOMESERVER, serverName: 'example.org', adminTo
 const ADMIN_LOGIN = `${HOMESERVER}/_synapse/admin/v1/users/${encodeURIComponent('@alice:example.org')}/login`;
 const GET_TOKEN = `${HOMESERVER}/_matrix/client/v1/login/get_token`;
 const LOGOUT = `${HOMESERVER}/_matrix/client/v3/logout`;
+const DEFAULT_ROOM = '#general:example.org';
+const ACCOUNT_SETTINGS = { ...SETTINGS, defaultRoom: DEFAULT_ROOM };
+const CREATE_USER = `${HOMESERVER}/_synapse/admin/v2/users/${encodeURIComponent('@alice:example.org')}`;
+const JOIN_ROOM = `${HOMESERVER}/_synapse/admin/v1/join/${encodeURIComponent(DEFAULT_ROOM)}`;
 
 interface SynapseCall {
   url: string;
@@ -43,7 +47,9 @@ function synapse(answers: Partial<Record<string, () => Promise<unknown>>> = {}) 
   const defaults: Record<string, () => Promise<unknown>> = {
     [ADMIN_LOGIN]: async () => ({ access_token: TEMPORARY_TOKEN }),
     [GET_TOKEN]: async () => ({ login_token: LOGIN_TOKEN, expires_in_ms: 120_000 }),
-    [LOGOUT]: async () => ({})
+    [LOGOUT]: async () => ({}),
+    [CREATE_USER]: async () => ({ name: '@alice:example.org' }),
+    [JOIN_ROOM]: async () => ({ room_id: '!general:example.org' })
   };
   const request = (url: string, init: RequestInit, timeoutMs: number) => {
     calls.push({
@@ -197,5 +203,104 @@ describe('mintMatrixLoginToken', () => {
       kind: 'rate-limited',
       retryAfterMs: 60_000
     });
+  });
+});
+
+describe('mintMatrixLoginTokenCreatingAccount', () => {
+  const displayNameOf = async (username: string) => `${username} (Hive)`;
+
+  /** Synapse without Alice's account until it is created */
+  function synapseWithoutAccount(answers: Partial<Record<string, () => Promise<unknown>>> = {}) {
+    let created = false;
+    const exchange = synapse({
+      [ADMIN_LOGIN]: async () => {
+        if (!created) throw httpError(404, { errcode: 'M_NOT_FOUND', error: 'User not found' });
+        return { access_token: TEMPORARY_TOKEN };
+      },
+      [CREATE_USER]: async () => {
+        created = true;
+        return { name: '@alice:example.org' };
+      },
+      ...answers
+    });
+    return exchange;
+  }
+
+  it('mints for an existing account without creating one', async () => {
+    const { calls, request } = synapse();
+    const { lines, report } = failureLog();
+
+    assert.deepEqual(await mintMatrixLoginTokenCreatingAccount('alice', displayNameOf, ACCOUNT_SETTINGS, request, report), {
+      kind: 'token',
+      loginToken: LOGIN_TOKEN
+    });
+    assert.deepEqual(
+      calls.map((call) => call.url),
+      [ADMIN_LOGIN, GET_TOKEN, LOGOUT]
+    );
+    assert.deepEqual(lines, []);
+  });
+
+  it('creates the account of an unknown user, joins it to the default room, then mints', async () => {
+    const { calls, request } = synapseWithoutAccount();
+    const { lines, report } = failureLog();
+
+    assert.deepEqual(await mintMatrixLoginTokenCreatingAccount('alice', displayNameOf, ACCOUNT_SETTINGS, request, report), {
+      kind: 'token',
+      loginToken: LOGIN_TOKEN
+    });
+    assert.deepEqual(
+      calls.map(({ url, method, authorization }) => ({ url, method, authorization })),
+      [
+        { url: ADMIN_LOGIN, method: 'POST', authorization: `Bearer ${ADMIN_TOKEN}` },
+        { url: CREATE_USER, method: 'PUT', authorization: `Bearer ${ADMIN_TOKEN}` },
+        { url: JOIN_ROOM, method: 'POST', authorization: `Bearer ${ADMIN_TOKEN}` },
+        { url: ADMIN_LOGIN, method: 'POST', authorization: `Bearer ${ADMIN_TOKEN}` },
+        { url: GET_TOKEN, method: 'POST', authorization: `Bearer ${TEMPORARY_TOKEN}` },
+        { url: LOGOUT, method: 'POST', authorization: `Bearer ${TEMPORARY_TOKEN}` }
+      ]
+    );
+    assert.deepEqual(calls[1].body, { displayname: 'alice (Hive)' });
+    assert.deepEqual(calls[2].body, { user_id: '@alice:example.org' });
+    for (const call of calls) assert.ok(call.timeoutMs > 0 && call.timeoutMs <= 10_000);
+    assert.deepEqual(lines, []);
+  });
+
+  it('joins no room without a default room', async () => {
+    const { calls, request } = synapseWithoutAccount();
+    const { report } = failureLog();
+
+    await mintMatrixLoginTokenCreatingAccount('alice', displayNameOf, { ...SETTINGS, defaultRoom: '' }, request, report);
+    assert.deepEqual(
+      calls.map((call) => call.url),
+      [ADMIN_LOGIN, CREATE_USER, ADMIN_LOGIN, GET_TOKEN, LOGOUT]
+    );
+  });
+
+  it('fails, reporting it without a token, when the account cannot be created', async () => {
+    const { calls, request } = synapseWithoutAccount({
+      [CREATE_USER]: () => Promise.reject(new Error(`Status: 500 for ${ADMIN_TOKEN}`))
+    });
+    const { lines, report } = failureLog();
+
+    assert.deepEqual(await mintMatrixLoginTokenCreatingAccount('alice', displayNameOf, ACCOUNT_SETTINGS, request, report), {
+      kind: 'failed'
+    });
+    assert.deepEqual(
+      calls.map((call) => call.url),
+      [ADMIN_LOGIN, CREATE_USER]
+    );
+    assert.deepEqual(lines, ['@alice:example.org: creating the account: Status: 500 for [redacted]']);
+  });
+
+  it('still mints when only the join fails, and reports that', async () => {
+    const { request } = synapseWithoutAccount({ [JOIN_ROOM]: () => Promise.reject(httpError(403)) });
+    const { lines, report } = failureLog();
+
+    assert.deepEqual(await mintMatrixLoginTokenCreatingAccount('alice', displayNameOf, ACCOUNT_SETTINGS, request, report), {
+      kind: 'token',
+      loginToken: LOGIN_TOKEN
+    });
+    assert.deepEqual(lines, [`@alice:example.org: joining ${DEFAULT_ROOM}: Status: 403. Status Text: none`]);
   });
 });
