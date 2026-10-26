@@ -46,6 +46,10 @@ const SIGNED_IN_TIMEOUT_MS = 20_000;
 const STORED_SESSION_KEY = `matrix-chat-session-${USER_ID}`;
 /** The wait a rate-limited token route names in CHAT-NATIVE-10 */
 const RETRY_AFTER_MS = 500;
+/** A window too short for the timeline to hold #general's first messages without a scroll */
+const SHORT_VIEWPORT_PX = 240;
+/** More Tab stops than one lap of the drawer has */
+const MAX_LAP_STOPS = 20;
 
 test.use({
   fixtureTestName: 'accountSwitchLogout',
@@ -402,5 +406,29 @@ test.describe('Native Matrix chat client', () => {
     await composer(page).focus();
     await page.keyboard.press('Escape');
     await expect(chatButton(page)).toBeFocused();
+  });
+
+  test('CHAT-NATIVE-15: on the first Tab lap after sign-in, focus never drops out of the drawer', async ({ page }) => {
+    // Short enough that #general's messages fill the timeline: "Load older" waits for a scroll
+    await page.setViewportSize({ width: 1280, height: SHORT_VIEWPORT_PX });
+    await usesNativeChat(page);
+    await openPage(page);
+
+    await chatButton(page).focus();
+    await page.keyboard.press('Enter');
+    await expect.poll(() => focusInDrawer(page)).toBe(true);
+    await expect(panel(page).getByRole('button', { name: EN.load_older })).toBeVisible({
+      timeout: SIGNED_IN_TIMEOUT_MS
+    });
+
+    const focused: string[] = [];
+    for (let step = 0; step < MAX_LAP_STOPS; step++) {
+      await page.keyboard.press('Tab');
+      focused.push(await page.evaluate(() => document.activeElement?.outerHTML.slice(0, 80) ?? 'none'));
+      expect(await focusInDrawer(page), focused.join('\n')).toBe(true);
+      if (await composer(page).evaluate((element) => element === document.activeElement)) break;
+    }
+    await expect(composer(page)).toBeFocused();
+    await expect(panel(page).getByText(OLDER_GENERAL_MESSAGE)).toBeVisible();
   });
 });
