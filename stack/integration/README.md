@@ -111,6 +111,11 @@ instead (`compose.yml` alone), e.g. to pin a version. Promotes no longer build
 `:integration` images (`.aidev/project.yaml` has no `publish:` section since the site
 switched to follow mode), so in images mode pin a tag CI builds from develop/main.
 
+The blog and wallet healthchecks (`compose.yml`) probe with `node -e` and `fetch`, the
+one program both the test image and the `-subdirectory` images have; the test image
+carries no `wget` or `curl`. `./test-healthchecks.sh` (or `./test-healthchecks.sh
+images`) checks that each healthcheck's program is in its service's image.
+
 ## Shared HTML cache (optional)
 
 A shared cache for the blog's anonymous pages, to measure hit rate and staleness here

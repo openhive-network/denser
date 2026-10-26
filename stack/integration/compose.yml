@@ -67,7 +67,7 @@ services:
       DENSER_SERVER_OAUTH_MATRIX_SECRET: ${DENSER_SERVER_OAUTH_MATRIX_SECRET:-}
     mem_limit: 4g
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:80/blog || exit 1"]
+      test: ["CMD", "node", "-e", "fetch(process.argv[1],{redirect:'manual'}).then(r=>process.exit(r.status<400?0:1),()=>process.exit(1))", "http://127.0.0.1:80/blog"]
       interval: 30s
       timeout: 15s
       retries: 5
@@ -82,7 +82,7 @@ services:
       REACT_APP_BASE_PATH: /wallet
     mem_limit: 2g
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:80/wallet || exit 1"]
+      test: ["CMD", "node", "-e", "fetch(process.argv[1],{redirect:'manual'}).then(r=>process.exit(r.status<400?0:1),()=>process.exit(1))", "http://127.0.0.1:80/wallet"]
       interval: 30s
       timeout: 15s
       retries: 5
