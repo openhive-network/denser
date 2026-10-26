@@ -1153,7 +1153,8 @@
       "secure_action": "保护此账户",
       "prompt_title": "你的轻账户已上链",
       "prompt_dismiss": "关闭",
-      "sign_in_on_device": "已用通行密钥保护过轻账户？在此设备上登录"
+      "sign_in_on_device": "已用通行密钥保护过轻账户？在此设备上登录",
+      "login_dialog_link": "有使用通行密钥的轻账户？在此设备上登录"
     },
     "signer_errors": {
       "popup_blocked": "浏览器拦截了签名窗口。请允许此网站的弹出窗口后重试。",

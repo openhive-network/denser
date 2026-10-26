@@ -280,10 +280,16 @@ with their flow runner (`use-passkey-flow.ts`) and the signer client.
   then the owner as the root (`kind: "passkey"`, `signer`).
   The guest may keep the signer origin off chain (the dialog's checkbox); it is remembered locally
   either way. Afterwards the stored identity drops `ownerWif`.
-- **Sign in on this device** (the name dialog's link): the name, the authority read, the signer the
-  root names (else the only one configured, else the guest picks), a fresh posting key added by the
-  root (`signL2Transaction` in the signer) with `expires` 90 days and a label guessed from the user agent.
-  A browser holding another lite identity forgets it first.
+- **Sign in on this device** (`lite-sign-in-dialog.tsx`, name field focused): the name, the authority
+  read, the signer the root names (else the only one configured, else the guest picks), a fresh posting
+  key added by the root (`signL2Transaction` in the signer) with `expires` 90 days and a label guessed
+  from the user agent. A browser holding another lite identity forgets it first. Three entry points:
+  - the Login dialog (`components/dialog-login.tsx`, `lite-login-entry.tsx`): a link under the Hive
+    sign-in form, shown where the API node's `lite.get_info` is known to be lite-aware and the gateway
+    relays `update_authority`; it closes the Login dialog and opens this one. A fresh browser starts
+    here. The gateway is asked only on a lite-aware node;
+  - the name dialog's link, for a guest who started a reply or post;
+  - the identity menu, to switch accounts: its "Sign in" opens the Login dialog, and so its link.
 - **Sign out** (menu, secured identity): `removeDevice` signed by this device's key, then
   `forgetLiteAccount`. Forget stays, and says what it costs: for an unsecured identity that the account
   is lost, for a secured one that the device key stays until it expires.
@@ -299,8 +305,8 @@ only while unsecured; `ownerPublicKey` is the root's once secured. A record stor
 unsecured with its owner key (`readStoredLiteIdentity`); nothing is rewritten until the identity changes.
 
 `liteIdentityPasskey.spec.ts` (LITE-ID-01, 02, 04–08, on the `liteSocial` recording) and
-`liteIdentityPasskeySignIn.spec.ts` (LITE-ID-03, and LITE-ID-09 for the first-post card, on `litePost`)
-cover it, with the gateway's authority and `/l2` answered in the browser from one authority the relayed edits change, and the popup served by a stub
+`liteIdentityPasskeySignIn.spec.ts` (LITE-ID-03, LITE-ID-09 for the first-post card and LITE-ID-10 for
+the Login dialog's link, on `litePost`; its node-without-lite case in `liteLoginEntry.spec.ts`) cover it, with the gateway's authority and `/l2` answered in the browser from one authority the relayed edits change, and the popup served by a stub
 speaking the signer protocol (`support/litePasskeyContext.ts`): fixture runs have no network, so the real
 signer and its passkey (PRF) are its own e2e's business.
 

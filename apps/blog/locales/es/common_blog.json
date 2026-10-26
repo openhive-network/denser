@@ -1153,7 +1153,8 @@
       "secure_action": "Proteger esta cuenta",
       "prompt_title": "Tu cuenta lite ya está en la cadena",
       "prompt_dismiss": "Descartar",
-      "sign_in_on_device": "¿Ya protegiste una cuenta lite con una passkey? Inicia sesión en este dispositivo"
+      "sign_in_on_device": "¿Ya protegiste una cuenta lite con una passkey? Inicia sesión en este dispositivo",
+      "login_dialog_link": "¿Tienes una cuenta lite con una passkey? Inicia sesión en este dispositivo"
     },
     "signer_errors": {
       "popup_blocked": "El navegador bloqueó la ventana del firmante. Permite las ventanas emergentes para este sitio e inténtalo de nuevo.",

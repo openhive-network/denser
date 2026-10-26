@@ -1153,7 +1153,8 @@
       "secure_action": "Secure this account",
       "prompt_title": "Your lite account is on chain",
       "prompt_dismiss": "Dismiss",
-      "sign_in_on_device": "Already secured a lite account with a passkey? Sign in on this device"
+      "sign_in_on_device": "Already secured a lite account with a passkey? Sign in on this device",
+      "login_dialog_link": "Have a lite account with a passkey? Sign in on this device"
     },
     "signer_errors": {
       "popup_blocked": "The browser blocked the signer window. Allow pop-ups for this site and try again.",

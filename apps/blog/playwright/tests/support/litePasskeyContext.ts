@@ -1,4 +1,4 @@
-import type { BrowserContext, Page } from '@playwright/test';
+import { expect, type BrowserContext, type Page } from '@playwright/test';
 
 /**
  * Shared mocks of the lite passkey specs (`liteIdentityPasskey.spec.ts`): the gateway's authority
@@ -214,3 +214,14 @@ export const storedIdentity = (page: Page) =>
     const raw = window.localStorage.getItem('lite-identity');
     return raw ? (JSON.parse(raw) as { value: Record<string, unknown> }).value : null;
   });
+
+/** Opens the header's Login dialog once the page has hydrated, and waits for its sign-in form. */
+export async function openLoginDialog(page: Page) {
+  const dialog = page.getByTestId('login-dialog');
+  await expect(async () => {
+    if (!(await dialog.isVisible())) await page.getByTestId('login-btn').click();
+    await expect(dialog).toBeVisible({ timeout: 2_000 });
+  }).toPass();
+  await expect(dialog.getByTestId('other-sign-in-options-button')).toBeVisible();
+  return dialog;
+}

@@ -1153,7 +1153,8 @@
       "secure_action": "Sécuriser ce compte",
       "prompt_title": "Votre compte lite est sur la chaîne",
       "prompt_dismiss": "Ignorer",
-      "sign_in_on_device": "Vous avez déjà sécurisé un compte lite avec une passkey ? Connectez-vous sur cet appareil"
+      "sign_in_on_device": "Vous avez déjà sécurisé un compte lite avec une passkey ? Connectez-vous sur cet appareil",
+      "login_dialog_link": "Vous avez un compte lite avec une passkey ? Connectez-vous sur cet appareil"
     },
     "signer_errors": {
       "popup_blocked": "Le navigateur a bloqué la fenêtre du signataire. Autorisez les fenêtres surgissantes pour ce site et réessayez.",
