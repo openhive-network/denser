@@ -379,8 +379,6 @@
     "search_placeholder": "Szukaj po tytule, autorze lub odbiorcy",
     "search_label": "Szukaj propozycji",
     "no_search_results": "Żadna propozycja nie pasuje do wyszukiwania.",
-    "search_loading": "Przeszukiwanie wszystkich propozycji…",
-    "search_incomplete": "Nie udało się wczytać wszystkich propozycji, więc wyniki mogą być niepełne.",
     "dhf_title": "Zdecentralizowany Fundusz Hive",
     "dhf_daily_funded": "Dziennie finansowane",
     "dhf_stabilizer": "Stabilizator HBD",

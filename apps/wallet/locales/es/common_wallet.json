@@ -374,8 +374,6 @@
     "search_placeholder": "Buscar por título, creador o receptor",
     "search_label": "Buscar propuestas",
     "no_search_results": "Ninguna propuesta coincide con tu búsqueda.",
-    "search_loading": "Buscando en todas las propuestas…",
-    "search_incomplete": "No se pudieron cargar todas las propuestas, así que los resultados pueden estar incompletos.",
     "dhf_title": "Fondo Descentralizado de Hive",
     "dhf_daily_funded": "Financiado al día",
     "dhf_stabilizer": "Estabilizador de HBD",

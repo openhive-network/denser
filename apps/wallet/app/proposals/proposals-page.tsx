@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { DEFAULT_PARAMS_FOR_PROPOSALS, getUserVotes } from '@/wallet/lib/hive';
 import { IGetProposalsParams } from '@hive/common-hiveio-packages/wax';
@@ -12,6 +12,7 @@ import { ProposalsFundingLine } from '@/wallet/components/proposals-funding-line
 import { useDhfFundingQuery } from '@/wallet/components/hooks/use-dhf-funding';
 import { useProposalsPaid } from '@/wallet/components/hooks/use-proposals-paid';
 import { useProposalsList } from '@/wallet/components/hooks/use-proposals-list';
+import { useRevealOnScroll } from '@/wallet/components/hooks/use-reveal-on-scroll';
 import { REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { isReturnProposal } from '@/wallet/lib/dhf-funding';
 import { fundingMarks, isProposalStatusTab, type FundingMarks } from '@/wallet/lib/proposals-list';
@@ -22,6 +23,8 @@ import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 const NO_FUNDING_MARKS: FundingMarks = { lineIndex: -1, badges: [] };
+/** How many proposals the list renders at first, and how many more each scroll to its end reveals. */
+const RENDER_STEP = 30;
 
 export default function ProposalsPage() {
   const { user } = useUserClient();
@@ -42,13 +45,16 @@ export default function ProposalsPage() {
     enabled: !!user?.username
   });
   const { data: funding, isPending: fundingLoading } = useDhfFundingQuery();
-  const {
-    pagesQuery: proposalsData,
-    loadedProposals,
-    proposals,
-    coverage,
-    loadsOnScroll
-  } = useProposalsList({ status: filterStatus, order: sortOrder, order_direction: orderDirection }, search);
+  const { listQuery: proposalsData, proposals } = useProposalsList(
+    { status: filterStatus, order: sortOrder, order_direction: orderDirection },
+    search
+  );
+  const renderedCount = useRevealOnScroll(
+    proposals.length,
+    RENDER_STEP,
+    [filterStatus, sortOrder, orderDirection, search].join('|')
+  );
+  const renderedProposals = useMemo(() => proposals.slice(0, renderedCount), [proposals, renderedCount]);
   const { data: dynamicData, isPending: dynamicLoading } = useQuery({
     queryKey: ['dynamicGlobalProperties'],
     queryFn: () => getDynamicGlobalProperties(),
@@ -63,8 +69,8 @@ export default function ProposalsPage() {
 
   const searching = search.trim() !== '';
   const paidProposalIds = useMemo(
-    () => (searching ? proposals : loadedProposals).map((proposal) => proposal.proposal_id),
-    [searching, proposals, loadedProposals]
+    () => renderedProposals.map((proposal) => proposal.proposal_id),
+    [renderedProposals]
   );
   const paidById = useProposalsPaid(paidProposalIds);
   const marks = useMemo(
@@ -79,26 +85,6 @@ export default function ProposalsPage() {
         : NO_FUNDING_MARKS,
     [proposals, funding, sortOrder, orderDirection, searching]
   );
-
-  useEffect(() => {
-    let fetching = false;
-    const handleScroll = async (e: Event) => {
-      if (!loadsOnScroll) return;
-      const target = e.target as Document | undefined;
-      if (!target?.scrollingElement) return;
-
-      const { scrollHeight, scrollTop, clientHeight } = target.scrollingElement;
-      if (!fetching && scrollHeight - scrollTop <= clientHeight * 1.2) {
-        fetching = true;
-        if (proposalsData.hasNextPage) await proposalsData.fetchNextPage();
-        fetching = false;
-      }
-    };
-    document.addEventListener('scroll', handleScroll);
-    return () => {
-      document.removeEventListener('scroll', handleScroll);
-    };
-  }, [proposalsData, proposalsData.fetchNextPage, proposalsData.hasNextPage, loadsOnScroll]);
 
   const handleStatusChange = (value: string) => {
     if (isProposalStatusTab(value)) setFilterStatus(value);
@@ -132,30 +118,21 @@ export default function ProposalsPage() {
             <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
             <Skeleton className="h-32 w-full bg-slate-300 dark:bg-slate-900" />
           </div>
-        ) : proposalsData.data?.pages[0].length === 0 || !dynamicData ? (
+        ) : proposalsData.data?.length === 0 || !dynamicData ? (
           <main>
             <p className="mt-32 text-center text-3xl" data-testid="cannot-show-you-any-proposals">
               {t('global.sorry_cant_show')}
             </p>
             <p className="text-center text-xl text-gray-400">{t('global.its_probably')}</p>
           </main>
-        ) : coverage === 'loading' ? (
-          <p className="mt-16 text-center text-xl" role="status" data-testid="proposals-search-loading">
-            {t('proposals_page.search_loading')}
-          </p>
         ) : (
           <>
-            {coverage === 'incomplete' ? (
-              <p className="text-center text-sm" role="status" data-testid="proposals-search-incomplete">
-                {t('proposals_page.search_incomplete')}
-              </p>
-            ) : null}
             {proposals.length === 0 ? (
               <p className="mt-16 text-center text-xl" data-testid="proposals-no-search-results">
                 {t('proposals_page.no_search_results')}
               </p>
             ) : null}
-            {proposals.map((proposal, index) => (
+            {renderedProposals.map((proposal, index) => (
               <Fragment key={proposal.proposal_id}>
                 <ProposalListItem
                   voted={

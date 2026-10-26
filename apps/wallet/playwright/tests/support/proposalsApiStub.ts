@@ -3,8 +3,7 @@ import { PROPOSALS_PAYMENTS_PATH, STUB_ACCOUNT, fullAccount, stubProposalsPaymen
 
 /**
  * A proposals page with a DHF to fund it, for `startWalletApiStub`'s `jsonRpc`: seven proposals,
- * which `database_api.list_proposals` filters by status, orders and pages (`limit` from `last_id`)
- * as the node does, and a DHF holding DHF_STUB_HBD. With a daily budget of 500 HBD the next round
+ * which `database_api.list_proposals` filters by status and orders, from the start up to `limit`, and a DHF holding DHF_STUB_HBD. With a daily budget of 500 HBD the next round
  * pays #11 (200 HBD), the stabilizer's #12 (150 HBD) and the return proposal #0 (the remaining
  * 150 HBD), and nothing below.
  */
@@ -121,7 +120,10 @@ const listProposalVotes: JsonRpcResults[string] = (params) => {
   return { proposal_votes: votedProposal ? [{ id: 1, voter: STUB_ACCOUNT, proposal: votedProposal }] : [] };
 };
 
-/** A page of the listing starts at the proposal `last_id` names, so it repeats the last one of the page before. */
+/**
+ * The listing from its start, up to `limit`. Like the node, which does not continue a listing from
+ * `last_id`, the stub does not page by it: a call without `start` always begins at the top.
+ */
 const listProposalsOf =
   (all: readonly StubProposal[]): JsonRpcResults[string] =>
   (params) => {
@@ -133,9 +135,7 @@ const listProposalsOf =
     const listing = all
       .filter((item) => statuses.includes(item.status))
       .sort((a, b) => direction * sortKey(a).localeCompare(sortKey(b)));
-    const cursor = listing.findIndex(({ id }) => id === numberParam(params, 'last_id'));
-    const from = Math.max(0, cursor);
-    return { proposals: listing.slice(from, from + (numberParam(params, 'limit') ?? listing.length)) };
+    return { proposals: listing.slice(0, numberParam(params, 'limit') ?? listing.length) };
   };
 
 const proposalsPageResults = (all: readonly StubProposal[]): JsonRpcResults => ({
@@ -152,7 +152,7 @@ export const PROPOSALS_PAGE_RESULTS: JsonRpcResults = proposalsPageResults(PROPO
 
 /** How many unfunded proposals SEARCH_PAGE_RESULTS adds below the seven, ids from 100 on. */
 export const SEARCH_EXTRA_PROPOSALS = 40;
-/** The two extra proposals whose subject has "Keychain": one on the first page of votable proposals, one past it. */
+/** The two extra proposals whose subject has "Keychain": one among the votable proposals the list renders first, one past them. */
 export const SEARCH_PROPOSALS = {
   onFirstPage: 101,
   pastFirstPage: 100 + SEARCH_EXTRA_PROPOSALS - 1
@@ -174,7 +174,7 @@ const extraProposal = (index: number) => {
 
 /**
  * The proposals page of PROPOSALS_PAGE_RESULTS with SEARCH_EXTRA_PROPOSALS more active proposals
- * below them in vote order, more than the page's first page of votable proposals holds.
+ * below them in vote order, more votable proposals than the list renders at first.
  */
 export const SEARCH_PAGE_RESULTS: JsonRpcResults = proposalsPageResults([
   ...PROPOSALS,
