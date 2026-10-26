@@ -16,6 +16,7 @@ import {
   stubSigners,
   TEST_KEYS,
   unsecuredIdentity,
+  YUBIKEY,
   type Authority
 } from '../support/litePasskeyContext';
 
@@ -26,15 +27,20 @@ import {
  * signer popup is a stub speaking the hive-passkey-signer protocol (no network in fixture runs,
  * so the real signer and its passkey are not reachable).
  *
- *   LITE-ID-01 – Secure with one configured signer: its popup opens directly; the stored identity
- *                drops its owner key; the owner is the root with `kind: passkey` and that signer
- *   LITE-ID-02 – Secure with two configured signers asks which before any popup opens
+ *   LITE-ID-01 – Secure with one configured signer: its popup opens directly; the passkey's label is
+ *                pre-filled from the signer's authenticator report; the stored identity drops its
+ *                owner key; the owner is the root with `kind: passkey`, that signer, the label and
+ *                the report's public part; the Devices tab and the backup note name the passkey
+ *   LITE-ID-02 – Secure with two configured signers asks which before any popup opens; an older
+ *                signer (no authenticator report) leaves the passkey labelled `Passkey`
  *   LITE-ID-04 – Sign out removes this device's posting key, then the browser forgets the account
  *   LITE-ID-05 – Devices: labels and dates; Renew extends only this device; Remove another device
  *   LITE-ID-06 – the "lives only in this browser" warning, the backup note, and neither, in the
  *                menu and on the profile
  *   LITE-ID-07 – a gateway that does not relay update_authority: no passkey UI, Forget unchanged
  *   LITE-ID-08 – a popup closed by the user changes nothing, silently; a signer error is named
+ *   LITE-ID-11 – the signer's address not recorded: neither `meta.signer` nor `meta.authenticator`
+ *                is written, the edited passkey label is
  *
  * LITE-ID-03 (sign in on a fresh browser) and LITE-ID-09 (the first-post prompt) are in
  * liteIdentityPasskeySignIn.spec.ts, on the `litePost` recording, whose post takes a guest reply.
@@ -51,7 +57,7 @@ const unsecuredAuthority = (): Authority => ({
 
 const securedAuthority = (deviceExpires: string, extraOwner = false): Authority => ({
   owner: [
-    keyMember(ROOT_KEY, { meta: { kind: 'passkey', signer: SIGNER } }),
+    keyMember(ROOT_KEY, { meta: { kind: 'passkey', signer: SIGNER, label: 'YubiKey 5 Series' } }),
     ...(extraOwner ? [keyMember(OTHER_DEVICE_KEY, { meta: { kind: 'backup', signer: SIGNER } })] : [])
   ],
   posting: [
@@ -65,6 +71,14 @@ const securedAuthority = (deviceExpires: string, extraOwner = false): Authority 
     })
   ]
 });
+
+/** Asks the open Secure dialog's signer for the passkey, and waits for its label field. */
+async function connectPasskey(page: Page) {
+  const dialog = page.getByTestId('lite-secure-dialog');
+  await dialog.getByTestId('lite-secure-connect').click();
+  await expect(dialog.getByTestId('lite-secure-passkey-label')).toBeVisible({ timeout: 30_000 });
+  return dialog;
+}
 
 async function openMenu(page: Page) {
   await page.getByTestId('lite-identity-button').click();
@@ -89,9 +103,16 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     await menu.getByTestId('lite-identity-secure').click();
     const dialog = page.getByTestId('lite-secure-dialog');
     await expect(dialog.getByTestId('lite-signer-picker')).toHaveCount(0);
+    await expect(dialog.getByText("This browser's key", { exact: true })).toBeVisible();
+    await expect(dialog).toContainText("so you can tell this browser's key from your other devices'");
+    await expect(dialog.getByTestId('lite-secure-passkey-label')).toHaveCount(0);
+    await dialog.getByTestId('lite-secure-label').fill('Chrome · Linux');
     const popup = page.waitForEvent('popup');
-    await dialog.getByTestId('lite-secure-confirm').click();
+    await connectPasskey(page);
     expect((await popup).url()).toBe(`${SIGNER}/sign/`);
+    await expect(dialog.getByTestId('lite-secure-passkey-label')).toHaveValue(YUBIKEY.description);
+    expect(gateway.relayed).toEqual([]);
+    await dialog.getByTestId('lite-secure-confirm').click();
     await expect(dialog).toHaveCount(0, { timeout: 30_000 });
 
     // The device's posting key restated with an expiry and its meta, then the owner as the root.
@@ -102,11 +123,20 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     const [device] = gateway.relayed[0].operations[0].args.authority.key_auths;
     expect(device).toMatchObject({
       member: { value: TEST_KEYS.postingPublicKey },
-      meta: { kind: 'device', signer: SIGNER }
+      meta: { kind: 'device', label: 'Chrome · Linux', signer: SIGNER }
     });
     expect(Date.parse(`${device.expires}Z`) - Date.now()).toBeGreaterThan(89 * 86_400_000);
     expect(gateway.relayed[1].operations[0].args.authority.key_auths).toEqual([
-      { member: { type: 'secp256k1', value: ROOT_KEY }, weight: 1, meta: { kind: 'passkey', signer: SIGNER } }
+      {
+        member: { type: 'secp256k1', value: ROOT_KEY },
+        weight: 1,
+        meta: {
+          kind: 'passkey',
+          signer: SIGNER,
+          label: 'YubiKey 5 Series',
+          authenticator: { attachment: YUBIKEY.attachment, aaguid: YUBIKEY.aaguid }
+        }
+      }
     ]);
     expect(gateway.relayed[1].signatures).toHaveLength(1);
     expect(opened).toEqual([SIGNER]);
@@ -122,11 +152,18 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     await page.getByTestId('lite-identity-button').click();
     await expect(menu.getByTestId('lite-identity-sign-out')).toBeVisible();
     await expect(menu.getByTestId('lite-identity-secure')).toHaveCount(0);
+    await expect(menu.getByTestId('lite-security-notice')).toContainText(
+      'secured by a single passkey, YubiKey 5 Series'
+    );
+
+    await page.goto(`${PROFILE}/devices`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('lite-passkey-label')).toHaveText('Passkey: YubiKey 5 Series');
+    await expect(page.getByTestId('lite-device-label')).toContainText(['Chrome · Linux']);
   });
 
   test('LITE-ID-02: Secure with two signers asks which before any popup opens', async ({ page, context }) => {
     await configureSigners(page, [SIGNER, OTHER_SIGNER]);
-    const opened = await stubSigners(context);
+    const opened = await stubSigners(context, { kind: 'answer', authenticator: null });
     await holdIdentity(page, unsecuredIdentity(LITE_NAME));
     const gateway = await mockPasskeyGateway(page, LITE_NAME, unsecuredAuthority());
     await page.goto(PROFILE, { waitUntil: 'domcontentloaded' });
@@ -138,13 +175,16 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     await expect(dialog.getByTestId('lite-signer-picker')).toContainText('signer.hive.blog');
     expect(opened).toEqual([]);
     await dialog.locator(`[data-origin="${OTHER_SIGNER}"]`).click();
+    await connectPasskey(page);
+    await expect(dialog.getByTestId('lite-secure-passkey-label')).toHaveValue('Passkey');
     await dialog.getByTestId('lite-secure-confirm').click();
     await expect(dialog).toHaveCount(0, { timeout: 30_000 });
 
     expect(opened).toEqual([OTHER_SIGNER]);
     expect(gateway.relayed.at(-1)?.operations[0].args.authority.key_auths[0].meta).toEqual({
       kind: 'passkey',
-      signer: OTHER_SIGNER
+      signer: OTHER_SIGNER,
+      label: 'Passkey'
     });
     expect(await storedIdentity(page)).toMatchObject({ signer: OTHER_SIGNER });
   });
@@ -183,6 +223,18 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     // The expiring key is announced on every page, linking the Devices tab.
     await page.getByTestId('lite-device-expiry-link').click();
     await expect(page).toHaveURL(new RegExp(`${PROFILE}/devices$`));
+    const passkeys = page.getByTestId('lite-passkey-row');
+    await expect(passkeys).toHaveCount(1);
+    await expect(passkeys).toHaveAttribute('data-kind', 'passkey');
+    await expect(passkeys.getByTestId('lite-passkey-label')).toHaveText('Passkey: YubiKey 5 Series');
+    await expect(passkeys.getByRole('button')).toHaveCount(0);
+    // The passkey section comes above the device rows.
+    await expect(
+      page
+        .getByTestId('lite-devices')
+        .locator('[data-testid="lite-passkey-row"], [data-testid="lite-device-row"]')
+        .first()
+    ).toHaveAttribute('data-testid', 'lite-passkey-row');
     const rows = page.getByTestId('lite-device-row');
     await expect(rows.getByTestId('lite-device-label')).toContainText([
       'Chrome · Linux',
@@ -247,7 +299,9 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
         );
         await expect(profileNotice.getByTestId('lite-security-secure')).toBeVisible();
       } else if (warning === 'add_backup') {
-        await expect(profileNotice).toContainText('Consider adding a backup');
+        await expect(profileNotice).toHaveText(
+          'This account is secured by a single passkey, YubiKey 5 Series. Consider adding a backup.'
+        );
         await expect(profileNotice.getByTestId('lite-security-secure')).toHaveCount(0);
       }
 
@@ -297,20 +351,51 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     await page.getByTestId('lite-security-secure').click();
     const dialog = page.getByTestId('lite-secure-dialog');
     const popup = page.waitForEvent('popup');
-    await dialog.getByTestId('lite-secure-confirm').click();
+    await dialog.getByTestId('lite-secure-connect').click();
     await (await popup).waitForEvent('close');
     await expect(dialog.getByTestId('lite-secure-pending')).toHaveCount(0, { timeout: 10_000 });
-    await expect(dialog.getByTestId('lite-secure-confirm')).toBeEnabled();
+    await expect(dialog.getByTestId('lite-secure-connect')).toBeEnabled();
+    await expect(dialog.getByTestId('lite-secure-passkey-label')).toHaveCount(0);
     await expect(page.getByText('The passkey action failed')).toHaveCount(0);
     expect(gateway.relayed).toEqual([]);
     expect(await storedIdentity(page)).toMatchObject({ ownerWif: TEST_KEYS.ownerWif });
 
     await context.unrouteAll();
     await stubSigners(context, { kind: 'error', code: 'key_not_found' });
-    await dialog.getByTestId('lite-secure-confirm').click();
+    await dialog.getByTestId('lite-secure-connect').click();
     await expect(
       page.getByText("This passkey does not hold the account's key.", { exact: false })
     ).toBeVisible();
     expect(gateway.relayed).toEqual([]);
+  });
+
+  test("LITE-ID-11: the signer's address not recorded writes the label, no signer or authenticator", async ({
+    page,
+    context
+  }) => {
+    await configureSigners(page, [SIGNER]);
+    await stubSigners(context);
+    await holdIdentity(page, unsecuredIdentity(LITE_NAME));
+    const gateway = await mockPasskeyGateway(page, LITE_NAME, unsecuredAuthority());
+    await page.goto(PROFILE, { waitUntil: 'domcontentloaded' });
+
+    await page.getByTestId('lite-security-secure').click();
+    const dialog = page.getByTestId('lite-secure-dialog');
+    await dialog.getByTestId('lite-secure-record-signer').click();
+    await dialog.getByTestId('lite-secure-label').fill('Work laptop');
+    await connectPasskey(page);
+    await dialog.getByTestId('lite-secure-passkey-label').fill('My YubiKey');
+    await dialog.getByTestId('lite-secure-confirm').click();
+    await expect(dialog).toHaveCount(0, { timeout: 30_000 });
+
+    expect(gateway.relayed[0].operations[0].args.authority.key_auths[0].meta).toEqual({
+      kind: 'device',
+      label: 'Work laptop'
+    });
+    expect(gateway.relayed[1].operations[0].args.authority.key_auths[0].meta).toEqual({
+      kind: 'passkey',
+      label: 'My YubiKey'
+    });
+    expect(await storedIdentity(page)).toMatchObject({ secured: true, signer: SIGNER });
   });
 });

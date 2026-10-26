@@ -35,8 +35,8 @@ const LiteSignOutDialog = dynamic(() => import('./lite-sign-out-dialog').then((m
 
 /** The menu's security notice: mounted with the open menu, so the authority is read only then. */
 function MenuSecurityNotice({ identity, onSecure }: { identity: StoredLiteIdentity; onSecure: () => void }) {
-  const warning = useLiteSecurityWarning(identity, true);
-  return <LiteSecurityNotice warning={warning} onSecure={onSecure} className="mx-2 mb-2" />;
+  const notice = useLiteSecurityWarning(identity, true);
+  return <LiteSecurityNotice notice={notice} onSecure={onSecure} className="mx-2 mb-2" />;
 }
 
 /**

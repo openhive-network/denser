@@ -260,10 +260,15 @@ host (`lite-signer-picker.tsx`). The signer opens as a popup at `<origin>/sign/`
 (`signer-client.ts`: the page posts `{ hiveSignerReady, hiveSigner: "1" }`, takes one
 `{ hiveSigner, id, method, params }` and answers `result` or `error.code`), so the CSP needs no entry.
 A closed popup is `cancelled` and says nothing; every other code has a `lite_account.signer_errors.*`
-message. `signer-client.ts` stands in for `@hiveio/passkey-signer-client` until that is published.
+message. Every result may carry the signer's report of what answered the ceremony,
+`authenticator { attachment, transports, aaguid, name, description }` (hive-passkey-signer SPEC §5.2;
+`description` always present, `name` the AAGUID's known model); an older signer omits it, and a report
+of another shape fails the call as `internal`. `signer-client.ts` stands in for
+`@hiveio/passkey-signer-client` until that is published.
 
 **Authority.** `GET /api/lite-gateway/names/<name>/authority` (allow-listed) relays the gateway's read of
-the account's roles and members (`expires`, `meta { kind, signer, label }`, `effective_until`, `active`);
+the account's roles and members (`expires`, `meta { kind, signer, label, authenticator }`,
+`effective_until`, `active`);
 `lite-authority-query.ts` reads it without the signing package. The edits use the package's builders
 (`enrollRoot`, `addDevice`, `renewDevice`, `removeDevice`) in `lite-authority-flows.ts`, loaded on the
 click, are relayed to `/l2` with `relayL2` and count as applied once the authority read shows them (polled
@@ -274,16 +279,23 @@ The header carries only the gate, the warning, the first-post card and the expir
 with their flow runner (`use-passkey-flow.ts`) and the signer client.
 
 - **Secure this account** (menu item and profile notice for a registered, unsecured identity, and a
-  dismissible card after its first post, `lite-secure-prompt.tsx`): pick the signer,
-  `getPublicKeys({ roles: [owner], account: 0 })`, then two edits signed by the browser's owner key:
-  this device's posting key restated with `expires` 90 days and `meta { kind: "device", label, signer }`,
-  then the owner as the root (`kind: "passkey"`, `signer`).
-  The guest may keep the signer origin off chain (the dialog's checkbox); it is remembered locally
-  either way. Afterwards the stored identity drops `ownerWif`.
+  dismissible card after its first post, `lite-secure-prompt.tsx`): pick the signer, then
+  `getPublicKeys({ roles: [owner], account: 0 })` (`readPasskeyRootKey`, the only popup). Its answer
+  adds the "Passkey" field, pre-filled from the report (`authenticatorLabel`: `name`, else
+  `description`, else "Passkey" for an older signer) and editable; then two edits signed by the
+  browser's owner key: this device's posting key restated with `expires` 90 days and
+  `meta { kind: "device", label, signer }` (the "This browser's key" field, guessed from the user
+  agent), then the owner as the root, `meta { kind: "passkey", signer, label, authenticator }`, where
+  `authenticator` is the report's public part, `{ attachment, aaguid, name }` as far as known
+  (`authenticatorMeta`, `lite-passkey-label.ts`; never the transports). The guest may keep the signer origin off chain (the
+  dialog's checkbox), which leaves out `authenticator` too, not the label; the origin is remembered
+  locally either way. Afterwards the stored identity drops `ownerWif`.
 - **Sign in on this device** (`lite-sign-in-dialog.tsx`, name field focused): the name, the authority
   read, the signer the root names (else the only one configured, else the guest picks), a fresh posting
-  key added by the root (`signL2Transaction` in the signer) with `expires` 90 days and a label guessed
-  from the user agent. A browser holding another lite identity forgets it first. Three entry points:
+  key added by the root (`signL2Transaction` in the signer) with `expires` 90 days and the "This
+  browser's key" label (guessed from the user agent). The passkey's own member is not touched; the
+  result toast names what signed ("Signed with YubiKey 5 Series") from the report. A browser holding
+  another lite identity forgets it first. Three entry points:
   - the Login dialog (`components/dialog-login.tsx`, `lite-login-entry.tsx`): a link under the Hive
     sign-in form, shown where the API node's `lite.get_info` is known to be lite-aware and the gateway
     relays `update_authority`; it closes the Login dialog and opens this one. A fresh browser starts
@@ -293,21 +305,25 @@ with their flow runner (`use-passkey-flow.ts`) and the signer client.
 - **Sign out** (menu, secured identity): `removeDevice` signed by this device's key, then
   `forgetLiteAccount`. Forget stays, and says what it costs: for an unsecured identity that the account
   is lost, for a secured one that the device key stays until it expires.
-- **Devices** (`/@did:lite:<name>/devices`, the owner's tab): every posting member with its label and
-  validity; Remove another device and Renew this one within 7 days of its expiry, both signed by the
-  root in the signer. `LiteDeviceExpiryBanner` (header, every page) announces that window from the stored
+- **Devices** (`/@did:lite:<name>/devices`, the owner's tab): first, read-only, the passkey owner
+  members (`kind: "passkey"`, and `kind: "backup"`) by their labels (`passkeyMembers`,
+  `lite-passkey-members.tsx`); then every posting member with its label and validity; Remove
+  another device and Renew this one within 7 days of its expiry, both signed by the root in the signer.
+  `LiteDeviceExpiryBanner` (header, every page) announces that window from the stored
   `deviceExpires`.
 - **Warnings** (`securityWarning`): no `kind: "passkey"` owner member → "This account lives only in
-  this browser"; one passkey and no `kind: "backup"` member → the backup note.
+  this browser"; one passkey and no `kind: "backup"` member → the backup note, naming the passkey by
+  its label when it has one (`useLiteSecurityWarning` returns the warning and the root's label).
 
 **Stored identity** (`lite-identity-record.ts`): `secured`, `signer`, `deviceExpires`, and `ownerWif`
 only while unsecured; `ownerPublicKey` is the root's once secured. A record stored before this reads as
 unsecured with its owner key (`readStoredLiteIdentity`); nothing is rewritten until the identity changes.
 
-`liteIdentityPasskey.spec.ts` (LITE-ID-01, 02, 04–08, on the `liteSocial` recording) and
+`liteIdentityPasskey.spec.ts` (LITE-ID-01, 02, 04–08, 11, on the `liteSocial` recording) and
 `liteIdentityPasskeySignIn.spec.ts` (LITE-ID-03, LITE-ID-09 for the first-post card and LITE-ID-10 for
 the Login dialog's link, on `litePost`; its node-without-lite case in `liteLoginEntry.spec.ts`) cover it, with the gateway's authority and `/l2` answered in the browser from one authority the relayed edits change, and the popup served by a stub
-speaking the signer protocol (`support/litePasskeyContext.ts`): fixture runs have no network, so the real
+speaking the signer protocol (`support/litePasskeyContext.ts`, reporting a YubiKey unless a spec
+says otherwise): fixture runs have no network, so the real
 signer and its passkey (PRF) are its own e2e's business.
 
 ## Notifications and mentions

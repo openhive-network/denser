@@ -69,7 +69,7 @@ export default function LiteProfileLayout({
   const isOwner = useIsLiteIdentity(profile.name);
   const identity = useStoredLiteIdentity();
   const passkey = useLitePasskeyAccess().available && isOwner && !!identity?.registered;
-  const warning = useLiteSecurityWarning(isOwner ? identity : null, isOwner);
+  const securityNotice = useLiteSecurityWarning(isOwner ? identity : null, isOwner);
   const [isSecureOpen, setIsSecureOpen] = useState(false);
   const tabs = useTabs(profile.name, { social, notifications, isOwner, devices: passkey });
   const current = decodeURIComponent(pathname).replace(/\/+$/, '');
@@ -77,9 +77,9 @@ export default function LiteProfileLayout({
   return (
     <div>
       <LiteProfileCard profile={profile} social={social} isOwner={isOwner} />
-      {warning ? (
+      {securityNotice ? (
         <div className="container mx-auto max-w-screen-xl px-4 pb-2 sm:px-8">
-          <LiteSecurityNotice warning={warning} onSecure={() => setIsSecureOpen(true)} />
+          <LiteSecurityNotice notice={securityNotice} onSecure={() => setIsSecureOpen(true)} />
         </div>
       ) : null}
       {passkey && isSecureOpen ? <LiteSecureDialog open onOpenChange={setIsSecureOpen} /> : null}

@@ -69,6 +69,15 @@ describe('passkeyRoot', () => {
     assert.deepEqual(passkeyRoot(view([key('STMroot', { meta: { kind: 'passkey' } })])), { key: 'STMroot' });
     assert.equal(passkeyRoot(view([key('STMdevice')])), null);
   });
+
+  it('carries the passkey label, if recorded', () => {
+    const meta = { kind: 'passkey', signer: SIGNER, label: 'YubiKey 5 Series' };
+    assert.deepEqual(passkeyRoot(view([key('STMroot', { meta })])), {
+      key: 'STMroot',
+      signer: SIGNER,
+      label: 'YubiKey 5 Series'
+    });
+  });
 });
 
 describe('postingDevices', () => {

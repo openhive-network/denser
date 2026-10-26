@@ -12,11 +12,13 @@ import {
   DialogTitle
 } from '@ui/components/dialog';
 import { toast } from '@ui/components/hooks/use-toast';
-import { Input } from '@ui/components/input';
 import { Label } from '@ui/components/label';
 import { configuredPasskeySigners } from '@ui/config/public-vars';
 import { useTranslation } from '@/blog/i18n/client';
+import type { PasskeyRootKey } from './lite-authority-flows';
 import { deviceLabelGuess } from './lite-authority-state';
+import LiteKeyLabelField from './lite-key-label-field';
+import { authenticatorLabel } from './lite-passkey-label';
 import LiteSignerPicker from './lite-signer-picker';
 import { useStoredLiteIdentityState } from './use-stored-lite-identity';
 import { useLitePasskeyAccess } from './use-lite-passkey';
@@ -24,7 +26,11 @@ import { usePasskeyFlow } from './use-passkey-flow';
 
 type Props = { open: boolean; onOpenChange: (open: boolean) => void };
 
-/** The dialog's body, mounted on each opening: the signer, whether to record it on chain, and this device's label. */
+/**
+ * The dialog's body, mounted on each opening: the signer, whether to record it on chain and this
+ * browser's key's label; once the signer has answered with the passkey's key, the passkey's label
+ * (pre-filled from what the signer reports) and the edits that secure the account.
+ */
 function LiteSecureForm({ onDone }: { onDone: () => void }) {
   const { t } = useTranslation('common_blog');
   const [stored, store] = useStoredLiteIdentityState();
@@ -33,17 +39,31 @@ function LiteSecureForm({ onDone }: { onDone: () => void }) {
   const [signer, setSigner] = useState(configuredPasskeySigners[0]);
   const [recordSigner, setRecordSigner] = useState(true);
   const [label, setLabel] = useState(() => deviceLabelGuess(navigator.userAgent));
+  const [root, setRoot] = useState<PasskeyRootKey | null>(null);
+  const [passkeyLabel, setPasskeyLabel] = useState('');
 
-  const secure = () => {
-    if (!stored || !relay) return;
+  const connect = () => {
     void run(signer, async (popup) => {
       if (!popup) return;
+      const { readPasskeyRootKey } = await import('./lite-authority-flows');
+      const read = await readPasskeyRootKey(popup);
+      setPasskeyLabel(
+        authenticatorLabel(read.authenticator) ?? t('lite_account.passkey.passkey_default_label')
+      );
+      setRoot(read);
+    });
+  };
+
+  const secure = () => {
+    if (!stored || !relay || !root) return;
+    void run(null, async () => {
       const { secureLiteAccount } = await import('./lite-authority-flows');
       const secured = await secureLiteAccount({
         identity: stored,
-        popup,
+        root,
         recordSigner,
         label: label.trim(),
+        passkeyLabel: passkeyLabel.trim(),
         relay
       });
       store(secured);
@@ -61,19 +81,26 @@ function LiteSecureForm({ onDone }: { onDone: () => void }) {
         signers={configuredPasskeySigners}
         value={signer}
         onValueChange={setSigner}
-        disabled={pending}
+        disabled={pending || !!root}
       />
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="lite-secure-label">{t('lite_account.passkey.device_label')}</Label>
-        <Input
-          id="lite-secure-label"
-          value={label}
-          maxLength={64}
+      {root ? (
+        <LiteKeyLabelField
+          id="lite-secure-passkey-label"
+          label={t('lite_account.passkey.passkey_label')}
+          hint={t('lite_account.passkey.passkey_label_hint')}
+          value={passkeyLabel}
           disabled={pending}
-          onChange={(e) => setLabel(e.target.value)}
-          data-testid="lite-secure-label"
+          onChange={setPasskeyLabel}
         />
-      </div>
+      ) : null}
+      <LiteKeyLabelField
+        id="lite-secure-label"
+        label={t('lite_account.passkey.device_label')}
+        hint={t('lite_account.passkey.device_label_hint')}
+        value={label}
+        disabled={pending}
+        onChange={setLabel}
+      />
       <div className="flex items-start gap-2">
         <Checkbox
           id="lite-secure-record-signer"
@@ -95,14 +122,25 @@ function LiteSecureForm({ onDone }: { onDone: () => void }) {
         <Button type="button" variant="ghost" disabled={pending} onClick={onDone}>
           {t('lite_account.manage.cancel')}
         </Button>
-        <Button
-          type="button"
-          disabled={pending || !stored?.ownerWif}
-          onClick={secure}
-          data-testid="lite-secure-confirm"
-        >
-          {t('lite_account.passkey.secure_confirm')}
-        </Button>
+        {root ? (
+          <Button
+            type="button"
+            disabled={pending || !stored?.ownerWif || !relay}
+            onClick={secure}
+            data-testid="lite-secure-confirm"
+          >
+            {t('lite_account.passkey.secure_confirm')}
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            disabled={pending || !stored?.ownerWif || !relay}
+            onClick={connect}
+            data-testid="lite-secure-connect"
+          >
+            {t('lite_account.passkey.secure_connect')}
+          </Button>
+        )}
       </DialogFooter>
     </>
   );
