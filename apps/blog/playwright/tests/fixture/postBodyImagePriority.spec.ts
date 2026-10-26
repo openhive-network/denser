@@ -14,7 +14,13 @@ test.use({ fixtureTestName: 'ssrChecks' });
 const POST_URL = '/test/@guest4test1/test-ako-post';
 
 // Lighthouse's mobile emulation: 412 CSS px at DPR 1.75 leaves a ~650 device-px content column.
-const LIGHTHOUSE_PHONE = { viewport: { width: 412, height: 823 }, deviceScaleFactor: 1.75, isMobile: true };
+// The screen too: Chromium sizes the first srcset pick by the screen, which Desktop Chrome sets to 1920 px.
+const LIGHTHOUSE_PHONE = {
+  viewport: { width: 412, height: 823 },
+  screen: { width: 412, height: 823 },
+  deviceScaleFactor: 1.75,
+  isMobile: true
+};
 
 const decodeHtmlAttribute = (value: string) => value.replace(/&amp;/g, '&');
 

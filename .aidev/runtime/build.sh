@@ -4,8 +4,8 @@
 # `environment.image`. See .aidev/README.md.
 #
 # The tag is `aidev-<hash>`, the hash of the image inputs (the Dockerfile,
-# `packageManager` from package.json, pnpm-lock.yaml, pnpm-workspace.yaml,
-# .npmrc); the registry cleanup policy keeps `aidev-*` tags. When
+# pnpm-lock.yaml, pnpm-workspace.yaml, .npmrc, and the digest the followed base
+# tag names now); the registry cleanup policy keeps `aidev-*` tags. When
 # <repository>:aidev-<hash> is already in the registry nothing is built: the script
 # prints that image's digest.
 #
@@ -17,14 +17,18 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 REPOSITORY="${AIDEV_RUNTIME_REPOSITORY:-registry.gitlab.syncad.com/hive/denser/aidev-tests}"
+# The base .aidev/project.yaml follows (`environment.base`), the Dockerfile's default.
+BASE_IMAGE="$(sed -n 's/^ARG BASE_IMAGE=//p' .aidev/runtime/Dockerfile)"
 
-# `pnpm fetch` reads only the lockfile, the workspace file and .npmrc; of
-# package.json the image uses `packageManager` alone (corepack), so its other
-# fields (scripts, versions) don't make a new image.
+# `pnpm fetch` reads only the lockfile, the workspace file and .npmrc, so
+# package.json's fields (scripts, versions) don't make a new image.
 input_hash() {
+    local base_digest
+    base_digest="$(docker buildx imagetools inspect "$BASE_IMAGE" --format '{{json .Manifest}}' \
+        | grep -o '"digest": *"sha256:[0-9a-f]*"' | head -1 | grep -o 'sha256:[0-9a-f]*')"
     {
         sha256sum .aidev/runtime/Dockerfile pnpm-lock.yaml pnpm-workspace.yaml .npmrc
-        grep '"packageManager"' package.json
+        echo "${base_digest:?cannot resolve $BASE_IMAGE}"
     } | sha256sum | cut -c1-16
 }
 TAG="aidev-$(input_hash)"

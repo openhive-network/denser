@@ -111,7 +111,7 @@
     "zustand": "^4.4.7"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "catalog:playwright-toolset",
     "@tanstack/react-query-devtools": "^5.104.1",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.6",
@@ -124,6 +124,6 @@
     "express-http-proxy": "^2.1.2",
     "jsdom": "24.1.0",
     "null-loader": "^4.0.1",
-    "typescript": "5.3.3"
+    "typescript": "catalog:typescript-toolset"
   }
 }

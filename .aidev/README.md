@@ -6,12 +6,14 @@ digest-pinned `registry.gitlab.syncad.com/hive/denser/aidev-tests` image
 
 ## The test runtime image (`runtime/`)
 
-Suites run offline in `registry.gitlab.syncad.com/hive/denser/aidev-tests`, pinned
-by digest in `project.yaml` (`environment.image`). The image holds Node, pnpm,
-Playwright's Chromium and every package `pnpm-lock.yaml` resolves.
-
-Its tag is `aidev-` plus a hash of its inputs: `runtime/Dockerfile`, `pnpm-lock.yaml`,
-`pnpm-workspace.yaml`, `.npmrc` and the `packageManager` field of `package.json`.
+`runtime/Dockerfile` is built on common-ci-configuration's
+`node-test-tools:develop`, the image CI's Node jobs run, so Node, pnpm and
+Playwright are ccc's versions and the repository pins none of its own. It adds
+Playwright's full Chromium (for Lighthouse) and every package `pnpm-lock.yaml`
+resolves. The build is published as `registry.gitlab.syncad.com/hive/denser/aidev-tests`
+and pinned by digest in `project.yaml` (`environment.image`) and the compose stacks
+(`x-image`). Its tag is `aidev-` plus a hash of its inputs: `runtime/Dockerfile`,
+`pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.npmrc` and the digest the base tag names.
 `runtime/build.sh` looks that tag up in the registry first and builds nothing when it
 is there; `build.sh --tag` prints the tag. The registry cleanup policy keeps
 `aidev-*` tags, so a pinned image isn't expired.

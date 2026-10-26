@@ -57,7 +57,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
-    "typescript": "5.3.3"
+    "@playwright/test": "catalog:playwright-toolset",
+    "typescript": "catalog:typescript-toolset"
   }
 }
