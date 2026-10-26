@@ -31,18 +31,34 @@ export class SignerError extends Error {
 
 export type SignerKey = { path: string; role: number; account: number; key: number; publicKey: string };
 
+/**
+ * What answered a ceremony, as the signer reports it with every result (an older signer omits it):
+ * the WebAuthn attachment and transports, the AAGUID and its known model `name` (null when either
+ * is unknown), and a `description` always fit to show ("YubiKey 5 Series", "this device").
+ */
+export type SignerAuthenticator = {
+  attachment?: string | null;
+  transports?: string[];
+  aaguid?: string | null;
+  name?: string | null;
+  description: string;
+};
+
+/** Every result carries the signer's `authenticator` report, when the signer sends one. */
+type Reported<T> = T & { authenticator?: SignerAuthenticator };
+
 type SignerMethods = {
   getPublicKeys: {
     params: { roles: number[]; account?: number; count?: number };
-    result: { keys: SignerKey[] };
+    result: Reported<{ keys: SignerKey[] }>;
   };
   signL2Transaction: {
     params: { transaction: L2Transaction; chainId: string; publicKey: string };
-    result: { signedTransaction: L2Transaction; signatures: string[]; digest: string };
+    result: Reported<{ signedTransaction: L2Transaction; signatures: string[]; digest: string }>;
   };
   signDigest: {
     params: { sigDigest: string; publicKey: string; purpose?: string };
-    result: { signature: string };
+    result: Reported<{ signature: string }>;
   };
 };
 export type SignerMethod = keyof SignerMethods;
@@ -76,13 +92,31 @@ export function signerReply(data: unknown, id: string): { result: unknown } | un
 const isKey = (value: unknown): value is SignerKey =>
   isObject(value) && typeof value.publicKey === 'string' && typeof value.role === 'number';
 
+const isOptionalText = (value: unknown): boolean =>
+  value === undefined || value === null || typeof value === 'string';
+
+const isAuthenticator = (value: unknown): value is SignerAuthenticator =>
+  isObject(value) &&
+  typeof value.description === 'string' &&
+  isOptionalText(value.attachment) &&
+  isOptionalText(value.aaguid) &&
+  isOptionalText(value.name) &&
+  (value.transports === undefined ||
+    (Array.isArray(value.transports) && value.transports.every((item) => typeof item === 'string')));
+
+const hasValidAuthenticator = (value: Record<string, unknown>): boolean =>
+  value.authenticator === undefined || isAuthenticator(value.authenticator);
+
 const RESULT_GUARDS: { [M in SignerMethod]: (value: unknown) => value is SignerMethods[M]['result'] } = {
   getPublicKeys: (value): value is SignerMethods['getPublicKeys']['result'] =>
-    isObject(value) && Array.isArray(value.keys) && value.keys.every(isKey),
+    isObject(value) && Array.isArray(value.keys) && value.keys.every(isKey) && hasValidAuthenticator(value),
   signL2Transaction: (value): value is SignerMethods['signL2Transaction']['result'] =>
-    isObject(value) && isObject(value.signedTransaction) && Array.isArray(value.signatures),
+    isObject(value) &&
+    isObject(value.signedTransaction) &&
+    Array.isArray(value.signatures) &&
+    hasValidAuthenticator(value),
   signDigest: (value): value is SignerMethods['signDigest']['result'] =>
-    isObject(value) && typeof value.signature === 'string'
+    isObject(value) && typeof value.signature === 'string' && hasValidAuthenticator(value)
 };
 
 type PopupWindow = {

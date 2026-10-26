@@ -20,6 +20,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import { liteAuthorityErrorKey } from './lite-authority-errors';
 import { liteAuthorityQuery } from './lite-authority-query';
 import { deviceLabelGuess, passkeyRoot } from './lite-authority-state';
+import LiteKeyLabelField from './lite-key-label-field';
 import LiteSignerPicker from './lite-signer-picker';
 import { forgetLiteAccount } from './lite-storage';
 import { useStoredLiteIdentityState } from './use-stored-lite-identity';
@@ -83,7 +84,8 @@ function NameStep({ onFound }: { onFound: (found: Found) => void }) {
 
 /**
  * Step two: the signer (the one the account's root names, else the only one configured, else the
- * guest picks), this device's label, and the passkey: a new posting key for this browser.
+ * guest picks), this browser's key's label, and the passkey: a new posting key for this browser.
+ * The passkey's own member is not touched.
  */
 function PasskeyStep({ found, onDone }: { found: Found; onDone: () => void }) {
   const { t } = useTranslation('common_blog');
@@ -99,7 +101,7 @@ function PasskeyStep({ found, onDone }: { found: Found; onDone: () => void }) {
     void run(signer, async (popup) => {
       if (!popup) return;
       const { signInOnDevice } = await import('./lite-authority-flows');
-      const identity = await signInOnDevice({
+      const { identity, authenticator } = await signInOnDevice({
         name: found.name,
         current: found.view,
         popup,
@@ -108,7 +110,15 @@ function PasskeyStep({ found, onDone }: { found: Found; onDone: () => void }) {
       });
       if (stored && stored.name !== identity.name) forgetLiteAccount();
       store(identity);
-      toast({ title: t('lite_account.passkey.signed_in_title', { name: identity.name }) });
+      toast({
+        title: t('lite_account.passkey.signed_in_title', { name: identity.name }),
+        description: authenticator
+          ? t('lite_account.passkey.signed_with', {
+              authenticator: authenticator.description,
+              interpolation: { escapeValue: false }
+            })
+          : undefined
+      });
       onDone();
     });
   };
@@ -127,17 +137,14 @@ function PasskeyStep({ found, onDone }: { found: Found; onDone: () => void }) {
           disabled={pending}
         />
       )}
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="lite-sign-in-label">{t('lite_account.passkey.device_label')}</Label>
-        <Input
-          id="lite-sign-in-label"
-          value={label}
-          maxLength={64}
-          disabled={pending}
-          onChange={(e) => setLabel(e.target.value)}
-          data-testid="lite-sign-in-label"
-        />
-      </div>
+      <LiteKeyLabelField
+        id="lite-sign-in-label"
+        label={t('lite_account.passkey.device_label')}
+        hint={t('lite_account.passkey.device_label_hint')}
+        value={label}
+        disabled={pending}
+        onChange={setLabel}
+      />
       {pending ? (
         <p className="text-sm text-muted-foreground" role="status">
           {t('lite_account.passkey.working')}

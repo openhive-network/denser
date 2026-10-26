@@ -32,19 +32,33 @@ export const expiresSoon = (expires: string | null | undefined, nowMs: number): 
   !!expires && chainTimeMs(expires) - nowMs <= RENEW_WINDOW_DAYS * DAY_MS;
 
 const isKeyMember = (member: AuthorityMemberView): member is AuthorityKeyMemberView => !('account' in member);
-const keyMembers = (view: LiteAuthorityView, role: string): AuthorityKeyMemberView[] =>
+/** The key members (not account members) of `view`'s `role`. */
+export const keyMembers = (view: LiteAuthorityView, role: string): AuthorityKeyMemberView[] =>
   (Object.hasOwn(view.roles, role) ? view.roles[role].members : []).filter(isKeyMember);
 
-/** The account's passkey root: its first active owner member marked `kind: passkey`, and its signer origin if recorded. */
-export function passkeyRoot(view: LiteAuthorityView): { key: string; signer?: string } | null {
+/** A member's `meta.label` or `meta.signer`, when it is a non-empty string. */
+export const metaText = (member: AuthorityKeyMemberView, field: 'label' | 'signer'): string | undefined => {
+  const value = member.meta?.[field];
+  return typeof value === 'string' && value ? value : undefined;
+};
+
+/**
+ * The account's passkey root: its first active owner member marked `kind: passkey`, with its signer
+ * origin and label where recorded.
+ */
+export function passkeyRoot(
+  view: LiteAuthorityView
+): { key: string; signer?: string; label?: string } | null {
   const root = keyMembers(view, 'owner').find((member) => member.active && member.meta?.kind === 'passkey');
   if (!root) return null;
-  return typeof root.meta?.signer === 'string' && root.meta.signer
-    ? { key: root.value, signer: root.meta.signer }
-    : { key: root.value };
+  const signer = metaText(root, 'signer');
+  const label = metaText(root, 'label');
+  return { key: root.value, ...(signer ? { signer } : {}), ...(label ? { label } : {}) };
 }
 
 export type SecurityWarning = 'unsecured' | 'add_backup';
+/** A security warning, with the label of the passkey that secures the account when it has one. */
+export type SecurityNotice = { warning: SecurityWarning; passkeyLabel?: string };
 
 /**
  * What the account's owner authority warrants telling its holder: `unsecured` while no owner member

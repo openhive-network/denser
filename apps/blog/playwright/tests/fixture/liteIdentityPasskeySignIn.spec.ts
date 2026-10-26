@@ -13,6 +13,7 @@ import {
   storedIdentity,
   stubSigners,
   unsecuredIdentity,
+  YUBIKEY,
   type Authority
 } from '../support/litePasskeyContext';
 
@@ -23,7 +24,9 @@ import {
  *
  *   LITE-ID-03 – a fresh browser enters the name, the root signs a new posting key in the signer
  *                named by the account's root; the browser ends with that key only (a current
- *                posting member, 90 days, `kind: device`) and replies as the account
+ *                posting member, 90 days, `kind: device`, labelled from "This browser's key"), the
+ *                passkey's member is untouched, the result names the signer's authenticator, and
+ *                it replies as the account
  *   LITE-ID-09 – a guest's first reply prompts, without blocking, to secure the new lite account;
  *                a reload does not prompt again
  *   LITE-ID-10 – a fresh browser starts the sign-in from the header's Login dialog: its lite link
@@ -46,7 +49,7 @@ const HEALTH = {
 
 /** A secured account with one other device. */
 const securedAuthority = (): Authority => ({
-  owner: [keyMember(ROOT_KEY, { meta: { kind: 'passkey', signer: SIGNER } })],
+  owner: [keyMember(ROOT_KEY, { meta: { kind: 'passkey', signer: SIGNER, label: 'YubiKey 5 Series' } })],
   posting: [
     keyMember(OTHER_DEVICE_KEY, {
       expires: chainTimeIn(60),
@@ -61,6 +64,8 @@ async function completeLiteSignIn(page: Page) {
   await dialog.getByTestId('lite-sign-in-name').fill(LITE_NAME);
   await dialog.getByTestId('lite-sign-in-continue').click();
   await expect(dialog.getByTestId('lite-sign-in-signer')).toContainText('signer.syncad.com');
+  await expect(dialog.getByText("This browser's key", { exact: true })).toBeVisible();
+  await expect(dialog.getByTestId('lite-secure-passkey-label')).toHaveCount(0);
   await dialog.getByTestId('lite-sign-in-label').fill('Test browser');
   await dialog.getByTestId('lite-sign-in-confirm').click();
   await expect(dialog).toHaveCount(0, { timeout: 30_000 });
@@ -101,9 +106,13 @@ test.describe('Lite account sign-in on another device (fixture-based, mocked gat
     await page.getByTestId('lite-reply-post').click();
     await page.getByTestId('lite-name-dialog').getByTestId('lite-name-sign-in-device').click();
 
+    const owner = structuredClone(gateway.authority.owner);
     await completeLiteSignIn(page);
+    await expect(page.getByText(`Signed with ${YUBIKEY.description}`, { exact: true })).toBeVisible();
 
     expect(opened).toEqual([SIGNER]);
+    expect(gateway.relayed.map((tx) => tx.operations.map((op) => op.args.role))).toEqual([['posting']]);
+    expect(gateway.authority.owner).toEqual(owner);
     const stored = await storedIdentity(page);
     expect(stored).toMatchObject({
       name: LITE_NAME,

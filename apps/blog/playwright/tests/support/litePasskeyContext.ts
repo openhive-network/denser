@@ -15,6 +15,14 @@ export const CHAIN_ID = 'beeab0de00000000000000000000000000000000000000000000000
 export const ROOT_KEY = 'STM6LLegbAgLAy28EHrffBVuANFWcFgmqRMW13wBmTExqFE9SCkg4';
 /** A key of another device of the account; nothing signs with it here. */
 export const OTHER_DEVICE_KEY = 'STM8m5UgaFAAYQRuaNejYdS8FVLVp9Ghm2D6b2gUMUddLUMBDx7ZZ';
+/** What the stub signer reports answered its ceremonies, unless a spec says otherwise. */
+export const YUBIKEY = {
+  attachment: 'cross-platform',
+  transports: ['usb', 'nfc'],
+  aaguid: 'cb69481e-8ff7-4039-93ec-0a2729a154a8',
+  name: null,
+  description: 'YubiKey 5 Series'
+};
 
 // A throwaway device key pair (never registered on any chain): the gateway is mocked.
 // @hiveio/lite-account is ESM-only, which Playwright's loader cannot import.
@@ -36,7 +44,7 @@ export type KeyMember = {
   value: string;
   weight: number;
   expires: string | null;
-  meta: Record<string, string> | null;
+  meta: Record<string, unknown> | null;
   effective_until: string | null;
   active: boolean;
 };
@@ -70,7 +78,7 @@ type WireKey = {
   member: { type: string; value: string };
   weight: number;
   expires?: string;
-  meta?: Record<string, string>;
+  meta?: Record<string, unknown>;
 };
 export type AuthorityOp = {
   method: string;
@@ -134,12 +142,21 @@ export async function mockPasskeyGateway(
   return { relayed, authority };
 }
 
-/** How the stub signer answers the request: with its result, a signer error code, or by closing its window unanswered. */
-export type SignerBehaviour = { kind: 'answer' } | { kind: 'error'; code: string } | { kind: 'close' };
+/**
+ * How the stub signer answers the request: with its result (reporting `authenticator`, `YUBIKEY` by
+ * default, none when null: an older signer), a signer error code, or by closing its window unanswered.
+ */
+export type SignerBehaviour =
+  | { kind: 'answer'; authenticator?: Record<string, unknown> | null }
+  | { kind: 'error'; code: string }
+  | { kind: 'close' };
 
 function signerPage(behaviour: SignerBehaviour): string {
+  const reported =
+    behaviour.kind === 'answer' && behaviour.authenticator !== undefined ? behaviour.authenticator : YUBIKEY;
   return `<!doctype html><html><body><p>Stub signer</p><script>
 const behaviour = ${JSON.stringify(behaviour)};
+const report = ${JSON.stringify(reported ? { authenticator: reported } : {})};
 window.addEventListener('message', (event) => {
   const request = event.data;
   if (!request || request.hiveSigner !== '1' || !request.id) return;
@@ -147,10 +164,10 @@ window.addEventListener('message', (event) => {
   const reply = (body) => event.source.postMessage({ hiveSigner: '1', id: request.id, ...body }, event.origin);
   if (behaviour.kind === 'error') return reply({ error: { code: behaviour.code, message: behaviour.code } });
   if (request.method === 'getPublicKeys') {
-    return reply({ result: { keys: [{ path: "m/48'/13'/0'/0'/0'", role: 0, account: 0, key: 0, publicKey: ${JSON.stringify(ROOT_KEY)} }] } });
+    return reply({ result: { keys: [{ path: "m/48'/13'/0'/0'/0'", role: 0, account: 0, key: 0, publicKey: ${JSON.stringify(ROOT_KEY)} }], ...report } });
   }
   const signatures = ['1f' + '00'.repeat(64)];
-  reply({ result: { signedTransaction: { ...request.params.transaction, signatures }, signatures, digest: '00'.repeat(32) } });
+  reply({ result: { signedTransaction: { ...request.params.transaction, signatures }, signatures, digest: '00'.repeat(32), ...report } });
 });
 window.opener.postMessage({ hiveSignerReady: true, hiveSigner: '1' }, '*');
 </script></body></html>`;

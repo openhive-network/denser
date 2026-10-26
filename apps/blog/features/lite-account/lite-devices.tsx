@@ -7,6 +7,8 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { useTranslation } from '@/blog/i18n/client';
 import { LITE_DID_PREFIX } from './lite-did';
 import { formatChainDate, passkeyRoot, postingDevices, type DeviceRow } from './lite-authority-state';
+import { passkeyMembers } from './lite-passkey-label';
+import LitePasskeyMembers from './lite-passkey-members';
 import { useStoredLiteIdentityState } from './use-stored-lite-identity';
 import { useLiteAuthority, useLitePasskeyAccess } from './use-lite-passkey';
 import { usePasskeyFlow } from './use-passkey-flow';
@@ -81,9 +83,9 @@ function DeviceItem({ row, busy, editable, onRemove, onRenew }: ItemProps) {
 }
 
 /**
- * The Devices tab of the browser's own lite account: every posting key on chain with its label and
- * validity. Once secured, another device's key can be removed, and this browser's renewed within
- * its last days, both signed by the passkey root in its signer.
+ * The Devices tab of the browser's own lite account: the passkeys that own it, then every posting
+ * key on chain with its label and validity. Once secured, another device's key can be removed, and
+ * this browser's renewed within its last days, both signed by the passkey root in its signer.
  */
 export default function LiteDevices({ did }: { did: string }) {
   const { t } = useTranslation('common_blog');
@@ -132,6 +134,7 @@ export default function LiteDevices({ did }: { did: string }) {
           {t('lite_account.passkey.working')}
         </p>
       ) : null}
+      <LitePasskeyMembers rows={passkeyMembers(view)} />
       <ul className="divide-y">
         {rows.map((row) => (
           <DeviceItem

@@ -96,6 +96,45 @@ describe('openSignerPopup', () => {
     await assert.rejects(keys, (error: unknown) => error instanceof SignerError && error.code === 'internal');
   });
 
+  it("resolves with the signer's authenticator report, and without one from an older signer", async () => {
+    const authenticator = {
+      attachment: 'cross-platform',
+      transports: ['usb'],
+      aaguid: 'cb69481e-8ff7-4039-93ec-0a2729a154a8',
+      name: null,
+      description: 'YubiKey 5 Series'
+    };
+    const signer = fakeSigner();
+    const popup = openSignerPopup(ORIGIN, signer.signerHost);
+    signer.answer({ hiveSignerReady: true, hiveSigner: '1' });
+    const reported = popup.call('getPublicKeys', { roles: [0] });
+    await tick();
+    signer.answer({ hiveSigner: '1', id: lastRequestId(signer.sent), result: { keys: KEYS, authenticator } });
+    assert.deepEqual(await reported, { keys: KEYS, authenticator });
+
+    const older = fakeSigner();
+    const olderPopup = openSignerPopup(ORIGIN, older.signerHost);
+    older.answer({ hiveSignerReady: true, hiveSigner: '1' });
+    const signed = olderPopup.call('signDigest', { sigDigest: 'a'.repeat(64), publicKey: ROOT_KEY });
+    await tick();
+    older.answer({ hiveSigner: '1', id: lastRequestId(older.sent), result: { signature: 'ab' } });
+    assert.deepEqual(await signed, { signature: 'ab' });
+  });
+
+  it('rejects an authenticator report of the wrong shape', async () => {
+    const signer = fakeSigner();
+    const popup = openSignerPopup(ORIGIN, signer.signerHost);
+    signer.answer({ hiveSignerReady: true, hiveSigner: '1' });
+    const keys = popup.call('getPublicKeys', { roles: [0] });
+    await tick();
+    signer.answer({
+      hiveSigner: '1',
+      id: lastRequestId(signer.sent),
+      result: { keys: KEYS, authenticator: { name: 'YubiKey 5 Series' } }
+    });
+    await assert.rejects(keys, (error: unknown) => error instanceof SignerError && error.code === 'internal');
+  });
+
   it('is cancelled when the user closes the popup', async (t) => {
     t.mock.timers.enable({ apis: ['setInterval', 'setTimeout'] });
     const signer = fakeSigner();
