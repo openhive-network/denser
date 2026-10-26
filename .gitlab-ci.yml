@@ -1056,6 +1056,9 @@ lighthouse-metrics-blog:
     alias: denser
     variables:
       HEALTHCHECK_TCP_PORT: '3000'
+      # robots.txt disallows everything unless this is set, which fails the SEO is-crawlable
+      # audit; production sets it, so the audit should see the same.
+      REACT_APP_SEO_ALLOW_INDEXING: 'yes'
   - name: caddy:${CADDY_TAG}
     # `caddy reverse-proxy` (used elsewhere) has no compression flag, so this job uses a
     # Caddyfile instead - written inline since GitLab CI `services:` don't support volume

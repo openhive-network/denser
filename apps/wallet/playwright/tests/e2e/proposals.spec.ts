@@ -485,7 +485,7 @@ test.describe('Proposals page tests', () => {
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       // Title color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
-        'rgb(239, 68, 68)'
+        'rgb(220, 38, 38)'
       );
       // Proposal Id color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalId.first(), 'color')).toBe(
@@ -505,25 +505,25 @@ test.describe('Proposals page tests', () => {
           proposalsPage.proposalAmountHBD.locator('span').first(),
           'color'
         )
-      ).toBe('rgb(239, 68, 68)');
+      ).toBe('rgb(220, 38, 38)');
       // Proposal Status Badge color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
-      ).toBe('rgb(239, 68, 68)');
+      ).toBe('rgb(220, 38, 38)');
       // Proposal Status tooltip
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText(/^started/);
       // Creator and/or receiver colors
       if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
         expect(
           await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
-        ).toBe('rgb(239, 68, 68)');
+        ).toBe('rgb(220, 38, 38)');
         expect(
           await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalReceiver.first(), 'color')
-        ).toBe('rgb(239, 68, 68)');
+        ).toBe('rgb(220, 38, 38)');
       } else
         expect(
           await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
-        ).toBe('rgb(239, 68, 68)');
+        ).toBe('rgb(220, 38, 38)');
       // Vote proposal value color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
