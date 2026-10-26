@@ -19,7 +19,9 @@
 //         replay answers them without a MISS.
 //
 // A redirect's Location on the upstream is rewritten to this server, so the browser
-// follows it here. `GET /__aidev/status` answers {mode, served, misses}.
+// follows it here. `GET /__aidev/status` answers {mode, served, misses, missed}, missed
+// listing the distinct paths that missed. Paths under /__aidev/ are the harness's own
+// and are never served, recorded or counted.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import http from 'node:http';
@@ -28,6 +30,7 @@ import { parseArgs } from 'node:util';
 import zlib from 'node:zlib';
 
 const INDEX = '_index.json';
+const CONTROL_PREFIX = '/__aidev/';
 
 function readIndex(dir) {
   const file = path.join(dir, INDEX);
@@ -70,11 +73,17 @@ function serve({ mode, dir, port, upstream }) {
   const self = `http://127.0.0.1:${port}`;
   let served = 0;
   let misses = 0;
+  const missed = new Set();
 
   const server = http.createServer(async (req, res) => {
-    if (req.url === '/__aidev/status') {
-      res.writeHead(200, { 'content-type': 'application/json' });
-      res.end(JSON.stringify({ mode, served, misses }));
+    const { pathname } = new URL(req.url, self);
+    if (pathname.startsWith(CONTROL_PREFIX)) {
+      if (pathname === `${CONTROL_PREFIX}status` && req.method === 'GET') {
+        res.writeHead(200, { 'content-type': 'application/json' });
+        res.end(JSON.stringify({ mode, served, misses, missed: [...missed] }));
+      } else {
+        res.writeHead(404).end();
+      }
       return;
     }
     if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -87,6 +96,7 @@ function serve({ mode, dir, port, upstream }) {
       if (!entry && mode === 'record') ({ entry, body } = await record(dir, upstream, req, index));
       if (!entry) {
         misses++;
+        missed.add(req.url);
         console.warn(`[image-server] MISS ${req.url}`);
         res.writeHead(404, { 'access-control-allow-origin': '*' }).end();
         return;
