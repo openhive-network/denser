@@ -1,14 +1,18 @@
+import type { Page } from '@playwright/test';
 import { openReplyEditor } from '../support/commentingContext';
 import { test, expect } from '../support/fixture-proxy-test';
 import {
   chainTimeIn,
+  holdIdentity,
   keyMember,
   mockPasskeyGateway,
+  openLoginDialog,
   OTHER_DEVICE_KEY,
   ROOT_KEY,
   SIGNER,
   storedIdentity,
   stubSigners,
+  unsecuredIdentity,
   type Authority
 } from '../support/litePasskeyContext';
 
@@ -22,6 +26,10 @@ import {
  *                posting member, 90 days, `kind: device`) and replies as the account
  *   LITE-ID-09 – a guest's first reply prompts, without blocking, to secure the new lite account;
  *                a reload does not prompt again
+ *   LITE-ID-10 – a fresh browser starts the sign-in from the header's Login dialog: its lite link
+ *                opens the sign-in dialog with the name focused; a browser already holding a lite
+ *                identity is offered it too; a gateway not relaying update_authority leaves the
+ *                Login dialog unchanged (a node without lite support: liteLoginEntry.spec.ts)
  *
  * The other LITE-ID specs are in liteIdentityPasskey.spec.ts.
  */
@@ -46,6 +54,17 @@ const securedAuthority = (): Authority => ({
     })
   ]
 });
+
+/** Signs in to `LITE_NAME` from the open lite sign-in dialog, ending with the dialog closed. */
+async function completeLiteSignIn(page: Page) {
+  const dialog = page.getByTestId('lite-sign-in-dialog');
+  await dialog.getByTestId('lite-sign-in-name').fill(LITE_NAME);
+  await dialog.getByTestId('lite-sign-in-continue').click();
+  await expect(dialog.getByTestId('lite-sign-in-signer')).toContainText('signer.syncad.com');
+  await dialog.getByTestId('lite-sign-in-label').fill('Test browser');
+  await dialog.getByTestId('lite-sign-in-confirm').click();
+  await expect(dialog).toHaveCount(0, { timeout: 30_000 });
+}
 
 test.describe('Lite account sign-in on another device (fixture-based, mocked gateway and signer)', () => {
   test('LITE-ID-03: a fresh browser signs in with the passkey and posts as the account', async ({
@@ -82,13 +101,7 @@ test.describe('Lite account sign-in on another device (fixture-based, mocked gat
     await page.getByTestId('lite-reply-post').click();
     await page.getByTestId('lite-name-dialog').getByTestId('lite-name-sign-in-device').click();
 
-    const dialog = page.getByTestId('lite-sign-in-dialog');
-    await dialog.getByTestId('lite-sign-in-name').fill(LITE_NAME);
-    await dialog.getByTestId('lite-sign-in-continue').click();
-    await expect(dialog.getByTestId('lite-sign-in-signer')).toContainText('signer.syncad.com');
-    await dialog.getByTestId('lite-sign-in-label').fill('Test browser');
-    await dialog.getByTestId('lite-sign-in-confirm').click();
-    await expect(dialog).toHaveCount(0, { timeout: 30_000 });
+    await completeLiteSignIn(page);
 
     expect(opened).toEqual([SIGNER]);
     const stored = await storedIdentity(page);
@@ -163,5 +176,52 @@ test.describe('Lite account sign-in on another device (fixture-based, mocked gat
     await expect(page.getByTestId('lite-identity-button')).toBeVisible();
     await page.waitForTimeout(1000);
     await expect(prompt).toHaveCount(0);
+  });
+  test('LITE-ID-10: the Login dialog leads a fresh browser to the lite sign-in', async ({ page, context }) => {
+    const opened = await stubSigners(context);
+    await mockPasskeyGateway(page, LITE_NAME, securedAuthority());
+    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+
+    const login = await openLoginDialog(page);
+    await login.getByTestId('login-lite-passkey').click();
+    await expect(login).toHaveCount(0);
+    const dialog = page.getByTestId('lite-sign-in-dialog');
+    await expect(dialog.getByTestId('lite-sign-in-name')).toBeFocused();
+
+    await completeLiteSignIn(page);
+    expect(opened).toEqual([SIGNER]);
+    expect(await storedIdentity(page)).toMatchObject({ name: LITE_NAME, secured: true, signer: SIGNER });
+    await expect(page.getByTestId('lite-identity-name')).toHaveText(LITE_NAME);
+  });
+
+  test('LITE-ID-10: a browser holding a lite identity is offered the lite sign-in from Login', async ({
+    page,
+    context
+  }) => {
+    await stubSigners(context);
+    await mockPasskeyGateway(page, LITE_NAME, securedAuthority());
+    await holdIdentity(page, unsecuredIdentity('lite-other-1'));
+    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+
+    await expect(page.getByTestId('lite-identity-name')).toHaveText('lite-other-1');
+    await page.getByTestId('lite-identity-button').click();
+    await page.getByTestId('lite-identity-menu').getByTestId('lite-identity-sign-in').click();
+    const login = page.getByTestId('login-dialog');
+    await login.getByTestId('login-lite-passkey').click();
+
+    await completeLiteSignIn(page);
+    expect(await storedIdentity(page)).toMatchObject({ name: LITE_NAME, secured: true });
+    await expect(page.getByTestId('lite-identity-name')).toHaveText(LITE_NAME);
+  });
+
+  test('LITE-ID-10: without update_authority relay the Login dialog has no lite link', async ({ page }) => {
+    await mockPasskeyGateway(page, LITE_NAME, securedAuthority(), false);
+    const info = page.waitForResponse((response) => response.url().endsWith('/api/lite-reply'));
+    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+
+    const login = await openLoginDialog(page);
+    await info;
+    await page.waitForTimeout(1000);
+    await expect(login.getByTestId('login-lite-passkey')).toHaveCount(0);
   });
 });

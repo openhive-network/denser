@@ -1153,7 +1153,8 @@
       "secure_action": "Proteggi questo account",
       "prompt_title": "Il tuo account lite è sulla catena",
       "prompt_dismiss": "Ignora",
-      "sign_in_on_device": "Hai già protetto un account lite con una passkey? Accedi su questo dispositivo"
+      "sign_in_on_device": "Hai già protetto un account lite con una passkey? Accedi su questo dispositivo",
+      "login_dialog_link": "Hai un account lite con una passkey? Accedi su questo dispositivo"
     },
     "signer_errors": {
       "popup_blocked": "Il browser ha bloccato la finestra del firmatario. Consenti i popup per questo sito e riprova.",

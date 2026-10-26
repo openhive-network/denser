@@ -1153,7 +1153,8 @@
       "secure_action": "Zabezpiecz to konto",
       "prompt_title": "Twoje konto lite jest już w łańcuchu",
       "prompt_dismiss": "Zamknij",
-      "sign_in_on_device": "Masz już konto lite zabezpieczone kluczem dostępu? Zaloguj się na tym urządzeniu"
+      "sign_in_on_device": "Masz już konto lite zabezpieczone kluczem dostępu? Zaloguj się na tym urządzeniu",
+      "login_dialog_link": "Masz konto lite z kluczem dostępu? Zaloguj się na tym urządzeniu"
     },
     "signer_errors": {
       "popup_blocked": "Przeglądarka zablokowała okno serwisu podpisującego. Zezwól na wyskakujące okna dla tej strony i spróbuj ponownie.",

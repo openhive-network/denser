@@ -62,6 +62,7 @@ function NameStep({ onFound }: { onFound: (found: Found) => void }) {
           id="lite-sign-in-name"
           value={name}
           autoComplete="username"
+          autoFocus
           onChange={(e) => setName(e.target.value.trim().toLowerCase())}
           data-testid="lite-sign-in-name"
         />

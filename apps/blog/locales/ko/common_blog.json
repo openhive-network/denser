@@ -1153,7 +1153,8 @@
       "secure_action": "이 계정 보호",
       "prompt_title": "라이트 계정이 체인에 등록되었습니다",
       "prompt_dismiss": "닫기",
-      "sign_in_on_device": "이미 패스키로 라이트 계정을 보호하셨나요? 이 기기에서 로그인"
+      "sign_in_on_device": "이미 패스키로 라이트 계정을 보호하셨나요? 이 기기에서 로그인",
+      "login_dialog_link": "패스키가 있는 라이트 계정이 있나요? 이 기기에서 로그인"
     },
     "signer_errors": {
       "popup_blocked": "브라우저가 서명 창을 차단했습니다. 이 사이트의 팝업을 허용한 후 다시 시도하세요.",
