@@ -408,7 +408,7 @@ test.describe('Native Matrix chat client', () => {
     await expect(chatButton(page)).toBeFocused();
   });
 
-  test('CHAT-NATIVE-15: on the first Tab lap after sign-in, focus never drops out of the drawer', async ({ page }) => {
+  test('CHAT-NATIVE-16: on the first Tab lap after sign-in, focus never drops out of the drawer', async ({ page }) => {
     // Short enough that #general's messages fill the timeline: "Load older" waits for a scroll
     await page.setViewportSize({ width: 1280, height: SHORT_VIEWPORT_PX });
     await usesNativeChat(page);
