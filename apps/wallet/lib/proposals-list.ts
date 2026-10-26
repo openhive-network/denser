@@ -48,6 +48,27 @@ export const uniqueProposals = <T extends { proposal_id: number }>(pages: readon
   });
 };
 
+/**
+ * The rest of a `list_proposals` listing, from the proposal with id `lastId` (from the start when
+ * `undefined`) to its end, as the pages `fetchPage` returns. Each page starts at the cursor it is
+ * given, the last proposal of the page before; one shorter than `limit` is the last.
+ */
+export async function fetchProposalPagesFrom<T extends { id: number }>(
+  fetchPage: (lastId: number | undefined) => Promise<T[]>,
+  lastId: number | undefined,
+  limit: number
+): Promise<T[][]> {
+  const pages: T[][] = [];
+  let cursor = lastId;
+  for (;;) {
+    const page = await fetchPage(cursor);
+    pages.push(page);
+    const next = page.at(-1)?.id;
+    if (page.length < limit || next === undefined || next === cursor) return pages;
+    cursor = next;
+  }
+}
+
 /** Whether the proposal pays back into the DHF, the proposals the list marks "refund". */
 export const isRefundProposal = (proposal: { receiver: string }, refundAccounts: readonly string[]): boolean =>
   refundAccounts.includes(proposal.receiver);

@@ -3,9 +3,10 @@ import { PROPOSALS_PAYMENTS_PATH, STUB_ACCOUNT, fullAccount, stubProposalsPaymen
 
 /**
  * A proposals page with a DHF to fund it, for `startWalletApiStub`'s `jsonRpc`: seven proposals,
- * which `database_api.list_proposals` filters by status and orders as the node does, and a DHF
- * holding DHF_STUB_HBD. With a daily budget of 500 HBD the next round pays #11 (200 HBD), the
- * stabilizer's #12 (150 HBD) and the return proposal #0 (the remaining 150 HBD), and nothing below.
+ * which `database_api.list_proposals` filters by status, orders and pages (`limit` from `last_id`)
+ * as the node does, and a DHF holding DHF_STUB_HBD. With a daily budget of 500 HBD the next round
+ * pays #11 (200 HBD), the stabilizer's #12 (150 HBD) and the return proposal #0 (the remaining
+ * 150 HBD), and nothing below.
  */
 
 const hbd = (amount: string) => ({ amount, precision: 3, nai: '@@000000013' });
@@ -49,7 +50,9 @@ const proposal = (
   status: fields.status ?? 'active'
 });
 
-const PROPOSALS = [
+type StubProposal = ReturnType<typeof proposal>;
+
+const PROPOSALS: StubProposal[] = [
   proposal(STUB_PROPOSALS.funded, '90000000000000000', '200000', {
     subject: 'Core development',
     creator: STUB_ACCOUNT
@@ -106,6 +109,11 @@ const stringParam = (params: object, name: string, fallback: string): string => 
   return typeof value === 'string' ? value : fallback;
 };
 
+const numberParam = (params: object, name: string): number | undefined => {
+  const value = param(params, name);
+  return typeof value === 'number' ? value : undefined;
+};
+
 /** STUB_ACCOUNT's vote on the proposal a `by_proposal_voter` listing starts at. */
 const listProposalVotes: JsonRpcResults[string] = (params) => {
   const start = param(params, 'start');
@@ -113,27 +121,65 @@ const listProposalVotes: JsonRpcResults[string] = (params) => {
   return { proposal_votes: votedProposal ? [{ id: 1, voter: STUB_ACCOUNT, proposal: votedProposal }] : [] };
 };
 
-const listProposals: JsonRpcResults[string] = (params) => {
-  const statuses = STATUSES_BY_FILTER[stringParam(params, 'status', 'all')] ?? [];
-  const order = stringParam(params, 'order', 'by_total_votes');
-  const direction = stringParam(params, 'order_direction', 'descending') === 'ascending' ? 1 : -1;
-  const sortKey = (item: (typeof PROPOSALS)[number]) =>
-    order === 'by_creator' ? item.creator : item.total_votes.padStart(20, '0');
-  const proposals = PROPOSALS.filter((item) => statuses.includes(item.status)).sort(
-    (a, b) => direction * sortKey(a).localeCompare(sortKey(b))
-  );
-  return { proposals };
-};
+/** A page of the listing starts at the proposal `last_id` names, so it repeats the last one of the page before. */
+const listProposalsOf =
+  (all: readonly StubProposal[]): JsonRpcResults[string] =>
+  (params) => {
+    const statuses = STATUSES_BY_FILTER[stringParam(params, 'status', 'all')] ?? [];
+    const order = stringParam(params, 'order', 'by_total_votes');
+    const direction = stringParam(params, 'order_direction', 'descending') === 'ascending' ? 1 : -1;
+    const sortKey = (item: StubProposal) =>
+      order === 'by_creator' ? item.creator : item.total_votes.padStart(20, '0');
+    const listing = all
+      .filter((item) => statuses.includes(item.status))
+      .sort((a, b) => direction * sortKey(a).localeCompare(sortKey(b)));
+    const cursor = listing.findIndex(({ id }) => id === numberParam(params, 'last_id'));
+    const from = Math.max(0, cursor);
+    return { proposals: listing.slice(from, from + (numberParam(params, 'limit') ?? listing.length)) };
+  };
 
-export const PROPOSALS_PAGE_RESULTS: JsonRpcResults = {
-  'database_api.list_proposals': listProposals,
+const proposalsPageResults = (all: readonly StubProposal[]): JsonRpcResults => ({
+  'database_api.list_proposals': listProposalsOf(all),
   'database_api.find_accounts': ({ accounts = [] }) => ({
     accounts: accounts.map((name) =>
       fullAccount(name === 'hive.fund' ? { name, hbd_balance: hbd(DHF_STUB_HBD) } : { name })
     )
   }),
   'database_api.list_proposal_votes': listProposalVotes
+});
+
+export const PROPOSALS_PAGE_RESULTS: JsonRpcResults = proposalsPageResults(PROPOSALS);
+
+/** How many unfunded proposals SEARCH_PAGE_RESULTS adds below the seven, ids from 100 on. */
+export const SEARCH_EXTRA_PROPOSALS = 40;
+/** The two extra proposals whose subject has "Keychain": one on the first page of votable proposals, one past it. */
+export const SEARCH_PROPOSALS = {
+  onFirstPage: 101,
+  pastFirstPage: 100 + SEARCH_EXTRA_PROPOSALS - 1
+} as const;
+export const SEARCH_TERM = 'keychain';
+
+const SEARCH_SUBJECTS: Record<number, string> = {
+  [SEARCH_PROPOSALS.onFirstPage]: 'Keychain for desktop',
+  [SEARCH_PROPOSALS.pastFirstPage]: 'Keychain for mobile'
 };
+
+const extraProposal = (index: number) => {
+  const id = 100 + index;
+  return proposal(id, String(1_000_000_000_000_000 - index), '1000', {
+    subject: SEARCH_SUBJECTS[id] ?? `Community work ${id}`,
+    creator: `stub-worker${id}`
+  });
+};
+
+/**
+ * The proposals page of PROPOSALS_PAGE_RESULTS with SEARCH_EXTRA_PROPOSALS more active proposals
+ * below them in vote order, more than the page's first page of votable proposals holds.
+ */
+export const SEARCH_PAGE_RESULTS: JsonRpcResults = proposalsPageResults([
+  ...PROPOSALS,
+  ...Array.from({ length: SEARCH_EXTRA_PROPOSALS }, (_, index) => extraProposal(index))
+]);
 
 /** HBD satoshis paid so far to the proposals that have been paid; every other id has had nothing. */
 export const STUB_PROPOSALS_PAID: Record<number, string> = {
