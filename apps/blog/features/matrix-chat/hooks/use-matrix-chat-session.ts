@@ -7,14 +7,14 @@
  * login token per user per minute, so a second page load within a minute failed to sign in.
  */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getLogger } from '@ui/lib/logging';
 import { requestMatrixLoginToken } from '@/blog/lib/fetch-matrix-login-token';
 import type { ChatSession } from '@/blog/features/matrix-chat/lib/chat-view-types';
 import { chatDeviceId } from '@/blog/features/matrix-chat/lib/device-id';
 import {
+  afterSignOutByHomeserver,
   forgetMatrixSession,
-  hasNewerMatrixSession,
   signInToMatrixChat,
   type StartedChatSession
 } from '@/blog/features/matrix-chat/lib/matrix-chat-sign-in';
@@ -75,12 +75,19 @@ function openSession({ userId, homeserverUrl, defaultRoom, onLoggedOut, signal }
  * session the browser stored, else with a login token denser's server mints. A change of user
  * (sign-out, account switch, the end of denser's session) or unmounting ends it: the client
  * stops, its state and stored session are dropped and its device signed out. A session the
- * homeserver signs out is dropped too; the session another tab stored since is then resumed.
+ * homeserver signs out is dropped too; the session another tab stored since is then resumed,
+ * else it signs in again with a newly minted login token, once until `retry` or another user.
  */
 export function useMatrixChatSession(options: MatrixChatSessionOptions) {
   const { userId, start, homeserverUrl, defaultRoom } = options;
   const [state, setState] = useState<ChatSessionState>(IDLE);
   const [attempt, setAttempt] = useState(0);
+  // Whether the session was signed in again after the homeserver signed one out, which happens once
+  const mintedAgain = useRef(false);
+
+  useEffect(() => {
+    mintedAgain.current = false;
+  }, [userId]);
 
   useEffect(() => {
     if (!userId || !start) return;
@@ -89,11 +96,15 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
     const aborted = new AbortController();
     const onLoggedOut = () => {
       if (!started) return;
-      forgetMatrixSession(browserMatrixSessionStore, started.credentials);
+      const next = afterSignOutByHomeserver(browserMatrixSessionStore, started.credentials, mintedAgain.current);
       if (!current) return;
       logger.info('The homeserver signed the Matrix chat session out');
-      if (hasNewerMatrixSession(browserMatrixSessionStore, started.credentials)) setAttempt((count) => count + 1);
-      else setState({ status: 'failed', session: null });
+      if (next === 'fail') {
+        setState({ status: 'failed', session: null });
+        return;
+      }
+      if (next === 'mint') mintedAgain.current = true;
+      setAttempt((count) => count + 1);
     };
     setState({ status: 'starting', session: null });
     const opening = inTurn(() =>
@@ -123,6 +134,9 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
     };
   }, [userId, start, homeserverUrl, defaultRoom, attempt]);
 
-  const retry = useCallback(() => setAttempt((count) => count + 1), []);
+  const retry = useCallback(() => {
+    mintedAgain.current = false;
+    setAttempt((count) => count + 1);
+  }, []);
   return { ...state, retry };
 }

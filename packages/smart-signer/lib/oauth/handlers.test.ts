@@ -40,7 +40,7 @@ const STUBS: Record<string, string> = {
   '@smart-signer/lib/auth/accounts': stub('export const setSessionUser = (session, user) => { session.user = user; };'),
   '@hive/ui/config/public-vars': stub('export const configuredImagesEndpoint = "https://images.example.org";')
 };
-const RELATIVE = new Set(['./config', './jwt-utils']);
+const RELATIVE = new Set(['./config', './jwt-utils', './profile-text']);
 // handlers.ts imports the OAuthError interface as a value, which type stripping leaves in
 const VALIDATE_WITH_TYPES = `data:text/javascript,${encodeURIComponent(
   `export * from '${new URL('./validate.ts', import.meta.url).href}'; export const OAuthError = undefined;`

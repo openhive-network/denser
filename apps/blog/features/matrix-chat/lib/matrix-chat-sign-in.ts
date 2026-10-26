@@ -118,3 +118,21 @@ export function hasNewerMatrixSession(store: MatrixSessionStore, credentials: Ma
   const stored = storedCredentials(store, credentials.userId);
   return !!stored && stored.accessToken !== credentials.accessToken;
 }
+
+/** What follows the homeserver signing a running session out */
+export type SignedOutNext = 'resume-newer' | 'mint' | 'fail';
+
+/**
+ * Forgets `credentials`, which the homeserver signed out, and tells what follows: resuming the
+ * session another tab stored since, else signing in with a newly minted login token, unless the
+ * chat already did that after an earlier sign-out (`mintedAgain`), when it fails.
+ */
+export function afterSignOutByHomeserver(
+  store: MatrixSessionStore,
+  credentials: MatrixCredentials,
+  mintedAgain: boolean
+): SignedOutNext {
+  forgetMatrixSession(store, credentials);
+  if (hasNewerMatrixSession(store, credentials)) return 'resume-newer';
+  return mintedAgain ? 'fail' : 'mint';
+}

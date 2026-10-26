@@ -4,8 +4,8 @@ import type { Page, Route } from '@playwright/test';
  * A Matrix homeserver for the native chat client, answered with `page.route`: sign-in with a login
  * token, a first sync of two rooms (`#general` with unread messages and history before them, and
  * `#lobby`), long polls that answer what a test queues (or fail once it cuts them off), `/messages`, sending, read receipts (which
- * clear the room's unread count in the next sync), `/account/whoami` for the access tokens it
- * issued and has not signed out, and sign-out. Every request is recorded.
+ * clear the room's unread count in the next sync), `/account/whoami` and `/sync` for the access
+ * tokens it issued and has not signed out or revoked, and sign-out. Every request is recorded.
  */
 
 export const HOMESERVER = 'https://matrix.matrix.test';
@@ -114,6 +114,11 @@ export class MatrixHomeserverStub {
     this.cuttingOff = true;
   }
 
+  /** Ends every access token issued so far, as an admin's sign-out of the user's devices does */
+  revokeSessions(): void {
+    this.sessions.clear();
+  }
+
   /** The next `count` sends fail */
   failNextSends(count: number): void {
     this.failSends = count;
@@ -154,11 +159,10 @@ export class MatrixHomeserverStub {
       return json({ user_id: this.userId, access_token: accessToken, device_id: deviceId });
     }
     const accessToken = request.headers()['authorization']?.replace(/^Bearer /, '') ?? '';
+    const unknownToken = () => json({ errcode: 'M_UNKNOWN_TOKEN', error: 'Invalid access token passed.' }, 401);
     if (path === '/account/whoami') {
       const deviceId = this.sessions.get(accessToken);
-      return deviceId
-        ? json({ user_id: this.userId, device_id: deviceId })
-        : json({ errcode: 'M_UNKNOWN_TOKEN', error: 'Invalid access token passed.' }, 401);
+      return deviceId ? json({ user_id: this.userId, device_id: deviceId }) : unknownToken();
     }
     if (path === '/logout' && method === 'POST') {
       this.sessions.delete(accessToken);
@@ -166,6 +170,7 @@ export class MatrixHomeserverStub {
     }
     if (path.endsWith('/filter') && method === 'POST') return json({ filter_id: 'stub-filter' });
     if (path === '/sync') {
+      if (!this.sessions.has(accessToken)) return unknownToken();
       const answer = await this.nextSync(url.searchParams.has('since'));
       return answer ? json(answer) : route.abort('aborted').catch(() => undefined);
     }

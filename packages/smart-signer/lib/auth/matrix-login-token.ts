@@ -8,6 +8,11 @@ import {
 
 export type MatrixLoginTokenSettings = Pick<MatrixDeviceCleanupSettings, 'homeserverUrl' | 'serverName' | 'adminToken'>;
 
+export interface MatrixAccountSettings extends MatrixLoginTokenSettings {
+  /** Alias or ID of the room a new account joins; none joins no room */
+  defaultRoom: string;
+}
+
 /**
  * A login token (`m.login.token`) for the user; `unknown-user` when Synapse has no account for
  * them yet; `rate-limited` when Synapse refused with a 429, with the wait it asked for;
@@ -116,4 +121,56 @@ export async function mintMatrixLoginToken(
       );
     }
   }
+}
+
+/**
+ * Creates the account SSO sign-in through denser would create: localpart `username`, display
+ * name `displayName`, no password, joined to `settings.defaultRoom`. A failed join is reported
+ * and leaves the account as created. Rejects when the account could not be created.
+ */
+async function createMatrixAccount(
+  userId: string,
+  displayName: string,
+  settings: MatrixAccountSettings,
+  request: MatrixAdminRequest,
+  onFailure: MatrixCleanupFailureReporter
+): Promise<void> {
+  await request(
+    `${settings.homeserverUrl}/_synapse/admin/v2/users/${encodeURIComponent(userId)}`,
+    { method: 'PUT', headers: bearer(settings.adminToken), body: JSON.stringify({ displayname: displayName }) },
+    MATRIX_ADMIN_TIMEOUT_MS
+  );
+  if (!settings.defaultRoom) return;
+  // Synapse's admin registration may run `auto_join_rooms` already; joining a joined room is a no-op
+  await request(
+    `${settings.homeserverUrl}/_synapse/admin/v1/join/${encodeURIComponent(settings.defaultRoom)}`,
+    { method: 'POST', headers: bearer(settings.adminToken), body: JSON.stringify({ user_id: userId }) },
+    MATRIX_ADMIN_TIMEOUT_MS
+  ).catch((error: unknown) =>
+    onFailure(userId, `joining ${settings.defaultRoom}: ${reasonOf(error, [settings.adminToken])}`)
+  );
+}
+
+/**
+ * `mintMatrixLoginToken`, which first creates the account of a user Synapse does not know yet,
+ * with the display name `displayNameOf` gives, then mints the token for it. A failed creation is
+ * reported and answers `failed`. Only call it for a user who may chat.
+ */
+export async function mintMatrixLoginTokenCreatingAccount(
+  username: string,
+  displayNameOf: (username: string) => Promise<string>,
+  settings: MatrixAccountSettings,
+  request: MatrixAdminRequest,
+  onFailure: MatrixCleanupFailureReporter
+): Promise<MatrixLoginTokenResult> {
+  const minted = await mintMatrixLoginToken(username, settings, request, onFailure);
+  if (minted.kind !== 'unknown-user') return minted;
+  const userId = matrixUserId(username, settings);
+  try {
+    await createMatrixAccount(userId, await displayNameOf(username), settings, request, onFailure);
+  } catch (error) {
+    onFailure(userId, `creating the account: ${reasonOf(error, [settings.adminToken])}`);
+    return { kind: 'failed' };
+  }
+  return mintMatrixLoginToken(username, settings, request, onFailure);
 }

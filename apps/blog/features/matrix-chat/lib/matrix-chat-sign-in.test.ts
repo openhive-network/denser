@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import type { ChatSession } from './chat-view-types.ts';
 import {
+  afterSignOutByHomeserver,
   forgetMatrixSession,
   hasNewerMatrixSession,
   signInToMatrixChat,
@@ -171,5 +172,45 @@ describe('forgetMatrixSession', () => {
     forgetMatrixSession(store, STORED);
     assert.deepEqual(slots[ALICE], MINTED);
     assert.equal(hasNewerMatrixSession(store, MINTED), false);
+  });
+});
+
+describe('afterSignOutByHomeserver', () => {
+  it('forgets a resumed session the homeserver rejects, mints once, and fails on a second rejection', async () => {
+    const { store, slots } = memoryStore({ [ALICE]: { ...STORED } });
+    const resumed = await signIn(store, []);
+    assert.deepEqual(resumed.started.credentials, STORED);
+
+    assert.equal(afterSignOutByHomeserver(store, STORED, false), 'mint');
+    assert.deepEqual(slots, {});
+    const again = await signIn(store, [{ kind: 'token', loginToken: 'syl_again' }]);
+    assert.deepEqual(again.calls, { mints: 1, logIns: ['syl_again'], resumed: [] });
+    assert.deepEqual(slots[ALICE], MINTED);
+
+    assert.equal(afterSignOutByHomeserver(store, MINTED, true), 'fail');
+    assert.deepEqual(slots, {});
+  });
+
+  it('waits out a rate-limited mint when signing in again, and fails when no token is minted', async () => {
+    const { store, waits } = memoryStore({ [ALICE]: { ...STORED } });
+    assert.equal(afterSignOutByHomeserver(store, STORED, false), 'mint');
+
+    const again = await signIn(store, [
+      { kind: 'rate-limited', retryAfterMs: 10 },
+      { kind: 'token', loginToken: 'syl_again' }
+    ]);
+    assert.deepEqual(waits, [10]);
+    assert.deepEqual(again.calls.logIns, ['syl_again']);
+
+    assert.equal(afterSignOutByHomeserver(store, MINTED, false), 'mint');
+    await assert.rejects(signIn(store, [{ kind: 'none' }]), /denser minted no Matrix login token/);
+  });
+
+  it('resumes the session another tab stored since, whether or not a token was minted again', () => {
+    for (const mintedAgain of [false, true]) {
+      const { store, slots } = memoryStore({ [ALICE]: { ...MINTED } });
+      assert.equal(afterSignOutByHomeserver(store, STORED, mintedAgain), 'resume-newer');
+      assert.deepEqual(slots[ALICE], MINTED);
+    }
   });
 });

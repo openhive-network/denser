@@ -57,6 +57,7 @@ const chatButton = (page: Page) => page.getByRole('button', { name: EN.open_widg
 const badge = (page: Page) => page.getByTestId('chat-unread-badge');
 const panel = (page: Page) => page.getByTestId('matrix-chat-panel');
 const messages = (page: Page) => panel(page).getByTestId('chat-message');
+const signInFailed = (page: Page) => page.getByRole('dialog').getByRole('alert').getByText(EN.sign_in_failed);
 const composer = (page: Page) => panel(page).getByRole('textbox', { name: EN.composer_label });
 const focusInDrawer = (page: Page) =>
   page.evaluate(() => document.activeElement?.closest('[role="dialog"]') !== null && document.hasFocus());
@@ -301,6 +302,28 @@ test.describe('Native Matrix chat client', () => {
     expect(chat.loginTokenRequests).toHaveLength(2);
     expect(chat.homeserver.requestsTo('/login', 'POST')).toHaveLength(1);
     await expect(panel(page).getByText(EN.sign_in_failed)).toHaveCount(0);
+  });
+
+  test('CHAT-NATIVE-15: a session the homeserver signs out signs in again with a new token, once, without Try again', async ({
+    page
+  }) => {
+    const chat = await usesNativeChat(page);
+    await openChat(page);
+    const signedOut = await storedSession(page);
+
+    chat.homeserver.revokeSessions();
+
+    await expect.poll(() => chat.homeserver.requestsTo('/login', 'POST').length, { timeout: SIGNED_IN_TIMEOUT_MS }).toBe(2);
+    await expect(messages(page).filter({ hasText: GENERAL_MESSAGES[0] })).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+    expect(chat.loginTokenRequests).toHaveLength(2);
+    await expect(signInFailed(page)).toHaveCount(0);
+    await expect.poll(() => storedSession(page)).toMatchObject({ userId: USER_ID, deviceId: signedOut.deviceId });
+    expect((await storedSession(page)).accessToken).not.toBe(signedOut.accessToken);
+
+    chat.homeserver.revokeSessions();
+
+    await expect(signInFailed(page)).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+    expect(chat.loginTokenRequests).toHaveLength(2);
   });
 
   test('CHAT-NATIVE-11: the SDK logs no console warning at the default log level', async ({ page }) => {
