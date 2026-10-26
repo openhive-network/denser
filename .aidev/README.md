@@ -407,7 +407,12 @@ trace and loads every lazy image of the page; no metric reads it.
 - *Nothing leaves the host, asserted:* a request in any Lighthouse report to a host
   other than the three above, a connection the app servers open off the host
   (`lighthouse-fixture/egress-guard.cjs` refuses and logs it), or a replay MISS on the
-  API or image server fails the pass (`hermetic` in the result).
+  API or image server fails the pass (`hermetic` in the result). The servers' own
+  `/__aidev/` paths, the harness's readiness and status requests, are never counted;
+  the image server's misses are listed by path (`hermetic.missed`). A Chromium update
+  can change which lazy images load after the trace (156 loads feed thumbnails and
+  avatars 153 did not): a missed path that no report's `network-requests` lists is
+  recorded as `prune` records it, a 404 with no body.
 
 **Server heap.** After the Lighthouse runs, `lighthouse-fixture/heap-check.mjs` renders
 the blog routes 300 times to warm up, then 1,000 more (16 concurrent), reading
