@@ -1,20 +1,32 @@
 import { useMemo } from 'react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Big from 'big.js';
 import { IGetProposalsParams, IProposal } from '@hive/common-hiveio-packages/wax';
-import { DEFAULT_PARAMS_FOR_PROPOSALS, getProposals, type ProposalData } from '@/wallet/lib/hive';
-import { fetchProposalPagesFrom, matchesProposalSearch, uniqueProposals } from '@/wallet/lib/proposals-list';
+import { getLogger } from '@hive/ui/lib/logging';
+import { getProposals, type ProposalData } from '@/wallet/lib/hive';
+import { matchesProposalSearch } from '@/wallet/lib/proposals-list';
 
-// database_api's single-query limit (DATABASE_API_SINGLE_QUERY_LIMIT); more than every proposal there is.
-const REST_OF_LIST_PAGE_LIMIT = 1000;
+const logger = getLogger('app');
+
+/**
+ * database_api's single-query limit (DATABASE_API_SINGLE_QUERY_LIMIT), far more proposals than any
+ * listing holds. `list_proposals` does not page by `last_id`, so a listing is read in one call.
+ */
+const PROPOSALS_LIST_LIMIT = 1000;
 
 export type ProposalsListParams = Pick<IGetProposalsParams, 'status' | 'order' | 'order_direction'>;
 
-/**
- * How much of the listing a search covers: all of it, not yet (the rest is loading), or only the
- * loaded pages because the rest failed to load.
- */
-export type ProposalsSearchCoverage = 'complete' | 'loading' | 'incomplete';
+let warnedFullListing = false;
+
+const warnIfListingFull = (proposals: IProposal[], params: ProposalsListParams) => {
+  if (warnedFullListing || proposals.length < PROPOSALS_LIST_LIMIT) return;
+  warnedFullListing = true;
+  logger.warn(
+    'list_proposals returned %d proposals, its limit, for %o: proposals past it are not listed',
+    proposals.length,
+    params
+  );
+};
 
 const toProposalData = (proposal: IProposal): ProposalData => ({
   ...proposal,
@@ -24,70 +36,28 @@ const toProposalData = (proposal: IProposal): ProposalData => ({
   }
 });
 
-const toProposalDataPages = (pages: IProposal[][]): ProposalData[][] =>
-  pages.map((page) => page.map(toProposalData));
-
-const searchCoverage = (
-  searching: boolean,
-  hasNextPage: boolean,
-  rest: { isSuccess: boolean; isError: boolean }
-): ProposalsSearchCoverage => {
-  if (!searching || !hasNextPage || rest.isSuccess) return 'complete';
-  return rest.isError ? 'incomplete' : 'loading';
-};
+const toProposalDataList = (proposals: IProposal[]): ProposalData[] => proposals.map(toProposalData);
 
 /**
- * A proposals listing as the page shows it: page by page (`fetchNextPage`) without a search; with
- * one, its whole rest in as few calls as it takes, once per listing, filtered by `search`.
- * `proposals` keeps the listing's order; `loadedProposals` is what the pages alone hold.
+ * A whole proposals listing, read in one call per status, order and direction, and `proposals`,
+ * those of it matching `search`, in the listing's order.
  */
 export const useProposalsList = (params: ProposalsListParams, search: string) => {
   const { status, order, order_direction } = params;
-  const searching = search.trim() !== '';
-  const pagesQuery = useInfiniteQuery({
+  const listQuery = useQuery({
     queryKey: ['proposals', status, order, order_direction],
-    queryFn: ({ pageParam: last_id }: { pageParam: number | undefined }) =>
-      getProposals({ last_id, status, order, order_direction }),
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage) => {
-      return lastPage.length >= DEFAULT_PARAMS_FOR_PROPOSALS.limit
-        ? lastPage[lastPage.length - 1].id
-        : undefined;
+    queryFn: async () => {
+      const proposals = await getProposals({ status, order, order_direction, limit: PROPOSALS_LIST_LIMIT });
+      warnIfListingFull(proposals, { status, order, order_direction });
+      return proposals;
     },
-    select: (proposals) => ({ ...proposals, pages: toProposalDataPages(proposals.pages) })
+    select: toProposalDataList
   });
-  const loadedPages = pagesQuery.data?.pages;
-  const lastLoadedId = loadedPages?.at(-1)?.at(-1)?.id;
-  const restQuery = useQuery({
-    queryKey: ['proposals', status, order, order_direction, 'rest'],
-    queryFn: () =>
-      fetchProposalPagesFrom(
-        (last_id) =>
-          getProposals({ last_id, status, order, order_direction, limit: REST_OF_LIST_PAGE_LIMIT }),
-        lastLoadedId,
-        REST_OF_LIST_PAGE_LIMIT
-      ),
-    enabled: searching && pagesQuery.hasNextPage,
-    select: toProposalDataPages
-  });
-  const restPages = searching ? restQuery.data : undefined;
-
-  const loadedProposals = useMemo(() => uniqueProposals(loadedPages ?? []), [loadedPages]);
+  const listing = listQuery.data;
   const proposals = useMemo(
-    () =>
-      uniqueProposals([...(loadedPages ?? []), ...(restPages ?? [])]).filter((proposal) =>
-        matchesProposalSearch(proposal, search)
-      ),
-    [loadedPages, restPages, search]
+    () => (listing ?? []).filter((proposal) => matchesProposalSearch(proposal, search)),
+    [listing, search]
   );
-  const coverage = searchCoverage(searching, pagesQuery.hasNextPage, restQuery);
 
-  return {
-    pagesQuery,
-    loadedProposals,
-    proposals,
-    coverage,
-    /** Whether scrolling to the end should load the next page: the rest has not replaced paging. */
-    loadsOnScroll: !searching || coverage === 'incomplete'
-  };
+  return { listQuery, proposals };
 };
