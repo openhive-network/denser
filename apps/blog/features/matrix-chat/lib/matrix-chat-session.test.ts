@@ -206,6 +206,12 @@ describe('startMatrixChatSession', () => {
     assert.equal(chat.unreadCount(), 3);
   });
 
+  it("names the user's own messages the way the room does, by their user id in a room it does not know", async () => {
+    const chat = await start();
+    assert.deepEqual(chat.ownSender(GENERAL), { name: 'alice', avatarMxc: null });
+    assert.deepEqual(chat.ownSender('!unknown:example.org'), { name: USER, avatarMxc: null });
+  });
+
   it('opens in no room when the default room is not one the user is in', async () => {
     const chat = await start('#elsewhere:example.org');
     assert.equal(chat.defaultRoomId(), null);

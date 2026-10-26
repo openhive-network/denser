@@ -147,6 +147,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/post-rendering/lib/paginate-threads.test.ts \
     apps/blog/features/matrix-chat/lib/message-view.test.ts \
     apps/blog/features/matrix-chat/lib/outbox.test.ts \
+    apps/blog/features/matrix-chat/lib/chat-time.test.ts \
     apps/blog/features/matrix-chat/lib/back-pagination.test.ts \
     apps/blog/features/matrix-chat/lib/matrix-chat-sign-in.test.ts \
     apps/blog/features/matrix-chat/lib/matrix-chat-session.test.ts \

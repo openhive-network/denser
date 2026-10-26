@@ -1,10 +1,12 @@
-import { useEffect, useLayoutEffect, useRef, type UIEvent } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef, type ReactNode, type UIEvent } from 'react';
 import { Button } from '@ui/components/button';
 import { useTranslation } from '@/blog/i18n/client';
 import type { ChatMessageView, ChatSession } from '@/blog/features/matrix-chat/lib/chat-view-types';
 import type { BackPaginationState } from '@/blog/features/matrix-chat/lib/back-pagination';
 import type { OutgoingMessage } from '@/blog/features/matrix-chat/lib/outbox';
+import { formatDayHeading, isSameDay } from '@/blog/features/matrix-chat/lib/chat-time';
 import { ChatMessageItem } from '@/blog/features/matrix-chat/components/chat-message-item';
+import { ChatOutgoingItem } from '@/blog/features/matrix-chat/components/chat-outgoing-item';
 
 /** How close to the top scrolling back starts loading older messages, and to the bottom new ones follow */
 const SCROLL_EDGE_PX = 48;
@@ -19,21 +21,13 @@ interface ChatTimelineProps {
   appUrl: string;
 }
 
-function OutgoingItem({ message, retry }: { message: OutgoingMessage; retry: (message: OutgoingMessage) => void }) {
-  const { t } = useTranslation('common_blog');
+function DaySeparator({ timestamp, now }: { timestamp: number; now: number }) {
+  const { i18n } = useTranslation('common_blog');
   return (
-    <li className="px-2 py-1.5 pl-12 text-sm" data-testid="chat-outgoing" data-status={message.status}>
-      <p className="whitespace-pre-wrap break-words">{message.text}</p>
-      {message.status === 'failed' ? (
-        <p className="flex items-center gap-2 text-xs text-destructive" role="alert">
-          {t('chat_widget.send_failed')}
-          <Button variant="link" size="sm" className="h-auto p-0 text-xs" onClick={() => retry(message)}>
-            {t('chat_widget.retry')}
-          </Button>
-        </p>
-      ) : (
-        <p className="text-xs text-muted-foreground">{t('chat_widget.sending')}</p>
-      )}
+    <li role="separator" className="flex items-center gap-2 px-2 py-1 text-xs text-muted-foreground" data-testid="chat-day">
+      <span aria-hidden className="h-px flex-1 bg-border" />
+      <time dateTime={new Date(timestamp).toISOString()}>{formatDayHeading(timestamp, now, i18n.language)}</time>
+      <span aria-hidden className="h-px flex-1 bg-border" />
     </li>
   );
 }
@@ -60,8 +54,21 @@ function HistoryControl({ pagination, loadOlder }: Pick<ChatTimelineProps, 'pagi
   );
 }
 
+/** `items` in order, each one on a day other than the one before it under that day's heading */
+function withDaySeparators(items: { key: string; timestamp: number; node: ReactNode }[], now: number) {
+  return items.map((item, index) => (
+    <Fragment key={item.key}>
+      {index === 0 || !isSameDay(items[index - 1].timestamp, item.timestamp) ? (
+        <DaySeparator timestamp={item.timestamp} now={now} />
+      ) : null}
+      {item.node}
+    </Fragment>
+  ));
+}
+
 /**
- * A room's messages, oldest first, followed by what the composer is sending. Scrolling to the
+ * A room's messages, oldest first, followed by what the composer is sending, under the heading
+ * of each day. Scrolling to the
  * top loads older messages, keeping the ones in view where they are; new messages follow while
  * the timeline is scrolled to its end.
  */
@@ -103,12 +110,21 @@ export function ChatTimeline(props: ChatTimelineProps) {
     <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto" onScroll={onScroll} data-testid="chat-timeline">
       <HistoryControl pagination={pagination} loadOlder={loadOlder} />
       <ol role="log" aria-live="polite" aria-label={t('chat_widget.messages')}>
-        {messages.map((message) => (
-          <ChatMessageItem key={message.eventId} session={session} message={message} appUrl={appUrl} />
-        ))}
-        {pending.map((message) => (
-          <OutgoingItem key={message.txnId} message={message} retry={retry} />
-        ))}
+        {withDaySeparators(
+          [
+            ...messages.map((message) => ({
+              key: message.eventId,
+              timestamp: message.timestamp,
+              node: <ChatMessageItem session={session} message={message} appUrl={appUrl} />
+            })),
+            ...pending.map((message) => ({
+              key: message.txnId,
+              timestamp: message.createdAt,
+              node: <ChatOutgoingItem session={session} message={message} retry={retry} />
+            }))
+          ],
+          Date.now()
+        )}
       </ol>
     </div>
   );
