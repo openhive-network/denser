@@ -1,9 +1,8 @@
 'use client';
 
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import Big from 'big.js';
-import { DEFAULT_PARAMS_FOR_PROPOSALS, getProposals, getUserVotes } from '@/wallet/lib/hive';
+import { useQuery } from '@tanstack/react-query';
+import { DEFAULT_PARAMS_FOR_PROPOSALS, getUserVotes } from '@/wallet/lib/hive';
 import { IGetProposalsParams } from '@hive/common-hiveio-packages/wax';
 import { getDynamicGlobalProperties } from '@transaction/lib/hive-api';
 import { ProposalsFilter } from '@/wallet/components/proposals-filter';
@@ -12,15 +11,10 @@ import { ProposalsDhfSummary } from '@/wallet/components/proposals-dhf-summary';
 import { ProposalsFundingLine } from '@/wallet/components/proposals-funding-line';
 import { useDhfFundingQuery } from '@/wallet/components/hooks/use-dhf-funding';
 import { useProposalsPaid } from '@/wallet/components/hooks/use-proposals-paid';
+import { useProposalsList } from '@/wallet/components/hooks/use-proposals-list';
 import { REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { isReturnProposal } from '@/wallet/lib/dhf-funding';
-import {
-  fundingMarks,
-  isProposalStatusTab,
-  matchesProposalSearch,
-  uniqueProposals,
-  type FundingMarks
-} from '@/wallet/lib/proposals-list';
+import { fundingMarks, isProposalStatusTab, type FundingMarks } from '@/wallet/lib/proposals-list';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { Skeleton } from '@ui/components/skeleton';
 import { Tabs, TabsContent } from '@ui/components/tabs';
@@ -48,36 +42,13 @@ export default function ProposalsPage() {
     enabled: !!user?.username
   });
   const { data: funding, isPending: fundingLoading } = useDhfFundingQuery();
-  const proposalsData = useInfiniteQuery({
-    queryKey: ['proposals', filterStatus, sortOrder, orderDirection],
-    queryFn: ({ pageParam: last_id }: { pageParam: number | undefined }) =>
-      getProposals({
-        last_id,
-        status: filterStatus,
-        order: sortOrder,
-        order_direction: orderDirection
-      }),
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage) => {
-      return lastPage.length >= DEFAULT_PARAMS_FOR_PROPOSALS.limit
-        ? lastPage[lastPage.length - 1].id
-        : undefined;
-    },
-    select: (proposals) => {
-      return {
-        ...proposals,
-        pages: proposals.pages.map((page) =>
-          page.map((proposal) => ({
-            ...proposal,
-            total_votes: new Big(parseFloat(proposal.total_votes).toFixed(2)),
-            daily_pay: {
-              amount: new Big(proposal.daily_pay.amount).div(1000)
-            }
-          }))
-        )
-      };
-    }
-  });
+  const {
+    pagesQuery: proposalsData,
+    loadedProposals,
+    proposals,
+    coverage,
+    loadsOnScroll
+  } = useProposalsList({ status: filterStatus, order: sortOrder, order_direction: orderDirection }, search);
   const { data: dynamicData, isPending: dynamicLoading } = useQuery({
     queryKey: ['dynamicGlobalProperties'],
     queryFn: () => getDynamicGlobalProperties(),
@@ -90,32 +61,29 @@ export default function ProposalsPage() {
     }
   });
 
-  const loadedProposals = useMemo(() => uniqueProposals(proposalsData.data?.pages ?? []), [proposalsData.data]);
-  const proposals = useMemo(
-    () => loadedProposals.filter((proposal) => matchesProposalSearch(proposal, search)),
-    [loadedProposals, search]
+  const searching = search.trim() !== '';
+  const paidProposalIds = useMemo(
+    () => (searching ? proposals : loadedProposals).map((proposal) => proposal.proposal_id),
+    [searching, proposals, loadedProposals]
   );
-  const loadedProposalIds = useMemo(
-    () => loadedProposals.map((proposal) => proposal.proposal_id),
-    [loadedProposals]
-  );
-  const paidById = useProposalsPaid(loadedProposalIds);
+  const paidById = useProposalsPaid(paidProposalIds);
   const marks = useMemo(
     () =>
       funding
         ? fundingMarks(
             proposals,
             funding.payouts,
-            sortOrder === 'by_total_votes' && orderDirection === 'descending' && !search.trim(),
+            sortOrder === 'by_total_votes' && orderDirection === 'descending' && !searching,
             REFUND_ACCOUNTS
           )
         : NO_FUNDING_MARKS,
-    [proposals, funding, sortOrder, orderDirection, search]
+    [proposals, funding, sortOrder, orderDirection, searching]
   );
 
   useEffect(() => {
     let fetching = false;
     const handleScroll = async (e: Event) => {
+      if (!loadsOnScroll) return;
       const target = e.target as Document | undefined;
       if (!target?.scrollingElement) return;
 
@@ -130,7 +98,7 @@ export default function ProposalsPage() {
     return () => {
       document.removeEventListener('scroll', handleScroll);
     };
-  }, [proposalsData, proposalsData.fetchNextPage, proposalsData.hasNextPage]);
+  }, [proposalsData, proposalsData.fetchNextPage, proposalsData.hasNextPage, loadsOnScroll]);
 
   const handleStatusChange = (value: string) => {
     if (isProposalStatusTab(value)) setFilterStatus(value);
@@ -171,27 +139,39 @@ export default function ProposalsPage() {
             </p>
             <p className="text-center text-xl text-gray-400">{t('global.its_probably')}</p>
           </main>
-        ) : proposals.length === 0 ? (
-          <p className="mt-16 text-center text-xl" data-testid="proposals-no-search-results">
-            {t('proposals_page.no_search_results')}
+        ) : coverage === 'loading' ? (
+          <p className="mt-16 text-center text-xl" role="status" data-testid="proposals-search-loading">
+            {t('proposals_page.search_loading')}
           </p>
         ) : (
-          proposals.map((proposal, index) => (
-            <Fragment key={proposal.proposal_id}>
-              <ProposalListItem
-                voted={
-                  votes?.find((vote) => vote.proposal.proposal_id === proposal.proposal_id) ? true : false
-                }
-                totalVestingFund={dynamicData.total_vesting_fund_hive}
-                totalShares={dynamicData.total_vesting_shares}
-                proposalData={proposal}
-                funding={marks.badges[index]}
-                isReturnProposal={isReturnProposal(proposal, REFUND_ACCOUNTS)}
-                paid={paidById.get(proposal.proposal_id)}
-              />
-              {index === marks.lineIndex ? <ProposalsFundingLine /> : null}
-            </Fragment>
-          ))
+          <>
+            {coverage === 'incomplete' ? (
+              <p className="text-center text-sm" role="status" data-testid="proposals-search-incomplete">
+                {t('proposals_page.search_incomplete')}
+              </p>
+            ) : null}
+            {proposals.length === 0 ? (
+              <p className="mt-16 text-center text-xl" data-testid="proposals-no-search-results">
+                {t('proposals_page.no_search_results')}
+              </p>
+            ) : null}
+            {proposals.map((proposal, index) => (
+              <Fragment key={proposal.proposal_id}>
+                <ProposalListItem
+                  voted={
+                    votes?.find((vote) => vote.proposal.proposal_id === proposal.proposal_id) ? true : false
+                  }
+                  totalVestingFund={dynamicData.total_vesting_fund_hive}
+                  totalShares={dynamicData.total_vesting_shares}
+                  proposalData={proposal}
+                  funding={marks.badges[index]}
+                  isReturnProposal={isReturnProposal(proposal, REFUND_ACCOUNTS)}
+                  paid={paidById.get(proposal.proposal_id)}
+                />
+                {index === marks.lineIndex ? <ProposalsFundingLine /> : null}
+              </Fragment>
+            ))}
+          </>
         )}
       </TabsContent>
     </Tabs>

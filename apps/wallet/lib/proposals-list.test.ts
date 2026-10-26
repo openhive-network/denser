@@ -1,6 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import {
+  fetchProposalPagesFrom,
   fundingMarks,
   isProposalStatusTab,
   matchesProposalSearch,
@@ -61,6 +62,55 @@ describe('uniqueProposals', () => {
   it('keeps pages without repeats as they are', () => {
     assert.deepEqual(uniqueProposals([[proposal(3)], [proposal(4)]]), [proposal(3), proposal(4)]);
     assert.deepEqual(uniqueProposals([]), []);
+  });
+});
+
+describe('fetchProposalPagesFrom', () => {
+  /** A listing of proposals `ids`, served in pages of `limit` from the cursor on; records the cursors asked for. */
+  const listing = (ids: number[], limit: number) => {
+    const cursors: (number | undefined)[] = [];
+    const fetchPage = async (lastId: number | undefined) => {
+      cursors.push(lastId);
+      const from = lastId === undefined ? 0 : ids.indexOf(lastId);
+      return ids.slice(from, from + limit).map((id) => ({ id }));
+    };
+    return { cursors, fetchPage };
+  };
+  const pageIds = (pages: { id: number }[][]) => pages.map((page) => page.map(({ id }) => id));
+
+  it('takes the rest in one call when it fits in a page', async () => {
+    const { cursors, fetchPage } = listing([5, 9, 2, 7, 4], 1000);
+
+    assert.deepEqual(pageIds(await fetchProposalPagesFrom(fetchPage, 9, 1000)), [[9, 2, 7, 4]]);
+    assert.deepEqual(cursors, [9]);
+  });
+
+  it('follows full pages from the last proposal of each until a short one', async () => {
+    const { cursors, fetchPage } = listing([5, 9, 2, 7, 4, 8], 3);
+
+    assert.deepEqual(pageIds(await fetchProposalPagesFrom(fetchPage, 9, 3)), [[9, 2, 7], [7, 4, 8], [8]]);
+    assert.deepEqual(cursors, [9, 7, 8]);
+  });
+
+  it('starts at the beginning without a cursor and stops at an empty page', async () => {
+    const { cursors, fetchPage } = listing([], 3);
+
+    assert.deepEqual(pageIds(await fetchProposalPagesFrom(fetchPage, undefined, 3)), [[]]);
+    assert.deepEqual(cursors, [undefined]);
+  });
+
+  it('stops when a full page does not move past its cursor', async () => {
+    const { cursors, fetchPage } = listing([5, 9], 1);
+
+    assert.deepEqual(pageIds(await fetchProposalPagesFrom(fetchPage, 9, 1)), [[9]]);
+    assert.deepEqual(cursors, [9]);
+  });
+
+  it('passes on a failed page', async () => {
+    await assert.rejects(
+      fetchProposalPagesFrom(() => Promise.reject(new Error('node down')), undefined, 3),
+      /node down/
+    );
   });
 });
 
