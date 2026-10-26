@@ -10,6 +10,9 @@ import { PostPage } from '../support/pages/postPage';
  *                      shows the name without a reload, and its menu links the lite profile
  *   LITE-IDENTITY-02 – Forget (confirmed) removes the identity and the lite drafts; the next reply
  *                      asks for a name again
+ *   LITE-NOTIF-06    – this node's `lite.get_info` lists no `lite.lookup_accounts`: `@ki` in the reply
+ *                      editor offers nothing and asks the node nothing (liteNotifications.spec.ts has
+ *                      the node with it)
  *
  * The page is the `litePost` recording; the gateway is answered in the browser.
  */
@@ -102,6 +105,26 @@ test.describe('Header indicator of the browser lite account (mocked gateway)', (
     await menu.getByTestId('lite-identity-sign-in').click();
     await expect(page.getByTestId('lite-identity-menu')).toHaveCount(0);
     await expect(page.getByRole('dialog')).toBeVisible();
+  });
+
+  test('LITE-NOTIF-06: no @ completion in the reply editor on a node without lite.lookup_accounts', async ({ page }) => {
+    const lookups: string[] = [];
+    page.on('request', (request) => {
+      if (request.postData()?.includes('"lite.lookup_accounts"')) lookups.push(request.url());
+    });
+    const reply = page.getByTestId('comment-reply').first();
+    await expect(reply).not.toHaveAttribute('aria-haspopup', 'dialog');
+    const editor = page.getByTestId('lite-reply-editor');
+    await openReplyEditor(reply, editor);
+    await editor.locator('.cm-content').fill('Thanks ');
+    await page.keyboard.press('End');
+    await page.keyboard.type('@ki');
+
+    await expect(editor.locator('.cm-content')).toHaveText('Thanks @ki');
+    // Longer than the completion's pause before it asks the node.
+    await page.waitForTimeout(1000);
+    await expect(page.locator('.cm-tooltip-autocomplete')).toHaveCount(0);
+    expect(lookups).toEqual([]);
   });
 
   test('LITE-IDENTITY-02: Forget removes the lite account, and the next reply asks for a name again', async ({ page }) => {

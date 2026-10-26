@@ -1,19 +1,19 @@
 import { Metadata } from 'next';
 import { getTranslation } from '@/blog/i18n/server';
-import HiveAccountLayout from '@/blog/lib/hive-account-route';
+import { extractNotificationsAccountFromParam, NotificationsAccountLayout } from '@/blog/lib/hive-account-route';
+import { authorDisplayName } from '@/blog/features/lite-account/lite-did';
 import { getPageNotFoundMetadata } from '@/blog/lib/not-found-metadata';
-import { extractHiveAccountFromParam } from '@/blog/utils/validate-links';
 
 export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
   const params = await props.params;
-  const username = extractHiveAccountFromParam(params.param);
-  if (!username) return getPageNotFoundMetadata();
+  const account = await extractNotificationsAccountFromParam(params.param);
+  if (!account) return getPageNotFoundMetadata();
   const { t } = await getTranslation('common_blog');
-  const title = t('page_titles.notifications_for', { username });
+  const title = t('page_titles.notifications_for', { username: authorDisplayName(account) });
 
   return {
     title
   };
 }
 
-export default HiveAccountLayout;
+export default NotificationsAccountLayout;

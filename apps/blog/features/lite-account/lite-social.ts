@@ -53,6 +53,8 @@ function actionArgs(action: LiteSocialAction): JcsObject {
       return { community: action.community };
     case 'set_profile':
       return { profile: definedFields(action.profile) };
+    case 'set_last_read':
+      return { date: action.date };
   }
 }
 

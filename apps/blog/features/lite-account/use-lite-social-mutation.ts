@@ -95,7 +95,8 @@ function snapshot(queryClient: QueryClient, keys: (readonly unknown[])[]): Snaps
   return keys.map((key) => ({ key, data: queryClient.getQueryData(key) }));
 }
 
-function useFailureToast() {
+/** Logs a failed lite social op and toasts the gateway's reason (`retryAfterS` for `rate_limited`). */
+export function useLiteSocialFailureToast() {
   const { t } = useTranslation('common_blog');
   return (error: unknown, retryAfterS: number | undefined) => {
     logger.error(error, 'Lite social op failed');
@@ -117,7 +118,7 @@ export function useLiteSocialMutation(method: LiteSocialMethod) {
   const relay = useQuery(liteRelayInfoQuery);
   const countdown = useRetryCountdown();
   const cleanupRef = useRef<(() => void) | null>(null);
-  const onFailure = useFailureToast();
+  const onFailure = useLiteSocialFailureToast();
   const actor = identity ? liteActorDid(identity.name) : null;
 
   const mutation = useMutation({

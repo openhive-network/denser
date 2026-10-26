@@ -18,6 +18,9 @@ import { test, expect } from '../support/fixture-proxy-test';
  *                    its Following list names the Hive account it follows
  *   LITE-SOCIAL-07 – a Hive profile's followers include a lite follower, with the lite badge
  *   LITE-SOCIAL-09 – `rate_limited` keeps the follow state, toasts and shows the wait
+ *   LITE-NOTIF-06  – this recording's `lite.get_info` lists no `account_notifications`: the lite
+ *                    identity's menu has no Notifications item nor unread count, and the browser
+ *                    asks no `lite.*notifications` (liteNotifications.spec.ts has the node with them)
  *
  * LITE-SOCIAL-08 (no social UI on a node without `apps.social`) is in liteProfile.spec.ts, whose
  * recording has none.
@@ -124,6 +127,25 @@ test.describe('Lite social for guests (fixture-based, node with lite_social)', (
       operations: [{ method: 'follow', args: { actor: `did:lite:${GUEST_NAME}`, target: `did:hive:${HIVE_AUTHOR}` } }]
     });
     expect(sent[0].signatures).toHaveLength(1);
+  });
+
+  test('LITE-NOTIF-06: no lite notifications on a node without lite.account_notifications', async ({ page }) => {
+    await holdLiteIdentity(page, GUEST_NAME);
+    await mockGateway(page, ACCEPTED);
+    const notificationReads: string[] = [];
+    page.on('request', (request) => {
+      const body = request.postData() ?? '';
+      if (/"lite\.(account|unread)_notifications"/.test(body)) notificationReads.push(body);
+    });
+    await page.goto(`/@${HIVE_AUTHOR}`, { waitUntil: 'domcontentloaded' });
+    // The lite buttons stand for the browser having read the node's lite.get_info.
+    await expect(page.getByTestId('profile-mute-button').first()).toBeVisible();
+
+    await page.getByTestId('lite-identity-button').click();
+    await expect(page.getByTestId('lite-identity-profile')).toBeVisible();
+    await expect(page.getByTestId('lite-identity-notifications')).toHaveCount(0);
+    await expect(page.getByTestId('lite-identity-unread')).toHaveCount(0);
+    expect(notificationReads).toEqual([]);
   });
 
   test('LITE-SOCIAL-09: rate_limited keeps the follow state and shows the wait', async ({ page }) => {

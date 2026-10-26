@@ -949,6 +949,13 @@ the fixture suite needs), run a copy of the script whose `in_stack env` line add
 calls to the worker's recording proxy too, so one run records both sides. Keep it to one
 worker and a passing spec (see "A FAILING assertion during record wipes earlier fixtures").
 
+### Editor completion: type only the trigger key by key
+
+The markdown editor's `@` completion asks `lite.lookup_accounts` for the prefix typed before a
+pause, and an aborted query asks nothing: how many prefixes reach the node depends on typing speed.
+Put the rest of the text in with `fill()` and type only the mention (`@ki`) key by key, so the
+recording and every replay ask the same single prefix (`liteNotifications.spec.ts`, LITE-NOTIF-04).
+
 ### Lite identities in specs: an account the node knows, written as stored
 
 A guest's lite identity lives in localStorage (`lite-identity`, `{ value, expiresAt: null }`); a

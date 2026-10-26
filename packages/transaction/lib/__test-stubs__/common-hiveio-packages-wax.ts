@@ -22,6 +22,9 @@ export type ExtendedNodeApi = {
     get_follow_count: (params: { account: string }) => Promise<ILiteFollowCount>;
     list_subscribers: (params: { community: string; last?: string; limit?: number }) => Promise<string[][] | null>;
     list_all_subscriptions: (params: { account: string }) => Promise<string[][] | null>;
+    account_notifications: (params: ILiteNotificationsParams) => Promise<IAccountNotification[] | null>;
+    unread_notifications: (params: { account: string }) => Promise<IUnreadNotifications | null>;
+    lookup_accounts: (params: { prefix: string; limit?: number }) => Promise<string[]>;
   };
   bridge: IPostsApi;
 };
@@ -46,6 +49,24 @@ export interface ILiteFollowParams {
   account: string;
   start: string | null;
   type: string;
+  limit: number;
+}
+/** A row of `bridge.account_notifications` / `lite.account_notifications`, and the unread answer. */
+export interface IAccountNotification {
+  date: string;
+  id?: number | string;
+  msg: string;
+  score: number;
+  type: string;
+  url: string;
+}
+export interface IUnreadNotifications {
+  lastread: string;
+  unread: number;
+}
+export interface ILiteNotificationsParams {
+  account: string;
+  last_id?: number | string;
   limit: number;
 }
 /** condenser's follow row and follow counts, as `lite-social-api.ts` returns them. */

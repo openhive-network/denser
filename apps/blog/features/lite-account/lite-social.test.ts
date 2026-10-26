@@ -64,6 +64,21 @@ describe('buildLiteSocialTransaction', () => {
     assert.equal(recoverPublicKey(digest, signatures[0]), identity.postingPublicKey);
   });
 
+  it('builds set_last_read as the actor and the naive-UTC date, signed like any social op', () => {
+    const marked = buildLiteSocialTransaction({
+      identity,
+      app: 'lite_social_test',
+      chainId: MAINNET_CHAIN_ID,
+      action: { method: 'set_last_read', date: '2026-10-21T11:58:30' },
+      nowMs: NOW
+    });
+    const { signatures, ...fields } = marked;
+    assert.deepEqual(fields.operations, [
+      { method: 'set_last_read', args: { actor: 'did:lite:social-guest-1', date: '2026-10-21T11:58:30' } }
+    ]);
+    assert.equal(recoverPublicKey(l2Digest(fields, MAINNET_CHAIN_ID), signatures[0]), identity.postingPublicKey);
+  });
+
   it('refuses a profile over 8192 bytes of JCS', () => {
     const profile = { about: 'x'.repeat(8200) };
     assert.throws(

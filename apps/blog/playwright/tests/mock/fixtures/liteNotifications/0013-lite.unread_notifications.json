@@ -1,0 +1,27 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.unread_notifications",
+    "params": {
+      "account": "test-gateway-1"
+    },
+    "id": 1
+  },
+  "requestHash": "fae2fe43b7eb5933",
+  "method": "lite.unread_notifications",
+  "params": {
+    "account": "test-gateway-1"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "unread": 4,
+      "lastread": "1970-01-01 00:00:00"
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

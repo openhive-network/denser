@@ -10,8 +10,8 @@ import clsx from 'clsx';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Avatar, AvatarFallback, AvatarImage, Skeleton } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
-import { getUnreadNotifications } from '@transaction/lib/bridge-api';
 import UserMenu from '@/blog/features/layouts/site-header/user-menu';
+import { useUnreadNotifications } from '@/blog/features/activity-log/hooks/use-unread-notifications';
 import { ManabarRing } from './manabar-ring';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
@@ -46,11 +46,7 @@ const MainBar: FC = () => {
   }, []);
 
   const manabarsData = useLoggedUserManabars();
-  const { data } = useQuery({
-    queryKey: ['unreadNotifications', user.username],
-    queryFn: () => getUnreadNotifications(user.username),
-    enabled: !!user.username
-  });
+  const { data } = useUnreadNotifications(user.username);
   const isIdle = useIdleAfterLoad();
   const [isSearchTouched, setIsSearchTouched] = useState(false);
   const handleSearchTouched = useCallback(() => setIsSearchTouched(true), []);

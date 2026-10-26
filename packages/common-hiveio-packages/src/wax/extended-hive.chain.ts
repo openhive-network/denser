@@ -668,7 +668,8 @@ export interface IVoteListItem {
 
 export interface IAccountNotification {
   date: string;
-  id?: number;
+  /** hivemind's (and lite_social's) time-ordered id; nodes send it as a string, past 2^53. */
+  id?: number | string;
   msg: string;
   score: number;
   type: string;
@@ -895,6 +896,16 @@ export interface ILiteFollowParams {
   limit: number;
 }
 
+/**
+ * The params of `lite.account_notifications`: hivemind's. `account` may be a DID; `last_id` (exclusive)
+ * pages hivemind's and lite rows alike, whose ids share one time-ordered range.
+ */
+export interface ILiteNotificationsParams {
+  account: string;
+  last_id?: number | string;
+  limit: number;
+}
+
 type TBridgeApi = {
   get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
   get_ranked_posts: TWaxApiRequest<
@@ -962,6 +973,9 @@ export type ExtendedNodeApi = {
     get_follow_count: TWaxApiRequest<{ account: string }, ILiteFollowCount>;
     list_subscribers: TWaxApiRequest<{ community: string; last?: string; limit?: number }, string[][] | null>;
     list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
+    account_notifications: TWaxApiRequest<ILiteNotificationsParams, IAccountNotification[] | null>;
+    unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
+    lookup_accounts: TWaxApiRequest<{ prefix: string; limit?: number }, string[]>;
   };
   bridge: TBridgeApi;
   market_history_api: {

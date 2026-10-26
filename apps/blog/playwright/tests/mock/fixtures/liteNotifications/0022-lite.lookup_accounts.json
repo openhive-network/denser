@@ -1,0 +1,29 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.lookup_accounts",
+    "params": {
+      "prefix": "ki",
+      "limit": 10
+    },
+    "id": 1
+  },
+  "requestHash": "669678b92b76ebac",
+  "method": "lite.lookup_accounts",
+  "params": {
+    "prefix": "ki",
+    "limit": 10
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      "did:lite:kind-badger-298",
+      "did:lite:kind-ferret-380"
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

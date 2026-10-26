@@ -175,10 +175,10 @@ export const getSubscribers = async (community: string): Promise<string[][] | nu
 
 export const getAccountNotifications = async (
   account: string,
-  lastId: number | null = null,
+  lastId: number | string | null = null,
   limit = 50
 ): Promise<IAccountNotification[] | null> => {
-  const params: { account: string; last_id?: number; limit: number } = {
+  const params: { account: string; last_id?: number | string; limit: number } = {
     account,
     limit
   };

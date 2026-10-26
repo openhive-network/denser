@@ -1,0 +1,63 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "database_api.find_accounts",
+    "params": {
+      "accounts": [
+        "did:lite:crisp-koala-499"
+      ],
+      "delayed_votes_active": false
+    },
+    "id": 1
+  },
+  "requestHash": "ae3ee351dfa43b2b",
+  "method": "database_api.find_accounts",
+  "params": {
+    "accounts": [
+      "did:lite:crisp-koala-499"
+    ],
+    "delayed_votes_active": false
+  },
+  "response": {
+    "error": {
+      "code": -32003,
+      "data": {
+        "assert_hash": "15599059534279751802",
+        "code": 10,
+        "extension": {
+          "assertion_expression": "in_len <= sizeof(data)"
+        },
+        "message": "Assert Exception",
+        "name": "assert_exception",
+        "stack": [
+          {
+            "context": {
+              "file": "fixed_string.hpp",
+              "hostname": "",
+              "level": "error",
+              "line": 153,
+              "method": "assign",
+              "thread_name": "th_93",
+              "timestamp": "2026-10-26T14:56:00"
+            },
+            "data": {
+              "category": "protocol",
+              "max": 16,
+              "subject": "did:lite:crisp-koala-499",
+              "subject_len": 24,
+              "subject_type": "string"
+            },
+            "format": "Input too large: `${subject}` (${subject_len}) for fixed size string: (${max})"
+          }
+        ]
+      },
+      "message": "Assert Exception:in_len <= sizeof(data): Input too large: `did:lite:crisp-koala-499` (24) for fixed size string: (16)"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

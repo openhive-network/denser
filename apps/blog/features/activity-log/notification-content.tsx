@@ -17,16 +17,19 @@ import { Button } from '@ui/components/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components/tabs';
 import { getRewardsString } from '../../lib/utils';
 import { getAccountFull, getFindAccounts } from '@transaction/lib/hive-api';
-import { useMarkAllNotificationsAsReadMutation } from './hooks/use-notifications-read-mutation';
 import { useClaimRewardsMutation } from './hooks/use-claim-reward-mutation';
+import { useMarkAllRead } from './hooks/use-mark-all-read';
+import { useUnreadNotifications } from './hooks/use-unread-notifications';
 import { handleError } from '@ui/lib/handle-error';
 import { convertStringToBig } from '@ui/lib/helpers';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { getAccountNotifications, getUnreadNotifications } from '@transaction/lib/bridge-api';
+import { getNotifications } from '@transaction/lib/lite-notifications-api';
 import { useTranslation } from '@/blog/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Icons } from '@hive/ui/components/icons';
 import { mergeNewNotifications } from './lib/merge-notifications';
+import { useLiteNotificationsAccount } from '@/blog/features/lite-account/use-lite-notifications';
+import { isLiteDid } from '@/blog/features/lite-account/lite-did';
 
 const NOTIFICATIONS_LIMIT = 50;
 
@@ -56,12 +59,16 @@ const NotificationActivities = ({
   const { t } = useTranslation('common_blog');
   const [state, setState] = useState(data);
   // Track the last ID we want to fetch MORE data after (for pagination)
-  const [fetchAfterId, setFetchAfterId] = useState<number | null>(null);
+  const [fetchAfterId, setFetchAfterId] = useState<number | string | null>(null);
   // Track if we've reached the end of available notifications
   const [hasMoreData, setHasMoreData] = useState(() => (data?.length ?? 0) >= NOTIFICATIONS_LIMIT);
   const previousUnreadRef = useRef<number | undefined>(undefined);
   const { user } = useUserClient();
-  const markAllNotificationsAsReadMutation = useMarkAllNotificationsAsReadMutation();
+  const liteAccount = useLiteNotificationsAccount();
+  // Whose unread count and read marker apply: the signed-in Hive account, else the browser's lite identity.
+  const reader = user.isLoggedIn ? user.username : liteAccount;
+  const accountOwner = !!reader && reader === username;
+  const markAllRead = useMarkAllRead(!user.isLoggedIn && accountOwner, state);
   const claimRewardMutation = useClaimRewardsMutation();
 
   // After claiming, remember the exact balances that were claimed. If the API
@@ -71,19 +78,13 @@ const NotificationActivities = ({
     hive: string; hbd: string; vests: string; expiresAt: number;
   } | null>(null);
 
-  const { data: unreadNotifications } = useQuery({
-    queryKey: ['unreadNotifications', user?.username],
-    queryFn: () => getUnreadNotifications(user?.username || ''),
-    enabled: !!user?.username,
-    refetchOnMount: true,
-    refetchInterval: 20000
-  });
+  const { data: unreadNotifications } = useUnreadNotifications(reader, { refetchInterval: 20000 });
   const newDate = new Date(Date.now());
   const lastRead = unreadNotifications?.lastread ? new Date(unreadNotifications.lastread) : newDate;
 
   const { isFetching, data: moreData } = useQuery({
     queryKey: ['AccountNotificationMoreData', username, fetchAfterId],
-    queryFn: () => getAccountNotifications(username, fetchAfterId, NOTIFICATIONS_LIMIT),
+    queryFn: () => getNotifications(username, fetchAfterId, NOTIFICATIONS_LIMIT),
     enabled: !!username && fetchAfterId !== null && hasMoreData,
     staleTime: 0
   });
@@ -94,11 +95,11 @@ const NotificationActivities = ({
     enabled: !!user.username
   });
 
-  const accountOwner = user.username === username;
   const { data: apiAccounts } = useQuery({
     queryKey: ['apiAccount', username],
     queryFn: () => getFindAccounts(username),
-    enabled: !!username
+    // The rewards a Hive account claims; a lite account has none.
+    enabled: !!username && !isLiteDid(username)
   });
 
   const noNotifications = !state || state.length === 0;
@@ -135,20 +136,6 @@ const NotificationActivities = ({
       }
     }
   }, [moreData, fetchAfterId]);
-
-  async function handleMarkAllAsRead() {
-    if (markAllNotificationsAsReadMutation.isPending) return;
-    const myDate = new Date().toISOString();
-    const date = myDate.slice(0, myDate.length - 5);
-    try {
-      await markAllNotificationsAsReadMutation.mutateAsync({ date });
-    } catch (error) {
-      handleError(error, {
-        method: 'markAllNotificationsAsRead',
-        params: { date }
-      });
-    }
-  }
 
   async function handleClaimRewards(e: SyntheticEvent) {
     e.preventDefault();
@@ -215,16 +202,17 @@ const NotificationActivities = ({
         </div>
       ) : null}
 
-      {accountOwner && unreadNotifications && unreadNotifications.unread !== 0 ? (
+      {accountOwner && markAllRead.available && unreadNotifications && unreadNotifications.unread !== 0 ? (
         <div className="flex flex-col items-center">
           <button
-            disabled={markAllNotificationsAsReadMutation.isPending}
+            disabled={markAllRead.isPending}
             className="w-100 mb-4 font-bold"
-            onClick={handleMarkAllAsRead}
+            onClick={markAllRead.markAll}
+            data-testid="notifications-mark-all-read"
           >
-            {markAllNotificationsAsReadMutation.isPending ? (
+            {markAllRead.isPending ? (
               <CircleSpinner
-                loading={markAllNotificationsAsReadMutation.isPending}
+                loading={markAllRead.isPending}
                 size={18}
                 color="#dc2626"
               />
@@ -261,7 +249,7 @@ const NotificationActivities = ({
         </TabsTrigger>
       </TabsList>
       <TabsContent value="all" data-testid="notifications-content-all">
-        <NotificationList data={state} lastRead={lastRead} />
+        <NotificationList data={state} lastRead={lastRead} isOwner={accountOwner} />
         {noNotifications ? (
           <div className="flex h-64 flex-col items-center justify-center">
             <span>{t('navigation.profile_notifications_tab_navbar.no_notifications_yet')}</span>
@@ -278,6 +266,7 @@ const NotificationActivities = ({
             (row: IAccountNotification) => row.type === 'reply_comment' || row.type === 'reply'
           )}
           lastRead={lastRead}
+          isOwner={accountOwner}
         />
         {noNotifications ? (
           <div className="flex h-64 flex-col items-center justify-center">
@@ -293,6 +282,7 @@ const NotificationActivities = ({
         <NotificationList
           data={state?.filter((row: IAccountNotification) => row.type === 'mention')}
           lastRead={lastRead}
+          isOwner={accountOwner}
         />
         {noNotifications ? (
           <div className="flex h-64 flex-col items-center justify-center">
@@ -308,6 +298,7 @@ const NotificationActivities = ({
         <NotificationList
           data={state?.filter((row: IAccountNotification) => row.type === 'follow')}
           lastRead={lastRead}
+          isOwner={accountOwner}
         />
         {noNotifications ? (
           <div className="flex h-64 flex-col items-center justify-center">
@@ -323,6 +314,7 @@ const NotificationActivities = ({
         <NotificationList
           data={state?.filter((row: IAccountNotification) => row.type === 'vote')}
           lastRead={lastRead}
+          isOwner={accountOwner}
         />
         {noNotifications ? (
           <div className="flex h-64 flex-col items-center justify-center">
@@ -338,6 +330,7 @@ const NotificationActivities = ({
         <NotificationList
           data={state?.filter((row: IAccountNotification) => row.type === 'reblog')}
           lastRead={lastRead}
+          isOwner={accountOwner}
         />
         {noNotifications ? (
           <div className="flex h-64 flex-col items-center justify-center">

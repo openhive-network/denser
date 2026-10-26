@@ -20,7 +20,9 @@ const SOCIAL_TABS = ['followers', 'followed', 'lists/muted'] as const;
 
 type Tab = { path: string; label: string };
 
-function useTabs(did: string, social: boolean, isOwner: boolean, devices: boolean): Tab[] {
+type TabOptions = { social: boolean; notifications: boolean; isOwner: boolean; devices: boolean };
+
+function useTabs(did: string, { social, notifications, isOwner, devices }: TabOptions): Tab[] {
   const { t } = useTranslation('common_blog');
   const posts = POST_TABS.map((tab) => ({ segment: tab, label: t(`lite_account.profile.tabs.${tab}`) }));
   const lists: Record<(typeof SOCIAL_TABS)[number], string> = {
@@ -36,25 +38,31 @@ function useTabs(did: string, social: boolean, isOwner: boolean, devices: boolea
         ...(isOwner ? [{ segment: 'feed', label: t('lite_account.profile.tabs.feed') }] : [])
       ]
     : posts;
-  const all: { segment: string; label: string }[] = devices
-    ? [...tabs, { segment: 'devices', label: t('lite_account.profile.tabs.devices') }]
-    : tabs;
+  const all: { segment: string; label: string }[] = [
+    ...tabs,
+    ...(notifications ? [{ segment: 'notifications', label: t('navigation.profile_navbar.notifications') }] : []),
+    ...(devices ? [{ segment: 'devices', label: t('lite_account.profile.tabs.devices') }] : [])
+  ];
   return all.map(({ segment, label }) => ({ path: segment ? `/@${did}/${segment}` : `/@${did}`, label }));
 }
 
 /**
  * A lite account's profile: its card and the tabs of its posts, comments and replies; on a node
  * serving the lite social graph also its blog (with reblogs), followers, follows and mutes, and
- * for the browser's own lite account its feed. Where the gateway relays authority edits, the owner
+ * for the browser's own lite account its feed; on a node serving lite notifications its
+ * notifications. Where the gateway relays authority edits, the owner
  * also gets its Devices tab and the account's security notice. No wallet: a lite account has none.
  */
 export default function LiteProfileLayout({
   profile,
   social,
+  notifications,
   children
 }: {
   profile: ILiteProfile;
   social: boolean;
+  /** Whether the node serves `lite.account_notifications`. */
+  notifications: boolean;
   children: ReactNode;
 }) {
   const pathname = usePathname() ?? '';
@@ -63,7 +71,7 @@ export default function LiteProfileLayout({
   const passkey = useLitePasskeyAccess().available && isOwner && !!identity?.registered;
   const warning = useLiteSecurityWarning(isOwner ? identity : null, isOwner);
   const [isSecureOpen, setIsSecureOpen] = useState(false);
-  const tabs = useTabs(profile.name, social, isOwner, passkey);
+  const tabs = useTabs(profile.name, { social, notifications, isOwner, devices: passkey });
   const current = decodeURIComponent(pathname).replace(/\/+$/, '');
 
   return (

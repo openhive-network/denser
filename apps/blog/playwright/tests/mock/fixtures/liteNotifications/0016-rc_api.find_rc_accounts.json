@@ -1,0 +1,46 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "rc_api.find_rc_accounts",
+    "params": {
+      "accounts": [
+        "test-gateway-1"
+      ]
+    },
+    "id": 1
+  },
+  "requestHash": "8196950febc1a6c6",
+  "method": "rc_api.find_rc_accounts",
+  "params": {
+    "accounts": [
+      "test-gateway-1"
+    ]
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "rc_accounts": [
+        {
+          "account": "test-gateway-1",
+          "rc_manabar": {
+            "current_mana": 325909767133,
+            "last_update_time": 1792605513
+          },
+          "max_rc_creation_adjustment": {
+            "amount": "4819962927",
+            "precision": 6,
+            "nai": "@@000000037"
+          },
+          "max_rc": 326150751051,
+          "delegated_rc": 0,
+          "received_delegated_rc": 0
+        }
+      ]
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

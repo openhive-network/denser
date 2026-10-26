@@ -99,7 +99,9 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/lib/in-app-redirect-url.test.ts \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
+    apps/blog/features/activity-log/lib/notification-source.test.ts \
     apps/blog/features/post-editor/lib/scroll-sync-anchors.test.ts \
+    apps/blog/features/post-editor/lib/mention-completion.test.ts \
     apps/blog/features/votes/hooks/logged-user-contexts.test.ts \
     apps/blog/features/post-rendering/lib/votes-before-payout.test.ts \
     apps/blog/features/post-rendering/lib/votes-after-payout.test.ts \
@@ -117,6 +119,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/lite-account/lite-storage.test.ts \
     apps/blog/features/lite-account/lite-social.test.ts \
     apps/blog/features/lite-account/lite-social-state.test.ts \
+    apps/blog/features/lite-account/lite-read-marker.test.ts \
     apps/blog/features/lite-account/signer-client.test.ts \
     apps/blog/features/lite-account/lite-identity-record.test.ts \
     apps/blog/features/lite-account/lite-authority-state.test.ts \
