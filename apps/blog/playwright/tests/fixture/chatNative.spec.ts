@@ -348,7 +348,7 @@ test.describe('Native Matrix chat client', () => {
     expect(problems).toEqual([]);
   });
 
-  test('CHAT-NATIVE-13: the keyboard reaches the drawer: focus moves in, Tab stays in, Escape closes it', async ({
+  test('CHAT-NATIVE-14: the keyboard reaches the drawer: focus moves in, Tab stays in, Escape closes it', async ({
     page
   }) => {
     await usesNativeChat(page);
