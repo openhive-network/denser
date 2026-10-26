@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { clsx } from "clsx";
+import { useModalFocus } from "@ui/hooks/use-modal-focus";
 
 const openClassNames = {
   right: "translate-x-0",
@@ -40,6 +41,7 @@ export const Drawer = ({
   side = "right",
   children
 }: DrawerProps) => {
+  const { containerRef, startGuardProps, endGuardProps } = useModalFocus(open, () => setOpen(false));
   return (
     <div
       className="relative z-50"
@@ -73,11 +75,16 @@ export const Drawer = ({
               )}
             >
               <div
+                ref={containerRef}
+                tabIndex={-1}
+                inert={!open}
                 className={clsx(
-                  "flex flex-col h-full overflow-y-scroll bg-background p-1 shadow-xl rounded-lg"
+                  "flex flex-col h-full overflow-y-scroll bg-background p-1 shadow-xl rounded-lg outline-none"
                 )}
               >
+                <span {...startGuardProps} />
                 {children}
+                <span {...endGuardProps} />
               </div>
             </div>
           </div>

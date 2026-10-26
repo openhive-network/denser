@@ -39,6 +39,8 @@ export function ChatComposer({ onSend }: ChatComposerProps) {
         id={inputId}
         value={text}
         rows={2}
+        // Where focus lands when the chat drawer opens
+        data-autofocus
         className="h-auto min-h-0 resize-none"
         placeholder={t('chat_widget.composer_placeholder')}
         onChange={(event) => setText(event.target.value)}

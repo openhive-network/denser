@@ -57,6 +57,8 @@ const badge = (page: Page) => page.getByTestId('chat-unread-badge');
 const panel = (page: Page) => page.getByTestId('matrix-chat-panel');
 const messages = (page: Page) => panel(page).getByTestId('chat-message');
 const composer = (page: Page) => panel(page).getByRole('textbox', { name: EN.composer_label });
+const focusInDrawer = (page: Page) =>
+  page.evaluate(() => document.activeElement?.closest('[role="dialog"]') !== null && document.hasFocus());
 
 interface NativeChat {
   homeserver: MatrixHomeserverStub;
@@ -318,5 +320,38 @@ test.describe('Native Matrix chat client', () => {
     expect(rtcRequests).toEqual([]);
     expect(homeserver.requestsWith('/rtc/')).toEqual([]);
     expect(problems).toEqual([]);
+  });
+
+  test('CHAT-NATIVE-13: the keyboard reaches the drawer: focus moves in, Tab stays in, Escape closes it', async ({
+    page
+  }) => {
+    await usesNativeChat(page);
+    await openPage(page);
+
+    await chatButton(page).focus();
+    await page.keyboard.press('Enter');
+    await expect.poll(() => focusInDrawer(page)).toBe(true);
+    await expect(messages(page).first()).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+
+    await page.keyboard.press('Escape');
+    await expect(chatButton(page)).toBeFocused();
+    await page.keyboard.press('Enter');
+    await expect(composer(page)).toBeFocused();
+
+    const openApp = page.getByRole('link', { name: EN.open_app });
+    await openApp.focus();
+    await page.keyboard.press('Tab');
+    expect(await focusInDrawer(page)).toBe(true);
+    await expect(openApp).not.toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(openApp).toBeFocused();
+    for (let step = 0; step < 15; step++) {
+      await page.keyboard.press('Tab');
+      expect(await focusInDrawer(page)).toBe(true);
+    }
+
+    await composer(page).focus();
+    await page.keyboard.press('Escape');
+    await expect(chatButton(page)).toBeFocused();
   });
 });
