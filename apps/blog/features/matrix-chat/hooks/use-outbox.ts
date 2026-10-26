@@ -14,7 +14,7 @@ export function useOutbox(session: ChatSession) {
 
   const send = useCallback(
     (roomId: string, text: string) => {
-      const message = { txnId: newTxnId(), roomId, text };
+      const message = { txnId: newTxnId(), roomId, text, createdAt: Date.now() };
       dispatch({ type: 'send', ...message });
       void deliver(sendText, message, dispatch);
     },

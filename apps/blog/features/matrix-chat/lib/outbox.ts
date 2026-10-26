@@ -3,13 +3,15 @@ export interface OutgoingMessage {
   txnId: string;
   roomId: string;
   text: string;
+  /** When the composer sent it, in ms since the epoch */
+  createdAt: number;
   status: 'sending' | 'failed' | 'sent';
   /** Set once the homeserver accepted it */
   eventId?: string;
 }
 
 export type OutboxAction =
-  | { type: 'send'; txnId: string; roomId: string; text: string }
+  | { type: 'send'; txnId: string; roomId: string; text: string; createdAt: number }
   | { type: 'sent'; txnId: string; eventId: string }
   | { type: 'failed'; txnId: string }
   | { type: 'retry'; txnId: string };
@@ -18,7 +20,8 @@ export type SendText = (roomId: string, txnId: string, text: string) => Promise<
 
 export function outboxReducer(outbox: readonly OutgoingMessage[], action: OutboxAction): OutgoingMessage[] {
   if (action.type === 'send') {
-    return [...outbox, { txnId: action.txnId, roomId: action.roomId, text: action.text, status: 'sending' }];
+    const { txnId, roomId, text, createdAt } = action;
+    return [...outbox, { txnId, roomId, text, createdAt, status: 'sending' }];
   }
   return outbox.map((message) => {
     if (message.txnId !== action.txnId) return message;

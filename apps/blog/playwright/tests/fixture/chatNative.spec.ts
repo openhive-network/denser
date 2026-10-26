@@ -18,6 +18,7 @@ import {
   UNREAD
 } from '../support/matrixHomeserverStub';
 import enBlog from '../../../locales/en/common_blog.json';
+import plBlog from '../../../locales/pl/common_blog.json';
 
 /**
  * The native Matrix chat client in the chat drawer (`MATRIX_CHAT_CLIENT` unset: the default).
@@ -146,6 +147,9 @@ test.describe('Native Matrix chat client', () => {
     const outgoing = panel(page).getByTestId('chat-outgoing');
     await expect(outgoing).toHaveAttribute('data-status', 'failed');
     await expect(outgoing).toContainText(EN.send_failed);
+    // Headed like a sent message, not run on under the one before it
+    await expect(outgoing.getByTitle(USER_ID)).toHaveText(DEFAULT_USER.username);
+    await expect(outgoing.locator('time')).toHaveText(/\d{2}:\d{2}/);
     await outgoing.getByRole('button', { name: EN.retry }).click();
     await expect(outgoing).toHaveAttribute('data-status', 'sent');
     const sends = homeserver.requestsWith('/send/m.room.message/', 'PUT').slice(1);
@@ -154,6 +158,28 @@ test.describe('Native Matrix chat client', () => {
       { msgtype: 'm.text', body: '\nsecond' }
     ]);
     expect(new Set(sends.map((request) => request.path)).size).toBe(1);
+  });
+
+  test('CHAT-NATIVE-13: days are headed, and times and days follow the blog language, not the browser', async ({
+    page,
+    baseURL
+  }) => {
+    await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'pl', url: baseURL ?? '' }]);
+    const { homeserver } = await usesNativeChat(page);
+    await page.goto(PAGE_WITH_HEADER);
+    const plChatButton = page.getByRole('button', { name: plBlog.chat_widget.open_widget });
+    await expect(plChatButton).toBeEnabled({ timeout: TIMEOUTS.HYDRATION });
+    await plChatButton.click();
+    await expect(messages(page).first()).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+
+    // The room's messages are from 1970: one heading over them, with the year
+    const days = panel(page).getByRole('separator');
+    await expect(days).toHaveCount(1);
+    await expect(days.first()).toContainText(/19(69|70)/);
+    homeserver.queueMessages(GENERAL_ROOM, [{ eventId: '$today.1', body: 'Dzisiejsza wiadomość' }]);
+    await expect(days).toHaveCount(2);
+    await expect(days.last()).toHaveText('Dzisiaj');
+    await expect(messages(page).last().locator('time')).toHaveText(/^\d{2}:\d{2}$/);
   });
 
   test('CHAT-NATIVE-03: older messages load scrolling back, and new ones arrive live', async ({ page }) => {

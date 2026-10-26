@@ -14,7 +14,7 @@ import {
 import { toMessageView } from './message-view.ts';
 import { withLocalRtcTransportsAnswer } from './rtc-transports-probe.ts';
 import type { MatrixSdkLogger } from './sdk-logger-type.ts';
-import type { ChatMessageView, ChatRoomView, ChatSession } from './chat-view-types.ts';
+import type { ChatMessageView, ChatRoomView, ChatSenderView, ChatSession } from './chat-view-types.ts';
 import { StoredSessionRejectedError, type MatrixCredentials, type StartedChatSession } from './matrix-chat-sign-in.ts';
 
 /** Messages per room in the first sync, and per page scrolling back */
@@ -183,6 +183,11 @@ class MatrixChatSession implements ChatSession {
     });
     this.messagesCache.set(roomId, { version: this.changes, messages });
     return messages;
+  }
+
+  ownSender(roomId: string): ChatSenderView {
+    const member = this.client.getRoom(roomId)?.getMember(this.userId);
+    return { name: member?.name || this.userId, avatarMxc: member?.getMxcAvatarUrl() ?? null };
   }
 
   async paginateBack(roomId: string): Promise<boolean> {

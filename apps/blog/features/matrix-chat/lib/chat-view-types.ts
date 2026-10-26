@@ -17,6 +17,13 @@ export interface ChatMessageView {
   content: ChatMessageContent;
 }
 
+/** Who a message is from, as its room names them */
+export interface ChatSenderView {
+  name: string;
+  /** Their avatar as an `mxc://` URI, null for none */
+  avatarMxc: string | null;
+}
+
 export interface ChatRoomView {
   roomId: string;
   name: string;
@@ -38,6 +45,8 @@ export interface ChatSession {
   defaultRoomId(): string | null;
   unreadCount(): number;
   messages(roomId: string): ChatMessageView[];
+  /** The signed-in user as the room names them, their user id when it has no member for them */
+  ownSender(roomId: string): ChatSenderView;
   /** Loads older messages of the room; resolves to whether there are more before them. */
   paginateBack(roomId: string): Promise<boolean>;
   /** Sends `text` as `m.text`; the same `txnId` again retries the same message. Resolves to its event id. */
