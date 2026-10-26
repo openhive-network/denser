@@ -303,3 +303,40 @@ unsecured with its owner key (`readStoredLiteIdentity`); nothing is rewritten un
 cover it, with the gateway's authority and `/l2` answered in the browser from one authority the relayed edits change, and the popup served by a stub
 speaking the signer protocol (`support/litePasskeyContext.ts`): fixture runs have no network, so the real
 signer and its passkey (PRF) are its own e2e's business.
+
+## Notifications and mentions
+
+Gated on `lite.get_info.methods` listing `account_notifications` (`servesLiteNotifications` in
+`@transaction/lib/lite-api`; the probe is the cached one above): on any other node nothing below
+changes and nothing is asked. `@transaction/lib/lite-notifications-api` reads
+`lite.account_notifications`, `lite.unread_notifications` and `lite.lookup_accounts` on such a node and
+falls back to `bridge.account_notifications` / `bridge.unread_notifications` (and no lookup) elsewhere.
+
+- **Lite identity**: a registered identity (`useLiteNotificationsAccount`) gets its unread count on the
+  header's identity button and a Notifications item in its menu; `/@did:lite:<name>/notifications` (the
+  profile's Notifications tab, shown on such a node; `NotificationsAccountLayout` lets the DID through)
+  renders the same notification list as a Hive account's. "Mark all as read" signs `set_last_read
+  { actor, date }` with the identity's posting key under the node's social app and relays it to `/l2`
+  (`use-lite-mark-read-mutation.ts`, with `useLiteSocialAccess('set_last_read')`: shown only where the
+  gateway relays that method). `date` is the newest listed row's date, which the chain has passed
+  (lite_social refuses a date after the op's block time); the count drops to 0 at once and a validated
+  refetch takes the node's answer once its `lastread` reaches the date.
+- **Hive user**: the bell, the page and the mark-read refetch read `lite.*` for the Hive name, so lite
+  follows and reblogs show among hivemind's rows (the node merges them by id). Marking read stays
+  hivemind's custom_json: the merged `unread` is computed from hivemind's `lastread`.
+- **Rows**: a source named by DID (`@did:lite:<name> followed you`) renders by its name with the lite
+  badge, its avatar linking the lite profile (`notificationSource` in `activity-log/lib`).
+- **Mention autocomplete**: the markdown editor (posts, replies, the lite reply box) completes `@` plus
+  two characters with up to 10 lite names from `lite.lookup_accounts`, asked after a 250 ms pause
+  (`post-editor/lib/mention-completion.ts`); choosing one inserts `@did:lite:<name>`, the canonical
+  mention form. No completion at all is configured on another node. Hive names are not completed, and a
+  plain `@name` is never resolved to a lite account here (only the node does, for its notifications).
+- **Rendering**: the renderer links `@did:lite:<name>` to `/@did:lite:<name>` showing `@<name>`, titled
+  with the DID (not a Hive usertag); the stylesheet badges `a[title^='did:lite:']` with
+  `--lite-mention-label`, which `RendererContainer` sets to the translated "lite account". A DID with an
+  invalid lite name stays text; plain `@name` renders as before.
+
+`liteNotifications.spec.ts` (LITE-NOTIF-01–05, recorded from steem-16) covers it, with the lite
+identity's notification reads and the gateway answered in the browser (steem-16 had no lite
+notification when recorded); LITE-NOTIF-06 (a node without the methods) is in `liteSocial.spec.ts`
+and `liteIdentity.spec.ts`, and LITE-PROFILE-04 has the page's 404 there.

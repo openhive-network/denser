@@ -3,12 +3,14 @@ import type { ILiteProfile } from '@hive/common-hiveio-packages/wax';
 import { expect } from 'chai';
 import {
   createLiteApiProbe,
+  createLiteNotificationsReader,
   createLiteProfileReader,
   createLiteSocialReader,
   createPostsReader,
   liteSocialApp,
   LITE_PROBE_TTL_MS,
   readLiteProbeTtlMs,
+  type ILiteNotificationsApi,
   type ILiteSocialApi,
   type TPostsApi
 } from './lite-api';
@@ -362,6 +364,48 @@ describe('createLiteSocialReader', () => {
     expect(liteSocialApp(SOCIAL_INFO)).to.equal('lite_social_test');
     expect(liteSocialApp(LITE_INFO)).to.equal(null);
     expect(liteSocialApp(null)).to.equal(null);
+  });
+});
+
+describe('createLiteNotificationsReader', () => {
+  const NOTIFY_INFO = {
+    ...LITE_INFO,
+    apps: { posts: 'lite_posts_test', social: 'lite_social_test' },
+    methods: [...LITE_INFO.methods, 'account_notifications', 'unread_notifications', 'lookup_accounts']
+  };
+  const ROWS = [{ id: '89481685581692929', msg: '@did:lite:bob followed you', url: '@did:lite:bob', date: '2026-10-16T19:54:15', type: 'follow', score: 15 }];
+
+  /** A chain whose `lite.account_notifications` records its calls and answers ROWS. */
+  const setupNotificationsReader = (probeAnswers: Record<string, unknown>) => {
+    const calls: unknown[] = [];
+    const lite: ILiteNotificationsApi = {
+      account_notifications: async (params) => {
+        calls.push(params);
+        return ROWS;
+      },
+      unread_notifications: async () => ({ lastread: '2026-10-16 00:00:00', unread: 1 }),
+      lookup_accounts: async () => ['did:lite:bob']
+    };
+    const { probe } = setupProbe(probeAnswers);
+    return { read: createLiteNotificationsReader(() => ({ endpointUrl: LITE_NODE, api: { lite } }), probe), calls };
+  };
+  const params = { account: 'did:lite:alice', limit: 50 };
+
+  it('reads lite.account_notifications of a node whose lite.get_info lists it', async () => {
+    const { read, calls } = setupNotificationsReader({ [LITE_NODE]: NOTIFY_INFO });
+
+    expect(await read((api) => api.account_notifications(params), async () => [])).to.deep.equal(ROWS);
+    expect(calls).to.deep.equal([params]);
+  });
+
+  it('runs the fallback without asking a lite node without the method, or a stock node', async () => {
+    const social = { ...LITE_INFO, apps: { posts: 'lite_posts', social: 'lite_social' } };
+    for (const info of [LITE_INFO, social, apiNotFound('lite.get_info')]) {
+      const { read, calls } = setupNotificationsReader({ [LITE_NODE]: info });
+
+      expect(await read<unknown>((api) => api.account_notifications(params), async () => 'stock')).to.equal('stock');
+      expect(calls).to.deep.equal([]);
+    }
   });
 });
 

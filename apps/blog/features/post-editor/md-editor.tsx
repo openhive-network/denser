@@ -33,6 +33,9 @@ import type { BatchFileItem, ProcessingOptions } from './lib/image-processing-ty
 import { convertHiveUrlsInText, parseHiveBlogUrl } from './lib/hive-url-converter';
 import { getToolbarButtons } from './lib/toolbar-config';
 import { useCodemirror } from './hooks/use-codemirror';
+import { createMentionSource } from './lib/mention-completion';
+import { lookupLiteAccounts } from '@transaction/lib/lite-notifications-api';
+import { useServesLiteNotifications } from '@/blog/features/lite-account/use-lite-notifications';
 import EditorToolbar from './EditorToolbar';
 
 interface MdEditorProps {
@@ -200,9 +203,17 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     pasteHandlerRef.current = handlePaste;
   }, [handlePaste]);
 
+  // Lite names complete an `@` only where the node serves `lite.lookup_accounts`.
+  const servesLiteLookup = useServesLiteNotifications();
+  const mentionSource = useMemo(
+    () => (servesLiteLookup ? createMentionSource({ lookup: lookupLiteAccounts, detail: t('lite_account.badge_prefix') }) : null),
+    [servesLiteLookup, t]
+  );
+
   const { viewRef, editorMountRef } = useCodemirror({
     placeholder,
     ariaLabel,
+    mentionSource,
     windowheight,
     persistedValue,
     onChangeRef,

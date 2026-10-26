@@ -1,9 +1,12 @@
 import type {
+  IAccountNotification,
   ILiteApiInfo,
   ILiteFollow,
+  ILiteNotificationsParams,
   ILiteFollowCount,
   ILiteFollowParams,
-  ILiteProfile
+  ILiteProfile,
+  IUnreadNotifications
 } from '@hive/common-hiveio-packages/wax';
 import { getLogger } from '@ui/lib/logging';
 import { getNodeReadChain, getReadChain, type ReadChain } from './chain';
@@ -36,10 +39,18 @@ export type TPostsApi = Pick<
 
 const NATIVE_MODE = 'native';
 const PROFILE_METHOD = 'get_profile';
+const NOTIFICATIONS_METHOD = 'account_notifications';
 
 /** Whether a node's `lite.get_info` answer lists `lite.get_profile`. */
 export const servesLiteProfile = (info: ILiteApiInfo | null | undefined): boolean =>
   !!info?.methods.includes(PROFILE_METHOD);
+
+/**
+ * Whether a node's `lite.get_info` answer lists `lite.account_notifications`: such a node also serves
+ * `lite.unread_notifications` and `lite.lookup_accounts`, and its notifications include lite actors.
+ */
+export const servesLiteNotifications = (info: ILiteApiInfo | null | undefined): boolean =>
+  !!info?.methods.includes(NOTIFICATIONS_METHOD);
 
 /**
  * The lite social app a node's `lite.get_info` advertises (`apps.social`), or null: a lite-aware
@@ -227,6 +238,30 @@ export function createLiteSocialReader(getChain: () => ISocialChain, probe: ILit
   };
 }
 
+/** The `lite.*` notification reads and the lite name lookup, see `createLiteNotificationsReader`. */
+export interface ILiteNotificationsApi {
+  account_notifications: (params: ILiteNotificationsParams) => Promise<IAccountNotification[] | null>;
+  unread_notifications: (params: { account: string }) => Promise<IUnreadNotifications | null>;
+  lookup_accounts: (params: { prefix: string; limit?: number }) => Promise<string[]>;
+}
+
+interface INotificationsChain {
+  readonly endpointUrl: string;
+  readonly api: { lite: ILiteNotificationsApi };
+}
+
+/**
+ * Runs `read` on the chain's current node when its `lite.get_info` lists the notification methods
+ * (`servesLiteNotifications`), else `fallback` (the stock read, or none). Errors of either are thrown.
+ */
+export function createLiteNotificationsReader(getChain: () => INotificationsChain, probe: ILiteApiProbe) {
+  return async <T>(read: (api: ILiteNotificationsApi) => Promise<T>, fallback: () => Promise<T>): Promise<T> => {
+    const chain = getChain();
+    if (!servesLiteNotifications(await probe.getInfo(chain.endpointUrl))) return fallback();
+    return read(chain.api.lite);
+  };
+}
+
 // Asked of the configured node itself: answered through failover, another node's capabilities
 // would be recorded as this one's.
 const liteApiProbe = createLiteApiProbe({
@@ -272,3 +307,6 @@ export const getLiteProfile = createLiteProfileReader(getReadChain, liteApiProbe
 
 /** Runs a lite social graph read on the current API node, see `createLiteSocialReader`. */
 export const readLiteSocial = createLiteSocialReader(getReadChain, liteApiProbe);
+
+/** Runs a notification read on the current API node, see `createLiteNotificationsReader`. */
+export const readLiteNotifications = createLiteNotificationsReader(getReadChain, liteApiProbe);

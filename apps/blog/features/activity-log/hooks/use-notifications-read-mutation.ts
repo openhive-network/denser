@@ -1,9 +1,10 @@
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { IUnreadNotifications } from '@hive/common-hiveio-packages/wax';
-import { getUnreadNotifications } from '@transaction/lib/bridge-api';
+import { getNotificationsUnread } from '@transaction/lib/lite-notifications-api';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
+import { unreadNotificationsKey } from './use-unread-notifications';
 
 /**
  * Naive-UTC timestamp, matching the shape the bridge API uses for both
@@ -15,7 +16,7 @@ const naiveUtcNow = (): string => new Date().toISOString().slice(0, -5);
 
 export function useMarkAllNotificationsAsReadMutation() {
   const { username } = useUserClient().user;
-  const queryKey = ['unreadNotifications', username];
+  const queryKey = unreadNotificationsKey(username);
   return useOperationMutation({
     name: 'useMarkAllNotificationsAsReadMutation',
     // The field is `lastread` (all lowercase) - see IUnreadNotifications and
@@ -44,7 +45,7 @@ export function useMarkAllNotificationsAsReadMutation() {
       scheduleValidatedRefetch<IUnreadNotifications | null>(
         queryClient,
         queryKey,
-        () => getUnreadNotifications(username),
+        () => getNotificationsUnread(username),
         (fresh) => !!fresh?.lastread && new Date(fresh.lastread).getTime() >= markedAt
       );
     },

@@ -16,7 +16,12 @@ import { languages } from "@codemirror/language-data";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
 import { oneDark } from "@codemirror/theme-one-dark";
-import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
+import {
+  autocompletion,
+  closeBrackets,
+  closeBracketsKeymap,
+  type CompletionSource,
+} from "@codemirror/autocomplete";
 import {
   bracketMatching,
   syntaxHighlighting,
@@ -26,6 +31,11 @@ import { wrapSelection } from "../lib/codemirror-commands";
 import { lightTheme, darkCompartment, isDarkMode } from "../lib/codemirror-theme";
 
 const labelCompartment = new Compartment();
+const mentionCompartment = new Compartment();
+
+// No completion at all without a source: the editor's keys and behaviour stay as they were.
+const mentionCompletion = (source: CompletionSource | null) =>
+  source ? autocompletion({ override: [source], icons: false }) : [];
 
 const labelAttributes = (ariaLabel: string) =>
   EditorView.contentAttributes.of({ "aria-label": ariaLabel });
@@ -33,6 +43,8 @@ const labelAttributes = (ariaLabel: string) =>
 interface UseCodemirrorConfig {
   placeholder?: string;
   ariaLabel: string;
+  /** Completes `@` mentions; null for none. */
+  mentionSource?: CompletionSource | null;
   windowheight: number;
   persistedValue: string;
   onChangeRef: React.MutableRefObject<(value: string) => void>;
@@ -45,6 +57,7 @@ export function useCodemirror(config: UseCodemirrorConfig) {
   const {
     placeholder,
     ariaLabel,
+    mentionSource = null,
     windowheight,
     persistedValue,
     onChangeRef,
@@ -225,6 +238,8 @@ export function useCodemirror(config: UseCodemirrorConfig) {
     ]);
 
     const extensions = [
+      // Ahead of the Enter keymap: Enter takes an open completion.
+      mentionCompartment.of(mentionCompletion(mentionSource)),
       enterKeymap,
       tabKeymap,
       boldItalicKeymap,
@@ -311,6 +326,12 @@ export function useCodemirror(config: UseCodemirrorConfig) {
       effects: labelCompartment.reconfigure(labelAttributes(ariaLabel)),
     });
   }, [ariaLabel]);
+
+  useEffect(() => {
+    viewRef.current?.dispatch({
+      effects: mentionCompartment.reconfigure(mentionCompletion(mentionSource)),
+    });
+  }, [mentionSource]);
 
   // Sync persistedValue from parent (form reset, template load, cross-tab sync).
   // Only runs when the editor is NOT focused -- user typing goes through the

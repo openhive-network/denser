@@ -15,7 +15,9 @@ export type LiteSocialAction =
   | { method: 'follow' | 'unfollow' | 'mute' | 'unmute'; target: string }
   | { method: 'reblog' | 'unreblog'; author: string; permlink: string }
   | { method: 'subscribe' | 'unsubscribe'; community: string }
-  | { method: 'set_profile'; profile: LiteProfileFields };
+  | { method: 'set_profile'; profile: LiteProfileFields }
+  /** The notification read marker, a naive-UTC `YYYY-MM-DDTHH:MM:SS` not after the op's block time. */
+  | { method: 'set_last_read'; date: string };
 
 export type LiteSocialMethod = LiteSocialAction['method'];
 

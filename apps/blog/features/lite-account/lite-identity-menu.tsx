@@ -26,6 +26,8 @@ import { useLiteApiInfo } from './use-lite-api-info';
 import { useLitePasskeyAccess, useLiteSecurityWarning } from './use-lite-passkey';
 import LiteSecurePrompt, { useLiteSecurePrompt } from './lite-secure-prompt';
 import { useStoredLiteIdentity } from './use-stored-lite-identity';
+import { useLiteNotificationsAccount } from './use-lite-notifications';
+import { useUnreadNotifications } from '@/blog/features/activity-log/hooks/use-unread-notifications';
 
 // The passkey dialogs are loaded when opened: the header is on every page.
 const LiteSecureDialog = dynamic(() => import('./lite-secure-dialog'), { ssr: false });
@@ -40,7 +42,8 @@ function MenuSecurityNotice({ identity, onSecure }: { identity: StoredLiteIdenti
 /**
  * The header's indicator of the lite account this browser holds, for a reader who is not signed
  * in: its avatar, name and badge, with a menu to view its profile (and its feed, where the node
- * serves the lite social graph), sign in with a Hive account instead, or forget it. Where the
+ * serves the lite social graph, and its notifications with the unread count where it serves lite
+ * notifications), sign in with a Hive account instead, or forget it. Where the
  * gateway relays authority edits it also secures the account with a passkey (and says when it is
  * not), or signs a secured one out. Nothing when the browser holds none. Reads the stored identity
  * directly, so the header does not load the lite signing code (`useLiteIdentity`).
@@ -57,6 +60,8 @@ export default function LiteIdentityMenu() {
   const passkeyRelay = useLitePasskeyAccess().available;
   const openSecure = useCallback(() => setIsSecureOpen(true), []);
   const prompt = useLiteSecurePrompt(identity, passkeyRelay);
+  const notificationsAccount = useLiteNotificationsAccount();
+  const unread = useUnreadNotifications(notificationsAccount).data?.unread ?? 0;
 
   if (!identity) return null;
   const { name, secured } = identity;
@@ -73,10 +78,18 @@ export default function LiteIdentityMenu() {
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="flex items-center gap-1 rounded-full pr-1 hover:bg-accent"
+            className="relative flex items-center gap-1 rounded-full pr-1 hover:bg-accent"
             aria-label={t('lite_account.identity.menu_label', { name })}
             data-testid="lite-identity-button"
           >
+            {unread > 0 ? (
+              <span
+                className="absolute left-7 top-0.5 z-10 -translate-y-1/2 whitespace-nowrap rounded-full bg-destructive-icon px-1.5 py-1 text-xs font-bold leading-none text-white"
+                data-testid="lite-identity-unread"
+              >
+                {unread}
+              </span>
+            ) : null}
             <UserAvatar username={did} size="small" className="mr-0 h-9 w-9" />
             <span className="hidden max-w-[8rem] truncate text-sm font-medium sm:inline" translate="no" data-testid="lite-identity-name">
               {name}
@@ -106,6 +119,17 @@ export default function LiteIdentityMenu() {
               <Link href={`/@${did}/feed`} className="flex w-full items-center" data-testid="lite-identity-feed">
                 <Icons.list className="mr-2" />
                 <span className="w-full">{t('lite_account.identity.my_feed')}</span>
+              </Link>
+            </DropdownMenuItem>
+          ) : null}
+          {notificationsAccount ? (
+            <DropdownMenuItem className="cursor-pointer" asChild>
+              <Link href={`/@${did}/notifications`} className="flex w-full items-center" data-testid="lite-identity-notifications">
+                <Icons.clock className="mr-2" />
+                <span className="w-full">
+                  {t('navigation.user_menu.notifications')}
+                  {unread > 0 ? ` (${unread})` : null}
+                </span>
               </Link>
             </DropdownMenuItem>
           ) : null}

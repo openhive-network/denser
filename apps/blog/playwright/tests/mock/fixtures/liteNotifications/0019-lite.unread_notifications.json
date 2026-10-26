@@ -1,0 +1,27 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.unread_notifications",
+    "params": {
+      "account": "did:lite:crisp-koala-499"
+    },
+    "id": 1
+  },
+  "requestHash": "ca92ad66d3228820",
+  "method": "lite.unread_notifications",
+  "params": {
+    "account": "did:lite:crisp-koala-499"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "unread": 0,
+      "lastread": "2026-10-19 22:56:51"
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

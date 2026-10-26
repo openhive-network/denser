@@ -197,6 +197,21 @@
   opacity: 0.5;
 }
 
+/* A lite account's mention, as the renderer links `@did:lite:<name>` (titled with the DID): the
+   lite badge, labelled by `--lite-mention-label` in the reader's language where the body is shown. */
+.prose a[title^='did:lite:']::after {
+  content: var(--lite-mention-label, 'lite');
+  display: inline-block;
+  margin-inline-start: 0.25em;
+  padding: 0 0.4em;
+  border: 1px solid rgb(96 165 250 / 0.6);
+  border-radius: 9999px;
+  font-size: 0.75em;
+  line-height: 1.4;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
 .prose .phishy {
   display: inline;
   color: red;

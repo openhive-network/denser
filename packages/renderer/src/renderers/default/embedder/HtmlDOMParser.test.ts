@@ -114,6 +114,12 @@ describe('HtmlDOMParser', () => {
         expect(usertags).to.equal('abc,aaa1,eee,fff');
     });
 
+    it('should not count a lite mention by DID as a Hive usertag', () => {
+        const text = '@abc meets @did:lite:alice';
+        const res = new HtmlDOMParser(htmlParserOptions).setMutateEnabled(false).parse(text).getState();
+        expect(Array.from(res.usertags)).to.deep.equal(['abc']);
+    });
+
     it('should not link usernames at the front of linked text', () => {
         const nameinsidelinkfirst = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">@hihi</a></xml>';
         const htmlified = '<xml xmlns="http://www.w3.org/1999/xhtml"><a href="https://hive.blog/signup">@hihi</a></xml>';

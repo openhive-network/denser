@@ -1,0 +1,59 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.account_notifications",
+    "params": {
+      "account": "test-gateway-1",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "b29ef675e1425199",
+  "method": "lite.account_notifications",
+  "params": {
+    "account": "test-gateway-1",
+    "limit": 50
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "id": "89481685581692929",
+        "msg": "@test-gateway-5 replied to your post",
+        "url": "@test-gateway-5/re-test-gateway-1-re-lite-test-478380rd5v-18b2eakbap",
+        "date": "2026-10-16T19:54:15",
+        "type": "reply",
+        "score": 25
+      },
+      {
+        "id": "89481566396350465",
+        "msg": "@test-gateway-4 replied to your post",
+        "url": "@test-gateway-4/re-test-gateway-1-re-lite-test-478380rd5v-74a620iys9",
+        "date": "2026-10-16T19:46:51",
+        "type": "reply",
+        "score": 25
+      },
+      {
+        "id": "89481439157944321",
+        "msg": "@test-gateway-2 replied to your post",
+        "url": "@test-gateway-2/re-test-gateway-1-re-lite-test-478380rd5v-d30f04n44o",
+        "date": "2026-10-16T19:38:57",
+        "type": "reply",
+        "score": 25
+      },
+      {
+        "id": "89463079795949569",
+        "msg": "@swarmpost followed you",
+        "url": "@swarmpost",
+        "date": "2026-10-16T00:39:03",
+        "type": "follow",
+        "score": 55
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

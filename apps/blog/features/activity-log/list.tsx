@@ -5,10 +5,13 @@ import { IAccountNotification } from '@hive/common-hiveio-packages/wax';
 
 const NotificationList = ({
   data,
-  lastRead
+  lastRead,
+  isOwner
 }: {
   data: IAccountNotification[] | null | undefined;
   lastRead: Date;
+  /** Whether the reader owns these notifications: only then are unread ones marked. */
+  isOwner: boolean;
 }) => {
   return (
     <div className="flex flex-col divide-y divide-border-secondary">
@@ -21,6 +24,7 @@ const NotificationList = ({
           type={notification.type}
           url={notification.url}
           lastRead={lastRead}
+          isOwner={isOwner}
         />
       ))}
     </div>

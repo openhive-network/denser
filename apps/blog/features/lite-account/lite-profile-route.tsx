@@ -6,7 +6,7 @@ import { getProfileLiteAccount } from '@/blog/lib/profile-cache';
 import { getPageNotFoundMetadata } from '@/blog/lib/not-found-metadata';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { getTranslation } from '@/blog/i18n/server';
-import { isLiteSocialNode } from '@/blog/lib/hive-account-route';
+import { isLiteNotificationsNode, isLiteSocialNode } from '@/blog/lib/hive-account-route';
 import { authorDisplayName } from './lite-did';
 import LiteProfileLayout from './lite-profile-layout';
 
@@ -30,10 +30,14 @@ export async function getLiteProfileMetadata(did: string): Promise<Metadata> {
  * not-found page on a node without lite support or for a DID it does not know.
  */
 export default async function LiteProfileRoute({ did, children }: { did: string; children: ReactNode }) {
-  const [profile, social] = await Promise.all([readLiteProfile(did), isLiteSocialNode()]);
+  const [profile, social, notifications] = await Promise.all([
+    readLiteProfile(did),
+    isLiteSocialNode(),
+    isLiteNotificationsNode()
+  ]);
   if (!profile) notFound();
   return (
-    <LiteProfileLayout profile={profile} social={social}>
+    <LiteProfileLayout profile={profile} social={social} notifications={notifications}>
       {children}
     </LiteProfileLayout>
   );
