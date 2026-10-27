@@ -76,23 +76,23 @@ export class SignerMetaMask extends Signer {
   }
 
   /**
-   * `MetaMaskProvider` forwards the buffer to the snap untouched, so the `#` marker is handled by
-   * `memo-crypto`'s wrappers. Imported on the call: this module is in the sign-in bundle, and
-   * `memo-crypto` would bring its Beekeeper loaders along.
+   * `MetaMaskProvider` forwards the buffer to the snap untouched, so the `#` marker and the snap's
+   * memo byte layout are handled by `memo-crypto`'s wrappers. Imported on the call: this module is
+   * in the sign-in bundle, and `memo-crypto` would bring its Beekeeper loaders along.
    */
   async encryptData({ toAccountMemoPublicKey, memo }: EncryptMemo): Promise<string> {
-    const [provider, { encryptMemoWithProvider }] = await Promise.all([
+    const [provider, { encryptMemoWithSnap }] = await Promise.all([
       this.connectProvider('memo'),
       import('@smart-signer/lib/memo-crypto')
     ]);
-    return encryptMemoWithProvider(provider, toAccountMemoPublicKey, memo);
+    return encryptMemoWithSnap(provider, toAccountMemoPublicKey, memo);
   }
 
   async decryptData(encodedMemo: string): Promise<string> {
-    const [provider, { decryptMemoWithProvider }] = await Promise.all([
+    const [provider, { decryptMemoWithSnap }] = await Promise.all([
       this.connectProvider('memo'),
       import('@smart-signer/lib/memo-crypto')
     ]);
-    return decryptMemoWithProvider(provider, encodedMemo);
+    return decryptMemoWithSnap(provider, encodedMemo);
   }
 }
