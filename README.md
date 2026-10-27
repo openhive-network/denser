@@ -12,9 +12,9 @@ The project consists of two apps:
 
 ## Prerequisites
 
-- Node.js >= 20.0.0 & <21.0.0
-
-If you have Volta installed, the 24.21.0 version of Node.js is pinned in the main [package.json](package.json) file.
+- Node.js 24 (`engines` `>=24`; `.nvmrc` names the major). The exact version is the single pin
+  in [common-ci-configuration](https://gitlab.syncad.com/hive/common-ci-configuration)
+  (`NODE_VERSION` in its `docker-bake.hcl`), which CI and the Docker images use.
 
 ## Building
 
@@ -61,9 +61,12 @@ pnpm run wallet:pw:test:local
 
 ### Build
 
-To build Docker images use the following commands:
+To build Docker images use the following commands. The image's Node comes from
+`NODE_VERSION`, which must name common-ci-configuration's Node version (CI passes its
+`NODE_IMAGE_VERSION`); the repository keeps no version of its own:
 
 ```bash
+export NODE_VERSION=<common-ci-configuration's NODE_VERSION>
 ./scripts/build_instance.sh --app-scope='@hive/blog' --app-path='/apps/blog' --app-name='blog' "$(pwd)"
 ./scripts/build_instance.sh --app-scope='@hive/wallet' --app-path='/apps/wallet' --app-name='wallet' "$(pwd)"
 ```

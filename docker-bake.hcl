@@ -34,6 +34,8 @@ variable "REACT_APP_GOOGLE_DRIVE_CLIENT_ID" {
 variable "NPM_CONFIG_REGISTRY" {
   default = ""
 }
+// common-ci-configuration's Node version ($NODE_IMAGE_VERSION in CI); no default of our own.
+variable "NODE_VERSION" {}
 
 function "notempty" {
   params = [variable]
@@ -67,6 +69,7 @@ target "local-build" {
     REACT_APP_ALLOWED_HIVE_API_NODES = "${REACT_APP_ALLOWED_HIVE_API_NODES}",
     REACT_APP_GOOGLE_DRIVE_CLIENT_ID = "${REACT_APP_GOOGLE_DRIVE_CLIENT_ID}",
     NPM_CONFIG_REGISTRY = "${NPM_CONFIG_REGISTRY}",
+    NODE_VERSION = "${NODE_VERSION}",
   }
   output = [
     "type=docker"

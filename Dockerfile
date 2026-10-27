@@ -1,4 +1,7 @@
-FROM node:24.21.0-alpine3.24 AS pure_node
+# Node comes from common-ci-configuration's single pin: CI passes
+# NODE_VERSION=$NODE_IMAGE_VERSION (scripts/build_instance.sh requires it).
+ARG NODE_VERSION
+FROM node:${NODE_VERSION}-alpine3.24 AS pure_node
 FROM pure_node AS base
 ARG NPM_CONFIG_REGISTRY
 ENV NPM_CONFIG_REGISTRY=${NPM_CONFIG_REGISTRY}

@@ -40,6 +40,8 @@ IMAGE_REPO="${CI_REGISTRY_IMAGE:?}/${TURBO_APP_NAME:?}"
 # every branch a deploy job runs on therefore ALWAYS build; they still push
 # `inputs-<hash>` for branch pipelines to reuse. Reuse is for unprotected
 # branch/MR pipelines only. FORCE_IMAGE_BUILD=true always builds.
+# Node version from common-ci-configuration; exported before hashing so the hash covers it.
+export NODE_VERSION="${NODE_IMAGE_VERSION:?NODE_IMAGE_VERSION comes from common-ci-configuration}"
 INPUT_HASH="$("${CI_PROJECT_DIR:?}/scripts/ci-helpers/image-input-hash.sh" "${TURBO_APP_PATH:-apps/${TURBO_APP_NAME}}")"
 INPUT_TAG="${IMAGE_REPO}:inputs-${INPUT_HASH}"
 echo "Image input hash: ${INPUT_HASH}"

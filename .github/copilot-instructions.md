@@ -23,7 +23,7 @@ Decentralized social media app for Hive Blockchain. Successor to hive/condenser 
 - TanStack Query (React Query) for data fetching
 - Zustand for app state
 - Playwright for E2E testing
-- Node 24.21.0 (pinned via Volta)
+- Node 24 (exact version from common-ci-configuration's `NODE_VERSION`; no repo-owned pin)
 
 ### Hive Blockchain Integration
 Apps consume Hive blockchain data via:

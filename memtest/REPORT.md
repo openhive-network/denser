@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-25
 **Reference:** [denser#886](https://gitlab.syncad.com/hive/denser/-/issues/886)
-**Build image:** `registry.gitlab.syncad.com/hive/common-ci-configuration/emsdk:5.0.2-1`
+**Build image:** `registry.gitlab.syncad.com/hive/common-ci-configuration/emsdk`, tag `5.0.2-1`
 **Runtime Node.js:** 22.22.1-alpine (runner stage)
 **Test parameters:** 10 RPS × 10 minutes = 6,000 requests per test, 5s sampling interval, 120s cooldown
 
@@ -12,8 +12,8 @@
 
 | Component | Value |
 |-----------|-------|
-| Build image | emsdk:5.0.2-1 (Node 22.21.1, pnpm 10.0.0) |
-| Runner image | node:22-alpine (22.22.1) |
+| Build image | emsdk, tag 5.0.2-1 (Node 22.21.1, pnpm 10.0.0) |
+| Runner image | node, Node 22 alpine variant (22.22.1) |
 | Node.js flags | `--expose-gc --max-old-space-size=3072` (F5: 1536) |
 | Load tool | k6 v0.56.0 |
 | URL corpus | 2,889 unique URLs (posts, profiles, communities) |
@@ -168,8 +168,11 @@ Sentry adds another **2.5 KB/req** on top, making it worse under crawler traffic
 ### Step 1: Build the test image
 
 ```bash
-# From the denser repo root
-docker build -f memtest/Dockerfile.memtest -t denser-memtest:latest .
+# From the denser repo root; both build args name common-ci-configuration's images
+docker build -f memtest/Dockerfile.memtest \
+  --build-arg EMSCRIPTEN_IMAGE="$EMSCRIPTEN_IMAGE" \
+  --build-arg NODE_VERSION="$NODE_IMAGE_VERSION" \
+  -t denser-memtest:latest .
 ```
 
 ### Step 2: Generate URL corpus
@@ -225,7 +228,7 @@ python3 memtest/scripts/analyze-test.py memtest/results/ --rps 10 --duration 600
 
 ```
 memtest/
-├── Dockerfile.memtest              # Test image (emsdk build, node:22 runner)
+├── Dockerfile.memtest              # Test image (emsdk build, Node runner, both from common-ci-configuration)
 ├── REPORT.md                       # This report
 ├── k6/
 │   ├── blog-crawler.js             # Full SSR page load simulation
