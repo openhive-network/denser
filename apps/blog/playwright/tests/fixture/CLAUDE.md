@@ -175,7 +175,7 @@ test('does the thing', async ({ page }) => {
 });
 ```
 
-A test ID in a title (`CMT-09:`) must be unique within the app: `scripts/check-playwright-test-ids.js`, in the static checks, fails on a duplicate. When a parallel landing takes your number first, renumber yours to the next free one in its prefix.
+A test ID in a title (`CMT-09:` or `CMT-09 —`) must be unique within the app: `scripts/check-playwright-test-ids.js`, in the static checks, fails on a duplicate. When a parallel landing takes your number first, renumber yours to the next free one in its prefix.
 
 For voting specs, prefer `postVotingContext.ts`:
 

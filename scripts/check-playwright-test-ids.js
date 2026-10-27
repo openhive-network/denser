@@ -9,15 +9,19 @@
  * Checked: the first argument of every test(…), test.skip/only/fixme/fail(…) and
  * test.describe(…) (with .serial/.parallel/.skip/.only/.fixme) call in
  * every .ts file under apps/<app>/playwright, when it is a quoted string that starts with an ID
- * (`[A-Z][A-Z0-9-]*-\d+[a-z]?:`).
+ * (`[A-Z][A-Z0-9-]*-\d+[a-z]?`) followed by optional spaces and a separator: `:`, `—`, `–` or
+ * ` - `. A hyphen not spaced on both sides is part of the ID (`CMT-12-3 —`) or of no separator. The summary
+ * line counts each separator, so a new form shows up there.
  *
  * Namespace: per app. Each app's Playwright configs run only its own specs, so a
  * `-g` filter never spans both apps, and the wallet prefixes its own IDs (WALLET-…);
  * the same ID in the blog and in the wallet is allowed.
  *
- * Not checked: titles built from template literals (often one title per loop
- * iteration, its ID varying or not) are listed as skipped; titles passed as a
- * variable are not seen at all.
+ * A template-literal title whose ID and separator come before any `${…}` is checked
+ * like a quoted one (its loop iterations share one location). Not checked: template
+ * titles with `${…}` inside the ID (often one ID per loop iteration) are listed as
+ * skipped; titles without a separator after the ID, and titles passed as a variable,
+ * are not seen at all.
  *
  * Usage: node scripts/check-playwright-test-ids.js
  */
@@ -25,7 +29,7 @@ const fs = require('fs');
 const path = require('path');
 
 const TITLE_CALL = /(?<![\w.$])test((?:\.(?:describe|skip|only|fixme|fail|serial|parallel))*)\(\s*(['"`])/g;
-const TEST_ID = /^([A-Z][A-Z0-9-]*-\d+[a-z]?):/;
+const TEST_ID = /^([A-Z][A-Z0-9-]*-\d+[a-z]?) *(:|—|–| - )/;
 const TEMPLATE_ID_PREFIX = /^[A-Z][A-Z0-9-]*-(?:\d|\$\{)/;
 
 function lineAt(source, index) {
@@ -36,8 +40,9 @@ function lineAt(source, index) {
 
 /**
  * The test IDs titles in one file's source start with, and the lines of the
- * template-literal titles that look like they start with one.
- * Returns { ids: [{ id, line }], templateLines: [line] }.
+ * template-literal titles that look like they start with a computed one.
+ * Returns { ids: [{ id, separator, line }], templateLines: [line] }, `separator`
+ * without its spaces (`:`, `—`, `–` or `-`).
  */
 function findTestIds(source) {
   const ids = [];
@@ -47,14 +52,21 @@ function findTestIds(source) {
     const textStart = match.index + match[0].length;
     const text = source.slice(textStart, textStart + 200);
     const line = lineAt(source, textStart);
-    if (quote === '`') {
-      if (TEMPLATE_ID_PREFIX.test(text)) templateLines.push(line);
-      continue;
-    }
     const id = text.match(TEST_ID);
-    if (id) ids.push({ id: id[1], line });
+    if (id) ids.push({ id: id[1], separator: id[2].trim(), line });
+    else if (quote === '`' && TEMPLATE_ID_PREFIX.test(text)) templateLines.push(line);
   }
   return { ids, templateLines };
+}
+
+/** How many times each separator occurs in [{ separator }], as `":" 12, "—" 3`, most frequent first. */
+function formatSeparatorCounts(ids) {
+  const counts = new Map();
+  for (const { separator } of ids) counts.set(separator, (counts.get(separator) ?? 0) + 1);
+  return [...counts]
+    .sort(([a, x], [b, y]) => y - x || a.localeCompare(b))
+    .map(([separator, count]) => `"${separator}" ${count}`)
+    .join(', ');
 }
 
 /** The IDs that occur more than once in [{ id, location }], each with all its locations, sorted by ID. */
@@ -91,7 +103,7 @@ function main() {
     for (const file of tsFiles(path.join(root, 'apps', app, 'playwright')).sort()) {
       const relative = path.relative(root, file);
       const { ids, templateLines } = findTestIds(fs.readFileSync(file, 'utf8'));
-      entries.push(...ids.map(({ id, line }) => ({ id, location: `${relative}:${line}` })));
+      entries.push(...ids.map(({ id, separator, line }) => ({ id, separator, location: `${relative}:${line}` })));
       skipped.push(...templateLines.map((line) => `${relative}:${line}`));
     }
     const duplicates = findDuplicateIds(entries);
@@ -100,7 +112,8 @@ function main() {
       for (const location of locations) console.error(`  ${location}`);
     }
     if (duplicates.length > 0) failed = true;
-    console.log(`apps/${app}: ${entries.length} test IDs, ${duplicates.length} duplicated`);
+    const separatorSummary = entries.length > 0 ? ` (separators: ${formatSeparatorCounts(entries)})` : '';
+    console.log(`apps/${app}: ${entries.length} test IDs${separatorSummary}, ${duplicates.length} duplicated`);
     if (skipped.length > 0) {
       console.log(`apps/${app}: ${skipped.length} template-literal titles not checked: ${skipped.join(', ')}`);
     }
@@ -115,4 +128,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { findTestIds, findDuplicateIds };
+module.exports = { findTestIds, findDuplicateIds, formatSeparatorCounts };

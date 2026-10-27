@@ -221,7 +221,7 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await expect(dialog).toBeHidden();
   });
 
-  test('WALLET-UI-04 — the avatar is a menu button: Enter and Space open the account menu, one Esc or a click outside closes it, and focus returns to it', async ({
+  test('WALLET-UI-08 — the avatar is a menu button: Enter and Space open the account menu, one Esc or a click outside closes it, and focus returns to it', async ({
     page
   }) => {
     await logInAsStubAccount(page);

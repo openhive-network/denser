@@ -9,7 +9,7 @@ import { CHUNK_MARKERS, SIGNING_STACK_MARKERS, findMarkersInInitialChunks } from
 
 test.use({ fixtureTestName: 'userProfileTabs' });
 
-test('PERF-CHUNKS-03 — no chunk referenced from a profile HTML contains wax, beekeeper or Remarkable', async ({
+test('PERF-CHUNKS-07 — no chunk referenced from a profile HTML contains wax, beekeeper or Remarkable', async ({
   request
 }) => {
   expect(
