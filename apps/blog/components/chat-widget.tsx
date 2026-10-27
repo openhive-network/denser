@@ -1,3 +1,5 @@
+'use client';
+
 import dynamic from 'next/dynamic';
 import { siteConfig } from '@ui/config/site';
 import RocketChatWidget from '@/blog/components/rocket-chat-widget';

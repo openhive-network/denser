@@ -448,6 +448,28 @@ test.describe('Native Matrix chat client', () => {
     await expect(chatButton(page)).toBeFocused();
   });
 
+  test('CHAT-NATIVE-18: the chat button is the next Tab stop after the header, with a visible focus ring', async ({
+    page
+  }) => {
+    await usesNativeChat(page);
+    await openPage(page);
+
+    await page.evaluate(() => {
+      const headerStops = Array.from(
+        document.querySelectorAll<HTMLElement>('header a[href], header button:not([disabled]), header input')
+      ).filter((element) => element.getClientRects().length > 0 && element.tabIndex >= 0);
+      headerStops.at(-1)?.focus();
+    });
+    await page.keyboard.press('Tab');
+    await expect(chatButton(page)).toBeFocused();
+    await expect(chatButton(page)).not.toHaveCSS('box-shadow', 'none');
+
+    await page.keyboard.press('Tab');
+    expect(await page.evaluate(() => !!document.activeElement?.closest('main'))).toBe(true);
+    await page.keyboard.press('Shift+Tab');
+    await expect(chatButton(page)).toBeFocused();
+  });
+
   test('CHAT-NATIVE-16: on the first Tab lap after sign-in, focus never drops out of the drawer', async ({ page }) => {
     // Short enough that #general's messages fill the timeline: "Load older" waits for a scroll
     await page.setViewportSize({ width: 1280, height: SHORT_VIEWPORT_PX });

@@ -11,6 +11,7 @@ import { useGetChatAuthToken } from '@smart-signer/lib/auth/use-chat-token';
 import { useChatTokenRequest } from '@/blog/components/hooks/use-chat-token-request';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { isEligibleForChat } from '@/blog/lib/chat-eligibility';
+import { CHAT_BUTTON_FOCUS_RING } from '@/blog/components/chat-button-focus-ring';
 
 const logger = getLogger('app');
 
@@ -234,12 +235,13 @@ const RocketChatWidget = () => {
   // openhive.chat where they can sign up via the OAuth flow.
   if (!hasRCAccess) {
     return (
-      <div className="group relative z-40 inline-flex w-fit cursor-pointer items-center justify-center">
+      <div className="relative z-40">
         <TooltipProvider>
           <Tooltip>
             <div className="fixed bottom-10 right-10 block">
               <TooltipTrigger
                 type="button"
+                className={CHAT_BUTTON_FOCUS_RING}
                 aria-label={t('chat_widget.set_up_account')}
                 onClick={() =>
                   window.open(siteConfig.openhiveChatUri, '_blank', 'noopener,noreferrer')
