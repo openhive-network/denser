@@ -55,6 +55,10 @@ export interface ChatSession {
   markRead(roomId: string): void;
   /** An object URL of the thumbnail of `mxc`, fetched with the session's token, or null */
   avatarUrl(mxc: string): Promise<string | null>;
-  /** Stops syncing, signs the device out on the homeserver and drops what the session held. */
-  end(): Promise<void>;
+  /**
+   * Stops syncing, signs the device out on the homeserver and drops what the session held. When
+   * `serverSignOut` resolves to true, denser's server has deleted the device, which is then not
+   * signed out again.
+   */
+  end(serverSignOut?: Promise<boolean>): Promise<void>;
 }

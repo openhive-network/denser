@@ -11,8 +11,11 @@ export type ChatRevocationFailureReporter = (username: string, reason: string) =
 export interface ChatSessionEnder {
   /** Identifies the chat-server session `user` holds, so each is ended once; '' when there is none */
   sessionOf(user: User): string;
-  /** Starts ending that session without waiting for the chat server, and reports its own failures */
-  end(user: User): void;
+  /**
+   * Ends that session on the chat server; resolves to whether the chat server confirmed it. Never
+   * rejects: it reports its own failures.
+   */
+  end(user: User): Promise<boolean>;
 }
 
 interface ChatSessionHolder {
@@ -27,12 +30,15 @@ export function rocketChatSessionEnder(
 ): ChatSessionEnder {
   return {
     sessionOf: (user) => user.chatAuthToken,
-    end: ({ username, chatAuthToken }) => {
-      revoke(username, chatAuthToken).catch((error: unknown) => {
-        const reason = error instanceof Error ? error.message : String(error);
-        onFailure(username, reason.replaceAll(chatAuthToken, '[redacted]'));
-      });
-    }
+    end: ({ username, chatAuthToken }) =>
+      revoke(username, chatAuthToken).then(
+        () => true,
+        (error: unknown) => {
+          const reason = error instanceof Error ? error.message : String(error);
+          onFailure(username, reason.replaceAll(chatAuthToken, '[redacted]'));
+          return false;
+        }
+      )
   };
 }
 
@@ -47,21 +53,22 @@ export function endCurrentChatSession(session: ChatSessionHolder, ender: ChatSes
   if (!user) return;
   const chatSession = ender.sessionOf(user);
   if (!chatSession || (incoming && ender.sessionOf(incoming) === chatSession)) return;
-  ender.end(user);
+  void ender.end(user);
   if (user.chatAuthToken) setSessionUser(session, { ...user, chatAuthToken: '' });
 }
 
 /**
- * Starts ending every chat session the session holds, its current user's and those of the accounts
- * it remembers, once each, without waiting for the chat server. For a session about to be destroyed.
+ * Ends every chat session the session holds, its current user's and those of the accounts it
+ * remembers, once each, all at once. For a session about to be destroyed: the sessions are read
+ * before this returns. Resolves to whether there was at least one and the chat server confirmed
+ * the end of each.
  */
-export function endAllChatSessions(session: ChatSessionHolder, ender: ChatSessionEnder): void {
+export function endAllChatSessions(session: ChatSessionHolder, ender: ChatSessionEnder): Promise<boolean> {
   const holders = [...(session.user ? [session.user] : []), ...(session.accounts ?? [])];
-  const ended = new Set<string>();
+  const ended = new Map<string, Promise<boolean>>();
   for (const user of holders) {
     const chatSession = ender.sessionOf(user);
-    if (!chatSession || ended.has(chatSession)) continue;
-    ended.add(chatSession);
-    ender.end(user);
+    if (chatSession && !ended.has(chatSession)) ended.set(chatSession, ender.end(user));
   }
+  return Promise.all(ended.values()).then((confirmed) => confirmed.length > 0 && confirmed.every(Boolean));
 }

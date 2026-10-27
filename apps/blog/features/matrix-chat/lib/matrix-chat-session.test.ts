@@ -62,6 +62,8 @@ interface HomeserverOptions {
   whoami?: { user_id: string; device_id: string } | { status: number; errcode: string };
   /** The long poll after the first sync answers `M_UNKNOWN_TOKEN` */
   signOutAfterFirstSync?: boolean;
+  /** `/logout` answers `M_UNKNOWN_TOKEN`: denser's server deleted the device first */
+  deviceDeleted?: boolean;
 }
 
 /** A homeserver answering the client API from `rooms`, recording every request */
@@ -113,7 +115,9 @@ function fakeHomeserver(options: HomeserverOptions = {}) {
       return json({ chunk: [message('$m0', 'older', 1)], start: url.searchParams.get('from'), end: undefined });
     }
     if (path.includes('/send/m.room.message/')) return json({ event_id: '$sent' });
-    if (path === '/logout') return json({});
+    if (path === '/logout' && options.deviceDeleted) {
+      return json({ errcode: 'M_UNKNOWN_TOKEN', error: 'Invalid access token passed.' }, 401);
+    }
     return json({});
   };
   return { fetchFn, requests, stop: () => later.forEach((abort) => abort()) };
@@ -123,19 +127,20 @@ describe('startMatrixChatSession', () => {
   let session: ChatSession | undefined;
   let homeserver: ReturnType<typeof fakeHomeserver>;
 
-  const start = async (defaultRoom = '#general:example.org') => {
-    homeserver = fakeHomeserver();
+  const start = async (defaultRoom = '#general:example.org', options: HomeserverOptions = {}, logger = quiet) => {
+    homeserver = fakeHomeserver(options);
     ({ session } = await startMatrixChatSession({
       homeserverUrl: HOMESERVER,
       userId: USER,
       loginToken: 'login-token',
       deviceId: 'DENSERDEVICE',
       defaultRoom,
-      logger: quiet,
+      logger,
       fetchFn: homeserver.fetchFn
     }));
     return session;
   };
+  const logouts = () => homeserver.requests.filter((request) => request.method === 'POST' && request.path.endsWith('/logout'));
 
   const STORED: MatrixCredentials = { userId: USER, deviceId: 'DENSERDEVICE', accessToken: 'stored-access' };
   const resume = async (options: HomeserverOptions = {}, onLoggedOut?: () => void) => {
@@ -258,7 +263,52 @@ describe('startMatrixChatSession', () => {
     const chat = await start();
     await chat.end();
     session = undefined;
-    assert.ok(homeserver.requests.some((request) => request.method === 'POST' && request.path.endsWith('/logout')));
+    assert.equal(logouts().length, 1);
+  });
+
+  it("signs the device out when denser's server says it did not delete it", async () => {
+    const chat = await start();
+    await chat.end(Promise.resolve(false));
+    session = undefined;
+    assert.equal(logouts().length, 1);
+  });
+
+  it("leaves the device to denser's server when it says it deleted it, and syncs no more", async () => {
+    const chat = await start();
+    let deleted: (ended: boolean) => void = () => {};
+    const ending = chat.end(new Promise<boolean>((resolve) => (deleted = resolve)));
+    await new Promise((resolve) => setImmediate(resolve));
+    const syncs = homeserver.requests.filter((request) => request.path.endsWith('/sync')).length;
+
+    deleted(true);
+    await ending;
+    session = undefined;
+
+    assert.deepEqual(logouts(), []);
+    assert.equal(homeserver.requests.filter((request) => request.path.endsWith('/sync')).length, syncs);
+  });
+
+  it('takes a /logout refused for an unknown token as a device already signed out, without a warning', async () => {
+    const logged: string[] = [];
+    const recording: MatrixSdkLogger = {
+      ...quiet,
+      debug: (...msg: unknown[]) => logged.push(`debug ${String(msg[0])}`),
+      warn: (...msg: unknown[]) => logged.push(`warn ${String(msg[0])}`),
+      error: (...msg: unknown[]) => logged.push(`error ${String(msg[0])}`),
+      getChild: () => recording
+    };
+    const chat = await start('#general:example.org', { deviceDeleted: true }, recording);
+    logged.length = 0;
+
+    await chat.end();
+    session = undefined;
+
+    assert.equal(logouts().length, 1);
+    assert.deepEqual(
+      logged.filter((line) => !line.startsWith('debug')),
+      []
+    );
+    assert.ok(logged.includes('debug The Matrix device was already signed out'));
   });
 
   it('returns the credentials it signed in with, for resuming the session later', async () => {

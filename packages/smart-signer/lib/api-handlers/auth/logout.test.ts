@@ -146,8 +146,7 @@ describe('logoutUser', () => {
     const calls = chatServer(() => Promise.resolve(Response.json({ status: 'success' })));
     signedIn(account('alice', 'token-a'));
 
-    assert.deepEqual(await signOut(), { isLoggedIn: false, username: '' });
-    await settle();
+    assert.deepEqual(await signOut(), { isLoggedIn: false, username: '', chatSessionsEnded: true });
 
     assert.equal(harness.session.destroyed, true);
     const logouts = calls.filter((call) => call.url === `${CHAT_API}/logout`);
@@ -163,25 +162,24 @@ describe('logoutUser', () => {
     const calls = chatServer(() => Promise.resolve(Response.json({ status: 'success' })));
     signedIn(account('carol', ''));
 
-    await signOut();
-    await settle();
+    assert.deepEqual(await signOut(), { isLoggedIn: false, username: '', chatSessionsEnded: false });
 
     assert.equal(harness.session.destroyed, true);
     assert.deepEqual(calls, []);
   });
 
-  it('signs out without waiting for an unreachable Rocket.Chat, and logs the failure without the token', { timeout: 2000 }, async () => {
+  it('answers once an unreachable Rocket.Chat fails, saying so, and logs the failure without the token', { timeout: 2000 }, async () => {
     let refuse: (error: Error) => void = () => {};
     chatServer(() => new Promise<Response>((_resolve, reject) => (refuse = reject)));
     signedIn(account('alice', 'token-a'));
 
-    assert.deepEqual(await signOut(), { isLoggedIn: false, username: '' });
-    assert.equal(harness.session.destroyed, true);
-
+    const answer = signOut();
     // The logout request is now waiting on Rocket.Chat, which then fails
     await settle();
+    assert.equal(harness.session.destroyed, true);
     refuse(new TypeError('fetch failed'));
-    await settle();
+
+    assert.deepEqual(await answer, { isLoggedIn: false, username: '', chatSessionsEnded: false });
     assert.equal(harness.errors.length, 1);
     assert.match(String(harness.errors[0][0]), /Rocket\.Chat logout/);
     assert.ok(!JSON.stringify(harness.errors).includes('token-a'));
@@ -218,8 +216,7 @@ describe('logoutUser', () => {
       const alice = account('alice', '');
       signedIn(alice, [alice, account('bob', '')]);
 
-      await signOut();
-      await settle();
+      assert.deepEqual(await signOut(), { isLoggedIn: false, username: '', chatSessionsEnded: true });
 
       assert.equal(harness.session.destroyed, true);
       const bobDevices = `${HOMESERVER}/_synapse/admin/v2/users/${encodeURIComponent('@bob:matrix.test')}`;
@@ -236,17 +233,17 @@ describe('logoutUser', () => {
       assert.deepEqual(harness.errors, []);
     });
 
-    it('signs out without waiting for a failing Synapse, and logs the failure without the admin token', { timeout: 2000 }, async () => {
+    it('answers once Synapse fails, saying so, and logs the failure without the admin token', { timeout: 2000 }, async () => {
       let refuse: (response: Response) => void = () => {};
       synapse(() => new Promise<Response>((resolve) => (refuse = resolve)));
       signedIn(account('alice', ''));
 
-      assert.deepEqual(await signOut(), { isLoggedIn: false, username: '' });
+      const answer = signOut();
+      await settle();
       assert.equal(harness.session.destroyed, true);
-
-      await settle();
       refuse(Response.json({ errcode: 'M_UNKNOWN', error: `bad ${MATRIX_ADMIN_TOKEN}` }, { status: 500 }));
-      await settle();
+
+      assert.deepEqual(await answer, { isLoggedIn: false, username: '', chatSessionsEnded: false });
       assert.equal(harness.errors.length, 1);
       assert.match(String(harness.errors[0][0]), /Matrix devices/);
       assert.ok(!JSON.stringify(harness.errors).includes(MATRIX_ADMIN_TOKEN));
@@ -257,8 +254,7 @@ describe('logoutUser', () => {
       const calls = synapse(() => Promise.resolve(Response.json({})));
       signedIn(account('alice', ''));
 
-      await signOut();
-      await settle();
+      assert.deepEqual(await signOut(), { isLoggedIn: false, username: '', chatSessionsEnded: false });
 
       assert.equal(harness.session.destroyed, true);
       assert.deepEqual(calls, []);

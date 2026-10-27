@@ -8,10 +8,11 @@ import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { setAccounts } from '@smart-signer/lib/auth/active-user';
 import { getLogger } from '@ui/lib/logging';
 import { appApiPath } from '@ui/lib/app-api-path';
+import { beginSignOut, type SignOutAnswer } from '@smart-signer/lib/auth/chat-sign-out';
 
 const logger = getLogger('app');
 
-async function signOutBackend(): Promise<User> {
+async function signOutBackend(): Promise<SignOutAnswer> {
   return await fetchJson(appApiPath('/api/auth/logout'), {
     method: 'POST',
     headers: [
@@ -27,6 +28,9 @@ export function useSignOut() {
     // Whatever the current account, the server session may hold others signed in before it
     mutationFn: signOutBackend,
     onMutate: () => {
+      // Recorded before the user changes, which ends the chat drawer's session
+      const settleSignOut = beginSignOut();
+
       // Clear observer cookie immediately — SSR stops personalizing
       document.cookie = 'observer=; path=/; max-age=0';
 
@@ -42,9 +46,13 @@ export function useSignOut() {
       // Invalidate observer-dependent queries to refetch with default observer
       queryClient.invalidateQueries({ queryKey: ['communitiesList'] });
       queryClient.invalidateQueries({ queryKey: ['entriesInfinite'] });
-      return { previousUser, previousAccounts };
+      return { previousUser, previousAccounts, settleSignOut };
+    },
+    onSuccess: (answer, _variables, context) => {
+      context.settleSignOut(answer);
     },
     onError: (error, _variables, context) => {
+      context?.settleSignOut(null);
       // Rollback on error
       if (context?.previousUser) {
         queryClient.setQueryData([QUERY_KEY.user], context.previousUser);

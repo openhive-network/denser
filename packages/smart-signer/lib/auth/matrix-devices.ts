@@ -61,10 +61,14 @@ export function matrixSessionEnder(
     sessionOf: userIdOf,
     end: (user) => {
       const userId = userIdOf(user);
-      deleteAllDevices(userId, settings, request).catch((error: unknown) => {
-        const reason = error instanceof Error ? error.message : String(error);
-        onFailure(userId, reason.replaceAll(settings.adminToken, '[redacted]'));
-      });
+      return deleteAllDevices(userId, settings, request).then(
+        () => true,
+        (error: unknown) => {
+          const reason = error instanceof Error ? error.message : String(error);
+          onFailure(userId, reason.replaceAll(settings.adminToken, '[redacted]'));
+          return false;
+        }
+      );
     }
   };
 }

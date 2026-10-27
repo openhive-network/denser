@@ -165,7 +165,7 @@ export class MatrixHomeserverStub {
       return deviceId ? json({ user_id: this.userId, device_id: deviceId }) : unknownToken();
     }
     if (path === '/logout' && method === 'POST') {
-      this.sessions.delete(accessToken);
+      if (!this.sessions.delete(accessToken)) return unknownToken();
       return json({});
     }
     if (path.endsWith('/filter') && method === 'POST') return json({ filter_id: 'stub-filter' });
