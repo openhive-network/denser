@@ -9,6 +9,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getLogger } from '@ui/lib/logging';
+import { takeSignOut } from '@smart-signer/lib/auth/chat-sign-out';
 import { requestMatrixLoginToken } from '@/blog/lib/fetch-matrix-login-token';
 import type { ChatSession } from '@/blog/features/matrix-chat/lib/chat-view-types';
 import { chatDeviceId } from '@/blog/features/matrix-chat/lib/device-id';
@@ -74,7 +75,8 @@ function openSession({ userId, homeserverUrl, defaultRoom, onLoggedOut, signal }
  * The native chat client's Matrix session for `userId`, signed in once `start` is set: with the
  * session the browser stored, else with a login token denser's server mints. A change of user
  * (sign-out, account switch, the end of denser's session) or unmounting ends it: the client
- * stops, its state and stored session are dropped and its device signed out. A session the
+ * stops, its state and stored session are dropped and its device signed out, by denser's server
+ * when it says it did so on signing out of denser, else by the client. A session the
  * homeserver signs out is dropped too; the session another tab stored since is then resumed,
  * else it signs in again with a newly minted login token, once until `retry` or another user.
  */
@@ -91,6 +93,8 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
 
   useEffect(() => {
     if (!userId || !start) return;
+    // A sign-out pending from before this session does not end it
+    takeSignOut();
     let current = true;
     let started: StartedChatSession | null = null;
     const aborted = new AbortController();
@@ -125,11 +129,13 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
       current = false;
       aborted.abort();
       setState(IDLE);
+      // Set when signing out of denser ends the session, whose server then deletes the device
+      const serverSignOut = takeSignOut() ?? undefined;
       void inTurn(async () => {
         const opened = await opening.catch(() => null);
         if (!opened) return;
         forgetMatrixSession(browserMatrixSessionStore, opened.credentials);
-        await opened.session.end();
+        await opened.session.end(serverSignOut);
       });
     };
   }, [userId, start, homeserverUrl, defaultRoom, attempt]);

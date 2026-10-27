@@ -74,8 +74,7 @@ describe('matrixSessionEnder', () => {
     const ender = matrixSessionEnder(SETTINGS, request, () => assert.fail('no failure expected'));
 
     assert.equal(ender?.sessionOf(account('alice')), '@alice:example.org');
-    ender?.end(account('alice'));
-    await settle();
+    assert.equal(await ender?.end(account('alice')), true);
 
     assert.deepEqual(
       calls.map(({ url, method, body }) => ({ url, method, body })),
@@ -92,8 +91,11 @@ describe('matrixSessionEnder', () => {
 
   it('deletes nothing for a user with no devices', async () => {
     const { calls, request } = synapse(async () => ({ devices: [], total: 0 }));
-    matrixSessionEnder(SETTINGS, request, () => assert.fail('no failure expected'))?.end(account('alice'));
-    await settle();
+    const ended = await matrixSessionEnder(SETTINGS, request, () => assert.fail('no failure expected'))?.end(
+      account('alice')
+    );
+
+    assert.equal(ended, true);
 
     assert.deepEqual(
       calls.map((call) => call.url),
@@ -108,17 +110,18 @@ describe('matrixSessionEnder', () => {
     assert.equal(matrixSessionEnder({ ...SETTINGS, adminToken: '' }, request, noFailures), undefined);
   });
 
-  it('returns before Synapse answers, and reports a failure without the admin token', async () => {
+  it('resolves once Synapse answers, to false for a failure it reports without the admin token', async () => {
     let fail: (error: Error) => void = () => {};
     const failures: string[] = [];
     const { request } = synapse(() => new Promise((_resolve, reject) => (fail = reject)));
 
     const ender = matrixSessionEnder(SETTINGS, request, (userId, reason) => failures.push(`${userId}: ${reason}`));
-    ender?.end(account('alice'));
+    const ended = ender?.end(account('alice'));
+    await settle();
     assert.deepEqual(failures, []);
 
     fail(new Error(`Unauthorized: ${ADMIN_TOKEN}`));
-    await settle();
+    assert.equal(await ended, false);
     assert.deepEqual(failures, ['@alice:example.org: Unauthorized: [redacted]']);
   });
 });

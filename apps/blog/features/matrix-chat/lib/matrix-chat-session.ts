@@ -247,14 +247,28 @@ class MatrixChatSession implements ChatSession {
     }
   }
 
-  async end(): Promise<void> {
+  async end(serverSignOut: Promise<boolean> = Promise.resolve(false)): Promise<void> {
+    // No sync in flight while denser's server deletes the device: it would fail on the deleted token
+    this.client.off(HttpApiEvent.SessionLoggedOut, this.loggedOutByHomeserver);
+    this.client.stopClient();
+    this.client.http.abort();
     try {
-      // Deletes the device; denser's server-side cleanup covers it when this fails
-      if (!this.loggedOut) await this.client.logout(true);
-    } catch (error) {
-      this.logger.warn('Matrix sign-out failed', error);
+      if (!this.loggedOut && !(await serverSignOut)) await this.signOutDevice();
     } finally {
       await this.stop();
+    }
+  }
+
+  private async signOutDevice(): Promise<void> {
+    try {
+      // Not `authedRequest`: on an unknown token the SDK logs a failed token refresh as an error
+      await this.client.http.request(Method.Post, '/logout', undefined, {}, {
+        headers: { Authorization: `Bearer ${this.client.getAccessToken() ?? ''}` }
+      });
+    } catch (error) {
+      // denser's server-side cleanup deleted the device first, or covers it when this fails
+      if (isRejectedToken(error)) this.logger.debug('The Matrix device was already signed out');
+      else this.logger.warn('Matrix sign-out failed', error);
     }
   }
 

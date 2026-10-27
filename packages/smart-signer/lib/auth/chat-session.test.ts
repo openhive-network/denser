@@ -105,7 +105,10 @@ describe('endCurrentChatSession', () => {
 
   it('keeps a session the incoming user holds too', () => {
     const ended: string[] = [];
-    const byUsername = { sessionOf: (user: User) => user.username, end: (user: User) => ended.push(user.username) };
+    const byUsername = {
+      sessionOf: (user: User) => user.username,
+      end: async (user: User) => ended.push(user.username) > 0
+    };
     const alice = account('alice', '');
     const session = { user: alice };
 
@@ -119,13 +122,28 @@ describe('endCurrentChatSession', () => {
 });
 
 describe('endAllChatSessions', () => {
-  it('revokes each token the session holds once', () => {
+  it('revokes each token the session holds once, and tells that each was ended', async () => {
     const { revoked, ender } = recorder();
     const alice = account('alice', 'token-a');
     const session = { user: alice, accounts: [alice, account('bob', 'token-b'), account('carol', '')] };
 
-    endAllChatSessions(session, ender);
+    const ended = endAllChatSessions(session, ender);
 
     assert.deepEqual(revoked, ['alice:token-a', 'bob:token-b']);
+    assert.equal(await ended, true);
+  });
+
+  it('tells that not all were ended when one fails, or when the session holds none', async () => {
+    const failing = rocketChatSessionEnder(
+      async (username: string) => {
+        if (username === 'bob') throw new Error('refused');
+      },
+      () => {}
+    );
+    const alice = account('alice', 'token-a');
+
+    assert.equal(await endAllChatSessions({ user: alice, accounts: [alice, account('bob', 'token-b')] }, failing), false);
+    assert.equal(await endAllChatSessions({ user: account('carol', '') }, failing), false);
+    assert.equal(await endAllChatSessions({}, failing), false);
   });
 });

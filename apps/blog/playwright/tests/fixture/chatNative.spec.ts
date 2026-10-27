@@ -88,6 +88,20 @@ async function usesNativeChat(page: Page, settings: Record<string, string> = NAT
   return routed;
 }
 
+/** Answers of 400 and above to `page`'s requests from now on, as `METHOD url status` */
+function recordFailedResponses(page: Page): string[] {
+  const failed: string[] = [];
+  page.on('response', (response) => {
+    if (response.status() >= 400) failed.push(`${response.request().method()} ${response.url()} ${response.status()}`);
+  });
+  return failed;
+}
+
+async function signOut(page: Page): Promise<void> {
+  await new HomePage(page).profileAvatarButton.click();
+  await new ProfileUserMenu(page).logoutLink.click();
+}
+
 const storedSession = (page: Page) =>
   page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? 'null')?.value ?? null, STORED_SESSION_KEY);
 
@@ -228,9 +242,9 @@ test.describe('Native Matrix chat client', () => {
     await openChat(page);
     expect(await storedSession(page)).toMatchObject({ userId: USER_ID });
     await page.getByRole('button', { name: EN.close_widget }).click();
+    const failed = recordFailedResponses(page);
 
-    await new HomePage(page).profileAvatarButton.click();
-    await new ProfileUserMenu(page).logoutLink.click();
+    await signOut(page);
 
     await expect(chatButton(page)).toHaveCount(0);
     await expect.poll(() => homeserver.requestsTo('/logout', 'POST').length).toBe(1);
@@ -238,6 +252,32 @@ test.describe('Native Matrix chat client', () => {
     const syncs = homeserver.requestsTo('/sync').length;
     await page.waitForTimeout(1_500);
     expect(homeserver.requestsTo('/sync').length).toBe(syncs);
+    expect(failed).toEqual([]);
+  });
+
+  test("CHAT-NATIVE-17: a sign-out whose server deleted the user's devices sends no /logout of its own", async ({
+    page
+  }) => {
+    const { homeserver } = await usesNativeChat(page);
+    // As denser's server does with a Matrix admin token: it deletes the devices, then answers
+    await page.route('**/api/auth/logout', async (route) => {
+      const response = await route.fetch();
+      homeserver.revokeSessions();
+      await route.fulfill({ response, json: { ...(await response.json()), chatSessionsEnded: true } });
+    });
+    await openChat(page);
+    await page.getByRole('button', { name: EN.close_widget }).click();
+    const failed = recordFailedResponses(page);
+
+    await signOut(page);
+
+    await expect(chatButton(page)).toHaveCount(0);
+    await expect.poll(() => storedSession(page)).toBeNull();
+    const syncs = homeserver.requestsTo('/sync').length;
+    await page.waitForTimeout(1_500);
+    expect(homeserver.requestsTo('/sync').length).toBe(syncs);
+    expect(homeserver.requestsTo('/logout')).toEqual([]);
+    expect(failed).toEqual([]);
   });
 
   test('CHAT-NATIVE-06: MATRIX_CHAT_CLIENT=element keeps Element in an iframe, without the native client', async ({
