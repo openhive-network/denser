@@ -11,7 +11,7 @@ const logger = getLogger('app');
 // this internally; wax's BeekeeperProvider and MetaMaskProvider pass the
 // buffer through untouched, so it's applied around those by the
 // `*MemoWithProvider` wrappers below.
-const ENCRYPTED_MEMO_MARKER = '#';
+export const ENCRYPTED_MEMO_MARKER = '#';
 
 export function stripEncryptedMemoMarker(memo: string): string {
   return memo.startsWith(ENCRYPTED_MEMO_MARKER) ? memo.slice(ENCRYPTED_MEMO_MARKER.length) : memo;
