@@ -19,7 +19,6 @@ import {
   NavigationProgress,
   NavigationProgressHandler
 } from '@hive/ui';
-import ChatWidget from '@/blog/components/chat-widget';
 import { SocialSyncListener } from '@/blog/components/social-sync-listener';
 import { useTranslation } from '@/blog/i18n/client';
 
@@ -46,7 +45,6 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
               />
               <LoggedUserProvider>
                 {children}
-                <ChatWidget />
               </LoggedUserProvider>
             </SignerProvider>
           </NavigationProgressProvider>

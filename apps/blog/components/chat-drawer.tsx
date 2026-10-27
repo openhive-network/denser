@@ -6,6 +6,7 @@ import { Link } from '@hive/ui';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
 import { useTranslation } from '@/blog/i18n/client';
+import { CHAT_BUTTON_FOCUS_RING } from '@/blog/components/chat-button-focus-ring';
 
 interface ChatDrawerProps {
   open: boolean;
@@ -98,13 +99,14 @@ export function ChatDrawer({
         </div>
       </Drawer>
 
-      {/* Drawer toggler */}
-      <div className="group relative z-40 inline-flex w-fit cursor-pointer items-center justify-center">
+      {/* Drawer toggler, in a block of no height: an inline box would add a line under the header */}
+      <div className="relative z-40">
         <TooltipProvider>
           <Tooltip>
             <div className="fixed bottom-10 right-10 block">
               <TooltipTrigger
                 type="button"
+                className={CHAT_BUTTON_FOCUS_RING}
                 aria-label={t('chat_widget.open_widget')}
                 aria-describedby={badgeContent ? badgeId : undefined}
                 onClick={() => setOpen(!open)}

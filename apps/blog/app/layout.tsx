@@ -5,6 +5,7 @@ import { Metadata } from 'next';
 import { cookies, headers } from 'next/headers';
 import { NONCE_HEADER, parseNonce } from '@hive/middleware/lib/csp';
 import MainBar from '../features/layouts/site-header/main-bar';
+import ChatWidget from '@/blog/components/chat-widget';
 import ClientEffects from '../features/layouts/site-header/client-effects';
 import { Providers } from '../features/layouts/providers';
 import { StorageCleanup } from '@ui/components/storage-cleanup';
@@ -89,6 +90,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                 <StorageCleanup />
                 <CondenserMigration />
                 <MainBar />
+                {/* Next after the header in the Tab order, wherever it shows, not after every post */}
+                <ChatWidget />
                 <main className="mx-auto">{children}</main>
               </>
             </Providers>
