@@ -120,7 +120,7 @@ test.describe('SSR safety — cache headers & per-user isolation', () => {
       expect(res.headers()['set-cookie']).toBeUndefined();
     });
   }
-  test('SAFE-09 — community feed /trending/hive-160391 for an observer is not publicly cacheable', async ({
+  test('SAFE-17 — community feed /trending/hive-160391 for an observer is not publicly cacheable', async ({
     request
   }) => {
     const res = await request.get('/trending/hive-160391', {
