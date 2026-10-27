@@ -175,6 +175,8 @@ test('does the thing', async ({ page }) => {
 });
 ```
 
+A test ID in a title (`CMT-09:`) must be unique within the app: `scripts/check-playwright-test-ids.js`, in the static checks, fails on a duplicate. When a parallel landing takes your number first, renumber yours to the next free one in its prefix.
+
 For voting specs, prefer `postVotingContext.ts`:
 
 - `VOTER`, `FIRST_POST_AUTHOR`, `FIRST_POST_PERMLINK` — seeded user &
@@ -868,7 +870,7 @@ click, retried until the editor or dialog is visible).
 ### Clicking a disabled control: scroll it in, wait for a settled box
 
 Playwright's actions refuse a disabled element, so a check of what a click on
-one does (CMT-03: a double-click on the disabled Post button selects no text)
+one does (CMT-09: a double-click on the disabled Post button selects no text)
 dispatches `page.mouse` at its `boundingBox()`. That skips Playwright's own
 scrolling and stability checks. In the production build the reply editor's
 Post button starts below the 720px viewport, and the editor keeps growing for

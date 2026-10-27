@@ -12,7 +12,7 @@ import { recordCspViolations } from '../support/csp';
 
 test.use({ fixtureTestName: 'postDetail_popover' });
 
-test('CSP-03: a post page and the author popover card raise no CSP violation', async ({ page }) => {
+test('CSP-06: a post page and the author popover card raise no CSP violation', async ({ page }) => {
   const violations = await recordCspViolations(page);
 
   await page.goto('/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit');
