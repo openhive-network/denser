@@ -1117,7 +1117,7 @@ lighthouse-metrics-wallet:
 lighthouse-mr-comment:
   extends: .job-defaults
   stage: test-report-aggregate
-  image: node:24.21.0-alpine3.24
+  image: ${NODE_TEST_TOOLS_IMAGE}
   needs:
   - job: lighthouse-metrics-blog
     optional: true
@@ -1133,7 +1133,7 @@ lighthouse-mr-comment:
 
 publish:
   image:
-    name: node:24.21.0-alpine3.24
+    name: ${NODE_TEST_TOOLS_IMAGE}
     entrypoint: ['']
   extends: .job-defaults
   stage: publish

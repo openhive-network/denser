@@ -19,6 +19,9 @@ OPTIONS:
   
   For subdirectory builds, set BASE_PATH environment variable:
     BASE_PATH=/blog $0 ...
+
+  NODE_VERSION (or NODE_IMAGE_VERSION) must be set to common-ci-configuration's
+  Node version (NODE_VERSION in its docker-bake.hcl); CI sets NODE_IMAGE_VERSION.
 EOF
 }
 
@@ -28,6 +31,8 @@ export TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-}
 export TURBO_APP_PATH=${TURBO_APP_PATH:-}
 export TURBO_APP_NAME=${TURBO_APP_NAME:-}
 export BASE_PATH=${BASE_PATH:-""}
+# Node version of the image: common-ci-configuration's NODE_IMAGE_VERSION, which CI sets.
+export NODE_VERSION=${NODE_VERSION:-${NODE_IMAGE_VERSION:-}}
 PROGRESS_DISPLAY=${PROGRESS_DISPLAY:-"auto"}
 
 while [ $# -gt 0 ]; do
@@ -79,6 +84,7 @@ done
 TURBO_APP_NAME=${TURBO_APP_NAME:?"App name must be set"}
 TURBO_APP_PATH=${TURBO_APP_PATH:-"/apps/${TURBO_APP_NAME}"}
 TURBO_APP_SCOPE=${TURBO_APP_SCOPE:-"@hive/${TURBO_APP_NAME}"}
+NODE_VERSION=${NODE_VERSION:?"NODE_VERSION (or NODE_IMAGE_VERSION) must name common-ci-configuration's Node version"}
 
 TARGET="local-build"
 if [ -n "${CI:-}" ];

@@ -6,7 +6,7 @@
   "types": "src/index.ts",
   "unpkg": "dist/browser/hive-content-renderer.min.js",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "publishConfig": {
     "access": "public"
