@@ -6,11 +6,18 @@ import { FYP_PAGE_SIZE, nextFypPage } from './fyp-paging.ts';
 const BASE_URL = 'https://fyp.example.org/haf-fyp-api/';
 // Larger than Number.MAX_SAFE_INTEGER: it would not survive as a JSON number
 const POST_ID = '477020413881221127';
+const TRUNCATED_BODY_LENGTH = 1000;
 
-const post = (permlink: string) => ({
+const IMAGE = '![img.webp](https://cdn.liketu.com/liketu/trina77/lkt-mvqaj2dw-2xogw446/img.webp)\n\n';
+const TEXT = '带着一群孩子到家已经四点半，我便马不停蹄准备晚餐。';
+
+/** `opening` followed by text, cut like haf_fyp cuts a body. */
+const cutBody = (opening: string) => (opening + 'x'.repeat(TRUNCATED_BODY_LENGTH)).slice(0, TRUNCATED_BODY_LENGTH);
+
+const post = (permlink: string, body = 'text') => ({
   author: 'alice',
   permlink,
-  body: 'text',
+  body,
   fyp: { rank: 1, source: 'personalized', post_id: POST_ID, algorithm_version: '1.1.0' }
 });
 
@@ -39,7 +46,46 @@ describe('getFypFeedPage', () => {
     assert.equal(url.origin + url.pathname, 'https://fyp.example.org/haf-fyp-api/v1/fyp/feed/alice');
     assert.equal(url.searchParams.get('page'), '3');
     assert.equal(url.searchParams.get('page-size'), String(FYP_PAGE_SIZE));
-    assert.equal(url.searchParams.get('truncate_body'), '300');
+    assert.equal(url.searchParams.get('truncate_body'), String(TRUNCATED_BODY_LENGTH));
+  });
+
+  it('drops a markdown image, link or HTML tag the cut left unfinished', async () => {
+    const opening = IMAGE.repeat(3) + TEXT + '\n\n';
+    const cuts = [
+      '![img_20261025_181',
+      '![download.gif](',
+      '![1001998356-bf4307b60d22.webp](https://',
+      '[Source](https://chatgpt.com/s/m_6adf7f393',
+      '<img src="https://images.hive.blog/a.png'
+    ];
+    const bodies = cuts.map((cut) => opening + 'y'.repeat(TRUNCATED_BODY_LENGTH - opening.length - cut.length) + cut);
+    serve(async () => Response.json(bodies.map((body, i) => post(String(i), body))));
+    const page = await getFypFeedPage(BASE_URL, 'alice', 1);
+
+    for (const [i, entry] of page.entries()) {
+      assert.equal(entry.body, bodies[i].slice(0, -cuts[i].length));
+    }
+  });
+
+  it('keeps complete markup at the end of a cut body and every short body', async () => {
+    const complete = cutBody('').slice(0, -IMAGE.length) + IMAGE;
+    const short = 'A short post ending in ![img](https://example.com/a.png';
+    serve(async () => Response.json([post('a', complete), post('b', short), post('c', cutBody(TEXT))]));
+    const page = await getFypFeedPage(BASE_URL, 'alice', 1);
+
+    assert.deepEqual(
+      page.map((entry) => entry.body),
+      [complete, short, cutBody(TEXT)]
+    );
+  });
+
+  it('gives a post opening with images a summary of its text, not a markdown fragment', async () => {
+    const { getPostSummary } = await import('./post-summary.ts');
+    const body = cutBody(IMAGE.repeat(3) + TEXT + '\n\n' + IMAGE.repeat(10));
+    serve(async () => Response.json([post('a', body)]));
+    const [entry] = await getFypFeedPage(BASE_URL, 'alice', 1);
+
+    assert.equal(getPostSummary(entry.json_metadata, entry.body), TEXT);
   });
 
   it('keeps fyp.post_id as the string the API sent', async () => {
