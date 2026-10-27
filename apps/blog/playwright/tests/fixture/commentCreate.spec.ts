@@ -110,7 +110,7 @@ test.describe('Comment creation — fresh state (§5)', () => {
     ).toBeVisible();
   });
 
-  test('CMT-03: a double-click on the disabled Post button selects no text', async ({ page }) => {
+  test('CMT-09: a double-click on the disabled Post button selects no text', async ({ page }) => {
     await gotoPostLoggedIn(page);
     await openReplyEditor(postReplyTrigger(page), page.getByTestId('reply-editor'));
     await waitForEditorMounted(page.getByTestId('reply-editor'));
@@ -138,7 +138,7 @@ test.describe('Comment creation — fresh state (§5)', () => {
     expect(await page.evaluate(() => window.getSelection()?.toString() ?? '')).toBe('');
   });
 
-  test('CMT-04: a double- or triple-click between the Post and Cancel buttons selects no text', async ({ page }) => {
+  test('CMT-10: a double- or triple-click between the Post and Cancel buttons selects no text', async ({ page }) => {
     await gotoPostLoggedIn(page);
     const editor = page.getByTestId('reply-editor');
     await openReplyEditor(postReplyTrigger(page), editor);
