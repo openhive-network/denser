@@ -3,8 +3,13 @@ import { FYP_PAGE_SIZE } from './fyp-paging.ts';
 
 /** How long a feed page may take before the request is abandoned. */
 export const FYP_REQUEST_TIMEOUT_MS = 10_000;
-/** Cards only show a summary, so the bodies are cut server-side to keep a page small. */
-const TRUNCATED_BODY_LENGTH = 300;
+/**
+ * Cards only show a summary, so the bodies are cut server-side to keep a page small. Long enough
+ * to get past the few images many posts open with to the text a summary is made of.
+ */
+const TRUNCATED_BODY_LENGTH = 1000;
+// A markdown image or link, or an HTML tag, the cut left unclosed at the end of a body.
+const UNFINISHED_MARKUP = /(?:!?\[[^\]\n]*(?:\]\([^)\s]*)?|<[^>\n]*)$/;
 
 /** How haf_fyp ranked a post. `post_id` is a string: it can exceed Number.MAX_SAFE_INTEGER. */
 export interface FypRanking {
@@ -83,5 +88,11 @@ export async function getFypFeedPage(
   if (!Array.isArray(body) || !body.every(isFypEntry)) {
     throw new FypApiError(`For You feed answered an unexpected body: ${url}`);
   }
-  return body;
+  return body.map(dropUnfinishedMarkup);
+}
+
+// Left in, a fragment like `![img_2026` would show as text in the card summary.
+function dropUnfinishedMarkup(entry: FypEntry): FypEntry {
+  if (typeof entry.body !== 'string' || entry.body.length < TRUNCATED_BODY_LENGTH) return entry;
+  return { ...entry, body: entry.body.replace(UNFINISHED_MARKUP, '') };
 }
