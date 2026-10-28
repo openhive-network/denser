@@ -60,6 +60,9 @@ issues:
 timeouts:
   enabled: true
   max_scale: 3
+# `tier:` puts a suite's results on Test Health's per-tier pass rate (one of unit,
+# smoke, system, dind, e2e). A suite name carries the same tier in every slot it
+# appears in; `static` runs eslint and tsc, records no test results, and has none.
 verification:
   # ~25 s: mocha unit suites of packages/renderer and packages/transaction
   # (~1,430 tests), plus lint and type check.
@@ -68,6 +71,7 @@ verification:
       - name: unit
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
+        tier: unit
         artifacts: ["test-results/unit/"]
         stack: false
       - name: static
@@ -83,6 +87,7 @@ verification:
       - name: unit
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
+        tier: unit
         artifacts: ["test-results/unit/"]
         stack: false
       - name: static
@@ -92,6 +97,7 @@ verification:
       - name: fixture_e2e
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
+        tier: e2e
         artifacts: ["test-results/fixture/"]
         stack: false
       # The wallet's fixture suite, split out of fixture_e2e on 2026-10-09 so a slow
@@ -99,6 +105,7 @@ verification:
       - name: wallet_fixture
         adapter: command
         args: [".aidev/run-wallet-fixture-e2e.sh"]
+        tier: e2e
         artifacts: ["test-results/wallet-fixture/"]
         stack: false
       # Boots the live dev stack (sandbox.dev) cold and over the base revision's
@@ -110,6 +117,7 @@ verification:
       - name: dev_stack
         adapter: command
         args: [".aidev/run-dev-stack.sh"]
+        tier: system
         artifacts: ["test-results/dev-stack-suite/"]
         stack: false
       # The live-API e2e specs this candidate changed or reaches through a
@@ -126,6 +134,7 @@ verification:
       - name: live_e2e
         adapter: command
         args: [".aidev/run-live-e2e.sh"]
+        tier: e2e
         artifacts: ["test-results/live-e2e/"]
         env: {DENSER_TEST_STACK: "1"}
         mode: advisory
@@ -133,6 +142,7 @@ verification:
   baseline:
     adapter: command
     args: [".aidev/run-unit-tests.sh"]
+    tier: unit
     artifacts: ["test-results/unit/"]
     stack: false
   # Re-checks the merged tree on deploy/promote.
@@ -141,6 +151,7 @@ verification:
       - name: unit
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
+        tier: unit
         artifacts: ["test-results/unit/"]
         stack: false
       - name: static
@@ -152,6 +163,7 @@ verification:
   coverage:
     adapter: command
     args: [".aidev/run-coverage.sh"]
+    tier: unit
     artifacts: ["test-results/coverage/"]
     stack: false
   # The deterministic Lighthouse pass (.aidev/run-lighthouse-fixture.sh): production
@@ -166,6 +178,7 @@ verification:
       - name: lighthouse_fixture
         adapter: command
         args: [".aidev/run-lighthouse-fixture.sh"]
+        tier: system
         artifacts: ["test-results/lighthouse-fixture/"]
         stack: false
 
