@@ -1205,6 +1205,44 @@
       "not_owner": "Urządzenia tego konta widzi tylko przeglądarka zalogowana na nie.",
       "expiry_banner": "Klucz tego urządzenia dla {{name}} wygasa {{date}}.",
       "expiry_banner_action": "Odnów go kluczem dostępu"
+    },
+    "graduation": {
+      "title": "Przejdź na konto Hive",
+      "description": "Twoje konto lite dostanie własne konto Hive. Jego klucze pochodzą z Twojego klucza dostępu: serwis podpisujący otworzy się, by je podać, i nigdy nie trafią one do tej strony.",
+      "name_label": "Nazwa konta Hive",
+      "keys_note": "Po przejściu konto lite nadal działa.",
+      "confirm": "Przejdź",
+      "upgrade": "Przejdź na konto Hive",
+      "earned": "Zarobiono {{rewards}} HBD",
+      "reached": "Zarobiono {{rewards}} HBD, potrzeba {{threshold}} HBD",
+      "progress": "Zarobiono {{rewards}} z {{threshold}} HBD ({{percent}}%)",
+      "steps": {
+        "keys": "Pobieranie kluczy konta z klucza dostępu",
+        "creating": "Tworzenie konta",
+        "delegating": "Delegowanie kredytów zasobów",
+        "linking": "Łączenie konta lite"
+      },
+      "done": "Twoje konto Hive jest gotowe:",
+      "created_unlinked": "Konto Hive zostało utworzone, ale połączenie z nim konta lite się nie udało:",
+      "retry_link": "Ponów łączenie",
+      "link_not_shown": "Połączenie zostało wysłane, ale jeszcze go nie widać. Spróbuj ponownie za minutę.",
+      "sign_in_as": "Zaloguj jako @{{account}}",
+      "now_account": "Teraz @{{account}}",
+      "profile_graduated": "Przeniesione na konto Hive",
+      "finish": "Dokończ przejście",
+      "errors": {
+        "not_eligible": "To konto lite nie może jeszcze przejść na Hive.",
+        "name_taken": "Ktoś w międzyczasie zajął tę nazwę. Wybierz inną.",
+        "name_invalid": "To nie jest poprawna nazwa konta Hive.",
+        "daily_cap": "Bramka utworzyła już dziś wszystkie konta, na jakie mogła. Spróbuj jutro.",
+        "graduation_disabled": "Przejścia na Hive są teraz wyłączone w tej bramce.",
+        "creator_balance": "Bramka nie może teraz opłacić nowych kont. Spróbuj później.",
+        "rate_limited": "Próbowano przed chwilą. Odczekaj godzinę przed kolejną próbą.",
+        "auth_failed": "Bramka nie przyjęła podpisu Twojego konta lite. Zaloguj się ponownie na tym urządzeniu.",
+        "broadcast_failed": "Łańcuch odmówił utworzenia konta. Spróbuj później.",
+        "signer_keys": "Serwis podpisujący nie zwrócił wszystkich kluczy nowego konta.",
+        "unavailable": "Nie udało się dokończyć przejścia: bramka jest nieosiągalna. Spróbuj ponownie."
+      }
     }
   }
 }

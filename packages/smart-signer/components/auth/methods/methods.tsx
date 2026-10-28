@@ -29,6 +29,7 @@ import { hasCompatibleMetaMask } from '@smart-signer/lib/signer/signer-metamask'
 import { logger } from '@ui/lib/logger';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { useInjectedExtensions } from './use-injected-extensions';
+import { configuredPasskeySigners } from '@ui/config/public-vars';
 
 export interface MethodsProps {
   onSetStep: (step: Steps) => void;
@@ -52,7 +53,7 @@ const formSchema = z.object({
 });
 type MethodsFormValues = z.infer<typeof formSchema>;
 
-type MethodInfoKey = 'metamask' | 'google' | 'keychain' | 'peakvault' | 'wif' | 'hiveauth' | 'hivesigner';
+type MethodInfoKey = 'metamask' | 'google' | 'keychain' | 'peakvault' | 'wif' | 'hiveauth' | 'hivesigner' | 'passkey';
 
 const Methods: FC<MethodsProps> = ({
   onSetStep,
@@ -75,6 +76,8 @@ const Methods: FC<MethodsProps> = ({
   });
 
   const { keychain: isKeychainSupported, peakvault: isPeakvaultSupported } = useInjectedExtensions();
+  // The passkey signer signs posting operations only.
+  const passkeyOffered = preferredKeyTypes.includes(KeyType.posting) && configuredPasskeySigners.length > 0;
   const [isMetaMaskSupported, setIsMetaMaskSupported] = useState(false);
   const [isGoogleSupported, setIsGoogleSupported] = useState(false);
 
@@ -286,6 +289,25 @@ const Methods: FC<MethodsProps> = ({
               </Button>
               {renderMethodInfo('wif', 'WIF')}
             </div>
+
+            {passkeyOffered ? (
+              <>
+                <Separator className="my-1 w-full" />
+                <div className="flex w-full items-center">
+                  <Button
+                    className="flex flex-1 justify-start py-6"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => onSetStep(Steps.PASSKEY_LOGIN)}
+                    data-testid="passkey-signer-button"
+                  >
+                    <Icons.keyRound className="mr-4 h-8 w-8" />
+                    {t('login_form.passkey.method')}
+                  </Button>
+                  {renderMethodInfo('passkey', t('login_form.passkey.method'))}
+                </div>
+              </>
+            ) : null}
 
             <Separator className="my-1 w-full" />
 

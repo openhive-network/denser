@@ -7,6 +7,7 @@ export enum LoginType {
     hiveauth = 'hiveauth',
     wif = 'wif',
     hivesigner = 'hivesigner',
+    passkey = 'passkey',
 }
 
 export enum KeyType {

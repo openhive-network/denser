@@ -6,6 +6,7 @@ import { useProcessAuth, LoginFormSchema } from './process';
 import { useLocalStorage } from 'usehooks-ts';
 import Methods from './methods/methods';
 import SafeStorageKeyUpdate from './methods/safestorage-key-update';
+import Passkey from './methods/passkey';
 
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
@@ -15,6 +16,8 @@ export interface SignInFormProps {
   i18nNamespace?: string;
   /** The account to sign in; defaults to the last one signed in */
   username?: string;
+  /** Opens on the "Passkey signer" sign-in instead of safe storage */
+  passkey?: boolean;
 }
 
 export type SignInFormRef = { cancel: () => Promise<void> };
@@ -22,7 +25,8 @@ export type SignInFormRef = { cancel: () => Promise<void> };
 export enum Steps {
   SAFE_STORAGE_LOGIN = 1,
   SAFE_STORAGE_KEY_UPDATE,
-  OTHER_LOGIN_OPTIONS
+  OTHER_LOGIN_OPTIONS,
+  PASSKEY_LOGIN
 }
 
 const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
@@ -33,12 +37,13 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       authenticateOnBackend = false,
       strict = false,
       i18nNamespace = 'smart-signer',
-      username: initialUsername
+      username: initialUsername,
+      passkey = false
     }: SignInFormProps,
     ref
   ) => {
     // component controllers
-    const [step, setStep] = useState<Steps>(Steps.SAFE_STORAGE_LOGIN);
+    const [step, setStep] = useState<Steps>(passkey ? Steps.PASSKEY_LOGIN : Steps.SAFE_STORAGE_LOGIN);
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
     const [username, setUsername] = useState<string>(initialUsername ?? lastLoggedInUser);
@@ -99,6 +104,16 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
             onSetStep={setStep}
             i18nNamespace={i18nNamespace}
             preferredKeyTypes={preferredKeyTypes}
+            username={username}
+            onUsernameChange={(username) => setUsername(username)}
+            signIn={signIn}
+          />
+        )}
+
+        {step === Steps.PASSKEY_LOGIN && (
+          <Passkey
+            onSetStep={setStep}
+            i18nNamespace={i18nNamespace}
             username={username}
             onUsernameChange={(username) => setUsername(username)}
             signIn={signIn}

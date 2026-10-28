@@ -10,6 +10,8 @@ describe('allowedGatewayPath', () => {
     assert.equal(allowedGatewayPath('POST', ['edit']), '/edit');
     assert.equal(allowedGatewayPath('POST', ['delete']), '/delete');
     assert.equal(allowedGatewayPath('POST', ['l2']), '/l2');
+    assert.equal(allowedGatewayPath('POST', ['graduate']), '/graduate');
+    assert.equal(allowedGatewayPath('GET', ['graduate']), null);
     assert.equal(allowedGatewayPath('GET', ['l2']), null);
     assert.equal(allowedGatewayPath('GET', ['post']), null);
     assert.equal(allowedGatewayPath('GET', ['edit']), null);
@@ -31,6 +33,13 @@ describe('allowedGatewayPath', () => {
     assert.equal(allowedGatewayPath('POST', ['names', 'brave-otter-482', 'authority']), null);
     assert.equal(allowedGatewayPath('GET', ['names', 'Not A Name', 'authority']), null);
     assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'authority', 'owner']), null);
+  });
+
+  it('relays a lite account graduation read: GET only, for a name in the lite grammar', () => {
+    assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'graduation']), '/names/brave-otter-482/graduation');
+    assert.equal(allowedGatewayPath('POST', ['names', 'brave-otter-482', 'graduation']), null);
+    assert.equal(allowedGatewayPath('GET', ['names', 'Not A Name', 'graduation']), null);
+    assert.equal(allowedGatewayPath('GET', ['names', 'brave-otter-482', 'graduation', 'more']), null);
   });
 
   it('relays a name availability check: GET only, for a name in the lite grammar', () => {

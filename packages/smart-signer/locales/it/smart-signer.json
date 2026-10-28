@@ -73,7 +73,8 @@
       "hivesigner": "HiveSigner è un servizio esterno che firma le transazioni per tuo conto dopo che hai autorizzato questa app.",
       "wif": "Inserisci direttamente la tua chiave privata (WIF). Viene usata solo per firmare e non viene conservata, a meno che tu non scelga di salvarla.",
       "metamask": "Firma con le tue chiavi Hive gestite da Hive Snap nell'estensione MetaMask.",
-      "google": "Conserva le tue chiavi cifrate nel tuo Google Drive e firma con esse da qualsiasi dispositivo."
+      "google": "Conserva le tue chiavi cifrate nel tuo Google Drive e firma con esse da qualsiasi dispositivo.",
+      "passkey": "Un sito firmatario ricava le tue chiavi Hive da una passkey e firma per te nella propria finestra. Le tue chiavi non raggiungono mai questo sito."
     },
     "signin_safe_storage": {
       "title": "Accedi con conservazione sicura",
@@ -133,6 +134,32 @@
       "keychain": "Accedi con Hive Keychain",
       "peakvault": "Accedi con PeakVault",
       "or_safe_storage": "oppure usa l'archivio sicuro"
+    },
+    "passkey": {
+      "method": "Firmatario con passkey",
+      "title": "Accedi con un firmatario con passkey",
+      "description": "Inserisci il nome del tuo account. Il firmatario verifica di avere la chiave di pubblicazione dell'account.",
+      "signer_label": "Firmatario",
+      "find": "Trova la mia chiave",
+      "found": "Il tuo firmatario ha la chiave di pubblicazione di @{{username}}.",
+      "sign_in": "Accedi come @{{username}}",
+      "find_again": "Usa un'altra passkey",
+      "errors": {
+        "account_not_found": "Non esiste alcun account Hive con questo nome.",
+        "key_not_on_account": "La chiave ricavata dal tuo firmatario non è nell'autorità di pubblicazione di questo account. Usa la passkey da cui provengono le chiavi di questo account.",
+        "unavailable": "Impossibile leggere questo account. Controlla la connessione e riprova."
+      },
+      "signer_errors": {
+        "popup_blocked": "Il browser ha bloccato la finestra del firmatario. Consenti i popup per questo sito e riprova.",
+        "signer_unavailable": "Il sito firmatario non ha risposto. Controlla la connessione e riprova.",
+        "key_not_found": "Questa passkey non ha la chiave di pubblicazione dell'account.",
+        "owner_blind_signing": "Il firmatario ha rifiutato di firmare alla cieca con una chiave di proprietario.",
+        "prf_unsupported": "Questa passkey o questo browser non può derivare chiavi (nessun supporto PRF). Prova un altro browser o fornitore di passkey.",
+        "webauthn_unavailable": "Le passkey non sono disponibili in questo browser.",
+        "busy": "La finestra del firmatario è occupata con un'altra richiesta. Chiudila e riprova.",
+        "invalid_request": "Il firmatario ha rifiutato la richiesta perché non valida.",
+        "internal": "Il firmatario non è riuscito. Riprova."
+      }
     }
   },
   "pageLogin": {

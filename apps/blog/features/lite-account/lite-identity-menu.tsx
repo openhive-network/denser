@@ -28,10 +28,14 @@ import LiteSecurePrompt, { useLiteSecurePrompt } from './lite-secure-prompt';
 import { useStoredLiteIdentity } from './use-stored-lite-identity';
 import { useLiteNotificationsAccount } from './use-lite-notifications';
 import { useUnreadNotifications } from '@/blog/features/activity-log/hooks/use-unread-notifications';
+import { useLiteGraduationAccess } from './use-lite-graduation';
 
 // The passkey dialogs are loaded when opened: the header is on every page.
 const LiteSecureDialog = dynamic(() => import('./lite-secure-dialog'), { ssr: false });
 const LiteSignOutDialog = dynamic(() => import('./lite-sign-out-dialog').then((m) => m.LiteSignOutDialog), { ssr: false });
+const LiteGraduationDialog = dynamic(() => import('./lite-graduation-dialog'), { ssr: false });
+// Only a secured identity on a graduating gateway gets these: loaded when such a menu opens.
+const LiteGraduationMenuItems = dynamic(() => import('./lite-graduation-menu-items'), { ssr: false });
 
 /** The menu's security notice: mounted with the open menu, so the authority is read only then. */
 function MenuSecurityNotice({ identity, onSecure }: { identity: StoredLiteIdentity; onSecure: () => void }) {
@@ -45,7 +49,8 @@ function MenuSecurityNotice({ identity, onSecure }: { identity: StoredLiteIdenti
  * serves the lite social graph, and its notifications with the unread count where it serves lite
  * notifications), sign in with a Hive account instead, or forget it. Where the
  * gateway relays authority edits it also secures the account with a passkey (and says when it is
- * not), or signs a secured one out. Nothing when the browser holds none. Reads the stored identity
+ * not), or signs a secured one out; where it graduates, it offers the upgrade to a Hive account and,
+ * once graduated, signing in as that account. Nothing when the browser holds none. Reads the stored identity
  * directly, so the header does not load the lite signing code (`useLiteIdentity`).
  */
 export default function LiteIdentityMenu() {
@@ -56,12 +61,15 @@ export default function LiteIdentityMenu() {
   const [isSecureOpen, setIsSecureOpen] = useState(false);
   const [isSignOutOpen, setIsSignOutOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [graduation, setGraduation] = useState<{ pendingLink?: string } | null>(null);
+  const [passkeyAccount, setPasskeyAccount] = useState<string | undefined>(undefined);
   const social = liteSocialApp(useLiteApiInfo()) !== null;
   const passkeyRelay = useLitePasskeyAccess().available;
   const openSecure = useCallback(() => setIsSecureOpen(true), []);
   const prompt = useLiteSecurePrompt(identity, passkeyRelay);
   const notificationsAccount = useLiteNotificationsAccount();
   const unread = useUnreadNotifications(notificationsAccount).data?.unread ?? 0;
+  const graduates = useLiteGraduationAccess(identity).available;
 
   if (!identity) return null;
   const { name, secured } = identity;
@@ -71,6 +79,10 @@ export default function LiteIdentityMenu() {
   };
   const passkey = passkeyRelay && identity.registered;
   const did = `${LITE_DID_PREFIX}${name}`;
+  const openLogin = (account?: string) => {
+    setPasskeyAccount(account);
+    setIsLoginOpen(true);
+  };
 
   return (
     <>
@@ -122,6 +134,13 @@ export default function LiteIdentityMenu() {
               </Link>
             </DropdownMenuItem>
           ) : null}
+          {graduates ? (
+            <LiteGraduationMenuItems
+              identity={identity}
+              onUpgrade={(pendingLink) => setGraduation({ pendingLink })}
+              onSignInAs={openLogin}
+            />
+          ) : null}
           {notificationsAccount ? (
             <DropdownMenuItem className="cursor-pointer" asChild>
               <Link href={`/@${did}/notifications`} className="flex w-full items-center" data-testid="lite-identity-notifications">
@@ -133,7 +152,7 @@ export default function LiteIdentityMenu() {
               </Link>
             </DropdownMenuItem>
           ) : null}
-          <DropdownMenuItem className="cursor-pointer" onSelect={() => setIsLoginOpen(true)} data-testid="lite-identity-sign-in">
+          <DropdownMenuItem className="cursor-pointer" onSelect={() => openLogin()} data-testid="lite-identity-sign-in">
             <Icons.doorOpen className="mr-2" />
             <span className="w-full">{t('lite_account.identity.sign_in')}</span>
           </DropdownMenuItem>
@@ -160,7 +179,12 @@ export default function LiteIdentityMenu() {
         </DropdownMenuContent>
       </DropdownMenu>
       {/* Outside the menu, which unmounts its content when it closes */}
-      <DialogLogin open={isLoginOpen} onOpenChange={setIsLoginOpen} />
+      <DialogLogin
+        open={isLoginOpen}
+        onOpenChange={setIsLoginOpen}
+        username={passkeyAccount}
+        passkey={!!passkeyAccount}
+      />
       <LiteForgetDialog
         name={name}
         variant={passkey ? (secured ? 'secured' : 'unsecured') : 'plain'}
@@ -179,6 +203,13 @@ export default function LiteIdentityMenu() {
       ) : null}
       {passkey && isSecureOpen ? <LiteSecureDialog open onOpenChange={setIsSecureOpen} /> : null}
       {passkey && isSignOutOpen ? <LiteSignOutDialog open onOpenChange={setIsSignOutOpen} /> : null}
+      {graduates && graduation ? (
+        <LiteGraduationDialog
+          open
+          onOpenChange={(open) => setGraduation(open ? graduation : null)}
+          pendingLink={graduation.pendingLink}
+        />
+      ) : null}
     </>
   );
 }

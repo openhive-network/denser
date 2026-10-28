@@ -1205,6 +1205,44 @@
       "not_owner": "Solo un navegador con sesión iniciada en esta cuenta ve sus dispositivos.",
       "expiry_banner": "La clave de este dispositivo para {{name}} caduca el {{date}}.",
       "expiry_banner_action": "Renuévala con tu passkey"
+    },
+    "graduation": {
+      "title": "Pasar a una cuenta de Hive",
+      "description": "Tu cuenta lite obtiene su propia cuenta de Hive. Sus claves provienen de tu passkey: el firmante se abre para proporcionarlas y nunca llegan a este sitio.",
+      "name_label": "Nombre de la cuenta de Hive",
+      "keys_note": "Tu cuenta lite sigue siendo utilizable después del cambio.",
+      "confirm": "Pasar a Hive",
+      "upgrade": "Pasar a una cuenta de Hive",
+      "earned": "{{rewards}} HBD ganados",
+      "reached": "{{rewards}} HBD ganados, se necesitan {{threshold}} HBD",
+      "progress": "{{rewards}} de {{threshold}} HBD ganados ({{percent}} %)",
+      "steps": {
+        "keys": "Obteniendo las claves de la cuenta desde tu passkey",
+        "creating": "Creando la cuenta",
+        "delegating": "Delegando créditos de recursos",
+        "linking": "Vinculando tu cuenta lite"
+      },
+      "done": "Tu cuenta de Hive está lista:",
+      "created_unlinked": "Tu cuenta de Hive se creó, pero no se pudo vincular tu cuenta lite con ella:",
+      "retry_link": "Reintentar el vínculo",
+      "link_not_shown": "El vínculo se envió, pero todavía no aparece. Inténtalo de nuevo en un minuto.",
+      "sign_in_as": "Iniciar sesión como @{{account}}",
+      "now_account": "Ahora @{{account}}",
+      "profile_graduated": "Convertida en la cuenta de Hive",
+      "finish": "Terminar el cambio",
+      "errors": {
+        "not_eligible": "Esta cuenta lite todavía no puede pasar a Hive.",
+        "name_taken": "Alguien tomó este nombre mientras tanto. Elige otro.",
+        "name_invalid": "Este no es un nombre de cuenta de Hive válido.",
+        "daily_cap": "La pasarela ya creó todas las cuentas que puede hoy. Inténtalo mañana.",
+        "graduation_disabled": "Los cambios a cuentas de Hive están desactivados en esta pasarela ahora mismo.",
+        "creator_balance": "La pasarela no puede pagar cuentas nuevas en este momento. Inténtalo más tarde.",
+        "rate_limited": "Lo intentaste hace un momento. Espera una hora antes de volver a intentarlo.",
+        "auth_failed": "La pasarela no aceptó la firma de tu cuenta lite. Vuelve a iniciar sesión en este dispositivo.",
+        "broadcast_failed": "La cadena rechazó crear la cuenta. Inténtalo más tarde.",
+        "signer_keys": "El firmante no devolvió todas las claves de la nueva cuenta.",
+        "unavailable": "No se pudo completar el cambio: la pasarela no responde. Inténtalo de nuevo."
+      }
     }
   }
 }

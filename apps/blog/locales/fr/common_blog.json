@@ -1205,6 +1205,44 @@
       "not_owner": "Seul un navigateur connecté à ce compte voit ses appareils.",
       "expiry_banner": "La clé de cet appareil pour {{name}} expire le {{date}}.",
       "expiry_banner_action": "La renouveler avec votre passkey"
+    },
+    "graduation": {
+      "title": "Passer à un compte Hive",
+      "description": "Votre compte lite obtient son propre compte Hive. Ses clés viennent de votre passkey : le signataire s'ouvre pour les fournir, et elles n'atteignent jamais ce site.",
+      "name_label": "Nom du compte Hive",
+      "keys_note": "Votre compte lite reste utilisable après le passage.",
+      "confirm": "Passer à Hive",
+      "upgrade": "Passer à un compte Hive",
+      "earned": "{{rewards}} HBD gagnés",
+      "reached": "{{rewards}} HBD gagnés, {{threshold}} HBD requis",
+      "progress": "{{rewards}} sur {{threshold}} HBD gagnés ({{percent}} %)",
+      "steps": {
+        "keys": "Obtention des clés du compte depuis votre passkey",
+        "creating": "Création du compte",
+        "delegating": "Délégation de crédits de ressources",
+        "linking": "Liaison de votre compte lite"
+      },
+      "done": "Votre compte Hive est prêt :",
+      "created_unlinked": "Votre compte Hive a été créé, mais la liaison de votre compte lite n'a pas abouti :",
+      "retry_link": "Réessayer la liaison",
+      "link_not_shown": "La liaison a été envoyée mais n'apparaît pas encore. Réessayez dans une minute.",
+      "sign_in_as": "Se connecter en tant que @{{account}}",
+      "now_account": "Désormais @{{account}}",
+      "profile_graduated": "Devenu le compte Hive",
+      "finish": "Terminer le passage",
+      "errors": {
+        "not_eligible": "Ce compte lite ne peut pas encore passer à Hive.",
+        "name_taken": "Ce nom a été pris entre-temps. Choisissez-en un autre.",
+        "name_invalid": "Ce n'est pas un nom de compte Hive valide.",
+        "daily_cap": "La passerelle a créé tous les comptes possibles aujourd'hui. Réessayez demain.",
+        "graduation_disabled": "Les passages à Hive sont désactivés sur cette passerelle pour le moment.",
+        "creator_balance": "La passerelle ne peut pas payer de nouveaux comptes pour le moment. Réessayez plus tard.",
+        "rate_limited": "Vous avez essayé il y a un instant. Attendez une heure avant de réessayer.",
+        "auth_failed": "La passerelle n'a pas accepté la signature de votre compte lite. Reconnectez-vous sur cet appareil.",
+        "broadcast_failed": "La chaîne a refusé de créer le compte. Réessayez plus tard.",
+        "signer_keys": "Le signataire n'a pas renvoyé toutes les clés du nouveau compte.",
+        "unavailable": "Le passage n'a pas pu aboutir : la passerelle est injoignable. Réessayez."
+      }
     }
   }
 }

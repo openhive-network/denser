@@ -7,7 +7,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useTranslation } from '@/blog/i18n/client';
 import { liteAuthorityErrorKey } from './lite-authority-errors';
 import { liteAuthorityKey } from './lite-authority-query';
-import { openSignerPopup, type SignerPopup } from './signer-client';
+import { openSignerPopup, type SignerPopup } from '@smart-signer/lib/passkey/signer-client';
 
 const logger = getLogger('app');
 

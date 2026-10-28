@@ -1205,6 +1205,44 @@
       "not_owner": "Only a browser signed in to this account sees its devices.",
       "expiry_banner": "This device's key for {{name}} expires on {{date}}.",
       "expiry_banner_action": "Renew it with your passkey"
+    },
+    "graduation": {
+      "title": "Upgrade to a Hive account",
+      "description": "Your lite account gets a Hive account of its own. Its keys come from your passkey: the signer opens to provide them, and they never reach this site.",
+      "name_label": "Hive account name",
+      "keys_note": "Your lite account stays usable after the upgrade.",
+      "confirm": "Upgrade",
+      "upgrade": "Upgrade to a Hive account",
+      "earned": "{{rewards}} HBD earned",
+      "reached": "{{rewards}} HBD earned, {{threshold}} HBD needed",
+      "progress": "{{rewards}} of {{threshold}} HBD earned ({{percent}}%)",
+      "steps": {
+        "keys": "Getting the account's keys from your passkey",
+        "creating": "Creating the account",
+        "delegating": "Delegating resource credits",
+        "linking": "Linking your lite account"
+      },
+      "done": "Your Hive account is ready:",
+      "created_unlinked": "Your Hive account was created, but linking your lite account to it did not go through:",
+      "retry_link": "Retry link",
+      "link_not_shown": "The link was sent but does not show up yet. Try again in a minute.",
+      "sign_in_as": "Sign in as @{{account}}",
+      "now_account": "Now @{{account}}",
+      "profile_graduated": "Upgraded to the Hive account",
+      "finish": "Finish the upgrade",
+      "errors": {
+        "not_eligible": "This lite account is not eligible for an upgrade yet.",
+        "name_taken": "This name was taken in the meantime. Pick another one.",
+        "name_invalid": "This is not a valid Hive account name.",
+        "daily_cap": "The gateway has created all the accounts it can today. Try again tomorrow.",
+        "graduation_disabled": "Upgrades are switched off on this gateway right now.",
+        "creator_balance": "The gateway cannot pay for new accounts right now. Try again later.",
+        "rate_limited": "You tried a moment ago. Wait an hour before trying again.",
+        "auth_failed": "The gateway did not accept your lite account's signature. Sign in on this device again.",
+        "broadcast_failed": "The chain refused to create the account. Try again later.",
+        "signer_keys": "The signer did not return all of the new account's keys.",
+        "unavailable": "The upgrade could not be completed: the gateway is unreachable. Try again."
+      }
     }
   }
 }

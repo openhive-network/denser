@@ -15,6 +15,16 @@ export const CHAIN_ID = 'beeab0de00000000000000000000000000000000000000000000000
 export const ROOT_KEY = 'STM6LLegbAgLAy28EHrffBVuANFWcFgmqRMW13wBmTExqFE9SCkg4';
 /** A key of another device of the account; nothing signs with it here. */
 export const OTHER_DEVICE_KEY = 'STM8m5UgaFAAYQRuaNejYdS8FVLVp9Ghm2D6b2gUMUddLUMBDx7ZZ';
+/**
+ * The keys the stub signer derives at account 0, by its role numbering (owner 0, active 1, memo 3,
+ * posting 4): the root for owner, throwaway keys for the others.
+ */
+export const SIGNER_KEYS: Record<number, string> = {
+  0: ROOT_KEY,
+  1: 'STM6XSxumfZgvPSgmqi8PTBDPrwow34cn5LPkN7eZb12Zo4zXk8gW',
+  3: 'STM7BcAppgjpAD1ukDRj3qnHn4dtE1f1sYSXAeVVn8facLy4HDtjo',
+  4: 'STM67vr8aQPGrnXbeKNcMFSbLJBXWpTNbKJGhDEL7xRA1tRsKBtvV'
+};
 /** What the stub signer reports answered its ceremonies, unless a spec says otherwise. */
 export const YUBIKEY = {
   attachment: 'cross-platform',
@@ -144,10 +154,11 @@ export async function mockPasskeyGateway(
 
 /**
  * How the stub signer answers the request: with its result (reporting `authenticator`, `YUBIKEY` by
- * default, none when null: an older signer), a signer error code, or by closing its window unanswered.
+ * default, none when null: an older signer; deriving `keys` per role over `SIGNER_KEYS`), a signer
+ * error code, or by closing its window unanswered.
  */
 export type SignerBehaviour =
-  | { kind: 'answer'; authenticator?: Record<string, unknown> | null }
+  | { kind: 'answer'; authenticator?: Record<string, unknown> | null; keys?: Record<number, string> }
   | { kind: 'error'; code: string }
   | { kind: 'close' };
 
@@ -157,18 +168,27 @@ function signerPage(behaviour: SignerBehaviour): string {
   return `<!doctype html><html><body><p>Stub signer</p><script>
 const behaviour = ${JSON.stringify(behaviour)};
 const report = ${JSON.stringify(reported ? { authenticator: reported } : {})};
+const derived = ${JSON.stringify({ ...SIGNER_KEYS, ...(behaviour.kind === 'answer' ? behaviour.keys : {}) })};
 window.addEventListener('message', (event) => {
   const request = event.data;
   if (!request || request.hiveSigner !== '1' || !request.id) return;
+  // Reported to its own origin before answering: the opener closes the window once answered.
+  fetch('/__signer-requests', { method: 'POST', body: JSON.stringify(request) })
+    .catch(() => undefined)
+    .then(() => answer(event, request));
+});
+function answer(event, request) {
   if (behaviour.kind === 'close') return window.close();
   const reply = (body) => event.source.postMessage({ hiveSigner: '1', id: request.id, ...body }, event.origin);
   if (behaviour.kind === 'error') return reply({ error: { code: behaviour.code, message: behaviour.code } });
   if (request.method === 'getPublicKeys') {
-    return reply({ result: { keys: [{ path: "m/48'/13'/0'/0'/0'", role: 0, account: 0, key: 0, publicKey: ${JSON.stringify(ROOT_KEY)} }], ...report } });
+    const roles = Array.isArray(request.params.roles) ? request.params.roles : [0];
+    const keys = roles.map((role) => ({ path: "m/48'/13'/0'/" + role + "'/0'", role, account: 0, key: 0, publicKey: derived[role] }));
+    return reply({ result: { keys, ...report } });
   }
   const signatures = ['1f' + '00'.repeat(64)];
   reply({ result: { signedTransaction: { ...request.params.transaction, signatures }, signatures, digest: '00'.repeat(32), ...report } });
-});
+}
 window.opener.postMessage({ hiveSignerReady: true, hiveSigner: '1' }, '*');
 </script></body></html>`;
 }
@@ -181,12 +201,27 @@ window.opener.postMessage({ hiveSignerReady: true, hiveSigner: '1' }, '*');
 export async function stubSigners(context: BrowserContext, behaviour: SignerBehaviour = { kind: 'answer' }) {
   const opened: string[] = [];
   for (const origin of [SIGNER, OTHER_SIGNER]) {
+    await context.route(`${origin}/__signer-requests`, (route) => route.fulfill({ status: 204 }));
     await context.route(`${origin}/sign/`, (route) => {
       opened.push(origin);
       return route.fulfill({ contentType: 'text/html', body: signerPage(behaviour) });
     });
   }
   return opened;
+}
+
+export type SignerRequest = { method: string; params: Record<string, unknown> };
+
+/** The requests the stub signers receive from now on (each reports it to its own origin). */
+export async function recordSignerRequests(context: BrowserContext) {
+  const requests: SignerRequest[] = [];
+  for (const origin of [SIGNER, OTHER_SIGNER]) {
+    await context.route(`${origin}/__signer-requests`, (route) => {
+      requests.push(route.request().postDataJSON() as SignerRequest);
+      return route.fulfill({ status: 204 });
+    });
+  }
+  return requests;
 }
 
 /** Sets the deployment's signer list (`REACT_APP_PASSKEY_SIGNERS`) as the browser reads it from __ENV.js. */

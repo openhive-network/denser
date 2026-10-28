@@ -27,6 +27,8 @@ interface DialogLoginProps {
   keyType?: KeyType;
   /** The account to sign in; defaults to the last one signed in */
   username?: string;
+  /** Opens on the "Passkey signer" sign-in */
+  passkey?: boolean;
 }
 
 function DialogLogin({
@@ -35,7 +37,8 @@ function DialogLogin({
   open,
   onOpenChange,
   keyType = KeyType.posting,
-  username
+  username,
+  passkey = false
 }: DialogLoginProps) {
   const signInFormRef = useRef<SignInFormRef>(null);
   const router = useRouter();
@@ -116,6 +119,7 @@ function DialogLogin({
             ref={signInFormRef}
             preferredKeyTypes={[keyType]}
             username={username}
+            passkey={passkey}
             onComplete={onComplete}
             authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
             strict={!siteConfig.allowNonStrictLogin}

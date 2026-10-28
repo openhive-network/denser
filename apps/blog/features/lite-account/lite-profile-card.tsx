@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useQuery } from '@tanstack/react-query';
 import type { AccountFollowStats, ILiteProfile } from '@hive/common-hiveio-packages/wax';
 import { getLiteFollowCount } from '@transaction/lib/lite-social-api';
@@ -17,6 +18,9 @@ import LiteSocialButtons from './lite-social-buttons';
 import { LITE_PROFILE_FIELDS, type LiteProfileFields } from './lite-social-state';
 import LiteProfileEditDialog from './lite-profile-edit-dialog';
 import { useLiteSocialAccess } from './use-lite-social-mutation';
+
+// Only the owner's card can show it: loaded there.
+const LiteGraduationNotice = dynamic(() => import('./lite-graduation-notice'), { ssr: false });
 
 const initialFields = (profile: ILiteProfile): LiteProfileFields => {
   const stored = profile.metadata?.profile ?? {};
@@ -43,7 +47,8 @@ function useLiteFollowCounts(profile: ILiteProfile, social: boolean) {
 /**
  * The card of a lite account's profile: name, badge, its `set_profile` fields, joined date, post
  * count and, on a node serving the lite social graph, follower counts with Follow / Mute for a
- * guest acting as another lite account and Edit profile for the browser's own lite account.
+ * guest acting as another lite account and Edit profile for the browser's own lite account, whose
+ * card also offers the upgrade to a Hive account, or names the account it graduated to.
  */
 export default function LiteProfileCard({ profile, social, isOwner }: { profile: ILiteProfile; social: boolean; isOwner: boolean }) {
   const { t, i18n } = useTranslation('common_blog');
@@ -75,6 +80,7 @@ export default function LiteProfileCard({ profile, social, isOwner }: { profile:
             <p className="font-semibold" data-testid="lite-profile-display-name">{fields.name}</p>
           ) : null}
           {fields.about ? <p className="mt-2 text-white/90" data-testid="lite-profile-about">{fields.about}</p> : null}
+          {isOwner && !user.isLoggedIn ? <LiteGraduationNotice /> : null}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-white/70 sm:justify-start sm:text-sm">
             {fields.location ? (
               <span className="flex items-center gap-1" data-testid="lite-profile-location">

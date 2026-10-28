@@ -4,11 +4,12 @@ import { SignerHiveauth } from '@smart-signer/lib/signer/signer-hiveauth';
 import { SignerKeychain } from '@smart-signer/lib/signer/signer-keychain';
 import { SignerPeakvault } from '@smart-signer/lib/signer/signer-peakvault';
 import { SignerMetaMask } from '@smart-signer/lib/signer/signer-metamask';
+import { SignerPasskey } from '@smart-signer/lib/signer/signer-passkey';
 import { SignerWif } from '@smart-signer/lib/signer/signer-wif';
 import { LoginType } from '@smart-signer/types/common';
 import { SignerOptions } from '@smart-signer/lib/signer/signer';
 
-export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | SignerPeakvault | SignerMetaMask | SignerGoogleDrive | SignerWif;
+export type SignerTool = SignerHbauth | SignerHiveauth | SignerKeychain | SignerPeakvault | SignerMetaMask | SignerGoogleDrive | SignerWif | SignerPasskey;
 export type RegisteredSigners = {
   [key in LoginType]?: any;
 };
@@ -21,6 +22,7 @@ registeredSigners[LoginType.metamask] = SignerMetaMask;
 registeredSigners[LoginType.google] = SignerGoogleDrive;
 registeredSigners[LoginType.peakvault] = SignerPeakvault;
 registeredSigners[LoginType.wif] = SignerWif;
+registeredSigners[LoginType.passkey] = SignerPasskey;
 
 function signerFactory({
   username,
@@ -52,6 +54,8 @@ function signerFactory({
  * 6. [MetaMask](https://metamask.io/), handled in SignerMetaMask class.
  * 7. [Google Drive](https://gitlab.syncad.com/hive/wax/-/blob/develop/examples/ts/signers-external/README.md),
  *    handled in SignerGoogleDrive class.
+ * 8. A passkey signer (hive-passkey-signer), in a popup, handled in
+ *    SignerPasskey class (posting authority only).
  *
  * @export
  * @param {SignerOptions} options

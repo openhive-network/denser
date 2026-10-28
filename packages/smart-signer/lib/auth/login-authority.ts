@@ -14,13 +14,14 @@ export type LoginAuthority =
 
 const KEY_TYPES: readonly KeyTypeName[] = ['posting', 'active'];
 
-// Values of LoginType.hbauth and LoginType.wif. Their signers sign with the keys they hold: hbauth
-// with any key in safe storage, which can take in another one (signer-hbauth.ts `requireOtherKey`),
-// wif with the session's key, which signs for every key type it is stored as (signer-wif.ts). Every
-// other signer either asks for the operation's required key (keychain, peakvault, metamask, google)
-// or leaves the choice to the external app (hiveauth, hivesigner).
+// Values of LoginType.hbauth, LoginType.wif and LoginType.passkey. Their signers sign with the keys
+// they hold: hbauth with any key in safe storage, which can take in another one (signer-hbauth.ts
+// `requireOtherKey`), wif with the session's key, which signs for every key type it is stored as
+// (signer-wif.ts), passkey with the posting key its signer derives, and nothing else
+// (signer-passkey.ts). Every other signer either asks for the operation's required key (keychain,
+// peakvault, metamask, google) or leaves the choice to the external app (hiveauth, hivesigner).
 const SAFE_STORAGE_LOGIN_TYPE: `${LoginType}` = 'hbauth';
-const KEY_LOGIN_TYPES: ReadonlySet<string> = new Set<`${LoginType}`>([SAFE_STORAGE_LOGIN_TYPE, 'wif']);
+const KEY_LOGIN_TYPES: ReadonlySet<string> = new Set<`${LoginType}`>([SAFE_STORAGE_LOGIN_TYPE, 'wif', 'passkey']);
 
 /**
  * @param storedKeyTypes the key types the session's signer holds keys of: what safe storage holds

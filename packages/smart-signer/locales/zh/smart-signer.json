@@ -73,7 +73,8 @@
       "hivesigner": "HiveSigner 是一项外部服务，在您授权此应用后代表您签署交易。",
       "wif": "直接输入您的私钥（WIF）。它仅用于签名，除非您选择保存，否则不会被保留。",
       "metamask": "使用 MetaMask 扩展中由 Hive Snap 管理的 Hive 密钥进行签名。",
-      "google": "将加密后的密钥保存在您的 Google Drive 中，并可在任何设备上使用它们签名。"
+      "google": "将加密后的密钥保存在您的 Google Drive 中，并可在任何设备上使用它们签名。",
+      "passkey": "通行密钥签名网站从通行密钥派生你的 Hive 密钥，并在它自己的窗口中替你签名。你的密钥永远不会到达本站。"
     },
     "signin_safe_storage": {
       "title": "使用安全存储登录",
@@ -133,6 +134,32 @@
       "keychain": "使用 Hive Keychain 登录",
       "peakvault": "使用 PeakVault 登录",
       "or_safe_storage": "或使用安全存储"
+    },
+    "passkey": {
+      "method": "通行密钥签名服务",
+      "title": "使用通行密钥签名服务登录",
+      "description": "输入你的账户名。签名服务会检查它是否持有该账户的发帖密钥。",
+      "signer_label": "签名服务",
+      "find": "查找我的密钥",
+      "found": "你的通行密钥签名服务持有 @{{username}} 的发帖密钥。",
+      "sign_in": "以 @{{username}} 登录",
+      "find_again": "使用其他通行密钥",
+      "errors": {
+        "account_not_found": "没有这个名称的 Hive 账户。",
+        "key_not_on_account": "签名服务派生的密钥不在该账户的发帖权限中。请使用该账户密钥所来自的通行密钥。",
+        "unavailable": "无法读取该账户。请检查网络连接后重试。"
+      },
+      "signer_errors": {
+        "popup_blocked": "浏览器拦截了签名窗口。请允许此网站的弹出窗口后重试。",
+        "signer_unavailable": "签名服务没有响应。请检查网络连接后重试。",
+        "key_not_found": "此通行密钥不持有该账户的发帖密钥。",
+        "owner_blind_signing": "签名服务拒绝用所有者密钥进行盲签。",
+        "prf_unsupported": "此通行密钥或浏览器无法派生密钥（不支持 PRF）。请尝试其他浏览器或通行密钥提供商。",
+        "webauthn_unavailable": "此浏览器不支持通行密钥。",
+        "busy": "签名窗口正在处理另一个请求。请关闭后重试。",
+        "invalid_request": "签名服务以请求无效为由拒绝了它。",
+        "internal": "签名服务出错。请重试。"
+      }
     }
   },
   "pageLogin": {

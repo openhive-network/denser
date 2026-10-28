@@ -972,7 +972,10 @@ identity's follows (`lite.get_following` with its DID), and the node refuses a D
 passkey specs (`liteIdentityPasskey*.spec.ts`) serve the passkey signer's `/sign/` page this way with a
 stub speaking its popup protocol (`stubSigners` in `support/litePasskeyContext.ts`), and change the
 deployment's signer list (`REACT_APP_PASSKEY_SIGNERS`) per test by appending to the served `__ENV.js`
-(`configureSigners`). An `addInitScript` runs again on every navigation and reload: a spec that needs a
+(`configureSigners`). The stub derives a key per requested role (`SIGNER_KEYS`, overridable per behaviour)
+and POSTs each request to its own origin's `/__signer-requests` before answering; `recordSignerRequests`
+(called after `stubSigners`) collects them, as `liteGraduation.spec.ts` does to check what the signer was
+asked to sign. An `addInitScript` runs again on every navigation and reload: a spec that needs a
 different stored identity after a reload needs another test.
 
 ### `fixtureTestName` is worker-scoped
