@@ -112,17 +112,24 @@ verification:
         args: [".aidev/run-dev-stack.sh"]
         artifacts: ["test-results/dev-stack-suite/"]
         stack: false
-      # ADVISORY (always exits 0): the live-API e2e specs this candidate changed
-      # or reaches through a changed import, plus the app's smoke specs when app
-      # source changed, against the stack's blog-live (fixture_e2e's build) and
-      # wallet-live (wallet_fixture's);
-      # "not applicable" when it selects none or no change information reaches
-      # the container. See .aidev/run-live-e2e.sh.
+      # The live-API e2e specs this candidate changed or reaches through a
+      # changed import, plus the app's smoke specs when app source changed,
+      # against the stack's blog-live (fixture_e2e's build) and wallet-live
+      # (wallet_fixture's); "not applicable" when it selects none or no change
+      # information reaches the container. See .aidev/run-live-e2e.sh.
+      # `mode: advisory` is what keeps it from deciding the slot: its result,
+      # an environment failure such as an OOM kill included, never fails the
+      # run or triggers a retry. The script's exit 0 alone does not do that.
+      # `memory: 6g` fixes its container cap: the Playwright run shares the
+      # container while the stack serves two Next.js production servers, and
+      # the cap fitted from past peaks (0.8-2.2 GB) killed larger selections.
       - name: live_e2e
         adapter: command
         args: [".aidev/run-live-e2e.sh"]
         artifacts: ["test-results/live-e2e/"]
         env: {DENSER_TEST_STACK: "1"}
+        mode: advisory
+        memory: 6g
   baseline:
     adapter: command
     args: [".aidev/run-unit-tests.sh"]
