@@ -6,6 +6,7 @@ import { cn } from '@ui/lib/utils';
 
 import env from '@beam-australia/react-env';
 import { useTranslation } from '@/blog/i18n/client';
+import { HEADER_NAV_FOCUS_RING } from './header-focus-ring';
 
 export function MainNav() {
   const pathname = usePathname();
@@ -19,6 +20,7 @@ export function MainNav() {
           href={`/trending`}
           className={cn(
             'ml-6 flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
+            HEADER_NAV_FOCUS_RING,
             // Root (/) serves the trending feed via the middleware rewrite, so mark Posts active there too.
             pathname === '/trending' || pathname === '/' ? 'text-destructive' : 'text-primary'
           )}
@@ -32,6 +34,7 @@ export function MainNav() {
           rel="noopener noreferrer"
           className={cn(
             'flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
+            HEADER_NAV_FOCUS_RING,
             pathname === '/proposals"' ? 'text-destructive' : 'text-primary'
           )}
           data-testid="nav-proposals-link"
@@ -44,6 +47,7 @@ export function MainNav() {
           rel="noopener noreferrer"
           className={cn(
             'flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
+            HEADER_NAV_FOCUS_RING,
             pathname === '/~witnesses' ? 'text-destructive' : 'text-primary'
           )}
           data-testid="nav-witnesses-link"
@@ -57,6 +61,7 @@ export function MainNav() {
           rel="noopener noreferrer"
           className={cn(
             'flex h-full items-center border-b-2 border-background transition-colors hover:border-destructive hover:text-destructive',
+            HEADER_NAV_FOCUS_RING,
             pathname === 'https://hive.io/eco/' ? 'text-destructive' : 'text-primary'
           )}
           data-testid="nav-our-dapps-link"
