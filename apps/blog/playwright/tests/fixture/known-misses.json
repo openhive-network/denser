@@ -5,6 +5,31 @@
     "hash": "27c21eb5844992c1"
   },
   {
+    "spec": "liteGraduation.spec.ts",
+    "method": "bridge.does_user_follow_any_lists",
+    "hash": "acc3b29a22e5dfc6"
+  },
+  {
+    "spec": "liteGraduation.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "2a0994286f1e6419"
+  },
+  {
+    "spec": "liteGraduation.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "f09d4b640a3f25ca"
+  },
+  {
+    "spec": "liteGraduation.spec.ts",
+    "method": "bridge.unread_notifications",
+    "hash": "3ed54b820528f4fa"
+  },
+  {
+    "spec": "liteGraduation.spec.ts",
+    "method": "rc_api.find_rc_accounts",
+    "hash": "8196950febc1a6c6"
+  },
+  {
     "spec": "loggedInCommunitiesExplorer.spec.ts",
     "method": "bridge.get_profile",
     "hash": "27c21eb5844992c1"

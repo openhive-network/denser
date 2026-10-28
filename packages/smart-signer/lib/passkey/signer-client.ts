@@ -1,5 +1,3 @@
-import type { L2Transaction } from '@hiveio/lite-account';
-
 // TODO: swap for @hiveio/passkey-signer-client once it is published; this is its popup protocol
 // (hive-passkey-signer, protocol "1"): the signer page posts a ready message to its opener, takes
 // ONE request `{ hiveSigner, id, method, params }` and answers `{ hiveSigner, id, result | error }`.
@@ -47,14 +45,22 @@ export type SignerAuthenticator = {
 /** Every result carries the signer's `authenticator` report, when the signer sends one. */
 type Reported<T> = T & { authenticator?: SignerAuthenticator };
 
+/** A transaction as JSON: an L2 transaction (`@hiveio/lite-account`) or an L1 one in the API format. */
+type TransactionJson = Record<string, unknown>;
+
 type SignerMethods = {
   getPublicKeys: {
     params: { roles: number[]; account?: number; count?: number };
     result: Reported<{ keys: SignerKey[] }>;
   };
   signL2Transaction: {
-    params: { transaction: L2Transaction; chainId: string; publicKey: string };
-    result: Reported<{ signedTransaction: L2Transaction; signatures: string[]; digest: string }>;
+    params: { transaction: TransactionJson; chainId: string; publicKey: string };
+    result: Reported<{ signedTransaction: TransactionJson; signatures: string[]; digest: string }>;
+  };
+  /** An L1 (Hive) transaction in the API format, signed with the key `publicKey` derives from. */
+  signTransaction: {
+    params: { transaction: TransactionJson; chainId: string; publicKey: string };
+    result: Reported<{ signatures: string[] }>;
   };
   signDigest: {
     params: { sigDigest: string; publicKey: string; purpose?: string };
@@ -114,6 +120,11 @@ const RESULT_GUARDS: { [M in SignerMethod]: (value: unknown) => value is SignerM
     isObject(value) &&
     isObject(value.signedTransaction) &&
     Array.isArray(value.signatures) &&
+    hasValidAuthenticator(value),
+  signTransaction: (value): value is SignerMethods['signTransaction']['result'] =>
+    isObject(value) &&
+    Array.isArray(value.signatures) &&
+    value.signatures.every((item) => typeof item === 'string') &&
     hasValidAuthenticator(value),
   signDigest: (value): value is SignerMethods['signDigest']['result'] =>
     isObject(value) && typeof value.signature === 'string' && hasValidAuthenticator(value)
@@ -231,7 +242,7 @@ export function openSignerPopup(origin: string, host: SignerHost = window): Sign
   return { origin, call, close };
 }
 
-/** The signer and client codes a user gets a message for, by their `lite_account.signer_errors.*` key. */
+/** The signer and client codes a user gets a message of their own for (the blog's `lite_account.signer_errors.*`, smart-signer's `login_form.passkey.signer_errors.*`). */
 const SIGNER_ERROR_KEYS = new Set([
   'popup_blocked',
   'signer_unavailable',
@@ -244,8 +255,7 @@ const SIGNER_ERROR_KEYS = new Set([
 ]);
 
 /**
- * The `lite_account.signer_errors.*` key explaining a signer failure; `internal` for any other code
- * or error; null for `cancelled`, which the user chose and is told nothing about.
+ * The code whose message explains a signer failure; `internal` for any other code or error; null for `cancelled`, which the user chose and is told nothing about.
  */
 export function signerErrorKey(error: unknown): string | null {
   if (!(error instanceof SignerError)) return 'internal';

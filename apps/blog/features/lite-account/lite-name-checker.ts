@@ -6,7 +6,13 @@ export const MAX_SUGGEST_ATTEMPTS = 5;
 
 type AvailabilityCheck = (name: string, signal: AbortSignal) => Promise<LiteNameAvailability>;
 
-type Options = { delayMs?: number; generate?: () => string; maxAttempts?: number };
+type Options = {
+  delayMs?: number;
+  generate?: () => string;
+  maxAttempts?: number;
+  /** What an answer says about its name; the lite name dialog's `availabilityState` by default. */
+  classify?: (answer: LiteNameAvailability) => LiteNameState;
+};
 
 export type LiteNameChecker = {
   /** The user typed `name`: reports its state now (`invalid`, a known answer, or `checking`) and the gateway's after the debounce. */
@@ -27,7 +33,12 @@ export type LiteNameChecker = {
 export function createLiteNameChecker(
   check: AvailabilityCheck,
   onState: (name: string, state: LiteNameState) => void,
-  { delayMs = NAME_CHECK_DEBOUNCE_MS, generate = generateLiteName, maxAttempts = MAX_SUGGEST_ATTEMPTS }: Options = {}
+  {
+    delayMs = NAME_CHECK_DEBOUNCE_MS,
+    generate = generateLiteName,
+    maxAttempts = MAX_SUGGEST_ATTEMPTS,
+    classify = availabilityState
+  }: Options = {}
 ): LiteNameChecker {
   const known = new Map<string, LiteNameState>();
   let timer: ReturnType<typeof setTimeout> | undefined;
@@ -45,7 +56,7 @@ export function createLiteNameChecker(
     const cached = known.get(name);
     if (cached) return cached;
     try {
-      const state = availabilityState(await check(name, signal));
+      const state = classify(await check(name, signal));
       known.set(name, state);
       return state;
     } catch {

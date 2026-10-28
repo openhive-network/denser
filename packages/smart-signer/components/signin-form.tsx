@@ -78,6 +78,10 @@ export const loginTypeDetails: LoginTypeDetails = {
   wif: {
     logo: '/smart-signer/images/hive-blog-twshare.png',
     type: 'internal'
+  },
+  passkey: {
+    logo: '/smart-signer/images/hive-blog-twshare.png',
+    type: 'internal'
   }
 };
 

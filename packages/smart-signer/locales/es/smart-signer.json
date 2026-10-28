@@ -73,7 +73,8 @@
       "hivesigner": "HiveSigner es un servicio externo que firma transacciones en su nombre después de que usted autorice esta aplicación.",
       "wif": "Ingrese su clave privada (WIF) directamente. Solo se usa para firmar y no se guarda a menos que elija almacenarla.",
       "metamask": "Firme con sus claves de Hive gestionadas por Hive Snap en la extensión MetaMask.",
-      "google": "Guarde sus claves cifradas en su Google Drive y firme con ellas desde cualquier dispositivo."
+      "google": "Guarde sus claves cifradas en su Google Drive y firme con ellas desde cualquier dispositivo.",
+      "passkey": "Un sitio firmante con passkey deriva tus claves de Hive de una passkey y firma por ti en su propia ventana. Tus claves nunca llegan a este sitio."
     },
     "signin_safe_storage": {
       "title": "Iniciar sesión con almacenamiento seguro",
@@ -133,6 +134,32 @@
       "keychain": "Iniciar sesión con Hive Keychain",
       "peakvault": "Iniciar sesión con PeakVault",
       "or_safe_storage": "o usa el almacenamiento seguro"
+    },
+    "passkey": {
+      "method": "Firmante con passkey",
+      "title": "Inicia sesión con un firmante con passkey",
+      "description": "Escribe el nombre de tu cuenta. Tu firmante comprueba que tiene la clave de publicación de la cuenta.",
+      "signer_label": "Firmante",
+      "find": "Buscar mi clave",
+      "found": "Tu firmante con passkey tiene la clave de publicación de @{{username}}.",
+      "sign_in": "Iniciar sesión como @{{username}}",
+      "find_again": "Usar otra passkey",
+      "errors": {
+        "account_not_found": "No existe ninguna cuenta de Hive con este nombre.",
+        "key_not_on_account": "La clave que deriva tu firmante no está en la autoridad de publicación de esta cuenta. Usa la passkey de la que provienen las claves de esta cuenta.",
+        "unavailable": "No se pudo leer esta cuenta. Comprueba tu conexión e inténtalo de nuevo."
+      },
+      "signer_errors": {
+        "popup_blocked": "El navegador bloqueó la ventana del firmante. Permite las ventanas emergentes para este sitio e inténtalo de nuevo.",
+        "signer_unavailable": "El sitio firmante no respondió. Comprueba tu conexión e inténtalo de nuevo.",
+        "key_not_found": "Esta passkey no tiene la clave de publicación de la cuenta.",
+        "owner_blind_signing": "El firmante se negó a firmar a ciegas con una clave de propietario.",
+        "prf_unsupported": "Esta passkey o este navegador no pueden derivar claves (sin soporte PRF). Prueba otro navegador u otro proveedor de passkeys.",
+        "webauthn_unavailable": "Las passkeys no están disponibles en este navegador.",
+        "busy": "La ventana del firmante está ocupada con otra solicitud. Ciérrala e inténtalo de nuevo.",
+        "invalid_request": "El firmante rechazó la solicitud por no ser válida.",
+        "internal": "El firmante ha fallado. Inténtalo de nuevo."
+      }
     }
   },
   "pageLogin": {

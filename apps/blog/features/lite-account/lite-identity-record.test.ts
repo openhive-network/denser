@@ -2,7 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { createLiteIdentity } from '@hiveio/lite-account';
 
-const { readStoredLiteIdentity, securedIdentity, signedInIdentity, signingIdentity, storedFromCreated } =
+const { graduatedIdentity, readStoredLiteIdentity, securedIdentity, signedInIdentity, signingIdentity, storedFromCreated } =
   await import('./lite-identity-record.ts');
 
 const NOW = Date.parse('2026-10-23T12:00:00Z');
@@ -31,6 +31,15 @@ describe('readStoredLiteIdentity', () => {
     assert.equal(stored?.ownerPublicKey, ROOT_KEY);
     assert.equal(stored?.signer, SIGNER);
     assert.equal(stored?.deviceExpires, '2027-01-21T12:00:00');
+  });
+
+  it('reads the Hive account a graduated identity became, and none before', () => {
+    const secured = securedIdentity(storedFromCreated(created), ROOT_KEY, SIGNER, '2027-01-21T12:00:00');
+    assert.equal(readStoredLiteIdentity(secured)?.graduated, undefined);
+    const stored = readStoredLiteIdentity(JSON.parse(JSON.stringify(graduatedIdentity(secured, 'brave-otter'))));
+    assert.equal(stored?.graduated, 'brave-otter');
+    assert.deepEqual([stored?.secured, stored?.postingWif], [true, created.postingWif]);
+    assert.equal(readStoredLiteIdentity({ ...secured, graduated: 7 })?.graduated, undefined);
   });
 
   it('is null for anything that is not an identity', () => {

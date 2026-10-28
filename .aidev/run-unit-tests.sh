@@ -83,6 +83,8 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/signer/safe-storage-registration.test.ts \
     packages/smart-signer/lib/auth/accounts.test.ts \
     packages/smart-signer/lib/auth/login-authority.test.ts \
+    packages/smart-signer/lib/passkey/signer-client.test.ts \
+    packages/smart-signer/lib/passkey/posting-key-match.test.ts \
     packages/smart-signer/lib/fetch-json.test.ts < /dev/null || status=1
 echo "== node --test packages/middleware" >&2
 junit="$PWD/test-results/unit/middleware.xml"
@@ -120,10 +122,11 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/lite-account/lite-social.test.ts \
     apps/blog/features/lite-account/lite-social-state.test.ts \
     apps/blog/features/lite-account/lite-read-marker.test.ts \
-    apps/blog/features/lite-account/signer-client.test.ts \
     apps/blog/features/lite-account/lite-identity-record.test.ts \
     apps/blog/features/lite-account/lite-authority-state.test.ts \
     apps/blog/features/lite-account/lite-passkey-label.test.ts \
+    apps/blog/features/lite-account/lite-graduation-state.test.ts \
+    apps/blog/features/lite-account/lite-graduation.test.ts \
     apps/blog/lib/lite-relay/gateway-paths.test.ts < /dev/null || status=1
 echo "== node --test apps/wallet" >&2
 junit="$PWD/test-results/unit/wallet.xml"

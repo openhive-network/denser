@@ -1,5 +1,5 @@
 import { LiteAuthorityError } from './lite-authority-query.ts';
-import { signerErrorKey, SignerError } from './signer-client.ts';
+import { signerErrorKey, SignerError } from '@smart-signer/lib/passkey/signer-client';
 
 /** The gateway's `POST /l2` codes, by the `lite_account.authority_errors.*` key that explains them. */
 const RELAY_ERROR_KEYS: Record<string, string> = {

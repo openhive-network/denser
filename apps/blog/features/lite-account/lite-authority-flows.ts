@@ -21,7 +21,7 @@ import { fetchLiteAuthority, LiteAuthorityError } from './lite-authority-query';
 import { liteGatewayEndpoint } from './lite-endpoints';
 import { securedIdentity, signedInIdentity, type StoredLiteIdentity } from './lite-identity-record';
 import { authenticatorMeta } from './lite-passkey-label';
-import { SIGNER_ROLES, SignerError, type SignerAuthenticator, type SignerPopup } from './signer-client';
+import { SIGNER_ROLES, SignerError, type SignerAuthenticator, type SignerPopup } from '@smart-signer/lib/passkey/signer-client';
 
 // The passkey flows of a lite account: each edits one role with `lite_account.update_authority`,
 // relays it through the gateway's `/l2` and waits until the gateway's authority read shows it.

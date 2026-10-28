@@ -1,6 +1,6 @@
 import type { LiteAuthorityView } from '@hiveio/lite-account';
 import { keyMembers, metaText } from './lite-authority-state.ts';
-import type { SignerAuthenticator } from './signer-client.ts';
+import type { SignerAuthenticator } from '@smart-signer/lib/passkey/signer-client';
 
 // What the account's passkeys are called: the owner members' labels, and what the signer reports.
 // Kept out of lite-authority-state, which the header loads on every page.

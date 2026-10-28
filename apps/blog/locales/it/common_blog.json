@@ -1205,6 +1205,44 @@
       "not_owner": "Solo un browser con accesso a questo account ne vede i dispositivi.",
       "expiry_banner": "La chiave di questo dispositivo per {{name}} scade il {{date}}.",
       "expiry_banner_action": "Rinnovala con la tua passkey"
+    },
+    "graduation": {
+      "title": "Passa a un account Hive",
+      "description": "Il tuo account lite ottiene un proprio account Hive. Le sue chiavi provengono dalla tua passkey: il firmatario si apre per fornirle e non raggiungono mai questo sito.",
+      "name_label": "Nome dell'account Hive",
+      "keys_note": "Il tuo account lite resta utilizzabile dopo il passaggio.",
+      "confirm": "Passa a Hive",
+      "upgrade": "Passa a un account Hive",
+      "earned": "{{rewards}} HBD guadagnati",
+      "reached": "{{rewards}} HBD guadagnati, ne servono {{threshold}}",
+      "progress": "{{rewards}} di {{threshold}} HBD guadagnati ({{percent}}%)",
+      "steps": {
+        "keys": "Recupero delle chiavi dell'account dalla tua passkey",
+        "creating": "Creazione dell'account",
+        "delegating": "Delega dei crediti risorse",
+        "linking": "Collegamento del tuo account lite"
+      },
+      "done": "Il tuo account Hive è pronto:",
+      "created_unlinked": "Il tuo account Hive è stato creato, ma il collegamento del tuo account lite non è riuscito:",
+      "retry_link": "Riprova il collegamento",
+      "link_not_shown": "Il collegamento è stato inviato ma non compare ancora. Riprova tra un minuto.",
+      "sign_in_as": "Accedi come @{{account}}",
+      "now_account": "Ora @{{account}}",
+      "profile_graduated": "Diventato l'account Hive",
+      "finish": "Completa il passaggio",
+      "errors": {
+        "not_eligible": "Questo account lite non può ancora passare a Hive.",
+        "name_taken": "Questo nome è stato preso nel frattempo. Scegline un altro.",
+        "name_invalid": "Questo non è un nome di account Hive valido.",
+        "daily_cap": "Il gateway ha già creato tutti gli account possibili oggi. Riprova domani.",
+        "graduation_disabled": "I passaggi a Hive sono disattivati su questo gateway al momento.",
+        "creator_balance": "Il gateway non può pagare nuovi account al momento. Riprova più tardi.",
+        "rate_limited": "Hai provato poco fa. Attendi un'ora prima di riprovare.",
+        "auth_failed": "Il gateway non ha accettato la firma del tuo account lite. Accedi di nuovo su questo dispositivo.",
+        "broadcast_failed": "La catena ha rifiutato di creare l'account. Riprova più tardi.",
+        "signer_keys": "Il firmatario non ha restituito tutte le chiavi del nuovo account.",
+        "unavailable": "Impossibile completare il passaggio: il gateway non è raggiungibile. Riprova."
+      }
     }
   }
 }

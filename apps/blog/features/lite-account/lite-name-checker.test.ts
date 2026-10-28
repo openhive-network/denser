@@ -62,6 +62,17 @@ describe('createLiteNameChecker', () => {
     assert.deepEqual(states, ['lite-smo:checking', 'lite-smoke-1016:checking', 'lite-smoke-1016:taken_lite']);
   });
 
+  it('says what its `classify` makes of an answer', async () => {
+    const gateway = fakeGateway();
+    const { states, onState } = recorder();
+    const checker = createLiteNameChecker(gateway.check, onState, { classify: (a) => (a.lite_taken ? 'available' : 'taken') });
+    checker.update('lite-smoke-1016');
+    mock.timers.tick(NAME_CHECK_DEBOUNCE_MS);
+    gateway.pending[0].resolve(answer('lite-smoke-1016', { available: false, lite_taken: true }));
+    await settle();
+    assert.deepEqual(states, ['lite-smoke-1016:checking', 'lite-smoke-1016:available']);
+  });
+
   it('never reports an answer for a name the user has typed past, and aborts its request', async () => {
     const gateway = fakeGateway();
     const { states, onState } = recorder();

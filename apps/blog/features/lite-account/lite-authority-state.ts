@@ -10,15 +10,25 @@ export const DEVICE_LIFETIME_DAYS = 90;
 export const RENEW_WINDOW_DAYS = 7;
 const DAY_MS = 86_400_000;
 
-/**
- * Whether the deployment's gateway relays `lite_account.update_authority`: its
- * `/info.limits.l2.apps[<account app id>]` lists it. Without it no passkey UI is shown.
- */
-export function relaysUpdateAuthority(info: LiteRelayInfo | undefined): boolean {
+/** The lite_account method that records the Hive account a lite account graduated to. */
+export const LINK_METHOD = 'link';
+
+/** Whether the deployment's gateway relays the lite_account `method`: its `/info.limits.l2.apps[<account app id>]` lists it. */
+function relaysAccountMethod(info: LiteRelayInfo | undefined, method: string): boolean {
   if (!info?.enabled) return false;
   const methods = info.limits?.l2?.apps?.[info.apps.account];
-  return Array.isArray(methods) && methods.includes(UPDATE_AUTHORITY_METHOD);
+  return Array.isArray(methods) && methods.includes(method);
 }
+
+/** Whether the gateway relays `lite_account.update_authority`. Without it no passkey UI is shown. */
+export const relaysUpdateAuthority = (info: LiteRelayInfo | undefined): boolean =>
+  relaysAccountMethod(info, UPDATE_AUTHORITY_METHOD);
+
+/**
+ * Whether the gateway graduates lite accounts: it relays `link`, which `POST /graduate` relays and a
+ * failed link is retried with. Without it no graduation UI is shown.
+ */
+export const relaysLink = (info: LiteRelayInfo | undefined): boolean => relaysAccountMethod(info, LINK_METHOD);
 
 /** A chain time (UTC, seconds, no zone) as epoch milliseconds. */
 export const chainTimeMs = (time: string): number => Date.parse(`${time}Z`);

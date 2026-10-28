@@ -1205,6 +1205,44 @@
       "not_owner": "只有登录此账户的浏览器才能看到其设备。",
       "expiry_banner": "此设备用于 {{name}} 的密钥将于 {{date}} 过期。",
       "expiry_banner_action": "用通行密钥续期"
+    },
+    "graduation": {
+      "title": "升级为 Hive 账户",
+      "description": "你的轻账户将获得一个属于自己的 Hive 账户。它的密钥来自你的通行密钥：签名服务会打开来提供密钥，密钥永远不会到达本站。",
+      "name_label": "Hive 账户名",
+      "keys_note": "升级后你的轻账户仍可使用。",
+      "confirm": "升级",
+      "upgrade": "升级为 Hive 账户",
+      "earned": "已赚取 {{rewards}} HBD",
+      "reached": "已赚取 {{rewards}} HBD，需要 {{threshold}} HBD",
+      "progress": "已赚取 {{rewards}} / {{threshold}} HBD（{{percent}}%）",
+      "steps": {
+        "keys": "正在从通行密钥获取账户密钥",
+        "creating": "正在创建账户",
+        "delegating": "正在委托资源积分",
+        "linking": "正在关联你的轻账户"
+      },
+      "done": "你的 Hive 账户已就绪：",
+      "created_unlinked": "你的 Hive 账户已创建，但轻账户关联失败：",
+      "retry_link": "重试关联",
+      "link_not_shown": "关联已发送，但尚未显示。请一分钟后重试。",
+      "sign_in_as": "以 @{{account}} 登录",
+      "now_account": "现为 @{{account}}",
+      "profile_graduated": "已升级为 Hive 账户",
+      "finish": "完成升级",
+      "errors": {
+        "not_eligible": "此轻账户暂时还不能升级。",
+        "name_taken": "这个名称刚被别人占用了。请另选一个。",
+        "name_invalid": "这不是有效的 Hive 账户名。",
+        "daily_cap": "网关今天能创建的账户已全部创建。请明天再试。",
+        "graduation_disabled": "此网关目前已关闭升级。",
+        "creator_balance": "网关目前无法支付新账户的费用。请稍后再试。",
+        "rate_limited": "你刚刚试过。请等一小时后再试。",
+        "auth_failed": "网关不接受你的轻账户签名。请在此设备上重新登录。",
+        "broadcast_failed": "区块链拒绝创建该账户。请稍后再试。",
+        "signer_keys": "签名服务没有返回新账户的全部密钥。",
+        "unavailable": "无法完成升级：网关无法访问。请重试。"
+      }
     }
   }
 }

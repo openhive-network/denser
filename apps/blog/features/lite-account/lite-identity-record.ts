@@ -14,6 +14,11 @@ export type StoredLiteIdentity = Omit<LiteIdentity, 'ownerWif'> & {
   signer?: string;
   /** When this browser's posting key stops counting on chain (UTC, seconds, no zone). */
   deviceExpires?: string;
+  /**
+   * The Hive account this lite account graduated to, once created. The lite identity stays valid;
+   * the account's keys are in the passkey signer, not here.
+   */
+  graduated?: string;
 };
 
 const isObject = (value: unknown): value is Record<string, unknown> =>
@@ -46,7 +51,8 @@ export function readStoredLiteIdentity(raw: unknown): StoredLiteIdentity | null 
     ownerWif: optionalString(raw.ownerWif),
     secured: raw.secured === true,
     signer: optionalString(raw.signer),
-    deviceExpires: optionalString(raw.deviceExpires)
+    deviceExpires: optionalString(raw.deviceExpires),
+    graduated: optionalString(raw.graduated)
   };
 }
 
@@ -69,6 +75,12 @@ export function securedIdentity(
   const { ownerWif: _dropped, ...rest } = identity;
   return { ...rest, ownerPublicKey: rootKey, secured: true, signer, deviceExpires };
 }
+
+/** `identity` once it graduated to the Hive account `account`. */
+export const graduatedIdentity = (identity: StoredLiteIdentity, account: string): StoredLiteIdentity => ({
+  ...identity,
+  graduated: account
+});
 
 export type SignedInDevice = {
   name: string;

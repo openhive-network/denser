@@ -56,6 +56,18 @@ export function availabilityState(answer: LiteNameAvailability): LiteNameState {
   return answer.available ? 'available' : 'taken';
 }
 
+/**
+ * What the graduation dialog says about `answer` as the Hive account `ownName` graduates to: only
+ * the Hive registry counts, and the lite registry only for another lite account's name (the
+ * gateway keeps that for its own graduation); `ownName` itself is free unless a Hive account has it.
+ */
+export function graduationNameState(answer: LiteNameAvailability, ownName: string): LiteNameState {
+  if (!answer.l1_grammar_ok) return 'invalid_l1';
+  if (answer.l1_taken) return 'taken_l1';
+  if (answer.lite_taken && answer.name !== ownName) return 'taken_lite';
+  return 'available';
+}
+
 /** Whether a name in `state` may be confirmed: an available one, or one the gateway could not check (it refuses a taken name at posting time). */
 export const canConfirmLiteName = (state: LiteNameState): boolean => state === 'available' || state === 'check_failed';
 

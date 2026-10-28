@@ -2,7 +2,7 @@ import { describe, it, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { LiteRelayError } from '@hiveio/lite-account';
 
-const { availabilityState, canConfirmLiteName, checkLiteNameAvailability, isLiteNameTaken } = await import(
+const { availabilityState, canConfirmLiteName, checkLiteNameAvailability, graduationNameState, isLiteNameTaken } = await import(
   './lite-name-availability.ts'
 );
 
@@ -50,6 +50,21 @@ describe('availabilityState', () => {
     assert.equal(availabilityState({ ...free, available: false, l1_grammar_ok: false }), 'invalid_l1');
     assert.equal(availabilityState({ ...free, available: false, lite_grammar_ok: false, l1_grammar_ok: false }), 'invalid');
     assert.equal(availabilityState({ ...free, available: false }), 'taken');
+  });
+});
+
+describe('graduationNameState', () => {
+  const own = 'brave-otter-482';
+  it('takes the lite account\'s own name, which the lite registry holds for it', () => {
+    assert.equal(graduationNameState({ ...free, available: false, lite_taken: true }, own), 'available');
+    assert.equal(graduationNameState(free, own), 'available');
+  });
+
+  it('refuses a Hive account\'s name, another lite account\'s name and a name hived refuses', () => {
+    assert.equal(graduationNameState({ ...free, available: false, lite_taken: true, l1_taken: true }, own), 'taken_l1');
+    const other = { ...free, name: 'calm-heron-17', available: false, lite_taken: true };
+    assert.equal(graduationNameState(other, own), 'taken_lite');
+    assert.equal(graduationNameState({ ...free, available: false, l1_grammar_ok: false }, own), 'invalid_l1');
   });
 });
 

@@ -263,8 +263,8 @@ A closed popup is `cancelled` and says nothing; every other code has a `lite_acc
 message. Every result may carry the signer's report of what answered the ceremony,
 `authenticator { attachment, transports, aaguid, name, description }` (hive-passkey-signer SPEC §5.2;
 `description` always present, `name` the AAGUID's known model); an older signer omits it, and a report
-of another shape fails the call as `internal`. `signer-client.ts` stands in for
-`@hiveio/passkey-signer-client` until that is published.
+of another shape fails the call as `internal`. `signer-client.ts` (in `packages/smart-signer/lib/passkey`, shared with the
+"Passkey signer" login type below) stands in for `@hiveio/passkey-signer-client` until that is published.
 
 **Authority.** `GET /api/lite-gateway/names/<name>/authority` (allow-listed) relays the gateway's read of
 the account's roles and members (`expires`, `meta { kind, signer, label, authenticator }`,
@@ -362,3 +362,71 @@ falls back to `bridge.account_notifications` / `bridge.unread_notifications` (an
 identity's notification reads and the gateway answered in the browser (steem-16 had no lite
 notification when recorded); LITE-NOTIF-06 (a node without the methods) is in `liteSocial.spec.ts`
 and `liteIdentity.spec.ts`, and LITE-PROFILE-04 has the page's 404 there.
+
+## Graduating to a Hive account
+
+Shown only where the gateway graduates: its `/info.limits.l2.apps[<apps.account>]` lists `link`
+(`relaysLink`, `lite-authority-state.ts`), and only for a registered identity secured with a passkey
+(`useLiteGraduationAccess`, `use-lite-graduation.ts`): the signer that secures it gives the new account its
+keys. Elsewhere nothing below appears.
+
+**Eligibility.** `GET /api/lite-gateway/names/<name>/graduation` (allow-listed; `lite-graduation-query.ts`,
+no signing package) relays the gateway's `{ eligible, reason, policy, rewards_hbd, threshold_hbd,
+linked_account }`. `graduationOffer` turns it into what the identity menu (`lite-graduation-menu-items.tsx`,
+read when the menu opens) and the owner's profile card (`lite-graduation-notice.tsx`) show: "Upgrade to a
+Hive account" with the ledger amount (and the threshold, under the `rewards` policy); below the threshold
+the item is disabled and says how far along the account is (`1.250 of 3.000 HBD earned (41%)`); an
+account not eligible with no threshold to progress to (an allow-list) gets nothing.
+
+**The flow** (`lite-graduation-dialog.tsx`, `next/dynamic` when opened; `lite-graduation.ts` with the
+signing package): the Hive account's name, starting on the lite name and checked as typed through the
+availability read (`graduationNameState`: hived's grammar and the Hive registry; the lite registry only for
+another lite account's name, which the gateway keeps for that account's own graduation). Upgrade opens
+the identity's signer (`identity.signer`) for one `getPublicKeys({ roles: [owner, active, posting, memo],
+account: 0 })`, signs `linkOp(name, account)` with this browser's posting key under the gateway's account
+app (`signL2Operations`), and POSTs `{ tx, keys }` to `/api/lite-gateway/graduate` (allow-listed). The
+checklist shows the keys, the creation, the RC delegation (the gateway does both in that request) and
+the link; the link counts once the graduation read names the account (polled for about 50 s). Errors by
+name (`lite_account.graduation.errors.*`): `not_eligible`, `name_taken`, `name_invalid`, `daily_cap`,
+`graduation_disabled`, `creator_balance`, `rate_limited` (one attempt per hour), `auth_failed`,
+`broadcast_failed`; the signer's as everywhere (a closed popup says nothing). Before the account exists
+nothing is stored.
+
+Once `/graduate` answers 202 the stored identity gains `graduated: <account>`
+(`lite-identity-record.ts`) and the signer is remembered as the account's (`rememberPasskeyBinding`). A
+202 with `link_trx_id: null`, or a link that does not show up, leaves "Retry link", which signs `link`
+afresh and relays it through `/l2`; the menu offers "Finish the upgrade" (the same retry) while the
+gateway's read does not name the account. The lite identity stays valid: the guest can still post as it,
+but the menu shows "Now @<account>" and suggests "Sign in as @<account>", and the profile card says
+"Upgraded to the Hive account @<account>".
+
+## The "Passkey signer" login type (Hive accounts)
+
+`LoginType.passkey` (`packages/smart-signer`) signs in to any Hive account whose posting key a passkey
+signer derives (at account index 0), graduated or not. The Login dialog's other sign-in options list
+"Passkey signer" where the dialog asks for the posting key and the deployment configures a signer
+(`REACT_APP_PASSKEY_SIGNERS`); the wallet asks for the active key, so it does not show it and needs no
+change. Its step (`components/auth/methods/passkey.tsx`) takes two clicks, as the signer's popup takes one
+request: "Find my key" asks the signer for `getPublicKeys({ roles: [posting], account: 0 })` and reads the
+account's posting authority (`findPasskeyPostingKey`): a derived key that meets the threshold alone is
+remembered with the signer (`passkey-binding.ts`, localStorage, until sign-out), any other answer is a
+readable message (`key_not_on_account`, `account_not_found`); then "Sign in as @<account>" signs the login
+challenge. An account whose key is remembered (as a graduation leaves it) starts at the second click;
+the identity menu's "Sign in as @<account>" opens the Login dialog there, and the graduation dialog's
+signs in directly (`usePasskeySignIn`).
+
+Every transaction Denser signs for such a session goes through `SignerPasskey` (`signer-passkey.ts`):
+the signer's popup gets `signTransaction({ transaction: <L1 transaction, API JSON>, chainId, publicKey:
+<the posting key> })` and answers `{ signatures }`. The popup is opened before anything is awaited, so the
+click that asked for the signature allows it. A closed popup is a cancellation (no toast); other codes are
+named. Posting authority only: `getLoginAuthority` reports the session as holding the posting key, so an
+operation needing the active key asks to sign in with it instead, and the signer refuses one anyway. Keys
+never enter Denser.
+
+`liteGraduation.spec.ts` covers it on the `liteSocial` recording, with the gateway answered in the browser
+and the stub signer of the passkey specs: LITE-GRAD-01 (eligibility, and the disabled progress below the
+threshold), -02 (a full graduation, the stored record and the profile), -03 (the gateway's refusals,
+nothing stored; a failed link and its retry through `/l2`), -04 (the Passkey signer sign-in refusing an
+account whose posting authority lacks the derived key, then, with a matching key, the signer signing the
+login challenge and the session becoming the account) and -05 (a gateway that does not graduate: no UI).
+A vote of a passkey session is not covered: the recording has no post that account can vote on.
