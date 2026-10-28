@@ -112,7 +112,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable, t }: ModeI
           type="button"
           onClick={onSearchClick}
           disabled={!aiAvailable && mode === 'ai'}
-          className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground ring-offset-background transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           aria-label={t('search_mode.search')}
         >
           <Search className="h-4 w-4" aria-hidden="true" />

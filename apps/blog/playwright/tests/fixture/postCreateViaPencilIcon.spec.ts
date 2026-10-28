@@ -65,19 +65,17 @@ test.describe('Post creation via pencil icon (§2.1)', () => {
     // /trending which mounts main-bar.tsx with the pencil icon.
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-    // The pencil flips between two wrappings depending on
+    // The pencil flips between two elements depending on
     // useUserClient hydration:
     //   - logged-out: <DialogLogin>...<Button data-testid="nav-pencil">
-    //   - logged-in:  <a href="/submit.html"><Button data-testid="nav-pencil">
+    //   - logged-in:  <a href="/submit.html" data-testid="nav-pencil">
     // login-btn hides under TWO different conditions (pre-hydration
     // skeleton AND post-hydration logged-in), so on a slow runner we
     // can race past `login-btn.toBeHidden` while user.isLoggedIn is
     // still false → click hits the DialogLogin trigger and never
-    // navigates (job 3141819 hit exactly that). Wait for the Link
-    // wrapper to materialise instead.
-    const pencilLink = page
-      .locator('a[href="/submit.html"]')
-      .filter({ has: page.getByTestId('nav-pencil') });
+    // navigates (job 3141819 hit exactly that). Wait for the pencil
+    // to become the link instead.
+    const pencilLink = page.locator('a[href="/submit.html"][data-testid="nav-pencil"]');
     await expect(pencilLink).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     await pencilLink.click();
     await page.waitForURL(/\/submit\.html(?:$|\?)/);
