@@ -4,7 +4,9 @@
 # `blog-live` and `wallet-live`, this tree's production builds talking to
 # api.hive.blog (.aidev/test-stack.compose.yml).
 #
-# ADVISORY: it always exits 0. The live specs judge mainnet data as much as the
+# ADVISORY: project.yaml declares it `mode: advisory`, which is what keeps its
+# result (an environment failure included) out of the verdict; the script also
+# exits 0. The live specs judge mainnet data as much as the
 # change, so their verdict must not gate; their per-test results are recorded
 # from test-results/live-e2e/junit.xml and the log shows them. The blog's cases
 # keep Playwright's names; every other app's are prefixed "<app> › ".

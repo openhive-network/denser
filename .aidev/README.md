@@ -317,7 +317,8 @@ for its spec's recording
 app's server side must read that same proxy. A stack server could reach it only
 by relaying back into the suite container.
 
-**`live_e2e`** (`.aidev/run-live-e2e.sh`, always exits 0) runs the e2e specs the
+**`live_e2e`** (`.aidev/run-live-e2e.sh`; declared `mode: advisory` with a fixed `memory: 6g` cap, so neither a
+failing spec nor an OOM kill of its container fails the slot) runs the e2e specs the
 candidate's change reaches, `--retries=0`, each app's against its stack server:
 `blog-live` serves `fixture_e2e`'s build and `wallet-live` `wallet_fixture`'s
 (base path `/wallet`), both against the live Hive API; no image is built. The
