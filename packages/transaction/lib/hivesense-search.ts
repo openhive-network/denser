@@ -1,8 +1,9 @@
 import { ReadTransportError } from './read-transport';
 
 /**
- * OpenAPI-root check is not enough: a live spec with a hung or empty
- * `posts/search` still left AI mode enabled and the search page blank (#947).
+ * Bound for the `sync-status` availability probe. It shares the search
+ * endpoints' postgrest pool, so a hung search hangs it too and AI mode turns
+ * off instead of leaving the search page blank (#947).
  */
 export const HIVE_SENSE_PROBE_TIMEOUT_MS = 8000;
 
@@ -34,14 +35,15 @@ export const isRenderableSearchEntry = (post: unknown): boolean => {
   return 'title' in entry || typeof entry.post_id === 'number';
 };
 
-export const hiveSenseOpenApiLooksHealthy = (spec: unknown): boolean => {
-  if (!spec || typeof spec !== 'object') return false;
-  const title = (spec as { info?: { title?: unknown } }).info?.title;
-  return title === 'Hivesense';
-};
-
-export const hiveSenseSearchProbeLooksHealthy = (responseOk: boolean, body: unknown): boolean => {
-  return responseOk && Array.isArray(body);
+/**
+ * Whether a HiveSense `/sync-status` body says the node is serving: a numeric
+ * `last_block_num` and a string `last_block_time` (null until the node has
+ * processed its first block).
+ */
+export const hiveSenseSyncStatusLooksHealthy = (body: unknown): boolean => {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return false;
+  if (!('last_block_num' in body) || !('last_block_time' in body)) return false;
+  return typeof body.last_block_num === 'number' && typeof body.last_block_time === 'string';
 };
 
 export const partitionHiveSensePosts = <T extends object>(

@@ -5,8 +5,7 @@ import { getHiveChainService } from './hive-chain-service';
 import {
   AI_SEARCH_REQUEST_TIMEOUT_MS,
   HIVE_SENSE_PROBE_TIMEOUT_MS,
-  hiveSenseOpenApiLooksHealthy,
-  hiveSenseSearchProbeLooksHealthy,
+  hiveSenseSyncStatusLooksHealthy,
   isHiveSenseNoEmbeddingError,
   isHiveSenseStub,
   isRenderableSearchEntry,
@@ -27,27 +26,13 @@ const logStandarizedError = (methodName: string, error: unknown): null => {
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
     const base = getHiveChainService().getAiSearchEndpoint().replace(/\/$/, '');
-    // The OpenAPI document is served only at the trailing-slash root, which the
-    // wax REST caller cannot request (it filters out empty path segments).
-    // A live spec is not enough: also probe posts/search so a degraded
-    // sub-endpoint disables AI mode instead of hanging the search page (#947).
-    const signal = AbortSignal.timeout(HIVE_SENSE_PROBE_TIMEOUT_MS);
-    const probeUrl = new URL(`${base}/hivesense-api/posts/search`);
-    probeUrl.searchParams.set('q', 'hive');
-    probeUrl.searchParams.set('truncate', '1');
-    probeUrl.searchParams.set('result_limit', '1');
-    probeUrl.searchParams.set('full_posts', '0');
-
-    const [rootResponse, probeResponse] = await Promise.all([
-      fetch(`${base}/hivesense-api/`, { signal }),
-      fetch(probeUrl, { signal })
-    ]);
-    if (!rootResponse.ok || !probeResponse.ok) return false;
-    const spec = await rootResponse.json();
-    const probeBody = await probeResponse.json();
-    return (
-      hiveSenseOpenApiLooksHealthy(spec) && hiveSenseSearchProbeLooksHealthy(probeResponse.ok, probeBody)
-    );
+    // A one-row lookup on the same postgrest pool as the search endpoints: when
+    // searches hang or haproxy has marked hivesense down, this fails too.
+    const response = await fetch(`${base}/hivesense-api/sync-status`, {
+      signal: AbortSignal.timeout(HIVE_SENSE_PROBE_TIMEOUT_MS)
+    });
+    if (!response.ok) return false;
+    return hiveSenseSyncStatusLooksHealthy(await response.json());
   } catch (error) {
     logger.error(error, 'Error in getHiveSenseStatus');
     return false;
