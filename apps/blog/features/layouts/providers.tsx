@@ -20,6 +20,7 @@ import {
   NavigationProgressHandler
 } from '@hive/ui';
 import { SocialSyncListener } from '@/blog/components/social-sync-listener';
+import { FypWarmUp } from '@/blog/components/fyp-warm-up';
 import { useTranslation } from '@/blog/i18n/client';
 
 /** `nonce`: this response's CSP nonce, for the theme's inline init script */
@@ -46,6 +47,7 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
               <LoggedUserProvider>
                 {children}
               </LoggedUserProvider>
+              <FypWarmUp />
             </SignerProvider>
           </NavigationProgressProvider>
         </ThemeProvider>
