@@ -980,16 +980,16 @@ for the `avatarFallback*.spec.ts` checks of the default-avatar fallback.
 
 ### The header's HiveSense probe leaves the proxy: stub it to assert "no console errors"
 
-`getHiveSenseStatus` (site header, every page) fetches `<AI domain>/hivesense-api/`
-and a `posts/search` probe. The fixture config doesn't set `REACT_APP_AI_DOMAIN`,
-so they go to `https://api.hive.blog`; with no network Chromium logs two
-`Failed to load resource: net::ERR_INTERNET_DISCONNECTED` console errors. The dev
+`getHiveSenseStatus` (site header, every page) fetches `<AI domain>/hivesense-api/sync-status`,
+nothing else. The fixture config doesn't set `REACT_APP_AI_DOMAIN`,
+so it goes to `https://api.hive.blog`; with no network Chromium logs a
+`Failed to load resource: net::ERR_INTERNET_DISCONNECTED` console error. The dev
 stack has egress, so it doesn't show them. A spec that fails on any console error
 routes those URLs to a `200 {}` (AI search off), as `healthchecker.spec.ts` does.
 To put the header in a given state, serve recorded probe answers instead:
-`headerSearchMode.spec.ts` answers both probe URLs with the recorded 404
-(`homeMainPage/0002`, classic `Search...`) or with `lighthouse/0017` + `0018`
-(OpenAPI document + `posts/search` result, `AI Search...`).
+`headerSearchMode.spec.ts` answers `sync-status` with the recorded 404
+(`homeMainPage/0002`, classic `Search...`) or with `lighthouse/0017`
+(a `sync-status` body, `AI Search...`), and checks it is the only hivesense request.
 
 ### Esc closes the topmost Radix layer, which may be a tooltip
 
