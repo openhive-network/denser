@@ -2,6 +2,7 @@ import { afterEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { FypApiError, getFypFeedPage, retryFypRead } from './fyp-api.ts';
 import { FYP_PAGE_SIZE, nextFypPage } from './fyp-paging.ts';
+import { warmUpFypFeedOnce } from './fyp-warm-up.ts';
 
 const BASE_URL = 'https://fyp.example.org/haf-fyp-api/';
 // Larger than Number.MAX_SAFE_INTEGER: it would not survive as a JSON number
@@ -99,6 +100,22 @@ describe('getFypFeedPage', () => {
     assert.equal(page[0].fyp.post_id, POST_ID);
   });
 
+  it('returns consecutive pages exactly as served, in their rank order', async () => {
+    const ranked = (first: number) =>
+      Array.from({ length: FYP_PAGE_SIZE }, (_, i) => {
+        const entry = post(`p${first + i}`);
+        return { ...entry, fyp: { ...entry.fyp, rank: first + i, post_id: String(first + i) } };
+      });
+    const pages = [ranked(1), ranked(FYP_PAGE_SIZE + 1)];
+    serve(async (url) => Response.json(pages[Number(url.searchParams.get('page')) - 1]));
+
+    const first = await getFypFeedPage(BASE_URL, 'alice', 1);
+    const second = await getFypFeedPage(BASE_URL, 'alice', nextFypPage(first, 1) ?? assert.fail('feed ended'));
+
+    assert.deepEqual(first, pages[0]);
+    assert.deepEqual(second, pages[1]);
+  });
+
   it('rejects with FypApiError on an HTTP error', async () => {
     serve(async () => new Response('down', { status: 502 }));
     await assert.rejects(getFypFeedPage(BASE_URL, 'alice', 1), FypApiError);
@@ -159,5 +176,69 @@ describe('retryFypRead', () => {
       assert.equal(retryFypRead(0, error), true);
       assert.equal(retryFypRead(1, error), false);
     }
+  });
+});
+
+/** A `sessionStorage` stand-in: one browser session. */
+const sessionStore = () => {
+  const items = new Map<string, string>();
+  return { getItem: (key: string) => items.get(key) ?? null, setItem: (key: string, value: string) => void items.set(key, value) };
+};
+
+describe('warmUpFypFeedOnce', () => {
+  const noFailure = (error: unknown) => assert.fail(`warm-up failed: ${String(error)}`);
+
+  it("asks haf_fyp to warm the account's feed once per browser session", async () => {
+    serve(async () => new Response(null, { status: 204 }));
+    const storage = sessionStore();
+    const warmUp = (account: string) => warmUpFypFeedOnce({ baseUrl: BASE_URL, account, storage, onFailure: noFailure });
+
+    await warmUp('alice');
+    await warmUp('alice');
+    await warmUp('bob');
+
+    assert.deepEqual(
+      requested.map((url) => url.href),
+      [
+        'https://fyp.example.org/haf-fyp-api/v1/fyp/warmup/alice',
+        'https://fyp.example.org/haf-fyp-api/v1/fyp/warmup/bob'
+      ]
+    );
+
+    await warmUpFypFeedOnce({ baseUrl: BASE_URL, account: 'alice', storage: sessionStore(), onFailure: noFailure });
+    assert.equal(requested.length, 3, 'a new browser session warms the feed again');
+  });
+
+  it('sends nothing when the For You feed is off or the reader is signed out', async () => {
+    serve(async () => new Response(null, { status: 204 }));
+    const storage = sessionStore();
+
+    await warmUpFypFeedOnce({ baseUrl: undefined, account: 'alice', storage, onFailure: noFailure });
+    await warmUpFypFeedOnce({ baseUrl: BASE_URL, account: undefined, storage, onFailure: noFailure });
+
+    assert.equal(requested.length, 0);
+    await warmUpFypFeedOnce({ baseUrl: BASE_URL, account: 'alice', storage, onFailure: noFailure });
+    assert.equal(requested.length, 1, 'skipped calls do not use up the session');
+  });
+
+  it('swallows a failure, reports it and does not retry it', async () => {
+    const answers = [
+      () => Promise.reject(new TypeError('fetch failed')),
+      async () => new Response('no such endpoint', { status: 404 })
+    ];
+    for (const answer of answers) {
+      serve(answer);
+      const storage = sessionStore();
+      const failures: unknown[] = [];
+      const warmUp = () =>
+        warmUpFypFeedOnce({ baseUrl: BASE_URL, account: 'alice', storage, onFailure: (e) => failures.push(e) });
+
+      await warmUp();
+      await warmUp();
+
+      assert.equal(failures.length, 1);
+      assert.ok(failures[0] instanceof FypApiError);
+    }
+    assert.equal(requested.length, answers.length);
   });
 });

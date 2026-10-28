@@ -12,6 +12,7 @@ export const FIXTURE_FYP_API_URL = 'https://fyp.fixture.test/haf-fyp-api';
 export const FYP_PAGE_SIZE = 20;
 
 const FEED_ROUTE = `${FIXTURE_FYP_API_URL}/v1/fyp/feed/**`;
+const WARM_UP_ROUTE = `${FIXTURE_FYP_API_URL}/v1/fyp/warmup/**`;
 // The page reads both APIs cross-origin
 const CORS_HEADERS = { 'access-control-allow-origin': '*' };
 
@@ -63,6 +64,16 @@ export async function serveFypFeed(
       return route.fulfill({ status, headers: CORS_HEADERS, json: { error: 'unavailable' } });
     const pageNumber = Number(new URL(route.request().url()).searchParams.get('page') ?? '1');
     return route.fulfill({ headers: CORS_HEADERS, json: pages[pageNumber - 1] ?? [] });
+  });
+  return requests;
+}
+
+/** Answers the For You warm-up requests of `page` with 204. Returns the requests the page sent. */
+export async function serveFypWarmUp(page: Page): Promise<Request[]> {
+  const requests: Request[] = [];
+  await page.route(WARM_UP_ROUTE, (route) => {
+    requests.push(route.request());
+    return route.fulfill({ status: 204, headers: CORS_HEADERS });
   });
   return requests;
 }

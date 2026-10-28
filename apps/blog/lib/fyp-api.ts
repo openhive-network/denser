@@ -91,6 +91,32 @@ export async function getFypFeedPage(
   return body.map(dropUnfinishedMarkup);
 }
 
+/**
+ * Asks haf_fyp to re-rank `account`'s feed ahead of its next read, without opening a read session.
+ *
+ * @param baseUrl - the haf_fyp API root, as for `getFypFeedPage`
+ * @throws FypApiError when the request fails, takes longer than `timeoutMs`, or answers an HTTP error
+ *   (a haf_fyp without the warm-up endpoint answers 404)
+ */
+export async function requestFypWarmUp(
+  baseUrl: string,
+  account: string,
+  timeoutMs: number = FYP_REQUEST_TIMEOUT_MS
+): Promise<void> {
+  const url = new URL(`${baseUrl.replace(/\/+$/, '')}/v1/fyp/warmup/${encodeURIComponent(account)}`);
+  let response: Response;
+  try {
+    response = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+  } catch (error) {
+    throw new FypApiError(`For You warm-up request failed: ${url}`, { cause: error, serviceDown: true });
+  }
+  if (!response.ok) {
+    throw new FypApiError(`For You warm-up answered HTTP ${response.status}: ${url}`, {
+      serviceDown: response.status >= 500
+    });
+  }
+}
+
 // Left in, a fragment like `![img_2026` would show as text in the card summary.
 function dropUnfinishedMarkup(entry: FypEntry): FypEntry {
   if (typeof entry.body !== 'string' || entry.body.length < TRUNCATED_BODY_LENGTH) return entry;
