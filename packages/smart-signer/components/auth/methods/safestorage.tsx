@@ -4,6 +4,12 @@ import { useForm } from 'react-hook-form';
 
 import { AuthUser, OnlineClient } from '@hiveio/hb-auth';
 import { handleAuthError, isKeyUpdateNeeded, isAlreadyRegistered } from '@smart-signer/lib/auth-error';
+import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
+import {
+  declinePasskeyPrompt,
+  isPasskeyPromptDismissed,
+  snoozePasskeyPrompt
+} from '@smart-signer/lib/auth/passkey-prompt-dismissal';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { username } from '@smart-signer/lib/auth/utils';
@@ -25,12 +31,7 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-  DropdownMenuItem,
-  Checkbox,
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent
+  DropdownMenuItem
 } from '@hive/ui';
 import Step from '../step';
 import MethodInfo from '../method-info';
@@ -42,6 +43,7 @@ import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
+import StrictModeCheckbox from './strict-mode-checkbox';
 import { useInjectedExtensions } from './use-injected-extensions';
 import { registerSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
@@ -128,6 +130,23 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     });
 
+    /** The client of this app's current worker: the one held since mount may have been replaced */
+    async function getAuthClient(): Promise<OnlineClient> {
+      authClient.current = await hbauthService.getOnlineClient();
+      return authClient.current;
+    }
+
+    async function shouldOfferPasskey(client: OnlineClient, username: string): Promise<boolean> {
+      try {
+        const supported = await client.isPasskeySupported();
+        const hasPasskey = await client.hasPasskey(username);
+        return supported && !hasPasskey && !isPasskeyPromptDismissed(username);
+      } catch {
+        // Non-critical — silently skip passkey prompt on any error
+        return false;
+      }
+    }
+
     async function onSave(values: SafeStorageForm) {
       const { username, password, wif, keyType, strict } = values;
       try {
@@ -140,17 +159,16 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           setLoading(false);
           return;
         }
-        if (authClient.current) {
-          await registerSafeStorageKey(
-            authClient.current,
-            { username, password, wif, keyType, strict },
-            SHARED_KEY_LOOKUP
-          );
-        }
+        await hbauthService.withOnlineClient((client) =>
+          registerSafeStorageKey(client, { username, password, wif, keyType, strict }, SHARED_KEY_LOOKUP)
+        );
         await finalize(values);
         form.reset();
       } catch (error) {
-        const errorMessage = handleAuthError(error, 'onSave');
+        const supersededKeyWrite = findSupersededKeyWrite(error);
+        const errorMessage = supersededKeyWrite
+          ? t(SUPERSEDED_KEY_WRITE_MESSAGE, { ns: SMART_SIGNER_NAMESPACE, ...supersededKeyWrite })
+          : handleAuthError(error, 'onSave');
         setError(errorMessage);
         setLoading(false);
       }
@@ -161,29 +179,12 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         setLoading(true);
         setError(null);
-        await authClient.current?.authenticate(username, password, keyType);
-
         // Check passkey support BEFORE finalize — finalize closes the dialog
         // and may unmount this component, so state updates after it are lost.
-        let shouldPromptPasskey = false;
-        try {
-          const client = authClient.current;
-          if (client) {
-            const supported = await client.isPasskeySupported();
-            const hasPasskey = await client.hasPasskey(username);
-            const dismissedRaw = localStorage.getItem(`passkey-dismissed-${username}`);
-            let dismissed = false;
-            if (dismissedRaw === 'never') {
-              dismissed = true;
-            } else if (dismissedRaw) {
-              // Timestamp-based dismiss — re-ask after 8 hours
-              dismissed = Date.now() - Number(dismissedRaw) < 8 * 60 * 60 * 1000;
-            }
-            shouldPromptPasskey = supported && !hasPasskey && !dismissed;
-          }
-        } catch {
-          // Non-critical — silently skip passkey prompt on any error
-        }
+        const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
+          await client.authenticate(username, password, keyType);
+          return shouldOfferPasskey(client, username);
+        });
 
         if (shouldPromptPasskey) {
           setLastAuthPassword(password);
@@ -254,13 +255,14 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     }
 
     async function signInWithExtension(loginType: LoginType.keychain | LoginType.peakvault) {
-      if (!(await form.trigger('username'))) return;
-      const { username, keyType } = form.getValues();
+      // Cover the form before validating, or a second click lands while validation is pending
+      setLoading(true);
       try {
-        setLoading(true);
+        if (!(await form.trigger('username'))) return;
+        const { username, keyType } = form.getValues();
         await signIn(loginType, username, keyType);
       } catch (error) {
-        handleError(error);
+        handleError(error, { method: 'signIn', params: { loginType } });
       } finally {
         setLoading(false);
       }
@@ -268,8 +270,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
     async function cancelAuth(username: string): Promise<void> {
       form.reset();
-      await authClient?.current?.logout(username);
-      const users = (await authClient.current?.getAuths()) || [];
+      const client = await getAuthClient();
+      await client.logout(username);
+      const users = await client.getAuths();
       setAuthUsers(users);
       setLoading(false);
     }
@@ -322,18 +325,20 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
 
       if (found?.username) {
         if (found?.unlocked) {
-          setDescription(`Unlocked with ${form.getValues().keyType} key`);
+          setDescription(
+            t('login_form.signin_safe_storage.description_unlocked', { keyType: form.getValues().keyType })
+          );
         } else {
-          setDescription('Unlock user with password');
+          setDescription(t('login_form.signin_safe_storage.description_unlock'));
         }
       } else {
-        setDescription(`Save your ${form.getValues().keyType} key by filling form below`);
+        setDescription(t('login_form.signin_safe_storage.description_save', { keyType: form.getValues().keyType }));
       }
 
       form.setValue('userFound', found ? true : false);
       return found;
       /* eslint-disable react-hooks/exhaustive-deps */
-    }, [form.watch('username'), authUsers]);
+    }, [form.watch('username'), authUsers, t]);
 
     if (loading === undefined) return <Step loading={true}></Step>;
 
@@ -341,9 +346,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       <Step
         title={
           <span className="flex items-center gap-1">
-            Sign in with safe storage
+            {t('login_form.signin_safe_storage.title')}
             <MethodInfo
-              label={t('login_form.method_info.label', { method: 'Safe Storage' })}
+              label={t('login_form.method_info.label', { method: t('login_form.safe_storage_name') })}
               info={t('login_form.method_info.safe_storage')}
               testId="method-info-safe_storage"
             />
@@ -369,7 +374,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
                     <div className="relative flex">
                       <Input
-                        placeholder="Username"
+                        placeholder={t('login_form.signin_safe_storage.placeholder_username')}
                         type="text"
                         autoComplete="username"
                         data-testid="username-input"
@@ -429,7 +434,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   <FormControl>
                     <div className="relative">
                       <Input
-                        placeholder="Safe storage password"
+                        placeholder={t('login_form.signin_safe_storage.placeholder_password')}
                         type={show.password ? 'text' : 'password'}
                         autoComplete="current-password"
                         data-testid="password-input"
@@ -462,7 +467,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     <FormControl>
                       <div className="relative">
                         <Input
-                          placeholder={`WIF ${form.getValues().keyType} private key`}
+                          placeholder={t('login_form.signin_safe_storage.placeholder_wif', { keyType: form.getValues().keyType })}
                           type={show.wif ? 'text' : 'password'}
                           data-testid="wif-input"
                           {...field}
@@ -525,34 +530,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                 control={form.control}
                 name="strict"
                 render={({ field }) => (
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="strict"
-                      onCheckedChange={async (isStrict) => {
-                        field.onChange(isStrict);
-                      }}
-                      {...field}
-                      checked={field.value}
-                      value={field.value as unknown as string}
-                    />
-
-                    <label
-                      htmlFor="strict"
-                      className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {t('login_form.signin_safe_storage.strict_mode')}
-                    </label>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger type="button">
-                          <Icons.info className="h-5 w-5" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          {t('login_form.signin_safe_storage.strict_mode_tooltip')}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+                  <StrictModeCheckbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    i18nNamespace={i18nNamespace}
+                  />
                 )}
               />
             )}
@@ -562,12 +544,12 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   onClick={() => onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE)}
                   className="max-w-max cursor-pointer text-xs text-destructive hover:opacity-80 active:opacity-60"
                 >
-                  Add new key
+                  {t('login_form.signin_safe_storage.key_update')}
                 </span>
               </div>
             )}
             {/* Show this for new user, otherwise show unlock then authorize */}
-            <div className="flex">
+            <div className="flex select-none">
               {userFound ? (
                 <>
                   <Button
@@ -576,7 +558,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                     disabled={!form.formState.isValid}
                     onClick={form.handleSubmit(onAuthenticate)}
                   >
-                    Sign in
+                    {t('login_form.signin_safe_storage.button_signin')}
                   </Button>
                   {/* TODO: Re-work offline flow */}
                   {/* <Button
@@ -597,7 +579,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   disabled={!form.formState.isValid}
                   onClick={form.handleSubmit(onSave)}
                 >
-                  Save and sign in
+                  {t('login_form.signin_safe_storage.button_save')}
                 </Button>
               )}
             </div>
@@ -615,7 +597,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
               }}
             >
               <Icons.keyRound className="mr-2 h-4 w-4" />
-              Other sign in options
+              {t('login_form.other_signin_options')}
             </Button>
           </form>
 
@@ -646,17 +628,15 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         {/* Passkey enrollment prompt — shown after successful password login */}
         {showPasskeyPrompt && (
           <div className="mt-4 rounded-md border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950">
-            <p className="mb-2 text-sm font-medium">Enable biometric unlock?</p>
-            <p className="mb-3 text-xs text-muted-foreground">
-              Use fingerprint, Face ID, or device PIN to unlock instead of typing your password.
-            </p>
-            <div className="flex gap-2">
+            <p className="mb-2 text-sm font-medium">{t('login_form.passkey_prompt.title')}</p>
+            <p className="mb-3 text-xs text-muted-foreground">{t('login_form.passkey_prompt.description')}</p>
+            <div className="flex select-none gap-2">
               <Button
                 size="sm"
                 className="bg-blue-600 text-white hover:bg-blue-500"
                 onClick={async () => {
                   try {
-                    await authClient.current?.registerPasskey(
+                    await (await getAuthClient()).registerPasskey(
                       form.getValues().username,
                       lastAuthPassword
                     );
@@ -673,16 +653,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   }
                 }}
               >
-                Enable
+                {t('login_form.passkey_prompt.enable')}
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={async () => {
-                  localStorage.setItem(
-                    `passkey-dismissed-${form.getValues().username}`,
-                    String(Date.now())
-                  );
+                  snoozePasskeyPrompt(form.getValues().username);
                   setShowPasskeyPrompt(false);
                   setLastAuthPassword('');
                   if (pendingFinalizeRef.current) {
@@ -691,17 +668,14 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   }
                 }}
               >
-                Not now
+                {t('login_form.passkey_prompt.not_now')}
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
                 className="text-muted-foreground"
                 onClick={async () => {
-                  localStorage.setItem(
-                    `passkey-dismissed-${form.getValues().username}`,
-                    'never'
-                  );
+                  declinePasskeyPrompt(form.getValues().username);
                   setShowPasskeyPrompt(false);
                   setLastAuthPassword('');
                   if (pendingFinalizeRef.current) {
@@ -710,7 +684,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   }
                 }}
               >
-                Never ask again
+                {t('login_form.passkey_prompt.never_ask_again')}
               </Button>
             </div>
           </div>

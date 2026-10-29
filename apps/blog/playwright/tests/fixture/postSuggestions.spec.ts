@@ -35,6 +35,9 @@ const SIMILAR_RECORDING = path.resolve(
 
 // React Query's first retry of a failed query fires 1 s after the failure.
 const PAST_FIRST_RETRY_MS = 2_500;
+// A cold HiveSense query: slower than the read chain's 5 s attempt timeout, within the call's own 15 s.
+const COLD_QUERY_DELAY_MS = 6_500;
+const SUGGESTIONS_AFTER_COLD_QUERY_MS = 15_000;
 const NO_EMBEDDING_RESPONSE = {
   code: 'P0001',
   details: null,
@@ -47,10 +50,11 @@ type SimilarPost = Record<string, unknown>;
 const recordedSimilarPosts = (): SimilarPost[] =>
   JSON.parse(fs.readFileSync(SIMILAR_RECORDING, 'utf-8')).response;
 
-const serveSimilarPosts = (page: Page, posts: SimilarPost[]) =>
-  page.route(SIMILAR_ROUTE, (route) =>
-    route.fulfill({ json: posts, headers: { 'access-control-allow-origin': '*' } })
-  );
+const serveSimilarPosts = (page: Page, posts: SimilarPost[], delayMs = 0) =>
+  page.route(SIMILAR_ROUTE, async (route) => {
+    if (delayMs > 0) await new Promise((resolve) => setTimeout(resolve, delayMs));
+    await route.fulfill({ json: posts, headers: { 'access-control-allow-origin': '*' } });
+  });
 
 test.describe('Post suggestions (fixture-based)', () => {
   test('POST-SUGGEST-01: suggestions without post_id render as cards', async ({ page }) => {
@@ -132,5 +136,52 @@ test.describe('Post suggestions (fixture-based)', () => {
     await expect(postPage.articleBody).toBeVisible();
     await expect(page.getByText('You Might Also Like')).toHaveCount(0);
     await expect(postPage.suggestionsAllHiddenMessage).toHaveCount(0);
+  });
+
+  test('POST-SUGGEST-05: suggestions of a cold query slower than the attempt timeout still render', async ({
+    page
+  }) => {
+    test.setTimeout(60_000);
+    await serveSimilarPosts(page, recordedSimilarPosts(), COLD_QUERY_DELAY_MS);
+
+    const postPage = new PostPage(page);
+    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await postPage.waitForPostHydration();
+
+    await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_SUGGESTION_COUNT, {
+      timeout: SUGGESTIONS_AFTER_COLD_QUERY_MS
+    });
+  });
+
+  test('POST-SUGGEST-06: a failing similar call shows no suggestions, logs no error and is not retried', async ({
+    page
+  }) => {
+    await page.route(SIMILAR_ROUTE, (route) =>
+      route.fulfill({
+        status: 503,
+        json: { message: 'Service unavailable' },
+        headers: { 'access-control-allow-origin': '*' }
+      })
+    );
+    const similarRequests: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes('/similar')) similarRequests.push(request.url());
+    });
+    const similarErrors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error' && /similar/i.test(msg.text())) similarErrors.push(msg.text());
+    });
+    const similarServed = page.waitForResponse((response) => response.url().includes('/similar'));
+
+    const postPage = new PostPage(page);
+    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await postPage.waitForPostHydration();
+    await similarServed;
+    await page.waitForTimeout(PAST_FIRST_RETRY_MS);
+
+    expect(similarRequests).toHaveLength(1);
+    expect(similarErrors).toEqual([]);
+    await expect(postPage.articleBody).toBeVisible();
+    await expect(page.getByText('You Might Also Like')).toHaveCount(0);
   });
 });

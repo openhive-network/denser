@@ -59,6 +59,8 @@ test('FBL-04 — Reset followed blacklists with one broadcast', async ({ page })
   const userList = new UserListPage(page);
   await expect(userList.items).toHaveCount(BLACKLIST_TARGETS.length);
 
+  await expect(userList.resetButton('followed_blacklists')).toBeVisible();
+  await expect(userList.resetAllButton).toHaveCount(0);
   await userList.resetButton('followed_blacklists').click();
   await broadcast.waitForCount(1);
 

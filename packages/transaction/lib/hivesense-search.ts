@@ -1,13 +1,20 @@
 import { ReadTransportError } from './read-transport';
 
 /**
- * OpenAPI-root check is not enough: a live spec with a hung or empty
- * `posts/search` still left AI mode enabled and the search page blank (#947).
+ * Bound for the `sync-status` availability probe. It shares the search
+ * endpoints' postgrest pool, so a hung search hangs it too and AI mode turns
+ * off instead of leaving the search page blank (#947).
  */
 export const HIVE_SENSE_PROBE_TIMEOUT_MS = 8000;
 
 /** Bound for the search calls the results page actually waits on (#947). */
 export const AI_SEARCH_REQUEST_TIMEOUT_MS = 12000;
+
+/**
+ * Length HiveSense cuts search result bodies at: cards only show a summary. Long enough to get past
+ * the few images many posts open with to the text a summary is made of.
+ */
+export const AI_SEARCH_BODY_LENGTH = 1000;
 
 /**
  * One empty `posts/by-ids` page is enough to stop. Advancing anyway kept the
@@ -34,14 +41,15 @@ export const isRenderableSearchEntry = (post: unknown): boolean => {
   return 'title' in entry || typeof entry.post_id === 'number';
 };
 
-export const hiveSenseOpenApiLooksHealthy = (spec: unknown): boolean => {
-  if (!spec || typeof spec !== 'object') return false;
-  const title = (spec as { info?: { title?: unknown } }).info?.title;
-  return title === 'Hivesense';
-};
-
-export const hiveSenseSearchProbeLooksHealthy = (responseOk: boolean, body: unknown): boolean => {
-  return responseOk && Array.isArray(body);
+/**
+ * Whether a HiveSense `/sync-status` body says the node is serving: a numeric
+ * `last_block_num` and a string `last_block_time` (null until the node has
+ * processed its first block).
+ */
+export const hiveSenseSyncStatusLooksHealthy = (body: unknown): boolean => {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return false;
+  if (!('last_block_num' in body) || !('last_block_time' in body)) return false;
+  return typeof body.last_block_num === 'number' && typeof body.last_block_time === 'string';
 };
 
 export const partitionHiveSensePosts = <T extends object>(
@@ -104,7 +112,6 @@ export const promiseWithTimeout = <T>(promise: Promise<T>, ms: number, label: st
 
 const NO_EMBEDDING_ERROR_CODE = 'P0001';
 const NO_EMBEDDING_MESSAGE = /has no stored embedding/;
-const MAX_HIVE_SENSE_QUERY_RETRIES = 3;
 
 /**
  * Whether HiveSense refused a similar-posts request because the post has no stored embedding (too
@@ -120,19 +127,4 @@ export const isHiveSenseNoEmbeddingError = (error: unknown): boolean => {
     typeof body.message === 'string' &&
     NO_EMBEDDING_MESSAGE.test(body.message)
   );
-};
-
-const httpStatusOf = (error: unknown): number | undefined => {
-  if (error instanceof ReadTransportError) return error.status;
-  return error instanceof Error ? httpStatusOf(error.cause) : undefined;
-};
-
-/**
- * React Query `retry` for HiveSense reads: retries a 5xx, timeout or network failure (also when
- * wrapped as an error's `cause`) up to three times, never a 4xx, which every retry would get again.
- */
-export const shouldRetryHiveSenseQuery = (failureCount: number, error: unknown): boolean => {
-  const status = httpStatusOf(error);
-  const rejected = status !== undefined && status >= 400 && status < 500;
-  return !rejected && failureCount < MAX_HIVE_SENSE_QUERY_RETRIES;
 };

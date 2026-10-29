@@ -166,22 +166,24 @@ interface IPostsChain {
 }
 
 /**
- * Post reads on `lite.*` when the chain's current node is lite-aware, else on `bridge.*`. A `lite.*`
- * read answered with "Api not found" (the node, or every node failover asked, lost the family)
- * marks the node not lite-aware and is read again through `bridge.*`.
+ * Post reads on `lite.*` when the chain's current node is lite-aware, else `stock` (the deployment's
+ * ordinary read: hivemind's REST API when configured, else `bridge.*`), or `read` on `bridge.*`
+ * without one. A `lite.*` read answered with "Api not found" (the node, or every node failover
+ * asked, lost the family) marks the node not lite-aware and is read again the stock way.
  */
 export function createPostsReader(getChain: () => IPostsChain, probe: ILiteApiProbe) {
-  return async <T>(read: (api: TPostsApi) => Promise<T>): Promise<T> => {
+  return async <T>(read: (api: TPostsApi) => Promise<T>, stock?: () => Promise<T>): Promise<T> => {
     const chain = getChain();
     const endpoint = chain.endpointUrl;
-    if (!(await probe.getInfo(endpoint))) return read(chain.api.bridge);
+    const stockRead = stock ?? (() => read(chain.api.bridge));
+    if (!(await probe.getInfo(endpoint))) return stockRead();
     try {
       return await read(chain.api.lite);
     } catch (error) {
       if (!isApiNotServedError(error)) throw error;
-      logger.warn('%s no longer serves lite.*, reading posts through bridge', endpoint);
+      logger.warn('%s no longer serves lite.*, reading posts the stock way', endpoint);
       probe.markUnavailable(endpoint);
-      return read(chain.api.bridge);
+      return stockRead();
     }
   };
 }
@@ -216,7 +218,11 @@ export interface ILiteSocialApi {
   get_followers: (params: ILiteFollowParams) => Promise<ILiteFollow[]>;
   get_following: (params: ILiteFollowParams) => Promise<ILiteFollow[]>;
   get_follow_count: (params: { account: string }) => Promise<ILiteFollowCount>;
-  list_subscribers: (params: { community: string; last?: string; limit?: number }) => Promise<string[][] | null>;
+  list_subscribers: (params: {
+    community: string;
+    last?: string;
+    limit?: number;
+  }) => Promise<string[][] | null>;
   list_all_subscriptions: (params: { account: string }) => Promise<string[][] | null>;
 }
 
@@ -255,7 +261,10 @@ interface INotificationsChain {
  * (`servesLiteNotifications`), else `fallback` (the stock read, or none). Errors of either are thrown.
  */
 export function createLiteNotificationsReader(getChain: () => INotificationsChain, probe: ILiteApiProbe) {
-  return async <T>(read: (api: ILiteNotificationsApi) => Promise<T>, fallback: () => Promise<T>): Promise<T> => {
+  return async <T>(
+    read: (api: ILiteNotificationsApi) => Promise<T>,
+    fallback: () => Promise<T>
+  ): Promise<T> => {
     const chain = getChain();
     if (!servesLiteNotifications(await probe.getInfo(chain.endpointUrl))) return fallback();
     return read(chain.api.lite);
@@ -270,16 +279,19 @@ const liteApiProbe = createLiteApiProbe({
 });
 
 /** `lite.get_info` of the API node reads currently go to, or null when it is not lite-aware. */
-export const getLiteApiInfo = (): Promise<ILiteApiInfo | null> => liteApiProbe.getInfo(getReadChain().endpointUrl);
+export const getLiteApiInfo = (): Promise<ILiteApiInfo | null> =>
+  liteApiProbe.getInfo(getReadChain().endpointUrl);
 
 /** Whether the API node reads currently go to serves lite posts natively (`lite.*`). */
 export const isLiteAware = async (): Promise<boolean> => (await getLiteApiInfo()) !== null;
 
 /** The namespace post reads of the current API node go to; part of every cache key of their results. */
-export const getPostsNamespace = async (): Promise<TPostsNamespace> => ((await isLiteAware()) ? 'lite' : 'bridge');
+export const getPostsNamespace = async (): Promise<TPostsNamespace> =>
+  (await isLiteAware()) ? 'lite' : 'bridge';
 
 /** `lite.get_info` of the current API node as far as it is known, without asking it; undefined before. */
-export const peekLiteApiInfo = (): ILiteApiInfo | null | undefined => liteApiProbe.peek(getReadChain().endpointUrl);
+export const peekLiteApiInfo = (): ILiteApiInfo | null | undefined =>
+  liteApiProbe.peek(getReadChain().endpointUrl);
 
 /** Calls `listener` whenever the probe records an answer of any node; returns the unsubscribe function. */
 export const subscribeLiteApiInfo = (listener: () => void): (() => void) => liteApiProbe.subscribe(listener);

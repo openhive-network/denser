@@ -25,6 +25,8 @@ import LoginMethodIcon from './login-method-icon';
 import LoginKeyAction from './login-key-action';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
 import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storage-key';
+import { usePathname } from 'next/navigation';
+import { startSignOutLeave } from '@/blog/features/tags-pages/sign-out-leave';
 
 /** What the login dialog opened from the menu signs in: any account, or this one with a given key */
 type LoginDialogTarget = { username?: string; keyType?: KeyType };
@@ -45,6 +47,7 @@ const UserMenu = ({
   tooltip?: ReactNode;
 }) => {
   const onLogout = useLogout();
+  const pathname = usePathname();
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
   const { authority, chip } = useLoginAuthorityLabels(user);
@@ -174,7 +177,7 @@ const UserMenu = ({
                 href=""
                 onClick={async (e) => {
                   e.preventDefault();
-                  await onLogout();
+                  await onLogout(startSignOutLeave(pathname));
                 }}
                 className="flex w-full items-center"
                 data-testid="user-profile-menu-logout-link"

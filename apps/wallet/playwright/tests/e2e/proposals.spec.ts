@@ -54,9 +54,8 @@ test.describe('Proposals page tests', () => {
     const amountResListOfProposalsStatusAllAPI = await resListOfProposalsStatusAllAPI.result.proposals.length;
     // console.log("Amount of proposals in API: ", amountResListOfProposalsStatusAllAPI);
 
-    await proposalsPage.proposalsFilterStatus.click();
-    await proposalsPage.proposalsFilterStatusConntent.getByText('All').click();
-    await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText('All');
+    await proposalsPage.statusTab('All').click();
+    await expect(proposalsPage.statusTab('All')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
@@ -86,9 +85,8 @@ test.describe('Proposals page tests', () => {
     const amountResListOfProposalsStatusAllAPI = await resListOfProposalsStatusAllAPI.result.proposals.length;
     // console.log("Amount of proposals in API: ", amountResListOfProposalsStatusAllAPI);
 
-    await proposalsPage.proposalsFilterStatus.click();
-    await proposalsPage.proposalsFilterStatusConntent.getByText(/^Active$/).click();
-    await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Active$/);
+    await proposalsPage.statusTab('Active').click();
+    await expect(proposalsPage.statusTab('Active')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
@@ -119,10 +117,8 @@ test.describe('Proposals page tests', () => {
     const amountResListOfProposalsStatusAllAPI = await resListOfProposalsStatusAllAPI.result.proposals.length;
     // console.log("Amount of proposals in API: ", amountResListOfProposalsStatusAllAPI);
 
-    await proposalsPage.proposalsFilterStatus.click();
-    await proposalsPage.proposalsFilterStatusConntent.getByText(/^Inactive$/).click();
-    await proposalsPage.page.waitForSelector(locatorSelector(proposalsPage.proposalsFilterStatus.getByText(/^Inactive$/)));
-    await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Inactive$/);
+    await proposalsPage.statusTab('Upcoming').click();
+    await expect(proposalsPage.statusTab('Upcoming')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
@@ -153,9 +149,8 @@ test.describe('Proposals page tests', () => {
     const amountResListOfProposalsStatusAllAPI = await resListOfProposalsStatusAllAPI.result.proposals.length;
     // console.log("Amount of proposals in API: ", amountResListOfProposalsStatusAllAPI);
 
-    await proposalsPage.proposalsFilterStatus.click();
-    await proposalsPage.proposalsFilterStatusConntent.getByText(/^Expired$/).click();
-    await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Expired$/);
+    await proposalsPage.statusTab('Expired').click();
+    await expect(proposalsPage.statusTab('Expired')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
@@ -186,9 +181,8 @@ test.describe('Proposals page tests', () => {
     const amountResListOfProposalsStatusAllAPI = await resListOfProposalsStatusAllAPI.result.proposals.length;
     // console.log("Amount of proposals in API: ", amountResListOfProposalsStatusAllAPI);
 
-    await proposalsPage.proposalsFilterStatus.click();
-    await proposalsPage.proposalsFilterStatusConntent.getByText(/^Votable$/).click();
-    await expect(proposalsPage.proposalsFilterStatus.locator('span')).toHaveText(/^Votable$/);
+    await proposalsPage.statusTab('Votable').click();
+    await expect(proposalsPage.statusTab('Votable')).toHaveAttribute('aria-selected', 'true');
     // Wait for proposals to load after filter change
     await proposalsPage.proposalListItem.first().or(proposalsPage.proposalMessageCannotShowYouAnyProposals).waitFor({ state: 'visible' });
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
@@ -491,7 +485,7 @@ test.describe('Proposals page tests', () => {
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       // Title color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
-        'rgb(239, 68, 68)'
+        'rgb(220, 38, 38)'
       );
       // Proposal Id color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalId.first(), 'color')).toBe(
@@ -511,31 +505,31 @@ test.describe('Proposals page tests', () => {
           proposalsPage.proposalAmountHBD.locator('span').first(),
           'color'
         )
-      ).toBe('rgb(239, 68, 68)');
+      ).toBe('rgb(220, 38, 38)');
       // Proposal Status Badge color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
-      ).toBe('rgb(239, 68, 68)');
+      ).toBe('rgb(220, 38, 38)');
       // Proposal Status tooltip
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText(/^started/);
       // Creator and/or receiver colors
       if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
         expect(
           await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
-        ).toBe('rgb(239, 68, 68)');
+        ).toBe('rgb(220, 38, 38)');
         expect(
           await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalReceiver.first(), 'color')
-        ).toBe('rgb(239, 68, 68)');
+        ).toBe('rgb(220, 38, 38)');
       } else
         expect(
           await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
-        ).toBe('rgb(239, 68, 68)');
+        ).toBe('rgb(220, 38, 38)');
       // Vote proposal value color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
       ).toBe('rgb(0, 0, 0)');
       // Proposal Status tooltip
-      await expect(proposalsPage.voteProposalsValue.first()).toHaveAttribute('title', /.+( HP)$/);
+      await expect(proposalsPage.voteProposalsValue.first()).toHaveText(/.+( HP)$/);
       // Vote proposal button icon
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalButtonIcon.first(), 'color')
@@ -570,20 +564,20 @@ test.describe('Proposals page tests', () => {
     if (await proposalsPage.proposalStatusBadge.first().isVisible()) {
       // Title color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalTitle.first(), 'color')).toBe(
-        'rgb(239, 68, 68)'
+        'rgb(248, 113, 113)'
       );
       // Proposal Id color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalId.first(), 'color')).toBe(
-        'rgb(100, 116, 139)'
+        'rgb(148, 163, 184)'
       );
       // Dates color
       expect(await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalDates.first(), 'color')).toBe(
-        'rgb(100, 116, 139)'
+        'rgb(148, 163, 184)'
       );
       // Proposal Daily Amount color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalAmountHBD.first(), 'color')
-      ).toBe('rgb(100, 116, 139)');
+      ).toBe('rgb(148, 163, 184)');
       // Proposal Total Amount color
       expect(
         await proposalsPage.getElementCssPropertyValue(
@@ -594,27 +588,27 @@ test.describe('Proposals page tests', () => {
       // Proposal Status Badge color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalStatusBadge.first(), 'color')
-      ).toBe('rgb(239, 68, 68)');
+      ).toBe('rgb(248, 113, 113)');
       // Proposal Status tooltip
       await expect(proposalsPage.proposalStatusBadge.first()).toHaveText(/^started/);
       // Creator and/or receiver colors
       if (firstProposalCreatorAPI !== firstProposalReceiverAPI) {
         expect(
           await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
-        ).toBe('rgb(239, 68, 68)');
+        ).toBe('rgb(248, 113, 113)');
         expect(
           await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalReceiver.first(), 'color')
-        ).toBe('rgb(239, 68, 68)');
+        ).toBe('rgb(248, 113, 113)');
       } else
         expect(
           await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalCreator.first(), 'color')
-        ).toBe('rgb(239, 68, 68)');
+        ).toBe('rgb(248, 113, 113)');
       // Vote proposal value color
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalsValue.first(), 'color')
       ).toBe('rgb(255, 255, 255)');
       // Proposal Status tooltip
-      await expect(proposalsPage.voteProposalsValue.first()).toHaveAttribute('title', /.+( HP)$/);
+      await expect(proposalsPage.voteProposalsValue.first()).toHaveText(/.+( HP)$/);
       // Vote proposal button icon
       expect(
         await proposalsPage.getElementCssPropertyValue(proposalsPage.voteProposalButtonIcon.first(), 'color')
@@ -631,13 +625,6 @@ test.describe('Proposals page tests', () => {
 
     await proposalsPage.goToProposalsPage();
 
-    // Filter Status:  color and border
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'color')
-    ).toBe('rgb(0, 0, 0)');
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'border')
-    ).toBe('1px solid rgb(226, 232, 240)');
     // Filter Order by:  color and border
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterOrderBy.first(), 'color')
@@ -664,13 +651,6 @@ test.describe('Proposals page tests', () => {
     await homePage.changeThemeMode('Dark');
     await homePage.validateThemeModeIsDark();
 
-    // Filter Status:  color and border
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'color')
-    ).toBe('rgb(255, 255, 255)');
-    expect(
-      await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterStatus.first(), 'border')
-    ).toBe('1px solid rgb(29, 40, 58)');
     // Filter Order by:  color and border
     expect(
       await proposalsPage.getElementCssPropertyValue(proposalsPage.proposalsFilterOrderBy.first(), 'color')

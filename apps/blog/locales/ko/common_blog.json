@@ -1,8 +1,12 @@
 {
   "global": {
+    "close": "닫기",
     "no_rewards": "받을 보상이 없습니다.",
     "loading": "불러오는 중",
     "publishing": "게시 중...",
+    "not_confirmed": "아직 확인되지 않음",
+    "comment_not_confirmed": "댓글이 처리되지 않았을 수 있습니다. 다시 시도하기 전에 페이지를 새로고침하여 확인하세요.",
+    "vote_not_confirmed": "투표가 처리되지 않았을 수 있습니다. 다시 시도하기 전에 페이지를 새로고침하여 확인하세요.",
     "confirmed_indexing": "블록체인에서 확인되었습니다. 인덱싱을 기다리는 중...",
     "indexing_slow": "인덱싱이 평소보다 오래 걸리고 있습니다. 트래픽이 많을 때는 정상적인 현상입니다.",
     "indexing_timeout": "게시물 인덱싱 시간이 초과되었습니다. 게시물이 곧 표시될 수 있습니다. 페이지를 새로고침해 보세요.",
@@ -36,7 +40,10 @@
       "months": " 개월",
       "a_month": " 1개월",
       "years": " 년",
-      "a_year": " 1년"
+      "a_year": " 1년",
+      "hours_count_other": "{{count}}시간",
+      "minutes_count_other": "{{count}}분",
+      "hours_and_minutes": "{{hours}} {{minutes}}"
     },
     "profile_picture": "프로필 사진",
     "notifications_region": "알림 ({hotkey})"
@@ -179,7 +186,8 @@
       "hot": "인기",
       "new": "최신",
       "payouts": "지급",
-      "muted": "뮤트됨"
+      "muted": "뮤트됨",
+      "for_you": "추천"
     },
     "communitie_sort": {
       "rank": "순위",
@@ -230,6 +238,7 @@
       "downvote_weight": "다운보팅 비율",
       "submit_upvote_percent": "{{votePercent}}%로 업보팅하기",
       "submit_downvote_percent": "{{votePercent}}%로 다운보팅하기",
+      "vote_after_payout_note": "지급이 완료된 콘텐츠에 투표해도 새로운 보상이 발생하지 않습니다",
       "no_votes": "보팅 없음",
       "vote": "보팅 1개",
       "votes": "보팅 {{votes}}개",
@@ -248,7 +257,7 @@
       "you_voted": "{{votePercent}}% 보팅했습니다",
       "vote_polling_error_message_title": "경고",
       "vote_polling_error_message_description": "사용자의 보팅이 반영되었는지 확인하지 못했습니다.",
-      "powered_up_100": "100% Hive Power"
+      "powered_up_100": "Hive Power 100%"
     },
     "comment_card": {
       "reveal_comment": "댓글 보기",
@@ -332,7 +341,9 @@
     "google_key_not_found_title": "지갑에서 키를 찾을 수 없음",
     "google_key_not_found_description": "Google Drive 지갑에 {{username}} 사용자의 Hive {{keyType}} 키가 저장되어 있지 않습니다.",
     "go_to_hive_bridge": "Hive Bridge로 이동",
-    "completing_google_auth": "Google 인증을 완료하는 중..."
+    "completing_google_auth": "Google 인증을 완료하는 중...",
+    "dialog_title": "로그인",
+    "dialog_description": "게시 키로 계정에 로그인하세요."
   },
   "user_profile": {
     "reputation": "평판",
@@ -415,14 +426,20 @@
         "reset_muted_list": "뮤트 목록 초기화",
         "reset_followed_blacklists": "팔로우한 블랙리스트 초기화",
         "reset_followed_muted_list": "팔로우한 뮤트 목록 초기화",
-        "reset_all_lists": "모든 팔로우/목록 초기화",
         "busy_button": "처리 중입니다. 잠시 기다려 주세요",
         "first_button": "처음",
         "previous_button": "이전",
         "next_button": "다음",
         "last_button": "마지막",
         "viewing_page": "{{total}}페이지 중 {{current}}페이지 보기",
-        "users_on_list": "목록의 사용자: {{number}}"
+        "users_on_list": "목록의 사용자: {{number}}",
+        "unfollow_all": {
+          "button": "모두 언팔로우",
+          "title": "모든 계정을 언팔로우할까요?",
+          "description_other": "팔로우 중인 계정 {{count}}개를 모두 언팔로우합니다. 되돌릴 수 없습니다.",
+          "confirm_prompt": "확인하려면 계정 이름({{username}})을 입력하세요.",
+          "cancel": "취소"
+        }
       },
       "username_placeholder": "사용자 이름"
     },
@@ -705,6 +722,8 @@
     "enter_content": "제출하려면 내용을 입력하세요",
     "enter_title_and_content": "제출하려면 제목과 내용을 입력하세요",
     "enter_tags": "제출하려면 태그를 하나 이상 입력하세요",
+    "image_upload_unavailable": "{{method}}(으)로 로그인한 경우 이미지 업로드를 사용할 수 없습니다. 이미지 URL을 붙여 넣거나 다른 방법으로 로그인하세요.",
+    "remove_failed_uploads": "제출하기 전에 업로드에 실패한 이미지(UPLOAD FAILED)를 삭제하세요.",
     "markdown_styling_guide": "Markdown 스타일 가이드",
     "power_up": " 100% 파워 업",
     "maximum_characters": "최대 {{num}}자",
@@ -720,6 +739,7 @@
     "convert_hive_links_tooltip": "Hive 블로그 프론트엔드에서 붙여넣은 링크를 프론트엔드에 의존하지 않는 상대 경로로 자동 변환하여, 게시물이 모든 Hive 앱에서 작동하도록 합니다",
     "optimize_images": "이미지 최적화",
     "optimize_images_tooltip": "업로드 전에 이미지 크기를 조정하고 압축하여 업로드 속도를 높이고 파일 크기를 줄입니다. 지원되지 않는 형식(HEIC/HEIF)은 자동으로 변환됩니다.",
+    "image_decode_failed": "이 이미지를 읽을 수 없습니다. 다른 파일을 사용하거나 이미지 최적화를 끄세요.",
     "uploading_images": "이미지 {{count}}개 업로드 중...",
     "image_processing_failed": "실패",
     "image_too_large_gif": "GIF가 너무 큽니다. 최대 크기는 15MB입니다.",
@@ -931,7 +951,8 @@
       "muted": "뮤트됨",
       "pending": "대기 중",
       "roles": "역할"
-    }
+    },
+    "for_you_posts": "추천"
   },
   "chat_widget": {
     "chat": "채팅",
@@ -939,7 +960,27 @@
     "set_up_account_tooltip": "openhive.chat에서 채팅 계정을 설정하세요",
     "close_widget": "채팅 위젯 닫기",
     "open_app": "채팅 앱 열기",
-    "open_widget": "채팅 위젯 열기"
+    "open_widget": "채팅 위젯 열기",
+    "connecting": "채팅에 연결하는 중…",
+    "sign_in_failed": "채팅에 연결할 수 없습니다.",
+    "retry": "다시 시도",
+    "rooms": "방 목록",
+    "no_rooms": "아직 참여한 방이 없습니다.",
+    "messages": "메시지 목록",
+    "load_older": "이전 메시지 불러오기",
+    "loading_older": "이전 메시지를 불러오는 중…",
+    "load_older_failed": "이전 메시지를 불러올 수 없습니다.",
+    "history_start": "방의 처음입니다.",
+    "composer_label": "메시지 내용",
+    "composer_placeholder": "메시지를 입력하세요…",
+    "send": "보내기",
+    "sending": "보내는 중…",
+    "send_failed": "보내지 못했습니다.",
+    "encrypted_message": "암호화된 메시지입니다.",
+    "encrypted_room": "이 방은 암호화되어 있습니다.",
+    "unsupported_message": "이 메시지는 여기에서 표시할 수 없습니다.",
+    "open_full_chat": "전체 채팅 열기",
+    "unread_count": "읽지 않은 메시지: {{number}}"
   },
   "search_mode": {
     "search": "검색",
@@ -967,6 +1008,13 @@
       "user_topic": "주제별 사용자 게시물",
       "tag": "태그"
     }
+  },
+  "for_you_feed": {
+    "sign_in_prompt": "로그인하면 내 피드를 볼 수 있습니다.",
+    "unavailable": "지금은 추천 피드를 사용할 수 없습니다.",
+    "service_not_responding": "추천 서비스가 응답하지 않았습니다.",
+    "data_not_loaded": "피드에 필요한 일부 데이터를 불러오지 못했습니다.",
+    "go_to_trending": "인기 게시물 보기"
   },
   "lite_account": {
     "badge_prefix": "라이트 계정",

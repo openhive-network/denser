@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { createAsset, createPermlink } from "@transaction/lib/utils";
 import { getPostPath } from "@transaction/lib/post-category";
 import { getLogger } from "@ui/lib/logging";
-import { handleError } from "@ui/lib/handle-error";
 import { Entry } from "@hive/common-hiveio-packages/wax";
 import { parseTags } from "@/blog/features/post-editor/lib/utils";
+import { hasFailedUploadPlaceholder } from "@/blog/features/post-editor/lib/image-markdown";
 import { usePostMutation } from "@/blog/features/post-editor/hooks/use-post-mutation";
 import { AccountFormValues } from "@/blog/features/post-editor/types";
 
@@ -95,6 +95,10 @@ export function usePostFormActions({
     // Flush pending debounce - use the latest editor value which may not have synced to form yet
     clearTimeout(postAreaSyncTimerRef.current);
     const postBody = latestPostAreaRef.current || data.postArea;
+    if (hasFailedUploadPlaceholder(postBody)) {
+      form.setValue("postArea", postBody);
+      return;
+    }
 
     const tags = parseTags(data.tags);
     const maxAcceptedPayout = await createAsset((data.maxAcceptedPayout * 1000).toString(), "HBD");
@@ -151,10 +155,13 @@ export function usePostFormActions({
       };
       try {
         await postMutation.mutateAsync(postParams);
-      } catch (error) {
+      } catch {
+        // usePostMutation has reported the failure
         setIsSubmitting(false);
-        handleError(error, { method: "post", params: postParams });
-        throw error;
+        if (btnRef.current) {
+          btnRef.current.disabled = false;
+        }
+        return;
       }
 
       hasSubmittedRef.current = true;

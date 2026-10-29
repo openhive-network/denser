@@ -34,7 +34,7 @@ test.describe('User parmlink redirect tests', () => {
 
     // Validate the redirect request
     const response = await request.get(requestEndpoint, { maxRedirects: 0 });
-    expect(response.status()).toBe(302);
+    expect(response.status()).toBe(308);
 
     // Get the location header of the respons
     const location = response.headers()['location'];
@@ -54,7 +54,7 @@ test.describe('User parmlink redirect tests', () => {
 
     // Validate the redirect request
     const response = await request.get(requestEndpoint, { maxRedirects: 0 });
-    expect(response.status()).toBe(302);
+    expect(response.status()).toBe(308);
 
     // Get the location header of the respons
     const location = response.headers()['location'];

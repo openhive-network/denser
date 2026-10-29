@@ -2,11 +2,13 @@ import { useRef } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Preferences, Entry } from '@hive/common-hiveio-packages/wax';
+import type { CommentBodyMetadata } from '@transaction/lib/comment-metadata';
 import { getLogger } from '@ui/lib/logging';
-import { useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
+import { CONFIRM_IN_BACKGROUND, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
+import { useBackgroundConfirmation } from '@/blog/components/hooks/use-background-confirmation';
 import { setStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-with-ttl';
-import { withOptimisticReply } from '../lib/optimistic-comment';
+import { withConfirmedReply, withOptimisticReply } from '../lib/optimistic-comment';
 import {
   type Discussion,
   type DiscussionParams,
@@ -18,9 +20,6 @@ import {
 } from '../lib/discussion-cache';
 
 const logger = getLogger('app');
-
-// Not observed: a successful broadcast guarantees inclusion in the blockchain
-const BROADCAST_ONLY = { observe: false };
 
 type CommentParams = DiscussionParams & {
   parentAuthor: string;
@@ -34,13 +33,22 @@ type UpdateCommentParams = DiscussionParams & {
   parentPermlink: string;
   permlink: string;
   body: string;
+  /** The edited comment's json_metadata; keys denser doesn't write are kept */
+  jsonMetadata: unknown;
 };
 type DeleteCommentParams = DiscussionParams & { permlink: string };
+
+// The renderer is loaded on demand, as for post bodies, to keep it off the page's initial bundle
+async function extractBodyMetadata(body: string): Promise<CommentBodyMetadata> {
+  const { extractContentMetadata } = await import('@hive/renderer');
+  return extractContentMetadata(body);
+}
 
 /** Makes comment transaction; the reply shows, fully interactive, before the broadcast. */
 export function useCommentMutation() {
   const { username } = useUserClient().user;
   const cleanupRef = useRef<(() => void) | null>(null);
+  const confirmInBackground = useBackgroundConfirmation('comment');
   const shadowKey = ({ parentAuthor, parentPermlink }: CommentParams) =>
     `shadow-reply-${username}-${parentAuthor}-${parentPermlink}`;
 
@@ -49,7 +57,8 @@ export function useCommentMutation() {
     optimistic: async (params: CommentParams, queryClient) => {
       const { parentAuthor, parentPermlink, body } = params;
       const snapshot = await snapshotDiscussion(queryClient, params, cleanupRef);
-      const reply = { username, reputation: params.reputation, parentAuthor, parentPermlink, body };
+      const bodyMetadata = await extractBodyMetadata(body);
+      const reply = { username, reputation: params.reputation, parentAuthor, parentPermlink, body, bodyMetadata };
       const { updatedData, tempPermlink } = withOptimisticReply(snapshot.prevData, reply);
       queryClient.setQueryData<Discussion>(snapshot.queryKey, updatedData);
       logger.info('Optimistic comment added: %o', { tempPermlink, queryKey: snapshot.queryKey });
@@ -57,10 +66,22 @@ export function useCommentMutation() {
       setStorageItem(shadowKey(params), { body, parentAuthor, parentPermlink }, StorageTTL.SHADOW_DRAFT);
       return snapshot;
     },
-    run: ({ parentAuthor, parentPermlink, body, preferences }: CommentParams) =>
-      transactionService.comment(parentAuthor, parentPermlink, body, preferences, BROADCAST_ONLY),
-    onSuccess: (_data, params, queryClient) => {
-      const { parentPermlink } = params;
+    run: async ({ parentAuthor, parentPermlink, body, preferences }: CommentParams) =>
+      transactionService.comment(
+        parentAuthor,
+        parentPermlink,
+        body,
+        await extractBodyMetadata(body),
+        preferences,
+        CONFIRM_IN_BACKGROUND
+      ),
+    onSuccess: (data, params, queryClient) => {
+      const { parentAuthor, parentPermlink, body } = params;
+      confirmInBackground(data, () =>
+        queryClient.setQueryData<Discussion>(discussionKey(params), (discussion: Discussion | undefined) =>
+          withConfirmedReply(discussion, { username, parentAuthor, parentPermlink, body })
+        )
+      );
       const isOwnReply = (e: Entry) => e.author === username && e.parent_permlink === parentPermlink;
       const prevData = queryClient.getQueryData<Discussion>(discussionKey(params));
       const prevRealCommentCount = Object.values(prevData ?? {}).filter(
@@ -93,6 +114,7 @@ export function useCommentMutation() {
 export function useUpdateCommentMutation() {
   const { username } = useUserClient().user;
   const cleanupRef = useRef<(() => void) | null>(null);
+  const confirmInBackground = useBackgroundConfirmation('comment');
 
   return useOperationMutation({
     name: 'useUpdateCommentMutation',
@@ -104,10 +126,19 @@ export function useUpdateCommentMutation() {
       );
       return snapshot;
     },
-    run: ({ parentAuthor, parentPermlink, permlink, body }: UpdateCommentParams) =>
-      transactionService.updateComment(parentAuthor, parentPermlink, permlink, body, BROADCAST_ONLY),
-    onSuccess: (_data, params, queryClient) => {
+    run: async ({ parentAuthor, parentPermlink, permlink, body, jsonMetadata }: UpdateCommentParams) =>
+      transactionService.updateComment(
+        parentAuthor,
+        parentPermlink,
+        permlink,
+        body,
+        await extractBodyMetadata(body),
+        jsonMetadata,
+        CONFIRM_IN_BACKGROUND
+      ),
+    onSuccess: (data, params, queryClient) => {
       const { permlink, body } = params;
+      confirmInBackground(data);
       cleanupRef.current = scheduleValidatedRefetch(
         queryClient,
         discussionKey(params),
@@ -133,6 +164,7 @@ export function useUpdateCommentMutation() {
 
 export function useDeleteCommentMutation() {
   const cleanupRef = useRef<(() => void) | null>(null);
+  const confirmInBackground = useBackgroundConfirmation('comment');
 
   return useOperationMutation({
     name: 'useDeleteCommentMutation',
@@ -143,8 +175,9 @@ export function useDeleteCommentMutation() {
       );
       return snapshot;
     },
-    run: ({ permlink }: DeleteCommentParams) => transactionService.deleteComment(permlink, BROADCAST_ONLY),
-    onSuccess: (_data, params, queryClient) => {
+    run: ({ permlink }: DeleteCommentParams) => transactionService.deleteComment(permlink, CONFIRM_IN_BACKGROUND),
+    onSuccess: (data, params, queryClient) => {
+      confirmInBackground(data);
       cleanupRef.current = scheduleValidatedRefetch(
         queryClient,
         discussionKey(params),

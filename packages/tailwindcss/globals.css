@@ -1,6 +1,119 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*
+  Tailwind CSS 4, configured here (CSS-first) for both apps and the shared packages.
+  source(none): only the files the @source globs name are scanned, the .jsx/.tsx
+  templates the Tailwind 3 `content` globs listed, so class-like words in .ts, .md
+  or locale files (e.g. the renderer's output classes) generate nothing.
+*/
+@import 'tailwindcss' source(none);
+@import './tailwind3-colors.css';
+
+@source '../../apps/**/*.{jsx,tsx}';
+@source '../**/*.{jsx,tsx}';
+@source '../../node_modules/@hiveio/healthchecker-component/**/*.{ts,tsx,js,jsx}';
+
+@plugin 'tailwindcss-animate';
+@plugin '@tailwindcss/typography';
+/* The typography plugin takes its element styles only from a JavaScript theme. */
+@config './typography.config.js';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Tailwind 3's sans stack: v4.3's starts with -apple-system and Roboto instead of system-ui. */
+  --font-sans:
+    ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-source: 'Source Serif Pro', serif;
+  --font-sanspro: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-consolas: Consolas, 'Liberation Mono', Courier, monospace;
+
+  --color-border: hsl(var(--border));
+  --color-thread-line: hsl(var(--thread-line));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-background-secondary: hsl(var(--background-secondary));
+  --color-background-tertiary: hsl(var(--background-tertiary));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-icon: hsl(var(--destructive-icon));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-noContent: hsl(var(--card-no-content));
+  --color-card-emptyBorder: hsl(var(--card-empty-border));
+  --color-link: hsl(var(--link));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/*
+  Tailwind 3's container: centred, 2rem side padding, and full width up to a single
+  1400px step (v4's own sm-2xl max-widths are cancelled by `max-width: none`).
+*/
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  max-width: none;
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+/*
+  Tailwind 3 defaults that v4's preflight changed: borders default to gray-200
+  (v4: currentcolor), buttons show a pointer (v4: default cursor), placeholders are
+  gray-400 (v4: the text colour at half opacity).
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400);
+  }
+}
 
 @layer base {
   :root {
@@ -144,6 +257,11 @@
   float: none;
   max-width: none;
   padding: 0;
+}
+
+/* Columns stay in source order in the DOM; `order` places them as hive.blog's floats do. */
+.pull-columns > .pull-right {
+  order: 1;
 }
 
 @media (max-width: 640px) {

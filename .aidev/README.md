@@ -6,12 +6,14 @@ digest-pinned `registry.gitlab.syncad.com/hive/denser/aidev-tests` image
 
 ## The test runtime image (`runtime/`)
 
-Suites run offline in `registry.gitlab.syncad.com/hive/denser/aidev-tests`, pinned
-by digest in `project.yaml` (`environment.image`). The image holds Node, pnpm,
-Playwright's Chromium and every package `pnpm-lock.yaml` resolves.
-
-Its tag is `aidev-` plus a hash of its inputs: `runtime/Dockerfile`, `pnpm-lock.yaml`,
-`pnpm-workspace.yaml`, `.npmrc` and the `packageManager` field of `package.json`.
+`runtime/Dockerfile` is built on common-ci-configuration's
+`node-test-tools:develop`, the image CI's Node jobs run, so Node, pnpm and
+Playwright are ccc's versions and the repository pins none of its own. It adds
+Playwright's full Chromium (for Lighthouse) and every package `pnpm-lock.yaml`
+resolves. The build is published as `registry.gitlab.syncad.com/hive/denser/aidev-tests`
+and pinned by digest in `project.yaml` (`environment.image`) and the compose stacks
+(`x-image`). Its tag is `aidev-` plus a hash of its inputs: `runtime/Dockerfile`,
+`pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.npmrc` and the digest the base tag names.
 `runtime/build.sh` looks that tag up in the registry first and builds nothing when it
 is there; `build.sh --tag` prints the tag. The registry cleanup policy keeps
 `aidev-*` tags, so a pinned image isn't expired.
@@ -315,7 +317,8 @@ for its spec's recording
 app's server side must read that same proxy. A stack server could reach it only
 by relaying back into the suite container.
 
-**`live_e2e`** (`.aidev/run-live-e2e.sh`, always exits 0) runs the e2e specs the
+**`live_e2e`** (`.aidev/run-live-e2e.sh`; declared `mode: advisory` with a fixed `memory: 6g` cap, so neither a
+failing spec nor an OOM kill of its container fails the slot) runs the e2e specs the
 candidate's change reaches, `--retries=0`, each app's against its stack server:
 `blog-live` serves `fixture_e2e`'s build and `wallet-live` `wallet_fixture`'s
 (base path `/wallet`), both against the live Hive API; no image is built. The
@@ -405,7 +408,12 @@ trace and loads every lazy image of the page; no metric reads it.
 - *Nothing leaves the host, asserted:* a request in any Lighthouse report to a host
   other than the three above, a connection the app servers open off the host
   (`lighthouse-fixture/egress-guard.cjs` refuses and logs it), or a replay MISS on the
-  API or image server fails the pass (`hermetic` in the result).
+  API or image server fails the pass (`hermetic` in the result). The servers' own
+  `/__aidev/` paths, the harness's readiness and status requests, are never counted;
+  the image server's misses are listed by path (`hermetic.missed`). A Chromium update
+  can change which lazy images load after the trace (156 loads feed thumbnails and
+  avatars 153 did not): a missed path that no report's `network-requests` lists is
+  recorded as `prune` records it, a 404 with no body.
 
 **Server heap.** After the Lighthouse runs, `lighthouse-fixture/heap-check.mjs` renders
 the blog routes 300 times to warm up, then 1,000 more (16 concurrent), reading
@@ -484,7 +492,36 @@ rewritten files until it is reinstalled from scratch.
 **Updating the baseline.** After a change that is meant to move the numbers (or on a
 new host): `.aidev/run-lighthouse-fixture.sh --update-baseline`, in the image, and
 commit `.aidev/lighthouse-fixture/baseline.json`. It is written only by a pass that is
-hermetic and within thresholds.
+hermetic and within thresholds. Its `revision` is the commit checked out when it was
+measured: a baseline taken with uncommitted changes names their parent, so say here
+what the measured tree was.
+
+The current baseline (2026-10-25, `revision` a4382d977) is that tree plus #1326's trims,
+which took the code three features had leaked into every page's initial chunks back out:
+the For You client (`fyp-api.ts`, pulled in for its paging helper), safe storage's
+generation bookkeeping (pulled in for its cross-tab subscription) and Rocket.Chat's
+drawer (now loaded only for a user it renders for). The rest of the growth since the
+2026-10-14 baseline (815c7a2a) was accepted as the cost of features: the blog's
+English strings (a chunk of their own), the login key and authority labels in both
+headers, hivemind REST reads and hidden authors, the Matrix chat configuration and
+background broadcast confirmation, partly offset by `handle-error` leaving the blog's
+initial chunks. Script transfer bytes, 815c7a2a rebuilt on the same host -> the
+current baseline:
+
+| route | 815c7a2a | before the trims | current baseline |
+|---|---|---|---|
+| `/blog/trending` | 364,324 | 368,439 | 366,330 |
+| `/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit` | 452,225 | 452,972 | 451,187 |
+| `/blog/trending/hive-160391` | 377,924 | 382,267 | 380,177 |
+| `/blog/@gtg` | 371,578 | 375,115 | 373,330 |
+| `/wallet/@gtg/transfers` | 474,805 | 480,778 | 480,376 |
+
+To attribute a change in bytes to source files, build both trees with
+`productionBrowserSourceMaps: true` in each app's `next.config.js` (the chunks keep
+their content, but not their names), run this pass on each with `--runs 1`, and weigh
+each chunk a route's report lists by the generated bytes its source map gives each
+file, scaled to the chunk's transfer size. Turbopack bundles a module whole, so one
+named import of a small helper brings everything else its file holds.
 
 **Refreshing the recordings.** Recording needs egress, so it runs in the image without
 `--network none`, from the checkout as the docker daemon sees it:

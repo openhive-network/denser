@@ -38,6 +38,8 @@ export const CHUNK_MARKERS = {
   shiki: 'ShikiError',
   /** zod: one of its issue codes */
   zod: 'invalid_intersection_types',
+  /** matrix-js-sdk, the native chat client's: its check against loading twice */
+  matrixSdk: 'Multiple matrix-js-sdk entrypoints detected',
   /** cmdk, behind @hive/ui's Command, which the blog never renders: one of its item selectors */
   cmdk: 'cmdk-group-items'
 } as const;

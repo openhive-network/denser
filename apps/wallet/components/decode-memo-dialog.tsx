@@ -27,7 +27,8 @@ const logger = getLogger('app');
 // See the identical constant in encrypt-memo-dialog.tsx.
 const NATIVE_SIGNER_DECODE_LABEL_KEY: Partial<Record<LoginType, string>> = {
   [LoginType.keychain]: 'transfers_page.decode_memo_with_keychain',
-  [LoginType.peakvault]: 'transfers_page.decode_memo_with_peakvault'
+  [LoginType.peakvault]: 'transfers_page.decode_memo_with_peakvault',
+  [LoginType.metamask]: 'transfers_page.decode_memo_with_metamask'
 };
 
 interface DecodeMemoDialogProps {

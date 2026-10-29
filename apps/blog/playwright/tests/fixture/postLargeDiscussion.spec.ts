@@ -16,7 +16,8 @@ test.use({ fixtureTestName: 'postLargeDiscussion' });
 
 const POST_PATH = '/communityfork/@hiveio/announcing-the-launch-of-hive-blockchain';
 const MAX_COMMENTS_PER_PAGE = 50;
-const MAX_HTML_BYTES = 1024 * 1024;
+// One page of comments renders about 1 MiB; the whole 981-reply discussion is many times that.
+const MAX_HTML_BYTES = 1.5 * 1024 * 1024;
 const COMMENT_ITEM_MARKUP = /data-testid="comment-list-item"/g;
 const HYDRATION_ERROR = /Minified React error #(418|423|425|421|422)\b|hydrat|did not match/i;
 

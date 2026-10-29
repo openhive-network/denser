@@ -6,13 +6,32 @@ import { useProcessAuth, LoginFormSchema } from './process';
 import { useLocalStorage } from 'usehooks-ts';
 import Methods from './methods/methods';
 import SafeStorageKeyUpdate from './methods/safestorage-key-update';
+import { getLogger } from '@hive/ui/lib/logging';
+import {
+  abandonPendingSignIn,
+  cancelPendingSignIn,
+  runExclusiveSignIn,
+  SignInPendingError
+} from '@smart-signer/lib/auth/sign-in-lock';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
+import { toast } from '@ui/components/hooks/use-toast';
+import { ToastAction } from '@ui/components/toast';
+import { useSharedTranslation } from '@ui/lib/i18n-client';
+
+const logger = getLogger('app');
+
+/** Sign-in methods answered in a browser wallet extension */
+const WALLET_EXTENSION_LOGIN_TYPES: ReadonlySet<LoginType> = new Set([
+  LoginType.keychain,
+  LoginType.peakvault,
+  LoginType.metamask
+]);
 import Passkey from './methods/passkey';
 
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
   onComplete: (arg0: any) => Promise<any>;
   authenticateOnBackend?: boolean;
-  strict?: boolean; // if true use strict authentication
   i18nNamespace?: string;
   /** The account to sign in; defaults to the last one signed in */
   username?: string;
@@ -35,7 +54,6 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       preferredKeyTypes,
       onComplete,
       authenticateOnBackend = false,
-      strict = false,
       i18nNamespace = 'smart-signer',
       username: initialUsername,
       passkey = false
@@ -47,6 +65,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
     const [username, setUsername] = useState<string>(initialUsername ?? lastLoggedInUser);
+    const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE);
 
     // provide methods to outside from here
     useImperativeHandle(ref, () => ({
@@ -54,6 +73,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       // when cancel sign in flow
       async cancel() {
         // set cancelled state
+        abandonPendingSignIn();
         await safeStorageRef.current?.cancel();
       }
     }));
@@ -61,7 +81,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     // Final form handlers.
     // TODO Some arguments for useProcessAuth should be read from env variables.
     // TODO: replace with function
-    const { submitAuth, signAuth, isSigned } = useProcessAuth(authenticateOnBackend, strict);
+    const { submitAuth, signAuth, isSigned } = useProcessAuth(authenticateOnBackend);
 
     async function sign(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
       const schema: LoginFormSchema = {
@@ -79,9 +99,28 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       await onComplete(username);
     }
 
+    function reportSignInPending(error: SignInPendingError): void {
+      toast({
+        description: t(error.translationKey),
+        action: (
+          <ToastAction altText={t('login_form.cancel_pending_sign_in')} onClick={cancelPendingSignIn}>
+            {t('login_form.cancel_pending_sign_in')}
+          </ToastAction>
+        )
+      });
+    }
+
     async function signIn(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
-      await sign(loginType, username, keyType);
-      await submit(username);
+      try {
+        await runExclusiveSignIn(async () => {
+          await sign(loginType, username, keyType);
+          await submit(username);
+        }, WALLET_EXTENSION_LOGIN_TYPES.has(loginType));
+      } catch (error) {
+        if (!(error instanceof SignInPendingError)) throw error;
+        logger.info('Sign-in with %s not sent: another sign-in is in progress', loginType);
+        reportSignInPending(error);
+      }
     }
 
     return (

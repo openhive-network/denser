@@ -3,8 +3,7 @@
 # systemd/denser-integration-upgrade@.timer; safe to run by hand.
 #
 #   ./upgrade.sh            # upgrade, rewrite status/deployed.json, check the blog's
-#                           # OAuth2 provider (status/oauth.json), then
-#                           # Lighthouse-check a newly deployed tip (lighthouse.sh)
+#                           # OAuth2 provider (status/oauth.json)
 #   ./upgrade.sh --quiet    # print nothing when nothing changed (the timer's mode)
 #
 # DENSER_MODE in .env picks how:
@@ -13,17 +12,32 @@
 #                     (follow/follow.sh) and serve those builds (compose.follow.yml).
 #                     A dirty or diverged checkout is REFUSED and nothing changes; a
 #                     build that fails leaves the previous one serving (ROLLED-BACK)
-#                     and is tried again on the next run.
+#                     and is tried again on the next run. Less free space on the
+#                     checkout's filesystem than DENSER_MIN_FREE_GB (default 5) skips
+#                     the run (DISK-LOW) and the current release keeps serving; a
+#                     successful run removes the follow images no release needs.
 #   images            pull the published images at DENSER_TAG (compose.yml alone).
 #
+# Either way caddy then loads a changed caddy/ (caddy-apply.sh): validated first,
+# and a config it refuses leaves the previous one serving. DENSER_HTML_CACHE=varnish
+# in .env adds the shared HTML cache (compose.cache.yml), which loads a changed
+# varnish/ the same way (varnish-apply.sh).
+#
+# The Lighthouse check of a deployed tip is not part of a run: lighthouse.sh has its
+# own unit (systemd/denser-integration-lighthouse@.timer), so a deploy never waits
+# for a measurement.
+#
 # Exit: 0 upgraded or nothing to do; 1 an app could not be brought to the tip
-# (ROLLED-BACK); 3 the checkout was REFUSED.
+# (ROLLED-BACK); 3 the checkout was REFUSED; 4 caddy refused the checkout's caddy/;
+# 5 varnish refused the checkout's varnish/; 6 too little free disk to build (DISK-LOW).
 set -euo pipefail
 cd "$(dirname "$0")"
 
 quiet=false
 [ "${1:-}" = --quiet ] && quiet=true
 say() { $quiet || echo "$@"; }
+quiet_args=()
+$quiet && quiet_args+=(--quiet)
 
 env_value() { sed -n "s/^$1=//p" .env 2>/dev/null | tail -n 1; }
 
@@ -32,6 +46,22 @@ mode=${mode:-follow}
 branch=$(env_value DENSER_SOURCE_BRANCH)
 branch=${branch:-aidev/integration}
 apps="blog:/blog wallet:/wallet"
+# Images mode's repositories; follow mode removes the ones no container uses.
+subdirectory_repos="registry.gitlab.syncad.com/hive/denser/blog-subdirectory registry.gitlab.syncad.com/hive/denser/wallet-subdirectory"
+caddy_rc=0
+varnish_rc=0
+
+html_cache=$(env_value DENSER_HTML_CACHE)
+case "${html_cache:-off}" in
+    off) cache_compose="" ;;
+    varnish) cache_compose=:compose.cache.yml ;;
+    *) echo "upgrade: DENSER_HTML_CACHE=$html_cache is neither varnish nor off" >&2; exit 64 ;;
+esac
+
+# Loads a changed varnish/ when the cache runs.
+apply_varnish() {
+    [ -z "$cache_compose" ] || ./varnish-apply.sh "${quiet_args[@]}" || varnish_rc=5
+}
 
 # Before compose up: caddy bind-mounts status/, and docker would create it root-owned.
 mkdir -p status releases
@@ -51,7 +81,7 @@ images_sync_checkout() {
 }
 
 images_upgrade() {
-    export COMPOSE_FILE=compose.yml
+    export COMPOSE_FILE=compose.yml$cache_compose
     images_sync_checkout
 
     ids() { docker compose images --format json 2>/dev/null | python3 -c '
@@ -69,6 +99,14 @@ print(" ".join(sorted(r.get("ID", "") for r in rows)))'; }
         docker compose ps >&2
     }
     after=$(ids)
+    ./caddy-apply.sh "${quiet_args[@]}" || caddy_rc=4
+    apply_varnish
+    # A new image serves only its own build's /_next/static, so a cached page of the
+    # previous build would load chunks that are gone. (Follow mode keeps them.)
+    if [ -n "$cache_compose" ] && [ "$before" != "$after" ]; then
+        docker compose exec -T varnish varnishadm ban 'obj.status != 0' > /dev/null \
+            || echo "upgrade: purging the HTML cache failed; cached pages expire within their s-maxage + stale-if-error" >&2
+    fi
 
     python3 - "$(git rev-parse HEAD)" <<'EOF' > status/deployed.json.tmp
 import json, subprocess, sys, datetime
@@ -169,16 +207,166 @@ follow_write_status() {
     python3 follow/deployed.py --releases releases --apps "$apps" --source "follow:$branch" \
         --checkout "$(git rev-parse HEAD)" --upgrade-status "$1" --upgrade-detail "${2:-}" \
         --site "$(env_value SITE_HOST)" --network "$(env_value DENSER_NETWORK | grep . || echo mainnet)" \
-        > status/deployed.json.tmp
-    mv status/deployed.json.tmp status/deployed.json
+        --disk-free-bytes "$disk_free" --disk-min-free-bytes "$disk_min_free" \
+        > status/deployed.json.tmp \
+        && mv status/deployed.json.tmp status/deployed.json
+}
+
+follow_image() { DENSER_FOLLOW_IMAGE=$(env_value DENSER_FOLLOW_IMAGE) follow/environment-image.sh; }
+
+# Bytes available on the checkout's filesystem: builds, releases and git's index.
+free_bytes() { df -P -B1 . | awk 'NR == 2 { print $4 }'; }
+
+# status/.follow-images: the last two follow images a run completed with, newest
+# last. Every image change rebuilds every app, so they are the images the current
+# and the previous releases were built and served in.
+follow_record_image() {
+    [ "$(tail -n 1 status/.follow-images 2>/dev/null)" = "$1" ] && return 0
+    { tail -n 1 status/.follow-images 2>/dev/null || true; echo "$1"; } > status/.follow-images.tmp \
+        && mv status/.follow-images.tmp status/.follow-images
+}
+
+# The follow images of the apps' previous releases: environment.image of the commit
+# each was built from. Fails when one can't be told: DENSER_FOLLOW_IMAGE set (it
+# overrides the commit's), a release without its commit, a commit git doesn't have.
+follow_previous_images() {
+    local entry release revision
+    [ -z "$(env_value DENSER_FOLLOW_IMAGE)" ] || return 1
+    for entry in $apps; do
+        release=releases/${entry%%:*}/previous/release.json
+        [ -e "releases/${entry%%:*}/previous" ] || continue
+        revision=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1])).get("revision") or "")' "$release" 2>/dev/null) \
+            && [ -n "$revision" ] || return 1
+        git show "$revision:.aidev/project.yaml" 2>/dev/null \
+            | DENSER_FOLLOW_IMAGE='' follow/environment-image.sh - 2>/dev/null || return 1
+    done
+}
+
+# Only denser's own repositories are ever listed or removed from.
+denser_repo() { [[ "$1" =~ ^registry\.gitlab\.syncad\.com/hive/denser/[a-z0-9]+([._/-][a-z0-9]+)*$ ]]; }
+
+# Removes the images of the follow image's repository other than those of
+# status/.follow-images (and $1), and images mode's -subdirectory images. An image a
+# container uses, running or stopped, of any stack, stays; no repository outside
+# registry.gitlab.syncad.com/hive/denser/ is looked at. Before status/.follow-images
+# names two images, the previous releases' images stay too, and the follow
+# repository is left alone when they can't be told. An image docker refuses to remove
+# is tried again the next UTC day (status/.prune-failed: "<day> <ID>" lines).
+follow_prune_images() {
+    local repo ref id i keep keep_refs recorded previous day repos=() refs=() ids=() removed=0 failed_ids=" " errors="" error
+    repo=${1%%@*}
+    [[ "${repo##*/}" != *:* ]] || repo=${repo%:*}
+    if ! denser_repo "$repo"; then
+        echo "upgrade: the follow image '$1' is not in registry.gitlab.syncad.com/hive/denser/; not removing any image" >&2
+        return 0
+    fi
+    keep_refs=$( { cat status/.follow-images 2>/dev/null || true; echo "$1"; } | sort -u)
+    recorded=$(grep -c . status/.follow-images 2>/dev/null || true)
+    if [ "${recorded:-0}" -lt 2 ]; then
+        if previous=$(follow_previous_images); then
+            keep_refs+=$'\n'$previous
+            repos+=("$repo")
+        else
+            say "upgrade: the previous releases' follow image is unknown; keeping every ${repo##*/} image"
+        fi
+    else
+        repos+=("$repo")
+    fi
+    for ref in $subdirectory_repos; do
+        if denser_repo "$ref"; then repos+=("$ref"); else echo "upgrade: $ref is not a denser repository; not listing it" >&2; fi
+    done
+    keep=$( { while read -r ref; do
+                [ -z "$ref" ] || docker image inspect --format '{{.Id}}' "$ref" 2>/dev/null || true
+            done <<< "$keep_refs"
+            docker ps -aq | xargs -r docker inspect --format '{{.Image}}' 2>/dev/null || true
+        } | tr '\n' ' ')
+    keep=" $keep "
+    day=$(date -u +%F)
+    keep+=$(sed -n "s/^$day //p" status/.prune-failed 2>/dev/null | tr '\n' ' ')
+    while read -r id ref; do
+        [ -n "$id" ] && [[ "$keep" != *" $id "* ]] || continue
+        # docker's reference filter matches patterns: only the queried repositories.
+        [[ " ${repos[*]} " == *" ${ref%:*} "* ]] || continue
+        # An untagged image (a digest-pinned pull, or a tag that moved) goes by its ID.
+        if [[ "$ref" == *:"<none>" ]]; then refs+=("$id"); else refs+=("$ref"); fi
+        ids+=("$id")
+    done < <(for ref in "${repos[@]}"; do
+            docker image ls --no-trunc --format '{{.ID}} {{.Repository}}:{{.Tag}}' "$ref" || true
+        done | sort -u)
+    [ ${#refs[@]} -gt 0 ] || return 0
+    for i in "${!refs[@]}"; do
+        [[ "$failed_ids" != *" ${ids[$i]} "* ]] || continue
+        if error=$(docker image rm "${refs[$i]}" 2>&1 > /dev/null); then
+            removed=$((removed + 1))
+        else
+            failed_ids+="${ids[$i]} "
+            errors+="${error%%$'\n'*}"$'\n'
+        fi
+    done
+    say "upgrade: removed $removed superseded images of $(printf '%s\n' "${repos[@]##*/}" | paste -sd ' ')"
+    [ "$failed_ids" != " " ] || return 0
+    { grep "^$day " status/.prune-failed 2>/dev/null || true
+      for id in $failed_ids; do echo "$day $id"; done
+    } > status/.prune-failed.tmp && mv status/.prune-failed.tmp status/.prune-failed \
+        || echo "upgrade: could not record the images not removed in status/.prune-failed" >&2
+    echo "upgrade: $(wc -w <<< "$failed_ids") images were not removed (not tried again until tomorrow, UTC):" >&2
+    head -n 5 <<< "${errors%$'\n'}" >&2
+}
+
+# Sets disk_free and disk_min_free. A filesystem below the minimum is first given
+# back the superseded images, then measured again.
+follow_check_disk() {
+    local min_gb image
+    min_gb=$(env_value DENSER_MIN_FREE_GB)
+    min_gb=${min_gb:-5}
+    [[ "$min_gb" =~ ^[0-9]+$ ]] || { echo "upgrade: DENSER_MIN_FREE_GB=$min_gb is not a whole number of GB" >&2; exit 64; }
+    disk_min_free=$((min_gb * 1000000000))
+    disk_free=$(free_bytes)
+    [ "$disk_free" -lt "$disk_min_free" ] || return 0
+    # A checkout a full disk truncated can leave no image to name: then nothing goes.
+    image=$(follow_image) || image=
+    if [ -n "$image" ]; then
+        follow_prune_images "$image" || true
+    else
+        echo "upgrade: cannot resolve the follow image; skipping the prune" >&2
+    fi
+    disk_free=$(free_bytes)
+}
+
+# Posts to RC_WEBHOOK_URL (a Rocket.Chat incoming webhook), at most once per UTC day.
+# The day posted is kept on tmpfs, not on the filesystem that is full.
+disk_low_notify() {
+    local url day marker
+    url=${RC_WEBHOOK_URL:-$(env_value RC_WEBHOOK_URL)}
+    [ -n "$url" ] || return 0
+    day=$(date -u +%F)
+    marker=${XDG_RUNTIME_DIR:-/dev/shm}/denser-integration-disk-low-notified-$(pwd -P | sha256sum | cut -c1-16)
+    [ "$(cat "$marker" 2>/dev/null)" != "$day" ] || return 0
+    if python3 -c 'import json, sys; print(json.dumps({"text": sys.argv[1]}))' \
+            ":warning: denser integration site $(env_value SITE_HOST): $1" \
+        | curl -fsS --max-time 30 -H 'Content-Type: application/json' --data-binary @- "$url" > /dev/null; then
+        echo "$day" > "$marker" || echo "upgrade: could not record the low-disk post in $marker" >&2
+    else
+        echo "upgrade: posting the low-disk warning to RC_WEBHOOK_URL failed" >&2
+    fi
 }
 
 follow_upgrade() {
     local image build_rc=0
-    export COMPOSE_FILE=compose.yml:compose.follow.yml
+    export COMPOSE_FILE=compose.yml:compose.follow.yml$cache_compose
     export DENSER_SOURCE_BRANCH=$branch DENSER_UID DENSER_GID
     DENSER_UID=$(id -u)
     DENSER_GID=$(id -g)
+
+    # Before git, which a full disk fails too (its index.lock).
+    follow_check_disk
+    if [ "$disk_free" -lt "$disk_min_free" ]; then
+        local detail="$((disk_free / 1000000)) MB free on the checkout's filesystem, under DENSER_MIN_FREE_GB=$((disk_min_free / 1000000000)); nothing pulled or built, the current release keeps serving"
+        echo "upgrade: DISK-LOW: $detail" >&2
+        follow_write_status DISK-LOW "$detail" || echo "upgrade: could not write status/deployed.json" >&2
+        disk_low_notify "$detail"
+        exit 6
+    fi
 
     follow_sync_checkout
     if [ -n "$refused" ]; then
@@ -187,7 +375,7 @@ follow_upgrade() {
         exit 3
     fi
 
-    image=$(DENSER_FOLLOW_IMAGE=$(env_value DENSER_FOLLOW_IMAGE) follow/environment-image.sh)
+    image=$(follow_image)
     export DENSER_FOLLOW_IMAGE=$image
     docker image inspect "$image" > /dev/null 2>&1 || docker pull -q "$image" > /dev/null
 
@@ -213,6 +401,12 @@ follow_upgrade() {
         echo "upgrade: not every app has a build yet; the running containers keep serving" >&2
     fi
     follow_write_status OK
+    ./caddy-apply.sh "${quiet_args[@]}" || caddy_rc=4
+    apply_varnish
+    if [ "$build_rc" = 0 ] && follow_all_released; then
+        { follow_record_image "$image" && follow_prune_images "$image"; } \
+            || echo "upgrade: removing superseded images failed" >&2
+    fi
     if [ "$build_rc" != 0 ]; then
         echo "upgrade: ROLLED-BACK: an app could not be built or started at $(git rev-parse --short HEAD); see status/deployed.json" >&2
         exit 1
@@ -258,10 +452,11 @@ case "$mode" in
     *) echo "upgrade: DENSER_MODE=$mode is neither follow nor images" >&2; exit 64 ;;
 esac
 
-# Advisory: a failed check or a breach is reported in status/oauth.json,
-# status/lighthouse/ and here, never by failing the upgrade or rolling it back.
+# Advisory: a failed check is reported in status/oauth.json and here, never by
+# failing the upgrade or rolling it back.
 oauth_check || echo "upgrade: see status/oauth.json" >&2
 
-lighthouse_args=()
-$quiet && lighthouse_args+=(--quiet)
-./lighthouse.sh "${lighthouse_args[@]}" || echo "upgrade: lighthouse check exited $?; see status/lighthouse/latest.json" >&2
+# After the check, which a refused caddy/ or varnish/ does not stop: the apps may
+# have moved.
+[ "$caddy_rc" != 0 ] && exit "$caddy_rc"
+exit "$varnish_rc"

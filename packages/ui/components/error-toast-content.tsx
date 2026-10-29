@@ -1,10 +1,10 @@
 import { cn } from '@ui/lib/utils';
 import { Button } from './button';
 import { ChevronDown, ClipboardCopy } from 'lucide-react';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 interface ErrorToastContentProps {
-  errorTitle: string;
+  errorTitle: ReactNode;
   fullError: string;
   displayControls?: boolean;
   className?: string;
@@ -46,7 +46,7 @@ const ErrorToastContent: React.FC<ErrorToastContentProps> = ({
       </div>
       {displayControls && (
         <pre
-          className={cn('h-0 w-0 overflow-hidden text-wrap break-words', {
+          className={cn('h-0 w-0 overflow-hidden text-wrap wrap-break-word', {
             'h-full max-h-[60vh] w-full overflow-y-auto px-4 md:max-h-[80vh]': showMoreOpen
           })}
           data-testid="error-toast-content-message"

@@ -27,7 +27,7 @@ branches:
 # How this project's suites execute (#13892): one kind, stated once.
 environment:
   kind: "container"
-  image: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:dcc8e87a4bf2c95fe19084f514830f3fb511cc7f825fe00a0a61ebd3d9a37a57"
+  image: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:06af720494ff070ef6db1b89ad736eba1ae412aa5222632e59fb14f8fdd37b33"
   inputs: ["pnpm-lock.yaml"]
 
 issues:
@@ -60,14 +60,19 @@ issues:
 timeouts:
   enabled: true
   max_scale: 3
+# `tier:` puts a suite's results on Test Health's per-tier pass rate (one of unit,
+# smoke, system, dind, e2e). A suite name carries the same tier in every slot it
+# appears in; `static` runs eslint and tsc, records no test results, and has none.
 verification:
   # ~25 s: mocha unit suites of packages/renderer and packages/transaction
-  # (~1,430 tests), plus lint and type check.
+  # (~1,430 tests), plus lint and type check. `unit` also runs the integration
+  # site's upkeep check (stack/integration/test-upkeep.sh, ~20 s, stand-ins only).
   quick:
     suites:
       - name: unit
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
+        tier: unit
         artifacts: ["test-results/unit/"]
         stack: false
       - name: static
@@ -83,6 +88,7 @@ verification:
       - name: unit
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
+        tier: unit
         artifacts: ["test-results/unit/"]
         stack: false
       - name: static
@@ -92,6 +98,7 @@ verification:
       - name: fixture_e2e
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
+        tier: e2e
         artifacts: ["test-results/fixture/"]
         stack: false
       # The wallet's fixture suite, split out of fixture_e2e on 2026-10-09 so a slow
@@ -99,6 +106,7 @@ verification:
       - name: wallet_fixture
         adapter: command
         args: [".aidev/run-wallet-fixture-e2e.sh"]
+        tier: e2e
         artifacts: ["test-results/wallet-fixture/"]
         stack: false
       # Boots the live dev stack (sandbox.dev) cold and over the base revision's
@@ -110,22 +118,32 @@ verification:
       - name: dev_stack
         adapter: command
         args: [".aidev/run-dev-stack.sh"]
+        tier: system
         artifacts: ["test-results/dev-stack-suite/"]
         stack: false
-      # ADVISORY (always exits 0): the live-API e2e specs this candidate changed
-      # or reaches through a changed import, plus the app's smoke specs when app
-      # source changed, against the stack's blog-live (fixture_e2e's build) and
-      # wallet-live (wallet_fixture's);
-      # "not applicable" when it selects none or no change information reaches
-      # the container. See .aidev/run-live-e2e.sh.
+      # The live-API e2e specs this candidate changed or reaches through a
+      # changed import, plus the app's smoke specs when app source changed,
+      # against the stack's blog-live (fixture_e2e's build) and wallet-live
+      # (wallet_fixture's); "not applicable" when it selects none or no change
+      # information reaches the container. See .aidev/run-live-e2e.sh.
+      # `mode: advisory` is what keeps it from deciding the slot: its result,
+      # an environment failure such as an OOM kill included, never fails the
+      # run or triggers a retry. The script's exit 0 alone does not do that.
+      # `memory: 6g` fixes its container cap: the Playwright run shares the
+      # container while the stack serves two Next.js production servers, and
+      # the cap fitted from past peaks (0.8-2.2 GB) killed larger selections.
       - name: live_e2e
         adapter: command
         args: [".aidev/run-live-e2e.sh"]
+        tier: e2e
         artifacts: ["test-results/live-e2e/"]
         env: {DENSER_TEST_STACK: "1"}
+        mode: advisory
+        memory: 6g
   baseline:
     adapter: command
     args: [".aidev/run-unit-tests.sh"]
+    tier: unit
     artifacts: ["test-results/unit/"]
     stack: false
   # Re-checks the merged tree on deploy/promote.
@@ -134,6 +152,7 @@ verification:
       - name: unit
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
+        tier: unit
         artifacts: ["test-results/unit/"]
         stack: false
       - name: static
@@ -145,6 +164,7 @@ verification:
   coverage:
     adapter: command
     args: [".aidev/run-coverage.sh"]
+    tier: unit
     artifacts: ["test-results/coverage/"]
     stack: false
   # The deterministic Lighthouse pass (.aidev/run-lighthouse-fixture.sh): production
@@ -159,6 +179,7 @@ verification:
       - name: lighthouse_fixture
         adapter: command
         args: [".aidev/run-lighthouse-fixture.sh"]
+        tier: system
         artifacts: ["test-results/lighthouse-fixture/"]
         stack: false
 

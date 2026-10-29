@@ -13,7 +13,11 @@ export function useLogout(redirect?: string) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const onLogout = async () => {
+  /**
+   * @param leaveTo where to take the reader once the server has ended the session, from a page
+   *   that has nothing to show a signed-out reader
+   */
+  const onLogout = async (leaveTo?: string) => {
     // Read before signing out clears them
     const remembered = userLocalStorage.getAccounts();
     const accounts =
@@ -32,6 +36,9 @@ export function useLogout(redirect?: string) {
       // onMutate already applied optimistic update; onError may have rolled
       // it back, but navigation below will load fresh state from the server.
     }
+
+    // Only now, so the next page renders without the ended session's cookie
+    if (leaveTo) router.replace(leaveTo);
 
     // Stored keys and tokens must not outlive the session, whichever account they belong to
     clearStoredCredentials();

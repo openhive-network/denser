@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
-# node:test suites of scripts/ci-helpers, .aidev, scripts/check-*-translations (with scripts/korean-translations), playwright/support, packages/ui, packages/smart-signer,
-# apps/blog and apps/wallet (run through node's TypeScript type stripping): the `baseline` slot
-# and the `unit` suite of the quick, full and canary slots.
+# node:test suites of scripts/ci-helpers, .aidev, scripts/check-*-translations (with scripts/korean-translations), scripts/check-beekeeper-lockfile, scripts/check-playwright-test-ids, playwright/support, packages/ui, packages/smart-signer, packages/common-hiveio-packages,
+# apps/blog and apps/wallet (run through node's TypeScript type stripping), and the
+# integration site's upkeep check (stack/integration/test-upkeep.sh: bash with stand-ins
+# for docker, git, df and curl): the `baseline` slot and the `unit` suite of the quick,
+# full and canary slots.
 # No I/O, no server. Each package writes junit (mocha's built-in xunit reporter)
 # to test-results/unit/, the per-test evidence AIDEV reads from the binding's
 # `artifacts:` path; the exit code is the verdict.
@@ -39,7 +41,8 @@ junit="$PWD/test-results/unit/aidev.xml"
 run_with_junit_fallback "$junit" aidev node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    .aidev/run-live-e2e.test.mjs .aidev/base-path-front.test.mjs < /dev/null || status=1
+    .aidev/run-live-e2e.test.mjs .aidev/base-path-front.test.mjs \
+    .aidev/lighthouse-fixture/image-server.test.mjs < /dev/null || status=1
 
 echo "== node --test scripts/check-*-translations" >&2
 junit="$PWD/test-results/unit/translations.xml"
@@ -48,6 +51,20 @@ run_with_junit_fallback "$junit" translations node --test \
     --test-reporter=junit --test-reporter-destination="$junit" \
     scripts/check-wallet-translations.test.js scripts/check-blog-translations.test.js \
     scripts/check-smart-signer-translations.test.js scripts/korean-translations.test.js < /dev/null || status=1
+
+echo "== node --test scripts/check-beekeeper-lockfile" >&2
+junit="$PWD/test-results/unit/beekeeper-lockfile.xml"
+run_with_junit_fallback "$junit" beekeeper-lockfile node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    scripts/check-beekeeper-lockfile.test.js < /dev/null || status=1
+
+echo "== node --test scripts/check-playwright-test-ids" >&2
+junit="$PWD/test-results/unit/playwright-test-ids.xml"
+run_with_junit_fallback "$junit" playwright-test-ids node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    scripts/check-playwright-test-ids.test.js < /dev/null || status=1
 
 echo "== node --test playwright/support" >&2
 junit="$PWD/test-results/unit/playwright-support.xml"
@@ -67,6 +84,8 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/memo-secret-check.test.ts \
     packages/ui/lib/storage-with-ttl-notify.test.ts packages/ui/lib/app-api-path.test.ts \
     packages/ui/lib/locale-cookie.test.ts packages/ui/lib/month-year.test.ts \
+    packages/ui/lib/session-time.test.ts packages/ui/lib/user-cancelled.test.ts \
+    packages/ui/config/chat.test.ts \
     packages/ui/lib/passkey-signers.test.ts < /dev/null || status=1
 echo "== node --test packages/smart-signer" >&2
 junit="$PWD/test-results/unit/smart-signer.xml"
@@ -74,40 +93,84 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     packages/smart-signer/lib/oauth/return-url.test.ts \
+    packages/smart-signer/lib/oauth/config.test.ts \
+    packages/smart-signer/lib/oauth/handlers.test.ts \
+    packages/smart-signer/lib/google-drive-urls.test.ts \
     packages/smart-signer/lib/condenser-migration.test.ts \
     packages/smart-signer/lib/validators/key-role.test.ts \
     packages/smart-signer/lib/memo-crypto.test.ts \
+    packages/smart-signer/lib/memo-layout.test.ts \
     packages/smart-signer/lib/signer/keychain-memo-crypto.test.ts \
+    packages/smart-signer/lib/signer/binary-challenge.test.ts \
     packages/smart-signer/lib/storage-mixin.test.ts \
     packages/smart-signer/lib/signer/credential-storage.test.ts \
     packages/smart-signer/lib/signer/safe-storage-registration.test.ts \
     packages/smart-signer/lib/auth/accounts.test.ts \
+    packages/smart-signer/lib/auth/chat-session.test.ts \
+    packages/smart-signer/lib/auth/chat-sign-out.test.ts \
+    packages/smart-signer/lib/auth/matrix-devices.test.ts \
+    packages/smart-signer/lib/auth/matrix-login-token.test.ts \
+    packages/smart-signer/lib/api-handlers/auth/logout.test.ts \
+    packages/smart-signer/lib/api-handlers/auth/challenge.test.ts \
+    packages/smart-signer/lib/auth/auth-storage-desync.test.ts \
     packages/smart-signer/lib/auth/login-authority.test.ts \
+    packages/smart-signer/lib/auth/sign-in-lock.test.ts \
+    packages/smart-signer/lib/fetch-json.test.ts \
+    packages/smart-signer/lib/signer/unlock-hint.test.ts \
+    packages/smart-signer/lib/signer/google-drive-missing-key.test.ts \
+    packages/smart-signer/lib/signer/google-drive-sign-in-cancelled.test.ts \
     packages/smart-signer/lib/passkey/signer-client.test.ts \
-    packages/smart-signer/lib/passkey/posting-key-match.test.ts \
-    packages/smart-signer/lib/fetch-json.test.ts < /dev/null || status=1
+    packages/smart-signer/lib/passkey/posting-key-match.test.ts < /dev/null || status=1
+echo "== node --test packages/common-hiveio-packages" >&2
+junit="$PWD/test-results/unit/common-hiveio-packages.xml"
+run_with_junit_fallback "$junit" common-hiveio-packages node --test \
+    --test-reporter=spec --test-reporter-destination=stdout \
+    --test-reporter=junit --test-reporter-destination="$junit" \
+    packages/common-hiveio-packages/src/hb-auth/safe-storage-generation.test.ts \
+    packages/common-hiveio-packages/src/hb-auth/hbauth-service.test.ts \
+    packages/common-hiveio-packages/src/hb-auth/worker-release.test.ts < /dev/null || status=1
 echo "== node --test packages/middleware" >&2
 junit="$PWD/test-results/unit/middleware.xml"
 run_with_junit_fallback "$junit" middleware node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    packages/middleware/lib/matcher.test.ts packages/middleware/lib/csp.test.ts < /dev/null || status=1
+    packages/middleware/lib/matcher.test.ts packages/middleware/lib/csp.test.ts \
+    packages/middleware/lib/public-cache.test.ts < /dev/null || status=1
 echo "== node --test apps/blog" >&2
 junit="$PWD/test-results/unit/blog.xml"
 run_with_junit_fallback "$junit" blog node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     apps/blog/lib/canonical-url.test.ts \
+    apps/blog/lib/json-ld.test.ts \
+    apps/blog/lib/structured-data.test.ts \
+    apps/blog/lib/seo-robots.test.ts \
+    apps/blog/lib/sitemap-entries.test.ts \
     apps/blog/lib/in-app-redirect-url.test.ts \
+    apps/blog/lib/post-summary.test.ts \
+    apps/blog/lib/chat-eligibility.test.ts \
+    apps/blog/lib/fyp-api.test.ts \
+    apps/blog/lib/cut-body.test.ts \
+    apps/blog/lib/matrix-login-token-route.test.ts \
+    apps/blog/components/hooks/use-chat-token-request.test.ts \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
     apps/blog/features/activity-log/lib/notification-source.test.ts \
     apps/blog/features/post-editor/lib/scroll-sync-anchors.test.ts \
+    apps/blog/features/post-editor/lib/image-markdown.test.ts \
     apps/blog/features/post-editor/lib/mention-completion.test.ts \
     apps/blog/features/votes/hooks/logged-user-contexts.test.ts \
     apps/blog/features/post-rendering/lib/votes-before-payout.test.ts \
     apps/blog/features/post-rendering/lib/votes-after-payout.test.ts \
     apps/blog/features/post-rendering/lib/paginate-threads.test.ts \
+    apps/blog/features/matrix-chat/lib/message-view.test.ts \
+    apps/blog/features/matrix-chat/lib/outbox.test.ts \
+    apps/blog/features/matrix-chat/lib/chat-time.test.ts \
+    apps/blog/features/matrix-chat/lib/back-pagination.test.ts \
+    apps/blog/features/matrix-chat/lib/matrix-chat-sign-in.test.ts \
+    apps/blog/features/matrix-chat/lib/matrix-chat-session.test.ts \
+    apps/blog/features/matrix-chat/lib/rtc-transports-probe.test.ts \
+    apps/blog/features/matrix-chat/lib/sdk-log-routing.test.ts \
     apps/blog/features/lite-account/lite-did.test.ts \
     apps/blog/features/lite-account/lite-reply-optimistic.test.ts \
     apps/blog/features/lite-account/use-lite-gateway-health.test.ts \
@@ -134,6 +197,7 @@ run_with_junit_fallback "$junit" wallet node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
     apps/wallet/lib/history-filter.test.ts \
+    apps/wallet/lib/transfer-suggestions.test.ts \
     apps/wallet/feature/delegations/lib/incoming-delegations.test.ts \
     apps/wallet/feature/transfers-page/lib/rc-amount.test.ts \
     apps/wallet/playwright/tests/support/walletOperations.test.ts \
@@ -141,5 +205,25 @@ run_with_junit_fallback "$junit" wallet node --test \
     apps/wallet/lib/min-delegation.test.ts \
     apps/wallet/lib/scam-transfer-filter.test.ts \
     apps/wallet/lib/market-order-form.test.ts \
-    apps/wallet/lib/financial-report.test.ts < /dev/null || status=1
+    apps/wallet/lib/financial-report.test.ts \
+    apps/wallet/lib/dhf-funding.test.ts \
+    apps/wallet/lib/dhf-faq.test.ts \
+    apps/wallet/lib/proposals-list.test.ts \
+    apps/wallet/lib/proposal-payments.test.ts \
+    apps/wallet/playwright/tests/support/contrast.test.ts < /dev/null || status=1
+echo "== stack/integration/test-upkeep.sh" >&2
+# One junit case per "ok   NAME" / "FAIL NAME" line it prints.
+junit="$PWD/test-results/unit/integration-upkeep.xml"
+upkeep_log="$(mktemp)"
+upkeep_cases="$(mktemp)"
+upkeep_status=0
+stack/integration/test-upkeep.sh < /dev/null 2>&1 | tee "$upkeep_log" || upkeep_status=${PIPESTATUS[0]}
+sed -n -e 's/^ok   \(.*\)$/case\t\1\tpass\t0\t/p' \
+    -e 's|^FAIL \(.*\)$|case\t\1\tfail\t0\tcheck failed\t'"$upkeep_log"'|p' "$upkeep_log" > "$upkeep_cases"
+if [ "$upkeep_status" -ne 0 ] && ! grep -q $'\tfail\t' "$upkeep_cases"; then
+    printf 'case\ttest-upkeep.sh\tfail\t0\texited %s before a failing check\t%s\n' "$upkeep_status" "$upkeep_log" >> "$upkeep_cases"
+fi
+junit_write_cases "$junit" integration-upkeep "$upkeep_cases"
+rm -f "$upkeep_log" "$upkeep_cases"
+[ "$upkeep_status" -eq 0 ] || status=1
 exit "$status"

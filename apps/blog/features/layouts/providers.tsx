@@ -19,8 +19,8 @@ import {
   NavigationProgress,
   NavigationProgressHandler
 } from '@hive/ui';
-import RocketChatWidget from '@/blog/components/rocket-chat-widget';
 import { SocialSyncListener } from '@/blog/components/social-sync-listener';
+import { FypWarmUp } from '@/blog/components/fyp-warm-up';
 import { useTranslation } from '@/blog/i18n/client';
 
 /** `nonce`: this response's CSP nonce, for the theme's inline init script */
@@ -42,13 +42,12 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
             <SignerProvider>
               <LazyGoogleOAuthRedirectHandler
                 authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
-                strict={!siteConfig.allowNonStrictLogin}
                 loadingText={t('login_form.completing_google_auth')}
               />
               <LoggedUserProvider>
                 {children}
-                <RocketChatWidget />
               </LoggedUserProvider>
+              <FypWarmUp />
             </SignerProvider>
           </NavigationProgressProvider>
         </ThemeProvider>

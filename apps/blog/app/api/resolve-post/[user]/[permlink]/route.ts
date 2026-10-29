@@ -8,7 +8,11 @@ import { inAppRedirectUrl } from '@/blog/lib/in-app-redirect-url';
 
 const logger = getLogger('app');
 
-function redirectInApp(request: Request, path: string): NextResponse {
+// A post's URL under its own category is where its other URLs permanently point; a 404 is not permanent.
+const NORMALISATION_REDIRECT_STATUS = 308;
+const NOT_FOUND_REDIRECT_STATUS = 302;
+
+function redirectInApp(request: Request, path: string, status: number): NextResponse {
   const url = inAppRedirectUrl(
     path,
     {
@@ -18,11 +22,11 @@ function redirectInApp(request: Request, path: string): NextResponse {
     },
     request.headers
   );
-  return NextResponse.redirect(url, { status: 302 });
+  return NextResponse.redirect(url, { status });
 }
 
 function notFoundRedirect(request: Request): NextResponse {
-  return redirectInApp(request, '/404');
+  return redirectInApp(request, '/404', NOT_FOUND_REDIRECT_STATUS);
 }
 
 // REACT_APP_WALLET_ENDPOINT is an absolute URL, or a path when the wallet shares the blog's
@@ -86,7 +90,7 @@ export async function GET(request: Request, props: { params: Promise<{ user: str
       return notFoundRedirect(request);
     }
 
-    return redirectInApp(request, `/${cat}/@${post.author}/${post.permlink}`);
+    return redirectInApp(request, `/${cat}/@${post.author}/${post.permlink}`, NORMALISATION_REDIRECT_STATUS);
   } catch (err) {
     logger.error(err, 'Error in GET');
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

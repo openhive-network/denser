@@ -142,9 +142,10 @@ test.describe('Witness vote broadcast', () => {
     // The rejection can be too quick to catch the pending state, so the error is what shows the vote ran.
     await expect(async () => {
       await voteBox.getByRole('button').click({ timeout: ATTEMPT_TIMEOUT });
-      await expect(page.getByTestId('error-toast-content').first()).toContainText('validate_account_name', {
-        timeout: ATTEMPT_TIMEOUT
-      });
+      await expect(page.getByTestId('error-toast-content').first()).toContainText(
+        "Account name 'Not An Account!' is not valid",
+        { timeout: ATTEMPT_TIMEOUT }
+      );
     }).toPass({ timeout: HYDRATION_TIMEOUT });
 
     await expect(voteBox.getByRole('button', { name: 'vote', exact: true })).toBeEnabled();

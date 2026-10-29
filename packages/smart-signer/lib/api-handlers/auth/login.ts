@@ -7,7 +7,6 @@ import { getChain } from '@transaction/lib/chain';
 import { postLoginSchema, PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User } from '@smart-signer/types/common';
 import { IronSessionData } from '@smart-signer/types/common';
-import { cookieNamePrefix } from '@smart-signer/lib/session';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { verifyLoginChallenge } from '@smart-signer/lib/verify-login-challenge';
 import { verifyLogin } from '@smart-signer/lib/verify-login';
@@ -18,17 +17,21 @@ import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
 import { logLoginEvent, getClientIpFromApiRequest } from '@smart-signer/lib/event-logging';
 import { setAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
 import { addAccount, setSessionUser } from '@smart-signer/lib/auth/accounts';
+import { endCurrentChatSession } from '@smart-signer/lib/auth/chat-session';
+import { chatSessionEnder } from '@smart-signer/lib/auth/chat-session-ender';
+import { ensureSessionUid } from '@smart-signer/lib/session-uid-cookie';
+import { LOGIN_CHALLENGE_COOKIE } from '@smart-signer/lib/api-handlers/auth/challenge';
 
 const logger = getLogger('app');
 
 export const loginUser: NextApiHandler<User> = async (req, res) => {
   checkCsrfHeader(req);
 
-  const loginChallenge = req.cookies[`${cookieNamePrefix}login_challenge_server`] || '';
+  const loginChallenge = req.cookies[LOGIN_CHALLENGE_COOKIE] || '';
 
   const data: PostLoginSchema = await postLoginSchema.parseAsync(req.body);
 
-  const { username, loginType, signatures, keyType, authenticateOnBackend, strict } = data;
+  const { username, loginType, signatures, keyType, authenticateOnBackend } = data;
   let hiveUserProfile;
   let chainAccount;
   try {
@@ -81,7 +84,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
 
     // Create User object from verified login data.
     try {
-      verifiedUser = await verifyLogin(data);
+      verifiedUser = await verifyLogin(data, chainAccount);
       result = verifiedUser.isLoggedIn;
     } catch (error) {
       logger.error(error, 'Failed to create user object for %s', username);
@@ -102,6 +105,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     siteConfig.openhiveChatAllowNonStrictLogin
   );
   if (
+    siteConfig.chatProvider === 'rocketchat' &&
     siteConfig.openhiveChatIframeIntegrationEnable &&
     (verifiedUser?.strict || siteConfig.openhiveChatAllowNonStrictLogin)
   ) {
@@ -125,6 +129,8 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
     strict: verifiedUser?.strict ? true : false
   };
   const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
+  // The same user signing in again keeps their Matrix devices, which Element in the drawer still uses
+  endCurrentChatSession(session, chatSessionEnder(), user);
   session.accounts = addAccount(session.accounts ?? [], session.user, user);
   setSessionUser(session, user);
   await session.save();
@@ -133,7 +139,7 @@ export const loginUser: NextApiHandler<User> = async (req, res) => {
   setAccountInfoCookie(res, username, loginType);
 
   // Log login event atomically with session creation
-  const uid = req.cookies['session_uid'] || 'n/a';
+  const uid = ensureSessionUid(req, res);
   logLoginEvent(getClientIpFromApiRequest(req), username, loginType, uid);
 
   res.json(user);

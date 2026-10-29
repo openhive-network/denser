@@ -65,7 +65,7 @@
     "other_signing_options_description": "ユーザー名を入力し、サインイン方法を選択してください",
     "go_back_button": "戻る",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "{{method}}とは？",
       "safe_storage": "安全な保管は、プライベートキーをパスワードで暗号化してこのブラウザに保存します。キーがお使いのデバイスの外に出ることはありません。",
       "keychain": "Hive Keychainは、キーを保存してトランザクションに代わりに署名するブラウザ拡張機能です。",
       "peakvault": "PeakVaultは、キーを保存してトランザクションに代わりに署名するブラウザ拡張機能のウォレットです。",
@@ -92,7 +92,8 @@
       "button_sign_auth": "署名されたtxを送信",
       "button_signin_unlocked": "署名されたtxでサインイン",
       "strict_mode": "制限付きの権限モード",
-      "strict_mode_tooltip": "有効にすると、アプリはアカウント自身の権限でのみキーの追加を許可します。他の権限でキーを追加する場合は、このモードを無効にしてください。",
+      "strict_mode_scope": "（安全な保管のみ）",
+      "strict_mode_tooltip": "安全な保管に保存するキーにのみ適用されます。有効にすると、安全な保管はアカウント自身の権限のキーのみを受け付けます。他のアカウントの権限で署名するキーを保存するには、このモードを無効にしてください。Keychain、PeakVault、HiveAuth などの他のサインイン方法には影響しません。",
       "key_update": "新しいキーを追加",
       "update_key_title": "安全な保管に新しいキーを追加",
       "update_key_description": "ユーザー{{username}}の新しい{{keyType}}キーを追加",
@@ -115,7 +116,8 @@
       "no_wif_key": "WIFキーがありません",
       "password_required": "パスワードは必須です",
       "wif_required": "WIFキーは必須です",
-      "posting_key_for_active": "ウォレットにはアクティブキーが必要です。投稿キーでは送金に署名できません"
+      "posting_key_for_active": "ウォレットにはアクティブキーが必要です。投稿キーでは送金に署名できません",
+      "active_key_for_posting": "このキーには投稿権限がありません。ブログへのサインインには投稿キーが必要です"
     },
     "signin_with_keychain": "Hive Keychain拡張機能",
     "signin_with_wif": "WIFでサインイン（レガシー）",
@@ -128,12 +130,25 @@
     "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "この操作には投稿キーが必要です。キーを入力し、安全な保管に保存してください。",
     "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "この操作にはアクティブキーが必要です。キーを入力し、安全な保管に保存してください。",
     "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "この操作にはオーナーキーが必要です。キーを入力し、安全な保管に保存してください。",
-    "use_peakvault": "Peakvaultを使用",
-    "signin_with_peakvault": "Peakvault拡張機能",
+    "use_peakvault": "PeakVaultを使用",
+    "signin_with_peakvault": "PeakVault拡張機能",
     "extension_sign_in": {
       "keychain": "Hive Keychainでサインイン",
       "peakvault": "PeakVaultでサインイン",
       "or_safe_storage": "または安全なストレージを使用"
+    },
+    "sign_in_pending": "別のサインインが応答を待っています。ウォレット拡張機能で完了または拒否するか、キャンセルしてやり直してください。",
+    "sign_in_pending_generic": "別のサインインが応答を待っています。完了するか、キャンセルしてやり直してください。",
+    "cancel_pending_sign_in": "保留中のサインインをキャンセル",
+    "safe_storage_name": "安全な保管",
+    "signin_with_metamask": "MetaMask拡張機能",
+    "signin_with_google": "Googleアカウント",
+    "passkey_prompt": {
+      "title": "生体認証によるロック解除を有効にしますか？",
+      "description": "パスワードを入力する代わりに、指紋、Face ID、またはデバイスのPINでロックを解除できます。",
+      "enable": "有効にする",
+      "not_now": "今はしない",
+      "never_ask_again": "今後表示しない"
     },
     "passkey": {
       "method": "パスキー署名サービス",
@@ -171,11 +186,30 @@
     "password_form_title": "パスワードを入力してください",
     "store_key_label": "キーを保存",
     "store_password_label": "パスワードを保存",
-    "google_drive_password_placeholder": "Google ドライブのウォレットを解除するパスワード"
+    "google_drive_password_placeholder": "Google ドライブのウォレットを解除するパスワード",
+    "safe_storage_recovery_description": "@{{username}} のキーを保存している間に、別のタブが安全なストレージを変更しました。保存を完了するには、@{{username}} の安全なストレージのパスワードを入力してください。"
   },
   "broadcast_error": {
     "missing_owner_authority": "この操作にはオーナーキー（owner）が必要です。オーナーキーでログインして、もう一度お試しください。",
     "missing_active_authority": "この操作にはアクティブキー（active）が必要です。アクティブキーでログインして、もう一度お試しください。",
-    "missing_posting_authority": "この操作には投稿キー（posting）が必要です。投稿キーでログインして、もう一度お試しください。"
+    "missing_posting_authority": "この操作には投稿キー（posting）が必要です。投稿キーでログインして、もう一度お試しください。",
+    "safe_storage_missing_account": "このブラウザーの安全なストレージには、お使いのアカウントのキーがありません。もう一度ログインしてください。",
+    "not_enough_rc": "このトランザクションに必要なリソースクレジット（RC）が不足しています。RC が回復するまで待つか、HIVE をパワーアップしてください。",
+    "not_enough_rc_amounts": "現在の RC は {{current}} で、このトランザクションには {{needed}} RC が必要です。",
+    "keychain_no_message": "Hive Keychain はリクエストを完了できず、理由も返しませんでした。",
+    "superseded_key_write": "別のタブにより、@{{username}} の {{keyType}} キーの安全なストレージへの保存が中断されました。{{keyType}} キーをもう一度安全なストレージに追加してください。"
+  },
+  "request_error": {
+    "timeout": "サーバーが時間内に応答しませんでした。もう一度お試しください。"
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "ウォレットが見つかりません",
+    "wallet_not_found_description": "Google DriveにHiveウォレットが見つかりませんでした。まずHive Bridgeでウォレットを作成してください。",
+    "key_not_found_title": "キーが見つかりません",
+    "key_not_found_description": "@{{username}}の{{keyType}}キーがGoogle Driveのウォレットに見つかりませんでした。Hive Bridgeでこのキーを追加するか、別のサインイン方法を使用してください。",
+    "account_not_found_title": "キーがありません",
+    "account_not_found_description": "Google Driveのウォレットに@{{username}}のキーがありません。Hive Bridgeでキーを追加するか、別のサインイン方法を使用してください。",
+    "bridge_info": "Hive Bridgeを使うと、HiveのキーをGoogle Driveに安全に保管できます。",
+    "go_to_bridge": "Hive Bridgeへ移動"
   }
 }

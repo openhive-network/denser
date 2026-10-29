@@ -1,0 +1,30 @@
+{
+	# Behind the host's sites-router: it forwards TLS untouched and prepends a
+	# PROXY header, so the client address is taken from that header.
+	servers :443 {
+		listener_wrappers {
+			proxy_protocol {
+				allow {$CADDY_PROXY_PROTOCOL_ALLOW}
+			}
+			tls
+		}
+	}
+	# The cache-origin listener's one client is varnish, which forwards the
+	# X-Forwarded-* this site set.
+	servers :8081 {
+		trusted_proxies static private_ranges
+	}
+}
+
+{$SITE_HOST} {
+	# Certificates by DNS-01: the name resolves to a LAN address the ACME
+	# servers can't reach.
+	tls {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+	}
+	encode zstd gzip
+
+	import Caddyfile.routes
+}
+
+import Caddyfile.cache-origin

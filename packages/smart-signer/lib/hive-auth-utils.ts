@@ -101,7 +101,8 @@ const broadcast = (
   };
 
   const handleSignSuccess = (message: any) => {
-    logger.info('Hive Auth: broadcast successful', message);
+    logger.info('Hive Auth: broadcast successful');
+    logger.debug('Hive Auth: broadcast response: %o', message);
     callbackFn({
       success: true
     });
@@ -109,7 +110,7 @@ const broadcast = (
   };
 
   const handleSignFailure = (error: { error: any; message: any }) => {
-    logger.warn('Hive Auth: broadcast failed', error);
+    logger.warn('Hive Auth: broadcast failed: %s', error.error || error.message);
     callbackFn({
       success: false,
       error: error.error || error.message
@@ -118,7 +119,7 @@ const broadcast = (
   };
 
   const handleSignError = (error: { error: any; message: any }) => {
-    logger.warn('Hive Auth: server returned an error during broadcast', error);
+    logger.warn('Hive Auth: server returned an error during broadcast: %s', error.error || error.message);
     callbackFn({
       success: false,
       error: error.error || error.message
@@ -177,7 +178,8 @@ const signChallenge = (
   };
 
   const handleChallengeSuccess = (e: { data: { challenge: any } }) => {
-    logger.info('Hive Auth: challenge success', e);
+    logger.info('Hive Auth: challenge success');
+    logger.debug('Hive Auth: challenge response: %o', e);
     callbackFn({
       result: e.data.challenge,
       success: true
@@ -333,7 +335,7 @@ const login = async (
     auth.key = key;
     auth.expire = expire;
 
-    logger.info('Hive Auth: user has approved the auth request', { challengeResponse, message, auth });
+    logger.info('Hive Auth: user has approved the auth request');
     callbackFn({
       success: true,
       hiveAuthData: {

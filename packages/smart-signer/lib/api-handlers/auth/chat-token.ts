@@ -41,7 +41,7 @@ export const getChatToken: NextApiHandler<User> = async (req, res) => {
 
 
   let chatAuthToken = '';
-  if (siteConfig.openhiveChatIframeIntegrationEnable) {
+  if (siteConfig.chatProvider === 'rocketchat' && siteConfig.openhiveChatIframeIntegrationEnable) {
     const result = await getChatAuthToken(user.username);
     if (result.success) {
       chatAuthToken = result.data.authToken;

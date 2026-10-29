@@ -8,8 +8,8 @@ import { KeyType, LoginType } from '@smart-signer/types/common';
  * posting key must be known already (`rememberPasskeyBinding`, as a graduation leaves them); the
  * signer signs the login challenge in its popup. Rejects with the signer's or the login's error.
  */
-export function usePasskeySignIn(authenticateOnBackend: boolean, strict: boolean) {
-  const { signAuth, submitAuth } = useProcessAuth(authenticateOnBackend, strict);
+export function usePasskeySignIn(authenticateOnBackend: boolean) {
+  const { signAuth, submitAuth } = useProcessAuth(authenticateOnBackend);
   const [, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
 
   return useCallback(

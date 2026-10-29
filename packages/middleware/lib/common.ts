@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { setLoginChallengeCookies } from '@hive/smart-signer/lib/middleware-challenge-cookies';
 import { logPageVisit } from './page-visit-logger';
 import { buildCsp, generateNonce, NONCE_HEADER, SECURITY_HEADERS, type CspConfig } from './csp';
+import { isPublicCacheableRequest, publicCacheControl, type PublicCacheConfig } from './public-cache';
 
 /**
  * Configuration options for the common middleware
@@ -22,6 +22,26 @@ export interface MiddlewareConfig {
    * If provided, a CSP header with a fresh script nonce will be set on all responses
    */
   csp?: CspConfig;
+
+  /**
+   * If provided, pages requested without personalizing cookies are sent with a public
+   * `Cache-Control` (see `isPublicCacheableRequest`). The app must also install
+   * `installPublicCacheGuard`, which takes it back for a response other than a cookie-less 200.
+   */
+  publicCache?: PublicCacheConfig;
+}
+
+/** `isPublicCacheableRequest` for a request the middleware sees, its path taken without the base path. */
+function isPublicCacheable(request: NextRequest, basePath: string): boolean {
+  const { pathname, searchParams } = request.nextUrl;
+  const pathInApp = basePath && pathname.startsWith(`${basePath}/`) ? pathname.slice(basePath.length) : pathname;
+  return isPublicCacheableRequest({
+    method: request.method,
+    pathname: pathInApp,
+    searchParams,
+    headers: request.headers,
+    cookieNames: request.cookies.getAll().map(({ name }) => name)
+  });
 }
 
 /**
@@ -36,7 +56,7 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
     // Serve a configured route at the root path without a client-visible redirect.
     // A rewrite (vs a 302) keeps the URL at / and returns the target route's SSR
     // response directly, saving the extra client→origin round-trip. The rewritten
-    // request still flows through the header/cookie/logging logic below, so / is
+    // request still flows through the header/logging logic below, so / is
     // treated like any other content page.
     const isRootPath =
       pathname === '/' || pathname === `${basePath}` || pathname === `${basePath}/`;
@@ -65,23 +85,8 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
       }
     }
 
-    setLoginChallengeCookies(request, res);
-
-    // Generate session_uid for browser tracking (persists across login/logout)
-    if (!request.cookies.has('session_uid')) {
-      try {
-        res.cookies.set({
-          name: 'session_uid',
-          value: crypto.randomUUID(),
-          path: '/',
-          sameSite: 'lax',
-          secure: process.env.NODE_ENV === 'production',
-          httpOnly: true,
-          maxAge: 400 * 24 * 60 * 60 // 400 days (browser maximum)
-        });
-      } catch (error) {
-        // Don't break middleware if UUID generation fails
-      }
+    if (config.publicCache && config.publicCache.sMaxAgeS > 0 && isPublicCacheable(request, basePath)) {
+      res.headers.set('Cache-Control', publicCacheControl(config.publicCache));
     }
 
     if (pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {

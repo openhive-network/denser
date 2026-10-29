@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { getTranslation } from '@/blog/i18n/server';
+import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
 import HiveAccountLayout from '@/blog/lib/hive-account-route';
 import { getPageNotFoundMetadata } from '@/blog/lib/not-found-metadata';
 import { extractHiveAccountFromParam } from '@/blog/utils/validate-links';
@@ -13,7 +14,8 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
   const title = t('page_titles.settings', { username });
 
   return {
-    title
+    title,
+    robots: NOINDEX_ROBOTS
   };
 }
 

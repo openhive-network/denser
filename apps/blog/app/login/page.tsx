@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getIronSession } from 'iron-session';
@@ -5,7 +6,10 @@ import { sessionOptions } from '@smart-signer/lib/session';
 import { buildOAuthReturnUrl } from '@smart-signer/lib/oauth/return-url';
 import { siteConfig } from '@ui/config/site';
 import type { IronSessionData } from '@smart-signer/types/common';
+import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
 import LoginForm from './login-form';
+
+export const metadata: Metadata = { robots: NOINDEX_ROBOTS };
 
 interface LoginPageProps {
   searchParams: Promise<{ oauth_return?: string | string[] }>;

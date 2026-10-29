@@ -1,19 +1,24 @@
 import { getLogger } from '@ui/lib/logging';
 import { Icons } from '@ui/components/icons';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-import { Drawer } from '@ui/components/drawer';
 import { useState, useRef, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useTranslation } from '@/blog/i18n/client';
 import { siteConfig } from '@ui/config/site';
 import { LoginType } from '@smart-signer/types/common';
-import { Link } from '@hive/ui';
-import { Button } from '@ui/components/button';
 import { inIframe } from '@smart-signer/lib/utils';
-import clsx from 'clsx';
 import { useGetChatAuthToken } from '@smart-signer/lib/auth/use-chat-token';
+import { useChatTokenRequest } from '@/blog/components/hooks/use-chat-token-request';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { isEligibleForChat } from '@/blog/lib/chat-eligibility';
+import { CHAT_BUTTON_FOCUS_RING } from '@/blog/components/chat-button-focus-ring';
 
 const logger = getLogger('app');
+
+// A chunk of its own: only a user eligible for chat, with an account on it, gets the drawer
+const ChatDrawer = dynamic(() => import('@/blog/components/chat-drawer').then((mod) => mod.ChatDrawer), {
+  ssr: false
+});
 
 /**
  * Login to Rocket Chat via iframe using postMessage.
@@ -86,10 +91,8 @@ const RocketChatWidget = () => {
   // Use layout=embedded to prevent OAuth redirect and enable postMessage login
   const iframeSrc = `${siteConfig.openhiveChatUri}/channel/general?layout=embedded`;
   const { t } = useTranslation('common_blog');
-  const chatLabel = t('chat_widget.chat');
   const { user } = useUserClient();
   const { loginType, chatAuthToken, oauthConsent } = user;
-  const [init, setInit] = useState(true);
   const [badgeContent, setBadgeContent] = useState(0);
   // Enable button when we have chatAuthToken - user can open drawer to trigger iframe load
   const [disabled, setDisabled] = useState(!chatAuthToken);
@@ -160,9 +163,15 @@ const RocketChatWidget = () => {
     }
   };
 
-  const removeIframeListener = () => {
-    window.removeEventListener('message', onMessageReceivedFromIframe);
-  };
+  // The window listener is added once; it reads the handler of the latest render
+  const onMessageRef = useRef(onMessageReceivedFromIframe);
+  onMessageRef.current = onMessageReceivedFromIframe;
+
+  useEffect(() => {
+    const listener = (event: MessageEvent) => onMessageRef.current(event);
+    window.addEventListener('message', listener);
+    return () => window.removeEventListener('message', listener);
+  }, []);
 
   // Enable button when chatAuthToken becomes available
   useEffect(() => {
@@ -172,41 +181,38 @@ const RocketChatWidget = () => {
     }
   }, [chatAuthToken]);
 
+  // Signing out unmounts the iframe; the next one has to report it is ready again
   useEffect(() => {
-    const addIframeListener = () => {
-      window.addEventListener('message', onMessageReceivedFromIframe);
-    };
+    if (!user.isLoggedIn) {
+      setIsIframeLoaded(false);
+    }
+  }, [user.isLoggedIn]);
 
-    logger.info('RocketChatWidget useEffect: init=%s, chatAuthToken=%s, isIframeLoaded=%s, isLoggedIn=%s',
-      init, !!chatAuthToken, isIframeLoaded, user.isLoggedIn);
+  useEffect(() => {
+    logger.info('RocketChatWidget useEffect: chatAuthToken=%s, isIframeLoaded=%s, isLoggedIn=%s',
+      !!chatAuthToken, isIframeLoaded, user.isLoggedIn);
 
-    // `init` is true when component operates on initial, default
-    // values.
-    if (!init) {
-      if (chatAuthToken) {
-        logger.info('RocketChatWidget: have chatAuthToken, setting loggedIn=true');
-        setLoggedIn(true);
-        if (isIframeLoaded) {
-          logger.info('RocketChatWidget: iframe loaded, calling chatLogin');
-          chatLogin({ chatAuthToken, loginType }, iframeRef);
-        } else {
-          logger.info('RocketChatWidget: waiting for iframe to load');
-        }
+    if (chatAuthToken) {
+      logger.info('RocketChatWidget: have chatAuthToken, setting loggedIn=true');
+      setLoggedIn(true);
+      if (isIframeLoaded) {
+        logger.info('RocketChatWidget: iframe loaded, calling chatLogin');
+        chatLogin({ chatAuthToken, loginType }, iframeRef);
       } else {
-        logger.info('RocketChatWidget: no chatAuthToken');
-        if (isIframeLoaded && user.isLoggedIn) {
-          logger.info('RocketChatWidget: calling getChatAuthToken API');
-          getChatAuthToken.mutateAsync().catch(logger.error);
-          // chatLogout(iframeRef);
-        }
+        logger.info('RocketChatWidget: waiting for iframe to load');
       }
     } else {
-      addIframeListener();
-      setInit(false);
+      logger.info('RocketChatWidget: no chatAuthToken');
     }
+  }, [chatAuthToken, isIframeLoaded, loginType, user.isLoggedIn]);
 
-    return removeIframeListener;
-  }, [chatAuthToken, init, isIframeLoaded, loginType]);
+  useChatTokenRequest(
+    { isIframeLoaded, isLoggedIn: user.isLoggedIn, username: user.username, chatAuthToken },
+    () => {
+      logger.info('RocketChatWidget: calling getChatAuthToken API');
+      getChatAuthToken.mutateAsync().catch(logger.error);
+    }
+  );
 
   const onIframeLoad = () => {
     logger.info('Chat iframe has been loaded');
@@ -215,10 +221,10 @@ const RocketChatWidget = () => {
   const hasRCAccess = loggedIn || oauthConsent[siteConfig.openhiveChatClientId];
   const meetsCriteria =
     !inIframe() &&
-    user.isLoggedIn &&
-    (user.strict || siteConfig.openhiveChatAllowNonStrictLogin) &&
-    (siteConfig.openhiveChatAllowedUsers.length === 0 ||
-      siteConfig.openhiveChatAllowedUsers.includes(user.username)) &&
+    isEligibleForChat(user, {
+      allowNonStrictLogin: siteConfig.openhiveChatAllowNonStrictLogin,
+      allowedUsers: siteConfig.openhiveChatAllowedUsers
+    }) &&
     siteConfig.openhiveChatIframeVisible;
 
   if (!meetsCriteria) {
@@ -229,12 +235,13 @@ const RocketChatWidget = () => {
   // openhive.chat where they can sign up via the OAuth flow.
   if (!hasRCAccess) {
     return (
-      <div className="group relative z-40 inline-flex w-fit cursor-pointer items-center justify-center">
+      <div className="relative z-40">
         <TooltipProvider>
           <Tooltip>
             <div className="fixed bottom-10 right-10 block">
               <TooltipTrigger
                 type="button"
+                className={CHAT_BUTTON_FOCUS_RING}
                 aria-label={t('chat_widget.set_up_account')}
                 onClick={() =>
                   window.open(siteConfig.openhiveChatUri, '_blank', 'noopener,noreferrer')
@@ -251,76 +258,16 @@ const RocketChatWidget = () => {
   }
 
   return (
-    <div>
-      <Drawer open={open} side="right" setOpen={setOpen}>
-        {/* Rocket Chat iframe */}
-        <iframe
-          id="chat-iframe"
-          src={iframeSrc}
-          style={{
-            width: '100%',
-            height: '100%',
-            border: 'none',
-            display: 'block'
-          }}
-          title={chatLabel}
-          ref={iframeRef}
-          onLoad={onIframeLoad}
-        />
-
-        <div className="flex">
-          {/* Button closing drawer */}
-          <Button
-            className="flex-1 hover:text-red-600"
-            variant="outline"
-            size="sm"
-            title={t('chat_widget.close_widget')}
-            aria-label={t('chat_widget.close_widget')}
-            onClick={() => setOpen(false)}
-          >
-            <Icons.close />
-          </Button>
-
-          {/* Link to open chat app in new tab */}
-          <Link
-            href={iframeSrc}
-            className="px-4 hover:cursor-pointer hover:text-red-600"
-            aria-label={t('chat_widget.open_app')}
-            title={t('chat_widget.open_app')}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Icons.externalLink />
-          </Link>
-        </div>
-      </Drawer>
-
-      {/* Drawer toggler */}
-      <div className="group relative z-40 inline-flex w-fit cursor-pointer items-center justify-center">
-        <TooltipProvider>
-          <Tooltip>
-            <div className="fixed bottom-10 right-10 block">
-              <TooltipTrigger
-                type="button"
-                aria-label={t('chat_widget.open_widget')}
-                onClick={() => setOpen(!open)}
-                disabled={disabled}
-              >
-                <Icons.messageSquareText className={clsx('h-12 w-12', { 'opacity-25': disabled })} />
-              </TooltipTrigger>
-
-              {/* Badge showing unread messages */}
-              {loggedIn && badgeContent !== 0 ? (
-                <div className="absolute bottom-auto left-auto right-0 top-0.5 z-50 inline-block -translate-y-1/2 translate-x-2/4 rotate-0 skew-x-0 skew-y-0 scale-x-100 scale-y-100 whitespace-nowrap rounded-full bg-red-600 px-1.5 py-1 text-center align-baseline text-xs font-bold leading-none text-white">
-                  {badgeContent}
-                </div>
-              ) : null}
-            </div>
-            <TooltipContent>{chatLabel}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-    </div>
+    <ChatDrawer
+      open={open}
+      setOpen={setOpen}
+      iframeSrc={iframeSrc}
+      iframeRef={iframeRef}
+      onIframeLoad={onIframeLoad}
+      appUrl={iframeSrc}
+      disabled={disabled}
+      badgeContent={loggedIn ? badgeContent : 0}
+    />
   );
 };
 

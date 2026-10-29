@@ -10,6 +10,9 @@ import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authorit
 import { createExternalWallet, IExternalWallet, IExternalWalletContent } from '@hiveio/wax-signers-external';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
+import type { GoogleDriveErrorDialogProps } from '@smart-signer/components/google-drive-error-dialog';
+import { missingKeyDialogProps } from '@smart-signer/lib/signer/google-drive-missing-key';
+import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
 import {
   GOOGLE_OAUTH_CODE_KEY,
   GOOGLE_OAUTH_ERROR_KEY,
@@ -27,6 +30,12 @@ import {
   readCredential
 } from '@smart-signer/lib/signer/credential-storage';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
+import {
+  GOOGLE_DRIVE_AUTH_PATH,
+  GOOGLE_DRIVE_REFRESH_PATH,
+  googleDriveApiUrl,
+  googleDriveCallbackUri
+} from '@smart-signer/lib/google-drive-urls';
 import { LoginType } from '@smart-signer/types/common';
 
 const logger = getLogger('app');
@@ -60,6 +69,19 @@ function clearStoredEncryptionKeyWif(username: string): void {
   window.localStorage.removeItem(googleEncryptionKeyWifCredentialKey(username).key);
 }
 /* eslint-enable no-restricted-properties */
+
+/**
+ * Shows the dialog pointing the user to Hive Bridge and resolves, once it is closed (by Cancel, ✕
+ * or going to Hive Bridge), with the error that ends the sign-in.
+ */
+async function waitForGoogleDriveErrorDialog(props: GoogleDriveErrorDialogProps): Promise<GoogleDriveSignInCancelledError> {
+  const { GoogleDriveErrorDialogPromise } = await import('@smart-signer/components/google-drive-error-dialog');
+  const closedBy = await GoogleDriveErrorDialogPromise({ isOpen: true, ...props }).then(
+    () => 'dialog',
+    (reason: unknown) => String(reason)
+  );
+  return new GoogleDriveSignInCancelledError(`${props.errorType} (${closedBy})`);
+}
 
 declare global {
   interface Window {
@@ -103,7 +125,7 @@ export class SignerGoogleDrive extends Signer {
   private currentKeyType?: keyof THiveRoles;
 
   private getAccessTokenForRefreshToken = async (refreshToken: string): Promise<string> => {
-    const response = await fetch(`${window.location.origin}/api/google-drive/refresh`, {
+    const response = await fetch(googleDriveApiUrl(window.location.origin, GOOGLE_DRIVE_REFRESH_PATH), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refreshToken }),
@@ -197,7 +219,7 @@ export class SignerGoogleDrive extends Signer {
     const returnUrl = window.location.href;
     // Use URL-safe base64 encoding and include nonce for CSRF protection
     const state = encodeUrlSafeBase64(JSON.stringify({ returnUrl, nonce }));
-    const redirectUri = `${window.location.origin}/api/google-drive/callback`;
+    const redirectUri = googleDriveCallbackUri(window.location.origin);
 
     const tokenClient = window.google.accounts.oauth2.initCodeClient({
       client_id: siteConfig.googleDrive.clientId,
@@ -261,10 +283,10 @@ export class SignerGoogleDrive extends Signer {
 
     // For redirect mode, include the redirect_uri that was used during authorization
     if (isRedirectMode) {
-      body.redirectUri = `${window.location.origin}/api/google-drive/callback`;
+      body.redirectUri = googleDriveCallbackUri(window.location.origin);
     }
 
-    const res = await fetch(`${window.location.origin}/api/google-drive/auth`, {
+    const res = await fetch(googleDriveApiUrl(window.location.origin, GOOGLE_DRIVE_AUTH_PATH), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -353,14 +375,7 @@ export class SignerGoogleDrive extends Signer {
           () => this.getAccessToken(),
           async (missingStorageFile) => {
             if (missingStorageFile) {
-              // Show error dialog with link to Hive Bridge
-              const { GoogleDriveErrorDialogPromise } = await import('@smart-signer/components/google-drive-error-dialog');
-              await GoogleDriveErrorDialogPromise({
-                isOpen: true,
-                errorType: 'wallet_not_found'
-              });
-              // Dialog will reject if user closes it, but if we somehow get here, still throw
-              throw new Error('Google Drive wallet file not found');
+              throw await waitForGoogleDriveErrorDialog({ errorType: 'wallet_not_found' });
             }
 
             const credentials = await this.getEncryptionCredentials();
@@ -381,21 +396,22 @@ export class SignerGoogleDrive extends Signer {
         this.rawWallet = wallet;
 
         // Load the wallet for the specified key type
-        const provider = await wallet.loadForHiveKey(username, keyType);
+        let provider: IExternalWalletContent;
+        try {
+          provider = await wallet.loadForHiveKey(username, keyType);
+        } catch (loadError) {
+          const dialogProps = missingKeyDialogProps(loadError, username, keyType);
+          if (!dialogProps) throw loadError;
+          logger.debug('Google Drive wallet lacks a key: %s', loadError instanceof Error ? loadError.message : String(loadError));
+          // The password decrypted the wallet, so it is kept: adding the key in Hive Bridge needs no new one
+          if (usedPassword) this.cacheEncryptionKeyWif(wallet);
+          throw await waitForGoogleDriveErrorDialog(dialogProps);
+        }
 
         logger.info('Obtained Google Drive wallet for user %s with key type %s', username, keyType);
 
         // If we used a password (not cached WIF), extract and cache the WIF now
-        if (usedPassword) {
-          try {
-            const wif = wallet.getEncryptionKeyWif();
-            setStoredEncryptionKeyWif(this.username, wif);
-            logger.info('Cached encryption key WIF for Google Drive wallet');
-          } catch (wifError) {
-            logger.error('Failed to extract/cache encryption key WIF: %s', wifError instanceof Error ? wifError.message : String(wifError));
-            // Non-fatal: wallet is already loaded, just won't have cached WIF next time
-          }
-        }
+        if (usedPassword) this.cacheEncryptionKeyWif(wallet);
 
         this.currentKeyType = keyType;
 
@@ -408,7 +424,7 @@ export class SignerGoogleDrive extends Signer {
       } catch (error) {
         // If we used cached WIF and it failed, it might be from a different Google account
         // Clear WIF and retry with password prompt
-        if (usedCachedWif && !usedPassword) {
+        if (usedCachedWif && !usedPassword && !(error instanceof GoogleDriveSignInCancelledError)) {
           logger.info('Wallet load failed with cached WIF, clearing and retrying with password prompt');
           clearStoredEncryptionKeyWif(this.username);
           this.passwordPromise = undefined;
@@ -419,33 +435,61 @@ export class SignerGoogleDrive extends Signer {
             resolve(provider);
             return;
           } catch (retryError) {
-            logger.error('Error in getWallet retry: %s', retryError instanceof Error ? retryError.message : String(retryError));
+            if (!(retryError instanceof GoogleDriveSignInCancelledError)) {
+              logger.error('Error in getWallet retry: %s', retryError instanceof Error ? retryError.message : String(retryError));
+            }
             reject(retryError);
             return;
           }
         }
 
-        logger.error('Error in getWallet: %s', error instanceof Error ? error.message : String(error));
+        if (!(error instanceof GoogleDriveSignInCancelledError)) {
+          logger.error('Error in getWallet: %s', error instanceof Error ? error.message : String(error));
+        }
         reject(error);
       }
     });
 
-    return this.walletInstance;
+    // A failed load is not kept, so the next operation tries again (e.g. after adding the key in Hive Bridge)
+    const walletInstance = this.walletInstance;
+    walletInstance.catch(() => {
+      if (this.walletInstance === walletInstance) this.walletInstance = undefined;
+    });
+
+    return walletInstance;
+  }
+
+  private cacheEncryptionKeyWif(wallet: IExternalWallet): void {
+    try {
+      const wif = wallet.getEncryptionKeyWif();
+      setStoredEncryptionKeyWif(this.username, wif);
+      logger.info('Cached encryption key WIF for Google Drive wallet');
+    } catch (wifError) {
+      logger.error('Failed to extract/cache encryption key WIF: %s', wifError instanceof Error ? wifError.message : String(wifError));
+      // Non-fatal: wallet is already loaded, just won't have cached WIF next time
+    }
+  }
+
+  /**
+   * Gets the wallet, signing in to Google again (`forceLogin`) if that fails, unless the user
+   * cancelled the sign-in: then rejects with `GoogleDriveSignInCancelledError`.
+   */
+  private async getWalletOrSignInAgain(username: string, keyType: keyof THiveRoles): Promise<IExternalWalletContent> {
+    try {
+      return await this.getWallet(username, keyType);
+    } catch (error) {
+      if (error instanceof GoogleDriveSignInCancelledError) throw error;
+      logger.error('Error obtaining Google Drive wallet: %s Retrying with forceLogin=true', error instanceof Error ? error.message : String(error));
+
+      return this.getWallet(username, keyType, true);
+    }
   }
 
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
-    logger.info('in SignerGoogleDrive.signChallenge %o', { message, username, keyType });
+    logger.debug('in SignerGoogleDrive.signChallenge %o', { message, username, keyType });
     try {
-      let provider: IExternalWalletContent;
-
-      try {
-        provider = await this.getWallet(username, keyType);
-      } catch (error) {
-        logger.error('Error obtaining Google Drive wallet: %s Retrying with forceLogin=true', error instanceof Error ? error.message : String(error));
-
-        provider = await this.getWallet(username, keyType, true);
-      }
+      const provider = await this.getWalletOrSignInAgain(username, keyType);
 
       let pk: string | null = null;
       for(const key of provider.enumStoredHiveKeys(username, keyType)) {
@@ -453,16 +497,7 @@ export class SignerGoogleDrive extends Signer {
         break;
       }
       if (!pk) {
-        // Show error dialog with link to Hive Bridge
-        const { GoogleDriveErrorDialogPromise } = await import('@smart-signer/components/google-drive-error-dialog');
-        await GoogleDriveErrorDialogPromise({
-          isOpen: true,
-          errorType: 'key_not_found',
-          username,
-          keyType
-        });
-        // Dialog will reject if user closes it, but if we somehow get here, still throw
-        throw new Error(`No stored Hive ${keyType} key found for user ${username} in Google Drive wallet`);
+        throw await waitForGoogleDriveErrorDialog({ errorType: 'key_not_found', username, keyType });
       }
 
       if (typeof message !== "string")
@@ -473,7 +508,7 @@ export class SignerGoogleDrive extends Signer {
 
       const signature = await provider.encryptData(message, pk);
 
-      logger.info('google', { signature });
+      logger.debug('google signature: %s', signature);
       return signature;
     } catch (error) {
       throw error;
@@ -484,23 +519,17 @@ export class SignerGoogleDrive extends Signer {
     try {
       const authTx = (await getChain()).createTransactionFromProto(transaction);
 
-      let provider: IExternalWalletContent;
-
-      try {
-        provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType);
-      } catch (error) {
-        logger.error('Error obtaining Google Drive wallet: %s Retrying with forceLogin=true', error instanceof Error ? error.message : String(error));
-
-        provider = await this.getWallet(this.username, requiredKeyType ?? this.keyType, true);
-      }
+      const provider = await this.getWalletOrSignInAgain(this.username, requiredKeyType ?? this.keyType);
 
       await provider.signTransaction(authTx);
 
       await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.HF_26, this.keyType, 'Google Drive');
-      logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
+      logger.debug('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
-      logger.error('SignerGoogleDrive.signTransaction error: %s', error instanceof Error ? error.message : String(error));
+      if (!(error instanceof GoogleDriveSignInCancelledError)) {
+        logger.error('SignerGoogleDrive.signTransaction error: %s', error instanceof Error ? error.message : String(error));
+      }
       throw error;
     }
   }

@@ -88,6 +88,8 @@ export interface Entry {
   //added only when using optimistic update, not backend property
   _temporary?: boolean;
   _optimistic?: boolean;
+  /** An optimistic entry whose transaction a block included; Hivemind has yet to index it */
+  _confirmed?: boolean;
 }
 
 export interface JsonMetadata {
@@ -1237,6 +1239,51 @@ export interface BalanceApiAccountDelegations {
   incoming_delegations: BalanceApiIncomingDelegation[];
 }
 
+/**
+ * What the DHF has paid one proposal so far, as balance-api's proposal payments list it. A proposal
+ * never paid (or that does not exist) has a zero `total_paid`, `payment_count` 0 and null
+ * `receiver`, payment blocks and times.
+ */
+export interface BalanceApiProposalPaymentTotals {
+  proposal_id: number;
+  receiver: string | null;
+  /** HBD, `amount` in satoshis */
+  total_paid: NaiAsset;
+  payment_count: number;
+  first_payment_block: number | null;
+  first_payment_time: string | null;
+  last_payment_block: number | null;
+  last_payment_time: string | null;
+}
+
+/** Paging and observer of a hivemind REST post list: `page-size` posts after `start-author`/`start-permlink`. */
+export interface HivemindRestPostPage {
+  'page-size'?: number;
+  'start-author'?: string;
+  'start-permlink'?: string;
+  observer?: string;
+}
+
+/** Paging of a hivemind REST follower / following list: `page-size` accounts from `start` on. */
+export interface HivemindRestFollowPage {
+  'account-name': string;
+  type?: string;
+  'page-size'?: number;
+  start?: string;
+}
+
+/** A post's vote as hivemind REST lists it: database_api's vote, `weight` and `rshares` as decimal strings. */
+export interface HivemindRestPostVote {
+  voter: string;
+  author: string;
+  permlink: string;
+  weight: string;
+  rshares: string;
+  vote_percent: number;
+  last_update: string;
+  num_changes: number;
+}
+
 export type ExtendedRestApi = {
   'hivesense-api': {
     params: undefined;
@@ -1288,6 +1335,86 @@ Together with the author name, it uniquely identifies the post.
       params: GetOperationsByAccountParams;
       result: IGetOperationsByAccountResponse;
     };
+    rankedPosts: {
+      params: HivemindRestPostPage & { sort: string; tag?: string };
+      result: Entry[] | null;
+    };
+    post: {
+      params: { author: string; permlink: string; observer?: string };
+      result: Entry | null;
+    };
+    postVotes: {
+      params: { author: string; permlink: string; 'page-size'?: number; 'start-voter'?: string };
+      result: HivemindRestPostVote[];
+    };
+    postDiscussion: {
+      params: { author: string; permlink: string; observer?: string };
+      result: Record<string, Entry> | null;
+    };
+    postHeader: {
+      params: { author: string; permlink: string };
+      result: IGetPostHeader;
+    };
+    postRebloggedBy: {
+      params: { author: string; permlink: string };
+      result: string[];
+    };
+    accountPosts: {
+      params: HivemindRestPostPage & { 'account-name': string; sort: string; community?: string };
+      result: Entry[] | null;
+    };
+    accountProfile: {
+      params: { 'account-name': string; observer?: string };
+      result: IProfile | null;
+    };
+    accountFollowers: {
+      params: HivemindRestFollowPage;
+      result: IFollow[];
+    };
+    accountFollowing: {
+      params: HivemindRestFollowPage;
+      result: IFollow[];
+    };
+    accountNotifications: {
+      params: { 'account-name': string; 'page-size'?: number; 'last-id'?: number };
+      result: IAccountNotification[] | null;
+    };
+    accountUnreadNotifications: {
+      params: { 'account-name': string; 'min-score'?: number };
+      result: IUnreadNotifications | null;
+    };
+    accountFollowList: {
+      params: { 'account-name': string; type: FollowListType };
+      result: IFollowList[];
+    };
+    accountFollowsAnyLists: {
+      params: { 'account-name': string };
+      result: boolean;
+    };
+    accountSubscriptions: {
+      params: { 'account-name': string };
+      result: string[][] | null;
+    };
+    communities: {
+      params: { sort: string; query?: string; observer?: string; 'page-size'?: number; last?: string };
+      result: Community[] | null;
+    };
+    community: {
+      params: { name: string; observer?: string };
+      result: Community | null;
+    };
+    communityRoles: {
+      params: { name: string; 'page-size'?: number; last?: string };
+      result: string[][] | null;
+    };
+    communitySubscribers: {
+      params: { name: string; 'page-size'?: number; last?: string };
+      result: string[][] | null;
+    };
+    searchPosts: {
+      params: HivemindRestPostPage & { q: string; sort?: string; author?: string };
+      result: Entry[];
+    };
   };
   'hafah-api': {
     'operation-types': {
@@ -1299,6 +1426,12 @@ Together with the author name, it uniquely identifies the post.
     accountDelegations: {
       params: { 'account-name': string };
       result: BalanceApiAccountDelegations;
+    };
+    proposalsPayments: {
+      /** Comma-separated proposal ids, at most 1000 */
+      params: { 'proposal-ids': string };
+      /** One entry per distinct requested id, in ascending id order */
+      result: BalanceApiProposalPaymentTotals[];
     };
   };
 };

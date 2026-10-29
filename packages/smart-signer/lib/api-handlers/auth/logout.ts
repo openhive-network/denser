@@ -1,19 +1,22 @@
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
 import { defaultUser } from '@smart-signer/lib/auth/default-user';
-import { User } from '@smart-signer/types/common';
-import { IronSessionData } from '@smart-signer/types/common';
+import type { IronSessionData } from '@smart-signer/types/common';
 import { checkCsrfHeader } from '@smart-signer/lib/csrf-protection';
 import { getLogger } from '@ui/lib/logging';
 import { oidc } from '@smart-signer/lib/oidc';
 import { logLogoutEvent, getClientIpFromApiRequest } from '@smart-signer/lib/event-logging';
 import { clearAccountInfoCookie } from '@smart-signer/lib/account-info-cookie';
+import { endAllChatSessions } from '@smart-signer/lib/auth/chat-session';
+import { chatSessionEnder } from '@smart-signer/lib/auth/chat-session-ender';
+import type { SignOutAnswer } from '@smart-signer/lib/auth/chat-sign-out';
 
 const logger = getLogger('app');
 
-export const logoutUser: NextApiHandler<User> = async (req, res) => {
+export const logoutUser: NextApiHandler<SignOutAnswer> = async (req, res) => {
   checkCsrfHeader(req);
+  let chatSessionsEnded: Promise<boolean> = Promise.resolve(false);
 
   if (oidc) {
     try {
@@ -42,6 +45,7 @@ export const logoutUser: NextApiHandler<User> = async (req, res) => {
       const uid = req.cookies['session_uid'] || 'n/a';
       logLogoutEvent(getClientIpFromApiRequest(req), username, loginType, uid);
 
+      chatSessionsEnded = endAllChatSessions(session, chatSessionEnder());
       logger.info('Logout: destroying app session for user: %s', username);
       session.destroy();
     }
@@ -52,5 +56,6 @@ export const logoutUser: NextApiHandler<User> = async (req, res) => {
   // Mirrors iron-session destruction
   clearAccountInfoCookie(res);
 
-  res.json(defaultUser);
+  // The browser's chat client signs its own device out when this does not say the server did
+  res.json({ ...defaultUser, chatSessionsEnded: await chatSessionsEnded });
 };

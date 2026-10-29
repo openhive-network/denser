@@ -23,7 +23,7 @@ test('a missing key and a label left in English are reported in Polish; a signin
   });
 });
 
-test('elsewhere an English sentence is reported, a short label is not', () => {
+test('elsewhere an English sentence and a short label are both reported', () => {
   const es = getLeaves({
     login_form: {
       signin_with_hiveauth: 'HiveAuth',
@@ -31,5 +31,8 @@ test('elsewhere an English sentence is reported, a short label is not', () => {
       zod_error: { posting_key_for_active: "The wallet needs your active key; a posting key can't sign transfers" }
     }
   });
-  assert.deepEqual(compareLocale(reference, es, 'es').untranslated, ['login_form.zod_error.posting_key_for_active']);
+  assert.deepEqual(compareLocale(reference, es, 'es').untranslated, [
+    'login_form.use_peakvault',
+    'login_form.zod_error.posting_key_for_active'
+  ]);
 });

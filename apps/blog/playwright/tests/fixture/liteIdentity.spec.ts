@@ -10,7 +10,7 @@ import { PostPage } from '../support/pages/postPage';
  *                      shows the name without a reload, and its menu links the lite profile
  *   LITE-IDENTITY-02 – Forget (confirmed) removes the identity and the lite drafts; the next reply
  *                      asks for a name again
- *   LITE-NOTIF-06    – this node's `lite.get_info` lists no `lite.lookup_accounts`: `@ki` in the reply
+ *   LITE-NOTIF-07    – this node's `lite.get_info` lists no `lite.lookup_accounts`: `@ki` in the reply
  *                      editor offers nothing and asks the node nothing (liteNotifications.spec.ts has
  *                      the node with it)
  *
@@ -107,7 +107,7 @@ test.describe('Header indicator of the browser lite account (mocked gateway)', (
     await expect(page.getByRole('dialog')).toBeVisible();
   });
 
-  test('LITE-NOTIF-06: no @ completion in the reply editor on a node without lite.lookup_accounts', async ({ page }) => {
+  test('LITE-NOTIF-07: no @ completion in the reply editor on a node without lite.lookup_accounts', async ({ page }) => {
     const lookups: string[] = [];
     page.on('request', (request) => {
       if (request.postData()?.includes('"lite.lookup_accounts"')) lookups.push(request.url());

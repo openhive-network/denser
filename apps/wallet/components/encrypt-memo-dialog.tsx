@@ -27,7 +27,8 @@ const logger = getLogger('app');
 // themselves (see load-native-memo-signer.ts); the others use the WIF option.
 const NATIVE_SIGNER_ENCRYPT_LABEL_KEY: Partial<Record<LoginType, string>> = {
   [LoginType.keychain]: 'transfers_page.encrypt_memo_with_keychain',
-  [LoginType.peakvault]: 'transfers_page.encrypt_memo_with_peakvault'
+  [LoginType.peakvault]: 'transfers_page.encrypt_memo_with_peakvault',
+  [LoginType.metamask]: 'transfers_page.encrypt_memo_with_metamask'
 };
 
 interface EncryptMemoDialogProps {

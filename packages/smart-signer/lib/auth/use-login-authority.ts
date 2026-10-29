@@ -5,6 +5,7 @@ import { LoginType, type User } from '@smart-signer/types/common';
 import { getLoginAuthority, type LoginAuthority } from '@smart-signer/lib/auth/login-authority';
 import { SAFE_STORAGE_KEYS_CHANGED_EVENT, getSafeStorageKeyTypes } from '@smart-signer/lib/signer/safe-storage-keys';
 import { storedWifKeyTypes } from '@smart-signer/lib/signer/credential-storage';
+import { subscribeSafeStorageGeneration } from '@hive/common-hiveio-packages/safe-storage-generation-subscription';
 
 export interface StoredKeyTypes {
   /** The key types the session's signer holds keys of; undefined until read, and for other signers */
@@ -36,7 +37,12 @@ export function useStoredKeyTypes(user: User): StoredKeyTypes {
     if (!enabled) return;
     const refresh = () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY.safeStorageKeyTypes] });
     window.addEventListener(SAFE_STORAGE_KEYS_CHANGED_EVENT, refresh);
-    return () => window.removeEventListener(SAFE_STORAGE_KEYS_CHANGED_EVENT, refresh);
+    // Another tab, of this app or another one on this origin, wrote a key to safe storage
+    const unsubscribeOtherTabs = subscribeSafeStorageGeneration(refresh);
+    return () => {
+      window.removeEventListener(SAFE_STORAGE_KEYS_CHANGED_EVENT, refresh);
+      unsubscribeOtherTabs();
+    };
   }, [enabled, queryClient]);
 
   return { keyTypes: query.data, isPending: enabled && query.isPending };

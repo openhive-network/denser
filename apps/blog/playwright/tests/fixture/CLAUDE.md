@@ -44,15 +44,23 @@ apps/blog/
             └── generate-voted-variants.mjs                # fixture-dir post-processor
 ```
 
-Config uses three ports:
+Config uses five ports:
 
 - `:3000` — the blog app (standalone Next.js server), server-side feed cache
   off (`DENSER_FEED_CACHE_TTL_S=0`), and the API node's `lite.get_info` asked
   before every post read (`DENSER_LITE_PROBE_TTL_S=0`): a recording made against
   a lite-aware node (`litePost`) answers it, every other one does not
 - `:3001` — the same build again with the feed cache on and a TTL of a few
-  seconds; only `feedCache.spec.ts` uses it (`feedCacheBaseURL`)
+  seconds, and with the For You feed off (`FYP_API_URL` unset, which `:3000`
+  sets); `feedCache.spec.ts` uses it, and `forYouFeed.spec.ts` FYP-05
+  (`feedCacheBaseURL`)
+- `:3002` — the same build reading feeds, profiles, communities, search, post
+  discussions and follow lists from hivemind REST GETs (`HIVEMIND_REST_NODES`
+  naming `:8201`); `hivemindRest*.spec.ts` use it (`hivemindRestBaseURL`)
 - `:8200` — the fixture proxy (record → mainnet; replay → committed JSON)
+- `:8201` — the hivemind REST stub (`support/hivemindRestStub.ts`), started by
+  `hivemindRest*.spec.ts` (`support/hivemindRestSpec.ts`): it answers each REST path with the JSON-RPC call it
+  wraps, asked of the fixture proxy, so REST reads replay the same recordings
 
 ---
 
@@ -168,6 +176,8 @@ test('does the thing', async ({ page }) => {
   // ... assertions ...
 });
 ```
+
+A test ID in a title (`CMT-09:` or `CMT-09 —`) must be unique within the app: `scripts/check-playwright-test-ids.js`, in the static checks, fails on a duplicate. When a parallel landing takes your number first, renumber yours to the next free one in its prefix.
 
 For voting specs, prefer `postVotingContext.ts`:
 
@@ -554,6 +564,74 @@ whose posting and active authorities list the key's public key.
 
 ---
 
+## Recipe: sign in with a stubbed Google account
+
+The fixture app has no Google client ID, so its Google button is disabled. To
+enable it, `loginGoogleWalletNotFound.spec.ts` appends
+`window.__ENV.REACT_APP_GOOGLE_DRIVE_CLIENT_ID` to `__ENV.js` (the URL carries
+a `?v=` query, so route `**/__ENV.js?*`). It also stubs `window.google` in an
+init script, with a `requestCode` that answers at once and counts the consent
+requests, and blanks the GSI script (`accounts.google.com`). It answers
+`/api/google-drive/auth` with an access token and the Drive API
+(`www.googleapis.com`) with `{ files: [] }`, i.e. no wallet. The build's CSP
+leaves Google out, so the spec sets `bypassCSP: true`. None of it reaches the
+Hive API, so the spec reuses the `accountSwitchLogout` recording. It is tagged
+@basepath, and GOOGLE-WNF-03 checks the token exchange is POSTed under
+FIXTURE_BASE_PATH (the route glob matches with or without it).
+
+---
+
+## Recipe: the chat widget of a chat provider
+
+The chat provider and its URLs are client settings, so `chatWidget.spec.ts`
+appends `REACT_APP_CHAT_PROVIDER` and the Matrix or Rocket.Chat URLs to
+`__ENV.js` (`configureChat` in `support/chatSettings.ts`), as the Google recipe
+above does, and sets `bypassCSP: true`: the fixture build's CSP frames neither
+chat origin. Matrix's drawer shows denser's native client unless
+`MATRIX_CHAT_CLIENT=element`, which `chatWidget.spec.ts` sets for Element.
+`chatNative.spec.ts` covers the native client: `support/matrixHomeserverStub.ts`
+answers the homeserver's client API with `page.route` (login, a first sync of
+`#general` and `#lobby`, long polls answering what a test queues within
+500 ms, `/messages`, sends, read receipts, logout) and records every request. It answers every chat origin
+with `page.route`. For Matrix, Element's origin serves the real session page
+from `stack/matrix/chat-origin/` (the whole checkout is mounted on the dev
+stack too) and a `config.json`; the homeserver's SSO redirect answers with a
+page that sends the frame on to `Element/?loginToken=…`. A fulfilled 302 does
+not navigate an iframe (it ends at `chrome-error://`). A
+`context.addInitScript` limited to the session page's URL plays the session
+Element holds (`mx_user_id`), and `frame.evaluate` reads the chat origin's
+`localStorage` afterwards: the frame's storage is partitioned under
+`localhost`, so a separate page on the chat origin would not see it.
+denser's theme follows the system's (`defaultTheme="system"`), so
+`page.emulateMedia({ colorScheme })` sets it, before the page loads or while
+the drawer is open, and the widget's session URL follows with `theme=`.
+The widget warms Element up in the closed drawer (`MATRIX_CHAT_PRELOAD`,
+default `idle`: a few seconds after load, or on hovering, focusing or pressing
+the chat button), so `#chat-iframe` can exist before any click. A check that it
+has *not* loaded waits past the idle warm-up's latest start
+(`PAST_IDLE_WARM_UP_MS`); keep that in step with `WARM_UP_DELAY_MS` in
+`matrix-chat-widget.tsx` and the idle timeout of `useIdleAfterLoad`.
+
+---
+
+## Recipe: the For You feed (haf_fyp)
+
+The main server sets `REACT_APP_FYP_API_URL` to `FIXTURE_FYP_API_URL`
+(`support/fypApiStub.ts`), an origin no network answers; only the browser reads
+the feed, so `serveFypFeed(page, pages)` answers it with `page.route`, built
+from recorded `bridge.get_ranked_posts` posts (`recordedRankedPosts` +
+`asFypPage`), or fails it with a status. The feed takes no observer, so the app
+reads the reader's mute and blacklist lists itself (`bridge.get_follow_list`
+for `muted`, `blacklisted`, `follow_muted`, `follow_blacklist`, then the
+followed lists); `serveFollowLists(page, lists)` answers those browser reads.
+`forYouFeed.spec.ts` (signed in, `loggedInHomeFeeds`) and
+`forYouFeedSignedOut.spec.ts` (`homeMainPage`) use them; FYP-05 checks the
+setting unset on the `:3001` server. Both servers serve the `__ENV.js` the main
+server writes, so FYP-05 also unsets it in the browser
+(`unsetFypApiUrlInBrowser`).
+
+---
+
 ## Recipe: the user should see a "previously voted" post
 
 SSR fetches post data server-side, so `page.route` cannot override
@@ -791,6 +869,19 @@ under CPU load) with the comment body's `<p>` as the event target, not Edit.
 CMT-03/04/05 go through `openReplyEditor` / `openDeleteDialog` (unforced
 click, retried until the editor or dialog is visible).
 
+### Clicking a disabled control: scroll it in, wait for a settled box
+
+Playwright's actions refuse a disabled element, so a check of what a click on
+one does (CMT-09: a double-click on the disabled Post button selects no text)
+dispatches `page.mouse` at its `boundingBox()`. That skips Playwright's own
+scrolling and stability checks. In the production build the reply editor's
+Post button starts below the 720px viewport, and the editor keeps growing for
+a moment after it opens. A point taken too early lands off-screen or on
+whatever moved there, and selects text the fix was meant to protect. Call
+`scrollIntoViewIfNeeded()`, then poll `boundingBox()` until two reads agree
+before dispatching. `next dev` lays the page out differently, so a dev-stack
+pass doesn't prove the point is right; check with `fixture_e2e`.
+
 ### `list_votes` race on "undo" flows — wait for the filled icon
 
 `login-btn` hides as soon as `user.isLoggedIn` is true, which does *not*
@@ -884,22 +975,25 @@ themselves: `recordImageRequests` (`support/cardImagePreload.ts`) answers a
 pixel size, can delay resized (`/p/…?width=`) or full-size URLs separately,
 and records every requested URL. `postBodyImages.spec.ts` uses the delays to
 observe the lightbox before the full-size image arrives and layout shifts
-from late body images. `failAvatarRequests` (`support/avatarImages.ts`) answers user
+from late body images; `commentImages.spec.ts` serves a portrait image to check that a
+posted comment's 400 px height cap keeps its proportions. `failAvatarRequests` (`support/avatarImages.ts`) answers user
 avatars (`/u/<user>/avatar/…`) with a 404 and everything else with a 1x1 PNG,
 for the `avatarFallback*.spec.ts` checks of the default-avatar fallback.
 
-### The header's HiveSense probe leaves the proxy: stub it to assert "no console errors"
+### The header's HiveSense probe leaves the proxy: the fixture stubs it
 
-`getHiveSenseStatus` (site header, every page) fetches `<AI domain>/hivesense-api/`
-and a `posts/search` probe. The fixture config doesn't set `REACT_APP_AI_DOMAIN`,
-so they go to `https://api.hive.blog`; with no network Chromium logs two
-`Failed to load resource: net::ERR_INTERNET_DISCONNECTED` console errors. The dev
-stack has egress, so it doesn't show them. A spec that fails on any console error
-routes those URLs to a `200 {}` (AI search off), as `healthchecker.spec.ts` does.
-To put the header in a given state, serve recorded probe answers instead:
-`headerSearchMode.spec.ts` answers both probe URLs with the recorded 404
-(`homeMainPage/0002`, classic `Search...`) or with `lighthouse/0017` + `0018`
-(OpenAPI document + `posts/search` result, `AI Search...`).
+`getHiveSenseStatus` (site header, every page) fetches `<AI domain>/hivesense-api/sync-status`,
+nothing else. The fixture config doesn't set `REACT_APP_AI_DOMAIN`,
+so it goes to `https://api.hive.blog`, outside the proxy. The shared `test`
+(`support/fixture-proxy-test.ts`) routes every `/hivesense-api/` call on that origin
+to a `200 {}` (AI search off) in each test's context, so the default header is the
+classic `Search...` input with or without network, and a spec asserting
+"no console errors" needs no route of its own.
+To serve another answer, `page.route` it in the spec: page routes take precedence
+over the context's. `headerSearchMode.spec.ts` answers `sync-status` with the recorded 404
+(`homeMainPage/0002`, classic `Search...`) or with `lighthouse/0017`
+(a `sync-status` body, `AI Search...`), and checks it is the only hivesense request;
+`postSuggestions.spec.ts` serves its recorded `similar` answers the same way.
 
 ### Esc closes the topmost Radix layer, which may be a tooltip
 
@@ -925,11 +1019,17 @@ localhost. Images and other off-origin resources can't load offline.
 
 ### Asserting Set-Cookie: a fresh request context per request
 
-The middleware sets `blog_login_challenge_server`, `blog_login_challenge` and
-`session_uid` only when the request lacks them, and a Playwright request context
-(the `request` fixture, or a page's) keeps and resends the cookies it was given.
-After the first page, "no Set-Cookie" proves nothing. `staticAssetCookies.spec.ts`
-makes each request from its own `playwright.request.newContext({ baseURL })`.
+Pages set no cookie: an anonymous page is sent `public, s-maxage=…` for shared
+caches (`anonymousPageCache.spec.ts`). The login challenge cookie
+(`blog_login_challenge_server`, HttpOnly) comes from `GET /api/auth/challenge`
+when signing starts, and is set only when the request lacks it; `session_uid`
+is set by `/api/auth/login`. A Playwright request context (the `request`
+fixture, or a page's) keeps and resends the cookies it was given, and a cookie
+it sends can change the answer (a session or observer cookie makes a page
+no-store). `staticAssetCookies.spec.ts`, `anonymousPageCache.spec.ts` and
+`loginChallenge.spec.ts` make each request from its own
+`playwright.request.newContext({ baseURL })`. The page's `Cache-Control` can only
+be checked on the production build: `next dev` sends its own.
 
 ### Dev-stack runs: stray feed misses can be the stack's, not the spec's
 
@@ -1025,10 +1125,23 @@ checks that expect content to be MISSING). Two fixes, used together by
 
 ### `networkidle` never comes once the sign-in dialog is open
 
-Opening the login dialog starts hb-auth's worker (`/auth/worker.js`), whose
-request stays open, so `page.waitForLoadState('networkidle')` (and
-`settleAfterLoad`) time out after it. Settle on a UI assertion plus a
+Opening the login dialog starts hb-auth's worker (`/auth/releasable-worker.js`,
+which imports hb-auth's `/auth/worker.js`), whose request stays open, so
+`page.waitForLoadState('networkidle')` (and `settleAfterLoad`) time out after it. Settle on a UI assertion plus a
 `requestIdleCallback` instead, as `cspNonce.spec.ts` CSP-03 does.
+
+### Counting hb-auth workers and their WASM: CDP targets, and a counter in the script
+
+A page's hb-auth SharedWorkers are not in `page.workers()`, and a `.wasm` route or
+page-side `WebAssembly` patch never sees beekeeper, which runs in the worker.
+`hbAuthWorkerRelease.spec.ts` lists the running workers from a browser CDP session
+(`Target.setDiscoverTargets`, `shared_worker` targets) and appends a WASM counter to
+`releasable-worker.js` with `context.route` + `route.fetch()`, read over a
+`SharedWorker` connection from the page. It plays another app's write by writing
+`hbauth-safe-storage-generation` from a second page that runs no app code
+(`/auth/worker.js`): a blog page there would be another blog tab, which keeps its
+worker running. Don't attach to a shared worker target and call
+`Runtime.queryObjects`: it crashed the renderer.
 
 ### SSR-correctness checks (ssrChecks.spec.ts)
 

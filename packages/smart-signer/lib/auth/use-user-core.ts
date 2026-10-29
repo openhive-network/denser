@@ -9,6 +9,7 @@ import { appApiPath } from '@ui/lib/app-api-path';
 import { useQueryErrorEffect } from '@ui/hooks/use-query-error-effect';
 import { User } from '@smart-signer/types/common';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
+import { subscribeAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
 import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
 import { RequiredKeyTypeContext } from '@smart-signer/lib/auth/required-key-type';
 import { lacksRequiredKeyType } from '@smart-signer/lib/auth/login-authority';
@@ -98,17 +99,16 @@ export function useUserCore(
     saveUserOnce(user || defaultUser);
   }, [user]);
 
-  // Listen for auth storage desync events (IndexedDB cleared while session valid).
-  // When detected, immediately transition to logged-out state in React Query cache.
-  useEffect(() => {
-    const handleDesync = () => {
-      logger.warn('Auth storage desync event received — resetting user to logged-out state');
-      queryClient.setQueryData([QUERY_KEY.user], defaultUser);
-      saveUserOnce(defaultUser);
-    };
-    window.addEventListener('auth-storage-desync', handleDesync);
-    return () => window.removeEventListener('auth-storage-desync', handleDesync);
-  }, [queryClient]);
+  // Safe storage does not know the signed-in account: show the logged-out state at once
+  useEffect(
+    () =>
+      subscribeAuthStorageDesync(queryClient, () => {
+        logger.warn('Auth storage desync event received — resetting user to logged-out state');
+        queryClient.setQueryData([QUERY_KEY.user], defaultUser);
+        saveUserOnce(defaultUser);
+      }),
+    [queryClient]
+  );
 
   // Another tab logged out. Mark the user query stale without refetching: `/api/users/me` may
   // still answer with the session the other tab's logout request has not ended yet.

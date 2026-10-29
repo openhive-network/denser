@@ -5,6 +5,7 @@ import { useProcessAuth, LoginFormSchema } from './auth/process';
 import { LoginType } from '@smart-signer/types/common';
 import { siteConfig } from '@ui/config/site';
 import { handleError } from '@ui/lib/handle-error';
+import { isUserCancelled } from '@ui/lib/user-cancelled';
 import { getLogger } from '@ui/lib/logging';
 import {
   GOOGLE_OAUTH_CODE_KEY,
@@ -23,14 +24,9 @@ const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 
 interface GoogleOAuthRedirectHandlerProps {
   authenticateOnBackend?: boolean;
-  strict?: boolean;
   onComplete?: (username: string) => void;
-  /**
-   * Text to display while completing authorization.
-   * Should be a translated string from the consuming app.
-   * @default 'Completing Google authorization...'
-   */
-  loadingText?: string;
+  /** Text to display while completing authorization, translated by the consuming app. */
+  loadingText: string;
 }
 
 /**
@@ -42,12 +38,11 @@ interface GoogleOAuthRedirectHandlerProps {
  */
 export function GoogleOAuthRedirectHandler({
   authenticateOnBackend = false,
-  strict = false,
   onComplete,
-  loadingText = 'Completing Google authorization...'
+  loadingText
 }: GoogleOAuthRedirectHandlerProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const { signAuth, submitAuth } = useProcessAuth(authenticateOnBackend, strict);
+  const { signAuth, submitAuth } = useProcessAuth(authenticateOnBackend);
 
   // Clean up stale OAuth data on mount
   useEffect(() => {
@@ -152,8 +147,10 @@ export function GoogleOAuthRedirectHandler({
       logger.info('Google OAuth redirect login completed successfully for %s', storedUsername);
       onComplete?.(storedUsername);
     } catch (error) {
-      logger.error('Google OAuth redirect continuation failed: %s', error instanceof Error ? error.message : String(error));
-      handleError(error);
+      if (!isUserCancelled(error)) {
+        logger.error('Google OAuth redirect continuation failed: %s', error instanceof Error ? error.message : String(error));
+      }
+      handleError(error, { method: 'signIn', params: { loginType: LoginType.google } });
     } finally {
       setIsProcessing(false);
     }

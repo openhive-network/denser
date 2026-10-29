@@ -1,5 +1,6 @@
 import { getObserverFromCookies } from '@/blog/lib/auth-utils';
-import { getCommunities, getSubscriptions } from '@transaction/lib/bridge-api';
+import { getSubscriptions } from '@transaction/lib/bridge-api';
+import { getCommunityList } from '@/blog/lib/community-cache';
 import { ReactNode } from 'react';
 import { getLogger } from '@ui/lib/logging';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
@@ -10,7 +11,6 @@ import {
 } from '@/blog/components/observer-provider';
 
 const sort = 'rank';
-const query = null;
 
 const logger = getLogger('app');
 
@@ -19,7 +19,7 @@ const ServerSideLayout = async ({ children }: { children: ReactNode }) => {
   const isLoggedIn = observer !== DEFAULT_OBSERVER;
   // Fetch communities (always) and subscriptions (logged-in) in parallel
   const [communitiesResult, subscriptionsResult] = await Promise.allSettled([
-    getCommunities(sort, query, observer),
+    getCommunityList(sort, observer),
     isLoggedIn ? getSubscriptions(observer) : Promise.resolve(null)
   ]);
   const communitiesData =

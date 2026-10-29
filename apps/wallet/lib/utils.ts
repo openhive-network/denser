@@ -1,7 +1,7 @@
 import { TFunction } from 'i18next';
 import { convertStringToBig, isHive } from '@hive/ui/lib/helpers';
 import { useUpdateAuthorityOperationMutation } from '../components/hooks/use-update-authority-mutation';
-import { SavingsWithdrawals, IFollow, HiveOperation } from '@hive/common-hiveio-packages/wax';
+import { SavingsWithdrawals } from '@hive/common-hiveio-packages/wax';
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { numberWithCommas } from '@ui/lib/utils';
 import { configuredBlogDomain } from '@ui/config/public-vars';
@@ -116,63 +116,6 @@ export function transformKeyAuths(authority: { [keyOrAccount: string]: number })
     keyOrAccount,
     thresholdWeight
   }));
-}
-
-export function createListWithSuggestions(
-  username: string,
-  t: TFunction<'common_wallet', undefined>,
-  transferHistory?: HiveOperation[],
-  followingList?: IFollow[]
-): { username: string; about: string }[] {
-  const following =
-    followingList?.map((e) => ({ username: e.following, about: t('profile.following') })) ?? [];
-  const transfers =
-    transferHistory
-      ?.map((e) => {
-        let accountName;
-
-        switch (e.op?.type) {
-          case 'transfer':
-            if (e.op?.value?.to !== username) accountName = e.op?.value?.to;
-            if (e.op?.value?.from !== username) accountName = e.op?.value?.from;
-            break;
-          case 'claim_reward_balance':
-            if (e.op?.value?.account !== username) accountName = e.op?.value?.account;
-            break;
-          case 'transfer_from_savings':
-          case 'transfer_to_savings':
-            if (e.op?.value?.to !== username) accountName = e.op?.value?.to;
-            if (e.op?.value?.from !== username) accountName = e.op?.value?.from;
-            break;
-          case 'interest':
-            if (e.op?.value?.owner !== username) accountName = e.op?.value?.owner;
-            break;
-          case 'cancel_transfer_from_savings':
-            if (e.op?.value?.from !== username) accountName = e.op?.value?.from;
-            break;
-          case 'fill_order':
-            if (e.op?.value?.current_owner !== username) accountName = e.op?.value?.current_owner;
-            break;
-          case 'transfer_to_vesting':
-            if (e.op?.value?.to !== username) accountName = e.op?.value?.to;
-            if (e.op?.value?.from !== username) accountName = e.op?.value?.from;
-            break;
-        }
-        return accountName ? { username: accountName } : undefined;
-      })
-      .filter((item) => item !== undefined)
-      .reduce((acc: { username: string; about: string; counter: number }[], curr) => {
-        const existing = acc.find((item) => item.username === curr!.username);
-        if (existing) {
-          existing.counter += 1;
-        } else {
-          acc.push({ username: curr!.username, about: t('profile.previous_transfers'), counter: 1 });
-        }
-        return acc;
-      }, [])
-      .sort((a, b) => b.counter - a.counter)
-      .map((e) => ({ username: e.username, about: `${e.counter} ${e.about}` })) ?? [];
-  return [...transfers, ...following];
 }
 
 export const prepareRC = (rc: string, t: TFunction<'common_wallet', undefined>): string => {

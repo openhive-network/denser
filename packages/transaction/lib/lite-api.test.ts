@@ -1,5 +1,5 @@
 import { describe, it } from 'mocha';
-import type { ILiteProfile } from '@hive/common-hiveio-packages/wax';
+import type { Entry, ILiteProfile } from '@hive/common-hiveio-packages/wax';
 import { expect } from 'chai';
 import {
   createLiteApiProbe,
@@ -172,12 +172,13 @@ describe('createPostsReader', () => {
         if (value instanceof Error) throw value;
         return value;
       };
+      // The fakes record their params as given; the real wax types are not what is under test.
       return {
         get_discussion: call('get_discussion'),
         get_post: call('get_post'),
         get_ranked_posts: call('get_ranked_posts'),
         get_account_posts: call('get_account_posts')
-      };
+      } as unknown as TPostsApi;
     };
     const chain = {
       endpointUrl: endpoint,
@@ -188,6 +189,7 @@ describe('createPostsReader', () => {
   };
 
   const getPost = (api: TPostsApi) => api.get_post({ author: 'did:lite:bob', permlink: 'p', observer: 'hive.blog' });
+  const trending = { sort: 'trending', tag: '', start_author: '', start_permlink: '', limit: 20, observer: 'hive.blog' };
 
   it('reads through lite.* when the current node is lite-aware', async () => {
     const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO });
@@ -199,8 +201,22 @@ describe('createPostsReader', () => {
   it('reads through bridge.* when the current node is not lite-aware', async () => {
     const { read, calls } = setupReader(STOCK_NODE, { [STOCK_NODE]: apiNotFound('lite.get_info') });
 
-    expect(await read((api) => api.get_ranked_posts({ sort: 'trending' }))).to.equal('compat');
-    expect(calls).to.deep.equal(['bridge.get_ranked_posts {"sort":"trending"}']);
+    expect(await read((api) => api.get_ranked_posts(trending))).to.equal('compat');
+    expect(calls).to.deep.equal([`bridge.get_ranked_posts ${JSON.stringify(trending)}`]);
+  });
+
+  it('reads the stock way (hivemind REST or bridge.*) when given one and the node is not lite-aware', async () => {
+    const { read, calls } = setupReader(STOCK_NODE, { [STOCK_NODE]: apiNotFound('lite.get_info') });
+
+    expect(await read((api) => api.get_ranked_posts(trending), async () => 'stock' as unknown as Entry[])).to.equal('stock');
+    expect(calls).to.deep.equal([]);
+  });
+
+  it('prefers lite.* over the stock read on a lite-aware node, and takes the stock read when lite.* goes', async () => {
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, apiNotFound('lite.get_ranked_posts'));
+
+    expect(await read((api) => api.get_ranked_posts(trending), async () => 'stock' as unknown as Entry[])).to.equal('stock');
+    expect(calls).to.deep.equal([`lite.get_ranked_posts ${JSON.stringify(trending)}`]);
   });
 
   it('falls back to bridge.* and stops probing when the node no longer serves lite.*', async () => {
@@ -403,7 +419,7 @@ describe('createLiteNotificationsReader', () => {
     for (const info of [LITE_INFO, social, apiNotFound('lite.get_info')]) {
       const { read, calls } = setupNotificationsReader({ [LITE_NODE]: info });
 
-      expect(await read<unknown>((api) => api.account_notifications(params), async () => 'stock')).to.equal('stock');
+      expect(await read<unknown>((api) => api.account_notifications(params), async () => 'stock' as unknown as Entry[])).to.equal('stock');
       expect(calls).to.deep.equal([]);
     }
   });

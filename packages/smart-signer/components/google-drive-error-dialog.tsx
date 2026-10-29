@@ -5,11 +5,13 @@ import { Button } from '@ui/components';
 import { FC } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { Icons } from '@ui/components/icons';
+import { useSharedTranslation } from '@ui/lib/i18n-client';
+import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 
 const HIVE_BRIDGE_URL = 'https://auth.openhive.network';
 
-interface GoogleDriveErrorDialogProps {
-  errorType: 'wallet_not_found' | 'key_not_found';
+export interface GoogleDriveErrorDialogProps {
+  errorType: 'wallet_not_found' | 'key_not_found' | 'account_not_found';
   username?: string;
   keyType?: string;
 }
@@ -21,6 +23,8 @@ export const GoogleDriveErrorDialog: FC<GoogleDriveErrorDialogProps & InstancePr
   username,
   keyType
 }) => {
+  const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
+
   const onOpenChange = (value: boolean) => {
     if (!value) {
       onReject?.('User closed dialog');
@@ -31,21 +35,18 @@ export const GoogleDriveErrorDialog: FC<GoogleDriveErrorDialogProps & InstancePr
     e.preventDefault();
   };
 
+  // Ends the sign-in: the user signs in again once the wallet is set up on Hive Bridge
   const handleGoToBridge = () => {
     window.open(HIVE_BRIDGE_URL, '_blank', 'noopener,noreferrer');
+    onReject?.('User went to Hive Bridge');
   };
 
   const handleClose = () => {
     onReject?.('User closed dialog');
   };
 
-  const title = errorType === 'wallet_not_found'
-    ? 'Wallet Not Found'
-    : 'Key Not Found';
-
-  const description = errorType === 'wallet_not_found'
-    ? 'No Hive wallet was found in your Google Drive. Please create a wallet first using Hive Bridge.'
-    : `The ${keyType} key for @${username} was not found in your Google Drive wallet. Please add this key using Hive Bridge.`;
+  const title = t(`google_drive_error.${errorType}_title`);
+  const description = t(`google_drive_error.${errorType}_description`, { keyType, username });
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -62,17 +63,17 @@ export const GoogleDriveErrorDialog: FC<GoogleDriveErrorDialogProps & InstancePr
 
         <div className="my-4 rounded-md bg-muted p-4">
           <p className="text-sm text-muted-foreground">
-            Hive Bridge allows you to securely store your Hive keys in Google Drive.
+            {t('google_drive_error.bridge_info')}
           </p>
         </div>
 
         <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button variant="outline" onClick={handleClose}>
-            Cancel
+            {t('login_form.cancel_button')}
           </Button>
           <Button onClick={handleGoToBridge} className="flex items-center gap-2">
             <Icons.externalLink className="h-4 w-4" />
-            Go to Hive Bridge
+            {t('google_drive_error.go_to_bridge')}
           </Button>
         </DialogFooter>
       </DialogContent>

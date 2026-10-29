@@ -15,10 +15,11 @@
     ".": "./src/index.ts",
     "./package.json": "./package.json",
     "./wax": "./src/wax/index.ts",
-    "./src/hb-auth": "./src/hb-auth/index.ts"
+    "./src/hb-auth": "./src/hb-auth/index.ts",
+    "./safe-storage-generation-subscription": "./src/hb-auth/safe-storage-generation-subscription.ts"
   },
   "devDependencies": {
     "@types/node": "^24",
-    "typescript": "5.3.3"
+    "typescript": "catalog:typescript-toolset"
   }
 }

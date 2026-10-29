@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { profileCanonical } from '@/blog/lib/profile-canonical';
 import { getTranslation } from '@/blog/i18n/server';
+import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
 import HiveAccountLayout from '@/blog/lib/hive-account-route';
 import { getPageNotFoundMetadata } from '@/blog/lib/not-found-metadata';
 import { extractHiveAccountFromParam } from '@/blog/utils/validate-links';
@@ -14,7 +15,8 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
 
   return {
     title,
-    alternates: profileCanonical(params.param, 'communities')
+    alternates: profileCanonical(params.param, 'communities'),
+    robots: NOINDEX_ROBOTS
   };
 }
 

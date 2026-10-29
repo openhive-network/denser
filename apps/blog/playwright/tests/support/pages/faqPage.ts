@@ -28,7 +28,7 @@ export class FaqPage {
     this.isThereGithubPageForHiveBlogLink = this.page.getByRole('link', {name: 'Is there a Github page for Hive.blog?'});
     this.firstCaretSign = this.page.locator('[href="#Table_of_Contents_General"]').first();
     this.canIEarnDigitalTokensOnHiveLink = this.page.getByRole('link', {name: 'Can I earn digital tokens on Hive? How?'});
-    this.caretSignCanIEarnDigitalTokensOnHiveLink = this.page.locator('p:nth-child(63) > a');
+    this.caretSignCanIEarnDigitalTokensOnHiveLink = this.page.locator('p:nth-child(65) > a');
   }
 
   async getElementCssPropertyValue(element: Locator, cssProperty: string) {

@@ -16,6 +16,11 @@ import {
   FEED_CACHE_STALE_S,
   FEED_CACHE_TTL_S
 } from './playwright/tests/support/feed-cache-server';
+import { FIXTURE_FYP_API_URL } from './playwright/tests/support/fypApiStub';
+import {
+  HIVEMIND_REST_BLOG_PORT,
+  HIVEMIND_REST_STUB_URL
+} from './playwright/tests/support/hivemindRestStub';
 import type {
   FixtureAuthTestFixtures,
   FixtureProxyWorkerFixtures
@@ -68,6 +73,9 @@ const serverEnv = {
   // installImageUploadStub can intercept it (job 3142272 saw exactly
   // this for POST-08/09/18).
   REACT_APP_IMAGES_ENDPOINT: 'https://images.hive.blog/',
+  // The For You feed is on, as on a deployment that sets it; specs answer it with page.route
+  // (fypApiStub.ts). The feed-cache server leaves it unset, the default.
+  REACT_APP_FYP_API_URL: FIXTURE_FYP_API_URL,
   // The steem-16 deployment's passkey signer, the one the lite passkey specs' recordings and
   // stub signer stand for; a spec needing another list rewrites it in __ENV.js
   // (`configureSigners` in support/litePasskeyContext.ts).
@@ -88,11 +96,13 @@ const serverEnv = {
   DENSER_SERVER_OAUTH_OPENHIVE_CHAT_SECRET: FIXTURE_OAUTH_CLIENT_SECRET,
   // A subdirectory deployment's site and blog URLs carry its base path: the
   // server builds its redirects from the first, post share links from the
-  // second. The root pass keeps the defaults.
+  // second. The browser loads hb-auth's worker from under REACT_APP_BASE_PATH,
+  // so the sign-in dialog needs it too. The root pass keeps the defaults.
   ...(BASE_PATH
     ? {
         REACT_APP_SITE_DOMAIN: `http://localhost:3000${BASE_PATH}`,
-        REACT_APP_BLOG_DOMAIN: `http://localhost:3000${BASE_PATH}`
+        REACT_APP_BLOG_DOMAIN: `http://localhost:3000${BASE_PATH}`,
+        REACT_APP_BASE_PATH: BASE_PATH
       }
     : {})
 };
@@ -128,7 +138,8 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
   use: {
     ...browserUse(true),
     baseURL: `http://localhost:3000${BASE_PATH}`,
-    feedCacheBaseURL: `http://localhost:${FEED_CACHE_PORT}`
+    feedCacheBaseURL: `http://localhost:${FEED_CACHE_PORT}`,
+    hivemindRestBaseURL: `http://localhost:${HIVEMIND_REST_BLOG_PORT}`
   },
   projects: [
     {
@@ -154,8 +165,22 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
       env: {
         ...serverEnv,
         PORT: String(FEED_CACHE_PORT),
+        REACT_APP_FYP_API_URL: '',
         DENSER_FEED_CACHE_TTL_S: String(FEED_CACHE_TTL_S),
         DENSER_FEED_CACHE_STALE_S: String(FEED_CACHE_STALE_S)
+      }
+    },
+    // Reads hivemind's data from the hivemind REST stub (hivemindRest*.spec.ts).
+    {
+      command: `node ${NEXT_DIR}/standalone/apps/blog/server.js`,
+      url: `http://127.0.0.1:${HIVEMIND_REST_BLOG_PORT}${BASE_PATH}/api/health`,
+      ...ownWebServerOptions(),
+      env: {
+        ...serverEnv,
+        PORT: String(HIVEMIND_REST_BLOG_PORT),
+        REACT_APP_FYP_API_URL: '',
+        REACT_APP_HIVEMIND_REST_NODES: HIVEMIND_REST_STUB_URL,
+        DENSER_FEED_CACHE_TTL_S: '0'
       }
     }
   ]

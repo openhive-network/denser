@@ -172,7 +172,7 @@ export default function BuyOrSellForm({
               hbd: state.total,
               rate: `${state.price}/HIVE`
             })}
-            <DialogFooter className="flex w-full items-center !justify-between">
+            <DialogFooter className="flex w-full items-center justify-between!">
               <Button onClick={submitOrder} data-testid={`${testIdPrefix}-dialog-ok`}>{t('market_page.ok')}</Button>
               <Button variant="secondary" onClick={() => setDialogOpen(false)} data-testid={`${testIdPrefix}-dialog-close`}>
                 {t('market_page.close')}

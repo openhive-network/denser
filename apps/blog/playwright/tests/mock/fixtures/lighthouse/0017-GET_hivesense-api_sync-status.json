@@ -1,0 +1,11 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/sync-status",
+  "requestHash": "a19d2b6b0cf68bb4",
+  "response": {
+    "last_block_num": 110545437,
+    "last_block_time": "2026-10-06T20:55:57"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json; charset=utf-8"
+}

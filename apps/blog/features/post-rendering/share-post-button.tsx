@@ -11,7 +11,7 @@ export function SharePostButton({ label, ...props }: ComponentPropsWithRef<'butt
       type="button"
       title={label}
       aria-label={label}
-      className="rounded-sm text-muted-foreground transition-colors hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="rounded-sm text-muted-foreground transition-colors hover:text-destructive focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
       {...props}
     />
   );

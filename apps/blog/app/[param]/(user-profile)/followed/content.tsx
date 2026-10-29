@@ -13,6 +13,8 @@ import { useMemo, useState } from 'react';
 import ButtonsContainer from '@/blog/features/mute-follow/buttons-container';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import Loading from '@ui/components/loading';
+import { UnfollowAllDialog } from '@/blog/features/account-lists/unfollow-all-dialog';
+import { useResetFollowingMutation } from '@/blog/features/mute-follow/hooks/use-follow-mutations';
 
 const LIMIT = 50;
 
@@ -34,7 +36,9 @@ const FollowedContent = ({
   const { user } = useUserClient();
   const isFollowMutating = useIsMutating({ mutationKey: ['follow'] });
   const isUnfollowMutating = useIsMutating({ mutationKey: ['unfollow'] });
-  const isMutating = isFollowMutating > 0 || isUnfollowMutating > 0;
+  const isUnfollowAllMutating = useIsMutating({ mutationKey: ['unfollowAll'] });
+  const isMutating = isFollowMutating > 0 || isUnfollowMutating > 0 || isUnfollowAllMutating > 0;
+  const resetFollowingMutation = useResetFollowingMutation();
 
   const followingData = useFollowingInfiniteQuery(username, LIMIT, undefined, undefined, initialFollowing);
   const following = useFollowingInfiniteQuery(user?.username || '', 1000, 'blog', ['blog']);
@@ -79,6 +83,8 @@ const FollowedContent = ({
     : profileData?.follow_stats?.following_count;
   const totalPages = followingCount === undefined ? '?' : Math.max(1, Math.ceil(followingCount / LIMIT));
 
+  const handleUnfollowAll = () => resetFollowingMutation.mutate(undefined, { onSuccess: () => setPage(0) });
+
   return (
     <div className="flex flex-col gap-2 p-2">
       <h1 className="self-center p-2">
@@ -87,6 +93,14 @@ const FollowedContent = ({
           total: totalPages
         })}
       </h1>
+      {isOwnProfile ? (
+        <UnfollowAllDialog
+          username={username}
+          count={followingCount ?? 0}
+          disabled={!followingCount || resetFollowingMutation.isPending}
+          onConfirm={handleUnfollowAll}
+        />
+      ) : null}
       <PrevNextButtons
         onNextPage={handleNextPage}
         onPrevPage={handlePrevPage}

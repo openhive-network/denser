@@ -65,7 +65,7 @@
     "other_signing_options_description": "Введите ваше имя пользователя и выберите способ входа",
     "go_back_button": "Назад",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "Что такое {{method}}?",
       "safe_storage": "Безопасное хранилище хранит ваш приватный ключ в этом браузере в зашифрованном паролем виде. Ключ никогда не покидает ваше устройство.",
       "keychain": "Hive Keychain — это расширение браузера, которое хранит ваши ключи и подписывает транзакции за вас.",
       "peakvault": "PeakVault — это кошелёк в виде расширения браузера, который хранит ваши ключи и подписывает транзакции за вас.",
@@ -92,7 +92,8 @@
       "button_sign_auth": "Подписать авторизационную транзакцию",
       "button_signin_unlocked": "Войти с подписанной транзакцией",
       "strict_mode": "Ограниченный режим авторизации",
-      "strict_mode_tooltip": "При включении приложение будет разрешать добавление ключей только с собственной авторизацией аккаунта. Если вы хотите добавить ключи с другой авторизацией, отключите этот режим.",
+      "strict_mode_scope": "(только безопасное хранилище)",
+      "strict_mode_tooltip": "Применяется только к ключам, сохраняемым в безопасном хранилище. При включении безопасное хранилище принимает только ключ собственной авторизации аккаунта. Чтобы сохранить ключ, который подписывает через авторизацию другого аккаунта, отключите этот режим. На Keychain, PeakVault, HiveAuth и другие способы входа это не влияет.",
       "key_update": "Добавить новый ключ",
       "update_key_title": "Добавить новый ключ в безопасное хранилище",
       "update_key_description": "Добавить новый ключ {{keyType}} для пользователя {{username}}",
@@ -115,7 +116,8 @@
       "no_wif_key": "Отсутствует ключ WIF",
       "password_required": "Требуется пароль",
       "wif_required": "Требуется ключ WIF",
-      "posting_key_for_active": "Кошельку нужен ваш активный ключ; ключ публикации не может подписывать переводы"
+      "posting_key_for_active": "Кошельку нужен ваш активный ключ; ключ публикации не может подписывать переводы",
+      "active_key_for_posting": "У этого ключа нет полномочий публикации. Для входа в блог нужен ключ публикации"
     },
     "signin_with_keychain": "Расширение Hive Keychain",
     "signin_with_wif": "Войти с WIF (устаревший)",
@@ -128,12 +130,25 @@
     "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "Для этой операции требуется ваш ключ публикации. Введите ключ и храните его в надёжном месте.",
     "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "Для этой операции требуется ваш активный ключ. Введите ключ и храните его в надёжном месте.",
     "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "Для этой операции требуется ваш ключ владельца. Введите ключ и храните его в надёжном месте.",
-    "use_peakvault": "Использовать Peakvault",
-    "signin_with_peakvault": "Расширение Peakvault",
+    "use_peakvault": "Использовать PeakVault",
+    "signin_with_peakvault": "Расширение PeakVault",
     "extension_sign_in": {
       "keychain": "Войти через Hive Keychain",
       "peakvault": "Войти через PeakVault",
       "or_safe_storage": "или используйте безопасное хранилище"
+    },
+    "sign_in_pending": "Другой вход всё ещё ожидает ответа. Завершите или отклоните его в расширении кошелька либо отмените, чтобы начать заново.",
+    "sign_in_pending_generic": "Другой вход всё ещё ожидает ответа. Завершите его либо отмените, чтобы начать заново.",
+    "cancel_pending_sign_in": "Отменить ожидающий вход",
+    "safe_storage_name": "Безопасное хранилище",
+    "signin_with_metamask": "Расширение MetaMask",
+    "signin_with_google": "Аккаунт Google",
+    "passkey_prompt": {
+      "title": "Включить биометрическую разблокировку?",
+      "description": "Разблокируйте отпечатком пальца, Face ID или PIN-кодом устройства вместо ввода пароля.",
+      "enable": "Включить",
+      "not_now": "Не сейчас",
+      "never_ask_again": "Больше не спрашивать"
     },
     "passkey": {
       "method": "Подпись через passkey",
@@ -171,11 +186,30 @@
     "password_form_title": "Введите ваш пароль",
     "store_key_label": "Сохранить ключ",
     "store_password_label": "Сохранить пароль",
-    "google_drive_password_placeholder": "Пароль для разблокировки кошелька Google Drive"
+    "google_drive_password_placeholder": "Пароль для разблокировки кошелька Google Drive",
+    "safe_storage_recovery_description": "Другая вкладка изменила защищённое хранилище во время сохранения ключа @{{username}}. Введите пароль защищённого хранилища @{{username}}, чтобы завершить сохранение."
   },
   "broadcast_error": {
     "missing_owner_authority": "Для этой операции нужен ключ владельца (owner). Войдите с ним и повторите попытку.",
     "missing_active_authority": "Для этой операции нужен активный ключ (active). Войдите с активным ключом и повторите попытку.",
-    "missing_posting_authority": "Для этой операции нужен ключ публикации (posting). Войдите с ним и повторите попытку."
+    "missing_posting_authority": "Для этой операции нужен ключ публикации (posting). Войдите с ним и повторите попытку.",
+    "safe_storage_missing_account": "В защищённом хранилище этого браузера нет ключей вашей учётной записи. Войдите снова.",
+    "not_enough_rc": "Недостаточно ресурсных кредитов (RC) для этой транзакции. Дождитесь восстановления RC или сделайте power up HIVE.",
+    "not_enough_rc_amounts": "У вас {{current}} RC; для этой транзакции нужно {{needed}} RC.",
+    "keychain_no_message": "Hive Keychain не смог выполнить запрос и не сообщил причину.",
+    "superseded_key_write": "Другая вкладка прервала сохранение ключа {{keyType}} учётной записи @{{username}} в защищённое хранилище. Добавьте ключ {{keyType}} в защищённое хранилище ещё раз."
+  },
+  "request_error": {
+    "timeout": "Сервер не ответил вовремя. Попробуйте ещё раз."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "Кошелёк не найден",
+    "wallet_not_found_description": "В вашем Google Диске не найден кошелёк Hive. Сначала создайте кошелёк с помощью Hive Bridge.",
+    "key_not_found_title": "Ключ не найден",
+    "key_not_found_description": "Ключ {{keyType}} для @{{username}} не найден в кошельке на Google Диске. Добавьте этот ключ с помощью Hive Bridge или используйте другой способ входа.",
+    "account_not_found_title": "Ключи не найдены",
+    "account_not_found_description": "В кошельке на Google Диске нет ключей для @{{username}}. Добавьте их с помощью Hive Bridge или используйте другой способ входа.",
+    "bridge_info": "Hive Bridge позволяет безопасно хранить ключи Hive в Google Диске.",
+    "go_to_bridge": "Перейти в Hive Bridge"
   }
 }

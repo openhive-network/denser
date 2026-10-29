@@ -15,7 +15,7 @@ import { liteAuthorityErrorKey } from './lite-authority-errors';
  */
 export default function LiteGraduatedSignIn({ account, onSignedIn }: { account: string; onSignedIn: () => void }) {
   const { t } = useTranslation('common_blog');
-  const signIn = usePasskeySignIn(siteConfig.loginAuthenticateOnBackend, !siteConfig.allowNonStrictLogin);
+  const signIn = usePasskeySignIn(siteConfig.loginAuthenticateOnBackend);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

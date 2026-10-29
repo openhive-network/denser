@@ -23,7 +23,7 @@ function requestKeychain(
   return new Promise((resolve, reject) => {
     invoke((response) => {
       if (!response.success || response.error || response.result === undefined) {
-        reject(new Error(response.error ?? 'Keychain request failed'));
+        reject(new Error(response.error ?? 'Keychain request failed', { cause: response }));
       } else {
         resolve(response.result);
       }
@@ -32,16 +32,13 @@ function requestKeychain(
 }
 
 /**
- * Bypasses `KeychainProvider` for memo *encoding* and calls the extension
- * directly. `KeychainProvider` sends lowercase `'memo'`, but the extension's
- * `encodeMessage` handler exact-matches against capitalized `'Memo'`
- * (`hive-keychain-commons`'s `KeychainKeyTypes`) - a mismatch silently falls
- * back to the account's POSTING key, producing undecryptable ciphertext.
- * Decoding isn't affected (case-insensitive there), so `decryptMemoWithKeychain`
- * below doesn't need this bypass.
- *
- * Transitional: remove once gitlab.syncad.com/hive/wax !655 is merged/released/
- * pinned here, and go back through `KeychainProvider`.
+ * Bypasses `KeychainProvider` for memo *encoding* and calls the extension's
+ * `encodeMessage` directly, with the capitalized `'Memo'` key type it
+ * exact-matches (`hive-keychain-commons`'s `KeychainKeyTypes`; any other casing
+ * silently falls back to the account's POSTING key, producing undecryptable
+ * ciphertext). `KeychainProvider` sends `'Memo'` too since wax !655, but routes a
+ * memo addressed to the sender's own account through `requestSignBuffer`, which
+ * returns a signature rather than an encrypted memo.
  */
 export async function encryptMemoWithKeychain(
   fromAccount: string,
@@ -53,7 +50,7 @@ export async function encryptMemoWithKeychain(
   );
 }
 
-/** Decrypts via the standard `KeychainProvider` - decode's key resolution is case-insensitive, so no bypass needed. */
+/** Decrypts via the standard `KeychainProvider`, which requests the `'Memo'` key type. */
 export async function decryptMemoWithKeychain(username: string, encodedMemo: string): Promise<string> {
   const provider = KeychainProvider.for(username, 'memo');
   return provider.decryptData(encodedMemo);

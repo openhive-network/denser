@@ -2,6 +2,9 @@ import { Metadata } from 'next';
 import PostContent from './content';
 import { getPostCached } from '@/blog/lib/cached-api';
 import { postCanonicalUrl } from '@/blog/lib/canonical-url';
+import { postSeo } from '@/blog/lib/post-seo';
+import { articleJsonLd, postBreadcrumbJsonLd } from '@/blog/lib/structured-data';
+import { JsonLd } from '@/blog/components/json-ld';
 import { getCommunity, getDiscussion, getFollowList, getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
@@ -73,30 +76,34 @@ export async function generateMetadata(
   // render right after post creation, before hivemind has indexed it.
   if (!post && !searchParams?.pending) notFound();
 
-  const title = post?.title ? `${post.title} ` : 'Hive Blog';
-  const description =
-    post?.json_metadata?.summary ||
-    post?.json_metadata?.description ||
-    (post?.body ? post.body.substring(0, 160) : '');
-  const image =
-    post?.json_metadata?.image?.[0] ||
-    post?.json_metadata?.images?.[0] ||
-    'https://hive.blog/images/hive-blog-share.png';
+  if (!post) return FALLBACK_METADATA;
+
+  const title = post.title ? `${post.title} ` : 'Hive Blog';
+  const canonical = postCanonicalUrl(post);
+  const seo = postSeo(post);
 
   return {
     title,
-    description,
-    ...(post ? { alternates: { canonical: postCanonicalUrl(post) } } : {}),
+    description: seo.description,
+    alternates: { canonical },
     openGraph: {
+      type: 'article',
+      siteName: 'Hive',
+      url: canonical,
       title,
-      description,
-      images: [image]
+      description: seo.description,
+      images: [seo.image],
+      publishedTime: seo.published,
+      modifiedTime: seo.modified,
+      authors: [seo.authorUrl],
+      section: seo.section.name,
+      tags: seo.tags
     },
     twitter: {
       card: 'summary_large_image',
       title,
-      description,
-      images: [image]
+      description: seo.description,
+      images: [seo.image]
     }
   };
 }
@@ -215,27 +222,36 @@ const PostPage = async (
   // Bodies are rendered here so the client hydrates their HTML instead of loading the
   // renderer and rendering them again.
   const renderedBodies = renderDiscussionBodies(postData, discussionData);
+  const seo = postData ? postSeo(postData) : null;
 
   // Pass data directly via context instead of Hydrate/dehydrate.
   // React Query v4's <Hydrate> has compatibility issues with Next.js App Router
   // streaming SSR where dehydrated state doesn't reliably reach the browser
   // query client, causing unnecessary client-side refetches and spinners.
   return (
-    <ObserverProvider value={observer} effectiveValue={effectiveObserver}>
-      <InitialPostDataProvider value={postData}>
-        <InitialDiscussionProvider value={discussionPageSeed}>
-          <InitialCommunityProvider value={communityData}>
-            <InitialCommunityRolesProvider value={communityRolesData}>
-              <InitialFollowListProvider value={mutedListData}>
-                <RenderedBodiesProvider value={renderedBodies}>
-                  <PostContent />
-                </RenderedBodiesProvider>
-              </InitialFollowListProvider>
-            </InitialCommunityRolesProvider>
-          </InitialCommunityProvider>
-        </InitialDiscussionProvider>
-      </InitialPostDataProvider>
-    </ObserverProvider>
+    <>
+      {seo ? (
+        <>
+          <JsonLd data={articleJsonLd(seo)} />
+          <JsonLd data={postBreadcrumbJsonLd(seo)} />
+        </>
+      ) : null}
+      <ObserverProvider value={observer} effectiveValue={effectiveObserver}>
+        <InitialPostDataProvider value={postData}>
+          <InitialDiscussionProvider value={discussionPageSeed}>
+            <InitialCommunityProvider value={communityData}>
+              <InitialCommunityRolesProvider value={communityRolesData}>
+                <InitialFollowListProvider value={mutedListData}>
+                  <RenderedBodiesProvider value={renderedBodies}>
+                    <PostContent />
+                  </RenderedBodiesProvider>
+                </InitialFollowListProvider>
+              </InitialCommunityRolesProvider>
+            </InitialCommunityProvider>
+          </InitialDiscussionProvider>
+        </InitialPostDataProvider>
+      </ObserverProvider>
+    </>
   );
 };
 export default PostPage;

@@ -65,7 +65,7 @@
     "use_hbauth": "Use safe storage",
     "use_hiveauth": "Use HiveAuth",
     "use_keychain": "Use Keychain",
-    "use_peakvault": "Use Peakvault",
+    "use_peakvault": "Use PeakVault",
     "use_wif": "Use WIF",
     "username_placeholder": "Enter your username",
     "working": "Working…",
@@ -100,7 +100,8 @@
       "button_sign_auth": "Sign auth tx",
       "button_signin_unlocked": "Sign in with signed tx",
       "strict_mode": "Direct Authority Mode",
-      "strict_mode_tooltip": "When enabled, the app will only allow adding keys with account's own authority. If you want to add keys with other authority, please disable this mode.",
+      "strict_mode_scope": "(safe storage only)",
+      "strict_mode_tooltip": "Applies only to keys saved in Safe Storage. When enabled, Safe Storage accepts only a key of the account's own authority. To save a key that signs through another account's authority, disable this mode. Keychain, PeakVault, HiveAuth and the other sign-in methods are not affected.",
       "key_update": "Add new key",
       "update_key_title": "Add New Key to Safe Storage",
       "update_key_description": "Add new {{keyType}} key for user {{username}}",
@@ -123,10 +124,11 @@
       "no_wif_key": "No WIF key",
       "password_required": "Password is required",
       "wif_required": "WIF key is required",
-      "posting_key_for_active": "The wallet needs your active key; a posting key can't sign transfers"
+      "posting_key_for_active": "The wallet needs your active key; a posting key can't sign transfers",
+      "active_key_for_posting": "This key doesn't have posting authority. Blog sign-in requires the posting key"
     },
     "signin_with_keychain": "Hive Keychain extension",
-    "signin_with_peakvault": "Peakvault extension",
+    "signin_with_peakvault": "PeakVault extension",
     "signin_with_wif": "Sign in with WIF (Legacy)",
     "signin_with_hiveauth": "HiveAuth",
     "signin_with_hivesigner": "HiveSigner",
@@ -134,6 +136,19 @@
       "keychain": "Sign in with Hive Keychain",
       "peakvault": "Sign in with PeakVault",
       "or_safe_storage": "or use safe storage"
+    },
+    "sign_in_pending": "Another sign-in is still waiting for an answer. Finish or reject it in your wallet extension, or cancel it to start over.",
+    "sign_in_pending_generic": "Another sign-in is still waiting for an answer. Finish or cancel it to start over.",
+    "cancel_pending_sign_in": "Cancel pending sign-in",
+    "safe_storage_name": "Safe Storage",
+    "signin_with_metamask": "MetaMask extension",
+    "signin_with_google": "Google Account",
+    "passkey_prompt": {
+      "title": "Enable biometric unlock?",
+      "description": "Use fingerprint, Face ID, or device PIN to unlock instead of typing your password.",
+      "enable": "Enable",
+      "not_now": "Not now",
+      "never_ask_again": "Never ask again"
     },
     "passkey": {
       "method": "Passkey signer",
@@ -171,11 +186,30 @@
     "password_form_title": "Enter your password",
     "store_key_label": "Store key",
     "store_password_label": "Store password",
-    "google_drive_password_placeholder": "Password to unlock Google Drive wallet"
+    "google_drive_password_placeholder": "Password to unlock Google Drive wallet",
+    "safe_storage_recovery_description": "Another tab changed safe storage while a key of @{{username}} was being saved. Enter the safe storage password of @{{username}} to finish saving it."
   },
   "broadcast_error": {
     "missing_owner_authority": "This operation needs your owner key. Sign in with it and try again.",
     "missing_active_authority": "This operation needs your active key. Sign in with your active key and try again.",
-    "missing_posting_authority": "This operation needs your posting key. Sign in with it and try again."
+    "missing_posting_authority": "This operation needs your posting key. Sign in with it and try again.",
+    "safe_storage_missing_account": "Safe storage in this browser holds no keys for your account. Please sign in again.",
+    "not_enough_rc": "Not enough Resource Credits (RC) for this transaction. Wait for your RC to recharge or power up HIVE.",
+    "not_enough_rc_amounts": "You have {{current}} RC; this transaction needs {{needed}} RC.",
+    "keychain_no_message": "Hive Keychain could not complete the request and gave no reason.",
+    "superseded_key_write": "Another tab interrupted saving the {{keyType}} key of @{{username}} to safe storage. Add the {{keyType}} key to safe storage again."
+  },
+  "request_error": {
+    "timeout": "The server did not respond in time. Please try again."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "Wallet Not Found",
+    "wallet_not_found_description": "No Hive wallet was found in your Google Drive. Please create a wallet first using Hive Bridge.",
+    "key_not_found_title": "Key Not Found",
+    "key_not_found_description": "The {{keyType}} key for @{{username}} was not found in your Google Drive wallet. Add this key using Hive Bridge or use another sign-in method.",
+    "account_not_found_title": "No Keys Found",
+    "account_not_found_description": "Your Google Drive wallet has no keys for @{{username}}. Add them using Hive Bridge or use another sign-in method.",
+    "bridge_info": "Hive Bridge allows you to securely store your Hive keys in Google Drive.",
+    "go_to_bridge": "Go to Hive Bridge"
   }
 }

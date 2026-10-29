@@ -1,8 +1,12 @@
 {
   "global": {
+    "close": "Zamknij",
     "no_rewards": "Brak nagród oczekujących na wykorzystanie.",
     "loading": "Wczytywanie",
     "publishing": "Publikowanie...",
+    "not_confirmed": "Jeszcze niepotwierdzone",
+    "comment_not_confirmed": "Twój komentarz mógł nie zostać przetworzony. Odśwież stronę, aby to sprawdzić, zanim spróbujesz ponownie.",
+    "vote_not_confirmed": "Twój głos mógł nie zostać przetworzony. Odśwież stronę, aby to sprawdzić, zanim spróbujesz ponownie.",
     "confirmed_indexing": "Potwierdzono w blockchainie. Oczekiwanie na indeksowanie...",
     "indexing_slow": "Indeksowanie trwa dłużej niż zwykle. To normalne przy dużym ruchu.",
     "indexing_timeout": "Upłynął limit czasu indeksowania posta. Twój post może wkrótce się pojawić — spróbuj odświeżyć stronę.",
@@ -12,31 +16,40 @@
     "unavailable_for_legal_reasons": "Niedostępne z przyczyn prawnych",
     "time_ago": {
       "a_few_seconds": " Kilka sekund temu",
-      "seconds": " sekund_y temu",
-      "minutes": " minut_y temu",
-      "a_minute": " minute temu",
-      "hours": " godzin_y temu",
-      "an_hour": " godzine temu",
+      "seconds": " sekund temu",
+      "minutes": " minut temu",
+      "a_minute": " minutę temu",
+      "hours": " godzin temu",
+      "an_hour": " godzinę temu",
       "days": " dni temu",
       "a_day": " dzień temu",
-      "months": " miesięce_y temu",
+      "months": " miesięcy temu",
       "a_month": " miesiąc temu",
-      "years": " lat_a temu",
+      "years": " lat temu",
       "a_year": " rok temu"
     },
     "time": {
       "a_few_seconds": " Za kilka sekund",
-      "seconds": " sekund_y",
-      "minutes": " minut_y",
-      "a_minute": " minute",
-      "hours": " godzin_y",
+      "seconds": " sekund",
+      "minutes": " minut",
+      "a_minute": " minutę",
+      "hours": " godzin",
       "an_hour": " godzina",
       "days": " dni",
       "a_day": " dzień",
-      "months": " miesięce_y",
+      "months": " miesięcy",
       "a_month": " miesiąc",
-      "years": " lat_a",
-      "a_year": " rok"
+      "years": " lat",
+      "a_year": " rok",
+      "hours_count_one": "{{count}} godzina",
+      "hours_count_few": "{{count}} godziny",
+      "hours_count_many": "{{count}} godzin",
+      "hours_count_other": "{{count}} godziny",
+      "minutes_count_one": "{{count}} minuta",
+      "minutes_count_few": "{{count}} minuty",
+      "minutes_count_many": "{{count}} minut",
+      "minutes_count_other": "{{count}} minuty",
+      "hours_and_minutes": "{{hours}} i {{minutes}}"
     },
     "profile_picture": "Zdjęcie profilowe",
     "notifications_region": "Powiadomienia ({hotkey})"
@@ -132,9 +145,9 @@
     },
     "user_menu": {
       "account_menu_key": {
-        "posting": "Menu konta {{username}}, klucz publikowania",
-        "active": "Menu konta {{username}}, klucz aktywny",
-        "posting_and_active": "Menu konta {{username}}, klucze publikowania i aktywny"
+        "posting": "Menu konta {{username}}, klucz Posting",
+        "active": "Menu konta {{username}}, klucz Active",
+        "posting_and_active": "Menu konta {{username}}, klucze Posting i Active"
       },
       "account_menu_signer": "Menu konta {{username}}, {{method}}",
       "profile": "Profil",
@@ -152,7 +165,7 @@
       "remove_account_failed": "Nie udało się usunąć {{username}}.",
       "logged_in_with": "Zalogowano przez {{method}}",
       "login_method": {
-        "hbauth": "Bezpieczne przechowywanie",
+        "hbauth": "Bezpieczny magazyn",
         "keychain": "Hive Keychain",
         "peakvault": "PeakVault",
         "metamask": "MetaMask",
@@ -162,15 +175,15 @@
         "hivesigner": "HiveSigner"
       },
       "key_type": {
-        "posting": "Klucz publikowania",
-        "active": "Klucz aktywny",
-        "posting_and_active": "Klucz publikowania + aktywny"
+        "posting": "Klucz Posting",
+        "active": "Klucz Active",
+        "posting_and_active": "Klucz Posting + Active"
       },
-      "active_key_badge": "Zalogowano kluczem aktywnym",
-      "log_in_with_active_key": "Zaloguj się kluczem aktywnym",
-      "add_active_key": "Dodaj klucz aktywny",
-      "add_posting_key": "Dodaj klucz publikowania",
-      "switch_to_posting_key": "Przełącz na klucz publikowania"
+      "active_key_badge": "Zalogowano kluczem Active",
+      "log_in_with_active_key": "Zaloguj się kluczem Active",
+      "add_active_key": "Dodaj klucz Active",
+      "add_posting_key": "Dodaj klucz Posting",
+      "switch_to_posting_key": "Przełącz na klucz Posting"
     }
   },
   "select_sort": {
@@ -179,7 +192,8 @@
       "hot": "Na czasie",
       "new": "Nowe",
       "payouts": "Wynagrodzenia",
-      "muted": "Wyciszone"
+      "muted": "Wyciszone",
+      "for_you": "Dla Ciebie"
     },
     "communitie_sort": {
       "rank": "Ranking",
@@ -228,6 +242,7 @@
       "downvote_weight": "Waga głosu przeciw",
       "submit_upvote_percent": "Oddaj głos za z wagą {{votePercent}}%",
       "submit_downvote_percent": "Oddaj głos przeciw z wagą {{votePercent}}%",
+      "vote_after_payout_note": "Głosowanie na treść po jej wypłacie nie generuje żadnych nowych nagród",
       "reputation_title": "Reputacja",
       "in": "w",
       "no_votes": "Brak głosów",
@@ -332,7 +347,9 @@
     "google_key_not_found_title": "Nie znaleziono klucza w portfelu",
     "google_key_not_found_description": "Nie znaleziono klucza {{keyType}} Hive dla użytkownika {{username}} w portfelu Google Drive.",
     "go_to_hive_bridge": "Przejdź do Hive Bridge",
-    "completing_google_auth": "Kończenie autoryzacji Google..."
+    "completing_google_auth": "Kończenie autoryzacji Google...",
+    "dialog_title": "Logowanie",
+    "dialog_description": "Zaloguj się na swoje konto za pomocą klucza Posting."
   },
   "user_profile": {
     "reputation": "Reputacja",
@@ -408,21 +425,30 @@
         "description_not_added": "Użytkownik nie dodwał jeszcze opisu do tej listy",
         "empty_list": "Ta lista jest pusta",
         "search_this_list": "Szukaj na tej liście",
-        "accounts_blacklisted_by": "Konta Zapisane na Czarną Liste przez {{username}}",
+        "accounts_blacklisted_by": "Konta Zapisane na Czarną Listę przez {{username}}",
         "accounts_muted_by": "Konta Wyciszone przez {{username}}",
         "reset_options": "Zresetuj Opcje",
-        "reset_blacklist": "Zresetuj Czarną Liste",
-        "reset_muted_list": "Zresetuj Liste Wyciszonych",
+        "reset_blacklist": "Zresetuj Czarną Listę",
+        "reset_muted_list": "Zresetuj Listę Wyciszonych",
         "reset_followed_blacklists": "Zresetuj obserwowane Czarne Listy",
         "reset_followed_muted_list": "Zresetuj obserwowane Listy Wyciszonych",
-        "reset_all_lists": "Zresetuj wszystkie Obserwacje/Listy",
         "busy_button": "Proszę czekać",
         "first_button": "Pierwsza",
         "previous_button": "Poprzednia",
         "next_button": "Następna",
         "last_button": "Ostatnia",
         "viewing_page": "Strona numer {{current}} z {{total}}",
-        "users_on_list": "Użytkowników na Liście jest: {{number}}"
+        "users_on_list": "Użytkowników na Liście jest: {{number}}",
+        "unfollow_all": {
+          "button": "Przestań obserwować wszystkich",
+          "title": "Przestać obserwować wszystkie konta?",
+          "description_one": "Przestaniesz obserwować {{count}} obserwowane konto. Tej operacji nie można cofnąć.",
+          "description_few": "Przestaniesz obserwować wszystkie {{count}} obserwowane konta. Tej operacji nie można cofnąć.",
+          "description_many": "Przestaniesz obserwować wszystkie {{count}} obserwowanych kont. Tej operacji nie można cofnąć.",
+          "description_other": "Przestaniesz obserwować wszystkie {{count}} obserwowanego konta. Tej operacji nie można cofnąć.",
+          "confirm_prompt": "Wpisz nazwę swojego konta ({{username}}), aby potwierdzić.",
+          "cancel": "Anuluj"
+        }
       },
       "username_placeholder": "nazwa użytkownika"
     },
@@ -622,8 +648,8 @@
         "editing": "Edytowanie komentarza",
         "replying": "Odpowiadanie",
         "reply": "Odpowiedz",
-        "insert_images": "Wstaw obrazy, przeciągając i upuszczając, wklejając ze schowka lub za pomocą",
-        "selecting_them": "wyboru ich.",
+        "insert_images": "Wstaw obrazy, przeciągając i upuszczając, wklejając ze schowka lub",
+        "selecting_them": "wybierając je z dysku.",
         "post": "Wyślij",
         "cancel": "Anuluj",
         "preview": "Podgląd",
@@ -701,6 +727,8 @@
     "enter_content": "Wprowadź treść, aby wysłać",
     "enter_title_and_content": "Wprowadź tytuł i treść, aby wysłać",
     "enter_tags": "Wprowadź przynajmniej jeden tag, aby wysłać",
+    "image_upload_unavailable": "Przesyłanie obrazów jest niedostępne po zalogowaniu przez {{method}}. Wklej adres URL obrazu albo zaloguj się inną metodą.",
+    "remove_failed_uploads": "Usuń nieudane przesłania obrazów (UPLOAD FAILED) przed wysłaniem.",
     "clean": "Wyczyść",
     "cancel": "Anuluj",
     "confirm": "Potwierdź",
@@ -720,6 +748,7 @@
     "convert_hive_links_tooltip": "Automatycznie konwertuje wklejone linki z frontendów blogów Hive na niezależne od frontendu ścieżki względne, dzięki czemu Twój post działa w każdej aplikacji Hive",
     "optimize_images": "Optymalizuj obrazy",
     "optimize_images_tooltip": "Zmienia rozmiar i kompresuje obrazy przed przesłaniem, co przyspiesza przesyłanie i zmniejsza rozmiar plików. Automatycznie konwertuje nieobsługiwane formaty (HEIC/HEIF).",
+    "image_decode_failed": "Nie udało się odczytać tego obrazu. Wybierz inny plik lub wyłącz optymalizację obrazów.",
     "uploading_images": "Przesyłanie obrazów ({{count}})...",
     "image_processing_failed": "niepowodzenie",
     "image_too_large_gif": "GIF jest za duży. Maksymalny rozmiar to 15MB.",
@@ -931,7 +960,8 @@
       "muted": "wyciszone",
       "pending": "oczekujące",
       "roles": "role"
-    }
+    },
+    "for_you_posts": "Dla Ciebie"
   },
   "chat_widget": {
     "chat": "Czat",
@@ -939,7 +969,27 @@
     "set_up_account_tooltip": "Skonfiguruj swoje konto czatu na openhive.chat",
     "close_widget": "Zamknij widżet czatu",
     "open_app": "Otwórz aplikację czatu",
-    "open_widget": "Otwórz widżet czatu"
+    "open_widget": "Otwórz widżet czatu",
+    "connecting": "Łączenie z czatem…",
+    "sign_in_failed": "Nie udało się połączyć z czatem.",
+    "retry": "Spróbuj ponownie",
+    "rooms": "Pokoje",
+    "no_rooms": "Nie dołączyłeś jeszcze do żadnego pokoju.",
+    "messages": "Wiadomości",
+    "load_older": "Wczytaj starsze wiadomości",
+    "loading_older": "Wczytywanie starszych wiadomości…",
+    "load_older_failed": "Nie udało się wczytać starszych wiadomości.",
+    "history_start": "To jest początek pokoju.",
+    "composer_label": "Wiadomość",
+    "composer_placeholder": "Napisz wiadomość…",
+    "send": "Wyślij",
+    "sending": "Wysyłanie…",
+    "send_failed": "Nie wysłano.",
+    "encrypted_message": "Zaszyfrowana wiadomość.",
+    "encrypted_room": "Ten pokój jest zaszyfrowany.",
+    "unsupported_message": "Tej wiadomości nie można tu wyświetlić.",
+    "open_full_chat": "Otwórz pełny czat",
+    "unread_count": "Nieprzeczytane wiadomości: {{number}}"
   },
   "search_mode": {
     "search": "Szukaj",
@@ -967,6 +1017,13 @@
       "user_topic": "Posty użytkownika według tematu",
       "tag": "Tagi"
     }
+  },
+  "for_you_feed": {
+    "sign_in_prompt": "Zaloguj się, aby zobaczyć swój kanał.",
+    "unavailable": "Twój kanał Dla Ciebie jest teraz niedostępny.",
+    "service_not_responding": "Usługa rekomendacji nie odpowiedziała.",
+    "data_not_loaded": "Nie udało się wczytać części danych potrzebnych do kanału.",
+    "go_to_trending": "Zobacz popularne posty"
   },
   "lite_account": {
     "badge_prefix": "konto lite",

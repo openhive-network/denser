@@ -4,7 +4,7 @@
   "private": false,
   "scripts": {
     "clean": "rm -rf ./public/auth/* && rm -rf ./public/locales/* && rm -rf ./public/smart-signer/*",
-    "copy:public": "mkdir -p public/auth/assets public/locales public/smart-signer && cp ../../node_modules/@hiveio/hb-auth/dist/worker.js public/auth/ && cp -r ../../node_modules/@hiveio/hb-auth/dist/assets/. public/auth/assets/ && cp -r locales/. public/locales/ && cp -r ../../packages/smart-signer/locales/. public/locales/ && cp -r ../../packages/smart-signer/public/smart-signer/. public/smart-signer/",
+    "copy:public": "mkdir -p public/auth/assets public/locales public/smart-signer && cp ../../node_modules/@hiveio/hb-auth/dist/worker.js ../../packages/common-hiveio-packages/public/auth/releasable-worker.js public/auth/ && cp -r ../../node_modules/@hiveio/hb-auth/dist/assets/. public/auth/assets/ && cp -r locales/. public/locales/ && cp -r ../../packages/smart-signer/locales/. public/locales/ && cp -r ../../packages/smart-signer/public/smart-signer/. public/smart-signer/",
     "predev": "pnpm run clean && pnpm run copy:public",
     "dev": "react-env -- next dev -p 4000",
     "predevssl": "pnpm run copy:public",
@@ -37,27 +37,27 @@
     "@sentry/nextjs": "^10",
     "@types/big.js": "^6.2.2",
     "@types/node": "^24",
-    "@types/react": "19.3.0",
-    "@types/react-dom": "19.3.0",
+    "@types/react": "catalog:react-toolset",
+    "@types/react-dom": "catalog:react-toolset",
     "big.js": "^6.2.1",
     "copy-webpack-plugin": "^12.0.1",
     "dayjs": "^1.11.10",
     "googleapis": "^170.0.0",
     "i18next": "^23.7.9",
     "i18next-resources-to-backend": "^1.2.1",
-    "next": "^16.3.8",
+    "next": "catalog:react-toolset",
     "next-i18next": "^15.1.1",
     "next-qrcode": "^2.5.1",
     "next-themes": "^0.4.6",
     "next-transpile-modules": "^10.0.1",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "react": "catalog:react-toolset",
+    "react-dom": "catalog:react-toolset",
     "react-i18next": "^15.4.0",
     "recharts": "^2.10.3",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
-    "typescript": "5.3.3"
+    "@playwright/test": "catalog:playwright-toolset",
+    "typescript": "catalog:typescript-toolset"
   }
 }

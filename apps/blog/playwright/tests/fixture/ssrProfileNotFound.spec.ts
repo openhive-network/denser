@@ -39,7 +39,7 @@ for (const path of ['/this-page-does-not-exist-xyz', `${NONEXISTENT_PROFILE_PATH
 }
 
 // The recording's node has no lite support: lite.get_info is answered -32601, as such a node does.
-test('SAFE-17 — a lite account DID on a node without lite support renders the not-found page', async ({ page }) => {
+test('SAFE-18 — a lite account DID on a node without lite support renders the not-found page', async ({ page }) => {
   const response = await page.goto('/@did:lite:lite-smoke-1016');
 
   expect(response?.status()).toBe(404);

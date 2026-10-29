@@ -1,12 +1,15 @@
 import { getRenderer, getPreviewRenderer } from '@/blog/features/post-rendering/lib/renderer';
 import type { LoadSigner } from '@smart-signer/lib/use-lazy-signer';
 import { configuredImagesEndpoint } from '@ui/config/public-vars';
+import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
 import { TFunction } from 'i18next';
-import { Dispatch, SetStateAction } from 'react';
-import { processImageForUpload } from './image-processing';
+import { createElement, Dispatch, SetStateAction } from 'react';
+import { ImageDecodeErrorMessage } from '../image-decode-error-message';
+import { imageMarkdown } from './image-markdown';
+import { ImageDecodeError, processImageForUpload } from './image-processing';
 import type { BatchFileItem, FileProcessingStatus, ProcessingOptions } from './image-processing-types';
 
 const logger = getLogger('app');
@@ -177,6 +180,15 @@ const uploadImg = async (file: File, username: string, loadSigner: LoadSigner): 
   return '';
 };
 
+/** Shows a failed image upload to the user; the error itself has already been logged. */
+function notifyImageUploadFailed(error: unknown) {
+  if (error instanceof ImageDecodeError) {
+    toast({ description: createElement(ImageDecodeErrorMessage), variant: 'destructive' });
+    return;
+  }
+  handleError(error);
+}
+
 export const onImageUpload = async (
   file: File,
   insertText: (text: string, pos?: number) => void,
@@ -191,12 +203,11 @@ export const onImageUpload = async (
     const result = await processImageForUpload(file, processingOptions);
     const url = await uploadImg(result.file, username, loadSigner);
     const name = result.file.name;
-    const imageMarkdown = ` ![${name}](${!url ? 'UPLOAD FAILED' : url}) `;
-    insertText(imageMarkdown, cursorPos);
+    insertText(` ${imageMarkdown(name, url)} `, cursorPos);
   } catch (error) {
     logger.error('Image processing/upload failed for %s: %o', file.name, error);
-    handleError(error);
-    insertText(` ![${file.name}](UPLOAD FAILED) `, cursorPos);
+    notifyImageUploadFailed(error);
+    insertText(` ${imageMarkdown(file.name, '')} `, cursorPos);
   }
   setUploading?.(false);
 };
@@ -229,14 +240,14 @@ export const onImageDrop = async (
       const result = await processImageForUpload(file, processingOptions);
       const url = await uploadImg(result.file, username, loadSigner);
       const name = result.file.name;
-      const markdown = `![${name}](${!url ? 'UPLOAD FAILED' : url})\n\n`;
+      const markdown = `${imageMarkdown(name, url)}\n\n`;
       const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
       insertText(markdown, adjustedPos);
       insertOffset += markdown.length;
     } catch (error) {
       logger.error('Image processing/upload failed for %s: %o', file.name, error);
-      handleError(error);
-      const markdown = `![${file.name}](UPLOAD FAILED)\n\n`;
+      notifyImageUploadFailed(error);
+      const markdown = `${imageMarkdown(file.name, '')}\n\n`;
       const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
       insertText(markdown, adjustedPos);
       insertOffset += markdown.length;
@@ -277,14 +288,14 @@ export const onImagePaste = async (
       const result = await processImageForUpload(file, processingOptions);
       const url = await uploadImg(result.file, username, loadSigner);
       const name = result.file.name;
-      const markdown = `![${name}](${!url ? 'UPLOAD FAILED' : url})\n\n`;
+      const markdown = `${imageMarkdown(name, url)}\n\n`;
       const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
       insertText(markdown, adjustedPos);
       insertOffset += markdown.length;
     } catch (error) {
       logger.error('Image processing/upload failed for %s: %o', file.name, error);
-      handleError(error);
-      const markdown = `![${file.name}](UPLOAD FAILED)\n\n`;
+      notifyImageUploadFailed(error);
+      const markdown = `${imageMarkdown(file.name, '')}\n\n`;
       const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
       insertText(markdown, adjustedPos);
       insertOffset += markdown.length;
@@ -326,7 +337,7 @@ export const onBatchImageUpload = async (
       const name = result.file.name;
 
       if (url) {
-        const markdown = `![${name}](${url})\n\n`;
+        const markdown = `${imageMarkdown(name, url)}\n\n`;
         const adjustedPos = cursorPos !== undefined ? cursorPos + insertOffset : undefined;
         insertText(markdown, adjustedPos);
         insertOffset += markdown.length;

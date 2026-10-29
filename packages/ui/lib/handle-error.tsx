@@ -1,32 +1,28 @@
 'use client';
 
-import { transformError } from '@hive/transaction/lib/transform-error';
+import { summarizeErrorForLog, transformError } from '@hive/transaction/lib/transform-error';
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
+import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
+import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
+import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
+import { SupersededKeyWriteMessage } from '@smart-signer/components/superseded-key-write-message';
+import { findSupersededKeyWrite } from '@smart-signer/lib/superseded-key-write';
+import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
+import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-message';
+import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-message';
+import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
 import env from "@beam-australia/react-env";
 import { getLogger } from '@ui/lib/logging';
 import { appApiPath } from '@ui/lib/app-api-path';
+import { isUserCancelled } from '@ui/lib/user-cancelled';
 
 const logger = getLogger('app');
 
-/** Patterns for user-cancelled operations — not errors, no toast needed */
-const USER_CANCELLED_PATTERNS = [
-  'No password from user',
-  'rejected',
-  'user rejected',
-  'user denied',
-  'user cancelled'
-];
-
 /** Pattern for auth storage desync (IndexedDB cleared while session cookie remains) */
 const AUTH_STORAGE_DESYNC_PATTERN = /Auth for user .+ not found|AuthStorageMissingError/i;
-
-function isUserCancelled(error: unknown): boolean {
-  const msg = error instanceof Error ? error.message : String(error);
-  return USER_CANCELLED_PATTERNS.some(p => msg.toLowerCase().includes(p.toLowerCase()));
-}
 
 function isAuthStorageDesync(error: unknown): boolean {
   if (error && typeof error === 'object' && 'name' in error && error.name === 'AuthStorageMissingError') {
@@ -71,7 +67,7 @@ function performDesyncLogout(): void {
   }).catch(err => logger.error('Desync logout API call failed: %o', err));
 
   // Dispatch event so React Query invalidates user state
-  window.dispatchEvent(new CustomEvent('auth-storage-desync'));
+  dispatchAuthStorageDesync();
 }
 
 // A dynamic import() keeps the Sentry SDK out of the initial chunks of every page that can show an error toast.
@@ -94,8 +90,20 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     logger.warn('Auth storage desync detected in %s — triggering auto-logout', ctx?.method);
     performDesyncLogout();
     toast({
-      description: 'Your secure key storage was cleared by your browser. Please sign in again.',
+      description: <SafeStorageMissingMessage />,
       variant: 'default',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // Another tab interrupted saving a key to safe storage: say which key to add again
+  const supersededKeyWrite = findSupersededKeyWrite(error);
+  if (supersededKeyWrite) {
+    logger.error(error, 'Key write in %s was superseded by another app', ctx?.method);
+    toast({
+      description: <SupersededKeyWriteMessage {...supersededKeyWrite} />,
+      variant: 'destructive',
       ...toastOptions
     });
     return;
@@ -104,7 +112,8 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   // A broadcast signed with too weak a key: say which key it needs, keep the node's answer in the log only
   const missingAuthority = findMissingAuthority(error);
   if (missingAuthority) {
-    logger.error(error, 'Broadcast in %s lacks %s authority', ctx?.method, missingAuthority);
+    logger.error('Broadcast in %s lacks %s authority: %s', ctx?.method, missingAuthority, summarizeErrorForLog(error));
+    logger.debug(error, 'Broadcast in %s lacks %s authority', ctx?.method, missingAuthority);
     toast({
       description: <MissingAuthorityMessage role={missingAuthority} />,
       variant: 'destructive',
@@ -113,14 +122,49 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     return;
   }
 
-  const { errorTitle, fullError, isWellKnownError } = transformError<T>(error, ctx);
+  // The account is short of Resource Credits: say so with the node's amounts, keep its answer in the log only
+  const notEnoughRc = findNotEnoughRc(error);
+  if (notEnoughRc) {
+    logger.error('Broadcast in %s rejected for lack of RC: %s', ctx?.method, summarizeErrorForLog(error));
+    logger.debug(error, 'Broadcast in %s rejected for lack of RC', ctx?.method);
+    toast({
+      description: <NotEnoughRcMessage {...notEnoughRc} />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // The app's server did not answer in time: ask for a retry, keep where and how long it waited in the log
+  if (error instanceof FetchTimeoutError) {
+    logger.error(
+      error,
+      'Request in %s to %s timed out after %d ms (limit %d ms)',
+      ctx?.method,
+      error.url,
+      error.elapsedMs,
+      error.timeoutMs
+    );
+    toast({
+      description: <RequestTimeoutMessage />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  const { errorTitle, fullError, isWellKnownError, isKeychainMessageMissing } = transformError<T>(error, ctx);
 
   if (!!env('SENTRY_DSN') && !isWellKnownError)
     reportToSentry(fullError);
 
   toast({
     description: (
-      <ErrorToastContent errorTitle={errorTitle} fullError={fullError} displayControls={!isWellKnownError} />
+      <ErrorToastContent
+        errorTitle={isKeychainMessageMissing ? <KeychainErrorFallbackTitle /> : errorTitle}
+        fullError={fullError}
+        displayControls={!isWellKnownError}
+      />
     ),
     variant: 'destructive',
     ...toastOptions

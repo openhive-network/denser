@@ -1,3 +1,5 @@
+import { describeError } from './describe-error';
+
 export type AuthorityRole = 'owner' | 'active' | 'posting';
 
 // hived names the role in the exception (`tx_missing_active_auth`) and in its message
@@ -16,16 +18,6 @@ export class MissingAuthorityError extends Error {
     super(`missing required ${role} authority`);
     this.name = 'MissingAuthorityError';
     this.role = role;
-  }
-}
-
-function describeError(error: unknown): string {
-  if (error instanceof Error) return `${error.name}: ${error.message}`;
-  if (typeof error === 'string') return error;
-  try {
-    return JSON.stringify(error) ?? String(error);
-  } catch {
-    return String(error);
   }
 }
 

@@ -49,6 +49,14 @@ export async function clickUntilOpen(trigger: Locator, opened: Locator): Promise
   }).toPass({ timeout: TIMEOUTS.HYDRATION });
 }
 
+/** Taps `trigger` until `opened` is visible (same hydration race as above); needs a `hasTouch` context. */
+export async function tapUntilOpen(trigger: Locator, opened: Locator): Promise<void> {
+  await expect(async () => {
+    await trigger.tap();
+    await expect(opened).toBeVisible({ timeout: testTimeout('retry-open-visible', 1000) });
+  }).toPass({ timeout: TIMEOUTS.HYDRATION });
+}
+
 /** Focuses `trigger` and presses `key` until `opened` is visible (same hydration race as above). */
 export async function pressUntilOpen(trigger: Locator, key: string, opened: Locator): Promise<void> {
   await expect(async () => {

@@ -1,8 +1,12 @@
 {
   "global": {
+    "close": "Close",
     "no_rewards": "No rewards pending redemption.",
     "loading": "Loading",
     "publishing": "Publishing...",
+    "not_confirmed": "Not confirmed yet",
+    "comment_not_confirmed": "Your comment may not have been processed. Reload the page to check before trying again.",
+    "vote_not_confirmed": "Your vote may not have been processed. Reload the page to check before trying again.",
     "confirmed_indexing": "Confirmed on blockchain. Waiting for indexing...",
     "indexing_slow": "Indexing is taking longer than usual. This is normal during high traffic.",
     "indexing_timeout": "Post indexing timed out. Your post may still appear shortly — try reloading the page.",
@@ -36,7 +40,12 @@
       "months": " months",
       "a_month": " a month",
       "years": " years",
-      "a_year": " a year"
+      "a_year": " a year",
+      "hours_count_one": "{{count}} hour",
+      "hours_count_other": "{{count}} hours",
+      "minutes_count_one": "{{count}} minute",
+      "minutes_count_other": "{{count}} minutes",
+      "hours_and_minutes": "{{hours}} and {{minutes}}"
     },
     "profile_picture": "Profile picture",
     "notifications_region": "Notifications ({hotkey})"
@@ -179,7 +188,8 @@
       "hot": "Hot",
       "new": "New",
       "payouts": "Payouts",
-      "muted": "Muted"
+      "muted": "Muted",
+      "for_you": "For You"
     },
     "communitie_sort": {
       "rank": "Rank",
@@ -230,6 +240,7 @@
       "downvote_weight": "Downvote weight",
       "submit_upvote_percent": "Submit upvote at {{votePercent}}%",
       "submit_downvote_percent": "Submit downvote at {{votePercent}}%",
+      "vote_after_payout_note": "Voting on content after its payout does not generate any new rewards",
       "no_votes": "no votes",
       "vote": "1 vote",
       "votes": "{{votes}} votes",
@@ -332,7 +343,9 @@
     "google_key_not_found_title": "Key Not Found in Wallet",
     "google_key_not_found_description": "No stored Hive {{keyType}} key found for user {{username}} in Google Drive wallet.",
     "go_to_hive_bridge": "Go to Hive Bridge",
-    "completing_google_auth": "Completing Google authorization..."
+    "completing_google_auth": "Completing Google authorization...",
+    "dialog_title": "Sign In",
+    "dialog_description": "Sign in to your account using your posting key."
   },
   "user_profile": {
     "reputation": "Reputation",
@@ -415,14 +428,21 @@
         "reset_muted_list": "Reset Muted List",
         "reset_followed_blacklists": "Reset Followed Blacklists",
         "reset_followed_muted_list": "Reset Followed Muted Lists",
-        "reset_all_lists": "Reset All Follows/Lists",
         "busy_button": "BUSY, PLEASE WAIT",
         "first_button": "First",
         "previous_button": "Previous",
         "next_button": "Next",
         "last_button": "Last",
         "viewing_page": "Viewing Page {{current}} of {{total}}",
-        "users_on_list": "Users On List: {{number}}"
+        "users_on_list": "Users On List: {{number}}",
+        "unfollow_all": {
+          "button": "Unfollow all",
+          "title": "Unfollow all accounts?",
+          "description_one": "This will unfollow the {{count}} account you follow. It can't be undone.",
+          "description_other": "This will unfollow all {{count}} accounts you follow. It can't be undone.",
+          "confirm_prompt": "Type your account name ({{username}}) to confirm.",
+          "cancel": "Cancel"
+        }
       },
       "username_placeholder": "username"
     },
@@ -705,6 +725,8 @@
     "enter_content": "Enter content to submit",
     "enter_title_and_content": "Enter a title and content to submit",
     "enter_tags": "Enter at least one tag to submit",
+    "image_upload_unavailable": "Image upload isn't available when signed in with {{method}}. Paste an image URL instead, or sign in with another method.",
+    "remove_failed_uploads": "Remove the failed image uploads (UPLOAD FAILED) before submitting.",
     "markdown_styling_guide": "Markdown Styling Guide",
     "power_up": " Power up 100%",
     "maximum_characters": "Maximum {{num}} characters",
@@ -720,6 +742,7 @@
     "convert_hive_links_tooltip": "Automatically converts pasted links from Hive blog frontends to frontend-agnostic relative paths, so your post works on any Hive app",
     "optimize_images": "Optimize images",
     "optimize_images_tooltip": "Resize and compress images before upload for faster uploads and smaller file sizes. Converts unsupported formats (HEIC/HEIF) automatically.",
+    "image_decode_failed": "This image couldn't be read. Try another file or turn off image optimization.",
     "uploading_images": "Uploading {{count}} images...",
     "image_processing_failed": "failed",
     "image_too_large_gif": "GIF is too large. Maximum size is 15MB.",
@@ -931,7 +954,8 @@
       "muted": "muted",
       "pending": "pending",
       "roles": "roles"
-    }
+    },
+    "for_you_posts": "For You"
   },
   "chat_widget": {
     "chat": "Chat",
@@ -939,7 +963,27 @@
     "set_up_account_tooltip": "Set up your chat account on openhive.chat",
     "close_widget": "Close Chat Widget",
     "open_app": "Open Chat App",
-    "open_widget": "Open Chat Widget"
+    "open_widget": "Open Chat Widget",
+    "connecting": "Connecting to chat…",
+    "sign_in_failed": "Couldn't connect to chat.",
+    "retry": "Try again",
+    "rooms": "Rooms",
+    "no_rooms": "You haven't joined any rooms yet.",
+    "messages": "Messages",
+    "load_older": "Load older messages",
+    "loading_older": "Loading older messages…",
+    "load_older_failed": "Couldn't load older messages.",
+    "history_start": "This is the start of the room.",
+    "composer_label": "Message",
+    "composer_placeholder": "Write a message…",
+    "send": "Send",
+    "sending": "Sending…",
+    "send_failed": "Not sent.",
+    "encrypted_message": "Encrypted message.",
+    "encrypted_room": "This room is encrypted.",
+    "unsupported_message": "This message can't be shown here.",
+    "open_full_chat": "Open full chat",
+    "unread_count": "Unread messages: {{number}}"
   },
   "search_mode": {
     "search": "Search",
@@ -967,6 +1011,13 @@
       "user_topic": "User posts by topic",
       "tag": "Tags"
     }
+  },
+  "for_you_feed": {
+    "sign_in_prompt": "Sign in to see your feed.",
+    "unavailable": "Your For You feed isn't available right now.",
+    "service_not_responding": "The recommendation service didn't respond.",
+    "data_not_loaded": "Some of the data the feed needs couldn't be loaded.",
+    "go_to_trending": "See Trending posts"
   },
   "lite_account": {
     "badge_prefix": "lite account",

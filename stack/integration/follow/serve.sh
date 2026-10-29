@@ -9,7 +9,8 @@
 # server.js), from the release directory rather than from the checkout, so a build
 # in the checkout never touches what is being served. A server that exits ends this
 # script, and the container's restart policy starts the current release again.
-# /releases/<app>/serving.json names the release being served.
+# /releases/<app>/serving.json names the release being served; a status file that
+# cannot be written (a full disk) is reported and the server keeps running.
 set -euo pipefail
 
 app=${1:?usage: serve.sh APP}
@@ -25,6 +26,14 @@ pid=""
 stop() { [ -z "$pid" ] || { kill -- -"$pid" 2>/dev/null || kill "$pid" 2>/dev/null || true; wait "$pid" 2>/dev/null || true; }; }
 trap 'stop; exit 0' TERM INT
 
+write_serving() {
+    if ! { printf '{"release":"%s","since":"%s"}\n' "$1" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$dir/serving.json.tmp" \
+            && mv -f "$dir/serving.json.tmp" "$dir/serving.json"; } 2> /dev/null; then
+        echo "serve: $app: could not write $dir/serving.json; serving $1 regardless" >&2
+        rm -f "$dir/serving.json.tmp" 2> /dev/null || true
+    fi
+}
+
 while true; do
     release=$(readlink "$dir/current")
     echo "serve: $app: starting $release"
@@ -32,8 +41,7 @@ while true; do
     revision=$(sed -n 's/.*"revision":"\([0-9a-f]*\)".*/\1/p' "$dir/$release/release.json")
     (cd "$dir/$release/apps/$app" && REACT_APP_GIT_COMMIT_SHA="$revision" exec setsid "$react_env" -- node server.js) &
     pid=$!
-    printf '{"release":"%s","since":"%s"}\n' "$release" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$dir/serving.json.tmp"
-    mv -f "$dir/serving.json.tmp" "$dir/serving.json"
+    write_serving "$release"
     while sleep 3; do
         if ! kill -0 "$pid" 2>/dev/null; then
             wait "$pid" && rc=0 || rc=$?

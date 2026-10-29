@@ -62,7 +62,7 @@ export class SignerWif extends SignerHbauth {
     _requiredKeyType?: KeyAuthorityType
   ) {
     const { username, keyType } = this;
-    logger.info('signDigest #wif args: %o', { digest, username, keyType });
+    logger.debug('signDigest #wif args: %o', { digest, username, keyType });
 
     const validKeyTypes = ['posting', 'active', 'owner'];
     if (!validKeyTypes.includes(keyType)) {

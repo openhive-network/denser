@@ -25,7 +25,8 @@
  *        --allowed-host <host:port>... [--miss-counter <url>...] [--baseline <result.json>]
  *        [--revision <label>] [--fixture-set <name>] [--clock <iso>] [--runs N]
  *        [--route <path>...] [--cases <file>]
- * --miss-counter URLs answer JSON with a numeric `misses`; --cases appends
+ * --miss-counter URLs answer JSON with a numeric `misses` and, optionally, `missed`,
+ * the paths that missed; --cases appends
  * junit_write_cases lines (.aidev/junit-helpers.sh), one case per route.
  */
 
@@ -108,21 +109,33 @@ async function measureRoute(options, route, thresholds, baselineMedian) {
 
 async function readMisses(counters) {
   const misses = {};
+  const missed = {};
   for (const url of counters) {
     try {
       const response = await fetch(url);
-      misses[url] = (await response.json()).misses;
+      const counter = await response.json();
+      misses[url] = counter.misses;
+      if (counter.missed?.length) missed[url] = counter.missed;
     } catch (err) {
       misses[url] = `unreadable: ${err.message}`;
     }
   }
-  return misses;
+  return { misses, missed };
 }
 
-function hermeticOf(routes, misses) {
+function hermeticOf(routes, { misses, missed }) {
   const offHost = routes.flatMap((r) => r.offHost.map((url) => ({ route: r.route, url })));
   const replayMisses = Object.entries(misses).filter(([, n]) => n !== 0);
-  return { status: offHost.length || replayMisses.length ? 'leaked' : 'hermetic', offHost, misses };
+  return { status: offHost.length || replayMisses.length ? 'leaked' : 'hermetic', offHost, misses, missed };
+}
+
+const MISSED_PATHS_SHOWN = 5;
+
+function missLine(hermetic, url, n) {
+  const paths = hermetic.missed?.[url] || [];
+  const more = paths.length > MISSED_PATHS_SHOWN ? `, ${paths.length - MISSED_PATHS_SHOWN} more` : '';
+  const shown = paths.length ? ` (${paths.slice(0, MISSED_PATHS_SHOWN).join(', ')}${more})` : '';
+  return `${url}: ${n} misses${shown}`;
 }
 
 function statusOf(routes, hermetic, comparison) {
@@ -152,7 +165,7 @@ function routeCaseLines(result) {
   }
   const leakedMisses = Object.entries(result.hermetic.misses).filter(([, n]) => n !== 0);
   lines.push(['case', 'no unrecorded request reached a replay server', leakedMisses.length ? 'fail' : 'pass', 0,
-    leakedMisses.map(([url, n]) => `${url}: ${n} misses`).join('; ')].join('\t'));
+    leakedMisses.map(([url, n]) => missLine(result.hermetic, url, n)).join('; ')].join('\t'));
   return lines;
 }
 
@@ -177,6 +190,9 @@ function printSummary(result) {
     for (const url of route.offHost) console.log(`      left the host: ${url}`);
   }
   console.log(`Hermetic: ${result.hermetic.status}; replay misses ${JSON.stringify(result.hermetic.misses)}`);
+  for (const [url, paths] of Object.entries(result.hermetic.missed || {})) {
+    console.log(`  missed at ${url}:\n${paths.map((p) => `    ${p}`).join('\n')}`);
+  }
   if (result.comparison) console.log(`\n${formatComparison(result.comparison).join('\n')}`);
   else console.log('\nNo baseline: nothing compared.');
   console.log(`\n${result.status === 'pass' ? '✅' : '❌'} ${result.status}`);

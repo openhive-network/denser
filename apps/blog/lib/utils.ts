@@ -6,13 +6,18 @@ import { Symbol } from '@ui/lib/asset-constants';
 import { accountReputation } from '@ui/lib/reputation';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
 import { commonVariables } from '@ui/lib/common-variables';
+import { configuredFypApiUrl } from '@ui/config/public-vars';
 
 // Re-export Symbol and accountReputation for backwards compatibility
 export { Symbol, accountReputation };
 // NaiMap is replaced by NaiToSymbol from @hive/ui
 
 export const DEFAULT_OBSERVER = commonVariables.defaultObserver;
-export type SortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
+/** The sort of the For You feed (`/for-you`), served by haf_fyp rather than the bridge API. */
+export const FOR_YOU_SORT = 'for-you';
+/** Whether the For You feed is on: FYP_API_URL is set. */
+export const isForYouEnabled = configuredFypApiUrl !== undefined;
+export type SortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted' | typeof FOR_YOU_SORT;
 
 export interface Preferences {
   nsfw: 'hide' | 'warn' | 'show';
@@ -28,7 +33,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   referral_system: 'enabled'
 };
 
-export type sortTypes = 'trending' | 'hot' | 'created' | 'payout' | 'muted';
+export type sortTypes = SortTypes;
 export const sortToTitle = (sort: sortTypes) => {
   switch (sort) {
     case 'trending':
@@ -41,6 +46,8 @@ export const sortToTitle = (sort: sortTypes) => {
       return 'Pending';
     case 'muted':
       return 'Muted';
+    case FOR_YOU_SORT:
+      return 'For You';
     default:
       return 'Trending';
   }
@@ -152,24 +159,17 @@ export function extractPictureFromPostBody(urls: string[]): string[] {
   return picturesFromPostBody;
 }
 
+/** Time left until `date`, e.g. "15 hours and 50 minutes"; empty once it has passed. */
 export function hoursAndMinutes(date: Date, t: TFunction<'common_blog', undefined>) {
   const today = dayjs();
   const cooldownMin = dayjs(date).diff(today, 'minute') % 60;
   const cooldownH = dayjs(date).diff(today, 'hour');
-
-  return (
-    (cooldownH === 1
-      ? t('global.time.an_hour')
-      : cooldownH > 1
-        ? cooldownH + ' ' + t('global.time.hours')
-        : '') +
-    (cooldownH && cooldownMin ? ' and ' : '') +
-    (cooldownMin === 1
-      ? t('global.time.a_minute')
-      : cooldownMin > 0
-        ? cooldownMin + ' ' + t('global.time.minutes')
-        : '')
-  );
+  const hoursText = cooldownH > 0 ? t('global.time.hours_count', { count: cooldownH }) : '';
+  const minutesText = cooldownMin > 0 ? t('global.time.minutes_count', { count: cooldownMin }) : '';
+  if (hoursText && minutesText) {
+    return t('global.time.hours_and_minutes', { hours: hoursText, minutes: minutesText });
+  }
+  return hoursText || minutesText;
 }
 
 export function getRewardsString(account: FullAccount, t: TFunction<'common_blog', undefined>): string {

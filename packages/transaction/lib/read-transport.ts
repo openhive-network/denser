@@ -27,13 +27,74 @@ const isRequestRejected = (status: number): boolean =>
   status >= 400 && status < 500 && status !== 404 && status !== 408 && status !== 429;
 
 /**
+ * REST endpoints (`<api>.<method>`) newer than the rest of their API, which nodes serving the API
+ * may not have yet: their 404 means the node lacks the endpoint, not the API.
+ */
+const ENDPOINTS_NOT_ON_EVERY_NODE = new Set([
+  'balance-api.proposalsPayments',
+  ...[
+    'rankedPosts',
+    'post',
+    'postVotes',
+    'postDiscussion',
+    'postHeader',
+    'postRebloggedBy',
+    'accountPosts',
+    'accountProfile',
+    'accountFollowers',
+    'accountFollowing',
+    'accountNotifications',
+    'accountUnreadNotifications',
+    'accountFollowList',
+    'accountFollowsAnyLists',
+    'accountSubscriptions',
+    'communities',
+    'community',
+    'communityRoles',
+    'communitySubscribers',
+    'searchPosts'
+  ].map((endpoint) => `hivemind-api.${endpoint}`)
+]);
+
+/**
+ * REST endpoints (`<api>.<method path>`) whose cold query can outlast the request timeout on a healthy
+ * node: their timeout is that node's answer, not a sign that it cannot serve the API.
+ */
+const ENDPOINTS_SLOWER_THAN_A_TIMEOUT = new Set(['hivesense-api.posts.author.permlink.similar']);
+
+/** Whether the request was aborted by its own timeout. */
+const isRequestTimeout = (error: ReadTransportError): boolean =>
+  error.cause instanceof Error && error.cause.name === 'TimeoutError';
+
+/** PostgREST's code for a request naming no SQL function the node has. */
+const POSTGREST_FUNCTION_NOT_FOUND = 'PGRST202';
+
+/**
+ * Whether a failed REST call means the node lacks the endpoint called: it answered 404, or
+ * PostgREST's "function not found" (PGRST202) whatever the status.
+ */
+export const isEndpointMissing = (error: unknown): boolean => {
+  if (!(error instanceof ReadTransportError)) return false;
+  const { body } = error;
+  const code = typeof body === 'object' && body !== null ? Reflect.get(body, 'code') : undefined;
+  return error.status === 404 || code === POSTGREST_FUNCTION_NOT_FOUND;
+};
+
+/**
  * Whether a failed REST call means this node cannot serve that REST API: it does not have it (404),
  * is down or overloaded (5xx, 408, 429, timeout, network failure) or did not answer with JSON, so
- * another node may serve it. False for a request the API rejected (any other 4xx) and for any error
+ * another node may serve it. False for a request the API rejected (any other 4xx), for a missing
+ * endpoint (see `isEndpointMissing`) at `path` (e.g. `['balance-api', 'proposalsPayments']`) that
+ * not every node has, for a timeout of an endpoint whose cold query may take longer, and for any error
  * that is not a `ReadTransportError`.
  */
-export const isRestApiUnavailable = (error: unknown): boolean =>
-  error instanceof ReadTransportError && (error.status === undefined || !isRequestRejected(error.status));
+export const isRestApiUnavailable = (error: unknown, path: readonly string[] = []): boolean => {
+  if (!(error instanceof ReadTransportError)) return false;
+  const endpoint = path.join('.');
+  if (error.status === undefined) return !(isRequestTimeout(error) && ENDPOINTS_SLOWER_THAN_A_TIMEOUT.has(endpoint));
+  if (isEndpointMissing(error) && ENDPOINTS_NOT_ON_EVERY_NODE.has(endpoint)) return false;
+  return !isRequestRejected(error.status);
+};
 
 const describeRequest = (request: IReadRequest): string => `"${request.method} ${request.endpoint + request.url}"`;
 
@@ -53,7 +114,9 @@ const parseBody = (request: IReadRequest, status: number, text: string): unknown
 const toTransportError = (request: IReadRequest, error: unknown): ReadTransportError => {
   if (error instanceof ReadTransportError) return error;
   const name = error instanceof Error ? error.name : undefined;
-  if (name === 'TimeoutError') return new ReadTransportError(`Request timed out: ${describeRequest(request)}`, request);
+  if (name === 'TimeoutError') {
+    return new ReadTransportError(`Request timed out: ${describeRequest(request)}`, request, undefined, error);
+  }
   if (name === 'AbortError') {
     return new ReadTransportError(`Request aborted by user action: ${describeRequest(request)}`, request);
   }

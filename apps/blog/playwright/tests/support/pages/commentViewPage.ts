@@ -104,7 +104,7 @@ export class CommentViewPage {
     this.getResponseCommentDownvoteButton = this.getResponseCommentFooter.locator(
       '[data-testid="comment-card-footer-downvote"]'
     );
-    this.getResponseCommentPayout = this.getResponseCommentFooter.locator('[data-testid="post-payout"]');
+    this.getResponseCommentPayout = this.getResponseCommentFooter.locator('[data-testid="comment-card-footer-payout"]');
     this.getResponsePostCommentPayout = this.page.getByTestId('post-card-footer').getByTestId('post-payout');
     this.getResponseCommentReply = this.getResponseCommentFooter.locator(
       '[data-testid="comment-card-footer-reply"]'

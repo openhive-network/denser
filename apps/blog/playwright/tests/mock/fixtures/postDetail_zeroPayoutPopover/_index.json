@@ -1,0 +1,9 @@
+{
+  "testName": "postDetail_zeroPayoutPopover",
+  "base": "postDetail_footerPopovers",
+  "additive": true,
+  "note": "Replay-only corpus for postPayoutZeroPopover.spec.ts: postDetail_footerPopovers with postDetail 0003 (bridge.get_discussion of the post) patched so two unvoted $0.00 comments are still pending (is_paidout false, payout_at 2099-01-01T00:00:00): @hivebuzz/hivebuzz-notify-gtg-20210630t180220000z gets a 100% hbdstabilizer beneficiary and a 100 HBD max accepted payout, @erialos/re-gtg-qxzw2i a declined payout (max accepted payout 0). Every other field is the recorded value. `additive: true` because the dir only patches a base key; it carries no recording of its own.",
+  "overlayFiles": [
+    "0001-bridge.get_discussion.json"
+  ]
+}

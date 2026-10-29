@@ -10,13 +10,13 @@
     "@hive/smart-signer": "workspace:*",
     "@hive/ui": "workspace:*",
     "@hiveio/wax": "catalog:hiveio-toolset",
-    "@tanstack/react-query": "^5.104.1",
-    "next": "^16.3.8",
+    "@tanstack/react-query": "catalog:react-toolset",
+    "next": "catalog:react-toolset",
     "pino": "^8.17.1",
     "pino-pretty": "^10.2.0"
   },
   "devDependencies": {
     "@types/node": "^24",
-    "typescript": "5.3.3"
+    "typescript": "catalog:typescript-toolset"
   }
 }

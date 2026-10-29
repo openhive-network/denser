@@ -393,6 +393,39 @@ describe('DefaultRender', () => {
         expect(rendered).to.include('pull-columns');
     });
 
+    it('should pair alternating pull-right/pull-left image divs without nesting wrappers or swallowing following content', () => {
+        const renderer = new DefaultRenderer(defaultOptions);
+        const raw = `<div class="pull-right">https://example.com/1.jpg</div>
+
+<div class="pull-left">https://example.com/2.jpg</div>
+
+<div class="pull-right">https://example.com/3.jpg</div>
+
+<div class="pull-left">https://example.com/4.jpg</div>
+
+* * *
+
+### Location
+
+Text after the images.`;
+        const rendered = renderer.render(raw).trim();
+
+        const wrappers = rendered.split('<div class="pull-columns">').slice(1);
+        expect(wrappers).to.have.length(2);
+        for (const wrapper of wrappers) {
+            // Each wrapper holds exactly one right + one left column and closes before the next wrapper
+            expect(wrapper).to.match(/^<div class="pull-right">.*?\.jpg.*?<\/div><div class="pull-left">.*?\.jpg.*?<\/div><\/div>/s);
+        }
+
+        // Content after the images is at div depth 0
+        const beforeHr = rendered.substring(0, rendered.indexOf('<hr'));
+        expect(rendered.indexOf('<hr')).to.be.greaterThan(-1);
+        const opens = (beforeHr.match(/<div[\s>]/g) || []).length;
+        const closes = (beforeHr.match(/<\/div>/g) || []).length;
+        expect(opens).to.equal(closes, 'hr and following content must not be nested inside pull-columns');
+        expect(rendered).to.include('Text after the images.');
+    });
+
     it('should handle bilingual post with bold center headers in pull columns', () => {
         const renderer = new DefaultRenderer(defaultOptions);
         // Real-world pattern from bilingual Hive posts: unquoted attributes,

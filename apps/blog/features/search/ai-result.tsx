@@ -22,6 +22,7 @@ import {
   nextAiSearchPageState,
   partitionHiveSensePosts,
   promiseWithTimeout,
+  AI_SEARCH_BODY_LENGTH,
   AI_SEARCH_REQUEST_TIMEOUT_MS
 } from '@transaction/lib/hivesense-search';
 
@@ -135,7 +136,8 @@ const AIResult = ({
           }),
           AI_SEARCH_REQUEST_TIMEOUT_MS,
           'getPostsByIds'
-        )
+        ),
+        AI_SEARCH_BODY_LENGTH
       );
 
       const validPosts = Array.isArray(fullPostData)

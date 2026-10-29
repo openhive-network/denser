@@ -7,9 +7,9 @@ import { encryptMemoWithKeychain, decryptMemoWithKeychain } from './keychain-mem
  * sent lowercase `'memo'`, but the extension's `encodeMessage` handler
  * exact-matches capitalized `'Memo'` (`KeychainKeyTypes`) - a silent mismatch
  * that fell back to the recipient's POSTING key, producing undecryptable
- * ciphertext. `encryptMemoWithKeychain` bypasses the provider with the correct
- * casing; decode was never affected (case-insensitive there), so
- * `decryptMemoWithKeychain` just uses the standard provider.
+ * ciphertext. Both directions must request `'Memo'`: `encryptMemoWithKeychain`
+ * calls the extension directly, `decryptMemoWithKeychain` goes through the
+ * provider, which sends that casing since wax !655.
  */
 
 type KeychainCallback = (response: { success: boolean; result?: string; error?: string }) => void;
@@ -37,7 +37,7 @@ describe('keychain-memo-crypto: memo key-type casing (regression for #605 / #713
     assert.equal(result, '#encrypted');
   });
 
-  it('decryptMemoWithKeychain (via KeychainProvider) requests the lowercase "memo" role', async () => {
+  it('decryptMemoWithKeychain (via KeychainProvider) requests the capitalized "Memo" role', async () => {
     let capturedMethod: string | undefined;
     stubKeychain({
       requestVerifyKey: (_account: string, _message: string, method: string, callback: KeychainCallback) => {
@@ -47,7 +47,7 @@ describe('keychain-memo-crypto: memo key-type casing (regression for #605 / #713
     });
 
     const result = await decryptMemoWithKeychain('quochuy', '#encrypted');
-    assert.equal(capturedMethod, 'memo');
+    assert.equal(capturedMethod, 'Memo');
     assert.equal(result, '#secret');
   });
 

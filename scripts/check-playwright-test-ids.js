@@ -1,0 +1,131 @@
+#!/usr/bin/env node
+/**
+ * Fails when two Playwright test titles of one app start with the same test ID.
+ *
+ * A title starting with an ID (`CMT-09: …`, `WALLET-PROPOSALS-SEARCH-01: …`) is how
+ * specs, `-g` filters, notes and commits name a test, so an ID has to name one test.
+ * Parallel changes each picking "the next free number" in a file collide silently.
+ *
+ * Checked: the first argument of every test(…), test.skip/only/fixme/fail(…) and
+ * test.describe(…) (with .serial/.parallel/.skip/.only/.fixme) call in
+ * every .ts file under apps/<app>/playwright, when it is a quoted string that starts with an ID
+ * (`[A-Z][A-Z0-9-]*-\d+[a-z]?`) followed by optional spaces and a separator: `:`, `—`, `–` or
+ * ` - `. A hyphen not spaced on both sides is part of the ID (`CMT-12-3 —`) or of no separator. The summary
+ * line counts each separator, so a new form shows up there.
+ *
+ * Namespace: per app. Each app's Playwright configs run only its own specs, so a
+ * `-g` filter never spans both apps, and the wallet prefixes its own IDs (WALLET-…);
+ * the same ID in the blog and in the wallet is allowed.
+ *
+ * A template-literal title whose ID and separator come before any `${…}` is checked
+ * like a quoted one (its loop iterations share one location). Not checked: template
+ * titles with `${…}` inside the ID (often one ID per loop iteration) are listed as
+ * skipped; titles without a separator after the ID, and titles passed as a variable,
+ * are not seen at all.
+ *
+ * Usage: node scripts/check-playwright-test-ids.js
+ */
+const fs = require('fs');
+const path = require('path');
+
+const TITLE_CALL = /(?<![\w.$])test((?:\.(?:describe|skip|only|fixme|fail|serial|parallel))*)\(\s*(['"`])/g;
+const TEST_ID = /^([A-Z][A-Z0-9-]*-\d+[a-z]?) *(:|—|–| - )/;
+const TEMPLATE_ID_PREFIX = /^[A-Z][A-Z0-9-]*-(?:\d|\$\{)/;
+
+function lineAt(source, index) {
+  let line = 1;
+  for (let i = 0; i < index; i++) if (source[i] === '\n') line++;
+  return line;
+}
+
+/**
+ * The test IDs titles in one file's source start with, and the lines of the
+ * template-literal titles that look like they start with a computed one.
+ * Returns { ids: [{ id, separator, line }], templateLines: [line] }, `separator`
+ * without its spaces (`:`, `—`, `–` or `-`).
+ */
+function findTestIds(source) {
+  const ids = [];
+  const templateLines = [];
+  for (const match of source.matchAll(TITLE_CALL)) {
+    const quote = match[2];
+    const textStart = match.index + match[0].length;
+    const text = source.slice(textStart, textStart + 200);
+    const line = lineAt(source, textStart);
+    const id = text.match(TEST_ID);
+    if (id) ids.push({ id: id[1], separator: id[2].trim(), line });
+    else if (quote === '`' && TEMPLATE_ID_PREFIX.test(text)) templateLines.push(line);
+  }
+  return { ids, templateLines };
+}
+
+/** How many times each separator occurs in [{ separator }], as `":" 12, "—" 3`, most frequent first. */
+function formatSeparatorCounts(ids) {
+  const counts = new Map();
+  for (const { separator } of ids) counts.set(separator, (counts.get(separator) ?? 0) + 1);
+  return [...counts]
+    .sort(([a, x], [b, y]) => y - x || a.localeCompare(b))
+    .map(([separator, count]) => `"${separator}" ${count}`)
+    .join(', ');
+}
+
+/** The IDs that occur more than once in [{ id, location }], each with all its locations, sorted by ID. */
+function findDuplicateIds(entries) {
+  const locationsById = new Map();
+  for (const { id, location } of entries) {
+    if (!locationsById.has(id)) locationsById.set(id, []);
+    locationsById.get(id).push(location);
+  }
+  return [...locationsById]
+    .filter(([, locations]) => locations.length > 1)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([id, locations]) => ({ id, locations }));
+}
+
+function tsFiles(dir) {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) return entry.name === 'node_modules' ? [] : tsFiles(full);
+    return entry.name.endsWith('.ts') ? [full] : [];
+  });
+}
+
+function main() {
+  const root = path.join(__dirname, '..');
+  const apps = fs
+    .readdirSync(path.join(root, 'apps'))
+    .filter((app) => fs.existsSync(path.join(root, 'apps', app, 'playwright')))
+    .sort();
+  let failed = false;
+  for (const app of apps) {
+    const entries = [];
+    const skipped = [];
+    for (const file of tsFiles(path.join(root, 'apps', app, 'playwright')).sort()) {
+      const relative = path.relative(root, file);
+      const { ids, templateLines } = findTestIds(fs.readFileSync(file, 'utf8'));
+      entries.push(...ids.map(({ id, separator, line }) => ({ id, separator, location: `${relative}:${line}` })));
+      skipped.push(...templateLines.map((line) => `${relative}:${line}`));
+    }
+    const duplicates = findDuplicateIds(entries);
+    for (const { id, locations } of duplicates) {
+      console.error(`apps/${app}: test ID ${id} is used ${locations.length} times:`);
+      for (const location of locations) console.error(`  ${location}`);
+    }
+    if (duplicates.length > 0) failed = true;
+    const separatorSummary = entries.length > 0 ? ` (separators: ${formatSeparatorCounts(entries)})` : '';
+    console.log(`apps/${app}: ${entries.length} test IDs${separatorSummary}, ${duplicates.length} duplicated`);
+    if (skipped.length > 0) {
+      console.log(`apps/${app}: ${skipped.length} template-literal titles not checked: ${skipped.join(', ')}`);
+    }
+  }
+  if (failed) {
+    console.error('Renumber the test you added to the next free number in its prefix, and update references to it.');
+    process.exit(1);
+  }
+}
+
+if (require.main === module) {
+  main();
+}
+
+module.exports = { findTestIds, findDuplicateIds, formatSeparatorCounts };

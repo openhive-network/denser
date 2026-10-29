@@ -8,11 +8,14 @@ import dynamic from 'next/dynamic';
 import type { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
 import { siteConfig } from '@ui/config/site';
+import { useTranslation } from '@/blog/i18n/client';
 import LiteLoginEntry from '@/blog/features/lite-account/lite-login-entry';
 
 // The sign-in form brings the signers, wax and the form validation: load it when the dialog opens.
 const SignInForm = dynamic(() => import('@smart-signer/components/auth/form'), { ssr: false });
-const LiteSignInDialog = dynamic(() => import('@/blog/features/lite-account/lite-sign-in-dialog'), { ssr: false });
+const LiteSignInDialog = dynamic(() => import('@/blog/features/lite-account/lite-sign-in-dialog'), {
+  ssr: false
+});
 
 const GOOGLE_GSI_SCRIPT_ID = 'google-gsi-script';
 const GOOGLE_GSI_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
@@ -40,6 +43,7 @@ function DialogLogin({
   username,
   passkey = false
 }: DialogLoginProps) {
+  const { t } = useTranslation('common_blog');
   const signInFormRef = useRef<SignInFormRef>(null);
   const router = useRouter();
   // Uncontrolled (trigger only) the dialog keeps its own state, so it can close itself for the lite sign-in.
@@ -108,12 +112,13 @@ function DialogLogin({
           data-testid="login-dialog"
           onInteractOutside={(e) => e.preventDefault()}
           onCloseAutoFocus={onCloseAutoFocus}
+          closeLabel={t('global.close')}
         >
           <VisuallyHidden>
-            <DialogTitle>Sign In</DialogTitle>
+            <DialogTitle>{t('login_form.dialog_title')}</DialogTitle>
           </VisuallyHidden>
           <VisuallyHidden>
-            <DialogDescription>Sign in to your account using your posting key.</DialogDescription>
+            <DialogDescription>{t('login_form.dialog_description')}</DialogDescription>
           </VisuallyHidden>
           <SignInForm
             ref={signInFormRef}
@@ -122,7 +127,6 @@ function DialogLogin({
             passkey={passkey}
             onComplete={onComplete}
             authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
-            strict={!siteConfig.allowNonStrictLogin}
           />
           <LiteLoginEntry onSignIn={openLiteSignIn} />
         </DialogContent>

@@ -10,8 +10,10 @@ export class ProposalsPage {
   readonly proposalListItem: Locator;
   readonly proposalsHeaderName: Locator;
   readonly proposalsSortAndFilterBlock: Locator;
-  readonly proposalsFilterStatus: Locator;
-  readonly proposalsFilterStatusConntent: Locator;
+  readonly proposalsStatusTabs: Locator;
+  readonly proposalsStatusSelect: Locator;
+  readonly proposalsStatusSelectContent: Locator;
+  readonly proposalsSearch: Locator;
   readonly proposalsFilterOrderByConntent: Locator;
   readonly proposalsFilterOrderBy: Locator;
   readonly proposalsFilterDirection: Locator;
@@ -29,6 +31,17 @@ export class ProposalsPage {
   readonly voterValuesDialog: Locator;
   readonly cannotShowYouAnyProposals: Locator;
   readonly proposalMessageCannotShowYouAnyProposals: Locator;
+  readonly proposalRemainingDays: Locator;
+  readonly proposalPostLink: Locator;
+  readonly proposalFundingBadge: Locator;
+  readonly proposalReturnNote: Locator;
+  readonly fundingLine: Locator;
+  readonly dhfSummary: Locator;
+  readonly dhfDailyFunded: Locator;
+  readonly dhfStabilizer: Locator;
+  readonly dhfMaxDailyBudget: Locator;
+  readonly dhfTotalBudget: Locator;
+  readonly voteProposalValueTooltip: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -43,10 +56,10 @@ export class ProposalsPage {
     this.proposalsSortAndFilterBlock = page.locator(
       '[data-testid="proposals-sort-filter"]'
     );
-    this.proposalsFilterStatus = page.locator(
-      '[data-testid="proposals-sort-filter-status"]'
-    );
-    this.proposalsFilterStatusConntent = page.locator('[data-testid="proposals-sort-filter-status-conntent"]');
+    this.proposalsStatusTabs = page.locator('[data-testid="proposals-status-tabs"]');
+    this.proposalsStatusSelect = page.locator('[data-testid="proposals-status-select"]');
+    this.proposalsStatusSelectContent = page.locator('[data-testid="proposals-status-select-content"]');
+    this.proposalsSearch = page.locator('[data-testid="proposals-search"]');
     this.proposalsFilterOrderByConntent = page.locator('[data-testid="proposals-sort-filter-orderby-conntent"]');
     this.proposalsFilterOrderBy = page.locator(
       '[data-testid="proposals-sort-filter-orderby"]'
@@ -69,6 +82,17 @@ export class ProposalsPage {
     this.cannotShowYouAnyProposals = page.locator('data-testid="cannot-show-you-any-proposals"');
 
     this.proposalMessageCannotShowYouAnyProposals = page.locator('text="Sorry, I can\'t show you any proposals right now."')
+    this.proposalRemainingDays = page.locator('[data-testid="proposal-remaining-days"]');
+    this.proposalPostLink = page.locator('[data-testid="proposal-post-link"]');
+    this.proposalFundingBadge = page.locator('[data-testid="proposal-funding-badge"]');
+    this.proposalReturnNote = page.locator('[data-testid="proposal-return-note"]');
+    this.fundingLine = page.locator('[data-testid="proposals-funding-line"]');
+    this.dhfSummary = page.locator('[data-testid="dhf-summary"]');
+    this.dhfDailyFunded = page.locator('[data-testid="dhf-daily-funded"]');
+    this.dhfStabilizer = page.locator('[data-testid="dhf-stabilizer"]');
+    this.dhfMaxDailyBudget = page.locator('[data-testid="dhf-max-daily-budget"]');
+    this.dhfTotalBudget = page.locator('[data-testid="dhf-total-budget"]');
+    this.voteProposalValueTooltip = page.locator('[data-testid="vote-proposal-value-tooltip"]');
   }
 
   async goToProposalsPage() {
@@ -85,6 +109,30 @@ export class ProposalsPage {
     ).catch(() => {
       // If neither appears within timeout, continue anyway (data may still be loading)
     });
+  }
+
+  /** The status tab named `name` (All, Active, Upcoming, Expired, Votable). */
+  statusTab(name: string): Locator {
+    return this.proposalsStatusTabs.getByRole('tab', { name, exact: true });
+  }
+
+  /** Picks the status `name` (All, Active, Upcoming, Expired, Votable) in the narrow screens' status select. */
+  async selectStatus(name: string) {
+    await this.proposalsStatusSelect.click();
+    await this.proposalsStatusSelectContent.getByRole('option', { name, exact: true }).click();
+  }
+
+  /** The card of proposal `proposalId`. */
+  proposalCard(proposalId: number): Locator {
+    return this.page.locator(`[data-testid="proposal-list-item"][data-proposal-id="${proposalId}"]`);
+  }
+
+  /** The ids of the listed proposals, in list order. */
+  async listedProposalIds(): Promise<number[]> {
+    const ids = await this.proposalListItem.evaluateAll((items) =>
+      items.map((item) => item.getAttribute('data-proposal-id'))
+    );
+    return ids.map(Number);
   }
 
   async clickVoteButtonOfFirstProposalItem() {

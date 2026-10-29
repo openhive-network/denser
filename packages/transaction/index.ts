@@ -2,7 +2,6 @@ import {
   ApiAccount,
   BlogPostOperation,
   CommunityOperation,
-  EFollowBlogAction,
   FollowOperation,
   type IArticle,
   type IReplyData,
@@ -31,7 +30,12 @@ import { getPostCategory } from './lib/post-category';
 import { subscribeToSignerOptions } from './lib/signer-options';
 import { getFindAccounts } from './lib/hive-api';
 import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/profile-metadata';
+import { buildCommentJsonMetadata, type CommentBodyMetadata } from './lib/comment-metadata';
 import { resolveRequiredKeyType } from './lib/required-key-type';
+import { getOperationNames } from './lib/operation-names';
+import { WorkerBeeSession } from './lib/workerbee-session';
+import { type IInclusionWatch, watchInclusion } from './lib/transaction-inclusion';
+import { buildFollowListReset, type FollowListReset } from './lib/follow-list-reset';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
 export type { ProfileMetadataUpdate } from './lib/profile-metadata';
@@ -44,12 +48,19 @@ export type TransactionBroadcastCallback = (txBuilder: ITransaction) => Promise<
 
 export interface TransactionOptions {
   observe?: boolean;
+  /** Broadcast without waiting, but watch blocks for the transaction; see `TransactionBroadcastResult.included`. */
+  confirmInBackground?: boolean;
   singleSignKeyType?: SignTransaction['singleSignKeyType'];
   requiredKeyType?: SignTransaction['requiredKeyType'];
 }
 
 export interface TransactionBroadcastResult {
   transactionId: string;
+  /**
+   * With `confirmInBackground`: true once a block includes the transaction, false when none did
+   * within `INCLUSION_TIMEOUT_MS`; rejects when blocks could not be scanned.
+   */
+  included?: Promise<boolean>;
 }
 
 export interface Authorizes {
@@ -68,21 +79,14 @@ export class TransactionService {
   signerOptions!: SignerOptions;
 
   /**
-   * The number of transactions observed.
+   * WorkerBee block scanner shared by observed broadcasts, stopped after a minute without one.
    *
    * @memberof TransactionService
    */
-  observedTransactionsCounter = 0;
-
-  // WorkerBee instance for scanning Hive blockchain blocks.
-
-  /**
-   * Instance of WorkerBee Block Scanner.
-   *
-   * @type {(IWorkerBee | undefined)}
-   * @memberof TransactionService
-   */
-  bot!: IWorkerBee | undefined;
+  private readonly workerBeeSession = new WorkerBeeSession<IHiveChainInterface, IWorkerBee>({
+    getChain: () => this.getChain(),
+    createBot: (hiveChain) => new WorkerBee(hiveChain)
+  });
 
   setSignerOptions(signerOptions: SignerOptions) {
     this.signerOptions = signerOptions;
@@ -117,7 +121,7 @@ export class TransactionService {
       transactionOptions: undefined
     };
 
-    const { observe, singleSignKeyType, requiredKeyType } = {
+    const { observe, confirmInBackground, singleSignKeyType, requiredKeyType } = {
       ...defaultTransactionOptions,
       ...transactionOptions
     };
@@ -141,6 +145,8 @@ export class TransactionService {
 
     if (observe) {
       return await this.broadcastAndObserveTransaction(txBuilder);
+    } else if (confirmInBackground) {
+      return await this.broadcastAndConfirmInBackground(txBuilder);
     } else {
       return await this.broadcastTransaction(txBuilder);
     }
@@ -178,7 +184,8 @@ export class TransactionService {
   async broadcastTransaction(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
     // Do broadcast
     const transactionId = txBuilder.id;
-    logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
+    logger.info('Broadcasting transaction id: %s', transactionId);
+    logger.debug('Transaction %s body: %o', transactionId, txBuilder.toApi());
     await (
       await getChain()
     ).api.network_broadcast_api.broadcast_transaction({ max_block_age: -1, trx: txBuilder.toApiJson() });
@@ -194,57 +201,80 @@ export class TransactionService {
   }
 
   /**
-   * Create and start bot (block scanner) if needed, broadcast
-   * transaction, wait until bot reports applying transaction into Hive
-   * blockchain, stop and destroy bot if needed, then resolve. When bot
-   * doesn't find the transaction, it will throw after transaction
-   * expiration time plus `throwAfter`.
+   * Broadcast transaction with the session's bot (block scanner, created
+   * and started if needed), wait until bot reports applying transaction
+   * into Hive blockchain, then resolve. The bot stays running for further
+   * observed broadcasts and is stopped after a minute without any. When
+   * bot doesn't find the transaction, it will throw after transaction
+   * expiration time.
    *
    * @param {ITransaction} txBuilder
-   * @param {number} [throwAfter=60 * 1000]
    * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
-  async broadcastAndObserveTransaction(
-    txBuilder: ITransaction,
-    throwAfter = 60 * 1000
-  ): Promise<TransactionBroadcastResult> {
+  async broadcastAndObserveTransaction(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
     try {
-      // Create bot
-      if (!this.bot) {
-        logger.info('Creating bot');
-        const hiveChain = await this.getChain();
-        this.bot = new WorkerBee(hiveChain);
-      }
-      // Start bot
-      if (this.observedTransactionsCounter++ === 0) {
-        logger.info('Starting bot');
-        this.bot.start();
-      }
+      return await this.workerBeeSession.use(async (bot) => {
+        const transactionId = txBuilder.id;
+        logger.info('Broadcasting transaction id: %s', transactionId);
+        logger.debug('Transaction %s body: %o', transactionId, txBuilder.toApi());
 
-      // Do broadcast
-      const transactionId = txBuilder.id;
-      logger.info('Broadcasting transaction id: %o, body: %o', transactionId, txBuilder.toApi());
+        // Broadcast and wait for block inclusion (irreversible with OBI)
+        await bot.broadcast(txBuilder, { verifySignatures: true, expireInMs: 10_000 });
 
-      // Broadcast and wait for block inclusion (irreversible with OBI)
-      await this.bot.broadcast(txBuilder, { verifySignatures: true, expireInMs: 10_000 });
-
-      return { transactionId };
+        return { transactionId };
+      });
     } catch (error) {
-      logger.error('Got error, logging and rethrowing it: %o', error);
+      logger.error(
+        'Broadcasting %s of %s failed: %s',
+        getOperationNames(txBuilder.transaction.operations).join(', '),
+        this.signerOptions.username,
+        error instanceof Error ? error.message : String(error)
+      );
+      logger.debug('Broadcast error: %o', error);
       throw error;
-    } finally {
-      if (--this.observedTransactionsCounter === 0) {
-        // Stop bot
-        if (this.bot) {
-          logger.info('Stopping bot');
-          this.bot.stop();
-        }
-        // Destroy bot
-        logger.info('Destroying bot');
-        this.bot = undefined;
-      }
     }
+  }
+
+  /**
+   * Broadcast transaction like `broadcastTransaction`, resolving after
+   * sending it, with `included` reporting whether the session's bot saw
+   * it in a block. The bot watches from before the broadcast, so the
+   * transaction cannot land in a block it skipped. When the bot cannot
+   * be set up, the transaction is broadcast without `included`.
+   *
+   * @param {ITransaction} txBuilder
+   * @return {*}  {Promise<TransactionBroadcastResult>}
+   * @memberof TransactionService
+   */
+  async broadcastAndConfirmInBackground(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
+    let watch: IInclusionWatch | undefined;
+    try {
+      watch = await this.watchTransactionInclusion(txBuilder.id);
+    } catch (error) {
+      logger.error(error, 'Cannot watch blocks for transaction %s', txBuilder.id);
+    }
+    try {
+      const result = await this.broadcastTransaction(txBuilder);
+      return watch ? { ...result, included: watch.included } : result;
+    } catch (error) {
+      watch?.cancel();
+      throw error;
+    }
+  }
+
+  /** Subscribes the session's bot to `transactionId`, holding the bot until the watch settles. */
+  private watchTransactionInclusion(transactionId: string): Promise<IInclusionWatch> {
+    return new Promise((resolve, reject) => {
+      this.workerBeeSession
+        .use(async (bot) => {
+          const watch = watchInclusion(bot, transactionId);
+          resolve(watch);
+          await watch.included;
+        })
+        // Before `resolve` this is a setup failure; after it, `watch.included` carries the error
+        .catch(reject);
+    });
   }
 
   async upVote(
@@ -325,11 +355,11 @@ export class TransactionService {
     return this.broadcastFollowOperation((operation, account) => operation[list](account, blog), transactionOptions);
   }
 
-  private resetFollowList(
-    list: 'resetAllBlog' | 'resetBlacklistBlog' | 'resetFollowBlacklistBlog' | 'resetFollowMutedBlog',
-    transactionOptions: TransactionOptions
-  ) {
-    return this.broadcastFollowOperation((operation, account) => operation[list](account, 'all'), transactionOptions);
+  private resetFollowList(list: FollowListReset, transactionOptions: TransactionOptions) {
+    return this.broadcastFollowOperation(
+      (operation, account) => buildFollowListReset(list, operation, account),
+      transactionOptions
+    );
   }
 
   async subscribe(community: string, transactionOptions: TransactionOptions = {}) {
@@ -435,10 +465,12 @@ export class TransactionService {
   }
 
   async resetBlogList(transactionOptions: TransactionOptions = {}) {
-    return await this.broadcastFollowOperation(
-      (op, account) => op.resetBlogList(EFollowBlogAction.MUTE_BLOG, account, 'all'),
-      transactionOptions
-    );
+    return await this.resetFollowList('muted', transactionOptions);
+  }
+
+  /** Unfollows every account the signed-in account follows (`reset_following_list`). */
+  async resetFollowingBlog(transactionOptions: TransactionOptions = {}) {
+    return await this.resetFollowList('following', transactionOptions);
   }
 
   async blacklistBlog(otherBlogs: string, blog = '', transactionOptions: TransactionOptions = {}) {
@@ -461,20 +493,16 @@ export class TransactionService {
     return await this.addToFollowList('followMutedBlog', otherBlogs, blog, transactionOptions);
   }
 
-  async resetAllBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.resetFollowList('resetAllBlog', transactionOptions);
-  }
-
   async resetBlacklistBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.resetFollowList('resetBlacklistBlog', transactionOptions);
+    return await this.resetFollowList('blacklist', transactionOptions);
   }
 
   async resetFollowBlacklistBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.resetFollowList('resetFollowBlacklistBlog', transactionOptions);
+    return await this.resetFollowList('followBlacklist', transactionOptions);
   }
 
   async resetFollowMutedBlog(transactionOptions: TransactionOptions = {}) {
-    return await this.resetFollowList('resetFollowMutedBlog', transactionOptions);
+    return await this.resetFollowList('followMuted', transactionOptions);
   }
 
   async unfollowMutedBlog(blog: string, transactionOptions: TransactionOptions = {}) {
@@ -485,6 +513,7 @@ export class TransactionService {
     parentAuthor: string,
     parentPermlink: string,
     body: string,
+    bodyMetadata: CommentBodyMetadata,
     preferences: Preferences,
     transactionOptions: TransactionOptions = {}
   ) {
@@ -494,9 +523,7 @@ export class TransactionService {
       author: this.signerOptions.username,
       body,
       permlink: `re-${parentAuthor.replaceAll('.', '-')}-${Date.now()}`,
-      jsonMetadata: {
-        app: PUBLISHING_APP
-      }
+      jsonMetadata: buildCommentJsonMetadata(bodyMetadata)
     };
 
     if (preferences.comment_rewards === '100%') {
@@ -521,6 +548,8 @@ export class TransactionService {
     parentPermlink: string,
     permlink: string,
     body: string,
+    bodyMetadata: CommentBodyMetadata,
+    currentJsonMetadata: unknown,
     transactionOptions: TransactionOptions = {}
   ) {
     const reply = new ReplyOperation({
@@ -528,9 +557,7 @@ export class TransactionService {
       parentPermlink,
       author: this.signerOptions.username,
       body,
-      jsonMetadata: {
-        app: PUBLISHING_APP
-      },
+      jsonMetadata: buildCommentJsonMetadata(bodyMetadata, currentJsonMetadata),
       permlink
     });
 

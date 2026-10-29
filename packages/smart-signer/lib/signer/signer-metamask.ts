@@ -1,5 +1,5 @@
-import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
-import { TTransactionPackType } from '@hiveio/wax';
+import { EncryptMemo, SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
+import { TRole, TTransactionPackType } from '@hiveio/wax';
 
 import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
@@ -31,23 +31,27 @@ export class SignerMetaMask extends Signer {
     }
   }
 
+  private async connectProvider(role: TRole): Promise<MetaMaskProvider> {
+    const provider = await MetaMaskProvider.for(
+      0, // Explicitly always use first MetaMask account
+      role,
+      env('METAMASK_SNAP_LOCATION')
+    );
+    await this.ensureMetaMaskSnapInitialized(provider);
+    return provider;
+  }
+
   async signChallenge({ message }: SignChallenge): Promise<string> {
     const { username, keyType } = this;
-    logger.info('in SignerMetaMask.signChallenge %o', { message, username, keyType });
+    logger.debug('in SignerMetaMask.signChallenge %o', { message, username, keyType });
     try {
-      const provider = await MetaMaskProvider.for(
-        0, // Explicitly always use first MetaMask account
-        keyType,
-        env('METAMASK_SNAP_LOCATION')
-      );
-
-      await this.ensureMetaMaskSnapInitialized(provider);
+      const provider = await this.connectProvider(keyType);
 
       const key = await provider.getPublicKey(keyType);
 
       const signature = await provider.encryptData(message, key);
 
-      logger.info('metamask', { signature });
+      logger.debug('metamask signature: %s', signature);
       return signature;
     } catch (error) {
       throw error;
@@ -58,22 +62,37 @@ export class SignerMetaMask extends Signer {
     try {
       const authTx = (await getChain()).createTransactionFromProto(transaction);
 
-      const provider = await MetaMaskProvider.for(
-        0, // Explicitly always use first MetaMask account
-        requiredKeyType ?? this.keyType,
-        env('METAMASK_SNAP_LOCATION')
-      );
-
-      await this.ensureMetaMaskSnapInitialized(provider);
+      const provider = await this.connectProvider(requiredKeyType ?? this.keyType);
 
       await provider.signTransaction(authTx);
 
       await verifyAuthorityOrThrow(authTx.toApiJson(), TTransactionPackType.HF_26, this.keyType, 'MetaMask');
-      logger.info('authTx.transaction.signatures: %o', authTx.transaction.signatures);
+      logger.debug('authTx.transaction.signatures: %o', authTx.transaction.signatures);
       return authTx.transaction.signatures[0];
     } catch (error) {
       logger.error('SignerMetaMask.signTransaction error: %s', error instanceof Error ? error.message : String(error));
       throw error;
     }
+  }
+
+  /**
+   * `MetaMaskProvider` forwards the buffer to the snap untouched, so the `#` marker and the snap's
+   * memo byte layout are handled by `memo-crypto`'s wrappers. Imported on the call: this module is
+   * in the sign-in bundle, and `memo-crypto` would bring its Beekeeper loaders along.
+   */
+  async encryptData({ toAccountMemoPublicKey, memo }: EncryptMemo): Promise<string> {
+    const [provider, { encryptMemoWithSnap }] = await Promise.all([
+      this.connectProvider('memo'),
+      import('@smart-signer/lib/memo-crypto')
+    ]);
+    return encryptMemoWithSnap(provider, toAccountMemoPublicKey, memo);
+  }
+
+  async decryptData(encodedMemo: string): Promise<string> {
+    const [provider, { decryptMemoWithSnap }] = await Promise.all([
+      this.connectProvider('memo'),
+      import('@smart-signer/lib/memo-crypto')
+    ]);
+    return decryptMemoWithSnap(provider, encodedMemo);
   }
 }

@@ -112,10 +112,12 @@ CI runs the live e2e suite on chromium only; see [playwright/README.md](playwrig
 
 ### Build
 
-You can build a Docker image using the following command
+You can build a Docker image using the following command (`NODE_VERSION` names
+common-ci-configuration's Node version, `NODE_VERSION` in its `docker-bake.hcl`; CI passes
+its `NODE_IMAGE_VERSION`)
 
 ```bash
-docker buildx bake local-build
+NODE_VERSION=<common-ci-configuration's NODE_VERSION> docker buildx bake local-build
 ```
 
 or using the convenience script:

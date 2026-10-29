@@ -13,6 +13,7 @@ import { useDelegateRCMutation } from './hooks/use-delegate-mutation';
 import { useAccountLookup, type AccountLookupStatus } from './hooks/use-account-lookup';
 import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
+import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Slider } from '@ui/components/slider';
 import { Autocompleter } from '@/wallet/components/autocompleter';
@@ -81,6 +82,8 @@ const DelegateRCDialog = ({
       await delegateMutation.mutateAsync({ toAccount, amount: rawToSend });
     } catch (error) {
       handleError(error, { method: 'delegate', params: { toAccount, amount: rawToSend } });
+      // Delegating again would only bring the Google Drive dialog back
+      if (error instanceof GoogleDriveSignInCancelledError) handleOpenChange(false);
     }
   };
 

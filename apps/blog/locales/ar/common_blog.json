@@ -1,12 +1,16 @@
 {
   "global": {
+    "close": "إغلاق",
     "no_rewards": "لا توجد مكافآت معلقة للاسترداد.",
     "loading": "جار التحميل",
     "publishing": "جاري النشر...",
+    "not_confirmed": "لم يتم التأكيد بعد",
+    "comment_not_confirmed": "ربما لم تتم معالجة تعليقك. أعد تحميل الصفحة للتحقق قبل المحاولة مرة أخرى.",
+    "vote_not_confirmed": "ربما لم تتم معالجة تصويتك. أعد تحميل الصفحة للتحقق قبل المحاولة مرة أخرى.",
     "confirmed_indexing": "تم التأكيد على البلوكشين. في انتظار الفهرسة...",
     "indexing_slow": "تستغرق الفهرسة وقتًا أطول من المعتاد. هذا أمر طبيعي أثناء الازدحام.",
     "indexing_timeout": "انتهت مهلة فهرسة المشاركة. قد تظهر مشاركتك قريبًا — حاول إعادة تحميل الصفحة.",
-    "reload_page": "Reload page",
+    "reload_page": "إعادة تحميل الصفحة",
     "reconnecting": "جارٍ إعادة الاتصال…",
     "something_went_wrong": "حدث خطأ ما",
     "unavailable_for_legal_reasons": "غير متوفر لأسباب قانونية",
@@ -36,7 +40,20 @@
       "months": " شهر",
       "a_month": " شهر واحد",
       "years": " سنة",
-      "a_year": " سنة واحدة"
+      "a_year": " سنة واحدة",
+      "hours_count_zero": "{{count}} ساعة",
+      "hours_count_one": "{{count}} ساعة",
+      "hours_count_two": "{{count}} ساعتان",
+      "hours_count_few": "{{count}} ساعات",
+      "hours_count_many": "{{count}} ساعة",
+      "hours_count_other": "{{count}} ساعة",
+      "minutes_count_zero": "{{count}} دقيقة",
+      "minutes_count_one": "{{count}} دقيقة",
+      "minutes_count_two": "{{count}} دقيقتان",
+      "minutes_count_few": "{{count}} دقائق",
+      "minutes_count_many": "{{count}} دقيقة",
+      "minutes_count_other": "{{count}} دقيقة",
+      "hours_and_minutes": "{{hours}} و{{minutes}}"
     },
     "profile_picture": "صورة الملف الشخصي",
     "notifications_region": "الإشعارات ({hotkey})"
@@ -97,7 +114,7 @@
       "notifications": "الإشعارات",
       "wallet": "المحفظة",
       "settings": "الإعدادات",
-      "block_explorer": "Block Explorer"
+      "block_explorer": "مستكشف الكتل"
     },
     "profile_posts_tab_navbar": {
       "label": "منشورات الملف الشخصي",
@@ -179,7 +196,8 @@
       "hot": "الساخن",
       "new": "جديد",
       "payouts": "المدفوعات",
-      "muted": "الصامت"
+      "muted": "الصامت",
+      "for_you": "لك"
     },
     "communitie_sort": {
       "rank": "الترتيب",
@@ -192,10 +210,10 @@
       "trending": "الرائجة",
       "votes": "الأصوات",
       "age": "العمر",
-      "filter_label": "Comment filtering",
+      "filter_label": "تصفية التعليقات",
       "filter_short_label": "فلتر المخفية",
       "filter_off": "معطل",
-      "filtered_count": "{{count}} filtered",
+      "filtered_count": "تمت تصفية {{count}}",
       "filter_tooltip": "إخفاء التعليقات من الحسابات المدرجة في القائمة السوداء أو ذات السمعة المنخفضة",
       "filter_tooltip_click_show": "انقر للإظهار",
       "filter_tooltip_click_hide": "انقر للإخفاء"
@@ -230,6 +248,7 @@
       "downvote_weight": "وزن التصويت السلبي",
       "submit_upvote_percent": "إرسال تصويت إيجابي بنسبة {{votePercent}}%",
       "submit_downvote_percent": "إرسال تصويت سلبي بنسبة {{votePercent}}%",
+      "vote_after_payout_note": "التصويت على المحتوى بعد صرف مكافآته لا يولّد أي مكافآت جديدة",
       "no_votes": "لا توجد أصوات",
       "vote": "1 صوت",
       "votes": "{{votes}} صوت",
@@ -248,7 +267,7 @@
       "you_voted": "صوتت بنسبة {{votePercent}}%",
       "vote_polling_error_message_title": "تحذير",
       "vote_polling_error_message_description": "فشل في التحقق مما إذا تم تضمين تصويت المستخدم.",
-      "powered_up_100": "100% Hive Power"
+      "powered_up_100": "Hive Power بنسبة 100%"
     },
     "comment_card": {
       "reveal_comment": "كشف التعليق",
@@ -287,10 +306,10 @@
     "close": "إغلاق"
   },
   "vote_removal_dialog": {
-    "remove_upvote_title": "Remove Upvote",
+    "remove_upvote_title": "إزالة التصويت الإيجابي",
     "remove_upvote_description": "ستؤدي إزالة صوتك إلى إعادة تعيين مكافآت التنسيق الخاصة بك لهذه المشاركة.",
-    "remove_downvote_title": "Remove Downvote",
-    "remove_downvote_description": "Removing your vote.",
+    "remove_downvote_title": "إزالة التصويت السلبي",
+    "remove_downvote_description": "جارٍ إزالة صوتك.",
     "confirm": "OK",
     "cancel": "إلغاء"
   },
@@ -332,7 +351,9 @@
     "google_key_not_found_title": "المفتاح غير موجود في المحفظة",
     "google_key_not_found_description": "لم يتم العثور على مفتاح {{keyType}} لـ Hive للمستخدم {{username}} في محفظة Google Drive.",
     "go_to_hive_bridge": "اذهب إلى Hive Bridge",
-    "completing_google_auth": "Completing Google authorization..."
+    "completing_google_auth": "جارٍ إكمال التفويض عبر Google...",
+    "dialog_title": "تسجيل الدخول",
+    "dialog_description": "سجّل الدخول إلى حسابك باستخدام مفتاح النشر."
   },
   "user_profile": {
     "reputation": "السمعة",
@@ -415,14 +436,25 @@
         "reset_muted_list": "إعادة تعيين قائمة الصمت",
         "reset_followed_blacklists": "إعادة تعيين قوائم الكتم المتبعة",
         "reset_followed_muted_list": "إعادة تعيين قوائم الصمت المتبعة",
-        "reset_all_lists": "إعادة تعيين جميع المتابعات/القوائم",
         "busy_button": "مشغول، يرجى الانتظار",
         "first_button": "الأول",
         "previous_button": "السابق",
         "next_button": "التالي",
         "last_button": "الأخير",
         "viewing_page": "عرض الصفحة {{current}} من {{total}}",
-        "users_on_list": "المستخدمون في القائمة: {{number}}"
+        "users_on_list": "المستخدمون في القائمة: {{number}}",
+        "unfollow_all": {
+          "button": "إلغاء متابعة الجميع",
+          "title": "إلغاء متابعة جميع الحسابات؟",
+          "description_zero": "سيؤدي هذا إلى إلغاء متابعة جميع الحسابات التي تتابعها ({{count}}). لا يمكن التراجع عن ذلك.",
+          "description_one": "سيؤدي هذا إلى إلغاء متابعة جميع الحسابات التي تتابعها ({{count}}). لا يمكن التراجع عن ذلك.",
+          "description_two": "سيؤدي هذا إلى إلغاء متابعة جميع الحسابات التي تتابعها ({{count}}). لا يمكن التراجع عن ذلك.",
+          "description_few": "سيؤدي هذا إلى إلغاء متابعة جميع الحسابات التي تتابعها ({{count}}). لا يمكن التراجع عن ذلك.",
+          "description_many": "سيؤدي هذا إلى إلغاء متابعة جميع الحسابات التي تتابعها ({{count}}). لا يمكن التراجع عن ذلك.",
+          "description_other": "سيؤدي هذا إلى إلغاء متابعة جميع الحسابات التي تتابعها ({{count}}). لا يمكن التراجع عن ذلك.",
+          "confirm_prompt": "اكتب اسم حسابك ({{username}}) للتأكيد.",
+          "cancel": "إلغاء"
+        }
       },
       "username_placeholder": "اسم المستخدم"
     },
@@ -431,7 +463,7 @@
       "the_author_has_subscribed_to_the_following": "قام المؤلف بالاشتراك في المجتمعات التالية من Hive",
       "badges_and_achievements_title": "الشارات والإنجازات",
       "these_are_badges_received_by_the_author": "هذه هي الشارات التي حصل عليها المؤلف من خلال تطبيقات الطرف الثالث",
-      "view_badges_on": "View badges on",
+      "view_badges_on": "عرض الشارات على",
       "you_dont_have_any_subscriptions": "مرحبا! ليس لديك أي اشتراكات حتى الآن."
     },
     "notifications_tab": {
@@ -444,8 +476,8 @@
       "subscribed_to": "@{{username}} اشترك في {{community}}"
     },
     "load_more_failed": "تعذر تحميل المزيد من المشاركات.",
-    "load_more_retry": "Retry",
-    "check_node_status": "Check Node Status",
+    "load_more_retry": "إعادة المحاولة",
+    "check_node_status": "التحقق من حالة العقدة",
     "load_failed_title": "تعذر تحميل هذا الملف الشخصي",
     "load_failed_description": "لم تستجب واجهة Hive البرمجية. عادةً ما يكون هذا مؤقتًا.",
     "go_home": "الصفحة الرئيسية",
@@ -630,7 +662,7 @@
         "markdown_styling_guide": "دليل أسلوب Markdown",
         "exit_editor": "هل أنت متأكد أنك تريد الخروج من محرر التعليق؟",
         "exit_editor_description": "سيتم تجاهل مسودتك ولا يمكن استعادتها.",
-        "discard": "Discard",
+        "discard": "تجاهل",
         "power_up": "زيادة الطاقة بنسبة 100%",
         "decline_payout": "رفض الدفعة",
         "rewards": "المكافآت: ",
@@ -639,8 +671,8 @@
         "update_settings": "تحديث الإعدادات",
         "full_in": "ملء: ",
         "shadow_draft_found": "تم العثور على رد غير محفوظ في هذا النقاش.",
-        "shadow_draft_recover": "Recover",
-        "shadow_draft_discard": "Discard"
+        "shadow_draft_recover": "استعادة",
+        "shadow_draft_discard": "تجاهل"
       }
     },
     "flag": {
@@ -701,27 +733,30 @@
     "enter_content": "أدخل محتوى للإرسال",
     "enter_title_and_content": "أدخل عنوانًا ومحتوى للإرسال",
     "enter_tags": "أدخل علامة واحدة على الأقل للإرسال",
+    "image_upload_unavailable": "رفع الصور غير متاح عند تسجيل الدخول باستخدام {{method}}. الصق رابط صورة بدلاً من ذلك، أو سجّل الدخول بطريقة أخرى.",
+    "remove_failed_uploads": "احذف الصور التي فشل رفعها (UPLOAD FAILED) قبل الإرسال.",
     "clean": "تنظيف",
     "cancel": "إلغاء",
-    "confirm": "Confirm",
+    "confirm": "تأكيد",
     "cancel_confirmation_description": "سيتم تجاهل تغييراتك ولا يمكن استعادتها.",
     "markdown_styling_guide": "دليل أسلوب Markdown",
     "power_up": "زيادة الطاقة بنسبة 100%",
     "maximum_characters": "أقصى عدد من الأحرف {{num}}",
     "markdown_not_supported": "Markdown غير مدعوم هنا",
     "html_not_supported": "HTML غير مدعوم هنا",
-    "hive_link_converted": "Blog link converted",
+    "hive_link_converted": "تم تحويل رابط المدونة",
     "hive_link_converted_count": "تم تحويل {{count}} من روابط مدونة Hive إلى مسار نسبي",
-    "undo": "Undo",
-    "convert_hive_links": "Convert Hive links",
+    "undo": "تراجع",
+    "convert_hive_links": "تحويل روابط Hive",
     "formatting_toolbar": "التنسيق",
     "spoiler": "حرق الأحداث",
     "post_body": "نص المنشور",
     "convert_hive_links_tooltip": "يحوّل تلقائيًا الروابط الملصقة من واجهات مدونات Hive إلى مسارات نسبية مستقلة عن الواجهة، بحيث تعمل مشاركتك على أي تطبيق Hive",
-    "optimize_images": "Optimize images",
+    "optimize_images": "تحسين الصور",
     "optimize_images_tooltip": "تغيير حجم الصور وضغطها قبل الرفع لتسريع الرفع وتقليل حجم الملفات. يحوّل الصيغ غير المدعومة (HEIC/HEIF) تلقائيًا.",
-    "uploading_images": "Uploading {{count}} images...",
-    "image_processing_failed": "failed",
+    "image_decode_failed": "تعذّرت قراءة هذه الصورة. جرّب ملفًا آخر أو أوقف تحسين الصور.",
+    "uploading_images": "جارٍ رفع {{count}} صور...",
+    "image_processing_failed": "فشل",
     "image_too_large_gif": "ملف GIF كبير جدًا. الحد الأقصى للحجم هو 15MB.",
     "advanced_tooltip": "هنا يمكنك تعيين خيارات المشاركة مثل تقسيم مكافآت المؤلف، الحد الأقصى للمبلغ المقبول للدفع، المستفيدين وقوالب المشاركة",
     "advanced_settings_dialog": {
@@ -779,10 +814,10 @@
       "must_not_include_hivemind_community_owner": "المشاركة تحتوي بالفعل على علامة hive بشكل افتراضي، يرجى عدم تضمين علامة 'hive-' أخرى.",
       "tags_cannot_be_repeated": "لا يمكن تكرار العلامات"
     },
-    "shadow_draft_found": "Unsaved post found",
+    "shadow_draft_found": "تم العثور على منشور غير محفوظ",
     "shadow_draft_description": "تم بث مشاركة لكن ربما لم تتم فهرستها بعد. هل تريد استعادة المحتوى؟",
-    "shadow_draft_recover": "Recover",
-    "shadow_draft_discard": "Discard",
+    "shadow_draft_recover": "استعادة",
+    "shadow_draft_discard": "تجاهل",
     "cover_image_alt": "صورة الغلاف",
     "select_category": "اختر الفئة",
     "toolbar": {
@@ -931,7 +966,8 @@
       "muted": "الصامتة",
       "pending": "المعلقة",
       "roles": "الأدوار"
-    }
+    },
+    "for_you_posts": "لك"
   },
   "chat_widget": {
     "chat": "المحادثة",
@@ -939,7 +975,27 @@
     "set_up_account_tooltip": "أعدّ حساب المحادثة الخاص بك على openhive.chat",
     "close_widget": "إغلاق أداة المحادثة",
     "open_app": "فتح تطبيق المحادثة",
-    "open_widget": "فتح أداة المحادثة"
+    "open_widget": "فتح أداة المحادثة",
+    "connecting": "جارٍ الاتصال بالدردشة…",
+    "sign_in_failed": "تعذّر الاتصال بالدردشة.",
+    "retry": "إعادة المحاولة",
+    "rooms": "الغرف",
+    "no_rooms": "لم تنضم إلى أي غرفة بعد.",
+    "messages": "الرسائل",
+    "load_older": "تحميل الرسائل الأقدم",
+    "loading_older": "جارٍ تحميل الرسائل الأقدم…",
+    "load_older_failed": "تعذّر تحميل الرسائل الأقدم.",
+    "history_start": "هذه بداية الغرفة.",
+    "composer_label": "الرسالة",
+    "composer_placeholder": "اكتب رسالة…",
+    "send": "إرسال",
+    "sending": "جارٍ الإرسال…",
+    "send_failed": "لم تُرسل.",
+    "encrypted_message": "رسالة مشفّرة.",
+    "encrypted_room": "هذه الغرفة مشفّرة.",
+    "unsupported_message": "لا يمكن عرض هذه الرسالة هنا.",
+    "open_full_chat": "فتح الدردشة الكاملة",
+    "unread_count": "الرسائل غير المقروءة: {{number}}"
   },
   "search_mode": {
     "search": "البحث",
@@ -968,8 +1024,15 @@
       "tag": "الوسوم"
     }
   },
+  "for_you_feed": {
+    "sign_in_prompt": "سجّل الدخول لعرض موجزك.",
+    "unavailable": "موجز «لك» غير متاح حاليًا.",
+    "service_not_responding": "لم تستجب خدمة التوصيات.",
+    "data_not_loaded": "تعذّر تحميل بعض البيانات التي يحتاجها الموجز.",
+    "go_to_trending": "عرض المنشورات الرائجة"
+  },
   "lite_account": {
-    "badge_prefix": "lite account",
+    "badge_prefix": "حساب خفيف",
     "badge_tooltip": "نُشر عبر مُرحِّل نيابةً عن حساب خفيف (الإسناد بانتظار التحقق على السلسلة)",
     "badge_native_tooltip": "حساب خفيف: ينشر دون حساب Hive، ويتولى تطبيق lite posts الإسناد",
     "card_description": "تنشر الحسابات الخفيفة دون حساب Hive.",
@@ -981,8 +1044,8 @@
     "name_dialog": {
       "title": "اختر اسمًا لحسابك الخفيف",
       "description": "لا حاجة للتسجيل. ستُنسب ردودك إلى هذا الاسم.",
-      "label": "Name",
-      "suggest_another": "Suggest another",
+      "label": "الاسم",
+      "suggest_another": "اقترح اسمًا آخر",
       "invalid_name": "من 3 إلى 16 حرفًا: أحرف لاتينية صغيرة وأرقام وشرطات؛ يبدأ بحرف وينتهي بحرف أو رقم.",
       "checking": "جارٍ التحقق من توفر هذا الاسم…",
       "available": "هذا الاسم متاح.",
@@ -993,16 +1056,16 @@
       "check_failed": "تعذر التحقق من الاسم: بوابة حسابات lite غير متاحة. يمكنك المتابعة؛ سيُرفض الاسم المأخوذ عند النشر.",
       "disposable_note": "تُحفظ هويتك في هذا المتصفح فقط إلى أن تحفظها.",
       "confirm": "النشر بهذا الاسم",
-      "cancel": "Cancel",
+      "cancel": "إلغاء",
       "sign_in_reply": "سجّل الدخول وردّ بحسابك على Hive بدلًا من ذلك",
       "sign_in_post": "سجّل الدخول وانشر بحسابك على Hive بدلًا من ذلك"
     },
     "posted": {
-      "title": "Reply posted",
+      "title": "تم نشر الرد",
       "description": "نُشر ردك كحساب خفيف {{name}}."
     },
     "save_identity": {
-      "title": "Save this identity?",
+      "title": "حفظ هذه الهوية؟",
       "description": "توجد حاليًا في هذا المتصفح فقط. أضف مفتاح مرور أو سجّل الدخول بحساب اجتماعي للاحتفاظ بها (قريبًا)."
     },
     "gateway": {

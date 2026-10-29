@@ -387,6 +387,8 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Move to the Other sign in options
     await loginForm.otherSignInOptionsButton.click();
+    // The click leaves the pointer over the HiveAuth button, whose hover background fades in
+    await page.mouse.move(0, 0);
     // Default - empty Other sign in options form
     // Color and background color of the form
     expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(0, 0, 0)");
@@ -403,10 +405,10 @@ test.describe('Login and Sign Up tests', () =>{
     expect(await homePage.getElementCssPropertyValue(await loginForm.signInWithWifButton, 'color')).toBe("rgb(15, 23, 42)");
     // HiveAuth button
     expect(await homePage.getElementCssPropertyValue(await loginForm.hiveAuthButton, 'color')).toBe("rgb(15, 23, 42)");
-    expect(await homePage.getElementCssPropertyValue(await loginForm.hiveAuthButton, 'background-color')).toBe("rgba(0, 0, 0, 0)");
+    await expect(loginForm.hiveAuthButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
     // HiveSigner button
     expect(await homePage.getElementCssPropertyValue(await loginForm.hiveSignerButton, 'color')).toBe("rgb(15, 23, 42)");
-    expect(await homePage.getElementCssPropertyValue(await loginForm.hiveSignerButton, 'background-color')).toBe("rgba(0, 0, 0, 0)");
+    await expect(loginForm.hiveSignerButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   });
 
   test('Check if Other sign in options styles are correct in the dark mode', async ({ page, browserName }) => {
@@ -422,6 +424,8 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.validateDefaultLoginFormIsLoaded();
     // Move to the Other sign in options
     await loginForm.otherSignInOptionsButton.click();
+    // The click leaves the pointer over the HiveAuth button, whose hover background fades in
+    await page.mouse.move(0, 0);
     // Default - empty Other sign in options form
     // Color and background color of the form
     expect(await homePage.getElementCssPropertyValue(await loginForm.loginDialog, 'color')).toBe("rgb(255, 255, 255)");
@@ -438,10 +442,10 @@ test.describe('Login and Sign Up tests', () =>{
     expect(await homePage.getElementCssPropertyValue(await loginForm.signInWithWifButton, 'color')).toBe("rgb(255, 255, 255)");
     // HiveAuth button
     expect(await homePage.getElementCssPropertyValue(await loginForm.hiveAuthButton, 'color')).toBe("rgb(255, 255, 255)");
-    expect(await homePage.getElementCssPropertyValue(await loginForm.hiveAuthButton, 'background-color')).toBe("rgba(0, 0, 0, 0)");
+    await expect(loginForm.hiveAuthButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
     // HiveSigner button
     expect(await homePage.getElementCssPropertyValue(await loginForm.hiveSignerButton, 'color')).toBe("rgb(255, 255, 255)");
-    expect(await homePage.getElementCssPropertyValue(await loginForm.hiveSignerButton, 'background-color')).toBe("rgba(0, 0, 0, 0)");
+    await expect(loginForm.hiveSignerButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
   });
 
 

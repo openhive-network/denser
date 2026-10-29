@@ -10,7 +10,7 @@
  */
 import type { TWaxExtended } from './hiveio-wax';
 
-export type HiveChain = TWaxExtended<unknown, unknown>;
+export type HiveChain = TWaxExtended<object, object>;
 
 const STUB_ERROR_MESSAGE = '@hive/common-hiveio-packages is stubbed in unit tests';
 

@@ -10,8 +10,11 @@ import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smar
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
 import { registerAddedSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
+import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
 
 const logger = getLogger('app');
+
+const VALID_KEY_TYPES = ['posting', 'active', 'owner'];
 
 /**
  * Signs challenges (any strings) or Hive transactions with Hive private
@@ -43,8 +46,7 @@ export class SignerHbauth extends Signer {
   }
 
   async destroy() {
-    const authClient = await this.hbAuthClient;
-    await authClient.logout(this.username);
+    await hbauthService.logout(this.username);
   }
 
   protected getPasswordPromise(passwordFormOptions: PasswordFormOptions): Promise<{ password: string }> {
@@ -118,15 +120,26 @@ export class SignerHbauth extends Signer {
     requiredKeyType?: KeyAuthorityType
   ) {
     const { username, keyType } = this;
-    logger.info('signDigest args: %o', { digest, username, keyType });
+    logger.debug('signDigest args: %o', { digest, username, keyType });
 
-    const validKeyTypes = ['posting', 'active', 'owner'];
-    if (!validKeyTypes.includes(keyType)) {
+    if (!VALID_KEY_TYPES.includes(keyType)) {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
 
-    const authClient = await this.hbAuthClient;
-    const checkAuthResult = await this.checkAuth(username, keyType);
+    return hbauthService.withOnlineClient((authClient) =>
+      this.signDigestWith(authClient, digest, password, singleSignKeyType, requiredKeyType)
+    );
+  }
+
+  private async signDigestWith(
+    authClient: OnlineClient,
+    digest: THexString,
+    password: string,
+    singleSignKeyType?: KeyAuthorityType,
+    requiredKeyType?: KeyAuthorityType
+  ): Promise<string> {
+    const { username, keyType } = this;
+    const checkAuthResult = await this.checkAuth(authClient, username, keyType, requiredKeyType);
 
     if (!checkAuthResult) {
       let authStatus: AuthStatus = { ok: false };
@@ -139,7 +152,7 @@ export class SignerHbauth extends Signer {
             // Use minimal verification for posting (blog), full verification for active/owner (wallet)
             const uv = keyType === 'posting' ? 'discouraged' : 'required';
             logger.info('Attempting biometric unlock for %s (uv=%s)', username, uv);
-            authStatus = await (authClient as OnlineClient).biometricUnlock(
+            authStatus = await authClient.biometricUnlock(
               username, keyType, uv as UserVerificationRequirement
             );
           }
@@ -173,14 +186,14 @@ export class SignerHbauth extends Signer {
         }
       }
 
-      logger.info('authStatus', { authStatus });
+      logger.debug('authStatus: %o', authStatus);
       if (!authStatus.ok) {
         throw new Error(`Unlocking key failed`);
       }
     }
 
     if (singleSignKeyType) {
-      if (!validKeyTypes.includes(singleSignKeyType)) {
+      if (!VALID_KEY_TYPES.includes(singleSignKeyType)) {
         throw new Error(`Unsupported singleSignKeyType: ${singleSignKeyType}`);
       }
 
@@ -217,19 +230,23 @@ export class SignerHbauth extends Signer {
     }
 
     if (requiredKeyType && requiredKeyType !== keyType) {
-      const signature = await this.requireOtherKey(requiredKeyType, username, digest, password);
+      const signature = await this.requireOtherKey(authClient, requiredKeyType, username, digest, password);
       return signature;
     } else {
       const signature = await authClient.sign(username, digest, keyType);
-      logger.info('hbauth: %o', { digest, signature });
+      logger.debug('hbauth: %o', { digest, signature });
       return signature;
     }
   }
 
-  async checkAuth(username: string, keyType: string): Promise<boolean> {
-    const authClient = await this.hbAuthClient;
+  async checkAuth(
+    authClient: OnlineClient,
+    username: string,
+    keyType: string,
+    requiredKeyType?: KeyAuthorityType
+  ): Promise<boolean> {
     const auths = await authClient.getRegisteredUsers();
-    logger.info('auths in safe storage %o', auths);
+    logger.debug('auths in safe storage %o', auths);
     const auth = await authClient.getRegisteredUserByUsername(username);
     const settings = await authClient.getUserSettings(username);
 
@@ -237,7 +254,7 @@ export class SignerHbauth extends Signer {
     this.authorityUsername = settings?.authorizedAccounts?.[keyType as KeyAuthorityType];
 
     if (auth) {
-      logger.info('Found auth for user %s: %o', username, auth);
+      logger.debug('Found auth for user %s: %o', username, auth);
       if (auth.unlocked) {
         if (auth.loggedInKeyType === keyType) {
           logger.info('User %s is authorized and we are ready to proceed', username);
@@ -253,7 +270,11 @@ export class SignerHbauth extends Signer {
           return true;
         }
       } else {
-        logger.info('User %s exists but is not authorized. Hint: unlock key %s', username, keyType);
+        logger.info(
+          'User %s exists but is not authorized. Hint: %s',
+          username,
+          unlockHint(keyType, requiredKeyType)
+        );
         // We should tell to unlock wallet.
         return false;
       }
@@ -264,18 +285,18 @@ export class SignerHbauth extends Signer {
   }
   // This method is used to sign with a different key than the one that is currently unlocked
   async requireOtherKey(
+    authClient: OnlineClient,
     keyType: KeyAuthorityType,
     username: string,
     digest: string,
     password: string
   ): Promise<string> {
-    const authClient = await this.hbAuthClient;
     const auths = await authClient.getRegisteredUserByUsername(username);
     if (!auths) throw new Error('User not found');
 
     // If key is not registered in safe storage, ask user to enter it
     if (!auths.registeredKeyTypes.includes(keyType)) {
-      await this.registerKey(keyType, password);
+      await this.registerKey(authClient, keyType, password);
     }
     // The account holding authority over this one, when the required key is one of its keys
     const settings = await authClient.getUserSettings(username);
@@ -291,11 +312,12 @@ export class SignerHbauth extends Signer {
    * @throws {AuthStorageMissingError} when safe storage does not know the account
    */
   async addKey(keyType: KeyAuthorityType): Promise<void> {
-    const authClient = await this.hbAuthClient;
-    const auth = await authClient.getRegisteredUserByUsername(this.username);
-    if (!auth) throw new AuthStorageMissingError(this.username, keyType);
-    if (auth.registeredKeyTypes.includes(keyType)) return;
-    await this.registerKey(keyType, '');
+    await hbauthService.withOnlineClient(async (authClient) => {
+      const auth = await authClient.getRegisteredUserByUsername(this.username);
+      if (!auth) throw new AuthStorageMissingError(this.username, keyType);
+      if (auth.registeredKeyTypes.includes(keyType)) return;
+      await this.registerKey(authClient, keyType, '');
+    });
   }
 
   /**
@@ -304,8 +326,7 @@ export class SignerHbauth extends Signer {
    * well. `password` is the safe storage password when this flow already has it; otherwise it is
    * asked for, once per signer.
    */
-  private async registerKey(keyType: KeyAuthorityType, password: string): Promise<void> {
-    const authClient = await this.hbAuthClient;
+  private async registerKey(authClient: OnlineClient, keyType: KeyAuthorityType, password: string): Promise<void> {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,

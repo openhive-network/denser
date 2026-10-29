@@ -65,7 +65,7 @@
     "other_signing_options_description": "输入用户名并选择登录方法",
     "go_back_button": "返回",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "什么是 {{method}}？",
       "safe_storage": "安全存储会在此浏览器中用密码加密保存您的私钥。密钥永远不会离开您的设备。",
       "keychain": "Hive Keychain 是一款浏览器扩展，可为您保存密钥并代您签署交易。",
       "peakvault": "PeakVault 是一款浏览器扩展钱包，可为您保存密钥并代您签署交易。",
@@ -92,7 +92,8 @@
       "button_sign_auth": "签署授权交易",
       "button_signin_unlocked": "使用已签署交易登录",
       "strict_mode": "受限授权模式",
-      "strict_mode_tooltip": "启用后，应用将只允许使用账户自身的授权添加密钥。如果您想使用其他授权添加密钥，请禁用此模式。",
+      "strict_mode_scope": "（仅限安全存储）",
+      "strict_mode_tooltip": "仅适用于保存到安全存储的密钥。启用后，安全存储只接受账户自身授权的密钥。要保存通过其他账户授权签名的密钥，请禁用此模式。Keychain、PeakVault、HiveAuth 及其他登录方式不受影响。",
       "key_update": "添加新密钥",
       "update_key_title": "添加新密钥到安全存储",
       "update_key_description": "为用户{{username}}添加新的{{keyType}}密钥",
@@ -115,7 +116,8 @@
       "no_wif_key": "没有WIF密钥",
       "password_required": "密码为必填项",
       "wif_required": "WIF 密钥为必填项",
-      "posting_key_for_active": "钱包需要您的 Active 密钥；Posting 密钥无法签署转账"
+      "posting_key_for_active": "钱包需要您的 Active 密钥；Posting 密钥无法签署转账",
+      "active_key_for_posting": "此密钥没有 Posting 权限。登录博客需要 Posting 密钥"
     },
     "signin_with_keychain": "Hive密钥链扩展",
     "signin_with_wif": "使用WIF登录（传统）",
@@ -128,12 +130,25 @@
     "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "此操作需要您的 Posting 密钥。请输入密钥并妥善保管。",
     "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "此操作需要您的 Active 密钥。请输入密钥并妥善保管。",
     "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "此操作需要您的 Owner 密钥。请输入密钥并妥善保管。",
-    "use_peakvault": "使用 Peakvault",
-    "signin_with_peakvault": "Peakvault 扩展程序",
+    "use_peakvault": "使用 PeakVault",
+    "signin_with_peakvault": "PeakVault 扩展程序",
     "extension_sign_in": {
       "keychain": "使用 Hive Keychain 登录",
       "peakvault": "使用 PeakVault 登录",
       "or_safe_storage": "或使用安全存储"
+    },
+    "sign_in_pending": "另一个登录仍在等待响应。请在钱包扩展中完成或拒绝它，或取消后重新开始。",
+    "sign_in_pending_generic": "另一个登录仍在等待响应。请完成它，或取消后重新开始。",
+    "cancel_pending_sign_in": "取消待处理的登录",
+    "safe_storage_name": "安全存储",
+    "signin_with_metamask": "MetaMask 扩展程序",
+    "signin_with_google": "Google 账户",
+    "passkey_prompt": {
+      "title": "启用生物识别解锁？",
+      "description": "使用指纹、面容 ID 或设备 PIN 解锁，无需输入密码。",
+      "enable": "启用",
+      "not_now": "以后再说",
+      "never_ask_again": "不再询问"
     },
     "passkey": {
       "method": "通行密钥签名服务",
@@ -171,11 +186,30 @@
     "password_form_title": "输入您的密码",
     "store_key_label": "存储密钥",
     "store_password_label": "存储密码",
-    "google_drive_password_placeholder": "解锁 Google Drive 钱包的密码"
+    "google_drive_password_placeholder": "解锁 Google Drive 钱包的密码",
+    "safe_storage_recovery_description": "保存 @{{username}} 的密钥时，另一个标签页更改了安全存储。请输入 @{{username}} 的安全存储密码以完成保存。"
   },
   "broadcast_error": {
     "missing_owner_authority": "此操作需要您的所有者密钥（owner）。请使用该密钥登录后重试。",
     "missing_active_authority": "此操作需要您的活动密钥（active）。请使用活动密钥登录后重试。",
-    "missing_posting_authority": "此操作需要您的发帖密钥（posting）。请使用该密钥登录后重试。"
+    "missing_posting_authority": "此操作需要您的发帖密钥（posting）。请使用该密钥登录后重试。",
+    "safe_storage_missing_account": "此浏览器的安全存储中没有您账户的密钥。请重新登录。",
+    "not_enough_rc": "资源积分（RC）不足，无法完成此交易。请等待 RC 恢复，或为 HIVE 增能（power up）。",
+    "not_enough_rc_amounts": "您当前有 {{current}} RC；此交易需要 {{needed}} RC。",
+    "keychain_no_message": "Hive Keychain 未能完成请求，也未说明原因。",
+    "superseded_key_write": "另一个标签页中断了将 @{{username}} 的 {{keyType}} 密钥保存到安全存储的操作。请再次将 {{keyType}} 密钥添加到安全存储。"
+  },
+  "request_error": {
+    "timeout": "服务器未及时响应。请重试。"
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "未找到钱包",
+    "wallet_not_found_description": "在您的 Google 云端硬盘中未找到 Hive 钱包。请先使用 Hive Bridge 创建钱包。",
+    "key_not_found_title": "未找到密钥",
+    "key_not_found_description": "在您的 Google 云端硬盘钱包中未找到 @{{username}} 的 {{keyType}} 密钥。请使用 Hive Bridge 添加此密钥，或使用其他登录方式。",
+    "account_not_found_title": "未找到任何密钥",
+    "account_not_found_description": "您的 Google 云端硬盘钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。",
+    "bridge_info": "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google 云端硬盘中。",
+    "go_to_bridge": "前往 Hive Bridge"
   }
 }

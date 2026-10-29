@@ -86,7 +86,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable, t }: ModeI
             mode === 'userTopic' ? setSecondInputValue(e.target.value) : setInputValue(e.target.value)
           }
           className={clsx(
-            'z-10 block h-8 w-full bg-transparent p-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+            'z-10 block h-8 w-full bg-transparent p-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
             {
               'w-24 pr-0': mode === 'userTopic'
             }
@@ -103,7 +103,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable, t }: ModeI
               aria-label={t('search_mode.input_label.topic')}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              className="z-10 block h-8 w-full bg-transparent p-2 pl-0 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="z-10 block h-8 w-full bg-transparent p-2 pl-0 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50"
               onKeyDown={onKeyDown}
             />
           </>
@@ -112,7 +112,7 @@ export function ModeSwitchInput({ className, searchPage, aiAvailable, t }: ModeI
           type="button"
           onClick={onSearchClick}
           disabled={!aiAvailable && mode === 'ai'}
-          className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+          className="mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground ring-offset-background transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           aria-label={t('search_mode.search')}
         >
           <Search className="h-4 w-4" aria-hidden="true" />

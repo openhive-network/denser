@@ -4,7 +4,7 @@ import { VariantProps, cva } from 'class-variance-authority';
 import { cn } from '@ui/lib/utils';
 
 const badgeVariants = cva(
-  'inline-flex items-center border rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+  'inline-flex items-center border rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2',
   {
     variants: {
       variant: {
@@ -12,9 +12,9 @@ const badgeVariants = cva(
         secondary: 'bg-secondary hover:bg-secondary/80 border-transparent text-secondary-foreground',
         desctructive: 'bg-destructive hover:bg-secondary/80 border-transparent text-destructive-foreground',
         outline: 'text-foreground',
-        red: 'text-red-500 cursor-default border-red-500  bg-destructive bg-white dark:bg-background cursor-text',
-        lime: 'bg-white cursor-default border-lime-700 text-lime-700 dark:bg-slate-800 cursor-text',
-        orange: 'bg-white border-orange-600 cursor-default text-orange-600 dark:bg-slate-800 cursor-text'
+        red: 'text-red-600 cursor-default border-red-600  bg-destructive bg-white dark:bg-background dark:text-red-400 dark:border-red-400 cursor-text',
+        lime: 'bg-white cursor-default border-lime-700 text-lime-700 dark:bg-slate-800 dark:border-lime-400 dark:text-lime-400 cursor-text',
+        orange: 'bg-white border-orange-700 cursor-default text-orange-700 dark:bg-slate-800 dark:border-orange-400 dark:text-orange-400 cursor-text'
       }
     },
     defaultVariants: {

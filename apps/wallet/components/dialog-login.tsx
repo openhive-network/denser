@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import dynamic from 'next/dynamic';
 import type { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
+import { useTranslation } from '@/wallet/i18n/client';
 
 // The sign-in form brings the signers, wax and the form validation: load it when the dialog opens.
 const SignInForm = dynamic(() => import('@smart-signer/components/auth/form'), { ssr: false });
@@ -19,6 +20,7 @@ interface DialogLoginProps {
 }
 
 function DialogLogin({ children, open, onOpenChange, keyType = KeyType.active, username }: DialogLoginProps) {
+  const { t } = useTranslation('common_wallet');
   const signInFormRef = useRef<SignInFormRef>(null);
 
   async function onComplete(_username: string) {
@@ -41,6 +43,7 @@ function DialogLogin({ children, open, onOpenChange, keyType = KeyType.active, u
         className="mt-32 max-w-[380px] rounded-md p-0 sm:mt-auto sm:max-w-[450px] sm:px-0"
         data-testid="login-dialog"
         onInteractOutside={(e) => e.preventDefault()}
+        closeLabel={t('global.close')}
       >
         <SignInForm
           ref={signInFormRef}

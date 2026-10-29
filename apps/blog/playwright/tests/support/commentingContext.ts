@@ -234,6 +234,20 @@ export function postReplyTrigger(page: Page): Locator {
 }
 
 /**
+ * Wait until MdEditor (loaded via `next/dynamic({ssr: false})`) has
+ * fetched its chunk and mounted CodeMirror, and return its `.cm-content`
+ * surface. Until then the editor is a shorter loading placeholder, so
+ * anything measured below it moves when the editor mounts.
+ * `expect.toBeVisible` auto-retries on the project-level
+ * `expect.timeout`, so no per-call override.
+ */
+export async function waitForEditorMounted(editorScope: Locator): Promise<Locator> {
+  const cm = editorScope.locator('.cm-content').first();
+  await expect(cm).toBeVisible();
+  return cm;
+}
+
+/**
  * Type into the open reply editor's CodeMirror surface. CM6 isn't a
  * real `<textarea>`, so `.fill()` doesn't work — focus the `.cm-content`
  * element and type via the keyboard.
@@ -260,13 +274,7 @@ export async function typeIntoReplyEditor(
     editor
   }: { clearFirst?: boolean; editor?: Locator } = {}
 ): Promise<void> {
-  const editorScope = editor ?? page.getByTestId('reply-editor');
-  // The CM6 surface is the positive signal that MdEditor (loaded via
-  // `next/dynamic({ssr: false})`) has finished its chunk fetch and
-  // EditorView mount. `expect.toBeVisible` auto-retries on the
-  // project-level `expect.timeout`, so no per-call override.
-  const cm = editorScope.locator('.cm-content').first();
-  await expect(cm).toBeVisible();
+  const cm = await waitForEditorMounted(editor ?? page.getByTestId('reply-editor'));
   // `force: true` skips the post-mount actionability re-check; a
   // hover-triggered toolbar Tooltip can briefly overlay `.cm-content`
   // and cause an unforced click to stall.

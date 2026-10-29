@@ -19,7 +19,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+      'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
       className
     )}
     {...props}
@@ -38,9 +38,9 @@ const SelectContent = React.forwardRef<
 >(({ className, children, position = 'popper', ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
-      ref={(ref) => ref?.addEventListener('touchend', (e) => e.preventDefault())}
+      ref={ref}
       className={cn(
-        'relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-background text-popover-foreground shadow-md animate-in fade-in-80',
+        'relative z-50 min-w-32 overflow-hidden rounded-md border bg-background text-popover-foreground shadow-md animate-in fade-in-80',
         position === 'popper' && 'translate-y-1',
         className
       )}
@@ -51,7 +51,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           'p-1',
           position === 'popper' &&
-            'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]'
+            'h-(--radix-select-trigger-height) w-full min-w-(--radix-select-trigger-width)'
         )}
       >
         {children}
@@ -80,7 +80,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-background-tertiary focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-hidden focus:bg-background-tertiary focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50',
       className
     )}
     {...props}
@@ -103,7 +103,7 @@ const CustomSelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-background-tertiary focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-hidden focus:bg-background-tertiary focus:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50',
       className
     )}
     {...props}
@@ -119,7 +119,7 @@ const CustomSelectContent = React.forwardRef<
 >(({ className, children, position = 'popper', ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
-      ref={(ref) => ref?.addEventListener('touchend', (e) => e.preventDefault())}
+      ref={ref}
       className={cn(
         'relative z-50  overflow-hidden rounded-md border bg-background text-popover-foreground shadow-md animate-in fade-in-80',
         position === 'popper' && 'translate-y-1',
@@ -129,7 +129,7 @@ const CustomSelectContent = React.forwardRef<
       {...props}
     >
       <SelectPrimitive.Viewport
-        className={cn('p-1', position === 'popper' && 'h-[var(--radix-select-trigger-height)] w-full')}
+        className={cn('p-1', position === 'popper' && 'h-(--radix-select-trigger-height) w-full')}
       >
         {children}
       </SelectPrimitive.Viewport>

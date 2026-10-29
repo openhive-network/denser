@@ -29,7 +29,7 @@ test.describe('Faq page tests', () => {
     await homePage.goto();
     await homePage.moveToFaqPage();
 
-    const numberOfTopics: number = 17;
+    const numberOfTopics: number = 18;
     const topics = await faqPage.subTopicsOfContent.all();
     const topicsLength = await topics.length;
 
@@ -43,7 +43,7 @@ test.describe('Faq page tests', () => {
     await homePage.goto();
     await homePage.moveToFaqPage();
 
-    const numberOfTopics: number = 18; // 17 main topics and + 1 main title (Hive.blog FAQ)
+    const numberOfTopics: number = 19; // 18 main topics and + 1 main title (Hive.blog FAQ)
     const topics = await faqPage.subTopicsOfContentDescription.all();
     const topicsLength = await topics.length;
 

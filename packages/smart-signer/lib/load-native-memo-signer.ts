@@ -4,16 +4,17 @@ import { KeyType, LoginType } from '@smart-signer/types/common';
 // Login types whose Signer encrypts and decrypts a MEMO itself, through its browser extension
 // (Signer.encryptData / decryptData). hb-auth's key store only knows active/posting/owner, and
 // HiveAuth's relay holds no key locally: those users enter the MEMO private key instead.
-const NATIVE_MEMO_LOGIN_TYPES: ReadonlySet<LoginType> = new Set([LoginType.keychain, LoginType.peakvault]);
-
-export const hasNativeMemoCrypto = (loginType: LoginType): boolean => NATIVE_MEMO_LOGIN_TYPES.has(loginType);
-
-const isExtensionInstalled = async (loginType: LoginType): Promise<boolean> => {
-  if (loginType === LoginType.keychain) {
-    return (await import('@smart-signer/lib/signer/signer-keychain')).hasCompatibleKeychain();
-  }
-  return (await import('@smart-signer/lib/signer/signer-peakvault')).hasCompatiblePeakvault();
+const EXTENSION_CHECKS: Partial<Record<LoginType, () => Promise<boolean>>> = {
+  [LoginType.keychain]: async () => (await import('@smart-signer/lib/signer/signer-keychain')).hasCompatibleKeychain(),
+  [LoginType.peakvault]: async () =>
+    (await import('@smart-signer/lib/signer/signer-peakvault')).hasCompatiblePeakvault(),
+  [LoginType.metamask]: async () => (await import('@smart-signer/lib/signer/signer-metamask')).hasCompatibleMetaMask()
 };
+
+export const hasNativeMemoCrypto = (loginType: LoginType): boolean => loginType in EXTENSION_CHECKS;
+
+const isExtensionInstalled = async (loginType: LoginType): Promise<boolean> =>
+  (await EXTENSION_CHECKS[loginType]?.()) ?? false;
 
 /**
  * Resolves to `username`'s signer when `loginType` can encrypt and decrypt memos itself and its

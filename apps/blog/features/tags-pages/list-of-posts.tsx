@@ -7,7 +7,9 @@ import { DATA_LIMIT, getPostsRanked } from '@transaction/lib/bridge-api';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
-import { DEFAULT_PREFERENCES, Preferences, SortTypes } from '@/blog/lib/utils';
+import { DEFAULT_PREFERENCES, FOR_YOU_SORT, Preferences, SortTypes } from '@/blog/lib/utils';
+import { FypApiError, retryFypRead } from '@/blog/lib/fyp-api';
+import { nextFypPage } from '@/blog/lib/fyp-paging';
 import { StaleTime } from '@/blog/lib/react-query';
 import { useTranslation } from '@/blog/i18n/client';
 import PostList from '../list-of-posts/posts-loader';
@@ -18,7 +20,21 @@ import { isCommunity } from '@ui/lib/utils';
 import { PostListSkeleton } from '@hive/ui';
 import { useSSREffectiveObserver, useInitialPosts } from '@/blog/components/observer-provider';
 import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-observer';
+import { useHiddenAuthors } from '@/blog/components/hooks/use-hidden-authors';
+import { withoutHiddenAuthors } from '@transaction/lib/hidden-authors';
+import ForYouError from './for-you-error';
 import { usePostsNamespace } from '@/blog/features/lite-account/use-lite-api-info';
+
+/** Where a page starts: after a post for the bridge API's feeds, a page number for For You. */
+type PageParam = { author: string; permlink: string } | number | undefined;
+
+function nextRankedPage(lastPage: CardEntry[]): PageParam {
+  // A short page is the end of the feed; asking for more would only return it empty.
+  if (!Array.isArray(lastPage) || lastPage.length < DATA_LIMIT) return undefined;
+  const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
+  if (!last?.author || !last?.permlink) return undefined;
+  return { author: last.author, permlink: last.permlink };
+}
 
 const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string }) => {
   const ssrObserver = useSSREffectiveObserver();
@@ -29,10 +45,14 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   // then switch to client observer (which should be the same value for logged-in users).
   // "my" lists the user's subscriptions, so it always sends the username.
   // A guest's lite account observes too: its mutes apply, and `my` lists its subscriptions.
-  const clientObserver = observers.liteObserver ?? (tag === 'my' ? observers.observer : observers.effectiveObserver);
+  const clientObserver =
+    observers.liteObserver ?? (tag === 'my' ? observers.observer : observers.effectiveObserver);
   const observer = isHydrated ? clientObserver : ssrObserver;
+  const postsNamespace = usePostsNamespace();
   // The server read its posts as ssrObserver; another observer (e.g. after a list change) fetches its own
-  const seedPosts = observer === ssrObserver ? initialPosts : null;
+  const isForYou = sort === FOR_YOU_SORT;
+  // The server fetches no For You page, so there is nothing to seed it with
+  const seedPosts = observer === ssrObserver && !isForYou ? initialPosts : null;
   const { t } = useTranslation('common_blog');
   const { ref, inView } = useInView();
   // Create a separate ref for prefetching - triggers earlier than the main ref
@@ -49,35 +69,52 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     StorageTTL.PERMANENT
   );
 
-  const postsNamespace = usePostsNamespace();
-  const { data, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage, isError, isPending } =
-    useInfiniteQuery({
-      queryKey: ['entriesInfinite', sort, tag, observer, postsNamespace],
-      queryFn: async ({ pageParam }: { pageParam: { author?: string; permlink?: string } | undefined }) => {
-        const { author, permlink } = pageParam || {};
-        const postsData = await loadCardEntries(
-          getPostsRanked(sort, tag, author ?? '', permlink ?? '', observer)
-        );
-        return postsData ?? [];
-      },
-      getNextPageParam: (lastPage: CardEntry[]) => {
-        // A short page is the end of the feed; asking for more would only return it empty.
-        if (!Array.isArray(lastPage) || lastPage.length < DATA_LIMIT) return undefined;
-        const last = lastPage[lastPage.length - 1] as { author?: string; permlink?: string };
-        if (!last?.author || !last?.permlink) return undefined;
-        return { author: last.author, permlink: last.permlink };
-      },
-      initialPageParam: undefined,
-      // Don't fetch "my communities" for anonymous users — the API would return
-      // hive.blog's subscriptions which are meaningless to the actual user. A lite account has its own.
-      enabled: !(tag === 'my' && !user.isLoggedIn && !observers.liteObserver),
-      // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
-      // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
-      // initialData is only used when the query has no cached data (first load).
-      initialData: seedPosts ? { pages: [seedPosts], pageParams: [undefined] } : undefined,
-      initialDataUpdatedAt: seedPosts ? Date.now() : undefined,
-      staleTime: StaleTime.MEDIUM
-    });
+  // For You is personal: it is read after hydration, for the signed-in account only. Its feed takes
+  // no observer, so the observer's mutes and blacklists are applied here, as the page renders.
+  const forYouAccount = isForYou && isHydrated && user.isLoggedIn ? user.username : '';
+  const hiddenAuthors = useHiddenAuthors(observer, Boolean(forYouAccount));
+
+  const {
+    data,
+    error,
+    isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isPending,
+    refetch
+  } = useInfiniteQuery({
+    queryKey: ['entriesInfinite', sort, tag, observer, postsNamespace, ...(isForYou ? [forYouAccount] : [])],
+    queryFn: async ({ pageParam }: { pageParam: PageParam }) => {
+      if (isForYou) {
+        const page = typeof pageParam === 'number' ? pageParam : 1;
+        // Loaded with the first For You page, so the other feeds don't carry the FYP client
+        const { getForYouPosts } = await import('./lib/for-you-posts');
+        return (await loadCardEntries(getForYouPosts(forYouAccount, page, observer))) ?? [];
+      }
+      const { author, permlink } = typeof pageParam === 'object' ? pageParam : { author: '', permlink: '' };
+      const postsData = await loadCardEntries(getPostsRanked(sort, tag, author, permlink, observer));
+      return postsData ?? [];
+    },
+    // Pages keep every post the feed sent, so a short page still marks the end of a filtered feed
+    getNextPageParam: (lastPage: CardEntry[], allPages: CardEntry[][]): PageParam =>
+      isForYou ? nextFypPage(lastPage, allPages.length) : nextRankedPage(lastPage),
+    initialPageParam: undefined as PageParam,
+    // Don't fetch "my communities" for anonymous users — the API would return
+    // hive.blog's subscriptions which are meaningless to the actual user.
+    // A lite account has its own subscriptions, so its `my` feed is read.
+    enabled: isForYou
+      ? Boolean(forYouAccount)
+      : !(tag === 'my' && !user.isLoggedIn && !observers.liteObserver),
+    // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
+    // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
+    // initialData is only used when the query has no cached data (first load).
+    initialData: seedPosts ? { pages: [seedPosts], pageParams: [undefined] } : undefined,
+    initialDataUpdatedAt: seedPosts ? Date.now() : undefined,
+    staleTime: StaleTime.MEDIUM,
+    ...(isForYou && { retry: retryFypRead })
+  });
 
   // Auto-fetch the next page when either the prefetch sentinel (1500px ahead)
   // or the load-more button enters view. Guard on !isFetching so a single cycle
@@ -91,8 +128,29 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     }
   }, [prefetchInView, inView, hasNextPage, isFetching, isError, fetchNextPage]);
 
+  const retryForYou = () => {
+    if (hiddenAuthors.isError) hiddenAuthors.refetch();
+    if (isError) refetch();
+  };
+
+  const visiblePosts = (page: CardEntry[]) =>
+    isForYou && hiddenAuthors.data ? withoutHiddenAuthors(page, hiddenAuthors.data) : page;
+
   // Calculate total posts to determine when to show prefetch trigger
   const totalPosts = data?.pages?.reduce((acc, page) => acc + (page?.length || 0), 0) || 0;
+
+  // For You shows no post before the hidden authors are known: unfiltered, it would show theirs too.
+  const forYouFailed =
+    isForYou && ((isError && !data?.pages?.length) || (hiddenAuthors.isError && !hiddenAuthors.data));
+  if (forYouFailed) {
+    return (
+      <ForYouError
+        onRetry={retryForYou}
+        isRetrying={isFetching || hiddenAuthors.isFetching}
+        serviceFailed={error instanceof FypApiError}
+      />
+    );
+  }
 
   // Only replace the whole list when there is nothing to show. A failed
   // fetchNextPage leaves earlier pages in `data` — keep them and show an
@@ -103,7 +161,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
 
   // Handle initial loading state (also show skeleton when refetching with no data,
   // e.g. during observer transition after hydration)
-  if (isPending || (isFetching && !data?.pages?.[0]?.length)) {
+  if (isPending || (isForYou && !hiddenAuthors.data) || (isFetching && !data?.pages?.[0]?.length)) {
     return <PostListSkeleton count={5} />;
   }
 
@@ -114,7 +172,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   if (isEmpty && tag === 'my' && !isFetching) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-lg text-primary/70">{t('user_profile.empty_feed_not_following')}</p>
+        <p className="text-primary/70 text-lg">{t('user_profile.empty_feed_not_following')}</p>
       </div>
     );
   }
@@ -128,7 +186,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
               <div key={`page-${pageIndex}`}>
                 <PostList
                   nsfwPreferences={preferences.nsfw}
-                  data={page}
+                  data={visiblePosts(page)}
                   key={`f-${pageIndex}`}
                   isCommunityPage={isCommunity(tag)}
                   testFilter={sort}

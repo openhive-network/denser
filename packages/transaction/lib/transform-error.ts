@@ -56,6 +56,60 @@ const wellKnownErrorDescriptions = [
   'No password from user'
 ];
 
+/**
+ * Wax's Keychain provider prefixes the extension's own answer with this; the
+ * answer is written for the user ("User ignored this transaction"), so it is shown as is.
+ * Wax interpolates the answer unchecked, so a missing one arrives as "undefined".
+ */
+const KEYCHAIN_ERROR_PATTERN = /Keychain error:(.*)/;
+const MISSING_KEYCHAIN_MESSAGES = ['', 'undefined', 'null'];
+
+/**
+ * Keychain's code for a request the user rejected: their own choice, nothing to report. The message
+ * beside it is translated to the extension's language, so only the code identifies it. Wax keeps
+ * Keychain's response as the `cause` of the error it throws.
+ */
+const KEYCHAIN_USER_CANCEL_CODE = 'user_cancel';
+const MAX_CAUSE_DEPTH = 5;
+
+function isKeychainUserCancel(error: unknown): boolean {
+  let current = error;
+  for (let depth = 0; depth < MAX_CAUSE_DEPTH && typeof current === 'object' && current !== null; depth++) {
+    if ('error' in current && current.error === KEYCHAIN_USER_CANCEL_CODE) return true;
+    current = 'cause' in current ? current.cause : undefined;
+  }
+  return false;
+}
+
+/**
+ * Peak Vault rejects a request with its own response, a plain object (`{ success: false, error, message }`)
+ * rather than an Error. Its `message` is written for the user, like Keychain's answer.
+ */
+function findWalletResponseMessage(error: unknown): string | undefined {
+  if (typeof error !== 'object' || error === null || error instanceof Error) return undefined;
+  if (!('success' in error) || error.success !== false) return undefined;
+  const message = 'message' in error && typeof error.message === 'string' ? error.message.trim() : '';
+  return message || undefined;
+}
+
+/**
+ * The error's message without the rest of it: a wallet's response or wax's error can carry the
+ * transaction the user signed, which the always-on error log must not print.
+ */
+export function summarizeErrorForLog(error: unknown): string {
+  if (error instanceof Error) return scrubSensitiveData(`${error.name}: ${error.message}`);
+  if (typeof error === 'string') return scrubSensitiveData(error);
+  return findWalletResponseMessage(error) ?? 'non-Error value';
+}
+
+function stringifyError(error: unknown): string {
+  try {
+    return JSON.stringify(error) ?? String(error);
+  } catch {
+    return String(error);
+  }
+}
+
 // TODO: Refactor this function to use the new error handling mechanism
 // This is not working as expected and it isn't configurable to show UI errors
 /**
@@ -64,16 +118,27 @@ const wellKnownErrorDescriptions = [
  *
  * @param {*} e
  * @param {{ method: string, params: T }} ctx
- * @returns error description
+ * @returns error description; `isWellKnownError` marks one not worth reporting,
+ * `isKeychainMessageMissing` a Keychain error that came without the extension's answer
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
-  logger.error('in transformError: got error (will be swallowed): %o on method: %s', e, ctx?.method);
-
   let description = 'Error';
   let isWellKnownError = false;
+  let isKeychainMessageMissing = false;
+  const isUserCancel = isKeychainUserCancel(e);
+  const walletResponseMessage = findWalletResponseMessage(e);
+
+  logger.error(
+    'in transformError: got error (will be swallowed) on method %s: %s',
+    ctx?.method,
+    summarizeErrorForLog(e)
+  );
+  logger.debug('in transformError: full error: %o', e);
 
   if (e instanceof Error) {
     e = `${e.name}: ${e.message}`;
+  } else if (typeof e !== 'string') {
+    e = stringifyError(e);
   } else if (isJSON(e)) {
     e = JSON.stringify(e);
   }
@@ -89,17 +154,28 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
       }
     }
 
+    const keychainMessage = KEYCHAIN_ERROR_PATTERN.exec(e)?.[1]?.trim();
+
     if (wellKnownErrorDescription) {
       description = wellKnownErrorDescription;
       isWellKnownError = true;
-    } else {
+    } else if (walletResponseMessage) {
+      description = walletResponseMessage;
+    } else if (keychainMessage === undefined) {
       description = errorDescription;
+    } else if (MISSING_KEYCHAIN_MESSAGES.includes(keychainMessage)) {
+      description = errorDescription;
+      isKeychainMessageMissing = true;
+    } else {
+      description = keychainMessage;
     }
   }
+  isWellKnownError ||= isUserCancel;
 
   return {
     errorTitle: defaultDescription ?? description,
     fullError: scrubSensitiveData(e.toString()),
-    isWellKnownError
+    isWellKnownError,
+    isKeychainMessageMissing
   };
 }

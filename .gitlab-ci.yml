@@ -9,12 +9,6 @@ stages:
 - cleanup
 
 variables:
-  # Variables required by Common CI jobs
-  CI_COMMON_JOB_VERSION: '9f5e12cd984bf12746ce9af081868e09ced8068f'
-  DOCKER_BUILDER_TAG: '$CI_COMMON_JOB_VERSION'
-  DOCKER_DIND_TAG: '$CI_COMMON_JOB_VERSION'
-  IMAGE_REMOVER_TAG: '$CI_COMMON_JOB_VERSION'
-
   # Git configuration
   # Fetch strategy reuses workspace between jobs, reducing GitLab server load.
   # Full clone (depth 0) enables efficient incremental fetches - shallow clones
@@ -22,7 +16,12 @@ variables:
   GIT_STRATEGY: fetch
   GIT_DEPTH: 0
   GIT_SUBMODULE_DEPTH: 0
-  GIT_SUBMODULE_STRATEGY: none
+  # npm-common-config is common-ci-configuration, tracked from its develop tip
+  # (--remote) so a ccc catalog bump reaches the next pipeline; its catalogs are
+  # merged into pnpm-workspace.yaml before every install (CCC_SUBMODULE_DIR).
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_UPDATE_FLAGS: --remote
+  CCC_SUBMODULE_DIR: npm-common-config
   # Temporary: separate clone path prevents clone-strategy jobs from erasing
   # fetch workspaces during transition. Remove once all projects use fetch.
   GIT_CLONE_PATH: $CI_BUILDS_DIR/clean/$CI_RUNNER_SHORT_TOKEN/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
@@ -50,7 +49,6 @@ variables:
 
   # Other settings
   CADDY_TAG: '2.7.6'
-  PLAYWRIGHT_TAG: 'v1.63.0-jammy'
 
   HAF_COMMIT: 8de693b2812a040aa5c4365c232ebab8036a1d11
 # Branch pipelines (what the Workflows/Branch-Pipelines template did), except for
@@ -82,6 +80,7 @@ include:
   - '/templates/base.gitlab-ci.yml'
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
+  - '/templates/npm_projects.gitlab-ci.yml'
 - project: 'hive/haf'
   ref: 8de693b2812a040aa5c4365c232ebab8036a1d11  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
@@ -488,37 +487,15 @@ mirrornet-haf-node-replay:
   - when: on_success
   interruptible: true
   image:
-    name: node:24.21.0-alpine3.24
+    name: ${NODE_TEST_TOOLS_IMAGE}
     entrypoint: []
   stage: test
   before_script:
-  - corepack enable
-  - |
-    # Retry corepack prepare with exponential backoff to handle transient npm registry failures
-    max_attempts=5
-    attempt=1
-    delay=5
-    while [ $attempt -le $max_attempts ]; do
-      echo "Attempting to prepare pnpm (attempt $attempt/$max_attempts)..."
-      if corepack prepare pnpm@9.6.0 --activate; then
-        echo "Successfully prepared pnpm"
-        break
-      fi
-      if [ $attempt -eq $max_attempts ]; then
-        echo "Failed to prepare pnpm after $max_attempts attempts"
-        exit 1
-      fi
-      echo "Attempt $attempt failed, retrying in ${delay}s..."
-      sleep $delay
-      attempt=$((attempt + 1))
-      delay=$((delay * 2))
-    done
   - pnpm config set store-dir .pnpm-store
   script:
-  - |
-    echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
-    pnpm install --frozen-lockfile
-    echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
+  - echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
+  - !reference [.pnpm_install_with_catalog_fallback, script]
+  - echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
     key: '$TURBO_APP_SCOPE-cache-2'
     paths:
@@ -529,6 +506,19 @@ mirrornet-haf-node-replay:
     name: '$CI_JOB_NAME-$CI_COMMIT_REF_NAME'
     when: always
     expire_in: 1 week
+  tags:
+  - public-runner-docker
+
+# Reports (allowed to fail) when the committed pnpm-workspace.yaml lacks the ccc
+# catalogs the submodule's develop tip has: re-run
+# `python3 npm-common-config/scripts/python/pnpm-catalog-sync.py` and commit it with
+# the refreshed lockfile.
+pnpm_catalog_check:
+  extends: .pnpm_catalog_check
+  stage: build
+  rules:
+  - when: on_success
+  interruptible: true
   tags:
   - public-runner-docker
 
@@ -552,7 +542,7 @@ flake-report-unit-tests:
   extends: .job-defaults
   interruptible: true
   image:
-    name: node:24.21.0-alpine3.24
+    name: ${NODE_TEST_TOOLS_IMAGE}
     entrypoint: []
   stage: test
   needs: []
@@ -566,7 +556,7 @@ flake-report-unit-tests:
 
 .e2e_tests_template:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   variables:
     CI_DEBUG_SERVICES: true
     FF_NETWORK_PER_BUILD: 1
@@ -616,7 +606,7 @@ mirrornet-based-tests:
   - docker-build-wallet-mirrornet-testenv
   - mirrornet-replay-data-copy
   - block_log_processing
-  image: 'mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}'
+  image: '${NODE_TEST_TOOLS_IMAGE}'
   allow_failure: true
   services:
   - !reference [.haf_api_node_test, services]
@@ -837,7 +827,7 @@ e2e-tests-wallet-flaky:
 
 smoke-tests-blog:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   stage: test
   allow_failure: true
   # smoke-runner.mjs stops starting attempts after 25 min (SMOKE_RUN_BUDGET_MS)
@@ -891,7 +881,7 @@ smoke-tests-blog:
 
 blog-fixture-tests:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   stage: test
   needs: []
   variables:
@@ -917,7 +907,7 @@ blog-fixture-tests:
 
 wallet-fixture-tests:
   extends: .node-job
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   stage: test
   needs: []
   variables:
@@ -947,7 +937,7 @@ wallet-fixture-tests:
   rules:
   - when: always
   allow_failure: true
-  image: mcr.microsoft.com/playwright:${PLAYWRIGHT_TAG}
+  image: ${NODE_TEST_TOOLS_IMAGE}
   script:
   - !reference [.node-job, script]
   - |
@@ -1084,6 +1074,9 @@ lighthouse-metrics-blog:
     alias: denser
     variables:
       HEALTHCHECK_TCP_PORT: '3000'
+      # robots.txt disallows everything unless this is set, which fails the SEO is-crawlable
+      # audit; production sets it, so the audit should see the same.
+      REACT_APP_SEO_ALLOW_INDEXING: 'yes'
   - name: caddy:${CADDY_TAG}
     # `caddy reverse-proxy` (used elsewhere) has no compression flag, so this job uses a
     # Caddyfile instead - written inline since GitLab CI `services:` don't support volume
@@ -1142,7 +1135,7 @@ lighthouse-metrics-wallet:
 lighthouse-mr-comment:
   extends: .job-defaults
   stage: test-report-aggregate
-  image: node:24.21.0-alpine3.24
+  image: ${NODE_TEST_TOOLS_IMAGE}
   needs:
   - job: lighthouse-metrics-blog
     optional: true
@@ -1158,7 +1151,7 @@ lighthouse-mr-comment:
 
 publish:
   image:
-    name: node:24.21.0-alpine3.24
+    name: ${NODE_TEST_TOOLS_IMAGE}
     entrypoint: ['']
   extends: .job-defaults
   stage: publish

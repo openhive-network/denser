@@ -1,6 +1,7 @@
 import env from '@beam-australia/react-env';
 
 import { configuredApiEndpoint, configuredRestApiEndpoint, configuredSiteDomain } from '@hive/ui/config/public-vars';
+import { chatAppUrl, resolveChatProvider, resolveMatrixChatConfig } from '@hive/ui/config/chat';
 
 const SERVER_VAR_PREFIX = 'DENSER_SERVER_';
 
@@ -16,6 +17,9 @@ const chainEnv: Record<string, ChainEnv> = {
 };
 
 const chainId = env('CHAIN_ID') ? env('CHAIN_ID') : MAINNET_CHAIN_ID;
+const chatProvider = resolveChatProvider(env('CHAT_PROVIDER'));
+const matrixChat = resolveMatrixChatConfig(env);
+const openhiveChatUri = env('OPENHIVE_CHAT_URI') || 'https://openhive.chat';
 export const siteConfig = {
   name: 'Hive Blog',
   url: configuredSiteDomain,
@@ -29,7 +33,6 @@ export const siteConfig = {
     twitter: '/',
     github: '/'
   },
-  allowNonStrictLogin: env('ALLOW_NON_STRICT_LOGIN') === 'yes' ? true : false,
   loginAuthenticateOnBackend: env('LOGIN_AUTHENTICATE_ON_BACKEND') === 'yes' ? true : false,
 
   googleDrive: {
@@ -51,10 +54,19 @@ export const siteConfig = {
   oidcClients: process.env[`${SERVER_VAR_PREFIX}OIDC_CLIENTS`] || '[]',
   oidcJwksKeys: process.env[`${SERVER_VAR_PREFIX}OIDC_JWKS_KEYS`] || '[]',
 
+  // Chat widget: Rocket.Chat (openhive.chat) unless CHAT_PROVIDER=matrix
+  chatProvider,
+  // The chat app the sidebars link to
+  chatAppUrl: chatAppUrl(chatProvider, matrixChat, openhiveChatUri),
+  // Element Web + Synapse, signing in through denser's OAuth server
+  matrixChat,
+  // A Synapse admin's access token, for deleting a user's Matrix devices at sign-out (empty: never)
+  matrixAdminToken: process.env[`${SERVER_VAR_PREFIX}MATRIX_ADMIN_TOKEN`]?.trim() || '',
+
   // Rocket Chat Widget
   openhiveChatClientId: env('OPENHIVE_CHAT_CLIENT_ID') || 'openhive_chat',
   openhiveChatApiUri: env('OPENHIVE_CHAT_API_URI') || 'https://openhive.chat',
-  openhiveChatUri: env('OPENHIVE_CHAT_URI') || 'https://openhive.chat',
+  openhiveChatUri,
   openhiveChatIframeIntegrationEnable: env('OPENHIVE_CHAT_IFRAME_INTEGRATION_ENABLE') || 'no',
   openhiveChatIframeVisible: env('OPENHIVE_CHAT_IFRAME_VISIBLE') || 'yes',
   openhiveChatAllowNonStrictLogin: env('OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN')

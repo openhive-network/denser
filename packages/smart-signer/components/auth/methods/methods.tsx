@@ -107,15 +107,13 @@ const Methods: FC<MethodsProps> = ({
   }, [form.getValues('username'), onUsernameChange]);
 
   async function onSubmit(_loginType: LoginType) {
+    form.setValue('loginType', _loginType);
+    const { username, keyType, loginType } = form.getValues();
     try {
       setLoading(true);
-      form.setValue('loginType', _loginType);
-
-      const { username, keyType, loginType } = form.getValues();
-
       await signIn(loginType, username, keyType);
     } catch (error: unknown) {
-      handleError(error);
+      handleError(error, { method: 'signIn', params: { loginType, username, keyType } });
     } finally {
       setLoading(false);
     }
@@ -134,12 +132,10 @@ const Methods: FC<MethodsProps> = ({
   return (
     <Step
       loading={loading}
-      title="Other sign in options"
+      title={t('login_form.other_signin_options')}
       description={
         <div>
-          <div data-testid="other-signin-options-description">
-            Enter your username and select a sign in method
-          </div>
+          <div data-testid="other-signin-options-description">{t('login_form.other_signing_options_description')}</div>
         </div>
       }
     >
@@ -155,7 +151,7 @@ const Methods: FC<MethodsProps> = ({
                   {/* Place holder, enter username if there is no user, otherwise select user from menu or enter new user*/}
                   <div className="relative flex">
                     <Input
-                      placeholder="Username"
+                      placeholder={t('login_form.signin_safe_storage.placeholder_username')}
                       type="text"
                       autoComplete="username"
                       {...field}
@@ -216,7 +212,7 @@ const Methods: FC<MethodsProps> = ({
                 data-testid="metamask-extension-button"
               >
                 <Icons.metamask className="mr-4 h-8 w-8" />
-                MetaMask extension
+                {t('login_form.signin_with_metamask')}
               </Button>
               {renderMethodInfo('metamask', 'MetaMask')}
             </div>
@@ -232,9 +228,9 @@ const Methods: FC<MethodsProps> = ({
                 data-testid="google-button"
               >
                 <Icons.google className="mr-4 h-8 w-8" />
-                Google Account
+                {t('login_form.signin_with_google')}
               </Button>
-              {renderMethodInfo('google', 'Google Account')}
+              {renderMethodInfo('google', t('login_form.signin_with_google'))}
             </div>
 
             <Separator className="my-1 w-full" />
@@ -249,7 +245,7 @@ const Methods: FC<MethodsProps> = ({
                 data-testid="hive-keychain-extension-button"
               >
                 <Icons.hivekeychain className="mr-4 h-8 w-8" />
-                Hive Keychain extension
+                {t('login_form.signin_with_keychain')}
               </Button>
               {renderMethodInfo('keychain', 'Hive Keychain')}
             </div>
@@ -266,7 +262,7 @@ const Methods: FC<MethodsProps> = ({
                 data-testid="peakvault-extension-button"
               >
                 <Icons.peakvault className="mr-4 h-8 w-8" />
-                PeakVault extension
+                {t('login_form.signin_with_peakvault')}
               </Button>
               {renderMethodInfo('peakvault', 'PeakVault')}
             </div>
@@ -284,7 +280,7 @@ const Methods: FC<MethodsProps> = ({
               >
                 <div className="flex flex-1 items-center">
                   <Icons.keyRound className="mr-4 h-8 w-8" />
-                  Sign in with WIF (Legacy)
+                  {t('login_form.signin_with_wif')}
                 </div>
               </Button>
               {renderMethodInfo('wif', 'WIF')}
@@ -321,7 +317,7 @@ const Methods: FC<MethodsProps> = ({
               >
                 <div className="flex flex-1 items-center">
                   <Icons.hiveauth className="mr-4 h-8 w-8" />
-                  HiveAuth
+                  {t('login_form.signin_with_hiveauth')}
                 </div>
               </Button>
               {renderMethodInfo('hiveauth', 'HiveAuth')}
@@ -338,7 +334,7 @@ const Methods: FC<MethodsProps> = ({
                 data-testid="hive-signer-button"
               >
                 <Icons.hivesigner className="mr-4 h-8 w-8" />
-                HiveSigner
+                {t('login_form.signin_with_hivesigner')}
               </Button>
               {renderMethodInfo('hivesigner', 'HiveSigner')}
             </div>
@@ -352,7 +348,7 @@ const Methods: FC<MethodsProps> = ({
               }}
               data-testid="go-back-button"
             >
-              <Icons.chevronLeft className="mr-2 h-4 w-4" /> Go back
+              <Icons.chevronLeft className="mr-2 h-4 w-4" /> {t('login_form.go_back_button')}
             </Button>
           </div>
         </form>

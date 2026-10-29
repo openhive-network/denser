@@ -65,7 +65,7 @@
     "other_signing_options_description": "Inserisci il tuo nome utente e seleziona un metodo di accesso",
     "go_back_button": "Torna indietro",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "Che cos'è {{method}}?",
       "safe_storage": "La conservazione sicura mantiene la tua chiave privata cifrata con una password in questo browser. La chiave non lascia mai il tuo dispositivo.",
       "keychain": "Hive Keychain è un'estensione del browser che conserva le tue chiavi e firma le transazioni al posto tuo.",
       "peakvault": "PeakVault è un wallet sotto forma di estensione del browser che conserva le tue chiavi e firma le transazioni al posto tuo.",
@@ -92,7 +92,8 @@
       "button_sign_auth": "Firma tx di autorizzazione",
       "button_signin_unlocked": "Accedi con tx firmato",
       "strict_mode": "Modo di autorità ristretta",
-      "strict_mode_tooltip": "Quando abilitato, l'app consentirà solo l'aggiunta di chiavi con l'autorità propria dell'account. Se vuoi aggiungere chiavi con un'altra autorità, disabilita questa modalità.",
+      "strict_mode_scope": "(solo conservazione sicura)",
+      "strict_mode_tooltip": "Si applica solo alle chiavi salvate nella conservazione sicura. Quando è abilitato, la conservazione sicura accetta solo una chiave dell'autorità propria dell'account. Per salvare una chiave che firma tramite l'autorità di un altro account, disabilita questa modalità. Keychain, PeakVault, HiveAuth e gli altri metodi di accesso non sono interessati.",
       "key_update": "Aggiungi nuova chiave",
       "update_key_title": "Aggiungi nuova chiave alla conservazione sicura",
       "update_key_description": "Aggiungi nuova chiave {{keyType}} per l'utente {{username}}",
@@ -115,7 +116,8 @@
       "no_wif_key": "Nessuna chiave WIF",
       "password_required": "La password è obbligatoria",
       "wif_required": "La chiave WIF è obbligatoria",
-      "posting_key_for_active": "Il wallet richiede la tua chiave attiva; una chiave di pubblicazione non può firmare i trasferimenti"
+      "posting_key_for_active": "Il wallet richiede la tua chiave attiva; una chiave di pubblicazione non può firmare i trasferimenti",
+      "active_key_for_posting": "Questa chiave non ha l'autorità di pubblicazione. L'accesso al blog richiede la chiave di pubblicazione"
     },
     "signin_with_keychain": "Estensione Hive Keychain",
     "signin_with_wif": "Accedi con WIF (Legacy)",
@@ -128,12 +130,25 @@
     "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "Questa operazione richiede la tua chiave di pubblicazione. Inserisci la chiave e conservala nella conservazione sicura.",
     "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "Questa operazione richiede la tua chiave attiva. Inserisci la chiave e conservala nella conservazione sicura.",
     "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "Questa operazione richiede la tua chiave proprietario. Inserisci la chiave e conservala nella conservazione sicura.",
-    "use_peakvault": "Usa Peakvault",
-    "signin_with_peakvault": "Estensione Peakvault",
+    "use_peakvault": "Usa PeakVault",
+    "signin_with_peakvault": "Estensione PeakVault",
     "extension_sign_in": {
       "keychain": "Accedi con Hive Keychain",
       "peakvault": "Accedi con PeakVault",
       "or_safe_storage": "oppure usa l'archivio sicuro"
+    },
+    "sign_in_pending": "Un altro accesso è ancora in attesa di risposta. Completalo o rifiutalo nell'estensione del tuo portafoglio, oppure annullalo per ricominciare.",
+    "sign_in_pending_generic": "Un altro accesso è ancora in attesa di risposta. Completalo oppure annullalo per ricominciare.",
+    "cancel_pending_sign_in": "Annulla l'accesso in sospeso",
+    "safe_storage_name": "Conservazione sicura",
+    "signin_with_metamask": "Estensione MetaMask",
+    "signin_with_google": "Account Google",
+    "passkey_prompt": {
+      "title": "Attivare lo sblocco biometrico?",
+      "description": "Usa l’impronta digitale, Face ID o il PIN del dispositivo per sbloccare invece di digitare la password.",
+      "enable": "Attiva",
+      "not_now": "Non ora",
+      "never_ask_again": "Non chiedere più"
     },
     "passkey": {
       "method": "Firmatario con passkey",
@@ -171,11 +186,30 @@
     "password_form_title": "Inserisci la tua password",
     "store_key_label": "Conserva chiave",
     "store_password_label": "Conserva password",
-    "google_drive_password_placeholder": "Password per sbloccare il portafoglio Google Drive"
+    "google_drive_password_placeholder": "Password per sbloccare il portafoglio Google Drive",
+    "safe_storage_recovery_description": "Un'altra scheda ha modificato l'archivio sicuro mentre veniva salvata una chiave di @{{username}}. Inserisci la password dell'archivio sicuro di @{{username}} per completare il salvataggio."
   },
   "broadcast_error": {
     "missing_owner_authority": "Questa operazione richiede la tua chiave proprietario (owner). Accedi con essa e riprova.",
     "missing_active_authority": "Questa operazione richiede la tua chiave attiva (active). Accedi con la tua chiave attiva e riprova.",
-    "missing_posting_authority": "Questa operazione richiede la tua chiave di pubblicazione (posting). Accedi con essa e riprova."
+    "missing_posting_authority": "Questa operazione richiede la tua chiave di pubblicazione (posting). Accedi con essa e riprova.",
+    "safe_storage_missing_account": "L'archivio sicuro di questo browser non contiene chiavi del tuo account. Accedi di nuovo.",
+    "not_enough_rc": "Crediti risorse (RC) insufficienti per questa transazione. Attendi che i tuoi RC si ricarichino o fai power up di HIVE.",
+    "not_enough_rc_amounts": "Hai {{current}} RC; questa transazione ne richiede {{needed}}.",
+    "keychain_no_message": "Hive Keychain non è riuscito a completare la richiesta e non ha indicato il motivo.",
+    "superseded_key_write": "Un'altra scheda ha interrotto il salvataggio della chiave {{keyType}} di @{{username}} nell'archivio sicuro. Aggiungi di nuovo la chiave {{keyType}} all'archivio sicuro."
+  },
+  "request_error": {
+    "timeout": "Il server non ha risposto in tempo. Riprova."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "Portafoglio non trovato",
+    "wallet_not_found_description": "Nessun portafoglio Hive trovato nel tuo Google Drive. Crea prima un portafoglio con Hive Bridge.",
+    "key_not_found_title": "Chiave non trovata",
+    "key_not_found_description": "La chiave {{keyType}} di @{{username}} non è stata trovata nel tuo portafoglio Google Drive. Aggiungi questa chiave con Hive Bridge o usa un altro metodo di accesso.",
+    "account_not_found_title": "Nessuna chiave trovata",
+    "account_not_found_description": "Il tuo portafoglio Google Drive non contiene chiavi per @{{username}}. Aggiungile con Hive Bridge o usa un altro metodo di accesso.",
+    "bridge_info": "Hive Bridge ti consente di conservare in modo sicuro le tue chiavi Hive su Google Drive.",
+    "go_to_bridge": "Vai a Hive Bridge"
   }
 }

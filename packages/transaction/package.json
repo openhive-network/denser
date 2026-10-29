@@ -5,7 +5,7 @@
   "types": "./index.ts",
   "scripts": {
     "lint": "eslint .",
-    "test": "TS_NODE_PROJECT=tsconfig.test.json mocha \"lib/**/*.test.ts\""
+    "test": "TS_NODE_PROJECT=tsconfig.test.json TS_NODE_BASEURL=. mocha \"lib/**/*.test.ts\""
   },
   "dependencies": {
     "bs58": "6.0.0",
@@ -21,6 +21,6 @@
     "@types/node": "^24",
     "@types/secure-random": "^1.1.3",
     "@types/speakingurl": "^13.0.6",
-    "typescript": "5.3.3"
+    "typescript": "catalog:typescript-toolset"
   }
 }

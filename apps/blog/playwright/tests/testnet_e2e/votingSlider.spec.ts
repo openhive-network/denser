@@ -95,7 +95,7 @@ test.describe('Test for slider voting', () => {
       const undoUpvoteTooltipText: string = 'Undo your upvote 34.00%Undo your upvote 34.00%';
       const upvoteTooltipText: string = 'UpvoteUpvote';
       const upvoteContentAfterTheirPayout: string =
-        'UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards';
+        'UpvoteVoting on content after its payout does not generate any new rewardsUpvoteVoting on content after its payout does not generate any new rewards';
 
       const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
       const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);
@@ -441,7 +441,7 @@ test.describe('Test for slider voting', () => {
       const undoDownvoteTooltipText: string = 'Undo your downvote 25.00%Undo your downvote 25.00%';
       const downvoteTooltipText: string = 'DownvoteDownvote';
       const downvoteAfterTheirPayout: string =
-        'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards';
+        'DownvoteVoting on content after its payout does not generate any new rewardsDownvoteVoting on content after its payout does not generate any new rewards';
 
       const homePage: HomePage = new HomePage(denserAutoTest3Page.page);
       const votingSlider: VotingSlider = new VotingSlider(denserAutoTest3Page.page);

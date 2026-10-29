@@ -34,6 +34,7 @@ import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import { DEFAULT_PREFERENCES, Preferences } from '@/blog/lib/utils';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { useSignerContext } from '@smart-signer/components/signer-provider';
+import { useImageUploadAvailability } from '@/blog/components/hooks/use-image-upload-availability';
 
 const SettingsForm = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');
@@ -50,6 +51,7 @@ const SettingsForm = ({ username }: { username: string }) => {
   const profileData = data?.profile;
 
   const { loadSigner } = useSignerContext();
+  const { preventFilePicker } = useImageUploadAvailability();
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [insertImg, setInsertImg] = useState('');
   const inputProfileRef = useRef<HTMLInputElement>(null) as MutableRefObject<HTMLInputElement>;
@@ -171,6 +173,7 @@ const SettingsForm = ({ username }: { username: string }) => {
                 accept=".jpg,.png,.jpeg,.jfif,.gif,.webp,.heic,.heif"
                 name="avatar"
                 value={insertImg}
+                onClick={preventFilePicker}
                 //@ts-expect-error
                 onChange={inputProfileHandler}
               />
@@ -202,6 +205,7 @@ const SettingsForm = ({ username }: { username: string }) => {
                 accept=".jpg,.png,.jpeg,.jfif,.gif,.webp,.heic,.heif"
                 name="avatar"
                 value={insertImg}
+                onClick={preventFilePicker}
                 //@ts-expect-error
                 onChange={inputCoverHandler}
               />

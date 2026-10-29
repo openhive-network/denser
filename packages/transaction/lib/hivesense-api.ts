@@ -3,15 +3,21 @@ import { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-package
 import { getReadChain } from './chain';
 import { getHiveChainService } from './hive-chain-service';
 import {
+  AI_SEARCH_BODY_LENGTH,
   AI_SEARCH_REQUEST_TIMEOUT_MS,
   HIVE_SENSE_PROBE_TIMEOUT_MS,
-  hiveSenseOpenApiLooksHealthy,
-  hiveSenseSearchProbeLooksHealthy,
+  hiveSenseSyncStatusLooksHealthy,
   isHiveSenseNoEmbeddingError,
   isHiveSenseStub,
   isRenderableSearchEntry,
   promiseWithTimeout
 } from './hivesense-search';
+
+/**
+ * Request timeout of the similar-posts call. A cold HiveSense similar-posts query took a healthy node
+ * up to ~9 s before its cache warmed, well past the read chain's per-attempt timeout.
+ */
+const SIMILAR_POSTS_TIMEOUT_MS = 15_000;
 
 const logStandarizedError = (methodName: string, error: unknown): null => {
   logger.error(error, `Error in ${methodName}`);
@@ -21,27 +27,13 @@ const logStandarizedError = (methodName: string, error: unknown): null => {
 export const getHiveSenseStatus = async (): Promise<boolean> => {
   try {
     const base = getHiveChainService().getAiSearchEndpoint().replace(/\/$/, '');
-    // The OpenAPI document is served only at the trailing-slash root, which the
-    // wax REST caller cannot request (it filters out empty path segments).
-    // A live spec is not enough: also probe posts/search so a degraded
-    // sub-endpoint disables AI mode instead of hanging the search page (#947).
-    const signal = AbortSignal.timeout(HIVE_SENSE_PROBE_TIMEOUT_MS);
-    const probeUrl = new URL(`${base}/hivesense-api/posts/search`);
-    probeUrl.searchParams.set('q', 'hive');
-    probeUrl.searchParams.set('truncate', '1');
-    probeUrl.searchParams.set('result_limit', '1');
-    probeUrl.searchParams.set('full_posts', '0');
-
-    const [rootResponse, probeResponse] = await Promise.all([
-      fetch(`${base}/hivesense-api/`, { signal }),
-      fetch(probeUrl, { signal })
-    ]);
-    if (!rootResponse.ok || !probeResponse.ok) return false;
-    const spec = await rootResponse.json();
-    const probeBody = await probeResponse.json();
-    return (
-      hiveSenseOpenApiLooksHealthy(spec) && hiveSenseSearchProbeLooksHealthy(probeResponse.ok, probeBody)
-    );
+    // A one-row lookup on the same postgrest pool as the search endpoints: when
+    // searches hang or haproxy has marked hivesense down, this fails too.
+    const response = await fetch(`${base}/hivesense-api/sync-status`, {
+      signal: AbortSignal.timeout(HIVE_SENSE_PROBE_TIMEOUT_MS)
+    });
+    if (!response.ok) return false;
+    return hiveSenseSyncStatusLooksHealthy(await response.json());
   } catch (error) {
     logger.error(error, 'Error in getHiveSenseStatus');
     return false;
@@ -52,7 +44,7 @@ export const getHiveSenseStatus = async (): Promise<boolean> => {
 
 export const searchPosts = async ({
   query,
-  truncate = 100,
+  truncate = AI_SEARCH_BODY_LENGTH,
   result_limit = 100,
   full_posts = 10,
   observer
@@ -82,6 +74,10 @@ export const searchPosts = async ({
   }
 };
 
+/**
+ * Posts HiveSense finds similar to @author/permlink; `null` when there are none, the post has no
+ * embedding yet, or the call failed (logged as a warning). Never rejects.
+ */
 export const getSimilarPostsByPost = async ({
   author,
   permlink,
@@ -98,7 +94,7 @@ export const getSimilarPostsByPost = async ({
   observer: string;
 }): Promise<MixedPostsResponse | null> => {
   try {
-    const chain = getReadChain();
+    const chain = getReadChain().withTimeout(SIMILAR_POSTS_TIMEOUT_MS);
     const response = await chain.restApi['hivesense-api'].posts.author.permlink.similar({
       author,
       permlink,
@@ -110,13 +106,15 @@ export const getSimilarPostsByPost = async ({
     return response;
   } catch (error) {
     if (isHiveSenseNoEmbeddingError(error)) return null;
-    return logStandarizedError('getSimilarPostsByPost', error);
+    // Suggestions are optional: a failure only means there are none to show.
+    logger.warn(error, 'getSimilarPostsByPost failed, showing no suggestions');
+    return null;
   }
 };
 
 export const getPostsByIds = async ({
   posts,
-  truncate = 100,
+  truncate = AI_SEARCH_BODY_LENGTH,
   observer
 }: {
   posts: Array<{ author: string; permlink: string }>;

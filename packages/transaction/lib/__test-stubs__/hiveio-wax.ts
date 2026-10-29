@@ -18,15 +18,36 @@ export class WaxRequestError extends Error {
 }
 
 /** Minimal chain shape for modules that only reference wax chain types. */
-export type TWaxExtended<_NodeApi, RestApi> = {
-  api: _NodeApi & object;
+/** The wax API entity types the transaction modules name; their fields are not checked. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- stands in for wax's account type, field by field
+export type ApiAccount = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- stands in for wax's global properties type
+export type GetDynamicGlobalPropertiesResponse = any;
+export type TWaxApiRequest<TParams, TResult> = (params: TParams) => Promise<TResult>;
+
+/** The calls of wax's own APIs the transaction modules make. */
+interface IWaxBaseApi {
+  database_api: {
+    find_accounts: TWaxApiRequest<{ accounts: string[]; delayed_votes_active?: boolean }, { accounts: ApiAccount[] }>;
+  };
+  rc_api: {
+    find_rc_accounts: TWaxApiRequest<{ accounts: string[] }, { rc_accounts: ApiAccount[] }>;
+  };
+}
+
+export type TWaxExtended<NodeApi, RestApi> = {
+  api: NodeApi & IWaxBaseApi;
   restApi: RestApi & { endpointUrl: string };
   readonly chainId: string;
   readonly endpointUrl: string;
-  extendConfig(config: { chainId: string; apiEndpoint: string; restApiEndpoint: string; apiTimeout: number }): TWaxExtended<_NodeApi, RestApi>;
+  extendConfig(config: { chainId: string; apiEndpoint: string; restApiEndpoint: string; apiTimeout: number }): TWaxExtended<NodeApi, RestApi>;
   isValidAccountName(name: string): boolean;
 };
-export type TWaxRestExtended<RestApi> = RestApi;
+/** wax's REST API type: a `{ params, result }` node is callable, every node has an `endpointUrl`. */
+export type TWaxRestExtended<RestApi> = {
+  [K in keyof RestApi]: (RestApi[K] extends { params: infer P; result: infer R } ? (params: P) => Promise<R> : unknown) &
+    TWaxRestExtended<Omit<RestApi[K], 'params' | 'result'>>;
+} & { endpointUrl: string };
 
 /** Asset types for the pure-TS asset modules of `@hive/ui` (type-only imports of wax). */
 export interface NaiAsset {
@@ -38,4 +59,17 @@ export enum EAssetName {
   HIVE = 'HIVE',
   HBD = 'HBD',
   VESTS = 'VESTS'
+}
+
+/** The follow-plugin builder surface `follow-list-reset.ts` uses; the test drives the real class. */
+export enum EFollowBlogAction {
+  FOLLOW_BLOG = 0,
+  MUTE_BLOG = 1,
+  BOTH = 2
+}
+export interface FollowOperation {
+  resetBlogList(action: EFollowBlogAction, workingAccount: string, blog: string): FollowOperation;
+  resetBlacklistBlog(workingAccount: string, blog: string): FollowOperation;
+  resetFollowBlacklistBlog(workingAccount: string, blog: string): FollowOperation;
+  resetFollowMutedBlog(workingAccount: string, blog: string): FollowOperation;
 }

@@ -5,13 +5,14 @@ import {
   STUB_ACCOUNT,
   STUB_FOLLOWED,
   STUB_PROPOSAL_SUBJECT,
+  STUB_TRANSFER_SENDER,
   logInAsStubAccount,
   startWalletApiStub
 } from '../support/walletApiStub';
 
 /**
  * The wallet's `@hive/ui` Radix and cmdk primitives, driven with mouse and keyboard: the proposals
- * status Select (Radix Select 2), the theme toggle's DropdownMenu (Radix DropdownMenu 2.1 +
+ * order Select (Radix Select 2), the theme toggle's DropdownMenu (Radix DropdownMenu 2.1 +
  * next-themes 0.4), and the owner's balance DropdownMenu, whose Transfer entry opens a Dialog with
  * the cmdk 1 recipient autocompleter. Each test checks where focus goes, that the chosen value is
  * applied, and that the page logs no console error or warning (but for the failed loads of
@@ -95,40 +96,44 @@ const clickSubmenuItem = async (page: Page, item: Locator): Promise<void> => {
   await item.click();
 };
 
-const focusIsInside = (container: Locator) => container.evaluate((element) => element.contains(document.activeElement));
+const focusIsInside = (container: Locator) =>
+  container.evaluate((element) => element.contains(document.activeElement));
 
 test.describe('Wallet Radix and cmdk primitives', () => {
-  test('WALLET-UI-01 — the proposals status Select opens, moves and applies with the keyboard and the mouse', async ({
+  test('WALLET-UI-01 — the proposals order Select opens, moves and applies with the keyboard and the mouse', async ({
     page
   }) => {
     await page.goto(`${WALLET_BASE_PATH}/proposals`);
     await expect(page.getByTestId('proposal-title')).toContainText(STUB_PROPOSAL_SUBJECT);
-    const trigger = page.getByTestId('proposals-sort-filter-status');
-    const list = page.getByTestId('proposals-sort-filter-status-conntent');
-    await expect(trigger).toHaveText('Votable');
+    const trigger = page.getByTestId('proposals-sort-filter-orderby');
+    const list = page.getByTestId('proposals-sort-filter-orderby-conntent');
+    await expect(trigger).toHaveText('Total Votes');
 
     await openWith(() => trigger.press('Enter'), list);
-    await expect(page.getByRole('option', { name: 'Votable', exact: true })).toBeFocused();
+    await expect(page.getByRole('option', { name: 'Total Votes', exact: true })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(list).toBeHidden();
     await expect(trigger).toBeFocused();
-    await expect(trigger).toHaveText('Votable');
+    await expect(trigger).toHaveText('Total Votes');
 
     await trigger.press('Enter');
     await page.keyboard.press('Home');
-    await expect(page.getByRole('option', { name: 'All', exact: true })).toBeFocused();
+    await expect(page.getByRole('option', { name: 'Creator', exact: true })).toBeFocused();
     await page.keyboard.press('ArrowDown');
-    await expect(page.getByRole('option', { name: 'Active', exact: true })).toBeFocused();
+    await expect(page.getByRole('option', { name: 'Start Date', exact: true })).toBeFocused();
     await page.keyboard.press('Enter');
     await expect(list).toBeHidden();
-    await expect(trigger).toHaveText('Active');
+    await expect(trigger).toHaveText('Start Date');
     await expect(trigger).toBeFocused();
 
     await trigger.click();
-    await expect(page.getByRole('option', { name: 'Active', exact: true })).toHaveAttribute('aria-selected', 'true');
-    await page.getByRole('option', { name: 'Expired', exact: true }).click();
+    await expect(page.getByRole('option', { name: 'Start Date', exact: true })).toHaveAttribute(
+      'aria-selected',
+      'true'
+    );
+    await page.getByRole('option', { name: 'End Date', exact: true }).click();
     await expect(list).toBeHidden();
-    await expect(trigger).toHaveText('Expired');
+    await expect(trigger).toHaveText('End Date');
     await expect(page.getByTestId('proposal-title')).toContainText(STUB_PROPOSAL_SUBJECT);
   });
 
@@ -159,7 +164,9 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await expect(page.locator('html')).toHaveClass(/\blight\b/);
   });
 
-  test('WALLET-UI-04 — the header controls are named and the menu panel is a named modal dialog', async ({ page }) => {
+  test('WALLET-UI-04 — the header controls are named and the menu panel is a named modal dialog', async ({
+    page
+  }) => {
     await page.goto(`${WALLET_BASE_PATH}/proposals`);
     const menuTrigger = page.getByTestId('nav-sidebar-menu-button');
     const dialog = page.getByRole('dialog', { name: 'Menu Panel' });
@@ -199,7 +206,13 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await expect(dialog.getByRole('heading', { name: 'Transfer To Account' })).toBeVisible();
     expect(await focusIsInside(dialog), 'focus moved into the dialog').toBe(true);
 
+    // The history's counterparties are suggested too, matched by their name only
+    await recipient.fill('stub-s');
+    await expect(dialog.getByRole('option', { name: `${STUB_TRANSFER_SENDER} (1 Previous transfers)` })).toBeVisible();
+    await expect(suggestion).toBeHidden();
+
     await recipient.fill('stub-f');
+    await expect(dialog.getByRole('option', { name: new RegExp(STUB_TRANSFER_SENDER) })).toBeHidden();
     await suggestion.click();
     await expect(recipient).toHaveValue(STUB_FOLLOWED);
 
@@ -215,7 +228,7 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await expect(dialog).toBeHidden();
   });
 
-  test('WALLET-UI-04 — the avatar is a menu button: Enter and Space open the account menu, one Esc or a click outside closes it, and focus returns to it', async ({
+  test('WALLET-UI-08 — the avatar is a menu button: Enter and Space open the account menu, one Esc or a click outside closes it, and focus returns to it', async ({
     page
   }) => {
     await logInAsStubAccount(page);
@@ -346,5 +359,24 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await clickSubmenuItem(page, light);
     await expect(menu).toBeHidden();
     await expect(page.locator('html')).toHaveClass(/\blight\b/);
+  });
+});
+
+// For a touch pointer Radix Select opens and selects on the `click` the browser derives from a tap,
+// which a cancelled `touchend` suppresses; mouse clicks and synthetic pointer events fire no touch events.
+test.describe('Wallet Radix Select on a touch screen', () => {
+  test.use({ hasTouch: true, isMobile: true, viewport: { width: 390, height: 844 } });
+
+  test('WALLET-UI-07 — tapping a proposals order option applies it', async ({ page }) => {
+    await page.goto(`${WALLET_BASE_PATH}/proposals`);
+    await expect(page.getByTestId('proposal-title')).toContainText(STUB_PROPOSAL_SUBJECT);
+    const trigger = page.getByTestId('proposals-sort-filter-orderby');
+    const list = page.getByTestId('proposals-sort-filter-orderby-conntent');
+    await expect(trigger).toHaveText('Total Votes');
+
+    await openWith(() => trigger.tap(), list);
+    await page.getByRole('option', { name: 'End Date', exact: true }).tap();
+    await expect(list).toBeHidden();
+    await expect(trigger).toHaveText('End Date');
   });
 });

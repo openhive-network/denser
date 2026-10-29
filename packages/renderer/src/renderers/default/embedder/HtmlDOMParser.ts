@@ -877,14 +877,9 @@ function preprocessPullColumns(html: string): string {
     // Step 1: Fix unquoted div class attributes: <div class=text-justify> → <div class="text-justify">
     html = html.replace(/<div\s+class=([^\s>"'][^\s>]*)/gi, '<div class="$1"');
 
-    // Step 2: Process pull-left + pull-right pairs using proper div matching
+    // Step 2: Process pull-left + pull-right pairs (either order) using proper div matching
     // This handles nested divs correctly (e.g., text-justify inside pull-right)
-    html = processPullColumnPairs(html, 'pull-left', 'pull-right');
-
-    // Also handle reverse order (pull-right first, then pull-left)
-    html = processPullColumnPairs(html, 'pull-right', 'pull-left');
-
-    return html;
+    return processPullColumnPairs(html);
 }
 
 /** Result of finding a column pair in HTML */
@@ -900,11 +895,11 @@ interface ColumnPairMatch {
 }
 
 /**
- * Creates a regex pattern to find the start of a pull column.
- * Handles optional text-justify wrapper before the pull div.
+ * Creates a regex pattern to find the start of a pull-left or pull-right column,
+ * capturing the column's class. Handles optional text-justify wrapper before the pull div.
  */
-function createColumnStartPattern(className: string): RegExp {
-    return new RegExp(`(?:<div\\s+class="text-justify"\\s*>\\s*)?<div\\s+class="${className}"\\s*>`, 'gi');
+function createColumnStartPattern(): RegExp {
+    return /(?:<div\s+class="text-justify"\s*>\s*)?<div\s+class="(pull-left|pull-right)"\s*>/gi;
 }
 
 /**
@@ -1031,18 +1026,23 @@ function buildPullColumnsHtml(firstClass: string, secondClass: string, firstCont
  * Processes pull column pairs in the HTML, wrapping them in a flex container.
  * Handles nested divs properly by counting depth.
  *
+ * Both orders (pull-left + pull-right and pull-right + pull-left) are matched in a single
+ * left-to-right scan, so a column already wrapped is never paired again. A second pass
+ * over the output could pair the last column of one wrapper with the next column and
+ * consume the wrapper's closing tag, nesting all following content inside a flex row.
+ *
  * @param html - The HTML string to process
- * @param firstClass - The class of the first column ('pull-left' or 'pull-right')
- * @param secondClass - The class of the second column
  * @returns Processed HTML with column pairs wrapped
  */
-function processPullColumnPairs(html: string, firstClass: string, secondClass: string): string {
-    const firstPattern = createColumnStartPattern(firstClass);
+function processPullColumnPairs(html: string): string {
+    const startPattern = createColumnStartPattern();
     const parts: string[] = [];
     let lastIndex = 0;
     let match;
 
-    while ((match = firstPattern.exec(html)) !== null) {
+    while ((match = startPattern.exec(html)) !== null) {
+        const firstClass = match[1].toLowerCase();
+        const secondClass = firstClass === 'pull-left' ? 'pull-right' : 'pull-left';
         const columnPair = findColumnPair(html, match.index, firstClass, secondClass);
 
         if (!columnPair) {
@@ -1056,7 +1056,7 @@ function processPullColumnPairs(html: string, firstClass: string, secondClass: s
         parts.push(buildPullColumnsHtml(firstClass, secondClass, columnPair.firstContent, columnPair.secondContent));
 
         lastIndex = columnPair.endPos;
-        firstPattern.lastIndex = columnPair.endPos;
+        startPattern.lastIndex = columnPair.endPos;
     }
 
     // Add remaining text

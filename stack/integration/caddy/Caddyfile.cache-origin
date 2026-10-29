@@ -1,0 +1,8 @@
+# The backend of the shared HTML cache (compose.cache.yml, varnish/default.vcl): the
+# blog, with the /blog route's hold while its server restarts, which varnish can't do.
+# Plain HTTP on the stack's network; it listens whether or not varnish runs.
+http://:8081 {
+	reverse_proxy blog:80 {
+		lb_try_duration 15s
+	}
+}

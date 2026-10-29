@@ -65,7 +65,7 @@
     "other_signing_options_description": "Entrez votre nom d'utilisateur et sélectionnez une méthode de connexion",
     "go_back_button": "Retour",
     "method_info": {
-      "label": "What is {{method}}?",
+      "label": "Qu'est-ce que {{method}} ?",
       "safe_storage": "Le stockage sécurisé conserve votre clé privée chiffrée par un mot de passe dans ce navigateur. La clé ne quitte jamais votre appareil.",
       "keychain": "Hive Keychain est une extension de navigateur qui stocke vos clés et signe les transactions à votre place.",
       "peakvault": "PeakVault est un portefeuille sous forme d'extension de navigateur qui stocke vos clés et signe les transactions à votre place.",
@@ -92,7 +92,8 @@
       "button_sign_auth": "Signer l'autorisation tx",
       "button_signin_unlocked": "Se connecter avec tx signé",
       "strict_mode": "Mode d'autorité restreinte",
-      "strict_mode_tooltip": "Lorsque ce mode est activé, l'application n'autorisera l'ajout de clés qu'avec l'autorité propre du compte. Si vous souhaitez ajouter des clés avec une autre autorité, veuillez désactiver ce mode.",
+      "strict_mode_scope": "(stockage sécurisé uniquement)",
+      "strict_mode_tooltip": "S'applique uniquement aux clés enregistrées dans le stockage sécurisé. Lorsque ce mode est activé, le stockage sécurisé n'accepte qu'une clé de l'autorité propre du compte. Pour enregistrer une clé qui signe via l'autorité d'un autre compte, désactivez ce mode. Keychain, PeakVault, HiveAuth et les autres méthodes de connexion ne sont pas concernés.",
       "key_update": "Ajouter une nouvelle clé",
       "update_key_title": "Ajouter une nouvelle clé au stockage sécurisé",
       "update_key_description": "Ajouter une nouvelle clé {{keyType}} pour l'utilisateur {{username}}",
@@ -115,7 +116,8 @@
       "no_wif_key": "Aucune clé WIF",
       "password_required": "Le mot de passe est requis",
       "wif_required": "La clé WIF est requise",
-      "posting_key_for_active": "Le portefeuille a besoin de votre clé active ; une clé de publication ne peut pas signer de transferts"
+      "posting_key_for_active": "Le portefeuille a besoin de votre clé active ; une clé de publication ne peut pas signer de transferts",
+      "active_key_for_posting": "Cette clé n'a pas l'autorité de publication. La connexion au blog nécessite la clé de publication"
     },
     "signin_with_keychain": "Extension Hive Keychain",
     "signin_with_wif": "Se connecter avec WIF (Legacy)",
@@ -128,12 +130,25 @@
     "this_operation_requires_your_posting_key_enter_key_and_keep_it_in_safe_storage": "Cette opération nécessite votre clé de publication. Saisissez votre clé et conservez-la dans le stockage sécurisé.",
     "this_operation_requires_your_active_key_enter_key_and_keep_it_in_safe_storage": "Cette opération nécessite votre clé active. Saisissez votre clé et conservez-la dans le stockage sécurisé.",
     "this_operation_requires_your_owner_key_enter_key_and_keep_it_in_safe_storage": "Cette opération nécessite votre clé propriétaire. Saisissez votre clé et conservez-la dans le stockage sécurisé.",
-    "use_peakvault": "Utiliser Peakvault",
-    "signin_with_peakvault": "Extension Peakvault",
+    "use_peakvault": "Utiliser PeakVault",
+    "signin_with_peakvault": "Extension PeakVault",
     "extension_sign_in": {
       "keychain": "Se connecter avec Hive Keychain",
       "peakvault": "Se connecter avec PeakVault",
       "or_safe_storage": "ou utilisez le stockage sécurisé"
+    },
+    "sign_in_pending": "Une autre connexion attend encore une réponse. Terminez-la ou refusez-la dans votre extension de portefeuille, ou annulez-la pour recommencer.",
+    "sign_in_pending_generic": "Une autre connexion attend encore une réponse. Terminez-la ou annulez-la pour recommencer.",
+    "cancel_pending_sign_in": "Annuler la connexion en attente",
+    "safe_storage_name": "Stockage sécurisé",
+    "signin_with_metamask": "Extension MetaMask",
+    "signin_with_google": "Compte Google",
+    "passkey_prompt": {
+      "title": "Activer le déverrouillage biométrique ?",
+      "description": "Utilisez votre empreinte digitale, Face ID ou le code PIN de l’appareil pour déverrouiller au lieu de saisir votre mot de passe.",
+      "enable": "Activer",
+      "not_now": "Pas maintenant",
+      "never_ask_again": "Ne plus demander"
     },
     "passkey": {
       "method": "Signataire à passkey",
@@ -171,11 +186,30 @@
     "password_form_title": "Entrez votre mot de passe",
     "store_key_label": "Enregistrer la clé",
     "store_password_label": "Enregistrer le mot de passe",
-    "google_drive_password_placeholder": "Mot de passe pour déverrouiller le portefeuille Google Drive"
+    "google_drive_password_placeholder": "Mot de passe pour déverrouiller le portefeuille Google Drive",
+    "safe_storage_recovery_description": "Un autre onglet a modifié le stockage sécurisé pendant l'enregistrement d'une clé de @{{username}}. Saisissez le mot de passe du stockage sécurisé de @{{username}} pour terminer l'enregistrement."
   },
   "broadcast_error": {
     "missing_owner_authority": "Cette opération nécessite votre clé propriétaire (owner). Connectez-vous avec celle-ci et réessayez.",
     "missing_active_authority": "Cette opération nécessite votre clé active. Connectez-vous avec votre clé active et réessayez.",
-    "missing_posting_authority": "Cette opération nécessite votre clé de publication (posting). Connectez-vous avec celle-ci et réessayez."
+    "missing_posting_authority": "Cette opération nécessite votre clé de publication (posting). Connectez-vous avec celle-ci et réessayez.",
+    "safe_storage_missing_account": "Le stockage sécurisé de ce navigateur ne contient aucune clé de votre compte. Veuillez vous reconnecter.",
+    "not_enough_rc": "Crédits de ressources (RC) insuffisants pour cette transaction. Attendez que vos RC se rechargent ou faites un power up de HIVE.",
+    "not_enough_rc_amounts": "Vous avez {{current}} RC ; cette transaction nécessite {{needed}} RC.",
+    "keychain_no_message": "Hive Keychain n'a pas pu traiter la demande et n'a donné aucune raison.",
+    "superseded_key_write": "Un autre onglet a interrompu l'enregistrement de la clé {{keyType}} de @{{username}} dans le stockage sécurisé. Ajoutez de nouveau la clé {{keyType}} au stockage sécurisé."
+  },
+  "request_error": {
+    "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer."
+  },
+  "google_drive_error": {
+    "wallet_not_found_title": "Portefeuille introuvable",
+    "wallet_not_found_description": "Aucun portefeuille Hive n’a été trouvé dans votre Google Drive. Créez d’abord un portefeuille avec Hive Bridge.",
+    "key_not_found_title": "Clé introuvable",
+    "key_not_found_description": "La clé {{keyType}} de @{{username}} est introuvable dans votre portefeuille Google Drive. Ajoutez cette clé avec Hive Bridge ou utilisez une autre méthode de connexion.",
+    "account_not_found_title": "Aucune clé trouvée",
+    "account_not_found_description": "Votre portefeuille Google Drive ne contient aucune clé pour @{{username}}. Ajoutez-les avec Hive Bridge ou utilisez une autre méthode de connexion.",
+    "bridge_info": "Hive Bridge vous permet de stocker vos clés Hive en toute sécurité dans Google Drive.",
+    "go_to_bridge": "Aller sur Hive Bridge"
   }
 }

@@ -16,6 +16,7 @@ This project uses **gitlab.syncad.com**, NOT gitlab.com.
 - Check `.gitlab-ci.yml` for current Node/pnpm versions
 - Example: `docker run --rm -v "$(pwd)":/app -w /app node:<version> sh -c "corepack enable && pnpm install"`
 - CI uses `--frozen-lockfile` - always commit lockfile changes
+- Versions of Hive libraries, React/Next, Tailwind, TypeScript and Playwright come from common-ci-configuration's catalogs (the `npm-common-config` submodule, tracked from its `develop`): package.json files reference them only as `catalog:<name>`, never as a version. `python3 npm-common-config/scripts/python/pnpm-catalog-sync.py` rewrites the marked region of `pnpm-workspace.yaml` from the submodule; commit that file with the refreshed lockfile (and the `.aidev/runtime` image digest). Local catalogs are only for packages ccc does not cover
 
 ## Logging
 - Pino logger: `logger.error(error, 'message')` (error first!)
@@ -55,17 +56,17 @@ The dev stack is for fast feedback; `next dev` is not the production build. The 
 
 ### Core
 - **Monorepo**: Turborepo with pnpm workspaces
-- **Node**: >=24 (24.21.0 pinned via Volta)
-- **pnpm**: >=9.5.0 (packageManager: pnpm@10.14.0)
-- **TypeScript**: 5.3.3
+- **Node**: >=24 (exact version from common-ci-configuration's `NODE_VERSION`; no repo-owned pin)
+- **pnpm**: >=9.5.0 (packageManager: pnpm@10.33.0, common-ci-configuration's version)
+- **TypeScript**: 5.x (ccc's `typescript-toolset` catalog; typescript-eslint 8 needs <6)
 
 ### Frontend Framework
-- **Next.js**: 16.x (App Router, Turbopack)
-- **React**: 19.3.0
+- **Next.js**: 16.x (App Router, Turbopack; ccc's `react-toolset` catalog)
+- **React**: 19.x (ccc's `react-toolset` catalog)
 
 ### Styling
-- **Tailwind CSS**: with custom config (`@hive/tailwindcss-config`)
-- **PostCSS**: standard config
+- **Tailwind CSS**: 4 (ccc's `tailwind-toolset` catalog), configured CSS-first in `@hive/tailwindcss-config`'s `globals.css` (`@theme`, `@source`, `@plugin`); only the typography plugin's `prose` styles stay in `typography.config.js`
+- **PostCSS**: `@tailwindcss/postcss`
 - **class-variance-authority**: for variant styling
 - **clsx** + **tailwind-merge**: class composition
 
@@ -434,7 +435,7 @@ pnpm --filter @hive/blog lint:translations
 - Missing keys (present in English but missing in other locales; i18next plural keys per the locale's own plural categories)
 - Extra keys (present in other locales but not in English reference)
 - Interpolation placeholders (`{{name}}`) and `<Trans>` tags that differ from English
-- Values identical to English (untranslated): every one in a reviewed locale (`pl`), sentences of 4+ words elsewhere. Brand names and other legitimate copies go in the allow-list in `scripts/check-blog-translations.js`
+- Values identical to English (untranslated), in every locale, a one-word label as much as a sentence. Brand names and other legitimate copies go in the allow-list in `scripts/check-blog-translations.js`
 - Missing translation files
 
 Both blog checks run in the `static` verification suite (`.aidev/run-static.sh`), with the same sync check for the smart-signer package's locales (`node scripts/check-smart-signer-translations.js`).

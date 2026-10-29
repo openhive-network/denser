@@ -1,7 +1,8 @@
 /**
  * The fixture suite's second blog server, the only one serving with the server-side feed cache on
  * (feedCache.spec.ts). The main server runs with it off: all specs share that server, and a cached
- * feed would answer one spec with the previous spec's recording.
+ * feed would answer one spec with the previous spec's recording. It also serves with the For You
+ * feed off (FYP_API_URL unset), the default the main server does not keep (fypApiStub.ts).
  */
 export const FEED_CACHE_PORT = 3001;
 export const FEED_CACHE_TTL_S = 3;

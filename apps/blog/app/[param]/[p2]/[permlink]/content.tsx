@@ -52,7 +52,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCommunity, getDiscussion, getListCommunityRoles, getPost } from '@transaction/lib/bridge-api';
 import { Entry, IFollowList } from '@hive/common-hiveio-packages/wax';
 import { getSimilarPostsByPost } from '@transaction/lib/hivesense-api';
-import { isRenderableSearchEntry, shouldRetryHiveSenseQuery } from '@transaction/lib/hivesense-search';
+import { isRenderableSearchEntry } from '@transaction/lib/hivesense-search';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
 import { Badge } from '@ui/components/badge';
 import { Button } from '@ui/components/button';
@@ -248,8 +248,7 @@ const PostContent = () => {
 
       const fullPosts = results?.filter((post): post is Entry => isRenderableSearchEntry(post)) ?? [];
       return fullPosts.length > 0 ? fullPosts : null;
-    },
-    retry: shouldRetryHiveSenseQuery
+    }
   });
   const useCommunityInitialData = initialCommunity && communityObserver === ssrObserver;
   const communityQuery = useQuery({
@@ -479,7 +478,7 @@ const PostContent = () => {
                   {!commentSite ? (
                     <div className="flex items-start justify-between gap-3">
                       <h1
-                        className="font-sanspro text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-3xl"
+                        className="font-sanspro text-2xl font-extrabold leading-tight tracking-tight text-foreground sm:text-3xl sm:leading-9"
                         data-testid="article-title"
                       >
                         {postData.title}
@@ -716,7 +715,7 @@ const PostContent = () => {
                           data-testid="comment-payout"
                           className={`font-bold text-destructive hover:cursor-pointer ${
                             parseFloat(postData.max_accepted_payout) === 0
-                              ? '!text-gray-600 line-through'
+                              ? 'text-gray-600! line-through'
                               : ''
                           }`}
                         >
@@ -933,7 +932,7 @@ const PostContent = () => {
                                 id="comment-filter"
                                 checked={filteringEnabled}
                                 onCheckedChange={(checked) => setFilteringEnabled(checked === true)}
-                                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=checked]:text-primary data-[state=checked]:hover:text-primary"
+                                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted-foreground ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[state=checked]:text-primary data-[state=checked]:hover:text-primary"
                               >
                                 {filteringEnabled ? (
                                   <ShieldCheck className="h-5 w-5" aria-hidden="true" />
@@ -969,7 +968,7 @@ const PostContent = () => {
                                 // block focus steal on mousedown so the trigger's blur-close can't unmount the button mid-click
                                 onPointerDown={(e) => e.preventDefault()}
                                 onClick={() => setFilteringEnabled((prev) => !prev)}
-                                className="font-medium text-destructive underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                className="font-medium text-destructive underline underline-offset-2 hover:no-underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
                               >
                                 {filteringEnabled
                                   ? t('select_sort.sort_comments.filter_tooltip_click_show')

@@ -6,6 +6,12 @@
  */
 
 import { PICKER_API_NODES } from '@hive/ui/config/api-node-picker';
+import {
+  matrixClientOrigins,
+  matrixFrameOrigins,
+  resolveChatProvider,
+  resolveMatrixChatConfig
+} from '@hive/ui/config/chat';
 
 /**
  * App-specific CSP configuration
@@ -65,6 +71,21 @@ function buildConnectSrcHosts(): Set<string> {
     } catch { /* invalid URL, skip */ }
   }
 
+  // The blog's For You feed (haf_fyp), read from the page; only when the feed is on
+  const fypApiUrl = process.env.REACT_APP_FYP_API_URL;
+  if (fypApiUrl) {
+    try {
+      hosts.add(new URL(fypApiUrl).origin);
+    } catch { /* invalid URL, skip */ }
+  }
+
+  // hivemind REST nodes the browser reads feeds, profiles and communities from; none by default
+  for (const node of (process.env.REACT_APP_HIVEMIND_REST_NODES ?? '').split(/[\s,]+/).filter(Boolean)) {
+    try {
+      hosts.add(new URL(node).origin);
+    } catch { /* invalid URL, skip */ }
+  }
+
   // Hivesense (AI search) endpoint - not deployed on every API node; mirror
   // the client-side default from public-vars (configuredAIDomain)
   try {
@@ -98,6 +119,12 @@ function buildConnectSrcHosts(): Set<string> {
       hosts.add('https://*.ingest.us.sentry.io');
     }
   }
+
+  // The native Matrix chat client talks to the homeserver from the page
+  matrixClientOrigins(
+    resolveChatProvider(process.env.REACT_APP_CHAT_PROVIDER),
+    resolveMatrixChatConfig((key) => process.env[`REACT_APP_${key}`])
+  ).forEach((origin) => hosts.add(origin));
 
   // Cloudflare Web Analytics beacon posts its measurements here when the
   // zone auto-injects it; harmless for deployments not behind Cloudflare
@@ -136,8 +163,9 @@ export function parseNonce(value: string | null | undefined): string | undefined
 function buildScriptSrc(nonce: string): string {
   // 'strict-dynamic' lets scripts loaded by nonced scripts (Next chunks, next/script) run, and makes
   // CSP3 browsers ignore the host list below; the hosts remain for browsers without it.
-  // 'wasm-unsafe-eval' is needed for wax's WebAssembly; hb-auth's beekeeper (which uses new Function)
-  // runs in /auth/worker.js, served without this policy.
+  // 'wasm-unsafe-eval' is needed for wax's and beekeeper's WebAssembly. Beekeeper also runs on the
+  // page (Google Drive's external wallet, memo crypto), so the policy relies on every package
+  // resolving the CSP-safe beekeeper build without new Function (the pnpm-workspace.yaml override).
   let scriptSrc = `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'`;
 
   // React's dev build reconstructs server stacks with eval; never sent by a production build
@@ -182,6 +210,11 @@ export function buildCsp(config: CspConfig, nonce: string): string {
   // at runtime so it is correct per deployment (blog.openhive.network, new.hive.blog, hive.blog) instead
   // of a hardcoded host; skip when 'self' is already listed, and fall back to 'self' if the var is unset.
   const frameSrcHosts = new Set(config.frameSrc ?? []);
+  // The Matrix chat widget embeds Element, and its sign-in navigates the frame through the homeserver
+  matrixFrameOrigins(
+    resolveChatProvider(process.env.REACT_APP_CHAT_PROVIDER),
+    resolveMatrixChatConfig((key) => process.env[`REACT_APP_${key}`])
+  ).forEach((origin) => frameSrcHosts.add(origin));
   if (frameSrcHosts.size > 0 && !frameSrcHosts.has("'self'")) {
     const siteDomain = process.env.REACT_APP_SITE_DOMAIN;
     let siteOrigin = "'self'";

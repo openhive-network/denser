@@ -1,5 +1,5 @@
 import { test, expect, isRecordMode } from '../support/fixture-proxy-test';
-import type { Locator } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { testTimeout } from '../../../../../playwright/support/timeouts';
 
 /**
@@ -114,6 +114,12 @@ async function expectSsrHref(locator: Locator): Promise<void> {
   await ssrExpect(locator).toHaveAttribute('href', /.+/);
 }
 
+/** The JSON-LD nodes of the server HTML; each block must parse as JSON. */
+async function jsonLdNodes(page: Page): Promise<Array<Record<string, unknown>>> {
+  const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+  return blocks.map((block) => JSON.parse(block));
+}
+
 test.use({ fixtureTestName: 'ssrChecks' });
 
 // ── Anonymous SSR ───────────────────────────────────────────────────────────
@@ -206,13 +212,60 @@ test.describe('SSR — post detail, profile & SEO (JS disabled)', () => {
     await expectSsrHref(page.locator('head link[rel="canonical"]'));
   });
 
-  // Gap: no route sets a `robots` directive and there is no robots.ts / robots.txt
-  // route either, so the server emits no <meta name="robots">. Indexing is left
-  // entirely to crawler defaults with no per-page control.
+  // The root layout makes every public page indexable; user-specific pages opt out (SSR-29).
   test('SSR-25 — post detail emits a robots meta tag in the server <head>', async ({ page }) => {
-    test.fail(!isRecordMode, 'SEO gap (#903): no robots meta is set (no robots field, no robots.txt route)');
     await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
     await expectSsrMetaContent(page.locator('head meta[name="robots"]'));
+    if (isRecordMode) return;
+    await ssrExpect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'index, follow');
+  });
+
+  // Link previews and crawlers read a post as an article: its own URL, dates, author and
+  // topic in Open Graph, and the same facts as schema.org Article + BreadcrumbList JSON-LD.
+  test('SSR-27 — post detail emits article Open Graph tags and Article JSON-LD', async ({ page }) => {
+    await page.goto(`/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`);
+    if (isRecordMode) return;
+    const head = page.locator('head');
+    await ssrExpect(head.locator('meta[property="og:type"]')).toHaveAttribute('content', 'article');
+    const canonical = await head.locator('link[rel="canonical"]').getAttribute('href');
+    expect(canonical).toBeTruthy();
+    await ssrExpect(head.locator('meta[property="og:url"]')).toHaveAttribute('content', canonical ?? '');
+    for (const property of ['published_time', 'modified_time', 'section', 'tag']) {
+      await expectSsrMetaContent(head.locator(`meta[property="article:${property}"]`).first());
+    }
+    await ssrExpect(head.locator('meta[property="article:author"]')).toHaveAttribute(
+      'content',
+      new RegExp(`/@${SUBSCRIBED_USER}$`)
+    );
+
+    const nodes = await jsonLdNodes(page);
+    const article = nodes.find((node) => node['@type'] === 'Article');
+    expect(article?.headline).toBeTruthy();
+    expect(article?.mainEntityOfPage).toMatchObject({ '@id': canonical });
+    const breadcrumb = nodes.find((node) => node['@type'] === 'BreadcrumbList');
+    expect(breadcrumb?.itemListElement).toHaveLength(3);
+  });
+
+  test('SSR-28 — /@user emits og:type=profile and ProfilePage JSON-LD', async ({ page }) => {
+    await page.goto(`/@${SUBSCRIBED_USER}`);
+    if (isRecordMode) return;
+    await ssrExpect(page.locator('head meta[property="og:type"]')).toHaveAttribute('content', 'profile');
+    const profilePage = (await jsonLdNodes(page)).find((node) => node['@type'] === 'ProfilePage');
+    expect(profilePage?.mainEntity).toMatchObject({ '@type': 'Person', identifier: SUBSCRIBED_USER });
+  });
+
+  test('SSR-29 — /@user/settings is noindex', async ({ page }) => {
+    await page.goto(`/@${SUBSCRIBED_USER}/settings`);
+    if (isRecordMode) return;
+    await ssrExpect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
+  });
+
+  test('SSR-30 — no page emits a fb:app_id', async ({ page }) => {
+    for (const path of ['/trending', `/${POST_CATEGORY}/@${SUBSCRIBED_USER}/${POST_PERMLINK}`]) {
+      await page.goto(path);
+      if (isRecordMode) continue;
+      await ssrExpect(page.locator('meta[name="fb:app_id"], meta[property="fb:app_id"]')).toHaveCount(0);
+    }
   });
 
   // User-profile SEO: generateMetadata (user-profile layout) sets og title +
@@ -321,5 +374,35 @@ test.describe('SSR — Hydrate-based pages (JS disabled, confirmed gaps)', () =>
     // Target a real role row, not the table: the table has a static <thead>
     // that would render even with zero role rows.
     await expectSsrNonEmpty(page.getByTestId('community-role-row').first());
+  });
+});
+
+// ── Crawl files ─────────────────────────────────────────────────────────────
+// The fixture server leaves SEO_ALLOW_INDEXING unset, as every non-production site does.
+test.describe('SSR — robots.txt & sitemap', () => {
+  test('SSR-31 — /robots.txt disallows everything while indexing is not allowed', async ({ request }) => {
+    const response = await request.get('/robots.txt');
+    if (isRecordMode) return;
+    expect(response.status()).toBe(200);
+    const text = await response.text();
+    expect(text).toMatch(/^User-Agent: \*$/m);
+    expect(text).toMatch(/^Disallow: \/$/m);
+    expect(text).not.toMatch(/^Allow:/m);
+  });
+
+  test('SSR-32 — /sitemap.xml is a valid sitemap listing the static pages', async ({ page, request }) => {
+    const response = await request.get('/sitemap.xml');
+    if (isRecordMode) return;
+    expect(response.status()).toBe(200);
+    const xml = await response.text();
+    const locs = await page.evaluate((text) => {
+      const doc = new DOMParser().parseFromString(text, 'application/xml');
+      if (doc.querySelector('parsererror') || doc.documentElement.localName !== 'urlset') return null;
+      return Array.from(doc.getElementsByTagName('loc'), (loc) => new URL(loc.textContent ?? '').pathname);
+    }, xml);
+    expect(locs).not.toBeNull();
+    for (const path of ['/', '/trending', '/communities', '/faq.html', '/tos.html', '/privacy.html']) {
+      expect(locs).toContain(path);
+    }
   });
 });

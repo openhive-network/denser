@@ -30,6 +30,7 @@ import {
 } from "@hive/ui/components/alert-dialog";
 import dynamic from "next/dynamic";
 import { imagePicker, validateTagInput, validateSummaryInput, validateAltUsernameInput } from "@/blog/features/post-editor/lib/utils";
+import { hasFailedUploadPlaceholder } from "@/blog/features/post-editor/lib/image-markdown";
 import { usePostFormState } from "@/blog/features/post-editor/hooks/use-post-form-state";
 import { usePostFormActions } from "@/blog/features/post-editor/hooks/use-post-form-actions";
 import { useScrollSync } from "@/blog/features/post-editor/hooks/use-scroll-sync";
@@ -239,6 +240,7 @@ export default function PostForm({
   const tagsRequiredAndEmpty = tagsRequired && (!watchedValues.tags || !watchedValues.tags.trim());
 
   const { postArea } = watchedValues;
+  const failedUploadCheck = hasFailedUploadPlaceholder(postArea ?? "");
 
   return (
     <div className={clsx({ container: !sideBySide || !preview })}>
@@ -307,6 +309,11 @@ export default function PostForm({
                       </Tooltip>
                     </TooltipProvider>
                   </div>
+                  {failedUploadCheck && (
+                    <p className="text-xs text-destructive" data-testid="failed-upload-hint">
+                      {t("submit_page.remove_failed_uploads")}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -337,7 +344,7 @@ export default function PostForm({
             />
 
             <div className="flex flex-col gap-2 pt-2">
-              <div className="flex items-center gap-3">
+              <div className="flex select-none items-center gap-3">
                 <Button
                   ref={btnRef}
                   type="submit"
@@ -349,6 +356,7 @@ export default function PostForm({
                     Boolean(tagsCheck) ||
                     Boolean(summaryCheck) ||
                     Boolean(altUsernameCheck) ||
+                    failedUploadCheck ||
                     postMutation.isPending
                   }
                   data-testid="submit-post-button"

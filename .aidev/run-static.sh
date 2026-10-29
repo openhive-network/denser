@@ -7,7 +7,8 @@
 # ESLint runs with --quiet: the rules added for gradual adoption are warnings, and
 # the existing ~200 of them must not fail a change; an error does. The locale
 # key/placeholder sync checks of the blog, the wallet and the smart-signer package
-# run here, with the blog's translation usage check.
+# run here, with the blog's translation usage check and the check that no two
+# Playwright tests of an app share a test ID.
 #
 # The Playwright code (apps/*/playwright) is excluded from the apps' ESLint and
 # tsconfig, so it is checked on its own: its tsconfig, and its .eslintrc.js, which
@@ -19,9 +20,10 @@ cd "$(dirname "$0")/.."
 # shellcheck source=pnpm-deps.sh
 source .aidev/pnpm-deps.sh
 
-# Each app's type check needs ~1.8 GB of heap; in the suite's memory-capped container V8's
-# default limit stops it at ~1.5 GB. 3 GB stays under the suite's cap.
-tsc_heap="--max-old-space-size=3072"
+# tsc of an app needs a ~1.5 GiB heap. Node otherwise sizes its heap from the
+# container's memory cap, which the suite budget sets from past runs: under a
+# ~3 GiB cap the derived limit is ~1.5 GiB and tsc aborts out of memory.
+export NODE_OPTIONS="${NODE_OPTIONS:+$NODE_OPTIONS }--max-old-space-size=4096"
 
 status=0
 for app in blog wallet; do
@@ -30,13 +32,13 @@ for app in blog wallet; do
     echo "== tsc apps/$app" >&2
     # --incremental false: the shared tsconfig enables incremental builds, which
     # would leave a .tsbuildinfo in the tree.
-    NODE_OPTIONS="${NODE_OPTIONS:-} $tsc_heap" pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false < /dev/null || status=1
+    pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false < /dev/null || status=1
     echo "== eslint apps/$app/playwright" >&2
     # --no-ignore: the app's .eslintignore excludes playwright/. The eslintrc
     # format is forced because wallet's eslint.config.mjs would select flat config.
     ESLINT_USE_FLAT_CONFIG=false pnpm --filter "@hive/$app" exec eslint --no-ignore --ext .ts playwright --quiet < /dev/null || status=1
     echo "== tsc apps/$app/playwright" >&2
-    NODE_OPTIONS="${NODE_OPTIONS:-} $tsc_heap" pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false -p playwright < /dev/null || status=1
+    pnpm --filter "@hive/$app" exec tsc --noEmit --incremental false -p playwright < /dev/null || status=1
 done
 for app in blog wallet; do
     echo "== $app translation sync" >&2
@@ -44,6 +46,8 @@ for app in blog wallet; do
 done
 echo "== smart-signer translation sync" >&2
 node scripts/check-smart-signer-translations.js < /dev/null || status=1
+echo "== playwright test ID uniqueness" >&2
+node scripts/check-playwright-test-ids.js < /dev/null || status=1
 echo "== blog translation usage" >&2
 pnpm --filter @hive/blog lint:translations:usage < /dev/null || status=1
 exit "$status"

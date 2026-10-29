@@ -101,7 +101,7 @@ export function PostPreviewPanel({
             author=""
             previewMode
             proxyAuthToken={proxyAuthToken}
-            className={postClassName + " w-full min-w-full self-center break-words p-4"}
+            className={postClassName + " w-full min-w-full self-center wrap-break-word p-4"}
           />
         ) : (
           <div className="flex w-full flex-col items-center justify-center gap-2 p-8 text-muted-foreground">

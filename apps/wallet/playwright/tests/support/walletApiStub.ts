@@ -210,6 +210,32 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
   'market_history_api.get_trade_history': () => ({ trades: [] })
 };
 
+export const PROPOSALS_PAYMENTS_PATH = '/balance-api/proposals/payments';
+
+/**
+ * balance-api's proposal payments as a node answers them: one entry per distinct requested id, in
+ * ascending order, `paid` giving the HBD satoshis paid to an id and `receiverOf` its receiver;
+ * every other id has had nothing.
+ */
+export const stubProposalsPayments =
+  (paid: Record<number, string> = {}, receiverOf: (id: number) => string | undefined = () => undefined) =>
+  (query: URLSearchParams) =>
+    [...new Set((query.get('proposal-ids') ?? '').split(',').filter(Boolean).map(Number))]
+      .sort((a, b) => a - b)
+      .map((id) => {
+        const amount = paid[id];
+        return {
+          proposal_id: id,
+          receiver: amount ? (receiverOf(id) ?? null) : null,
+          total_paid: hbd(amount ?? '0'),
+          payment_count: amount ? 151 : 0,
+          first_payment_block: amount ? 90_000_000 : null,
+          first_payment_time: amount ? '2026-01-01T00:00:00' : null,
+          last_payment_block: amount ? 95_000_000 : null,
+          last_payment_time: amount ? '2026-06-01T00:00:00' : null
+        };
+      });
+
 const REST_RESULTS: RestResults = {
   '/hafah-api/operation-types': () => [
     { op_type_id: 2, operation_name: 'transfer_operation', is_virtual: false }
@@ -220,15 +246,20 @@ const REST_RESULTS: RestResults = {
     block_range: { from: 1, to: 100_000_000 },
     operations_result: [stubTransfer({ from: STUB_TRANSFER_SENDER, operationId: '429492434051907584' })]
   }),
-  [`/balance-api/accounts/${STUB_ACCOUNT}/delegations`]: () => ({ outgoing_delegations: [], incoming_delegations: [] })
+  [`/balance-api/accounts/${STUB_ACCOUNT}/delegations`]: () => ({ outgoing_delegations: [], incoming_delegations: [] }),
+  [PROPOSALS_PAYMENTS_PATH]: stubProposalsPayments()
 };
 
 /**
- * Starts the stub node with the wallet pages' reads, `jsonRpc` replacing some of them; resolves
- * with the server to close after the spec.
+ * Starts the stub node with the wallet pages' reads, `jsonRpc` and `rest` adding to or replacing
+ * some of them; resolves with the server to close after the spec.
  */
-export const startWalletApiStub = (port = FIXTURE_API_PORT, jsonRpc: JsonRpcResults = {}): Promise<Server> =>
-  startApiStub({ jsonRpc: { ...JSON_RPC_RESULTS, ...jsonRpc }, rest: REST_RESULTS }, port);
+export const startWalletApiStub = (
+  port = FIXTURE_API_PORT,
+  jsonRpc: JsonRpcResults = {},
+  rest: RestResults = {}
+): Promise<Server> =>
+  startApiStub({ jsonRpc: { ...JSON_RPC_RESULTS, ...jsonRpc }, rest: { ...REST_RESULTS, ...rest } }, port);
 
 /**
  * Logs a stub account in on the client, as the blog's fixture seeder does: the stored user is what

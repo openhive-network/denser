@@ -1,0 +1,16 @@
+{
+  "default_server_config": {
+    "m.homeserver": {
+      "base_url": "https://matrix.discuss.peerverity.info",
+      "server_name": "matrix.discuss.peerverity.info"
+    }
+  },
+  "disable_custom_urls": true,
+  "disable_guests": true,
+  "brand": "Denser Chat",
+  "default_theme": "dark",
+  "room_directory": { "servers": ["matrix.discuss.peerverity.info"] },
+  "setting_defaults": { "breadcrumbs": true, "UIFeature.BulkUnverifiedSessionsReminder": false, "use_system_theme": false },
+  "element_call": { "use_exclusively": false },
+  "show_labs_settings": false
+}

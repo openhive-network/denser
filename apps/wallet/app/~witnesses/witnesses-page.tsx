@@ -195,7 +195,7 @@ export default function WitnessesPage() {
                   value={voteInput}
                   onChange={(e) => setVoteInput(e.target.value)}
                 />
-                <div className="items absolute bottom-[1px] right-[1px]">
+                <div className="items absolute bottom-px right-px">
                   {!user.isLoggedIn ? (
                     <DialogLogin>
                       <Button className="h-fit" variant="destructive">
@@ -250,7 +250,7 @@ export default function WitnessesPage() {
                   onChange={(e) => setProxy(e.target.value)}
                   className="block p-4 pl-10 pr-28 text-sm"
                 />
-                <div className="items absolute bottom-[1px] right-[1px]">
+                <div className="items absolute bottom-px right-px">
                   {!user.isLoggedIn ? (
                     <DialogLogin>
                       <Button className="h-fit" variant="destructive">
@@ -286,7 +286,7 @@ export default function WitnessesPage() {
                 <Icons.atSign />
               </div>
               <Input value={observerData?.proxy} disabled className="block p-4 pl-10 pr-28 text-sm" />
-              <div className="items absolute bottom-[1px] right-[1px]">
+              <div className="items absolute bottom-px right-px">
                 <ProxyDialog
                   loading={proxyMutation.isPending}
                   onSetProxy={() => onSetProxy('')}

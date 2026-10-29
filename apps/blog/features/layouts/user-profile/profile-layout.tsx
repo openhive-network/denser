@@ -188,12 +188,12 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
           className="relative min-h-[280px] sm:min-h-[320px]"
         >
           {/* Gradient Overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/20" />
 
           {/* Content Container */}
           <div className="relative flex h-full min-h-[280px] flex-col items-center justify-center px-4 py-6 text-white sm:min-h-[320px]">
             {/* Glassmorphism Card */}
-            <div className="w-full max-w-2xl rounded-2xl bg-black/30 p-6 backdrop-blur-sm sm:p-8">
+            <div className="w-full max-w-2xl rounded-2xl bg-black/30 p-6 backdrop-blur-xs sm:p-8">
               {/* Avatar and Name Row */}
               <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
                 <Avatar className="h-20 w-20 shrink-0 ring-4 ring-white/30 sm:h-24 sm:w-24">
@@ -261,7 +261,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                   {/* Bio */}
                   {!legalBlockedUser && profileData?.profile?.about ? (
                     <p
-                      className="mt-3 max-w-md text-sm leading-relaxed text-white/90 sm:text-base"
+                      className="mt-3 max-w-md text-sm leading-relaxed text-white/90 sm:text-base sm:leading-6"
                       data-testid="profile-about"
                     >
                       {profileData.profile.about.slice(0, 157) +
@@ -415,10 +415,10 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
       <div className="flex flex-col pb-8 md:pb-4 ">
         <div className="w-full">
           <div className="bg-gray-700" data-testid="profile-navigation">
-            <div className="container mx-auto max-w-screen-xl px-0 sm:px-8">
+            <div className="container mx-auto max-w-(--breakpoint-xl) px-0 sm:px-8">
               <div className="flex items-center justify-between">
                 {/* Primary tabs - scrollable on mobile */}
-                <nav className="flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <nav className="flex-1 overflow-x-auto [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden">
                   <ul className="flex gap-1 text-white sm:gap-2">
                     <ListItem
                       href={`/@${username}`}
@@ -450,7 +450,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                   </ul>
                 </nav>
                 {/* Secondary links - hidden on mobile */}
-                <ul className="hidden flex-shrink-0 items-center gap-1 text-white md:flex">
+                <ul className="hidden shrink-0 items-center gap-1 text-white md:flex">
                   <li>
                     <Link
                       href={`${explorerHost}/@${username}`}
@@ -492,7 +492,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                   ) : null}
                 </ul>
                 {/* Mobile dropdown for secondary links */}
-                <div className="flex-shrink-0 md:hidden">
+                <div className="shrink-0 md:hidden">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
@@ -543,7 +543,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
             </div>
           </div>
         </div>
-        <main className="container mx-auto max-w-screen-xl pt-4">{children}</main>
+        <main className="container mx-auto max-w-(--breakpoint-xl) pt-4">{children}</main>
       </div>
     </div>
   );

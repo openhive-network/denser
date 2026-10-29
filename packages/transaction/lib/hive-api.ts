@@ -3,15 +3,19 @@ import {
   AccountProfile,
   FullAccount,
   Entry,
+  HivemindRestPostVote,
   IAccountReputations,
   IFeedHistory,
   IFollow,
+  IProfile,
   IVote,
   IVoteListItem,
   IWitnessSchedule
 } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
-import { getReadChain } from './chain';
+import { getHiveChainService } from './hive-chain-service';
+import { getReadChain, type HivemindRestApi } from './chain';
+import { nonEmpty, readFromHivemind } from './hivemind-rest';
 import { ApiAccount } from '@hiveio/wax';
 import {
   calculateCurrentManabarValue,
@@ -48,7 +52,10 @@ interface IManabars {
 const PERCENT_VALUE_DOUBLE_PRECISION = 100;
 const ONE_HUNDRED_PERCENT = BigInt(100) * BigInt(PERCENT_VALUE_DOUBLE_PRECISION);
 
-type ManabarDynamicGlobalProperties = Pick<GetDynamicGlobalPropertiesResponse, 'time' | 'downvote_pool_percent'>;
+type ManabarDynamicGlobalProperties = Pick<
+  GetDynamicGlobalPropertiesResponse,
+  'time' | 'downvote_pool_percent'
+>;
 
 /**
  * Loads the global properties the manabars are computed against. Callers that already hold them
@@ -63,17 +70,23 @@ export const getManabars = async (
   try {
     const chain = getReadChain();
 
-    const [dgpo, {
-      accounts: [account]
-    }, {
-      rc_accounts: [rcAccount]
-    }] = await Promise.all([
-      loadDynamicGlobalProperties ? loadDynamicGlobalProperties() : chain.api.database_api.get_dynamic_global_properties({}),
+    const [
+      dgpo,
+      {
+        accounts: [account]
+      },
+      {
+        rc_accounts: [rcAccount]
+      }
+    ] = await Promise.all([
+      loadDynamicGlobalProperties
+        ? loadDynamicGlobalProperties()
+        : chain.api.database_api.get_dynamic_global_properties({}),
       chain.api.database_api.find_accounts({
         accounts: [accountName],
         delayed_votes_active: false
       }),
-      chain.api.rc_api.find_rc_accounts({ accounts: [ accountName ] })
+      chain.api.rc_api.find_rc_accounts({ accounts: [accountName] })
     ]);
 
     if (!account || !rcAccount) {
@@ -82,33 +95,38 @@ export const getManabars = async (
 
     const time = new Date(`${dgpo.time}Z`).getTime() / 1000;
 
-    const upvoteCooldown = new Date(calculateManabarFullRegenerationTime(
-      time,
-      account.post_voting_power.amount,
-      account.voting_manabar.current_mana,
-      account.voting_manabar.last_update_time
-    ) * 1000);
+    const upvoteCooldown = new Date(
+      calculateManabarFullRegenerationTime(
+        time,
+        account.post_voting_power.amount,
+        account.voting_manabar.current_mana,
+        account.voting_manabar.last_update_time
+      ) * 1000
+    );
 
     // This code is copied from Wax repository. We should implement an easier way to manually calculate multiple manabars in the future.
     let max = BigInt(account.post_voting_power.amount);
     const downvotePoolPercent = BigInt(dgpo.downvote_pool_percent);
-    if(max / ONE_HUNDRED_PERCENT > ONE_HUNDRED_PERCENT)
+    if (max / ONE_HUNDRED_PERCENT > ONE_HUNDRED_PERCENT)
       max = (max / ONE_HUNDRED_PERCENT) * downvotePoolPercent;
-    else
-      max = (max * downvotePoolPercent) / ONE_HUNDRED_PERCENT;
+    else max = (max * downvotePoolPercent) / ONE_HUNDRED_PERCENT;
 
-    const downvoteCooldown = new Date(calculateManabarFullRegenerationTime(
-      time,
-      max,
-      account.downvote_manabar.current_mana,
-      account.downvote_manabar.last_update_time
-    ) * 1000);
-    const rcCooldown = new Date(calculateManabarFullRegenerationTime(
-      time,
-      rcAccount.max_rc,
-      rcAccount.rc_manabar.current_mana,
-      rcAccount.rc_manabar.last_update_time
-    ) * 1000);
+    const downvoteCooldown = new Date(
+      calculateManabarFullRegenerationTime(
+        time,
+        max,
+        account.downvote_manabar.current_mana,
+        account.downvote_manabar.last_update_time
+      ) * 1000
+    );
+    const rcCooldown = new Date(
+      calculateManabarFullRegenerationTime(
+        time,
+        rcAccount.max_rc,
+        rcAccount.rc_manabar.current_mana,
+        rcAccount.rc_manabar.last_update_time
+      ) * 1000
+    );
     const upvote = calculateCurrentManabarValue(
       time,
       account.post_voting_power.amount,
@@ -247,6 +265,13 @@ export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> =
 export const getAccount = (username: string): Promise<FullAccount> =>
   getAccounts([username]).then((resp) => resp[0]);
 
+const getBridgeProfile = (account: string): Promise<IProfile | null> =>
+  readFromHivemind(
+    'accountProfile',
+    (api) => api.accountProfile({ 'account-name': account }),
+    () => getReadChain().api.bridge.get_profile({ account })
+  );
+
 /**
  * Fetches follow stats and reputation from bridge.get_profile. On a node serving the lite social
  * graph the follow counts come from `lite.get_follow_count`, which counts lite followers too.
@@ -254,11 +279,9 @@ export const getAccount = (username: string): Promise<FullAccount> =>
 export const getProfileInfo = async (
   username: string
 ): Promise<{ follow_stats: AccountFollowStats; reputation: number }> => {
-  const [profile, liteCounts] = await Promise.all([
-    getReadChain().api.bridge.get_profile({ account: username }),
-    getLiteFollowCount(username)
-  ]);
-  if (liteCounts) return { follow_stats: { ...liteCounts, account: username }, reputation: profile?.reputation ?? 25 };
+  const [profile, liteCounts] = await Promise.all([getBridgeProfile(username), getLiteFollowCount(username)]);
+  if (liteCounts)
+    return { follow_stats: { ...liteCounts, account: username }, reputation: profile?.reputation ?? 25 };
   if (!profile || !profile.stats) {
     return {
       follow_stats: {
@@ -311,7 +334,11 @@ export const getFollowCount = async (username: string): Promise<AccountFollowSta
  * @returns
  */
 export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
-  return getReadChain().api.condenser_api.get_reblogged_by([ author, permlink ]);
+  return readFromHivemind(
+    'postRebloggedBy',
+    (api) => api.postRebloggedBy({ author, permlink }),
+    () => getReadChain().api.condenser_api.get_reblogged_by([author, permlink])
+  );
 };
 
 export const getFeedHistory = async (): Promise<IFeedHistory> => {
@@ -360,12 +387,12 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
 
     const lite = await getLiteFollowing({ account, start, type, limit });
     if (lite) return lite;
-    return getReadChain().api.condenser_api.get_following([
-      account,
-      start,
-      type,
-      limit
-    ]);
+    return readFromHivemind(
+      'accountFollowing',
+      (api) =>
+        api.accountFollowing({ 'account-name': account, type, 'page-size': limit, start: nonEmpty(start) }),
+      () => getReadChain().api.condenser_api.get_following([account, start, type, limit])
+    );
   } catch (error) {
     console.error('Error:', error);
     throw error;
@@ -376,7 +403,7 @@ export const getAccountReputations = async (
   account_lower_bound: string,
   _limit: number
 ): Promise<IAccountReputations[]> => {
-  const profile = await getReadChain().api.bridge.get_profile({ account: account_lower_bound });
+  const profile = await getBridgeProfile(account_lower_bound);
   if (!profile) {
     return [];
   }
@@ -401,40 +428,96 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
 
     const lite = await getLiteFollowers({ account, start, type, limit });
     if (lite) return lite;
-    return getReadChain().api.condenser_api.get_followers([
-      account,
-      start,
-      type,
-      limit
-    ]);
+    return readFromHivemind(
+      'accountFollowers',
+      (api) =>
+        api.accountFollowers({ 'account-name': account, type, 'page-size': limit, start: nonEmpty(start) }),
+      () => getReadChain().api.condenser_api.get_followers([account, start, type, limit])
+    );
   } catch (error) {
     console.error('Error:', error);
     throw error;
   }
 };
 
-export const getByText = async ({
-  pattern,
-  sort = 'relevance',
-  author = '',
-  limit = DATA_LIMIT,
-  observer,
-  start_author = '',
-  start_permlink = ''
-}: Parameters<ReturnType<typeof getReadChain>['api']['search-api']['find_text']>[0] // Temporary solution
-): Promise<Entry[]> => {
-  return getReadChain().api['search-api'].find_text({
+export const getByText = async (
+  {
     pattern,
-    sort,
-    author,
-    limit,
+    sort = 'relevance',
+    author = '',
+    limit = DATA_LIMIT,
     observer,
-    start_author,
-    start_permlink
-  });
+    start_author = '',
+    start_permlink = ''
+  }: Parameters<ReturnType<typeof getReadChain>['api']['search-api']['find_text']>[0] // Temporary solution
+): Promise<Entry[]> => {
+  const findText = () =>
+    getReadChain().api['search-api'].find_text({
+      pattern,
+      sort,
+      author,
+      limit,
+      observer,
+      start_author,
+      start_permlink
+    });
+  // A search endpoint the reader picked is asked, not hivemind's own search.
+  if (getHiveChainService().getApiEndpoints().searchApiEndpoint) return findText();
+  return readFromHivemind(
+    'searchPosts',
+    (api) =>
+      api.searchPosts({
+        q: pattern,
+        sort,
+        author: nonEmpty(author),
+        observer,
+        'page-size': limit,
+        'start-author': nonEmpty(start_author),
+        'start-permlink': nonEmpty(start_permlink)
+      }),
+    findText
+  );
 };
 
-export const getActiveVotes = async (author: string, permlink: string): Promise<IVote[]> => {
+const ACTIVE_VOTES_PAGE_SIZE = 1000;
+
+/** Every vote of the post, from hivemind REST pages of ACTIVE_VOTES_PAGE_SIZE that start after `start-voter`. */
+const getPostVotesFromHivemind = async (
+  api: HivemindRestApi,
+  author: string,
+  permlink: string
+): Promise<IVote[]> => {
+  const votes: HivemindRestPostVote[] = [];
+  let startVoter: string | undefined;
+  while (true) {
+    const page = await api.postVotes({
+      author,
+      permlink,
+      'page-size': ACTIVE_VOTES_PAGE_SIZE,
+      'start-voter': startVoter
+    });
+    votes.push(...page.filter((vote) => vote.voter !== startVoter));
+    if (page.length < ACTIVE_VOTES_PAGE_SIZE) break;
+    startVoter = page[page.length - 1].voter;
+  }
+  return votes.map((vote) => ({
+    voter: vote.voter,
+    percent: vote.vote_percent,
+    rshares: Number(vote.rshares),
+    time: vote.last_update,
+    weight: parseInt(vote.weight, 10),
+    reputation: 0
+  }));
+};
+
+export const getActiveVotes = (author: string, permlink: string): Promise<IVote[]> =>
+  readFromHivemind(
+    'postVotes',
+    (api) => getPostVotesFromHivemind(api, author, permlink),
+    () => getActiveVotesFromListVotes(author, permlink)
+  );
+
+const getActiveVotesFromListVotes = async (author: string, permlink: string): Promise<IVote[]> => {
   const BATCH_SIZE = 1000;
   const allVotes: IVoteListItem[] = [];
   let lastVoter = '';

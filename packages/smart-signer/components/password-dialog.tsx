@@ -10,9 +10,6 @@ import {
   PasswordFormOptions,
   passwordFormDefaultValuesWif
 } from '@smart-signer/components/password-form';
-import { getLogger } from '@ui/lib/logging';
-
-const logger = getLogger('app');
 
 interface PasswordDialogProps {
   children?: ReactNode;
@@ -35,7 +32,6 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
   const titleId = useId();
 
   const onSubmit = async (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {
-    logger.info('onSubmit form data', data);
     const { password } = data;
     setErrorMsg('');
     setPassword(password);

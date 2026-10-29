@@ -149,7 +149,7 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
     : t('post_content.footer.comment.post');
 
   return (
-    <div className="mb-4 flex w-full flex-col gap-4 rounded-lg border border-border bg-background p-4 text-primary shadow-sm" data-testid="lite-reply-editor">
+    <div className="mb-4 flex w-full flex-col gap-4 rounded-lg border border-border bg-background p-4 text-primary shadow-xs" data-testid="lite-reply-editor">
       <p className="text-xs text-muted-foreground">
         {identity ? t('lite_account.replying_as', { name: identity.name }) : t('lite_account.reply_as_guest')}{' '}
         <button type="button" className="underline hover:text-destructive" onClick={signIn} data-testid="lite-reply-sign-in">

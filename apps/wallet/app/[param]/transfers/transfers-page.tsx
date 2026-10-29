@@ -9,7 +9,7 @@ import {
 import { getAccount } from '@transaction/lib/hive-api';
 import { FullAccount } from '@hive/common-hiveio-packages/wax';
 import { getOpenOrder, getSavingsWithdrawals } from '@/wallet/lib/hive';
-import { createListWithSuggestions } from '@/wallet/lib/utils';
+import { createListWithSuggestions } from '@/wallet/lib/transfer-suggestions';
 import Loading from '@ui/components/loading';
 import AccountHistory from '@/wallet/feature/transfers-page/account-history';
 import RewardsBanner from '@/wallet/feature/transfers-page/rewards-banner';

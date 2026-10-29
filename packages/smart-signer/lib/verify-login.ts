@@ -1,5 +1,6 @@
 import { PostLoginSchema } from '@smart-signer/lib/auth/utils';
 import { User } from '@smart-signer/types/common';
+import type { AccountAuthorities } from '@smart-signer/lib/validators/key-role';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -10,13 +11,16 @@ const logger = getLogger('app');
  * handler (login.ts) before this function is called.
  *
  * @param {PostLoginSchema} data
+ * @param account the authorities of the account signing in, when the caller has read them already
  * @returns {Promise<User>}
  */
-export async function verifyLogin(data: PostLoginSchema): Promise<User> {
-  const { username, keyType, strict, loginType } = data;
-  logger.info('verifyLogin argument data: %o', data);
+export async function verifyLogin(data: PostLoginSchema, account?: AccountAuthorities): Promise<User> {
+  const { username, keyType, loginType } = data;
+  logger.debug('verifyLogin argument data: %o', data);
 
   try {
+    // Loaded on sign-in only: it brings wax, which a signed-in user's page must not load
+    const { isStrictLogin } = await import('@smart-signer/lib/auth/strict-login');
     // Create User object from login data
     const user: User = {
       isLoggedIn: true,
@@ -27,7 +31,7 @@ export async function verifyLogin(data: PostLoginSchema): Promise<User> {
       authenticateOnBackend: false,
       chatAuthToken: '',
       oauthConsent: {},
-      strict
+      strict: await isStrictLogin(data, account)
     };
     return user;
   } catch (error) {

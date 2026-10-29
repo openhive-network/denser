@@ -5,7 +5,7 @@ import { Link } from '@hive/ui';
 
 const ListItem = ({ href, currentTab, label }: { href: string; currentTab: boolean; label: string }) => {
   return (
-    <li className="flex-shrink-0">
+    <li className="shrink-0">
       <Link
         href={href}
         className={clsx(

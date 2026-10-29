@@ -1,7 +1,6 @@
 {
   "extends": "@hive/tsconfig/base.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@ui/*": ["./*"],
       "@transaction/*": ["../../packages/transaction/*"],

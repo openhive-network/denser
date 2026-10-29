@@ -1,8 +1,7 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 import {
-  hiveSenseOpenApiLooksHealthy,
-  hiveSenseSearchProbeLooksHealthy,
+  hiveSenseSyncStatusLooksHealthy,
   isRenderableSearchEntry,
   nextAiSearchPageState,
   partitionHiveSensePosts,
@@ -15,18 +14,25 @@ import {
  */
 describe('hivesense search fallback', () => {
   describe('health probe (#947)', () => {
-    it('accepts the OpenAPI spec only when the title is Hivesense', () => {
-      expect(hiveSenseOpenApiLooksHealthy({ info: { title: 'Hivesense' } })).to.equal(true);
-      expect(hiveSenseOpenApiLooksHealthy({ info: { title: 'Other' } })).to.equal(false);
-      expect(hiveSenseOpenApiLooksHealthy(null)).to.equal(false);
-      expect(hiveSenseOpenApiLooksHealthy('Hivesense')).to.equal(false);
+    it('accepts the sync-status shape of a node that has processed a block', () => {
+      expect(
+        hiveSenseSyncStatusLooksHealthy({ last_block_num: 111179054, last_block_time: '2026-10-28T21:56:00' })
+      ).to.equal(true);
     });
 
-    it('requires the posts/search probe to return an array', () => {
-      expect(hiveSenseSearchProbeLooksHealthy(true, [])).to.equal(true);
-      expect(hiveSenseSearchProbeLooksHealthy(true, [{ author: 'a', permlink: 'b' }])).to.equal(true);
-      expect(hiveSenseSearchProbeLooksHealthy(true, { error: 'down' })).to.equal(false);
-      expect(hiveSenseSearchProbeLooksHealthy(false, [])).to.equal(false);
+    it('rejects a node that has not processed its first block', () => {
+      expect(hiveSenseSyncStatusLooksHealthy({ last_block_num: 0, last_block_time: null })).to.equal(false);
+    });
+
+    it('rejects bodies that are not the sync-status shape', () => {
+      expect(hiveSenseSyncStatusLooksHealthy({ last_block_num: '111179054', last_block_time: 'x' })).to.equal(
+        false
+      );
+      expect(hiveSenseSyncStatusLooksHealthy({ last_block_time: '2026-10-28T21:56:00' })).to.equal(false);
+      expect(hiveSenseSyncStatusLooksHealthy([{ last_block_num: 1, last_block_time: 'x' }])).to.equal(false);
+      expect(hiveSenseSyncStatusLooksHealthy({ code: 'PGRST', message: 'down' })).to.equal(false);
+      expect(hiveSenseSyncStatusLooksHealthy('<html>404 Not Found</html>')).to.equal(false);
+      expect(hiveSenseSyncStatusLooksHealthy(null)).to.equal(false);
     });
   });
 

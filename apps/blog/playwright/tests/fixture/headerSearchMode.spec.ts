@@ -8,15 +8,15 @@ import { TIMEOUTS } from '../support/constants';
 /**
  * The site header's search control follows the HiveSense availability probe
  * (`getHiveSenseStatus`, #947): the classic `Search...` input when the probe
- * fails, the AI search input when the OpenAPI root and the `posts/search` probe
- * both answer healthy.
+ * fails, the AI search input when `/hivesense-api/sync-status` reports a
+ * processed block. The probe is that one request: no OpenAPI root fetch and no
+ * `posts/search` call (#1365).
  *
  * The probe goes to the AI domain, not the fixture proxy (see "The header's
  * HiveSense probe leaves the proxy" in CLAUDE.md), so both states are served
  * from the browser with recorded hivesense responses:
  *   - AI search off: `homeMainPage/0002`, the API's 404 for the hivesense root.
- *   - AI search on:  `lighthouse/0017` (the OpenAPI document) and
- *                    `lighthouse/0018` (a `posts/search` probe result).
+ *   - AI search on:  `lighthouse/0017`, a `sync-status` answer.
  *
  * The feed itself replays from `homeMainPage`. Replay-only: recording this spec
  * would overwrite that directory.
@@ -31,8 +31,7 @@ test.skip(
 );
 
 const FIXTURES_ROOT = path.resolve(__dirname, '..', 'mock', 'fixtures');
-const HIVESENSE_ROOT_PATH = '/hivesense-api/';
-const HIVESENSE_SEARCH_PATH = '/hivesense-api/posts/search';
+const HIVESENSE_SYNC_STATUS_PATH = '/hivesense-api/sync-status';
 const CLASSIC_PLACEHOLDER = 'Search...';
 const AI_PLACEHOLDER = 'AI Search...';
 
@@ -45,15 +44,8 @@ interface IRecordedRestResponse {
 const readRecording = (recording: string): IRecordedRestResponse =>
   JSON.parse(fs.readFileSync(path.join(FIXTURES_ROOT, recording), 'utf-8'));
 
-const AI_OFF_RESPONSES: Record<string, IRecordedRestResponse> = {
-  [HIVESENSE_ROOT_PATH]: readRecording('homeMainPage/0002-GET_hivesense-api.json'),
-  [HIVESENSE_SEARCH_PATH]: readRecording('homeMainPage/0002-GET_hivesense-api.json')
-};
-
-const AI_ON_RESPONSES: Record<string, IRecordedRestResponse> = {
-  [HIVESENSE_ROOT_PATH]: readRecording('lighthouse/0017-GET_hivesense-api.json'),
-  [HIVESENSE_SEARCH_PATH]: readRecording('lighthouse/0018-GET_hivesense-api_posts_search.json')
-};
+const AI_OFF_RESPONSE = readRecording('homeMainPage/0002-GET_hivesense-api.json');
+const AI_ON_RESPONSE = readRecording('lighthouse/0017-GET_hivesense-api_sync-status.json');
 
 const fulfillWithRecording = (route: Route, recording: IRecordedRestResponse) =>
   route.fulfill({
@@ -64,20 +56,21 @@ const fulfillWithRecording = (route: Route, recording: IRecordedRestResponse) =>
   });
 
 /**
- * Answers the two probe requests with `responses` and returns the set of probe
- * paths answered so far, so a test can wait until the header has its answer.
+ * Answers the `sync-status` probe with `recording` and returns the paths of every
+ * hivesense request the page made so far, so a test can wait until the header
+ * has its answer and check nothing else was asked.
  */
-async function serveHiveSenseProbe(page: Page, responses: Record<string, IRecordedRestResponse>) {
-  const answered = new Set<string>();
+async function serveHiveSenseProbe(page: Page, recording: IRecordedRestResponse) {
+  const hiveSensePaths: string[] = [];
+  page.on('request', (request) => {
+    const { pathname } = new URL(request.url());
+    if (pathname.startsWith('/hivesense-api')) hiveSensePaths.push(pathname);
+  });
   await page.route(
-    (url) => url.pathname in responses,
-    (route) => {
-      const { pathname } = new URL(route.request().url());
-      answered.add(pathname);
-      return fulfillWithRecording(route, responses[pathname]);
-    }
+    (url) => url.pathname === HIVESENSE_SYNC_STATUS_PATH,
+    (route) => fulfillWithRecording(route, recording)
   );
-  return answered;
+  return hiveSensePaths;
 }
 
 const headerSearchInput = (page: Page, placeholder: string) =>
@@ -85,30 +78,32 @@ const headerSearchInput = (page: Page, placeholder: string) =>
 
 test.describe('Header search control follows the HiveSense probe', () => {
   test('HDR-SEARCH-01 — probe answers 404: the classic Search... input stays', async ({ page }) => {
-    const answered = await serveHiveSenseProbe(page, AI_OFF_RESPONSES);
+    const hiveSensePaths = await serveHiveSenseProbe(page, AI_OFF_RESPONSE);
     const homePage = new HomePage(page);
 
     await homePage.goto();
     await expect
-      .poll(() => answered.size, { timeout: TIMEOUTS.HYDRATION })
-      .toBe(Object.keys(AI_OFF_RESPONSES).length);
+      .poll(() => hiveSensePaths, { timeout: TIMEOUTS.HYDRATION })
+      .toEqual([HIVESENSE_SYNC_STATUS_PATH]);
 
     await expect(headerSearchInput(page, CLASSIC_PLACEHOLDER)).toBeVisible();
     await expect(headerSearchInput(page, CLASSIC_PLACEHOLDER)).toBeEnabled();
     await expect(headerSearchInput(page, AI_PLACEHOLDER)).toHaveCount(0);
+    expect(hiveSensePaths).toEqual([HIVESENSE_SYNC_STATUS_PATH]);
   });
 
   test('HDR-SEARCH-02 — probe answers healthy: the header switches to AI search', async ({ page }) => {
-    const answered = await serveHiveSenseProbe(page, AI_ON_RESPONSES);
+    const hiveSensePaths = await serveHiveSenseProbe(page, AI_ON_RESPONSE);
     const homePage = new HomePage(page);
 
     await homePage.goto();
     await expect
-      .poll(() => answered.size, { timeout: TIMEOUTS.HYDRATION })
-      .toBe(Object.keys(AI_ON_RESPONSES).length);
+      .poll(() => hiveSensePaths, { timeout: TIMEOUTS.HYDRATION })
+      .toEqual([HIVESENSE_SYNC_STATUS_PATH]);
 
     await expect(headerSearchInput(page, AI_PLACEHOLDER)).toBeVisible();
     await expect(headerSearchInput(page, AI_PLACEHOLDER)).toBeEnabled();
     await expect(headerSearchInput(page, CLASSIC_PLACEHOLDER)).toHaveCount(0);
+    expect(hiveSensePaths).toEqual([HIVESENSE_SYNC_STATUS_PATH]);
   });
 });
