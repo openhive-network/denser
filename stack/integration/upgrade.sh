@@ -12,7 +12,10 @@
 #                     (follow/follow.sh) and serve those builds (compose.follow.yml).
 #                     A dirty or diverged checkout is REFUSED and nothing changes; a
 #                     build that fails leaves the previous one serving (ROLLED-BACK)
-#                     and is tried again on the next run.
+#                     and is tried again on the next run. Less free space on the
+#                     checkout's filesystem than DENSER_MIN_FREE_GB (default 5) skips
+#                     the run (DISK-LOW) and the current release keeps serving; a
+#                     successful run removes the follow images no release needs.
 #   images            pull the published images at DENSER_TAG (compose.yml alone).
 #
 # Either way caddy then loads a changed caddy/ (caddy-apply.sh): validated first,
@@ -26,7 +29,7 @@
 #
 # Exit: 0 upgraded or nothing to do; 1 an app could not be brought to the tip
 # (ROLLED-BACK); 3 the checkout was REFUSED; 4 caddy refused the checkout's caddy/;
-# 5 varnish refused the checkout's varnish/.
+# 5 varnish refused the checkout's varnish/; 6 too little free disk to build (DISK-LOW).
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -43,6 +46,8 @@ mode=${mode:-follow}
 branch=$(env_value DENSER_SOURCE_BRANCH)
 branch=${branch:-aidev/integration}
 apps="blog:/blog wallet:/wallet"
+# Images mode's repositories; follow mode removes the ones no container uses.
+subdirectory_repos="registry.gitlab.syncad.com/hive/denser/blog-subdirectory registry.gitlab.syncad.com/hive/denser/wallet-subdirectory"
 caddy_rc=0
 varnish_rc=0
 
@@ -202,8 +207,81 @@ follow_write_status() {
     python3 follow/deployed.py --releases releases --apps "$apps" --source "follow:$branch" \
         --checkout "$(git rev-parse HEAD)" --upgrade-status "$1" --upgrade-detail "${2:-}" \
         --site "$(env_value SITE_HOST)" --network "$(env_value DENSER_NETWORK | grep . || echo mainnet)" \
-        > status/deployed.json.tmp
-    mv status/deployed.json.tmp status/deployed.json
+        --disk-free-bytes "$disk_free" --disk-min-free-bytes "$disk_min_free" \
+        > status/deployed.json.tmp \
+        && mv status/deployed.json.tmp status/deployed.json
+}
+
+follow_image() { DENSER_FOLLOW_IMAGE=$(env_value DENSER_FOLLOW_IMAGE) follow/environment-image.sh; }
+
+# Bytes available on the checkout's filesystem: builds, releases and git's index.
+free_bytes() { df -P -B1 . | awk 'NR == 2 { print $4 }'; }
+
+# status/.follow-images: the last two follow images a run completed with, newest
+# last. Every image change rebuilds every app, so they are the images the current
+# and the previous releases were built and served in.
+follow_record_image() {
+    [ "$(tail -n 1 status/.follow-images 2>/dev/null)" = "$1" ] && return 0
+    { tail -n 1 status/.follow-images 2>/dev/null || true; echo "$1"; } > status/.follow-images.tmp \
+        && mv status/.follow-images.tmp status/.follow-images
+}
+
+# Removes the images of the follow image's repository other than those of
+# status/.follow-images (and $1), and images mode's -subdirectory images. An image a
+# container uses, running or stopped, of any stack, stays; no other repository is
+# looked at.
+follow_prune_images() {
+    local repo ref id keep refs=() errors failed
+    repo=${1%%@*}
+    [[ "${repo##*/}" != *:* ]] || repo=${repo%:*}
+    keep=$( { { cat status/.follow-images 2>/dev/null || true; echo "$1"; } | while read -r ref; do
+                docker image inspect --format '{{.Id}}' "$ref" 2>/dev/null || true
+            done
+            docker ps -aq | xargs -r docker inspect --format '{{.Image}}' 2>/dev/null || true
+        } | tr '\n' ' ')
+    keep=" $keep "
+    while read -r id ref; do
+        [ -n "$id" ] && [[ "$keep" != *" $id "* ]] || continue
+        # An untagged image (a digest-pinned pull, or a tag that moved) goes by its ID.
+        if [[ "$ref" == *:"<none>" ]]; then refs+=("$id"); else refs+=("$ref"); fi
+    done < <(for ref in "$repo" $subdirectory_repos; do
+            docker image ls --no-trunc --format '{{.ID}} {{.Repository}}:{{.Tag}}' "$ref" || true
+        done | sort -u)
+    [ ${#refs[@]} -gt 0 ] || return 0
+    errors=$(docker image rm "${refs[@]}" 2>&1 > /dev/null) || true
+    failed=$(grep -c . <<< "$errors" || true)
+    echo "upgrade: removed $((${#refs[@]} - failed)) superseded images of ${repo##*/}, blog-subdirectory and wallet-subdirectory"
+    [ -z "$errors" ] || { echo "upgrade: $failed were not removed:" >&2; head -n 5 <<< "$errors" >&2; }
+}
+
+# Sets disk_free and disk_min_free. A filesystem below the minimum is first given
+# back the superseded images, then measured again.
+follow_check_disk() {
+    local min_gb
+    min_gb=$(env_value DENSER_MIN_FREE_GB)
+    min_gb=${min_gb:-5}
+    [[ "$min_gb" =~ ^[0-9]+$ ]] || { echo "upgrade: DENSER_MIN_FREE_GB=$min_gb is not a whole number of GB" >&2; exit 64; }
+    disk_min_free=$((min_gb * 1000000000))
+    disk_free=$(free_bytes)
+    [ "$disk_free" -lt "$disk_min_free" ] || return 0
+    follow_prune_images "$(follow_image)" || true
+    disk_free=$(free_bytes)
+}
+
+# Posts to RC_WEBHOOK_URL (a Rocket.Chat incoming webhook), at most once per UTC day.
+disk_low_notify() {
+    local url day
+    url=${RC_WEBHOOK_URL:-$(env_value RC_WEBHOOK_URL)}
+    [ -n "$url" ] || return 0
+    day=$(date -u +%F)
+    [ "$(cat status/.disk-low-notified 2>/dev/null)" != "$day" ] || return 0
+    if python3 -c 'import json, sys; print(json.dumps({"text": sys.argv[1]}))' \
+            ":warning: denser integration site $(env_value SITE_HOST): $1" \
+        | curl -fsS --max-time 30 -H 'Content-Type: application/json' --data-binary @- "$url" > /dev/null; then
+        echo "$day" > status/.disk-low-notified || true
+    else
+        echo "upgrade: posting the low-disk warning to RC_WEBHOOK_URL failed" >&2
+    fi
 }
 
 follow_upgrade() {
@@ -213,6 +291,16 @@ follow_upgrade() {
     DENSER_UID=$(id -u)
     DENSER_GID=$(id -g)
 
+    # Before git, which a full disk fails too (its index.lock).
+    follow_check_disk
+    if [ "$disk_free" -lt "$disk_min_free" ]; then
+        local detail="$((disk_free / 1000000)) MB free on the checkout's filesystem, under DENSER_MIN_FREE_GB=$((disk_min_free / 1000000000)); nothing pulled or built, the current release keeps serving"
+        echo "upgrade: DISK-LOW: $detail" >&2
+        follow_write_status DISK-LOW "$detail" || echo "upgrade: could not write status/deployed.json" >&2
+        disk_low_notify "$detail"
+        exit 6
+    fi
+
     follow_sync_checkout
     if [ -n "$refused" ]; then
         echo "upgrade: REFUSED: $refused; nothing changed" >&2
@@ -220,7 +308,7 @@ follow_upgrade() {
         exit 3
     fi
 
-    image=$(DENSER_FOLLOW_IMAGE=$(env_value DENSER_FOLLOW_IMAGE) follow/environment-image.sh)
+    image=$(follow_image)
     export DENSER_FOLLOW_IMAGE=$image
     docker image inspect "$image" > /dev/null 2>&1 || docker pull -q "$image" > /dev/null
 
@@ -248,6 +336,10 @@ follow_upgrade() {
     follow_write_status OK
     ./caddy-apply.sh "${quiet_args[@]}" || caddy_rc=4
     apply_varnish
+    if [ "$build_rc" = 0 ] && follow_all_released; then
+        { follow_record_image "$image" && follow_prune_images "$image"; } \
+            || echo "upgrade: removing superseded images failed" >&2
+    fi
     if [ "$build_rc" != 0 ]; then
         echo "upgrade: ROLLED-BACK: an app could not be built or started at $(git rev-parse --short HEAD); see status/deployed.json" >&2
         exit 1

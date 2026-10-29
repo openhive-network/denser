@@ -83,7 +83,8 @@ The site runs from this checkout; no image is built or pulled for the apps.
    previous commit's build, `status/deployed.json` says `ROLLED-BACK` with the
    failed commit and its log (`releases/<app>/logs/`), the unit exits 1, and the next
    run tries again. A checkout with local changes, on another branch, or behind a
-   rewritten branch is `REFUSED` (exit 3) and nothing changes.
+   rewritten branch is `REFUSED` (exit 3) and nothing changes. Too little free disk
+   is `DISK-LOW` (exit 6) and builds nothing; see "Disk space" below.
 6. Caddy config: caddy mounts `caddy/` as a directory (a single-file mount keeps
    showing the file git replaced), so the container sees a changed `Caddyfile*` at
    once, and `upgrade.sh` makes caddy load it in the same run (`caddy-apply.sh`, in
@@ -115,6 +116,41 @@ The blog and wallet healthchecks (`compose.yml`) probe with `node -e` and `fetch
 one program both the test image and the `-subdirectory` images have; the test image
 carries no `wget` or `curl`. `./test-healthchecks.sh` (or `./test-healthchecks.sh
 images`) checks that each healthcheck's program is in its service's image.
+
+## Disk space
+
+The host's root filesystem is shared with the other stacks on it (ratings, discuss,
+matrix). Follow mode keeps its own use bounded and stops building before the disk
+fills:
+
+- **Superseded images:** a lockfile change brings a new environment image (3 to 4 GB).
+  After every follow run that leaves every app serving the tip, `upgrade.sh` removes
+  the other images of that image's repository (`.../aidev-tests`) and every
+  `blog-subdirectory`/`wallet-subdirectory` image (images mode's). It keeps the last
+  two follow images a run completed with (`status/.follow-images`: every image
+  change rebuilds every app, so those are what the current and the previous releases
+  were built in) and any image a container uses, running or stopped, whichever stack
+  it belongs to. It lists no other repository. The first run after this was
+  introduced knows only the current image, so the image of an older previous release
+  goes too.
+- **Low disk:** each run first checks the space free on the checkout's filesystem.
+  Under `DENSER_MIN_FREE_GB` (`.env`, default 5) it removes the superseded images as
+  above and measures again; still under, it fetches, pulls and builds nothing and
+  leaves the containers alone, so the current release keeps serving. It logs
+  `upgrade: DISK-LOW: ...`, exits 6 (the unit shows failed), and
+  `status/deployed.json` says `"upgrade": {"status": "DISK-LOW", ...}` with
+  `"disk_low": true`. Every follow run reports `disk_free_bytes` and
+  `disk_min_free_bytes` there. With `RC_WEBHOOK_URL` set (`.env` or the
+  environment, a Rocket.Chat incoming webhook) it also posts the message there, at
+  most once per UTC day (`status/.disk-low-notified`). The next run with room builds
+  as usual.
+- **Status writes:** `follow/serve.sh` logs a `serving.json` it cannot write and keeps
+  the server running: a full disk leaves the built release serving, and only
+  `upgrade.sh`'s wait for the swap (`serving.json`) gives up after its 2 minutes.
+
+`./test-upkeep.sh` checks these with stand-ins for docker, git, df and curl: a faked
+low free space skips the run and reports it, the prune spares the current and in-use
+images, and `serve.sh` survives an unwritable `serving.json`.
 
 ## Shared HTML cache (optional)
 
