@@ -61,6 +61,10 @@ def main() -> None:
     parser.add_argument("--upgrade-detail", default="")
     parser.add_argument("--site", default=None)
     parser.add_argument("--network", default=None)
+    parser.add_argument(
+        "--disk-free-bytes", type=int, default=None, help="free on the checkout's filesystem"
+    )
+    parser.add_argument("--disk-min-free-bytes", type=int, default=None)
     args = parser.parse_args()
 
     services = {
@@ -81,6 +85,14 @@ def main() -> None:
             f"{app}: {f.get('stage')} failed at {f.get('revision') or 'the tree'} ({f.get('log')})"
             for app, f in failed.items()
         )
+    disk = {}
+    if args.disk_free_bytes is not None:
+        disk = {
+            "disk_low": args.disk_min_free_bytes is not None
+            and args.disk_free_bytes < args.disk_min_free_bytes,
+            "disk_free_bytes": args.disk_free_bytes,
+            "disk_min_free_bytes": args.disk_min_free_bytes,
+        }
     print(
         json.dumps(
             {
@@ -90,6 +102,7 @@ def main() -> None:
                 "source": args.source,
                 "stack_checkout": args.checkout or None,
                 "upgrade": {"status": upgrade_status, "detail": upgrade_detail or None},
+                **disk,
                 "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),  # noqa: UP017 - the image runs Python 3.10
                 "services": services,
             },
