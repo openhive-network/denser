@@ -107,7 +107,7 @@ services:
     image: *image
     user: *user
     working_dir: /work
-    mem_limit: 3g
+    mem_limit: 8g
     network_mode: service:fixture-proxy
     volumes:
       - *checkout
@@ -130,7 +130,7 @@ services:
       DENSER_FEED_CACHE_TTL_S: "0"
       HOSTNAME: 0.0.0.0
       PORT: "3000"
-      NODE_OPTIONS: --max-old-space-size=2048
+      NODE_OPTIONS: --max-old-space-size=4096
       # Host names besides localhost and 127.0.0.1 a browser may open the stack
       # at (comma- or space-separated); next.config.js reads it.
       DENSER_DEV_ALLOWED_ORIGINS: ${DENSER_DEV_ALLOWED_ORIGINS:-}
@@ -174,7 +174,7 @@ services:
     image: *image
     user: *user
     working_dir: /work
-    mem_limit: 3g
+    mem_limit: 8g
     network_mode: service:fixture-proxy
     volumes:
       - *checkout
@@ -192,7 +192,7 @@ services:
       DENSER_SERVER_SECRET_COOKIE_PASSWORD: fixture-tests-dummy-cookie-password-not-a-secret
       HOSTNAME: 0.0.0.0
       PORT: "4000"
-      NODE_OPTIONS: --max-old-space-size=2048
+      NODE_OPTIONS: --max-old-space-size=4096
       DENSER_DEV_ALLOWED_ORIGINS: ${DENSER_DEV_ALLOWED_ORIGINS:-}
       DENSER_DEV_START_ON_REQUEST: "1"
       WATCHPACK_POLLING: ${WATCHPACK_POLLING:-}
