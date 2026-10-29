@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { configuredPasskeySigners } from '@ui/config/public-vars';
 import { liteAuthorityQuery } from './lite-authority-query';
 import {
   passkeyRoot,
@@ -16,12 +17,13 @@ import { liteRelayInfoQuery } from './lite-relay-info-query';
 // (`use-passkey-flow`) comes with the dialogs, the flows (`lite-authority-flows`) on the click.
 
 /**
- * Whether the deployment's gateway relays lite authority edits, and its chain and lite_account app
- * when it does. Without it, no passkey UI is shown.
+ * Whether the deployment configures a passkey signer and its gateway relays lite authority edits,
+ * and the gateway's chain and lite_account app when both hold. Otherwise no passkey UI is shown.
  */
 export function useLitePasskeyAccess(): { available: boolean; relay: AuthorityRelay | null } {
   const { data } = useQuery(liteRelayInfoQuery);
-  if (!data?.enabled || !relaysUpdateAuthority(data)) return { available: false, relay: null };
+  if (configuredPasskeySigners.length === 0 || !data?.enabled || !relaysUpdateAuthority(data))
+    return { available: false, relay: null };
   return { available: true, relay: { chainId: data.chain_id, accountApp: data.apps.account } };
 }
 

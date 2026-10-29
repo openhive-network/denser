@@ -90,7 +90,9 @@ only in this browser and runs `forgetLiteAccount` (`lite-storage.ts`): it remove
 
 ## Guest posting preflight
 
-The gateway is `DENSER_SERVER_LITE_GATEWAY_URL` (`lib/lite-relay/gateway.ts`, `.env.blog.example`).
+The gateway is `DENSER_SERVER_LITE_GATEWAY_URL` (`lib/lite-relay/gateway-url.ts`, `.env.blog.example`).
+There is no default: unset or blank, `/api/lite-reply` answers `{"enabled": false}` without asking any
+host and the gateway routes answer 503 `relay_unavailable`, so guest features stay hidden.
 `/api/lite-reply` relays its `/info` and `/reply`; `/api/lite-reply/health` relays its `/health`
 (status, hived lag, per-pool `reply` / `root` readiness), shared by all requests for 5 s and always
 answered 200 — a missing or unreachable gateway reads `{"status":"down"}`.
@@ -247,15 +249,17 @@ profile has no communities list.
 
 ## Passkeys: securing, signing in, devices, signing out
 
-Everything here shows only where the gateway relays `lite_account.update_authority`: its
-`/info.limits.l2.apps[<apps.account>]` lists it (`relaysUpdateAuthority`, `lite-authority-state.ts`;
-`useLitePasskeyAccess`, `use-lite-passkey.ts`). Elsewhere the header menu, the profile and Forget are as
+Everything here shows only where a passkey signer is configured (below) and the gateway relays
+`lite_account.update_authority`: its `/info.limits.l2.apps[<apps.account>]` lists it
+(`relaysUpdateAuthority`, `lite-authority-state.ts`; `useLitePasskeyAccess`, `use-lite-passkey.ts`). Elsewhere the header menu, the profile and Forget are as
 before.
 
 **Signers.** `REACT_APP_PASSKEY_SIGNERS` (`configuredPasskeySigners`, `packages/ui/config/public-vars.ts`,
 parsed by `packages/ui/lib/passkey-signers.ts`) lists the passkey signer sites (hive-passkey-signer): a JSON
-array or comma-separated origins, https only (http on a loopback host), default
-`["https://signer.hive.blog"]`. With one, nobody is asked; with several, the Secure dialog offers them by
+array or comma-separated origins, https only (http on a loopback host). There is no default: unset,
+empty or with no valid origin the list is empty, and no passkey is offered anywhere — no Secure dialog,
+signer picker, device-expiry banner, lite passkey sign-in or identity-menu passkey items, no "Passkey
+signer" login type, and `SignInForm`'s `passkey` opens on safe storage instead. With one, nobody is asked; with several, the Secure dialog offers them by
 host (`lite-signer-picker.tsx`). The signer opens as a popup at `<origin>/sign/` from the click
 (`signer-client.ts`: the page posts `{ hiveSignerReady, hiveSigner: "1" }`, takes one
 `{ hiveSigner, id, method, params }` and answers `result` or `error.code`), so the CSP needs no entry.
