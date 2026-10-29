@@ -226,59 +226,126 @@ follow_record_image() {
         && mv status/.follow-images.tmp status/.follow-images
 }
 
+# The follow images of the apps' previous releases: environment.image of the commit
+# each was built from. Fails when one can't be told: DENSER_FOLLOW_IMAGE set (it
+# overrides the commit's), a release without its commit, a commit git doesn't have.
+follow_previous_images() {
+    local entry release revision
+    [ -z "$(env_value DENSER_FOLLOW_IMAGE)" ] || return 1
+    for entry in $apps; do
+        release=releases/${entry%%:*}/previous/release.json
+        [ -e "releases/${entry%%:*}/previous" ] || continue
+        revision=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1])).get("revision") or "")' "$release" 2>/dev/null) \
+            && [ -n "$revision" ] || return 1
+        git show "$revision:.aidev/project.yaml" 2>/dev/null \
+            | DENSER_FOLLOW_IMAGE='' follow/environment-image.sh - 2>/dev/null || return 1
+    done
+}
+
+# Only denser's own repositories are ever listed or removed from.
+denser_repo() { [[ "$1" =~ ^registry\.gitlab\.syncad\.com/hive/denser/[a-z0-9]+([._/-][a-z0-9]+)*$ ]]; }
+
 # Removes the images of the follow image's repository other than those of
 # status/.follow-images (and $1), and images mode's -subdirectory images. An image a
-# container uses, running or stopped, of any stack, stays; no other repository is
-# looked at.
+# container uses, running or stopped, of any stack, stays; no repository outside
+# registry.gitlab.syncad.com/hive/denser/ is looked at. Before status/.follow-images
+# names two images, the previous releases' images stay too, and the follow
+# repository is left alone when they can't be told. An image docker refuses to remove
+# is tried again the next UTC day (status/.prune-failed: "<day> <ID>" lines).
 follow_prune_images() {
-    local repo ref id keep refs=() errors failed
+    local repo ref id i keep keep_refs recorded previous day repos=() refs=() ids=() removed=0 failed_ids=" " errors="" error
     repo=${1%%@*}
     [[ "${repo##*/}" != *:* ]] || repo=${repo%:*}
-    keep=$( { { cat status/.follow-images 2>/dev/null || true; echo "$1"; } | while read -r ref; do
-                docker image inspect --format '{{.Id}}' "$ref" 2>/dev/null || true
-            done
+    if ! denser_repo "$repo"; then
+        echo "upgrade: the follow image '$1' is not in registry.gitlab.syncad.com/hive/denser/; not removing any image" >&2
+        return 0
+    fi
+    keep_refs=$( { cat status/.follow-images 2>/dev/null || true; echo "$1"; } | sort -u)
+    recorded=$(grep -c . status/.follow-images 2>/dev/null || true)
+    if [ "${recorded:-0}" -lt 2 ]; then
+        if previous=$(follow_previous_images); then
+            keep_refs+=$'\n'$previous
+            repos+=("$repo")
+        else
+            say "upgrade: the previous releases' follow image is unknown; keeping every ${repo##*/} image"
+        fi
+    else
+        repos+=("$repo")
+    fi
+    for ref in $subdirectory_repos; do
+        if denser_repo "$ref"; then repos+=("$ref"); else echo "upgrade: $ref is not a denser repository; not listing it" >&2; fi
+    done
+    keep=$( { while read -r ref; do
+                [ -z "$ref" ] || docker image inspect --format '{{.Id}}' "$ref" 2>/dev/null || true
+            done <<< "$keep_refs"
             docker ps -aq | xargs -r docker inspect --format '{{.Image}}' 2>/dev/null || true
         } | tr '\n' ' ')
     keep=" $keep "
+    day=$(date -u +%F)
+    keep+=$(sed -n "s/^$day //p" status/.prune-failed 2>/dev/null | tr '\n' ' ')
     while read -r id ref; do
         [ -n "$id" ] && [[ "$keep" != *" $id "* ]] || continue
+        # docker's reference filter matches patterns: only the queried repositories.
+        [[ " ${repos[*]} " == *" ${ref%:*} "* ]] || continue
         # An untagged image (a digest-pinned pull, or a tag that moved) goes by its ID.
         if [[ "$ref" == *:"<none>" ]]; then refs+=("$id"); else refs+=("$ref"); fi
-    done < <(for ref in "$repo" $subdirectory_repos; do
+        ids+=("$id")
+    done < <(for ref in "${repos[@]}"; do
             docker image ls --no-trunc --format '{{.ID}} {{.Repository}}:{{.Tag}}' "$ref" || true
         done | sort -u)
     [ ${#refs[@]} -gt 0 ] || return 0
-    errors=$(docker image rm "${refs[@]}" 2>&1 > /dev/null) || true
-    failed=$(grep -c . <<< "$errors" || true)
-    echo "upgrade: removed $((${#refs[@]} - failed)) superseded images of ${repo##*/}, blog-subdirectory and wallet-subdirectory"
-    [ -z "$errors" ] || { echo "upgrade: $failed were not removed:" >&2; head -n 5 <<< "$errors" >&2; }
+    for i in "${!refs[@]}"; do
+        [[ "$failed_ids" != *" ${ids[$i]} "* ]] || continue
+        if error=$(docker image rm "${refs[$i]}" 2>&1 > /dev/null); then
+            removed=$((removed + 1))
+        else
+            failed_ids+="${ids[$i]} "
+            errors+="${error%%$'\n'*}"$'\n'
+        fi
+    done
+    say "upgrade: removed $removed superseded images of $(printf '%s\n' "${repos[@]##*/}" | paste -sd ' ')"
+    [ "$failed_ids" != " " ] || return 0
+    { grep "^$day " status/.prune-failed 2>/dev/null || true
+      for id in $failed_ids; do echo "$day $id"; done
+    } > status/.prune-failed.tmp && mv status/.prune-failed.tmp status/.prune-failed \
+        || echo "upgrade: could not record the images not removed in status/.prune-failed" >&2
+    echo "upgrade: $(wc -w <<< "$failed_ids") images were not removed (not tried again until tomorrow, UTC):" >&2
+    head -n 5 <<< "${errors%$'\n'}" >&2
 }
 
 # Sets disk_free and disk_min_free. A filesystem below the minimum is first given
 # back the superseded images, then measured again.
 follow_check_disk() {
-    local min_gb
+    local min_gb image
     min_gb=$(env_value DENSER_MIN_FREE_GB)
     min_gb=${min_gb:-5}
     [[ "$min_gb" =~ ^[0-9]+$ ]] || { echo "upgrade: DENSER_MIN_FREE_GB=$min_gb is not a whole number of GB" >&2; exit 64; }
     disk_min_free=$((min_gb * 1000000000))
     disk_free=$(free_bytes)
     [ "$disk_free" -lt "$disk_min_free" ] || return 0
-    follow_prune_images "$(follow_image)" || true
+    # A checkout a full disk truncated can leave no image to name: then nothing goes.
+    image=$(follow_image) || image=
+    if [ -n "$image" ]; then
+        follow_prune_images "$image" || true
+    else
+        echo "upgrade: cannot resolve the follow image; skipping the prune" >&2
+    fi
     disk_free=$(free_bytes)
 }
 
 # Posts to RC_WEBHOOK_URL (a Rocket.Chat incoming webhook), at most once per UTC day.
+# The day posted is kept on tmpfs, not on the filesystem that is full.
 disk_low_notify() {
-    local url day
+    local url day marker
     url=${RC_WEBHOOK_URL:-$(env_value RC_WEBHOOK_URL)}
     [ -n "$url" ] || return 0
     day=$(date -u +%F)
-    [ "$(cat status/.disk-low-notified 2>/dev/null)" != "$day" ] || return 0
+    marker=${XDG_RUNTIME_DIR:-/dev/shm}/denser-integration-disk-low-notified-$(pwd -P | sha256sum | cut -c1-16)
+    [ "$(cat "$marker" 2>/dev/null)" != "$day" ] || return 0
     if python3 -c 'import json, sys; print(json.dumps({"text": sys.argv[1]}))' \
             ":warning: denser integration site $(env_value SITE_HOST): $1" \
         | curl -fsS --max-time 30 -H 'Content-Type: application/json' --data-binary @- "$url" > /dev/null; then
-        echo "$day" > status/.disk-low-notified || true
+        echo "$day" > "$marker" || echo "upgrade: could not record the low-disk post in $marker" >&2
     else
         echo "upgrade: posting the low-disk warning to RC_WEBHOOK_URL failed" >&2
     fi

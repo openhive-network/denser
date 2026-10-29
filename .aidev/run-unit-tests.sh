@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # The mocha unit suites of packages/renderer and packages/transaction, and the
 # node:test suites of scripts/ci-helpers, .aidev, scripts/check-*-translations (with scripts/korean-translations), scripts/check-beekeeper-lockfile, scripts/check-playwright-test-ids, playwright/support, packages/ui, packages/smart-signer, packages/common-hiveio-packages,
-# apps/blog and apps/wallet (run through node's TypeScript type stripping): the `baseline` slot
-# and the `unit` suite of the quick, full and canary slots.
+# apps/blog and apps/wallet (run through node's TypeScript type stripping), and the
+# integration site's upkeep check (stack/integration/test-upkeep.sh: bash with stand-ins
+# for docker, git, df and curl): the `baseline` slot and the `unit` suite of the quick,
+# full and canary slots.
 # No I/O, no server. Each package writes junit (mocha's built-in xunit reporter)
 # to test-results/unit/, the per-test evidence AIDEV reads from the binding's
 # `artifacts:` path; the exit code is the verdict.
@@ -183,4 +185,19 @@ run_with_junit_fallback "$junit" wallet node --test \
     apps/wallet/lib/proposals-list.test.ts \
     apps/wallet/lib/proposal-payments.test.ts \
     apps/wallet/playwright/tests/support/contrast.test.ts < /dev/null || status=1
+echo "== stack/integration/test-upkeep.sh" >&2
+# One junit case per "ok   NAME" / "FAIL NAME" line it prints.
+junit="$PWD/test-results/unit/integration-upkeep.xml"
+upkeep_log="$(mktemp)"
+upkeep_cases="$(mktemp)"
+upkeep_status=0
+stack/integration/test-upkeep.sh < /dev/null 2>&1 | tee "$upkeep_log" || upkeep_status=${PIPESTATUS[0]}
+sed -n -e 's/^ok   \(.*\)$/case\t\1\tpass\t0\t/p' \
+    -e 's|^FAIL \(.*\)$|case\t\1\tfail\t0\tcheck failed\t'"$upkeep_log"'|p' "$upkeep_log" > "$upkeep_cases"
+if [ "$upkeep_status" -ne 0 ] && ! grep -q $'\tfail\t' "$upkeep_cases"; then
+    printf 'case\ttest-upkeep.sh\tfail\t0\texited %s before a failing check\t%s\n' "$upkeep_status" "$upkeep_log" >> "$upkeep_cases"
+fi
+junit_write_cases "$junit" integration-upkeep "$upkeep_cases"
+rm -f "$upkeep_log" "$upkeep_cases"
+[ "$upkeep_status" -eq 0 ] || status=1
 exit "$status"
