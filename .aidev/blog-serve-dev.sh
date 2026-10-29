@@ -16,6 +16,14 @@
 # next dev is started again; QUICK_ENDS runs shorter than MIN_RUN_S in a row end
 # the service non-zero rather than looping on a failure a restart cannot fix.
 #
+# Turbopack keeps a persistent cache in .next/dev/cache/turbopack, on the app's
+# `.next` volume, which outlives the container and every stack recreated under the
+# same compose project. A server the OOM killer ends never commits to it, so the
+# next start restores what the killed one did and can die the same way, start
+# after start. The cache is removed after an OOM kill, and before a start that
+# finds it over CACHE_MAX_MB (left alone, it grew past 12 GB in a month); the cost
+# is one cold compile.
+#
 # Every start writes a new id to the app's .next/aidev-dev-boot (its `.next`
 # volume); its ready service (.aidev/blog-ready.sh) warms the routes again for
 # each new id.
@@ -47,8 +55,16 @@ readonly BOOT_FILE=.next/aidev-dev-boot
 readonly ON_REQUEST_FILE=.next/aidev-dev-on-request
 readonly MIN_RUN_S=120
 readonly QUICK_ENDS=3
+readonly TURBOPACK_CACHE=.next/dev/cache/turbopack
+readonly CACHE_MAX_MB=4096
 
 oom_kills() { awk '$1 == "oom_kill" {print $2}' /sys/fs/cgroup/memory.events 2> /dev/null; }
+
+drop_turbopack_cache() {
+    [ -d "$TURBOPACK_CACHE" ] || return 0
+    echo "$log: removing Turbopack's persistent cache ($(du -sm --apparent-size "$TURBOPACK_CACHE" | cut -f1) MB): $1" >&2
+    rm -rf "$TURBOPACK_CACHE"
+}
 
 pid=""
 stopping=""
@@ -77,6 +93,9 @@ fi
 
 quick=0
 while :; do
+    if [ -d "$TURBOPACK_CACHE" ] && [ "$(du -sm --apparent-size "$TURBOPACK_CACHE" | cut -f1)" -gt "$CACHE_MAX_MB" ]; then
+        drop_turbopack_cache "over ${CACHE_MAX_MB} MB"
+    fi
     echo "$(date +%s)-$RANDOM" > "$BOOT_FILE"
     oom_before="$(oom_kills)"
     started=$SECONDS
@@ -92,7 +111,11 @@ while :; do
     fi
     kill -KILL -- "-$pid" 2> /dev/null
     ran=$((SECONDS - started))
-    echo "$log: next dev ended with status $status after ${ran}s; OOM kills in this container: ${oom_before:-?} before, $(oom_kills) now" >&2
+    oom_after="$(oom_kills)"
+    echo "$log: next dev ended with status $status after ${ran}s; OOM kills in this container: ${oom_before:-?} before, ${oom_after:-?} now" >&2
+    if [ -n "$oom_after" ] && [ "$oom_after" != "${oom_before:-}" ]; then
+        drop_turbopack_cache "the server was OOM-killed"
+    fi
 
     if [ "$ran" -lt "$MIN_RUN_S" ]; then quick=$((quick + 1)); else quick=0; fi
     if [ "$quick" -ge "$QUICK_ENDS" ]; then
