@@ -3,6 +3,7 @@ import { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-package
 import { getReadChain } from './chain';
 import { getHiveChainService } from './hive-chain-service';
 import {
+  AI_SEARCH_BODY_LENGTH,
   AI_SEARCH_REQUEST_TIMEOUT_MS,
   HIVE_SENSE_PROBE_TIMEOUT_MS,
   hiveSenseSyncStatusLooksHealthy,
@@ -43,7 +44,7 @@ export const getHiveSenseStatus = async (): Promise<boolean> => {
 
 export const searchPosts = async ({
   query,
-  truncate = 100,
+  truncate = AI_SEARCH_BODY_LENGTH,
   result_limit = 100,
   full_posts = 10,
   observer
@@ -113,7 +114,7 @@ export const getSimilarPostsByPost = async ({
 
 export const getPostsByIds = async ({
   posts,
-  truncate = 100,
+  truncate = AI_SEARCH_BODY_LENGTH,
   observer
 }: {
   posts: Array<{ author: string; permlink: string }>;

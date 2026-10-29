@@ -1,4 +1,6 @@
 import type { Entry, MixedPostsResponse, PostStub } from '@hive/common-hiveio-packages/wax';
+import { AI_SEARCH_BODY_LENGTH } from '@transaction/lib/hivesense-search';
+import { dropUnfinishedMarkup } from '@/blog/lib/cut-body';
 import { getPostSummary } from '@/blog/lib/post-summary';
 import { find_first_img } from './card-image';
 import type { CardEntry, TrimmedEntry } from './card-entry';
@@ -40,20 +42,23 @@ function trimEntry(entry: Entry): TrimmedEntry {
  *
  * Run this where the list is fetched (server components import it, client query functions
  * `import()` it), so neither the bodies nor the Remarkable renderer reach the page's initial payload.
+ *
+ * @param bodyCutAt - the length the server cut the body at, when it was fetched cut
  */
-export function toCardEntry(entry: Entry): CardEntry {
+export function toCardEntry(entry: Entry, bodyCutAt?: number): CardEntry {
+  const post = bodyCutAt ? { ...entry, body: dropUnfinishedMarkup(entry.body, bodyCutAt) } : entry;
   return {
-    ...trimEntry(entry),
-    summary: getPostSummary(entry.json_metadata, entry.body),
-    cardImage: find_first_img(entry)
+    ...trimEntry(post),
+    summary: getPostSummary(post.json_metadata, post.body),
+    cardImage: find_first_img(post)
   };
 }
 
-export function toCardEntries(entries: Entry[]): CardEntry[] {
-  return entries.map(toCardEntry);
+export function toCardEntries(entries: Entry[], bodyCutAt?: number): CardEntry[] {
+  return entries.map((entry) => toCardEntry(entry, bodyCutAt));
 }
 
 /** Converts the full posts of a HiveSense search result; its stubs, fetched page by page later, stay as they are. */
 export function toCardSearchResults(results: MixedPostsResponse): Array<CardEntry | PostStub> {
-  return results.map((post) => (post && 'body' in post ? toCardEntry(post) : post));
+  return results.map((post) => (post && 'body' in post ? toCardEntry(post, AI_SEARCH_BODY_LENGTH) : post));
 }
