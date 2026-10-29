@@ -1,6 +1,7 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
+import { usePathname } from 'next/navigation';
 import { FOR_YOU_SORT } from '@/blog/lib/utils';
 
 export const TRENDING_PATH = '/trending';
@@ -22,17 +23,17 @@ function subscribe(listener: () => void): () => void {
 
 const readLeaving = () => isLeaving;
 const readNotLeaving = () => false;
+const readLeaveTarget = () => (isLeaving ? TRENDING_PATH : undefined);
 
 /**
  * Starts a sign-out from `pathname`. On a signed-in-only list (For You) the page switches at once
- * to its leaving state (the list skeleton, the selector naming Trending) and the returned path,
- * Trending, is where the sign-out takes the reader once the server has ended the session.
- * Elsewhere nothing changes and the result is undefined.
+ * to its leaving state (the list skeleton, the selector naming Trending). The returned function,
+ * read once the server has ended the session, gives where the sign-out takes the reader: Trending
+ * while the leaving state lasts, nowhere once the reader has moved to another page.
  */
-export function startSignOutLeave(pathname: string | null): string | undefined {
-  if (pathname !== FOR_YOU_PATH) return undefined;
-  setLeaving(true);
-  return TRENDING_PATH;
+export function startSignOutLeave(pathname: string | null): () => string | undefined {
+  if (pathname === FOR_YOU_PATH) setLeaving(true);
+  return readLeaveTarget;
 }
 
 /** Ends the leaving state, once the page that showed it is gone */
@@ -43,6 +44,14 @@ export function endSignOutLeave(): void {
 /** Whether a sign-out is taking the reader away from the current page (read outside render) */
 export function isLeavingOnSignOut(): boolean {
   return isLeaving;
+}
+
+/** Ends the leaving state once the reader is on another page, whatever that page renders */
+export function useEndSignOutLeaveOnNavigation(): void {
+  const pathname = usePathname();
+  useEffect(() => {
+    if (pathname !== FOR_YOU_PATH) endSignOutLeave();
+  }, [pathname]);
 }
 
 /** Re-renders the caller when a sign-out starts or ends taking the reader away */

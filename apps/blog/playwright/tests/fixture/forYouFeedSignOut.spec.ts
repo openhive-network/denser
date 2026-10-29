@@ -11,8 +11,10 @@ import enBlog from '../../../locales/en/common_blog.json';
 /**
  * Signing out on the For You feed (`/for-you`): the feed is personal and the signed-out sort
  * selector has no For You option, so the sign-out takes the reader to Trending once the server has
- * ended the session. Meanwhile /for-you shows the list skeleton under a selector reading Trending,
- * never an empty selector or an empty list. Opening `/for-you` signed out is
+ * ended the session, or once it gave up waiting for the logout answer. Meanwhile /for-you shows the
+ * list skeleton under a selector reading Trending, never an empty selector or an empty list. A
+ * sign-out in another tab waits for that tab's logout answer, and a list the reader picks while the
+ * sign-out waits is where they stay. Opening `/for-you` signed out is
  * forYouFeedSignedOut.spec.ts.
  *
  * Fixtures: `forYouSignOut`, the logged-in feeds with the anonymous Trending page's reads added.
@@ -27,6 +29,15 @@ const TRENDING_LABEL = 'Trending';
 const DEFAULT_OBSERVER = 'hive.blog';
 /** How long the logout answer is held back, so a navigation started before it would show */
 const LOGOUT_DELAY_MS = 1500;
+/** Held back longer while the reader picks another list, still short of the sign-out's 5 s wait */
+const LOGOUT_DELAY_WHILE_PICKING_MS = 3000;
+/** How soon after the click a sign-out whose logout never answers must reach Trending */
+const HUNG_LOGOUT_LEAVES_WITHIN_MS = 6000;
+/** How long after the logout answer a navigation it started would have had to land */
+const AFTER_LOGOUT_SETTLE_MS = 1500;
+/** The marker a sign-out writes once its logout is answered (smart-signer's logout-done) */
+const LOGOUT_DONE_KEY = 'denser:logout-done';
+const HOT_LABEL = enBlog.select_sort.posts_sort.hot;
 /** How soon after the sign-out click /for-you must show its leaving state */
 const LEAVING_STATE_WITHIN_MS = 200;
 
@@ -113,17 +124,39 @@ async function recordTrendingRscRequests(page: Page): Promise<TrendingRscRequest
   return requests;
 }
 
-/** Holds the logout request back for LOGOUT_DELAY_MS; `answeredAt` resolves when its answer arrives */
-async function delayLogout(page: Page): Promise<{ answeredAt: Promise<number> }> {
-  const isLogout = (url: string) => new URL(url).pathname.endsWith('/api/auth/logout');
+const isLogout = (url: string) => new URL(url).pathname.endsWith('/api/auth/logout');
+
+/** Holds the logout request back for `delayMs`; `answeredAt` resolves when its answer arrives */
+async function delayLogout(page: Page, delayMs = LOGOUT_DELAY_MS): Promise<{ answeredAt: Promise<number> }> {
   await page.route(
     (url) => isLogout(url.href),
     async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, LOGOUT_DELAY_MS));
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
       await route.continue();
     }
   );
   return { answeredAt: page.waitForResponse((response) => isLogout(response.url())).then(() => Date.now()) };
+}
+
+/** Leaves the logout request unanswered for as long as the page lives */
+async function hangLogout(page: Page): Promise<void> {
+  await page.route((url) => isLogout(url.href), () => new Promise<void>(() => {}));
+}
+
+async function signOutFromHeader(page: Page, homePage: HomePage): Promise<void> {
+  await homePage.profileAvatarButton.click();
+  await new ProfileUserMenu(page).logoutLink.click();
+}
+
+/** Expects the /trending page data was loaded once, after `answeredAt`, for a signed-out reader */
+function expectSignedOutTrendingLoad(trendingRequests: TrendingRscRequest[], answeredAt: number): void {
+  const pageData = trendingRequests.filter(({ isPrefetch }) => !isPrefetch);
+  expect(pageData, '/trending page-data requests').toHaveLength(1);
+  const [{ at, cookie, body }] = pageData;
+  expect(at, 'the /trending page data left before the logout answer').toBeGreaterThanOrEqual(answeredAt);
+  expect(cookie).not.toContain(`${FIXTURE_COOKIE_NAME}=`);
+  expect(body).not.toContain(`"value":"${OBSERVER}"`);
+  expect(body).toContain(`"value":"${DEFAULT_OBSERVER}"`);
 }
 
 async function openForYouSignedIn(page: Page, homePage: HomePage): Promise<void> {
@@ -182,11 +215,66 @@ test.describe('For You feed — signing out', () => {
     for (const { at } of trendingRequests) {
       expect(at, 'a /trending request left before the logout answer').toBeGreaterThanOrEqual(answeredAt);
     }
-    const pageData = trendingRequests.filter(({ isPrefetch }) => !isPrefetch);
-    expect(pageData, '/trending page-data requests').toHaveLength(1);
-    const [{ cookie, body }] = pageData;
-    expect(cookie).not.toContain(`${FIXTURE_COOKIE_NAME}=`);
-    expect(body).not.toContain(`"value":"${OBSERVER}"`);
-    expect(body).toContain(`"value":"${DEFAULT_OBSERVER}"`);
+    expectSignedOutTrendingLoad(trendingRequests, answeredAt);
+  });
+
+  test('FYP-09 — a logout that never answers still takes the reader to Trending within the sign-out timeout', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await openForYouSignedIn(page, homePage);
+    await hangLogout(page);
+
+    await signOutFromHeader(page, homePage);
+    const clickedAt = Date.now();
+    await expect(page.getByTestId('post-list-skeleton')).toBeVisible();
+
+    await expect(page).toHaveURL(/\/trending$/, { timeout: HUNG_LOGOUT_LEAVES_WITHIN_MS });
+    expect(Date.now() - clickedAt, 'time from the sign-out click to /trending').toBeLessThan(
+      HUNG_LOGOUT_LEAVES_WITHIN_MS
+    );
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    await expect(page.getByTestId('post-list-skeleton')).toHaveCount(0);
+    await expect(homePage.getFilterPosts).toHaveText(TRENDING_LABEL);
+  });
+
+  test('FYP-10 — a sign-out in another tab takes For You to Trending only after that tab\'s logout answer, as a signed-out reader', async ({ page, context }) => {
+    const homePage = new HomePage(page);
+    await openForYouSignedIn(page, homePage);
+    const trendingRequests = await recordTrendingRscRequests(page);
+
+    const otherTab = await context.newPage();
+    const otherHomePage = new HomePage(otherTab);
+    await gotoLoggedIn(otherTab, '/hot');
+    const logout = await delayLogout(otherTab);
+    await signOutFromHeader(otherTab, otherHomePage);
+
+    await expect(page.getByTestId('post-list-skeleton')).toBeVisible();
+    await expect(page).toHaveURL(/\/trending$/, { timeout: TIMEOUTS.HYDRATION });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    await expect(homePage.getFilterPosts).toHaveText(TRENDING_LABEL);
+    await expect(otherTab).toHaveURL(/\/hot$/);
+
+    expectSignedOutTrendingLoad(trendingRequests, await logout.answeredAt);
+  });
+
+  test('FYP-11 — picking Hot while the sign-out waits for the logout answer leaves the reader on Hot', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await openForYouSignedIn(page, homePage);
+    const logout = await delayLogout(page, LOGOUT_DELAY_WHILE_PICKING_MS);
+    let answered = false;
+    void logout.answeredAt.then(() => (answered = true));
+
+    await signOutFromHeader(page, homePage);
+    await expect(homePage.getFilterPosts).toHaveText(TRENDING_LABEL);
+    await homePage.getFilterPosts.click();
+    await homePage.getFilterPostsList.getByText(HOT_LABEL, { exact: true }).click();
+    await expect(page).toHaveURL(/\/hot$/);
+    expect(answered, 'the logout was answered before the reader reached Hot').toBe(false);
+
+    await logout.answeredAt;
+    await page.waitForFunction((key) => window.localStorage.getItem(key) !== null, LOGOUT_DONE_KEY);
+    // The sign-out's own navigation, had it started on the answer, would have landed by now
+    await page.waitForTimeout(AFTER_LOGOUT_SETTLE_MS);
+    await expect(page).toHaveURL(/\/hot$/);
+    await expect(homePage.getFilterPosts).toHaveText(HOT_LABEL);
   });
 });
