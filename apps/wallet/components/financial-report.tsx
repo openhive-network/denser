@@ -239,7 +239,7 @@ const FinancialReport: React.FC<FinancialReportProps> = ({ username }) => {
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2">
         <DropdownMenu open={isPeriodMenuOpen} onOpenChange={setIsPeriodMenuOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative border border-white">
+            <Button variant="ghost" className="relative border border-zinc-500">
               <div className="w-28 text-left">
                 <span>{t(`transfers_page.report_periods.${financialReportPeriod}`)}</span>
                 <span className="absolute right-2 top-1/2 -translate-y-1/2 transform text-xl">▾</span>
