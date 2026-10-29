@@ -81,7 +81,8 @@
       "hivesigner": "HiveSigner is an external service that signs transactions on your behalf after you authorize this app.",
       "wif": "Enter your private key (WIF) directly. It is used only to sign and is not kept unless you choose to store it.",
       "metamask": "Sign with your Hive keys managed by the Hive Snap in the MetaMask extension.",
-      "google": "Keep your encrypted keys in your Google Drive and sign with them from any device."
+      "google": "Keep your encrypted keys in your Google Drive and sign with them from any device.",
+      "passkey": "A passkey signer site derives your Hive keys from a passkey and signs for you in its own window. Your keys never reach this site."
     },
     "signin_safe_storage": {
       "title": "Sign in with safe storage",
@@ -148,6 +149,32 @@
       "enable": "Enable",
       "not_now": "Not now",
       "never_ask_again": "Never ask again"
+    },
+    "passkey": {
+      "method": "Passkey signer",
+      "title": "Sign in with a passkey signer",
+      "description": "Enter your account name. Your passkey signer checks that it holds the account's posting key.",
+      "signer_label": "Signer",
+      "find": "Find my key",
+      "found": "Your passkey signer holds the posting key of @{{username}}.",
+      "sign_in": "Sign in as @{{username}}",
+      "find_again": "Use another passkey",
+      "errors": {
+        "account_not_found": "There is no Hive account with this name.",
+        "key_not_on_account": "The key your passkey signer derives is not on this account's posting authority. Use the passkey this account's keys come from.",
+        "unavailable": "Couldn't read this account. Check your connection and try again."
+      },
+      "signer_errors": {
+        "popup_blocked": "The browser blocked the signer window. Allow pop-ups for this site and try again.",
+        "signer_unavailable": "The signer site did not answer. Check your connection and try again.",
+        "key_not_found": "This passkey does not hold the account's posting key.",
+        "owner_blind_signing": "The signer refused to sign blind with an owner key.",
+        "prf_unsupported": "This passkey or browser cannot derive keys (no PRF support). Try another browser or passkey provider.",
+        "webauthn_unavailable": "Passkeys are not available in this browser.",
+        "busy": "The signer window is busy with another request. Close it and try again.",
+        "invalid_request": "The signer refused the request as invalid.",
+        "internal": "The signer failed. Try again."
+      }
     }
   },
   "pageLogin": {

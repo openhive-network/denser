@@ -1,0 +1,26 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.account_notifications",
+    "params": {
+      "account": "hive-107705",
+      "limit": 50
+    },
+    "id": 1
+  },
+  "requestHash": "b818fc803d58bb61",
+  "method": "bridge.account_notifications",
+  "params": {
+    "account": "hive-107705",
+    "limit": 50
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": null,
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

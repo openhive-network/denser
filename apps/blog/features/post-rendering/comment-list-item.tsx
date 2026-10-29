@@ -8,6 +8,7 @@ import { Link } from '@hive/ui';
 import { Separator } from '@ui/components/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@ui/components/accordion';
 import { memo, useEffect, useRef, useState, useCallback, type ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import DetailsCardVoters from '@/blog/features/post-rendering/details-card-voters';
 import { ReplyTextbox } from '../post-editor/reply-textbox';
 import DetailsCardHover from '../list-of-posts/details-card-hover';
@@ -16,6 +17,15 @@ import clsx from 'clsx';
 import { Badge } from '@ui/components/badge';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '../../components/dialog-login';
+import LiteAuthorBadge from '../lite-account/lite-author-badge';
+import { isLiteDid } from '../lite-account/lite-did';
+import { LiteReplyBox } from '../lite-account/lite-reply-box';
+import LiteReplyTrigger from '../lite-account/lite-reply-trigger';
+import { LiteOwnerActions } from '../lite-account/lite-owner-actions';
+import { liteL1Author } from '../lite-account/lite-ownership';
+import { LiteTombstoneNotice } from '../lite-account/lite-tombstone-notice';
+import { useIsLiteTombstone } from '../lite-account/use-lite-owner';
+import { useReopenReplyAfterSignIn } from '../lite-account/use-lite-sign-in-handoff';
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 
@@ -52,6 +62,9 @@ interface CommentListProps {
   onCommnentLinkClick: (hash: string) => void;
   children?: ReactNode;
 }
+// The lite editor pulls in the post editor's helpers (and the renderer); load it only when editing.
+const LiteEditForm = dynamic(() => import('../lite-account/lite-edit-form').then((m) => m.LiteEditForm), { ssr: false });
+
 export const commentClassName =
   'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] prose-p:last:mb-[3.2px] prose-img:max-w-full prose-img:h-auto prose-img:max-h-[400px] prose-img:object-contain';
 
@@ -103,10 +116,18 @@ const CommentListItem = memo(function CommentListItem({
     StorageTTL.UI_STATE
   );
 
+  // Guests have no storage key (empty replyStorageId disables the hook), so the lite
+  // reply box keeps its open/closed state in memory instead.
+  const [guestReply, setGuestReply] = useState(false);
+  const [liteEdit, setLiteEdit] = useState(false);
+  const liteTombstone = useIsLiteTombstone(comment);
+
   // Wrapper to match expected interface and handle storage
   const setReply = useCallback(
     (value: boolean | ((prev: boolean) => boolean)) => {
-      if (typeof value === 'function') {
+      if (!user.isLoggedIn) {
+        setGuestReply(value);
+      } else if (typeof value === 'function') {
         setStoredReply((prev) => value(prev));
       } else if (value) {
         setStoredReply(true);
@@ -114,8 +135,11 @@ const CommentListItem = memo(function CommentListItem({
         removeStoredReply();
       }
     },
-    [setStoredReply, removeStoredReply]
+    [user.isLoggedIn, setStoredReply, removeStoredReply]
   );
+
+  const openReply = useCallback(() => setReply(true), [setReply]);
+  useReopenReplyAfterSignIn(comment.author, comment.permlink, user.isLoggedIn, openReply);
 
   const setEdit = useCallback(
     (value: boolean) => {
@@ -129,7 +153,7 @@ const CommentListItem = memo(function CommentListItem({
   );
 
   // Use stored values directly as state
-  const reply = storedReply;
+  const reply = user.isLoggedIn ? storedReply : guestReply;
   const edit = storedEdit;
   const userFromDMCA = dmcaUserList.some((e) => e === comment.author);
   const legalBlockedUser = userIllegalContent.some((e) => e === comment.author);
@@ -232,6 +256,9 @@ const CommentListItem = memo(function CommentListItem({
                                   author_reputation={comment.author_reputation}
                                   blacklist={comment.blacklists}
                                 />
+                                {isLiteDid(comment.author) ? null : (
+                                  <LiteAuthorBadge jsonMetadata={comment.json_metadata} />
+                                )}
                                 {comment.author_title ? (
                                   <Badge
                                     variant="outline"
@@ -388,6 +415,16 @@ const CommentListItem = memo(function CommentListItem({
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (
                         <div className="px-2 py-6">{t('post_content.body.copyright')}</div>
+                      ) : liteEdit && !user.isLoggedIn ? (
+                        <LiteEditForm
+                          entry={comment}
+                          onClose={() => setLiteEdit(false)}
+                          discussionAuthor={discussionAuthor}
+                          discussionPermlink={discussionPermlink}
+                          observer={observer}
+                        />
+                      ) : liteTombstone ? (
+                        <LiteTombstoneNotice />
                       ) : edit && comment.parent_permlink && comment.parent_author ? (
                         <ReplyTextbox
                           editMode={edit}
@@ -465,15 +502,27 @@ const CommentListItem = memo(function CommentListItem({
                               {t('cards.comment_card.reply')}
                             </button>
                           ) : (
-                            <DialogLogin>
-                              <button
-                                className="flex items-center hover:cursor-pointer hover:text-destructive"
-                                data-testid="comment-card-footer-reply"
-                              >
-                                {t('post_content.footer.reply')}
-                              </button>
-                            </DialogLogin>
+                            <LiteReplyTrigger
+                              open={reply}
+                              onToggle={() => setReply(!reply)}
+                              className="flex items-center hover:cursor-pointer hover:text-destructive"
+                              testId="comment-card-footer-reply"
+                            >
+                              {t('post_content.footer.reply')}
+                            </LiteReplyTrigger>
                           )}
+                          {!user.isLoggedIn ? (
+                            <LiteOwnerActions
+                              entry={comment}
+                              editing={liteEdit}
+                              onToggleEdit={() => setLiteEdit((prev) => !prev)}
+                              separator={<Separator orientation="vertical" className="h-5" />}
+                              className="flex items-center hover:cursor-pointer hover:text-destructive"
+                              discussionAuthor={discussionAuthor}
+                              discussionPermlink={discussionPermlink}
+                              observer={observer}
+                            />
+                          ) : null}
                           {user && user.isLoggedIn && comment.author === user.username ? (
                             <>
                               <Separator orientation="vertical" className="h-5" />
@@ -533,6 +582,19 @@ const CommentListItem = memo(function CommentListItem({
                         </div>
                       )}
                     </CardFooter>
+                    {reply && !user.isLoggedIn ? (
+                      <div className="px-2 pb-2">
+                        <LiteReplyBox
+                          parentAuthor={comment.author}
+                          l1ParentAuthor={liteL1Author(comment)}
+                          parentPermlink={comment.permlink}
+                          discussionAuthor={discussionAuthor}
+                          discussionPermlink={discussionPermlink}
+                          observer={observer}
+                          onSetReply={setReply}
+                        />
+                      </div>
+                    ) : null}
                     {reply && user && user.isLoggedIn ? (
                       <div className="px-2 pb-2">
                         <ReplyTextbox

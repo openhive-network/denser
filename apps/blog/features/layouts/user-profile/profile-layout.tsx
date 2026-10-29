@@ -41,6 +41,7 @@ import ProfileLayoutSkeleton from './profile-layout-skeleton';
 import ProfileSocialLinks from './profile-social-links';
 import { parseSocialLinks } from './lib/social-links';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import LiteGatewayNote from '@/blog/features/lite-account/lite-gateway-note';
 
 // Rendered at 80/96 CSS px; 192 covers 2x displays without fetching the full-size default avatar.
 const AVATAR_FALLBACK_SIZE = 192;
@@ -267,6 +268,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                         (157 < profileData.profile.about.length ? '...' : '')}
                     </p>
                   ) : null}
+                  <LiteGatewayNote username={username} />
                 </div>
               </div>
 

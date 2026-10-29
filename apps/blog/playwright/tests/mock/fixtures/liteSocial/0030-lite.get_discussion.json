@@ -1,0 +1,120 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_discussion",
+    "params": {
+      "author": "swarmpost",
+      "permlink": "swarm-post-2026-10-19",
+      "observer": "did:lite:lite-smoke-1016"
+    },
+    "id": 1
+  },
+  "requestHash": "dedbd6a4dd96c1ca",
+  "method": "lite.get_discussion",
+  "params": {
+    "author": "swarmpost",
+    "permlink": "swarm-post-2026-10-19",
+    "observer": "did:lite:lite-smoke-1016"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "lett/re-1792576030": {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-10-19#@lett/re-1792576030",
+        "body": "This comment is a **SCAM**. Hive is not running this airdrop, so please do not click any links!!!",
+        "depth": 2,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "RE: Hive Swarm Post — 2026-10-19",
+        "author": "lett",
+        "payout": 0,
+        "created": "2026-10-21T09:47:09",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-21T09:47:09",
+        "category": "hive-107705",
+        "children": 0,
+        "permlink": "re-1792576030",
+        "community": "hive-107705",
+        "payout_at": "2026-10-28T09:47:09",
+        "blacklists": [],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hiveblog/0.1"
+        },
+        "parent_author": "hellene8",
+        "community_title": "HiveInvite.com",
+        "parent_permlink": "re-swarmpost-swarm-post-2026-10-19-1792575442820",
+        "author_reputation": 70.05,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      "hellene8/re-swarmpost-swarm-post-2026-10-19-1792575442820": {
+        "url": "/hive-107705/@swarmpost/swarm-post-2026-10-19#@hellene8/re-swarmpost-swarm-post-2026-10-19-1792575442820",
+        "body": "⚡ NEW AIRDROP ALERT: DON'T SLEEP ON THIS! ⚡\n\nRumors are true—Hive is rewarding the community big time! If you missed the last major drop, consider this your redemption arc. 📈🔥\n\nLimited allocations are up for grabs for active holders, staking, curators, and delegators. High potential, zero heavy lifting.\n\n⏳ Clock is ticking! Head over to the official [claim page](https://t.co/8eD7gFzqKd) now\n\nProve you're early. Claim yours today! 💎🙌",
+        "depth": 1,
+        "stats": {
+          "gray": true,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0,
+          "muted_reasons": [
+            3
+          ]
+        },
+        "title": "RE: Hive Swarm Post — 2026-10-19",
+        "author": "hellene8",
+        "payout": 0,
+        "created": "2026-10-21T09:37:24",
+        "reblogs": 0,
+        "replies": [
+          "lett/re-1792576030"
+        ],
+        "updated": "2026-10-21T09:37:24",
+        "category": "hive-107705",
+        "children": 1,
+        "permlink": "re-swarmpost-swarm-post-2026-10-19-1792575442820",
+        "community": "hive-107705",
+        "payout_at": "2026-10-28T09:37:24",
+        "blacklists": [
+          "reputation-0"
+        ],
+        "is_paidout": false,
+        "author_role": "guest",
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "author_title": "",
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive-instant-commenter/1.2"
+        },
+        "parent_author": "swarmpost",
+        "community_title": "HiveInvite.com",
+        "parent_permlink": "swarm-post-2026-10-19",
+        "author_reputation": -7.77,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

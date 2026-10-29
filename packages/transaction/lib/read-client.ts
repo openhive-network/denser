@@ -80,6 +80,22 @@ const jsonRpcErrorMessage = (response: unknown): string => {
   return 'Invalid response from chain API';
 };
 
+/** JSON-RPC "method not found": the stock answer of a node to an API family it does not have. */
+const METHOD_NOT_FOUND_CODE = -32601;
+/** What a jussi front answers instead of -32601 for an API family it routes nowhere. */
+const JUSSI_UNMAPPED_MESSAGE = 'Unable to map request to endpoint.';
+
+/**
+ * Whether `error` says the node does not serve the called API family at all (e.g. `lite.*` on a
+ * node without that support), as opposed to an answer of the API itself.
+ */
+export const isApiNotServedError = (error: unknown): boolean => {
+  if (!(error instanceof JsonRpcApiError)) return false;
+  const { response } = error;
+  if (!isRecord(response) || !isRecord(response.error)) return false;
+  return response.error.code === METHOD_NOT_FOUND_CODE || response.error.message === JUSSI_UNMAPPED_MESSAGE;
+};
+
 const ENDPOINT_URL_KEY = 'endpointUrl';
 const QUERY_STRING_METHODS = new Set(['GET', 'DELETE']);
 const DEFAULT_REST_METHOD = 'GET';

@@ -150,7 +150,8 @@ describe('hivemind REST reads', function () {
     const posts = await getPostsRanked('trending', '', '', '', 'hive.blog');
 
     expect(posts).to.deep.equal(fixtures.rankedPosts);
-    expect(rpc.calls).to.deep.equal([
+    // Post reads first ask the node once whether it serves lite.* (lite-api.ts); it does not.
+    expect(rpc.calls.filter((call) => call.method !== 'lite.get_info')).to.deep.equal([
       {
         method: 'bridge.get_ranked_posts',
         params: { sort: 'trending', start_author: '', start_permlink: '', limit: 20, tag: '', observer: 'hive.blog' }

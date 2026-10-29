@@ -11,6 +11,7 @@ import {
 import { commonVariables } from '@ui/lib/common-variables';
 import { getReadChain } from './chain';
 import { nonEmpty, readFromHivemind } from './hivemind-rest';
+import { readPosts } from './lite-api';
 import type { IObserverListsApi } from './observer-lists';
 import type { IHiddenAuthorsApi } from './hidden-authors';
 
@@ -75,26 +76,30 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return readFromHivemind(
-    'rankedPosts',
-    (api) =>
-      api.rankedPosts({
-        sort,
-        tag: nonEmpty(tag),
-        observer,
-        'page-size': limit,
-        'start-author': nonEmpty(start_author),
-        'start-permlink': nonEmpty(start_permlink)
-      }),
+  return readPosts(
+    (api) => api.get_ranked_posts({ sort, start_author, start_permlink, limit, tag, observer }),
     () =>
-      getReadChain().api.bridge.get_ranked_posts({
-        sort,
-        start_author,
-        start_permlink,
-        limit,
-        tag,
-        observer
-      })
+      readFromHivemind(
+        'rankedPosts',
+        (api) =>
+          api.rankedPosts({
+            sort,
+            tag: nonEmpty(tag),
+            observer,
+            'page-size': limit,
+            'start-author': nonEmpty(start_author),
+            'start-permlink': nonEmpty(start_permlink)
+          }),
+        () =>
+          getReadChain().api.bridge.get_ranked_posts({
+            sort,
+            start_author,
+            start_permlink,
+            limit,
+            tag,
+            observer
+          })
+      )
   ).then((resp) => {
     // logger.info('getPostsRanked result: %o', resp);
     if (resp) {
@@ -143,15 +148,19 @@ export const getPost = async (
   permlink: string = '',
   observer: string = commonVariables.defaultObserver
 ): Promise<Entry | null> => {
-  return readFromHivemind(
-    'post',
-    (api) => api.post({ author, permlink, observer }),
+  return readPosts(
+    (api) => api.get_post({ author, permlink, observer }),
     () =>
-      getReadChain().api.bridge.get_post({
-        author,
-        permlink,
-        observer
-      })
+      readFromHivemind(
+        'post',
+        (api) => api.post({ author, permlink, observer }),
+        () =>
+          getReadChain().api.bridge.get_post({
+            author,
+            permlink,
+            observer
+          })
+      )
   ).then((resp) => {
     if (resp) {
       return resolvePost(resp, observer);
@@ -169,26 +178,30 @@ export const getAccountPosts = async (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return readFromHivemind(
-    'accountPosts',
-    (api) =>
-      api.accountPosts({
-        'account-name': account,
-        sort,
-        observer,
-        'page-size': limit,
-        'start-author': nonEmpty(start_author),
-        'start-permlink': nonEmpty(start_permlink)
-      }),
+  return readPosts(
+    (api) => api.get_account_posts({ sort, account, start_author, start_permlink, limit, observer }),
     () =>
-      getReadChain().api.bridge.get_account_posts({
-        sort,
-        account,
-        start_author,
-        start_permlink,
-        limit,
-        observer
-      })
+      readFromHivemind(
+        'accountPosts',
+        (api) =>
+          api.accountPosts({
+            'account-name': account,
+            sort,
+            observer,
+            'page-size': limit,
+            'start-author': nonEmpty(start_author),
+            'start-permlink': nonEmpty(start_permlink)
+          }),
+        () =>
+          getReadChain().api.bridge.get_account_posts({
+            sort,
+            account,
+            start_author,
+            start_permlink,
+            limit,
+            observer
+          })
+      )
   ).then((resp) => {
     if (resp) {
       return resolvePosts(resp, observer);
@@ -238,10 +251,10 @@ export const getSubscribers = async (community: string): Promise<string[][] | nu
 
 export const getAccountNotifications = async (
   account: string,
-  lastId: number | null = null,
+  lastId: number | string | null = null,
   limit = 50
 ): Promise<IAccountNotification[] | null> => {
-  const params: { account: string; last_id?: number; limit: number } = {
+  const params: { account: string; last_id?: number | string; limit: number } = {
     account,
     limit
   };
@@ -249,10 +262,12 @@ export const getAccountNotifications = async (
   if (lastId) {
     params.last_id = lastId;
   }
+  // A string id names a lite notification row, which only a lite-aware node has (its
+  // `lite.account_notifications` pages by it); hivemind's own ids are numbers.
+  const restLastId = typeof params.last_id === 'number' ? params.last_id : undefined;
   return readFromHivemind(
     'accountNotifications',
-    (api) =>
-      api.accountNotifications({ 'account-name': account, 'page-size': limit, 'last-id': params.last_id }),
+    (api) => api.accountNotifications({ 'account-name': account, 'page-size': limit, 'last-id': restLastId }),
     () => getReadChain().api.bridge.account_notifications(params)
   );
 };
@@ -280,14 +295,18 @@ export const getDiscussion = async (
   permlink: string,
   observer: string = commonVariables.defaultObserver
 ): Promise<Record<string, Entry> | null> => {
-  return readFromHivemind(
-    'postDiscussion',
-    (api) => api.postDiscussion({ author, permlink, observer }),
+  return readPosts(
+    (api) => api.get_discussion({ author, permlink, observer }),
     () =>
-      getReadChain().api.bridge.get_discussion({
-        author,
-        permlink,
-        observer
-      })
+      readFromHivemind(
+        'postDiscussion',
+        (api) => api.postDiscussion({ author, permlink, observer }),
+        () =>
+          getReadChain().api.bridge.get_discussion({
+            author,
+            permlink,
+            observer
+          })
+      )
   );
 };

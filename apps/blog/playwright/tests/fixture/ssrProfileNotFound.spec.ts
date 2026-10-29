@@ -38,6 +38,15 @@ for (const path of ['/this-page-does-not-exist-xyz', `${NONEXISTENT_PROFILE_PATH
   });
 }
 
+// The recording's node has no lite support: lite.get_info is answered -32601, as such a node does.
+test('SAFE-18 — a lite account DID on a node without lite support renders the not-found page', async ({ page }) => {
+  const response = await page.goto('/@did:lite:lite-smoke-1016');
+
+  expect(response?.status()).toBe(404);
+  await expect(page.getByTestId('not-found-page')).toBeVisible();
+  await expect(page).toHaveTitle(NOT_FOUND_TITLE);
+});
+
 test('SAFE-14 — a failed account lookup renders the profile load error with a 503, not a 404', async ({
   page,
   fixtureProxy

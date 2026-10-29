@@ -47,7 +47,9 @@ apps/blog/
 Config uses five ports:
 
 - `:3000` — the blog app (standalone Next.js server), server-side feed cache
-  off (`DENSER_FEED_CACHE_TTL_S=0`)
+  off (`DENSER_FEED_CACHE_TTL_S=0`), and the API node's `lite.get_info` asked
+  before every post read (`DENSER_LITE_PROBE_TTL_S=0`): a recording made against
+  a lite-aware node (`litePost`) answers it, every other one does not
 - `:3001` — the same build again with the feed cache on and a TTL of a few
   seconds, and with the For You feed off (`FYP_API_URL` unset, which `:3000`
   sets); `feedCache.spec.ts` uses it, and `forYouFeed.spec.ts` FYP-05
@@ -1037,6 +1039,44 @@ in that window (no browser request involved) shows up as
 `bridge.list_communities` / `bridge.get_ranked_posts` misses, more often the
 longer a test runs. A spec that only misses those under the dev stack needs no
 baseline entry; check it with the `full` slot's `fixture_e2e`.
+
+### Recording through the dev stack
+
+`.aidev/dev-stack-spec.sh` passes no `FIXTURE_MODE`, so it always replays. To record a spec
+against another node from an AIDEV session (e.g. `liteProfile` from steem-16, whose `lite.*`
+the fixture suite needs), run a copy of the script whose `in_stack env` line adds
+`FIXTURE_MODE=record FIXTURE_UPSTREAM=<host>`: the stack's proxy relays the blog's server
+calls to the worker's recording proxy too, so one run records both sides. Keep it to one
+worker and a passing spec (see "A FAILING assertion during record wipes earlier fixtures").
+
+### Editor completion: type only the trigger key by key
+
+The markdown editor's `@` completion asks `lite.lookup_accounts` for the prefix typed before a
+pause, and an aborted query asks nothing: how many prefixes reach the node depends on typing speed.
+Put the rest of the text in with `fill()` and type only the mention (`@ki`) key by key, so the
+recording and every replay ask the same single prefix (`liteNotifications.spec.ts`, LITE-NOTIF-04).
+
+### Lite identities in specs: an account the node knows, written as stored
+
+A guest's lite identity lives in localStorage (`lite-identity`, `{ value, expiresAt: null }`); a
+spec writes it with `addInitScript` (`liteSocial.spec.ts`'s `holdLiteIdentity`). The spec cannot
+create one: `@hiveio/lite-account` is ESM-only and Playwright's loader cannot import it, so the
+key pair is a fixed throwaway one. On a node with the lite social app the browser reads the
+identity's follows (`lite.get_following` with its DID), and the node refuses a DID it does not know
+("Account did:lite:… does not exist"): name an existing lite account (on steem-16 e.g.
+`crisp-koala-499`), or the read fails in record and replay alike.
+
+### Popups: route them on the context, not the page
+
+`page.route` does not reach a popup the page opens with `window.open`; `context.route` does. The lite
+passkey specs (`liteIdentityPasskey*.spec.ts`) serve the passkey signer's `/sign/` page this way with a
+stub speaking its popup protocol (`stubSigners` in `support/litePasskeyContext.ts`), and change the
+deployment's signer list (`REACT_APP_PASSKEY_SIGNERS`) per test by appending to the served `__ENV.js`
+(`configureSigners`). The stub derives a key per requested role (`SIGNER_KEYS`, overridable per behaviour)
+and POSTs each request to its own origin's `/__signer-requests` before answering; `recordSignerRequests`
+(called after `stubSigners`) collects them, as `liteGraduation.spec.ts` does to check what the signer was
+asked to sign. An `addInitScript` runs again on every navigation and reload: a spec that needs a
+different stored identity after a reload needs another test.
 
 ### `fixtureTestName` is worker-scoped
 

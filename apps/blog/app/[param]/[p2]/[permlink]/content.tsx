@@ -15,6 +15,16 @@ import { useRebloggedByQuery } from '@/blog/features/list-of-posts/hooks/use-reb
 import { useDeletePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
+import { LiteReplyBox } from '@/blog/features/lite-account/lite-reply-box';
+import LiteReplyTrigger from '@/blog/features/lite-account/lite-reply-trigger';
+import { liteDeletedPostDestination } from '@/blog/features/lite-account/lite-manage-cache';
+import { liteL1Author } from '@/blog/features/lite-account/lite-ownership';
+import { LiteOwnerActions } from '@/blog/features/lite-account/lite-owner-actions';
+import { useReopenReplyAfterSignIn } from '@/blog/features/lite-account/use-lite-sign-in-handoff';
+import { LiteTombstoneNotice } from '@/blog/features/lite-account/lite-tombstone-notice';
+import { useIsLiteTombstone } from '@/blog/features/lite-account/use-lite-owner';
+import { postAuthorFromParam } from '@/blog/features/lite-account/lite-did';
+import { usePostsNamespace } from '@/blog/features/lite-account/use-lite-api-info';
 import { AlertDialogFlag } from '@/blog/features/post-rendering/alert-window-flag';
 import CommentsSection from '@/blog/features/post-rendering/comments-section';
 import ContextLinks from '@/blog/features/post-rendering/context-links';
@@ -82,6 +92,9 @@ import { StaleTime } from '@/blog/lib/react-query';
 
 // The post editor (its form schema and transaction helpers) is needed only when editing the post.
 const PostForm = dynamic(() => import('@/blog/features/post-editor/post-form'), { ssr: false });
+const LiteEditForm = dynamic(() => import('@/blog/features/lite-account/lite-edit-form').then((m) => m.LiteEditForm), {
+  ssr: false
+});
 
 // Stable empty fallback for mutedList — an inline [] would create a new reference
 // every render and invalidate mutedList-dependent useMemo in the comments tree.
@@ -93,7 +106,7 @@ const PostContent = () => {
   const router = useRouter();
   const pathname = usePathname();
   const commentSort = searchParams?.get('sort') || 'trending';
-  const author = params?.p2.replace('%40', '') ?? '';
+  const author = postAuthorFromParam(params?.p2) ?? '';
   const category = params?.param ?? '';
   const permlink = params?.permlink ?? '';
   const { user, isHydrated } = useUserClient();
@@ -106,10 +119,16 @@ const PostContent = () => {
   const initialMutedList = useInitialFollowList();
   // Use SSR observer before hydration to match prefetched cache keys,
   // then switch to client observer (which should be the same value for logged-in users)
-  const { observer: clientObserver, effectiveObserver: clientEffectiveObserver } = useEffectiveObserver();
+  const {
+    observer: clientObserver,
+    effectiveObserver: clientEffectiveObserver,
+    liteObserver
+  } = useEffectiveObserver();
   const communityObserver = isHydrated ? clientObserver : ssrObserver;
-  // Post, discussion and suggestion reads; community reads use the username
-  const observer = isHydrated ? clientEffectiveObserver : ssrEffectiveObserver;
+  // Suggestion reads; community reads use the username
+  const accountObserver = isHydrated ? clientEffectiveObserver : ssrEffectiveObserver;
+  // Post and discussion reads: a guest's lite account where it has one, so its mutes apply
+  const observer = isHydrated ? (liteObserver ?? clientEffectiveObserver) : ssrEffectiveObserver;
   // Use empty key when user is not logged in to disable storage hooks
   const replyStorageId = user.username ? `replybox-/${author}/${permlink}-${user.username}` : '';
   const editStorageId = user.username ? `editbox-/${author}/${permlink}-${user.username}` : '';
@@ -133,18 +152,24 @@ const PostContent = () => {
     StorageTTL.DRAFT
   );
 
+  // Guests have no storage key (see replyStorageId), so the lite reply box keeps its
+  // open/closed state in memory instead.
+  const [guestReply, setGuestReply] = useState(false);
+  const [liteEdit, setLiteEdit] = useState(false);
   // Use stored values directly - no useState needed
   // This ensures proper hydration and cross-tab sync
-  const reply = storedReply;
+  const reply = user.isLoggedIn ? storedReply : guestReply;
   const setReply = useCallback(
     (value: boolean) => {
-      if (value) {
+      if (!user.isLoggedIn) {
+        setGuestReply(value);
+      } else if (value) {
         storeReply(true);
       } else {
         removeReply();
       }
     },
-    [storeReply, removeReply]
+    [user.isLoggedIn, storeReply, removeReply]
   );
 
   const edit = storedEdit;
@@ -168,8 +193,9 @@ const PostContent = () => {
   const postInCommunity = isCommunity(category);
   // The server read the post as ssrEffectiveObserver; another observer (e.g. after an account switch) fetches its own
   const seedPostData = observer === ssrEffectiveObserver ? initialPostData : null;
+  const postsNamespace = usePostsNamespace();
   const postQuery = useQuery({
-    queryKey: ['postData', author, permlink, observer],
+    queryKey: ['postData', author, permlink, observer, postsNamespace],
     queryFn: () => getPost(author, permlink, observer),
     enabled: !!author && !!permlink,
     initialData: seedPostData ?? undefined,
@@ -177,6 +203,9 @@ const PostContent = () => {
     staleTime: StaleTime.MEDIUM
   });
   const { data: postData, isPending: postIsLoading } = postQuery;
+  const openReply = useCallback(() => setReply(true), [setReply]);
+  useReopenReplyAfterSignIn(postData?.author ?? '', permlink, user.isLoggedIn, openReply);
+  const liteTombstone = useIsLiteTombstone(postData);
   useQueryErrorEffect(postQuery, (error) => {
     handleError(error, { method: 'getPost', params: { author, permlink, observer } });
   });
@@ -198,7 +227,8 @@ const PostContent = () => {
       'postData',
       postData?.json_metadata.original_author,
       postData?.json_metadata.original_permlink,
-      observer
+      observer,
+      postsNamespace
     ],
     queryFn: () =>
       getPost(postData?.json_metadata.original_author, postData?.json_metadata.original_permlink, observer),
@@ -206,12 +236,12 @@ const PostContent = () => {
   });
 
   const { data: suggestionData } = useQuery({
-    queryKey: ['suggestions', author, permlink, observer],
+    queryKey: ['suggestions', author, permlink, accountObserver],
     queryFn: async () => {
       const results = await getSimilarPostsByPost({
         author,
         permlink,
-        observer,
+        observer: accountObserver,
         result_limit: 10, // Only get 10 suggestions
         full_posts: 10 // Get all as full posts
       });
@@ -241,7 +271,7 @@ const PostContent = () => {
   const [seededCommentSort] = useState(initialDiscussion?.sort);
   const [hasFullDiscussion, setHasFullDiscussion] = useState(false);
   const discussionQuery = useQuery({
-    queryKey: ['discussionData', author, permlink, observer],
+    queryKey: ['discussionData', author, permlink, observer, postsNamespace],
     queryFn: async () => {
       const discussion = await getDiscussion(author, permlink, observer);
       // Set only by fetches, never by the seed or optimistic setQueryData updates
@@ -521,6 +551,7 @@ const PostContent = () => {
                       <ReblogTrigger
                         author={postData.author}
                         permlink={postData.permlink}
+                        url={postData.url}
                         dataTestidTooltipContent="post-header-reblog-tooltip"
                         dataTestidTooltipIcon="post-header-reblog-icon"
                         isReblogged={isReblogged}
@@ -531,6 +562,16 @@ const PostContent = () => {
                 </div>
                 {postIsLoading ? (
                   <Loading loading={postIsLoading} />
+                ) : liteEdit && !user.isLoggedIn ? (
+                  <LiteEditForm
+                    entry={postData}
+                    onClose={() => setLiteEdit(false)}
+                    discussionAuthor={author}
+                    discussionPermlink={permlink}
+                    observer={observer}
+                  />
+                ) : liteTombstone ? (
+                  <LiteTombstoneNotice />
                 ) : edit && commentSite && postData.parent_author && postData.parent_permlink ? (
                   <ReplyTextbox
                     editMode={edit}
@@ -703,6 +744,7 @@ const PostContent = () => {
                       <ReblogTrigger
                         author={postData.author}
                         permlink={postData.permlink}
+                        url={postData.url}
                         dataTestidTooltipContent="post-footer-reblog-tooltip"
                         dataTestidTooltipIcon="post-footer-reblog-icon"
                         isReblogged={isReblogged}
@@ -772,11 +814,29 @@ const PostContent = () => {
                           ) : null}
                         </>
                       ) : (
-                        <DialogLogin>
-                          <button className="flex items-center text-destructive" data-testid="comment-reply">
+                        <>
+                          <LiteReplyTrigger
+                            open={reply}
+                            onToggle={() => setReply(!reply)}
+                            className="flex items-center text-destructive"
+                            testId="comment-reply"
+                          >
                             {t('post_content.footer.reply')}
-                          </button>
-                        </DialogLogin>
+                          </LiteReplyTrigger>
+                          <LiteOwnerActions
+                            entry={postData}
+                            editing={liteEdit}
+                            onToggleEdit={() => setLiteEdit((prev) => !prev)}
+                            onDeleted={(mode) => {
+                              if (mode === 'l1_delete') router.push(liteDeletedPostDestination(postData));
+                            }}
+                            separator={<span className="mx-1">|</span>}
+                            className="flex items-center text-destructive"
+                            discussionAuthor={author}
+                            discussionPermlink={permlink}
+                            observer={observer}
+                          />
+                        </>
                       )}
                       {postData.children === 0 &&
                       user.isLoggedIn &&
@@ -931,6 +991,19 @@ const PostContent = () => {
                     </div>
                   </div>
                 </div>
+                {reply && postData && !user.isLoggedIn ? (
+                  <div className="mt-4 px-4">
+                    <LiteReplyBox
+                      parentAuthor={postData.author}
+                      l1ParentAuthor={liteL1Author(postData)}
+                      parentPermlink={permlink}
+                      discussionAuthor={author}
+                      discussionPermlink={permlink}
+                      observer={observer}
+                      onSetReply={setReply}
+                    />
+                  </div>
+                ) : null}
                 {reply && postData && user.isLoggedIn ? (
                   <div className="mt-4 px-4">
                     <ReplyTextbox

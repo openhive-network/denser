@@ -9,7 +9,7 @@ import { getCommunity, getDiscussion, getFollowList, getListCommunityRoles } fro
 import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
 import { getEffectiveObserverFromCookies, getObserverFromCookies } from '@/blog/lib/auth-utils';
-import { isUsernameValid, isPermlinkValid, isValidUserParam } from '@/blog/utils/validate-links';
+import { isPermlinkValid, isPostAuthorValid, isValidUserParam, postAuthorFromParam } from '@/blog/utils/validate-links';
 import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
@@ -51,10 +51,10 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const searchParams = await props.searchParams;
   const params = await props.params;
-  if (!isValidUserParam(params?.p2)) notFound();
-  const author = params.p2.replace('%40', '').replace('@', '');
+  const author = isValidUserParam(params?.p2) ? postAuthorFromParam(params.p2) : null;
+  if (!author) notFound();
   const permlink = params?.permlink;
-  if (!(await isUsernameValid(author)) || !isPermlinkValid(permlink)) notFound();
+  if (!(await isPostAuthorValid(author)) || !isPermlinkValid(permlink)) notFound();
 
   const effectiveObserver = await getEffectiveObserverFromCookies();
   let post = null;
@@ -123,11 +123,11 @@ const PostPage = async (
     permlink
   } = params;
 
-  if (!isValidUserParam(p2)) notFound();
+  const username = isValidUserParam(p2) ? postAuthorFromParam(p2) : null;
+  if (!username) notFound();
 
-  const username = p2.replace('%40', '').replace('@', '');
   const community = param;
-  const validUser = await isUsernameValid(username);
+  const validUser = await isPostAuthorValid(username);
   if (!validUser) notFound();
   if (!isPermlinkValid(permlink)) notFound();
 

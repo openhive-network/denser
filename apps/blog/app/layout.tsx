@@ -1,6 +1,6 @@
 import '@hive/tailwindcss-config/globals.css';
 import * as Sentry from '@sentry/nextjs';
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 import { Metadata } from 'next';
 import { cookies, headers } from 'next/headers';
 import { NONCE_HEADER, parseNonce } from '@hive/middleware/lib/csp';
@@ -18,6 +18,7 @@ import { JsonLd } from '../components/json-ld';
 import { INDEX_ROBOTS } from '../lib/seo-robots';
 import { SITE_URL } from '../lib/site-url';
 import { websiteJsonLd } from '../lib/structured-data';
+import LiteApiSeed from '../features/lite-account/lite-api-seed';
 
 // Get basePath from build-time environment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -61,7 +62,7 @@ export function generateMetadata(): Metadata {
     ...metadata,
     other: { ...Sentry.getTraceData() }
   };
-};
+}
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   // Server-side locale and language handling
@@ -83,6 +84,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       </head>
       <body className="bg-background-secondary">
         <JsonLd data={websiteJsonLd()} />
+        <Suspense fallback={null}>
+          <LiteApiSeed />
+        </Suspense>
         <LocaleProvider locale={locale}>
           <div className="min-h-screen">
             <Providers nonce={nonce}>

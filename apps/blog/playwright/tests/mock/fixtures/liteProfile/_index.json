@@ -1,0 +1,19 @@
+{
+  "testName": "liteProfile",
+  "recordedAt": "2026-10-20T19:13:40.597Z",
+  "totalRequests": 119,
+  "savedFixtures": 15,
+  "duplicatesSkipped": 104,
+  "methods": {
+    "lite.get_info": 79,
+    "bridge.list_communities": 4,
+    "lite.get_profile": 19,
+    "lite.get_ranked_posts": 3,
+    "lite.get_account_posts": 8,
+    "lite.get_post": 1,
+    "lite.get_discussion": 1,
+    "database_api.find_accounts": 1,
+    "bridge.get_profile": 2,
+    "database_api.get_dynamic_global_properties": 1
+  }
+}

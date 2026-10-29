@@ -68,6 +68,9 @@ catalogs:
     "@tailwindcss/vite": "4.3.3"
     "@tailwindcss/cli": "4.3.3"
   # END common-ci-configuration catalogs
+  # denser's own: the lite-account client (hive/lite_gateway packages/lite-account)
+  "lite-toolset":
+    "@hiveio/lite-account": "0.2.0-rc1-stable.261027023737"
 
 # wax-signers-external and wax-signers-beekeeper pin an older @hiveio/beekeeper
 # whose embind glue uses new Function, which the nonce CSP (no 'unsafe-eval') blocks

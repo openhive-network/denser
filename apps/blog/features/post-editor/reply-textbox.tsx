@@ -29,11 +29,12 @@ import { getStorageItem, removeStorageItem, StorageTTL } from '@ui/lib/storage-w
 import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { useLoggedUserContext, useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-user';
 import { hasFailedUploadPlaceholder } from './lib/image-markdown';
+import { adoptLiteReplyDraft } from '@/blog/features/lite-account/lite-sign-in-handoff';
 
 const MdEditor = dynamic(() => import('./md-editor'), {
   ssr: false,
   loading: () => (
-    <div className="flex h-[200px] w-full items-center justify-center rounded-md border border-border bg-background-secondary/30">
+    <div className="border-border bg-background-secondary/30 flex h-[200px] w-full items-center justify-center rounded-md border">
       <CircleSpinner loading size={24} color="#dc2626" />
     </div>
   )
@@ -130,6 +131,12 @@ export function ReplyTextbox({
       lastSyncedDraftRef.current = storedDraft;
     }
   }, [storedDraft, editMode, commentBody]);
+
+  // A reply the reader typed as a guest before signing in becomes this draft, when there is none
+  useEffect(() => {
+    if (editMode || !replyStorageKey) return;
+    adoptLiteReplyDraft(username, permlink, replyStorageKey);
+  }, [editMode, replyStorageKey, username, permlink]);
 
   // Shadow reply recovery — check for orphaned shadow draft from crashed session
   const [shadowReplyRecovery, setShadowReplyRecovery] = useState<{
@@ -266,19 +273,19 @@ export function ReplyTextbox({
 
   return (
     <div
-      className="mb-4 flex w-full flex-col gap-4 rounded-lg border border-border bg-background p-4 text-primary shadow-xs"
+      className="border-border bg-background text-primary shadow-xs mb-4 flex w-full flex-col gap-4 rounded-lg border p-4"
       data-testid="reply-editor"
       suppressHydrationWarning
     >
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between rounded-md bg-background-secondary px-3 py-1.5">
-          <span className="text-xs text-muted-foreground">
+        <div className="bg-background-secondary flex items-center justify-between rounded-md px-3 py-1.5">
+          <span className="text-muted-foreground text-xs">
             {editMode ? t('post_content.footer.comment.editing') : t('post_content.footer.comment.replying')}
           </span>
           <Button
             type="button"
             variant="ghost"
-            className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground h-auto px-2 py-1 text-xs"
             onClick={() => handleCancel()}
           >
             {t('post_content.footer.comment.disable_editor')}
@@ -330,9 +337,10 @@ export function ReplyTextbox({
             placeholder={t('post_content.footer.comment.reply')}
             ariaLabel={t('post_content.footer.comment.reply')}
           />
-          <div className="flex items-center rounded-b-md border-x border-b border-border bg-background-secondary/50 px-3 py-1.5 text-xs text-muted-foreground">
+          <div className="border-border bg-background-secondary/50 text-muted-foreground flex items-center rounded-b-md border-x border-b px-3 py-1.5 text-xs">
             <span>
-              {t('post_content.footer.comment.insert_images')} {t('post_content.footer.comment.selecting_them')}
+              {t('post_content.footer.comment.insert_images')}{' '}
+              {t('post_content.footer.comment.selecting_them')}
             </span>
             <TooltipProvider>
               <Tooltip>
@@ -344,7 +352,7 @@ export function ReplyTextbox({
             </TooltipProvider>
           </div>
           {hasFailedUpload && (
-            <p className="mt-1 text-xs text-destructive" data-testid="failed-upload-hint">
+            <p className="text-destructive mt-1 text-xs" data-testid="failed-upload-hint">
               {t('submit_page.remove_failed_uploads')}
             </p>
           )}
@@ -356,7 +364,9 @@ export function ReplyTextbox({
               ref={btnRef}
               variant="redHover"
               className="w-24"
-              disabled={text === '' || hasFailedUpload || commentMutation.isPending || updateCommentMutation.isPending}
+              disabled={
+                text === '' || hasFailedUpload || commentMutation.isPending || updateCommentMutation.isPending
+              }
               onClick={() => postComment()}
             >
               {commentMutation.isPending || updateCommentMutation.isPending ? (
@@ -385,10 +395,10 @@ export function ReplyTextbox({
               className="h-2 w-20"
               indicatorClassName="bg-[#0088FE]"
             />
-            <span className="text-xs tabular-nums text-muted-foreground">
+            <span className="text-muted-foreground text-xs tabular-nums">
               {manabarsData?.rc.percentageValue ?? 0}% RC
               {manabarsData?.rc.percentageValue !== 100 && manabarsData?.rc.cooldown ? (
-                <span className="ml-1 text-muted-foreground/60">
+                <span className="text-muted-foreground/60 ml-1">
                   ({hoursAndMinutes(manabarsData.rc.cooldown, t)})
                 </span>
               ) : null}
@@ -400,8 +410,8 @@ export function ReplyTextbox({
       <Separator />
 
       <div className="flex flex-col">
-        <div className="flex items-center justify-between rounded-t-lg border border-b-0 border-border bg-background-secondary/50 px-3 py-1.5">
-          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        <div className="border-border bg-background-secondary/50 flex items-center justify-between rounded-t-lg border border-b-0 px-3 py-1.5">
+          <span className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
             {t('post_content.footer.comment.preview')}
           </span>
           <div className="flex items-center gap-3 text-xs">
@@ -423,7 +433,7 @@ export function ReplyTextbox({
             </Link>
           </div>
         </div>
-        <div className="rounded-b-lg border border-border">
+        <div className="border-border rounded-b-lg border">
           {text ? (
             <RendererContainer
               body={text}
@@ -432,7 +442,7 @@ export function ReplyTextbox({
               className={commentClassName + ' max-w-full p-3'}
             />
           ) : (
-            <div className="flex w-full flex-col items-center justify-center gap-2 p-6 text-muted-foreground">
+            <div className="text-muted-foreground flex w-full flex-col items-center justify-center gap-2 p-6">
               <Icons.eye className="h-6 w-6 opacity-20" />
               <span className="text-xs">{t('submit_page.preview_placeholder')}</span>
             </div>

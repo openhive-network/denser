@@ -85,7 +85,8 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/storage-with-ttl-notify.test.ts packages/ui/lib/app-api-path.test.ts \
     packages/ui/lib/locale-cookie.test.ts packages/ui/lib/month-year.test.ts \
     packages/ui/lib/session-time.test.ts packages/ui/lib/user-cancelled.test.ts \
-    packages/ui/config/chat.test.ts < /dev/null || status=1
+    packages/ui/config/chat.test.ts \
+    packages/ui/lib/passkey-signers.test.ts < /dev/null || status=1
 echo "== node --test packages/smart-signer" >&2
 junit="$PWD/test-results/unit/smart-signer.xml"
 run_with_junit_fallback "$junit" smart-signer node --test \
@@ -117,7 +118,9 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/fetch-json.test.ts \
     packages/smart-signer/lib/signer/unlock-hint.test.ts \
     packages/smart-signer/lib/signer/google-drive-missing-key.test.ts \
-    packages/smart-signer/lib/signer/google-drive-sign-in-cancelled.test.ts < /dev/null || status=1
+    packages/smart-signer/lib/signer/google-drive-sign-in-cancelled.test.ts \
+    packages/smart-signer/lib/passkey/signer-client.test.ts \
+    packages/smart-signer/lib/passkey/posting-key-match.test.ts < /dev/null || status=1
 echo "== node --test packages/common-hiveio-packages" >&2
 junit="$PWD/test-results/unit/common-hiveio-packages.xml"
 run_with_junit_fallback "$junit" common-hiveio-packages node --test \
@@ -152,8 +155,10 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/components/hooks/use-chat-token-request.test.ts \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
+    apps/blog/features/activity-log/lib/notification-source.test.ts \
     apps/blog/features/post-editor/lib/scroll-sync-anchors.test.ts \
     apps/blog/features/post-editor/lib/image-markdown.test.ts \
+    apps/blog/features/post-editor/lib/mention-completion.test.ts \
     apps/blog/features/votes/hooks/logged-user-contexts.test.ts \
     apps/blog/features/post-rendering/lib/votes-before-payout.test.ts \
     apps/blog/features/post-rendering/lib/votes-after-payout.test.ts \
@@ -165,7 +170,28 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/matrix-chat/lib/matrix-chat-sign-in.test.ts \
     apps/blog/features/matrix-chat/lib/matrix-chat-session.test.ts \
     apps/blog/features/matrix-chat/lib/rtc-transports-probe.test.ts \
-    apps/blog/features/matrix-chat/lib/sdk-log-routing.test.ts < /dev/null || status=1
+    apps/blog/features/matrix-chat/lib/sdk-log-routing.test.ts \
+    apps/blog/features/lite-account/lite-did.test.ts \
+    apps/blog/features/lite-account/lite-reply-optimistic.test.ts \
+    apps/blog/features/lite-account/use-lite-gateway-health.test.ts \
+    apps/blog/features/lite-account/lite-endpoints.test.ts \
+    apps/blog/features/lite-account/lite-root-post.test.ts \
+    apps/blog/features/lite-account/lite-ownership.test.ts \
+    apps/blog/features/lite-account/lite-manage-cache.test.ts \
+    apps/blog/features/lite-account/lite-name-availability.test.ts \
+    apps/blog/features/lite-account/lite-name-checker.test.ts \
+    apps/blog/features/lite-account/lite-sign-in-handoff.test.ts \
+    apps/blog/features/lite-account/lite-storage.test.ts \
+    apps/blog/features/lite-account/lite-social.test.ts \
+    apps/blog/features/lite-account/lite-social-state.test.ts \
+    apps/blog/features/lite-account/lite-read-marker.test.ts \
+    apps/blog/features/lite-account/lite-identity-record.test.ts \
+    apps/blog/features/lite-account/lite-authority-state.test.ts \
+    apps/blog/features/lite-account/lite-passkey-label.test.ts \
+    apps/blog/features/lite-account/lite-graduation-state.test.ts \
+    apps/blog/features/lite-account/lite-graduation.test.ts \
+    apps/blog/lib/lite-relay/gateway-paths.test.ts \
+    apps/blog/lib/lite-relay/gateway-url.test.ts < /dev/null || status=1
 echo "== node --test apps/wallet" >&2
 junit="$PWD/test-results/unit/wallet.xml"
 run_with_junit_fallback "$junit" wallet node --test \

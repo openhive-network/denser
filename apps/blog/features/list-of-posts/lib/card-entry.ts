@@ -33,6 +33,8 @@ export type TrimmedEntry = Pick<
 > & {
   json_metadata: Pick<JsonMetadata, 'tags'>;
   original_entry?: TrimmedEntry;
+  /** Kept for a lite (DID) author only: it names the post's L1 author, which a guest's reblog needs. */
+  url?: string;
 };
 
 /** A post list entry with the summary and image its card shows, derived from the dropped body. */

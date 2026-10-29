@@ -1,0 +1,43 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_profile",
+    "params": {
+      "account": "did:lite:crisp-koala-499"
+    },
+    "id": 1
+  },
+  "requestHash": "585d573b723f7f1b",
+  "method": "lite.get_profile",
+  "params": {
+    "account": "did:lite:crisp-koala-499"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": -36570388,
+      "name": "did:lite:crisp-koala-499",
+      "stats": {
+        "rank": 0,
+        "followers": 0,
+        "following": 0
+      },
+      "active": "2026-10-19T22:56:51",
+      "created": "2026-10-19T22:56:51",
+      "metadata": {
+        "profile": {
+          "name": "crisp-koala-499",
+          "about": "Lite account (via test-gateway-1)"
+        }
+      },
+      "blacklists": [],
+      "post_count": 1,
+      "reputation": 25
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

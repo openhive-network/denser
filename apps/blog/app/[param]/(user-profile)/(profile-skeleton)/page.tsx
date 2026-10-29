@@ -7,7 +7,9 @@ import { hiveTimeToIso } from '@/blog/lib/post-seo';
 import { profilePageJsonLd } from '@/blog/lib/structured-data';
 import { JsonLd } from '@/blog/components/json-ld';
 import { extractUsernameFromParam, isUsernameValid } from '@/blog/utils/validate-links';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
+import { postAuthorKind } from '@/blog/features/lite-account/lite-did';
+import { isLiteSocialNode } from '@/blog/lib/hive-account-route';
 
 const query = 'blog';
 
@@ -21,13 +23,18 @@ const Page = async (props: { params: Promise<{ param: string }> }) => {
   const params = await props.params;
   const username = extractUsernameFromParam(params.param);
   if (!username) notFound();
-
-  const valid = await isUsernameValid(username);
-  if (!valid) notFound();
+  if (postAuthorKind(username) === 'lite') {
+    // A lite account's blog (its posts and reblogs) needs the lite social graph; elsewhere it opens on its posts.
+    if (!(await isLiteSocialNode())) redirect(`/@${username}/posts`);
+  } else if (!(await isUsernameValid(username))) {
+    notFound();
+  }
 
   // Deduplicated with the profile layout's read. A missing account or a failed read is the layout's
-  // to answer (404 or 503), so here it only leaves the structured data out.
-  const account = await getProfileAccount(username).catch(() => null);
+  // to answer (404 or 503), so here it only leaves the structured data out. A lite account is no
+  // Hive account: its profile (lite-profile-route.tsx) has no structured data.
+  const account =
+    postAuthorKind(username) === 'account' ? await getProfileAccount(username).catch(() => null) : null;
   const profileJsonLd = account?.name
     ? profilePageJsonLd({
         username,

@@ -9,7 +9,11 @@ import {
   refreshOwnLists,
   subscribeOwnLists
 } from '@transaction/lib/observer-lists';
+import { liteSocialApp } from '@transaction/lib/lite-api';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
+import { useLiteApiInfo } from '@/blog/features/lite-account/use-lite-api-info';
+import { liteActorDid } from '@/blog/features/lite-account/lite-social-state';
+import { useStoredLiteIdentity } from '@/blog/features/lite-account/use-stored-lite-identity';
 
 const readNothing = () => null;
 
@@ -19,12 +23,17 @@ const readNothing = () => null;
  * subscriptions, the `my` and `feed` lists). `effectiveObserver` is for feed, post, discussion and
  * search reads: DEFAULT_OBSERVER while the account is known to have no lists of its own.
  * An unknown or expired answer is checked through the API; until then both are the username.
+ * `liteObserver` is the DID of the browser's lite account for a reader who is not signed in, where
+ * the node serves the lite social graph (its mutes apply to `lite.*` post reads), else null: only
+ * post reads (`readPosts`) take it.
  */
-export function useEffectiveObserver(): { observer: string; effectiveObserver: string } {
+export function useEffectiveObserver(): { observer: string; effectiveObserver: string; liteObserver: string | null } {
   const { user } = useUserClient();
   const username = user.isLoggedIn ? user.username : '';
   const readStored = useCallback(() => (username ? readOwnLists(username) : null), [username]);
   const hasOwnLists = useSyncExternalStore(subscribeOwnLists, readStored, readNothing);
+  const liteIdentity = useStoredLiteIdentity();
+  const liteSocial = liteSocialApp(useLiteApiInfo()) !== null;
 
   useQuery({
     queryKey: ownListsQueryKey(username),
@@ -36,6 +45,7 @@ export function useEffectiveObserver(): { observer: string; effectiveObserver: s
 
   return {
     observer: username || DEFAULT_OBSERVER,
-    effectiveObserver: getEffectiveObserver(username, hasOwnLists)
+    effectiveObserver: getEffectiveObserver(username, hasOwnLists),
+    liteObserver: !user.isLoggedIn && liteSocial && liteIdentity ? liteActorDid(liteIdentity.name) : null
   };
 }

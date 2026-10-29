@@ -23,6 +23,7 @@ import { useEffectiveObserver } from '@/blog/components/hooks/use-effective-obse
 import { useHiddenAuthors } from '@/blog/components/hooks/use-hidden-authors';
 import { withoutHiddenAuthors } from '@transaction/lib/hidden-authors';
 import ForYouError from './for-you-error';
+import { usePostsNamespace } from '@/blog/features/lite-account/use-lite-api-info';
 
 /** Where a page starts: after a post for the bridge API's feeds, a page number for For You. */
 type PageParam = { author: string; permlink: string } | number | undefined;
@@ -43,8 +44,11 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   // Use SSR observer before hydration to match prefetched cache keys,
   // then switch to client observer (which should be the same value for logged-in users).
   // "my" lists the user's subscriptions, so it always sends the username.
-  const clientObserver = tag === 'my' ? observers.observer : observers.effectiveObserver;
+  // A guest's lite account observes too: its mutes apply, and `my` lists its subscriptions.
+  const clientObserver =
+    observers.liteObserver ?? (tag === 'my' ? observers.observer : observers.effectiveObserver);
   const observer = isHydrated ? clientObserver : ssrObserver;
+  const postsNamespace = usePostsNamespace();
   // The server read its posts as ssrObserver; another observer (e.g. after a list change) fetches its own
   const isForYou = sort === FOR_YOU_SORT;
   // The server fetches no For You page, so there is nothing to seed it with
@@ -81,7 +85,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     isPending,
     refetch
   } = useInfiniteQuery({
-    queryKey: ['entriesInfinite', sort, tag, observer, ...(isForYou ? [forYouAccount] : [])],
+    queryKey: ['entriesInfinite', sort, tag, observer, postsNamespace, ...(isForYou ? [forYouAccount] : [])],
     queryFn: async ({ pageParam }: { pageParam: PageParam }) => {
       if (isForYou) {
         const page = typeof pageParam === 'number' ? pageParam : 1;
@@ -99,7 +103,10 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
     initialPageParam: undefined as PageParam,
     // Don't fetch "my communities" for anonymous users — the API would return
     // hive.blog's subscriptions which are meaningless to the actual user.
-    enabled: isForYou ? Boolean(forYouAccount) : !(tag === 'my' && !user.isLoggedIn),
+    // A lite account has its own subscriptions, so its `my` feed is read.
+    enabled: isForYou
+      ? Boolean(forYouAccount)
+      : !(tag === 'my' && !user.isLoggedIn && !observers.liteObserver),
     // Server-fetched data passed directly via context, bypassing Hydrate/dehydrate
     // which has compatibility issues with Next.js App Router streaming SSR in RQ v4.
     // initialData is only used when the query has no cached data (first load).
@@ -165,7 +172,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
   if (isEmpty && tag === 'my' && !isFetching) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-lg text-primary/70">{t('user_profile.empty_feed_not_following')}</p>
+        <p className="text-primary/70 text-lg">{t('user_profile.empty_feed_not_following')}</p>
       </div>
     );
   }

@@ -10,6 +10,8 @@ import { DEFAULT_PREFERENCES, Preferences } from "@/blog/lib/utils";
 import { useTranslation } from "@/blog/i18n/client";
 import { AccountFormValues, createAccountFormSchema } from "@/blog/features/post-editor/types";
 
+export const newPostDraftKey = (username: string) => `postData-new-${username}`;
+
 interface UsePostFormStateParams {
   username: string;
   editMode: boolean;
@@ -38,7 +40,7 @@ export function usePostFormState({ username, editMode, post_s, categoryParam }: 
   };
 
   const [storedPost, storePost, removePost] = useStorageWithTTL<AccountFormValues>(
-    editMode ? `postData-edit-${post_s?.permlink}` : `postData-new-${username}`,
+    editMode ? `postData-edit-${post_s?.permlink}` : newPostDraftKey(username),
     defaultValues,
     StorageTTL.DRAFT,
     // Auto-save writes every 500ms while typing; the form already holds these values,

@@ -52,6 +52,13 @@ const POLICY = {
       'page_titles.blog'
     ]),
     es: new Set([
+      // Lite accounts: borrowed words (blog, feed) and the passkey product term
+      'lite_account.profile.tabs.blog',
+      'lite_account.profile.tabs.feed',
+      'lite_account.passkey.passkey_label',
+      'lite_account.passkey.passkey_default_label',
+      'lite_account.devices.passkey_title',
+      'lite_account.devices.passkey_member',
       // Spanish uses the same word
       'page_titles.blog',
       'chat_widget.chat',
@@ -62,6 +69,11 @@ const POLICY = {
       'page_titles.sections.roles'
     ]),
     fr: new Set([
+      // Lite accounts: borrowed word (blog) and the passkey product term
+      'lite_account.profile.tabs.blog',
+      'lite_account.passkey.passkey_label',
+      'lite_account.passkey.passkey_default_label',
+      'lite_account.devices.passkey_title',
       // French uses the same word
       'page_titles.blog',
       'submit_page.spoiler',
@@ -86,6 +98,14 @@ const POLICY = {
       'post_content.footer.votes'
     ]),
     it: new Set([
+      // Lite accounts: borrowed words (blog, feed, backup) and the passkey product term
+      'lite_account.profile.tabs.blog',
+      'lite_account.profile.tabs.feed',
+      'lite_account.passkey.passkey_label',
+      'lite_account.passkey.passkey_default_label',
+      'lite_account.devices.passkey_title',
+      'lite_account.devices.passkey_member',
+      'lite_account.devices.backup_member',
       // Italian uses the same word
       'page_titles.blog',
       'chat_widget.chat',

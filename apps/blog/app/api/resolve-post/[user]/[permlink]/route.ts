@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getPost } from '@transaction/lib/bridge-api';
 import { getEffectiveObserverFromCookies } from '@/blog/lib/auth-utils';
-import { isPermlinkValid, isUsernameValid, isValidUserParam } from '@/blog/utils/validate-links';
+import { isPermlinkValid, isPostAuthorValid, isValidUserParam, postAuthorFromParam } from '@/blog/utils/validate-links';
 import { getLogger } from '@ui/lib/logging';
 import { getBasePath } from '@ui/lib/path-utils';
 import { inAppRedirectUrl } from '@/blog/lib/in-app-redirect-url';
@@ -53,11 +53,9 @@ export async function GET(request: Request, props: { params: Promise<{ user: str
       return notFoundRedirect(request);
     }
 
-    const rawParam = params?.user ?? '';
-    const decoded = decodeURIComponent(rawParam);
-    const username = decoded.replace(/^@/, '').trim();
+    const username = postAuthorFromParam(params.user)?.trim() ?? '';
     const observer = await getEffectiveObserverFromCookies();
-    const validUser = await isUsernameValid(username);
+    const validUser = await isPostAuthorValid(username);
 
     if (!validUser) return notFoundRedirect(request);
     if (!isPermlinkValid(params?.permlink)) return notFoundRedirect(request);

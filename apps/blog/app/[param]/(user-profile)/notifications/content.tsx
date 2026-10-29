@@ -3,16 +3,17 @@
 import NotificationActivities from '@/blog/features/activity-log/notification-content';
 import { useTranslation } from '@/blog/i18n/client';
 import { useQuery } from '@tanstack/react-query';
-import { getAccountNotifications } from '@transaction/lib/bridge-api';
+import { getNotifications } from '@transaction/lib/lite-notifications-api';
 import { Button } from '@ui/components/button';
 import { CircleSpinner } from '@ui/components/circle-spinner';
+import { authorDisplayName } from '@/blog/features/lite-account/lite-did';
 
 const NotificationContent = ({ username }: { username: string }) => {
   const { t } = useTranslation('common_blog');
 
   const { data, isError, isFetching, refetch } = useQuery({
     queryKey: ['AccountNotification', username],
-    queryFn: () => getAccountNotifications(username),
+    queryFn: () => getNotifications(username),
     refetchOnMount: true,
     staleTime: 0
   });
@@ -56,7 +57,7 @@ const NotificationContent = ({ username }: { username: string }) => {
           className="border-card-empty-border mt-12 border-2 border-solid bg-card-noContent px-4 py-6 text-sm"
           data-testid="user-has-not-had-any-notifications-yet"
         >
-          {t('user_profile.no_notifications_yet', { username: username })}
+          {t('user_profile.no_notifications_yet', { username: authorDisplayName(username) })}
         </div>
       )}
     </div>

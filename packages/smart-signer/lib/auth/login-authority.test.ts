@@ -57,6 +57,13 @@ describe('getLoginAuthority', () => {
     }
   });
 
+  it('passkey holds the posting key its signer derives, and can add no other', () => {
+    const postingOnly = { kind: 'key', keyTypes: ['posting'], canAddKey: false };
+    assert.deepEqual(getLoginAuthority(session('passkey', 'posting')), postingOnly);
+    assert.equal(lacksRequiredKeyType(session('passkey', 'posting'), 'active'), true);
+    assert.equal(lacksRequiredKeyType(session('passkey', 'posting'), 'posting'), false);
+  });
+
   for (const loginType of SIGNERS) {
     it(`${loginType} is a signer whatever key it signed in with`, () => {
       assert.deepEqual(getLoginAuthority(session(loginType, 'posting')), { kind: 'signer', loginType });

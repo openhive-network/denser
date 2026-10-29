@@ -13,12 +13,16 @@ import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 import { getPageNotFoundMetadata } from '@/blog/lib/not-found-metadata';
 import { getTranslation } from '@/blog/i18n/server';
+import { postAuthorFromParam, postAuthorKind } from '@/blog/features/lite-account/lite-did';
+import LiteProfileRoute, { getLiteProfileMetadata } from '@/blog/features/lite-account/lite-profile-route';
 
 const logger = getLogger('app');
 
 export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
   const params = await props.params;
   const raw = params.param;
+  const author = postAuthorFromParam(raw);
+  if (author && postAuthorKind(author) === 'lite') return getLiteProfileMetadata(author);
   // Only process if it looks like a username (starts with @ or %40)
   if (!raw.startsWith('@') && !raw.startsWith('%40')) {
     return getPageNotFoundMetadata();
@@ -80,6 +84,8 @@ const Layout = async (props: { children: ReactNode; params: Promise<{ param: str
 
   const queryClient = getQueryClient();
   const { param } = params;
+  const author = postAuthorFromParam(param);
+  if (author && postAuthorKind(author) === 'lite') return <LiteProfileRoute did={author}>{children}</LiteProfileRoute>;
 
   // Only process if it looks like a username (starts with @ or %40)
   if (!param.startsWith('@') && !param.startsWith('%40')) {

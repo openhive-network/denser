@@ -670,7 +670,8 @@ export interface IVoteListItem {
 
 export interface IAccountNotification {
   date: string;
-  id?: number;
+  /** hivemind's (and lite_social's) time-ordered id; nodes send it as a string, past 2^53. */
+  id?: number | string;
   msg: string;
   score: number;
   type: string;
@@ -851,55 +852,134 @@ export interface IGetOperationsByAccountResponse {
   operations_result: HiveOperation[];
 }
 
+/**
+ * `lite.get_info`: the capability probe of a node serving lite posts natively. A node without
+ * that support answers the call with a JSON-RPC error.
+ */
+export interface ILiteApiInfo {
+  version: string;
+  modes: string[];
+  render_base: string;
+  /**
+   * Custom_json ids of the lite apps the node reads, e.g. `{ posts: 'lite_posts' }`; `social` is
+   * set where the node indexes lite social ops (follows, mutes, reblogs, subscriptions, profiles).
+   */
+  apps: { posts: string; social?: string };
+  methods: string[];
+}
+
+/**
+ * `lite.get_profile`: the profile of a lite account (`name` is its `did:lite:<name>`) or of a Hive
+ * account. `lite` is set for an account with a role in the lite system, e.g. a gate account.
+ */
+export interface ILiteProfile extends IProfile {
+  lite?: { gateway?: boolean; pools?: unknown[] };
+}
+
+/** A row of `lite.get_followers` / `lite.get_following`: a lite identity is named by its DID. */
+export interface ILiteFollow {
+  follower: string;
+  following: string;
+  what: string[];
+}
+
+/** `lite.get_follow_count`: the counts include lite followers and follows. */
+export interface ILiteFollowCount {
+  account: string;
+  follower_count: number;
+  following_count: number;
+}
+
+/** The params of `lite.get_followers` / `lite.get_following`; `account` and `start` may be DIDs. */
+export interface ILiteFollowParams {
+  account: string;
+  start: string | null;
+  type: string;
+  limit: number;
+}
+
+/**
+ * The params of `lite.account_notifications`: hivemind's. `account` may be a DID; `last_id` (exclusive)
+ * pages hivemind's and lite rows alike, whose ids share one time-ordered range.
+ */
+export interface ILiteNotificationsParams {
+  account: string;
+  last_id?: number | string;
+  limit: number;
+}
+
+type TBridgeApi = {
+  get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
+  get_ranked_posts: TWaxApiRequest<
+    {
+      sort: string;
+      tag: string;
+      start_author: string;
+      start_permlink: string;
+      limit: number;
+      observer: string;
+    },
+    Entry[] | null
+  >;
+  get_account_posts: TWaxApiRequest<
+    {
+      sort: string;
+      account: string;
+      start_author: string;
+      start_permlink: string;
+      limit: number;
+      observer: string;
+    },
+    Entry[] | null
+  >;
+  get_post: TWaxApiRequest<{ author: string; permlink: string; observer: string }, Entry | null>;
+  account_notifications: TWaxApiRequest<
+    { account: string; lastId?: number; limit: number },
+    IAccountNotification[] | null
+  >;
+  get_discussion: TWaxApiRequest<
+    { author: string; permlink: string; observer?: string },
+    Record<string, Entry> | null
+  >;
+  get_community: TWaxApiRequest<{ name: string; observer?: string }, Community | null>;
+  list_community_roles: TWaxApiRequest<{ community: string }, string[][] | null>;
+  list_communities: TWaxApiRequest<
+    { sort: string; query?: string | null; observer: string },
+    Community[] | null
+  >;
+  normalize_post: TWaxApiRequest<{ post: Entry }, Entry | null>;
+  list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
+  list_subscribers: TWaxApiRequest<{ community: string }, string[][] | null>;
+  unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
+  get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
+  get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
+  does_user_follow_any_lists: TWaxApiRequest<{ observer: string }, boolean>;
+  get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
+};
+
+type TBridgePostsApi = Pick<
+  TBridgeApi,
+  'get_discussion' | 'get_post' | 'get_ranked_posts' | 'get_account_posts'
+>;
+
 export type ExtendedNodeApi = {
-  bridge: {
-    get_post_header: TWaxApiRequest<{ author: string; permlink: string }, IGetPostHeader>;
-    get_ranked_posts: TWaxApiRequest<
-      {
-        sort: string;
-        tag: string;
-        start_author: string;
-        start_permlink: string;
-        limit: number;
-        observer: string;
-      },
-      Entry[] | null
-    >;
-    get_account_posts: TWaxApiRequest<
-      {
-        sort: string;
-        account: string;
-        start_author: string;
-        start_permlink: string;
-        limit: number;
-        observer: string;
-      },
-      Entry[] | null
-    >;
-    get_post: TWaxApiRequest<{ author: string; permlink: string; observer: string }, Entry | null>;
-    account_notifications: TWaxApiRequest<
-      { account: string; lastId?: number; limit: number },
-      IAccountNotification[] | null
-    >;
-    get_discussion: TWaxApiRequest<
-      { author: string; permlink: string; observer?: string },
-      Record<string, Entry> | null
-    >;
-    get_community: TWaxApiRequest<{ name: string; observer?: string }, Community | null>;
-    list_community_roles: TWaxApiRequest<{ community: string }, string[][] | null>;
-    list_communities: TWaxApiRequest<
-      { sort: string; query?: string | null; observer: string },
-      Community[] | null
-    >;
-    normalize_post: TWaxApiRequest<{ post: Entry }, Entry | null>;
+  /**
+   * The `bridge` post reads, answered with lite posts under their lite identity: `author` (and
+   * `parent_author`, the `get_discussion` keys and `replies`) is `did:lite:<name>`.
+   */
+  lite: TBridgePostsApi & {
+    get_info: TWaxApiRequest<Record<string, never>, ILiteApiInfo>;
+    get_profile: TWaxApiRequest<{ account: string; observer?: string }, ILiteProfile | null>;
+    get_followers: TWaxApiRequest<ILiteFollowParams, ILiteFollow[]>;
+    get_following: TWaxApiRequest<ILiteFollowParams, ILiteFollow[]>;
+    get_follow_count: TWaxApiRequest<{ account: string }, ILiteFollowCount>;
+    list_subscribers: TWaxApiRequest<{ community: string; last?: string; limit?: number }, string[][] | null>;
     list_all_subscriptions: TWaxApiRequest<{ account: string }, string[][] | null>;
-    list_subscribers: TWaxApiRequest<{ community: string }, string[][] | null>;
+    account_notifications: TWaxApiRequest<ILiteNotificationsParams, IAccountNotification[] | null>;
     unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
-    get_relationship_between_accounts: TWaxApiRequest<string[], IAccountRelationship | null>;
-    get_follow_list: TWaxApiRequest<{ observer: string; follow_type: FollowListType }, IFollowList[]>;
-    does_user_follow_any_lists: TWaxApiRequest<{ observer: string }, boolean>;
-    get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
+    lookup_accounts: TWaxApiRequest<{ prefix: string; limit?: number }, string[]>;
   };
+  bridge: TBridgeApi;
   market_history_api: {
     get_ticker: TWaxApiRequest<Record<string, never>, IMarketStatistics>;
     get_order_book: TWaxApiRequest<{ limit: number }, IOrdersData>;

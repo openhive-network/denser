@@ -1,5 +1,6 @@
 import { getLogger } from '@ui/lib/logging';
 import type { NodeHealth, TNodeAdmission } from './node-health';
+import { isApiNotServedError } from './read-client';
 
 const logger = getLogger('app');
 
@@ -29,6 +30,13 @@ const isWaxTransportError = async (error: unknown): Promise<boolean> =>
 
 /** JSON-RPC namespaces that are not read-only; a failed broadcast must never be re-sent. */
 const NON_RETRYABLE_NAMESPACES = new Set(['network_broadcast_api']);
+
+/**
+ * JSON-RPC namespaces only some nodes serve. A node answering such a call with "Api not found" (see
+ * `isApiNotServedError`) cannot serve it, so the next node is asked, and health is recorded per
+ * node and namespace (`<node>/lite`): a node lacking the namespace keeps serving every other call.
+ */
+const OPTIONAL_NAMESPACES = new Set(['lite']);
 
 export interface IFailoverChain<TSelf = unknown> {
   readonly api: object;
@@ -172,7 +180,8 @@ export function parseFallbackNodes(
  * was still silent when a node asked after it answered, is marked down in `health` and skipped by
  * later calls until its cooldown ends or its late answer arrives; when every node is down, all are
  * tried, the most recently healthy first. A definitive API answer (e.g. "post does not exist") is
- * never retried. When every attempt fails, the last transport error is rethrown.
+ * never retried. When every attempt fails, the last transport error is rethrown. A call of a
+ * namespace only some nodes serve (`lite.*`) also moves on when the node answers "Api not found".
  *
  * With `isRestApiUnavailable`, a call on `chain.restApi` that the REST primary (`restApi.endpointUrl`)
  * cannot serve is asked of the fallback nodes the same way, without the second attempt on the
@@ -344,13 +353,17 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
   };
 
   const callJsonRpc = (path: readonly string[], args: unknown[]): Promise<unknown> => {
-    if (NON_RETRYABLE_NAMESPACES.has(path[0])) return callOn(chain.api, 'api', path, args);
+    const [namespace] = path;
+    if (NON_RETRYABLE_NAMESPACES.has(namespace)) return callOn(chain.api, 'api', path, args);
+    const isOptional = OPTIONAL_NAMESPACES.has(namespace);
     return callWithFailover({
       label: path.join('.'),
       primary: chain.endpointUrl,
-      healthKey: (node) => node,
+      healthKey: isOptional ? (node) => `${node}/${namespace}` : (node) => node,
       invoke: (target) => callOn(target.api, 'api', path, args),
-      isNodeFailure: isTransportError,
+      isNodeFailure: isOptional
+        ? async (error) => isApiNotServedError(error) || (await isTransportError(error))
+        : isTransportError,
       retriesPrimary: policy.retriesPrimary,
       onFailover
     });

@@ -1,0 +1,439 @@
+import { describe, it } from 'mocha';
+import type { Entry, ILiteProfile } from '@hive/common-hiveio-packages/wax';
+import { expect } from 'chai';
+import {
+  createLiteApiProbe,
+  createLiteNotificationsReader,
+  createLiteProfileReader,
+  createLiteSocialReader,
+  createPostsReader,
+  liteSocialApp,
+  LITE_PROBE_TTL_MS,
+  readLiteProbeTtlMs,
+  type ILiteNotificationsApi,
+  type ILiteSocialApi,
+  type TPostsApi
+} from './lite-api';
+import { accountOfDid, toFollow } from './lite-social-api';
+import { JsonRpcApiError } from './read-client';
+import { ReadTransportError } from './read-transport';
+
+const LITE_NODE = 'https://lite.example';
+const STOCK_NODE = 'https://stock.example';
+
+const LITE_INFO = {
+  version: '1.0',
+  modes: ['compat', 'native'],
+  render_base: 'https://hive.blog',
+  apps: { posts: 'lite_posts' },
+  methods: ['get_discussion', 'get_post', 'get_ranked_posts', 'get_account_posts']
+};
+
+const apiNotFound = (method: string) =>
+  new JsonRpcApiError(method, { jsonrpc: '2.0', id: 1, error: { code: -32601, message: 'Api not found lite' } });
+
+/** A probe whose nodes answer from `answers` (an Error is thrown), counting the requests per node. */
+const setupProbe = (answers: Record<string, unknown>) => {
+  let time = 0;
+  const requests: string[] = [];
+  const probe = createLiteApiProbe({
+    now: () => time,
+    fetchInfo: async (endpoint) => {
+      requests.push(endpoint);
+      const answer = answers[endpoint];
+      if (answer instanceof Error) throw answer;
+      return answer;
+    }
+  });
+  return {
+    probe,
+    requests,
+    advance: (ms: number) => {
+      time += ms;
+    }
+  };
+};
+
+describe('createLiteApiProbe', () => {
+  it('answers a lite-aware node with its info and asks it once within the TTL', async () => {
+    const { probe, requests, advance } = setupProbe({ [LITE_NODE]: LITE_INFO });
+
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+    advance(LITE_PROBE_TTL_MS - 1);
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+
+    expect(requests).to.deep.equal([LITE_NODE]);
+  });
+
+  it('shares one request between concurrent callers', async () => {
+    const { probe, requests } = setupProbe({ [LITE_NODE]: LITE_INFO });
+
+    await Promise.all([probe.getInfo(LITE_NODE), probe.getInfo(LITE_NODE)]);
+
+    expect(requests).to.deep.equal([LITE_NODE]);
+  });
+
+  it('caches "Api not found", a transport failure and a malformed answer as not lite-aware', async () => {
+    const nodes = {
+      [STOCK_NODE]: apiNotFound('lite.get_info'),
+      'https://down.example': new ReadTransportError('fetch failed', { method: 'POST', endpoint: 'https://down.example', url: '', timeout: 1, responseType: 'json' }),
+      'https://compat-only.example': { ...LITE_INFO, modes: ['compat'] },
+      'https://garbage.example': 'ok'
+    };
+    const { probe, requests } = setupProbe(nodes);
+
+    for (const node of Object.keys(nodes)) {
+      expect(await probe.getInfo(node), node).to.equal(null);
+      expect(await probe.getInfo(node), node).to.equal(null);
+    }
+
+    expect(requests).to.deep.equal(Object.keys(nodes));
+  });
+
+  it('asks the node again once the TTL has passed', async () => {
+    const answers: Record<string, unknown> = { [LITE_NODE]: apiNotFound('lite.get_info') };
+    const { probe, requests, advance } = setupProbe(answers);
+
+    expect(await probe.getInfo(LITE_NODE)).to.equal(null);
+    answers[LITE_NODE] = LITE_INFO;
+    advance(LITE_PROBE_TTL_MS);
+
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(requests).to.deep.equal([LITE_NODE, LITE_NODE]);
+  });
+
+  it('keeps one answer per endpoint, so a node change is probed on its own', async () => {
+    const { probe, requests } = setupProbe({ [LITE_NODE]: LITE_INFO, [STOCK_NODE]: apiNotFound('lite.get_info') });
+
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(await probe.getInfo(STOCK_NODE)).to.equal(null);
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+
+    expect(requests).to.deep.equal([LITE_NODE, STOCK_NODE]);
+  });
+  it('answers a seeded endpoint without asking it, and asks every other endpoint itself', async () => {
+    const { probe, requests } = setupProbe({ [LITE_NODE]: LITE_INFO, [STOCK_NODE]: apiNotFound('lite.get_info') });
+
+    probe.seed(LITE_NODE, LITE_INFO);
+
+    expect(probe.peek(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(probe.peek(STOCK_NODE)).to.equal(undefined);
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(await probe.getInfo(STOCK_NODE)).to.equal(null);
+    expect(requests).to.deep.equal([STOCK_NODE]);
+  });
+
+  it('takes a malformed seed as not lite-aware and asks the node again once the seed expires', async () => {
+    const { probe, requests, advance } = setupProbe({ [LITE_NODE]: LITE_INFO });
+
+    probe.seed(LITE_NODE, { ...LITE_INFO, modes: ['compat'] });
+
+    expect(await probe.getInfo(LITE_NODE)).to.equal(null);
+    advance(LITE_PROBE_TTL_MS);
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(requests).to.deep.equal([LITE_NODE]);
+  });
+
+  it('notifies subscribers of a seed and of an answer, until they unsubscribe', async () => {
+    const { probe } = setupProbe({ [LITE_NODE]: LITE_INFO, [STOCK_NODE]: apiNotFound('lite.get_info') });
+    const seen: unknown[] = [];
+    const unsubscribe = probe.subscribe(() => seen.push(probe.peek(LITE_NODE)));
+
+    await probe.getInfo(LITE_NODE);
+    expect(seen).to.deep.equal([LITE_INFO]);
+
+    unsubscribe();
+    await probe.getInfo(STOCK_NODE);
+    expect(seen).to.have.length(1);
+  });
+});
+
+describe('readLiteProbeTtlMs', () => {
+  it('reads DENSER_LITE_PROBE_TTL_S in seconds, 0 included', () => {
+    expect(readLiteProbeTtlMs({ DENSER_LITE_PROBE_TTL_S: '0' })).to.equal(0);
+    expect(readLiteProbeTtlMs({ DENSER_LITE_PROBE_TTL_S: '2.5' })).to.equal(2_500);
+  });
+
+  it('falls back to the default when unset, empty or not a non-negative number', () => {
+    for (const value of [undefined, '', ' ', '-1', 'soon']) {
+      expect(readLiteProbeTtlMs({ DENSER_LITE_PROBE_TTL_S: value }), String(value)).to.equal(LITE_PROBE_TTL_MS);
+    }
+  });
+});
+
+describe('createPostsReader', () => {
+  /** A chain whose `lite` and `bridge` post reads record their calls and answer with `answers`. */
+  const setupReader = (endpoint: string, probeAnswers: Record<string, unknown>, liteAnswer: unknown = 'native') => {
+    const calls: string[] = [];
+    const postsApi = (namespace: string, answer: () => unknown): TPostsApi => {
+      const call = (method: string) => async (params: unknown) => {
+        calls.push(`${namespace}.${method} ${JSON.stringify(params)}`);
+        const value = answer();
+        if (value instanceof Error) throw value;
+        return value;
+      };
+      // The fakes record their params as given; the real wax types are not what is under test.
+      return {
+        get_discussion: call('get_discussion'),
+        get_post: call('get_post'),
+        get_ranked_posts: call('get_ranked_posts'),
+        get_account_posts: call('get_account_posts')
+      } as unknown as TPostsApi;
+    };
+    const chain = {
+      endpointUrl: endpoint,
+      api: { lite: postsApi('lite', () => liteAnswer), bridge: postsApi('bridge', () => 'compat') }
+    };
+    const { probe, requests } = setupProbe(probeAnswers);
+    return { read: createPostsReader(() => chain, probe), calls, probeRequests: requests, probe };
+  };
+
+  const getPost = (api: TPostsApi) => api.get_post({ author: 'did:lite:bob', permlink: 'p', observer: 'hive.blog' });
+  const trending = { sort: 'trending', tag: '', start_author: '', start_permlink: '', limit: 20, observer: 'hive.blog' };
+
+  it('reads through lite.* when the current node is lite-aware', async () => {
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO });
+
+    expect(await read(getPost)).to.equal('native');
+    expect(calls).to.deep.equal(['lite.get_post {"author":"did:lite:bob","permlink":"p","observer":"hive.blog"}']);
+  });
+
+  it('reads through bridge.* when the current node is not lite-aware', async () => {
+    const { read, calls } = setupReader(STOCK_NODE, { [STOCK_NODE]: apiNotFound('lite.get_info') });
+
+    expect(await read((api) => api.get_ranked_posts(trending))).to.equal('compat');
+    expect(calls).to.deep.equal([`bridge.get_ranked_posts ${JSON.stringify(trending)}`]);
+  });
+
+  it('reads the stock way (hivemind REST or bridge.*) when given one and the node is not lite-aware', async () => {
+    const { read, calls } = setupReader(STOCK_NODE, { [STOCK_NODE]: apiNotFound('lite.get_info') });
+
+    expect(await read((api) => api.get_ranked_posts(trending), async () => 'stock' as unknown as Entry[])).to.equal('stock');
+    expect(calls).to.deep.equal([]);
+  });
+
+  it('prefers lite.* over the stock read on a lite-aware node, and takes the stock read when lite.* goes', async () => {
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, apiNotFound('lite.get_ranked_posts'));
+
+    expect(await read((api) => api.get_ranked_posts(trending), async () => 'stock' as unknown as Entry[])).to.equal('stock');
+    expect(calls).to.deep.equal([`lite.get_ranked_posts ${JSON.stringify(trending)}`]);
+  });
+
+  it('falls back to bridge.* and stops probing when the node no longer serves lite.*', async () => {
+    const { read, calls, probeRequests } = setupReader(
+      LITE_NODE,
+      { [LITE_NODE]: LITE_INFO },
+      apiNotFound('lite.get_post')
+    );
+
+    expect(await read(getPost)).to.equal('compat');
+    expect(await read(getPost)).to.equal('compat');
+
+    expect(calls.map((call) => call.split(' ')[0])).to.deep.equal(['lite.get_post', 'bridge.get_post', 'bridge.get_post']);
+    expect(probeRequests).to.deep.equal([LITE_NODE]);
+  });
+
+  it('probes the node once, on the first read, and notifies its answer', async () => {
+    const { read, calls, probeRequests, probe } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO });
+    let notified = 0;
+    probe.subscribe(() => notified++);
+
+    expect(probeRequests).to.deep.equal([]);
+    await read(getPost);
+    await read(getPost);
+
+    expect(probeRequests).to.deep.equal([LITE_NODE]);
+    expect(notified).to.be.greaterThan(0);
+    expect(probe.peek(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(calls.map((call) => call.split(' ')[0])).to.deep.equal(['lite.get_post', 'lite.get_post']);
+  });
+
+  it('reads a seeded lite-aware node through lite.* without probing it', async () => {
+    const { read, calls, probeRequests, probe } = setupReader(LITE_NODE, { [LITE_NODE]: apiNotFound('lite.get_info') });
+    probe.seed(LITE_NODE, LITE_INFO);
+
+    await read(getPost);
+
+    expect(probeRequests).to.deep.equal([]);
+    expect(calls.map((call) => call.split(' ')[0])).to.deep.equal(['lite.get_post']);
+  });
+
+  it('rejects with the lite.* answer when it is an answer of the API itself', async () => {
+    const missing = new JsonRpcApiError('lite.get_post', { error: { code: -32602, message: 'Post does not exist' } });
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, missing);
+
+    const error = await read(getPost).catch((e: unknown) => e);
+
+    expect(error).to.equal(missing);
+    expect(calls).to.have.length(1);
+  });
+});
+
+describe('createLiteProfileReader', () => {
+  const PROFILE: ILiteProfile = {
+    id: -1,
+    name: 'did:lite:bob',
+    created: '2026-10-16T18:37:48',
+    active: '2026-10-16T19:54:18',
+    post_count: 4,
+    reputation: 25,
+    blacklists: [],
+    stats: { rank: 0, followers: 0, following: 0 },
+    metadata: { profile: { name: 'bob' } }
+  };
+  const PROFILE_INFO = { ...LITE_INFO, methods: [...LITE_INFO.methods, 'get_profile'] };
+
+  /** A chain whose `lite.get_profile` records its calls and answers with `answer` (an Error is thrown). */
+  const setupProfileReader = (probeAnswers: Record<string, unknown>, answer: ILiteProfile | Error = PROFILE) => {
+    const calls: string[] = [];
+    const chain = {
+      endpointUrl: LITE_NODE,
+      api: {
+        lite: {
+          get_profile: async (params: { account: string }): Promise<ILiteProfile> => {
+            calls.push(params.account);
+            if (answer instanceof Error) throw answer;
+            return answer;
+          }
+        }
+      }
+    };
+    const { probe } = setupProbe(probeAnswers);
+    return { read: createLiteProfileReader(() => chain, probe), calls };
+  };
+
+  it('asks a node that lists lite.get_profile', async () => {
+    const { read, calls } = setupProfileReader({ [LITE_NODE]: PROFILE_INFO });
+
+    expect(await read('did:lite:bob')).to.deep.equal(PROFILE);
+    expect(calls).to.deep.equal(['did:lite:bob']);
+  });
+
+  it('answers null without asking a node that is not lite-aware or does not list the method', async () => {
+    for (const info of [apiNotFound('lite.get_info'), LITE_INFO]) {
+      const { read, calls } = setupProfileReader({ [LITE_NODE]: info });
+
+      expect(await read('did:lite:bob')).to.equal(null);
+      expect(calls).to.deep.equal([]);
+    }
+  });
+
+  it('answers null for an API error such as an account that does not exist', async () => {
+    const missing = new JsonRpcApiError('lite.get_profile', {
+      error: { code: -32602, message: 'Assert Exception:[{"did:lite:bob": "account does not exist"}]' }
+    });
+    const { read } = setupProfileReader({ [LITE_NODE]: PROFILE_INFO }, missing);
+
+    expect(await read('did:lite:bob')).to.equal(null);
+  });
+
+  it('rejects with a transport failure, which says nothing about the account', async () => {
+    const failure = new ReadTransportError('timeout', { method: 'POST', endpoint: LITE_NODE, url: '', timeout: 1, responseType: 'json' });
+    const { read } = setupProfileReader({ [LITE_NODE]: PROFILE_INFO }, failure);
+
+    expect(await read('did:lite:bob').catch((e: unknown) => e)).to.equal(failure);
+  });
+});
+
+describe('createLiteSocialReader', () => {
+  const SOCIAL_INFO = { ...LITE_INFO, apps: { posts: 'lite_posts_test', social: 'lite_social_test' } };
+  const ROWS = [{ what: ['blog'], follower: 'did:lite:bob', following: 'alice' }];
+
+  /** A chain whose `lite.get_followers` records its calls and answers ROWS. */
+  const setupSocialReader = (probeAnswers: Record<string, unknown>) => {
+    const calls: unknown[] = [];
+    const unused = async (): Promise<never> => {
+      throw new Error('not asked');
+    };
+    const lite: ILiteSocialApi = {
+      get_followers: async (params) => {
+        calls.push(params);
+        return ROWS;
+      },
+      get_following: unused,
+      get_follow_count: unused,
+      list_subscribers: unused,
+      list_all_subscriptions: unused
+    };
+    const { probe } = setupProbe(probeAnswers);
+    return { read: createLiteSocialReader(() => ({ endpointUrl: LITE_NODE, api: { lite } }), probe), calls };
+  };
+  const params = { account: 'alice', start: null, type: 'blog', limit: 50 };
+
+  it('reads the social graph of a node whose lite.get_info advertises apps.social', async () => {
+    const { read, calls } = setupSocialReader({ [LITE_NODE]: SOCIAL_INFO });
+
+    expect(await read((api) => api.get_followers(params))).to.deep.equal(ROWS);
+    expect(calls).to.deep.equal([params]);
+  });
+
+  it('answers null without asking a lite-aware node without the social app, or a stock node', async () => {
+    for (const info of [LITE_INFO, { ...LITE_INFO, apps: { posts: 'lite_posts', social: '' } }, apiNotFound('lite.get_info')]) {
+      const { read, calls } = setupSocialReader({ [LITE_NODE]: info });
+
+      expect(await read((api) => api.get_followers(params))).to.equal(null);
+      expect(calls).to.deep.equal([]);
+    }
+  });
+
+  it('names the social app only when it is advertised', () => {
+    expect(liteSocialApp(SOCIAL_INFO)).to.equal('lite_social_test');
+    expect(liteSocialApp(LITE_INFO)).to.equal(null);
+    expect(liteSocialApp(null)).to.equal(null);
+  });
+});
+
+describe('createLiteNotificationsReader', () => {
+  const NOTIFY_INFO = {
+    ...LITE_INFO,
+    apps: { posts: 'lite_posts_test', social: 'lite_social_test' },
+    methods: [...LITE_INFO.methods, 'account_notifications', 'unread_notifications', 'lookup_accounts']
+  };
+  const ROWS = [{ id: '89481685581692929', msg: '@did:lite:bob followed you', url: '@did:lite:bob', date: '2026-10-16T19:54:15', type: 'follow', score: 15 }];
+
+  /** A chain whose `lite.account_notifications` records its calls and answers ROWS. */
+  const setupNotificationsReader = (probeAnswers: Record<string, unknown>) => {
+    const calls: unknown[] = [];
+    const lite: ILiteNotificationsApi = {
+      account_notifications: async (params) => {
+        calls.push(params);
+        return ROWS;
+      },
+      unread_notifications: async () => ({ lastread: '2026-10-16 00:00:00', unread: 1 }),
+      lookup_accounts: async () => ['did:lite:bob']
+    };
+    const { probe } = setupProbe(probeAnswers);
+    return { read: createLiteNotificationsReader(() => ({ endpointUrl: LITE_NODE, api: { lite } }), probe), calls };
+  };
+  const params = { account: 'did:lite:alice', limit: 50 };
+
+  it('reads lite.account_notifications of a node whose lite.get_info lists it', async () => {
+    const { read, calls } = setupNotificationsReader({ [LITE_NODE]: NOTIFY_INFO });
+
+    expect(await read((api) => api.account_notifications(params), async () => [])).to.deep.equal(ROWS);
+    expect(calls).to.deep.equal([params]);
+  });
+
+  it('runs the fallback without asking a lite node without the method, or a stock node', async () => {
+    const social = { ...LITE_INFO, apps: { posts: 'lite_posts', social: 'lite_social' } };
+    for (const info of [LITE_INFO, social, apiNotFound('lite.get_info')]) {
+      const { read, calls } = setupNotificationsReader({ [LITE_NODE]: info });
+
+      expect(await read<unknown>((api) => api.account_notifications(params), async () => 'stock' as unknown as Entry[])).to.equal('stock');
+      expect(calls).to.deep.equal([]);
+    }
+  });
+});
+
+describe('lite social rows', () => {
+  it('name Hive accounts by name and keep lite DIDs', () => {
+    expect(accountOfDid('did:hive:test-gateway-1')).to.equal('test-gateway-1');
+    expect(accountOfDid('did:lite:bob')).to.equal('did:lite:bob');
+    expect(accountOfDid('alice')).to.equal('alice');
+    expect(toFollow({ what: ['blog'], follower: 'did:lite:bob', following: 'did:hive:alice' })).to.deep.equal({
+      follower: 'did:lite:bob',
+      following: 'alice',
+      what: ['blog']
+    });
+  });
+});

@@ -1,13 +1,19 @@
 import { Metadata } from 'next';
-import React, { PropsWithChildren } from 'react';
 import { getTranslation } from '@/blog/i18n/server';
 import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
+import {
+  extractNotificationsAccountFromParam,
+  NotificationsAccountLayout
+} from '@/blog/lib/hive-account-route';
+import { authorDisplayName } from '@/blog/features/lite-account/lite-did';
+import { getPageNotFoundMetadata } from '@/blog/lib/not-found-metadata';
 
 export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
   const params = await props.params;
-  const username = params?.param?.startsWith('%40') ? params.param.replace('%40', '') : params.param;
+  const account = await extractNotificationsAccountFromParam(params.param);
+  if (!account) return getPageNotFoundMetadata();
   const { t } = await getTranslation('common_blog');
-  const title = t('page_titles.notifications_for', { username });
+  const title = t('page_titles.notifications_for', { username: authorDisplayName(account) });
 
   return {
     title,
@@ -15,6 +21,4 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
   };
 }
 
-export default function Layout({ children }: PropsWithChildren) {
-  return <>{children}</>;
-}
+export default NotificationsAccountLayout;

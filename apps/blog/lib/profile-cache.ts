@@ -1,8 +1,9 @@
 import { cache } from 'react';
-import type { FullAccount, IAccountReputations } from '@hive/common-hiveio-packages/wax';
+import type { FullAccount, IAccountReputations, ILiteProfile } from '@hive/common-hiveio-packages/wax';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { getAccountPosts } from '@transaction/lib/bridge-api';
 import { getReadChain } from '@transaction/lib/chain';
+import { getLiteProfile, getPostsNamespace } from '@transaction/lib/lite-api';
 import { readFeedCacheConfig } from '@transaction/lib/feed-cache';
 import { createProfileCache, type IProfileCache } from '@transaction/lib/profile-cache';
 import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } from '@transaction/lib/hive-api';
@@ -22,6 +23,7 @@ interface IProfileCaches {
   reputations: IProfileCache<IAccountReputations[]>;
   globalProperties: IProfileCache<GetDynamicGlobalPropertiesResponse>;
   posts: IProfileCache<PostsPage>;
+  liteProfile: IProfileCache<ILiteProfile | null>;
 }
 
 declare global {
@@ -47,12 +49,14 @@ const getCaches = (): IProfileCaches =>
     account: createCache(hasFollowStats),
     reputations: createCache(),
     globalProperties: createCache(),
-    posts: createCache()
+    posts: createCache(),
+    liteProfile: createCache()
   });
 
 const profileRequest = async (read: string, account: string) => {
   const chain = getReadChain();
-  return { network: `${chain.chainId}|${chain.endpointUrl}`, read, account, observer: await getObserver() };
+  const network = `${chain.chainId}|${chain.endpointUrl}|${await getPostsNamespace()}`;
+  return { network, read, account, observer: await getObserver() };
 };
 
 /*
@@ -74,6 +78,11 @@ export const getProfileGlobalProperties = async (): Promise<GetDynamicGlobalProp
   getCaches().globalProperties.get(await profileRequest('dynamic-global-properties', ''), () =>
     getDynamicGlobalProperties()
   );
+
+/** `lite.get_profile` of a lite account's DID: null when the node does not serve it or knows no such account. */
+export const getProfileLiteAccount = cache(async (did: string): Promise<ILiteProfile | null> =>
+  getCaches().liteProfile.get(await profileRequest('lite-profile', did), () => getLiteProfile(did))
+);
 
 /**
  * The first page of a profile tab's posts as the server renders it: card entries with only the viewer's own votes.

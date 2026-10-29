@@ -1,0 +1,12 @@
+{
+  "testName": "litePost",
+  "recordedAt": "2026-10-19T21:11:06.840Z",
+  "totalRequests": 13,
+  "savedFixtures": 5,
+  "duplicatesSkipped": 8,
+  "methods": {
+    "lite.get_info": 5,
+    "lite.get_post": 4,
+    "lite.get_discussion": 4
+  }
+}

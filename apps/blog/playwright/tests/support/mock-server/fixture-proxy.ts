@@ -165,6 +165,8 @@ function extractJsonRpc(body: unknown): IJsonRpcCall | null {
   };
 }
 
+const isLiteApiCall = (call: IJsonRpcCall): boolean => call.method.startsWith('lite.');
+
 function safeFilenamePart(s: string): string {
   const cleaned = s.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
   return cleaned.slice(0, 80) || 'root';
@@ -629,6 +631,17 @@ export async function createReplayProxy(
     if ((!entries || entries.length === 0) && jsonRpc) {
       const legacyHash = computeParamsHash(jsonRpc.method, jsonRpc.params);
       entries = fixtures.get(legacyHash);
+    }
+
+    // A recording without lite.* calls was made against a node without lite support (every one
+    // before lite.get_info existed): answer as such a node does, which is no miss.
+    if ((!entries || entries.length === 0) && jsonRpc && isLiteApiCall(jsonRpc)) {
+      res.status(200).json({
+        id: (reqBody as { id?: unknown })?.id ?? 0,
+        jsonrpc: '2.0',
+        error: { code: -32601, message: 'Api not found lite' }
+      });
+      return;
     }
 
     if (!entries || entries.length === 0) {

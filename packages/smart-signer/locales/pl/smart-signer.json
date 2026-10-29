@@ -73,7 +73,8 @@
       "hivesigner": "HiveSigner to zewnętrzna usługa, która po autoryzacji tej aplikacji podpisuje transakcje w Twoim imieniu.",
       "wif": "Wpisz bezpośrednio swój klucz prywatny (WIF). Służy tylko do podpisywania i nie jest zachowywany, chyba że zdecydujesz się go zapisać.",
       "metamask": "Podpisuj kluczami Hive zarządzanymi przez Hive Snap w rozszerzeniu MetaMask.",
-      "google": "Przechowuj zaszyfrowane klucze na swoim Dysku Google i podpisuj nimi z dowolnego urządzenia."
+      "google": "Przechowuj zaszyfrowane klucze na swoim Dysku Google i podpisuj nimi z dowolnego urządzenia.",
+      "passkey": "Serwis podpisujący wyprowadza Twoje klucze Hive z klucza dostępu (passkey) i podpisuje za Ciebie we własnym oknie. Klucze nigdy nie trafiają do tej strony."
     },
     "signin_safe_storage": {
       "title": "Zaloguj się za pomocą bezpiecznego magazynu",
@@ -148,6 +149,32 @@
       "enable": "Włącz",
       "not_now": "Nie teraz",
       "never_ask_again": "Nie pytaj więcej"
+    },
+    "passkey": {
+      "method": "Podpisywanie kluczem dostępu",
+      "title": "Zaloguj się przez serwis podpisujący",
+      "description": "Wpisz nazwę konta. Serwis podpisujący sprawdzi, czy ma klucz publikowania tego konta.",
+      "signer_label": "Serwis podpisujący",
+      "find": "Znajdź mój klucz",
+      "found": "Twój serwis podpisujący ma klucz publikowania konta @{{username}}.",
+      "sign_in": "Zaloguj jako @{{username}}",
+      "find_again": "Użyj innego klucza dostępu",
+      "errors": {
+        "account_not_found": "Nie ma konta Hive o tej nazwie.",
+        "key_not_on_account": "Klucz wyprowadzony przez serwis podpisujący nie należy do uprawnień publikowania tego konta. Użyj klucza dostępu, z którego pochodzą klucze tego konta.",
+        "unavailable": "Nie udało się odczytać tego konta. Sprawdź połączenie i spróbuj ponownie."
+      },
+      "signer_errors": {
+        "popup_blocked": "Przeglądarka zablokowała okno serwisu podpisującego. Zezwól na wyskakujące okna dla tej strony i spróbuj ponownie.",
+        "signer_unavailable": "Serwis podpisujący nie odpowiedział. Sprawdź połączenie i spróbuj ponownie.",
+        "key_not_found": "Ten klucz dostępu nie ma klucza publikowania tego konta.",
+        "owner_blind_signing": "Serwis podpisujący odmówił podpisania w ciemno kluczem właściciela.",
+        "prf_unsupported": "Ten klucz dostępu lub ta przeglądarka nie potrafi wyprowadzać kluczy (brak obsługi PRF). Spróbuj innej przeglądarki lub dostawcy kluczy.",
+        "webauthn_unavailable": "Klucze dostępu nie są dostępne w tej przeglądarce.",
+        "busy": "Okno serwisu podpisującego obsługuje inne żądanie. Zamknij je i spróbuj ponownie.",
+        "invalid_request": "Serwis podpisujący odrzucił żądanie jako nieprawidłowe.",
+        "internal": "Serwis podpisujący zawiódł. Spróbuj ponownie."
+      }
     }
   },
   "pageLogin": {

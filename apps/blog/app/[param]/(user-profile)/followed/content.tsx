@@ -1,6 +1,8 @@
 'use client';
 
 import BasePathLink from '@/blog/components/base-path-link';
+import AccountNameLink from '@/blog/features/lite-account/account-name-link';
+import { isLiteDid } from '@/blog/features/lite-account/lite-did';
 import PrevNextButtons from '@/blog/features/account-lists/prev-next-buttons';
 import { useFollowingInfiniteQuery } from '@/blog/features/account-lists/hooks/use-following-infinitequery';
 import { useTranslation } from '@/blog/i18n/client';
@@ -122,8 +124,13 @@ const FollowedContent = ({
                 data-testid="followed-list-item"
                 className="flex items-center justify-between bg-background-tertiary px-3 font-semibold text-destructive odd:bg-background"
               >
-                <BasePathLink href={`/@${e.following}`}>{e.following}</BasePathLink>
-                {!user.isLoggedIn || user.username === e.following ? null : (
+                {isLiteDid(e.following) ? (
+                  <AccountNameLink account={e.following} />
+                ) : (
+                  <BasePathLink href={`/@${e.following}`}>{e.following}</BasePathLink>
+                )}
+                {/* A Hive account's follow names Hive accounts: lite accounts are followed as a lite account */}
+                {!user.isLoggedIn || user.username === e.following || isLiteDid(e.following) ? null : (
                   <div className="flex gap-2">
                     <ButtonsContainer
                       username={e.following}

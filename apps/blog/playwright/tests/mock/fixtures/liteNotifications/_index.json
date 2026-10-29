@@ -1,0 +1,24 @@
+{
+  "testName": "liteNotifications",
+  "recordedAt": "2026-10-26T14:56:12.943Z",
+  "totalRequests": 77,
+  "savedFixtures": 22,
+  "duplicatesSkipped": 55,
+  "methods": {
+    "lite.get_info": 39,
+    "bridge.list_communities": 3,
+    "lite.get_ranked_posts": 3,
+    "lite.account_notifications": 4,
+    "lite.get_profile": 3,
+    "database_api.find_accounts": 8,
+    "bridge.get_profile": 3,
+    "lite.get_follow_count": 2,
+    "database_api.get_dynamic_global_properties": 2,
+    "lite.unread_notifications": 2,
+    "lite.get_following": 2,
+    "rc_api.find_rc_accounts": 1,
+    "lite.get_post": 2,
+    "lite.get_discussion": 2,
+    "lite.lookup_accounts": 1
+  }
+}

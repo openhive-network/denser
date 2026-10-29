@@ -1,17 +1,15 @@
 import { Icons } from '@hive/ui/components/icons';
 import TimeAgo from '@hive/ui/components/time-ago';
-import { configuredImagesEndpoint } from '@hive/ui/config/public-vars';
 import { Avatar, AvatarFallback, AvatarImage } from '@ui/components/avatar';
 import { IAccountNotification } from '@hive/common-hiveio-packages/wax';
-import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
-import { usePathname } from 'next/navigation';
-import { Link } from '@hive/ui';
+import { getUserAvatarUrl, Link } from '@hive/ui';
 import { cn } from '@ui/lib/utils';
 import { getImageSrc } from '@ui/lib/path-utils';
 import { useTranslation } from '@/blog/i18n/client';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
-
-const usernamePattern = /\B@[a-z0-9.-]+/gi;
+import LiteDidBadge from '@/blog/features/lite-account/lite-did-badge';
+import { authorDisplayName, isLiteDid } from '@/blog/features/lite-account/lite-did';
+import { notificationSource } from './lib/notification-source';
 
 /** Get icon and color based on notification type */
 function getNotificationIcon(type: string) {
@@ -61,25 +59,19 @@ const NotificationListItem = ({
   score,
   type,
   url,
-  lastRead
-}: IAccountNotification & { lastRead: Date }) => {
+  lastRead,
+  isOwner
+}: IAccountNotification & { lastRead: Date; isOwner: boolean }) => {
   const { t } = useTranslation('common_blog');
-  const pathname = usePathname();
-  const username = pathname?.split('/')[1].replace('@', '') || '';
-  const { user } = useUserClient();
 
-  const mentions = msg.match(usernamePattern);
+  const source = notificationSource(msg);
   const notificationDate = new Date(date);
   const { icon, color } = getNotificationIcon(type);
-  const imageHosterUrl = configuredImagesEndpoint;
   const fixedUrl = url.startsWith('c') ? url.replace('c', 'trending') : url;
   const errorMessage = type === 'error';
-  const isOwner = user.isLoggedIn && user.username === username;
   const isUnread = isOwner && notificationDate > lastRead;
 
-  // Get the first mentioned user for avatar display
-  const firstMention = mentions?.[0];
-  const avatarUsername = firstMention?.substring(1);
+  const avatarUsername = source?.account;
 
   return (
     <div
@@ -101,7 +93,7 @@ const NotificationListItem = ({
         <Link href={`/@${avatarUsername}`} data-testid="notification-account-icon-link" className="shrink-0">
           <Avatar className="h-10 w-10">
             <AvatarImage
-              src={`${imageHosterUrl}/u/${avatarUsername}/avatar/small`}
+              src={getUserAvatarUrl(avatarUsername, 'small')}
               alt={`${avatarUsername} profile picture`}
             />
             <AvatarFallback className="bg-transparent">
@@ -131,9 +123,18 @@ const NotificationListItem = ({
           className="line-clamp-2 text-sm hover:text-destructive visited:text-gray-500 dark:visited:text-gray-400"
         >
           <span data-testid="notification-account-and-message">
-            <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
-            {mentions
-              ? msg.split(new RegExp(`(${mentions[0]})`, 'gi'))[2]
+            {source && isLiteDid(source.account) ? (
+              <>
+                <strong data-testid="subscriber-name" translate="no">
+                  @{authorDisplayName(source.account)}
+                </strong>
+                <LiteDidBadge />
+              </>
+            ) : (
+              <strong data-testid="subscriber-name">{msg.split(' ')[0]}</strong>
+            )}
+            {source
+              ? source.text
               : errorMessage
                 ? msg.split('error:')[1]
                 : null}

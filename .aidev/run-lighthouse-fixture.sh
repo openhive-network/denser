@@ -118,7 +118,8 @@ build() {
 }
 
 # The integration site's app environment (stack/integration/compose.yml) with every
-# upstream on this host.
+# upstream on this host. No lite-account gateway: the recordings have none, and its
+# default is the public one on api.hive.blog.
 serve_app() {
     local app=$1 port=$2 repo=$PWD
     (
@@ -135,6 +136,7 @@ serve_app() {
             REACT_APP_EXPLORER_DOMAIN=https://explore.openhive.network \
             REACT_APP_LOGGING_BROWSER_ENABLED=true REACT_APP_LOGGING_LOG_LEVEL=info \
             DENSER_SERVER_SECRET_COOKIE_PASSWORD=lighthouse-fixture-dummy-cookie-password-not-a-secret \
+            DENSER_SERVER_LITE_GATEWAY_URL= \
             DENSER_FIXTURE_CLOCK="$clock" DENSER_EGRESS_LOG="$out/egress.log" \
             NODE_OPTIONS="--require $repo/$here/clock.cjs --require $repo/$here/egress-guard.cjs"
         # A recording must see where the servers go, not be stopped by it.

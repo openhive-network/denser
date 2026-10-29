@@ -1,0 +1,128 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_account_posts",
+    "params": {
+      "sort": "blog",
+      "account": "test-gateway-1",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "observer": "did:lite:crisp-koala-499"
+    },
+    "id": 1
+  },
+  "requestHash": "d37079d2d2b4fa72",
+  "method": "lite.get_account_posts",
+  "params": {
+    "sort": "blog",
+    "account": "test-gateway-1",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "observer": "did:lite:crisp-koala-499"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "url": "/lite-test/@test-gateway-1/denser-guest-root-post-check-2026-10-19t22-56-454653zrds",
+        "body": "Posted by the denser #1260 implementation check through the lite gateway (test namespace).",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 1
+        },
+        "title": "Denser guest root post check 2026-10-19T22:56",
+        "author": "did:lite:crisp-koala-499",
+        "payout": 0,
+        "created": "2026-10-19T22:56:48",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-19T22:56:48",
+        "category": "lite-test",
+        "children": 2,
+        "permlink": "denser-guest-root-post-check-2026-10-19t22-56-454653zrds",
+        "payout_at": "2026-10-26T22:56:48",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 1377435575,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "cheapestwhale",
+            "rshares": 1377435575
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "@hiveio/wax/1.28.6-rc10-stable.260326112051",
+          "tags": [
+            "lite-test"
+          ],
+          "format": "markdown+html",
+          "lite_posts_test": {
+            "alg": "lite-comment-v1",
+            "attester": "crisp-koala-499"
+          }
+        },
+        "author_reputation": 25,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      },
+      {
+        "url": "/lite-test/@test-gateway-1/re-lite-test-478380rd5v",
+        "body": "Smoke test of the lite gateway deployment on steem-16 (test namespace lite_account_test / lite_posts_test). Safe to ignore.",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "lite gateway smoke test",
+        "author": "did:lite:lite-smoke-1016",
+        "payout": 0,
+        "created": "2026-10-16T18:37:45",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2026-10-16T18:37:45",
+        "category": "lite-test",
+        "children": 4,
+        "permlink": "re-lite-test-478380rd5v",
+        "payout_at": "2026-10-23T18:37:45",
+        "blacklists": [],
+        "is_paidout": false,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "@hiveio/wax/1.28.6-rc10-stable.260326112051",
+          "tags": [
+            "lite-test"
+          ],
+          "format": "markdown+html",
+          "lite_posts_test": {
+            "alg": "lite-comment-v1",
+            "attester": "lite-smoke-1016"
+          }
+        },
+        "author_reputation": 25,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "1000000.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    ],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

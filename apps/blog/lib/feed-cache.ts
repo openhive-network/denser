@@ -1,5 +1,6 @@
 import { DATA_LIMIT, getPostsRanked } from '@transaction/lib/bridge-api';
 import { getReadChain } from '@transaction/lib/chain';
+import { getPostsNamespace } from '@transaction/lib/lite-api';
 import { createFeedCache, readFeedCacheConfig, type IFeedCache } from '@transaction/lib/feed-cache';
 import { getLogger } from '@ui/lib/logging';
 import { DEFAULT_OBSERVER } from './utils';
@@ -39,7 +40,7 @@ export async function getFeedFirstPage(
 ): Promise<FeedPage> {
   const chain = getReadChain();
   const request = {
-    network: `${chain.chainId}|${chain.endpointUrl}`,
+    network: `${chain.chainId}|${chain.endpointUrl}|${await getPostsNamespace()}`,
     sort,
     tag,
     startAuthor: '',

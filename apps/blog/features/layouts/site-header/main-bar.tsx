@@ -11,8 +11,8 @@ import { cn } from '@ui/lib/utils';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { Avatar, AvatarFallback, AvatarImage, Skeleton } from '@ui/components';
 import { useQuery } from '@tanstack/react-query';
-import { getUnreadNotifications } from '@transaction/lib/bridge-api';
 import UserMenu from '@/blog/features/layouts/site-header/user-menu';
+import { useUnreadNotifications } from '@/blog/features/activity-log/hooks/use-unread-notifications';
 import { ManabarRing } from './manabar-ring';
 import TooltipContainer from '@ui/components/tooltip-container';
 import { ModeSwitchInput } from '@ui/components/mode-switch-input';
@@ -20,6 +20,9 @@ import { getUserAvatarUrl } from '@hive/ui';
 import { getHiveSenseStatus } from '@transaction/lib/hivesense-api';
 import { useLoggedUserManabars } from '@/blog/features/votes/hooks/use-logged-user';
 import DialogLogin from '@/blog/components/dialog-login';
+import GuestWritePostTrigger from '@/blog/features/lite-account/guest-write-post-trigger';
+import LiteIdentityMenu from '@/blog/features/lite-account/lite-identity-menu';
+import LiteDeviceExpiryBanner from '@/blog/features/lite-account/lite-device-expiry-banner';
 import ModeToggle from '@/blog/features/layouts/mode-toggle';
 import LangToggle from '@/blog/features/layouts/lang-toggle';
 import { hoursAndMinutes } from '@/blog/lib/utils';
@@ -52,11 +55,7 @@ const MainBar: FC = () => {
   }, []);
 
   const manabarsData = useLoggedUserManabars();
-  const { data } = useQuery({
-    queryKey: ['unreadNotifications', user.username],
-    queryFn: () => getUnreadNotifications(user.username),
-    enabled: !!user.username
-  });
+  const { data } = useUnreadNotifications(user.username);
   const isIdle = useIdleAfterLoad();
   const [isSearchTouched, setIsSearchTouched] = useState(false);
   const handleSearchTouched = useCallback(() => setIsSearchTouched(true), []);
@@ -182,17 +181,20 @@ const MainBar: FC = () => {
                   <Icons.pencil className="h-5 w-5" aria-hidden="true" />
                 </Link>
               ) : (
-                <DialogLogin redirectTo="/submit.html">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-10 w-10 px-0"
-                    aria-label={t('navigation.main_nav_bar.create_post')}
-                    data-testid="nav-pencil"
-                  >
-                    <Icons.pencil className="h-5 w-5" aria-hidden="true" />
-                  </Button>
-                </DialogLogin>
+                <GuestWritePostTrigger>
+                  {(onClick) => (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-10 w-10 px-0"
+                      aria-label={t('navigation.main_nav_bar.create_post')}
+                      onClick={onClick}
+                      data-testid="nav-pencil"
+                    >
+                      <Icons.pencil className="h-5 w-5" aria-hidden="true" />
+                    </Button>
+                  )}
+                </GuestWritePostTrigger>
               )}
             </TooltipContainer>
             {!isClient ? (
@@ -299,7 +301,9 @@ const MainBar: FC = () => {
                       <LoginKeyBadge authority={loginAuthority.authority} />
                     </button>
                   </UserMenu>
-                ) : null}
+                ) : (
+                  <LiteIdentityMenu />
+                )}
               </>
             )}
 
@@ -307,6 +311,7 @@ const MainBar: FC = () => {
           </nav>
         </div>
       </div>
+      <LiteDeviceExpiryBanner />
     </header>
   );
 };

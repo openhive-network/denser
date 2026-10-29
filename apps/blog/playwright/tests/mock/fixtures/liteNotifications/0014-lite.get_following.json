@@ -1,0 +1,30 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_following",
+    "params": {
+      "account": "test-gateway-1",
+      "start": null,
+      "type": "ignore",
+      "limit": 1000
+    },
+    "id": 1
+  },
+  "requestHash": "547e7934352d51f0",
+  "method": "lite.get_following",
+  "params": {
+    "account": "test-gateway-1",
+    "start": null,
+    "type": "ignore",
+    "limit": 1000
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

@@ -1,10 +1,14 @@
 import { Metadata } from 'next';
-import React, { PropsWithChildren } from 'react';
 import { getTranslation } from '@/blog/i18n/server';
+import { extractSocialAccountFromParam, SocialAccountLayout } from '@/blog/lib/hive-account-route';
+import { authorDisplayName } from '@/blog/features/lite-account/lite-did';
+import { getPageNotFoundMetadata } from '@/blog/lib/not-found-metadata';
 
 export async function generateMetadata(props: { params: Promise<{ param: string }> }): Promise<Metadata> {
   const params = await props.params;
-  const username = params?.param?.startsWith('%40') ? params.param.replace('%40', '') : params.param;
+  const account = await extractSocialAccountFromParam(params.param);
+  if (!account) return getPageNotFoundMetadata();
+  const username = authorDisplayName(account);
   const { t } = await getTranslation('common_blog');
   const title = t('page_titles.people_following', { username });
 
@@ -13,6 +17,4 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
   };
 }
 
-export default function Layout({ children }: PropsWithChildren) {
-  return <>{children}</>;
-}
+export default SocialAccountLayout;

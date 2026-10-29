@@ -13,6 +13,10 @@ import {YoutubeEmbedder} from './embedders/YoutubeEmbedder';
 import {AccountNameValidator} from './utils/AccountNameValidator';
 import linksRe, {any as linksAny} from './utils/Links';
 
+const LITE_DID_PREFIX = 'did:lite:';
+// @hiveio/lite-account's LITE_NAME_PATTERN (isValidLiteName).
+const LITE_NAME_PATTERN = /^(?=.{3,16}$)[a-z][a-z0-9-]+[a-z0-9](\.[a-z][a-z0-9-]+[a-z0-9])*$/;
+
 export class HtmlDOMParser {
     private options: HtmlDOMParserOptions;
     private localization: LocalizationOptions;
@@ -442,18 +446,20 @@ export class HtmlDOMParser {
             return space + `<a href="${tagUrl}">${tag.trim()}</a>`;
         });
 
-        // usertag (mention)
+        // usertag (mention), or a lite account's mention by its DID (@did:lite:<name>)
         // Cribbed from https://github.com/twitter/twitter-text/blob/v1.14.7/js/twitter-text.js#L90
-        content = content.replace(/(^|[^a-zA-Z0-9_!#$%&*@＠/]|(^|[^a-zA-Z0-9_+~.-/#]))[@＠]([a-z][-.a-z\d]+[a-z\d])/gi, (_match, preceeding1, preceeding2, user) => {
+        content = content.replace(/(^|[^a-zA-Z0-9_!#$%&*@＠/]|(^|[^a-zA-Z0-9_+~.-/#]))[@＠](did:lite:[-.a-z\d]*[a-z\d]|[a-z][-.a-z\d]+[a-z\d])/gi, (_match, preceeding1, preceeding2, user) => {
+            // include the preceeding matches if they exist
+            const preceedings = (preceeding1 || '') + (preceeding2 || '');
+            if (/^did:lite:/i.test(user)) {
+                return preceedings + this.linkifyLiteMention(user);
+            }
             const userLower = user.toLowerCase();
             const valid = AccountNameValidator.validateAccountName(userLower, this.localization) == null;
 
             if (valid && this.state.usertags) {
                 this.state.usertags.add(userLower);
             }
-
-            // include the preceeding matches if they exist
-            const preceedings = (preceeding1 || '') + (preceeding2 || '');
 
             if (!this.mutate) {
                 return `${preceedings}${user}`;
@@ -463,6 +469,21 @@ export class HtmlDOMParser {
             return valid ? `${preceedings}<a href="${userTagUrl}">@${user}</a>` : `${preceedings}@${user}`;
         });
         return content;
+    }
+
+    /**
+     * A lite account's mention (`did:lite:<name>`, without its `@`): a link to its profile
+     * (`usertagUrlFn` of the DID) showing `@<name>`, titled with the DID, by which a stylesheet can
+     * badge it. Not a Hive account, so it is not one of the usertags. A DID with an invalid lite name
+     * stays text.
+     */
+    private linkifyLiteMention(did: string) {
+        const name = did.slice(LITE_DID_PREFIX.length).toLowerCase();
+        if (!this.mutate || !LITE_NAME_PATTERN.test(name)) {
+            return `@${did}`;
+        }
+        const liteDid = `${LITE_DID_PREFIX}${name}`;
+        return `<a href="${this.options.usertagUrlFn(liteDid)}" title="${liteDid}">@${name}</a>`;
     }
 
     /**

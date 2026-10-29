@@ -39,6 +39,18 @@ describe('DefaultRender', () => {
             expected: '<p>Content <a href="https://hive.blog/@noisy" class="hive-test">@noisy</a> another content</p>'
         },
         {
+            name: 'Renders a lite mention by DID as a link to the lite profile, showing its name',
+            raw: 'Thanks @did:lite:alice and @did:lite:Bob.Two-x!',
+            expected:
+                '<p>Thanks <a href="https://hive.blog/@did:lite:alice" title="did:lite:alice" class="hive-test">@alice</a> and ' +
+                '<a href="https://hive.blog/@did:lite:bob.two-x" title="did:lite:bob.two-x" class="hive-test">@bob.two-x</a>!</p>'
+        },
+        {
+            name: 'Keeps a lite mention with an invalid lite name as text, without linking @did',
+            raw: 'Hi @did:lite:ab there',
+            expected: '<p>Hi @did:lite:ab there</p>'
+        },
+        {
             name: 'Renders hive hashtags correctly',
             raw: 'Content #pl-nuda another content',
             expected: '<p>Content <a href="/trending/pl-nuda" class="hive-test">#pl-nuda</a> another content</p>'

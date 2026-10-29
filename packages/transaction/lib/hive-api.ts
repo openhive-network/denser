@@ -24,6 +24,7 @@ import {
 } from './manabar-math';
 import { DATA_LIMIT } from './bridge-api';
 import { getLogger } from '@ui/lib/logging';
+import { getLiteFollowCount, getLiteFollowers, getLiteFollowing } from './lite-social-api';
 
 const logger = getLogger('hive-api');
 
@@ -51,7 +52,10 @@ interface IManabars {
 const PERCENT_VALUE_DOUBLE_PRECISION = 100;
 const ONE_HUNDRED_PERCENT = BigInt(100) * BigInt(PERCENT_VALUE_DOUBLE_PRECISION);
 
-type ManabarDynamicGlobalProperties = Pick<GetDynamicGlobalPropertiesResponse, 'time' | 'downvote_pool_percent'>;
+type ManabarDynamicGlobalProperties = Pick<
+  GetDynamicGlobalPropertiesResponse,
+  'time' | 'downvote_pool_percent'
+>;
 
 /**
  * Loads the global properties the manabars are computed against. Callers that already hold them
@@ -66,17 +70,23 @@ export const getManabars = async (
   try {
     const chain = getReadChain();
 
-    const [dgpo, {
-      accounts: [account]
-    }, {
-      rc_accounts: [rcAccount]
-    }] = await Promise.all([
-      loadDynamicGlobalProperties ? loadDynamicGlobalProperties() : chain.api.database_api.get_dynamic_global_properties({}),
+    const [
+      dgpo,
+      {
+        accounts: [account]
+      },
+      {
+        rc_accounts: [rcAccount]
+      }
+    ] = await Promise.all([
+      loadDynamicGlobalProperties
+        ? loadDynamicGlobalProperties()
+        : chain.api.database_api.get_dynamic_global_properties({}),
       chain.api.database_api.find_accounts({
         accounts: [accountName],
         delayed_votes_active: false
       }),
-      chain.api.rc_api.find_rc_accounts({ accounts: [ accountName ] })
+      chain.api.rc_api.find_rc_accounts({ accounts: [accountName] })
     ]);
 
     if (!account || !rcAccount) {
@@ -85,33 +95,38 @@ export const getManabars = async (
 
     const time = new Date(`${dgpo.time}Z`).getTime() / 1000;
 
-    const upvoteCooldown = new Date(calculateManabarFullRegenerationTime(
-      time,
-      account.post_voting_power.amount,
-      account.voting_manabar.current_mana,
-      account.voting_manabar.last_update_time
-    ) * 1000);
+    const upvoteCooldown = new Date(
+      calculateManabarFullRegenerationTime(
+        time,
+        account.post_voting_power.amount,
+        account.voting_manabar.current_mana,
+        account.voting_manabar.last_update_time
+      ) * 1000
+    );
 
     // This code is copied from Wax repository. We should implement an easier way to manually calculate multiple manabars in the future.
     let max = BigInt(account.post_voting_power.amount);
     const downvotePoolPercent = BigInt(dgpo.downvote_pool_percent);
-    if(max / ONE_HUNDRED_PERCENT > ONE_HUNDRED_PERCENT)
+    if (max / ONE_HUNDRED_PERCENT > ONE_HUNDRED_PERCENT)
       max = (max / ONE_HUNDRED_PERCENT) * downvotePoolPercent;
-    else
-      max = (max * downvotePoolPercent) / ONE_HUNDRED_PERCENT;
+    else max = (max * downvotePoolPercent) / ONE_HUNDRED_PERCENT;
 
-    const downvoteCooldown = new Date(calculateManabarFullRegenerationTime(
-      time,
-      max,
-      account.downvote_manabar.current_mana,
-      account.downvote_manabar.last_update_time
-    ) * 1000);
-    const rcCooldown = new Date(calculateManabarFullRegenerationTime(
-      time,
-      rcAccount.max_rc,
-      rcAccount.rc_manabar.current_mana,
-      rcAccount.rc_manabar.last_update_time
-    ) * 1000);
+    const downvoteCooldown = new Date(
+      calculateManabarFullRegenerationTime(
+        time,
+        max,
+        account.downvote_manabar.current_mana,
+        account.downvote_manabar.last_update_time
+      ) * 1000
+    );
+    const rcCooldown = new Date(
+      calculateManabarFullRegenerationTime(
+        time,
+        rcAccount.max_rc,
+        rcAccount.rc_manabar.current_mana,
+        rcAccount.rc_manabar.last_update_time
+      ) * 1000
+    );
     const upvote = calculateCurrentManabarValue(
       time,
       account.post_voting_power.amount,
@@ -258,13 +273,15 @@ const getBridgeProfile = (account: string): Promise<IProfile | null> =>
   );
 
 /**
- * Fetches follow stats and reputation from bridge.get_profile.
- * Returns both values from a single API call.
+ * Fetches follow stats and reputation from bridge.get_profile. On a node serving the lite social
+ * graph the follow counts come from `lite.get_follow_count`, which counts lite followers too.
  */
 export const getProfileInfo = async (
   username: string
 ): Promise<{ follow_stats: AccountFollowStats; reputation: number }> => {
-  const profile = await getBridgeProfile(username);
+  const [profile, liteCounts] = await Promise.all([getBridgeProfile(username), getLiteFollowCount(username)]);
+  if (liteCounts)
+    return { follow_stats: { ...liteCounts, account: username }, reputation: profile?.reputation ?? 25 };
   if (!profile || !profile.stats) {
     return {
       follow_stats: {
@@ -320,7 +337,7 @@ export const getRebloggedBy = async (author: string, permlink: string): Promise<
   return readFromHivemind(
     'postRebloggedBy',
     (api) => api.postRebloggedBy({ author, permlink }),
-    () => getReadChain().api.condenser_api.get_reblogged_by([ author, permlink ])
+    () => getReadChain().api.condenser_api.get_reblogged_by([author, permlink])
   );
 };
 
@@ -368,9 +385,12 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
     const type = params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type;
     const limit = params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit;
 
+    const lite = await getLiteFollowing({ account, start, type, limit });
+    if (lite) return lite;
     return readFromHivemind(
       'accountFollowing',
-      (api) => api.accountFollowing({ 'account-name': account, type, 'page-size': limit, start: nonEmpty(start) }),
+      (api) =>
+        api.accountFollowing({ 'account-name': account, type, 'page-size': limit, start: nonEmpty(start) }),
       () => getReadChain().api.condenser_api.get_following([account, start, type, limit])
     );
   } catch (error) {
@@ -406,9 +426,12 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
     const type = params?.type || DEFAULT_PARAMS_FOR_FOLLOW.type;
     const limit = params?.limit || DEFAULT_PARAMS_FOR_FOLLOW.limit;
 
+    const lite = await getLiteFollowers({ account, start, type, limit });
+    if (lite) return lite;
     return readFromHivemind(
       'accountFollowers',
-      (api) => api.accountFollowers({ 'account-name': account, type, 'page-size': limit, start: nonEmpty(start) }),
+      (api) =>
+        api.accountFollowers({ 'account-name': account, type, 'page-size': limit, start: nonEmpty(start) }),
       () => getReadChain().api.condenser_api.get_followers([account, start, type, limit])
     );
   } catch (error) {
@@ -417,15 +440,16 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
   }
 };
 
-export const getByText = async ({
-  pattern,
-  sort = 'relevance',
-  author = '',
-  limit = DATA_LIMIT,
-  observer,
-  start_author = '',
-  start_permlink = ''
-}: Parameters<ReturnType<typeof getReadChain>['api']['search-api']['find_text']>[0] // Temporary solution
+export const getByText = async (
+  {
+    pattern,
+    sort = 'relevance',
+    author = '',
+    limit = DATA_LIMIT,
+    observer,
+    start_author = '',
+    start_permlink = ''
+  }: Parameters<ReturnType<typeof getReadChain>['api']['search-api']['find_text']>[0] // Temporary solution
 ): Promise<Entry[]> => {
   const findText = () =>
     getReadChain().api['search-api'].find_text({
@@ -466,7 +490,12 @@ const getPostVotesFromHivemind = async (
   const votes: HivemindRestPostVote[] = [];
   let startVoter: string | undefined;
   while (true) {
-    const page = await api.postVotes({ author, permlink, 'page-size': ACTIVE_VOTES_PAGE_SIZE, 'start-voter': startVoter });
+    const page = await api.postVotes({
+      author,
+      permlink,
+      'page-size': ACTIVE_VOTES_PAGE_SIZE,
+      'start-voter': startVoter
+    });
     votes.push(...page.filter((vote) => vote.voter !== startVoter));
     if (page.length < ACTIVE_VOTES_PAGE_SIZE) break;
     startVoter = page[page.length - 1].voter;

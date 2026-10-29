@@ -22,7 +22,7 @@
 # How an agent uses it: .aidev/README.md.
 name: denser-aidev-dev
 
-x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:4b25055e3b76cdac25a58addbe519ca1377908ab3d8f7ab71706666cd4cf1e21
+x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:06af720494ff070ef6db1b89ad736eba1ae412aa5222632e59fb14f8fdd37b33
 
 # The checkout owner: node_modules and next's cache are
 # written as this uid so a host-side `git clean` or worktree removal can delete
@@ -128,6 +128,12 @@ services:
       # Feed cache off: one server answers spec after spec (or fixture set after
       # fixture set), and a cached feed would carry the previous one's data.
       DENSER_FEED_CACHE_TTL_S: "0"
+      # Same for whether the node behind the endpoint serves lite.* (a recording does or not).
+      DENSER_LITE_PROBE_TTL_S: "0"
+      # The lite-account gateway guest replies and posts go through: none unless the stack is
+      # started with one (the recordings have no gateway), e.g. the steem-16 test namespace
+      # https://steem-16.syncad.com/lite-gateway-api for liteRootPost.spec.ts.
+      DENSER_SERVER_LITE_GATEWAY_URL: ${DENSER_SERVER_LITE_GATEWAY_URL:-}
       HOSTNAME: 0.0.0.0
       PORT: "3000"
       NODE_OPTIONS: --max-old-space-size=4096

@@ -30,7 +30,7 @@
 # and after .aidev/run-wallet-fixture-e2e.sh, wallet-live likewise.
 name: denser-aidev-test
 
-x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:4b25055e3b76cdac25a58addbe519ca1377908ab3d8f7ab71706666cd4cf1e21
+x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:06af720494ff070ef6db1b89ad736eba1ae412aa5222632e59fb14f8fdd37b33
 
 x-checkout: &checkout ${AIDEV_HOST_CHECKOUT:-${PWD}}:/work:ro
 
@@ -89,6 +89,8 @@ services:
       # Feed cache off: one server answers spec after spec (or fixture set after
       # fixture set), and a cached feed would carry the previous one's data.
       DENSER_FEED_CACHE_TTL_S: "0"
+      # Same for whether the node behind the endpoint serves lite.* (a recording does or not).
+      DENSER_LITE_PROBE_TTL_S: "0"
       HOSTNAME: 0.0.0.0
       PORT: "3000"
     command: ["bash", ".aidev/blog-serve-standalone.sh"]

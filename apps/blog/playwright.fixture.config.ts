@@ -76,6 +76,10 @@ const serverEnv = {
   // The For You feed is on, as on a deployment that sets it; specs answer it with page.route
   // (fypApiStub.ts). The feed-cache server leaves it unset, the default.
   REACT_APP_FYP_API_URL: FIXTURE_FYP_API_URL,
+  // The steem-16 deployment's passkey signer, the one the lite passkey specs' recordings and
+  // stub signer stand for; a spec needing another list rewrites it in __ENV.js
+  // (`configureSigners` in support/litePasskeyContext.ts).
+  REACT_APP_PASSKEY_SIGNERS: JSON.stringify(['https://signer.syncad.com']),
   HOSTNAME: '0.0.0.0',
   PORT: '3000',
   // Pin APP_NAME so iron-session's cookieName matches what the seeder
@@ -151,7 +155,7 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
       // unreachable answers 503, which Playwright does not count as ready.
       url: `http://127.0.0.1:3000${BASE_PATH}/api/health`,
       ...ownWebServerOptions(),
-      env: { ...serverEnv, DENSER_FEED_CACHE_TTL_S: '0' }
+      env: { ...serverEnv, DENSER_FEED_CACHE_TTL_S: '0', DENSER_LITE_PROBE_TTL_S: '0' }
     },
     // Started once the server above has put the build's static files in place.
     {

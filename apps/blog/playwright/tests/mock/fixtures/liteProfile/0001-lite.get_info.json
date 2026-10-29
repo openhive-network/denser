@@ -1,0 +1,37 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_info",
+    "params": {},
+    "id": 1
+  },
+  "requestHash": "7488bfbdd06ba0d1",
+  "method": "lite.get_info",
+  "params": {},
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "apps": {
+        "posts": "lite_posts_test"
+      },
+      "modes": [
+        "compat",
+        "native"
+      ],
+      "methods": [
+        "get_discussion",
+        "get_post",
+        "get_ranked_posts",
+        "get_account_posts",
+        "get_profile"
+      ],
+      "version": "502ee030",
+      "render_base": "https://hive.blog"
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

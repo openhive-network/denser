@@ -12,6 +12,7 @@ import { useClientRenderedBody } from './hooks/use-client-rendered-body';
 import { useServerRenderedBody } from './rendered-bodies-context';
 import { useLeavePageLinks } from './hooks/use-leave-page-links';
 import { usePatchedHtml } from './hooks/use-patched-html';
+import { useTranslation } from '@/blog/i18n/client';
 
 const isExternalLink = (link: HTMLAnchorElement) => link.classList.contains('link-external');
 
@@ -35,6 +36,9 @@ const RendererContainer = ({
   proxyAuthToken?: string;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation('common_blog');
+  // The label of the badge the stylesheet draws on a lite mention (a CSS string).
+  const liteMentionStyle: Record<string, string> = { '--lite-mention-label': JSON.stringify(t('lite_account.badge_prefix')) };
   const serverRenderedHtml = useServerRenderedBody(author, permlink, body, Boolean(mainPost));
   const prerenderedHtml = proxyAuthToken ? undefined : serverRenderedHtml;
   const clientRenderedHtml = useClientRenderedBody(prerenderedHtml ? undefined : body, {
@@ -142,6 +146,7 @@ const RendererContainer = ({
           id="articleBody"
           ref={ref}
           className={cn('prose w-full', className)}
+          style={liteMentionStyle}
           data-testid={dataTestid}
           dangerouslySetInnerHTML={previewMode ? undefined : { __html: htmlBody }}
         />

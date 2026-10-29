@@ -1,0 +1,28 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "lite.get_follow_count",
+    "params": {
+      "account": "test-gateway-1"
+    },
+    "id": 1
+  },
+  "requestHash": "b981cd562f5169c8",
+  "method": "lite.get_follow_count",
+  "params": {
+    "account": "test-gateway-1"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "account": "test-gateway-1",
+      "follower_count": 1,
+      "following_count": 0
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

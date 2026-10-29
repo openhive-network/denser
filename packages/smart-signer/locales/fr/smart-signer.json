@@ -73,7 +73,8 @@
       "hivesigner": "HiveSigner est un service externe qui signe les transactions en votre nom une fois que vous avez autorisé cette application.",
       "wif": "Entrez directement votre clé privée (WIF). Elle sert uniquement à signer et n'est pas conservée, sauf si vous choisissez de l'enregistrer.",
       "metamask": "Signez avec vos clés Hive gérées par Hive Snap dans l'extension MetaMask.",
-      "google": "Conservez vos clés chiffrées dans votre Google Drive et signez avec elles depuis n'importe quel appareil."
+      "google": "Conservez vos clés chiffrées dans votre Google Drive et signez avec elles depuis n'importe quel appareil.",
+      "passkey": "Un site signataire dérive vos clés Hive d'une passkey et signe pour vous dans sa propre fenêtre. Vos clés n'atteignent jamais ce site."
     },
     "signin_safe_storage": {
       "title": "Connexion avec stockage sécurisé",
@@ -148,6 +149,32 @@
       "enable": "Activer",
       "not_now": "Pas maintenant",
       "never_ask_again": "Ne plus demander"
+    },
+    "passkey": {
+      "method": "Signataire à passkey",
+      "title": "Se connecter avec un signataire à passkey",
+      "description": "Saisissez le nom de votre compte. Votre signataire vérifie qu'il détient la clé de publication du compte.",
+      "signer_label": "Signataire",
+      "find": "Trouver ma clé",
+      "found": "Votre signataire détient la clé de publication de @{{username}}.",
+      "sign_in": "Se connecter en tant que @{{username}}",
+      "find_again": "Utiliser une autre passkey",
+      "errors": {
+        "account_not_found": "Aucun compte Hive ne porte ce nom.",
+        "key_not_on_account": "La clé dérivée par votre signataire ne figure pas dans l'autorité de publication de ce compte. Utilisez la passkey dont proviennent les clés de ce compte.",
+        "unavailable": "Impossible de lire ce compte. Vérifiez votre connexion et réessayez."
+      },
+      "signer_errors": {
+        "popup_blocked": "Le navigateur a bloqué la fenêtre du signataire. Autorisez les fenêtres surgissantes pour ce site et réessayez.",
+        "signer_unavailable": "Le site signataire n'a pas répondu. Vérifiez votre connexion et réessayez.",
+        "key_not_found": "Cette passkey ne détient pas la clé de publication du compte.",
+        "owner_blind_signing": "Le signataire a refusé de signer à l'aveugle avec une clé de propriétaire.",
+        "prf_unsupported": "Cette passkey ou ce navigateur ne peut pas dériver de clés (pas de prise en charge PRF). Essayez un autre navigateur ou fournisseur de passkeys.",
+        "webauthn_unavailable": "Les passkeys ne sont pas disponibles dans ce navigateur.",
+        "busy": "La fenêtre du signataire traite une autre demande. Fermez-la et réessayez.",
+        "invalid_request": "Le signataire a refusé la demande comme invalide.",
+        "internal": "Le signataire a échoué. Réessayez."
+      }
     }
   },
   "pageLogin": {
