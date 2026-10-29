@@ -44,9 +44,9 @@ catalogs:
     "@hiveio/wax-signers-metamask": "1.28.8-stable.261028191145"
     "@hiveio/wax-signers-peakvault": "1.28.8-stable.261028191145"
     "@hiveio/wax-signers-beekeeper": "1.28.8-stable.261028191145"
-    "@hiveio/beekeeper": "1.28.8-stable.261010174216"
-    "@hiveio/workerbee": "1.28.4-rc1-stable.261026001315"
-    "@hiveio/hb-auth": "1.28.4-rc0-stable.261027002715"
+    "@hiveio/beekeeper": "1.28.9-rc0-stable.261028200530"
+    "@hiveio/workerbee": "1.28.4-rc1-stable.261029021233"
+    "@hiveio/hb-auth": "1.28.4-rc0-stable.261028220752"
     "@hiveio/healthchecker-component": "2.0.2-stable.261027010535"
   "react-toolset":
     "react": "19.3.1"
@@ -73,4 +73,6 @@ catalogs:
 # whose embind glue uses new Function, which the nonce CSP (no 'unsafe-eval') blocks
 # on the page; every consumer gets the catalog's CSP-safe build.
 overrides:
-  '@hiveio/beekeeper': 'catalog:hiveio-toolset'
+  # BEGIN common-ci-configuration overrides (pnpm-catalog-sync.py rewrites this region from the ccc submodule; do not edit)
+  "@hiveio/beekeeper": "catalog:hiveio-toolset"
+  # END common-ci-configuration overrides
