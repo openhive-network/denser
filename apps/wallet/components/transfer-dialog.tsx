@@ -558,7 +558,7 @@ export function TransferDialog({
                           <SelectTrigger
                             aria-label={t('transfers_page.currency')}
                             disabled={type === 'delegate'}
-                            className="my-[1.5px] mr-[1px] h-9 w-fit border-none focus:ring-0 focus:ring-offset-0"
+                            className="my-[1.5px] mr-px h-9 w-fit border-none focus:ring-0 focus:ring-offset-0"
                             onSelect={() => setCurr('HIVE')}
                           >
                             <SelectValue placeholder={curr} />
@@ -724,7 +724,7 @@ export function TransferDialog({
         </DialogContent>
         <Dialog open={nextOpen} onOpenChange={setNextOpen}>
           <DialogContent onOpenAutoFocus={focusConfirmTitle} closeLabel={t('global.close')}>
-            <DialogTitle ref={confirmTitleRef} tabIndex={-1} className="focus:outline-none">
+            <DialogTitle ref={confirmTitleRef} tabIndex={-1} className="focus:outline-hidden">
               {t('transfers_page.confirm_transaction', { transaction: data.title })}
             </DialogTitle>
             {type !== 'delegate' ? (
@@ -734,7 +734,7 @@ export function TransferDialog({
                   <div className="relative col-span-3">
                     <Input
                       defaultValue={username}
-                      className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5 pl-11"
+                      className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5 pl-11"
                     />
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                       <Icons.atSign className="h-5 w-5" />
@@ -746,7 +746,7 @@ export function TransferDialog({
                   <div className="relative col-span-3">
                     <Input
                       defaultValue={data.to}
-                      className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5 pl-11"
+                      className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5 pl-11"
                     />
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                       <Icons.atSign className="h-5 w-5" />
@@ -758,7 +758,7 @@ export function TransferDialog({
                   <div className="relative col-span-3">
                     <Input
                       defaultValue={value}
-                      className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
+                      className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5"
                     />
                   </div>
                 </div>
@@ -768,7 +768,7 @@ export function TransferDialog({
                     <div className="relative col-span-3">
                       <Input
                         defaultValue={data.memo}
-                        className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
+                        className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5"
                       />
                     </div>
                   </div>
@@ -779,7 +779,7 @@ export function TransferDialog({
                     <div className="relative col-span-3">
                       <Input
                         defaultValue={data.requestId}
-                        className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
+                        className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5"
                       />
                     </div>
                   </div>
@@ -792,7 +792,7 @@ export function TransferDialog({
                   <div className="relative col-span-3">
                     <Input
                       defaultValue={username}
-                      className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5 pl-11"
+                      className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5 pl-11"
                     />
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                       <Icons.atSign className="h-5 w-5" />
@@ -804,7 +804,7 @@ export function TransferDialog({
                   <div className="relative col-span-3">
                     <Input
                       defaultValue={data.to}
-                      className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5 pl-11"
+                      className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5 pl-11"
                     />
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                       <Icons.atSign className="h-5 w-5" />
@@ -816,7 +816,7 @@ export function TransferDialog({
                   <div className="relative col-span-3">
                     <Input
                       defaultValue={value}
-                      className="text-stale-900 pointer-events-none block w-full !cursor-default px-3 py-2.5"
+                      className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5"
                     />
                   </div>
                 </div>

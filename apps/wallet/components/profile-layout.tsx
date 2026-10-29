@@ -111,7 +111,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
                   <Icons.globe2 className="m-1" />
                   <Link
                     target="_external"
-                    className="website-link break-words"
+                    className="website-link wrap-break-word"
                     href={`https://${profileData?.profile?.website?.replace(/^(https?|ftp):\/\//, '')}`}
                   >
                     <span>{profileData?.profile?.website}</span>
@@ -135,7 +135,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
       <div className="flex flex-col pb-8 md:pb-4 ">
         <div className="w-full">
           <div className="flex h-12 bg-background-tertiary" data-testid="profile-navigation">
-            <div className="container mx-auto flex max-w-screen-xl justify-between p-0 sm:pl-8">
+            <div className="container mx-auto flex max-w-(--breakpoint-xl) justify-between p-0 sm:pl-8">
               <ul className="flex h-full gap-2 text-xs text-primary sm:text-base lg:flex lg:gap-8">
                 <li>
                   <Link
@@ -190,7 +190,7 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
         </div>
-        <main className="container max-w-screen-xl p-0">{children}</main>
+        <main className="container max-w-(--breakpoint-xl) p-0">{children}</main>
       </div>
     </div>
   );

@@ -266,7 +266,7 @@ export function ReplyTextbox({
 
   return (
     <div
-      className="mb-4 flex w-full flex-col gap-4 rounded-lg border border-border bg-background p-4 text-primary shadow-sm"
+      className="mb-4 flex w-full flex-col gap-4 rounded-lg border border-border bg-background p-4 text-primary shadow-xs"
       data-testid="reply-editor"
       suppressHydrationWarning
     >

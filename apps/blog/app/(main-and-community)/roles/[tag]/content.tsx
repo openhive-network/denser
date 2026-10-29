@@ -50,7 +50,7 @@ const Content = ({ community, initialData }: { community: string; initialData: s
           {t('communities.user_roles')}
         </h2>
         <Table
-          className="w-full border-[1px] border-solid border-secondary"
+          className="w-full border border-solid border-secondary"
           data-testid="community-roles-table"
         >
           <TableHeader className="text-">

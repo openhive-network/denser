@@ -32,7 +32,7 @@ const SuggestionsList = ({ suggestions, horizontal }: SuggestionsListProps) => {
       data-testid="suggestions-list"
       className={
         horizontal
-          ? 'flex gap-3 overflow-x-auto px-4 pb-3 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+          ? 'flex gap-3 overflow-x-auto px-4 pb-3 snap-x snap-mandatory [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden'
           : 'my-4 flex flex-col'
       }
     >

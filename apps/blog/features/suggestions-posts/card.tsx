@@ -22,7 +22,7 @@ const SuggestionsCard = ({ entry, horizontal }: SuggestionsCardProps) => {
 
   if (horizontal) {
     return (
-      <div className="w-44 flex-shrink-0 snap-start overflow-hidden rounded-lg bg-background shadow-md">
+      <div className="w-44 shrink-0 snap-start overflow-hidden rounded-lg bg-background shadow-md">
         <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`}>
           {image ? (
             <div className="h-24 overflow-hidden bg-transparent">

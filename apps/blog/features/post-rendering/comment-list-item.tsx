@@ -53,7 +53,7 @@ interface CommentListProps {
   children?: ReactNode;
 }
 export const commentClassName =
-  'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] last:prose-p:mb-[3.2px] prose-img:max-w-full prose-img:h-auto prose-img:max-h-[400px] prose-img:object-contain';
+  'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] prose-p:last:mb-[3.2px] prose-img:max-w-full prose-img:h-auto prose-img:max-h-[400px] prose-img:object-contain';
 
 const CommentListItem = memo(function CommentListItem({
   permissionToMute,
@@ -297,7 +297,7 @@ const CommentListItem = memo(function CommentListItem({
                                 </AlertDialogFlag>
                               ) : null}
                               <AccordionTrigger
-                                className="pb-0 pt-1 !no-underline sm:hidden"
+                                className="pb-0 pt-1 no-underline! sm:hidden"
                                 aria-label={toggleLabel}
                                 onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                               />
@@ -307,7 +307,7 @@ const CommentListItem = memo(function CommentListItem({
                         {comment._temporary && !comment._optimistic ? null : isOriginallyHidden ? (
                           <div className="flex w-full items-center justify-between">
                             <AccordionTrigger
-                              className="pb-0 pt-1 !no-underline "
+                              className="pb-0 pt-1 no-underline! "
                               onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                             >
                               <span
@@ -374,7 +374,7 @@ const CommentListItem = memo(function CommentListItem({
                       </div>
                       {!hiddenComment ? (
                         <AccordionTrigger
-                          className="mr-2 hidden pb-0 pt-1 !no-underline sm:block"
+                          className="mr-2 hidden pb-0 pt-1 no-underline! sm:block"
                           aria-label={toggleLabel}
                           onClick={() => setOpenState((prev) => (prev === 'item-1' ? '' : 'item-1'))}
                         />
@@ -383,7 +383,7 @@ const CommentListItem = memo(function CommentListItem({
                   </CardHeader>
                   <AccordionContent className="h-fit p-0">
                     <Separator orientation="horizontal" />
-                    <CardContent className="h-fit w-full min-w-0 overflow-hidden px-[5px] py-[1px] hover:bg-background-tertiary" data-testid="comment-card-to-hover">
+                    <CardContent className="h-fit w-full min-w-0 overflow-hidden px-[5px] py-px hover:bg-background-tertiary" data-testid="comment-card-to-hover">
                       {legalBlockedUser ? (
                         <div className="px-2 py-6">{t('global.unavailable_for_legal_reasons')}</div>
                       ) : userFromDMCA ? (

@@ -53,11 +53,11 @@ let replayModule;
 function loadReplayModule() {
   if (!replayModule) {
     // fixture-proxy.ts is TypeScript with CommonJS semantics (__dirname), so it
-    // is loaded through jiti, which the workspace already carries (tailwindcss
-    // depends on it) — no build step and no new dependency.
+    // is loaded through jiti, which the workspace already carries (Tailwind's
+    // @tailwindcss/node depends on it) — no build step and no new dependency.
     const blogRequire = createRequire(path.join(BLOG, 'package.json'));
-    const tailwindRequire = createRequire(blogRequire.resolve('tailwindcss/package.json'));
-    const jiti = tailwindRequire('jiti')(path.join(BLOG, 'aidev-fixture-proxy.js'), { interopDefault: true });
+    const tailwindNodeRequire = createRequire(blogRequire.resolve('@tailwindcss/node'));
+    const jiti = tailwindNodeRequire('jiti')(path.join(BLOG, 'aidev-fixture-proxy.js'), { interopDefault: true });
     replayModule = jiti(PROXY_TS);
   }
   return replayModule;
