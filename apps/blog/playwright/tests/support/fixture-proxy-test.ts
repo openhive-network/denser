@@ -1,5 +1,5 @@
 import path from 'path';
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect, type BrowserContext } from '@playwright/test';
 import {
   createFixtureProxy,
   createReplayProxy,
@@ -66,6 +66,27 @@ export type FixtureAuthTestFixtures = {
 };
 
 export const isRecordMode = process.env.FIXTURE_MODE === 'record';
+
+// The fixture config leaves REACT_APP_AI_DOMAIN unset, so the app uses its default.
+const AI_DOMAIN_ORIGIN = new URL(process.env.REACT_APP_AI_DOMAIN || 'https://api.hive.blog').origin;
+
+/**
+ * The site header's HiveSense probe goes to the AI domain, not the fixture proxy.
+ * Answer every hivesense call there with an empty document (AI search off), so no
+ * spec depends on the production service or on egress. A spec that needs another
+ * answer routes it with `page.route`, which takes precedence over this.
+ */
+const stubHiveSense = (context: BrowserContext) =>
+  context.route(
+    (url) => url.origin === AI_DOMAIN_ORIGIN && url.pathname.startsWith('/hivesense-api/'),
+    (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: '{}',
+        headers: { 'access-control-allow-origin': '*' }
+      })
+  );
 
 export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>({
   fixtureTestName: ['', { option: true, scope: 'worker' }],
@@ -136,6 +157,7 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
         get: () => true
       });
     });
+    await stubHiveSense(context);
     if (authenticatedUser !== undefined) {
       await seedAuthCookie(context, authenticatedUser, authenticatedUserHasOwnLists);
     }

@@ -21,8 +21,8 @@ import { TIMEOUTS } from '../support/constants';
  * recorded into this fixture dir too, so replay renders them and the client
  * navigation completes deterministically.
  *
- * Anonymous: HiveSense status is unavailable in replay (the REST endpoint
- * 404s), so `getHiveSenseStatus` resolves false, the input stays enabled in
+ * Anonymous: the shared fixture answers the HiveSense probe with an empty
+ * document (AI search off), so `getHiveSenseStatus` resolves false, the input stays enabled in
  * classic mode, and no AI auto-switch fires.
  *
  * Record:  FIXTURE_MODE=record pnpm exec playwright \
