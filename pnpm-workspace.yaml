@@ -11,18 +11,18 @@ catalogs:
   "rollup-toolset":
     "rollup": "4.24.0"
     "rollup-plugin-copy": "3.5.0"
-    "rollup-plugin-dts": "6.1.1"
+    "rollup-plugin-dts": "6.5.1"
     "@rollup/plugin-commonjs": "27.0.0"
     "@rollup/plugin-node-resolve": "15.3.1"
     "@rollup/plugin-replace": "6.0.2"
   "typedoc-toolset":
-    "typedoc": "0.27.3"
-    "typedoc-gitlab-wiki-theme": "2.1.0"
-    "typedoc-plugin-markdown": "4.3.1"
+    "typedoc": "0.28.20"
+    "typedoc-gitlab-wiki-theme": "2.1.1"
+    "typedoc-plugin-markdown": "4.14.0"
   "typescript-toolset":
-    "typescript": "5.9.3"
+    "typescript": "6.0.3"
     "tslib": "2.8.1"
-    "tsx": "4.19.3"
+    "tsx": "4.23.15"
   "proto-toolset":
     "protobufjs": "7.2.5"
     "ts-proto": "1.172.0"
