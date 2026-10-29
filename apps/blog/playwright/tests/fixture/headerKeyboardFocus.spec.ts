@@ -110,8 +110,9 @@ for (const [layout, viewport] of [
       expect(stop.hasOutline, stop.name).toBe(false);
       expect(stop.boxShadow, stop.name).not.toBe('none');
     }
-    // Focus has moved on: a tooltip still open is the focused element's own, none of the header's
-    expect(await tooltipsOfOthers(page)).toEqual([]);
+    // Focus has moved on: a tooltip still open is the focused element's own, none of the header's.
+    // A closed TooltipContent stays mounted for its exit animation, so wait that out.
+    await expect.poll(() => tooltipsOfOthers(page)).toEqual([]);
   });
 }
 

@@ -12,27 +12,13 @@ import { HealthcheckerPage } from '../support/pages/healthcheckerPage';
  * probing on load, the page's CSP (connect-src is the fixture proxy) would block
  * the requests and the console assertion below would report them.
  *
- * The site header's HiveSense availability probe is the one call that leaves the
- * fixture proxy: it goes to the AI domain (unset here, so the app's default),
- * which the suite cannot reach, and Chromium logs the failed loads as console
- * errors. It is answered with an empty document, which turns AI search off.
- *
  * Record:  FIXTURE_MODE=record pnpm exec playwright test --config=playwright.fixture.config.ts healthchecker
  * Replay:  pnpm --filter @hive/blog test:fixture -- healthchecker
  */
 
-const DEFAULT_AI_DOMAIN = 'https://api.hive.blog';
-
 test.use({ fixtureTestName: 'healthchecker' });
 
 test.describe('Healthchecker page — renders under the app React', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.route(
-      (url) => url.origin === DEFAULT_AI_DOMAIN && url.pathname.startsWith('/hivesense-api/'),
-      (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })
-    );
-  });
-
   test('HC-01 — /healthchecker answers 200 and renders the provider switch with no errors', async ({
     page
   }) => {

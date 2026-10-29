@@ -978,18 +978,20 @@ posted comment's 400 px height cap keeps its proportions. `failAvatarRequests` (
 avatars (`/u/<user>/avatar/…`) with a 404 and everything else with a 1x1 PNG,
 for the `avatarFallback*.spec.ts` checks of the default-avatar fallback.
 
-### The header's HiveSense probe leaves the proxy: stub it to assert "no console errors"
+### The header's HiveSense probe leaves the proxy: the fixture stubs it
 
 `getHiveSenseStatus` (site header, every page) fetches `<AI domain>/hivesense-api/sync-status`,
 nothing else. The fixture config doesn't set `REACT_APP_AI_DOMAIN`,
-so it goes to `https://api.hive.blog`; with no network Chromium logs a
-`Failed to load resource: net::ERR_INTERNET_DISCONNECTED` console error. The dev
-stack has egress, so it doesn't show them. A spec that fails on any console error
-routes those URLs to a `200 {}` (AI search off), as `healthchecker.spec.ts` does.
-To put the header in a given state, serve recorded probe answers instead:
-`headerSearchMode.spec.ts` answers `sync-status` with the recorded 404
+so it goes to `https://api.hive.blog`, outside the proxy. The shared `test`
+(`support/fixture-proxy-test.ts`) routes every `/hivesense-api/` call on that origin
+to a `200 {}` (AI search off) in each test's context, so the default header is the
+classic `Search...` input with or without network, and a spec asserting
+"no console errors" needs no route of its own.
+To serve another answer, `page.route` it in the spec: page routes take precedence
+over the context's. `headerSearchMode.spec.ts` answers `sync-status` with the recorded 404
 (`homeMainPage/0002`, classic `Search...`) or with `lighthouse/0017`
-(a `sync-status` body, `AI Search...`), and checks it is the only hivesense request.
+(a `sync-status` body, `AI Search...`), and checks it is the only hivesense request;
+`postSuggestions.spec.ts` serves its recorded `similar` answers the same way.
 
 ### Esc closes the topmost Radix layer, which may be a tooltip
 
