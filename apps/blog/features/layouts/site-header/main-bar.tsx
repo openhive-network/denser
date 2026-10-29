@@ -35,7 +35,7 @@ import { HEADER_FOCUS_RING } from './header-focus-ring';
 
 /** Clears the RC ring (48 px around the 36 px avatar) by 2 px, so the focus ring surrounds both */
 const AVATAR_FOCUS_RING =
-  'ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-[8px]';
+  'ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-8';
 
 const MainBar: FC = () => {
   const { t } = useTranslation('common_blog');
@@ -69,7 +69,8 @@ const MainBar: FC = () => {
   const rcPercent = manabarsData?.rc.percentageValue ?? 0;
 
   const resourceCreditsTooltip = manabarsData ? (
-    <TooltipContent className="flex flex-col bg-background-tertiary">
+    // Unmounts at once when closed, as TooltipContainer's labels do.
+    <TooltipContent className="flex flex-col bg-background-tertiary data-[state=closed]:animate-none">
       <span>Resource Credits</span>
       <div className="flex flex-col text-blue-600">
         <span>(RC) level: {manabarsData.rc.percentageValue}%</span>
@@ -112,7 +113,7 @@ const MainBar: FC = () => {
   return (
     <header
       className={clsx(
-        'sticky top-0 z-40 w-full bg-background shadow-sm transition duration-500 ease-in-out',
+        'sticky top-0 z-40 w-full bg-background shadow-xs transition duration-500 ease-in-out',
         {
           'translate-y-[-56px]': isNavHidden
         }

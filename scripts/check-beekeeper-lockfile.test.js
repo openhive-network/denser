@@ -36,6 +36,17 @@ test('the catalog version is read from the hiveio-toolset catalog, not another o
   assert.equal(catalogBeekeeperVersion('catalogs:\n  hiveio-toolset:\n    \'@hiveio/wax\': 1.0.0\n'), undefined);
 });
 
+test('the catalog version is read from the double-quoted region pnpm-catalog-sync.py writes', () => {
+  const synced = `catalogs:
+  # BEGIN common-ci-configuration catalogs
+  "hiveio-toolset":
+    "@hiveio/wax": "1.0.0"
+    "@hiveio/beekeeper": "1.28.8-stable.261010174216"
+  # END common-ci-configuration catalogs
+`;
+  assert.equal(catalogBeekeeperVersion(synced), '1.28.8-stable.261010174216');
+});
+
 test('a lockfile resolving only the catalog version passes', () => {
   const locked = lockedBeekeeperVersions(lockWith('1.28.8-stable.261010131807'));
   assert.deepEqual(locked, ['1.28.8-stable.261010131807']);

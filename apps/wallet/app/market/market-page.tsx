@@ -25,7 +25,7 @@ const Box = ({
 }) => {
   return (
     <div className="flex bg-background-secondary px-2 text-xs drop-shadow-md" data-testid={testId}>
-      <span className="border-r-[1px] border-border py-1 pr-2 font-semibold" data-testid={testId ? `${testId}-label` : undefined}>{label}</span>
+      <span className="border-r border-border py-1 pr-2 font-semibold" data-testid={testId ? `${testId}-label` : undefined}>{label}</span>
       <span className="py-1 pl-2" data-testid={testId ? `${testId}-value` : undefined}>
         {dollar ? '$' : null}
         {value}

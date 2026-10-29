@@ -78,7 +78,7 @@ const SiteHeader: FC = () => {
   const chartAngle = (360 * stats.resourceCreditsPercent) / 100;
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background shadow-sm">
+    <header className="sticky top-0 z-40 w-full border-b bg-background shadow-xs">
       <div className="container flex h-14 w-full items-center justify-between px-0 pl-1 md:px-8">
         <Link
           href="/"

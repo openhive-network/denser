@@ -35,7 +35,7 @@ interface WitnessListItemProps {
 
 const ONE_WEEK_IN_SEC = 604800;
 const VOTE_FOCUS_RING =
-  'rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2';
+  'rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2';
 
 function WitnessListItem({
   data,
@@ -178,7 +178,7 @@ function WitnessListItem({
           )}
         </div>
       </td>
-      <td className="break-words font-light md:font-normal">
+      <td className="wrap-break-word font-light md:font-normal">
         <div className="flex" data-testid="witness-list-item-info">
           <div className="self hidden p-2 sm:block" title={t('witnesses_page.navigate_to_witness_profile')}>
             <Link href={`/@${data.owner}`} target="_blank">
@@ -242,7 +242,7 @@ function WitnessListItem({
               // Focusable so keyboard users can scroll a description that overflows
               <div
                 tabIndex={0}
-                className="mb-1 ml-4 hidden max-h-16 max-w-lg overflow-y-auto overflow-x-hidden border-b-[1px] border-dotted border-gray-400 p-1 italic sm:block"
+                className="mb-1 ml-4 hidden max-h-16 max-w-lg overflow-y-auto overflow-x-hidden border-b border-dotted border-gray-400 p-1 italic sm:block"
               >
                 {witnessDescription}
               </div>

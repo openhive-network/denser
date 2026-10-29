@@ -51,7 +51,7 @@ function CopyableHandle({ link, title }: { link: SocialLink; title: string }) {
       data-verified="false"
     >
       <Icon className="h-4 w-4 shrink-0" />
-      <span className="max-w-[8rem] truncate">{copied ? t('user_profile.social.copied') : link.handle}</span>
+      <span className="max-w-32 truncate">{copied ? t('user_profile.social.copied') : link.handle}</span>
     </button>
   );
 }

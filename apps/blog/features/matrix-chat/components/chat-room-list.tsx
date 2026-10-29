@@ -23,7 +23,7 @@ export function ChatRoomList({ rooms, selectedRoomId, onSelect }: ChatRoomListPr
                 aria-current={selected ? 'true' : undefined}
                 onClick={() => onSelect(room.roomId)}
                 className={clsx(
-                  'flex max-w-[12rem] items-center gap-1 rounded-md px-2 py-1 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'flex max-w-48 items-center gap-1 rounded-md px-2 py-1 text-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
                   selected ? 'bg-accent font-semibold text-accent-foreground' : 'text-muted-foreground hover:bg-muted'
                 )}
               >

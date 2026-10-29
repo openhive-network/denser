@@ -20,13 +20,13 @@ const CATALOG_NAME = 'hiveio-toolset';
 /** The catalog's beekeeper version from pnpm-workspace.yaml text, or undefined. */
 function catalogBeekeeperVersion(workspaceYaml) {
   const lines = workspaceYaml.split('\n');
-  const start = lines.findIndex((line) => line.trim() === `${CATALOG_NAME}:`);
+  const start = lines.findIndex((line) => line.trim().replace(/["']/g, '') === `${CATALOG_NAME}:`);
   if (start === -1) return undefined;
   const indent = lines[start].search(/\S/);
   for (const line of lines.slice(start + 1)) {
     if (line.trim() === '' || line.trim().startsWith('#')) continue;
     if (line.search(/\S/) <= indent) break;
-    const match = line.match(/^\s*'?@hiveio\/beekeeper'?:\s*'?([^'\s#]+)'?/);
+    const match = line.match(/^\s*["']?@hiveio\/beekeeper["']?:\s*["']?([^"'\s#]+)["']?/);
     if (match) return match[1];
   }
   return undefined;

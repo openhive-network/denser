@@ -106,7 +106,7 @@ test.describe('Encrypted memos in the account history', () => {
 
     await expect(dialog.getByTestId('decoded-memo-result')).toHaveValue(PLAINTEXT_MEMO);
     const verifyCalls = (await keychainCalls(page)).filter(({ method }) => method === 'requestVerifyKey');
-    expect(verifyCalls.map(({ args }) => args)).toEqual([[STUB_ACCOUNT, ENCRYPTED_MEMO, 'memo']]);
+    expect(verifyCalls.map(({ args }) => args)).toEqual([[STUB_ACCOUNT, ENCRYPTED_MEMO, 'Memo']]);
   });
 
   test("WALLET-MEMO-DEC-04 — another account's history shows the placeholder without Decode", async ({

@@ -2,27 +2,72 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
+# Version pins come from common-ci-configuration's catalogs (npm-common-config
+# submodule): `python3 npm-common-config/scripts/python/pnpm-catalog-sync.py`
+# rewrites the marked region below, and package.json files reference them only as
+# `catalog:<name>`. Catalogs for packages ccc does not cover go after the region.
 catalogs:
-  # Can be referenced through "catalog:hiveio-toolset"
-  hiveio-toolset:
-    '@hiveio/wax': 1.28.6-rc10-stable.260326112051
-    '@hiveio/wax-signers-external': 1.28.6-rc10-stable.260326112051
-    '@hiveio/wax-signers-keychain': 1.28.6-rc10-stable.260326112051
-    '@hiveio/wax-signers-metamask': 1.28.6-rc10-stable.260326112051
-    '@hiveio/wax-signers-peakvault': 1.28.6-rc10-stable.260326112051
-    '@hiveio/wax-signers-beekeeper': 1.28.6-rc10-stable.260326112051
-    '@hiveio/beekeeper': 1.28.8-stable.261010131807
-    '@hiveio/workerbee': 1.28.4-rc1-stable.260317120349
-    '@hiveio/hb-auth': 1.28.4-rc0-stable.261018041051
-    '@hiveio/healthchecker-component': 2.0.2
-  # Playwright as common-ci-configuration's pnpm-config catalog has it: its CI
-  # images ship only that version's browsers.
-  playwright-toolset:
-    '@playwright/test': 1.64.1
-  # TypeScript 5.x, the newest typescript-eslint 8 (<6.0.0) and Next.js's type
-  # check accept; TypeScript 7 lacks the compiler JS API both use.
-  typescript-toolset:
-    typescript: 5.9.3
+  # BEGIN common-ci-configuration catalogs (pnpm-catalog-sync.py rewrites this region from the ccc submodule; do not edit)
+  "rollup-toolset":
+    "rollup": "4.24.0"
+    "rollup-plugin-copy": "3.5.0"
+    "rollup-plugin-dts": "6.1.1"
+    "@rollup/plugin-commonjs": "27.0.0"
+    "@rollup/plugin-node-resolve": "15.3.1"
+    "@rollup/plugin-replace": "6.0.2"
+  "typedoc-toolset":
+    "typedoc": "0.27.3"
+    "typedoc-gitlab-wiki-theme": "2.1.0"
+    "typedoc-plugin-markdown": "4.3.1"
+  "typescript-toolset":
+    "typescript": "5.9.3"
+    "tslib": "2.8.1"
+    "tsx": "4.19.3"
+  "proto-toolset":
+    "protobufjs": "7.2.5"
+    "ts-proto": "1.172.0"
+  "playwright-toolset":
+    "@playwright/test": "1.64.1"
+    "playwright": "1.64.1"
+    "http-server": "14.1.1"
+  "husky":
+    "husky": "9.1.5"
+  "terser":
+    "terser": "5.39.0"
+  "size-limit-toolset":
+    "size-limit": "11.1.6"
+    "@size-limit/file": "11.1.6"
+  "hiveio-toolset":
+    "@hiveio/wax": "1.28.8-stable.261028191145"
+    "@hiveio/wax-signers-external": "1.28.8-stable.261028191145"
+    "@hiveio/wax-signers-keychain": "1.28.8-stable.261028191145"
+    "@hiveio/wax-signers-metamask": "1.28.8-stable.261028191145"
+    "@hiveio/wax-signers-peakvault": "1.28.8-stable.261028191145"
+    "@hiveio/wax-signers-beekeeper": "1.28.8-stable.261028191145"
+    "@hiveio/beekeeper": "1.28.8-stable.261010174216"
+    "@hiveio/workerbee": "1.28.4-rc1-stable.261026001315"
+    "@hiveio/hb-auth": "1.28.4-rc0-stable.261027002715"
+    "@hiveio/healthchecker-component": "2.0.2-stable.261027010535"
+  "react-toolset":
+    "react": "19.3.1"
+    "react-dom": "19.3.1"
+    "@types/react": "19.3.0"
+    "@types/react-dom": "19.3.0"
+    "next": "16.4.1"
+    "eslint-config-next": "16.4.1"
+    "@tanstack/react-query": "5.104.2"
+  "vue-toolset":
+    "vue": "3.5.44"
+    "nuxt": "4.6.1"
+    "pinia": "4.1.0"
+    "vuetify": "4.2.5"
+    "vue-tsc": "3.3.13"
+  "tailwind-toolset":
+    "tailwindcss": "4.3.3"
+    "@tailwindcss/postcss": "4.3.3"
+    "@tailwindcss/vite": "4.3.3"
+    "@tailwindcss/cli": "4.3.3"
+  # END common-ci-configuration catalogs
 
 # wax-signers-external and wax-signers-beekeeper pin an older @hiveio/beekeeper
 # whose embind glue uses new Function, which the nonce CSP (no 'unsafe-eval') blocks
