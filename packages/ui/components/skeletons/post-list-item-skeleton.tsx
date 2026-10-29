@@ -45,7 +45,7 @@ function PostListItemSkeleton() {
 
 function PostListSkeleton({ count = 5 }: { count?: number }) {
   return (
-    <ul>
+    <ul data-testid="post-list-skeleton">
       {Array.from({ length: count }).map((_, i) => (
         <PostListItemSkeleton key={i} />
       ))}
