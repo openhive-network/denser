@@ -32,6 +32,7 @@ import { useIdleAfterLoad } from '@/blog/components/hooks/use-idle-after-load';
 import LoginKeyBadge from './login-key-badge';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
 import { HEADER_FOCUS_RING } from './header-focus-ring';
+import { useEndSignOutLeaveOnNavigation } from '@/blog/features/tags-pages/sign-out-leave';
 
 /** Clears the RC ring (48 px around the 36 px avatar) by 2 px, so the focus ring surrounds both */
 const AVATAR_FOCUS_RING =
@@ -43,6 +44,8 @@ const MainBar: FC = () => {
   const { user } = useUserClient();
   const loginAuthority = useLoginAuthorityLabels(user);
   const [isClient, setIsClient] = useState(false);
+  // Here, as the header outlives every page a sign-out leaves, For You or one without its content
+  useEndSignOutLeaveOnNavigation();
 
   useEffect(() => {
     setIsClient(true);

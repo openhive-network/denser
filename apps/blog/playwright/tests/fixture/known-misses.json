@@ -80,16 +80,6 @@
     "hash": "e79d38f6489af16b"
   },
   {
-    "spec": "postCreate.spec.ts",
-    "method": "database_api.list_votes",
-    "hash": "3735cc2ef2c9f546"
-  },
-  {
-    "spec": "postCreate.spec.ts",
-    "method": "database_api.list_votes",
-    "hash": "461ddf66a78212ab"
-  },
-  {
     "spec": "postCreateInCommunity.spec.ts",
     "method": "bridge.get_discussion",
     "hash": "7608a7933d5bc9bb"
@@ -115,11 +105,6 @@
     "hash": "69bc1c81c3a69972"
   },
   {
-    "spec": "postCreateInCommunity.spec.ts",
-    "method": "database_api.list_votes",
-    "hash": "a159655cd6686b35"
-  },
-  {
     "spec": "postCreateRedirectCommunity.spec.ts",
     "method": "bridge.get_discussion",
     "hash": "7608a7933d5bc9bb"
@@ -143,11 +128,6 @@
     "spec": "postCreateRedirectCommunity.spec.ts",
     "method": "condenser_api.get_reblogged_by",
     "hash": "69bc1c81c3a69972"
-  },
-  {
-    "spec": "postCreateRedirectCommunity.spec.ts",
-    "method": "database_api.list_votes",
-    "hash": "a159655cd6686b35"
   },
   {
     "spec": "postCreateRedirectTag.spec.ts",
@@ -170,11 +150,6 @@
     "hash": "e79d38f6489af16b"
   },
   {
-    "spec": "postCreateRedirectTag.spec.ts",
-    "method": "database_api.list_votes",
-    "hash": "461ddf66a78212ab"
-  },
-  {
     "spec": "postCreateSameTitle.spec.ts",
     "method": "bridge.get_discussion",
     "hash": "*"
@@ -192,11 +167,6 @@
   {
     "spec": "postCreateSameTitle.spec.ts",
     "method": "condenser_api.get_reblogged_by",
-    "hash": "*"
-  },
-  {
-    "spec": "postCreateSameTitle.spec.ts",
-    "method": "database_api.list_votes",
     "hash": "*"
   },
   {
@@ -218,11 +188,6 @@
     "spec": "postCreateUserWithPosts.spec.ts",
     "method": "condenser_api.get_reblogged_by",
     "hash": "af6111d04f6cc59d"
-  },
-  {
-    "spec": "postCreateUserWithPosts.spec.ts",
-    "method": "database_api.list_votes",
-    "hash": "85e81ca0b7aca5e9"
   },
   {
     "spec": "postEdit.spec.ts",
@@ -253,11 +218,6 @@
     "spec": "postEdit.spec.ts",
     "method": "condenser_api.get_following",
     "hash": "ff22f37c1a6ae080"
-  },
-  {
-    "spec": "postEditCommunity.spec.ts",
-    "method": "bridge.get_community",
-    "hash": "50f0a6832c3ff911"
   },
   {
     "spec": "postEditCommunity.spec.ts",
