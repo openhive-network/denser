@@ -3,27 +3,22 @@
  * accounts and broadcasts their bridged comments with its own gate accounts; Denser only
  * proxies to it, so a Denser deployment never holds a gate posting key.
  *
- *   DENSER_SERVER_LITE_GATEWAY_URL   base URL of the gateway API. Default: the public instance
- *                                    at https://api.hive.blog/lite-gateway-api. A node that runs
- *                                    its own gateway sets https://<its host>/lite-gateway-api;
- *                                    an empty value disables the feature.
+ *   DENSER_SERVER_LITE_GATEWAY_URL   base URL of the gateway API, e.g.
+ *                                    https://<gateway host>/lite-gateway-api. Default: none; unset,
+ *                                    empty or blank leaves the feature off, and Denser makes no
+ *                                    gateway request.
  */
 import { getLogger } from '@ui/lib/logging';
 import type { GatewayMethod } from './gateway-paths';
+import { liteGatewayUrl } from './gateway-url';
 
-export const DEFAULT_LITE_GATEWAY_URL = 'https://api.hive.blog/lite-gateway-api';
+export { liteGatewayUrl };
 
 const logger = getLogger('lite-relay');
 
 const GATEWAY_TIMEOUT_MS = 15_000;
 const HEALTH_TIMEOUT_MS = 5_000;
 const HEALTH_CACHE_MS = 5_000;
-
-export function liteGatewayUrl(): string | undefined {
-  const raw = process.env.DENSER_SERVER_LITE_GATEWAY_URL;
-  const url = (raw === undefined ? DEFAULT_LITE_GATEWAY_URL : raw).trim().replace(/\/+$/, '');
-  return url === '' ? undefined : url;
-}
 
 export type GatewayResult = { status: number; body: string };
 
