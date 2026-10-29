@@ -41,8 +41,13 @@ export type CardEntry = TrimmedEntry & { summary: string; cardImage: string };
 /**
  * Card entries for a page of posts fetched on the client. The converter, and the Remarkable renderer
  * it runs, load with the first page fetched after startup instead of with the page itself.
+ *
+ * @param bodyCutAt - the length the server cut the bodies at, when they were fetched cut
  */
-export async function loadCardEntries(posts: Promise<Entry[] | null | undefined>): Promise<CardEntry[] | null> {
+export async function loadCardEntries(
+  posts: Promise<Entry[] | null | undefined>,
+  bodyCutAt?: number
+): Promise<CardEntry[] | null> {
   const [entries, { toCardEntries }] = await Promise.all([posts, import('./to-card-entries')]);
-  return entries ? toCardEntries(entries) : null;
+  return entries ? toCardEntries(entries, bodyCutAt) : null;
 }

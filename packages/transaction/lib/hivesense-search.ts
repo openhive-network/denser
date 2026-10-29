@@ -11,6 +11,12 @@ export const HIVE_SENSE_PROBE_TIMEOUT_MS = 8000;
 export const AI_SEARCH_REQUEST_TIMEOUT_MS = 12000;
 
 /**
+ * Length HiveSense cuts search result bodies at: cards only show a summary. Long enough to get past
+ * the few images many posts open with to the text a summary is made of.
+ */
+export const AI_SEARCH_BODY_LENGTH = 1000;
+
+/**
  * One empty `posts/by-ids` page is enough to stop. Advancing anyway kept the
  * load-more sentinel in view and walked the stub list forever (#949).
  */
