@@ -130,9 +130,15 @@ fills:
   two follow images a run completed with (`status/.follow-images`: every image
   change rebuilds every app, so those are what the current and the previous releases
   were built in) and any image a container uses, running or stopped, whichever stack
-  it belongs to. It lists no other repository. The first run after this was
-  introduced knows only the current image, so the image of an older previous release
-  goes too.
+  it belongs to. It lists no repository outside `registry.gitlab.syncad.com/hive/denser/`,
+  and removes nothing when it cannot tell the follow image (a `.aidev/project.yaml`
+  a full disk truncated). While `status/.follow-images` names fewer than two images
+  (the first runs after it was introduced), it also keeps the image of each app's
+  previous release, read from the `.aidev/project.yaml` of the commit that release was
+  built from; when that can't be told (`DENSER_FOLLOW_IMAGE` set, or the commit
+  unknown) it leaves the follow repository alone and removes only the `-subdirectory`
+  images. One docker refuses to remove (shared with another repository, or the parent
+  of another image) is tried again the next UTC day (`status/.prune-failed`).
 - **Low disk:** each run first checks the space free on the checkout's filesystem.
   Under `DENSER_MIN_FREE_GB` (`.env`, default 5) it removes the superseded images as
   above and measures again; still under, it fetches, pulls and builds nothing and
@@ -142,15 +148,19 @@ fills:
   `"disk_low": true`. Every follow run reports `disk_free_bytes` and
   `disk_min_free_bytes` there. With `RC_WEBHOOK_URL` set (`.env` or the
   environment, a Rocket.Chat incoming webhook) it also posts the message there, at
-  most once per UTC day (`status/.disk-low-notified`). The next run with room builds
+  most once per UTC day, remembered on tmpfs (`$XDG_RUNTIME_DIR`, else `/dev/shm`) so a
+  full disk can't defeat it: a reboot can post once more. The next run with room builds
   as usual.
 - **Status writes:** `follow/serve.sh` logs a `serving.json` it cannot write and keeps
   the server running: a full disk leaves the built release serving, and only
   `upgrade.sh`'s wait for the swap (`serving.json`) gives up after its 2 minutes.
 
 `./test-upkeep.sh` checks these with stand-ins for docker, git, df and curl: a faked
-low free space skips the run and reports it, the prune spares the current and in-use
-images, and `serve.sh` survives an unwritable `serving.json`.
+low free space skips the run and reports it (posting once a day even when `status/`
+takes no writes), an unresolvable or foreign follow image removes nothing, the prune
+spares the current, previous-release and in-use images and tries a refused one once a
+day, a completed run records its image, and `serve.sh` survives an unwritable
+`serving.json`. The `unit` suite of `.aidev/project.yaml` runs it.
 
 ## Shared HTML cache (optional)
 

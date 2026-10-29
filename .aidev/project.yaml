@@ -65,7 +65,8 @@ timeouts:
 # appears in; `static` runs eslint and tsc, records no test results, and has none.
 verification:
   # ~25 s: mocha unit suites of packages/renderer and packages/transaction
-  # (~1,430 tests), plus lint and type check.
+  # (~1,430 tests), plus lint and type check. `unit` also runs the integration
+  # site's upkeep check (stack/integration/test-upkeep.sh, ~20 s, stand-ins only).
   quick:
     suites:
       - name: unit
