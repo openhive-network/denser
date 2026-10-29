@@ -31,8 +31,10 @@ const Page = async (props: { params: Promise<{ param: string }> }) => {
   }
 
   // Deduplicated with the profile layout's read. A missing account or a failed read is the layout's
-  // to answer (404 or 503), so here it only leaves the structured data out.
-  const account = await getProfileAccount(username).catch(() => null);
+  // to answer (404 or 503), so here it only leaves the structured data out. A lite account is no
+  // Hive account: its profile (lite-profile-route.tsx) has no structured data.
+  const account =
+    postAuthorKind(username) === 'account' ? await getProfileAccount(username).catch(() => null) : null;
   const profileJsonLd = account?.name
     ? profilePageJsonLd({
         username,
