@@ -14,6 +14,8 @@ import { useFeedNavigation } from './sorts/feed-navigation-context';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { FOR_YOU_SORT, isForYouEnabled } from '@/blog/lib/utils';
 
+const FOR_YOU_PATH = `/${FOR_YOU_SORT}`;
+
 const PostSelectFilter = ({ param }: { param?: string }) => {
   const { t } = useTranslation('common_blog');
   const router = useRouter();
@@ -26,6 +28,8 @@ const PostSelectFilter = ({ param }: { param?: string }) => {
   // path segment is empty — treat that as /trending so the filter shows "Trending".
   const segment = path?.split('/')[1];
   const currentPath = segment ? `/${segment}` : '/trending';
+  // Signed out on /for-you the selector still names the page, without offering it as a choice
+  const namesForYouOnly = !showForYou && currentPath === FOR_YOU_PATH;
   const onValueChange = (next: string) => {
     const href = param ? `${next}/${param}` : next;
     if (feedNavigation) {
@@ -45,8 +49,14 @@ const PostSelectFilter = ({ param }: { param?: string }) => {
           <SelectItem value="/hot">{t('select_sort.posts_sort.hot')}</SelectItem>
           <SelectItem value="/created">{t('select_sort.posts_sort.new')}</SelectItem>
           <SelectItem value="/payout">{t('select_sort.posts_sort.payouts')}</SelectItem>
-          {showForYou ? (
-            <SelectItem value={`/${FOR_YOU_SORT}`}>{t('select_sort.posts_sort.for_you')}</SelectItem>
+          {showForYou || namesForYouOnly ? (
+            <SelectItem
+              value={FOR_YOU_PATH}
+              disabled={namesForYouOnly}
+              className={namesForYouOnly ? 'hidden' : undefined}
+            >
+              {t('select_sort.posts_sort.for_you')}
+            </SelectItem>
           ) : null}
           <SelectItem value="/muted">{t('select_sort.posts_sort.muted')}</SelectItem>
         </SelectGroup>
