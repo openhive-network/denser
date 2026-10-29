@@ -236,6 +236,7 @@
       "downvote_weight": "反対票の重み",
       "submit_upvote_percent": "{{votePercent}}% で賛成票を送信",
       "submit_downvote_percent": "{{votePercent}}% で反対票を送信",
+      "vote_after_payout_note": "支払い後のコンテンツへの投票では新たな報酬は発生しません",
       "reputation_title": "評価",
       "in": "投稿先",
       "no_votes": "投票がありません",

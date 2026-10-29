@@ -240,6 +240,7 @@
       "downvote_weight": "Poids du vote négatif",
       "submit_upvote_percent": "Envoyer un vote positif à {{votePercent}}%",
       "submit_downvote_percent": "Envoyer un vote négatif à {{votePercent}}%",
+      "vote_after_payout_note": "Voter pour un contenu après son paiement ne génère aucune nouvelle récompense",
       "reputation_title": "Réputation",
       "in": "dans",
       "no_votes": "Pas de vote",

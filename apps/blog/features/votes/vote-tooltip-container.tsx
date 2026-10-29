@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
+import { useTranslation } from '@/blog/i18n/client';
 
 export const TooltipContainer = ({
   children,
@@ -14,6 +15,7 @@ export const TooltipContainer = ({
   dataTestId: string;
   afterPayout?: boolean;
 }) => {
+  const { t } = useTranslation('common_blog');
   return (
     <TooltipProvider>
       <Tooltip>
@@ -31,7 +33,7 @@ export const TooltipContainer = ({
           <div className="font-bold">{text}</div>
           {afterPayout && (
             <div className="text-xs text-destructive opacity-80">
-              Voting on Content after their payout does not generate any new rewards
+              {t('cards.post_card.vote_after_payout_note')}
             </div>
           )}
         </TooltipContent>
