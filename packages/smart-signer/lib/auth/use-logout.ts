@@ -14,8 +14,8 @@ export function useLogout(redirect?: string) {
   const queryClient = useQueryClient();
 
   /**
-   * @param leaveTo where to take the reader as the sign-out starts, before the signed-out user
-   *   renders on the current page (one that has nothing to show a signed-out reader)
+   * @param leaveTo where to take the reader once the server has ended the session, from a page
+   *   that has nothing to show a signed-out reader
    */
   const onLogout = async (leaveTo?: string) => {
     // Read before signing out clears them
@@ -25,8 +25,6 @@ export function useLogout(redirect?: string) {
 
     // Clear observer cookie immediately — SSR stops personalizing
     document.cookie = 'observer=; path=/; max-age=0';
-
-    if (leaveTo) router.replace(leaveTo);
 
     // Trigger sign out mutation and wait for server response to ensure
     // the Set-Cookie header (which clears iron-session) is processed
@@ -38,6 +36,9 @@ export function useLogout(redirect?: string) {
       // onMutate already applied optimistic update; onError may have rolled
       // it back, but navigation below will load fresh state from the server.
     }
+
+    // Only now, so the next page renders without the ended session's cookie
+    if (leaveTo) router.replace(leaveTo);
 
     // Stored keys and tokens must not outlive the session, whichever account they belong to
     clearStoredCredentials();

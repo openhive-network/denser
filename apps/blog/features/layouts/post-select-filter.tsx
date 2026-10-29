@@ -13,6 +13,7 @@ import { useTranslation } from '../../i18n/client';
 import { useFeedNavigation } from './sorts/feed-navigation-context';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { FOR_YOU_SORT, isForYouEnabled } from '@/blog/lib/utils';
+import { TRENDING_PATH, useIsLeavingOnSignOut } from '@/blog/features/tags-pages/sign-out-leave';
 
 const FOR_YOU_PATH = `/${FOR_YOU_SORT}`;
 
@@ -22,12 +23,15 @@ const PostSelectFilter = ({ param }: { param?: string }) => {
   const feedNavigation = useFeedNavigation();
   const path = usePathname();
   const { user } = useUserClient();
+  const isLeavingOnSignOut = useIsLeavingOnSignOut();
   // haf_fyp ranks across all of Hive, so For You is a global feed only, and a personal one
   const showForYou = isForYouEnabled && user.isLoggedIn && !param;
   // Root (/) serves the trending feed via the middleware rewrite, so its first
   // path segment is empty — treat that as /trending so the filter shows "Trending".
   const segment = path?.split('/')[1];
-  const currentPath = segment ? `/${segment}` : '/trending';
+  const pathSort = segment ? `/${segment}` : TRENDING_PATH;
+  // A sign-out leaving the page already names where it goes
+  const currentPath = isLeavingOnSignOut ? TRENDING_PATH : pathSort;
   // Signed out on /for-you the selector still names the page, without offering it as a choice
   const namesForYouOnly = !showForYou && currentPath === FOR_YOU_PATH;
   const onValueChange = (next: string) => {

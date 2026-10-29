@@ -26,7 +26,7 @@ import LoginKeyAction from './login-key-action';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
 import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storage-key';
 import { usePathname } from 'next/navigation';
-import { signOutDestination } from '@/blog/features/tags-pages/use-trending-on-sign-out';
+import { startSignOutLeave } from '@/blog/features/tags-pages/sign-out-leave';
 
 /** What the login dialog opened from the menu signs in: any account, or this one with a given key */
 type LoginDialogTarget = { username?: string; keyType?: KeyType };
@@ -177,7 +177,7 @@ const UserMenu = ({
                 href=""
                 onClick={async (e) => {
                   e.preventDefault();
-                  await onLogout(signOutDestination(pathname));
+                  await onLogout(startSignOutLeave(pathname));
                 }}
                 className="flex w-full items-center"
                 data-testid="user-profile-menu-logout-link"
