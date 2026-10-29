@@ -34,7 +34,7 @@ interface ToolbarItem {
 }
 
 const BUTTON_CLASS =
-  "flex h-7 w-7 items-center justify-center rounded text-xs text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+  "flex h-7 w-7 items-center justify-center rounded text-xs text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring";
 
 const CHECKBOX_LABEL_CLASS =
   "flex cursor-pointer select-none items-center gap-1 px-2 text-xs text-muted-foreground";

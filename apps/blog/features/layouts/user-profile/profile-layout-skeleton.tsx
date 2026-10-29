@@ -9,10 +9,10 @@ const ProfileLayoutSkeleton = () => {
       {/* Cover area */}
       <div className="relative w-full bg-slate-800 text-sm leading-6">
         <div className="relative min-h-[280px] sm:min-h-[320px]">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/20" />
 
           <div className="relative flex h-full min-h-[280px] flex-col items-center justify-center px-4 py-6 sm:min-h-[320px]">
-            <div className="w-full max-w-2xl rounded-2xl bg-black/30 p-6 backdrop-blur-sm sm:p-8">
+            <div className="w-full max-w-2xl rounded-2xl bg-black/30 p-6 backdrop-blur-xs sm:p-8">
               {/* Avatar and Name Row */}
               <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
                 <Skeleton className="h-20 w-20 shrink-0 rounded-full bg-white/10 ring-4 ring-white/30 sm:h-24 sm:w-24" />
@@ -52,7 +52,7 @@ const ProfileLayoutSkeleton = () => {
       <div className="flex flex-col pb-8 md:pb-4">
         <div className="w-full">
           <div className="bg-gray-700">
-            <div className="container mx-auto max-w-screen-xl px-0 sm:px-8">
+            <div className="container mx-auto max-w-(--breakpoint-xl) px-0 sm:px-8">
               <div className="flex items-center">
                 <nav className="flex-1 overflow-x-auto">
                   <ul className="flex gap-1 sm:gap-2">
@@ -69,7 +69,7 @@ const ProfileLayoutSkeleton = () => {
         </div>
 
         {/* Content area placeholder */}
-        <main className="container mx-auto max-w-screen-xl pt-4">
+        <main className="container mx-auto max-w-(--breakpoint-xl) pt-4">
           <div className="space-y-4">
             {Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="h-32 w-full rounded-lg" />

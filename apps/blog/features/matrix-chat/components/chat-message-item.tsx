@@ -8,7 +8,7 @@ const LINK_CLASS = 'text-destructive underline break-all';
 
 function LinkifiedText({ text }: { text: string }) {
   return (
-    <p className="whitespace-pre-wrap break-words">
+    <p className="whitespace-pre-wrap wrap-break-word">
       {linkify(text).map((segment, index) =>
         segment.href ? (
           <a key={index} href={segment.href} target="_blank" rel="noopener noreferrer" className={LINK_CLASS}>
@@ -30,7 +30,7 @@ function MessageContent({ content, appUrl }: { content: ChatMessageContent; appU
     case 'html':
       return (
         <div
-          className="break-words [&_a]:text-destructive [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:pl-2 [&_code]:font-mono [&_pre]:overflow-x-auto"
+          className="wrap-break-word [&_a]:text-destructive [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:pl-2 [&_code]:font-mono [&_pre]:overflow-x-auto"
           // Sanitized by sanitizeMessageHtml: formatting tags and http(s)/mailto links only
           dangerouslySetInnerHTML={{ __html: content.html }}
         />

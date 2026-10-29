@@ -33,9 +33,9 @@ export default function HomePage() {
         </DialogLogin>
       </div>
       <div className="mr-6 sm:mt-6 sm:w-full sm:max-w-lg">
-        <div className="h-[260px] w-full border-[1px] border-solid border-border bg-background-tertiary drop-shadow">
-          <div className="relative right-[-10px] top-[-12px] h-[260px] w-full border-[1px] border-solid border-border bg-background-tertiary drop-shadow">
-            <div className="relative right-[-10px] top-[-12px] flex h-[260px] w-full flex-col justify-center gap-4 border-[1px] border-solid border-border bg-background-tertiary pl-4 drop-shadow sm:pr-4">
+        <div className="h-[260px] w-full border border-solid border-border bg-background-tertiary drop-shadow-sm">
+          <div className="relative right-[-10px] top-[-12px] h-[260px] w-full border border-solid border-border bg-background-tertiary drop-shadow-sm">
+            <div className="relative right-[-10px] top-[-12px] flex h-[260px] w-full flex-col justify-center gap-4 border border-solid border-border bg-background-tertiary pl-4 drop-shadow-sm sm:pr-4">
               <div className="text-lg font-bold sm:text-2xl">{t('wallet_index.card.title')}</div>
               <div className="flex gap-3">
                 <Icons.hivetoken />

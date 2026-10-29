@@ -74,7 +74,7 @@ test('LOGGED-WASM-05: the first vote loads the signing stack and is signed by Ke
 
   const keychainCalls = await page.evaluate(() => window.keychainSignTxCalls);
   expect(keychainCalls).toHaveLength(1);
-  expect(keychainCalls[0]).toMatchObject({ account: VOTER, role: 'posting' });
+  expect(keychainCalls[0]).toMatchObject({ account: VOTER, role: 'Posting' });
   expect(JSON.stringify(keychainCalls[0].operations)).toContain(FIRST_POST_PERMLINK);
 
   expect(wasmRequests.length).toBeGreaterThan(0);

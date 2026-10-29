@@ -72,7 +72,7 @@ const RewardsBanner = ({ username, isOwner, rewardBalances }: RewardsBannerProps
         </div>
         {isOwner && (
           <Button
-            className="h-fit flex-shrink-0 text-sm md:text-base"
+            className="h-fit shrink-0 text-sm md:text-base"
             variant="redHover"
             onClick={() => claimRewards()}
             disabled={claimRewardsMutation.isPending}

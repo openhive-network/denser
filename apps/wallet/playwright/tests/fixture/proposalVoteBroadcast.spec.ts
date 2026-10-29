@@ -29,7 +29,7 @@ const ACTIVE_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';
 const STUB_PROPOSAL_ID = '7';
 
 /** The class the vote icon has while STUB_ACCOUNT's vote for the proposal stands. */
-const VOTED_CLASS = /!bg-red-500/;
+const VOTED_CLASS = /(^|\s)bg-red-500!(\s|$)/;
 
 // As anonymousNoWasm.spec.ts: without a network Chromium reports offline and React Query pauses.
 test.beforeEach(async ({ context }) => {

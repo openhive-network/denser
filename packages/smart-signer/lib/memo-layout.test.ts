@@ -6,7 +6,7 @@ import { MemoLayoutError, parseEncryptedMemo, toSnapMemoLayout, toStandardMemoLa
 const wax = await createWaxFoundation();
 const toPublicKeyString = (key: Uint8Array) => wax.convertRawPublicKeyToWif(Buffer.from(key).toString('hex'));
 
-/** The from/to keys wax (the build denser bundles, standard layout only) reads off a memo. */
+/** The from/to keys wax reads off a memo (it parses both layouts). */
 const readMemoKeysWithWax = async (memo: string) => {
   let keys: [string, string] | undefined;
   const notCalled = async () => {
@@ -77,7 +77,7 @@ describe('memo-layout: converting between layouts', () => {
     assert.notEqual(standard, SNAP_MEMO);
     assert.deepEqual(parseEncryptedMemo(standard), parseEncryptedMemo(SNAP_MEMO));
     assert.deepEqual(await readMemoKeysWithWax(standard), [QUOCHUY_MEMO_KEY, TEAMVN_MEMO_KEY]);
-    await assert.rejects(readMemoKeysWithWax(SNAP_MEMO));
+    assert.deepEqual(await readMemoKeysWithWax(SNAP_MEMO), [QUOCHUY_MEMO_KEY, TEAMVN_MEMO_KEY]);
   });
 
   it('leaves a memo already in the target layout as it is, with a single #', () => {

@@ -32,7 +32,7 @@ function SidebarSkeleton() {
 
 export default function Loading() {
   return (
-    <div className="container mx-auto max-w-screen-2xl flex-grow px-4 pb-2">
+    <div className="container mx-auto max-w-(--breakpoint-2xl) grow px-4 pb-2">
       <div className="grid grid-cols-12 md:gap-4">
         <div className="hidden md:col-span-3 md:flex xl:col-span-2">
           <SidebarSkeleton />

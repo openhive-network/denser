@@ -68,7 +68,7 @@ export default function ConsentPage({
           <button
             disabled={!!runningAction}
             onClick={() => registerConsent(true)}
-            className="w-fit rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-green-700 focus:outline-none disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+            className="w-fit rounded-lg bg-green-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-green-700 focus:outline-hidden disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
           >
             {runningAction === 'yes' ? (
               <CircleSpinner loading={runningAction === 'yes'} size={18} color="#dc2626" />
@@ -80,7 +80,7 @@ export default function ConsentPage({
           <button
             disabled={!!runningAction}
             onClick={() => registerConsent(false)}
-            className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+            className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-hidden disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
           >
             {runningAction === 'no' ? (
               <CircleSpinner loading={runningAction === 'no'} size={18} color="#dc2626" />
