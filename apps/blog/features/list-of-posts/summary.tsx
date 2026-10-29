@@ -38,12 +38,12 @@ const PostSummary = ({
             ) : null}
             <Link
               href={`/${post.category}/@${post.author}/${post.permlink}`}
-              className="whitespace-normal break-words visited:text-gray-500 dark:visited:text-gray-400"
+              className="whitespace-normal wrap-break-word visited:text-gray-500 dark:visited:text-gray-400"
             >
               {post.title}
             </Link>
           </CardTitle>
-          <CardDescription className="block w-auto break-words max-md:line-clamp-3 md:overflow-hidden md:overflow-ellipsis md:whitespace-nowrap">
+          <CardDescription className="block w-auto wrap-break-word max-md:line-clamp-3 md:overflow-hidden md:text-ellipsis md:whitespace-nowrap">
             <Link href={`/${post.category}/@${post.author}/${post.permlink}`} data-testid="post-description">
               {userFromDMCA
                 ? t('cards.content_removed')

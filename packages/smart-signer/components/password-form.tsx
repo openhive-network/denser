@@ -159,7 +159,7 @@ export function PasswordForm({
           <div className="relative mb-5">
             <input
               type="password"
-              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-none focus:ring-red-500 dark:text-slate-300"
+              className="block w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 focus:border-red-500 focus:outline-hidden focus:ring-red-500 dark:text-slate-300"
               placeholder={caption(captionKey.inputPasswordPlaceholder)}
               autoComplete="current-password"
               {...register('password')}
@@ -178,7 +178,7 @@ export function PasswordForm({
                 id={`store-password-${randomValue}`}
                 type="checkbox"
                 value=""
-                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-none"
+                className="h-4 w-4 rounded-lg border border-gray-300 focus:outline-hidden"
                 {...register('storePassword')}
               />
               <label
@@ -194,7 +194,7 @@ export function PasswordForm({
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-none disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
+              className="w-fit rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-semibold text-white hover:cursor-pointer hover:bg-red-700 focus:outline-hidden disabled:bg-gray-400 disabled:hover:cursor-not-allowed"
               onClick={handleSubmit(submitIfValid)}
               data-testid="password-submit-button"
               disabled={isSubmitting}
@@ -207,7 +207,7 @@ export function PasswordForm({
             <button
               type="button"
               onClick={() => reset()}
-              className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-none"
+              className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-hidden"
               data-testid="password-reset-button"
             >
               {caption(captionKey.resetButtonName)}

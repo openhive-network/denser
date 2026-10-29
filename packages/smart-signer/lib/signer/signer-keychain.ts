@@ -81,7 +81,7 @@ export class SignerKeychain extends Signer {
     return encryptMemoWithKeychain(this.username, toAccount, memo);
   }
 
-  /** Decoding isn't affected by the casing bug above - see `decryptMemoWithKeychain` (keychain-memo-crypto.ts). */
+  /** Decrypts through `KeychainProvider` - see `decryptMemoWithKeychain` (keychain-memo-crypto.ts). */
   async decryptData(encodedMemo: string): Promise<string> {
     return decryptMemoWithKeychain(this.username, encodedMemo);
   }

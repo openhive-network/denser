@@ -32,7 +32,7 @@ export function ProposalVotesButton({
       <button
         type="button"
         aria-label={t('proposals_page.show_voters_label', { amount, id: proposalId })}
-        className="group flex flex-col items-center gap-0.5 self-center rounded-md px-1 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:ring-offset-slate-800"
+        className="group flex flex-col items-center gap-0.5 self-center rounded-md px-1 hover:underline focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:ring-offset-slate-800"
         data-testid="vote-proposals-dialog-trigger"
       >
         <span className="whitespace-nowrap md:text-xl" data-testid="vote-proposal-value">

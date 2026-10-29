@@ -347,7 +347,7 @@ const MdEditor: FC<MdEditorProps> = ({ onChange, persistedValue = '', placeholde
     <div
       className={cn(
         'relative cursor-text overflow-hidden rounded-md border border-border',
-        { '!bg-red-400/20': isDrag }
+        { 'bg-red-400/20!': isDrag }
       )}
       onClick={focusEditor}
       onDragEnter={isBlockedUser ? undefined : dragHandler}

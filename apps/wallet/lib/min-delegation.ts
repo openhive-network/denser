@@ -19,12 +19,19 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 export const minDelegationHiveSatoshis = (accountCreationFee: { amount: string }): bigint =>
   BigInt(accountCreationFee.amount) / MIN_DELEGATION_FEE_DIVISOR;
 
+// wax ends the message of a chain exception it does not type with the exception's JSON after this.
+const RAW_EXCEPTION_MARKER = 'Original deserialization data: ';
+// Wrappers between the broadcast and the dialog keep wax's error as a cause.
+const MAX_CAUSE_DEPTH = 5;
+
 function parseErrorDetails(message: string): unknown {
-  const start = message.indexOf('{');
-  const end = message.lastIndexOf('}');
+  const marker = message.lastIndexOf(RAW_EXCEPTION_MARKER);
+  const json = marker === -1 ? message : message.slice(marker + RAW_EXCEPTION_MARKER.length);
+  const start = json.indexOf('{');
+  const end = json.lastIndexOf('}');
   if (start === -1 || end < start) return null;
   try {
-    return JSON.parse(message.slice(start, end + 1));
+    return JSON.parse(json.slice(start, end + 1));
   } catch (error) {
     if (error instanceof SyntaxError) return null;
     throw error;
@@ -32,13 +39,26 @@ function parseErrorDetails(message: string): unknown {
 }
 
 /**
+ * The stack frames of the chain exception behind `error`: wax's assertion errors carry them parsed
+ * (`raw`), other wax errors in their message; searched along the `cause` chain.
+ */
+function chainExceptionStack(error: unknown): unknown[] {
+  let current: unknown = error;
+  for (let depth = 0; depth < MAX_CAUSE_DEPTH && current !== undefined; depth++) {
+    if (isRecord(current) && isRecord(current.raw) && Array.isArray(current.raw.stack)) return current.raw.stack;
+    const details = parseErrorDetails(current instanceof Error ? current.message : String(current));
+    if (isRecord(details) && Array.isArray(details.stack)) return details.stack;
+    current = isRecord(current) ? current.cause : undefined;
+  }
+  return [];
+}
+
+/**
  * The minimum delegation, in VESTS satoshis, that the chain named when it rejected a
  * `delegate_vesting_shares` operation for delegating less; null for any other error.
  */
 export function rejectedMinDelegationVests(error: unknown): bigint | null {
-  const details = parseErrorDetails(error instanceof Error ? error.message : String(error));
-  const stack = isRecord(details) && Array.isArray(details.stack) ? details.stack : [];
-  for (const entry of stack) {
+  for (const entry of chainExceptionStack(error)) {
     if (!isRecord(entry) || typeof entry.format !== 'string') continue;
     const { format } = entry;
     if (!MIN_DELEGATION_ASSERT_FORMATS.some((minimumFormat) => format.endsWith(minimumFormat))) continue;

@@ -156,7 +156,7 @@ const CommunityDescription = ({
                 {t('communities.titles.rules')}
               </h6>
               <div
-                className="preview-rules prose-sm whitespace-normal break-words"
+                className="preview-rules prose-sm whitespace-normal wrap-break-word"
                 data-testid="community-rules-content"
               >
                 {ln2list(data.flag_text).map((x, i) => (

@@ -3,6 +3,9 @@
 .gitignore
 .gitlab-ci.yml
 
+# common-ci-configuration submodule: its catalogs are already merged into pnpm-workspace.yaml
+npm-common-config
+
 # IDE
 .idea
 .vscode

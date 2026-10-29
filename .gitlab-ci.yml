@@ -16,7 +16,12 @@ variables:
   GIT_STRATEGY: fetch
   GIT_DEPTH: 0
   GIT_SUBMODULE_DEPTH: 0
-  GIT_SUBMODULE_STRATEGY: none
+  # npm-common-config is common-ci-configuration, tracked from its develop tip
+  # (--remote) so a ccc catalog bump reaches the next pipeline; its catalogs are
+  # merged into pnpm-workspace.yaml before every install (CCC_SUBMODULE_DIR).
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_UPDATE_FLAGS: --remote
+  CCC_SUBMODULE_DIR: npm-common-config
   # Temporary: separate clone path prevents clone-strategy jobs from erasing
   # fetch workspaces during transition. Remove once all projects use fetch.
   GIT_CLONE_PATH: $CI_BUILDS_DIR/clean/$CI_RUNNER_SHORT_TOKEN/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
@@ -75,6 +80,7 @@ include:
   - '/templates/base.gitlab-ci.yml'
   - '/templates/docker_image_jobs.gitlab-ci.yml'
   - '/templates/cache_cleanup.gitlab-ci.yml'
+  - '/templates/npm_projects.gitlab-ci.yml'
 - project: 'hive/haf'
   ref: 8de693b2812a040aa5c4365c232ebab8036a1d11  # develop
   file: '/scripts/ci-helpers/prepare_data_image_job.yml'
@@ -487,10 +493,9 @@ mirrornet-haf-node-replay:
   before_script:
   - pnpm config set store-dir .pnpm-store
   script:
-  - |
-    echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
-    pnpm install --frozen-lockfile
-    echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
+  - echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
+  - !reference [.pnpm_install_with_catalog_fallback, script]
+  - echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
     key: '$TURBO_APP_SCOPE-cache-2'
     paths:
@@ -501,6 +506,19 @@ mirrornet-haf-node-replay:
     name: '$CI_JOB_NAME-$CI_COMMIT_REF_NAME'
     when: always
     expire_in: 1 week
+  tags:
+  - public-runner-docker
+
+# Reports (allowed to fail) when the committed pnpm-workspace.yaml lacks the ccc
+# catalogs the submodule's develop tip has: re-run
+# `python3 npm-common-config/scripts/python/pnpm-catalog-sync.py` and commit it with
+# the refreshed lockfile.
+pnpm_catalog_check:
+  extends: .pnpm_catalog_check
+  stage: build
+  rules:
+  - when: on_success
+  interruptible: true
   tags:
   - public-runner-docker
 

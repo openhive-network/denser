@@ -22,7 +22,7 @@ import { getUserAvatarUrl, UserAvatarImg } from '@hive/ui';
 import { useLocale } from '@ui/components/locale-context';
 
 const VOTE_FOCUS_RING =
-  'rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2';
+  'rounded-full focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2';
 
 const STATUS_TOOLTIP_KEYS: Record<string, string> = {
   active: 'proposals_page.status_tooltip_started',
@@ -286,7 +286,7 @@ export function ProposalListItem({
                   className={cn(
                     'relative inline-flex h-6 w-6 cursor-pointer rounded-full bg-white stroke-1 text-red-500 dark:bg-slate-800',
                     {
-                      '!bg-red-500 text-white': voteSuccess
+                      'bg-red-500! text-white': voteSuccess
                     }
                   )}
                   data-testid="voting-button-icon"

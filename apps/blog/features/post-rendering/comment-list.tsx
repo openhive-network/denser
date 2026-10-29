@@ -12,7 +12,7 @@ import { getEntryKey } from './lib/paginate-threads';
  * Shows a vertical line with a curved connector to parent comment
  */
 const ThreadLine = ({ isLast }: { isLast: boolean }) => (
-  <div className="relative flex-shrink-0 w-5 mr-1 group/thread">
+  <div className="relative shrink-0 w-5 mr-1 group/thread">
     {/* Vertical line from top to curve junction - connects to parent's line above */}
     <div
       className={clsx(

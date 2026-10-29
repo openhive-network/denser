@@ -23,7 +23,7 @@ export function ChatOutgoingItem({ session, message, retry }: ChatOutgoingItemPr
         avatarMxc={sender.avatarMxc}
         timestamp={message.createdAt}
       >
-        <p className="whitespace-pre-wrap break-words">{message.text}</p>
+        <p className="whitespace-pre-wrap wrap-break-word">{message.text}</p>
         {message.status === 'failed' ? (
           <p className="flex items-center gap-2 text-xs text-destructive" role="alert">
             {t('chat_widget.send_failed')}

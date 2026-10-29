@@ -94,7 +94,7 @@ const TradeHive = ({ tickerData }: { tickerData: Market }) => {
 
   return (
     <div>
-      <div className="max-w-[75rem]">
+      <div className="max-w-300">
         <div className="flex flex-col items-center justify-center">
           <Chart
             bids={reduced(data.order.bids).sort((a, b) => +a.real_price - +b.real_price)}

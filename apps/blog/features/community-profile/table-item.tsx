@@ -52,7 +52,7 @@ const TableItem = ({
           @{item.name}
         </BasePathLink>
       </TableCell>
-      <TableCell className="border-x-[1px] border-solid border-secondary p-2">
+      <TableCell className="border-x border-solid border-secondary p-2">
         {loggedUserValue >= 4 && item.value < loggedUserValue ? (
           <span className="flex items-center gap-2">
             {editMode ? (
