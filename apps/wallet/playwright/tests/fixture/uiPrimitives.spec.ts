@@ -5,6 +5,7 @@ import {
   STUB_ACCOUNT,
   STUB_FOLLOWED,
   STUB_PROPOSAL_SUBJECT,
+  STUB_TRANSFER_SENDER,
   logInAsStubAccount,
   startWalletApiStub
 } from '../support/walletApiStub';
@@ -205,7 +206,13 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await expect(dialog.getByRole('heading', { name: 'Transfer To Account' })).toBeVisible();
     expect(await focusIsInside(dialog), 'focus moved into the dialog').toBe(true);
 
+    // The history's counterparties are suggested too, matched by their name only
+    await recipient.fill('stub-s');
+    await expect(dialog.getByRole('option', { name: `${STUB_TRANSFER_SENDER} (1 Previous transfers)` })).toBeVisible();
+    await expect(suggestion).toBeHidden();
+
     await recipient.fill('stub-f');
+    await expect(dialog.getByRole('option', { name: new RegExp(STUB_TRANSFER_SENDER) })).toBeHidden();
     await suggestion.click();
     await expect(recipient).toHaveValue(STUB_FOLLOWED);
 

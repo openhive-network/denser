@@ -129,8 +129,15 @@ export function Autocompleter({
             !isOpen && 'hidden'
           )}
         >
+          {/* The username alone is the value: cmdk's fuzzy filter would otherwise also match the
+              about text, so a name prefix would find any account with "previous transfers". */}
           {items?.map((item) => (
-            <CommandItem key={item.username} className="p-0" onSelect={() => onChange(item.username)}>
+            <CommandItem
+              key={item.username}
+              value={item.username}
+              className="p-0"
+              onSelect={() => onChange(item.username)}
+            >
               <div
                 onClick={() => onChange(item.username)}
                 className="w-full truncate px-2 py-1 even:bg-background-tertiary"
