@@ -1,0 +1,6 @@
+{
+  "testName": "forYouSignOut",
+  "base": "observerDefault",
+  "additive": true,
+  "note": "The logged-in feeds and the anonymous trending feed (base), plus the anonymous communities list (bridge.list_communities observer=hive.blog, copied from homeMainPage 0001), which the Trending page reads after signing out on For You."
+}
