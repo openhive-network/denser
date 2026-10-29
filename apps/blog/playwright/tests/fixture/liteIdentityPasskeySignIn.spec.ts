@@ -29,7 +29,7 @@ import {
  *                it replies as the account
  *   LITE-ID-09 – a guest's first reply prompts, without blocking, to secure the new lite account;
  *                a reload does not prompt again
- *   LITE-ID-10, 12, 13 – a fresh browser starts the sign-in from the header's Login dialog: its lite link
+ *   LITE-ID-10, 13, 15 – a fresh browser starts the sign-in from the header's Login dialog: its lite link
  *                opens the sign-in dialog with the name focused; a browser already holding a lite
  *                identity is offered it too; a gateway not relaying update_authority leaves the
  *                Login dialog unchanged (a node without lite support: liteLoginEntry.spec.ts)
@@ -203,7 +203,7 @@ test.describe('Lite account sign-in on another device (fixture-based, mocked gat
     await expect(page.getByTestId('lite-identity-name')).toHaveText(LITE_NAME);
   });
 
-  test('LITE-ID-12: a browser holding a lite identity is offered the lite sign-in from Login', async ({
+  test('LITE-ID-15: a browser holding a lite identity is offered the lite sign-in from Login', async ({
     page,
     context
   }) => {

@@ -324,7 +324,7 @@ only while unsecured; `ownerPublicKey` is the root's once secured. A record stor
 unsecured with its owner key (`readStoredLiteIdentity`); nothing is rewritten until the identity changes.
 
 `liteIdentityPasskey.spec.ts` (LITE-ID-01, 02, 04–08, 11, on the `liteSocial` recording) and
-`liteIdentityPasskeySignIn.spec.ts` (LITE-ID-03, LITE-ID-09 for the first-post card and LITE-ID-10, 12, 13 for
+`liteIdentityPasskeySignIn.spec.ts` (LITE-ID-03, LITE-ID-09 for the first-post card and LITE-ID-10, 13, 15 for
 the Login dialog's link, on `litePost`; its node-without-lite case in `liteLoginEntry.spec.ts`) cover it, with the gateway's authority and `/l2` answered in the browser from one authority the relayed edits change, and the popup served by a stub
 speaking the signer protocol (`support/litePasskeyContext.ts`, reporting a YubiKey unless a spec
 says otherwise): fixture runs have no network, so the real

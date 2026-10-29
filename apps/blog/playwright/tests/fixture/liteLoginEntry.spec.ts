@@ -9,7 +9,7 @@ import { keyMember, mockPasskeyGateway, openLoginDialog, ROOT_KEY, SIGNER } from
  *
  *   LITE-ID-14 – a node without lite support leaves the Login dialog without the lite link
  *
- * The lite-aware cases (LITE-ID-10, 12, 13) are in liteIdentityPasskeySignIn.spec.ts.
+ * The lite-aware cases (LITE-ID-10, 13, 15) are in liteIdentityPasskeySignIn.spec.ts.
  */
 
 test.use({ fixtureTestName: 'postDetail' });
