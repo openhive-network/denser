@@ -1,12 +1,12 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { DEFAULT_PASSKEY_SIGNERS, parsePasskeySigners } from './passkey-signers.ts';
+import { parsePasskeySigners } from './passkey-signers.ts';
 
 describe('parsePasskeySigners', () => {
-  it('defaults to signer.hive.blog when unset or empty', () => {
-    assert.deepEqual(parsePasskeySigners(undefined), ['https://signer.hive.blog']);
-    assert.deepEqual(parsePasskeySigners(''), DEFAULT_PASSKEY_SIGNERS);
-    assert.deepEqual(parsePasskeySigners('  '), DEFAULT_PASSKEY_SIGNERS);
+  it('configures no signer when unset or empty', () => {
+    assert.deepEqual(parsePasskeySigners(undefined), []);
+    assert.deepEqual(parsePasskeySigners(''), []);
+    assert.deepEqual(parsePasskeySigners('  '), []);
   });
 
   it('reads one signer from a JSON array or a bare URL, as its origin', () => {
@@ -38,12 +38,10 @@ describe('parsePasskeySigners', () => {
     assert.deepEqual(parsePasskeySigners('http://127.0.0.1:8080'), ['http://127.0.0.1:8080']);
   });
 
-  it('falls back to the default when no entry is valid or the JSON is broken', () => {
-    assert.deepEqual(
-      parsePasskeySigners('["ftp://x.example", "javascript:alert(1)"]'),
-      DEFAULT_PASSKEY_SIGNERS
-    );
-    assert.deepEqual(parsePasskeySigners('["https://a.example"'), DEFAULT_PASSKEY_SIGNERS);
-    assert.deepEqual(parsePasskeySigners('{"signer": "https://a.example"}'), DEFAULT_PASSKEY_SIGNERS);
+  it('configures no signer when no entry is valid or the JSON is broken', () => {
+    assert.deepEqual(parsePasskeySigners('["not a url"]'), []);
+    assert.deepEqual(parsePasskeySigners('["ftp://x.example", "javascript:alert(1)"]'), []);
+    assert.deepEqual(parsePasskeySigners('["https://a.example"'), []);
+    assert.deepEqual(parsePasskeySigners('{"signer": "https://a.example"}'), []);
   });
 });

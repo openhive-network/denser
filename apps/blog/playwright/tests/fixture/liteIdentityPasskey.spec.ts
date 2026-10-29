@@ -7,6 +7,7 @@ import {
   holdIdentity,
   keyMember,
   mockPasskeyGateway,
+  openLoginDialog,
   OTHER_DEVICE_KEY,
   OTHER_SIGNER,
   ROOT_KEY,
@@ -41,6 +42,9 @@ import {
  *   LITE-ID-08 – a popup closed by the user changes nothing, silently; a signer error is named
  *   LITE-ID-11 – the signer's address not recorded: neither `meta.signer` nor `meta.authenticator`
  *                is written, the edited passkey label is
+ *   LITE-ID-12 – no configured signer (`REACT_APP_PASSKEY_SIGNERS` empty): a gateway that relays
+ *                update_authority still shows no passkey UI, and the Login dialog has no
+ *                "Passkey signer" method
  *
  * LITE-ID-03 (sign in on a fresh browser) and LITE-ID-09 (the first-post prompt) are in
  * liteIdentityPasskeySignIn.spec.ts, on the `litePost` recording, whose post takes a guest reply.
@@ -336,6 +340,33 @@ test.describe('Lite account passkey (fixture-based, mocked gateway and signer)',
     const description = page.getByTestId('lite-forget-dialog').locator('[data-variant]');
     await expect(description).toHaveAttribute('data-variant', 'plain');
     await expect(description).toContainText('Its key is kept only in this browser');
+  });
+
+  test('LITE-ID-12: without a configured signer there is no passkey UI or Passkey signer login', async ({
+    page
+  }) => {
+    await configureSigners(page, []);
+    await holdIdentity(page, unsecuredIdentity(LITE_NAME));
+    await mockPasskeyGateway(page, LITE_NAME, unsecuredAuthority());
+    await page.goto(PROFILE, { waitUntil: 'domcontentloaded' });
+
+    await expect(
+      page.getByTestId('profile-navigation').getByRole('link', { name: 'Feed', exact: true })
+    ).toBeVisible();
+    await expect(
+      page.getByTestId('profile-navigation').getByRole('link', { name: 'Devices', exact: true })
+    ).toHaveCount(0);
+    const menu = await openMenu(page);
+    await expect(menu.getByTestId('lite-identity-forget')).toBeVisible();
+    await expect(menu.getByTestId('lite-identity-secure')).toHaveCount(0);
+    await expect(menu.getByTestId('lite-identity-sign-out')).toHaveCount(0);
+    await expect(menu.getByTestId('lite-security-notice')).toHaveCount(0);
+    await page.keyboard.press('Escape');
+
+    const login = await openLoginDialog(page);
+    await login.getByTestId('other-sign-in-options-button').click();
+    await expect(login.getByTestId('hive-keychain-extension-button')).toBeVisible();
+    await expect(login.getByTestId('passkey-signer-button')).toHaveCount(0);
   });
 
   test('LITE-ID-08: a closed popup changes nothing silently; a signer error is named', async ({

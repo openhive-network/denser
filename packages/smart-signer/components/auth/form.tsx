@@ -27,6 +27,7 @@ const WALLET_EXTENSION_LOGIN_TYPES: ReadonlySet<LoginType> = new Set([
   LoginType.metamask
 ]);
 import Passkey from './methods/passkey';
+import { configuredPasskeySigners } from '@ui/config/public-vars';
 
 export interface SignInFormProps {
   preferredKeyTypes: KeyType[];
@@ -35,7 +36,7 @@ export interface SignInFormProps {
   i18nNamespace?: string;
   /** The account to sign in; defaults to the last one signed in */
   username?: string;
-  /** Opens on the "Passkey signer" sign-in instead of safe storage */
+  /** Opens on the "Passkey signer" sign-in instead of safe storage, when a signer is configured */
   passkey?: boolean;
 }
 
@@ -61,7 +62,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     ref
   ) => {
     // component controllers
-    const [step, setStep] = useState<Steps>(passkey ? Steps.PASSKEY_LOGIN : Steps.SAFE_STORAGE_LOGIN);
+    const passkeyStep = passkey && configuredPasskeySigners.length > 0;
+    const [step, setStep] = useState<Steps>(passkeyStep ? Steps.PASSKEY_LOGIN : Steps.SAFE_STORAGE_LOGIN);
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
     const [username, setUsername] = useState<string>(initialUsername ?? lastLoggedInUser);
