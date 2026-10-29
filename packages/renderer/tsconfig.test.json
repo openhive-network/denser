@@ -1,21 +1,23 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
     "types": ["mocha", "node", "chai"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noEmit": true,
+    // ts-node emits (to memory) the sibling workspace packages too; TS 6 requires an explicit
+    // rootDir when the sources' common directory is not the tsconfig's own.
+    "rootDir": "..",
     "strict": false,
-    "noImplicitAny": false,
-    // node10 resolution ignores package.json `exports`, which is how shiki publishes its entries
-    "baseUrl": ".",
-    "paths": {
-      "shiki/core": ["node_modules/shiki/dist/core.d.mts"],
-      "shiki/engine/javascript": ["node_modules/shiki/dist/engine-javascript.d.mts"],
-      "shiki/*": ["node_modules/shiki/dist/*"]
-    }
+    "noImplicitAny": false
+  },
+  // ts-node type checks with the bundler resolution above but emits CommonJS for mocha, also for
+  // the sibling workspace packages the tests load. Its CommonJS transpile keeps
+  // `moduleResolution: bundler`, which TS rejects there (5095) although a single-file transpile
+  // resolves no modules.
+  "ts-node": {
+    "moduleTypes": {"../**/*.ts": "cjs"},
+    "ignoreDiagnostics": [5095]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
