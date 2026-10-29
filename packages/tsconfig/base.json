@@ -12,9 +12,8 @@
     "jsx": "preserve",
     "lib": ["DOM", "dom.iterable", "esnext"],
     "module": "es2022",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noEmit": true,
-    "outDir": "build",
     "plugins": [
       {
         "name": "next"

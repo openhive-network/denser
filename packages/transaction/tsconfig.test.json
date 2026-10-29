@@ -1,28 +1,36 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "moduleResolution": "node",
     "types": ["mocha", "node", "chai"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noEmit": true,
+    // ts-node emits (to memory) the sibling workspace packages too; TS 6 requires an explicit
+    // rootDir when the sources' common directory is not the tsconfig's own.
+    "rootDir": "..",
     "strict": false,
     "noImplicitAny": false,
-    "baseUrl": ".",
     "paths": {
-      "@hiveio/wax": ["lib/__test-stubs__/hiveio-wax.ts"],
-      "@hive/common-hiveio-packages": ["lib/__test-stubs__/common-hiveio-packages.ts"],
-      "@hive/common-hiveio-packages/wax": ["lib/__test-stubs__/common-hiveio-packages-wax.ts"],
-      "@hive/ui/lib/logging": ["lib/__test-stubs__/ui-logging.ts"],
-      "@ui/lib/logging": ["lib/__test-stubs__/ui-logging.ts"],
+      "@hiveio/wax": ["./lib/__test-stubs__/hiveio-wax.ts"],
+      "@hive/common-hiveio-packages": ["./lib/__test-stubs__/common-hiveio-packages.ts"],
+      "@hive/common-hiveio-packages/wax": ["./lib/__test-stubs__/common-hiveio-packages-wax.ts"],
+      "@hive/ui/lib/logging": ["./lib/__test-stubs__/ui-logging.ts"],
+      "@ui/lib/logging": ["./lib/__test-stubs__/ui-logging.ts"],
       "@ui/lib/logger": ["../ui/lib/logger.ts"],
-      "@ui/lib/utils": ["lib/__test-stubs__/ui-utils.ts"],
+      "@ui/lib/utils": ["./lib/__test-stubs__/ui-utils.ts"],
       "@hive/ui/lib/sentry-scrub": ["../ui/lib/sentry-scrub.ts"],
       "@ui/lib/common-variables": ["../ui/lib/common-variables.ts"],
       "@ui/lib/storage-with-ttl": ["../ui/lib/storage-with-ttl.ts"],
-      "@ui/config/public-vars": ["lib/__test-stubs__/ui-public-vars.ts"]
+      "@ui/config/public-vars": ["./lib/__test-stubs__/ui-public-vars.ts"]
     }
+  },
+  // ts-node type checks with the bundler resolution above but emits CommonJS for mocha, also for
+  // the sibling workspace packages the tests load. Its CommonJS transpile keeps
+  // `moduleResolution: bundler`, which TS rejects there (5095) although a single-file transpile
+  // resolves no modules.
+  "ts-node": {
+    "moduleTypes": {"../**/*.ts": "cjs"},
+    "ignoreDiagnostics": [5095]
   },
   "include": ["lib/**/*.ts"],
   "exclude": ["node_modules", "dist"]
