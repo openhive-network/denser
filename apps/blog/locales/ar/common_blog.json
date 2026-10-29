@@ -248,6 +248,7 @@
       "downvote_weight": "وزن التصويت السلبي",
       "submit_upvote_percent": "إرسال تصويت إيجابي بنسبة {{votePercent}}%",
       "submit_downvote_percent": "إرسال تصويت سلبي بنسبة {{votePercent}}%",
+      "vote_after_payout_note": "التصويت على المحتوى بعد صرف مكافآته لا يولّد أي مكافآت جديدة",
       "no_votes": "لا توجد أصوات",
       "vote": "1 صوت",
       "votes": "{{votes}} صوت",

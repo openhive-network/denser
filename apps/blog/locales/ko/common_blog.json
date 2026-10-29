@@ -238,6 +238,7 @@
       "downvote_weight": "다운보팅 비율",
       "submit_upvote_percent": "{{votePercent}}%로 업보팅하기",
       "submit_downvote_percent": "{{votePercent}}%로 다운보팅하기",
+      "vote_after_payout_note": "지급이 완료된 콘텐츠에 투표해도 새로운 보상이 발생하지 않습니다",
       "no_votes": "보팅 없음",
       "vote": "보팅 1개",
       "votes": "보팅 {{votes}}개",

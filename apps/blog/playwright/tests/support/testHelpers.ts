@@ -19,7 +19,7 @@ export function assertDefined<T>(val: T | null | undefined, msg: string): assert
   expect(val, msg).not.toBeNull();
 }
 
-const AFTER_PAYOUT_VOTE_NOTE = 'Voting on Content after their payout does not generate any new rewards';
+const AFTER_PAYOUT_VOTE_NOTE = 'Voting on content after its payout does not generate any new rewards';
 
 /**
  * Matches the full text of a vote button tooltip: the label (e.g. 'Upvote'),

@@ -27,11 +27,11 @@ test.describe('Voting tests with fixture and POM', () => {
   const upvoteTooltipText: string = 'UpvoteUpvote';
   const undoUpvoteTooltipText: string = 'Undo your upvoteUndo your upvote';
   const upVotingAfterPayoutText: string =
-    'UpvoteVoting on Content after their payout does not generate any new rewardsUpvoteVoting on Content after their payout does not generate any new rewards';
+    'UpvoteVoting on content after its payout does not generate any new rewardsUpvoteVoting on content after its payout does not generate any new rewards';
   const downvoteTooltipText: string = 'DownvoteDownvote';
   const undoDownvoteTooltipText: string = 'Undo your downvoteUndo your downvote';
   const downVotingAfterPayoutText: string =
-    'DownvoteVoting on Content after their payout does not generate any new rewardsDownvoteVoting on Content after their payout does not generate any new rewards';
+    'DownvoteVoting on content after its payout does not generate any new rewardsDownvoteVoting on content after its payout does not generate any new rewards';
 
   let homePage: HomePage;
 

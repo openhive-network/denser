@@ -242,6 +242,7 @@
       "downvote_weight": "Вес голоса против",
       "submit_upvote_percent": "Проголосовать за с весом {{votePercent}}%",
       "submit_downvote_percent": "Проголосовать против с весом {{votePercent}}%",
+      "vote_after_payout_note": "Голосование за контент после его выплаты не приносит новых вознаграждений",
       "reputation_title": "Репутация",
       "in": "в",
       "no_votes": "нет голосов",

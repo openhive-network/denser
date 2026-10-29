@@ -240,6 +240,7 @@
       "downvote_weight": "Downvote weight",
       "submit_upvote_percent": "Submit upvote at {{votePercent}}%",
       "submit_downvote_percent": "Submit downvote at {{votePercent}}%",
+      "vote_after_payout_note": "Voting on content after its payout does not generate any new rewards",
       "no_votes": "no votes",
       "vote": "1 vote",
       "votes": "{{votes}} votes",

@@ -242,6 +242,7 @@
       "downvote_weight": "Waga głosu przeciw",
       "submit_upvote_percent": "Oddaj głos za z wagą {{votePercent}}%",
       "submit_downvote_percent": "Oddaj głos przeciw z wagą {{votePercent}}%",
+      "vote_after_payout_note": "Głosowanie na treść po jej wypłacie nie generuje żadnych nowych nagród",
       "reputation_title": "Reputacja",
       "in": "w",
       "no_votes": "Brak głosów",

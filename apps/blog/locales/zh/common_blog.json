@@ -236,6 +236,7 @@
       "downvote_weight": "反对票权重",
       "submit_upvote_percent": "以 {{votePercent}}% 投赞成票",
       "submit_downvote_percent": "以 {{votePercent}}% 投反对票",
+      "vote_after_payout_note": "在内容支付后投票不会产生任何新的奖励",
       "reputation_title": "声誉",
       "in": "在",
       "no_votes": "暂无投票",

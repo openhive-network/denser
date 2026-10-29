@@ -242,6 +242,7 @@
       "downvote_weight": "Peso del voto negativo",
       "submit_upvote_percent": "Enviar voto positivo al {{votePercent}}%",
       "submit_downvote_percent": "Enviar voto negativo al {{votePercent}}%",
+      "vote_after_payout_note": "Votar contenido después de su pago no genera nuevas recompensas",
       "no_votes": "sin votos",
       "vote": "1 voto",
       "votes": "{{votes}} votos",
