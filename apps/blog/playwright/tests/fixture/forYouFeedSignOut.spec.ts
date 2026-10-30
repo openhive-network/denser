@@ -14,7 +14,8 @@ import enBlog from '../../../locales/en/common_blog.json';
  * selector has no For You option, so the sign-out takes the reader to Trending once the server has
  * ended the session, or once it gave up waiting for the logout answer. Meanwhile /for-you shows the
  * list skeleton under a selector reading Trending, never an empty selector or an empty list. A
- * sign-out in another tab waits for that tab's logout answer, and a list the reader picks while the
+ * sign-out in another tab waits for that tab's logout answer, a sign-out outside the header menu in
+ * this tab (a desync logout) for its own, and a list the reader picks while the
  * sign-out waits is where they stay. A logout answered after the sign-out stopped waiting renders
  * Trending again for the signed-out reader, and an answer left by an earlier logout does not count
  * for a later sign-out. Opening `/for-you` signed out is forYouFeedSignedOut.spec.ts.
@@ -35,8 +36,8 @@ const LOGOUT_DELAY_MS = 1500;
 const LOGOUT_DELAY_WHILE_PICKING_MS = 3000;
 /** Held back past the sign-out's 5 s wait, so the reader reaches Trending before the answer */
 const SLOW_LOGOUT_DELAY_MS = 7000;
-/** How soon after another tab's logout answer For You must start loading Trending */
-const OTHER_TAB_LEAVES_WITHIN_MS = 1000;
+/** How soon after a logout answer, this tab's or another's, For You must start loading Trending */
+const LEAVES_AFTER_ANSWER_WITHIN_MS = 1000;
 /** How long before the test an earlier logout's answer was announced */
 const EARLIER_LOGOUT_AGE_MS = 60_000;
 /** How soon after the click a sign-out whose logout never answers must reach Trending */
@@ -133,6 +134,15 @@ async function recordTrendingRscRequests(page: Page): Promise<TrendingRscRequest
 }
 
 const isLogout = (url: string) => new URL(url).pathname.endsWith('/api/auth/logout');
+
+/** Counts the logout requests the page sends from now on */
+function countLogoutRequests(page: Page): () => number {
+  let count = 0;
+  page.on('request', (request) => {
+    if (isLogout(request.url())) count += 1;
+  });
+  return () => count;
+}
 
 /** Holds the logout request back for `delayMs`; `answeredAt` resolves when its answer arrives */
 async function delayLogout(page: Page, delayMs = LOGOUT_DELAY_MS): Promise<{ answeredAt: Promise<number> }> {
@@ -278,7 +288,7 @@ test.describe('For You feed — signing out', () => {
     expectSignedOutTrendingLoad(trendingRequests, answeredAt);
     const [{ at }] = pageDataRequests(trendingRequests);
     expect(at - answeredAt, 'time from the other tab\'s logout answer to the /trending request').toBeLessThan(
-      OTHER_TAB_LEAVES_WITHIN_MS
+      LEAVES_AFTER_ANSWER_WITHIN_MS
     );
   });
 
@@ -348,5 +358,27 @@ test.describe('For You feed — signing out when safe storage lost the keys', ()
     await expect(page).toHaveURL(/\/trending$/, { timeout: TIMEOUTS.HYDRATION });
     await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
     expectSignedOutTrendingLoad(trendingRequests, await logout.answeredAt);
+  });
+
+  test('FYP-14 — a desync logout on For You itself takes the reader to Trending right after its one logout answer', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await openForYouSignedIn(page, homePage);
+    const trendingRequests = await recordTrendingRscRequests(page);
+    const logoutRequests = countLogoutRequests(page);
+    const logout = await delayLogout(page);
+
+    // Safe storage holds no keys for the account: signing the vote signs the reader out
+    await homePage.getFirstPostUpvoteButton.click();
+    await expect(page.getByTestId('safe-storage-missing-message')).toBeVisible();
+
+    await expect(page).toHaveURL(/\/trending$/, { timeout: TIMEOUTS.HYDRATION });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    const answeredAt = await logout.answeredAt;
+    expectSignedOutTrendingLoad(trendingRequests, answeredAt);
+    const [{ at }] = pageDataRequests(trendingRequests);
+    expect(at - answeredAt, 'time from the logout answer to the /trending request').toBeLessThan(
+      LEAVES_AFTER_ANSWER_WITHIN_MS
+    );
+    expect(logoutRequests(), 'logout requests sent for the one desync').toBe(1);
   });
 });
