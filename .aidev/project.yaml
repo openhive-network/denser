@@ -83,12 +83,22 @@ verification:
   # site's upkeep check (stack/integration/test-upkeep.sh, ~20 s, stand-ins only).
   quick:
     suites:
+      # `honor_quarantine:` on every binding of unit and fixture_e2e (aidev#17010):
+      # a failure of a test listed in .aidev/known_failures.txt is pardoned. unit
+      # declares no `rerun:` (aidev#17009): its junit ids name no file and no
+      # runner. mocha's xunit spells a test `<describe path>::<title>`, and so do
+      # node:test's ids (its junit's `file=` is not part of the id) and the upkeep
+      # check's; all of them share one suite, so an id cannot be routed to the
+      # runner that owns it. A `--grep`
+      # handed to mocha alone would exit 0 on a node:test id it matches nothing
+      # of, and that exit status would pardon the failure.
       - name: unit
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
         tier: unit
         artifacts: ["test-results/unit/"]
         stack: false
+        honor_quarantine: true
       - name: static
         adapter: command
         args: [".aidev/run-static.sh"]
@@ -105,16 +115,39 @@ verification:
         tier: unit
         artifacts: ["test-results/unit/"]
         stack: false
+        honor_quarantine: true
       - name: static
         adapter: command
         args: [".aidev/run-static.sh"]
         stack: false
+      # Playwright's JSON report records every attempt (aidev#17008): with CI=1 the
+      # config retries once, so a test that failed and then passed reaches
+      # `aidev flaky-tests --project denser` as an in-run flake. Its ids are the
+      # junit's, `<spec relative to playwright/tests/fixture>::<describe › … › title>`.
+      # `rerun:` (aidev#17009) appends the argv to run-fixture-e2e.sh's, which hands
+      # it to `playwright test` from apps/blog: `chatNative.spec.ts::A › B` renders
+      # as `playwright/tests/fixture/chatNative.spec.ts -g "A B"`, and a changed spec
+      # is repeated as `playwright/tests/fixture/<spec>`. `file_pattern` refuses the
+      # basepath pass's ids (`basepath › <spec>`, see the script), so a failure
+      # there blocks without a re-run.
       - name: fixture_e2e
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
         tier: e2e
         artifacts: ["test-results/fixture/"]
         stack: false
+        reports:
+          - {path: test-results/fixture/playwright.json, format: playwright-json}
+        rerun:
+          classify: true
+          separator: "::"
+          root: apps/blog/playwright/tests/fixture
+          file: "playwright/tests/fixture/{file}"
+          file_pattern: "^[\\w.-]+\\.spec\\.ts$"
+          title_separator: " › "
+          ids: ["{files}", "-g", "{titles}"]
+          files: ["{files}"]
+        honor_quarantine: true
       # The wallet's fixture suite, split out of fixture_e2e on 2026-10-09 so a slow
       # blog pass on a loaded host cannot use up its wall (denser#1093, #799).
       - name: wallet_fixture
@@ -160,6 +193,7 @@ verification:
     tier: unit
     artifacts: ["test-results/unit/"]
     stack: false
+    honor_quarantine: true
   # Re-checks the merged tree on deploy/promote.
   canary:
     suites:
@@ -169,6 +203,7 @@ verification:
         tier: unit
         artifacts: ["test-results/unit/"]
         stack: false
+        honor_quarantine: true
       - name: static
         adapter: command
         args: [".aidev/run-static.sh"]
