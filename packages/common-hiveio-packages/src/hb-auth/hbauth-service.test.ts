@@ -298,7 +298,8 @@ async function openPage(basePath: string) {
       options?: Parameters<HbAuthService['withOnlineClient']>[1]
     ) => onPage(() => service.withOnlineClient(operation, options)),
     SupersededKeyWriteError: service.SupersededKeyWriteError,
-    logout: (username: string) => onPage(() => service.logoutFromEveryWorker(username))
+    logout: (username: string) => onPage(() => service.logoutFromEveryWorker(username)),
+    logoutStarted: (username: string) => onPage(() => service.logoutFromStartedWorkers(username))
   };
 }
 
@@ -506,6 +507,32 @@ describe('hb-auth online client', () => {
 
     assert.deepEqual(fakeHbAuth.fakeHbAuthStarts.slice(startsBefore), []);
     assert.equal(fakeHbAuth.fakeHbAuthWorkers.has(retiredUrl), false);
+  });
+
+  it("locks the worker of the page's app after another app's logout, which locked only its own", async () => {
+    const blog = await openPage(BLOG);
+    await blog.register('alice');
+    const wallet = await openPage(WALLET);
+    await wallet.register('alice');
+    const walletWorker = workerOf(await wallet.getOnlineClient());
+    await blog.logout('alice');
+    assert.deepEqual([...walletWorker.worker.unlocked], ['alice']);
+
+    await wallet.logoutStarted('alice');
+
+    assert.deepEqual([...walletWorker.worker.unlocked], []);
+  });
+
+  it('starts no client, and no worker, to log out of on a page that never asked for one', async () => {
+    const signingTab = await openPage(WALLET);
+    await signingTab.register('alice');
+    const idleTab = await openPage(WALLET);
+    const startsBefore = fakeHbAuth.fakeHbAuthStarts.length;
+
+    await idleTab.logoutStarted('alice');
+
+    assert.deepEqual(fakeHbAuth.fakeHbAuthStarts.slice(startsBefore), []);
+    assert.deepEqual([...workerOf(await signingTab.getOnlineClient()).worker.unlocked], ['alice']);
   });
 
   it('renews the safe storage generation after every write of one operation, keeping the writer on its worker', async () => {

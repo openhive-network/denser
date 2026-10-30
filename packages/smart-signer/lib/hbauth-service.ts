@@ -4,9 +4,14 @@ import {
   getOnlineClient,
   getOfflineClient,
   logoutFromEveryWorker,
+  logoutFromStartedWorkers,
   withOnlineClient,
   type OnlineClientOperationOptions
 } from "@hive/common-hiveio-packages";
+import { getLogger } from '@ui/lib/logging';
+import { subscribeOtherTabLogout } from '@smart-signer/lib/auth/other-tab-logout';
+
+const logger = getLogger('app');
 
 /** Asks for the safe storage password of `username` in the dialog signing asks for it in */
 async function requestSafeStoragePassword(username: string): Promise<string> {
@@ -49,3 +54,13 @@ class HbauthService {
 }
 
 export const hbauthService = new HbauthService();
+
+// Another tab's logout locked the workers of its own app; the workers of this app, which may be
+// another one, still hold the keys unlocked for every page of it.
+subscribeOtherTabLogout((accounts) => {
+  for (const { username } of accounts) {
+    logoutFromStartedWorkers(username).catch((error: unknown) => {
+      logger.error(error, 'Failed to lock the safe storage keys of %s after another tab logged out', username);
+    });
+  }
+});

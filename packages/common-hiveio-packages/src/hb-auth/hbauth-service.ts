@@ -365,6 +365,16 @@ export const logoutFromEveryWorker = async (username: string): Promise<void> => 
   await (await clientPromise).logout(username);
 };
 
+/**
+ * Logs `username` out as `logoutFromEveryWorker` does when this page has asked for the online
+ * client; otherwise starts no client and resolves. A running worker is held by a page that asked for
+ * one, so of the pages that hear of a logout, those that did lock every running worker.
+ */
+export const logoutFromStartedWorkers = async (username: string): Promise<void> => {
+  if (!onlineClientPromise) return;
+  await logoutFromEveryWorker(username);
+};
+
 export const getOfflineClient = (): Promise<OfflineClient> => {
   if (offlineClientPromise)
     return offlineClientPromise;

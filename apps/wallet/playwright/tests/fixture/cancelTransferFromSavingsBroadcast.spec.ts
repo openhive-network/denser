@@ -13,7 +13,7 @@ import {
 
 /**
  * Cancelling a pending savings withdrawal broadcasts one `cancel_transfer_from_savings_operation`
- * naming the owner and that withdrawal's request id. Reads come from the stub node
+ * naming the owner and that withdrawal's request id; only the signed-in owner is offered it. Reads come from the stub node
  * (support/walletApiStub.ts), here with one pending withdrawal; the broadcast is answered by the
  * interceptor.
  */
@@ -90,6 +90,45 @@ test.describe('Cancel transfer from savings broadcast', () => {
       from: STUB_ACCOUNT,
       request_id: REQUEST_ID
     });
+  });
+
+  test('WALLET-TX-SAVINGS-CANCEL-03 — a sign-out in another tab takes the cancel away, and broadcasts nothing', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    const dialog = await openCancelDialog(page);
+
+    // Another tab of the origin signs out: it stores the logged-out user, which this tab hears
+    const otherTab = await page.context().newPage();
+    await otherTab.goto(`${WALLET_BASE_PATH}/favicon.ico`);
+    await otherTab.evaluate(() =>
+      window.localStorage.setItem(
+        'user',
+        JSON.stringify({
+          isLoggedIn: false,
+          username: '',
+          avatarUrl: '',
+          loginType: 'hbauth',
+          keyType: 'posting'
+        })
+      )
+    );
+
+    await expect(dialog).toBeHidden();
+    const row = page.getByRole('row').filter({ hasText: WITHDRAW_MESSAGE });
+    await expect(row).toBeVisible();
+    await expect(row.getByRole('button', { name: 'Cancel' })).toHaveCount(0);
+    expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-SAVINGS-CANCEL-04 — a signed-out reader sees the withdrawal without a cancel', async ({
+    page
+  }) => {
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+
+    const row = page.getByRole('row').filter({ hasText: WITHDRAW_MESSAGE });
+    await expect(row).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await expect(row.getByRole('button', { name: 'Cancel' })).toHaveCount(0);
   });
 
   test('WALLET-TX-SAVINGS-CANCEL-02 — dismissing the prompt broadcasts nothing', async ({ page }) => {

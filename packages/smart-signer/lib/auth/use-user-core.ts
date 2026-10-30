@@ -11,6 +11,8 @@ import { User } from '@smart-signer/types/common';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { subscribeAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
 import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
+import { sessionAccounts } from '@smart-signer/lib/auth/accounts';
+import { notifyOtherTabLogout } from '@smart-signer/lib/auth/other-tab-logout';
 import { RequiredKeyTypeContext } from '@smart-signer/lib/auth/required-key-type';
 import { lacksRequiredKeyType } from '@smart-signer/lib/auth/login-authority';
 import { useStoredKeyTypes } from '@smart-signer/lib/auth/use-login-authority';
@@ -111,14 +113,18 @@ export function useUserCore(
   );
 
   // Another tab logged out. Mark the user query stale without refetching: `/api/users/me` may
-  // still answer with the session the other tab's logout request has not ended yet.
+  // still answer with the session the other tab's logout request has not ended yet. That tab ended
+  // the signer sessions of its own app only; this tab's signers end theirs.
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
       if (!userLocalStorage.isLogoutStorageEvent(event)) return;
-      if (!queryClient.getQueryData<User>([QUERY_KEY.user])?.isLoggedIn) return;
+      const previousUser = queryClient.getQueryData<User>([QUERY_KEY.user]);
+      if (!previousUser?.isLoggedIn) return;
+      const remembered = queryClient.getQueryData<User[]>([QUERY_KEY.accounts]) ?? [];
       queryClient.setQueryData([QUERY_KEY.user], defaultUser);
       saveUserOnce(defaultUser);
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.user], refetchType: 'none' });
+      notifyOtherTabLogout(sessionAccounts(remembered, previousUser));
     };
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);

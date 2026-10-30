@@ -1,7 +1,15 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import type { User } from '@smart-signer/types/common';
-import { addAccount, removeAccount, findAccount, replaceAccount, setSessionUser, MAX_ACCOUNTS } from './accounts.ts';
+import {
+  addAccount,
+  removeAccount,
+  findAccount,
+  replaceAccount,
+  sessionAccounts,
+  setSessionUser,
+  MAX_ACCOUNTS
+} from './accounts.ts';
 
 function account(username: string, isLoggedIn = true): User {
   return {
@@ -58,6 +66,15 @@ describe('removeAccount', () => {
     const accounts = [account('alice'), account('bob'), account('carol')];
     assert.deepEqual(usernames(removeAccount(accounts, 'bob')), ['alice', 'carol']);
     assert.deepEqual(usernames(removeAccount(accounts, 'dave')), ['alice', 'bob', 'carol']);
+  });
+});
+
+describe('sessionAccounts', () => {
+  it('adds the user to the remembered accounts only when they do not list it', () => {
+    const accounts = [account('alice'), account('bob')];
+    assert.deepEqual(usernames(sessionAccounts(accounts, account('carol'))), ['alice', 'bob', 'carol']);
+    assert.equal(sessionAccounts(accounts, account('bob')), accounts);
+    assert.deepEqual(usernames(sessionAccounts([], account('alice'))), ['alice']);
   });
 });
 
