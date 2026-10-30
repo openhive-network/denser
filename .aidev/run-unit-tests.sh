@@ -119,6 +119,8 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/auth/matrix-login-token.test.ts \
     packages/smart-signer/lib/api-handlers/auth/logout.test.ts \
     packages/smart-signer/lib/api-handlers/auth/challenge.test.ts \
+    packages/smart-signer/lib/session.test.ts \
+    packages/smart-signer/lib/api-handlers/auth/shared-session.test.ts \
     packages/smart-signer/lib/auth/auth-storage-desync.test.ts \
     packages/smart-signer/lib/hbauth-service.test.ts \
     packages/smart-signer/lib/auth/login-authority.test.ts \

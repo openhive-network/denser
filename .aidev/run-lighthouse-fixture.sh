@@ -136,6 +136,7 @@ serve_app() {
             REACT_APP_EXPLORER_DOMAIN=https://explore.openhive.network \
             REACT_APP_LOGGING_BROWSER_ENABLED=true REACT_APP_LOGGING_LOG_LEVEL=info \
             DENSER_SERVER_SECRET_COOKIE_PASSWORD=lighthouse-fixture-dummy-cookie-password-not-a-secret \
+            DENSER_SERVER_SESSION_COOKIE_PREFIX=denser_ \
             DENSER_SERVER_LITE_GATEWAY_URL= \
             DENSER_FIXTURE_CLOCK="$clock" DENSER_EGRESS_LOG="$out/egress.log" \
             NODE_OPTIONS="--require $repo/$here/clock.cjs --require $repo/$here/egress-guard.cjs"
