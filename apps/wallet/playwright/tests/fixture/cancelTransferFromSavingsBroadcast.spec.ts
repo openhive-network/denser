@@ -3,6 +3,7 @@ import { test, expect, type Locator, type Page } from '@playwright/test';
 import { FIXTURE_API_PORT } from '../support/apiStub';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { openOtherTab, signInInTab, signOutInTab } from '../support/otherTab';
 import { expectCancelTransferFromSavingsOperation } from '../support/walletOperations';
 import {
   STUB_ACCOUNT,
@@ -98,26 +99,30 @@ test.describe('Cancel transfer from savings broadcast', () => {
     const broadcasts = await installBroadcastInterceptor(page);
     const dialog = await openCancelDialog(page);
 
-    // Another tab of the origin signs out: it stores the logged-out user, which this tab hears
-    const otherTab = await page.context().newPage();
-    await otherTab.goto(`${WALLET_BASE_PATH}/favicon.ico`);
-    await otherTab.evaluate(() =>
-      window.localStorage.setItem(
-        'user',
-        JSON.stringify({
-          isLoggedIn: false,
-          username: '',
-          avatarUrl: '',
-          loginType: 'hbauth',
-          keyType: 'posting'
-        })
-      )
-    );
+    await signOutInTab(await openOtherTab(page));
 
     await expect(dialog).toBeHidden();
     const row = page.getByRole('row').filter({ hasText: WITHDRAW_MESSAGE });
     await expect(row).toBeVisible();
     await expect(row.getByRole('button', { name: 'Cancel' })).toHaveCount(0);
+    expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-SAVINGS-CANCEL-05 — the prompt a sign-out in another tab closed stays closed after signing back in', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    const dialog = await openCancelDialog(page);
+    const otherTab = await openOtherTab(page);
+    const cancel = page.getByRole('row').filter({ hasText: WITHDRAW_MESSAGE }).getByRole('button', { name: 'Cancel' });
+
+    await signOutInTab(otherTab);
+    await expect(cancel).toHaveCount(0);
+    await signInInTab(otherTab, page);
+
+    await expect(page.getByRole('banner').getByRole('button', { name: 'Login' })).toHaveCount(0);
+    await expect(dialog).toBeHidden();
+    await expect(cancel).toBeVisible();
     expect(broadcasts.calls).toHaveLength(0);
   });
 

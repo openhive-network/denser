@@ -37,7 +37,7 @@ export function useRemoveAccount({ onError }: { onError?: (account: User) => voi
     onSuccess: (_data, { account }) => {
       setAccounts(queryClient, removeAccount(userLocalStorage.getAccounts(), account.username));
       void destroyAccountSigner(account);
-      postAccountsChanged();
+      postAccountsChanged({ removedUsername: account.username });
     },
     // Here rather than in `mutate`'s callbacks: those do not run once the caller unmounted
     onError: (error, { account }) => {

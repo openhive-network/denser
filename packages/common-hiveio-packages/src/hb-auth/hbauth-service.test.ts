@@ -114,6 +114,11 @@ export class OnlineClient {
     worker.unlocked.delete(username);
     worker.authorized.delete(username);
   }
+  async logoutAll() {
+    const worker = await this.startBeekeeper();
+    worker.unlocked.clear();
+    worker.authorized.clear();
+  }
   async lock() {
     const worker = await this.startBeekeeper();
     if (!worker.unlocked.size) throw new Error('There is no existing user session');
@@ -299,7 +304,8 @@ async function openPage(basePath: string) {
     ) => onPage(() => service.withOnlineClient(operation, options)),
     SupersededKeyWriteError: service.SupersededKeyWriteError,
     logout: (username: string) => onPage(() => service.logoutFromEveryWorker(username)),
-    logoutStarted: (username: string) => onPage(() => service.logoutFromStartedWorkers(username))
+    logoutStarted: (username: string) => onPage(() => service.logoutFromStartedWorkers(username)),
+    logoutEveryoneStarted: () => onPage(() => service.logoutEveryoneFromStartedWorkers())
   };
 }
 
@@ -530,6 +536,52 @@ describe('hb-auth online client', () => {
     const startsBefore = fakeHbAuth.fakeHbAuthStarts.length;
 
     await idleTab.logoutStarted('alice');
+
+    assert.deepEqual(fakeHbAuth.fakeHbAuthStarts.slice(startsBefore), []);
+    assert.deepEqual([...workerOf(await signingTab.getOnlineClient()).worker.unlocked], ['alice']);
+  });
+
+  it("locks every account unlocked in the page's app after another app's logout, also those the page never knew", async () => {
+    const blog = await openPage(BLOG);
+    await blog.register('alice');
+    const wallet = await openPage(WALLET);
+    await wallet.register('alice');
+    await wallet.register('bob');
+    const walletWorker = workerOf(await wallet.getOnlineClient());
+    await blog.logout('alice');
+    assert.deepEqual([...walletWorker.worker.unlocked].sort(), ['alice', 'bob']);
+
+    await wallet.logoutEveryoneStarted();
+
+    assert.deepEqual([...walletWorker.worker.unlocked], []);
+    assert.deepEqual([...walletWorker.worker.authorized], []);
+  });
+
+  it("locks every account in the app's replaced workers still running, as in its current one", async () => {
+    const wallet = await openPage(WALLET);
+    await wallet.register('alice');
+    const otherTab = await openPage(WALLET);
+    const replacedWorker = workerOf(await otherTab.getOnlineClient());
+    const blog = await openPage(BLOG);
+    await blog.register('bob');
+    await wallet.register('carol');
+    const currentWorker = workerOf(await wallet.getOnlineClient());
+    assert.notEqual(currentWorker.url, replacedWorker.url);
+    replacedWorker.worker.unlocked.add('bob');
+
+    await wallet.logoutEveryoneStarted();
+
+    assert.deepEqual([...replacedWorker.worker.unlocked], []);
+    assert.deepEqual([...currentWorker.worker.unlocked], []);
+  });
+
+  it('starts no client, and no worker, to lock every account on a page that never asked for one', async () => {
+    const signingTab = await openPage(WALLET);
+    await signingTab.register('alice');
+    const idleTab = await openPage(WALLET);
+    const startsBefore = fakeHbAuth.fakeHbAuthStarts.length;
+
+    await idleTab.logoutEveryoneStarted();
 
     assert.deepEqual(fakeHbAuth.fakeHbAuthStarts.slice(startsBefore), []);
     assert.deepEqual([...workerOf(await signingTab.getOnlineClient()).worker.unlocked], ['alice']);

@@ -25,6 +25,8 @@ const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWith
   const { user } = useUserClient();
   // Only the signed-in owner can cancel; a sign-out in another tab takes the action away too
   const canCancel = user.isLoggedIn && user.username === username;
+  // The prompt a sign-out closed stays closed when Cancel comes back
+  if (!canCancel && openCancelTransfer) setOpenCancelTransfer(false);
 
   const cancelTransferFromSavings = async (requestId: number) => {
     const params = { fromAccount: username, requestId: requestId };
