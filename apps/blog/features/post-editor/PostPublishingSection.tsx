@@ -18,9 +18,8 @@ import { getSubscriptions } from "@transaction/lib/bridge-api";
 import { useTranslation } from "@/blog/i18n/client";
 import { AdvancedSettingsPostForm } from "@/blog/features/post-editor/advanced-settings-post-form";
 import { useLoggedUserManabars } from "@/blog/features/votes/hooks/use-logged-user";
-import { Entry } from "@hive/common-hiveio-packages/wax";
+import { Community, Entry } from "@hive/common-hiveio-packages/wax";
 import { AccountFormValues } from "@/blog/features/post-editor/types";
-import { useEditorCommunity } from "@/blog/features/post-editor/hooks/use-editor-community";
 
 interface PostPublishingSectionProps {
   form: UseFormReturn<AccountFormValues>;
@@ -32,6 +31,7 @@ interface PostPublishingSectionProps {
   storedPost: AccountFormValues;
   storePost: (value: AccountFormValues) => void;
   categoryParam?: string;
+  communityData?: Community | null;
   handleLoadTemplate: (data: AccountFormValues) => void;
 }
 
@@ -45,13 +45,12 @@ export function PostPublishingSection({
   storedPost,
   storePost,
   categoryParam,
+  communityData,
   handleLoadTemplate,
 }: PostPublishingSectionProps) {
   const { t } = useTranslation("common_blog");
   const router = useRouter();
   const manabarsData = useLoggedUserManabars();
-
-  const { data: communityData } = useEditorCommunity(categoryParam, storedPost.category, observer);
 
   const { data: mySubsData } = useQuery({
     queryKey: ["subscriptions", observer],

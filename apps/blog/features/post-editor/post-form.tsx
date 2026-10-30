@@ -222,7 +222,8 @@ export default function PostForm({
   }, [proxyAuthToken, fetchProxyAuthToken]);
 
   // --- NSFW tag injection ---
-  const { data: communityData } = useEditorCommunity(categoryParam, storedPost.category, observer);
+  // An edit posts into the post's own category; the draft's is saved only after a debounce
+  const { data: communityData } = useEditorCommunity(entryValues.category, observer);
   const nsfwTagCheck = communityData?.is_nsfw && !storedPost.tags?.includes("nsfw");
   useEffect(() => {
     form.setValue("tags", nsfwTagCheck ? `nsfw ${entryValues.tags}` : entryValues.tags);
@@ -340,6 +341,7 @@ export default function PostForm({
               storedPost={storedPost}
               storePost={storePost}
               categoryParam={categoryParam}
+              communityData={communityData}
               handleLoadTemplate={handleLoadTemplate}
             />
 

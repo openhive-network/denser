@@ -5,14 +5,14 @@ import { getCommunity } from "@transaction/lib/bridge-api";
 import { isCommunity } from "@ui/lib/utils";
 
 /**
- * Community the editor posts into: the `category` URL param, falling back to
- * the stored draft's category. Disabled unless one of them is a community.
+ * The community the editor posts into, named by `category`. Disabled unless
+ * `category` is a community.
  */
-export function useEditorCommunity(categoryParam: string | undefined, storedCategory: string, observer: string) {
+export function useEditorCommunity(category: string, observer: string) {
   return useQuery({
-    queryKey: ["community", categoryParam, observer],
-    queryFn: () => getCommunity(categoryParam ?? storedCategory, observer),
-    enabled: isCommunity(categoryParam) || isCommunity(storedCategory),
+    queryKey: ["community", category, observer],
+    queryFn: () => getCommunity(category, observer),
+    enabled: isCommunity(category),
     refetchOnWindowFocus: false,
   });
 }

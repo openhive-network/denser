@@ -1,0 +1,69 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_community",
+    "params": {
+      "name": "hive-137823",
+      "observer": "guest4test"
+    },
+    "id": 1
+  },
+  "requestHash": "50f0a6832c3ff911",
+  "method": "bridge.get_community",
+  "params": {
+    "name": "hive-137823",
+    "observer": "guest4test"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "id": 1367505,
+      "lang": "en",
+      "name": "hive-137823",
+      "team": [
+        [
+          "hive-137823",
+          "owner",
+          ""
+        ],
+        [
+          "juliakponsford",
+          "admin",
+          ""
+        ],
+        [
+          "whatsup",
+          "mod",
+          ""
+        ],
+        [
+          "steemitqa",
+          "mod",
+          ""
+        ]
+      ],
+      "about": "",
+      "title": "Test Hive 137823",
+      "context": {
+        "role": "guest",
+        "title": "",
+        "subscribed": true
+      },
+      "is_nsfw": false,
+      "type_id": 1,
+      "settings": {},
+      "flag_text": "",
+      "created_at": "2020-02-20 19:49:48",
+      "description": "",
+      "num_authors": 0,
+      "num_pending": 0,
+      "subscribers": 8,
+      "sum_pending": 0
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
