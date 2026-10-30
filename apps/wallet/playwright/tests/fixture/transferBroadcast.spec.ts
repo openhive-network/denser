@@ -3,6 +3,7 @@ import { test, expect, type Locator, type Page } from '@playwright/test';
 import { openBalanceMenuDialog } from '../support/balanceMenu';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { FIXTURE_API_PORT } from '../support/apiStub';
 import { expectTransferOperation, naiAsset } from '../support/walletOperations';
 import {
   STUB_ACCOUNT,
@@ -69,6 +70,22 @@ const fillTransfer = async (dialog: Locator, amount: string, memo: string) => {
 
 const confirmDialog = (page: Page) => page.getByRole('dialog', { name: 'Confirm Transfer To Account' });
 
+/** Answers every block read with no block, as a lagging node does, so WorkerBee's listener expires. */
+const withholdBlocks = (page: Page) =>
+  page.route(
+    (url) => url.hostname === '127.0.0.1' && url.port === String(FIXTURE_API_PORT),
+    (route) => {
+      const body = route.request().postDataJSON() as { method?: string; id?: number } | null;
+      if (body?.method === 'block_api.get_block') {
+        return route.fulfill({ json: { jsonrpc: '2.0', id: body.id ?? 1, result: {} } });
+      }
+      if (body?.method === 'block_api.get_block_range') {
+        return route.fulfill({ json: { jsonrpc: '2.0', id: body.id ?? 1, result: { blocks: [] } } });
+      }
+      return route.fallback();
+    }
+  );
+
 test.describe('Transfer broadcast', () => {
   test('WALLET-TX-TRANSFER-01 — confirming a transfer broadcasts its from, to, amount and memo', async ({ page }) => {
     const broadcasts = await installBroadcastInterceptor(page);
@@ -125,5 +142,23 @@ test.describe('Transfer broadcast', () => {
     await expect(dialog.getByText('Insufficient funds.')).toBeVisible();
     await expect(confirmDialog(page)).toBeHidden();
     expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-TRANSFER-05 — a transfer no block confirms in time closes the dialog and names its transaction', async ({
+    page
+  }) => {
+    // The node takes the broadcast but no block is seen to include it: OK must not be there to send it twice
+    const broadcasts = await installBroadcastInterceptor(page);
+    await withholdBlocks(page);
+    const dialog = await openTransferDialog(page, 'wallet-hive-value');
+    await fillTransfer(dialog, '1.5', MEMO);
+    await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
+    await broadcasts.waitForCount(1);
+
+    await expect(page.getByTestId('transaction-not-confirmed-message')).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId('transaction-not-confirmed-id')).toHaveText(/^[0-9a-f]{40}$/);
+    await expect(confirmDialog(page)).toBeHidden();
+    await expect(dialog).toBeHidden();
+    expect(broadcasts.calls).toHaveLength(1);
   });
 });

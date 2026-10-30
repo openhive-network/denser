@@ -188,7 +188,12 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   if (error instanceof TransactionNotConfirmedError) {
     logger.warn('Transaction %s in %s not confirmed in time', error.transactionId, ctx?.method);
     toast({
-      description: <TransactionNotConfirmedMessage />,
+      description: (
+        <TransactionNotConfirmedMessage
+          transactionId={error.transactionId}
+          explorerDomain={env('EXPLORER_DOMAIN')}
+        />
+      ),
       variant: 'default',
       ...toastOptions
     });

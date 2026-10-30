@@ -202,7 +202,8 @@
   },
   "request_error": {
     "timeout": "Il server non ha risposto in tempo. Riprova.",
-    "not_confirmed": "Transazione inviata, la conferma sta richiedendo più tempo del solito."
+    "not_confirmed": "Transazione inviata, ma nessun blocco l'ha ancora confermata. Potrebbe ancora essere applicata: controlla la cronologia prima di riprovare.",
+    "transaction_id": "ID della transazione:"
   },
   "google_drive_error": {
     "wallet_not_found_title": "Portafoglio non trovato",

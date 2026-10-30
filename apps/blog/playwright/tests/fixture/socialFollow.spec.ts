@@ -72,3 +72,27 @@ test('FOL-01 + FOL-03 — Follow user from profile; follower count updates', asy
     })
     .toBe(followersBefore + 1);
 });
+
+test('FOL-01b — Follow keeps Unfollow with a note when no block confirms it in time', async ({ page }) => {
+  // No confirmInBlock: the node takes the broadcast, and the head block is "not available yet" on
+  // every poll, so WorkerBee's listener expires after expireInMs (10 s).
+  const broadcast = await installBroadcastInterceptor(page);
+  await page.route(
+    (url) => url.hostname === 'localhost' && url.port === '8200',
+    (route) => {
+      const body = route.request().postDataJSON() as { method?: string; id?: number } | null;
+      if (body?.method !== 'block_api.get_block') return route.fallback();
+      return route.fulfill({ json: { jsonrpc: '2.0', id: body.id ?? 1, result: {} } });
+    }
+  );
+  await gotoProfileLoggedIn(page);
+  const profile = new ProfilePage(page);
+  await expect(profile.followButton).toHaveText('Follow');
+
+  await profile.followButton.click();
+  await broadcast.waitForCount(1);
+
+  await expect(page.getByTestId('transaction-not-confirmed-message')).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByTestId('transaction-not-confirmed-id')).toHaveText(/^[0-9a-f]{40}$/);
+  await expect(profile.followButton).toHaveText('Unfollow');
+});

@@ -202,7 +202,8 @@
   },
   "request_error": {
     "timeout": "El servidor no respondió a tiempo. Inténtalo de nuevo.",
-    "not_confirmed": "Transacción enviada; la confirmación está tardando más de lo habitual."
+    "not_confirmed": "Transacción enviada, pero ningún bloque la ha confirmado todavía. Aún puede aplicarse: revisa tu historial antes de volver a intentarlo.",
+    "transaction_id": "ID de la transacción:"
   },
   "google_drive_error": {
     "wallet_not_found_title": "Monedero no encontrado",

@@ -2,7 +2,9 @@ import { afterEach, describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import { MutationObserver, QueryClient } from '@tanstack/react-query';
 import type { QueryKey } from '@tanstack/react-query';
+import { TransactionNotConfirmedError } from '../../transaction/lib/transaction-inclusion.ts';
 import {
+  UNCONFIRMED_REFRESH_DELAY_MS,
   buildOperationMutationOptions,
   type OperationEffects,
   type OperationMutationConfig,
@@ -17,7 +19,8 @@ function recordingEffects() {
   const effects: OperationEffects = {
     notifySuccess: (toast) => toasts.push(toast),
     reportError: (error, method, params) => errors.push({ error, method, params }),
-    logSuccess: () => {}
+    logSuccess: () => {},
+    isUnconfirmedBroadcast: (error) => error instanceof TransactionNotConfirmedError
   };
   return { toasts, errors, effects };
 }
@@ -160,5 +163,38 @@ describe('buildOperationMutationOptions', () => {
     await assert.rejects(mutate(client, config, effects, { name: 'bob' }));
 
     assert.deepEqual(errors, []);
+  });
+
+  it('after a broadcast not seen in a block keeps the optimistic write and refreshes later', async () => {
+    mock.timers.enable({ apis: ['setTimeout'] });
+    const client = new QueryClient();
+    client.setQueryData(LIST_KEY, ['alice']);
+    const invalidated = spyInvalidations(client);
+    const { toasts, errors, effects } = recordingEffects();
+    const notConfirmed = new TransactionNotConfirmedError('abc123');
+    const config = { ...listConfig(async () => Promise.reject(notConfirmed)), invalidateDelays: [0, 4000] };
+
+    await assert.rejects(mutate(client, config, effects, { name: 'bob' }), notConfirmed);
+
+    assert.deepEqual(client.getQueryData(LIST_KEY), ['alice', 'bob']);
+    assert.deepEqual(toasts, []);
+    assert.deepEqual(errors, [{ error: notConfirmed, method: 'useAddToList', params: { name: 'bob' } }]);
+    assert.deepEqual(invalidated, []);
+    mock.timers.tick(4000);
+    assert.deepEqual(invalidated, [LIST_KEY, ['profile', 'bob']]);
+  });
+
+  it('refreshes an unconfirmed broadcast with only immediate refreshes configured after a delay', async () => {
+    mock.timers.enable({ apis: ['setTimeout'] });
+    const client = new QueryClient();
+    const invalidated = spyInvalidations(client);
+    const { effects } = recordingEffects();
+    const run = async () => Promise.reject(new TransactionNotConfirmedError('abc123'));
+
+    await assert.rejects(mutate(client, listConfig(run), effects, { name: 'bob' }));
+
+    assert.deepEqual(invalidated, []);
+    mock.timers.tick(UNCONFIRMED_REFRESH_DELAY_MS);
+    assert.deepEqual(invalidated, [LIST_KEY, ['profile', 'bob']]);
   });
 });
