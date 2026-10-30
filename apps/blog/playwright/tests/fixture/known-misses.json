@@ -10,6 +10,11 @@
     "hash": "e3831ed293053819"
   },
   {
+    "spec": "headerSearchMode.spec.ts",
+    "method": "bridge.get_ranked_posts",
+    "hash": "efd4dd747a98c2a9"
+  },
+  {
     "spec": "liteGraduation.spec.ts",
     "method": "bridge.does_user_follow_any_lists",
     "hash": "acc3b29a22e5dfc6"
@@ -248,6 +253,11 @@
     "spec": "postEdit.spec.ts",
     "method": "condenser_api.get_following",
     "hash": "ff22f37c1a6ae080"
+  },
+  {
+    "spec": "postEditCommunity.spec.ts",
+    "method": "bridge.get_community",
+    "hash": "50f0a6832c3ff911"
   },
   {
     "spec": "postEditCommunity.spec.ts",

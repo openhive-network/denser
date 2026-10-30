@@ -18,7 +18,13 @@ import { TIMEOUTS } from '../support/constants';
  *   - AI search off: `homeMainPage/0002`, the API's 404 for the hivesense root.
  *   - AI search on:  `lighthouse/0017`, a `sync-status` answer.
  *
- * The feed itself replays from `homeMainPage`. Replay-only: recording this spec
+ * Typing in the header's input leaves the page where it is (#1389): the 80 px
+ * offset kept clear of the sticky header is a scroll-margin of the targets, as a
+ * root scroll-padding it put the header's field in the band Chrome keeps a
+ * caret out of, so each keystroke scrolled the page.
+ *
+ * The feed itself replays from `homeMainPage`; the next feed page the scroll
+ * loads has no recording (a known miss). Replay-only: recording this spec
  * would overwrite that directory.
  *
  * Replay:  pnpm --filter @hive/blog test:fixture -- headerSearchMode
@@ -31,6 +37,10 @@ test.skip(
 );
 
 const FIXTURES_ROOT = path.resolve(__dirname, '..', 'mock', 'fixtures');
+const WIDE = { width: 1400, height: 900 };
+/** Down the feed, then back up a little so the header shows again, as a reader does */
+const SCROLL_DOWN_PX = 800;
+const SCROLL_BACK_PX = 100;
 const HIVESENSE_SYNC_STATUS_PATH = '/hivesense-api/sync-status';
 const CLASSIC_PLACEHOLDER = 'Search...';
 const AI_PLACEHOLDER = 'AI Search...';
@@ -73,6 +83,15 @@ async function serveHiveSenseProbe(page: Page, recording: IRecordedRestResponse)
   return hiveSensePaths;
 }
 
+/** The page's scroll offset once a frame has painted, so a scroll a keystroke caused has happened */
+const scrollYAfterPaint = (page: Page) =>
+  page.evaluate(
+    () =>
+      new Promise<number>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve(window.scrollY)))
+      )
+  );
+
 const headerSearchInput = (page: Page, placeholder: string) =>
   page.getByRole('banner').getByPlaceholder(placeholder, { exact: true });
 
@@ -105,5 +124,32 @@ test.describe('Header search control follows the HiveSense probe', () => {
     await expect(headerSearchInput(page, AI_PLACEHOLDER)).toBeEnabled();
     await expect(headerSearchInput(page, CLASSIC_PLACEHOLDER)).toHaveCount(0);
     expect(hiveSensePaths).toEqual([HIVESENSE_SYNC_STATUS_PATH]);
+  });
+
+  test('HDR-SEARCH-03 — typing in the header search input does not scroll the page', async ({ page }) => {
+    await page.setViewportSize(WIDE);
+    await serveHiveSenseProbe(page, AI_OFF_RESPONSE);
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    const input = headerSearchInput(page, CLASSIC_PLACEHOLDER);
+    await expect(input).toBeEnabled({ timeout: TIMEOUTS.HYDRATION });
+
+    await page.mouse.wheel(0, SCROLL_DOWN_PX);
+    await expect.poll(() => scrollYAfterPaint(page)).toBe(SCROLL_DOWN_PX);
+    await page.mouse.wheel(0, -SCROLL_BACK_PX);
+    await expect.poll(() => scrollYAfterPaint(page)).toBe(SCROLL_DOWN_PX - SCROLL_BACK_PX);
+    await expect
+      .poll(() => page.getByRole('banner').evaluate((header) => header.getBoundingClientRect().top))
+      .toBe(0);
+
+    await input.click();
+    const focusedY = await scrollYAfterPaint(page);
+    for (const key of ['h', 'i', 'v']) {
+      await page.keyboard.type(key);
+      expect(await scrollYAfterPaint(page)).toBe(focusedY);
+    }
+    await page.keyboard.press('Backspace');
+    expect(await scrollYAfterPaint(page)).toBe(focusedY);
+    await expect(input).toHaveValue('hi');
   });
 });
