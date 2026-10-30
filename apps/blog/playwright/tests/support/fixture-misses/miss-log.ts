@@ -1,28 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import type { IReplayMiss } from '../mock-server';
-
-/** A replay MISS attributed to the spec file whose test was running. */
-export interface IFixtureMiss extends IReplayMiss {
-  /** Spec path relative to the fixture test dir, e.g. `homepage.spec.ts` */
-  spec: string;
-}
+import { mergeIntoBaseline, sortedUnique, type IFixtureMiss, type IKnownMiss, type IMissRun } from './known-misses';
 
 interface IMissShardLine {
   spec: string;
   misses: IReplayMiss[];
-}
-
-export interface IMissRun {
-  /** Specs with at least one passing test attempt in this run */
-  specs: Set<string>;
-  /** Deduplicated, sorted misses from passing test attempts */
-  misses: IFixtureMiss[];
-}
-
-export interface IBaselineDiff {
-  added: IFixtureMiss[];
-  gone: IFixtureMiss[];
 }
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..', '..', '..', '..', '..');
@@ -31,25 +14,6 @@ const SHARD_DIR = path.join(RESULTS_DIR, 'misses.d');
 
 export const MISSES_FILE = path.join(RESULTS_DIR, 'misses.json');
 export const BASELINE_FILE = path.resolve(__dirname, '..', '..', 'fixture', 'known-misses.json');
-
-/**
- * A baseline entry with this hash accepts any params for its spec + method,
- * for calls whose params are random per run (e.g. a noise-prefixed permlink).
- */
-const ANY_HASH = '*';
-
-function missKey(miss: IFixtureMiss): string {
-  return `${miss.spec}\t${miss.method}\t${miss.hash}`;
-}
-
-function anyHashKey(miss: IFixtureMiss): string {
-  return missKey({ ...miss, hash: ANY_HASH });
-}
-
-function sortedUnique(misses: IFixtureMiss[]): IFixtureMiss[] {
-  const byKey = new Map(misses.map(({ spec, method, hash }) => [missKey({ spec, method, hash }), { spec, method, hash }]));
-  return [...byKey.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)).map(([, miss]) => miss);
-}
 
 function writeJson(file: string, value: unknown): void {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -90,34 +54,14 @@ export function writeRunMisses(misses: IFixtureMiss[]): void {
   writeJson(MISSES_FILE, misses);
 }
 
-export function readBaseline(): IFixtureMiss[] {
+export function readBaseline(): IKnownMiss[] {
   if (!fs.existsSync(BASELINE_FILE)) return [];
-  return JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf-8')) as IFixtureMiss[];
+  return JSON.parse(fs.readFileSync(BASELINE_FILE, 'utf-8')) as IKnownMiss[];
 }
 
-/**
- * Replaces the baseline entries of the specs that ran with the run's misses.
- * Entries of other specs and `*` entries are kept.
- */
-export function updateBaseline(baseline: IFixtureMiss[], run: IMissRun): IFixtureMiss[] {
-  const kept = baseline.filter((m) => !run.specs.has(m.spec) || m.hash === ANY_HASH);
-  const anyHashKeys = new Set(kept.filter((m) => m.hash === ANY_HASH).map(missKey));
-  const updated = sortedUnique([...kept, ...run.misses.filter((m) => !anyHashKeys.has(anyHashKey(m)))]);
+/** Writes the baseline {@link mergeIntoBaseline} makes of the run. */
+export function updateBaseline(baseline: IKnownMiss[], run: IMissRun): IKnownMiss[] {
+  const updated = mergeIntoBaseline(baseline, run);
   writeJson(BASELINE_FILE, updated);
   return updated;
-}
-
-/** Compares a run against the baseline entries of the specs that ran. */
-export function diffAgainstBaseline(baseline: IFixtureMiss[], run: IMissRun): IBaselineDiff {
-  const inScope = baseline.filter((m) => run.specs.has(m.spec));
-  const baselineKeys = new Set(inScope.map(missKey));
-  const runKeys = new Set([...run.misses.map(missKey), ...run.misses.map(anyHashKey)]);
-  return {
-    added: run.misses.filter((m) => !baselineKeys.has(missKey(m)) && !baselineKeys.has(anyHashKey(m))),
-    gone: inScope.filter((m) => !runKeys.has(missKey(m)))
-  };
-}
-
-export function formatMisses(misses: IFixtureMiss[]): string {
-  return misses.map((m) => `  ${m.spec}  ${m.method}  (hash ${m.hash})`).join('\n');
 }
