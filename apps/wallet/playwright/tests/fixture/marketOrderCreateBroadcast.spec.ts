@@ -2,6 +2,7 @@ import type { Server } from 'node:http';
 import { test, expect, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { openOtherTab, signOutInTab } from '../support/otherTab';
 import { expectLimitOrderCreateOperation, naiAsset } from '../support/walletOperations';
 import { STUB_ACCOUNT, logInAsStubAccount, startWalletApiStub, storeStubAccountKey } from '../support/walletApiStub';
 
@@ -121,6 +122,21 @@ test.describe('Market limit order create broadcast', () => {
     await rejected;
 
     await expect(page.getByTestId('buy-form-dialog')).toBeVisible();
+    expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-ORDER-CREATE-04 — an order confirmed after a sign-out in another tab is refused as signed out, unsent', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    await fillMarketForm(page, 'buy-form', '9', '2.259');
+    await page.getByTestId('buy-form-submit-button').click();
+    await expect(page.getByTestId('buy-form-dialog')).toBeVisible();
+
+    await signOutInTab(await openOtherTab(page));
+    await page.getByTestId('buy-form-dialog-ok').click();
+
+    await expect(page.getByTestId('signed-out-message')).toHaveText('You are signed out. Sign in and try again.');
     expect(broadcasts.calls).toHaveLength(0);
   });
 });

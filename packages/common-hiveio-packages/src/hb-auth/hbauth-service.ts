@@ -333,8 +333,10 @@ export const withOnlineClient = async <T>(
   return runOperation(client, getClientForOperation, operation, options);
 };
 
-/** Logs `username` out of the running worker at `workerUrl`, of a client this app no longer creates */
-const logoutFromReplacedWorker = async (workerUrl: string, username: string): Promise<void> => {
+type WorkerLogout = (client: OnlineClient) => Promise<void>;
+
+/** Runs `logout` in the running worker at `workerUrl`, of a client this app no longer creates */
+const logoutFromReplacedWorker = async (workerUrl: string, logout: WorkerLogout): Promise<void> => {
   const releaseWorker = await holdRunningWorker(workerUrl);
   // No page holds it, so it does not run, or a page is retiring it, locking it first
   if (!releaseWorker) return;
@@ -343,7 +345,7 @@ const logoutFromReplacedWorker = async (workerUrl: string, username: string): Pr
     const client = new OnlineClient({ ...getDefaultClientOptions(null), workerUrl });
     await startWithWorker(workerUrl, async () => {
       await client.initialize(chain);
-      await client.logout(username);
+      await logout(client);
     });
   } catch (error: unknown) {
     logger.info('Did not log out of a replaced HB-Auth worker: %s', error instanceof Error ? error.message : String(error));
@@ -352,18 +354,22 @@ const logoutFromReplacedWorker = async (workerUrl: string, username: string): Pr
   }
 };
 
+/** Runs `logout` in the online client's worker, and in every other running worker of this app */
+const logoutOfRunningWorkers = async (logout: WorkerLogout): Promise<void> => {
+  const clientPromise = getOnlineClient();
+  const replaced = await otherRunningWorkers(getWorkerUrl(onlineClientGeneration));
+  await Promise.all(replaced.map((workerUrl) => logoutFromReplacedWorker(workerUrl, logout)));
+  await logout(await clientPromise);
+};
+
 /**
  * Logs `username` out of the online client's worker, and out of every other running worker of this
  * app: a page that has not asked for a client since keeps signing with its own. A worker no page
  * holds is not running, and is not started to be logged out of. Rejects as the online client's
  * logout does.
  */
-export const logoutFromEveryWorker = async (username: string): Promise<void> => {
-  const clientPromise = getOnlineClient();
-  const replaced = await otherRunningWorkers(getWorkerUrl(onlineClientGeneration));
-  await Promise.all(replaced.map((workerUrl) => logoutFromReplacedWorker(workerUrl, username)));
-  await (await clientPromise).logout(username);
-};
+export const logoutFromEveryWorker = (username: string): Promise<void> =>
+  logoutOfRunningWorkers((client) => client.logout(username));
 
 /**
  * Logs `username` out as `logoutFromEveryWorker` does when this page has asked for the online
@@ -373,6 +379,16 @@ export const logoutFromEveryWorker = async (username: string): Promise<void> => 
 export const logoutFromStartedWorkers = async (username: string): Promise<void> => {
   if (!onlineClientPromise) return;
   await logoutFromEveryWorker(username);
+};
+
+/**
+ * Ends the session of, and locks, every user unlocked in any running worker of this app, whether or
+ * not this page knows of it, when this page has asked for the online client; otherwise starts no
+ * client and resolves, as `logoutFromStartedWorkers` does. Rejects as the online client's logout does.
+ */
+export const logoutEveryoneFromStartedWorkers = async (): Promise<void> => {
+  if (!onlineClientPromise) return;
+  await logoutOfRunningWorkers((client) => client.logoutAll());
 };
 
 export const getOfflineClient = (): Promise<OfflineClient> => {

@@ -8,3 +8,11 @@ export class SignedOutError extends Error {
     this.name = 'SignedOutError';
   }
 }
+
+/**
+ * Throws `SignedOutError` unless `signerOptions` name a user to sign as; the signer options of a
+ * signed-out reader name none.
+ */
+export function requireSignedIn(signerOptions: { username?: string } | undefined): void {
+  if (!signerOptions?.username) throw new SignedOutError();
+}

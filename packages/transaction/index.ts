@@ -28,7 +28,7 @@ import { getChain } from './lib/chain';
 import { PUBLISHING_APP } from './lib/publishing-app';
 import { getPostCategory } from './lib/post-category';
 import { subscribeToSignerOptions } from './lib/signer-options';
-import { SignedOutError } from './lib/signed-out';
+import { requireSignedIn } from './lib/signed-out';
 import { getFindAccounts } from './lib/hive-api';
 import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/profile-metadata';
 import { buildCommentJsonMetadata, type CommentBodyMetadata } from './lib/comment-metadata';
@@ -98,11 +98,6 @@ export class TransactionService {
     this.signerOptions = signerOptions;
   }
 
-  /** Whether a user is signed in to sign with; the signer options of a signed-out reader name none */
-  private isSignedIn(): boolean {
-    return !!this.signerOptions?.username;
-  }
-
   /**
    * Create transaction and add operation to it (by running callback
    * `cb`), sign transaction, broadcast transaction and observe if
@@ -135,7 +130,7 @@ export class TransactionService {
     };
 
     // Before `cb`, which may name the signed-in user in the operation
-    if (!this.isSignedIn()) throw new SignedOutError();
+    requireSignedIn(this.signerOptions);
 
     const { observe, confirmInBackground, singleSignKeyType, requiredKeyType } = {
       ...defaultTransactionOptions,
@@ -176,12 +171,12 @@ export class TransactionService {
    * @return {*}  {Promise<string>}
    * @memberof TransactionService
    */
-  signTransaction(
+  async signTransaction(
     txBuilder: ITransaction,
     singleSignKeyType?: SignTransaction['singleSignKeyType'],
     requiredKeyType?: SignTransaction['requiredKeyType']
   ): Promise<string> {
-    if (!this.isSignedIn()) return Promise.reject(new SignedOutError());
+    requireSignedIn(this.signerOptions);
     const signer = getSigner(this.signerOptions);
     return signer.signTransaction({
       digest: txBuilder.sigDigest,

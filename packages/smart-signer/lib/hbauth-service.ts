@@ -4,12 +4,14 @@ import {
   getOnlineClient,
   getOfflineClient,
   logoutFromEveryWorker,
+  logoutEveryoneFromStartedWorkers,
   logoutFromStartedWorkers,
   withOnlineClient,
   type OnlineClientOperationOptions
 } from "@hive/common-hiveio-packages";
 import { getLogger } from '@ui/lib/logging';
 import { subscribeOtherTabLogout } from '@smart-signer/lib/auth/other-tab-logout';
+import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 
 const logger = getLogger('app');
 
@@ -56,11 +58,21 @@ class HbauthService {
 export const hbauthService = new HbauthService();
 
 // Another tab's logout locked the workers of its own app; the workers of this app, which may be
-// another one, still hold the keys unlocked for every page of it.
-subscribeOtherTabLogout((accounts) => {
-  for (const { username } of accounts) {
-    logoutFromStartedWorkers(username).catch((error: unknown) => {
-      logger.error(error, 'Failed to lock the safe storage keys of %s after another tab logged out', username);
-    });
-  }
+// another one, still hold the keys unlocked for every page of it. Every account is locked, also those
+// this page never knew were signed in, as the logout ended the session of each.
+subscribeOtherTabLogout(() => {
+  logoutEveryoneFromStartedWorkers().catch((error: unknown) => {
+    logger.error(error, 'Failed to lock the safe storage keys after another tab logged out');
+  });
 });
+
+// Likewise for an account another tab removed: its signer ended the account's session in its own app
+// only. Not on the server, which renders this module's importers and has no tabs.
+if (typeof window !== 'undefined') {
+  subscribeAccountsChanged(({ removedUsername }) => {
+    if (!removedUsername) return;
+    logoutFromStartedWorkers(removedUsername).catch((error: unknown) => {
+      logger.error(error, 'Failed to lock the safe storage keys of %s after another tab removed it', removedUsername);
+    });
+  });
+}
