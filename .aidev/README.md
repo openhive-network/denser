@@ -34,6 +34,36 @@ The workflow (or person) that changes an input runs `build.sh --push` itself; no
 CI job builds this image. AIDEV-driven development doesn't use GitLab CI (see
 "CI" below).
 
+### The shared test image (`kind: shared`): not yet
+
+aidev's shared route (`docs/operations/shared-test-images.md` in ai/aidev) would run
+the suites in ccc's `node-test-tools:develop` with a host pnpm store mounted read-only
+at `/opt/pnpm-store`, and drop this image. `.aidev/pnpm-deps.sh` already exports the
+environment this image sets, so the suites need nothing else from it. Checked by hand
+on 2026-10-30 (`node-test-tools@sha256:41eb307a…`, Node 24.22.1, pnpm 10.33.0,
+Playwright 1.64.1 with only `chromium_headless_shell-1248`; store filled by `pnpm fetch`
+at `/work`, suites at `--network none` as uid 1000), `unit`, `static` and the
+Playwright suites pass there as they do in this image: Playwright's headless launches
+already use the headless shell in both. What keeps denser on `kind: container` is the
+`system` slot's `lighthouse_fixture`:
+
+- **No Lighthouse.** The image has none. Making it a root devDependency puts it in
+  `pnpm-lock.yaml`, and the commit that switches the environment is judged under the
+  approved `container` image, whose store would not install that lockfile.
+- **No full Chromium**, and the recording assumes it. On the headless shell (same tree,
+  same image) the pass makes 18 image requests the `lighthouse` recording lacks
+  (`/p/…?format=webp&mode=fit&width=640`, lazy images), so it is not hermetic. Bytes
+  and request counts are the same as full Chromium's; TBT medians were lower.
+
+A ccc image variant with Playwright's full Chromium and Lighthouse would satisfy both.
+A switch also has to bring the stacks along: `dev-stack.compose.yml` and
+`test-stack.compose.yml` run this image (`x-image`) with its baked store, and the
+integration site's follow mode runs `environment.image`
+(`stack/integration/follow/environment-image.sh`), which on the shared route names a
+tag with no store. Under the shared route a project's `pnpm install` registers the
+checkout in the store (`v10/projects/`), which works on the read-only mount only
+because aidev's fill runs its fetch at the suites' workspace path.
+
 ## Hand-off to develop
 
 `develop` is protected, fast-forward only and needs a green pipeline, so AIDEV
