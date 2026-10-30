@@ -20,13 +20,13 @@ interface PendingSavingsWithdrawalsProps {
 
 const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWithdrawalsProps) => {
   const { t } = useTranslation('common_wallet');
-  const [openCancelTransfer, setOpenCancelTransfer] = useState(false);
+  const [cancelRequestId, setCancelRequestId] = useState<number | null>(null);
   const cancelTransferFromSavingsMutation = useCancelTransferFromSavingsMutation();
   const { user } = useUserClient();
   // Only the signed-in owner can cancel; a sign-out in another tab takes the action away too
   const canCancel = user.isLoggedIn && user.username === username;
   // The prompt a sign-out closed stays closed when Cancel comes back
-  if (!canCancel && openCancelTransfer) setOpenCancelTransfer(false);
+  if (!canCancel && cancelRequestId !== null) setCancelRequestId(null);
 
   const cancelTransferFromSavings = async (requestId: number) => {
     const params = { fromAccount: username, requestId: requestId };
@@ -40,7 +40,7 @@ const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWith
     } catch (error) {
       handleError(error, { method: 'cancel_transfer_from_savings', params });
     } finally {
-      setOpenCancelTransfer(false);
+      setCancelRequestId(null);
     }
   };
 
@@ -66,7 +66,10 @@ const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWith
                 <td className="flex flex-row items-center px-2 sm:px-4 sm:py-2">
                   <div>{withdrawMessage}</div>
                   {canCancel && (
-                    <Dialog open={openCancelTransfer} onOpenChange={setOpenCancelTransfer}>
+                    <Dialog
+                      open={cancelRequestId === withdrawal.request_id}
+                      onOpenChange={(open) => setCancelRequestId(open ? withdrawal.request_id : null)}
+                    >
                       <DialogTrigger asChild>
                         <Button variant="link" className="text-destructive hover:no-underline">
                           {t('transfers_page.cancel')}
