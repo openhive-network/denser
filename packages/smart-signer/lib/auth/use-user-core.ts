@@ -11,7 +11,7 @@ import { User } from '@smart-signer/types/common';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { subscribeAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
 import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
-import { notifyOtherTabLogout } from '@smart-signer/lib/auth/logout-notice';
+import { notifyOtherTabLogout, notifyOwnLogout } from '@smart-signer/lib/auth/logout-notice';
 import { RequiredKeyTypeContext } from '@smart-signer/lib/auth/required-key-type';
 import { lacksRequiredKeyType } from '@smart-signer/lib/auth/login-authority';
 import { useStoredKeyTypes } from '@smart-signer/lib/auth/use-login-authority';
@@ -46,6 +46,9 @@ let lastSavedUser: User | undefined;
 function saveUserOnce(user: User): void {
   if (user === lastSavedUser) return;
   lastSavedUser = user;
+  // The session the stored user had ended without a sign-out here (the server lost it): it ends the
+  // signer sessions as one does. A logout that already stored the logged-out user did so itself.
+  if (!user.isLoggedIn && userLocalStorage.getUser().isLoggedIn) notifyOwnLogout();
   userLocalStorage.saveUser(user);
 }
 

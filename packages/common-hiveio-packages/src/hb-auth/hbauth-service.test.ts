@@ -222,10 +222,19 @@ class FakeSharedWorker {
 const GENERATION_KEY = 'hbauth-safe-storage-generation';
 
 /** localStorage, counting the safe storage generation's writes */
+const SIGN_OUT_KEY_PREFIX = 'hbauth-sign-out';
+
 class CountingStorage extends MemoryStorage {
   generationWrites = 0;
+  /** Lands before the next write of a sign-out record, as another tab's write between its read and write does */
+  beforeNextSignOutWrite: (() => void) | undefined;
   override setItem(key: string, value: string) {
     if (key === GENERATION_KEY) this.generationWrites += 1;
+    const interleaved = key.startsWith(SIGN_OUT_KEY_PREFIX) ? this.beforeNextSignOutWrite : undefined;
+    if (interleaved) {
+      this.beforeNextSignOutWrite = undefined;
+      interleaved();
+    }
     super.setItem(key, value);
   }
 }
@@ -326,6 +335,7 @@ describe('hb-auth online client', () => {
   beforeEach(() => {
     storage.clear();
     storage.generationWrites = 0;
+    storage.beforeNextSignOutWrite = undefined;
     fakeHbAuth.fakeHbAuthFiles = new Set();
     fakeHbAuth.fakeHbAuthAliases = new Set();
     fakeHbAuth.fakeHbAuthPasswords = new Map();
@@ -592,6 +602,25 @@ describe('hb-auth online client', () => {
     assert.equal(reconnected.worker, lingering.worker);
     assert.deepEqual([...lingering.worker.unlocked], []);
     assert.deepEqual([...lingering.worker.authorized], []);
+  });
+
+  it("keeps another tab's later sign-out when a logout of an earlier one is recorded from what was read before it", async () => {
+    const departedTab = await openPage(WALLET);
+    await departedTab.register('alice');
+    const lingering = workerOf(await departedTab.getOnlineClient());
+    advanceSignOutEpoch();
+    // Another tab signs out while the page reconnecting to the worker records its logout of the earlier one
+    storage.beforeNextSignOutWrite = advanceSignOutEpoch;
+    await (await openPage(WALLET)).getOnlineClient();
+    assert.equal(storage.beforeNextSignOutWrite, undefined);
+    // Unlocked again since, the worker is left by its pages before the later sign-out reaches it
+    lingering.worker.unlocked.add('alice');
+
+    const reopened = await openPage(WALLET);
+    const reconnected = workerOf(await reopened.getOnlineClient());
+
+    assert.equal(reconnected.worker, lingering.worker);
+    assert.deepEqual([...lingering.worker.unlocked], []);
   });
 
   it('keeps a sign-in made after a sign-out when more pages connect to the worker', async () => {

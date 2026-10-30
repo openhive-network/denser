@@ -11,8 +11,7 @@ import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage
 import { SignedOutMessage } from '@smart-signer/components/signed-out-message';
 import { SupersededKeyWriteMessage } from '@smart-signer/components/superseded-key-write-message';
 import { findSupersededKeyWrite } from '@smart-signer/lib/superseded-key-write';
-import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
-import { announceLogoutDone, clearLogoutDone } from '@smart-signer/lib/auth/logout-done';
+import { performDesyncLogout } from '@smart-signer/lib/auth/desync-logout';
 import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-message';
 import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-message';
 import { TransactionNotConfirmedMessage } from '@smart-signer/components/transaction-not-confirmed-message';
@@ -21,7 +20,6 @@ import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
 import env from "@beam-australia/react-env";
 import { getLogger } from '@ui/lib/logging';
-import { appApiPath } from '@ui/lib/app-api-path';
 import { isUserCancelled } from '@ui/lib/user-cancelled';
 
 const logger = getLogger('app');
@@ -35,59 +33,6 @@ function isAuthStorageDesync(error: unknown): boolean {
   }
   const msg = error instanceof Error ? error.message : String(error);
   return AUTH_STORAGE_DESYNC_PATTERN.test(msg);
-}
-
-/** The desync logout whose answer has not come yet: one desync can reach the error handler more than once */
-let pendingDesyncLogout: Promise<void> | null = null;
-
-/**
- * Perform emergency logout when IndexedDB key storage is lost.
- * This runs outside React — clears cookie, posts to logout API,
- * and dispatches event for React Query to pick up.
- * Does nothing while an earlier one waits for its answer.
- */
-function performDesyncLogout(): void {
-  if (pendingDesyncLogout) return;
-
-  // Clear observer cookie immediately — SSR stops personalizing
-  document.cookie = 'observer=; path=/; max-age=0';
-
-  // Before the signed-out user reaches other tabs, so they wait for this logout's answer
-  clearLogoutDone();
-
-  // Clear user from localStorage so next page load starts logged out
-  try {
-    const defaultUser = JSON.stringify({
-      isLoggedIn: false,
-      username: '',
-      avatarUrl: '',
-      loginType: 'hbauth',
-      keyType: 'posting',
-      authenticateOnBackend: false
-    });
-    localStorage.setItem('user', defaultUser);
-  } catch {
-    // localStorage may be unavailable — cookie clear is sufficient
-  }
-
-  // POST to logout API to destroy server session (fire and forget); other tabs go on on its answer
-  // Header value must match csrfHeaderName in @smart-signer/lib/csrf-protection.ts
-  pendingDesyncLogout = fetch(appApiPath('/api/auth/logout'), {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      'x-csrf-token': '1'
-    }
-  })
-    .then(() => undefined)
-    .catch(err => logger.error('Desync logout API call failed: %o', err))
-    .finally(() => {
-      pendingDesyncLogout = null;
-      announceLogoutDone();
-    });
-
-  // Dispatch event so React Query invalidates user state
-  dispatchAuthStorageDesync();
 }
 
 // A dynamic import() keeps the Sentry SDK out of the initial chunks of every page that can show an error toast.
