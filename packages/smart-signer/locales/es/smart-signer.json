@@ -201,7 +201,8 @@
     "signed_out": "Has cerrado sesión. Inicia sesión e inténtalo de nuevo."
   },
   "request_error": {
-    "timeout": "El servidor no respondió a tiempo. Inténtalo de nuevo."
+    "timeout": "El servidor no respondió a tiempo. Inténtalo de nuevo.",
+    "not_confirmed": "Transacción enviada; la confirmación está tardando más de lo habitual."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Monedero no encontrado",

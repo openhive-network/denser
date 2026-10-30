@@ -51,7 +51,10 @@
     "neverBuiltDependencies": [
       "secp256k1",
       "core-js"
-    ]
+    ],
+    "patchedDependencies": {
+      "@hiveio/workerbee@1.28.4-rc1-stable.261029021233": "patches/@hiveio__workerbee@1.28.4-rc1-stable.261029021233.patch"
+    }
   },
   "dependencies": {
     "@beam-australia/react-env": "3.1.1"

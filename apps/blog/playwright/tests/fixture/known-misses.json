@@ -1,5 +1,15 @@
 [
   {
+    "spec": "communityLeave.spec.ts",
+    "method": "bridge.get_ranked_posts",
+    "hash": "b4724695413bd11f"
+  },
+  {
+    "spec": "communityLeave.spec.ts",
+    "method": "bridge.list_communities",
+    "hash": "3c9b21db67ad172c"
+  },
+  {
     "spec": "communityModeratePost.spec.ts",
     "method": "bridge.get_profile",
     "hash": "27c21eb5844992c1"

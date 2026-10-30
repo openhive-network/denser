@@ -83,6 +83,20 @@ describe('buildOperationMutationOptions', () => {
     assert.deepEqual(invalidated, [LIST_KEY, ['profile', 'bob']]);
   });
 
+  it('keeps the success but shows no toast when successToast returns null', async () => {
+    const client = new QueryClient();
+    client.setQueryData(LIST_KEY, ['alice']);
+    spyInvalidations(client);
+    const { toasts, errors, effects } = recordingEffects();
+    const config = { ...listConfig(async () => 'tx-1'), successToast: () => null };
+
+    assert.equal(await mutate(client, config, effects, { name: 'bob' }), 'tx-1');
+
+    assert.deepEqual(client.getQueryData(LIST_KEY), ['alice', 'bob']);
+    assert.deepEqual(toasts, []);
+    assert.deepEqual(errors, []);
+  });
+
   it('on a failed broadcast rolls back, reports the error by name and does not toast success', async () => {
     const client = new QueryClient();
     client.setQueryData(LIST_KEY, ['alice']);

@@ -1,4 +1,6 @@
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
+import { TransactionNotConfirmedError } from '@transaction/lib/transaction-inclusion';
+import { handleError } from '@ui/lib/handle-error';
 import {
   OBSERVE,
   useOperationMutation,
@@ -14,13 +16,32 @@ interface SubscriptionChange {
   toast: (params: SubscriptionParams) => OperationToast;
 }
 
+/**
+ * Broadcasts the change and waits for its block. A transaction the node took but no block was seen to
+ * include in time counts as made, so the button keeps the new state; its error is returned to report.
+ */
+async function broadcastSubscription(
+  change: SubscriptionChange,
+  community: string
+): Promise<TransactionNotConfirmedError | null> {
+  try {
+    await change.broadcast(community, OBSERVE);
+    return null;
+  } catch (error) {
+    if (error instanceof TransactionNotConfirmedError) return error;
+    throw error;
+  }
+}
+
 function useSubscriptionMutation(change: SubscriptionChange) {
   return useOperationMutation({
     name: change.name,
-    run: ({ community }: SubscriptionParams) => change.broadcast(community, OBSERVE),
-    onSuccess: (_data, params, queryClient) =>
-      applySubscription(queryClient, params, change.subscribed, change.updateSubscriptions),
-    successToast: (_data, params) => change.toast(params),
+    run: ({ community }: SubscriptionParams) => broadcastSubscription(change, community),
+    onSuccess: (notConfirmed, params, queryClient) => {
+      applySubscription(queryClient, params, change.subscribed, change.updateSubscriptions);
+      if (notConfirmed) handleError(notConfirmed, { method: change.name, params });
+    },
+    successToast: (notConfirmed, params) => (notConfirmed ? null : change.toast(params)),
     invalidate: ({ community, username }) => [
       ['communitiesList'],
       ['subscriptions', username],

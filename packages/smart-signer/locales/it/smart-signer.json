@@ -201,7 +201,8 @@
     "signed_out": "Sei disconnesso. Accedi e riprova."
   },
   "request_error": {
-    "timeout": "Il server non ha risposto in tempo. Riprova."
+    "timeout": "Il server non ha risposto in tempo. Riprova.",
+    "not_confirmed": "Transazione inviata, la conferma sta richiedendo più tempo del solito."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Portafoglio non trovato",

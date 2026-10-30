@@ -32,8 +32,10 @@ RUN apt-get update \
     && chmod -R a+rX /ms-playwright
 
 # pnpm-lock.yaml (with the workspace file and the @hiveio registry in .npmrc) is
-# what pnpm fetches.
+# what pnpm fetches. pnpm fetch refuses to run without the files package.json's
+# patchedDependencies name; the glob keeps the COPY valid when there are none.
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc /tmp/pnpm-fetch/
+COPY patche[s]/ /tmp/pnpm-fetch/patches/
 RUN cd /tmp/pnpm-fetch \
     && pnpm fetch \
     && cd / && rm -rf /tmp/pnpm-fetch \

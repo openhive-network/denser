@@ -201,7 +201,8 @@
     "signed_out": "您已退出登录。请登录后重试。"
   },
   "request_error": {
-    "timeout": "服务器未及时响应。请重试。"
+    "timeout": "服务器未及时响应。请重试。",
+    "not_confirmed": "交易已发送，确认时间比平时长。"
   },
   "google_drive_error": {
     "wallet_not_found_title": "未找到钱包",

@@ -17,7 +17,8 @@ export interface OperationMutationConfig<TVariables, TData, TContext> {
   onSuccess?: (data: TData, variables: TVariables, queryClient: QueryClient) => void;
   /** Restores the cache after a failed broadcast. */
   rollback?: (context: TContext | undefined, variables: TVariables, queryClient: QueryClient) => void;
-  successToast?: (data: TData, variables: TVariables) => OperationToast;
+  /** The toast for a successful broadcast; null shows none. */
+  successToast?: (data: TData, variables: TVariables) => OperationToast | null;
   /** Query keys refreshed once the mutation settles, whether the broadcast succeeded or failed. */
   invalidate?: (variables: TVariables) => QueryKey[];
   /** When (ms after settling) the `invalidate` keys are refreshed; 0 refreshes at once. */
@@ -53,7 +54,8 @@ export function buildOperationMutationOptions<TVariables, TData, TContext>(
     onMutate: optimistic && ((variables) => optimistic(variables, queryClient)),
     onSuccess: (data, variables) => {
       effects.logSuccess(name, data);
-      if (successToast) effects.notifySuccess(successToast(data, variables));
+      const toast = successToast?.(data, variables);
+      if (toast) effects.notifySuccess(toast);
       onSuccess?.(data, variables, queryClient);
     },
     onError: (error, variables, context) => {

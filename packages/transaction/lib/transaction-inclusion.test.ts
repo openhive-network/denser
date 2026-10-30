@@ -1,5 +1,10 @@
 import { expect } from 'chai';
-import { type ITransactionIdObserver, watchInclusion } from './transaction-inclusion';
+import {
+  type ITransactionIdObserver,
+  TransactionNotConfirmedError,
+  toNotConfirmedError,
+  watchInclusion
+} from './transaction-inclusion';
 
 /** A bot whose test drives `next`/`error` for the one transaction it is subscribed to. */
 class FakeBot implements ITransactionIdObserver {
@@ -99,5 +104,31 @@ describe('watchInclusion', () => {
 
     expect(await watch.included).to.equal(true);
     expect(bot.unsubscribes).to.equal(1);
+  });
+});
+
+describe('toNotConfirmedError', () => {
+  // As WorkerBee 1.28.4 words it when its listener expires
+  const LISTENER_EXPIRED =
+    'Transaction #a2192469 (legacy: #a2192469) broadcasted successfully, but listener has expired.\n' +
+    'Blocks analyzed: 111225633 - 111225635\n' +
+    "Try adjusting the 'expireInMs' option (currently set to 10000 ms) in the broadcast method to a higher value.";
+
+  it('turns the expired-listener rejection into a not-confirmed error keeping the original as cause', () => {
+    const original = new Error(LISTENER_EXPIRED);
+    const error = toNotConfirmedError(original, 'a2192469');
+
+    if (!(error instanceof TransactionNotConfirmedError)) return expect.fail('not a TransactionNotConfirmedError');
+    expect(error.transactionId).to.equal('a2192469');
+    expect(error.cause).to.equal(original);
+    expect(error.message).to.not.include('expireInMs');
+  });
+
+  it('passes other broadcast errors through unchanged', () => {
+    const rejected = new Error('Assert Exception: payer has not enough RC mana for transaction');
+    const notAnError = { message: LISTENER_EXPIRED };
+
+    expect(toNotConfirmedError(rejected, 'a2192469')).to.equal(rejected);
+    expect(toNotConfirmedError(notAnError, 'a2192469')).to.equal(notAnError);
   });
 });

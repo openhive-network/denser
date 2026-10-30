@@ -201,7 +201,8 @@
     "signed_out": "로그아웃된 상태입니다. 로그인한 후 다시 시도해 주세요."
   },
   "request_error": {
-    "timeout": "서버가 제때 응답하지 않았습니다. 다시 시도해 주세요."
+    "timeout": "서버가 제때 응답하지 않았습니다. 다시 시도해 주세요.",
+    "not_confirmed": "트랜잭션을 전송했습니다. 확인이 평소보다 오래 걸리고 있습니다."
   },
   "google_drive_error": {
     "wallet_not_found_title": "지갑을 찾을 수 없음",

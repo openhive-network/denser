@@ -43,3 +43,27 @@ export function watchInclusion(
   included.then(stopWatching, stopWatching);
   return { included, cancel: () => finish(false) };
 }
+
+/**
+ * WorkerBee's `broadcast` rejects with this text when the node accepted the transaction but no block
+ * the bot scanned before `expireInMs` included it.
+ */
+const LISTENER_EXPIRED_PATTERN = /broadcasted successfully, but listener has expired/;
+
+/** An observed broadcast the node accepted but no block was seen to include in time; it may still apply. */
+export class TransactionNotConfirmedError extends Error {
+  readonly transactionId: string;
+
+  constructor(transactionId: string, cause?: unknown) {
+    super(`Transaction ${transactionId} was broadcast but not seen in a block in time`, { cause });
+    this.name = 'TransactionNotConfirmedError';
+    this.transactionId = transactionId;
+  }
+}
+
+/** `error` as a `TransactionNotConfirmedError` when it is WorkerBee's expired-listener rejection, else as is. */
+export function toNotConfirmedError(error: unknown, transactionId: string): unknown {
+  return error instanceof Error && LISTENER_EXPIRED_PATTERN.test(error.message)
+    ? new TransactionNotConfirmedError(transactionId, error)
+    : error;
+}

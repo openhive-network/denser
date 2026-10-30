@@ -82,6 +82,11 @@ catalogs:
 overrides:
   '@hiveio/beekeeper': 1.28.9-rc0-stable.261028200530
 
+patchedDependencies:
+  '@hiveio/workerbee@1.28.4-rc1-stable.261029021233':
+    hash: 6075db03f02db899b5c50cd68feaaf9fae3c78d731b07c53552973dee0bdf534
+    path: patches/@hiveio__workerbee@1.28.4-rc1-stable.261029021233.patch
+
 importers:
 
   .:
@@ -819,7 +824,7 @@ importers:
         version: 1.28.8-stable.261028191145
       '@hiveio/workerbee':
         specifier: catalog:hiveio-toolset
-        version: 1.28.4-rc1-stable.261029021233(@hiveio/wax@1.28.8-stable.261028191145)
+        version: 1.28.4-rc1-stable.261029021233(patch_hash=6075db03f02db899b5c50cd68feaaf9fae3c78d731b07c53552973dee0bdf534)(@hiveio/wax@1.28.8-stable.261028191145)
       bs58:
         specifier: 6.0.0
         version: 6.0.0
@@ -11934,7 +11939,7 @@ snapshots:
     dependencies:
       events: 3.3.0
 
-  '@hiveio/workerbee@1.28.4-rc1-stable.261029021233(@hiveio/wax@1.28.8-stable.261028191145)':
+  '@hiveio/workerbee@1.28.4-rc1-stable.261029021233(patch_hash=6075db03f02db899b5c50cd68feaaf9fae3c78d731b07c53552973dee0bdf534)(@hiveio/wax@1.28.8-stable.261028191145)':
     dependencies:
       '@hiveio/wax': 1.28.8-stable.261028191145
 

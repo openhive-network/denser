@@ -201,7 +201,8 @@
     "signed_out": "Vous êtes déconnecté. Connectez-vous et réessayez."
   },
   "request_error": {
-    "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer."
+    "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer.",
+    "not_confirmed": "Transaction envoyée, la confirmation prend plus de temps que d'habitude."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Portefeuille introuvable",

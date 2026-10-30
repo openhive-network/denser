@@ -201,7 +201,8 @@
     "signed_out": "You are signed out. Sign in and try again."
   },
   "request_error": {
-    "timeout": "The server did not respond in time. Please try again."
+    "timeout": "The server did not respond in time. Please try again.",
+    "not_confirmed": "Transaction sent, confirmation is taking longer than usual."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Wallet Not Found",
