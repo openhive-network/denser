@@ -15,7 +15,7 @@ import {
 /**
  * Cancelling a pending savings withdrawal broadcasts one `cancel_transfer_from_savings_operation`
  * naming the owner and that withdrawal's request id; only the signed-in owner is offered it. Reads come from the stub node
- * (support/walletApiStub.ts), here with one pending withdrawal; the broadcast is answered by the
+ * (support/walletApiStub.ts), here with two pending withdrawals; the broadcast is answered by the
  * interceptor.
  */
 
@@ -26,6 +26,8 @@ const ACTIVE_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';
 
 const REQUEST_ID = 1_759_312_345;
 const WITHDRAW_MESSAGE = `Withdraw 1.250 HBD to ${STUB_ACCOUNT}`;
+const LAST_REQUEST_ID = 1_759_398_765;
+const LAST_WITHDRAW_MESSAGE = `Withdraw 2.500 HBD to ${STUB_ACCOUNT}`;
 
 let stub: Server;
 
@@ -41,6 +43,15 @@ test.beforeAll(async () => {
           request_id: REQUEST_ID,
           amount: { amount: '1250', precision: 3, nai: '@@000000013' },
           complete: '2026-10-04T12:00:00'
+        },
+        {
+          id: 12,
+          from: STUB_ACCOUNT,
+          to: STUB_ACCOUNT,
+          memo: '',
+          request_id: LAST_REQUEST_ID,
+          amount: { amount: '2500', precision: 3, nai: '@@000000013' },
+          complete: '2026-10-05T12:00:00'
         }
       ]
     })
@@ -61,7 +72,7 @@ test.beforeEach(async ({ context }) => {
   });
 });
 
-/** Opens the cancel prompt of the pending withdrawal, retried until hydration attached the handlers. */
+/** Opens the cancel prompt of the first pending withdrawal, retried until hydration attached the handlers. */
 const openCancelDialog = async (page: Page): Promise<Locator> => {
   await logInAsStubAccount(page, 'active');
   await storeStubAccountKey(page, 'active', ACTIVE_WIF);
@@ -83,6 +94,24 @@ test.describe('Cancel transfer from savings broadcast', () => {
   }) => {
     const broadcasts = await installBroadcastInterceptor(page);
     const dialog = await openCancelDialog(page);
+    await dialog.getByRole('button', { name: 'Cancel withdraw from savings' }).click();
+
+    await broadcasts.waitForCount(1);
+    expect(broadcasts.calls).toHaveLength(1);
+    expectCancelTransferFromSavingsOperation(broadcasts.calls[0], {
+      from: STUB_ACCOUNT,
+      request_id: REQUEST_ID
+    });
+  });
+
+  test('WALLET-TX-SAVINGS-CANCEL-06 — cancelling the first of two withdrawals opens only its prompt and broadcasts its request id', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    const dialog = await openCancelDialog(page);
+
+    await expect(page.getByRole('dialog')).toHaveCount(1);
+    await expect(dialog).not.toContainText(LAST_WITHDRAW_MESSAGE);
     await dialog.getByRole('button', { name: 'Cancel withdraw from savings' }).click();
 
     await broadcasts.waitForCount(1);
