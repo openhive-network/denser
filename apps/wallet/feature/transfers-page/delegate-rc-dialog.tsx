@@ -11,6 +11,7 @@ import {
 } from '@ui/components';
 import { useDelegateRCMutation } from './hooks/use-delegate-mutation';
 import { useAccountLookup, type AccountLookupStatus } from './hooks/use-account-lookup';
+import { useExistingRcDelegation } from './hooks/use-existing-rc-delegation';
 import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
 import { getLogger } from '@ui/lib/logging';
@@ -50,11 +51,13 @@ const ACCOUNT_STATUS_KEYS: Partial<Record<AccountLookupStatus, string>> = {
 };
 
 const DelegateRCDialog = ({
+  fromAccount,
   delegatableRC,
   creationAdjustmentRC,
   suggestedUsers
 }: {
-  /** Raw RC the account can delegate now: its RC mana above the account creation adjustment */
+  fromAccount: string;
+  /** Raw RC the account can add to its delegations now, as hived's delegate_rc check computes it */
   delegatableRC: string;
   /** Raw RC of the account creation adjustment, which counts in the RC max but cannot be delegated */
   creationAdjustmentRC: string;
@@ -66,7 +69,11 @@ const DelegateRCDialog = ({
   const [open, setOpen] = useState(false);
   const toAccount = form.toAccount.trim();
   const accountStatus = useAccountLookup(toAccount);
-  const maxBillions = rawRcToBillions(delegatableRC);
+  const existingBillions = rawRcToBillions(
+    useExistingRcDelegation(fromAccount, toAccount, accountStatus === 'found')
+  );
+  // The new total replaces the existing delegation, so only its increase has to be delegatable.
+  const maxBillions = rawRcToBillions(delegatableRC).plus(existingBillions);
   const creationAdjustmentBillions = rawRcToBillions(creationAdjustmentRC);
   const amountBillions = parseRcBillions(form.amount);
   const percent = rcPercentOf(amountBillions, maxBillions);
@@ -192,6 +199,15 @@ const DelegateRCDialog = ({
                 <div className="flex justify-center text-xs">
                   <span className="font-medium">{t('transfers_page.delegate_rc.readout', summary)}</span>
                 </div>
+                {existingBillions.gt(0) ? (
+                  <p className="text-xs text-primary/70">
+                    {t('transfers_page.delegate_rc.existing_delegation_note', {
+                      existing: formatRcSummary(existingBillions),
+                      account: toAccount,
+                      max: summary.max
+                    })}
+                  </p>
+                ) : null}
                 {creationAdjustmentBillions.gt(0) ? (
                   <p className="text-xs text-primary/70">
                     {t('transfers_page.delegate_rc.creation_adjustment_note', {

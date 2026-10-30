@@ -593,6 +593,7 @@
       "account_check_failed": "Could not check the account. Try again later.",
       "almost_all_warning": "You are about to delegate {{percent}}% of your available RC. Your account may be left without enough RC for its own transactions.",
       "creation_adjustment_note": "{{reserved}} bil RC is your account creation adjustment and can't be delegated.",
+      "existing_delegation_note": "You delegate {{existing}} bil RC to {{account}} now. The new amount replaces it and can be up to {{max}} bil RC.",
       "insufficient_rc": "Not enough delegatable RC: you have {{current}} bil, this delegation needs {{needed}} bil.",
       "submit": "Delegate RC"
     }

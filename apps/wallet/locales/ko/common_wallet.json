@@ -589,6 +589,7 @@
       "account_check_failed": "계정을 확인할 수 없습니다. 나중에 다시 시도하세요.",
       "almost_all_warning": "사용 가능한 RC의 {{percent}}%를 위임하려고 합니다. 계정 자체의 트랜잭션에 필요한 RC가 부족해질 수 있습니다.",
       "creation_adjustment_note": "{{reserved}}(×10억 RC)는 계정 생성 조정분이므로 위임할 수 없습니다.",
+      "existing_delegation_note": "현재 {{account}}에게 {{existing}}(×10억 RC)를 위임하고 있습니다. 새 수량은 이를 대체하며 최대 {{max}}(×10억 RC)까지 지정할 수 있습니다.",
       "insufficient_rc": "위임 가능한 RC가 부족합니다: 보유 {{current}}(×10억 RC), 이 위임에 필요 {{needed}}(×10억 RC).",
       "submit": "RC 위임"
     }
