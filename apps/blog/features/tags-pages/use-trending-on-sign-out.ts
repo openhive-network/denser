@@ -19,17 +19,19 @@ import { TRENDING_PATH, isLeavingOnSignOut } from './sign-out-leave';
 export function useTrendingOnSignOut(isLoggedIn: boolean, isHydrated: boolean): boolean {
   const router = useRouter();
   const [wasLoggedIn, setWasLoggedIn] = useState(isHydrated && isLoggedIn);
-  const [hasSignedOut, setHasSignedOut] = useState(false);
+  // When this page saw the signed-out user, so a logout answer announced before it is not taken for
+  // this sign-out's
+  const [signedOutAt, setSignedOutAt] = useState<number | null>(null);
 
   if (isHydrated && isLoggedIn !== wasLoggedIn) {
     setWasLoggedIn(isLoggedIn);
-    setHasSignedOut(wasLoggedIn);
+    setSignedOutAt(wasLoggedIn ? Date.now() : null);
   }
 
   useEffect(() => {
-    if (!hasSignedOut || isLeavingOnSignOut()) return;
-    return whenLogoutDone(LOGOUT_ANSWER_TIMEOUT_MS, () => router.replace(TRENDING_PATH));
-  }, [hasSignedOut, router]);
+    if (signedOutAt === null || isLeavingOnSignOut()) return;
+    return whenLogoutDone(signedOutAt, LOGOUT_ANSWER_TIMEOUT_MS, () => router.replace(TRENDING_PATH));
+  }, [signedOutAt, router]);
 
-  return hasSignedOut;
+  return signedOutAt !== null;
 }

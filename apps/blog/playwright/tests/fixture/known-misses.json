@@ -5,6 +5,11 @@
     "hash": "27c21eb5844992c1"
   },
   {
+    "spec": "forYouFeedSignOut.spec.ts",
+    "method": "database_api.list_votes",
+    "hash": "e3831ed293053819"
+  },
+  {
     "spec": "liteGraduation.spec.ts",
     "method": "bridge.does_user_follow_any_lists",
     "hash": "acc3b29a22e5dfc6"
