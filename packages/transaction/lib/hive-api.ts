@@ -38,6 +38,8 @@ interface Manabar {
   upvote: ISingleManabar;
   downvote: ISingleManabar;
   rc: ISingleManabar;
+  /** RC the account got for creating accounts: counted in the RC max, but never delegatable. */
+  rcCreationAdjustment: string;
 }
 
 interface IManabars {
@@ -47,6 +49,7 @@ interface IManabars {
   upvoteCooldown: Date;
   downvoteCooldown: Date;
   rcCooldown: Date;
+  rcCreationAdjustment: string;
 }
 
 const PERCENT_VALUE_DOUBLE_PRECISION = 100;
@@ -152,7 +155,8 @@ export const getManabars = async (
       downvote,
       downvoteCooldown,
       rc,
-      rcCooldown
+      rcCooldown,
+      rcCreationAdjustment: rcAccount.max_rc_creation_adjustment.amount
     };
   } catch (error) {
     console.error(error);
@@ -165,7 +169,7 @@ export const getManabar = async (
 ): Promise<Manabar | null> => {
   const manabars = await getManabars(accountName!, loadDynamicGlobalProperties);
   if (!manabars) return null;
-  const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown } = manabars;
+  const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown, rcCreationAdjustment } = manabars;
 
   const processedManabars = {
     upvote: {
@@ -185,7 +189,8 @@ export const getManabar = async (
       max: rc.max.toString(),
       current: rc.current.toString(),
       percentageValue: rc.percent
-    }
+    },
+    rcCreationAdjustment
   };
   return processedManabars;
 };

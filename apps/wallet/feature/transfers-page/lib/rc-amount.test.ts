@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import Big from 'big.js';
 import {
   billionsToRawRc,
+  delegatableRawRc,
   formatRcInput,
   formatRcSummary,
   parseRcBillions,
@@ -44,5 +45,11 @@ describe('RC amounts in billions', () => {
     assert.equal(rcPercentOf(rcForPercent(MAX, 25), MAX), 25);
     assert.equal(rcPercentOf(MAX, MAX), 100);
     assert.equal(rcPercentOf(new Big(1), new Big(0)), 0);
+  });
+
+  it('leaves the account creation adjustment out of the delegatable RC', () => {
+    assert.equal(delegatableRawRc('6102137224', '5819763453'), '282373771');
+    assert.equal(delegatableRawRc('5000000000', '5819763453'), '0');
+    assert.equal(delegatableRawRc('1000000000000', '0'), '1000000000000');
   });
 });

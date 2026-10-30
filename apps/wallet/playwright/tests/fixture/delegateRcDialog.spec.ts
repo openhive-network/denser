@@ -1,29 +1,45 @@
 import type { Server } from 'node:http';
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
-import { STUB_ACCOUNT, STUB_FOLLOWED, logInAsStubAccount, startWalletApiStub, stubAccountWith } from '../support/walletApiStub';
+import {
+  STUB_ACCOUNT,
+  STUB_FOLLOWED,
+  logInAsStubAccount,
+  startWalletApiStub,
+  stubAccountWith,
+  stubRcAccountsWith
+} from '../support/walletApiStub';
 
 /**
  * The Delegate RC dialog of the Resource Credits row: its slider moves in percent of the available
  * RC, the recipient autocompletes from the transfer suggestions and is looked up on chain, and
  * closing the dialog forgets what was entered.
  * STUB_ACCOUNT's RC manabar has fully regenerated to its max_rc of 1,000,000,000,000 RC
- * (1000 billion) at the stub's head block time. Nothing is broadcast.
+ * (1000 billion) at the stub's head block time, none of it an account creation adjustment unless a
+ * test sets one. Nothing is broadcast.
  */
 
 const HYDRATION_TIMEOUT = 30_000;
 const DIALOG_NAME = 'Delegate RC';
 /** A name the stub node has no account for. */
 const MISSING_ACCOUNT = 'quest4test1zz';
+/** 750 billion RC, as the stub's `vests` asset amount: leaves 250 billion of the max delegatable. */
+const CREATION_ADJUSTMENT = { amount: '750000000000', precision: 6, nai: '@@000000037' };
 
 let stub: Server;
+let rcAccountFields: Record<string, unknown> = {};
 
 test.beforeAll(async () => {
   const findAccounts = stubAccountWith({})['database_api.find_accounts'];
   stub = await startWalletApiStub(undefined, {
     'database_api.find_accounts': ({ accounts = [] }) =>
-      findAccounts({ accounts: accounts.filter((name) => name !== MISSING_ACCOUNT) })
+      findAccounts({ accounts: accounts.filter((name) => name !== MISSING_ACCOUNT) }),
+    'rc_api.find_rc_accounts': (params) => stubRcAccountsWith(rcAccountFields)['rc_api.find_rc_accounts'](params)
   });
+});
+
+test.afterEach(() => {
+  rcAccountFields = {};
 });
 
 test.afterAll(async () => {
@@ -212,5 +228,27 @@ test.describe('Delegate RC dialog', () => {
     await dialog.getByRole('combobox', { name: 'Do konta' }).fill('stub-fo');
     await expect(dialog.getByRole('option', { name: `${STUB_FOLLOWED} (obserwujesz)` })).toBeVisible();
     await expect(dialog.getByRole('button', { name: 'Zamknij', exact: true })).toBeVisible();
+  });
+
+  test('WALLET-RC-07 — the account creation adjustment is left out of the RC the slider and presets delegate', async ({
+    page
+  }) => {
+    rcAccountFields = { max_rc_creation_adjustment: CREATION_ADJUSTMENT };
+    await gotoTransfers(page);
+    const { dialog } = await openDelegateRcDialog(page);
+    const amount = dialog.getByLabel('RC amount (billions)');
+    const warning = dialog.getByRole('alert').filter({ hasText: 'of your available RC' });
+
+    await expect(dialog.getByText('0.00 bil / 250.00 bil RC')).toBeVisible();
+    await expect(
+      dialog.getByText("750.00 bil RC is your account creation adjustment and can't be delegated.")
+    ).toBeVisible();
+
+    await dialog.getByRole('button', { name: '100%' }).click();
+    await expect(amount).toHaveValue('250');
+    await expect(warning).toContainText('100%');
+
+    await amount.fill('900');
+    await expect(amount).toHaveValue('250');
   });
 });

@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { findNotEnoughRc } from './not-enough-rc';
+import { findInsufficientDelegatableRc, findNotEnoughRc } from './not-enough-rc';
 import { findMissingAuthority } from './missing-authority';
 
 // The shape of the node's answer to a witness vote by an account short of RC, as wax rethrows it.
@@ -55,5 +55,21 @@ describe('findNotEnoughRc', () => {
 
   it('is not mistaken for a missing authority', () => {
     expect(findMissingAuthority(waxAssertionError(notEnoughRcAnswer))).to.equal(null);
+  });
+});
+
+describe('findInsufficientDelegatableRc', () => {
+  const rejection = waxAssertionError(
+    '[Chain Error] Account guest4test has insufficient RC (have 282373771, needs 5980094479)'
+  );
+
+  it('reads the delegatable and needed RC from the delegate_rc rejection', () => {
+    expect(findInsufficientDelegatableRc(rejection)).to.deep.equal({ current: 282373771, needed: 5980094479 });
+  });
+
+  it('is not the transaction RC shortfall, and that one is not it', () => {
+    expect(findNotEnoughRc(rejection)).to.equal(null);
+    expect(findInsufficientDelegatableRc(waxAssertionError(notEnoughRcAnswer))).to.equal(null);
+    expect(findInsufficientDelegatableRc(undefined)).to.equal(null);
   });
 });

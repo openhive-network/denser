@@ -5,6 +5,7 @@ import { formatRestoreTime } from './lib/utils';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { prepareRC } from '@/wallet/lib/utils';
 import DelegateRCDialog from './delegate-rc-dialog';
+import { delegatableRawRc } from './lib/rc-amount';
 import dynamic from 'next/dynamic';
 import { useTranslation } from '@/wallet/i18n/client';
 
@@ -50,7 +51,8 @@ const RCRow = ({
               percentageValue: e.rc.percentageValue,
               cooldown: formatRestoreTime(e.rc.cooldown, t)
             },
-            maxAvailableRC: e.rc.current
+            delegatableRC: delegatableRawRc(e.rc.current, e.rcCreationAdjustment),
+            rcCreationAdjustment: e.rcCreationAdjustment
           }
         : null
   });
@@ -112,7 +114,11 @@ const RCRow = ({
       )}
       {user.username === username && !!data ? (
         <div className="my-4 flex justify-center">
-          <DelegateRCDialog maxRC={data.maxAvailableRC} suggestedUsers={suggestedUsers} />
+          <DelegateRCDialog
+            delegatableRC={data.delegatableRC}
+            creationAdjustmentRC={data.rcCreationAdjustment}
+            suggestedUsers={suggestedUsers}
+          />
         </div>
       ) : null}
     </div>
