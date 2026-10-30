@@ -207,14 +207,23 @@
     margin: 0;
     -moz-appearance: textfield !important;
   }
-  /* 80px = sticky navbar (h-16/64px) + visual buffer. A scroll-margin of the targets, not the root's
-     scroll-padding: Chrome keeps a field's caret out of the root's padding band, which the sticky
-     header sits in, so each keystroke in a header field scrolled the page. */
   * {
     @apply border-border;
+  }
+  /* 80px = sticky navbar (h-16/64px) + visual buffer. A scroll-margin of the targets, not the root's
+     scroll-padding: Chrome keeps a field's caret out of the root's padding band, which the sticky
+     header sits in, so each keystroke in a header field scrolled the page. Only page-level jump
+     targets carry it (a block:'start' scrollIntoView target without an id takes scroll-mt-20):
+     the margin holds in every scroll container, so on a list's options it kept the highlighted
+     one 80px below the list's top. */
+  :target,
+  [id] {
     scroll-margin-top: 5rem;
   }
-  header * {
+  header [id],
+  [role='dialog'] [id],
+  [role='option'],
+  [role^='menuitem'] {
     scroll-margin-top: 0;
   }
   body {
