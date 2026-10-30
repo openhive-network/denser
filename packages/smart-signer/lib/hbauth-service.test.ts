@@ -31,6 +31,8 @@ const STUBS: Record<string, string> = {
   '@smart-signer/lib/auth/user-localstore': 'export const getAccounts = () => globalThis.fakeStoredAccounts;',
   '@smart-signer/lib/auth/active-user':
     'export const setAccounts = (_queryClient, accounts) => { globalThis.fakeStoredAccounts = accounts; }; export const setActiveUser = () => {};',
+  '@smart-signer/lib/auth/logout-done': 'export const clearLogoutDone = () => {}; export const announceLogoutDone = () => {};',
+  '@smart-signer/lib/auth/auth-storage-desync': 'export const dispatchAuthStorageDesync = () => {};',
   '@smart-signer/lib/auth/destroy-signer':
     "import { logoutFromEveryWorker } from '@hive/common-hiveio-packages'; export const destroyAccountSigner = (account) => logoutFromEveryWorker(account.username);"
 };
@@ -40,7 +42,8 @@ const MODULES: Record<string, string> = {
   '@smart-signer/lib/auth/account-sync': new URL('./auth/account-sync.ts', import.meta.url).href,
   '@smart-signer/lib/auth/accounts': new URL('./auth/accounts.ts', import.meta.url).href,
   '@smart-signer/lib/auth/forget-account': new URL('./auth/forget-account.ts', import.meta.url).href,
-  '@smart-signer/lib/fetch-json': new URL('./fetch-json.ts', import.meta.url).href
+  '@smart-signer/lib/fetch-json': new URL('./fetch-json.ts', import.meta.url).href,
+  '@smart-signer/lib/auth/desync-logout': new URL('./auth/desync-logout.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -81,6 +84,7 @@ await import('./hbauth-service.ts');
 // Called as the stubbed useMutation is: it returns the mutation's options
 const { useSwitchAccount: switchAccountMutation } = await import('./auth/use-switch-account.ts');
 const { FetchError } = await import('./fetch-json.ts');
+const { performDesyncLogout } = await import('./auth/desync-logout.ts');
 
 /** Lets the logouts the notices start, which are not awaited, settle */
 const settle = () => new Promise((resolve) => setImmediate(resolve));
@@ -117,6 +121,30 @@ describe("the hb-auth service on this tab's sign-out", () => {
     await settle();
 
     assert.deepEqual(fake.fakeHbAuthLogouts, ['epoch', 'started:everyone']);
+  });
+});
+
+describe('a logout on finding safe storage lost the signed-in account', () => {
+  it('starts a new sign-out epoch, then locks every account in the workers this page started, once until answered', async () => {
+    fake.fakeHbAuthLogouts = [];
+    let answer = () => {};
+    const logoutAnswer = new Promise<Response>((resolve) => {
+      answer = () => resolve(new Response(null, { status: 200 }));
+    });
+    Object.assign(globalThis, { document: { cookie: '' }, fetch: () => logoutAnswer });
+
+    performDesyncLogout();
+    performDesyncLogout();
+    await settle();
+
+    assert.deepEqual(fake.fakeHbAuthLogouts, ['epoch', 'started:everyone']);
+
+    answer();
+    await settle();
+    performDesyncLogout();
+    await settle();
+
+    assert.deepEqual(fake.fakeHbAuthLogouts, ['epoch', 'started:everyone', 'epoch', 'started:everyone']);
   });
 });
 
