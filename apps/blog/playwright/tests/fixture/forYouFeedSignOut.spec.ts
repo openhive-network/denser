@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { KeyType, LoginType } from '@smart-signer/types/common';
 import { test, expect } from '../support/fixture-proxy-test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
@@ -14,8 +15,9 @@ import enBlog from '../../../locales/en/common_blog.json';
  * ended the session, or once it gave up waiting for the logout answer. Meanwhile /for-you shows the
  * list skeleton under a selector reading Trending, never an empty selector or an empty list. A
  * sign-out in another tab waits for that tab's logout answer, and a list the reader picks while the
- * sign-out waits is where they stay. Opening `/for-you` signed out is
- * forYouFeedSignedOut.spec.ts.
+ * sign-out waits is where they stay. A logout answered after the sign-out stopped waiting renders
+ * Trending again for the signed-out reader, and an answer left by an earlier logout does not count
+ * for a later sign-out. Opening `/for-you` signed out is forYouFeedSignedOut.spec.ts.
  *
  * Fixtures: `forYouSignOut`, the logged-in feeds with the anonymous Trending page's reads added.
  *
@@ -31,6 +33,12 @@ const DEFAULT_OBSERVER = 'hive.blog';
 const LOGOUT_DELAY_MS = 1500;
 /** Held back longer while the reader picks another list, still short of the sign-out's 5 s wait */
 const LOGOUT_DELAY_WHILE_PICKING_MS = 3000;
+/** Held back past the sign-out's 5 s wait, so the reader reaches Trending before the answer */
+const SLOW_LOGOUT_DELAY_MS = 7000;
+/** How soon after another tab's logout answer For You must start loading Trending */
+const OTHER_TAB_LEAVES_WITHIN_MS = 1000;
+/** How long before the test an earlier logout's answer was announced */
+const EARLIER_LOGOUT_AGE_MS = 60_000;
 /** How soon after the click a sign-out whose logout never answers must reach Trending */
 const HUNG_LOGOUT_LEAVES_WITHIN_MS = 6000;
 /** How long after the logout answer a navigation it started would have had to land */
@@ -150,13 +158,26 @@ async function signOutFromHeader(page: Page, homePage: HomePage): Promise<void> 
 
 /** Expects the /trending page data was loaded once, after `answeredAt`, for a signed-out reader */
 function expectSignedOutTrendingLoad(trendingRequests: TrendingRscRequest[], answeredAt: number): void {
-  const pageData = trendingRequests.filter(({ isPrefetch }) => !isPrefetch);
+  const pageData = pageDataRequests(trendingRequests);
   expect(pageData, '/trending page-data requests').toHaveLength(1);
   const [{ at, cookie, body }] = pageData;
   expect(at, 'the /trending page data left before the logout answer').toBeGreaterThanOrEqual(answeredAt);
   expect(cookie).not.toContain(`${FIXTURE_COOKIE_NAME}=`);
   expect(body).not.toContain(`"value":"${OBSERVER}"`);
   expect(body).toContain(`"value":"${DEFAULT_OBSERVER}"`);
+}
+
+const pageDataRequests = (requests: TrendingRscRequest[]) => requests.filter(({ isPrefetch }) => !isPrefetch);
+
+/** Leaves the marker an earlier logout's answer wrote, as announceLogoutDone writes it */
+async function leaveEarlierLogoutDone(page: Page): Promise<void> {
+  await page.evaluate(
+    ([key, age]) => {
+      const now = Date.now();
+      window.localStorage.setItem(key, JSON.stringify({ value: now - age, expiresAt: now + age, createdAt: now - age }));
+    },
+    [LOGOUT_DONE_KEY, EARLIER_LOGOUT_AGE_MS] as const
+  );
 }
 
 async function openForYouSignedIn(page: Page, homePage: HomePage): Promise<void> {
@@ -253,7 +274,12 @@ test.describe('For You feed — signing out', () => {
     await expect(homePage.getFilterPosts).toHaveText(TRENDING_LABEL);
     await expect(otherTab).toHaveURL(/\/hot$/);
 
-    expectSignedOutTrendingLoad(trendingRequests, await logout.answeredAt);
+    const answeredAt = await logout.answeredAt;
+    expectSignedOutTrendingLoad(trendingRequests, answeredAt);
+    const [{ at }] = pageDataRequests(trendingRequests);
+    expect(at - answeredAt, 'time from the other tab\'s logout answer to the /trending request').toBeLessThan(
+      OTHER_TAB_LEAVES_WITHIN_MS
+    );
   });
 
   test('FYP-11 — picking Hot while the sign-out waits for the logout answer leaves the reader on Hot', async ({ page }) => {
@@ -276,5 +302,51 @@ test.describe('For You feed — signing out', () => {
     await page.waitForTimeout(AFTER_LOGOUT_SETTLE_MS);
     await expect(page).toHaveURL(/\/hot$/);
     await expect(homePage.getFilterPosts).toHaveText(HOT_LABEL);
+  });
+
+  test('FYP-12 — a logout answered after the sign-out stopped waiting renders Trending again for a signed-out reader', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await openForYouSignedIn(page, homePage);
+    const logout = await delayLogout(page, SLOW_LOGOUT_DELAY_MS);
+    const trendingRequests = await recordTrendingRscRequests(page);
+
+    await signOutFromHeader(page, homePage);
+    await expect(page).toHaveURL(/\/trending$/, { timeout: HUNG_LOGOUT_LEAVES_WITHIN_MS });
+
+    const answeredAt = await logout.answeredAt;
+    await expect
+      .poll(() => pageDataRequests(trendingRequests).filter(({ at }) => at >= answeredAt).length, {
+        message: 'a /trending page-data request after the logout answer'
+      })
+      .toBeGreaterThan(0);
+    const [rendered] = pageDataRequests(trendingRequests).filter(({ at }) => at >= answeredAt);
+    expect(rendered.cookie).not.toContain(`${FIXTURE_COOKIE_NAME}=`);
+    expect(rendered.body).not.toContain(OBSERVER);
+    expect(rendered.body).toContain(`"value":"${DEFAULT_OBSERVER}"`);
+    await expect(homePage.loginBtn).toBeVisible();
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    await expect(homePage.getFilterPosts).toHaveText(TRENDING_LABEL);
+  });
+});
+
+test.describe('For You feed — signing out when safe storage lost the keys', () => {
+  test.use({ authenticatedUser: { loginType: LoginType.hbauth, keyType: KeyType.posting } });
+
+  test('FYP-13 — an earlier logout\'s answer does not take For You to Trending before another tab\'s desync logout is answered', async ({ page, context }) => {
+    const homePage = new HomePage(page);
+    await openForYouSignedIn(page, homePage);
+    await leaveEarlierLogoutDone(page);
+    const trendingRequests = await recordTrendingRscRequests(page);
+
+    const otherTab = await context.newPage();
+    await gotoLoggedIn(otherTab, '/trending');
+    const logout = await delayLogout(otherTab);
+    // Safe storage holds no keys for the account: signing the vote signs the reader out
+    await new HomePage(otherTab).getFirstPostUpvoteButton.click();
+    await expect(otherTab.getByTestId('safe-storage-missing-message')).toBeVisible();
+
+    await expect(page).toHaveURL(/\/trending$/, { timeout: TIMEOUTS.HYDRATION });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    expectSignedOutTrendingLoad(trendingRequests, await logout.answeredAt);
   });
 });

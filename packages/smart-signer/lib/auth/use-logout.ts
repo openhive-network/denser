@@ -8,19 +8,13 @@ import { LOGOUT_ANSWER_TIMEOUT_MS, announceLogoutDone, clearLogoutDone } from '@
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import { useRouter } from 'next/navigation';
 
-/** Settles with `promise`, or after `ms` when it has not settled by then; never rejects */
-function settleWithin(promise: Promise<unknown>, ms: number): Promise<void> {
+/** Whether `promise` settles within `ms`; never rejects */
+function settlesWithin(promise: Promise<unknown>, ms: number): Promise<boolean> {
   let timer: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<void>((resolve) => {
-    timer = setTimeout(resolve, ms);
+  const timeout = new Promise<boolean>((resolve) => {
+    timer = setTimeout(() => resolve(false), ms);
   });
-  return Promise.race([promise.then(() => undefined), timeout])
-    .catch(() => {
-      // Server logout may have failed, but proceed with local cleanup.
-      // onMutate already applied optimistic update; onError may have rolled
-      // it back, but navigation below will load fresh state from the server.
-    })
-    .finally(() => clearTimeout(timer));
+  return Promise.race([promise.then(() => true), timeout]).finally(() => clearTimeout(timer));
 }
 
 export function useLogout(redirect?: string) {
@@ -49,8 +43,22 @@ export function useLogout(redirect?: string) {
     // Trigger sign out mutation and wait for server response to ensure
     // the Set-Cookie header (which clears iron-session) is processed
     // before any navigation occurs. A logout that never answers must not hold the reader.
-    await settleWithin(signOut.mutateAsync(), LOGOUT_ANSWER_TIMEOUT_MS);
-    announceLogoutDone();
+    const isSignedOut = signOut.mutateAsync().then(
+      () => true,
+      // Server logout may have failed, but proceed with local cleanup.
+      // onMutate already applied optimistic update; onError may have rolled
+      // it back, but navigation below will load fresh state from the server.
+      () => false
+    );
+    // Only on the server's answer: other tabs that time out go on by themselves
+    void isSignedOut.then(announceLogoutDone);
+    if (!(await settlesWithin(isSignedOut, LOGOUT_ANSWER_TIMEOUT_MS))) {
+      // The page the reader is taken to below is rendered while the session is still open:
+      // render it again once the server has ended it
+      void isSignedOut.then((hasEnded) => {
+        if (hasEnded) router.refresh();
+      });
+    }
 
     // Only now, so the next page renders without the ended session's cookie
     const leavePath = leaveTo?.();

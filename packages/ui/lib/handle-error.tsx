@@ -9,6 +9,7 @@ import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage
 import { SupersededKeyWriteMessage } from '@smart-signer/components/superseded-key-write-message';
 import { findSupersededKeyWrite } from '@smart-signer/lib/superseded-key-write';
 import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
+import { announceLogoutDone, clearLogoutDone } from '@smart-signer/lib/auth/logout-done';
 import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-message';
 import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-message';
 import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
@@ -41,6 +42,9 @@ function performDesyncLogout(): void {
   // Clear observer cookie immediately — SSR stops personalizing
   document.cookie = 'observer=; path=/; max-age=0';
 
+  // Before the signed-out user reaches other tabs, so they wait for this logout's answer
+  clearLogoutDone();
+
   // Clear user from localStorage so next page load starts logged out
   try {
     const defaultUser = JSON.stringify({
@@ -56,7 +60,7 @@ function performDesyncLogout(): void {
     // localStorage may be unavailable — cookie clear is sufficient
   }
 
-  // POST to logout API to destroy server session (fire and forget)
+  // POST to logout API to destroy server session (fire and forget); other tabs go on on its answer
   // Header value must match csrfHeaderName in @smart-signer/lib/csrf-protection.ts
   fetch(appApiPath('/api/auth/logout'), {
     method: 'POST',
@@ -64,7 +68,9 @@ function performDesyncLogout(): void {
       'content-type': 'application/json',
       'x-csrf-token': '1'
     }
-  }).catch(err => logger.error('Desync logout API call failed: %o', err));
+  })
+    .catch(err => logger.error('Desync logout API call failed: %o', err))
+    .finally(announceLogoutDone);
 
   // Dispatch event so React Query invalidates user state
   dispatchAuthStorageDesync();
