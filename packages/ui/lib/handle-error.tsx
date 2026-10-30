@@ -33,12 +33,18 @@ function isAuthStorageDesync(error: unknown): boolean {
   return AUTH_STORAGE_DESYNC_PATTERN.test(msg);
 }
 
+/** The desync logout whose answer has not come yet: one desync can reach the error handler more than once */
+let pendingDesyncLogout: Promise<void> | null = null;
+
 /**
  * Perform emergency logout when IndexedDB key storage is lost.
  * This runs outside React — clears cookie, posts to logout API,
  * and dispatches event for React Query to pick up.
+ * Does nothing while an earlier one waits for its answer.
  */
 function performDesyncLogout(): void {
+  if (pendingDesyncLogout) return;
+
   // Clear observer cookie immediately — SSR stops personalizing
   document.cookie = 'observer=; path=/; max-age=0';
 
@@ -62,15 +68,19 @@ function performDesyncLogout(): void {
 
   // POST to logout API to destroy server session (fire and forget); other tabs go on on its answer
   // Header value must match csrfHeaderName in @smart-signer/lib/csrf-protection.ts
-  fetch(appApiPath('/api/auth/logout'), {
+  pendingDesyncLogout = fetch(appApiPath('/api/auth/logout'), {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
       'x-csrf-token': '1'
     }
   })
+    .then(() => undefined)
     .catch(err => logger.error('Desync logout API call failed: %o', err))
-    .finally(announceLogoutDone);
+    .finally(() => {
+      pendingDesyncLogout = null;
+      announceLogoutDone();
+    });
 
   // Dispatch event so React Query invalidates user state
   dispatchAuthStorageDesync();
