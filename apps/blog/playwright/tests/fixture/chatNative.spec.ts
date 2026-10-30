@@ -494,3 +494,22 @@ test.describe('Native Matrix chat client', () => {
     await expect(panel(page).getByText(OLDER_GENERAL_MESSAGE)).toBeVisible();
   });
 });
+
+test.describe('Native Matrix chat client: a client-only user', () => {
+  // As a sign-in without the backend leaves it: Synapse trusts only users the server signed in
+  test.use({ authenticatedUser: { strict: true, authenticateOnBackend: false, oauthConsent: { openhive_chat: true } } });
+
+  test('CHAT-NATIVE-19: a user the server did not sign in gets no chat button and no Matrix requests', async ({
+    page
+  }) => {
+    const { homeserver, loginTokenRequests } = await usesNativeChat(page);
+
+    await page.goto(PAGE_WITH_HEADER);
+    await expect(new HomePage(page).profileAvatarButton).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+
+    await expect(chatButton(page)).toHaveCount(0);
+    await page.waitForTimeout(1_500);
+    expect(loginTokenRequests).toEqual([]);
+    expect(homeserver.requestsTo('/sync')).toEqual([]);
+  });
+});
