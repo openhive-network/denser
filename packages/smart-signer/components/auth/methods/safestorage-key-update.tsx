@@ -27,6 +27,7 @@ import StrictModeCheckbox from './strict-mode-checkbox';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
+import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { KeyAuthorityType } from '@smart-signer/lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -154,6 +155,14 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
 
         if (!registeredUser) {
           setError(t('login_form.signin_safe_storage.user_not_found'));
+          setLoading(false);
+          return;
+        }
+
+        const keyAuthorityError = await validateKeyAuthority(username, keyType, wif);
+        if (keyAuthorityError) {
+          form.resetField('wif');
+          form.setError('wif', { message: t(keyAuthorityError, { ns: SMART_SIGNER_NAMESPACE }) });
           setLoading(false);
           return;
         }

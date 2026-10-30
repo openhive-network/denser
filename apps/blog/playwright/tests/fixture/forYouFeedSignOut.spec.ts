@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Page, Request } from '@playwright/test';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { test, expect } from '../support/fixture-proxy-test';
 import { HomePage } from '../support/pages/homePage';
@@ -18,7 +18,9 @@ import enBlog from '../../../locales/en/common_blog.json';
  * this tab (a desync logout) for its own, and a list the reader picks while the
  * sign-out waits is where they stay. A logout answered after the sign-out stopped waiting renders
  * Trending again for the signed-out reader, and an answer left by an earlier logout does not count
- * for a later sign-out. Opening `/for-you` signed out is forYouFeedSignedOut.spec.ts.
+ * for a later sign-out. A tab that learns of the sign-out from another tab names Trending from its
+ * first skeleton frame and reads no more of the signed-out account's feed, not even a page asked
+ * for before it rendered the sign-out. Opening `/for-you` signed out is forYouFeedSignedOut.spec.ts.
  *
  * Fixtures: `forYouSignOut`, the logged-in feeds with the anonymous Trending page's reads added.
  *
@@ -49,28 +51,34 @@ const LOGOUT_DONE_KEY = 'denser:logout-done';
 const HOT_LABEL = enBlog.select_sort.posts_sort.hot;
 /** How soon after the sign-out click /for-you must show its leaving state */
 const LEAVING_STATE_WITHIN_MS = 200;
+const FOR_YOU_LABEL = enBlog.select_sort.posts_sort.for_you;
+const LOAD_MORE_LABEL = enBlog.user_profile.load_newer;
 
 type ForYouWatchState = {
   blankSelector: boolean;
   emptyList: boolean;
   clickedAt: number | null;
   leavingShownAt: number | null;
+  /** A frame showed the skeleton under a selector still reading For You */
+  forYouOverSkeleton: boolean;
 };
 type ForYouWatch = { __forYouWatch: ForYouWatchState };
 
 /**
  * Watches every animation frame while the page is on /for-you, recording in `window.__forYouWatch`
  * whether one showed an empty sort selector, or a list with neither cards nor the skeleton, and how
- * long after the sign-out click the skeleton first showed under a selector reading Trending. The
- * page is never reloaded, so the watch spans the client-side navigation.
+ * long after the sign-out click the skeleton first showed under a selector reading Trending, and
+ * whether it ever showed under one reading For You. The page is never reloaded, so the watch spans
+ * the client-side navigation.
  */
 async function watchForYouWhileSigningOut(page: Page): Promise<void> {
-  await page.evaluate((trendingLabel) => {
+  await page.evaluate(([trendingLabel, forYouLabel]) => {
     const state: ForYouWatchState = {
       blankSelector: false,
       emptyList: false,
       clickedAt: null,
-      leavingShownAt: null
+      leavingShownAt: null,
+      forYouOverSkeleton: false
     };
     (window as unknown as ForYouWatch).__forYouWatch = state;
     document.addEventListener(
@@ -90,6 +98,7 @@ async function watchForYouWhileSigningOut(page: Page): Promise<void> {
         const hasCards = document.querySelector('li[data-testid="post-list-item"]') !== null;
         if (!selector) state.blankSelector = true;
         if (!hasSkeleton && !hasCards) state.emptyList = true;
+        if (hasSkeleton && selector === forYouLabel) state.forYouOverSkeleton = true;
         const showsLeaving = hasSkeleton && selector === trendingLabel;
         if (state.clickedAt !== null && state.leavingShownAt === null && showsLeaving) {
           state.leavingShownAt = performance.now();
@@ -98,7 +107,30 @@ async function watchForYouWhileSigningOut(page: Page): Promise<void> {
       requestAnimationFrame(check);
     };
     check();
-  }, TRENDING_LABEL);
+  }, [TRENDING_LABEL, FOR_YOU_LABEL] as const);
+}
+
+type LoadMoreOnLogout = { __loadMorePressedOnLogout: boolean };
+
+/**
+ * Presses the feed's "Load Newer" button in the first `storage` listener told that another tab
+ * stored the signed-out user, ahead of the app's own: the feed asks for its next page once the
+ * session has ended, while the page still renders the signed-in reader. Set up before the page loads.
+ */
+async function loadMoreOnOtherTabLogout(page: Page): Promise<void> {
+  await page.addInitScript((label) => {
+    window.addEventListener('storage', (event) => {
+      if (event.key !== 'user' || event.newValue === null) return;
+      const user: { isLoggedIn?: boolean } = JSON.parse(event.newValue);
+      if (user.isLoggedIn) return;
+      const button = Array.from(document.querySelectorAll('button')).find(
+        (element) => element.textContent?.trim() === label
+      );
+      if (!button) return;
+      (window as unknown as LoadMoreOnLogout).__loadMorePressedOnLogout = true;
+      button.click();
+    });
+  }, LOAD_MORE_LABEL);
 }
 
 const readWatch = (page: Page) =>
@@ -190,14 +222,14 @@ async function leaveEarlierLogoutDone(page: Page): Promise<void> {
   );
 }
 
-async function openForYouSignedIn(page: Page, homePage: HomePage): Promise<void> {
+/** Opens /for-you signed in; returns the For You feed requests the page sends */
+async function openForYouSignedIn(page: Page, homePage: HomePage): Promise<Request[]> {
   await serveFollowLists(page, {});
-  await serveFypFeed(page, [FEED]);
+  const feedRequests = await serveFypFeed(page, [FEED]);
   await gotoLoggedIn(page, '/for-you');
-  await expect(homePage.getFilterPosts).toHaveText(enBlog.select_sort.posts_sort.for_you, {
-    timeout: TIMEOUTS.HYDRATION
-  });
+  await expect(homePage.getFilterPosts).toHaveText(FOR_YOU_LABEL, { timeout: TIMEOUTS.HYDRATION });
   await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+  return feedRequests;
 }
 
 test.describe('For You feed — signing out', () => {
@@ -290,6 +322,55 @@ test.describe('For You feed — signing out', () => {
     expect(at - answeredAt, 'time from the other tab\'s logout answer to the /trending request').toBeLessThan(
       LEAVES_AFTER_ANSWER_WITHIN_MS
     );
+  });
+
+  test('FYP-15 — For You open in two tabs: the tab that did not sign out names Trending over its skeleton and reads no more of the feed', async ({ page, context }) => {
+    const homePage = new HomePage(page);
+    const feedRequests = await openForYouSignedIn(page, homePage);
+    const otherTab = await context.newPage();
+    const otherHomePage = new HomePage(otherTab);
+    await openForYouSignedIn(otherTab, otherHomePage);
+    await delayLogout(otherTab);
+    await watchForYouWhileSigningOut(page);
+    const feedRequestsBefore = feedRequests.length;
+
+    await signOutFromHeader(otherTab, otherHomePage);
+
+    await expect(page.getByTestId('post-list-skeleton')).toBeVisible();
+    await expect(page).toHaveURL(/\/trending$/, { timeout: TIMEOUTS.HYDRATION });
+    await expect(homePage.getMainTimeLineOfPosts.first()).toBeVisible({ timeout: TIMEOUTS.HYDRATION });
+    await expect(homePage.getFilterPosts).toHaveText(TRENDING_LABEL);
+
+    const watch = await readWatch(page);
+    expect(watch.forYouOverSkeleton, 'the skeleton under a selector reading For You').toBe(false);
+    expect(watch.blankSelector, 'an empty sort selector on /for-you').toBe(false);
+    expect(
+      feedRequests.slice(feedRequestsBefore).map((request) => new URL(request.url()).pathname),
+      'For You feed requests after the other tab signed out'
+    ).toEqual([]);
+  });
+
+  test('FYP-16 — the feed asks for no page of the account once another tab stored its sign-out', async ({ page, context }) => {
+    const homePage = new HomePage(page);
+    await loadMoreOnOtherTabLogout(page);
+    const feedRequests = await openForYouSignedIn(page, homePage);
+    await expect(page.getByRole('button', { name: LOAD_MORE_LABEL })).toBeEnabled();
+    const feedRequestsBefore = feedRequests.length;
+
+    const otherTab = await context.newPage();
+    const otherHomePage = new HomePage(otherTab);
+    await gotoLoggedIn(otherTab, '/hot');
+    await signOutFromHeader(otherTab, otherHomePage);
+
+    await expect(page).toHaveURL(/\/trending$/, { timeout: TIMEOUTS.HYDRATION });
+    expect(
+      await page.evaluate(() => (window as unknown as LoadMoreOnLogout).__loadMorePressedOnLogout),
+      'the next page was asked for on the logout'
+    ).toBe(true);
+    expect(
+      feedRequests.slice(feedRequestsBefore).map((request) => request.url()),
+      'For You feed requests after the other tab signed out'
+    ).toEqual([]);
   });
 
   test('FYP-11 — picking Hot while the sign-out waits for the logout answer leaves the reader on Hot', async ({ page }) => {

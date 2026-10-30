@@ -134,11 +134,11 @@ export function deviceLabelGuess(userAgent: string): string {
   return [firstMatch(BROWSERS, userAgent), firstMatch(SYSTEMS, userAgent)].filter(Boolean).join(' · ');
 }
 
-/** A chain time as a date in `locale` (`Oct 23, 2026`). */
+/** A chain time as a date in `locale` (`October 23, 2026`, Polish `23 października 2026`). */
 export const formatChainDate = (time: string, locale: string): string =>
   new Date(chainTimeMs(time)).toLocaleDateString(locale, {
     year: 'numeric',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
     timeZone: 'UTC'
   });

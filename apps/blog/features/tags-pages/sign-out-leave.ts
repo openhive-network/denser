@@ -36,6 +36,14 @@ export function startSignOutLeave(pathname: string | null): () => string | undef
   return readLeaveTarget;
 }
 
+/**
+ * Switches For You to its leaving state for a sign-out this page did not start (another tab's, a
+ * desync logout), which takes the reader to Trending by itself (useTrendingOnSignOut)
+ */
+export function showSignOutLeave(): void {
+  setLeaving(true);
+}
+
 /** Ends the leaving state, once the page that showed it is gone */
 export function endSignOutLeave(): void {
   setLeaving(false);

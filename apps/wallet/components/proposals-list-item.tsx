@@ -45,7 +45,9 @@ const TitleSetter = ({ start, end, status }: { start: string; end: string; statu
     </div>
   );
 };
-const PROPOSAL_DATE_FORMAT: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+// The full month name: with a day, a locale writes it in its date form (Polish "15 maja"), which the
+// abbreviation does not always give ("15 maj")
+const PROPOSAL_DATE_FORMAT: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
 
 export function ProposalListItem({
   proposalData,
@@ -142,7 +144,7 @@ export function ProposalListItem({
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <div className="flex w-fit flex-col gap-3 py-3 text-xs min-[900px]:flex-row min-[900px]:items-center">
+        <div className="flex w-fit flex-col gap-3 py-3 text-xs min-[900px]:flex-row min-[900px]:flex-wrap min-[900px]:items-center">
           <span className="whitespace-nowrap text-slate-500 dark:text-slate-400" data-testid="proposal-date">
             {dateFormat.format(dayjs(proposalData.start_date).toDate())}
             {' - '}
