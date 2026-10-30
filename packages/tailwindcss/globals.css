@@ -207,11 +207,15 @@
     margin: 0;
     -moz-appearance: textfield !important;
   }
-  html {
-    scroll-padding-top: 5rem; /* 80px = sticky navbar (h-16/64px) + visual buffer */
-  }
+  /* 80px = sticky navbar (h-16/64px) + visual buffer. A scroll-margin of the targets, not the root's
+     scroll-padding: Chrome keeps a field's caret out of the root's padding band, which the sticky
+     header sits in, so each keystroke in a header field scrolled the page. */
   * {
     @apply border-border;
+    scroll-margin-top: 5rem;
+  }
+  header * {
+    scroll-margin-top: 0;
   }
   body {
     font-feature-settings:

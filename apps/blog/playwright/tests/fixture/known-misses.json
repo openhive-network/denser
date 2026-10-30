@@ -10,6 +10,11 @@
     "hash": "e3831ed293053819"
   },
   {
+    "spec": "headerSearchMode.spec.ts",
+    "method": "bridge.get_ranked_posts",
+    "hash": "efd4dd747a98c2a9"
+  },
+  {
     "spec": "liteGraduation.spec.ts",
     "method": "bridge.does_user_follow_any_lists",
     "hash": "acc3b29a22e5dfc6"
