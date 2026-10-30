@@ -145,12 +145,22 @@ export function ProposalListItem({
           </Tooltip>
         </TooltipProvider>
         <div className="flex w-fit flex-col gap-3 py-3 text-xs min-[900px]:flex-row min-[900px]:flex-wrap min-[900px]:items-center">
-          <span className="whitespace-nowrap text-slate-500 dark:text-slate-400" data-testid="proposal-date">
-            {dateFormat.format(dayjs(proposalData.start_date).toDate())}
-            {' - '}
-            {dateFormat.format(dayjs(proposalData.end_date).toDate())} {'('}
-            {totalDays !== 1 ? totalDays + t('global.time.days') : t('global.time.a_day')}
-            {')'}
+          {/* Long month names do not fit a phone's card on one line: below 900px the range breaks
+              between its dates and the duration, never inside one */}
+          <span
+            className="text-slate-500 dark:text-slate-400 min-[900px]:whitespace-nowrap"
+            data-testid="proposal-date"
+          >
+            <span className="whitespace-nowrap">
+              {dateFormat.format(dayjs(proposalData.start_date).toDate())}
+              {' -'}
+            </span>{' '}
+            <span className="whitespace-nowrap">{dateFormat.format(dayjs(proposalData.end_date).toDate())}</span>{' '}
+            <span className="whitespace-nowrap">
+              {'('}
+              {totalDays !== 1 ? totalDays + t('global.time.days') : t('global.time.a_day')}
+              {')'}
+            </span>
           </span>
           <div className="whitespace-nowrap text-slate-500 dark:text-slate-400" data-testid="proposal-amount">
             <span
