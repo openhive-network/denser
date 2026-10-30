@@ -30,12 +30,24 @@
 #
 #   .aidev/run-fixture-e2e.sh playwright/tests/fixture/13-profile
 #
+# AIDEV's flake layers re-run failing tests the same way (the `rerun:` of the
+# full binding in .aidev/project.yaml): `chatNative.spec.ts::A › B` arrives as
+#
+#   .aidev/run-fixture-e2e.sh playwright/tests/fixture/chatNative.spec.ts -g 'A B'
+#
 # A run without arguments also runs the @basepath specs a second time against a
 # build served under /blog, as subdirectory deployments (the integration site, API
 # nodes' `ui` profile) serve it; production (hive.blog) is the root pass. That
 # build is made first and moved to test-results/blog-basepath-next: `next build`
 # empties apps/blog/.next, and the root build must be the one left there for the
 # test stack's blog-live. Its cases join junit.xml as suite `basepath › <spec>`.
+#
+# Each pass also writes Playwright's JSON report, which records every attempt of
+# a retried test where the junit keeps only the last: test-results/fixture/
+# playwright.json, the `reports:` entry of the full binding (format
+# playwright-json, ids `<spec>::<describe › … › title>` as in junit.xml), and
+# basepath-playwright.json for the basepath pass, which is not declared: its ids
+# would not carry the `basepath › ` prefix junit.xml gives them.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -49,6 +61,8 @@ rm -rf test-results/fixture
 mkdir -p test-results/fixture
 junit="$PWD/test-results/fixture/junit.xml"
 basepath_junit="$PWD/test-results/fixture/basepath-junit.xml"
+json_report="$PWD/test-results/fixture/playwright.json"
+basepath_json_report="$PWD/test-results/fixture/basepath-playwright.json"
 basepath_next="$PWD/test-results/blog-basepath-next"
 basepath=/blog
 
@@ -61,13 +75,14 @@ export CI=1
 # before the junit reporter writes, so the junit shows no failure. Record such
 # a run as a failing case in the junit.
 #
-#   run_playwright JUNIT SUITE PLAYWRIGHT_ARGS...
+#   run_playwright JUNIT JSON SUITE PLAYWRIGHT_ARGS...
 miss_error='new fixture MISS'
 run_playwright() {
-    local junit="$1" suite="$2" log status=0
-    shift 2
+    local junit="$1" json="$2" suite="$3" log status=0
+    shift 3
     log="$(mktemp)"
-    PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit" pnpm exec playwright test --reporter=list,junit "$@" < /dev/null 2>&1 | tee "$log" || status=${PIPESTATUS[0]}
+    PLAYWRIGHT_JUNIT_OUTPUT_NAME="$junit" PLAYWRIGHT_JSON_OUTPUT_NAME="$json" \
+        pnpm exec playwright test --reporter=list,junit,json "$@" < /dev/null 2>&1 | tee "$log" || status=${PIPESTATUS[0]}
     if [ "$status" -ne 0 ]; then
         if grep -q "$miss_error" "$log"; then
             junit_add_unreported_failure "$junit" "$suite" "fixture MISS baseline" "$log" "$status" "$miss_error"
@@ -90,7 +105,7 @@ build_basepath_blog() {
 
 run_basepath_fixture() {
     (cd apps/blog && FIXTURE_BASE_PATH="$basepath" FIXTURE_NEXT_DIR="$basepath_next" \
-        run_playwright "$basepath_junit" fixture_e2e_basepath --config=playwright.fixture.config.ts \
+        run_playwright "$basepath_junit" "$basepath_json_report" fixture_e2e_basepath --config=playwright.fixture.config.ts \
         --grep @basepath --output=test-results/basepath)
 }
 
@@ -109,7 +124,7 @@ if [ "${DENSER_FIXTURE_VIA_STACK:-}" != 1 ]; then
         run_with_junit_fallback "$basepath_junit" fixture_e2e_basepath build_basepath_blog || basepath_status=$?
     fi
     .aidev/run-blog-build.sh
-    (cd apps/blog && run_playwright "$junit" fixture_e2e --config=playwright.fixture.config.ts "$@") || status=$?
+    (cd apps/blog && run_playwright "$junit" "$json_report" fixture_e2e --config=playwright.fixture.config.ts "$@") || status=$?
     if [ "$#" -eq 0 ]; then
         [ "$basepath_status" -ne 0 ] || run_basepath_fixture || basepath_status=$?
         finish_basepath_fixture "$basepath_status" || status=1
@@ -161,6 +176,6 @@ const start = Date.now();
 
 status=0
 (cd apps/blog && DENSER_BLOG_URL=http://localhost:3000 \
-    run_playwright "$junit" fixture_e2e --config=../../.aidev/playwright.fixture-stack.config.ts \
+    run_playwright "$junit" "$json_report" fixture_e2e --config=../../.aidev/playwright.fixture-stack.config.ts \
     --tsconfig=tsconfig.json "$@") || status=$?
 exit "$status"
