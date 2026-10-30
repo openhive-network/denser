@@ -11,6 +11,7 @@ import { getAmountFromWithdrawal } from '@/wallet/lib/utils';
 import { useCancelTransferFromSavingsMutation } from '@/wallet/components/hooks/use-cancel-transfer-from-savings-mutation';
 import { handleError } from '@ui/lib/handle-error';
 import { toast } from '@ui/components/hooks/use-toast';
+import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 
 interface PendingSavingsWithdrawalsProps {
   username: string;
@@ -21,20 +22,23 @@ const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWith
   const { t } = useTranslation('common_wallet');
   const [openCancelTransfer, setOpenCancelTransfer] = useState(false);
   const cancelTransferFromSavingsMutation = useCancelTransferFromSavingsMutation();
+  const { user } = useUserClient();
+  // Only the signed-in owner can cancel; a sign-out in another tab takes the action away too
+  const canCancel = user.isLoggedIn && user.username === username;
 
   const cancelTransferFromSavings = async (requestId: number) => {
     const params = { fromAccount: username, requestId: requestId };
     try {
       await cancelTransferFromSavingsMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'cancel_transfer_from_savings', params });
-    } finally {
-      setOpenCancelTransfer(false);
       toast({
         title: t('transfers_page.transaction_success'),
         description: t('transfers_page.cancel__transfer_from_savings'),
         variant: 'success'
       });
+    } catch (error) {
+      handleError(error, { method: 'cancel_transfer_from_savings', params });
+    } finally {
+      setOpenCancelTransfer(false);
     }
   };
 
@@ -59,36 +63,38 @@ const PendingSavingsWithdrawals = ({ username, withdrawals }: PendingSavingsWith
                 </td>
                 <td className="flex flex-row items-center px-2 sm:px-4 sm:py-2">
                   <div>{withdrawMessage}</div>
-                  <Dialog open={openCancelTransfer} onOpenChange={setOpenCancelTransfer}>
-                    <DialogTrigger asChild>
-                      <Button variant="link" className="text-destructive hover:no-underline">
-                        {t('transfers_page.cancel')}
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="text-left sm:max-w-[425px]">
-                      <div className="flex flex-col gap-y-2">
-                        <div>{t('transfers_page.cancel_withdraw_request')}</div>
-                        <div>{withdrawMessage}</div>
-                      </div>
-                      <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-                        <Button
-                          variant="redHover"
-                          onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
-                          disabled={cancelTransferFromSavingsMutation.isPending}
-                        >
-                          {cancelTransferFromSavingsMutation.isPending ? (
-                            <CircleSpinner
-                              loading={cancelTransferFromSavingsMutation.isPending}
-                              size={18}
-                              color="#dc2626"
-                            />
-                          ) : (
-                            t('transfers_page.cancel_withdraw_from_savings')
-                          )}
+                  {canCancel && (
+                    <Dialog open={openCancelTransfer} onOpenChange={setOpenCancelTransfer}>
+                      <DialogTrigger asChild>
+                        <Button variant="link" className="text-destructive hover:no-underline">
+                          {t('transfers_page.cancel')}
                         </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                      </DialogTrigger>
+                      <DialogContent className="text-left sm:max-w-[425px]">
+                        <div className="flex flex-col gap-y-2">
+                          <div>{t('transfers_page.cancel_withdraw_request')}</div>
+                          <div>{withdrawMessage}</div>
+                        </div>
+                        <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
+                          <Button
+                            variant="redHover"
+                            onClick={() => cancelTransferFromSavings(withdrawal.request_id)}
+                            disabled={cancelTransferFromSavingsMutation.isPending}
+                          >
+                            {cancelTransferFromSavingsMutation.isPending ? (
+                              <CircleSpinner
+                                loading={cancelTransferFromSavingsMutation.isPending}
+                                size={18}
+                                color="#dc2626"
+                              />
+                            ) : (
+                              t('transfers_page.cancel_withdraw_from_savings')
+                            )}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  )}
                 </td>
               </tr>
             );

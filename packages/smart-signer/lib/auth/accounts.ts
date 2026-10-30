@@ -26,6 +26,11 @@ export function findAccount(accounts: User[], username: string): User | undefine
   return accounts.find((account) => account.username === username);
 }
 
+/** The accounts a session of `user` holds: the remembered ones, and `user` when it is not among them. */
+export function sessionAccounts(remembered: User[], user: User): User[] {
+  return findAccount(remembered, user.username) ? remembered : [...remembered, user];
+}
+
 /** The accounts with the one listed under `user`'s username, if any, replaced by `user`. */
 export function replaceAccount(accounts: User[], user: User): User[] {
   return accounts.map((account) => (account.username === user.username ? user : account));

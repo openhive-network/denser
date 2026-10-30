@@ -2,8 +2,12 @@ import { useEffect, useMemo } from 'react';
 import type { SignerTool } from '@smart-signer/lib/signer/get-signer';
 import type { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { setSignerOptions } from '@transaction/lib/signer-options';
+import { SignedOutError } from '@transaction/lib/signed-out';
 
-/** Resolves to the signer of the logged-in user, loading the signers (and wax) on the first call. */
+/**
+ * Resolves to the signer of the logged-in user, loading the signers (and wax) on the first call;
+ * rejects with `SignedOutError` while no user is logged in.
+ */
 export type LoadSigner = () => Promise<SignerTool>;
 
 /**
@@ -13,13 +17,14 @@ export type LoadSigner = () => Promise<SignerTool>;
  */
 export const useLazySigner = ({ username, loginType, keyType, storageType }: SignerOptions): LoadSigner => {
   useEffect(() => {
-    if (username === '') return;
+    // Also the logged-out user's, so a sign-out (here or in another tab) leaves no account to sign for
     setSignerOptions({ username, loginType, keyType, storageType });
   }, [username, loginType, keyType, storageType]);
 
   return useMemo(() => {
     let signer: Promise<SignerTool> | undefined;
     return () => {
+      if (username === '') return Promise.reject(new SignedOutError());
       signer ??= import('@smart-signer/lib/signer/get-signer')
         .then(({ getSigner }) => getSigner({ username, loginType, keyType, storageType }))
         .catch((error: unknown) => {

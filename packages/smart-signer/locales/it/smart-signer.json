@@ -197,7 +197,8 @@
     "not_enough_rc": "Crediti risorse (RC) insufficienti per questa transazione. Attendi che i tuoi RC si ricarichino o fai power up di HIVE.",
     "not_enough_rc_amounts": "Hai {{current}} RC; questa transazione ne richiede {{needed}}.",
     "keychain_no_message": "Hive Keychain non è riuscito a completare la richiesta e non ha indicato il motivo.",
-    "superseded_key_write": "Un'altra scheda ha interrotto il salvataggio della chiave {{keyType}} di @{{username}} nell'archivio sicuro. Aggiungi di nuovo la chiave {{keyType}} all'archivio sicuro."
+    "superseded_key_write": "Un'altra scheda ha interrotto il salvataggio della chiave {{keyType}} di @{{username}} nell'archivio sicuro. Aggiungi di nuovo la chiave {{keyType}} all'archivio sicuro.",
+    "signed_out": "Sei disconnesso. Accedi e riprova."
   },
   "request_error": {
     "timeout": "Il server non ha risposto in tempo. Riprova."

@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useSignOut } from '@smart-signer/lib/auth/use-sign-out';
 import { useUser } from '@smart-signer/lib/auth/use-user';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
-import { findAccount } from '@smart-signer/lib/auth/accounts';
+import { sessionAccounts } from '@smart-signer/lib/auth/accounts';
 import { clearStoredCredentials, destroyAccountSigner } from '@smart-signer/lib/auth/destroy-signer';
 import { LOGOUT_ANSWER_TIMEOUT_MS, announceLogoutDone, clearLogoutDone } from '@smart-signer/lib/auth/logout-done';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
@@ -31,8 +31,7 @@ export function useLogout(redirect?: string) {
   const onLogout = async (leaveTo?: () => string | undefined) => {
     // Read before signing out clears them
     const remembered = userLocalStorage.getAccounts();
-    const accounts =
-      user.isLoggedIn && !findAccount(remembered, user.username) ? [...remembered, user] : remembered;
+    const accounts = user.isLoggedIn ? sessionAccounts(remembered, user) : remembered;
 
     // Clear observer cookie immediately — SSR stops personalizing
     document.cookie = 'observer=; path=/; max-age=0';

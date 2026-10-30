@@ -28,6 +28,7 @@ import { getChain } from './lib/chain';
 import { PUBLISHING_APP } from './lib/publishing-app';
 import { getPostCategory } from './lib/post-category';
 import { subscribeToSignerOptions } from './lib/signer-options';
+import { SignedOutError } from './lib/signed-out';
 import { getFindAccounts } from './lib/hive-api';
 import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/profile-metadata';
 import { buildCommentJsonMetadata, type CommentBodyMetadata } from './lib/comment-metadata';
@@ -92,6 +93,11 @@ export class TransactionService {
     this.signerOptions = signerOptions;
   }
 
+  /** Whether a user is signed in to sign with; the signer options of a signed-out reader name none */
+  private isSignedIn(): boolean {
+    return !!this.signerOptions?.username;
+  }
+
   /**
    * Create transaction and add operation to it (by running callback
    * `cb`), sign transaction, broadcast transaction and observe if
@@ -105,6 +111,8 @@ export class TransactionService {
    * this resolves after applying transaction in blockchain. Unless the
    * caller names a key in `transactionOptions`, the signer is asked for the
    * key the transaction's operations require (`resolveRequiredKeyType`).
+   * Rejects with `SignedOutError`, building nothing, when no user is
+   * signed in.
    *
    * @param {(opBuilder: ITransaction) => void} cb
    * @param {TransactionOptions} [transactionOptions={}]
@@ -120,6 +128,9 @@ export class TransactionService {
       singleSignKeyType: undefined,
       transactionOptions: undefined
     };
+
+    // Before `cb`, which may name the signed-in user in the operation
+    if (!this.isSignedIn()) throw new SignedOutError();
 
     const { observe, confirmInBackground, singleSignKeyType, requiredKeyType } = {
       ...defaultTransactionOptions,
@@ -153,7 +164,8 @@ export class TransactionService {
   }
 
   /**
-   * Sign transaction using smart-signer.
+   * Sign transaction using smart-signer. Rejects with `SignedOutError`
+   * when no user is signed in.
    *
    * @param {ITransaction} txBuilder
    * @return {*}  {Promise<string>}
@@ -164,6 +176,7 @@ export class TransactionService {
     singleSignKeyType?: SignTransaction['singleSignKeyType'],
     requiredKeyType?: SignTransaction['requiredKeyType']
   ): Promise<string> {
+    if (!this.isSignedIn()) return Promise.reject(new SignedOutError());
     const signer = getSigner(this.signerOptions);
     return signer.signTransaction({
       digest: txBuilder.sigDigest,

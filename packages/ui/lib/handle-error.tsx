@@ -3,9 +3,11 @@
 import { summarizeErrorForLog, transformError } from '@hive/transaction/lib/transform-error';
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
+import { SignedOutError } from '@hive/transaction/lib/signed-out';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
+import { SignedOutMessage } from '@smart-signer/components/signed-out-message';
 import { SupersededKeyWriteMessage } from '@smart-signer/components/superseded-key-write-message';
 import { findSupersededKeyWrite } from '@smart-signer/lib/superseded-key-write';
 import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
@@ -97,6 +99,17 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   // User-cancelled operations (dismissed password dialog) — silently ignore
   if (isUserCancelled(error)) {
     logger.info('User cancelled operation in %s — no toast', ctx?.method);
+    return;
+  }
+
+  // Signed out, here or in another tab, before the operation was signed: nothing was signed or sent
+  if (error instanceof SignedOutError) {
+    logger.info('Signed out before signing in %s — asking to sign in', ctx?.method);
+    toast({
+      description: <SignedOutMessage />,
+      variant: 'destructive',
+      ...toastOptions
+    });
     return;
   }
 
