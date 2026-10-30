@@ -8,8 +8,9 @@
 # so the install is offline, from the pnpm store baked into that image. It is
 # skipped only when the marker names this pnpm-lock.yaml and this image, and the
 # apps resolve the next and react the lockfile pins (.aidev/check-node-modules.mjs);
-# otherwise `pnpm install --offline --frozen-lockfile` runs.
-# The marker is written after a successful install that passes that check.
+# otherwise `pnpm install --offline --frozen-lockfile` runs, and
+# scripts/check-workerbee-patch.js confirms WorkerBee's block catch-up fix is in effect.
+# The marker is written after a successful install that passes those checks.
 #
 # Services and suites can share one bind-mounted checkout, so installs into it
 # are serialised on node_modules/.aidev-install.lock; a second caller waits, then
@@ -30,7 +31,8 @@ if [ "$(cat "$marker" 2>/dev/null)" != "$marker_want" ] || ! node .aidev/check-n
     # pnpm 10 answers "Already up to date" from this file without relinking, so a
     # missing app link would survive the install.
     rm -f node_modules/.pnpm-workspace-state.json
-    if ! pnpm install --offline --frozen-lockfile < /dev/null || ! node .aidev/check-node-modules.mjs; then
+    if ! pnpm install --offline --frozen-lockfile < /dev/null || ! node .aidev/check-node-modules.mjs \
+        || ! node scripts/check-workerbee-patch.js; then
         echo "pnpm install --offline did not produce a consistent node_modules; not writing $marker" >&2
         exec {install_lock_fd}>&-
         return 1

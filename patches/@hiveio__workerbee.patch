@@ -1,5 +1,5 @@
 diff --git a/dist/bundle/index.js b/dist/bundle/index.js
-index 67761bd13d453968a7d0abb436f23852c90f3606..4de25fea15ef7b14563422f556bdab831280076e 100644
+index 67761bd13d453968a7d0abb436f23852c90f3606..ec5d91a68ab087d4b8d0973351f58b43944c9d8a 100644
 --- a/dist/bundle/index.js
 +++ b/dist/bundle/index.js
 @@ -136,11 +136,11 @@ const{headBlockNumber}=await data.get(DynamicGlobalPropertiesClassifier)
@@ -7,7 +7,7 @@ index 67761bd13d453968a7d0abb436f23852c90f3606..4de25fea15ef7b14563422f556bdab83
  ;const blocks=[];if(-1!==this.currentHeadBlock&&headBlockNumber!==this.currentHeadBlock+1){
  if(headBlockNumber-this.currentHeadBlock-1>1e3)throw new WorkerBeeError(`Something went terribly wrong. Cannot catch up block range larger than 1000 blocks. Current head: ${this.currentHeadBlock}, requested head: ${headBlockNumber}`)
 -;const startMultiBlock=Date.now(),{blocks}=await this.worker.chain.api.block_api.get_block_range({
-+;const startMultiBlock=Date.now(),{blocks:fetchedBlocks}=await this.worker.chain.api.block_api.get_block_range({
++;const startMultiBlock=Date.now(),{blocks:fetchedBlocks/*denser:workerbee-5eab2cad*/}=await this.worker.chain.api.block_api.get_block_range({
  starting_block_num:this.currentHeadBlock+1,count:headBlockNumber-this.currentHeadBlock-1})
  ;if(data.addTiming("block_api.get_block_range",Date.now()-startMultiBlock),
 -0===blocks.length)throw new WorkerBeeError(`Could not fetch missing blocks from ${this.currentHeadBlock+1} to ${headBlockNumber}`)
