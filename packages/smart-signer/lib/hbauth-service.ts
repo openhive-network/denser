@@ -10,7 +10,7 @@ import {
   type OnlineClientOperationOptions
 } from "@hive/common-hiveio-packages";
 import { getLogger } from '@ui/lib/logging';
-import { subscribeOtherTabLogout } from '@smart-signer/lib/auth/other-tab-logout';
+import { subscribeLogout } from '@smart-signer/lib/auth/logout-notice';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 
 const logger = getLogger('app');
@@ -59,10 +59,11 @@ export const hbauthService = new HbauthService();
 
 // Another tab's logout locked the workers of its own app; the workers of this app, which may be
 // another one, still hold the keys unlocked for every page of it. Every account is locked, also those
-// this page never knew were signed in, as the logout ended the session of each.
-subscribeOtherTabLogout(() => {
+// this page never knew were signed in, as the logout ended the session of each. Likewise on this
+// tab's logout, for the accounts its stored list misses.
+subscribeLogout(() => {
   logoutEveryoneFromStartedWorkers().catch((error: unknown) => {
-    logger.error(error, 'Failed to lock the safe storage keys after another tab logged out');
+    logger.error(error, 'Failed to lock the safe storage keys after a logout');
   });
 });
 

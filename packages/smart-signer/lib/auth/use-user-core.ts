@@ -11,7 +11,7 @@ import { User } from '@smart-signer/types/common';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { subscribeAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
 import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
-import { notifyOtherTabLogout } from '@smart-signer/lib/auth/other-tab-logout';
+import { notifyOtherTabLogout } from '@smart-signer/lib/auth/logout-notice';
 import { RequiredKeyTypeContext } from '@smart-signer/lib/auth/required-key-type';
 import { lacksRequiredKeyType } from '@smart-signer/lib/auth/login-authority';
 import { useStoredKeyTypes } from '@smart-signer/lib/auth/use-login-authority';

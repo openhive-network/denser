@@ -5,6 +5,7 @@ import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
 import { sessionAccounts } from '@smart-signer/lib/auth/accounts';
 import { clearStoredCredentials, destroyAccountSigner } from '@smart-signer/lib/auth/destroy-signer';
 import { LOGOUT_ANSWER_TIMEOUT_MS, announceLogoutDone, clearLogoutDone } from '@smart-signer/lib/auth/logout-done';
+import { notifyOwnLogout } from '@smart-signer/lib/auth/logout-notice';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import { useRouter } from 'next/navigation';
 
@@ -32,6 +33,10 @@ export function useLogout(redirect?: string) {
     // Read before signing out clears them
     const remembered = userLocalStorage.getAccounts();
     const accounts = user.isLoggedIn ? sessionAccounts(remembered, user) : remembered;
+
+    // Every account unlocked in this app's hb-auth workers, also one missing from the stored list,
+    // and in any worker of the origin no page hears of this logout from
+    notifyOwnLogout();
 
     // Clear observer cookie immediately — SSR stops personalizing
     document.cookie = 'observer=; path=/; max-age=0';
