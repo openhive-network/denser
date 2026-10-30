@@ -1,6 +1,8 @@
 const TIME_OPTIONS: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
 const WEEKDAY_OPTIONS: Intl.DateTimeFormatOptions = { weekday: 'long' };
-const DATE_OPTIONS: Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric', month: 'short' };
+// The full month name: with a day, a locale writes it in its date form (Polish "15 maja"), which the
+// abbreviation does not always give ("15 maj")
+const DATE_OPTIONS: Intl.DateTimeFormatOptions = { weekday: 'short', day: 'numeric', month: 'long' };
 const DATE_WITH_YEAR_OPTIONS: Intl.DateTimeFormatOptions = { ...DATE_OPTIONS, year: 'numeric' };
 /** Days back a day is named by its weekday alone: further back, a weekday repeats */
 const WEEKDAY_ONLY_DAYS = 6;

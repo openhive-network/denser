@@ -432,10 +432,10 @@ test.describe('Proposals page tests', () => {
       await expect(proposalsPage.proposalTitle.first()).toContainText('#' + firstProposalIdAPI);
       // Validate start/end date
       await expect(proposalsPage.proposalDates.first()).toContainText(
-        dayjs(firstProposalStartDateAPI).format('MMM D, YYYY')
+        dayjs(firstProposalStartDateAPI).format('MMMM D, YYYY')
       );
       await expect(proposalsPage.proposalDates.first()).toContainText(
-        dayjs(firstProposalEndDateAPI).format('MMM D, YYYY')
+        dayjs(firstProposalEndDateAPI).format('MMMM D, YYYY')
       );
 
       // Validate amount of days in date

@@ -561,6 +561,11 @@ is seeded. `sharedPostingActiveKey.spec.ts` repeats that sign-in on the same
 recording and answers the browser's recorded `find_accounts` for the account
 with a patched copy (`route.fetch()`, then `route.fulfill({ response, json })`)
 whose posting and active authorities list the key's public key.
+A safe-storage sign-in registers the key through hb-auth, which also asks
+`account_by_key_api.get_key_references` for the key and `find_accounts` without
+`delayed_votes_active`. `safeStorageLoginKeyRole.spec.ts` (BLOG-SAFE-STORAGE-LOGIN-02)
+answers the first with the account and sends the second as the recorded read, then
+reopens the dialog on the stored account to reach its "Add new key" form.
 
 ---
 

@@ -36,7 +36,12 @@ describe('chat day headings', () => {
   });
 
   it('dates a day further back, with the year only when it is not this one', () => {
-    assert.equal(formatDayHeading(at(9, 19), NOW, 'en'), 'Mon, Oct 19');
-    assert.equal(formatDayHeading(at(11, 31, 12, 0, 2025), NOW, 'en'), 'Wed, Dec 31, 2025');
+    assert.equal(formatDayHeading(at(9, 19), NOW, 'en'), 'Mon, October 19');
+    assert.equal(formatDayHeading(at(11, 31, 12, 0, 2025), NOW, 'en'), 'Wed, December 31, 2025');
+  });
+
+  it('writes the month of a dated day in the form the language uses with a day', () => {
+    assert.equal(formatDayHeading(at(4, 15), NOW, 'pl'), 'pt., 15 maja');
+    assert.equal(formatDayHeading(at(4, 15, 12, 0, 2025), NOW, 'pl'), 'czw., 15 maja 2025');
   });
 });

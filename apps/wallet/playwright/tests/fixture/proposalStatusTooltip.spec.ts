@@ -75,9 +75,10 @@ test.describe('Proposal status tooltip', () => {
     baseURL
   }) => {
     await openStatusTooltip(page, baseURL, 'pl');
-    await expect(page.getByTestId('proposal-date')).toContainText('1 sty 2026 - 1 sty 2027');
+    // A day with a month name takes the genitive in Polish
+    await expect(page.getByTestId('proposal-date')).toContainText('1 stycznia 2026 - 1 stycznia 2027');
 
     await openStatusTooltip(page, baseURL, 'en');
-    await expect(page.getByTestId('proposal-date')).toContainText('Jan 1, 2026 - Jan 1, 2027');
+    await expect(page.getByTestId('proposal-date')).toContainText('January 1, 2026 - January 1, 2027');
   });
 });
