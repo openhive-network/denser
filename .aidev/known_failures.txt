@@ -1,0 +1,9 @@
+# Quarantined tests: a failure of a test listed here does not block a merge (aidev#17010).
+#
+# One test id per line, spelled as the suite's junit spells it, `<file>::<title path>`:
+#   fixture_e2e  chatNative.spec.ts::Native Matrix chat client › CHAT-NATIVE-14: …
+#                (the spec relative to apps/blog/playwright/tests/fixture/, titles joined by " › ")
+#   unit         <describe path>::<title> for mocha (renderer, transaction), as test-results/unit/*.xml names it
+# Add one with `aidev test quarantine`, giving a --reason that names the tracking issue
+# (`see hive/denser#N`); remove it once the test is fixed. Only the suites whose
+# binding in .aidev/project.yaml declares `honor_quarantine: true` are pardoned by it.

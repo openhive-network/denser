@@ -356,6 +356,62 @@ starts those services. On the same tree (steem-17, 2026-09-30):
 It buys nothing, and it gives the suite egress through the stack network. The
 default stays hermetic.
 
+## Flakes, isolated re-runs and quarantine
+
+`fixture_e2e` and `unit` declare in `project.yaml` what AIDEV needs to tell a
+flaky test from a broken one (aidev#17008–#17010). These keys are part of each
+binding's identity, so on a protected slot adding or changing them is a rebind,
+held until an operator approves it.
+
+* **Flakes are recorded per attempt.** `fixture_e2e` runs with `CI=1`, so
+  `playwright.fixture.config.ts` retries a failing test once. Besides
+  `junit.xml`, `run-fixture-e2e.sh` writes Playwright's JSON report,
+  `test-results/fixture/playwright.json`, declared as a `reports:` entry with
+  `format: playwright-json`: every attempt reaches `test_results`, not only the
+  last one the junit keeps. A test that failed and then passed on the retry is an
+  in-run flake. Read them with `aidev flaky-tests --project denser` (the last 7 days;
+  `--since 30d` for another window); Test Health shows the same. Ids are the junit's:
+  `<spec relative to apps/blog/playwright/tests/fixture/>::<describe › … › title>`,
+  e.g. `chatNative.spec.ts::Native Matrix chat client › CHAT-NATIVE-14: …`. The
+  basepath pass writes `basepath-playwright.json` beside it, which is not declared:
+  its junit cases are prefixed `basepath › `, its JSON ids would not be.
+* **Failures are isolated and re-run.** `fixture_e2e`'s `rerun:` (with
+  `classify: true`) tells AIDEV how to run failing ids again: the argv is appended
+  to `run-fixture-e2e.sh`'s, which passes it to `playwright test` from
+  `apps/blog`, so the id above renders as
+  `playwright/tests/fixture/chatNative.spec.ts -g "Native Matrix chat client CHAT-NATIVE-14: …"`.
+  The failures run once together and, if that fails, each alone; one that then
+  passes is pardoned as `passed_solo_failed_parallel`, one that still fails
+  blocks. Each re-run builds the blog again (`run-blog-build.sh`), a few minutes,
+  and skips the basepath pass. A basepath failure (`basepath › <spec>::…`) is not
+  re-run: `file_pattern` takes only a bare spec name, so it blocks as before. The
+  same argv reproduces a failure by hand, against the dev stack:
+  `.aidev/dev-stack-spec.sh playwright/tests/fixture/chatNative.spec.ts -g "…" --retries=0`.
+  `-g` is a regex over the title path, so a test whose title extends another's in
+  the same spec runs with it.
+* **New or changed specs are repeated.** On the quick and full gates, a changed
+  `apps/blog/playwright/tests/fixture/*.spec.ts` is run again on its own through
+  `rerun:`'s `files` template (`root:` is that directory), so a spec that passes
+  once by luck is caught before it lands.
+* **`unit` is not re-run.** Its junit ids name neither a file nor a runner: mocha
+  (renderer, transaction) writes `<describe path>::<title>`, and the node:test
+  groups and the upkeep check share the suite with ids of the same shape
+  (node:test's junit `file=` attribute is not part of the id). A rendered argv
+  could not be routed to the runner owning the id, and a `--grep` handed to mocha
+  alone exits 0 for a node:test id it matches nothing of, which would pardon the
+  failure. Its failures block as they did; it can be quarantined.
+* **A known-flaky test can be quarantined.** `honor_quarantine: true` (on every
+  binding of `unit` and `fixture_e2e`) makes `.aidev/known_failures.txt` decide: a
+  failure of a test listed there is pardoned, with its tracking issue named on the
+  verdict, and a suite whose only failures are listed passes (a timed-out or
+  OOM-killed run still fails). A listed test that passed is named as an
+  unquarantine candidate. Add an entry with
+  `aidev test quarantine '<id>' --reason 'see hive/denser#N'` (it commits the
+  entry and pushes it; `--no-push` to review it first, `--target aidev/integration`
+  for this project's integration branch), spelling the id as the junit does. Remove
+  it, by deleting the line in a change of its own, once the test is fixed. The
+  ledger is empty until someone adds an entry.
+
 ## Deterministic Lighthouse pass (`system` slot)
 
 The integration site's Lighthouse check (`stack/integration/lighthouse.sh`) measures
