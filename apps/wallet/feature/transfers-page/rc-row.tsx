@@ -51,7 +51,12 @@ const RCRow = ({
               percentageValue: e.rc.percentageValue,
               cooldown: formatRestoreTime(e.rc.cooldown, t)
             },
-            delegatableRC: delegatableRawRc(e.rc.current, e.rcCreationAdjustment),
+            delegatableRC: delegatableRawRc({
+              maxRc: e.rc.max,
+              currentRc: e.rc.current,
+              creationAdjustment: e.rcCreationAdjustment,
+              receivedDelegated: e.rcReceivedDelegated
+            }),
             rcCreationAdjustment: e.rcCreationAdjustment
           }
         : null
@@ -115,6 +120,7 @@ const RCRow = ({
       {user.username === username && !!data ? (
         <div className="my-4 flex justify-center">
           <DelegateRCDialog
+            fromAccount={username}
             delegatableRC={data.delegatableRC}
             creationAdjustmentRC={data.rcCreationAdjustment}
             suggestedUsers={suggestedUsers}

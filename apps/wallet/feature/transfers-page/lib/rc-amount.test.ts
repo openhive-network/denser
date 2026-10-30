@@ -47,9 +47,32 @@ describe('RC amounts in billions', () => {
     assert.equal(rcPercentOf(new Big(1), new Big(0)), 0);
   });
 
-  it('leaves the account creation adjustment out of the delegatable RC', () => {
-    assert.equal(delegatableRawRc('6102137224', '5819763453'), '282373771');
-    assert.equal(delegatableRawRc('5000000000', '5819763453'), '0');
-    assert.equal(delegatableRawRc('1000000000000', '0'), '1000000000000');
+  // guest4test's max_rc and adjustment, from #1388's chain rejection
+  const GUEST = { maxRc: '6102137224', creationAdjustment: '5819763453', receivedDelegated: '0' };
+
+  it('leaves the account creation adjustment out of a full manabar', () => {
+    assert.equal(delegatableRawRc({ ...GUEST, currentRc: GUEST.maxRc }), '282373771');
+    assert.equal(
+      delegatableRawRc({
+        maxRc: '1000000000000',
+        currentRc: '1000000000000',
+        creationAdjustment: '0',
+        receivedDelegated: '0'
+      }),
+      '1000000000000'
+    );
+  });
+
+  it('caps a partly spent manabar by its current mana, not current mana minus the adjustment', () => {
+    assert.equal(delegatableRawRc({ ...GUEST, currentRc: '5500000000' }), '282373771');
+    assert.equal(delegatableRawRc({ ...GUEST, currentRc: '200000000' }), '200000000');
+    assert.equal(delegatableRawRc({ ...GUEST, currentRc: '0' }), '0');
+  });
+
+  it('leaves received RC out of the delegatable RC', () => {
+    const received = { maxRc: '1000000000000', creationAdjustment: '0', receivedDelegated: '400000000000' };
+    assert.equal(delegatableRawRc({ ...received, currentRc: '1000000000000' }), '600000000000');
+    assert.equal(delegatableRawRc({ ...received, currentRc: '500000000000' }), '500000000000');
+    assert.equal(delegatableRawRc({ ...GUEST, receivedDelegated: '300000000', currentRc: GUEST.maxRc }), '0');
   });
 });

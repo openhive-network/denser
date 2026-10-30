@@ -123,6 +123,16 @@ export const getDirectDelegations = async (account: string): Promise<IDirectDele
   return chain.api.rc_api.list_rc_direct_delegations({ limit: 1000, start: [account, ''] });
 };
 
+/** The raw RC `from` delegates to `to` now, '0' when it delegates none. */
+export const getDirectDelegationTo = async (from: string, to: string): Promise<string> => {
+  const { rc_direct_delegations } = await getReadChain().api.rc_api.list_rc_direct_delegations({
+    limit: 1,
+    start: [from, to]
+  });
+  const delegation = rc_direct_delegations.find((entry) => entry.from === from && entry.to === to);
+  return delegation ? String(delegation.delegated_rc) : '0';
+};
+
 export const DEFAULT_PARAMS_FOR_PROPOSALS: IGetProposalsParams = {
   start: [],
   limit: 30,

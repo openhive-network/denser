@@ -32,11 +32,30 @@ export const rcForPercent = (maxBillions: Big, percent: number): Big =>
 export const rcPercentOf = (billions: Big, maxBillions: Big): number =>
   maxBillions.lte(0) ? 0 : Number(billions.times(100).div(maxBillions).toFixed(2));
 
+/** An account's RC manabar and the parts of its max that it can't delegate, all in raw RC. */
+export interface RcDelegationSource {
+  /** max_rc as rc_api reports it: RC delegated away is already subtracted */
+  maxRc: string;
+  currentRc: string;
+  creationAdjustment: string;
+  receivedDelegated: string;
+}
+
+const toBig = (raw: string): Big => new Big(raw || '0');
+
 /**
- * The raw RC an account can delegate: hived keeps its account creation adjustment out of delegations,
- * so only the RC mana above it counts.
+ * The raw RC an account can add to its delegations now, as hived's delegate_rc check computes it:
+ * its max RC without the account creation adjustment and the RC it received, capped by its current
+ * RC mana, and never below 0.
  */
-export const delegatableRawRc = (currentRaw: string, creationAdjustmentRaw: string): string => {
-  const delegatable = new Big(currentRaw || '0').minus(creationAdjustmentRaw || '0');
+export const delegatableRawRc = ({
+  maxRc,
+  currentRc,
+  creationAdjustment,
+  receivedDelegated
+}: RcDelegationSource): string => {
+  const ownMax = toBig(maxRc).minus(toBig(creationAdjustment)).minus(toBig(receivedDelegated));
+  const current = toBig(currentRc);
+  const delegatable = ownMax.lt(current) ? ownMax : current;
   return delegatable.gt(0) ? delegatable.toFixed(0) : '0';
 };

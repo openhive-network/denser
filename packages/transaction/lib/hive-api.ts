@@ -40,6 +40,8 @@ interface Manabar {
   rc: ISingleManabar;
   /** RC the account got for creating accounts: counted in the RC max, but never delegatable. */
   rcCreationAdjustment: string;
+  /** RC other accounts delegate to this one: counted in the RC max, but never delegatable. */
+  rcReceivedDelegated: string;
 }
 
 interface IManabars {
@@ -50,10 +52,17 @@ interface IManabars {
   downvoteCooldown: Date;
   rcCooldown: Date;
   rcCreationAdjustment: string;
+  rcReceivedDelegated: string;
 }
 
 const PERCENT_VALUE_DOUBLE_PRECISION = 100;
 const ONE_HUNDRED_PERCENT = BigInt(100) * BigInt(PERCENT_VALUE_DOUBLE_PRECISION);
+
+/** find_rc_accounts replies with the RC an account received, though wax's RcAccount type leaves it out. */
+const getReceivedDelegatedRc = (rcAccount: {
+  account: string;
+  received_delegated_rc?: string | number;
+}): string => String(rcAccount.received_delegated_rc ?? 0);
 
 type ManabarDynamicGlobalProperties = Pick<
   GetDynamicGlobalPropertiesResponse,
@@ -156,7 +165,8 @@ export const getManabars = async (
       downvoteCooldown,
       rc,
       rcCooldown,
-      rcCreationAdjustment: rcAccount.max_rc_creation_adjustment.amount
+      rcCreationAdjustment: rcAccount.max_rc_creation_adjustment.amount,
+      rcReceivedDelegated: getReceivedDelegatedRc(rcAccount)
     };
   } catch (error) {
     console.error(error);
@@ -169,7 +179,16 @@ export const getManabar = async (
 ): Promise<Manabar | null> => {
   const manabars = await getManabars(accountName!, loadDynamicGlobalProperties);
   if (!manabars) return null;
-  const { upvote, upvoteCooldown, downvote, downvoteCooldown, rc, rcCooldown, rcCreationAdjustment } = manabars;
+  const {
+    upvote,
+    upvoteCooldown,
+    downvote,
+    downvoteCooldown,
+    rc,
+    rcCooldown,
+    rcCreationAdjustment,
+    rcReceivedDelegated
+  } = manabars;
 
   const processedManabars = {
     upvote: {
@@ -190,7 +209,8 @@ export const getManabar = async (
       current: rc.current.toString(),
       percentageValue: rc.percent
     },
-    rcCreationAdjustment
+    rcCreationAdjustment,
+    rcReceivedDelegated
   };
   return processedManabars;
 };

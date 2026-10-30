@@ -589,6 +589,7 @@
       "account_check_failed": "アカウントを確認できませんでした。しばらくしてから再試行してください。",
       "almost_all_warning": "利用可能なRCの{{percent}}%を委託しようとしています。自分の取引に必要なRCが不足する可能性があります。",
       "creation_adjustment_note": "{{reserved}}（×10億 RC）はアカウント作成調整分のため、委託できません。",
+      "existing_delegation_note": "現在 {{account}} に {{existing}}（×10億 RC）を委託しています。新しい量はこれを置き換え、最大 {{max}}（×10億 RC）まで指定できます。",
       "insufficient_rc": "委託可能なRCが不足しています：保有 {{current}}（×10億 RC）、この委託に必要 {{needed}}（×10億 RC）。",
       "submit": "RCを委託"
     }

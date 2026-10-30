@@ -25,21 +25,31 @@ const DIALOG_NAME = 'Delegate RC';
 const MISSING_ACCOUNT = 'quest4test1zz';
 /** 750 billion RC, as the stub's `vests` asset amount: leaves 250 billion of the max delegatable. */
 const CREATION_ADJUSTMENT = { amount: '750000000000', precision: 6, nai: '@@000000037' };
+/** The stub's head block time, as a manabar's last_update_time: its current_mana has not regenerated. */
+const HEAD_BLOCK_TIME = 1_790_856_000;
 
 let stub: Server;
 let rcAccountFields: Record<string, unknown> = {};
+/** Raw RC STUB_ACCOUNT delegates to STUB_FOLLOWED; none unless a test sets it. */
+let delegatedToFollowed = 0;
 
 test.beforeAll(async () => {
   const findAccounts = stubAccountWith({})['database_api.find_accounts'];
   stub = await startWalletApiStub(undefined, {
     'database_api.find_accounts': ({ accounts = [] }) =>
       findAccounts({ accounts: accounts.filter((name) => name !== MISSING_ACCOUNT) }),
-    'rc_api.find_rc_accounts': (params) => stubRcAccountsWith(rcAccountFields)['rc_api.find_rc_accounts'](params)
+    'rc_api.find_rc_accounts': (params) => stubRcAccountsWith(rcAccountFields)['rc_api.find_rc_accounts'](params),
+    'rc_api.list_rc_direct_delegations': () => ({
+      rc_direct_delegations: delegatedToFollowed
+        ? [{ from: STUB_ACCOUNT, to: STUB_FOLLOWED, delegated_rc: delegatedToFollowed }]
+        : []
+    })
   });
 });
 
 test.afterEach(() => {
   rcAccountFields = {};
+  delegatedToFollowed = 0;
 });
 
 test.afterAll(async () => {
@@ -250,5 +260,54 @@ test.describe('Delegate RC dialog', () => {
 
     await amount.fill('900');
     await expect(amount).toHaveValue('250');
+  });
+
+  test('WALLET-RC-08 — a partly spent manabar still delegates what lies above the adjustment, up to its current RC', async ({
+    page
+  }) => {
+    // 600 of the 1000 billion RC left: hived allows min(1000 - 750, 600) = 250 billion.
+    rcAccountFields = {
+      max_rc_creation_adjustment: CREATION_ADJUSTMENT,
+      rc_manabar: { current_mana: '600000000000', last_update_time: HEAD_BLOCK_TIME }
+    };
+    await gotoTransfers(page);
+    const { dialog } = await openDelegateRcDialog(page);
+
+    await expect(dialog.getByText('0.00 bil / 250.00 bil RC')).toBeVisible();
+    await dialog.getByRole('button', { name: '100%' }).click();
+    await expect(dialog.getByLabel('RC amount (billions)')).toHaveValue('250');
+  });
+
+  test('WALLET-RC-09 — received RC is not delegatable, and an existing delegation can be reduced with none left', async ({
+    page
+  }) => {
+    // max_rc 1000 = 600 adjustment + 400 received: nothing of its own to delegate.
+    rcAccountFields = {
+      max_rc_creation_adjustment: { ...CREATION_ADJUSTMENT, amount: '600000000000' },
+      received_delegated_rc: 400_000_000_000
+    };
+    delegatedToFollowed = 200_000_000_000;
+    await gotoTransfers(page);
+    const { dialog } = await openDelegateRcDialog(page);
+    const amount = dialog.getByLabel('RC amount (billions)');
+    const submit = dialog.getByRole('button', { name: DIALOG_NAME, exact: true });
+
+    await expect(dialog.getByText('0.00 bil / 0.00 bil RC')).toBeVisible();
+
+    await dialog.getByLabel('To Account').fill(STUB_FOLLOWED);
+    await expect(dialog.getByText('0.00 bil / 200.00 bil RC')).toBeVisible();
+    await expect(
+      dialog.getByText(
+        `You delegate 200.00 bil RC to ${STUB_FOLLOWED} now. The new amount replaces it and can be up to 200.00 bil RC.`
+      )
+    ).toBeVisible();
+
+    await amount.fill('100');
+    await expect(amount).toHaveValue('100');
+    await expect(dialog.getByText('100.00 bil / 200.00 bil RC')).toBeVisible();
+    await expect(submit).toBeEnabled();
+
+    await amount.fill('300');
+    await expect(amount).toHaveValue('200');
   });
 });

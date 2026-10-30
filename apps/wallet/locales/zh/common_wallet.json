@@ -589,6 +589,7 @@
       "account_check_failed": "无法检查该账户，请稍后重试。",
       "almost_all_warning": "你即将代理 {{percent}}% 的可用 RC。你的账户可能没有足够的 RC 用于自身交易。",
       "creation_adjustment_note": "{{reserved}} 十亿 RC 是账户创建调整额度，无法代理。",
+      "existing_delegation_note": "你目前向 {{account}} 代理 {{existing}} 十亿 RC。新数量将替换它，最多可为 {{max}} 十亿 RC。",
       "insufficient_rc": "可代理的 RC 不足：你有 {{current}} 十亿，此次代理需要 {{needed}} 十亿。",
       "submit": "代理 RC"
     }

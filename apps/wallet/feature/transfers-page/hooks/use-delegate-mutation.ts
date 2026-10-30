@@ -14,7 +14,10 @@ export function useDelegateRCMutation() {
     successToast: (_data, { amount, toAccount }) => ({
       description: `Successfully delegated ${amount} RC to ${toAccount}`
     }),
-    invalidate: () => [['manabar', username]],
+    invalidate: () => [
+      ['manabar', username],
+      ['rcDirectDelegation', username]
+    ],
     reportErrors: false
   });
 }
