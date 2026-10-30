@@ -59,3 +59,26 @@ test('COM-03 — Leave community via community page', async ({ page }) => {
   ).toBeVisible();
   await expect(community.communitySubscribeButton).toBeVisible();
 });
+
+test('COM-03b — Leave stays left with a short note when no block confirms it in time', async ({ page }) => {
+  // No confirmInBlock: the node takes the broadcast, and the head block is "not available yet" on
+  // every poll (as on a lagging node), so WorkerBee's listener expires after expireInMs (10 s).
+  const broadcast = await installBroadcastInterceptor(page);
+  await page.route(
+    (url) => url.hostname === 'localhost' && url.port === '8200',
+    (route) => {
+      const body = route.request().postDataJSON() as { method?: string; id?: number } | null;
+      if (body?.method !== 'block_api.get_block') return route.fallback();
+      return route.fulfill({ json: { jsonrpc: '2.0', id: body.id ?? 1, result: {} } });
+    }
+  );
+  await gotoCommunityLoggedIn(page, COMMUNITY_TAG_SUBSCRIBED);
+
+  const community = new CommunitiesPage(page);
+  await community.communityJoinedLeaveButton.click();
+  await broadcast.waitForCount(1);
+
+  await expect(page.getByTestId('transaction-not-confirmed-message')).toBeVisible({ timeout: 20_000 });
+  await expect(community.communitySubscribeButton).toBeVisible();
+  await expect(page.getByText('listener has expired')).toHaveCount(0);
+});

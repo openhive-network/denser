@@ -200,7 +200,8 @@
     "superseded_key_write": "Un'altra scheda ha interrotto il salvataggio della chiave {{keyType}} di @{{username}} nell'archivio sicuro. Aggiungi di nuovo la chiave {{keyType}} all'archivio sicuro."
   },
   "request_error": {
-    "timeout": "Il server non ha risposto in tempo. Riprova."
+    "timeout": "Il server non ha risposto in tempo. Riprova.",
+    "not_confirmed": "Transazione inviata, la conferma sta richiedendo più tempo del solito."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Portafoglio non trovato",

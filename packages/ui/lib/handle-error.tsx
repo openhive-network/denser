@@ -3,6 +3,7 @@
 import { summarizeErrorForLog, transformError } from '@hive/transaction/lib/transform-error';
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
+import { TransactionNotConfirmedError } from '@hive/transaction/lib/transaction-inclusion';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
@@ -12,6 +13,7 @@ import { dispatchAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-d
 import { announceLogoutDone, clearLogoutDone } from '@smart-signer/lib/auth/logout-done';
 import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-message';
 import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-message';
+import { TransactionNotConfirmedMessage } from '@smart-signer/components/transaction-not-confirmed-message';
 import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
@@ -164,6 +166,17 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     toast({
       description: <RequestTimeoutMessage />,
       variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // The node took the transaction, no block was seen to include it yet: it may still apply, so no error
+  if (error instanceof TransactionNotConfirmedError) {
+    logger.warn('Transaction %s in %s not confirmed in time', error.transactionId, ctx?.method);
+    toast({
+      description: <TransactionNotConfirmedMessage />,
+      variant: 'default',
       ...toastOptions
     });
     return;

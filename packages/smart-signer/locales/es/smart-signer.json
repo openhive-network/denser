@@ -200,7 +200,8 @@
     "superseded_key_write": "Otra pestaña interrumpió el guardado de la clave {{keyType}} de @{{username}} en el almacenamiento seguro. Vuelve a añadir la clave {{keyType}} al almacenamiento seguro."
   },
   "request_error": {
-    "timeout": "El servidor no respondió a tiempo. Inténtalo de nuevo."
+    "timeout": "El servidor no respondió a tiempo. Inténtalo de nuevo.",
+    "not_confirmed": "Transacción enviada; la confirmación está tardando más de lo habitual."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Monedero no encontrado",

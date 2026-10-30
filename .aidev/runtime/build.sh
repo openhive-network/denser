@@ -21,7 +21,8 @@ REPOSITORY="${AIDEV_RUNTIME_REPOSITORY:-registry.gitlab.syncad.com/hive/denser/a
 BASE_IMAGE="$(sed -n 's/^ARG BASE_IMAGE=//p' .aidev/runtime/Dockerfile)"
 
 # `pnpm fetch` reads only the lockfile, the workspace file and .npmrc, so
-# package.json's fields (scripts, versions) don't make a new image.
+# package.json's fields (scripts, versions) don't make a new image. It also needs the
+# patch files of package.json's patchedDependencies, whose hashes the lockfile carries.
 input_hash() {
     local base_digest
     base_digest="$(docker buildx imagetools inspect "$BASE_IMAGE" --format '{{json .Manifest}}' \
@@ -57,6 +58,7 @@ echo "$REPOSITORY:$TAG is not in the registry; building it" >&2
 context="$(mktemp -d)"
 trap 'rm -rf "$context"' EXIT
 cp package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc "$context/"
+if [ -d patches ]; then cp -r patches "$context/"; fi
 
 # buildx so it works with any builder (CI's docker-container builder keeps no local
 # image); no provenance, so the pushed digest is a plain image manifest.

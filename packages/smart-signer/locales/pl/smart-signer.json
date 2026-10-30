@@ -200,7 +200,8 @@
     "superseded_key_write": "Inna karta przerwała zapisywanie klucza {{keyType}} konta @{{username}} w bezpiecznym magazynie. Dodaj klucz {{keyType}} do bezpiecznego magazynu ponownie."
   },
   "request_error": {
-    "timeout": "Serwer nie odpowiedział na czas. Spróbuj ponownie."
+    "timeout": "Serwer nie odpowiedział na czas. Spróbuj ponownie.",
+    "not_confirmed": "Transakcja wysłana, potwierdzenie trwa dłużej niż zwykle."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Nie znaleziono portfela",

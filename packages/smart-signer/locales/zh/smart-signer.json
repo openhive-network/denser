@@ -200,7 +200,8 @@
     "superseded_key_write": "另一个标签页中断了将 @{{username}} 的 {{keyType}} 密钥保存到安全存储的操作。请再次将 {{keyType}} 密钥添加到安全存储。"
   },
   "request_error": {
-    "timeout": "服务器未及时响应。请重试。"
+    "timeout": "服务器未及时响应。请重试。",
+    "not_confirmed": "交易已发送，确认时间比平时长。"
   },
   "google_drive_error": {
     "wallet_not_found_title": "未找到钱包",

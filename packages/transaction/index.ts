@@ -34,7 +34,12 @@ import { buildCommentJsonMetadata, type CommentBodyMetadata } from './lib/commen
 import { resolveRequiredKeyType } from './lib/required-key-type';
 import { getOperationNames } from './lib/operation-names';
 import { WorkerBeeSession } from './lib/workerbee-session';
-import { type IInclusionWatch, watchInclusion } from './lib/transaction-inclusion';
+import {
+  type IInclusionWatch,
+  TransactionNotConfirmedError,
+  toNotConfirmedError,
+  watchInclusion
+} from './lib/transaction-inclusion';
 import { buildFollowListReset, type FollowListReset } from './lib/follow-list-reset';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
@@ -205,8 +210,8 @@ export class TransactionService {
    * and started if needed), wait until bot reports applying transaction
    * into Hive blockchain, then resolve. The bot stays running for further
    * observed broadcasts and is stopped after a minute without any. When
-   * bot doesn't find the transaction, it will throw after transaction
-   * expiration time.
+   * the node accepted the transaction but the bot doesn't find it in a
+   * block in time, it rejects with `TransactionNotConfirmedError`.
    *
    * @param {ITransaction} txBuilder
    * @return {*}  {Promise<TransactionBroadcastResult>}
@@ -224,14 +229,25 @@ export class TransactionService {
 
         return { transactionId };
       });
-    } catch (error) {
-      logger.error(
-        'Broadcasting %s of %s failed: %s',
-        getOperationNames(txBuilder.transaction.operations).join(', '),
-        this.signerOptions.username,
-        error instanceof Error ? error.message : String(error)
-      );
-      logger.debug('Broadcast error: %o', error);
+    } catch (caught) {
+      const error = toNotConfirmedError(caught, txBuilder.id);
+      const operationNames = getOperationNames(txBuilder.transaction.operations).join(', ');
+      if (error instanceof TransactionNotConfirmedError) {
+        logger.warn(
+          '%s of %s sent but not seen in a block in time: transaction %s',
+          operationNames,
+          this.signerOptions.username,
+          error.transactionId
+        );
+      } else {
+        logger.error(
+          'Broadcasting %s of %s failed: %s',
+          operationNames,
+          this.signerOptions.username,
+          error instanceof Error ? error.message : String(error)
+        );
+      }
+      logger.debug('Broadcast error: %o', caught);
       throw error;
     }
   }

@@ -200,7 +200,8 @@
     "superseded_key_write": "Un autre onglet a interrompu l'enregistrement de la clé {{keyType}} de @{{username}} dans le stockage sécurisé. Ajoutez de nouveau la clé {{keyType}} au stockage sécurisé."
   },
   "request_error": {
-    "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer."
+    "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer.",
+    "not_confirmed": "Transaction envoyée, la confirmation prend plus de temps que d'habitude."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Portefeuille introuvable",
