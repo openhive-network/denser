@@ -67,7 +67,7 @@ const CommentsSection = memo(function CommentsSection({
   );
 
   return (
-    <div ref={sectionRef} className={commentsSectionClasses}>
+    <div ref={sectionRef} className={`${commentsSectionClasses} scroll-mt-20`}>
       <div className="my-1 flex items-center justify-end" translate="no">
         <div className="flex items-center">
           <span className="pr-1">{t('select_sort.sort_comments.sort')}</span>
