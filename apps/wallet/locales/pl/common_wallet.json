@@ -603,6 +603,8 @@
       "checking_account": "Sprawdzanie konta…",
       "account_check_failed": "Nie udało się sprawdzić konta. Spróbuj ponownie później.",
       "almost_all_warning": "Zamierzasz delegować {{percent}}% dostępnych RC. Twojemu kontu może zabraknąć RC na własne transakcje.",
+      "creation_adjustment_note": "{{reserved}} mld RC to korekta za tworzenie kont i nie można ich delegować.",
+      "insufficient_rc": "Za mało RC do delegowania: masz {{current}} mld, ta delegacja wymaga {{needed}} mld.",
       "submit": "Deleguj RC"
     }
   },

@@ -597,6 +597,8 @@
       "checking_account": "Verifica dell'account…",
       "account_check_failed": "Impossibile verificare l'account. Riprova più tardi.",
       "almost_all_warning": "Stai per delegare il {{percent}}% delle tue RC disponibili. Il tuo account potrebbe restare senza RC sufficienti per le proprie transazioni.",
+      "creation_adjustment_note": "{{reserved}} mld RC sono l'adeguamento per la creazione di account e non si possono delegare.",
+      "insufficient_rc": "RC delegabili insufficienti: ne hai {{current}} mld, questa delega ne richiede {{needed}} mld.",
       "submit": "Delega RC"
     }
   },

@@ -597,6 +597,8 @@
       "checking_account": "Comprobando la cuenta…",
       "account_check_failed": "No se pudo comprobar la cuenta. Inténtalo más tarde.",
       "almost_all_warning": "Estás a punto de delegar el {{percent}} % de tus RC disponibles. Tu cuenta podría quedarse sin RC suficientes para sus propias transacciones.",
+      "creation_adjustment_note": "{{reserved}} mil M RC son el ajuste por creación de cuentas y no se pueden delegar.",
+      "insufficient_rc": "No hay suficientes RC delegables: tienes {{current}} mil M y esta delegación necesita {{needed}} mil M.",
       "submit": "Delegar RC"
     }
   },

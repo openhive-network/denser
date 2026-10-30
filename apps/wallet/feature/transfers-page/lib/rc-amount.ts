@@ -31,3 +31,12 @@ export const rcForPercent = (maxBillions: Big, percent: number): Big =>
 /** The share of `maxBillions` that `billions` is, in percent; 0 when there is nothing to delegate. */
 export const rcPercentOf = (billions: Big, maxBillions: Big): number =>
   maxBillions.lte(0) ? 0 : Number(billions.times(100).div(maxBillions).toFixed(2));
+
+/**
+ * The raw RC an account can delegate: hived keeps its account creation adjustment out of delegations,
+ * so only the RC mana above it counts.
+ */
+export const delegatableRawRc = (currentRaw: string, creationAdjustmentRaw: string): string => {
+  const delegatable = new Big(currentRaw || '0').minus(creationAdjustmentRaw || '0');
+  return delegatable.gt(0) ? delegatable.toFixed(0) : '0';
+};

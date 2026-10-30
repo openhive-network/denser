@@ -26,3 +26,21 @@ export function findNotEnoughRc(error: unknown): NotEnoughRc | null {
   if (!NOT_ENOUGH_RC_PATTERN.test(text)) return null;
   return { current: readAmount(text, RC_CURRENT_PATTERN), needed: readAmount(text, RC_NEEDED_PATTERN) };
 }
+
+export interface InsufficientDelegatableRc {
+  /** RC the delegator could delegate: its RC mana less the account creation adjustment */
+  current: number;
+  /** RC the delegation added to what the delegator already delegates */
+  needed: number;
+}
+
+// hived's delegate_rc check, which counts only RC above the account creation adjustment.
+const INSUFFICIENT_DELEGATABLE_RC_PATTERN = /has insufficient RC \(have (\d+), needs (\d+)\)/i;
+
+/**
+ * The shortfall a `delegate_rc` was rejected for, or null when `error` is not that rejection.
+ */
+export function findInsufficientDelegatableRc(error: unknown): InsufficientDelegatableRc | null {
+  const match = INSUFFICIENT_DELEGATABLE_RC_PATTERN.exec(describeError(error));
+  return match ? { current: Number(match[1]), needed: Number(match[2]) } : null;
+}

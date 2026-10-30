@@ -78,6 +78,24 @@ export const stubAccountWith = (fields: Record<string, unknown>): JsonRpcResults
   }
 });
 
+/**
+ * A `rc_api.find_rc_accounts` replacement, for `startWalletApiStub`'s `jsonRpc`, that gives every
+ * RC account `fields` over its stub data: a fully regenerated max_rc of 1,000,000,000,000 RC.
+ */
+export const stubRcAccountsWith = (fields: Record<string, unknown>): JsonRpcResults => ({
+  'rc_api.find_rc_accounts': ({ accounts = [] }) => ({
+    rc_accounts: accounts.map((account) => ({
+      account,
+      rc_manabar: manabar,
+      max_rc_creation_adjustment: vests('0'),
+      max_rc: '1000000000000',
+      delegated_rc: 0,
+      received_delegated_rc: 0,
+      ...fields
+    }))
+  })
+});
+
 /** STUB_ACCOUNT's fields while it powers down 330,000 VESTS (180 HP) over 13 weeks, none withdrawn yet. */
 export const STUB_POWER_DOWN_FIELDS = {
   to_withdraw: 330_000_000_000,
@@ -185,16 +203,7 @@ const JSON_RPC_RESULTS: JsonRpcResults = {
   }),
   'database_api.find_vesting_delegation_expirations': () => ({ delegations: [] }),
   'rc_api.list_rc_direct_delegations': () => ({ rc_direct_delegations: [] }),
-  'rc_api.find_rc_accounts': ({ accounts = [] }) => ({
-    rc_accounts: accounts.map((account) => ({
-      account,
-      rc_manabar: manabar,
-      max_rc_creation_adjustment: vests('0'),
-      max_rc: '1000000000000',
-      delegated_rc: 0,
-      received_delegated_rc: 0
-    }))
-  }),
+  ...stubRcAccountsWith({}),
   'condenser_api.get_following': () => [{ follower: STUB_ACCOUNT, following: STUB_FOLLOWED, what: ['blog'] }],
   'bridge.get_follow_list': () => [],
   'market_history_api.get_ticker': () => ({

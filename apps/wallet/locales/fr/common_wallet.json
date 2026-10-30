@@ -597,6 +597,8 @@
       "checking_account": "Vérification du compte…",
       "account_check_failed": "Impossible de vérifier le compte. Réessayez plus tard.",
       "almost_all_warning": "Vous êtes sur le point de déléguer {{percent}} % de vos RC disponibles. Votre compte risque de ne plus avoir assez de RC pour ses propres transactions.",
+      "creation_adjustment_note": "{{reserved}} Md RC correspondent à l'ajustement pour création de comptes et ne peuvent pas être délégués.",
+      "insufficient_rc": "Pas assez de RC délégables : vous avez {{current}} Md, cette délégation en demande {{needed}} Md.",
       "submit": "Déléguer des RC"
     }
   },

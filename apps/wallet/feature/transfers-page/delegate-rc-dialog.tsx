@@ -13,6 +13,9 @@ import { useDelegateRCMutation } from './hooks/use-delegate-mutation';
 import { useAccountLookup, type AccountLookupStatus } from './hooks/use-account-lookup';
 import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
+import { getLogger } from '@ui/lib/logging';
+import { toast } from '@ui/components/hooks/use-toast';
+import { findInsufficientDelegatableRc } from '@transaction/lib/not-enough-rc';
 import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Slider } from '@ui/components/slider';
@@ -28,6 +31,8 @@ import {
   rcForPercent,
   rcPercentOf
 } from './lib/rc-amount';
+
+const logger = getLogger('app');
 
 const defaultForm = { toAccount: '', amount: '0' };
 const PERCENT_PRESETS = [25, 50, 75, 100];
@@ -45,10 +50,14 @@ const ACCOUNT_STATUS_KEYS: Partial<Record<AccountLookupStatus, string>> = {
 };
 
 const DelegateRCDialog = ({
-  maxRC,
+  delegatableRC,
+  creationAdjustmentRC,
   suggestedUsers
 }: {
-  maxRC: string;
+  /** Raw RC the account can delegate now: its RC mana above the account creation adjustment */
+  delegatableRC: string;
+  /** Raw RC of the account creation adjustment, which counts in the RC max but cannot be delegated */
+  creationAdjustmentRC: string;
   suggestedUsers: { username: string; about: string }[];
 }) => {
   const { t } = useTranslation('common_wallet');
@@ -57,7 +66,8 @@ const DelegateRCDialog = ({
   const [open, setOpen] = useState(false);
   const toAccount = form.toAccount.trim();
   const accountStatus = useAccountLookup(toAccount);
-  const maxBillions = rawRcToBillions(maxRC);
+  const maxBillions = rawRcToBillions(delegatableRC);
+  const creationAdjustmentBillions = rawRcToBillions(creationAdjustmentRC);
   const amountBillions = parseRcBillions(form.amount);
   const percent = rcPercentOf(amountBillions, maxBillions);
 
@@ -81,6 +91,19 @@ const DelegateRCDialog = ({
     try {
       await delegateMutation.mutateAsync({ toAccount, amount: rawToSend });
     } catch (error) {
+      // The chain's own delegatable RC check, e.g. when RC was spent since the dialog read it
+      const shortfall = findInsufficientDelegatableRc(error);
+      if (shortfall) {
+        logger.error(error, 'Delegating %s RC to %s exceeded the delegatable RC', rawToSend, toAccount);
+        toast({
+          description: t('transfers_page.delegate_rc.insufficient_rc', {
+            current: formatRcSummary(rawRcToBillions(String(shortfall.current))),
+            needed: formatRcSummary(rawRcToBillions(String(shortfall.needed)))
+          }),
+          variant: 'destructive'
+        });
+        return;
+      }
       handleError(error, { method: 'delegate', params: { toAccount, amount: rawToSend } });
       // Delegating again would only bring the Google Drive dialog back
       if (error instanceof GoogleDriveSignInCancelledError) handleOpenChange(false);
@@ -169,6 +192,13 @@ const DelegateRCDialog = ({
                 <div className="flex justify-center text-xs">
                   <span className="font-medium">{t('transfers_page.delegate_rc.readout', summary)}</span>
                 </div>
+                {creationAdjustmentBillions.gt(0) ? (
+                  <p className="text-xs text-primary/70">
+                    {t('transfers_page.delegate_rc.creation_adjustment_note', {
+                      reserved: formatRcSummary(creationAdjustmentBillions)
+                    })}
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>
