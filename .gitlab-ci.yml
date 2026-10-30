@@ -495,6 +495,9 @@ mirrornet-haf-node-replay:
   script:
   - echo -e "\e[0Ksection_start:$(date +%s):deps[collapsed=true]\r\e[0KInstalling dependencies..."
   - !reference [.pnpm_install_with_catalog_fallback, script]
+  # The merged catalog may have moved workerbee: fails when its bundle still has
+  # the block catch-up bug unpatched, says when the patch can go (patches/README.md)
+  - node scripts/check-workerbee-patch.js
   - echo -e "\e[0Ksection_end:$(date +%s):deps\r\e[0K"
   cache:
     key: '$TURBO_APP_SCOPE-cache-2'

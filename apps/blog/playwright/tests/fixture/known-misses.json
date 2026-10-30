@@ -2,12 +2,14 @@
   {
     "spec": "communityLeave.spec.ts",
     "method": "bridge.get_ranked_posts",
-    "hash": "b4724695413bd11f"
+    "hash": "b4724695413bd11f",
+    "intermittent": "The unsubscribe mutation (use-subscribe-mutations.ts) invalidates the community and subscription queries 5 s after the broadcast (invalidateDelays), and this bridge.get_ranked_posts refetch is made only when the spec is still on the page by then, so whether the call is made depends on timing"
   },
   {
     "spec": "communityLeave.spec.ts",
     "method": "bridge.list_communities",
-    "hash": "3c9b21db67ad172c"
+    "hash": "3c9b21db67ad172c",
+    "intermittent": "The unsubscribe mutation (use-subscribe-mutations.ts) invalidates communitiesList 5 s after the broadcast (invalidateDelays), and the refetch is made only when the spec is still on the page by then, so whether the call is made depends on timing"
   },
   {
     "spec": "communityModeratePost.spec.ts",

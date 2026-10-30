@@ -53,7 +53,7 @@
       "core-js"
     ],
     "patchedDependencies": {
-      "@hiveio/workerbee@1.28.4-rc1-stable.261029021233": "patches/@hiveio__workerbee@1.28.4-rc1-stable.261029021233.patch"
+      "@hiveio/workerbee": "patches/@hiveio__workerbee.patch"
     }
   },
   "dependencies": {
