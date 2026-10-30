@@ -3,11 +3,7 @@ import { fetchJson } from '@smart-signer/lib/fetch-json';
 import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { User } from '@smart-signer/types/common';
 import { PostAccountSchema } from '@smart-signer/lib/auth/utils';
-import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
-import { removeAccount } from '@smart-signer/lib/auth/accounts';
-import { setAccounts } from '@smart-signer/lib/auth/active-user';
-import { destroyAccountSigner } from '@smart-signer/lib/auth/destroy-signer';
-import { postAccountsChanged } from '@smart-signer/lib/auth/account-sync';
+import { forgetAccount } from '@smart-signer/lib/auth/forget-account';
 import { getLogger } from '@ui/lib/logging';
 import { appApiPath } from '@ui/lib/app-api-path';
 
@@ -34,11 +30,7 @@ export function useRemoveAccount({ onError }: { onError?: (account: User) => voi
         await removeAccountBackend({ username: account.username });
       }
     },
-    onSuccess: (_data, { account }) => {
-      setAccounts(queryClient, removeAccount(userLocalStorage.getAccounts(), account.username));
-      void destroyAccountSigner(account);
-      postAccountsChanged({ removedUsername: account.username });
-    },
+    onSuccess: (_data, { account }) => forgetAccount(queryClient, account),
     // Here rather than in `mutate`'s callbacks: those do not run once the caller unmounted
     onError: (error, { account }) => {
       logger.error(error, 'Removing account %s failed', account.username);

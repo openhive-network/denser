@@ -14,6 +14,7 @@ import { getChain } from '../wax';
 import { getWorkerGeneration, renewSafeStorageGeneration, whenSafeStorageSettles } from './safe-storage-generation';
 import { holdRunningWorker, holdWorker, otherRunningWorkers, startWithWorker } from './worker-release';
 import { runOperation, type OnlineClientOperationOptions, type OperationClient } from './online-client-operation';
+import { getSignOutEpoch, recordWorkerLoggedOut, signOutEpochToLogOut } from './sign-out-epoch';
 
 export { SupersededKeyWriteError, type OnlineClientOperationOptions } from './online-client-operation';
 
@@ -90,6 +91,7 @@ const currentWorkerGeneration = (basePath = getBasePath()): string | null => get
 class GenerationRenewingOnlineClient extends OnlineClient implements OperationClient {
   readonly #generation: string | null;
   readonly #basePath: string;
+  readonly #workerUrl: string;
   #operations = 0;
   #onIdle: (() => void)[] = [];
 
@@ -97,6 +99,12 @@ class GenerationRenewingOnlineClient extends OnlineClient implements OperationCl
     super(clientOptions);
     this.#generation = generation;
     this.#basePath = basePath;
+    this.#workerUrl = clientOptions.workerUrl;
+  }
+
+  /** The URL of the worker the client connects to */
+  get workerUrl(): string {
+    return this.#workerUrl;
   }
 
   /** The base path of the app the client is of */
@@ -164,9 +172,23 @@ class GenerationRenewingOnlineClient extends OnlineClient implements OperationCl
 }
 
 /**
+ * Logs everyone out of the worker at `workerUrl`, which `client` connected to, when it was not logged
+ * out of since the last sign-out: it may have outlived every page of its app, which would have heard
+ * of the sign-out (sign-out-epoch.ts).
+ */
+const logoutIfSignedOutSince = async (client: OnlineClient | OfflineClient, workerUrl: string): Promise<void> => {
+  const epoch = signOutEpochToLogOut(workerUrl);
+  if (epoch === null) return;
+  logger.info('Logging everyone out of an HB-Auth worker that was running when they signed out');
+  await client.logoutAll();
+  recordWorkerLoggedOut(workerUrl, epoch);
+};
+
+/**
  * Initializes `client`, and starts its worker's session with a single call, after the clients other
  * pages are starting with that worker: hb-auth's worker starts beekeeper, and instantiates its WASM,
- * for every call that reaches it before the first start finished, and keeps only the last one.
+ * for every call that reaches it before the first start finished, and keeps only the last one. A
+ * worker that missed a sign-out is logged out of before the client is used.
  */
 const startClient = (
   client: OnlineClient | OfflineClient,
@@ -176,6 +198,7 @@ const startClient = (
   startWithWorker(workerUrl, async () => {
     await client.initialize(chain);
     await client.getRegisteredUsers();
+    await logoutIfSignedOutSince(client, workerUrl);
   });
 
 // This is intentionally non-async method as we don't want any race condition for onlineClientPromise !== undefined check
@@ -333,7 +356,7 @@ export const withOnlineClient = async <T>(
   return runOperation(client, getClientForOperation, operation, options);
 };
 
-type WorkerLogout = (client: OnlineClient) => Promise<void>;
+type WorkerLogout = (client: OnlineClient, workerUrl: string) => Promise<void>;
 
 /** Runs `logout` in the running worker at `workerUrl`, of a client this app no longer creates */
 const logoutFromReplacedWorker = async (workerUrl: string, logout: WorkerLogout): Promise<void> => {
@@ -345,7 +368,7 @@ const logoutFromReplacedWorker = async (workerUrl: string, logout: WorkerLogout)
     const client = new OnlineClient({ ...getDefaultClientOptions(null), workerUrl });
     await startWithWorker(workerUrl, async () => {
       await client.initialize(chain);
-      await logout(client);
+      await logout(client, workerUrl);
     });
   } catch (error: unknown) {
     logger.info('Did not log out of a replaced HB-Auth worker: %s', error instanceof Error ? error.message : String(error));
@@ -354,12 +377,18 @@ const logoutFromReplacedWorker = async (workerUrl: string, logout: WorkerLogout)
   }
 };
 
-/** Runs `logout` in the online client's worker, and in every other running worker of this app */
+/**
+ * Runs `logout` in the online client's worker, and in every other running worker of this app. The
+ * client is awaited first, so the worker a pending replacement replaces is among the others, logged
+ * out of now rather than only locked once retired.
+ */
 const logoutOfRunningWorkers = async (logout: WorkerLogout): Promise<void> => {
-  const clientPromise = getOnlineClient();
-  const replaced = await otherRunningWorkers(getWorkerUrl(onlineClientGeneration));
+  const clientPromise = getRenewingOnlineClient();
+  const client = await clientPromise.catch(() => undefined);
+  const replaced = await otherRunningWorkers(client?.workerUrl ?? getWorkerUrl(onlineClientGeneration));
   await Promise.all(replaced.map((workerUrl) => logoutFromReplacedWorker(workerUrl, logout)));
-  await logout(await clientPromise);
+  const current = await clientPromise;
+  await logout(current, current.workerUrl);
 };
 
 /**
@@ -384,11 +413,17 @@ export const logoutFromStartedWorkers = async (username: string): Promise<void> 
 /**
  * Ends the session of, and locks, every user unlocked in any running worker of this app, whether or
  * not this page knows of it, when this page has asked for the online client; otherwise starts no
- * client and resolves, as `logoutFromStartedWorkers` does. Rejects as the online client's logout does.
+ * client and resolves, as `logoutFromStartedWorkers` does. Records the workers it logged out of in
+ * the current sign-out epoch, so pages connecting to them do not log out whoever signs in next.
+ * Rejects as the online client's logout does.
  */
 export const logoutEveryoneFromStartedWorkers = async (): Promise<void> => {
   if (!onlineClientPromise) return;
-  await logoutOfRunningWorkers((client) => client.logoutAll());
+  const epoch = getSignOutEpoch();
+  await logoutOfRunningWorkers(async (client, workerUrl) => {
+    await client.logoutAll();
+    if (epoch !== null) recordWorkerLoggedOut(workerUrl, epoch);
+  });
 };
 
 export const getOfflineClient = (): Promise<OfflineClient> => {

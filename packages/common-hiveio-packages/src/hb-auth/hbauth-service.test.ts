@@ -141,7 +141,8 @@ const MODULES: Record<string, string> = {
   './safe-storage-generation': new URL('./safe-storage-generation.ts', import.meta.url).href,
   './safe-storage-generation-subscription': new URL('./safe-storage-generation-subscription.ts', import.meta.url).href,
   './worker-release': new URL('./worker-release.ts', import.meta.url).href,
-  './online-client-operation': new URL('./online-client-operation.ts', import.meta.url).href
+  './online-client-operation': new URL('./online-client-operation.ts', import.meta.url).href,
+  './sign-out-epoch': new URL('./sign-out-epoch.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -260,6 +261,9 @@ function setBeforeEveryWrite(beforeWrite: (() => Promise<void>) | undefined): vo
 
 const BLOG = '/blog';
 const WALLET = '/wallet';
+
+/** A sign-out in any tab of the origin, as its sign-out epoch records it */
+const { advanceSignOutEpoch } = await import('./sign-out-epoch.ts');
 
 type HbAuthService = typeof import('./hbauth-service.ts');
 type OnlineClient = Awaited<ReturnType<HbAuthService['getOnlineClient']>>;
@@ -573,6 +577,50 @@ describe('hb-auth online client', () => {
 
     assert.deepEqual([...replacedWorker.worker.unlocked], []);
     assert.deepEqual([...currentWorker.worker.unlocked], []);
+  });
+
+  it('logs everyone out of a worker that outlived the pages of its app through a sign-out, before a page uses it', async () => {
+    // The app's only page unlocked the account, then left for another app, which signed out
+    const departedTab = await openPage(WALLET);
+    await departedTab.register('alice');
+    const lingering = workerOf(await departedTab.getOnlineClient());
+    advanceSignOutEpoch();
+
+    const reopened = await openPage(WALLET);
+    const reconnected = workerOf(await reopened.getOnlineClient());
+
+    assert.equal(reconnected.worker, lingering.worker);
+    assert.deepEqual([...lingering.worker.unlocked], []);
+    assert.deepEqual([...lingering.worker.authorized], []);
+  });
+
+  it('keeps a sign-in made after a sign-out when more pages connect to the worker', async () => {
+    const wallet = await openPage(WALLET);
+    await wallet.register('alice');
+    advanceSignOutEpoch();
+    await wallet.logoutEveryoneStarted();
+    await wallet.register('alice');
+
+    const otherTab = await openPage(WALLET);
+    const { worker } = workerOf(await otherTab.getOnlineClient());
+
+    assert.deepEqual([...worker.unlocked], ['alice']);
+  });
+
+  it('logs everyone out of a worker a pending replacement replaces, rather than only locking it once retired', async () => {
+    const wallet = await openPage(WALLET);
+    await wallet.register('alice');
+    const otherTab = await openPage(WALLET);
+    const replacedWorker = workerOf(await otherTab.getOnlineClient());
+    const blog = await openPage(BLOG);
+    await blog.register('bob');
+
+    // Right after the blog's write, before the page asked for a client since
+    await wallet.logoutEveryoneStarted();
+
+    assert.notEqual(workerOf(await wallet.getOnlineClient()).url, replacedWorker.url);
+    assert.deepEqual([...replacedWorker.worker.unlocked], []);
+    assert.deepEqual([...replacedWorker.worker.authorized], []);
   });
 
   it('starts no client, and no worker, to lock every account on a page that never asked for one', async () => {

@@ -4,9 +4,10 @@ import { csrfHeaderName } from '@smart-signer/lib/csrf-protection';
 import { User } from '@smart-signer/types/common';
 import { PostSwitchSchema } from '@smart-signer/lib/auth/utils';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
-import { findAccount, removeAccount } from '@smart-signer/lib/auth/accounts';
-import { setAccounts, setActiveUser } from '@smart-signer/lib/auth/active-user';
+import { findAccount } from '@smart-signer/lib/auth/accounts';
+import { setActiveUser } from '@smart-signer/lib/auth/active-user';
 import { postAccountsChanged } from '@smart-signer/lib/auth/account-sync';
+import { forgetAccount } from '@smart-signer/lib/auth/forget-account';
 import { getLogger } from '@ui/lib/logging';
 import { appApiPath } from '@ui/lib/app-api-path';
 
@@ -55,10 +56,10 @@ export function useSwitchAccount({ onError }: { onError?: (username: string) => 
     // Here rather than in `mutate`'s callbacks: those do not run once the caller unmounted
     onError: (error, { username }) => {
       logger.error(error, 'Switching to account %s failed', username);
-      // The server session no longer holds this account (e.g. it expired): stop offering it
-      if (isSessionMissingAccount(error)) {
-        setAccounts(queryClient, removeAccount(userLocalStorage.getAccounts(), username));
-      }
+      // The server session no longer holds this account (e.g. it expired): stop offering it, and
+      // end its signer session in every app, as no tab can switch to it any more
+      const account = isSessionMissingAccount(error) && findAccount(userLocalStorage.getAccounts(), username);
+      if (account) forgetAccount(queryClient, account);
       onError?.(username);
     }
   });
