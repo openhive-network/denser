@@ -27,7 +27,9 @@
  *                              (EDIT-03c: "Reward options are final")
  *   - postEditOwn_community  → community / community_title / category set
  *                              (EDIT-04: comment_operation.parent_permlink
- *                              becomes the community id)
+ *                              becomes the community id), plus the editor's
+ *                              bridge.get_community read of that community,
+ *                              which the base never makes
  *
  * Usage:
  *   1) Record the base (once, or after deliberate re-record):
@@ -39,6 +41,7 @@
  *        pnpm --filter @hive/blog test:fixture -- postEdit
  */
 
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -71,6 +74,35 @@ const NEUTRAL = {
 
 const COMMUNITY = 'hive-137823';
 const COMMUNITY_TITLE = 'Test Hive 137823';
+
+/**
+ * hive-137823 as api.hive.blog answered bridge.get_community for guest4test,
+ * with the title set to COMMUNITY_TITLE.
+ */
+const COMMUNITY_RESULT = {
+  id: 1367505,
+  lang: 'en',
+  name: COMMUNITY,
+  team: [
+    [COMMUNITY, 'owner', ''],
+    ['juliakponsford', 'admin', ''],
+    ['whatsup', 'mod', ''],
+    ['steemitqa', 'mod', '']
+  ],
+  about: '',
+  title: COMMUNITY_TITLE,
+  context: { role: 'guest', title: '', subscribed: true },
+  is_nsfw: false,
+  type_id: 1,
+  settings: {},
+  flag_text: '',
+  created_at: '2020-02-20 19:49:48',
+  description: '',
+  num_authors: 0,
+  num_pending: 0,
+  subscribers: 8,
+  sum_pending: 0
+};
 
 function readJSON(filepath) {
   return JSON.parse(fs.readFileSync(filepath, 'utf8'));
@@ -224,10 +256,37 @@ function patchCommunity(entry) {
   return true;
 }
 
+/** A JSON-RPC fixture entry; `requestHash` follows fixture-proxy.ts's computeRequestHash. */
+function jsonRpcFixture(method, params, result) {
+  const hashedBody = { jsonrpc: '2.0', method, params };
+  const requestHash = crypto
+    .createHash('sha256')
+    .update(JSON.stringify({ m: 'POST', p: '/', q: {}, b: hashedBody }))
+    .digest('hex')
+    .slice(0, 16);
+  return {
+    httpMethod: 'POST',
+    requestPath: '/',
+    requestBody: { ...hashedBody, id: 1 },
+    requestHash,
+    method,
+    params,
+    response: { jsonrpc: '2.0', result, id: 1 },
+    responseStatus: 200,
+    responseContentType: 'application/json'
+  };
+}
+
+// The post editor reads the community it posts into, which for an edit is the post's category
+const EDITOR_COMMUNITY_FIXTURE = {
+  file: '0013-bridge.get_community.json',
+  content: jsonRpcFixture('bridge.get_community', { name: COMMUNITY, observer: POST_AUTHOR }, COMMUNITY_RESULT)
+};
+
 const VARIANTS = [
   { name: `${BASE_NAME}_voted`, patcher: patchVoted },
   { name: `${BASE_NAME}_finalized`, patcher: patchFinalized },
-  { name: `${BASE_NAME}_community`, patcher: patchCommunity }
+  { name: `${BASE_NAME}_community`, patcher: patchCommunity, added: [EDITOR_COMMUNITY_FIXTURE] }
 ];
 
 function generateVariant(variant) {
@@ -257,11 +316,19 @@ function generateVariant(variant) {
     }
   }
 
+  const added = variant.added ?? [];
+  for (const { file, content } of added) {
+    writeJSON(path.join(targetDir, file), content);
+    overlayFiles.push(file);
+  }
+
   writeJSON(path.join(targetDir, '_index.json'), {
     testName: variant.name,
     base: BASE_NAME,
     generatedAt: new Date().toISOString(),
-    overlayFiles
+    overlayFiles,
+    // Keys new to the base, not patches of its recordings
+    ...(added.length > 0 && { additive: true })
   });
 
   console.log(

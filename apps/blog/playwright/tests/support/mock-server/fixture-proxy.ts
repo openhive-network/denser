@@ -45,6 +45,8 @@ export interface IReplayMiss {
   method: string;
   /** Normalized request hash (same scheme as `IFixtureEntry.requestHash`) */
   hash: string;
+  /** JSON-RPC params, which tell apart two misses of one method; absent for non-RPC calls */
+  params?: Record<string, unknown>;
 }
 
 export interface IFixtureProxyHandle {
@@ -646,7 +648,9 @@ export async function createReplayProxy(
 
     if (!entries || entries.length === 0) {
       missCount++;
-      pendingMisses.push({ method: label, hash: requestHash });
+      pendingMisses.push(
+        jsonRpc ? { method: label, hash: requestHash, params: jsonRpc.params } : { method: label, hash: requestHash }
+      );
       console.warn(
         `[fixture-proxy:replay] MISS — no fixture for ${label} (hash: ${requestHash})`
       );

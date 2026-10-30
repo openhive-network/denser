@@ -1,9 +1,9 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
 import {
   diffAgainstBaseline,
   mergeIntoBaseline,
+  newMissesMessage,
   type IFixtureMiss,
   type IKnownMiss,
   type IMissRun
@@ -15,24 +15,19 @@ const POST_HEADER: IFixtureMiss = { spec: SPEC, method: 'bridge.get_post_header'
 const OTHER_SPEC: IKnownMiss = { spec: 'homepage.spec.ts', method: 'bridge.get_profile', hash: 'aaaaaaaaaaaaaaaa' };
 const NOTE = 'made only when the draft auto-save lands first';
 
-const repoBaseline: IKnownMiss[] = JSON.parse(
-  fs.readFileSync(new URL('../../fixture/known-misses.json', import.meta.url), 'utf-8')
-);
-
 const run = (misses: IFixtureMiss[], specs = [SPEC]): IMissRun => ({ specs: new Set(specs), misses });
 
 void describe('diffAgainstBaseline', () => {
-  void it('accepts the postEditCommunity get_community miss with the repository baseline', () => {
-    const diff = diffAgainstBaseline(repoBaseline, run([GET_COMMUNITY]));
+  void it('accepts a listed miss whatever its params', () => {
+    const diff = diffAgainstBaseline([GET_COMMUNITY], run([{ ...GET_COMMUNITY, params: { name: 'hive-137823' } }]));
 
-    assert.deepEqual(diff.added, []);
+    assert.deepEqual(diff, { added: [], gone: [] });
   });
 
-  void it('does not report the intermittent get_community entry as gone when the run does not hit it', () => {
-    const diff = diffAgainstBaseline(repoBaseline, run([]));
+  void it('does not report an intermittent entry as gone when the run does not hit it', () => {
+    const diff = diffAgainstBaseline([{ ...GET_COMMUNITY, intermittent: NOTE }], run([]));
 
-    assert.deepEqual(diff.added, []);
-    assert.ok(!diff.gone.some((m) => m.method === GET_COMMUNITY.method && m.hash === GET_COMMUNITY.hash));
+    assert.deepEqual(diff, { added: [], gone: [] });
   });
 
   void it('reports an unlisted miss as added and a regular entry the run did not hit as gone', () => {
@@ -64,5 +59,24 @@ void describe('mergeIntoBaseline', () => {
     const merged = mergeIntoBaseline([{ ...GET_COMMUNITY, intermittent: NOTE }], run([GET_COMMUNITY, POST_HEADER]));
 
     assert.deepEqual(merged, [{ ...GET_COMMUNITY, intermittent: NOTE }, POST_HEADER]);
+  });
+
+  void it('writes no params into the baseline', () => {
+    const merged = mergeIntoBaseline([], run([{ ...POST_HEADER, params: { author: 'a', permlink: 'p' } }]));
+
+    assert.deepEqual(merged, [POST_HEADER]);
+  });
+});
+
+void describe('newMissesMessage', () => {
+  void it("prints each new miss's hash and params", () => {
+    const miss: IFixtureMiss = { ...GET_COMMUNITY, params: { name: 'hive-137823', observer: '' } };
+
+    const message = newMissesMessage([miss], 'known-misses.json', 'misses.json');
+
+    assert.match(
+      message,
+      /postEditCommunity\.spec\.ts {2}bridge\.get_community {2}\(hash 50f0a6832c3ff911\) {2}params \{"name":"hive-137823","observer":""\}/
+    );
   });
 });

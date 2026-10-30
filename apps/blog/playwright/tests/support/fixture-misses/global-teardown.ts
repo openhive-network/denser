@@ -1,5 +1,5 @@
 import path from 'path';
-import { diffAgainstBaseline, formatMisses } from './known-misses';
+import { diffAgainstBaseline, formatMisses, newMissesMessage } from './known-misses';
 import { BASELINE_FILE, MISSES_FILE, readBaseline, readMissRun, updateBaseline, writeRunMisses } from './miss-log';
 
 const UPDATE_BASELINE = process.env.FIXTURE_MISS_BASELINE === 'update';
@@ -35,11 +35,6 @@ export default function globalTeardown(): void {
     );
   }
   if (added.length > 0) {
-    throw new Error(
-      `${added.length} new fixture MISS(es): the app made API calls that have no recording ` +
-        `and were answered with a JSON-RPC error.\n${formatMisses(added)}\n` +
-        `Record the calls (FIXTURE_MODE=record) or, if the miss is intended, add it to ` +
-        `${baselineName} (FIXTURE_MISS_BASELINE=update). Full list: ${MISSES_FILE}`
-    );
+    throw new Error(newMissesMessage(added, baselineName, MISSES_FILE));
   }
 }

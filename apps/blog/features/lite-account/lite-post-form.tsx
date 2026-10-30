@@ -68,7 +68,7 @@ export function LitePostForm({ identity, categoryParam, onNameTaken }: Props) {
   const [draft, setDraft, removeDraft] = useStorageWithTTL<LiteRootDraft>(LITE_POST_DRAFT_KEY, EMPTY_DRAFT, StorageTTL.DRAFT);
   const [storedQueue, setQueue, removeQueue] = useStorageWithTTL<PersistedLiteQueue | null>(LITE_ROOT_QUEUE_KEY, null, persistedQueueTtlMs(limits));
   const pending = isPersistedLiteQueue(storedQueue) ? storedQueue : null;
-  const { data: community } = useEditorCommunity(categoryParam, draft.category, DEFAULT_OBSERVER);
+  const { data: community } = useEditorCommunity(categoryParam ?? draft.category, DEFAULT_OBSERVER);
   const update = (patch: Partial<LiteRootDraft>) => setDraft((prev) => ({ ...prev, ...patch }));
 
   useEffect(() => {
