@@ -257,7 +257,8 @@
   {
     "spec": "postEditCommunity.spec.ts",
     "method": "bridge.get_community",
-    "hash": "50f0a6832c3ff911"
+    "hash": "50f0a6832c3ff911",
+    "intermittent": "The post editor's useEditorCommunity reads the community (observer guest4test) once the debounced draft auto-save has stored the post's community category; the submit can close the editor before that, so whether the call is made depends on timing"
   },
   {
     "spec": "postEditCommunity.spec.ts",

@@ -261,6 +261,15 @@ random noise prefix — so no hash is stable. For those, set the entry's
 `hash` to `"*"`: it accepts any params for that spec + method, and
 baseline updates keep it as is. Use `*` only for truly random params.
 
+A miss that happens in some runs only (it depends on request timing)
+would be reported as gone by the runs that do not hit it, and a baseline
+update from such a run would drop it, so the next run that hits it
+fails. Give such an entry an `intermittent` field saying why the call is
+made only sometimes: baseline updates keep it, and a run that does not
+hit it does not list it as gone. Before removing an entry the teardown
+lists as gone, check that its call can no longer be made: a gone entry
+never fails the run, a missing one does.
+
 Regenerate the baseline after a green replay run (a failed attempt
 drops its misses, so updating from a red run can remove real entries):
 
