@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
 import dynamic from 'next/dynamic';
 import type { SignInFormRef } from '@smart-signer/components/auth/form';
 import { KeyType } from '@smart-signer/types/common';
+import { siteConfig } from '@ui/config/site';
 import { useTranslation } from '@/wallet/i18n/client';
 
 // The sign-in form brings the signers, wax and the form validation: load it when the dialog opens.
@@ -50,6 +51,7 @@ function DialogLogin({ children, open, onOpenChange, keyType = KeyType.active, u
           preferredKeyTypes={[keyType]}
           username={username}
           onComplete={onComplete}
+          authenticateOnBackend={siteConfig.loginAuthenticateOnBackend}
         />
       </DialogContent>
     </Dialog>
