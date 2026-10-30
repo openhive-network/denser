@@ -202,7 +202,8 @@
   },
   "request_error": {
     "timeout": "The server did not respond in time. Please try again.",
-    "not_confirmed": "Transaction sent, confirmation is taking longer than usual."
+    "not_confirmed": "Transaction sent, but no block has confirmed it yet. It may still apply: check your history before trying again.",
+    "transaction_id": "Transaction ID:"
   },
   "google_drive_error": {
     "wallet_not_found_title": "Wallet Not Found",

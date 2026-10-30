@@ -202,7 +202,8 @@
   },
   "request_error": {
     "timeout": "服务器未及时响应。请重试。",
-    "not_confirmed": "交易已发送，确认时间比平时长。"
+    "not_confirmed": "交易已发送，但尚未被任何区块确认。它仍可能生效：请先查看历史记录再重试。",
+    "transaction_id": "交易 ID："
   },
   "google_drive_error": {
     "wallet_not_found_title": "未找到钱包",

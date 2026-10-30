@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { TransactionNotConfirmedError } from '@hive/transaction/lib/transaction-inclusion';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
 import { getLogger } from '@ui/lib/logging';
@@ -15,7 +16,8 @@ const logger = getLogger('app');
 const effects: OperationEffects = {
   notifySuccess: (successToast) => toast({ ...successToast, variant: 'success' }),
   reportError: (error, method, params) => handleError(error, { method, params }),
-  logSuccess: (name, data) => logger.info('%s done: %o', name, data)
+  logSuccess: (name, data) => logger.info('%s done: %o', name, data),
+  isUnconfirmedBroadcast: (error) => error instanceof TransactionNotConfirmedError
 };
 
 /** Observed broadcast: resolves once the transaction is in a block. */

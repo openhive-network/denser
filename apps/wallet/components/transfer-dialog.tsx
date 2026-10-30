@@ -27,6 +27,7 @@ import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { useMinDelegation } from './hooks/use-min-delegation';
 import { handleError } from '@ui/lib/handle-error';
 import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
+import { TransactionNotConfirmedError } from '@transaction/lib/transaction-inclusion';
 import { useQueryClient } from '@tanstack/react-query';
 import type { TransactionBroadcastResult } from '@transaction/index';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -180,8 +181,9 @@ export function TransferDialog({
           return;
         }
         handleError(error, { method, params });
-        // OK would only bring the Google Drive dialog back: this sign-in method cannot sign the operation
-        if (error instanceof GoogleDriveSignInCancelledError) {
+        // OK would only bring the Google Drive dialog back: this sign-in method cannot sign the operation.
+        // After a broadcast the node took but no block was seen to include, OK could send it twice.
+        if (error instanceof GoogleDriveSignInCancelledError || error instanceof TransactionNotConfirmedError) {
           setNextOpen(false);
           setEncryptDialogOpen(false);
           onOpenChange(false);

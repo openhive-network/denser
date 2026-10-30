@@ -202,7 +202,8 @@
   },
   "request_error": {
     "timeout": "Serwer nie odpowiedział na czas. Spróbuj ponownie.",
-    "not_confirmed": "Transakcja wysłana, potwierdzenie trwa dłużej niż zwykle."
+    "not_confirmed": "Transakcja wysłana, ale żaden blok jeszcze jej nie potwierdził. Może jeszcze zostać wykonana: sprawdź historię, zanim spróbujesz ponownie.",
+    "transaction_id": "ID transakcji:"
   },
   "google_drive_error": {
     "wallet_not_found_title": "Nie znaleziono portfela",
