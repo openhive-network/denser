@@ -261,6 +261,11 @@
   },
   {
     "spec": "postEditCommunity.spec.ts",
+    "method": "bridge.get_community",
+    "hash": "50f0a6832c3ff911"
+  },
+  {
+    "spec": "postEditCommunity.spec.ts",
     "method": "bridge.get_post_header",
     "hash": "d36fe00401414219"
   },
