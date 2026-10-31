@@ -350,6 +350,20 @@ routes. `lcp-lazy-loaded: false` there flags a route whose LCP image is
   described there. If the pass gets too long, take routes out of
   `integrationLoggedIn` rather than runs per route.
 
+## One server session for blog and wallet
+
+Blog and wallet share the browser's stored user and accounts list, since they share the
+origin, so they share the server session too: both containers get the same
+`DENSER_SERVER_SESSION_COOKIE_PREFIX` (default `denser_`) and cookie password, so both
+read and write the iron-session cookie `denser_session` and the login challenge cookie
+`denser_login_challenge_server`, at `Path=/`. A sign-in through either app's dialog
+signs both in on their servers (Matrix chat in the blog works after a wallet sign-in),
+an account added in one can be switched to in the other, and a sign-out in either ends
+the one session. The prefix is letters, digits, `-` and `_`, ending in `_` (the HTML
+cache recognises a signed-in request by a `*_session` cookie). Changing it signs
+everyone out once. A deployment serving each app on its own host leaves it unset: the
+names stay `${APP_NAME}_` (`blog_session`, `wallet_session`).
+
 ## Setup (done once per host)
 
 The shared HTML cache is off unless `.env` says `DENSER_HTML_CACHE=varnish` (above).
