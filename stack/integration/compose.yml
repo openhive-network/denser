@@ -30,6 +30,9 @@ x-app: &app
     REACT_APP_LOGGING_BROWSER_ENABLED: "true"
     REACT_APP_LOGGING_LOG_LEVEL: info
     DENSER_SERVER_SECRET_COOKIE_PASSWORD: ${DENSER_SERVER_SECRET_COOKIE_PASSWORD:?set it in .env (32+ random characters)}
+    # One prefix for blog and wallet: on one origin they then share one server session (sign-in,
+    # accounts, switches, sign-out). Unset, each app keeps its own (`blog_session`, `wallet_session`).
+    DENSER_SERVER_SESSION_COOKIE_PREFIX: ${DENSER_SERVER_SESSION_COOKIE_PREFIX:-denser_}
     # Google Drive sign-in (optional): a Google OAuth web client whose authorized
     # JavaScript origin is https://${SITE_HOST}. Empty leaves the method disabled.
     REACT_APP_GOOGLE_DRIVE_CLIENT_ID: ${GOOGLE_DRIVE_CLIENT_ID:-}
