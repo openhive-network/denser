@@ -586,25 +586,23 @@ hermetic and within thresholds. Its `revision` is the commit checked out when it
 measured: a baseline taken with uncommitted changes names their parent, so say here
 what the measured tree was.
 
-The current baseline (2026-10-25, `revision` a4382d977) is that tree plus #1326's trims,
-which took the code three features had leaked into every page's initial chunks back out:
-the For You client (`fyp-api.ts`, pulled in for its paging helper), safe storage's
-generation bookkeeping (pulled in for its cross-tab subscription) and Rocket.Chat's
-drawer (now loaded only for a user it renders for). The rest of the growth since the
-2026-10-14 baseline (815c7a2a) was accepted as the cost of features: the blog's
-English strings (a chunk of their own), the login key and authority labels in both
-headers, hivemind REST reads and hidden authors, the Matrix chat configuration and
-background broadcast confirmation, partly offset by `handle-error` leaving the blog's
-initial chunks. Script transfer bytes, 815c7a2a rebuilt on the same host -> the
-current baseline:
+The current baseline (2026-10-31, `revision` 334cd985c) is that tree, after #1412 took
+two accidental additions back off the post pages (`react-spinners-kit` with its
+styled-components, and eager `@hiveio/lite-account` imports, about 37 KiB). The growth
+left since the 2026-10-25 baseline (a4382d977) was accepted as the cost of features:
+the lite header and feature UI (#1269, #1309), Next 16.4.1 (#1364) and the sign-out
+work (#1383-#1408). It is script only (image bytes are unchanged, the wallet's script
+is 1.6 KiB lighter), plus two requests on every route and three on `/blog/@gtg`.
+Script transfer bytes and requests, a4382d977 -> the current baseline:
 
-| route | 815c7a2a | before the trims | current baseline |
-|---|---|---|---|
-| `/blog/trending` | 364,324 | 368,439 | 366,330 |
-| `/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit` | 452,225 | 452,972 | 451,187 |
-| `/blog/trending/hive-160391` | 377,924 | 382,267 | 380,177 |
-| `/blog/@gtg` | 371,578 | 375,115 | 373,330 |
-| `/wallet/@gtg/transfers` | 474,805 | 480,778 | 480,376 |
+| route | a4382d977 | current baseline |
+|---|---|---|
+| `/blog/trending` | 366,330 B, 85 req | 376,103 B, 87 req |
+| `/blog/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit` | 451,187 B, 46 req | 464,034 B, 48 req |
+| `/blog/hive-163772/@ibarra95/visiting-the-desparramaderos-waterfall-nature` | 451,187 B, 51 req | 464,034 B, 53 req |
+| `/blog/trending/hive-160391` | 380,177 B, 47 req | 391,490 B, 49 req |
+| `/blog/@gtg` | 373,330 B, 55 req | 386,754 B, 58 req |
+| `/wallet/@gtg/transfers` | 480,376 B, 49 req | 478,703 B, 51 req |
 
 To attribute a change in bytes to source files, build both trees with
 `productionBrowserSourceMaps: true` in each app's `next.config.js` (the chunks keep
