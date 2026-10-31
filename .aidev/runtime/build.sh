@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Build (and with --push, publish) the test runtime image of .aidev/runtime/Dockerfile
 # and print the digest-pinned reference to put in .aidev/project.yaml's
-# `environment.image`. See .aidev/README.md.
+# `environment.fallback`. See .aidev/README.md.
 #
 # The tag is `aidev-<hash>`, the hash of the image inputs (the Dockerfile,
 # pnpm-lock.yaml, pnpm-workspace.yaml, .npmrc, and the digest the followed base
@@ -17,7 +17,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 REPOSITORY="${AIDEV_RUNTIME_REPOSITORY:-registry.gitlab.syncad.com/hive/denser/aidev-tests}"
-# The base .aidev/project.yaml follows (`environment.base`), the Dockerfile's default.
+# The base is the Dockerfile's default.
 BASE_IMAGE="$(sed -n 's/^ARG BASE_IMAGE=//p' .aidev/runtime/Dockerfile)"
 
 # `pnpm fetch` reads only the lockfile, the workspace file and .npmrc, so

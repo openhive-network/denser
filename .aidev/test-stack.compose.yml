@@ -2,7 +2,7 @@
 # #967): the blog's and the wallet's production builds served against the LIVE
 # Hive API, for the full slot's advisory live_e2e suite (.aidev/run-live-e2e.sh).
 #
-# No image is built: every service runs the pinned test image (`environment.image`)
+# No image is built: every service runs the pinned test image (`environment.fallback`)
 # over the read-only checkout, and the builds are the ones fixture_e2e
 # (.aidev/run-fixture-e2e.sh -> .aidev/run-blog-build.sh) and wallet_fixture
 # (.aidev/run-wallet-fixture-e2e.sh) made before AIDEV started this stack (it

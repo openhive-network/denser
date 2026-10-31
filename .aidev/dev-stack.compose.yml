@@ -4,7 +4,7 @@
 # checkout, against the fixture replay proxy — so the stack needs no network and
 # no chain. Both are served from one origin by `edge` (the wallet under /wallet,
 # the blog at the root); the blog's own port stays as it was. Every service but
-# `edge` (caddy) runs the project's pinned test image (`environment.image`);
+# `edge` (caddy) runs the project's pinned test image (`environment.fallback`);
 # nothing is built. node_modules come from `pnpm install --offline` out of the image's store
 # (.aidev/pnpm-deps.sh), written into the checkout like every other suite does,
 # and skipped while pnpm-lock.yaml and the image are unchanged and the tree checks out.

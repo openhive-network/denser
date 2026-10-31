@@ -4,18 +4,19 @@
 # Returns non-zero when the install fails, so a caller must stop on it (`set -e`,
 # or `source … && …`).
 #
-# The suites run in the image of .aidev/runtime/Dockerfile under `--network none`,
-# so the install is offline, from the pnpm store at /opt/pnpm-store baked into that
-# image. It is skipped only when the marker names this pnpm-lock.yaml and this
+# The suites run under `--network none` in common-ci-configuration's
+# node-test-tools-browser image with the host's pnpm store mounted read-only at
+# /opt/pnpm-store (`environment.kind: shared`), or in the fallback image of
+# .aidev/runtime/Dockerfile with the store baked in at that path, so the install is
+# offline, from that store. It is skipped only when the marker names this pnpm-lock.yaml and this
 # store, and the apps resolve the next and react the lockfile pins
 # (.aidev/check-node-modules.mjs); otherwise `pnpm install --offline --frozen-lockfile` runs,
 # and scripts/check-workerbee-patch.js confirms WorkerBee's block catch-up fix is in effect.
 # The marker is written after a successful install that passes those checks.
 #
-# The environment the runtime image sets is exported here as well, so the suites
-# also run in common-ci-configuration's node-test-tools image with a store mounted
-# at /opt/pnpm-store (see .aidev/README.md, "The shared test image"), which sets
-# none of it, with the caller's uid, which may have no writable home. pnpm must not
+# The environment the fallback image sets is exported here, so the suites run the
+# same in the shared image, which sets only part of it (see .aidev/README.md, "The
+# shared test image"), with the caller's uid, which may have no writable home. pnpm must not
 # switch to `packageManager`'s version: that would download at run time, offline.
 #
 # Services and suites can share one bind-mounted checkout, so installs into it
