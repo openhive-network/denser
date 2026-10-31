@@ -1,7 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import type { LiteDeleteMode } from '@hiveio/lite-account';
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { useTranslation } from '@/blog/i18n/client';

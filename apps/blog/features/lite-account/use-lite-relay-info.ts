@@ -1,7 +1,8 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { DEFAULT_LITE_APP_IDS, type LiteAppIds } from '@hiveio/lite-account';
+import type { LiteAppIds } from '@hiveio/lite-account';
+import { DEFAULT_LITE_APP_IDS } from './lite-attribution';
 import { liteRelayInfoQuery, type LiteRelayInfo } from './lite-relay-info-query';
 
 export {

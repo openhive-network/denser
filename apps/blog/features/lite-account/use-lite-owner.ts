@@ -2,13 +2,13 @@
 
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { isLiteOwner, isLiteTombstone, liteManageCapabilities, type LiteManageCapabilities } from './lite-ownership';
-import { useLiteIdentity } from './use-lite-identity';
 import { relayAppIds, useLiteRelayInfo } from './use-lite-relay-info';
+import { useStoredLiteIdentity } from './use-stored-lite-identity';
 
 /** Whether this browser's lite identity wrote `entry` (by its DID author, or the attester on a compat node). */
 export function useIsLiteOwner(entry: Entry): boolean {
   const relay = useLiteRelayInfo();
-  const { identity } = useLiteIdentity();
+  const identity = useStoredLiteIdentity();
   return !!relay.data?.enabled && isLiteOwner(entry, identity?.name, relay.data.apps);
 }
 

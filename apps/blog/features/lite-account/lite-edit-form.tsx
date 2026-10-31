@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 import { Button } from '@ui/components/button';
 import { Input } from '@ui/components/input';

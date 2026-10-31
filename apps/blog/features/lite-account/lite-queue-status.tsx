@@ -2,7 +2,7 @@
 
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import { cancelLiteQueued, getLiteQueueEntry, waitForLiteQueue, type LiteRelayOk } from '@hiveio/lite-account';
 import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';

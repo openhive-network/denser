@@ -113,3 +113,14 @@ const ERROR_KEYS: Record<string, string> = {
 export function liteManageErrorKey(code: string | undefined): string {
   return (code !== undefined ? ERROR_KEYS[code] : undefined) ?? 'unknown';
 }
+
+/**
+ * Where to go after the open post was deleted from the chain: a comment's parent, or the feed
+ * of a root post's category.
+ */
+export function liteDeletedPostDestination(entry: Pick<Entry, 'parent_author' | 'parent_permlink' | 'category'>): string {
+  if (entry.parent_author && entry.parent_permlink) {
+    return `/${entry.category}/@${entry.parent_author}/${entry.parent_permlink}`;
+  }
+  return `/created/${entry.category}`;
+}

@@ -87,14 +87,3 @@ export function showsLiteDeletion(fresh: Discussion | null, ref: EntryRef, mode:
   const entry = Object.values(fresh).find(isEntry(ref));
   return mode === 'l1_delete' ? !entry : !!entry && isLiteTombstone(entry, apps);
 }
-
-/**
- * Where to go after the open post was deleted from the chain: a comment's parent, or the feed
- * of a root post's category.
- */
-export function liteDeletedPostDestination(entry: Pick<Entry, 'parent_author' | 'parent_permlink' | 'category'>): string {
-  if (entry.parent_author && entry.parent_permlink) {
-    return `/${entry.category}/@${entry.parent_author}/${entry.parent_permlink}`;
-  }
-  return `/created/${entry.category}`;
-}

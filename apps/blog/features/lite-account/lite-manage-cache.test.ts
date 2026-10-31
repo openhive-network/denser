@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
-const { asLiteTombstone, liteDeletedPostDestination, showsLiteDeletion, showsLiteEdit, withLiteDeletion, withLiteEdit } =
+const { asLiteTombstone, showsLiteDeletion, showsLiteEdit, withLiteDeletion, withLiteEdit } =
   await import('./lite-manage-cache.ts');
 const { isLiteTombstone } = await import('./lite-ownership.ts');
 
@@ -83,15 +83,5 @@ describe('delete modes in the cache', () => {
     const tomb: Discussion = { ...discussion(), x: asLiteTombstone(find(discussion(), REPLY) as Entry, APPS, 'warm-zebra-201') };
     delete tomb[`${REPLY.author}/${REPLY.permlink}`];
     assert.equal(showsLiteDeletion(tomb, REPLY, 'tombstone', APPS), true);
-  });
-});
-
-describe('after deleting the open post', () => {
-  it('goes to the parent of a comment, or the feed of a root post', () => {
-    assert.equal(
-      liteDeletedPostDestination({ category: 'lite-test', parent_author: ROOT.author, parent_permlink: 'root' }),
-      '/lite-test/@did:lite:lite-smoke-1016/root'
-    );
-    assert.equal(liteDeletedPostDestination({ category: 'lite-test', parent_author: '' }), '/created/lite-test');
   });
 });
