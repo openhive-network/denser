@@ -1,7 +1,7 @@
 {
-  "revision": "a4382d977647721632d89ca31ff046419713feaf",
+  "revision": "334cd985c8a5606620066eab94c0ce7ada64b88e",
   "site": "http://127.0.0.1:8000",
-  "measuredAt": "2026-10-25T05:13:52.278Z",
+  "measuredAt": "2026-10-31T14:48:40.784Z",
   "formFactor": "mobile",
   "runsPerRoute": 5,
   "lighthouseVersion": "13.5.0",
@@ -16,7 +16,8 @@
     "misses": {
       "http://127.0.0.1:8200/__aidev/status": 0,
       "http://127.0.0.1:8201/__aidev/status": 0
-    }
+    },
+    "missed": {}
   },
   "routes": [
     {
@@ -34,22 +35,22 @@
       "median": {
         "measuredRuns": 5,
         "errors": [],
-        "performance": 77,
-        "largest-contentful-paint": 4126.890299999999,
-        "total-blocking-time": 392.0000000000009,
+        "performance": 76,
+        "largest-contentful-paint": 4201.3928,
+        "total-blocking-time": 390,
         "cumulative-layout-shift": 0,
-        "script-transfer-bytes": 366330,
+        "script-transfer-bytes": 376103,
         "wasm-transfer-bytes": 0,
         "lcp-lazy-loaded": false,
-        "observed-first-contentful-paint": 165,
-        "observed-largest-contentful-paint": 165,
+        "observed-first-contentful-paint": 170,
+        "observed-largest-contentful-paint": 170,
         "image-transfer-bytes": 389847,
-        "total-transfer-bytes": 827381,
-        "request-count": 85,
-        "benchmark-index": 2529.5
+        "total-transfer-bytes": 828289,
+        "request-count": 87,
+        "benchmark-index": 2349.5
       },
       "hostSpeed": {
-        "benchmark": 2529.5,
+        "benchmark": 2349.5,
         "scale": 1
       },
       "breaches": [],
@@ -71,22 +72,22 @@
       "median": {
         "measuredRuns": 5,
         "errors": [],
-        "performance": 61,
-        "largest-contentful-paint": 4017.4655250000005,
-        "total-blocking-time": 1520.2506749999998,
+        "performance": 59,
+        "largest-contentful-paint": 4077.8227500000007,
+        "total-blocking-time": 2032.413649999999,
         "cumulative-layout-shift": 0,
-        "script-transfer-bytes": 451187,
+        "script-transfer-bytes": 464034,
         "wasm-transfer-bytes": 0,
         "lcp-lazy-loaded": false,
-        "observed-first-contentful-paint": 243,
-        "observed-largest-contentful-paint": 243,
+        "observed-first-contentful-paint": 232,
+        "observed-largest-contentful-paint": 232,
         "image-transfer-bytes": 26236,
-        "total-transfer-bytes": 859388,
-        "request-count": 46,
-        "benchmark-index": 2432
+        "total-transfer-bytes": 863287,
+        "request-count": 48,
+        "benchmark-index": 2297.5
       },
       "hostSpeed": {
-        "benchmark": 2432,
+        "benchmark": 2297.5,
         "scale": 1
       },
       "breaches": [],
@@ -108,22 +109,22 @@
       "median": {
         "measuredRuns": 5,
         "errors": [],
-        "performance": 59,
-        "largest-contentful-paint": 6451.396999999999,
-        "total-blocking-time": 759.5,
+        "performance": 54,
+        "largest-contentful-paint": 6751.586636655237,
+        "total-blocking-time": 1065.5,
         "cumulative-layout-shift": 0,
-        "script-transfer-bytes": 451187,
+        "script-transfer-bytes": 464034,
         "wasm-transfer-bytes": 0,
         "lcp-lazy-loaded": false,
-        "observed-first-contentful-paint": 278,
-        "observed-largest-contentful-paint": 278,
+        "observed-first-contentful-paint": 249,
+        "observed-largest-contentful-paint": 249,
         "image-transfer-bytes": 1923647,
-        "total-transfer-bytes": 2653034,
-        "request-count": 51,
-        "benchmark-index": 2374
+        "total-transfer-bytes": 2656937,
+        "request-count": 53,
+        "benchmark-index": 2308
       },
       "hostSpeed": {
-        "benchmark": 2374,
+        "benchmark": 2308,
         "scale": 1
       },
       "breaches": [],
@@ -145,22 +146,22 @@
       "median": {
         "measuredRuns": 5,
         "errors": [],
-        "performance": 79,
-        "largest-contentful-paint": 3752.447100000001,
-        "total-blocking-time": 408.34304999999995,
+        "performance": 75,
+        "largest-contentful-paint": 3901.094600000001,
+        "total-blocking-time": 514.45145,
         "cumulative-layout-shift": 0,
-        "script-transfer-bytes": 380177,
+        "script-transfer-bytes": 391490,
         "wasm-transfer-bytes": 0,
         "lcp-lazy-loaded": false,
-        "observed-first-contentful-paint": 108,
-        "observed-largest-contentful-paint": 108,
+        "observed-first-contentful-paint": 96,
+        "observed-largest-contentful-paint": 96,
         "image-transfer-bytes": 128623,
-        "total-transfer-bytes": 570293,
-        "request-count": 47,
-        "benchmark-index": 2445.5
+        "total-transfer-bytes": 572800,
+        "request-count": 49,
+        "benchmark-index": 2307
       },
       "hostSpeed": {
-        "benchmark": 2445.5,
+        "benchmark": 2307,
         "scale": 1
       },
       "breaches": [],
@@ -183,21 +184,21 @@
         "measuredRuns": 5,
         "errors": [],
         "performance": 74,
-        "largest-contentful-paint": 4576.792600000001,
-        "total-blocking-time": 400,
+        "largest-contentful-paint": 4651.60055,
+        "total-blocking-time": 381,
         "cumulative-layout-shift": 0,
-        "script-transfer-bytes": 373330,
+        "script-transfer-bytes": 386754,
         "wasm-transfer-bytes": 0,
         "lcp-lazy-loaded": false,
-        "observed-first-contentful-paint": 141,
-        "observed-largest-contentful-paint": 141,
+        "observed-first-contentful-paint": 134,
+        "observed-largest-contentful-paint": 134,
         "image-transfer-bytes": 433231,
-        "total-transfer-bytes": 862211,
-        "request-count": 55,
-        "benchmark-index": 2471
+        "total-transfer-bytes": 866747,
+        "request-count": 58,
+        "benchmark-index": 2299.5
       },
       "hostSpeed": {
-        "benchmark": 2471,
+        "benchmark": 2299.5,
         "scale": 1
       },
       "breaches": [],
@@ -219,21 +220,21 @@
         "measuredRuns": 5,
         "errors": [],
         "performance": 58,
-        "largest-contentful-paint": 5963.9733,
-        "total-blocking-time": 904,
+        "largest-contentful-paint": 5825.93375,
+        "total-blocking-time": 870.0000000000005,
         "cumulative-layout-shift": 0,
-        "script-transfer-bytes": 480376,
+        "script-transfer-bytes": 478703,
         "wasm-transfer-bytes": 0,
         "lcp-lazy-loaded": false,
-        "observed-first-contentful-paint": 89,
-        "observed-largest-contentful-paint": 446,
+        "observed-first-contentful-paint": 77,
+        "observed-largest-contentful-paint": 420,
         "image-transfer-bytes": 5560,
-        "total-transfer-bytes": 731967,
-        "request-count": 49,
-        "benchmark-index": 2460
+        "total-transfer-bytes": 736432,
+        "request-count": 51,
+        "benchmark-index": 2277
       },
       "hostSpeed": {
-        "benchmark": 2460,
+        "benchmark": 2277,
         "scale": 1
       },
       "breaches": [],
