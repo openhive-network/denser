@@ -1,5 +1,6 @@
-# Test runtime AIDEV runs denser's verification suites in (the profile's
-# `environment: {kind: container}`, see ai/aidev docs/operations/project-test-runtimes.md).
+# Test runtime AIDEV runs denser's verification suites in when the shared image
+# cannot be had (the profile's `environment.fallback`, see ai/aidev
+# docs/operations/shared-test-images.md), and the one the stacks and follow mode run.
 #
 # AIDEV runs it as `docker run --rm --network none --user <uid>:<gid> -v <workspace>:/work`,
 # so everything a suite needs must already be in the image. Node, pnpm and
@@ -10,8 +11,8 @@
 #     `pnpm install --offline` links node_modules from (.aidev/pnpm-deps.sh).
 #
 # .aidev/runtime/build.sh builds it on the digest node-test-tools:develop names at
-# the time; the result is pinned as `environment.image`. The base comes in as a
-# build argument so AIDEV can build it on a followed base (`environment.base`).
+# the time; the result is pinned as `environment.fallback`. The base comes in as a
+# build argument.
 ARG BASE_IMAGE=registry.gitlab.syncad.com/hive/common-ci-configuration/node-test-tools:develop
 FROM ${BASE_IMAGE}
 

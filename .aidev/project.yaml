@@ -24,11 +24,25 @@ branches:
   integration: "aidev/integration"
   handoff: "develop"
 
-# How this project's suites execute (#13892): one kind, stated once.
+# How this project's suites execute (#13892): one kind, stated once. common-ci-
+# configuration's node-test-tools-browser (node-test-tools plus full Chromium and
+# Lighthouse), pinned per workflow, with the host's pnpm store filled from
+# pnpm-lock.yaml and mounted read-only at /opt/pnpm-store (ai/aidev
+# docs/operations/shared-test-images.md). The flags are .aidev/pnpm-deps.sh's.
+# `fallback` is .aidev/runtime/'s image, its store baked in at the same path, run
+# when the shared route cannot be had on a host. It was baked from one
+# pnpm-lock.yaml: rebuild it (.aidev/runtime/build.sh --push) or drop it in the
+# commit that changes the lockfile. The stacks' `x-image` and the integration
+# site's follow mode run it too (.aidev/README.md).
 environment:
-  kind: "container"
-  image: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:1acd232102e455e24636fff9260321c7147acb48c96d5fe089c155dbb76ec0ce"
-  inputs: ["pnpm-lock.yaml"]
+  kind: "shared"
+  image: "registry.gitlab.syncad.com/hive/common-ci-configuration/node-test-tools-browser:develop"
+  packages:
+    lock: "pnpm-lock.yaml"
+    store: "/opt/pnpm-store"
+    fetch: ["pnpm", "fetch", "--frozen-lockfile", "--store-dir", "/opt/pnpm-store"]
+    install: ["pnpm", "install", "--offline", "--frozen-lockfile", "--store-dir", "/opt/pnpm-store"]
+  fallback: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:1acd232102e455e24636fff9260321c7147acb48c96d5fe089c155dbb76ec0ce"
 
 issues:
   intake_label: todo
@@ -184,7 +198,7 @@ verification:
         stack: false
 
 # Live dev stack (#966): `next dev` of the blog and the wallet, hot-reloading from
-# the implement checkout, against the fixture replay proxy — from the pinned image
+# the implement checkout, against the fixture replay proxy — from the fallback image
 # above (and caddy for the edge), with no image build. The blog answers at
 # $DENSER_DEV_BLOG_URL, and both apps at $DENSER_DEV_UI_URL (the blog at the root,
 # the wallet under /wallet); an agent runs fixture specs with
@@ -227,7 +241,7 @@ sandbox:
       # A dependency change needs node_modules reinstalled (offline, from the
       # image's store) and next restarted; restarting reruns .aidev/pnpm-deps.sh,
       # which installs only when the lockfile moved. No image is rebuilt: a
-      # lockfile the image's store cannot satisfy needs a new environment.image.
+      # lockfile the image's store cannot satisfy needs a new environment.fallback.
       - paths: ["pnpm-lock.yaml", "package.json", "apps/*/package.json", "packages/*/package.json"]
         action: restart
       # next.config.js and the env/middleware wiring are read once at startup.

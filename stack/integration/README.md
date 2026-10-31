@@ -39,15 +39,15 @@ The site runs from this checkout; no image is built or pulled for the apps.
    minutes. It fast-forwards this checkout to `origin/$DENSER_SOURCE_BRANCH`
    (`aidev/integration`). A run that finds nothing new builds nothing.
 2. It runs `follow/follow.sh once` in the project's test image
-   (`environment.image` of `.aidev/project.yaml`: Node, pnpm and the pnpm store of
-   this lockfile), with the checkout mounted. For each app the build key is Turbo's
+   (`environment.fallback` of `.aidev/project.yaml`, the image with Node, pnpm and the
+   pnpm store of this lockfile baked in; `follow/environment-image.sh`), with the checkout mounted. For each app the build key is Turbo's
    hash of its build task (its sources, the workspace packages it uses, the lockfile's
    resolution of its dependencies, `turbo.json`, its base path) plus the image and
    the root workspace files:
    - `apps/blog/**` moves the blog's key only, `apps/wallet/**` the wallet's;
    - `packages/**` moves the key of each app that depends on the package;
-   - `pnpm-lock.yaml` comes with a new `environment.image` (AIDEV requires both
-     together), which reinstalls `node_modules` and moves both keys;
+   - `pnpm-lock.yaml` comes with a new `environment.fallback` (`.aidev/README.md`
+     requires both together), which reinstalls `node_modules` and moves both keys;
    - docs, `.aidev/`, `stack/`, `apps/*/playwright/**` move nothing.
 3. An app whose key moved gets `next build` in the checkout (`.next/cache` stays
    there), with `NEXT_PUBLIC_BASE_PATH` and the commit's `version.json` (the

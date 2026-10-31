@@ -1,68 +1,72 @@
 # denser under AIDEV
 
-`.aidev/project.yaml` is denser's AIDEV profile. The suites it binds run in the
-digest-pinned `registry.gitlab.syncad.com/hive/denser/aidev-tests` image
-(`.aidev/runtime/`), offline, and write junit under `test-results/`.
+`.aidev/project.yaml` is denser's AIDEV profile. The suites it binds run in
+common-ci-configuration's shared `node-test-tools-browser:develop` image
+(`environment.kind: shared`), or in the digest-pinned fallback
+`registry.gitlab.syncad.com/hive/denser/aidev-tests` (`.aidev/runtime/`), offline,
+and write junit under `test-results/`.
 
-## The test runtime image (`runtime/`)
+## The shared test image (`kind: shared`)
 
-`runtime/Dockerfile` is built on common-ci-configuration's
-`node-test-tools:develop`, the image CI's Node jobs run, so Node, pnpm and
-Playwright are ccc's versions and the repository pins none of its own. It adds
-Playwright's full Chromium (for Lighthouse) and every package `pnpm-lock.yaml`
-resolves. The build is published as `registry.gitlab.syncad.com/hive/denser/aidev-tests`
-and pinned by digest in `project.yaml` (`environment.image`) and the compose stacks
-(`x-image`). Its tag is `aidev-` plus a hash of its inputs: `runtime/Dockerfile`,
-`pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.npmrc` and the digest the base tag names.
+`node-test-tools-browser` is ccc's `node-test-tools` (Node, pnpm, Playwright with
+its Chromium headless shell, the image CI's Node jobs run) plus Playwright's full
+Chromium (`CHROME_PATH=/usr/local/bin/chromium`) and Lighthouse on `PATH`. AIDEV pins
+the tag to a digest once per workflow, fills the host's pnpm store from
+`pnpm-lock.yaml` with the profile's `packages.fetch` (online, at the suites'
+workspace path) and runs every suite with that store mounted read-only at
+`/opt/pnpm-store` and `--network none`, as the caller's uid (aidev's
+`docs/operations/shared-test-images.md`). The suites install from it with
+`.aidev/pnpm-deps.sh`, which passes `--store-dir /opt/pnpm-store` and exports the
+environment the fallback image sets (`HOME` when it is not writable,
+`PLAYWRIGHT_BROWSERS_PATH`, `NEXT_TELEMETRY_DISABLED`, `TURBO_TELEMETRY_DISABLED`,
+`DO_NOT_TRACK`, no `packageManager` switch), so they need nothing else from either
+image. Lighthouse (`lighthouse_fixture`) runs on the image's full Chromium: on the
+headless shell its pages load lazy images (`/p/…?format=webp&mode=fit&width=640`)
+the `lighthouse` recording lacks, so the pass would not be hermetic.
+
+`pnpm install` registers the checkout in the store (`v10/projects/`), which works on
+the read-only mount only because the fill runs its fetch at the suites' workspace
+path. A lockfile change needs no new image on the shared route: the next fill
+fetches it.
+
+## The fallback image (`runtime/`)
+
+`environment.fallback` runs when the shared route cannot be had on a host (the tag
+does not resolve, the pull or the store fill fails). `runtime/Dockerfile` builds it on
+`node-test-tools:develop`, adding Playwright's full Chromium, Lighthouse 13.5.0 under
+`/opt/lighthouse` and every package `pnpm-lock.yaml` resolves, fetched into a store
+at `/opt/pnpm-store`, the path the shared route mounts its store at. The build is
+published as `registry.gitlab.syncad.com/hive/denser/aidev-tests` and pinned by
+digest in `project.yaml` (`environment.fallback`) and the compose stacks (`x-image`);
+the integration site's follow mode runs it too
+(`stack/integration/follow/environment-image.sh` prints `environment.fallback`). Its
+tag is `aidev-` plus a hash of its inputs: `runtime/Dockerfile`, `pnpm-lock.yaml`,
+`pnpm-workspace.yaml`, `.npmrc` and the digest the base tag names.
 `runtime/build.sh` looks that tag up in the registry first and builds nothing when it
 is there; `build.sh --tag` prints the tag. The registry cleanup policy keeps
 `aidev-*` tags, so a pinned image isn't expired.
 
-### Changing dependencies (lockfile + digest bump)
+### Changing dependencies (lockfile + fallback bump)
 
-AIDEV refuses a commit that changes `pnpm-lock.yaml` unless `environment.image` moves
-in the same commit. When you change any image input:
+The fallback's store installs only the lockfile it was baked from. **Rebuild the
+fallback, or drop it, in the same commit as any `pnpm-lock.yaml` change.** AIDEV
+holds `fallback` to the lockstep rule: one the lockfile moved past is dropped (a
+pending `environment.fallback` change), and a shared-route failure then refuses the
+slot. The stacks and follow mode have no shared route: with a stale `x-image` the
+dev stack's offline install fails, and follow mode would build on a store that lacks
+the new packages.
 
 1. Run `.aidev/runtime/build.sh --push` (needs push rights on the registry). It prints
    `registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:<digest>`, building and
    pushing only when no image for these inputs exists yet.
-2. Put that reference in `project.yaml` `environment.image` and in the `x-image`
+2. Put that reference in `project.yaml` `environment.fallback` and in the `x-image`
    line of `dev-stack.compose.yml` and `test-stack.compose.yml`, and commit them
-   together with the input change.
+   together with the lockfile change.
 
-The workflow (or person) that changes an input runs `build.sh --push` itself; no
+The workflow (or person) that changes the lockfile runs `build.sh --push` itself; no
 CI job builds this image. AIDEV-driven development doesn't use GitLab CI (see
-"CI" below).
-
-### The shared test image (`kind: shared`): not yet
-
-aidev's shared route (`docs/operations/shared-test-images.md` in ai/aidev) would run
-the suites in ccc's `node-test-tools:develop` with a host pnpm store mounted read-only
-at `/opt/pnpm-store`, and drop this image. `.aidev/pnpm-deps.sh` already exports the
-environment this image sets, so the suites need nothing else from it. Checked by hand
-on 2026-10-30 (`node-test-tools@sha256:41eb307a…`, Node 24.22.1, pnpm 10.33.0,
-Playwright 1.64.1 with only `chromium_headless_shell-1248`; store filled by `pnpm fetch`
-at `/work`, suites at `--network none` as uid 1000), `unit`, `static` and the
-Playwright suites pass there as they do in this image: Playwright's headless launches
-already use the headless shell in both. What keeps denser on `kind: container` is the
-`system` slot's `lighthouse_fixture`:
-
-- **No Lighthouse.** The image has none. Making it a root devDependency puts it in
-  `pnpm-lock.yaml`, and the commit that switches the environment is judged under the
-  approved `container` image, whose store would not install that lockfile.
-- **No full Chromium**, and the recording assumes it. On the headless shell (same tree,
-  same image) the pass makes 18 image requests the `lighthouse` recording lacks
-  (`/p/…?format=webp&mode=fit&width=640`, lazy images), so it is not hermetic. Bytes
-  and request counts are the same as full Chromium's; TBT medians were lower.
-
-A ccc image variant with Playwright's full Chromium and Lighthouse would satisfy both.
-A switch also has to bring the stacks along: `dev-stack.compose.yml` and
-`test-stack.compose.yml` run this image (`x-image`) with its baked store, and the
-integration site's follow mode runs `environment.image`
-(`stack/integration/follow/environment-image.sh`), which on the shared route names a
-tag with no store. Under the shared route a project's `pnpm install` registers the
-checkout in the store (`v10/projects/`), which works on the read-only mount only
-because aidev's fill runs its fetch at the suites' workspace path.
+"CI" below). Dropping the fallback means moving the stacks and follow mode off it
+first: they need an image whose store matches the lockfile.
 
 ## Hand-off to develop
 
@@ -280,7 +284,7 @@ restarts the stack's services (`reload` in the profile; either app's
 when an app no longer resolves the `next`/`react` the lockfile pins
 (`.aidev/pnpm-deps.sh`). An install that fails stops the service rather than
 starting `next` on a half-linked tree. A lockfile the
-image's store cannot satisfy needs a new `environment.image`
+image's store cannot satisfy needs a new `environment.fallback`
 (`.aidev/runtime/build.sh`).
 
 **By hand**, outside AIDEV:
@@ -558,7 +562,7 @@ named import of a small helper brings everything else its file holds.
 
 ```bash
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work \
-    registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:<environment.image digest> \
+    registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:<environment.fallback digest> \
     .aidev/run-lighthouse-fixture.sh --record
 ```
 

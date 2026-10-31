@@ -197,12 +197,25 @@ else
         || { echo "no recording at $set_dir (run with --record)" >&2; exit 1; }
 fi
 
+# Lighthouse and the browser it drives come from the image: node-test-tools-browser
+# puts `lighthouse` on PATH and names its full Chromium in CHROME_PATH; the fallback
+# image installs Lighthouse under /opt/lighthouse and has Playwright's full Chromium
+# under /ms-playwright. Never the headless shell: on it the pages load lazy images the
+# recording lacks.
+command -v lighthouse > /dev/null || PATH=/opt/lighthouse/bin:$PATH
+export CHROME_PATH=${CHROME_PATH:-$(ls -d "${PLAYWRIGHT_BROWSERS_PATH:-/ms-playwright}"/chromium-*/chrome-linux*/chrome 2> /dev/null | head -n 1)}
+if ! command -v lighthouse > /dev/null || [ ! -x "$CHROME_PATH" ]; then
+    printf 'case\tLighthouse and full Chromium in the image\tfail\t0\tlighthouse: %s, CHROME_PATH: %s\t\n' \
+        "$(command -v lighthouse || echo none)" "${CHROME_PATH:-none}" >> "$cases"
+    echo "no Lighthouse on PATH or no full Chromium (CHROME_PATH='$CHROME_PATH'): run this in the environment image" >&2
+    exit 1
+fi
+echo "Lighthouse $(lighthouse --version) at $(command -v lighthouse), Chromium $CHROME_PATH ($("$CHROME_PATH" --version 2> /dev/null))" >&2
+
 step "build blog" "$out/logs/build-blog.log" build blog
 step "build wallet" "$out/logs/build-wallet.log" build wallet
 step "start the site ($mode, clock $clock)" "$out/logs/start.log" start_site
 
-chrome=$(ls -d /ms-playwright/chromium-*/chrome-linux*/chrome 2> /dev/null | head -n 1)
-export CHROME_PATH=${CHROME_PATH:-$chrome}
 args=(--site "$site" --out "$out" --fixture-set "$set_name" --clock "$clock" --cases "$cases"
     --revision "$(git rev-parse HEAD 2> /dev/null || echo worktree)"
     --allowed-host "127.0.0.1:$site_port" --allowed-host "127.0.0.1:$api_port" --allowed-host "127.0.0.1:$images_port")
