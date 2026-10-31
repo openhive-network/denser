@@ -19,7 +19,6 @@ import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '../../components/dialog-login';
 import LiteAuthorBadge from '../lite-account/lite-author-badge';
 import { isLiteDid } from '../lite-account/lite-did';
-import { LiteReplyBox } from '../lite-account/lite-reply-box';
 import LiteReplyTrigger from '../lite-account/lite-reply-trigger';
 import { LiteOwnerActions } from '../lite-account/lite-owner-actions';
 import { liteL1Author } from '../lite-account/lite-ownership';
@@ -64,6 +63,8 @@ interface CommentListProps {
 }
 // The lite editor pulls in the post editor's helpers (and the renderer); load it only when editing.
 const LiteEditForm = dynamic(() => import('../lite-account/lite-edit-form').then((m) => m.LiteEditForm), { ssr: false });
+// The guest reply box signs with @hiveio/lite-account's crypto; load it only when a guest opens a reply.
+const LiteReplyBox = dynamic(() => import('../lite-account/lite-reply-box').then((m) => m.LiteReplyBox), { ssr: false });
 
 export const commentClassName =
   'font-sanspro text-[12.5px] prose-h1:text-[20px] prose-h2:text-[17.5px] prose-h4:text-[13.7px] sm:text-[13.4px] sm:prose-h1:text-[21.5px] sm:prose-h2:text-[18.7px] sm:prose-h3:text-[16px]  sm:prose-h4:text-[14.7px] lg:text-[14.6px] lg:prose-h1:text-[23.3px] lg:prose-h2:text-[20.4px] lg:prose-h3:text-[17.5px] lg:prose-h4:text-[16px] prose-h3:text-[15px] prose-p:mb-[9.6px] prose-p:mt-[1.6px] prose-p:last:mb-[3.2px] prose-img:max-w-full prose-img:h-auto prose-img:max-h-[400px] prose-img:object-contain';

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import { buildLiteReplyRequest, type LiteIdentity } from '@hiveio/lite-account';
 import { currentPostsNamespace } from '@transaction/lib/lite-api';
 import { Button } from '@ui/components/button';

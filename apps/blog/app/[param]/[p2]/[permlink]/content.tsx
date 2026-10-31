@@ -15,10 +15,8 @@ import { useRebloggedByQuery } from '@/blog/features/list-of-posts/hooks/use-reb
 import { useDeletePostMutation } from '@/blog/features/post-editor/hooks/use-post-mutation';
 import PostingLoader from '@/blog/features/post-editor/posting-loader';
 import { ReplyTextbox } from '@/blog/features/post-editor/reply-textbox';
-import { LiteReplyBox } from '@/blog/features/lite-account/lite-reply-box';
 import LiteReplyTrigger from '@/blog/features/lite-account/lite-reply-trigger';
-import { liteDeletedPostDestination } from '@/blog/features/lite-account/lite-manage-cache';
-import { liteL1Author } from '@/blog/features/lite-account/lite-ownership';
+import { liteDeletedPostDestination, liteL1Author } from '@/blog/features/lite-account/lite-ownership';
 import { LiteOwnerActions } from '@/blog/features/lite-account/lite-owner-actions';
 import { useReopenReplyAfterSignIn } from '@/blog/features/lite-account/use-lite-sign-in-handoff';
 import { LiteTombstoneNotice } from '@/blog/features/lite-account/lite-tombstone-notice';
@@ -93,6 +91,10 @@ import { StaleTime } from '@/blog/lib/react-query';
 // The post editor (its form schema and transaction helpers) is needed only when editing the post.
 const PostForm = dynamic(() => import('@/blog/features/post-editor/post-form'), { ssr: false });
 const LiteEditForm = dynamic(() => import('@/blog/features/lite-account/lite-edit-form').then((m) => m.LiteEditForm), {
+  ssr: false
+});
+// The guest reply box signs with @hiveio/lite-account's crypto; load it only when a guest opens a reply.
+const LiteReplyBox = dynamic(() => import('@/blog/features/lite-account/lite-reply-box').then((m) => m.LiteReplyBox), {
   ssr: false
 });
 

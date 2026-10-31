@@ -1,9 +1,11 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { CONTENT_ALG, DEFAULT_LITE_APP_IDS as PACKAGE_APP_IDS } from '@hiveio/lite-account';
 import type { Entry } from '@hive/common-hiveio-packages/wax';
 
-const { isLiteOwner, isLiteTombstone, liteL1Author, liteL1Parent, liteManageCapabilities, liteManageErrorKey } =
+const { isLiteOwner, isLiteTombstone, liteDeletedPostDestination, liteL1Author, liteL1Parent, liteManageCapabilities, liteManageErrorKey } =
   await import('./lite-ownership.ts');
+const { DEFAULT_LITE_APP_IDS, liteAttribution } = await import('./lite-attribution.ts');
 
 const APPS = { account: 'lite_account_test', posts: 'lite_posts_test' };
 const ROOT_URL = '/lite-test/@test-gateway-1/re-lite-test-478380rd5v';
@@ -134,5 +136,25 @@ describe('manage error keys', () => {
     assert.equal(liteManageErrorKey('bad_signature'), 'invalid_request');
     assert.equal(liteManageErrorKey('something_new'), 'unknown');
     assert.equal(liteManageErrorKey(undefined), 'unknown');
+  });
+});
+
+describe('after deleting the open post', () => {
+  it('goes to the parent of a comment, or the feed of a root post', () => {
+    assert.equal(
+      liteDeletedPostDestination({ category: 'lite-test', parent_author: 'did:lite:lite-smoke-1016', parent_permlink: 'root' }),
+      '/lite-test/@did:lite:lite-smoke-1016/root'
+    );
+    assert.equal(liteDeletedPostDestination({ category: 'lite-test', parent_author: '' }), '/created/lite-test');
+  });
+});
+
+describe('release attribution', () => {
+  it('reads the gate marker under the same app ids and algorithm as @hiveio/lite-account', () => {
+    assert.deepEqual(DEFAULT_LITE_APP_IDS, PACKAGE_APP_IDS);
+    assert.deepEqual(liteAttribution({ [PACKAGE_APP_IDS.posts]: { attester: 'warm-zebra-201' } }), {
+      attester: 'warm-zebra-201',
+      alg: CONTENT_ALG
+    });
   });
 });

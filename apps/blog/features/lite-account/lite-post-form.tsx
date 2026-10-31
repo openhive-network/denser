@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { CircleSpinner } from 'react-spinners-kit';
+import { CircleSpinner } from '@ui/components/circle-spinner';
 import type { CommentContent, LiteIdentity, LiteRelayOk } from '@hiveio/lite-account';
 import { getLiteApiInfo } from '@transaction/lib/lite-api';
 import { getPostCategory } from '@transaction/lib/post-category';

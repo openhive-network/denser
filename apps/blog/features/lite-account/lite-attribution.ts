@@ -1,4 +1,9 @@
-import { CONTENT_ALG, DEFAULT_LITE_APP_IDS, type LiteAppIds } from '@hiveio/lite-account';
+import type { LiteAppIds } from '@hiveio/lite-account';
+
+// @hiveio/lite-account's DEFAULT_LITE_APP_IDS and CONTENT_ALG, copied: the package has a single
+// entry point, and importing it would bundle its signing code into every page that shows a post.
+export const DEFAULT_LITE_APP_IDS: LiteAppIds = { account: 'lite_account', posts: 'lite_posts' };
+const CONTENT_ALG = 'lite-comment-v1';
 
 export type LiteAttribution = { attester: string; alg: string };
 
