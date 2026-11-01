@@ -12,6 +12,10 @@ void describe('shardFromEnv', () => {
     assert.equal(shardFromEnv('1', '1'), undefined);
   });
 
+  void it('runs unsharded in a GitLab job without parallel: (CI_NODE_TOTAL=1, no index)', () => {
+    assert.equal(shardFromEnv(undefined, '1'), undefined);
+  });
+
   void it('reads GitLab parallel variables', () => {
     assert.deepEqual(shardFromEnv('3', '4'), { current: 3, total: 4 });
   });

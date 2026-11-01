@@ -11,11 +11,13 @@ export type SpecDurations = Record<string, number>;
 
 /**
  * The shard GitLab's `parallel:` gives a job (CI_NODE_INDEX, CI_NODE_TOTAL),
- * or undefined for an unsharded run: neither set, or a total of 1. Throws on
- * any other value, which would otherwise run the whole suite in every shard.
+ * or undefined for an unsharded run: neither set, or a total of 1. GitLab sets
+ * CI_NODE_TOTAL=1 and no CI_NODE_INDEX on every job without `parallel:`, so
+ * that pair is unsharded too. Throws on any other value, which would otherwise
+ * run the whole suite in every shard.
  */
 export function shardFromEnv(index: string | undefined, total: string | undefined): IShard | undefined {
-  if (index === undefined && total === undefined) return undefined;
+  if (index === undefined && (total === undefined || total === '1')) return undefined;
   const current = Number(index);
   const count = Number(total);
   if (!Number.isInteger(count) || count < 1 || !Number.isInteger(current) || current < 1 || current > count) {
