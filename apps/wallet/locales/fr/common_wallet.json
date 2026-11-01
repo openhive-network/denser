@@ -747,6 +747,7 @@
     "description": "Chaque famille d'API Hive est envoyée au nœud choisi pour elle. Choisissez un nœud par famille ou gardez le choix automatique.",
     "check_nodes": "Vérifier les nœuds",
     "stop_checking": "Arrêter la vérification",
-    "node_unavailable": "{{selected}} est indisponible pour {{set}} ; {{node}} est utilisé jusqu'à son rétablissement."
+    "node_unavailable": "{{selected}} est indisponible pour {{set}} ; {{node}} est utilisé jusqu'à son rétablissement.",
+    "catalog_only": "Seuls les nœuds listés peuvent être choisis : le site ne peut en appeler aucun autre."
   }
 }

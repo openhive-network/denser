@@ -29,8 +29,8 @@ export const API_SET_TITLES: Readonly<Record<TApiSetId, string>> = {
 
 /**
  * Public API nodes users may pick for any set they serve, on every deployment. They are in the
- * catalog (and the CSP's `connect-src`) but are no failover target unless the operator lists them:
- * not all of them serve every API.
+ * catalog (and the CSP's `connect-src`); a set's calls fail over to them, behind the operator's
+ * nodes, once the engine found them serving the set.
  */
 export const SELECTABLE_API_NODES: readonly string[] = [
   'https://api.hive.blog',
@@ -212,7 +212,7 @@ export function resolveApiSetsConfig(
   return { nodes, sets, preferences };
 }
 
-/** The nodes of `setId` the operator lists, the ones its calls may fail over to. */
+/** The nodes of `setId` the operator lists, best first. */
 export const preferredNodes = (config: IApiSetsConfig, setId: TApiSetId): string[] =>
   nodesOf(config.preferences[setId]);
 

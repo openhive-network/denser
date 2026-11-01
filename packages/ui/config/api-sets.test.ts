@@ -35,6 +35,7 @@ registerHooks({
 const { ApiSetEngine, memoryStorage } = await import('@hiveio/healthchecker-component/engine');
 const { createApiSetEngine } = await import('../../transaction/lib/api-sets/definitions.ts');
 const { getApiSetView, provideApiSetView } = await import('../../transaction/lib/api-sets/router.ts');
+const { probeAnswerOf } = await import('../../transaction/lib/api-sets/probe-answers.ts');
 const { createEngineView } = await import('../../transaction/lib/api-sets/engine-view.ts');
 const { installServerApiSets } = await import('../../transaction/lib/api-sets/server.ts');
 
@@ -186,18 +187,90 @@ describe('routing by API set', () => {
     assert.equal(engine.groups().find(({ group }) => group === 'hivemind')?.split, false);
   });
 
-  it("fails over in the engine's order across the operator's nodes only, skipping a node that is down", async () => {
+  it("fails over in the engine's order, the operator's nodes first, skipping a node that is down", async () => {
     const { engine, config } = await probedEngine(MAINNET_ENV, fakeTransport({ downNodes: [SYNCAD] }));
     const view = createEngineView(engine, config);
-    // anyx.io serves core as well, but only users pick it: it is no failover target.
-    assert.deepEqual(view.nodesFor('core'), [HIVE_BLOG, OPENHIVE]);
+    const core = view.nodesFor('core');
+    assert.deepEqual(core.slice(0, 2), [HIVE_BLOG, OPENHIVE]);
+    assert.equal(core.includes(SYNCAD), false);
     assert.deepEqual(view.nodesFor('lite'), []);
+  });
+
+  it('routes to a catalog node the operator does not list once it serves the set, as /healthchecker shows', async () => {
+    const { engine, config } = await probedEngine(
+      { apiEndpoint: HIVE_BLOG, allowedNodes: HIVE_BLOG },
+      fakeTransport({ liteNodes: [SYNCAD] })
+    );
+    assert.equal(config.preferences.lite.includes(SYNCAD), false);
+    assert.equal(engine.bestNode('lite'), SYNCAD);
+    assert.deepEqual(createEngineView(engine, config).nodesFor('lite'), [SYNCAD]);
+    assert.equal(createEngineView(engine, config).nodesFor('core')[0], HIVE_BLOG);
+  });
+
+  it("keeps the For You feed's URL out of the other sets without asking it", async () => {
+    const fyp = `${SYNCAD}/haf-fyp-api`;
+    const asked: string[] = [];
+    const transport = fakeTransport();
+    const { engine } = await probedEngine(
+      { ...MAINNET_ENV, fypApiUrl: fyp },
+      {
+        jsonRpc: async (node, method, params, timeoutMs) => {
+          asked.push(node);
+          return transport.jsonRpc(node, method, params, timeoutMs);
+        },
+        restGet: transport.restGet
+      }
+    );
+    assert.equal(asked.includes(fyp), false);
+    for (const setId of ['core', 'bridge', 'lite'] as const) {
+      assert.equal(engine.rankings(setId).find(({ node }) => node === fyp)?.state, 'unsupported');
+    }
+    assert.equal(engine.bestNode('fyp'), fyp);
+  });
+
+  it('backs off a node users may pick that could not be reached, but not an operator node', async () => {
+    let time = 0;
+    const asked: string[] = [];
+    const config = resolveApiSetsConfig(MAINNET_ENV, ['core']);
+    const engine = createApiSetEngine(config, {
+      storage: memoryStorage(),
+      now: () => time,
+      transport: {
+        jsonRpc: async (node) => {
+          asked.push(node);
+          if (node === ANYX || node === OPENHIVE) throw new Error(`${node} is down`);
+          return { result: { head_block_number: 1 } };
+        },
+        restGet: async () => ({ status: 200, body: {} })
+      }
+    });
+    const askedOf = (node: string) => asked.filter((asked) => asked === node).length;
+    await engine.refresh();
+    for (const elapsedMs of [31_000, 31_000]) {
+      time += elapsedMs;
+      await engine.refresh();
+    }
+    // Asked at 0 s, backed off for 30 s, asked at 31 s, backed off for 60 s: not asked at 62 s.
+    assert.equal(askedOf(ANYX), 2);
+    assert.equal(askedOf(OPENHIVE), 3);
+  });
+
+  it("records the lite probe's lite.get_info answers for the lite reads", async () => {
+    await probedEngine();
+    assert.deepEqual(probeAnswerOf('lite', SYNCAD, 60_000)?.answer, LITE_INFO);
+    assert.deepEqual(probeAnswerOf('lite', HIVE_BLOG, 60_000), { answer: null });
+    assert.equal(probeAnswerOf('lite', HIVE_BLOG, -1), undefined);
   });
 
   it("takes a user's node into the order of its set", async () => {
     const { engine, config } = await probedEngine();
     assert.equal(engine.select('core', ANYX), true);
-    assert.deepEqual(createEngineView(engine, config).nodesFor('core'), [ANYX, HIVE_BLOG, SYNCAD, OPENHIVE]);
+    assert.deepEqual(createEngineView(engine, config).nodesFor('core').slice(0, 4), [
+      ANYX,
+      HIVE_BLOG,
+      SYNCAD,
+      OPENHIVE
+    ]);
   });
 
   it('does not offer a node that does not serve the set', async () => {

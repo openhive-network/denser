@@ -1300,6 +1300,7 @@
     "description": "Each family of Hive APIs goes to the node chosen for it. Pick a node per family, or keep the automatic choice.",
     "check_nodes": "Check the nodes",
     "stop_checking": "Stop checking",
-    "node_unavailable": "{{selected}} is unavailable for {{set}}; using {{node}} until it recovers."
+    "node_unavailable": "{{selected}} is unavailable for {{set}}; using {{node}} until it recovers.",
+    "catalog_only": "Only the listed nodes can be chosen: the site may call no others."
   }
 }

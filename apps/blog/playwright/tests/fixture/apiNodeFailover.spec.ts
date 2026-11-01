@@ -6,7 +6,9 @@ import type { IFixtureProxyHandle, IJsonRpcCall } from '../support/mock-server';
 /**
  * When the browser's selected API node is unreachable, the client switches to a node that answers
  * (one of the allowed nodes, here the fixture proxy) and the page loads its data from it. The
- * switch lasts for the browser session only and never overwrites the node the user chose.
+ * switch lasts for the browser session only and never overwrites the node the user chose. Only a
+ * core read (database_api, condenser_api, ...) switches it: a bridge or lite read fails over
+ * for that call alone.
  */
 
 test.use({ fixtureTestName: 'userProfileTabs', bypassCSP: true });
@@ -112,7 +114,6 @@ const SWITCHED_TO_HEALTHY_NODE = {
   automatic: JSON.stringify({ replaced: DEAD_NODE, node: HEALTHY_NODE })
 };
 
-const COMMUNITIES_READ = 'bridge.list_communities';
 const isRepliesRead = ({ method, params }: IJsonRpcCall) =>
   method === 'bridge.get_account_posts' && params.sort === 'replies';
 
@@ -180,16 +181,8 @@ test('API-FAILOVER-03: after a switch, a client-side navigation reads from the n
 }) => {
   const deadNodeRequests = await selectDeadNode(context, stall);
 
-  // The sidebar's communities are read by the browser, which fails over and switches.
-  const restoreCommunities = await failServerReads(
-    context,
-    fixtureProxy,
-    ({ method }) => method === COMMUNITIES_READ
-  );
-  const communitiesRead = waitForHealthyRead(page, ({ method }) => method === COMMUNITIES_READ);
-  await page.goto('/trending');
-  await communitiesRead;
-  await restoreCommunities();
+  // The followers list is read by the browser (a core read), which fails over and switches.
+  await openFollowersServedByHealthyNode(page);
   await expect.poll(() => readNodeStorage(page)).toEqual(SWITCHED_TO_HEALTHY_NODE);
 
   const requestsBeforeNavigation = deadNodeRequests.length;
@@ -243,5 +236,6 @@ test('API-FAILOVER-04: a client-side navigation first in a session fails over wi
   }
 
   await expectRepliesListed(page);
-  await expect.poll(() => readNodeStorage(page)).toEqual(SWITCHED_TO_HEALTHY_NODE);
+  // Only a core read switches the browser's node: a bridge read that failed over leaves it.
+  expect(await readNodeStorage(page)).toEqual({ selected: JSON.stringify(DEAD_NODE), automatic: null });
 });

@@ -153,7 +153,10 @@ export interface IApiSetRoute {
 }
 
 export interface IRouteNodes {
-  /** A node that goes before the view's, e.g. one the user picked before API sets existed. */
+  /**
+   * A node that goes before the view's, e.g. one the user picked before API sets existed; ignored
+   * while the user chose a node for the set, a choice that always wins.
+   */
   pinned?: string;
   /** The nodes the call was configured with, used after the view's. */
   configured: readonly string[];
@@ -165,13 +168,14 @@ export async function routeApiSet(
   { pinned, configured }: IRouteNodes
 ): Promise<IApiSetRoute> {
   const view = await getApiSetView();
-  const nodes = [pinned, ...(view?.nodesFor(setId) ?? []), ...configured].filter(
+  const selected = view?.selectedNode(setId);
+  const nodes = [selected ? undefined : pinned, ...(view?.nodesFor(setId) ?? []), ...configured].filter(
     (node): node is string => !!node
   );
   return {
     setId,
     nodes: [...new Set(nodes)],
-    selected: view?.selectedNode(setId),
+    selected,
     report: (node, outcome) => view?.report(setId, node, outcome)
   };
 }

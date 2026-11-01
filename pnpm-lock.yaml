@@ -10,8 +10,8 @@ catalogs:
       specifier: 1.28.4-rc0-stable.261028220752
       version: 1.28.4-rc0-stable.261028220752
     '@hiveio/healthchecker-component':
-      specifier: 2.0.2-stable.261101020235
-      version: 2.0.2-stable.261101020235
+      specifier: 2.0.2-stable.261101024148
+      version: 2.0.2-stable.261101024148
     '@hiveio/wax':
       specifier: 1.28.8-stable.261028191145
       version: 1.28.8-stable.261028191145
@@ -160,7 +160,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 2.0.2-stable.261101020235(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
+        version: 2.0.2-stable.261101024148(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
       '@hiveio/lite-account':
         specifier: catalog:lite-toolset
         version: 0.2.0-rc1-stable.261027023737
@@ -389,7 +389,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 2.0.2-stable.261101020235(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
+        version: 2.0.2-stable.261101024148(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.8-stable.261028191145
@@ -508,7 +508,7 @@ importers:
         version: 7.37.5(eslint@8.57.1)
       eslint-plugin-turbo:
         specifier: latest
-        version: 2.11.8(eslint@8.57.1)(turbo@2.3.3)
+        version: 2.11.10(eslint@8.57.1)(turbo@2.3.3)
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: 7.15.0
@@ -821,7 +821,7 @@ importers:
         version: link:../smart-signer
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 2.0.2-stable.261101020235(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
+        version: 2.0.2-stable.261101024148(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.8-stable.261028191145
@@ -1993,8 +1993,8 @@ packages:
     peerDependencies:
       '@hiveio/wax': '>= 1.28.8-0 < 1.29.0'
 
-  '@hiveio/healthchecker-component@2.0.2-stable.261101020235':
-    resolution: {integrity: sha1-s6ZNaVKEYIN8nxiTY4zl8Rm4vnU=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-2.0.2-stable.261101020235.tgz}
+  '@hiveio/healthchecker-component@2.0.2-stable.261101024148':
+    resolution: {integrity: sha1-MQcfByC5kyVVV4hoDI6agytdUV4=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-2.0.2-stable.261101024148.tgz}
     engines: {node: '>=24'}
     peerDependencies:
       '@hiveio/wax': '>=1.28.6-rc10-stable.260317114454 <1.29.0 || >=1.28.8-0 <1.29.0 || ^2.0.0'
@@ -5947,8 +5947,8 @@ packages:
   eslint-plugin-security@1.7.1:
     resolution: {integrity: sha512-sMStceig8AFglhhT2LqlU5r+/fn9OwsA72O5bBuQVTssPCdQAOQzL+oMn/ZcpeUY6KcNfLJArgcrsSULNjYYdQ==}
 
-  eslint-plugin-turbo@2.11.8:
-    resolution: {integrity: sha512-nS0thH4YqMGZJYfmMKOg+zsglKYUICH7OhUvryfK/jZZoYZ48ulaKmXwtS2usdgVxtA1lICb/Yofvxuk1t/zGw==}
+  eslint-plugin-turbo@2.11.10:
+    resolution: {integrity: sha512-he4kQi41ZX8KM9fxCCl9cmhbk37bNnXR0EVGP6xc12KvxfoosfHmMVsdo7zX2a1G/iPhbLaXSATZorXAA5eXOw==}
     peerDependencies:
       eslint: '>6.6.0'
       turbo: '>2.0.0'
@@ -11895,7 +11895,7 @@ snapshots:
       '@hiveio/wax': 1.28.8-stable.261028191145
       comlink: 4.4.2
 
-  '@hiveio/healthchecker-component@2.0.2-stable.261101020235(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)':
+  '@hiveio/healthchecker-component@2.0.2-stable.261101024148(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)':
     dependencies:
       '@hiveio/wax': 1.28.8-stable.261028191145
       react: 19.3.1
@@ -16426,7 +16426,7 @@ snapshots:
     dependencies:
       safe-regex: 2.1.1
 
-  eslint-plugin-turbo@2.11.8(eslint@8.57.1)(turbo@2.3.3):
+  eslint-plugin-turbo@2.11.10(eslint@8.57.1)(turbo@2.3.3):
     dependencies:
       dotenv: 16.0.3
       eslint: 8.57.1

@@ -16,13 +16,27 @@ interface IApiSetsPanelProps {
   createChecks?: () => Promise<TApiSetChecks>;
   checkLabel: string;
   stopLabel: string;
+  /** Says that only the listed nodes can be chosen: the panel offers no custom nodes. */
+  catalogOnlyNote: string;
 }
+
+/**
+ * The package component's last child is its "Add Custom Node" form, which it always renders: the
+ * browser engine refuses custom nodes (see `getBrowserApiSetEngine`), so the form is hidden.
+ */
+const HIDE_CUSTOM_NODE_FORM = '[&>div:last-child]:hidden';
 
 /**
  * One tab per API set with its ranked nodes, where the user picks a node per set (or for every set
  * it serves) or keeps the automatic choice. Nodes are probed only while the user has the check on.
  */
-export function ApiSetsPanel({ snapshot, createChecks, checkLabel, stopLabel }: IApiSetsPanelProps) {
+export function ApiSetsPanel({
+  snapshot,
+  createChecks,
+  checkLabel,
+  stopLabel,
+  catalogOnlyNote
+}: IApiSetsPanelProps) {
   const [engine, setEngine] = useState<ApiSetEngine>();
   const [checking, setChecking] = useState(false);
 
@@ -56,7 +70,10 @@ export function ApiSetsPanel({ snapshot, createChecks, checkLabel, stopLabel }: 
       <Button className="self-center" onClick={toggleChecking} data-testid="api-sets-check-toggle">
         {checking ? stopLabel : checkLabel}
       </Button>
-      <ApiSetsComponent className="m-4" engine={engine} />
+      <ApiSetsComponent className={`m-4 ${HIDE_CUSTOM_NODE_FORM}`} engine={engine} />
+      <p className="text-muted-foreground m-4 text-sm" data-testid="api-sets-catalog-only">
+        {catalogOnlyNote}
+      </p>
     </div>
   );
 }

@@ -29,6 +29,9 @@ export function getBrowserApiSetEngine({
 }: IBrowserApiSetEngineOptions): ApiSetEngine {
   if (engine) return engine;
   const created = createApiSetEngine(config, { storage, checks });
+  // Calls outside /healthchecker route by the server's bootstrap, which never names a custom node,
+  // and the CSP lets the page call catalog nodes only: a custom node could be chosen, never used.
+  created.addNode = () => false;
   if (snapshot !== undefined) created.hydrateSnapshot(snapshot);
   created.on('selectionfallback', ({ setId, selected, node }) => {
     if (node && isApiSetId(setId)) announceApiNodeSwitch(node, { setId, selected });

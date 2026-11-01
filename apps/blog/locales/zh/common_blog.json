@@ -1297,6 +1297,7 @@
     "description": "每一类 Hive API 都会发送到为其选定的节点。请为每一类选择节点，或保留自动选择。",
     "check_nodes": "检查节点",
     "stop_checking": "停止检查",
-    "node_unavailable": "{{selected}} 对 {{set}} 不可用；在其恢复之前使用 {{node}}。"
+    "node_unavailable": "{{selected}} 对 {{set}} 不可用；在其恢复之前使用 {{node}}。",
+    "catalog_only": "只能选择列出的节点：本站无法连接其他节点。"
   }
 }

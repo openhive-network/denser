@@ -31,9 +31,10 @@ export const createApiSetsSelectionStorage = (catalog: readonly string[]) => ({
 /**
  * Brings the stored choices to the server: the selection kept in localStorage back into its cookie
  * when that is gone, or, the first time, the node picks stored before API sets existed
- * (`node-endpoint` for core, bridge and lite, `ai-search-endpoint` for hivesense), as far as they
- * name nodes of `catalog`. The old picks stay, so a node outside the catalog keeps being used first
- * in this browser until the user chooses per set.
+ * (`node-endpoint` for core and bridge, `ai-search-endpoint` for hivesense), as far as they name
+ * nodes of `catalog`. lite gets none: such a pick predates lite and says nothing about whether the
+ * node serves it. The old picks stay, so a node outside the catalog keeps being used first in this
+ * browser until the user chooses per set.
  */
 export function migrateApiSetsSelection(catalog: readonly string[]): void {
   if (readCookie() !== undefined) return;
@@ -43,9 +44,6 @@ export function migrateApiSetsSelection(catalog: readonly string[]): void {
     return;
   }
   const { apiNode, aiNode } = hiveChainService.getLegacyEndpointChoices();
-  const state = serializeApiSetChoices(
-    { core: apiNode, bridge: apiNode, lite: apiNode, hivesense: aiNode },
-    catalog
-  );
+  const state = serializeApiSetChoices({ core: apiNode, bridge: apiNode, hivesense: aiNode }, catalog);
   if (state) storeSelection(state);
 }
