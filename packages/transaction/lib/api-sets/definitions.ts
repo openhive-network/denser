@@ -73,6 +73,14 @@ const MAX_UNREACHABLE_BACKOFF_MS = 30 * 60_000;
 // A node with a path (`https://api.syncad.com/haf-fyp-api`) is the URL of one API, not an API node.
 const isFeatureUrl = (node: string): boolean => new URL(node).pathname !== '/';
 
+/**
+ * Sets served only at a feature URL, with why an API node is none of their nodes: their calls go to
+ * `<feature URL>/<path>`, which an API node does not serve at its root.
+ */
+const FEATURE_URL_ONLY_SETS: Partial<Record<TApiSetId, string>> = {
+  fyp: 'not a For You API URL'
+};
+
 /** `probe` of `setId`, logging each outcome at debug level. */
 const loggedProbe =
   (setId: TApiSetId, probe: ApiProbe): ApiProbe =>
@@ -89,18 +97,20 @@ const loggedProbe =
   };
 
 /**
- * `setId`'s probe as the engine runs it, logged: a feature URL another set lists is no node of this set, so
- * it is not asked; a node the operator does not list for the set (a node users may pick) that
+ * `setId`'s probe as the engine runs it, logged: a feature URL another set lists is no node of this set, nor
+ * is an API node of a set served only at feature URLs, so neither is asked; a node the operator does not list for the set (a node users may pick) that
  * could not answer is not asked again until its back-off, doubling with each failure, ends.
  */
 function probeOf(config: IApiSetsConfig, setId: TApiSetId, now: () => number): ApiProbe {
   const probe = loggedProbe(setId, PROBES[setId]);
   const preferred = new Set(preferredNodes(config, setId));
   const backoffs = new Map<string, { failures: number; until: number }>();
+  const notAFeatureUrl = FEATURE_URL_ONLY_SETS[setId];
   return async (context) => {
     const { node } = context;
     if (preferred.has(node)) return probe(context);
     if (isFeatureUrl(node)) return { supported: false, reason: 'the URL of another API set' };
+    if (notAFeatureUrl) return { supported: false, reason: notAFeatureUrl };
     const backoff = backoffs.get(node);
     if (backoff && now() < backoff.until) {
       throw new Error(
