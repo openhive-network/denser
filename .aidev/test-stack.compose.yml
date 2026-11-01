@@ -30,7 +30,7 @@
 # and after .aidev/run-wallet-fixture-e2e.sh, wallet-live likewise.
 name: denser-aidev-test
 
-x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:1acd232102e455e24636fff9260321c7147acb48c96d5fe089c155dbb76ec0ce
+x-image: &image registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:1e78d619da98972f6a16d99643b5d81532c1f848013952195d0c0ee4d686f420
 
 x-checkout: &checkout ${AIDEV_HOST_CHECKOUT:-${PWD}}:/work:ro
 
@@ -91,6 +91,8 @@ services:
       DENSER_FEED_CACHE_TTL_S: "0"
       # Same for whether the node behind the endpoint serves lite.* (a recording does or not).
       DENSER_LITE_PROBE_TTL_S: "0"
+      # The API set engine's probes are no recorded calls: it learns from real calls only.
+      DENSER_API_SETS_PROBING: "off"
       HOSTNAME: 0.0.0.0
       PORT: "3000"
     command: ["bash", ".aidev/blog-serve-standalone.sh"]

@@ -5,7 +5,7 @@
  * can be evaluated when the server starts, not at build time.
  */
 
-import { PICKER_API_NODES } from '@hive/ui/config/api-node-picker';
+import { apiSetsEnvFromProcess, resolveApiSetsConfig } from '@hive/ui/config/api-sets';
 import {
   matrixClientOrigins,
   matrixFrameOrigins,
@@ -51,8 +51,9 @@ function buildConnectSrcHosts(): Set<string> {
     }
   }
 
-  // Added on top of the configured nodes, so a node the user picks is reachable on every deployment
-  PICKER_API_NODES.forEach((node) => hosts.add(node));
+  // Every node of the API sets' catalog, the ones users may pick included, so whichever node a set
+  // is routed to is reachable on every deployment
+  resolveApiSetsConfig(apiSetsEnvFromProcess(process.env)).nodes.forEach((node) => hosts.add(new URL(node).origin));
 
   // Ensure the configured images endpoint is in connect-src for proxy-auth token fetch
   const imagesEndpoint = process.env.REACT_APP_IMAGES_ENDPOINT;

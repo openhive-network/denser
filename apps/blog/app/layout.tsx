@@ -12,6 +12,7 @@ import { StorageCleanup } from '@ui/components/storage-cleanup';
 import CondenserMigration from '../components/condenser-migration';
 import { getEnvVersion } from '@ui/lib/env-version';
 import { ImagesHostHints } from '@ui/components/images-host-hints';
+import { ApiSetsBootstrap } from '@ui/components/api-sets-bootstrap';
 import { LocaleProvider } from '@ui/components/locale-context';
 import { cookieName, resolveLocale } from '../i18n/settings';
 import { JsonLd } from '../components/json-ld';
@@ -81,6 +82,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         {/* Use plain script tag for guaranteed synchronous loading of env globals */}
         <script src={`${basePath}/__ENV.js?v=${envVersion}`} nonce={nonce} />
         <ImagesHostHints />
+        <ApiSetsBootstrap nonce={nonce} />
       </head>
       <body className="bg-background-secondary">
         <JsonLd data={websiteJsonLd()} />

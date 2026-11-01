@@ -9,7 +9,7 @@ import type {
   IUnreadNotifications
 } from '@hive/common-hiveio-packages/wax';
 import { getLogger } from '@ui/lib/logging';
-import { getNodeReadChain, getReadChain, type ReadChain } from './chain';
+import { getApiSetNodes, getNodeReadChain, getReadChain, type ReadChain } from './chain';
 import { isApiNotServedError, JsonRpcApiError } from './read-client';
 
 const logger = getLogger('lite-api');
@@ -160,29 +160,66 @@ export function createLiteApiProbe({
   };
 }
 
+/** The node `lite.*` reads go to, and its `lite.get_info`. */
+export interface ILiteNode {
+  node: string;
+  info: ILiteApiInfo;
+}
+
+/**
+ * The first of `nodes` that serves lite posts natively, or null when none does. The first node is
+ * asked alone; the others, needed only when it is not lite-aware, are asked together.
+ */
+export async function findLiteNode(
+  nodes: readonly string[],
+  probe: ILiteApiProbe
+): Promise<ILiteNode | null> {
+  const [first, ...others] = nodes;
+  if (first === undefined) return null;
+  const firstInfo = await probe.getInfo(first);
+  if (firstInfo) return { node: first, info: firstInfo };
+  const infos = await Promise.all(others.map((node) => probe.getInfo(node)));
+  for (const [index, info] of infos.entries()) {
+    if (info) return { node: others[index], info };
+  }
+  return null;
+}
+
+/** Looks up the lite node; by default the chain's current node, when it is lite-aware. */
+type TFindLiteNode = () => Promise<ILiteNode | null>;
+
+const currentNodeOf =
+  (getChain: () => { readonly endpointUrl: string }, probe: ILiteApiProbe): TFindLiteNode =>
+  () =>
+    findLiteNode([getChain().endpointUrl], probe);
+
 interface IPostsChain {
   readonly endpointUrl: string;
   readonly api: { lite: TPostsApi; bridge: TPostsApi };
 }
 
 /**
- * Post reads on `lite.*` when the chain's current node is lite-aware, else `stock` (the deployment's
- * ordinary read: hivemind's REST API when configured, else `bridge.*`), or `read` on `bridge.*`
- * without one. A `lite.*` read answered with "Api not found" (the node, or every node failover
- * asked, lost the family) marks the node not lite-aware and is read again the stock way.
+ * Post reads on `lite.*` when a node of the lite API set is lite-aware, else `stock` (the
+ * deployment's ordinary read: hivemind's REST API when configured, else `bridge.*`), or `read` on
+ * `bridge.*` without one. A `lite.*` read answered with "Api not found" (the node, or every node
+ * failover asked, lost the family) marks the node not lite-aware and is read again the stock way.
  */
-export function createPostsReader(getChain: () => IPostsChain, probe: ILiteApiProbe) {
+export function createPostsReader(
+  getChain: () => IPostsChain,
+  probe: ILiteApiProbe,
+  findLite: TFindLiteNode = currentNodeOf(getChain, probe)
+) {
   return async <T>(read: (api: TPostsApi) => Promise<T>, stock?: () => Promise<T>): Promise<T> => {
     const chain = getChain();
-    const endpoint = chain.endpointUrl;
     const stockRead = stock ?? (() => read(chain.api.bridge));
-    if (!(await probe.getInfo(endpoint))) return stockRead();
+    const lite = await findLite();
+    if (!lite) return stockRead();
     try {
       return await read(chain.api.lite);
     } catch (error) {
       if (!isApiNotServedError(error)) throw error;
-      logger.warn('%s no longer serves lite.*, reading posts the stock way', endpoint);
-      probe.markUnavailable(endpoint);
+      logger.warn('%s no longer serves lite.*, reading posts the stock way', lite.node);
+      probe.markUnavailable(lite.node);
       return stockRead();
     }
   };
@@ -194,15 +231,19 @@ interface IProfileChain {
 }
 
 /**
- * `lite.get_profile` of `account` (a `did:lite:<name>` or a Hive account name) on the chain's
- * current node, or null when the node does not serve it (not lite-aware, or `lite.get_info` does
- * not list the method) or answers with an error, e.g. for an account that does not exist. A
- * transport failure is thrown.
+ * `lite.get_profile` of `account` (a `did:lite:<name>` or a Hive account name) on the lite API
+ * set's node, or null when it does not serve it (not lite-aware, or `lite.get_info` does not list
+ * the method) or answers with an error, e.g. for an account that does not exist. A transport
+ * failure is thrown.
  */
-export function createLiteProfileReader(getChain: () => IProfileChain, probe: ILiteApiProbe) {
+export function createLiteProfileReader(
+  getChain: () => IProfileChain,
+  probe: ILiteApiProbe,
+  findLite: TFindLiteNode = currentNodeOf(getChain, probe)
+) {
   return async (account: string): Promise<ILiteProfile | null> => {
     const chain = getChain();
-    const info = await probe.getInfo(chain.endpointUrl);
+    const info = (await findLite())?.info;
     if (!servesLiteProfile(info)) return null;
     try {
       return await chain.api.lite.get_profile({ account });
@@ -232,14 +273,18 @@ interface ISocialChain {
 }
 
 /**
- * Runs a read of the lite social graph on the chain's current node when its `lite.get_info`
+ * Runs a read of the lite social graph on the lite API set's node when its `lite.get_info`
  * advertises the social app, else resolves null so the caller keeps its stock read. Errors of
  * the read itself are thrown.
  */
-export function createLiteSocialReader(getChain: () => ISocialChain, probe: ILiteApiProbe) {
+export function createLiteSocialReader(
+  getChain: () => ISocialChain,
+  probe: ILiteApiProbe,
+  findLite: TFindLiteNode = currentNodeOf(getChain, probe)
+) {
   return async <T>(read: (api: ILiteSocialApi) => Promise<T>): Promise<T | null> => {
     const chain = getChain();
-    if (!liteSocialApp(await probe.getInfo(chain.endpointUrl))) return null;
+    if (!liteSocialApp((await findLite())?.info)) return null;
     return read(chain.api.lite);
   };
 }
@@ -257,68 +302,110 @@ interface INotificationsChain {
 }
 
 /**
- * Runs `read` on the chain's current node when its `lite.get_info` lists the notification methods
+ * Runs `read` on the lite API set's node when its `lite.get_info` lists the notification methods
  * (`servesLiteNotifications`), else `fallback` (the stock read, or none). Errors of either are thrown.
  */
-export function createLiteNotificationsReader(getChain: () => INotificationsChain, probe: ILiteApiProbe) {
+export function createLiteNotificationsReader(
+  getChain: () => INotificationsChain,
+  probe: ILiteApiProbe,
+  findLite: TFindLiteNode = currentNodeOf(getChain, probe)
+) {
   return async <T>(
     read: (api: ILiteNotificationsApi) => Promise<T>,
     fallback: () => Promise<T>
   ): Promise<T> => {
     const chain = getChain();
-    if (!servesLiteNotifications(await probe.getInfo(chain.endpointUrl))) return fallback();
+    if (!servesLiteNotifications((await findLite())?.info)) return fallback();
     return read(chain.api.lite);
   };
 }
 
-// Asked of the configured node itself: answered through failover, another node's capabilities
-// would be recorded as this one's.
+// Asked of each node itself: answered through failover, another node's capabilities would be
+// recorded as this one's.
 const liteApiProbe = createLiteApiProbe({
   fetchInfo: (endpoint) => getNodeReadChain(endpoint).api.lite.get_info({}),
   ttlMs: typeof window === 'undefined' ? readLiteProbeTtlMs(process.env) : LITE_PROBE_TTL_MS
 });
 
-/** `lite.get_info` of the API node reads currently go to, or null when it is not lite-aware. */
-export const getLiteApiInfo = (): Promise<ILiteApiInfo | null> =>
-  liteApiProbe.getInfo(getReadChain().endpointUrl);
+/** The nodes of the lite API set, best first (see `getApiSetNodes`). */
+const getLiteNodes = (): Promise<readonly string[]> => getApiSetNodes('lite');
 
-/** Whether the API node reads currently go to serves lite posts natively (`lite.*`). */
+// The outcome of the last lookup of the lite node: undefined before the first one.
+let lastLiteNode: ILiteNode | null | undefined;
+const liteNodeListeners = new Set<() => void>();
+
+const rememberLiteNode = (found: ILiteNode | null): ILiteNode | null => {
+  if (
+    found?.node !== lastLiteNode?.node ||
+    found?.info !== lastLiteNode?.info ||
+    lastLiteNode === undefined
+  ) {
+    lastLiteNode = found;
+    liteNodeListeners.forEach((listener) => listener());
+  }
+  return found;
+};
+
+const lookupLiteNode = async (): Promise<ILiteNode | null> =>
+  rememberLiteNode(await findLiteNode(await getLiteNodes(), liteApiProbe));
+
+/** The node `lite.*` reads go to and its `lite.get_info`, or null when no node of the lite API set is lite-aware. */
+export const getLiteNode = (): Promise<ILiteNode | null> => lookupLiteNode();
+
+/** `lite.get_info` of the node `lite.*` reads go to, or null when no node of the lite API set is lite-aware. */
+export const getLiteApiInfo = async (): Promise<ILiteApiInfo | null> =>
+  (await lookupLiteNode())?.info ?? null;
+
+/** Whether a node of the lite API set serves lite posts natively (`lite.*`). */
 export const isLiteAware = async (): Promise<boolean> => (await getLiteApiInfo()) !== null;
 
-/** The namespace post reads of the current API node go to; part of every cache key of their results. */
+/** The namespace post reads go to; part of every cache key of their results. */
 export const getPostsNamespace = async (): Promise<TPostsNamespace> =>
   (await isLiteAware()) ? 'lite' : 'bridge';
 
-/** `lite.get_info` of the current API node as far as it is known, without asking it; undefined before. */
+/** `lite.get_info` of the lite node as far as it is known, without asking; undefined before the first lookup. */
 export const peekLiteApiInfo = (): ILiteApiInfo | null | undefined =>
-  liteApiProbe.peek(getReadChain().endpointUrl);
+  lastLiteNode === undefined ? undefined : (lastLiteNode?.info ?? null);
 
-/** Calls `listener` whenever the probe records an answer of any node; returns the unsubscribe function. */
-export const subscribeLiteApiInfo = (listener: () => void): (() => void) => liteApiProbe.subscribe(listener);
-
-/**
- * Takes the server render's `lite.get_info` answer of `endpoint` when the browser reads from that
- * same node and has no answer of its own yet; a browser on another node keeps probing its own.
- */
-export const seedLiteApiInfo = (endpoint: string, info: unknown): void => {
-  if (getReadChain().endpointUrl !== endpoint || liteApiProbe.peek(endpoint) !== undefined) return;
-  liteApiProbe.seed(endpoint, info);
+/** Calls `listener` whenever the known lite node or its answer changes; returns the unsubscribe function. */
+export const subscribeLiteApiInfo = (listener: () => void): (() => void) => {
+  liteNodeListeners.add(listener);
+  return () => {
+    liteNodeListeners.delete(listener);
+  };
 };
 
 /**
- * The namespace of the current API node as far as it is known, without asking it: `bridge` until
- * its probe has answered (or the server's answer was seeded). For cache keys built outside React.
+ * Takes the server render's `lite.get_info` answer of `endpoint`, the node it read `lite.*` from (or
+ * found not lite-aware), when the browser has no answer of that node yet. A lite-aware answer also
+ * makes it the browser's lite node until a lookup of its own: the page's routes, which the browser
+ * looks up by, come from the same server.
+ */
+export const seedLiteApiInfo = (endpoint: string, info: unknown): void => {
+  if (liteApiProbe.peek(endpoint) !== undefined) return;
+  liteApiProbe.seed(endpoint, info);
+  const seeded = liteApiProbe.peek(endpoint);
+  if (seeded && lastLiteNode === undefined) rememberLiteNode({ node: endpoint, info: seeded });
+};
+
+/**
+ * The namespace of the lite node as far as it is known, without asking: `bridge` until a lookup has
+ * found a lite-aware node (or the server's answer was seeded). For cache keys built outside React.
  */
 export const currentPostsNamespace = (): TPostsNamespace => (peekLiteApiInfo() ? 'lite' : 'bridge');
 
-/** Runs a post read on the namespace of the current API node, see `createPostsReader`. */
-export const readPosts = createPostsReader(getReadChain, liteApiProbe);
+/** Runs a post read on the namespace of the lite API set, see `createPostsReader`. */
+export const readPosts = createPostsReader(getReadChain, liteApiProbe, lookupLiteNode);
 
-/** Runs `lite.get_profile` on the current API node, see `createLiteProfileReader`. */
-export const getLiteProfile = createLiteProfileReader(getReadChain, liteApiProbe);
+/** Runs `lite.get_profile` on the lite API set's node, see `createLiteProfileReader`. */
+export const getLiteProfile = createLiteProfileReader(getReadChain, liteApiProbe, lookupLiteNode);
 
-/** Runs a lite social graph read on the current API node, see `createLiteSocialReader`. */
-export const readLiteSocial = createLiteSocialReader(getReadChain, liteApiProbe);
+/** Runs a lite social graph read on the lite API set's node, see `createLiteSocialReader`. */
+export const readLiteSocial = createLiteSocialReader(getReadChain, liteApiProbe, lookupLiteNode);
 
-/** Runs a notification read on the current API node, see `createLiteNotificationsReader`. */
-export const readLiteNotifications = createLiteNotificationsReader(getReadChain, liteApiProbe);
+/** Runs a notification read on the lite API set's node, see `createLiteNotificationsReader`. */
+export const readLiteNotifications = createLiteNotificationsReader(
+  getReadChain,
+  liteApiProbe,
+  lookupLiteNode
+);

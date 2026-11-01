@@ -1301,5 +1301,11 @@
         "unavailable": "Nie udało się dokończyć przejścia: bramka jest nieosiągalna. Spróbuj ponownie."
       }
     }
+  },
+  "api_sets": {
+    "description": "Każda rodzina API Hive trafia do węzła wybranego dla niej. Wybierz węzeł dla każdej rodziny albo zostaw wybór automatyczny.",
+    "check_nodes": "Sprawdź węzły",
+    "stop_checking": "Zatrzymaj sprawdzanie",
+    "node_unavailable": "{{selected}} jest niedostępny dla {{set}}; do czasu jego powrotu używany jest {{node}}."
   }
 }

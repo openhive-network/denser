@@ -729,5 +729,11 @@
     "authorities": "계정 권한",
     "change_password": "비밀번호 변경",
     "create_communities": "커뮤니티 만들기"
+  },
+  "api_sets": {
+    "description": "Hive API의 각 계열은 그 계열에 선택된 노드로 보내집니다. 계열마다 노드를 고르거나 자동 선택을 유지하세요.",
+    "check_nodes": "노드 확인",
+    "stop_checking": "확인 중지",
+    "node_unavailable": "{{selected}}을(를) {{set}}에 사용할 수 없어 복구될 때까지 {{node}}을(를) 사용합니다."
   }
 }

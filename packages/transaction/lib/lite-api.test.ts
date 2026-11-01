@@ -7,6 +7,7 @@ import {
   createLiteProfileReader,
   createLiteSocialReader,
   createPostsReader,
+  findLiteNode,
   liteSocialApp,
   LITE_PROBE_TTL_MS,
   readLiteProbeTtlMs,
@@ -158,6 +159,53 @@ describe('readLiteProbeTtlMs', () => {
     for (const value of [undefined, '', ' ', '-1', 'soon']) {
       expect(readLiteProbeTtlMs({ DENSER_LITE_PROBE_TTL_S: value }), String(value)).to.equal(LITE_PROBE_TTL_MS);
     }
+  });
+});
+
+describe('findLiteNode', () => {
+  it('finds the first lite-aware node of the lite set, asking the first one alone', async () => {
+    const { probe, requests } = setupProbe({ [STOCK_NODE]: apiNotFound('lite.get_info'), [LITE_NODE]: LITE_INFO });
+
+    expect(await findLiteNode([LITE_NODE, STOCK_NODE], probe)).to.deep.equal({ node: LITE_NODE, info: LITE_INFO });
+    expect(requests).to.deep.equal([LITE_NODE]);
+  });
+
+  it('asks the other nodes when the first is not lite-aware, and keeps their order', async () => {
+    const other = 'https://other.example';
+    const { probe, requests } = setupProbe({
+      [STOCK_NODE]: apiNotFound('lite.get_info'),
+      [other]: LITE_INFO,
+      [LITE_NODE]: LITE_INFO
+    });
+
+    expect(await findLiteNode([STOCK_NODE, other, LITE_NODE], probe)).to.deep.equal({ node: other, info: LITE_INFO });
+    expect(requests).to.have.members([STOCK_NODE, other, LITE_NODE]);
+  });
+
+  it('answers null when no node of the set is lite-aware, or the set has no node', async () => {
+    const { probe } = setupProbe({ [STOCK_NODE]: apiNotFound('lite.get_info') });
+
+    expect(await findLiteNode([STOCK_NODE], probe)).to.equal(null);
+    expect(await findLiteNode([], probe)).to.equal(null);
+  });
+
+  it("lets post reads go through lite.* when the lite set's node is not the chain's own", async () => {
+    const calls: string[] = [];
+    const postsApi = (namespace: string): TPostsApi =>
+      // The fakes record their params as given; the real wax types are not what is under test.
+      ({
+        get_post: async () => {
+          calls.push(`${namespace}.get_post`);
+          return namespace;
+        }
+      }) as unknown as TPostsApi;
+    const chain = { endpointUrl: STOCK_NODE, api: { lite: postsApi('lite'), bridge: postsApi('bridge') } };
+    const { probe, requests } = setupProbe({ [STOCK_NODE]: apiNotFound('lite.get_info'), [LITE_NODE]: LITE_INFO });
+    const read = createPostsReader(() => chain, probe, () => findLiteNode([LITE_NODE, STOCK_NODE], probe));
+
+    expect(await read((api) => api.get_post({ author: 'did:lite:bob', permlink: 'p', observer: '' }))).to.equal('lite');
+    expect(calls).to.deep.equal(['lite.get_post']);
+    expect(requests).to.deep.equal([LITE_NODE]);
   });
 });
 

@@ -11,6 +11,7 @@
     "bs58": "6.0.0",
     "@hive/common-hiveio-packages": "workspace:*",
     "@hive/smart-signer": "workspace:*",
+    "@hiveio/healthchecker-component": "catalog:hiveio-toolset",
     "@hiveio/wax": "catalog:hiveio-toolset",
     "@hiveio/workerbee": "catalog:hiveio-toolset",
     "secure-random": "^1.1.2",

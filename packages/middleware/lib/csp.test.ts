@@ -1,11 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
-import { PICKER_API_NODES } from '../../ui/config/api-node-picker.ts';
+import { SELECTABLE_API_NODES } from '../../ui/config/api-sets.ts';
 
-// csp.ts imports the picker list and chat config the way the apps' bundler resolves it, without the extension
+// csp.ts imports the API sets and chat config the way the apps' bundler resolves it, without the extension
 // node's type stripping needs.
-const UI_CONFIG_MODULES = new Set(['@hive/ui/config/api-node-picker', '@hive/ui/config/chat']);
+const UI_CONFIG_MODULES = new Set(['@hive/ui/config/api-sets', '@hive/ui/config/chat']);
 registerHooks({
   resolve(specifier, context, nextResolve) {
     return nextResolve(UI_CONFIG_MODULES.has(specifier) ? `${specifier}.ts` : specifier, context);
@@ -67,18 +67,18 @@ test("script-src adds 'unsafe-eval' for next dev only", () => {
   });
 });
 
-test('connect-src allows every node the node picker offers', () => {
+test('connect-src allows every node users may pick', () => {
   withAllowedApiNodes(undefined, () => {
     const connectSrc = connectSrcOf(buildCsp({}, 'bm9uY2U='));
-    for (const node of PICKER_API_NODES) assert.ok(connectSrc.includes(node), `${node} missing: ${connectSrc.join(' ')}`);
+    for (const node of SELECTABLE_API_NODES) assert.ok(connectSrc.includes(node), `${node} missing: ${connectSrc.join(' ')}`);
   });
 });
 
-test('connect-src adds the picker nodes to the configured allowed API nodes', () => {
+test('connect-src adds the selectable nodes to the configured allowed API nodes', () => {
   withAllowedApiNodes('https://api.dev.openhive.network,https://api.hive.blog', () => {
     const connectSrc = connectSrcOf(buildCsp({}, 'bm9uY2U='));
     assert.ok(connectSrc.includes('https://api.dev.openhive.network'), connectSrc.join(' '));
-    for (const node of PICKER_API_NODES) assert.ok(connectSrc.includes(node), `${node} missing: ${connectSrc.join(' ')}`);
+    for (const node of SELECTABLE_API_NODES) assert.ok(connectSrc.includes(node), `${node} missing: ${connectSrc.join(' ')}`);
   });
 });
 

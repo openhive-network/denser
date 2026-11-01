@@ -1,6 +1,7 @@
 import { getLogger } from '@ui/lib/logging';
 import type { NodeHealth, TNodeAdmission } from './node-health';
 import { isApiNotServedError } from './read-client';
+import { isEndpointMissing } from './read-transport';
 
 const logger = getLogger('app');
 
@@ -79,9 +80,34 @@ const slowCallPolicy = (timeoutMs: number): IFailoverPolicy => ({
   maxNodes: 2
 });
 
+/** How a node did on one call: served or answered it, or could not (it lacks the API, or failed). */
+export type TFailoverOutcome =
+  | { ok: true; latencyMs: number }
+  | { ok: false; error: 'apiNotFound' | 'transport'; latencyMs: number };
+
+/** The nodes one call goes to, chosen by the API family it belongs to (see `routeFor`). */
+export interface IFailoverRoute {
+  /** The nodes to ask, the first one first. */
+  nodes: readonly string[];
+  /** Told how each node asked did. */
+  report?: (node: string, outcome: TFailoverOutcome) => void;
+  /** Called after the call failed on the first node and was then served by `node`. */
+  onFallback?: (node: string) => void;
+}
+
 export interface IServerFailoverOptions<T extends IFailoverChain<T>> {
   /** Nodes to fail over to after the primary, in order of preference. */
   fallbackNodes: readonly string[];
+  /**
+   * Routes a call of `chain.api` (`'api'`) or `chain.restApi` (`'restApi'`) at `path` by its API
+   * family: the nodes it returns replace `configured` (the primary, then `fallbackNodes`). A call
+   * it returns nothing for, or no nodes, keeps `configured` and `onFailover`.
+   */
+  routeFor?: (
+    root: 'api' | 'restApi',
+    path: readonly string[],
+    configured: readonly string[]
+  ) => Promise<IFailoverRoute | undefined>;
   /** Builds a chain that sends JSON-RPC and REST calls to `node` with the given request timeout. */
   createNodeChain: (node: string, timeoutMs: number) => T;
   /** Node health shared by every chain of the process, so a dead node is skipped by all of them. */
@@ -109,16 +135,21 @@ export interface IServerFailoverOptions<T extends IFailoverChain<T>> {
 interface IFailoverCall<T> {
   /** Names the call in logs, e.g. `bridge.get_post`. */
   label: string;
-  /** The node the configured chain sends the call to. */
-  primary: string;
+  /** The nodes to ask, the first one first. */
+  nodes: readonly string[];
+  /** The node the configured chain itself sends the call to. */
+  chainEndpoint: string;
   /** The `health` key recording whether `node` serves this call. */
   healthKey: (node: string) => string;
   invoke: (target: T) => Promise<unknown>;
   /** Whether a failure means the node could not serve the call, so another node may. */
   isNodeFailure: (error: unknown) => boolean | Promise<boolean>;
+  /** Whether a failure the node answered means it lacks the API rather than that it failed. */
+  isApiNotServed: (error: unknown) => boolean;
   /** Whether a healthy primary is asked once more before the next node. */
   retriesPrimary: boolean;
   onFailover?: (node: string) => void;
+  report?: (node: string, outcome: TFailoverOutcome) => void;
 }
 
 type TNodeOutcome =
@@ -190,6 +221,10 @@ export function parseFallbackNodes(
  * other call. A REST API with an endpoint of its own (one that is not `restApi.endpointUrl`) is not
  * failed over. Everything other than `chain.api` and `chain.restApi` is passed through untouched.
  *
+ * With `routeFor`, a call of an API family that is routed goes to the family's nodes instead (a REST
+ * API with an endpoint of its own included), each node's outcome is reported to the route, and a
+ * broadcast is sent once to the family's first node.
+ *
  * A chain derived by `withTimeout(timeoutMs)` fails over as well, sharing `health`, but each call
  * asks a node once with `timeoutMs`, without hedging, and asks two nodes at most.
  *
@@ -210,6 +245,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
 ): T {
   const {
     fallbackNodes,
+    routeFor,
     createNodeChain,
     health,
     isTransportError = isWaxTransportError,
@@ -242,17 +278,36 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     return Reflect.apply(method, undefined, args);
   };
 
-  // A healthy primary is asked through the configured chain first and, for JSON-RPC, retried once
-  // after a pause; a probe of a recovering node, or a fallback, gets one short-timeout attempt.
+  // A healthy primary is asked first (through the configured chain when that is the node it calls)
+  // and, for JSON-RPC, retried once after a pause; a probe of a recovering node, or a fallback, gets
+  // one short-timeout attempt.
   const attemptsOn = (call: IFailoverCall<T>, node: string, admission: TNodeAdmission): Array<() => T> => {
-    if (node !== call.primary || admission !== 'healthy') return [() => getAttemptChain(node)];
-    return call.retriesPrimary ? [() => chain, () => getAttemptChain(node)] : [() => chain];
+    const attempt = () => getAttemptChain(node);
+    if (node !== call.nodes[0] || admission !== 'healthy') return [attempt];
+    const first = node === call.chainEndpoint ? () => chain : attempt;
+    return call.retriesPrimary ? [first, attempt] : [first];
+  };
+
+  const configuredNodesOf = (primary: string): string[] => [
+    primary,
+    ...fallbackNodes.filter((node) => node !== primary)
+  ];
+
+  // The route of the call's API family, or `undefined` to keep the configured nodes.
+  const routeOf = async (
+    root: 'api' | 'restApi',
+    path: readonly string[],
+    configured: readonly string[]
+  ): Promise<IFailoverRoute | undefined> => {
+    const route = await routeFor?.(root, path, configured);
+    return route && route.nodes.length > 0 ? route : undefined;
   };
 
   const callWithFailover = async (call: IFailoverCall<T>) => {
     const startedAt = now();
-    const { label, primary, healthKey } = call;
-    const configuredNodes = [primary, ...fallbackNodes.filter((node) => node !== primary)];
+    const { label, healthKey } = call;
+    const configuredNodes = [...new Set(call.nodes)];
+    const [primary] = configuredNodes;
     const nodeByKey = new Map(configuredNodes.map((node) => [healthKey(node), node]));
     // Skipping every node would fail the call without asking anyone, so then all of them are tried,
     // the one that answered last first: it is likelier to be back than a node that never answered.
@@ -270,6 +325,8 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     // Every attempt on one node, in turn. It also runs on after another node served the call, so
     // its outcome still updates `health`, but it starts no retry then.
     const runNode = async (node: string, admission: TNodeAdmission): Promise<TNodeOutcome> => {
+      const nodeStartedAt = now();
+      let notServed = false;
       for (const [index, target] of attemptsOn(call, node, admission).entries()) {
         if (index > 0) {
           await sleep(RETRY_DELAY_MS);
@@ -278,17 +335,22 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
         try {
           const value = await call.invoke(target());
           health.markUp(healthKey(node));
+          call.report?.(node, { ok: true, latencyMs: now() - nodeStartedAt });
           return { kind: 'served', value };
         } catch (error) {
           if (!(await call.isNodeFailure(error))) {
             health.markUp(healthKey(node));
+            call.report?.(node, { ok: true, latencyMs: now() - nodeStartedAt });
             return { kind: 'answered', error };
           }
           failures += 1;
           lastError = error;
+          notServed = call.isApiNotServed(error);
         }
       }
       health.markDown(healthKey(node));
+      const error = notServed ? 'apiNotFound' : 'transport';
+      call.report?.(node, { ok: false, error, latencyMs: now() - nodeStartedAt });
       return { kind: 'failed' };
     };
 
@@ -352,39 +414,58 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     throw lastError;
   };
 
-  const callJsonRpc = (path: readonly string[], args: unknown[]): Promise<unknown> => {
+  const callJsonRpc = async (path: readonly string[], args: unknown[]): Promise<unknown> => {
     const [namespace] = path;
-    if (NON_RETRYABLE_NAMESPACES.has(namespace)) return callOn(chain.api, 'api', path, args);
+    const route = await routeOf('api', path, configuredNodesOf(chain.endpointUrl));
+    if (NON_RETRYABLE_NAMESPACES.has(namespace)) {
+      // Sent once, to the routed node: a failed broadcast may still have been accepted.
+      const node = route?.nodes[0];
+      const target = !node || node === chain.endpointUrl ? chain : getAttemptChain(node);
+      return callOn(target.api, 'api', path, args);
+    }
     const isOptional = OPTIONAL_NAMESPACES.has(namespace);
     return callWithFailover({
       label: path.join('.'),
-      primary: chain.endpointUrl,
+      nodes: route?.nodes ?? configuredNodesOf(chain.endpointUrl),
+      chainEndpoint: chain.endpointUrl,
       healthKey: isOptional ? (node) => `${node}/${namespace}` : (node) => node,
       invoke: (target) => callOn(target.api, 'api', path, args),
       isNodeFailure: isOptional
         ? async (error) => isApiNotServedError(error) || (await isTransportError(error))
         : isTransportError,
+      isApiNotServed: isApiNotServedError,
       retriesPrimary: policy.retriesPrimary,
-      onFailover
+      onFailover: route ? route.onFallback : onFailover,
+      report: route?.report
     });
   };
 
-  const callRest = (
+  const callRest = async (
     isUnavailable: (error: unknown, path: readonly string[]) => boolean,
     path: readonly string[],
     args: unknown[]
   ): Promise<unknown> => {
     const primary = endpointOf(resolveApiPath(chain.restApi, [], 'restApi'));
     const ownEndpoint = endpointOf(resolveApiPath(chain.restApi, path, 'restApi'));
-    if (typeof primary !== 'string' || ownEndpoint !== primary) return callOn(chain.restApi, 'restApi', path, args);
+    if (typeof primary !== 'string' || typeof ownEndpoint !== 'string') {
+      return callOn(chain.restApi, 'restApi', path, args);
+    }
+    // A REST API with an endpoint of its own is failed over only when it is routed by its family.
+    const configured = ownEndpoint === primary ? configuredNodesOf(primary) : [ownEndpoint];
+    const route = await routeOf('restApi', path, configured);
+    if (!route && ownEndpoint !== primary) return callOn(chain.restApi, 'restApi', path, args);
     const apiName = path[0];
     return callWithFailover({
       label: path.join('.'),
-      primary,
+      nodes: route?.nodes ?? configured,
+      chainEndpoint: ownEndpoint,
       healthKey: (node) => restApiHealthKey(node, apiName),
       invoke: (target) => callOn(target.restApi, 'restApi', path, args),
       isNodeFailure: (error) => isUnavailable(error, path),
-      retriesPrimary: false
+      isApiNotServed: isEndpointMissing,
+      retriesPrimary: false,
+      onFailover: route?.onFallback,
+      report: route?.report
     });
   };
 
