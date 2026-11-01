@@ -179,6 +179,17 @@ A shared cache in front of the blog must not serve a stored page to a request ca
 - On the server both are wrapped by `server-failover.ts`: a read-only JSON-RPC call that fails at the
   transport level is retried once on the primary node, then on the other nodes of
   `REACT_APP_ALLOWED_HIVE_API_NODES` (images host excluded), within an 8 s budget per call
+- **API sets** route each API family to a node that serves it: core (`database_api`,
+  `condenser_api`, broadcast), `bridge`, `lite`, hivemind REST, `balance-api`, HAfAH, hivesense and
+  the For You feed (`ui/config/api-sets.ts`: catalog, per-set preferences from the `REACT_APP_*`
+  settings and `REACT_APP_API_SET_PREFERENCES`). `@hiveio/healthchecker-component`'s engine decides
+  per set; the failover asks the set's nodes (`routeFor`, `transaction/lib/api-sets/router.ts`) and
+  reports each node's outcome back to it. The server runs one shared engine per process
+  (`api-sets/server.ts`, installed by the instrumentation hook; `DENSER_API_SETS_PROBING=off` stops
+  its probes) and a fresh one per request with the user's `api-sets` cookie; the page carries the
+  server's routes (`ApiSetsBootstrap`) to the browser, which runs an engine of its own only on
+  `/healthchecker` (the engine bundle carries wax). `lite.*` reads go to the first node of the lite
+  set that is lite-aware (`findLiteNode`).
 
 **Initial client bundle** — the chunks a page's server HTML references must not contain wax,
 hb-auth/beekeeper or the signers (fixture guard `initialChunks*.spec.ts`, PERF-CHUNKS-01..03).

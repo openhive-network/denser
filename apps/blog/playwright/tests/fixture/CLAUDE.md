@@ -44,7 +44,7 @@ apps/blog/
             └── generate-voted-variants.mjs                # fixture-dir post-processor
 ```
 
-Config uses five ports:
+Config uses seven ports:
 
 - `:3000` — the blog app (standalone Next.js server), server-side feed cache
   off (`DENSER_FEED_CACHE_TTL_S=0`), and the API node's `lite.get_info` asked
@@ -57,10 +57,18 @@ Config uses five ports:
 - `:3002` — the same build reading feeds, profiles, communities, search, post
   discussions and follow lists from hivemind REST GETs (`HIVEMIND_REST_NODES`
   naming `:8201`); `hivemindRest*.spec.ts` use it (`hivemindRestBaseURL`)
+- `:3003` — the same build with a node lacking `lite.*` (`:8209`) as its API
+  endpoint and the fixture proxy as one more allowed node, so its API sets route
+  `lite` apart from core and bridge; `apiSetsLite.spec.ts` uses it (`apiSetsBaseURL`).
+  Every server runs with `DENSER_API_SETS_PROBING=off`: the API set engine's
+  probes would be calls no recording has, so it learns from the app's own calls
 - `:8200` — the fixture proxy (record → mainnet; replay → committed JSON)
 - `:8201` — the hivemind REST stub (`support/hivemindRestStub.ts`), started by
   `hivemindRest*.spec.ts` (`support/hivemindRestSpec.ts`): it answers each REST path with the JSON-RPC call it
   wraps, asked of the fixture proxy, so REST reads replay the same recordings
+- `:8209` — the lite-less node (`support/apiSetsNodes.ts`), started by
+  `apiSetsLite.spec.ts`: it answers `lite.*` "Api not found lite" and passes every
+  other call to the fixture proxy
 
 ---
 

@@ -92,7 +92,7 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/storage-with-ttl-notify.test.ts packages/ui/lib/app-api-path.test.ts \
     packages/ui/lib/locale-cookie.test.ts packages/ui/lib/month-year.test.ts \
     packages/ui/lib/session-time.test.ts packages/ui/lib/user-cancelled.test.ts \
-    packages/ui/config/chat.test.ts \
+    packages/ui/config/chat.test.ts packages/ui/config/api-sets.test.ts \
     packages/ui/lib/passkey-signers.test.ts < /dev/null || status=1
 echo "== node --test packages/smart-signer" >&2
 junit="$PWD/test-results/unit/smart-signer.xml"

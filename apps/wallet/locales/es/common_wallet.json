@@ -742,5 +742,11 @@
     "authorities": "Autoridades",
     "change_password": "Cambiar contraseña",
     "create_communities": "Crear comunidades"
+  },
+  "api_sets": {
+    "description": "Cada familia de APIs de Hive va al nodo elegido para ella. Elige un nodo por familia o mantén la elección automática.",
+    "check_nodes": "Comprobar los nodos",
+    "stop_checking": "Detener la comprobación",
+    "node_unavailable": "{{selected}} no está disponible para {{set}}; se usa {{node}} hasta que se recupere."
   }
 }

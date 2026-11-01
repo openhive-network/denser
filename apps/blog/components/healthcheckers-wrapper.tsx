@@ -1,90 +1,57 @@
 'use client';
-import { ApiChecker, HealthCheckerComponent } from '@hiveio/healthchecker-component'
-import { Community, Entry, MixedPostsResponse } from '@hive/common-hiveio-packages/wax';
-import { ApiAccount } from '@hiveio/wax';
+
 import { hiveChainService } from '@transaction/lib/hive-chain-service';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/components'
-import { useHealthChecker } from '@ui/hooks/useHealthChecker';
-import { CircleCheck } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import type { TApiSetChecks } from '@transaction/lib/api-sets/definitions';
+import { isJsonObject } from '@transaction/lib/json-object';
+import { ApiSetsPanel } from '@ui/components/api-sets-panel';
+import { useTranslation } from '@/blog/i18n/client';
 
-type NodeApiCheckers = [
-  ApiChecker<{ accounts: ApiAccount[] }>,
-  ApiChecker<Entry | null>,
-  ApiChecker<Community[] | null>,
-  ApiChecker<Entry[] | null>
-];
+const isNonEmptyList = (value: unknown): boolean => Array.isArray(value) && value.length > 0;
 
-type AiSearchApiCheckers = [ApiChecker<MixedPostsResponse>, ApiChecker<Entry[]>];
+const firstAccountName = (data: unknown): unknown => {
+  const accounts = isJsonObject(data) ? data.accounts : undefined;
+  return Array.isArray(accounts) && isJsonObject(accounts[0]) ? accounts[0].name : undefined;
+};
 
-const HealthCheckersWrapper = () => {
-  const [nodeApiCheckers, setNodeApiCheckers] = useState<NodeApiCheckers | undefined>(undefined);
-  const [aiSearchApiCheckers, setAiSearchApiCheckers] = useState<AiSearchApiCheckers | undefined>(undefined);
-
-  const DEFAULT_AI_ENDPOINTS = [
-    'https://api.hive.blog',
-    'https://api.syncad.com',
-    'https://api.openhive.network',
-    'https://api.dev.openhive.network'
-  ];
-
-  const nodeHcService = useHealthChecker(
-    'node-api',
-    nodeApiCheckers,
-    'node-endpoint',
-    hiveChainService.setHiveChainEndpoint
-  );
-  const aiSearchHcService = useHealthChecker(
-    'ai-search',
-    aiSearchApiCheckers,
-    'ai-search-endpoint',
-    hiveChainService.setAiSearchEndpoint,
-    DEFAULT_AI_ENDPOINTS
-  );
-
-  const createApiCheckers = async () => {
-    // The bare chain: a checker must ask each provider itself, never fail over to another node.
-    const hiveChain = await hiveChainService.getHiveChain();
-    const nodeApiCheckers: NodeApiCheckers = [
+// The bare chain: a check must ask each node itself, never fail over to another one.
+const createBlogChecks = async (): Promise<TApiSetChecks> => {
+  const hiveChain = await hiveChainService.getHiveChain();
+  return {
+    core: [
       {
         title: 'Database - Find accounts',
         method: hiveChain.api.database_api.find_accounts,
         params: { accounts: ['guest4test'], delayed_votes_active: false },
-        validatorFunction: (data: { accounts: ApiAccount[] }) =>
-          data?.accounts?.[0]?.name === 'guest4test'
-            ? true
-            : 'Find accounts error'
-      },
+        validatorFunction: (data) => (firstAccountName(data) === 'guest4test' ? true : 'Find accounts error')
+      }
+    ],
+    bridge: [
       {
         title: 'Bridge - Get post',
         method: hiveChain.api.bridge.get_post,
         params: { author: 'guest4test', permlink: '6wpmjy-test', observer: '' },
-        validatorFunction: (data) => (data?.author === 'guest4test' ? true : 'Bridge API get post error')
+        validatorFunction: (data) =>
+          isJsonObject(data) && data.author === 'guest4test' ? true : 'Bridge API get post error'
       },
       {
         title: 'Bridge - List Communities',
         method: hiveChain.api.bridge.list_communities,
-        params: {query: null, sort: 'rank', observer: 'hive.blog' },
-        validatorFunction: (data) => (data?.length && data.length > 0 ? true : 'Bridge API get community list error')
+        params: { query: null, sort: 'rank', observer: 'hive.blog' },
+        validatorFunction: (data) => (isNonEmptyList(data) ? true : 'Bridge API get community list error')
       },
       {
         title: 'Bridge - Get Ranked Posts',
         method: hiveChain.api.bridge.get_ranked_posts,
-        params: {observer: 'hive.blog', tag: '', limit: 10, sort: 'trending'},
-        validatorFunction: (data) => (data?.length && data.length > 0 ? true : 'Bridge API get ranked posts error')
+        params: { observer: 'hive.blog', tag: '', limit: 10, sort: 'trending' },
+        validatorFunction: (data) => (isNonEmptyList(data) ? true : 'Bridge API get ranked posts error')
       }
-    ];
-    const aiSearchApiCheckers: AiSearchApiCheckers = [
+    ],
+    hivesense: [
       {
         title: 'AI search',
         method: hiveChain.restApi['hivesense-api'].posts.search,
-        params: {
-          q: 'test',
-          truncate: 100,
-          result_limit: 10,
-          full_posts: 10,
-        },
-        validatorFunction: (data) => (!!data[0] ? true : 'AI search error')
+        params: { q: 'test', truncate: 100, result_limit: 10, full_posts: 10 },
+        validatorFunction: (data) => (isNonEmptyList(data) ? true : 'AI search error')
       },
       {
         title: 'AI similar posts',
@@ -94,49 +61,29 @@ const HealthCheckersWrapper = () => {
           permlink: 'clive-updates-clive-in-spring-colors',
           truncate: 100,
           result_limit: 1
-
         },
-        validatorFunction: (data) => (!!data[0] ? true : 'AI similar posts error')
+        validatorFunction: (data) => (isNonEmptyList(data) ? true : 'AI similar posts error')
       }
-    ];
-    setNodeApiCheckers(nodeApiCheckers);
-    setAiSearchApiCheckers(aiSearchApiCheckers);
+    ]
   };
+};
 
-  useEffect(() => {
-    createApiCheckers();
-  }, []);
-
+const HealthCheckersWrapper = ({ snapshot }: { snapshot: unknown }) => {
+  const { t } = useTranslation('common_blog');
   return (
-    <div className='p4  lg:px-48'>
-      <div className='mx-auto flex flex-col items-center py-8'>
-        <h3 className='py-4 text-lg'>API switch and HealthChecker</h3>
-        <p className='mb-4 text-center text-muted-foreground'>You can switch your provider here. Use &quot;Continuos Check&quot; to start evaluating them.</p>
-        <p className=' mb-4 text-center text-muted-foreground'>
-          For the best experience run HealthChecker use only providers with <CircleCheck className='inline-block w-4 h-4 text-green-600' /> icon.
-        </p>
-        <p className='text-center text-muted-foreground'>
-          Click &quot;Switch to Best&quot; button for Healthchecker to automatically select the best possible API.
-        </p>
+    <div className="p4 lg:px-48">
+      <div className="mx-auto flex flex-col items-center py-8">
+        <h3 className="py-4 text-lg">API switch and HealthChecker</h3>
+        <p className="text-muted-foreground mb-4 text-center">{t('api_sets.description')}</p>
       </div>
-      <Tabs defaultValue="node" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="node">HIVE API providers</TabsTrigger>
-          <TabsTrigger value="hivesense">HiveSense API providers</TabsTrigger>
-        </TabsList>
-        <TabsContent value="node">
-          {!!nodeHcService && (
-            <HealthCheckerComponent className='m-4' healthCheckerService={nodeHcService} />
-          )}
-        </TabsContent>
-        <TabsContent value="hivesense">
-          {!!aiSearchHcService && (
-            <HealthCheckerComponent className='m-4' healthCheckerService={aiSearchHcService} />
-          )}
-        </TabsContent>
-      </Tabs>
+      <ApiSetsPanel
+        snapshot={snapshot}
+        createChecks={createBlogChecks}
+        checkLabel={t('api_sets.check_nodes')}
+        stopLabel={t('api_sets.stop_checking')}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default HealthCheckersWrapper
+export default HealthCheckersWrapper;

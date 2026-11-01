@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { getApiSetSnapshot } from '@transaction/lib/api-sets/router';
 import HealthCheckerWrapper from '@/wallet/components/healthchecker-wrapper';
 import { getTranslation } from '@/wallet/i18n/server';
 
@@ -19,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <div className="flex flex-col gap-8 p-4">
-      <HealthCheckerWrapper />
+      <HealthCheckerWrapper snapshot={getApiSetSnapshot() ?? null} />
     </div>
   );
 }

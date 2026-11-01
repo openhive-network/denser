@@ -42,7 +42,7 @@ environment:
     store: "/opt/pnpm-store"
     fetch: ["pnpm", "fetch", "--frozen-lockfile", "--store-dir", "/opt/pnpm-store"]
     install: ["pnpm", "install", "--offline", "--frozen-lockfile", "--store-dir", "/opt/pnpm-store"]
-  fallback: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:1acd232102e455e24636fff9260321c7147acb48c96d5fe089c155dbb76ec0ce"
+  fallback: "registry.gitlab.syncad.com/hive/denser/aidev-tests@sha256:1e78d619da98972f6a16d99643b5d81532c1f848013952195d0c0ee4d686f420"
 
 issues:
   intake_label: todo

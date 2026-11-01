@@ -6,10 +6,16 @@ import { useLocale } from '@ui/components/locale-context';
 import { ensureLocaleCookie } from '@ui/lib/locale-cookie';
 import { defaultLocale, resolveLocale } from '@/blog/i18n/settings';
 import { takeLegacyStoredLanguage } from '@/blog/utils/language';
+import { useTranslation } from '@/blog/i18n/client';
+import { useApiSetsEffects, type IApiSetSwitch } from '@ui/hooks/use-api-sets-effects';
 
 export default function ClientEffects() {
   const router = useRouter();
   const { locale: renderedLocale } = useLocale();
+  const { t } = useTranslation('common_blog');
+  useApiSetsEffects(({ node, selected, setTitle }: IApiSetSwitch) =>
+    t('api_sets.node_unavailable', { selected, set: setTitle, node })
+  );
 
   useEffect(() => {
     // Keeps a language only another app of the origin supports, so that app still shows it

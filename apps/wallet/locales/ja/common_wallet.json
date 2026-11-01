@@ -729,5 +729,11 @@
     "authorities": "権限設定",
     "change_password": "パスワードの変更",
     "create_communities": "コミュニティを作成"
+  },
+  "api_sets": {
+    "description": "Hive API の各ファミリーは、そのファミリー用に選ばれたノードに送られます。ファミリーごとにノードを選ぶか、自動選択のままにしてください。",
+    "check_nodes": "ノードを確認",
+    "stop_checking": "確認を停止",
+    "node_unavailable": "{{selected}} は {{set}} で利用できません。復旧するまで {{node}} を使用します。"
   }
 }

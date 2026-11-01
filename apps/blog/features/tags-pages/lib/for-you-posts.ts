@@ -1,4 +1,5 @@
 import { resolvePosts } from '@transaction/lib/bridge-api';
+import { routeApiSet } from '@transaction/lib/api-sets/router';
 import { configuredFypApiUrl } from '@ui/config/public-vars';
 import { getUser as getStoredUser } from '@smart-signer/lib/auth/user-localstore';
 import { isStorageAvailable } from '@smart-signer/lib/utils';
@@ -19,5 +20,18 @@ function isStoredSession(account: string): boolean {
 export async function getForYouPosts(account: string, page: number, observer: string): Promise<FypEntry[]> {
   if (!configuredFypApiUrl) throw new FypApiError('The For You feed is off: FYP_API_URL is not set');
   if (!isStoredSession(account)) throw new FypApiError(`The For You feed is not read: ${account} is signed out`);
-  return resolvePosts(await getFypFeedPage(configuredFypApiUrl, account, page), observer);
+  const route = await routeApiSet('fyp', { configured: [configuredFypApiUrl] });
+  const [node = configuredFypApiUrl] = route.nodes;
+  const startedAt = Date.now();
+  let entries: FypEntry[];
+  try {
+    entries = await getFypFeedPage(node, account, page);
+  } catch (error) {
+    if (error instanceof FypApiError && error.serviceDown) {
+      route.report(node, { ok: false, error: 'transport', latencyMs: Date.now() - startedAt });
+    }
+    throw error;
+  }
+  route.report(node, { ok: true, latencyMs: Date.now() - startedAt });
+  return resolvePosts(entries, observer);
 }
