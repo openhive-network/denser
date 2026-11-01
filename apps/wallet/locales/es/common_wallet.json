@@ -503,6 +503,7 @@
     "encrypt_memo_with_peakvault": "Cifrar con Peak Vault",
     "encrypt_memo_with_metamask": "Cifrar con MetaMask",
     "encrypt_memo_error": "Error al cifrar el MEMO: la clave privada no es válida o no se encontró la cuenta destinataria.",
+    "metamask_snap_outdated": "El snap Hive Wallet de MetaMask está en la versión {{installed}}, anterior a la {{required}} que necesita este sitio. Actualiza el snap en MetaMask y vuelve a intentarlo.",
     "request_id": "ID de solicitud",
     "cancel_power_down": "Cancelar Power Down",
     "transaction_success": "Transacción completada",

@@ -496,6 +496,7 @@
     "encrypt_memo_with_peakvault": "使用 Peak Vault 加密",
     "encrypt_memo_with_metamask": "使用 MetaMask 加密",
     "encrypt_memo_error": "加密 MEMO 时出错:私钥无效或未找到收款账户。",
+    "metamask_snap_outdated": "MetaMask 中的 Hive Wallet snap 版本为 {{installed}}，低于本站所需的 {{required}}。请在 MetaMask 中更新该 snap 后重试。",
     "request_id": "请求 ID",
     "cancel_power_down": "取消 Power Down",
     "transaction_success": "交易成功",

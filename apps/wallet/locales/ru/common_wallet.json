@@ -508,6 +508,7 @@
     "encrypt_memo_with_peakvault": "Зашифровать через Peak Vault",
     "encrypt_memo_with_metamask": "Зашифровать через MetaMask",
     "encrypt_memo_error": "Ошибка шифрования MEMO: неверный приватный ключ или учётная запись получателя не найдена.",
+    "metamask_snap_outdated": "Снап Hive Wallet в MetaMask имеет версию {{installed}}, более старую, чем нужная этому сайту {{required}}. Обновите снап в MetaMask и повторите попытку.",
     "request_id": "ID запроса",
     "cancel_power_down": "Отменить уменьшение Силы Голоса",
     "transaction_success": "Транзакция выполнена",

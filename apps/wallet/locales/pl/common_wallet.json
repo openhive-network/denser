@@ -508,6 +508,7 @@
     "encrypt_memo_with_peakvault": "Zaszyfruj za pomocą PeakVault",
     "encrypt_memo_with_metamask": "Zaszyfruj za pomocą MetaMask",
     "encrypt_memo_error": "Błąd szyfrowania MEMO: klucz prywatny jest nieprawidłowy lub nie znaleziono konta odbiorcy.",
+    "metamask_snap_outdated": "Snap Hive Wallet w MetaMask ma wersję {{installed}}, starszą niż wymagana przez tę stronę {{required}}. Zaktualizuj snap w MetaMask i spróbuj ponownie.",
     "request_id": "ID żądania",
     "cancel_power_down": "Anuluj zmniejszanie mocy",
     "transaction_success": "Transakcja zakończona sukcesem",

@@ -16,6 +16,7 @@ import {
 } from '@ui/components';
 import { decryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
 import { hasNativeMemoCrypto, loadNativeMemoSigner } from '@smart-signer/lib/load-native-memo-signer';
+import { OutdatedMetaMaskSnapError } from '@smart-signer/lib/metamask-snap-version';
 import type { SignerTool } from '@smart-signer/lib/signer/get-signer';
 import { LoginType } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
@@ -88,7 +89,15 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
         if (attemptIdRef.current === attemptId) setDecodedMessage(decoded);
       } catch (error) {
         logger.error(error, 'Error decoding memo with native signer');
-        if (attemptIdRef.current === attemptId) setError(t('transfers_page.decode_memo_error'));
+        if (attemptIdRef.current !== attemptId) return;
+        setError(
+          error instanceof OutdatedMetaMaskSnapError
+            ? t('transfers_page.metamask_snap_outdated', {
+                installed: error.installedVersion,
+                required: error.requiredVersion
+              })
+            : t('transfers_page.decode_memo_error')
+        );
       } finally {
         if (attemptIdRef.current === attemptId) setLoading(false);
       }

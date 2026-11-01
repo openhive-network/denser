@@ -1,8 +1,9 @@
 // A Hive encrypted memo is `#` + base58(from[33] | to[33] | body), body being
 // nonce u64 | check u32 | varint length | ciphertext: what hive-js, Keychain, Peakd and
-// the wax build denser bundles read and write. The wax build inside the Hive MetaMask snap
-// (1.27.6-rc7, in snap 1.6.0 and 1.7.0) serializes the same fields as body | from | to, and
-// only parses that order.
+// the wax build denser bundles read and write (that wax also reads the legacy order below).
+// The wax build inside the Hive MetaMask snap 1.6.0 and 1.7.0 (1.27.6-rc7) serializes the
+// same fields as body | from | to, and only parses that order; snap 1.8.0 writes the
+// standard order and reads both.
 export const ENCRYPTED_MEMO_MARKER = '#';
 const PUBLIC_KEY_SIZE = 33;
 const KEYS_SIZE = 2 * PUBLIC_KEY_SIZE;
@@ -11,6 +12,18 @@ const MAX_VARINT_BITS = 35;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 export class MemoLayoutError extends Error {}
+
+/** An encryption returned nothing, or only the `#` marker: sending it would lose the memo. */
+export class EmptyEncryptedMemoError extends MemoLayoutError {
+  name = 'EmptyEncryptedMemoError';
+}
+
+/** Returns `encrypted` when it holds more than the `#` marker. @throws {EmptyEncryptedMemoError} */
+export function requireEncryptedMemo(encrypted: string): string {
+  const content = encrypted.startsWith(ENCRYPTED_MEMO_MARKER) ? encrypted.slice(ENCRYPTED_MEMO_MARKER.length) : encrypted;
+  if (content.trim().length === 0) throw new EmptyEncryptedMemoError('The memo encryption returned no ciphertext');
+  return encrypted;
+}
 
 export interface EncryptedMemoParts {
   /** Compressed secp256k1 public key the memo was encrypted from. */
@@ -128,7 +141,7 @@ export function toStandardMemoLayout(memo: string): string {
   return encodeMemo(from, to, body);
 }
 
-/** `#` + base58(body | from | to): the only memo the MetaMask snap's `hive_decrypt` parses. @throws {MemoLayoutError} */
+/** `#` + base58(body | from | to): the only memo `hive_decrypt` of snaps before 1.8.0 parses. @throws {MemoLayoutError} */
 export function toSnapMemoLayout(memo: string): string {
   const { from, to, body } = parseEncryptedMemo(memo);
   return encodeMemo(body, from, to);

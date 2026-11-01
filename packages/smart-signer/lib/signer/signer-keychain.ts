@@ -6,6 +6,7 @@ import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import { encryptMemoWithKeychain, decryptMemoWithKeychain } from '@smart-signer/lib/signer/keychain-memo-crypto';
+import { requireEncryptedMemo } from '@smart-signer/lib/memo-layout';
 const logger = getLogger('app');
 
 // See https://github.com/hive-keychain/hive-keychain-extension/blob/master/documentation/README.md#requestsignbuffer
@@ -78,7 +79,7 @@ export class SignerKeychain extends Signer {
 
   /** Uses `encryptMemoWithKeychain`'s casing workaround, not a plain `KeychainProvider` call - see its docstring. */
   async encryptData({ toAccount, memo }: EncryptMemo): Promise<string> {
-    return encryptMemoWithKeychain(this.username, toAccount, memo);
+    return requireEncryptedMemo(await encryptMemoWithKeychain(this.username, toAccount, memo));
   }
 
   /** Decrypts through `KeychainProvider` - see `decryptMemoWithKeychain` (keychain-memo-crypto.ts). */
