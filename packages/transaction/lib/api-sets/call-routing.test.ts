@@ -22,30 +22,33 @@ interface IFakeChain {
     database_api: { get_dynamic_global_properties: (params: unknown) => Promise<unknown> };
     bridge: { get_post: (params: unknown) => Promise<unknown> };
     lite: { get_post: (params: unknown) => Promise<unknown> };
+    'search-api': { find_text: (params: unknown) => Promise<unknown> };
   };
 }
 
 /** `answers[node][namespace]`; a node answers `ok` where nothing else is given. */
-type TAnswers = Record<string, Partial<Record<'database_api' | 'bridge' | 'lite', Answer>>>;
+type TNamespace = 'database_api' | 'bridge' | 'lite' | 'search-api';
+type TAnswers = Record<string, Partial<Record<TNamespace, Answer>>>;
 
 const setup = (answers: TAnswers, bootstrap: IApiSetsBootstrap, apiEndpoint = CONFIGURED) => {
   const endpoints: IBrowserEndpoints = { apiEndpoint, restApiEndpoint: apiEndpoint };
   const switches: string[] = [];
   const announced: string[] = [];
+  const switchApiNode = (node: string) => {
+    switches.push(node);
+    endpoints.apiEndpoint = node;
+  };
   const routing = createApiSetRouting({
     endpoints: () => endpoints,
     configuredApiEndpoint: CONFIGURED,
     configuredRestEndpoint: CONFIGURED,
-    switchApiNode: (node) => {
-      switches.push(node);
-      endpoints.apiEndpoint = node;
-    },
+    switchApiNode,
     announceSwitch: (node, { setId, selected }) => announced.push(`${setId} ${selected} -> ${node}`)
   });
   provideApiSetView(() => createStaticView(bootstrap));
 
   const makeChain = (node: string): IFakeChain => {
-    const answer = (namespace: 'database_api' | 'bridge' | 'lite', method: string) => async () => {
+    const answer = (namespace: TNamespace, method: string) => async () => {
       const outcome = answers[node]?.[namespace] ?? 'ok';
       if (outcome === 'ok') return { node };
       if (outcome === 'api-not-found') {
@@ -68,16 +71,18 @@ const setup = (answers: TAnswers, bootstrap: IApiSetsBootstrap, apiEndpoint = CO
           get_dynamic_global_properties: answer('database_api', 'get_dynamic_global_properties')
         },
         bridge: { get_post: answer('bridge', 'get_post') },
-        lite: { get_post: answer('lite', 'get_post') }
+        lite: { get_post: answer('lite', 'get_post') },
+        'search-api': { find_text: answer('search-api', 'find_text') }
       }
     };
   };
 
   const chain = wrapChainWithServerFailover(makeChain(endpoints.apiEndpoint), {
-    fallbackNodes: [],
+    fallbackNodes: [LITE_NODE],
     routeFor: routing.routeCall,
     health: new NodeHealth(),
     isTransportError: (error) => error instanceof ReadTransportError,
+    onFailover: switchApiNode,
     createNodeChain: (node) => makeChain(node),
     now: () => 0,
     // Retries run at once; a hedge never starts, so a node is asked only after the previous one failed.
@@ -117,6 +122,17 @@ describe('routing the browser calls by API set', () => {
     expect((await routing.nodesOf('bridge', [CONFIGURED]))[0]).to.equal(LITE_NODE);
   });
 
+  it('never switches it after a search-api call failed on it on transport and another node served it', async () => {
+    const { chain, routing, switches, endpoints } = setup(
+      { [CONFIGURED]: { 'search-api': 'transport' } },
+      ROUTES
+    );
+    expect(await chain.api['search-api'].find_text({})).to.deep.equal({ node: LITE_NODE });
+    expect(switches).to.deep.equal([]);
+    expect(endpoints.apiEndpoint).to.equal(CONFIGURED);
+    expect((await routing.nodesOf('core', [CONFIGURED]))[0]).to.equal(CONFIGURED);
+  });
+
   it('puts a node picked before API sets existed first for core and bridge, never for lite', async () => {
     const { routing } = setup({}, { routes: { lite: [LITE_NODE] }, selections: {} }, LEGACY_PICK);
     expect(await routing.nodesOf('core', [CONFIGURED])).to.deep.equal([LEGACY_PICK, CONFIGURED]);
@@ -150,6 +166,8 @@ describe('routing the browser calls by API set', () => {
     );
     expect(route?.nodes).to.deep.equal([CONFIGURED, LITE_NODE]);
     expect(route?.onFallback).to.equal(undefined);
-    expect(await routing.routeCall('api', ['search-api', 'find_text'], [CONFIGURED])).to.equal(undefined);
+    const searchRoute = await routing.routeCall('api', ['search-api', 'find_text'], [CONFIGURED]);
+    expect(searchRoute?.nodes).to.deep.equal([CONFIGURED]);
+    expect(searchRoute?.onFallback).to.equal(undefined);
   });
 });
