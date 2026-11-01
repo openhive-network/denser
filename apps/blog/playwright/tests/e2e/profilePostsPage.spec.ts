@@ -187,30 +187,16 @@ test.describe('Profile page of @gtg', () => {
     await expect(postPage.articleTitle).toHaveText(`${commentTittText}`);
   });
 
-  test('Tab Posts - Comment Card Footer - Payout Amount', async ({ page }) => {
+  test('Tab Posts - Comment Card Footer - Payout Amount', async () => {
     await profilePage.gotoPostsCommentsProfilePage('@gtg');
-    await expect(commentViewPage.getResponsePostCommentPayout.first()).toBeVisible();
-    const firstPayout = await commentViewPage.getResponsePostCommentPayout.first();
-    const payoutText = await commentViewPage.getResponsePostCommentPayout.first().textContent();
-    if (payoutText === null) throw new Error('First comment payout has no text content');
-    await expect(commentViewPage.getResponsePostCommentPayout.first()).toBeVisible();
+    // A declined payout renders post-payout-decline instead, so every post-payout has a hover card
+    const firstPayout = commentViewPage.getResponsePostCommentPayout.first();
+    await expect(firstPayout).toBeVisible();
+    await expect(firstPayout).toHaveText(/^\$\d+\.\d{2}$/);
 
-    if (payoutText.includes('0.00')) {
-      if (await firstPayout.getAttribute('data-state') == 'closed') {
-        await commentViewPage.getResponsePostCommentPayout.first().hover();
-        // Use toHaveCSS with auto-retry instead of fixed timeout
-        await expect(commentViewPage.getResponsePostCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
-      } else {
-      await commentViewPage.getResponsePostCommentPayout.first().hover();
-      // Use toHaveCSS with auto-retry instead of fixed timeout
-      await expect(commentViewPage.getResponsePostCommentPayout.first()).toHaveCSS('color', 'rgb(24, 30, 42)');
-      }
-    } else {
-      await commentViewPage.getResponsePostCommentPayout.first().hover();
-      // Wait for tooltip to be visible instead of fixed timeout
-      await expect(commentViewPage.payoutPostCardTooltip).toBeVisible({ timeout: 15000 });
-      await expect(commentViewPage.getResponsePostCommentPayout.first()).toHaveCSS('color', 'rgb(218, 43, 43)');
-    }
+    await firstPayout.hover();
+    await expect(commentViewPage.payoutPostCardTooltip).toBeVisible({ timeout: 15000 });
+    await expect(firstPayout).toHaveCSS('color', 'rgb(218, 43, 43)');
   });
 
   test('Tab Posts - Comment Card Footer - Votes', async ({ page, browserName }) => {
