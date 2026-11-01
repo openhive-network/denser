@@ -107,8 +107,19 @@ verification:
   # suite (fixture_e2e: recorded API responses, one worker), the wallet's build and
   # fixture suite (wallet_fixture), the dev stack boot check, then the advisory
   # live_e2e against those blog and wallet builds served by the test stack.
+  #
+  # Overlapped (#1425; `concurrent:` and `phase:`, aidev#15949, #17229): static
+  # first, then unit and wallet_fixture beside fixture_e2e and dev_stack, then
+  # live_e2e. Each suite is its own container with its own network namespace, so
+  # :3000/:8200 (blog) and :4000 (wallet) cannot collide; what they share is the
+  # bind-mounted checkout. node_modules installs are serialised by
+  # .aidev/pnpm-deps.sh's lock; the blog and wallet builds write only their own
+  # app's .next, public/ copies and next-env.d.ts, and every suite its own
+  # test-results/ subdirectory. Host admission reserves memory for fixture_e2e plus
+  # both concurrent suites.
   full:
     suites:
+      # Concurrent: reads sources only, nothing a build writes.
       - name: unit
         adapter: command
         args: [".aidev/run-unit-tests.sh"]
@@ -116,10 +127,17 @@ verification:
         artifacts: ["test-results/unit/"]
         stack: false
         honor_quarantine: true
+        concurrent: true
+      # `phase: before`, not concurrent: it reads what both builds rewrite. Each
+      # app's tsconfig includes next-env.d.ts and .next/types/**, which `next
+      # build` empties and writes again, and ESLint walks the app's public/, whose
+      # copies `pnpm build`'s prebuild removes and copies again. Beside a build its
+      # verdict would depend on how far that build had got. ~30 s.
       - name: static
         adapter: command
         args: [".aidev/run-static.sh"]
         stack: false
+        phase: before
       # Playwright's JSON report records every attempt (aidev#17008): with CI=1 the
       # config retries once, so a test that failed and then passed reaches
       # `aidev flaky-tests --project denser` as an in-run flake. Its ids are the
@@ -150,12 +168,15 @@ verification:
         honor_quarantine: true
       # The wallet's fixture suite, split out of fixture_e2e on 2026-10-09 so a slow
       # blog pass on a loaded host cannot use up its wall (denser#1093, #799).
+      # Concurrent: its build and pass use apps/wallet and test-results/wallet-fixture
+      # only, and fixture_e2e's use apps/blog and test-results/fixture.
       - name: wallet_fixture
         adapter: command
         args: [".aidev/run-wallet-fixture-e2e.sh"]
         tier: e2e
         artifacts: ["test-results/wallet-fixture/"]
         stack: false
+        concurrent: true
       # Boots the live dev stack (sandbox.dev) cold and over the base revision's
       # node_modules, when the candidate changes its dependencies, next.config,
       # middleware or the stack's own files; "not applicable" otherwise. It runs
@@ -179,6 +200,8 @@ verification:
       # `memory: 6g` fixes its container cap: the Playwright run shares the
       # container while the stack serves two Next.js production servers, and
       # the cap fitted from past peaks (0.8-2.2 GB) killed larger selections.
+      # `phase: after`: wallet-live serves wallet_fixture's build, so live_e2e
+      # starts only once that concurrent suite has ended.
       - name: live_e2e
         adapter: command
         args: [".aidev/run-live-e2e.sh"]
@@ -187,6 +210,7 @@ verification:
         env: {DENSER_TEST_STACK: "1"}
         mode: advisory
         memory: 6g
+        phase: after
   baseline:
     adapter: command
     args: [".aidev/run-unit-tests.sh"]
