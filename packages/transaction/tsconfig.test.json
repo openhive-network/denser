@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noEmit": true,
+    // `@ui/config/api-sets` imports its siblings with `.ts`, as packages/ui runs under node's type stripping.
     "allowImportingTsExtensions": true,
     // ts-node emits (to memory) the sibling workspace packages too; TS 6 requires an explicit
     // rootDir when the sources' common directory is not the tsconfig's own.

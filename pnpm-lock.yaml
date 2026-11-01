@@ -10,8 +10,8 @@ catalogs:
       specifier: 1.28.4-rc0-stable.261028220752
       version: 1.28.4-rc0-stable.261028220752
     '@hiveio/healthchecker-component':
-      specifier: 2.0.2-stable.261101024148
-      version: 2.0.2-stable.261101024148
+      specifier: 2.0.2-stable.261101230602
+      version: 2.0.2-stable.261101230602
     '@hiveio/wax':
       specifier: 1.28.8-stable.261028191145
       version: 1.28.8-stable.261028191145
@@ -160,7 +160,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 2.0.2-stable.261101024148(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
+        version: 2.0.2-stable.261101230602(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
       '@hiveio/lite-account':
         specifier: catalog:lite-toolset
         version: 0.2.0-rc1-stable.261027023737
@@ -389,7 +389,7 @@ importers:
         version: link:../../packages/ui
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 2.0.2-stable.261101024148(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
+        version: 2.0.2-stable.261101230602(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.8-stable.261028191145
@@ -821,7 +821,7 @@ importers:
         version: link:../smart-signer
       '@hiveio/healthchecker-component':
         specifier: catalog:hiveio-toolset
-        version: 2.0.2-stable.261101024148(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
+        version: 2.0.2-stable.261101230602(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.8-stable.261028191145
@@ -1993,8 +1993,8 @@ packages:
     peerDependencies:
       '@hiveio/wax': '>= 1.28.8-0 < 1.29.0'
 
-  '@hiveio/healthchecker-component@2.0.2-stable.261101024148':
-    resolution: {integrity: sha1-MQcfByC5kyVVV4hoDI6agytdUV4=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-2.0.2-stable.261101024148.tgz}
+  '@hiveio/healthchecker-component@2.0.2-stable.261101230602':
+    resolution: {integrity: sha1-MH14az0VR7AmijzdifzLhbcKfz0=, tarball: https://gitlab.syncad.com/api/v4/projects/520/packages/npm/@hiveio/healthchecker-component/-/@hiveio/healthchecker-component-2.0.2-stable.261101230602.tgz}
     engines: {node: '>=24'}
     peerDependencies:
       '@hiveio/wax': '>=1.28.6-rc10-stable.260317114454 <1.29.0 || >=1.28.8-0 <1.29.0 || ^2.0.0'
@@ -11895,7 +11895,7 @@ snapshots:
       '@hiveio/wax': 1.28.8-stable.261028191145
       comlink: 4.4.2
 
-  '@hiveio/healthchecker-component@2.0.2-stable.261101024148(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)':
+  '@hiveio/healthchecker-component@2.0.2-stable.261101230602(@hiveio/wax@1.28.8-stable.261028191145)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tailwindcss@4.3.3)':
     dependencies:
       '@hiveio/wax': 1.28.8-stable.261028191145
       react: 19.3.1
