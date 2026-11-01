@@ -56,7 +56,7 @@ export const EXIT_LOW_COVERAGE = 3;
 export function reportDir(jobName) {
   const e2e = /^e2e-tests-(blog|wallet)-(?:stable|flaky): \[(\w+), (\d+), \d+\]$/.exec(jobName);
   if (e2e) return `apps/${e2e[1]}/junit/${e2e[2]}/${e2e[3]}`;
-  if (jobName === 'blog-fixture-tests') return 'apps/blog/junit/fixture';
+  if (/^blog-fixture-tests(?: \d+\/\d+)?$/.test(jobName)) return 'apps/blog/junit/fixture';
   return null;
 }
 

@@ -882,7 +882,74 @@ smoke-tests-blog:
   tags:
   - public-runner-docker
 
+# The blog build the fixture shards test: docker-build-blog-testenv's /app (the
+# Next standalone tree with its static files and public/), exported without a
+# container. The image builds it at WORKDIR /app, so the absolute paths in its
+# server chunks (@hiveio/wax's WASM loader among them) hold wherever it is
+# restored to /app again.
+blog-fixture-standalone:
+  extends: .docker_image_builder_job_template
+  stage: build
+  rules:
+  - when: on_success
+  interruptible: true
+  needs:
+  - docker-build-blog-testenv
+  variables:
+    GIT_SUBMODULE_STRATEGY: none
+  before_script:
+  - !reference [.docker_image_builder_job_template, before_script]
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+  - scripts/ci-helpers/export-data-from-docker-image.sh "${DENSER_BLOG_IMAGE_NAME}" blog-standalone --image-path=/app/
+  - du -sh blog-standalone
+  artifacts:
+    paths:
+    - blog-standalone/
+    expire_in: 1 day
+  tags:
+  - public-runner-docker
+
+# One of 4 shards of the fixture suite, against blog-fixture-standalone's build
+# instead of its own. playwright.fixture.config.ts picks the shard's spec files
+# from CI_NODE_INDEX/CI_NODE_TOTAL: whole files (the replay proxy counts each
+# recording's calls in order), balanced by recorded duration.
 blog-fixture-tests:
+  extends: .node-job
+  image: ${NODE_TEST_TOOLS_IMAGE}
+  stage: test
+  needs:
+  - blog-fixture-standalone
+  parallel: 4
+  variables:
+    TURBO_APP_SCOPE: '@hive/blog'
+    TURBO_APP_PATH: '/apps/blog'
+    FIXTURE_STANDALONE_DIR: '/app/apps/blog'
+  script:
+  - !reference [.node-job, script]
+  - |
+    rm -rf /app
+    mv blog-standalone /app
+  - |
+    echo -e "\e[0Ksection_start:$(date +%s):fixture_tests[collapsed=false]\r\e[0KRunning blog fixture-based Playwright tests (shard ${CI_NODE_INDEX}/${CI_NODE_TOTAL})..."
+    cd .$TURBO_APP_PATH
+    pnpm test:fixture:run
+    echo -e "\e[0Ksection_end:$(date +%s):fixture_tests\r\e[0K"
+  artifacts:
+    paths:
+    - .${TURBO_APP_PATH}/test-results/
+    - .${TURBO_APP_PATH}/junit/
+    reports:
+      junit: .${TURBO_APP_PATH}/junit/fixture/results.xml
+    when: always
+    expire_in: 1 week
+  tags:
+  - public-runner-docker
+
+# The @basepath specs against a build served under /blog, as subdirectory
+# deployments serve it. Builds its own: no image is built with a base path on
+# every pipeline.
+blog-fixture-basepath-tests:
   extends: .node-job
   image: ${NODE_TEST_TOOLS_IMAGE}
   stage: test
@@ -893,9 +960,9 @@ blog-fixture-tests:
   script:
   - !reference [.node-job, script]
   - |
-    echo -e "\e[0Ksection_start:$(date +%s):fixture_tests[collapsed=false]\r\e[0KRunning blog fixture-based Playwright tests..."
+    echo -e "\e[0Ksection_start:$(date +%s):fixture_tests[collapsed=false]\r\e[0KRunning blog @basepath fixture-based Playwright tests under /blog..."
     cd .$TURBO_APP_PATH
-    pnpm test:fixture
+    pnpm test:fixture:basepath
     echo -e "\e[0Ksection_end:$(date +%s):fixture_tests\r\e[0K"
   artifacts:
     paths:

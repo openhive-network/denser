@@ -1,7 +1,7 @@
 // Unit tests for flake-report.mjs: node --test scripts/ci/flake-report.test.mjs
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { aggregate, code, coverageProblem, fromJson, fromJunit, render, retryDelay } from './flake-report.mjs';
+import { aggregate, code, coverageProblem, fromJson, fromJunit, render, reportDir, retryDelay } from './flake-report.mjs';
 
 const job = (id, name, status = 'success') => ({
   id,
@@ -76,4 +76,11 @@ test('retryDelay honours Retry-After, bounded', () => {
   assert.equal(retryDelay(null, 2), 4000);
   const now = Date.parse('2026-09-30T10:00:00Z');
   assert.equal(retryDelay('Wed, 30 Sep 2026 10:00:10 GMT', 1, now), 10_000);
+});
+
+test('reportDir finds the fixture shards\' and e2e jobs\' reports', () => {
+  assert.equal(reportDir('blog-fixture-tests 3/4'), 'apps/blog/junit/fixture');
+  assert.equal(reportDir('blog-fixture-tests'), 'apps/blog/junit/fixture');
+  assert.equal(reportDir('e2e-tests-blog-stable: [chromium, 2, 5]'), 'apps/blog/junit/chromium/2');
+  assert.equal(reportDir('blog-fixture-basepath-tests'), null);
 });

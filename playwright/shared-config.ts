@@ -123,8 +123,17 @@ export function standaloneServerCommand(app: string, nextDir = '.next') {
     `rm -rf ${appDir}/.next/static ${appDir}/public`,
     `cp -r ${nextDir}/static ${appDir}/.next/static`,
     `cp -r public ${appDir}/public`,
-    `react-env -- sh -c "cp -f public/__ENV.js ${appDir}/public/__ENV.js && node ${appDir}/server.js"`
+    prebuiltStandaloneServerCommand(appDir)
   ].join(' && ');
+}
+
+/**
+ * `node server.js` of a standalone app directory whose static files and
+ * public/ are already in place, as in an image's /app/apps/<app>, with
+ * __ENV.js written fresh by react-env as standaloneServerCommand() does.
+ */
+export function prebuiltStandaloneServerCommand(appDir: string) {
+  return `react-env -- sh -c "cp -f public/__ENV.js ${appDir}/public/__ENV.js && node ${appDir}/server.js"`;
 }
 
 /** webServer options for a server the suite starts itself, piping its output. */

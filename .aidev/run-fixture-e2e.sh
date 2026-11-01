@@ -7,8 +7,9 @@
 # not bound. The wallet's fixture suite is its own full-slot suite,
 # wallet_fixture (.aidev/run-wallet-fixture-e2e.sh), so it gets its own wall.
 #
-# Self-contained by default, as CI's blog-fixture-tests job (pnpm test:fixture):
-# build, then playwright.fixture.config.ts's webServer serves the build here.
+# Self-contained by default, as `pnpm test:fixture`: build, then
+# playwright.fixture.config.ts's webServer serves the build here. (CI shards the
+# suite over the testenv image's build instead; see blog-fixture-tests.)
 # The build goes through .aidev/run-blog-build.sh, whose completion marker lets
 # the test stack's blog-live serve the same build to live_e2e afterwards.
 #
