@@ -11,6 +11,7 @@ export type TApiSetOutcome =
  */
 export interface IApiSetEngine {
   fallbackOrder(setId: string): string[];
+  rankings(setId: string): { node: string; state: string }[];
   selection(setId: string): string;
   report(setId: string, node: string, outcome: TApiSetOutcome): boolean;
 }

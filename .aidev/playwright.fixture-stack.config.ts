@@ -3,7 +3,8 @@
  * blog someone else serves — AIDEV's dev stack (.aidev/dev-stack-spec.sh) or
  * test stack (.aidev/run-fixture-e2e.sh) — instead of the standalone server the
  * base config's webServer starts. Everything else (tests, timeouts, retries,
- * projects, the app's env contract) is the base config's.
+ * projects, the app's env contract) is the base config's, less the API sets
+ * probing project, whose spec starts a server of its own from a standalone build.
  *
  *   DENSER_BLOG_URL             the blog, default http://localhost:3000. Keep the
  *                               host `localhost`: the auth seeder's cookie is
@@ -30,7 +31,7 @@
  * resolve as they do under the base config.
  */
 import path from 'path';
-import base from '../apps/blog/playwright.fixture.config';
+import base, { API_SETS_PROBING_PROJECT } from '../apps/blog/playwright.fixture.config';
 
 const blogDir = path.resolve(__dirname, '../apps/blog');
 
@@ -39,6 +40,7 @@ export default {
   testDir: path.join(blogDir, 'playwright/tests/fixture'),
   outputDir: process.env.DENSER_PLAYWRIGHT_OUTPUT_DIR || path.join(blogDir, 'test-results'),
   webServer: undefined,
+  projects: base.projects?.filter(({ name }) => name !== API_SETS_PROBING_PROJECT),
   use: {
     ...base.use,
     baseURL: process.env.DENSER_BLOG_URL || 'http://localhost:3000',

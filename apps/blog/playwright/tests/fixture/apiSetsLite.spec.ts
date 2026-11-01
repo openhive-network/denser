@@ -2,7 +2,13 @@ import type { Page } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 import { PostPage } from '../support/pages/postPage';
 import { API_SET_TAB, HealthcheckerPage } from '../support/pages/healthcheckerPage';
-import { LITE_LESS_NODE_URL, startLiteLessNode, type ILiteLessNode } from '../support/apiSetsNodes';
+import {
+  LITE_LESS_NODE_URL,
+  startBlogServer,
+  startLiteLessNode,
+  type IBlogServer,
+  type ILiteLessNode
+} from '../support/apiSetsNodes';
 
 /**
  * Each API set goes to a node that serves it: on the blog server whose API endpoint (node A, a stub)
@@ -10,20 +16,24 @@ import { LITE_LESS_NODE_URL, startLiteLessNode, type ILiteLessNode } from '../su
  * go to B and core and bridge reads stay on A, with no node switched for everything.
  *
  *   API-SETS-03 – /created/lite-test lists the lite post under its did:lite: author on a server that
- *                 has learned nothing yet (probing off, the cold start) and once it has; the
- *                 browser's own core and bridge requests (the sidebar's communities, which the
- *                 recording lacks, so the browser reads them again) go to A, before and after a
- *                 client-side navigation, and the browser never switches its node
+ *                 has made no call yet and once it has; the browser's own core and bridge requests
+ *                 (the sidebar's communities, which the recording lacks, so the browser reads them
+ *                 again) go to A, before and after a client-side navigation, and the browser never
+ *                 switches its node
  *   API-SETS-01 – a lite post renders under its lite author, read from B; core and bridge stay on A
  *   API-SETS-02 – on /healthchecker, A is not offered for lite; B picked for lite persists across a
  *                 reload, in the server's render too
  *   API-SETS-04 – the browser's own lite read starts at A (the page's routes list A first for lite, as
  *                 a server that has not yet learned A lacks it renders them): A refuses it, B serves
  *                 it, and the browser still sends core and bridge to A and never switches its node
+ *   API-SETS-05 – (probing only) the server probed A for core, bridge and lite once A was up, before
+ *                 any page
  *
- * The suite's servers run with DENSER_API_SETS_PROBING=off: probes would be unrecorded calls, to
- * the public catalog nodes too. A server that has served a page has learned what a probe would tell
- * it, so API-SETS-03's second load stands in for a probed server. The `litePost` recording's
+ * The suite runs twice. In the default project the server runs with DENSER_API_SETS_PROBING=off, the
+ * cold start: a server that has served a page has learned what a probe would tell it, so API-SETS-03's
+ * second load stands in for a probed server. The probing project (playwright.fixture.config.ts) has
+ * this file start a probing server once A and B are up, as production probes: the `litePost`
+ * recording answers its probes of B and A, the public catalog nodes are refused. The recording's
  * `lite.get_ranked_posts` of lite-test lists the recorded post, built from its `lite.get_post` answer.
  *
  * Replay:  pnpm --filter @hive/blog test:fixture apiSetsLite
@@ -40,15 +50,18 @@ const LITE_FEED_PATH = '/created/lite-test';
 const AUTO_NODE_KEY = 'auto-node-endpoint';
 
 let node: ILiteLessNode | undefined;
+let server: IBlogServer | undefined;
 let baseURL = '';
 
-test.beforeAll(async ({ apiSetsBaseURL, fixtureProxy: _fixtureProxy, fixturePort }) => {
+test.beforeAll(async ({ apiSetsBaseURL, apiSetsServer, fixtureProxy: _fixtureProxy, fixturePort }) => {
   if (!apiSetsBaseURL) return;
   baseURL = apiSetsBaseURL;
   node = await startLiteLessNode(`http://localhost:${fixturePort}`);
+  if (apiSetsServer) server = await startBlogServer(apiSetsServer);
 });
 
 test.afterAll(async () => {
+  await server?.close();
   await node?.close();
 });
 
@@ -143,7 +156,18 @@ const expectCallsOnTheirNodes = (calls: readonly INodeCall[]) => {
   ).toEqual([]);
 };
 
-// First in the file: the server has learned nothing about the nodes yet.
+/** The JSON-RPC calls of the server's probes (`PROBES` in packages/transaction/lib/api-sets/definitions.ts). */
+const PROBE_METHODS = ['database_api.get_dynamic_global_properties', 'bridge.get_post', 'lite.get_info'];
+
+// Before any page: A has been asked nothing but the probes.
+test('API-SETS-05: a probing server started once its nodes are up has probed A for core, bridge and lite', async ({
+  apiSetsServer
+}) => {
+  test.skip(!apiSetsServer, 'the server does not probe');
+  await expect.poll(() => [...new Set(node?.methods)].sort()).toEqual([...PROBE_METHODS].sort());
+});
+
+// The file's first page: the server has learned nothing about the nodes from calls yet.
 test('API-SETS-03: the lite feed lists lite authors while the browser keeps core and bridge on A', async ({
   page
 }) => {

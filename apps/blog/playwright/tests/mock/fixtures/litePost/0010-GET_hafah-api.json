@@ -1,0 +1,8 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hafah-api/",
+  "requestHash": "c2e701ab6d559c9a",
+  "response": "Not Found",
+  "responseStatus": 404,
+  "responseContentType": "text/plain"
+}
