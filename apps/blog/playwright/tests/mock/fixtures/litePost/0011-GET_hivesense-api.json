@@ -1,0 +1,8 @@
+{
+  "httpMethod": "GET",
+  "requestPath": "/hivesense-api/",
+  "requestHash": "b2dad0010d5ab4cf",
+  "response": "Not Found",
+  "responseStatus": 404,
+  "responseContentType": "text/plain"
+}

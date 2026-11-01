@@ -8,6 +8,7 @@ import {
 } from './mock-server';
 import { seedAuthCookie } from './fixture-auth/seeder';
 import { appendMissShard } from './fixture-misses/miss-log';
+import type { IBlogServerSpec } from './apiSetsNodes';
 import type { User } from '@smart-signer/types/common';
 
 /**
@@ -48,6 +49,11 @@ export type FixtureProxyWorkerFixtures = {
   hivemindRestBaseURL: string | undefined;
   /** The blog server whose API endpoint lacks lite.* (support/apiSetsNodes.ts); unset when none runs. */
   apiSetsBaseURL: string | undefined;
+  /**
+   * The server at `apiSetsBaseURL`, when the spec starts it once its nodes are up instead of the
+   * config's webServer starting it before them (support/apiSetsNodes.ts).
+   */
+  apiSetsServer: IBlogServerSpec | undefined;
 };
 
 export type FixtureAuthTestFixtures = {
@@ -96,6 +102,7 @@ export const test = base.extend<FixtureAuthTestFixtures, FixtureProxyWorkerFixtu
   feedCacheBaseURL: [undefined, { option: true, scope: 'worker' }],
   hivemindRestBaseURL: [undefined, { option: true, scope: 'worker' }],
   apiSetsBaseURL: [undefined, { option: true, scope: 'worker' }],
+  apiSetsServer: [undefined, { option: true, scope: 'worker' }],
 
   fixtureProxy: [
     async ({ fixtureTestName, fixturePort }, use) => {

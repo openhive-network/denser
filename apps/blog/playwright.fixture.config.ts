@@ -1,3 +1,4 @@
+import os from 'os';
 import path from 'path';
 import { defineConfig, devices } from '@playwright/test';
 import {
@@ -22,7 +23,12 @@ import {
   HIVEMIND_REST_BLOG_PORT,
   HIVEMIND_REST_STUB_URL
 } from './playwright/tests/support/hivemindRestStub';
-import { API_SETS_BLOG_PORT, LITE_LESS_NODE_URL } from './playwright/tests/support/apiSetsNodes';
+import {
+  API_SETS_BLOG_PORT,
+  API_SETS_PROBING_BLOG_PORT,
+  LITE_LESS_NODE_URL,
+  type IBlogServerSpec
+} from './playwright/tests/support/apiSetsNodes';
 import {
   listSpecs,
   readDurations,
@@ -132,18 +138,51 @@ const serverEnv = {
     : {})
 };
 
+// Its API endpoint is a node without lite.*, the fixture proxy (which has it) one more allowed node:
+// its API sets route lite apart from core and bridge (apiSetsLite.spec.ts).
+const apiSetsServerEnv = {
+  ...serverEnv,
+  REACT_APP_API_ENDPOINT: LITE_LESS_NODE_URL,
+  REACT_APP_ALLOWED_HIVE_API_NODES: `${LITE_LESS_NODE_URL} http://localhost:${FIXTURE_PORT}`,
+  REACT_APP_FYP_API_URL: '',
+  DENSER_FEED_CACHE_TTL_S: '0',
+  DENSER_LITE_PROBE_TTL_S: '0'
+};
+
+const API_SETS_SPEC = 'apiSetsLite.spec.ts';
+/** Runs API_SETS_SPEC against a probing server: it starts a standalone build, which a stack has not. */
+export const API_SETS_PROBING_PROJECT = 'chromium-fixture-api-sets-probing';
+const SHARD_SPECS = SHARD
+  ? specsForShard(
+      listSpecs(TEST_DIR),
+      readDurations(path.join(__dirname, 'playwright/tests/support/fixture-shards/durations.json')),
+      SHARD
+    )
+  : undefined;
+
+/**
+ * The API sets server again, probing as production does. The spec starts it once node A and the
+ * fixture proxy are up: started with the others, it would probe them before either listens, and
+ * find no node for core. Its probes of the public catalog nodes are refused (egress-guard.cjs), so
+ * they are down, as on a host without network, and no live answer reaches the routes.
+ */
+const apiSetsProbingServer: IBlogServerSpec = {
+  serverJs: path.resolve(__dirname, SERVER_JS),
+  readyUrl: `http://127.0.0.1:${API_SETS_PROBING_BLOG_PORT}${BASE_PATH}/api/health`,
+  env: {
+    ...apiSetsServerEnv,
+    PORT: String(API_SETS_PROBING_BLOG_PORT),
+    DENSER_API_SETS_PROBING: 'on',
+    NODE_OPTIONS: `--require ${path.join(__dirname, '../../.aidev/lighthouse-fixture/egress-guard.cjs')}`,
+    DENSER_EGRESS_LOG: path.join(os.tmpdir(), `denser-api-sets-probing-${API_SETS_PROBING_BLOG_PORT}-egress.log`),
+    DENSER_EGRESS_BLOCK: '1'
+  }
+};
+
 export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>({
   ...baseConfig(),
   testDir: './playwright/tests/fixture',
-  ...(SHARD
-    ? {
-        testMatch: specsForShard(
-          listSpecs(TEST_DIR),
-          readDurations(path.join(__dirname, 'playwright/tests/support/fixture-shards/durations.json')),
-          SHARD
-        )
-      }
-    : {}),
+  ...(SHARD_SPECS ? { testMatch: SHARD_SPECS } : {}),
   // Collect the fixture proxy's replay MISSes and fail on ones missing
   // from playwright/tests/fixture/known-misses.json.
   // Absolute: .aidev/playwright.fixture-stack.config.ts spreads this config
@@ -180,7 +219,20 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
     {
       name: 'chromium-fixture',
       use: { ...devices['Desktop Chrome'] }
-    }
+    },
+    ...(!SHARD_SPECS || SHARD_SPECS.includes(API_SETS_SPEC)
+      ? [
+          {
+            name: API_SETS_PROBING_PROJECT,
+            testMatch: API_SETS_SPEC,
+            use: {
+              ...devices['Desktop Chrome'],
+              apiSetsBaseURL: `http://localhost:${API_SETS_PROBING_BLOG_PORT}`,
+              apiSetsServer: apiSetsProbingServer
+            }
+          }
+        ]
+      : [])
   ],
   webServer: [
     {
@@ -221,21 +273,12 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
         DENSER_FEED_CACHE_TTL_S: '0'
       }
     },
-    // Its API endpoint is a node without lite.*, the fixture proxy (which has it) one more allowed
-    // node: its API sets route lite apart from core and bridge (apiSetsLite.spec.ts).
+    // The API sets server, probing off (apiSetsServerEnv).
     {
       command: `node ${SERVER_JS}`,
       url: `http://127.0.0.1:${API_SETS_BLOG_PORT}${BASE_PATH}/api/health`,
       ...ownWebServerOptions(),
-      env: {
-        ...serverEnv,
-        PORT: String(API_SETS_BLOG_PORT),
-        REACT_APP_API_ENDPOINT: LITE_LESS_NODE_URL,
-        REACT_APP_ALLOWED_HIVE_API_NODES: `${LITE_LESS_NODE_URL} http://localhost:${FIXTURE_PORT}`,
-        REACT_APP_FYP_API_URL: '',
-        DENSER_FEED_CACHE_TTL_S: '0',
-        DENSER_LITE_PROBE_TTL_S: '0'
-      }
+      env: { ...apiSetsServerEnv, PORT: String(API_SETS_BLOG_PORT) }
     }
   ]
 });

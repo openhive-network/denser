@@ -34,7 +34,9 @@ registerHooks({
 });
 const { ApiSetEngine, memoryStorage } = await import('@hiveio/healthchecker-component/engine');
 const { createApiSetEngine } = await import('../../transaction/lib/api-sets/definitions.ts');
-const { getApiSetView, provideApiSetView } = await import('../../transaction/lib/api-sets/router.ts');
+const { bootstrapOf, getApiSetView, provideApiSetView } = await import(
+  '../../transaction/lib/api-sets/router.ts'
+);
 const { probeAnswerOf } = await import('../../transaction/lib/api-sets/probe-answers.ts');
 const { createEngineView } = await import('../../transaction/lib/api-sets/engine-view.ts');
 const { installServerApiSets } = await import('../../transaction/lib/api-sets/server.ts');
@@ -193,7 +195,18 @@ describe('routing by API set', () => {
     const core = view.nodesFor('core');
     assert.deepEqual(core.slice(0, 2), [HIVE_BLOG, OPENHIVE]);
     assert.equal(core.includes(SYNCAD), false);
-    assert.deepEqual(view.nodesFor('lite'), []);
+    // The only node serving lite is down: lite's calls still go to it, the others lack lite.*.
+    assert.deepEqual(view.nodesFor('lite'), [SYNCAD]);
+  });
+
+  it("routes a set no node is known to serve to the operator's nodes, as its calls go", async () => {
+    const config = resolveApiSetsConfig(MAINNET_ENV);
+    const { engine } = await probedEngine(MAINNET_ENV, fakeTransport({ downNodes: config.nodes }));
+    assert.deepEqual(engine.fallbackOrder('core'), []);
+    const { routes } = bootstrapOf(createEngineView(engine, config));
+    assert.deepEqual(routes.core, [HIVE_BLOG, SYNCAD, OPENHIVE]);
+    assert.deepEqual(routes.bridge, [HIVE_BLOG, SYNCAD, OPENHIVE]);
+    assert.deepEqual(routes.lite, [HIVE_BLOG, SYNCAD, OPENHIVE]);
   });
 
   it('routes to a catalog node the operator does not list once it serves the set, as /healthchecker shows', async () => {

@@ -18,7 +18,10 @@ import {
   type IApiSetsConfig,
   type TApiSetId
 } from '@ui/config/api-sets';
+import { getLogger } from '@ui/lib/logging';
 import { recordProbeAnswer } from './probe-answers';
+
+const logger = getLogger('app');
 
 const isStringArray = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === 'string');
@@ -70,13 +73,28 @@ const MAX_UNREACHABLE_BACKOFF_MS = 30 * 60_000;
 // A node with a path (`https://api.syncad.com/haf-fyp-api`) is the URL of one API, not an API node.
 const isFeatureUrl = (node: string): boolean => new URL(node).pathname !== '/';
 
+/** `probe` of `setId`, logging each outcome at debug level. */
+const loggedProbe =
+  (setId: TApiSetId, probe: ApiProbe): ApiProbe =>
+  async (context) => {
+    try {
+      const result = await probe(context);
+      if (result.supported) logger.debug('API set %s: %s serves it', setId, context.node);
+      else logger.debug('API set %s: %s does not serve it: %s', setId, context.node, result.reason);
+      return result;
+    } catch (error) {
+      logger.debug('API set %s: probing %s failed: %s', setId, context.node, String(error));
+      throw error;
+    }
+  };
+
 /**
- * `setId`'s probe as the engine runs it: a feature URL another set lists is no node of this set, so
+ * `setId`'s probe as the engine runs it, logged: a feature URL another set lists is no node of this set, so
  * it is not asked; a node the operator does not list for the set (a node users may pick) that
  * could not answer is not asked again until its back-off, doubling with each failure, ends.
  */
 function probeOf(config: IApiSetsConfig, setId: TApiSetId, now: () => number): ApiProbe {
-  const probe = PROBES[setId];
+  const probe = loggedProbe(setId, PROBES[setId]);
   const preferred = new Set(preferredNodes(config, setId));
   const backoffs = new Map<string, { failures: number; until: number }>();
   return async (context) => {

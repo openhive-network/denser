@@ -1,0 +1,32 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_post",
+    "params": {
+      "author": "hc-probe",
+      "permlink": "hc-probe",
+      "observer": ""
+    },
+    "id": 1
+  },
+  "requestHash": "cc109ff41cb5b092",
+  "method": "bridge.get_post",
+  "params": {
+    "author": "hc-probe",
+    "permlink": "hc-probe",
+    "observer": ""
+  },
+  "response": {
+    "error": {
+      "code": -32602,
+      "data": "Post hc-probe/hc-probe does not exist",
+      "message": "Invalid parameters"
+    },
+    "id": 1,
+    "jsonrpc": "2.0"
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}
