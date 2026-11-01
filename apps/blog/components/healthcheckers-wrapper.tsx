@@ -81,6 +81,7 @@ const HealthCheckersWrapper = ({ snapshot }: { snapshot: unknown }) => {
         createChecks={createBlogChecks}
         checkLabel={t('api_sets.check_nodes')}
         stopLabel={t('api_sets.stop_checking')}
+        catalogOnlyNote={t('api_sets.catalog_only')}
       />
     </div>
   );

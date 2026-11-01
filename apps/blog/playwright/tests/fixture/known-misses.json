@@ -1,5 +1,10 @@
 [
   {
+    "spec": "apiSetsLite.spec.ts",
+    "method": "bridge.list_communities",
+    "hash": "3c9b21db67ad172c"
+  },
+  {
     "spec": "communityLeave.spec.ts",
     "method": "bridge.get_ranked_posts",
     "hash": "b4724695413bd11f",

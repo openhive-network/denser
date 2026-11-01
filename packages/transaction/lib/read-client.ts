@@ -66,7 +66,9 @@ export interface IReadClient<TApi, TRestApi> {
 export class JsonRpcApiError extends Error {
   constructor(
     readonly method: string,
-    readonly response: unknown
+    readonly response: unknown,
+    /** The node that answered. */
+    readonly endpoint?: string
   ) {
     super(`${method}: ${jsonRpcErrorMessage(response)}`);
     this.name = 'JsonRpcApiError';
@@ -179,16 +181,17 @@ export function createReadClient<TApi extends object, TRestApi extends object>({
   const callJsonRpc = async (path: readonly string[], params: unknown): Promise<unknown> => {
     const config = getConfig();
     const method = path.join('.');
+    const endpoint = resolveEndpoint(path, config.apiEndpoint, config.jsonRpcEndpoints);
     const { response } = await transport.request({
       method: 'POST',
-      endpoint: resolveEndpoint(path, config.apiEndpoint, config.jsonRpcEndpoints),
+      endpoint,
       url: '',
       timeout: config.timeoutMs,
       data: JSON.stringify({ jsonrpc: '2.0', method, params, id: 1 }),
       responseType: 'json'
     });
     if (isRecord(response) && 'result' in response) return response.result;
-    throw new JsonRpcApiError(method, response);
+    throw new JsonRpcApiError(method, response, endpoint);
   };
 
   const callRest = async (state: IRestPathState, params: unknown): Promise<unknown> => {

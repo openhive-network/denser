@@ -209,6 +209,28 @@ describe('findLiteNode', () => {
   });
 });
 
+describe('createLiteApiProbe with known answers', () => {
+  it("takes a node's known answer (the API sets engine's probe) instead of asking it", async () => {
+    const requests: string[] = [];
+    const known: Record<string, { info: unknown }> = {
+      [LITE_NODE]: { info: LITE_INFO },
+      [STOCK_NODE]: { info: null }
+    };
+    const probe = createLiteApiProbe({
+      fetchInfo: async (endpoint) => {
+        requests.push(endpoint);
+        return LITE_INFO;
+      },
+      knownInfo: (endpoint) => known[endpoint]
+    });
+
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(await probe.getInfo(STOCK_NODE)).to.equal(null);
+    expect(await probe.getInfo('https://unknown.example')).to.deep.equal(LITE_INFO);
+    expect(requests).to.deep.equal(['https://unknown.example']);
+  });
+});
+
 describe('createPostsReader', () => {
   /** A chain whose `lite` and `bridge` post reads record their calls and answer with `answers`. */
   const setupReader = (endpoint: string, probeAnswers: Record<string, unknown>, liteAnswer: unknown = 'native') => {
@@ -279,6 +301,25 @@ describe('createPostsReader', () => {
 
     expect(calls.map((call) => call.split(' ')[0])).to.deep.equal(['lite.get_post', 'bridge.get_post', 'bridge.get_post']);
     expect(probeRequests).to.deep.equal([LITE_NODE]);
+  });
+
+  it('marks the node that answered "Api not found", not the lite node failover started from', async () => {
+    const OTHER_LITE_NODE = 'https://other-lite.example';
+    const answeredByOther = new JsonRpcApiError(
+      'lite.get_post',
+      { error: { code: -32601, message: 'Api not found lite' } },
+      OTHER_LITE_NODE
+    );
+    const { read, probe } = setupReader(
+      LITE_NODE,
+      { [LITE_NODE]: LITE_INFO, [OTHER_LITE_NODE]: LITE_INFO },
+      answeredByOther
+    );
+    await probe.getInfo(OTHER_LITE_NODE);
+
+    expect(await read(getPost)).to.equal('compat');
+    expect(probe.peek(OTHER_LITE_NODE)).to.equal(null);
+    expect(probe.peek(LITE_NODE)).to.deep.equal(LITE_INFO);
   });
 
   it('probes the node once, on the first read, and notifies its answer', async () => {

@@ -9,6 +9,7 @@ import type {
   IUnreadNotifications
 } from '@hive/common-hiveio-packages/wax';
 import { getLogger } from '@ui/lib/logging';
+import { probeAnswerOf } from './api-sets/probe-answers';
 import { getApiSetNodes, getNodeReadChain, getReadChain, type ReadChain } from './chain';
 import { isApiNotServedError, JsonRpcApiError } from './read-client';
 
@@ -77,6 +78,11 @@ const isLiteApiInfo = (value: unknown): value is ILiteApiInfo => {
 export interface ILiteApiProbeOptions {
   /** Calls `lite.get_info` on exactly `endpoint`, never on another node in its place. */
   fetchInfo: (endpoint: string) => Promise<unknown>;
+  /**
+   * An answer of `endpoint` already at hand (e.g. the API sets engine's probe of it), or undefined to
+   * ask the node; null means it does not serve `lite.*`.
+   */
+  knownInfo?: (endpoint: string) => { info: unknown } | undefined;
   ttlMs?: number;
   now?: () => number;
 }
@@ -101,6 +107,7 @@ export interface ILiteApiProbe {
  */
 export function createLiteApiProbe({
   fetchInfo,
+  knownInfo,
   ttlMs = LITE_PROBE_TTL_MS,
   now = Date.now
 }: ILiteApiProbeOptions): ILiteApiProbe {
@@ -114,6 +121,8 @@ export function createLiteApiProbe({
   };
 
   const probe = async (endpoint: string): Promise<ILiteApiInfo | null> => {
+    const known = knownInfo?.(endpoint);
+    if (known) return isLiteApiInfo(known.info) ? known.info : null;
     let answer: unknown;
     try {
       answer = await fetchInfo(endpoint);
@@ -218,8 +227,10 @@ export function createPostsReader(
       return await read(chain.api.lite);
     } catch (error) {
       if (!isApiNotServedError(error)) throw error;
-      logger.warn('%s no longer serves lite.*, reading posts the stock way', lite.node);
-      probe.markUnavailable(lite.node);
+      // Failover may have asked other nodes after the lite node: the error names the one that answered.
+      const node = (error instanceof JsonRpcApiError && error.endpoint) || lite.node;
+      logger.warn('%s no longer serves lite.*, reading posts the stock way', node);
+      probe.markUnavailable(node);
       return stockRead();
     }
   };
@@ -320,21 +331,34 @@ export function createLiteNotificationsReader(
   };
 }
 
+const isServer = typeof window === 'undefined';
+const liteProbeTtlMs = isServer ? readLiteProbeTtlMs(process.env) : LITE_PROBE_TTL_MS;
+
+const engineProbedInfo = (endpoint: string): { info: unknown } | undefined => {
+  const probed = probeAnswerOf('lite', endpoint, liteProbeTtlMs);
+  return probed && { info: probed.answer };
+};
+
 // Asked of each node itself: answered through failover, another node's capabilities would be
-// recorded as this one's.
+// recorded as this one's. On the server, whose API sets engine probes the nodes, a node it probed
+// within the TTL is not asked again; the bundler drops that from the browser's code.
 const liteApiProbe = createLiteApiProbe({
   fetchInfo: (endpoint) => getNodeReadChain(endpoint).api.lite.get_info({}),
-  ttlMs: typeof window === 'undefined' ? readLiteProbeTtlMs(process.env) : LITE_PROBE_TTL_MS
+  knownInfo: typeof window === 'undefined' ? engineProbedInfo : undefined,
+  ttlMs: liteProbeTtlMs
 });
 
 /** The nodes of the lite API set, best first (see `getApiSetNodes`). */
 const getLiteNodes = (): Promise<readonly string[]> => getApiSetNodes('lite');
 
-// The outcome of the last lookup of the lite node: undefined before the first one.
+// The outcome of the browser's last lookup of the lite node: undefined before the first one. A
+// server keeps none: its requests route by their own cookies, so one request's lite node is not
+// another's.
 let lastLiteNode: ILiteNode | null | undefined;
 const liteNodeListeners = new Set<() => void>();
 
 const rememberLiteNode = (found: ILiteNode | null): ILiteNode | null => {
+  if (isServer) return found;
   if (
     found?.node !== lastLiteNode?.node ||
     found?.info !== lastLiteNode?.info ||
@@ -363,7 +387,10 @@ export const isLiteAware = async (): Promise<boolean> => (await getLiteApiInfo()
 export const getPostsNamespace = async (): Promise<TPostsNamespace> =>
   (await isLiteAware()) ? 'lite' : 'bridge';
 
-/** `lite.get_info` of the lite node as far as it is known, without asking; undefined before the first lookup. */
+/**
+ * `lite.get_info` of the browser's lite node as far as it is known, without asking; undefined before
+ * the first lookup, and always on a server.
+ */
 export const peekLiteApiInfo = (): ILiteApiInfo | null | undefined =>
   lastLiteNode === undefined ? undefined : (lastLiteNode?.info ?? null);
 
