@@ -4,6 +4,7 @@ import {
   baseConfig,
   browserUse,
   ownWebServerOptions,
+  prebuiltStandaloneServerCommand,
   standaloneServerCommand
 } from '../../playwright/shared-config';
 import {
@@ -21,6 +22,12 @@ import {
   HIVEMIND_REST_BLOG_PORT,
   HIVEMIND_REST_STUB_URL
 } from './playwright/tests/support/hivemindRestStub';
+import {
+  listSpecs,
+  readDurations,
+  shardFromEnv,
+  specsForShard
+} from './playwright/tests/support/fixture-shards/shard-specs';
 import type {
   FixtureAuthTestFixtures,
   FixtureProxyWorkerFixtures
@@ -49,11 +56,25 @@ require('dotenv').config({ path: './.env.local' });
  * NEXT_PUBLIC_BASE_PATH under that path, as a subdirectory deployment does;
  * FIXTURE_NEXT_DIR points at that build when it is not `.next`. See the
  * `@basepath` pass of .aidev/run-fixture-e2e.sh.
+ *
+ * FIXTURE_STANDALONE_DIR (e.g. `/app/apps/blog`) serves a standalone app
+ * directory that already has its static files and public/, as the testenv
+ * image's /app holds it, instead of a build in FIXTURE_NEXT_DIR. CI's shards
+ * restore the image's /app to /app: the server chunks carry the absolute paths
+ * of the image's build, so the tree only runs there.
+ *
+ * CI_NODE_INDEX/CI_NODE_TOTAL (GitLab's `parallel:`) run one shard of the
+ * spec files: whole files, so a file's calls reach the replay proxy in their
+ * recorded order, balanced by support/fixture-shards/durations.json.
  */
 
 const FIXTURE_PORT = 8200;
 const BASE_PATH = process.env.FIXTURE_BASE_PATH ?? '';
 const NEXT_DIR = process.env.FIXTURE_NEXT_DIR ?? '.next';
+const STANDALONE_DIR = process.env.FIXTURE_STANDALONE_DIR;
+const SERVER_JS = `${STANDALONE_DIR ?? `${NEXT_DIR}/standalone/apps/blog`}/server.js`;
+const TEST_DIR = path.join(__dirname, 'playwright/tests/fixture');
+const SHARD = shardFromEnv(process.env.CI_NODE_INDEX, process.env.CI_NODE_TOTAL);
 
 // Point the app at the fixture proxy
 process.env.REACT_APP_API_ENDPOINT = `http://localhost:${FIXTURE_PORT}`;
@@ -110,6 +131,15 @@ const serverEnv = {
 export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>({
   ...baseConfig(),
   testDir: './playwright/tests/fixture',
+  ...(SHARD
+    ? {
+        testMatch: specsForShard(
+          listSpecs(TEST_DIR),
+          readDurations(path.join(__dirname, 'playwright/tests/support/fixture-shards/durations.json')),
+          SHARD
+        )
+      }
+    : {}),
   // Collect the fixture proxy's replay MISSes and fail on ones missing
   // from playwright/tests/fixture/known-misses.json.
   // Absolute: .aidev/playwright.fixture-stack.config.ts spreads this config
@@ -149,8 +179,11 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
   ],
   webServer: [
     {
-      // The standalone build in NEXT_DIR, with react-env writing __ENV.js from serverEnv.
-      command: standaloneServerCommand('blog', NEXT_DIR),
+      // The standalone build in NEXT_DIR (or STANDALONE_DIR), with react-env writing __ENV.js
+      // from serverEnv.
+      command: STANDALONE_DIR
+        ? prebuiltStandaloneServerCommand(STANDALONE_DIR)
+        : standaloneServerCommand('blog', NEXT_DIR),
       // Not `/`: the fixture proxy only starts with the first worker, and a feed whose API is
       // unreachable answers 503, which Playwright does not count as ready.
       url: `http://127.0.0.1:3000${BASE_PATH}/api/health`,
@@ -159,7 +192,7 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
     },
     // Started once the server above has put the build's static files in place.
     {
-      command: `node ${NEXT_DIR}/standalone/apps/blog/server.js`,
+      command: `node ${SERVER_JS}`,
       url: `http://127.0.0.1:${FEED_CACHE_PORT}${BASE_PATH}/api/health`,
       ...ownWebServerOptions(),
       env: {
@@ -172,7 +205,7 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
     },
     // Reads hivemind's data from the hivemind REST stub (hivemindRest*.spec.ts).
     {
-      command: `node ${NEXT_DIR}/standalone/apps/blog/server.js`,
+      command: `node ${SERVER_JS}`,
       url: `http://127.0.0.1:${HIVEMIND_REST_BLOG_PORT}${BASE_PATH}/api/health`,
       ...ownWebServerOptions(),
       env: {

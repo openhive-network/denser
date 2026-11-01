@@ -13,11 +13,23 @@ Writing fixture specs for the blog: see [tests/fixture/CLAUDE.md](tests/fixture/
 
 | Job | Suite | Gates the pipeline |
 |-----|-------|--------------------|
-| `blog-fixture-tests`, `wallet-fixture-tests` | fixture, `pnpm test:fixture` | yes |
+| `blog-fixture-tests` (4 shards) | fixture, `pnpm test:fixture:run` against the testenv image's build | yes |
+| `blog-fixture-basepath-tests` | fixture `@basepath` specs under `/blog`, `pnpm test:fixture:basepath` | yes |
+| `wallet-fixture-tests` | fixture, `pnpm test:fixture` | yes |
 | `e2e-tests-blog-stable`, `e2e-tests-wallet-stable` | live e2e, `--grep-invert @flaky` | yes |
 | `e2e-tests-blog-flaky`, `e2e-tests-wallet-flaky` | live e2e, `--grep @flaky` | no (`allow_failure`) |
 
 Each job publishes its junit as a GitLab test report.
+
+### Fixture shards
+
+`blog-fixture-tests` runs as 4 jobs on the `/app` tree `blog-fixture-standalone` exports from
+the testenv image, so no shard builds. Each shard takes whole spec files, balanced by the seconds
+in `tests/support/fixture-shards/durations.json`; a spec missing there counts as the median one.
+Stale durations cost balance, never coverage. When the shards' durations drift apart, refresh
+the file from the 4 jobs' `junit/fixture/results.json` (the command is in
+`tests/support/fixture-shards/durations-from-reports.ts`). Locally, the same shard runs as
+`CI_NODE_INDEX=2 CI_NODE_TOTAL=4 pnpm test:fixture:run`.
 
 ### Live e2e runs on chromium only
 
