@@ -7,7 +7,3 @@
 # Add one with `aidev test quarantine`, giving a --reason that names the tracking issue
 # (`see hive/denser#N`); remove it once the test is fixed. Only the suites whose
 # binding in .aidev/project.yaml declares `honor_quarantine: true` are pardoned by it.
-
-# Manually quarantined 2026-10-31 by syncad — reason: see hive/denser#1414
-# Quarantined-against: 53ff445961e873cd16d11bc0963f42fcc186828a
-chatNative.spec.ts::Native Matrix chat client › CHAT-NATIVE-14: the keyboard reaches the drawer: focus moves in, Tab stays in, Escape closes it

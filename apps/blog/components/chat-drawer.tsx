@@ -129,7 +129,9 @@ export function ChatDrawer({
                 </div>
               ) : null}
             </div>
-            <TooltipContent>{chatLabel}</TooltipContent>
+            {/* Not while the drawer is open: a closed tooltip Radix leaves mounted keeps its Escape
+                listener, which takes the Escape that closes the drawer */}
+            {open ? null : <TooltipContent>{chatLabel}</TooltipContent>}
           </Tooltip>
         </TooltipProvider>
       </div>
