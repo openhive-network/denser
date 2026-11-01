@@ -5,6 +5,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     // ts-node emits (to memory) the sibling workspace packages too; TS 6 requires an explicit
     // rootDir when the sources' common directory is not the tsconfig's own.
     "rootDir": "..",
@@ -22,7 +23,13 @@
       "@ui/lib/common-variables": ["../ui/lib/common-variables.ts"],
       "@ui/lib/storage-with-ttl": ["../ui/lib/storage-with-ttl.ts"],
       "@ui/config/public-vars": ["./lib/__test-stubs__/ui-public-vars.ts"],
-      "@ui/config/api-set-ids": ["../ui/config/api-set-ids.ts"]
+      "@ui/config/api-set-ids": ["../ui/config/api-set-ids.ts"],
+      "@ui/config/api-sets": ["../ui/config/api-sets.ts"],
+      // The engine is exported to `import` only; Node 24 `require`s its ESM build, typed by its declarations.
+      "@hiveio/healthchecker-component/engine": [
+        "./node_modules/@hiveio/healthchecker-component/dist/engine.es.js",
+        "./node_modules/@hiveio/healthchecker-component/dist/engine.d.ts"
+      ]
     }
   },
   // ts-node type checks with the bundler resolution above but emits CommonJS for mocha, also for

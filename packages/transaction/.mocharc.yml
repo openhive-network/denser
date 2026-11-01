@@ -2,3 +2,7 @@ recursive: true
 require:
   - ts-node/register
   - tsconfig-paths/register
+# Mocha `import()`s a spec before `require`-ing it; with Node's type stripping that import half-loads the
+# ESM-only engine (`@hiveio/healthchecker-component/engine`) and the `require` then fails on it.
+node-option:
+  - no-experimental-strip-types
