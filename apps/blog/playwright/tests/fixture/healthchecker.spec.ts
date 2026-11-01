@@ -12,6 +12,9 @@ import { API_SET_TAB, HealthcheckerPage } from '../support/pages/healthcheckerPa
  * requests to the public nodes, unreachable offline, would fail and the console
  * assertion below would report them.
  *
+ * HC-02: the component always renders its "Add Custom Node" form, which the app hides (the
+ * browser engine refuses custom nodes); the sets' ranked nodes stay visible.
+ *
  * Record:  FIXTURE_MODE=record pnpm exec playwright test --config=playwright.fixture.config.ts healthchecker
  * Replay:  pnpm --filter @hive/blog test:fixture -- healthchecker
  */
@@ -46,5 +49,20 @@ test.describe('Healthchecker page — renders under the app React', () => {
     await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
     if (isRecordMode) return;
     expect(errors, errors.join('\n')).toEqual([]);
+  });
+
+  test('HC-02 — the custom-node form is hidden while every set keeps its ranked nodes', async ({ page }) => {
+    const healthcheckerPage = new HealthcheckerPage(page);
+
+    await page.goto('/healthchecker');
+    await healthcheckerPage.validatePageIsLoaded();
+    for (const title of [API_SET_TAB.core, API_SET_TAB.hivesense]) {
+      await healthcheckerPage.switchToTab(title);
+      await expect(healthcheckerPage.nodeCards.first()).toBeVisible();
+      await expect(healthcheckerPage.selection).toBeVisible();
+      // Still rendered: a form hidden is told apart from one the package no longer renders.
+      await expect(healthcheckerPage.customNodeInput).toHaveCount(1);
+      await expect(healthcheckerPage.customNodeInput).toBeHidden();
+    }
   });
 });

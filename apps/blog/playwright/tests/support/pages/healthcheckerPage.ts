@@ -24,6 +24,8 @@ export class HealthcheckerPage {
     readonly nodeCards: Locator;
     /** "Automatic choice" or "Your choice: <node>" for the set shown. */
     readonly selection: Locator;
+    /** The URL input of the component's "Add Custom Node" form, which the app hides. */
+    readonly customNodeInput: Locator;
 
     readonly body: Locator;
 
@@ -40,6 +42,7 @@ export class HealthcheckerPage {
         this.liteTab = this.tab(API_SET_TAB.lite);
         this.nodeCards = page.getByTestId('hc-set-node');
         this.selection = page.getByTestId('hc-set-selection');
+        this.customNodeInput = page.getByTestId('api-address-input');
 
         this.body = page.locator('body');
     }

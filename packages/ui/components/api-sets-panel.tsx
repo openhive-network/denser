@@ -21,10 +21,11 @@ interface IApiSetsPanelProps {
 }
 
 /**
- * The package component's last child is its "Add Custom Node" form, which it always renders: the
- * browser engine refuses custom nodes (see `getBrowserApiSetEngine`), so the form is hidden.
+ * The package component always renders its "Add Custom Node" form and has no option to leave it
+ * out: the browser engine refuses custom nodes (see `getBrowserApiSetEngine`), so the form is
+ * hidden, found by its URL input's test id (the form wraps the input's row) rather than by its place.
  */
-const HIDE_CUSTOM_NODE_FORM = '[&>div:last-child]:hidden';
+const HIDE_CUSTOM_NODE_FORM = '[&_div:has(>div>[data-testid=api-address-input])]:hidden';
 
 /**
  * One tab per API set with its ranked nodes, where the user picks a node per set (or for every set

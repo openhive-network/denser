@@ -51,7 +51,7 @@ export interface IApiSetRouting {
  * picked before API sets existed (`node-endpoint`, `rest-node-endpoint`, `ai-search-endpoint`), or
  * the JSON-RPC node this session switched to, goes first for the sets that node served, unless the
  * user chose a node for the set. Only a core call that left the browser's JSON-RPC node switches
- * that node: a bridge or lite node failing, or not serving the call, says nothing about core.
+ * that node: a bridge, lite or search-api node failing, or not serving the call, says nothing about core.
  */
 export function createApiSetRouting(browser?: IBrowserNodeState): IApiSetRouting {
   const pinnedNodeOf = (setId: TApiSetId): string | undefined => {
@@ -85,7 +85,10 @@ export function createApiSetRouting(browser?: IBrowserNodeState): IApiSetRouting
 
   const routeCall: IApiSetRouting['routeCall'] = async (root, path, configured) => {
     const setId = root === 'api' ? apiSetOfJsonRpc(path[0]) : apiSetOfRest(path[0]);
-    if (!setId) return undefined;
+    // A JSON-RPC call not routed by set (search-api) goes to an endpoint of its own on every node's
+    // chain, so it keeps its configured nodes without the global `onFailover`: another node serving
+    // it says nothing about the browser's JSON-RPC node.
+    if (!setId) return root === 'api' ? { nodes: configured } : undefined;
     const route = await routeOf(setId, configured);
     return {
       nodes: route.nodes,

@@ -17,6 +17,9 @@ import { LITE_LESS_NODE_URL, startLiteLessNode, type ILiteLessNode } from '../su
  *   API-SETS-01 – a lite post renders under its lite author, read from B; core and bridge stay on A
  *   API-SETS-02 – on /healthchecker, A is not offered for lite; B picked for lite persists across a
  *                 reload, in the server's render too
+ *   API-SETS-04 – the browser's own lite read starts at A (the page's routes list A first for lite, as
+ *                 a server that has not yet learned A lacks it renders them): A refuses it, B serves
+ *                 it, and the browser still sends core and bridge to A and never switches its node
  *
  * The suite's servers run with DENSER_API_SETS_PROBING=off: probes would be unrecorded calls, to
  * the public catalog nodes too. A server that has served a page has learned what a probe would tell
@@ -97,6 +100,36 @@ const recordBrowserCalls = (page: Page): INodeCall[] => {
   });
   return calls;
 };
+
+/**
+ * Lists A first for lite in the routes `path`'s page was rendered with (`ApiSetsBootstrap`), as a
+ * server that has not learned yet that A lacks lite.* renders them: the browser's lite reads then
+ * start at A. Rewritten in the page, not in the HTML: Chrome lets a page that `route.fulfill` served
+ * call no loopback node. React keeps a data block's text as parsed; the browser reads it on its
+ * first call.
+ */
+const listLiteLessNodeFirstForLite = (page: Page, path: string) =>
+  page.addInitScript(
+    ({ id, path, lite }) => {
+      const withoutSlash = (value: string) => value.replace(/\/$/, '');
+      if (withoutSlash(location.pathname) !== withoutSlash(path)) return;
+      const rewrite = () => {
+        const block = document.getElementById(id);
+        if (!block?.textContent) return;
+        const bootstrap = JSON.parse(block.textContent);
+        if (JSON.stringify(bootstrap.routes.lite) === JSON.stringify(lite)) return;
+        bootstrap.routes.lite = lite;
+        block.textContent = JSON.stringify(bootstrap);
+      };
+      const observer = new MutationObserver(rewrite);
+      observer.observe(document, { childList: true, subtree: true, characterData: true });
+      document.addEventListener('DOMContentLoaded', () => {
+        rewrite();
+        observer.disconnect();
+      });
+    },
+    { id: 'denser-api-sets', path, lite: [LITE_LESS_NODE_URL, LITE_NODE] }
+  );
 
 /** Not recorded: the server's read fails with a JSON-RPC error, so the browser reads it again. */
 const COMMUNITIES_READ = 'bridge.list_communities';
@@ -184,4 +217,35 @@ test('API-SETS-02: B picked for lite persists across a reload, server render inc
   await healthcheckerPage.switchToTab(API_SET_TAB.lite);
   await expect(healthcheckerPage.selection).toHaveText(`Your choice: ${LITE_NODE}`);
   expect((await healthcheckerPage.serverRoutes()).selections.lite).toBe(LITE_NODE);
+});
+
+test('API-SETS-04: a browser lite read A refuses and B serves leaves core and bridge on A', async ({
+  page
+}) => {
+  await useThisServersSettings(page);
+  await listLiteLessNodeFirstForLite(page, POST_PATH);
+  const calls = recordBrowserCalls(page);
+  const postPage = new PostPage(page);
+  const discussionReads = () => calls.filter(({ method }) => method === 'lite.get_discussion');
+
+  await page.goto(`${baseURL}${POST_PATH}`, { waitUntil: 'networkidle' });
+  await postPage.waitForPostHydration();
+  expect((await new HealthcheckerPage(page).serverRoutes()).routes.lite?.[0]).toBe(LITE_LESS_NODE_URL);
+  expect(discussionReads()).toEqual([]);
+
+  // A comment sort the server did not render: the browser reads the whole discussion itself.
+  await postPage.getCommentFilter.click();
+  await postPage.getCommentFilterList.getByRole('option', { name: 'Age' }).click();
+  await expect.poll(() => discussionReads().some(({ node }) => node === LITE_NODE)).toBe(true);
+  // Asked of A first, which refused it, then of B.
+  expect(discussionReads()[0]).toEqual({ node: LITE_LESS_NODE_URL, method: 'lite.get_discussion' });
+  await page.waitForLoadState('networkidle');
+  expect(await page.evaluate((key) => sessionStorage.getItem(key), AUTO_NODE_KEY)).toBeNull();
+
+  // The next page's core and bridge reads, in the same session.
+  calls.length = 0;
+  await page.goto(`${baseURL}${LITE_FEED_PATH}`, { waitUntil: 'networkidle' });
+  expect(calls).toContainEqual({ node: LITE_LESS_NODE_URL, method: COMMUNITIES_READ });
+  expectCallsOnTheirNodes(calls);
+  expect(await page.evaluate((key) => sessionStorage.getItem(key), AUTO_NODE_KEY)).toBeNull();
 });
