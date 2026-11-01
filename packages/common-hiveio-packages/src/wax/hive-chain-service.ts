@@ -208,6 +208,33 @@ export const setAiEndpoint = (newEndpoint: string): void => {
 };
 
 /**
+ * The user's node picks stored before API sets existed: `node-endpoint` (every JSON-RPC call) and
+ * `ai-search-endpoint` (hivesense).
+ */
+export const getLegacyEndpointChoices = (): { apiNode?: string; aiNode?: string } => ({
+  apiNode: getStoredRpcEndpoint(),
+  aiNode: getAIDefaultEndpoint()
+});
+
+/**
+ * Drops those picks and this session's automatic pick, once the user chose nodes per API set: the
+ * chain goes back to the configured endpoints, which the per-set routing then overrides.
+ */
+export const clearLegacyEndpointChoices = (): void => {
+  if (typeof window !== 'object' || !window.localStorage) return;
+  window.localStorage.removeItem('node-endpoint');
+  window.localStorage.removeItem('ai-search-endpoint');
+  getSessionStorage()?.removeItem(AUTO_RPC_ENDPOINT_KEY);
+  pointChainAt(siteConfig.endpoint);
+  if (hiveChain) {
+    const { restApiEndpoint } = getDefaultClientOptions();
+    hiveChain.restApi.endpointUrl = restApiEndpoint;
+    hiveChain.restApi['hivesense-api'].endpointUrl = resolveAiEndpoint(restApiEndpoint);
+    hiveChain.api['search-api'].find_text.endpointUrl = siteConfig.endpoint;
+  }
+};
+
+/**
  * Hivesense endpoint the chain uses, or would use once created. Does not create
  * the chain, so it is safe to call during page load (no wasm download).
  */

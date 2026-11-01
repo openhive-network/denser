@@ -750,5 +750,11 @@
     "authorities": "Upoważnienia",
     "change_password": "Zmiana hasła",
     "create_communities": "Tworzenie społeczności"
+  },
+  "api_sets": {
+    "description": "Każda rodzina API Hive trafia do węzła wybranego dla niej. Wybierz węzeł dla każdej rodziny albo zostaw wybór automatyczny.",
+    "check_nodes": "Sprawdź węzły",
+    "stop_checking": "Zatrzymaj sprawdzanie",
+    "node_unavailable": "{{selected}} jest niedostępny dla {{set}}; do czasu jego powrotu używany jest {{node}}."
   }
 }

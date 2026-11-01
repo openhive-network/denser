@@ -3,8 +3,15 @@
 import { useEffect } from 'react';
 import { ensureLocaleCookie } from '@ui/lib/locale-cookie';
 import { languages, defaultLocale } from '@/wallet/i18n/settings';
+import { useTranslation } from '@/wallet/i18n/client';
+import { useApiSetsEffects, type IApiSetSwitch } from '@ui/hooks/use-api-sets-effects';
 
 export default function ClientEffects() {
+  const { t } = useTranslation('common_wallet');
+  useApiSetsEffects(({ node, selected, setTitle }: IApiSetSwitch) =>
+    t('api_sets.node_unavailable', { selected, set: setTitle, node })
+  );
+
   // Set default locale cookie if missing or invalid, and the document direction for RTL languages
   useEffect(() => {
     const locale = ensureLocaleCookie(defaultLocale, languages);

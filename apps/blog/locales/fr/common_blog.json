@@ -1298,5 +1298,11 @@
         "unavailable": "Le passage n'a pas pu aboutir : la passerelle est injoignable. Réessayez."
       }
     }
+  },
+  "api_sets": {
+    "description": "Chaque famille d'API Hive est envoyée au nœud choisi pour elle. Choisissez un nœud par famille ou gardez le choix automatique.",
+    "check_nodes": "Vérifier les nœuds",
+    "stop_checking": "Arrêter la vérification",
+    "node_unavailable": "{{selected}} est indisponible pour {{set}} ; {{node}} est utilisé jusqu'à son rétablissement."
   }
 }

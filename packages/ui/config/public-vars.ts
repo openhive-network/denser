@@ -29,11 +29,16 @@ export const configuredSessionTime = resolveSessionTime(
 );
 /**
  * API nodes the browser fails over across; the default mirrors the CSP's own. The CSP `connect-src`
- * allows them plus the node picker's nodes (`PICKER_API_NODES`), which are not failover targets.
+ * allows them plus every node of the API sets' catalog (`@ui/config/api-sets`).
  */
 export const configuredAllowedApiNodes =
   env('ALLOWED_HIVE_API_NODES') ??
   'https://api.hive.blog https://api.syncad.com https://api.openhive.network';
+/**
+ * Explicit per-API-set node preferences (`<set>=<nodes>; ...`, see `parseApiSetPreferences` in
+ * `@ui/config/api-sets`); a set without one derives its order from the settings above.
+ */
+export const configuredApiSetPreferences = env('API_SET_PREFERENCES') || undefined;
 /**
  * Passkey signer sites (origins) a lite account can be secured with, in order. One configured: it
  * is used without asking; several: the guest picks one when securing the account.

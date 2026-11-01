@@ -55,6 +55,8 @@ export default defineConfig({
       REACT_APP_BLOG_DOMAIN: FIXTURE_BLOG_URL,
       // The session routes a sign-in calls need iron-session's password; no spec reads the cookie
       DENSER_SERVER_SECRET_COOKIE_PASSWORD: FIXTURE_COOKIE_PASSWORD,
+      // The API set engine's probes are no recorded calls: it learns from real calls only.
+      DENSER_API_SETS_PROBING: 'off',
       HOSTNAME: '0.0.0.0',
       PORT: String(PORT)
     }

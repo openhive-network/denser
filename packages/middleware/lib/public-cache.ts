@@ -10,10 +10,17 @@ export const NO_STORE_CACHE_CONTROL = 'private, no-cache, no-store, max-age=0, m
 /**
  * Cookies that change what a page renders: the iron-session cookie (`<app>_session`) and OIDC's
  * `_session` cookies, the observer cookies the server reads (`observer`, and `observer-no-own-lists`
- * from @transaction/lib/observer-lists), the signed-in account's `account_info`, and the language
- * (`NEXT_LOCALE`). Named here, not imported: the apps' middleware must not load those modules.
+ * from @transaction/lib/observer-lists), the signed-in account's `account_info`, the language
+ * (`NEXT_LOCALE`) and the user's API node choices (`api-sets`, @ui/config/api-sets). Named here, not
+ * imported: the apps' middleware must not load those modules.
  */
-const PERSONALIZING_COOKIES = new Set(['observer', 'observer-no-own-lists', 'account_info', 'NEXT_LOCALE']);
+const PERSONALIZING_COOKIES = new Set([
+  'observer',
+  'observer-no-own-lists',
+  'account_info',
+  'NEXT_LOCALE',
+  'api-sets'
+]);
 const SESSION_COOKIE_PATTERN = /_session(?:\.|$)/;
 
 // Requests of the client router: RSC payloads and prefetches, which Next answers differently.

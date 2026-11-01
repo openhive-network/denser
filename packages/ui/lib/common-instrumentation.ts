@@ -30,5 +30,14 @@ const dumpStartupEnvironment = () => {
 export async function commonRegister(appName: string): Promise<void> {
   console.log(`Starting up the '${appName}' application server...`);
   dumpStartupEnvironment();
+
+  if (process.env.NEXT_RUNTIME === 'nodejs') {
+    // Once per server process, before the first request: the engine choosing a node per API set.
+    const [{ installServerApiSets }, { readApiSetsCookie }] = await Promise.all([
+      import('@transaction/lib/api-sets/server'),
+      import('./api-sets-request-cookie')
+    ]);
+    installServerApiSets({ app: appName, readCookie: readApiSetsCookie });
+  }
 }
 

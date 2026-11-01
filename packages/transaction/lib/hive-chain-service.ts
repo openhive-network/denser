@@ -1,7 +1,9 @@
 import {
+  clearLegacyEndpointChoices,
   getAiEndpoint,
   getApiEndpoints,
   getChain,
+  getLegacyEndpointChoices,
   reuseHiveChain,
   HiveChain,
   IApiEndpoints,
@@ -40,6 +42,16 @@ export class HiveChainService {
 
   public getApiEndpoints(): IApiEndpoints {
     return getApiEndpoints();
+  }
+
+  /** The node picks stored before API sets existed (see `getLegacyEndpointChoices`). */
+  public getLegacyEndpointChoices(): { apiNode?: string; aiNode?: string } {
+    return getLegacyEndpointChoices();
+  }
+
+  /** Drops the node picks stored before API sets existed, once the user chose nodes per set. */
+  public clearLegacyEndpointChoices(): void {
+    clearLegacyEndpointChoices();
   }
 }
 

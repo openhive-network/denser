@@ -22,6 +22,7 @@ import {
   HIVEMIND_REST_BLOG_PORT,
   HIVEMIND_REST_STUB_URL
 } from './playwright/tests/support/hivemindRestStub';
+import { API_SETS_BLOG_PORT, LITE_LESS_NODE_URL } from './playwright/tests/support/apiSetsNodes';
 import {
   listSpecs,
   readDurations,
@@ -101,6 +102,9 @@ const serverEnv = {
   // stub signer stand for; a spec needing another list rewrites it in __ENV.js
   // (`configureSigners` in support/litePasskeyContext.ts).
   REACT_APP_PASSKEY_SIGNERS: JSON.stringify(['https://signer.syncad.com']),
+  // The API set engine's probes are no recorded calls (they would be replay misses): it learns
+  // which node serves which API from the app's own calls only.
+  DENSER_API_SETS_PROBING: 'off',
   HOSTNAME: '0.0.0.0',
   PORT: '3000',
   // Pin APP_NAME so iron-session's cookieName matches what the seeder
@@ -169,7 +173,8 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
     ...browserUse(true),
     baseURL: `http://localhost:3000${BASE_PATH}`,
     feedCacheBaseURL: `http://localhost:${FEED_CACHE_PORT}`,
-    hivemindRestBaseURL: `http://localhost:${HIVEMIND_REST_BLOG_PORT}`
+    hivemindRestBaseURL: `http://localhost:${HIVEMIND_REST_BLOG_PORT}`,
+    apiSetsBaseURL: `http://localhost:${API_SETS_BLOG_PORT}`
   },
   projects: [
     {
@@ -214,6 +219,22 @@ export default defineConfig<FixtureAuthTestFixtures, FixtureProxyWorkerFixtures>
         REACT_APP_FYP_API_URL: '',
         REACT_APP_HIVEMIND_REST_NODES: HIVEMIND_REST_STUB_URL,
         DENSER_FEED_CACHE_TTL_S: '0'
+      }
+    },
+    // Its API endpoint is a node without lite.*, the fixture proxy (which has it) one more allowed
+    // node: its API sets route lite apart from core and bridge (apiSetsLite.spec.ts).
+    {
+      command: `node ${SERVER_JS}`,
+      url: `http://127.0.0.1:${API_SETS_BLOG_PORT}${BASE_PATH}/api/health`,
+      ...ownWebServerOptions(),
+      env: {
+        ...serverEnv,
+        PORT: String(API_SETS_BLOG_PORT),
+        REACT_APP_API_ENDPOINT: LITE_LESS_NODE_URL,
+        REACT_APP_ALLOWED_HIVE_API_NODES: `${LITE_LESS_NODE_URL} http://localhost:${FIXTURE_PORT}`,
+        REACT_APP_FYP_API_URL: '',
+        DENSER_FEED_CACHE_TTL_S: '0',
+        DENSER_LITE_PROBE_TTL_S: '0'
       }
     }
   ]

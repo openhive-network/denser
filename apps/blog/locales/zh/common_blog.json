@@ -1292,5 +1292,11 @@
         "unavailable": "无法完成升级：网关无法访问。请重试。"
       }
     }
+  },
+  "api_sets": {
+    "description": "每一类 Hive API 都会发送到为其选定的节点。请为每一类选择节点，或保留自动选择。",
+    "check_nodes": "检查节点",
+    "stop_checking": "停止检查",
+    "node_unavailable": "{{selected}} 对 {{set}} 不可用；在其恢复之前使用 {{node}}。"
   }
 }

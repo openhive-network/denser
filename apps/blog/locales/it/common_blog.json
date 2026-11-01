@@ -1298,5 +1298,11 @@
         "unavailable": "Impossibile completare il passaggio: il gateway non è raggiungibile. Riprova."
       }
     }
+  },
+  "api_sets": {
+    "description": "Ogni famiglia di API di Hive va al nodo scelto per essa. Scegli un nodo per famiglia o mantieni la scelta automatica.",
+    "check_nodes": "Controlla i nodi",
+    "stop_checking": "Interrompi il controllo",
+    "node_unavailable": "{{selected}} non è disponibile per {{set}}; viene usato {{node}} finché non torna disponibile."
   }
 }

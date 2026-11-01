@@ -6,15 +6,24 @@ import {
 import { getHiveChainService } from './hive-chain-service';
 import type { TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { wrapChainWithLogging } from './chain-proxy';
-import { parseFallbackNodes, restApiHealthKey, wrapChainWithServerFailover } from './server-failover';
+import {
+  parseFallbackNodes,
+  restApiHealthKey,
+  wrapChainWithServerFailover,
+  type IFailoverRoute
+} from './server-failover';
 import { NodeHealth } from './node-health';
 import { createReadClient, IReadClient, IReadClientConfig } from './read-client';
 import { fetchReadTransport, isRestApiUnavailable, ReadTransportError } from './read-transport';
 import { announceApiNodeSwitch } from './api-node-switch';
+import { apiSetOfJsonRpc, apiSetOfRest, routeApiSet, type IApiSetRoute } from './api-sets/router';
+import type { TApiSetId } from '@ui/config/api-set-ids';
 import {
   configuredAllowedApiNodes,
+  configuredApiEndpoint,
   configuredHivemindRestNodes,
-  configuredImagesEndpoint
+  configuredImagesEndpoint,
+  configuredRestApiEndpoint
 } from '@ui/config/public-vars';
 
 export type Chain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestApi>>;
@@ -54,9 +63,61 @@ const switchApiNode = (node: string): void => {
 
 const onFailover = isServer ? undefined : switchApiNode;
 
+/** The sets the browser's one JSON-RPC node served before API sets existed. */
+const SINGLE_NODE_SETS: ReadonlySet<TApiSetId> = new Set(['core', 'bridge', 'lite']);
+/** The sets the browser's one REST node served before API sets existed. */
+const REST_NODE_SETS: ReadonlySet<TApiSetId> = new Set(['balance-api', 'hafah']);
+
+// In the browser, a node the user picked before API sets existed (`node-endpoint`,
+// `rest-node-endpoint`, `ai-search-endpoint`), or the node failover switched to this session, goes
+// first; a REST node that follows the JSON-RPC node follows such a pick too.
+const pinnedNodeOf = (setId: TApiSetId): string | undefined => {
+  if (isServer) return undefined;
+  const endpoints = getHiveChainService().getApiEndpoints();
+  if (setId === 'hivesense') return endpoints.searchApiEndpoint;
+  if (SINGLE_NODE_SETS.has(setId)) {
+    return endpoints.apiEndpoint !== configuredApiEndpoint ? endpoints.apiEndpoint : undefined;
+  }
+  if (REST_NODE_SETS.has(setId)) {
+    const configuredRestNode = configuredRestApiEndpoint ?? configuredApiEndpoint;
+    return endpoints.restApiEndpoint !== configuredRestNode ? endpoints.restApiEndpoint : undefined;
+  }
+  return undefined;
+};
+
+// A call that left the browser's JSON-RPC node switches it as before; one that left a node the
+// user chose for the set tells the page so.
+const onRouteFallback = (route: IApiSetRoute, node: string): void => {
+  const [first] = route.nodes;
+  if (SINGLE_NODE_SETS.has(route.setId) && first === getHiveChainService().getApiEndpoints().apiEndpoint) {
+    switchApiNode(node);
+    return;
+  }
+  if (route.selected && route.selected === first) {
+    announceApiNodeSwitch(node, { setId: route.setId, selected: route.selected });
+  }
+};
+
+/** Routes a call by its API family (see `api-sets/router`); `undefined` for one routed by configuration only. */
+const routeCall = async (
+  root: 'api' | 'restApi',
+  path: readonly string[],
+  configured: readonly string[]
+): Promise<IFailoverRoute | undefined> => {
+  const setId = root === 'api' ? apiSetOfJsonRpc(path[0]) : apiSetOfRest(path[0]);
+  if (!setId) return undefined;
+  const route = await routeApiSet(setId, { pinned: pinnedNodeOf(setId), configured });
+  return {
+    nodes: route.nodes,
+    report: route.report,
+    onFallback: isServer ? undefined : (node) => onRouteFallback(route, node)
+  };
+};
+
 const withFailover = (baseChain: Chain): Chain =>
   wrapChainWithServerFailover(baseChain, {
     fallbackNodes: getFallbackNodes(),
+    routeFor: routeCall,
     health: nodeHealth,
     onFailover,
     createNodeChain: (node, timeoutMs) =>
@@ -102,20 +163,14 @@ const createReadChain = (getConfig: () => IReadClientConfig): ReadChain =>
     })
   );
 
-// A REST API served by the REST node (only those fail over) moves with it to `node`; one with an
-// endpoint of its own stays there.
-const readClientConfigOn = (node: string, timeoutMs: number): IReadClientConfig => {
-  const config = getReadClientConfig();
-  const restEndpoints =
-    config.restEndpoints &&
-    Object.fromEntries(
-      Object.entries(config.restEndpoints).map(([path, endpoint]) => [
-        path,
-        endpoint === config.restApiEndpoint ? node : endpoint
-      ])
-    );
-  return { ...config, apiEndpoint: node, restApiEndpoint: node, restEndpoints, timeoutMs };
-};
+// Every REST API moves to `node`: a call is failed over only to nodes of its own API family.
+const readClientConfigOn = (node: string, timeoutMs: number): IReadClientConfig => ({
+  ...getReadClientConfig(),
+  apiEndpoint: node,
+  restApiEndpoint: node,
+  restEndpoints: undefined,
+  timeoutMs
+});
 
 /**
  * Client for read-only API calls (bridge, database_api, condenser_api, hivesense, ...). Unlike
@@ -131,6 +186,7 @@ export const getReadChain = (): ReadChain => {
 
   const chain = wrapChainWithServerFailover(createReadChain(getReadClientConfig), {
     fallbackNodes,
+    routeFor: routeCall,
     health: nodeHealth,
     // The read client fails only with ReadTransportError on transport; checking for it keeps
     // a failing browser read from loading wax.
@@ -142,6 +198,16 @@ export const getReadChain = (): ReadChain => {
   });
   readChain = { fallbackNodes: key, chain };
   return chain;
+};
+
+/**
+ * The nodes the JSON-RPC calls of `setId` go to, best first, as `getReadChain()` routes them: for
+ * a question to ask of the set's nodes themselves, such as which of them serves lite posts.
+ */
+export const getApiSetNodes = async (setId: TApiSetId): Promise<string[]> => {
+  const { apiEndpoint } = getReadClientConfig();
+  const configured = [apiEndpoint, ...getFallbackNodes().filter((node) => node !== apiEndpoint)];
+  return (await routeApiSet(setId, { pinned: pinnedNodeOf(setId), configured })).nodes;
 };
 
 export type HivemindRestApi = ReadChain['restApi']['hivemind-api'];
@@ -165,6 +231,7 @@ const createHivemindRestChain = (nodes: readonly string[]): ReadChain => {
   };
   return wrapChainWithServerFailover(createReadChain(configFor(nodes[0])), {
     fallbackNodes: nodes.slice(1),
+    routeFor: routeCall,
     health: nodeHealth,
     isTransportError: (error) => error instanceof ReadTransportError,
     isRestApiUnavailable,

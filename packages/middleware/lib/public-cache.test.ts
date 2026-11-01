@@ -44,7 +44,8 @@ describe('isPublicCacheableRequest', () => {
       'observer',
       'observer-no-own-lists',
       'account_info',
-      'NEXT_LOCALE'
+      'NEXT_LOCALE',
+      'api-sets'
     ]) {
       assert.equal(isPublicCacheableRequest(anonymousPage({ cookieNames: ['session_uid', name] })), false, name);
     }
