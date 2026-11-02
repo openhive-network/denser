@@ -9,7 +9,9 @@ interface IMissShardLine {
 }
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..', '..', '..', '..', '..');
-const RESULTS_DIR = path.join(REPO_ROOT, 'test-results', 'fixture');
+// A shard of .aidev/run-fixture-e2e.sh runs beside the others on the same checkout, so each
+// names its own directory: globalSetup empties the misses of this one.
+const RESULTS_DIR = process.env.FIXTURE_RESULTS_DIR ?? path.join(REPO_ROOT, 'test-results', 'fixture');
 const SHARD_DIR = path.join(RESULTS_DIR, 'misses.d');
 
 export const MISSES_FILE = path.join(RESULTS_DIR, 'misses.json');
