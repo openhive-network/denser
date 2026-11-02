@@ -70,9 +70,10 @@ require('dotenv').config({ path: './.env.local' });
  * restore the image's /app to /app: the server chunks carry the absolute paths
  * of the image's build, so the tree only runs there.
  *
- * CI_NODE_INDEX/CI_NODE_TOTAL (GitLab's `parallel:`) run one shard of the
- * spec files: whole files, so a file's calls reach the replay proxy in their
- * recorded order, balanced by support/fixture-shards/durations.json.
+ * CI_NODE_INDEX/CI_NODE_TOTAL (GitLab's `parallel:`, and the shards of
+ * .aidev/run-fixture-e2e.sh) run one shard of the spec files: whole files, so a
+ * file's calls reach the replay proxy in their recorded order, balanced by
+ * support/fixture-shards/durations.json.
  */
 
 const FIXTURE_PORT = 8200;
