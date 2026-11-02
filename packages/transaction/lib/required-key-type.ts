@@ -17,12 +17,14 @@ interface KeyTypeOptions {
  * when any operation needs active authority, otherwise posting when one needs posting authority.
  * Undefined for owner authority (signed through single sign) and for transactions naming no role,
  * which leave the choice to the signer. A `requiredKeyType` or `singleSignKeyType` the caller
- * passed wins over the derived one.
+ * passed wins over the derived one, except that a posting key is never asked for a transaction
+ * needing active authority: the node would reject what it signs.
  */
 export function resolveRequiredKeyType(
   { singleSignKeyType, requiredKeyType }: KeyTypeOptions,
   { owner, active, posting }: RequiredAuthorities
 ): SigningKeyType | undefined {
+  if (requiredKeyType === 'posting' && active.size > 0) return 'active';
   if (requiredKeyType || singleSignKeyType) return requiredKeyType;
   if (owner.size > 0) return undefined;
   if (active.size > 0) return 'active';

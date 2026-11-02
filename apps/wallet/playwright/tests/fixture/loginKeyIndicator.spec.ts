@@ -11,10 +11,10 @@ import enWallet from '../../../locales/en/common_wallet.json';
  * or WIF session holds the active key, the key (or, for a signer that picks the key per operation,
  * the signer's name) in the account menu and in the avatar button's accessible name, and a menu item
  * for the key the session lacks: a safe-storage session adds it next to its key, a WIF session gives
- * the active key up by signing the same account in with its posting key. A posting session that cannot
- * sign with the active key counts as logged out here (postingSessionActiveKey.spec.ts), so it has no
- * avatar at all. The seeded safe-storage sessions have no keys in safe storage, so they hold only the
- * key they signed in with. Reads come from the stub node (support/walletApiStub.ts).
+ * the active key up by signing the same account in with its posting key. A posting session opens the
+ * wallet too, without the badge, and is asked for the active key only when an operation needs it
+ * (postingSessionActiveKey.spec.ts). The seeded safe-storage sessions have no keys in safe storage,
+ * so they hold only the key they signed in with. Reads come from the stub node (support/walletApiStub.ts).
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -129,25 +129,30 @@ test.describe('A WIF session with the active key', () => {
     await loginForm.postingPrivateKeyInput.fill(POSTING_WIF);
     await loginForm.postingPrivateKeySubmitButton.click();
 
-    // The posting session the wallet cannot sign with
-    await expect(page.getByTestId('active-key-required-notice')).toBeVisible({ timeout: HYDRATION_TIMEOUT });
-    await expect(avatar).toHaveCount(0);
+    await expect(avatar).toHaveAccessibleName(`${STUB_ACCOUNT} account menu, posting key`, {
+      timeout: HYDRATION_TIMEOUT
+    });
+    await expect(avatar.getByTestId('login-key-badge')).toHaveCount(0);
     expect(await storedUser(page)).toMatchObject({ isLoggedIn: true, username: STUB_ACCOUNT, keyType: 'posting' });
   });
 });
 
 test.describe('A safe storage session with the posting key', () => {
-  test('WALLET-LOGIN-KEY-03 — has no avatar or badge; the wallet offers to add the active key instead', async ({
+  test('WALLET-LOGIN-KEY-03 — the avatar names the posting key without a badge, and the menu adds the active key', async ({
     page
   }) => {
     await logInAsStubAccount(page, { loginType: 'hbauth', keyType: 'posting' });
     await page.goto(ownTransfersPage);
+    const avatar = page.getByTestId('profile-avatar-button');
 
-    await expect(page.getByTestId('active-key-required-notice')).toBeVisible({ timeout: HYDRATION_TIMEOUT });
-    await expect(page.getByTestId('active-key-required-add-key')).toHaveText(EN_MENU.add_active_key);
-    await expect(page.getByTestId('active-key-required-login')).toBeVisible();
-    await expect(page.getByTestId('profile-avatar-button')).toHaveCount(0);
-    await expect(page.getByTestId('login-key-badge')).toHaveCount(0);
+    await expect(avatar).toHaveAccessibleName(`${STUB_ACCOUNT} account menu, posting key`, {
+      timeout: HYDRATION_TIMEOUT
+    });
+    await expect(avatar.getByTestId('login-key-badge')).toHaveCount(0);
+
+    const menu = await openAccountMenu(page);
+    await expect(menu.getByTestId('login-authority-chip')).toHaveText(EN_MENU.key_type.posting);
+    await expect(menu.getByTestId('login-key-action')).toHaveText(EN_MENU.add_active_key);
   });
 });
 
@@ -167,7 +172,7 @@ test.describe('A Keychain session', () => {
     await expect(menu.getByTestId('login-key-action')).toHaveCount(0);
   });
 
-  test('WALLET-LOGIN-KEY-06 — signed in with the posting key, it still opens the wallet: Keychain holds the active key', async ({
+  test('WALLET-LOGIN-KEY-06 — signed in with the posting key, it is still named as Keychain: Keychain holds the active key', async ({
     page
   }) => {
     await logInAsStubAccount(page, { loginType: 'keychain', keyType: 'posting' });
@@ -177,6 +182,5 @@ test.describe('A Keychain session', () => {
       `${STUB_ACCOUNT} account menu, ${EN_MENU.login_method.keychain}`,
       { timeout: HYDRATION_TIMEOUT }
     );
-    await expect(page.getByTestId('active-key-required-notice')).toHaveCount(0);
   });
 });
