@@ -5,6 +5,7 @@ import { prepareRC } from '@/wallet/lib/utils';
 import Big from 'big.js';
 import RCRow from './rc-row';
 import { useTranslation } from '@/wallet/i18n/client';
+import { RC_SUMMARY_DECIMALS } from '@/wallet/feature/transfers-page/lib/rc-amount';
 
 const COLUMN_COUNT = 3;
 
@@ -53,7 +54,7 @@ const RCTable = ({ account }: { account: string }) => {
         </tbody>
       </table>
       <span className="text-sm" data-testid="wallet-rc-delegations-total">
-        {t('resource_credits.total', { amount: prepareRC(data?.total ?? '0', t) })}
+        {t('resource_credits.total', { amount: prepareRC(data?.total ?? '0', t, RC_SUMMARY_DECIMALS) })}
       </span>
     </div>
   );

@@ -45,7 +45,7 @@ export function createListWithSuggestions(
     .sort(([, a], [, b]) => b - a)
     .map(([accountName, counter]) => ({
       username: accountName,
-      about: `${counter} ${t('profile.previous_transfers')}`
+      about: t('profile.previous_transfers', { count: counter })
     }));
   return [...transfers, ...following];
 }

@@ -12,11 +12,12 @@ import {
 import { useDelegateRCMutation } from './hooks/use-delegate-mutation';
 import { useAccountLookup, type AccountLookupStatus } from './hooks/use-account-lookup';
 import { useExistingRcDelegation } from './hooks/use-existing-rc-delegation';
+import { useMinRcDelegation } from './hooks/use-min-rc-delegation';
 import { useEffect, useState } from 'react';
 import { handleError } from '@ui/lib/handle-error';
 import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
-import { findInsufficientDelegatableRc } from '@transaction/lib/not-enough-rc';
+import { findInsufficientDelegatableRc, findRcDelegationMinimum } from '@transaction/lib/not-enough-rc';
 import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
 import { TransactionNotConfirmedError } from '@transaction/lib/transaction-inclusion';
 import { CircleSpinner } from '@ui/components/circle-spinner';
@@ -44,6 +45,7 @@ const SLIDER_STEP_PERCENT = 1;
 const ALMOST_ALL_RC_PERCENT = 90;
 const AMOUNT_INPUT_PATTERN = new RegExp(`^\\d*(\\.\\d{0,${RC_INPUT_DECIMALS}})?$`);
 const ACCOUNT_STATUS_ID = 'delegate-rc-account-status';
+const MINIMUM_NOTE_ID = 'delegate-rc-minimum';
 
 const ACCOUNT_STATUS_KEYS: Partial<Record<AccountLookupStatus, string>> = {
   checking: 'transfers_page.delegate_rc.checking_account',
@@ -78,6 +80,10 @@ const DelegateRCDialog = ({
   const creationAdjustmentBillions = rawRcToBillions(creationAdjustmentRC);
   const amountBillions = parseRcBillions(form.amount);
   const percent = rcPercentOf(amountBillions, maxBillions);
+  const minRawRc = useMinRcDelegation(open);
+  const minBillions = minRawRc === undefined ? undefined : rawRcToBillions(minRawRc);
+  const isBelowMinimum = minBillions !== undefined && amountBillions.gt(0) && amountBillions.lt(minBillions);
+  const isMinimumUnreachable = minBillions !== undefined && maxBillions.lt(minBillions);
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
@@ -112,6 +118,18 @@ const DelegateRCDialog = ({
         });
         return;
       }
+      // The chain's minimum, e.g. when the account creation fee was raised since the dialog read it
+      const minimum = findRcDelegationMinimum(error);
+      if (minimum !== null) {
+        logger.error(error, 'Delegating %s RC to %s fell below the minimum delegation', rawToSend, toAccount);
+        toast({
+          description: t('transfers_page.delegate_rc.below_minimum_error', {
+            min: formatRcSummary(rawRcToBillions(minimum.toString()))
+          }),
+          variant: 'destructive'
+        });
+        return;
+      }
       handleError(error, { method: 'delegate', params: { toAccount, amount: rawToSend } });
       // Delegating again would only bring the Google Drive dialog back, or send a delegation the node
       // took but no block was seen to include a second time
@@ -128,7 +146,7 @@ const DelegateRCDialog = ({
     }
   }, [delegateMutation.isSuccess]);
 
-  const isAmountValid = amountBillions.gt(0) && amountBillions.lte(maxBillions);
+  const isAmountValid = amountBillions.gt(0) && amountBillions.lte(maxBillions) && !isBelowMinimum;
   const isFormValid = isAmountValid && accountStatus === 'found' && !delegateMutation.isPending;
   const accountStatusKey = ACCOUNT_STATUS_KEYS[accountStatus];
   const summary = { amount: formatRcSummary(amountBillions), max: formatRcSummary(maxBillions) };
@@ -182,6 +200,8 @@ const DelegateRCDialog = ({
                 max={maxBillions.toString()}
                 disabled={delegateMutation.isPending}
                 id="amount"
+                aria-invalid={isBelowMinimum}
+                aria-describedby={minBillions === undefined ? undefined : MINIMUM_NOTE_ID}
                 value={form.amount}
                 onChange={(e) => onAmountInput(e.target.value)}
               />
@@ -203,6 +223,22 @@ const DelegateRCDialog = ({
                 <div className="flex justify-center text-xs">
                   <span className="font-medium">{t('transfers_page.delegate_rc.readout', summary)}</span>
                 </div>
+                {minBillions !== undefined ? (
+                  <p
+                    id={MINIMUM_NOTE_ID}
+                    aria-live="polite"
+                    className={
+                      isBelowMinimum || isMinimumUnreachable ? 'text-xs text-destructive' : 'text-xs text-primary/70'
+                    }
+                  >
+                    {isMinimumUnreachable
+                      ? t('transfers_page.delegate_rc.minimum_unreachable', {
+                          min: formatRcSummary(minBillions),
+                          max: summary.max
+                        })
+                      : t('transfers_page.delegate_rc.minimum_note', { min: formatRcSummary(minBillions) })}
+                  </p>
+                ) : null}
                 {existingBillions.gt(0) ? (
                   <p className="text-xs text-primary/70">
                     {t('transfers_page.delegate_rc.existing_delegation_note', {

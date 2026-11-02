@@ -215,7 +215,7 @@
     "start_power_down": "开始 Power Down {{amount}}",
     "stop_power_down": "停止 Power Down",
     "delegated_tooltip": "代理给此账户或由此账户代理出的 HIVE POWER",
-    "previous_transfers": "以往转账",
+    "previous_transfers_other": "{{count}} 笔以往转账",
     "following": "关注中",
     "potential_author_rewards_info": "潜在奖励尚未计入余额。在 7 天期间内，社区会通过投票决定最终的奖励分配。",
     "potential_author_rewards_title": "潜在作者奖励来自：",
@@ -447,6 +447,7 @@
     "page_of": "第 {{page}} 页，共 {{total}} 页",
     "revoke": "撤销",
     "revoke_rc_confirm": "确定要撤销对 @{{account}} 的 RC 委托吗？",
+    "revoke_rc_success": "已撤销对 @{{account}} 的 RC 代理。",
     "confirm_revoke": "确认委托 Vesting Shares",
     "revoke_failed": "撤销委托失败"
   },
@@ -600,6 +601,10 @@
       "creation_adjustment_note": "{{reserved}} 十亿 RC 是账户创建调整额度，无法代理。",
       "existing_delegation_note": "你目前向 {{account}} 代理 {{existing}} 十亿 RC。新数量将替换它，最多可为 {{max}} 十亿 RC。",
       "insufficient_rc": "可代理的 RC 不足：你有 {{current}} 十亿，此次代理需要 {{needed}} 十亿。",
+      "minimum_note": "最低代理额度为 {{min}} 十亿 RC。",
+      "minimum_unreachable": "最低代理额度为 {{min}} 十亿 RC，超过你当前可代理的 {{max}} 十亿 RC。",
+      "below_minimum_error": "区块链不接受低于 {{min}} 十亿 RC 的 RC 代理。",
+      "success": "已向 {{account}} 代理 {{amount}} 十亿 RC。",
       "submit": "代理 RC"
     }
   },

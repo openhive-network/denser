@@ -5,6 +5,7 @@ import { Button } from '@ui/components';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useTranslation } from '@/wallet/i18n/client';
+import { RC_SUMMARY_DECIMALS } from '@/wallet/feature/transfers-page/lib/rc-amount';
 
 const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string; account: string }) => {
   const { t } = useTranslation('common_wallet');
@@ -22,7 +23,7 @@ const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string
       className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700"
       data-testid="wallet-rc-delegation-item"
     >
-      <td className="px-1 py-2 sm:px-4">{prepareRC(delegated_rc.toString(), t)}</td>
+      <td className="px-1 py-2 sm:px-4">{prepareRC(delegated_rc.toString(), t, RC_SUMMARY_DECIMALS)}</td>
       <td className="px-1 py-2 text-destructive sm:px-4">
         <Link href={`/@${to}/transfers`}>{`@${to}`}</Link>
       </td>

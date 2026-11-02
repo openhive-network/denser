@@ -94,9 +94,9 @@ test.describe('Wallet RC delegations', () => {
     const rcColumn = page.getByTestId('wallet-rc-delegations');
     const rcRows = page.getByTestId('wallet-rc-delegation-item');
     await expect(rcRows).toHaveCount(1);
-    await expect(rcRows.nth(0).getByRole('cell').nth(0)).toHaveText('0.2bil');
+    await expect(rcRows.nth(0).getByRole('cell').nth(0)).toHaveText('0.20bil');
     await expect(rcRows.nth(0).getByRole('cell').nth(1)).toHaveText(`@${RC_DELEGATEE}`);
-    await expect(rcColumn.getByTestId('wallet-rc-delegations-total')).toHaveText('total: 0.2bil');
+    await expect(rcColumn.getByTestId('wallet-rc-delegations-total')).toHaveText('total: 0.20bil');
     await expect(page.getByTestId('wallet-delegation-item')).toContainText(STUB_DELEGATEE);
 
     expect((await box(rcRows.nth(0).getByRole('cell').nth(0))).x).toBeGreaterThanOrEqual(
@@ -114,7 +114,7 @@ test.describe('Wallet RC delegations', () => {
 
     const rcColumn = page.getByTestId('wallet-rc-delegations');
     await expect(rcColumn).toContainText('No delegations found');
-    await expect(rcColumn.getByTestId('wallet-rc-delegations-total')).toHaveText('total: 0.0bil');
+    await expect(rcColumn.getByTestId('wallet-rc-delegations-total')).toHaveText('total: 0.00bil');
     await expect(page.getByTestId('wallet-rc-delegation-item')).toHaveCount(0);
     await expect(page.getByTestId('wallet-delegation-item')).toContainText(STUB_DELEGATEE);
 

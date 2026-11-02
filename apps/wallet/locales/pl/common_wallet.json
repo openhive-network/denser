@@ -224,7 +224,10 @@
     "start_power_down": "Rozpoczęto zmniejszanie mocy o {{amount}}",
     "stop_power_down": "Zatrzymano zmniejszanie mocy",
     "delegated_tooltip": "HIVE POWER delegowane do/z tego konta",
-    "previous_transfers": "Poprzednie przelewy",
+    "previous_transfers_one": "{{count}} poprzedni przelew",
+    "previous_transfers_few": "{{count}} poprzednie przelewy",
+    "previous_transfers_many": "{{count}} poprzednich przelewów",
+    "previous_transfers_other": "{{count}} poprzedniego przelewu",
     "following": "obserwujesz",
     "potential_author_rewards_info": "Potencjalne nagrody nie zostały jeszcze dodane do salda. Podczas 7-dniowego okresu społeczność decyduje o ostatecznym podziale nagród poprzez głosowanie.",
     "potential_author_rewards_title": "Potencjalne nagrody dla autora z: ",
@@ -462,6 +465,7 @@
     "page_of": "Strona {{page}} z {{total}}",
     "revoke": "Wycofaj",
     "revoke_rc_confirm": "Czy na pewno chcesz wycofać delegację RC dla @{{account}}?",
+    "revoke_rc_success": "Wycofano delegację RC do @{{account}}.",
     "confirm_revoke": "Potwierdź wycofanie delegacji HIVE POWER",
     "revoke_failed": "Nie udało się wycofać delegacji"
   },
@@ -618,6 +622,10 @@
       "creation_adjustment_note": "{{reserved}} mld RC to korekta za tworzenie kont i nie można ich delegować.",
       "existing_delegation_note": "Delegujesz teraz {{existing}} mld RC do {{account}}. Nowa kwota ją zastąpi i może wynosić do {{max}} mld RC.",
       "insufficient_rc": "Za mało RC do delegowania: masz {{current}} mld, ta delegacja wymaga {{needed}} mld.",
+      "minimum_note": "Minimalna delegacja to {{min}} mld RC.",
+      "minimum_unreachable": "Minimalna delegacja to {{min}} mld RC, więcej niż {{max}} mld RC, które możesz teraz delegować.",
+      "below_minimum_error": "Blockchain nie przyjmuje delegacji RC mniejszej niż {{min}} mld RC.",
+      "success": "Delegowano {{amount}} mld RC do {{account}}.",
       "submit": "Deleguj RC"
     }
   },

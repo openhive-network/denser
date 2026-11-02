@@ -220,7 +220,9 @@
     "start_power_down": "Démarrer le power down de {{amount}}",
     "stop_power_down": "Arrêter le power down",
     "delegated_tooltip": "HIVE POWER délégué à/par ce compte",
-    "previous_transfers": "Transferts précédents",
+    "previous_transfers_one": "{{count}} transfert précédent",
+    "previous_transfers_many": "{{count}} transferts précédents",
+    "previous_transfers_other": "{{count}} transferts précédents",
     "following": "Abonnements",
     "potential_author_rewards_info": "Les gains potentiels n'ont pas encore été ajoutés au solde. Pendant la période de 7 jours, la communauté décide de la répartition finale des gains par ses votes.",
     "potential_author_rewards_title": "Gains éditoriaux potentiels pour : ",
@@ -456,6 +458,7 @@
     "page_of": "Page {{page}} sur {{total}}",
     "revoke": "Révoquer",
     "revoke_rc_confirm": "Voulez-vous vraiment révoquer la délégation de RC à @{{account}} ?",
+    "revoke_rc_success": "Délégation de RC à @{{account}} révoquée.",
     "confirm_revoke": "Confirmer la délégation de Vesting Shares",
     "revoke_failed": "Impossible de révoquer la délégation"
   },
@@ -611,6 +614,10 @@
       "creation_adjustment_note": "{{reserved}} Md RC correspondent à l'ajustement pour création de comptes et ne peuvent pas être délégués.",
       "existing_delegation_note": "Vous déléguez actuellement {{existing}} Md RC à {{account}}. Le nouveau montant la remplace et peut aller jusqu'à {{max}} Md RC.",
       "insufficient_rc": "Pas assez de RC délégables : vous avez {{current}} Md, cette délégation en demande {{needed}} Md.",
+      "minimum_note": "La délégation minimale est de {{min}} Md RC.",
+      "minimum_unreachable": "La délégation minimale est de {{min}} Md RC, plus que les {{max}} Md RC que vous pouvez déléguer maintenant.",
+      "below_minimum_error": "La blockchain n'accepte pas de délégation de RC inférieure à {{min}} Md RC.",
+      "success": "{{amount}} Md RC délégués à {{account}}.",
       "submit": "Déléguer des RC"
     }
   },

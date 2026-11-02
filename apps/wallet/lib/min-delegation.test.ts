@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHiveChain } from '@hiveio/wax';
-import { minDelegationHiveSatoshis, rejectedMinDelegationVests } from './min-delegation.ts';
+import { minDelegationHiveSatoshis, minRcDelegationRaw, rejectedMinDelegationVests } from './min-delegation.ts';
 
 const vests = (amount: string) => ({ amount, nai: '@@000000037', precision: 6 });
 
@@ -34,6 +34,20 @@ describe('minDelegationHiveSatoshis', () => {
   it('rounds toward zero as the chain does', () => {
     assert.equal(minDelegationHiveSatoshis({ amount: '3001' }), BigInt(1000));
     assert.equal(minDelegationHiveSatoshis({ amount: '2' }), BigInt(0));
+  });
+});
+
+describe('minRcDelegationRaw', () => {
+  it('is the HP minimum in VESTS at the vesting share price, rounded down', () => {
+    // 1.000 HIVE at 330,000,000,000.000000 VESTS for 180,000,000.000 HIVE: 1833.333333333 VESTS.
+    assert.equal(
+      minRcDelegationRaw({ amount: '3000' }, { amount: '330000000000000000' }, { amount: '180000000000' }),
+      BigInt('1833333333')
+    );
+  });
+
+  it('is null without a vesting fund to price VESTS with', () => {
+    assert.equal(minRcDelegationRaw({ amount: '3000' }, { amount: '0' }, { amount: '0' }), null);
   });
 });
 

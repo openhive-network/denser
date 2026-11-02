@@ -215,7 +215,7 @@
     "start_power_down": "{{amount}}のパワーダウンを開始",
     "stop_power_down": "パワーダウンを停止",
     "delegated_tooltip": "このアカウントへ/からの委託されたHIVE POWER",
-    "previous_transfers": "過去の送金",
+    "previous_transfers_other": "過去の送金{{count}}件",
     "following": "フォロー中",
     "potential_author_rewards_info": "見込み報酬はまだ残高に加算されていません。7日間の期間中、コミュニティが投票によって最終的な報酬の配分を決定します。",
     "potential_author_rewards_title": "見込み投稿者報酬の対象: ",
@@ -447,6 +447,7 @@
     "page_of": "{{page}} / {{total}} ページ",
     "revoke": "取り消す",
     "revoke_rc_confirm": "@{{account}} への RC の委任を取り消してもよろしいですか？",
+    "revoke_rc_success": "@{{account}} へのRC委託を取り消しました。",
     "confirm_revoke": "Vesting Shares の委任を確認",
     "revoke_failed": "委任を取り消せませんでした"
   },
@@ -600,6 +601,10 @@
       "creation_adjustment_note": "{{reserved}}（×10億 RC）はアカウント作成調整分のため、委託できません。",
       "existing_delegation_note": "現在 {{account}} に {{existing}}（×10億 RC）を委託しています。新しい量はこれを置き換え、最大 {{max}}（×10億 RC）まで指定できます。",
       "insufficient_rc": "委託可能なRCが不足しています：保有 {{current}}（×10億 RC）、この委託に必要 {{needed}}（×10億 RC）。",
+      "minimum_note": "最小委託量は {{min}}（×10億 RC）です。",
+      "minimum_unreachable": "最小委託量は {{min}}（×10億 RC）で、現在委託できる {{max}}（×10億 RC）を上回っています。",
+      "below_minimum_error": "チェーンは {{min}}（×10億 RC）未満のRC委託を受け付けません。",
+      "success": "{{account}} に {{amount}}（×10億 RC）を委託しました。",
       "submit": "RCを委託"
     }
   },

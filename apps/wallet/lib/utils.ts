@@ -118,9 +118,9 @@ export function transformKeyAuths(authority: { [keyOrAccount: string]: number })
   }));
 }
 
-export const prepareRC = (rc: string, t: TFunction<'common_wallet', undefined>): string => {
+export const prepareRC = (rc: string, t: TFunction<'common_wallet', undefined>, decimals = 1): string => {
   return t('resource_credits.amount_billions', {
-    amount: numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(1))
+    amount: numberWithCommas(convertStringToBig(rc).div(1000000000).toFixed(decimals))
   });
 };
 type VestsToHiveSatoshis = typeof vestsToHiveSatoshis;

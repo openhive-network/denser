@@ -215,7 +215,7 @@
     "start_power_down": "{{amount}} 파워 다운 시작",
     "stop_power_down": "파워 다운 중지",
     "delegated_tooltip": "이 계정이 위임하거나 위임받은 HIVE POWER",
-    "previous_transfers": "이전 송금",
+    "previous_transfers_other": "이전 송금 {{count}}건",
     "following": "팔로잉",
     "potential_author_rewards_info": "예상 보상은 아직 잔액에 추가되지 않았습니다. 7일 동안 커뮤니티가 보팅을 통해 최종 보상 분배를 결정합니다.",
     "potential_author_rewards_title": "예상 저자 보상 출처: ",
@@ -447,6 +447,7 @@
     "page_of": "{{page}} / {{total}} 페이지",
     "revoke": "철회",
     "revoke_rc_confirm": "@{{account}}에 대한 RC 위임을 철회하시겠습니까?",
+    "revoke_rc_success": "@{{account}}에 대한 RC 위임을 취소했습니다.",
     "confirm_revoke": "베스팅 지분 위임 확인",
     "revoke_failed": "위임을 철회하지 못했습니다"
   },
@@ -600,6 +601,10 @@
       "creation_adjustment_note": "{{reserved}}(×10억 RC)는 계정 생성 조정분이므로 위임할 수 없습니다.",
       "existing_delegation_note": "현재 {{account}}에게 {{existing}}(×10억 RC)를 위임하고 있습니다. 새 수량은 이를 대체하며 최대 {{max}}(×10억 RC)까지 지정할 수 있습니다.",
       "insufficient_rc": "위임 가능한 RC가 부족합니다: 보유 {{current}}(×10억 RC), 이 위임에 필요 {{needed}}(×10억 RC).",
+      "minimum_note": "최소 위임량은 {{min}}(×10억 RC)입니다.",
+      "minimum_unreachable": "최소 위임량은 {{min}}(×10억 RC)으로, 지금 위임할 수 있는 {{max}}(×10억 RC)보다 많습니다.",
+      "below_minimum_error": "체인은 {{min}}(×10억 RC) 미만의 RC 위임을 받지 않습니다.",
+      "success": "{{account}}에게 {{amount}}(×10억 RC)를 위임했습니다.",
       "submit": "RC 위임"
     }
   },
