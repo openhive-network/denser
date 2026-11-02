@@ -18,3 +18,13 @@ export async function getSafeStorageKeyTypes(username: string): Promise<KeyAutho
   const auth = await authClient.getRegisteredUserByUsername(username);
   return auth?.registeredKeyTypes ?? [];
 }
+
+/**
+ * Asks the browser to keep this origin's storage, where safe storage keeps its keys, from eviction.
+ * A best-effort hint: browsers may ignore it.
+ */
+export function requestPersistentKeyStorage(): void {
+  if (navigator.storage?.persist) {
+    navigator.storage.persist().catch(() => {});
+  }
+}

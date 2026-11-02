@@ -35,7 +35,12 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { handleAuthError } from '@smart-signer/lib/auth-error';
 import { findSupersededKeyWrite, SUPERSEDED_KEY_WRITE_MESSAGE } from '@smart-signer/lib/superseded-key-write';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
-import { registerSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
+import {
+  addedKeyStrictMode,
+  registerSafeStorageKey,
+  type StrictModeSettings
+} from '@smart-signer/lib/signer/safe-storage-registration';
+import { requestPersistentKeyStorage } from '@smart-signer/lib/signer/safe-storage-keys';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { getLogger } from '@ui/lib/logging';
 
@@ -47,6 +52,10 @@ export interface SafeStorageKeyUpdateProps {
   preferredKeyTypes: KeyType[];
   username: string;
   onUsernameChange: (username: string) => void;
+  /** Signs in to the app with the key safe storage holds unlocked, as the safe-storage sign-in does */
+  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
+  /** Told why the sign-in after the key was added failed; the unlock step shows it */
+  onSignInFailed: (error: string) => void;
 }
 
 function getFormSchema() {
@@ -61,7 +70,7 @@ function getFormSchema() {
         invalid_type_error: 'Invalid keyType',
         required_error: 'keyType is required'
       }),
-      isStrict: z.boolean().default(false)
+      isStrict: z.boolean().default(true)
     })
     .superRefine(async (val, ctx) => {
       const result = await validateWifKey(val.wif);
@@ -83,7 +92,7 @@ export type SafeStorageKeyUpdateRef = { cancel: () => Promise<void> };
 type SafeStorageKeyUpdateForm = z.infer<ReturnType<typeof getFormSchema>>;
 
 const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyUpdateProps>(
-  ({ onSetStep, preferredKeyTypes, i18nNamespace, username, onUsernameChange }, ref) => {
+  ({ onSetStep, preferredKeyTypes, i18nNamespace, username, onUsernameChange, signIn, onSignInFailed }, ref) => {
     useImperativeHandle(ref, () => ({
       async cancel() {
         // No need to cancel anything for key update
@@ -95,6 +104,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
     const [registeredUser, setRegisteredUser] = useState<AuthUser | null>(null);
+    const [strictSettings, setStrictSettings] = useState<StrictModeSettings | null>(null);
     const [availableKeyTypes, setAvailableKeyTypes] = useState<KeyType[]>([]);
     const [updateSuccess, setUpdateSuccess] = useState(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -106,7 +116,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         password: '',
         wif: '',
         keyType: preferredKeyTypes[0],
-        isStrict: false
+        isStrict: true
       }
     });
 
@@ -125,6 +135,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
 
           if (user) {
             setRegisteredUser(user);
+            setStrictSettings(await authClient.current.getUserSettings(username));
 
             // Filter preferred key types to only those registered in hbauth
             const availableTypes = preferredKeyTypes.filter((keyType) =>
@@ -147,11 +158,33 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
       })();
     }, [username, preferredKeyTypes, form]);
 
+    const selectedKeyType = form.watch('keyType');
+    const strictModePicked = useRef(false);
+    // Defaults to the mode the account's keys are stored with, until the user picks one
+    useEffect(() => {
+      if (strictModePicked.current) return;
+      form.setValue('isStrict', addedKeyStrictMode(strictSettings, selectedKeyType));
+    }, [strictSettings, selectedKeyType, form]);
+
     /** Clears the key field and names the key the sign-in needs under it */
     function rejectKey(keyRoleHint: string) {
       form.resetField('wif');
       form.setError('wif', { message: t(keyRoleHint, { ns: SMART_SIGNER_NAMESPACE }) });
       setLoading(false);
+    }
+
+    async function signInWithAddedKey(client: OnlineClient, username: string, password: string, keyType: KeyType) {
+      try {
+        // hb-auth adds a key to a wallet it holds unlocked without checking the password: unlock it
+        // with the password, as the unlock step does, before signing in with it
+        await client.authenticate(username, password, keyType);
+        await signIn(LoginType.hbauth, username, keyType);
+        requestPersistentKeyStorage();
+      } catch (error) {
+        onSignInFailed(handleAuthError(error, 'signInWithAddedKey'));
+      } finally {
+        setLoading(false);
+      }
     }
 
     // Handle key update
@@ -213,10 +246,12 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
 
         logger.info('Key added successfully for user: %s, keyType: %s', username, keyType);
 
-        // Reset form after successful update
-        form.reset();
+        if (preferredKeyTypes.includes(keyType)) {
+          await signInWithAddedKey(client, username, password, keyType);
+          return;
+        }
 
-        // Go back to previous step after a short delay
+        form.reset();
         setTimeout(() => {
           onSetStep(Steps.SAFE_STORAGE_LOGIN);
         }, 2000);
@@ -367,7 +402,10 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
               render={({ field }) => (
                 <StrictModeCheckbox
                   checked={field.value}
-                  onCheckedChange={field.onChange}
+                  onCheckedChange={(checked) => {
+                    strictModePicked.current = true;
+                    field.onChange(checked);
+                  }}
                   i18nNamespace={i18nNamespace}
                 />
               )}

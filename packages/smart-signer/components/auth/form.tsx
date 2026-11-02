@@ -67,6 +67,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     const safeStorageRef = useRef<SafeStorageRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
     const [username, setUsername] = useState<string>(initialUsername ?? lastLoggedInUser);
+    const [safeStorageError, setSafeStorageError] = useState<string | null>(null);
     const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE);
 
     // provide methods to outside from here
@@ -125,24 +126,35 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       }
     }
 
+    function returnToSafeStorageLogin(error: string): void {
+      setSafeStorageError(error);
+      setStep(Steps.SAFE_STORAGE_LOGIN);
+    }
+
+    function changeStep(nextStep: Steps): void {
+      setSafeStorageError(null);
+      setStep(nextStep);
+    }
+
     return (
       <div className="flex max-h-[calc(100dvh-10rem)] overflow-y-auto pb-4">
         {step === Steps.SAFE_STORAGE_LOGIN && (
           <SafeStorage
             ref={safeStorageRef}
             preferredKeyTypes={preferredKeyTypes}
-            onSetStep={setStep}
+            onSetStep={changeStep}
             signIn={signIn}
             i18nNamespace={i18nNamespace}
             isSigned={isSigned}
             username={username}
             onUsernameChange={(username) => setUsername(username)}
+            initialError={safeStorageError}
           />
         )}
 
         {step === Steps.OTHER_LOGIN_OPTIONS && (
           <Methods
-            onSetStep={setStep}
+            onSetStep={changeStep}
             i18nNamespace={i18nNamespace}
             preferredKeyTypes={preferredKeyTypes}
             username={username}
@@ -153,7 +165,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
 
         {step === Steps.PASSKEY_LOGIN && (
           <Passkey
-            onSetStep={setStep}
+            onSetStep={changeStep}
             i18nNamespace={i18nNamespace}
             username={username}
             onUsernameChange={(username) => setUsername(username)}
@@ -163,11 +175,13 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
 
         {step === Steps.SAFE_STORAGE_KEY_UPDATE && (
           <SafeStorageKeyUpdate
-            onSetStep={setStep}
+            onSetStep={changeStep}
             i18nNamespace={i18nNamespace}
             preferredKeyTypes={preferredKeyTypes}
             username={username}
             onUsernameChange={(username) => setUsername(username)}
+            signIn={signIn}
+            onSignInFailed={returnToSafeStorageLogin}
           />
         )}
       </div>

@@ -3,6 +3,26 @@ import type { KeyAuthorityType, OnlineClient } from '@hiveio/hb-auth';
 /** What registering a key needs of hb-auth's client */
 export type SafeStorageClient = Pick<OnlineClient, 'register' | 'getRegisteredUserByUsername' | 'getUserSettings'>;
 
+/** What safe storage keeps of an account's Direct Authority Mode, per key type */
+export type StrictModeSettings = Pick<NonNullable<Awaited<ReturnType<OnlineClient['getUserSettings']>>>, 'strict'>;
+
+/**
+ * The Direct Authority Mode safe storage unlocks the `keyType` key of an account with: the stored
+ * one, strict when safe storage does not say, as hb-auth's `authenticate` does.
+ */
+export function storedStrictMode(settings: StrictModeSettings | null | undefined, keyType: KeyAuthorityType): boolean {
+  return settings?.strict[keyType] ?? true;
+}
+
+/**
+ * The Direct Authority Mode a key added for `keyType` defaults to: the one stored for that key
+ * type, else for another key type of the account, else strict, as at the account's first save.
+ */
+export function addedKeyStrictMode(settings: StrictModeSettings | null | undefined, keyType: KeyAuthorityType): boolean {
+  const strict = settings?.strict ?? {};
+  return strict[keyType] ?? Object.values(strict).find((mode) => mode !== undefined) ?? true;
+}
+
 export interface SafeStorageKey {
   username: string;
   /** The safe storage password */
@@ -60,6 +80,6 @@ export async function registerAddedSafeStorageKey(
   lookup: SharedKeyLookup
 ): Promise<void> {
   const settings = await client.getUserSettings(key.username);
-  const strict = settings?.strict[sessionKeyType] ?? true;
+  const strict = storedStrictMode(settings, sessionKeyType);
   await registerSafeStorageKey(client, { ...key, strict }, lookup);
 }
