@@ -49,21 +49,73 @@
 # playwright-json, ids `<spec>::<describe › … › title>` as in junit.xml), and
 # basepath-playwright.json for the basepath pass, which is not declared: its ids
 # would not carry the `basepath › ` prefix junit.xml gives them.
+#
+# Shards (#1429): DENSER_FIXTURE_SHARD=<k>/<n> runs shard k of n, one suite of the
+# full slot each (.aidev/project.yaml), side by side on the same checkout. The
+# spec files are split as CI splits them (CI_NODE_INDEX/CI_NODE_TOTAL, see
+# playwright.fixture.config.ts): whole files, balanced by recorded durations, each
+# in exactly one shard. Shard 1 is the `fixture_e2e` suite and the builder: it
+# makes both builds as above, a copy of the root build for each other shard
+# (every pass's server rewrites its build's static files and public/ as it starts,
+# so two passes cannot serve one build), publishes the outcome in
+# test-results/fixture-shard-builds/state, then runs its share and the basepath
+# pass, writing test-results/fixture/ as before. Shard k > 1 waits for a state
+# written after it started (named timeout fixture-shard-build), runs its share
+# against its copy and writes test-results/fixture-shard-<k>/. A run with
+# arguments (a re-run) is unsharded in every shard: it builds and runs what it
+# was given, as without DENSER_FIXTURE_SHARD.
 set -euo pipefail
 
+started_at="$(date +%s)"
 cd "$(dirname "$0")/.."
+
+shard_index=1
+shard_total=1
+if [ -n "${DENSER_FIXTURE_SHARD:-}" ]; then
+    if ! [[ "$DENSER_FIXTURE_SHARD" =~ ^([1-9][0-9]*)/([1-9][0-9]*)$ ]] \
+        || [ "${BASH_REMATCH[1]}" -gt "${BASH_REMATCH[2]}" ]; then
+        echo "DENSER_FIXTURE_SHARD=$DENSER_FIXTURE_SHARD is not <k>/<n> with 1 <= k <= n" >&2
+        exit 2
+    fi
+    shard_index="${BASH_REMATCH[1]}"
+    shard_total="${BASH_REMATCH[2]}"
+fi
+suite_name=fixture_e2e
+[ "$shard_index" -eq 1 ] || suite_name="fixture_e2e_shard_$shard_index"
+shard_builds="$PWD/test-results/fixture-shard-builds"
+shard_state="$shard_builds/state"
+
+# The shard state, written whole: `ok`, or why the other shards have no build.
+publish_shard_state() {
+    mkdir -p "$shard_builds"
+    printf '%s\n' "$1" > "$shard_state.tmp"
+    mv -f "$shard_state.tmp" "$shard_state"
+}
+
+# Set before anything can fail, so the other shards never wait out their timeout
+# for a builder that has stopped.
+builds_for_shards=0
+if [ "$shard_index" -eq 1 ] && [ "$shard_total" -gt 1 ] && [ "$#" -eq 0 ] \
+    && [ "${DENSER_FIXTURE_VIA_STACK:-}" != 1 ]; then
+    builds_for_shards=1
+    rm -rf "$shard_builds"
+    trap '[ -f "$shard_state" ] || publish_shard_state "the fixture_e2e suite ended before its build was ready"' EXIT
+fi
 
 # shellcheck source=pnpm-deps.sh
 source .aidev/pnpm-deps.sh
 # shellcheck source=junit-helpers.sh
 source .aidev/junit-helpers.sh
 
-rm -rf test-results/fixture
-mkdir -p test-results/fixture
-junit="$PWD/test-results/fixture/junit.xml"
-basepath_junit="$PWD/test-results/fixture/basepath-junit.xml"
-json_report="$PWD/test-results/fixture/playwright.json"
-basepath_json_report="$PWD/test-results/fixture/basepath-playwright.json"
+results=test-results/fixture
+[ "$shard_index" -eq 1 ] || results="test-results/fixture-shard-$shard_index"
+results_dir="$PWD/$results"
+rm -rf "$results_dir"
+mkdir -p "$results_dir"
+junit="$results_dir/junit.xml"
+basepath_junit="$results_dir/basepath-junit.xml"
+json_report="$results_dir/playwright.json"
+basepath_json_report="$results_dir/basepath-playwright.json"
 basepath_next="$PWD/test-results/blog-basepath-next"
 basepath=/blog
 
@@ -118,19 +170,97 @@ finish_basepath_fixture() {
     return "$status"
 }
 
+# Run by the builder once the root build is in apps/blog/.next, before its own
+# pass starts a server on it.
+copy_build_for_shards() {
+    local k
+    for ((k = 2; k <= shard_total; k++)); do
+        mkdir -p "$shard_builds/$k" \
+            && cp -a apps/blog/.next/standalone apps/blog/.next/static "$shard_builds/$k/" \
+            || return 1
+    done
+}
+
+# Waits for a state the builder published after this shard started: an older one
+# is a previous run's. Fails, with the reason, when it is not `ok` or none comes.
+wait_for_shard_build() {
+    STATE="$shard_state" SINCE_MS="$((started_at * 1000))" SHARD="$shard_index/$shard_total" node --input-type=module -e '
+import fs from "node:fs";
+import { testTimeout, recordTimedAction } from "./playwright/support/timeouts.ts";
+const { STATE, SINCE_MS, SHARD } = process.env;
+const defaultMs = 1800000;
+const timeoutMs = testTimeout("fixture-shard-build", defaultMs);
+const start = Date.now();
+for (;;) {
+  let state;
+  try {
+    if (fs.statSync(STATE).mtimeMs >= Number(SINCE_MS)) state = fs.readFileSync(STATE, "utf8").trim();
+  } catch {}
+  if (state === "ok") {
+    recordTimedAction("fixture-shard-build", Date.now() - start, defaultMs);
+    console.error(`fixture_e2e shard ${SHARD}: the build is ready after ${Math.round((Date.now() - start) / 1000)} s`);
+    process.exit(0);
+  }
+  if (state !== undefined) {
+    console.error(`fixture_e2e shard ${SHARD}: no build to test, the fixture_e2e suite reports: ${state}`);
+    process.exit(1);
+  }
+  if (Date.now() - start > timeoutMs) {
+    console.error(`fixture_e2e shard ${SHARD}: the fixture_e2e suite published no build within ${timeoutMs / 1000} s`);
+    process.exit(1);
+  }
+  await new Promise((r) => setTimeout(r, 2000));
+}
+' < /dev/null
+}
+
+# A shard after the first, without arguments: its share against its copy of the
+# builder's build.
+run_shard() {
+    local status=0
+    run_with_junit_fallback "$junit" "$suite_name" wait_for_shard_build || exit 1
+    (cd apps/blog && CI_NODE_INDEX="$shard_index" CI_NODE_TOTAL="$shard_total" \
+        FIXTURE_NEXT_DIR="$shard_builds/$shard_index" FIXTURE_RESULTS_DIR="$results_dir" \
+        run_playwright "$junit" "$json_report" "$suite_name" --config=playwright.fixture.config.ts \
+        --output="test-results/shard-$shard_index") || status=$?
+    rm -rf "${shard_builds:?}/$shard_index"
+    exit "$status"
+}
+
 if [ "${DENSER_FIXTURE_VIA_STACK:-}" != 1 ]; then
+    [ "$shard_index" -eq 1 ] || [ "$#" -ne 0 ] || run_shard
     status=0
     basepath_status=0
     if [ "$#" -eq 0 ]; then
         run_with_junit_fallback "$basepath_junit" fixture_e2e_basepath build_basepath_blog || basepath_status=$?
     fi
-    .aidev/run-blog-build.sh
-    (cd apps/blog && run_playwright "$junit" "$json_report" fixture_e2e --config=playwright.fixture.config.ts "$@") || status=$?
+    if ! .aidev/run-blog-build.sh; then
+        [ "$builds_for_shards" -eq 0 ] || publish_shard_state "the blog build failed"
+        exit 1
+    fi
+    if [ "$builds_for_shards" -eq 1 ]; then
+        copy_build_for_shards || { publish_shard_state "copying the build for the shards failed"; exit 1; }
+        publish_shard_state ok
+    fi
+    (
+        cd apps/blog
+        [ "$builds_for_shards" -eq 0 ] || export CI_NODE_INDEX=1 CI_NODE_TOTAL="$shard_total"
+        # A re-run of a later shard keeps to that shard's directories.
+        [ "$shard_index" -eq 1 ] || set -- --output="test-results/shard-$shard_index" "$@"
+        FIXTURE_RESULTS_DIR="$results_dir" run_playwright "$junit" "$json_report" "$suite_name" \
+            --config=playwright.fixture.config.ts "$@"
+    ) || status=$?
     if [ "$#" -eq 0 ]; then
         [ "$basepath_status" -ne 0 ] || run_basepath_fixture || basepath_status=$?
         finish_basepath_fixture "$basepath_status" || status=1
     fi
     exit "$status"
+fi
+
+# The stack's one blog cannot serve several shards: the first runs every spec.
+if [ "$shard_index" -gt 1 ]; then
+    echo "skipped: DENSER_FIXTURE_VIA_STACK=1 runs the whole suite in shard 1" >&2
+    exit 77
 fi
 
 # ---- opt-in: against the test stack's `fixture-relay` services ----------------

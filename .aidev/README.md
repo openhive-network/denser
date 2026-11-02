@@ -337,8 +337,8 @@ when the daemon sees the checkout at a different path.
 
 ## Test stack (`sandbox.compose`) and the `full` slot
 
-`full` runs `unit`, `static`, `fixture_e2e`, `wallet_fixture`, `dev_stack` (above)
-and the advisory `live_e2e`, in that order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
+`full` runs `unit`, `static`, `fixture_e2e` (with its shards `fixture_e2e_shard_<k>`),
+`wallet_fixture`, `dev_stack` (above) and the advisory `live_e2e`, in that order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
 before the first `stack: true` suite. Only `live_e2e` declares one, so every
 suite before it runs with no stack up, under `--network none`.
 
@@ -350,6 +350,21 @@ for its spec's recording
 (`apps/blog/playwright/tests/support/fixture-proxy-test.ts:61-95`), and the
 app's server side must read that same proxy. A stack server could reach it only
 by relaying back into the suite container.
+
+**`fixture_e2e` runs as concurrent shards** (#1429). Each suite of the full slot
+that sets `DENSER_FIXTURE_SHARD=<k>/<n>` runs the k-th of n disjoint sets of whole
+spec files, split as CI's `blog-fixture-tests` shards are (by
+`playwright/tests/support/fixture-shards/durations.json`). `fixture_e2e` is
+shard 1 and makes the builds: the basepath build, then the root build. It copies
+the root build to `test-results/fixture-shard-builds/<k>/` for each later shard,
+because every pass's server rewrites its build's static files and `public/` as
+it starts. It writes `ok` (or why there is no build) to
+`test-results/fixture-shard-builds/state`, then runs its share and the basepath
+pass. `fixture_e2e_shard_<k>` waits for a state written after it started (named
+timeout `fixture-shard-build`), runs its share against its copy, and writes
+`test-results/fixture-shard-<k>/` (junit, `playwright.json`, replay misses). To
+change n, add or drop shard entries and rewrite every `k/n`.
+`.aidev/fixture-shards.test.mjs` (in `unit`) checks that the entries are 1..n.
 
 **`live_e2e`** (`.aidev/run-live-e2e.sh`; declared `mode: advisory` with a fixed `memory: 6g` cap, so neither a
 failing spec nor an OOM kill of its container fails the slot) runs the e2e specs the
@@ -417,7 +432,8 @@ held until an operator approves it.
   The failures run once together and, if that fails, each alone; one that then
   passes is pardoned as `passed_solo_failed_parallel`, one that still fails
   blocks. Each re-run builds the blog again (`run-blog-build.sh`), a few minutes,
-  and skips the basepath pass. A basepath failure (`basepath › <spec>::…`) is not
+  and skips the basepath pass. Every shard declares the same `rerun:` and re-runs
+  its own failing ids this way, unsharded. A basepath failure (`basepath › <spec>::…`) is not
   re-run: `file_pattern` takes only a bare spec name, so it blocks as before. The
   same argv reproduces a failure by hand, against the dev stack:
   `.aidev/dev-stack-spec.sh playwright/tests/fixture/chatNative.spec.ts -g "…" --retries=0`.
@@ -426,7 +442,8 @@ held until an operator approves it.
 * **New or changed specs are repeated.** On the quick and full gates, a changed
   `apps/blog/playwright/tests/fixture/*.spec.ts` is run again on its own through
   `rerun:`'s `files` template (`root:` is that directory), so a spec that passes
-  once by luck is caught before it lands.
+  once by luck is caught before it lands. Only `fixture_e2e` declares `files`, so
+  the shards do not repeat it again.
 * **`unit` is not re-run.** Its junit ids name neither a file nor a runner: mocha
   (renderer, transaction) writes `<describe path>::<title>`, and the node:test
   groups and the upkeep check share the suite with ids of the same shape
