@@ -28,6 +28,7 @@ import { KeyType, LoginType } from '@smart-signer/types/common';
 
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
+import { findRegistrationKeyRoleHint } from '@smart-signer/lib/validators/key-role-hint';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import { KeyAuthorityType } from '@smart-signer/lib/utils';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -146,6 +147,13 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
       })();
     }, [username, preferredKeyTypes, form]);
 
+    /** Clears the key field and names the key the sign-in needs under it */
+    function rejectKey(keyRoleHint: string) {
+      form.resetField('wif');
+      form.setError('wif', { message: t(keyRoleHint, { ns: SMART_SIGNER_NAMESPACE }) });
+      setLoading(false);
+    }
+
     // Handle key update
     async function onUpdateKey(values: SafeStorageKeyUpdateForm) {
       const { username, password, wif, keyType, isStrict } = values;
@@ -161,9 +169,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
 
         const keyAuthorityError = await validateKeyAuthority(username, keyType, wif);
         if (keyAuthorityError) {
-          form.resetField('wif');
-          form.setError('wif', { message: t(keyAuthorityError, { ns: SMART_SIGNER_NAMESPACE }) });
-          setLoading(false);
+          rejectKey(keyAuthorityError);
           return;
         }
 
@@ -184,11 +190,18 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         await client.invalidateExistingKey(username, keyType as KeyAuthorityType);
 
         // Import the new key, and for the other key type too when it is that key as well
-        await registerSafeStorageKey(
-          client,
-          { username, password, wif, keyType: keyType as KeyAuthorityType, strict: isStrict },
-          SHARED_KEY_LOOKUP
-        );
+        try {
+          await registerSafeStorageKey(
+            client,
+            { username, password, wif, keyType: keyType as KeyAuthorityType, strict: isStrict },
+            SHARED_KEY_LOOKUP
+          );
+        } catch (error) {
+          const keyRoleHint = findRegistrationKeyRoleHint(error, keyType);
+          if (!keyRoleHint) throw error;
+          rejectKey(keyRoleHint);
+          return;
+        }
 
         setUpdateSuccess(true);
 

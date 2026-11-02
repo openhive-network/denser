@@ -105,6 +105,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/google-drive-urls.test.ts \
     packages/smart-signer/lib/condenser-migration.test.ts \
     packages/smart-signer/lib/validators/key-role.test.ts \
+    packages/smart-signer/lib/validators/key-role-hint.test.ts \
     packages/smart-signer/lib/memo-crypto.test.ts \
     packages/smart-signer/lib/memo-layout.test.ts \
     packages/smart-signer/lib/metamask-snap-version.test.ts \

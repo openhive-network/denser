@@ -40,6 +40,7 @@ import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
+import { findRegistrationKeyRoleHint } from '@smart-signer/lib/validators/key-role-hint';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
@@ -147,6 +148,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     }
 
+    /** Clears the key field and names the key the sign-in needs under it */
+    function rejectKey(keyRoleHint: string) {
+      form.resetField('wif');
+      form.setError('wif', { message: t(keyRoleHint, { ns: SMART_SIGNER_NAMESPACE }) });
+      setLoading(false);
+    }
+
     async function onSave(values: SafeStorageForm) {
       const { username, password, wif, keyType, strict } = values;
       try {
@@ -154,14 +162,19 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         setError(null);
         const keyAuthorityError = await validateKeyAuthority(username, keyType, wif);
         if (keyAuthorityError) {
-          form.resetField('wif');
-          form.setError('wif', { message: t(keyAuthorityError, { ns: SMART_SIGNER_NAMESPACE }) });
-          setLoading(false);
+          rejectKey(keyAuthorityError);
           return;
         }
-        await hbauthService.withOnlineClient((client) =>
-          registerSafeStorageKey(client, { username, password, wif, keyType, strict }, SHARED_KEY_LOOKUP)
-        );
+        try {
+          await hbauthService.withOnlineClient((client) =>
+            registerSafeStorageKey(client, { username, password, wif, keyType, strict }, SHARED_KEY_LOOKUP)
+          );
+        } catch (error) {
+          const keyRoleHint = findRegistrationKeyRoleHint(error, keyType);
+          if (!keyRoleHint) throw error;
+          rejectKey(keyRoleHint);
+          return;
+        }
         await finalize(values);
         form.reset();
       } catch (error) {
