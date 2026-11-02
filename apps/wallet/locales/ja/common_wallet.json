@@ -359,6 +359,7 @@
     "status_tooltip_not_started": "<start/>に開始予定、<end/>に終了",
     "status_tooltip_finished": "<end/>に終了",
     "remaining_days_other": "残り{{count}}日",
+    "duration_days_other": "{{count}}日",
     "funded": "資金提供あり",
     "not_funded": "資金提供なし",
     "return_proposal_note": "これは基本の返還提案です。これより得票の少ない提案には資金が支払われません。",
