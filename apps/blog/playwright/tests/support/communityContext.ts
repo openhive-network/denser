@@ -119,17 +119,20 @@ export const ROLE_ROW_ADMIN = { account: 'gandalf', role: ROLE_ADMIN, title: '' 
 export const ROLE_ROW_MOD = { account: 'gtg', role: ROLE_MOD, title: 'Wizard' };
 
 /**
- * Success-toast literals fired by the community mutation hooks. Pinned
- * against `features/community-profile/hooks/use-subscribe-mutations.ts`
- * — keep aligned when those hooks change. Note the asymmetry: subscribe
- * uses the community *title* in the toast, unsubscribe uses the raw
- * community *tag* (hive-XXXXXX). That's the hook as written; not our
- * choice. Use the `_TITLE` arg for subscribe, the `_TAG` arg for unsubscribe.
+ * Success-toast descriptions fired by the community mutation hooks
+ * (`features/community-profile/hooks/use-subscribe-mutations.ts`), from
+ * `communities.toasts` in the blog locales. Both name the community by its
+ * *title* (the hook falls back to the hive-XXXXXX tag only when the title is
+ * unknown). The `_PL` variants are the Polish locale's strings.
  */
 export const TOAST_SUBSCRIBED = (communityTitle: string): string =>
   `You have successfully subscribed to ${communityTitle}.`;
-export const TOAST_UNSUBSCRIBED = (communityTag: string): string =>
-  `You have successfully unsubscribed from ${communityTag}.`;
+export const TOAST_UNSUBSCRIBED = (communityTitle: string): string =>
+  `You have successfully unsubscribed from ${communityTitle}.`;
+export const TOAST_SUBSCRIBED_PL = (communityTitle: string): string =>
+  `Subskrybujesz teraz społeczność ${communityTitle}.`;
+export const TOAST_UNSUBSCRIBED_PL = (communityTitle: string): string =>
+  `Nie subskrybujesz już społeczności ${communityTitle}.`;
 
 /**
  * Success toast fired by `useSetRoleMutation` (COM-09). Pinned against

@@ -529,6 +529,12 @@
     "no_results": "لم يتم العثور على أي نتائج",
     "latest_subscribers": "أحدث المشتركين في {{username}}",
     "unmoderated_tag": "علامة غير معتمدة",
+    "toasts": {
+      "subscribed_title": "تم الاشتراك",
+      "subscribed_description": "لقد اشتركت بنجاح في {{community}}.",
+      "unsubscribed_title": "تم إلغاء الاشتراك",
+      "unsubscribed_description": "لقد ألغيت اشتراكك بنجاح في {{community}}."
+    },
     "buttons": {
       "subscribe": "الاشتراك",
       "new_post": "مشاركة جديدة",

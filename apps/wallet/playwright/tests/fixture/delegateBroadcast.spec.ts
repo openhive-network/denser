@@ -27,6 +27,7 @@ const ACTIVE_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';
 
 /** The dialog's title, as the wallet's English locale spells it. */
 const DELEGATE_TITLE = 'Delegate To Account';
+const CONFIRM_TITLE = 'Confirm Delegation To Account';
 
 let stub: Server;
 
@@ -147,8 +148,8 @@ test.describe('Delegate broadcast', () => {
     const broadcasts = await installBroadcastInterceptor(page);
     await fillDelegateDialog(page, '3');
 
-    const confirm = page.getByRole('dialog', { name: `Confirm ${DELEGATE_TITLE}` });
-    await expect(confirm.getByRole('heading', { name: `Confirm ${DELEGATE_TITLE}` })).toBeFocused();
+    const confirm = page.getByRole('dialog', { name: CONFIRM_TITLE });
+    await expect(confirm.getByRole('heading', { name: CONFIRM_TITLE })).toBeFocused();
     await confirm.getByRole('button', { name: 'OK' }).click();
 
     await broadcasts.waitForCount(1);
@@ -167,7 +168,7 @@ test.describe('Delegate broadcast', () => {
     const dialog = await fillDelegateDialog(page, '900.001');
 
     await expect(dialog.getByText('Insufficient funds.')).toBeVisible();
-    await expect(page.getByRole('dialog', { name: `Confirm ${DELEGATE_TITLE}` })).toHaveCount(0);
+    await expect(page.getByRole('dialog', { name: CONFIRM_TITLE })).toHaveCount(0);
     expect(broadcasts.calls).toHaveLength(0);
   });
 
@@ -178,7 +179,7 @@ test.describe('Delegate broadcast', () => {
     const dialog = await fillDelegateDialog(page, '0.5');
 
     await expect(dialog.getByText('Minimum delegation is 1.000 HP.')).toBeVisible();
-    await expect(page.getByRole('dialog', { name: `Confirm ${DELEGATE_TITLE}` })).toHaveCount(0);
+    await expect(page.getByRole('dialog', { name: CONFIRM_TITLE })).toHaveCount(0);
     expect(broadcasts.calls).toHaveLength(0);
   });
 
@@ -204,13 +205,13 @@ test.describe('Delegate broadcast', () => {
     await answerRpc(page, BROADCAST_METHODS, MIN_DELEGATION_REJECTION);
     await fillDelegateDialog(page, '3');
 
-    const confirm = page.getByRole('dialog', { name: `Confirm ${DELEGATE_TITLE}` });
+    const confirm = page.getByRole('dialog', { name: CONFIRM_TITLE });
     await confirm.getByRole('button', { name: 'OK' }).click();
 
     await expect(
       page.getByText('Delegation rejected: the minimum is 1.000 HP (you tried 3.000 HP).', { exact: true })
     ).toBeVisible();
-    await expect(confirm.getByRole('heading', { name: `Confirm ${DELEGATE_TITLE}` })).toBeFocused();
+    await expect(confirm.getByRole('heading', { name: CONFIRM_TITLE })).toBeFocused();
   });
 });
 

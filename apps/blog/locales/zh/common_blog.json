@@ -514,6 +514,12 @@
     "no_results": "没有找到相关结果",
     "latest_subscribers": "{{username}} 的最新订阅者",
     "unmoderated_tag": "未管理的标签",
+    "toasts": {
+      "subscribed_title": "已订阅",
+      "subscribed_description": "您已成功订阅 {{community}}。",
+      "unsubscribed_title": "已取消订阅",
+      "unsubscribed_description": "您已成功取消订阅 {{community}}。"
+    },
     "buttons": {
       "subscribe": "订阅",
       "new_post": "发布新帖",

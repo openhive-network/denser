@@ -563,7 +563,13 @@
       "delegation_below_minimum": "Delegacja odrzucona: minimum to {{min}} HP (próbowano {{amount}} HP).",
       "account_check_failed": "Nie udało się sprawdzić konta. Spróbuj ponownie później."
     },
-    "confirm_transaction": "Potwierdź {{transaction}}",
+    "confirm_title": {
+      "transfers": "Potwierdź przelew na konto",
+      "transfer_to_savings": "Potwierdź przelew do oszczędności",
+      "power_up": "Potwierdź zwiększenie mocy",
+      "delegate": "Potwierdź delegowanie na konto",
+      "savings_withdraw": "Potwierdź wypłatę z oszczędności"
+    },
     "ok": "OK",
     "cancel": "Anuluj",
     "from": "Od",

@@ -63,6 +63,8 @@ const ACCOUNT_FORMAT_ERROR_KEYS: Record<AccountNameFormatError, string> = {
   segment_too_short: 'transfers_page.error.not_found'
 };
 
+const newRequestId = () => Math.floor((Date.now() / 1000) % 4294967295);
+
 // wax is imported only once a broadcast has failed, so it stays out of the page's initial chunks.
 const isPrivateKeyLeak = async (error: unknown) =>
   error instanceof (await import('@hiveio/wax')).WaxPrivateKeyLeakDetectedException;
@@ -125,12 +127,14 @@ export function TransferDialog({
     to: ['transferTo', 'powerUp', 'withdrawHive', 'withdrawHiveDollars'].includes(type) ? username : '',
     onSubmit: () => {},
     memo: '',
-    requestId: 0
+    confirmTitle: ''
   };
   const [curr, setCurr] = useState<'HIVE' | 'HBD'>(currency);
   const [value, setValue] = useState('0');
   const [advanced, setAdvanced] = useState(false);
   const [data, setData] = useState(defaultValue);
+  // Drawn when the confirmation opens, so the id it shows is the one broadcast.
+  const [requestId, setRequestId] = useState(0);
   const badActors = badActorList.includes(data.to);
   const memoSecret = detectSecretInMemo(data.memo);
   // The override covers only the memo it was given for: any edit has to be acknowledged again.
@@ -217,6 +221,7 @@ export function TransferDialog({
   switch (type) {
     case 'transfers':
       data.title = t('transfers_page.transfer_to_account');
+      data.confirmTitle = t('transfers_page.confirm_title.transfers');
       data.description = t('transfers_page.transfer_to_account_desc');
       data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
       data.onSubmit = async () => {
@@ -238,6 +243,7 @@ export function TransferDialog({
 
     case 'transferTo':
       data.title = t('transfers_page.transfer_to');
+      data.confirmTitle = t('transfers_page.confirm_title.transfer_to_savings');
       data.description = t('transfers_page.transfer_to_desc');
       data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
@@ -254,6 +260,7 @@ export function TransferDialog({
 
     case 'powerUp':
       data.title = t('transfers_page.power_up');
+      data.confirmTitle = t('transfers_page.confirm_title.power_up');
       data.description = t('transfers_page.power_up_desc');
       data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
@@ -281,6 +288,7 @@ export function TransferDialog({
 
     case 'delegate':
       data.title = t('transfers_page.delegate');
+      data.confirmTitle = t('transfers_page.confirm_title.delegate');
       data.description = '';
       data.amount = amount.reducedHP;
       data.onSubmit = async () => {
@@ -295,6 +303,7 @@ export function TransferDialog({
 
     case 'withdrawHive':
       data.title = t('transfers_page.savings_withdraw');
+      data.confirmTitle = t('transfers_page.confirm_title.savings_withdraw');
       data.description = t('transfers_page.savings_withdraw_desc');
       data.amount = amount.savingsHive;
       data.advancedBtn = true;
@@ -304,7 +313,7 @@ export function TransferDialog({
           toAccount: advanced ? data.to : username,
           memo: data.memo,
           amount: await getAsset(value, curr),
-          requestId: Math.floor((Date.now() / 1000) % 4294967295)
+          requestId
         };
         transfersTransaction('withdrawHive', params, withdrawFromSavingsMutation.mutateAsync);
       };
@@ -312,6 +321,7 @@ export function TransferDialog({
 
     case 'withdrawHiveDollars':
       data.title = t('transfers_page.savings_withdraw');
+      data.confirmTitle = t('transfers_page.confirm_title.savings_withdraw');
       data.description = t('transfers_page.savings_withdraw_desc');
       data.amount = amount.savingsHbd;
       data.advancedBtn = true;
@@ -321,7 +331,7 @@ export function TransferDialog({
           toAccount: advanced ? data.to : username,
           memo: data.memo,
           amount: await getAsset(value, curr),
-          requestId: Math.floor((Date.now() / 1000) % 4294967295)
+          requestId
         };
         transfersTransaction('withdrawHiveDollars', params, withdrawFromSavingsMutation.mutateAsync);
       };
@@ -384,6 +394,7 @@ export function TransferDialog({
       setEncryptDialogOpen(true);
       return;
     }
+    setRequestId(newRequestId());
     setNextOpen(true);
   };
 
@@ -727,7 +738,7 @@ export function TransferDialog({
         <Dialog open={nextOpen} onOpenChange={setNextOpen}>
           <DialogContent onOpenAutoFocus={focusConfirmTitle} closeLabel={t('global.close')}>
             <DialogTitle ref={confirmTitleRef} tabIndex={-1} className="focus:outline-hidden">
-              {t('transfers_page.confirm_transaction', { transaction: data.title })}
+              {data.confirmTitle}
             </DialogTitle>
             {type !== 'delegate' ? (
               <>
@@ -780,7 +791,8 @@ export function TransferDialog({
                     {t('transfers_page.request_id')}
                     <div className="relative col-span-3">
                       <Input
-                        defaultValue={data.requestId}
+                        value={requestId}
+                        readOnly
                         className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5"
                       />
                     </div>
