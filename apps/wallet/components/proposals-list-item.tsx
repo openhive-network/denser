@@ -158,7 +158,7 @@ export function ProposalListItem({
             <span className="whitespace-nowrap">{dateFormat.format(dayjs(proposalData.end_date).toDate())}</span>{' '}
             <span className="whitespace-nowrap">
               {'('}
-              {totalDays !== 1 ? totalDays + t('global.time.days') : t('global.time.a_day')}
+              {t('proposals_page.duration_days', { count: totalDays })}
               {')'}
             </span>
           </span>
