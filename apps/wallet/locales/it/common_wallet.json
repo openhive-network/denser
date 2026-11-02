@@ -358,6 +358,7 @@
     "by": "da",
     "for": " per ",
     "vote_for_proposal": "Vota la proposta #{{id}}",
+    "vote_ended": "Proposta terminata",
     "votes_on_proposal": "Voti sulla proposta",
     "voters_list": "Votanti",
     "status_tooltip_started": "Iniziata <start/> e termina <end/>",

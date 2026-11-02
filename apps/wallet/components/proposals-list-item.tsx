@@ -2,11 +2,12 @@ import { Link } from '@hive/ui';
 import { BURN_ACCOUNTS, REFUND_ACCOUNTS } from '@/wallet/lib/constants';
 import { IListItemProps } from '@/wallet/lib/hive';
 import { cn, getRoundedAbbreveration, numberWithCommas } from '@hive/ui/lib/utils';
-import { isRefundProposal, remainingDays } from '@/wallet/lib/proposals-list';
+import { isProposalVotable, isRefundProposal, remainingDays } from '@/wallet/lib/proposals-list';
 import { Icons } from '@hive/ui/components/icons';
 import dayjs from 'dayjs';
 import { Badge } from '@ui/components/badge';
 import { ProposalVotesButton } from './proposal-votes-button';
+import { ProposalEndedVoteButton } from './proposal-ended-vote-button';
 import { ProposalFundingBadge } from './proposal-funding-badge';
 import { ProposalPaidAmounts } from './proposal-paid-amounts';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
@@ -75,6 +76,7 @@ export function ProposalListItem({
 
   const voteLabel = t('proposals_page.vote_for_proposal', { id: proposalData.proposal_id });
   const statusLabelKey = STATUS_LABEL_KEYS[proposalData.status];
+  const votable = isProposalVotable(proposalData);
 
   const totalVotes = totalVestingFund.times(proposalData.total_votes).div(totalShares).times(0.000001);
 
@@ -92,6 +94,7 @@ export function ProposalListItem({
   }, [voted]);
 
   async function updateProposalVotes() {
+    if (!votable) return;
     const params = {
       proposal_ids: [String(proposalData.proposal_id)],
       approve: !voteSuccess,
@@ -279,7 +282,9 @@ export function ProposalListItem({
           totalShares={totalShares}
           totalVestingFund={totalVestingFund}
         />
-        {user && user.isLoggedIn ? (
+        {!votable ? (
+          <ProposalEndedVoteButton label={voteLabel} voted={voteSuccess} />
+        ) : user && user.isLoggedIn ? (
           <button
             type="button"
             className={cn('group relative flex', VOTE_FOCUS_RING)}

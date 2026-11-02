@@ -362,6 +362,7 @@
     "by": "от",
     "for": " для ",
     "vote_for_proposal": "Голосовать за предложение #{{id}}",
+    "vote_ended": "Предложение завершено",
     "votes_on_proposal": "Голоса за предложение",
     "voters_list": "Проголосовавшие",
     "status_tooltip_started": "Началось <start/> и завершится <end/>",
