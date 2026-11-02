@@ -1,0 +1,6 @@
+{
+  "testName": "postSuggestions",
+  "base": "loggedInPostDetail",
+  "additive": true,
+  "note": "The signed-in post page (base), plus the anonymous reads of the same post (bridge.get_post, bridge.get_community and bridge.get_discussion with observer hive.blog, copied from postDetail 0001-0003), which an anonymous visit and the page after a sign-out make."
+}
