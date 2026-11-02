@@ -91,6 +91,7 @@ const ERROR_PATTERNS: { pattern: RegExp; message: string }[] = [
   { pattern: /assert_exception/i, message: 'Operation failed' },
   { pattern: /missing.*challenge/i, message: 'Login failed - invalid challenge' },
   { pattern: /account not found on the blockchain/i, message: 'Account not found on the blockchain' },
+  { pattern: /missing (posting|active|owner) authority/i, message: 'Key does not have the required authority for this account' },
   { pattern: /does not have.*authority/i, message: 'Key does not have the required authority for this account' }
 ];
 

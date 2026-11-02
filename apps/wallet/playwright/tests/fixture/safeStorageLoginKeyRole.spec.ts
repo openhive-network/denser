@@ -8,7 +8,8 @@ import { STUB_ACCOUNT, fullAccount, startWalletApiStub } from '../support/wallet
 /**
  * The safe-storage sign-in stores the wallet's active key: a posting key is refused in place with
  * the same error as the WIF sign-in (wifLoginKeyRole.spec.ts), the key field cleared, before
- * anything is stored. A key of none of the account's authorities is still "Invalid credentials".
+ * anything is stored. So is a key of none of the account's authorities, which the chain's
+ * `verify_authority` refuses: it names the active key too, not hb-auth's "Invalid credentials".
  * The API answers come from the stub node (support/walletApiStub.ts), whose account holds the
  * generated key below as its only posting key.
  */
@@ -82,12 +83,15 @@ test.describe('Safe-storage sign-in with a key of the wrong role', () => {
     await expect(loginForm.loginDialog).not.toContainText(INVALID_CREDENTIALS);
   });
 
-  test('WALLET-SAFE-STORAGE-LOGIN-02 — a key of no authority is still invalid credentials', async ({ page }) => {
+  test('WALLET-SAFE-STORAGE-LOGIN-02 — a key of no authority keeps the form open, naming the active key', async ({
+    page
+  }) => {
     const loginForm = new LoginForm(page);
     await submitSafeStorageForm(loginForm, UNKNOWN_WIF);
 
-    await expect(loginForm.loginDialog).toContainText(INVALID_CREDENTIALS);
+    await expect(loginForm.wifInputErrorMessage).toHaveText(POSTING_KEY_ERROR, { timeout: HYDRATION_TIMEOUT });
     await expect(loginForm.loginFormHeader).toBeVisible();
-    await expect(loginForm.wifInputErrorMessage).toHaveCount(0);
+    await expect(loginForm.wifInput).toHaveValue('');
+    await expect(loginForm.loginDialog).not.toContainText(INVALID_CREDENTIALS);
   });
 });
