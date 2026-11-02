@@ -25,6 +25,10 @@ export const formatRcInput = (billions: Big): string =>
 /** Rounded for reading, e.g. `1.45`. */
 export const formatRcSummary = (billions: Big): string => billions.toFixed(RC_SUMMARY_DECIMALS);
 
+/** A minimum rounded for reading, but up, so that typing the stated amount meets it: `1.604473654` is `1.61`. */
+export const formatRcMinimum = (billions: Big): string =>
+  billions.round(RC_SUMMARY_DECIMALS, Big.roundUp).toFixed(RC_SUMMARY_DECIMALS);
+
 /** `percent` of `maxBillions`, rounded down to a whole RC so it never exceeds the maximum. */
 export const rcForPercent = (maxBillions: Big, percent: number): Big =>
   maxBillions.times(RC_PER_BILLION).times(percent).div(100).round(0, Big.roundDown).div(RC_PER_BILLION);

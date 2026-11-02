@@ -5,6 +5,7 @@ import {
   billionsToRawRc,
   delegatableRawRc,
   formatRcInput,
+  formatRcMinimum,
   formatRcSummary,
   parseRcBillions,
   rawRcToBillions,
@@ -26,6 +27,15 @@ describe('RC amounts in billions', () => {
     assert.equal(formatRcInput(new Big('100')), '100');
     assert.equal(formatRcInput(new Big('0')), '0');
     assert.equal(formatRcSummary(MAX), '5.80');
+  });
+
+  it('states a minimum rounded up, so the stated amount is never below it', () => {
+    const minimum = rawRcToBillions('1604473654');
+    assert.equal(formatRcSummary(minimum), '1.60');
+    assert.equal(formatRcMinimum(minimum), '1.61');
+    assert.ok(parseRcBillions(formatRcMinimum(minimum)).gte(minimum));
+    assert.equal(formatRcMinimum(rawRcToBillions('1600000000')), '1.60');
+    assert.equal(formatRcMinimum(rawRcToBillions('1609999999')), '1.61');
   });
 
   it('reads an empty or malformed amount as zero', () => {
