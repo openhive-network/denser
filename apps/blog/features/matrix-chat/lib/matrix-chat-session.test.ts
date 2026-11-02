@@ -66,6 +66,8 @@ interface HomeserverOptions {
   deviceDeleted?: boolean;
   /** Requests to these paths fail as a lost connection does */
   unreachable?: RegExp;
+  /** The error answer to the sync filter request the first sync starts with */
+  filterError?: { status: number; errcode: string };
 }
 
 /** A homeserver answering the client API from `rooms`, recording every request */
@@ -87,6 +89,9 @@ function fakeHomeserver(options: HomeserverOptions = {}) {
       return json({ user_id: USER, access_token: 'access', device_id: body.device_id });
     }
     if (path === '/versions' || url.pathname === '/_matrix/client/versions') return json({ versions: ['v1.11'] });
+    if (path.endsWith('/filter') && options.filterError) {
+      return json({ errcode: options.filterError.errcode, error: 'stub' }, options.filterError.status);
+    }
     if (path.endsWith('/filter')) return json({ filter_id: 'filter' });
     if (path === '/account/whoami') {
       const whoami = options.whoami ?? { user_id: USER, device_id: 'DENSERDEVICE' };
@@ -366,6 +371,31 @@ describe('startMatrixChatSession', () => {
 
   it('rejects as unreachable when the login request cannot reach the homeserver', async () => {
     await assert.rejects(start('#general:example.org', { unreachable: /\/login$/ }), ChatUnreachableError);
+  });
+
+  it('rejects as unreachable, signing the device out, when the first sync cannot reach the homeserver', async () => {
+    await assert.rejects(start('#general:example.org', { unreachable: /\/filter$/ }), ChatUnreachableError);
+    assert.equal(logouts().length, 1);
+  });
+
+  it('rejects as unreachable, keeping the device, when a resumed first sync cannot reach it or fails', async () => {
+    const answers: HomeserverOptions[] = [
+      { unreachable: /\/filter$/ },
+      { filterError: { status: 502, errcode: 'M_UNKNOWN' } },
+      { filterError: { status: 429, errcode: 'M_LIMIT_EXCEEDED' } }
+    ];
+    for (const options of answers) {
+      await assert.rejects(resume(options), ChatUnreachableError, JSON.stringify(options));
+      assert.deepEqual(logouts(), []);
+    }
+  });
+
+  it('rejects, not as unreachable, when the homeserver refuses the first sync', async () => {
+    const refused = resume({ filterError: { status: 403, errcode: 'M_FORBIDDEN' } });
+    await assert.rejects(
+      refused,
+      (error) => !(error instanceof ChatUnreachableError) && /first Matrix sync failed/.test(String(error))
+    );
   });
 
   it('stops, without signing out, and tells when the homeserver signs a running session out', async () => {

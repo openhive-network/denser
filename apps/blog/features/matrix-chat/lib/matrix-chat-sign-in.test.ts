@@ -166,6 +166,42 @@ describe('signInToMatrixChat', () => {
     assert.deepEqual(slots[ALICE], MINTED);
   });
 
+  it("mints again when the mint request could not reach denser's server", async () => {
+    const { store, slots, waits } = memoryStore();
+    const { started, calls, retriedAfterMs } = await signIn(store, [
+      { kind: 'unreachable' },
+      { kind: 'token', loginToken: 'syl_login' }
+    ]);
+    assert.deepEqual(started.credentials, MINTED);
+    assert.deepEqual(calls, { mints: 2, logIns: ['syl_login'], resumed: [] });
+    assert.deepEqual(retriedAfterMs, [RETRY_DELAYS_MS[0]]);
+    assert.deepEqual(waits, [RETRY_DELAYS_MS[0]]);
+    assert.deepEqual(slots[ALICE], MINTED);
+  });
+
+  it("retries a mint after a rate limit that could not reach denser's server", async () => {
+    const { store } = memoryStore();
+    const { calls, retriedAfterMs } = await signIn(store, [
+      { kind: 'rate-limited', retryAfterMs: 5 },
+      { kind: 'unreachable' },
+      { kind: 'token', loginToken: 'syl_login' }
+    ]);
+    assert.deepEqual(calls, { mints: 3, logIns: ['syl_login'], resumed: [] });
+    assert.deepEqual(retriedAfterMs, [RETRY_DELAYS_MS[0]]);
+  });
+
+  it('does not retry a login the homeserver rejects', async () => {
+    const { store, waits } = memoryStore();
+    const rejectedLogIn = async (): Promise<StartedChatSession> => {
+      throw Object.assign(new Error('Invalid login token'), { errcode: 'M_UNKNOWN_TOKEN', httpStatus: 401 });
+    };
+    await assert.rejects(
+      signIn(store, [{ kind: 'token', loginToken: 'syl_login' }], undefined, rejectedLogIn),
+      /Invalid login token/
+    );
+    assert.deepEqual(waits, []);
+  });
+
   it('fails once the retries are used up, keeping the stored session for the next attempt', async () => {
     const { store, slots, waits } = memoryStore({ [ALICE]: { ...STORED } });
     const down = async (): Promise<ChatSession> => {

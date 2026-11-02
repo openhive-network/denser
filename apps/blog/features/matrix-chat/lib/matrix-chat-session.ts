@@ -8,6 +8,7 @@ import {
   NotificationCountType,
   RoomEvent,
   SyncState,
+  type SyncStateData,
   type MatrixClient,
   type MatrixEvent,
   type Room
@@ -110,9 +111,9 @@ class MatrixChatSession implements ChatSession {
         this.client.off(HttpApiEvent.SessionLoggedOut, onLoggedOut);
         outcome();
       };
-      const onSync = (state: SyncState) => {
+      const onSync = (state: SyncState, _previous: SyncState | null, data?: SyncStateData) => {
         if (state === SyncState.Prepared || state === SyncState.Syncing) settle(resolve);
-        else if (state === SyncState.Error) settle(() => reject(new Error('The first Matrix sync failed')));
+        else if (state === SyncState.Error) settle(() => reject(firstSyncFailure(data?.error)));
       };
       const onLoggedOut = () =>
         settle(() => reject(new StoredSessionRejectedError('The homeserver signed the session out')));
@@ -333,7 +334,8 @@ function newSession(options: SessionOptions, credentials: MatrixCredentials) {
  * Signs `options.userId` in with a login token on this browser's device, without crypto, and
  * resolves once the first sync is in, with the session's credentials for resuming it later. A
  * token for another user, or a failed first sync, signs that device out again and rejects. A
- * login request that does not reach the homeserver rejects with `ChatUnreachableError`.
+ * login request or first sync that does not reach the homeserver, or meets a server error or rate
+ * limit, rejects with `ChatUnreachableError`.
  */
 export async function startMatrixChatSession(options: MatrixChatSessionOptions): Promise<StartedChatSession> {
   const base = { baseUrl: options.homeserverUrl, fetchFn: fetchOf(options), logger: options.logger };
@@ -363,14 +365,28 @@ function isRejectedToken(error: unknown): boolean {
   return error instanceof MatrixError && (error.errcode === 'M_UNKNOWN_TOKEN' || error.httpStatus === UNAUTHORIZED);
 }
 
-/** `error` as a `ChatUnreachableError` when it is a failed request or a server error or rate limit */
-function unreachableOr(error: unknown): unknown {
-  const transient =
+/** Whether `error` is a failed request or a server error or rate limit, which may pass */
+function isTransient(error: unknown): boolean {
+  return (
     error instanceof ConnectionError ||
     (error instanceof MatrixError &&
       error.httpStatus !== undefined &&
-      (error.httpStatus >= FIRST_SERVER_ERROR || error.httpStatus === TOO_MANY_REQUESTS));
-  return transient ? new ChatUnreachableError('The Matrix homeserver could not be reached', { cause: error }) : error;
+      (error.httpStatus >= FIRST_SERVER_ERROR || error.httpStatus === TOO_MANY_REQUESTS))
+  );
+}
+
+/** `error` as a `ChatUnreachableError` when it is a failed request or a server error or rate limit */
+function unreachableOr(error: unknown): unknown {
+  if (!isTransient(error)) return error;
+  return new ChatUnreachableError('The Matrix homeserver could not be reached', { cause: error });
+}
+
+/** What the first sync failing on `error` rejects with: `ChatUnreachableError` when that may pass */
+function firstSyncFailure(error: Error | undefined): Error {
+  if (isTransient(error)) {
+    return new ChatUnreachableError('The first Matrix sync could not reach the homeserver', { cause: error });
+  }
+  return new Error('The first Matrix sync failed', { cause: error });
 }
 
 /**
