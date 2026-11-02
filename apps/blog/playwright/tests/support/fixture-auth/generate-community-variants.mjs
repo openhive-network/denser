@@ -145,6 +145,20 @@ const VARIANTS = [
       author: 'gtg',
       permlink: 'hive-hardfork-28-jump-starter-kit'
     }
+  },
+  // COM-02-escape / COM-03-escape (communitySubscribeEscapedTitle.spec.ts,
+  // communityLeaveEscapedTitle.spec.ts) — the (un)subscribe toasts name the community
+  // by a title holding `&` and `/`, characters i18next would HTML-escape. The
+  // title mirrors COMMUNITY_TITLE_ESCAPABLE in communityContext.ts.
+  {
+    name: 'communitySubscribeEscapedTitle',
+    base: 'communitySubscribe',
+    communityTitle: { community: 'hive-194913', title: 'Photography & Art/Hive' }
+  },
+  {
+    name: 'communityLeaveEscapedTitle',
+    base: 'communityLeave',
+    communityTitle: { community: 'hive-167922', title: 'Photography & Art/Hive' }
   }
 ];
 
@@ -218,6 +232,21 @@ const OPS = {
       } else {
         result.unshift(newEntry);
       }
+      return true;
+    }
+  },
+
+  // Replace the community's own `title` in `bridge.get_community`.
+  communityTitle: {
+    fileSubstring: 'bridge.get_community',
+    apply(content, file, spec) {
+      const name = content.params?.name ?? content.params?.[0];
+      if (name !== spec.community) return false;
+      const result = content.response?.result;
+      if (!result || typeof result !== 'object') {
+        throw new Error(`${file}: response.result missing for ${spec.community}`);
+      }
+      result.title = spec.title;
       return true;
     }
   },
