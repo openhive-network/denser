@@ -1,5 +1,6 @@
 import {
   ClientEvent,
+  ConnectionError,
   createClient,
   HttpApiEvent,
   MatrixError,
@@ -15,7 +16,12 @@ import { toMessageView } from './message-view.ts';
 import { withLocalRtcTransportsAnswer } from './rtc-transports-probe.ts';
 import type { MatrixSdkLogger } from './sdk-logger-type.ts';
 import type { ChatMessageView, ChatRoomView, ChatSenderView, ChatSession } from './chat-view-types.ts';
-import { StoredSessionRejectedError, type MatrixCredentials, type StartedChatSession } from './matrix-chat-sign-in.ts';
+import {
+  ChatUnreachableError,
+  StoredSessionRejectedError,
+  type MatrixCredentials,
+  type StartedChatSession
+} from './matrix-chat-sign-in.ts';
 
 /** Messages per room in the first sync, and per page scrolling back */
 const TIMELINE_PAGE_SIZE = 20;
@@ -23,6 +29,8 @@ const AVATAR_SIZE_PX = 64;
 const DEVICE_DISPLAY_NAME = 'denser chat';
 const JOINED = 'join';
 const UNAUTHORIZED = 401;
+const TOO_MANY_REQUESTS = 429;
+const FIRST_SERVER_ERROR = 500;
 /** Room events that change what the drawer shows; a sync brings the new unread counts */
 const CHANGES = [
   RoomEvent.Timeline,
@@ -324,16 +332,21 @@ function newSession(options: SessionOptions, credentials: MatrixCredentials) {
 /**
  * Signs `options.userId` in with a login token on this browser's device, without crypto, and
  * resolves once the first sync is in, with the session's credentials for resuming it later. A
- * token for another user, or a failed first sync, signs that device out again and rejects.
+ * token for another user, or a failed first sync, signs that device out again and rejects. A
+ * login request that does not reach the homeserver rejects with `ChatUnreachableError`.
  */
 export async function startMatrixChatSession(options: MatrixChatSessionOptions): Promise<StartedChatSession> {
   const base = { baseUrl: options.homeserverUrl, fetchFn: fetchOf(options), logger: options.logger };
-  const login = await createClient(base).loginRequest({
-    type: 'm.login.token',
-    token: options.loginToken,
-    device_id: options.deviceId,
-    initial_device_display_name: DEVICE_DISPLAY_NAME
-  });
+  const login = await createClient(base)
+    .loginRequest({
+      type: 'm.login.token',
+      token: options.loginToken,
+      device_id: options.deviceId,
+      initial_device_display_name: DEVICE_DISPLAY_NAME
+    })
+    .catch((error: unknown) => {
+      throw unreachableOr(error);
+    });
   const credentials = { userId: login.user_id, deviceId: login.device_id, accessToken: login.access_token };
   const { session } = newSession(options, credentials);
   try {
@@ -350,11 +363,21 @@ function isRejectedToken(error: unknown): boolean {
   return error instanceof MatrixError && (error.errcode === 'M_UNKNOWN_TOKEN' || error.httpStatus === UNAUTHORIZED);
 }
 
+/** `error` as a `ChatUnreachableError` when it is a failed request or a server error or rate limit */
+function unreachableOr(error: unknown): unknown {
+  const transient =
+    error instanceof ConnectionError ||
+    (error instanceof MatrixError &&
+      error.httpStatus !== undefined &&
+      (error.httpStatus >= FIRST_SERVER_ERROR || error.httpStatus === TOO_MANY_REQUESTS));
+  return transient ? new ChatUnreachableError('The Matrix homeserver could not be reached', { cause: error }) : error;
+}
+
 /**
  * Starts a session with stored credentials, checked first with `/account/whoami`, and resolves
  * once the first sync is in. Rejects with `StoredSessionRejectedError` when the homeserver no
- * longer accepts the access token or names another user or device for it; on any failure the
- * device stays signed in.
+ * longer accepts the access token or names another user or device for it, and with
+ * `ChatUnreachableError` when it could not be reached; on any failure the device stays signed in.
  */
 export async function resumeMatrixChatSession(options: ResumedMatrixChatSessionOptions): Promise<ChatSession> {
   const { credentials } = options;
@@ -371,6 +394,6 @@ export async function resumeMatrixChatSession(options: ResumedMatrixChatSessionO
     return session;
   } catch (error) {
     await session.stop();
-    throw error;
+    throw unreachableOr(error);
   }
 }
