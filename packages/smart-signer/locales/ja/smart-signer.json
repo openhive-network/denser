@@ -103,6 +103,7 @@
       "key_updated_title": "キーが追加されました",
       "key_updated_description": "キーが正常に追加されました",
       "key_updated_success": "キーが正常に追加されました！サインインしています…",
+      "key_added_sign_in_pending": "キーは追加されましたが、別のサインインが進行中のためサインインしていません。完了してからサインインしてください。",
       "add_key_info": "まず、ウォレットの適切な権限にキーを追加してください。",
       "user_not_found": "安全な保管にユーザーが見つかりません",
       "back": "戻る",

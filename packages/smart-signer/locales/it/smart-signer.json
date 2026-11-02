@@ -103,6 +103,7 @@
       "key_updated_title": "Chiave aggiunta",
       "key_updated_description": "La tua chiave è stata aggiunta con successo",
       "key_updated_success": "Chiave aggiunta con successo! Accesso in corso…",
+      "key_added_sign_in_pending": "Chiave aggiunta, ma è in corso un altro accesso, quindi non hai effettuato l’accesso. Accedi quando sarà terminato.",
       "add_key_info": "Per prima cosa, aggiungi la chiave all'autorità appropriata nel tuo portafoglio.",
       "user_not_found": "Utente non trovato nella conservazione sicura",
       "back": "Indietro",

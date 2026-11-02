@@ -5,7 +5,7 @@ import { KeyType, LoginType } from '@smart-signer/types/common';
 import { useProcessAuth, LoginFormSchema } from './process';
 import { useLocalStorage } from 'usehooks-ts';
 import Methods from './methods/methods';
-import SafeStorageKeyUpdate from './methods/safestorage-key-update';
+import SafeStorageKeyUpdate, { SafeStorageKeyUpdateRef } from './methods/safestorage-key-update';
 import { getLogger } from '@hive/ui/lib/logging';
 import {
   abandonPendingSignIn,
@@ -65,6 +65,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     const passkeyStep = passkey && configuredPasskeySigners.length > 0;
     const [step, setStep] = useState<Steps>(passkeyStep ? Steps.PASSKEY_LOGIN : Steps.SAFE_STORAGE_LOGIN);
     const safeStorageRef = useRef<SafeStorageRef>(null);
+    const safeStorageKeyUpdateRef = useRef<SafeStorageKeyUpdateRef>(null);
     const [lastLoggedInUser, setLastLoggedInUser] = useLocalStorage<string>('lastLoggedInUser', '');
     const [username, setUsername] = useState<string>(initialUsername ?? lastLoggedInUser);
     const [safeStorageError, setSafeStorageError] = useState<string | null>(null);
@@ -77,7 +78,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       async cancel() {
         // set cancelled state
         abandonPendingSignIn();
-        await safeStorageRef.current?.cancel();
+        // Both refs are read before awaiting: the closed dialog unmounts the steps meanwhile
+        await Promise.all([safeStorageRef.current?.cancel(), safeStorageKeyUpdateRef.current?.cancel()]);
       }
     }));
 
@@ -113,16 +115,19 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       });
     }
 
-    async function signIn(loginType: LoginType, username: string, keyType: KeyType): Promise<void> {
+    /** Resolves with false when the sign-in was not sent because another one is pending */
+    async function signIn(loginType: LoginType, username: string, keyType: KeyType): Promise<boolean> {
       try {
         await runExclusiveSignIn(async () => {
           await sign(loginType, username, keyType);
           await submit(username);
         }, WALLET_EXTENSION_LOGIN_TYPES.has(loginType));
+        return true;
       } catch (error) {
         if (!(error instanceof SignInPendingError)) throw error;
         logger.info('Sign-in with %s not sent: another sign-in is in progress', loginType);
         reportSignInPending(error);
+        return false;
       }
     }
 
@@ -175,6 +180,7 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
 
         {step === Steps.SAFE_STORAGE_KEY_UPDATE && (
           <SafeStorageKeyUpdate
+            ref={safeStorageKeyUpdateRef}
             onSetStep={changeStep}
             i18nNamespace={i18nNamespace}
             preferredKeyTypes={preferredKeyTypes}

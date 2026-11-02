@@ -111,6 +111,7 @@
       "key_updated_title": "키가 추가되었습니다",
       "key_updated_description": "키가 성공적으로 추가되었습니다",
       "key_updated_success": "키가 성공적으로 추가되었습니다! 로그인하는 중…",
+      "key_added_sign_in_pending": "키가 추가되었지만 다른 로그인이 진행 중이어서 로그인되지 않았습니다. 완료된 후 로그인하세요.",
       "add_key_info": "먼저 지갑의 적절한 권한에 키를 추가하십시오.",
       "user_not_found": "안전 저장소에서 사용자를 찾을 수 없습니다",
       "back": "뒤로",

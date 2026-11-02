@@ -103,6 +103,7 @@
       "key_updated_title": "Clé ajoutée",
       "key_updated_description": "Votre clé a été ajoutée avec succès",
       "key_updated_success": "Clé ajoutée avec succès ! Connexion en cours…",
+      "key_added_sign_in_pending": "Clé ajoutée, mais une autre connexion est en cours : vous n’avez pas été connecté. Connectez-vous une fois qu’elle sera terminée.",
       "add_key_info": "D'abord, ajoutez la clé à l'autorité appropriée dans votre portefeuille.",
       "user_not_found": "Utilisateur non trouvé dans le stockage sécurisé",
       "back": "Retour",

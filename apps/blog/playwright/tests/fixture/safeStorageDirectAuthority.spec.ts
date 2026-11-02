@@ -1,4 +1,4 @@
-import type { Page, Request } from '@playwright/test';
+import type { Page, Request, Route } from '@playwright/test';
 import { test, expect, isRecordMode } from '../support/fixture-proxy-test';
 import { installBroadcastInterceptor } from '../support/fixture-auth/broadcast-interceptor';
 import { LoginForm } from '../support/pages/loginForm';
@@ -20,9 +20,12 @@ import {
  * The Blog's safe-storage sign-in shows a stored account's Direct Authority Mode, read-only, in its
  * unlock form; "Add new key" defaults its Direct Authority Mode checkbox to the mode stored for the
  * account, and once the key is added signs the account in without asking for the password again.
- * A wrong password signs nobody in: it returns to the unlock step with the error. The mode default for an account with no stored
- * setting (on) is covered by `addedKeyStrictMode`'s unit tests in
- * packages/smart-signer/lib/signer/safe-storage-registration.test.ts.
+ * A wrong password signs nobody in: it returns to the unlock step with the error; closing the dialog
+ * while the key is added signs nobody in either, and leaves the key stored. The mode default for an
+ * account with no stored setting (on) is covered by `addedKeyStrictMode`'s unit tests in
+ * packages/smart-signer/lib/signer/safe-storage-registration.test.ts; the sign-in after Add new key
+ * while another sign-in is pending, and its cancel, by `signInWithAddedKey`'s in
+ * packages/smart-signer/lib/auth/added-key-sign-in.test.ts.
  *
  * Fixtures: reuses `accountSwitchLogout` (read-only on replay), whose add-account dialog stores
  * ACCOUNT in safe storage, as safeStorageLoginKeyRole.spec.ts; ACCOUNT's posting authority is
@@ -39,6 +42,10 @@ const MODE_ON = 'Direct Authority Mode: on';
 const MODE_OFF = 'Direct Authority Mode: off';
 const WRONG_PASSWORD = 'not-the-fixture-password';
 const INVALID_CREDENTIALS = 'Invalid credentials';
+const KEY_ADDED_TOAST = 'Key Added';
+// Long past the unlock of the added key and the sign-in's first request, which follow its toast
+const PAST_SIGN_IN_START_MS = 5_000;
+const FIXTURE_PROXY_PORT = 8200;
 
 /** Stores ACCOUNT with FIXTURE_POSTING_WIF as its own posting key, in Direct Authority Mode */
 async function storeStrictAccount(page: Page): Promise<void> {
@@ -57,6 +64,34 @@ async function storeDelegatedAccount(page: Page): Promise<void> {
   await delegatePostingAuthority(page);
   await page.goto(PAGE_WITH_HEADER);
   await storeAccount(page, { strict: false });
+}
+
+/**
+ * Holds safe storage's lookup of the added key's accounts, made while it registers the key, until
+ * `release` is called; `held` resolves once the lookup is held
+ */
+async function holdKeyRegistration(page: Page): Promise<{ held: Promise<void>; release: () => void }> {
+  let release = () => {};
+  const released = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let markHeld = () => {};
+  const held = new Promise<void>((resolve) => {
+    markHeld = resolve;
+  });
+  await page.route(
+    (url) => url.hostname === 'localhost' && url.port === String(FIXTURE_PROXY_PORT),
+    async (route: Route) => {
+      const body: { method?: string } | null =
+        route.request().method() === 'POST' ? route.request().postDataJSON() : null;
+      if (body?.method === 'account_by_key_api.get_key_references') {
+        markHeld();
+        await released;
+      }
+      return route.fallback();
+    }
+  );
+  return { held, release };
 }
 
 /** The app sign-in's first request, whether or not the deployment authenticates on its backend */
@@ -133,5 +168,29 @@ test.describe('Safe-storage Direct Authority Mode of a stored account', () => {
     await expect(loginForm.loginDialog).toContainText(INVALID_CREDENTIALS, { timeout: SIGN_IN_TIMEOUT_MS });
     await expect(loginForm.passwordInput).toBeVisible();
     expect(loginRequests).toHaveLength(0);
+  });
+
+  test('BLOG-SAFE-STORAGE-DIRECT-AUTHORITY-05 — closing the dialog while the key is added signs nobody in', async ({
+    page
+  }) => {
+    await storeStrictAccount(page);
+
+    const updateKeyForm = await openAddNewKey(page);
+    const keyRegistration = await holdKeyRegistration(page);
+    const loginRequests: Request[] = [];
+    page.on('request', (request) => {
+      if (isLoginChallengeRequest(request)) loginRequests.push(request);
+    });
+    await submitNewKey(updateKeyForm);
+    await keyRegistration.held;
+    await page.keyboard.press('Escape');
+    await expect(updateKeyForm).toHaveCount(0);
+    keyRegistration.release();
+
+    // The key is still stored, and its sign-in is not sent
+    await expect(page.getByText(KEY_ADDED_TOAST, { exact: true })).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await page.waitForTimeout(PAST_SIGN_IN_START_MS);
+    expect(loginRequests).toHaveLength(0);
+    await expect(updateKeyForm).toHaveCount(0);
   });
 });

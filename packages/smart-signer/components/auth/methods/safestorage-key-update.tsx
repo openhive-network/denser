@@ -42,6 +42,7 @@ import {
 } from '@smart-signer/lib/signer/safe-storage-registration';
 import { requestPersistentKeyStorage } from '@smart-signer/lib/signer/safe-storage-keys';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
+import { signInWithAddedKey } from '@smart-signer/lib/auth/added-key-sign-in';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -52,8 +53,11 @@ export interface SafeStorageKeyUpdateProps {
   preferredKeyTypes: KeyType[];
   username: string;
   onUsernameChange: (username: string) => void;
-  /** Signs in to the app with the key safe storage holds unlocked, as the safe-storage sign-in does */
-  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
+  /**
+   * Signs in to the app with the key safe storage holds unlocked, as the safe-storage sign-in does;
+   * resolves with false when it did not run because another sign-in is pending
+   */
+  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<boolean>;
   /** Told why the sign-in after the key was added failed; the unlock step shows it */
   onSignInFailed: (error: string) => void;
 }
@@ -93,9 +97,11 @@ type SafeStorageKeyUpdateForm = z.infer<ReturnType<typeof getFormSchema>>;
 
 const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyUpdateProps>(
   ({ onSetStep, preferredKeyTypes, i18nNamespace, username, onUsernameChange, signIn, onSignInFailed }, ref) => {
+    // Set when the dialog is closed: the sign-in after the key is added must not go on
+    const cancelled = useRef(false);
     useImperativeHandle(ref, () => ({
       async cancel() {
-        // No need to cancel anything for key update
+        cancelled.current = true;
       }
     }));
 
@@ -173,13 +179,23 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
       setLoading(false);
     }
 
-    async function signInWithAddedKey(client: OnlineClient, username: string, password: string, keyType: KeyType) {
+    async function signInWithKey(client: OnlineClient, username: string, password: string, keyType: KeyType) {
       try {
-        // hb-auth adds a key to a wallet it holds unlocked without checking the password: unlock it
-        // with the password, as the unlock step does, before signing in with it
-        await client.authenticate(username, password, keyType);
-        await signIn(LoginType.hbauth, username, keyType);
-        requestPersistentKeyStorage();
+        const outcome = await signInWithAddedKey(client, {
+          username,
+          password,
+          keyType: keyType as KeyAuthorityType,
+          signIn: () => signIn(LoginType.hbauth, username, keyType),
+          isCancelled: () => cancelled.current
+        });
+        if (outcome === 'signed-in') requestPersistentKeyStorage();
+        if (outcome === 'cancelled') logger.info('Sign-in with the key added for %s cancelled', username);
+        if (outcome === 'pending') {
+          setUpdateSuccess(false);
+          onSignInFailed(
+            t('login_form.signin_safe_storage.key_added_sign_in_pending', { ns: SMART_SIGNER_NAMESPACE })
+          );
+        }
       } catch (error) {
         onSignInFailed(handleAuthError(error, 'signInWithAddedKey'));
       } finally {
@@ -247,7 +263,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         logger.info('Key added successfully for user: %s, keyType: %s', username, keyType);
 
         if (preferredKeyTypes.includes(keyType)) {
-          await signInWithAddedKey(client, username, password, keyType);
+          await signInWithKey(client, username, password, keyType);
           return;
         }
 
