@@ -1,10 +1,23 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfilePage } from '../support/pages/profilePage';
 import { ApiHelper } from '../support/apiHelper';
 import { PostPage } from '../support/pages/postPage';
 import { CommentViewPage } from '../support/pages/commentViewPage';
 import { locatorSelector } from '../support/locatorSelector';
+
+// The page reads `lite.account_notifications` when its lite API set has a node serving it (the
+// default node list includes one), else `bridge.account_notifications`; both answer in one shape.
+const NOTIFICATIONS_METHODS = ['bridge.account_notifications', 'lite.account_notifications'];
+
+const waitForUiNotifications = (page: Page, account: string) =>
+  page.waitForResponse(
+    (response) => {
+      const postData = response.request().postDataJSON?.();
+      return NOTIFICATIONS_METHODS.includes(postData?.method) && postData?.params?.account === account;
+    },
+    { timeout: 30000 }
+  );
 
 test.describe('Notifications Tab in Profile page of @gtg', () => {
   let homePage: HomePage;
@@ -27,13 +40,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
   }) => {
     // Intercept the account_notifications response the UI itself fetches
     // to eliminate race conditions from separate API calls.
-    const notificationsPromise = page.waitForResponse(
-      (response) => {
-        const postData = response.request().postDataJSON?.();
-        return postData?.method === 'bridge.account_notifications';
-      },
-      { timeout: 30000 }
-    );
+    const notificationsPromise = waitForUiNotifications(page, 'gtg');
 
     await profilePage.gotoNotificationsProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsSelected();
@@ -127,13 +134,7 @@ test.describe('Notifications Tab in Profile page of @gtg', () => {
   test('Validate the filter of notifications', async ({ page }) => {
     // Intercept the account_notifications response the UI itself fetches
     // to eliminate race conditions from separate API calls.
-    const notificationsPromise = page.waitForResponse(
-      (response) => {
-        const postData = response.request().postDataJSON?.();
-        return postData?.method === 'bridge.account_notifications';
-      },
-      { timeout: 30000 }
-    );
+    const notificationsPromise = waitForUiNotifications(page, 'gtg');
 
     await profilePage.gotoNotificationsProfilePage('@gtg');
     await profilePage.profileNotificationsTabIsSelected();
