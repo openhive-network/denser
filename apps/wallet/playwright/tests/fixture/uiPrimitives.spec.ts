@@ -208,7 +208,7 @@ test.describe('Wallet Radix and cmdk primitives', () => {
 
     // The history's counterparties are suggested too, matched by their name only
     await recipient.fill('stub-s');
-    await expect(dialog.getByRole('option', { name: `${STUB_TRANSFER_SENDER} (1 Previous transfers)` })).toBeVisible();
+    await expect(dialog.getByRole('option', { name: `${STUB_TRANSFER_SENDER} (1 previous transfer)` })).toBeVisible();
     await expect(suggestion).toBeHidden();
 
     await recipient.fill('stub-f');
