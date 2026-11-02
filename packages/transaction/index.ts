@@ -28,7 +28,7 @@ import { getChain } from './lib/chain';
 import { PUBLISHING_APP } from './lib/publishing-app';
 import { getPostCategory } from './lib/post-category';
 import { subscribeToSignerOptions } from './lib/signer-options';
-import { requireSignedIn } from './lib/signed-out';
+import { requireSignedIn, requireStillSignedInAs } from './lib/signed-out';
 import { getFindAccounts } from './lib/hive-api';
 import { mergePostingJsonMetadata, type ProfileMetadataUpdate } from './lib/profile-metadata';
 import { buildCommentJsonMetadata, type CommentBodyMetadata } from './lib/comment-metadata';
@@ -165,7 +165,8 @@ export class TransactionService {
 
   /**
    * Sign transaction using smart-signer. Rejects with `SignedOutError`
-   * when no user is signed in.
+   * when no user is signed in, or when the user signed out or switched
+   * account while signing (a signer's dialog asking for a key was open).
    *
    * @param {ITransaction} txBuilder
    * @return {*}  {Promise<string>}
@@ -177,13 +178,16 @@ export class TransactionService {
     requiredKeyType?: SignTransaction['requiredKeyType']
   ): Promise<string> {
     requireSignedIn(this.signerOptions);
+    const { username } = this.signerOptions;
     const signer = getSigner(this.signerOptions);
-    return signer.signTransaction({
+    const signature = await signer.signTransaction({
       digest: txBuilder.sigDigest,
       transaction: txBuilder.transaction,
       singleSignKeyType,
       requiredKeyType
     });
+    requireStillSignedInAs(this.signerOptions, username);
+    return signature;
   }
 
   /**

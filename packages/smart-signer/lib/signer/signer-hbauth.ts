@@ -11,6 +11,8 @@ import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-stor
 import { registerAddedSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
+import { askWhileSignedIn } from '@smart-signer/lib/signer/signed-in-check';
+import { SignedOutError } from '@transaction/lib/signed-out';
 
 const logger = getLogger('app');
 
@@ -79,6 +81,7 @@ export class SignerHbauth extends Signer {
       const { password } = await this.passwordPromise;
       return password;
     } catch (error) {
+      if (error instanceof SignedOutError) throw error;
       logger.error('Error in getPasswordFromUser: %s', error instanceof Error ? error.message : String(error));
       throw new Error('No password from user');
     }
@@ -208,10 +211,9 @@ export class SignerHbauth extends Signer {
       };
 
       try {
-        const { password: singleSignPassword } = await PasswordDialogModalPromise({
-          isOpen: true,
-          passwordFormOptions
-        });
+        const { password: singleSignPassword } = await askWhileSignedIn(username, () =>
+          PasswordDialogModalPromise({ isOpen: true, passwordFormOptions })
+        );
 
         if (!singleSignPassword) {
           throw new Error('No key provided for single sign');
@@ -336,7 +338,9 @@ export class SignerHbauth extends Signer {
       }
     };
     if (!password) password = await this.getPasswordFromUser();
-    const { password: keyToUse } = await this.getKeyFromUser(passwordFormOptions);
+    const { password: keyToUse } = await askWhileSignedIn(this.username, () =>
+      this.getKeyFromUser(passwordFormOptions)
+    );
     try {
       await registerAddedSafeStorageKey(
         authClient,
@@ -355,7 +359,8 @@ export class SignerHbauth extends Signer {
 
   /**
    * What the user entered in a dialog opened with `passwordFormOptions`: the key, and whether to
-   * keep it. A dismissed dialog is the user's cancel: it rejects with 'No password from user'.
+   * keep it. A dismissed dialog is the user's cancel: it rejects with 'No password from user'; one
+   * closed by a sign-out rejects with `SignedOutError`.
    */
   protected async getKeyFromUser(
     passwordFormOptions: PasswordFormOptions
@@ -363,6 +368,7 @@ export class SignerHbauth extends Signer {
     try {
       return await PasswordDialogModalPromise({ isOpen: true, passwordFormOptions });
     } catch (error) {
+      if (error instanceof SignedOutError) throw error;
       logger.info('No key entered: %s', error instanceof Error ? error.message : String(error));
       throw new Error('No password from user', { cause: error });
     }

@@ -11,9 +11,11 @@ import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authorit
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
 import { MissingAuthorityError } from '@transaction/lib/missing-authority';
+import { SignedOutError } from '@transaction/lib/signed-out';
 import { KeyType } from '@smart-signer/types/common';
 import { findSharedKeyTypes } from '@smart-signer/lib/auth/shared-key-types';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
+import { askWhileSignedIn, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
 
 const logger = getLogger('app');
 
@@ -47,8 +49,12 @@ export class SignerWif extends SignerHbauth {
     txBuilder.addSignature(signature);
 
     await verifyAuthorityOrThrow(txBuilder.toApiJson(), this.pack, signingKeyType, 'WIF');
-    // Kept only once the node's authority check took it as the key it was asked for
-    if (otherKey?.store) this.storeOtherKey(signingKeyType, otherKey.wif);
+    // Kept only once the node's authority check took it as the key it was asked for, and for a user
+    // still signed in: the check awaited the node, during which the user may have signed out
+    if (otherKey?.store) {
+      requireStillSignedInAs(this.username);
+      this.storeOtherKey(signingKeyType, otherKey.wif);
+    }
 
     return signature;
   }
@@ -59,6 +65,7 @@ export class SignerWif extends SignerHbauth {
    * needing another key the session lacks is refused instead of letting the node reject it.
    *
    * @throws {MissingAuthorityError} when no key of `keyType` is stored and it is not the active key
+   * @throws {SignedOutError} when the user signed out, or switched account, while asked for the key
    */
   private async getOtherKey(keyType: KeyAuthorityType): Promise<{ wif: string; store: boolean }> {
     const storedWif = this.getStoredWif(keyType);
@@ -76,7 +83,9 @@ export class SignerWif extends SignerHbauth {
       },
       i18nValues: { keyType }
     };
-    const { password: wif, storePassword } = await this.getKeyFromUser(passwordFormOptions);
+    const { password: wif, storePassword } = await askWhileSignedIn(username, () =>
+      this.getKeyFromUser(passwordFormOptions)
+    );
     return { wif, store: !!storePassword };
   }
 
@@ -170,6 +179,7 @@ export class SignerWif extends SignerHbauth {
       const wif: string = await this.passwordPromise;
       return wif;
     } catch (error) {
+      if (error instanceof SignedOutError) throw error;
       logger.error('Error in getPasswordFromUser: %s', error instanceof Error ? error.message : String(error));
       throw new Error('No WIF key from user');
     }

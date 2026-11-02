@@ -16,3 +16,13 @@ export class SignedOutError extends Error {
 export function requireSignedIn(signerOptions: { username?: string } | undefined): void {
   if (!signerOptions?.username) throw new SignedOutError();
 }
+
+/**
+ * Throws `SignedOutError` unless `signerOptions` still name `username`, the user an operation was
+ * signed for: a sign-out or an account switch while the signer asked for a key leaves a signature
+ * that is not the signed-in user's to send.
+ */
+export function requireStillSignedInAs(signerOptions: { username?: string } | undefined, username: string): void {
+  requireSignedIn(signerOptions);
+  if (signerOptions?.username !== username) throw new SignedOutError();
+}

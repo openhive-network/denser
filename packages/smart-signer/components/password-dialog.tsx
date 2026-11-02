@@ -1,8 +1,10 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTrigger } from '@ui/components/dialog';
-import { ReactNode, useId, useState, FC } from 'react';
+import { ReactNode, useEffect, useId, useState, FC } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
+import { SignedOutError } from '@transaction/lib/signed-out';
+import { subscribeLogout } from '@smart-signer/lib/auth/logout-notice';
 import {
   PasswordForm,
   PasswordFormSchemaHbauth,
@@ -30,6 +32,14 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
   );
   const [errorMsg, setErrorMsg] = useState('');
   const titleId = useId();
+
+  // A sign-out, here or in another tab, closes the dialog: the key it asks for is no longer of a signed-in user
+  useEffect(() => {
+    const unsubscribe = subscribeLogout(() => onReject(new SignedOutError()));
+    return () => {
+      unsubscribe();
+    };
+  }, [onReject]);
 
   const onSubmit = async (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {
     const { password } = data;
