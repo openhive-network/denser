@@ -22,8 +22,8 @@ import { openOtherTab, signOutInTab } from '../support/otherTab';
  * key. An operation needing the active key asks for it when it is signed: cancelling sends nothing,
  * entering it signs and sends the operation once. A broadcast the node rejects for a missing
  * authority reads as a message naming the key, not as the node's answer. A sign-out in another tab
- * closes the prompt, and a key entered after one is neither used nor kept. Reads come from the stub
- * node (support/walletApiStub.ts).
+ * closes the prompt, and a key entered after one, the active key or the session's own one, is neither
+ * used nor kept. Reads come from the stub node (support/walletApiStub.ts).
  */
 
 const HYDRATION_TIMEOUT = 30_000;
@@ -34,6 +34,7 @@ const ACTIVE_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';
 const POSTING_WIF = '5JSTSDF5nUcChE6SeyWG28ktUevv1Bg6rUnmueRQw2cxyGqE4oT';
 
 const ACTIVE_KEY_PROMPT = 'This operation requires your active key for one time signing.';
+const SESSION_KEY_PROMPT = 'Enter your WIF key';
 const DELEGATE_RC = 'Delegate RC';
 /** The transfer dialog's labels and the expected message, in each locale checked. */
 const LOCALES = [
@@ -167,6 +168,25 @@ const activeKeyPrompt = (page: Page) => page.getByRole('dialog').filter({ hasTex
 const storedActiveKey = (page: Page) =>
   page.evaluate((key) => window.localStorage.getItem(key), `wif.${STUB_ACCOUNT}@active`);
 
+/** The prompt for the key the session signed in with, when it is not stored */
+const sessionKeyPrompt = (page: Page) => page.getByRole('dialog').filter({ hasText: SESSION_KEY_PROMPT });
+
+/** Every WIF key stored for the account */
+const storedWifKeys = (page: Page) =>
+  page.evaluate(
+    (prefix) => Object.keys(window.localStorage).filter((key) => key.startsWith(prefix)),
+    `wif.${STUB_ACCOUNT}@`
+  );
+
+/** Another tab signed out, and this tab has not heard of it yet: a tab's own write fires no storage event here */
+const signOutUnheard = (page: Page) =>
+  page.evaluate(() =>
+    window.localStorage.setItem(
+      'user',
+      JSON.stringify({ isLoggedIn: false, username: '', loginType: 'wif', keyType: 'posting' })
+    )
+  );
+
 test.describe('A posting-key session on the wallet', () => {
   test('WALLET-POSTING-SESSION-01 — opens the own wallet from the wallet home, without asking for the active key', async ({
     page
@@ -292,13 +312,7 @@ test.describe('A posting-key session on the wallet', () => {
 
     const prompt = activeKeyPrompt(page);
     await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
-    // Another tab signed out, and this tab has not heard of it yet: a tab's own write fires no storage event here
-    await page.evaluate(() =>
-      window.localStorage.setItem(
-        'user',
-        JSON.stringify({ isLoggedIn: false, username: '', loginType: 'wif', keyType: 'posting' })
-      )
-    );
+    await signOutUnheard(page);
     await prompt.getByTestId('posting-private-key-input').fill(ACTIVE_WIF);
     await prompt.getByLabel('Store key').check();
     await prompt.getByTestId('password-submit-button').click();
@@ -308,6 +322,28 @@ test.describe('A posting-key session on the wallet', () => {
     });
     expect(broadcasts.calls).toEqual([]);
     expect(await storedActiveKey(page)).toBeNull();
+  });
+
+  test("WALLET-POSTING-SESSION-08 — the session's own key entered after a sign-out elsewhere is neither sent nor kept", async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    await logInAsStubAccount(page, 'active');
+    await page.goto(ownTransfersPage);
+    await submitTransfer(page, EN_LABELS);
+
+    const prompt = sessionKeyPrompt(page);
+    await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await signOutUnheard(page);
+    await prompt.getByTestId('posting-private-key-input').fill(ACTIVE_WIF);
+    await prompt.getByLabel('Store key').check();
+    await prompt.getByTestId('password-submit-button').click();
+
+    await expect(page.getByTestId('signed-out-message')).toHaveText('You are signed out. Sign in and try again.', {
+      timeout: HYDRATION_TIMEOUT
+    });
+    expect(broadcasts.calls).toEqual([]);
+    expect(await storedWifKeys(page)).toEqual([]);
   });
 });
 

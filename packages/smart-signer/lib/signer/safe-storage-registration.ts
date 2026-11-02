@@ -83,3 +83,39 @@ export async function registerAddedSafeStorageKey(
   const strict = storedStrictMode(settings, sessionKeyType);
   await registerSafeStorageKey(client, { ...key, strict }, lookup);
 }
+
+/** What registering a key, and removing it again, needs of hb-auth's client */
+export type RevocableSafeStorageClient = SafeStorageClient & Pick<OnlineClient, 'invalidateExistingKey'>;
+
+/**
+ * Registers a key added to a session as `registerAddedSafeStorageKey` does, then calls
+ * `requireSession`. When that throws, as when the user signed out while the key was registered,
+ * every key type the registration added is removed again and its error rethrown. A key type that
+ * cannot be removed goes to `onRemoveError`.
+ */
+export async function registerAddedSafeStorageKeyWithin(
+  client: RevocableSafeStorageClient,
+  key: Omit<SafeStorageKey, 'strict'>,
+  sessionKeyType: KeyAuthorityType,
+  lookup: SharedKeyLookup,
+  requireSession: () => void,
+  onRemoveError: (error: unknown, keyType: KeyAuthorityType) => void
+): Promise<void> {
+  const registeredKeyTypes = async () =>
+    (await client.getRegisteredUserByUsername(key.username))?.registeredKeyTypes ?? [];
+  const registeredBefore = await registeredKeyTypes();
+  await registerAddedSafeStorageKey(client, key, sessionKeyType, lookup);
+  try {
+    requireSession();
+  } catch (sessionError) {
+    const added = (await registeredKeyTypes()).filter((keyType) => !registeredBefore.includes(keyType));
+    for (const keyType of added) {
+      try {
+        await client.invalidateExistingKey(key.username, keyType);
+      } catch (error) {
+        onRemoveError(error, keyType);
+      }
+    }
+    throw sessionError;
+  }
+}
