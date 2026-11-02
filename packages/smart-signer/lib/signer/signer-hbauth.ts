@@ -336,11 +336,8 @@ export class SignerHbauth extends Signer {
       }
     };
     if (!password) password = await this.getPasswordFromUser();
+    const { password: keyToUse } = await this.getKeyFromUser(passwordFormOptions);
     try {
-      const { password: keyToUse } = await PasswordDialogModalPromise({
-        isOpen: true,
-        passwordFormOptions
-      });
       await registerAddedSafeStorageKey(
         authClient,
         { username: this.username, password, wif: keyToUse, keyType },
@@ -354,5 +351,20 @@ export class SignerHbauth extends Signer {
       throw new Error(message, { cause: error });
     }
     notifySafeStorageKeysChanged();
+  }
+
+  /**
+   * What the user entered in a dialog opened with `passwordFormOptions`: the key, and whether to
+   * keep it. A dismissed dialog is the user's cancel: it rejects with 'No password from user'.
+   */
+  protected async getKeyFromUser(
+    passwordFormOptions: PasswordFormOptions
+  ): Promise<{ password: string; storePassword?: boolean }> {
+    try {
+      return await PasswordDialogModalPromise({ isOpen: true, passwordFormOptions });
+    } catch (error) {
+      logger.info('No key entered: %s', error instanceof Error ? error.message : String(error));
+      throw new Error('No password from user', { cause: error });
+    }
   }
 }

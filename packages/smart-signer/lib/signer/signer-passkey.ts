@@ -1,5 +1,6 @@
 import { TTransactionPackType } from '@hiveio/wax';
 import { getChain } from '@transaction/lib/chain';
+import { MissingAuthorityError } from '@transaction/lib/missing-authority';
 import { SignChallenge, SignTransaction, Signer, SignerOptions } from '@smart-signer/lib/signer/signer';
 import { forgetPasskeyBinding, passkeyBindingOf } from '@smart-signer/lib/passkey/passkey-binding';
 import { openSignerPopup, SignerError, type SignerPopup } from '@smart-signer/lib/passkey/signer-client';
@@ -50,7 +51,7 @@ export class SignerPasskey extends Signer {
 
   async signTransaction({ transaction, requiredKeyType }: SignTransaction): Promise<string> {
     if (requiredKeyType && requiredKeyType !== 'posting') {
-      throw new Error(`The passkey signer signs with the posting key only; this operation needs the ${requiredKeyType} key.`);
+      throw new MissingAuthorityError(requiredKeyType);
     }
     const binding = passkeyBindingOf(this.username);
     if (!binding) throw new Error(`No passkey signer is known for @${this.username}. Sign in again.`);

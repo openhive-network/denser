@@ -1,4 +1,4 @@
-import { useContext, useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEY } from '@smart-signer/lib/query-keys';
 import * as userLocalStorage from './user-localstore';
@@ -12,9 +12,6 @@ import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { subscribeAuthStorageDesync } from '@smart-signer/lib/auth/auth-storage-desync';
 import { followStoredAccounts } from '@smart-signer/lib/auth/active-user';
 import { notifyOtherTabLogout, notifyOwnLogout } from '@smart-signer/lib/auth/logout-notice';
-import { RequiredKeyTypeContext } from '@smart-signer/lib/auth/required-key-type';
-import { lacksRequiredKeyType } from '@smart-signer/lib/auth/login-authority';
-import { useStoredKeyTypes } from '@smart-signer/lib/auth/use-login-authority';
 
 const logger = getLogger('app');
 
@@ -22,13 +19,6 @@ export interface IUseUser {
   user: User;
   /** True when user state from localStorage is stable (after hydration completes) */
   isHydrated: boolean;
-  /**
-   * True when a session exists but cannot sign with the app's `RequiredKeyTypeContext` key;
-   * `user` is then the logged-out user.
-   */
-  lacksRequiredKey: boolean;
-  /** The session on this origin, also while `lacksRequiredKey` hides it from `user` */
-  sessionUser: User;
 }
 
 export interface UseUserOptions {
@@ -79,7 +69,6 @@ export function useUserCore(
   waitForHydration = false
 ): IUseUser {
   const queryClient = useQueryClient();
-  const requiredKeyType = useContext(RequiredKeyTypeContext);
   const isPastHydration = useIsPastHydration();
   const userQuery = useQuery<User>({
     queryKey: [QUERY_KEY.user],
@@ -91,12 +80,6 @@ export function useUserCore(
     initialData: () => userLocalStorage.getUser()
   });
   const user = userQuery.data;
-  const storedKeys = useStoredKeyTypes(user ?? defaultUser);
-  // The stored session is kept as it is (another app on this origin may use it); only this app's view changes
-  const lacksRequiredKey = !!user && lacksRequiredKeyType(user, requiredKeyType, storedKeys.keyTypes);
-  // Until the stored keys say whether the session holds the required key, it is neither shown nor refused
-  const isKeyCheckPending = lacksRequiredKey && storedKeys.isPending;
-  const appUser = lacksRequiredKey ? defaultUser : user;
   useQueryErrorEffect(userQuery, () => saveUserOnce(defaultUser));
 
   useEffect(() => {
@@ -150,29 +133,27 @@ export function useUserCore(
     // If no redirect needed, just return (example: already on
     // /dashboard). If user data not yet there (fetch in progress,
     // logged in or not) then don't do anything yet.
-    if (!redirectTo || !appUser) {
+    if (!redirectTo || !user) {
       return;
     }
 
     if (
       // If redirectTo is set, redirect if the user was not found.
-      (redirectTo && !redirectIfFound && !appUser?.isLoggedIn) ||
+      (redirectTo && !redirectIfFound && !user?.isLoggedIn) ||
       // If redirectIfFound is also set, redirect if the user was found.
-      (redirectIfFound && appUser?.isLoggedIn)
+      (redirectIfFound && user?.isLoggedIn)
     ) {
       onRedirect(redirectTo);
     }
-  }, [appUser, redirectIfFound, redirectTo, onRedirect]);
+  }, [user, redirectIfFound, redirectTo, onRedirect]);
 
   // Server uses cookies, client uses localStorage - these may differ during hydration,
   // so hydration renders the logged-out user the server rendered
-  const isHydrated = (!waitForHydration || isPastHydration) && !isKeyCheckPending;
-  const resolvedUser = isHydrated && appUser ? appUser : defaultUser;
+  const isHydrated = !waitForHydration || isPastHydration;
+  const resolvedUser = isHydrated && user ? user : defaultUser;
 
   return {
     user: resolvedUser,
-    isHydrated,
-    lacksRequiredKey: isHydrated && lacksRequiredKey,
-    sessionUser: user ?? defaultUser
+    isHydrated
   };
 }

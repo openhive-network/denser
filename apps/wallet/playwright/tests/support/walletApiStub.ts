@@ -278,8 +278,8 @@ export const startWalletApiStub = (
 /**
  * Logs a stub account in on the client, as the blog's fixture seeder does: the stored user is what
  * `useUser` starts from. Pass a key type (`'posting'`/`'active'`) or options
- * (`username`, `loginType`, `keyType`); defaults: STUB_ACCOUNT, `wif`, `active`. The wallet counts
- * only an active-key session as logged in; a `posting` one is the blog's session on a shared origin.
+ * (`username`, `loginType`, `keyType`); defaults: STUB_ACCOUNT, `wif`, `active`. A `posting` one is
+ * also the blog's session on a shared origin, which the wallet opens and asks for the active key.
  */
 export const logInAsStubAccount = (
   page: Page,
