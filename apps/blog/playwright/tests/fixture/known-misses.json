@@ -372,6 +372,11 @@
     "hash": "ddbf4d7827992b49"
   },
   {
+    "spec": "postSuggestions.spec.ts",
+    "method": "bridge.get_profile",
+    "hash": "27c21eb5844992c1"
+  },
+  {
     "spec": "postTemplates.spec.ts",
     "method": "bridge.get_post_header",
     "hash": "0f817dfbc9d85522"
