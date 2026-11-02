@@ -353,6 +353,7 @@
     "by": "작성자",
     "for": " 받는 사람: ",
     "vote_for_proposal": "제안 #{{id}}에 투표",
+    "vote_ended": "제안이 종료되었습니다",
     "votes_on_proposal": "제안에 대한 투표",
     "voters_list": "투표자",
     "status_tooltip_started": "<start/> 시작, <end/> 종료",

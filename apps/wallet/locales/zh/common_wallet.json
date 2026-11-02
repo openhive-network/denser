@@ -353,6 +353,7 @@
     "by": "由",
     "for": " 用于 ",
     "vote_for_proposal": "为提案 #{{id}} 投票",
+    "vote_ended": "提案已结束",
     "votes_on_proposal": "提案投票",
     "voters_list": "投票者",
     "status_tooltip_started": "已于<start/>开始，将于<end/>结束",
