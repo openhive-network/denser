@@ -45,9 +45,12 @@ import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
 import StrictModeCheckbox from './strict-mode-checkbox';
+import StrictModeStatus from './strict-mode-status';
+import { useStoredStrictMode } from './use-stored-strict-mode';
 import { useInjectedExtensions } from './use-injected-extensions';
 import { registerSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
+import { requestPersistentKeyStorage } from '@smart-signer/lib/signer/safe-storage-keys';
 
 function getFormSchema() {
   return z
@@ -89,13 +92,15 @@ export interface SafeStorageProps {
   signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
   username: string;
   onUsernameChange: (username: string) => void;
+  /** Shown on mount: why the step before this one sent the user back here */
+  initialError?: string | null;
 }
 
 type SafeStorageForm = z.infer<ReturnType<typeof getFormSchema>>;
 
 const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
   (
-    { onSetStep, signIn, preferredKeyTypes, i18nNamespace, isSigned, username, onUsernameChange },
+    { onSetStep, signIn, preferredKeyTypes, i18nNamespace, isSigned, username, onUsernameChange, initialError = null },
     ref
   ) => {
     useImperativeHandle(ref, () => ({
@@ -108,7 +113,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     const authClient = useRef<OnlineClient | undefined>(undefined);
     const [description, setDescription] = useState('');
     const [loading, setLoading] = useState<boolean | undefined>(undefined);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(initialError);
     const [showPasskeyPrompt, setShowPasskeyPrompt] = useState(false);
     const [lastAuthPassword, setLastAuthPassword] = useState<string>('');
     const pendingFinalizeRef = useRef<SafeStorageForm | null>(null);
@@ -254,11 +259,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         setLoading(true);
         await signIn(LoginType.hbauth, username, KeyType[keyType]);
-        // Request persistent storage to reduce risk of browser evicting IndexedDB keys.
-        // This is a best-effort hint — browsers may ignore it.
-        if (navigator.storage?.persist) {
-          navigator.storage.persist().catch(() => {});
-        }
+        requestPersistentKeyStorage();
       } catch (error) {
         const errorMessage = handleAuthError(error, 'finalize');
         setError(errorMessage);
@@ -352,6 +353,8 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       return found;
       /* eslint-disable react-hooks/exhaustive-deps */
     }, [form.watch('username'), authUsers, t]);
+
+    const storedStrict = useStoredStrictMode(userFound?.username, form.watch('keyType'));
 
     if (loading === undefined) return <Step loading={true}></Step>;
 
@@ -550,6 +553,9 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
                   />
                 )}
               />
+            )}
+            {userFound && storedStrict !== undefined && (
+              <StrictModeStatus strict={storedStrict} i18nNamespace={i18nNamespace} />
             )}
             {userFound && (
               <div className="flex justify-end">

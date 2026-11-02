@@ -2,8 +2,10 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import type { AuthUser, KeyAuthorityType } from '@hiveio/hb-auth';
 import {
+  addedKeyStrictMode,
   registerAddedSafeStorageKey,
   registerSafeStorageKey,
+  storedStrictMode,
   type SafeStorageClient,
   type SharedKeyLookup
 } from './safe-storage-registration.ts';
@@ -175,5 +177,34 @@ describe('registerSafeStorageKey', () => {
       /refused posting/
     );
     assert.deepEqual(storage.registered, []);
+  });
+});
+
+describe('storedStrictMode', () => {
+  it('is the mode the key type was stored with', () => {
+    assert.equal(storedStrictMode({ strict: { posting: true } }, 'posting'), true);
+    assert.equal(storedStrictMode({ strict: { posting: false } }, 'posting'), false);
+  });
+
+  it("is strict when safe storage has no setting for the key type, as hb-auth's unlock", () => {
+    assert.equal(storedStrictMode({ strict: { active: false } }, 'posting'), true);
+    assert.equal(storedStrictMode(null, 'posting'), true);
+  });
+});
+
+describe('addedKeyStrictMode', () => {
+  it('is the mode stored for the key type being added', () => {
+    assert.equal(addedKeyStrictMode({ strict: { posting: true, active: false } }, 'posting'), true);
+    assert.equal(addedKeyStrictMode({ strict: { posting: false, active: true } }, 'posting'), false);
+  });
+
+  it("is the mode of the account's other key type when none is stored for the one being added", () => {
+    assert.equal(addedKeyStrictMode({ strict: { posting: false } }, 'active'), false);
+    assert.equal(addedKeyStrictMode({ strict: { posting: true } }, 'active'), true);
+  });
+
+  it('is strict when safe storage has no setting for the account', () => {
+    assert.equal(addedKeyStrictMode({ strict: {} }, 'posting'), true);
+    assert.equal(addedKeyStrictMode(null, 'posting'), true);
   });
 });
