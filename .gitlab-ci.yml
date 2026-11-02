@@ -583,6 +583,10 @@ flake-report-unit-tests:
     - .${TURBO_APP_PATH}/junit/
     reports:
       junit: .${TURBO_APP_PATH}/junit/**/**/results.xml
+    # A failed run is the one whose test-results/ (a screenshot mismatch's
+    # actual and diff images) is needed; the default keeps artifacts only on
+    # success.
+    when: always
 
 mirrornet-replay-data-copy:
   rules:
