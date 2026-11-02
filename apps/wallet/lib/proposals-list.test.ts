@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   fundingMarks,
   isProposalStatusTab,
+  isProposalVotable,
   matchesProposalSearch,
   remainingDays
 } from './proposals-list.ts';
@@ -23,6 +24,17 @@ describe('remainingDays', () => {
   it('is 0 once the end date has passed', () => {
     assert.equal(remainingDays('2026-06-01T12:00:00', NOW), 0);
     assert.equal(remainingDays('2026-01-01T00:00:00', NOW), 0);
+  });
+});
+
+describe('isProposalVotable', () => {
+  it('takes votes on an active or a not yet started proposal', () => {
+    assert.equal(isProposalVotable({ status: 'active' }), true);
+    assert.equal(isProposalVotable({ status: 'inactive' }), true);
+  });
+
+  it('refuses votes on an expired proposal', () => {
+    assert.equal(isProposalVotable({ status: 'expired' }), false);
   });
 });
 
