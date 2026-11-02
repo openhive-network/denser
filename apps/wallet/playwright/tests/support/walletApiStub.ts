@@ -125,6 +125,11 @@ export const stubWitnessVotes = (witnesses: string[]): JsonRpcResults => ({
   })
 });
 
+/** The stub proposal with `status` (`list_proposals`' `active`, `inactive` or `expired`) instead of active. */
+export const stubProposalStatus = (status: string): JsonRpcResults => ({
+  'database_api.list_proposals': () => ({ proposals: [{ ...proposal, status }] })
+});
+
 /** STUB_ACCOUNT's votes on the stub proposal, as `database_api.list_proposal_votes` returns them. */
 export const stubProposalVotes = (voted: boolean): JsonRpcResults => ({
   'database_api.list_proposal_votes': () => ({

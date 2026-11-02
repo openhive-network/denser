@@ -1,13 +1,14 @@
 import type { Server } from 'node:http';
 import { test, expect, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
-import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { installBroadcastInterceptor, type BroadcastInterceptor } from '../support/broadcastInterceptor';
 import { expectUpdateProposalVotesOperation } from '../support/walletOperations';
 import {
   STUB_ACCOUNT,
   logInAsStubAccount,
   startWalletApiStub,
   storeStubAccountKey,
+  stubProposalStatus,
   stubProposalVotes
 } from '../support/walletApiStub';
 
@@ -41,11 +42,14 @@ test.beforeEach(async ({ context }) => {
   });
 });
 
-/** Runs the stub node for the specs of the enclosing describe, with STUB_ACCOUNT's vote `voted`. */
-const useStubWithVote = (voted: boolean) => {
+/**
+ * Runs the stub node for the specs of the enclosing describe, with STUB_ACCOUNT's vote `voted` and
+ * the proposal's `status`.
+ */
+const useStubWithVote = (voted: boolean, status = 'active') => {
   let stub: Server;
   test.beforeAll(async () => {
-    stub = await startWalletApiStub(undefined, stubProposalVotes(voted));
+    stub = await startWalletApiStub(undefined, { ...stubProposalVotes(voted), ...stubProposalStatus(status) });
   });
   test.afterAll(async () => {
     await new Promise((resolve) => stub.close(resolve));
@@ -77,9 +81,36 @@ const toggleVote = (page: Page) => {
   }).toPass({ timeout: HYDRATION_TIMEOUT });
 };
 
+/** The prompt for the active key that signing opens when no key is stored. */
+const activeKeyPrompt = (page: Page) => page.getByPlaceholder('Your active private key');
+
+/**
+ * Checks the ended proposal's vote control is a disabled toggle named for the proposal whose
+ * tooltip says it ended, and that clicking it asks for no key and broadcasts nothing.
+ */
+const expectEndedVoteControl = async (page: Page, broadcasts: BroadcastInterceptor) => {
+  const button = page.getByRole('button', { name: `Vote for proposal #${STUB_PROPOSAL_ID}`, exact: true });
+  await expect(button).toBeDisabled();
+  await expect(button).toHaveAttribute('aria-disabled', 'true');
+  await expect(button).toHaveAccessibleDescription('Proposal ended');
+
+  const control = page.getByTestId('proposal-vote-ended');
+  await expect(async () => {
+    await page.mouse.move(0, 0);
+    await control.hover();
+    await expect(page.getByRole('tooltip')).toHaveText('Proposal ended', { timeout: ATTEMPT_TIMEOUT });
+  }).toPass({ timeout: HYDRATION_TIMEOUT });
+
+  await control.click();
+
+  await expect(page.getByTestId('proposal-list-item').locator('.animate-spin')).toHaveCount(0);
+  await expect(activeKeyPrompt(page)).toBeHidden();
+  expect(broadcasts.calls).toHaveLength(0);
+};
+
 /** Dismisses the prompt for the active key that signing opens; resolves once the vote has given up. */
 const declineKeyPrompt = async (page: Page) => {
-  const keyInput = page.getByPlaceholder('Your active private key');
+  const keyInput = activeKeyPrompt(page);
   await expect(keyInput).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(keyInput).toBeHidden();
@@ -185,5 +216,39 @@ test.describe('Proposal vote broadcast: removing the vote', () => {
 
     await expect(page.getByTestId('voting-button-icon')).toHaveClass(VOTED_CLASS);
     expect(broadcasts.calls).toHaveLength(0);
+  });
+});
+
+test.describe('Proposal vote broadcast: an expired proposal', () => {
+  test.describe('not voted for', () => {
+    useStubWithVote(false, 'expired');
+
+    test('WALLET-TX-PROPOSAL-EXPIRED-01 — the vote control of an expired proposal is disabled, says it ended and broadcasts nothing', async ({
+      page
+    }) => {
+      // No stored key: a vote that got through would ask for one.
+      const broadcasts = await openProposalsPage(page, { storeKey: false, voted: false });
+
+      await expectEndedVoteControl(page, broadcasts);
+      await expect(
+        page.getByRole('button', { name: `Vote for proposal #${STUB_PROPOSAL_ID}`, exact: true })
+      ).toHaveAttribute('aria-pressed', 'false');
+    });
+  });
+
+  test.describe('voted for', () => {
+    useStubWithVote(true, 'expired');
+
+    test('WALLET-TX-PROPOSAL-EXPIRED-02 — an expired proposal the user voted for still shows the vote, disabled', async ({
+      page
+    }) => {
+      const broadcasts = await openProposalsPage(page, { storeKey: true, voted: true });
+
+      await expectEndedVoteControl(page, broadcasts);
+      await expect(
+        page.getByRole('button', { name: `Vote for proposal #${STUB_PROPOSAL_ID}`, exact: true })
+      ).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.getByTestId('voting-button-icon')).toHaveClass(VOTED_CLASS);
+    });
   });
 });
