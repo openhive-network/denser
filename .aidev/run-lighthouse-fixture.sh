@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# The deterministic Lighthouse pass, the `system` slot's `lighthouse_fixture` suite:
+# The deterministic Lighthouse pass, the `full` slot's advisory `lighthouse_fixture` suite:
 # the integration site's Lighthouse routes, settings and medians
 # (scripts/ci-helpers/lighthouse-fixture-check.js), measured on production builds of
 # this tree served from recorded Hive API and image data, with no network.

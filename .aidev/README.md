@@ -156,8 +156,8 @@ Recordings are the directories of `apps/blog/playwright/tests/mock/fixtures/`.
 **Open it in a browser.** A browser (e.g. ad-hoc Playwright) on
 `$DENSER_DEV_BLOG_URL` hydrates the page and makes its client API calls: both
 apps' `allowedDevOrigins` let next dev serve `/_next/hmr` to `127.0.0.1` and
-`localhost`, and the
-`dev_stack` suite checks it. With fixture data those calls go to
+`localhost`, and
+`.aidev/run-dev-stack.sh` checks it. With fixture data those calls go to
 `http://localhost:8200`, which is the proxy only inside the stack's network, so
 in-page data from a browser on the host needs live data (below); for fixture
 data check interactive behaviour with `.aidev/dev-stack-spec.sh`.
@@ -234,8 +234,8 @@ production-build run (`fixture_e2e`). For production builds of this tree served
 live, in the integration site's own topology (blog and wallet behind caddy's
 `/blog` and `/wallet` routing, rebuilt as the checkout moves), start
 `stack/integration/session-stack.sh up`; see "A session's stack" in
-`stack/integration/README.md`. For deterministic timings, the `system` slot
-(below) measures production builds against recorded data. What was seen while
+`stack/integration/README.md`. For deterministic timings, the `full` slot's
+advisory `lighthouse_fixture` (below) measures production builds against recorded data. What was seen while
 qualifying the dev stack (#966):
 
 - Playwright output written under `apps/` or `packages/` (tailwind's content
@@ -300,11 +300,11 @@ docker compose -f .aidev/dev-stack.compose.yml -p denser-dev down -v
 Files are written as uid `${AIDEV_UID:-1000}`; set `AIDEV_UID`/`AIDEV_GID` if
 your checkout belongs to someone else.
 
-**Verifying the stack itself: the `dev_stack` suite** (`.aidev/run-dev-stack.sh`,
-`full` slot). No other suite boots the dev stack, so a dependency upgrade can pass
+**Verifying the stack itself: `.aidev/run-dev-stack.sh`** (by hand on a docker
+host; the `full` slot's `dev_stack` suite until #1432). No suite boots the dev stack, so a dependency upgrade can pass
 every gate and still break it (#995). When the candidate changes `pnpm-lock.yaml`,
 a `package.json`, `apps/*/next.config.js`, `packages/middleware/`,
-`.aidev/runtime/` or the stack's own files, the suite boots the stack twice. Each
+`.aidev/runtime/` or the stack's own files, the script boots the stack twice. Each
 boot uses a scratch copy under `test-results/dev-stack-work` and its own compose
 project, and is torn down afterwards:
 
@@ -329,16 +329,20 @@ passing. With the pre-#995 `pnpm-deps.sh`, the upgrade case serves `/trending` a
 500 and fails at the readiness timeout (11m49s in all). A failing boot therefore costs up to
 `readiness_timeout`.
 
-The suite drives docker, but AIDEV runs a container project's suites under
-`docker run --network none` with no docker socket. So inside the gate it can only
-report a skipped "could not run" case naming the applicable files. Run it on a
-docker host (`DENSER_DEV_STACK_BASE=<rev>` picks the base). Set `AIDEV_HOST_CHECKOUT`
-when the daemon sees the checkout at a different path.
+The script drives docker, and AIDEV runs a container project's suites under
+`docker run --network none` with no docker socket, where it could only report a
+skipped "could not run" case. So it is no gate suite since #1432; `full` is at
+AIDEV's eight-suite ceiling, and a `docker: true` binding (aidev#14527) would need a
+ninth and is not handed the checkout's host path. Every workflow's live dev stack
+(`aidev project devstack`) boots the candidate's tree. Run the script on a docker
+host for the cold and upgrade boots (`DENSER_DEV_STACK_BASE=<rev>` picks the base).
+Set `AIDEV_HOST_CHECKOUT` when the daemon sees the checkout at a different path.
 
 ## Test stack (`sandbox.compose`) and the `full` slot
 
 `full` runs `unit`, `static`, `fixture_e2e` (with its shards `fixture_e2e_shard_<k>`),
-`wallet_fixture`, `dev_stack` (above) and the advisory `live_e2e`, in that order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
+`wallet_fixture`, then the advisory `live_e2e` and the advisory `lighthouse_fixture`
+(below), in that order. AIDEV starts the stack (`.aidev/test-stack.compose.yml`) lazily, right
 before the first `stack: true` suite. Only `live_e2e` declares one, so every
 suite before it runs with no stack up, under `--network none`.
 
@@ -463,7 +467,7 @@ held until an operator approves it.
   it, by deleting the line in a change of its own, once the test is fixed. The
   ledger is empty until someone adds an entry.
 
-## Deterministic Lighthouse pass (`system` slot)
+## Deterministic Lighthouse pass (`lighthouse_fixture`)
 
 The integration site's Lighthouse check (`stack/integration/lighthouse.sh`) measures
 the live site against the live Hive API and `images.hive.blog`, whose latency and
@@ -473,13 +477,16 @@ Lighthouse (13.5.0, mobile, median of 5 runs), on production builds of this tree
 from recorded data, so two passes differ only by the code and the host's CPU.
 
 ```bash
-aidev test run --slot system                      # build, measure, compare with the baseline
+aidev test run --slot full --suite lighthouse_fixture   # build, measure, compare with the baseline
 .aidev/run-lighthouse-fixture.sh --route /blog/trending --runs 1   # in the image, narrowed
 ```
 
-It is bound to `system` because AIDEV's slot names are fixed (there is no `perf`
-slot) and no workflow phase requests `system` for a project: it never gates, and
-it is not part of `quick` or `full`. It takes about 8 minutes (both builds with
+It is the last suite of `full` (#1432), `phase: after` because its builds rewrite
+`apps/*/.next`, which the earlier suites build and the stack serves, and `mode:
+advisory`: a Lighthouse score depends on the host's load, so its result is recorded
+(Test Health's `system` tier) and never fails the slot until it has a week of passes on
+the fleet. Until #1432 it was the `system` slot's only suite, which AIDEV never runs
+for a project. It takes about 8 minutes (both builds with
 next's build cache warm, then 30 Lighthouse runs of about 14 s each, 3 minutes more
 than the 18 of 3 runs per route); a cold build cache adds a few. Each route's median
 also carries the paints the browser observed (`observed-first-contentful-paint`,

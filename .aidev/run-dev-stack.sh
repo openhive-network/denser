@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# The `dev_stack` suite of the full slot (#996): boots the live dev stack
-# (.aidev/dev-stack.compose.yml) from the candidate, as no other suite does, and
-# checks it serves. #990 (Next 16) passed every other gate while an existing dev
-# stack broke on it (#995).
+# The dev stack check (#996), run by hand on a docker host since #1432 (it was
+# the full slot's `dev_stack` suite): boots the live dev stack
+# (.aidev/dev-stack.compose.yml) from the candidate and checks it serves. #990
+# (Next 16) passed every other gate while an existing dev stack broke on it (#995).
 #
 # Applicable only when the candidate changes what the dev stack is made of (see
 # applies() below); otherwise one skipped "not applicable" case, at no cost. The
@@ -31,10 +31,10 @@
 # properties).
 #
 # Needs a docker daemon that sees the checkout (AIDEV_HOST_CHECKOUT or
-# DENSER_DEV_CHECKOUT when its path there differs from $PWD) and git. AIDEV runs
-# a container project's suites under `docker run --network none` with no docker
-# socket, so there the suite reports a skipped case saying it could not run;
-# run it on a docker host:
+# DENSER_DEV_CHECKOUT when its path there differs from $PWD) and git; without a
+# daemon it reports a skipped case saying it could not run. AIDEV runs a container
+# project's suites under `docker run --network none` with no docker socket, where
+# it could only skip, so it is no gate suite. Run it on a docker host:
 #
 #   .aidev/run-dev-stack.sh
 #   DENSER_DEV_STACK_BASE=origin/develop .aidev/run-dev-stack.sh
