@@ -3,7 +3,13 @@ import type { BeekeeperProvider as IBeekeeperProvider } from '@hiveio/wax-signer
 import type { IBeekeeperInstance, IBeekeeperSession } from '@hiveio/beekeeper';
 
 import { getLogger } from '@hive/ui/lib/logging';
-import { ENCRYPTED_MEMO_MARKER, toSnapMemoLayout, toStandardMemoLayout } from '@smart-signer/lib/memo-layout';
+import {
+  ENCRYPTED_MEMO_MARKER,
+  requireEncryptedMemo,
+  toSnapMemoLayout,
+  toStandardMemoLayout
+} from '@smart-signer/lib/memo-layout';
+import { snapWritesStandardMemoLayout } from '@smart-signer/lib/metamask-snap-version';
 
 const logger = getLogger('app');
 
@@ -18,13 +24,17 @@ export function stripEncryptedMemoMarker(memo: string): string {
 
 export type MemoEncryptionProvider = Pick<AEncryptionProvider, 'encryptData' | 'decryptData'>;
 
-/** Encrypts `memo` for `toAccountMemoPublicKey` through a provider that doesn't strip the `#` marker itself. */
+/**
+ * Encrypts `memo` for `toAccountMemoPublicKey` through a provider that doesn't strip the `#` marker itself.
+ *
+ * @throws {EmptyEncryptedMemoError} when the provider returns no ciphertext.
+ */
 export async function encryptMemoWithProvider(
   provider: MemoEncryptionProvider,
   toAccountMemoPublicKey: TPublicKey,
   memo: string
 ): Promise<string> {
-  return provider.encryptData(stripEncryptedMemoMarker(memo), toAccountMemoPublicKey);
+  return requireEncryptedMemo(await provider.encryptData(stripEncryptedMemoMarker(memo), toAccountMemoPublicKey));
 }
 
 /** Decrypts `encodedMemo` through a provider that doesn't re-prepend the `#` marker itself. */
@@ -36,21 +46,33 @@ export async function decryptMemoWithProvider(
 }
 
 /**
- * Encrypts `memo` through the Hive MetaMask snap and returns it as a standard Hive memo
- * (see `memo-layout`): the snap's own output is the right ciphertext from the sender's memo
- * key to `toAccountMemoPublicKey`, in a byte layout no other wallet reads.
+ * Encrypts `memo` through the Hive MetaMask snap at `snapVersion` and returns a standard Hive memo
+ * (see `memo-layout`). A snap before 1.8.0 returns the right ciphertext in a byte layout no other
+ * wallet reads, so its output is reordered; a later snap's is returned as it is.
  */
 export async function encryptMemoWithSnap(
   provider: MemoEncryptionProvider,
+  snapVersion: string,
   toAccountMemoPublicKey: TPublicKey,
   memo: string
 ): Promise<string> {
-  return toStandardMemoLayout(await encryptMemoWithProvider(provider, toAccountMemoPublicKey, memo));
+  const encrypted = await encryptMemoWithProvider(provider, toAccountMemoPublicKey, memo);
+  return snapWritesStandardMemoLayout(snapVersion) ? encrypted : toStandardMemoLayout(encrypted);
 }
 
-/** Decrypts a memo in either layout through the Hive MetaMask snap, which only parses its own. */
-export async function decryptMemoWithSnap(provider: MemoEncryptionProvider, encodedMemo: string): Promise<string> {
-  return decryptMemoWithProvider(provider, toSnapMemoLayout(encodedMemo));
+/**
+ * Decrypts a memo in either layout through the Hive MetaMask snap at `snapVersion`. A snap before
+ * 1.8.0 only parses its own layout, so the memo is reordered for it; a later snap reads both.
+ */
+export async function decryptMemoWithSnap(
+  provider: MemoEncryptionProvider,
+  snapVersion: string,
+  encodedMemo: string
+): Promise<string> {
+  return decryptMemoWithProvider(
+    provider,
+    snapWritesStandardMemoLayout(snapVersion) ? encodedMemo : toSnapMemoLayout(encodedMemo)
+  );
 }
 
 /** Caches an async factory's result; a rejection isn't cached, so the next call retries. */
@@ -126,14 +148,13 @@ async function withEphemeralMemoProvider<T>(
 
 /**
  * Decrypts a `#`-prefixed memo with a user-supplied MEMO WIF; re-prepends the marker.
- * Also reads the snap's layout, so a memo sent with an earlier MetaMask build decodes too.
+ * wax reads the legacy layout too, so a memo sent through MetaMask snap 1.6/1.7 decodes as well.
  */
 export async function decryptMemoWithPrivateKey(
   memoPrivateKeyWif: string,
   encodedMemo: string
 ): Promise<string> {
-  const standardMemo = toStandardMemoLayout(encodedMemo);
-  return withEphemeralMemoProvider(memoPrivateKeyWif, (provider) => decryptMemoWithProvider(provider, standardMemo));
+  return withEphemeralMemoProvider(memoPrivateKeyWif, (provider) => decryptMemoWithProvider(provider, encodedMemo));
 }
 
 /** Encrypts a memo with a user-supplied MEMO WIF for a recipient's MEMO public key; strips the marker first. */

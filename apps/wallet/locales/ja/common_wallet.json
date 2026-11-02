@@ -496,6 +496,7 @@
     "encrypt_memo_with_peakvault": "Peak Vaultで暗号化",
     "encrypt_memo_with_metamask": "MetaMaskで暗号化",
     "encrypt_memo_error": "MEMOの暗号化中にエラーが発生しました。秘密鍵が無効か、受信者アカウントが見つかりませんでした。",
+    "metamask_snap_outdated": "MetaMask の Hive Wallet スナップのバージョンは {{installed}} で、このサイトに必要な {{required}} より古いです。MetaMask でスナップを更新してから、もう一度お試しください。",
     "request_id": "リクエストID",
     "cancel_power_down": "パワーダウンをキャンセル",
     "transaction_success": "取引が完了しました",

@@ -7,10 +7,12 @@ const SILENT_LOGGER_MODULE =
   'data:text/javascript,const noop = () => {}; export const getLogger = () => ({ error: noop, warn: noop, info: noop });';
 // Under node's type stripping the `@smart-signer/` alias does not resolve.
 const MEMO_LAYOUT_MODULE = new URL('./memo-layout.ts', import.meta.url).href;
+const SNAP_VERSION_MODULE = new URL('./metamask-snap-version.ts', import.meta.url).href;
 registerHooks({
   resolve(specifier, context, nextResolve) {
     if (specifier === '@hive/ui/lib/logging') return { url: SILENT_LOGGER_MODULE, shortCircuit: true };
     if (specifier === '@smart-signer/lib/memo-layout') return { url: MEMO_LAYOUT_MODULE, shortCircuit: true };
+    if (specifier === '@smart-signer/lib/metamask-snap-version') return { url: SNAP_VERSION_MODULE, shortCircuit: true };
     return nextResolve(specifier, context);
   }
 });
@@ -25,7 +27,7 @@ const {
   encryptMemoWithSnap,
   stripEncryptedMemoMarker
 } = await import('./memo-crypto.ts');
-const { MemoLayoutError } = await import('./memo-layout.ts');
+const { EmptyEncryptedMemoError, MemoLayoutError } = await import('./memo-layout.ts');
 
 /**
  * Generated key pairs of no real account:
@@ -70,6 +72,17 @@ describe('memo-crypto: encrypt/decrypt with a MEMO private key', () => {
     assert.equal(await decryptMemoWithPrivateKey(RECIPIENT_MEMO_WIF, SNAP_LAYOUT_MEMO), '#hello');
     assert.equal(await decryptMemoWithPrivateKey(RECIPIENT_MEMO_WIF, STANDARD_LAYOUT_MEMO), '#hello');
   });
+
+  // Beekeeper before hive/beekeeper#48 truncated memos of 494 characters and more.
+  for (const length of [494, 1000, 2048]) {
+    it(`round-trips a ${length}-character memo`, async () => {
+      const memo = '#' + 'memo text '.repeat(Math.ceil(length / 10)).slice(0, length);
+      const encrypted = await encryptMemoWithPrivateKey(SENDER_MEMO_WIF, RECIPIENT_MEMO_PUBLIC_KEY, memo);
+
+      assert.match(encrypted, BASE58_CIPHERTEXT);
+      assert.equal(await decryptMemoWithPrivateKey(RECIPIENT_MEMO_WIF, encrypted), memo);
+    });
+  }
 
   it('rejects a key that is neither party of the memo', async () => {
     const encrypted = await encryptMemoWithPrivateKey(SENDER_MEMO_WIF, RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
@@ -187,9 +200,27 @@ describe('memo-crypto: # marker around a pass-through provider (MetaMask path)',
     await assert.rejects(encryptMemoWithProvider(provider, RECIPIENT_MEMO_PUBLIC_KEY, '#hello'), /snap rejected/);
     await assert.rejects(decryptMemoWithProvider(provider, '#olleh'), /snap rejected/);
   });
+
+  for (const emptyResult of ['', '#', '# ']) {
+    it(`rejects an encryption that returned ${JSON.stringify(emptyResult)}`, async () => {
+      const provider = {
+        encryptData: async () => emptyResult,
+        decryptData: async () => 'hello'
+      };
+
+      await assert.rejects(
+        encryptMemoWithProvider(provider, RECIPIENT_MEMO_PUBLIC_KEY, '#hello'),
+        EmptyEncryptedMemoError
+      );
+      await assert.rejects(
+        encryptMemoWithSnap(provider, '1.8.0', RECIPIENT_MEMO_PUBLIC_KEY, '#hello'),
+        EmptyEncryptedMemoError
+      );
+    });
+  }
 });
 
-/** Stands in for the Hive MetaMask snap: returns `SNAP_LAYOUT_MEMO` and decrypts only that. */
+/** Stands in for the Hive MetaMask snap 1.6/1.7: returns `SNAP_LAYOUT_MEMO` and decrypts only that. */
 const createSnapProvider = () => {
   const received: { encrypt?: [unknown, string]; decrypt?: string } = {};
   const provider = {
@@ -206,11 +237,11 @@ const createSnapProvider = () => {
   return { provider, received };
 };
 
-describe('memo-crypto: the Hive MetaMask snap', () => {
+describe('memo-crypto: the Hive MetaMask snap before 1.8.0', () => {
   it('encrypts the plaintext without its # for the recipient memo key, and returns a standard memo', async () => {
     const { provider, received } = createSnapProvider();
 
-    const encrypted = await encryptMemoWithSnap(provider, RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
+    const encrypted = await encryptMemoWithSnap(provider, '1.7.0', RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
 
     assert.deepEqual(received.encrypt, ['hello', RECIPIENT_MEMO_PUBLIC_KEY]);
     assert.equal(encrypted, STANDARD_LAYOUT_MEMO);
@@ -220,21 +251,62 @@ describe('memo-crypto: the Hive MetaMask snap', () => {
   it('hands the snap a standard memo, # included, in the layout it parses', async () => {
     const { provider, received } = createSnapProvider();
 
-    assert.equal(await decryptMemoWithSnap(provider, STANDARD_LAYOUT_MEMO), '#hello');
+    assert.equal(await decryptMemoWithSnap(provider, '1.6.0', STANDARD_LAYOUT_MEMO), '#hello');
     assert.equal(received.decrypt, SNAP_LAYOUT_MEMO);
   });
 
   it('hands the snap a memo already in its layout unchanged', async () => {
     const { provider, received } = createSnapProvider();
 
-    assert.equal(await decryptMemoWithSnap(provider, SNAP_LAYOUT_MEMO), '#hello');
+    assert.equal(await decryptMemoWithSnap(provider, '1.6.0', SNAP_LAYOUT_MEMO), '#hello');
     assert.equal(received.decrypt, SNAP_LAYOUT_MEMO);
   });
 
   it('rejects text that is not an encrypted memo before asking the snap', async () => {
     const { provider, received } = createSnapProvider();
 
-    await assert.rejects(decryptMemoWithSnap(provider, '#not a memo'), MemoLayoutError);
+    await assert.rejects(decryptMemoWithSnap(provider, '1.6.0', '#not a memo'), MemoLayoutError);
     assert.equal(received.decrypt, undefined);
+  });
+});
+
+/** Stands in for the Hive MetaMask snap 1.8.0: returns `STANDARD_LAYOUT_MEMO` and decrypts either layout. */
+const createStandardLayoutSnapProvider = () => {
+  const received: { encrypt?: [unknown, string]; decrypt?: string } = {};
+  const provider = {
+    encryptData: async (buffer: unknown, recipient: string) => {
+      received.encrypt = [buffer, recipient];
+      return STANDARD_LAYOUT_MEMO;
+    },
+    decryptData: async (buffer: string) => {
+      received.decrypt = buffer;
+      if (buffer !== STANDARD_LAYOUT_MEMO && buffer !== SNAP_LAYOUT_MEMO) {
+        throw new Error('Could not load the crypto memo content from given string');
+      }
+      return 'hello';
+    }
+  };
+  return { provider, received };
+};
+
+describe('memo-crypto: the Hive MetaMask snap 1.8.0 and later', () => {
+  for (const snapVersion of ['1.8.0', '1.9.2', '2.0.0']) {
+    it(`returns what snap ${snapVersion} encrypted unchanged`, async () => {
+      const { provider, received } = createStandardLayoutSnapProvider();
+
+      const encrypted = await encryptMemoWithSnap(provider, snapVersion, RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
+
+      assert.deepEqual(received.encrypt, ['hello', RECIPIENT_MEMO_PUBLIC_KEY]);
+      assert.equal(encrypted, STANDARD_LAYOUT_MEMO);
+    });
+  }
+
+  it('hands the snap a memo of either layout unchanged', async () => {
+    for (const memo of [STANDARD_LAYOUT_MEMO, SNAP_LAYOUT_MEMO]) {
+      const { provider, received } = createStandardLayoutSnapProvider();
+
+      assert.equal(await decryptMemoWithSnap(provider, '1.8.0', memo), '#hello');
+      assert.equal(received.decrypt, memo);
+    }
   });
 });
