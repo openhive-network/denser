@@ -14,6 +14,7 @@ import {
 } from '@ui/components';
 import { encryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
 import { loadNativeMemoSigner } from '@smart-signer/lib/load-native-memo-signer';
+import { OutdatedMetaMaskSnapError } from '@smart-signer/lib/metamask-snap-version';
 import type { SignerTool } from '@smart-signer/lib/signer/get-signer';
 import { LoginType } from '@smart-signer/types/common';
 import { getAccount } from '@transaction/lib/hive-api';
@@ -107,7 +108,14 @@ const EncryptMemoDialog = ({
       onEncrypted(encrypted);
     } catch (error) {
       logger.error(error, 'Error encrypting memo with native signer');
-      setError(t('transfers_page.encrypt_memo_error'));
+      setError(
+        error instanceof OutdatedMetaMaskSnapError
+          ? t('transfers_page.metamask_snap_outdated', {
+              installed: error.installedVersion,
+              required: error.requiredVersion
+            })
+          : t('transfers_page.encrypt_memo_error')
+      );
     } finally {
       setLoading(false);
     }

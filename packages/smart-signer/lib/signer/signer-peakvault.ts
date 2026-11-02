@@ -5,6 +5,7 @@ import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import PeakVaultProvider from '@hiveio/wax-signers-peakvault';
+import { requireEncryptedMemo } from '@smart-signer/lib/memo-layout';
 const logger = getLogger('app');
 
 declare global {
@@ -81,7 +82,7 @@ export class SignerPeakvault extends Signer {
    */
   async encryptData({ toAccountMemoPublicKey, memo }: EncryptMemo): Promise<string> {
     const provider = PeakVaultProvider.for(this.username, 'memo');
-    return provider.encryptData(memo, toAccountMemoPublicKey);
+    return requireEncryptedMemo(await provider.encryptData(memo, toAccountMemoPublicKey));
   }
 
   async decryptData(encodedMemo: string): Promise<string> {
