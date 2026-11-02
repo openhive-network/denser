@@ -23,7 +23,7 @@ const POSTING_PUBLIC_KEY = 'STM5J5fKpBEfiFEANpk321mLT3oNTZ4xTW4Vq8E33eA3zBSWRbVi
 const UNKNOWN_WIF = '5Jg6Um6AvJZ886UWQnNBfqScNo9f8PtGWecXo7gZS29FoVgektM';
 
 const SAFE_STORAGE_PASSWORD = 'fixture-password';
-const POSTING_KEY_ERROR = "The wallet needs your active key; a posting key can't sign transfers";
+const ACTIVE_KEY_ERROR = "This key doesn't have active authority. The wallet needs your active key to sign this";
 const INVALID_CREDENTIALS = 'Invalid credentials';
 
 let stub: Server;
@@ -76,7 +76,7 @@ test.describe('Safe-storage sign-in with a key of the wrong role', () => {
     const loginForm = new LoginForm(page);
     await submitSafeStorageForm(loginForm, POSTING_WIF);
 
-    await expect(loginForm.wifInputErrorMessage).toHaveText(POSTING_KEY_ERROR);
+    await expect(loginForm.wifInputErrorMessage).toHaveText(ACTIVE_KEY_ERROR);
     await expect(loginForm.loginFormHeader).toBeVisible();
     await expect(loginForm.wifInput).toHaveValue('');
     await expect(loginForm.usernameInput).toHaveValue(STUB_ACCOUNT);
@@ -89,7 +89,7 @@ test.describe('Safe-storage sign-in with a key of the wrong role', () => {
     const loginForm = new LoginForm(page);
     await submitSafeStorageForm(loginForm, UNKNOWN_WIF);
 
-    await expect(loginForm.wifInputErrorMessage).toHaveText(POSTING_KEY_ERROR, { timeout: HYDRATION_TIMEOUT });
+    await expect(loginForm.wifInputErrorMessage).toHaveText(ACTIVE_KEY_ERROR, { timeout: HYDRATION_TIMEOUT });
     await expect(loginForm.loginFormHeader).toBeVisible();
     await expect(loginForm.wifInput).toHaveValue('');
     await expect(loginForm.loginDialog).not.toContainText(INVALID_CREDENTIALS);

@@ -118,7 +118,7 @@
       "no_wif_key": "Aucune clé WIF",
       "password_required": "Le mot de passe est requis",
       "wif_required": "La clé WIF est requise",
-      "posting_key_for_active": "Le portefeuille a besoin de votre clé active ; une clé de publication ne peut pas signer de transferts",
+      "key_without_active_authority": "Cette clé n'a pas l'autorité active. Le portefeuille a besoin de votre clé active pour signer ceci",
       "active_key_for_posting": "Cette clé n'a pas l'autorité de publication. La connexion au blog nécessite la clé de publication"
     },
     "signin_with_keychain": "Extension Hive Keychain",
