@@ -63,6 +63,10 @@ export function Autocompleter({
     setIsOpen(true);
     onChange(next);
   };
+  const pickSuggestion = (username: string) => {
+    setIsOpen(false);
+    onChange(username);
+  };
   const handleInputBlur = (event: FocusEvent<HTMLInputElement>) => {
     if (!autocompleteRef.current?.contains(event.relatedTarget)) setIsOpen(false);
   };
@@ -136,10 +140,10 @@ export function Autocompleter({
               key={item.username}
               value={item.username}
               className="p-0"
-              onSelect={() => onChange(item.username)}
+              onSelect={() => pickSuggestion(item.username)}
             >
               <div
-                onClick={() => onChange(item.username)}
+                onClick={() => pickSuggestion(item.username)}
                 className="w-full truncate px-2 py-1 even:bg-background-tertiary"
               >
                 {`${item.username} (${item.about})`}

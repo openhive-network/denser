@@ -4,7 +4,8 @@ import Big from 'big.js';
 const RC_PER_BILLION = new Big(1_000_000_000);
 /** One raw RC in billions: the input's finest step. */
 export const RC_INPUT_DECIMALS = 9;
-const RC_SUMMARY_DECIMALS = 2;
+/** Decimals of RC amounts shown for reading, in the form and in the delegations list alike. */
+export const RC_SUMMARY_DECIMALS = 2;
 
 /** Parses the amount typed in billions of RC; anything that is not a non-negative number is 0. */
 export const parseRcBillions = (input: string): Big => {

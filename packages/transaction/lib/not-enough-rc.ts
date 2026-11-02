@@ -44,3 +44,16 @@ export function findInsufficientDelegatableRc(error: unknown): InsufficientDeleg
   const match = INSUFFICIENT_DELEGATABLE_RC_PATTERN.exec(describeError(error));
   return match ? { current: Number(match[1]), needed: Number(match[2]) } : null;
 }
+
+// hived's delegate_rc check on a non-zero delegation below the minimum, a third of the account
+// creation fee in VESTS.
+const RC_DELEGATION_BELOW_MINIMUM_PATTERN = /Cannot delegate less than (\d+) rc/i;
+
+/**
+ * The minimum, in raw RC, that a `delegate_rc` was rejected for staying below, or null when `error`
+ * is not that rejection.
+ */
+export function findRcDelegationMinimum(error: unknown): bigint | null {
+  const match = RC_DELEGATION_BELOW_MINIMUM_PATTERN.exec(describeError(error));
+  return match ? BigInt(match[1]) : null;
+}

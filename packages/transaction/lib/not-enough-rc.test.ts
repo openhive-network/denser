@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { findInsufficientDelegatableRc, findNotEnoughRc } from './not-enough-rc';
+import { findInsufficientDelegatableRc, findNotEnoughRc, findRcDelegationMinimum } from './not-enough-rc';
 import { findMissingAuthority } from './missing-authority';
 
 // The shape of the node's answer to a witness vote by an account short of RC, as wax rethrows it.
@@ -71,5 +71,20 @@ describe('findInsufficientDelegatableRc', () => {
     expect(findNotEnoughRc(rejection)).to.equal(null);
     expect(findInsufficientDelegatableRc(waxAssertionError(notEnoughRcAnswer))).to.equal(null);
     expect(findInsufficientDelegatableRc(undefined)).to.equal(null);
+  });
+});
+
+describe('findRcDelegationMinimum', () => {
+  it('reads the minimum from the delegate_rc rejection', () => {
+    const rejection = waxAssertionError('[Chain Error] Cannot delegate less than 1604473654 rc');
+    expect(findRcDelegationMinimum(rejection)).to.equal(BigInt(1604473654));
+  });
+
+  it('returns null for other delegate_rc rejections', () => {
+    const shortfall = waxAssertionError(
+      '[Chain Error] Account guest4test has insufficient RC (have 282373771, needs 5980094479)'
+    );
+    expect(findRcDelegationMinimum(shortfall)).to.equal(null);
+    expect(findRcDelegationMinimum(undefined)).to.equal(null);
   });
 });

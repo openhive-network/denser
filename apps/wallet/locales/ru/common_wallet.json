@@ -224,7 +224,10 @@
     "start_power_down": "Начато уменьшение Силы Голоса на {{amount}}",
     "stop_power_down": "Уменьшение Силы Голоса остановлено",
     "delegated_tooltip": "HIVE POWER, делегированная этим аккаунтом или этому аккаунту",
-    "previous_transfers": "Предыдущие переводы",
+    "previous_transfers_one": "{{count}} предыдущий перевод",
+    "previous_transfers_few": "{{count}} предыдущих перевода",
+    "previous_transfers_many": "{{count}} предыдущих переводов",
+    "previous_transfers_other": "{{count}} предыдущего перевода",
     "following": "Подписки",
     "potential_author_rewards_info": "Потенциальные вознаграждения ещё не зачислены на баланс. В течение 7 дней сообщество определяет окончательное распределение вознаграждений путём голосования.",
     "potential_author_rewards_title": "Потенциальные авторские вознаграждения за: ",
@@ -462,6 +465,7 @@
     "page_of": "Страница {{page}} из {{total}}",
     "revoke": "Отозвать",
     "revoke_rc_confirm": "Вы уверены, что хотите отозвать делегирование RC для @{{account}}?",
+    "revoke_rc_success": "Делегирование RC аккаунту @{{account}} отозвано.",
     "confirm_revoke": "Подтвердите делегирование Vesting Shares",
     "revoke_failed": "Не удалось отозвать делегирование"
   },
@@ -618,6 +622,10 @@
       "creation_adjustment_note": "{{reserved}} млрд RC — это поправка за создание аккаунтов, их нельзя делегировать.",
       "existing_delegation_note": "Сейчас вы делегируете {{existing}} млрд RC аккаунту {{account}}. Новая сумма заменит её и может составлять до {{max}} млрд RC.",
       "insufficient_rc": "Недостаточно RC для делегирования: у вас {{current}} млрд, для этого делегирования нужно {{needed}} млрд.",
+      "minimum_note": "Минимальное делегирование — {{min}} млрд RC.",
+      "minimum_unreachable": "Минимальное делегирование — {{min}} млрд RC, больше, чем {{max}} млрд RC, которые вы можете делегировать сейчас.",
+      "below_minimum_error": "Блокчейн не принимает делегирование RC меньше {{min}} млрд RC.",
+      "success": "Делегировано {{amount}} млрд RC аккаунту {{account}}.",
       "submit": "Делегировать RC"
     }
   },

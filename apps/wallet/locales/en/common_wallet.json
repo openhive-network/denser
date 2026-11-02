@@ -217,7 +217,8 @@
     "start_power_down": "Start power down of {{amount}}",
     "stop_power_down": "Stop power down",
     "delegated_tooltip": "HIVE POWER delegated to/from this account",
-    "previous_transfers": "Previous transfers",
+    "previous_transfers_one": "{{count}} previous transfer",
+    "previous_transfers_other": "{{count}} previous transfers",
     "following": "Following",
     "potential_author_rewards_info": "Potential rewards haven't been added to balance yet. During the 7-day period, the community decides on the final rewards distribution through voting.",
     "potential_author_rewards_title": "Potential Author Rewards from: ",
@@ -451,6 +452,7 @@
     "page_of": "Page {{page}} of {{total}}",
     "revoke": "Revoke",
     "revoke_rc_confirm": "Are you sure you want to revoke RC delegation to @{{account}}?",
+    "revoke_rc_success": "Revoked the RC delegation to @{{account}}.",
     "confirm_revoke": "Confirm Delegate Vesting Shares",
     "revoke_failed": "Failed to revoke delegation"
   },
@@ -605,6 +607,10 @@
       "creation_adjustment_note": "{{reserved}} bil RC is your account creation adjustment and can't be delegated.",
       "existing_delegation_note": "You delegate {{existing}} bil RC to {{account}} now. The new amount replaces it and can be up to {{max}} bil RC.",
       "insufficient_rc": "Not enough delegatable RC: you have {{current}} bil, this delegation needs {{needed}} bil.",
+      "minimum_note": "Minimum delegation is {{min}} bil RC.",
+      "minimum_unreachable": "Minimum delegation is {{min}} bil RC, more than the {{max}} bil RC you can delegate now.",
+      "below_minimum_error": "The chain does not accept an RC delegation below {{min}} bil RC.",
+      "success": "Delegated {{amount}} bil RC to {{account}}.",
       "submit": "Delegate RC"
     }
   },

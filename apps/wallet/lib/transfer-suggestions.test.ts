@@ -21,10 +21,11 @@ const transfer = (from: string, to: string) =>
   historyRow('transfer_operation', { from, to, amount: hive('1000'), memo: '' });
 
 // The rows are the API's JSON, which HiveOperation types more strictly (dates, required asset fields).
-type Suggest = (username: string, t: (key: string) => string, history?: object[], following?: object[]) =>
+type Translate = (key: string, options?: { count?: number }) => string;
+type Suggest = (username: string, t: Translate, history?: object[], following?: object[]) =>
   { username: string; about: string }[];
 const suggest = createListWithSuggestions as unknown as Suggest;
-const t = (key: string) => key;
+const t: Translate = (key, options) => (options?.count === undefined ? key : `${options.count} ${key}`);
 
 describe('createListWithSuggestions', () => {
   it('suggests the counterparties of transfers, most frequent first, then followed accounts', () => {

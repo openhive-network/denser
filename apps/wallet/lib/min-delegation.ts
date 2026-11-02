@@ -19,6 +19,21 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 export const minDelegationHiveSatoshis = (accountCreationFee: { amount: string }): bigint =>
   BigInt(accountCreationFee.amount) / MIN_DELEGATION_FEE_DIVISOR;
 
+/**
+ * Raw RC of the smallest non-zero `delegate_rc` the chain accepts: the HP delegation minimum in VESTS
+ * at the global vesting share price, rounded down as hived does (delegate_rc_evaluator, rc_operations.cpp).
+ * Null while the chain holds no vesting fund to price VESTS with.
+ */
+export const minRcDelegationRaw = (
+  accountCreationFee: { amount: string },
+  totalVestingShares: { amount: string },
+  totalVestingFundHive: { amount: string }
+): bigint | null => {
+  const fund = BigInt(totalVestingFundHive.amount);
+  if (fund === BigInt(0)) return null;
+  return (minDelegationHiveSatoshis(accountCreationFee) * BigInt(totalVestingShares.amount)) / fund;
+};
+
 // wax ends the message of a chain exception it does not type with the exception's JSON after this.
 const RAW_EXCEPTION_MARKER = 'Original deserialization data: ';
 // Wrappers between the broadcast and the dialog keep wax's error as a cause.

@@ -25,6 +25,11 @@ const DIALOG_NAME = 'Delegate RC';
 const MISSING_ACCOUNT = 'quest4test1zz';
 /** 750 billion RC, as the stub's `vests` asset amount: leaves 250 billion of the max delegatable. */
 const CREATION_ADJUSTMENT = { amount: '750000000000', precision: 6, nai: '@@000000037' };
+/**
+ * The chain's smallest RC delegation at the stub's 3.000 HIVE account creation fee and vesting share
+ * price: 1.000 HIVE in VESTS, 1,833,333,333 RC.
+ */
+const MIN_DELEGATION_NOTE = 'Minimum delegation is 1.83 bil RC.';
 /** The stub's head block time, as a manabar's last_update_time: its current_mana has not regenerated. */
 const HEAD_BLOCK_TIME = 1_790_856_000;
 
@@ -309,5 +314,52 @@ test.describe('Delegate RC dialog', () => {
 
     await amount.fill('300');
     await expect(amount).toHaveValue('200');
+  });
+
+  test('WALLET-RC-10 — an amount below the chain minimum keeps Delegate RC disabled, and a picked suggestion closes the list', async ({
+    page
+  }) => {
+    await gotoTransfers(page);
+    const { dialog } = await openDelegateRcDialog(page);
+    const recipient = dialog.getByRole('combobox', { name: 'To Account' });
+    const suggestion = dialog.getByRole('option', { name: `${STUB_FOLLOWED} (Following)` });
+    const amount = dialog.getByLabel('RC amount (billions)');
+    const submit = dialog.getByRole('button', { name: DIALOG_NAME, exact: true });
+
+    await expect(dialog.getByText(MIN_DELEGATION_NOTE)).toBeVisible();
+
+    await recipient.fill('stub-fo');
+    await suggestion.click();
+    await expect(recipient).toHaveValue(STUB_FOLLOWED);
+    await expect(suggestion).toBeHidden();
+
+    await amount.fill('1.5');
+    await expect(amount).toHaveAttribute('aria-invalid', 'true');
+    await expect(submit).toBeDisabled();
+
+    await amount.fill('1.9');
+    await expect(amount).toHaveAttribute('aria-invalid', 'false');
+    await expect(submit).toBeEnabled();
+  });
+
+  test('WALLET-RC-11 — when all the delegatable RC is below the minimum the dialog says so and cannot delegate', async ({
+    page
+  }) => {
+    // 999 of the 1000 billion RC are the adjustment: 1 billion delegatable, under the 1.83 billion minimum.
+    rcAccountFields = { max_rc_creation_adjustment: { ...CREATION_ADJUSTMENT, amount: '999000000000' } };
+    await gotoTransfers(page);
+    const { dialog } = await openDelegateRcDialog(page);
+    const submit = dialog.getByRole('button', { name: DIALOG_NAME, exact: true });
+
+    await expect(
+      dialog.getByText('Minimum delegation is 1.83 bil RC, more than the 1.00 bil RC you can delegate now.')
+    ).toBeVisible();
+
+    await dialog.getByLabel('To Account').fill(STUB_FOLLOWED);
+    await dialog.getByRole('button', { name: '100%' }).click();
+    const amount = dialog.getByLabel('RC amount (billions)');
+    await expect(amount).toHaveValue('1');
+    await expect(amount).toHaveAttribute('aria-invalid', 'true');
+    await expect(submit).toBeDisabled();
   });
 });

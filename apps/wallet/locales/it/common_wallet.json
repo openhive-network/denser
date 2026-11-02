@@ -220,7 +220,9 @@
     "start_power_down": "Avvia il power down di {{amount}}",
     "stop_power_down": "Interrompi il power down",
     "delegated_tooltip": "HIVE POWER delegato a/da questo account",
-    "previous_transfers": "Trasferimenti precedenti",
+    "previous_transfers_one": "{{count}} trasferimento precedente",
+    "previous_transfers_many": "{{count}} trasferimenti precedenti",
+    "previous_transfers_other": "{{count}} trasferimenti precedenti",
     "following": "Seguiti",
     "potential_author_rewards_info": "Le ricompense potenziali non sono ancora state aggiunte al saldo. Durante il periodo di 7 giorni, la community decide la distribuzione finale delle ricompense tramite i voti.",
     "potential_author_rewards_title": "Potenziali ricompense da autore da: ",
@@ -456,6 +458,7 @@
     "page_of": "Pagina {{page}} di {{total}}",
     "revoke": "Revoca",
     "revoke_rc_confirm": "Vuoi davvero revocare la delega di RC a @{{account}}?",
+    "revoke_rc_success": "Delega di RC a @{{account}} revocata.",
     "confirm_revoke": "Conferma delega di Vesting Shares",
     "revoke_failed": "Impossibile revocare la delega"
   },
@@ -611,6 +614,10 @@
       "creation_adjustment_note": "{{reserved}} mld RC sono l'adeguamento per la creazione di account e non si possono delegare.",
       "existing_delegation_note": "Ora deleghi {{existing}} mld RC a {{account}}. Il nuovo importo la sostituisce e può arrivare fino a {{max}} mld RC.",
       "insufficient_rc": "RC delegabili insufficienti: ne hai {{current}} mld, questa delega ne richiede {{needed}} mld.",
+      "minimum_note": "La delega minima è di {{min}} mld RC.",
+      "minimum_unreachable": "La delega minima è di {{min}} mld RC, più dei {{max}} mld RC che puoi delegare ora.",
+      "below_minimum_error": "La blockchain non accetta deleghe di RC inferiori a {{min}} mld RC.",
+      "success": "Delegati {{amount}} mld RC a {{account}}.",
       "submit": "Delega RC"
     }
   },
