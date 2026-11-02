@@ -70,7 +70,10 @@ export const useSubscribeMutation = () =>
     ],
     toast: (t, community) => ({
       title: t('communities.toasts.subscribed_title'),
-      description: t('communities.toasts.subscribed_description', { community })
+      description: t('communities.toasts.subscribed_description', {
+        community,
+        interpolation: { escapeValue: false }
+      })
     })
   });
 
@@ -83,6 +86,9 @@ export const useUnsubscribeMutation = () =>
       subscriptions.filter((sub) => sub[0] !== community),
     toast: (t, community) => ({
       title: t('communities.toasts.unsubscribed_title'),
-      description: t('communities.toasts.unsubscribed_description', { community })
+      description: t('communities.toasts.unsubscribed_description', {
+        community,
+        interpolation: { escapeValue: false }
+      })
     })
   });

@@ -47,6 +47,13 @@ export const COMMUNITY_TAG_SUBSCRIBED = 'hive-167922';
 export const COMMUNITY_NAME_SUBSCRIBED = 'LeoFinance';
 
 /**
+ * Title the `communitySubscribeEscapedTitle` / `communityLeaveEscapedTitle`
+ * overlays give COMMUNITY_TAG / COMMUNITY_TAG_SUBSCRIBED: `&` and `/` are
+ * characters i18next HTML-escapes in interpolated values unless told not to.
+ */
+export const COMMUNITY_TITLE_ESCAPABLE = 'Photography & Art/Hive';
+
+/**
  * Community used by the moderation specs (COM-08..13).
  * `hive-160391` is "Blockchain Wizardry" — a community with a rich, stable
  * role list on mainnet (owner / admin=gandalf / mod=gtg "Wizard" / members
