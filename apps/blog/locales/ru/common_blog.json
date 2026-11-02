@@ -523,6 +523,12 @@
     "no_results": "По вашему запросу ничего не найдено",
     "latest_subscribers": "Последние подписчики {{username}}",
     "unmoderated_tag": "Немодерируемый тег",
+    "toasts": {
+      "subscribed_title": "Вы подписались",
+      "subscribed_description": "Вы подписались на сообщество {{community}}.",
+      "unsubscribed_title": "Вы отписались",
+      "unsubscribed_description": "Вы отписались от сообщества {{community}}."
+    },
     "buttons": {
       "subscribe": "Подписаться",
       "new_post": "Новый пост",

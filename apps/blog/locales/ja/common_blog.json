@@ -514,6 +514,12 @@
     "no_results": "検索結果はありません",
     "latest_subscribers": "{{username}}の最新の購読者",
     "unmoderated_tag": "モデレートされていないタグ",
+    "toasts": {
+      "subscribed_title": "購読しました",
+      "subscribed_description": "{{community}} を購読しました。",
+      "unsubscribed_title": "購読を解除しました",
+      "unsubscribed_description": "{{community}} の購読を解除しました。"
+    },
     "buttons": {
       "subscribe": "購読する",
       "new_post": "新規投稿",

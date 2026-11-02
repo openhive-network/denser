@@ -64,10 +64,13 @@ const SubscribeCommunity = ({
               disabled={unsubscribeMutation.isPending || temprary}
               onClick={async () => {
                 try {
-                  await unsubscribeMutation.mutateAsync({ community, username });
+                  await unsubscribeMutation.mutateAsync({ community, username, communityTitle });
                   onIsSubscribed(false);
                 } catch (error) {
-                  handleError(error, { method: 'unsubscribe', params: { community, username } });
+                  handleError(error, {
+                    method: 'unsubscribe',
+                    params: { community, username, communityTitle }
+                  });
                 }
               }}
             >

@@ -557,7 +557,13 @@
       "delegation_below_minimum": "Délégation refusée : le minimum est de {{min}} HP (vous avez tenté {{amount}} HP).",
       "account_check_failed": "Impossible de vérifier le compte. Réessayez plus tard."
     },
-    "confirm_transaction": "Confirmer {{transaction}}",
+    "confirm_title": {
+      "transfers": "Confirmer le transfert vers le compte",
+      "transfer_to_savings": "Confirmer le transfert vers l'épargne",
+      "power_up": "Confirmer le Power Up",
+      "delegate": "Confirmer la délégation au compte",
+      "savings_withdraw": "Confirmer le retrait de l'épargne"
+    },
     "ok": "OK",
     "cancel": "Annuler",
     "from": "De",

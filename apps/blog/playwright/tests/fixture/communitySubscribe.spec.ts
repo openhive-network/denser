@@ -10,6 +10,7 @@ import {
   COMMUNITY_NAME,
   ACTION_SUBSCRIBE,
   TOAST_SUBSCRIBED,
+  TOAST_SUBSCRIBED_PL,
   gotoCommunityLoggedIn
 } from '../support/communityContext';
 
@@ -17,9 +18,8 @@ import {
  * §10 — COM-02 — Subscribe to community from the community page.
  *
  *   Wire — custom_json id="community", json: ["subscribe", { community }].
- *   Toast — "You have successfully subscribed to <Community Title>." (Note:
- *           subscribe toast uses *title*; unsubscribe toast uses *tag*.
- *           See use-subscribe-mutations.ts:63 vs :134.)
+ *   Toast — "You have successfully subscribed to <Community Title>." in the
+ *           reader's locale (COM-02-pl checks the Polish one).
  *   UI — `community-subscribe-button` flips out, `community-join-leave-button`
  *        renders (via optimistic `context.subscribed = true` write in
  *        useSubscribeMutation.onSettled).
@@ -56,4 +56,21 @@ test('COM-02 — Subscribe to community via community page', async ({ page }) =>
     page.getByText(TOAST_SUBSCRIBED(COMMUNITY_NAME), { exact: true })
   ).toBeVisible();
   await expect(community.communityJoinedLeaveButton).toBeVisible();
+});
+
+test('COM-02-pl — the subscribe toast is Polish and names the community by its title', async ({
+  page,
+  baseURL
+}) => {
+  await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'pl', url: baseURL ?? '' }]);
+  const broadcast = await installBroadcastInterceptor(page, undefined, {
+    confirmInBlock: true
+  });
+  await gotoCommunityLoggedIn(page, COMMUNITY_TAG);
+
+  const community = new CommunitiesPage(page);
+  await community.communitySubscribeButton.click();
+  await broadcast.waitForCount(1);
+
+  await expect(page.getByText(TOAST_SUBSCRIBED_PL(COMMUNITY_NAME), { exact: true })).toBeVisible();
 });

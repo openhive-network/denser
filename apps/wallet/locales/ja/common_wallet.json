@@ -546,7 +546,13 @@
       "delegation_below_minimum": "委託が拒否されました: 最小額は{{min}} HPです（入力額: {{amount}} HP）。",
       "account_check_failed": "アカウントを確認できませんでした。しばらくしてから再試行してください。"
     },
-    "confirm_transaction": "{{transaction}}の確認",
+    "confirm_title": {
+      "transfers": "アカウントへの送金の確認",
+      "transfer_to_savings": "貯蓄口座への送金の確認",
+      "power_up": "パワーアップの確認",
+      "delegate": "アカウントへの委託の確認",
+      "savings_withdraw": "貯蓄口座からの引き出しの確認"
+    },
     "ok": "OK",
     "cancel": "キャンセル",
     "from": "送金元",
