@@ -359,6 +359,7 @@
     "status_tooltip_not_started": "将于<start/>开始，<end/>结束",
     "status_tooltip_finished": "已于<end/>结束",
     "remaining_days_other": "剩余 {{count}} 天",
+    "duration_days_other": "{{count}} 天",
     "funded": "已资助",
     "not_funded": "未资助",
     "return_proposal_note": "这是基础返还提案：票数低于它的提案不会获得资助。",

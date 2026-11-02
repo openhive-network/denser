@@ -76,9 +76,9 @@ test.describe('Proposal status tooltip', () => {
   }) => {
     await openStatusTooltip(page, baseURL, 'pl');
     // A day with a month name takes the genitive in Polish
-    await expect(page.getByTestId('proposal-date')).toContainText('1 stycznia 2026 - 1 stycznia 2027');
+    await expect(page.getByTestId('proposal-date')).toContainText('1 stycznia 2026 - 1 stycznia 2027 (365 dni)');
 
     await openStatusTooltip(page, baseURL, 'en');
-    await expect(page.getByTestId('proposal-date')).toContainText('January 1, 2026 - January 1, 2027');
+    await expect(page.getByTestId('proposal-date')).toContainText('January 1, 2026 - January 1, 2027 (365 days)');
   });
 });

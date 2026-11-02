@@ -359,6 +359,7 @@
     "status_tooltip_not_started": "<start/> 시작, <end/> 종료",
     "status_tooltip_finished": "<end/> 종료",
     "remaining_days_other": "{{count}}일 남음",
+    "duration_days_other": "{{count}}일",
     "funded": "지원됨",
     "not_funded": "지원 안 됨",
     "return_proposal_note": "기본 반환 제안입니다. 이보다 득표가 적은 제안은 지원받지 못합니다.",
