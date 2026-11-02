@@ -87,8 +87,11 @@ const loggedProbe =
   async (context) => {
     try {
       const result = await probe(context);
-      if (result.supported) logger.debug('API set %s: %s serves it', setId, context.node);
-      else logger.debug('API set %s: %s does not serve it: %s', setId, context.node, result.reason);
+      // `in`, not `supported`: the unit tests type-check without strictNullChecks, which keeps a boolean
+      // discriminant from narrowing.
+      if ('reason' in result) {
+        logger.debug('API set %s: %s does not serve it: %s', setId, context.node, result.reason);
+      } else logger.debug('API set %s: %s serves it', setId, context.node);
       return result;
     } catch (error) {
       logger.debug('API set %s: probing %s failed: %s', setId, context.node, String(error));
