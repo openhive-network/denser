@@ -4,8 +4,10 @@ import type { AuthUser, KeyAuthorityType } from '@hiveio/hb-auth';
 import {
   addedKeyStrictMode,
   registerAddedSafeStorageKey,
+  registerAddedSafeStorageKeyWithin,
   registerSafeStorageKey,
   storedStrictMode,
+  type RevocableSafeStorageClient,
   type SafeStorageClient,
   type SharedKeyLookup
 } from './safe-storage-registration.ts';
@@ -19,10 +21,11 @@ const AUTHORITY_ACCOUNT = 'bob';
  * hb-auth's client as far as registering goes: keeps what was registered, with its Direct
  * Authority Mode, and records the account in authority for a key registered non-strict.
  */
-class FakeSafeStorage implements SafeStorageClient {
-  readonly registered: { keyType: KeyAuthorityType; wif: string; password: string; strict: boolean }[] = [];
+class FakeSafeStorage implements RevocableSafeStorageClient {
+  registered: { keyType: KeyAuthorityType; wif: string; password: string; strict: boolean }[] = [];
   settings: UserSettings | null = null;
   failingKeyTypes: KeyAuthorityType[] = [];
+  unremovableKeyTypes: KeyAuthorityType[] = [];
 
   async register(_username: string, password: string, wif: string, keyType: KeyAuthorityType, strict = true) {
     if (this.failingKeyTypes.includes(keyType)) throw new Error(`refused ${keyType}`);
@@ -51,6 +54,11 @@ class FakeSafeStorage implements SafeStorageClient {
 
   async getUserSettings(): Promise<UserSettings | null> {
     return this.settings;
+  }
+
+  async invalidateExistingKey(_username: string, keyType: KeyAuthorityType) {
+    if (this.unremovableKeyTypes.includes(keyType)) throw new Error(`cannot remove ${keyType}`);
+    this.registered = this.registered.filter((key) => key.keyType !== keyType);
   }
 
   /** As the safe-storage sign-in leaves it */
@@ -112,6 +120,65 @@ describe('registerAddedSafeStorageKey', () => {
     );
 
     assert.equal(storage.registered[0].strict, true);
+  });
+});
+
+describe('registerAddedSafeStorageKeyWithin', () => {
+  const signedOut = new Error('signed out');
+  const ACTIVE_KEY = { username: USERNAME, password: 'password', wif: 'active-wif', keyType: 'active' as const };
+  const registeredKeyTypes = (storage: FakeSafeStorage) => storage.registered.map(({ keyType }) => keyType);
+
+  it('keeps the key added for a session still going', async () => {
+    const storage = FakeSafeStorage.signedIn('posting', true);
+
+    await registerAddedSafeStorageKeyWithin(storage, ACTIVE_KEY, 'posting', lookup().sharedKeyLookup, () => {}, () => {
+      assert.fail('nothing to remove');
+    });
+
+    assert.deepEqual(registeredKeyTypes(storage), ['posting', 'active']);
+  });
+
+  it('removes every key type it added when the session ended meanwhile, and rethrows why', async () => {
+    const storage = FakeSafeStorage.signedIn('posting', true);
+
+    await assert.rejects(
+      registerAddedSafeStorageKeyWithin(
+        storage,
+        ACTIVE_KEY,
+        'posting',
+        lookup(['owner']).sharedKeyLookup,
+        () => {
+          throw signedOut;
+        },
+        () => assert.fail('every key type removable')
+      ),
+      (error) => error === signedOut
+    );
+
+    assert.deepEqual(registeredKeyTypes(storage), ['posting']);
+  });
+
+  it('reports a key type it cannot remove, still rethrowing why the session ended', async () => {
+    const storage = FakeSafeStorage.signedIn('posting', true);
+    storage.unremovableKeyTypes = ['active'];
+    const unremoved: KeyAuthorityType[] = [];
+
+    await assert.rejects(
+      registerAddedSafeStorageKeyWithin(
+        storage,
+        ACTIVE_KEY,
+        'posting',
+        lookup(['owner']).sharedKeyLookup,
+        () => {
+          throw signedOut;
+        },
+        (_error, keyType) => unremoved.push(keyType)
+      ),
+      (error) => error === signedOut
+    );
+
+    assert.deepEqual(unremoved, ['active']);
+    assert.deepEqual(registeredKeyTypes(storage), ['posting', 'active']);
   });
 });
 
