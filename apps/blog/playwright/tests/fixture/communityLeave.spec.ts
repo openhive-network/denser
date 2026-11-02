@@ -7,8 +7,10 @@ import { CommunitiesPage } from '../support/pages/communitiesPage';
 import {
   SUBSCRIBER,
   COMMUNITY_TAG_SUBSCRIBED,
+  COMMUNITY_NAME_SUBSCRIBED,
   ACTION_UNSUBSCRIBE,
   TOAST_UNSUBSCRIBED,
+  TOAST_UNSUBSCRIBED_PL,
   gotoCommunityLoggedIn
 } from '../support/communityContext';
 
@@ -16,9 +18,8 @@ import {
  * §10 — COM-03 — Leave a community via the community page.
  *
  *   Wire — custom_json id="community", json: ["unsubscribe", { community }].
- *   Toast — "You have successfully unsubscribed from hive-XXXXXX." (raw
- *           tag, not title — asymmetric vs the subscribe path, see
- *           use-subscribe-mutations.ts:134).
+ *   Toast — "You have successfully unsubscribed from <title>." in the
+ *           reader's locale (COM-03-pl checks the Polish one).
  *   UI — `community-join-leave-button` disappears, `community-subscribe-button`
  *        renders (via optimistic `context.subscribed = false` write in
  *        useUnsubscribeMutation.onSettled).
@@ -55,9 +56,28 @@ test('COM-03 — Leave community via community page', async ({ page }) => {
   });
 
   await expect(
-    page.getByText(TOAST_UNSUBSCRIBED(COMMUNITY_TAG_SUBSCRIBED), { exact: true })
+    page.getByText(TOAST_UNSUBSCRIBED(COMMUNITY_NAME_SUBSCRIBED), { exact: true })
   ).toBeVisible();
   await expect(community.communitySubscribeButton).toBeVisible();
+});
+
+test('COM-03-pl — the leave toast is Polish and names the community by its title', async ({
+  page,
+  baseURL
+}) => {
+  await page.context().addCookies([{ name: 'NEXT_LOCALE', value: 'pl', url: baseURL ?? '' }]);
+  const broadcast = await installBroadcastInterceptor(page, undefined, {
+    confirmInBlock: true
+  });
+  await gotoCommunityLoggedIn(page, COMMUNITY_TAG_SUBSCRIBED);
+
+  const community = new CommunitiesPage(page);
+  await community.communityJoinedLeaveButton.click();
+  await broadcast.waitForCount(1);
+
+  await expect(
+    page.getByText(TOAST_UNSUBSCRIBED_PL(COMMUNITY_NAME_SUBSCRIBED), { exact: true })
+  ).toBeVisible();
 });
 
 test('COM-03b — Leave stays left with a short note when no block confirms it in time', async ({ page }) => {

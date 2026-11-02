@@ -546,7 +546,13 @@
       "delegation_below_minimum": "代理被拒绝：最低数量为 {{min}} HP（你尝试代理 {{amount}} HP）。",
       "account_check_failed": "无法检查该账户，请稍后重试。"
     },
-    "confirm_transaction": "确认{{transaction}}",
+    "confirm_title": {
+      "transfers": "确认转账到账户",
+      "transfer_to_savings": "确认转入储蓄",
+      "power_up": "确认增加 Hive Power",
+      "delegate": "确认代理给账户",
+      "savings_withdraw": "确认储蓄提款"
+    },
     "ok": "确定",
     "cancel": "取消",
     "from": "从",

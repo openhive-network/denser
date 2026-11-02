@@ -545,7 +545,13 @@
       "delegation_below_minimum": "위임이 거부되었습니다: 최소 금액은 {{min}} HP입니다(시도한 금액: {{amount}} HP).",
       "account_check_failed": "계정을 확인할 수 없습니다. 나중에 다시 시도하세요."
     },
-    "confirm_transaction": "{{transaction}} 확인",
+    "confirm_title": {
+      "transfers": "계정 송금 확인",
+      "transfer_to_savings": "저축 송금 확인",
+      "power_up": "파워 업 확인",
+      "delegate": "계정 위임 확인",
+      "savings_withdraw": "저축 출금 확인"
+    },
     "ok": "확인",
     "cancel": "취소",
     "from": "보낸 사람",

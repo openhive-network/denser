@@ -73,13 +73,14 @@ const submitAmount = async (dialog: Locator, amount: string) => {
   await dialog.getByRole('button', { name: 'Next' }).click();
 };
 
-const confirmDialog = (page: Page) => page.getByRole('dialog', { name: 'Confirm Savings Withdraw' });
+const confirmDialog = (page: Page) => page.getByRole('dialog', { name: 'Confirm Savings Withdrawal' });
 
 test.describe('Transfer from savings broadcast', () => {
   test('WALLET-TX-SAVINGS-OUT-01 — withdrawing HIVE sends it back to the owner', async ({ page }) => {
     const broadcasts = await installBroadcastInterceptor(page);
     const dialog = await openWithdrawDialog(page, /^4\.321 HIVE/, 'Withdraw HIVE');
     await submitAmount(dialog, '4.3');
+    await expect(confirmDialog(page).getByRole('textbox').last()).toHaveValue(String(REQUEST_ID));
     await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
 
     await broadcasts.waitForCount(1);

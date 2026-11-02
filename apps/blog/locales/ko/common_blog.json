@@ -514,6 +514,12 @@
     "no_results": "검색 결과가 없습니다",
     "latest_subscribers": "{{username}}의 최근 구독자",
     "unmoderated_tag": "관리되지 않는 태그",
+    "toasts": {
+      "subscribed_title": "구독함",
+      "subscribed_description": "{{community}} 커뮤니티를 구독했습니다.",
+      "unsubscribed_title": "구독 취소됨",
+      "unsubscribed_description": "{{community}} 커뮤니티 구독을 취소했습니다."
+    },
     "buttons": {
       "subscribe": "구독",
       "new_post": "새 게시물",
