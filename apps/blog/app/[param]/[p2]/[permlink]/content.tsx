@@ -237,7 +237,8 @@ const PostContent = () => {
     enabled: crossedPost
   });
 
-  const { data: suggestionData } = useQuery({
+  // Signed-in readers only: crawlers are never signed in, and similar posts are hivesense's costliest call
+  const { data: similarPosts } = useQuery({
     queryKey: ['suggestions', author, permlink, accountObserver],
     queryFn: async () => {
       const results = await getSimilarPostsByPost({
@@ -250,8 +251,11 @@ const PostContent = () => {
 
       const fullPosts = results?.filter((post): post is Entry => isRenderableSearchEntry(post)) ?? [];
       return fullPosts.length > 0 ? fullPosts : null;
-    }
+    },
+    enabled: user.isLoggedIn
   });
+  // A disabled query keeps its cached data, so a reader who signs out must not see it
+  const suggestionData = user.isLoggedIn ? similarPosts : null;
   const useCommunityInitialData = initialCommunity && communityObserver === ssrObserver;
   const communityQuery = useQuery({
     queryKey: ['community', category, communityObserver],

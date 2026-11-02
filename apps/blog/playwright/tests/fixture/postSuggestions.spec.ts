@@ -2,10 +2,17 @@ import fs from 'fs';
 import path from 'path';
 import type { Page } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
+import { HomePage } from '../support/pages/homePage';
 import { PostPage } from '../support/pages/postPage';
+import { ProfileUserMenu } from '../support/pages/profileUserMenu';
+import { gotoLoggedIn } from '../support/postDisplayContext';
 
 /**
  * "You Might Also Like" suggestions on the post detail page.
+ *
+ * Only a signed-in reader asks hivesense for similar posts and sees the
+ * section: an anonymous visit (every crawler) makes no similar request, and a
+ * sign-out on the page removes the section.
  *
  * The recorded hivesense `similar` response (postDetail fixture set) is in
  * the current API shape: full posts without `post_id`. The panel must still
@@ -18,7 +25,7 @@ import { PostPage } from '../support/pages/postPage';
  * Replay:  pnpm --filter @hive/blog test:fixture -- postSuggestions
  */
 
-test.use({ fixtureTestName: 'postDetail' });
+test.use({ fixtureTestName: 'postSuggestions' });
 
 const POST_URL = '/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit/';
 const SIMILAR_ROUTE = '**/hivesense-api/posts/*/*/similar*';
@@ -35,6 +42,8 @@ const SIMILAR_RECORDING = path.resolve(
 
 // React Query's first retry of a failed query fires 1 s after the failure.
 const PAST_FIRST_RETRY_MS = 2_500;
+// Longer than a client query takes to start after hydration, so a similar request would have left.
+const PAST_CLIENT_QUERIES_MS = 3_000;
 // A cold HiveSense query: slower than the read chain's 5 s attempt timeout, within the call's own 15 s.
 const COLD_QUERY_DELAY_MS = 6_500;
 const SUGGESTIONS_AFTER_COLD_QUERY_MS = 15_000;
@@ -56,12 +65,72 @@ const serveSimilarPosts = (page: Page, posts: SimilarPost[], delayMs = 0) =>
     await route.fulfill({ json: posts, headers: { 'access-control-allow-origin': '*' } });
   });
 
-test.describe('Post suggestions (fixture-based)', () => {
+/** Records the URL of every similar-posts request the page sends from now on */
+function recordSimilarRequests(page: Page): string[] {
+  const urls: string[] = [];
+  page.on('request', (request) => {
+    if (request.url().includes('/similar')) urls.push(request.url());
+  });
+  return urls;
+}
+
+test.describe('Post suggestions for an anonymous reader (fixture-based)', () => {
+  test('POST-SUGGEST-07: an anonymous visit asks for no similar posts and shows no suggestions', async ({ page }) => {
+    await serveSimilarPosts(page, recordedSimilarPosts());
+    const similarRequests = recordSimilarRequests(page);
+
+    const postPage = new PostPage(page);
+    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await postPage.waitForPostHydration();
+    await expect(postPage.articleBody).toBeVisible();
+    await page.waitForTimeout(PAST_CLIENT_QUERIES_MS);
+
+    expect(similarRequests).toEqual([]);
+    await expect(page.getByTestId('suggestions-list')).toHaveCount(0);
+    await expect(page.getByText('You Might Also Like')).toHaveCount(0);
+  });
+});
+
+test.describe('Post suggestions for a signed-in reader (fixture-based)', () => {
+  test.use({ authenticatedUser: {} });
+
+  test('POST-SUGGEST-08: a signed-in visit asks for similar posts once and shows them', async ({ page }) => {
+    await serveSimilarPosts(page, recordedSimilarPosts());
+    const similarRequests = recordSimilarRequests(page);
+
+    const postPage = new PostPage(page);
+    await gotoLoggedIn(page, POST_URL);
+    await postPage.waitForPostHydration();
+
+    await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_SUGGESTION_COUNT);
+    await page.waitForTimeout(PAST_FIRST_RETRY_MS);
+    expect(similarRequests).toHaveLength(1);
+  });
+
+  test('POST-SUGGEST-09: signing out on the post page removes the suggestions without a reload', async ({
+    page
+  }) => {
+    await serveSimilarPosts(page, recordedSimilarPosts());
+    const homePage = new HomePage(page);
+    const postPage = new PostPage(page);
+    await gotoLoggedIn(page, POST_URL);
+    await postPage.waitForPostHydration();
+    await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_SUGGESTION_COUNT);
+    const similarRequests = recordSimilarRequests(page);
+
+    await homePage.profileAvatarButton.click();
+    await new ProfileUserMenu(page).logoutLink.click();
+
+    await expect(homePage.loginBtn).toBeVisible();
+    await expect(page.getByTestId('suggestions-list')).toHaveCount(0);
+    await expect(postPage.articleBody).toBeVisible();
+    expect(similarRequests).toEqual([]);
+  });
   test('POST-SUGGEST-01: suggestions without post_id render as cards', async ({ page }) => {
     await serveSimilarPosts(page, recordedSimilarPosts());
 
     const postPage = new PostPage(page);
-    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await gotoLoggedIn(page, POST_URL);
     await postPage.waitForPostHydration();
 
     await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_SUGGESTION_COUNT);
@@ -77,7 +146,7 @@ test.describe('Post suggestions (fixture-based)', () => {
     await serveSimilarPosts(page, lowRated);
 
     const postPage = new PostPage(page);
-    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await gotoLoggedIn(page, POST_URL);
     await postPage.waitForPostHydration();
 
     await expect(postPage.suggestionsAllHiddenMessage).toContainText(
@@ -101,7 +170,7 @@ test.describe('Post suggestions (fixture-based)', () => {
     const similarServed = page.waitForResponse((response) => response.url().includes('/similar'));
 
     const postPage = new PostPage(page);
-    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await gotoLoggedIn(page, POST_URL);
     await postPage.waitForPostHydration();
     await similarServed;
 
@@ -119,14 +188,11 @@ test.describe('Post suggestions (fixture-based)', () => {
         headers: { 'access-control-allow-origin': '*' }
       })
     );
-    const similarRequests: string[] = [];
-    page.on('request', (request) => {
-      if (request.url().includes('/similar')) similarRequests.push(request.url());
-    });
+    const similarRequests = recordSimilarRequests(page);
     const similarServed = page.waitForResponse((response) => response.url().includes('/similar'));
 
     const postPage = new PostPage(page);
-    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await gotoLoggedIn(page, POST_URL);
     await postPage.waitForPostHydration();
     await similarServed;
     // A retry leaves no trace in the page: wait past the moment React Query would send it.
@@ -145,7 +211,7 @@ test.describe('Post suggestions (fixture-based)', () => {
     await serveSimilarPosts(page, recordedSimilarPosts(), COLD_QUERY_DELAY_MS);
 
     const postPage = new PostPage(page);
-    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await gotoLoggedIn(page, POST_URL);
     await postPage.waitForPostHydration();
 
     await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_SUGGESTION_COUNT, {
@@ -163,10 +229,7 @@ test.describe('Post suggestions (fixture-based)', () => {
         headers: { 'access-control-allow-origin': '*' }
       })
     );
-    const similarRequests: string[] = [];
-    page.on('request', (request) => {
-      if (request.url().includes('/similar')) similarRequests.push(request.url());
-    });
+    const similarRequests = recordSimilarRequests(page);
     const similarErrors: string[] = [];
     page.on('console', (msg) => {
       if (msg.type() === 'error' && /similar/i.test(msg.text())) similarErrors.push(msg.text());
@@ -174,7 +237,7 @@ test.describe('Post suggestions (fixture-based)', () => {
     const similarServed = page.waitForResponse((response) => response.url().includes('/similar'));
 
     const postPage = new PostPage(page);
-    await page.goto(POST_URL, { waitUntil: 'domcontentloaded' });
+    await gotoLoggedIn(page, POST_URL);
     await postPage.waitForPostHydration();
     await similarServed;
     await page.waitForTimeout(PAST_FIRST_RETRY_MS);
