@@ -15,7 +15,7 @@ import { SignedOutError } from '@transaction/lib/signed-out';
 import { KeyType } from '@smart-signer/types/common';
 import { findSharedKeyTypes } from '@smart-signer/lib/auth/shared-key-types';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
-import { askWhileSignedIn, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
+import { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
 
 const logger = getLogger('app');
 
@@ -142,7 +142,9 @@ export class SignerWif extends SignerHbauth {
 
   /**
    * Displays dialog and asks user to enter password (WIF key). Also
-   * triggers storing this password, if user wants this.
+   * triggers storing this password, if user wants this. Asked of a
+   * signed-in user, rejects with `SignedOutError`, storing nothing, when
+   * the user signed out or switched account while asked.
    *
    * @returns {Promise<string>}
    * @memberof SignerWif
@@ -164,10 +166,11 @@ export class SignerWif extends SignerHbauth {
     try {
       if (!this.passwordPromise) {
         const resolvePassword = async () => {
-          const { password: wif, storePassword: storeKey } = await PasswordDialogModalPromise({
-            isOpen: true,
-            passwordFormOptions
-          });
+          // Kept only for a user still signed in: one signing out in another tab while asked would
+          // have the key stored for the signed-out account
+          const { password: wif, storePassword: storeKey } = await askWhileSignedInIfSo(username, () =>
+            PasswordDialogModalPromise({ isOpen: true, passwordFormOptions })
+          );
           if (storeKey) {
             await this.storePassword(wif);
             await this.storeSharedKey(wif);

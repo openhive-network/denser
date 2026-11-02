@@ -5,7 +5,7 @@ import { registerHooks } from 'node:module';
 const STUBS: Record<string, string> = {
   '@hive/ui/lib/logging':
     'const noop = () => {}; export const getLogger = () => ({ error: noop, warn: noop, info: noop, debug: noop });',
-  '@smart-signer/lib/utils': 'export const isStorageAvailable = () => true;',
+  '@smart-signer/lib/utils': 'export const isStorageAvailable = () => globalThis.localStorageAvailable;',
   '@smart-signer/lib/auth/default-user': "export const defaultUser = { isLoggedIn: false, username: '' };",
   '@smart-signer/types/common': 'export let User;'
 };
@@ -29,6 +29,7 @@ registerHooks({
 const storage = new Map<string, string>();
 Object.assign(globalThis, {
   window: globalThis,
+  localStorageAvailable: true,
   localStorage: {
     getItem: (key: string) => storage.get(key) ?? null,
     setItem: (key: string, value: string) => storage.set(key, value),
@@ -36,7 +37,7 @@ Object.assign(globalThis, {
   }
 });
 
-const { askWhileSignedIn } = await import('./signed-in-check.ts');
+const { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } = await import('./signed-in-check.ts');
 const { SignedOutError } = await import('../../../transaction/lib/signed-out.ts');
 
 /** What a sign-in, a sign-out or an account switch in any tab stores */
@@ -49,11 +50,15 @@ const keyDialog = (meanwhile: () => void) => async () => {
   return { password: 'active-wif', storePassword: true };
 };
 
+/** Signs `username` in, with localStorage available */
+const resetStorage = (username = 'alice') => {
+  Object.assign(globalThis, { localStorageAvailable: true });
+  storage.clear();
+  if (username) storeUser(username);
+};
+
 describe('askWhileSignedIn', () => {
-  beforeEach(() => {
-    storage.clear();
-    storeUser('alice');
-  });
+  beforeEach(() => resetStorage());
 
   it('gives the key entered by a user still signed in', async () => {
     const answer = await askWhileSignedIn('alice', keyDialog(() => {}));
@@ -87,5 +92,50 @@ describe('askWhileSignedIn', () => {
       askWhileSignedIn('alice', () => Promise.reject(cancelled)),
       (error) => error === cancelled
     );
+  });
+});
+
+describe('requireStillSignedInAs', () => {
+  beforeEach(() => resetStorage());
+
+  it('passes for the stored signed-in user', () => {
+    assert.doesNotThrow(() => requireStillSignedInAs('alice'));
+  });
+
+  it('refuses another account', () => {
+    assert.throws(() => requireStillSignedInAs('bob'), SignedOutError);
+  });
+
+  it('passes without localStorage, where no user is stored to tell a sign-out', () => {
+    Object.assign(globalThis, { localStorageAvailable: false });
+    assert.doesNotThrow(() => requireStillSignedInAs('alice'));
+  });
+});
+
+describe('askWhileSignedInIfSo', () => {
+  beforeEach(() => resetStorage());
+
+  it('refuses the key a signed-in user entered after a sign-out in another tab', async () => {
+    await assert.rejects(
+      askWhileSignedInIfSo('alice', keyDialog(() => storeUser('', false))),
+      SignedOutError
+    );
+  });
+
+  it('gives the key entered by a user still signed in', async () => {
+    const answer = await askWhileSignedInIfSo('alice', keyDialog(() => {}));
+    assert.deepEqual(answer, { password: 'active-wif', storePassword: true });
+  });
+
+  it('gives the key entered at a sign-in, before the user is stored', async () => {
+    resetStorage('');
+    const answer = await askWhileSignedInIfSo('alice', keyDialog(() => {}));
+    assert.deepEqual(answer, { password: 'active-wif', storePassword: true });
+  });
+
+  it('gives the key entered at a sign-in as another account than the signed-in one', async () => {
+    resetStorage('bob');
+    const answer = await askWhileSignedInIfSo('alice', keyDialog(() => storeUser('alice')));
+    assert.deepEqual(answer, { password: 'active-wif', storePassword: true });
   });
 });

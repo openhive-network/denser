@@ -8,7 +8,7 @@ import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
-import { registerAddedSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
+import { registerAddedSafeStorageKeyWithin } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
 import { askWhileSignedIn, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
@@ -334,11 +334,15 @@ export class SignerHbauth extends Signer {
     // Registered from within the prompt: a key hb-auth refuses for its authority keeps it open with the role hint
     const registration = promptedKeyRegistration(keyType, async (wif) => {
       requireStillSignedInAs(this.username);
-      await registerAddedSafeStorageKey(
+      // A sign-out during the registration must not leave the key registered for the signed-out account
+      await registerAddedSafeStorageKeyWithin(
         authClient,
         { username: this.username, password, wif, keyType },
         this.keyType,
-        SHARED_KEY_LOOKUP
+        SHARED_KEY_LOOKUP,
+        () => requireStillSignedInAs(this.username),
+        (error, removedKeyType) =>
+          logger.error(error, 'Cannot remove the %s key registered after a sign-out', removedKeyType)
       );
     });
     const passwordFormOptions: PasswordFormOptions = {
@@ -354,6 +358,7 @@ export class SignerHbauth extends Signer {
     try {
       registration.throwFailure();
     } catch (error) {
+      if (error instanceof SignedOutError) throw error;
       logger.error('Error in registerKey: %s', error instanceof Error ? error.message : String(error));
       // Preserve the actual error message instead of generic "Invalid key"
       const { message } = parseAuthError(error, 'Invalid key');
