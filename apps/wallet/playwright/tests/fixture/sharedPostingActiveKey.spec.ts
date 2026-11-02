@@ -95,7 +95,6 @@ async function expectBothKeysHeld(page: Page) {
   await expect(avatar).toHaveAccessibleName(`${STUB_ACCOUNT} account menu, posting and active keys`, {
     timeout: HYDRATION_TIMEOUT
   });
-  await expect(page.getByTestId('active-key-required-notice')).toHaveCount(0);
 
   const menu = page.getByRole('menu');
   await expect(async () => {
@@ -163,7 +162,7 @@ test.describe('An account whose posting and active keys are one key', () => {
     await transferWithoutKeyPrompt(page, broadcasts);
   });
 
-  test('WALLET-SHARED-KEY-03 — the blog\'s posting WIF session whose key is stored as both opens the wallet', async ({
+  test('WALLET-SHARED-KEY-03 — the blog\'s posting WIF session whose key is stored as both signs a transfer without asking', async ({
     page
   }) => {
     const broadcasts = await installBroadcastInterceptor(page);

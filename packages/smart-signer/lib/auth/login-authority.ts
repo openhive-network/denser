@@ -43,18 +43,3 @@ export function missingKeyType(authority: LoginAuthority): KeyTypeName | null {
   if (authority.kind !== 'key') return null;
   return KEY_TYPES.find((type) => !authority.keyTypes.includes(type)) ?? null;
 }
-
-/**
- * True when `user` is signed in, but its signer cannot sign with `requiredKeyType`: a session that
- * holds another key than the one required, and has neither added it to safe storage nor stored its
- * own key as that key too.
- */
-export function lacksRequiredKeyType(
-  user: User,
-  requiredKeyType: KeyTypeName | undefined,
-  storedKeyTypes?: readonly string[]
-): boolean {
-  if (!user.isLoggedIn || !requiredKeyType) return false;
-  const authority = getLoginAuthority(user, storedKeyTypes);
-  return authority.kind === 'key' && !authority.keyTypes.includes(requiredKeyType);
-}
