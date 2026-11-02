@@ -80,8 +80,13 @@ describe('resolveRequiredKeyType', function () {
   });
 
   it('keeps the key type the caller passed', () => {
-    expect(resolveRequiredKeyType({ requiredKeyType: 'posting' }, authoritiesOf(transfer))).to.equal('posting');
+    expect(resolveRequiredKeyType({ requiredKeyType: 'posting' }, authoritiesOf(comment))).to.equal('posting');
     expect(resolveRequiredKeyType({ requiredKeyType: 'active' }, authoritiesOf(comment))).to.equal('active');
+  });
+
+  it('asks for the active key when the caller passed posting for a transaction needing active', () => {
+    expect(resolveRequiredKeyType({ requiredKeyType: 'posting' }, authoritiesOf(transfer))).to.equal('active');
+    expect(resolveRequiredKeyType({ requiredKeyType: 'posting' }, authoritiesOf(vote, transfer))).to.equal('active');
   });
 
   it('derives nothing for a single-sign transaction', () => {

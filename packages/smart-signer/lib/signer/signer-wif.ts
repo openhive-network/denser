@@ -11,6 +11,7 @@ import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authorit
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
 import { MissingAuthorityError } from '@transaction/lib/missing-authority';
+import { KeyType } from '@smart-signer/types/common';
 import { findSharedKeyTypes } from '@smart-signer/lib/auth/shared-key-types';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
 
@@ -33,26 +34,55 @@ export class SignerWif extends SignerHbauth {
 
   override async signTransaction({ digest, transaction, singleSignKeyType, requiredKeyType }: SignTransaction): Promise<string> {
     const signingKeyType = !singleSignKeyType && requiredKeyType ? requiredKeyType : this.keyType;
-    // Another key than the session's signs only when its WIF is stored too; otherwise refuse the
-    // operation instead of letting the node reject it
-    const otherWif = signingKeyType === this.keyType ? '' : this.getStoredWif(signingKeyType);
-    if (signingKeyType !== this.keyType && !otherWif) {
-      throw new MissingAuthorityError(signingKeyType);
-    }
     const wax = await getChain();
     const txBuilder = wax.createTransactionFromProto(transaction);
     if (digest !== txBuilder.sigDigest) {
       throw new Error('Digests do not match');
     }
 
-    const signature = otherWif
-      ? await (await this.hbAuthClient).singleSign(this.username, digest, otherWif, signingKeyType)
+    const otherKey = signingKeyType === this.keyType ? null : await this.getOtherKey(signingKeyType);
+    const signature = otherKey
+      ? await (await this.hbAuthClient).singleSign(this.username, digest, otherKey.wif, signingKeyType)
       : await this.signDigest(digest, '', singleSignKeyType, requiredKeyType);
     txBuilder.addSignature(signature);
 
     await verifyAuthorityOrThrow(txBuilder.toApiJson(), this.pack, signingKeyType, 'WIF');
+    // Kept only once the node's authority check took it as the key it was asked for
+    if (otherKey?.store) this.storeOtherKey(signingKeyType, otherKey.wif);
 
     return signature;
+  }
+
+  /**
+   * The WIF key of `keyType`, another than the session's: the stored one, or, for the active key,
+   * the one the user enters for this operation, then kept when they ask for it. An operation
+   * needing another key the session lacks is refused instead of letting the node reject it.
+   *
+   * @throws {MissingAuthorityError} when no key of `keyType` is stored and it is not the active key
+   */
+  private async getOtherKey(keyType: KeyAuthorityType): Promise<{ wif: string; store: boolean }> {
+    const storedWif = this.getStoredWif(keyType);
+    if (storedWif) return { wif: storedWif, store: false };
+    if (keyType !== 'active') throw new MissingAuthorityError(keyType);
+    const { username } = this;
+    const passwordFormOptions: PasswordFormOptions = {
+      mode: PasswordFormMode.WIF,
+      showInputStorePassword: true,
+      validatePassword: (wif) => validateKeyAuthority(username, KeyType.active, wif),
+      i18nKeysForCaptions: {
+        inputPasswordPlaceholder: 'login_form.private_key_placeholder',
+        inputStorePasswordLabel: 'password_form.store_key_label',
+        title: 'login_form.this_operation_requires_your_key_for_single_sign_active'
+      },
+      i18nValues: { keyType }
+    };
+    const { password: wif, storePassword } = await this.getKeyFromUser(passwordFormOptions);
+    return { wif, store: !!storePassword };
+  }
+
+  private storeOtherKey(keyType: KeyAuthorityType, wif: string): void {
+    window.localStorage.setItem(wifCredentialKey(this.username, keyType), JSON.stringify(wif));
+    notifySafeStorageKeysChanged();
   }
 
   override async signDigest(
