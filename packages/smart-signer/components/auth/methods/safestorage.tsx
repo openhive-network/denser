@@ -89,7 +89,7 @@ export interface SafeStorageProps {
   preferredKeyTypes: KeyType[];
   i18nNamespace: string;
   isSigned?: boolean;
-  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
+  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<boolean>;
   username: string;
   onUsernameChange: (username: string) => void;
   /** Shown on mount: why the step before this one sent the user back here */

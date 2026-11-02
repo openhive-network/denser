@@ -103,6 +103,7 @@
       "key_updated_title": "密钥已添加",
       "key_updated_description": "您的密钥已成功添加",
       "key_updated_success": "密钥添加成功！正在登录…",
+      "key_added_sign_in_pending": "密钥已添加，但另一个登录正在进行中，因此您尚未登录。请在其完成后登录。",
       "add_key_info": "首先，在您的钱包中将密钥添加到相应的授权中。",
       "user_not_found": "在安全存储中未找到用户",
       "back": "返回",

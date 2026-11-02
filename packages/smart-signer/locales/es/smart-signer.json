@@ -103,6 +103,7 @@
       "key_updated_title": "Clave agregada",
       "key_updated_description": "Su clave ha sido agregada exitosamente",
       "key_updated_success": "¡Clave agregada exitosamente! Iniciando sesión…",
+      "key_added_sign_in_pending": "Clave agregada, pero hay otro inicio de sesión en curso, así que no se inició tu sesión. Inicia sesión cuando termine.",
       "add_key_info": "Primero, agregue la clave a la autoridad apropiada en su billetera.",
       "user_not_found": "Usuario no encontrado en el almacenamiento seguro",
       "back": "Atrás",

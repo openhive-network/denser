@@ -19,7 +19,7 @@ export interface PasskeyProps {
   i18nNamespace: string;
   username: string;
   onUsernameChange: (username: string) => void;
-  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
+  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<boolean>;
 }
 
 const signerHost = (origin: string) => new URL(origin).host;

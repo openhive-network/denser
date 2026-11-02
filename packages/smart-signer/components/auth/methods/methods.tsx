@@ -37,7 +37,7 @@ export interface MethodsProps {
   preferredKeyTypes: KeyType[];
   username: string;
   onUsernameChange: (username: string) => void;
-  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<void>;
+  signIn: (loginType: LoginType, username: string, keyType: KeyType) => Promise<boolean>;
 }
 
 const formSchema = z.object({

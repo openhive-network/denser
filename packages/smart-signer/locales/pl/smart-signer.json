@@ -103,6 +103,7 @@
       "key_updated_title": "Klucz dodany",
       "key_updated_description": "Twój klucz został pomyślnie dodany",
       "key_updated_success": "Klucz dodany pomyślnie! Trwa logowanie…",
+      "key_added_sign_in_pending": "Klucz dodany, ale trwa inne logowanie, więc nie zalogowano Cię. Zaloguj się, gdy się zakończy.",
       "add_key_info": "Najpierw dodaj klucz do odpowiedniej autoryzacji w swoim portfelu.",
       "user_not_found": "Nie znaleziono użytkownika w bezpiecznym magazynie",
       "back": "Wróć",
