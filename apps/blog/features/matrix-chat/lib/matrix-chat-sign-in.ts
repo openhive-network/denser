@@ -38,6 +38,20 @@ export class StoredSessionRejectedError extends Error {
   }
 }
 
+/**
+ * The homeserver could not be reached, or answered with a server error or a rate limit: the same
+ * sign-in may succeed a little later
+ */
+export class ChatUnreachableError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = 'ChatUnreachableError';
+  }
+}
+
+/** The waits before signing in again after a `ChatUnreachableError`, one per retry */
+const UNREACHABLE_RETRY_DELAYS_MS = [2_000, 5_000, 15_000, 30_000];
+
 export interface MatrixChatSignIn {
   userId: string;
   store: MatrixSessionStore;
@@ -46,6 +60,8 @@ export interface MatrixChatSignIn {
   logIn: (loginToken: string) => Promise<StartedChatSession>;
   /** Starts with stored credentials; rejects with `StoredSessionRejectedError` when they are no longer valid */
   resume: (credentials: MatrixCredentials) => Promise<ChatSession>;
+  /** Told of a `ChatUnreachableError`, before waiting `delayMs` to sign in again */
+  onUnreachable?: (error: ChatUnreachableError, delayMs: number) => void;
   signal: AbortSignal;
 }
 
@@ -86,13 +102,7 @@ async function logInAndStore(signIn: MatrixChatSignIn, loginToken: string): Prom
   return started;
 }
 
-/**
- * Signs `signIn.userId` in to the chat: with the session the browser stored, when the homeserver
- * still accepts it, else with a login token denser's server mints, storing the new session. A
- * rate-limited mint is waited out once, after which the session another tab stored meanwhile is
- * used, or a token minted again. Rejects when no session could be started.
- */
-export async function signInToMatrixChat(signIn: MatrixChatSignIn): Promise<StartedChatSession> {
+async function signInOnce(signIn: MatrixChatSignIn): Promise<StartedChatSession> {
   const resumed = await resumeStored(signIn);
   if (resumed) return resumed;
   const answer = await signIn.requestLoginToken();
@@ -105,6 +115,30 @@ export async function signInToMatrixChat(signIn: MatrixChatSignIn): Promise<Star
     if (again.kind === 'token') return logInAndStore(signIn, again.loginToken);
   }
   throw new Error('denser minted no Matrix login token');
+}
+
+/**
+ * Signs `signIn.userId` in to the chat: with the session the browser stored, when the homeserver
+ * still accepts it, else with a login token denser's server mints, storing the new session. A
+ * rate-limited mint is waited out once, after which the session another tab stored meanwhile is
+ * used, or a token minted again. A homeserver that cannot be reached (`ChatUnreachableError`) is
+ * tried again after each of `retryDelaysMs`, or sooner when another tab stores a session. Rejects
+ * when no session could be started, or when `signIn.signal` aborts a wait.
+ */
+export async function signInToMatrixChat(
+  signIn: MatrixChatSignIn,
+  retryDelaysMs: readonly number[] = UNREACHABLE_RETRY_DELAYS_MS
+): Promise<StartedChatSession> {
+  for (const delayMs of retryDelaysMs) {
+    try {
+      return await signInOnce(signIn);
+    } catch (error) {
+      if (!(error instanceof ChatUnreachableError)) throw error;
+      signIn.onUnreachable?.(error, delayMs);
+      await signIn.store.waitForWrite(signIn.userId, delayMs, signIn.signal);
+    }
+  }
+  return signInOnce(signIn);
 }
 
 /** Removes the stored session of `credentials`, unless another tab has stored a newer one since */

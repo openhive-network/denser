@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import type { MatrixSdkLogger } from './sdk-logger-type.ts';
 import { resumeMatrixChatSession, startMatrixChatSession } from './matrix-chat-session.ts';
 import type { ChatSession } from './chat-view-types.ts';
-import { StoredSessionRejectedError, type MatrixCredentials } from './matrix-chat-sign-in.ts';
+import { ChatUnreachableError, StoredSessionRejectedError, type MatrixCredentials } from './matrix-chat-sign-in.ts';
 
 const HOMESERVER = 'https://matrix.example.org';
 const USER = '@alice:example.org';
@@ -64,6 +64,8 @@ interface HomeserverOptions {
   signOutAfterFirstSync?: boolean;
   /** `/logout` answers `M_UNKNOWN_TOKEN`: denser's server deleted the device first */
   deviceDeleted?: boolean;
+  /** Requests to these paths fail as a lost connection does */
+  unreachable?: RegExp;
 }
 
 /** A homeserver answering the client API from `rooms`, recording every request */
@@ -79,6 +81,7 @@ function fakeHomeserver(options: HomeserverOptions = {}) {
     const method = init?.method ?? 'GET';
     const body = typeof init?.body === 'string' ? JSON.parse(init.body) : undefined;
     requests.push({ method, path: url.pathname, body });
+    if (options.unreachable?.test(url.pathname)) throw new TypeError('Failed to fetch');
     const path = url.pathname.replace(/^\/_matrix\/client\/(v3|v1|r0)/, '');
     if (path === '/login' && method === 'POST') {
       return json({ user_id: USER, access_token: 'access', device_id: body.device_id });
@@ -347,6 +350,22 @@ describe('startMatrixChatSession', () => {
       await assert.rejects(resume({ whoami }), StoredSessionRejectedError, JSON.stringify(whoami));
       assert.ok(!homeserver.requests.some((request) => /\/(sync|logout)$/.test(request.path)));
     }
+  });
+
+  it('rejects as unreachable, keeping the device, when the homeserver cannot be reached or fails', async () => {
+    const answers: HomeserverOptions[] = [
+      { unreachable: /\/account\/whoami$/ },
+      { whoami: { status: 502, errcode: 'M_UNKNOWN' } },
+      { whoami: { status: 429, errcode: 'M_LIMIT_EXCEEDED' } }
+    ];
+    for (const options of answers) {
+      await assert.rejects(resume(options), ChatUnreachableError, JSON.stringify(options));
+      assert.ok(!homeserver.requests.some((request) => /\/(sync|logout)$/.test(request.path)));
+    }
+  });
+
+  it('rejects as unreachable when the login request cannot reach the homeserver', async () => {
+    await assert.rejects(start('#general:example.org', { unreachable: /\/login$/ }), ChatUnreachableError);
   });
 
   it('stops, without signing out, and tells when the homeserver signs a running session out', async () => {
