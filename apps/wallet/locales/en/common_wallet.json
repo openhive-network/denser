@@ -362,6 +362,8 @@
     "status_tooltip_finished": "Finished <end/>",
     "remaining_days_one": "{{count}} day left",
     "remaining_days_other": "{{count}} days left",
+    "duration_days_one": "{{count}} day",
+    "duration_days_other": "{{count}} days",
     "funded": "funded",
     "not_funded": "not funded",
     "return_proposal_note": "This is the base return proposal: proposals with fewer votes are not funded.",
