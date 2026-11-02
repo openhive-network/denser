@@ -57,7 +57,8 @@ issues:
 # Verification slots. Every suite runs in the image above, offline; each
 # writes junit under test-results/, the per-test evidence AIDEV records.
 # AIDEV does not run the `static` or `system` slots for a project, so the static
-# checks (ESLint errors, tsc for both apps) are a suite of quick, full and canary.
+# checks (ESLint errors, tsc for both apps) are a suite of quick, full and canary,
+# and the Lighthouse pass is full's.
 #
 # The live-API Playwright suites (apps/*/playwright/tests/e2e, smoke) judge
 # mainnet data rather than the change and are the flaky part of denser's CI, so
@@ -105,12 +106,13 @@ verification:
         stack: false
   # quick, plus a production build of the blog and its fixture-replay Playwright
   # suite (fixture_e2e and its shards: recorded API responses, one worker each), the wallet's build and
-  # fixture suite (wallet_fixture), the dev stack boot check, then the advisory
-  # live_e2e against those blog and wallet builds served by the test stack.
+  # fixture suite (wallet_fixture), then the advisory
+  # live_e2e against those blog and wallet builds served by the test stack and
+  # the advisory Lighthouse pass (lighthouse_fixture).
   #
   # Overlapped (#1425, #1428; `concurrent:` and `phase:`, aidev#15949, #17229):
-  # unit, static and wallet_fixture beside fixture_e2e and dev_stack, then
-  # live_e2e. Each suite is its own container with its own network namespace, so
+  # unit, static and wallet_fixture beside fixture_e2e, then live_e2e and
+  # lighthouse_fixture. Each suite is its own container with its own network namespace, so
   # :3000/:8200 (blog) and :4000 (wallet) cannot collide; what they share is the
   # bind-mounted checkout. node_modules installs are serialised by
   # .aidev/pnpm-deps.sh's lock; the blog and wallet builds write only their own
@@ -118,6 +120,14 @@ verification:
   # every suite its own test-results/ subdirectory. Host admission reserves memory
   # for fixture_e2e plus the five concurrent suites, fixture_e2e's shards among
   # them (#1429).
+  #
+  # Eight suites, AIDEV's ceiling for one slot (MAX_SLOT_SUITES). The dev stack
+  # check (.aidev/run-dev-stack.sh) is no suite since #1432: in AIDEV's
+  # `--network none` container with no docker socket it could only report a
+  # skipped case. A `docker: true` binding (aidev#14527) would be a ninth suite,
+  # and its daemon would not be handed the checkout's host path. Every workflow's
+  # live dev stack (`aidev project devstack`) boots the candidate's tree; run the
+  # script by hand on a docker host for its cold and upgrade boots.
   full:
     suites:
       # Concurrent: reads sources only, nothing a build writes.
@@ -248,18 +258,6 @@ verification:
         artifacts: ["test-results/wallet-fixture/"]
         stack: false
         concurrent: true
-      # Boots the live dev stack (sandbox.dev) cold and over the base revision's
-      # node_modules, when the candidate changes its dependencies, next.config,
-      # middleware or the stack's own files; "not applicable" otherwise. It runs
-      # its own compose projects, so it needs a docker daemon: under AIDEV's
-      # `--network none` container it reports a skipped case saying it could not
-      # run. See .aidev/run-dev-stack.sh.
-      - name: dev_stack
-        adapter: command
-        args: [".aidev/run-dev-stack.sh"]
-        tier: system
-        artifacts: ["test-results/dev-stack-suite/"]
-        stack: false
       # The live-API e2e specs this candidate changed or reaches through a
       # changed import, plus the app's smoke specs when app source changed,
       # against the stack's blog-live (fixture_e2e's build) and wallet-live
@@ -281,6 +279,30 @@ verification:
         env: {DENSER_TEST_STACK: "1"}
         mode: advisory
         memory: 6g
+        phase: after
+      # The deterministic Lighthouse pass (.aidev/run-lighthouse-fixture.sh): production
+      # builds of blog and wallet behind one origin, recorded Hive API and image data, no
+      # network; the integration check's routes and medians, compared with the committed
+      # baseline (.aidev/lighthouse-fixture/baseline.json). ~8 min with next's build
+      # cache warm. Until #1432 it was the `system` slot's, which AIDEV never runs.
+      # `phase: after`, declared after live_e2e: it rebuilds apps/blog/.next and
+      # apps/wallet/.next with base paths /blog and /wallet, the directories
+      # fixture_e2e, wallet_fixture and their shards build into and the stack's
+      # blog-live and wallet-live serve to live_e2e, so it starts once those ended.
+      # `mode: advisory` (staged activation): a Lighthouse score depends on the
+      # host's load, so it reports and never fails the slot. Drop `advisory` once it
+      # has a week of passes on the fleet in `aidev flaky-tests --project denser`.
+      # `memory: 10g`: two next builds, then Chromium beside both standalone
+      # servers; admission's local p95 of its last 20 runs as the `system` slot's
+      # suite was 8.6 GiB (steem-3, 2026-11-02).
+      - name: lighthouse_fixture
+        adapter: command
+        args: [".aidev/run-lighthouse-fixture.sh"]
+        tier: system
+        artifacts: ["test-results/lighthouse-fixture/"]
+        stack: false
+        mode: advisory
+        memory: 10g
         phase: after
   baseline:
     adapter: command
@@ -311,21 +333,6 @@ verification:
     tier: unit
     artifacts: ["test-results/coverage/"]
     stack: false
-  # The deterministic Lighthouse pass (.aidev/run-lighthouse-fixture.sh): production
-  # builds of blog and wallet behind one origin, recorded Hive API and image data, no
-  # network; the integration check's routes and medians, compared with the committed
-  # baseline (.aidev/lighthouse-fixture/baseline.json). Bound to `system` because the
-  # slot names are AIDEV's fixed vocabulary (there is no `perf`) and no phase requests
-  # `system` for a project: it gates nothing and runs only as
-  # `aidev test run --slot system`. ~5 min with next's build cache warm.
-  system:
-    suites:
-      - name: lighthouse_fixture
-        adapter: command
-        args: [".aidev/run-lighthouse-fixture.sh"]
-        tier: system
-        artifacts: ["test-results/lighthouse-fixture/"]
-        stack: false
 
 # Live dev stack (#966): `next dev` of the blog and the wallet, hot-reloading from
 # the implement checkout, against the fixture replay proxy — from the fallback image
