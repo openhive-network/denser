@@ -23,6 +23,9 @@ export const PROPOSAL_STATUS_LABEL_KEYS: Record<ProposalStatusTab, string> = {
 export const remainingDays = (endDate: string, now: number): number =>
   Math.max(0, Math.ceil((Date.parse(`${endDate}Z`) - now) / DAY_MS));
 
+/** Whether the proposal still takes votes: an expired one has ended, and a vote on it is refused. */
+export const isProposalVotable = (proposal: { status: string }): boolean => proposal.status !== 'expired';
+
 /** Whether the proposal's title, creator or receiver contains `query`, ignoring case and surrounding blanks. */
 export const matchesProposalSearch = (
   proposal: { subject: string; creator: string; receiver: string },
