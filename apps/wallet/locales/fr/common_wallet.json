@@ -358,6 +358,7 @@
     "by": "par",
     "for": " pour ",
     "vote_for_proposal": "Voter pour la proposition #{{id}}",
+    "vote_ended": "Proposition terminée",
     "votes_on_proposal": "Votes sur la proposition",
     "voters_list": "Votants",
     "status_tooltip_started": "A commencé <start/> et se termine <end/>",
