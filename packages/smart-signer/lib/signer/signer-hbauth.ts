@@ -11,7 +11,8 @@ import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-stor
 import { registerAddedSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
-import { askWhileSignedIn } from '@smart-signer/lib/signer/signed-in-check';
+import { askWhileSignedIn, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
+import { promptedKeyRegistration } from '@smart-signer/lib/signer/prompted-key-registration';
 import { SignedOutError } from '@transaction/lib/signed-out';
 
 const logger = getLogger('app');
@@ -329,25 +330,29 @@ export class SignerHbauth extends Signer {
    * asked for, once per signer.
    */
   private async registerKey(authClient: OnlineClient, keyType: KeyAuthorityType, password: string): Promise<void> {
+    if (!password) password = await this.getPasswordFromUser();
+    // Registered from within the prompt: a key hb-auth refuses for its authority keeps it open with the role hint
+    const registration = promptedKeyRegistration(keyType, async (wif) => {
+      requireStillSignedInAs(this.username);
+      await registerAddedSafeStorageKey(
+        authClient,
+        { username: this.username, password, wif, keyType },
+        this.keyType,
+        SHARED_KEY_LOOKUP
+      );
+    });
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
+      validatePassword: registration.validateKey,
       i18nKeysForCaptions: {
         title: `login_form.this_operation_requires_your_${keyType}_key_enter_key_and_keep_it_in_safe_storage`,
         inputPasswordPlaceholder: 'login_form.title_wif_dialog_password'
       }
     };
-    if (!password) password = await this.getPasswordFromUser();
-    const { password: keyToUse } = await askWhileSignedIn(this.username, () =>
-      this.getKeyFromUser(passwordFormOptions)
-    );
+    await askWhileSignedIn(this.username, () => this.getKeyFromUser(passwordFormOptions));
     try {
-      await registerAddedSafeStorageKey(
-        authClient,
-        { username: this.username, password, wif: keyToUse, keyType },
-        this.keyType,
-        SHARED_KEY_LOOKUP
-      );
+      registration.throwFailure();
     } catch (error) {
       logger.error('Error in registerKey: %s', error instanceof Error ? error.message : String(error));
       // Preserve the actual error message instead of generic "Invalid key"

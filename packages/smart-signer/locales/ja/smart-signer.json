@@ -118,7 +118,7 @@
       "no_wif_key": "WIFキーがありません",
       "password_required": "パスワードは必須です",
       "wif_required": "WIFキーは必須です",
-      "posting_key_for_active": "ウォレットにはアクティブキーが必要です。投稿キーでは送金に署名できません",
+      "key_without_active_authority": "このキーにはアクティブ権限がありません。この操作に署名するには、ウォレットにアクティブキーが必要です",
       "active_key_for_posting": "このキーには投稿権限がありません。ブログへのサインインには投稿キーが必要です"
     },
     "signin_with_keychain": "Hive Keychain拡張機能",

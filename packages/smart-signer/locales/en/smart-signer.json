@@ -126,7 +126,7 @@
       "no_wif_key": "No WIF key",
       "password_required": "Password is required",
       "wif_required": "WIF key is required",
-      "posting_key_for_active": "The wallet needs your active key; a posting key can't sign transfers",
+      "key_without_active_authority": "This key doesn't have active authority. The wallet needs your active key to sign this",
       "active_key_for_posting": "This key doesn't have posting authority. Blog sign-in requires the posting key"
     },
     "signin_with_keychain": "Hive Keychain extension",

@@ -18,7 +18,7 @@ const HYDRATION_TIMEOUT = 30_000;
 const POSTING_WIF = '5KQ8zgZx9Q4YuU8eUVcXfbVGQxe96eCXynREFJxdJvar8FQJvhk';
 const POSTING_PUBLIC_KEY = 'STM5J5fKpBEfiFEANpk321mLT3oNTZ4xTW4Vq8E33eA3zBSWRbViL';
 
-const POSTING_KEY_ERROR = "The wallet needs your active key; a posting key can't sign transfers";
+const ACTIVE_KEY_ERROR = "This key doesn't have active authority. The wallet needs your active key to sign this";
 
 let stub: Server;
 
@@ -75,7 +75,7 @@ test.describe('WIF sign-in with a key of the wrong role', () => {
     await loginForm.postingPrivateKeyInput.fill(POSTING_WIF);
     await loginForm.postingPrivateKeySubmitButton.click();
 
-    await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText(POSTING_KEY_ERROR);
+    await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText(ACTIVE_KEY_ERROR);
     await expect(loginForm.headerEnterYourWifKey).toBeVisible();
     await expect(loginForm.postingPrivateKeyInput).toHaveValue('');
     await expect(loginForm.storeKeyCheckbox).toBeChecked();

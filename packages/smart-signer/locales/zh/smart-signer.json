@@ -118,7 +118,7 @@
       "no_wif_key": "没有WIF密钥",
       "password_required": "密码为必填项",
       "wif_required": "WIF 密钥为必填项",
-      "posting_key_for_active": "钱包需要您的 Active 密钥；Posting 密钥无法签署转账",
+      "key_without_active_authority": "此密钥没有 Active 权限。钱包需要您的 Active 密钥来签署此操作",
       "active_key_for_posting": "此密钥没有 Posting 权限。登录博客需要 Posting 密钥"
     },
     "signin_with_keychain": "Hive密钥链扩展",

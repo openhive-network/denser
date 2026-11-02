@@ -118,7 +118,7 @@
       "no_wif_key": "Brak klucza WIF",
       "password_required": "Hasło jest wymagane",
       "wif_required": "Klucz WIF jest wymagany",
-      "posting_key_for_active": "Portfel potrzebuje Twojego klucza Active; klucz Posting nie może podpisywać przelewów",
+      "key_without_active_authority": "Ten klucz nie ma uprawnień Active. Portfel potrzebuje Twojego klucza Active, aby to podpisać",
       "active_key_for_posting": "Ten klucz nie ma uprawnień Posting. Logowanie do bloga wymaga klucza Posting"
     },
     "signin_with_keychain": "Rozszerzenie Hive Keychain",

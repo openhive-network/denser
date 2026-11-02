@@ -4,7 +4,7 @@ type SignInKeyRole = Exclude<KeyRole, 'owner'>;
 
 /** Smart-signer translation keys of the hint shown for a key that cannot sign as the key type asked for */
 export const KEY_ROLE_HINTS: Record<SignInKeyRole, string> = {
-  active: 'login_form.zod_error.posting_key_for_active',
+  active: 'login_form.zod_error.key_without_active_authority',
   posting: 'login_form.zod_error.active_key_for_posting'
 };
 

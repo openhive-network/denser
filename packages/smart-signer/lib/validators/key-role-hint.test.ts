@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { findRegistrationKeyRoleHint, KEY_ROLE_HINTS } from './key-role-hint.ts';
 
 const POSTING_HINT = 'login_form.zod_error.active_key_for_posting';
-const ACTIVE_HINT = 'login_form.zod_error.posting_key_for_active';
+const ACTIVE_HINT = 'login_form.zod_error.key_without_active_authority';
 
 class AuthorizationError extends Error {}
 
