@@ -3,13 +3,15 @@ import assert from 'node:assert/strict';
 import type { ChatSession } from './chat-view-types.ts';
 import {
   afterSignOutByHomeserver,
+  ChatUnreachableError,
   forgetMatrixSession,
   hasNewerMatrixSession,
   signInToMatrixChat,
   StoredSessionRejectedError,
   type LoginTokenAnswer,
   type MatrixCredentials,
-  type MatrixSessionStore
+  type MatrixSessionStore,
+  type StartedChatSession
 } from './matrix-chat-sign-in.ts';
 
 const ALICE = '@alice:example.org';
@@ -38,28 +40,36 @@ function memoryStore(slots: Record<string, unknown> = {}, onWait: (store: Matrix
   return { store, slots, waits };
 }
 
+const RETRY_DELAYS_MS = [10, 20];
+
 /** Signs Alice in against `store`; the mint answers `answers` in turn */
 async function signIn(
   store: MatrixSessionStore,
   answers: LoginTokenAnswer[],
-  resume?: (credentials: MatrixCredentials) => Promise<ChatSession>
+  resume?: (credentials: MatrixCredentials) => Promise<ChatSession>,
+  logIn?: (loginToken: string) => Promise<StartedChatSession>
 ) {
   const calls = { mints: 0, logIns: [] as string[], resumed: [] as string[] };
-  const started = await signInToMatrixChat({
-    userId: ALICE,
-    store,
-    requestLoginToken: async () => answers[calls.mints++] ?? { kind: 'none' },
-    logIn: async (loginToken) => {
-      calls.logIns.push(loginToken);
-      return { session: sessionWith(MINTED), credentials: MINTED };
+  const retriedAfterMs: number[] = [];
+  const started = await signInToMatrixChat(
+    {
+      userId: ALICE,
+      store,
+      requestLoginToken: async () => answers[calls.mints++] ?? { kind: 'none' },
+      logIn: async (loginToken) => {
+        calls.logIns.push(loginToken);
+        return logIn ? logIn(loginToken) : { session: sessionWith(MINTED), credentials: MINTED };
+      },
+      resume: async (credentials) => {
+        calls.resumed.push(credentials.accessToken);
+        return resume ? resume(credentials) : sessionWith(credentials);
+      },
+      onUnreachable: (_error, delayMs) => retriedAfterMs.push(delayMs),
+      signal: new AbortController().signal
     },
-    resume: async (credentials) => {
-      calls.resumed.push(credentials.accessToken);
-      return resume ? resume(credentials) : sessionWith(credentials);
-    },
-    signal: new AbortController().signal
-  });
-  return { started, calls };
+    RETRY_DELAYS_MS
+  );
+  return { started, calls, retriedAfterMs };
 }
 
 const rejected = async (): Promise<ChatSession> => {
@@ -118,6 +128,78 @@ describe('signInToMatrixChat', () => {
     };
     await assert.rejects(signIn(store, [{ kind: 'token', loginToken: 'syl_login' }], unreachable), TypeError);
     assert.deepEqual(slots[ALICE], STORED);
+  });
+
+  it('signs in again, after each retry delay, while the homeserver cannot be reached', async () => {
+    const { store, slots, waits } = memoryStore({ [ALICE]: { ...STORED } });
+    let failures = 2;
+    const flaky = async (credentials: MatrixCredentials): Promise<ChatSession> => {
+      if (failures-- > 0) throw new ChatUnreachableError('fetch failed');
+      return sessionWith(credentials);
+    };
+    const { started, calls, retriedAfterMs } = await signIn(store, [], flaky);
+
+    assert.deepEqual(started.credentials, STORED);
+    assert.deepEqual(calls, { mints: 0, logIns: [], resumed: ['syt_stored', 'syt_stored', 'syt_stored'] });
+    assert.deepEqual(retriedAfterMs, RETRY_DELAYS_MS);
+    assert.deepEqual(waits, RETRY_DELAYS_MS);
+    assert.deepEqual(slots[ALICE], STORED);
+  });
+
+  it('mints again when signing in with a minted token could not reach the homeserver', async () => {
+    const { store, slots } = memoryStore();
+    let failures = 1;
+    const flaky = async (): Promise<StartedChatSession> => {
+      if (failures-- > 0) throw new ChatUnreachableError('fetch failed');
+      return { session: sessionWith(MINTED), credentials: MINTED };
+    };
+    const { calls } = await signIn(
+      store,
+      [
+        { kind: 'token', loginToken: 'syl_first' },
+        { kind: 'token', loginToken: 'syl_second' }
+      ],
+      undefined,
+      flaky
+    );
+    assert.deepEqual(calls, { mints: 2, logIns: ['syl_first', 'syl_second'], resumed: [] });
+    assert.deepEqual(slots[ALICE], MINTED);
+  });
+
+  it('fails once the retries are used up, keeping the stored session for the next attempt', async () => {
+    const { store, slots, waits } = memoryStore({ [ALICE]: { ...STORED } });
+    const down = async (): Promise<ChatSession> => {
+      throw new ChatUnreachableError('fetch failed');
+    };
+    await assert.rejects(signIn(store, [{ kind: 'token', loginToken: 'syl_unused' }], down), ChatUnreachableError);
+    assert.deepEqual(waits, RETRY_DELAYS_MS);
+    assert.deepEqual(slots[ALICE], STORED);
+  });
+
+  it('stops retrying when the sign-in is aborted while waiting', async () => {
+    const { store } = memoryStore({ [ALICE]: { ...STORED } });
+    const aborted = new AbortController();
+    store.waitForWrite = async () => {
+      aborted.abort();
+      throw new DOMException('aborted', 'AbortError');
+    };
+    let attempts = 0;
+    const down = async (): Promise<ChatSession> => {
+      attempts++;
+      throw new ChatUnreachableError('fetch failed');
+    };
+    await assert.rejects(
+      signInToMatrixChat({
+        userId: ALICE,
+        store,
+        requestLoginToken: async () => ({ kind: 'none' }),
+        logIn: async () => ({ session: sessionWith(MINTED), credentials: MINTED }),
+        resume: down,
+        signal: aborted.signal
+      }),
+      { name: 'AbortError' }
+    );
+    assert.equal(attempts, 1);
   });
 
   it('waits out a rate-limited mint once, then mints again', async () => {

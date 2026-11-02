@@ -67,6 +67,8 @@ function openSession({ userId, homeserverUrl, defaultRoom, onLoggedOut, signal }
     logIn: async (loginToken) =>
       (await sdk).startMatrixChatSession({ ...common, userId, loginToken, deviceId: chatDeviceId(userId) }),
     resume: async (credentials) => (await sdk).resumeMatrixChatSession({ ...common, credentials }),
+    onUnreachable: (error, delayMs) =>
+      logger.warn('The Matrix chat could not reach the homeserver, trying again in %d ms: %o', delayMs, error.cause),
     signal
   });
 }
@@ -79,6 +81,8 @@ function openSession({ userId, homeserverUrl, defaultRoom, onLoggedOut, signal }
  * when it says it did so on signing out of denser, else by the client. A session the
  * homeserver signs out is dropped too; the session another tab stored since is then resumed,
  * else it signs in again with a newly minted login token, once until `retry` or another user.
+ * A homeserver it cannot reach is tried again with backoff, the status staying `starting`, and
+ * `retry` after a failure starts the sign-in over, backoff included.
  */
 export function useMatrixChatSession(options: MatrixChatSessionOptions) {
   const { userId, start, homeserverUrl, defaultRoom } = options;
