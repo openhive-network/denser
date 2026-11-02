@@ -57,7 +57,7 @@ test('COM-05 — Leave community via /communities explorer card', async ({ page 
   });
 
   await expect(
-    page.getByText(TOAST_UNSUBSCRIBED(COMMUNITY_TAG_SUBSCRIBED), { exact: true })
+    page.getByText(TOAST_UNSUBSCRIBED(COMMUNITY_NAME_SUBSCRIBED), { exact: true })
   ).toBeVisible();
 
   // The card flips back to Subscribe and the Joined/Leave button disappears.

@@ -46,7 +46,7 @@ const LOCALES = [
     following: 'obserwujesz',
     amount: 'Kwota',
     next: 'Dalej',
-    confirm: 'Potwierdź Przelew na konto',
+    confirm: 'Potwierdź przelew na konto',
     message: 'Ta operacja wymaga klucza Active. Zaloguj się kluczem Active i spróbuj ponownie.'
   }
 ];
