@@ -13,6 +13,7 @@ import {
   stubRcAccountsWith
 } from '../support/walletApiStub';
 import { expectTransferOperation, naiAsset } from '../support/walletOperations';
+import { openOtherTab, signOutInTab } from '../support/otherTab';
 
 /**
  * Where the blog and the wallet share one origin they share the session, so the wallet can find a
@@ -20,7 +21,8 @@ import { expectTransferOperation, naiAsset } from '../support/walletOperations';
  * views and the account menu, and signs posting-authority operations (Delegate RC) with the posting
  * key. An operation needing the active key asks for it when it is signed: cancelling sends nothing,
  * entering it signs and sends the operation once. A broadcast the node rejects for a missing
- * authority reads as a message naming the key, not as the node's answer. Reads come from the stub
+ * authority reads as a message naming the key, not as the node's answer. A sign-out in another tab
+ * closes the prompt, and a key entered after one is neither used nor kept. Reads come from the stub
  * node (support/walletApiStub.ts).
  */
 
@@ -162,6 +164,9 @@ const broadcastOperation = (call: InterceptedBroadcast) => {
 
 const activeKeyPrompt = (page: Page) => page.getByRole('dialog').filter({ hasText: ACTIVE_KEY_PROMPT });
 
+const storedActiveKey = (page: Page) =>
+  page.evaluate((key) => window.localStorage.getItem(key), `wif.${STUB_ACCOUNT}@active`);
+
 test.describe('A posting-key session on the wallet', () => {
   test('WALLET-POSTING-SESSION-01 — opens the own wallet from the wallet home, without asking for the active key', async ({
     page
@@ -252,12 +257,57 @@ test.describe('A posting-key session on the wallet', () => {
     });
     await expect(prompt).toHaveCount(0);
     expect(broadcasts.calls).toHaveLength(1);
-    const storedActiveKey = await page.evaluate(
-      (key) => window.localStorage.getItem(key),
-      `wif.${STUB_ACCOUNT}@active`
-    );
-    expect(storedActiveKey).toBeNull();
+    expect(await storedActiveKey(page)).toBeNull();
     expect(await storedUser(page)).toMatchObject({ isLoggedIn: true, username: STUB_ACCOUNT, keyType: 'posting' });
+  });
+
+  test('WALLET-POSTING-SESSION-06 — a sign-out in another tab closes the active key prompt; nothing is sent', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    await logInAsStubAccount(page, 'posting');
+    await storeStubAccountKey(page, 'posting', POSTING_WIF);
+    await page.goto(ownTransfersPage);
+    await submitTransfer(page, EN_LABELS);
+
+    const prompt = activeKeyPrompt(page);
+    await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    const otherTab = await openOtherTab(page);
+    await signOutInTab(otherTab);
+
+    await expect(prompt).toHaveCount(0);
+    await expect(page.getByTestId('signed-out-message')).toHaveText('You are signed out. Sign in and try again.');
+    expect(broadcasts.calls).toEqual([]);
+    expect(await storedActiveKey(page)).toBeNull();
+  });
+
+  test('WALLET-POSTING-SESSION-07 — the active key entered after a sign-out elsewhere is neither sent nor kept', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    await logInAsStubAccount(page, 'posting');
+    await storeStubAccountKey(page, 'posting', POSTING_WIF);
+    await page.goto(ownTransfersPage);
+    await submitTransfer(page, EN_LABELS);
+
+    const prompt = activeKeyPrompt(page);
+    await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    // Another tab signed out, and this tab has not heard of it yet: a tab's own write fires no storage event here
+    await page.evaluate(() =>
+      window.localStorage.setItem(
+        'user',
+        JSON.stringify({ isLoggedIn: false, username: '', loginType: 'wif', keyType: 'posting' })
+      )
+    );
+    await prompt.getByTestId('posting-private-key-input').fill(ACTIVE_WIF);
+    await prompt.getByLabel('Store key').check();
+    await prompt.getByTestId('password-submit-button').click();
+
+    await expect(page.getByTestId('signed-out-message')).toHaveText('You are signed out. Sign in and try again.', {
+      timeout: HYDRATION_TIMEOUT
+    });
+    expect(broadcasts.calls).toEqual([]);
+    expect(await storedActiveKey(page)).toBeNull();
   });
 });
 

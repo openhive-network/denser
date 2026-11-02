@@ -129,6 +129,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/auth/sign-in-lock.test.ts \
     packages/smart-signer/lib/fetch-json.test.ts \
     packages/smart-signer/lib/signer/unlock-hint.test.ts \
+    packages/smart-signer/lib/signer/signed-in-check.test.ts \
     packages/smart-signer/lib/signer/google-drive-missing-key.test.ts \
     packages/smart-signer/lib/signer/google-drive-sign-in-cancelled.test.ts \
     packages/smart-signer/lib/passkey/signer-client.test.ts \
