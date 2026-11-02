@@ -10,6 +10,8 @@ export interface MatrixCredentials {
 export type LoginTokenAnswer =
   | { kind: 'token'; loginToken: string }
   | { kind: 'rate-limited'; retryAfterMs: number }
+  /** The request to denser's server failed or timed out before an answer */
+  | { kind: 'unreachable' }
   | { kind: 'none' };
 
 export interface StartedChatSession {
@@ -102,16 +104,25 @@ async function logInAndStore(signIn: MatrixChatSignIn, loginToken: string): Prom
   return started;
 }
 
+/** A login token denser's server mints; rejects with `ChatUnreachableError` when it could not be asked */
+async function requestLoginToken(signIn: MatrixChatSignIn): Promise<LoginTokenAnswer> {
+  const answer = await signIn.requestLoginToken();
+  if (answer.kind === 'unreachable') {
+    throw new ChatUnreachableError("denser's server could not be reached for a login token");
+  }
+  return answer;
+}
+
 async function signInOnce(signIn: MatrixChatSignIn): Promise<StartedChatSession> {
   const resumed = await resumeStored(signIn);
   if (resumed) return resumed;
-  const answer = await signIn.requestLoginToken();
+  const answer = await requestLoginToken(signIn);
   if (answer.kind === 'token') return logInAndStore(signIn, answer.loginToken);
   if (answer.kind === 'rate-limited') {
     await signIn.store.waitForWrite(signIn.userId, answer.retryAfterMs, signIn.signal);
     const another = await resumeStored(signIn);
     if (another) return another;
-    const again = await signIn.requestLoginToken();
+    const again = await requestLoginToken(signIn);
     if (again.kind === 'token') return logInAndStore(signIn, again.loginToken);
   }
   throw new Error('denser minted no Matrix login token');
@@ -121,9 +132,10 @@ async function signInOnce(signIn: MatrixChatSignIn): Promise<StartedChatSession>
  * Signs `signIn.userId` in to the chat: with the session the browser stored, when the homeserver
  * still accepts it, else with a login token denser's server mints, storing the new session. A
  * rate-limited mint is waited out once, after which the session another tab stored meanwhile is
- * used, or a token minted again. A homeserver that cannot be reached (`ChatUnreachableError`) is
- * tried again after each of `retryDelaysMs`, or sooner when another tab stores a session. Rejects
- * when no session could be started, or when `signIn.signal` aborts a wait.
+ * used, or a token minted again. A homeserver, or a mint request to denser's server, that cannot
+ * be reached (`ChatUnreachableError`) is tried again after each of `retryDelaysMs`, or sooner
+ * when another tab stores a session. Rejects when no session could be started, or when
+ * `signIn.signal` aborts a wait.
  */
 export async function signInToMatrixChat(
   signIn: MatrixChatSignIn,

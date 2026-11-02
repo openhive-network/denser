@@ -16,7 +16,8 @@ function field(answer: unknown, name: string): unknown {
 
 /**
  * A Matrix login token denser's server mints for the signed-in chat user; `rate-limited` with the
- * wait the server names when Synapse refused a mint this soon; `none` on any other answer.
+ * wait the server names when Synapse refused a mint this soon; `unreachable` when the request got
+ * no answer, failing or timing out; `none` on any other answer.
  */
 export async function requestMatrixLoginToken(): Promise<LoginTokenAnswer> {
   try {
@@ -28,7 +29,12 @@ export async function requestMatrixLoginToken(): Promise<LoginTokenAnswer> {
     const loginToken = field(answer, 'loginToken');
     return typeof loginToken === 'string' ? { kind: 'token', loginToken } : { kind: 'none' };
   } catch (error) {
-    if (error instanceof FetchError && error.response.status === TOO_MANY_REQUESTS) {
+    if (!(error instanceof FetchError)) {
+      const reason = error instanceof Error ? error.message : error;
+      logger.warn('The Matrix login token request got no answer: %o', reason);
+      return { kind: 'unreachable' };
+    }
+    if (error.response.status === TOO_MANY_REQUESTS) {
       const retryAfterMs = field(error.data, 'retry_after_ms');
       if (typeof retryAfterMs === 'number' && Number.isFinite(retryAfterMs) && retryAfterMs >= 0) {
         return { kind: 'rate-limited', retryAfterMs };
