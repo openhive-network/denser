@@ -47,7 +47,7 @@ catalogs:
     "@hiveio/beekeeper": "1.28.9-rc0-stable.261028200530"
     "@hiveio/workerbee": "1.28.4-rc1-stable.261029021233"
     "@hiveio/hb-auth": "1.28.4-rc0-stable.261028220752"
-    "@hiveio/healthchecker-component": "2.0.2-stable.261027010535"
+    "@hiveio/healthchecker-component": "2.0.2-stable.261101230602"
   "react-toolset":
     "react": "19.3.1"
     "react-dom": "19.3.1"
