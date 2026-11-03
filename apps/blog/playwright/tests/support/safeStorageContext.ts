@@ -36,14 +36,25 @@ export type KeyRole = 'posting' | 'active';
 
 type AuthorityOverrides = Partial<Record<KeyRole, unknown>>;
 
-/** Answers ACCOUNT's `find_accounts` with the authorities `overrides()` gives in place of the recorded ones */
-export async function overrideAuthorities(page: Page, overrides: () => AuthorityOverrides): Promise<void> {
+/**
+ * Answers ACCOUNT's `find_accounts` with the authorities `overrides()` gives in place of the recorded
+ * ones; leaves it to the routes added before while `overrides()` gives null
+ */
+export async function overrideAuthorities(
+  page: Page,
+  overrides: () => AuthorityOverrides | null
+): Promise<void> {
   await page.route(
     (url) => url.hostname === 'localhost' && url.port === String(FIXTURE_PROXY_PORT),
     async (route: Route) => {
       const body: { method?: string; params?: { accounts?: string[] } } | null =
         route.request().method() === 'POST' ? route.request().postDataJSON() : null;
-      if (body?.method !== 'database_api.find_accounts' || !body.params?.accounts?.includes(ACCOUNT)) {
+      const authorities = overrides();
+      if (
+        body?.method !== 'database_api.find_accounts' ||
+        !body.params?.accounts?.includes(ACCOUNT) ||
+        !authorities
+      ) {
         return route.fallback();
       }
       // hb-auth's own lookup, after verify_authority, leaves `delayed_votes_active` out: ask the recorded read
@@ -52,7 +63,7 @@ export async function overrideAuthorities(page: Page, overrides: () => Authority
       });
       const json: { result: { accounts: AccountAuthorities[] } } = await response.json();
       json.result.accounts = json.result.accounts.map((account) =>
-        account.name === ACCOUNT ? { ...account, ...overrides() } : account
+        account.name === ACCOUNT ? { ...account, ...authorities } : account
       );
       return route.fulfill({ response, json });
     }
@@ -68,10 +79,16 @@ export async function giveKeyRole(page: Page, role: () => KeyRole | null): Promi
   });
 }
 
-/** Answers ACCOUNT's `find_accounts` with OTHER_ACCOUNT in its posting authority's `account_auths`, and no key */
-export async function delegatePostingAuthority(page: Page): Promise<void> {
+/**
+ * While `delegated()`, answers ACCOUNT's `find_accounts` with OTHER_ACCOUNT in its posting
+ * authority's `account_auths`, and no key
+ */
+export async function delegatePostingAuthority(
+  page: Page,
+  delegated: () => boolean = () => true
+): Promise<void> {
   const delegatedPosting = { weight_threshold: 1, account_auths: [[OTHER_ACCOUNT, 1]], key_auths: [] };
-  await overrideAuthorities(page, () => ({ posting: delegatedPosting }));
+  await overrideAuthorities(page, () => (delegated() ? { posting: delegatedPosting } : null));
 }
 
 /** Answers safe storage's lookup of KEY_PUBLIC_KEY's accounts, made when it registers the key, with `owner` */

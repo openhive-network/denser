@@ -1,4 +1,4 @@
-import type { KeyRole } from './key-role';
+import type { KeyRefusal, KeyRole } from './key-role';
 
 type SignInKeyRole = Exclude<KeyRole, 'owner'>;
 
@@ -7,6 +7,45 @@ export const KEY_ROLE_HINTS: Record<SignInKeyRole, string> = {
   active: 'login_form.zod_error.key_without_active_authority',
   posting: 'login_form.zod_error.active_key_for_posting'
 };
+
+/** A smart-signer translation key, with the values it interpolates besides the Direct Authority Mode label (`mode`) */
+export interface KeyHint {
+  key: string;
+  values?: Record<string, string>;
+}
+
+const AUTHORISED_ACCOUNT_KEY_HINTS: Record<SignInKeyRole, string> = {
+  active: 'login_form.zod_error.authorised_account_active_key',
+  posting: 'login_form.zod_error.authorised_account_posting_key'
+};
+
+const OTHER_ACCOUNT_KEY_HINTS: Record<SignInKeyRole, string> = {
+  active: 'login_form.zod_error.other_account_active_key',
+  posting: 'login_form.zod_error.other_account_posting_key'
+};
+
+/**
+ * The hint for a key `classifyKeyRefusal` refused as `account`'s `keyType` key, or null for a key
+ * that safe storage takes as it is: an authorised account's key with Direct Authority Mode off
+ * (`strict` false), which it accepts through the account's `account_auths`.
+ */
+export function findKeyRefusalHint(
+  refusal: KeyRefusal,
+  account: string,
+  keyType: SignInKeyRole,
+  strict: boolean
+): KeyHint | null {
+  switch (refusal.kind) {
+    case 'own-other-role':
+      return { key: KEY_ROLE_HINTS[keyType] };
+    case 'authorised-account':
+      return strict
+        ? { key: AUTHORISED_ACCOUNT_KEY_HINTS[keyType], values: { owner: refusal.owner, account } }
+        : null;
+    case 'unrelated-account':
+      return { key: OTHER_ACCOUNT_KEY_HINTS[keyType], values: { owner: refusal.owner, account } };
+  }
+}
 
 // hived's answer to `verify_authority` for a signature the named authority does not accept
 const MISSING_AUTHORITY_PATTERN = /missing (posting|active) authority/i;

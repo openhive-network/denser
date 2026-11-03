@@ -128,7 +128,11 @@
       "password_required": "비밀번호를 입력해야 합니다",
       "wif_required": "WIF 키를 입력해야 합니다",
       "key_without_active_authority": "이 키에는 액티브 권한이 없습니다. 이 작업에 서명하려면 지갑에 액티브 키가 필요합니다",
-      "active_key_for_posting": "이 키에는 포스팅 권한이 없습니다. 블로그 로그인에는 포스팅 키가 필요합니다"
+      "active_key_for_posting": "이 키에는 포스팅 권한이 없습니다. 블로그 로그인에는 포스팅 키가 필요합니다",
+      "authorised_account_active_key": "이 키는 @{{account}}에 대한 액티브 권한을 가진 @{{owner}}의 키입니다. \"{{mode}}\"를 끄면 사용할 수 있습니다",
+      "authorised_account_posting_key": "이 키는 @{{account}}에 대한 포스팅 권한을 가진 @{{owner}}의 키입니다. \"{{mode}}\"를 끄면 사용할 수 있습니다",
+      "other_account_active_key": "이 키는 @{{account}}가 아닌 @{{owner}}의 키입니다. @{{account}}의 액티브 키를 입력하세요",
+      "other_account_posting_key": "이 키는 @{{account}}가 아닌 @{{owner}}의 키입니다. @{{account}}의 포스팅 키를 입력하세요"
     },
     "signin_with_keychain": "Hive Keychain 확장",
     "signin_with_peakvault": "PeakVault 확장",

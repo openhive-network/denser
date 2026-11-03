@@ -120,7 +120,11 @@
       "password_required": "密码为必填项",
       "wif_required": "WIF 密钥为必填项",
       "key_without_active_authority": "此密钥没有 Active 权限。钱包需要您的 Active 密钥来签署此操作",
-      "active_key_for_posting": "此密钥没有 Posting 权限。登录博客需要 Posting 密钥"
+      "active_key_for_posting": "此密钥没有 Posting 权限。登录博客需要 Posting 密钥",
+      "authorised_account_active_key": "此密钥属于 @{{owner}}，它拥有 @{{account}} 的 Active 权限。关闭“{{mode}}”后即可接受此密钥",
+      "authorised_account_posting_key": "此密钥属于 @{{owner}}，它拥有 @{{account}} 的 Posting 权限。关闭“{{mode}}”后即可接受此密钥",
+      "other_account_active_key": "此密钥属于 @{{owner}}，而不是 @{{account}}。请输入 @{{account}} 的 Active 密钥",
+      "other_account_posting_key": "此密钥属于 @{{owner}}，而不是 @{{account}}。请输入 @{{account}} 的 Posting 密钥"
     },
     "signin_with_keychain": "Hive密钥链扩展",
     "signin_with_wif": "使用WIF登录（传统）",

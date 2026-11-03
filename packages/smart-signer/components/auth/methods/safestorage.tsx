@@ -39,8 +39,8 @@ import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { Steps } from '../form';
 import { KeyType, LoginType } from '@smart-signer/types/common';
 import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
-import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
-import { findRegistrationKeyRoleHint } from '@smart-signer/lib/validators/key-role-hint';
+import { describeRefusedKey, validateSafeStorageKey } from '@smart-signer/lib/validators/validate-key-authority';
+import { findRegistrationKeyRoleHint, type KeyHint } from '@smart-signer/lib/validators/key-role-hint';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { passwordSchema } from '@smart-signer/lib/validators/validate-password';
 import ExtensionSignIn, { hasInjectedExtension } from './extension-sign-in';
@@ -153,10 +153,13 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       }
     }
 
-    /** Clears the key field and names the key the sign-in needs under it */
-    function rejectKey(keyRoleHint: string) {
-      form.resetField('wif');
-      form.setError('wif', { message: t(keyRoleHint, { ns: SMART_SIGNER_NAMESPACE }) });
+    /**
+     * Names the key the sign-in needs under the key field, which keeps the key: an authorised account's
+     * key is taken once Direct Authority Mode is unticked
+     */
+    function rejectKey({ key, values }: KeyHint) {
+      const mode = t('login_form.signin_safe_storage.strict_mode', { ns: SMART_SIGNER_NAMESPACE });
+      form.setError('wif', { message: t(key, { ns: SMART_SIGNER_NAMESPACE, mode, ...values }) });
       setLoading(false);
     }
 
@@ -165,7 +168,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         setLoading(true);
         setError(null);
-        const keyAuthorityError = await validateKeyAuthority(username, keyType, wif);
+        const keyAuthorityError = await validateSafeStorageKey(username, keyType, wif, strict);
         if (keyAuthorityError) {
           rejectKey(keyAuthorityError);
           return;
@@ -177,7 +180,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         } catch (error) {
           const keyRoleHint = findRegistrationKeyRoleHint(error, keyType);
           if (!keyRoleHint) throw error;
-          rejectKey(keyRoleHint);
+          rejectKey(await describeRefusedKey(username, keyType, wif, strict, keyRoleHint));
           return;
         }
         await finalize(values);
