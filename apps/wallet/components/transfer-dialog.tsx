@@ -44,7 +44,12 @@ import { toast } from '@ui/components/hooks/use-toast';
 import { getAsset } from '@transaction/lib/utils';
 import { detectSecretInMemo } from '@ui/lib/memo-secret-check';
 import { MemoSecretWarning } from './memo-secret-warning';
-import { type EncryptedMemo, hasEncryptedMemoMarker, memoToBroadcast } from '@/wallet/lib/encrypted-memo';
+import {
+  type EncryptedMemo,
+  hasEncryptedMemoMarker,
+  isMarkerOnlyMemo,
+  memoToBroadcast
+} from '@/wallet/lib/encrypted-memo';
 import { rejectedMinDelegationVests } from '@/wallet/lib/min-delegation';
 import type { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { createNaiAsset } from '@ui/lib/asset-constants';
@@ -115,7 +120,8 @@ export function TransferDialog({
     toError: `${fieldIdPrefix}-to-error`,
     amount: `${fieldIdPrefix}-amount`,
     amountError: `${fieldIdPrefix}-amount-error`,
-    memo: `${fieldIdPrefix}-memo`
+    memo: `${fieldIdPrefix}-memo`,
+    memoError: `${fieldIdPrefix}-memo-error`
   };
   const defaultValue = {
     title: '',
@@ -140,7 +146,8 @@ export function TransferDialog({
   // The override covers only the memo it was given for: any edit has to be acknowledged again.
   const [acknowledgedMemo, setAcknowledgedMemo] = useState<string | null>(null);
   const memoSecretAcknowledged = acknowledgedMemo === data.memo;
-  const memoBlocked = memoSecret !== null && !memoSecretAcknowledged;
+  const memoMarkerOnly = isMarkerOnlyMemo(data.memo);
+  const memoBlocked = (memoSecret !== null && !memoSecretAcknowledged) || memoMarkerOnly;
   const onMemoSecretAcknowledgedChange = useCallback(
     (acknowledged: boolean) => setAcknowledgedMemo(acknowledged ? data.memo : null),
     [data.memo]
@@ -627,8 +634,17 @@ export function TransferDialog({
                         className="col-span-3"
                         value={data.memo}
                         onChange={(e) => setData({ ...data, memo: e.target.value })}
+                        aria-invalid={memoMarkerOnly}
+                        aria-describedby={memoMarkerOnly ? fieldIds.memoError : undefined}
                       />
                     </div>
+                    {memoMarkerOnly ? (
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <p id={fieldIds.memoError} className="col-span-3 col-start-2 pt-1 text-sm text-destructive">
+                          {t('transfers_page.error.memo_marker_only')}
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                 )}
                 {memoSecret ? (

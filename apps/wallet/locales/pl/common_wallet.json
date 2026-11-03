@@ -518,7 +518,7 @@
     "encrypt_memo_with_metamask": "Zaszyfruj za pomocą MetaMask",
     "encrypt_memo_error": "Błąd szyfrowania MEMO: klucz prywatny jest nieprawidłowy lub nie znaleziono konta odbiorcy.",
     "metamask_snap_outdated": "Snap Hive Wallet w MetaMask ma wersję {{installed}}, starszą niż wymagana przez tę stronę {{required}}. Zaktualizuj snap w MetaMask i spróbuj ponownie.",
-    "request_id": "ID żądania",
+    "request_id": "ID zlecenia",
     "cancel_power_down": "Anuluj zmniejszanie mocy",
     "transaction_success": "Transakcja zakończona sukcesem",
     "cancel__transfer_from_savings": "Anuluj wypłatę z oszczędności",
@@ -566,7 +566,8 @@
       "min_delegation": "Minimalna delegacja to {{min}} HP.",
       "cannot_delegate": "Nie możesz jeszcze delegować: minimalna delegacja to {{min}} HP, a dostępne masz {{available}} HP.",
       "delegation_below_minimum": "Delegacja odrzucona: minimum to {{min}} HP (próbowano {{amount}} HP).",
-      "account_check_failed": "Nie udało się sprawdzić konta. Spróbuj ponownie później."
+      "account_check_failed": "Nie udało się sprawdzić konta. Spróbuj ponownie później.",
+      "memo_marker_only": "Zaszyfrowana notatka musi zawierać tekst po #."
     },
     "confirm_title": {
       "transfers": "Potwierdź przelew na konto",
