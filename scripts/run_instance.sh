@@ -69,9 +69,37 @@ done
 echo "Pulling image: $IMAGE_NAME"
 docker pull "$IMAGE_NAME"
 
-(docker ps -q --filter "name=$CONTAINER_NAME" | grep -q . && docker stop "$CONTAINER_NAME") || true
+CONTAINER_REMOVAL_TIMEOUT=${CONTAINER_REMOVAL_TIMEOUT:-60}
 
-docker container rm --force "$CONTAINER_NAME" || true
+container_exists () {
+    docker container inspect "$CONTAINER_NAME" >/dev/null 2>&1
+}
+
+# A container started with --rm is removed by the daemon asynchronously once it
+# stops, so `docker stop`/`docker rm` can return (or fail with "removal ... already
+# in progress") while the name is still taken. The name being free is the only
+# reliable signal that `docker run --name` will succeed.
+remove_old_container () {
+    container_exists || return 0
+
+    echo "Removing existing container: $CONTAINER_NAME"
+    docker stop "$CONTAINER_NAME" >/dev/null || echo "WARNING: 'docker stop $CONTAINER_NAME' failed; waiting for its removal anyway"
+    if container_exists; then
+        docker container rm --force "$CONTAINER_NAME" >/dev/null || echo "WARNING: 'docker container rm --force $CONTAINER_NAME' failed; waiting for its removal anyway"
+    fi
+
+    local waited=0
+    while container_exists; do
+        if [ "$waited" -ge "$CONTAINER_REMOVAL_TIMEOUT" ]; then
+            echo "ERROR: Container '$CONTAINER_NAME' still exists ${CONTAINER_REMOVAL_TIMEOUT}s after stop/remove; refusing to start a new one"
+            exit 1
+        fi
+        sleep 1
+        waited=$((waited + 1))
+    done
+}
+
+remove_old_container
 
 RUN_OPTIONS=(
     "--rm"
