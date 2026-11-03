@@ -1,4 +1,4 @@
-import { describe, it } from 'node:test';
+import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import { registerHooks } from 'node:module';
 
@@ -88,6 +88,19 @@ describe('memo-crypto: encrypt/decrypt with a MEMO private key', () => {
     const encrypted = await encryptMemoWithPrivateKey(SENDER_MEMO_WIF, RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
 
     await assert.rejects(decryptMemoWithPrivateKey(UNRELATED_WIF, encrypted));
+  });
+
+  // Beekeeper's unlock timeout counts idle time across the whole (shared, page-lifetime) instance.
+  it('still encrypts and decrypts after the page has been idle past beekeeper\'s default unlock timeout', async (t) => {
+    await encryptMemoWithPrivateKey(SENDER_MEMO_WIF, RECIPIENT_MEMO_PUBLIC_KEY, '#warm up the shared instance');
+    t.after(() => mock.timers.reset());
+    mock.timers.enable({ apis: ['Date'], now: Date.now() });
+    mock.timers.tick(25 * 60 * 1000);
+
+    const encrypted = await encryptMemoWithPrivateKey(SENDER_MEMO_WIF, RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
+
+    assert.match(encrypted, BASE58_CIPHERTEXT);
+    assert.equal(await decryptMemoWithPrivateKey(RECIPIENT_MEMO_WIF, encrypted), '#hello');
   });
 });
 
