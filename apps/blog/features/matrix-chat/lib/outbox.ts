@@ -2,7 +2,7 @@ import { ChatUnreachableError } from './matrix-chat-sign-in.ts';
 
 /**
  * Why sending a message failed: `unreachable` (no connection, or a server error or rate limit) is
- * sent again once the chat reconnects; `rejected` waits for the user's retry
+ * sent again automatically (see `OutgoingQueue`); `rejected` waits for the user's retry
  */
 export type SendFailure = 'unreachable' | 'rejected';
 
