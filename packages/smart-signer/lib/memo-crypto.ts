@@ -91,9 +91,13 @@ export function createLazyAsyncSingleton<T>(factory: () => Promise<T>): () => Pr
 
 // Beekeeper's WASM instance is expensive to init, so it's cached and reused;
 // only the per-call session/wallet below is ephemeral.
+// Beekeeper counts its unlock timeout over the whole instance, not per wallet: with the default
+// (900s), the first call after the page sat idle that long throws "Wallet locked due to timeout".
+// Each wallet here lives for one call only, so the instance never times out.
+const NO_UNLOCK_TIMEOUT = 0;
 const getBeekeeperInstance = createLazyAsyncSingleton<IBeekeeperInstance>(async () => {
   const { default: createBeekeeper } = await import('@hiveio/beekeeper');
-  return createBeekeeper({ inMemory: true });
+  return createBeekeeper({ inMemory: true, unlockTimeout: NO_UNLOCK_TIMEOUT });
 });
 
 /**
