@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import {
   type ITransactionIdObserver,
+  isWaxRequestTimeout,
   TransactionNotConfirmedError,
   toNotConfirmedError,
   watchInclusion
@@ -167,20 +168,39 @@ describe('toNotConfirmedError', () => {
     expect(toNotConfirmedError(original, 'a2192469')).to.be.instanceOf(TransactionNotConfirmedError);
   });
 
-  // Reads wax's on-chain verification makes before sending the transaction
+  // Reads of WorkerBee's inclusion observer, which go on after `broadcast_transaction` succeeded
   for (const method of [
-    'database_api.find_accounts',
-    'condenser_api.get_accounts',
+    'block_api.get_block',
+    'block_api.get_block_range',
     'database_api.get_dynamic_global_properties'
   ]) {
-    it(`passes a timed-out pre-broadcast read (${method}) through unchanged`, () => {
+    it(`turns a timed-out block scanner read (${method}) into a not-confirmed error`, () => {
+      const original = requestTimeout(method);
+      const error = toNotConfirmedError(original, 'a2192469');
+
+      if (!(error instanceof TransactionNotConfirmedError))
+        return expect.fail('not a TransactionNotConfirmedError');
+      expect(error.transactionId).to.equal('a2192469');
+      expect(error.cause).to.equal(original);
+    });
+  }
+
+  // Reads wax's on-chain verification makes before sending the transaction
+  for (const method of ['database_api.find_accounts', 'rc_api.find_rc_accounts']) {
+    it(`passes a timed-out pre-broadcast verification read (${method}) through unchanged`, () => {
       const original = requestTimeout(method);
 
       expect(toNotConfirmedError(original, 'a2192469')).to.equal(original);
     });
   }
 
-  it('passes a timeout without a readable request payload through unchanged', () => {
+  it('reads a pre-broadcast verification method from a request payload sent as a JSON string', () => {
+    const original = requestTimeout('database_api.find_accounts', { dataAsString: true });
+
+    expect(toNotConfirmedError(original, 'a2192469')).to.equal(original);
+  });
+
+  it('turns a timeout without a readable request method into a not-confirmed error', () => {
     const noRequest = new Error('Request timed out: "POST https://api.hive.blog"');
     noRequest.name = 'WaxError';
     const garbled = Object.assign(new Error('Request timed out: "POST https://api.hive.blog"'), {
@@ -188,8 +208,8 @@ describe('toNotConfirmedError', () => {
     });
     garbled.name = 'WaxError';
 
-    expect(toNotConfirmedError(noRequest, 'a2192469')).to.equal(noRequest);
-    expect(toNotConfirmedError(garbled, 'a2192469')).to.equal(garbled);
+    expect(toNotConfirmedError(noRequest, 'a2192469')).to.be.instanceOf(TransactionNotConfirmedError);
+    expect(toNotConfirmedError(garbled, 'a2192469')).to.be.instanceOf(TransactionNotConfirmedError);
   });
 
   it('passes other broadcast errors through unchanged', () => {
@@ -203,5 +223,25 @@ describe('toNotConfirmedError', () => {
     expect(toNotConfirmedError(notAnError, 'a2192469')).to.equal(notAnError);
     expect(toNotConfirmedError(otherTimeout, 'a2192469')).to.equal(otherTimeout);
     expect(toNotConfirmedError(expired, 'a2192469')).to.equal(expired);
+  });
+});
+
+describe('isWaxRequestTimeout', () => {
+  it("takes wax's request timeout under either of its names", () => {
+    for (const name of ['WaxError', 'WaxRequestTimeoutError']) {
+      const error = new Error('Request timed out: "POST https://api.hive.blog"');
+      error.name = name;
+      expect(isWaxRequestTimeout(error)).to.equal(true);
+    }
+  });
+
+  it('rejects other errors and timeouts not raised by wax', () => {
+    const notWax = new Error('Request timed out: "POST https://api.hive.blog"');
+    const otherWax = new Error('Chain API returned an error');
+    otherWax.name = 'WaxChainApiError';
+
+    expect(isWaxRequestTimeout(notWax)).to.equal(false);
+    expect(isWaxRequestTimeout(otherWax)).to.equal(false);
+    expect(isWaxRequestTimeout({ name: 'WaxError', message: 'Request timed out' })).to.equal(false);
   });
 });
