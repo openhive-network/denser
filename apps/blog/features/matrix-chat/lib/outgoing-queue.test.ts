@@ -221,6 +221,43 @@ describe('outgoing queue', () => {
     assert.deepEqual(server.attempts, ['txn-1', 'txn-1', 'txn-2', 'txn-2']);
   });
 
+  it('retries a resend whose send hung until it timed out as unreachable, on the next reconnection, once at a time', async () => {
+    const server = homeserver();
+    const timers = manualTimers();
+    const queue = queueOn(server, timers);
+    queue.send(ROOM, 'offline');
+    await settled();
+    server.holding = true;
+    queue.setConnected(true);
+    assert.deepEqual(
+      server.held.map((attempt) => attempt.txnId),
+      ['txn-1']
+    );
+
+    queue.setConnected(false);
+    queue.setConnected(true);
+    await settled();
+    assert.deepEqual(server.attempts, ['txn-1', 'txn-1'], 'no second send of the transaction while one is in flight');
+
+    server.held[0].failUnreachable();
+    await settled();
+    assert.deepEqual(statuses(queue), [['txn-1', 'failed']]);
+    assert.deepEqual(
+      timers.pending.map((timer) => timer.ms),
+      [RESEND_BACKOFF_MS[0]]
+    );
+
+    server.holding = false;
+    server.online = true;
+    queue.setConnected(false);
+    queue.setConnected(true);
+    await settled();
+    assert.deepEqual(server.attempts, ['txn-1', 'txn-1', 'txn-1']);
+    assert.deepEqual(server.delivered, ['txn-1']);
+    assert.deepEqual(statuses(queue), [['txn-1', 'sent']]);
+    assert.deepEqual(timers.pending, []);
+  });
+
   it('never resends a message the homeserver rejected, leaving it to the retry button', async () => {
     const attempts: string[] = [];
     let rejecting = true;

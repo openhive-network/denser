@@ -106,7 +106,8 @@ export default function MatrixChatPanel({ status, session, retry, open, appUrl }
   if (session) {
     return (
       <div className="flex min-h-0 flex-1 flex-col bg-background text-foreground" data-testid="matrix-chat-panel">
-        <SignedInChat session={session} open={open} appUrl={appUrl} />
+        {/* Keyed by the user: another user's session starts with an empty outbox, resending none of the last one's */}
+        <SignedInChat key={session.userId} session={session} open={open} appUrl={appUrl} />
       </div>
     );
   }

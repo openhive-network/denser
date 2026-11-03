@@ -1,7 +1,7 @@
 import { describe, it, afterEach, before, after, mock } from 'node:test';
 import assert from 'node:assert/strict';
 import type { MatrixSdkLogger } from './sdk-logger-type.ts';
-import { resumeMatrixChatSession, startMatrixChatSession } from './matrix-chat-session.ts';
+import { resumeMatrixChatSession, SEND_TIMEOUT_MS, startMatrixChatSession } from './matrix-chat-session.ts';
 import type { ChatSession } from './chat-view-types.ts';
 import { ChatUnreachableError, StoredSessionRejectedError, type MatrixCredentials } from './matrix-chat-sign-in.ts';
 
@@ -66,6 +66,8 @@ interface HomeserverOptions {
   deviceDeleted?: boolean;
   /** Requests to these paths fail as a lost connection does */
   unreachable?: RegExp;
+  /** Message sends never answer, as on a half-open socket, until the client aborts them */
+  hangingSend?: boolean;
   /** The error answer to the sync filter request the first sync starts with */
   filterError?: { status: number; errcode: string };
 }
@@ -121,6 +123,11 @@ function fakeHomeserver(options: HomeserverOptions = {}) {
     }
     if (path.includes('/messages')) {
       return json({ chunk: [message('$m0', 'older', 1)], start: url.searchParams.get('from'), end: undefined });
+    }
+    if (path.includes('/send/m.room.message/') && options.hangingSend) {
+      return new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')));
+      });
     }
     if (path.includes('/send/m.room.message/')) return json({ event_id: '$sent' });
     if (path === '/logout' && options.deviceDeleted) {
@@ -260,6 +267,18 @@ describe('startMatrixChatSession', () => {
   it('rejects a send that does not reach the homeserver with ChatUnreachableError', async () => {
     const chat = await start('#general:example.org', { unreachable: /\/send\// });
     await assert.rejects(chat.sendText(GENERAL, 'txn-1', 'hi all'), ChatUnreachableError);
+  });
+
+  it('rejects a send the homeserver does not answer in time with ChatUnreachableError', async () => {
+    const chat = await start('#general:example.org', { hangingSend: true });
+    const sending = chat.sendText(GENERAL, 'txn-1', 'hi all');
+    let settled = false;
+    sending.catch(() => undefined).finally(() => (settled = true));
+    mock.timers.tick(SEND_TIMEOUT_MS - 1);
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.equal(settled, false);
+    mock.timers.tick(1);
+    await assert.rejects(sending, ChatUnreachableError);
   });
 
   it('is connected once the first sync is in', async () => {
