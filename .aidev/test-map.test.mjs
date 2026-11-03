@@ -15,7 +15,7 @@ const SUITES = [...BLOG_SUITES, 'wallet_fixture', 'lighthouse_fixture'];
 const FIXTURE = 'apps/blog/playwright/tests/fixture';
 const SKIP = 77;
 
-function testMap(args, changedLines, extraEnv = {}) {
+function testMap(args, changedLines, extraEnv = {}, root = repo) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-map-'));
   const env = { ...process.env, ...extraEnv };
   delete env.AIDEV_CHANGED_FILES_FILE;
@@ -23,18 +23,18 @@ function testMap(args, changedLines, extraEnv = {}) {
     env.AIDEV_CHANGED_FILES_FILE = path.join(dir, 'changed-files.txt');
     fs.writeFileSync(env.AIDEV_CHANGED_FILES_FILE, changedLines.map((line) => `${line}\n`).join(''));
   }
-  const run = spawnSync('node', [path.join(repo, '.aidev/test-map.mjs'), ...args], { cwd: os.tmpdir(), env, encoding: 'utf8' });
+  const run = spawnSync('node', [path.join(root, '.aidev/test-map.mjs'), ...args], { cwd: os.tmpdir(), env, encoding: 'utf8' });
   fs.rmSync(dir, { recursive: true, force: true });
   return run;
 }
 
 // suite -> its select's exit status
-function selected(changedLines) {
-  return Object.fromEntries(SUITES.map((suite) => [suite, testMap(['select', suite], changedLines).status]));
+function selected(changedLines, root = repo) {
+  return Object.fromEntries(SUITES.map((suite) => [suite, testMap(['select', suite], changedLines, {}, root).status]));
 }
 
-function specs(changedLines) {
-  const run = testMap(['specs'], changedLines);
+function specs(changedLines, root = repo) {
+  const run = testMap(['specs'], changedLines, {}, root);
   assert.equal(run.status, 0, run.stderr);
   return run.stdout.split('\n').filter(Boolean);
 }
@@ -235,6 +235,58 @@ test('the plan prints the invocation that runs exactly the selected specs', () =
   const run = testMap(['plan'], [`${FIXTURE}/faqDhf.spec.ts`]);
   assert.equal(run.status, 0, run.stderr);
   assert.match(run.stdout, /^run: aidev test run --slot full --suite fixture_e2e -- playwright\/tests\/fixture\/faqDhf\.spec\.ts$/m);
+});
+
+// A repository holding the map and `files` (path -> content), for import shapes
+// the real tree does not have yet.
+function syntheticRepo(files) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'test-map-repo-'));
+  fs.mkdirSync(path.join(root, '.aidev'));
+  for (const script of ['test-map.mjs', 'import-graph.mjs']) fs.copyFileSync(path.join(repo, '.aidev', script), path.join(root, '.aidev', script));
+  for (const [file, content] of Object.entries(files)) {
+    fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
+    fs.writeFileSync(path.join(root, file), content);
+  }
+  return root;
+}
+
+const SUPPORT = 'apps/blog/playwright/tests/support';
+// helper.ts and recorded.ts each have a relative importer too, so a missed alias
+// edge would narrow the selection rather than widen it as an orphan.
+const ALIASED_TREE = {
+  'apps/blog/tsconfig.json': JSON.stringify({
+    compilerOptions: { paths: { '@/blog/*': ['./*'], '@data/*': ['./playwright/tests/data/*'], '@ui/*': ['../../packages/ui/*'] } }
+  }).replace('{', '{\n  // tsconfig is JSONC\n'),
+  'apps/blog/playwright.fixture.config.ts': '',
+  [`${FIXTURE}/aliased.spec.ts`]: "import { helper } from '@/blog/playwright/tests/support/helper';\n",
+  [`${FIXTURE}/relative.spec.ts`]: "import { helper } from '../support/helper';\nimport { recorded } from '../support/mock-server/recorded';\nimport { other } from '../data/other';\n",
+  [`${FIXTURE}/proxied.spec.ts`]: "import { proxy } from '../support/mock-server/fixture-proxy';\n",
+  [`${FIXTURE}/unrelated.spec.ts`]: "import { test } from '@playwright/test';\nimport { button } from '@ui/components/button';\n",
+  [`${FIXTURE}/unfollowed.spec.ts`]: "import { other } from '@data/other';\n",
+  [`${SUPPORT}/helper.ts`]: 'export const helper = 1;\n',
+  'apps/blog/playwright/tests/data/other.ts': 'export const other = 1;\n',
+  [`${SUPPORT}/mock-server/fixture-proxy.ts`]: "export { recorded as proxy } from '@/blog/playwright/tests/support/mock-server/recorded';\n",
+  [`${SUPPORT}/mock-server/recorded.ts`]: 'export const recorded = 1;\n',
+  'packages/ui/components/button.tsx': 'export const button = 1;\n'
+};
+
+test('an import through @/blog/ is followed like a relative one', (t) => {
+  const root = syntheticRepo(ALIASED_TREE);
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  assert.deepEqual(specs([`${SUPPORT}/helper.ts`], root), ['playwright/tests/fixture/aliased.spec.ts', 'playwright/tests/fixture/relative.spec.ts']);
+  const change = [`${SUPPORT}/mock-server/recorded.ts`];
+  assert.deepEqual(specs(change, root), ['playwright/tests/fixture/proxied.spec.ts', 'playwright/tests/fixture/relative.spec.ts']);
+  assert.equal(selected(change, root).lighthouse_fixture, 0);
+});
+
+test('a path under an alias target the import graph does not follow selects everything', (t) => {
+  const root = syntheticRepo(ALIASED_TREE);
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const change = ['apps/blog/playwright/tests/data/other.ts'];
+  assert.deepEqual(selected(change, root), Object.fromEntries(SUITES.map((suite) => [suite, 0])));
+  assert.equal(specs(change, root).length, 5);
+  const run = testMap(['select', 'wallet_fixture'], change, {}, root);
+  assert.match(run.stdout, /imports '@data\/other' through apps\/blog\/tsconfig\.json's '@data\/\*'/);
 });
 
 test('project.yaml binds each mapped suite to its select', () => {

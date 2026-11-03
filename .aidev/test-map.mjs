@@ -22,7 +22,10 @@
 // lockfile, root or build config, scripts/, .aidev/ itself, anything unknown)
 // selects every suite and every spec; so does Playwright code that is loaded by
 // something other than an import (a config's string path) or whose importers end
-// anywhere this map does not recognise. Rules, first match:
+// anywhere this map does not recognise. Imports through the apps' own aliases
+// (`@/blog/...`, `@/wallet/...`) count as relative ones; a path under the target of
+// any other tsconfig `paths` alias some app or Playwright source imports through
+// selects everything, the import graph missing its importers. Rules, first match:
 //   - docs (docs/**, root *.md, CLAUDE.md/AGENTS.md anywhere, *.md under a
 //     playwright/ directory): nothing;
 //   - apps/wallet/playwright** (the wallet's Playwright code, configs and
@@ -53,7 +56,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { importerClosure, isSource, reverseImports, SOURCE_SUFFIXES, sourceFiles } from './import-graph.mjs';
+import { importerClosure, isSource, reverseImports, SOURCE_SUFFIXES, sourceFiles, unfollowedAliasTargets } from './import-graph.mjs';
 
 export const SELECT_SKIP_EXIT = 77;
 const BLOG_SUITES = ['fixture_e2e', 'fixture_e2e_shard_2', 'fixture_e2e_shard_3'];
@@ -63,6 +66,7 @@ export const MAPPED_SUITES = [...BLOG_SUITES, WALLET_SUITE, LIGHTHOUSE_SUITE];
 
 const FALLBACK_BASES = ['origin/aidev/integration', 'aidev/integration', 'origin/develop'];
 const SCANNED_ROOTS = ['apps', 'playwright'];
+const TSCONFIG_ROOTS = ['apps', 'packages', 'playwright'];
 const BLOG_APP_DIR = 'apps/blog';
 const FIXTURE_SPEC = /^apps\/blog\/playwright\/tests\/fixture\/[^/]+\.spec\.ts$/;
 const FIXTURE_SPEC_DIR = 'apps/blog/playwright/tests/fixture';
@@ -176,6 +180,7 @@ class TestMap {
   constructor() {
     const sources = SCANNED_ROOTS.flatMap((root) => [...sourceFiles(root)]);
     this.importers = reverseImports(sources);
+    this.unfollowedAliasTargets = unfollowedAliasTargets(sources, TSCONFIG_ROOTS);
     this.playwrightSources = sources.filter((file) => BLOG_PLAYWRIGHT.test(file) || WALLET_PLAYWRIGHT.test(file) || SHARED_PLAYWRIGHT.test(file));
     for (const config of sources) this.addConfigPaths(config);
   }
@@ -210,6 +215,9 @@ class TestMap {
 
   classifyPath(file, selection) {
     if (DOCS.some((pattern) => pattern.test(file))) return;
+    for (const [target, why] of this.unfollowedAliasTargets) {
+      if (file.startsWith(target)) return selection.widen(`${file} may be imported unseen: ${why}`);
+    }
     if (WALLET_PLAYWRIGHT.test(file)) {
       selection.suite(WALLET_SUITE, `${file} is wallet Playwright code`);
       if (isSource(file)) this.reach(file, selection);
