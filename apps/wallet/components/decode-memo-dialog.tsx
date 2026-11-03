@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { TFunction } from 'i18next';
 import {
   Button,
   Dialog,
@@ -17,11 +18,13 @@ import {
 import { decryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
 import { hasNativeMemoCrypto, loadNativeMemoSigner } from '@smart-signer/lib/load-native-memo-signer';
 import { OutdatedMetaMaskSnapError } from '@smart-signer/lib/metamask-snap-version';
+import { isWalletRequestRejected } from '@smart-signer/lib/signer/wallet-request-rejected';
 import type { SignerTool } from '@smart-signer/lib/signer/get-signer';
 import { LoginType } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
+import { isUserCancelled } from '@ui/lib/user-cancelled';
 
 const logger = getLogger('app');
 
@@ -30,6 +33,32 @@ const NATIVE_SIGNER_DECODE_LABEL_KEY: Partial<Record<LoginType, string>> = {
   [LoginType.keychain]: 'transfers_page.decode_memo_with_keychain',
   [LoginType.peakvault]: 'transfers_page.decode_memo_with_peakvault',
   [LoginType.metamask]: 'transfers_page.decode_memo_with_metamask'
+};
+
+// Brand names, not translated.
+const NATIVE_SIGNER_WALLET_NAME: Partial<Record<LoginType, string>> = {
+  [LoginType.keychain]: 'Hive Keychain',
+  [LoginType.peakvault]: 'Peak Vault',
+  [LoginType.metamask]: 'MetaMask'
+};
+
+type PendingDecode = 'native' | 'key' | null;
+
+const nativeSignerErrorMessage = (
+  error: unknown,
+  wallet: string | undefined,
+  t: TFunction<'common_wallet', undefined>
+): string => {
+  if (error instanceof OutdatedMetaMaskSnapError) {
+    return t('transfers_page.metamask_snap_outdated', {
+      installed: error.installedVersion,
+      required: error.requiredVersion
+    });
+  }
+  if (isWalletRequestRejected(error) || isUserCancelled(error)) {
+    return t('transfers_page.decode_memo_wallet_rejected', { wallet });
+  }
+  return t('transfers_page.decode_memo_wallet_error', { wallet });
 };
 
 interface DecodeMemoDialogProps {
@@ -44,88 +73,92 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
   const [privateKey, setPrivateKey] = useState('');
   const [decodedMessage, setDecodedMessage] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [pending, setPending] = useState<PendingDecode>(null);
   // Loaded when the dialog opens: the signer modules pull in wax (DR-005).
   const [nativeSigner, setNativeSigner] = useState<SignerTool | null>(null);
-  // Gates the manual private-key form until the automatic native-signer attempt finishes.
-  const [autoAttempted, setAutoAttempted] = useState(false);
+  // Set once the native signer is loaded (or known to be unavailable), before its request is
+  // answered: an extension may never answer a rejected request, so the private-key form and the
+  // retry must not wait for it.
+  const [signerLoaded, setSignerLoaded] = useState(false);
   const autoAttemptStarted = useRef(false);
-  // Bumped on every close/reopen so a stale in-flight decode (started before the dialog
-  // was closed and reopened) can't clobber state from a newer attempt when it resolves.
-  const attemptIdRef = useRef(0);
+  // Bumped by every decode and every close, so only the latest request's answer is shown: an
+  // extension answers a request it dropped for a newer one, and a closed dialog's request may
+  // be answered after it was reopened.
+  const requestIdRef = useRef(0);
+  const walletName = NATIVE_SIGNER_WALLET_NAME[user.loginType];
 
   const resetState = () => {
     setPrivateKey('');
     setDecodedMessage('');
     setError('');
-    setLoading(false);
-    setAutoAttempted(false);
+    setPending(null);
+    setSignerLoaded(false);
     autoAttemptStarted.current = false;
-    attemptIdRef.current += 1;
+    requestIdRef.current += 1;
   };
 
-  const onDecodeWithPrivateKey = async () => {
-    const attemptId = attemptIdRef.current;
-    setLoading(true);
-    setError('');
-    try {
-      const decoded = await decryptMemoWithPrivateKey(privateKey, encodedMemo);
-      if (attemptIdRef.current === attemptId) setDecodedMessage(decoded);
-    } catch (error) {
-      logger.error(error, 'Error decoding memo with private key');
-      if (attemptIdRef.current === attemptId) setError(t('transfers_page.decode_memo_error'));
-    } finally {
-      if (attemptIdRef.current === attemptId) setLoading(false);
-    }
-  };
-
-  const decodeWithNativeSigner = useCallback(
-    async (signer: SignerTool) => {
-      const attemptId = attemptIdRef.current;
-      setLoading(true);
+  const runDecode = useCallback(
+    async (
+      kind: Exclude<PendingDecode, null>,
+      decode: () => Promise<string>,
+      errorMessage: (e: unknown) => string
+    ) => {
+      const requestId = ++requestIdRef.current;
+      const isLatest = () => requestIdRef.current === requestId;
+      setPending(kind);
+      setDecodedMessage('');
       setError('');
       try {
-        const decoded = await signer.decryptData(encodedMemo);
-        if (attemptIdRef.current === attemptId) setDecodedMessage(decoded);
+        const decoded = await decode();
+        if (isLatest()) setDecodedMessage(decoded);
       } catch (error) {
-        logger.error(error, 'Error decoding memo with native signer');
-        if (attemptIdRef.current !== attemptId) return;
-        setError(
-          error instanceof OutdatedMetaMaskSnapError
-            ? t('transfers_page.metamask_snap_outdated', {
-                installed: error.installedVersion,
-                required: error.requiredVersion
-              })
-            : t('transfers_page.decode_memo_error')
-        );
+        logger.error(error, 'Error decoding memo with %s', kind === 'key' ? 'private key' : 'native signer');
+        if (isLatest()) setError(errorMessage(error));
       } finally {
-        if (attemptIdRef.current === attemptId) setLoading(false);
+        if (isLatest()) setPending(null);
       }
     },
-    [encodedMemo, t]
+    []
+  );
+
+  const onDecodeWithPrivateKey = () =>
+    runDecode(
+      'key',
+      () => decryptMemoWithPrivateKey(privateKey, encodedMemo),
+      () => t('transfers_page.decode_memo_error')
+    );
+
+  const decodeWithNativeSigner = useCallback(
+    (signer: SignerTool) =>
+      runDecode(
+        'native',
+        () => signer.decryptData(encodedMemo),
+        (error) => nativeSignerErrorMessage(error, walletName, t)
+      ),
+    [runDecode, encodedMemo, walletName, t]
   );
 
   const onDecodeWithNativeSigner = () => {
     if (nativeSigner) decodeWithNativeSigner(nativeSigner);
   };
 
-  // Try the logged-in signer's own key store first; only reveal the manual
-  // private-key form once that attempt has run (successfully or not).
+  // Try the logged-in signer's own key store first; reveal the manual private-key
+  // form once the signer is loaded, without waiting for the extension's answer.
   useEffect(() => {
     if (!open || autoAttemptStarted.current) return;
     autoAttemptStarted.current = true;
 
-    const attemptId = attemptIdRef.current;
-    const autoAttempt = async () => {
-      const signer = await loadNativeMemoSigner(username, user.loginType);
-      if (attemptIdRef.current !== attemptId) return;
-      setNativeSigner(signer);
-      if (signer) await decodeWithNativeSigner(signer);
-    };
-    autoAttempt()
-      .catch((error) => logger.error(error, 'Error loading the native memo signer'))
-      .finally(() => {
-        if (attemptIdRef.current === attemptId) setAutoAttempted(true);
+    const requestId = requestIdRef.current;
+    loadNativeMemoSigner(username, user.loginType)
+      .then((signer) => {
+        if (requestIdRef.current !== requestId) return;
+        setNativeSigner(signer);
+        setSignerLoaded(true);
+        if (signer) decodeWithNativeSigner(signer);
+      })
+      .catch((error) => {
+        logger.error(error, 'Error loading the native memo signer');
+        if (requestIdRef.current === requestId) setSignerLoaded(true);
       });
   }, [open, username, user.loginType, decodeWithNativeSigner]);
 
@@ -147,16 +180,20 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{t('transfers_page.decode_memo_title')}</DialogTitle>
-          <DialogDescription>{t('transfers_page.decode_memo_description')}</DialogDescription>
+          <DialogDescription>
+            {walletName
+              ? t('transfers_page.decode_memo_description_with_wallet', { wallet: walletName })
+              : t('transfers_page.decode_memo_description')}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4">
-          {hasNativeMemoCrypto(user.loginType) && !autoAttempted && (
+          {hasNativeMemoCrypto(user.loginType) && (!signerLoaded || pending === 'native') && (
             <div className="text-sm text-muted-foreground" data-testid="decode-memo-auto-trying">
               {t('transfers_page.decode_memo_auto_trying')}
             </div>
           )}
-          {autoAttempted && (
+          {signerLoaded && (
             <div>
               <Label htmlFor="memo-private-key">{t('transfers_page.decode_memo_private_key')}</Label>
               <Input
@@ -182,17 +219,21 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
               data-testid="decoded-memo-result"
             />
           </div>
-          {error && <div className="text-sm text-destructive">{error}</div>}
+          {error && (
+            <div className="text-sm text-destructive" data-testid="decode-memo-error">
+              {error}
+            </div>
+          )}
         </div>
 
         <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-          {autoAttempted && (
-            <Button onClick={onDecodeWithPrivateKey} disabled={!privateKey || loading}>
+          {signerLoaded && (
+            <Button onClick={onDecodeWithPrivateKey} disabled={!privateKey || pending === 'key'}>
               {t('transfers_page.decode_memo_with_private_key')}
             </Button>
           )}
           {nativeSigner && nativeSignerLabelKey && (
-            <Button variant="ghost" onClick={onDecodeWithNativeSigner} disabled={loading}>
+            <Button variant="ghost" onClick={onDecodeWithNativeSigner} disabled={pending === 'key'}>
               {t(nativeSignerLabelKey)}
             </Button>
           )}

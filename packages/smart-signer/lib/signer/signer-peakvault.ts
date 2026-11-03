@@ -6,6 +6,7 @@ import { getChain } from '@transaction/lib/chain';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import PeakVaultProvider from '@hiveio/wax-signers-peakvault';
 import { requireEncryptedMemo } from '@smart-signer/lib/memo-layout';
+import { decryptMemoWithPeakVault } from '@smart-signer/lib/signer/peakvault-memo-crypto';
 const logger = getLogger('app');
 
 declare global {
@@ -85,8 +86,8 @@ export class SignerPeakvault extends Signer {
     return requireEncryptedMemo(await provider.encryptData(memo, toAccountMemoPublicKey));
   }
 
+  /** See `decryptMemoWithPeakVault` (peakvault-memo-crypto.ts). */
   async decryptData(encodedMemo: string): Promise<string> {
-    const provider = PeakVaultProvider.for(this.username, 'memo');
-    return provider.decryptData(encodedMemo);
+    return decryptMemoWithPeakVault(this.username, encodedMemo);
   }
 }

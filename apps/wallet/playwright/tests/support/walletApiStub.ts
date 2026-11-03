@@ -286,7 +286,11 @@ export const logInAsStubAccount = (
   options:
     | 'posting'
     | 'active'
-    | { username?: string; loginType?: 'wif' | 'hbauth' | 'keychain'; keyType?: 'posting' | 'active' } = {}
+    | {
+        username?: string;
+        loginType?: 'wif' | 'hbauth' | 'keychain' | 'peakvault';
+        keyType?: 'posting' | 'active';
+      } = {}
 ) => {
   const { username = STUB_ACCOUNT, loginType = 'wif', keyType = 'active' } =
     typeof options === 'string' ? { keyType: options } : options;

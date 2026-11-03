@@ -6,9 +6,14 @@ import type { Page } from '@playwright/test';
  * recorded so a spec can check what the wallet asked Keychain for.
  */
 
+/** Keychain's answer to a request the user did not approve, or `'no answer'` for one it never answers */
+export type KeychainStubFailure = { error: string; message: string } | 'no answer';
+
 export interface IKeychainStubResults {
   /** The plaintext `requestVerifyKey` (memo decode) answers. */
   verifyKey?: string;
+  /** What the first `requestVerifyKey` calls get, in order, before `verifyKey` answers the later ones. */
+  verifyKeyFailures?: KeychainStubFailure[];
   /** The ciphertext `requestEncodeMessage` (memo encode) answers. */
   encodeMessage?: string;
 }
@@ -29,11 +34,18 @@ export const installKeychainStub = (page: Page, results: IKeychainStubResults) =
       type Callback = (response: { success: boolean; result?: unknown; error?: string }) => void;
       const calls: { method: string; args: unknown[] }[] = [];
       Reflect.set(window, callsGlobal, calls);
+      const verifyKeyFailures = [...(results.verifyKeyFailures ?? [])];
       const answer =
-        (method: string, result: (args: unknown[]) => unknown) =>
+        (method: string, result: (args: unknown[]) => unknown, failures: typeof verifyKeyFailures = []) =>
         (...args: unknown[]) => {
           const callback = args.pop() as Callback;
           calls.push({ method, args });
+          const failure = failures.shift();
+          if (failure === 'no answer') return;
+          if (failure) {
+            callback({ success: false, ...failure });
+            return;
+          }
           const value = result(args);
           callback(
             value === undefined
@@ -43,7 +55,7 @@ export const installKeychainStub = (page: Page, results: IKeychainStubResults) =
         };
       Reflect.set(window, 'hive_keychain', {
         requestSignBuffer: answer('requestSignBuffer', () => undefined),
-        requestVerifyKey: answer('requestVerifyKey', () => results.verifyKey),
+        requestVerifyKey: answer('requestVerifyKey', () => results.verifyKey, verifyKeyFailures),
         requestEncodeMessage: answer('requestEncodeMessage', () => results.encodeMessage),
         requestSignTx: answer('requestSignTx', ([, transaction]) => ({
           ...(transaction as object),
