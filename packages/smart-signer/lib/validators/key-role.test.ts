@@ -128,6 +128,8 @@ describe('classifyKeyRefusal', () => {
   const ACCOUNT = 'guest4test2';
   const AUTHORISED = 'guest4test1';
   const UNRELATED = 'guest4test3';
+  const HOLDER_ACTIVE_KEY = 'STM5ActiveKeyOfTheHolder';
+  const HOLDER_POSTING_KEY = 'STM4PostingKeyOfTheHolder';
   const named = { ...account, name: ACCOUNT };
   const delegatingActive = {
     ...named,
@@ -136,41 +138,56 @@ describe('classifyKeyRefusal', () => {
       account_auths: [AUTHORISED].map((name): [string, number] => [name, 1])
     }
   };
+  const holder = (name: string) => ({
+    name,
+    owner: authority('STM3OwnerKeyOfTheHolder'),
+    active: authority(HOLDER_ACTIVE_KEY),
+    posting: authority(HOLDER_POSTING_KEY)
+  });
+  const authorised = holder(AUTHORISED);
+  const unrelated = holder(UNRELATED);
 
   it("refuses the account's own key of another role, whoever else holds it", () => {
-    assert.deepEqual(classifyKeyRefusal(named, POSTING_KEY, 'active', [UNRELATED]), {
+    assert.deepEqual(classifyKeyRefusal(named, POSTING_KEY, 'active', [unrelated]), {
       kind: 'own-other-role'
     });
     assert.deepEqual(classifyKeyRefusal(named, ACTIVE_KEY, 'posting', []), { kind: 'own-other-role' });
   });
 
   it("accepts the account's own key of the role asked for", () => {
-    assert.equal(classifyKeyRefusal(named, ACTIVE_KEY, 'active', [UNRELATED]), null);
+    assert.equal(classifyKeyRefusal(named, ACTIVE_KEY, 'active', [unrelated]), null);
   });
 
-  it("names the holder the role's authority lists in account_auths", () => {
-    assert.deepEqual(classifyKeyRefusal(delegatingActive, OTHER_KEY, 'active', [AUTHORISED]), {
+  it("names the holder the role's authority lists in account_auths, for the holder's key of that role", () => {
+    assert.deepEqual(classifyKeyRefusal(delegatingActive, HOLDER_ACTIVE_KEY, 'active', [authorised]), {
       kind: 'authorised-account',
+      owner: AUTHORISED
+    });
+  });
+
+  it("names a listed holder as unrelated for the holder's key of another role", () => {
+    assert.deepEqual(classifyKeyRefusal(delegatingActive, HOLDER_POSTING_KEY, 'active', [authorised]), {
+      kind: 'unrelated-account',
       owner: AUTHORISED
     });
   });
 
   it('prefers an authorised holder over an unrelated one', () => {
-    assert.deepEqual(classifyKeyRefusal(delegatingActive, OTHER_KEY, 'active', [UNRELATED, AUTHORISED]), {
-      kind: 'authorised-account',
-      owner: AUTHORISED
-    });
+    assert.deepEqual(
+      classifyKeyRefusal(delegatingActive, HOLDER_ACTIVE_KEY, 'active', [unrelated, authorised]),
+      { kind: 'authorised-account', owner: AUTHORISED }
+    );
   });
 
   it('names a holder only another role lists as unrelated', () => {
-    assert.deepEqual(classifyKeyRefusal(delegatingActive, OTHER_KEY, 'posting', [AUTHORISED]), {
+    assert.deepEqual(classifyKeyRefusal(delegatingActive, HOLDER_POSTING_KEY, 'posting', [authorised]), {
       kind: 'unrelated-account',
       owner: AUTHORISED
     });
   });
 
   it('names a holder of no authority over the account as unrelated', () => {
-    assert.deepEqual(classifyKeyRefusal(named, OTHER_KEY, 'active', [UNRELATED]), {
+    assert.deepEqual(classifyKeyRefusal(named, HOLDER_ACTIVE_KEY, 'active', [unrelated]), {
       kind: 'unrelated-account',
       owner: UNRELATED
     });
@@ -178,6 +195,6 @@ describe('classifyKeyRefusal', () => {
 
   it('leaves a key nobody else is known to hold unclassified', () => {
     assert.equal(classifyKeyRefusal(named, OTHER_KEY, 'active', []), null);
-    assert.equal(classifyKeyRefusal(named, OTHER_KEY, 'active', [ACCOUNT]), null);
+    assert.equal(classifyKeyRefusal(named, OTHER_KEY, 'active', [{ ...named }]), null);
   });
 });

@@ -52,32 +52,58 @@ export function areOwnKeys(account: AccountAuthorities, publicKeys: readonly str
 export type KeyRefusal =
   /** One of the account's own keys, of a role that cannot sign as `keyType` */
   | { kind: 'own-other-role' }
-  /** Another account's key, an account the account's `keyType` authority lists in `account_auths` */
+  /**
+   * Another account's key, an account the account's `keyType` authority lists in `account_auths`,
+   * of the holder's own `keyType` authority
+   */
   | { kind: 'authorised-account'; owner: string }
-  /** Another account's key, an account the account's `keyType` authority does not list */
+  /** Another account's key that the account's `keyType` authority does not take through `account_auths` */
   | { kind: 'unrelated-account'; owner: string };
+
+/** An account holding a key, with its authorities */
+export type KeyHolder = AccountAuthorities & { name: string };
+
+/**
+ * Whether `holder`'s `publicKey` signs for `account` as its `keyType` key through `account_auths`:
+ * the account's `keyType` authority lists the holder, and the key is in the holder's own `keyType`
+ * authority. Hived checks an account named in `account_auths` against that account's authority of
+ * the role being verified (its active one for active, its posting one for posting), so a holder's
+ * posting key does not sign as active, nor its active or owner key as posting.
+ */
+function signsThroughAccountAuths(
+  account: AccountAuthorities,
+  holder: KeyHolder,
+  publicKey: string,
+  keyType: Exclude<KeyRole, 'owner'>
+): boolean {
+  return (
+    account[keyType].account_auths.some(({ 0: name }) => name === holder.name) &&
+    holder[keyType].key_auths.some(({ 0: key }) => key === publicKey)
+  );
+}
 
 /**
  * Classifies `publicKey` offered as `account`'s `keyType` key, given `keyHolders`, the accounts
- * whose authorities list it (`account_by_key_api.get_key_references`). Null when the key may sign
- * as `keyType`, or when it is none of the account's keys and no other account is known to hold it.
- * An authorised holder wins over an unrelated one when several accounts hold the key; whether the
- * holder's key has the role its authority over the account needs is left to the chain.
+ * whose authorities list it (`account_by_key_api.get_key_references`) with their authorities. Null
+ * when the key may sign as `keyType`, or when it is none of the account's keys and no other account
+ * is known to hold it. A holder is authorised only when the account's `keyType` authority lists it
+ * in `account_auths` and the key is of the holder's own `keyType` authority; such a holder wins over
+ * the others when several accounts hold the key.
  */
 export function classifyKeyRefusal(
   account: AccountAuthorities & { name: string },
   publicKey: string,
   keyType: Exclude<KeyRole, 'owner'>,
-  keyHolders: readonly string[]
+  keyHolders: readonly KeyHolder[]
 ): KeyRefusal | null {
   if (findKeyRoles(account, publicKey).length > 0) {
     return isKeyOfOtherRole(account, publicKey, keyType) ? { kind: 'own-other-role' } : null;
   }
-  const otherHolders = keyHolders.filter((holder) => holder !== account.name);
+  const otherHolders = keyHolders.filter((holder) => holder.name !== account.name);
   const authorised = otherHolders.find((holder) =>
-    account[keyType].account_auths.some(({ 0: name }) => name === holder)
+    signsThroughAccountAuths(account, holder, publicKey, keyType)
   );
-  if (authorised) return { kind: 'authorised-account', owner: authorised };
+  if (authorised) return { kind: 'authorised-account', owner: authorised.name };
   const [unrelated] = otherHolders;
-  return unrelated ? { kind: 'unrelated-account', owner: unrelated } : null;
+  return unrelated ? { kind: 'unrelated-account', owner: unrelated.name } : null;
 }

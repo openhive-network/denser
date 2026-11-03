@@ -8,8 +8,8 @@ const logger = getLogger('app');
 
 /**
  * Reads what the chain tells about `wif` offered as `username`'s `keyType` key. The accounts holding
- * the key (`account_by_key_api.get_key_references`) are looked up only for a key that is none of the
- * account's own, and only when `lookUpHolders`.
+ * the key (`account_by_key_api.get_key_references`), and their authorities, are looked up only for a
+ * key that is none of the account's own, and only when `lookUpHolders`.
  */
 async function findKeyRefusal(
   username: string,
@@ -27,8 +27,14 @@ async function findKeyRefusal(
     return classifyKeyRefusal(account, publicKey, keyType, []);
   }
   const {
-    accounts: [keyHolders = []]
+    accounts: [holderNames = []]
   } = await hiveChain.api.account_by_key_api.get_key_references({ keys: [publicKey] });
+  const otherHolderNames = holderNames.filter((name) => name !== username);
+  if (otherHolderNames.length === 0) return classifyKeyRefusal(account, publicKey, keyType, []);
+  const { accounts: keyHolders } = await hiveChain.api.database_api.find_accounts({
+    accounts: otherHolderNames,
+    delayed_votes_active: false
+  });
   return classifyKeyRefusal(account, publicKey, keyType, keyHolders);
 }
 
@@ -58,7 +64,8 @@ export async function validateKeyAuthority(
  * `validateKeyAuthority` for a key to store in safe storage, which in Direct Authority Mode
  * (`strict`) takes only the account's own keys: there, a key another account holds is refused too,
  * with a hint naming that account and, when the account's `keyType` authority lists it in
- * `account_auths`, saying the key is taken with the mode off. Resolves with null when the key may be
+ * `account_auths` and the key is of that account's own `keyType` authority, saying the key is taken
+ * with the mode off. Resolves with null when the key may be
  * right, also when the chain cannot be read or nobody is known to hold the key; safe storage's own
  * verification, whose refusal `describeRefusedKey` explains, decides then.
  */
