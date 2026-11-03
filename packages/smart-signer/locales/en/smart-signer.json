@@ -206,7 +206,8 @@
     "keychain_no_message": "Hive Keychain could not complete the request and gave no reason.",
     "superseded_key_write": "Another tab interrupted saving the {{keyType}} key of @{{username}} to safe storage. Add the {{keyType}} key to safe storage again.",
     "signed_out": "You are signed out. Sign in and try again.",
-    "transaction_expired": "Your transaction expired before it was approved, so nothing was sent. Please try again and approve it within about a minute."
+    "transaction_expired": "Your transaction expired before it was approved, so nothing was sent. Please try again and approve it within about a minute.",
+    "transaction_expiration_too_far_ahead": "The node rejected your transaction's expiration time, so nothing was sent. Check that your device's clock is correct and try again."
   },
   "request_error": {
     "timeout": "The server did not respond in time. Please try again.",

@@ -206,7 +206,8 @@
     "keychain_no_message": "Hive Keychain 未能完成请求，也未说明原因。",
     "superseded_key_write": "另一个标签页中断了将 @{{username}} 的 {{keyType}} 密钥保存到安全存储的操作。请再次将 {{keyType}} 密钥添加到安全存储。",
     "signed_out": "您已退出登录。请登录后重试。",
-    "transaction_expired": "您的交易在获得批准前已过期，因此未发送任何内容。请重试，并在大约一分钟内批准。"
+    "transaction_expired": "您的交易在获得批准前已过期，因此未发送任何内容。请重试，并在大约一分钟内批准。",
+    "transaction_expiration_too_far_ahead": "节点拒绝了您交易的过期时间，因此未发送任何内容。请检查设备时钟是否准确，然后重试。"
   },
   "request_error": {
     "timeout": "服务器未及时响应。请重试。",

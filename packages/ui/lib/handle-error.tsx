@@ -5,7 +5,7 @@ import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
 import { SignedOutError } from '@hive/transaction/lib/signed-out';
 import { TransactionNotConfirmedError } from '@hive/transaction/lib/transaction-inclusion';
-import { isTransactionExpired } from '@hive/transaction/lib/transaction-expired';
+import { findTransactionExpirationRejection } from '@hive/transaction/lib/transaction-expired';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
@@ -113,11 +113,17 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     return;
   }
 
-  // Signed only after its expiration, so the node rejected it: nothing was applied, it can be signed again
-  if (isTransactionExpired(error)) {
-    logger.warn('Transaction in %s expired before broadcast: %s', ctx?.method, summarizeErrorForLog(error));
+  // The node rejected the expiration, signed only after it passed or set too far ahead: nothing was applied
+  const expirationRejection = findTransactionExpirationRejection(error);
+  if (expirationRejection) {
+    logger.warn(
+      'Transaction in %s rejected for its expiration (%s): %s',
+      ctx?.method,
+      expirationRejection,
+      summarizeErrorForLog(error)
+    );
     toast({
-      description: <TransactionExpiredMessage />,
+      description: <TransactionExpiredMessage rejection={expirationRejection} />,
       variant: 'destructive',
       ...toastOptions
     });
