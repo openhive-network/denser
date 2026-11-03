@@ -26,7 +26,8 @@ const counterpartyOf = ({ op }: HiveOperation, username: string): string | undef
 
 /**
  * The accounts suggested in the wallet's "To" fields: the counterparties of `username`'s history,
- * most frequent first, followed by the accounts `username` follows.
+ * most frequent first, followed by the accounts `username` follows. Each account appears once: one
+ * that is both a counterparty and followed keeps its transfer count.
  */
 export function createListWithSuggestions(
   username: string,
@@ -34,8 +35,6 @@ export function createListWithSuggestions(
   transferHistory?: HiveOperation[],
   followingList?: IFollow[]
 ): { username: string; about: string }[] {
-  const following =
-    followingList?.map((e) => ({ username: e.following, about: t('profile.following') })) ?? [];
   const counters = new Map<string, number>();
   for (const operation of transferHistory ?? []) {
     const accountName = counterpartyOf(operation, username);
@@ -47,5 +46,8 @@ export function createListWithSuggestions(
       username: accountName,
       about: t('profile.previous_transfers', { count: counter })
     }));
+  const following = [...new Set(followingList?.map((e) => e.following))]
+    .filter((accountName) => !counters.has(accountName))
+    .map((accountName) => ({ username: accountName, about: t('profile.following') }));
   return [...transfers, ...following];
 }

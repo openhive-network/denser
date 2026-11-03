@@ -26,9 +26,18 @@ const RCTable = ({ account }: { account: string }) => {
   });
 
   return (
-    <div className="flex w-full flex-col items-center gap-2" data-testid="wallet-rc-delegations">
-      <h2 className="text-lg font-bold underline">{t('resource_credits.title')}</h2>
+    <div className="flex w-full flex-col" data-testid="wallet-rc-delegations">
+      {/* The heading labels the amount column, so each amount and the total sit under it at any width. */}
       <table className="w-full">
+        <thead>
+          <tr>
+            <th scope="col" className="px-1 pb-2 font-normal sm:px-4">
+              <h2 className="text-lg font-bold underline">{t('resource_credits.title')}</h2>
+            </th>
+            <td />
+            <td />
+          </tr>
+        </thead>
         <tbody>
           {isPending ? (
             <tr>
@@ -52,10 +61,15 @@ const RCTable = ({ account }: { account: string }) => {
             )
           ) : null}
         </tbody>
+        <tfoot>
+          <tr>
+            <td className="px-1 pt-2 text-center text-sm sm:px-4" data-testid="wallet-rc-delegations-total">
+              {t('resource_credits.total', { amount: prepareRC(data?.total ?? '0', t, RC_SUMMARY_DECIMALS) })}
+            </td>
+            <td colSpan={COLUMN_COUNT - 1} />
+          </tr>
+        </tfoot>
       </table>
-      <span className="text-sm" data-testid="wallet-rc-delegations-total">
-        {t('resource_credits.total', { amount: prepareRC(data?.total ?? '0', t, RC_SUMMARY_DECIMALS) })}
-      </span>
     </div>
   );
 };

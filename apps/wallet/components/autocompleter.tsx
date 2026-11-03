@@ -59,8 +59,10 @@ export function Autocompleter({
   const handleInputFocus = () => {
     setIsOpen(true);
   };
+  // A name typed out in full needs no suggestion, so the list closes as on picking it.
   const handleValueChange = (next: string) => {
-    setIsOpen(true);
+    const typed = next.trim().toLowerCase();
+    setIsOpen(!items?.some((item) => item.username === typed));
     onChange(next);
   };
   const pickSuggestion = (username: string) => {
