@@ -997,6 +997,7 @@
     "send": "إرسال",
     "sending": "جارٍ الإرسال…",
     "send_failed": "لم تُرسل.",
+    "offline": "غير متصل. جارٍ إعادة الاتصال…",
     "encrypted_message": "رسالة مشفّرة.",
     "encrypted_room": "هذه الغرفة مشفّرة.",
     "unsupported_message": "لا يمكن عرض هذه الرسالة هنا.",

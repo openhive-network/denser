@@ -982,6 +982,7 @@
     "send": "送信",
     "sending": "送信中…",
     "send_failed": "送信されませんでした。",
+    "offline": "オフラインです。再接続中…",
     "encrypted_message": "暗号化されたメッセージ。",
     "encrypted_room": "このルームは暗号化されています。",
     "unsupported_message": "このメッセージはここでは表示できません。",

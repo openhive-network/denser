@@ -988,6 +988,7 @@
     "send": "Envoyer",
     "sending": "Envoi…",
     "send_failed": "Non envoyé.",
+    "offline": "Hors ligne. Reconnexion…",
     "encrypted_message": "Message chiffré.",
     "encrypted_room": "Ce salon est chiffré.",
     "unsupported_message": "Ce message ne peut pas être affiché ici.",

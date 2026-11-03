@@ -257,6 +257,16 @@ describe('startMatrixChatSession', () => {
     );
   });
 
+  it('rejects a send that does not reach the homeserver with ChatUnreachableError', async () => {
+    const chat = await start('#general:example.org', { unreachable: /\/send\// });
+    await assert.rejects(chat.sendText(GENERAL, 'txn-1', 'hi all'), ChatUnreachableError);
+  });
+
+  it('is connected once the first sync is in', async () => {
+    const chat = await start();
+    assert.equal(chat.connected(), true);
+  });
+
   it('sends a read receipt for the latest message once', async () => {
     const chat = await start();
     chat.markRead(GENERAL);

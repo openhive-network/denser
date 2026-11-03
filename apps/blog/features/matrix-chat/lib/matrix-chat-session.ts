@@ -173,6 +173,11 @@ class MatrixChatSession implements ChatSession {
     return rooms;
   }
 
+  connected(): boolean {
+    const state = this.client.getSyncState();
+    return state === SyncState.Prepared || state === SyncState.Syncing;
+  }
+
   defaultRoomId(): string | null {
     const id = this.defaultRoom;
     return id && this.rooms().some((room) => room.roomId === id) ? id : null;
@@ -214,10 +219,11 @@ class MatrixChatSession implements ChatSession {
     // The client API directly, not the SDK's local echo: a retry with the same transaction id
     // is one message on the homeserver, and the drawer keeps its own sending state
     const path = `/rooms/${encodeURIComponent(roomId)}/send/m.room.message/${encodeURIComponent(txnId)}`;
-    const sent = await this.client.http.authedRequest<{ event_id: string }>(Method.Put, path, undefined, {
-      msgtype: 'm.text',
-      body: text
-    });
+    const sent = await this.client.http
+      .authedRequest<{ event_id: string }>(Method.Put, path, undefined, { msgtype: 'm.text', body: text })
+      .catch((error: unknown) => {
+        throw unreachableOr(error);
+      });
     return sent.event_id;
   }
 

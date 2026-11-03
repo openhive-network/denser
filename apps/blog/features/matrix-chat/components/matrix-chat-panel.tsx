@@ -7,7 +7,7 @@ import type { ChatSession } from '@/blog/features/matrix-chat/lib/chat-view-type
 import type { ChatSessionStatus } from '@/blog/features/matrix-chat/hooks/use-matrix-chat-session';
 import { pendingInRoom } from '@/blog/features/matrix-chat/lib/outbox';
 import { useChatRoom } from '@/blog/features/matrix-chat/hooks/use-chat-room';
-import { useChatSessionVersion } from '@/blog/features/matrix-chat/hooks/use-chat-session-version';
+import { useChatConnected } from '@/blog/features/matrix-chat/hooks/use-chat-connected';
 import { useOutbox } from '@/blog/features/matrix-chat/hooks/use-outbox';
 import { ChatRoomList } from '@/blog/features/matrix-chat/components/chat-room-list';
 import { ChatTimeline } from '@/blog/features/matrix-chat/components/chat-timeline';
@@ -65,16 +65,29 @@ function ChatRoom({ session, roomId, open, appUrl, outbox }: ChatRoomProps) {
 
 function SignedInChat({ session, open, appUrl }: { session: ChatSession; open: boolean; appUrl: string }) {
   const { t } = useTranslation('common_blog');
-  useChatSessionVersion(session);
-  const outbox = useOutbox(session);
+  const connected = useChatConnected(session);
+  const outbox = useOutbox(session, connected);
   const rooms = session.rooms();
   const [chosenRoomId, setChosenRoomId] = useState<string | null>(null);
   const roomId = rooms.find((room) => room.roomId === chosenRoomId)?.roomId ?? session.defaultRoomId() ?? rooms[0]?.roomId;
   const room = rooms.find((candidate) => candidate.roomId === roomId);
 
-  if (!room) return <p className="p-4 text-sm text-muted-foreground">{t('chat_widget.no_rooms')}</p>;
+  const offlineNote = connected ? null : (
+    <p className="bg-muted px-3 py-1 text-xs text-muted-foreground" role="status" data-testid="chat-offline">
+      {t('chat_widget.offline')}
+    </p>
+  );
+  if (!room) {
+    return (
+      <>
+        {offlineNote}
+        <p className="p-4 text-sm text-muted-foreground">{t('chat_widget.no_rooms')}</p>
+      </>
+    );
+  }
   return (
     <>
+      {offlineNote}
       <ChatRoomList rooms={rooms} selectedRoomId={room.roomId} onSelect={setChosenRoomId} />
       {room.encrypted ? (
         <div className="p-4">
