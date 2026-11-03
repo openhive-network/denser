@@ -130,4 +130,30 @@ test.describe('Transfer memo encryption', () => {
     expect(await keychainCalls(page)).toEqual([]);
     expect(broadcastMemos).toEqual([]);
   });
+
+  test('WALLET-MEMO-ENC-04 — a memo of only the # marker is refused until it has text after #', async ({ page }) => {
+    await logInAsStubAccount(page, { loginType: 'keychain' });
+    await installKeychainStub(page, { encodeMessage: ENCRYPTED_MEMO });
+    const dialog = await openTransferDialog(page);
+    const memoInput = dialog.getByPlaceholder('Memo');
+    const next = dialog.getByRole('button', { name: 'Next' });
+    const error = dialog.getByText('An encrypted memo needs text after #.');
+
+    for (const markerOnly of ['#', '#   ']) {
+      await fillTransfer(dialog, markerOnly);
+      await expect(error).toBeVisible();
+      await expect(memoInput).toHaveAttribute('aria-invalid', 'true');
+      await expect(next).toBeDisabled();
+    }
+
+    await memoInput.fill('');
+    await expect(error).toBeHidden();
+    await expect(next).toBeEnabled();
+
+    await memoInput.fill(MEMO);
+    await expect(error).toBeHidden();
+    await next.click();
+    await expect(encryptDialog(page)).toBeVisible();
+    expect(broadcastMemos).toEqual([]);
+  });
 });

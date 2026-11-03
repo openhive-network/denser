@@ -550,7 +550,8 @@
       "min_delegation": "Minimum delegation is {{min}} HP.",
       "cannot_delegate": "You cannot delegate yet: the minimum delegation is {{min}} HP and you have {{available}} HP available.",
       "delegation_below_minimum": "Delegation rejected: the minimum is {{min}} HP (you tried {{amount}} HP).",
-      "account_check_failed": "Could not check the account. Try again later."
+      "account_check_failed": "Could not check the account. Try again later.",
+      "memo_marker_only": "An encrypted memo needs text after #."
     },
     "confirm_title": {
       "transfers": "Confirm Transfer To Account",

@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { hasEncryptedMemoMarker, memoToBroadcast } from './encrypted-memo.ts';
+import { hasEncryptedMemoMarker, isMarkerOnlyMemo, memoToBroadcast } from './encrypted-memo.ts';
 
 const ENCRYPTED = { plaintext: '#hello', toAccount: 'alice', ciphertext: '#8j3XSecWPyvLkxjZ' };
 
@@ -32,5 +32,21 @@ describe('hasEncryptedMemoMarker', () => {
     assert.equal(hasEncryptedMemoMarker('#hello'), true);
     assert.equal(hasEncryptedMemoMarker('hello #1'), false);
     assert.equal(hasEncryptedMemoMarker(''), false);
+  });
+});
+
+describe('isMarkerOnlyMemo', () => {
+  it('is true for the `#` marker alone or followed only by whitespace', () => {
+    assert.equal(isMarkerOnlyMemo('#'), true);
+    assert.equal(isMarkerOnlyMemo('#   '), true);
+    assert.equal(isMarkerOnlyMemo('#\t\n'), true);
+  });
+
+  it('is false for a memo with text after `#`, a public memo, or an empty memo', () => {
+    assert.equal(isMarkerOnlyMemo('#hello'), false);
+    assert.equal(isMarkerOnlyMemo('# hello'), false);
+    assert.equal(isMarkerOnlyMemo('hello'), false);
+    assert.equal(isMarkerOnlyMemo(' #'), false);
+    assert.equal(isMarkerOnlyMemo(''), false);
   });
 });

@@ -558,7 +558,8 @@
       "min_delegation": "La delega minima è di {{min}} HP.",
       "cannot_delegate": "Non puoi ancora delegare: la delega minima è di {{min}} HP e hai {{available}} HP disponibili.",
       "delegation_below_minimum": "Delega rifiutata: il minimo è {{min}} HP (hai provato {{amount}} HP).",
-      "account_check_failed": "Impossibile verificare l'account. Riprova più tardi."
+      "account_check_failed": "Impossibile verificare l'account. Riprova più tardi.",
+      "memo_marker_only": "Un memo cifrato deve contenere del testo dopo #."
     },
     "confirm_title": {
       "transfers": "Conferma il trasferimento all'account",

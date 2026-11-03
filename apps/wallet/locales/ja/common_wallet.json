@@ -545,7 +545,8 @@
       "min_delegation": "委託の最小額は{{min}} HPです。",
       "cannot_delegate": "まだ委託できません: 委託の最小額は{{min}} HPですが、利用可能額は{{available}} HPです。",
       "delegation_below_minimum": "委託が拒否されました: 最小額は{{min}} HPです（入力額: {{amount}} HP）。",
-      "account_check_failed": "アカウントを確認できませんでした。しばらくしてから再試行してください。"
+      "account_check_failed": "アカウントを確認できませんでした。しばらくしてから再試行してください。",
+      "memo_marker_only": "暗号化するメモには # の後にテキストが必要です。"
     },
     "confirm_title": {
       "transfers": "アカウントへの送金の確認",

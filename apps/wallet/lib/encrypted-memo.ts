@@ -10,6 +10,10 @@ export interface EncryptedMemo {
 
 export const hasEncryptedMemoMarker = (memo: string): boolean => memo.startsWith(ENCRYPTED_MEMO_MARKER);
 
+/** True for a memo asking to be encrypted with nothing to encrypt: only `#`, or `#` and whitespace. */
+export const isMarkerOnlyMemo = (memo: string): boolean =>
+  hasEncryptedMemoMarker(memo) && memo.slice(ENCRYPTED_MEMO_MARKER.length).trim() === '';
+
 /**
  * The memo to broadcast for `memo` sent to `toAccount`: the memo itself when it does not start with
  * `#`, otherwise the ciphertext made for exactly that plaintext and recipient. Returns null when
