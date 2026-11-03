@@ -85,6 +85,22 @@ export function isWaxRequestTimeout(error: unknown): error is Error {
   return error instanceof Error && error.name.startsWith('Wax') && REQUEST_TIMED_OUT_PATTERN.test(error.message);
 }
 
+const MAX_CAUSE_DEPTH = 5;
+
+/**
+ * Wax's request timeout that is `error` or, a few levels deep, its `cause`: a signer that wraps the
+ * failure of a node read (hb-auth's unlock checks the key against the account) keeps it as the cause.
+ */
+export function findWaxRequestTimeout(error: unknown): Error | undefined {
+  let current = error;
+  for (let depth = 0; depth < MAX_CAUSE_DEPTH && current instanceof Error; depth++) {
+    const { cause } = current;
+    if (isWaxRequestTimeout(current)) return current;
+    current = cause;
+  }
+  return undefined;
+}
+
 /**
  * True for a request timeout on the broadcast path that may have come after the node took the
  * transaction: the `broadcast_transaction` request itself, or a read of the block scanner watching for
