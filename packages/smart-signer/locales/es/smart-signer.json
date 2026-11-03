@@ -206,7 +206,8 @@
     "keychain_no_message": "Hive Keychain no pudo completar la solicitud y no indicó el motivo.",
     "superseded_key_write": "Otra pestaña interrumpió el guardado de la clave {{keyType}} de @{{username}} en el almacenamiento seguro. Vuelve a añadir la clave {{keyType}} al almacenamiento seguro.",
     "signed_out": "Has cerrado sesión. Inicia sesión e inténtalo de nuevo.",
-    "transaction_expired": "Tu transacción caducó antes de ser aprobada, así que no se envió nada. Inténtalo de nuevo y apruébala en aproximadamente un minuto."
+    "transaction_expired": "Tu transacción caducó antes de ser aprobada, así que no se envió nada. Inténtalo de nuevo y apruébala en aproximadamente un minuto.",
+    "transaction_expiration_too_far_ahead": "El nodo rechazó la hora de caducidad de tu transacción, así que no se envió nada. Comprueba que el reloj de tu dispositivo sea correcto e inténtalo de nuevo."
   },
   "request_error": {
     "timeout": "El servidor no respondió a tiempo. Inténtalo de nuevo.",
