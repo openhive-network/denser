@@ -493,6 +493,7 @@
     "decode_memo_error": "MEMOのデコード中にエラーが発生しました。秘密鍵が無効か、MEMOメッセージが暗号化されていません。",
     "decode_memo_wallet_rejected": "{{wallet}}でリクエストが拒否されました。もう一度お試しいただくか、MEMO秘密鍵でデコードしてください。",
     "decode_memo_wallet_error": "{{wallet}}でMEMOをデコードできませんでした。もう一度お試しいただくか、MEMO秘密鍵でデコードしてください。",
+    "decode_memo_wallet_no_answer": "{{wallet}}から応答がありません。リクエストが拒否された可能性があります。もう一度お試しいただくか、MEMO秘密鍵でデコードしてください。",
     "decode_memo_auto_trying": "ログイン中のウォレットでデコードを試みています...",
     "encrypt_memo_title": "MEMOメッセージを暗号化",
     "encrypt_memo_description": "このメモは送信前に暗号化されます。MEMO秘密鍵を入力するか、Hive Keychainを使用してください。",

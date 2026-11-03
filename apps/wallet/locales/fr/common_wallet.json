@@ -504,6 +504,7 @@
     "decode_memo_error": "Erreur lors du déchiffrement du MEMO : la clé privée est invalide ou le message MEMO n'est pas chiffré.",
     "decode_memo_wallet_rejected": "La demande a été refusée dans {{wallet}}. Réessayez ou déchiffrez avec la clé privée MEMO.",
     "decode_memo_wallet_error": "{{wallet}} n'a pas pu déchiffrer le MEMO. Réessayez ou déchiffrez avec la clé privée MEMO.",
+    "decode_memo_wallet_no_answer": "Aucune réponse de {{wallet}} : la demande a peut-être été refusée. Réessayez ou déchiffrez avec la clé privée MEMO.",
     "decode_memo_auto_trying": "Tentative de déchiffrement avec votre portefeuille connecté...",
     "encrypt_memo_title": "Chiffrer le message MEMO",
     "encrypt_memo_description": "Ce mémo sera chiffré avant l'envoi. Fournissez la clé privée MEMO ou utilisez Hive Keychain.",

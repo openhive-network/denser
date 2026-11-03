@@ -22,6 +22,7 @@ import { isWalletRequestRejected } from '@smart-signer/lib/signer/wallet-request
 import type { SignerTool } from '@smart-signer/lib/signer/get-signer';
 import { LoginType } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
+import { useUnansweredRequest } from '@/wallet/components/hooks/use-unanswered-request';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { getLogger } from '@ui/lib/logging';
 import { isUserCancelled } from '@ui/lib/user-cancelled';
@@ -42,7 +43,12 @@ const NATIVE_SIGNER_WALLET_NAME: Partial<Record<LoginType, string>> = {
   [LoginType.metamask]: 'MetaMask'
 };
 
-type PendingDecode = 'native' | 'key' | null;
+type DecodeKind = 'native' | 'key';
+
+interface PendingDecode {
+  kind: DecodeKind;
+  requestId: number;
+}
 
 const nativeSignerErrorMessage = (
   error: unknown,
@@ -73,7 +79,7 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
   const [privateKey, setPrivateKey] = useState('');
   const [decodedMessage, setDecodedMessage] = useState('');
   const [error, setError] = useState('');
-  const [pending, setPending] = useState<PendingDecode>(null);
+  const [pending, setPending] = useState<PendingDecode | null>(null);
   // Loaded when the dialog opens: the signer modules pull in wax (DR-005).
   const [nativeSigner, setNativeSigner] = useState<SignerTool | null>(null);
   // Set once the native signer is loaded (or known to be unavailable), before its request is
@@ -86,6 +92,9 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
   // be answered after it was reopened.
   const requestIdRef = useRef(0);
   const walletName = NATIVE_SIGNER_WALLET_NAME[user.loginType];
+  // Named in the description only while its decode button is offered.
+  const offeredWalletName = nativeSigner ? walletName : undefined;
+  const nativeUnanswered = useUnansweredRequest(pending?.kind === 'native' ? pending.requestId : null);
 
   const resetState = () => {
     setPrivateKey('');
@@ -99,13 +108,13 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
 
   const runDecode = useCallback(
     async (
-      kind: Exclude<PendingDecode, null>,
+      kind: DecodeKind,
       decode: () => Promise<string>,
       errorMessage: (e: unknown) => string
     ) => {
       const requestId = ++requestIdRef.current;
       const isLatest = () => requestIdRef.current === requestId;
-      setPending(kind);
+      setPending({ kind, requestId });
       setDecodedMessage('');
       setError('');
       try {
@@ -163,6 +172,8 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
   }, [open, username, user.loginType, decodeWithNativeSigner]);
 
   const nativeSignerLabelKey = NATIVE_SIGNER_DECODE_LABEL_KEY[user.loginType];
+  const showAutoTrying =
+    hasNativeMemoCrypto(user.loginType) && (!signerLoaded || pending?.kind === 'native') && !nativeUnanswered;
 
   return (
     <Dialog
@@ -181,16 +192,21 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
         <DialogHeader>
           <DialogTitle>{t('transfers_page.decode_memo_title')}</DialogTitle>
           <DialogDescription>
-            {walletName
-              ? t('transfers_page.decode_memo_description_with_wallet', { wallet: walletName })
+            {offeredWalletName
+              ? t('transfers_page.decode_memo_description_with_wallet', { wallet: offeredWalletName })
               : t('transfers_page.decode_memo_description')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4">
-          {hasNativeMemoCrypto(user.loginType) && (!signerLoaded || pending === 'native') && (
+          {showAutoTrying && (
             <div className="text-sm text-muted-foreground" data-testid="decode-memo-auto-trying">
               {t('transfers_page.decode_memo_auto_trying')}
+            </div>
+          )}
+          {nativeUnanswered && (
+            <div className="text-sm text-destructive" data-testid="decode-memo-no-answer">
+              {t('transfers_page.decode_memo_wallet_no_answer', { wallet: walletName })}
             </div>
           )}
           {signerLoaded && (
@@ -228,12 +244,12 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
 
         <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
           {signerLoaded && (
-            <Button onClick={onDecodeWithPrivateKey} disabled={!privateKey || pending === 'key'}>
+            <Button onClick={onDecodeWithPrivateKey} disabled={!privateKey || pending?.kind === 'key'}>
               {t('transfers_page.decode_memo_with_private_key')}
             </Button>
           )}
           {nativeSigner && nativeSignerLabelKey && (
-            <Button variant="ghost" onClick={onDecodeWithNativeSigner} disabled={pending === 'key'}>
+            <Button variant="ghost" onClick={onDecodeWithNativeSigner} disabled={pending?.kind === 'key'}>
               {t(nativeSignerLabelKey)}
             </Button>
           )}
