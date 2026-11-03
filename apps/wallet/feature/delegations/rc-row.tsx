@@ -1,48 +1,27 @@
 import { prepareRC } from '@/wallet/lib/utils';
 import { Link } from '@hive/ui';
-import { useUndelegateMutation } from './hooks/use-undelegate-mutation';
-import { Button } from '@ui/components';
-import { CircleSpinner } from '@ui/components/circle-spinner';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { useTranslation } from '@/wallet/i18n/client';
 import { RC_SUMMARY_DECIMALS } from '@/wallet/feature/transfers-page/lib/rc-amount';
+import RevokeRcDialog from './revoke-rc-dialog';
 
 const RCRow = ({ delegated_rc, to, account }: { delegated_rc: number; to: string; account: string }) => {
   const { t } = useTranslation('common_wallet');
-  const undelegateMutation = useUndelegateMutation();
-  const handleUndelegate = (toAccount: string) => {
-    if (window.confirm(t('delegations_page.revoke_rc_confirm', { account: toAccount }))) {
-      undelegateMutation.mutate(toAccount);
-    }
-  };
   const { user } = useUserClient();
   const userOwner = account === user.username;
+  const amount = prepareRC(delegated_rc.toString(), t, RC_SUMMARY_DECIMALS);
 
   return (
     <tr
       className="m-0 p-0 text-sm even:bg-slate-100 dark:even:bg-slate-700"
       data-testid="wallet-rc-delegation-item"
     >
-      <td className="px-1 py-2 sm:px-4">{prepareRC(delegated_rc.toString(), t, RC_SUMMARY_DECIMALS)}</td>
+      <td className="px-1 py-2 text-center sm:px-4">{amount}</td>
       <td className="px-1 py-2 text-destructive sm:px-4">
         <Link href={`/@${to}/transfers`}>{`@${to}`}</Link>
       </td>
       <td className="px-1 py-2 sm:px-4">
-        {userOwner ? (
-          <Button
-            disabled={undelegateMutation.isPending}
-            variant="outlineRed"
-            onClick={() => handleUndelegate(to)}
-          >
-            {undelegateMutation.isPending ? (
-              <span className="flex h-5 w-12 items-center justify-center">
-                <CircleSpinner loading={undelegateMutation.isPending} size={18} color="#dc2626" />
-              </span>
-            ) : (
-              t('delegations_page.revoke')
-            )}
-          </Button>
-        ) : null}
+        {userOwner ? <RevokeRcDialog delegator={account} delegatee={to} amount={amount} /> : null}
       </td>
     </tr>
   );

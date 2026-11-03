@@ -46,6 +46,20 @@ describe('createListWithSuggestions', () => {
     ]);
   });
 
+  it('lists an account that is both a counterparty and followed once, with its transfer count', () => {
+    const history = [transfer(ACCOUNT, 'guest4test1x'), transfer('guest4test1x', ACCOUNT)];
+    const following = [
+      { follower: ACCOUNT, following: 'guest4test1x', what: ['blog'] },
+      { follower: ACCOUNT, following: 'alice', what: ['blog'] },
+      { follower: ACCOUNT, following: 'alice', what: ['blog'] }
+    ];
+
+    assert.deepEqual(suggest(ACCOUNT, t, history, following), [
+      { username: 'guest4test1x', about: '2 profile.previous_transfers' },
+      { username: 'alice', about: 'profile.following' }
+    ]);
+  });
+
   it('skips transfers the account made to itself', () => {
     assert.deepEqual(suggest(ACCOUNT, t, [transfer(ACCOUNT, ACCOUNT)]), []);
   });
