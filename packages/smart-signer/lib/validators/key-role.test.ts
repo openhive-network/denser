@@ -193,6 +193,42 @@ describe('classifyKeyRefusal', () => {
     });
   });
 
+  it('names a holder the account lists below its threshold as unrelated', () => {
+    const multisigAccount = {
+      ...delegatingActive,
+      active: { ...delegatingActive.active, weight_threshold: 2 }
+    };
+    assert.deepEqual(classifyKeyRefusal(multisigAccount, HOLDER_ACTIVE_KEY, 'active', [authorised]), {
+      kind: 'unrelated-account',
+      owner: AUTHORISED
+    });
+  });
+
+  it("names a holder whose key weighs less than the holder's threshold as unrelated", () => {
+    const multisigHolder = { ...authorised, active: { ...authorised.active, weight_threshold: 2 } };
+    assert.deepEqual(classifyKeyRefusal(delegatingActive, HOLDER_ACTIVE_KEY, 'active', [multisigHolder]), {
+      kind: 'unrelated-account',
+      owner: AUTHORISED
+    });
+  });
+
+  it('names a holder whose weights meet higher thresholds as authorised', () => {
+    const heavyAccountAuths: [string, number][] = [[AUTHORISED, 3]];
+    const heavyKeyAuths: [string, number][] = [[HOLDER_ACTIVE_KEY, 2]];
+    const heavyAccount = {
+      ...delegatingActive,
+      active: { ...authority(ACTIVE_KEY), weight_threshold: 3, account_auths: heavyAccountAuths }
+    };
+    const heavyHolder = {
+      ...authorised,
+      active: { weight_threshold: 2, account_auths: [], key_auths: heavyKeyAuths }
+    };
+    assert.deepEqual(classifyKeyRefusal(heavyAccount, HOLDER_ACTIVE_KEY, 'active', [heavyHolder]), {
+      kind: 'authorised-account',
+      owner: AUTHORISED
+    });
+  });
+
   it('leaves a key nobody else is known to hold unclassified', () => {
     assert.equal(classifyKeyRefusal(named, OTHER_KEY, 'active', []), null);
     assert.equal(classifyKeyRefusal(named, OTHER_KEY, 'active', [{ ...named }]), null);
