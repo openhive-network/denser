@@ -52,12 +52,42 @@ const LISTENER_EXPIRED_PATTERN = /broadcasted successfully, but listener has exp
 
 /**
  * Wax's message for a request that got no answer in time (`WaxRequestTimeoutError`, though wax's bundle
- * names it `WaxError`). A broadcast request that timed out may still have reached the node.
+ * names it `WaxError`).
  */
 const REQUEST_TIMED_OUT_PATTERN = /^Request timed out\b/;
 
-function isRequestTimeout(error: Error): boolean {
-  return error.name.startsWith('Wax') && REQUEST_TIMED_OUT_PATTERN.test(error.message);
+const BROADCAST_METHODS = new Set([
+  'network_broadcast_api.broadcast_transaction',
+  'condenser_api.broadcast_transaction'
+]);
+
+function parseRequestData(data: unknown): unknown {
+  if (typeof data !== 'string') return data;
+  try {
+    return JSON.parse(data);
+  } catch {
+    return undefined;
+  }
+}
+
+/** The JSON-RPC method of the request a wax `WaxRequestError` carries, if it has one. */
+function jsonRpcMethodOf(error: Error): string | undefined {
+  const request: unknown = 'request' in error ? error.request : undefined;
+  if (typeof request !== 'object' || request === null || !('data' in request)) return undefined;
+  const payload = parseRequestData(request.data);
+  if (typeof payload !== 'object' || payload === null || !('method' in payload)) return undefined;
+  return typeof payload.method === 'string' ? payload.method : undefined;
+}
+
+/**
+ * True for a timeout of the `broadcast_transaction` request itself, which may still have reached the
+ * node. Wax's pre-broadcast verification reads (account checks, memo key-leak scan) can time out too,
+ * before anything is sent; those are plain failures.
+ */
+function isBroadcastRequestTimeout(error: Error): boolean {
+  if (!error.name.startsWith('Wax') || !REQUEST_TIMED_OUT_PATTERN.test(error.message)) return false;
+  const method = jsonRpcMethodOf(error);
+  return method !== undefined && BROADCAST_METHODS.has(method);
 }
 
 /**
@@ -76,10 +106,11 @@ export class TransactionNotConfirmedError extends Error {
 
 /**
  * `error` as a `TransactionNotConfirmedError` when it is WorkerBee's expired-listener rejection or a
- * request timeout during the broadcast, else as is.
+ * timeout of the `broadcast_transaction` request, else as is.
  */
 export function toNotConfirmedError(error: unknown, transactionId: string): unknown {
-  return error instanceof Error && (LISTENER_EXPIRED_PATTERN.test(error.message) || isRequestTimeout(error))
+  return error instanceof Error &&
+    (LISTENER_EXPIRED_PATTERN.test(error.message) || isBroadcastRequestTimeout(error))
     ? new TransactionNotConfirmedError(transactionId, error)
     : error;
 }
