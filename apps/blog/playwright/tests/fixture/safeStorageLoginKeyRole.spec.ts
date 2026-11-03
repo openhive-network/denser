@@ -28,8 +28,9 @@ import {
  * key added to an account safe storage already holds ("Add new key"), and a key of no authority of
  * the account at all whose holder is not known, which the chain's `verify_authority` refuses. A key
  * `get_key_references` gives another account for is refused naming that account: one the account's
- * posting authority does not list as not the account's, one it lists in `account_auths` as taken with
- * Direct Authority Mode off, which then stores it. The Wallet's mirror case is
+ * posting authority does not list, or whose key is not of its own posting authority, as not the
+ * account's; one it lists in `account_auths`, by that account's posting key, as taken with Direct
+ * Authority Mode off, which then stores it. The Wallet's mirror case is
  * apps/wallet/playwright/tests/fixture/safeStorageLoginKeyRole.spec.ts.
  *
  * Fixtures: reuses `accountSwitchLogout` (read-only on replay), whose add-account dialog it opens;
@@ -177,5 +178,19 @@ test.describe('Safe-storage sign-in with a key of the wrong role', () => {
 
     // Signed in: the dialog closes
     await expect(updateKeyForm).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
+  });
+
+  test("BLOG-SAFE-STORAGE-LOGIN-08 — the active key of an account in the posting authority's account_auths is named as that account's, without the Direct Authority Mode promise", async ({
+    page
+  }) => {
+    await answerKeyReferences(page, OTHER_ACCOUNT, 'active');
+    await delegatePostingAuthority(page);
+    await page.goto(PAGE_WITH_HEADER);
+
+    const loginForm = await openAddAccountDialog(page);
+    await fillSignInForm(loginForm);
+    await loginForm.saveSignInButton.click();
+
+    await expectSignInKeyRefused(loginForm, UNRELATED_ACCOUNT_KEY_ERROR);
   });
 });

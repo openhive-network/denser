@@ -91,15 +91,44 @@ export async function delegatePostingAuthority(
   await overrideAuthorities(page, () => (delegated() ? { posting: delegatedPosting } : null));
 }
 
-/** Answers safe storage's lookup of KEY_PUBLIC_KEY's accounts, made when it registers the key, with `owner` */
-export async function answerKeyReferences(page: Page, owner = ACCOUNT): Promise<void> {
+/**
+ * Answers safe storage's lookup of KEY_PUBLIC_KEY's accounts, made when it registers the key, with
+ * `owner`; for an `owner` other than ACCOUNT, answers its `find_accounts` too, with KEY_PUBLIC_KEY as
+ * the key of its `ownerKeyRole` authority (the recording holds no read of that account)
+ */
+export async function answerKeyReferences(
+  page: Page,
+  owner = ACCOUNT,
+  ownerKeyRole: KeyRole = 'posting'
+): Promise<void> {
+  const noKey = { weight_threshold: 1, account_auths: [], key_auths: [] };
+  const ownerAuthorities = {
+    name: owner,
+    owner: noKey,
+    active: noKey,
+    posting: noKey,
+    [ownerKeyRole]: { ...noKey, key_auths: [[KEY_PUBLIC_KEY, 1]] }
+  };
   await page.route(
     (url) => url.hostname === 'localhost' && url.port === String(FIXTURE_PROXY_PORT),
     async (route: Route) => {
-      const body: { id?: unknown; method?: string } | null =
+      const body: { id?: unknown; method?: string; params?: { accounts?: string[] } } | null =
         route.request().method() === 'POST' ? route.request().postDataJSON() : null;
-      if (body?.method !== 'account_by_key_api.get_key_references') return route.fallback();
-      return route.fulfill({ json: { jsonrpc: '2.0', id: body.id, result: { accounts: [[owner]] } } });
+      if (body?.method === 'account_by_key_api.get_key_references') {
+        return route.fulfill({ json: { jsonrpc: '2.0', id: body.id, result: { accounts: [[owner]] } } });
+      }
+      const accounts = body?.params?.accounts;
+      if (
+        owner !== ACCOUNT &&
+        body?.method === 'database_api.find_accounts' &&
+        accounts?.length === 1 &&
+        accounts[0] === owner
+      ) {
+        return route.fulfill({
+          json: { jsonrpc: '2.0', id: body.id, result: { accounts: [ownerAuthorities] } }
+        });
+      }
+      return route.fallback();
     }
   );
 }
