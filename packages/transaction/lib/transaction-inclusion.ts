@@ -56,10 +56,11 @@ const LISTENER_EXPIRED_PATTERN = /broadcasted successfully, but listener has exp
  */
 const REQUEST_TIMED_OUT_PATTERN = /^Request timed out\b/;
 
-const BROADCAST_METHODS = new Set([
-  'network_broadcast_api.broadcast_transaction',
-  'condenser_api.broadcast_transaction'
-]);
+/**
+ * The reads wax 1.28.8's `OnChainOperationValidator` (`performOnChainVerification`) makes before it sends
+ * the transaction: the memo key-leak scan's account lookup and the account-exists check.
+ */
+const PRE_BROADCAST_VERIFICATION_METHODS = new Set(['database_api.find_accounts', 'rc_api.find_rc_accounts']);
 
 function parseRequestData(data: unknown): unknown {
   if (typeof data !== 'string') return data;
@@ -79,20 +80,26 @@ function jsonRpcMethodOf(error: Error): string | undefined {
   return typeof payload.method === 'string' ? payload.method : undefined;
 }
 
+/** True for wax's error for a request to the node that got no answer in time. */
+export function isWaxRequestTimeout(error: unknown): error is Error {
+  return error instanceof Error && error.name.startsWith('Wax') && REQUEST_TIMED_OUT_PATTERN.test(error.message);
+}
+
 /**
- * True for a timeout of the `broadcast_transaction` request itself, which may still have reached the
- * node. Wax's pre-broadcast verification reads (account checks, memo key-leak scan) can time out too,
- * before anything is sent; those are plain failures.
+ * True for a request timeout on the broadcast path that may have come after the node took the
+ * transaction: the `broadcast_transaction` request itself, or a read of the block scanner watching for
+ * it. Only a timeout of one of wax's pre-broadcast verification reads proves nothing was sent; one whose
+ * request method cannot be read counts as possibly sent, so the user checks before retrying.
  */
-function isBroadcastRequestTimeout(error: Error): boolean {
-  if (!error.name.startsWith('Wax') || !REQUEST_TIMED_OUT_PATTERN.test(error.message)) return false;
+function isUnconfirmedRequestTimeout(error: Error): boolean {
+  if (!isWaxRequestTimeout(error)) return false;
   const method = jsonRpcMethodOf(error);
-  return method !== undefined && BROADCAST_METHODS.has(method);
+  return method === undefined || !PRE_BROADCAST_VERIFICATION_METHODS.has(method);
 }
 
 /**
  * A broadcast that may still apply: the node accepted it but no block was seen to include it in time,
- * or the broadcast request timed out without the node's answer.
+ * or a request timed out after the transaction may have reached the node.
  */
 export class TransactionNotConfirmedError extends Error {
   readonly transactionId: string;
@@ -106,11 +113,11 @@ export class TransactionNotConfirmedError extends Error {
 
 /**
  * `error` as a `TransactionNotConfirmedError` when it is WorkerBee's expired-listener rejection or a
- * timeout of the `broadcast_transaction` request, else as is.
+ * request timeout other than of a pre-broadcast verification read, else as is.
  */
 export function toNotConfirmedError(error: unknown, transactionId: string): unknown {
   return error instanceof Error &&
-    (LISTENER_EXPIRED_PATTERN.test(error.message) || isBroadcastRequestTimeout(error))
+    (LISTENER_EXPIRED_PATTERN.test(error.message) || isUnconfirmedRequestTimeout(error))
     ? new TransactionNotConfirmedError(transactionId, error)
     : error;
 }

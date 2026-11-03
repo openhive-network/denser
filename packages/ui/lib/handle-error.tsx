@@ -4,7 +4,7 @@ import { summarizeErrorForLog, transformError } from '@hive/transaction/lib/tran
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
 import { SignedOutError } from '@hive/transaction/lib/signed-out';
-import { TransactionNotConfirmedError } from '@hive/transaction/lib/transaction-inclusion';
+import { isWaxRequestTimeout, TransactionNotConfirmedError } from '@hive/transaction/lib/transaction-inclusion';
 import { findTransactionExpirationRejection } from '@hive/transaction/lib/transaction-expired';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
@@ -159,6 +159,17 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
         />
       ),
       variant: 'default',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // A Hive node request timed out (on the broadcast path, a read made before sending): ask for a retry
+  if (isWaxRequestTimeout(error)) {
+    logger.error(error, 'Node request in %s timed out', ctx?.method);
+    toast({
+      description: <RequestTimeoutMessage />,
+      variant: 'destructive',
       ...toastOptions
     });
     return;
