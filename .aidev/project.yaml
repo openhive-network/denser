@@ -128,6 +128,18 @@ verification:
   # and its daemon would not be handed the checkout's host path. Every workflow's
   # live dev stack (`aidev project devstack`) boots the candidate's tree; run the
   # script by hand on a docker host for its cold and upgrade boots.
+  #
+  # `select:` (aidev#15949, #1455): fixture_e2e and its shards, wallet_fixture and
+  # lighthouse_fixture each ask .aidev/test-map.mjs whether the candidate's changed
+  # paths can reach them (host-side, before admission; exit 77 skips, any other
+  # failure runs the suite). The map only widens: a shared package, the lockfile,
+  # config, tooling, .aidev/ or an unknown path runs all of them; an apps/wallet-only
+  # change skips the blog's three, an apps/blog-only one wallet_fixture (unless the
+  # wallet's Playwright code imports what changed), a Playwright-only change the
+  # Lighthouse pass. The three blog suites always decide alike, so the builder
+  # (fixture_e2e) is never skipped beside a shard that waits for its build. unit and
+  # static have no select, so no change skips every blocking suite, and the slot
+  # declares no allow_all_skipped. Recall replay before landing: .aidev/README.md.
   full:
     suites:
       # Concurrent: reads sources only, nothing a build writes.
@@ -191,6 +203,7 @@ verification:
       - name: fixture_e2e
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
+        select: ["node", ".aidev/test-map.mjs", "select", "fixture_e2e"]
         env: {DENSER_FIXTURE_SHARD: "1/3"}
         tier: e2e
         artifacts: ["test-results/fixture/"]
@@ -210,6 +223,7 @@ verification:
       - name: fixture_e2e_shard_2
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
+        select: ["node", ".aidev/test-map.mjs", "select", "fixture_e2e_shard_2"]
         env: {DENSER_FIXTURE_SHARD: "2/3"}
         tier: e2e
         artifacts: ["test-results/fixture-shard-2/"]
@@ -230,6 +244,7 @@ verification:
       - name: fixture_e2e_shard_3
         adapter: command
         args: [".aidev/run-fixture-e2e.sh"]
+        select: ["node", ".aidev/test-map.mjs", "select", "fixture_e2e_shard_3"]
         env: {DENSER_FIXTURE_SHARD: "3/3"}
         tier: e2e
         artifacts: ["test-results/fixture-shard-3/"]
@@ -254,6 +269,7 @@ verification:
       - name: wallet_fixture
         adapter: command
         args: [".aidev/run-wallet-fixture-e2e.sh"]
+        select: ["node", ".aidev/test-map.mjs", "select", "wallet_fixture"]
         tier: e2e
         artifacts: ["test-results/wallet-fixture/"]
         stack: false
@@ -298,6 +314,7 @@ verification:
       - name: lighthouse_fixture
         adapter: command
         args: [".aidev/run-lighthouse-fixture.sh"]
+        select: ["node", ".aidev/test-map.mjs", "select", "lighthouse_fixture"]
         tier: system
         artifacts: ["test-results/lighthouse-fixture/"]
         stack: false

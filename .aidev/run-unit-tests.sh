@@ -41,7 +41,7 @@ junit="$PWD/test-results/unit/aidev.xml"
 run_with_junit_fallback "$junit" aidev node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
-    .aidev/run-live-e2e.test.mjs .aidev/base-path-front.test.mjs .aidev/fixture-shards.test.mjs \
+    .aidev/run-live-e2e.test.mjs .aidev/test-map.test.mjs .aidev/base-path-front.test.mjs .aidev/fixture-shards.test.mjs \
     .aidev/lighthouse-fixture/image-server.test.mjs < /dev/null || status=1
 
 echo "== node --test scripts/check-*-translations" >&2
