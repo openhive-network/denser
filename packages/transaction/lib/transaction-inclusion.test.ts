@@ -118,29 +118,79 @@ describe('toNotConfirmedError', () => {
     const original = new Error(LISTENER_EXPIRED);
     const error = toNotConfirmedError(original, 'a2192469');
 
-    if (!(error instanceof TransactionNotConfirmedError)) return expect.fail('not a TransactionNotConfirmedError');
+    if (!(error instanceof TransactionNotConfirmedError))
+      return expect.fail('not a TransactionNotConfirmedError');
     expect(error.transactionId).to.equal('a2192469');
     expect(error.cause).to.equal(original);
     expect(error.message).to.not.include('expireInMs');
   });
 
-  /** What wax 1.28.8 throws for a request that times out: a `WaxRequestTimeoutError` its bundle names `WaxError` */
-  function requestTimeout(name = 'WaxError') {
-    const error = new Error('Request timed out: "POST https://api.hive.blog"');
+  /**
+   * What wax 1.28.8 throws for a request that times out: a `WaxRequestTimeoutError` its bundle names
+   * `WaxError`, carrying the request options with the JSON-RPC payload as `data`.
+   */
+  function requestTimeout(method: string, { name = 'WaxError', dataAsString = false } = {}) {
+    const payload = { jsonrpc: '2.0', method, params: {}, id: 1 };
+    const error = Object.assign(new Error('Request timed out: "POST https://api.hive.blog"'), {
+      request: {
+        endpoint: 'https://api.hive.blog',
+        url: '',
+        method: 'POST',
+        timeout: 2000,
+        data: dataAsString ? JSON.stringify(payload) : payload
+      }
+    });
     error.name = name;
     return error;
   }
 
-  for (const name of ['WaxError', 'WaxRequestTimeoutError']) {
-    it(`turns a broadcast request that timed out (${name}) into a not-confirmed error`, () => {
-      const original = requestTimeout(name);
+  const BROADCAST_TIMEOUTS = [
+    { method: 'network_broadcast_api.broadcast_transaction', name: 'WaxError' },
+    { method: 'network_broadcast_api.broadcast_transaction', name: 'WaxRequestTimeoutError' },
+    { method: 'condenser_api.broadcast_transaction', name: 'WaxError' }
+  ];
+  for (const { method, name } of BROADCAST_TIMEOUTS) {
+    it(`turns a timed-out ${method} request (${name}) into a not-confirmed error`, () => {
+      const original = requestTimeout(method, { name });
       const error = toNotConfirmedError(original, 'a2192469');
 
-      if (!(error instanceof TransactionNotConfirmedError)) return expect.fail('not a TransactionNotConfirmedError');
+      if (!(error instanceof TransactionNotConfirmedError))
+        return expect.fail('not a TransactionNotConfirmedError');
       expect(error.transactionId).to.equal('a2192469');
       expect(error.cause).to.equal(original);
     });
   }
+
+  it('reads the method from a request payload sent as a JSON string', () => {
+    const original = requestTimeout('network_broadcast_api.broadcast_transaction', { dataAsString: true });
+
+    expect(toNotConfirmedError(original, 'a2192469')).to.be.instanceOf(TransactionNotConfirmedError);
+  });
+
+  // Reads wax's on-chain verification makes before sending the transaction
+  for (const method of [
+    'database_api.find_accounts',
+    'condenser_api.get_accounts',
+    'database_api.get_dynamic_global_properties'
+  ]) {
+    it(`passes a timed-out pre-broadcast read (${method}) through unchanged`, () => {
+      const original = requestTimeout(method);
+
+      expect(toNotConfirmedError(original, 'a2192469')).to.equal(original);
+    });
+  }
+
+  it('passes a timeout without a readable request payload through unchanged', () => {
+    const noRequest = new Error('Request timed out: "POST https://api.hive.blog"');
+    noRequest.name = 'WaxError';
+    const garbled = Object.assign(new Error('Request timed out: "POST https://api.hive.blog"'), {
+      request: { data: 'not json' }
+    });
+    garbled.name = 'WaxError';
+
+    expect(toNotConfirmedError(noRequest, 'a2192469')).to.equal(noRequest);
+    expect(toNotConfirmedError(garbled, 'a2192469')).to.equal(garbled);
+  });
 
   it('passes other broadcast errors through unchanged', () => {
     const rejected = new Error('Assert Exception: payer has not enough RC mana for transaction');
