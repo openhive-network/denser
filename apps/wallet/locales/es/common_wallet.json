@@ -504,6 +504,7 @@
     "decode_memo_error": "Error al descifrar el MEMO: la clave privada no es válida o el mensaje MEMO no está cifrado.",
     "decode_memo_wallet_rejected": "La solicitud fue rechazada en {{wallet}}. Inténtalo de nuevo o descifra con la clave privada MEMO.",
     "decode_memo_wallet_error": "{{wallet}} no pudo descifrar el MEMO. Inténtalo de nuevo o descifra con la clave privada MEMO.",
+    "decode_memo_wallet_no_answer": "No hay respuesta de {{wallet}}: es posible que la solicitud haya sido rechazada. Inténtalo de nuevo o descifra con la clave privada MEMO.",
     "decode_memo_auto_trying": "Intentando descifrar con tu monedero conectado...",
     "encrypt_memo_title": "Cifrar mensaje MEMO",
     "encrypt_memo_description": "Este memo se cifrará antes de enviarlo. Proporciona la clave privada MEMO o usa Hive Keychain.",

@@ -1,7 +1,7 @@
 import type { Server } from 'node:http';
 import { test, expect, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
-import { installKeychainStub, keychainCalls } from '../support/keychainStub';
+import { answerUnansweredKeychainRequests, installKeychainStub, keychainCalls } from '../support/keychainStub';
 import { installPeakVaultStub, peakVaultCalls } from '../support/peakVaultStub';
 import { ENCRYPTED_MEMO, PLAINTEXT_MEMO, RECIPIENT_MEMO_WIF } from '../support/memoKeys';
 import {
@@ -23,6 +23,12 @@ import {
 const UNRELATED_WIF = '5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg';
 /** What Keychain and Peak Vault answer a request the user rejected */
 const USER_CANCEL = { error: 'user_cancel', message: 'Request was canceled by the user.' };
+/** What Keychain answers a request whose prompt was left open once a newer request supersedes it */
+const IGNORED = { error: 'ignored', message: 'User ignored this transaction' };
+/** Past the dialog's bounded wait for the wallet's answer (use-unanswered-request.ts) */
+const PAST_UNANSWERED_WAIT = '00:25';
+const KEYCHAIN_NO_ANSWER =
+  'No answer from Hive Keychain: the request may have been rejected. Try again, or decode with the MEMO private key.';
 
 let stub: Server;
 
@@ -75,6 +81,12 @@ const openDecodeDialog = async (page: Page) => {
   }).toPass({ timeout: 30_000 });
   return decodeDialog(page);
 };
+
+/** Waits until the dialog has sent Keychain its decode request: the dialog says it is trying before that. */
+const expectKeychainDecodeRequested = (page: Page) =>
+  expect
+    .poll(async () => (await keychainCalls(page)).filter(({ method }) => method === 'requestVerifyKey').length)
+    .toBe(1);
 
 /** The dialog offers both ways out of a decode the wallet did not do: a retry and the private key. */
 const expectRetryAndPrivateKey = async (page: Page, retryButtonName: string) => {
@@ -151,6 +163,56 @@ test.describe('Encrypted memos in the account history', () => {
     await dialog.getByRole('button', { name: 'Decode with private key' }).click();
     await expect(dialog.getByTestId('decoded-memo-result')).toHaveValue(PLAINTEXT_MEMO);
     await expect(dialog.getByTestId('decode-memo-auto-trying')).toHaveCount(0);
+  });
+
+  test('WALLET-MEMO-DEC-09 — a Keychain prompt left unanswered says so after a bounded wait', async ({ page }) => {
+    await page.clock.install();
+    await logInAsStubAccount(page, { loginType: 'keychain' });
+    await installKeychainStub(page, { verifyKey: PLAINTEXT_MEMO, verifyKeyFailures: ['no answer'] });
+    const dialog = await openDecodeDialog(page);
+    await expectKeychainDecodeRequested(page);
+    await expect(dialog.getByTestId('decode-memo-auto-trying')).toBeVisible();
+    await expect(dialog.getByTestId('decode-memo-no-answer')).toHaveCount(0);
+
+    await page.clock.fastForward(PAST_UNANSWERED_WAIT);
+
+    await expect(dialog.getByTestId('decode-memo-no-answer')).toHaveText(KEYCHAIN_NO_ANSWER);
+    await expect(dialog.getByTestId('decode-memo-auto-trying')).toHaveCount(0);
+    await expectRetryAndPrivateKey(page, 'Decode with Keychain');
+
+    await dialog.getByRole('button', { name: 'Decode with Keychain' }).click();
+    await expect(dialog.getByTestId('decoded-memo-result')).toHaveValue(PLAINTEXT_MEMO);
+    await expect(dialog.getByTestId('decode-memo-no-answer')).toHaveCount(0);
+  });
+
+  test('WALLET-MEMO-DEC-10 — a late "ignored" answer to the awaited Keychain request is shown as rejected', async ({
+    page
+  }) => {
+    await logInAsStubAccount(page, { loginType: 'keychain' });
+    await installKeychainStub(page, { verifyKey: PLAINTEXT_MEMO, verifyKeyFailures: ['no answer'] });
+    const dialog = await openDecodeDialog(page);
+    await expectKeychainDecodeRequested(page);
+    await expect(dialog.getByTestId('decode-memo-auto-trying')).toBeVisible();
+
+    await answerUnansweredKeychainRequests(page, IGNORED);
+
+    await expect(dialog.getByTestId('decode-memo-error')).toHaveText(
+      'The request was rejected in Hive Keychain. Try again, or decode with the MEMO private key.'
+    );
+    await expect(dialog.getByTestId('decode-memo-auto-trying')).toHaveCount(0);
+    await expectRetryAndPrivateKey(page, 'Decode with Keychain');
+  });
+
+  test('WALLET-MEMO-DEC-11 — logged in with Keychain but without the extension, the dialog asks only for the private key', async ({
+    page
+  }) => {
+    await logInAsStubAccount(page, { loginType: 'keychain' });
+    const dialog = await openDecodeDialog(page);
+
+    await expect(dialog.getByLabel('MEMO private key')).toBeVisible();
+    await expect(dialog).toContainText('you will need to provide the MEMO private key');
+    await expect(dialog).not.toContainText('Hive Keychain');
+    await expect(dialog.getByRole('button', { name: 'Decode with Keychain' })).toHaveCount(0);
   });
 
   test('WALLET-MEMO-DEC-07 — a Peak Vault prompt cancelled on opening says so instead of blaming the private key', async ({

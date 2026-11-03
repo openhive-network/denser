@@ -511,6 +511,7 @@
     "decode_memo_error": "Błąd odszyfrowywania MEMO: klucz prywatny jest nieprawidłowy lub wiadomość MEMO nie jest zaszyfrowana.",
     "decode_memo_wallet_rejected": "Żądanie zostało odrzucone w {{wallet}}. Spróbuj ponownie lub odszyfruj kluczem prywatnym MEMO.",
     "decode_memo_wallet_error": "{{wallet}} nie odszyfrował MEMO. Spróbuj ponownie lub odszyfruj kluczem prywatnym MEMO.",
+    "decode_memo_wallet_no_answer": "Brak odpowiedzi z {{wallet}}: żądanie mogło zostać odrzucone. Spróbuj ponownie lub odszyfruj kluczem prywatnym MEMO.",
     "decode_memo_auto_trying": "Próba odszyfrowania za pomocą zalogowanego portfela...",
     "encrypt_memo_title": "Zaszyfruj wiadomość MEMO",
     "encrypt_memo_description": "Ta notatka zostanie zaszyfrowana przed wysłaniem. Podaj klucz prywatny MEMO lub użyj Hive Keychain.",
