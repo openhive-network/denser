@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import {
   type ITransactionIdObserver,
+  findWaxRequestTimeout,
   isWaxRequestTimeout,
   TransactionNotConfirmedError,
   toNotConfirmedError,
@@ -243,5 +244,37 @@ describe('isWaxRequestTimeout', () => {
     expect(isWaxRequestTimeout(notWax)).to.equal(false);
     expect(isWaxRequestTimeout(otherWax)).to.equal(false);
     expect(isWaxRequestTimeout({ name: 'WaxError', message: 'Request timed out' })).to.equal(false);
+  });
+});
+
+describe('findWaxRequestTimeout', () => {
+  const waxTimeout = () => {
+    const error = new Error('Request timed out: "POST https://api.hive.blog"');
+    error.name = 'WaxError';
+    return error;
+  };
+
+  it("finds wax's request timeout itself", () => {
+    const timeout = waxTimeout();
+    expect(findWaxRequestTimeout(timeout)).to.equal(timeout);
+  });
+
+  it('finds it as the cause of the error the safe-storage unlock rethrows', () => {
+    const timeout = waxTimeout();
+    const unlockError = new Error(timeout.message, { cause: timeout });
+
+    expect(findWaxRequestTimeout(unlockError)).to.equal(timeout);
+    expect(findWaxRequestTimeout(new Error('Signing failed', { cause: unlockError }))).to.equal(timeout);
+  });
+
+  it('finds nothing in an unlock failure that is no timeout', () => {
+    const invalidCredentials = new Error('Invalid credentials');
+    invalidCredentials.name = 'AuthorizationError';
+    const notWaxTimeout = new Error('Request timed out: "POST https://api.hive.blog"');
+
+    expect(findWaxRequestTimeout(new Error('Invalid credentials', { cause: invalidCredentials }))).to.equal(undefined);
+    expect(findWaxRequestTimeout(new Error(notWaxTimeout.message, { cause: notWaxTimeout }))).to.equal(undefined);
+    expect(findWaxRequestTimeout(new Error('No password to unlock key'))).to.equal(undefined);
+    expect(findWaxRequestTimeout(undefined)).to.equal(undefined);
   });
 });
