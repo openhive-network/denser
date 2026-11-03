@@ -47,14 +47,31 @@ const ACCOUNT_AUTHORITIES = {
   posting: authority([POSTING_KEY])
 };
 
+const OTHER_POSTING_KEY = 'STM4PostingKeyOfAnotherAccount';
+
+/** An account other than ACCOUNT, whose active key is OTHER_KEY and posting key OTHER_POSTING_KEY */
+const holderAuthorities = (name: string) => ({
+  name,
+  owner: authority(['STM3OwnerKeyOfAnotherAccount']),
+  active: authority([OTHER_KEY]),
+  posting: authority([OTHER_POSTING_KEY])
+});
+
 let holderLookups = 0;
+let holderAccountsUnreadable = false;
 
 /** A chain where WIF's public key is `publicKey`, held by `holders`; the holder lookup fails for `holders` null */
 function useChain(publicKey: string, holders: string[] | null = []): void {
   chain.current = {
     calculatePublicKey: () => publicKey,
     api: {
-      database_api: { find_accounts: async () => ({ accounts: [ACCOUNT_AUTHORITIES] }) },
+      database_api: {
+        find_accounts: async ({ accounts }: { accounts: string[] }) => {
+          if (accounts.includes(ACCOUNT)) return { accounts: [ACCOUNT_AUTHORITIES] };
+          if (holderAccountsUnreadable) throw new Error('Unable to acquire database lock');
+          return { accounts: accounts.map(holderAuthorities) };
+        }
+      },
       account_by_key_api: {
         get_key_references: async () => {
           holderLookups += 1;
@@ -68,6 +85,7 @@ function useChain(publicKey: string, holders: string[] | null = []): void {
 
 beforeEach(() => {
   holderLookups = 0;
+  holderAccountsUnreadable = false;
 });
 
 describe('validateSafeStorageKey', () => {
@@ -89,6 +107,20 @@ describe('validateSafeStorageKey', () => {
       key: 'login_form.zod_error.authorised_account_active_key',
       values: { owner: AUTHORISED, account: ACCOUNT }
     });
+  });
+
+  it("names an authorised account's key of another role as that account's, in Direct Authority Mode", async () => {
+    useChain(OTHER_POSTING_KEY, [AUTHORISED]);
+    assert.deepEqual(await validateSafeStorageKey(ACCOUNT, 'active', WIF, true), {
+      key: 'login_form.zod_error.other_account_active_key',
+      values: { owner: AUTHORISED, account: ACCOUNT }
+    });
+  });
+
+  it("leaves the key to safe storage when its holders' authorities cannot be read", async () => {
+    useChain(OTHER_KEY, [AUTHORISED]);
+    holderAccountsUnreadable = true;
+    assert.equal(await validateSafeStorageKey(ACCOUNT, 'active', WIF, true), null);
   });
 
   it("names an unrelated account's key in Direct Authority Mode", async () => {
