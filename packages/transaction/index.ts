@@ -196,7 +196,9 @@ export class TransactionService {
 
   /**
    * Broadcasts transaction. Resolves after sending request to API
-   * server. Does not wait for applying transaction in blockchain.
+   * server. Does not wait for applying transaction in blockchain. When
+   * the request times out, the node may still have taken the transaction:
+   * it rejects with `TransactionNotConfirmedError`.
    *
    * @param {ITransaction} txBuilder
    * @return {*}  {Promise<TransactionBroadcastResult>}
@@ -207,9 +209,16 @@ export class TransactionService {
     const transactionId = txBuilder.id;
     logger.info('Broadcasting transaction id: %s', transactionId);
     logger.debug('Transaction %s body: %o', transactionId, txBuilder.toApi());
-    await (
-      await getChain()
-    ).api.network_broadcast_api.broadcast_transaction({ max_block_age: -1, trx: txBuilder.toApiJson() });
+    const chain = await getChain();
+    try {
+      await chain.api.network_broadcast_api.broadcast_transaction({ max_block_age: -1, trx: txBuilder.toApiJson() });
+    } catch (caught) {
+      const error = toNotConfirmedError(caught, transactionId);
+      if (error instanceof TransactionNotConfirmedError) {
+        logger.warn('Broadcast request for transaction %s timed out; it may still apply', transactionId);
+      }
+      throw error;
+    }
     return { transactionId };
   }
 
@@ -227,7 +236,8 @@ export class TransactionService {
    * into Hive blockchain, then resolve. The bot stays running for further
    * observed broadcasts and is stopped after a minute without any. When
    * the node accepted the transaction but the bot doesn't find it in a
-   * block in time, it rejects with `TransactionNotConfirmedError`.
+   * block in time, or a request timed out during the broadcast, it rejects
+   * with `TransactionNotConfirmedError`.
    *
    * @param {ITransaction} txBuilder
    * @return {*}  {Promise<TransactionBroadcastResult>}
@@ -250,7 +260,7 @@ export class TransactionService {
       const operationNames = getOperationNames(txBuilder.transaction.operations).join(', ');
       if (error instanceof TransactionNotConfirmedError) {
         logger.warn(
-          '%s of %s sent but not seen in a block in time: transaction %s',
+          '%s of %s sent but not confirmed in time, it may still apply: transaction %s',
           operationNames,
           this.signerOptions.username,
           error.transactionId
