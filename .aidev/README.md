@@ -394,6 +394,87 @@ It needs no build of its own; it serves the ones `fixture_e2e` and
 `wallet_fixture` made (`wallet_fixture` writes `apps/wallet/.next/aidev-build-complete`
 for `wallet-live` to wait on, as `run-blog-build.sh` does for the blog).
 
+### Which suites and fixture specs a change needs (`.aidev/test-map.mjs`, #1455)
+
+`.aidev/test-map.mjs` maps a candidate's changed paths to the `full` suites it can
+reach and to the blog fixture specs (`apps/blog/playwright/tests/fixture/*.spec.ts`)
+it can reach. It reads the changed paths as `run-live-e2e.sh` does
+(`AIDEV_CHANGED_FILES_FILE`, else `git diff` from the merge base with
+`AIDEV_BASE_REF` / `DENSER_TEST_MAP_BASE` / `origin/aidev/integration`). Locally it
+diffs the working tree, untracked files included, so uncommitted edits count. Its
+graph is `.aidev/import-graph.mjs`, which `live-e2e-importers.mjs` also uses. The
+rules are in the script's header. The map only ever widens. A shared package, the
+lockfile, root or build config, `scripts/`, `.aidev/`, an unknown path, Playwright
+code that no import or config path loads, and Playwright data that no code names all
+select every suite and every spec. So do no change information and an empty change.
+
+**In the gate** (`select:` in `project.yaml`): `fixture_e2e` and its shards,
+`wallet_fixture` and `lighthouse_fixture` each run
+`node .aidev/test-map.mjs select <suite>`. It runs host-side before admission and
+exits 0 to run the suite or 77 to skip it, with the reason on its last line. Any
+other exit, such as no `node` on the host or a base git cannot resolve, runs the
+suite. `aidev test affected` and `aidev test run --slot full` apply the same
+selects. Effects:
+
+- An `apps/wallet/**`-only change skips the three blog suites.
+- An `apps/blog/**`-only change skips `wallet_fixture`, unless the wallet's
+  Playwright code imports the changed file (it imports the blog's
+  `locatorSelector`, `csp`, `fixture-proxy`, …).
+- A change to Playwright code only skips `lighthouse_fixture`, unless it reaches the
+  fixture proxy that the pass loads or the `lighthouse` recording.
+- A change that reaches a live e2e spec keeps that app's build suite, whose build
+  `live_e2e` serves.
+- Docs (`docs/**`, root `*.md`, `CLAUDE.md`) skip all five.
+
+`unit` and `static` have no select, so every change runs a blocking suite and the
+slot declares no `allow_all_skipped`. A docs-only change passes on `unit` and
+`static`, and the slot reports the other suites as skipped. The three blog suites
+always decide alike, so a shard never waits for a builder that was skipped.
+`.aidev/test-map.test.mjs` (in `unit`) covers each rule, the widen cases, and the
+`select:` binding of each suite.
+
+**Recall replay** before the selects landed (2026-11-03). The corpus was 235
+changes:
+
+- 85 denser full-slot runs that had a failing suite, from 66 workflows between
+  2026-10-14 and 2026-11-02. `activity_runs.metadata.suite_timings` begins on
+  2026-10-14. Each run's paths are its candidate's fork-base diff.
+- The last 150 first-parent changes on `aidev/integration`.
+
+Results:
+
+- Failing runs: the map selected the failing suite in all 39 cases that this map
+  decides (`fixture_e2e` 31, `wallet_fixture` 6, `lighthouse_fixture` 2), with
+  0 misses. `live_e2e` (52) and `unit` (3) are not decided here.
+- Build dependency: for each change, every app whose e2e specs `live_e2e` selected
+  had its build suite selected, 333 of 333.
+- Skips across the corpus: the blog suites 13 times, `wallet_fixture` 28 times,
+  `lighthouse_fixture` 12 times.
+
+Most changes touch `packages/` or `.aidev/`, and those run everything. The replay
+classifies against the tree at the time of the replay, not each candidate's own tree.
+
+**In the agent's loop**, run only the fixture specs your diff reaches instead of
+the whole `full` slot:
+
+```bash
+node .aidev/test-map.mjs plan     # the suites, the fixture specs, and the commands that run them
+node .aidev/test-map.mjs specs    # just the specs, relative to apps/blog
+aidev test run --slot full --suite fixture_e2e -- playwright/tests/fixture/a.spec.ts playwright/tests/fixture/b.spec.ts
+```
+
+`plan` prints the exact `aidev test run --slot full --suite fixture_e2e -- <specs>`
+line. That run builds the blog once and runs exactly those specs, unsharded and
+without the basepath pass, in the suite's image, and it reports their results. It is
+not recorded for gate reuse. The specs it lists are the changed specs, the specs
+whose imports reach a changed Playwright file, the specs naming a changed recording,
+and a changed snapshot's spec. When the change reaches every spec, as app source or
+anything shared does, `plan` says so and points at `aidev test run --slot full`,
+which keeps the selects above. With a running dev stack,
+`.aidev/dev-stack-spec.sh <spec>` is faster still. The gate always runs the whole
+`fixture_e2e` suite whenever it selects it. Spec-level narrowing stays out of the
+gate until the map has a recall record.
+
 **Opt-in: the fixture suite through the stack.** Set
 `DENSER_FIXTURE_VIA_STACK=1`, and bring up the `fixture-relay` profile's
 `fixture-proxy` and `blog` services. With these, the stack's `blog` serves the
