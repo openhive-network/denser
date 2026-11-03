@@ -5,6 +5,7 @@ import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
 import { SignedOutError } from '@hive/transaction/lib/signed-out';
 import { TransactionNotConfirmedError } from '@hive/transaction/lib/transaction-inclusion';
+import { isTransactionExpired } from '@hive/transaction/lib/transaction-expired';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
@@ -15,6 +16,7 @@ import { performDesyncLogout } from '@smart-signer/lib/auth/desync-logout';
 import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-message';
 import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-message';
 import { TransactionNotConfirmedMessage } from '@smart-signer/components/transaction-not-confirmed-message';
+import { TransactionExpiredMessage } from '@smart-signer/components/transaction-expired-message';
 import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
@@ -105,6 +107,17 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     logger.debug(error, 'Broadcast in %s rejected for lack of RC', ctx?.method);
     toast({
       description: <NotEnoughRcMessage {...notEnoughRc} />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // Signed only after its expiration, so the node rejected it: nothing was applied, it can be signed again
+  if (isTransactionExpired(error)) {
+    logger.warn('Transaction in %s expired before broadcast: %s', ctx?.method, summarizeErrorForLog(error));
+    toast({
+      description: <TransactionExpiredMessage />,
       variant: 'destructive',
       ...toastOptions
     });

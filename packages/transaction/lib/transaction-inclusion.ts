@@ -50,7 +50,20 @@ export function watchInclusion(
  */
 const LISTENER_EXPIRED_PATTERN = /broadcasted successfully, but listener has expired/;
 
-/** An observed broadcast the node accepted but no block was seen to include in time; it may still apply. */
+/**
+ * Wax's message for a request that got no answer in time (`WaxRequestTimeoutError`, though wax's bundle
+ * names it `WaxError`). A broadcast request that timed out may still have reached the node.
+ */
+const REQUEST_TIMED_OUT_PATTERN = /^Request timed out\b/;
+
+function isRequestTimeout(error: Error): boolean {
+  return error.name.startsWith('Wax') && REQUEST_TIMED_OUT_PATTERN.test(error.message);
+}
+
+/**
+ * A broadcast that may still apply: the node accepted it but no block was seen to include it in time,
+ * or the broadcast request timed out without the node's answer.
+ */
 export class TransactionNotConfirmedError extends Error {
   readonly transactionId: string;
 
@@ -61,9 +74,12 @@ export class TransactionNotConfirmedError extends Error {
   }
 }
 
-/** `error` as a `TransactionNotConfirmedError` when it is WorkerBee's expired-listener rejection, else as is. */
+/**
+ * `error` as a `TransactionNotConfirmedError` when it is WorkerBee's expired-listener rejection or a
+ * request timeout during the broadcast, else as is.
+ */
 export function toNotConfirmedError(error: unknown, transactionId: string): unknown {
-  return error instanceof Error && LISTENER_EXPIRED_PATTERN.test(error.message)
+  return error instanceof Error && (LISTENER_EXPIRED_PATTERN.test(error.message) || isRequestTimeout(error))
     ? new TransactionNotConfirmedError(transactionId, error)
     : error;
 }

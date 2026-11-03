@@ -124,11 +124,34 @@ describe('toNotConfirmedError', () => {
     expect(error.message).to.not.include('expireInMs');
   });
 
+  /** What wax 1.28.8 throws for a request that times out: a `WaxRequestTimeoutError` its bundle names `WaxError` */
+  function requestTimeout(name = 'WaxError') {
+    const error = new Error('Request timed out: "POST https://api.hive.blog"');
+    error.name = name;
+    return error;
+  }
+
+  for (const name of ['WaxError', 'WaxRequestTimeoutError']) {
+    it(`turns a broadcast request that timed out (${name}) into a not-confirmed error`, () => {
+      const original = requestTimeout(name);
+      const error = toNotConfirmedError(original, 'a2192469');
+
+      if (!(error instanceof TransactionNotConfirmedError)) return expect.fail('not a TransactionNotConfirmedError');
+      expect(error.transactionId).to.equal('a2192469');
+      expect(error.cause).to.equal(original);
+    });
+  }
+
   it('passes other broadcast errors through unchanged', () => {
     const rejected = new Error('Assert Exception: payer has not enough RC mana for transaction');
     const notAnError = { message: LISTENER_EXPIRED };
+    const otherTimeout = new Error('Request timed out: "POST https://api.hive.blog"');
+    const expired = new Error('transaction expiration exception');
+    expired.name = 'WaxUnhandledAssertionError';
 
     expect(toNotConfirmedError(rejected, 'a2192469')).to.equal(rejected);
     expect(toNotConfirmedError(notAnError, 'a2192469')).to.equal(notAnError);
+    expect(toNotConfirmedError(otherTimeout, 'a2192469')).to.equal(otherTimeout);
+    expect(toNotConfirmedError(expired, 'a2192469')).to.equal(expired);
   });
 });
