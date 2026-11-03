@@ -1,6 +1,15 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { deliver, outboxReducer, pendingInRoom, type OutboxAction, type OutgoingMessage } from './outbox.ts';
+import {
+  awaitingReconnect,
+  deliver,
+  outboxReducer,
+  pendingInRoom,
+  resendInOrder,
+  type OutboxAction,
+  type OutgoingMessage
+} from './outbox.ts';
+import { ChatUnreachableError } from './matrix-chat-sign-in.ts';
 
 const ROOM = '!general:example.org';
 const SENT_AT = 1_793_000_000_000;
@@ -36,8 +45,9 @@ describe('composer outbox', () => {
 
   it('marks a message failed when sending it fails, and a retry sends it again with the same transaction id', async () => {
     let outbox = outboxAfter([{ type: 'send', txnId: 'txn-1', roomId: ROOM, text: 'hi', createdAt: SENT_AT }]);
-    outbox = await deliverInto(outbox, () => Promise.reject(new Error('offline')));
+    outbox = await deliverInto(outbox, () => Promise.reject(new Error('M_FORBIDDEN')));
     assert.equal(outbox[0].status, 'failed');
+    assert.equal(outbox[0].failure, 'rejected');
     assert.equal(pendingInRoom(outbox, ROOM, new Set()).length, 1);
 
     outbox = outboxReducer(outbox, { type: 'retry', txnId: 'txn-1' });
@@ -49,6 +59,7 @@ describe('composer outbox', () => {
     });
     assert.deepEqual(retried, ['txn-1']);
     assert.equal(outbox[0].status, 'sent');
+    assert.equal(outbox[0].failure, undefined);
   });
 
   it('retries only failed messages and keeps each room to its own', () => {
@@ -65,5 +76,102 @@ describe('composer outbox', () => {
       pendingInRoom(outbox, ROOM, new Set()).map((message) => message.txnId),
       ['a']
     );
+  });
+
+  describe('on reconnecting', () => {
+    const unreachable = () => Promise.reject(new ChatUnreachableError('fetch failed'));
+    const rejected = () => Promise.reject(new Error('M_TOO_LARGE'));
+
+    /** Sends each of `texts` and fails it with `sendOf(text)` */
+    async function failedOutbox(texts: string[], sendOf: (text: string) => () => Promise<string>) {
+      let outbox = outboxAfter(
+        texts.map((text, index) => ({ type: 'send', txnId: `txn-${text}`, roomId: ROOM, text, createdAt: SENT_AT + index }))
+      );
+      for (const message of outbox) {
+        const actions: OutboxAction[] = [];
+        await deliver(sendOf(message.text), message, (action) => actions.push(action));
+        outbox = actions.reduce(outboxReducer, outbox);
+      }
+      return outbox;
+    }
+
+    async function resend(outbox: OutgoingMessage[], send: (roomId: string, txnId: string, text: string) => Promise<string>) {
+      const statuses: string[][] = [];
+      let current = outbox;
+      await resendInOrder(send, awaitingReconnect(outbox), (action) => {
+        current = outboxReducer(current, action);
+        statuses.push(current.map((message) => message.status));
+      });
+      return { outbox: current, statuses };
+    }
+
+    it('sends the messages that could not reach the homeserver again, once each, in order, with their transaction ids', async () => {
+      const outbox = await failedOutbox(['one', 'two'], () => unreachable);
+      assert.deepEqual(
+        outbox.map((message) => [message.status, message.failure]),
+        [
+          ['failed', 'unreachable'],
+          ['failed', 'unreachable']
+        ]
+      );
+
+      const sends: string[][] = [];
+      const resent = await resend(outbox, async (roomId, txnId, text) => {
+        sends.push([roomId, txnId, text]);
+        return `$${txnId}`;
+      });
+
+      assert.deepEqual(sends, [
+        [ROOM, 'txn-one', 'one'],
+        [ROOM, 'txn-two', 'two']
+      ]);
+      assert.deepEqual(resent.statuses[1], ['sending', 'sending']);
+      assert.deepEqual(
+        resent.outbox.map((message) => [message.status, message.eventId]),
+        [
+          ['sent', '$txn-one'],
+          ['sent', '$txn-two']
+        ]
+      );
+      assert.deepEqual(awaitingReconnect(resent.outbox), []);
+    });
+
+    it('leaves a message the homeserver rejected to the retry button', async () => {
+      const outbox = await failedOutbox(['big', 'lost'], (text) => (text === 'big' ? rejected : unreachable));
+      assert.deepEqual(
+        awaitingReconnect(outbox).map((message) => message.txnId),
+        ['txn-lost']
+      );
+
+      const sends: string[] = [];
+      const resent = await resend(outbox, async (_roomId, txnId) => {
+        sends.push(txnId);
+        return '$sent';
+      });
+
+      assert.deepEqual(sends, ['txn-lost']);
+      assert.deepEqual(
+        resent.outbox.map((message) => [message.status, message.failure]),
+        [
+          ['failed', 'rejected'],
+          ['sent', undefined]
+        ]
+      );
+    });
+
+    it('stops at a message that still cannot reach the homeserver, keeping it and those after it for the next reconnection', async () => {
+      const outbox = await failedOutbox(['one', 'two', 'three'], () => unreachable);
+      const sends: string[] = [];
+      const resent = await resend(outbox, (_roomId, txnId) => {
+        sends.push(txnId);
+        return unreachable();
+      });
+
+      assert.deepEqual(sends, ['txn-one']);
+      assert.deepEqual(
+        awaitingReconnect(resent.outbox).map((message) => message.txnId),
+        ['txn-one', 'txn-two', 'txn-three']
+      );
+    });
   });
 });

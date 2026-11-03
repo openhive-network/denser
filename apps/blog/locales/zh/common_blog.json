@@ -982,6 +982,7 @@
     "send": "发送",
     "sending": "正在发送…",
     "send_failed": "未发送。",
+    "offline": "已离线，正在重新连接…",
     "encrypted_message": "加密消息。",
     "encrypted_room": "此房间已加密。",
     "unsupported_message": "此消息无法在此显示。",

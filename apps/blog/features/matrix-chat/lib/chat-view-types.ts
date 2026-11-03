@@ -49,7 +49,13 @@ export interface ChatSession {
   ownSender(roomId: string): ChatSenderView;
   /** Loads older messages of the room; resolves to whether there are more before them. */
   paginateBack(roomId: string): Promise<boolean>;
-  /** Sends `text` as `m.text`; the same `txnId` again retries the same message. Resolves to its event id. */
+  /** Whether the latest sync reached the homeserver: false while it fails or is reconnecting */
+  connected(): boolean;
+  /**
+   * Sends `text` as `m.text`; the same `txnId` again retries the same message. Resolves to its
+   * event id; rejects with `ChatUnreachableError` when the homeserver could not be reached, or
+   * answered with a server error or a rate limit.
+   */
   sendText(roomId: string, txnId: string, text: string): Promise<string>;
   /** Marks the room read up to its latest message. */
   markRead(roomId: string): void;

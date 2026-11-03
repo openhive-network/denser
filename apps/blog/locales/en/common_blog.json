@@ -985,6 +985,7 @@
     "send": "Send",
     "sending": "Sending…",
     "send_failed": "Not sent.",
+    "offline": "Offline. Reconnecting…",
     "encrypted_message": "Encrypted message.",
     "encrypted_room": "This room is encrypted.",
     "unsupported_message": "This message can't be shown here.",

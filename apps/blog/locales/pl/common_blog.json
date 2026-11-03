@@ -991,6 +991,7 @@
     "send": "Wyślij",
     "sending": "Wysyłanie…",
     "send_failed": "Nie wysłano.",
+    "offline": "Brak połączenia. Ponowne łączenie…",
     "encrypted_message": "Zaszyfrowana wiadomość.",
     "encrypted_room": "Ten pokój jest zaszyfrowany.",
     "unsupported_message": "Tej wiadomości nie można tu wyświetlić.",

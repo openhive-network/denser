@@ -15,7 +15,12 @@ export function ChatOutgoingItem({ session, message, retry }: ChatOutgoingItemPr
   const { t } = useTranslation('common_blog');
   const sender = session.ownSender(message.roomId);
   return (
-    <li className="flex gap-2 px-2 py-1.5" data-testid="chat-outgoing" data-status={message.status}>
+    <li
+      className="flex gap-2 px-2 py-1.5"
+      data-testid="chat-outgoing"
+      data-status={message.status}
+      data-failure={message.failure}
+    >
       <ChatMessageFrame
         session={session}
         senderId={session.userId}

@@ -982,6 +982,7 @@
     "send": "보내기",
     "sending": "보내는 중…",
     "send_failed": "보내지 못했습니다.",
+    "offline": "오프라인입니다. 다시 연결하는 중…",
     "encrypted_message": "암호화된 메시지입니다.",
     "encrypted_room": "이 방은 암호화되어 있습니다.",
     "unsupported_message": "이 메시지는 여기에서 표시할 수 없습니다.",

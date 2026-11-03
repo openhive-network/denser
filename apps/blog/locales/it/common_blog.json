@@ -988,6 +988,7 @@
     "send": "Invia",
     "sending": "Invio in corso…",
     "send_failed": "Non inviato.",
+    "offline": "Nessuna connessione. Riconnessione in corso…",
     "encrypted_message": "Messaggio cifrato.",
     "encrypted_room": "Questa stanza è cifrata.",
     "unsupported_message": "Questo messaggio non può essere mostrato qui.",

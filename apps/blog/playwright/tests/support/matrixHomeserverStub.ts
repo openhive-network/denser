@@ -3,9 +3,10 @@ import type { Page, Route } from '@playwright/test';
 /**
  * A Matrix homeserver for the native chat client, answered with `page.route`: sign-in with a login
  * token, a first sync of two rooms (`#general` with unread messages and history before them, and
- * `#lobby`), long polls that answer what a test queues (or fail once it cuts them off), `/messages`, sending, read receipts (which
- * clear the room's unread count in the next sync), `/account/whoami` and `/sync` for the access
- * tokens it issued and has not signed out or revoked, and sign-out. Every request is recorded.
+ * `#lobby`), long polls that answer what a test queues (or fail once it cuts them off or the
+ * network goes), `/messages`, sending, read receipts (which clear the room's unread count in the
+ * next sync), `/account/whoami` and `/sync` for the access tokens it issued and has not signed out
+ * or revoked, and sign-out. Every request that reaches it is recorded.
  */
 
 export const HOMESERVER = 'https://matrix.matrix.test';
@@ -75,8 +76,11 @@ export class MatrixHomeserverStub {
   private readonly queued: Json[] = [];
   private batch = 1;
   private failSends = 0;
+  private sendFailure = { status: 500, errcode: 'M_UNKNOWN' };
   /** Long polls fail until a client starts again with a first sync */
   private cuttingOff = false;
+  /** Every request fails unanswered and unrecorded, as with no network */
+  private offline = false;
   /** Device of each access token issued and not signed out */
   private readonly sessions = new Map<string, string>();
   private issued = 0;
@@ -119,9 +123,18 @@ export class MatrixHomeserverStub {
     this.sessions.clear();
   }
 
-  /** The next `count` sends fail */
-  failNextSends(count: number): void {
+  /**
+   * No request reaches the homeserver until `online` is set again: the long polls in flight and
+   * every request from now on fail as the browser fails them with no network
+   */
+  setOnline(online: boolean): void {
+    this.offline = !online;
+  }
+
+  /** The next `count` sends fail with `status`, a server error by default */
+  failNextSends(count: number, status = 500, errcode = 'M_UNKNOWN'): void {
     this.failSends = count;
+    this.sendFailure = { status, errcode };
   }
 
   async install(page: Page): Promise<void> {
@@ -129,6 +142,7 @@ export class MatrixHomeserverStub {
   }
 
   private async answer(route: Route): Promise<void> {
+    if (this.offline) return route.abort('internetdisconnected').catch(() => undefined);
     const request = route.request();
     const url = new URL(request.url());
     const method = request.method();
@@ -178,7 +192,7 @@ export class MatrixHomeserverStub {
     if (path.includes('/send/m.room.message/')) {
       if (this.failSends > 0) {
         this.failSends--;
-        return json({ errcode: 'M_UNKNOWN', error: 'stub send failure' }, 500);
+        return json({ errcode: this.sendFailure.errcode, error: 'stub send failure' }, this.sendFailure.status);
       }
       return json({ event_id: `$sent.${path.split('/').at(-1)}` });
     }
@@ -212,10 +226,11 @@ export class MatrixHomeserverStub {
         [LOBBY_ROOM]: room(`#lobby:${SERVER_NAME}`, 'lobby', this.userId, [message('$lobby.1', LOBBY_MESSAGE, 500)], UNREAD.lobby)
       });
     }
-    for (let waited = 0; waited < LONG_POLL_MS && this.queued.length === 0 && !this.cuttingOff; waited += POLL_STEP_MS) {
+    const waiting = () => this.queued.length === 0 && !this.cuttingOff && !this.offline;
+    for (let waited = 0; waited < LONG_POLL_MS && waiting(); waited += POLL_STEP_MS) {
       await new Promise((resolve) => setTimeout(resolve, POLL_STEP_MS));
     }
-    if (this.cuttingOff) return null;
+    if (this.cuttingOff || this.offline) return null;
     return sync(this.batch++, this.queued.shift() ?? {});
   }
 

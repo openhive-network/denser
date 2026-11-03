@@ -181,6 +181,46 @@ test.describe('Native Matrix chat client', () => {
     expect(new Set(sends.map((request) => request.path)).size).toBe(1);
   });
 
+  test('CHAT-NATIVE-20: offline, the drawer says so; a message sent then is delivered once on reconnecting, a rejected one is not', async ({
+    page
+  }) => {
+    const { homeserver } = await usesNativeChat(page);
+    await openChat(page);
+    const outgoing = panel(page).getByTestId('chat-outgoing');
+    const offlineNote = panel(page).getByRole('status').filter({ hasText: EN.offline });
+    const sendsOf = (body: string) =>
+      homeserver.requestsWith('/send/m.room.message/', 'PUT').filter((request) => Reflect.get(Object(request.body), 'body') === body);
+
+    homeserver.failNextSends(1, 413, 'M_TOO_LARGE');
+    await composer(page).fill('Rejected');
+    await composer(page).press('Enter');
+    await expect(outgoing.filter({ hasText: 'Rejected' })).toHaveAttribute('data-failure', 'rejected');
+
+    const keepAlivesFailed: string[] = [];
+    page.on('requestfailed', (request) => {
+      if (request.url().endsWith('/_matrix/client/versions')) keepAlivesFailed.push(request.url());
+    });
+    homeserver.setOnline(false);
+    await page.context().setOffline(true);
+    await expect(offlineNote).toBeVisible();
+    await composer(page).fill('Sent offline');
+    await composer(page).press('Enter');
+    const sentOffline = outgoing.filter({ hasText: 'Sent offline' });
+    await expect(sentOffline).toHaveAttribute('data-status', 'failed');
+    await expect(sentOffline).toHaveAttribute('data-failure', 'unreachable');
+    // The client gives the connection up as lost, as on a long break, before the network returns
+    await expect.poll(() => keepAlivesFailed.length, { timeout: SIGNED_IN_TIMEOUT_MS }).toBeGreaterThan(0);
+    await expect(offlineNote).toBeVisible();
+
+    homeserver.setOnline(true);
+    await page.context().setOffline(false);
+    await expect(sentOffline).toHaveAttribute('data-status', 'sent', { timeout: SIGNED_IN_TIMEOUT_MS });
+    await expect(offlineNote).toBeHidden();
+    expect(sendsOf('Sent offline')).toHaveLength(1);
+    await expect(outgoing.filter({ hasText: 'Rejected' })).toHaveAttribute('data-status', 'failed');
+    expect(sendsOf('Rejected')).toHaveLength(1);
+  });
+
   test('CHAT-NATIVE-13: days are headed, and times and days follow the blog language, not the browser', async ({
     page,
     baseURL
