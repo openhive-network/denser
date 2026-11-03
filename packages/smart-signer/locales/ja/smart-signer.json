@@ -120,7 +120,11 @@
       "password_required": "パスワードは必須です",
       "wif_required": "WIFキーは必須です",
       "key_without_active_authority": "このキーにはアクティブ権限がありません。この操作に署名するには、ウォレットにアクティブキーが必要です",
-      "active_key_for_posting": "このキーには投稿権限がありません。ブログへのサインインには投稿キーが必要です"
+      "active_key_for_posting": "このキーには投稿権限がありません。ブログへのサインインには投稿キーが必要です",
+      "authorised_account_active_key": "このキーは @{{account}} に対するアクティブ権限を持つ @{{owner}} のものです。「{{mode}}」をオフにすると受け入れられます",
+      "authorised_account_posting_key": "このキーは @{{account}} に対する投稿権限を持つ @{{owner}} のものです。「{{mode}}」をオフにすると受け入れられます",
+      "other_account_active_key": "このキーは @{{account}} ではなく @{{owner}} のものです。@{{account}} のアクティブキーを入力してください",
+      "other_account_posting_key": "このキーは @{{account}} ではなく @{{owner}} のものです。@{{account}} の投稿キーを入力してください"
     },
     "signin_with_keychain": "Hive Keychain拡張機能",
     "signin_with_wif": "WIFでサインイン（レガシー）",

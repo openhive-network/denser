@@ -128,7 +128,11 @@
       "password_required": "Password is required",
       "wif_required": "WIF key is required",
       "key_without_active_authority": "This key doesn't have active authority. The wallet needs your active key to sign this",
-      "active_key_for_posting": "This key doesn't have posting authority. Blog sign-in requires the posting key"
+      "active_key_for_posting": "This key doesn't have posting authority. Blog sign-in requires the posting key",
+      "authorised_account_active_key": "This key belongs to @{{owner}}, which has active authority over @{{account}}. It will be accepted with \"{{mode}}\" turned off",
+      "authorised_account_posting_key": "This key belongs to @{{owner}}, which has posting authority over @{{account}}. It will be accepted with \"{{mode}}\" turned off",
+      "other_account_active_key": "This key belongs to @{{owner}}, not @{{account}}. Enter the active key of @{{account}}",
+      "other_account_posting_key": "This key belongs to @{{owner}}, not @{{account}}. Enter the posting key of @{{account}}"
     },
     "signin_with_keychain": "Hive Keychain extension",
     "signin_with_peakvault": "PeakVault extension",

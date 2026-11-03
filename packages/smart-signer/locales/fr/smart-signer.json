@@ -120,7 +120,11 @@
       "password_required": "Le mot de passe est requis",
       "wif_required": "La clé WIF est requise",
       "key_without_active_authority": "Cette clé n'a pas l'autorité active. Le portefeuille a besoin de votre clé active pour signer ceci",
-      "active_key_for_posting": "Cette clé n'a pas l'autorité de publication. La connexion au blog nécessite la clé de publication"
+      "active_key_for_posting": "Cette clé n'a pas l'autorité de publication. La connexion au blog nécessite la clé de publication",
+      "authorised_account_active_key": "Cette clé appartient à @{{owner}}, qui a l'autorité active sur @{{account}}. Elle sera acceptée avec « {{mode}} » désactivé",
+      "authorised_account_posting_key": "Cette clé appartient à @{{owner}}, qui a l'autorité de publication sur @{{account}}. Elle sera acceptée avec « {{mode}} » désactivé",
+      "other_account_active_key": "Cette clé appartient à @{{owner}}, pas à @{{account}}. Saisissez la clé active de @{{account}}",
+      "other_account_posting_key": "Cette clé appartient à @{{owner}}, pas à @{{account}}. Saisissez la clé de publication de @{{account}}"
     },
     "signin_with_keychain": "Extension Hive Keychain",
     "signin_with_wif": "Se connecter avec WIF (Legacy)",

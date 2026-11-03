@@ -7,7 +7,7 @@ import { STUB_ACCOUNT, fullAccount, startWalletApiStub } from '../support/wallet
 
 /**
  * The safe-storage sign-in stores the wallet's active key: a posting key is refused in place with
- * the same error as the WIF sign-in (wifLoginKeyRole.spec.ts), the key field cleared, before
+ * the same error as the WIF sign-in (wifLoginKeyRole.spec.ts), the key kept in its field, before
  * anything is stored. So is a key of none of the account's authorities, which the chain's
  * `verify_authority` refuses: it names the active key too, not hb-auth's "Invalid credentials".
  * The API answers come from the stub node (support/walletApiStub.ts), whose account holds the
@@ -23,7 +23,8 @@ const POSTING_PUBLIC_KEY = 'STM5J5fKpBEfiFEANpk321mLT3oNTZ4xTW4Vq8E33eA3zBSWRbVi
 const UNKNOWN_WIF = '5Jg6Um6AvJZ886UWQnNBfqScNo9f8PtGWecXo7gZS29FoVgektM';
 
 const SAFE_STORAGE_PASSWORD = 'fixture-password';
-const ACTIVE_KEY_ERROR = "This key doesn't have active authority. The wallet needs your active key to sign this";
+const ACTIVE_KEY_ERROR =
+  "This key doesn't have active authority. The wallet needs your active key to sign this";
 const INVALID_CREDENTIALS = 'Invalid credentials';
 
 let stub: Server;
@@ -78,7 +79,7 @@ test.describe('Safe-storage sign-in with a key of the wrong role', () => {
 
     await expect(loginForm.wifInputErrorMessage).toHaveText(ACTIVE_KEY_ERROR);
     await expect(loginForm.loginFormHeader).toBeVisible();
-    await expect(loginForm.wifInput).toHaveValue('');
+    await expect(loginForm.wifInput).toHaveValue(POSTING_WIF);
     await expect(loginForm.usernameInput).toHaveValue(STUB_ACCOUNT);
     await expect(loginForm.loginDialog).not.toContainText(INVALID_CREDENTIALS);
   });
@@ -91,7 +92,7 @@ test.describe('Safe-storage sign-in with a key of the wrong role', () => {
 
     await expect(loginForm.wifInputErrorMessage).toHaveText(ACTIVE_KEY_ERROR, { timeout: HYDRATION_TIMEOUT });
     await expect(loginForm.loginFormHeader).toBeVisible();
-    await expect(loginForm.wifInput).toHaveValue('');
+    await expect(loginForm.wifInput).toHaveValue(UNKNOWN_WIF);
     await expect(loginForm.loginDialog).not.toContainText(INVALID_CREDENTIALS);
   });
 });

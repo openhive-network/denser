@@ -120,7 +120,11 @@
       "password_required": "La password è obbligatoria",
       "wif_required": "La chiave WIF è obbligatoria",
       "key_without_active_authority": "Questa chiave non ha l'autorità attiva. Il wallet richiede la tua chiave attiva per firmare questa operazione",
-      "active_key_for_posting": "Questa chiave non ha l'autorità di pubblicazione. L'accesso al blog richiede la chiave di pubblicazione"
+      "active_key_for_posting": "Questa chiave non ha l'autorità di pubblicazione. L'accesso al blog richiede la chiave di pubblicazione",
+      "authorised_account_active_key": "Questa chiave appartiene a @{{owner}}, che ha l'autorità attiva su @{{account}}. Sarà accettata con \"{{mode}}\" disattivato",
+      "authorised_account_posting_key": "Questa chiave appartiene a @{{owner}}, che ha l'autorità di pubblicazione su @{{account}}. Sarà accettata con \"{{mode}}\" disattivato",
+      "other_account_active_key": "Questa chiave appartiene a @{{owner}}, non a @{{account}}. Inserisci la chiave attiva di @{{account}}",
+      "other_account_posting_key": "Questa chiave appartiene a @{{owner}}, non a @{{account}}. Inserisci la chiave di pubblicazione di @{{account}}"
     },
     "signin_with_keychain": "Estensione Hive Keychain",
     "signin_with_wif": "Accedi con WIF (Legacy)",

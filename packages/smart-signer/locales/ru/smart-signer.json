@@ -120,7 +120,11 @@
       "password_required": "Требуется пароль",
       "wif_required": "Требуется ключ WIF",
       "key_without_active_authority": "У этого ключа нет активных полномочий. Кошельку нужен ваш активный ключ, чтобы подписать это",
-      "active_key_for_posting": "У этого ключа нет полномочий публикации. Для входа в блог нужен ключ публикации"
+      "active_key_for_posting": "У этого ключа нет полномочий публикации. Для входа в блог нужен ключ публикации",
+      "authorised_account_active_key": "Этот ключ принадлежит @{{owner}}, у которого есть активные полномочия над @{{account}}. Он будет принят, если отключить «{{mode}}»",
+      "authorised_account_posting_key": "Этот ключ принадлежит @{{owner}}, у которого есть полномочия публикации над @{{account}}. Он будет принят, если отключить «{{mode}}»",
+      "other_account_active_key": "Этот ключ принадлежит @{{owner}}, а не @{{account}}. Введите активный ключ @{{account}}",
+      "other_account_posting_key": "Этот ключ принадлежит @{{owner}}, а не @{{account}}. Введите ключ публикации @{{account}}"
     },
     "signin_with_keychain": "Расширение Hive Keychain",
     "signin_with_wif": "Войти с WIF (устаревший)",
