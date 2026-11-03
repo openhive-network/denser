@@ -111,6 +111,8 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/memo-layout.test.ts \
     packages/smart-signer/lib/metamask-snap-version.test.ts \
     packages/smart-signer/lib/signer/keychain-memo-crypto.test.ts \
+    packages/smart-signer/lib/signer/peakvault-memo-crypto.test.ts \
+    packages/smart-signer/lib/signer/wallet-request-rejected.test.ts \
     packages/smart-signer/lib/signer/binary-challenge.test.ts \
     packages/smart-signer/lib/storage-mixin.test.ts \
     packages/smart-signer/lib/signer/credential-storage.test.ts \
