@@ -6,7 +6,8 @@ import { OutgoingQueue } from '@/blog/features/matrix-chat/lib/outgoing-queue';
 /**
  * Messages the composer sends, with their sending and failed states, and retrying a failed one.
  * Those that failed for want of a connection are sent again, in order, when `connected` turns true
- * and, with backoff, while it stays true.
+ * and, with backoff, while it stays true. The outbox lasts as long as the component and sends
+ * through the latest `session`, so a component outliving a change of user has to be remounted.
  */
 export function useOutbox(session: ChatSession, connected: boolean) {
   const sessionRef = useRef(session);

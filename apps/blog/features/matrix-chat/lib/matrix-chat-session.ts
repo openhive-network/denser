@@ -32,6 +32,11 @@ const JOINED = 'join';
 const UNAUTHORIZED = 401;
 const TOO_MANY_REQUESTS = 429;
 const FIRST_SERVER_ERROR = 500;
+/**
+ * How long a message send may go unanswered before it fails as unreachable: on a half-open socket
+ * the browser may not give up for minutes, and the outbox resends one message at a time
+ */
+export const SEND_TIMEOUT_MS = 20_000;
 /** Room events that change what the drawer shows; a sync brings the new unread counts */
 const CHANGES = [
   RoomEvent.Timeline,
@@ -219,12 +224,22 @@ class MatrixChatSession implements ChatSession {
     // The client API directly, not the SDK's local echo: a retry with the same transaction id
     // is one message on the homeserver, and the drawer keeps its own sending state
     const path = `/rooms/${encodeURIComponent(roomId)}/send/m.room.message/${encodeURIComponent(txnId)}`;
-    const sent = await this.client.http
-      .authedRequest<{ event_id: string }>(Method.Put, path, undefined, { msgtype: 'm.text', body: text })
-      .catch((error: unknown) => {
-        throw unreachableOr(error);
+    const timeout = new AbortController();
+    const timer = setTimeout(() => timeout.abort(), SEND_TIMEOUT_MS);
+    try {
+      const body = { msgtype: 'm.text', body: text };
+      const sent = await this.client.http.authedRequest<{ event_id: string }>(Method.Put, path, undefined, body, {
+        abortSignal: timeout.signal
       });
-    return sent.event_id;
+      return sent.event_id;
+    } catch (error) {
+      if (timeout.signal.aborted) {
+        throw new ChatUnreachableError('The Matrix homeserver did not answer the send in time', { cause: error });
+      }
+      throw unreachableOr(error);
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   markRead(roomId: string): void {
