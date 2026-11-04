@@ -215,6 +215,7 @@
   },
   "request_error": {
     "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer.",
+    "network": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
     "not_confirmed": "Transaction envoyée, mais aucun bloc ne l'a encore confirmée. Elle peut encore s'appliquer : vérifiez votre historique avant de réessayer.",
     "transaction_id": "ID de la transaction :"
   },

@@ -4,7 +4,11 @@ import { summarizeErrorForLog, transformError } from '@hive/transaction/lib/tran
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
 import { SignedOutError } from '@hive/transaction/lib/signed-out';
-import { findWaxRequestTimeout, TransactionNotConfirmedError } from '@hive/transaction/lib/transaction-inclusion';
+import {
+  findNodeNetworkFailure,
+  findWaxRequestTimeout,
+  TransactionNotConfirmedError
+} from '@hive/transaction/lib/transaction-inclusion';
 import { findTransactionExpirationRejection } from '@hive/transaction/lib/transaction-expired';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
@@ -14,6 +18,7 @@ import { SupersededKeyWriteMessage } from '@smart-signer/components/superseded-k
 import { findSupersededKeyWrite } from '@smart-signer/lib/superseded-key-write';
 import { performDesyncLogout } from '@smart-signer/lib/auth/desync-logout';
 import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-message';
+import { RequestNetworkErrorMessage } from '@smart-signer/components/request-network-error-message';
 import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-message';
 import { TransactionNotConfirmedMessage } from '@smart-signer/components/transaction-not-confirmed-message';
 import { TransactionExpiredMessage } from '@smart-signer/components/transaction-expired-message';
@@ -198,6 +203,17 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     logger.error(error, 'Node request in %s timed out', ctx?.method);
     toast({
       description: <RequestTimeoutMessage />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // A Hive node request failed on the network before sending (or the signer's unlock check): ask for a retry
+  if (findNodeNetworkFailure(error)) {
+    logger.error(error, 'Node request in %s failed on the network', ctx?.method);
+    toast({
+      description: <RequestNetworkErrorMessage />,
       variant: 'destructive',
       ...toastOptions
     });

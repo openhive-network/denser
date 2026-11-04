@@ -15,6 +15,7 @@ import plWallet from '../../../locales/pl/common_wallet.json';
  * Unlocking the safe-storage key at sign time checks it against the account on the node. When that
  * read times out the transfer fails with the translated request-timeout toast, not wax's raw
  * `Request timed out: "POST ..."` text, and without the "may still apply" note: nothing was sent.
+ * When that read fails on the network it fails likewise with the translated network-error toast.
  * A wrong password there fails it with the translated wrong-password toast in the page's language,
  * not hb-auth's English `Invalid credentials`. The right password for a key the account no longer
  * lists says that key no longer works and asks for the current one, not that the password is wrong.
@@ -91,6 +92,17 @@ const holdFindAccounts = (page: Page) =>
     }
   );
 
+/** Fails every `database_api.find_accounts` request on the network, as a dropped connection does */
+const abortFindAccounts = (page: Page) =>
+  page.route(
+    (url) => url.hostname === '127.0.0.1' && url.port === String(FIXTURE_API_PORT),
+    (route) => {
+      const body = route.request().postDataJSON() as { method?: string } | null;
+      if (body?.method === 'database_api.find_accounts') return route.abort('connectionreset');
+      return route.fallback();
+    }
+  );
+
 /** Answers every `database_api.find_accounts` request with the shared key changed for another one */
 const rotateSharedKey = (page: Page) =>
   page.route(
@@ -148,6 +160,27 @@ test.describe('Safe-storage unlock at sign time', () => {
       timeout: UNLOCK_TIMEOUT
     });
     await expect(page.getByText('Request timed out')).toHaveCount(0);
+    await expect(page.getByTestId('transaction-not-confirmed-message')).toHaveCount(0);
+    await expect(confirmDialog).toBeVisible();
+    expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-SAFE-STORAGE-UNLOCK-06 — an unlock whose node read fails on the network shows the translated failure', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    const loginForm = await signInWithSafeStorage(page);
+    await page.reload();
+
+    const confirmDialog = await transferUpToUnlockPrompt(page, loginForm);
+    await abortFindAccounts(page);
+    await loginForm.passwordToUnlockKeyInput.fill(SAFE_STORAGE_PASSWORD);
+    await loginForm.passwordToUnlockKeySubmitButton.click();
+
+    await expect(page.getByTestId('request-network-error-message')).toHaveText(enSmartSigner.request_error.network, {
+      timeout: UNLOCK_TIMEOUT
+    });
+    await expect(page.getByText('Unknown request error caught')).toHaveCount(0);
     await expect(page.getByTestId('transaction-not-confirmed-message')).toHaveCount(0);
     await expect(confirmDialog).toBeVisible();
     expect(broadcasts.calls).toHaveLength(0);

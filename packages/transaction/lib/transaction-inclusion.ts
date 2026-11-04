@@ -57,6 +57,13 @@ const LISTENER_EXPIRED_PATTERN = /broadcasted successfully, but listener has exp
 const REQUEST_TIMED_OUT_PATTERN = /^Request timed out\b/;
 
 /**
+ * The message for a request that failed on the network (connection refused, reset or dropped, a CORS
+ * refusal): wax's `WaxUnknownRequestError`, which its bundle can name `WaxError`, and the read client's
+ * `ReadTransportError`.
+ */
+const NETWORK_FAILURE_PATTERN = /^Unknown request error caught\b/;
+
+/**
  * The reads wax 1.28.8's `OnChainOperationValidator` (`performOnChainVerification`) makes before it sends
  * the transaction: the memo key-leak scan's account lookup and the account-exists check.
  */
@@ -85,37 +92,57 @@ export function isWaxRequestTimeout(error: unknown): error is Error {
   return error instanceof Error && error.name.startsWith('Wax') && REQUEST_TIMED_OUT_PATTERN.test(error.message);
 }
 
+/** True for a node request, by wax or the read client, that failed on the network before any answer. */
+export function isNodeNetworkFailure(error: unknown): error is Error {
+  return (
+    error instanceof Error &&
+    (error.name.startsWith('Wax') || error.name === 'ReadTransportError') &&
+    NETWORK_FAILURE_PATTERN.test(error.message)
+  );
+}
+
 const MAX_CAUSE_DEPTH = 5;
 
 /**
- * Wax's request timeout that is `error` or, a few levels deep, its `cause`: a signer that wraps the
- * failure of a node read (hb-auth's unlock checks the key against the account) keeps it as the cause.
+ * `error` or, a few levels deep, its `cause` that `matches`: a signer that wraps the failure of a node
+ * read (hb-auth's unlock checks the key against the account) keeps it as the cause.
  */
-export function findWaxRequestTimeout(error: unknown): Error | undefined {
+function findInCauses(error: unknown, matches: (candidate: Error) => boolean): Error | undefined {
   let current = error;
   for (let depth = 0; depth < MAX_CAUSE_DEPTH && current instanceof Error; depth++) {
     const { cause } = current;
-    if (isWaxRequestTimeout(current)) return current;
+    if (matches(current)) return current;
     current = cause;
   }
   return undefined;
 }
 
+/** Wax's request timeout that is `error` or, a few levels deep, its `cause`. */
+export function findWaxRequestTimeout(error: unknown): Error | undefined {
+  return findInCauses(error, isWaxRequestTimeout);
+}
+
+/** A node request's network failure that is `error` or, a few levels deep, its `cause`. */
+export function findNodeNetworkFailure(error: unknown): Error | undefined {
+  return findInCauses(error, isNodeNetworkFailure);
+}
+
 /**
- * True for a request timeout on the broadcast path that may have come after the node took the
- * transaction: the `broadcast_transaction` request itself, or a read of the block scanner watching for
- * it. Only a timeout of one of wax's pre-broadcast verification reads proves nothing was sent; one whose
- * request method cannot be read counts as possibly sent, so the user checks before retrying.
+ * True for a request timeout or network failure on the broadcast path that may have come after the
+ * node took the transaction: the `broadcast_transaction` request itself, or a read of the block scanner
+ * watching for it. A request that never got an answer may still have reached the node. Only a failure
+ * of one of wax's pre-broadcast verification reads proves nothing was sent; one whose request method
+ * cannot be read counts as possibly sent, so the user checks before retrying.
  */
-function isUnconfirmedRequestTimeout(error: Error): boolean {
-  if (!isWaxRequestTimeout(error)) return false;
+function isUnconfirmedRequestFailure(error: Error): boolean {
+  if (!isWaxRequestTimeout(error) && !isNodeNetworkFailure(error)) return false;
   const method = jsonRpcMethodOf(error);
   return method === undefined || !PRE_BROADCAST_VERIFICATION_METHODS.has(method);
 }
 
 /**
  * A broadcast that may still apply: the node accepted it but no block was seen to include it in time,
- * or a request timed out after the transaction may have reached the node.
+ * or a request timed out or failed on the network after the transaction may have reached the node.
  */
 export class TransactionNotConfirmedError extends Error {
   readonly transactionId: string;
@@ -129,11 +156,11 @@ export class TransactionNotConfirmedError extends Error {
 
 /**
  * `error` as a `TransactionNotConfirmedError` when it is WorkerBee's expired-listener rejection or a
- * request timeout other than of a pre-broadcast verification read, else as is.
+ * request timeout or network failure other than of a pre-broadcast verification read, else as is.
  */
 export function toNotConfirmedError(error: unknown, transactionId: string): unknown {
   return error instanceof Error &&
-    (LISTENER_EXPIRED_PATTERN.test(error.message) || isUnconfirmedRequestTimeout(error))
+    (LISTENER_EXPIRED_PATTERN.test(error.message) || isUnconfirmedRequestFailure(error))
     ? new TransactionNotConfirmedError(transactionId, error)
     : error;
 }
