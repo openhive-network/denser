@@ -635,7 +635,7 @@
     "posting_key": {
       "name": "Chiave Posting",
       "info": "Questa chiave va usata per le azioni social, come pubblicare, commentare e votare. Ha un insieme limitato di permessi e non può essere usata per operazioni monetarie. Quindi non puoi perdere denaro se qualcun altro ottiene l'accesso a questa chiave.",
-      "use": "Usa questa chiave per accedere ad altri social network basati su Hive come Hive.blog, Busy ed Esteem. Conserva questa chiave al sicuro.",
+      "use": "Usa questa chiave per accedere ad altri social network basati su Hive come Hive.blog, Ecency o PeakD. Conserva questa chiave al sicuro.",
       "private": "La tua chiave Posting privata",
       "permissions": "Permessi della chiave Posting",
       "to": "Usa la tua chiave Posting per:",

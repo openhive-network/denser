@@ -635,7 +635,7 @@
     "posting_key": {
       "name": "Clé de publication",
       "info": "Cette clé doit être utilisée pour les actions sociales, comme publier, commenter et voter. Elle dispose d'un ensemble limité de permissions et ne peut pas être utilisée pour des opérations financières. Vous ne pouvez donc pas perdre d'argent si quelqu'un d'autre accède à cette clé.",
-      "use": "Utilisez cette clé pour vous connecter à d'autres réseaux sociaux basés sur Hive comme Hive.blog, Busy et Esteem. Conservez cette clé en lieu sûr.",
+      "use": "Utilisez cette clé pour vous connecter à d'autres réseaux sociaux basés sur Hive comme Hive.blog, Ecency ou PeakD. Conservez cette clé en lieu sûr.",
       "private": "Votre clé de publication privée",
       "permissions": "Permissions de la clé de publication",
       "to": "Utilisez votre clé de publication pour :",
