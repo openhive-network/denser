@@ -13,6 +13,7 @@ import {
   Label
 } from '@ui/components';
 import { encryptMemoWithPrivateKey } from '@smart-signer/lib/memo-crypto';
+import { requireEncryptedMemoFor } from '@smart-signer/lib/memo-layout';
 import { loadNativeMemoSigner } from '@smart-signer/lib/load-native-memo-signer';
 import { OutdatedMetaMaskSnapError } from '@smart-signer/lib/metamask-snap-version';
 import type { SignerTool } from '@smart-signer/lib/signer/get-signer';
@@ -84,7 +85,7 @@ const EncryptMemoDialog = ({
       const account = await getAccount(toAccount);
       if (!account) throw new Error(`Unknown account ${toAccount}`);
       const encrypted = await encryptMemoWithPrivateKey(privateKey, account.memo_key, memo);
-      onEncrypted(encrypted);
+      onEncrypted(requireEncryptedMemoFor(encrypted, memo, account.memo_key));
     } catch (error) {
       logger.error(error, 'Error encrypting memo with private key');
       setError(t('transfers_page.encrypt_memo_error'));
@@ -105,7 +106,8 @@ const EncryptMemoDialog = ({
         toAccountMemoPublicKey: account.memo_key,
         memo
       });
-      onEncrypted(encrypted);
+      // Keychain encrypts by account name: the key it used is only known from the memo it returns.
+      onEncrypted(requireEncryptedMemoFor(encrypted, memo, account.memo_key));
     } catch (error) {
       logger.error(error, 'Error encrypting memo with native signer');
       setError(

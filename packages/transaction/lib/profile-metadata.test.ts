@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { mergePostingJsonMetadata } from './profile-metadata';
+import { mergePostingJsonMetadata, readAccountProfile } from './profile-metadata';
 
 describe('mergePostingJsonMetadata', () => {
   it('keeps keys set by other frontends, top-level and inside profile', () => {
@@ -41,5 +41,44 @@ describe('mergePostingJsonMetadata', () => {
         profile: { name: 'A', version: 2 }
       });
     }
+  });
+});
+
+describe('readAccountProfile', () => {
+  it('drops profile fields whose value is not a string', () => {
+    for (const about of [123, true, {}, [{}], null]) {
+      const metadata = JSON.stringify({ profile: { about, name: 'Alice', location: 7, website: ['x'] } });
+      expect(readAccountProfile(metadata, undefined), JSON.stringify(about)).to.deep.equal({ name: 'Alice' });
+    }
+  });
+
+  it('keeps string profile fields and ignores keys outside AccountProfile', () => {
+    const metadata = JSON.stringify({
+      profile: { about: 'bio', name: 'Alice', location: 'KTW', website: 'https://a.example', version: 2 }
+    });
+    expect(readAccountProfile(metadata, undefined)).to.deep.equal({
+      about: 'bio',
+      name: 'Alice',
+      location: 'KTW',
+      website: 'https://a.example'
+    });
+  });
+
+  it('falls back to json_metadata when posting_json_metadata has no profile object', () => {
+    const fallback = JSON.stringify({ profile: { about: 'legacy', name: 42 } });
+    for (const posting of [undefined, '{broken', '{}', '{"profile":"str"}']) {
+      expect(readAccountProfile(posting, fallback), String(posting)).to.deep.equal({ about: 'legacy' });
+    }
+  });
+
+  it('returns empty text fields when neither metadata has a profile', () => {
+    expect(readAccountProfile('{}', '[]')).to.deep.equal({
+      about: '',
+      cover_image: '',
+      location: '',
+      name: '',
+      profile_image: '',
+      website: ''
+    });
   });
 });

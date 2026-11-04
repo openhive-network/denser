@@ -1,3 +1,4 @@
+import type { AccountProfile } from '@hive/common-hiveio-packages/wax';
 import { isJsonObject, parseJsonObject, type JsonObject } from './json-object';
 
 /** Profile fields written by the profile settings form; `social` holds sparse handles by platform key. */
@@ -49,4 +50,38 @@ export function mergePostingJsonMetadata(current: string | undefined, update: Pr
     profile[key] = value;
   }
   return JSON.stringify({ ...metadata, profile });
+}
+
+const ACCOUNT_PROFILE_KEYS: ReadonlyArray<keyof AccountProfile> = [
+  'about',
+  'cover_image',
+  'location',
+  'blacklist_description',
+  'muted_list_description',
+  'name',
+  'profile_image',
+  'website',
+  'pinned',
+  'witness_description',
+  'witness_owner'
+];
+
+/**
+ * The account's profile from `posting_json_metadata`, falling back to `json_metadata` when the
+ * former has no profile object. Only string values of the `AccountProfile` fields are kept, so a
+ * field set to a number, boolean, object or array by another frontend reads as absent. With no
+ * profile in either, the text fields are empty strings.
+ */
+export function readAccountProfile(postingJsonMetadata: string | undefined, jsonMetadata: string | undefined): AccountProfile {
+  const postingProfile = parseJsonObject(postingJsonMetadata).profile;
+  const source = isJsonObject(postingProfile) ? postingProfile : parseJsonObject(jsonMetadata).profile;
+  if (!isJsonObject(source)) {
+    return { about: '', cover_image: '', location: '', name: '', profile_image: '', website: '' };
+  }
+  const profile: AccountProfile = {};
+  for (const key of ACCOUNT_PROFILE_KEYS) {
+    const value = source[key];
+    if (typeof value === 'string') profile[key] = value;
+  }
+  return profile;
 }
