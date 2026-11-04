@@ -8,9 +8,10 @@ import { verifyLogin } from '@smart-signer/lib/verify-login';
 import { getLogger } from '@ui/lib/logging';
 import { appApiPath } from '@ui/lib/app-api-path';
 import * as userLocalStorage from '@smart-signer/lib/auth/user-localstore';
-import { addAccount } from '@smart-signer/lib/auth/accounts';
+import { addAccount, droppedAccounts } from '@smart-signer/lib/auth/accounts';
 import { setAccounts, setActiveUser } from '@smart-signer/lib/auth/active-user';
 import { postAccountsChanged } from '@smart-signer/lib/auth/account-sync';
+import { destroyAccountSigner } from '@smart-signer/lib/auth/destroy-signer';
 import { switchAccountBackend } from '@smart-signer/lib/auth/use-switch-account';
 import { clearOtherSessionWifKeys } from '@smart-signer/lib/signer/credential-storage';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
@@ -68,9 +69,17 @@ export function useSignIn() {
       const { user } = data;
       clearOtherKeysOfSignIn(user);
       const previousUser = queryClient.getQueryData<User>([QUERY_KEY.user]);
-      setAccounts(queryClient, addAccount(userLocalStorage.getAccounts(), previousUser, user));
+      const previousAccounts = userLocalStorage.getAccounts();
+      const accounts = addAccount(previousAccounts, previousUser, user);
+      setAccounts(queryClient, accounts);
       setActiveUser(queryClient, user);
-      postAccountsChanged();
+      const dropped = droppedAccounts(previousAccounts, previousUser, accounts);
+      // Named one by one, so the other tabs' and apps' signers end each dropped account's session too
+      for (const account of dropped) {
+        void destroyAccountSigner(account);
+        postAccountsChanged({ removedUsername: account.username });
+      }
+      if (dropped.length === 0) postAccountsChanged();
     },
     onError: (error) => {
       throw error;
