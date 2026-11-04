@@ -5,6 +5,7 @@ import {
 } from '../../../../../playwright/support/broadcast/interceptor.ts';
 import { FIXTURE_API_PORT } from './apiStub';
 
+export { BROADCAST_METHODS } from '../../../../../playwright/support/broadcast/interceptor.ts';
 export type { BroadcastInterceptor, InterceptedBroadcast } from '../../../../../playwright/support/broadcast/interceptor.ts';
 
 /**

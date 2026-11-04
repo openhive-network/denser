@@ -21,15 +21,15 @@ export function CancelPowerDownDialog({
     const params = { account: username };
     try {
       await cancelPowerDownMutation.mutateAsync(params);
-    } catch (error) {
-      handleError(error, { method: 'withdraw_vesting', params });
-    } finally {
-      onOpenChange(false);
       toast({
         title: t('transfers_page.transaction_success'),
         description: t('transfers_page.cancel_power_down'),
         variant: 'success'
       });
+    } catch (error) {
+      handleError(error, { method: 'withdraw_vesting', params });
+    } finally {
+      onOpenChange(false);
     }
   };
 
