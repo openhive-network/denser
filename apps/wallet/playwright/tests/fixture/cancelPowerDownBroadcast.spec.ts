@@ -1,8 +1,8 @@
 import type { Server } from 'node:http';
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Page, type Route } from '@playwright/test';
 import { FIXTURE_API_PORT } from '../support/apiStub';
 import { WALLET_BASE_PATH } from '../support/basePath';
-import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { BROADCAST_METHODS, installBroadcastInterceptor } from '../support/broadcastInterceptor';
 import { expectWithdrawVestingOperation, naiAsset } from '../support/walletOperations';
 import {
   STUB_ACCOUNT,
@@ -16,7 +16,8 @@ import {
 /**
  * While the account powers down (STUB_POWER_DOWN_FIELDS), Cancel Power Down in the HIVE POWER
  * balance menu signs and broadcasts one `withdraw_vesting_operation` of zero VESTS once its
- * prompt is confirmed, and nothing when the prompt is dismissed. Reads come from the stub node
+ * prompt is confirmed, and nothing when the prompt is dismissed; a broadcast the node rejects
+ * shows only the error toast. Reads come from the stub node
  * (support/walletApiStub.ts); the broadcast and `verify_authority` are answered by the
  * interceptor, so the key signing it belongs to no account.
  */
@@ -45,6 +46,58 @@ test.beforeEach(async ({ context }) => {
     });
   });
 });
+
+const SUCCESS_TOAST_TITLE = 'Transaction Success';
+
+/** hived's answer to a cancel of a power down that is no longer running. */
+const NO_POWER_DOWN_REJECTION = {
+  code: -32003,
+  message: 'Assert Exception:account.vesting_withdraw_rate.amount != 0: This operation would not change the vesting withdraw rate.',
+  data: {
+    code: 10,
+    name: 'assert_exception',
+    message: 'Assert Exception',
+    stack: [
+      {
+        context: {
+          level: 'error',
+          file: 'hive_evaluator.cpp',
+          line: 1520,
+          method: 'do_apply',
+          hostname: '',
+          thread_name: 'th_a',
+          timestamp: '2026-11-04T02:52:00'
+        },
+        format: 'This operation would not change the vesting withdraw rate.',
+        data: {}
+      }
+    ]
+  }
+};
+
+/** Answers every broadcast with NO_POWER_DOWN_REJECTION and returns how many were answered. */
+const rejectBroadcasts = async (page: Page) => {
+  const rejected = { count: 0 };
+  await page.route(
+    (url) => url.hostname === '127.0.0.1',
+    (route: Route) => {
+      let body: { method?: unknown; id?: unknown } | null;
+      try {
+        body = route.request().postDataJSON();
+      } catch {
+        return route.fallback();
+      }
+      if (typeof body?.method !== 'string' || !BROADCAST_METHODS.has(body.method)) return route.fallback();
+      rejected.count++;
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ jsonrpc: '2.0', id: body.id ?? 1, error: NO_POWER_DOWN_REJECTION })
+      });
+    }
+  );
+  return rejected;
+};
 
 /** Opens the Cancel Power Down prompt of STUB_ACCOUNT's transfers page, logged in with its active key. */
 const openCancelPowerDownPrompt = async (page: Page) => {
@@ -87,5 +140,18 @@ test.describe('Cancel power down broadcast', () => {
 
     await expect(prompt).toHaveCount(0);
     expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-CANCELPD-03 — a cancel the node rejects shows only the error toast', async ({ page }) => {
+    await installBroadcastInterceptor(page);
+    const rejected = await rejectBroadcasts(page);
+    const prompt = await openCancelPowerDownPrompt(page);
+
+    await prompt.getByRole('button', { name: 'Cancel Power Down' }).click();
+
+    await expect(page.getByTestId('error-toast-content')).toHaveCount(1);
+    await expect(prompt).toHaveCount(0);
+    expect(rejected.count).toBeGreaterThan(0);
+    await expect(page.getByText(SUCCESS_TOAST_TITLE, { exact: true })).toHaveCount(0);
   });
 });
