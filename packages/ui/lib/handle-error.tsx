@@ -18,7 +18,11 @@ import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-
 import { TransactionNotConfirmedMessage } from '@smart-signer/components/transaction-not-confirmed-message';
 import { TransactionExpiredMessage } from '@smart-signer/components/transaction-expired-message';
 import { WrongSafeStoragePasswordMessage } from '@smart-signer/components/wrong-safe-storage-password-message';
-import { findWrongSafeStoragePassword } from '@smart-signer/lib/wrong-safe-storage-password';
+import { SafeStorageKeyNotAuthorizedMessage } from '@smart-signer/components/safe-storage-key-not-authorized-message';
+import {
+  findSafeStorageKeyNotAuthorized,
+  findWrongSafeStoragePassword
+} from '@smart-signer/lib/wrong-safe-storage-password';
 import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
@@ -82,6 +86,18 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     logger.warn('Wrong safe storage password entered in %s', ctx?.method);
     toast({
       description: <WrongSafeStoragePasswordMessage />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // The password unlocked the stored key, but the account's authority on chain no longer accepts it
+  const keyNotAuthorized = findSafeStorageKeyNotAuthorized(error);
+  if (keyNotAuthorized) {
+    logger.warn('The %s key in safe storage lost its authority in %s', keyNotAuthorized.keyType, ctx?.method);
+    toast({
+      description: <SafeStorageKeyNotAuthorizedMessage keyType={keyNotAuthorized.keyType} />,
       variant: 'destructive',
       ...toastOptions
     });

@@ -7,7 +7,11 @@ import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/
 import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
-import { isHbAuthInvalidCredentials, WrongSafeStoragePasswordError } from '@smart-signer/lib/wrong-safe-storage-password';
+import {
+  classifyUnlockRefusal,
+  SafeStorageKeyNotAuthorizedError,
+  WrongSafeStoragePasswordError
+} from '@smart-signer/lib/wrong-safe-storage-password';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
 import { registerAddedSafeStorageKeyWithin } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
@@ -184,11 +188,8 @@ export class SignerHbauth extends Signer {
           if (isIgnorableError(error)) {
             logger.info('Ignoring expected error during authentication');
             authStatus.ok = true;
-          } else if (isHbAuthInvalidCredentials(error)) {
-            throw new WrongSafeStoragePasswordError(error);
           } else {
-            const { message } = parseAuthError(error);
-            throw new Error(message, { cause: error });
+            throw await this.unlockFailure(authClient, error);
           }
         }
       }
@@ -242,6 +243,29 @@ export class SignerHbauth extends Signer {
       const signature = await authClient.sign(username, digest, keyType);
       logger.debug('hbauth: %o', { digest, signature });
       return signature;
+    }
+  }
+
+  /** The error to fail signing with when hb-auth's `authenticate` of the session's key threw `error` */
+  private async unlockFailure(authClient: OnlineClient, error: unknown): Promise<Error> {
+    const { username, keyType } = this;
+    const refusal = await classifyUnlockRefusal(
+      error,
+      async () => (await authClient.getRegisteredUserByUsername(username)) !== null
+    );
+    switch (refusal) {
+      case 'wrong-password':
+        return new WrongSafeStoragePasswordError(error);
+      case 'key-not-authorized':
+        logger.warn('The %s key of %s in safe storage no longer has its authority', keyType, username);
+        return new SafeStorageKeyNotAuthorizedError(keyType, error);
+      case 'key-not-stored':
+        logger.error('Safe storage no longer holds %s while unlocking its %s key', username, keyType);
+        return new AuthStorageMissingError(username, keyType);
+      default: {
+        const { message } = parseAuthError(error);
+        return new Error(message, { cause: error });
+      }
     }
   }
 

@@ -208,7 +208,10 @@
     "signed_out": "You are signed out. Sign in and try again.",
     "transaction_expired": "Your transaction expired before it was approved, so nothing was sent. Please try again and approve it within about a minute.",
     "transaction_expiration_too_far_ahead": "The node rejected your transaction's expiration time, so nothing was sent. Check that your device's clock is correct and try again.",
-    "wrong_safe_storage_password": "Wrong safe storage password. Enter the password you set for safe storage and try again."
+    "wrong_safe_storage_password": "Wrong safe storage password. Enter the password you set for safe storage and try again.",
+    "safe_storage_posting_key_not_authorized": "The posting key kept in safe storage no longer works for your account; it may have been changed. Sign in again with your current posting key.",
+    "safe_storage_active_key_not_authorized": "The active key kept in safe storage no longer works for your account; it may have been changed. Sign in again with your current active key.",
+    "safe_storage_owner_key_not_authorized": "The owner key kept in safe storage no longer works for your account; it may have been changed. Sign in again with your current owner key."
   },
   "request_error": {
     "timeout": "The server did not respond in time. Please try again.",
