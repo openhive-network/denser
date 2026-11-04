@@ -1,7 +1,7 @@
-import { NextApiHandler } from 'next';
+import type { NextApiHandler } from 'next';
 import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@smart-signer/lib/session';
-import { IronSessionData } from '@smart-signer/types/common';
+import type { IronSessionData } from '@smart-signer/types/common';
 import { getLogger } from '@hive/ui/lib/logging';
 import { siteConfig } from '@hive/ui/config/site';
 import { getChatAuthToken } from '@smart-signer/lib/rocket-chat';
@@ -13,12 +13,17 @@ const logger = getLogger('app');
  *
  * This endpoint is called by Rocket.Chat when the iframe loads.
  * If user is logged into denser, we return a login token.
- * Otherwise, we return 401.
+ * Otherwise, we return 401. With the iframe integration off, it does not exist (404).
  *
  * See: https://docs.rocket.chat/docs/iframe-based-single-sign-on
  */
 export const chatSso: NextApiHandler = async (req, res) => {
   logger.info('chatSso endpoint called, method=%s', req.method);
+
+  if (!siteConfig.openhiveChatIframeIntegrationEnable) {
+    res.status(404).json({ error: 'Not found' });
+    return;
+  }
 
   // Set CORS headers for Rocket.Chat
   res.setHeader('Access-Control-Allow-Origin', siteConfig.openhiveChatUri);
