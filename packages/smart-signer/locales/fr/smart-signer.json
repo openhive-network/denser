@@ -207,7 +207,8 @@
     "superseded_key_write": "Un autre onglet a interrompu l'enregistrement de la clé {{keyType}} de @{{username}} dans le stockage sécurisé. Ajoutez de nouveau la clé {{keyType}} au stockage sécurisé.",
     "signed_out": "Vous êtes déconnecté. Connectez-vous et réessayez.",
     "transaction_expired": "Votre transaction a expiré avant d'être approuvée, rien n'a donc été envoyé. Réessayez et approuvez-la en une minute environ.",
-    "transaction_expiration_too_far_ahead": "Le nœud a refusé l'heure d'expiration de votre transaction, rien n'a donc été envoyé. Vérifiez que l'horloge de votre appareil est à l'heure et réessayez."
+    "transaction_expiration_too_far_ahead": "Le nœud a refusé l'heure d'expiration de votre transaction, rien n'a donc été envoyé. Vérifiez que l'horloge de votre appareil est à l'heure et réessayez.",
+    "wrong_safe_storage_password": "Mot de passe du stockage sécurisé incorrect. Saisissez le mot de passe défini pour le stockage sécurisé et réessayez."
   },
   "request_error": {
     "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer.",

@@ -207,7 +207,8 @@
     "superseded_key_write": "Un'altra scheda ha interrotto il salvataggio della chiave {{keyType}} di @{{username}} nell'archivio sicuro. Aggiungi di nuovo la chiave {{keyType}} all'archivio sicuro.",
     "signed_out": "Sei disconnesso. Accedi e riprova.",
     "transaction_expired": "La transazione è scaduta prima di essere approvata, quindi non è stato inviato nulla. Riprova e approvala entro circa un minuto.",
-    "transaction_expiration_too_far_ahead": "Il nodo ha rifiutato l'ora di scadenza della transazione, quindi non è stato inviato nulla. Verifica che l'orologio del dispositivo sia corretto e riprova."
+    "transaction_expiration_too_far_ahead": "Il nodo ha rifiutato l'ora di scadenza della transazione, quindi non è stato inviato nulla. Verifica che l'orologio del dispositivo sia corretto e riprova.",
+    "wrong_safe_storage_password": "Password dell'archivio sicuro errata. Inserisci la password impostata per l'archivio sicuro e riprova."
   },
   "request_error": {
     "timeout": "Il server non ha risposto in tempo. Riprova.",

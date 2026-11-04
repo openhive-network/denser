@@ -7,6 +7,7 @@ import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/
 import { getLogger } from '@ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { AuthStorageMissingError, isIgnorableError, parseAuthError } from '@smart-signer/lib/auth-error';
+import { isHbAuthInvalidCredentials, WrongSafeStoragePasswordError } from '@smart-signer/lib/wrong-safe-storage-password';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
 import { registerAddedSafeStorageKeyWithin } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
@@ -183,6 +184,8 @@ export class SignerHbauth extends Signer {
           if (isIgnorableError(error)) {
             logger.info('Ignoring expected error during authentication');
             authStatus.ok = true;
+          } else if (isHbAuthInvalidCredentials(error)) {
+            throw new WrongSafeStoragePasswordError(error);
           } else {
             const { message } = parseAuthError(error);
             throw new Error(message, { cause: error });
