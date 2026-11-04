@@ -5,6 +5,8 @@ import { postCanonicalUrl } from '@/blog/lib/canonical-url';
 import { postSeo } from '@/blog/lib/post-seo';
 import { articleJsonLd, postBreadcrumbJsonLd } from '@/blog/lib/structured-data';
 import { JsonLd } from '@/blog/components/json-ld';
+import { isPostListed } from '@/blog/lib/listed-content';
+import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
 import { getCommunity, getDiscussion, getFollowList, getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { isTransportError } from '@transaction/lib/wax-errors';
 import { ServiceUnavailableError } from '@/blog/lib/service-unavailable';
@@ -36,6 +38,9 @@ const FALLBACK_METADATA: Metadata = {
     description: 'Hive: Communities Without Borders.'
   }
 };
+
+// A post the GDPR, legal or DMCA lists hide shows crawlers none of its content.
+const LISTED_POST_METADATA: Metadata = { ...FALLBACK_METADATA, robots: NOINDEX_ROBOTS };
 
 // generateMetadata lives on the PAGE (not the layout) on purpose: it resolves before
 // the route's loading boundary starts streaming, so notFound() here still controls the
@@ -77,6 +82,7 @@ export async function generateMetadata(
   if (!post && !searchParams?.pending) notFound();
 
   if (!post) return FALLBACK_METADATA;
+  if (isPostListed(params.param, author, permlink)) return LISTED_POST_METADATA;
 
   const title = post.title ? `${post.title} ` : 'Hive Blog';
   const canonical = postCanonicalUrl(post);
@@ -222,8 +228,10 @@ const PostPage = async (
   // Bodies are rendered here so the client hydrates their HTML instead of loading the
   // renderer and rendering them again. Only the seeded page's replies are rendered; later pages
   // render on the client when shown.
-  const renderedBodies = renderDiscussionBodies(postData, discussionPageSeed?.entries ?? null);
-  const seo = postData ? postSeo(postData) : null;
+  // A listed post's page shows no body, so nothing of it goes into the HTML or the structured data.
+  const listed = isPostListed(community, username, permlink);
+  const renderedBodies = listed ? {} : renderDiscussionBodies(postData, discussionPageSeed?.entries ?? null);
+  const seo = postData && !listed ? postSeo(postData) : null;
 
   // Pass data directly via context instead of Hydrate/dehydrate.
   // React Query v4's <Hydrate> has compatibility issues with Next.js App Router

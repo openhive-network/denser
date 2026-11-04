@@ -6,6 +6,7 @@ import { getProfileAccount } from '@/blog/lib/profile-cache';
 import { hiveTimeToIso } from '@/blog/lib/post-seo';
 import { profilePageJsonLd } from '@/blog/lib/structured-data';
 import { JsonLd } from '@/blog/components/json-ld';
+import { isProfileListed } from '@/blog/lib/listed-content';
 import { extractUsernameFromParam, isUsernameValid } from '@/blog/utils/validate-links';
 import { notFound, redirect } from 'next/navigation';
 import { postAuthorKind } from '@/blog/features/lite-account/lite-did';
@@ -32,9 +33,12 @@ const Page = async (props: { params: Promise<{ param: string }> }) => {
 
   // Deduplicated with the profile layout's read. A missing account or a failed read is the layout's
   // to answer (404 or 503), so here it only leaves the structured data out. A lite account is no
-  // Hive account: its profile (lite-profile-route.tsx) has no structured data.
+  // Hive account: its profile (lite-profile-route.tsx) has no structured data, nor has an account
+  // the GDPR or legal list hides.
   const account =
-    postAuthorKind(username) === 'account' ? await getProfileAccount(username).catch(() => null) : null;
+    postAuthorKind(username) === 'account' && !isProfileListed(username)
+      ? await getProfileAccount(username).catch(() => null)
+      : null;
   const profileJsonLd = account?.name
     ? profilePageJsonLd({
         username,
