@@ -17,6 +17,7 @@ type Outcome = 'ok' | 'transport' | 'missing';
 interface IFakeChain {
   api: {
     bridge: { get_ranked_posts: (params: unknown) => Promise<unknown> };
+    'search-api': { find_text: (params: unknown) => Promise<unknown> };
     network_broadcast_api: { broadcast_transaction: (params: unknown) => Promise<unknown> };
   };
   endpointUrl: string;
@@ -72,7 +73,8 @@ const createFakeClock = () => {
 /**
  * A fake wax chain per node. Each node answers from its own queue of outcomes (the last one
  * repeats) after `latencyMs` of fake time, or the node's own `nodeLatencyMs` (`Infinity`: it never
- * answers); a call slower than the chain's request timeout fails with a transport error then.
+ * answers), keyed by node or by `<node> <method>`; a call slower than the chain's request timeout
+ * fails with a transport error then.
  */
 interface ISetupOptions {
   latencyMs?: number;
@@ -94,7 +96,7 @@ const setup = (
     calls.push(`${node} ${method}`);
     const queue = outcomes[node] ?? ['transport'];
     const outcome = queue.length > 1 ? queue.shift() : queue[0];
-    const latency = nodeLatencyMs[node] ?? latencyMs;
+    const latency = nodeLatencyMs[`${node} ${method}`] ?? nodeLatencyMs[node] ?? latencyMs;
     await clock.sleep(Math.min(latency, timeoutMs));
     if (latency > timeoutMs || outcome === 'transport') throw new WaxRequestError(`fetch failed: ${node}`);
     if (outcome === 'missing')
@@ -108,6 +110,7 @@ const setup = (
     withTimeout: (slowTimeoutMs) => makeChain(node, slowTimeoutMs),
     api: {
       bridge: { get_ranked_posts: (params) => answer(node, timeoutMs, 'bridge.get_ranked_posts', params) },
+      'search-api': { find_text: (params) => answer(node, timeoutMs, 'search-api.find_text', params) },
       network_broadcast_api: {
         broadcast_transaction: (params) => answer(node, timeoutMs, 'broadcast_transaction', params)
       }
@@ -325,6 +328,27 @@ describe('wrapChainWithServerFailover', () => {
 
       expect(first).to.have.property('node', 'https://fallback-a');
       expect(calls[0]).to.equal(`https://primary ${ranked}`);
+    });
+
+    it('keeps sending every other API family to a node one find_text stalled on', async () => {
+      const { chain, run, rankedPosts, calls } = setup(
+        { 'https://primary': ['ok'], 'https://fallback-a': ['ok'] },
+        { nodeLatencyMs: { 'https://primary search-api.find_text': Infinity } }
+      );
+      const findText = () => run(chain.api['search-api'].find_text({}));
+
+      const searched = await findText();
+      calls.length = 0;
+      const posts = await rankedPosts({});
+      const searchedAgain = await findText();
+
+      expect(searched).to.have.property('node', 'https://fallback-a');
+      expect(posts).to.have.property('node', 'https://primary');
+      expect(searchedAgain).to.have.property('node', 'https://fallback-a');
+      expect(calls).to.deep.equal([
+        `https://primary ${ranked}`,
+        'https://fallback-a search-api.find_text'
+      ]);
     });
 
     it('asks the most recently healthy node first when every node is down', async () => {

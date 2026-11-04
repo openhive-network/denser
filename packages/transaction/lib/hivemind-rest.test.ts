@@ -106,6 +106,7 @@ describe('hivemind REST reads', function () {
   let rpc: IJsonRpcNode;
   let rest: IRestNode;
   let deadRest: IRestNode;
+  let busyRest: IRestNode;
 
   const useRestNodes = (nodes: string | undefined) => {
     if (nodes === undefined) delete process.env.REACT_APP_HIVEMIND_REST_NODES;
@@ -113,13 +114,14 @@ describe('hivemind REST reads', function () {
   };
 
   before(async () => {
-    const [rpcStarted, restStarted, deadStarted] = await Promise.all([
+    const [rpcStarted, restStarted, deadStarted, busyStarted] = await Promise.all([
       startJsonRpcNode(),
+      startRestNode(),
       startRestNode(),
       startRestNode()
     ]);
-    servers = [rpcStarted.server, restStarted.server, deadStarted.server];
-    [rpc, rest, deadRest] = [rpcStarted.node, restStarted.node, deadStarted.node];
+    servers = [rpcStarted.server, restStarted.server, deadStarted.server, busyStarted.server];
+    [rpc, rest, deadRest, busyRest] = [rpcStarted.node, restStarted.node, deadStarted.node, busyStarted.node];
     getHiveChainService().getApiEndpoints = () => ({
       chainId: 'beeab0de',
       apiEndpoint: rpc.url,
@@ -281,6 +283,25 @@ describe('hivemind REST reads', function () {
     expect(posts).to.deep.equal(fixtures.rankedPosts);
     expect(rest.requests).to.deep.equal([
       '/hivemind-api/search/posts?q=solar%20array&sort=relevance&observer=hive.blog&page-size=20'
+    ]);
+  });
+
+  it('keeps reading from a node a search failed on, answering the search over JSON-RPC', async () => {
+    useRestNodes(busyRest.url);
+    busyRest.routes['/hivemind-api/search/posts'] = { status: 503, body: { message: 'statement timeout' } };
+    busyRest.routes['/hivemind-api/accounts/alice/followers'] = { body: [] };
+    rpc.results['search-api.find_text'] = fixtures.rankedPosts;
+
+    expect(await getByText({ pattern: 'solar array', observer: 'hive.blog' })).to.deep.equal(fixtures.rankedPosts);
+    expect(await getFollowers({ account: 'alice', limit: 50 })).to.deep.equal([]);
+
+    // The search asked the node once, without a retry, and left it in use for every other read.
+    expect(busyRest.requests.map((request) => request.split('?')[0])).to.deep.equal([
+      '/hivemind-api/search/posts',
+      '/hivemind-api/accounts/alice/followers'
+    ]);
+    expect(rpc.calls.map(({ method }) => method).filter((method) => method !== 'lite.get_info')).to.deep.equal([
+      'search-api.find_text'
     ]);
   });
 

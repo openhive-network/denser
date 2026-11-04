@@ -34,8 +34,7 @@ const NON_RETRYABLE_NAMESPACES = new Set(['network_broadcast_api']);
 
 /**
  * JSON-RPC namespaces only some nodes serve. A node answering such a call with "Api not found" (see
- * `isApiNotServedError`) cannot serve it, so the next node is asked, and health is recorded per
- * node and namespace (`<node>/lite`): a node lacking the namespace keeps serving every other call.
+ * `isApiNotServedError`) cannot serve it, so the next node is asked.
  */
 const OPTIONAL_NAMESPACES = new Set(['lite']);
 
@@ -89,6 +88,11 @@ export type TFailoverOutcome =
 export interface IFailoverRoute {
   /** The nodes to ask, the first one first. */
   nodes: readonly string[];
+  /**
+   * The API family a JSON-RPC call's health is recorded under (`<node>/<family>`, e.g. `core`);
+   * its namespace when absent.
+   */
+  family?: string;
   /** Told how each node asked did. */
   report?: (node: string, outcome: TFailoverOutcome) => void;
   /** Called after the call failed on the first node and was then served by `node`. */
@@ -177,6 +181,9 @@ const endpointOf = (apiNode: object): unknown => Reflect.get(apiNode, 'endpointU
 /** The `health` key recording whether `node` serves the REST API `apiName`, e.g. `https://api.example.com/balance-api`. */
 export const restApiHealthKey = (node: string, apiName: string): string => `${node}/${apiName}`;
 
+/** The `health` key recording whether `node` serves the JSON-RPC calls of `family`, e.g. `https://api.example.com/core`. */
+export const jsonRpcHealthKey = (node: string, family: string): string => `${node}/${family}`;
+
 /**
  * Parses a whitespace/comma-separated node list (the `REACT_APP_ALLOWED_HIVE_API_NODES` format) into
  * distinct origins, dropping `excluded` entries (e.g. the images host, which is listed for CSP but is
@@ -208,11 +215,13 @@ export function parseFallbackNodes(
  * (see `isTransportError`) is retried once on the primary node and then on each fallback node, within
  * `FAILOVER_BUDGET_MS`. A node that has not answered within `HEDGE_DELAY_MS` is not waited for alone:
  * the next node is asked as well and the first answer wins. A node whose attempts all failed, or that
- * was still silent when a node asked after it answered, is marked down in `health` and skipped by
- * later calls until its cooldown ends or its late answer arrives; when every node is down, all are
- * tried, the most recently healthy first. A definitive API answer (e.g. "post does not exist") is
- * never retried. When every attempt fails, the last transport error is rethrown. A call of a
- * namespace only some nodes serve (`lite.*`) also moves on when the node answers "Api not found".
+ * was still silent when a node asked after it answered, is marked down in `health` for the call's
+ * API family (the route's `family`, else the namespace: `<node>/core`, `<node>/search-api`) and
+ * skipped by later calls of that family until its cooldown ends or its late answer arrives, so a
+ * query one API of a node is slow on leaves every other API of the node in use; when every node is
+ * down, all are tried, the most recently healthy first. A definitive API answer (e.g. "post does not
+ * exist") is never retried. When every attempt fails, the last transport error is rethrown. A call
+ * of a namespace only some nodes serve (`lite.*`) also moves on when the node answers "Api not found".
  *
  * With `isRestApiUnavailable`, a call on `chain.restApi` that the REST primary (`restApi.endpointUrl`)
  * cannot serve is asked of the fallback nodes the same way, without the second attempt on the
@@ -424,11 +433,12 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
       return callOn(target.api, 'api', path, args);
     }
     const isOptional = OPTIONAL_NAMESPACES.has(namespace);
+    const family = route?.family ?? namespace;
     return callWithFailover({
       label: path.join('.'),
       nodes: route?.nodes ?? configuredNodesOf(chain.endpointUrl),
       chainEndpoint: chain.endpointUrl,
-      healthKey: isOptional ? (node) => `${node}/${namespace}` : (node) => node,
+      healthKey: (node) => jsonRpcHealthKey(node, family),
       invoke: (target) => callOn(target.api, 'api', path, args),
       isNodeFailure: isOptional
         ? async (error) => isApiNotServedError(error) || (await isTransportError(error))
