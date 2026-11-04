@@ -32,4 +32,26 @@ describe('Links regexp', () => {
             expect(links.ipfsProtocol.test('engrave')).to.be.false;
         });
     });
+
+    describe('local', () => {
+        it('should match hive.blog, its subdomains and localhost', () => {
+            expect(links.local.test('https://hive.blog/a.jpg')).to.be.true;
+            expect(links.local.test('https://images.hive.blog/p/abc')).to.be.true;
+            expect(links.local.test('http://localhost:3000/a.jpg')).to.be.true;
+            expect(links.remote.test('https://images.hive.blog/p/abc')).to.be.false;
+        });
+
+        it('should not match a URL that only mentions hive.blog outside its host', () => {
+            for (const url of [
+                'https://x.example/i.jpg?u=https://hive.blog',
+                'https://hive.blog.x.example/i.jpg',
+                'https://evilhive.blog/i.jpg',
+                'https://hiveXblog/i.jpg',
+                'https://localhost.x.example/i.jpg'
+            ]) {
+                expect(links.local.test(url), url).to.be.false;
+                expect(links.remote.test(url), url).to.be.true;
+            }
+        });
+    });
 });
