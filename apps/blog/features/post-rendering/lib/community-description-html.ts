@@ -51,6 +51,9 @@ function adaptElementClasses(tagName: string, attribs: sanitizeHtml.Attributes):
 // elements, and text is serialized escaped again, so no text ever turns into markup.
 const CLASS_ADAPTATION: sanitizeHtml.IOptions = {
   allowedTags: false,
+  // The input is the renderer's already-sanitized output and this pass only rewrites classes, so
+  // sanitize-html's warning about allowing script and style is noise on every render.
+  allowVulnerableTags: true,
   allowedAttributes: false,
   allowedSchemes: ALLOWED_SCHEMES,
   parseStyleAttributes: false,
