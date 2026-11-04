@@ -71,8 +71,12 @@ const ACCOUNT_FORMAT_ERROR_KEYS: Record<AccountNameFormatError, string> = {
 const newRequestId = () => Math.floor((Date.now() / 1000) % 4294967295);
 
 // wax is imported only once a broadcast has failed, so it stays out of the page's initial chunks.
+// A wax that cannot be imported now was never loaded, so it threw nothing: the failure is reported as it is.
 const isPrivateKeyLeak = async (error: unknown) =>
-  error instanceof (await import('@hiveio/wax')).WaxPrivateKeyLeakDetectedException;
+  import('@hiveio/wax').then(
+    ({ WaxPrivateKeyLeakDetectedException }) => error instanceof WaxPrivateKeyLeakDetectedException,
+    () => false
+  );
 
 type Amount = {
   hive: string;
@@ -174,11 +178,14 @@ export function TransferDialog({
   const transfersTransaction = useCallback(
     async <T,>(
       method: string,
-      params: T,
+      buildParams: () => Promise<T>,
       transaction: (params: T) => Promise<T & { broadcastResult: TransactionBroadcastResult }>,
       explainRejection?: (error: unknown) => string | null
     ) => {
+      // Built inside the try: `getAsset` loads the chain and checks the amount's precision, and either can fail.
+      let params: T | undefined;
       try {
+        params = await buildParams();
         await transaction(params);
         invalidateData();
       } catch (error) {
@@ -238,13 +245,16 @@ export function TransferDialog({
           setEncryptDialogOpen(true);
           return;
         }
-        const params = {
-          fromAccount: username,
-          toAccount: data.to,
-          memo,
-          amount: await getAsset(value, curr)
-        };
-        await transfersTransaction('transfer', params, transferMutation.mutateAsync);
+        await transfersTransaction(
+          'transfer',
+          async () => ({
+            fromAccount: username,
+            toAccount: data.to,
+            memo,
+            amount: await getAsset(value, curr)
+          }),
+          transferMutation.mutateAsync
+        );
       };
       break;
 
@@ -255,13 +265,16 @@ export function TransferDialog({
       data.amount = curr === 'HIVE' ? amount.hive : amount.hbd;
       data.advancedBtn = true;
       data.onSubmit = async () => {
-        const params = {
-          amount: await getAsset(value, curr),
-          fromAccount: username,
-          toAccount: data.to,
-          memo: data.memo
-        };
-        await transfersTransaction('transferToSavings', params, transferToSavingsMutation.mutateAsync);
+        await transfersTransaction(
+          'transferToSavings',
+          async () => ({
+            amount: await getAsset(value, curr),
+            fromAccount: username,
+            toAccount: data.to,
+            memo: data.memo
+          }),
+          transferToSavingsMutation.mutateAsync
+        );
       };
       break;
 
@@ -274,8 +287,11 @@ export function TransferDialog({
       data.selectCurr = false;
       data.buttonTitle = t('transfers_page.power_up');
       data.onSubmit = async () => {
-        const params = { fromAccount: username, toAccount: data.to, amount: await getAsset(value, curr) };
-        await transfersTransaction('powerUp', params, powerUpMutation.mutateAsync);
+        await transfersTransaction(
+          'powerUp',
+          async () => ({ fromAccount: username, toAccount: data.to, amount: await getAsset(value, curr) }),
+          powerUpMutation.mutateAsync
+        );
       };
       break;
 
@@ -285,11 +301,11 @@ export function TransferDialog({
       data.buttonTitle = t('transfers_page.power_down');
       data.amount = amount.reducedHP;
       data.onSubmit = async () => {
-        const params = {
-          account: username,
-          hp: await getAsset(value, 'HIVE')
-        };
-        await transfersTransaction('powerDown', params, powerDownMutation.mutateAsync);
+        await transfersTransaction(
+          'powerDown',
+          async () => ({ account: username, hp: await getAsset(value, 'HIVE') }),
+          powerDownMutation.mutateAsync
+        );
       };
       break;
 
@@ -299,12 +315,12 @@ export function TransferDialog({
       data.description = '';
       data.amount = amount.reducedHP;
       data.onSubmit = async () => {
-        const params = {
-          delegator: username,
-          delegatee: data.to,
-          hp: await getAsset(value, 'HIVE')
-        };
-        await transfersTransaction('delegate', params, delegateMutation.mutateAsync, explainDelegationRejection);
+        await transfersTransaction(
+          'delegate',
+          async () => ({ delegator: username, delegatee: data.to, hp: await getAsset(value, 'HIVE') }),
+          delegateMutation.mutateAsync,
+          explainDelegationRejection
+        );
       };
       break;
 
@@ -315,14 +331,17 @@ export function TransferDialog({
       data.amount = amount.savingsHive;
       data.advancedBtn = true;
       data.onSubmit = async () => {
-        const params = {
-          fromAccount: username,
-          toAccount: advanced ? data.to : username,
-          memo: data.memo,
-          amount: await getAsset(value, curr),
-          requestId
-        };
-        await transfersTransaction('withdrawHive', params, withdrawFromSavingsMutation.mutateAsync);
+        await transfersTransaction(
+          'withdrawHive',
+          async () => ({
+            fromAccount: username,
+            toAccount: advanced ? data.to : username,
+            memo: data.memo,
+            amount: await getAsset(value, curr),
+            requestId
+          }),
+          withdrawFromSavingsMutation.mutateAsync
+        );
       };
       break;
 
@@ -333,14 +352,17 @@ export function TransferDialog({
       data.amount = amount.savingsHbd;
       data.advancedBtn = true;
       data.onSubmit = async () => {
-        const params = {
-          fromAccount: username,
-          toAccount: advanced ? data.to : username,
-          memo: data.memo,
-          amount: await getAsset(value, curr),
-          requestId
-        };
-        await transfersTransaction('withdrawHiveDollars', params, withdrawFromSavingsMutation.mutateAsync);
+        await transfersTransaction(
+          'withdrawHiveDollars',
+          async () => ({
+            fromAccount: username,
+            toAccount: advanced ? data.to : username,
+            memo: data.memo,
+            amount: await getAsset(value, curr),
+            requestId
+          }),
+          withdrawFromSavingsMutation.mutateAsync
+        );
       };
       break;
   }

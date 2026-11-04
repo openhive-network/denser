@@ -251,4 +251,23 @@ test.describe('Transfer broadcast', () => {
       memo: MEMO
     });
   });
+
+  test('WALLET-TX-TRANSFER-09 — an amount the chain refuses to build is a toast, nothing is broadcast and OK works again', async ({
+    page
+  }) => {
+    // The form reads "1.5000" as 1.5, but the chain's asset allows at most 3 decimal places
+    const broadcasts = await installBroadcastInterceptor(page);
+    const pageErrors: Error[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error));
+    const dialog = await openTransferDialog(page, 'wallet-hive-value');
+    await fillTransfer(dialog, '1.5000', MEMO);
+    const ok = confirmDialog(page).getByRole('button', { name: 'OK' });
+    await ok.click();
+
+    await expect(page.getByTestId('error-toast-content')).toContainText('maximum of 3 decimal places in HIVE amount');
+    await expect(confirmDialog(page)).toBeVisible();
+    await expect(ok).toBeEnabled();
+    expect(broadcasts.calls).toHaveLength(0);
+    expect(pageErrors).toHaveLength(0);
+  });
 });
