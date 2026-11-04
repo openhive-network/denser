@@ -211,6 +211,14 @@ const PostContent = () => {
   useQueryErrorEffect(postQuery, (error) => {
     handleError(error, { method: 'getPost', params: { author, permlink, observer } });
   });
+  // A listed post is seeded without its body; an editor opened on it fetches the post for the body
+  const bodyWithheld = !!postData?._bodyWithheld;
+  const editorOpen = edit || liteEdit;
+  const { refetch: refetchPost } = postQuery;
+  useEffect(() => {
+    if (editorOpen && bodyWithheld) void refetchPost();
+  }, [editorOpen, bodyWithheld, refetchPost]);
+  const awaitingBody = editorOpen && bodyWithheld && !postQuery.isError;
   const [mutedPost, setMutedPost] = useState<boolean>(postData?.stats?.gray || false);
   // Single reblog query shared by header and footer ReblogTrigger components
   const { data: isReblogged } = useRebloggedByQuery(
@@ -566,9 +574,9 @@ const PostContent = () => {
                     )}
                   </div>
                 </div>
-                {postIsLoading ? (
-                  <Loading loading={postIsLoading} />
-                ) : liteEdit && !user.isLoggedIn ? (
+                {postIsLoading || awaitingBody ? (
+                  <Loading loading />
+                ) : liteEdit && !bodyWithheld && !user.isLoggedIn ? (
                   <LiteEditForm
                     entry={postData}
                     onClose={() => setLiteEdit(false)}
@@ -578,7 +586,7 @@ const PostContent = () => {
                   />
                 ) : liteTombstone ? (
                   <LiteTombstoneNotice />
-                ) : edit && commentSite && postData.parent_author && postData.parent_permlink ? (
+                ) : edit && !bodyWithheld && commentSite && postData.parent_author && postData.parent_permlink ? (
                   <ReplyTextbox
                     editMode={edit}
                     onSetReply={setEdit}
@@ -591,7 +599,7 @@ const PostContent = () => {
                     discussionPermlink={permlink}
                     observer={observer}
                   />
-                ) : edit ? (
+                ) : edit && !bodyWithheld ? (
                   <PostForm
                     username={postData.author}
                     editMode={edit}

@@ -90,6 +90,8 @@ export interface Entry {
   _optimistic?: boolean;
   /** An optimistic entry whose transaction a block included; Hivemind has yet to index it */
   _confirmed?: boolean;
+  /** A server seed sent without its body and body-derived metadata; the client fetches the post for them */
+  _bodyWithheld?: boolean;
 }
 
 export interface JsonMetadata {
