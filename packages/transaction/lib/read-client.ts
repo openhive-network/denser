@@ -156,13 +156,17 @@ interface IRestPathState {
   definition: IRestApiDefinition | undefined;
 }
 
+/**
+ * `urlPath` with each `{name}` placeholder replaced by `params[name]`, URI-component encoded so a value
+ * cannot add path segments or a query, and the params left for the query or body.
+ */
 const fillUrlPlaceholders = (urlPath: string, params: unknown): { url: string; rest: unknown } => {
   if (!isRecord(params) || Array.isArray(params)) return { url: urlPath, rest: params };
 
   const rest = { ...params };
   const url = urlPath.replace(/\{([^}]*)\}/g, (_match, name: string) => {
     if (!(name in rest)) throw new Error(`No ${name} in request`);
-    const value = String(rest[name]);
+    const value = encodeURIComponent(String(rest[name]));
     delete rest[name];
     return value;
   });
