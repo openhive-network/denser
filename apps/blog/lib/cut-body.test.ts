@@ -35,6 +35,17 @@ describe('dropUnfinishedMarkup', () => {
     assert.equal(dropUnfinishedMarkup(short, CUT_LENGTH), short);
   });
 
+  it('cuts a body the server did not cut before matching', () => {
+    const text = 'y'.repeat(CUT_LENGTH - 10);
+    const uncut = text + '![img](https://example.com/a.png) and more';
+    const brackets = '['.repeat(60_000) + ']x';
+
+    assert.equal(dropUnfinishedMarkup(uncut, CUT_LENGTH), text);
+    const start = performance.now();
+    assert.equal(dropUnfinishedMarkup(brackets, CUT_LENGTH), '');
+    assert.ok(performance.now() - start < 500);
+  });
+
   it('leaves a post cut inside its opening image with no summary, not a markdown fragment', () => {
     const body = cut('![20191028_185309.jpg](https://cdn.steemitimages.com/DQmYhU9TXdXnBJMoFwv9yMC7TftGNrierzmtMcz9Lpu4UhM/20191028_185309.jpg)');
 
