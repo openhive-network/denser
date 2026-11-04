@@ -1,4 +1,4 @@
-import { describe, it } from 'node:test';
+import { describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
 
 const { toCommunityDescriptionHtml } = await import('./community-description-html.ts');
@@ -65,5 +65,15 @@ describe('toCommunityDescriptionHtml', () => {
   it('keeps inline styles as the renderer wrote them', () => {
     const html = toCommunityDescriptionHtml('<div style="overflow-x: auto; width: 100%;"><table></table></div>');
     assert.equal(html, '<div style="overflow-x: auto; width: 100%;"><table></table></div>');
+  });
+
+  it('prints no sanitize-html warning', () => {
+    const warn = mock.method(console, 'warn', () => {});
+    try {
+      toCommunityDescriptionHtml('<p><a href="https://example.com">link</a> <code>c</code></p>');
+      assert.equal(warn.mock.callCount(), 0);
+    } finally {
+      warn.mock.restore();
+    }
   });
 });
