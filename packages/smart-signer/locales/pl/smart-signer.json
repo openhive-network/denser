@@ -197,7 +197,7 @@
     "safe_storage_recovery_description": "Inna karta zmieniła bezpieczny magazyn podczas zapisywania klucza @{{username}}. Wpisz hasło bezpiecznego magazynu @{{username}}, aby dokończyć zapisywanie."
   },
   "broadcast_error": {
-    "missing_owner_authority": "Ta operacja wymaga klucza właściciela (owner). Zaloguj się nim i spróbuj ponownie.",
+    "missing_owner_authority": "Ta operacja wymaga klucza właściciela (owner) i nie jest tu dostępna.",
     "missing_active_authority": "Ta operacja wymaga klucza Active. Zaloguj się kluczem Active i spróbuj ponownie.",
     "missing_posting_authority": "Ta operacja wymaga klucza Posting. Zaloguj się nim i spróbuj ponownie.",
     "safe_storage_missing_account": "Bezpieczny magazyn w tej przeglądarce nie zawiera kluczy Twojego konta. Zaloguj się ponownie.",

@@ -197,7 +197,7 @@
     "safe_storage_recovery_description": "@{{username}} のキーを保存している間に、別のタブが安全なストレージを変更しました。保存を完了するには、@{{username}} の安全なストレージのパスワードを入力してください。"
   },
   "broadcast_error": {
-    "missing_owner_authority": "この操作にはオーナーキー（owner）が必要です。オーナーキーでログインして、もう一度お試しください。",
+    "missing_owner_authority": "この操作にはオーナーキー（owner）が必要なため、ここでは利用できません。",
     "missing_active_authority": "この操作にはアクティブキー（active）が必要です。アクティブキーでログインして、もう一度お試しください。",
     "missing_posting_authority": "この操作には投稿キー（posting）が必要です。投稿キーでログインして、もう一度お試しください。",
     "safe_storage_missing_account": "このブラウザーの安全なストレージには、お使いのアカウントのキーがありません。もう一度ログインしてください。",
