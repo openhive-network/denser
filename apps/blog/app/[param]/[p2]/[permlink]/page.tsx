@@ -220,8 +220,9 @@ const PostPage = async (
       : null;
 
   // Bodies are rendered here so the client hydrates their HTML instead of loading the
-  // renderer and rendering them again.
-  const renderedBodies = renderDiscussionBodies(postData, discussionData);
+  // renderer and rendering them again. Only the seeded page's replies are rendered; later pages
+  // render on the client when shown.
+  const renderedBodies = renderDiscussionBodies(postData, discussionPageSeed?.entries ?? null);
   const seo = postData ? postSeo(postData) : null;
 
   // Pass data directly via context instead of Hydrate/dehydrate.

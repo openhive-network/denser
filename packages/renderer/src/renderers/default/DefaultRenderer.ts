@@ -206,7 +206,7 @@ export class DefaultRenderer {
             return text;
         }
 
-        return this.tagTransformingSanitizer.sanitize(text, postContext);
+        return this.tagTransformingSanitizer.sanitize(text, postContext, this.domParser.getImageHints());
     }
     /**
      * Validates the renderer options

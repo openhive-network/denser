@@ -12,6 +12,7 @@ export class TagTransformingSanitizer {
     private localization: LocalizationOptions;
     private sanitizationErrors: string[] = [];
     private currentPostContext?: PostContext;
+    private currentImageHints: ReadonlyMap<string, RenderedImageHints> = new Map();
 
     public constructor(options: TagsSanitizerOptions, localization: LocalizationOptions) {
         this.validate(options);
@@ -27,10 +28,13 @@ export class TagTransformingSanitizer {
      *
      * @param text - The HTML content to sanitize
      * @param postContext - Optional context about the post being rendered (for logging)
+     * @param imageHints - The responsive sources and loading priority the renderer built, keyed by
+     *   the image's `src`. An image's `srcset`, `sizes` and eager loading come only from here.
      * @returns A sanitized version of the HTML content with transformed tags and removed unsafe content
      */
-    public sanitize(text: string, postContext?: PostContext): string {
+    public sanitize(text: string, postContext?: PostContext, imageHints?: ReadonlyMap<string, RenderedImageHints>): string {
         this.currentPostContext = postContext;
+        this.currentImageHints = imageHints ?? new Map();
         return sanitize(text, this.generateSanitizeConfig());
     }
 
@@ -148,7 +152,7 @@ export class TagTransformingSanitizer {
                         return retTagOnImagesNotAllowed;
                     }
                     // See https://github.com/punkave/sanitize-html/issues/117
-                    const {src, srcset, sizes, alt} = attribs;
+                    const {src, alt} = attribs;
                     // eslint-disable-next-line security/detect-unsafe-regex
                     if (!/^(https?:)?\/\//i.test(src)) {
                         Log.log().warn(`Blocked image (invalid src)${this.formatPostContext()}: src="${src || '(empty)'}"`);
@@ -163,11 +167,12 @@ export class TagTransformingSanitizer {
                     const atts: sanitize.Attributes = {};
                     atts.src = src.replace(/^http:\/\//i, '//'); // replace http:// with // to force https when needed
                     // srcset/sizes are set by HtmlDOMParser from the image proxy, never taken from the author
-                    if (srcset) {
-                        atts.srcset = srcset;
+                    const hints = this.currentImageHints.get(src);
+                    if (hints?.srcset) {
+                        atts.srcset = hints.srcset;
                     }
-                    if (sizes) {
-                        atts.sizes = sizes;
+                    if (hints?.srcset && hints.sizes) {
+                        atts.sizes = hints.sizes;
                     }
                     if (alt && alt !== '') {
                         atts.alt = alt;
@@ -175,7 +180,7 @@ export class TagTransformingSanitizer {
                     // Lazy-load off-screen images to reduce layout shifts during scroll sync
                     // and avoid blocking the main thread with eager decoding of large images.
                     // Only the LCP candidate HtmlDOMParser prioritizes loads eagerly.
-                    if (attribs.loading === 'eager' && attribs.fetchpriority === 'high') {
+                    if (hints?.prioritized) {
                         atts.loading = 'eager';
                         atts.fetchpriority = 'high';
                     } else {
@@ -287,6 +292,13 @@ export interface TagsSanitizerOptions {
     noImage: boolean;
     isLinkSafeFn: (url: string) => boolean;
     addExternalCssClassToMatchingLinksFn: (url: string) => boolean;
+}
+
+/** What HtmlDOMParser set on an image it proxied: the only source of its responsive and priority attributes */
+export interface RenderedImageHints {
+    srcset?: string;
+    sizes?: string;
+    prioritized: boolean;
 }
 
 export interface PostContext {

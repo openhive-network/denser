@@ -20,9 +20,11 @@ const urlSet = ({domain = domainPath, path = ''} = {}) => {
  *   same string so naturally the regex object can't be cached for long.
  */
 export const any = (flags = 'i') => new RegExp(urlSet(), flags);
+// The whole host, not a substring of the URL: `hive.blog.x.example` and `x.example/?u=https://hive.blog` are remote
+const localDomain = '(?:localhost|(?:[-a-zA-Z0-9_]+\\.)*hive\\.blog)(?![-a-zA-Z0-9_]|\\.[-a-zA-Z0-9_])';
 // TODO verify if we should pass baseUrl here
-export const local = (flags = 'i') => new RegExp(urlSet({domain: '(?:localhost|(?:.*\\.)?hive.blog)'}), flags);
-export const remote = (flags = 'i') => new RegExp(urlSet({domain: `(?!localhost|(?:.*\\.)?hive.blog)${domainPath}`}), flags);
+export const local = (flags = 'i') => new RegExp(`^${urlSet({domain: localDomain})}`, flags);
+export const remote = (flags = 'i') => new RegExp(`^${urlSet({domain: `(?!${localDomain})${domainPath}`})}`, flags);
 export const image = (flags = 'i') => new RegExp(urlSet({path: imagePath}), flags);
 export const imageFile = (flags = 'i') => new RegExp(imagePath, flags);
 

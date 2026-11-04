@@ -35,12 +35,20 @@ export function proxifyImageSrc(url?: string, width = 0, height = 0, format = 'm
     return '';
   }
 
+  // A string with whitespace is a candidate list (`proxied, https://other 2x`), not one URL:
+  // passed through, it would put the unproxied candidates in a srcset or preload.
+  const isSingleUrl = !/\s/.test(url);
+
   // Skip already-proxified URLs (ones that already have /p/ hash format)
-  if (url.startsWith(`${proxyBase}/p/`)) {
+  if (isSingleUrl && url.startsWith(`${proxyBase}/p/`)) {
     return url; // Return as-is, already proxified
   }
 
-  if (url.indexOf('https://steemitimages.com/') === 0 && url.indexOf('https://steemitimages.com/D') !== 0) {
+  if (
+    isSingleUrl &&
+    url.indexOf('https://steemitimages.com/') === 0 &&
+    url.indexOf('https://steemitimages.com/D') !== 0
+  ) {
     let result = url.replace('https://steemitimages.com', proxyBase);
     if (token) {
       result += (result.includes('?') ? '&' : '?') + 'token=' + encodeURIComponent(token);

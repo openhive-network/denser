@@ -332,6 +332,37 @@ describe('DefaultRender', () => {
             expect(rendered).to.not.include('sizes=');
         });
 
+        it('keeps no author srcset host, whatever the case of the tag or its container', () => {
+            const renderer = new DefaultRenderer(responsiveOptions);
+            for (const input of [
+                '<img src="https://x.example/i.jpg" srcset="https://x.example/t.jpg 2x">',
+                '<IMG SRC="https://x.example/i.jpg" SRCSET="https://x.example/t.jpg 2x">',
+                '<svg><img src="https://x.example/i.jpg" srcset="https://x.example/t.jpg 2x"></svg>',
+                '<textarea><img src="https://x.example/i.jpg" srcset="https://x.example/t.jpg 2x"></textarea>'
+            ]) {
+                expect(renderer.render(input).replace(/https:\/\/proxy\.test\/\w+\/https:\/\/x\.example/g, '')).to.not.include('x.example', input);
+            }
+        });
+
+        it('drops an author srcset on a local image, which keeps its own src', () => {
+            const rendered = new DefaultRenderer(responsiveOptions).render('<p><img src="https://hive.blog/a.jpg" srcset="https://x.example/t.jpg 2x" sizes="50vw"></p>');
+            expect(rendered).to.not.include('x.example');
+            expect(rendered).to.include('srcset="https://proxy.test/480/https://hive.blog/a.jpg 480w');
+        });
+
+        it('proxies an image whose URL only mentions hive.blog', () => {
+            const rendered = new DefaultRenderer(responsiveOptions).render('<p><img src="https://x.example/i.jpg?u=https://hive.blog"></p>');
+            expect(rendered).to.include('src="https://proxy.test/0x0/https://x.example/i.jpg?u=https://hive.blog"');
+        });
+
+        it('prioritizes only the first image, never one the author marked eager', () => {
+            const rendered = new DefaultRenderer({...responsiveOptions, prioritizeFirstImage: true}).render(
+                '<p><img src="https://example.com/a.jpg"></p><p><img src="https://example.com/b.jpg" loading="eager" fetchpriority="high"></p>'
+            );
+            const loadingHints = [...rendered.matchAll(/<img [^>]*?(loading="\w+"(?: fetchpriority="\w+")?)/g)].map((m) => m[1]);
+            expect(loadingHints).to.deep.equal(['loading="eager" fetchpriority="high"', 'loading="lazy"']);
+        });
+
         it('loads the first image eagerly at high priority and the rest lazily when prioritizeFirstImage is set', () => {
             const rendered = new DefaultRenderer({...responsiveOptions, prioritizeFirstImage: true}).render(twoImages);
             const loadingHints = [...rendered.matchAll(/<img [^>]*?(loading="\w+"(?: fetchpriority="\w+")?)/g)].map((m) => m[1]);

@@ -8,6 +8,7 @@ import ChainedError from 'typescript-chained-error';
 import {Log} from '../../../Log';
 import {LinkSanitizer} from '../../../security/LinkSanitizer';
 import {Localization, LocalizationOptions} from '../Localization';
+import type {RenderedImageHints} from '../sanitization/TagTransformingSanitizer';
 import {AssetEmbedder, AssetEmbedderOptions} from './AssetEmbedder';
 import {YoutubeEmbedder} from './embedders/YoutubeEmbedder';
 import {AccountNameValidator} from './utils/AccountNameValidator';
@@ -35,6 +36,7 @@ export class HtmlDOMParser {
     });
     private xmlSerializer = new xmldom.XMLSerializer();
     private state: State;
+    private imageHints = new Map<string, RenderedImageHints>();
     private mutate = true;
     private parsedDocument: Document | undefined = undefined;
 
@@ -96,6 +98,7 @@ export class HtmlDOMParser {
             images: new Set(),
             links: new Set()
         };
+        this.imageHints = new Map();
 
         try {
             const doc: Document = this.domParser.parseFromString(preprocessHtml(html), 'text/html');
@@ -112,6 +115,11 @@ export class HtmlDOMParser {
     public getState(): State {
         if (!this.parsedDocument) throw new HtmlDOMParserError('Html has not been parsed yet');
         return this.state;
+    }
+
+    /** The responsive sources and loading priority set on each proxied image, keyed by its final `src` */
+    public getImageHints(): ReadonlyMap<string, RenderedImageHints> {
+        return this.imageHints;
     }
 
     public getParsedDocument(): Document {
@@ -284,6 +292,7 @@ export class HtmlDOMParser {
      * @private
      */
     private processImgTag(child: HTMLObjectElement) {
+        lowercaseAttributeNames(child);
         const url = child.getAttribute('src');
         if (url) {
             this.state.images.add(url);
@@ -523,7 +532,7 @@ export class HtmlDOMParser {
      */
     private hideImagesIfNeeded(doc: Document) {
         if (this.mutate && this.options.hideImages) {
-            for (const image of Array.from(doc.getElementsByTagName('img'))) {
+            for (const image of getImages(doc)) {
                 const pre = doc.createElement('pre');
                 pre.setAttribute('class', 'image-url-only');
                 pre.appendChild(doc.createTextNode(image.getAttribute('src') || ''));
@@ -579,13 +588,14 @@ export class HtmlDOMParser {
         if (!doc) {
             return;
         }
-        Array.from(doc.getElementsByTagName('img')).forEach((node, index) => {
+        getImages(doc).forEach((node, index) => {
             const url: string = node.getAttribute('src') || '';
             if (!linksRe.local.test(url)) {
                 node.setAttribute('src', this.options.imageProxyFn(url));
             }
             this.setResponsiveSources(node, url);
             this.setLoadingPriority(node, index);
+            this.recordImageHints(node);
         });
     }
 
@@ -626,6 +636,16 @@ export class HtmlDOMParser {
         } else {
             node.setAttribute('loading', 'lazy');
         }
+    }
+
+    private recordImageHints(node: Element) {
+        const src = node.getAttribute('src') || '';
+        const previous = this.imageHints.get(src);
+        this.imageHints.set(src, {
+            srcset: node.getAttribute('srcset') || undefined,
+            sizes: node.getAttribute('sizes') || undefined,
+            prioritized: previous?.prioritized || node.getAttribute('fetchpriority') === 'high'
+        });
     }
 
     private static validate(o: HtmlDOMParserOptions) {
@@ -684,6 +704,28 @@ export interface State {
 export class HtmlDOMParserError extends ChainedError {
     public constructor(message?: string, cause?: Error) {
         super(message, cause);
+    }
+}
+
+/**
+ * Every img element of the document, whatever the case of its tag name: xmldom keeps `<IMG>` as
+ * written, while the sanitizer, which lowercases it, keeps it as an image.
+ */
+function getImages(doc: Document): Element[] {
+    return Array.from(doc.getElementsByTagName('*')).filter((element) => element.tagName.toLowerCase() === 'img');
+}
+
+/** Renames `SRC`/`SrcSet`-style attributes to lowercase, as an HTML parser reads them; a lowercase one already there wins */
+function lowercaseAttributeNames(element: Element) {
+    for (const {name, value} of Array.from(element.attributes)) {
+        const lowercase = name.toLowerCase();
+        if (lowercase === name) {
+            continue;
+        }
+        element.removeAttribute(name);
+        if (!element.hasAttribute(lowercase)) {
+            element.setAttribute(lowercase, value);
+        }
     }
 }
 
