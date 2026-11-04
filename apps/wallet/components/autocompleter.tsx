@@ -72,8 +72,10 @@ export function Autocompleter({
   const handleInputBlur = (event: FocusEvent<HTMLInputElement>) => {
     if (!autocompleteRef.current?.contains(event.relatedTarget)) setIsOpen(false);
   };
+  // cmdk's Enter picks the highlighted item even while the list is hidden; it skips a prevented event.
   const handleInputKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') setIsOpen(true);
+    if (event.key === 'Enter' && !isOpen) event.preventDefault();
   };
   // Keeps the focus in the input, so picking a suggestion with the mouse does not blur it first.
   const keepInputFocus = (event: ReactMouseEvent) => event.preventDefault();
