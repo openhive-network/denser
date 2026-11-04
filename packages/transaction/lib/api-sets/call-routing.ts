@@ -92,6 +92,7 @@ export function createApiSetRouting(browser?: IBrowserNodeState): IApiSetRouting
     const route = await routeOf(setId, configured);
     return {
       nodes: route.nodes,
+      family: setId,
       report: route.report,
       onFallback: browser && ((node) => onFallback(browser, route, node))
     };

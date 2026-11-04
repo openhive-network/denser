@@ -23,7 +23,11 @@ const FALLBACK = 'https://fallback';
 const LITE_A = 'https://lite-a';
 const LITE_B = 'https://lite-b';
 
-const setup = (answers: Record<string, Answer>, routes: Record<string, string[]>) => {
+const setup = (
+  answers: Record<string, Answer>,
+  routes: Record<string, string[]>,
+  families: Record<string, string> = {}
+) => {
   const health = new NodeHealth();
   const calls: string[] = [];
   const reports: string[] = [];
@@ -69,6 +73,7 @@ const setup = (answers: Record<string, Answer>, routes: Record<string, string[]>
       if (!nodes) return undefined;
       return {
         nodes,
+        family: families[path[0]],
         report: (node: string, outcome: TFailoverOutcome) =>
           reports.push(`${node} ${'error' in outcome ? outcome.error : 'ok'}`),
         onFallback: (node: string) => fallbacks.push(node)
@@ -138,6 +143,20 @@ describe('wrapChainWithServerFailover: calls routed by API family', () => {
     ]);
     expect(failovers).to.deep.equal([FALLBACK]);
     expect(fallbacks).to.deep.equal([]);
+  });
+
+  it('records health per API family, shared by the namespaces of one family', async () => {
+    const nodes = [CONFIGURED, FALLBACK];
+    const { chain, calls } = setup(
+      { [CONFIGURED]: 'transport', [FALLBACK]: 'ok' },
+      { bridge: nodes, lite: nodes },
+      { bridge: 'social', lite: 'social' }
+    );
+    await chain.api.bridge.get_post({});
+    calls.length = 0;
+
+    expect(await chain.api.lite.get_post({})).to.deep.equal({ node: FALLBACK });
+    expect(calls).to.deep.equal([`${FALLBACK} lite.get_post`]);
   });
 
   it("sends a broadcast once, to its family's first node, even when it fails", async () => {

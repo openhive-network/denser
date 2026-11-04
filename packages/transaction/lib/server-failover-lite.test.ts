@@ -69,7 +69,7 @@ describe('wrapChainWithServerFailover: lite.*', () => {
     await chain.api.lite.get_post({});
 
     expect(health.isDown(`${PRIMARY}/lite`)).to.equal(true);
-    expect(health.isDown(PRIMARY)).to.equal(false);
+    expect(health.isDown(`${PRIMARY}/bridge`)).to.equal(false);
   });
 
   it('treats "Api not found" on bridge.* as a definitive answer', async () => {

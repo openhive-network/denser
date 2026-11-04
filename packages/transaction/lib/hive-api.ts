@@ -14,7 +14,7 @@ import {
 } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { getHiveChainService } from './hive-chain-service';
-import { getReadChain, type HivemindRestApi } from './chain';
+import { getReadChain, getSearchHivemindRestApi, getSearchReadChain, type HivemindRestApi } from './chain';
 import { nonEmpty, readFromHivemind } from './hivemind-rest';
 import { ApiAccount } from '@hiveio/wax';
 import {
@@ -476,8 +476,9 @@ export const getByText = async (
     start_permlink = ''
   }: Parameters<ReturnType<typeof getReadChain>['api']['search-api']['find_text']>[0] // Temporary solution
 ): Promise<Entry[]> => {
+  // A search is asked of each node once, without moving any other call off a node it is slow on.
   const findText = () =>
-    getReadChain().api['search-api'].find_text({
+    getSearchReadChain().api['search-api'].find_text({
       pattern,
       sort,
       author,
@@ -500,7 +501,8 @@ export const getByText = async (
         'start-author': nonEmpty(start_author),
         'start-permlink': nonEmpty(start_permlink)
       }),
-    findText
+    findText,
+    getSearchHivemindRestApi()
   );
 };
 

@@ -17,7 +17,8 @@ const isKnownMissing = (endpoint: keyof HivemindRestApi): boolean => {
 /**
  * Reads `endpoint` of hivemind's REST API with `rest` when a hivemind REST node is configured
  * (`HIVEMIND_REST_NODES`), and with `jsonRpc`, the same read over JSON-RPC, otherwise. `rest` must
- * resolve to what `jsonRpc` would.
+ * resolve to what `jsonRpc` would. `api` is the REST API `rest` is given, `getHivemindRestApi()`
+ * unless the read fails over in a way of its own (see `getSearchHivemindRestApi`).
  *
  * Any failure of the REST read (`ReadTransportError`) is answered by `jsonRpc`, so callers see
  * JSON-RPC's results and errors: a node lacking the endpoint (404 or PGRST202, which does not mark
@@ -28,9 +29,9 @@ const isKnownMissing = (endpoint: keyof HivemindRestApi): boolean => {
 export async function readFromHivemind<T>(
   endpoint: keyof HivemindRestApi,
   rest: (api: HivemindRestApi) => Promise<T>,
-  jsonRpc: () => Promise<T>
+  jsonRpc: () => Promise<T>,
+  api: HivemindRestApi | undefined = getHivemindRestApi()
 ): Promise<T> {
-  const api = getHivemindRestApi();
   if (!api || isKnownMissing(endpoint)) return jsonRpc();
   try {
     return await rest(api);

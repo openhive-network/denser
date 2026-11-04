@@ -6,7 +6,13 @@ import {
 import { getHiveChainService } from './hive-chain-service';
 import type { TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { wrapChainWithLogging } from './chain-proxy';
-import { parseFallbackNodes, restApiHealthKey, wrapChainWithServerFailover } from './server-failover';
+import {
+  FAILOVER_ATTEMPT_TIMEOUT_MS,
+  parseFallbackNodes,
+  restApiHealthKey,
+  wrapChainWithServerFailover,
+  type IServerFailoverOptions
+} from './server-failover';
 import { NodeHealth } from './node-health';
 import { createReadClient, IReadClient, IReadClientConfig } from './read-client';
 import { fetchReadTransport, isRestApiUnavailable, ReadTransportError } from './read-transport';
@@ -27,8 +33,6 @@ export type Chain = TWaxExtended<ExtendedNodeApi, TWaxRestExtended<ExtendedRestA
 export type ReadChain = IReadClient<Chain['api'], Pick<Chain['restApi'], keyof ExtendedRestApi>>;
 
 let chain: Promise<Chain> | undefined = undefined;
-let readChain: { fallbackNodes: string; chain: ReadChain } | undefined = undefined;
-let hivemindRestChain: { nodes: string; chain: ReadChain } | undefined = undefined;
 
 const isServer = typeof window === 'undefined';
 
@@ -69,6 +73,50 @@ const apiSetRouting = createApiSetRouting(
         announceSwitch: announceApiNodeSwitch
       }
 );
+
+/** The health record and routing a kind of read chain fails over with. */
+type TReadFailover = Pick<IServerFailoverOptions<ReadChain>, 'health' | 'routeFor' | 'onFailover'>;
+
+const sharedFailover: TReadFailover = { health: nodeHealth, routeFor: apiSetRouting.routeCall, onFailover };
+
+// A reader's search is a heavy query a node may be slow on while it serves every other call well:
+// it keeps a health record of its own and reports nothing to the API sets, so a slow search never
+// moves anyone else's calls away from a node.
+const searchFailover: TReadFailover = {
+  health: new NodeHealth(),
+  routeFor: async (root, path, configured) => {
+    const route = await apiSetRouting.routeCall(root, path, configured);
+    return route && { nodes: route.nodes, family: route.family };
+  }
+};
+
+/**
+ * Request timeout of one search attempt. Search asks a node once and at most one more node after
+ * it (see `withTimeout` of `wrapChainWithServerFailover`), without hedging.
+ */
+const SEARCH_TIMEOUT_MS = FAILOVER_ATTEMPT_TIMEOUT_MS;
+
+interface ICachedReadChain {
+  key: string;
+  chain: ReadChain;
+}
+
+/** The chain of `failover` cached under `key`, built again once `key` changes. */
+const cachedReadChain = (
+  cache: Map<TReadFailover, ICachedReadChain>,
+  failover: TReadFailover,
+  key: string,
+  build: () => ReadChain
+): ReadChain => {
+  const cached = cache.get(failover);
+  if (cached?.key === key) return cached.chain;
+  const chain = build();
+  cache.set(failover, { key, chain });
+  return chain;
+};
+
+const readChains = new Map<TReadFailover, ICachedReadChain>();
+const hivemindRestChains = new Map<TReadFailover, ICachedReadChain>();
 
 const withFailover = (baseChain: Chain): Chain =>
   wrapChainWithServerFailover(baseChain, {
@@ -128,6 +176,22 @@ const readClientConfigOn = (node: string, timeoutMs: number): IReadClientConfig 
   timeoutMs
 });
 
+const readChainWith = (failover: TReadFailover): ReadChain => {
+  const fallbackNodes = getFallbackNodes();
+  return cachedReadChain(readChains, failover, fallbackNodes.join(' '), () =>
+    wrapChainWithServerFailover(createReadChain(getReadClientConfig), {
+      ...failover,
+      fallbackNodes,
+      // The read client fails only with ReadTransportError on transport; checking for it keeps
+      // a failing browser read from loading wax.
+      isTransportError: (error) => error instanceof ReadTransportError,
+      // REST reads (balance-api, hafah-api, hivemind-api) fail over too: not every node serves them.
+      isRestApiUnavailable,
+      createNodeChain: (node, timeoutMs) => createReadChain(() => readClientConfigOn(node, timeoutMs))
+    })
+  );
+};
+
 /**
  * Client for read-only API calls (bridge, database_api, condenser_api, hivesense, ...). Unlike
  * `getChain()` it never loads wax's wasm, so pages an anonymous reader browses stay wasm-free.
@@ -135,26 +199,14 @@ const readClientConfigOn = (node: string, timeoutMs: number): IReadClientConfig 
  * over across the same nodes. It is created again when the allowed API nodes change.
  * Signing, broadcasting and wasm-only computation still need `getChain()`.
  */
-export const getReadChain = (): ReadChain => {
-  const fallbackNodes = getFallbackNodes();
-  const key = fallbackNodes.join(' ');
-  if (readChain?.fallbackNodes === key) return readChain.chain;
+export const getReadChain = (): ReadChain => readChainWith(sharedFailover);
 
-  const chain = wrapChainWithServerFailover(createReadChain(getReadClientConfig), {
-    fallbackNodes,
-    routeFor: apiSetRouting.routeCall,
-    health: nodeHealth,
-    // The read client fails only with ReadTransportError on transport; checking for it keeps
-    // a failing browser read from loading wax.
-    isTransportError: (error) => error instanceof ReadTransportError,
-    // REST reads (balance-api, hafah-api, hivemind-api) fail over too: not every node serves them.
-    isRestApiUnavailable,
-    onFailover,
-    createNodeChain: (node, timeoutMs) => createReadChain(() => readClientConfigOn(node, timeoutMs))
-  });
-  readChain = { fallbackNodes: key, chain };
-  return chain;
-};
+/**
+ * Read client for a reader's search (`search-api.find_text`): it fails over like `getReadChain()`,
+ * but asks each node once without hedging and keeps its own health record, so a slow search leaves
+ * the nodes every other call uses as they were.
+ */
+export const getSearchReadChain = (): ReadChain => readChainWith(searchFailover).withTimeout(SEARCH_TIMEOUT_MS);
 
 /**
  * The nodes the JSON-RPC calls of `setId` go to, best first, as `getReadChain()` routes them: for
@@ -174,7 +226,7 @@ const HIVEMIND_REST_API = 'hivemind-api';
 const getHivemindRestNodes = (): string[] =>
   parseFallbackNodes(isServer ? process.env.REACT_APP_HIVEMIND_REST_NODES : configuredHivemindRestNodes);
 
-const createHivemindRestChain = (nodes: readonly string[]): ReadChain => {
+const createHivemindRestChain = (nodes: readonly string[], { health, routeFor }: TReadFailover): ReadChain => {
   const configFor = (node: string, timeoutMs?: number) => (): IReadClientConfig => {
     const config = getReadClientConfig();
     return {
@@ -187,12 +239,21 @@ const createHivemindRestChain = (nodes: readonly string[]): ReadChain => {
   };
   return wrapChainWithServerFailover(createReadChain(configFor(nodes[0])), {
     fallbackNodes: nodes.slice(1),
-    routeFor: apiSetRouting.routeCall,
-    health: nodeHealth,
+    routeFor,
+    health,
     isTransportError: (error) => error instanceof ReadTransportError,
     isRestApiUnavailable,
     createNodeChain: (node, timeoutMs) => createReadChain(configFor(node, timeoutMs))
   });
+};
+
+const hivemindRestChainWith = (failover: TReadFailover): ReadChain | undefined => {
+  const nodes = getHivemindRestNodes();
+  if (nodes.length === 0) return undefined;
+  if (nodes.every((node) => failover.health.isDown(restApiHealthKey(node, HIVEMIND_REST_API)))) return undefined;
+  return cachedReadChain(hivemindRestChains, failover, nodes.join(' '), () =>
+    createHivemindRestChain(nodes, failover)
+  );
 };
 
 /**
@@ -200,16 +261,12 @@ const createHivemindRestChain = (nodes: readonly string[]): ReadChain => {
  * across them as `getReadChain()` does. `undefined` while none is configured, or while every one
  * is marked down, so that the caller reads over JSON-RPC instead of waiting on dead nodes.
  */
-export const getHivemindRestApi = (): HivemindRestApi | undefined => {
-  const nodes = getHivemindRestNodes();
-  if (nodes.length === 0) return undefined;
-  if (nodes.every((node) => nodeHealth.isDown(restApiHealthKey(node, HIVEMIND_REST_API)))) return undefined;
-  const key = nodes.join(' ');
-  if (hivemindRestChain?.nodes !== key) {
-    hivemindRestChain = { nodes: key, chain: createHivemindRestChain(nodes) };
-  }
-  return hivemindRestChain.chain.restApi[HIVEMIND_REST_API];
-};
+export const getHivemindRestApi = (): HivemindRestApi | undefined =>
+  hivemindRestChainWith(sharedFailover)?.restApi[HIVEMIND_REST_API];
+
+/** `getHivemindRestApi()` for a reader's search, failing over as `getSearchReadChain()` does. */
+export const getSearchHivemindRestApi = (): HivemindRestApi | undefined =>
+  hivemindRestChainWith(searchFailover)?.withTimeout(SEARCH_TIMEOUT_MS).restApi[HIVEMIND_REST_API];
 
 const nodeReadChains = new Map<string, ReadChain>();
 
