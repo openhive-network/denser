@@ -30,8 +30,32 @@ describe('isPublicCacheableRequest', () => {
   });
 
   test('cookies that do not change the render keep it cacheable', () => {
-    for (const name of ['blog_login_challenge_server', 'session_uid', '_ga']) {
+    for (const name of [
+      'blog_login_challenge_server',
+      'wallet_login_challenge',
+      'session_uid',
+      'user_preferred_api_endpoint',
+      '_ga',
+      '_ga_ABC123',
+      '_gid',
+      '__cf_bm',
+      '_cfuvid'
+    ]) {
       assert.equal(isPublicCacheableRequest(anonymousPage({ cookieNames: [name] })), true, name);
+    }
+    assert.equal(isPublicCacheableRequest(anonymousPage({ cookieNames: ['session_uid', '_ga', '__cf_bm'] })), true);
+  });
+
+  test('a cookie outside the allow list makes it not cacheable', () => {
+    for (const name of ['foo', 'session_uid_extra', '_gax', 'login_challenge_server_x']) {
+      assert.equal(isPublicCacheableRequest(anonymousPage({ cookieNames: ['session_uid', name] })), false, name);
+    }
+  });
+
+  test('a request with Authorization is not cacheable', () => {
+    for (const authorization of ['Bearer abc', 'Basic dXNlcjpwYXNz', '']) {
+      const headers = new Headers({ accept: 'text/html', Authorization: authorization });
+      assert.equal(isPublicCacheableRequest(anonymousPage({ headers })), false, authorization);
     }
   });
 
@@ -71,7 +95,31 @@ describe('isPublicCacheableRequest', () => {
       assert.equal(isPublicCacheableRequest(anonymousPage({ pathname })), false, pathname);
     }
     // An account named like the API prefix is a page
+    assert.equal(isPublicCacheableRequest(anonymousPage({ pathname: '/@api' })), true);
     assert.equal(isPublicCacheableRequest(anonymousPage({ pathname: '/apix' })), true);
+  });
+
+  test('the route is decided after the rewrites: /public, /oidc and /.well-known reach API routes', () => {
+    for (const pathname of [
+      '/public/api/oauth/userinfo',
+      '/public/public/api/oauth/userinfo',
+      '/PUBLIC/api/users/me',
+      '/public//api/users/me',
+      '//api/users/me',
+      '/%70ublic/api/oauth/userinfo',
+      '/public/%61pi/oauth/userinfo',
+      '/API/users/me',
+      '/oidc/token',
+      '/public/oidc/userinfo',
+      '/.well-known/openid-configuration',
+      '/public/_next/data/x.json',
+      '/%E0%A4%A'
+    ]) {
+      assert.equal(isPublicCacheableRequest(anonymousPage({ pathname })), false, pathname);
+    }
+    for (const pathname of ['/public/trending', '/public', '/publicity', '/@alice/public']) {
+      assert.equal(isPublicCacheableRequest(anonymousPage({ pathname })), true, pathname);
+    }
   });
 });
 

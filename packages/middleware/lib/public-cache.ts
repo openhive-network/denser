@@ -8,25 +8,41 @@ const DEFAULT_STALE_IF_ERROR_S = 300;
 export const NO_STORE_CACHE_CONTROL = 'private, no-cache, no-store, max-age=0, must-revalidate';
 
 /**
- * Cookies that change what a page renders: the iron-session cookie (`<app>_session`) and OIDC's
- * `_session` cookies, the observer cookies the server reads (`observer`, and `observer-no-own-lists`
- * from @transaction/lib/observer-lists), the signed-in account's `account_info`, the language
- * (`NEXT_LOCALE`) and the user's API node choices (`api-sets`, @ui/config/api-sets). Named here, not
- * imported: the apps' middleware must not load those modules.
+ * Cookies a page render never reads, so a request carrying only these stays public: the login
+ * challenge (`<app>_login_challenge_server`, and the legacy readable `<app>_login_challenge` that
+ * `/api/auth/challenge` clears), the log-correlation `session_uid`, Condenser's
+ * `user_preferred_api_endpoint`, Google Analytics' and Cloudflare's. Any other cookie, the session,
+ * observer, `account_info`, `NEXT_LOCALE` and `api-sets` among them, counts as personalizing.
  */
-const PERSONALIZING_COOKIES = new Set([
-  'observer',
-  'observer-no-own-lists',
-  'account_info',
-  'NEXT_LOCALE',
-  'api-sets'
+const NON_PERSONALIZING_COOKIES = new Set([
+  'session_uid',
+  'user_preferred_api_endpoint',
+  '_gid',
+  '__cf_bm',
+  '_cfuvid',
+  'cf_clearance',
+  '__cflb',
+  '__cfruid'
 ]);
-const SESSION_COOKIE_PATTERN = /_session(?:\.|$)/;
+const NON_PERSONALIZING_COOKIE_PATTERN = /^(?:[A-Za-z0-9_-]*_login_challenge(?:_server)?|_ga(?:_[A-Za-z0-9]+)?|_gat(?:_[A-Za-z0-9]+)?)$/;
+
+const isNonPersonalizingCookie = (name: string): boolean =>
+  NON_PERSONALIZING_COOKIES.has(name) || NON_PERSONALIZING_COOKIE_PATTERN.test(name);
+
+// The apps' `/public/:path*` rewrite (next.config.js) serves a path under `/public` as the path itself.
+const PUBLIC_PREFIX = /^\/public(?=\/|$)/i;
+/**
+ * Path prefixes served by API routes or Next itself, after the `/public` prefix is removed: the
+ * blog rewrites `/oidc/*` and `/.well-known/openid-configuration` to `/api/oidc/*`. Matched without
+ * regard to case: no page is named like them.
+ */
+const NON_PAGE_PREFIXES = /^\/(?:api|oidc|\.well-known|_next)(?:\/|$)/i;
 
 // Requests of the client router: RSC payloads and prefetches, which Next answers differently.
 const RSC_HEADER = 'rsc';
 const ROUTER_HEADER_PREFIX = 'next-router-';
 const RSC_QUERY_PARAM = '_rsc';
+const AUTHORIZATION_HEADER = 'authorization';
 
 export interface PublicCacheConfig {
   /** Seconds a shared cache may serve the page fresh; 0 marks no response public. */
@@ -72,22 +88,38 @@ export interface PageRequest {
 }
 
 /**
+ * The path the apps' rewrites route a request to, decoded and with repeated slashes collapsed; null
+ * for a path that does not decode. A path rewritten to an API route keeps that route's prefix.
+ */
+const resolvedRoute = (pathname: string): string | null => {
+  let path: string;
+  try {
+    path = decodeURIComponent(pathname).replace(/\/{2,}/g, '/');
+  } catch {
+    return null;
+  }
+  while (PUBLIC_PREFIX.test(path)) path = path.replace(PUBLIC_PREFIX, '') || '/';
+  return path;
+};
+
+/**
  * Whether the response to a request may be marked public: a GET or HEAD for a page document (not
- * an API route or a client router request), sent without any cookie that changes the render, so
- * the page renders for the default observer. The status, the response's cookies and the raw
- * URL's `_rsc` are checked once rendered, by `installPublicCacheGuard`.
+ * an API route, also one reached through a rewrite, nor a client router request), sent without
+ * `Authorization` and without any cookie outside the non-personalizing allow list, so the page
+ * renders for the default observer. The status, the response's cookies and the raw URL's `_rsc`
+ * are checked once rendered, by `installPublicCacheGuard`.
  */
 export function isPublicCacheableRequest(request: PageRequest): boolean {
   if (request.method !== 'GET' && request.method !== 'HEAD') return false;
-  if (request.pathname === '/api' || request.pathname.startsWith('/api/')) return false;
-  if (request.pathname.startsWith('/_next/')) return false;
+  const route = resolvedRoute(request.pathname);
+  if (route === null || NON_PAGE_PREFIXES.test(route)) return false;
   // Next removes `_rsc` from the URL the middleware gets, unless __NEXT_NO_MIDDLEWARE_URL_NORMALIZE
   // is set; `installPublicCacheGuard` checks the raw request.
   if (request.searchParams.has(RSC_QUERY_PARAM)) return false;
   for (const name of request.headers.keys()) {
-    if (name === RSC_HEADER || name.startsWith(ROUTER_HEADER_PREFIX)) return false;
+    if (name === AUTHORIZATION_HEADER || name === RSC_HEADER || name.startsWith(ROUTER_HEADER_PREFIX)) return false;
   }
-  return !request.cookieNames.some((name) => PERSONALIZING_COOKIES.has(name) || SESSION_COOKIE_PATTERN.test(name));
+  return request.cookieNames.every(isNonPersonalizingCookie);
 }
 
 // What `publicCacheControl` writes. Static files are sent `public` too (with `max-age`), and their
