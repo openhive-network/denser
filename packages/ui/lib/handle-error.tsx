@@ -17,6 +17,8 @@ import { NotEnoughRcMessage } from '@smart-signer/components/not-enough-rc-messa
 import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-message';
 import { TransactionNotConfirmedMessage } from '@smart-signer/components/transaction-not-confirmed-message';
 import { TransactionExpiredMessage } from '@smart-signer/components/transaction-expired-message';
+import { WrongSafeStoragePasswordMessage } from '@smart-signer/components/wrong-safe-storage-password-message';
+import { findWrongSafeStoragePassword } from '@smart-signer/lib/wrong-safe-storage-password';
 import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
@@ -70,6 +72,17 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     toast({
       description: <SafeStorageMissingMessage />,
       variant: 'default',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // hb-auth refused the safe storage password entered to unlock the key: nothing was signed
+  if (findWrongSafeStoragePassword(error)) {
+    logger.warn('Wrong safe storage password entered in %s', ctx?.method);
+    toast({
+      description: <WrongSafeStoragePasswordMessage />,
+      variant: 'destructive',
       ...toastOptions
     });
     return;

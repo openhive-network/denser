@@ -7,11 +7,16 @@ import { FIXTURE_API_PORT } from '../support/apiStub';
 import { LoginForm } from '../support/pages/loginForm';
 import { STUB_ACCOUNT, STUB_FOLLOWED, startWalletApiStub, stubAccountWith } from '../support/walletApiStub';
 import enSmartSigner from '../../../../../packages/smart-signer/locales/en/smart-signer.json';
+import plSmartSigner from '../../../../../packages/smart-signer/locales/pl/smart-signer.json';
+import enWallet from '../../../locales/en/common_wallet.json';
+import plWallet from '../../../locales/pl/common_wallet.json';
 
 /**
  * Unlocking the safe-storage key at sign time checks it against the account on the node. When that
  * read times out the transfer fails with the translated request-timeout toast, not wax's raw
  * `Request timed out: "POST ..."` text, and without the "may still apply" note: nothing was sent.
+ * A wrong password there fails it with the translated wrong-password toast in the page's language,
+ * not hb-auth's English `Invalid credentials`.
  * The stub node (support/walletApiStub.ts) vouches for the key as sharedPostingActiveKey.spec.ts's
  * does; the broadcast is intercepted.
  */
@@ -82,6 +87,29 @@ const holdFindAccounts = (page: Page) =>
     }
   );
 
+/**
+ * Confirms a 0.001 HIVE transfer, in the page's language whose wallet texts are `wallet`, up to the
+ * password prompt unlocking the key, and resolves with the confirm dialog.
+ */
+async function transferUpToUnlockPrompt(page: Page, loginForm: LoginForm, wallet: typeof enWallet = enWallet) {
+  const { transfers_page: texts } = wallet;
+  const dialog = await openBalanceMenuDialog(
+    page,
+    page.getByTestId('wallet-hive-value').getByRole('button'),
+    wallet.profile.transfer,
+    texts.transfer_to_account
+  );
+  await dialog.locator('input[cmdk-input]').fill('stub-f');
+  await dialog.getByRole('option', { name: new RegExp(`^${STUB_FOLLOWED} \\(`) }).click();
+  await dialog.getByPlaceholder(texts.amount, { exact: true }).fill('0.001');
+  await dialog.getByPlaceholder(texts.memo, { exact: true }).fill('unlock at sign time');
+  await dialog.getByRole('button', { name: texts.next }).click();
+  const confirmDialog = page.getByRole('dialog', { name: texts.confirm_title.transfers });
+  await confirmDialog.getByRole('button', { name: texts.ok }).click();
+  await expect(loginForm.enterYourPasswordForm).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+  return confirmDialog;
+}
+
 test.describe('Safe-storage unlock at sign time', () => {
   test('WALLET-SAFE-STORAGE-UNLOCK-01 — an unlock whose node read times out shows the translated timeout', async ({
     page
@@ -90,21 +118,7 @@ test.describe('Safe-storage unlock at sign time', () => {
     const loginForm = await signInWithSafeStorage(page);
     await page.reload();
 
-    const dialog = await openBalanceMenuDialog(
-      page,
-      page.getByTestId('wallet-hive-value').getByRole('button'),
-      'Transfer',
-      'Transfer To Account'
-    );
-    await dialog.locator('input[cmdk-input]').fill('stub-f');
-    await dialog.getByRole('option', { name: `${STUB_FOLLOWED} (Following)` }).click();
-    await dialog.getByPlaceholder('Amount').fill('0.001');
-    await dialog.getByPlaceholder('Memo').fill('unlock timeout');
-    await dialog.getByRole('button', { name: 'Next' }).click();
-    const confirmDialog = page.getByRole('dialog', { name: 'Confirm Transfer To Account' });
-    await confirmDialog.getByRole('button', { name: 'OK' }).click();
-
-    await expect(loginForm.enterYourPasswordForm).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    const confirmDialog = await transferUpToUnlockPrompt(page, loginForm);
     await holdFindAccounts(page);
     await loginForm.passwordToUnlockKeyInput.fill(SAFE_STORAGE_PASSWORD);
     await loginForm.passwordToUnlockKeySubmitButton.click();
@@ -117,4 +131,29 @@ test.describe('Safe-storage unlock at sign time', () => {
     await expect(confirmDialog).toBeVisible();
     expect(broadcasts.calls).toHaveLength(0);
   });
+
+  for (const { id, locale, wallet, smartSigner } of [
+    { id: 'WALLET-SAFE-STORAGE-UNLOCK-02', locale: 'en', wallet: enWallet, smartSigner: enSmartSigner },
+    { id: 'WALLET-SAFE-STORAGE-UNLOCK-03', locale: 'pl', wallet: plWallet, smartSigner: plSmartSigner }
+  ]) {
+    test(`${id} — a wrong password shows the ${locale} wrong-password message`, async ({ page, context, baseURL }) => {
+      const broadcasts = await installBroadcastInterceptor(page);
+      const loginForm = await signInWithSafeStorage(page);
+      await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, url: baseURL }]);
+      await page.reload();
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+
+      const confirmDialog = await transferUpToUnlockPrompt(page, loginForm, wallet);
+      await loginForm.passwordToUnlockKeyInput.fill(`${SAFE_STORAGE_PASSWORD}-wrong`);
+      await loginForm.passwordToUnlockKeySubmitButton.click();
+
+      await expect(page.getByTestId('wrong-safe-storage-password-message')).toHaveText(
+        smartSigner.broadcast_error.wrong_safe_storage_password,
+        { timeout: UNLOCK_TIMEOUT }
+      );
+      await expect(page.getByText('Invalid credentials')).toHaveCount(0);
+      await expect(confirmDialog).toBeVisible();
+      expect(broadcasts.calls).toHaveLength(0);
+    });
+  }
 });

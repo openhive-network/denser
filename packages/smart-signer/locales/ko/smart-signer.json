@@ -207,7 +207,8 @@
     "superseded_key_write": "다른 탭 때문에 @{{username}}의 {{keyType}} 키를 안전한 저장소에 저장하는 작업이 중단되었습니다. {{keyType}} 키를 안전한 저장소에 다시 추가하세요.",
     "signed_out": "로그아웃된 상태입니다. 로그인한 후 다시 시도해 주세요.",
     "transaction_expired": "트랜잭션이 승인되기 전에 만료되어 아무것도 전송되지 않았습니다. 다시 시도하고 약 1분 이내에 승인하세요.",
-    "transaction_expiration_too_far_ahead": "노드가 트랜잭션의 만료 시간을 거부하여 아무것도 전송되지 않았습니다. 기기의 시계가 정확한지 확인한 후 다시 시도하세요."
+    "transaction_expiration_too_far_ahead": "노드가 트랜잭션의 만료 시간을 거부하여 아무것도 전송되지 않았습니다. 기기의 시계가 정확한지 확인한 후 다시 시도하세요.",
+    "wrong_safe_storage_password": "안전한 저장소 비밀번호가 올바르지 않습니다. 안전한 저장소에 설정한 비밀번호를 입력하고 다시 시도해 주세요."
   },
   "request_error": {
     "timeout": "서버가 제때 응답하지 않았습니다. 다시 시도해 주세요.",
