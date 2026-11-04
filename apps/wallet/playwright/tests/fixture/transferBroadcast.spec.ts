@@ -71,6 +71,9 @@ const fillTransfer = async (dialog: Locator, amount: string, memo: string) => {
 
 const confirmDialog = (page: Page) => page.getByRole('dialog', { name: 'Confirm Transfer To Account' });
 
+/** The confirmation's read-only amount, after its From and To rows. */
+const confirmAmount = (page: Page) => confirmDialog(page).locator('input').nth(2);
+
 /** Answers every block read with no block, as a lagging node does, so WorkerBee's listener expires. */
 const withholdBlocks = (page: Page) =>
   page.route(
@@ -104,6 +107,7 @@ test.describe('Transfer broadcast', () => {
     const broadcasts = await installBroadcastInterceptor(page);
     const dialog = await openTransferDialog(page, 'wallet-hive-value');
     await fillTransfer(dialog, '1.5', MEMO);
+    await expect(confirmAmount(page)).toHaveValue('1.500 HIVE');
     await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
 
     await broadcasts.waitForCount(1);
@@ -120,6 +124,7 @@ test.describe('Transfer broadcast', () => {
     const broadcasts = await installBroadcastInterceptor(page);
     const dialog = await openTransferDialog(page, 'wallet-hive-dallars-value');
     await fillTransfer(dialog, '2.125', HBD_MEMO);
+    await expect(confirmAmount(page)).toHaveValue('2.125 HBD');
     await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
 
     await broadcasts.waitForCount(1);
