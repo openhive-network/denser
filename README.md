@@ -75,8 +75,10 @@ All the options available can be displayed by running `scripts/build_instance.sh
 
 In CI the `docker-build-*` jobs build an image only when its inputs change: each built
 image is also tagged `inputs-<hash>` (`scripts/ci-helpers/image-input-hash.sh`: the
-Dockerfile and build scripts, workspace manifests and lockfile, the app and `packages/`
-without tests, and the build arguments). When that tag exists the job re-tags it for
+Dockerfile, the build scripts and every file it copies or runs, workspace manifests,
+lockfile and patches, the app and `packages/` without tests, and the build arguments;
+`scripts/ci-helpers/image-input-hash.test.js` fails when a file the Dockerfile copies
+is missing from it). When that tag exists the job re-tags it for
 the pipeline instead of building, so a test- or docs-only commit builds nothing. Only
 unprotected branch/MR pipelines reuse: protected refs (`develop`, `main`,
 `dev-deployment`, release tags) always build, since any branch can push an

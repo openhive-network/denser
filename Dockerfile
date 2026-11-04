@@ -52,6 +52,23 @@ WORKDIR /app
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+# The runner's react-env (docker-entrypoint.sh runs it at every start), as the
+# frozen install linked it: its .pnpm directory and those of its dependencies,
+# walked through their symlinks, which stay relative, so the copy needs no
+# registry. Node resolves a package's dependencies from its real path, so a link
+# to the CLI on PATH is enough.
+RUN set -eu; cd node_modules/.pnpm; \
+    todo="$(readlink ../@beam-australia/react-env | sed 's|^\.\./\.pnpm/||; s|/.*||')"; \
+    mkdir -p /opt/react-env/bin; \
+    ln -s "../$todo/node_modules/@beam-australia/react-env/dist/cli.js" /opt/react-env/bin/react-env; \
+    while [ -n "$todo" ]; do \
+      set -- $todo; id="$1"; shift; todo="$*"; \
+      [ -e "/opt/react-env/$id" ] && continue; \
+      cp -a "$id" /opt/react-env/; \
+      todo="$todo $(find "$id/node_modules" -mindepth 1 -maxdepth 2 -type l -exec readlink {} \; | sed 's|^\(\.\./\)*||; s|/.*||')"; \
+      todo="${todo# }"; \
+    done; \
+    test -x /opt/react-env/bin/react-env
 
 # Now copy source and build (this layer changes on code changes)
 COPY --from=builder /app/out/full/ .
@@ -82,12 +99,14 @@ ENV TURBO_APP_NAME=${TURBO_APP_NAME}
 
 WORKDIR /app
 
-# LAYER 1: System deps + global tools (rarely changes - well cached)
-# Use npm (comes with node) instead of pnpm to avoid installing pnpm runtime
+# LAYER 1: System deps (rarely changes - well cached)
 RUN apk add --no-cache tini && \
-    npm install -g @beam-australia/react-env@3.1.1 && \
     addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
+
+# react-env at the version pnpm-lock.yaml pins, from the installer's frozen install
+COPY --from=installer /opt/react-env /opt/react-env
+ENV PATH="/opt/react-env/bin:$PATH"
 
 # LAYER 2: Static entrypoint script (rarely changes)
 COPY --from=builder /app/docker/docker-entrypoint.sh .

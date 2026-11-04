@@ -80,7 +80,7 @@ Apps support deployment at root (`/`) or subdirectory (`/blog`, `/wallet`):
 - Monorepo packages use `workspace:*` protocol
 - External Hive tools use `catalog:hiveio-toolset` (defined in pnpm workspace)
 - `transpilePackages` in next.config includes all workspace packages
-- `neverBuiltDependencies`: `secp256k1`, `core-js` (defined in root package.json)
+- `onlyBuiltDependencies` in root package.json is the allowlist of packages whose install scripts run (none are needed now); `ignoredBuiltDependencies` names the ones deliberately left unbuilt
 
 ### Authentication Flow
 1. HiveAuth worker copied from `@hiveio/hb-auth/dist/worker.js` to `public/auth/`
