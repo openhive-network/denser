@@ -47,8 +47,9 @@ export async function decryptMemoWithProvider(
 
 /**
  * Encrypts `memo` through the Hive MetaMask snap at `snapVersion` and returns a standard Hive memo
- * (see `memo-layout`). A snap before 1.8.0 returns the right ciphertext in a byte layout no other
- * wallet reads, so its output is reordered; a later snap's is returned as it is.
+ * (see `memo-layout`), `#` included. A snap before 1.8.0 returns the right ciphertext in a byte layout
+ * no other wallet reads, so its output is reordered; a later snap's is returned as it is, with the `#`
+ * added when missing.
  */
 export async function encryptMemoWithSnap(
   provider: MemoEncryptionProvider,
@@ -57,7 +58,13 @@ export async function encryptMemoWithSnap(
   memo: string
 ): Promise<string> {
   const encrypted = await encryptMemoWithProvider(provider, toAccountMemoPublicKey, memo);
-  return snapWritesStandardMemoLayout(snapVersion) ? encrypted : toStandardMemoLayout(encrypted);
+  if (!snapWritesStandardMemoLayout(snapVersion)) return toStandardMemoLayout(encrypted);
+  // Snap 1.8.0's `hive_encrypt` returns its bundled wax `encrypt()` (1.28.8), whose
+  // `crypto_memo_dump_string` writes the `#`; wax-signers-metamask passes it through untouched.
+  // The snap's `hive_decrypt` returns no `#`, so a bare ciphertext is not ruled out for later
+  // snaps: add the marker rather than refuse the memo. Whether it is encrypted to the recipient
+  // is still checked by `requireEncryptedMemoFor`.
+  return encrypted.startsWith(ENCRYPTED_MEMO_MARKER) ? encrypted : ENCRYPTED_MEMO_MARKER + encrypted;
 }
 
 /**
