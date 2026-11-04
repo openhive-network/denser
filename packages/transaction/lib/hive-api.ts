@@ -1,6 +1,5 @@
 import {
   AccountFollowStats,
-  AccountProfile,
   FullAccount,
   Entry,
   HivemindRestPostVote,
@@ -23,6 +22,7 @@ import {
   type IManabarValue
 } from './manabar-math';
 import { DATA_LIMIT } from './bridge-api';
+import { readAccountProfile } from './profile-metadata';
 import { getLogger } from '@ui/lib/logging';
 import { getLiteFollowCount, getLiteFollowers, getLiteFollowing } from './lite-social-api';
 
@@ -260,30 +260,7 @@ export const getAccounts = async (usernames: string[]): Promise<FullAccount[]> =
       __loaded: true
     };
 
-    let profile: AccountProfile | undefined;
-
-    try {
-      profile = JSON.parse(x.posting_json_metadata!).profile;
-    } catch (e) {}
-
-    if (!profile) {
-      try {
-        profile = JSON.parse(x.json_metadata!).profile;
-      } catch (e) {}
-    }
-
-    if (!profile) {
-      profile = {
-        about: '',
-        cover_image: '',
-        location: '',
-        name: '',
-        profile_image: '',
-        website: ''
-      };
-    }
-
-    return { ...account, profile };
+    return { ...account, profile: readAccountProfile(x.posting_json_metadata, x.json_metadata) };
   });
 };
 
