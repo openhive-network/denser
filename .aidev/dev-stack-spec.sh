@@ -35,12 +35,15 @@ in_stack() {
         -v "$checkout:/work" -w /work/apps/blog "$image" "$@"
 }
 
+# Empty for a stack started before the proxy had a token; that proxy needs none.
+token="$(DENSER_DEV_STACK_PROJECT="$project" .aidev/dev-stack-token.sh 2> /dev/null || true)"
+
 control() { # METHOD PATH [BODY]
     in_stack node -e '
-const [m, p, b] = process.argv.slice(1);
-fetch("http://127.0.0.1:8200" + p, { method: m, body: b || undefined })
+const [token, m, p, b] = process.argv.slice(1);
+fetch("http://127.0.0.1:8200" + p, { method: m, body: b || undefined, headers: token ? { "x-aidev-fixture-token": token } : {} })
   .then(async (r) => { const t = await r.text(); console.log(t); process.exit(r.ok ? 0 : 1); }, (e) => { console.error(String(e)); process.exit(1); });
-' "$@"
+' "$token" "$@"
 }
 
 before="$(control GET /__aidev/status)"

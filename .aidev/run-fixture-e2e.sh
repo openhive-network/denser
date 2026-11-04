@@ -21,7 +21,8 @@
 # suite's container. That relay exists, opt-in and off by default:
 #
 #   DENSER_FIXTURE_VIA_STACK=1 with .aidev/test-stack.compose.yml's `fixture-relay`
-#   profile up — the stack's `blog` serves the build, its `fixture-proxy` relays
+#   profile up, both given the same DENSER_FIXTURE_PROXY_TOKEN (the stack proxy's
+#   control token, fixture-proxy-serve.mjs) — the stack's `blog` serves the build, its `fixture-proxy` relays
 #   the server side's API calls to this container's workers, and the browser
 #   reaches the blog as localhost:3000 (the seeder's cookie domain,
 #   fixture-auth/seeder.ts:49) through a forwarder. Measured equal to the
@@ -265,6 +266,10 @@ fi
 
 # ---- opt-in: against the test stack's `fixture-relay` services ----------------
 
+[ -n "${DENSER_FIXTURE_PROXY_TOKEN:-}" ] || {
+    run_with_junit_fallback "$junit" fixture_e2e sh -c 'echo "DENSER_FIXTURE_VIA_STACK=1 needs DENSER_FIXTURE_PROXY_TOKEN, the token the fixture-relay profile was started with"; exit 1'
+    exit 1
+}
 node -e "fetch('http://fixture-proxy:8200/__aidev/status').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))" < /dev/null || {
     run_with_junit_fallback "$junit" fixture_e2e sh -c 'echo "DENSER_FIXTURE_VIA_STACK=1 but the test stack fixture-proxy is unreachable (is the fixture-relay profile up?)"; exit 1'
     exit 1
@@ -277,7 +282,7 @@ node .aidev/fixture-proxy-serve.mjs forward 3000 blog:3000 < /dev/null &
 forwarder=$!
 cleanup() {
     kill "$forwarder" 2> /dev/null || true
-    node -e "fetch('http://fixture-proxy:8200/__aidev/upstream',{method:'DELETE'}).catch(()=>{})" < /dev/null || true
+    node -e "fetch('http://fixture-proxy:8200/__aidev/upstream',{method:'DELETE',headers:{'x-aidev-fixture-token':process.env.DENSER_FIXTURE_PROXY_TOKEN}}).catch(()=>{})" < /dev/null || true
 }
 trap cleanup EXIT
 
@@ -296,7 +301,10 @@ const start = Date.now();
     await new Promise((r) => setTimeout(r, 1000));
   }
   recordTimedAction("fixture-stack-blog-ready", Date.now() - start, defaultMs);
-  const r = await fetch("http://fixture-proxy:8200/__aidev/upstream?port=8200", { method: "POST" });
+  const r = await fetch("http://fixture-proxy:8200/__aidev/upstream?port=8200", {
+    method: "POST",
+    headers: { "x-aidev-fixture-token": process.env.DENSER_FIXTURE_PROXY_TOKEN },
+  });
   console.error("fixture_e2e: stack proxy", await r.text());
   process.exit(r.ok ? 0 : 1);
 })();

@@ -46,7 +46,7 @@ When the prompt has a **Live dev stack** section, a blog built from *your worktr
   `.aidev/dev-stack-spec.sh playwright/tests/fixture/postDetail.spec.ts -g ANON-POST-07 --retries=0`
   The path is relative to `apps/blog`. Check interactive (in-browser) behaviour with fixture data this way.
 - **Open it in a browser**: browser checks against `$DENSER_DEV_BLOG_URL` work; the page hydrates and makes its client API calls (`allowedDevOrigins` admits `127.0.0.1`). With fixture data those calls go to `http://localhost:8200`, the proxy only inside the stack's network, so in-page data from a host browser needs a stack in live mode (`DENSER_DEV_API_ENDPOINT`, see `.aidev/README.md`).
-- **Switch which recording the stack serves**: `curl -s -X PUT "$DENSER_DEV_FIXTURE_URL/__aidev/fixture-set/<name>"`, where `<name>` is a directory of `apps/blog/playwright/tests/mock/fixtures/`.
+- **Switch which recording the stack serves**: `curl -s -X PUT -H "x-aidev-fixture-token: $(.aidev/dev-stack-token.sh)" "$DENSER_DEV_FIXTURE_URL/__aidev/fixture-set/<name>"`, where `<name>` is a directory of `apps/blog/playwright/tests/mock/fixtures/`.
 - Readiness: `aidev project devstack status --name "$AIDEV_DEV_STACK_NAME"`.
 
 The dev stack is for fast feedback; `next dev` is not the production build. The verdict comes from the `full` slot. If there's no Live dev stack section, work without it.

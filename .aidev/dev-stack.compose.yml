@@ -73,8 +73,11 @@ services:
     restart: "no"
 
   # Installs node_modules (once per lockfile), then serves the recording named by
-  # FIXTURE_SET on :8200. Switch recordings with
-  #   curl -X PUT http://127.0.0.1:$AIDEV_PORT_FIXTURE/__aidev/fixture-set/<name>
+  # FIXTURE_SET on :8200. Its control requests need the token it generates at
+  # start, kept in the container at AIDEV_FIXTURE_TOKEN_FILE (.aidev/dev-stack-token.sh
+  # prints it). Switch recordings with
+  #   curl -X PUT -H "x-aidev-fixture-token: $(.aidev/dev-stack-token.sh)" \
+  #     http://127.0.0.1:$AIDEV_PORT_FIXTURE/__aidev/fixture-set/<name>
   fixture-proxy:
     image: *image
     user: *user
@@ -84,6 +87,7 @@ services:
       - *checkout
     environment:
       FIXTURE_SET: ${DENSER_DEV_FIXTURE_SET:-ssrChecks}
+      AIDEV_FIXTURE_TOKEN_FILE: /tmp/aidev-fixture-token
     command:
       - bash
       - -c
