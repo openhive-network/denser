@@ -20,7 +20,7 @@ export default function TimelineError({
 
   return (
     <ServiceUnavailable>
-      <ServiceUnavailableRetry reset={reset} />
+      <ServiceUnavailableRetry error={error} reset={reset} />
     </ServiceUnavailable>
   );
 }

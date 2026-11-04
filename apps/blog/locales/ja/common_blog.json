@@ -12,6 +12,7 @@
     "indexing_timeout": "投稿のインデックス作成がタイムアウトしました。投稿はまもなく表示される可能性があります。ページを再読み込みしてみてください。",
     "reload_page": "ページを再読み込み",
     "reconnecting": "再接続中…",
+    "could_not_load": "このページを読み込めませんでした。しばらくしてから再読み込みしてください。",
     "something_went_wrong": "問題が発生しました",
     "unavailable_for_legal_reasons": "法的な理由により利用できません",
     "time_ago": {

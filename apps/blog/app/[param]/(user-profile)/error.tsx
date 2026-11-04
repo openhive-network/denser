@@ -15,5 +15,5 @@ export default function ProfileError({
     handleError(error, { method: 'ProfileErrorBoundary', params: { digest: error.digest } });
   }, [error]);
 
-  return <ProfileLoadError reset={reset} />;
+  return <ProfileLoadError error={error} reset={reset} />;
 }

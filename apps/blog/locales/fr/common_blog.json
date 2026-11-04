@@ -12,6 +12,7 @@
     "indexing_timeout": "Le délai d'indexation de l'article a expiré. Votre article peut encore apparaître sous peu — essayez de recharger la page.",
     "reload_page": "Recharger la page",
     "reconnecting": "Reconnexion…",
+    "could_not_load": "Impossible de charger cette page. Réessayez de la recharger dans un moment.",
     "something_went_wrong": "Une erreur s'est produite",
     "unavailable_for_legal_reasons": "Indisponible pour des raisons légales",
     "time_ago": {

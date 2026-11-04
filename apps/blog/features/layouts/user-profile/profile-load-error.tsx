@@ -10,7 +10,7 @@ import ServiceUnavailableRetry from '@/blog/components/service-unavailable-retry
  * Error boundary content of a profile page whose server render failed. A nonexistent account is a
  * `notFound()` and never lands here, so this says the profile could not be loaded and retries.
  */
-export default function ProfileLoadError({ reset }: { reset: () => void }) {
+export default function ProfileLoadError({ error, reset }: { error: unknown; reset: () => void }) {
   const router = useRouter();
   const { t } = useTranslation('common_blog');
   const goHome = useCallback(() => router.push('/'), [router]);
@@ -20,7 +20,7 @@ export default function ProfileLoadError({ reset }: { reset: () => void }) {
       <h3 className="text-xl font-bold">{t('user_profile.load_failed_title')}</h3>
       <p className="text-muted-foreground">{t('user_profile.load_failed_description')}</p>
       <div className="flex flex-col items-center gap-2">
-        <ServiceUnavailableRetry reset={reset} />
+        <ServiceUnavailableRetry error={error} reset={reset} />
         <Button variant="outline" onClick={goHome}>
           {t('user_profile.go_home')}
         </Button>

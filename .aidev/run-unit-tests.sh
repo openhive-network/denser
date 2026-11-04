@@ -173,7 +173,9 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/lib/fyp-api.test.ts \
     apps/blog/lib/cut-body.test.ts \
     apps/blog/lib/matrix-login-token-route.test.ts \
+    apps/blog/lib/service-unavailable.test.ts \
     apps/blog/components/hooks/use-chat-token-request.test.ts \
+    apps/blog/components/hooks/use-auto-retry.test.ts \
     apps/blog/features/layouts/user-profile/lib/social-links.test.ts \
     apps/blog/features/activity-log/lib/merge-notifications.test.ts \
     apps/blog/features/activity-log/lib/notification-source.test.ts \

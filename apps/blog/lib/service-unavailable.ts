@@ -4,6 +4,7 @@ import type { OutgoingHttpHeaders, ServerResponse } from 'node:http';
 export const RETRY_AFTER_SECONDS = 30;
 
 const SERVICE_UNAVAILABLE_ERROR_NAME = 'ServiceUnavailableError';
+const SERVICE_UNAVAILABLE_DIGEST_PREFIX = 'HIVE_SERVICE_UNAVAILABLE;';
 
 /**
  * Thrown by a server component when the data its page must render could not be fetched from any
@@ -11,18 +12,33 @@ const SERVICE_UNAVAILABLE_ERROR_NAME = 'ServiceUnavailableError';
  * not index it) instead of a 200 without content, or Next's generic 500.
  */
 export class ServiceUnavailableError extends Error {
+  /**
+   * In production Next replaces a server error's name and message before it reaches the client
+   * error boundary, but keeps a digest the thrown error already carries. The prefix lets the
+   * boundary recognise this error; the random part keeps each one's digest distinct, as Next keys
+   * the errors of a render by digest.
+   */
+  readonly digest: string;
+
   constructor(cause: unknown) {
     super('Hive API unavailable', { cause });
     this.name = SERVICE_UNAVAILABLE_ERROR_NAME;
+    this.digest = `${SERVICE_UNAVAILABLE_DIGEST_PREFIX}${crypto.randomUUID()}`;
   }
 }
 
-const isServiceUnavailableError = (error: unknown): boolean =>
+/**
+ * Whether `error` is a `ServiceUnavailableError`: the error itself on the server, or what a client
+ * error boundary receives for one (recognised by its digest).
+ */
+export const isServiceUnavailableError = (error: unknown): boolean =>
   error instanceof ServiceUnavailableError ||
   (typeof error === 'object' &&
     error !== null &&
-    'name' in error &&
-    error.name === SERVICE_UNAVAILABLE_ERROR_NAME);
+    (('name' in error && error.name === SERVICE_UNAVAILABLE_ERROR_NAME) ||
+      ('digest' in error &&
+        typeof error.digest === 'string' &&
+        error.digest.startsWith(SERVICE_UNAVAILABLE_DIGEST_PREFIX))));
 
 // Keyed by the request's headers object: it is the only per-request object that Next hands both to
 // `onRequestError` and (as `response.req.headers`) to the response.

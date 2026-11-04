@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-/** Delay before each automatic attempt; the last one repeats until the schedule stops. */
-const RETRY_DELAYS_MS = [2_000, 5_000, 10_000, 30_000];
+/** Delay before each automatic attempt; once all of them have been made, the schedule stops. */
+const RETRY_DELAYS_MS = [2_000, 5_000, 10_000, 30_000, 30_000, 30_000];
 
 /**
  * How long the schedule's position outlives an unmount. A route error boundary remounts its error
@@ -15,16 +15,19 @@ const RESUME_GRACE_MS = 1_000;
 let carriedAttempts = 0;
 let dropCarriedAttempts: ReturnType<typeof setTimeout> | undefined;
 
-const delayForAttempt = (attempt: number): number =>
-  RETRY_DELAYS_MS[Math.min(attempt, RETRY_DELAYS_MS.length - 1)];
+const isExhausted = (): boolean => carriedAttempts >= RETRY_DELAYS_MS.length;
 
 /**
- * Calls `retry` on a backoff schedule (2 s, 5 s, 10 s, then every 30 s) while the calling component
- * stays mounted. An attempt that comes due while the tab is hidden waits until the tab is visible.
- * A remount right after an unmount resumes the schedule rather than restarting it.
+ * Calls `retry` on a backoff schedule (2 s, 5 s, 10 s, then three times every 30 s) while the
+ * calling component stays mounted, and then stops. An attempt that comes due while the tab is
+ * hidden waits until the tab is visible. A remount right after an unmount resumes the schedule
+ * rather than restarting it, so a component remounted after the last attempt does not retry.
+ *
+ * Returns `exhausted`: true once every automatic attempt has been made.
  */
-export function useAutoRetry(retry: () => void): void {
+export function useAutoRetry(retry: () => void): { exhausted: boolean } {
   const retryRef = useRef(retry);
+  const [exhausted, setExhausted] = useState(isExhausted);
   useEffect(() => {
     retryRef.current = retry;
   }, [retry]);
@@ -34,12 +37,16 @@ export function useAutoRetry(retry: () => void): void {
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     const schedule = () => {
-      timer = setTimeout(attemptWhenVisible, delayForAttempt(carriedAttempts));
+      timer = setTimeout(attemptWhenVisible, RETRY_DELAYS_MS[carriedAttempts]);
     };
     const attemptNow = () => {
       carriedAttempts += 1;
       retryRef.current();
-      schedule();
+      if (isExhausted()) {
+        setExhausted(true);
+      } else {
+        schedule();
+      }
     };
     const onVisibilityChange = () => {
       if (document.hidden) return;
@@ -54,7 +61,7 @@ export function useAutoRetry(retry: () => void): void {
       }
     }
 
-    schedule();
+    if (!isExhausted()) schedule();
     return () => {
       clearTimeout(timer);
       document.removeEventListener('visibilitychange', onVisibilityChange);
@@ -63,4 +70,6 @@ export function useAutoRetry(retry: () => void): void {
       }, RESUME_GRACE_MS);
     };
   }, []);
+
+  return { exhausted };
 }
