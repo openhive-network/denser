@@ -24,6 +24,7 @@ import { LoginType } from '@smart-signer/types/common';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useUnansweredRequest } from '@/wallet/components/hooks/use-unanswered-request';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { NATIVE_MEMO_SIGNER_NAME } from '@/wallet/lib/native-memo-signer-name';
 import { getLogger } from '@ui/lib/logging';
 import { isUserCancelled } from '@ui/lib/user-cancelled';
 
@@ -34,13 +35,6 @@ const NATIVE_SIGNER_DECODE_LABEL_KEY: Partial<Record<LoginType, string>> = {
   [LoginType.keychain]: 'transfers_page.decode_memo_with_keychain',
   [LoginType.peakvault]: 'transfers_page.decode_memo_with_peakvault',
   [LoginType.metamask]: 'transfers_page.decode_memo_with_metamask'
-};
-
-// Brand names, not translated.
-const NATIVE_SIGNER_WALLET_NAME: Partial<Record<LoginType, string>> = {
-  [LoginType.keychain]: 'Hive Keychain',
-  [LoginType.peakvault]: 'Peak Vault',
-  [LoginType.metamask]: 'MetaMask'
 };
 
 type DecodeKind = 'native' | 'key';
@@ -91,7 +85,7 @@ const DecodeMemoDialog = ({ username, encodedMemo }: DecodeMemoDialogProps) => {
   // extension answers a request it dropped for a newer one, and a closed dialog's request may
   // be answered after it was reopened.
   const requestIdRef = useRef(0);
-  const walletName = NATIVE_SIGNER_WALLET_NAME[user.loginType];
+  const walletName = NATIVE_MEMO_SIGNER_NAME[user.loginType];
   // Named in the description only while its decode button is offered.
   const offeredWalletName = nativeSigner ? walletName : undefined;
   const nativeUnanswered = useUnansweredRequest(pending?.kind === 'native' ? pending.requestId : null);

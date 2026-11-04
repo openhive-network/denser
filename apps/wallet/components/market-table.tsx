@@ -3,7 +3,7 @@
 import { Button } from '@hive/ui';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { dateToRelative } from '@ui/lib/parse-date';
+import TimeAgo from '@ui/components/time-ago';
 import Big from 'big.js';
 import { useTranslation } from '@/wallet/i18n/client';
 import { NaiAsset } from '@hiveio/wax';
@@ -171,7 +171,7 @@ export function HistoryTable({ data, params, label }: { data: any[]; params: str
           <tbody data-testid={`${testIdPrefix}-tbody`}>
             {data.slice(sliceFrom, sliceTo).map((e: TradeHistory, index: number) => (
               <tr className="even:bg-background-tertiary" key={`${e.date}-${index}`} data-testid={`${testIdPrefix}-row-${index}`}>
-                <td title={e.date.replace('T', ' ')} data-testid={`${testIdPrefix}-row-${index}-date`}>{dateToRelative(e.date, t)}</td>
+                <td title={e.date.replace('T', ' ')} data-testid={`${testIdPrefix}-row-${index}-date`}><TimeAgo date={e.date} /></td>
                 <td
                   className={clsx({
                     'text-destructive': !isHbd(e.current_pays),
