@@ -31,7 +31,7 @@ const PopoverCardData = ({ author, blacklist, authorReputation }: PopoverCardDat
   const { data: account, isPending } = useAccountQuery(author);
   const following = useFollowingInfiniteQuery(user.username || '', 1000, 'blog', ['blog']);
   const mute = useFollowingInfiniteQuery(user.username, 1000, 'ignore', ['ignore']);
-  const about = account?.profile?.about ?? null;
+  const about = typeof account?.profile?.about === 'string' ? account.profile.about : null;
   const { data: dynamicData } = useDynamicGlobalData();
   const delegated_hive =
     dynamicData && account
