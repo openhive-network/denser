@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useId, useReducer, useState } from 'react';
+import { useCallback, useEffect, useId, useReducer, useRef, useState } from 'react';
 import { Button } from '@ui/components/button';
 import clsx from 'clsx';
 import { convertStringToBig, formatNaiAsset } from '@ui/lib/helpers';
@@ -31,6 +31,9 @@ export default function BuyOrSellForm({
     total: ''
   });
   const [dialogOpen, setDialogOpen] = useState(false);
+  // The ref blocks clicks that land before the re-render disabling OK.
+  const submittingRef = useRef(false);
+  const [submitting, setSubmitting] = useState(false);
   const { user } = useUserClient();
   const createBuyOrderMutation = useCreateMarketOrder();
   const { data: accountData } = useQuery({
@@ -48,25 +51,33 @@ export default function BuyOrSellForm({
   }, [price]);
 
   const submitOrder = useCallback(async () => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    setSubmitting(true);
     const DEFAULT_EXPIRE = new Date(Math.floor(Date.now() / 1000 + 60 * 60 * 24 * 27) * 1000)
       .toISOString()
       .split('.')[0];
-    const hbd = await getAsset(state.total, 'HBD');
-    const hive = await getAsset(state.amount, 'HIVE');
-    const params = {
-      owner: user.username,
-      amountToSell: transaction === 'buy' ? hbd : hive,
-      minToReceive: transaction === 'buy' ? hive : hbd,
-      orderId: Math.floor(Date.now() / 1000),
-      fillOrKill: false,
-      expiration: DEFAULT_EXPIRE
-    };
+    const orderId = Math.floor(Date.now() / 1000);
 
     try {
-      await createBuyOrderMutation.mutateAsync(params);
+      const hbd = await getAsset(state.total, 'HBD');
+      const hive = await getAsset(state.amount, 'HIVE');
+      await createBuyOrderMutation.mutateAsync({
+        owner: user.username,
+        amountToSell: transaction === 'buy' ? hbd : hive,
+        minToReceive: transaction === 'buy' ? hive : hbd,
+        orderId,
+        fillOrKill: false,
+        expiration: DEFAULT_EXPIRE
+      });
     } catch (error) {
-      handleError(error, { method: 'limit_order_create', params });
+      handleError(error, {
+        method: 'limit_order_create',
+        params: { owner: user.username, amount: state.amount, total: state.total, orderId }
+      });
     } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
       setDialogOpen(false);
       queryClient.invalidateQueries({ queryKey: ['openOrders', user.username] });
     }
@@ -173,7 +184,7 @@ export default function BuyOrSellForm({
               rate: `${state.price}/HIVE`
             })}
             <DialogFooter className="flex w-full items-center justify-between!">
-              <Button onClick={submitOrder} data-testid={`${testIdPrefix}-dialog-ok`}>{t('market_page.ok')}</Button>
+              <Button onClick={submitOrder} disabled={submitting} data-testid={`${testIdPrefix}-dialog-ok`}>{t('market_page.ok')}</Button>
               <Button variant="secondary" onClick={() => setDialogOpen(false)} data-testid={`${testIdPrefix}-dialog-close`}>
                 {t('market_page.close')}
               </Button>
