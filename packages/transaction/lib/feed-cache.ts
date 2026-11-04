@@ -1,14 +1,17 @@
+import type { CacheBudget } from './cache-budget';
 import { StaleWhileRevalidateCache } from './stale-while-revalidate-cache';
 
 const DEFAULT_TTL_S = 30;
 const DEFAULT_STALE_S = 30;
 const DEFAULT_MAX_MB = 32;
 const BYTES_PER_MB = 1024 * 1024;
+const utf8 = new TextEncoder();
 
 export interface IFeedCacheConfig {
   /** 0 turns the cache off. */
   ttlMs: number;
   staleMs: number;
+  /** Shared by every cache of the process: the size of their `CacheBudget`. */
   maxBytes: number;
 }
 
@@ -21,7 +24,7 @@ const parseNonNegative = (value: string | undefined, fallback: number): number =
 /**
  * Reads the feed cache settings: `DENSER_FEED_CACHE_TTL_S` (fresh, default 30, 0 = off),
  * `DENSER_FEED_CACHE_STALE_S` (served stale while reloading, past the TTL, default 30) and
- * `DENSER_FEED_CACHE_MAX_MB` (memory cap, default 32). Invalid values fall back to the default.
+ * `DENSER_FEED_CACHE_MAX_MB` (memory cap of all the caches together, default 32). Invalid values fall back to the default.
  */
 export function readFeedCacheConfig(env: Record<string, string | undefined>): IFeedCacheConfig {
   return {
@@ -50,6 +53,8 @@ export function feedCacheKey(request: IFeedRequest): string {
 
 export interface IFeedCacheOptions {
   config: IFeedCacheConfig;
+  /** One per process, of `config.maxBytes`, shared by every cache: entries are sized in UTF-8 bytes of their JSON. */
+  budget: CacheBudget;
   /**
    * The default observer: sent by anonymous requests and by accounts without mute or blacklist
    * lists of their own (see `getEffectiveObserver`). Requests for any other observer are never cached.
@@ -90,9 +95,8 @@ export function createAnonymousReadCache<R extends IObservedRequest, T>(
   const cache = new StaleWhileRevalidateCache<T>({
     freshMs: config.ttlMs,
     staleMs: config.staleMs,
-    maxSize: config.maxBytes,
-    // UTF-16 code units, close enough to the retained size for a memory cap.
-    sizeOf: (value) => JSON.stringify(value)?.length ?? 0,
+    budget: options.budget,
+    sizeOf: (value) => utf8.encode(JSON.stringify(value) ?? '').byteLength,
     cacheIf: options.cacheIf,
     onRevalidateError: options.onRevalidateError,
     now: options.now
