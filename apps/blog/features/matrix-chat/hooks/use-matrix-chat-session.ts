@@ -12,6 +12,7 @@ import { getLogger } from '@ui/lib/logging';
 import { takeSignOut } from '@smart-signer/lib/auth/chat-sign-out';
 import { requestMatrixLoginToken } from '@/blog/lib/fetch-matrix-login-token';
 import type { ChatSession } from '@/blog/features/matrix-chat/lib/chat-view-types';
+import type { LoginTokenAnswer } from '@/blog/features/matrix-chat/lib/matrix-chat-sign-in';
 import { chatDeviceId } from '@/blog/features/matrix-chat/lib/device-id';
 import {
   afterSignOutByHomeserver,
@@ -29,6 +30,8 @@ export type ChatSessionStatus = 'idle' | 'starting' | 'ready' | 'failed';
 interface ChatSessionState {
   status: ChatSessionStatus;
   session: ChatSession | null;
+  /** A failed sign-in whose last login token was asked for without creating the account */
+  failedWithoutCreating?: boolean;
 }
 
 interface MatrixChatSessionOptions {
@@ -36,11 +39,14 @@ interface MatrixChatSessionOptions {
   userId: string;
   /** Sign in now: the drawer was warmed up or opened */
   start: boolean;
+  /** The drawer was opened, so a login token may create the user's missing Matrix account */
+  createAccount: boolean;
   homeserverUrl: string;
   defaultRoom: string;
 }
 
-interface OpenSessionOptions extends Omit<MatrixChatSessionOptions, 'start'> {
+interface OpenSessionOptions extends Omit<MatrixChatSessionOptions, 'start' | 'createAccount'> {
+  requestLoginToken: () => Promise<LoginTokenAnswer>;
   onLoggedOut: () => void;
   signal: AbortSignal;
 }
@@ -56,14 +62,14 @@ function inTurn<T>(task: () => Promise<T>): Promise<T> {
   return run;
 }
 
-function openSession({ userId, homeserverUrl, defaultRoom, onLoggedOut, signal }: OpenSessionOptions) {
+function openSession({ userId, homeserverUrl, defaultRoom, requestLoginToken, onLoggedOut, signal }: OpenSessionOptions) {
   // The SDK's chunk loads while the stored session is read or denser's server mints a login token
   const sdk = import('@/blog/features/matrix-chat/lib/matrix-chat-session');
   const common = { homeserverUrl, defaultRoom, logger: matrixSdkLogger, onLoggedOut };
   return signInToMatrixChat({
     userId,
     store: browserMatrixSessionStore,
-    requestLoginToken: requestMatrixLoginToken,
+    requestLoginToken,
     logIn: async (loginToken) =>
       (await sdk).startMatrixChatSession({ ...common, userId, loginToken, deviceId: chatDeviceId(userId) }),
     resume: async (credentials) => (await sdk).resumeMatrixChatSession({ ...common, credentials }),
@@ -83,13 +89,23 @@ function openSession({ userId, homeserverUrl, defaultRoom, onLoggedOut, signal }
  * else it signs in again with a newly minted login token, once until `retry` or another user.
  * A homeserver it cannot reach is tried again with backoff, the status staying `starting`, and
  * `retry` after a failure starts the sign-in over, backoff included.
+ *
+ * Only once `createAccount` is set does a login token create the user's missing Matrix account
+ * (and join the default room): a warm-up signs in only a user who has one, and a warm-up that
+ * failed without creating it signs in again when `createAccount` is set.
  */
 export function useMatrixChatSession(options: MatrixChatSessionOptions) {
-  const { userId, start, homeserverUrl, defaultRoom } = options;
+  const { userId, start, createAccount, homeserverUrl, defaultRoom } = options;
   const [state, setState] = useState<ChatSessionState>(IDLE);
   const [attempt, setAttempt] = useState(0);
   // Whether the session was signed in again after the homeserver signed one out, which happens once
   const mintedAgain = useRef(false);
+  // Read when a login token is asked for, so opening the drawer does not restart a sign-in
+  const createAccountRef = useRef(createAccount);
+
+  useEffect(() => {
+    createAccountRef.current = createAccount;
+  }, [createAccount]);
 
   useEffect(() => {
     mintedAgain.current = false;
@@ -101,6 +117,11 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
     takeSignOut();
     let current = true;
     let started: StartedChatSession | null = null;
+    let askedWithoutCreating = false;
+    const requestLoginToken = () => {
+      askedWithoutCreating = !createAccountRef.current;
+      return requestMatrixLoginToken(createAccountRef.current);
+    };
     const aborted = new AbortController();
     const onLoggedOut = () => {
       if (!started) return;
@@ -116,7 +137,7 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
     };
     setState({ status: 'starting', session: null });
     const opening = inTurn(() =>
-      openSession({ userId, homeserverUrl, defaultRoom, onLoggedOut, signal: aborted.signal })
+      openSession({ userId, homeserverUrl, defaultRoom, requestLoginToken, onLoggedOut, signal: aborted.signal })
     );
     opening.then(
       (opened) => {
@@ -126,7 +147,7 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
       (error: unknown) => {
         if (aborted.signal.aborted) return;
         logger.error(error, 'The Matrix chat could not sign in');
-        if (current) setState({ status: 'failed', session: null });
+        if (current) setState({ status: 'failed', session: null, failedWithoutCreating: askedWithoutCreating });
       }
     );
     return () => {
@@ -144,9 +165,14 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
     };
   }, [userId, start, homeserverUrl, defaultRoom, attempt]);
 
+  const { status, failedWithoutCreating } = state;
+  useEffect(() => {
+    if (createAccount && status === 'failed' && failedWithoutCreating) setAttempt((count) => count + 1);
+  }, [createAccount, status, failedWithoutCreating]);
+
   const retry = useCallback(() => {
     mintedAgain.current = false;
     setAttempt((count) => count + 1);
   }, []);
-  return { ...state, retry };
+  return { status, session: state.session, retry };
 }

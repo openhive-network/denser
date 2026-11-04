@@ -16,7 +16,8 @@ const MatrixChatPanel = dynamic(() => import('@/blog/features/matrix-chat/compon
  * denser's own Matrix client in the chat drawer. Its code, matrix-js-sdk with no crypto, loads
  * when the drawer warms up (`siteConfig.matrixChat.preload`, as Element's iframe does) or opens;
  * it then signs the user in with a login token denser's server mints and syncs, so the chat
- * button shows the unread count. The rooms and timeline render on the first opening.
+ * button shows the unread count. The rooms and timeline render on the first opening. Only the
+ * first opening may create the user's Matrix account: a warm-up signs in an existing one only.
  *
  * Sign-out, an account switch or the end of denser's session ends the Matrix session: the client
  * stops and its device is signed out. Element stays available as the full chat app.
@@ -33,6 +34,7 @@ const MatrixNativeChatWidget = () => {
   const { status, session, retry } = useMatrixChatSession({
     userId: chatUser ? matrixUserId(chatUser, matrix) : '',
     start: warmUp.warm,
+    createAccount: opened,
     homeserverUrl: matrix.homeserverUrl,
     defaultRoom: matrix.defaultRoom
   });

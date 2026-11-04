@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import { fetchMatrixLoginToken } from '@/blog/lib/fetch-matrix-login-token';
 
 // The session page's protocol (stack/matrix/chat-origin/denser-session.html)
@@ -17,13 +17,20 @@ function isLoginTokenRequest(data: unknown): data is { type: string; user: strin
 /**
  * Answers the session page in `frameRef` when it asks for a login token for `userId`, posting it
  * to `elementOrigin` only, so the token never travels in a URL. A request from another window or
- * origin is ignored; one for another user, or a failed mint, is answered with none.
+ * origin is ignored; one for another user, or a failed mint, is answered with none. The mint
+ * creates a missing Matrix account only while `drawerOpen`, not for a warm-up.
  */
 export function useMatrixLoginTokenAnswer(
   frameRef: RefObject<HTMLIFrameElement | null>,
   elementOrigin: string | undefined,
-  userId: string
+  userId: string,
+  drawerOpen: boolean
 ): void {
+  const drawerOpenRef = useRef(drawerOpen);
+  useEffect(() => {
+    drawerOpenRef.current = drawerOpen;
+  }, [drawerOpen]);
+
   useEffect(() => {
     if (!elementOrigin || !userId) return;
     const onMessage = async (event: MessageEvent) => {
@@ -31,7 +38,7 @@ export function useMatrixLoginTokenAnswer(
       if (!frame || event.source !== frame || event.origin !== elementOrigin || !isLoginTokenRequest(event.data)) {
         return;
       }
-      const loginToken = event.data.user === userId ? await fetchMatrixLoginToken() : null;
+      const loginToken = event.data.user === userId ? await fetchMatrixLoginToken(drawerOpenRef.current) : null;
       frame.postMessage({ type: LOGIN_TOKEN_ANSWER, loginToken }, elementOrigin);
     };
     window.addEventListener('message', onMessage);

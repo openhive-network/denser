@@ -130,17 +130,24 @@ posts back to Element's origin. The server logs in as the user through the admin
 (`POST /_synapse/admin/v1/users/<user id>/login`, valid for a minute), asks that session for a
 login token (`POST /_matrix/client/v1/login/get_token`, which needs `login_via_existing_session`
 in `homeserver.yaml`), and logs it out, each call bounded to 5 s. Element then signs in with
-`/?loginToken=`, skipping the three SSO hops. A user Synapse does not know yet (the admin login
-answers 404), a failure, or no answer within 8 s sends the session page through SSO, which creates
-the account and joins `#general`.
+`/?loginToken=`, skipping the three SSO hops. Once the drawer is open, the widget asks with the
+JSON body `{"createAccount": true}`, and for a user Synapse does not know yet (the admin login
+answers 404) the server first creates the account (`PUT /_synapse/admin/v2/users/<user id>`, with
+denser's display name) and joins it to `REACT_APP_MATRIX_DEFAULT_ROOM`
+(`POST /_synapse/admin/v1/join/<room>`). A warm-up asks without it, so the route answers such a
+user 404 and creates nothing. A 404, a failure, or no answer within 8 s sends the session page
+through SSO, which creates the account and joins `#general` too: with Element in the drawer, a
+warm-up of a user without a Matrix account still creates it that way.
 
 `REACT_APP_MATRIX_CHAT_CLIENT` chooses what the drawer shows. `native` (the default) is denser's own
 client on matrix-js-sdk, without crypto: its code loads with the warm-up above (or on opening), it
 signs in with the same minted login token (`m.login.token`, on one device per browser and user,
 so signing in again reuses it), keeps the access token in memory only, and syncs the user's joined
 rooms with lazy-loaded members. It needs `DENSER_SERVER_MATRIX_ADMIN_TOKEN`, and the user's Matrix
-account: it creates none, so a user Synapse does not know yet gets "Open full chat", whose Element
-SSO creates it. The page reaches the homeserver itself (the CSP's `connect-src`, and Synapse's
+account, which the warm-up never creates: for a user Synapse does not know yet, the warm-up's
+token request is answered 404 and the client stays signed out, and opening the drawer asks for a
+token again with `createAccount`, which creates the account and joins the default room as above.
+A user who never opens the chat gets no Matrix account. The page reaches the homeserver itself (the CSP's `connect-src`, and Synapse's
 CORS), and fetches avatars as authenticated media. The chat button shows the unread count of the
 sync; opening a room sends read receipts. Encrypted rooms and events it cannot show get a line
 linking to Element (`REACT_APP_MATRIX_ELEMENT_URL`, which stays the full chat app). Sign-out, an
