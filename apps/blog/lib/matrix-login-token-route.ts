@@ -1,8 +1,8 @@
-import type { IncomingHttpHeaders } from 'http';
 import type { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import type { ChatProvider } from '@hive/ui/config/chat';
 import type { MatrixLoginTokenResult } from '@smart-signer/lib/auth/matrix-login-token';
 import type { User } from '@smart-signer/types/common';
+import { isSameOriginRequest } from '@smart-signer/lib/same-origin-request';
 import { isEligibleForChat, type ChatEligibilityRules } from './chat-eligibility.ts';
 
 export interface MatrixLoginTokenRouteSettings {
@@ -21,31 +21,6 @@ type Answer = { loginToken: string } | { error: string; retry_after_ms?: number 
 const MAX_RETRY_AFTER_MS = 70_000;
 const MS_PER_SECOND = 1000;
 
-function headerValue(headers: IncomingHttpHeaders, name: string): string | undefined {
-  const value = headers[name];
-  return Array.isArray(value) ? value[0] : value;
-}
-
-function hostOf(origin: string): string | undefined {
-  try {
-    return new URL(origin).host;
-  } catch {
-    return undefined;
-  }
-}
-
-/**
- * A request the browser made from a page of this site: `Sec-Fetch-Site: same-origin`, or, from a
- * browser that does not send it, an `Origin` on the host the request was made to.
- */
-function isSameOrigin(headers: IncomingHttpHeaders): boolean {
-  const fetchSite = headerValue(headers, 'sec-fetch-site');
-  if (fetchSite) return fetchSite === 'same-origin';
-  const origin = headerValue(headers, 'origin');
-  const host = headerValue(headers, 'x-forwarded-host')?.split(',')[0]?.trim() || headerValue(headers, 'host');
-  return !!origin && !!host && hostOf(origin) === host;
-}
-
 /**
  * `POST /api/chat/matrix-login-token`: a Synapse login token for the chat user the server signed
  * in, with which the session page signs Element in without the SSO redirects. Answers `200
@@ -62,7 +37,7 @@ export function matrixLoginTokenHandler(settings: MatrixLoginTokenRouteSettings)
       res.status(404).json({ error: 'Matrix chat is not in use' });
       return;
     }
-    if (!isSameOrigin(req.headers)) {
+    if (!isSameOriginRequest(req.headers)) {
       res.status(403).json({ error: 'Cross-origin request' });
       return;
     }

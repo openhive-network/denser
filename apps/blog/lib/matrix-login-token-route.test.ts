@@ -1,9 +1,26 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { registerHooks } from 'node:module';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import type { User } from '@smart-signer/types/common';
 import type { MatrixLoginTokenResult } from '@smart-signer/lib/auth/matrix-login-token';
-import { matrixLoginTokenHandler, type MatrixLoginTokenRouteSettings } from './matrix-login-token-route.ts';
+import type { MatrixLoginTokenRouteSettings } from './matrix-login-token-route.ts';
+
+// Node resolves neither the tsconfig path alias nor an extensionless import:
+// point `@smart-signer/…` at the package's TypeScript source.
+const SMART_SIGNER_ALIAS = '@smart-signer/';
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (!specifier.startsWith(SMART_SIGNER_ALIAS)) return nextResolve(specifier, context);
+    const source = new URL(
+      `../../../packages/smart-signer/${specifier.slice(SMART_SIGNER_ALIAS.length)}.ts`,
+      import.meta.url
+    );
+    return nextResolve(source.href, context);
+  }
+});
+
+const { matrixLoginTokenHandler } = await import('./matrix-login-token-route.ts');
 
 const SAME_ORIGIN = { host: 'denser.example.org', origin: 'https://denser.example.org', 'sec-fetch-site': 'same-origin' };
 
