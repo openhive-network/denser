@@ -6,7 +6,7 @@ import { test, expect } from '../support/fixture-proxy-test';
  *
  * The middleware marks a page request public (packages/middleware/lib/public-cache.ts) when it
  * is a GET or HEAD document request without `Authorization` and without a cookie outside the
- * non-personalizing allow list, and its path, after the `/public` rewrite, is not an API route; the Node.js server sends no-store instead for any status
+ * non-personalizing allow list (a `NEXT_LOCALE` of the default language among them), and its path, after the `/public` rewrite, is not an API route; the Node.js server sends no-store instead for any status
  * other than 200, a response that sets a cookie, or an `_rsc` URL (Next strips `_rsc` from the URL
  * the middleware sees). Everything else keeps Next's no-store.
  *
@@ -66,14 +66,15 @@ test.describe('Anonymous page responses — shared-cache headers', () => {
     expect(head.cacheControl).toBe(PUBLIC_CACHE_CONTROL);
   });
 
-  test('PAGE-CACHE-02 — a request with a session, observer, account or language cookie is no-store', async () => {
-    // Values the server renders the default observer and language for, so the recording answers
+  test('PAGE-CACHE-02 — a request with a session, observer, account or non-default language cookie is no-store', async () => {
+    // Values the server renders the default observer for, so the recording answers
     for (const cookie of [
       'blog_session=not-a-sealed-session',
       'observer=hive.blog',
       'observer-no-own-lists=hive.blog',
       'account_info=hive.blog:hbauth',
-      'NEXT_LOCALE=en'
+      'NEXT_LOCALE=pl',
+      'NEXT_LOCALE=en-US'
     ]) {
       const answer = await get('/trending', { cookie });
       expect(answer.status, cookie).toBe(200);
@@ -90,7 +91,7 @@ test.describe('Anonymous page responses — shared-cache headers', () => {
       expect(answer.status, what).toBe(200);
       expectNotPublic(answer, what);
     }
-    const allowed = await get('/trending', { cookie: 'session_uid=abc; _ga=GA1.1.1.1' });
+    const allowed = await get('/trending', { cookie: 'session_uid=abc; _ga=GA1.1.1.1; NEXT_LOCALE=en' });
     expect(allowed.cacheControl).toBe(PUBLIC_CACHE_CONTROL);
   });
 

@@ -45,14 +45,18 @@ const expectLanguage = async (page: Page, { lang, flag, posts }: { lang: string;
   await expect(homePage.getNavPostsLink).toHaveText(posts);
 };
 
-test('LANG-COOKIE-01: a first visit with no cookie is English and stores one origin-wide cookie', async ({
+test('LANG-COOKIE-01: a first visit with no cookie is English and stores no cookie, so later pages stay public', async ({
   page,
   context
 }) => {
   await loadFeed(page);
 
   await expectLanguage(page, { lang: 'en', flag: FLAG_GB, posts: POSTS_EN });
-  await expect.poll(() => localeCookies(context)).toEqual([{ value: 'en', path: '/' }]);
+  expect(await localeCookies(context)).toEqual([]);
+
+  const second = await page.goto('/trending');
+  expect(second?.headers()['cache-control']).toMatch(/^public, s-maxage=/);
+  expect(await localeCookies(context)).toEqual([]);
 });
 
 test('LANG-COOKIE-02: the cookie wins over a stale localStorage language', async ({ page, context, baseURL }) => {
