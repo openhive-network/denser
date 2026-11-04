@@ -10,6 +10,10 @@ const KEYS_SIZE = 2 * PUBLIC_KEY_SIZE;
 const NONCE_AND_CHECK_SIZE = 12;
 const MAX_VARINT_BITS = 35;
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+// A public key is a chain prefix (`STM`, `TST`) + base58(key[33] | checksum[4]); with the key's
+// leading 0x02/0x03 those 37 bytes always take 50 base58 digits, so the key reads off the tail.
+const PUBLIC_KEY_CHECKSUM_SIZE = 4;
+const PUBLIC_KEY_BASE58_LENGTH = 50;
 
 export class MemoLayoutError extends Error {}
 
@@ -133,6 +137,34 @@ export function parseEncryptedMemo(memo: string): EncryptedMemoParts {
   const parts = parseStandardLayout(bytes) ?? parseSnapLayout(bytes);
   if (!parts) throw new MemoLayoutError('Not an encrypted memo: no from/to public keys around a well-formed body');
   return parts;
+}
+
+function decodePublicKey(publicKey: string): Uint8Array {
+  const bytes = decodeBase58(publicKey.slice(-PUBLIC_KEY_BASE58_LENGTH));
+  if (bytes.length !== PUBLIC_KEY_SIZE + PUBLIC_KEY_CHECKSUM_SIZE || !isCompressedPublicKey(bytes, 0)) {
+    throw new MemoLayoutError(`Not a public key: ${publicKey}`);
+  }
+  return bytes.slice(0, PUBLIC_KEY_SIZE);
+}
+
+const isSameKey = (a: Uint8Array, b: Uint8Array) => a.length === b.length && a.every((byte, i) => byte === b[i]);
+
+/**
+ * Returns `encrypted` when it is a memo encrypted to `toPublicKey` (the recipient's memo key) and not
+ * `plaintext` handed back: what a signer returns for `plaintext` must pass this before it is sent.
+ *
+ * @throws {EmptyEncryptedMemoError} when `encrypted` holds no ciphertext.
+ * @throws {MemoLayoutError} when it is not an encrypted memo, is the plaintext, or is encrypted to another key.
+ */
+export function requireEncryptedMemoFor(encrypted: string, plaintext: string, toPublicKey: string): string {
+  requireEncryptedMemo(encrypted);
+  if (encrypted.trim() === plaintext.trim()) throw new MemoLayoutError('The memo encryption returned the plaintext');
+  if (!encrypted.startsWith(ENCRYPTED_MEMO_MARKER)) throw new MemoLayoutError('Not an encrypted memo: no leading #');
+  const { to } = parseEncryptedMemo(encrypted);
+  if (!isSameKey(to, decodePublicKey(toPublicKey))) {
+    throw new MemoLayoutError(`The memo was encrypted to another key than ${toPublicKey}`);
+  }
+  return encrypted;
 }
 
 /** `#` + base58(from | to | body): the memo every Hive wallet reads. @throws {MemoLayoutError} */
