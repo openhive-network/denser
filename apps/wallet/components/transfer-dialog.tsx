@@ -405,6 +405,10 @@ export function TransferDialog({
     setNextOpen(true);
   };
 
+  // As each `onSubmit` above signs it: power down in HIVE, every other type in the selected currency.
+  const confirmAsset = type === 'powerDown' ? 'HIVE' : curr;
+  const confirmAmount = `${convertStringToBig(value === '' ? '0' : value).toFixed(3)} ${confirmAsset}`;
+
   const onConfirm = () => {
     if (memoBlocked) return;
     data.onSubmit();
@@ -786,7 +790,8 @@ export function TransferDialog({
                   {t('transfers_page.amount')}
                   <div className="relative col-span-3">
                     <Input
-                      defaultValue={value}
+                      value={confirmAmount}
+                      readOnly
                       className="text-stale-900 pointer-events-none block w-full cursor-default! px-3 py-2.5"
                     />
                   </div>
