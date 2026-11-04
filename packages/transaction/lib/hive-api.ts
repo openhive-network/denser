@@ -270,6 +270,7 @@ export const getAccount = (username: string): Promise<FullAccount> =>
 const getBridgeProfile = (account: string): Promise<IProfile | null> =>
   readFromHivemind(
     'accountProfile',
+    { accounts: [account] },
     (api) => api.accountProfile({ 'account-name': account }),
     () => getReadChain().api.bridge.get_profile({ account })
   );
@@ -338,6 +339,7 @@ export const getFollowCount = async (username: string): Promise<AccountFollowSta
 export const getRebloggedBy = async (author: string, permlink: string): Promise<string[]> => {
   return readFromHivemind(
     'postRebloggedBy',
+    { accounts: [author], permlinks: [permlink] },
     (api) => api.postRebloggedBy({ author, permlink }),
     () => getReadChain().api.condenser_api.get_reblogged_by([author, permlink])
   );
@@ -391,6 +393,7 @@ export const getFollowing = async (params?: Partial<IGetFollowParams>): Promise<
     if (lite) return lite;
     return readFromHivemind(
       'accountFollowing',
+      { accounts: [account] },
       (api) =>
         api.accountFollowing({ 'account-name': account, type, 'page-size': limit, start: nonEmpty(start) }),
       () => getReadChain().api.condenser_api.get_following([account, start, type, limit])
@@ -432,6 +435,7 @@ export const getFollowers = async (params?: Partial<IGetFollowParams>): Promise<
     if (lite) return lite;
     return readFromHivemind(
       'accountFollowers',
+      { accounts: [account] },
       (api) =>
         api.accountFollowers({ 'account-name': account, type, 'page-size': limit, start: nonEmpty(start) }),
       () => getReadChain().api.condenser_api.get_followers([account, start, type, limit])
@@ -468,6 +472,7 @@ export const getByText = async (
   if (getHiveChainService().getApiEndpoints().searchApiEndpoint) return findText();
   return readFromHivemind(
     'searchPosts',
+    {},
     (api) =>
       api.searchPosts({
         q: pattern,
@@ -517,6 +522,7 @@ const getPostVotesFromHivemind = async (
 export const getActiveVotes = (author: string, permlink: string): Promise<IVote[]> =>
   readFromHivemind(
     'postVotes',
+    { accounts: [author], permlinks: [permlink] },
     (api) => getPostVotesFromHivemind(api, author, permlink),
     () => getActiveVotesFromListVotes(author, permlink)
   );

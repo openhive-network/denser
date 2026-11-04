@@ -22,6 +22,7 @@ import {
 } from './bridge-api';
 import { getActiveVotes, getByText, getFollowers, getFollowing, getProfileInfo, getRebloggedBy } from './hive-api';
 import { getHiveChainService } from './hive-chain-service';
+import { getHivemindRestApi } from './chain';
 
 /**
  * The bridge / hive-api reads covered by hivemind's REST API, over real sockets between a JSON-RPC
@@ -514,6 +515,53 @@ describe('hivemind REST reads', function () {
     expect(rpc.calls).to.deep.equal([
       { method: 'bridge.get_post', params: { author: 'nobody', permlink: 'missing', observer: 'hive.blog' } }
     ]);
+  });
+
+  it('keeps reading posts over REST after a 404 about one missing post', async () => {
+    rest.routes['/hivemind-api/posts/nobody/gone'] = {
+      status: 404,
+      body: { code: 'PT404', message: 'Post @nobody/gone does not exist' }
+    };
+    rest.routes[`/hivemind-api/posts/${post.author}/${post.permlink}`] = { body: post };
+
+    expect(await getPost('nobody', 'gone', 'carol')).to.equal(null);
+    expect(await getPost('nobody', 'gone', 'carol')).to.equal(null);
+    expect(await getPost(post.author, post.permlink, 'carol')).to.deep.equal(post);
+
+    expect(rest.requests).to.deep.equal([
+      '/hivemind-api/posts/nobody/gone?observer=carol',
+      '/hivemind-api/posts/nobody/gone?observer=carol',
+      `/hivemind-api/posts/${post.author}/${post.permlink}?observer=carol`
+    ]);
+    expect(rpc.calls.filter(({ method }) => method === 'bridge.get_post')).to.have.length(2);
+  });
+
+  it("reads a cross-post's original over JSON-RPC when its permlink would not be one path segment", async () => {
+    const crossPost = {
+      ...post,
+      json_metadata: { tags: ['cross-post'], original_author: 'alice', original_permlink: '../x/y?observer=z' }
+    };
+    rest.routes['/hivemind-api/posts'] = { body: [crossPost] };
+    rpc.results['bridge.get_post'] = post;
+
+    const [resolved] = (await getPostsRanked('created', '', '', '', 'bob')) ?? [];
+
+    expect(resolved).to.deep.include({ original_entry: post });
+    expect(rest.requests).to.deep.equal(['/hivemind-api/posts?sort=created&observer=bob&page-size=20']);
+    expect(rpc.calls.filter(({ method }) => method === 'bridge.get_post')).to.deep.equal([
+      {
+        method: 'bridge.get_post',
+        params: { author: 'alice', permlink: '../x/y?observer=z', observer: 'bob' }
+      }
+    ]);
+  });
+
+  it('encodes each path placeholder, so its value stays one path segment', async () => {
+    const api = getHivemindRestApi();
+    rest.routes['/hivemind-api/posts/alice/a%2Fb%3Fc'] = { body: post };
+
+    expect(await api?.post({ author: 'alice', permlink: 'a/b?c', observer: 'bob' })).to.deep.equal(post);
+    expect(rest.requests).to.deep.equal(['/hivemind-api/posts/alice/a%2Fb%3Fc?observer=bob']);
   });
 
   it('reads over JSON-RPC while every hivemind REST node is down, without asking them again', async () => {
