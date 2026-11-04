@@ -143,7 +143,19 @@ describe('readLocaleCookie', () => {
 });
 
 describe('ensureLocaleCookie', () => {
-  it('writes the fallback on a first visit', () => {
+  it('writes no cookie on a first visit in the default language', () => {
+    assert.equal(ensureLocaleCookie('en'), 'en');
+    assert.equal(ensureLocaleCookie('en', ['en', 'pl']), 'en');
+    assert.deepEqual(jar.written, []);
+  });
+
+  it('writes a fallback other than the default on a first visit', () => {
+    assert.equal(ensureLocaleCookie('pl'), 'pl');
+    assert.deepEqual(jar.stored(), ['NEXT_LOCALE=pl@/']);
+  });
+
+  it('keeps a default-valued cookie', () => {
+    jar.cookie = 'NEXT_LOCALE=en; path=/';
     assert.equal(ensureLocaleCookie('en'), 'en');
     assert.deepEqual(jar.stored(), ['NEXT_LOCALE=en@/']);
   });

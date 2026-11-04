@@ -1,4 +1,6 @@
-export const defaultLocale = 'en';
+import { DEFAULT_LOCALE } from '@hive/ui/lib/locale-cookie.ts';
+
+export const defaultLocale = DEFAULT_LOCALE;
 export const languages = ['ar', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh'];
 export const defaultNS = 'common_wallet';
 export const cookieName = 'NEXT_LOCALE';

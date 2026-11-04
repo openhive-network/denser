@@ -46,7 +46,7 @@ function isPublicCacheable(request: NextRequest, basePath: string): boolean {
     pathname: pathInApp,
     searchParams,
     headers: request.headers,
-    cookieNames: request.cookies.getAll().map(({ name }) => name)
+    cookies: request.cookies.getAll()
   });
 }
 
