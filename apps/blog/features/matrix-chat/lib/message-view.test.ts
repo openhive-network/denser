@@ -141,4 +141,15 @@ describe('linkify', () => {
     ]);
     assert.deepEqual(linkify(''), []);
   });
+
+  it('trims a long run of punctuation in linear time', () => {
+    const run = '.'.repeat(60_000);
+    const started = performance.now();
+    const inner = linkify(`https://hive.blog/${run}a`);
+    const trailing = linkify(`https://hive.blog/x${run}`);
+    // the quadratic regex took about 2 s here
+    assert.ok(performance.now() - started < 500);
+    assert.deepEqual(inner, [{ text: `https://hive.blog/${run}a`, href: `https://hive.blog/${run}a` }]);
+    assert.deepEqual(trailing, [{ text: 'https://hive.blog/x', href: 'https://hive.blog/x' }, { text: run }]);
+  });
 });
