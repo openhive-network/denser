@@ -18,6 +18,16 @@ export function addAccount(accounts: User[], currentUser: User | undefined, user
   return next.length > MAX_ACCOUNTS ? next.slice(next.length - MAX_ACCOUNTS) : next;
 }
 
+/**
+ * The accounts that leave the list when `next` replaces it: those of `accounts`, and `currentUser`
+ * when logged in, that `next` does not list. Each is named once.
+ */
+export function droppedAccounts(accounts: User[], currentUser: User | undefined, next: User[]): User[] {
+  const previous = currentUser?.isLoggedIn ? sessionAccounts(accounts, currentUser) : accounts;
+  const dropped = previous.filter((account) => !findAccount(next, account.username));
+  return dropped.filter((account, i) => dropped.findIndex((other) => other.username === account.username) === i);
+}
+
 export function removeAccount(accounts: User[], username: string): User[] {
   return accounts.filter((account) => account.username !== username);
 }

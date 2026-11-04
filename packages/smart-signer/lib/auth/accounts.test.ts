@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import type { User } from '@smart-signer/types/common';
 import {
   addAccount,
+  droppedAccounts,
   removeAccount,
   findAccount,
   replaceAccount,
@@ -58,6 +59,34 @@ describe('addAccount', () => {
     assert.equal(next.length, MAX_ACCOUNTS);
     assert.equal(findAccount(next, 'user0'), undefined);
     assert.equal(next[next.length - 1].username, 'newcomer');
+  });
+});
+
+describe('droppedAccounts', () => {
+  it('names the previous list when signing in while logged out, but not the account signing in', () => {
+    const stale = [account('alice'), account('bob'), account('carol')];
+    const next = addAccount(stale, account('', false), account('bob'));
+    assert.deepEqual(usernames(droppedAccounts(stale, account('', false), next)), ['alice', 'carol']);
+    assert.deepEqual(usernames(droppedAccounts(stale, undefined, next)), ['alice', 'carol']);
+  });
+
+  it('names the oldest account dropped past the limit', () => {
+    const accounts = Array.from({ length: MAX_ACCOUNTS }, (_, i) => account(`user${i}`));
+    const current = accounts[MAX_ACCOUNTS - 1];
+    const next = addAccount(accounts, current, account('newcomer'));
+    assert.deepEqual(usernames(droppedAccounts(accounts, current, next)), ['user0']);
+  });
+
+  it('names the current user when the list did not hold it and it is dropped', () => {
+    const accounts = Array.from({ length: MAX_ACCOUNTS }, (_, i) => account(`user${i}`));
+    const next = [...accounts.slice(1), account('newcomer')];
+    assert.deepEqual(usernames(droppedAccounts(accounts, account('outsider'), next)), ['user0', 'outsider']);
+  });
+
+  it('names none while the list grows below the limit or an account signs in again', () => {
+    const accounts = [account('alice'), account('bob')];
+    assert.deepEqual(droppedAccounts(accounts, accounts[0], addAccount(accounts, accounts[0], account('carol'))), []);
+    assert.deepEqual(droppedAccounts(accounts, accounts[0], addAccount(accounts, accounts[0], account('bob'))), []);
   });
 });
 
