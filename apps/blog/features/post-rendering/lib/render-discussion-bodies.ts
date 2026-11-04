@@ -28,16 +28,15 @@ function orderedEntries(post: Entry | null, discussion: Record<string, Entry> | 
 }
 
 /**
- * Renders the post and the given replies of its discussion on the server, as the post page displays
- * them: only a top-level post is rendered as the page's main post. A reply not in `replies`, or a
- * body that fails to render, is left out and rendered by the client instead. Code is highlighted
- * within one budget for the whole page; a body with blocks left plain by it is marked
- * `highlightDeferred`.
+ * Renders the post and every reply of its discussion on the server, as the post page displays
+ * them: only a top-level post is rendered as the page's main post. A body that fails to render is
+ * left out and rendered by the client instead. Code is highlighted within one budget for the
+ * whole page; a body with blocks left plain by it is marked `highlightDeferred`.
  */
-export function renderDiscussionBodies(post: Entry | null, replies: Record<string, Entry> | null): RenderedBodies {
+export function renderDiscussionBodies(post: Entry | null, discussion: Record<string, Entry> | null): RenderedBodies {
   const budget = new HighlightBudget(MAX_HIGHLIGHTED_BLOCKS_PER_PAGE, MAX_HIGHLIGHTED_UTF8_BYTES_PER_PAGE);
   const rendered: RenderedBodies = {};
-  for (const [key, { author, permlink, body, depth }] of orderedEntries(post, replies)) {
+  for (const [key, { author, permlink, body, depth }] of orderedEntries(post, discussion)) {
     if (!body) continue;
     const mainPost = depth === 0;
     const refusedBefore = budget.refusedBlocks;
