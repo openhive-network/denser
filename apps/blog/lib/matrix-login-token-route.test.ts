@@ -64,30 +64,36 @@ function respond(): { res: NextApiResponse; answered: Answered } {
   return { res: res as unknown as NextApiResponse, answered };
 }
 
-/** Calls the route for `user` with `headers`; resolves to its answer and the users it minted for. */
+/**
+ * Calls the route for `user` with `headers` and `body`; resolves to its answer, the users it minted
+ * for and whether each mint could create the account.
+ */
 async function call(
-  { user, headers = SAME_ORIGIN, ...overrides }: Partial<MatrixLoginTokenRouteSettings> & {
+  { user, headers = SAME_ORIGIN, body, ...overrides }: Partial<MatrixLoginTokenRouteSettings> & {
     user?: User;
     headers?: Record<string, string>;
+    body?: unknown;
   },
   minted: MatrixLoginTokenResult = { kind: 'token', loginToken: 'syl_login' }
-): Promise<Answered & { mintedFor: string[] }> {
+): Promise<Answered & { mintedFor: string[]; creating: boolean[] }> {
   const mintedFor: string[] = [];
+  const creating: boolean[] = [];
   const handler = matrixLoginTokenHandler({
     provider: 'matrix',
     minting: true,
     eligibility: { allowNonStrictLogin: false, allowedUsers: [] },
     sessionUser: async () => user,
-    mint: async (username) => {
+    mint: async (username, createAccount) => {
       mintedFor.push(username);
+      creating.push(createAccount);
       return minted;
     },
     ...overrides
   });
   const { res, answered } = respond();
-  await handler({ method: 'POST', headers } as unknown as NextApiRequest, res);
+  await handler({ method: 'POST', headers, body } as unknown as NextApiRequest, res);
   assert.equal(answered.headers['cache-control'], 'no-store');
-  return { ...answered, mintedFor };
+  return { ...answered, mintedFor, creating };
 }
 
 describe('matrixLoginTokenHandler', () => {
@@ -97,8 +103,19 @@ describe('matrixLoginTokenHandler', () => {
       status: 200,
       body: { loginToken: 'syl_login' },
       headers: { 'cache-control': 'no-store' },
-      mintedFor: ['alice']
+      mintedFor: ['alice'],
+      creating: [false]
     });
+  });
+
+  it('lets the mint create the account only when the request asks for it, as an opened chat does', async () => {
+    const opened = await call({ user: signedIn(), body: { createAccount: true } });
+    assert.equal(opened.status, 200);
+    assert.deepEqual(opened.creating, [true]);
+    for (const body of [undefined, '', {}, { createAccount: false }, { createAccount: 'true' }, 'createAccount']) {
+      const warmUp = await call({ user: signedIn(), body });
+      assert.deepEqual(warmUp.creating, [false], JSON.stringify(body));
+    }
   });
 
   it('accepts a same-origin request from a browser without Sec-Fetch-Site, behind a proxy too', async () => {
@@ -167,7 +184,8 @@ describe('matrixLoginTokenHandler', () => {
       status: 429,
       body: { error: 'Rate-limited', retry_after_ms: 41_500 },
       headers: { 'cache-control': 'no-store', 'retry-after': '42' },
-      mintedFor: ['alice']
+      mintedFor: ['alice'],
+      creating: [false]
     });
     const long = await call({ user: signedIn() }, { kind: 'rate-limited', retryAfterMs: 3_600_000 });
     assert.equal(long.status, 429);

@@ -4,7 +4,7 @@ import { apiHandler } from '@smart-signer/lib/api';
 import { sessionOptions } from '@smart-signer/lib/session';
 import type { IronSessionData } from '@smart-signer/types/common';
 import { fetchJson } from '@smart-signer/lib/fetch-json';
-import { mintMatrixLoginTokenCreatingAccount } from '@smart-signer/lib/auth/matrix-login-token';
+import { mintMatrixLoginToken, mintMatrixLoginTokenCreatingAccount } from '@smart-signer/lib/auth/matrix-login-token';
 import { getHiveUserProfile } from '@smart-signer/lib/get-hive-user-profile';
 import { oauthDisplayName } from '@smart-signer/lib/oauth/profile-text';
 import { getLogger } from '@hive/ui/lib/logging';
@@ -43,7 +43,9 @@ export default apiHandler({
       allowedUsers: siteConfig.openhiveChatAllowedUsers
     },
     sessionUser,
-    mint: (username) =>
-      mintMatrixLoginTokenCreatingAccount(username, matrixDisplayName, matrixAdmin, fetchJson, reportMintFailure)
+    mint: (username, createAccount) =>
+      createAccount
+        ? mintMatrixLoginTokenCreatingAccount(username, matrixDisplayName, matrixAdmin, fetchJson, reportMintFailure)
+        : mintMatrixLoginToken(username, matrixAdmin, fetchJson, reportMintFailure)
   })
 });

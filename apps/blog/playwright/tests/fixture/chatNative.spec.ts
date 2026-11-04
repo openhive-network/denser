@@ -23,7 +23,8 @@ import plBlog from '../../../locales/pl/common_blog.json';
 /**
  * The native Matrix chat client in the chat drawer (`MATRIX_CHAT_CLIENT` unset: the default).
  * The settings are appended to `__ENV.js` (see chatSettings.ts), the build's CSP is bypassed, and
- * the homeserver is answered by MatrixHomeserverStub; denser's login token route answers a token.
+ * the homeserver is answered by MatrixHomeserverStub; denser's login token route answers a token
+ * (in CHAT-NATIVE-21, a 404 until the opened drawer asks it to create the account).
  *
  * The client loads and signs in with the warm-up (on idle after the page loads, or on intent to
  * use the chat button), so the badge can show before the drawer opens.
@@ -71,7 +72,12 @@ interface NativeChat {
   loginTokenRequests: Request[];
   /** How many of the first token requests are answered 429 */
   rateLimited: number;
+  /** Synapse has no account for the user until a token request asks to create it */
+  withoutAccount?: boolean;
 }
+
+/** Whether a request to denser's login token route lets it create the user's Matrix account */
+const createsAccount = (request: Request) => Reflect.get(Object(request.postDataJSON()), 'createAccount') === true;
 
 /** Routes `page`'s chat to the stubbed homeserver and token route of `chat`, a new one by default */
 async function usesNativeChat(page: Page, settings: Record<string, string> = NATIVE_SETTINGS, chat?: NativeChat) {
@@ -83,6 +89,10 @@ async function usesNativeChat(page: Page, settings: Record<string, string> = NAT
     if (routed.loginTokenRequests.length <= routed.rateLimited) {
       return route.fulfill({ status: 429, json: { error: 'Rate-limited', retry_after_ms: RETRY_AFTER_MS } });
     }
+    if (routed.withoutAccount && !createsAccount(route.request())) {
+      return route.fulfill({ status: 404, json: { error: 'No Matrix account yet' } });
+    }
+    routed.withoutAccount = false;
     return route.fulfill({ json: { loginToken: LOGIN_TOKEN } });
   });
   return routed;
@@ -388,6 +398,24 @@ test.describe('Native Matrix chat client', () => {
     expect(chat.loginTokenRequests).toHaveLength(2);
     expect(chat.homeserver.requestsTo('/login', 'POST')).toHaveLength(1);
     await expect(panel(page).getByText(EN.sign_in_failed)).toHaveCount(0);
+  });
+
+  test('CHAT-NATIVE-21: the warm-up of a user without a Matrix account creates none; opening the drawer does', async ({
+    page
+  }) => {
+    const chat = await usesNativeChat(page);
+    chat.withoutAccount = true;
+    await openPage(page);
+
+    await expect.poll(() => chat.loginTokenRequests.length, { timeout: SIGNED_IN_TIMEOUT_MS }).toBe(1);
+    expect(createsAccount(chat.loginTokenRequests[0])).toBe(false);
+    expect(chat.homeserver.requestsTo('/login', 'POST')).toEqual([]);
+
+    await chatButton(page).click();
+    await expect(messages(page).first()).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+    expect(chat.loginTokenRequests.map(createsAccount)).toEqual([false, true]);
+    expect(chat.homeserver.requestsTo('/login', 'POST')).toHaveLength(1);
+    await expect(signInFailed(page)).toHaveCount(0);
   });
 
   test('CHAT-NATIVE-15: a session the homeserver signs out signs in again with a new token, once, without Try again', async ({

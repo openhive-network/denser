@@ -15,15 +15,25 @@ function field(answer: unknown, name: string): unknown {
 }
 
 /**
- * A Matrix login token denser's server mints for the signed-in chat user; `rate-limited` with the
+ * A Matrix login token denser's server mints for the signed-in chat user, creating their Matrix
+ * account first when it has none only with `createAccount`, which only an opened chat sets;
+ * `rate-limited` with the
  * wait the server names when Synapse refused a mint this soon; `unreachable` when the request got
  * no answer, failing or timing out; `none` on any other answer.
  */
-export async function requestMatrixLoginToken(): Promise<LoginTokenAnswer> {
+export async function requestMatrixLoginToken(createAccount: boolean): Promise<LoginTokenAnswer> {
   try {
     const answer: unknown = await fetchJson(
       appApiPath('/api/chat/matrix-login-token'),
-      { method: 'POST', credentials: 'same-origin', headers: [[csrfHeaderName, '1']] },
+      {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: [
+          [csrfHeaderName, '1'],
+          ['Content-Type', 'application/json']
+        ],
+        body: JSON.stringify({ createAccount })
+      },
       LOGIN_TOKEN_TIMEOUT_MS
     );
     const loginToken = field(answer, 'loginToken');
@@ -40,14 +50,14 @@ export async function requestMatrixLoginToken(): Promise<LoginTokenAnswer> {
         return { kind: 'rate-limited', retryAfterMs };
       }
     }
-    // Expected for a user without a Matrix account yet; Element's SSO creates it
+    // Expected for a user without a Matrix account yet, before the chat is opened
     logger.info('No Matrix login token: %o', error instanceof Error ? error.message : error);
     return { kind: 'none' };
   }
 }
 
-/** A Matrix login token denser's server mints for the signed-in chat user, or null for none */
-export async function fetchMatrixLoginToken(): Promise<string | null> {
-  const answer = await requestMatrixLoginToken();
+/** `requestMatrixLoginToken`'s token, or null for none */
+export async function fetchMatrixLoginToken(createAccount: boolean): Promise<string | null> {
+  const answer = await requestMatrixLoginToken(createAccount);
   return answer.kind === 'token' ? answer.loginToken : null;
 }

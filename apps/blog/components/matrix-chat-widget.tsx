@@ -41,7 +41,12 @@ const MatrixChatWidget = () => {
   const matrix = siteConfig.matrixChat;
   const chatUser = useMatrixChatUser(!!matrix.elementUrl);
   const { reset: resetWarmUp, ...warmUp } = useChatWarmUp(matrix.preload, sessionEnds === 0);
-  useMatrixLoginTokenAnswer(frameRef, originOf(matrix.elementUrl), chatUser ? matrixUserId(chatUser, matrix) : '');
+  useMatrixLoginTokenAnswer(
+    frameRef,
+    originOf(matrix.elementUrl),
+    chatUser ? matrixUserId(chatUser, matrix) : '',
+    open
+  );
 
   useEffect(() => {
     const previous = chatUserRef.current;
