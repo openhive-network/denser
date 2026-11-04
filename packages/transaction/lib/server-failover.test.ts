@@ -5,6 +5,7 @@ import {
   FAILOVER_ATTEMPT_TIMEOUT_MS,
   FAILOVER_BUDGET_MS,
   HEDGE_DELAY_MS,
+  jsonRpcHealthKey,
   parseFallbackNodes,
   wrapChainWithServerFailover,
   type IServerFailoverOptions
@@ -12,10 +13,19 @@ import {
 import { NODE_COOLDOWN_MS, NodeHealth } from './node-health';
 import { getLogger } from '@ui/lib/logging';
 
-type Outcome = 'ok' | 'transport' | 'missing';
+/** `refused`: the node refuses the connection, failing as `fetch` does on Node. */
+type Outcome = 'ok' | 'transport' | 'refused' | 'missing';
+
+const connectionRefused = (node: string): WaxRequestError =>
+  Object.assign(new WaxRequestError(`fetch failed: ${node}`), {
+    cause: Object.assign(new TypeError('fetch failed'), {
+      cause: Object.assign(new Error(`connect ECONNREFUSED ${node}`), { code: 'ECONNREFUSED' })
+    })
+  });
 
 interface IFakeChain {
   api: {
+    database_api: { get_dynamic_global_properties: (params: unknown) => Promise<unknown> };
     bridge: { get_ranked_posts: (params: unknown) => Promise<unknown> };
     'search-api': { find_text: (params: unknown) => Promise<unknown> };
     network_broadcast_api: { broadcast_transaction: (params: unknown) => Promise<unknown> };
@@ -80,15 +90,24 @@ interface ISetupOptions {
   latencyMs?: number;
   nodeLatencyMs?: Record<string, number>;
   primary?: string;
+  /** Whether the chain's health record consults a shared one (`shared`), as a reader's search does. */
+  consultsShared?: boolean;
   hooks?: Pick<IServerFailoverOptions<IFakeChain>, 'isTransportError' | 'onFailover'>;
 }
 
 const setup = (
   outcomes: Record<string, Outcome[]>,
-  { latencyMs = 100, nodeLatencyMs = {}, primary = 'https://primary', hooks = {} }: ISetupOptions = {}
+  {
+    latencyMs = 100,
+    nodeLatencyMs = {},
+    primary = 'https://primary',
+    consultsShared = false,
+    hooks = {}
+  }: ISetupOptions = {}
 ) => {
   const clock = createFakeClock();
-  const health = new NodeHealth({ now: clock.now });
+  const shared = new NodeHealth({ now: clock.now });
+  const health = new NodeHealth({ now: clock.now, consults: consultsShared ? shared : undefined });
   const calls: string[] = [];
   const created: Array<{ node: string; timeoutMs: number }> = [];
 
@@ -98,6 +117,7 @@ const setup = (
     const outcome = queue.length > 1 ? queue.shift() : queue[0];
     const latency = nodeLatencyMs[`${node} ${method}`] ?? nodeLatencyMs[node] ?? latencyMs;
     await clock.sleep(Math.min(latency, timeoutMs));
+    if (outcome === 'refused') throw connectionRefused(node);
     if (latency > timeoutMs || outcome === 'transport') throw new WaxRequestError(`fetch failed: ${node}`);
     if (outcome === 'missing')
       throw Object.assign(new Error('Post does not exist'), { name: 'WaxChainApiError' });
@@ -109,6 +129,10 @@ const setup = (
     chainId: 'beeab0de',
     withTimeout: (slowTimeoutMs) => makeChain(node, slowTimeoutMs),
     api: {
+      database_api: {
+        get_dynamic_global_properties: (params) =>
+          answer(node, timeoutMs, 'database_api.get_dynamic_global_properties', params)
+      },
       bridge: { get_ranked_posts: (params) => answer(node, timeoutMs, 'bridge.get_ranked_posts', params) },
       'search-api': { find_text: (params) => answer(node, timeoutMs, 'search-api.find_text', params) },
       network_broadcast_api: {
@@ -131,7 +155,17 @@ const setup = (
 
   const rankedPosts = (params: unknown = {}) => clock.run(chain.api.bridge.get_ranked_posts(params));
 
-  return { chain, rankedPosts, run: clock.run, calls, created, elapsed: clock.now, advance: clock.advance };
+  return {
+    chain,
+    rankedPosts,
+    run: clock.run,
+    calls,
+    created,
+    health,
+    shared,
+    elapsed: clock.now,
+    advance: clock.advance
+  };
 };
 
 describe('wrapChainWithServerFailover', () => {
@@ -277,6 +311,35 @@ describe('wrapChainWithServerFailover', () => {
 
       expect(calls).to.deep.equal([`https://fallback-a ${ranked}`]);
     });
+
+    it('skips a node the consulted record marks down, as a reader\'s search does', async () => {
+      const findText = 'search-api.find_text';
+      const { chain, run, calls, shared } = setup(
+        { 'https://primary': ['ok'], 'https://fallback-a': ['ok'] },
+        { consultsShared: true }
+      );
+      shared.markDown(jsonRpcHealthKey('https://primary', 'search-api'));
+
+      const result = await run(chain.withTimeout(SLOW_TIMEOUT_MS).api['search-api'].find_text({}));
+
+      expect(result).to.have.property('node', 'https://fallback-a');
+      expect(calls).to.deep.equal([`https://fallback-a ${findText}`]);
+    });
+
+    it('never writes the consulted record', async () => {
+      const searchKey = jsonRpcHealthKey('https://primary', 'search-api');
+      const { chain, run, health, shared } = setup(
+        { 'https://primary': ['refused'], 'https://fallback-a': ['ok'] },
+        { consultsShared: true }
+      );
+
+      await run(chain.withTimeout(SLOW_TIMEOUT_MS).api['search-api'].find_text({}));
+      await run(chain.withTimeout(SLOW_TIMEOUT_MS).api.bridge.get_ranked_posts({}));
+
+      expect(health.isDown(searchKey)).to.equal(true);
+      expect(shared.isDown(searchKey)).to.equal(false);
+      expect(shared.isDown(jsonRpcHealthKey('https://primary', 'bridge'))).to.equal(false);
+    });
   });
 
   describe('a dead or slow node', () => {
@@ -348,6 +411,44 @@ describe('wrapChainWithServerFailover', () => {
       expect(calls).to.deep.equal([
         `https://primary ${ranked}`,
         'https://fallback-a search-api.find_text'
+      ]);
+    });
+
+    it('skips a node that refused a call of one family for every other family too', async () => {
+      const { chain, run, rankedPosts, calls, elapsed } = setup({
+        'https://primary': ['refused'],
+        'https://fallback-a': ['ok']
+      });
+      const globals = () => run(chain.api.database_api.get_dynamic_global_properties({}));
+
+      const core = await globals();
+      calls.length = 0;
+      const before = elapsed();
+      const posts = await rankedPosts({});
+
+      expect(core).to.have.property('node', 'https://fallback-a');
+      expect(posts).to.have.property('node', 'https://fallback-a');
+      expect(calls).to.deep.equal([`https://fallback-a ${ranked}`]);
+      expect(elapsed() - before).to.equal(100);
+    });
+
+    it('probes a refusing node again from another family once its cooldown has passed', async () => {
+      const { chain, run, rankedPosts, calls, advance } = setup({
+        'https://primary': ['refused', 'refused', 'ok'],
+        'https://fallback-a': ['ok']
+      });
+      await run(chain.api.database_api.get_dynamic_global_properties({}));
+      await advance(NODE_COOLDOWN_MS);
+      calls.length = 0;
+
+      const probed = await rankedPosts({});
+      const core = await run(chain.api.database_api.get_dynamic_global_properties({}));
+
+      expect(probed).to.have.property('node', 'https://primary');
+      expect(core).to.have.property('node', 'https://primary');
+      expect(calls).to.deep.equal([
+        `https://primary ${ranked}`,
+        'https://primary database_api.get_dynamic_global_properties'
       ]);
     });
 
