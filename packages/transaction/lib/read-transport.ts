@@ -68,30 +68,29 @@ const isRequestTimeout = (error: ReadTransportError): boolean =>
 
 /** PostgREST's code for a request naming no SQL function the node has. */
 const POSTGREST_FUNCTION_NOT_FOUND = 'PGRST202';
-/** PostgREST's code for a request path it has no route for. */
-const POSTGREST_INVALID_PATH = 'PGRST125';
+/** The SQLSTATE a PostgREST function raises to answer 404 itself, e.g. for an item that does not exist. */
+const POSTGREST_OWN_NOT_FOUND = 'PT404';
 
 /**
  * Whether a failed REST call means the node lacks the endpoint called: PostgREST's "function not
- * found" (PGRST202) whatever the status, or a 404 that names no API answer: PostgREST's "invalid
- * path" (PGRST125) or a body without an error `code` (a proxy routing the path nowhere). A 404 whose
- * body carries any other `code` is the endpoint's own answer, e.g. about one missing item.
+ * found" (PGRST202) whatever the status, or any other 404 but the endpoint's own (PT404), which is
+ * its answer about one item, not a sign the node lacks it.
  */
 export const isEndpointMissing = (error: unknown): boolean => {
   if (!(error instanceof ReadTransportError)) return false;
   const { body } = error;
   const code = typeof body === 'object' && body !== null ? Reflect.get(body, 'code') : undefined;
   if (code === POSTGREST_FUNCTION_NOT_FOUND) return true;
-  return error.status === 404 && (code === undefined || code === POSTGREST_INVALID_PATH);
+  return error.status === 404 && code !== POSTGREST_OWN_NOT_FOUND;
 };
 
 /**
  * Whether a failed REST call means this node cannot serve that REST API: it does not have it
  * (`isEndpointMissing`), is down or overloaded (5xx, 408, 429, timeout, network failure) or did not
  * answer with JSON, so another node may serve it. False for a request the API rejected (any other
- * 4xx, including a 404 about a missing item), for a missing endpoint at `path` (e.g. `['balance-api', 'proposalsPayments']`) that
- * not every node has, for a timeout of an endpoint whose cold query may take longer, and for any error
- * that is not a `ReadTransportError`.
+ * 4xx, including the endpoint's own 404 about one item), for a missing endpoint at `path` (e.g.
+ * `['balance-api', 'proposalsPayments']`) that not every node has, for a timeout of an endpoint
+ * whose cold query may take longer, and for any error that is not a `ReadTransportError`.
  */
 export const isRestApiUnavailable = (error: unknown, path: readonly string[] = []): boolean => {
   if (!(error instanceof ReadTransportError)) return false;

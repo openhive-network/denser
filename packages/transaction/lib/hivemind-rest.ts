@@ -42,8 +42,8 @@ const isRestPathValid = ({ accounts = [], permlinks = [] }: IHivemindRestPath): 
  * Any failure of the REST read (`ReadTransportError`) is answered by `jsonRpc`, so callers see
  * JSON-RPC's results and errors: a node lacking the endpoint (`isEndpointMissing`, which does not
  * mark the node down) is then not asked for it for HIVEMIND_ENDPOINT_MISSING_TTL_MS, nodes that are
- * all down are skipped until their cooldown ends, and an API answer (400, or a 404 about a missing
- * item) gets JSON-RPC's own. Any other error of `rest` rejects as is.
+ * all down are skipped until their cooldown ends, and an API answer (400, or the endpoint's own 404,
+ * PT404, about one item) gets JSON-RPC's own. Any other error of `rest` rejects as is.
  */
 export async function readFromHivemind<T>(
   endpoint: keyof HivemindRestApi,
