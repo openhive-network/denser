@@ -19,8 +19,9 @@ import enBlog from '../../../locales/en/common_blog.json';
  * that stack's caddy does, with Element's `config.json`; the homeserver's SSO redirect stands in
  * for Synapse → denser → Synapse by sending the frame back to Element with a login token. denser's
  * login token route, which the session page asks for a token through the widget first, answers
- * that the user has no Matrix account yet, so the session page falls back to that SSO, unless a
- * test has it mint one. An init
+ * that the user has no Matrix account yet, so the session page falls back to that SSO once the
+ * drawer is open, unless a test has it mint one; a warm-up in the closed drawer that gets no token
+ * unloads the frame instead (CHAT-MATRIX-TOKEN-06). An init
  * script plays a session Element already holds (`mx_user_id`), and its device settings
  * (`mx_local_settings`), when the session page loads. denser's theme is the system's
  * (`defaultTheme="system"`), set through the emulated color scheme.
@@ -129,6 +130,9 @@ function recordRequests(page: Page, ...origins: string[]): Request[] {
   });
   return requests;
 }
+
+/** Whether a request to denser's login token route lets it create the user's Matrix account */
+const createsAccount = (request: Request) => Reflect.get(Object(request.postDataJSON()), 'createAccount') === true;
 
 const chatButton = (page: Page) => page.getByRole('button', { name: EN.chat_widget.open_widget });
 const chatIframe = (page: Page) => page.locator('#chat-iframe');
@@ -354,6 +358,32 @@ test.describe('Chat widget in Matrix mode: sign-in with a login token from dense
       .poll(() => page.frames().map((frame) => frame.url()))
       .toContain(`${ELEMENT}/${DEFAULT_ROOM_SCREEN}`);
     expect(loginTokenRequests).toEqual([]);
+    expect(ssoRedirects).toEqual([]);
+  });
+
+  test('CHAT-MATRIX-TOKEN-06: the warm-up of a user without a Matrix account makes no SSO redirect; opening the drawer signs in', async ({
+    page
+  }) => {
+    await page.route(LOGIN_TOKEN_ROUTE, (route) =>
+      createsAccount(route.request())
+        ? route.fulfill({ json: { loginToken: MINTED_LOGIN_TOKEN } })
+        : route.fulfill({ status: 404, json: { error: 'No Matrix account yet' } })
+    );
+    await openPage(page);
+
+    await expect.poll(() => loginTokenRequests.length, { timeout: IDLE_WARM_UP_TIMEOUT_MS }).toBe(1);
+    await expect(chatIframe(page)).toHaveCount(0);
+    await chatButton(page).hover();
+    await page.waitForTimeout(PAST_IDLE_WARM_UP_MS);
+    await expect(chatIframe(page)).toHaveCount(0);
+    expect(loginTokenRequests.map(createsAccount)).toEqual([false]);
+    expect(ssoRedirects).toEqual([]);
+
+    await chatButton(page).click();
+
+    const frame = await elementFrame(page);
+    expect(new URL(frame.url()).searchParams.get('loginToken')).toBe(MINTED_LOGIN_TOKEN);
+    expect(loginTokenRequests.map(createsAccount)).toEqual([false, true]);
     expect(ssoRedirects).toEqual([]);
   });
 });
