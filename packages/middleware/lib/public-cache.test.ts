@@ -18,8 +18,12 @@ const anonymousPage = (overrides: Partial<PageRequest> = {}): PageRequest => ({
   pathname: '/trending',
   searchParams: new URLSearchParams(),
   headers: new Headers({ accept: 'text/html' }),
-  cookieNames: [],
+  cookies: [],
   ...overrides
+});
+
+const withCookies = (...names: string[]): Partial<PageRequest> => ({
+  cookies: names.map((name) => ({ name, value: '1' }))
 });
 
 describe('isPublicCacheableRequest', () => {
@@ -41,14 +45,14 @@ describe('isPublicCacheableRequest', () => {
       '__cf_bm',
       '_cfuvid'
     ]) {
-      assert.equal(isPublicCacheableRequest(anonymousPage({ cookieNames: [name] })), true, name);
+      assert.equal(isPublicCacheableRequest(anonymousPage(withCookies(name))), true, name);
     }
-    assert.equal(isPublicCacheableRequest(anonymousPage({ cookieNames: ['session_uid', '_ga', '__cf_bm'] })), true);
+    assert.equal(isPublicCacheableRequest(anonymousPage(withCookies('session_uid', '_ga', '__cf_bm'))), true);
   });
 
   test('a cookie outside the allow list makes it not cacheable', () => {
     for (const name of ['foo', 'session_uid_extra', '_gax', 'login_challenge_server_x']) {
-      assert.equal(isPublicCacheableRequest(anonymousPage({ cookieNames: ['session_uid', name] })), false, name);
+      assert.equal(isPublicCacheableRequest(anonymousPage(withCookies('session_uid', name))), false, name);
     }
   });
 
@@ -68,11 +72,33 @@ describe('isPublicCacheableRequest', () => {
       'observer',
       'observer-no-own-lists',
       'account_info',
-      'NEXT_LOCALE',
       'api-sets'
     ]) {
-      assert.equal(isPublicCacheableRequest(anonymousPage({ cookieNames: ['session_uid', name] })), false, name);
+      assert.equal(isPublicCacheableRequest(anonymousPage(withCookies('session_uid', name))), false, name);
     }
+  });
+
+  test('a NEXT_LOCALE of the default language keeps it cacheable', () => {
+    const cookies = [
+      { name: 'session_uid', value: 'abc' },
+      { name: 'NEXT_LOCALE', value: 'en' }
+    ];
+    assert.equal(isPublicCacheableRequest(anonymousPage({ cookies })), true);
+  });
+
+  test('a NEXT_LOCALE of another language makes it not cacheable', () => {
+    for (const value of ['pl', 'ar', 'EN', 'en-US', '', 'xx']) {
+      const cookies = [{ name: 'NEXT_LOCALE', value }];
+      assert.equal(isPublicCacheableRequest(anonymousPage({ cookies })), false, value);
+    }
+  });
+
+  test('a default NEXT_LOCALE does not make a request with Authorization or a session cacheable', () => {
+    const locale = { name: 'NEXT_LOCALE', value: 'en' };
+    const headers = new Headers({ accept: 'text/html', Authorization: 'Bearer abc' });
+    assert.equal(isPublicCacheableRequest(anonymousPage({ headers, cookies: [locale] })), false);
+    const cookies = [locale, { name: 'blog_session', value: 'sealed' }];
+    assert.equal(isPublicCacheableRequest(anonymousPage({ cookies })), false);
   });
 
   test('other methods are not cacheable', () => {

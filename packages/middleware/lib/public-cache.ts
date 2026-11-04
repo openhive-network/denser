@@ -1,3 +1,4 @@
+import { DEFAULT_LOCALE, LOCALE_COOKIE } from '@hive/ui/lib/locale-cookie.ts';
 import type { IncomingMessage, OutgoingHttpHeader, OutgoingHttpHeaders, ServerResponse } from 'node:http';
 
 const DEFAULT_S_MAXAGE_S = 30;
@@ -12,7 +13,9 @@ export const NO_STORE_CACHE_CONTROL = 'private, no-cache, no-store, max-age=0, m
  * challenge (`<app>_login_challenge_server`, and the legacy readable `<app>_login_challenge` that
  * `/api/auth/challenge` clears), the log-correlation `session_uid`, Condenser's
  * `user_preferred_api_endpoint`, Google Analytics' and Cloudflare's. Any other cookie, the session,
- * observer, `account_info`, `NEXT_LOCALE` and `api-sets` among them, counts as personalizing.
+ * observer, `account_info` and `api-sets` among them, counts as personalizing, and so does a
+ * `NEXT_LOCALE` with any value but `DEFAULT_LOCALE`: the page cached for a URL is rendered in the
+ * default language, so only a visitor on it may be served that copy.
  */
 const NON_PERSONALIZING_COOKIES = new Set([
   'session_uid',
@@ -26,8 +29,10 @@ const NON_PERSONALIZING_COOKIES = new Set([
 ]);
 const NON_PERSONALIZING_COOKIE_PATTERN = /^(?:[A-Za-z0-9_-]*_login_challenge(?:_server)?|_ga(?:_[A-Za-z0-9]+)?|_gat(?:_[A-Za-z0-9]+)?)$/;
 
-const isNonPersonalizingCookie = (name: string): boolean =>
-  NON_PERSONALIZING_COOKIES.has(name) || NON_PERSONALIZING_COOKIE_PATTERN.test(name);
+const isNonPersonalizingCookie = ({ name, value }: RequestCookie): boolean =>
+  NON_PERSONALIZING_COOKIES.has(name) ||
+  NON_PERSONALIZING_COOKIE_PATTERN.test(name) ||
+  (name === LOCALE_COOKIE && value === DEFAULT_LOCALE);
 
 // The apps' `/public/:path*` rewrite (next.config.js) serves a path under `/public` as the path itself.
 const PUBLIC_PREFIX = /^\/public(?=\/|$)/i;
@@ -78,13 +83,18 @@ export function publicCacheControl(config: PublicCacheConfig): string {
   return `public, s-maxage=${config.sMaxAgeS}, stale-while-revalidate=${config.staleWhileRevalidateS}, stale-if-error=${config.staleIfErrorS}`;
 }
 
+export interface RequestCookie {
+  name: string;
+  value: string;
+}
+
 export interface PageRequest {
   method: string;
   /** Path without the app's base path. */
   pathname: string;
   searchParams: URLSearchParams;
   headers: Headers;
-  cookieNames: readonly string[];
+  cookies: readonly RequestCookie[];
 }
 
 /**
@@ -106,7 +116,7 @@ const resolvedRoute = (pathname: string): string | null => {
  * Whether the response to a request may be marked public: a GET or HEAD for a page document (not
  * an API route, also one reached through a rewrite, nor a client router request), sent without
  * `Authorization` and without any cookie outside the non-personalizing allow list, so the page
- * renders for the default observer. The status, the response's cookies and the raw URL's `_rsc`
+ * renders for the default observer in the default language. The status, the response's cookies and the raw URL's `_rsc`
  * are checked once rendered, by `installPublicCacheGuard`.
  */
 export function isPublicCacheableRequest(request: PageRequest): boolean {
@@ -119,7 +129,7 @@ export function isPublicCacheableRequest(request: PageRequest): boolean {
   for (const name of request.headers.keys()) {
     if (name === AUTHORIZATION_HEADER || name === RSC_HEADER || name.startsWith(ROUTER_HEADER_PREFIX)) return false;
   }
-  return request.cookieNames.every(isNonPersonalizingCookie);
+  return request.cookies.every(isNonPersonalizingCookie);
 }
 
 // What `publicCacheControl` writes. Static files are sent `public` too (with `max-age`), and their

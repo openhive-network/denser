@@ -3,6 +3,11 @@
  * `<html lang>` from it, so it is the only place the language is stored.
  */
 export const LOCALE_COOKIE = 'NEXT_LOCALE';
+/**
+ * The language every app renders without a cookie. A visitor on it carries no cookie, or one with this
+ * value, so the page stays the one a shared cache serves every anonymous visitor.
+ */
+export const DEFAULT_LOCALE = 'en';
 
 const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60;
 const EXPIRED = 'Thu, 01 Jan 1970 00:00:00 GMT';
@@ -60,10 +65,11 @@ export function writeLocaleCookie(locale: string): void {
  * Rewrites the language cookie as the one `path=/` cookie (a copy an older build scoped to this page's
  * path is invisible to the other apps of the origin, and indistinguishable here) and returns its value.
  * Keeps the value the server resolves when it is set (and in `accepted`, when given); otherwise
- * writes `fallback`.
+ * writes `fallback`. Without a cookie, a `fallback` of `DEFAULT_LOCALE` is returned and not written.
  */
 export function ensureLocaleCookie(fallback: string, accepted?: readonly string[]): string {
   const current = readLocaleCookie();
+  if (current === '' && fallback === DEFAULT_LOCALE) return fallback;
   const isUsable = current !== '' && (!accepted || accepted.includes(current));
   const locale = isUsable ? current : fallback;
   writeLocaleCookie(locale);
