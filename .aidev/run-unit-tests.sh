@@ -88,7 +88,7 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/lib/time-ago.test.ts packages/ui/lib/server-query-cache.test.ts \
     packages/ui/lib/site-url.test.ts packages/ui/lib/operation-mutation.test.ts \
     packages/ui/lib/account-name-rules.test.ts packages/ui/lib/asset-math.test.ts \
-    packages/ui/lib/memo-secret-check.test.ts \
+    packages/ui/lib/memo-secret-check.test.ts packages/ui/lib/common-instrumentation.test.ts \
     packages/ui/lib/storage-with-ttl-notify.test.ts packages/ui/lib/app-api-path.test.ts \
     packages/ui/lib/locale-cookie.test.ts packages/ui/lib/month-year.test.ts \
     packages/ui/lib/session-time.test.ts packages/ui/lib/user-cancelled.test.ts \

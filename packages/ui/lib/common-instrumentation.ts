@@ -1,3 +1,25 @@
+const DUMPED_PREFIXES = ['DENSER_', 'HIVE_', 'NEXT_PUBLIC_', 'REACT_APP_'];
+// These reach every visitor anyway: NEXT_PUBLIC_* is inlined into the client bundle and
+// REACT_APP_* is served to the browser at runtime, so their values are safe to log.
+// Every other variable (DENSER_SERVER_* holds the cookie password, OAuth and chat secrets)
+// is listed by name only.
+const VALUE_LOGGED_PREFIXES = ['NEXT_PUBLIC_', 'REACT_APP_'];
+
+/**
+ * The startup dump's lines for `env`: each Denser-related variable, sorted by name, with its
+ * value only when the variable is browser-public, and `<set>`, `<empty>` otherwise.
+ */
+export function formatStartupEnvironment(env: NodeJS.ProcessEnv): string[] {
+  return Object.keys(env)
+    .filter((key) => DUMPED_PREFIXES.some((prefix) => key.startsWith(prefix)))
+    .sort()
+    .map((key) => {
+      const value = env[key];
+      if (!value) return `${key}: <empty>`;
+      return VALUE_LOGGED_PREFIXES.some((prefix) => key.startsWith(prefix)) ? `${key}: ${value}` : `${key}: <set>`;
+    });
+}
+
 const dumpStartupEnvironment = () => {
   const executionEnv = process.env.NODE_ENV ?? 'test';
   const isProduction = executionEnv === 'production';
@@ -9,22 +31,8 @@ const dumpStartupEnvironment = () => {
   }
 
   console.log('Attempting to dump Denser specific environment variables (you can skip it by unsetting DENSER_SERVER_ENV_DUMP variable or set it to false');
-
-  const vars = Object.keys(process.env);
-  const filteredVars = vars.filter((key) => {
-    return key.startsWith('DENSER_') || key.startsWith('HIVE_') || key.startsWith('NEXT_PUBLIC_') || key.startsWith('REACT_APP_');
-  });
-
-  const env = filteredVars.sort().forEach((key) => {
-    const value = process.env[key];
-    if (value) {
-      console.log(`${key}: ${value}`);
-    } else {
-      console.log(`Variable ${key} is <undefined> !!!`);
-    }
-  });
-
-  console.log('Denser startup environment variables dump finsihed');
+  formatStartupEnvironment(process.env).forEach((line) => console.log(line));
+  console.log('Denser startup environment variables dump finished');
 };
 
 export async function commonRegister(appName: string): Promise<void> {
