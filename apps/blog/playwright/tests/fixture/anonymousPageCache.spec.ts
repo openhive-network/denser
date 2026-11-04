@@ -5,8 +5,8 @@ import { test, expect } from '../support/fixture-proxy-test';
  * Pages sent to a visitor without personalizing cookies may be stored by a shared cache.
  *
  * The middleware marks a page request public (packages/middleware/lib/public-cache.ts) when it
- * is a GET or HEAD document request without a `*_session`, `observer`, `observer-no-own-lists`,
- * `account_info` or `NEXT_LOCALE` cookie; the Node.js server sends no-store instead for any status
+ * is a GET or HEAD document request without `Authorization` and without a cookie outside the
+ * non-personalizing allow list, and its path, after the `/public` rewrite, is not an API route; the Node.js server sends no-store instead for any status
  * other than 200, a response that sets a cookie, or an `_rsc` URL (Next strips `_rsc` from the URL
  * the middleware sees). Everything else keeps Next's no-store.
  *
@@ -78,6 +78,25 @@ test.describe('Anonymous page responses — shared-cache headers', () => {
       const answer = await get('/trending', { cookie });
       expect(answer.status, cookie).toBe(200);
       expectNotPublic(answer, cookie);
+    }
+  });
+
+  test('PAGE-CACHE-05 — Authorization or a cookie outside the allow list is no-store, allowed cookies stay public', async () => {
+    for (const [what, headers] of [
+      ['Bearer token', { authorization: 'Bearer abc' }],
+      ['unknown cookie', { cookie: 'foo=bar' }]
+    ] as const) {
+      const answer = await get('/trending', headers);
+      expect(answer.status, what).toBe(200);
+      expectNotPublic(answer, what);
+    }
+    const allowed = await get('/trending', { cookie: 'session_uid=abc; _ga=GA1.1.1.1' });
+    expect(allowed.cacheControl).toBe(PUBLIC_CACHE_CONTROL);
+  });
+
+  test('PAGE-CACHE-06 — an API route reached through the /public rewrite with a Bearer token is no-store', async () => {
+    for (const path of ['/public/api/oauth/userinfo', '/api/oauth/userinfo']) {
+      expectNotPublic(await get(path, { authorization: 'Bearer abc' }), path);
     }
   });
 
