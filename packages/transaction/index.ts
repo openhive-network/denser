@@ -1044,23 +1044,20 @@ export class TransactionService {
       Math.pow(10, median_props.account_creation_fee.precision)
     ).toString();
     const fee = await getAsset(feeAmount, 'HIVE');
-    return (
-      await this.processHiveAppOperation((builder) => {
-        builder.pushOperation({
-          account_create_operation: {
-            fee,
-            active,
-            owner,
-            posting,
-            creator,
-            memo_key,
-            new_account_name,
-            json_metadata
-          }
-        });
-      }),
-      transactionOptions
-    );
+    return await this.processHiveAppOperation((builder) => {
+      builder.pushOperation({
+        account_create_operation: {
+          fee,
+          active,
+          owner,
+          posting,
+          creator,
+          memo_key,
+          new_account_name,
+          json_metadata
+        }
+      });
+    }, transactionOptions);
   }
 
   async newCommunityUpdate(
