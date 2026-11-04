@@ -1,5 +1,6 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
+import { CacheBudget } from './cache-budget';
 import { readFeedCacheConfig } from './feed-cache';
 import { createProfileCache, profileCacheKey } from './profile-cache';
 import type { IProfileRequest } from './profile-cache';
@@ -19,7 +20,12 @@ const request = (overrides: Partial<IProfileRequest> = {}): IProfileRequest => (
 const setup = (config = readFeedCacheConfig({})) => {
   let clock = 0;
   const loads: string[] = [];
-  const cache = createProfileCache<string>({ config, anonymousObserver: ANONYMOUS, now: () => clock });
+  const cache = createProfileCache<string>({
+    config,
+    budget: new CacheBudget(config.maxBytes),
+    anonymousObserver: ANONYMOUS,
+    now: () => clock
+  });
   const get = (req: IProfileRequest = request()) =>
     cache.get(req, async () => {
       loads.push(profileCacheKey(req));
@@ -90,8 +96,10 @@ describe('createProfileCache', () => {
   it('never serves a later request a value cacheIf rejects, and keeps serving the stale one', async () => {
     let clock = 0;
     const answers = ['good#1', 'degraded#2', 'good#3', 'degraded#4', 'good#5'];
+    const config = readFeedCacheConfig({});
     const cache = createProfileCache<string>({
-      config: readFeedCacheConfig({}),
+      config,
+      budget: new CacheBudget(config.maxBytes),
       anonymousObserver: ANONYMOUS,
       now: () => clock,
       cacheIf: (value) => !value.startsWith('degraded')

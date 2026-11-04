@@ -1,10 +1,15 @@
+import type { CacheBudget } from './cache-budget';
+
 export interface IStaleWhileRevalidateOptions<T> {
   /** How long a stored value is served without asking `load` again. */
   freshMs: number;
   /** How long past `freshMs` a value is still served while it is reloaded in the background. */
   staleMs: number;
-  /** Upper bound of the summed `sizeOf` of all stored values; least recently used ones go first. */
-  maxSize: number;
+  /**
+   * Caps the summed `sizeOf` of the stored values, together with those of every other cache
+   * sharing it; least recently used ones go first, whichever cache holds them.
+   */
+  budget: CacheBudget;
   sizeOf: (value: T) => number;
   /** Whether a loaded value may be stored (default: every one); a value it rejects only answers its own load. */
   cacheIf?: (value: T) => boolean;
@@ -15,13 +20,12 @@ export interface IStaleWhileRevalidateOptions<T> {
 
 interface IEntry<T> {
   value: T;
-  size: number;
   freshUntil: number;
   staleUntil: number;
 }
 
 /**
- * In-process cache with stale-while-revalidate semantics and a size cap.
+ * In-process cache with stale-while-revalidate semantics and a size cap (its budget).
  *
  * Only values `load` resolved, and `cacheIf` accepts, are stored: a rejected load is never cached,
  * it reaches the caller when no servable value exists, and otherwise leaves the stale value in place
@@ -32,7 +36,6 @@ interface IEntry<T> {
 export class StaleWhileRevalidateCache<T> {
   private readonly entries = new Map<string, IEntry<T>>();
   private readonly inFlight = new Map<string, Promise<T>>();
-  private totalSize = 0;
   private readonly now: () => number;
 
   constructor(private readonly options: IStaleWhileRevalidateOptions<T>) {
@@ -44,9 +47,7 @@ export class StaleWhileRevalidateCache<T> {
     const now = this.now();
     if (!entry || now >= entry.staleUntil) return this.load(key, load);
 
-    // Re-insert so Map order stays least-recently-used first.
-    this.entries.delete(key);
-    this.entries.set(key, entry);
+    this.options.budget.touch(entry);
     if (now >= entry.freshUntil && !this.inFlight.has(key)) {
       this.load(key, load).catch((error) => this.options.onRevalidateError?.(error, key));
     }
@@ -69,23 +70,18 @@ export class StaleWhileRevalidateCache<T> {
 
   private store(key: string, value: T): void {
     this.remove(key);
-    const size = this.options.sizeOf(value);
-    if (size > this.options.maxSize) return;
-
-    const now = this.now();
-    const freshUntil = now + this.options.freshMs;
-    this.entries.set(key, { value, size, freshUntil, staleUntil: freshUntil + this.options.staleMs });
-    this.totalSize += size;
-    for (const oldestKey of this.entries.keys()) {
-      if (this.totalSize <= this.options.maxSize) break;
-      this.remove(oldestKey);
-    }
+    const freshUntil = this.now() + this.options.freshMs;
+    const entry: IEntry<T> = { value, freshUntil, staleUntil: freshUntil + this.options.staleMs };
+    const evict = () => {
+      if (this.entries.get(key) === entry) this.entries.delete(key);
+    };
+    if (this.options.budget.admit(entry, this.options.sizeOf(value), evict)) this.entries.set(key, entry);
   }
 
   private remove(key: string): void {
     const entry = this.entries.get(key);
     if (!entry) return;
     this.entries.delete(key);
-    this.totalSize -= entry.size;
+    this.options.budget.release(entry);
   }
 }

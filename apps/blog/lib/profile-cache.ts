@@ -10,6 +10,7 @@ import { getAccountFull, getAccountReputations, getDynamicGlobalProperties } fro
 import { getLogger } from '@ui/lib/logging';
 import { getObserver } from './auth-utils';
 import { DEFAULT_OBSERVER } from './utils';
+import { getServerCacheBudget } from './server-cache-budget';
 import { keepObserverVotes } from './feed-entries';
 import type { CardEntry } from '@/blog/features/list-of-posts/lib/card-entry';
 import { toCardEntries } from '@/blog/features/list-of-posts/lib/to-card-entries';
@@ -34,6 +35,7 @@ declare global {
 const createCache = <T,>(cacheIf?: (value: T) => boolean): IProfileCache<T> =>
   createProfileCache<T>({
     config: readFeedCacheConfig(process.env),
+    budget: getServerCacheBudget(),
     anonymousObserver: DEFAULT_OBSERVER,
     cacheIf,
     onRevalidateError: (error, key) =>

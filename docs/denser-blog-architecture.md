@@ -119,13 +119,13 @@ The first page of a ranked feed (trending/hot/created/payout/muted, tag and comm
 |-----|---------|---------|
 | `DENSER_FEED_CACHE_TTL_S` | 30 | Seconds a feed is served without fetching; `0` turns the cache off |
 | `DENSER_FEED_CACHE_STALE_S` | 30 | Seconds past the TTL it is still served while reloaded in the background |
-| `DENSER_FEED_CACHE_MAX_MB` | 32 | Memory cap; least recently used feeds are dropped first |
+| `DENSER_FEED_CACHE_MAX_MB` | 32 | Memory cap of all the server caches together (feed, profile and community), in UTF-8 bytes of the cached JSON; least recently used entries of any of them are dropped first |
 
 A failed fetch is never stored. While a background reload fails the stale feed keeps being served (logged as a warning); past the stale window a failed fetch answers 503 as before. The cache is per process, so every server replica keeps its own. The pages themselves may be stored by a shared cache only as described under *Anonymous Page Responses* below.
 
 ### Anonymous Profile Cache (`lib/profile-cache.ts`)
 
-The profile layout's server reads (account, reputation, dynamic global properties) and the first page of a profile tab's posts use the same settings and the same anonymous-only rule, keyed by read, account and the chain id + API node (`packages/transaction/lib/profile-cache.ts`). The stale window is capped at the TTL, so profile data is served at most one TTL past fresh. Each of the four reads has its own cache with its own `DENSER_FEED_CACHE_MAX_MB` cap. `getProfileAccount` is also wrapped in React `cache()`, deduplicating `generateMetadata` and the layout within a request.
+The profile layout's server reads (account, reputation, dynamic global properties) and the first page of a profile tab's posts use the same settings and the same anonymous-only rule, keyed by read, account and the chain id + API node (`packages/transaction/lib/profile-cache.ts`). The stale window is capped at the TTL, so profile data is served at most one TTL past fresh. Each read has its own cache, but all of them, the feed cache and the community caches share one `DENSER_FEED_CACHE_MAX_MB` budget per process (`apps/blog/lib/server-cache-budget.ts`). `getProfileAccount` is also wrapped in React `cache()`, deduplicating `generateMetadata` and the layout within a request.
 
 The sort layout's community list (`bridge.list_communities`, `getCommunityList` in `lib/community-cache.ts`) and a community page's data (`getCommunityPageData`) use the same profile-cache rules.
 
