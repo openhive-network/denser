@@ -7,8 +7,6 @@ import RCRow from './rc-row';
 import { useTranslation } from '@/wallet/i18n/client';
 import { RC_SUMMARY_DECIMALS } from '@/wallet/feature/transfers-page/lib/rc-amount';
 
-const COLUMN_COUNT = 3;
-
 const RCTable = ({ account }: { account: string }) => {
   const { t } = useTranslation('common_wallet');
   const { data, isPending } = useQuery({
@@ -27,21 +25,19 @@ const RCTable = ({ account }: { account: string }) => {
 
   return (
     <div className="flex w-full flex-col" data-testid="wallet-rc-delegations">
-      {/* The heading labels the amount column, so each amount and the total sit under it at any width. */}
+      {/* One column under the heading: each row keeps its amount, delegatee and Revoke inside it at any width. */}
       <table className="w-full">
         <thead>
           <tr>
             <th scope="col" className="px-1 pb-2 font-normal sm:px-4">
               <h2 className="text-lg font-bold underline">{t('resource_credits.title')}</h2>
             </th>
-            <td />
-            <td />
           </tr>
         </thead>
         <tbody>
           {isPending ? (
             <tr>
-              <td colSpan={COLUMN_COUNT}>
+              <td>
                 <div className="flex h-48 items-center justify-center">
                   <CircleSpinner size={48} color="#dc2626" />
                 </div>
@@ -50,7 +46,7 @@ const RCTable = ({ account }: { account: string }) => {
           ) : data ? (
             data.list.length === 0 ? (
               <tr>
-                <td colSpan={COLUMN_COUNT} className="px-1 py-2 text-center text-sm sm:px-4">
+                <td className="px-1 py-2 text-center text-sm sm:px-4">
                   {t('resource_credits.no_delegations')}
                 </td>
               </tr>
@@ -66,7 +62,6 @@ const RCTable = ({ account }: { account: string }) => {
             <td className="px-1 pt-2 text-center text-sm sm:px-4" data-testid="wallet-rc-delegations-total">
               {t('resource_credits.total', { amount: prepareRC(data?.total ?? '0', t, RC_SUMMARY_DECIMALS) })}
             </td>
-            <td colSpan={COLUMN_COUNT - 1} />
           </tr>
         </tfoot>
       </table>

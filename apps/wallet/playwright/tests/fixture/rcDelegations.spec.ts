@@ -12,10 +12,11 @@ import {
 } from '../support/walletApiStub';
 
 /**
- * /@account/delegations shows each outgoing RC delegation (amount, delegatee) as one row of the
- * Resource Credits table, whose heading is the amount column's header: each amount and the total
- * below them sit in that column, and nothing of it in the HIVE POWER column. Revoke asks in a
- * dialog first and broadcasts one `delegate_rc` of zero RC once confirmed. The other reads come
+ * /@account/delegations shows each outgoing RC delegation (amount, delegatee, Revoke) as one row of
+ * the one-column Resource Credits table: each amount and the total below them sit centred under its
+ * heading, the delegatee and Revoke inside the same column, and nothing of it in the HIVE POWER
+ * column. Revoke asks in a dialog first and broadcasts one `delegate_rc` of zero RC once confirmed.
+ * The other reads come
  * from the stub node (support/walletApiStub.ts); the RC delegations call is answered by each test
  * through `page.route`, the broadcast and `verify_authority` by the interceptor.
  */
@@ -82,11 +83,16 @@ const delegationsPage = `${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/delegations`;
 const rcHeader = (page: Page) =>
   page.getByTestId('wallet-rc-delegations').getByRole('columnheader', { name: 'Resource Credits' });
 
-/** `cell` lies horizontally within the Resource Credits column header, centred under its heading. */
-const expectUnderRcHeader = async (page: Page, cell: Locator) => {
-  const [header, rect] = await Promise.all([box(rcHeader(page)), box(cell)]);
+/** `element` lies horizontally within the Resource Credits column header. */
+const expectWithinRcHeader = async (page: Page, element: Locator) => {
+  const [header, rect] = await Promise.all([box(rcHeader(page)), box(element)]);
   expect(rect.x).toBeGreaterThanOrEqual(header.x - 1);
   expect(rect.x + rect.width).toBeLessThanOrEqual(header.x + header.width + 1);
+};
+
+/** `cell` lies horizontally within the Resource Credits column header, centred under its heading. */
+const expectUnderRcHeader = async (page: Page, cell: Locator) => {
+  await expectWithinRcHeader(page, cell);
   const headingCentre = await centreX(page.getByRole('heading', { name: 'Resource Credits' }));
   const textCentre = await cell.evaluate((element) => {
     const range = document.createRange();
@@ -136,12 +142,19 @@ const openRcRevokeDialog = async (page: Page) => {
   return dialog;
 };
 
+/** The amount of the RC row centred under the heading, its delegatee and Revoke in the same column. */
+const expectRcRowInRcColumn = async (page: Page) => {
+  const row = page.getByTestId('wallet-rc-delegation-item');
+  await expectUnderRcHeader(page, row.getByTestId('wallet-rc-delegation-amount'));
+  await expectWithinRcHeader(page, row.getByTestId('wallet-rc-delegation-delegatee'));
+  await expectWithinRcHeader(page, row.getByRole('button', { name: 'Revoke' }));
+};
+
 /** The HIVE POWER column's right edge, from the row of the stub's HP delegation. */
 const hivePowerColumnRight = async (page: Page) => {
   const rect = await box(page.getByTestId('wallet-delegation-item'));
   return rect.x + rect.width;
 };
-
 
 test.describe('Wallet RC delegations', () => {
   test('WALLET-RC-DELEGATIONS-01 — an RC delegation and the total render in the Resource Credits column', async ({
@@ -154,15 +167,15 @@ test.describe('Wallet RC delegations', () => {
     const rcColumn = page.getByTestId('wallet-rc-delegations');
     const rcRows = page.getByTestId('wallet-rc-delegation-item');
     await expect(rcRows).toHaveCount(1);
-    await expect(rcRows.nth(0).getByRole('cell').nth(0)).toHaveText('0.20bil');
-    await expect(rcRows.nth(0).getByRole('cell').nth(1)).toHaveText(`@${RC_DELEGATEE}`);
+    await expect(rcRows.nth(0).getByTestId('wallet-rc-delegation-amount')).toHaveText('0.20bil');
+    await expect(rcRows.nth(0).getByTestId('wallet-rc-delegation-delegatee')).toHaveText(`@${RC_DELEGATEE}`);
     await expect(rcColumn.getByTestId('wallet-rc-delegations-total')).toHaveText('total: 0.20bil');
     await expect(page.getByTestId('wallet-delegation-item')).toContainText(STUB_DELEGATEE);
 
-    expect((await box(rcRows.nth(0).getByRole('cell').nth(0))).x).toBeGreaterThanOrEqual(
+    expect((await box(rcRows.nth(0).getByRole('cell'))).x).toBeGreaterThanOrEqual(
       await hivePowerColumnRight(page)
     );
-    await expectUnderRcHeader(page, rcRows.nth(0).getByRole('cell').nth(0));
+    await expectUnderRcHeader(page, rcRows.nth(0).getByTestId('wallet-rc-delegation-amount'));
     await expectTotalUnderRcHeader(page);
   });
 
@@ -190,11 +203,32 @@ test.describe('Wallet RC delegations', () => {
 
     await page.goto(delegationsPage);
 
-    const amount = page.getByTestId('wallet-rc-delegation-item').getByRole('cell').nth(0);
+    const amount = page.getByTestId('wallet-rc-delegation-item').getByTestId('wallet-rc-delegation-amount');
     await expect(amount).toHaveText('0.20bil');
     await expectUnderRcHeader(page, amount);
     await expectTotalUnderRcHeader(page);
   });
+
+  for (const [width, viewport] of [
+    ['desktop', { width: 1280, height: 900 }],
+    ['phone', PHONE_VIEWPORT]
+  ] as const) {
+    test(`WALLET-RC-DELEGATIONS-06 — on ${width} the owner's RC row keeps its delegatee and Revoke in the Resource Credits column`, async ({
+      page
+    }) => {
+      await page.setViewportSize(viewport);
+      await logInAsStubAccount(page, 'posting');
+      await routeRcDelegations(page, [RC_DELEGATION]);
+
+      await page.goto(delegationsPage);
+
+      await expect(
+        page.getByTestId('wallet-rc-delegation-item').getByRole('button', { name: 'Revoke' })
+      ).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+      await expectRcRowInRcColumn(page);
+      await expectTotalUnderRcHeader(page);
+    });
+  }
 
   test('WALLET-RC-DELEGATIONS-04 — confirming the revoke dialog broadcasts one delegate_rc of zero RC', async ({
     page

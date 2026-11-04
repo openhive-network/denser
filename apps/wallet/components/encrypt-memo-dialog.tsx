@@ -21,6 +21,7 @@ import { LoginType } from '@smart-signer/types/common';
 import { getAccount } from '@transaction/lib/hive-api';
 import { useTranslation } from '@/wallet/i18n/client';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { NATIVE_MEMO_SIGNER_NAME } from '@/wallet/lib/native-memo-signer-name';
 import { getLogger } from '@ui/lib/logging';
 
 const logger = getLogger('app');
@@ -124,13 +125,20 @@ const EncryptMemoDialog = ({
   };
 
   const nativeSignerLabelKey = NATIVE_SIGNER_ENCRYPT_LABEL_KEY[user.loginType];
+  // Named only when its button is offered: a safe-storage session has no extension to mention.
+  const offeredWalletName =
+    nativeSigner && nativeSignerLabelKey ? NATIVE_MEMO_SIGNER_NAME[user.loginType] : undefined;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]" onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>{t('transfers_page.encrypt_memo_title')}</DialogTitle>
-          <DialogDescription>{t('transfers_page.encrypt_memo_description')}</DialogDescription>
+          <DialogDescription>
+            {offeredWalletName
+              ? t('transfers_page.encrypt_memo_description_with_wallet', { wallet: offeredWalletName })
+              : t('transfers_page.encrypt_memo_description')}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4">
