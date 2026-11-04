@@ -378,17 +378,47 @@ const logoutFromReplacedWorker = async (workerUrl: string, logout: WorkerLogout)
 };
 
 /**
- * Runs `logout` in the online client's worker, and in every other running worker of this app. The
+ * How long a logout waits for the other running workers, at most: a worker that never answers keeps
+ * no logout pending, as the online client's worker was logged out of before
+ */
+const REPLACED_WORKERS_LOGOUT_TIMEOUT_MS = 10_000;
+
+/**
+ * Runs `logout` in every running worker of this app other than the one at `ownWorkerUrl`, resolving
+ * once each has settled or REPLACED_WORKERS_LOGOUT_TIMEOUT_MS passed. Never rejects.
+ */
+const logoutOfReplacedWorkers = async (ownWorkerUrl: string, logout: WorkerLogout): Promise<void> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const expired = new Promise<'expired'>((resolve) => {
+    timer = setTimeout(() => resolve('expired'), REPLACED_WORKERS_LOGOUT_TIMEOUT_MS);
+  });
+  const settled = otherRunningWorkers(ownWorkerUrl)
+    .then((replaced) => Promise.allSettled(replaced.map((workerUrl) => logoutFromReplacedWorker(workerUrl, logout))))
+    .then(() => 'settled' as const);
+  try {
+    if ((await Promise.race([settled, expired])) === 'expired')
+      logger.info('Stopped waiting for the logout of replaced HB-Auth workers after %d ms', REPLACED_WORKERS_LOGOUT_TIMEOUT_MS);
+  } catch (error: unknown) {
+    logger.info('Did not list the running HB-Auth workers to log out of: %s', error instanceof Error ? error.message : String(error));
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
+/**
+ * Runs `logout` in the online client's worker, then in every other running worker of this app. The
  * client is awaited first, so the worker a pending replacement replaces is among the others, logged
- * out of now rather than only locked once retired.
+ * out of now rather than only locked once retired. The others are logged out of even when the
+ * client, or its logout, fails; their failures are not reported. Rejects as the online client, or
+ * its logout, does.
  */
 const logoutOfRunningWorkers = async (logout: WorkerLogout): Promise<void> => {
   const clientPromise = getRenewingOnlineClient();
   const client = await clientPromise.catch(() => undefined);
-  const replaced = await otherRunningWorkers(client?.workerUrl ?? getWorkerUrl(onlineClientGeneration));
-  await Promise.all(replaced.map((workerUrl) => logoutFromReplacedWorker(workerUrl, logout)));
-  const current = await clientPromise;
-  await logout(current, current.workerUrl);
+  const currentLogout = clientPromise.then((current) => logout(current, current.workerUrl));
+  await currentLogout.catch(() => undefined);
+  await logoutOfReplacedWorkers(client?.workerUrl ?? getWorkerUrl(onlineClientGeneration), logout);
+  await currentLogout;
 };
 
 /**
