@@ -224,6 +224,15 @@ test.describe('Wallet Radix and cmdk primitives', () => {
     await expect(suggestion).toBeHidden();
     await expect(dialog).toBeVisible();
 
+    // Enter after Esc closed the list keeps the typed text: the hidden suggestion is not picked
+    await recipient.fill('stub-f');
+    await expect(suggestion).toBeVisible();
+    await recipient.press('Escape');
+    await expect(suggestion).toBeHidden();
+    await recipient.press('Enter');
+    await expect(recipient).toHaveValue('stub-f');
+    await expect(dialog).toBeVisible();
+
     await recipient.press('Escape');
     await expect(dialog).toBeHidden();
   });
