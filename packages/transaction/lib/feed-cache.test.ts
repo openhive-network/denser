@@ -1,7 +1,10 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
+import { CacheBudget } from './cache-budget';
 import { createFeedCache, feedCacheKey, readFeedCacheConfig } from './feed-cache';
 import type { IFeedRequest } from './feed-cache';
+import { createProfileCache } from './profile-cache';
+import type { IProfileRequest } from './profile-cache';
 
 const ANONYMOUS = 'hive.blog';
 const MAINNET = 'beeab0de|https://api.hive.blog';
@@ -18,13 +21,14 @@ const request = (overrides: Partial<IFeedRequest> = {}): IFeedRequest => ({
   ...overrides
 });
 
-const setup = (config = readFeedCacheConfig({})) => {
+const setup = (config = readFeedCacheConfig({}), budget = new CacheBudget(config.maxBytes)) => {
   let clock = 0;
   const loads: string[] = [];
   const revalidateErrors: unknown[] = [];
   let failNext = false;
   const cache = createFeedCache<string>({
     config,
+    budget,
     anonymousObserver: ANONYMOUS,
     now: () => clock,
     onRevalidateError: (error) => revalidateErrors.push(error)
@@ -188,5 +192,66 @@ describe('createFeedCache', () => {
     expect(loads).to.have.length(3);
     expect(await get(request({ sort: 'trending' }))).to.equal('posts#1');
     expect(await get(request({ sort: 'hot' }))).to.equal('posts#4');
+  });
+
+  it('sizes entries in UTF-8 bytes of their JSON', async () => {
+    const budget = new CacheBudget(1024);
+    const cache = createFeedCache<string>({ config: readFeedCacheConfig({}), budget, anonymousObserver: ANONYMOUS });
+    // 'żółw' is 4 UTF-16 code units but 7 UTF-8 bytes; with its quotes, 9.
+    await cache.get(request(), async () => 'żółw');
+    expect(budget.usedSize).to.equal(9);
+  });
+});
+
+describe('caches sharing one budget', () => {
+  const ENTRY = 'x'.repeat(98); // 100 bytes as JSON
+  const config = { ttlMs: 30_000, staleMs: 30_000, maxBytes: 1_000 };
+  const profileRequest = (account: string): IProfileRequest => ({
+    network: MAINNET,
+    read: 'account',
+    account,
+    observer: ANONYMOUS
+  });
+
+  it('never holds more than the configured maximum in all of them together', async () => {
+    const budget = new CacheBudget(config.maxBytes);
+    const options = { config, budget, anonymousObserver: ANONYMOUS };
+    const feeds = createFeedCache<string>(options);
+    const profiles = Array.from({ length: 7 }, () => createProfileCache<string>(options));
+    let loads = 0;
+    const load = async () => {
+      loads += 1;
+      return ENTRY;
+    };
+    for (let round = 0; round < 20; round += 1) {
+      await feeds.get(request({ tag: `t${round}` }), load);
+      expect(budget.usedSize).to.be.at.most(config.maxBytes);
+      for (const cache of profiles) {
+        await cache.get(profileRequest(`a${round}`), load);
+        expect(budget.usedSize).to.be.at.most(config.maxBytes);
+      }
+    }
+    expect(budget.usedSize).to.equal(config.maxBytes);
+    expect(loads).to.equal(160);
+  });
+
+  it('evicts the least recently used entry of any cache to make room', async () => {
+    const budget = new CacheBudget(250);
+    const feeds = createFeedCache<string>({ config, budget, anonymousObserver: ANONYMOUS });
+    const profiles = createProfileCache<string>({ config, budget, anonymousObserver: ANONYMOUS });
+    let loads = 0;
+    const load = async () => `${ENTRY}#${(loads += 1)}`.slice(-98);
+
+    const feed = await feeds.get(request(), load);
+    await profiles.get(profileRequest('alice'), load);
+    // Using the feed again leaves alice's profile the least recently used entry.
+    expect(await feeds.get(request(), load)).to.equal(feed);
+    await profiles.get(profileRequest('bob'), load);
+
+    expect(await feeds.get(request(), load)).to.equal(feed);
+    expect(loads).to.equal(3);
+    await profiles.get(profileRequest('alice'), load);
+    expect(loads).to.equal(4);
+    expect(budget.usedSize).to.equal(200);
   });
 });

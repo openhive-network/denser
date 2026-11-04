@@ -4,6 +4,7 @@ import { getPostsNamespace } from '@transaction/lib/lite-api';
 import { createFeedCache, readFeedCacheConfig, type IFeedCache } from '@transaction/lib/feed-cache';
 import { getLogger } from '@ui/lib/logging';
 import { DEFAULT_OBSERVER } from './utils';
+import { getServerCacheBudget } from './server-cache-budget';
 import { keepObserverVotes } from './feed-entries';
 import type { CardEntry } from '@/blog/features/list-of-posts/lib/card-entry';
 import { toCardEntries } from '@/blog/features/list-of-posts/lib/to-card-entries';
@@ -20,6 +21,7 @@ declare global {
 const getFeedCache = (): IFeedCache<FeedPage> =>
   (globalThis.denserFeedCache ??= createFeedCache<FeedPage>({
     config: readFeedCacheConfig(process.env),
+    budget: getServerCacheBudget(),
     anonymousObserver: DEFAULT_OBSERVER,
     onRevalidateError: (error, key) =>
       logger.warn(error, 'Feed cache: reloading %s failed, serving the stale feed', key)

@@ -5,6 +5,7 @@ import { readFeedCacheConfig } from '@transaction/lib/feed-cache';
 import { createProfileCache, type IProfileCache } from '@transaction/lib/profile-cache';
 import { getLogger } from '@ui/lib/logging';
 import { DEFAULT_OBSERVER } from './utils';
+import { getServerCacheBudget } from './server-cache-budget';
 import type { RenderedCommunityDescription } from '@/blog/features/layouts/community/rendered-description-context';
 import { renderCommunityDescription } from '@/blog/features/layouts/community/lib/render-community-description';
 
@@ -25,6 +26,7 @@ declare global {
 const createCommunityCache = <T,>(): IProfileCache<T> =>
   createProfileCache<T>({
     config: readFeedCacheConfig(process.env),
+    budget: getServerCacheBudget(),
     anonymousObserver: DEFAULT_OBSERVER,
     onRevalidateError: (error, key) =>
       logger.warn(error, 'Community cache: reloading %s failed, serving the stale value', key)
