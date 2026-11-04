@@ -2,7 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { logPageVisit } from './page-visit-logger';
 import { buildCsp, generateNonce, NONCE_HEADER, SECURITY_HEADERS, type CspConfig } from './csp';
-import { isPublicCacheableRequest, publicCacheControl, type PublicCacheConfig } from './public-cache';
+import {
+  isPublicCacheableRequest,
+  NO_STORE_CACHE_CONTROL,
+  publicCacheControl,
+  type PublicCacheConfig
+} from './public-cache';
 
 /**
  * Configuration options for the common middleware
@@ -25,7 +30,8 @@ export interface MiddlewareConfig {
 
   /**
    * If provided, pages requested without personalizing cookies are sent with a public
-   * `Cache-Control` (see `isPublicCacheableRequest`). The app must also install
+   * `Cache-Control` (see `isPublicCacheableRequest`), and a request with `Authorization` is sent
+   * `NO_STORE_CACHE_CONTROL` unless its route sets its own. The app must also install
    * `installPublicCacheGuard`, which takes it back for a response other than a cookie-less 200.
    */
   publicCache?: PublicCacheConfig;
@@ -87,6 +93,9 @@ export function createMiddleware(config: MiddlewareConfig = {}) {
 
     if (config.publicCache && config.publicCache.sMaxAgeS > 0 && isPublicCacheable(request, basePath)) {
       res.headers.set('Cache-Control', publicCacheControl(config.publicCache));
+    } else if (config.publicCache && request.headers.has('authorization')) {
+      // API routes send no Cache-Control of their own unless they set one
+      res.headers.set('Cache-Control', NO_STORE_CACHE_CONTROL);
     }
 
     if (pathname.match('/((?!api|_next/static|_next/image|favicon.ico).*)')) {
