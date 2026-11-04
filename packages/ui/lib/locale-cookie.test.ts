@@ -3,12 +3,15 @@ import assert from 'node:assert/strict';
 import { ensureLocaleCookie, readLocaleCookie, writeLocaleCookie } from './locale-cookie.ts';
 
 /**
- * A path-aware cookie jar standing in for `document.cookie`: a cookie is keyed by name and path, and
- * reading lists the ones visible at `location.pathname`, longest path first, as browsers do.
+ * A path-aware cookie jar standing in for `document.cookie`: a cookie is keyed by name, domain and path,
+ * and reading lists the ones visible at `location.pathname`, longest path first, as browsers do. Like
+ * browsers, the last of a repeated attribute wins, an empty `path` falls back to the default path and
+ * `max-age` takes precedence over `expires`.
  */
 class CookieJar {
-  private cookies = new Map<string, { name: string; value: string; path: string }>();
+  private cookies = new Map<string, { name: string; value: string; path: string; domain?: string }>();
   pathname = '/';
+  written: string[] = [];
 
   private defaultPath() {
     const lastSlash = this.pathname.lastIndexOf('/');
@@ -24,25 +27,34 @@ class CookieJar {
   }
 
   set cookie(header: string) {
+    this.written.push(header);
     const [pair, ...attributes] = header.split(';').map((part) => part.trim());
     const [name, value] = pair.split('=');
     const attribute = (key: string) =>
-      attributes.find((part) => part.toLowerCase().startsWith(`${key}=`))?.split('=')[1];
-    const path = attribute('path') ?? this.defaultPath();
+      attributes.findLast((part) => part.toLowerCase().startsWith(`${key}=`))?.split('=')[1];
+    const path = attribute('path') || this.defaultPath();
+    const domain = attribute('domain') || undefined;
+    const maxAge = attribute('max-age');
     const expires = attribute('expires');
-    if (expires && new Date(expires).getTime() < Date.now()) {
-      this.cookies.delete(`${name}|${path}`);
+    const isExpired =
+      maxAge !== undefined ? Number(maxAge) <= 0 : expires !== undefined && new Date(expires).getTime() < Date.now();
+    const key = `${name}|${domain ?? ''}|${path}`;
+    if (isExpired) {
+      this.cookies.delete(key);
     } else {
-      this.cookies.set(`${name}|${path}`, { name, value, path });
+      this.cookies.set(key, { name, value, path, domain });
     }
   }
 
   stored() {
-    return [...this.cookies.values()].map(({ name, value, path }) => `${name}=${value}@${path}`).sort();
+    return [...this.cookies.values()]
+      .map(({ name, value, path, domain }) => `${name}=${value}@${domain ?? ''}${path}`)
+      .sort();
   }
 
   clear() {
     this.cookies.clear();
+    this.written = [];
   }
 }
 
@@ -88,6 +100,32 @@ describe('writeLocaleCookie', () => {
     jar.pathname = '/wallet/@alice';
     writeLocaleCookie('es');
     assert.deepEqual(jar.stored(), ['NEXT_LOCALE=es@/']);
+  });
+
+  it('still expires stale copies scoped to every ancestor of a normal path', () => {
+    jar.pathname = '/blog/@alice/posts';
+    jar.cookie = 'NEXT_LOCALE=pl; path=/blog';
+    jar.cookie = 'NEXT_LOCALE=es; path=/blog/@alice';
+    jar.cookie = 'NEXT_LOCALE=fr; path=/blog/@alice/posts';
+    writeLocaleCookie('en');
+    assert.deepEqual(jar.stored(), ['NEXT_LOCALE=en@/']);
+  });
+
+  it('keeps cookie attributes in a path segment out of the cookies it writes', () => {
+    jar.pathname = '/blog/x;max-age=31536000;domain=example.com;path=';
+    jar.cookie = 'NEXT_LOCALE=pl; path=/blog';
+    writeLocaleCookie('en');
+    assert.deepEqual(jar.stored(), ['NEXT_LOCALE=en@/']);
+  });
+
+  it('expires only the safe prefixes of a path with a comma, whitespace or control character', () => {
+    for (const segment of ['a,b', 'a b', 'a\tb', 'a\u0000b']) {
+      jar.clear();
+      jar.pathname = `/blog/${segment}`;
+      writeLocaleCookie('en');
+      const paths = jar.written.map((header) => header.match(/; path=([^;]*)/)?.[1]);
+      assert.deepEqual(paths, ['/blog', '/'], JSON.stringify(segment));
+    }
   });
 });
 
