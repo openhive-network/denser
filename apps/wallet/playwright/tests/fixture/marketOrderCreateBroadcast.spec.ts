@@ -1,6 +1,7 @@
 import type { Server } from 'node:http';
 import { test, expect, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
+import { FIXTURE_API_PORT } from '../support/apiStub';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
 import { openOtherTab, signOutInTab } from '../support/otherTab';
 import { expectLimitOrderCreateOperation, naiAsset } from '../support/walletOperations';
@@ -109,20 +110,19 @@ test.describe('Market limit order create broadcast', () => {
     });
   });
 
-  test('WALLET-TX-ORDER-CREATE-03 — an amount finer than 0.001 HIVE is rejected and nothing is broadcast', async ({
+  test('WALLET-TX-ORDER-CREATE-03 — an amount finer than 0.001 HIVE is rejected, nothing is broadcast and OK works again', async ({
     page
   }) => {
     const broadcasts = await installBroadcastInterceptor(page);
     await fillMarketForm(page, 'buy-form', '1.2345', '0.310');
-
-    const rejected = page.waitForEvent('pageerror', {
-      predicate: (error) => error.message.includes('maximum of 3 decimal places in HIVE amount')
-    });
     await confirmOrder(page, 'buy-form');
-    await rejected;
 
-    await expect(page.getByTestId('buy-form-dialog')).toBeVisible();
+    await expect(page.getByTestId('error-toast-content')).toContainText('maximum of 3 decimal places in HIVE amount');
+    await expect(page.getByTestId('buy-form-dialog')).toBeHidden();
     expect(broadcasts.calls).toHaveLength(0);
+
+    await page.getByTestId('buy-form-submit-button').click();
+    await expect(page.getByTestId('buy-form-dialog-ok')).toBeEnabled();
   });
 
   test('WALLET-TX-ORDER-CREATE-04 — an order confirmed after a sign-out in another tab is refused as signed out, unsent', async ({
@@ -138,5 +138,39 @@ test.describe('Market limit order create broadcast', () => {
 
     await expect(page.getByTestId('signed-out-message')).toHaveText('You are signed out. Sign in and try again.');
     expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-ORDER-CREATE-05 — clicks on OK while the order is in flight place one order', async ({ page }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    let heldBroadcasts = 0;
+    let releaseBroadcast = () => {};
+    const broadcastHeld = new Promise<void>((resolve) => {
+      releaseBroadcast = resolve;
+    });
+    // Registered after the interceptor, so it runs first: holds each broadcast, then hands it on.
+    await page.route(
+      (url) => url.hostname === '127.0.0.1' && url.port === String(FIXTURE_API_PORT),
+      async (route) => {
+        if ((route.request().postData() ?? '').includes('broadcast_transaction')) {
+          heldBroadcasts += 1;
+          await broadcastHeld;
+        }
+        await route.fallback();
+      }
+    );
+    await fillMarketForm(page, 'buy-form', '9', '2.259');
+    await page.getByTestId('buy-form-submit-button').click();
+
+    const ok = page.getByTestId('buy-form-dialog-ok');
+    await ok.click({ clickCount: 3 });
+    await expect(ok).toBeDisabled();
+    await ok.click({ force: true });
+    await expect.poll(() => heldBroadcasts).toBe(1);
+
+    releaseBroadcast();
+    await broadcasts.waitForCount(1);
+    await expect(page.getByTestId('buy-form-dialog')).toBeHidden();
+    expect(heldBroadcasts).toBe(1);
+    expect(broadcasts.calls).toHaveLength(1);
   });
 });
