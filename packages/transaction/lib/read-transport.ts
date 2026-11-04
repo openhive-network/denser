@@ -96,6 +96,53 @@ export const isRestApiUnavailable = (error: unknown, path: readonly string[] = [
   return !isRequestRejected(error.status);
 };
 
+/**
+ * Node's error codes (`error.code` of the failure `fetch` wraps) for a request that never reached
+ * the node's server: the connection was refused or reset, its address did not resolve or could not
+ * be routed to, or TLS could not be set up. A timeout is none of them.
+ */
+const CONNECTION_FAILURE_CODES = new Set([
+  'ECONNREFUSED',
+  'ECONNRESET',
+  'EHOSTUNREACH',
+  'ENETUNREACH',
+  'ENOTFOUND',
+  'EAI_AGAIN',
+  'EPIPE',
+  'EPROTO',
+  'UND_ERR_SOCKET',
+  'CERT_HAS_EXPIRED',
+  'DEPTH_ZERO_SELF_SIGNED_CERT',
+  'SELF_SIGNED_CERT_IN_CHAIN',
+  'UNABLE_TO_VERIFY_LEAF_SIGNATURE',
+  'UNABLE_TO_GET_ISSUER_CERT_LOCALLY'
+]);
+
+const isConnectionFailureCode = (code: unknown): boolean =>
+  typeof code === 'string' &&
+  (CONNECTION_FAILURE_CODES.has(code) || code.startsWith('ERR_TLS_') || code.startsWith('ERR_SSL_'));
+
+const isObject = (value: unknown): value is object => typeof value === 'object' && value !== null;
+
+/** Deepest `cause` followed; the chain of a failed request is three errors long. */
+const MAX_CAUSE_DEPTH = 5;
+
+/**
+ * Whether a failed request (a `ReadTransportError` or wax's `WaxRequestError`, both keeping the
+ * failure of `fetch` as `cause`) could not connect to the node at all (see
+ * CONNECTION_FAILURE_CODES), so no other API of the node can be reached either. False for a
+ * timeout, an HTTP status, a malformed body, and for a browser's network failure, which carries
+ * no code to tell it from a CORS rejection.
+ */
+export const isConnectionFailure = (error: unknown): boolean => {
+  let current = error;
+  for (let depth = 0; depth <= MAX_CAUSE_DEPTH && isObject(current); depth += 1) {
+    if (isConnectionFailureCode(Reflect.get(current, 'code'))) return true;
+    current = Reflect.get(current, 'cause');
+  }
+  return false;
+};
+
 const describeRequest = (request: IReadRequest): string => `"${request.method} ${request.endpoint + request.url}"`;
 
 const parseBody = (request: IReadRequest, status: number, text: string): unknown => {

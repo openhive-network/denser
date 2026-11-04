@@ -48,8 +48,9 @@ export const getBrowserFallbackNodes = (): string[] =>
 
 const getFallbackNodes = (): string[] => (isServer ? getServerFallbackNodes() : getBrowserFallbackNodes());
 
-// One record for the whole process (or browser tab): once any call finds a node dead, every chain
-// skips it.
+// One record for the whole process (or browser tab), per node and API family: once a call finds a
+// node failing for its family, every chain skips the node for that family, and for every family
+// once it could not connect to the node at all.
 const nodeHealth = new NodeHealth();
 
 // A call served by another node means the selected one is down: switch every later call to the node
@@ -81,9 +82,10 @@ const sharedFailover: TReadFailover = { health: nodeHealth, routeFor: apiSetRout
 
 // A reader's search is a heavy query a node may be slow on while it serves every other call well:
 // it keeps a health record of its own and reports nothing to the API sets, so a slow search never
-// moves anyone else's calls away from a node.
+// moves anyone else's calls away from a node. Its record consults the shared one, so a search does
+// not spend its attempt on a node every other call already knows is down.
 const searchFailover: TReadFailover = {
-  health: new NodeHealth(),
+  health: new NodeHealth({ consults: nodeHealth }),
   routeFor: async (root, path, configured) => {
     const route = await apiSetRouting.routeCall(root, path, configured);
     return route && { nodes: route.nodes, family: route.family };
@@ -204,7 +206,8 @@ export const getReadChain = (): ReadChain => readChainWith(sharedFailover);
 /**
  * Read client for a reader's search (`search-api.find_text`): it fails over like `getReadChain()`,
  * but asks each node once without hedging and keeps its own health record, so a slow search leaves
- * the nodes every other call uses as they were.
+ * the nodes every other call uses as they were. It skips the nodes that record or the shared one
+ * marks down.
  */
 export const getSearchReadChain = (): ReadChain => readChainWith(searchFailover).withTimeout(SEARCH_TIMEOUT_MS);
 

@@ -1,7 +1,7 @@
 import { getLogger } from '@ui/lib/logging';
 import type { NodeHealth, TNodeAdmission } from './node-health';
 import { isApiNotServedError } from './read-client';
-import { isEndpointMissing } from './read-transport';
+import { isConnectionFailure, isEndpointMissing } from './read-transport';
 
 const logger = getLogger('app');
 
@@ -114,7 +114,11 @@ export interface IServerFailoverOptions<T extends IFailoverChain<T>> {
   ) => Promise<IFailoverRoute | undefined>;
   /** Builds a chain that sends JSON-RPC and REST calls to `node` with the given request timeout. */
   createNodeChain: (node: string, timeoutMs: number) => T;
-  /** Node health shared by every chain of the process, so a dead node is skipped by all of them. */
+  /**
+   * Node health the chain records each node's outcomes in and skips the nodes down in. The process
+   * shares one record between its chains, so a dead node is skipped by all of them; a reader's
+   * search keeps a record of its own that only consults the shared one.
+   */
   health: NodeHealth;
   /**
    * Whether a failed call may be retried elsewhere. Defaults to wax's `isTransportError`; a chain
@@ -145,6 +149,11 @@ interface IFailoverCall<T> {
   chainEndpoint: string;
   /** The `health` key recording whether `node` serves this call. */
   healthKey: (node: string) => string;
+  /**
+   * The `health` key recording that `node` could not be connected to at all, which every call
+   * given it skips the node for; without it a connection failure is recorded under `healthKey` only.
+   */
+  unreachableKey?: (node: string) => string;
   invoke: (target: T) => Promise<unknown>;
   /** Whether a failure means the node could not serve the call, so another node may. */
   isNodeFailure: (error: unknown) => boolean | Promise<boolean>;
@@ -185,6 +194,13 @@ export const restApiHealthKey = (node: string, apiName: string): string => `${no
 export const jsonRpcHealthKey = (node: string, family: string): string => `${node}/${family}`;
 
 /**
+ * The `health` key recording that `node` refused or dropped the connection (see
+ * `isConnectionFailure`), so that its JSON-RPC calls of every family skip it, e.g.
+ * `https://api.example.com/unreachable`.
+ */
+const nodeUnreachableKey = (node: string): string => `${node}/unreachable`;
+
+/**
  * Parses a whitespace/comma-separated node list (the `REACT_APP_ALLOWED_HIVE_API_NODES` format) into
  * distinct origins, dropping `excluded` entries (e.g. the images host, which is listed for CSP but is
  * not an API node) and anything that is not an http(s) URL.
@@ -218,7 +234,10 @@ export function parseFallbackNodes(
  * was still silent when a node asked after it answered, is marked down in `health` for the call's
  * API family (the route's `family`, else the namespace: `<node>/core`, `<node>/search-api`) and
  * skipped by later calls of that family until its cooldown ends or its late answer arrives, so a
- * query one API of a node is slow on leaves every other API of the node in use; when every node is
+ * query one API of a node is slow on leaves every other API of the node in use. A node whose last
+ * attempt could not connect at all (see `isConnectionFailure`) is marked down for the node as well
+ * (`<node>/unreachable`), which calls of every family skip it for, so a dead node costs each
+ * family no attempt of its own; when every node is
  * down, all are tried, the most recently healthy first. A definitive API answer (e.g. "post does not
  * exist") is never retried. When every attempt fails, the last transport error is rethrown. A call
  * of a namespace only some nodes serve (`lite.*`) also moves on when the node answers "Api not found".
@@ -318,9 +337,14 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     const configuredNodes = [...new Set(call.nodes)];
     const [primary] = configuredNodes;
     const nodeByKey = new Map(configuredNodes.map((node) => [healthKey(node), node]));
+    const unreachableKeyOf = (node: string): string | undefined => call.unreachableKey?.(node);
+    const isSkipped = (node: string): boolean => {
+      const unreachable = unreachableKeyOf(node);
+      return health.isDown(healthKey(node)) || (unreachable !== undefined && health.isDown(unreachable));
+    };
     // Skipping every node would fail the call without asking anyone, so then all of them are tried,
     // the one that answered last first: it is likelier to be back than a node that never answered.
-    const sweepAll = [...nodeByKey.keys()].every((key) => health.isDown(key));
+    const sweepAll = configuredNodes.every(isSkipped);
     const nodes = sweepAll
       ? health.byRecentHealth([...nodeByKey.keys()]).flatMap((key) => nodeByKey.get(key) ?? [])
       : configuredNodes;
@@ -331,11 +355,30 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     let failures = 0;
     let lastError: unknown;
 
+    // A node is asked once neither its family nor the node itself is down; the call probes it when
+    // either cooldown has just passed. The family is checked first so that a node still down for it
+    // does not use up the probe of the node.
+    const admitNode = (node: string): TNodeAdmission | undefined => {
+      if (health.isDown(healthKey(node))) return undefined;
+      const unreachable = unreachableKeyOf(node);
+      const reach = unreachable === undefined ? 'healthy' : health.admit(unreachable);
+      if (!reach) return undefined;
+      const family = health.admit(healthKey(node));
+      return reach === 'probe' || family === 'probe' ? 'probe' : family;
+    };
+
+    const markUp = (node: string): void => {
+      health.markUp(healthKey(node));
+      const unreachable = unreachableKeyOf(node);
+      if (unreachable !== undefined) health.markUp(unreachable);
+    };
+
     // Every attempt on one node, in turn. It also runs on after another node served the call, so
     // its outcome still updates `health`, but it starts no retry then.
     const runNode = async (node: string, admission: TNodeAdmission): Promise<TNodeOutcome> => {
       const nodeStartedAt = now();
       let notServed = false;
+      let nodeError: unknown;
       for (const [index, target] of attemptsOn(call, node, admission).entries()) {
         if (index > 0) {
           await sleep(RETRY_DELAY_MS);
@@ -343,21 +386,26 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
         }
         try {
           const value = await call.invoke(target());
-          health.markUp(healthKey(node));
+          markUp(node);
           call.report?.(node, { ok: true, latencyMs: now() - nodeStartedAt });
           return { kind: 'served', value };
         } catch (error) {
           if (!(await call.isNodeFailure(error))) {
-            health.markUp(healthKey(node));
+            markUp(node);
             call.report?.(node, { ok: true, latencyMs: now() - nodeStartedAt });
             return { kind: 'answered', error };
           }
           failures += 1;
           lastError = error;
+          nodeError = error;
           notServed = call.isApiNotServed(error);
         }
       }
       health.markDown(healthKey(node));
+      // A node that could not be connected to cannot serve any family either; a node that was only
+      // slow may still serve the others, so a timeout stays recorded for this family alone.
+      const unreachable = unreachableKeyOf(node);
+      if (unreachable !== undefined && isConnectionFailure(nodeError)) health.markDown(unreachable);
       const error = notServed ? 'apiNotFound' : 'transport';
       call.report?.(node, { ok: false, error, latencyMs: now() - nodeStartedAt });
       return { kind: 'failed' };
@@ -368,7 +416,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     const startNextNode = (): boolean => {
       while (nextIndex < nodes.length && tried.length < maxNodes) {
         const node = nodes[nextIndex++];
-        const admission = sweepAll ? 'healthy' : health.admit(healthKey(node));
+        const admission = sweepAll ? 'healthy' : admitNode(node);
         if (!admission) continue;
         tried.push(node);
         running.set(node, runNode(node, admission).then((outcome) => ({ node, outcome })));
@@ -439,6 +487,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
       nodes: route?.nodes ?? configuredNodesOf(chain.endpointUrl),
       chainEndpoint: chain.endpointUrl,
       healthKey: (node) => jsonRpcHealthKey(node, family),
+      unreachableKey: nodeUnreachableKey,
       invoke: (target) => callOn(target.api, 'api', path, args),
       isNodeFailure: isOptional
         ? async (error) => isApiNotServedError(error) || (await isTransportError(error))
