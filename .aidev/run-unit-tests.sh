@@ -220,6 +220,7 @@ junit="$PWD/test-results/unit/wallet.xml"
 run_with_junit_fallback "$junit" wallet node --test \
     --test-reporter=spec --test-reporter-destination=stdout \
     --test-reporter=junit --test-reporter-destination="$junit" \
+    apps/wallet/i18n/settings.test.ts \
     apps/wallet/lib/history-filter.test.ts \
     apps/wallet/lib/transfer-suggestions.test.ts \
     apps/wallet/feature/delegations/lib/incoming-delegations.test.ts \

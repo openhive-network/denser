@@ -3,6 +3,15 @@ export const languages = ['ar', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 
 export const defaultNS = 'common_wallet';
 export const cookieName = 'NEXT_LOCALE';
 
+/**
+ * The language the wallet renders for a `NEXT_LOCALE` cookie value: the value when the wallet has
+ * translations for it, else `defaultLocale`. The cookie is shared with the other apps of the origin,
+ * so it can name a language only they support.
+ */
+export function resolveLocale(cookieValue: string | undefined): string {
+  return cookieValue && languages.includes(cookieValue) ? cookieValue : defaultLocale;
+}
+
 export function getOptions(lng = defaultLocale, ns = defaultNS) {
   return {
     supportedLngs: languages,
