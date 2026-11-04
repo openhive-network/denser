@@ -12,6 +12,7 @@
     "indexing_timeout": "Se agotó el tiempo de indexación de la publicación. Es posible que aparezca en breve; prueba a recargar la página.",
     "reload_page": "Recargar página",
     "reconnecting": "Reconectando…",
+    "could_not_load": "No se pudo cargar esta página. Intenta recargarla dentro de un rato.",
     "something_went_wrong": "Algo salió mal",
     "unavailable_for_legal_reasons": "No disponible por razones legales",
     "time_ago": {

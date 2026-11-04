@@ -12,6 +12,7 @@
     "indexing_timeout": "게시물 인덱싱 시간이 초과되었습니다. 게시물이 곧 표시될 수 있습니다. 페이지를 새로고침해 보세요.",
     "reload_page": "페이지 새로고침",
     "reconnecting": "다시 연결하는 중…",
+    "could_not_load": "이 페이지를 불러오지 못했습니다. 잠시 후 다시 새로고침해 주세요.",
     "something_went_wrong": "문제가 발생했습니다",
     "unavailable_for_legal_reasons": "법적 사유로 이용할 수 없음",
     "time_ago": {

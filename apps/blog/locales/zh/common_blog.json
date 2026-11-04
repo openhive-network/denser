@@ -12,6 +12,7 @@
     "indexing_timeout": "帖子索引超时。你的帖子可能很快就会出现——请尝试刷新页面。",
     "reload_page": "重新加载页面",
     "reconnecting": "正在重新连接…",
+    "could_not_load": "无法加载此页面。请稍后重新加载。",
     "something_went_wrong": "出了点问题",
     "unavailable_for_legal_reasons": "因法律原因不可用",
     "time_ago": {

@@ -12,6 +12,7 @@
     "indexing_timeout": "Tempo scaduto per l'indicizzazione del post. Il post potrebbe comparire a breve: prova a ricaricare la pagina.",
     "reload_page": "Ricarica la pagina",
     "reconnecting": "Riconnessione…",
+    "could_not_load": "Impossibile caricare questa pagina. Prova a ricaricarla tra un po'.",
     "something_went_wrong": "Qualcosa è andato storto",
     "unavailable_for_legal_reasons": "Non disponibile per motivi legali",
     "time_ago": {

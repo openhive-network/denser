@@ -12,6 +12,7 @@
     "indexing_timeout": "Upłynął limit czasu indeksowania posta. Twój post może wkrótce się pojawić — spróbuj odświeżyć stronę.",
     "reload_page": "Odśwież stronę",
     "reconnecting": "Ponowne łączenie…",
+    "could_not_load": "Nie udało się wczytać tej strony. Spróbuj odświeżyć ją za chwilę.",
     "something_went_wrong": "Coś poszło nie tak",
     "unavailable_for_legal_reasons": "Niedostępne z przyczyn prawnych",
     "time_ago": {
