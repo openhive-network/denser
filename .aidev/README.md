@@ -147,9 +147,16 @@ the `full` slot's `fixture_e2e` suite, which runs a production build.
 a post, a profile, a community). Switch it:
 
 ```bash
-curl -s -X PUT "$DENSER_DEV_FIXTURE_URL/__aidev/fixture-set/loggedInUserProfile"
+curl -s -X PUT -H "x-aidev-fixture-token: $(.aidev/dev-stack-token.sh)" \
+  "$DENSER_DEV_FIXTURE_URL/__aidev/fixture-set/loggedInUserProfile"
 curl -s "$DENSER_DEV_FIXTURE_URL/__aidev/status"
 ```
+
+The proxy's control requests are for scripts: one carrying an `Origin` header
+(any a web page sends) answers 403, and every one but `GET /__aidev/status` needs
+the stack's token, which the proxy generates at each start and
+`.aidev/dev-stack-token.sh` prints. A stack started from a tree older than the
+token has none and ignores the header; it needs it once restarted.
 
 Recordings are the directories of `apps/blog/playwright/tests/mock/fixtures/`.
 
@@ -272,8 +279,8 @@ not the blog. A switched recording can turn it into an error page, and a
 `dev-stack-spec.sh` run killed before its cleanup leaves the proxy relaying to
 a worker proxy that is gone, so every API call answers 503. The next
 `dev-stack-spec.sh` run puts the stack's recording (`FIXTURE_SET`) back;
-`curl -X PUT "$DENSER_DEV_FIXTURE_URL/__aidev/fixture-set/ssrChecks"` does it
-by hand. Each start of next dev writes a new id to `.next/aidev-dev-boot`, and
+`curl -X PUT -H "x-aidev-fixture-token: $(.aidev/dev-stack-token.sh)" "$DENSER_DEV_FIXTURE_URL/__aidev/fixture-set/ssrChecks"`
+does it by hand. Each start of next dev writes a new id to `.next/aidev-dev-boot`, and
 `blog-ready` warms the routes again for a restarted server.
 
 **When things change.** Source edits hot-reload. A change to `pnpm-lock.yaml` or a
@@ -477,7 +484,9 @@ gate until the map has a recall record.
 
 **Opt-in: the fixture suite through the stack.** Set
 `DENSER_FIXTURE_VIA_STACK=1`, and bring up the `fixture-relay` profile's
-`fixture-proxy` and `blog` services. With these, the stack's `blog` serves the
+`fixture-proxy` and `blog` services, with the same `DENSER_FIXTURE_PROXY_TOKEN`
+in the compose environment and the suite's (the proxy's control token, any
+random string). With these, the stack's `blog` serves the
 build, and its `fixture-proxy` relays the server side's API calls to the
 workers' proxies in the suite container. It is off by default and AIDEV never
 starts those services. On the same tree (steem-17, 2026-09-30):

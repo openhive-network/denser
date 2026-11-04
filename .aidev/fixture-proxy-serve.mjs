@@ -30,8 +30,19 @@
 // the proxy answers a JSON-RPC error, the shape a replay MISS has, so the blog renders
 // its error states rather than hanging.
 //
+// The /__aidev/ control routes are for scripts, not pages: a request carrying an
+// Origin header (every browser sends one on a POST, PUT or DELETE) is refused with
+// 403, and their replies carry no CORS header. Every control request but
+// `GET /__aidev/status` must also carry the stack's token as
+// `x-aidev-fixture-token: <token>`, else 403. The token is $AIDEV_FIXTURE_TOKEN, or
+// one generated at start; with $AIDEV_FIXTURE_TOKEN_FILE set it is written there
+// (mode 0600) for the stack's clients to read. Status stays tokenless so that
+// healthchecks and readiness waits need no secret.
+//
 // The replay and record backends need node_modules (express, cors, jiti); relay and
 // forward use node's standard library only.
+import crypto from 'node:crypto';
+import fs from 'node:fs';
 import http from 'node:http';
 import net from 'node:net';
 import path from 'node:path';
@@ -42,6 +53,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BLOG = path.join(ROOT, 'apps/blog');
 const PROXY_TS = path.join(BLOG, 'playwright/tests/support/mock-server/fixture-proxy.ts');
 const INTERNAL_REPLAY_PORT = Number(process.env.FIXTURE_REPLAY_INTERNAL_PORT || 8299);
+const TOKEN_HEADER = 'x-aidev-fixture-token';
 
 function log(message) {
   console.log(`[aidev-fixture-proxy] ${message}`);
@@ -65,7 +77,18 @@ function loadReplayModule() {
 
 // ----------------------------------------------------------------- serve ----
 
+function controlToken() {
+  const token = process.env.AIDEV_FIXTURE_TOKEN || crypto.randomBytes(24).toString('hex');
+  const file = process.env.AIDEV_FIXTURE_TOKEN_FILE;
+  if (file) {
+    fs.rmSync(file, { force: true });
+    fs.writeFileSync(file, token, { mode: 0o600 });
+  }
+  return token;
+}
+
 function serve(port) {
+  const token = Buffer.from(controlToken());
   let backend = null; // { kind: 'replay' | 'record', name, handle, url } | { kind: 'relay', url }
   let switching = Promise.resolve();
 
@@ -109,9 +132,26 @@ function serve(port) {
     return { backend: 'replay', fixtureSet: backend.name, served, misses };
   }
 
-  function reply(res, code, body) {
-    res.writeHead(code, { 'content-type': 'application/json', 'access-control-allow-origin': '*' });
+  // The proxied API's own replies keep their CORS header: the apps' browser calls
+  // come from another origin.
+  function reply(res, code, body, { cors = true } = {}) {
+    res.writeHead(code, { 'content-type': 'application/json', ...(cors && { 'access-control-allow-origin': '*' }) });
     res.end(JSON.stringify(body));
+  }
+
+  function replyControl(res, code, body) {
+    reply(res, code, body, { cors: false });
+  }
+
+  function hasToken(req) {
+    const given = Buffer.from(String(req.headers[TOKEN_HEADER] ?? ''));
+    return given.length === token.length && crypto.timingSafeEqual(given, token);
+  }
+
+  function controlRefusal(req, url) {
+    if (req.headers.origin !== undefined) return 'a request with an Origin header';
+    if (url.pathname === '/__aidev/status' && req.method === 'GET') return null;
+    return hasToken(req) ? null : `a request without the ${TOKEN_HEADER} of this proxy`;
   }
 
   function readBody(req) {
@@ -131,19 +171,25 @@ function serve(port) {
 
   async function control(req, res, url) {
     const parts = url.pathname.split('/').filter(Boolean); // ['__aidev', ...]
+    const refusal = controlRefusal(req, url);
+    if (refusal) {
+      req.resume();
+      log(`refused ${req.method} ${url.pathname}: ${refusal}`);
+      return replyControl(res, 403, { error: `control requests refuse ${refusal}` });
+    }
     try {
-      if (parts[1] === 'status' && req.method === 'GET') return reply(res, 200, await status());
+      if (parts[1] === 'status' && req.method === 'GET') return replyControl(res, 200, await status());
       if (parts[1] === 'fixture-set' && parts[2] && (req.method === 'PUT' || req.method === 'POST')) {
         const name = decodeURIComponent(parts[2]);
         switching = switching.then(() => useReplay(name));
         await switching;
-        return reply(res, 200, await status());
+        return replyControl(res, 200, await status());
       }
       if (parts[1] === 'record' && parts[2] && req.method === 'PUT') {
         const name = decodeURIComponent(parts[2]);
         switching = switching.then(() => useRecord(name));
         await switching;
-        return reply(res, 200, await status());
+        return replyControl(res, 200, await status());
       }
       if (parts[1] === 'upstream' && req.method === 'POST') {
         const raw = (await readBody(req)).toString().trim();
@@ -151,7 +197,7 @@ function serve(port) {
         if (!target) target = `http://${remoteHost(req)}:${url.searchParams.get('port') || 8200}`;
         switching = switching.then(() => useRelay(target.replace(/\/+$/, '')));
         await switching;
-        return reply(res, 200, await status());
+        return replyControl(res, 200, await status());
       }
       if (['upstream', 'fixture-set', 'record'].includes(parts[1]) && req.method === 'DELETE') {
         switching = switching.then(async () => {
@@ -160,12 +206,12 @@ function serve(port) {
           log('backend: none');
         });
         await switching;
-        return reply(res, 200, await status());
+        return replyControl(res, 200, await status());
       }
-      return reply(res, 404, { error: `unknown control request ${req.method} ${url.pathname}` });
+      return replyControl(res, 404, { error: `unknown control request ${req.method} ${url.pathname}` });
     } catch (error) {
       switching = Promise.resolve();
-      return reply(res, 400, { error: String(error?.message || error) });
+      return replyControl(res, 400, { error: String(error?.message || error) });
     }
   }
 

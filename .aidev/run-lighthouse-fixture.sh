@@ -55,6 +55,9 @@ out=$PWD/test-results/lighthouse-fixture
 cases=$out/cases.tsv
 site_port=8000 blog_port=3000 wallet_port=4000 api_port=8200 images_port=8201
 site=http://127.0.0.1:$site_port
+# The fixture proxy's control token (fixture-proxy-serve.mjs), for proxy_control.
+AIDEV_FIXTURE_TOKEN=$(node -e 'process.stdout.write(require("crypto").randomBytes(24).toString("hex"))')
+export AIDEV_FIXTURE_TOKEN
 
 rm -rf "$out"
 mkdir -p "$out/logs"
@@ -98,7 +101,7 @@ wait_for() {
 }
 
 proxy_control() {
-    node -e 'fetch(process.argv[1], { method: process.argv[2] }).then(async (r) => { console.log(await r.text()); process.exit(r.ok ? 0 : 1); }, (e) => { console.error(e.message); process.exit(1); })' \
+    node -e 'fetch(process.argv[1], { method: process.argv[2], headers: { "x-aidev-fixture-token": process.env.AIDEV_FIXTURE_TOKEN } }).then(async (r) => { console.log(await r.text()); process.exit(r.ok ? 0 : 1); }, (e) => { console.error(e.message); process.exit(1); })' \
         "http://127.0.0.1:$api_port/__aidev/$1" "$2" < /dev/null
 }
 
