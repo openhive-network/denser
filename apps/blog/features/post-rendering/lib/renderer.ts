@@ -1,4 +1,4 @@
-import { DefaultRenderer, SyntaxHighlightPlugin } from '@hive/renderer';
+import { DefaultRenderer, SyntaxHighlightPlugin, type HighlightBudget } from '@hive/renderer';
 import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { BODY_IMAGE_SIZES, getBodyImageSrcSet } from './body-image-sources';
 import { RENDERER_PLUGINS } from './renderer-plugins';
@@ -12,6 +12,11 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 // One instance for every renderer, so they share its cache of highlighted code blocks.
 const syntaxHighlightPlugin = new SyntaxHighlightPlugin();
+
+/** Runs the synchronous `render`, highlighting code blocks meanwhile only within `budget`. */
+export function withSyntaxHighlightBudget<T>(budget: HighlightBudget, render: () => T): T {
+  return syntaxHighlightPlugin.withBudget(budget, render);
+}
 
 const renderDefaultOptions = {
   baseUrl: configuredSiteDomain,

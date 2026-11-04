@@ -8,6 +8,8 @@ export interface RenderedBody {
   body: string;
   mainPost: boolean;
   html: string;
+  /** code blocks were left plain by the server's highlight budget: the client renders it again */
+  highlightDeferred: boolean;
 }
 
 export type RenderedBodies = Record<string, RenderedBody>;
@@ -22,13 +24,13 @@ export const RenderedBodiesProvider = ({ value, children }: { value: RenderedBod
   <RenderedBodiesContext.Provider value={value}>{children}</RenderedBodiesContext.Provider>
 );
 
-/** The server-rendered HTML of this exact body, if there is one. */
+/** The server rendering of this exact body, if there is one. */
 export function useServerRenderedBody(
   author: string,
   permlink: string | undefined,
   body: string,
   mainPost: boolean
-): string | undefined {
+): RenderedBody | undefined {
   const rendered = useContext(RenderedBodiesContext)[`${author}/${permlink}`];
-  return rendered && rendered.body === body && rendered.mainPost === mainPost ? rendered.html : undefined;
+  return rendered && rendered.body === body && rendered.mainPost === mainPost ? rendered : undefined;
 }
