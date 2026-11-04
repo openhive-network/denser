@@ -185,6 +185,22 @@ describe('logoutUser', () => {
     assert.ok(!JSON.stringify(harness.errors).includes('token-a'));
   });
 
+  it('answers within a second, saying the chat sessions were not ended, while Rocket.Chat hangs', { timeout: 2000 }, async () => {
+    let release: (response: Response) => void = () => {};
+    const calls = chatServer(() => new Promise<Response>((resolve) => (release = resolve)));
+    signedIn(account('alice', 'token-a'));
+
+    const startedAt = Date.now();
+    assert.deepEqual(await signOut(), { isLoggedIn: false, username: '', chatSessionsEnded: false });
+
+    assert.ok(Date.now() - startedAt < 1000);
+    assert.equal(harness.session.destroyed, true);
+    assert.equal(calls.filter((call) => call.url === `${CHAT_API}/logout`).length, 1);
+    release(Response.json({ status: 'success' }));
+    await settle();
+    assert.deepEqual(harness.errors, []);
+  });
+
   describe('in Matrix mode', () => {
     const ALICE_DEVICES = `${HOMESERVER}/_synapse/admin/v2/users/${encodeURIComponent('@alice:matrix.test')}`;
 
