@@ -1,56 +1,47 @@
-import { safeJsonForScript, htmlEscapeJsonString } from './html-escape-json';
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
+import { safeJsonForScript, htmlEscapeJsonString } from './html-escape-json.ts';
 
 describe('htmlEscapeJsonString', () => {
   it('escapes < to prevent script breakout', () => {
-    const result = htmlEscapeJsonString('</script>');
-    expect(result).not.toContain('<');
-    expect(result).toContain('\\u003c');
+    assert.equal(htmlEscapeJsonString('</script>'), '\\u003c/script\\u003e');
   });
 
   it('escapes > to prevent comment issues', () => {
-    const result = htmlEscapeJsonString('-->');
-    expect(result).not.toContain('>');
-    expect(result).toContain('\\u003e');
+    assert.equal(htmlEscapeJsonString('-->'), '--\\u003e');
   });
 
   it('escapes & to prevent HTML entity injection', () => {
-    const result = htmlEscapeJsonString('foo&bar');
-    expect(result).not.toContain('&');
-    expect(result).toContain('\\u0026');
+    assert.equal(htmlEscapeJsonString('foo&bar'), 'foo\\u0026bar');
   });
 
   it('escapes line separator U+2028', () => {
-    const result = htmlEscapeJsonString('line\u2028break');
-    expect(result).toContain('\\u2028');
+    assert.equal(htmlEscapeJsonString('line\u2028break'), 'line\\u2028break');
   });
 
   it('escapes paragraph separator U+2029', () => {
-    const result = htmlEscapeJsonString('para\u2029break');
-    expect(result).toContain('\\u2029');
+    assert.equal(htmlEscapeJsonString('para\u2029break'), 'para\\u2029break');
   });
 
   it('leaves safe characters unchanged', () => {
-    const result = htmlEscapeJsonString('hello world 123');
-    expect(result).toBe('hello world 123');
+    assert.equal(htmlEscapeJsonString('hello world 123'), 'hello world 123');
   });
 });
 
 describe('safeJsonForScript', () => {
   it('escapes < and > to prevent script breakout', () => {
-    const result = safeJsonForScript('</script><script>alert(1)');
-    expect(result).not.toContain('</script>');
-    expect(result).toContain('\\u003c');
-    expect(result).toContain('\\u003e');
+    assert.equal(
+      safeJsonForScript('</script><script>alert(1)'),
+      '"\\u003c/script\\u003e\\u003cscript\\u003ealert(1)"'
+    );
   });
 
   it('escapes & to prevent HTML entity injection', () => {
-    const result = safeJsonForScript('foo&bar');
-    expect(result).toContain('\\u0026');
+    assert.equal(safeJsonForScript('foo&bar'), '"foo\\u0026bar"');
   });
 
   it('escapes line terminators', () => {
-    const result = safeJsonForScript('line\u2028break');
-    expect(result).toContain('\\u2028');
+    assert.equal(safeJsonForScript('line\u2028break\u2029end'), '"line\\u2028break\\u2029end"');
   });
 
   it('produces valid JavaScript that evaluates to original value', () => {
@@ -58,26 +49,21 @@ describe('safeJsonForScript', () => {
     const escaped = safeJsonForScript(original);
     // eval is safe here - we control the input
     // eslint-disable-next-line no-eval
-    const evaluated = eval(escaped);
-    expect(evaluated).toBe(original);
+    assert.equal(eval(escaped), original);
   });
 
   it('handles null', () => {
-    expect(safeJsonForScript(null)).toBe('null');
+    assert.equal(safeJsonForScript(null), 'null');
   });
 
-  it('handles objects', () => {
-    const obj = { key: '<script>test</script>' };
-    const result = safeJsonForScript(obj);
-    expect(result).not.toContain('<script>');
-    expect(result).toContain('\\u003c');
+  it('escapes string values nested in objects', () => {
+    assert.equal(
+      safeJsonForScript({ key: '<script>test</script>' }),
+      '{"key":"\\u003cscript\\u003etest\\u003c/script\\u003e"}'
+    );
   });
 
-  it('handles arrays', () => {
-    const arr = ['<', '>', '&'];
-    const result = safeJsonForScript(arr);
-    expect(result).not.toContain('<');
-    expect(result).not.toContain('>');
-    expect(result).not.toContain('&');
+  it('escapes string values nested in arrays', () => {
+    assert.equal(safeJsonForScript(['<', '>', '&']), '["\\u003c","\\u003e","\\u0026"]');
   });
 });

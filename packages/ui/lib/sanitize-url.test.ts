@@ -8,8 +8,8 @@
  * - Encoding bypass attempts
  */
 
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+import { describe, it } from 'node:test';
+import assert from 'node:assert/strict';
 import {
   isDangerousProtocol,
   sanitizeUrl,
@@ -17,7 +17,7 @@ import {
   sanitizeHash,
   isInternalPath,
   buildSafePath
-} from './sanitize-url';
+} from './sanitize-url.ts';
 
 describe('URL Sanitization Security Tests', () => {
   describe('isDangerousProtocol', () => {
@@ -34,7 +34,7 @@ describe('URL Sanitization Security Tests', () => {
 
       vectors.forEach((url) => {
         it(`should block: ${url}`, () => {
-          expect(isDangerousProtocol(url)).to.be.true;
+          assert.equal(isDangerousProtocol(url), true);
         });
       });
     });
@@ -44,7 +44,7 @@ describe('URL Sanitization Security Tests', () => {
 
       vectors.forEach((url) => {
         it(`should block: ${url}`, () => {
-          expect(isDangerousProtocol(url)).to.be.true;
+          assert.equal(isDangerousProtocol(url), true);
         });
       });
     });
@@ -58,7 +58,7 @@ describe('URL Sanitization Security Tests', () => {
 
       vectors.forEach((url) => {
         it(`should block: ${url}`, () => {
-          expect(isDangerousProtocol(url)).to.be.true;
+          assert.equal(isDangerousProtocol(url), true);
         });
       });
     });
@@ -74,7 +74,7 @@ describe('URL Sanitization Security Tests', () => {
 
       vectors.forEach((url) => {
         it(`should block: ${url}`, () => {
-          expect(isDangerousProtocol(url)).to.be.true;
+          assert.equal(isDangerousProtocol(url), true);
         });
       });
     });
@@ -92,51 +92,51 @@ describe('URL Sanitization Security Tests', () => {
 
       safeUrls.forEach((url) => {
         it(`should allow: ${url}`, () => {
-          expect(isDangerousProtocol(url)).to.be.false;
+          assert.equal(isDangerousProtocol(url), false);
         });
       });
     });
 
     describe('should handle edge cases', () => {
       it('should return false for empty string', () => {
-        expect(isDangerousProtocol('')).to.be.false;
+        assert.equal(isDangerousProtocol(''), false);
       });
 
       it('should return false for null/undefined', () => {
         // @ts-expect-error - Testing invalid input
-        expect(isDangerousProtocol(null)).to.be.false;
+        assert.equal(isDangerousProtocol(null), false);
         // @ts-expect-error - Testing invalid input
-        expect(isDangerousProtocol(undefined)).to.be.false;
+        assert.equal(isDangerousProtocol(undefined), false);
       });
 
       it('should handle encoded javascript:', () => {
-        expect(isDangerousProtocol('javascript%3Aalert(1)')).to.be.true;
+        assert.equal(isDangerousProtocol('javascript%3Aalert(1)'), true);
       });
 
       it('should handle null bytes in protocol', () => {
-        expect(isDangerousProtocol('java\x00script:alert(1)')).to.be.true;
-        expect(isDangerousProtocol('javas\x00cript:alert(1)')).to.be.true;
-        expect(isDangerousProtocol('\x00javascript:alert(1)')).to.be.true;
+        assert.equal(isDangerousProtocol('java\x00script:alert(1)'), true);
+        assert.equal(isDangerousProtocol('javas\x00cript:alert(1)'), true);
+        assert.equal(isDangerousProtocol('\x00javascript:alert(1)'), true);
       });
     });
   });
 
   describe('sanitizeUrl', () => {
     it('should return safe URLs unchanged', () => {
-      expect(sanitizeUrl('https://example.com')).to.equal('https://example.com');
-      expect(sanitizeUrl('/path/to/page')).to.equal('/path/to/page');
-      expect(sanitizeUrl('/@username')).to.equal('/@username');
+      assert.equal(sanitizeUrl('https://example.com'), 'https://example.com');
+      assert.equal(sanitizeUrl('/path/to/page'), '/path/to/page');
+      assert.equal(sanitizeUrl('/@username'), '/@username');
     });
 
     it('should return undefined for dangerous URLs', () => {
-      expect(sanitizeUrl('javascript:alert(1)')).to.be.undefined;
-      expect(sanitizeUrl('data:text/html,<script>')).to.be.undefined;
+      assert.equal(sanitizeUrl('javascript:alert(1)'), undefined);
+      assert.equal(sanitizeUrl('data:text/html,<script>'), undefined);
     });
 
     it('should return undefined for empty/invalid input', () => {
-      expect(sanitizeUrl('')).to.be.undefined;
+      assert.equal(sanitizeUrl(''), undefined);
       // @ts-expect-error - Testing invalid input
-      expect(sanitizeUrl(null)).to.be.undefined;
+      assert.equal(sanitizeUrl(null), undefined);
     });
   });
 
@@ -157,7 +157,7 @@ describe('URL Sanitization Security Tests', () => {
 
       validIds.forEach((id) => {
         it(`should accept: ${id}`, () => {
-          expect(isValidElementId(id)).to.be.true;
+          assert.equal(isValidElementId(id), true);
         });
       });
     });
@@ -178,55 +178,55 @@ describe('URL Sanitization Security Tests', () => {
 
       invalidIds.forEach((id) => {
         it(`should reject: ${id.substring(0, 30)}${id.length > 30 ? '...' : ''}`, () => {
-          expect(isValidElementId(id)).to.be.false;
+          assert.equal(isValidElementId(id), false);
         });
       });
     });
 
     it('should handle null/undefined', () => {
       // @ts-expect-error - Testing invalid input
-      expect(isValidElementId(null)).to.be.false;
+      assert.equal(isValidElementId(null), false);
       // @ts-expect-error - Testing invalid input
-      expect(isValidElementId(undefined)).to.be.false;
+      assert.equal(isValidElementId(undefined), false);
     });
 
     it('should reject IDs containing null bytes', () => {
-      expect(isValidElementId('section\x00-1')).to.be.false;
-      expect(isValidElementId('\x00section')).to.be.false;
-      expect(isValidElementId('section\x00')).to.be.false;
+      assert.equal(isValidElementId('section\x00-1'), false);
+      assert.equal(isValidElementId('\x00section'), false);
+      assert.equal(isValidElementId('section\x00'), false);
     });
   });
 
   describe('sanitizeHash', () => {
     describe('should sanitize valid hashes', () => {
       it('should remove # prefix and return valid hash', () => {
-        expect(sanitizeHash('#section-1')).to.equal('section-1');
-        expect(sanitizeHash('section-1')).to.equal('section-1');
+        assert.equal(sanitizeHash('#section-1'), 'section-1');
+        assert.equal(sanitizeHash('section-1'), 'section-1');
       });
 
       it('should decode URL-encoded hashes', () => {
-        expect(sanitizeHash('#user%2Fpost')).to.equal('user/post');
+        assert.equal(sanitizeHash('#user%2Fpost'), 'user/post');
       });
 
       it('should handle Hive-style comment anchors', () => {
-        expect(sanitizeHash('#@alice/my-post')).to.equal('@alice/my-post');
-        expect(sanitizeHash('@bob/comment-123')).to.equal('@bob/comment-123');
+        assert.equal(sanitizeHash('#@alice/my-post'), '@alice/my-post');
+        assert.equal(sanitizeHash('@bob/comment-123'), '@bob/comment-123');
       });
     });
 
     describe('should reject invalid hashes', () => {
       it('should return undefined for XSS attempts', () => {
-        expect(sanitizeHash('#<script>')).to.be.undefined;
-        expect(sanitizeHash('#test<img>')).to.be.undefined;
+        assert.equal(sanitizeHash('#<script>'), undefined);
+        assert.equal(sanitizeHash('#test<img>'), undefined);
       });
 
       it('should return undefined for empty hash', () => {
-        expect(sanitizeHash('#')).to.be.undefined;
-        expect(sanitizeHash('')).to.be.undefined;
+        assert.equal(sanitizeHash('#'), undefined);
+        assert.equal(sanitizeHash(''), undefined);
       });
 
       it('should handle invalid encoding', () => {
-        expect(sanitizeHash('#%invalid')).to.be.undefined;
+        assert.equal(sanitizeHash('#%invalid'), undefined);
       });
     });
   });
@@ -244,7 +244,7 @@ describe('URL Sanitization Security Tests', () => {
 
       validPaths.forEach((path) => {
         it(`should accept: ${path}`, () => {
-          expect(isInternalPath(path)).to.be.true;
+          assert.equal(isInternalPath(path), true);
         });
       });
     });
@@ -262,7 +262,7 @@ describe('URL Sanitization Security Tests', () => {
 
       invalidPaths.forEach((path) => {
         it(`should reject: ${path}`, () => {
-          expect(isInternalPath(path)).to.be.false;
+          assert.equal(isInternalPath(path), false);
         });
       });
     });
@@ -270,17 +270,17 @@ describe('URL Sanitization Security Tests', () => {
 
   describe('buildSafePath', () => {
     it('should build valid paths', () => {
-      expect(buildSafePath('/blog', '/@user')).to.equal('/blog/@user');
-      expect(buildSafePath('', '/@user')).to.equal('/@user');
+      assert.equal(buildSafePath('/blog', '/@user'), '/blog/@user');
+      assert.equal(buildSafePath('', '/@user'), '/@user');
     });
 
     it('should return undefined for dangerous paths', () => {
-      expect(buildSafePath('/blog', 'javascript:alert(1)')).to.be.undefined;
-      expect(buildSafePath('javascript:', '/test')).to.be.undefined;
+      assert.equal(buildSafePath('/blog', 'javascript:alert(1)'), undefined);
+      assert.equal(buildSafePath('javascript:', '/test'), undefined);
     });
 
     it('should reject protocol-relative URLs', () => {
-      expect(buildSafePath('/blog', '//evil.com')).to.be.undefined;
+      assert.equal(buildSafePath('/blog', '//evil.com'), undefined);
     });
   });
 });
@@ -301,7 +301,7 @@ describe('OWASP XSS Prevention Tests', () => {
         // These might or might not be caught depending on browser behavior
         // The important thing is they don't cause crashes
         const result = isDangerousProtocol(input);
-        expect(typeof result).to.equal('boolean');
+        assert.equal(typeof result, 'boolean');
       });
     });
   });
@@ -317,7 +317,7 @@ describe('OWASP XSS Prevention Tests', () => {
 
     injectionAttempts.forEach((input) => {
       it(`should reject injection attempt: ${input.substring(0, 30)}`, () => {
-        expect(isValidElementId(input)).to.be.false;
+        assert.equal(isValidElementId(input), false);
       });
     });
   });
