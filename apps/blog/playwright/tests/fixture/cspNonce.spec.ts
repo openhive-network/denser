@@ -3,7 +3,15 @@ import { TIMEOUTS } from '../support/constants';
 import { settleAfterLoad } from '../support/wasmRequests';
 import { HomePage } from '../support/pages/homePage';
 import { LoginForm } from '../support/pages/loginForm';
-import { cspOf, nonceOf, recordCspViolations, scriptSrcOf, scriptTagsWithoutNonce } from '../support/csp';
+import {
+  BASELINE_SECURITY_HEADERS,
+  baselineHeadersOf,
+  cspOf,
+  nonceOf,
+  recordCspViolations,
+  scriptSrcOf,
+  scriptTagsWithoutNonce
+} from '../support/csp';
 
 /**
  * Nonce-based Content-Security-Policy (packages/middleware/lib/csp.ts).
@@ -41,6 +49,15 @@ test.describe('Content-Security-Policy — nonce', () => {
       nonces.push(nonce);
     }
     expect(nonces[0]).not.toBe(nonces[1]);
+  });
+
+  test('CSP-07: a file-like path the middleware skips still answers with the baseline security headers', async ({
+    request
+  }) => {
+    // Under /api the path renders no feed, which would need recorded data for the tag "x.js".
+    const response = await request.get('/api/x.js');
+    expect(response.status()).toBe(404);
+    expect(baselineHeadersOf(response.headers())).toEqual(BASELINE_SECURITY_HEADERS);
   });
 
   test('CSP-02: the trending feed loads with no CSP violation', async ({ page }) => {

@@ -1,5 +1,6 @@
 import type { APIResponse } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
+import { BASELINE_SECURITY_HEADERS, baselineHeadersOf, nonceOf } from '../support/csp';
 
 /**
  * Static asset and page responses carry no cookies.
@@ -8,8 +9,9 @@ import { test, expect } from '../support/fixture-proxy-test';
  * middleware (proxy.ts, packages/middleware) sets none; the login challenge
  * comes from /api/auth/challenge (loginChallenge.spec.ts). proxy.ts's matcher
  * leaves /_next/static, /_next/image and public files out of the middleware.
- * Pages, including the .html ones and account pages whose names end in what
- * looks like an extension, still get its CSP.
+ * Those carry only the baseline security headers next.config.js sets on every
+ * path. Pages, including the .html ones and account pages whose names end in
+ * what looks like an extension, still get the middleware's CSP.
  *
  * Each request is made from a fresh context: one that kept a response's cookies
  * would send them back.
@@ -45,7 +47,7 @@ test.describe('Static assets and pages — no cookies', () => {
     const page = await get('/trending');
     expect(page.status).toBe(200);
     expect(page.cookies).toEqual([]);
-    expect(page.headers['content-security-policy']).toBeTruthy();
+    expect(nonceOf(page.headers['content-security-policy'] ?? '')).toBeTruthy();
 
     const assets = [...new Set(page.body.match(CHUNK_URL_PATTERN) ?? [])];
     expect(assets.length).toBeGreaterThan(0);
@@ -53,7 +55,7 @@ test.describe('Static assets and pages — no cookies', () => {
       const asset = await get(path);
       expect(asset.status, path).toBe(200);
       expect(asset.cookies, path).toEqual([]);
-      expect(asset.headers['content-security-policy'], path).toBeUndefined();
+      expect(baselineHeadersOf(asset.headers), path).toEqual(BASELINE_SECURITY_HEADERS);
     }
   });
 
@@ -67,7 +69,7 @@ test.describe('Static assets and pages — no cookies', () => {
       const context = await playwright.request.newContext({ baseURL });
       try {
         const response = await context.get(path, { maxRedirects: 0 });
-        expect(response.headers()['content-security-policy'], path).toBeTruthy();
+        expect(nonceOf(response.headers()['content-security-policy'] ?? ''), path).toBeTruthy();
         expect(setCookieNames(response), path).toEqual([]);
       } finally {
         await context.dispose();

@@ -37,6 +37,21 @@ export const recordCspViolations = async (page: Page): Promise<string[]> => {
   return violations;
 };
 
+/**
+ * The headers next.config.js sets on every path (packages/middleware/baseline-headers.js), by
+ * lower-case name: what a response the middleware does not run on (public files, build assets,
+ * file-like 404s) carries. The middleware replaces them on pages.
+ */
+export const BASELINE_SECURITY_HEADERS: Readonly<Record<string, string>> = {
+  'x-content-type-options': 'nosniff',
+  'x-frame-options': 'SAMEORIGIN',
+  'content-security-policy': "frame-ancestors 'self'"
+};
+
+/** The baseline headers `headers` (a response's, by lower-case name) carry, for comparing with BASELINE_SECURITY_HEADERS. */
+export const baselineHeadersOf = (headers: Record<string, string>): Record<string, string | undefined> =>
+  Object.fromEntries(Object.keys(BASELINE_SECURITY_HEADERS).map((name) => [name, headers[name]]));
+
 /** The policy a page response enforces; fails the test when there is none. */
 export const cspOf = (response: APIResponse): string => {
   const policy = response.headers()['content-security-policy'];

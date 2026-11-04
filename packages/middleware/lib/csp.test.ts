@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { registerHooks } from 'node:module';
+import { createRequire, registerHooks } from 'node:module';
 import { SELECTABLE_API_NODES } from '../../ui/config/api-sets.ts';
 
 // csp.ts imports the API sets and chat config the way the apps' bundler resolves it, without the extension
@@ -11,7 +11,9 @@ registerHooks({
     return nextResolve(UI_CONFIG_MODULES.has(specifier) ? `${specifier}.ts` : specifier, context);
   }
 });
-const { buildCsp, generateNonce, parseNonce } = await import('./csp.ts');
+const { buildCsp, generateNonce, parseNonce, SECURITY_HEADERS } = await import('./csp.ts');
+const { BASELINE_SECURITY_HEADERS }: { BASELINE_SECURITY_HEADERS: { key: string; value: string }[] } =
+  createRequire(import.meta.url)('../baseline-headers.js');
 
 const scriptSrcOf = (policy: string): string[] =>
   policy
@@ -263,5 +265,20 @@ test('connect-src admits every hivemind REST node of HIVEMIND_REST_NODES, skippi
   } finally {
     if (saved === undefined) delete process.env.REACT_APP_HIVEMIND_REST_NODES;
     else process.env.REACT_APP_HIVEMIND_REST_NODES = saved;
+  }
+});
+
+test('the baseline headers of every path agree with what the middleware sets', () => {
+  const policy = buildCsp({}, 'bm9uY2U=');
+  const directives = policy.split(';').map((directive) => directive.trim());
+  const keys = BASELINE_SECURITY_HEADERS.map(({ key }) => key);
+  assert.ok(keys.includes('X-Frame-Options') && keys.includes('X-Content-Type-Options'), keys.join(', '));
+  for (const { key, value } of BASELINE_SECURITY_HEADERS) {
+    if (key === 'Content-Security-Policy') {
+      assert.deepEqual(value.split(';').map((directive) => directive.trim().split(/\s+/)[0]), ['frame-ancestors'], value);
+      assert.ok(directives.includes(value), `${value} not in ${policy}`);
+    } else {
+      assert.equal(value, new Map(Object.entries(SECURITY_HEADERS)).get(key), key);
+    }
   }
 });
