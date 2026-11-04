@@ -3,6 +3,7 @@ import { useTranslation } from '@/blog/i18n/client';
 import type { ChatSession } from '@/blog/features/matrix-chat/lib/chat-view-types';
 import { formatMessageTime } from '@/blog/features/matrix-chat/lib/chat-time';
 import { useAvatarUrl } from '@/blog/features/matrix-chat/hooks/use-avatar-url';
+import { senderLabel } from '@/blog/features/matrix-chat/lib/sender-label';
 
 function SenderAvatar({ session, mxc, name }: { session: ChatSession; mxc: string | null; name: string }) {
   const url = useAvatarUrl(session, mxc);
@@ -32,13 +33,18 @@ interface ChatMessageFrameProps {
 /** A message's avatar and header (who sent it, and when, in the blog's language), then `children` */
 export function ChatMessageFrame({ session, senderId, senderName, avatarMxc, timestamp, children }: ChatMessageFrameProps) {
   const { i18n } = useTranslation('common_blog');
+  const { name, handle } = senderLabel(senderId, senderName);
   return (
     <>
       <SenderAvatar session={session} mxc={avatarMxc} name={senderName} />
       <div className="min-w-0 flex-1 text-sm">
         <div className="flex items-baseline gap-2">
-          <span className="truncate font-semibold" title={senderId}>
-            {senderName}
+          {/* The display name truncates first: the handle is what tells senders apart */}
+          <span className="flex min-w-0 items-baseline gap-1" title={senderId}>
+            {name ? <span className="truncate font-semibold">{name}</span> : null}
+            <span className={name ? 'shrink-0 text-xs text-muted-foreground' : 'shrink-0 font-semibold'}>
+              {handle}
+            </span>
           </span>
           <time className="shrink-0 text-xs text-muted-foreground" dateTime={new Date(timestamp).toISOString()}>
             {formatMessageTime(timestamp, i18n.language)}
