@@ -876,6 +876,9 @@ importers:
       '@hiveio/wax':
         specifier: catalog:hiveio-toolset
         version: 1.28.8-stable.261028191145
+      '@noble/hashes':
+        specifier: ^1.4.0
+        version: 1.4.0
       '@radix-ui/react-accordion':
         specifier: ^1.2.20
         version: 1.2.20(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
