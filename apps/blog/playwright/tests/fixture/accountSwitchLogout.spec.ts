@@ -106,7 +106,7 @@ test.describe('Account switching and the server session', () => {
     expect(await readCookie(context, 'account_info')).toBeUndefined();
     // The session no longer holds the server-held account to switch back to either
     const switched = await context.request.post('/api/auth/switch', {
-      headers: { 'x-csrf-token': '1' },
+      headers: { 'x-csrf-token': '1', 'sec-fetch-site': 'same-origin' },
       data: { username: SERVER_HELD.username }
     });
     expect(switched.status()).toBe(401);

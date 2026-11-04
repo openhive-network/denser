@@ -23,7 +23,7 @@ import type { User } from '@smart-signer/types/common';
 const CURRENT: User = { ...DEFAULT_USER, authenticateOnBackend: true };
 const OTHER: User = { ...CURRENT, username: 'gtg' };
 const CLIENT_ONLY_OTHER: User = { ...OTHER, authenticateOnBackend: false };
-const CSRF_HEADERS = { 'x-csrf-token': '1' };
+const CSRF_HEADERS = { 'x-csrf-token': '1', 'sec-fetch-site': 'same-origin' };
 // A page with the site header but no feed, to keep the recording small
 const PAGE_WITH_HEADER = '/faq.html';
 // A page with the subscriptions sidebar
