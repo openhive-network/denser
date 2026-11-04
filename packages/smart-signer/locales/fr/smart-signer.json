@@ -197,7 +197,7 @@
     "safe_storage_recovery_description": "Un autre onglet a modifié le stockage sécurisé pendant l'enregistrement d'une clé de @{{username}}. Saisissez le mot de passe du stockage sécurisé de @{{username}} pour terminer l'enregistrement."
   },
   "broadcast_error": {
-    "missing_owner_authority": "Cette opération nécessite votre clé propriétaire (owner). Connectez-vous avec celle-ci et réessayez.",
+    "missing_owner_authority": "Cette opération nécessite votre clé propriétaire (owner) et n'est pas disponible ici.",
     "missing_active_authority": "Cette opération nécessite votre clé active. Connectez-vous avec votre clé active et réessayez.",
     "missing_posting_authority": "Cette opération nécessite votre clé de publication (posting). Connectez-vous avec celle-ci et réessayez.",
     "safe_storage_missing_account": "Le stockage sécurisé de ce navigateur ne contient aucune clé de votre compte. Veuillez vous reconnecter.",

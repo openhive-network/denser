@@ -197,7 +197,7 @@
     "safe_storage_recovery_description": "@{{username}}의 키를 저장하는 동안 다른 탭에서 안전한 저장소를 변경했습니다. 저장을 완료하려면 @{{username}}의 안전한 저장소 비밀번호를 입력하세요."
   },
   "broadcast_error": {
-    "missing_owner_authority": "이 작업에는 소유자 키(owner)가 필요합니다. 해당 키로 로그인한 후 다시 시도하세요.",
+    "missing_owner_authority": "이 작업에는 소유자 키(owner)가 필요하므로 여기서는 사용할 수 없습니다.",
     "missing_active_authority": "이 작업에는 액티브 키(active)가 필요합니다. 액티브 키로 로그인한 후 다시 시도하세요.",
     "missing_posting_authority": "이 작업에는 포스팅 키(posting)가 필요합니다. 해당 키로 로그인한 후 다시 시도하세요.",
     "safe_storage_missing_account": "이 브라우저의 안전한 저장소에 계정의 키가 없습니다. 다시 로그인하세요.",
