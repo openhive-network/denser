@@ -13,6 +13,7 @@ import { notFound } from 'next/navigation';
 import { getLogger } from '@ui/lib/logging';
 import { getPageNotFoundMetadata } from '@/blog/lib/not-found-metadata';
 import { getTranslation } from '@/blog/i18n/server';
+import { isProfileListed } from '@/blog/lib/listed-content';
 import { postAuthorFromParam, postAuthorKind } from '@/blog/features/lite-account/lite-did';
 import LiteProfileRoute, { getLiteProfileMetadata } from '@/blog/features/lite-account/lite-profile-route';
 
@@ -37,8 +38,10 @@ export async function generateMetadata(props: { params: Promise<{ param: string 
     if (!account?.name) {
       return getPageNotFoundMetadata();
     }
-    const image = account?.profile?.profile_image || 'https://hive.blog/images/hive-blog-share.png';
-    const about = account?.profile?.about || `Profile of @${username} on Hive.`;
+    // The profile of an account the GDPR or legal list hides shows neither its image nor its about text.
+    const listed = isProfileListed(username);
+    const image = (!listed && account?.profile?.profile_image) || 'https://hive.blog/images/hive-blog-share.png';
+    const about = (!listed && account?.profile?.about) || `Profile of @${username} on Hive.`;
     const { t } = await getTranslation('common_blog');
     const title = t('page_titles.user_blog', { username });
     return {
@@ -112,11 +115,15 @@ const Layout = async (props: { children: ReactNode; params: Promise<{ param: str
 
   try {
     const prefetchPromises = [
-      // Seed React Query cache with already-fetched account data (no extra API call)
-      queryClient.prefetchQuery({
-        queryKey: ['profileData', username],
-        queryFn: () => account
-      }),
+      // Seed React Query cache with already-fetched account data (no extra API call). Not for an
+      // account the GDPR or legal list hides: its about text and metadata stay out of the HTML, and
+      // the client reads the account itself.
+      isProfileListed(username)
+        ? Promise.resolve()
+        : queryClient.prefetchQuery({
+            queryKey: ['profileData', username],
+            queryFn: () => account
+          }),
       queryClient.prefetchQuery({
         queryKey: ['accountReputationData', username],
         queryFn: () => getProfileReputations(username)
