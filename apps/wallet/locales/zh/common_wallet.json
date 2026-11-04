@@ -622,7 +622,7 @@
     "posting_key": {
       "name": "Posting 密钥",
       "info": "此密钥用于社交操作，如发帖、评论和投票。它的权限有限，不能用于资金相关操作。因此即使他人获取了此密钥，你也不会损失资金。",
-      "use": "使用此密钥登录其他基于 Hive 的社交网络，如 Hive.blog、Busy 和 Esteem。请妥善保管此密钥。",
+      "use": "使用此密钥登录其他基于 Hive 的社交网络，如 Hive.blog、Ecency 或 PeakD。请妥善保管此密钥。",
       "private": "你的 Posting 私钥",
       "permissions": "Posting 密钥权限",
       "to": "Posting 密钥可用于：",
