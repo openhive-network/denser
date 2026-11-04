@@ -62,4 +62,27 @@ describe('TagTransformingSanitizer', () => {
             });
         });
     });
+
+    describe('img', () => {
+        const authorHints = '<img src="https://proxy.test/a.jpg" srcset="https://x.example/t.jpg 2x" sizes="50vw" loading="eager" fetchpriority="high">';
+
+        it('drops the srcset, sizes and eager loading an image carries itself', () => {
+            const sanitized = new TagTransformingSanitizer(options, Localization.DEFAULT).sanitize(authorHints);
+            expect(sanitized).to.equal('<img src="https://proxy.test/a.jpg" loading="lazy" decoding="async" />');
+        });
+
+        it('takes srcset, sizes and priority from the renderer hints for the image src', () => {
+            const hints = new Map([['https://proxy.test/a.jpg', {srcset: 'https://proxy.test/480/a.jpg 480w', sizes: '100vw', prioritized: true}]]);
+            const sanitized = new TagTransformingSanitizer(options, Localization.DEFAULT).sanitize(authorHints, undefined, hints);
+            expect(sanitized).to.equal(
+                '<img src="https://proxy.test/a.jpg" srcset="https://proxy.test/480/a.jpg 480w" sizes="100vw" loading="eager" fetchpriority="high" decoding="async" />'
+            );
+        });
+
+        it('applies no hints recorded for another src', () => {
+            const hints = new Map([['https://proxy.test/b.jpg', {srcset: 'https://proxy.test/480/b.jpg 480w', prioritized: true}]]);
+            const sanitized = new TagTransformingSanitizer(options, Localization.DEFAULT).sanitize(authorHints, undefined, hints);
+            expect(sanitized).to.equal('<img src="https://proxy.test/a.jpg" loading="lazy" decoding="async" />');
+        });
+    });
 });
