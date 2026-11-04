@@ -355,6 +355,32 @@ describe('DefaultRender', () => {
             expect(rendered).to.include('src="https://proxy.test/0x0/https://x.example/i.jpg?u=https://hive.blog"');
         });
 
+        it('proxies an image whose browser-parsed host is not hive.blog, in HTML and markdown', () => {
+            const renderer = new DefaultRenderer(responsiveOptions);
+            for (const url of [
+                'https://hive.blog@x.example/i.jpg',
+                'https://images.hive.blog:@x.example/i.jpg',
+                '//hive.blog@x.example/i.jpg',
+                'https://hive.blog&#9;x.example/i.jpg',
+                'https://hive.blog&#10;.x.example/i.jpg'
+            ]) {
+                for (const input of [`<p><img src="${url}"></p>`, `![](${url})`]) {
+                    const src = renderer.render(input).match(/<img src="([^"]*)"/)?.[1];
+                    expect(src, input).to.match(/^https:\/\/proxy\.test\/0x0\//);
+                }
+            }
+        });
+
+        it('keeps images on localhost and (*.)hive.blog unproxied, in HTML and markdown', () => {
+            const renderer = new DefaultRenderer(responsiveOptions);
+            for (const url of ['https://images.hive.blog/p/a.jpg', 'https://hive.blog:8080/a.jpg', '//images.hive.blog/p/a.jpg', 'https://localhost/a.jpg']) {
+                for (const input of [`<p><img src="${url}"></p>`, `![](${url})`]) {
+                    const src = renderer.render(input).match(/<img src="([^"]*)"/)?.[1];
+                    expect(src, input).to.equal(url.replace(/^\/\//, 'https://'));
+                }
+            }
+        });
+
         it('prioritizes only the first image, never one the author marked eager', () => {
             const rendered = new DefaultRenderer({...responsiveOptions, prioritizeFirstImage: true}).render(
                 '<p><img src="https://example.com/a.jpg"></p><p><img src="https://example.com/b.jpg" loading="eager" fetchpriority="high"></p>'

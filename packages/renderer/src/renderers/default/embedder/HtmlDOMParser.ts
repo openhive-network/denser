@@ -12,7 +12,7 @@ import type {RenderedImageHints} from '../sanitization/TagTransformingSanitizer'
 import {AssetEmbedder, AssetEmbedderOptions} from './AssetEmbedder';
 import {YoutubeEmbedder} from './embedders/YoutubeEmbedder';
 import {AccountNameValidator} from './utils/AccountNameValidator';
-import linksRe, {any as linksAny} from './utils/Links';
+import linksRe, {isLocalUrl, any as linksAny} from './utils/Links';
 
 const LITE_DID_PREFIX = 'did:lite:';
 // @hiveio/lite-account's LITE_NAME_PATTERN (isValidLiteName).
@@ -571,7 +571,7 @@ export class HtmlDOMParser {
      *
      * This method:
      * - Finds all img elements in the document
-     * - For each image with a non-local URL (not matching linksRe.local pattern):
+     * - For each image with a non-local URL (its parsed host is not localhost or (*.)hive.blog, see isLocalUrl):
      *   - Transforms the src URL using the configured imageProxyFn
      * - Local images are left unchanged
      * - Every image gets its responsive sources and loading hints
@@ -590,7 +590,7 @@ export class HtmlDOMParser {
         }
         getImages(doc).forEach((node, index) => {
             const url: string = node.getAttribute('src') || '';
-            if (!linksRe.local.test(url)) {
+            if (!isLocalUrl(url)) {
                 node.setAttribute('src', this.options.imageProxyFn(url));
             }
             this.setResponsiveSources(node, url);

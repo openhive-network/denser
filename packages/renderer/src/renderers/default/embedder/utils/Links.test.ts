@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import links from './Links';
+import links, {isLocalUrl} from './Links';
 
 describe('Links regexp', () => {
     describe('ipfs', () => {
@@ -33,24 +33,35 @@ describe('Links regexp', () => {
         });
     });
 
-    describe('local', () => {
-        it('should match hive.blog, its subdomains and localhost', () => {
-            expect(links.local.test('https://hive.blog/a.jpg')).to.be.true;
-            expect(links.local.test('https://images.hive.blog/p/abc')).to.be.true;
-            expect(links.local.test('http://localhost:3000/a.jpg')).to.be.true;
-            expect(links.remote.test('https://images.hive.blog/p/abc')).to.be.false;
+    describe('isLocalUrl', () => {
+        it('should accept hive.blog, its subdomains and localhost', () => {
+            for (const url of [
+                'https://hive.blog/a.jpg',
+                'https://images.hive.blog/p/abc',
+                'https://hive.blog:8080/a.jpg',
+                '//images.hive.blog/p/abc',
+                'http://localhost:3000/a.jpg'
+            ]) {
+                expect(isLocalUrl(url), url).to.be.true;
+            }
         });
 
-        it('should not match a URL that only mentions hive.blog outside its host', () => {
+        it('should reject a URL whose browser-parsed host is not hive.blog', () => {
             for (const url of [
                 'https://x.example/i.jpg?u=https://hive.blog',
                 'https://hive.blog.x.example/i.jpg',
                 'https://evilhive.blog/i.jpg',
                 'https://hiveXblog/i.jpg',
-                'https://localhost.x.example/i.jpg'
+                'https://localhost.x.example/i.jpg',
+                'https://hive.blog@x.example/i.jpg',
+                'https://images.hive.blog:@x.example/i.jpg',
+                '//hive.blog@x.example/i.jpg',
+                'https://user@hive.blog/i.jpg',
+                'https://hive.blog\tx.example/i.jpg',
+                'https://hive.blog\n.x.example/i.jpg',
+                'https://[::1/i.jpg'
             ]) {
-                expect(links.local.test(url), url).to.be.false;
-                expect(links.remote.test(url), url).to.be.true;
+                expect(isLocalUrl(url), url).to.be.false;
             }
         });
     });
