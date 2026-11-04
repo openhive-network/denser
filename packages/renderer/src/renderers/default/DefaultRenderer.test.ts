@@ -381,6 +381,7 @@ describe('DefaultRender', () => {
             }
         });
 
+
         it('prioritizes only the first image, never one the author marked eager', () => {
             const rendered = new DefaultRenderer({...responsiveOptions, prioritizeFirstImage: true}).render(
                 '<p><img src="https://example.com/a.jpg"></p><p><img src="https://example.com/b.jpg" loading="eager" fetchpriority="high"></p>'
