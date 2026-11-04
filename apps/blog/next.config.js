@@ -1,12 +1,14 @@
 const path = require('path');
 const { waxSignersZodCoreAlias } = require('@hive/smart-signer/wax-signers-zod');
+const { BASELINE_SECURITY_HEADERS } = require('@hive/middleware/baseline-headers');
 
 // Support serving from subdirectory like /blog
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
-// Note: Security headers (CSP, X-Content-Type-Options, etc.) are now applied
-// via middleware for runtime environment variable evaluation.
-// See packages/middleware/lib/csp.ts and apps/blog/proxy.ts
+// Note: Security headers (CSP, X-Content-Type-Options, etc.) are applied via middleware
+// for runtime environment variable evaluation (packages/middleware/lib/csp.ts and
+// apps/blog/proxy.ts). headers() below sets a baseline on every path, for the ones the
+// middleware matcher skips; see packages/middleware/baseline-headers.js.
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -47,9 +49,13 @@ const nextConfig = {
       ...waxSignersZodCoreAlias(__dirname)
     }
   },
-  // Worker files need specific headers (security headers are applied via middleware)
+  // Worker files need specific headers (the full security headers are applied via middleware)
   async headers() {
     return [
+      {
+        source: '/:path*',
+        headers: BASELINE_SECURITY_HEADERS
+      },
       {
         source: '/auth/:file(worker\\.js|releasable-worker\\.js)',
         headers: [
