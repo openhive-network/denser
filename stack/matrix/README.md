@@ -135,9 +135,11 @@ JSON body `{"createAccount": true}`, and for a user Synapse does not know yet (t
 answers 404) the server first creates the account (`PUT /_synapse/admin/v2/users/<user id>`, with
 denser's display name) and joins it to `REACT_APP_MATRIX_DEFAULT_ROOM`
 (`POST /_synapse/admin/v1/join/<room>`). A warm-up asks without it, so the route answers such a
-user 404 and creates nothing. A 404, a failure, or no answer within 8 s sends the session page
-through SSO, which creates the account and joins `#general` too: with Element in the drawer, a
-warm-up of a user without a Matrix account still creates it that way.
+user 404 and creates nothing. With the drawer open, a 404, a failure, or no answer within 8 s
+sends the session page through SSO, which creates the account and joins `#general` too. A warm-up
+in the closed drawer that gets no token is not answered: the widget unloads the hidden frame before
+the session page would start that SSO, and loads it again only when the drawer opens, which asks
+with `createAccount`. A user who never opens the chat gets no Matrix account with Element either.
 
 `REACT_APP_MATRIX_CHAT_CLIENT` chooses what the drawer shows. `native` (the default) is denser's own
 client on matrix-js-sdk, without crypto: its code loads with the warm-up above (or on opening), it

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { siteConfig } from '@ui/config/site';
 import { matrixSessionPageUrl, matrixUserId, originOf } from '@ui/config/chat';
@@ -28,6 +28,10 @@ const HIDDEN_FRAME_STYLE = { display: 'none' } as const;
  * the first opening shows it already signed in: the iframe stays where it is, off-screen with the
  * drawer, and opening only slides it in. No idle warm-up under Save-Data, nor after this page
  * ended a session, which the next user's session page must not race; intent still loads.
+ *
+ * A warm-up that gets no login token (a user without a Matrix account yet, whom only an opened
+ * drawer creates one for) unloads the frame instead of letting the session page sign in through
+ * SSO, which would create the account; it is not warmed up again until the drawer opens.
  */
 const MatrixChatWidget = () => {
   const { t } = useTranslation('common_blog');
@@ -35,17 +39,20 @@ const MatrixChatWidget = () => {
   const { resolvedTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [sessionEnds, setSessionEnds] = useState(0);
+  const [warmUpUnsigned, setWarmUpUnsigned] = useState(false);
   const chatUserRef = useRef('');
   const frameRef = useRef<HTMLIFrameElement>(null);
 
   const matrix = siteConfig.matrixChat;
   const chatUser = useMatrixChatUser(!!matrix.elementUrl);
+  const onUnsignedWarmUp = useCallback(() => setWarmUpUnsigned(true), []);
   const { reset: resetWarmUp, ...warmUp } = useChatWarmUp(matrix.preload, sessionEnds === 0);
   useMatrixLoginTokenAnswer(
     frameRef,
     originOf(matrix.elementUrl),
     chatUser ? matrixUserId(chatUser, matrix) : '',
-    open
+    open,
+    onUnsignedWarmUp
   );
 
   useEffect(() => {
@@ -53,12 +60,16 @@ const MatrixChatWidget = () => {
     chatUserRef.current = chatUser;
     if (!previous || previous === chatUser) return;
     setOpen(false);
+    setWarmUpUnsigned(false);
     resetWarmUp();
     setSessionEnds((count) => count + 1);
   }, [chatUser, resetWarmUp]);
 
   const toggle = (next: boolean) => {
-    if (next) warmUp.request();
+    if (next) {
+      warmUp.request();
+      setWarmUpUnsigned(false);
+    }
     setOpen(next);
   };
 
@@ -79,7 +90,7 @@ const MatrixChatWidget = () => {
   const sessionPage = matrixSessionPageUrl(matrix, chatUser, resolvedTheme);
   // Client-only, as resolvedTheme is
   const framedSessionPage =
-    warmUp.warm && resolvedTheme
+    warmUp.warm && !warmUpUnsigned && resolvedTheme
       ? matrixSessionPageUrl(matrix, chatUser, resolvedTheme, window.location.origin)
       : undefined;
   return (
