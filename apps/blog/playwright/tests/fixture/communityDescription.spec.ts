@@ -10,7 +10,7 @@ import { CommunitiesPage } from '../support/pages/communitiesPage';
  * external link, an image, a mention, a hashtag, inline code, a table, a YouTube link (a facade)
  * and a Vimeo iframe. EXPECTED_HTML is what the browser rendered for it when the sidebar still
  * rendered it client-side: links in the sidebar's link style, code wrapping, and each embed shown
- * as its video's URL.
+ * as its video's URL. A video wrapper left with no class carries no class attribute.
  */
 
 const COMMUNITY_PATH = '/trending/hive-139531';
@@ -35,8 +35,8 @@ const EXPECTED_HTML = [
   '<tr><td>Monday</td><td>Photography</td></tr>',
   '</tbody>',
   '</table></div>',
-  '<p></p><div class="">https://www.youtube.com/watch?v=dQw4w9WgXcQ</div><p></p>',
-  '<div class="">https://player.vimeo.com/video/76979871</div>'
+  '<p></p><div>https://www.youtube.com/watch?v=dQw4w9WgXcQ</div><p></p>',
+  '<div>https://player.vimeo.com/video/76979871</div>'
 ].join('\n');
 
 test.use({ fixtureTestName: 'communityDescription' });
