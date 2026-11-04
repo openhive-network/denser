@@ -31,6 +31,24 @@ export function storedWifKeyTypes(storage: Storage, username: string, keyType: s
   return WIF_KEY_TYPES.filter((type) => storage.getItem(wifCredentialKey(username, type)) === wif);
 }
 
+/**
+ * Remove `username`'s WIF keys stored for key types other than `keyType`, the one a session just
+ * signed in with, but those holding the key stored as the `keyType` key (one key pair for several),
+ * so only keys stored for this session sign without asking. Returns whether any was removed.
+ */
+export function clearOtherSessionWifKeys(storage: Storage, username: string, keyType: string): boolean {
+  const sessionKeyTypes = storedWifKeyTypes(storage, username, keyType);
+  let removed = false;
+  for (const type of WIF_KEY_TYPES) {
+    if (type === keyType || sessionKeyTypes.includes(type)) continue;
+    const key = wifCredentialKey(username, type);
+    if (storage.getItem(key) === null) continue;
+    storage.removeItem(key);
+    removed = true;
+  }
+  return removed;
+}
+
 export function hiveAuthCredentialKey(username: string): CredentialKey {
   return { key: `${LEGACY_HIVEAUTH_KEY}.${username}`, legacyKey: LEGACY_HIVEAUTH_KEY };
 }

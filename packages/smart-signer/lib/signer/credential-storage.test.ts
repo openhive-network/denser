@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   clearAccountCredentials,
   clearAllCredentials,
+  clearOtherSessionWifKeys,
   googleEncryptionKeyWifCredentialKey,
   googleRefreshTokenCredentialKey,
   hiveAuthCredentialKey,
@@ -150,5 +151,47 @@ describe('storedWifKeyTypes', () => {
 
     assert.deepEqual(storedWifKeyTypes(storage, 'alice', 'active'), []);
     assert.deepEqual(storedWifKeyTypes(storage, 'alice', 'posting'), ['posting']);
+  });
+});
+
+describe('clearOtherSessionWifKeys', () => {
+  it('removes the active key stored before signing in with the posting key', () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('posting-wif'));
+    storage.setItem(wifCredentialKey('alice', 'active'), JSON.stringify('active-wif'));
+
+    assert.equal(clearOtherSessionWifKeys(storage, 'alice', 'posting'), true);
+
+    assert.deepEqual(storage.keys(), [wifCredentialKey('alice', 'posting')]);
+  });
+
+  it('removes the other key when the session key is not stored', () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('posting-wif'));
+
+    assert.equal(clearOtherSessionWifKeys(storage, 'alice', 'active'), true);
+
+    assert.deepEqual(storage.keys(), []);
+  });
+
+  it('keeps a key stored for another key type that is the session key too', () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'posting'), JSON.stringify('shared-wif'));
+    storage.setItem(wifCredentialKey('alice', 'active'), JSON.stringify('shared-wif'));
+
+    assert.equal(clearOtherSessionWifKeys(storage, 'alice', 'posting'), false);
+
+    assert.deepEqual(storage.keys(), [wifCredentialKey('alice', 'active'), wifCredentialKey('alice', 'posting')]);
+  });
+
+  it("leaves other accounts' keys and other credentials", () => {
+    const storage = new StubStorage();
+    storage.setItem(wifCredentialKey('alice', 'active'), JSON.stringify('active-wif'));
+    storage.setItem(wifCredentialKey('bob', 'active'), JSON.stringify('bob-wif'));
+    storage.setItem(hiveAuthCredentialKey('alice').key, hiveAuthData('alice', 'token-a'));
+
+    assert.equal(clearOtherSessionWifKeys(storage, 'alice', 'posting'), true);
+
+    assert.deepEqual(storage.keys(), [hiveAuthCredentialKey('alice').key, wifCredentialKey('bob', 'active')]);
   });
 });
