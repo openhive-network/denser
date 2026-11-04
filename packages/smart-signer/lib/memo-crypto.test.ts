@@ -27,7 +27,7 @@ const {
   encryptMemoWithSnap,
   stripEncryptedMemoMarker
 } = await import('./memo-crypto.ts');
-const { EmptyEncryptedMemoError, MemoLayoutError } = await import('./memo-layout.ts');
+const { EmptyEncryptedMemoError, MemoLayoutError, requireEncryptedMemoFor } = await import('./memo-layout.ts');
 
 /**
  * Generated key pairs of no real account:
@@ -35,6 +35,7 @@ const { EmptyEncryptedMemoError, MemoLayoutError } = await import('./memo-layout
  * `getPrivateKeyFromPassword('gtg', 'memo', 'denser-fixture-memo-key')`.
  */
 const SENDER_MEMO_WIF = '5JPHhxDdBo6aFU8GuGzpPE85FaNmndTKFFb1eiZMp35k8sNd5cw';
+const SENDER_MEMO_PUBLIC_KEY = 'STM761jB637TiV4qFj5AHFzGrPwpZRz4bSDDqKTe74YFuJx95GKQe';
 const RECIPIENT_MEMO_WIF = '5J1DMxmJAfPR2qvQoNEuUCAXNjfVQVLbNGe5ofQ7VkBCbydQWrg';
 const RECIPIENT_MEMO_PUBLIC_KEY = 'STM6F7rvuwHGe2Goj2veXDeyNS5PKwBE1AtQYLK94Ds2MULXEuLPv';
 const UNRELATED_WIF = '5JRaypasxMx1L97ZUX7YuC5Psb5EAbF821kkAGtBj7xCJFQcbLg';
@@ -283,13 +284,16 @@ describe('memo-crypto: the Hive MetaMask snap before 1.8.0', () => {
   });
 });
 
-/** Stands in for the Hive MetaMask snap 1.8.0: returns `STANDARD_LAYOUT_MEMO` and decrypts either layout. */
-const createStandardLayoutSnapProvider = () => {
+/**
+ * Stands in for the Hive MetaMask snap 1.8.0: returns `encrypted` (by default `STANDARD_LAYOUT_MEMO`)
+ * and decrypts either layout.
+ */
+const createStandardLayoutSnapProvider = (encrypted = STANDARD_LAYOUT_MEMO) => {
   const received: { encrypt?: [unknown, string]; decrypt?: string } = {};
   const provider = {
     encryptData: async (buffer: unknown, recipient: string) => {
       received.encrypt = [buffer, recipient];
-      return STANDARD_LAYOUT_MEMO;
+      return encrypted;
     },
     decryptData: async (buffer: string) => {
       received.decrypt = buffer;
@@ -313,6 +317,32 @@ describe('memo-crypto: the Hive MetaMask snap 1.8.0 and later', () => {
       assert.equal(encrypted, STANDARD_LAYOUT_MEMO);
     });
   }
+
+  it('adds the # to a ciphertext the snap returned without it, and the memo passes the recipient check', async () => {
+    const { provider } = createStandardLayoutSnapProvider(STANDARD_LAYOUT_MEMO.slice(1));
+
+    const encrypted = await encryptMemoWithSnap(provider, '1.8.0', RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
+
+    assert.equal(encrypted, STANDARD_LAYOUT_MEMO);
+    assert.equal(requireEncryptedMemoFor(encrypted, '#hello', RECIPIENT_MEMO_PUBLIC_KEY), STANDARD_LAYOUT_MEMO);
+    assert.equal(await decryptMemoWithPrivateKey(RECIPIENT_MEMO_WIF, encrypted), '#hello');
+  });
+
+  it('still refuses a ciphertext without # that is encrypted to another key', async () => {
+    const { provider } = createStandardLayoutSnapProvider(STANDARD_LAYOUT_MEMO.slice(1));
+
+    const encrypted = await encryptMemoWithSnap(provider, '1.8.0', SENDER_MEMO_PUBLIC_KEY, '#hello');
+
+    assert.throws(() => requireEncryptedMemoFor(encrypted, '#hello', SENDER_MEMO_PUBLIC_KEY), /another key/);
+  });
+
+  it('still refuses the plaintext handed back without its #', async () => {
+    const { provider } = createStandardLayoutSnapProvider('hello');
+
+    const encrypted = await encryptMemoWithSnap(provider, '1.8.0', RECIPIENT_MEMO_PUBLIC_KEY, '#hello');
+
+    assert.throws(() => requireEncryptedMemoFor(encrypted, '#hello', RECIPIENT_MEMO_PUBLIC_KEY), MemoLayoutError);
+  });
 
   it('hands the snap a memo of either layout unchanged', async () => {
     for (const memo of [STANDARD_LAYOUT_MEMO, SNAP_LAYOUT_MEMO]) {
