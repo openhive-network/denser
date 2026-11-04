@@ -25,4 +25,16 @@ describe('joinSiteUrl', () => {
       'https://h/blog/login?oauth_return=true'
     );
   });
+
+  const offOriginPaths = ['/\\x.com/a', '/\t/x.com', '\\\\x.com', '\\/x.com', '/\n\\x.com', '//x.com'];
+
+  for (const path of offOriginPaths) {
+    it(`keeps the site origin for ${JSON.stringify(path)}`, () => {
+      assert.equal(joinSiteUrl('https://h/', path).origin, 'https://h');
+    });
+  }
+
+  it('keeps a backslash-led path on the site path', () => {
+    assert.equal(joinSiteUrl('https://h/', '/\\x.com/a').toString(), 'https://h/x.com/a');
+  });
 });
