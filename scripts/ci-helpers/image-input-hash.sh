@@ -1,11 +1,11 @@
 #!/bin/bash
 # Print the content hash of everything that goes into an app's Docker image
-# (Dockerfile + build scripts, the workspace manifests and lockfile, the app and
-# the shared packages, minus tests), plus the build arguments that change its
-# output (read from docker-bake.hcl's `args`), and the ISO week, so a reused image
-# is rebuilt at least weekly. Two commits with the same hash produce the same
-# image, so CI reuses the image tagged `inputs-<hash>` instead of rebuilding it
-# (denser#969).
+# (Dockerfile + build scripts, the files it copies or runs, the workspace
+# manifests, lockfile and patches, the app and the shared packages, minus tests),
+# plus the build arguments that change its output (read from docker-bake.hcl's
+# `args`), and the ISO week, so a reused image is rebuilt at least weekly. Two
+# commits with the same hash produce the same image, so CI reuses the image
+# tagged `inputs-<hash>` instead of rebuilding it (denser#969).
 #
 #   scripts/ci-helpers/image-input-hash.sh apps/blog
 #
@@ -22,8 +22,9 @@ cd "$(git rev-parse --show-toplevel)"
 INPUTS=(
   Dockerfile docker-bake.hcl .dockerignore
   package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json .npmrc
-  docker/docker-entrypoint.sh
-  scripts/build_instance.sh scripts/write-version.sh
+  patches
+  docker/docker-entrypoint.sh scripts/precompress-static.mjs
+  scripts/build_instance.sh
   scripts/ci-helpers/docker-build-template-script.sh
   scripts/ci-helpers/image-input-hash.sh
   "$APP_PATH"
@@ -40,6 +41,9 @@ EXCLUDES=(
   ':(exclude,glob)packages/renderer/browser-test/**'
   ':(exclude,glob)packages/*/tsconfig.test.json'
 )
+
+# A listed input that no longer exists would leave a renamed one out of the hash.
+git ls-files --error-unmatch -- "${INPUTS[@]}" > /dev/null
 
 {
   git ls-files -s -- "${INPUTS[@]}" "${EXCLUDES[@]}"
