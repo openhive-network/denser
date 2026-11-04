@@ -6,6 +6,12 @@ export const LOCALE_COOKIE = 'NEXT_LOCALE';
 
 const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60;
 const EXPIRED = 'Thu, 01 Jan 1970 00:00:00 GMT';
+/**
+ * Paths that can go into a cookie's `path` attribute as they are: RFC 3986 path characters other than
+ * `;` and `,`. The page path is not percent-encoded for `;`, so a segment holding one would add
+ * attributes (`domain`, `max-age`) of the URL's choosing to the cookie written.
+ */
+const SAFE_COOKIE_PATH = /^[A-Za-z0-9\-._~!$&'()*+=:@%/]+$/;
 
 function cookieValues(name: string): string[] {
   if (typeof document === 'undefined') return [];
@@ -19,11 +25,15 @@ function cookieValues(name: string): string[] {
 
 /**
  * Paths of the current page and its ancestors (`/blog/@alice` gives `/blog/@alice`, `/blog`): the paths
- * a cookie visible to this page can be scoped to, other than `/`.
+ * a cookie visible to this page can be scoped to, other than `/`. Skips those that are not a
+ * `SAFE_COOKIE_PATH`.
  */
 function pathScopes(pathname: string): string[] {
   const segments = pathname.split('/').filter(Boolean);
-  return segments.map((_, index) => `/${segments.slice(0, index + 1).join('/')}`).reverse();
+  return segments
+    .map((_, index) => `/${segments.slice(0, index + 1).join('/')}`)
+    .filter((path) => SAFE_COOKIE_PATH.test(path))
+    .reverse();
 }
 
 /**

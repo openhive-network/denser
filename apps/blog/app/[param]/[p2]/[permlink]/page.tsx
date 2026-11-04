@@ -89,7 +89,7 @@ export async function generateMetadata(
     openGraph: {
       type: 'article',
       siteName: 'Hive',
-      url: canonical,
+      url: seo.url,
       title,
       description: seo.description,
       images: [seo.image],
