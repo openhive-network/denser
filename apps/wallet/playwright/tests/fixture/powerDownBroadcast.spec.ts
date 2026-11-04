@@ -9,8 +9,8 @@ import { STUB_ACCOUNT, logInAsStubAccount, startWalletApiStub, storeStubAccountK
  * Power down from the HIVE POWER balance menu signs and broadcasts one
  * `withdraw_vesting_operation` of the VESTS the HP amount is worth at the stub's vesting fund
  * (180,000,000.000 HIVE for 330,000,000,000.000000 VESTS: 3 HP is 5,500 VESTS); an amount with
- * more than HIVE's 3 decimals broadcasts nothing. Reads come from the stub node
- * (support/walletApiStub.ts); the broadcast and `verify_authority` are answered by the
+ * more than HIVE's 3 decimals is refused with a toast and broadcasts nothing. Reads come from the
+ * stub node (support/walletApiStub.ts); the broadcast and `verify_authority` are answered by the
  * interceptor, so the key signing it belongs to no account.
  */
 
@@ -77,13 +77,16 @@ test.describe('Power down broadcast', () => {
     const broadcasts = await installBroadcastInterceptor(page);
     const dialog = await openPowerDownDialog(page);
 
+    const pageErrors: Error[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error));
     await dialog.getByPlaceholder('Amount').fill('1.2345');
-    // The dialog shows no error for it: the refusal surfaces only as the page's rejected promise.
-    const refusal = page.waitForEvent('pageerror', (error) => /maximum of 3 decimal places/.test(error.message));
-    await dialog.getByRole('button', { name: 'Power Down', exact: true }).click();
+    const powerDown = dialog.getByRole('button', { name: 'Power Down', exact: true });
+    await powerDown.click();
 
-    await refusal;
+    await expect(page.getByTestId('error-toast-content')).toContainText('maximum of 3 decimal places in HIVE amount');
     await expect(dialog).toBeVisible();
+    await expect(powerDown).toBeEnabled();
     expect(broadcasts.calls).toHaveLength(0);
+    expect(pageErrors).toHaveLength(0);
   });
 });
