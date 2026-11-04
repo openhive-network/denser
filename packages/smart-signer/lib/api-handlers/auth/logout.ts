@@ -14,6 +14,22 @@ import type { SignOutAnswer } from '@smart-signer/lib/auth/chat-sign-out';
 
 const logger = getLogger('app');
 
+/**
+ * How long the answer, which carries the cookie clearing, waits for the chat servers; the chat
+ * calls go on after it, each bounded by its own timeout, and report their own failures. Well under
+ * the browser's wait for the answer.
+ */
+const CHAT_SESSIONS_END_WAIT_MS = 800;
+
+/** Whether `ended` resolves to true within `ms`; false when it does not settle in time */
+function endedWithin(ended: Promise<boolean>, ms: number): Promise<boolean> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const giveUp = new Promise<boolean>((resolve) => {
+    timer = setTimeout(() => resolve(false), ms);
+  });
+  return Promise.race([ended, giveUp]).finally(() => clearTimeout(timer));
+}
+
 export const logoutUser: NextApiHandler<SignOutAnswer> = async (req, res) => {
   checkCsrfHeader(req);
   let chatSessionsEnded: Promise<boolean> = Promise.resolve(false);
@@ -57,5 +73,5 @@ export const logoutUser: NextApiHandler<SignOutAnswer> = async (req, res) => {
   clearAccountInfoCookie(res);
 
   // The browser's chat client signs its own device out when this does not say the server did
-  res.json({ ...defaultUser, chatSessionsEnded: await chatSessionsEnded });
+  res.json({ ...defaultUser, chatSessionsEnded: await endedWithin(chatSessionsEnded, CHAT_SESSIONS_END_WAIT_MS) });
 };
