@@ -48,9 +48,11 @@
   },
   "packageManager": "pnpm@10.33.0",
   "pnpm": {
-    "neverBuiltDependencies": [
-      "secp256k1",
-      "core-js"
+    "onlyBuiltDependencies": [],
+    "ignoredBuiltDependencies": [
+      "@sentry/cli",
+      "core-js",
+      "core-js-pure"
     ],
     "patchedDependencies": {
       "@hiveio/workerbee": "patches/@hiveio__workerbee.patch"
