@@ -208,7 +208,10 @@
     "signed_out": "로그아웃된 상태입니다. 로그인한 후 다시 시도해 주세요.",
     "transaction_expired": "트랜잭션이 승인되기 전에 만료되어 아무것도 전송되지 않았습니다. 다시 시도하고 약 1분 이내에 승인하세요.",
     "transaction_expiration_too_far_ahead": "노드가 트랜잭션의 만료 시간을 거부하여 아무것도 전송되지 않았습니다. 기기의 시계가 정확한지 확인한 후 다시 시도하세요.",
-    "wrong_safe_storage_password": "안전한 저장소 비밀번호가 올바르지 않습니다. 안전한 저장소에 설정한 비밀번호를 입력하고 다시 시도해 주세요."
+    "wrong_safe_storage_password": "안전한 저장소 비밀번호가 올바르지 않습니다. 안전한 저장소에 설정한 비밀번호를 입력하고 다시 시도해 주세요.",
+    "safe_storage_posting_key_not_authorized": "안전한 저장소에 보관된 게시(posting) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 게시(posting) 키로 다시 로그인해 주세요.",
+    "safe_storage_active_key_not_authorized": "안전한 저장소에 보관된 액티브(active) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 액티브(active) 키로 다시 로그인해 주세요.",
+    "safe_storage_owner_key_not_authorized": "안전한 저장소에 보관된 소유자(owner) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 소유자(owner) 키로 다시 로그인해 주세요."
   },
   "request_error": {
     "timeout": "서버가 제때 응답하지 않았습니다. 다시 시도해 주세요.",

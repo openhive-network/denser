@@ -16,7 +16,8 @@ import plWallet from '../../../locales/pl/common_wallet.json';
  * read times out the transfer fails with the translated request-timeout toast, not wax's raw
  * `Request timed out: "POST ..."` text, and without the "may still apply" note: nothing was sent.
  * A wrong password there fails it with the translated wrong-password toast in the page's language,
- * not hb-auth's English `Invalid credentials`.
+ * not hb-auth's English `Invalid credentials`. The right password for a key the account no longer
+ * lists says that key no longer works and asks for the current one, not that the password is wrong.
  * The stub node (support/walletApiStub.ts) vouches for the key as sharedPostingActiveKey.spec.ts's
  * does; the broadcast is intercepted.
  */
@@ -31,6 +32,9 @@ const SHARED_PUBLIC_KEY = 'STM5dRfo5EMpM51eN3pS8Gn1CDGVZXjRanwfJP8oEXQ8KS36HhB2W
 const SAFE_STORAGE_PASSWORD = 'fixture-password';
 
 const sharedAuthority = { weight_threshold: 1, account_auths: [], key_auths: [[SHARED_PUBLIC_KEY, 1]] };
+/** A key of no real account, standing for the one the shared key was changed to on chain */
+const ROTATED_PUBLIC_KEY = 'STM8GC13uCZbP44HzMLV6zPZGwVQ8Nt4Kji8PapsPiNq1BK153XTX';
+const rotatedAuthority = { weight_threshold: 1, account_auths: [], key_auths: [[ROTATED_PUBLIC_KEY, 1]] };
 
 let stub: Server;
 
@@ -84,6 +88,23 @@ const holdFindAccounts = (page: Page) =>
       const body = route.request().postDataJSON() as { method?: string } | null;
       if (body?.method === 'database_api.find_accounts') return new Promise<void>(() => undefined);
       return route.fallback();
+    }
+  );
+
+/** Answers every `database_api.find_accounts` request with the shared key changed for another one */
+const rotateSharedKey = (page: Page) =>
+  page.route(
+    (url) => url.hostname === '127.0.0.1' && url.port === String(FIXTURE_API_PORT),
+    async (route) => {
+      const body = route.request().postDataJSON() as { method?: string } | null;
+      if (body?.method !== 'database_api.find_accounts') return route.fallback();
+      const response = await route.fetch();
+      const json = (await response.json()) as { result: { accounts: Record<string, unknown>[] } };
+      for (const account of json.result.accounts) {
+        account.posting = rotatedAuthority;
+        account.active = rotatedAuthority;
+      }
+      return route.fulfill({ response, json });
     }
   );
 
@@ -156,4 +177,26 @@ test.describe('Safe-storage unlock at sign time', () => {
       expect(broadcasts.calls).toHaveLength(0);
     });
   }
+
+  test('WALLET-SAFE-STORAGE-UNLOCK-04 — the right password for a key the account no longer lists asks for the current key', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    const loginForm = await signInWithSafeStorage(page);
+    await page.reload();
+
+    const confirmDialog = await transferUpToUnlockPrompt(page, loginForm);
+    await rotateSharedKey(page);
+    await loginForm.passwordToUnlockKeyInput.fill(SAFE_STORAGE_PASSWORD);
+    await loginForm.passwordToUnlockKeySubmitButton.click();
+
+    await expect(page.getByTestId('safe-storage-key-not-authorized-message')).toHaveText(
+      enSmartSigner.broadcast_error.safe_storage_active_key_not_authorized,
+      { timeout: UNLOCK_TIMEOUT }
+    );
+    await expect(page.getByTestId('wrong-safe-storage-password-message')).toHaveCount(0);
+    await expect(page.getByText('Invalid credentials')).toHaveCount(0);
+    await expect(confirmDialog).toBeVisible();
+    expect(broadcasts.calls).toHaveLength(0);
+  });
 });

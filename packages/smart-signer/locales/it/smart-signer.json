@@ -208,7 +208,10 @@
     "signed_out": "Sei disconnesso. Accedi e riprova.",
     "transaction_expired": "La transazione è scaduta prima di essere approvata, quindi non è stato inviato nulla. Riprova e approvala entro circa un minuto.",
     "transaction_expiration_too_far_ahead": "Il nodo ha rifiutato l'ora di scadenza della transazione, quindi non è stato inviato nulla. Verifica che l'orologio del dispositivo sia corretto e riprova.",
-    "wrong_safe_storage_password": "Password dell'archivio sicuro errata. Inserisci la password impostata per l'archivio sicuro e riprova."
+    "wrong_safe_storage_password": "Password dell'archivio sicuro errata. Inserisci la password impostata per l'archivio sicuro e riprova.",
+    "safe_storage_posting_key_not_authorized": "La chiave di pubblicazione (posting) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave di pubblicazione (posting) attuale.",
+    "safe_storage_active_key_not_authorized": "La chiave attiva (active) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave attiva (active) attuale.",
+    "safe_storage_owner_key_not_authorized": "La chiave proprietario (owner) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave proprietario (owner) attuale."
   },
   "request_error": {
     "timeout": "Il server non ha risposto in tempo. Riprova.",
