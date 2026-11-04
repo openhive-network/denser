@@ -50,10 +50,11 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
+        proxy_set_header Host $http_host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
         proxy_cache_bypass $http_upgrade;
 
         # HSTS - Set at nginx level (infrastructure concern)
@@ -76,6 +77,10 @@ server {
     }
 }
 ```
+
+### Why the Proxy Forwards the Port
+
+The auth API routes (login, logout, account switch and removal, consent, chat token) accept a POST only from the site's own pages. A browser that sends no `Sec-Fetch-Site`, which is every browser on a plain-HTTP site, is checked by its `Origin` instead: its scheme must match `X-Forwarded-Proto`, and its host and port must match the forwarded `Host`. nginx's `$host` drops the port, so on a non-default port (`http://example.com:8080`) the Origin would never match and those routes would answer 403. `$http_host` passes the Host the browser sent, port included; `X-Forwarded-Port` names the port when the Host has none.
 
 ### Why HSTS Should Be Set at Nginx Level
 
