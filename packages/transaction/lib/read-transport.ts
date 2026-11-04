@@ -20,11 +20,11 @@ export class ReadTransportError extends Error {
 }
 
 /**
- * Statuses that reject the request itself, so every node would answer it the same. 404 is not one:
- * a node without the REST API answers it.
+ * Statuses that reject the request itself, so every node would answer it the same. 404 is one only
+ * when it is not a missing endpoint (see `isEndpointMissing`).
  */
 const isRequestRejected = (status: number): boolean =>
-  status >= 400 && status < 500 && status !== 404 && status !== 408 && status !== 429;
+  status >= 400 && status < 500 && status !== 408 && status !== 429;
 
 /**
  * REST endpoints (`<api>.<method>`) newer than the rest of their API, which nodes serving the API
@@ -68,23 +68,28 @@ const isRequestTimeout = (error: ReadTransportError): boolean =>
 
 /** PostgREST's code for a request naming no SQL function the node has. */
 const POSTGREST_FUNCTION_NOT_FOUND = 'PGRST202';
+/** PostgREST's code for a request path it has no route for. */
+const POSTGREST_INVALID_PATH = 'PGRST125';
 
 /**
- * Whether a failed REST call means the node lacks the endpoint called: it answered 404, or
- * PostgREST's "function not found" (PGRST202) whatever the status.
+ * Whether a failed REST call means the node lacks the endpoint called: PostgREST's "function not
+ * found" (PGRST202) whatever the status, or a 404 that names no API answer: PostgREST's "invalid
+ * path" (PGRST125) or a body without an error `code` (a proxy routing the path nowhere). A 404 whose
+ * body carries any other `code` is the endpoint's own answer, e.g. about one missing item.
  */
 export const isEndpointMissing = (error: unknown): boolean => {
   if (!(error instanceof ReadTransportError)) return false;
   const { body } = error;
   const code = typeof body === 'object' && body !== null ? Reflect.get(body, 'code') : undefined;
-  return error.status === 404 || code === POSTGREST_FUNCTION_NOT_FOUND;
+  if (code === POSTGREST_FUNCTION_NOT_FOUND) return true;
+  return error.status === 404 && (code === undefined || code === POSTGREST_INVALID_PATH);
 };
 
 /**
- * Whether a failed REST call means this node cannot serve that REST API: it does not have it (404),
- * is down or overloaded (5xx, 408, 429, timeout, network failure) or did not answer with JSON, so
- * another node may serve it. False for a request the API rejected (any other 4xx), for a missing
- * endpoint (see `isEndpointMissing`) at `path` (e.g. `['balance-api', 'proposalsPayments']`) that
+ * Whether a failed REST call means this node cannot serve that REST API: it does not have it
+ * (`isEndpointMissing`), is down or overloaded (5xx, 408, 429, timeout, network failure) or did not
+ * answer with JSON, so another node may serve it. False for a request the API rejected (any other
+ * 4xx, including a 404 about a missing item), for a missing endpoint at `path` (e.g. `['balance-api', 'proposalsPayments']`) that
  * not every node has, for a timeout of an endpoint whose cold query may take longer, and for any error
  * that is not a `ReadTransportError`.
  */
@@ -92,7 +97,7 @@ export const isRestApiUnavailable = (error: unknown, path: readonly string[] = [
   if (!(error instanceof ReadTransportError)) return false;
   const endpoint = path.join('.');
   if (error.status === undefined) return !(isRequestTimeout(error) && ENDPOINTS_SLOWER_THAN_A_TIMEOUT.has(endpoint));
-  if (isEndpointMissing(error) && ENDPOINTS_NOT_ON_EVERY_NODE.has(endpoint)) return false;
+  if (isEndpointMissing(error)) return !ENDPOINTS_NOT_ON_EVERY_NODE.has(endpoint);
   return !isRequestRejected(error.status);
 };
 

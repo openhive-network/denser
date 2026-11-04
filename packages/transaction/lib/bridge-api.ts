@@ -21,6 +21,7 @@ const logger = getLogger('bridge');
 export const getPostHeader = async (author: string, permlink: string): Promise<IGetPostHeader> => {
   return readFromHivemind(
     'postHeader',
+    { accounts: [author], permlinks: [permlink] },
     (api) => api.postHeader({ author, permlink }),
     () =>
       getReadChain().api.bridge.get_post_header({
@@ -32,6 +33,7 @@ export const getPostHeader = async (author: string, permlink: string): Promise<I
 export const getUnreadNotifications = async (account: string): Promise<IUnreadNotifications | null> => {
   return readFromHivemind(
     'accountUnreadNotifications',
+    { accounts: [account] },
     (api) => api.accountUnreadNotifications({ 'account-name': account }),
     () =>
       getReadChain().api.bridge.unread_notifications({
@@ -47,6 +49,7 @@ export const getCommunities = async (
 ): Promise<Community[] | null> => {
   return readFromHivemind(
     'communities',
+    {},
     (api) => api.communities({ sort, query: nonEmpty(query), observer }),
     () =>
       getReadChain().api.bridge.list_communities({
@@ -60,6 +63,7 @@ export const getCommunities = async (
 export const getSubscriptions = async (account: string): Promise<string[][] | null> => {
   return readFromHivemind(
     'accountSubscriptions',
+    { accounts: [account] },
     (api) => api.accountSubscriptions({ 'account-name': account }),
     () =>
       getReadChain().api.bridge.list_all_subscriptions({
@@ -81,6 +85,7 @@ export const getPostsRanked = async (
     () =>
       readFromHivemind(
         'rankedPosts',
+        {},
         (api) =>
           api.rankedPosts({
             sort,
@@ -153,6 +158,7 @@ export const getPost = async (
     () =>
       readFromHivemind(
         'post',
+        { accounts: [author], permlinks: [permlink] },
         (api) => api.post({ author, permlink, observer }),
         () =>
           getReadChain().api.bridge.get_post({
@@ -183,6 +189,7 @@ export const getAccountPosts = async (
     () =>
       readFromHivemind(
         'accountPosts',
+        { accounts: [account] },
         (api) =>
           api.accountPosts({
             'account-name': account,
@@ -217,6 +224,7 @@ export const getFollowList = async (
 ): Promise<IFollowList[]> => {
   return readFromHivemind(
     'accountFollowList',
+    { accounts: [observer] },
     (api) => api.accountFollowList({ 'account-name': observer, type: follow_type }),
     () =>
       getReadChain().api.bridge.get_follow_list({
@@ -229,6 +237,7 @@ export const getFollowList = async (
 export const doesUserFollowAnyLists = async (observer: string): Promise<boolean> => {
   return readFromHivemind(
     'accountFollowsAnyLists',
+    { accounts: [observer] },
     (api) => api.accountFollowsAnyLists({ 'account-name': observer }),
     () => getReadChain().api.bridge.does_user_follow_any_lists({ observer })
   );
@@ -241,6 +250,7 @@ export const hiddenAuthorsApi: IHiddenAuthorsApi = { getFollowList };
 export const getSubscribers = async (community: string): Promise<string[][] | null> => {
   return readFromHivemind(
     'communitySubscribers',
+    { accounts: [community] },
     (api) => api.communitySubscribers({ name: community }),
     () =>
       getReadChain().api.bridge.list_subscribers({
@@ -267,6 +277,7 @@ export const getAccountNotifications = async (
   const restLastId = typeof params.last_id === 'number' ? params.last_id : undefined;
   return readFromHivemind(
     'accountNotifications',
+    { accounts: [account] },
     (api) => api.accountNotifications({ 'account-name': account, 'page-size': limit, 'last-id': restLastId }),
     () => getReadChain().api.bridge.account_notifications(params)
   );
@@ -278,6 +289,7 @@ export const getCommunity = async (
 ): Promise<Community | null> => {
   return readFromHivemind(
     'community',
+    { accounts: [name] },
     (api) => api.community({ name, observer }),
     () => getReadChain().api.bridge.get_community({ name, observer })
   );
@@ -285,6 +297,7 @@ export const getCommunity = async (
 export const getListCommunityRoles = async (community: string): Promise<string[][] | null> => {
   return readFromHivemind(
     'communityRoles',
+    { accounts: [community] },
     (api) => api.communityRoles({ name: community }),
     () => getReadChain().api.bridge.list_community_roles({ community })
   );
@@ -300,6 +313,7 @@ export const getDiscussion = async (
     () =>
       readFromHivemind(
         'postDiscussion',
+        { accounts: [author], permlinks: [permlink] },
         (api) => api.postDiscussion({ author, permlink, observer }),
         () =>
           getReadChain().api.bridge.get_discussion({
