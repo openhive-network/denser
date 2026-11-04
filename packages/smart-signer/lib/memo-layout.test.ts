@@ -1,7 +1,14 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { createWaxFoundation } from '@hiveio/wax';
-import { MemoLayoutError, parseEncryptedMemo, toSnapMemoLayout, toStandardMemoLayout } from './memo-layout.ts';
+import {
+  EmptyEncryptedMemoError,
+  MemoLayoutError,
+  parseEncryptedMemo,
+  requireEncryptedMemoFor,
+  toSnapMemoLayout,
+  toStandardMemoLayout
+} from './memo-layout.ts';
 
 const wax = await createWaxFoundation();
 const toPublicKeyString = (key: Uint8Array) => wax.convertRawPublicKeyToWif(Buffer.from(key).toString('hex'));
@@ -89,5 +96,45 @@ describe('memo-layout: converting between layouts', () => {
   it('round-trips between the layouts', () => {
     assert.equal(toSnapMemoLayout(toStandardMemoLayout(SNAP_MEMO)), SNAP_MEMO);
     assert.equal(toStandardMemoLayout(toSnapMemoLayout(PEAKD_MEMO)), PEAKD_MEMO);
+  });
+});
+
+describe('memo-layout: requireEncryptedMemoFor', () => {
+  it('accepts a memo encrypted to the recipient memo key, in either layout', () => {
+    assert.equal(requireEncryptedMemoFor(PEAKD_MEMO, '#hello', QUOCHUY_MEMO_KEY), PEAKD_MEMO);
+    assert.equal(requireEncryptedMemoFor(SNAP_MEMO, '#hello', TEAMVN_MEMO_KEY), SNAP_MEMO);
+  });
+
+  it('reads the recipient key whatever its chain prefix', () => {
+    assert.equal(requireEncryptedMemoFor(PEAKD_MEMO, '#hello', 'TST' + QUOCHUY_MEMO_KEY.slice(3)), PEAKD_MEMO);
+  });
+
+  it('refuses the plaintext handed back', () => {
+    assert.throws(() => requireEncryptedMemoFor('#hello', '#hello', QUOCHUY_MEMO_KEY), MemoLayoutError);
+    assert.throws(() => requireEncryptedMemoFor('hello', '#hello', QUOCHUY_MEMO_KEY), MemoLayoutError);
+  });
+
+  it('refuses a plaintext that looks like an encrypted memo, handed back unchanged', () => {
+    assert.throws(() => requireEncryptedMemoFor(PEAKD_MEMO, PEAKD_MEMO, QUOCHUY_MEMO_KEY), MemoLayoutError);
+  });
+
+  it('refuses a hex string such as a signature', () => {
+    const signature = '1f'.repeat(65);
+    assert.throws(() => requireEncryptedMemoFor(signature, '#hello', QUOCHUY_MEMO_KEY), MemoLayoutError);
+    assert.throws(() => requireEncryptedMemoFor('#' + signature, '#hello', QUOCHUY_MEMO_KEY), MemoLayoutError);
+  });
+
+  it('refuses a memo encrypted to another key', () => {
+    assert.throws(() => requireEncryptedMemoFor(PEAKD_MEMO, '#hello', TEAMVN_MEMO_KEY), /another key/);
+    assert.throws(() => requireEncryptedMemoFor(SNAP_MEMO, '#hello', QUOCHUY_MEMO_KEY), /another key/);
+  });
+
+  it('refuses malformed base58 and an empty result', () => {
+    assert.throws(() => requireEncryptedMemoFor('#' + PEAKD_MEMO.slice(1, 60), '#hello', QUOCHUY_MEMO_KEY), MemoLayoutError);
+    assert.throws(() => requireEncryptedMemoFor('#', '#hello', QUOCHUY_MEMO_KEY), EmptyEncryptedMemoError);
+  });
+
+  it('refuses a recipient key that is not a public key', () => {
+    assert.throws(() => requireEncryptedMemoFor(PEAKD_MEMO, '#hello', 'STM1'), MemoLayoutError);
   });
 });

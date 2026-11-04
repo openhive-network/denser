@@ -37,18 +37,18 @@ describe('postSeo', () => {
     assert.equal(seo.description, 'Body text');
   });
 
-  it('keeps an external canonical URL and falls back to the category without a community', () => {
+  it('uses the site URL of the post whatever its canonical URL, and falls back to the category without a community', () => {
     const seo = postSeo(
       {
         ...POST,
         category: 'photography',
         community: undefined,
         community_title: undefined,
-        json_metadata: { canonical_url: 'https://peakd.com/x/@alice/my-post' }
+        json_metadata: { canonical_url: 'https://example.net/x', app: 'peakd/2024.5.1' }
       },
       SITE
     );
-    assert.equal(seo.url, 'https://peakd.com/x/@alice/my-post');
+    assert.equal(seo.url, 'https://example.org/blog/photography/@alice/my-post');
     assert.deepEqual(seo.section, {
       name: 'photography',
       url: 'https://example.org/blog/trending/photography'
@@ -100,6 +100,17 @@ describe('JSON-LD builders', () => {
         name: 'My post',
         item: 'https://example.org/blog/hive-167922/@alice/my-post'
       }
+    ]);
+  });
+
+  it('points the Article and the breadcrumb at the site URL of a post with a canonical_url', () => {
+    const seo = postSeo({ ...POST, json_metadata: { canonical_url: 'https://example.net/x' } }, SITE);
+    const siteUrl = 'https://example.org/blog/hive-167922/@alice/my-post';
+    assert.deepEqual(articleJsonLd(seo).mainEntityOfPage, { '@type': 'WebPage', '@id': siteUrl });
+    assert.deepEqual(postBreadcrumbJsonLd(seo, SITE).itemListElement, [
+      { '@type': 'ListItem', position: 1, name: 'Hive', item: 'https://example.org/blog/' },
+      { '@type': 'ListItem', position: 2, name: 'LeoFinance', item: 'https://example.org/blog/trending/hive-167922' },
+      { '@type': 'ListItem', position: 3, name: 'My post', item: siteUrl }
     ]);
   });
 

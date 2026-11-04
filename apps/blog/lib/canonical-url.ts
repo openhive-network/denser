@@ -28,6 +28,11 @@ function appUrlScheme(app: unknown): string | undefined {
   return name ? APP_URL_SCHEMES.get(name) : undefined;
 }
 
+/** Path of a post page on this site: `/<category>/@<author>/<permlink>`. */
+export function postSitePath({ category, author, permlink }: Omit<ICanonicalPost, 'json_metadata'>): string {
+  return `/${category}/@${author}/${permlink}`;
+}
+
 /**
  * Canonical URL of a post page, by condenser's rule (`makeCanonicalLink`):
  * 1. `json_metadata.canonical_url`, when it is a string starting with `hive://`, `https://` or `://`;
@@ -41,7 +46,7 @@ export function postCanonicalUrl({ category, author, permlink, json_metadata }: 
   if (typeof canonicalUrl === 'string' && CANONICAL_URL_PATTERN.test(canonicalUrl)) return canonicalUrl;
 
   const scheme = appUrlScheme(json_metadata?.app);
-  if (!scheme) return `/${category}/@${author}/${permlink}`;
+  if (!scheme) return postSitePath({ category, author, permlink });
   return scheme
     .split('{category}')
     .join(category)

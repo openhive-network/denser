@@ -100,6 +100,16 @@ const abortMethod = (page: Page, method: string) =>
     }
   );
 
+/** Holds every script chunk and wasm module requested from now on, as a slow connection does: the chain loads late. */
+const delayCodeLoads = (page: Page, delayMs: number) =>
+  page.route(
+    (url) => url.pathname.includes('/_next/static/') || url.pathname.endsWith('.wasm'),
+    async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return route.fallback();
+    }
+  );
+
 const RAW_NETWORK_ERROR = 'Unknown request error caught';
 
 test.describe('Transfer broadcast', () => {
@@ -212,6 +222,33 @@ test.describe('Transfer broadcast', () => {
     await expect(page.getByText(RAW_NETWORK_ERROR)).toHaveCount(0);
     await expect(page.getByTestId('transaction-not-confirmed-message')).toHaveCount(0);
     await expect(confirmDialog(page)).toBeVisible();
+    await expect(confirmDialog(page).getByRole('button', { name: 'OK' })).toBeEnabled();
     expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-TRANSFER-08 — a double click on OK while the chain loads broadcasts one transfer', async ({
+    page
+  }) => {
+    // Before the mutation starts the submission waits for the chain: OK must already be disabled then
+    const broadcasts = await installBroadcastInterceptor(page);
+    const dialog = await openTransferDialog(page, 'wallet-hive-value');
+    await fillTransfer(dialog, '1.5', MEMO);
+    const ok = confirmDialog(page).getByRole('button', { name: 'OK' });
+    await expect(ok).toBeEnabled();
+    await delayCodeLoads(page, 2_000);
+    await ok.dblclick();
+
+    // While it spins OK has no name: it is the dialog's only disabled button
+    await expect(confirmDialog(page).locator('button[disabled]')).toHaveCount(1);
+    await broadcasts.waitForCount(1);
+    // Once the submission has ended, a second one would have broadcast too
+    await expect(ok).toBeEnabled({ timeout: 20_000 });
+    expect(broadcasts.calls).toHaveLength(1);
+    expectTransferOperation(broadcasts.calls[0], {
+      from: STUB_ACCOUNT,
+      to: STUB_FOLLOWED,
+      amount: naiAsset('1.500 HIVE'),
+      memo: MEMO
+    });
   });
 });

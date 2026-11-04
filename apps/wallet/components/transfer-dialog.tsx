@@ -131,7 +131,7 @@ export function TransferDialog({
     selectCurr: true,
     buttonTitle: t('transfers_page.next'),
     to: ['transferTo', 'powerUp', 'withdrawHive', 'withdrawHiveDollars'].includes(type) ? username : '',
-    onSubmit: () => {},
+    onSubmit: async () => {},
     memo: '',
     confirmTitle: ''
   };
@@ -244,7 +244,7 @@ export function TransferDialog({
           memo,
           amount: await getAsset(value, curr)
         };
-        transfersTransaction('transfer', params, transferMutation.mutateAsync);
+        await transfersTransaction('transfer', params, transferMutation.mutateAsync);
       };
       break;
 
@@ -261,7 +261,7 @@ export function TransferDialog({
           toAccount: data.to,
           memo: data.memo
         };
-        transfersTransaction('transferToSavings', params, transferToSavingsMutation.mutateAsync);
+        await transfersTransaction('transferToSavings', params, transferToSavingsMutation.mutateAsync);
       };
       break;
 
@@ -275,7 +275,7 @@ export function TransferDialog({
       data.buttonTitle = t('transfers_page.power_up');
       data.onSubmit = async () => {
         const params = { fromAccount: username, toAccount: data.to, amount: await getAsset(value, curr) };
-        transfersTransaction('powerUp', params, powerUpMutation.mutateAsync);
+        await transfersTransaction('powerUp', params, powerUpMutation.mutateAsync);
       };
       break;
 
@@ -289,7 +289,7 @@ export function TransferDialog({
           account: username,
           hp: await getAsset(value, 'HIVE')
         };
-        transfersTransaction('powerDown', params, powerDownMutation.mutateAsync);
+        await transfersTransaction('powerDown', params, powerDownMutation.mutateAsync);
       };
       break;
 
@@ -304,7 +304,7 @@ export function TransferDialog({
           delegatee: data.to,
           hp: await getAsset(value, 'HIVE')
         };
-        transfersTransaction('delegate', params, delegateMutation.mutateAsync, explainDelegationRejection);
+        await transfersTransaction('delegate', params, delegateMutation.mutateAsync, explainDelegationRejection);
       };
       break;
 
@@ -322,7 +322,7 @@ export function TransferDialog({
           amount: await getAsset(value, curr),
           requestId
         };
-        transfersTransaction('withdrawHive', params, withdrawFromSavingsMutation.mutateAsync);
+        await transfersTransaction('withdrawHive', params, withdrawFromSavingsMutation.mutateAsync);
       };
       break;
 
@@ -340,7 +340,7 @@ export function TransferDialog({
           amount: await getAsset(value, curr),
           requestId
         };
-        transfersTransaction('withdrawHiveDollars', params, withdrawFromSavingsMutation.mutateAsync);
+        await transfersTransaction('withdrawHiveDollars', params, withdrawFromSavingsMutation.mutateAsync);
       };
       break;
   }
@@ -409,12 +409,23 @@ export function TransferDialog({
   const confirmAsset = type === 'powerDown' ? 'HIVE' : curr;
   const confirmAmount = `${convertStringToBig(value === '' ? '0' : value).toFixed(3)} ${confirmAsset}`;
 
-  const onConfirm = () => {
-    if (memoBlocked) return;
-    data.onSubmit();
+  // Set before the first await: until the mutation starts, the submission waits for the chain (`getAsset`).
+  const submittingRef = useRef(false);
+  const [submitting, setSubmitting] = useState(false);
+  const onConfirm = async () => {
+    if (memoBlocked || submittingRef.current) return;
+    submittingRef.current = true;
+    setSubmitting(true);
+    try {
+      await data.onSubmit();
+    } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
+    }
   };
 
   const isBroadcasting =
+    submitting ||
     transferMutation.isPending ||
     transferToSavingsMutation.isPending ||
     powerUpMutation.isPending ||
@@ -713,11 +724,11 @@ export function TransferDialog({
               <Button
                 variant="redHover"
                 className="w-fit"
-                disabled={badActors || memoBlocked || belowMinDelegation || powerDownMutation.isPending}
+                disabled={badActors || memoBlocked || belowMinDelegation || submitting || powerDownMutation.isPending}
                 onClick={type === 'powerDown' ? onConfirm : form.handleSubmit(onSubmit)}
               >
-                {powerDownMutation.isPending ? (
-                  <CircleSpinner loading={powerDownMutation.isPending} size={18} color="#dc2626" />
+                {submitting || powerDownMutation.isPending ? (
+                  <CircleSpinner loading size={18} color="#dc2626" />
                 ) : (
                   data.buttonTitle
                 )}
