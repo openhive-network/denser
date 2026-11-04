@@ -1,5 +1,5 @@
 import type { Entry } from '@hive/common-hiveio-packages/wax';
-import { postCanonicalUrl } from './canonical-url.ts';
+import { postSitePath } from './canonical-url.ts';
 import { absoluteSiteUrl } from './site-url.ts';
 
 const DEFAULT_SHARE_IMAGE = 'https://hive.blog/images/hive-blog-share.png';
@@ -27,7 +27,7 @@ export type SeoPost = Pick<
 
 /** What a post page tells crawlers and link previews about the post. */
 export interface IPostSeo {
-  /** The canonical URL, absolute. */
+  /** The post's URL on this site, absolute; never the author's canonical_url, which only rel=canonical follows. */
   url: string;
   title: string;
   description: string;
@@ -76,7 +76,7 @@ export function postSeo(post: SeoPost, siteUrl?: string): IPostSeo {
   const metadata = post.json_metadata;
   const sectionTag = post.community || post.category;
   return {
-    url: absoluteSiteUrl(postCanonicalUrl(post), siteUrl),
+    url: absoluteSiteUrl(postSitePath(post), siteUrl),
     title: post.title,
     description: postDescription(post),
     image: firstString(metadata?.image) || firstString(metadata?.images) || DEFAULT_SHARE_IMAGE,
