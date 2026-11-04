@@ -4,6 +4,8 @@ import { WALLET_BASE_PATH } from '../support/basePath';
 import { LoginForm } from '../support/pages/loginForm';
 import { STUB_ACCOUNT, logInAsStubAccount, startWalletApiStub } from '../support/walletApiStub';
 import {
+  BASELINE_SECURITY_HEADERS,
+  baselineHeadersOf,
   cspOf,
   nonceOf,
   recordCspViolations,
@@ -62,6 +64,14 @@ test.describe('Content-Security-Policy — nonce', () => {
       nonces.push(nonce);
     }
     expect(nonces[0]).not.toBe(nonces[1]);
+  });
+
+  test('WALLET-CSP-04 — a file-like path the middleware skips still answers with the baseline security headers', async ({
+    request
+  }) => {
+    const response = await request.get(`${WALLET_BASE_PATH}/x.js`);
+    expect(response.status()).toBe(404);
+    expect(baselineHeadersOf(response.headers())).toEqual(BASELINE_SECURITY_HEADERS);
   });
 
   test('WALLET-CSP-02 — the transfers page and the transfer dialog raise no CSP violation', async ({ page }) => {
