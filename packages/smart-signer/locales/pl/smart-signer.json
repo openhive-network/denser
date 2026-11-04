@@ -215,6 +215,7 @@
   },
   "request_error": {
     "timeout": "Serwer nie odpowiedział na czas. Spróbuj ponownie.",
+    "network": "Nie udało się połączyć z serwerem. Sprawdź połączenie i spróbuj ponownie.",
     "not_confirmed": "Transakcja wysłana, ale żaden blok jeszcze jej nie potwierdził. Może jeszcze zostać wykonana: sprawdź historię, zanim spróbujesz ponownie.",
     "transaction_id": "ID transakcji:"
   },

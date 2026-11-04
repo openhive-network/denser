@@ -215,6 +215,7 @@
   },
   "request_error": {
     "timeout": "服务器未及时响应。请重试。",
+    "network": "无法连接服务器。请检查网络连接后重试。",
     "not_confirmed": "交易已发送，但尚未被任何区块确认。它仍可能生效：请先查看历史记录再重试。",
     "transaction_id": "交易 ID："
   },

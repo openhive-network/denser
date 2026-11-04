@@ -1,6 +1,7 @@
 import { TTransactionPackType, ApiTransaction } from '@hiveio/wax';
 import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
+import { isNodeNetworkFailure } from '@transaction/lib/transaction-inclusion';
 
 const logger = getLogger('app');
 
@@ -47,7 +48,7 @@ export async function verifyAuthorityOrThrow(
     const msg = error instanceof Error ? error.message : String(error);
 
     // Re-throw network errors as-is — don't misattribute them as authority failures
-    if (isNetworkError(msg)) {
+    if (isNetworkError(msg) || isNodeNetworkFailure(error)) {
       throw error;
     }
 

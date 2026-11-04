@@ -1,7 +1,9 @@
 import { expect } from 'chai';
 import {
   type ITransactionIdObserver,
+  findNodeNetworkFailure,
   findWaxRequestTimeout,
+  isNodeNetworkFailure,
   isWaxRequestTimeout,
   TransactionNotConfirmedError,
   toNotConfirmedError,
@@ -213,16 +215,60 @@ describe('toNotConfirmedError', () => {
     expect(toNotConfirmedError(garbled, 'a2192469')).to.be.instanceOf(TransactionNotConfirmedError);
   });
 
+  /**
+   * What wax 1.28.8 throws for a request that fails on the network (connection reset or dropped, the
+   * browser blocking it): a `WaxUnknownRequestError` its bundle can name `WaxError`.
+   */
+  function networkFailure(method: string, { name = 'WaxError', dataAsString = false } = {}) {
+    const error = requestTimeout(method, { name, dataAsString });
+    error.message = 'Unknown request error caught (possible network or CORS error): "POST https://api.hive.blog"';
+    return error;
+  }
+
+  for (const { method, name } of [
+    { method: 'network_broadcast_api.broadcast_transaction', name: 'WaxError' },
+    { method: 'network_broadcast_api.broadcast_transaction', name: 'WaxUnknownRequestError' },
+    { method: 'block_api.get_block', name: 'WaxError' },
+    { method: 'block_api.get_block_range', name: 'WaxError' }
+  ]) {
+    it(`turns a ${method} request failed on the network (${name}) into a not-confirmed error`, () => {
+      const original = networkFailure(method, { name });
+      const error = toNotConfirmedError(original, 'a2192469');
+
+      if (!(error instanceof TransactionNotConfirmedError))
+        return expect.fail('not a TransactionNotConfirmedError');
+      expect(error.transactionId).to.equal('a2192469');
+      expect(error.cause).to.equal(original);
+    });
+  }
+
+  for (const method of ['database_api.find_accounts', 'rc_api.find_rc_accounts']) {
+    it(`passes a pre-broadcast verification read (${method}) failed on the network through unchanged`, () => {
+      const original = networkFailure(method, { dataAsString: true });
+
+      expect(toNotConfirmedError(original, 'a2192469')).to.equal(original);
+    });
+  }
+
+  it('turns a network failure without a readable request method into a not-confirmed error', () => {
+    const noRequest = new Error('Unknown request error caught (possible network or CORS error): "POST https://api.hive.blog"');
+    noRequest.name = 'WaxError';
+
+    expect(toNotConfirmedError(noRequest, 'a2192469')).to.be.instanceOf(TransactionNotConfirmedError);
+  });
+
   it('passes other broadcast errors through unchanged', () => {
     const rejected = new Error('Assert Exception: payer has not enough RC mana for transaction');
     const notAnError = { message: LISTENER_EXPIRED };
     const otherTimeout = new Error('Request timed out: "POST https://api.hive.blog"');
+    const otherNetworkFailure = new Error('Unknown request error caught (possible network or CORS error)');
     const expired = new Error('transaction expiration exception');
     expired.name = 'WaxUnhandledAssertionError';
 
     expect(toNotConfirmedError(rejected, 'a2192469')).to.equal(rejected);
     expect(toNotConfirmedError(notAnError, 'a2192469')).to.equal(notAnError);
     expect(toNotConfirmedError(otherTimeout, 'a2192469')).to.equal(otherTimeout);
+    expect(toNotConfirmedError(otherNetworkFailure, 'a2192469')).to.equal(otherNetworkFailure);
     expect(toNotConfirmedError(expired, 'a2192469')).to.equal(expired);
   });
 });
@@ -276,5 +322,52 @@ describe('findWaxRequestTimeout', () => {
     expect(findWaxRequestTimeout(new Error(notWaxTimeout.message, { cause: notWaxTimeout }))).to.equal(undefined);
     expect(findWaxRequestTimeout(new Error('No password to unlock key'))).to.equal(undefined);
     expect(findWaxRequestTimeout(undefined)).to.equal(undefined);
+  });
+});
+
+describe('isNodeNetworkFailure', () => {
+  const MESSAGE = 'Unknown request error caught (possible network or CORS error): "POST https://api.hive.blog"';
+
+  it("takes wax's and the read client's network failure under any of their names", () => {
+    for (const name of ['WaxError', 'WaxUnknownRequestError', 'ReadTransportError']) {
+      const error = new Error(MESSAGE);
+      error.name = name;
+      expect(isNodeNetworkFailure(error)).to.equal(true);
+    }
+  });
+
+  it('rejects other node errors and network failures not raised for a node request', () => {
+    const notWax = new Error(MESSAGE);
+    const timeout = new Error('Request timed out: "POST https://api.hive.blog"');
+    timeout.name = 'WaxError';
+
+    expect(isNodeNetworkFailure(notWax)).to.equal(false);
+    expect(isNodeNetworkFailure(timeout)).to.equal(false);
+    expect(isNodeNetworkFailure({ name: 'WaxError', message: MESSAGE })).to.equal(false);
+  });
+});
+
+describe('findNodeNetworkFailure', () => {
+  const networkFailure = () => {
+    const error = new Error('Unknown request error caught (possible network or CORS error): "POST https://api.hive.blog"');
+    error.name = 'WaxError';
+    return error;
+  };
+
+  it('finds the network failure itself or as the cause the safe-storage unlock rethrows', () => {
+    const failure = networkFailure();
+    const unlockError = new Error(failure.message, { cause: failure });
+
+    expect(findNodeNetworkFailure(failure)).to.equal(failure);
+    expect(findNodeNetworkFailure(new Error('Signing failed', { cause: unlockError }))).to.equal(failure);
+  });
+
+  it('finds nothing in a timeout or another failure', () => {
+    const timeout = new Error('Request timed out: "POST https://api.hive.blog"');
+    timeout.name = 'WaxError';
+
+    expect(findNodeNetworkFailure(timeout)).to.equal(undefined);
+    expect(findNodeNetworkFailure(new Error('Invalid credentials'))).to.equal(undefined);
+    expect(findNodeNetworkFailure(undefined)).to.equal(undefined);
   });
 });

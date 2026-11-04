@@ -12,6 +12,7 @@ import {
   startWalletApiStub,
   storeStubAccountKey
 } from '../support/walletApiStub';
+import enSmartSigner from '../../../../../packages/smart-signer/locales/en/smart-signer.json';
 
 /**
  * A transfer from a balance menu signs and broadcasts one `transfer_operation` with what the
@@ -85,6 +86,18 @@ const withholdBlocks = (page: Page) =>
       return route.fallback();
     }
   );
+
+/** Fails every request for the JSON-RPC `method` on the network, as a dropped connection does: nothing reaches the node. */
+const abortMethod = (page: Page, method: string) =>
+  page.route(
+    (url) => url.hostname === '127.0.0.1' && url.port === String(FIXTURE_API_PORT),
+    (route) => {
+      const body = route.request().postDataJSON() as { method?: string } | null;
+      return body?.method === method ? route.abort('connectionreset') : route.fallback();
+    }
+  );
+
+const RAW_NETWORK_ERROR = 'Unknown request error caught';
 
 test.describe('Transfer broadcast', () => {
   test('WALLET-TX-TRANSFER-01 — confirming a transfer broadcasts its from, to, amount and memo', async ({ page }) => {
@@ -160,5 +173,40 @@ test.describe('Transfer broadcast', () => {
     await expect(confirmDialog(page)).toBeHidden();
     await expect(dialog).toBeHidden();
     expect(broadcasts.calls).toHaveLength(1);
+  });
+
+  test('WALLET-TX-TRANSFER-06 — a broadcast request failed on the network says the transfer may still apply', async ({
+    page
+  }) => {
+    // The connection may have dropped after the node took the transaction: a retry could send it twice
+    const broadcasts = await installBroadcastInterceptor(page);
+    const dialog = await openTransferDialog(page, 'wallet-hive-value');
+    await fillTransfer(dialog, '1.5', MEMO);
+    await abortMethod(page, 'network_broadcast_api.broadcast_transaction');
+    await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
+
+    await expect(page.getByTestId('transaction-not-confirmed-message')).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByTestId('transaction-not-confirmed-id')).toHaveText(/^[0-9a-f]{40}$/);
+    await expect(page.getByText(RAW_NETWORK_ERROR)).toHaveCount(0);
+    await expect(confirmDialog(page)).toBeHidden();
+    await expect(dialog).toBeHidden();
+    expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-TX-TRANSFER-07 — a signing check failed on the network is a translated failure', async ({ page }) => {
+    // The signer checks the key's authority before anything is sent
+    const broadcasts = await installBroadcastInterceptor(page);
+    const dialog = await openTransferDialog(page, 'wallet-hive-value');
+    await fillTransfer(dialog, '1.5', MEMO);
+    await abortMethod(page, 'database_api.verify_authority');
+    await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
+
+    await expect(page.getByTestId('request-network-error-message')).toHaveText(enSmartSigner.request_error.network, {
+      timeout: 20_000
+    });
+    await expect(page.getByText(RAW_NETWORK_ERROR)).toHaveCount(0);
+    await expect(page.getByTestId('transaction-not-confirmed-message')).toHaveCount(0);
+    await expect(confirmDialog(page)).toBeVisible();
+    expect(broadcasts.calls).toHaveLength(0);
   });
 });

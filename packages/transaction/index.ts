@@ -197,7 +197,7 @@ export class TransactionService {
   /**
    * Broadcasts transaction. Resolves after sending request to API
    * server. Does not wait for applying transaction in blockchain. When
-   * the request times out, the node may still have taken the transaction:
+   * the request times out or fails on the network, the node may still have taken the transaction:
    * it rejects with `TransactionNotConfirmedError`.
    *
    * @param {ITransaction} txBuilder
@@ -215,7 +215,7 @@ export class TransactionService {
     } catch (caught) {
       const error = toNotConfirmedError(caught, transactionId);
       if (error instanceof TransactionNotConfirmedError) {
-        logger.warn('Broadcast request for transaction %s timed out; it may still apply', transactionId);
+        logger.warn('Broadcast request for transaction %s got no answer; it may still apply', transactionId);
       }
       throw error;
     }
@@ -236,9 +236,9 @@ export class TransactionService {
    * into Hive blockchain, then resolve. The bot stays running for further
    * observed broadcasts and is stopped after a minute without any. When
    * the node accepted the transaction but the bot doesn't find it in a
-   * block in time, or a request timed out (the broadcast itself or a read
-   * of the bot watching for it), it rejects with
-   * `TransactionNotConfirmedError`. A timed-out read of wax's on-chain
+   * block in time, or a request timed out or failed on the network (the
+   * broadcast itself or a read of the bot watching for it), it rejects with
+   * `TransactionNotConfirmedError`. Such a failure of a read of wax's on-chain
    * verification, made before anything is sent, rejects as is.
    *
    * @param {ITransaction} txBuilder
