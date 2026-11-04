@@ -12,6 +12,9 @@ import { addAccount } from '@smart-signer/lib/auth/accounts';
 import { setAccounts, setActiveUser } from '@smart-signer/lib/auth/active-user';
 import { postAccountsChanged } from '@smart-signer/lib/auth/account-sync';
 import { switchAccountBackend } from '@smart-signer/lib/auth/use-switch-account';
+import { clearOtherSessionWifKeys } from '@smart-signer/lib/signer/credential-storage';
+import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
+import { isStorageAvailable } from '@smart-signer/lib/utils';
 
 const logger = getLogger('app');
 
@@ -31,6 +34,15 @@ async function signInBackend(data: PostLoginSchema): Promise<User> {
     ],
     body: JSON.stringify(data)
   });
+}
+
+/**
+ * Drops the keys of other key types stored for `user` before this sign-in, as by an earlier session
+ * of another key, so they no longer sign without asking.
+ */
+function clearOtherKeysOfSignIn({ username, keyType }: User): void {
+  if (!isStorageAvailable('localStorage')) return;
+  if (clearOtherSessionWifKeys(window.localStorage, username, keyType)) notifySafeStorageKeysChanged();
 }
 
 async function signIn(data: PostLoginSchema): Promise<User> {
@@ -54,6 +66,7 @@ export function useSignIn() {
     },
     onSuccess: (data) => {
       const { user } = data;
+      clearOtherKeysOfSignIn(user);
       const previousUser = queryClient.getQueryData<User>([QUERY_KEY.user]);
       setAccounts(queryClient, addAccount(userLocalStorage.getAccounts(), previousUser, user));
       setActiveUser(queryClient, user);

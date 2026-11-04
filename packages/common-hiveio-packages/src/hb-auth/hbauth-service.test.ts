@@ -14,7 +14,8 @@ import { registerHooks } from 'node:module';
  * reaches it before that start finished. A client connecting to a worker that does not run starts it
  * (fakeHbAuthStarts lists those). fakeHbAuthWrite, when set, is awaited by every key write before it
  * lands, as hb-auth's on-chain verification is; register's fails, as on an API node that does not
- * show the key yet, while fakeHbAuthChainLags is set when it starts. User settings lack `strict`.
+ * show the key yet, while fakeHbAuthChainLags is set when it starts. fakeHbAuthLogout, when set, is
+ * awaited with the worker URL by every logout before it reaches the worker. User settings lack `strict`.
  */
 const FAKE_HB_AUTH = `
 const workers = new Map();
@@ -110,11 +111,13 @@ export class OnlineClient {
     globalThis.fakeHbAuthAliases.delete(alias(username, keyType));
   }
   async logout(username) {
+    await globalThis.fakeHbAuthLogout?.(this.options.workerUrl);
     const worker = await this.startBeekeeper();
     worker.unlocked.delete(username);
     worker.authorized.delete(username);
   }
   async logoutAll() {
+    await globalThis.fakeHbAuthLogout?.(this.options.workerUrl);
     const worker = await this.startBeekeeper();
     worker.unlocked.clear();
     worker.authorized.clear();
@@ -340,7 +343,7 @@ describe('hb-auth online client', () => {
     fakeHbAuth.fakeHbAuthAliases = new Set();
     fakeHbAuth.fakeHbAuthPasswords = new Map();
     setBeforeEveryWrite(undefined);
-    Object.assign(globalThis, { fakeHbAuthChainLags: false });
+    Object.assign(globalThis, { fakeHbAuthChainLags: false, fakeHbAuthLogout: undefined });
   });
 
   it('starts no generation when there is none, so apps loading together keep their workers', async () => {
@@ -465,6 +468,59 @@ describe('hb-auth online client', () => {
 
     assert.deepEqual([...idleWorker.worker.unlocked], []);
     assert.deepEqual([...currentWorker.worker.unlocked], []);
+  });
+
+  it('logs out of the current worker when the running workers cannot be listed', async () => {
+    const blog = await openPage(BLOG);
+    await blog.register('alice');
+    const currentWorker = workerOf(await blog.getOnlineClient());
+    Object.assign(navigator.locks, {
+      query: async () => {
+        throw new Error('Locks query failed');
+      }
+    });
+
+    try {
+      await blog.logout('alice');
+    } finally {
+      Reflect.deleteProperty(navigator.locks, 'query');
+    }
+
+    assert.deepEqual([...currentWorker.worker.unlocked], []);
+    assert.deepEqual([...currentWorker.worker.authorized], []);
+  });
+
+  it('logs out of the current worker first, while a replaced worker has not answered', async () => {
+    const wallet = await openPage(WALLET);
+    await wallet.importKey('alice');
+    const idleBlogTab = await openPage(BLOG);
+    await idleBlogTab.register('alice');
+    const idleWorker = workerOf(await idleBlogTab.getOnlineClient());
+    await wallet.importKey('alice');
+    const blog = await openPage(BLOG);
+    await blog.register('alice');
+    const currentWorker = workerOf(await blog.getOnlineClient());
+    assert.notEqual(currentWorker.url, idleWorker.url);
+    const logoutOrder: string[] = [];
+    let answer = () => {};
+    const answered = new Promise<void>((resolve) => (answer = resolve));
+    Object.assign(globalThis, {
+      fakeHbAuthLogout: async (url: string) => {
+        logoutOrder.push(url);
+        if (url === idleWorker.url) await answered;
+      }
+    });
+
+    const logout = blog.logout('alice');
+    await settle();
+
+    assert.deepEqual([...currentWorker.worker.unlocked], []);
+    assert.deepEqual([...idleWorker.worker.unlocked], ['alice']);
+    assert.equal(logoutOrder[0], currentWorker.url);
+    assert.equal(logoutOrder.includes(idleWorker.url), true);
+    answer();
+    await logout;
+    assert.deepEqual([...idleWorker.worker.unlocked], []);
   });
 
   it("starts one beekeeper in each worker the page moves to, however many calls reach it at once", async () => {
