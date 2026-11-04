@@ -7,6 +7,7 @@ import resourcesToBackend from 'i18next-resources-to-backend';
 import { isServer } from '@tanstack/react-query';
 import { useLocale } from '@ui/components/locale-context';
 import { readLocaleCookie } from '@ui/lib/locale-cookie';
+import { I18N_INTERPOLATION } from '@ui/lib/i18n-interpolation';
 
 export { Trans } from 'react-i18next';
 /**
@@ -62,6 +63,7 @@ export function createI18nClient(
     .use(resourcesToBackend(loadNamespace))
     .init({
       ...getOptions(getInitialLanguage()),
+      interpolation: I18N_INTERPOLATION,
       detection: {
         order: ['cookie', 'path', 'htmlTag', 'navigator'],
         cookieName
