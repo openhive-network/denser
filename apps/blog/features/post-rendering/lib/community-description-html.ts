@@ -1,13 +1,10 @@
+import sanitizeHtml from 'sanitize-html';
+
 const LINK_CLASS = ' text-destructive break-words';
 const CODE_CLASS = 'whitespace-normal';
 const SUB_CLASS = 'leading-[150%]';
 const VIDEO_WRAPPER_CLASS = 'videoWrapper';
 
-const LINK_OPENING_TAGS = /<a(\s[^>]*)?>/g;
-const CODE_OPENING_TAGS = /<code(\s[^>]*)?>/g;
-const SUB_OPENING_TAGS = /<sub(\s[^>]*)?>/g;
-const CLASS_ATTRIBUTE = /\sclass="([^"]*)"/;
-const CLASS_ATTRIBUTES = new RegExp(CLASS_ATTRIBUTE.source, 'g');
 const IFRAMES = /<iframe\b([^>]*)>[\s\S]*?<\/iframe>/g;
 const SRC_ATTRIBUTE = /\ssrc="([^"]*)"/;
 // A facade holds only its label and play button: the first closing </div> is its own.
@@ -22,34 +19,43 @@ const FACADE_URLS: Record<string, (id: string) => string> = {
 
 const decodeAttribute = (value: string) =>
   value.replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-const encodeAttribute = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 const encodeText = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-const getClassTokens = (value: string) => [...new Set(value.split(/\s+/).filter(Boolean))];
+// The renderer's own schemes (TagTransformingSanitizer): the class pass keeps every link it allowed.
+const ALLOWED_SCHEMES = ['http', 'https', 'hive'];
 
-/** The opening tag `<name attributes>` with its class set to `className`, as `element.className = …` would. */
-function withClass(name: string, attributes: string, className: string): string {
-  const attribute = ` class="${encodeAttribute(className)}"`;
-  return CLASS_ATTRIBUTE.test(attributes)
-    ? `<${name}${attributes.replace(CLASS_ATTRIBUTE, attribute)}>`
-    : `<${name}${attributes}${attribute}>`;
+const getClassTokens = (value: string | undefined) => [...new Set((value ?? '').split(/\s+/).filter(Boolean))];
+
+function withoutVideoWrapperClass(attribs: sanitizeHtml.Attributes): sanitizeHtml.Attributes {
+  const tokens = getClassTokens(attribs.class);
+  if (!tokens.includes(VIDEO_WRAPPER_CLASS)) return attribs;
+  const { class: _class, ...rest } = attribs;
+  const kept = tokens.filter((token) => token !== VIDEO_WRAPPER_CLASS);
+  return kept.length ? { ...rest, class: kept.join(' ') } : rest;
 }
 
-/** The opening tag with `token` added to its classes, as `element.classList.add(…)` would. */
-function withAddedClass(name: string, attributes: string, token: string): string {
-  const current = CLASS_ATTRIBUTE.exec(attributes);
-  if (!current) return withClass(name, attributes, token);
-  const tokens = getClassTokens(decodeAttribute(current[1]));
-  return withClass(name, attributes, tokens.includes(token) ? tokens.join(' ') : [...tokens, token].join(' '));
+function withAddedClass(attribs: sanitizeHtml.Attributes, token: string): sanitizeHtml.Attributes {
+  const tokens = getClassTokens(attribs.class);
+  return { ...attribs, class: (tokens.includes(token) ? tokens : [...tokens, token]).join(' ') };
 }
 
-function removeVideoWrapperClass(html: string): string {
-  return html.replace(CLASS_ATTRIBUTES, (attribute: string, value: string) => {
-    const tokens = getClassTokens(decodeAttribute(value));
-    if (!tokens.includes(VIDEO_WRAPPER_CLASS)) return attribute;
-    return ` class="${encodeAttribute(tokens.filter((token) => token !== VIDEO_WRAPPER_CLASS).join(' '))}"`;
-  });
+function adaptElementClasses(tagName: string, attribs: sanitizeHtml.Attributes): sanitizeHtml.Tag {
+  const adapted = withoutVideoWrapperClass(attribs);
+  if (tagName === 'a') return { tagName, attribs: { ...adapted, class: LINK_CLASS } };
+  if (tagName === 'code') return { tagName, attribs: { ...adapted, class: CODE_CLASS } };
+  if (tagName === 'sub') return { tagName, attribs: withAddedClass(adapted, SUB_CLASS) };
+  return { tagName, attribs: adapted };
 }
+
+// Keeps every element and attribute of the renderer's output: only the classes change, on parsed
+// elements, and text is serialized escaped again, so no text ever turns into markup.
+const CLASS_ADAPTATION: sanitizeHtml.IOptions = {
+  allowedTags: false,
+  allowedAttributes: false,
+  allowedSchemes: ALLOWED_SCHEMES,
+  parseStyleAttributes: false,
+  transformTags: { '*': adaptElementClasses }
+};
 
 /** The URL an iframe's `src` resolves to, as `iframe.src` reports it. */
 function getIframeUrl(attributes: string): string {
@@ -76,13 +82,12 @@ function getFacadeUrl(attributes: string): string {
  * the sidebar's link style, code wraps, and every embed (player iframe or click-to-load facade)
  * is shown as the URL of its video instead, so a description never loads a player.
  *
- * Expects the renderer's sanitized output, whose attributes are double-quoted and escaped.
+ * Expects the renderer's sanitized output, whose text holds no raw `<` and whose attributes are
+ * double-quoted and escaped.
  */
 export function toCommunityDescriptionHtml(html: string): string {
-  return removeVideoWrapperClass(html)
-    .replace(SUB_OPENING_TAGS, (_tag: string, attributes = '') => withAddedClass('sub', attributes, SUB_CLASS))
-    .replace(CODE_OPENING_TAGS, (_tag: string, attributes = '') => withClass('code', attributes, CODE_CLASS))
-    .replace(LINK_OPENING_TAGS, (_tag: string, attributes = '') => withClass('a', attributes, LINK_CLASS))
+  const withoutEmbeds = html
     .replace(IFRAMES, (_iframe: string, attributes: string) => encodeText(getIframeUrl(attributes)))
     .replace(FACADES, (_facade: string, attributes: string) => encodeText(getFacadeUrl(attributes)));
+  return sanitizeHtml(withoutEmbeds, CLASS_ADAPTATION);
 }
