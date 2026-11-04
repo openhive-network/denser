@@ -1,6 +1,7 @@
 import sanitize from 'sanitize-html';
 import {Log} from '../../../Log';
 import type {RendererPlugin} from './RendererPlugin';
+import type {HighlightBudget} from './syntax-highlight/HighlightBudget';
 import {HighlightCache} from './syntax-highlight/HighlightCache';
 import {type CodeHighlighter, getSyntaxHighlighter} from './syntax-highlight/SyntaxHighlighterLoader';
 import {resolveHighlightLanguage} from './syntax-highlight/SyntaxHighlightLanguages';
@@ -37,10 +38,12 @@ function decodeEntities(text: string): string {
     return text.replace(HTML_ENTITY_PATTERN, (entity) => HTML_ENTITIES[entity] ?? entity);
 }
 
-function fitsHighlightLimit(code: string): boolean {
+/** The UTF-8 size of `code`, or undefined when it is over the highlight limit. */
+function utf8SizeWithinLimit(code: string): number | undefined {
     // A UTF-16 code unit takes at least one UTF-8 byte: skip encoding a block that is surely too big.
-    if (code.length > MAX_HIGHLIGHTED_BLOCK_UTF8_BYTES) return false;
-    return new TextEncoder().encode(code).length <= MAX_HIGHLIGHTED_BLOCK_UTF8_BYTES;
+    if (code.length > MAX_HIGHLIGHTED_BLOCK_UTF8_BYTES) return undefined;
+    const utf8Bytes = new TextEncoder().encode(code).length;
+    return utf8Bytes <= MAX_HIGHLIGHTED_BLOCK_UTF8_BYTES ? utf8Bytes : undefined;
 }
 
 const SHIKI_COLOR = [/^#[0-9a-fA-F]{3,8}$/];
@@ -78,6 +81,7 @@ const SHIKI_OUTPUT_SANITIZE_CONFIG: sanitize.IOptions = {
 interface CodeBlock {
     lang: string;
     code: string;
+    utf8Bytes: number;
 }
 
 /** The block a blockPattern match stands for, when it is one to highlight. */
@@ -85,7 +89,8 @@ function toHighlightableBlock(fenceLanguage: string, encodedCode: string): CodeB
     const lang = resolveHighlightLanguage(fenceLanguage);
     if (!lang) return undefined;
     const code = decodeEntities(encodedCode);
-    return fitsHighlightLimit(code) ? {lang, code} : undefined;
+    const utf8Bytes = utf8SizeWithinLimit(code);
+    return utf8Bytes === undefined ? undefined : {lang, code, utf8Bytes};
 }
 
 /**
@@ -109,12 +114,15 @@ export function containsHighlightableCode(html: string): boolean {
  * block that fails to highlight.
  *
  * Highlights only once the highlighter is loaded (loadSyntaxHighlighter); until then it returns
- * its input. Highlighted blocks are cached by language and source.
+ * its input. Highlighted blocks are cached by language and source. Within withBudget, a block the
+ * budget refuses stays plain too.
  */
 export class SyntaxHighlightPlugin implements RendererPlugin {
     public name = 'syntax-highlight-plugin';
 
     private readonly cache = new HighlightCache(MAX_CACHED_BLOCKS, MAX_CACHED_CODE_UNITS);
+
+    private budget: HighlightBudget | undefined;
 
     /** @param getHighlighter - the highlighter to use, undefined while it is not loaded */
     public constructor(private readonly getHighlighter: () => CodeHighlighter | undefined = getSyntaxHighlighter) {}
@@ -126,9 +134,26 @@ export class SyntaxHighlightPlugin implements RendererPlugin {
         if (!highlighter) return html;
         return html.replace(blockPattern(), (block: string, fenceLanguage: string, encodedCode: string) => {
             const highlightable = toHighlightableBlock(fenceLanguage, encodedCode);
-            return (highlightable && this.highlight(highlighter, highlightable)) || block;
+            if (!highlightable || (this.budget && !this.budget.take(highlightable.utf8Bytes))) return block;
+            return this.highlight(highlighter, highlightable) || block;
         });
     };
+
+    /**
+     * Runs `render`, taking every block this plugin highlights meanwhile from `budget`. A block
+     * served from the cache counts too: the budget bounds what one render highlights. `render`
+     * must be synchronous, so no other render on this shared instance can run while the budget
+     * applies.
+     */
+    public withBudget<T>(budget: HighlightBudget, render: () => T): T {
+        const previous = this.budget;
+        this.budget = budget;
+        try {
+            return render();
+        } finally {
+            this.budget = previous;
+        }
+    }
 
     private highlight(highlighter: CodeHighlighter, {lang, code}: CodeBlock): string | null {
         const cached = this.cache.get(lang, code);

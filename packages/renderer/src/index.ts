@@ -12,6 +12,7 @@ export {TwitterMessageResizePlugin} from './renderers/default/plugins/TwitterMes
 export {InstagramPlugin} from './renderers/default/plugins/InstagramPlugin';
 export {InstagramResizePlugin} from './renderers/default/plugins/InstagramResizePlugin';
 export {SyntaxHighlightPlugin, containsHighlightableCode} from './renderers/default/plugins/SyntaxHighlightPlugin';
+export {HighlightBudget} from './renderers/default/plugins/syntax-highlight/HighlightBudget';
 export {getSyntaxHighlighter, loadSyntaxHighlighter, warmUpSyntaxHighlighter} from './renderers/default/plugins/syntax-highlight/SyntaxHighlighterLoader';
 export {TablePlugin} from './renderers/default/plugins/TablePlugin';
 export {extractContentMetadata} from './renderers/default/ContentMetadata';

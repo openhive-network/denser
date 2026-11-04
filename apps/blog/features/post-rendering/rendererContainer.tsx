@@ -39,15 +39,15 @@ const RendererContainer = ({
   const { t } = useTranslation('common_blog');
   // The label of the badge the stylesheet draws on a lite mention (a CSS string).
   const liteMentionStyle: Record<string, string> = { '--lite-mention-label': JSON.stringify(t('lite_account.badge_prefix')) };
-  const serverRenderedHtml = useServerRenderedBody(author, permlink, body, Boolean(mainPost));
-  const prerenderedHtml = proxyAuthToken ? undefined : serverRenderedHtml;
-  const clientRenderedHtml = useClientRenderedBody(prerenderedHtml ? undefined : body, {
-    author,
-    permlink,
-    mainPost: Boolean(mainPost),
-    proxyAuthToken
-  });
-  const htmlBody = prerenderedHtml ?? clientRenderedHtml;
+  const serverRendered = useServerRenderedBody(author, permlink, body, Boolean(mainPost));
+  const prerendered = proxyAuthToken ? undefined : serverRendered;
+  // A body whose code the server left plain is shown as rendered there until it is highlighted here.
+  const clientRenderedHtml = useClientRenderedBody(
+    prerendered && !prerendered.highlightDeferred ? undefined : body,
+    { author, permlink, mainPost: Boolean(mainPost), proxyAuthToken },
+    Boolean(prerendered)
+  );
+  const htmlBody = clientRenderedHtml ?? prerendered?.html;
   const { link, open, setOpen } = useLeavePageLinks(ref, htmlBody, isExternalLink);
 
   // Build the player iframe for a clicked facade.

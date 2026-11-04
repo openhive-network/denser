@@ -3,6 +3,7 @@ import * as path from 'path';
 import {expect} from 'chai';
 import 'mocha';
 import {DefaultRenderer, type RendererOptions} from '../DefaultRenderer';
+import {HighlightBudget} from './syntax-highlight/HighlightBudget';
 import {type CodeHighlighter, getSyntaxHighlighter, loadSyntaxHighlighter} from './syntax-highlight/SyntaxHighlighterLoader';
 import {HIGHLIGHT_LANGUAGES} from './syntax-highlight/SyntaxHighlightLanguages';
 import {SyntaxHighlightPlugin, containsHighlightableCode} from './SyntaxHighlightPlugin';
@@ -226,6 +227,59 @@ describe('SyntaxHighlightPlugin', () => {
             const plugin = new SyntaxHighlightPlugin(() => ({codeToHtml: () => hostile}));
             const out = plugin.postProcess(block('js', 'a\n'));
             expect(out).to.equal('<pre class="shiki" style="--shiki-light:#fff"><code><span class="line" style="--shiki-light:#000">a</span>b</code></pre>');
+        });
+    });
+
+    describe('withBudget', () => {
+        const countHighlighted = (html: string) => (html.match(/<pre class="shiki/g) ?? []).length;
+        const countPlain = (html: string) => (html.match(/<pre><code class="language-/g) ?? []).length;
+
+        it('highlights at most the budgeted number of blocks across every render it wraps', () => {
+            const plugin = new SyntaxHighlightPlugin();
+            const bodies = Array.from({length: 200}, (_, i) => block('js', `const x${i} = ${i};\n`));
+            const budget = new HighlightBudget(5, 64 * 1024);
+            const out = plugin.withBudget(budget, () => bodies.map((body) => plugin.postProcess(body)).join(''));
+            expect(countHighlighted(out)).to.equal(5);
+            expect(countPlain(out)).to.equal(195);
+            expect(budget.refusedBlocks).to.equal(195);
+        });
+
+        it('counts blocks served from the cache against the budget', () => {
+            const plugin = new SyntaxHighlightPlugin();
+            const html = block('js', 'a;\n');
+            plugin.postProcess(html);
+            const out = plugin.withBudget(new HighlightBudget(1, 64 * 1024), () => plugin.postProcess(html + html));
+            expect(countHighlighted(out)).to.equal(1);
+            expect(out).to.include(html);
+        });
+
+        it('leaves a block plain once the total UTF-8 size would exceed the budget', () => {
+            const plugin = new SyntaxHighlightPlugin();
+            // 3000 three-byte characters: 9000 bytes, of which only one block fits in 10000.
+            const big = block('js', '€'.repeat(3000));
+            const small = block('js', 'a;\n');
+            const out = plugin.withBudget(new HighlightBudget(10, 10000), () => plugin.postProcess(big + big + small));
+            expect(countHighlighted(out)).to.equal(2);
+            expect(out).to.include(big);
+            expect(out).to.not.include(small);
+        });
+
+        it('applies no budget outside withBudget, even after a render that threw', () => {
+            const plugin = new SyntaxHighlightPlugin();
+            expect(() =>
+                plugin.withBudget(new HighlightBudget(0, 0), () => {
+                    throw new Error('render failed');
+                })
+            ).to.throw('render failed');
+            expect(countHighlighted(plugin.postProcess(block('js', 'a;\n') + block('python', 'a\n')))).to.equal(2);
+        });
+
+        it('takes nothing from the budget for blocks that are not highlighted anyway', () => {
+            const plugin = new SyntaxHighlightPlugin();
+            const budget = new HighlightBudget(1, 64 * 1024);
+            const html = block('cobol', 'x\n') + '<pre><code>plain\n</code></pre>' + block('js', 'x'.repeat(16 * 1024 + 1)) + block('js', 'a;\n');
+            expect(countHighlighted(plugin.withBudget(budget, () => plugin.postProcess(html)))).to.equal(1);
+            expect(budget.refusedBlocks).to.equal(0);
         });
     });
 

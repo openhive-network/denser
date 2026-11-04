@@ -18,10 +18,13 @@ async function loadRenderBody(): Promise<RenderBodyModule> {
  * Renders `body` in the browser, for bodies the server didn't render (edits, replies just posted,
  * previews). Returns undefined until the renderer has loaded, or when there is no body. Code
  * blocks are plain until the syntax highlighter has loaded, then the body is rendered again.
+ *
+ * @param untilHighlighted - return undefined, rather than plain code blocks, until the highlighter has loaded
  */
 export function useClientRenderedBody(
   body: string | undefined,
-  { author, permlink, mainPost, communityDescription, proxyAuthToken }: RenderBodyOptions
+  { author, permlink, mainPost, communityDescription, proxyAuthToken }: RenderBodyOptions,
+  untilHighlighted = false
 ): string | undefined {
   const [loaded, setLoaded] = useState(() => Boolean(renderBodyModule));
   const [highlighterLoads, setHighlighterLoads] = useState(0);
@@ -60,5 +63,5 @@ export function useClientRenderedBody(
     };
   }, [awaitsHighlighter]);
 
-  return html;
+  return untilHighlighted && awaitsHighlighter ? undefined : html;
 }
