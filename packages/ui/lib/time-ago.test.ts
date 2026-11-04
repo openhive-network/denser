@@ -1,12 +1,23 @@
 import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import {
+import { registerHooks } from 'node:module';
+
+// Repo-style extensionless relative imports need the `.ts` spelled out for node.
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (specifier === './locale-format-cache') return nextResolve('./locale-format-cache.ts', context);
+    return nextResolve(specifier, context);
+  }
+});
+
+const {
   getMinuteClockNow,
   getTimeAgoDateTime,
+  getTimeAgoFormatCacheSizes,
   getTimeAgoString,
   getTimeAgoTitle,
   subscribeMinuteClock
-} from './time-ago.ts';
+} = await import('./time-ago.ts');
 
 const NOW = Date.UTC(2026, 9, 6, 12, 0, 0);
 const MINUTE = 60000;
@@ -83,6 +94,44 @@ describe('getTimeAgoTitle', () => {
 
   it('matches toLocaleString for an invalid date', () => {
     assert.equal(getTimeAgoTitle('not a date', 'en'), new Date('not a date').toLocaleString('en'));
+  });
+
+  it('reports a locale the runtime rejects as "Invalid Date"', () => {
+    assert.equal(getTimeAgoTitle('2026-10-06T09:15:00', '%%%'), 'Invalid Date');
+    assert.equal(getTimeAgoTitle('2026-10-06T09:15:00', 'not_a_locale!'), 'Invalid Date');
+  });
+});
+
+describe('time-ago formatter caches', () => {
+  const formatIn = (lang: string) => {
+    getTimeAgoString('2026-10-06T09:15:00', lang, NOW);
+    getTimeAgoTitle('2026-10-06T09:15:00', lang);
+  };
+
+  it('do not grow under distinct tags that resolve to a locale already held', () => {
+    // The app languages, and a language the runtime lacks, which resolves to its default locale.
+    const held = ['ar', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh', 'qaa'];
+    held.forEach(formatIn);
+    const before = getTimeAgoFormatCacheSizes();
+
+    for (let i = 0; i < 1000; i++) {
+      formatIn(`${held[i % held.length]}-x-${i}`);
+    }
+
+    assert.deepEqual(getTimeAgoFormatCacheSizes(), before);
+    assert.equal(getTimeAgoString('2026-10-06T09:15:00', 'en-x-123', NOW), '2 hours ago');
+  });
+
+  it('hold a bounded number of formatters whatever locales are asked for', () => {
+    for (const numberingSystem of Intl.supportedValuesOf('numberingSystem')) {
+      for (const lang of ['en', 'pl', 'ja']) {
+        formatIn(`${lang}-u-nu-${numberingSystem}`);
+      }
+    }
+
+    const { relative, title } = getTimeAgoFormatCacheSizes();
+    assert.ok(relative <= 32, `relative cache holds ${relative}`);
+    assert.ok(title <= 32, `title cache holds ${title}`);
   });
 });
 

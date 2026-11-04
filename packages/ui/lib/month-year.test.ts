@@ -6,11 +6,12 @@ import { registerHooks } from 'node:module';
 registerHooks({
   resolve(specifier, context, nextResolve) {
     if (specifier === './time-ago') return nextResolve('./time-ago.ts', context);
+    if (specifier === './locale-format-cache') return nextResolve('./locale-format-cache.ts', context);
     return nextResolve(specifier, context);
   }
 });
 
-const { formatMonthYear } = await import('./month-year.ts');
+const { formatMonthYear, getMonthYearFormatCacheSize } = await import('./month-year.ts');
 
 describe('formatMonthYear', () => {
   const cases: [string, string, string][] = [
@@ -34,5 +35,24 @@ describe('formatMonthYear', () => {
 
   it('accepts a timestamp with a zone suffix', () => {
     assert.equal(formatMonthYear('2020-07-31T23:30:00-02:00', 'en'), 'August 2020');
+  });
+
+  it('formats in English for a locale the runtime rejects', () => {
+    assert.equal(formatMonthYear('2020-07-15T08:00:00', '%%%'), 'July 2020');
+    assert.equal(formatMonthYear('2020-07-15T08:00:00', 'not_a_locale!'), 'July 2020');
+  });
+
+  it('does not grow its cache under distinct tags that resolve to a locale already held', () => {
+    // The app languages, and a language the runtime lacks, which resolves to its default locale.
+    const held = ['ar', 'en', 'es', 'fr', 'it', 'ja', 'ko', 'pl', 'ru', 'zh', 'qaa'];
+    held.forEach((lang) => formatMonthYear('2020-07-15T08:00:00', lang));
+    const before = getMonthYearFormatCacheSize();
+
+    for (let i = 0; i < 1000; i++) {
+      formatMonthYear('2020-07-15T08:00:00', `${held[i % held.length]}-x-${i}`);
+    }
+
+    assert.equal(getMonthYearFormatCacheSize(), before);
+    assert.equal(formatMonthYear('2020-07-15T08:00:00', 'pl-x-7'), 'lipiec 2020');
   });
 });

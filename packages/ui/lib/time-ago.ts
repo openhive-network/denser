@@ -1,3 +1,5 @@
+import { createLocaleFormatCache } from './locale-format-cache';
+
 const TIME_INTERVALS: [number, Intl.RelativeTimeFormatUnit][] = [
   [31536000, 'year'],
   [2592000, 'month'],
@@ -28,26 +30,16 @@ const TITLE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
 // Hive API timestamps are UTC but carry no zone designator, which `new Date` would read as local time.
 const ZONELESS_DATE_TIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/;
 
-const relativeFormats = new Map<string, Intl.RelativeTimeFormat>();
-const titleFormats = new Map<string, Intl.DateTimeFormat>();
+const relativeFormats = createLocaleFormatCache(
+  (lang) => new Intl.RelativeTimeFormat(lang, { numeric: 'auto' })
+);
+const titleFormats = createLocaleFormatCache((lang) => new Intl.DateTimeFormat(lang, TITLE_FORMAT_OPTIONS));
 
-const getRelativeFormat = (lang: string): Intl.RelativeTimeFormat => {
-  let format = relativeFormats.get(lang);
-  if (!format) {
-    format = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' });
-    relativeFormats.set(lang, format);
-  }
-  return format;
-};
-
-const getTitleFormat = (lang: string): Intl.DateTimeFormat => {
-  let format = titleFormats.get(lang);
-  if (!format) {
-    format = new Intl.DateTimeFormat(lang, TITLE_FORMAT_OPTIONS);
-    titleFormats.set(lang, format);
-  }
-  return format;
-};
+/** Number of formatters each of this module's caches holds. */
+export const getTimeAgoFormatCacheSizes = (): { relative: number; title: number } => ({
+  relative: relativeFormats.size(),
+  title: titleFormats.size()
+});
 
 export const parseUtcTimestamp = (date: string | number | Date): number => {
   if (typeof date === 'string' && ZONELESS_DATE_TIME.test(date)) {
@@ -68,7 +60,7 @@ export const getTimeAgoString = (date: string | number | Date, lang: string, now
 
   let rtf: Intl.RelativeTimeFormat;
   try {
-    rtf = getRelativeFormat(lang);
+    rtf = relativeFormats.get(lang);
   } catch (error) {
     if (error instanceof RangeError) return INVALID_TIME_AGO;
     throw error;
@@ -98,13 +90,21 @@ const formatFuture = (secondsLeft: number, rtf: Intl.RelativeTimeFormat): string
   return rtf.format(0, 'second');
 };
 
-/** `date` in the runtime's local timezone, as `Date.prototype.toLocaleString(lang)` prints it. */
+/**
+ * `date` in the runtime's local timezone, as `Date.prototype.toLocaleString(lang)` prints it;
+ * "Invalid Date" for an unparsable date or locale.
+ */
 export const getTimeAgoTitle = (date: string | number | Date, lang: string): string => {
   const timestamp = parseUtcTimestamp(date);
   if (isNaN(timestamp)) {
     return INVALID_TITLE;
   }
-  return getTitleFormat(lang).format(timestamp);
+  try {
+    return titleFormats.get(lang).format(timestamp);
+  } catch (error) {
+    if (error instanceof RangeError) return INVALID_TITLE;
+    throw error;
+  }
 };
 
 /** `date` as an ISO 8601 UTC string for a `<time dateTime>` attribute; `undefined` for an unparsable date. */
