@@ -5,7 +5,7 @@ import { postCanonicalUrl } from '@/blog/lib/canonical-url';
 import { postSeo } from '@/blog/lib/post-seo';
 import { articleJsonLd, postBreadcrumbJsonLd } from '@/blog/lib/structured-data';
 import { JsonLd } from '@/blog/components/json-ld';
-import { isPostListed } from '@/blog/lib/listed-content';
+import { isPostListed, withholdBody, withholdEntryBody } from '@/blog/lib/listed-content';
 import { NOINDEX_ROBOTS } from '@/blog/lib/seo-robots';
 import { getCommunity, getDiscussion, getFollowList, getListCommunityRoles } from '@transaction/lib/bridge-api';
 import { isTransportError } from '@transaction/lib/wax-errors';
@@ -232,6 +232,12 @@ const PostPage = async (
   const listed = isPostListed(community, username, permlink);
   const renderedBodies = listed ? {} : renderDiscussionBodies(postData, discussionPageSeed?.entries ?? null);
   const seo = postData && !listed ? postSeo(postData) : null;
+  // Nor does its body go into the seeded data: the edit form fetches it on the client.
+  const seededPost = postData && listed ? withholdBody(postData) : postData;
+  const seededDiscussion =
+    discussionPageSeed && listed
+      ? { ...discussionPageSeed, entries: withholdEntryBody(discussionPageSeed.entries, username, permlink) }
+      : discussionPageSeed;
 
   // Pass data directly via context instead of Hydrate/dehydrate.
   // React Query v4's <Hydrate> has compatibility issues with Next.js App Router
@@ -246,8 +252,8 @@ const PostPage = async (
         </>
       ) : null}
       <ObserverProvider value={observer} effectiveValue={effectiveObserver}>
-        <InitialPostDataProvider value={postData}>
-          <InitialDiscussionProvider value={discussionPageSeed}>
+        <InitialPostDataProvider value={seededPost}>
+          <InitialDiscussionProvider value={seededDiscussion}>
             <InitialCommunityProvider value={communityData}>
               <InitialCommunityRolesProvider value={communityRolesData}>
                 <InitialFollowListProvider value={mutedListData}>
