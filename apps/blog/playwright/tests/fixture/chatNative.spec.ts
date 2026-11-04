@@ -134,6 +134,8 @@ test.describe('Native Matrix chat client', () => {
 
     await expect(messages(page).filter({ hasText: GENERAL_MESSAGES[0] })).toBeVisible();
     await expect(messages(page).filter({ hasText: GENERAL_MESSAGES[0] })).toContainText('Bob');
+    // The id shows without hovering: a display name is free text and can read like anyone's
+    await expect(messages(page).filter({ hasText: GENERAL_MESSAGES[0] })).toContainText('@bob');
     const link = messages(page).getByRole('link', { name: 'https://hive.blog/trending' });
     await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
     await expect(link).toHaveAttribute('target', '_blank');
@@ -169,7 +171,7 @@ test.describe('Native Matrix chat client', () => {
     await expect(outgoing).toHaveAttribute('data-status', 'failed');
     await expect(outgoing).toContainText(EN.send_failed);
     // Headed like a sent message, not run on under the one before it
-    await expect(outgoing.getByTitle(USER_ID)).toHaveText(DEFAULT_USER.username);
+    await expect(outgoing.getByTitle(USER_ID)).toHaveText(`@${DEFAULT_USER.username}`);
     await expect(outgoing.locator('time')).toHaveText(/\d{2}:\d{2}/);
     await outgoing.getByRole('button', { name: EN.retry }).click();
     await expect(outgoing).toHaveAttribute('data-status', 'sent');
