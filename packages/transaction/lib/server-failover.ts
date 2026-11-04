@@ -200,7 +200,6 @@ export const jsonRpcHealthKey = (node: string, family: string): string => `${nod
  */
 const nodeUnreachableKey = (node: string): string => `${node}/unreachable`;
 
-
 /**
  * Parses a whitespace/comma-separated node list (the `REACT_APP_ALLOWED_HIVE_API_NODES` format) into
  * distinct origins, dropping `excluded` entries (e.g. the images host, which is listed for CSP but is
