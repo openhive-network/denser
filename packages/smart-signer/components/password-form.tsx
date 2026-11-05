@@ -62,7 +62,7 @@ export interface PasswordFormI18nKeysForCaptions {
   inputStorePasswordLabel?: string;
   submitButtonName?: string;
   submitButtonNameWhenWorking?: string;
-  resetButtonName?: string;
+  cancelButtonName?: string;
 }
 
 export interface PasswordFormOptions {
@@ -70,6 +70,8 @@ export interface PasswordFormOptions {
   showInputStorePassword?: boolean;
   errorMessage?: string;
   onSubmit?: (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => any;
+  /** Closes the form without submitting anything. */
+  onCancel?: () => void;
   /**
    * Checks the entered password once the form's own validation passed. Resolves with a
    * smart-signer translation key to keep the form open with that error and the password cleared,
@@ -88,6 +90,7 @@ export function PasswordForm({
   showInputStorePassword = true,
   errorMessage = '',
   onSubmit = (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {},
+  onCancel = () => {},
   validatePassword,
   i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
   i18nValues,
@@ -104,7 +107,7 @@ export function PasswordForm({
     inputStorePasswordLabel: 'password_form.store_password_label',
     submitButtonName: 'login_form.login_button',
     submitButtonNameWhenWorking: 'login_form.working',
-    resetButtonName: 'login_form.reset_button'
+    cancelButtonName: 'login_form.cancel_button'
   };
   const captionKey: Required<PasswordFormI18nKeysForCaptions> = {
     ...defaultI18nKeysForCaptions,
@@ -128,7 +131,6 @@ export function PasswordForm({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
     resetField,
     setError
   } = useForm<PasswordFormSchemaHbauth | PasswordFormSchemaWif>({
@@ -203,14 +205,13 @@ export function PasswordForm({
               {isSubmitting && caption(captionKey.submitButtonNameWhenWorking)}
             </button>
 
-            {/* Reset Button */}
             <button
               type="button"
-              onClick={() => reset()}
+              onClick={onCancel}
               className="w-fit rounded-lg bg-transparent px-5 py-2.5 text-center text-sm font-semibold text-gray-500 hover:cursor-pointer hover:text-red-600 focus:outline-hidden"
-              data-testid="password-reset-button"
+              data-testid="password-cancel-button"
             >
-              {caption(captionKey.resetButtonName)}
+              {caption(captionKey.cancelButtonName)}
             </button>
           </div>
 

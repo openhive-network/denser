@@ -46,7 +46,6 @@
     "password_hbauth_placeholder": "Contraseña para desbloquear la clave",
     "password_placeholder": "Clave privada de publicación",
     "posting_private_key_placeholder": "Clave privada de publicación",
-    "reset_button": "Restablecer",
     "this_operation_requires_your_key_or_master_password": "Esta operación requiere su clave {{authType}} o contraseña maestra.",
     "title_action_login": "Iniciar sesión",
     "title_action_unlock_key": "Desbloquear clave",
@@ -197,6 +196,7 @@
     "safe_storage_recovery_description": "Otra pestaña modificó el almacenamiento seguro mientras se guardaba una clave de @{{username}}. Introduce la contraseña del almacenamiento seguro de @{{username}} para terminar de guardarla."
   },
   "broadcast_error": {
+    "too_many_decimal_places": "La cantidad de {{token}} puede tener como máximo {{precision}} decimales.",
     "missing_owner_authority": "Esta operación necesita tu clave de propietario (owner) y no está disponible aquí.",
     "missing_active_authority": "Esta operación necesita tu clave activa (active). Inicia sesión con tu clave activa e inténtalo de nuevo.",
     "missing_posting_authority": "Esta operación necesita tu clave de publicación (posting). Inicia sesión con ella e inténtalo de nuevo.",

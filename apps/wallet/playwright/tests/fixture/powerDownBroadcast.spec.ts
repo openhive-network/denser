@@ -83,7 +83,8 @@ test.describe('Power down broadcast', () => {
     const powerDown = dialog.getByRole('button', { name: 'Power Down', exact: true });
     await powerDown.click();
 
-    await expect(page.getByTestId('error-toast-content')).toContainText('maximum of 3 decimal places in HIVE amount');
+    await expect(page.getByTestId('asset-precision-message')).toHaveText('The HIVE amount can have at most 3 decimal places.');
+    await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
     await expect(dialog).toBeVisible();
     await expect(powerDown).toBeEnabled();
     expect(broadcasts.calls).toHaveLength(0);

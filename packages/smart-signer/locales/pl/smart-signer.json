@@ -46,7 +46,6 @@
     "password_hbauth_placeholder": "Hasło do odblokowania klucza",
     "password_placeholder": "Prywatny klucz Posting",
     "posting_private_key_placeholder": "Prywatny klucz Posting",
-    "reset_button": "Resetuj",
     "this_operation_requires_your_key_or_master_password": "Ta operacja wymaga Twojego klucza {{authType}} lub hasła głównego.",
     "title_action_login": "Zaloguj się",
     "title_action_unlock_key": "Odblokuj klucz",
@@ -197,6 +196,7 @@
     "safe_storage_recovery_description": "Inna karta zmieniła bezpieczny magazyn podczas zapisywania klucza @{{username}}. Wpisz hasło bezpiecznego magazynu @{{username}}, aby dokończyć zapisywanie."
   },
   "broadcast_error": {
+    "too_many_decimal_places": "Maksymalna liczba miejsc po przecinku w kwocie {{token}}: {{precision}}.",
     "missing_owner_authority": "Ta operacja wymaga klucza właściciela (owner) i nie jest tu dostępna.",
     "missing_active_authority": "Ta operacja wymaga klucza Active. Zaloguj się kluczem Active i spróbuj ponownie.",
     "missing_posting_authority": "Ta operacja wymaga klucza Posting. Zaloguj się nim i spróbuj ponownie.",

@@ -287,7 +287,12 @@
     "open_orders": "未約定の注文",
     "no_orders": "未約定の注文はありません。",
     "confirm_cancel_order": "{{user}}の注文{{orderId}}をキャンセルしますか？",
-    "cancel_order": "注文をキャンセル"
+    "cancel_order": "注文をキャンセル",
+    "order_placed": "注文を出しました",
+    "order_placed_buy": "{{hbd}} で {{hive}} を購入",
+    "order_placed_sell": "{{hive}} を {{hbd}} で売却",
+    "order_cancelled": "注文をキャンセルしました",
+    "order_cancelled_description": "注文 {{orderId}} はキャンセルされました"
   },
   "witnesses_page": {
     "title": "証人投票",
