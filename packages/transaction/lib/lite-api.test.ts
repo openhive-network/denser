@@ -10,8 +10,11 @@ import {
   findLiteNode,
   liteSocialApp,
   LITE_PROBE_TTL_MS,
+  LITE_READ_BUDGET_MS,
   readLiteProbeTtlMs,
+  readLiteReadBudgetMs,
   type ILiteNotificationsApi,
+  type IPostsReaderOptions,
   type ILiteSocialApi,
   type TPostsApi
 } from './lite-api';
@@ -162,6 +165,18 @@ describe('readLiteProbeTtlMs', () => {
   });
 });
 
+describe('readLiteReadBudgetMs', () => {
+  it('reads DENSER_LITE_READ_BUDGET_S in seconds', () => {
+    expect(readLiteReadBudgetMs({ DENSER_LITE_READ_BUDGET_S: '1.5' })).to.equal(1_500);
+  });
+
+  it('keeps the default when unset, not positive or not a number', () => {
+    for (const value of [undefined, '', '0', '-1', 'soon']) {
+      expect(readLiteReadBudgetMs({ DENSER_LITE_READ_BUDGET_S: value }), String(value)).to.equal(LITE_READ_BUDGET_MS);
+    }
+  });
+});
+
 describe('findLiteNode', () => {
   it('finds the first lite-aware node of the lite set, asking the first one alone', async () => {
     const { probe, requests } = setupProbe({ [STOCK_NODE]: apiNotFound('lite.get_info'), [LITE_NODE]: LITE_INFO });
@@ -199,7 +214,8 @@ describe('findLiteNode', () => {
           return namespace;
         }
       }) as unknown as TPostsApi;
-    const chain = { endpointUrl: STOCK_NODE, api: { lite: postsApi('lite'), bridge: postsApi('bridge') } };
+    const api = { lite: postsApi('lite'), bridge: postsApi('bridge') };
+    const chain = { endpointUrl: STOCK_NODE, api, withTimeout: () => ({ api }) };
     const { probe, requests } = setupProbe({ [STOCK_NODE]: apiNotFound('lite.get_info'), [LITE_NODE]: LITE_INFO });
     const read = createPostsReader(() => chain, probe, () => findLiteNode([LITE_NODE, STOCK_NODE], probe));
 
@@ -233,8 +249,14 @@ describe('createLiteApiProbe with known answers', () => {
 
 describe('createPostsReader', () => {
   /** A chain whose `lite` and `bridge` post reads record their calls and answer with `answers`. */
-  const setupReader = (endpoint: string, probeAnswers: Record<string, unknown>, liteAnswer: unknown = 'native') => {
+  const setupReader = (
+    endpoint: string,
+    probeAnswers: Record<string, unknown>,
+    liteAnswer: unknown = 'native',
+    options: IPostsReaderOptions = {}
+  ) => {
     const calls: string[] = [];
+    const timeouts: number[] = [];
     const postsApi = (namespace: string, answer: () => unknown): TPostsApi => {
       const call = (method: string) => async (params: unknown) => {
         calls.push(`${namespace}.${method} ${JSON.stringify(params)}`);
@@ -250,12 +272,19 @@ describe('createPostsReader', () => {
         get_account_posts: call('get_account_posts')
       } as unknown as TPostsApi;
     };
+    const answerLite = () => (typeof liteAnswer === 'function' ? liteAnswer() : liteAnswer);
+    const api = { lite: postsApi('lite', answerLite), bridge: postsApi('bridge', () => 'compat') };
     const chain = {
       endpointUrl: endpoint,
-      api: { lite: postsApi('lite', () => liteAnswer), bridge: postsApi('bridge', () => 'compat') }
+      api,
+      withTimeout: (timeoutMs: number) => {
+        timeouts.push(timeoutMs);
+        return { api };
+      }
     };
     const { probe, requests } = setupProbe(probeAnswers);
-    return { read: createPostsReader(() => chain, probe), calls, probeRequests: requests, probe };
+    const read = createPostsReader(() => chain, probe, undefined, options);
+    return { read, calls, probeRequests: requests, probe, timeouts };
   };
 
   const getPost = (api: TPostsApi) => api.get_post({ author: 'did:lite:bob', permlink: 'p', observer: 'hive.blog' });
@@ -345,6 +374,58 @@ describe('createPostsReader', () => {
 
     expect(probeRequests).to.deep.equal([]);
     expect(calls.map((call) => call.split(' ')[0])).to.deep.equal(['lite.get_post']);
+  });
+
+  const transportError = (message: string, status?: number) =>
+    new ReadTransportError(
+      message,
+      { method: 'POST', endpoint: LITE_NODE, url: '', timeout: LITE_READ_BUDGET_MS, responseType: 'json' },
+      status
+    );
+  const namesOf = (calls: readonly string[]) => calls.map((call) => call.split(' ')[0]);
+
+  it('reads the stock way when the lite node times out, without marking it not lite-aware', async () => {
+    const timeout = transportError('The operation was aborted due to timeout');
+    const { read, calls, probe } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, timeout);
+
+    expect(await read((api) => api.get_ranked_posts(trending), async () => 'stock' as unknown as Entry[])).to.equal('stock');
+    expect(namesOf(calls)).to.deep.equal(['lite.get_ranked_posts']);
+    expect(probe.peek(LITE_NODE)).to.deep.equal(LITE_INFO);
+  });
+
+  it('reads through bridge.* when the lite node answers with a 5xx', async () => {
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, transportError('Bad Gateway', 502));
+
+    expect(await read(getPost)).to.equal('compat');
+    expect(namesOf(calls)).to.deep.equal(['lite.get_post', 'bridge.get_post']);
+  });
+
+  it('gives the lite read its budget, as its request timeout too, then reads the stock way', async () => {
+    const never = new Promise<never>(() => undefined);
+    const { read, calls, timeouts } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, never, { budgetMs: 20 });
+    const startedAt = Date.now();
+
+    expect(await read(getPost)).to.equal('compat');
+    expect(Date.now() - startedAt).to.be.lessThan(1_000);
+    expect(timeouts).to.deep.equal([20]);
+    expect(namesOf(calls)).to.deep.equal(['lite.get_post', 'bridge.get_post']);
+  });
+
+  it('skips lite.* on the node for the cooldown after a transport failure, then reads it again', async () => {
+    let time = 0;
+    const answers: unknown[] = [transportError('fetch failed'), 'native'];
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, () => answers.shift(), {
+      cooldownMs: 30_000,
+      now: () => time
+    });
+
+    expect(await read(getPost)).to.equal('compat');
+    time += 29_999;
+    expect(await read(getPost)).to.equal('compat');
+    time += 1;
+    expect(await read(getPost)).to.equal('native');
+
+    expect(namesOf(calls)).to.deep.equal(['lite.get_post', 'bridge.get_post', 'bridge.get_post', 'lite.get_post']);
   });
 
   it('rejects with the lite.* answer when it is an answer of the API itself', async () => {

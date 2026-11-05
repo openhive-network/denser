@@ -12,6 +12,7 @@ import { getLogger } from '@ui/lib/logging';
 import { probeAnswerOf } from './api-sets/probe-answers';
 import { getApiSetNodes, getNodeReadChain, getReadChain, type ReadChain } from './chain';
 import { isApiNotServedError, JsonRpcApiError } from './read-client';
+import { ReadTransportError } from './read-transport';
 
 const logger = getLogger('lite-api');
 
@@ -23,11 +24,36 @@ export const LITE_PROBE_TTL_MS = 10 * 60_000;
  * for a test server whose node is swapped behind one endpoint), else `LITE_PROBE_TTL_MS`.
  */
 export function readLiteProbeTtlMs(env: Record<string, string | undefined>): number {
-  const value = env.DENSER_LITE_PROBE_TTL_S;
-  if (value === undefined || value.trim() === '') return LITE_PROBE_TTL_MS;
-  const seconds = Number(value);
-  return Number.isFinite(seconds) && seconds >= 0 ? seconds * 1000 : LITE_PROBE_TTL_MS;
+  const seconds = secondsOf(env.DENSER_LITE_PROBE_TTL_S);
+  return seconds !== undefined && seconds >= 0 ? seconds * 1000 : LITE_PROBE_TTL_MS;
 }
+
+/**
+ * How long a `lite.*` post read may take before the posts are read the stock way instead, so a slow
+ * lite node costs a page this much, not a whole request timeout and failover.
+ */
+export const LITE_READ_BUDGET_MS = 3_000;
+
+/**
+ * The lite read budget of a server process: `DENSER_LITE_READ_BUDGET_S` seconds when above 0, else
+ * `LITE_READ_BUDGET_MS`.
+ */
+export function readLiteReadBudgetMs(env: Record<string, string | undefined>): number {
+  const seconds = secondsOf(env.DENSER_LITE_READ_BUDGET_S);
+  return seconds !== undefined && seconds > 0 ? seconds * 1000 : LITE_READ_BUDGET_MS;
+}
+
+/**
+ * How long post reads skip `lite.*` on a node after a read of it failed on transport or ran out of
+ * budget: the API sets engine's cooldown of a node it found down, after which it probes the node again.
+ */
+export const LITE_READ_COOLDOWN_MS = 30_000;
+
+const secondsOf = (value: string | undefined): number | undefined => {
+  if (value === undefined || value.trim() === '') return undefined;
+  const seconds = Number(value);
+  return Number.isFinite(seconds) ? seconds : undefined;
+};
 
 /** Where the post reads go: `lite.*` (lite posts under their `did:lite:` identity) or `bridge.*`. */
 export type TPostsNamespace = 'lite' | 'bridge';
@@ -205,32 +231,74 @@ const currentNodeOf =
 interface IPostsChain {
   readonly endpointUrl: string;
   readonly api: { lite: TPostsApi; bridge: TPostsApi };
+  /** The chain with requests timing out after `timeoutMs`, each node asked once (see `getReadChain`). */
+  withTimeout(timeoutMs: number): { readonly api: { lite: TPostsApi } };
 }
+
+export interface IPostsReaderOptions {
+  /** See `LITE_READ_BUDGET_MS`. */
+  budgetMs?: number;
+  /** See `LITE_READ_COOLDOWN_MS`. */
+  cooldownMs?: number;
+  now?: () => number;
+}
+
+/** A `lite.*` post read that did not settle within its budget. */
+class LiteReadBudgetError extends Error {
+  constructor(budgetMs: number) {
+    super(`no answer within ${budgetMs} ms`);
+    this.name = 'LiteReadBudgetError';
+  }
+}
+
+const withinBudget = <T>(read: Promise<T>, budgetMs: number): Promise<T> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const expired = new Promise<never>((_resolve, reject) => {
+    timer = setTimeout(() => reject(new LiteReadBudgetError(budgetMs)), budgetMs);
+  });
+  return Promise.race([read, expired]).finally(() => clearTimeout(timer));
+};
 
 /**
  * Post reads on `lite.*` when a node of the lite API set is lite-aware, else `stock` (the
  * deployment's ordinary read: hivemind's REST API when configured, else `bridge.*`), or `read` on
  * `bridge.*` without one. A `lite.*` read answered with "Api not found" (the node, or every node
  * failover asked, lost the family) marks the node not lite-aware and is read again the stock way.
+ *
+ * A `lite.*` read gets `budgetMs`, its requests time out after it as well. One that fails on
+ * transport (timeout, network error, HTTP 5xx) or runs out of budget is read again the stock way,
+ * and reads skip `lite.*` on the node for `cooldownMs`; the node is not marked not lite-aware. The
+ * failed request itself is reported to the API sets engine by the chain's failover, as every call is.
+ * Any other `lite.*` answer is thrown.
  */
 export function createPostsReader(
   getChain: () => IPostsChain,
   probe: ILiteApiProbe,
-  findLite: TFindLiteNode = currentNodeOf(getChain, probe)
+  findLite: TFindLiteNode = currentNodeOf(getChain, probe),
+  { budgetMs = LITE_READ_BUDGET_MS, cooldownMs = LITE_READ_COOLDOWN_MS, now = Date.now }: IPostsReaderOptions = {}
 ) {
+  const skippedUntil = new Map<string, number>();
+  const isSkipped = (node: string): boolean => (skippedUntil.get(node) ?? -Infinity) > now();
+
   return async <T>(read: (api: TPostsApi) => Promise<T>, stock?: () => Promise<T>): Promise<T> => {
     const chain = getChain();
     const stockRead = stock ?? (() => read(chain.api.bridge));
     const lite = await findLite();
-    if (!lite) return stockRead();
+    if (!lite || isSkipped(lite.node)) return stockRead();
     try {
-      return await read(chain.api.lite);
+      return await withinBudget(read(chain.withTimeout(budgetMs).api.lite), budgetMs);
     } catch (error) {
-      if (!isApiNotServedError(error)) throw error;
-      // Failover may have asked other nodes after the lite node: the error names the one that answered.
-      const node = (error instanceof JsonRpcApiError && error.endpoint) || lite.node;
-      logger.warn('%s no longer serves lite.*, reading posts the stock way', node);
-      probe.markUnavailable(node);
+      if (isApiNotServedError(error)) {
+        // Failover may have asked other nodes after the lite node: the error names the one that answered.
+        const node = (error instanceof JsonRpcApiError && error.endpoint) || lite.node;
+        logger.warn('%s no longer serves lite.*, reading posts the stock way', node);
+        probe.markUnavailable(node);
+        return stockRead();
+      }
+      if (!(error instanceof ReadTransportError) && !(error instanceof LiteReadBudgetError)) throw error;
+      const node = (error instanceof ReadTransportError && error.request.endpoint) || lite.node;
+      logger.warn('lite.* post read on %s failed (%s), reading posts the stock way', node, error.message);
+      skippedUntil.set(lite.node, now() + cooldownMs);
       return stockRead();
     }
   };
@@ -422,7 +490,9 @@ export const seedLiteApiInfo = (endpoint: string, info: unknown): void => {
 export const currentPostsNamespace = (): TPostsNamespace => (peekLiteApiInfo() ? 'lite' : 'bridge');
 
 /** Runs a post read on the namespace of the lite API set, see `createPostsReader`. */
-export const readPosts = createPostsReader(getReadChain, liteApiProbe, lookupLiteNode);
+export const readPosts = createPostsReader(getReadChain, liteApiProbe, lookupLiteNode, {
+  budgetMs: isServer ? readLiteReadBudgetMs(process.env) : LITE_READ_BUDGET_MS
+});
 
 /** Runs `lite.get_profile` on the lite API set's node, see `createLiteProfileReader`. */
 export const getLiteProfile = createLiteProfileReader(getReadChain, liteApiProbe, lookupLiteNode);

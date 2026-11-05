@@ -28,6 +28,14 @@ recordings swap what answers behind one endpoint. In failover, "Api not found" o
 `lite.*` call means the node cannot serve it (the next node is asked; its health is kept as
 `<node>/lite`), not a definitive answer.
 
+A `lite.*` post read gets 3 s (`DENSER_LITE_READ_BUDGET_S` on a server), as its request timeout and
+in all. One that fails on transport (timeout, network error, 5xx) or runs out of budget is read
+again the stock way, and post reads skip `lite.*` on that node for 30 s, the API sets engine's
+cooldown of a node it found down; the node stays lite-aware. Failover reports the failed request to
+the engine, as it does every call. `lite.*` calls fail over within the lite set's nodes only: the
+configured nodes, which were picked for core, are used for `lite` only while the routes know no
+node of the set.
+
 React-query keys of these reads end with the namespace (`'lite' | 'bridge'`): `usePostsNamespace()`
 (`use-lite-api-info.ts`) in components, `currentPostsNamespace()` for keys built in mutations. Both
 are `'bridge'` until the probe has answered. The server's feed and profile caches add it to their
