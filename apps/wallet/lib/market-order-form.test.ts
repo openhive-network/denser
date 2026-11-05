@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import Big from 'big.js';
-import { exceedsAvailableBalance, orderFormReducer, type OrderFormState } from './market-order-form.ts';
+import { exceedsAvailableBalance, isBelowMinimumOrder, orderFormReducer, type OrderFormState } from './market-order-form.ts';
 
 const EMPTY: OrderFormState = { price: '0.052502', amount: '', total: '' };
 
@@ -62,5 +62,33 @@ describe('exceedsAvailableBalance', () => {
   it('does not report an unknown balance or an empty order', () => {
     assert.equal(exceedsAvailableBalance(order, 'buy', undefined), false);
     assert.equal(exceedsAvailableBalance(EMPTY, 'buy', new Big('0')), false);
+  });
+});
+
+describe('isBelowMinimumOrder', () => {
+  it('reports an amount whose total rounds to 0.000 HBD', () => {
+    const state = orderFormReducer({ ...EMPTY, price: '0.045840' }, { type: 'amount', value: '0.001' });
+    assert.equal(state.total, '0.000');
+    assert.equal(isBelowMinimumOrder(state), true);
+  });
+
+  it('reports a total whose amount rounds to 0.000 HIVE', () => {
+    const state = orderFormReducer({ ...EMPTY, price: '20' }, { type: 'total', value: '0.001' });
+    assert.equal(state.amount, '0.000');
+    assert.equal(isBelowMinimumOrder(state), true);
+  });
+
+  it('reports a zero amount', () => {
+    assert.equal(isBelowMinimumOrder({ ...EMPTY, amount: '0', total: '0.000' }), true);
+  });
+
+  it('accepts the smallest order with both sides at least 0.001', () => {
+    const state = orderFormReducer({ ...EMPTY, price: '0.045840' }, { type: 'amount', value: '0.011' });
+    assert.equal(state.total, '0.001');
+    assert.equal(isBelowMinimumOrder(state), false);
+  });
+
+  it('does not report an empty order', () => {
+    assert.equal(isBelowMinimumOrder(EMPTY), false);
   });
 });

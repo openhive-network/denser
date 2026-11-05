@@ -56,3 +56,10 @@ export const exceedsAvailableBalance = (state: OrderFormState, side: OrderSide, 
   const spent = toBig(side === 'buy' ? state.total : state.amount);
   return Boolean(available && spent && spent.gt(available));
 };
+
+/**
+ * Whether the amount or the total, rounded to the chain's three decimals, is zero: such an order
+ * cannot be created on chain. An empty or unparsable field is not reported.
+ */
+export const isBelowMinimumOrder = (state: OrderFormState) =>
+  [state.amount, state.total].some((value) => toBig(value)?.round(ASSET_DECIMALS).eq(0) ?? false);

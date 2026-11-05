@@ -272,6 +272,7 @@
     "newer": "Plus récent",
     "older": "Plus ancien",
     "insufficient_balance": "Solde insuffisant ({{available}} disponible)",
+    "order_too_small": "Ordre trop petit : le montant et le total doivent chacun être d'au moins 0.001",
     "use_price": "Utiliser le prix {{price}}",
     "date": "Date",
     "buy": "Acheter",
