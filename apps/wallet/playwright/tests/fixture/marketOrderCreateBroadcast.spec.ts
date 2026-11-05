@@ -3,6 +3,7 @@ import { test, expect, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { FIXTURE_API_PORT } from '../support/apiStub';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { confirmBroadcastsInBlocks } from '../support/blockConfirmation';
 import { openOtherTab, signOutInTab } from '../support/otherTab';
 import { expectLimitOrderCreateOperation, naiAsset } from '../support/walletOperations';
 import { STUB_ACCOUNT, logInAsStubAccount, startWalletApiStub, storeStubAccountKey } from '../support/walletApiStub';
@@ -64,6 +65,15 @@ const fillMarketForm = async (page: Page, form: 'buy-form' | 'sell-form', amount
   }).toPass({ timeout: HYDRATION_TIMEOUT });
 };
 
+/** The page's toasts with `title`: the notification list's items, not the announcement Radix reads out. */
+const toastsTitled = (page: Page, title: string) => page.getByRole('listitem').filter({ hasText: title });
+
+/** The success toast of a 9 HIVE buy order, in each locale checked. */
+const ORDER_PLACED_TOASTS = [
+  { locale: 'en', title: 'Order placed', description: 'Buy 9.000 HIVE for 2.259 HBD' },
+  { locale: 'pl', title: 'Zlecenie złożone', description: 'Kupno 9.000 HIVE za 2.259 HBD' }
+];
+
 const confirmOrder = async (page: Page, form: 'buy-form' | 'sell-form') => {
   await page.getByTestId(`${form}-submit-button`).click();
   await page.getByTestId(`${form}-dialog-ok`).click();
@@ -117,7 +127,8 @@ test.describe('Market limit order create broadcast', () => {
     await fillMarketForm(page, 'buy-form', '1.2345', '0.310');
     await confirmOrder(page, 'buy-form');
 
-    await expect(page.getByTestId('error-toast-content')).toContainText('maximum of 3 decimal places in HIVE amount');
+    await expect(page.getByTestId('asset-precision-message')).toHaveText('The HIVE amount can have at most 3 decimal places.');
+    await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
     await expect(page.getByTestId('buy-form-dialog')).toBeHidden();
     expect(broadcasts.calls).toHaveLength(0);
 
@@ -173,4 +184,24 @@ test.describe('Market limit order create broadcast', () => {
     expect(heldBroadcasts).toBe(1);
     expect(broadcasts.calls).toHaveLength(1);
   });
+
+  for (const { locale, title, description } of ORDER_PLACED_TOASTS) {
+    test(`WALLET-TX-ORDER-CREATE-06-${locale} — a placed order shows one success toast naming the amounts`, async ({
+      page,
+      context,
+      baseURL
+    }) => {
+      await context.addCookies([{ name: 'NEXT_LOCALE', value: locale, url: baseURL }]);
+      const broadcasts = await installBroadcastInterceptor(page);
+      await confirmBroadcastsInBlocks(page);
+      await fillMarketForm(page, 'buy-form', '9', '2.259');
+      await confirmOrder(page, 'buy-form');
+
+      await broadcasts.waitForCount(1);
+      const toast = toastsTitled(page, title);
+      await expect(toast).toHaveCount(1);
+      await expect(toast).toContainText(description);
+      await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
+    });
+  }
 });

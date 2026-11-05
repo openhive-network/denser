@@ -294,7 +294,12 @@
     "open_orders": "Órdenes abiertas",
     "no_orders": "No tienes órdenes abiertas.",
     "confirm_cancel_order": "¿Cancelar la orden {{orderId}} de {{user}}?",
-    "cancel_order": "Cancelar orden"
+    "cancel_order": "Cancelar orden",
+    "order_placed": "Orden creada",
+    "order_placed_buy": "Comprar {{hive}} por {{hbd}}",
+    "order_placed_sell": "Vender {{hive}} por {{hbd}}",
+    "order_cancelled": "Orden cancelada",
+    "order_cancelled_description": "La orden {{orderId}} fue cancelada"
   },
   "witnesses_page": {
     "title": "Votación para testigo",

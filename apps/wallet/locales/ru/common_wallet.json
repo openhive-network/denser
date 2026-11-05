@@ -299,7 +299,12 @@
     "open_orders": "Открытые заказы",
     "no_orders": "У вас нет открытых заказов.",
     "confirm_cancel_order": "Отменить заказ {{orderId}} пользователя {{user}}?",
-    "cancel_order": "Отменить заказ"
+    "cancel_order": "Отменить заказ",
+    "order_placed": "Заявка размещена",
+    "order_placed_buy": "Покупка {{hive}} за {{hbd}}",
+    "order_placed_sell": "Продажа {{hive}} за {{hbd}}",
+    "order_cancelled": "Заявка отменена",
+    "order_cancelled_description": "Заявка {{orderId}} отменена"
   },
   "witnesses_page": {
     "title": "Топ делегатов",

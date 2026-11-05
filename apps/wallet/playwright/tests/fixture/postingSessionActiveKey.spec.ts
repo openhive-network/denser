@@ -254,6 +254,28 @@ test.describe('A posting-key session on the wallet', () => {
     expect(broadcasts.calls).toEqual([]);
   });
 
+  test('WALLET-POSTING-SESSION-09 — the active key prompt offers Submit and Cancel; Cancel closes it and sends nothing', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    await logInAsStubAccount(page, 'posting');
+    await storeStubAccountKey(page, 'posting', POSTING_WIF);
+    await page.goto(ownTransfersPage);
+    await submitTransfer(page, EN_LABELS);
+
+    const prompt = activeKeyPrompt(page);
+    await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await expect(prompt.getByTestId('password-submit-button')).toHaveText('Submit');
+    await expect(prompt.getByRole('button', { name: 'Reset' })).toHaveCount(0);
+    await prompt.getByTestId('posting-private-key-input').fill(ACTIVE_WIF);
+    await prompt.getByRole('button', { name: 'Cancel', exact: true }).click();
+    await expect(prompt).toHaveCount(0);
+
+    await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
+    expect(broadcasts.calls).toEqual([]);
+    expect(await storedActiveKey(page)).toBeNull();
+  });
+
   test('WALLET-POSTING-SESSION-05 — the active key entered for a transfer signs it, sent once and not kept', async ({
     page
   }) => {

@@ -46,7 +46,6 @@
     "password_hbauth_placeholder": "Пароль для разблокировки ключа",
     "password_placeholder": "Приватный ключ для публикации",
     "posting_private_key_placeholder": "Приватный ключ для публикации",
-    "reset_button": "Сбросить",
     "this_operation_requires_your_key_or_master_password": "Для этой операции требуется ваш {{authType}} ключ или главный пароль.",
     "title_action_login": "Вход",
     "title_action_unlock_key": "Разблокировать ключ",
@@ -197,6 +196,7 @@
     "safe_storage_recovery_description": "Другая вкладка изменила защищённое хранилище во время сохранения ключа @{{username}}. Введите пароль защищённого хранилища @{{username}}, чтобы завершить сохранение."
   },
   "broadcast_error": {
+    "too_many_decimal_places": "Максимальное число знаков после запятой в сумме {{token}}: {{precision}}.",
     "missing_owner_authority": "Для этой операции нужен ключ владельца (owner), поэтому здесь она недоступна.",
     "missing_active_authority": "Для этой операции нужен активный ключ (active). Войдите с активным ключом и повторите попытку.",
     "missing_posting_authority": "Для этой операции нужен ключ публикации (posting). Войдите с ним и повторите попытку.",

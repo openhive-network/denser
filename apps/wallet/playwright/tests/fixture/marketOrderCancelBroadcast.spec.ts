@@ -2,6 +2,7 @@ import type { Server } from 'node:http';
 import { test, expect, type Page } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
+import { confirmBroadcastsInBlocks } from '../support/blockConfirmation';
 import { expectLimitOrderCancelOperation } from '../support/walletOperations';
 import { STUB_ACCOUNT, logInAsStubAccount, startWalletApiStub, storeStubAccountKey } from '../support/walletApiStub';
 
@@ -55,15 +56,38 @@ test.beforeEach(async ({ context }) => {
   });
 });
 
+/** The page's toasts with `title`: the notification list's items, not the announcement Radix reads out. */
+const toastsTitled = (page: Page, title: string) => page.getByRole('listitem').filter({ hasText: title });
+
+/** The cancel confirmation's labels and the success toast, in each locale checked. */
+const ORDER_CANCELLED_LOCALES = [
+  {
+    locale: 'en',
+    cancel: 'Cancel',
+    confirmation: `Cancel order ${ORDER_ID} from ${STUB_ACCOUNT}?`,
+    cancelOrder: 'Cancel Order',
+    title: 'Order cancelled',
+    description: `Order ${ORDER_ID} was cancelled`
+  },
+  {
+    locale: 'pl',
+    cancel: 'Anuluj',
+    confirmation: `Anulować zlecenie ${ORDER_ID} użytkownika ${STUB_ACCOUNT}?`,
+    cancelOrder: 'Anuluj zlecenie',
+    title: 'Zlecenie anulowane',
+    description: `Zlecenie ${ORDER_ID} zostało anulowane`
+  }
+];
+
 /** Opens /market signed in and the cancel confirmation of OPEN_ORDER; resolves with that dialog. */
-const openCancelConfirmation = async (page: Page) => {
+const openCancelConfirmation = async (page: Page, labels = ORDER_CANCELLED_LOCALES[0]) => {
   await logInAsStubAccount(page, 'active');
   await storeStubAccountKey(page, 'active', ACTIVE_WIF);
   await page.goto(`${WALLET_BASE_PATH}/market`);
 
-  const confirmation = page.getByRole('dialog').filter({ hasText: `Cancel order ${ORDER_ID} from ${STUB_ACCOUNT}?` });
+  const confirmation = page.getByRole('dialog').filter({ hasText: labels.confirmation });
   // The open orders list renders only once the client knows the signed-in user, i.e. after hydration.
-  await page.getByRole('button', { name: 'Cancel', exact: true }).click({ timeout: HYDRATION_TIMEOUT });
+  await page.getByRole('button', { name: labels.cancel, exact: true }).click({ timeout: HYDRATION_TIMEOUT });
   await expect(confirmation).toBeVisible();
   return confirmation;
 };
@@ -91,4 +115,24 @@ test.describe('Market limit order cancel broadcast', () => {
     await expect(page.getByRole('button', { name: 'Cancel', exact: true })).toBeVisible();
     expect(broadcasts.calls).toHaveLength(0);
   });
+
+  for (const labels of ORDER_CANCELLED_LOCALES) {
+    test(`WALLET-TX-ORDER-CANCEL-03-${labels.locale} — a cancelled order shows one success toast`, async ({
+      page,
+      context,
+      baseURL
+    }) => {
+      await context.addCookies([{ name: 'NEXT_LOCALE', value: labels.locale, url: baseURL }]);
+      const broadcasts = await installBroadcastInterceptor(page);
+      await confirmBroadcastsInBlocks(page);
+      const confirmation = await openCancelConfirmation(page, labels);
+      await confirmation.getByRole('button', { name: labels.cancelOrder }).click();
+
+      await broadcasts.waitForCount(1);
+      const toast = toastsTitled(page, labels.title);
+      await expect(toast).toHaveCount(1);
+      await expect(toast).toContainText(labels.description);
+      await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
+    });
+  }
 });

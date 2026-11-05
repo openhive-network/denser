@@ -46,7 +46,6 @@
     "password_hbauth_placeholder": "キーを解除するためのパスワード",
     "password_placeholder": "投稿プライベートキー",
     "posting_private_key_placeholder": "投稿プライベートキー",
-    "reset_button": "リセット",
     "this_operation_requires_your_key_or_master_password": "この操作には、{{authType}}キーまたはマスターパスワードが必要です。",
     "title_action_login": "ログイン",
     "title_action_unlock_key": "キーを解除",
@@ -197,6 +196,7 @@
     "safe_storage_recovery_description": "@{{username}} のキーを保存している間に、別のタブが安全なストレージを変更しました。保存を完了するには、@{{username}} の安全なストレージのパスワードを入力してください。"
   },
   "broadcast_error": {
+    "too_many_decimal_places": "{{token}} の金額は小数点以下 {{precision}} 桁までです。",
     "missing_owner_authority": "この操作にはオーナーキー（owner）が必要なため、ここでは利用できません。",
     "missing_active_authority": "この操作にはアクティブキー（active）が必要です。アクティブキーでログインして、もう一度お試しください。",
     "missing_posting_authority": "この操作には投稿キー（posting）が必要です。投稿キーでログインして、もう一度お試しください。",
