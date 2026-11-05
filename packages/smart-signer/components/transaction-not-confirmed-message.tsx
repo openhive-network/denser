@@ -6,25 +6,28 @@ import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 /**
  * Tells the user their transaction was sent but a block has not been seen to include it yet, so it may
  * still apply, and names it, linked to `explorerDomain` when one is set, to check before retrying.
+ * `message`, when given, replaces the generic text above the id.
  */
 export function TransactionNotConfirmedMessage({
   transactionId,
-  explorerDomain
+  explorerDomain,
+  message
 }: {
   transactionId: string;
   explorerDomain?: string;
+  message?: string;
 }) {
   // The toast can be the first thing on the page to need this namespace: render once it has loaded
   const { t, ready } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
   if (!ready) return null;
   return (
     <div data-testid="transaction-not-confirmed-message">
-      <p>{t('request_error.not_confirmed')}</p>
+      <p>{message ?? t('request_error.not_confirmed')}</p>
       <p className="break-all">
         {t('request_error.transaction_id')}{' '}
         {explorerDomain ? (
           <a
-            href={`${explorerDomain}/transaction/${transactionId}`}
+            href={`${explorerDomain}/tx/${transactionId}`}
             target="_blank"
             rel="noopener noreferrer"
             className="underline"
