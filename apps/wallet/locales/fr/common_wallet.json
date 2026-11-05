@@ -100,6 +100,11 @@
       "change_password": "Changer le mot de passe",
       "settings": "Paramètres",
       "logout": "Se déconnecter",
+      "switch_account": "Changer de compte",
+      "add_account": "Ajouter un compte",
+      "remove_account": "Retirer {{username}}",
+      "switch_account_failed": "Impossible de passer à {{username}}. Veuillez vous reconnecter.",
+      "remove_account_failed": "Impossible de retirer {{username}}.",
       "key_type": {
         "posting": "Clé de publication",
         "active": "Clé active",

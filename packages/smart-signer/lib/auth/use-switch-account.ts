@@ -44,14 +44,21 @@ function isSessionMissingAccount(error: unknown): boolean {
   return error instanceof FetchError && error.response.status === HTTP_UNAUTHORIZED;
 }
 
+interface SwitchAccountCallbacks {
+  /** Called with the new current user once the switch succeeded */
+  onSuccess?: (user: User) => void;
+  onError?: (username: string) => void;
+}
+
 /** Make an account signed in earlier in this session the current user. */
-export function useSwitchAccount({ onError }: { onError?: (username: string) => void } = {}) {
+export function useSwitchAccount({ onSuccess, onError }: SwitchAccountCallbacks = {}) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (params: { username: string }) => switchAccount(params.username),
     onSuccess: (user) => {
       setActiveUser(queryClient, user);
       postAccountsChanged();
+      onSuccess?.(user);
     },
     // Here rather than in `mutate`'s callbacks: those do not run once the caller unmounted
     onError: (error, { username }) => {

@@ -100,6 +100,11 @@
       "change_password": "パスワードの変更",
       "settings": "設定",
       "logout": "ログアウト",
+      "switch_account": "アカウントを切り替え",
+      "add_account": "アカウントを追加",
+      "remove_account": "{{username}} を削除",
+      "switch_account_failed": "{{username}} に切り替えられませんでした。もう一度ログインしてください。",
+      "remove_account_failed": "{{username}} を削除できませんでした。",
       "key_type": {
         "posting": "投稿キー",
         "active": "アクティブキー",
