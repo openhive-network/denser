@@ -20,8 +20,8 @@ import { useTranslation } from '@/blog/i18n/client';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useDismissOnPointerDownOutside } from '@ui/hooks/use-dismiss-on-pointer-down-outside';
 import DialogLogin from '@/blog/components/dialog-login';
-import AccountSwitcher from './account-switcher';
-import LoginMethodIcon from './login-method-icon';
+import AccountSwitcher from '@smart-signer/components/account-switcher';
+import LoginMethodIcon from '@smart-signer/components/login-method-icon';
 import LoginKeyAction from './login-key-action';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
 import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storage-key';
@@ -127,7 +127,7 @@ const UserMenu = ({
           </DropdownMenuLabel>
           <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} onAddKey={addKey} />
 
-          <AccountSwitcher user={user} onAddAccount={openAddAccount} />
+          <AccountSwitcher user={user} onAddAccount={openAddAccount} t={t} />
 
           <DropdownMenuSeparator />
           <DropdownMenuGroup>

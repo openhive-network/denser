@@ -23,8 +23,13 @@ import DialogLogin from './dialog-login';
 import LoginKeyAction from './login-key-action';
 import { useLoginAuthorityLabels } from './use-login-authority-labels';
 import { useAddSafeStorageKey } from '@smart-signer/lib/auth/use-add-safe-storage-key';
+import AccountSwitcher from '@smart-signer/components/account-switcher';
+import { useRouter } from 'next/navigation';
 
 const logger = getLogger('app');
+
+/** What the login dialog opened from the menu signs in: any account, or this one with a given key */
+type LoginDialogTarget = { username?: string; keyType?: KeyType };
 
 /**
  * The header's account menu. `children` is its trigger: a single focusable element (a `<button>`)
@@ -36,13 +41,25 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
   const { t } = useTranslation('common_wallet');
   const { authority, chip } = useLoginAuthorityLabels(user);
   const addKey = useAddSafeStorageKey(user);
-  const [isKeyLoginOpen, setIsKeyLoginOpen] = useState(false);
+  const router = useRouter();
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   // Kept when the dialog closes, so its content does not change while it animates out
-  const [keyLoginType, setKeyLoginType] = useState<KeyType>(KeyType.active);
-  const openKeyLogin = useCallback((keyType: KeyType) => {
-    setKeyLoginType(keyType);
-    setIsKeyLoginOpen(true);
+  const [loginTarget, setLoginTarget] = useState<LoginDialogTarget>({});
+  const openAddAccount = useCallback(() => {
+    setLoginTarget({});
+    setIsLoginOpen(true);
   }, []);
+  const openKeyLogin = useCallback(
+    (keyType: KeyType) => {
+      setLoginTarget({ username: user.username, keyType });
+      setIsLoginOpen(true);
+    },
+    [user.username]
+  );
+  const showSwitchedWallet = useCallback(
+    (switchedUser: User) => router.push(`/@${switchedUser.username}/transfers`),
+    [router]
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
@@ -77,6 +94,8 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
             <Icons.walletlogo className=" w-20" />
           </DropdownMenuLabel>
           <LoginKeyAction authority={authority} onSwitchKey={openKeyLogin} onAddKey={addKey} />
+
+          <AccountSwitcher user={user} onAddAccount={openAddAccount} onSwitched={showSwitchedWallet} t={t} />
 
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
@@ -125,10 +144,10 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
       </DropdownMenu>
       {/* Outside the menu, which unmounts its content when it closes */}
       <DialogLogin
-        open={isKeyLoginOpen}
-        onOpenChange={setIsKeyLoginOpen}
-        username={user.username}
-        keyType={keyLoginType}
+        open={isLoginOpen}
+        onOpenChange={setIsLoginOpen}
+        username={loginTarget.username}
+        keyType={loginTarget.keyType}
       />
     </>
   );

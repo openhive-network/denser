@@ -100,6 +100,11 @@
       "change_password": "Cambiar contraseña",
       "settings": "Ajustes",
       "logout": "Cerrar sesión",
+      "switch_account": "Cambiar de cuenta",
+      "add_account": "Añadir cuenta",
+      "remove_account": "Quitar {{username}}",
+      "switch_account_failed": "No se pudo cambiar a {{username}}. Vuelve a iniciar sesión.",
+      "remove_account_failed": "No se pudo quitar {{username}}.",
       "key_type": {
         "posting": "Clave de publicación",
         "active": "Clave activa",

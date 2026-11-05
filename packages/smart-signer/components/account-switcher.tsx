@@ -6,19 +6,23 @@ import { User } from '@smart-signer/types/common';
 import { useAccounts } from '@smart-signer/lib/auth/use-accounts';
 import { useSwitchAccount } from '@smart-signer/lib/auth/use-switch-account';
 import { useRemoveAccount } from '@smart-signer/lib/auth/use-remove-account';
-import { useTranslation } from '@/blog/i18n/client';
+import type { TFunction } from 'i18next';
 import AccountSwitcherItem from './account-switcher-item';
 
 interface AccountSwitcherProps {
   user: User;
   onAddAccount: () => void;
+  /** Called with the new current user after a switch, e.g. to show its page */
+  onSwitched?: (user: User) => void;
+  /** The app's translation function; the texts are under `navigation.user_menu` in its default namespace. */
+  t: TFunction;
 }
 
 /** User menu section listing the other signed-in accounts to switch to, and a way to add one. */
-const AccountSwitcher = ({ user, onAddAccount }: AccountSwitcherProps) => {
-  const { t } = useTranslation('common_blog');
+const AccountSwitcher = ({ user, onAddAccount, onSwitched, t }: AccountSwitcherProps) => {
   const accounts = useAccounts();
   const switchAccount = useSwitchAccount({
+    onSuccess: onSwitched,
     onError: (username) =>
       toast({
         title: t('navigation.user_menu.switch_account_failed', { username }),
@@ -56,6 +60,7 @@ const AccountSwitcher = ({ user, onAddAccount }: AccountSwitcherProps) => {
           disabled={isPending}
           onSwitch={handleSwitch}
           onRemove={handleRemove}
+          t={t}
         />
       ))}
       <DropdownMenuItem className="cursor-pointer" onSelect={onAddAccount} data-testid="account-switcher-add">

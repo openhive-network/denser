@@ -4,7 +4,7 @@ import { Avatar, AvatarImage } from '@ui/components';
 import { Icons } from '@ui/components/icons';
 import { getUserAvatarUrl } from '@hive/ui';
 import { User } from '@smart-signer/types/common';
-import { useTranslation } from '@/blog/i18n/client';
+import type { TFunction } from 'i18next';
 import LoginMethodIcon from './login-method-icon';
 
 interface AccountSwitcherItemProps {
@@ -12,10 +12,10 @@ interface AccountSwitcherItemProps {
   disabled: boolean;
   onSwitch: (account: User) => void;
   onRemove: (account: User) => void;
+  t: TFunction;
 }
 
-const AccountSwitcherItem = ({ account, disabled, onSwitch, onRemove }: AccountSwitcherItemProps) => {
-  const { t } = useTranslation('common_blog');
+const AccountSwitcherItem = ({ account, disabled, onSwitch, onRemove, t }: AccountSwitcherItemProps) => {
   const removeLabel = t('navigation.user_menu.remove_account', { username: account.username });
 
   const handleSelect = useCallback(() => onSwitch(account), [account, onSwitch]);

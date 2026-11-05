@@ -100,6 +100,11 @@
       "change_password": "Cambia Password",
       "settings": "Impostazioni",
       "logout": "Esci",
+      "switch_account": "Cambia account",
+      "add_account": "Aggiungi account",
+      "remove_account": "Rimuovi {{username}}",
+      "switch_account_failed": "Impossibile passare a {{username}}. Accedi di nuovo.",
+      "remove_account_failed": "Impossibile rimuovere {{username}}.",
       "key_type": {
         "posting": "Chiave di pubblicazione",
         "active": "Chiave attiva",

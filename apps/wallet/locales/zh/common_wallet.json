@@ -100,6 +100,11 @@
       "change_password": "修改密码",
       "settings": "设置",
       "logout": "退出登录",
+      "switch_account": "切换账户",
+      "add_account": "添加账户",
+      "remove_account": "移除 {{username}}",
+      "switch_account_failed": "无法切换到 {{username}}，请重新登录。",
+      "remove_account_failed": "无法移除 {{username}}。",
       "key_type": {
         "posting": "发帖密钥",
         "active": "活动密钥",
