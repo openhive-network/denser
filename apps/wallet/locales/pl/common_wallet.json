@@ -277,6 +277,7 @@
     "newer": "Nowsze",
     "older": "Starsze",
     "insufficient_balance": "Niewystarczające saldo (dostępne: {{available}})",
+    "order_too_small": "Zlecenie jest za małe: ilość i suma muszą wynosić co najmniej 0.001",
     "use_price": "Użyj ceny {{price}}",
     "date": "Data",
     "buy": "Kup",

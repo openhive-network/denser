@@ -265,6 +265,7 @@
     "newer": "최신",
     "older": "이전",
     "insufficient_balance": "잔액 부족 ({{available}} 사용 가능)",
+    "order_too_small": "주문이 너무 작습니다: 수량과 합계는 각각 0.001 이상이어야 합니다",
     "use_price": "가격 {{price}} 사용",
     "date": "날짜",
     "buy": "매수",

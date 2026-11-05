@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/componen
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAccount } from '@transaction/lib/hive-api';
 import { getAsset } from '@transaction/lib/utils';
-import { exceedsAvailableBalance, orderFormReducer } from '../lib/market-order-form';
+import { exceedsAvailableBalance, isBelowMinimumOrder, orderFormReducer } from '../lib/market-order-form';
 import OrderFormField from './order-form-field';
 
 export default function BuyOrSellForm({
@@ -45,6 +45,7 @@ export default function BuyOrSellForm({
   const testIdPrefix = transaction === 'buy' ? 'buy-form' : 'sell-form';
   const headingId = useId();
   const errorId = useId();
+  const minimumId = useId();
 
   useEffect(() => {
     dispatch({ type: 'price', value: price });
@@ -90,8 +91,10 @@ export default function BuyOrSellForm({
     transaction,
     availableAsset ? convertStringToBig(availableAsset) : undefined
   );
-  const canSubmit = Boolean(state.amount && state.total) && !insufficientBalance;
+  const belowMinimum = isBelowMinimumOrder(state);
+  const canSubmit = Boolean(state.amount && state.total) && !insufficientBalance && !belowMinimum;
   const balanceErrorId = insufficientBalance ? errorId : undefined;
+  const minimumErrorId = belowMinimum ? minimumId : undefined;
   const setDefaultPrice = () => dispatch({ type: 'price', value: defaultPrice });
   const label = transaction === 'sell' ? t('market_page.sell_hive') : t('market_page.buy_hive');
   return (
@@ -122,7 +125,7 @@ export default function BuyOrSellForm({
           value={state.amount}
           onChange={(value) => dispatch({ type: 'amount', value })}
           testId={`${testIdPrefix}-amount`}
-          errorId={transaction === 'sell' ? balanceErrorId : undefined}
+          errorId={transaction === 'sell' ? (balanceErrorId ?? minimumErrorId) : minimumErrorId}
         />
         <OrderFormField
           headingId={headingId}
@@ -131,7 +134,7 @@ export default function BuyOrSellForm({
           value={state.total}
           onChange={(value) => dispatch({ type: 'total', value })}
           testId={`${testIdPrefix}-total`}
-          errorId={transaction === 'buy' ? balanceErrorId : undefined}
+          errorId={transaction === 'buy' ? (balanceErrorId ?? minimumErrorId) : minimumErrorId}
         />
         {insufficientBalance ? (
           <p
@@ -141,6 +144,16 @@ export default function BuyOrSellForm({
             data-testid={`${testIdPrefix}-balance-error`}
           >
             {t('market_page.insufficient_balance', { available: availableText })}
+          </p>
+        ) : null}
+        {belowMinimum ? (
+          <p
+            id={minimumId}
+            role="alert"
+            className="text-end text-xs text-destructive"
+            data-testid={`${testIdPrefix}-minimum-error`}
+          >
+            {t('market_page.order_too_small')}
           </p>
         ) : null}
       </div>
@@ -163,7 +176,7 @@ export default function BuyOrSellForm({
           <DialogTrigger asChild>
             <Button
               disabled={!canSubmit}
-              aria-describedby={balanceErrorId}
+              aria-describedby={balanceErrorId ?? minimumErrorId}
               variant="outline"
               data-testid={`${testIdPrefix}-submit-button`}
               className={clsx({

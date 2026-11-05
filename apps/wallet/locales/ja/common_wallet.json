@@ -265,6 +265,7 @@
     "newer": "新しい",
     "older": "古い",
     "insufficient_balance": "残高不足（利用可能: {{available}}）",
+    "order_too_small": "注文が小さすぎます：数量と合計はそれぞれ0.001以上である必要があります",
     "use_price": "価格 {{price}} を使用",
     "date": "日付",
     "buy": "購入",

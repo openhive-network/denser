@@ -265,6 +265,7 @@
     "newer": "较新的",
     "older": "较旧的",
     "insufficient_balance": "余额不足（可用：{{available}}）",
+    "order_too_small": "订单太小：数量和总额都必须至少为 0.001",
     "use_price": "使用价格 {{price}}",
     "date": "日期",
     "buy": "购买",
