@@ -152,6 +152,37 @@ async function createMatrixAccount(
 }
 
 /**
+ * Gives `username`'s existing Matrix account the display name `displayName`, through the admin
+ * API, when it has another. Resolves to whether it changed it; a failure, such as an account
+ * that does not exist, is reported and resolves to false.
+ */
+export async function syncMatrixDisplayName(
+  username: string,
+  displayName: string,
+  settings: MatrixLoginTokenSettings,
+  request: MatrixAdminRequest,
+  onFailure: MatrixCleanupFailureReporter
+): Promise<boolean> {
+  const userId = matrixUserId(username, settings);
+  const url = `${settings.homeserverUrl}/_synapse/admin/v2/users/${encodeURIComponent(userId)}`;
+  try {
+    const headers = bearer(settings.adminToken);
+    const account: unknown = await request(url, { method: 'GET', headers }, MATRIX_ADMIN_TIMEOUT_MS);
+    const current = typeof account === 'object' && account !== null ? Reflect.get(account, 'displayname') : null;
+    if (current === displayName) return false;
+    await request(
+      url,
+      { method: 'PUT', headers, body: JSON.stringify({ displayname: displayName }) },
+      MATRIX_ADMIN_TIMEOUT_MS
+    );
+    return true;
+  } catch (error) {
+    onFailure(userId, `setting the display name: ${reasonOf(error, [settings.adminToken])}`);
+    return false;
+  }
+}
+
+/**
  * `mintMatrixLoginToken`, which first creates the account of a user Synapse does not know yet,
  * with the display name `displayNameOf` gives, then mints the token for it. A failed creation is
  * reported and answers `failed`. Only call it for a user who may chat.

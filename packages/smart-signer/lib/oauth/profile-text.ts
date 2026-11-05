@@ -8,7 +8,12 @@ export function sanitizeProfileText(value: string | undefined, maxLen = 160): st
   return value.replace(/<[^>]*>/g, '').slice(0, maxLen).trim() || undefined;
 }
 
+/** The display name a Hive profile names, as plain text; undefined when it names none */
+export function profileDisplayName(profile: HiveUserProfile): string | undefined {
+  return sanitizeProfileText(profile.name, DISPLAY_NAME_MAX_LENGTH);
+}
+
 /** The `name` userinfo gives a Hive account: its profile's name, else the account name. */
 export function oauthDisplayName(profile: HiveUserProfile, username: string): string {
-  return sanitizeProfileText(profile.name, DISPLAY_NAME_MAX_LENGTH) || username;
+  return profileDisplayName(profile) || username;
 }

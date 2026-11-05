@@ -2,7 +2,7 @@ import type { Page, Request } from '@playwright/test';
 import { test, expect } from '../support/fixture-proxy-test';
 import { HomePage } from '../support/pages/homePage';
 import { ProfileUserMenu } from '../support/pages/profileUserMenu';
-import { DEFAULT_USER } from '../support/fixture-auth/seeder';
+import { DEFAULT_USER, seedRememberedAccounts } from '../support/fixture-auth/seeder';
 import { TIMEOUTS } from '../support/constants';
 import { configureChat } from '../support/chatSettings';
 import { recordWasmRequests } from '../support/wasmRequests';
@@ -17,6 +17,7 @@ import {
   SERVER_NAME,
   UNREAD
 } from '../support/matrixHomeserverStub';
+import type { User } from '@smart-signer/types/common';
 import enBlog from '../../../locales/en/common_blog.json';
 import plBlog from '../../../locales/pl/common_blog.json';
 
@@ -24,12 +25,14 @@ import plBlog from '../../../locales/pl/common_blog.json';
  * The native Matrix chat client in the chat drawer (`MATRIX_CHAT_CLIENT` unset: the default).
  * The settings are appended to `__ENV.js` (see chatSettings.ts), the build's CSP is bypassed, and
  * the homeserver is answered by MatrixHomeserverStub; denser's login token route answers a token
- * (in CHAT-NATIVE-21, a 404 until the opened drawer asks it to create the account).
+ * (in CHAT-NATIVE-21, a 404 until the opened drawer asks it to create the account). In
+ * CHAT-NATIVE-23 the recorded `find_accounts` answers are given a Hive profile name.
  *
  * The client loads and signs in with the warm-up (on idle after the page loads, or on intent to
  * use the chat button), so the badge can show before the drawer opens.
  *
- * Fixtures: reuses `accountSwitchLogout`, which loads the same page for a signed-in user.
+ * Fixtures: reuses `accountSwitchLogout`, which loads the same page for a signed-in user, and
+ * holds the accounts CHAT-NATIVE-24 switches between.
  */
 
 const PAGE_WITH_HEADER = '/faq.html';
@@ -47,6 +50,20 @@ const SIGNED_IN_TIMEOUT_MS = 20_000;
 const STORED_SESSION_KEY = `matrix-chat-session-${USER_ID}`;
 /** The wait a rate-limited token route names in CHAT-NATIVE-10 */
 const RETRY_AFTER_MS = 500;
+/** The `Retry-After` of the rate-limited answers of CHAT-NATIVE-22, which name no other wait */
+const RETRY_AFTER_S = 1;
+const MS_PER_SECOND = 1000;
+const HIVE_DISPLAY_NAME = 'Guest Four Test';
+const CHAT_USER: User = {
+  ...DEFAULT_USER,
+  strict: true,
+  authenticateOnBackend: true,
+  oauthConsent: { openhive_chat: true }
+};
+const OTHER_CHAT_USER: User = { ...CHAT_USER, username: 'gtg' };
+const OTHER_USER_ID = `@${OTHER_CHAT_USER.username}:${SERVER_NAME}`;
+/** Longer than the idle warm-up takes to start after a page loads (see chatWidget.spec.ts) */
+const NO_WARM_UP_MS = 5_000;
 /** A window too short for the timeline to hold #general's first messages without a scroll */
 const SHORT_VIEWPORT_PX = 240;
 /** More Tab stops than one lap of the drawer has */
@@ -70,8 +87,12 @@ const focusInDrawer = (page: Page) =>
 interface NativeChat {
   homeserver: MatrixHomeserverStub;
   loginTokenRequests: Request[];
+  /** When each token request reached the route, as `Date.now()` */
+  loginTokenSentAt?: number[];
   /** How many of the first token requests are answered 429 */
   rateLimited: number;
+  /** The 429s name their wait in `Retry-After` only, not in `retry_after_ms` */
+  retryAfterHeaderOnly?: boolean;
   /** Synapse has no account for the user until a token request asks to create it */
   withoutAccount?: boolean;
 }
@@ -86,7 +107,12 @@ async function usesNativeChat(page: Page, settings: Record<string, string> = NAT
   await routed.homeserver.install(page);
   await page.route('**/api/chat/matrix-login-token', (route) => {
     routed.loginTokenRequests.push(route.request());
+    routed.loginTokenSentAt?.push(Date.now());
     if (routed.loginTokenRequests.length <= routed.rateLimited) {
+      if (routed.retryAfterHeaderOnly) {
+        const headers = { 'retry-after': String(RETRY_AFTER_S) };
+        return route.fulfill({ status: 429, headers, json: { error: 'Rate-limited' } });
+      }
       return route.fulfill({ status: 429, json: { error: 'Rate-limited', retry_after_ms: RETRY_AFTER_MS } });
     }
     if (routed.withoutAccount && !createsAccount(route.request())) {
@@ -114,6 +140,37 @@ async function signOut(page: Page): Promise<void> {
 
 const storedSession = (page: Page) =>
   page.evaluate((key) => JSON.parse(localStorage.getItem(key) ?? 'null')?.value ?? null, STORED_SESSION_KEY);
+
+/** Gives `username`'s Hive profile the name `name` in the `find_accounts` answers `page` gets */
+async function withHiveProfileName(page: Page, port: number, username: string, name: string): Promise<void> {
+  await page.route(
+    (url) => url.hostname === 'localhost' && url.port === String(port),
+    async (route) => {
+      const request = route.request();
+      const rpc: unknown = request.method() === 'POST' ? request.postDataJSON() : null;
+      if (Reflect.get(Object(rpc), 'method') !== 'database_api.find_accounts') return route.fallback();
+      const response = await route.fetch();
+      const answer: unknown = await response.json();
+      const accounts: unknown = Reflect.get(Object(Reflect.get(Object(answer), 'result')), 'accounts');
+      for (const account of Array.isArray(accounts) ? accounts : []) {
+        if (Reflect.get(Object(account), 'name') !== username) continue;
+        const metadata = Object(JSON.parse(String(Reflect.get(account, 'posting_json_metadata') || '{}')));
+        const profile = { ...Object(Reflect.get(metadata, 'profile')), name };
+        Reflect.set(account, 'posting_json_metadata', JSON.stringify({ ...metadata, profile }));
+      }
+      return route.fulfill({ response, json: answer });
+    }
+  );
+}
+
+/** Switches to `username` from the user menu, and resolves once it is the current user */
+async function switchTo(page: Page, username: string): Promise<void> {
+  await new HomePage(page).profileAvatarButton.click();
+  await new ProfileUserMenu(page).accountSwitcherItems.filter({ hasText: username }).click();
+  await expect
+    .poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('user') || '{}').username))
+    .toBe(username);
+}
 
 async function openPage(page: Page): Promise<void> {
   await page.goto(PAGE_WITH_HEADER);
@@ -398,6 +455,74 @@ test.describe('Native Matrix chat client', () => {
     expect(chat.loginTokenRequests).toHaveLength(2);
     expect(chat.homeserver.requestsTo('/login', 'POST')).toHaveLength(1);
     await expect(panel(page).getByText(EN.sign_in_failed)).toHaveCount(0);
+  });
+
+  test('CHAT-NATIVE-22: after a 429, no token request goes out before its Retry-After has passed', async ({
+    page
+  }) => {
+    const chat = await usesNativeChat(page);
+    chat.rateLimited = 2;
+    chat.retryAfterHeaderOnly = true;
+    chat.loginTokenSentAt = [];
+    await openPage(page);
+    await chatButton(page).click();
+
+    // The second 429 fails the sign-in: Try again, or opening the drawer after a failed warm-up,
+    // signs in again, still after the wait
+    const retry = page.getByRole('dialog').getByRole('button', { name: EN.retry });
+    await expect(messages(page).first().or(retry)).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+    if (await retry.isVisible()) await retry.click();
+    await expect(messages(page).first()).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+
+    const sentAt = chat.loginTokenSentAt;
+    expect(sentAt).toHaveLength(3);
+    for (let index = 1; index < sentAt.length; index++) {
+      expect(sentAt[index] - sentAt[index - 1]).toBeGreaterThanOrEqual(RETRY_AFTER_S * MS_PER_SECOND);
+    }
+    expect(chat.homeserver.requestsTo('/login', 'POST')).toHaveLength(1);
+  });
+
+  test('CHAT-NATIVE-23: signing in gives the Matrix user the display name of their Hive profile', async ({
+    page,
+    fixturePort
+  }) => {
+    const { homeserver } = await usesNativeChat(page);
+    homeserver.displayName = DEFAULT_USER.username;
+    await withHiveProfileName(page, fixturePort, DEFAULT_USER.username, HIVE_DISPLAY_NAME);
+    await openChat(page);
+
+    await expect.poll(() => homeserver.displayName, { timeout: SIGNED_IN_TIMEOUT_MS }).toBe(HIVE_DISPLAY_NAME);
+    expect(homeserver.requestsTo('/displayname', 'PUT')).toHaveLength(1);
+
+    // A reload resumes the session, whose display name is already the profile's
+    await page.reload();
+    const profileReads = () => homeserver.requestsTo(`/profile/${encodeURIComponent(USER_ID)}`, 'GET').length;
+    await expect.poll(profileReads, { timeout: SIGNED_IN_TIMEOUT_MS }).toBeGreaterThanOrEqual(2);
+    await page.waitForTimeout(1_500);
+    expect(homeserver.requestsTo('/displayname', 'PUT')).toHaveLength(1);
+  });
+
+  test('CHAT-NATIVE-24: switching through accounts asks no login token for those switched past; the last one signs in', async ({
+    page,
+    context
+  }) => {
+    const chat = await usesNativeChat(page);
+    await seedRememberedAccounts(context, [CHAT_USER, OTHER_CHAT_USER]);
+    await openPage(page);
+    await expect(badge(page)).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+    expect(chat.loginTokenRequests).toHaveLength(1);
+
+    chat.homeserver.signInAs(OTHER_USER_ID);
+    for (const username of [OTHER_CHAT_USER, CHAT_USER, OTHER_CHAT_USER].map((user) => user.username)) {
+      await switchTo(page, username);
+    }
+    await page.waitForTimeout(NO_WARM_UP_MS);
+    expect(chat.loginTokenRequests).toHaveLength(1);
+
+    await chatButton(page).click();
+    await expect(messages(page).first()).toBeVisible({ timeout: SIGNED_IN_TIMEOUT_MS });
+    expect(chat.loginTokenRequests).toHaveLength(2);
+    await expect(signInFailed(page)).toHaveCount(0);
   });
 
   test('CHAT-NATIVE-21: the warm-up of a user without a Matrix account creates none; opening the drawer does', async ({
