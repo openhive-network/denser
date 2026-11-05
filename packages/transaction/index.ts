@@ -16,7 +16,8 @@ import {
   ESupportedLanguages,
   type IHiveChainInterface,
   type GetDynamicGlobalPropertiesResponse,
-  ResourceCreditsOperation
+  ResourceCreditsOperation,
+  type TTransactionPackType
 } from '@hiveio/wax';
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
@@ -38,6 +39,7 @@ import { getOperationNames } from './lib/operation-names';
 import { WorkerBeeSession } from './lib/workerbee-session';
 import {
   type IInclusionWatch,
+  recordedTransactionId,
   TransactionNotConfirmedError,
   toNotConfirmedError,
   watchInclusion
@@ -64,8 +66,8 @@ export interface TransactionOptions {
 export interface TransactionBroadcastResult {
   transactionId: string;
   /**
-   * With `confirmInBackground`: true once a block includes the transaction, false when none did
-   * within `INCLUSION_TIMEOUT_MS`; rejects when blocks could not be scanned.
+   * With `confirmInBackground`: true once a block includes the transaction, false when none of the
+   * blocks scanned within `INCLUSION_TIMEOUT_MS` did; rejects when no block could be scanned.
    */
   included?: Promise<boolean>;
 }
@@ -146,7 +148,7 @@ export class TransactionService {
     // Validate transaction
     txBuilder.validate();
 
-    const signature = await this.signTransaction(
+    const { signature, pack } = await this.signTransaction(
       txBuilder,
       singleSignKeyType,
       resolveRequiredKeyType({ singleSignKeyType, requiredKeyType }, txBuilder.requiredAuthorities)
@@ -154,13 +156,14 @@ export class TransactionService {
 
     // Add signature to transaction
     txBuilder.addSignature(signature);
+    const transactionId = recordedTransactionId(txBuilder, pack);
 
     if (observe) {
-      return await this.broadcastAndObserveTransaction(txBuilder);
+      return await this.broadcastAndObserveTransaction(txBuilder, transactionId);
     } else if (confirmInBackground) {
-      return await this.broadcastAndConfirmInBackground(txBuilder);
+      return await this.broadcastAndConfirmInBackground(txBuilder, transactionId);
     } else {
-      return await this.broadcastTransaction(txBuilder);
+      return await this.broadcastTransaction(txBuilder, transactionId);
     }
   }
 
@@ -168,17 +171,19 @@ export class TransactionService {
    * Sign transaction using smart-signer. Rejects with `SignedOutError`
    * when no user is signed in, or when the user signed out or switched
    * account while signing (a signer's dialog asking for a key was open),
-   * here or in another tab.
+   * here or in another tab. Resolves with the signature and the
+   * serialization the signer signed, which decides the transaction's
+   * id in a block (`recordedTransactionId`).
    *
    * @param {ITransaction} txBuilder
-   * @return {*}  {Promise<string>}
+   * @return {*}  {Promise<{ signature: string; pack: TTransactionPackType }>}
    * @memberof TransactionService
    */
   async signTransaction(
     txBuilder: ITransaction,
     singleSignKeyType?: SignTransaction['singleSignKeyType'],
     requiredKeyType?: SignTransaction['requiredKeyType']
-  ): Promise<string> {
+  ): Promise<{ signature: string; pack: TTransactionPackType }> {
     requireSignedIn(this.signerOptions);
     const { username } = this.signerOptions;
     const signer = getSigner(this.signerOptions);
@@ -191,22 +196,25 @@ export class TransactionService {
     requireStillSignedInAs(this.signerOptions, username);
     // The signer options follow another tab's sign-out only once its storage event arrives; the stored user already tells
     requireStoredUser(username);
-    return signature;
+    return { signature, pack: signer.pack };
   }
 
   /**
    * Broadcasts transaction. Resolves after sending request to API
    * server. Does not wait for applying transaction in blockchain. When
    * the request times out or fails on the network, the node may still have taken the transaction:
-   * it rejects with `TransactionNotConfirmedError`.
+   * it rejects with `TransactionNotConfirmedError`. `transactionId` is the
+   * id a block lists for it, reported in the result and errors.
    *
    * @param {ITransaction} txBuilder
    * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
-  async broadcastTransaction(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
+  async broadcastTransaction(
+    txBuilder: ITransaction,
+    transactionId = txBuilder.id
+  ): Promise<TransactionBroadcastResult> {
     // Do broadcast
-    const transactionId = txBuilder.id;
     logger.info('Broadcasting transaction id: %s', transactionId);
     logger.debug('Transaction %s body: %o', transactionId, txBuilder.toApi());
     const chain = await getChain();
@@ -245,10 +253,12 @@ export class TransactionService {
    * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
-  async broadcastAndObserveTransaction(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
+  async broadcastAndObserveTransaction(
+    txBuilder: ITransaction,
+    transactionId = txBuilder.id
+  ): Promise<TransactionBroadcastResult> {
     try {
       return await this.workerBeeSession.use(async (bot) => {
-        const transactionId = txBuilder.id;
         logger.info('Broadcasting transaction id: %s', transactionId);
         logger.debug('Transaction %s body: %o', transactionId, txBuilder.toApi());
 
@@ -258,7 +268,7 @@ export class TransactionService {
         return { transactionId };
       });
     } catch (caught) {
-      const error = toNotConfirmedError(caught, txBuilder.id);
+      const error = toNotConfirmedError(caught, transactionId);
       const operationNames = getOperationNames(txBuilder.transaction.operations).join(', ');
       if (error instanceof TransactionNotConfirmedError) {
         logger.warn(
@@ -283,23 +293,27 @@ export class TransactionService {
   /**
    * Broadcast transaction like `broadcastTransaction`, resolving after
    * sending it, with `included` reporting whether the session's bot saw
-   * it in a block. The bot watches from before the broadcast, so the
-   * transaction cannot land in a block it skipped. When the bot cannot
-   * be set up, the transaction is broadcast without `included`.
+   * it in a block under its HF26 or legacy id. The bot watches from
+   * before the broadcast, so the transaction cannot land in a block it
+   * skipped. When the bot cannot be set up, the transaction is broadcast
+   * without `included`.
    *
    * @param {ITransaction} txBuilder
    * @return {*}  {Promise<TransactionBroadcastResult>}
    * @memberof TransactionService
    */
-  async broadcastAndConfirmInBackground(txBuilder: ITransaction): Promise<TransactionBroadcastResult> {
+  async broadcastAndConfirmInBackground(
+    txBuilder: ITransaction,
+    transactionId = txBuilder.id
+  ): Promise<TransactionBroadcastResult> {
     let watch: IInclusionWatch | undefined;
     try {
-      watch = await this.watchTransactionInclusion(txBuilder.id);
+      watch = await this.watchTransactionInclusion([txBuilder.id, txBuilder.legacy_id]);
     } catch (error) {
-      logger.error(error, 'Cannot watch blocks for transaction %s', txBuilder.id);
+      logger.error(error, 'Cannot watch blocks for transaction %s', transactionId);
     }
     try {
-      const result = await this.broadcastTransaction(txBuilder);
+      const result = await this.broadcastTransaction(txBuilder, transactionId);
       return watch ? { ...result, included: watch.included } : result;
     } catch (error) {
       watch?.cancel();
@@ -307,12 +321,12 @@ export class TransactionService {
     }
   }
 
-  /** Subscribes the session's bot to `transactionId`, holding the bot until the watch settles. */
-  private watchTransactionInclusion(transactionId: string): Promise<IInclusionWatch> {
+  /** Subscribes the session's bot to `transactionIds`, holding the bot until the watch settles. */
+  private watchTransactionInclusion(transactionIds: readonly string[]): Promise<IInclusionWatch> {
     return new Promise((resolve, reject) => {
       this.workerBeeSession
         .use(async (bot) => {
-          const watch = watchInclusion(bot, transactionId);
+          const watch = watchInclusion(bot, transactionIds);
           resolve(watch);
           await watch.included;
         })

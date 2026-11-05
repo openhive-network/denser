@@ -1,27 +1,61 @@
+import type { TTransactionPackType } from '@hiveio/wax';
+
 export const INCLUSION_TIMEOUT_MS = 10_000;
 
-/** The part of a WorkerBee bot that reports a transaction landing in a block. */
+/** What the bot passes for each block it scans: the watched transactions that block includes, by id. */
+export interface IScannedBlock {
+  transactions: Partial<Record<string, unknown>>;
+}
+
+/** The part of a WorkerBee bot that reports each block it scans and the watched transactions in it. */
 export interface ITransactionIdObserver {
   observe: {
-    onTransactionIds(transactionId: string): {
-      subscribe(observer: { next: () => void; error: (error: unknown) => void }): { unsubscribe(): void };
+    onTransactionIds(...transactionIds: string[]): {
+      onBlock(): {
+        subscribe(observer: { next: (block: IScannedBlock) => void; error: (error: unknown) => void }): {
+          unsubscribe(): void;
+        };
+      };
     };
   };
 }
 
 export interface IInclusionWatch {
   /**
-   * True once a block includes the transaction, false when `timeoutMs` passes first or the watch is
-   * cancelled. Rejects with the bot's error when it cannot scan blocks.
+   * True once a block includes the transaction, false when `timeoutMs` passes first after the bot
+   * scanned at least one block, or the watch is cancelled. Rejects when no block was scanned in time,
+   * with the bot's last scanner error as `cause`.
    */
   readonly included: Promise<boolean>;
   cancel(): void;
 }
 
-/** Watches `bot`'s blocks for `transactionId`; subscribe before broadcasting so no block is missed. */
+/**
+ * The pack types of wax's `TTransactionPackType` as their values, so this module loads without the
+ * ESM-only wax.
+ */
+type TransactionPack = `${TTransactionPackType}`;
+
+/**
+ * The id a block lists for `transaction` signed in `pack`. hived takes a transaction signed in the
+ * legacy serialization (Keychain, PeakVault, HiveAuth) re-packed as legacy, and the two ids differ
+ * once the transaction serializes an asset.
+ */
+export function recordedTransactionId(
+  transaction: { id: string; legacy_id: string },
+  pack: TransactionPack
+): string {
+  return pack === 'legacy' ? transaction.legacy_id : transaction.id;
+}
+
+/**
+ * Watches `bot`'s blocks for a transaction known by any of `transactionIds` (its HF26 and legacy ids);
+ * subscribe before broadcasting so no block is missed. A scanner error is taken as transient: the
+ * subscription stays and the next poll may still find the transaction.
+ */
 export function watchInclusion(
   bot: ITransactionIdObserver,
-  transactionId: string,
+  transactionIds: readonly string[],
   timeoutMs = INCLUSION_TIMEOUT_MS
 ): IInclusionWatch {
   let finish: (included: boolean) => void = () => {};
@@ -30,11 +64,28 @@ export function watchInclusion(
     finish = resolve;
     fail = reject;
   });
-  const subscription = bot.observe.onTransactionIds(transactionId).subscribe({
-    next: () => finish(true),
-    error: fail
-  });
-  const timer = setTimeout(() => finish(false), timeoutMs);
+  let scannedBlock = false;
+  let lastScanError: unknown;
+  const subscription = bot.observe
+    .onTransactionIds(...transactionIds)
+    .onBlock()
+    .subscribe({
+      next: ({ transactions }) => {
+        scannedBlock = true;
+        if (transactionIds.some((id) => transactions[id] !== undefined)) finish(true);
+      },
+      error: (error) => {
+        lastScanError = error;
+      }
+    });
+  // Without a scanned block the timeout says nothing about the transaction
+  const timer = setTimeout(
+    () =>
+      scannedBlock
+        ? finish(false)
+        : fail(new Error(`No block scanned within ${timeoutMs} ms`, { cause: lastScanError })),
+    timeoutMs
+  );
   // The first outcome settles `included`; later reports from the bot or the timer are no-ops
   const stopWatching = () => {
     clearTimeout(timer);

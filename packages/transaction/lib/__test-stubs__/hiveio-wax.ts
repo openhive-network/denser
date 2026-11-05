@@ -17,6 +17,12 @@ export class WaxRequestError extends Error {
   }
 }
 
+/** wax's serializations a signer signs a transaction in. */
+export enum TTransactionPackType {
+  LEGACY = 'legacy',
+  HF_26 = 'hf26'
+}
+
 /** Minimal chain shape for modules that only reference wax chain types. */
 /** The wax API entity types the transaction modules name; their fields are not checked. */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- stands in for wax's account type, field by field
