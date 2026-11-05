@@ -53,9 +53,13 @@ test('WALLET-MENU-BLOG-01 — Enter on the account menu Blog item opens the acco
 
   const blogItem = menu.getByRole('menuitem', { name: enWallet.navigation.user_menu.blog, exact: true });
   await expect(blogItem).toHaveAttribute('href', blogUrl);
+  // Radix moves focus after the keydown: wait for it to land before deciding to press again
+  const focusedItem = menu.locator('[role="menuitem"]:focus');
   for (let press = 0; press < MAX_ARROW_PRESSES; press++) {
     if (await blogItem.evaluate((element) => element === document.activeElement)) break;
+    const before = await focusedItem.textContent();
     await page.keyboard.press('ArrowDown');
+    await expect(focusedItem).not.toHaveText(before ?? '');
   }
   await expect(blogItem).toBeFocused();
 
