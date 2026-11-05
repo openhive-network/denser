@@ -44,6 +44,8 @@ import { requestPersistentKeyStorage } from '@smart-signer/lib/signer/safe-stora
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { signInWithAddedKey } from '@smart-signer/lib/auth/added-key-sign-in';
 import { getLogger } from '@ui/lib/logging';
+import { unlockBeforeKeyWrite } from '@smart-signer/lib/auth/safe-storage-unlock';
+import { findWrongSafeStoragePassword } from '@smart-signer/lib/wrong-safe-storage-password';
 
 const logger = getLogger('app');
 
@@ -229,13 +231,18 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
         const client = await hbauthService.getOnlineClient();
         authClient.current = client;
 
-        // Try to unlock the wallet with the provided password
+        // A wrong password must stop before the stored key is moved aside
         try {
-          await client.unlock(username, password);
-          logger.info('Wallet unlocked successfully for user: %s', username);
-        } catch (unlockError) {
-          // If unlock fails, we'll continue with the key update process
-          logger.warn('Failed to unlock wallet for user: %s, continuing with key update', username);
+          if (await unlockBeforeKeyWrite(client, username, password, keyType as KeyAuthorityType)) {
+            logger.info('Wallet unlocked successfully for user: %s', username);
+          } else {
+            logger.warn('Failed to unlock wallet for user: %s, continuing with key update', username);
+          }
+        } catch (error) {
+          if (!findWrongSafeStoragePassword(error)) throw error;
+          setError(t('broadcast_error.wrong_safe_storage_password', { ns: SMART_SIGNER_NAMESPACE }));
+          setLoading(false);
+          return;
         }
 
         // Invalidate the existing key

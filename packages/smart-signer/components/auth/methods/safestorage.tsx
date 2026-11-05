@@ -51,6 +51,8 @@ import { useInjectedExtensions } from './use-injected-extensions';
 import { registerSafeStorageKey } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { requestPersistentKeyStorage } from '@smart-signer/lib/signer/safe-storage-keys';
+import { authenticateStoredKey } from '@smart-signer/lib/auth/safe-storage-unlock';
+import { findWrongSafeStoragePassword } from '@smart-signer/lib/wrong-safe-storage-password';
 
 function getFormSchema() {
   return z
@@ -203,7 +205,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
         // Check passkey support BEFORE finalize — finalize closes the dialog
         // and may unmount this component, so state updates after it are lost.
         const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
-          await client.authenticate(username, password, keyType);
+          await authenticateStoredKey(client, username, password, keyType);
           return shouldOfferPasskey(client, username);
         });
 
@@ -216,6 +218,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           await finalize(values);
         }
       } catch (error) {
+        if (findWrongSafeStoragePassword(error)) {
+          setError(t('broadcast_error.wrong_safe_storage_password', { ns: SMART_SIGNER_NAMESPACE }));
+          setLoading(false);
+          return;
+        }
         if (isKeyUpdateNeeded(error) || isAlreadyRegistered(error)) {
           onSetStep(Steps.SAFE_STORAGE_KEY_UPDATE);
           return;
