@@ -1,35 +1,39 @@
 import { expect } from 'chai';
 import {
+  type IScannedBlock,
   type ITransactionIdObserver,
   findNodeNetworkFailure,
   findWaxRequestTimeout,
   isNodeNetworkFailure,
   isWaxRequestTimeout,
+  recordedTransactionId,
   TransactionNotConfirmedError,
   toNotConfirmedError,
   watchInclusion
 } from './transaction-inclusion';
 
-/** A bot whose test drives `next`/`error` for the one transaction it is subscribed to. */
+/** A bot whose test drives `next`/`error` for the transactions it is subscribed to. */
 class FakeBot implements ITransactionIdObserver {
-  subscribedIds: string[] = [];
+  subscribedIds: string[][] = [];
   unsubscribes = 0;
-  private observer: { next: () => void; error: (error: unknown) => void } | undefined;
+  private observer: { next: (block: IScannedBlock) => void; error: (error: unknown) => void } | undefined;
 
   readonly observe = {
-    onTransactionIds: (transactionId: string) => {
-      this.subscribedIds.push(transactionId);
+    onTransactionIds: (...transactionIds: string[]) => {
+      this.subscribedIds.push(transactionIds);
       return {
-        subscribe: (observer: { next: () => void; error: (error: unknown) => void }) => {
-          this.observer = observer;
-          return { unsubscribe: () => this.unsubscribes++ };
-        }
+        onBlock: () => ({
+          subscribe: (observer: { next: (block: IScannedBlock) => void; error: (error: unknown) => void }) => {
+            this.observer = observer;
+            return { unsubscribe: () => this.unsubscribes++ };
+          }
+        })
       };
     }
   };
 
-  includeInBlock() {
-    this.observer?.next();
+  scanBlock(...includedIds: string[]) {
+    this.observer?.next({ transactions: Object.fromEntries(includedIds.map((id) => [id, { signatures: [] }])) });
   }
 
   failScan(error: unknown) {
@@ -38,21 +42,63 @@ class FakeBot implements ITransactionIdObserver {
 }
 
 const SHORT_TIMEOUT_MS = 20;
+const IDS = ['abc123', 'legacy456'];
 
 describe('watchInclusion', () => {
   it('resolves true and unsubscribes when a block includes the transaction', async () => {
     const bot = new FakeBot();
-    const watch = watchInclusion(bot, 'abc123', SHORT_TIMEOUT_MS);
-    bot.includeInBlock();
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS);
+    bot.scanBlock('abc123');
 
     expect(await watch.included).to.equal(true);
-    expect(bot.subscribedIds).to.deep.equal(['abc123']);
+    expect(bot.subscribedIds).to.deep.equal([IDS]);
     expect(bot.unsubscribes).to.equal(1);
   });
 
-  it('resolves false and unsubscribes when no block includes it in time', async () => {
+  it('resolves true when the block lists the transaction under its legacy id', async () => {
     const bot = new FakeBot();
-    const watch = watchInclusion(bot, 'abc123', SHORT_TIMEOUT_MS);
+    const watch = watchInclusion(bot, IDS, 60_000);
+    bot.scanBlock('legacy456');
+
+    expect(await watch.included).to.equal(true);
+    expect(bot.unsubscribes).to.equal(1);
+  });
+
+  it('keeps watching after a scanner error and resolves true on a later block with the transaction', async () => {
+    const bot = new FakeBot();
+    const watch = watchInclusion(bot, IDS, 60_000);
+    bot.scanBlock();
+    bot.failScan(new Error('node unreachable'));
+    await Promise.resolve();
+    expect(bot.unsubscribes).to.equal(0);
+    bot.scanBlock('abc123');
+
+    expect(await watch.included).to.equal(true);
+    expect(bot.unsubscribes).to.equal(1);
+  });
+
+  it('resolves true after scanner errors before any block was scanned', async () => {
+    const bot = new FakeBot();
+    const watch = watchInclusion(bot, IDS, 60_000);
+    bot.failScan(new Error('node unreachable'));
+    bot.scanBlock('legacy456');
+
+    expect(await watch.included).to.equal(true);
+  });
+
+  it('ignores a block that includes other transactions only', async () => {
+    const bot = new FakeBot();
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS);
+    bot.scanBlock('someone-else');
+
+    expect(await watch.included).to.equal(false);
+  });
+
+  it('resolves false and unsubscribes when the blocks scanned in time do not include it', async () => {
+    const bot = new FakeBot();
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS);
+    bot.scanBlock();
+    bot.failScan(new Error('node unreachable'));
 
     expect(await watch.included).to.equal(false);
     expect(bot.unsubscribes).to.equal(1);
@@ -60,9 +106,10 @@ describe('watchInclusion', () => {
 
   it('ignores a block reported after the timeout', async () => {
     const bot = new FakeBot();
-    const watch = watchInclusion(bot, 'abc123', SHORT_TIMEOUT_MS);
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS);
+    bot.scanBlock();
     const included = await watch.included;
-    bot.includeInBlock();
+    bot.scanBlock('abc123');
 
     expect(included).to.equal(false);
     expect(bot.unsubscribes).to.equal(1);
@@ -70,26 +117,38 @@ describe('watchInclusion', () => {
 
   it('resolves false at once when cancelled', async () => {
     const bot = new FakeBot();
-    const watch = watchInclusion(bot, 'abc123', 60_000);
+    const watch = watchInclusion(bot, IDS, 60_000);
     watch.cancel();
-    bot.includeInBlock();
+    bot.scanBlock('abc123');
 
     expect(await watch.included).to.equal(false);
     expect(bot.unsubscribes).to.equal(1);
   });
 
-  it("rejects with the bot's error when it cannot scan blocks", async () => {
+  it("rejects at the timeout with the bot's last error as cause when no block was scanned", async () => {
     const bot = new FakeBot();
-    const watch = watchInclusion(bot, 'abc123', 60_000);
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS);
     const failure = new Error('node unreachable');
+    bot.failScan(new Error('first failure'));
     bot.failScan(failure);
 
     const error = await watch.included.then(
       () => undefined,
       (reason: unknown) => reason
     );
-    expect(error).to.equal(failure);
+    expect(error).to.be.instanceOf(Error).and.to.have.property('cause', failure);
     expect(bot.unsubscribes).to.equal(1);
+  });
+
+  it('rejects at the timeout when the bot neither scanned a block nor failed', async () => {
+    const bot = new FakeBot();
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS);
+
+    const error = await watch.included.then(
+      () => undefined,
+      (reason: unknown) => reason
+    );
+    expect(error).to.be.instanceOf(Error).and.to.have.property('cause', undefined);
   });
 
   it('settles from a bot that reports while subscribing', async () => {
@@ -97,17 +156,73 @@ describe('watchInclusion', () => {
       unsubscribes: 0,
       observe: {
         onTransactionIds: () => ({
-          subscribe: (observer) => {
-            observer.next();
-            return { unsubscribe: () => bot.unsubscribes++ };
-          }
+          onBlock: () => ({
+            subscribe: (observer) => {
+              observer.next({ transactions: { abc123: {} } });
+              return { unsubscribe: () => bot.unsubscribes++ };
+            }
+          })
         })
       }
     };
-    const watch = watchInclusion(bot, 'abc123', 60_000);
+    const watch = watchInclusion(bot, IDS, 60_000);
 
     expect(await watch.included).to.equal(true);
     expect(bot.unsubscribes).to.equal(1);
+  });
+});
+
+interface IWaxTransaction {
+  pushOperation(operation: object): IWaxTransaction;
+  readonly id: string;
+  readonly legacy_id: string;
+}
+interface IWaxModule {
+  createWaxFoundation(): Promise<{ createTransactionWithTaPoS(taposBlockId: string): IWaxTransaction }>;
+}
+
+const importEsm = new Function('specifier', 'return import(specifier)') as (specifier: string) => Promise<unknown>;
+
+describe('recordedTransactionId', function () {
+  let transaction: IWaxTransaction;
+
+  before(async function () {
+    this.timeout(30_000);
+    const wax = await ((await importEsm('@hiveio/wax')) as IWaxModule).createWaxFoundation();
+    // A reply with comment rewards Power Up: `comment_options` serializes an asset, so the ids differ
+    transaction = wax
+      .createTransactionWithTaPoS('04c1c7a566fc0da66aee465714acee7346b48ac2')
+      .pushOperation({
+        comment_operation: {
+          parent_author: 'bob',
+          parent_permlink: 'a-post',
+          author: 'alice',
+          permlink: 're-a-post',
+          title: '',
+          body: 'Reply',
+          json_metadata: '{}'
+        }
+      })
+      .pushOperation({
+        comment_options_operation: {
+          author: 'alice',
+          permlink: 're-a-post',
+          max_accepted_payout: { amount: '1000000000', precision: 3, nai: '@@000000013' },
+          percent_hbd: 0,
+          allow_votes: true,
+          allow_curation_rewards: true,
+          extensions: []
+        }
+      });
+  });
+
+  it('takes the legacy id for a transaction signed in the legacy serialization (Keychain, PeakVault)', () => {
+    expect(transaction.legacy_id).to.not.equal(transaction.id);
+    expect(recordedTransactionId(transaction, 'legacy')).to.equal(transaction.legacy_id);
+  });
+
+  it('takes the HF26 id for a transaction signed in the HF26 serialization', () => {
+    expect(recordedTransactionId(transaction, 'hf26')).to.equal(transaction.id);
   });
 });
 
