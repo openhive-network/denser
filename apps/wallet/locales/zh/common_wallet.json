@@ -282,7 +282,12 @@
     "open_orders": "未成交订单",
     "no_orders": "你没有未成交的订单。",
     "confirm_cancel_order": "取消 {{user}} 的订单 {{orderId}}？",
-    "cancel_order": "取消订单"
+    "cancel_order": "取消订单",
+    "order_placed": "订单已提交",
+    "order_placed_buy": "以 {{hbd}} 买入 {{hive}}",
+    "order_placed_sell": "以 {{hbd}} 卖出 {{hive}}",
+    "order_cancelled": "订单已取消",
+    "order_cancelled_description": "订单 {{orderId}} 已取消"
   },
   "witnesses_page": {
     "title": "见证人投票",

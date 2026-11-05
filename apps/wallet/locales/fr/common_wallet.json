@@ -289,7 +289,12 @@
     "open_orders": "Ordres ouverts",
     "no_orders": "Vous n'avez aucun ordre ouvert.",
     "confirm_cancel_order": "Annuler l'ordre {{orderId}} de {{user}} ?",
-    "cancel_order": "Annuler l'ordre"
+    "cancel_order": "Annuler l'ordre",
+    "order_placed": "Ordre passé",
+    "order_placed_buy": "Achat de {{hive}} pour {{hbd}}",
+    "order_placed_sell": "Vente de {{hive}} pour {{hbd}}",
+    "order_cancelled": "Ordre annulé",
+    "order_cancelled_description": "L'ordre {{orderId}} a été annulé"
   },
   "witnesses_page": {
     "title": "Votes pour les témoins",

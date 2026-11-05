@@ -28,7 +28,7 @@ export class LoginForm {
   readonly postingPrivateKeyInput: Locator;
   readonly storeKeyCheckbox: Locator;
   readonly postingPrivateKeySubmitButton: Locator;
-  readonly postingPrivateKeyResetButton: Locator;
+  readonly postingPrivateKeyCancelButton: Locator;
 
   readonly usernameErrorMessage: Locator;
   readonly passwordErrorMessage: Locator;
@@ -39,7 +39,7 @@ export class LoginForm {
   readonly headerEnterYourPassword: Locator;
   readonly passwordToUnlockKeyInput: Locator;
   readonly passwordToUnlockKeySubmitButton: Locator;
-  readonly passwordToUnlockKeyResetButton: Locator;
+  readonly passwordToUnlockKeyCancelButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -69,7 +69,7 @@ export class LoginForm {
     this.postingPrivateKeyInput = page.getByTestId('posting-private-key-input');
     this.storeKeyCheckbox = page.getByLabel('Store key');
     this.postingPrivateKeySubmitButton = page.getByTestId('password-submit-button');
-    this.postingPrivateKeyResetButton = page.getByTestId('password-reset-button');
+    this.postingPrivateKeyCancelButton = page.getByTestId('password-cancel-button');
 
     this.usernameErrorMessage = page.getByTestId('username-error-message');
     this.passwordErrorMessage = page.getByTestId('password-error-message');
@@ -80,7 +80,7 @@ export class LoginForm {
     this.headerEnterYourPassword = page.getByText('Enter your password');
     this.passwordToUnlockKeyInput = page.getByTestId('posting-private-key-input');
     this.passwordToUnlockKeySubmitButton = page.getByTestId('password-submit-button');
-    this.passwordToUnlockKeyResetButton = page.getByTestId('password-reset-button');
+    this.passwordToUnlockKeyCancelButton = page.getByTestId('password-cancel-button');
   }
 
   async validateDefaultLoginFormIsLoaded() {
@@ -138,7 +138,7 @@ export class LoginForm {
     await expect(this.postingPrivateKeyInput).toBeVisible();
     await expect(this.storeKeyCheckbox).not.toBeChecked();
     await expect(this.postingPrivateKeySubmitButton).toBeVisible();
-    await expect(this.postingPrivateKeyResetButton).toBeVisible();
+    await expect(this.postingPrivateKeyCancelButton).toBeVisible();
   }
 
   async validateEnterYourPasswordToUnlockKeyIsLoaded() {
@@ -146,7 +146,7 @@ export class LoginForm {
     await expect(this.headerEnterYourPassword).toHaveText('Enter your password');
     await expect(this.passwordToUnlockKeyInput).toHaveAttribute('placeholder', 'Password to unlock key');
     await expect(this.passwordToUnlockKeySubmitButton).toBeVisible();
-    await expect(this.passwordToUnlockKeyResetButton).toBeVisible();
+    await expect(this.passwordToUnlockKeyCancelButton).toBeVisible();
   }
 
   async putEnterYourPasswordToUnlockKey(safeStoragePassword: string) {
@@ -154,7 +154,7 @@ export class LoginForm {
     await expect(this.headerEnterYourPassword).toHaveText('Enter your password');
     await expect(this.passwordToUnlockKeyInput).toHaveAttribute('placeholder', 'Password to unlock key');
     await expect(this.passwordToUnlockKeySubmitButton).toBeVisible();
-    await expect(this.passwordToUnlockKeyResetButton).toBeVisible();
+    await expect(this.passwordToUnlockKeyCancelButton).toBeVisible();
     await this.passwordToUnlockKeyInput.fill(safeStoragePassword);
     await this.passwordToUnlockKeySubmitButton.click();
   }

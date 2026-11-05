@@ -1,5 +1,6 @@
 'use client';
 
+import { AssetPrecisionError } from '@hive/transaction/lib/asset-precision';
 import { summarizeErrorForLog, transformError } from '@hive/transaction/lib/transform-error';
 import { findMissingAuthority } from '@hive/transaction/lib/missing-authority';
 import { findNotEnoughRc } from '@hive/transaction/lib/not-enough-rc';
@@ -10,6 +11,7 @@ import {
   TransactionNotConfirmedError
 } from '@hive/transaction/lib/transaction-inclusion';
 import { findTransactionExpirationRejection } from '@hive/transaction/lib/transaction-expired';
+import { AssetPrecisionMessage } from '@smart-signer/components/asset-precision-message';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
 import { SafeStorageMissingMessage } from '@smart-signer/components/safe-storage-missing-message';
@@ -68,6 +70,17 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     logger.info('Signed out before signing in %s — asking to sign in', ctx?.method);
     toast({
       description: <SignedOutMessage />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // An amount finer than its asset allows, refused before signing: the message is the user's to act on
+  if (error instanceof AssetPrecisionError) {
+    logger.info('Amount in %s has more than %d decimal places', ctx?.method, error.precision);
+    toast({
+      description: <AssetPrecisionMessage token={error.token} precision={error.precision} />,
       variant: 'destructive',
       ...toastOptions
     });

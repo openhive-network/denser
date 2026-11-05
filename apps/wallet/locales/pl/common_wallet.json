@@ -294,7 +294,12 @@
     "open_orders": "Otwarte zlecenia",
     "no_orders": "Nie masz otwartych zleceń.",
     "confirm_cancel_order": "Anulować zlecenie {{orderId}} użytkownika {{user}}?",
-    "cancel_order": "Anuluj zlecenie"
+    "cancel_order": "Anuluj zlecenie",
+    "order_placed": "Zlecenie złożone",
+    "order_placed_buy": "Kupno {{hive}} za {{hbd}}",
+    "order_placed_sell": "Sprzedaż {{hive}} za {{hbd}}",
+    "order_cancelled": "Zlecenie anulowane",
+    "order_cancelled_description": "Zlecenie {{orderId}} zostało anulowane"
   },
   "witnesses_page": {
     "title": "Głosowanie na świadków",

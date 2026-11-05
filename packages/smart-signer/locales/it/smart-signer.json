@@ -46,7 +46,6 @@
     "password_hbauth_placeholder": "Password per sbloccare la chiave",
     "password_placeholder": "Chiave privata di pubblicazione",
     "posting_private_key_placeholder": "Chiave privata di pubblicazione",
-    "reset_button": "Reimposta",
     "this_operation_requires_your_key_or_master_password": "Questa operazione richiede la tua chiave {{authType}} o la password principale.",
     "title_action_login": "Accesso",
     "title_action_unlock_key": "Sblocca Chiave",
@@ -197,6 +196,7 @@
     "safe_storage_recovery_description": "Un'altra scheda ha modificato l'archivio sicuro mentre veniva salvata una chiave di @{{username}}. Inserisci la password dell'archivio sicuro di @{{username}} per completare il salvataggio."
   },
   "broadcast_error": {
+    "too_many_decimal_places": "L'importo in {{token}} può avere al massimo {{precision}} cifre decimali.",
     "missing_owner_authority": "Questa operazione richiede la tua chiave proprietario (owner) e non è disponibile qui.",
     "missing_active_authority": "Questa operazione richiede la tua chiave attiva (active). Accedi con la tua chiave attiva e riprova.",
     "missing_posting_authority": "Questa operazione richiede la tua chiave di pubblicazione (posting). Accedi con essa e riprova.",

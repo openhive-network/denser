@@ -46,7 +46,6 @@
     "password_hbauth_placeholder": "Password to unlock key",
     "password_placeholder": "Posting private key",
     "posting_private_key_placeholder": "Posting private key",
-    "reset_button": "Reset",
     "this_operation_requires_your_key_or_master_password": "This operation requires your {{authType}} key or Master password.",
     "this_operation_requires_your_key_for_single_sign": "This operation requires your {{authType}} key for one time signing.",
     "this_operation_requires_your_key_for_single_sign_posting": "This operation requires your posting key for one time signing.",
@@ -197,6 +196,7 @@
     "safe_storage_recovery_description": "Another tab changed safe storage while a key of @{{username}} was being saved. Enter the safe storage password of @{{username}} to finish saving it."
   },
   "broadcast_error": {
+    "too_many_decimal_places": "The {{token}} amount can have at most {{precision}} decimal places.",
     "missing_owner_authority": "This operation needs your owner key and is not available here.",
     "missing_active_authority": "This operation needs your active key. Sign in with your active key and try again.",
     "missing_posting_authority": "This operation needs your posting key. Sign in with it and try again.",

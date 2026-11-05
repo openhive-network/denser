@@ -46,7 +46,6 @@
     "password_hbauth_placeholder": "解锁密钥的密码",
     "password_placeholder": "发帖私钥",
     "posting_private_key_placeholder": "发帖私钥",
-    "reset_button": "重置",
     "this_operation_requires_your_key_or_master_password": "此操作需要您的{{authType}}密钥或主密码。",
     "title_action_login": "登录",
     "title_action_unlock_key": "解锁密钥",
@@ -197,6 +196,7 @@
     "safe_storage_recovery_description": "保存 @{{username}} 的密钥时，另一个标签页更改了安全存储。请输入 @{{username}} 的安全存储密码以完成保存。"
   },
   "broadcast_error": {
+    "too_many_decimal_places": "{{token}} 金额最多只能有 {{precision}} 位小数。",
     "missing_owner_authority": "此操作需要您的所有者密钥（owner），因此在此处不可用。",
     "missing_active_authority": "此操作需要您的活动密钥（active）。请使用活动密钥登录后重试。",
     "missing_posting_authority": "此操作需要您的发帖密钥（posting）。请使用该密钥登录后重试。",

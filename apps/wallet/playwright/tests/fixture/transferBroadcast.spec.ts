@@ -264,7 +264,8 @@ test.describe('Transfer broadcast', () => {
     const ok = confirmDialog(page).getByRole('button', { name: 'OK' });
     await ok.click();
 
-    await expect(page.getByTestId('error-toast-content')).toContainText('maximum of 3 decimal places in HIVE amount');
+    await expect(page.getByTestId('asset-precision-message')).toHaveText('The HIVE amount can have at most 3 decimal places.');
+    await expect(page.getByTestId('error-toast-content')).toHaveCount(0);
     await expect(confirmDialog(page)).toBeVisible();
     await expect(ok).toBeEnabled();
     expect(broadcasts.calls).toHaveLength(0);

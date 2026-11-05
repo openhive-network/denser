@@ -4,6 +4,7 @@ import secureRandom from 'secure-random';
 import { getPostHeader } from './bridge-api';
 import type { EAssetName } from '@hiveio/wax';
 import { getChain } from './chain';
+import { AssetPrecisionError } from './asset-precision';
 import { decimalToSatoshis } from '@ui/lib/asset-math';
 
 // Re-export EAssetName for convenience
@@ -70,7 +71,7 @@ export const getAsset = async (value: string, token: TokenType) => {
   // Validate decimal places
   const dotIndex = value.indexOf('.');
   if (dotIndex !== -1 && value.slice(dotIndex).length > precision + 1) {
-    throw new Error(`There should be maximum of ${precision} decimal places in ${token} amount`);
+    throw new AssetPrecisionError(token, precision);
   }
 
   return createAsset(decimalToSatoshis(value, precision).toString(), token);

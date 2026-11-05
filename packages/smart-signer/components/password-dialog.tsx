@@ -59,6 +59,11 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
     }
   };
 
+  const onCancel = () => {
+    setOpen(false);
+    onReject('rejected');
+  };
+
   const onInteractOutside = (e: any) => {
     e.preventDefault();
   };
@@ -76,6 +81,7 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
       >
         <PasswordForm
           onSubmit={onSubmit}
+          onCancel={onCancel}
           errorMessage={errorMsg}
           mode={mode}
           showInputStorePassword={showInputStorePassword}
