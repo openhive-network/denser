@@ -32,9 +32,10 @@ A `lite.*` post read gets 3 s (`DENSER_LITE_READ_BUDGET_S` on a server), as its 
 in all. One that fails on transport (timeout, network error, 5xx) or runs out of budget is read
 again the stock way, and post reads skip `lite.*` on that node for 30 s, the API sets engine's
 cooldown of a node it found down; the node stays lite-aware. Failover reports the failed request to
-the engine, as it does every call. `lite.*` calls fail over within the lite set's nodes only: the
-configured nodes, which were picked for core, are used for `lite` only while the routes know no
-node of the set.
+the engine, as it does every call. `lite.*` calls fail over within the lite set's routes only:
+the engine's order, then the set's preferred nodes it does not know to lack `lite` (so a node not
+probed yet is still asked). The configured nodes, which were picked for core, are used for `lite`
+only while no routes are known at all.
 
 React-query keys of these reads end with the namespace (`'lite' | 'bridge'`): `usePostsNamespace()`
 (`use-lite-api-info.ts`) in components, `currentPostsNamespace()` for keys built in mutations. Both

@@ -1,5 +1,11 @@
 import { API_SET_IDS, API_SETS_BOOTSTRAP_ID, type TApiSetId } from '@ui/config/api-set-ids';
 
+/**
+ * Sets only some nodes serve. Their calls go to the nodes the routes list for the set, never on to
+ * the call's configured nodes, which were configured for core and can at best answer "Api not found".
+ */
+export const OPTIONAL_API_SETS: ReadonlySet<TApiSetId> = new Set(['lite']);
+
 /** The result of a real call, as the engine's `report()` takes it. */
 export type TApiSetOutcome =
   | { ok: true; latencyMs?: number }

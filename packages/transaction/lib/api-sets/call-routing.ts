@@ -1,7 +1,7 @@
 import type { TApiSetId } from '@ui/config/api-set-ids';
 import type { IApiNodeSwitchDetail } from '../api-node-switch';
 import type { IFailoverRoute } from '../server-failover';
-import { apiSetOfJsonRpc, apiSetOfRest, routeApiSet, type IApiSetRoute } from './router';
+import { apiSetOfJsonRpc, apiSetOfRest, OPTIONAL_API_SETS, routeApiSet, type IApiSetRoute } from './router';
 
 /** The nodes the browser's chain is configured with (`getApiEndpoints()`). */
 export interface IBrowserEndpoints {
@@ -34,12 +34,6 @@ export interface IBrowserNodeState {
 const JSON_RPC_NODE_SETS: ReadonlySet<TApiSetId> = new Set(['core', 'bridge']);
 /** The sets the browser's one REST node served before API sets existed. */
 const REST_NODE_SETS: ReadonlySet<TApiSetId> = new Set(['balance-api', 'hafah']);
-/**
- * Sets only some nodes serve. Their calls go to the nodes the routes know for the set, without the
- * configured nodes behind them: those were configured for core and can at best answer "Api not
- * found", after their latency. The configured nodes stand in only while the routes know none.
- */
-const OPTIONAL_SETS: ReadonlySet<TApiSetId> = new Set(['lite']);
 
 export interface IApiSetRouting {
   /** `routeFor` of `wrapChainWithServerFailover`. */
@@ -92,7 +86,8 @@ export function createApiSetRouting(browser?: IBrowserNodeState): IApiSetRouting
 
   const routeOf = async (setId: TApiSetId, configured: readonly string[]): Promise<IApiSetRoute> => {
     const pinned = pinnedNodeOf(setId);
-    if (!OPTIONAL_SETS.has(setId)) return routeApiSet(setId, { pinned, configured });
+    if (!OPTIONAL_API_SETS.has(setId)) return routeApiSet(setId, { pinned, configured });
+    // The configured nodes stand in only while no view knows the set's nodes.
     const route = await routeApiSet(setId, { pinned, configured: [] });
     return route.nodes.length > 0 ? route : { ...route, nodes: [...new Set(configured)] };
   };
