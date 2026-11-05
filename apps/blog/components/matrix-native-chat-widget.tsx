@@ -7,6 +7,7 @@ import { ChatDrawer } from '@/blog/components/chat-drawer';
 import { useChatWarmUp, useMatrixChatUser } from '@/blog/components/hooks/use-matrix-chat-drawer';
 import { useMatrixChatSession } from '@/blog/features/matrix-chat/hooks/use-matrix-chat-session';
 import { useChatSessionVersion } from '@/blog/features/matrix-chat/hooks/use-chat-session-version';
+import { useDisplayNameSync } from '@/blog/features/matrix-chat/hooks/use-display-name-sync';
 
 const MatrixChatPanel = dynamic(() => import('@/blog/features/matrix-chat/components/matrix-chat-panel'), {
   ssr: false
@@ -20,17 +21,20 @@ const MatrixChatPanel = dynamic(() => import('@/blog/features/matrix-chat/compon
  * first opening may create the user's Matrix account: a warm-up signs in an existing one only.
  *
  * Sign-out, an account switch or the end of denser's session ends the Matrix session: the client
- * stops and its device is signed out. Element stays available as the full chat app.
+ * stops and its device is signed out. After an account switch there is no idle warm-up: the next
+ * account signs in on intent or opening only, so switching through accounts mints no login token
+ * for those switched away from. Element stays available as the full chat app.
  */
 const MatrixNativeChatWidget = () => {
   const { resolvedTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [switched, setSwitched] = useState(false);
   const chatUserRef = useRef('');
 
   const matrix = siteConfig.matrixChat;
   const chatUser = useMatrixChatUser(!!matrix.homeserverUrl);
-  const { reset: resetWarmUp, ...warmUp } = useChatWarmUp(matrix.preload, true);
+  const { reset: resetWarmUp, ...warmUp } = useChatWarmUp(matrix.preload, !switched);
   const { status, session, retry } = useMatrixChatSession({
     userId: chatUser ? matrixUserId(chatUser, matrix) : '',
     start: warmUp.warm,
@@ -39,6 +43,7 @@ const MatrixNativeChatWidget = () => {
     defaultRoom: matrix.defaultRoom
   });
   useChatSessionVersion(session);
+  useDisplayNameSync(session, chatUser);
 
   useEffect(() => {
     const previous = chatUserRef.current;
@@ -46,6 +51,7 @@ const MatrixNativeChatWidget = () => {
     if (!previous || previous === chatUser) return;
     setOpen(false);
     setOpened(false);
+    setSwitched(true);
     resetWarmUp();
   }, [chatUser, resetWarmUp]);
 

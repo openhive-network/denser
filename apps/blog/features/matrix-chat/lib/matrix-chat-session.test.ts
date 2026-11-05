@@ -70,6 +70,8 @@ interface HomeserverOptions {
   hangingSend?: boolean;
   /** The error answer to the sync filter request the first sync starts with */
   filterError?: { status: number; errcode: string };
+  /** The display name of the user's profile */
+  displayName?: string;
 }
 
 /** A homeserver answering the client API from `rooms`, recording every request */
@@ -130,6 +132,9 @@ function fakeHomeserver(options: HomeserverOptions = {}) {
       });
     }
     if (path.includes('/send/m.room.message/')) return json({ event_id: '$sent' });
+    if (path === `/profile/${encodeURIComponent(USER)}` && method === 'GET') {
+      return json(options.displayName === undefined ? {} : { displayname: options.displayName });
+    }
     if (path === '/logout' && options.deviceDeleted) {
       return json({ errcode: 'M_UNKNOWN_TOKEN', error: 'Invalid access token passed.' }, 401);
     }
@@ -279,6 +284,21 @@ describe('startMatrixChatSession', () => {
     assert.equal(settled, false);
     mock.timers.tick(1);
     await assert.rejects(sending, ChatUnreachableError);
+  });
+
+  it('sets the display name only when the profile has another', async () => {
+    const chat = await start('#general:example.org', { displayName: 'Old Name' });
+    const profileWrites = () =>
+      homeserver.requests.filter((request) => request.method === 'PUT' && request.path.includes('/profile/'));
+
+    assert.equal(await chat.syncDisplayName('Old Name'), false);
+    assert.deepEqual(profileWrites(), []);
+
+    assert.equal(await chat.syncDisplayName('New Name'), true);
+    assert.deepEqual(
+      profileWrites().map((request) => [request.path, request.body]),
+      [[`/_matrix/client/v3/profile/${encodeURIComponent(USER)}/displayname`, { displayname: 'New Name' }]]
+    );
   });
 
   it('is connected once the first sync is in', async () => {

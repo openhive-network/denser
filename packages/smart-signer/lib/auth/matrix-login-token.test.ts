@@ -11,7 +11,9 @@ registerHooks({
   }
 });
 
-const { mintMatrixLoginToken, mintMatrixLoginTokenCreatingAccount } = await import('./matrix-login-token.ts');
+const { mintMatrixLoginToken, mintMatrixLoginTokenCreatingAccount, syncMatrixDisplayName } = await import(
+  './matrix-login-token.ts'
+);
 const { FetchError, FetchTimeoutError } = await import('../fetch-json.ts');
 
 const HOMESERVER = 'https://matrix.example.org';
@@ -302,5 +304,42 @@ describe('mintMatrixLoginTokenCreatingAccount', () => {
       loginToken: LOGIN_TOKEN
     });
     assert.deepEqual(lines, [`@alice:example.org: joining ${DEFAULT_ROOM}: Status: 403. Status Text: none`]);
+  });
+});
+
+describe('syncMatrixDisplayName', () => {
+  it("sets the account's display name when it has another", async () => {
+    const { calls, request } = synapse({ [CREATE_USER]: async () => ({ displayname: 'Old Name' }) });
+    const { lines, report } = failureLog();
+
+    assert.equal(await syncMatrixDisplayName('alice', 'New Name', SETTINGS, request, report), true);
+    assert.deepEqual(
+      calls.map(({ url, method, authorization, body }) => ({ url, method, authorization, body })),
+      [
+        { url: CREATE_USER, method: 'GET', authorization: `Bearer ${ADMIN_TOKEN}`, body: undefined },
+        { url: CREATE_USER, method: 'PUT', authorization: `Bearer ${ADMIN_TOKEN}`, body: { displayname: 'New Name' } }
+      ]
+    );
+    assert.deepEqual(lines, []);
+  });
+
+  it('leaves a display name that is already the same', async () => {
+    const { calls, request } = synapse({ [CREATE_USER]: async () => ({ displayname: 'Same Name' }) });
+    const { report } = failureLog();
+
+    assert.equal(await syncMatrixDisplayName('alice', 'Same Name', SETTINGS, request, report), false);
+    assert.deepEqual(
+      calls.map((call) => call.method),
+      ['GET']
+    );
+  });
+
+  it('reports a failure, without the admin token, and changes nothing', async () => {
+    const { calls, request } = synapse({ [CREATE_USER]: () => Promise.reject(new Error(`Status: 404 for ${ADMIN_TOKEN}`)) });
+    const { lines, report } = failureLog();
+
+    assert.equal(await syncMatrixDisplayName('alice', 'New Name', SETTINGS, request, report), false);
+    assert.equal(calls.length, 1);
+    assert.deepEqual(lines, ['@alice:example.org: setting the display name: Status: 404 for [redacted]']);
   });
 });

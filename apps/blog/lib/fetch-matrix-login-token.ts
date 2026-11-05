@@ -9,16 +9,31 @@ const logger = getLogger('app');
 /** Within the session page's wait for a token, after which it signs in through SSO anyway */
 const LOGIN_TOKEN_TIMEOUT_MS = 7_000;
 const TOO_MANY_REQUESTS = 429;
+/** The wait on a 429 that names none, as Synapse allows about one login token per user per minute */
+const DEFAULT_RETRY_AFTER_MS = 60_000;
+const MS_PER_SECOND = 1000;
 
 function field(answer: unknown, name: string): unknown {
   return typeof answer === 'object' && answer !== null ? Reflect.get(answer, name) : undefined;
 }
 
+const isWait = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && value >= 0;
+
+/** The wait a 429 names: its `retry_after_ms`, else its `Retry-After` in seconds, else a minute */
+function retryAfterMsOf(error: FetchError): number {
+  const fromBody = field(error.data, 'retry_after_ms');
+  if (isWait(fromBody)) return fromBody;
+  const header = error.response.headers.get('retry-after');
+  const seconds = header === null || header.trim() === '' ? NaN : Number(header);
+  return isWait(seconds) ? seconds * MS_PER_SECOND : DEFAULT_RETRY_AFTER_MS;
+}
+
 /**
  * A Matrix login token denser's server mints for the signed-in chat user, creating their Matrix
  * account first when it has none only with `createAccount`, which only an opened chat sets;
- * `rate-limited` with the
- * wait the server names when Synapse refused a mint this soon; `unreachable` when the request got
+ * `rate-limited` on a 429, with the wait it names (`retry_after_ms`, else `Retry-After`, else a
+ * minute); `unreachable` when the request got
  * no answer, failing or timing out; `none` on any other answer.
  */
 export async function requestMatrixLoginToken(createAccount: boolean): Promise<LoginTokenAnswer> {
@@ -45,10 +60,7 @@ export async function requestMatrixLoginToken(createAccount: boolean): Promise<L
       return { kind: 'unreachable' };
     }
     if (error.response.status === TOO_MANY_REQUESTS) {
-      const retryAfterMs = field(error.data, 'retry_after_ms');
-      if (typeof retryAfterMs === 'number' && Number.isFinite(retryAfterMs) && retryAfterMs >= 0) {
-        return { kind: 'rate-limited', retryAfterMs };
-      }
+      return { kind: 'rate-limited', retryAfterMs: retryAfterMsOf(error) };
     }
     // Expected for a user without a Matrix account yet, before the chat is opened
     logger.info('No Matrix login token: %o', error instanceof Error ? error.message : error);

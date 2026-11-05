@@ -5,6 +5,21 @@
     "hash": "3c9b21db67ad172c"
   },
   {
+    "spec": "chatNative.spec.ts",
+    "method": "bridge.does_user_follow_any_lists",
+    "hash": "d3614786e01e0963"
+  },
+  {
+    "spec": "chatNative.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "23c8aaf1693ef1a4"
+  },
+  {
+    "spec": "chatNative.spec.ts",
+    "method": "bridge.get_follow_list",
+    "hash": "265f49c19fa4b53c"
+  },
+  {
     "spec": "communityLeave.spec.ts",
     "method": "bridge.get_ranked_posts",
     "hash": "b4724695413bd11f",

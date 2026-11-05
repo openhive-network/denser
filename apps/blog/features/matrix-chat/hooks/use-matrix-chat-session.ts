@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { getLogger } from '@ui/lib/logging';
 import { takeSignOut } from '@smart-signer/lib/auth/chat-sign-out';
 import { requestMatrixLoginToken } from '@/blog/lib/fetch-matrix-login-token';
+import { LoginTokenGate } from '@/blog/features/matrix-chat/lib/login-token-gate';
 import type { ChatSession } from '@/blog/features/matrix-chat/lib/chat-view-types';
 import type { LoginTokenAnswer } from '@/blog/features/matrix-chat/lib/matrix-chat-sign-in';
 import { chatDeviceId } from '@/blog/features/matrix-chat/lib/device-id';
@@ -53,6 +54,15 @@ interface OpenSessionOptions extends Omit<MatrixChatSessionOptions, 'start' | 'c
 
 const IDLE: ChatSessionState = { status: 'idle', session: null };
 
+/**
+ * How long after an account switch no login token is asked for: switching on within it leaves the
+ * account switched away from without one, which Synapse would count against it for a minute
+ */
+const SWITCH_SETTLE_MS = 1_000;
+
+// Shared by every sign-in in this page, so that a rate limit holds back the next one of that user
+const loginTokens = new LoginTokenGate();
+
 // One sign-in or sign-out at a time: an ending session deletes its device, which the next
 // sign-in of the same user in this browser reuses
 let lifecycle: Promise<unknown> = Promise.resolve();
@@ -93,6 +103,10 @@ function openSession({ userId, homeserverUrl, defaultRoom, requestLoginToken, on
  * Only once `createAccount` is set does a login token create the user's missing Matrix account
  * (and join the default room): a warm-up signs in only a user who has one, and a warm-up that
  * failed without creating it signs in again when `createAccount` is set.
+ *
+ * No login token is asked for within `SWITCH_SETTLE_MS` of an account switch, nor for a user
+ * before the wait of their last rate-limited token request has passed; a sign-in ended meanwhile
+ * asks for none.
  */
 export function useMatrixChatSession(options: MatrixChatSessionOptions) {
   const { userId, start, createAccount, homeserverUrl, defaultRoom } = options;
@@ -107,8 +121,16 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
     createAccountRef.current = createAccount;
   }, [createAccount]);
 
+  // When the last account switch has settled, as of `Date.now()`
+  const switchSettledAt = useRef(0);
+  const previousUser = useRef(userId);
+
   useEffect(() => {
     mintedAgain.current = false;
+    if (previousUser.current && userId && previousUser.current !== userId) {
+      switchSettledAt.current = Date.now() + SWITCH_SETTLE_MS;
+    }
+    previousUser.current = userId;
   }, [userId]);
 
   useEffect(() => {
@@ -118,11 +140,13 @@ export function useMatrixChatSession(options: MatrixChatSessionOptions) {
     let current = true;
     let started: StartedChatSession | null = null;
     let askedWithoutCreating = false;
-    const requestLoginToken = () => {
+    const aborted = new AbortController();
+    const askForLoginToken = () => {
       askedWithoutCreating = !createAccountRef.current;
       return requestMatrixLoginToken(createAccountRef.current);
     };
-    const aborted = new AbortController();
+    const requestLoginToken = () =>
+      loginTokens.request(userId, askForLoginToken, aborted.signal, switchSettledAt.current);
     const onLoggedOut = () => {
       if (!started) return;
       const next = afterSignOutByHomeserver(browserMatrixSessionStore, started.credentials, mintedAgain.current);

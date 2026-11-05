@@ -262,6 +262,13 @@ class MatrixChatSession implements ChatSession {
     return url;
   }
 
+  async syncDisplayName(name: string): Promise<boolean> {
+    const profile = await this.client.getProfileInfo(this.userId);
+    if (profile.displayname === name) return false;
+    await this.client.setDisplayName(name);
+    return true;
+  }
+
   private async fetchAvatar(mxc: string): Promise<string | null> {
     // Authenticated media: the thumbnail needs the access token, which an <img> cannot send
     const thumbnail = this.client.mxcUrlToHttp(mxc, AVATAR_SIZE_PX, AVATAR_SIZE_PX, 'crop', false, true, true);

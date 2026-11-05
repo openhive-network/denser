@@ -6,7 +6,8 @@ import type { Page, Route } from '@playwright/test';
  * `#lobby`), long polls that answer what a test queues (or fail once it cuts them off or the
  * network goes), `/messages`, sending, read receipts (which clear the room's unread count in the
  * next sync), `/account/whoami` and `/sync` for the access tokens it issued and has not signed out
- * or revoked, and sign-out. Every request that reaches it is recorded.
+ * or revoked, the user's profile display name, and sign-out. Every request that reaches it is
+ * recorded.
  */
 
 export const HOMESERVER = 'https://matrix.matrix.test';
@@ -72,7 +73,9 @@ const sync = (batch: number, join: Json = {}) => ({ next_batch: `s${batch}`, roo
 
 export class MatrixHomeserverStub {
   readonly requests: RecordedRequest[] = [];
-  private readonly userId: string;
+  private userId: string;
+  /** The display name of the user's profile, which a `PUT .../displayname` sets */
+  displayName: string | undefined;
   private readonly queued: Json[] = [];
   private batch = 1;
   private failSends = 0;
@@ -119,6 +122,11 @@ export class MatrixHomeserverStub {
   }
 
   /** Ends every access token issued so far, as an admin's sign-out of the user's devices does */
+  /** Signs in, from now on, `userId`, as after an account switch */
+  signInAs(userId: string): void {
+    this.userId = userId;
+  }
+
   revokeSessions(): void {
     this.sessions.clear();
   }
@@ -183,6 +191,15 @@ export class MatrixHomeserverStub {
       return json({});
     }
     if (path.endsWith('/filter') && method === 'POST') return json({ filter_id: 'stub-filter' });
+    const profilePath = `/profile/${encodeURIComponent(this.userId)}`;
+    if (path === profilePath && method === 'GET') {
+      return json(this.displayName === undefined ? {} : { displayname: this.displayName });
+    }
+    if (path === `${profilePath}/displayname` && method === 'PUT') {
+      const displayName = typeof body === 'object' && body !== null ? Reflect.get(body, 'displayname') : undefined;
+      if (typeof displayName === 'string') this.displayName = displayName;
+      return json({});
+    }
     if (path === '/sync') {
       if (!this.sessions.has(accessToken)) return unknownToken();
       const answer = await this.nextSync(url.searchParams.has('since'));
