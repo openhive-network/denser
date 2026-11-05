@@ -124,3 +124,29 @@ To allow this you need to turn on non-strict login for Oauth client
 `openhive_chat` (see above), and set value of environment variable
 `REACT_APP_OPENHIVE_CHAT_ALLOW_NON_STRICT_LOGIN` to `"yes"`.
 
+
+## Safe storage idle lock
+
+A safe-storage session locks after a set time without activity; the next
+signing asks for the password again.
+
+- `REACT_APP_APP_SESSION_TIME` (seconds, default 900) is the deployment's
+  idle time, and `REACT_APP_APP_SESSION_TIME_MAX` (seconds, default 8 hours,
+  or the deployment's value when longer) the longest one a user may choose.
+  Blog and wallet on one origin share safe storage: give both apps the same
+  values.
+- When signing in with safe storage the user picks the idle time from 5 min,
+  15 min, 1 h, 8 h and the deployment's value, up to the maximum. The choice
+  is kept per browser (localStorage `safe-storage-session-time`) for every app
+  of the origin. A choice the maximum no longer allows falls back to the
+  deployment's value.
+- Activity is what hb-auth's beekeeper counts: unlocking, and every use of the
+  unlocked keys (each signature, memo encryption and decryption, key checks).
+  Reading the account list does not count. The session locks within about
+  two seconds of the idle time running out.
+- hb-auth's worker keeps the timeout of the client that started it, so the
+  worker URL names the idle time (`?idle=<seconds>`). A new choice starts a
+  new worker in each app at its next signing, which asks for the password
+  once; the replaced worker is locked.
+- The unlock dialogs and the account menu show the idle time, not a countdown:
+  hb-auth does not tell pages when its worker locks.

@@ -228,5 +228,13 @@
     "account_not_found_description": "您的 Google 云端硬盘钱包中没有 @{{username}} 的任何密钥。请使用 Hive Bridge 添加，或使用其他登录方式。",
     "bridge_info": "Hive Bridge 可让您将 Hive 密钥安全地存储在 Google 云端硬盘中。",
     "go_to_bridge": "前往 Hive Bridge"
+  },
+  "session_time": {
+    "choose_label": "闲置多久后锁定",
+    "locks_after": "闲置 {{duration}} 后锁定",
+    "activity": "每次签名都会重新计时。需要活跃密钥或所有者密钥的操作仍可能要求输入密码。",
+    "minutes": "{{value}} 分钟",
+    "hours": "{{value}} 小时",
+    "seconds": "{{value}} 秒"
   }
 }

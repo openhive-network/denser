@@ -228,5 +228,13 @@
     "account_not_found_description": "В кошельке на Google Диске нет ключей для @{{username}}. Добавьте их с помощью Hive Bridge или используйте другой способ входа.",
     "bridge_info": "Hive Bridge позволяет безопасно хранить ключи Hive в Google Диске.",
     "go_to_bridge": "Перейти в Hive Bridge"
+  },
+  "session_time": {
+    "choose_label": "Блокировать при бездействии",
+    "locks_after": "Блокируется после {{duration}} бездействия",
+    "activity": "Каждая подпись перезапускает таймер. Операции, требующие активного ключа или ключа владельца, могут по-прежнему запрашивать пароль.",
+    "minutes": "{{value}} мин",
+    "hours": "{{value}} ч",
+    "seconds": "{{value}} с"
   }
 }

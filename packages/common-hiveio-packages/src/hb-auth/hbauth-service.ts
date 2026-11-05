@@ -8,7 +8,7 @@ import {
 } from '@hiveio/hb-auth';
 
 import { getLogger } from '@hive/ui/lib/logging';
-import { configuredSessionTime } from '@hive/ui/config/public-vars';
+import { getSessionTime } from '@hive/ui/lib/session-time-choice';
 import env from '@beam-australia/react-env';
 import { getChain } from '../wax';
 import { getWorkerGeneration, renewSafeStorageGeneration, whenSafeStorageSettles } from './safe-storage-generation';
@@ -26,14 +26,15 @@ const getBasePath = (): string => env('BASE_PATH') || '';
 const WORKER_PATH = '/auth/releasable-worker.js';
 
 // Get the worker URL with proper basePath handling, naming the safe storage generation the worker
-// reads (safe-storage-generation.ts)
-const getWorkerUrl = (generation: string | null, basePath = getBasePath()): string => {
+// reads (safe-storage-generation.ts) and the idle time, in seconds, it locks after: hb-auth's worker
+// keeps the session timeout of the first client starting it, so each timeout has a worker of its own
+const getWorkerUrl = (generation: string | null, sessionTime: number, basePath = getBasePath()): string => {
   // Only run in browser context
   if (typeof window === 'undefined') {
     return WORKER_PATH;
   }
 
-  const query = generation ? `?storage=${encodeURIComponent(generation)}` : '';
+  const query = `?${new URLSearchParams({ ...(generation ? { storage: generation } : {}), idle: String(sessionTime) })}`;
 
   // For subdirectory deployments, construct the full URL to avoid path issues
   if (basePath) {
@@ -52,10 +53,14 @@ const getWorkerUrl = (generation: string | null, basePath = getBasePath()): stri
   return workerUrl;
 };
 
-const getDefaultClientOptions = (generation: string | null, basePath = getBasePath()): ClientOptions => {
+const getDefaultClientOptions = (
+  generation: string | null,
+  basePath = getBasePath(),
+  sessionTime = getSessionTime()
+): ClientOptions => {
   return {
-    sessionTimeout: Number(configuredSessionTime),
-    workerUrl: getWorkerUrl(generation, basePath),
+    sessionTimeout: sessionTime,
+    workerUrl: getWorkerUrl(generation, sessionTime, basePath),
     initTimeout: DEFAULT_INIT_TIMEOUT
   };
 };
@@ -63,6 +68,8 @@ const getDefaultClientOptions = (generation: string | null, basePath = getBasePa
 let onlineClientPromise: Promise<GenerationRenewingOnlineClient> | undefined = undefined;
 // The safe storage generation the cached online client's worker URL names
 let onlineClientGeneration: string | null = null;
+// The idle time, in seconds, the cached online client's worker locks after
+let onlineClientSessionTime = 0;
 // This should be just a reference retrieved from the onlineClientPromise.
 let onlineClient: OnlineClient | undefined = undefined;
 
@@ -202,8 +209,12 @@ const startClient = (
   });
 
 // This is intentionally non-async method as we don't want any race condition for onlineClientPromise !== undefined check
-const setOnlineClient = async (generation: string | null, basePath: string): Promise<GenerationRenewingOnlineClient> => {
-  const clientOptions = getDefaultClientOptions(generation, basePath);
+const setOnlineClient = async (
+  generation: string | null,
+  basePath: string,
+  sessionTime: number
+): Promise<GenerationRenewingOnlineClient> => {
+  const clientOptions = getDefaultClientOptions(generation, basePath, sessionTime);
   logger.info('Creating instance of HB-Auth OnlineClient with options: %o', clientOptions);
 
   const chain = await getChain();
@@ -271,14 +282,21 @@ const retireReplacedClient = (clientPromise: Promise<GenerationRenewingOnlineCli
 
 /**
  * The online client, replaced by one with another worker when another app changed safe storage's
- * wallet files since it was created: the new worker reads them, and starts with every key locked. The
- * replaced worker is locked, so no page of this app keeps signing with it, and released.
+ * wallet files since it was created, or the user chose another idle lock: the new worker reads the
+ * files, locks after the idle time now chosen, and starts with every key locked. The replaced worker
+ * is locked, so no page of this app keeps signing with it, and released.
  */
 export const getOnlineClient = (): Promise<OnlineClient> => getRenewingOnlineClient();
 
+/** Whether the cached online client's worker is the one for `generation` and the idle lock now chosen */
+const isOnlineClientFor = (generation: string | null): boolean =>
+  generation === onlineClientGeneration && getSessionTime() === onlineClientSessionTime;
+
 const startOnlineClient = (generation: string | null, basePath: string): Promise<GenerationRenewingOnlineClient> => {
+  const sessionTime = getSessionTime();
   onlineClientGeneration = generation;
-  const clientPromise = setOnlineClient(generation, basePath).catch((error) => {
+  onlineClientSessionTime = sessionTime;
+  const clientPromise = setOnlineClient(generation, basePath, sessionTime).catch((error) => {
     // Clear cache so next call retries, unless a newer client replaced it already
     if (onlineClientPromise === clientPromise) onlineClientPromise = undefined;
     throw error;
@@ -288,7 +306,8 @@ const startOnlineClient = (generation: string | null, basePath: string): Promise
 };
 
 /**
- * Replaces `replaced` with a client for the generation safe storage settles at, so the writes of
+ * Replaces `replaced` with a client for the generation safe storage settles at, and the idle lock
+ * the user chose by then, so the writes of
  * another app's operation start a single worker here. That worker starts only once `replaced`
  * started, and the worker the previous replacement retired was let go of, so the page runs two
  * workers at most, besides those operations still run with: a replacement never waits for an
@@ -302,8 +321,8 @@ const replaceOnlineClient = async (
   await replaced.catch(() => undefined);
   await lastRetirement;
   const generation = currentWorkerGeneration(basePath);
-  if (onlineClientPromise && generation === onlineClientGeneration) return onlineClientPromise;
-  logger.info('Safe storage changed in another app; starting a new HB-Auth worker');
+  if (onlineClientPromise && isOnlineClientFor(generation)) return onlineClientPromise;
+  logger.info('Safe storage changed in another app, or its idle lock was chosen; starting a new HB-Auth worker');
   lastRetirement = retireReplacedClient(replaced);
   return startOnlineClient(generation, basePath);
 };
@@ -323,7 +342,7 @@ const getRenewingOnlineClient = (basePath = getBasePath()): Promise<GenerationRe
   if (replacementPromise) return replacementPromise;
   const generation = currentWorkerGeneration(basePath);
   if (!onlineClientPromise) return startOnlineClient(generation, basePath);
-  if (generation === onlineClientGeneration) return onlineClientPromise;
+  if (isOnlineClientFor(generation)) return onlineClientPromise;
 
   const replacement = replaceOnlineClient(onlineClientPromise, basePath).finally(() => {
     if (replacementPromise !== replacement) return;
@@ -417,7 +436,7 @@ const logoutOfRunningWorkers = async (logout: WorkerLogout): Promise<void> => {
   const client = await clientPromise.catch(() => undefined);
   const currentLogout = clientPromise.then((current) => logout(current, current.workerUrl));
   await currentLogout.catch(() => undefined);
-  await logoutOfReplacedWorkers(client?.workerUrl ?? getWorkerUrl(onlineClientGeneration), logout);
+  await logoutOfReplacedWorkers(client?.workerUrl ?? getWorkerUrl(onlineClientGeneration, onlineClientSessionTime), logout);
   await currentLogout;
 };
 

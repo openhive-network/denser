@@ -1,5 +1,5 @@
 import env from '@beam-australia/react-env';
-import { resolveSessionTime } from '@hive/ui/lib/session-time';
+import { resolveSessionTimeConfig } from '@hive/ui/lib/session-time';
 import { parsePasskeySigners } from '../lib/passkey-signers';
 
 /// Contains list of public variables which can have safely set defaults and allow application build without explicit env. definition
@@ -23,10 +23,12 @@ export const configuredHivemindRestNodes = env('HIVEMIND_REST_NODES') ?? '';
 export const configuredBlogDomain = env('BLOG_DOMAIN') ?? 'https://hive.blog/';
 /** Whether search engines may index the site (robots.txt); off unless `yes`, so a non-production site stays out. */
 export const configuredSeoAllowIndexing = env('SEO_ALLOW_INDEXING') === 'yes';
-export const configuredSessionTime = resolveSessionTime(
-  env('APP_SESSION_TIME'),
-  process.env.DENSER_APP === 'wallet' ? 'wallet' : 'blog'
-);
+/**
+ * The safe-storage idle lock (`APP_SESSION_TIME`, seconds) and the longest one the user may choose
+ * (`APP_SESSION_TIME_MAX`). Blog and wallet on one origin share safe storage, so a deployment gives
+ * both apps the same values.
+ */
+export const configuredSessionTime = resolveSessionTimeConfig(env('APP_SESSION_TIME'), env('APP_SESSION_TIME_MAX'));
 /**
  * API nodes the browser fails over across; the default mirrors the CSP's own. The CSP `connect-src`
  * allows them plus every node of the API sets' catalog (`@ui/config/api-sets`).

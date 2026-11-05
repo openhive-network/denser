@@ -27,6 +27,7 @@ async function requestSafeStoragePassword(username: string): Promise<string> {
     passwordFormOptions: {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
+      showSessionTime: true,
       i18nKeysForCaptions: {
         description: 'password_form.safe_storage_recovery_description',
         inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder'

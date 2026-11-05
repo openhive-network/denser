@@ -53,6 +53,9 @@ import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { requestPersistentKeyStorage } from '@smart-signer/lib/signer/safe-storage-keys';
 import { authenticateStoredKey } from '@smart-signer/lib/auth/safe-storage-unlock';
 import { findWrongSafeStoragePassword } from '@smart-signer/lib/wrong-safe-storage-password';
+import { chooseSessionTime } from '@ui/lib/session-time-choice';
+import { useSessionTime } from '@ui/hooks/use-session-time';
+import SessionTimeSelect from './session-time-select';
 
 function getFormSchema() {
   return z
@@ -124,6 +127,10 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       wif: false
     });
     const [authUsers, setAuthUsers] = useState<AuthUser[]>([]);
+    const storedSessionTime = useSessionTime();
+    // Stored only on sign-in: a stored choice moves every app's pages to a worker locking after it
+    const [pickedSessionTime, setPickedSessionTime] = useState<number | null>(null);
+    const sessionTime = pickedSessionTime ?? storedSessionTime;
     const extensions = useInjectedExtensions();
     const form = useForm<SafeStorageForm>({
       mode: 'onChange',
@@ -142,6 +149,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
     async function getAuthClient(): Promise<OnlineClient> {
       authClient.current = await hbauthService.getOnlineClient();
       return authClient.current;
+    }
+
+    /** Stores the idle lock picked, before the client the sign-in unlocks is asked for */
+    function storePickedSessionTime() {
+      if (pickedSessionTime !== null && pickedSessionTime !== storedSessionTime) chooseSessionTime(pickedSessionTime);
     }
 
     async function shouldOfferPasskey(client: OnlineClient, username: string): Promise<boolean> {
@@ -175,6 +187,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
           rejectKey(keyAuthorityError);
           return;
         }
+        storePickedSessionTime();
         try {
           await hbauthService.withOnlineClient((client) =>
             registerSafeStorageKey(client, { username, password, wif, keyType, strict }, SHARED_KEY_LOOKUP)
@@ -202,6 +215,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         setLoading(true);
         setError(null);
+        storePickedSessionTime();
         // Check passkey support BEFORE finalize — finalize closes the dialog
         // and may unmount this component, so state updates after it are lost.
         const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
@@ -567,6 +581,7 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
             {userFound && storedStrict !== undefined && (
               <StrictModeStatus strict={storedStrict} i18nNamespace={i18nNamespace} />
             )}
+            <SessionTimeSelect value={sessionTime} onChange={setPickedSessionTime} />
             {userFound && (
               <div className="flex justify-end">
                 <span

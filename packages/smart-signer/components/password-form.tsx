@@ -5,6 +5,7 @@ import { validateWifKey } from '@smart-signer/lib/validators/validate-wif-key';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { getLogger } from '@ui/lib/logging';
 import { useSharedTranslation } from '@ui/lib/i18n-client';
+import SessionTimeNote from '@smart-signer/components/session-time-note';
 
 const logger = getLogger('app');
 
@@ -81,6 +82,8 @@ export interface PasswordFormOptions {
   i18nValues?: Record<string, string>;
   /** Id given to the form's title, so a surrounding dialog can be labelled by it. */
   titleId?: string;
+  /** Shows how long the safe-storage session the password unlocks stays unlocked while idle */
+  showSessionTime?: boolean;
 }
 
 export function PasswordForm({
@@ -91,7 +94,8 @@ export function PasswordForm({
   validatePassword,
   i18nKeysForCaptions = {}, // captions for inputs, buttons, form title etc.
   i18nValues,
-  titleId
+  titleId,
+  showSessionTime = false
 }: PasswordFormOptions) {
   // Also rendered for transaction signing, where the namespace may not be loaded yet: don't suspend.
   const { t } = useSharedTranslation(SMART_SIGNER_NAMESPACE, { useSuspense: false });
@@ -154,6 +158,7 @@ export function PasswordForm({
       <div className="mx-auto flex w-full max-w-md flex-col items-center">
         <h2 id={titleId} className="w-full text-xl">{caption(captionKey.title)}</h2>
         {captionKey.description && <p className="w-full">{caption(captionKey.description)}</p>}
+        {showSessionTime && <SessionTimeNote className="w-full text-sm text-muted-foreground" />}
 
         <form method="post" className="mt-6 w-full">
           <div className="relative mb-5">

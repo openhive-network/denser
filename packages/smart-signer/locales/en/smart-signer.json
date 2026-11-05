@@ -228,5 +228,13 @@
     "account_not_found_description": "Your Google Drive wallet has no keys for @{{username}}. Add them using Hive Bridge or use another sign-in method.",
     "bridge_info": "Hive Bridge allows you to securely store your Hive keys in Google Drive.",
     "go_to_bridge": "Go to Hive Bridge"
+  },
+  "session_time": {
+    "choose_label": "Lock when idle for",
+    "locks_after": "Locks after {{duration}} idle",
+    "activity": "Each signature restarts the timer. Operations that need your active or owner key may still ask for your password.",
+    "minutes": "{{value}} min",
+    "hours": "{{value}} h",
+    "seconds": "{{value}} s"
   }
 }

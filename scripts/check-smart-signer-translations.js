@@ -24,8 +24,17 @@ const POLICY = {
     ]),
     it: new Set([
       // Italian uses the same word
-      'password_form.password_placeholder'
-    ])
+      'password_form.password_placeholder',
+      // Italian abbreviates minutes, hours and seconds as English does
+      'session_time.minutes',
+      'session_time.hours',
+      'session_time.seconds'
+    ]),
+    // Spanish and French abbreviate minutes, hours and seconds as English does
+    es: new Set(['session_time.minutes', 'session_time.hours', 'session_time.seconds']),
+    fr: new Set(['session_time.minutes', 'session_time.hours', 'session_time.seconds']),
+    // Polish abbreviates minutes and seconds as English does
+    pl: new Set(['session_time.minutes', 'session_time.seconds'])
   }
 };
 

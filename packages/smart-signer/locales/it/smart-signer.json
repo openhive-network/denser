@@ -228,5 +228,13 @@
     "account_not_found_description": "Il tuo portafoglio Google Drive non contiene chiavi per @{{username}}. Aggiungile con Hive Bridge o usa un altro metodo di accesso.",
     "bridge_info": "Hive Bridge ti consente di conservare in modo sicuro le tue chiavi Hive su Google Drive.",
     "go_to_bridge": "Vai a Hive Bridge"
+  },
+  "session_time": {
+    "choose_label": "Blocca dopo un'inattività di",
+    "locks_after": "Si blocca dopo {{duration}} di inattività",
+    "activity": "Ogni firma riavvia il timer. Le operazioni che richiedono la tua chiave attiva o proprietaria possono comunque chiedere la password.",
+    "minutes": "{{value}} min",
+    "hours": "{{value}} h",
+    "seconds": "{{value}} s"
   }
 }

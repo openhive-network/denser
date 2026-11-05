@@ -135,12 +135,16 @@ const STUBS: Record<string, string> = {
   '@hiveio/hb-auth': FAKE_HB_AUTH,
   '@hive/ui/lib/logging': SILENT_LOGGER,
   './logging': SILENT_LOGGER,
-  '@hive/ui/config/public-vars': 'export const configuredSessionTime = 900;',
+  '@hive/ui/config/public-vars': 'export const configuredSessionTime = { deployment: 900, max: 3600 };',
   '@beam-australia/react-env': 'export default (name) => globalThis.fakeEnv[name];',
   '../wax': "export const getChain = async () => ({ calculatePublicKey: () => 'STM-public-key' });"
 };
 const MODULES: Record<string, string> = {
   '@hive/ui/lib/storage-with-ttl': new URL('../../../ui/lib/storage-with-ttl.ts', import.meta.url).href,
+  './storage-with-ttl': new URL('../../../ui/lib/storage-with-ttl.ts', import.meta.url).href,
+  '@hive/ui/lib/storage-with-ttl-notify': new URL('../../../ui/lib/storage-with-ttl-notify.ts', import.meta.url).href,
+  '@hive/ui/lib/session-time': new URL('../../../ui/lib/session-time.ts', import.meta.url).href,
+  '@hive/ui/lib/session-time-choice': new URL('../../../ui/lib/session-time-choice.ts', import.meta.url).href,
   './safe-storage-generation': new URL('./safe-storage-generation.ts', import.meta.url).href,
   './safe-storage-generation-subscription': new URL('./safe-storage-generation-subscription.ts', import.meta.url).href,
   './worker-release': new URL('./worker-release.ts', import.meta.url).href,
@@ -242,9 +246,19 @@ class CountingStorage extends MemoryStorage {
   }
 }
 
+/** The `storage` event a write in this tab dispatches to its own listeners (storage-with-ttl-notify.ts) */
+class FakeStorageEvent extends Event {
+  readonly key: string | null;
+  constructor(type: string, init: { key?: string | null } = {}) {
+    super(type);
+    this.key = init.key ?? null;
+  }
+}
+
 const storage = new CountingStorage();
 const fakeEnv: Record<string, string> = {};
 Object.assign(globalThis, {
+  StorageEvent: FakeStorageEvent,
   window: Object.assign(new EventTarget(), {
     localStorage: storage,
     location: { origin: 'https://hive.blog', href: 'https://hive.blog/blog/trending' }
@@ -276,6 +290,8 @@ const WALLET = '/wallet';
 
 /** A sign-out in any tab of the origin, as its sign-out epoch records it */
 const { advanceSignOutEpoch } = await import('./sign-out-epoch.ts');
+/** The user's choice of idle lock, in any app of the origin; the deployment offers up to 1 hour */
+const { chooseSessionTime } = await import('@hive/ui/lib/session-time-choice');
 
 type HbAuthService = typeof import('./hbauth-service.ts');
 type OnlineClient = Awaited<ReturnType<HbAuthService['getOnlineClient']>>;
@@ -325,6 +341,12 @@ async function openPage(basePath: string) {
   };
 }
 
+/** The idle time, in seconds, a client of the stand-in hb-auth has its worker lock after, and the one its worker URL names */
+function sessionTimeOf(client: unknown): { sessionTimeout: number; named: string | null } {
+  const { options } = client as { options: { sessionTimeout: number; workerUrl: string } };
+  return { sessionTimeout: options.sessionTimeout, named: new URL(options.workerUrl).searchParams.get('idle') };
+}
+
 /** The worker URL a client of the stand-in hb-auth was created with, and its worker */
 function workerOf(client: unknown): { url: string; worker: FakeWorker } {
   const { options, worker } = client as { options: { workerUrl: string }; worker: FakeWorker };
@@ -353,8 +375,8 @@ describe('hb-auth online client', () => {
     const blogClient = await blog.getOnlineClient();
     const walletClient = await wallet.getOnlineClient();
 
-    assert.equal(workerOf(blogClient).url, 'https://hive.blog/blog/auth/releasable-worker.js');
-    assert.equal(workerOf(walletClient).url, 'https://hive.blog/wallet/auth/releasable-worker.js');
+    assert.equal(workerOf(blogClient).url, 'https://hive.blog/blog/auth/releasable-worker.js?idle=900');
+    assert.equal(workerOf(walletClient).url, 'https://hive.blog/wallet/auth/releasable-worker.js?idle=900');
     assert.equal(await blog.getOnlineClient(), blogClient);
     assert.equal(await wallet.getOnlineClient(), walletClient);
     assert.equal(storage.length, 0);
@@ -393,6 +415,37 @@ describe('hb-auth online client', () => {
     assert.deepEqual([...stale.worker.unlocked], []);
     const otherBlogTab = await openPage(BLOG);
     assert.equal((workerOf(await otherBlogTab.getOnlineClient())).url, fresh.url);
+  });
+
+  it("moves every app to a worker locking after the idle time the user chose, locking the replaced ones", async () => {
+    const blog = await openPage(BLOG);
+    const wallet = await openPage(WALLET);
+    const blogBefore = await blog.getOnlineClient();
+    assert.deepEqual(sessionTimeOf(blogBefore), { sessionTimeout: 900, named: '900' });
+    workerOf(blogBefore).worker.unlocked.add('alice');
+    await wallet.getOnlineClient();
+
+    await blog.act(async () => chooseSessionTime(3600));
+    const blogAfter = await blog.getOnlineClient();
+    const walletAfter = await wallet.getOnlineClient();
+    await settle();
+
+    assert.deepEqual(sessionTimeOf(blogAfter), { sessionTimeout: 3600, named: '3600' });
+    assert.deepEqual(sessionTimeOf(walletAfter), { sessionTimeout: 3600, named: '3600' });
+    assert.deepEqual([...workerOf(blogBefore).worker.unlocked], []);
+    assert.deepEqual([...workerOf(blogAfter).worker.unlocked], []);
+    const otherBlogTab = await openPage(BLOG);
+    assert.equal(workerOf(await otherBlogTab.getOnlineClient()).url, workerOf(blogAfter).url);
+  });
+
+  it('keeps the deployment idle lock, and the worker, when the choice stored is above the maximum', async () => {
+    const blog = await openPage(BLOG);
+    const client = await blog.getOnlineClient();
+
+    await blog.act(async () => chooseSessionTime(28800));
+
+    assert.equal(await blog.getOnlineClient(), client);
+    assert.deepEqual(sessionTimeOf(client), { sessionTimeout: 900, named: '900' });
   });
 
   it("keeps the writing app's worker after another app moved to the new generation", async () => {
