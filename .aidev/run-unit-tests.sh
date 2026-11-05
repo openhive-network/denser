@@ -137,6 +137,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/auth/login-authority.test.ts \
     packages/smart-signer/lib/auth/sign-in-lock.test.ts \
     packages/smart-signer/lib/auth/added-key-sign-in.test.ts \
+    packages/smart-signer/lib/auth/safe-storage-unlock.test.ts \
     packages/smart-signer/lib/fetch-json.test.ts \
     packages/smart-signer/lib/signer/unlock-hint.test.ts \
     packages/smart-signer/lib/signer/signed-in-check.test.ts \
