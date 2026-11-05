@@ -470,6 +470,7 @@
     "load_more_failed": "Impossibile caricare altri post.",
     "load_more_retry": "Riprova",
     "check_node_status": "Verifica lo stato del nodo",
+    "background_updating": "Aggiornamento in background…",
     "load_failed_title": "Impossibile caricare questo profilo",
     "load_failed_description": "L'API di Hive non ha risposto. Di solito è temporaneo.",
     "go_home": "Torna alla home",

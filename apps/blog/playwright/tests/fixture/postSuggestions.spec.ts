@@ -31,6 +31,9 @@ const POST_URL = '/hive-160391/@gtg/hive-hardfork-25-jump-starter-kit/';
 const SIMILAR_ROUTE = '**/hivesense-api/posts/*/*/similar*';
 const RECORDED_SUGGESTION_COUNT = 10;
 const LOW_REPUTATION = 10;
+const LOCALE_COOKIE = 'NEXT_LOCALE';
+// The first recorded suggestion was created 2022-10-09T21:18:51 (UTC).
+const FIRST_SUGGESTION_DATE_PL = '09.10.2022';
 const SIMILAR_RECORDING = path.resolve(
   __dirname,
   '..',
@@ -137,6 +140,24 @@ test.describe('Post suggestions for a signed-in reader (fixture-based)', () => {
     await expect(postPage.suggestionCardTitles.first()).toHaveText('Hive HardFork 26 Jump Starter Kit');
     await expect(postPage.suggestionsAllHiddenMessage).toHaveCount(0);
     await expect(postPage.suggestionsToggle).toHaveCount(0);
+  });
+
+  test('POST-SUGGEST-10: a Polish reader sees suggestion dates in the Polish format', async ({
+    page,
+    context,
+    baseURL
+  }) => {
+    await context.addCookies([{ name: LOCALE_COOKIE, value: 'pl', url: baseURL ?? '' }]);
+    await serveSimilarPosts(page, recordedSimilarPosts());
+
+    const postPage = new PostPage(page);
+    await gotoLoggedIn(page, POST_URL);
+    await postPage.waitForPostHydration();
+
+    await expect(postPage.suggestionCardTitles).toHaveCount(RECORDED_SUGGESTION_COUNT);
+    const firstDate = page.getByTestId('suggestions-list').locator('time').first();
+    await expect(firstDate).toHaveText(FIRST_SUGGESTION_DATE_PL);
+    await expect(firstDate).toHaveAttribute('datetime', '2022-10-09T21:18:51.000Z');
   });
 
   test('POST-SUGGEST-02: all low-rated suggestions show the hidden message and Show all toggle', async ({

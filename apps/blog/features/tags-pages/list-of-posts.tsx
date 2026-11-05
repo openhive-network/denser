@@ -214,7 +214,7 @@ const SortedPagesPosts = ({ sort, tag = '' }: { sort: SortTypes; tag?: string })
           </button>
         )}
       </div>
-      <div>{isFetching && !isFetchingNextPage ? 'Background Updating...' : null}</div>
+      <div>{isFetching && !isFetchingNextPage && !isError ? t('user_profile.background_updating') : null}</div>
     </>
   );
 };

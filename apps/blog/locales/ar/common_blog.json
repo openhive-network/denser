@@ -479,6 +479,7 @@
     "load_more_failed": "تعذر تحميل المزيد من المشاركات.",
     "load_more_retry": "إعادة المحاولة",
     "check_node_status": "التحقق من حالة العقدة",
+    "background_updating": "جارٍ التحديث في الخلفية…",
     "load_failed_title": "تعذر تحميل هذا الملف الشخصي",
     "load_failed_description": "لم تستجب واجهة Hive البرمجية. عادةً ما يكون هذا مؤقتًا.",
     "go_home": "الصفحة الرئيسية",

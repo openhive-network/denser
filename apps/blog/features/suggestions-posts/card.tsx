@@ -5,6 +5,8 @@ import { proxifyImageSrc } from '@ui/lib/proxify-images';
 import { useState } from 'react';
 import { getDefaultImageUrl } from '@hive/ui';
 import { useTranslation } from '@/blog/i18n/client';
+import { formatCalendarDate } from '@ui/lib/calendar-date';
+import { getTimeAgoDateTime } from '@ui/lib/time-ago';
 
 const truncateTitle = (title: string, maxLength: number = 50) => {
   return title.length > maxLength ? `${title.substring(0, maxLength)}...` : title;
@@ -16,7 +18,7 @@ interface SuggestionsCardProps {
 }
 
 const SuggestionsCard = ({ entry, horizontal }: SuggestionsCardProps) => {
-  const { t } = useTranslation('common_blog');
+  const { t, i18n } = useTranslation('common_blog');
   const cardImage = find_first_img(entry);
   const [image, setImage] = useState<string>(cardImage);
 
@@ -74,7 +76,7 @@ const SuggestionsCard = ({ entry, horizontal }: SuggestionsCardProps) => {
       <div className="flex items-center gap-1.5 px-1.5 pb-1.5 text-xs text-muted-foreground">
         <Link href={`/${entry.category}/@${entry.author}/${entry.permlink}`}>@{entry.author}</Link>
         <span>·</span>
-        <time>{new Date(entry.created).toLocaleDateString()}</time>
+        <time dateTime={getTimeAgoDateTime(entry.created)}>{formatCalendarDate(entry.created, i18n.language)}</time>
       </div>
     </div>
   );
