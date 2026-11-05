@@ -464,6 +464,7 @@
     "load_more_failed": "게시물을 더 불러올 수 없습니다.",
     "load_more_retry": "다시 시도",
     "check_node_status": "노드 상태 확인",
+    "background_updating": "백그라운드에서 업데이트 중…",
     "load_failed_title": "이 프로필을 불러올 수 없습니다",
     "load_failed_description": "Hive API가 응답하지 않았습니다. 대개 일시적인 현상입니다.",
     "go_home": "홈으로 이동",

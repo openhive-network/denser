@@ -470,6 +470,7 @@
     "load_more_failed": "Impossible de charger plus d'articles.",
     "load_more_retry": "Réessayer",
     "check_node_status": "Vérifier l'état du nœud",
+    "background_updating": "Mise à jour en arrière-plan…",
     "load_failed_title": "Impossible de charger ce profil",
     "load_failed_description": "L'API Hive n'a pas répondu. C'est généralement temporaire.",
     "go_home": "Retour à l'accueil",

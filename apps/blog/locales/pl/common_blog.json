@@ -473,6 +473,7 @@
     "load_more_failed": "Nie udało się wczytać kolejnych wpisów.",
     "load_more_retry": "Spróbuj ponownie",
     "check_node_status": "Sprawdź status węzła",
+    "background_updating": "Odświeżanie w tle…",
     "load_failed_title": "Nie udało się wczytać tego profilu",
     "load_failed_description": "API Hive nie odpowiedziało. Zwykle jest to chwilowe.",
     "go_home": "Strona główna",

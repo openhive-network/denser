@@ -19,9 +19,10 @@ type LoadMoreErrorProps = {
 const LoadMoreError: FC<LoadMoreErrorProps> = ({ onRetry, isRetrying = false }) => {
   const { t } = useTranslation('common_blog');
 
+  // mb-24 keeps the buttons clear of the fixed chat button (bottom-10, h-12) once the feed is scrolled to its end
   return (
     <div
-      className="mt-4 flex flex-col items-center gap-2 border-2 border-solid border-destructive/40 bg-card-noContent px-4 py-3 text-sm md:flex-row md:justify-between"
+      className="mb-24 mt-4 flex flex-col items-center gap-2 border-2 border-solid border-destructive/40 bg-card-noContent px-4 py-3 text-sm md:flex-row md:justify-between"
       data-testid="load-more-error"
       role="status"
     >

@@ -473,6 +473,7 @@
     "load_more_failed": "Не удалось загрузить больше постов.",
     "load_more_retry": "Повторить",
     "check_node_status": "Проверить состояние узла",
+    "background_updating": "Фоновое обновление…",
     "load_failed_title": "Не удалось загрузить этот профиль",
     "load_failed_description": "API Hive не ответил. Обычно это временно.",
     "go_home": "На главную",

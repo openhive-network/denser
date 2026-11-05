@@ -464,6 +464,7 @@
     "load_more_failed": "これ以上投稿を読み込めませんでした。",
     "load_more_retry": "再試行",
     "check_node_status": "ノードの状態を確認",
+    "background_updating": "バックグラウンドで更新中…",
     "load_failed_title": "このプロフィールを読み込めませんでした",
     "load_failed_description": "Hive API が応答しませんでした。通常は一時的なものです。",
     "go_home": "ホームへ",

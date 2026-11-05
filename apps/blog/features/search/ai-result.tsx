@@ -231,7 +231,7 @@ const AIResult = ({
         {!hasNextPage && displayedPosts.length > 0 && <div>{t('user_profile.nothing_more_to_load')}</div>}
       </div>
 
-      {isFetching && !isLoadingMore && <div>Background Updating...</div>}
+      {isFetching && !isLoadingMore && <div>{t('user_profile.background_updating')}</div>}
     </div>
   );
 };
