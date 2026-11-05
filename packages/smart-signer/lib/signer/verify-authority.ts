@@ -1,4 +1,5 @@
 import { TTransactionPackType, ApiTransaction } from '@hiveio/wax';
+import { findChunkLoadError } from '@hive/ui/lib/chunk-load-error';
 import { getLogger } from '@hive/ui/lib/logging';
 import { getChain } from '@transaction/lib/chain';
 import { isNodeNetworkFailure } from '@transaction/lib/transaction-inclusion';
@@ -47,8 +48,9 @@ export async function verifyAuthorityOrThrow(
     logger.error('%s key authority verification failed: %s', signerName, error instanceof Error ? error.message : String(error));
     const msg = error instanceof Error ? error.message : String(error);
 
-    // Re-throw network errors as-is — don't misattribute them as authority failures
-    if (isNetworkError(msg) || isNodeNetworkFailure(error)) {
+    // Re-throw network errors as-is — don't misattribute them as authority failures. Code loaded on
+    // first use (the chain, the verification) that could not be fetched means the check never ran.
+    if (isNetworkError(msg) || isNodeNetworkFailure(error) || findChunkLoadError(error)) {
       throw error;
     }
 

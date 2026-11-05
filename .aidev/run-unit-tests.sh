@@ -95,7 +95,7 @@ run_with_junit_fallback "$junit" ui node --test \
     packages/ui/config/chat.test.ts packages/ui/config/api-sets.test.ts \
     packages/ui/lib/passkey-signers.test.ts packages/ui/lib/sanitize-url.test.ts \
     packages/ui/lib/html-escape-json.test.ts packages/ui/lib/reputation.test.ts \
-    packages/ui/lib/i18n-interpolation.test.ts < /dev/null || status=1
+    packages/ui/lib/i18n-interpolation.test.ts packages/ui/lib/chunk-load-error.test.ts < /dev/null || status=1
 echo "== node --test packages/smart-signer" >&2
 junit="$PWD/test-results/unit/smart-signer.xml"
 run_with_junit_fallback "$junit" smart-signer node --test \

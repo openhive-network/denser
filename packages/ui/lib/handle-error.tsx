@@ -29,6 +29,7 @@ import {
   findWrongSafeStoragePassword
 } from '@smart-signer/lib/wrong-safe-storage-password';
 import { FetchTimeoutError } from '@smart-signer/lib/fetch-json';
+import { findChunkLoadError } from '@ui/lib/chunk-load-error';
 import ErrorToastContent from '@ui/components/error-toast-content';
 import { toast, Toast } from '@ui/components/hooks/use-toast';
 import env from "@beam-australia/react-env";
@@ -212,6 +213,18 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   // A Hive node request failed on the network before sending (or the signer's unlock check): ask for a retry
   if (findNodeNetworkFailure(error)) {
     logger.error(error, 'Node request in %s failed on the network', ctx?.method);
+    toast({
+      description: <RequestNetworkErrorMessage />,
+      variant: 'destructive',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // Code loaded on first use (the signing stack, the key's verification) could not be fetched, nothing
+  // was sent: mostly the browser is offline, so ask for a retry once connected
+  if (findChunkLoadError(error)) {
+    logger.error(error, 'Loading code for %s failed on the network', ctx?.method);
     toast({
       description: <RequestNetworkErrorMessage />,
       variant: 'destructive',
