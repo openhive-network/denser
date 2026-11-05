@@ -228,5 +228,13 @@
     "account_not_found_description": "Google Drive 지갑에 @{{username}}의 키가 없습니다. Hive Bridge로 키를 추가하거나 다른 로그인 방법을 사용하세요.",
     "bridge_info": "Hive Bridge를 사용하면 Hive 키를 Google Drive에 안전하게 보관할 수 있습니다.",
     "go_to_bridge": "Hive Bridge로 이동"
+  },
+  "session_time": {
+    "choose_label": "다음 시간 동안 활동이 없으면 잠금",
+    "locks_after": "{{duration}} 동안 활동이 없으면 잠깁니다",
+    "activity": "서명할 때마다 타이머가 다시 시작됩니다. 액티브 키나 오너 키가 필요한 작업은 여전히 비밀번호를 요청할 수 있습니다.",
+    "minutes": "{{value}}분",
+    "hours": "{{value}}시간",
+    "seconds": "{{value}}초"
   }
 }

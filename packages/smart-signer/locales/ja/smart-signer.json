@@ -228,5 +228,13 @@
     "account_not_found_description": "Google Driveのウォレットに@{{username}}のキーがありません。Hive Bridgeでキーを追加するか、別のサインイン方法を使用してください。",
     "bridge_info": "Hive Bridgeを使うと、HiveのキーをGoogle Driveに安全に保管できます。",
     "go_to_bridge": "Hive Bridgeへ移動"
+  },
+  "session_time": {
+    "choose_label": "次の時間操作がないとロック",
+    "locks_after": "操作がないまま{{duration}}経過するとロックされます",
+    "activity": "署名するたびにタイマーがリセットされます。アクティブキーまたはオーナーキーが必要な操作では、引き続きパスワードを求められる場合があります。",
+    "minutes": "{{value}} 分",
+    "hours": "{{value}} 時間",
+    "seconds": "{{value}} 秒"
   }
 }

@@ -75,6 +75,7 @@ export class SignerHbauth extends Signer {
     const passwordFormOptions: PasswordFormOptions = {
       mode: PasswordFormMode.HBAUTH,
       showInputStorePassword: false,
+      showSessionTime: true,
       i18nKeysForCaptions: {
         inputPasswordPlaceholder: 'login_form.password_hbauth_placeholder'
       }
