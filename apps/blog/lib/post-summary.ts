@@ -14,7 +14,7 @@ function extractBodySummary(body: string, stripQuotes = false) {
   desc = desc.replaceAll(BLOCK_BREAK, '');
   desc = remarkableStripper.render(desc); // render markdown to html
   desc = sanitize(desc, { allowedTags: [] }); // remove all html, leaving text
-  desc = htmlDecode(desc);
+  desc = unescapeSanitizedText(desc);
 
   // Strip any raw URLs from preview text
   desc = desc.replace(/https?:\/\/[^\s]+/g, '');
@@ -74,25 +74,8 @@ export function getPostSummary(jsonMetadata: JsonMetadata, body: string, stripQu
   return extractBodySummary(shortDescription, stripQuotes) || extractBodySummary(body, stripQuotes);
 }
 
-const htmlDecode = (txt: string) =>
-  txt.replace(/&[a-z]+;/g, (ch: string) => {
-    // @ts-ignore
-    const char = htmlCharMap[ch.substring(1, ch.length - 1)];
-    return char ? char : ch;
-  });
+// sanitize-html's parser decodes every entity (the HTML5 named set and numeric ones), then escapes
+// only these three characters back in the text it emits, so reversing them decodes the text once.
+const SANITIZED_ESCAPES: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>' };
 
-const htmlCharMap = {
-  amp: '&',
-  quot: '"',
-  lsquo: '‘',
-  rsquo: '’',
-  sbquo: '‚',
-  ldquo: '“',
-  rdquo: '”',
-  bdquo: '„',
-  hearts: '♥',
-  trade: '™',
-  hellip: '…',
-  pound: '£',
-  copy: ''
-};
+const unescapeSanitizedText = (text: string) => text.replace(/&(?:amp|lt|gt);/g, (entity) => SANITIZED_ESCAPES[entity]);
