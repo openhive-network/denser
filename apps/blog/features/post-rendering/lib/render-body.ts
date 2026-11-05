@@ -2,6 +2,7 @@ import { containsHighlightableCode, getSyntaxHighlighter, type DefaultRenderer }
 import { getRenderer, getPreviewRenderer } from './renderer';
 import { insertFacadeThumbnails } from './facade-thumbnails';
 import { toCommunityDescriptionHtml } from './community-description-html';
+import { deferTwitchIframes } from './twitch-iframes';
 
 export interface RenderBodyOptions {
   author: string;
@@ -34,7 +35,7 @@ export function renderBody(
   const postContext = author || permlink ? { author, permlink } : undefined;
   const html = renderer.render(body, postContext);
   if (communityDescription) return toCommunityDescriptionHtml(html);
-  return insertFacadeThumbnails(html, { prioritizeLeading: mainPost, proxyAuthToken });
+  return deferTwitchIframes(insertFacadeThumbnails(html, { prioritizeLeading: mainPost, proxyAuthToken }));
 }
 
 /**

@@ -1,0 +1,80 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_discussion",
+    "params": {
+      "author": "guest4test1",
+      "permlink": "test-twitch-iframe",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "a95533da3b19c344",
+  "method": "bridge.get_discussion",
+  "params": {
+    "author": "guest4test1",
+    "permlink": "test-twitch-iframe",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": {
+      "guest4test1/test-twitch-iframe": {
+        "url": "/test/@guest4test1/test-twitch-iframe",
+        "body": "<center><iframe src=\"https://player.twitch.tv/?video=v2919479459&parent=peakd.com&parent=hive.blog&parent=steemit.com&parent=ecency.com&autoplay=false\" frameborder=\"0\" allowfullscreen=\"true\" scrolling=\"no\" height=\"378\" width=\"620\"></iframe></center>\n\nA body iframe of another provider:\n\n<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/dQw4w9WgXcQ\" frameborder=\"0\" allowfullscreen></iframe>\n\nA Twitch link:\n\nhttps://www.twitch.tv/videos/2919479459\n",
+        "depth": 0,
+        "stats": {
+          "gray": false,
+          "hide": false,
+          "flag_weight": 0,
+          "total_votes": 0
+        },
+        "title": "Test twitch iframe",
+        "author": "guest4test1",
+        "payout": 0,
+        "created": "2025-05-16T08:25:15",
+        "reblogs": 0,
+        "replies": [],
+        "updated": "2025-05-16T08:25:15",
+        "category": "test",
+        "children": 0,
+        "permlink": "test-twitch-iframe",
+        "payout_at": "2025-05-23T08:25:15",
+        "blacklists": [],
+        "is_paidout": true,
+        "net_rshares": 0,
+        "percent_hbd": 10000,
+        "active_votes": [
+          {
+            "voter": "guest4test2",
+            "rshares": 0
+          }
+        ],
+        "beneficiaries": [],
+        "json_metadata": {
+          "app": "hive.blog/0.9",
+          "tags": [
+            "test",
+            "spam"
+          ],
+          "image": [
+            ""
+          ],
+          "author": "",
+          "format": "markdown+html",
+          "summary": ""
+        },
+        "author_reputation": 43.24,
+        "author_payout_value": "0.000 HBD",
+        "max_accepted_payout": "0.000 HBD",
+        "curator_payout_value": "0.000 HBD",
+        "pending_payout_value": "0.000 HBD"
+      }
+    },
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

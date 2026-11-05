@@ -1,0 +1,13 @@
+{
+  "testName": "postTwitchIframe",
+  "note": "Replay-only corpus for postTwitchIframe.spec.ts, built from postEmbedTableLayout: its three calls copied with the permlink changed to test-twitch-iframe and the body replaced by the Twitch iframe dagamers.xyz posts (foreveraverage/diablo-2-no-mic1793815316437, parents peakd.com, hive.blog, steemit.com, ecency.com), a YouTube iframe and a Twitch video link.",
+  "recordedAt": "2026-10-01T02:28:21.595Z",
+  "totalRequests": 3,
+  "savedFixtures": 3,
+  "duplicatesSkipped": 0,
+  "methods": {
+    "bridge.get_post": 1,
+    "bridge.get_discussion": 1,
+    "database_api.list_votes": 1
+  }
+}

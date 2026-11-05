@@ -12,6 +12,7 @@ import { useClientRenderedBody } from './hooks/use-client-rendered-body';
 import { useServerRenderedBody } from './rendered-bodies-context';
 import { useLeavePageLinks } from './hooks/use-leave-page-links';
 import { usePatchedHtml } from './hooks/use-patched-html';
+import { loadTwitchIframes } from './lib/twitch-iframes';
 import { useTranslation } from '@/blog/i18n/client';
 
 const isExternalLink = (link: HTMLAnchorElement) => link.classList.contains('link-external');
@@ -118,6 +119,7 @@ const RendererContainer = ({
     // This caused issue #759 where line breaks/spacing weren't visible in preview
     // Now paragraphs keep their default prose styling in both preview and published view
     const rootEl = ref.current;
+    if (rootEl) loadTwitchIframes(rootEl, window.location.hostname);
     const pluginCleanups: (() => void)[] = [];
     if (rootEl) {
       RENDERER_PLUGINS.forEach((plugin) => {

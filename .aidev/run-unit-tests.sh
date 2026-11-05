@@ -191,6 +191,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/post-rendering/lib/votes-after-payout.test.ts \
     apps/blog/features/post-rendering/lib/paginate-threads.test.ts \
     apps/blog/features/post-rendering/lib/community-description-html.test.ts \
+    apps/blog/features/post-rendering/lib/twitch-iframes.test.ts \
     apps/blog/features/matrix-chat/lib/message-view.test.ts \
     apps/blog/features/matrix-chat/lib/outbox.test.ts \
     apps/blog/features/matrix-chat/lib/outgoing-queue.test.ts \
