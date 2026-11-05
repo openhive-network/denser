@@ -146,4 +146,25 @@ describe('getPostSummary', () => {
   it('ignores a non-string summary and uses the body', () => {
     assert.equal(getPostSummary(parsedMetadata('{"summary": {"a": 1}}'), BODY), BODY_SUMMARY);
   });
+
+  it('shows angle brackets and ampersands as characters, not entities', () => {
+    assert.equal(getPostSummary(metadata({}), 'a < b > c & d'), 'a < b > c & d');
+  });
+
+  it('decodes named and numeric entities and keeps the copyright sign', () => {
+    const body = 'x&nbsp;y it&#39;s it&#x27;s a &mdash; b © 2026 &copy; &hellip;';
+    assert.equal(getPostSummary(metadata({}), body), 'x y it\'s it\'s a — b © 2026 © …');
+  });
+
+  it('decodes entities inside raw HTML', () => {
+    assert.equal(getPostSummary(metadata({}), '<p>it&#39;s 1 &lt; 2 &amp;&nbsp;more</p>'), "it's 1 < 2 & more");
+  });
+
+  it('decodes an escaped entity only once', () => {
+    assert.equal(getPostSummary(metadata({}), 'Write &amp;lt; for <b>&amp;gt;</b>'), 'Write &lt; for &gt;');
+  });
+
+  it('shows code spans as written', () => {
+    assert.equal(getPostSummary(metadata({}), 'Use `a<b && &lt;` here'), 'Use a<b && &lt; here');
+  });
 });
