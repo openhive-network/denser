@@ -8,7 +8,10 @@ export interface IViewerVotes {
 }
 
 /** What a post entry tells of the viewer's vote, see `viewerVoteOf`. */
-export type TViewerVote = { known: true; votes: IViewerVotes } | { known: false; lookUp: boolean };
+export type TViewerVote =
+  | { known: true; votes: IViewerVotes }
+  | { known: false; lookUp: false }
+  | { known: false; lookUp: true; batch: boolean };
 
 const toListedVote = (post: TVotedEntry, voter: string, vote: EntryObserverVote): IVoteListItem => ({
   id: 0,
@@ -28,7 +31,8 @@ const toListedVote = (post: TVotedEntry, voter: string, vote: EntryObserverVote)
  * (`observer_vote`): `known`, in the shape `database_api.list_votes` answers, with no vote when
  * they have not voted. Otherwise it is not known and is to be looked up when `lookUp`: when the
  * entry's `active_votes` list the viewer, or when it is a vote-free entry read as another observer,
- * which says nothing of the viewer's vote. Nothing is looked up for a signed-out viewer (`''`).
+ * which says nothing of the viewer's vote. The latter is `batch`ed: every card of a page needs it, so
+ * the lookups of a page go together. Nothing is looked up for a signed-out viewer (`''`).
  */
 export function viewerVoteOf(post: TVotedEntry, viewer: string): TViewerVote {
   if (!viewer) return { known: false, lookUp: false };
@@ -36,6 +40,10 @@ export function viewerVoteOf(post: TVotedEntry, viewer: string): TViewerVote {
     const { observer_vote: vote } = post;
     return { known: true, votes: { votes: vote ? [toListedVote(post, viewer, vote)] : [] } };
   }
-  if (post.active_votes) return { known: false, lookUp: post.active_votes.some((vote) => vote.voter === viewer) };
-  return { known: false, lookUp: true };
+  if (post.active_votes) {
+    return post.active_votes.some((vote) => vote.voter === viewer)
+      ? { known: false, lookUp: true, batch: false }
+      : { known: false, lookUp: false };
+  }
+  return { known: false, lookUp: true, batch: true };
 }

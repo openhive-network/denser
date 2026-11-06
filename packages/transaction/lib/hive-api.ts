@@ -21,7 +21,9 @@ import {
   calculateManabarFullRegenerationTime,
   type IManabarValue
 } from './manabar-math';
-import { DATA_LIMIT } from './bridge-api';
+import { DATA_LIMIT, getBridgeReadNode } from './bridge-api';
+import { fetchReadTransport } from './read-transport';
+import { createViewerVoteBatcher } from './viewer-votes-batch';
 import { readAccountProfile } from './profile-metadata';
 import { getLogger } from '@ui/lib/logging';
 import { getLiteFollowCount, getLiteFollowers, getLiteFollowing } from './lite-social-api';
@@ -360,6 +362,27 @@ export const getListVotesByCommentVoter = async (
 ): Promise<{ votes: IVoteListItem[] }> => {
   return getReadChain().api.database_api.list_votes({ start, limit, order: 'by_comment_voter' });
 };
+
+/**
+ * `voter`'s vote on `author`/`permlink`, as `getListVotesByCommentVoter([author, permlink, voter], 1)`
+ * answers it with that vote only; lookups made together (the cards of a page) go to the node of the
+ * bridge post reads in one JSON-RPC batch, see `createViewerVoteBatcher`.
+ */
+export const getViewerVote = createViewerVoteBatcher({
+  nodeOf: getBridgeReadNode,
+  send: async (node, batch) => {
+    const { response } = await fetchReadTransport.request({
+      method: 'POST',
+      endpoint: node,
+      url: '',
+      timeout: getHiveChainService().getApiEndpoints().apiTimeout,
+      data: JSON.stringify(batch),
+      responseType: 'json'
+    });
+    return response;
+  },
+  lookUpOne: ({ author, permlink, viewer }) => getListVotesByCommentVoter([author, permlink, viewer], 1)
+});
 
 export const getFindAccounts = async (username: string): Promise<{ accounts: ApiAccount[] }> => {
   return getReadChain().api.database_api.find_accounts({

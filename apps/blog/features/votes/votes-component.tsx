@@ -7,7 +7,7 @@ import { Icons } from '@ui/components/icons';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useQuery } from '@tanstack/react-query';
-import { getListVotesByCommentVoter } from '@transaction/lib/hive-api';
+import { getListVotesByCommentVoter, getViewerVote } from '@transaction/lib/hive-api';
 import type { TrimmedEntry } from '@/blog/features/list-of-posts/lib/card-entry';
 import { useLoggedUserNetVests } from '@/blog/features/votes/hooks/use-logged-user';
 import { useTranslation } from '@/blog/i18n/client';
@@ -67,10 +67,15 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
   }, [type, storedVotesValues]);
   const viewerVote = viewerVoteOf(post, voter);
 
+  const lookUpViewerVote = () =>
+    !viewerVote.known && viewerVote.lookUp && viewerVote.batch
+      ? getViewerVote({ author: post.author, permlink: post.permlink, viewer: voter })
+      : getListVotesByCommentVoter([post.author, post.permlink, voter], 1);
+
   // A vote the entry carries seeds the query: it is looked up only after the user votes.
   const { data: userVotes } = useQuery({
     queryKey: ['votes', post.author, post.permlink, user?.username],
-    queryFn: () => getListVotesByCommentVoter([post.author, post.permlink, user?.username], 1),
+    queryFn: lookUpViewerVote,
     enabled: (!viewerVote.known && viewerVote.lookUp) || !!clickedVoteButton,
     initialData: viewerVote.known ? viewerVote.votes : undefined,
     refetchOnWindowFocus: false,

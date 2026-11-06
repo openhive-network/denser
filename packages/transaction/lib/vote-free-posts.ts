@@ -27,13 +27,13 @@ export const isUnknownMethodError = (error: unknown): boolean => {
   return 'message' in answer && typeof answer.message === 'string' && answer.message.includes(UNKNOWN_METHOD_MESSAGE);
 };
 
-/** The nodes found to lack the vote-free post reads. */
+/** The nodes found to lack a capability: the vote-free post reads, or JSON-RPC batches. */
 export interface IVoteFreeSupport {
   lacks(node: string): boolean;
   markLacking(node: string): void;
 }
 
-/** A record of the nodes that answered a vote-free read with "unknown method", kept as long as it lives. */
+/** A record of the nodes found lacking (e.g. that answered a vote-free read with "unknown method"), kept as long as it lives. */
 export const createVoteFreeSupport = (): IVoteFreeSupport => {
   const lacking = new Set<string>();
   return {
