@@ -1,11 +1,11 @@
 // Inspired by react-hot-toast library
 import * as React from "react";
 
-import { ToastActionElement, type ToastProps } from "@ui/components/toast";
+import type { ToastActionElement, ToastProps } from "@ui/components/toast";
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 1000000;
-/** An identical toast asked for this soon after one still open is not shown again. */
+/** An identical error toast asked for this soon after one still open is not shown again. */
 const DUPLICATE_WINDOW_MS = 10_000;
 /** How deep `isSameContent` compares props before calling content different. */
 const MAX_CONTENT_DEPTH = 6;
@@ -183,8 +183,9 @@ function handleOf(id: string) {
   };
 }
 
-/** The handle of an identical toast still open and shown less than DUPLICATE_WINDOW_MS ago. */
+/** The handle of an identical error toast still open and shown less than DUPLICATE_WINDOW_MS ago. */
 function findRecentDuplicate(props: Toast) {
+  if (props.variant !== "destructive") return undefined;
   const now = Date.now();
   shownAt.forEach((at, id) => {
     if (now - at >= DUPLICATE_WINDOW_MS) shownAt.delete(id);
@@ -197,8 +198,9 @@ function findRecentDuplicate(props: Toast) {
 
 /**
  * Shows a toast and returns its handle. The same error reported by several failing calls at once
- * shows once: a toast identical to one still open that was shown less than DUPLICATE_WINDOW_MS ago
- * is not added, and the open one's handle is returned instead.
+ * shows once: a destructive toast identical to one still open that was shown less than
+ * DUPLICATE_WINDOW_MS ago is not added, and the open one's handle is returned instead. Toasts of
+ * other variants always show, so each of two identical successful actions gets its feedback.
  */
 function toast({ ...props }: Toast) {
   const duplicate = findRecentDuplicate(props);
