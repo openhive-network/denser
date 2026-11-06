@@ -40,6 +40,7 @@
     "close": "Закрыть",
     "profile_picture": "Фото профиля",
     "notifications_region": "Уведомления ({hotkey})",
+    "offline_notice": "Нет подключения к сети. Кошелёк обновится, когда соединение восстановится.",
     "select_placeholder": "Выберите..."
   },
   "navigation": {

@@ -40,6 +40,7 @@
     "close": "Fermer",
     "profile_picture": "Photo de profil",
     "notifications_region": "Notifications ({hotkey})",
+    "offline_notice": "Vous êtes hors ligne. Le portefeuille se mettra à jour dès le retour de la connexion.",
     "select_placeholder": "Sélectionner..."
   },
   "navigation": {

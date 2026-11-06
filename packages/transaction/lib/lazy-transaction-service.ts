@@ -1,4 +1,6 @@
 import type { TransactionService } from '../index';
+import { getBrowserConnectivity } from './connectivity';
+import { createChunkLoader } from './load-chunk';
 
 type AsyncMethodNames<T> = {
   [K in keyof T]: T[K] extends (...args: never[]) => Promise<unknown> ? K : never;
@@ -7,7 +9,10 @@ type AsyncMethodNames<T> = {
 /** The asynchronous operations of `TransactionService` (broadcasts, signing, chain access). */
 export type LazyTransactionService = Pick<TransactionService, AsyncMethodNames<TransactionService>>;
 
-const loadTransactionService = async (): Promise<TransactionService> => (await import('../index')).transactionService;
+// Fails fast offline, rather than leaving the action that needs it spinning until the browser gives up.
+const loadTransactionModule = createChunkLoader(() => import('../index'), { connectivity: getBrowserConnectivity() });
+
+const loadTransactionService = async (): Promise<TransactionService> => (await loadTransactionModule()).transactionService;
 
 /**
  * Stands in for `transactionService` from `@transaction/index` in client components: that module

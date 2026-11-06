@@ -40,6 +40,7 @@
     "close": "Chiudi",
     "profile_picture": "Immagine del profilo",
     "notifications_region": "Notifiche ({hotkey})",
+    "offline_notice": "Sei offline. Il portafoglio si aggiornerà quando la connessione tornerà disponibile.",
     "select_placeholder": "Seleziona..."
   },
   "navigation": {

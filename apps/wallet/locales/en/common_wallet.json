@@ -40,6 +40,7 @@
     "close": "Close",
     "profile_picture": "Profile picture",
     "notifications_region": "Notifications ({hotkey})",
+    "offline_notice": "You're offline. The wallet will refresh once your connection is back.",
     "select_placeholder": "Select..."
   },
   "navigation": {

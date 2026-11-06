@@ -38,6 +38,8 @@ export interface OperationEffects {
   logSuccess: (name: string, data: unknown) => void;
   /** True for a broadcast the node took but no block was seen to include in time: it may still apply. */
   isUnconfirmedBroadcast: (error: unknown) => boolean;
+  /** The error to fail with at once while the browser is offline, so nothing is signed or sent; else undefined. */
+  offlineError: () => Error | undefined;
 }
 
 /** The refresh after an unconfirmed broadcast when no later one is configured: a few blocks on. */
@@ -64,7 +66,14 @@ export function buildOperationMutationOptions<TVariables, TData, TContext>(
   const { invalidateDelays = [0], reportErrors = true, mutationKey } = config;
   return {
     mutationKey,
-    mutationFn: run,
+    // Offline, React Query would hold the mutation and broadcast it whenever the browser is back
+    // online, long after the user gave up on it: it runs, and is refused, at once instead.
+    networkMode: 'always',
+    mutationFn: async (variables) => {
+      const offline = effects.offlineError();
+      if (offline) throw offline;
+      return run(variables);
+    },
     onMutate: optimistic && ((variables) => optimistic(variables, queryClient)),
     onSuccess: (data, variables) => {
       effects.logSuccess(name, data);

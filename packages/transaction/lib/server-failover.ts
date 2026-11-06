@@ -99,6 +99,18 @@ export interface IFailoverRoute {
   onFallback?: (node: string) => void;
 }
 
+/** The browser's connection, which a call consults before failing over and tells what it found. */
+export interface IFailoverConnectivity {
+  /** False while the network is down: a call then asks its first node once. */
+  admitsFailover(): boolean;
+  /** A node answered. */
+  reportAnswered(): void;
+  /** Every node a call asked failed without any answer (see `isUnanswered`). */
+  reportUnanswered(): void;
+  /** Whether a failed attempt got no answer from its node, e.g. a network failure or a timeout. */
+  isUnanswered(error: unknown): boolean;
+}
+
 export interface IServerFailoverOptions<T extends IFailoverChain<T>> {
   /** Nodes to fail over to after the primary, in order of preference. */
   fallbackNodes: readonly string[];
@@ -134,6 +146,11 @@ export interface IServerFailoverOptions<T extends IFailoverChain<T>> {
   isRestApiUnavailable?: (error: unknown, path: readonly string[]) => boolean;
   /** Called after a call failed on the primary node and was then served by `node`. */
   onFailover?: (node: string) => void;
+  /**
+   * The browser's connection. While it is down a call asks its first node once, without failing
+   * over and without recording the outcome against the node: offline every node fails alike.
+   */
+  connectivity?: IFailoverConnectivity;
   /** Clock and sleep, injectable for tests. */
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
@@ -253,6 +270,9 @@ export function parseFallbackNodes(
  * API with an endpoint of its own included), each node's outcome is reported to the route, and a
  * broadcast is sent once to the family's first node.
  *
+ * With `connectivity`, a call made while the network is down asks its first node once and records
+ * nothing about it, and a call no node answered at all tells `connectivity` the network is down.
+ *
  * A chain derived by `withTimeout(timeoutMs)` fails over as well, sharing `health`, but each call
  * asks a node once with `timeoutMs`, without hedging, and asks two nodes at most.
  *
@@ -279,6 +299,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     isTransportError = isWaxTransportError,
     isRestApiUnavailable,
     onFailover,
+    connectivity,
     now = Date.now,
     sleep = defaultSleep
   } = options;
@@ -344,15 +365,19 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     };
     // Skipping every node would fail the call without asking anyone, so then all of them are tried,
     // the one that answered last first: it is likelier to be back than a node that never answered.
-    const sweepAll = configuredNodes.every(isSkipped);
-    const nodes = sweepAll
-      ? health.byRecentHealth([...nodeByKey.keys()]).flatMap((key) => nodeByKey.get(key) ?? [])
-      : configuredNodes;
+    const failsOver = connectivity?.admitsFailover() ?? true;
+    const sweepAll = failsOver && configuredNodes.every(isSkipped);
+    const nodes = !failsOver
+      ? [primary]
+      : sweepAll
+        ? health.byRecentHealth([...nodeByKey.keys()]).flatMap((key) => nodeByKey.get(key) ?? [])
+        : configuredNodes;
     const { budgetMs, maxNodes = Infinity } = policy;
     const fitsBudget = () => budgetMs === undefined || now() - startedAt + policy.attemptTimeoutMs <= budgetMs;
     const tried: string[] = [];
     let settled = false;
     let failures = 0;
+    let anyAnswer = false;
     let lastError: unknown;
 
     // A node is asked once neither its family nor the node itself is down; the call probes it when
@@ -368,6 +393,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     };
 
     const markUp = (node: string): void => {
+      connectivity?.reportAnswered();
       health.markUp(healthKey(node));
       const unreachable = unreachableKeyOf(node);
       if (unreachable !== undefined) health.markUp(unreachable);
@@ -399,8 +425,10 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
           lastError = error;
           nodeError = error;
           notServed = call.isApiNotServed(error);
+          if (!connectivity?.isUnanswered(error)) anyAnswer = true;
         }
       }
+      if (!failsOver) return { kind: 'failed' };
       health.markDown(healthKey(node));
       // A node that could not be connected to cannot serve any family either; a node that was only
       // slow may still serve the others, so a timeout stays recorded for this family alone.
@@ -416,7 +444,8 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     const startNextNode = (): boolean => {
       while (nextIndex < nodes.length && tried.length < maxNodes) {
         const node = nodes[nextIndex++];
-        const admission = sweepAll ? 'healthy' : admitNode(node);
+        // Without failover the first node gets one attempt, as a probe does.
+        const admission = !failsOver ? 'probe' : sweepAll ? 'healthy' : admitNode(node);
         if (!admission) continue;
         tried.push(node);
         running.set(node, runNode(node, admission).then((outcome) => ({ node, outcome })));
@@ -461,6 +490,8 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     }
 
     settled = true;
+    // One unreachable node says nothing about the network; several silent at once mostly mean it is down.
+    if (failsOver && !anyAnswer && tried.length > 1) connectivity?.reportUnanswered();
     logger.error(
       lastError,
       '%s failed on every node tried (%s) within %d ms',

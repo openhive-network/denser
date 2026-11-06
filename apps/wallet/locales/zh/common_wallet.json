@@ -40,6 +40,7 @@
     "close": "关闭",
     "profile_picture": "头像",
     "notifications_region": "通知 ({hotkey})",
+    "offline_notice": "您已离线。连接恢复后钱包将自动刷新。",
     "select_placeholder": "请选择..."
   },
   "navigation": {
