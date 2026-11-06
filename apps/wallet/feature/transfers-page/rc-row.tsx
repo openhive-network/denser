@@ -4,13 +4,14 @@ import { CircleSpinner } from '@ui/components/circle-spinner';
 import { formatRestoreTime } from './lib/utils';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
 import { prepareRC } from '@/wallet/lib/utils';
-import DelegateRCDialog from './delegate-rc-dialog';
 import { delegatableRawRc } from './lib/rc-amount';
 import dynamic from 'next/dynamic';
 import { useTranslation } from '@/wallet/i18n/client';
 
 // recharts draws the manabar rings only once the manabars are fetched: keep it out of page-load chunks.
 const RCStats = dynamic(() => import('./rc-stats'), { ssr: false });
+// Only the account's owner gets the delegation dialog: a visitor's page never loads it.
+const DelegateRCDialog = dynamic(() => import('./delegate-rc-dialog'), { ssr: false });
 
 const RCRow = ({
   username,
