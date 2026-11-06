@@ -354,6 +354,7 @@
     "unfollow_button": "フォローを解除する",
     "hive_buzz_badge_title": "これは {{username}} がHivebuzzプログラムで獲得したレベルバッジです",
     "user_level_title": "{{username}} は {{level}} です（ステークされたVESTSに基づく）。クリックするとHiveBuzzで詳しい統計を表示します。",
+    "reputation_score_title": "これは {{username}} の評価スコアです。\n\n評価スコアはアカウントが受け取った投票の履歴に基づいており、低品質なコンテンツを非表示にするために使われます。",
     "twitter_badge_title": "Twitterバッジを取得するには、HivePosh.comでアカウントを連携してください",
     "social": {
       "unverified_title": "{{platform}}: {{handle}}。アカウント所有者が追加したもので、未認証です",

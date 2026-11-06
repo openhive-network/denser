@@ -220,7 +220,7 @@ const ProfileLayout = ({ children }: { children: ReactNode }) => {
                     </h1>
                     <span
                       className="rounded-full bg-white/20 px-2 py-0.5 text-sm font-medium"
-                      title={`This is ${username}'s reputation score.\n\nThe reputation score is based on the history of votes received by the account, and is used to hide low quality content.`}
+                      title={t('user_profile.reputation_score_title', { username })}
                     >
                       {accountReputationData && accountReputationData[0]?.reputation
                         ? accountReputation(accountReputationData[0].reputation)

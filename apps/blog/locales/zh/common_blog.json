@@ -354,6 +354,7 @@
     "unfollow_button": "取消关注",
     "hive_buzz_badge_title": "这是 {{username}} 从 Hivebuzz 项目获得的等级徽章",
     "user_level_title": "{{username}} 的等级为 {{level}}（基于质押的 VESTS）。点击在 HiveBuzz 上查看更多统计数据。",
+    "reputation_score_title": "这是 {{username}} 的声誉分数。\n\n声誉分数基于该账户收到的投票历史，用于隐藏低质量内容。",
     "twitter_badge_title": "要获得 Twitter 徽章，请在 HivePosh.com 关联你的账户",
     "social": {
       "unverified_title": "{{platform}}：{{handle}}。由账户所有者添加，未经验证",

@@ -360,6 +360,7 @@
     "unfollow_button": "отписаться",
     "hive_buzz_badge_title": "Это значок уровня {{username}}, полученный в программах Hivebuzz",
     "user_level_title": "{{username}} — {{level}} (по застейканным VESTS). Нажмите, чтобы увидеть больше статистики на HiveBuzz.",
+    "reputation_score_title": "Это рейтинг репутации {{username}}.\n\nРейтинг репутации основан на истории голосов, полученных аккаунтом, и используется для скрытия некачественного контента.",
     "twitter_badge_title": "Чтобы получить значок Twitter, привяжите свой аккаунт на HivePosh.com",
     "social": {
       "unverified_title": "{{platform}}: {{handle}}. Добавлено владельцем аккаунта, не подтверждено",

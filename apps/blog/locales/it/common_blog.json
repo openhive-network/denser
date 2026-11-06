@@ -358,6 +358,7 @@
     "unfollow_button": "Non seguire più",
     "hive_buzz_badge_title": "Questo è il badge di livello di {{username}} ottenuto dai programmi Hivebuzz",
     "user_level_title": "{{username}} è di livello {{level}} (in base ai VESTS in stake). Clicca per altre statistiche su HiveBuzz.",
+    "reputation_score_title": "Questo è il punteggio di reputazione di {{username}}.\n\nIl punteggio di reputazione si basa sulla cronologia dei voti ricevuti dall'account e serve a nascondere i contenuti di bassa qualità.",
     "twitter_badge_title": "Per ottenere il badge Twitter, collega il tuo account su HivePosh.com",
     "social": {
       "unverified_title": "{{platform}}: {{handle}}. Aggiunto dal titolare dell'account, non verificato",

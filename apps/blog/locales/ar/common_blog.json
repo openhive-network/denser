@@ -364,6 +364,7 @@
     "follow_button": "متابعة",
     "hive_buzz_badge_title": "هذه هي شارة مستوى {{username}} المكتسبة من برامج Hivebuzz",
     "user_level_title": "{{username}} في مستوى {{level}} (بناءً على VESTS المحجوزة). انقر لمزيد من الإحصائيات على HiveBuzz.",
+    "reputation_score_title": "هذه هي درجة سمعة {{username}}.\n\nتعتمد درجة السمعة على سجل الأصوات التي تلقاها الحساب، وتُستخدم لإخفاء المحتوى منخفض الجودة.",
     "twitter_badge_title": "للحصول على شارة Twitter، قم بربط حسابك على HivePosh.com",
     "social": {
       "unverified_title": "{{platform}}: {{handle}}. أضافه صاحب الحساب، غير موثق",

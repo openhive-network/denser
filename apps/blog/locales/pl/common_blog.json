@@ -360,6 +360,7 @@
     "unfollow_button": "Przestań obserwować",
     "hive_buzz_badge_title": "To poziom odznaki użytkownika {{username}} zdobytą z programu Hivebuzz",
     "user_level_title": "{{username}} jest {{level}} (na podstawie zdeponowanych VESTS). Kliknij po więcej statystyk na HiveBuzz.",
+    "reputation_score_title": "To jest wynik reputacji konta {{username}}.\n\nReputacja wynika z historii głosów otrzymanych przez konto i służy do ukrywania treści niskiej jakości.",
     "twitter_badge_title": "By otrzymać odznakę Twittera, podlinkuj twoje konto na HivePosh.com",
     "social": {
       "unverified_title": "{{platform}}: {{handle}}. Dodane przez właściciela konta, niezweryfikowane",

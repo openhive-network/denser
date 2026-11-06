@@ -354,6 +354,7 @@
     "follow_button": "팔로우",
     "hive_buzz_badge_title": "{{username}} 님이 Hivebuzz 프로그램에서 획득한 레벨 배지입니다",
     "user_level_title": "{{username}} 님은 {{level}}입니다(스테이킹된 VESTS 기준). HiveBuzz에서 더 많은 통계를 보려면 클릭하세요.",
+    "reputation_score_title": "{{username}} 님의 평판 점수입니다.\n\n평판 점수는 계정이 받은 투표 기록을 바탕으로 하며, 품질이 낮은 콘텐츠를 숨기는 데 사용됩니다.",
     "twitter_badge_title": "Twitter 배지를 받으려면 HivePosh.com에서 계정을 연결하세요",
     "social": {
       "unverified_title": "{{platform}}: {{handle}}. 계정 소유자가 추가했으며 인증되지 않음",
