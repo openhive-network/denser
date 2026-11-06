@@ -151,9 +151,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       return authClient.current;
     }
 
+    const isSessionTimePicked = pickedSessionTime !== null && pickedSessionTime !== storedSessionTime;
+
     /** Stores the idle lock picked, before the client the sign-in unlocks is asked for */
     function storePickedSessionTime() {
-      if (pickedSessionTime !== null && pickedSessionTime !== storedSessionTime) chooseSessionTime(pickedSessionTime);
+      if (isSessionTimePicked) chooseSessionTime(pickedSessionTime);
     }
 
     async function shouldOfferPasskey(client: OnlineClient, username: string): Promise<boolean> {
@@ -215,7 +217,11 @@ const SafeStorage = forwardRef<SafeStorageRef, SafeStorageProps>(
       try {
         setLoading(true);
         setError(null);
-        storePickedSessionTime();
+        if (isSessionTimePicked) {
+          // The stored pick replaces the worker on the next client asked for: check the password first
+          await hbauthService.withOnlineClient((client) => authenticateStoredKey(client, username, password, keyType));
+          storePickedSessionTime();
+        }
         // Check passkey support BEFORE finalize — finalize closes the dialog
         // and may unmount this component, so state updates after it are lost.
         const shouldPromptPasskey = await hbauthService.withOnlineClient(async (client) => {
