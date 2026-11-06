@@ -7,6 +7,8 @@ import type { Entry, JsonMetadata } from '@hive/common-hiveio-packages/wax';
 export type TrimmedEntry = Pick<
   Entry,
   | 'active_votes'
+  | 'observer_vote'
+  | '_observer'
   | 'author'
   | 'author_payout_value'
   | 'author_reputation'

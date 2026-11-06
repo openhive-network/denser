@@ -23,7 +23,7 @@ export class ReadTransportError extends Error {
  * Statuses that reject the request itself, so every node would answer it the same. 404 is one only
  * when it is not a missing endpoint (see `isEndpointMissing`).
  */
-const isRequestRejected = (status: number): boolean =>
+export const isRequestRejected = (status: number): boolean =>
   status >= 400 && status < 500 && status !== 408 && status !== 429;
 
 /**

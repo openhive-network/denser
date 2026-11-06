@@ -9,9 +9,23 @@ import {
   IUnreadNotifications
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
-import { getReadChain } from './chain';
-import { nonEmpty, readFromHivemind } from './hivemind-rest';
-import { postsReadOptionsOf, readPosts } from './lite-api';
+import { getApiSetNodes, getReadChain } from './chain';
+import { nonEmpty, readFromHivemind, readRestPostList } from './hivemind-rest';
+import {
+  postsReadOptionsOf,
+  readPosts,
+  servesVoteFreeLite,
+  type TPostsApi,
+  type TPostsMethod,
+  type TPostsRead
+} from './lite-api';
+import {
+  createVoteFreeSupport,
+  discussionWithObserverVotes,
+  listWithObserverVotes,
+  readVoteFree,
+  withObserverVote
+} from './vote-free-posts';
 import type { IObserverListsApi } from './observer-lists';
 import type { IHiddenAuthorsApi } from './hidden-authors';
 
@@ -72,6 +86,34 @@ export const getSubscriptions = async (account: string): Promise<string[][] | nu
   );
 };
 
+/** The top votes the vote-free post reads are asked for: cards and post pages show no voters. */
+const NO_TOP_VOTES = 0;
+
+// The nodes, per process or browser tab, that answered a vote-free read with "unknown method". A
+// lite node has a record of its own: it may serve `bridge.*_v2` and not `lite.*_v2`, or the reverse.
+const bridgeVoteFree = createVoteFreeSupport();
+const liteVoteFree = createVoteFreeSupport();
+
+/**
+ * The post read `method` in hivemind's vote-free form (`voteFree`, `<method>_v2`) where its node
+ * serves it, else with votes (`stock`): on a lite node, only when its `lite.get_info` lists the
+ * method; on `bridge.*`, unless the bridge node answered it with "unknown method" before.
+ */
+const voteFreeRead =
+  <T>(
+    method: TPostsMethod,
+    voteFree: (api: TPostsApi) => Promise<T>,
+    stock: (api: TPostsApi) => Promise<T>
+  ): TPostsRead<T> =>
+  async (api, lite) => {
+    if (lite) {
+      if (!servesVoteFreeLite(lite.info, method)) return stock(api);
+      return readVoteFree(liteVoteFree, lite.node, () => voteFree(api), () => stock(api));
+    }
+    const [node = getReadChain().endpointUrl] = await getApiSetNodes('bridge');
+    return readVoteFree(bridgeVoteFree, node, () => voteFree(api), () => stock(api));
+  };
+
 export const getPostsRanked = async (
   sort: string,
   tag: string = '',
@@ -80,39 +122,33 @@ export const getPostsRanked = async (
   observer: string,
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
-  return readPosts(
-    (api) => api.get_ranked_posts({ sort, start_author, start_permlink, limit, tag, observer }),
-    () =>
-      readFromHivemind(
-        'rankedPosts',
-        {},
-        (api) =>
+  const params = { sort, start_author, start_permlink, limit, tag, observer };
+  const read = voteFreeRead(
+    'get_ranked_posts',
+    (api) => api.get_ranked_posts_v2({ ...params, top_votes: NO_TOP_VOTES }),
+    (api) => api.get_ranked_posts(params)
+  );
+  return readPosts(read, () =>
+    readFromHivemind(
+      'rankedPosts',
+      {},
+      (api) =>
+        readRestPostList((shape) =>
           api.rankedPosts({
             sort,
             tag: nonEmpty(tag),
             observer,
             'page-size': limit,
             'start-author': nonEmpty(start_author),
-            'start-permlink': nonEmpty(start_permlink)
-          }),
-        () =>
-          getReadChain().api.bridge.get_ranked_posts({
-            sort,
-            start_author,
-            start_permlink,
-            limit,
-            tag,
-            observer
+            'start-permlink': nonEmpty(start_permlink),
+            ...shape
           })
-      )
+        ),
+      () => read(getReadChain().api.bridge)
+    )
   ).then((resp) => {
-    // logger.info('getPostsRanked result: %o', resp);
-    if (resp) {
-      return resolvePosts(resp, observer);
-    }
-    console.log('response', resp);
-
-    return resp;
+    const posts = listWithObserverVotes(resp, observer);
+    return posts && resolvePosts(posts, observer);
   });
 };
 
@@ -153,24 +189,25 @@ export const getPost = async (
   permlink: string = '',
   observer: string = commonVariables.defaultObserver
 ): Promise<Entry | null> => {
+  const params = { author, permlink, observer };
+  const read = voteFreeRead(
+    'get_post',
+    (api) => api.get_post_v2({ ...params, top_votes: NO_TOP_VOTES }),
+    (api) => api.get_post(params)
+  );
   return readPosts(
-    (api) => api.get_post({ author, permlink, observer }),
+    read,
     () =>
       readFromHivemind(
         'post',
         { accounts: [author], permlinks: [permlink] },
-        (api) => api.post({ author, permlink, observer }),
-        () =>
-          getReadChain().api.bridge.get_post({
-            author,
-            permlink,
-            observer
-          })
+        (api) => api.post(params),
+        () => read(getReadChain().api.bridge)
       ),
     postsReadOptionsOf(author)
   ).then((resp) => {
     if (resp) {
-      return resolvePost(resp, observer);
+      return resolvePost(withObserverVote(resp, observer), observer);
     }
 
     return resp;
@@ -185,38 +222,36 @@ export const getAccountPosts = async (
   start_permlink: string = '',
   limit: number = DATA_LIMIT
 ): Promise<Entry[] | null> => {
+  const params = { sort, account, start_author, start_permlink, limit, observer };
+  const read = voteFreeRead(
+    'get_account_posts',
+    (api) => api.get_account_posts_v2({ ...params, top_votes: NO_TOP_VOTES }),
+    (api) => api.get_account_posts(params)
+  );
   return readPosts(
-    (api) => api.get_account_posts({ sort, account, start_author, start_permlink, limit, observer }),
+    read,
     () =>
       readFromHivemind(
         'accountPosts',
         { accounts: [account] },
         (api) =>
-          api.accountPosts({
-            'account-name': account,
-            sort,
-            observer,
-            'page-size': limit,
-            'start-author': nonEmpty(start_author),
-            'start-permlink': nonEmpty(start_permlink)
-          }),
-        () =>
-          getReadChain().api.bridge.get_account_posts({
-            sort,
-            account,
-            start_author,
-            start_permlink,
-            limit,
-            observer
-          })
+          readRestPostList((shape) =>
+            api.accountPosts({
+              'account-name': account,
+              sort,
+              observer,
+              'page-size': limit,
+              'start-author': nonEmpty(start_author),
+              'start-permlink': nonEmpty(start_permlink),
+              ...shape
+            })
+          ),
+        () => read(getReadChain().api.bridge)
       ),
     postsReadOptionsOf(account)
   ).then((resp) => {
-    if (resp) {
-      return resolvePosts(resp, observer);
-    }
-
-    return resp;
+    const posts = listWithObserverVotes(resp, observer);
+    return posts && resolvePosts(posts, observer);
   });
 };
 
@@ -310,19 +345,43 @@ export const getDiscussion = async (
   permlink: string,
   observer: string = commonVariables.defaultObserver
 ): Promise<Record<string, Entry> | null> => {
+  const params = { author, permlink, observer };
+  const read = voteFreeRead(
+    'get_discussion',
+    (api) => api.get_discussion_v2({ ...params, top_votes: NO_TOP_VOTES }),
+    (api) => api.get_discussion(params)
+  );
   return readPosts(
-    (api) => api.get_discussion({ author, permlink, observer }),
+    read,
     () =>
       readFromHivemind(
         'postDiscussion',
         { accounts: [author], permlinks: [permlink] },
-        (api) => api.postDiscussion({ author, permlink, observer }),
-        () =>
-          getReadChain().api.bridge.get_discussion({
-            author,
-            permlink,
-            observer
-          })
+        (api) => api.postDiscussion(params),
+        () => read(getReadChain().api.bridge)
+      ),
+    postsReadOptionsOf(author)
+  ).then((discussion) => discussionWithObserverVotes(discussion, observer));
+};
+
+/**
+ * `getDiscussion` read with every post's votes (`active_votes`) wherever the node serves the
+ * vote-free reads too, for what needs the votes themselves rather than their number.
+ */
+export const getDiscussionWithVotes = async (
+  author: string,
+  permlink: string,
+  observer: string = commonVariables.defaultObserver
+): Promise<Record<string, Entry> | null> => {
+  const params = { author, permlink, observer };
+  return readPosts(
+    (api) => api.get_discussion(params),
+    () =>
+      readFromHivemind(
+        'postDiscussion',
+        { accounts: [author], permlinks: [permlink] },
+        (api) => api.postDiscussion(params),
+        () => getReadChain().api.bridge.get_discussion(params)
       ),
     postsReadOptionsOf(author)
   );

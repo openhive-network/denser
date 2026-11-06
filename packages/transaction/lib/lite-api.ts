@@ -66,14 +66,18 @@ export const postsReadOptionsOf = (author: string): IPostsReadOptions => ({
 export type TPostsNamespace = 'lite' | 'bridge';
 
 /** The post reads `lite.*` and `bridge.*` both serve, with the same params and response shape. */
-export type TPostsApi = Pick<
-  ReadChain['api']['bridge'],
-  'get_discussion' | 'get_post' | 'get_ranked_posts' | 'get_account_posts'
->;
+export type TPostsMethod = 'get_discussion' | 'get_post' | 'get_ranked_posts' | 'get_account_posts';
+
+/** The post reads, each with its vote-free counterpart (`<method>_v2`). */
+export type TPostsApi = Pick<ReadChain['api']['bridge'], TPostsMethod | `${TPostsMethod}_v2`>;
 
 const NATIVE_MODE = 'native';
 const PROFILE_METHOD = 'get_profile';
 const NOTIFICATIONS_METHOD = 'account_notifications';
+
+/** Whether a node's `lite.get_info` answer lists the vote-free counterpart of the post read `method`. */
+export const servesVoteFreeLite = (info: ILiteApiInfo | null | undefined, method: TPostsMethod): boolean =>
+  !!info?.methods.includes(`${method}_v2`);
 
 /** Whether a node's `lite.get_info` answer lists `lite.get_profile`. */
 export const servesLiteProfile = (info: ILiteApiInfo | null | undefined): boolean =>
@@ -301,6 +305,9 @@ const startBudget = (budgetMs: number) => {
   };
 };
 
+/** A post read on `api`: `lite.*` of the lite node `lite`, or `bridge.*` without one. */
+export type TPostsRead<T> = (api: TPostsApi, lite?: ILiteNode) => Promise<T>;
+
 /** Options of one post read, see `createPostsReader`. */
 export interface IPostsReadOptions {
   /**
@@ -314,7 +321,7 @@ export interface IPostsReadOptions {
 /**
  * Post reads on `lite.*` when a node of the lite API set is lite-aware, else `stock` (the
  * deployment's ordinary read: hivemind's REST API when configured, else `bridge.*`), or `read` on
- * `bridge.*` without one. A `lite.*` read answered with "Api not found" (the node, or every node
+ * `bridge.*` without one; a `lite.*` read is given its lite node. A `lite.*` read answered with "Api not found" (the node, or every node
  * failover asked, lost the family) marks the node not lite-aware and is read again the stock way.
  *
  * The lookup of the lite node and the `lite.*` read share `budgetMs`; the read's requests time out
@@ -347,7 +354,7 @@ export function createPostsReader(
   /** The `lite.*` answer of `read`, or null when the posts are to be read the stock way. */
   const readLite = async <T>(
     chain: IPostsChain,
-    read: (api: TPostsApi) => Promise<T>,
+    read: TPostsRead<T>,
     liteOnly: boolean,
     within: <S>(step: Promise<S>) => Promise<S>
   ): Promise<{ value: T } | null> => {
@@ -368,7 +375,7 @@ export function createPostsReader(
     }
     if (isSkipped(lite.node) && !liteOnly) return null;
     try {
-      return { value: await within(read(chain.withTimeout(budgetMs).api.lite)) };
+      return { value: await within(read(chain.withTimeout(budgetMs).api.lite, lite)) };
     } catch (error) {
       if (isApiNotServedError(error)) {
         // Failover may have asked other nodes after the lite node: the error names the one that answered.
@@ -387,7 +394,7 @@ export function createPostsReader(
   };
 
   return async <T>(
-    read: (api: TPostsApi) => Promise<T>,
+    read: TPostsRead<T>,
     stock?: () => Promise<T>,
     { liteOnly = false }: IPostsReadOptions = {}
   ): Promise<T> => {

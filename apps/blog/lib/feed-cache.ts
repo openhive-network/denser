@@ -50,7 +50,8 @@ export async function getFeedFirstPage(
     limit: DATA_LIMIT,
     observer
   };
-  // Cached with every vote: one cached page serves every viewer that sends the default observer.
+  // Cached as read: one cached page serves every viewer that sends the default observer. Entries
+  // with votes keep all of them; a vote-free node's entries carry the observer's vote only.
   const page = await getFeedCache().get(request, async () => {
     const posts = await getPostsRanked(sort, tag, '', '', observer, DATA_LIMIT);
     return posts ? toCardEntries(posts) : null;

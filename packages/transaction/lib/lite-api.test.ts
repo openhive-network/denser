@@ -14,6 +14,7 @@ import {
   LITE_READ_COOLDOWN_MS,
   postsReadOptionsOf,
   readLiteProbeTtlMs,
+  servesVoteFreeLite,
   readLiteReadBudgetMs,
   type ILiteApiProbeOptions,
   type ILiteNotificationsApi,
@@ -321,6 +322,21 @@ describe('createPostsReader', () => {
 
     expect(await read(getPost)).to.equal('native');
     expect(calls).to.deep.equal(['lite.get_post {"author":"did:lite:bob","permlink":"p","observer":"hive.blog"}']);
+  });
+
+  it('gives a lite.* read its lite node, and a bridge.* read none', async () => {
+    const lite = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO });
+    const stock = setupReader(STOCK_NODE, { [STOCK_NODE]: apiNotFound('lite.get_info') });
+    const nodes: unknown[] = [];
+    const recordNode = (api: TPostsApi, node?: unknown) => {
+      nodes.push(node);
+      return getPost(api);
+    };
+
+    await lite.read(recordNode);
+    await stock.read(recordNode);
+
+    expect(nodes).to.deep.equal([{ node: LITE_NODE, info: LITE_INFO }, undefined]);
   });
 
   it('reads through bridge.* when the current node is not lite-aware', async () => {
@@ -787,5 +803,16 @@ describe('lite social rows', () => {
       following: 'alice',
       what: ['blog']
     });
+  });
+});
+
+describe('servesVoteFreeLite', () => {
+  it("is true for a post read whose vote-free counterpart the node's lite.get_info lists", () => {
+    const info = { ...LITE_INFO, methods: [...LITE_INFO.methods, 'get_ranked_posts_v2'] };
+
+    expect(servesVoteFreeLite(info, 'get_ranked_posts')).to.equal(true);
+    expect(servesVoteFreeLite(info, 'get_post')).to.equal(false);
+    expect(servesVoteFreeLite(LITE_INFO, 'get_ranked_posts')).to.equal(false);
+    expect(servesVoteFreeLite(null, 'get_ranked_posts')).to.equal(false);
   });
 });

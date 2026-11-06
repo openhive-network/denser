@@ -17,6 +17,7 @@ import { getLogger } from '@ui/lib/logging';
 import { isCommunity } from '@ui/lib/utils';
 import { DEFAULT_OBSERVER } from '@/blog/lib/utils';
 import { buildDiscussionPageSeed, parseCommentSort } from '@/blog/features/post-rendering/lib/paginate-discussion';
+import { fetchUpvoteCounts, needsUpvoteCounts } from '@/blog/features/post-rendering/lib/discussion-upvotes';
 import {
   ObserverProvider,
   InitialPostDataProvider,
@@ -216,13 +217,18 @@ const PostPage = async (
   // Only the first comments page goes into the HTML and the RSC payload; the client fetches the
   // whole discussion when another page or sort order is requested.
   const sortParam = searchParams?.sort;
+  const commentSort = parseCommentSort(Array.isArray(sortParam) ? sortParam[0] : sortParam);
+  // Without them a vote-free discussion is seeded in `stats.total_votes` order, as close as it gets.
+  const upvotes =
+    discussionData && needsUpvoteCounts(discussionData, commentSort)
+      ? await fetchUpvoteCounts(username, permlink, effectiveObserver).catch((error: unknown) => {
+          logger.error(error, 'Error fetching discussion votes:');
+          return null;
+        })
+      : null;
   const discussionPageSeed =
     discussionData && postData
-      ? buildDiscussionPageSeed(
-          discussionData,
-          postData,
-          parseCommentSort(Array.isArray(sortParam) ? sortParam[0] : sortParam)
-        )
+      ? buildDiscussionPageSeed(discussionData, postData, commentSort, upvotes ?? undefined)
       : null;
 
   // Bodies are rendered here so the client hydrates their HTML instead of loading the

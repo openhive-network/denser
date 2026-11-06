@@ -53,7 +53,7 @@ test.describe('anonymous', () => {
 
     expect(overJsonRpc.posts.length).toBeGreaterThan(0);
     expect(overRest).toEqual(overJsonRpc);
-    expect(servedRestRequests()).toContain('/hivemind-api/posts?sort=trending&observer=hive.blog&page-size=20');
+    expect(servedRestRequests()).toContain('/hivemind-api/posts?sort=trending&observer=hive.blog&page-size=20&votes=none&truncate-body=1000');
     expect(servedRestRequests()).toContain('/hivemind-api/communities?sort=rank&observer=hive.blog');
   });
 
@@ -65,7 +65,7 @@ test.describe('anonymous', () => {
     expect(overRest).toEqual(overJsonRpc);
     expect(servedRestRequests()).toEqual(
       expect.arrayContaining([
-        `/hivemind-api/accounts/${USER}/posts?sort=blog&observer=hive.blog&page-size=20`,
+        `/hivemind-api/accounts/${USER}/posts?sort=blog&observer=hive.blog&page-size=20&votes=none&truncate-body=1000`,
         `/hivemind-api/accounts/${USER}/profile`
       ])
     );
@@ -114,7 +114,7 @@ test.describe('signed in', () => {
     expect(servedRestRequests()).toEqual(
       expect.arrayContaining([
         `/hivemind-api/communities/${COMMUNITY}?observer=${USER}`,
-        `/hivemind-api/posts?sort=trending&tag=${COMMUNITY}&observer=${USER}&page-size=20`
+        `/hivemind-api/posts?sort=trending&tag=${COMMUNITY}&observer=${USER}&page-size=20&votes=none&truncate-body=1000`
       ])
     );
   });

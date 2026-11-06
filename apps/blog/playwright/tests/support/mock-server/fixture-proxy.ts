@@ -169,6 +169,15 @@ function extractJsonRpc(body: unknown): IJsonRpcCall | null {
 
 const isLiteApiCall = (call: IJsonRpcCall): boolean => call.method.startsWith('lite.');
 
+/** A vote-free post read (`bridge.get_post_v2`, ...), which hivemind before its vote-free reads lacks. */
+const isVoteFreeCall = (call: IJsonRpcCall): boolean => call.method.endsWith('_v2');
+
+/** What such a hivemind answers a method it lacks, the namespace mangled as it mangles it. */
+const unknownMethodError = (method: string) => ({
+  code: -32602,
+  message: `Assert Exception:unknown method: ${method.replace('bridge.', 'bridge_api')}`
+});
+
 function safeFilenamePart(s: string): string {
   const cleaned = s.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
   return cleaned.slice(0, 80) || 'root';
@@ -642,6 +651,16 @@ export async function createReplayProxy(
         id: (reqBody as { id?: unknown })?.id ?? 0,
         jsonrpc: '2.0',
         error: { code: -32601, message: 'Api not found lite' }
+      });
+      return;
+    }
+
+    // Likewise a recording without vote-free post reads was made against a node without them.
+    if ((!entries || entries.length === 0) && jsonRpc && isVoteFreeCall(jsonRpc)) {
+      res.status(200).json({
+        id: (reqBody as { id?: unknown })?.id ?? 0,
+        jsonrpc: '2.0',
+        error: unknownMethodError(jsonRpc.method)
       });
       return;
     }

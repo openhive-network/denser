@@ -28,6 +28,12 @@ export interface EntryVote {
   rshares: number;
 }
 
+/** The observer's vote on a post as the vote-free post reads give it; a removed vote reads 0 / 0. */
+export interface EntryObserverVote {
+  rshares: number;
+  percent: number;
+}
+
 export interface EntryStat {
   flag_weight: number;
   gray: boolean;
@@ -45,8 +51,20 @@ export interface IFollowList {
   //added only when using optimistic update, not backend property
   _temporary?: boolean;
 }
+/**
+ * A post as the bridge post reads give it, in one of two shapes: the stock one with `active_votes`
+ * (up to 1000 votes), or hivemind's vote-free one (`bridge.*_v2`, REST `votes=none`) with
+ * `observer_vote` instead. The readers add `_observer` to a vote-free entry.
+ */
 export interface Entry {
-  active_votes: EntryVote[];
+  /** Absent on a vote-free entry. */
+  active_votes?: EntryVote[];
+  /** On a vote-free entry only: the vote of `_observer` on the post, or null when it has not voted. */
+  observer_vote?: EntryObserverVote | null;
+  /** The observer a vote-free entry was read as, whose vote `observer_vote` is; not a backend property. */
+  _observer?: string;
+  /** The length the node cut `body` at (REST `truncate-body`); not a backend property. */
+  _bodyCutAt?: number;
   author: string;
   author_payout_value: string;
   author_reputation: number;
@@ -959,10 +977,44 @@ type TBridgeApi = {
   get_profile: TWaxApiRequest<{ account: string; observer?: string }, IProfile | null>;
 };
 
+/** The params a vote-free post read takes besides its stock counterpart's: how many top votes (0–10) to list. */
+interface IVoteFreeParams {
+  top_votes?: number;
+}
+
 type TBridgePostsApi = Pick<
   TBridgeApi,
   'get_discussion' | 'get_post' | 'get_ranked_posts' | 'get_account_posts'
->;
+> & {
+  /** The vote-free counterparts of the post reads (hivemind's `*_v2`): their entries carry `observer_vote`, no `active_votes`. */
+  get_ranked_posts_v2: TWaxApiRequest<
+    {
+      sort: string;
+      tag: string;
+      start_author: string;
+      start_permlink: string;
+      limit: number;
+      observer: string;
+    } & IVoteFreeParams,
+    Entry[] | null
+  >;
+  get_account_posts_v2: TWaxApiRequest<
+    {
+      sort: string;
+      account: string;
+      start_author: string;
+      start_permlink: string;
+      limit: number;
+      observer: string;
+    } & IVoteFreeParams,
+    Entry[] | null
+  >;
+  get_post_v2: TWaxApiRequest<{ author: string; permlink: string; observer: string } & IVoteFreeParams, Entry | null>;
+  get_discussion_v2: TWaxApiRequest<
+    { author: string; permlink: string; observer?: string } & IVoteFreeParams,
+    Record<string, Entry> | null
+  >;
+};
 
 export type ExtendedNodeApi = {
   /**
@@ -981,7 +1033,7 @@ export type ExtendedNodeApi = {
     unread_notifications: TWaxApiRequest<{ account: string }, IUnreadNotifications | null>;
     lookup_accounts: TWaxApiRequest<{ prefix: string; limit?: number }, string[]>;
   };
-  bridge: TBridgeApi;
+  bridge: TBridgeApi & TBridgePostsApi;
   market_history_api: {
     get_ticker: TWaxApiRequest<Record<string, never>, IMarketStatistics>;
     get_order_book: TWaxApiRequest<{ limit: number }, IOrdersData>;
@@ -1270,6 +1322,10 @@ export interface HivemindRestPostPage {
   'start-author'?: string;
   'start-permlink'?: string;
   observer?: string;
+  /** `none` and `summary` answer in the vote-free shape (see `Entry`); `full`, the default, with `active_votes`. */
+  votes?: 'none' | 'summary' | 'full';
+  /** Cuts each post's body at this many characters. */
+  'truncate-body'?: number;
 }
 
 /** Paging of a hivemind REST follower / following list: `page-size` accounts from `start` on. */

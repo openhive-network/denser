@@ -34,6 +34,10 @@ function trimEntry(entry: Entry): TrimmedEntry {
     stats: entry.stats,
     title: entry.title
   };
+  if (entry.observer_vote !== undefined) {
+    trimmed.observer_vote = entry.observer_vote;
+    trimmed._observer = entry._observer;
+  }
   if (entry.original_entry) trimmed.original_entry = trimEntry(entry.original_entry);
   if (isLiteDid(entry.author)) trimmed.url = entry.url;
   return trimmed;
@@ -45,9 +49,10 @@ function trimEntry(entry: Entry): TrimmedEntry {
  * Run this where the list is fetched (server components import it, client query functions
  * `import()` it), so neither the bodies nor the Remarkable renderer reach the page's initial payload.
  *
- * @param bodyCutAt - the length the server cut the body at, when it was fetched cut
+ * @param bodyCutAt - the length the server cut the body at, when it was fetched cut; else the
+ *   length the reader marked it cut at (`_bodyCutAt`), if any
  */
-export function toCardEntry(entry: Entry, bodyCutAt?: number): CardEntry {
+export function toCardEntry(entry: Entry, bodyCutAt: number | undefined = entry._bodyCutAt): CardEntry {
   const post = bodyCutAt ? { ...entry, body: dropUnfinishedMarkup(entry.body, bodyCutAt) } : entry;
   return {
     ...trimEntry(post),
@@ -57,7 +62,7 @@ export function toCardEntry(entry: Entry, bodyCutAt?: number): CardEntry {
 }
 
 export function toCardEntries(entries: Entry[], bodyCutAt?: number): CardEntry[] {
-  return entries.map((entry) => toCardEntry(entry, bodyCutAt));
+  return entries.map((entry) => toCardEntry(entry, bodyCutAt ?? entry._bodyCutAt));
 }
 
 /** Converts the full posts of a HiveSense search result; its stubs, fetched page by page later, stay as they are. */
