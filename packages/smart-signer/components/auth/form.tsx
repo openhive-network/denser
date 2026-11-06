@@ -7,7 +7,12 @@ import { useLocalStorage } from 'usehooks-ts';
 import Methods from './methods/methods';
 import SafeStorageKeyUpdate, { SafeStorageKeyUpdateRef } from './methods/safestorage-key-update';
 import { getLogger } from '@hive/ui/lib/logging';
-import { cancelPendingSignIn, runExclusiveSignIn, SignInPendingError } from '@smart-signer/lib/auth/sign-in-lock';
+import {
+  cancelPendingSignIn,
+  runExclusiveSignIn,
+  SignInCancelledError,
+  SignInPendingError
+} from '@smart-signer/lib/auth/sign-in-lock';
 import { awaitWalletExtensionAnswer, WalletExtensionTimeoutError } from '@smart-signer/lib/auth/wallet-extension-answer';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -122,14 +127,16 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
 
     /**
      * Resolves with false when the sign-in was not sent because another one is pending,
-     * or when the wallet extension did not answer it in time
+     * when the wallet extension did not answer it in time, or when it was cancelled meanwhile
      */
     async function signIn(loginType: LoginType, username: string, keyType: KeyType): Promise<boolean> {
       const walletName = WALLET_EXTENSION_NAMES.get(loginType);
       try {
-        await runExclusiveSignIn(async () => {
+        await runExclusiveSignIn(async (cancelled) => {
           const signing = sign(loginType, username, keyType);
           await (walletName ? awaitWalletExtensionAnswer(signing) : signing);
+          // The dialog that started this sign-in was closed: another may have completed meanwhile
+          cancelled.throwIfAborted();
           await submit(username);
         }, walletName !== undefined);
         return true;
@@ -137,6 +144,10 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
         if (error instanceof SignInPendingError) {
           logger.info('Sign-in with %s not sent: another sign-in is in progress', loginType);
           reportSignInPending(error);
+          return false;
+        }
+        if (error instanceof SignInCancelledError) {
+          logger.info('Sign-in with %s dropped: it was cancelled before it ended', loginType);
           return false;
         }
         if (walletName && error instanceof WalletExtensionTimeoutError) {
