@@ -1,6 +1,9 @@
+import dynamic from 'next/dynamic';
 import { useTranslation } from '@/wallet/i18n/client';
-import DecodeMemoDialog from '@/wallet/components/decode-memo-dialog';
 import { hasEncryptedMemoMarker } from '@/wallet/lib/encrypted-memo';
+
+// Only the account's owner can decode a memo: a visitor's page never loads the dialog.
+const DecodeMemoDialog = dynamic(() => import('@/wallet/components/decode-memo-dialog'), { ssr: false });
 
 const HistoryMemoCell = ({
   memo,

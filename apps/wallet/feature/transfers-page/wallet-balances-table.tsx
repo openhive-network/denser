@@ -1,12 +1,13 @@
 'use client';
 
 import dayjs from 'dayjs';
+import dynamic from 'next/dynamic';
 import { useTranslation, Trans } from '@/wallet/i18n/client';
 import type { GetDynamicGlobalPropertiesResponse, NaiAsset } from '@hiveio/wax';
 import { FullAccount, IFeedHistory, IOpenOrdersData } from '@hive/common-hiveio-packages/wax';
 import { Link } from '@hive/ui';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components';
-import { TransferDialog, type TransferDialogType } from '@/wallet/components/transfer-dialog';
+import type { TransferDialogType } from '@/wallet/components/transfer-dialog';
 import { powerdownHive, convertToHP, netDelegatedVests, numberWithCommas, vestsToHive } from '@ui/lib/utils';
 import { convertStringToBig, isHive } from '@ui/lib/helpers';
 import { createNaiAsset } from '@ui/lib/asset-constants';
@@ -16,6 +17,13 @@ import { getCurrentHpApr } from '@/wallet/lib/utils';
 import RCRow from './rc-row';
 import { BalanceAction, BalanceMenu } from './balance-menu';
 import { CancelPowerDownDialog } from './cancel-power-down-dialog';
+
+// BalanceMenu renders a dialog only once its action is picked, so the transfer form, its memo
+// checks and the memo encryption load then, not with the page.
+const TransferDialog = dynamic(
+  () => import('@/wallet/components/transfer-dialog').then((m) => m.TransferDialog),
+  { ssr: false }
+);
 
 const MIN_HIVE_AMOUNT = '0.001';
 
