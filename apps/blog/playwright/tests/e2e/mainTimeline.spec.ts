@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, Locator, Page, test } from '@playwright/test';
 import { HomePage } from '../support/pages/homePage';
 import { LoginForm } from '../support/pages/loginForm';
 import { ReblogThisPostDialog } from '../support/pages/reblogThisPostDialog';
@@ -6,6 +6,88 @@ import { ProfilePage } from '../support/pages/profilePage';
 import { PostPage } from '../support/pages/postPage';
 import { ApiHelper } from '../support/apiHelper';
 import { locatorSelector } from '../support/locatorSelector';
+
+interface IPostReply {
+  author: string;
+  author_reputation: number;
+  title: string;
+  payout: number;
+  json_metadata?: { original_author?: string; original_permlink?: string; tags?: string[] };
+}
+
+/** How long a post read waits for a node that has not indexed a brand new post yet. */
+const POST_READ_TIMEOUT_MS = 30000;
+// Payout moves with every vote between the render and the read: allow the larger of a few cents
+// and a share of it
+const MAX_PAYOUT_DRIFT_CENTS = 5;
+const MAX_PAYOUT_DRIFT_SHARE = 0.05;
+
+async function readPost(apiHelper: ApiHelper, author: string, permlink: string): Promise<IPostReply> {
+  const reply: { post?: IPostReply } = {};
+  await expect
+    .poll(async () => (reply.post = (await apiHelper.getPostAPI(author, permlink)).result ?? undefined), {
+      message: `bridge.get_post ${author}/${permlink}`,
+      timeout: POST_READ_TIMEOUT_MS
+    })
+    .toBeTruthy();
+  if (!reply.post) throw new Error(`bridge.get_post ${author}/${permlink} returned no post`);
+  return reply.post;
+}
+
+/**
+ * Checks the first card of `cards` that shows a title against the post it links to. The head of a
+ * live feed moves (and the server may render a feed cached a little while), so the card is compared
+ * with a read of that same post, not with a second read of the feed. NSFW-tagged cards hide their
+ * title behind a warning, so they are passed over.
+ */
+async function expectFirstTitledCardToShowItsPost(page: Page, cards: Locator) {
+  const apiHelper = new ApiHelper(page);
+  const titledCards = cards.filter({ has: page.locator('h3 a') });
+  const postHref = await titledCards.first().locator('h3 a').getAttribute('href');
+  const postLinkMatch = postHref?.match(/\/@([^/]+)\/([^/?#]+)/);
+  expect(postLinkMatch, `post link href: ${postHref}`).toBeTruthy();
+  const [, author, permlink] = postLinkMatch ?? [];
+  // Pinned by its link, so a list re-rendered with a newer head cannot swap the card under the checks
+  const card = titledCards.filter({ has: page.locator(`h3 a[href="${postHref}"]`) }).first();
+  const cardTitle = card.locator('h3 a');
+
+  const post = await readPost(apiHelper, author, permlink);
+
+  // A cross-post card shows the original post's author and reputation
+  const {
+    original_author: originalAuthor,
+    original_permlink: originalPermlink,
+    tags
+  } = post.json_metadata ?? {};
+  const isCrossPost = tags?.[0] === 'cross-post';
+  const shownAuthorEntry =
+    isCrossPost && originalAuthor && originalPermlink
+      ? await readPost(apiHelper, originalAuthor, originalPermlink)
+      : post;
+
+  await expect(card.getByTestId('post-author')).toHaveText(shownAuthorEntry.author);
+  await expect(card.getByTestId('post-author-reputation')).toContainText(
+    '(' + Math.floor(shownAuthorEntry.author_reputation) + ')'
+  );
+  await expect(cardTitle).toHaveText(post.title);
+
+  const payoutText = await card.getByTestId('post-payout').innerText();
+  expect(payoutText).toMatch(/^\$[\d,]+\.\d{2}$/);
+  const shownPayoutCents = Math.round(parseFloat(payoutText.slice(1).replace(/,/g, '')) * 100);
+  const readPayoutCents = Math.round(post.payout * 100);
+  const maxPayoutDriftCents = Math.max(
+    MAX_PAYOUT_DRIFT_CENTS,
+    Math.round(readPayoutCents * MAX_PAYOUT_DRIFT_SHARE)
+  );
+  expect(
+    Math.abs(shownPayoutCents - readPayoutCents),
+    `payout ${payoutText} vs read ${post.payout}`
+  ).toBeLessThanOrEqual(maxPayoutDriftCents);
+
+  // Vote and reply counts move with the chain too, so just verify they're numbers
+  await expect(card.getByTestId('post-total-votes').first()).toHaveText(/^\d+$/);
+  await expect(card.getByTestId('post-children').first()).toHaveText(/^\d+$/);
+}
 
 test.describe('Home page tests', () => {
   let homePage: HomePage;
@@ -46,46 +128,11 @@ test.describe('Home page tests', () => {
     expect(postsCount).toBeLessThanOrEqual(60);
   });
 
-  test('validate the first post (for Trending filter)', async ({ page, request, browserName }) => {
+  test('validate the first post (for Trending filter)', async ({ page, browserName }) => {
     test.skip(browserName === 'webkit', 'Automatic test works well on chromium');
 
     await homePage.goto();
-
-    const url = process.env.REACT_APP_API_ENDPOINT;
-
-    const response = await request.post(`${url}/`, {
-      data: {
-        id: 0,
-        jsonrpc: '2.0',
-        method: 'bridge.get_ranked_posts',
-        params: { sort: 'trending', start_author: '', start_permlink: '', limit: 20, tag: '', observer: '' }
-      },
-      headers: {
-        Accept: 'application/json, text/plain, */*'
-      }
-    });
-
-    // console.log((await response.json()).result[0])
-    const postAuthor = (await response.json()).result[0].author;
-    // console.log("Post author: ", await postAuthor)
-    const postAuthorReputation = (await response.json()).result[0].author_reputation;
-    // console.log("Post author reputation: ", await postAuthorReputation)
-    const postTitle = (await response.json()).result[0].title;
-    // console.log("Post title: ", await postTitle)
-    const postPayout = (await response.json()).result[0].payout.toFixed(2);
-    // console.log("Post payout: ", await postPayout)
-
-    await expect(homePage.getFirstPostAuthor).toHaveText(postAuthor);
-    await expect(homePage.getFirstPostAuthorReputation).toContainText('(' + Math.floor(postAuthorReputation) + ')');
-    await expect(homePage.getFirstPostTitle).toHaveText(postTitle);
-    await expect(homePage.getFirstPostPayout).toHaveText(`$${postPayout}`);
-
-    // Vote/children counts can change between API fetch and UI check, so just verify they're numbers
-    const firstPostTotalVotes = (await homePage.getFirstPostVotes.allInnerTexts()).at(0);
-    expect(firstPostTotalVotes).toMatch(/^\d+$/);
-
-    const firstPostChildren = (await homePage.getFirstPostChildren.allInnerTexts()).at(0);
-    expect(firstPostChildren).toMatch(/^\d+$/);
+    await expectFirstTitledCardToShowItsPost(page, homePage.getMainTimeLineOfPosts);
   });
 
   test('validate the first post footer payouts styles (for Trending filter) in the light theme', async ({
@@ -149,7 +196,6 @@ test.describe('Home page tests', () => {
   });
 
   test('validate the first post (for New filter)', async ({ page }) => {
-    const apiHelper = new ApiHelper(page);
     await homePage.goto();
 
     // Wait for posts to load before interacting with filter
@@ -160,42 +206,11 @@ test.describe('Home page tests', () => {
     await expect(homePage.getPostListNew).toBeVisible();
     await expect(homePage.getFilterPosts).toHaveText('New');
 
-    // New posts arrive every few seconds, so fetch the post the card shows rather than the API's newest post.
-    // NSFW-tagged cards hide their title behind a warning, so take the first card that renders one.
-    const firstPostCard = homePage.getPostListNew
-      .locator('li[data-testid="post-list-item"]')
-      .filter({ has: page.locator('h3 a') })
-      .first();
-    const firstPostTitle = firstPostCard.locator('h3 a');
-    const postHref = await firstPostTitle.getAttribute('href');
-    const postLinkMatch = postHref?.match(/\/@([^/]+)\/([^/?#]+)/);
-    expect(postLinkMatch, `post link href: ${postHref}`).toBeTruthy();
-    const [, author, permlink] = postLinkMatch ?? [];
-
-    const post = (await apiHelper.getPostAPI(author, permlink)).result;
-    expect(post, `bridge.get_post ${author}/${permlink}`).toBeTruthy();
-
-    // A cross-post card shows the original post's author and reputation
-    const { original_author: originalAuthor, original_permlink: originalPermlink, tags } = post.json_metadata ?? {};
-    const isCrossPost = Boolean(originalAuthor && originalPermlink && tags?.[0] === 'cross-post');
-    const shownAuthorEntry = isCrossPost ? (await apiHelper.getPostAPI(originalAuthor, originalPermlink)).result : post;
-
-    await expect(firstPostCard.getByTestId('post-author')).toHaveText(shownAuthorEntry.author);
-    await expect(firstPostCard.getByTestId('post-author-reputation')).toContainText(
-      '(' + Math.floor(shownAuthorEntry.author_reputation) + ')'
+    // New posts arrive every few seconds, so the card is checked against its own post, not the newest one
+    await expectFirstTitledCardToShowItsPost(
+      page,
+      homePage.getPostListNew.locator('li[data-testid="post-list-item"]')
     );
-    await expect(firstPostTitle).toHaveText(post.title);
-
-    // Payout can move between render and fetch on a new post, so allow a few cents of drift
-    const payoutText = await firstPostCard.getByTestId('post-payout').innerText();
-    expect(payoutText).toMatch(/^\$\d+\.\d{2}$/);
-    const maxPayoutDriftCents = 5;
-    const payoutDriftCents = Math.abs(Math.round(parseFloat(payoutText.slice(1)) * 100) - Math.round(post.payout * 100));
-    expect(payoutDriftCents).toBeLessThanOrEqual(maxPayoutDriftCents);
-
-    // Vote count can change between render and API fetch, so just verify it's a number
-    const firstPostTotalVotes = await firstPostCard.getByTestId('post-total-votes').first().innerText();
-    expect(firstPostTotalVotes).toMatch(/^\d+$/);
   });
 
   test('move to the first post author profile page', async ({ page }) => {
@@ -376,9 +391,17 @@ test.describe('Home page tests', () => {
 
   test('move to the test trending page for searching by tags', async ({ page }) => {
     await homePage.goto();
-    await page.getByRole('banner').getByRole('combobox').click();
-    await page.getByRole('option').last().click();
-    await expect(homePage.getNavSearchTagsInput).toBeVisible();
+    // Opening the mode menu starts the live HiveSense health check, whose answer can switch the still
+    // untouched box to AI search while the menu is open; a click before hydration opens nothing.
+    // Pick the tag mode again until it holds.
+    await expect(async () => {
+      if (!(await homePage.getNavSearchTagsInput.isVisible())) {
+        await page.keyboard.press('Escape');
+        await page.getByRole('banner').getByRole('combobox').click();
+        await page.getByTestId('search-mode-tag').click({ timeout: 5000 });
+      }
+      await expect(homePage.getNavSearchTagsInput).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 30000 });
     // Type test and press Enter
     await homePage.getNavSearchTagsInput.fill('test');
     await homePage.page.keyboard.press('Enter');

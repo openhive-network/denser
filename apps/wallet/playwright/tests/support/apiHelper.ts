@@ -54,26 +54,6 @@ export interface RecentTradesResponse {
   result: RecentTradesResult;
 }
 
-export interface AccountHistoryOperation {
-  type: string;
-  value: { from?: string; to?: string };
-}
-
-export interface AccountHistoryEntry {
-  op: AccountHistoryOperation;
-  block: number;
-  trx_id: string;
-  timestamp: string;
-}
-
-export type AccountHistoryItem = [number, AccountHistoryEntry];
-
-export interface AccountHistoryResponse {
-  id: number;
-  jsonrpc: string;
-  result: AccountHistoryItem[];
-}
-
 export class ApiHelper {
   readonly page: Page;
 
@@ -100,12 +80,6 @@ export class ApiHelper {
     const json = await response.json();
     // Transform response to match the old format for backward compatibility in tests
     return { result: json.result?.accounts };
-  }
-
-  // Whether the account currently delegates any of its HIVE POWER to others
-  async isDelegatingHivePowerAPI(username: string): Promise<boolean> {
-    const accounts = (await this.getAccountInfoAPI(username)).result;
-    return Number(accounts[0].delegated_vesting_shares.amount) > 0;
   }
 
   // Get Follow count info as json from API response using bridge.get_profile
@@ -320,68 +294,6 @@ export class ApiHelper {
     });
 
     return responseGetListOfProposals.json();
-  }
-
-  // Get account history as json from API response using account_history_api
-  async getAccountHistoryAPI(account: string, start: number, limit: number): Promise<AccountHistoryResponse> {
-    const url = process.env.REACT_APP_API_ENDPOINT;
-
-    const responseGetAccountHistory = await this.page.request.post(`${url}/`, {
-      data: {
-        id: 0,
-        jsonrpc: "2.0",
-        method: "account_history_api.get_account_history",
-        params: {
-          account,
-          start,
-          limit,
-          operation_filter_low: 199284866418737180,
-          include_reversible: true
-        },
-      },
-      headers: {
-        Accept: "application/json, text/plain, */*",
-      },
-    });
-
-    const json = await responseGetAccountHistory.json();
-    // Transform response to maintain backward compatibility with tests
-    // account_history_api returns { result: { history: [...] } }
-    if (json.result && json.result.history) {
-      json.result = json.result.history;
-    }
-    return json;
-  }
-
-  // Get account history as json from API response
-  async getVestingDelegationsAPI(account: string, startDelegatee: string = '', limit: number = 1000) {
-    const url = process.env.REACT_APP_API_ENDPOINT;
-
-    const response = await this.page.request.post(`${url}/`, {
-      data: {
-        id: 0,
-        jsonrpc: "2.0",
-        method: "database_api.list_vesting_delegations",
-        params: {
-          start: [account, startDelegatee],
-          limit,
-          order: "by_delegation"
-        },
-      },
-      headers: {
-        Accept: "application/json, text/plain, */*",
-      },
-    });
-
-    const json = await response.json();
-    // Filter to only include delegations where the account is the delegator
-    // and transform to match expected format
-    if (json.result && json.result.delegations) {
-      json.result = json.result.delegations.filter(
-        (d: { delegator: string }) => d.delegator === account
-      );
-    }
-    return json;
   }
 
   /**
