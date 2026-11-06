@@ -372,6 +372,31 @@ describe('toNotConfirmedError', () => {
     expect(toNotConfirmedError(noRequest, 'a2192469')).to.be.instanceOf(TransactionNotConfirmedError);
   });
 
+  /** What webpack's and Turbopack's runtimes throw for a script chunk that could not be loaded. */
+  function chunkLoadError() {
+    const error = new Error('Loading chunk 8123 failed.\n(error: https://blog.example/_next/static/chunks/8123.js)');
+    error.name = 'ChunkLoadError';
+    return error;
+  }
+
+  // The failover chain loads `wax-errors` on a read's first failure, maybe a block scanner read made
+  // after `broadcast_transaction` succeeded; WorkerBee's `broadcast` rejects with the scanner's error
+  it('turns a chunk load failure during the broadcast into a not-confirmed error with the transaction id', () => {
+    const original = chunkLoadError();
+    const error = toNotConfirmedError(original, 'a2192469');
+
+    if (!(error instanceof TransactionNotConfirmedError))
+      return expect.fail('not a TransactionNotConfirmedError');
+    expect(error.transactionId).to.equal('a2192469');
+    expect(error.cause).to.equal(original);
+  });
+
+  it('finds a chunk load failure as the cause of the broadcast error', () => {
+    const wrapped = new Error('Read failed', { cause: chunkLoadError() });
+
+    expect(toNotConfirmedError(wrapped, 'a2192469')).to.be.instanceOf(TransactionNotConfirmedError);
+  });
+
   it('passes other broadcast errors through unchanged', () => {
     const rejected = new Error('Assert Exception: payer has not enough RC mana for transaction');
     const notAnError = { message: LISTENER_EXPIRED };
