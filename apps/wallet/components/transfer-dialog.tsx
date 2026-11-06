@@ -35,6 +35,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from '@/wallet/i18n/client';
 import { getAccount } from '@transaction/lib/hive-api';
+import { isNodeRequestFailure } from '@transaction/lib/read-transport';
 import { type AccountNameFormatError, checkAccountNameFormat } from '@ui/lib/account-name-rules';
 import { Slider } from '@ui/components/slider';
 import Big from 'big.js';
@@ -383,10 +384,14 @@ export function TransferDialog({
             if (!(await getAccount(to))) {
               ctx.addIssue({ code: z.ZodIssueCode.custom, message: t('transfers_page.error.not_found') });
             }
-          } catch {
+          } catch (error) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
-              message: t('transfers_page.error.account_check_failed')
+              message: t(
+                isNodeRequestFailure(error)
+                  ? 'transfers_page.error.account_check_unreachable'
+                  : 'transfers_page.error.account_check_failed'
+              )
             });
           }
         }),

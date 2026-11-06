@@ -148,5 +148,11 @@ signing asks for the password again.
   worker URL names the idle time (`?idle=<seconds>`). A new choice starts a
   new worker in each app at its next signing, which asks for the password
   once; the replaced worker is locked.
-- The unlock dialogs and the account menu show the idle time, not a countdown:
-  hb-auth does not tell pages when its worker locks.
+- The unlock dialogs and the account menu show the idle time, not a countdown.
+  hb-auth does not tell pages when its worker locks, so a page that started
+  the worker (it has signed with safe storage) asks it every 5 s which
+  accounts it holds unlocked, which is no activity
+  (`@hive/common-hiveio-packages/safe-storage-lock`). Once the signed-in
+  account's keys lock, a notice says so and the account menu shows them
+  locked instead of the idle time. A page that has not signed starts no
+  worker to ask, and shows the idle time.

@@ -211,7 +211,8 @@
     "wrong_safe_storage_password": "Nieprawidłowe hasło do bezpiecznego magazynu. Wpisz hasło ustawione dla bezpiecznego magazynu i spróbuj ponownie.",
     "safe_storage_posting_key_not_authorized": "Klucz do publikowania (posting) zapisany w bezpiecznym magazynie nie działa już dla Twojego konta; mógł zostać zmieniony. Zaloguj się ponownie, podając aktualny klucz do publikowania (posting).",
     "safe_storage_active_key_not_authorized": "Klucz aktywny (active) zapisany w bezpiecznym magazynie nie działa już dla Twojego konta; mógł zostać zmieniony. Zaloguj się ponownie, podając aktualny klucz aktywny (active).",
-    "safe_storage_owner_key_not_authorized": "Klucz właściciela (owner) zapisany w bezpiecznym magazynie nie działa już dla Twojego konta; mógł zostać zmieniony. Zaloguj się ponownie, podając aktualny klucz właściciela (owner)."
+    "safe_storage_owner_key_not_authorized": "Klucz właściciela (owner) zapisany w bezpiecznym magazynie nie działa już dla Twojego konta; mógł zostać zmieniony. Zaloguj się ponownie, podając aktualny klucz właściciela (owner).",
+    "keychain_signing_failed": "Wystąpił błąd podczas podpisywania transakcji w Hive Keychain."
   },
   "request_error": {
     "timeout": "Serwer nie odpowiedział na czas. Spróbuj ponownie.",
@@ -232,9 +233,13 @@
   "session_time": {
     "choose_label": "Zablokuj po bezczynności przez",
     "locks_after": "Blokuje się po {{duration}} bezczynności",
+    "locks_after_sentence": "Blokuje się po {{duration}} bezczynności.",
     "activity": "Każdy podpis uruchamia licznik od nowa. Operacje wymagające klucza aktywnego lub właściciela mogą nadal prosić o hasło.",
     "minutes": "{{value}} min",
     "hours": "{{value}} godz.",
-    "seconds": "{{value}} s"
+    "seconds": "{{value}} s",
+    "locked": "Klucze zablokowane",
+    "locked_notice": "Twoje klucze są zablokowane. Przy następnym podpisie pojawi się prośba o hasło.",
+    "locked_note": "Klucze zablokowane: następny podpis poprosi o hasło"
   }
 }

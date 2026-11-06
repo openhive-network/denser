@@ -472,7 +472,15 @@
     "load_failed_description": "Hive API가 응답하지 않았습니다. 대개 일시적인 현상입니다.",
     "go_home": "홈으로 이동",
     "more_options": "더 보기",
-    "loading_profile": "프로필 불러오는 중"
+    "loading_profile": "프로필 불러오는 중",
+    "follow_toasts": {
+      "followed_title": "팔로우함",
+      "followed_description": "이제 {{username}}님을 팔로우합니다.",
+      "unfollowed_title": "팔로우 취소됨",
+      "unfollowed_description": "{{username}}님을 더 이상 팔로우하지 않습니다.",
+      "unfollowed_all_title": "모두 팔로우 취소됨",
+      "unfollowed_all_description": "더 이상 아무도 팔로우하지 않습니다."
+    }
   },
   "communities": {
     "set_title_for_user": "@{{username}}의 칭호 설정",
@@ -686,7 +694,15 @@
       "you_might_also_like": "추천 게시물",
       "title": "추천"
     },
-    "browse_to_original_post": "@{{author}} 님의 원본 게시물로 이동"
+    "browse_to_original_post": "@{{author}} 님의 원본 게시물로 이동",
+    "comment_toasts": {
+      "posted_title": "댓글 게시됨",
+      "posted_description": "댓글이 게시되었습니다.",
+      "updated_title": "댓글 수정됨",
+      "updated_description": "댓글이 수정되었습니다.",
+      "deleted_title": "댓글 삭제됨",
+      "deleted_description": "댓글이 삭제되었습니다."
+    }
   },
   "submit_page": {
     "log_in_to_post": "게시물을 작성하려면 로그인하세요.",

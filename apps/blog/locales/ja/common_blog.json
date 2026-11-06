@@ -472,7 +472,15 @@
     "load_failed_description": "Hive API が応答しませんでした。通常は一時的なものです。",
     "go_home": "ホームへ",
     "more_options": "その他のオプション",
-    "loading_profile": "プロフィールを読み込み中"
+    "loading_profile": "プロフィールを読み込み中",
+    "follow_toasts": {
+      "followed_title": "フォローしました",
+      "followed_description": "{{username}} をフォローしました。",
+      "unfollowed_title": "フォローを解除しました",
+      "unfollowed_description": "{{username}} のフォローを解除しました。",
+      "unfollowed_all_title": "すべてのフォローを解除しました",
+      "unfollowed_all_description": "誰もフォローしていません。"
+    }
   },
   "communities": {
     "set_title_for_user": "@{{username}}のタイトルを設定",
@@ -686,7 +694,15 @@
       "you_might_also_like": "こちらもおすすめ",
       "title": "おすすめ"
     },
-    "browse_to_original_post": "@{{author}} による元の投稿を見る"
+    "browse_to_original_post": "@{{author}} による元の投稿を見る",
+    "comment_toasts": {
+      "posted_title": "コメントを投稿しました",
+      "posted_description": "コメントが投稿されました。",
+      "updated_title": "コメントを更新しました",
+      "updated_description": "コメントが更新されました。",
+      "deleted_title": "コメントを削除しました",
+      "deleted_description": "コメントが削除されました。"
+    }
   },
   "submit_page": {
     "log_in_to_post": "投稿するにはログインしてください。",

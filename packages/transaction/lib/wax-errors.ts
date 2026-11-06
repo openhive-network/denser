@@ -1,5 +1,5 @@
 import { WaxRequestError } from '@hiveio/wax';
-import { ReadTransportError } from './read-transport';
+import { ReadTransportError, WAX_REQUEST_ERROR_NAMES } from './read-transport';
 
 /**
  * True when an error means we could not get a usable answer from the API node — an HTTP non-2xx
@@ -26,12 +26,5 @@ export function isTransportError(error: unknown): boolean {
   // module instance (e.g. one bundled by a dependency, or after a WASM re-initialisation). The
   // wax transport-error class names are stable, so match them directly as a backstop.
   const name = typeof error === 'object' && error !== null && 'name' in error ? error.name : undefined;
-  return (
-    name === 'WaxRequestError' ||
-    name === 'WaxMalformedJsonError' ||
-    name === 'WaxNon_2XX_3XX_ResponseCodeError' ||
-    name === 'WaxUnknownRequestError' ||
-    name === 'WaxRequestTimeoutError' ||
-    name === 'WaxRequestAbortedByUser'
-  );
+  return typeof name === 'string' && WAX_REQUEST_ERROR_NAMES.has(name);
 }

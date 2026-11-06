@@ -1,4 +1,5 @@
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useTranslation } from '@/blog/i18n/client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { FullAccount, IFollow } from '@hive/common-hiveio-packages/wax';
 import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operation-mutation';
@@ -18,6 +19,7 @@ type FollowParams = { username: string };
 const FOLLOW_REFRESH_DELAYS = [8000, 16000, 30000];
 
 export function useFollowMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   return useOperationMutation({
     name: 'useFollowMutation',
@@ -59,8 +61,8 @@ export function useFollowMutation() {
       rollbackFollowCaches(queryClient, username, otherUsername, context),
     onSuccess: () => postSocialChanged(username),
     successToast: (_data, { username: otherUsername }) => ({
-      title: 'Followed',
-      description: `You are now following ${otherUsername}.`
+      title: t('user_profile.follow_toasts.followed_title'),
+      description: t('user_profile.follow_toasts.followed_description', { username: otherUsername })
     }),
     invalidate: ({ username: otherUsername }) => [
       ['followingData', otherUsername],
@@ -75,6 +77,7 @@ export function useFollowMutation() {
 }
 
 export function useUnfollowMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   return useOperationMutation({
     name: 'useUnfollowMutation',
@@ -99,8 +102,8 @@ export function useUnfollowMutation() {
       rollbackFollowCaches(queryClient, username, otherUsername, context),
     onSuccess: () => postSocialChanged(username),
     successToast: (_data, { username: otherUsername }) => ({
-      title: 'Unfollowed',
-      description: `You have unfollowed ${otherUsername}.`
+      title: t('user_profile.follow_toasts.unfollowed_title'),
+      description: t('user_profile.follow_toasts.unfollowed_description', { username: otherUsername })
     }),
     invalidate: ({ username: otherUsername }) => [
       ['followingData', otherUsername],
@@ -115,6 +118,7 @@ export function useUnfollowMutation() {
 
 /** Unfollows every account the signed-in user follows, in one `reset_following_list` operation. */
 export function useResetFollowingMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   const followingKey = ['followingData', username];
   const profileKey = ['profileData', username];
@@ -142,8 +146,8 @@ export function useResetFollowingMutation() {
       if (context.prevProfile !== undefined) queryClient.setQueryData(profileKey, context.prevProfile);
     },
     successToast: () => ({
-      title: 'Unfollowed all',
-      description: 'You no longer follow anyone.'
+      title: t('user_profile.follow_toasts.unfollowed_all_title'),
+      description: t('user_profile.follow_toasts.unfollowed_all_description')
     }),
     invalidate: () => [followingKey, profileKey],
     invalidateDelays: FOLLOW_REFRESH_DELAYS

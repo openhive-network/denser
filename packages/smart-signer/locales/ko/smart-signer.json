@@ -211,7 +211,8 @@
     "wrong_safe_storage_password": "안전한 저장소 비밀번호가 올바르지 않습니다. 안전한 저장소에 설정한 비밀번호를 입력하고 다시 시도해 주세요.",
     "safe_storage_posting_key_not_authorized": "안전한 저장소에 보관된 게시(posting) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 게시(posting) 키로 다시 로그인해 주세요.",
     "safe_storage_active_key_not_authorized": "안전한 저장소에 보관된 액티브(active) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 액티브(active) 키로 다시 로그인해 주세요.",
-    "safe_storage_owner_key_not_authorized": "안전한 저장소에 보관된 소유자(owner) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 소유자(owner) 키로 다시 로그인해 주세요."
+    "safe_storage_owner_key_not_authorized": "안전한 저장소에 보관된 소유자(owner) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 소유자(owner) 키로 다시 로그인해 주세요.",
+    "keychain_signing_failed": "Hive Keychain에서 트랜잭션에 서명하는 중 오류가 발생했습니다."
   },
   "request_error": {
     "timeout": "서버가 제때 응답하지 않았습니다. 다시 시도해 주세요.",
@@ -232,9 +233,13 @@
   "session_time": {
     "choose_label": "다음 시간 동안 활동이 없으면 잠금",
     "locks_after": "{{duration}} 동안 활동이 없으면 잠깁니다",
+    "locks_after_sentence": "{{duration}} 동안 활동이 없으면 잠깁니다.",
     "activity": "서명할 때마다 타이머가 다시 시작됩니다. 액티브 키나 오너 키가 필요한 작업은 여전히 비밀번호를 요청할 수 있습니다.",
     "minutes": "{{value}}분",
     "hours": "{{value}}시간",
-    "seconds": "{{value}}초"
+    "seconds": "{{value}}초",
+    "locked": "키 잠김",
+    "locked_notice": "키가 잠겼습니다. 다음 서명 시 비밀번호를 묻습니다.",
+    "locked_note": "키 잠김: 다음 서명 시 비밀번호를 묻습니다"
   }
 }

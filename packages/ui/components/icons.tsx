@@ -13,6 +13,7 @@ import {
   Image,
   Laptop,
   Loader2,
+  Lock,
   LucideProps,
   Moon,
   MoreVertical,
@@ -170,6 +171,7 @@ export const Icons = {
   wallet: Wallet,
   messagesSquare: MessagesSquare,
   keyRound: KeyRound,
+  lock: Lock,
   radix: (props: LucideProps) => (
     <svg viewBox="0 0 25 25" fill="none" {...props}>
       <path d="M12 25C7.58173 25 4 21.4183 4 17C4 12.5817 7.58173 9 12 9V25Z" fill="currentcolor"></path>

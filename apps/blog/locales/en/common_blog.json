@@ -477,7 +477,15 @@
     "load_failed_description": "The Hive API did not answer. This is usually temporary.",
     "go_home": "Go home",
     "more_options": "More options",
-    "loading_profile": "Loading profile"
+    "loading_profile": "Loading profile",
+    "follow_toasts": {
+      "followed_title": "Followed",
+      "followed_description": "You are now following {{username}}.",
+      "unfollowed_title": "Unfollowed",
+      "unfollowed_description": "You have unfollowed {{username}}.",
+      "unfollowed_all_title": "Unfollowed all",
+      "unfollowed_all_description": "You no longer follow anyone."
+    }
   },
   "communities": {
     "set_title_for_user": "Set Title for @{{username}}",
@@ -691,7 +699,15 @@
       "you_might_also_like": "You Might Also Like",
       "title": "Suggestions"
     },
-    "browse_to_original_post": "Browse to the original post by @{{author}}"
+    "browse_to_original_post": "Browse to the original post by @{{author}}",
+    "comment_toasts": {
+      "posted_title": "Comment posted successfully",
+      "posted_description": "Your comment has been posted successfully.",
+      "updated_title": "Comment updated successfully",
+      "updated_description": "Your comment has been updated successfully.",
+      "deleted_title": "Comment deleted successfully",
+      "deleted_description": "Your comment has been deleted successfully."
+    }
   },
   "submit_page": {
     "log_in_to_post": "Log in to make a post.",

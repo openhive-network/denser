@@ -38,7 +38,7 @@ const SessionTimeSelect: FC<SessionTimeSelectProps> = ({ value, onChange }) => {
         </Select>
       </div>
       <p className="text-xs text-muted-foreground" data-testid="session-time-caption" data-seconds={value}>
-        {t('session_time.locks_after', { duration: formatSessionTime(t, value) })} {t('session_time.activity')}
+        {t('session_time.locks_after_sentence', { duration: formatSessionTime(t, value) })} {t('session_time.activity')}
       </p>
     </div>
   );

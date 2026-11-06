@@ -211,7 +211,8 @@
     "wrong_safe_storage_password": "Contraseña del almacenamiento seguro incorrecta. Introduce la contraseña que configuraste para el almacenamiento seguro e inténtalo de nuevo.",
     "safe_storage_posting_key_not_authorized": "La clave de publicación (posting) guardada en el almacenamiento seguro ya no funciona para tu cuenta; puede que se haya cambiado. Vuelve a iniciar sesión con tu clave de publicación (posting) actual.",
     "safe_storage_active_key_not_authorized": "La clave activa (active) guardada en el almacenamiento seguro ya no funciona para tu cuenta; puede que se haya cambiado. Vuelve a iniciar sesión con tu clave activa (active) actual.",
-    "safe_storage_owner_key_not_authorized": "La clave de propietario (owner) guardada en el almacenamiento seguro ya no funciona para tu cuenta; puede que se haya cambiado. Vuelve a iniciar sesión con tu clave de propietario (owner) actual."
+    "safe_storage_owner_key_not_authorized": "La clave de propietario (owner) guardada en el almacenamiento seguro ya no funciona para tu cuenta; puede que se haya cambiado. Vuelve a iniciar sesión con tu clave de propietario (owner) actual.",
+    "keychain_signing_failed": "Se produjo un error al firmar la transacción en Hive Keychain."
   },
   "request_error": {
     "timeout": "El servidor no respondió a tiempo. Inténtalo de nuevo.",
@@ -232,9 +233,13 @@
   "session_time": {
     "choose_label": "Bloquear tras inactividad de",
     "locks_after": "Se bloquea tras {{duration}} de inactividad",
+    "locks_after_sentence": "Se bloquea tras {{duration}} de inactividad.",
     "activity": "Cada firma reinicia el temporizador. Las operaciones que requieren tu clave activa o de propietario pueden seguir pidiendo tu contraseña.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
-    "seconds": "{{value}} s"
+    "seconds": "{{value}} s",
+    "locked": "Claves bloqueadas",
+    "locked_notice": "Tus claves están bloqueadas. La próxima firma te pedirá la contraseña.",
+    "locked_note": "Claves bloqueadas: la próxima firma pedirá tu contraseña"
   }
 }

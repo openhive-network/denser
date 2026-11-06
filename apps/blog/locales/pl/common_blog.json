@@ -433,7 +433,7 @@
         "reset_blacklist": "Zresetuj czarną listę",
         "reset_muted_list": "Zresetuj listę wyciszonych",
         "reset_followed_blacklists": "Zresetuj obserwowane czarne listy",
-        "reset_followed_muted_list": "Zresetuj obserwowane listy wyciszonych",
+        "reset_followed_muted_list": "Zresetuj obserwowane wyciszone listy",
         "busy_button": "Proszę czekać",
         "first_button": "Pierwsza",
         "previous_button": "Poprzednia",
@@ -487,7 +487,15 @@
     "load_failed_description": "API Hive nie odpowiedziało. Zwykle jest to chwilowe.",
     "go_home": "Strona główna",
     "more_options": "Więcej opcji",
-    "loading_profile": "Wczytywanie profilu"
+    "loading_profile": "Wczytywanie profilu",
+    "follow_toasts": {
+      "followed_title": "Obserwujesz",
+      "followed_description": "Obserwujesz teraz {{username}}.",
+      "unfollowed_title": "Przestano obserwować",
+      "unfollowed_description": "Nie obserwujesz już {{username}}.",
+      "unfollowed_all_title": "Przestano obserwować wszystkich",
+      "unfollowed_all_description": "Nie obserwujesz już nikogo."
+    }
   },
   "communities": {
     "set_title_for_user": "Ustaw tytuł dla @{{username}}",
@@ -701,7 +709,15 @@
       "you_might_also_like": "Może Ci się również spodobać",
       "title": "Propozycje"
     },
-    "browse_to_original_post": "Przejdź do oryginalnego posta autorstwa @{{author}}"
+    "browse_to_original_post": "Przejdź do oryginalnego posta autorstwa @{{author}}",
+    "comment_toasts": {
+      "posted_title": "Komentarz opublikowany",
+      "posted_description": "Twój komentarz został opublikowany.",
+      "updated_title": "Komentarz zaktualizowany",
+      "updated_description": "Twój komentarz został zaktualizowany.",
+      "deleted_title": "Komentarz usunięty",
+      "deleted_description": "Twój komentarz został usunięty."
+    }
   },
   "submit_page": {
     "log_in_to_post": "Zaloguj się, aby opublikować post.",

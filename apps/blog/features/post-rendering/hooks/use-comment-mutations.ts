@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useUserClient } from '@smart-signer/lib/auth/use-user-client';
+import { useTranslation } from '@/blog/i18n/client';
 import { transactionService } from '@transaction/lib/lazy-transaction-service';
 import { Preferences, Entry } from '@hive/common-hiveio-packages/wax';
 import type { CommentBodyMetadata } from '@transaction/lib/comment-metadata';
@@ -46,6 +47,7 @@ async function extractBodyMetadata(body: string): Promise<CommentBodyMetadata> {
 
 /** Makes comment transaction; the reply shows, fully interactive, before the broadcast. */
 export function useCommentMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   const cleanupRef = useRef<(() => void) | null>(null);
   const confirmInBackground = useBackgroundConfirmation('comment');
@@ -105,13 +107,14 @@ export function useCommentMutation() {
       removeStorageItem(shadowKey(params));
     },
     successToast: () => ({
-      title: 'Comment posted successfully',
-      description: 'Your comment has been posted successfully.'
+      title: t('post_content.comment_toasts.posted_title'),
+      description: t('post_content.comment_toasts.posted_description')
     })
   });
 }
 
 export function useUpdateCommentMutation() {
+  const { t } = useTranslation('common_blog');
   const { username } = useUserClient().user;
   const cleanupRef = useRef<(() => void) | null>(null);
   const confirmInBackground = useBackgroundConfirmation('comment');
@@ -154,8 +157,8 @@ export function useUpdateCommentMutation() {
     },
     rollback: (context, _params, queryClient) => restoreDiscussion(queryClient, context),
     successToast: () => ({
-      title: 'Comment updated successfully',
-      description: 'Your comment has been updated successfully.'
+      title: t('post_content.comment_toasts.updated_title'),
+      description: t('post_content.comment_toasts.updated_description')
     }),
     invalidate: ({ permlink, observer }) => [['postData', username, permlink, observer]],
     invalidateDelays: [8000, 16000, 30000]
@@ -163,6 +166,7 @@ export function useUpdateCommentMutation() {
 }
 
 export function useDeleteCommentMutation() {
+  const { t } = useTranslation('common_blog');
   const cleanupRef = useRef<(() => void) | null>(null);
   const confirmInBackground = useBackgroundConfirmation('comment');
 
@@ -188,8 +192,8 @@ export function useDeleteCommentMutation() {
     },
     rollback: (context, _params, queryClient) => restoreDiscussion(queryClient, context),
     successToast: () => ({
-      title: 'Comment deleted successfully',
-      description: 'Your comment has been deleted successfully.'
+      title: t('post_content.comment_toasts.deleted_title'),
+      description: t('post_content.comment_toasts.deleted_description')
     })
   });
 }

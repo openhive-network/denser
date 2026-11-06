@@ -211,7 +211,8 @@
     "wrong_safe_storage_password": "Password dell'archivio sicuro errata. Inserisci la password impostata per l'archivio sicuro e riprova.",
     "safe_storage_posting_key_not_authorized": "La chiave di pubblicazione (posting) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave di pubblicazione (posting) attuale.",
     "safe_storage_active_key_not_authorized": "La chiave attiva (active) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave attiva (active) attuale.",
-    "safe_storage_owner_key_not_authorized": "La chiave proprietario (owner) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave proprietario (owner) attuale."
+    "safe_storage_owner_key_not_authorized": "La chiave proprietario (owner) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave proprietario (owner) attuale.",
+    "keychain_signing_failed": "Si è verificato un errore durante la firma della transazione in Hive Keychain."
   },
   "request_error": {
     "timeout": "Il server non ha risposto in tempo. Riprova.",
@@ -232,9 +233,13 @@
   "session_time": {
     "choose_label": "Blocca dopo un'inattività di",
     "locks_after": "Si blocca dopo {{duration}} di inattività",
+    "locks_after_sentence": "Si blocca dopo {{duration}} di inattività.",
     "activity": "Ogni firma riavvia il timer. Le operazioni che richiedono la tua chiave attiva o proprietaria possono comunque chiedere la password.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
-    "seconds": "{{value}} s"
+    "seconds": "{{value}} s",
+    "locked": "Chiavi bloccate",
+    "locked_notice": "Le tue chiavi sono bloccate. La prossima firma ti chiederà la password.",
+    "locked_note": "Chiavi bloccate: la prossima firma chiederà la password"
   }
 }

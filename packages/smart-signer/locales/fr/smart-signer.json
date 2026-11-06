@@ -211,7 +211,8 @@
     "wrong_safe_storage_password": "Mot de passe du stockage sécurisé incorrect. Saisissez le mot de passe défini pour le stockage sécurisé et réessayez.",
     "safe_storage_posting_key_not_authorized": "La clé de publication (posting) conservée dans le stockage sécurisé ne fonctionne plus pour votre compte ; elle a peut-être été modifiée. Reconnectez-vous avec votre clé de publication (posting) actuelle.",
     "safe_storage_active_key_not_authorized": "La clé active conservée dans le stockage sécurisé ne fonctionne plus pour votre compte ; elle a peut-être été modifiée. Reconnectez-vous avec votre clé active actuelle.",
-    "safe_storage_owner_key_not_authorized": "La clé propriétaire (owner) conservée dans le stockage sécurisé ne fonctionne plus pour votre compte ; elle a peut-être été modifiée. Reconnectez-vous avec votre clé propriétaire (owner) actuelle."
+    "safe_storage_owner_key_not_authorized": "La clé propriétaire (owner) conservée dans le stockage sécurisé ne fonctionne plus pour votre compte ; elle a peut-être été modifiée. Reconnectez-vous avec votre clé propriétaire (owner) actuelle.",
+    "keychain_signing_failed": "Une erreur s'est produite lors de la signature de la transaction dans Hive Keychain."
   },
   "request_error": {
     "timeout": "Le serveur n'a pas répondu à temps. Veuillez réessayer.",
@@ -232,9 +233,13 @@
   "session_time": {
     "choose_label": "Verrouiller après une inactivité de",
     "locks_after": "Se verrouille après {{duration}} d'inactivité",
+    "locks_after_sentence": "Se verrouille après {{duration}} d'inactivité.",
     "activity": "Chaque signature relance le minuteur. Les opérations qui nécessitent votre clé active ou propriétaire peuvent toujours demander votre mot de passe.",
     "minutes": "{{value}} min",
     "hours": "{{value}} h",
-    "seconds": "{{value}} s"
+    "seconds": "{{value}} s",
+    "locked": "Clés verrouillées",
+    "locked_notice": "Vos clés sont verrouillées. La prochaine signature vous demandera votre mot de passe.",
+    "locked_note": "Clés verrouillées : la prochaine signature demandera votre mot de passe"
   }
 }

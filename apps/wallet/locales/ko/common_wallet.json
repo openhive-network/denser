@@ -289,6 +289,7 @@
     "no_orders": "미체결 주문이 없습니다.",
     "confirm_cancel_order": "{{user}}의 주문 {{orderId}}을(를) 취소하시겠습니까?",
     "cancel_order": "주문 취소",
+    "cancelling": "취소 중…",
     "order_placed": "주문 완료",
     "order_placed_buy": "{{hbd}}(으)로 {{hive}} 구매",
     "order_placed_sell": "{{hive}}을(를) {{hbd}}에 판매",
@@ -562,6 +563,7 @@
       "cannot_delegate": "아직 위임할 수 없습니다: 최소 위임 금액은 {{min}} HP이며 사용 가능한 금액은 {{available}} HP입니다.",
       "delegation_below_minimum": "위임이 거부되었습니다: 최소 금액은 {{min}} HP입니다(시도한 금액: {{amount}} HP).",
       "account_check_failed": "계정을 확인할 수 없습니다. 나중에 다시 시도하세요.",
+      "account_check_unreachable": "이 계정을 확인하기 위해 서버에 연결할 수 없습니다. 연결 상태를 확인한 후 다시 시도하세요.",
       "memo_marker_only": "암호화된 메모에는 # 뒤에 텍스트가 있어야 합니다."
     },
     "confirm_title": {
