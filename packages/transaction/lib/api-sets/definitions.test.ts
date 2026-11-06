@@ -105,4 +105,16 @@ describe('the API set engine probing lite', () => {
     expect(view.nodesFor('lite')).to.not.include(NO_LITE_NODE);
     expect(view.nodesFor('core')[0]).to.equal(NO_LITE_NODE);
   });
+
+  it('routes lite to every preferred node before any probe or call, its default first', () => {
+    const config = resolveApiSetsConfig({ apiEndpoint: NO_LITE_NODE, allowedNodes: `${NO_LITE_NODE} ${LITE_NODE}` }, [
+      'core',
+      'lite'
+    ]);
+    const engine = createApiSetEngine(config);
+    engine.report('core', NO_LITE_NODE, { ok: true });
+
+    const view = createEngineView(engine, config);
+    expect(view.nodesFor('lite')).to.deep.equal([NO_LITE_NODE, LITE_NODE]);
+  });
 });

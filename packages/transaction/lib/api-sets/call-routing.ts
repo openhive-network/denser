@@ -1,7 +1,7 @@
 import type { TApiSetId } from '@ui/config/api-set-ids';
 import type { IApiNodeSwitchDetail } from '../api-node-switch';
 import type { IFailoverRoute } from '../server-failover';
-import { apiSetOfJsonRpc, apiSetOfRest, routeApiSet, type IApiSetRoute } from './router';
+import { apiSetOfJsonRpc, apiSetOfRest, OPTIONAL_API_SETS, routeApiSet, type IApiSetRoute } from './router';
 
 /** The nodes the browser's chain is configured with (`getApiEndpoints()`). */
 export interface IBrowserEndpoints {
@@ -42,7 +42,10 @@ export interface IApiSetRouting {
     path: readonly string[],
     configured: readonly string[]
   ) => Promise<IFailoverRoute | undefined>;
-  /** The nodes the calls of `setId` go to, best first, behind which come `configured`. */
+  /**
+   * The nodes the calls of `setId` go to, best first, behind which come `configured`; for a set only
+   * some nodes serve (lite), `configured` only while the routes know no node of it.
+   */
   nodesOf: (setId: TApiSetId, configured: readonly string[]) => Promise<string[]>;
 }
 
@@ -52,6 +55,7 @@ export interface IApiSetRouting {
  * the JSON-RPC node this session switched to, goes first for the sets that node served, unless the
  * user chose a node for the set. Only a core call that left the browser's JSON-RPC node switches
  * that node: a bridge, lite or search-api node failing, or not serving the call, says nothing about core.
+ * A lite call fails over within the lite set's nodes only.
  */
 export function createApiSetRouting(browser?: IBrowserNodeState): IApiSetRouting {
   const pinnedNodeOf = (setId: TApiSetId): string | undefined => {
@@ -80,8 +84,13 @@ export function createApiSetRouting(browser?: IBrowserNodeState): IApiSetRouting
     }
   };
 
-  const routeOf = (setId: TApiSetId, configured: readonly string[]) =>
-    routeApiSet(setId, { pinned: pinnedNodeOf(setId), configured });
+  const routeOf = async (setId: TApiSetId, configured: readonly string[]): Promise<IApiSetRoute> => {
+    const pinned = pinnedNodeOf(setId);
+    if (!OPTIONAL_API_SETS.has(setId)) return routeApiSet(setId, { pinned, configured });
+    // The configured nodes stand in only while no view knows the set's nodes.
+    const route = await routeApiSet(setId, { pinned, configured: [] });
+    return route.nodes.length > 0 ? route : { ...route, nodes: [...new Set(configured)] };
+  };
 
   const routeCall: IApiSetRouting['routeCall'] = async (root, path, configured) => {
     const setId = root === 'api' ? apiSetOfJsonRpc(path[0]) : apiSetOfRest(path[0]);

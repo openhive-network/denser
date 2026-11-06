@@ -53,6 +53,11 @@
   },
   {
     "spec": "liteGraduation.spec.ts",
+    "method": "bridge.get_account_posts",
+    "hash": "b2fe1cf208782a2e"
+  },
+  {
+    "spec": "liteGraduation.spec.ts",
     "method": "bridge.get_follow_list",
     "hash": "2a0994286f1e6419"
   },
@@ -70,6 +75,16 @@
     "spec": "liteGraduation.spec.ts",
     "method": "rc_api.find_rc_accounts",
     "hash": "8196950febc1a6c6"
+  },
+  {
+    "spec": "liteSignIn.spec.ts",
+    "method": "bridge.get_discussion",
+    "hash": "eeda6b06b4c56c1e"
+  },
+  {
+    "spec": "liteSignIn.spec.ts",
+    "method": "bridge.get_post",
+    "hash": "0e6d3162f433985d"
   },
   {
     "spec": "loggedInCommunitiesExplorer.spec.ts",

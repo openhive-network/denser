@@ -137,7 +137,23 @@ describe('routing the browser calls by API set', () => {
     const { routing } = setup({}, { routes: { lite: [LITE_NODE] }, selections: {} }, LEGACY_PICK);
     expect(await routing.nodesOf('core', [CONFIGURED])).to.deep.equal([LEGACY_PICK, CONFIGURED]);
     expect(await routing.nodesOf('bridge', [CONFIGURED])).to.deep.equal([LEGACY_PICK, CONFIGURED]);
-    expect(await routing.nodesOf('lite', [CONFIGURED])).to.deep.equal([LITE_NODE, CONFIGURED]);
+    expect(await routing.nodesOf('lite', [CONFIGURED])).to.deep.equal([LITE_NODE]);
+  });
+
+  it("fails a lite call over within the lite set's nodes only, never to the configured ones", async () => {
+    const { chain, routing } = setup(
+      { [LITE_NODE]: { lite: 'transport' } },
+      { routes: { core: [CONFIGURED, LITE_NODE], lite: [LITE_NODE] }, selections: {} }
+    );
+    expect(await routing.nodesOf('lite', [CONFIGURED])).to.deep.equal([LITE_NODE]);
+    const error = await chain.api.lite.get_post({}).catch((e: unknown) => e);
+    expect(error).to.be.instanceOf(ReadTransportError);
+    expect(String(error)).to.contain(LITE_NODE);
+  });
+
+  it('sends lite calls to the configured nodes while the routes know no lite node', async () => {
+    const { routing } = setup({}, { routes: { core: [CONFIGURED] }, selections: {} });
+    expect(await routing.nodesOf('lite', [CONFIGURED, LITE_NODE])).to.deep.equal([CONFIGURED, LITE_NODE]);
   });
 
   it("puts the user's choice for a set before this session's automatic switch", async () => {
