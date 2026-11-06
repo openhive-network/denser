@@ -9,7 +9,7 @@ import {
   IUnreadNotifications
 } from '@hive/common-hiveio-packages/wax';
 import { commonVariables } from '@ui/lib/common-variables';
-import { getApiSetNodes, getReadChain } from './chain';
+import { getApiSetCallNode, getReadChain } from './chain';
 import { nonEmpty, readFromHivemind, readRestPostList } from './hivemind-rest';
 import {
   postsReadOptionsOf,
@@ -97,7 +97,8 @@ const liteVoteFree = createVoteFreeSupport();
 /**
  * The post read `method` in hivemind's vote-free form (`voteFree`, `<method>_v2`) where its node
  * serves it, else with votes (`stock`): on a lite node, only when its `lite.get_info` lists the
- * method; on `bridge.*`, unless the bridge node answered it with "unknown method" before.
+ * method; on `bridge.*`, unless the bridge node the call goes to (past the nodes failover skips)
+ * answered it with "unknown method" before.
  */
 const voteFreeRead =
   <T>(
@@ -110,7 +111,7 @@ const voteFreeRead =
       if (!servesVoteFreeLite(lite.info, method)) return stock(api);
       return readVoteFree(liteVoteFree, lite.node, () => voteFree(api), () => stock(api));
     }
-    const [node = getReadChain().endpointUrl] = await getApiSetNodes('bridge');
+    const node = (await getApiSetCallNode('bridge')) ?? getReadChain().endpointUrl;
     return readVoteFree(bridgeVoteFree, node, () => voteFree(api), () => stock(api));
   };
 

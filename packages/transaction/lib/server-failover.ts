@@ -227,6 +227,35 @@ export const jsonRpcHealthKey = (node: string, family: string): string => `${nod
  */
 const nodeUnreachableKey = (node: string): string => `${node}/unreachable`;
 
+/** Whether a call skips `node`: `health` has it down for the call (`healthKey`) or, given `unreachableKey`, at all. */
+const isSkippedIn =
+  (health: NodeHealth, healthKey: (node: string) => string, unreachableKey?: (node: string) => string) =>
+  (node: string): boolean => {
+    const unreachable = unreachableKey?.(node);
+    return health.isDown(healthKey(node)) || (unreachable !== undefined && health.isDown(unreachable));
+  };
+
+/** `nodes` with the most recently healthy for the call (`healthKey`) first. */
+const byRecentHealthIn = (
+  health: NodeHealth,
+  nodes: readonly string[],
+  healthKey: (node: string) => string
+): string[] => {
+  const nodeByKey = new Map(nodes.map((node) => [healthKey(node), node]));
+  return health.byRecentHealth([...nodeByKey.keys()]).flatMap((key) => nodeByKey.get(key) ?? []);
+};
+
+/**
+ * The node a JSON-RPC call of `family` routed to `nodes` is sent to first, as the failover chain
+ * picks it: the first node `health` does not skip, else, with every node skipped, the one healthy
+ * most recently; `undefined` for no nodes. It claims no probe.
+ */
+export function firstJsonRpcNode(health: NodeHealth, nodes: readonly string[], family: string): string | undefined {
+  const healthKey = (node: string) => jsonRpcHealthKey(node, family);
+  const isSkipped = isSkippedIn(health, healthKey, nodeUnreachableKey);
+  return nodes.find((node) => !isSkipped(node)) ?? byRecentHealthIn(health, nodes, healthKey)[0];
+}
+
 /**
  * Parses a whitespace/comma-separated node list (the `REACT_APP_ALLOWED_HIVE_API_NODES` format) into
  * distinct origins, dropping `excluded` entries (e.g. the images host, which is listed for CSP but is
@@ -371,18 +400,13 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     const { label, healthKey } = call;
     const configuredNodes = [...new Set(call.nodes)];
     const [primary] = configuredNodes;
-    const nodeByKey = new Map(configuredNodes.map((node) => [healthKey(node), node]));
     const unreachableKeyOf = (node: string): string | undefined => call.unreachableKey?.(node);
-    const isSkipped = (node: string): boolean => {
-      const unreachable = unreachableKeyOf(node);
-      return health.isDown(healthKey(node)) || (unreachable !== undefined && health.isDown(unreachable));
-    };
+    const isSkipped = isSkippedIn(health, healthKey, call.unreachableKey);
     // Skipping every node would fail the call without asking anyone, so then all of them are tried,
     // the one that answered last first: it is likelier to be back than a node that never answered.
     const failsOver = connectivity?.admitsFailover() ?? true;
     const firstUp = configuredNodes.find((node) => !isSkipped(node));
-    const byRecentHealth = () =>
-      health.byRecentHealth([...nodeByKey.keys()]).flatMap((key) => nodeByKey.get(key) ?? []);
+    const byRecentHealth = () => byRecentHealthIn(health, configuredNodes, healthKey);
     const sweepAll = failsOver && firstUp === undefined;
     // Without failover the one node asked is the first one up, so a dead pinned node is not asked
     // again and again while the others serve.
