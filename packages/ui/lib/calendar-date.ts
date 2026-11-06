@@ -28,7 +28,10 @@ const getCalendarDateFormat = (lang: string): Intl.DateTimeFormat => {
 /**
  * Numeric calendar date of a chain timestamp (UTC, with or without a zone suffix) in `lang`'s own
  * order and separators: "03/23/2021" in English, "23.03.2021" in Polish. A tag the runtime rejects
- * formats in English.
+ * formats in English; an unparseable date formats as an empty string.
  */
-export const formatCalendarDate = (date: string, lang: string): string =>
-  getCalendarDateFormat(lang).format(parseUtcTimestamp(date));
+export const formatCalendarDate = (date: string, lang: string): string => {
+  const timestamp = parseUtcTimestamp(date);
+  if (isNaN(timestamp)) return '';
+  return getCalendarDateFormat(lang).format(timestamp);
+};

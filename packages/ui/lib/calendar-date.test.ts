@@ -38,4 +38,11 @@ describe('formatCalendarDate', () => {
   it('formats in English for a locale the runtime rejects', () => {
     assert.equal(formatCalendarDate('2021-03-23T08:00:00', 'not_a_locale!'), '03/23/2021');
   });
+
+  it('formats an unparseable or missing date as an empty string', () => {
+    assert.equal(formatCalendarDate('not a date', 'en'), '');
+    assert.equal(formatCalendarDate('', 'pl'), '');
+    // @ts-expect-error - a suggestion entry from the API may lack `created`
+    assert.equal(formatCalendarDate(undefined, 'en'), '');
+  });
 });
