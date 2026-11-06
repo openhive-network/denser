@@ -436,6 +436,10 @@
         "last_button": "Last",
         "viewing_page": "Viewing Page {{current}} of {{total}}",
         "users_on_list": "Users On List: {{number}}",
+        "accounts_count_one": "{{count}} account",
+        "accounts_count_other": "{{count}} accounts",
+        "lists_count_one": "{{count}} list",
+        "lists_count_other": "{{count}} lists",
         "unfollow_all": {
           "button": "Unfollow all",
           "title": "Unfollow all accounts?",

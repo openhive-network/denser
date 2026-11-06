@@ -438,6 +438,12 @@
         "last_button": "Dernière",
         "viewing_page": "Page {{current}} sur {{total}}",
         "users_on_list": "Utilisateurs dans la liste : {{number}}",
+        "accounts_count_one": "{{count}} compte",
+        "accounts_count_many": "{{count}} comptes",
+        "accounts_count_other": "{{count}} comptes",
+        "lists_count_one": "{{count}} liste",
+        "lists_count_many": "{{count}} listes",
+        "lists_count_other": "{{count}} listes",
         "unfollow_all": {
           "button": "Ne plus suivre personne",
           "title": "Ne plus suivre aucun compte ?",

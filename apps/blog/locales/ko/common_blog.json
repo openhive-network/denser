@@ -434,6 +434,8 @@
         "last_button": "마지막",
         "viewing_page": "{{total}}페이지 중 {{current}}페이지 보기",
         "users_on_list": "목록의 사용자: {{number}}",
+        "accounts_count_other": "계정 {{count}}개",
+        "lists_count_other": "목록 {{count}}개",
         "unfollow_all": {
           "button": "모두 언팔로우",
           "title": "모든 계정을 언팔로우할까요?",

@@ -114,7 +114,8 @@ const POLICY = {
       'cards.post_card.in',
       'post_content.in',
       'post_content.footer.in',
-      'user_profile.lists.post_count.one'
+      'user_profile.lists.post_count.one',
+      'user_profile.lists.list.accounts_count_one'
     ])
   }
 };

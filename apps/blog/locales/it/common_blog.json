@@ -438,6 +438,12 @@
         "last_button": "Ultimo",
         "viewing_page": "Pagina {{current}} di {{total}}",
         "users_on_list": "Utenti nella lista: {{number}}",
+        "accounts_count_one": "{{count}} account",
+        "accounts_count_many": "{{count}} account",
+        "accounts_count_other": "{{count}} account",
+        "lists_count_one": "{{count}} lista",
+        "lists_count_many": "{{count}} liste",
+        "lists_count_other": "{{count}} liste",
         "unfollow_all": {
           "button": "Smetti di seguire tutti",
           "title": "Smettere di seguire tutti gli account?",

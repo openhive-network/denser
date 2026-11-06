@@ -434,6 +434,8 @@
         "last_button": "最後",
         "viewing_page": "{{total}} ページ中 {{current}} ページを表示中",
         "users_on_list": "リストのユーザー: {{number}}",
+        "accounts_count_other": "{{count}}件のアカウント",
+        "lists_count_other": "{{count}}件のリスト",
         "unfollow_all": {
           "button": "すべてフォロー解除",
           "title": "すべてのアカウントのフォローを解除しますか？",
