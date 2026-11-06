@@ -13,7 +13,13 @@ import {
 } from '@hive/common-hiveio-packages/wax';
 import { GetDynamicGlobalPropertiesResponse } from '@hiveio/wax';
 import { getHiveChainService } from './hive-chain-service';
-import { getReadChain, getSearchHivemindRestApi, getSearchReadChain, type HivemindRestApi } from './chain';
+import {
+  getApiSetCallNode,
+  getReadChain,
+  getSearchHivemindRestApi,
+  getSearchReadChain,
+  type HivemindRestApi
+} from './chain';
 import { nonEmpty, readFromHivemind } from './hivemind-rest';
 import { ApiAccount } from '@hiveio/wax';
 import {
@@ -21,9 +27,9 @@ import {
   calculateManabarFullRegenerationTime,
   type IManabarValue
 } from './manabar-math';
-import { DATA_LIMIT, getBridgeReadNode } from './bridge-api';
+import { DATA_LIMIT } from './bridge-api';
 import { fetchReadTransport } from './read-transport';
-import { createViewerVoteBatcher } from './viewer-votes-batch';
+import { createViewerVoteBatcher, listVotesNodeOf } from './viewer-votes-batch';
 import { readAccountProfile } from './profile-metadata';
 import { getLogger } from '@ui/lib/logging';
 import { getLiteFollowCount, getLiteFollowers, getLiteFollowing } from './lite-social-api';
@@ -365,11 +371,11 @@ export const getListVotesByCommentVoter = async (
 
 /**
  * `voter`'s vote on `author`/`permlink`, as `getListVotesByCommentVoter([author, permlink, voter], 1)`
- * answers it with that vote only; lookups made together (the cards of a page) go to the node of the
- * bridge post reads in one JSON-RPC batch, see `createViewerVoteBatcher`.
+ * answers it with that vote only; lookups made together (the cards of a page) go in one JSON-RPC
+ * batch to the node the core set routes `database_api` calls to, see `createViewerVoteBatcher`.
  */
 export const getViewerVote = createViewerVoteBatcher({
-  nodeOf: getBridgeReadNode,
+  nodeOf: listVotesNodeOf(getApiSetCallNode, () => getReadChain().endpointUrl),
   send: async (node, batch) => {
     const { response } = await fetchReadTransport.request({
       method: 'POST',

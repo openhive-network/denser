@@ -1,4 +1,5 @@
 import type { IVoteListItem } from '@hive/common-hiveio-packages/wax';
+import type { TApiSetId } from '@ui/config/api-set-ids';
 import { getLogger } from '@ui/lib/logging';
 import { isRequestRejected, ReadTransportError } from './read-transport';
 import { createVoteFreeSupport, type IVoteFreeSupport } from './vote-free-posts';
@@ -31,6 +32,18 @@ export const buildListVotesBatch = (targets: readonly IViewerVoteTarget[]): obje
     id
   }));
 
+/** The API set whose node `database_api.list_votes` is routed to: a core (hived) call. */
+const LIST_VOTES_API_SET: TApiSetId = 'core';
+
+/**
+ * The node a lookup of the viewer's votes goes to: the one `callNodeOf` routes `LIST_VOTES_API_SET`
+ * calls to, which a single `list_votes` reaches first, or `defaultNode()` while it names none.
+ */
+export const listVotesNodeOf =
+  (callNodeOf: (setId: TApiSetId) => Promise<string | undefined>, defaultNode: () => string) =>
+  async (): Promise<string> =>
+    (await callNodeOf(LIST_VOTES_API_SET)) ?? defaultNode();
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
@@ -59,8 +72,13 @@ export function parseListVotesBatch(
   return results;
 }
 
+/** Whether a batch answer carries replies and every one of them is an error, none a result. */
+const isAllErrors = (answer: readonly unknown[]): boolean =>
+  answer.length > 0 &&
+  answer.every((reply) => isRecord(reply) && reply.error !== undefined && !('result' in reply));
+
 export interface IViewerVoteBatcherOptions {
-  /** The node the batch goes to: the one the vote-free posts were read from. */
+  /** The node the batch goes to: the one a single lookup (`lookUpOne`) is sent to first. */
   nodeOf: () => Promise<string>;
   /** Posts `batch` to `node` and resolves to the parsed body; fails with `ReadTransportError`. */
   send: (node: string, batch: object[]) => Promise<unknown>;
@@ -85,8 +103,9 @@ const isBatchRejected = (error: ReadTransportError): boolean =>
  * A lookup of a viewer's vote on a post that collects the lookups made within `windowMs` and asks
  * for them in JSON-RPC batches of up to `maxBatchSize` calls, sent to `nodeOf()`. A lone lookup, and
  * every target the batch left unanswered, is looked up on its own (`lookUpOne`). A node that answers
- * a batch with something other than an array, or with a 4xx status, is recorded in `support` and
- * gets no more batches: its lookups go one by one. A batch failing on transport is looked up one by
+ * a batch with something other than an array, with every call in error, or with a 4xx status, is
+ * recorded in `support` and gets no more batches: its lookups go one by one. A target whose call
+ * alone is in error is looked up on its own. A batch failing on transport is looked up one by
  * one as well, without recording the node. Any other error of `send` rejects the batch's lookups.
  */
 export function createViewerVoteBatcher({
@@ -128,6 +147,12 @@ export function createViewerVoteBatcher({
     const results = parseListVotesBatch(answer, targets);
     if (!results) {
       logger.info('%s answers no JSON-RPC batches, looking votes up one by one', node);
+      support.markLacking(node);
+      lookUpEach(lookups);
+      return;
+    }
+    if (Array.isArray(answer) && isAllErrors(answer)) {
+      logger.info('%s answers every call of a vote batch with an error, looking votes up one by one', node);
       support.markLacking(node);
       lookUpEach(lookups);
       return;

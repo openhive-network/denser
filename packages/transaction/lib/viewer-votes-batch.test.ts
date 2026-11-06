@@ -5,6 +5,7 @@ import { ReadTransportError } from './read-transport';
 import {
   buildListVotesBatch,
   createViewerVoteBatcher,
+  listVotesNodeOf,
   parseListVotesBatch,
   type IViewerVoteAnswer,
   type IViewerVoteTarget
@@ -179,8 +180,36 @@ describe('createViewerVoteBatcher', () => {
     expect(single).to.deep.equal([target('one')]);
   });
 
+  it('sends the batch to the node the core set routes list_votes to, not the bridge node', async () => {
+    const routes: Record<string, string> = { bridge: NODE, core: OTHER_NODE };
+    const sent: string[] = [];
+    const lookUp = createViewerVoteBatcher({
+      nodeOf: listVotesNodeOf(async (setId) => routes[setId], () => NODE),
+      send: async (to, batch) => {
+        sent.push(to);
+        return batchAnswer(batch, {});
+      },
+      lookUpOne: async () => ({ votes: [] }),
+      windowMs: 0
+    });
+
+    await Promise.all([lookUp(target('one')), lookUp(target('two'))]);
+
+    expect(sent).to.deep.equal([OTHER_NODE]);
+  });
+
+  it('sends the batch to the default node while the core set names none', async () => {
+    const nodeOf = listVotesNodeOf(async () => undefined, () => OTHER_NODE);
+
+    expect(await nodeOf()).to.equal(OTHER_NODE);
+  });
+
   for (const [rejection, answer] of [
     ['answers no array', () => ({ jsonrpc: '2.0', id: null, error: { message: 'batch requests are not allowed' } })],
+    [
+      'answers every call with an error',
+      (batch: object[]) => batch.map((_call, id) => ({ jsonrpc: '2.0', id, error: { code: -32003, message: 'lock' } }))
+    ],
     [
       'answers 400',
       () => {
