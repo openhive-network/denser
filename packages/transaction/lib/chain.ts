@@ -8,6 +8,7 @@ import type { TWaxExtended, TWaxRestExtended } from '@hiveio/wax';
 import { wrapChainWithLogging } from './chain-proxy';
 import {
   FAILOVER_ATTEMPT_TIMEOUT_MS,
+  firstJsonRpcNode,
   parseFallbackNodes,
   restApiHealthKey,
   wrapChainWithServerFailover,
@@ -231,6 +232,14 @@ export const getApiSetNodes = async (setId: TApiSetId): Promise<string[]> => {
   const configured = [apiEndpoint, ...getFallbackNodes().filter((node) => node !== apiEndpoint)];
   return apiSetRouting.nodesOf(setId, configured);
 };
+
+/**
+ * The node `getReadChain()` sends a JSON-RPC call of `setId` to first: the first of
+ * `getApiSetNodes(setId)` the shared node health does not skip (routed calls are recorded under
+ * their set as the family), for a question about the node the call will reach.
+ */
+export const getApiSetCallNode = async (setId: TApiSetId): Promise<string | undefined> =>
+  firstJsonRpcNode(nodeHealth, await getApiSetNodes(setId), setId);
 
 export type HivemindRestApi = ReadChain['restApi']['hivemind-api'];
 
