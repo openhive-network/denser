@@ -34,9 +34,9 @@ import { getHivemindRestApi } from './chain';
 const fixtures = JSON.parse(readFileSync(join(__dirname, '__fixtures__/hivemind-rest.json'), 'utf8'));
 const [post] = fixtures.rankedPosts;
 /** What a REST post list adds to its query: the posts without votes, bodies cut for cards. */
-const LIST_SHAPE = 'votes=none&truncate-body=1000';
+const LIST_SHAPE = 'votes=none&truncate-body=9000';
 /** A REST post list's posts as read: marked with the length their bodies were cut at. */
-const cutPosts = (posts: object[]) => posts.map((entry) => ({ ...entry, _bodyCutAt: 1000 }));
+const cutPosts = (posts: object[]) => posts.map((entry) => ({ ...entry, _bodyCutAt: 9000 }));
 /** The JSON-RPC calls but the vote-free post reads, which a node without them answers "unknown method". */
 const stockCalls = (calls: IJsonRpcNode['calls']) => calls.filter(({ method }) => !method.endsWith('_v2'));
 const discussionRoot = fixtures.discussion['guest4test1/test-ako-post'];
