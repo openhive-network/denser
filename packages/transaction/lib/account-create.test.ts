@@ -40,7 +40,7 @@ const STUBS: Record<string, unknown> = {
   './lib/required-key-type': {},
   './lib/operation-names': {},
   './lib/workerbee-session': { WorkerBeeSession: class {} },
-  './lib/transaction-inclusion': {},
+  './lib/transaction-inclusion': { inclusionLookupVia: () => async () => false },
   './lib/follow-list-reset': {},
   './lib/validate-hive-account': {},
   './lib/validation': {}

@@ -25,7 +25,7 @@ import { Beneficiarie, Preferences } from '@hive/common-hiveio-packages/wax';
 import WorkerBee, { IWorkerBee } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
-import { getChain } from './lib/chain';
+import { getChain, getReadChain } from './lib/chain';
 import { PUBLISHING_APP } from './lib/publishing-app';
 import { getPostCategory } from './lib/post-category';
 import { subscribeToSignerOptions } from './lib/signer-options';
@@ -39,6 +39,8 @@ import { getOperationNames } from './lib/operation-names';
 import { WorkerBeeSession } from './lib/workerbee-session';
 import {
   type IInclusionWatch,
+  INCLUSION_TIMEOUT_MS,
+  inclusionLookupVia,
   recordedTransactionId,
   TransactionNotConfirmedError,
   toNotConfirmedError,
@@ -50,6 +52,10 @@ export { PUBLISHING_APP } from './lib/publishing-app';
 export type { ProfileMetadataUpdate } from './lib/profile-metadata';
 
 const logger = getLogger('app');
+
+const lookUpTransactionInclusion = inclusionLookupVia((params) =>
+  getReadChain().api.transaction_status_api.find_transaction(params)
+);
 
 export type TransactionErrorCallback = (error: any) => any;
 
@@ -67,7 +73,9 @@ export interface TransactionBroadcastResult {
   transactionId: string;
   /**
    * With `confirmInBackground`: true once a block includes the transaction, false when none of the
-   * blocks scanned within `INCLUSION_TIMEOUT_MS` did; rejects when no block could be scanned.
+   * blocks scanned within `INCLUSION_TIMEOUT_MS` did; rejects when no block could be scanned. After a
+   * scanner error, the node's `transaction_status_api` answers at the timeout instead, and a failed
+   * lookup rejects.
    */
   included?: Promise<boolean>;
 }
@@ -326,7 +334,7 @@ export class TransactionService {
     return new Promise((resolve, reject) => {
       this.workerBeeSession
         .use(async (bot) => {
-          const watch = watchInclusion(bot, transactionIds);
+          const watch = watchInclusion(bot, transactionIds, INCLUSION_TIMEOUT_MS, lookUpTransactionInclusion);
           resolve(watch);
           await watch.included;
         })
