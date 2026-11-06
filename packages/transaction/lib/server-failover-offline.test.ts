@@ -11,7 +11,10 @@ import { ReadTransportError } from './read-transport';
 interface IFakeChain {
   endpointUrl: string;
   withTimeout: (timeoutMs: number) => IFakeChain;
-  api: { database_api: { get_dynamic_global_properties: (params: unknown) => Promise<unknown> } };
+  api: {
+    database_api: { get_dynamic_global_properties: (params: unknown) => Promise<unknown> };
+    lite: { get_account_history: (params: unknown) => Promise<unknown> };
+  };
 }
 
 const NODES = ['https://primary', 'https://second', 'https://third'];
@@ -25,28 +28,31 @@ const networkFailure = () =>
 // `hanging`: the request gets no answer until its timeout, with no `offline` event.
 type TNodeState = 'ok' | 'offline' | 'http-503' | 'hanging';
 
-const setup = (state: Record<string, TNodeState>) => {
+// The nodes `lite.*` calls are routed to, a list of their own.
+const LITE_NODES = NODES.slice(0, 2);
+
+const setup = (state: Record<string, TNodeState>, liteState: Record<string, TNodeState> = state) => {
   let time = 0;
   const now = () => time;
   const health = new NodeHealth({ now });
   const connectivity = new Connectivity({ now });
   const calls: string[] = [];
+  const respond = async (node: string, nodeState: TNodeState, timeoutMs: number) => {
+    calls.push(node);
+    if (nodeState === 'ok') return { node };
+    if (nodeState === 'http-503') throw new ReadTransportError('#503', REQUEST, 503);
+    if (nodeState === 'hanging') {
+      time += timeoutMs;
+      throw new ReadTransportError('Request timeout', REQUEST);
+    }
+    throw networkFailure();
+  };
   const makeChain = (node: string, timeoutMs = FAILOVER_ATTEMPT_TIMEOUT_MS): IFakeChain => ({
     endpointUrl: node,
     withTimeout: (ms) => makeChain(node, ms),
     api: {
-      database_api: {
-        get_dynamic_global_properties: async () => {
-          calls.push(node);
-          if (state[node] === 'ok') return { node };
-          if (state[node] === 'http-503') throw new ReadTransportError('#503', REQUEST, 503);
-          if (state[node] === 'hanging') {
-            time += timeoutMs;
-            throw new ReadTransportError('Request timeout', REQUEST);
-          }
-          throw networkFailure();
-        }
-      }
+      database_api: { get_dynamic_global_properties: () => respond(node, state[node], timeoutMs) },
+      lite: { get_account_history: () => respond(node, liteState[node], timeoutMs) }
     }
   });
   const chain = wrapChainWithServerFailover(makeChain(PRIMARY), {
@@ -55,17 +61,20 @@ const setup = (state: Record<string, TNodeState>) => {
     connectivity,
     createNodeChain: (node, timeoutMs) => makeChain(node, timeoutMs),
     isTransportError: (error) => error instanceof ReadTransportError,
+    routeFor: async (_root, path) => (path[0] === 'lite' ? { nodes: LITE_NODES, family: 'lite' } : undefined),
     now,
     // Retries run at once; a hedge never starts, so a node is asked only after the previous one failed.
     sleep: (ms) => (ms === HEDGE_DELAY_MS ? new Promise<void>(() => undefined) : Promise.resolve())
   });
   const read = () => chain.api.database_api.get_dynamic_global_properties({});
   // A heavy read: each node asked once, two nodes at most.
-  const heavyRead = () => chain.withTimeout(30_000).api.database_api.get_dynamic_global_properties({});
+  const heavyRead = (timeoutMs = 30_000) =>
+    chain.withTimeout(timeoutMs).api.database_api.get_dynamic_global_properties({});
+  const liteRead = () => chain.api.lite.get_account_history({});
   const advance = (ms: number) => {
     time += ms;
   };
-  return { read, heavyRead, calls, health, connectivity, advance };
+  return { read, heavyRead, liteRead, calls, health, connectivity, advance, now };
 };
 
 const offlineEverywhere = (): Record<string, TNodeState> => Object.fromEntries(NODES.map((node) => [node, 'offline']));
@@ -217,6 +226,43 @@ describe('wrapChainWithServerFailover: connectivity', () => {
     }
 
     expect(calls).to.include.members(NODES);
+  });
+
+  it('keeps the network up when a heavy read stalls on every one of three nodes', async () => {
+    const { heavyRead, calls, connectivity } = setup(hangingEverywhere());
+
+    for (let i = 0; i < 4; i += 1) {
+      await heavyRead(15_000).catch(() => undefined);
+      expect(connectivity.isConnected()).to.equal(true);
+    }
+
+    expect(calls).to.include.members(NODES);
+  });
+
+  it('still finds the network down through plain reads after heavy reads stalled', async () => {
+    const { read, heavyRead, connectivity, now } = setup(hangingEverywhere());
+    await heavyRead(15_000).catch(() => undefined);
+    const readsStartedAt = now();
+
+    // The heavy read left two nodes down, so the plain reads reach the third one only after its cooldown.
+    while (connectivity.isConnected() && now() - readsStartedAt <= SILENT_NODE_WINDOW_MS) {
+      await read().catch(() => undefined);
+    }
+
+    expect(connectivity.isConnected()).to.equal(false);
+  });
+
+  it('keeps the network up when the nodes of a lite route stall on lite calls alone', async () => {
+    const state = Object.fromEntries(NODES.map((node): [string, TNodeState] => [node, 'ok']));
+    const liteState = hangingEverywhere();
+    const { liteRead, calls, connectivity } = setup(state, liteState);
+
+    for (let i = 0; i < 4; i += 1) {
+      await liteRead().catch(() => undefined);
+      expect(connectivity.isConnected()).to.equal(true);
+    }
+
+    expect(new Set(calls)).to.deep.equal(new Set(LITE_NODES));
   });
 
   it('asks only the first node while the browser is offline', async () => {
