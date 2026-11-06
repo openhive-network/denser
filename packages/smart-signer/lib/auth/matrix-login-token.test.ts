@@ -11,9 +11,8 @@ registerHooks({
   }
 });
 
-const { mintMatrixLoginToken, mintMatrixLoginTokenCreatingAccount, syncMatrixDisplayName } = await import(
-  './matrix-login-token.ts'
-);
+const { mintMatrixLoginToken, mintMatrixLoginTokenCreatingAccount, mintSyncingDisplayName, syncMatrixDisplayName } =
+  await import('./matrix-login-token.ts');
 const { FetchError, FetchTimeoutError } = await import('../fetch-json.ts');
 
 const HOMESERVER = 'https://matrix.example.org';
@@ -341,5 +340,83 @@ describe('syncMatrixDisplayName', () => {
     assert.equal(await syncMatrixDisplayName('alice', 'New Name', SETTINGS, request, report), false);
     assert.equal(calls.length, 1);
     assert.deepEqual(lines, ['@alice:example.org: setting the display name: Status: 404 for [redacted]']);
+  });
+});
+
+describe('mintSyncingDisplayName', () => {
+  const minted = async () => ({ kind: 'token' as const, loginToken: LOGIN_TOKEN });
+  /** Resolves once the background work queued so far has run */
+  const settle = () => new Promise((resolve) => setImmediate(resolve));
+
+  it("answers the token, then gives the account the profile's display name", async () => {
+    const { calls, request } = synapse({ [CREATE_USER]: async () => ({ displayname: 'Old Name' }) });
+    const { lines, report } = failureLog();
+
+    const result = await mintSyncingDisplayName('alice', minted, async () => 'New Name', SETTINGS, request, report);
+    await settle();
+
+    assert.deepEqual(result, { kind: 'token', loginToken: LOGIN_TOKEN });
+    assert.deepEqual(
+      calls.map(({ method, body }) => ({ method, body })),
+      [
+        { method: 'GET', body: undefined },
+        { method: 'PUT', body: { displayname: 'New Name' } }
+      ]
+    );
+    assert.deepEqual(lines, []);
+  });
+
+  it('answers the token without waiting for a profile read that hangs', async () => {
+    const { calls, request } = synapse();
+    const { report } = failureLog();
+
+    const result = await mintSyncingDisplayName('alice', minted, () => new Promise(() => {}), SETTINGS, request, report);
+
+    assert.deepEqual(result, { kind: 'token', loginToken: LOGIN_TOKEN });
+    assert.deepEqual(calls, []);
+  });
+
+  it('answers the token, reporting it, when the profile read fails', async () => {
+    const { calls, request } = synapse();
+    const { lines, report } = failureLog();
+    const failingRead = () => Promise.reject(new TypeError(`value.replace is not a function ${ADMIN_TOKEN}`));
+
+    const result = await mintSyncingDisplayName('alice', minted, failingRead, SETTINGS, request, report);
+    await settle();
+
+    assert.deepEqual(result, { kind: 'token', loginToken: LOGIN_TOKEN });
+    assert.deepEqual(calls, []);
+    assert.deepEqual(lines, [
+      '@alice:example.org: reading the display name: value.replace is not a function [redacted]'
+    ]);
+  });
+
+  it('leaves the display name of an account whose profile names none', async () => {
+    const { calls, request } = synapse();
+    const { lines, report } = failureLog();
+
+    await mintSyncingDisplayName('alice', minted, async () => undefined, SETTINGS, request, report);
+    await settle();
+
+    assert.deepEqual(calls, []);
+    assert.deepEqual(lines, []);
+  });
+
+  it('reads no profile when no token was minted', async () => {
+    const { request } = synapse();
+    const { report } = failureLog();
+    let reads = 0;
+    const displayNameOf = async () => {
+      reads += 1;
+      return 'New Name';
+    };
+
+    for (const answer of [{ kind: 'unknown-user' }, { kind: 'failed' }, { kind: 'rate-limited', retryAfterMs: 5 }] as const) {
+      assert.deepEqual(
+        await mintSyncingDisplayName('alice', async () => answer, displayNameOf, SETTINGS, request, report),
+        answer
+      );
+    }
+    assert.equal(reads, 0);
   });
 });
