@@ -28,17 +28,17 @@ describe('viewerVoteOf', () => {
     });
   });
 
-  it("looks the vote up when the vote-free entry was read as another observer, whose vote it carries", () => {
+  it("looks the vote up in a page's batch when the vote-free entry was read as another observer", () => {
     const readAsDefault = post({ observer_vote: { rshares: 5, percent: 10000 }, _observer: 'hive.blog' });
 
-    assert.deepEqual(viewerVoteOf(readAsDefault, 'bob'), { known: false, lookUp: true });
+    assert.deepEqual(viewerVoteOf(readAsDefault, 'bob'), { known: false, lookUp: true, batch: true });
   });
 
   it('looks the vote up when active_votes list the viewer, and not otherwise', () => {
     const voted = post({ active_votes: [{ voter: 'carol', rshares: 1 }, { voter: 'bob', rshares: 2 }] });
     const notVoted = post({ active_votes: [{ voter: 'carol', rshares: 1 }] });
 
-    assert.deepEqual(viewerVoteOf(voted, 'bob'), { known: false, lookUp: true });
+    assert.deepEqual(viewerVoteOf(voted, 'bob'), { known: false, lookUp: true, batch: false });
     assert.deepEqual(viewerVoteOf(notVoted, 'bob'), { known: false, lookUp: false });
   });
 

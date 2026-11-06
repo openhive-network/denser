@@ -94,6 +94,11 @@ const NO_TOP_VOTES = 0;
 const bridgeVoteFree = createVoteFreeSupport();
 const liteVoteFree = createVoteFreeSupport();
 
+/** The node `bridge.*` post reads go to: the first the failover will admit of the bridge API set. */
+export const getBridgeReadNode = async (): Promise<string> => {
+  return (await getApiSetCallNode('bridge')) ?? getReadChain().endpointUrl;
+};
+
 /**
  * The post read `method` in hivemind's vote-free form (`voteFree`, `<method>_v2`) where its node
  * serves it, else with votes (`stock`): on a lite node, only when its `lite.get_info` lists the
@@ -111,8 +116,7 @@ const voteFreeRead =
       if (!servesVoteFreeLite(lite.info, method)) return stock(api);
       return readVoteFree(liteVoteFree, lite.node, () => voteFree(api), () => stock(api));
     }
-    const node = (await getApiSetCallNode('bridge')) ?? getReadChain().endpointUrl;
-    return readVoteFree(bridgeVoteFree, node, () => voteFree(api), () => stock(api));
+    return readVoteFree(bridgeVoteFree, await getBridgeReadNode(), () => voteFree(api), () => stock(api));
   };
 
 export const getPostsRanked = async (
