@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import clsx from "clsx";
 import { Input } from "@hive/ui/components/input";
 import { Button } from "@hive/ui/components/button";
@@ -12,11 +12,8 @@ import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Entry } from "@hive/common-hiveio-packages/wax";
 import { useSearchParams } from "next/navigation";
 import { DEFAULT_OBSERVER } from "@/blog/lib/utils";
-import { getLogger } from "@ui/lib/logging";
-import { configuredImagesEndpoint } from "@ui/config/public-vars";
 import { useTranslation } from "@/blog/i18n/client";
 import { useUserClient } from "@smart-signer/lib/auth/use-user-client";
-import { useSignerContext } from "@smart-signer/components/signer-provider";
 import { useLoggedUserContext } from "@/blog/features/votes/hooks/use-logged-user";
 import {
   AlertDialog,
@@ -35,6 +32,7 @@ import { usePostFormState } from "@/blog/features/post-editor/hooks/use-post-for
 import { usePostFormActions } from "@/blog/features/post-editor/hooks/use-post-form-actions";
 import { useScrollSync } from "@/blog/features/post-editor/hooks/use-scroll-sync";
 import { useEditorCommunity } from "@/blog/features/post-editor/hooks/use-editor-community";
+import { useProxyAuthToken } from "@/blog/features/post-editor/hooks/use-proxy-auth-token";
 import { PostFormHeader } from "@/blog/features/post-editor/PostFormHeader";
 import { PostMetadataSection } from "@/blog/features/post-editor/PostMetadataSection";
 import { PostPublishingSection } from "@/blog/features/post-editor/PostPublishingSection";
@@ -48,27 +46,6 @@ const MdEditor = dynamic(() => import("@/blog/features/post-editor/md-editor"), 
     </div>
   ),
 });
-
-const logger = getLogger("app");
-
-/** Check if markdown content contains external image URLs that would need proxying. */
-function contentHasExternalImage(content: string, proxyBase: string): boolean {
-  const mdImageRegex = /!\[[^\]]*\]\((https?:\/\/[^)\s]+)\)/g;
-  let match;
-  while ((match = mdImageRegex.exec(content)) !== null) {
-    if (!match[1].startsWith(proxyBase)) return true;
-  }
-  const bareImageRegex =
-    /(?:^|\n)\s*(https?:\/\/[^\s]+\.(?:jpe?g|png|gif|webp|svg|bmp)(?:\?[^\s]*)?)\s*(?:\n|$)/gi;
-  while ((match = bareImageRegex.exec(content)) !== null) {
-    if (!match[1].startsWith(proxyBase)) return true;
-  }
-  const htmlImgRegex = /<img\s[^>]*src=["'](https?:\/\/[^"']+)["']/gi;
-  while ((match = htmlImgRegex.exec(content)) !== null) {
-    if (!match[1].startsWith(proxyBase)) return true;
-  }
-  return false;
-}
 
 export default function PostForm({
   username,
@@ -89,7 +66,6 @@ export default function PostForm({
 }) {
   const btnRef = useRef<HTMLButtonElement>(null);
   const { user } = useUserClient();
-  const { loadSigner } = useSignerContext();
   const observer = user.isLoggedIn ? user.username : DEFAULT_OBSERVER;
   const searchParams = useSearchParams();
   const categoryParam = searchParams?.get("category") ?? undefined;
@@ -115,8 +91,6 @@ export default function PostForm({
   const [imagePickerState, setImagePickerState] = useState("");
   const editorContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
-  const [proxyAuthToken, setProxyAuthToken] = useState<string | undefined>();
-  const proxyAuthRequested = useRef(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
   // --- State hook ---
@@ -136,6 +110,11 @@ export default function PostForm({
     shadowDraftRecovery,
     removeShadowDraft,
   } = usePostFormState({ username, editMode, post_s, categoryParam });
+
+  const { proxyAuthToken, settleProxyAuth } = useProxyAuthToken({
+    content: previewContent,
+    publishedBody: editMode ? post_s?.body : undefined,
+  });
 
   // --- Actions hook ---
   const {
@@ -166,6 +145,7 @@ export default function PostForm({
     setIsSubmitting,
     setCancelDialogOpen,
     btnRef,
+    settleProxyAuth,
   });
 
   // --- Scroll sync hook ---
@@ -177,49 +157,6 @@ export default function PostForm({
     preview,
     previewContent,
   });
-
-  // --- Proxy auth token ---
-  const fetchProxyAuthToken = useCallback(async () => {
-    if (!user.isLoggedIn) {
-      proxyAuthRequested.current = false;
-      return;
-    }
-    try {
-      const signer = await loadSigner();
-      const timestamp = Date.now();
-      const imageOwner = signer.authorityUsername || signer.username;
-      const message = `Authorize image proxy preview for ${imageOwner} at ${new Date(timestamp).toISOString()}`;
-      const sig = await signer.signChallenge({ message, password: "" });
-      const baseUrl = configuredImagesEndpoint.replace(/\/+$/, "");
-      const resp = await fetch(`${baseUrl}/proxy-auth/${imageOwner}/${sig}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ timestamp }),
-      });
-      if (resp.ok) {
-        const data = await resp.json();
-        setProxyAuthToken(data.token);
-      } else {
-        logger.error("Failed to obtain proxy auth token: %s", resp.status);
-      }
-    } catch (error) {
-      logger.error("Error obtaining proxy auth token: %o", error);
-    }
-  }, [user.isLoggedIn, loadSigner]);
-
-  useEffect(() => {
-    if (proxyAuthRequested.current || !previewContent) return;
-    if (contentHasExternalImage(previewContent, configuredImagesEndpoint)) {
-      proxyAuthRequested.current = true;
-      fetchProxyAuthToken();
-    }
-  }, [previewContent, fetchProxyAuthToken]);
-
-  useEffect(() => {
-    if (!proxyAuthToken) return;
-    const interval = setInterval(fetchProxyAuthToken, 25 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, [proxyAuthToken, fetchProxyAuthToken]);
 
   // --- NSFW tag injection ---
   // An edit posts into the post's own category; the draft's is saved only after a debounce

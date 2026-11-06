@@ -190,6 +190,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/features/post-editor/lib/scroll-sync-anchors.test.ts \
     apps/blog/features/post-editor/lib/image-markdown.test.ts \
     apps/blog/features/post-editor/lib/mention-completion.test.ts \
+    apps/blog/features/post-editor/lib/proxy-auth.test.ts \
     apps/blog/features/votes/hooks/logged-user-contexts.test.ts \
     apps/blog/features/votes/lib/viewer-vote.test.ts \
     apps/blog/features/post-rendering/lib/votes-before-payout.test.ts \

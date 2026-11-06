@@ -35,6 +35,7 @@ interface UsePostFormActionsParams {
   setIsSubmitting: (submitting: boolean) => void;
   setCancelDialogOpen: Dispatch<SetStateAction<boolean>>;
   btnRef: RefObject<HTMLButtonElement | null>;
+  settleProxyAuth: () => Promise<void>;
 }
 
 export function usePostFormActions({
@@ -57,6 +58,7 @@ export function usePostFormActions({
   setIsSubmitting,
   setCancelDialogOpen,
   btnRef,
+  settleProxyAuth,
 }: UsePostFormActionsParams) {
   const router = useRouter();
   const postMutation = usePostMutation();
@@ -154,6 +156,8 @@ export function usePostFormActions({
         rewardOptionsChanged,
       };
       try {
+        // Keychain answers one request at a time: signing while the preview's token prompt is open fails both
+        await settleProxyAuth();
         await postMutation.mutateAsync(postParams);
       } catch {
         // usePostMutation has reported the failure
