@@ -61,14 +61,15 @@ export class Connectivity {
     return true;
   }
 
-  /** A node answered, so the network works. */
+  /** A node answered, if only with an HTTP error, so the network works, whatever the browser last reported. */
   reportAnswered(): void {
-    if (this.unreachableSince === undefined) return;
+    if (this.isConnected()) return;
+    this.browserOffline = false;
     this.unreachableSince = undefined;
     this.notify();
   }
 
-  /** No node a call asked answered at all: a network failure or a timeout on each. */
+  /** A call asked every node and none answered at all: a network failure or a timeout on each. */
   reportUnanswered(): void {
     if (this.unreachableSince !== undefined) return;
     this.unreachableSince = this.now();

@@ -101,11 +101,11 @@ export interface IFailoverRoute {
 
 /** The browser's connection, which a call consults before failing over and tells what it found. */
 export interface IFailoverConnectivity {
-  /** False while the network is down: a call then asks its first node once. */
+  /** False while the network is down: a call then asks its first node that is not down once. */
   admitsFailover(): boolean;
-  /** A node answered. */
+  /** A node answered, if only with an HTTP error. */
   reportAnswered(): void;
-  /** Every node a call asked failed without any answer (see `isUnanswered`). */
+  /** A call asked every node and each failed without any answer (see `isUnanswered`). */
   reportUnanswered(): void;
   /** Whether a failed attempt got no answer from its node, e.g. a network failure or a timeout. */
   isUnanswered(error: unknown): boolean;
@@ -147,7 +147,7 @@ export interface IServerFailoverOptions<T extends IFailoverChain<T>> {
   /** Called after a call failed on the primary node and was then served by `node`. */
   onFailover?: (node: string) => void;
   /**
-   * The browser's connection. While it is down a call asks its first node once, without failing
+   * The browser's connection. While it is down a call asks its first node up once, without failing
    * over and without recording the outcome against the node: offline every node fails alike.
    */
   connectivity?: IFailoverConnectivity;
@@ -270,8 +270,10 @@ export function parseFallbackNodes(
  * API with an endpoint of its own included), each node's outcome is reported to the route, and a
  * broadcast is sent once to the family's first node.
  *
- * With `connectivity`, a call made while the network is down asks its first node once and records
- * nothing about it, and a call no node answered at all tells `connectivity` the network is down.
+ * With `connectivity`, a call made while the network is down asks its first node that is not down
+ * once and records nothing about it, any answer of a node (an HTTP error included) tells
+ * `connectivity` the network works, and a call that asked every node and got no answer at all tells
+ * it the network is down.
  *
  * A chain derived by `withTimeout(timeoutMs)` fails over as well, sharing `health`, but each call
  * asks a node once with `timeoutMs`, without hedging, and asks two nodes at most.
@@ -366,11 +368,16 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     // Skipping every node would fail the call without asking anyone, so then all of them are tried,
     // the one that answered last first: it is likelier to be back than a node that never answered.
     const failsOver = connectivity?.admitsFailover() ?? true;
-    const sweepAll = failsOver && configuredNodes.every(isSkipped);
+    const firstUp = configuredNodes.find((node) => !isSkipped(node));
+    const byRecentHealth = () =>
+      health.byRecentHealth([...nodeByKey.keys()]).flatMap((key) => nodeByKey.get(key) ?? []);
+    const sweepAll = failsOver && firstUp === undefined;
+    // Without failover the one node asked is the first one up, so a dead pinned node is not asked
+    // again and again while the others serve.
     const nodes = !failsOver
-      ? [primary]
+      ? [firstUp ?? byRecentHealth()[0]]
       : sweepAll
-        ? health.byRecentHealth([...nodeByKey.keys()]).flatMap((key) => nodeByKey.get(key) ?? [])
+        ? byRecentHealth()
         : configuredNodes;
     const { budgetMs, maxNodes = Infinity } = policy;
     const fitsBudget = () => budgetMs === undefined || now() - startedAt + policy.attemptTimeoutMs <= budgetMs;
@@ -425,7 +432,11 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
           lastError = error;
           nodeError = error;
           notServed = call.isApiNotServed(error);
-          if (!connectivity?.isUnanswered(error)) anyAnswer = true;
+          // Any answer, an HTTP error included, proves the network works.
+          if (!connectivity?.isUnanswered(error)) {
+            anyAnswer = true;
+            connectivity?.reportAnswered();
+          }
         }
       }
       if (!failsOver) return { kind: 'failed' };
@@ -490,8 +501,10 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     }
 
     settled = true;
-    // One unreachable node says nothing about the network; several silent at once mostly mean it is down.
-    if (failsOver && !anyAnswer && tried.length > 1) connectivity?.reportUnanswered();
+    // Only a sweep that asked every node, more than one, and got no answer says the network is down:
+    // a call held to fewer nodes by its node or time budget may only have met slow nodes.
+    const sweptEveryNode = tried.length > 1 && configuredNodes.every((node) => tried.includes(node));
+    if (failsOver && !anyAnswer && sweptEveryNode) connectivity?.reportUnanswered();
     logger.error(
       lastError,
       '%s failed on every node tried (%s) within %d ms',
