@@ -105,8 +105,8 @@ export interface IFailoverConnectivity {
   admitsFailover(): boolean;
   /** A node answered, if only with an HTTP error. */
   reportAnswered(): void;
-  /** A call asked every node and each failed without any answer (see `isUnanswered`). */
-  reportUnanswered(): void;
+  /** `node` failed without any answer (see `isUnanswered`) to a call that may ask `nodes`. */
+  reportSilent(node: string, nodes: readonly string[]): void;
   /** Whether a failed attempt got no answer from its node, e.g. a network failure or a timeout. */
   isUnanswered(error: unknown): boolean;
 }
@@ -272,8 +272,8 @@ export function parseFallbackNodes(
  *
  * With `connectivity`, a call made while the network is down asks its first node that is not down
  * once and records nothing about it, any answer of a node (an HTTP error included) tells
- * `connectivity` the network works, and a call that asked every node and got no answer at all tells
- * it the network is down.
+ * `connectivity` the network works, and each node that got no answer at all is reported to it as
+ * silent, which tells it the network is down once every node was, across calls.
  *
  * A chain derived by `withTimeout(timeoutMs)` fails over as well, sharing `health`, but each call
  * asks a node once with `timeoutMs`, without hedging, and asks two nodes at most.
@@ -384,7 +384,6 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     const tried: string[] = [];
     let settled = false;
     let failures = 0;
-    let anyAnswer = false;
     let lastError: unknown;
 
     // A node is asked once neither its family nor the node itself is down; the call probes it when
@@ -411,6 +410,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     const runNode = async (node: string, admission: TNodeAdmission): Promise<TNodeOutcome> => {
       const nodeStartedAt = now();
       let notServed = false;
+      let answered = false;
       let nodeError: unknown;
       for (const [index, target] of attemptsOn(call, node, admission).entries()) {
         if (index > 0) {
@@ -434,7 +434,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
           notServed = call.isApiNotServed(error);
           // Any answer, an HTTP error included, proves the network works.
           if (!connectivity?.isUnanswered(error)) {
-            anyAnswer = true;
+            answered = true;
             connectivity?.reportAnswered();
           }
         }
@@ -445,6 +445,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
       // slow may still serve the others, so a timeout stays recorded for this family alone.
       const unreachable = unreachableKeyOf(node);
       if (unreachable !== undefined && isConnectionFailure(nodeError)) health.markDown(unreachable);
+      if (!answered) connectivity?.reportSilent(node, configuredNodes);
       const error = notServed ? 'apiNotFound' : 'transport';
       call.report?.(node, { ok: false, error, latencyMs: now() - nodeStartedAt });
       return { kind: 'failed' };
@@ -501,10 +502,6 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
     }
 
     settled = true;
-    // Only a sweep that asked every node, more than one, and got no answer says the network is down:
-    // a call held to fewer nodes by its node or time budget may only have met slow nodes.
-    const sweptEveryNode = tried.length > 1 && configuredNodes.every((node) => tried.includes(node));
-    if (failsOver && !anyAnswer && sweptEveryNode) connectivity?.reportUnanswered();
     logger.error(
       lastError,
       '%s failed on every node tried (%s) within %d ms',
