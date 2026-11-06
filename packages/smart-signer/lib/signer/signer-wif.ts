@@ -1,10 +1,10 @@
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { SignerHbauth } from '@smart-signer/lib/signer/signer-hbauth';
 import { TTransactionPackType, THexString, transaction } from '@hiveio/wax';
-import { PasswordDialogModalPromise } from '@smart-signer/components/password-dialog';
 import { PasswordFormMode, PasswordFormOptions } from '@smart-signer/components/password-form';
 
 import { getLogger } from '@hive/ui/lib/logging';
+import { isUserCancelled } from '@hive/ui/lib/user-cancelled';
 import { KeyAuthorityType } from '@hiveio/hb-auth';
 import { getChain } from '@hive/common-hiveio-packages';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
@@ -169,7 +169,7 @@ export class SignerWif extends SignerHbauth {
           // Kept only for a user still signed in: one signing out in another tab while asked would
           // have the key stored for the signed-out account
           const { password: wif, storePassword: storeKey } = await askWhileSignedInIfSo(username, () =>
-            PasswordDialogModalPromise({ isOpen: true, passwordFormOptions })
+            this.getKeyFromUser(passwordFormOptions)
           );
           if (storeKey) {
             await this.storePassword(wif);
@@ -182,7 +182,7 @@ export class SignerWif extends SignerHbauth {
       const wif: string = await this.passwordPromise;
       return wif;
     } catch (error) {
-      if (error instanceof SignedOutError) throw error;
+      if (error instanceof SignedOutError || isUserCancelled(error)) throw error;
       logger.error('Error in getPasswordFromUser: %s', error instanceof Error ? error.message : String(error));
       throw new Error('No WIF key from user');
     }
@@ -214,10 +214,10 @@ export class SignerWif extends SignerHbauth {
   /**
    * Stores password (WIF key) in storage for future use.
    *
-   * @param {''} wif
+   * @param {string} wif
    * @memberof SignerWif
    */
-  async storePassword(wif: '') {
+  async storePassword(wif: string) {
     const storageKey = this.storageKey;
 
     // Check if we have the same key already stored (means also already

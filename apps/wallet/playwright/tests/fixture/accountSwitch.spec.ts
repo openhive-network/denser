@@ -1,10 +1,11 @@
 import type { Server } from 'node:http';
-import { test, expect, type Locator, type Page } from '@playwright/test';
+import { test, expect, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import { FIXTURE_API_PORT } from '../support/apiStub';
 import { WALLET_BASE_PATH } from '../support/basePath';
+import { installBroadcastInterceptor } from '../support/broadcastInterceptor';
 import { installKeychainStub } from '../support/keychainStub';
 import { LoginForm } from '../support/pages/loginForm';
-import { STUB_ACCOUNT, startWalletApiStub } from '../support/walletApiStub';
+import { STUB_ACCOUNT, startWalletApiStub, stubAccountWith } from '../support/walletApiStub';
 import enSmartSigner from '@smart-signer/locales/en/smart-signer.json';
 
 /**
@@ -19,6 +20,12 @@ const OTHER = 'stub-sender';
 const ADDED = 'stub-followed';
 const WITHDRAW_MESSAGE = `Withdraw 1.250 HBD to ${STUB_ACCOUNT}`;
 const EN_EXTENSION_SIGN_IN = enSmartSigner.login_form.extension_sign_in;
+
+/** `getPrivateKeyFromPassword('gtg', 'active', 'denser-fixture-shared-key')`, a key of no real account. */
+const SHARED_WIF = '5Jdptz9S7YME5YLzHRwVHbAjQf2r95HBFgQTbMmTYwghsUV2SfR';
+const SHARED_PUBLIC_KEY = 'STM5dRfo5EMpM51eN3pS8Gn1CDGVZXjRanwfJP8oEXQ8KS36HhB2W';
+const SAFE_STORAGE_PASSWORD = 'fixture-password';
+const sharedAuthority = { weight_threshold: 1, account_auths: [], key_auths: [[SHARED_PUBLIC_KEY, 1]] };
 
 const clientOnlyUser = (username: string) => ({
   isLoggedIn: true,
@@ -36,7 +43,9 @@ let stub: Server;
 
 test.beforeAll(async () => {
   stub = await startWalletApiStub(FIXTURE_API_PORT, {
+    ...stubAccountWith({ posting: sharedAuthority, active: sharedAuthority }),
     'database_api.verify_authority': () => ({ valid: true }),
+    'account_by_key_api.get_key_references': () => ({ accounts: [[STUB_ACCOUNT]] }),
     'database_api.find_savings_withdrawals': () => ({
       withdrawals: [
         {
@@ -96,6 +105,27 @@ const openAccountMenu = async (page: Page): Promise<Locator> => {
   return menu;
 };
 
+/** Opens the dialog cancelling the savings withdrawal, retried until hydration attached the handlers. */
+const openCancelWithdrawDialog = async (page: Page): Promise<Locator> => {
+  const cancel = page.getByRole('row').filter({ hasText: WITHDRAW_MESSAGE }).getByRole('button', { name: 'Cancel' });
+  const dialog = page.getByRole('dialog').filter({ hasText: 'Cancel this withdraw request?' });
+  await expect(async () => {
+    await cancel.click();
+    await expect(dialog).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: HYDRATION_TIMEOUT });
+  return dialog;
+};
+
+/** Switches to OTHER in a new tab of `context` and waits for `page` to see the switch. */
+const switchInOtherTab = async (page: Page, context: BrowserContext): Promise<void> => {
+  const otherTab = await context.newPage();
+  await otherTab.goto(`${WALLET_BASE_PATH}/market`);
+  const menu = await openAccountMenu(otherTab);
+  await menu.getByTestId('account-switcher-item').click();
+  await otherTab.waitForURL(`**${WALLET_BASE_PATH}/@${OTHER}/transfers`);
+  await expect.poll(() => readStoredUsername(page)).toBe(OTHER);
+};
+
 test.describe('Account menu switcher', () => {
   test('WALLET-ACCOUNT-SWITCH-01 — the menu lists the other account and switching shows its wallet', async ({
     page
@@ -138,20 +168,39 @@ test.describe('Account menu switcher', () => {
     context
   }) => {
     await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
-    const cancel = page.getByRole('row').filter({ hasText: WITHDRAW_MESSAGE }).getByRole('button', { name: 'Cancel' });
-    const dialog = page.getByRole('dialog').filter({ hasText: 'Cancel this withdraw request?' });
-    await expect(async () => {
-      await cancel.click();
-      await expect(dialog).toBeVisible({ timeout: 1000 });
-    }).toPass({ timeout: HYDRATION_TIMEOUT });
+    const dialog = await openCancelWithdrawDialog(page);
 
-    const otherTab = await context.newPage();
-    await otherTab.goto(`${WALLET_BASE_PATH}/market`);
-    const menu = await openAccountMenu(otherTab);
-    await menu.getByTestId('account-switcher-item').click();
-    await otherTab.waitForURL(`**${WALLET_BASE_PATH}/@${OTHER}/transfers`);
+    await switchInOtherTab(page, context);
 
-    await expect.poll(() => readStoredUsername(page)).toBe(OTHER);
     await expect(dialog).toBeHidden();
+  });
+
+  test('WALLET-ACCOUNT-SWITCH-04 — a switch in another tab closes the safe-storage password prompt, unlocking nothing', async ({
+    page,
+    context
+  }) => {
+    // hb-auth then runs in a dedicated worker, which a reload ends: the stored key is locked again
+    await context.addInitScript(() => Reflect.deleteProperty(globalThis, 'SharedWorker'));
+    const broadcasts = await installBroadcastInterceptor(page);
+    await page.goto(`${WALLET_BASE_PATH}/@${STUB_ACCOUNT}/transfers`);
+    const menu = await openAccountMenu(page);
+    await menu.getByTestId('account-switcher-add').click();
+    const loginForm = new LoginForm(page);
+    await expect(loginForm.wifInput).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await loginForm.usernameInput.fill(STUB_ACCOUNT);
+    await loginForm.passwordInput.fill(SAFE_STORAGE_PASSWORD);
+    await loginForm.wifInput.fill(SHARED_WIF);
+    await loginForm.saveSignInButton.click();
+    await expect(loginForm.loginDialog).toHaveCount(0, { timeout: HYDRATION_TIMEOUT });
+    await page.reload();
+
+    const dialog = await openCancelWithdrawDialog(page);
+    await dialog.getByRole('button', { name: 'Cancel withdraw from savings' }).click();
+    await expect(loginForm.enterYourPasswordForm).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+
+    await switchInOtherTab(page, context);
+
+    await expect(loginForm.enterYourPasswordForm).toBeHidden();
+    expect(broadcasts.calls).toHaveLength(0);
   });
 });

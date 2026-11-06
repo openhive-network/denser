@@ -272,8 +272,8 @@ test.describe('Login and Sign Up tests', () =>{
     await expect(loginForm.wifInputErrorMessage).toHaveText('WIF should not be empty.');
   });
 
-  // No WIF key from user - in the other sign in options form
-  test('Validate No WIF key from user in the other sign in options form', async ({page}) =>{
+  // Closing the WIF dialog is the user's cancel - no error toast
+  test('Validate closing the WIF dialog in the other sign in options form shows no error', async ({page}) =>{
     const loginForm = new LoginForm(page);
 
     await homePage.loginBtn.click()
@@ -287,11 +287,9 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.signInWithWifButton.click();
     await loginForm.validateEnterYourWifKeyFormIsLoaded();
     await loginForm.closeDialog.last().click();
-    // Validate other sign in options form with error message is loaded
+    // Validate other sign in options form is loaded without an error message
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);
-    await expect(loginForm.errorToastContent).toBeVisible();
-    await loginForm.errorToastContentTrigger.click();
-    await expect(loginForm.errorToastContentMessage).toHaveText('Error: No WIF key from user');
+    expect(await loginForm.errorToastContent.count()).toBe(0);
   });
 
   // Invalid WIF key. - in Enter your WIF key
@@ -313,11 +311,9 @@ test.describe('Login and Sign Up tests', () =>{
     // `Invalid WIF checksum.` message changed to `Invalid WIF key.`
     await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText('Invalid WIF key.');
     await loginForm.closeDialog.last().click();
-    // Validate other sign in options form with error message is loaded
+    // Validate other sign in options form is loaded without an error message
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);
-    await expect(loginForm.errorToastContent).toBeVisible();
-    await loginForm.errorToastContentTrigger.click();
-    await expect(loginForm.errorToastContentMessage).toHaveText('Error: No WIF key from user');
+    expect(await loginForm.errorToastContent.count()).toBe(0);
   });
 
   test('Check if Sign in with safe storage styles are correct in the light mode', async ({ page }) => {
@@ -562,7 +558,7 @@ test.describe('Login and Sign Up tests', () =>{
     await loginForm.postingPrivateKeySubmitButton.click();
     expect(await homePage.getElementCssPropertyValue(await loginForm.passwordErrorMessageEnterYourWifKey, 'color')).toBe("rgb(239, 68, 68)");
     await loginForm.closeDialog.last().click();
-    // Validate other sign in options form with error message is loaded
+    // Validate other sign in options form is loaded without an error message
     await loginForm.validateOtherSignInOptionsFormWithUsernameIsLoaded(user.username);
     await expect(loginForm.errorToastContent).toBeVisible();
     await loginForm.errorToastContentTrigger.click();

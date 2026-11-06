@@ -5,6 +5,8 @@ import { ReactNode, useEffect, useId, useState, FC } from 'react';
 import { create, InstanceProps } from 'react-modal-promise';
 import { SignedOutError } from '@transaction/lib/signed-out';
 import { subscribeLogout } from '@smart-signer/lib/auth/logout-notice';
+import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
+import { getUser } from '@smart-signer/lib/auth/user-localstore';
 import {
   PasswordForm,
   PasswordFormSchemaHbauth,
@@ -39,6 +41,17 @@ export const PasswordDialog: FC<PasswordDialogProps & InstanceProps<unknown>> = 
     return () => {
       unsubscribe();
     };
+  }, [onReject]);
+
+  // So does an account switch in another tab: the key is no longer of the user signed in as it opened.
+  // A dialog opened by a sign-in, before any user is stored, stays open.
+  useEffect(() => {
+    const { isLoggedIn, username } = getUser();
+    if (!isLoggedIn) return;
+    return subscribeAccountsChanged(() => {
+      const storedUser = getUser();
+      if (!storedUser.isLoggedIn || storedUser.username !== username) onReject(new SignedOutError());
+    });
   }, [onReject]);
 
   const onSubmit = async (data: PasswordFormSchemaHbauth | PasswordFormSchemaWif) => {
