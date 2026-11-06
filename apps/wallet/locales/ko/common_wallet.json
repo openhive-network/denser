@@ -461,8 +461,7 @@
     "revoke": "철회",
     "revoke_rc_confirm": "@{{account}}에 대한 RC 위임을 철회하시겠습니까?",
     "revoke_rc_success": "@{{account}}에 대한 RC 위임을 취소했습니다.",
-    "confirm_revoke": "베스팅 지분 위임 확인",
-    "revoke_failed": "위임을 철회하지 못했습니다"
+    "confirm_revoke": "베스팅 지분 위임 확인"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "죄송합니다! 이 페이지는 존재하지 않습니다.",

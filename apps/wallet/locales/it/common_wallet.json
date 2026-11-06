@@ -472,8 +472,7 @@
     "revoke": "Revoca",
     "revoke_rc_confirm": "Vuoi davvero revocare la delega di RC a @{{account}}?",
     "revoke_rc_success": "Delega di RC a @{{account}} revocata.",
-    "confirm_revoke": "Conferma delega di Vesting Shares",
-    "revoke_failed": "Impossibile revocare la delega"
+    "confirm_revoke": "Conferma delega di Vesting Shares"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Spiacenti! Questa pagina non esiste.",

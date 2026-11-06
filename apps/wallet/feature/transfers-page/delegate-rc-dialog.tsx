@@ -18,8 +18,7 @@ import { handleError } from '@ui/lib/handle-error';
 import { getLogger } from '@ui/lib/logging';
 import { toast } from '@ui/components/hooks/use-toast';
 import { findInsufficientDelegatableRc, findRcDelegationMinimum } from '@transaction/lib/not-enough-rc';
-import { GoogleDriveSignInCancelledError } from '@smart-signer/lib/signer/google-drive-sign-in-cancelled';
-import { TransactionNotConfirmedError } from '@transaction/lib/transaction-inclusion';
+import { closesDialogOnFailure } from '@/wallet/lib/closes-dialog-on-failure';
 import { CircleSpinner } from '@ui/components/circle-spinner';
 import { Slider } from '@ui/components/slider';
 import { Autocompleter } from '@/wallet/components/autocompleter';
@@ -135,7 +134,7 @@ const DelegateRCDialog = ({
       handleError(error, { method: 'delegate', params: { toAccount, amount: rawToSend } });
       // Delegating again would only bring the Google Drive dialog back, or send a delegation the node
       // took but no block was seen to include a second time
-      if (error instanceof GoogleDriveSignInCancelledError || error instanceof TransactionNotConfirmedError) {
+      if (closesDialogOnFailure(error)) {
         handleOpenChange(false);
       }
     }

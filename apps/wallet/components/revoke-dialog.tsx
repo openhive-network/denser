@@ -12,27 +12,30 @@ import {
 import { useState } from 'react';
 import { useDelegateMutation } from './hooks/use-delegate-mutation';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { toast } from '@ui/components/hooks/use-toast';
 import { getAsset } from '@transaction/lib/utils';
+import { handleError } from '@ui/lib/handle-error';
 import { useTranslation } from '@/wallet/i18n/client';
+import { closesDialogOnFailure } from '@/wallet/lib/closes-dialog-on-failure';
 
 const RevokeDialog = ({ delegator, delegatee }: { delegator: string; delegatee: string }) => {
   const { t } = useTranslation('common_wallet');
   const [open, setOpen] = useState(false);
   const delegateMutation = useDelegateMutation();
+  const onRevokeError = (error: unknown) => {
+    handleError(error, { method: 'delegateVestingShares', params: { delegator, delegatee } });
+    if (closesDialogOnFailure(error)) setOpen(false);
+  };
   const onRevoke = async () => {
-    delegateMutation.mutate({
-      delegator: delegator,
-      delegatee: delegatee,
-      hp: await getAsset('0', 'HIVE')
-    });
-    delegateMutation.isError &&
-      toast({
-        variant: 'destructive',
-        title: t('global.something_went_wrong'),
-        description: t('delegations_page.revoke_failed')
-      });
-    delegateMutation.isSuccess && setOpen(false);
+    try {
+      // `getAsset` loads the chain, which can fail before anything is signed
+      const hp = await getAsset('0', 'HIVE');
+      delegateMutation.mutate(
+        { delegator, delegatee, hp },
+        { onSuccess: () => setOpen(false), onError: onRevokeError }
+      );
+    } catch (error) {
+      onRevokeError(error);
+    }
   };
   const loading = delegateMutation.isPending;
   return (

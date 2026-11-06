@@ -479,8 +479,7 @@
     "revoke": "Wycofaj",
     "revoke_rc_confirm": "Czy na pewno chcesz wycofać delegację RC dla @{{account}}?",
     "revoke_rc_success": "Wycofano delegację RC do @{{account}}.",
-    "confirm_revoke": "Potwierdź wycofanie delegacji HIVE POWER",
-    "revoke_failed": "Nie udało się wycofać delegacji"
+    "confirm_revoke": "Potwierdź wycofanie delegacji HIVE POWER"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Przepraszamy! Ta strona nie istnieje.",

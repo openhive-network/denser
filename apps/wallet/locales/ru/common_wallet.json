@@ -479,8 +479,7 @@
     "revoke": "Отозвать",
     "revoke_rc_confirm": "Вы уверены, что хотите отозвать делегирование RC для @{{account}}?",
     "revoke_rc_success": "Делегирование RC аккаунту @{{account}} отозвано.",
-    "confirm_revoke": "Подтвердите делегирование Vesting Shares",
-    "revoke_failed": "Не удалось отозвать делегирование"
+    "confirm_revoke": "Подтвердите делегирование Vesting Shares"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "Извините! Такой страницы не существует.",

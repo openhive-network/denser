@@ -461,8 +461,7 @@
     "revoke": "撤销",
     "revoke_rc_confirm": "确定要撤销对 @{{account}} 的 RC 委托吗？",
     "revoke_rc_success": "已撤销对 @{{account}} 的 RC 代理。",
-    "confirm_revoke": "确认委托 Vesting Shares",
-    "revoke_failed": "撤销委托失败"
+    "confirm_revoke": "确认委托 Vesting Shares"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "抱歉！此页面不存在。",

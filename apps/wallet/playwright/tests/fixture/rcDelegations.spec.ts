@@ -1,8 +1,12 @@
 import type { Server } from 'node:http';
-import { test, expect, type Locator, type Page } from '@playwright/test';
+import { test, expect, type Locator, type Page, type Route } from '@playwright/test';
 import { WALLET_BASE_PATH } from '../support/basePath';
 import { FIXTURE_API_PORT } from '../support/apiStub';
-import { installBroadcastInterceptor, type InterceptedBroadcast } from '../support/broadcastInterceptor';
+import {
+  BROADCAST_METHODS,
+  installBroadcastInterceptor,
+  type InterceptedBroadcast
+} from '../support/broadcastInterceptor';
 import {
   STUB_ACCOUNT,
   STUB_DELEGATEE,
@@ -15,7 +19,8 @@ import {
  * /@account/delegations shows each outgoing RC delegation (amount, delegatee, Revoke) as one row of
  * the one-column Resource Credits table: each amount and the total below them sit centred under its
  * heading, the delegatee and Revoke inside the same column, and nothing of it in the HIVE POWER
- * column. Revoke asks in a dialog first and broadcasts one `delegate_rc` of zero RC once confirmed.
+ * column. Revoke asks in a dialog first and broadcasts one `delegate_rc` of zero RC once confirmed;
+ * a revoke that fails says why, and closes the dialog only when OK could send it a second time.
  * The other reads come
  * from the stub node (support/walletApiStub.ts); the RC delegations call is answered by each test
  * through `page.route`, the broadcast and `verify_authority` by the interceptor.
@@ -28,6 +33,35 @@ const HYDRATION_TIMEOUT = 30_000;
 /** Randomly generated, of no account. */
 const POSTING_WIF = '5JSTSDF5nUcChE6SeyWG28ktUevv1Bg6rUnmueRQw2cxyGqE4oT';
 const PHONE_VIEWPORT = { width: 375, height: 812 };
+/** The not-confirmed message waits for the inclusion check to give up. */
+const NOT_CONFIRMED_TIMEOUT = 20_000;
+
+/** hived's answer to a `delegate_rc` it refuses. */
+const RC_REVOKE_REJECTION = {
+  code: -32003,
+  message: 'Assert Exception:rc_delegation != nullptr: The RC delegation does not exist.',
+  data: {
+    code: 10,
+    name: 'assert_exception',
+    message: 'Assert Exception',
+    stack: [
+      {
+        // wax only parses an exception whose context has every field hived sends.
+        context: {
+          level: 'error',
+          file: 'rc_operations.cpp',
+          line: 240,
+          method: 'do_apply',
+          hostname: '',
+          thread_name: 'th_a',
+          timestamp: '2026-11-06T19:12:00'
+        },
+        format: 'The RC delegation does not exist.',
+        data: {}
+      }
+    ]
+  }
+};
 
 let stub: Server;
 
@@ -50,6 +84,19 @@ test.beforeEach(async ({ context }) => {
     });
   });
 });
+
+/** Answers every broadcast to the stub node through `answer`; every other call goes on. */
+const routeBroadcasts = async (page: Page, answer: (route: Route, id: unknown) => Promise<void>) => {
+  await page.route(
+    (url) => url.port === String(FIXTURE_API_PORT),
+    async (route) => {
+      const request = route.request();
+      const body = request.method() === 'POST' ? request.postDataJSON() : undefined;
+      if (!BROADCAST_METHODS.has(body?.method)) return route.fallback();
+      await answer(route, body.id);
+    }
+  );
+};
 
 /** Answers the browser's RC delegations call with `delegations`; every other call reaches the stub node. */
 const routeRcDelegations = async (page: Page, delegations: unknown[]) => {
@@ -257,5 +304,44 @@ test.describe('Wallet RC delegations', () => {
 
     await expect(dialog).toHaveCount(0);
     expect(broadcasts.calls).toHaveLength(0);
+  });
+
+  test('WALLET-RC-DELEGATIONS-07 — a revoke whose broadcast fails offline says it may have been sent and closes the dialog', async ({
+    page
+  }) => {
+    // The connection may have dropped after the node took the transaction: OK must not be there to send it twice
+    await installBroadcastInterceptor(page);
+    await routeBroadcasts(page, (route) => route.abort('internetdisconnected'));
+    const dialog = await openRcRevokeDialog(page);
+
+    await dialog.getByRole('button', { name: 'Ok' }).click();
+
+    await expect(page.getByTestId('transaction-not-confirmed-message')).toBeVisible({
+      timeout: NOT_CONFIRMED_TIMEOUT
+    });
+    await expect(dialog).toHaveCount(0);
+  });
+
+  test('WALLET-RC-DELEGATIONS-08 — a revoke the node rejects shows the error and leaves the dialog open', async ({
+    page
+  }) => {
+    await installBroadcastInterceptor(page);
+    let rejected = 0;
+    await routeBroadcasts(page, (route, id) => {
+      rejected++;
+      return route.fulfill({
+        json: { jsonrpc: '2.0', id: id ?? 1, error: RC_REVOKE_REJECTION },
+        headers: { 'access-control-allow-origin': '*' }
+      });
+    });
+    const dialog = await openRcRevokeDialog(page);
+
+    await dialog.getByRole('button', { name: 'Ok' }).click();
+
+    await expect(page.getByTestId('error-toast-content')).toHaveCount(1);
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('button', { name: 'Ok' })).toBeEnabled();
+    expect(rejected).toBeGreaterThan(0);
+    await expect(page.getByTestId('transaction-not-confirmed-message')).toHaveCount(0);
   });
 });

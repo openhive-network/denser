@@ -11,7 +11,9 @@ import {
 } from '@ui/components';
 import { useState } from 'react';
 import { CircleSpinner } from '@ui/components/circle-spinner';
+import { handleError } from '@ui/lib/handle-error';
 import { useTranslation } from '@/wallet/i18n/client';
+import { closesDialogOnFailure } from '@/wallet/lib/closes-dialog-on-failure';
 import { useUndelegateMutation } from './hooks/use-undelegate-mutation';
 
 /** Asks before revoking `delegator`'s RC delegation of `amount` (already formatted) to `delegatee`. */
@@ -28,8 +30,12 @@ const RevokeRcDialog = ({
   const [open, setOpen] = useState(false);
   const undelegateMutation = useUndelegateMutation();
   const loading = undelegateMutation.isPending;
+  const onRevokeError = (error: unknown) => {
+    handleError(error, { method: 'undelegateRC', params: { delegator, delegatee } });
+    if (closesDialogOnFailure(error)) setOpen(false);
+  };
   const onRevoke = () => {
-    undelegateMutation.mutate(delegatee, { onSuccess: () => setOpen(false) });
+    undelegateMutation.mutate(delegatee, { onSuccess: () => setOpen(false), onError: onRevokeError });
   };
   const onCancel = () => setOpen(false);
 
