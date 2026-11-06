@@ -40,12 +40,18 @@ class FakeSafeStorage {
   /** Whether the account's authority on chain still accepts the stored keys */
   onChain = true;
 
+  /** The key safe storage holds for each key type: the WIF last written */
+  storedKeys: Partial<Record<KeyAuthorityType, string>>;
+
   readonly keyTypes: KeyAuthorityType[];
   readonly authorized: boolean;
+  unlocked: boolean;
 
-  constructor(keyTypes: KeyAuthorityType[], authorized = false) {
+  constructor(keyTypes: KeyAuthorityType[], authorized = false, unlocked = false) {
     this.keyTypes = keyTypes;
     this.authorized = authorized;
+    this.unlocked = authorized && unlocked;
+    this.storedKeys = Object.fromEntries(keyTypes.map((keyType) => [keyType, `${keyType}-wif`]));
   }
 
   async getRegisteredUserByUsername(username: string): Promise<AuthUser | null> {
@@ -53,7 +59,7 @@ class FakeSafeStorage {
     return {
       username,
       authorized: this.authorized,
-      unlocked: false,
+      unlocked: this.unlocked,
       loggedInKeyType: this.keyTypes[0],
       registeredKeyTypes: this.keyTypes
     };
@@ -68,11 +74,27 @@ class FakeSafeStorage {
     return { ok: true };
   }
 
+  /** As hb-auth's worker: locks the unlocked wallets, keeping their sessions */
+  async lock() {
+    this.calls.push('lock');
+    if (!this.unlocked) throw workerRefusal('There is no existing user session or session already expired');
+    this.unlocked = false;
+  }
+
+  /** As hb-auth's worker: an unlocked wallet is not unlocked again, so its password goes unchecked */
   async unlock(username: string, password: string) {
     this.calls.push('unlock');
     if (!this.authorized) throw workerRefusal('There is no existing user session or session already expired');
+    if (this.unlocked) return;
     if (password !== PASSWORD) throw workerRefusal('Invalid credentials');
+    this.unlocked = true;
   }
+}
+
+/** Replaces the key stored for `keyType` with `wif` once `unlockBeforeKeyWrite` let the write go on */
+async function writeKey(storage: FakeSafeStorage, password: string, keyType: KeyAuthorityType, wif: string) {
+  await unlockBeforeKeyWrite(storage, USERNAME, password, keyType);
+  storage.storedKeys[keyType] = wif;
 }
 
 describe('authenticateStoredKey', () => {
@@ -121,12 +143,36 @@ describe('unlockBeforeKeyWrite', () => {
     assert.deepEqual(storage.calls, ['unlock']);
   });
 
-  for (const authorized of [false, true]) {
-    it(`rejects a wrong password with WrongSafeStoragePasswordError (session: ${authorized})`, async () => {
-      const storage = new FakeSafeStorage(['posting', 'active'], authorized);
+  it('locks the unlocked session of the user so that unlocking checks the password', async () => {
+    const storage = new FakeSafeStorage(['active'], true, true);
+    assert.equal(await unlockBeforeKeyWrite(storage, USERNAME, PASSWORD, 'active'), true);
+    assert.deepEqual(storage.calls, ['lock', 'unlock']);
+    assert.equal(storage.unlocked, true);
+  });
+
+  for (const [authorized, unlocked] of [
+    [false, false],
+    [true, false],
+    [true, true]
+  ]) {
+    it(`rejects a wrong password with WrongSafeStoragePasswordError (session: ${authorized}, unlocked: ${unlocked})`, async () => {
+      const storage = new FakeSafeStorage(['posting', 'active'], authorized, unlocked);
       await assert.rejects(unlockBeforeKeyWrite(storage, USERNAME, 'wrong', 'active'), WrongSafeStoragePasswordError);
     });
   }
+
+  it('keeps the stored key of an unlocked session from a wrong password', async () => {
+    const storage = new FakeSafeStorage(['active'], true, true);
+    await assert.rejects(writeKey(storage, 'wrong', 'active', 'new-wif'), WrongSafeStoragePasswordError);
+    assert.equal(storage.storedKeys.active, 'active-wif');
+    assert.equal(storage.unlocked, false);
+  });
+
+  it('replaces the stored key of an unlocked session with the right password', async () => {
+    const storage = new FakeSafeStorage(['active'], true, true);
+    await writeKey(storage, PASSWORD, 'active', 'new-wif');
+    assert.equal(storage.storedKeys.active, 'new-wif');
+  });
 
   it('leaves the password to the write when no key is stored for the key type', async () => {
     const storage = new FakeSafeStorage(['posting']);

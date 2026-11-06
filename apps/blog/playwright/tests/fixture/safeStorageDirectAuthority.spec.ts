@@ -1,7 +1,7 @@
 import type { Page, Request, Route } from '@playwright/test';
+import enSmartSigner from '@smart-signer/locales/en/smart-signer.json';
 import { test, expect, isRecordMode } from '../support/fixture-proxy-test';
 import { installBroadcastInterceptor } from '../support/fixture-auth/broadcast-interceptor';
-import { LoginForm } from '../support/pages/loginForm';
 import {
   ACCOUNT,
   answerKeyReferences,
@@ -20,7 +20,8 @@ import {
  * The Blog's safe-storage sign-in shows a stored account's Direct Authority Mode, read-only, in its
  * unlock form; "Add new key" defaults its Direct Authority Mode checkbox to the mode stored for the
  * account, and once the key is added signs the account in without asking for the password again.
- * A wrong password signs nobody in: it returns to the unlock step with the error; closing the dialog
+ * A wrong password, though safe storage holds the account unlocked, signs nobody in and adds no key:
+ * the add-key step says the password is wrong and takes the right one after it; closing the dialog
  * while the key is added signs nobody in either, and leaves the key stored. The mode default for an
  * account with no stored setting (on) is covered by `addedKeyStrictMode`'s unit tests in
  * packages/smart-signer/lib/signer/safe-storage-registration.test.ts; the sign-in after Add new key
@@ -42,6 +43,7 @@ const MODE_ON = 'Direct Authority Mode: on';
 const MODE_OFF = 'Direct Authority Mode: off';
 const WRONG_PASSWORD = 'not-the-fixture-password';
 const INVALID_CREDENTIALS = 'Invalid credentials';
+const WRONG_SAFE_STORAGE_PASSWORD = enSmartSigner.broadcast_error.wrong_safe_storage_password;
 const KEY_ADDED_TOAST = 'Key Added';
 // Long past the unlock of the added key and the sign-in's first request, which follow its toast
 const PAST_SIGN_IN_START_MS = 5_000;
@@ -153,7 +155,7 @@ test.describe('Safe-storage Direct Authority Mode of a stored account', () => {
   test('BLOG-SAFE-STORAGE-DIRECT-AUTHORITY-04 — Add new key with a wrong password fails and signs nobody in', async ({
     page
   }) => {
-    // Safe storage holds the stored account unlocked, so the password is checked only when signing in
+    // Safe storage holds the stored account unlocked: hb-auth's unlock alone would not check the password
     await storeStrictAccount(page);
 
     const updateKeyForm = await openAddNewKey(page);
@@ -163,11 +165,15 @@ test.describe('Safe-storage Direct Authority Mode of a stored account', () => {
     });
     await submitNewKey(updateKeyForm, WRONG_PASSWORD);
 
-    // Back on the unlock step, with the error
-    const loginForm = new LoginForm(page);
-    await expect(loginForm.loginDialog).toContainText(INVALID_CREDENTIALS, { timeout: SIGN_IN_TIMEOUT_MS });
-    await expect(loginForm.passwordInput).toBeVisible();
+    // Still on the add-key step, with the error, before the stored key was touched
+    await expect(updateKeyForm).toContainText(WRONG_SAFE_STORAGE_PASSWORD, { timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(updateKeyForm).not.toContainText(INVALID_CREDENTIALS);
+    await expect(page.getByText(KEY_ADDED_TOAST, { exact: true })).toHaveCount(0);
     expect(loginRequests).toHaveLength(0);
+
+    // The right password then adds the key and signs in
+    await submitNewKey(updateKeyForm);
+    await expect(updateKeyForm).toHaveCount(0, { timeout: SIGN_IN_TIMEOUT_MS });
   });
 
   test('BLOG-SAFE-STORAGE-DIRECT-AUTHORITY-05 — closing the dialog while the key is added signs nobody in', async ({
