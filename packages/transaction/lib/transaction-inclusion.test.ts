@@ -11,6 +11,7 @@ import {
   recordedTransactionId,
   TransactionNotConfirmedError,
   toNotConfirmedError,
+  toObservedBroadcastError,
   watchInclusion
 } from './transaction-inclusion';
 
@@ -354,6 +355,8 @@ class FakeNode {
   readonly transactionIdsOf = new Map<number, string[]>();
   readonly failingBlockReads = new Set<number>();
   readonly blockReads: string[] = [];
+  /** What `broadcast_transaction` answers; pending by default, a request still in flight. */
+  broadcastAnswer: Promise<void> = new Promise(() => {});
 
   private block(blockNum: number) {
     const transactionIds = this.transactionIdsOf.get(blockNum) ?? [];
@@ -363,6 +366,7 @@ class FakeNode {
   readonly chain: object = {
     extend: () => this.chain,
     createTransactionFromJson: (transaction: object) => ({ transaction }),
+    broadcast: () => this.broadcastAnswer,
     api: {
       database_api: {
         get_dynamic_global_properties: async () => ({
@@ -391,7 +395,13 @@ class FakeNode {
 interface IWorkerBeeBot extends ITransactionIdObserver {
   /** Not in WorkerBee's types: the mediator whose `notify` is one poll of `start()`'s interval. */
   mediator: { notify(): Promise<void> };
+  broadcast(transaction: { signatures: string[] }, options?: { expireInMs?: number }): Promise<void>;
   delete(): void;
+}
+
+interface IWorkerBeeModule {
+  default: new (chain: object) => IWorkerBeeBot;
+  WorkerBeeError: new (message: string) => Error;
 }
 
 describe("watchInclusion on WorkerBee's block collector", function () {
@@ -399,7 +409,7 @@ describe("watchInclusion on WorkerBee's block collector", function () {
 
   before(async function () {
     this.timeout(30_000);
-    const workerBee = (await importEsm('@hiveio/workerbee')) as { default: new (chain: object) => IWorkerBeeBot };
+    const workerBee = (await importEsm('@hiveio/workerbee')) as IWorkerBeeModule;
     createBot = (chain) => new workerBee.default(chain);
   });
 
@@ -473,6 +483,73 @@ describe("watchInclusion on WorkerBee's block collector", function () {
 
     expect(await watch.included).to.equal(false);
     bot.delete();
+  });
+});
+
+describe("toObservedBroadcastError on WorkerBee's broadcast", function () {
+  let createBot: (chain: object) => IWorkerBeeBot;
+  let isWorkerBeeError: (error: unknown) => boolean;
+
+  before(async function () {
+    this.timeout(30_000);
+    const workerBee = (await importEsm('@hiveio/workerbee')) as IWorkerBeeModule;
+    createBot = (chain) => new workerBee.default(chain);
+    isWorkerBeeError = (error) => error instanceof workerBee.WorkerBeeError;
+  });
+
+  const TX_ID = 'abc123';
+  const SIGNED_TRANSACTION = { signatures: ['1f00'] };
+
+  const poll = async (bot: IWorkerBeeBot) => {
+    await bot.mediator.notify();
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  };
+
+  /** The error `bot.broadcast` rejects with, given the polls `drive` makes while it is pending. */
+  const broadcastRejection = async (bot: IWorkerBeeBot, drive: () => Promise<void>) => {
+    const rejection = bot.broadcast(SIGNED_TRANSACTION, { expireInMs: 60_000 }).then(
+      () => expect.fail('the broadcast resolved'),
+      (error: unknown) => error
+    );
+    await drive();
+    return await rejection;
+  };
+
+  it("turns the block scanner's WorkerBee error, the broadcast still in flight, into a not-confirmed error", async () => {
+    const node = new FakeNode();
+    const bot = createBot(node.chain);
+    const caught = await broadcastRejection(bot, async () => {
+      await poll(bot);
+      // A gap WorkerBee refuses to catch up on, failing the scanner with its own error
+      node.head = 2_000;
+      await poll(bot);
+    });
+
+    expect(isWorkerBeeError(caught)).to.equal(true);
+    const error = toObservedBroadcastError(caught, TX_ID, isWorkerBeeError);
+    if (!(error instanceof TransactionNotConfirmedError))
+      return expect.fail('not a TransactionNotConfirmedError');
+    expect(error.transactionId).to.equal(TX_ID);
+    expect(error.cause).to.equal(caught);
+    bot.delete();
+  });
+
+  it('passes the node\'s rejection of the broadcast through unchanged', async () => {
+    const node = new FakeNode();
+    const rejected = new Error('Assert Exception: missing required active authority');
+    node.broadcastAnswer = Promise.reject(rejected);
+    const bot = createBot(node.chain);
+    const caught = await broadcastRejection(bot, () => poll(bot));
+
+    expect(toObservedBroadcastError(caught, TX_ID, isWorkerBeeError)).to.equal(rejected);
+    bot.delete();
+  });
+
+  it('turns a network failure of the broadcast request into a not-confirmed error as toNotConfirmedError does', () => {
+    const failure = new Error('Unknown request error caught (possible network or CORS error)');
+    failure.name = 'WaxError';
+
+    expect(toObservedBroadcastError(failure, TX_ID, isWorkerBeeError)).to.be.instanceOf(TransactionNotConfirmedError);
   });
 });
 

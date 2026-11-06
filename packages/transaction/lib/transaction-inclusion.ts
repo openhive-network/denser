@@ -265,3 +265,20 @@ export function toNotConfirmedError(error: unknown, transactionId: string): unkn
     ? new TransactionNotConfirmedError(transactionId, error)
     : error;
 }
+
+/**
+ * The rejection of WorkerBee's `broadcast` as a `TransactionNotConfirmedError` when the transaction may
+ * have reached the node: as `toNotConfirmedError` takes it, or when it is WorkerBee's own error
+ * (`isWorkerBeeError`; this module loads without the ESM-only WorkerBee). `broadcast` sends the
+ * transaction while its block scanner runs and rejects with the scanner's first error, such as a
+ * collector WorkerBee could not set up after a failed read, whether or not the node took the transaction.
+ */
+export function toObservedBroadcastError(
+  error: unknown,
+  transactionId: string,
+  isWorkerBeeError: (error: unknown) => boolean
+): unknown {
+  return isWorkerBeeError(error)
+    ? new TransactionNotConfirmedError(transactionId, error)
+    : toNotConfirmedError(error, transactionId);
+}
