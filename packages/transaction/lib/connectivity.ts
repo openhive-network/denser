@@ -7,6 +7,13 @@ import { isNodeNetworkFailure, isWaxRequestTimeout } from './transaction-inclusi
  */
 export const UNREACHABLE_RECHECK_MS = 60_000;
 
+/**
+ * How long a node that gave no answer counts as silent. When every node a call may ask has been
+ * silent within it, and none answered since, the nodes are unreachable, though no single call, held
+ * to a few nodes by its time budget while requests hang, asked them all.
+ */
+export const SILENT_NODE_WINDOW_MS = 60_000;
+
 /** An operation refused because the browser is offline: nothing was signed or sent. */
 export class BrowserOfflineError extends Error {
   constructor() {
@@ -24,8 +31,8 @@ export interface IConnectivityOptions {
 
 /**
  * The browser's connection to the API nodes. It is lost when the browser reports going offline (its
- * `offline` event) or when one call found no node answering at all (`reportUnanswered`), and back on
- * the `online` event or once any node answers. The browser's initial `navigator.onLine` is not
+ * `offline` event) or when every node a call may ask gave no answer within SILENT_NODE_WINDOW_MS
+ * (`reportSilent`), across calls, and back on the `online` event or once any node answers. The browser's initial `navigator.onLine` is not
  * trusted, as React Query does not trust it: Chromium reports `false` without a default route even
  * when the nodes are reachable.
  */
@@ -33,6 +40,7 @@ export class Connectivity {
   private browserOffline = false;
   private unreachableSince: number | undefined;
   private lastFailoverAt = 0;
+  private readonly silentAt = new Map<string, number>();
   private readonly listeners = new Set<TConnectivityListener>();
   private readonly now: () => number;
 
@@ -63,13 +71,29 @@ export class Connectivity {
 
   /** A node answered, if only with an HTTP error, so the network works, whatever the browser last reported. */
   reportAnswered(): void {
+    this.silentAt.clear();
     if (this.isConnected()) return;
     this.browserOffline = false;
     this.unreachableSince = undefined;
     this.notify();
   }
 
-  /** A call asked every node and none answered at all: a network failure or a timeout on each. */
+  /**
+   * `node` gave no answer at all (see `isUnanswered`) to a call that may ask `nodes`. Once each of
+   * `nodes`, more than one, has been silent within SILENT_NODE_WINDOW_MS with no answer from any node
+   * since, the nodes are unreachable: a node or two only slow among many that answer is not.
+   */
+  reportSilent(node: string, nodes: readonly string[]): void {
+    const now = this.now();
+    this.silentAt.set(node, now);
+    const isSilent = (other: string): boolean => {
+      const at = this.silentAt.get(other);
+      return at !== undefined && now - at <= SILENT_NODE_WINDOW_MS;
+    };
+    if (new Set(nodes).size > 1 && nodes.every(isSilent)) this.reportUnanswered();
+  }
+
+  /** No node answered at all: a network failure or a timeout on each. */
   reportUnanswered(): void {
     if (this.unreachableSince !== undefined) return;
     this.unreachableSince = this.now();
@@ -107,7 +131,10 @@ export class Connectivity {
     const wasConnected = this.isConnected();
     this.browserOffline = offline;
     // Back online, the nodes get a fresh chance: what failed before may have been this browser's network.
-    if (!offline) this.unreachableSince = undefined;
+    if (!offline) {
+      this.unreachableSince = undefined;
+      this.silentAt.clear();
+    }
     if (this.isConnected() !== wasConnected) this.notify();
   }
 
