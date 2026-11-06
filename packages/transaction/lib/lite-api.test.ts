@@ -15,6 +15,7 @@ import {
   postsReadOptionsOf,
   readLiteProbeTtlMs,
   readLiteReadBudgetMs,
+  type ILiteApiProbeOptions,
   type ILiteNotificationsApi,
   type IPostsReaderOptions,
   type ILiteSocialApi,
@@ -38,11 +39,15 @@ const LITE_INFO = {
 const apiNotFound = (method: string) =>
   new JsonRpcApiError(method, { jsonrpc: '2.0', id: 1, error: { code: -32601, message: 'Api not found lite' } });
 
-/** A probe whose nodes answer from `answers` (an Error is thrown), counting the requests per node. */
-const setupProbe = (answers: Record<string, unknown>) => {
+/**
+ * A probe whose nodes answer from `answers` (an Error is thrown), counting the requests per node;
+ * `knownInfo` stands for the server's API sets engine.
+ */
+const setupProbe = (answers: Record<string, unknown>, knownInfo?: ILiteApiProbeOptions['knownInfo']) => {
   let time = 0;
   const requests: string[] = [];
   const probe = createLiteApiProbe({
+    knownInfo,
     now: () => time,
     fetchInfo: async (endpoint) => {
       requests.push(endpoint);
@@ -274,7 +279,7 @@ describe('createPostsReader', () => {
     endpoint: string,
     probeAnswers: Record<string, unknown>,
     liteAnswer: unknown = 'native',
-    options: IPostsReaderOptions = {}
+    { knownInfo, ...options }: IPostsReaderOptions & Pick<ILiteApiProbeOptions, 'knownInfo'> = {}
   ) => {
     const calls: string[] = [];
     const timeouts: number[] = [];
@@ -303,9 +308,9 @@ describe('createPostsReader', () => {
         return { api };
       }
     };
-    const { probe, requests } = setupProbe(probeAnswers);
+    const { probe, requests, advance } = setupProbe(probeAnswers, knownInfo);
     const read = createPostsReader(() => chain, probe, undefined, options);
-    return { read, calls, probeRequests: requests, probe, timeouts };
+    return { read, calls, probeRequests: requests, probe, timeouts, advance };
   };
 
   const getPost = (api: TPostsApi) => api.get_post({ author: 'did:lite:bob', permlink: 'p', observer: 'hive.blog' });
@@ -551,6 +556,51 @@ describe('createPostsReader', () => {
 
     expect(error).to.be.instanceOf(ReadTransportError);
     expect(namesOf(calls)).to.deep.equal(['bridge.get_ranked_posts']);
+  });
+
+  // The engine's `jsonRpcMethodProbe` rejects with a `TransportError` when `lite.get_info` times out
+  // (and the engine marks the node down, not unsupported); `definitions.ts` records that as failed.
+  it("rethrows for a did:lite: post when the engine's lite probe of the node stalled, and reads a feed through bridge.*", async () => {
+    const stalled = () => ({ failed: true as const });
+    const { read, calls, probeRequests, probe } = setupReader(LITE_NODE, {}, 'native', { knownInfo: stalled });
+
+    expect(await read((api) => api.get_ranked_posts(trending))).to.equal('compat');
+    const error = await read(getPost, undefined, { liteOnly: true }).catch((e: unknown) => e);
+
+    expect(error).to.be.instanceOf(ReadTransportError);
+    expect(probe.hasUnreachableNode()).to.equal(true);
+    expect(namesOf(calls)).to.deep.equal(['bridge.get_ranked_posts']);
+    expect(probeRequests).to.deep.equal([]);
+  });
+
+  it("keeps a stalled engine probe for the cooldown only, then takes the engine's next answer", async () => {
+    let known: { info: unknown } | { failed: true } = { failed: true };
+    const { read, calls, advance } = setupReader(LITE_NODE, {}, 'native', { knownInfo: () => known });
+
+    expect(await read(getPost, undefined, { liteOnly: true }).catch((e: unknown) => e)).to.be.instanceOf(
+      ReadTransportError
+    );
+    known = { info: LITE_INFO };
+    expect(await read(getPost, undefined, { liteOnly: true }).catch((e: unknown) => e)).to.be.instanceOf(
+      ReadTransportError
+    );
+    advance(LITE_READ_COOLDOWN_MS + 1);
+
+    expect(await read(getPost, undefined, { liteOnly: true })).to.equal('native');
+    expect(namesOf(calls)).to.deep.equal(['lite.get_post']);
+  });
+
+  it("reads a did:lite: post and a feed the stock way for the TTL when the engine found the node not lite", async () => {
+    let known: { info: unknown } = { info: null };
+    const { read, calls, probe, advance } = setupReader(STOCK_NODE, {}, 'native', { knownInfo: () => known });
+
+    expect(await read(getPost, undefined, { liteOnly: true })).to.equal('compat');
+    known = { info: LITE_INFO };
+    advance(LITE_PROBE_TTL_MS - 1);
+    expect(await read((api) => api.get_ranked_posts(trending))).to.equal('compat');
+
+    expect(probe.hasUnreachableNode()).to.equal(false);
+    expect(namesOf(calls)).to.deep.equal(['bridge.get_post', 'bridge.get_ranked_posts']);
   });
 
   it('reads a did:lite: post the stock way when the node answered "Api not found"', async () => {

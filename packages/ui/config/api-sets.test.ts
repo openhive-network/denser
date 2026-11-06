@@ -270,7 +270,7 @@ describe('routing by API set', () => {
 
   it("records the lite probe's lite.get_info answers for the lite reads", async () => {
     await probedEngine();
-    assert.deepEqual(probeAnswerOf('lite', SYNCAD, 60_000)?.answer, LITE_INFO);
+    assert.deepEqual(probeAnswerOf('lite', SYNCAD, 60_000), { answer: LITE_INFO });
     assert.deepEqual(probeAnswerOf('lite', HIVE_BLOG, 60_000), { answer: null });
     assert.equal(probeAnswerOf('lite', HIVE_BLOG, -1), undefined);
   });
