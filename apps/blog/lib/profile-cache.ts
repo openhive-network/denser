@@ -96,7 +96,8 @@ export const getProfilePostsFirstPage = async (
   observer: string
 ): Promise<PostsPage> => {
   const request = { ...(await profileRequest(`posts:${sort}`, username)), observer };
-  // Cached with every vote: one cached page serves every viewer that sends the default observer.
+  // Cached as read: one cached page serves every viewer that sends the default observer. Entries
+  // with votes keep all of them; a vote-free node's entries carry the observer's vote only.
   const page = await getCaches().posts.get(request, async () => {
     const posts = await getAccountPosts(sort, username, observer, '', '');
     return posts ? toCardEntries(posts) : null;

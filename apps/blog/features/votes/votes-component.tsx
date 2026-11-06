@@ -13,6 +13,7 @@ import { useLoggedUserNetVests } from '@/blog/features/votes/hooks/use-logged-us
 import { useTranslation } from '@/blog/i18n/client';
 import { handleError } from '@ui/lib/handle-error';
 import { useVoteMutation } from './hooks/use-vote-mutation';
+import { viewerVoteOf } from './lib/viewer-vote';
 import { VoteRemovalDialog } from './vote-removal-dialog';
 import { TooltipContainer } from './vote-tooltip-container';
 import WeightedVoteButton from './weighted-vote-button';
@@ -64,12 +65,14 @@ const VotesComponent = ({ post, type }: { post: TrimmedEntry; type: 'comment' | 
   useEffect(() => {
     setSliderDownvote(getVoteValue(storedVotesValues, type, 'downvote'));
   }, [type, storedVotesValues]);
-  const checkVote = post.active_votes.find((e) => e.voter === voter);
+  const viewerVote = viewerVoteOf(post, voter);
 
+  // A vote the entry carries seeds the query: it is looked up only after the user votes.
   const { data: userVotes } = useQuery({
     queryKey: ['votes', post.author, post.permlink, user?.username],
     queryFn: () => getListVotesByCommentVoter([post.author, post.permlink, user?.username], 1),
-    enabled: !!checkVote || !!clickedVoteButton,
+    enabled: (!viewerVote.known && viewerVote.lookUp) || !!clickedVoteButton,
+    initialData: viewerVote.known ? viewerVote.votes : undefined,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false

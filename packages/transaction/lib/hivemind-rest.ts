@@ -1,7 +1,8 @@
+import type { Entry, HivemindRestPostPage } from '@hive/common-hiveio-packages/wax';
 import { getLogger } from '@ui/lib/logging';
 import { checkAccountNameFormat } from '@hive/ui/lib/account-name-rules';
 import { getHivemindRestApi, type HivemindRestApi } from './chain';
-import { isEndpointMissing, ReadTransportError } from './read-transport';
+import { isEndpointMissing, isRequestRejected, ReadTransportError } from './read-transport';
 
 const logger = getLogger('app');
 
@@ -74,3 +75,45 @@ export async function readFromHivemind<T>(
 
 /** `value`, or `undefined` for an empty string, which hivemind's JSON-RPC reads as absent too. */
 export const nonEmpty = (value: string | null | undefined): string | undefined => value || undefined;
+
+/**
+ * The length REST post lists cut bodies at (`truncate-body`): a card shows only a summary and an
+ * image, and this gets past the few images many posts open with to the text a summary is made of.
+ */
+export const POST_LIST_BODY_LENGTH = 1000;
+
+/** The params a REST post list read adds for a list sized for cards: no votes, cut bodies. */
+export type TPostListShape = Pick<HivemindRestPostPage, 'votes' | 'truncate-body'>;
+
+const POST_LIST_SHAPE: TPostListShape = { votes: 'none', 'truncate-body': POST_LIST_BODY_LENGTH };
+
+let postListShapeRejectedUntil = 0;
+
+const isShapeRejected = (error: unknown): boolean =>
+  error instanceof ReadTransportError &&
+  (isEndpointMissing(error) || (error.status !== undefined && isRequestRejected(error.status)));
+
+const markBodiesCut = (entries: Entry[] | null): Entry[] | null =>
+  entries && entries.map((entry) => ({ ...entry, _bodyCutAt: POST_LIST_BODY_LENGTH }));
+
+/**
+ * A REST post list (`/posts`, `/accounts/{name}/posts`) read by `read` with `votes=none` and bodies
+ * cut at POST_LIST_BODY_LENGTH, each entry marked with the length (`_bodyCutAt`). A node that rejects
+ * those params (an older hivemind: a 4xx, or a function not found) is asked again as before, without
+ * them, and for HIVEMIND_ENDPOINT_MISSING_TTL_MS no list is asked with them. Every other error, and
+ * any of the second request, is thrown.
+ */
+export async function readRestPostList(
+  read: (shape: TPostListShape) => Promise<Entry[] | null>
+): Promise<Entry[] | null> {
+  if (Date.now() < postListShapeRejectedUntil) return read({});
+  try {
+    return markBodiesCut(await read(POST_LIST_SHAPE));
+  } catch (error) {
+    if (!isShapeRejected(error)) throw error;
+    const posts = await read({});
+    postListShapeRejectedUntil = Date.now() + HIVEMIND_ENDPOINT_MISSING_TTL_MS;
+    logger.info('hivemind REST rejects votes=none, reading post lists with votes for %d ms', HIVEMIND_ENDPOINT_MISSING_TTL_MS);
+    return posts;
+  }
+}

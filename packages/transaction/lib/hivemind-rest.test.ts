@@ -33,6 +33,12 @@ import { getHivemindRestApi } from './chain';
 
 const fixtures = JSON.parse(readFileSync(join(__dirname, '__fixtures__/hivemind-rest.json'), 'utf8'));
 const [post] = fixtures.rankedPosts;
+/** What a REST post list adds to its query: the posts without votes, bodies cut for cards. */
+const LIST_SHAPE = 'votes=none&truncate-body=1000';
+/** A REST post list's posts as read: marked with the length their bodies were cut at. */
+const cutPosts = (posts: object[]) => posts.map((entry) => ({ ...entry, _bodyCutAt: 1000 }));
+/** The JSON-RPC calls but the vote-free post reads, which a node without them answers "unknown method". */
+const stockCalls = (calls: IJsonRpcNode['calls']) => calls.filter(({ method }) => !method.endsWith('_v2'));
 const discussionRoot = fixtures.discussion['guest4test1/test-ako-post'];
 
 interface IJsonRpcNode {
@@ -41,11 +47,16 @@ interface IJsonRpcNode {
   results: Record<string, unknown>;
 }
 
+interface IRestAnswer {
+  status?: number;
+  body: unknown;
+}
+
 interface IRestNode {
   url: string;
   requests: string[];
-  /** Answer by request path (without its query); a path not listed answers 404. */
-  routes: Record<string, { status?: number; body: unknown }>;
+  /** Answer by request path (without its query), or by the whole request URL; a path not listed answers 404. */
+  routes: Record<string, IRestAnswer | ((url: string) => IRestAnswer)>;
 }
 
 const listen = (server: Server): Promise<string> =>
@@ -69,6 +80,11 @@ const startJsonRpcNode = async (): Promise<{ node: IJsonRpcNode; server: Server 
     request.on('end', () => {
       const { method, params, id } = JSON.parse(text);
       node.calls.push({ method, params });
+      // A node of an older hivemind, without the vote-free post reads, unless a test gives an answer.
+      if (method.endsWith('_v2') && !(method in node.results)) {
+        reply(response, 200, { jsonrpc: '2.0', id, error: { code: -32602, message: `Assert Exception:unknown method: ${method}` } });
+        return;
+      }
       reply(response, 200, { jsonrpc: '2.0', id, result: node.results[method] ?? null });
     });
   });
@@ -83,7 +99,8 @@ const startRestNode = async (): Promise<{ node: IRestNode; server: Server }> => 
       const path = request.url ?? '/';
       node.requests.push(path);
       const route = node.routes[path.split('?')[0]];
-      if (route) reply(response, route.status ?? 200, route.body);
+      const answer = typeof route === 'function' ? route(path) : route;
+      if (answer) reply(response, answer.status ?? 200, answer.body);
       else reply(response, 404, { code: 'PGRST125', message: 'Invalid path specified in request URL' });
     });
   });
@@ -108,6 +125,8 @@ describe('hivemind REST reads', function () {
   let rest: IRestNode;
   let deadRest: IRestNode;
   let busyRest: IRestNode;
+  /** The JSON-RPC node the reads go to: `rpc`, unless a case reads from a node of its own. */
+  let apiNode = '';
 
   const useRestNodes = (nodes: string | undefined) => {
     if (nodes === undefined) delete process.env.REACT_APP_HIVEMIND_REST_NODES;
@@ -125,12 +144,24 @@ describe('hivemind REST reads', function () {
     [rpc, rest, deadRest, busyRest] = [rpcStarted.node, restStarted.node, deadStarted.node, busyStarted.node];
     getHiveChainService().getApiEndpoints = () => ({
       chainId: 'beeab0de',
-      apiEndpoint: rpc.url,
-      restApiEndpoint: rpc.url,
+      apiEndpoint: apiNode,
+      restApiEndpoint: apiNode,
       apiTimeout: 2_000,
-      aiEndpoint: `${rpc.url}/hivesense-api`
+      aiEndpoint: `${apiNode}/hivesense-api`
     });
   });
+
+  /** Runs `read` against a JSON-RPC node of its own, which no earlier case asked for anything. */
+  const onFreshNode = async (read: (node: IJsonRpcNode) => Promise<void>) => {
+    const { node, server } = await startJsonRpcNode();
+    servers.push(server);
+    apiNode = node.url;
+    try {
+      await read(node);
+    } finally {
+      apiNode = rpc.url;
+    }
+  };
 
   after(async () => {
     getHiveChainService().getApiEndpoints = savedGetApiEndpoints;
@@ -139,6 +170,7 @@ describe('hivemind REST reads', function () {
   });
 
   beforeEach(() => {
+    apiNode = rpc.url;
     useRestNodes(rest.url);
     rpc.calls.length = 0;
     rpc.results = {};
@@ -154,7 +186,7 @@ describe('hivemind REST reads', function () {
 
     expect(posts).to.deep.equal(fixtures.rankedPosts);
     // Post reads first ask the node once whether it serves lite.* (lite-api.ts); it does not.
-    expect(rpc.calls.filter((call) => call.method !== 'lite.get_info')).to.deep.equal([
+    expect(stockCalls(rpc.calls).filter((call) => call.method !== 'lite.get_info')).to.deep.equal([
       {
         method: 'bridge.get_ranked_posts',
         params: { sort: 'trending', start_author: '', start_permlink: '', limit: 20, tag: '', observer: 'hive.blog' }
@@ -168,9 +200,9 @@ describe('hivemind REST reads', function () {
 
     const posts = await getPostsRanked('created', 'hive-160391', 'alice', 'hello', 'bob', 10);
 
-    expect(posts).to.deep.equal(fixtures.rankedPosts);
+    expect(posts).to.deep.equal(cutPosts(fixtures.rankedPosts));
     expect(rest.requests).to.deep.equal([
-      '/hivemind-api/posts?sort=created&tag=hive-160391&observer=bob&page-size=10&start-author=alice&start-permlink=hello'
+      `/hivemind-api/posts?sort=created&tag=hive-160391&observer=bob&page-size=10&start-author=alice&start-permlink=hello&${LIST_SHAPE}`
     ]);
     expect(rpc.calls).to.deep.equal([]);
   });
@@ -180,7 +212,7 @@ describe('hivemind REST reads', function () {
 
     await getPostsRanked('trending', '', '', '', 'hive.blog');
 
-    expect(rest.requests).to.deep.equal(['/hivemind-api/posts?sort=trending&observer=hive.blog&page-size=20']);
+    expect(rest.requests).to.deep.equal([`/hivemind-api/posts?sort=trending&observer=hive.blog&page-size=20&${LIST_SHAPE}`]);
   });
 
   it('reads a profile tab from /accounts/{name}/posts', async () => {
@@ -188,9 +220,9 @@ describe('hivemind REST reads', function () {
 
     const posts = await getAccountPosts('blog', 'alice', 'hive.blog', 'alice', 'older-post');
 
-    expect(posts).to.deep.equal(fixtures.rankedPosts);
+    expect(posts).to.deep.equal(cutPosts(fixtures.rankedPosts));
     expect(rest.requests).to.deep.equal([
-      '/hivemind-api/accounts/alice/posts?sort=blog&observer=hive.blog&page-size=20&start-author=alice&start-permlink=older-post'
+      `/hivemind-api/accounts/alice/posts?sort=blog&observer=hive.blog&page-size=20&start-author=alice&start-permlink=older-post&${LIST_SHAPE}`
     ]);
   });
 
@@ -458,7 +490,7 @@ describe('hivemind REST reads', function () {
       expect(await read(), method).to.deep.equal(result);
       expect(await read(), `${method} again`).to.deep.equal(result);
       expect(rest.requests.map((request) => request.split('?')[0]), method).to.deep.equal([path]);
-      expect(rpc.calls, method).to.deep.equal([
+      expect(stockCalls(rpc.calls), method).to.deep.equal([
         { method, params },
         { method, params }
       ]);
@@ -512,7 +544,7 @@ describe('hivemind REST reads', function () {
     };
 
     expect(await getPost('nobody', 'missing')).to.deep.equal(post);
-    expect(rpc.calls).to.deep.equal([
+    expect(stockCalls(rpc.calls)).to.deep.equal([
       { method: 'bridge.get_post', params: { author: 'nobody', permlink: 'missing', observer: 'hive.blog' } }
     ]);
   });
@@ -547,7 +579,7 @@ describe('hivemind REST reads', function () {
     const [resolved] = (await getPostsRanked('created', '', '', '', 'bob')) ?? [];
 
     expect(resolved).to.deep.include({ original_entry: post });
-    expect(rest.requests).to.deep.equal(['/hivemind-api/posts?sort=created&observer=bob&page-size=20']);
+    expect(rest.requests).to.deep.equal([`/hivemind-api/posts?sort=created&observer=bob&page-size=20&${LIST_SHAPE}`]);
     expect(rpc.calls.filter(({ method }) => method === 'bridge.get_post')).to.deep.equal([
       {
         method: 'bridge.get_post',
@@ -574,5 +606,119 @@ describe('hivemind REST reads', function () {
 
     expect(deadRest.requests).to.deep.equal(['/hivemind-api/communities/hive-3?observer=hive.blog']);
     expect(rpc.calls.map(({ method }) => method)).to.deep.equal(['bridge.get_community', 'bridge.get_community']);
+  });
+  describe('vote-free post reads', () => {
+    const { active_votes: _votes, ...voteFreePost } = post;
+    const observerVote = { rshares: 1200, percent: 5000 };
+    const notLite = (node: IJsonRpcNode) => node.calls.filter(({ method }) => method !== 'lite.get_info');
+
+    beforeEach(() => useRestNodes(''));
+
+    it("reads them where the node serves them, each entry with the observer's vote", async () => {
+      await onFreshNode(async (node) => {
+        node.results['bridge.get_ranked_posts_v2'] = [{ ...voteFreePost, observer_vote: observerVote }];
+        node.results['bridge.get_post_v2'] = { ...voteFreePost, observer_vote: null };
+        node.results['bridge.get_discussion_v2'] = { [`${post.author}/${post.permlink}`]: voteFreePost };
+
+        const [ranked] = (await getPostsRanked('trending', '', '', '', 'bob')) ?? [];
+        const single = await getPost(post.author, post.permlink, 'bob');
+        const discussion = await getDiscussion(post.author, post.permlink, 'bob');
+
+        expect(ranked).to.deep.equal({ ...voteFreePost, observer_vote: observerVote, _observer: 'bob' });
+        expect(single).to.deep.equal({ ...voteFreePost, observer_vote: null, _observer: 'bob' });
+        // An entry without the key has the observer's vote as null all the same.
+        expect(discussion?.[`${post.author}/${post.permlink}`]).to.deep.equal({
+          ...voteFreePost,
+          observer_vote: null,
+          _observer: 'bob'
+        });
+        expect(notLite(node)).to.deep.equal([
+          {
+            method: 'bridge.get_ranked_posts_v2',
+            params: { sort: 'trending', start_author: '', start_permlink: '', limit: 20, tag: '', observer: 'bob', top_votes: 0 }
+          },
+          { method: 'bridge.get_post_v2', params: { author: post.author, permlink: post.permlink, observer: 'bob', top_votes: 0 } },
+          {
+            method: 'bridge.get_discussion_v2',
+            params: { author: post.author, permlink: post.permlink, observer: 'bob', top_votes: 0 }
+          }
+        ]);
+      });
+    });
+
+    it('reads posts with their votes from a node without them, asking it for them only once', async () => {
+      await onFreshNode(async (node) => {
+        node.results['bridge.get_ranked_posts'] = fixtures.rankedPosts;
+        node.results['bridge.get_account_posts'] = fixtures.rankedPosts;
+
+        expect(await getPostsRanked('trending', '', '', '', 'bob')).to.deep.equal(fixtures.rankedPosts);
+        expect(await getPostsRanked('hot', '', '', '', 'bob')).to.deep.equal(fixtures.rankedPosts);
+        expect(await getAccountPosts('blog', 'alice', 'bob')).to.deep.equal(fixtures.rankedPosts);
+
+        expect(notLite(node).map(({ method }) => method)).to.deep.equal([
+          'bridge.get_ranked_posts_v2',
+          'bridge.get_ranked_posts',
+          'bridge.get_ranked_posts',
+          'bridge.get_account_posts'
+        ]);
+      });
+    });
+
+    const liteInfo = (methods: string[]) => ({
+      version: '1',
+      modes: ['native'],
+      render_base: 'https://hive.blog',
+      apps: { posts: 'lite_posts' },
+      methods
+    });
+    const LITE_POSTS = ['get_discussion', 'get_post', 'get_ranked_posts', 'get_account_posts'];
+
+    it('reads lite.* posts with their votes from a lite node whose lite.get_info does not list the vote-free reads', async () => {
+      await onFreshNode(async (node) => {
+        node.results['lite.get_info'] = liteInfo(LITE_POSTS);
+        node.results['lite.get_ranked_posts'] = fixtures.rankedPosts;
+
+        expect(await getPostsRanked('trending', '', '', '', 'bob')).to.deep.equal(fixtures.rankedPosts);
+        expect(notLite(node).map(({ method }) => method)).to.deep.equal(['lite.get_ranked_posts']);
+      });
+    });
+
+    it('reads the lite.* vote-free reads a lite node lists, falling back once when it answers "unknown method"', async () => {
+      await onFreshNode(async (node) => {
+        node.results['lite.get_info'] = liteInfo([...LITE_POSTS, 'get_ranked_posts_v2', 'get_post_v2']);
+        node.results['lite.get_ranked_posts_v2'] = [{ ...voteFreePost, observer_vote: observerVote }];
+        node.results['lite.get_post'] = post;
+
+        const [ranked] = (await getPostsRanked('trending', '', '', '', 'bob')) ?? [];
+        expect(await getPost(post.author, post.permlink, 'bob')).to.deep.equal(post);
+        expect(await getPost(post.author, post.permlink, 'bob')).to.deep.equal(post);
+
+        expect(ranked).to.deep.include({ observer_vote: observerVote, _observer: 'bob' });
+        expect(notLite(node).map(({ method }) => method)).to.deep.equal([
+          'lite.get_ranked_posts_v2',
+          'lite.get_post_v2',
+          'lite.get_post',
+          'lite.get_post'
+        ]);
+      });
+    });
+  });
+
+  // Last: the rejection keeps every later REST post list in this process on the old request.
+  it('asks a REST node that rejects votes=none for its post lists as before, and then no more', async () => {
+    rest.routes['/hivemind-api/posts'] = (url) =>
+      url.includes('votes=')
+        ? { status: 400, body: { code: 'PGRST100', message: '"votes" is not a parameter' } }
+        : { body: fixtures.rankedPosts };
+
+    expect(await getPostsRanked('trending', '', '', '', 'bob')).to.deep.equal(fixtures.rankedPosts);
+    expect(await getPostsRanked('hot', '', '', '', 'bob')).to.deep.equal(fixtures.rankedPosts);
+
+    expect(rest.requests).to.deep.equal([
+      `/hivemind-api/posts?sort=trending&observer=bob&page-size=20&${LIST_SHAPE}`,
+      '/hivemind-api/posts?sort=trending&observer=bob&page-size=20',
+      '/hivemind-api/posts?sort=hot&observer=bob&page-size=20'
+    ]);
+    expect(stockCalls(rpc.calls).filter(({ method }) => method !== 'lite.get_info')).to.deep.equal([]);
   });
 });

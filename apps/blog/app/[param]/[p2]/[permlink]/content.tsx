@@ -31,6 +31,7 @@ import FlagIcon from '@/blog/features/post-rendering/flag-icon';
 import MutePostDialog from '@/blog/features/post-rendering/mute-post-dialog';
 import PostBodySection from '@/blog/features/post-rendering/post-body-section';
 import { parseCommentSort, sortDiscussion } from '@/blog/features/post-rendering/lib/paginate-discussion';
+import { useDiscussionUpvotes } from '@/blog/features/post-rendering/hooks/use-discussion-upvotes';
 import { paginateDiscussion } from '@/blog/features/post-rendering/lib/paginate-threads';
 import { PostDeleteDialog } from '@/blog/features/post-rendering/post-delete-dialog';
 import { SharePost } from '@/blog/features/post-rendering/share-post-dialog';
@@ -314,9 +315,19 @@ const PostContent = () => {
     if (awaitingFullDiscussion) refetchDiscussion();
   }, [awaitingFullDiscussion, refetchDiscussion]);
 
+  const upvotes = useDiscussionUpvotes({
+    author,
+    permlink,
+    observer,
+    postsNamespace,
+    discussion: discussionData,
+    sort: commentSortOrder,
+    seeded: isPartialDiscussion ? initialDiscussion?.upvotes : undefined,
+    seededSort: seededCommentSort
+  });
   const discussionState = useMemo(
-    () => (discussionData ? sortDiscussion(discussionData, commentSortOrder) : undefined),
-    [discussionData, commentSortOrder]
+    () => (discussionData ? sortDiscussion(discussionData, commentSortOrder, upvotes) : undefined),
+    [discussionData, commentSortOrder, upvotes]
   );
 
   const paginatedDiscussionState = useMemo(() => {
