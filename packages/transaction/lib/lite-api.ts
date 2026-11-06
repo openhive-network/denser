@@ -113,9 +113,10 @@ export interface ILiteApiProbeOptions {
   fetchInfo: (endpoint: string) => Promise<unknown>;
   /**
    * An answer of `endpoint` already at hand (e.g. the API sets engine's probe of it), or undefined to
-   * ask the node; null means it does not serve `lite.*`.
+   * ask the node; null means it does not serve `lite.*`. `failed` means the node could not be asked
+   * (transport failure or timeout), kept as a transport failure of `fetchInfo` is.
    */
-  knownInfo?: (endpoint: string) => { info: unknown } | undefined;
+  knownInfo?: (endpoint: string) => { info: unknown } | { failed: true } | undefined;
   ttlMs?: number;
   /** How long a transport failure of `lite.get_info` is kept (at most `ttlMs`); see `LITE_READ_COOLDOWN_MS`. */
   unreachableTtlMs?: number;
@@ -175,7 +176,8 @@ export function createLiteApiProbe({
 
   const probe = async (endpoint: string): Promise<IProbeOutcome> => {
     const known = knownInfo?.(endpoint);
-    if (known) return answered(isLiteApiInfo(known.info) ? known.info : null);
+    if (known && 'info' in known) return answered(isLiteApiInfo(known.info) ? known.info : null);
+    if (known) return { info: null, unreachable: true };
     let answer: unknown;
     try {
       answer = await fetchInfo(endpoint);
@@ -495,9 +497,10 @@ export function createLiteNotificationsReader(
 const isServer = typeof window === 'undefined';
 const liteProbeTtlMs = isServer ? readLiteProbeTtlMs(process.env) : LITE_PROBE_TTL_MS;
 
-const engineProbedInfo = (endpoint: string): { info: unknown } | undefined => {
+const engineProbedInfo = (endpoint: string): { info: unknown } | { failed: true } | undefined => {
   const probed = probeAnswerOf('lite', endpoint, liteProbeTtlMs);
-  return probed && { info: probed.answer };
+  if (!probed) return undefined;
+  return 'answer' in probed ? { info: probed.answer } : { failed: true };
 };
 
 const liteReadBudgetMs = isServer ? readLiteReadBudgetMs(process.env) : LITE_READ_BUDGET_MS;
