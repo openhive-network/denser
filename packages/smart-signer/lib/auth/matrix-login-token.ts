@@ -205,3 +205,27 @@ export async function mintMatrixLoginTokenCreatingAccount(
   }
   return mintMatrixLoginToken(username, settings, request, onFailure);
 }
+
+/**
+ * `mint`'s answer for `username`, as soon as it has one. Once it is a token, the account is given
+ * the display name `displayNameOf` reads, in the background: neither a slow nor a failed read or
+ * update delays or loses the token, and a failure is reported. A name of none leaves the account's.
+ */
+export async function mintSyncingDisplayName(
+  username: string,
+  mint: (username: string) => Promise<MatrixLoginTokenResult>,
+  displayNameOf: (username: string) => Promise<string | undefined>,
+  settings: MatrixLoginTokenSettings,
+  request: MatrixAdminRequest,
+  onFailure: MatrixCleanupFailureReporter
+): Promise<MatrixLoginTokenResult> {
+  const minted = await mint(username);
+  if (minted.kind === 'token') {
+    void displayNameOf(username)
+      .then((name) => (name ? syncMatrixDisplayName(username, name, settings, request, onFailure) : false))
+      .catch((error: unknown) =>
+        onFailure(matrixUserId(username, settings), `reading the display name: ${reasonOf(error, [settings.adminToken])}`)
+      );
+  }
+  return minted;
+}

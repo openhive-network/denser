@@ -104,6 +104,7 @@ run_with_junit_fallback "$junit" smart-signer node --test \
     packages/smart-signer/lib/oauth/return-url.test.ts \
     packages/smart-signer/lib/oauth/config.test.ts \
     packages/smart-signer/lib/oauth/handlers.test.ts \
+    packages/smart-signer/lib/oauth/profile-text.test.ts \
     packages/smart-signer/lib/google-drive-urls.test.ts \
     packages/smart-signer/lib/condenser-migration.test.ts \
     packages/smart-signer/lib/validators/key-role.test.ts \
@@ -177,6 +178,7 @@ run_with_junit_fallback "$junit" blog node --test \
     apps/blog/lib/cut-body.test.ts \
     apps/blog/lib/listed-content.test.ts \
     apps/blog/lib/matrix-login-token-route.test.ts \
+    apps/blog/lib/fetch-matrix-login-token.test.ts \
     apps/blog/lib/service-unavailable.test.ts \
     apps/blog/components/hooks/use-chat-token-request.test.ts \
     apps/blog/components/hooks/use-auto-retry.test.ts \
