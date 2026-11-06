@@ -46,8 +46,11 @@ export const SELECTABLE_API_NODES: readonly string[] = [
   'https://hiveapi.actifit.io'
 ];
 
-/** The sets the wallet reads: accounts and broadcasts, profiles, balances and account history. */
-export const WALLET_API_SETS: readonly TApiSetId[] = ['core', 'bridge', 'balance-api', 'hafah'];
+/**
+ * The sets the wallet reads: accounts and broadcasts, profiles, lite accounts' follows, balances and
+ * account history.
+ */
+export const WALLET_API_SETS: readonly TApiSetId[] = ['core', 'bridge', 'lite', 'balance-api', 'hafah'];
 
 /** The sets an app routes: the wallet's own, every set for the blog. */
 export const apiSetsOfApp = (app: string | undefined): readonly TApiSetId[] =>
