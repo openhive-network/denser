@@ -7,6 +7,7 @@ import {
   type ApiProbe,
   type ApiSet,
   type ProbeContext,
+  type ProbeResult,
   type ApiSetEngineOptions,
   type PreferenceOrder
 } from '@hiveio/healthchecker-component/engine';
@@ -19,7 +20,7 @@ import {
   type TApiSetId
 } from '@ui/config/api-sets';
 import { getLogger } from '@ui/lib/logging';
-import { recordProbeAnswer } from './probe-answers';
+import { recordProbeAnswer, recordProbeFailure } from './probe-answers';
 
 const logger = getLogger('app');
 
@@ -36,13 +37,21 @@ const liteFeatures = (info: unknown): string[] => {
 };
 
 // `lite.get_info` is kept for the lite reads (see `lite-api`), which need its answer, not only the
-// verdict, so they need not ask the node again.
+// verdict, so they need not ask the node again. A probe that rejects (the engine's `TransportError`
+// of a timeout, network error or HTTP 5xx, or an answer that tells nothing) is kept as failed, not as
+// "not lite": a stalled node may well serve lite.
 const liteProbe: ApiProbe = async (context: ProbeContext) => {
   const probe = jsonRpcMethodProbe('lite.get_info', {}, (info: unknown) => {
     recordProbeAnswer('lite', context.node, info);
     return liteFeatures(info);
   });
-  const result = await probe(context);
+  let result: ProbeResult;
+  try {
+    result = await probe(context);
+  } catch (error) {
+    recordProbeFailure('lite', context.node);
+    throw error;
+  }
   if (!result.supported) recordProbeAnswer('lite', context.node, null);
   return result;
 };

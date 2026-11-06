@@ -106,6 +106,30 @@ describe('the API set engine probing lite', () => {
     expect(view.nodesFor('core')[0]).to.equal(NO_LITE_NODE);
   });
 
+  it('records a lite probe that timed out as failed, not as an answer "not lite", and the node as down', async () => {
+    stubFetch();
+    const answering = globalThis.fetch;
+    globalThis.fetch = (async (input: string | URL, init: RequestInit = {}) => {
+      const node = String(input).replace(/\/+$/, '');
+      if (node !== LITE_NODE || JSON.parse(String(init.body)).method !== 'lite.get_info') return answering(input, init);
+      // A stalled node: no answer until the engine's probe timeout aborts the request.
+      return new Promise<Response>((_resolve, reject) => {
+        init.signal?.addEventListener('abort', () => reject(init.signal?.reason));
+      });
+    }) as typeof fetch;
+    const config = resolveApiSetsConfig({ apiEndpoint: LITE_NODE, allowedNodes: `${LITE_NODE} ${NO_LITE_NODE}` }, [
+      'core',
+      'lite'
+    ]);
+    const engine = createApiSetEngine(config, { timing: { probeTimeoutMs: 20 } });
+    await engine.refresh();
+
+    const states = Object.fromEntries(engine.rankings('lite').map(({ node, state }) => [node, state]));
+    expect(states[LITE_NODE]).to.equal('down');
+    expect(probeAnswerOf('lite', LITE_NODE, 60_000)).to.deep.equal({ failed: true });
+    expect(probeAnswerOf('lite', NO_LITE_NODE, 60_000)).to.deep.equal({ answer: null });
+  });
+
   it('routes lite to every preferred node before any probe or call, its default first', () => {
     const config = resolveApiSetsConfig({ apiEndpoint: NO_LITE_NODE, allowedNodes: `${NO_LITE_NODE} ${LITE_NODE}` }, [
       'core',
