@@ -461,8 +461,7 @@
     "revoke": "取り消す",
     "revoke_rc_confirm": "@{{account}} への RC の委任を取り消してもよろしいですか？",
     "revoke_rc_success": "@{{account}} へのRC委託を取り消しました。",
-    "confirm_revoke": "Vesting Shares の委任を確認",
-    "revoke_failed": "委任を取り消せませんでした"
+    "confirm_revoke": "Vesting Shares の委任を確認"
   },
   "four_oh_four": {
     "this_page_does_not_exist": "申し訳ありません。このページは存在しません。",
