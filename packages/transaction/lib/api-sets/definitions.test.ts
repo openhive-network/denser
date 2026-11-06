@@ -1,10 +1,11 @@
 import { afterEach, describe, it } from 'mocha';
 import { expect } from 'chai';
 import { TransportError, type ApiTransport } from '@hiveio/healthchecker-component/engine';
-import { resolveApiSetsConfig, SELECTABLE_API_NODES } from '@ui/config/api-sets';
+import { apiSetsOfApp, resolveApiSetsConfig, SELECTABLE_API_NODES } from '@ui/config/api-sets';
 import { createApiSetEngine } from './definitions';
 import { createEngineView } from './engine-view';
 import { probeAnswerOf } from './probe-answers';
+import { bootstrapOf } from './router';
 
 const FYP_URL = 'https://api.syncad.com/haf-fyp-api';
 const FYP_PROBE_PATH = '/v1/fyp/feed/hive.blog?page=1&page-size=1';
@@ -140,5 +141,31 @@ describe('the API set engine probing lite', () => {
 
     const view = createEngineView(engine, config);
     expect(view.nodesFor('lite')).to.deep.equal([NO_LITE_NODE, LITE_NODE]);
+  });
+
+  it('gives the wallet a lite route of its lite preference alone before any probe or call', () => {
+    const config = resolveApiSetsConfig(
+      {
+        apiEndpoint: NO_LITE_NODE,
+        allowedNodes: `${NO_LITE_NODE} https://api.openhive.network ${LITE_NODE}`,
+        setPreferences: `lite=${LITE_NODE}`
+      },
+      apiSetsOfApp('wallet')
+    );
+    const engine = createApiSetEngine(config);
+
+    const bootstrap = bootstrapOf(createEngineView(engine, config));
+    expect(bootstrap.routes.lite).to.deep.equal([LITE_NODE]);
+    expect(bootstrap.routes.core?.[0]).to.equal(NO_LITE_NODE);
+  });
+
+  it('keeps the wallet asking its only lite node before any probe when no lite preference names it', () => {
+    const config = resolveApiSetsConfig(
+      { apiEndpoint: NO_LITE_NODE, allowedNodes: `${NO_LITE_NODE} ${LITE_NODE}` },
+      apiSetsOfApp('wallet')
+    );
+    const engine = createApiSetEngine(config);
+
+    expect(createEngineView(engine, config).nodesFor('lite')).to.include(LITE_NODE);
   });
 });
