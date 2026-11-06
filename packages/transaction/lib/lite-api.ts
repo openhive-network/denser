@@ -55,6 +55,13 @@ const secondsOf = (value: string | undefined): number | undefined => {
   return Number.isFinite(seconds) ? seconds : undefined;
 };
 
+const LITE_DID_PREFIX = 'did:lite:';
+
+/** The options of a post read of `author`'s post or posts: only `lite.*` knows a `did:lite:` author. */
+export const postsReadOptionsOf = (author: string): IPostsReadOptions => ({
+  liteOnly: author.startsWith(LITE_DID_PREFIX)
+});
+
 /** Where the post reads go: `lite.*` (lite posts under their `did:lite:` identity) or `bridge.*`. */
 export type TPostsNamespace = 'lite' | 'bridge';
 
@@ -110,6 +117,8 @@ export interface ILiteApiProbeOptions {
    */
   knownInfo?: (endpoint: string) => { info: unknown } | undefined;
   ttlMs?: number;
+  /** How long a transport failure of `lite.get_info` is kept (at most `ttlMs`); see `LITE_READ_COOLDOWN_MS`. */
+  unreachableTtlMs?: number;
   now?: () => number;
 }
 
@@ -124,20 +133,36 @@ export interface ILiteApiProbe {
   seed(endpoint: string, info: unknown): void;
   /** Calls `listener` whenever an answer is recorded; returns the unsubscribe function. */
   subscribe(listener: () => void): () => void;
+  /** Whether the last `lite.get_info` of some node failed on transport and is not asked again yet. */
+  hasUnreachableNode(): boolean;
+}
+
+interface IProbeOutcome {
+  info: ILiteApiInfo | null;
+  /** The node could not be asked (a transport failure), which says nothing about its lite support. */
+  unreachable: boolean;
+}
+
+interface IProbeEntry {
+  expiresAt: number;
+  unreachable: boolean;
+  info: Promise<ILiteApiInfo | null>;
 }
 
 /**
  * A per-endpoint cache of `lite.get_info`. Negative answers are cached as well: a JSON-RPC error
- * (a node without lite support), a transport failure and a malformed answer all mean "not
- * lite-aware" until the TTL ends. Concurrent calls for one endpoint share one request.
+ * (a node without lite support) and a malformed answer mean "not lite-aware" until the TTL ends, a
+ * transport failure only for `unreachableTtlMs`, so a node back from a stall is lite-aware again
+ * soon. Concurrent calls for one endpoint share one request.
  */
 export function createLiteApiProbe({
   fetchInfo,
   knownInfo,
   ttlMs = LITE_PROBE_TTL_MS,
+  unreachableTtlMs = LITE_READ_COOLDOWN_MS,
   now = Date.now
 }: ILiteApiProbeOptions): ILiteApiProbe {
-  const cache = new Map<string, { expiresAt: number; info: Promise<ILiteApiInfo | null> }>();
+  const cache = new Map<string, IProbeEntry>();
   const answers = new Map<string, ILiteApiInfo | null>();
   const listeners = new Set<() => void>();
 
@@ -146,9 +171,11 @@ export function createLiteApiProbe({
     listeners.forEach((listener) => listener());
   };
 
-  const probe = async (endpoint: string): Promise<ILiteApiInfo | null> => {
+  const answered = (info: ILiteApiInfo | null): IProbeOutcome => ({ info, unreachable: false });
+
+  const probe = async (endpoint: string): Promise<IProbeOutcome> => {
     const known = knownInfo?.(endpoint);
-    if (known) return isLiteApiInfo(known.info) ? known.info : null;
+    if (known) return answered(isLiteApiInfo(known.info) ? known.info : null);
     let answer: unknown;
     try {
       answer = await fetchInfo(endpoint);
@@ -156,20 +183,25 @@ export function createLiteApiProbe({
       // Every failure, not only "Api not found lite", leaves the node on the stock bridge reads,
       // which every node serves.
       logger.debug('lite.get_info of %s failed, reading posts through bridge: %o', endpoint, error);
-      return null;
+      return { info: null, unreachable: error instanceof ReadTransportError };
     }
-    if (isLiteApiInfo(answer)) return answer;
+    if (isLiteApiInfo(answer)) return answered(answer);
     logger.warn('lite.get_info of %s answered without native mode: %o', endpoint, answer);
-    return null;
+    return answered(null);
   };
 
-  const remember = (endpoint: string, info: Promise<ILiteApiInfo | null>) => {
-    const entry = { expiresAt: now() + ttlMs, info };
+  const remember = (endpoint: string, outcome: Promise<IProbeOutcome>) => {
+    const entry: IProbeEntry = { expiresAt: now() + ttlMs, unreachable: false, info: outcome.then(({ info }) => info) };
     cache.set(endpoint, entry);
-    void info.then((answer) => {
-      if (cache.get(endpoint) === entry) record(endpoint, answer);
+    void outcome.then(({ info, unreachable }) => {
+      if (cache.get(endpoint) !== entry) return;
+      if (unreachable) {
+        entry.unreachable = true;
+        entry.expiresAt = Math.min(entry.expiresAt, now() + unreachableTtlMs);
+      }
+      record(endpoint, info);
     });
-    return info;
+    return entry.info;
   };
 
   return {
@@ -181,17 +213,19 @@ export function createLiteApiProbe({
     peek: (endpoint) => answers.get(endpoint),
     markUnavailable: (endpoint) => {
       answers.set(endpoint, null);
-      remember(endpoint, Promise.resolve(null));
+      remember(endpoint, Promise.resolve(answered(null)));
     },
     seed: (endpoint, info) => {
       const answer = isLiteApiInfo(info) ? info : null;
-      remember(endpoint, Promise.resolve(answer));
+      remember(endpoint, Promise.resolve(answered(answer)));
       record(endpoint, answer);
     },
     subscribe: (listener) => {
       listeners.add(listener);
       return () => listeners.delete(listener);
-    }
+    },
+    hasUnreachableNode: () =>
+      [...cache.values()].some((entry) => entry.unreachable && entry.expiresAt > now())
   };
 }
 
@@ -243,7 +277,7 @@ export interface IPostsReaderOptions {
   now?: () => number;
 }
 
-/** A `lite.*` post read that did not settle within its budget. */
+/** A `lite.*` post read (its node's lookup included) that did not settle within its budget. */
 class LiteReadBudgetError extends Error {
   constructor(budgetMs: number) {
     super(`no answer within ${budgetMs} ms`);
@@ -251,13 +285,29 @@ class LiteReadBudgetError extends Error {
   }
 }
 
-const withinBudget = <T>(read: Promise<T>, budgetMs: number): Promise<T> => {
+/** Races promises against one deadline, `budgetMs` from now; `clear` stops its timer. */
+const startBudget = (budgetMs: number) => {
   let timer: ReturnType<typeof setTimeout> | undefined;
   const expired = new Promise<never>((_resolve, reject) => {
     timer = setTimeout(() => reject(new LiteReadBudgetError(budgetMs)), budgetMs);
   });
-  return Promise.race([read, expired]).finally(() => clearTimeout(timer));
+  // Raced only while a lite step is pending: the deadline may pass with nothing left to race.
+  expired.catch(() => undefined);
+  return {
+    within: <T>(step: Promise<T>): Promise<T> => Promise.race([step, expired]),
+    clear: () => clearTimeout(timer)
+  };
 };
+
+/** Options of one post read, see `createPostsReader`. */
+export interface IPostsReadOptions {
+  /**
+   * Only `lite.*` can answer the read (it names a `did:lite:` author, which the stock read rejects):
+   * a transport failure or overrun of the budget is thrown as a transport error, not read the stock
+   * way, and the read goes to the lite node during its cooldown as well.
+   */
+  liteOnly?: boolean;
+}
 
 /**
  * Post reads on `lite.*` when a node of the lite API set is lite-aware, else `stock` (the
@@ -265,11 +315,13 @@ const withinBudget = <T>(read: Promise<T>, budgetMs: number): Promise<T> => {
  * `bridge.*` without one. A `lite.*` read answered with "Api not found" (the node, or every node
  * failover asked, lost the family) marks the node not lite-aware and is read again the stock way.
  *
- * A `lite.*` read gets `budgetMs`, its requests time out after it as well. One that fails on
- * transport (timeout, network error, HTTP 5xx) or runs out of budget is read again the stock way,
- * and reads skip `lite.*` on the node for `cooldownMs`; the node is not marked not lite-aware. The
- * failed request itself is reported to the API sets engine by the chain's failover, as every call is.
- * Any other `lite.*` answer is thrown.
+ * The lookup of the lite node and the `lite.*` read share `budgetMs`; the read's requests time out
+ * after it as well. One that fails on transport (timeout, network error, HTTP 5xx) or runs out of
+ * budget is read again the stock way, and reads skip `lite.*` on the node for `cooldownMs`; the node
+ * is not marked not lite-aware. The failed request itself is reported to the API sets engine by the
+ * chain's failover, as every call is. Any other `lite.*` answer is thrown. A `liteOnly` read throws
+ * a `ReadTransportError` instead of reading the stock way, also when no node is lite-aware while a
+ * node's lookup failed on transport.
  */
 export function createPostsReader(
   getChain: () => IPostsChain,
@@ -280,27 +332,68 @@ export function createPostsReader(
   const skippedUntil = new Map<string, number>();
   const isSkipped = (node: string): boolean => (skippedUntil.get(node) ?? -Infinity) > now();
 
-  return async <T>(read: (api: TPostsApi) => Promise<T>, stock?: () => Promise<T>): Promise<T> => {
-    const chain = getChain();
-    const stockRead = stock ?? (() => read(chain.api.bridge));
-    const lite = await findLite();
-    if (!lite || isSkipped(lite.node)) return stockRead();
+  const unreachableError = (cause: Error, endpoint: string): ReadTransportError =>
+    cause instanceof ReadTransportError
+      ? cause
+      : new ReadTransportError(
+          'lite.* unreachable',
+          { method: 'POST', endpoint, url: '', timeout: budgetMs, responseType: 'json' },
+          undefined,
+          cause
+        );
+
+  /** The `lite.*` answer of `read`, or null when the posts are to be read the stock way. */
+  const readLite = async <T>(
+    chain: IPostsChain,
+    read: (api: TPostsApi) => Promise<T>,
+    liteOnly: boolean,
+    within: <S>(step: Promise<S>) => Promise<S>
+  ): Promise<{ value: T } | null> => {
+    let lite: ILiteNode | null;
     try {
-      return await withinBudget(read(chain.withTimeout(budgetMs).api.lite), budgetMs);
+      lite = await within(findLite());
+    } catch (error) {
+      if (!(error instanceof LiteReadBudgetError)) throw error;
+      logger.warn('no lite node found within %d ms', budgetMs);
+      if (liteOnly) throw unreachableError(error, chain.endpointUrl);
+      return null;
+    }
+    if (!lite) {
+      if (liteOnly && probe.hasUnreachableNode()) {
+        throw unreachableError(new Error('no lite-aware node answered lite.get_info'), chain.endpointUrl);
+      }
+      return null;
+    }
+    if (isSkipped(lite.node) && !liteOnly) return null;
+    try {
+      return { value: await within(read(chain.withTimeout(budgetMs).api.lite)) };
     } catch (error) {
       if (isApiNotServedError(error)) {
         // Failover may have asked other nodes after the lite node: the error names the one that answered.
         const node = (error instanceof JsonRpcApiError && error.endpoint) || lite.node;
         logger.warn('%s no longer serves lite.*, reading posts the stock way', node);
         probe.markUnavailable(node);
-        return stockRead();
+        return null;
       }
       if (!(error instanceof ReadTransportError) && !(error instanceof LiteReadBudgetError)) throw error;
       const node = (error instanceof ReadTransportError && error.request.endpoint) || lite.node;
-      logger.warn('lite.* post read on %s failed (%s), reading posts the stock way', node, error.message);
+      logger.warn('lite.* post read on %s failed (%s)', node, error.message);
       skippedUntil.set(lite.node, now() + cooldownMs);
-      return stockRead();
+      if (liteOnly) throw unreachableError(error, node);
+      return null;
     }
+  };
+
+  return async <T>(
+    read: (api: TPostsApi) => Promise<T>,
+    stock?: () => Promise<T>,
+    { liteOnly = false }: IPostsReadOptions = {}
+  ): Promise<T> => {
+    const chain = getChain();
+    const budget = startBudget(budgetMs);
+    const lite = await readLite(chain, read, liteOnly, budget.within).finally(budget.clear);
+    if (lite) return lite.value;
+    return stock ? stock() : read(chain.api.bridge);
   };
 }
 
@@ -407,11 +500,14 @@ const engineProbedInfo = (endpoint: string): { info: unknown } | undefined => {
   return probed && { info: probed.answer };
 };
 
+const liteReadBudgetMs = isServer ? readLiteReadBudgetMs(process.env) : LITE_READ_BUDGET_MS;
+
 // Asked of each node itself: answered through failover, another node's capabilities would be
 // recorded as this one's. On the server, whose API sets engine probes the nodes, a node it probed
-// within the TTL is not asked again; the bundler drops that from the browser's code.
+// within the TTL is not asked again; the bundler drops that from the browser's code. A node that
+// does not answer within the read budget is unreachable, so no lookup outlasts a post read's budget.
 const liteApiProbe = createLiteApiProbe({
-  fetchInfo: (endpoint) => getNodeReadChain(endpoint).api.lite.get_info({}),
+  fetchInfo: (endpoint) => getNodeReadChain(endpoint).withTimeout(liteReadBudgetMs).api.lite.get_info({}),
   knownInfo: typeof window === 'undefined' ? engineProbedInfo : undefined,
   ttlMs: liteProbeTtlMs
 });
@@ -447,6 +543,12 @@ export const getLiteNode = (): Promise<ILiteNode | null> => lookupLiteNode();
 /** `lite.get_info` of the node `lite.*` reads go to, or null when no node of the lite API set is lite-aware. */
 export const getLiteApiInfo = async (): Promise<ILiteApiInfo | null> =>
   (await lookupLiteNode())?.info ?? null;
+
+/**
+ * Whether the last `lite.get_info` of some node failed on transport, recently enough not to ask it
+ * again yet: no lite-aware node found then is no verdict on the nodes' lite support.
+ */
+export const isLiteNodeUnreachable = (): boolean => liteApiProbe.hasUnreachableNode();
 
 /** Whether a node of the lite API set serves lite posts natively (`lite.*`). */
 export const isLiteAware = async (): Promise<boolean> => (await getLiteApiInfo()) !== null;
@@ -491,7 +593,7 @@ export const currentPostsNamespace = (): TPostsNamespace => (peekLiteApiInfo() ?
 
 /** Runs a post read on the namespace of the lite API set, see `createPostsReader`. */
 export const readPosts = createPostsReader(getReadChain, liteApiProbe, lookupLiteNode, {
-  budgetMs: isServer ? readLiteReadBudgetMs(process.env) : LITE_READ_BUDGET_MS
+  budgetMs: liteReadBudgetMs
 });
 
 /** Runs `lite.get_profile` on the lite API set's node, see `createLiteProfileReader`. */

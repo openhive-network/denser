@@ -11,6 +11,8 @@ import {
   liteSocialApp,
   LITE_PROBE_TTL_MS,
   LITE_READ_BUDGET_MS,
+  LITE_READ_COOLDOWN_MS,
+  postsReadOptionsOf,
   readLiteProbeTtlMs,
   readLiteReadBudgetMs,
   type ILiteNotificationsApi,
@@ -75,6 +77,25 @@ describe('createLiteApiProbe', () => {
     await Promise.all([probe.getInfo(LITE_NODE), probe.getInfo(LITE_NODE)]);
 
     expect(requests).to.deep.equal([LITE_NODE]);
+  });
+
+  it('keeps a transport failure only for the read cooldown, "Api not found" for the whole TTL', async () => {
+    const down = new ReadTransportError('fetch failed', { method: 'POST', endpoint: LITE_NODE, url: '', timeout: 1, responseType: 'json' });
+    const answers: Record<string, unknown> = { [LITE_NODE]: down, [STOCK_NODE]: apiNotFound('lite.get_info') };
+    const { probe, requests, advance } = setupProbe(answers);
+
+    expect(await probe.getInfo(LITE_NODE)).to.equal(null);
+    expect(await probe.getInfo(STOCK_NODE)).to.equal(null);
+    expect(probe.hasUnreachableNode()).to.equal(true);
+    answers[LITE_NODE] = LITE_INFO;
+    advance(LITE_READ_COOLDOWN_MS - 1);
+    expect(await probe.getInfo(LITE_NODE)).to.equal(null);
+    advance(1);
+    expect(probe.hasUnreachableNode()).to.equal(false);
+    expect(await probe.getInfo(LITE_NODE)).to.deep.equal(LITE_INFO);
+    expect(await probe.getInfo(STOCK_NODE)).to.equal(null);
+
+    expect(requests).to.deep.equal([LITE_NODE, STOCK_NODE, LITE_NODE]);
   });
 
   it('caches "Api not found", a transport failure and a malformed answer as not lite-aware', async () => {
@@ -426,6 +447,117 @@ describe('createPostsReader', () => {
     expect(await read(getPost)).to.equal('native');
 
     expect(namesOf(calls)).to.deep.equal(['lite.get_post', 'bridge.get_post', 'bridge.get_post', 'lite.get_post']);
+  });
+
+  it('rethrows a transport failure of a did:lite: post read instead of reading bridge.*', async () => {
+    const timeout = transportError('The operation was aborted due to timeout');
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, timeout);
+
+    const error = await read(getPost, undefined, postsReadOptionsOf('did:lite:bob')).catch((e: unknown) => e);
+
+    expect(error).to.equal(timeout);
+    expect(namesOf(calls)).to.deep.equal(['lite.get_post']);
+  });
+
+  it('rethrows an overrun budget of a did:lite: post read as a transport error', async () => {
+    const never = new Promise<never>(() => undefined);
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, never, { budgetMs: 20 });
+
+    const error = await read(getPost, undefined, { liteOnly: true }).catch((e: unknown) => e);
+
+    expect(error).to.be.instanceOf(ReadTransportError);
+    expect(error instanceof ReadTransportError && error.request.endpoint).to.equal(LITE_NODE);
+    expect(namesOf(calls)).to.deep.equal(['lite.get_post']);
+  });
+
+  it('asks lite.* for a did:lite: post during the cooldown, which a feed read skips', async () => {
+    let time = 0;
+    const answers: unknown[] = [transportError('fetch failed'), 'native'];
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: LITE_INFO }, () => answers.shift(), {
+      now: () => time
+    });
+
+    expect(await read((api) => api.get_ranked_posts(trending))).to.equal('compat');
+    time += 1;
+    expect(await read((api) => api.get_ranked_posts(trending))).to.equal('compat');
+    expect(await read(getPost, undefined, { liteOnly: true })).to.equal('native');
+
+    expect(namesOf(calls)).to.deep.equal([
+      'lite.get_ranked_posts',
+      'bridge.get_ranked_posts',
+      'bridge.get_ranked_posts',
+      'lite.get_post'
+    ]);
+  });
+
+  it('marks only did:lite: authors as read through lite.* alone', () => {
+    expect(postsReadOptionsOf('did:lite:bob')).to.deep.equal({ liteOnly: true });
+    expect(postsReadOptionsOf('bob')).to.deep.equal({ liteOnly: false });
+  });
+
+  it('bounds the lookup of the lite node by the budget, then reads the stock way', async () => {
+    const chainCalls: string[] = [];
+    const bridge = {
+      get_ranked_posts: async () => {
+        chainCalls.push('bridge.get_ranked_posts');
+        return 'compat';
+      }
+    } as unknown as TPostsApi;
+    const api = { lite: bridge, bridge };
+    const chain = { endpointUrl: LITE_NODE, api, withTimeout: () => ({ api }) };
+    const stalledLookup = () => new Promise<never>(() => undefined);
+    const read = createPostsReader(() => chain, setupProbe({}).probe, stalledLookup, { budgetMs: 20 });
+    const startedAt = Date.now();
+
+    expect(await read((posts) => posts.get_ranked_posts(trending))).to.equal('compat');
+    expect(Date.now() - startedAt).to.be.lessThan(1_000);
+    const error = await read(getPost, undefined, { liteOnly: true }).catch((e: unknown) => e);
+    expect(error).to.be.instanceOf(ReadTransportError);
+    expect(chainCalls).to.deep.equal(['bridge.get_ranked_posts']);
+  });
+
+  it('shares one budget between the lookup of the lite node and the lite.* read', async () => {
+    const never = new Promise<never>(() => undefined);
+    const { probe } = setupProbe({ [LITE_NODE]: LITE_INFO });
+    const calls: string[] = [];
+    const postsApi = (namespace: string, answer: () => Promise<unknown>) =>
+      ({
+        get_post: () => {
+          calls.push(`${namespace}.get_post`);
+          return answer();
+        }
+      }) as unknown as TPostsApi;
+    const api = { lite: postsApi('lite', () => never), bridge: postsApi('bridge', async () => 'compat') };
+    const chain = { endpointUrl: LITE_NODE, api, withTimeout: () => ({ api }) };
+    const slowLookup = () =>
+      new Promise<{ node: string; info: typeof LITE_INFO }>((resolve) =>
+        setTimeout(() => resolve({ node: LITE_NODE, info: LITE_INFO }), 60)
+      );
+    const read = createPostsReader(() => chain, probe, slowLookup, { budgetMs: 100 });
+    const startedAt = Date.now();
+
+    expect(await read(getPost)).to.equal('compat');
+    // The read had what was left of the budget after the lookup, not a budget of its own.
+    expect(Date.now() - startedAt).to.be.lessThan(140);
+    expect(calls).to.deep.equal(['lite.get_post', 'bridge.get_post']);
+  });
+
+  it('rethrows for a did:lite: post when no node is lite-aware while one could not be asked', async () => {
+    const down = transportError('fetch failed');
+    const { read, calls } = setupReader(LITE_NODE, { [LITE_NODE]: down });
+
+    expect(await read((api) => api.get_ranked_posts(trending))).to.equal('compat');
+    const error = await read(getPost, undefined, { liteOnly: true }).catch((e: unknown) => e);
+
+    expect(error).to.be.instanceOf(ReadTransportError);
+    expect(namesOf(calls)).to.deep.equal(['bridge.get_ranked_posts']);
+  });
+
+  it('reads a did:lite: post the stock way when the node answered "Api not found"', async () => {
+    const { read, calls } = setupReader(STOCK_NODE, { [STOCK_NODE]: apiNotFound('lite.get_info') });
+
+    expect(await read(getPost, undefined, { liteOnly: true })).to.equal('compat');
+    expect(namesOf(calls)).to.deep.equal(['bridge.get_post']);
   });
 
   it('rejects with the lite.* answer when it is an answer of the API itself', async () => {

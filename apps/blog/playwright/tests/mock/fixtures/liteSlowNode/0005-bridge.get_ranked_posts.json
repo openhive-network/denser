@@ -1,0 +1,34 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "trending",
+      "start_author": "nurfay",
+      "start_permlink": "roasted-sweet-potatoes-with-palm-sugar-glaze",
+      "limit": 20,
+      "tag": "",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "0",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "trending",
+    "start_author": "nurfay",
+    "start_permlink": "roasted-sweet-potatoes-with-palm-sugar-glaze",
+    "limit": 20,
+    "tag": "",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "jsonrpc": "2.0",
+    "result": [],
+    "id": 1
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

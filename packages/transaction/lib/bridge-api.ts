@@ -11,7 +11,7 @@ import {
 import { commonVariables } from '@ui/lib/common-variables';
 import { getReadChain } from './chain';
 import { nonEmpty, readFromHivemind } from './hivemind-rest';
-import { readPosts } from './lite-api';
+import { postsReadOptionsOf, readPosts } from './lite-api';
 import type { IObserverListsApi } from './observer-lists';
 import type { IHiddenAuthorsApi } from './hidden-authors';
 
@@ -166,7 +166,8 @@ export const getPost = async (
             permlink,
             observer
           })
-      )
+      ),
+    postsReadOptionsOf(author)
   ).then((resp) => {
     if (resp) {
       return resolvePost(resp, observer);
@@ -208,7 +209,8 @@ export const getAccountPosts = async (
             limit,
             observer
           })
-      )
+      ),
+    postsReadOptionsOf(account)
   ).then((resp) => {
     if (resp) {
       return resolvePosts(resp, observer);
@@ -321,6 +323,7 @@ export const getDiscussion = async (
             permlink,
             observer
           })
-      )
+      ),
+    postsReadOptionsOf(author)
   );
 };
