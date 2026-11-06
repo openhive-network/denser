@@ -10,6 +10,7 @@ import { ReadTransportError } from './read-transport';
 
 interface IFakeChain {
   endpointUrl: string;
+  withTimeout: (timeoutMs: number) => IFakeChain;
   api: { database_api: { get_dynamic_global_properties: (params: unknown) => Promise<unknown> } };
 }
 
@@ -31,6 +32,7 @@ const setup = (state: Record<string, TNodeState>) => {
   const calls: string[] = [];
   const makeChain = (node: string): IFakeChain => ({
     endpointUrl: node,
+    withTimeout: () => makeChain(node),
     api: {
       database_api: {
         get_dynamic_global_properties: async () => {
@@ -53,10 +55,12 @@ const setup = (state: Record<string, TNodeState>) => {
     sleep: (ms) => (ms === HEDGE_DELAY_MS ? new Promise<void>(() => undefined) : Promise.resolve())
   });
   const read = () => chain.api.database_api.get_dynamic_global_properties({});
+  // A heavy read: each node asked once, two nodes at most.
+  const heavyRead = () => chain.withTimeout(30_000).api.database_api.get_dynamic_global_properties({});
   const advance = (ms: number) => {
     time += ms;
   };
-  return { read, calls, health, connectivity, advance };
+  return { read, heavyRead, calls, health, connectivity, advance };
 };
 
 const offlineEverywhere = (): Record<string, TNodeState> => Object.fromEntries(NODES.map((node) => [node, 'offline']));
@@ -113,6 +117,56 @@ describe('wrapChainWithServerFailover: connectivity', () => {
 
     await read().catch(() => undefined);
 
+    expect(connectivity.isConnected()).to.equal(true);
+  });
+
+  it('keeps the network up when a call limited to fewer nodes got no answer', async () => {
+    const state = offlineEverywhere();
+    const { read, heavyRead, calls, connectivity } = setup(state);
+
+    await heavyRead().catch(() => undefined);
+
+    expect(calls).to.deep.equal(NODES.slice(0, 2));
+    expect(connectivity.isConnected()).to.equal(true);
+    state[NODES[2]] = 'ok';
+    expect(await read()).to.deep.equal({ node: NODES[2] });
+  });
+
+  it('asks the first node not down, not a pinned dead one, while the network is down', async () => {
+    const state = offlineEverywhere();
+    state[NODES[1]] = 'ok';
+    const { read, calls, connectivity, health } = setup(state);
+    health.markDown(jsonRpcHealthKey(PRIMARY, 'database_api'));
+    connectivity.reportUnanswered();
+
+    expect(await read()).to.deep.equal({ node: NODES[1] });
+    expect(calls).to.deep.equal([NODES[1]]);
+    expect(connectivity.isConnected()).to.equal(true);
+  });
+
+  it('is connected again when a node answers with an HTTP error after an outage', async () => {
+    const state = offlineEverywhere();
+    const { read, connectivity } = setup(state);
+    await read().catch(() => undefined);
+    NODES.forEach((node) => {
+      state[node] = 'http-503';
+    });
+
+    await read().catch(() => undefined);
+
+    expect(connectivity.isConnected()).to.equal(true);
+  });
+
+  it('is back online once a node answers, even without the online event', async () => {
+    const state = offlineEverywhere();
+    const { read, connectivity } = setup(state);
+    const target = new EventTarget();
+    connectivity.followBrowser(target);
+    target.dispatchEvent(new Event('offline'));
+    state[PRIMARY] = 'ok';
+
+    expect(await read()).to.deep.equal({ node: PRIMARY });
+    expect(connectivity.isBrowserOffline()).to.equal(false);
     expect(connectivity.isConnected()).to.equal(true);
   });
 
