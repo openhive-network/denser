@@ -11,6 +11,8 @@ const LOGIN_TOKEN_TIMEOUT_MS = 7_000;
 const TOO_MANY_REQUESTS = 429;
 /** The wait on a 429 that names none, as Synapse allows about one login token per user per minute */
 const DEFAULT_RETRY_AFTER_MS = 60_000;
+/** The longest wait honoured, the cap the route puts on Synapse's: a proxy may name a longer one */
+const MAX_RETRY_AFTER_MS = 70_000;
 const MS_PER_SECOND = 1000;
 
 function field(answer: unknown, name: string): unknown {
@@ -21,7 +23,7 @@ const isWait = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0;
 
 /** The wait a 429 names: its `retry_after_ms`, else its `Retry-After` in seconds, else a minute */
-function retryAfterMsOf(error: FetchError): number {
+function namedRetryAfterMs(error: FetchError): number {
   const fromBody = field(error.data, 'retry_after_ms');
   if (isWait(fromBody)) return fromBody;
   const header = error.response.headers.get('retry-after');
@@ -29,11 +31,13 @@ function retryAfterMsOf(error: FetchError): number {
   return isWait(seconds) ? seconds * MS_PER_SECOND : DEFAULT_RETRY_AFTER_MS;
 }
 
+const retryAfterMsOf = (error: FetchError): number => Math.min(namedRetryAfterMs(error), MAX_RETRY_AFTER_MS);
+
 /**
  * A Matrix login token denser's server mints for the signed-in chat user, creating their Matrix
  * account first when it has none only with `createAccount`, which only an opened chat sets;
  * `rate-limited` on a 429, with the wait it names (`retry_after_ms`, else `Retry-After`, else a
- * minute); `unreachable` when the request got
+ * minute), at most 70 s; `unreachable` when the request got
  * no answer, failing or timing out; `none` on any other answer.
  */
 export async function requestMatrixLoginToken(createAccount: boolean): Promise<LoginTokenAnswer> {

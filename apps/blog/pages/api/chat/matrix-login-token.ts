@@ -7,7 +7,7 @@ import { fetchJson } from '@smart-signer/lib/fetch-json';
 import {
   mintMatrixLoginToken,
   mintMatrixLoginTokenCreatingAccount,
-  syncMatrixDisplayName
+  mintSyncingDisplayName
 } from '@smart-signer/lib/auth/matrix-login-token';
 import { getHiveUserProfile } from '@smart-signer/lib/get-hive-user-profile';
 import { oauthDisplayName, profileDisplayName } from '@smart-signer/lib/oauth/profile-text';
@@ -33,20 +33,21 @@ async function matrixDisplayName(username: string): Promise<string> {
   return oauthDisplayName(await getHiveUserProfile(username), username);
 }
 
+/** The display name of `username`'s Hive profile, which their Matrix account then has */
+async function hiveProfileName(username: string): Promise<string | undefined> {
+  return profileDisplayName(await getHiveUserProfile(username));
+}
+
 /**
- * A login token for `username`, whose Matrix account then has the display name of their Hive
- * profile, when it names one; the profile is read while the token is minted
+ * A login token for `username`, answered without waiting for their Matrix account to be given the
+ * display name of their Hive profile
  */
-async function mint(username: string, createAccount: boolean) {
-  const displayName = getHiveUserProfile(username).then(profileDisplayName);
-  const minted = await (createAccount
-    ? mintMatrixLoginTokenCreatingAccount(username, matrixDisplayName, matrixAdmin, fetchJson, reportMintFailure)
-    : mintMatrixLoginToken(username, matrixAdmin, fetchJson, reportMintFailure));
-  const name = await displayName;
-  if (minted.kind === 'token' && name) {
-    await syncMatrixDisplayName(username, name, matrixAdmin, fetchJson, reportMintFailure);
-  }
-  return minted;
+function mint(username: string, createAccount: boolean) {
+  const mintToken = (account: string) =>
+    createAccount
+      ? mintMatrixLoginTokenCreatingAccount(account, matrixDisplayName, matrixAdmin, fetchJson, reportMintFailure)
+      : mintMatrixLoginToken(account, matrixAdmin, fetchJson, reportMintFailure);
+  return mintSyncingDisplayName(username, mintToken, hiveProfileName, matrixAdmin, fetchJson, reportMintFailure);
 }
 
 async function sessionUser(req: NextApiRequest, res: NextApiResponse) {
