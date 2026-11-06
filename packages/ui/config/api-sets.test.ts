@@ -145,7 +145,7 @@ describe('resolveApiSetsConfig', () => {
       },
       WALLET_API_SETS
     );
-    assert.deepEqual(config.sets, ['core', 'bridge', 'balance-api', 'hafah']);
+    assert.deepEqual(config.sets, ['core', 'bridge', 'lite', 'balance-api', 'hafah']);
     assert.equal(config.nodes.includes('https://images.hive.blog'), false);
   });
 });
