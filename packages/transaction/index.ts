@@ -22,7 +22,7 @@ import {
 import { getSigner } from '@smart-signer/lib/signer/get-signer';
 import { SignerOptions, SignTransaction } from '@smart-signer/lib/signer/signer';
 import { Beneficiarie, Preferences } from '@hive/common-hiveio-packages/wax';
-import WorkerBee, { IWorkerBee } from '@hiveio/workerbee';
+import WorkerBee, { IWorkerBee, WorkerBeeError } from '@hiveio/workerbee';
 import { getLogger } from '@hive/ui/lib/logging';
 import { createAsset, getAsset } from './lib/utils';
 import { getChain, getReadChain } from './lib/chain';
@@ -44,6 +44,7 @@ import {
   recordedTransactionId,
   TransactionNotConfirmedError,
   toNotConfirmedError,
+  toObservedBroadcastError,
   watchInclusion
 } from './lib/transaction-inclusion';
 import { buildFollowListReset, type FollowListReset } from './lib/follow-list-reset';
@@ -253,9 +254,10 @@ export class TransactionService {
    * observed broadcasts and is stopped after a minute without any. When
    * the node accepted the transaction but the bot doesn't find it in a
    * block in time, or a request timed out or failed on the network (the
-   * broadcast itself or a read of the bot watching for it), it rejects with
-   * `TransactionNotConfirmedError`. Such a failure of a read of wax's on-chain
-   * verification, made before anything is sent, rejects as is.
+   * broadcast itself or a read of the bot watching for it), or the bot failed
+   * with WorkerBee's own error, it rejects with `TransactionNotConfirmedError`.
+   * Such a failure of a read of wax's on-chain verification, made before
+   * anything is sent, rejects as is.
    *
    * @param {ITransaction} txBuilder
    * @return {*}  {Promise<TransactionBroadcastResult>}
@@ -276,7 +278,7 @@ export class TransactionService {
         return { transactionId };
       });
     } catch (caught) {
-      const error = toNotConfirmedError(caught, transactionId);
+      const error = toObservedBroadcastError(caught, transactionId, (e) => e instanceof WorkerBeeError);
       const operationNames = getOperationNames(txBuilder.transaction.operations).join(', ');
       if (error instanceof TransactionNotConfirmedError) {
         logger.warn(
