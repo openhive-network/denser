@@ -1,22 +1,96 @@
-import { expect, Locator, Page, test } from '@playwright/test';
+import { expect, Locator, Page, Response, test } from '@playwright/test';
 import { WalletPage } from '../support/pages/walletPage';
 import { LoginToVoteDialog } from '../support/pages/loginToVoteDialog';
-import { AccountHistoryItem, ApiHelper } from '../support/apiHelper';
 import { HomePage } from '../../../../blog/playwright/tests/support/pages/homePage';
 import { locatorSelector } from '../../../../blog/playwright/tests/support/locatorSelector';
 
+// These specs read the live chain, which moves between any two reads: each check compares the page
+// with the response it rendered, captured from the page's own traffic, not with a second API call.
+
+/** Rows the history table renders at a time (HISTORY_PAGE_SIZE in history-table.tsx). */
+const HISTORY_ROWS_PER_VIEW = 50;
+
+const DELEGATED_VESTS_PATTERN = /delegated_vesting_shares\\*":\{[^}]*?\\*"amount\\*":\\*"(\d+)/;
+
+/**
+ * Follows the responses the page renders the account from: the server-rendered document (or RSC
+ * refresh) carrying the account prefetched on the server, or the browser's own find_accounts when
+ * that prefetch failed. The returned function answers whether the latest of them has the account
+ * delegating HIVE POWER, and fails when none carried the account.
+ */
+function trackRenderedDelegation(page: Page): () => Promise<boolean> {
+  const amounts: Promise<string | undefined>[] = [];
+  page.on('response', (response) => {
+    const type = response.request().resourceType();
+    if ((type !== 'document' && type !== 'fetch') || !response.ok()) return;
+    amounts.push(
+      response
+        .text()
+        .then((body) => body.match(DELEGATED_VESTS_PATTERN)?.[1])
+        // The body of a response from a page navigated away from is gone; that page shows nothing now
+        .catch(() => undefined)
+    );
+  });
+  return async () => {
+    const latest = (await Promise.all(amounts)).filter((amount) => amount !== undefined).at(-1);
+    if (latest === undefined) throw new Error('No response the page rendered carried the account');
+    return BigInt(latest) > 0n;
+  };
+}
+
 // The delegated sentence is shown only while the account delegates, which changes over time.
 async function expectDelegatedSentenceToFollowAccount(
-  page: Page,
   description: Locator,
-  username: string,
+  isDelegating: () => Promise<boolean>,
   delegatedSentence: string
 ) {
-  if (await new ApiHelper(page).isDelegatingHivePowerAPI(username)) {
+  if (await isDelegating()) {
     await expect(description).toContainText(delegatedSentence);
   } else {
     await expect(description).not.toContainText(delegatedSentence);
   }
+}
+
+interface IRenderedOperation {
+  op?: { type: string; value?: { from?: string; to?: string } };
+}
+
+/**
+ * The newest page of `username`'s wallet operations the history rendered: the answer to the page's
+ * own request. Register it before the page loads. Only operations with a value make a row.
+ */
+async function captureRenderedOperations(page: Page, username: string): Promise<IRenderedOperation[]> {
+  const operationsUrl = new RegExp(`/hivemind-api/accounts/${username}/operations\\?`);
+  const response = await page.waitForResponse(
+    (candidate) =>
+      operationsUrl.test(candidate.url()) && candidate.request().method() === 'GET' && candidate.ok(),
+    { timeout: 60000 }
+  );
+  const body: { operations_result: IRenderedOperation[] } = await response.json();
+  return body.operations_result.filter(({ op }) => op?.value);
+}
+
+// Transfers from bad actors are hidden behind a notice: show them, so the rows follow the operations
+// one to one.
+async function showHiddenTransfers(page: Page) {
+  const showButton = page.getByTestId('wallet-account-history-scam-show');
+  if (await showButton.isVisible()) await showButton.click();
+}
+
+interface IVestingDelegationReply {
+  delegator: string;
+  delegatee: string;
+}
+
+/** The delegations the delegations tab rendered: the answer to its own list_vesting_delegations read. */
+async function readRenderedDelegations(
+  response: Response,
+  delegator: string
+): Promise<IVestingDelegationReply[]> {
+  // A single JSON-RPC reply, or a batch of them
+  const replies: { result?: { delegations?: IVestingDelegationReply[] } }[] = [await response.json()].flat();
+  const delegations = replies.find(({ result }) => result?.delegations)?.result?.delegations ?? [];
+  return delegations.filter((delegation) => delegation.delegator === delegator);
 }
 
 test.describe('Wallet page tests', () => {
@@ -76,6 +150,7 @@ test.describe('Wallet page of @gtg tests', () => {
   });
 
   test('validate hive power balances on @gtg wallet page is visible', async ({ page }) => {
+    const renderedDelegation = trackRenderedDelegation(page);
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
     await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
@@ -87,9 +162,8 @@ test.describe('Wallet page of @gtg tests', () => {
       /HIVE POWER increases at an APR of approximately \d+(\.\d+)?%, subject to blockchain variance\./
     );
     await expectDelegatedSentenceToFollowAccount(
-      page,
       description,
-      'gtg',
+      renderedDelegation,
       "Part of gtg's HIVE POWER is currently delegated."
     );
     await expect(await walletPage.walletHivePowerValue).toBeVisible();
@@ -172,52 +246,41 @@ test.describe('Wallet page of @gtg tests', () => {
   });
 
   test('validate amount of transactions on @gtg in account history', async ({ page }) => {
-    let apiHelper = new ApiHelper(page);
+    const renderedOperations = captureRenderedOperations(page, 'gtg');
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
     await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
-    const accountHistoryResult = await apiHelper.getAccountHistoryAPI('gtg', -1, 500);
+    const operations = await renderedOperations;
     // History rows and the empty-state message render only after the history
-    // query settles - wait for either before branching, otherwise the check
-    // races the request and lands in the wrong branch
+    // query settles - wait for either before checking them
     await expect(
       walletPage.walletAccountHistoryRow.first().or(walletPage.walletAccountHistoryNoTransactionMsg)
     ).toBeVisible({ timeout: 30000 });
 
-    if (await walletPage.walletAccountHistoryRow.first().isVisible()) {
-      // The history is shown and loaded a page at a time: expand it to at least as many rows as the
-      // API answer has, or to the whole history when it is shorter
-      const olderButton = page.getByTestId('wallet-account-history-older');
-      const apiRows = accountHistoryResult.result.length;
-      let shownRows = await walletPage.walletAccountHistoryRow.count();
-      while (shownRows < apiRows && (await olderButton.isVisible())) {
-        await olderButton.click();
-        await expect(walletPage.walletAccountHistoryRow).not.toHaveCount(shownRows, { timeout: 30000 });
-        shownRows = await walletPage.walletAccountHistoryRow.count();
-      }
-      if (await olderButton.isVisible()) {
-        await expect(shownRows).toBeGreaterThanOrEqual(apiRows);
-      } else {
-        await expect(shownRows).toBe(apiRows);
-      }
-    } else {
-      await expect(await walletPage.walletAccountHistoryNoTransactionMsg).toContainText(
-        'No transactions found'
+    if (operations.length === 0) {
+      await expect(walletPage.walletAccountHistoryNoTransactionMsg).toContainText('No transactions found');
+      return;
+    }
+    await showHiddenTransfers(page);
+    await expect(walletPage.walletAccountHistoryRow).toHaveCount(
+      Math.min(operations.length, HISTORY_ROWS_PER_VIEW)
+    );
+    if (operations.length > HISTORY_ROWS_PER_VIEW) {
+      // The next rows of the page already loaded are shown without another request
+      await page.getByTestId('wallet-account-history-older').click();
+      await expect(walletPage.walletAccountHistoryRow).toHaveCount(
+        Math.min(operations.length, 2 * HISTORY_ROWS_PER_VIEW)
       );
     }
   });
 
   test('validate first transaction on @gtg in account history', async ({ page }) => {
-    let apiHelper = new ApiHelper(page);
     const username: string = 'gtg';
+    const renderedOperations = captureRenderedOperations(page, username);
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@gtg\/transfers/);
     await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
-
-    const accountHistoryResultAPI = await apiHelper.getAccountHistoryAPI(username, -1, 500);
-    let accountHistoryResult: AccountHistoryItem[] = [];
-
-    if (accountHistoryResultAPI.result != null) accountHistoryResult = accountHistoryResultAPI.result.reverse();
+    const operations = await renderedOperations;
 
     // History rows and the empty-state message render only after the history
     // query settles - wait for either before branching
@@ -225,17 +288,18 @@ test.describe('Wallet page of @gtg tests', () => {
       walletPage.walletAccountHistoryRow.first().or(walletPage.walletAccountHistoryNoTransactionMsg)
     ).toBeVisible({ timeout: 30000 });
 
-    if (await walletPage.walletAccountHistoryRow.first().isVisible()) {
-      const firstAccountHistoryOperation = accountHistoryResult[0][1].op;
-      // account_history_api names operations with an `_operation` suffix, e.g. `transfer_operation`
-      const firstAccountHistoryOperationType = firstAccountHistoryOperation.type.replace(/_operation$/, '');
+    if (operations.length > 0) {
+      await showHiddenTransfers(page);
+      const firstAccountHistoryOperation = operations[0].op;
+      // The API names operations with an `_operation` suffix, e.g. `transfer_operation`
+      const firstAccountHistoryOperationType = firstAccountHistoryOperation?.type.replace(/_operation$/, '');
       const firstAccountHistoryTransfer = await walletPage.walletAccountHistoryRow.first();
 
       if (firstAccountHistoryOperationType == 'claim_reward_balance') {
         await expect(firstAccountHistoryTransfer).toContainText('Claim rewards');
       } else if (firstAccountHistoryOperationType == 'transfer') {
-        const firstAccountHistoryOperationTo = firstAccountHistoryOperation.value.to;
-        const firstAccountHistoryOperationFrom = firstAccountHistoryOperation.value.from;
+        const firstAccountHistoryOperationTo = firstAccountHistoryOperation?.value?.to;
+        const firstAccountHistoryOperationFrom = firstAccountHistoryOperation?.value?.from;
         if (firstAccountHistoryOperationTo == username) {
           await expect(firstAccountHistoryTransfer).toContainText('Received');
         }
@@ -265,23 +329,27 @@ test.describe('Wallet page of @gtg tests', () => {
   });
 
   test('validate delegations on @blocktrades in wallet', async ({ page }) => {
-    let apiHelper = new ApiHelper(page);
     const username: string = 'blocktrades';
     await walletPage.goToWalletPageOfUser(`@${username}`);
     await expect(walletPage.page.url()).toMatch(/https?:\/\/[\w\.]+(:\d{1,5})?\/@blocktrades\/transfers/);
     await walletPage.page.waitForSelector(locatorSelector(walletPage.walletSearchInput));
 
+    const delegationsResponse = page.waitForResponse(
+      (response) =>
+        Boolean(response.request().postData()?.includes('database_api.list_vesting_delegations')) && response.ok()
+    );
     await walletPage.delegationsTab.click();
+    const delegations = await readRenderedDelegations(await delegationsResponse, username);
     await walletPage.page.waitForSelector(locatorSelector(walletPage.walletDelegationItem));
 
-    const vestingDelegationAPI = await apiHelper.getVestingDelegationsAPI('blocktrades');
-    const vestingDelegationAPILength = await vestingDelegationAPI.result.length;
-    // console.log('vesting delegation api response ', await vestingDelegationAPI, await vestingDelegationAPILength);
-
-    expect((await walletPage.walletDelegationItem.all()).length).toBe(vestingDelegationAPILength);
+    // One row per delegation, in the answer's order, each naming its delegatee
+    await expect(walletPage.walletDelegationItem.locator('td:nth-child(2)')).toHaveText(
+      delegations.map(({ delegatee }) => delegatee)
+    );
   });
 
   test('Wallet page - translation polish', async ({ page }) => {
+    const renderedDelegation = trackRenderedDelegation(page);
     await walletPage.goToWalletPageOfUser('@gtg');
     await expect(page.locator('.container.p-0').last()).toBeVisible();
     await homePage.toggleLanguage.click();
@@ -301,9 +369,8 @@ test.describe('Wallet page of @gtg tests', () => {
       /HIVE POWER rośnie w tempie około \d+(\.\d+)?% w skali roku \(APR\), z zastrzeżeniem zmienności blockchaina\./
     );
     await expectDelegatedSentenceToFollowAccount(
-      page,
       hivePowerDescription,
-      'gtg',
+      renderedDelegation,
       'Część HIVE POWER użytkownika gtg jest obecnie oddelegowana.'
     );
     await expect(page.getByTestId('wallet-account-history-description')).toContainText(
