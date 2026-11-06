@@ -20,11 +20,40 @@ export interface ITransactionIdObserver {
   };
 }
 
+/**
+ * Asks the node whether a block includes a transaction known by any of `transactionIds`; rejects
+ * when the node cannot tell.
+ */
+export type InclusionLookup = (transactionIds: readonly string[]) => Promise<boolean>;
+
+/** `transaction_status_api.find_transaction`: where the node saw a transaction, by its id in blocks. */
+export type FindTransaction = (params: { transaction_id: string }) => Promise<{ status: string }>;
+
+const IN_BLOCK_STATUSES = new Set(['within_reversible_block', 'within_irreversible_block']);
+
+/**
+ * An `InclusionLookup` asking `findTransaction` about each of the ids. Rejects with a request's
+ * failure when no id was found in a block and a request failed.
+ */
+export function inclusionLookupVia(findTransaction: FindTransaction): InclusionLookup {
+  return async (transactionIds) => {
+    const answers = await Promise.allSettled(
+      [...new Set(transactionIds)].map((id) => findTransaction({ transaction_id: id }))
+    );
+    if (answers.some((answer) => answer.status === 'fulfilled' && IN_BLOCK_STATUSES.has(answer.value.status)))
+      return true;
+    const failure = answers.find((answer): answer is PromiseRejectedResult => answer.status === 'rejected');
+    if (failure) throw failure.reason;
+    return false;
+  };
+}
+
 export interface IInclusionWatch {
   /**
    * True once a block includes the transaction, false when `timeoutMs` passes first after the bot
    * scanned at least one block, or the watch is cancelled. Rejects when no block was scanned in time,
-   * with the bot's last scanner error as `cause`.
+   * with the bot's last scanner error as `cause`. After a scanner error, the timeout's answer is the
+   * lookup's instead, rejecting when the lookup fails.
    */
   readonly included: Promise<boolean>;
   cancel(): void;
@@ -51,12 +80,16 @@ export function recordedTransactionId(
 /**
  * Watches `bot`'s blocks for a transaction known by any of `transactionIds` (its HF26 and legacy ids);
  * subscribe before broadcasting so no block is missed. A scanner error is taken as transient: the
- * subscription stays and the next poll may still find the transaction.
+ * subscription stays and the next poll may still find the transaction. The poll may never scan the
+ * block the error left out, though (WorkerBee's first poll after a failed first read of a fresh bot
+ * starts from the new head, and a catch-up read stops one block short of it), so once one occurred,
+ * `lookUpInclusion` answers at the timeout in place of the blocks scanned.
  */
 export function watchInclusion(
   bot: ITransactionIdObserver,
   transactionIds: readonly string[],
-  timeoutMs = INCLUSION_TIMEOUT_MS
+  timeoutMs = INCLUSION_TIMEOUT_MS,
+  lookUpInclusion?: InclusionLookup
 ): IInclusionWatch {
   let finish: (included: boolean) => void = () => {};
   let fail: (error: unknown) => void = () => {};
@@ -65,6 +98,7 @@ export function watchInclusion(
     fail = reject;
   });
   let scannedBlock = false;
+  let scanFailed = false;
   let lastScanError: unknown;
   const subscription = bot.observe
     .onTransactionIds(...transactionIds)
@@ -75,17 +109,22 @@ export function watchInclusion(
         if (transactionIds.some((id) => transactions[id] !== undefined)) finish(true);
       },
       error: (error) => {
+        scanFailed = true;
         lastScanError = error;
       }
     });
-  // Without a scanned block the timeout says nothing about the transaction
-  const timer = setTimeout(
-    () =>
-      scannedBlock
-        ? finish(false)
-        : fail(new Error(`No block scanned within ${timeoutMs} ms`, { cause: lastScanError })),
-    timeoutMs
-  );
+  const onTimeout = () => {
+    if (scanFailed && lookUpInclusion) {
+      lookUpInclusion(transactionIds).then(finish, (error: unknown) =>
+        fail(new Error('Cannot look up the transaction after a scanner error', { cause: error }))
+      );
+      return;
+    }
+    // Without a scanned block the timeout says nothing about the transaction
+    if (scannedBlock) finish(false);
+    else fail(new Error(`No block scanned within ${timeoutMs} ms`, { cause: lastScanError }));
+  };
+  const timer = setTimeout(onTimeout, timeoutMs);
   // The first outcome settles `included`; later reports from the bot or the timer are no-ops
   const stopWatching = () => {
     clearTimeout(timer);

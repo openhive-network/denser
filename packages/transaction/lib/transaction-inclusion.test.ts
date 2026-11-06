@@ -1,9 +1,11 @@
 import { expect } from 'chai';
 import {
+  type InclusionLookup,
   type IScannedBlock,
   type ITransactionIdObserver,
   findNodeNetworkFailure,
   findWaxRequestTimeout,
+  inclusionLookupVia,
   isNodeNetworkFailure,
   isWaxRequestTimeout,
   recordedTransactionId,
@@ -172,6 +174,123 @@ describe('watchInclusion', () => {
   });
 });
 
+describe('watchInclusion after a scanner error', () => {
+  const lookUp = (answer: Promise<boolean>) => {
+    const asked: (readonly string[])[] = [];
+    return {
+      asked,
+      lookUpInclusion: (transactionIds: readonly string[]) => {
+        asked.push(transactionIds);
+        return answer;
+      }
+    };
+  };
+
+  it("resolves the lookup's true at the timeout when the blocks scanned did not include it", async () => {
+    const bot = new FakeBot();
+    const { asked, lookUpInclusion } = lookUp(Promise.resolve(true));
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS, lookUpInclusion);
+    bot.failScan(new Error('node unreachable'));
+    bot.scanBlock();
+
+    expect(await watch.included).to.equal(true);
+    expect(asked).to.deep.equal([IDS]);
+    expect(bot.unsubscribes).to.equal(1);
+  });
+
+  it("resolves the lookup's false, for a transaction that never landed", async () => {
+    const bot = new FakeBot();
+    const { lookUpInclusion } = lookUp(Promise.resolve(false));
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS, lookUpInclusion);
+    bot.scanBlock();
+    bot.failScan(new Error('node unreachable'));
+
+    expect(await watch.included).to.equal(false);
+  });
+
+  it('rejects with the failure as cause when the lookup fails', async () => {
+    const bot = new FakeBot();
+    const failure = new Error('node unreachable');
+    const { lookUpInclusion } = lookUp(Promise.reject(failure));
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS, lookUpInclusion);
+    bot.scanBlock();
+    bot.failScan(new Error('scanner failed'));
+
+    const error = await watch.included.then(
+      () => undefined,
+      (reason: unknown) => reason
+    );
+    expect(error).to.be.instanceOf(Error).and.to.have.property('cause', failure);
+    expect(bot.unsubscribes).to.equal(1);
+  });
+
+  it('resolves true from a block the bot reports while the lookup is pending', async () => {
+    const bot = new FakeBot();
+    const { asked, lookUpInclusion } = lookUp(new Promise<boolean>(() => {}));
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS, lookUpInclusion);
+    bot.failScan(new Error('node unreachable'));
+    await new Promise((resolve) => setTimeout(resolve, SHORT_TIMEOUT_MS * 2));
+    expect(asked).to.have.length(1);
+    bot.scanBlock('legacy456');
+
+    expect(await watch.included).to.equal(true);
+  });
+
+  it('does not look up the transaction when no scanner error occurred', async () => {
+    const bot = new FakeBot();
+    const { asked, lookUpInclusion } = lookUp(Promise.resolve(true));
+    const watch = watchInclusion(bot, IDS, SHORT_TIMEOUT_MS, lookUpInclusion);
+    bot.scanBlock();
+
+    expect(await watch.included).to.equal(false);
+    expect(asked).to.deep.equal([]);
+  });
+});
+
+describe('inclusionLookupVia', () => {
+  const answering =
+    (statuses: Partial<Record<string, string | Error>>) =>
+    async ({ transaction_id }: { transaction_id: string }) => {
+      const answer = statuses[transaction_id] ?? 'unknown';
+      if (answer instanceof Error) throw answer;
+      return { status: answer };
+    };
+
+  it('finds a transaction in a reversible or irreversible block under either id', async () => {
+    expect(await inclusionLookupVia(answering({ abc123: 'within_reversible_block' }))(IDS)).to.equal(true);
+    expect(await inclusionLookupVia(answering({ legacy456: 'within_irreversible_block' }))(IDS)).to.equal(true);
+  });
+
+  it('finds no transaction the node does not know or holds in its mempool only', async () => {
+    expect(await inclusionLookupVia(answering({ abc123: 'within_mempool' }))(IDS)).to.equal(false);
+    expect(await inclusionLookupVia(answering({ abc123: 'expired_irreversible' }))(IDS)).to.equal(false);
+  });
+
+  it('asks once for a transaction whose ids are the same', async () => {
+    const asked: string[] = [];
+    const lookUpInclusion = inclusionLookupVia(async ({ transaction_id }) => {
+      asked.push(transaction_id);
+      return { status: 'unknown' };
+    });
+
+    expect(await lookUpInclusion(['abc123', 'abc123'])).to.equal(false);
+    expect(asked).to.deep.equal(['abc123']);
+  });
+
+  it('rejects when a request failed and no id was found, else answers from the other id', async () => {
+    const failure = new Error('node unreachable');
+
+    const error = await inclusionLookupVia(answering({ abc123: failure }))(IDS).then(
+      () => undefined,
+      (reason: unknown) => reason
+    );
+    expect(error).to.equal(failure);
+    expect(
+      await inclusionLookupVia(answering({ abc123: failure, legacy456: 'within_reversible_block' }))(IDS)
+    ).to.equal(true);
+  });
+});
+
 interface IWaxTransaction {
   pushOperation(operation: object): IWaxTransaction;
   readonly id: string;
@@ -223,6 +342,137 @@ describe('recordedTransactionId', function () {
 
   it('takes the HF26 id for a transaction signed in the HF26 serialization', () => {
     expect(recordedTransactionId(transaction, 'hf26')).to.equal(transaction.id);
+  });
+});
+
+/**
+ * A node a real WorkerBee bot polls: the head and the transaction ids of each block are the test's,
+ * and so are the block reads that fail.
+ */
+class FakeNode {
+  head = 100;
+  readonly transactionIdsOf = new Map<number, string[]>();
+  readonly failingBlockReads = new Set<number>();
+  readonly blockReads: string[] = [];
+
+  private block(blockNum: number) {
+    const transactionIds = this.transactionIdsOf.get(blockNum) ?? [];
+    return { transaction_ids: transactionIds, transactions: transactionIds.map(() => ({ operations: [] })) };
+  }
+
+  readonly chain: object = {
+    extend: () => this.chain,
+    createTransactionFromJson: (transaction: object) => ({ transaction }),
+    api: {
+      database_api: {
+        get_dynamic_global_properties: async () => ({
+          head_block_number: this.head,
+          head_block_id: `${this.head}`,
+          current_witness: 'witness',
+          time: '2026-11-06T00:00:00',
+          downvote_pool_percent: 2500
+        })
+      },
+      block_api: {
+        get_block: async ({ block_num }: { block_num: number }) => {
+          this.blockReads.push(`get_block ${block_num}`);
+          if (this.failingBlockReads.delete(block_num)) throw new Error('Request timed out');
+          return { block: this.block(block_num) };
+        },
+        get_block_range: async ({ starting_block_num, count }: { starting_block_num: number; count: number }) => {
+          this.blockReads.push(`get_block_range ${starting_block_num}+${count}`);
+          return { blocks: Array.from({ length: count }, (_, i) => this.block(starting_block_num + i)) };
+        }
+      }
+    }
+  };
+}
+
+interface IWorkerBeeBot extends ITransactionIdObserver {
+  /** Not in WorkerBee's types: the mediator whose `notify` is one poll of `start()`'s interval. */
+  mediator: { notify(): Promise<void> };
+  delete(): void;
+}
+
+describe("watchInclusion on WorkerBee's block collector", function () {
+  let createBot: (chain: object) => IWorkerBeeBot;
+
+  before(async function () {
+    this.timeout(30_000);
+    const workerBee = (await importEsm('@hiveio/workerbee')) as { default: new (chain: object) => IWorkerBeeBot };
+    createBot = (chain) => new workerBee.default(chain);
+  });
+
+  const WATCH_MS = 200;
+  const TX_ID = 'abc123';
+
+  /** One poll of `bot`, with the block reads and observers it starts settled. */
+  const poll = async (bot: IWorkerBeeBot) => {
+    await bot.mediator.notify();
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  };
+
+  const watchOnFreshBotWithFailedFirstRead = async (node: FakeNode, lookUpInclusion?: InclusionLookup) => {
+    const bot = createBot(node.chain);
+    const watch = watchInclusion(bot, [TX_ID], WATCH_MS, lookUpInclusion);
+    node.failingBlockReads.add(100);
+    await poll(bot);
+    node.head = 101;
+    await poll(bot);
+    return { bot, watch };
+  };
+
+  it('never scans the block whose read failed first on a fresh bot', async () => {
+    const node = new FakeNode();
+    node.transactionIdsOf.set(100, [TX_ID]);
+    const { bot, watch } = await watchOnFreshBotWithFailedFirstRead(node);
+
+    expect(node.blockReads).to.deep.equal(['get_block 100', 'get_block 101']);
+    expect(await watch.included).to.equal(false);
+    bot.delete();
+  });
+
+  it('confirms a transaction in that block through the lookup', async () => {
+    const node = new FakeNode();
+    node.transactionIdsOf.set(100, [TX_ID]);
+    const lookUpInclusion = inclusionLookupVia(async () => ({ status: 'within_reversible_block' }));
+    const { bot, watch } = await watchOnFreshBotWithFailedFirstRead(node, lookUpInclusion);
+
+    expect(await watch.included).to.equal(true);
+    bot.delete();
+  });
+
+  it('confirms a transaction in the head block a catch-up read stopped short of', async () => {
+    const node = new FakeNode();
+    node.transactionIdsOf.set(102, [TX_ID]);
+    const bot = createBot(node.chain);
+    const watch = watchInclusion(
+      bot,
+      [TX_ID],
+      WATCH_MS,
+      inclusionLookupVia(async () => ({ status: 'within_reversible_block' }))
+    );
+    await poll(bot);
+    node.head = 101;
+    node.failingBlockReads.add(101);
+    await poll(bot);
+    node.head = 102;
+    await poll(bot);
+
+    expect(node.blockReads).to.deep.equal(['get_block 100', 'get_block 101', 'get_block_range 101+1']);
+    expect(await watch.included).to.equal(true);
+    bot.delete();
+  });
+
+  it('reports a transaction that never landed as not included', async () => {
+    const node = new FakeNode();
+    const { bot, watch } = await watchOnFreshBotWithFailedFirstRead(
+      node,
+      inclusionLookupVia(async () => ({ status: 'unknown' }))
+    );
+
+    expect(await watch.included).to.equal(false);
+    bot.delete();
   });
 });
 

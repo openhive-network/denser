@@ -1048,6 +1048,12 @@ export type ExtendedNodeApi = {
   network_broadcast_api: {
     broadcast_transaction: TWaxApiRequest<transaction[], transaction>;
   };
+  transaction_status_api: {
+    find_transaction: TWaxApiRequest<
+      { transaction_id: string; expiration?: string },
+      { status: string; block_num?: number; rc_cost?: number }
+    >;
+  };
   'search-api': {
     find_text: TWaxApiRequest<SearchType, Entry[]>;
   };
