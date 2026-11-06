@@ -1,13 +1,17 @@
 import { QueryClient, isServer } from '@tanstack/react-query';
 import { ServerMutationCache, ServerQueryCache } from '@ui/lib/server-query-cache';
 import { retryQueriesOnApiNodeSwitch } from '@ui/lib/retry-queries-on-api-node-switch';
+import { retryQueriesOnReconnect } from '@ui/lib/retry-queries-on-reconnect';
+import { getBrowserConnectivity } from '@transaction/lib/connectivity';
 
 function makeQueryClient() {
   return new QueryClient({
     ...(isServer && { queryCache: new ServerQueryCache(), mutationCache: new ServerMutationCache() }),
     defaultOptions: {
       queries: {
-        staleTime: 60 * 1000
+        staleTime: 60 * 1000,
+        // Queries pause while the browser is offline; once it is back, the page's data refreshes once.
+        refetchOnReconnect: 'always'
       }
     }
   });
@@ -27,6 +31,8 @@ export function getQueryClient() {
     if (!browserQueryClient) {
       browserQueryClient = makeQueryClient();
       retryQueriesOnApiNodeSwitch(browserQueryClient);
+      const connectivity = getBrowserConnectivity();
+      if (connectivity) retryQueriesOnReconnect(browserQueryClient, connectivity);
     }
     return browserQueryClient;
   }

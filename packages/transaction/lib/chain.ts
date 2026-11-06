@@ -17,6 +17,7 @@ import { NodeHealth } from './node-health';
 import { createReadClient, IReadClient, IReadClientConfig } from './read-client';
 import { fetchReadTransport, isRestApiUnavailable, ReadTransportError } from './read-transport';
 import { announceApiNodeSwitch } from './api-node-switch';
+import { getBrowserConnectivity } from './connectivity';
 import { createApiSetRouting } from './api-sets/call-routing';
 import type { TApiSetId } from '@ui/config/api-set-ids';
 import {
@@ -63,6 +64,9 @@ const switchApiNode = (node: string): void => {
 
 const onFailover = isServer ? undefined : switchApiNode;
 
+// Offline, the browser asks one node per call instead of sweeping every node on every call.
+const connectivity = getBrowserConnectivity();
+
 const apiSetRouting = createApiSetRouting(
   isServer
     ? undefined
@@ -76,9 +80,14 @@ const apiSetRouting = createApiSetRouting(
 );
 
 /** The health record and routing a kind of read chain fails over with. */
-type TReadFailover = Pick<IServerFailoverOptions<ReadChain>, 'health' | 'routeFor' | 'onFailover'>;
+type TReadFailover = Pick<IServerFailoverOptions<ReadChain>, 'health' | 'routeFor' | 'onFailover' | 'connectivity'>;
 
-const sharedFailover: TReadFailover = { health: nodeHealth, routeFor: apiSetRouting.routeCall, onFailover };
+const sharedFailover: TReadFailover = {
+  health: nodeHealth,
+  routeFor: apiSetRouting.routeCall,
+  onFailover,
+  connectivity
+};
 
 // A reader's search is a heavy query a node may be slow on while it serves every other call well:
 // it keeps a health record of its own and reports nothing to the API sets, so a slow search never
@@ -89,7 +98,8 @@ const searchFailover: TReadFailover = {
   routeFor: async (root, path, configured) => {
     const route = await apiSetRouting.routeCall(root, path, configured);
     return route && { nodes: route.nodes, family: route.family };
-  }
+  },
+  connectivity
 };
 
 /**
@@ -126,6 +136,7 @@ const withFailover = (baseChain: Chain): Chain =>
     routeFor: apiSetRouting.routeCall,
     health: nodeHealth,
     onFailover,
+    connectivity,
     createNodeChain: (node, timeoutMs) =>
       baseChain.extendConfig({
         chainId: baseChain.chainId,
@@ -229,7 +240,10 @@ const HIVEMIND_REST_API = 'hivemind-api';
 const getHivemindRestNodes = (): string[] =>
   parseFallbackNodes(isServer ? process.env.REACT_APP_HIVEMIND_REST_NODES : configuredHivemindRestNodes);
 
-const createHivemindRestChain = (nodes: readonly string[], { health, routeFor }: TReadFailover): ReadChain => {
+const createHivemindRestChain = (
+  nodes: readonly string[],
+  { health, routeFor, connectivity }: TReadFailover
+): ReadChain => {
   const configFor = (node: string, timeoutMs?: number) => (): IReadClientConfig => {
     const config = getReadClientConfig();
     return {
@@ -244,6 +258,7 @@ const createHivemindRestChain = (nodes: readonly string[], { health, routeFor }:
     fallbackNodes: nodes.slice(1),
     routeFor,
     health,
+    connectivity,
     isTransportError: (error) => error instanceof ReadTransportError,
     isRestApiUnavailable,
     createNodeChain: (node, timeoutMs) => createReadChain(configFor(node, timeoutMs))

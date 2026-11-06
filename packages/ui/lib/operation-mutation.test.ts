@@ -1,6 +1,6 @@
 import { afterEach, describe, it, mock } from 'node:test';
 import assert from 'node:assert/strict';
-import { MutationObserver, QueryClient } from '@tanstack/react-query';
+import { MutationObserver, QueryClient, onlineManager } from '@tanstack/react-query';
 import type { QueryKey } from '@tanstack/react-query';
 import { TransactionNotConfirmedError } from '../../transaction/lib/transaction-inclusion.ts';
 import {
@@ -20,7 +20,8 @@ function recordingEffects() {
     notifySuccess: (toast) => toasts.push(toast),
     reportError: (error, method, params) => errors.push({ error, method, params }),
     logSuccess: () => {},
-    isUnconfirmedBroadcast: (error) => error instanceof TransactionNotConfirmedError
+    isUnconfirmedBroadcast: (error) => error instanceof TransactionNotConfirmedError,
+    offlineError: () => undefined
   };
   return { toasts, errors, effects };
 }
@@ -182,6 +183,27 @@ describe('buildOperationMutationOptions', () => {
     assert.deepEqual(invalidated, []);
     mock.timers.tick(4000);
     assert.deepEqual(invalidated, [LIST_KEY, ['profile', 'bob']]);
+  });
+
+  it('refuses at once while offline, before running, rather than waiting to broadcast once back online', async () => {
+    const client = new QueryClient();
+    client.setQueryData(LIST_KEY, ['alice']);
+    const { errors, effects } = recordingEffects();
+    const offline = new Error('offline');
+    const run = mock.fn(async () => 'tx-1');
+    onlineManager.setOnline(false);
+    try {
+      await assert.rejects(
+        mutate(client, listConfig(run), { ...effects, offlineError: () => offline }, { name: 'bob' }),
+        offline
+      );
+    } finally {
+      onlineManager.setOnline(true);
+    }
+
+    assert.equal(run.mock.callCount(), 0);
+    assert.deepEqual(client.getQueryData(LIST_KEY), ['alice']);
+    assert.deepEqual(errors, [{ error: offline, method: 'useAddToList', params: { name: 'bob' } }]);
   });
 
   it('refreshes an unconfirmed broadcast with only immediate refreshes configured after a delay', async () => {

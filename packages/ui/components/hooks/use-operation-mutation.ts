@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TransactionNotConfirmedError } from '@hive/transaction/lib/transaction-inclusion';
+import { BrowserOfflineError, getBrowserConnectivity } from '@hive/transaction/lib/connectivity';
 import { toast } from '@ui/components/hooks/use-toast';
 import { handleError } from '@ui/lib/handle-error';
 import { getLogger } from '@ui/lib/logging';
@@ -17,7 +18,8 @@ const effects: OperationEffects = {
   notifySuccess: (successToast) => toast({ ...successToast, variant: 'success' }),
   reportError: (error, method, params) => handleError(error, { method, params }),
   logSuccess: (name, data) => logger.info('%s done: %o', name, data),
-  isUnconfirmedBroadcast: (error) => error instanceof TransactionNotConfirmedError
+  isUnconfirmedBroadcast: (error) => error instanceof TransactionNotConfirmedError,
+  offlineError: () => (getBrowserConnectivity()?.isBrowserOffline() ? new BrowserOfflineError() : undefined)
 };
 
 /** Observed broadcast: resolves once the transaction is in a block. */

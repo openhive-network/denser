@@ -40,6 +40,7 @@
     "close": "Cerrar",
     "profile_picture": "Foto de perfil",
     "notifications_region": "Notificaciones ({hotkey})",
+    "offline_notice": "Estás sin conexión. La billetera se actualizará cuando vuelva la conexión.",
     "select_placeholder": "Seleccionar..."
   },
   "navigation": {

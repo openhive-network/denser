@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ApiSetsComponent } from '@hiveio/healthchecker-component';
 import type { ApiSetEngine } from '@hiveio/healthchecker-component/engine';
 import { getBrowserApiSetEngine } from '@transaction/lib/api-sets/browser';
+import { getBrowserConnectivity } from '@transaction/lib/connectivity';
 import type { TApiSetChecks } from '@transaction/lib/api-sets/definitions';
 import { getBrowserApiSetsConfig } from '@ui/config/browser-api-sets';
 import { createApiSetsSelectionStorage } from '@ui/lib/api-sets-storage';
@@ -57,6 +58,16 @@ export function ApiSetsPanel({
   }, [snapshot, createChecks]);
 
   useEffect(() => () => engine?.stop(), [engine]);
+
+  // Offline every probe fails: probing pauses until the connection is back.
+  useEffect(() => {
+    const connectivity = getBrowserConnectivity();
+    if (!engine || !checking || !connectivity) return;
+    return connectivity.onChange((connected) => {
+      if (connected) void engine.start();
+      else engine.stop();
+    });
+  }, [engine, checking]);
 
   const toggleChecking = useCallback(() => {
     if (!engine) return;

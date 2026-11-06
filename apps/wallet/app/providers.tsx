@@ -10,6 +10,7 @@ import { ThemeProvider } from '@/wallet/components/theme-provider';
 import SiteHeader from '@/wallet/components/site-header';
 import { ModalContainer } from '@smart-signer/components/modal-container';
 import { Toaster } from '@ui/components/toaster';
+import { OfflineNotice } from '@ui/components/offline-notice';
 import { TailwindIndicator } from '@/wallet/components/tailwind-indicator';
 
 // Importing the module initializes i18next for client components; it must happen before any
@@ -34,6 +35,7 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
       </SignerProviderClient>
       <ModalContainer />
       <Toaster label={t('global.notifications_region')} />
+      <OfflineNotice message={t('global.offline_notice')} />
       <ReactQueryDevtools initialIsOpen={false} />
       <TailwindIndicator />
     </QueryClientProvider>

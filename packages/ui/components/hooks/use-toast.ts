@@ -5,6 +5,10 @@ import { ToastActionElement, type ToastProps } from "@ui/components/toast";
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 1000000;
+/** An identical toast asked for this soon after one still open is not shown again. */
+const DUPLICATE_WINDOW_MS = 10_000;
+/** How deep `isSameContent` compares props before calling content different. */
+const MAX_CONTENT_DEPTH = 6;
 
 export type ToasterToast = ToastProps & {
   id: string;
@@ -137,15 +141,72 @@ function dispatch(action: Action) {
 
 export interface Toast extends Omit<ToasterToast, "id"> {}
 
-function toast({ ...props }: Toast) {
-  const id = genId();
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (typeof value !== "object" || value === null) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+};
 
-  const update = (props: ToasterToast) =>
-    dispatch({
-      type: "UPDATE_TOAST",
-      toast: { ...props, id },
-    });
-  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id });
+/** Whether two pieces of toast content (text, elements, their props) render the same. */
+function isSameContent(a: unknown, b: unknown, depth = 0): boolean {
+  if (Object.is(a, b)) return true;
+  if (depth > MAX_CONTENT_DEPTH) return false;
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((item, index) => isSameContent(item, b[index], depth + 1));
+  }
+  if (React.isValidElement(a) && React.isValidElement(b)) {
+    return a.type === b.type && a.key === b.key && isSameContent(a.props, b.props, depth + 1);
+  }
+  if (isPlainObject(a) && isPlainObject(b)) {
+    const keys = Object.keys(a);
+    return (
+      keys.length === Object.keys(b).length &&
+      keys.every((key) => Object.hasOwn(b, key) && isSameContent(a[key], b[key], depth + 1))
+    );
+  }
+  return false;
+}
+
+const isSameToast = (shown: ToasterToast, props: Toast): boolean =>
+  shown.variant === props.variant &&
+  isSameContent(shown.title, props.title) &&
+  isSameContent(shown.description, props.description) &&
+  isSameContent(shown.action, props.action);
+
+const shownAt = new Map<string, number>();
+
+function handleOf(id: string) {
+  return {
+    id,
+    dismiss: () => dispatch({ type: "DISMISS_TOAST", toastId: id }),
+    update: (props: ToasterToast) => dispatch({ type: "UPDATE_TOAST", toast: { ...props, id } }),
+  };
+}
+
+/** The handle of an identical toast still open and shown less than DUPLICATE_WINDOW_MS ago. */
+function findRecentDuplicate(props: Toast) {
+  const now = Date.now();
+  shownAt.forEach((at, id) => {
+    if (now - at >= DUPLICATE_WINDOW_MS) shownAt.delete(id);
+  });
+  const duplicate = memoryState.toasts.find(
+    (shown) => shown.open && shownAt.has(shown.id) && isSameToast(shown, props)
+  );
+  return duplicate && handleOf(duplicate.id);
+}
+
+/**
+ * Shows a toast and returns its handle. The same error reported by several failing calls at once
+ * shows once: a toast identical to one still open that was shown less than DUPLICATE_WINDOW_MS ago
+ * is not added, and the open one's handle is returned instead.
+ */
+function toast({ ...props }: Toast) {
+  const duplicate = findRecentDuplicate(props);
+  if (duplicate) return duplicate;
+
+  const id = genId();
+  shownAt.set(id, Date.now());
+  const handle = handleOf(id);
 
   dispatch({
     type: "ADD_TOAST",
@@ -154,16 +215,12 @@ function toast({ ...props }: Toast) {
       id,
       open: true,
       onOpenChange: (open) => {
-        if (!open) dismiss();
+        if (!open) handle.dismiss();
       },
     },
   });
 
-  return {
-    id: id,
-    dismiss,
-    update,
-  };
+  return handle;
 }
 
 function useToast() {

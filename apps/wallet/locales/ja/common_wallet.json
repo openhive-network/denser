@@ -40,6 +40,7 @@
     "close": "閉じる",
     "profile_picture": "プロフィール画像",
     "notifications_region": "通知 ({hotkey})",
+    "offline_notice": "オフラインです。接続が回復するとウォレットが更新されます。",
     "select_placeholder": "選択..."
   },
   "navigation": {
