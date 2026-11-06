@@ -22,6 +22,7 @@ const STUBS: Record<string, string> = {
   '@hive/common-hiveio-packages': FAKE_HB_AUTH_SERVICE,
   '@hive/common-hiveio-packages/sign-out-epoch':
     "export const advanceSignOutEpoch = () => { globalThis.fakeHbAuthLogouts.push('epoch'); };",
+  '@hive/common-hiveio-packages/safe-storage-lock': 'export const forgetSafeStorageLock = () => {};',
   '@ui/lib/logging': 'const noop = () => {}; export const getLogger = () => ({ error: noop, warn: noop, info: noop, debug: noop });',
   '@ui/lib/app-api-path': 'export const appApiPath = (path) => path;',
   '@tanstack/react-query': 'export const useMutation = (options) => options; export const useQueryClient = () => ({});',

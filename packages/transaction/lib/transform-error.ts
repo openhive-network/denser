@@ -63,6 +63,20 @@ const wellKnownErrorDescriptions = [
  */
 const KEYCHAIN_ERROR_PATTERN = /Keychain error:(.*)/;
 const MISSING_KEYCHAIN_MESSAGES = ['', 'undefined', 'null'];
+/**
+ * Keychain's generic English answer for a transaction it failed to sign, misspelled ("occured"); it says
+ * nothing the app's own, translated text cannot, so that is shown instead.
+ */
+const KEYCHAIN_SIGNING_FAILURE_PATTERN = /^An error occur+ed while signing the transaction\.?$/i;
+
+/** A Keychain error the toast titles with the app's own text: one without an answer, or a generic signing failure */
+export type KeychainFallback = 'no_message' | 'signing_failed';
+
+function keychainFallbackFor(keychainMessage: string): KeychainFallback | null {
+  if (MISSING_KEYCHAIN_MESSAGES.includes(keychainMessage)) return 'no_message';
+  if (KEYCHAIN_SIGNING_FAILURE_PATTERN.test(keychainMessage)) return 'signing_failed';
+  return null;
+}
 
 /**
  * Keychain's code for a request the user rejected: their own choice, nothing to report. The message
@@ -119,12 +133,12 @@ function stringifyError(error: unknown): string {
  * @param {*} e
  * @param {{ method: string, params: T }} ctx
  * @returns error description; `isWellKnownError` marks one not worth reporting,
- * `isKeychainMessageMissing` a Keychain error that came without the extension's answer
+ * `keychainFallback` a Keychain error to title with the app's own text rather than the description
  */
 export function transformError<T>(e: any, ctx?: { method: string; params: T }, defaultDescription?: string) {
   let description = 'Error';
   let isWellKnownError = false;
-  let isKeychainMessageMissing = false;
+  let keychainFallback: KeychainFallback | null = null;
   const isUserCancel = isKeychainUserCancel(e);
   const walletResponseMessage = findWalletResponseMessage(e);
 
@@ -163,11 +177,9 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
       description = walletResponseMessage;
     } else if (keychainMessage === undefined) {
       description = errorDescription;
-    } else if (MISSING_KEYCHAIN_MESSAGES.includes(keychainMessage)) {
-      description = errorDescription;
-      isKeychainMessageMissing = true;
     } else {
-      description = keychainMessage;
+      keychainFallback = keychainFallbackFor(keychainMessage);
+      description = keychainFallback === 'no_message' ? errorDescription : keychainMessage;
     }
   }
   isWellKnownError ||= isUserCancel;
@@ -176,6 +188,6 @@ export function transformError<T>(e: any, ctx?: { method: string; params: T }, d
     errorTitle: defaultDescription ?? description,
     fullError: scrubSensitiveData(e.toString()),
     isWellKnownError,
-    isKeychainMessageMissing
+    keychainFallback
   };
 }

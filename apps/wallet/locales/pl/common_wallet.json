@@ -301,6 +301,7 @@
     "no_orders": "Nie masz otwartych zleceń.",
     "confirm_cancel_order": "Anulować zlecenie {{orderId}} użytkownika {{user}}?",
     "cancel_order": "Anuluj zlecenie",
+    "cancelling": "Anulowanie…",
     "order_placed": "Zlecenie złożone",
     "order_placed_buy": "Kupno {{hive}} za {{hbd}}",
     "order_placed_sell": "Sprzedaż {{hive}} za {{hbd}}",
@@ -584,6 +585,7 @@
       "cannot_delegate": "Nie możesz jeszcze delegować: minimalna delegacja to {{min}} HP, a dostępne masz {{available}} HP.",
       "delegation_below_minimum": "Delegacja odrzucona: minimum to {{min}} HP (próbowano {{amount}} HP).",
       "account_check_failed": "Nie udało się sprawdzić konta. Spróbuj ponownie później.",
+      "account_check_unreachable": "Nie udało się połączyć z serwerem, aby sprawdzić konto. Sprawdź połączenie i spróbuj ponownie.",
       "memo_marker_only": "Zaszyfrowana notatka musi zawierać tekst po #."
     },
     "confirm_title": {

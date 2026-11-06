@@ -154,7 +154,8 @@ run_with_junit_fallback "$junit" common-hiveio-packages node --test \
     --test-reporter=junit --test-reporter-destination="$junit" \
     packages/common-hiveio-packages/src/hb-auth/safe-storage-generation.test.ts \
     packages/common-hiveio-packages/src/hb-auth/hbauth-service.test.ts \
-    packages/common-hiveio-packages/src/hb-auth/worker-release.test.ts < /dev/null || status=1
+    packages/common-hiveio-packages/src/hb-auth/worker-release.test.ts \
+    packages/common-hiveio-packages/src/hb-auth/safe-storage-lock.test.ts < /dev/null || status=1
 echo "== node --test packages/middleware" >&2
 junit="$PWD/test-results/unit/middleware.xml"
 run_with_junit_fallback "$junit" middleware node --test \

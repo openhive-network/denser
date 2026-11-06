@@ -482,7 +482,15 @@
     "load_failed_description": "L'API di Hive non ha risposto. Di solito è temporaneo.",
     "go_home": "Torna alla home",
     "more_options": "Altre opzioni",
-    "loading_profile": "Caricamento del profilo"
+    "loading_profile": "Caricamento del profilo",
+    "follow_toasts": {
+      "followed_title": "Seguito",
+      "followed_description": "Ora segui {{username}}.",
+      "unfollowed_title": "Non segui più",
+      "unfollowed_description": "Non segui più {{username}}.",
+      "unfollowed_all_title": "Non segui più nessuno",
+      "unfollowed_all_description": "Hai smesso di seguire tutti gli account."
+    }
   },
   "communities": {
     "set_title_for_user": "Imposta il titolo per @{{username}}",
@@ -696,7 +704,15 @@
       "you_might_also_like": "Potrebbe piacerti anche",
       "title": "Suggerimenti"
     },
-    "browse_to_original_post": "Vai al post originale di @{{author}}"
+    "browse_to_original_post": "Vai al post originale di @{{author}}",
+    "comment_toasts": {
+      "posted_title": "Commento pubblicato",
+      "posted_description": "Il tuo commento è stato pubblicato.",
+      "updated_title": "Commento aggiornato",
+      "updated_description": "Il tuo commento è stato aggiornato.",
+      "deleted_title": "Commento eliminato",
+      "deleted_description": "Il tuo commento è stato eliminato."
+    }
   },
   "submit_page": {
     "log_in_to_post": "Accedi per pubblicare.",

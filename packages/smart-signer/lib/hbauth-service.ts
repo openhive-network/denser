@@ -9,6 +9,7 @@ import {
   withOnlineClient,
   type OnlineClientOperationOptions
 } from "@hive/common-hiveio-packages";
+import { forgetSafeStorageLock } from '@hive/common-hiveio-packages/safe-storage-lock';
 import { getLogger } from '@ui/lib/logging';
 import { subscribeLogout } from '@smart-signer/lib/auth/logout-notice';
 import { subscribeAccountsChanged } from '@smart-signer/lib/auth/account-sync';
@@ -63,6 +64,8 @@ export const hbauthService = new HbauthService();
 // this page never knew were signed in, as the logout ended the session of each. Likewise on this
 // tab's logout, for the accounts its stored list misses.
 subscribeLogout(() => {
+  // The keys the logout locks did not lock idle: the lock state is asked anew
+  forgetSafeStorageLock();
   logoutEveryoneFromStartedWorkers().catch((error: unknown) => {
     logger.error(error, 'Failed to lock the safe storage keys after a logout');
   });

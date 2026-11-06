@@ -15,8 +15,9 @@ import { Icons } from '@ui/components/icons';
 import LangSubmenu from '../lang-submenu';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import env from '@beam-australia/react-env';
-import { KeyType, LoginType, User } from '@smart-signer/types/common';
-import SessionTimeNote from '@smart-signer/components/session-time-note';
+import { KeyType, User } from '@smart-signer/types/common';
+import SafeStorageSessionNote from '@smart-signer/components/safe-storage-session-note';
+import { useSafeStorageLockNotice } from '@smart-signer/lib/auth/use-safe-storage-lock';
 import { useTranslation } from '@/blog/i18n/client';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useDismissOnPointerDownOutside } from '@ui/hooks/use-dismiss-on-pointer-down-outside';
@@ -48,6 +49,7 @@ const UserMenu = ({
   tooltip?: ReactNode;
 }) => {
   const onLogout = useLogout();
+  useSafeStorageLockNotice(user);
   const pathname = usePathname();
   const walletHost = env('WALLET_ENDPOINT');
   const { t } = useTranslation('common_blog');
@@ -101,9 +103,7 @@ const UserMenu = ({
               >
                 {chip}
               </span>
-              {user.loginType === LoginType.hbauth && (
-                <SessionTimeNote className="text-xs font-normal text-muted-foreground" />
-              )}
+              <SafeStorageSessionNote user={user} className="text-xs font-normal text-muted-foreground" />
             </div>
             <TooltipProvider>
               <Tooltip>

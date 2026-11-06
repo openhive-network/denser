@@ -17,6 +17,8 @@ const TOO_LONG_ACCOUNT = 'nieistniejacekonto99';
 const MISSING_ACCOUNT = 'brakkonta9x';
 /** Well formed; the node answers its lookup with an error. */
 const FAILING_LOOKUP_ACCOUNT = 'lookupfails1';
+/** Well formed; its lookup never reaches a node, as offline. */
+const UNREACHABLE_LOOKUP_ACCOUNT = 'nonetwork1';
 const ABOVE_BALANCE = '5000';
 
 let stub: Server;
@@ -116,6 +118,24 @@ test.describe('Transfer dialog validation', () => {
     await submit(dialog, FAILING_LOOKUP_ACCOUNT, '1');
 
     await expectFieldError(recipientInput(dialog), 'Could not check the account. Try again later.');
+    await expect(confirmDialog(page)).toBeHidden();
+  });
+
+  test('WALLET-TX-VALIDATE-05 — a recipient lookup that reaches no node reports a connection problem, not the account', async ({
+    page
+  }) => {
+    await page.route('**/*', (route) => {
+      const body = route.request().postData() ?? '';
+      if (!body.includes('find_accounts') || !body.includes(UNREACHABLE_LOOKUP_ACCOUNT)) return route.fallback();
+      return route.abort('internetdisconnected');
+    });
+    const dialog = await openTransferDialog(page);
+    await submit(dialog, UNREACHABLE_LOOKUP_ACCOUNT, '1');
+
+    await expectFieldError(
+      recipientInput(dialog),
+      "Couldn't reach the server to check this account. Check your connection and try again."
+    );
     await expect(confirmDialog(page)).toBeHidden();
   });
 

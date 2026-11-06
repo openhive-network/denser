@@ -15,6 +15,7 @@ import { getWorkerGeneration, renewSafeStorageGeneration, whenSafeStorageSettles
 import { holdRunningWorker, holdWorker, otherRunningWorkers, startWithWorker } from './worker-release';
 import { runOperation, type OnlineClientOperationOptions, type OperationClient } from './online-client-operation';
 import { getSignOutEpoch, recordWorkerLoggedOut, signOutEpochToLogOut } from './sign-out-epoch';
+import { setSafeStorageLockProbe } from './safe-storage-lock';
 
 export { SupersededKeyWriteError, type OnlineClientOperationOptions } from './online-client-operation';
 
@@ -485,3 +486,10 @@ export const getOfflineClient = (): Promise<OfflineClient> => {
   });
   return offlineClientPromise;
 };
+
+// Asks the online client this page started, and starts none: a page that has not signed holds no worker
+setSafeStorageLockProbe(async () => {
+  if (!onlineClientPromise) return undefined;
+  const users = await (await onlineClientPromise).getRegisteredUsers();
+  return users.filter((user) => user.unlocked).map((user) => user.username);
+});

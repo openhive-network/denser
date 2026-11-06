@@ -497,7 +497,15 @@
     "load_failed_description": "لم تستجب واجهة Hive البرمجية. عادةً ما يكون هذا مؤقتًا.",
     "go_home": "الصفحة الرئيسية",
     "more_options": "خيارات إضافية",
-    "loading_profile": "جارٍ تحميل الملف الشخصي"
+    "loading_profile": "جارٍ تحميل الملف الشخصي",
+    "follow_toasts": {
+      "followed_title": "تمت المتابعة",
+      "followed_description": "أنت الآن تتابع {{username}}.",
+      "unfollowed_title": "تم إلغاء المتابعة",
+      "unfollowed_description": "لقد ألغيت متابعة {{username}}.",
+      "unfollowed_all_title": "تم إلغاء متابعة الجميع",
+      "unfollowed_all_description": "لم تعد تتابع أي أحد."
+    }
   },
   "communities": {
     "set_title_for_user": "تعيين العنوان لـ @{{username}}",
@@ -711,7 +719,15 @@
       "you_might_also_like": "قد يعجبك أيضًا",
       "title": "اقتراحات"
     },
-    "browse_to_original_post": "الانتقال إلى المشاركة الأصلية بواسطة @{{author}}"
+    "browse_to_original_post": "الانتقال إلى المشاركة الأصلية بواسطة @{{author}}",
+    "comment_toasts": {
+      "posted_title": "تم نشر التعليق",
+      "posted_description": "تم نشر تعليقك.",
+      "updated_title": "تم تحديث التعليق",
+      "updated_description": "تم تحديث تعليقك.",
+      "deleted_title": "تم حذف التعليق",
+      "deleted_description": "تم حذف تعليقك."
+    }
   },
   "submit_page": {
     "log_in_to_post": "تسجيل الدخول لنشر مشاركة.",

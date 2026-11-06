@@ -472,7 +472,15 @@
     "load_failed_description": "Hive API 没有响应。这通常是暂时的。",
     "go_home": "返回首页",
     "more_options": "更多选项",
-    "loading_profile": "正在加载个人资料"
+    "loading_profile": "正在加载个人资料",
+    "follow_toasts": {
+      "followed_title": "已关注",
+      "followed_description": "你已关注 {{username}}。",
+      "unfollowed_title": "已取消关注",
+      "unfollowed_description": "你已取消关注 {{username}}。",
+      "unfollowed_all_title": "已全部取消关注",
+      "unfollowed_all_description": "你不再关注任何人。"
+    }
   },
   "communities": {
     "set_title_for_user": "为 @{{username}} 设置标题",
@@ -686,7 +694,15 @@
       "you_might_also_like": "您可能还喜欢",
       "title": "推荐"
     },
-    "browse_to_original_post": "查看 @{{author}} 的原帖"
+    "browse_to_original_post": "查看 @{{author}} 的原帖",
+    "comment_toasts": {
+      "posted_title": "评论已发布",
+      "posted_description": "你的评论已发布。",
+      "updated_title": "评论已更新",
+      "updated_description": "你的评论已更新。",
+      "deleted_title": "评论已删除",
+      "deleted_description": "你的评论已删除。"
+    }
   },
   "submit_page": {
     "log_in_to_post": "登录后才能发布帖子。",

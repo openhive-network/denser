@@ -292,6 +292,7 @@
     "no_orders": "You've got no open orders.",
     "confirm_cancel_order": "Cancel order {{orderId}} from {{user}}?",
     "cancel_order": "Cancel Order",
+    "cancelling": "Cancelling…",
     "order_placed": "Order placed",
     "order_placed_buy": "Buy {{hive}} for {{hbd}}",
     "order_placed_sell": "Sell {{hive}} for {{hbd}}",
@@ -568,6 +569,7 @@
       "cannot_delegate": "You cannot delegate yet: the minimum delegation is {{min}} HP and you have {{available}} HP available.",
       "delegation_below_minimum": "Delegation rejected: the minimum is {{min}} HP (you tried {{amount}} HP).",
       "account_check_failed": "Could not check the account. Try again later.",
+      "account_check_unreachable": "Couldn't reach the server to check this account. Check your connection and try again.",
       "memo_marker_only": "An encrypted memo needs text after #."
     },
     "confirm_title": {

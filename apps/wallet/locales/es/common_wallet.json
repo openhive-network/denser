@@ -296,6 +296,7 @@
     "no_orders": "No tienes órdenes abiertas.",
     "confirm_cancel_order": "¿Cancelar la orden {{orderId}} de {{user}}?",
     "cancel_order": "Cancelar orden",
+    "cancelling": "Cancelando…",
     "order_placed": "Orden creada",
     "order_placed_buy": "Comprar {{hive}} por {{hbd}}",
     "order_placed_sell": "Vender {{hive}} por {{hbd}}",
@@ -576,6 +577,7 @@
       "cannot_delegate": "Aún no puedes delegar: la delegación mínima es de {{min}} HP y tienes {{available}} HP disponibles.",
       "delegation_below_minimum": "Delegación rechazada: el mínimo es {{min}} HP (intentaste {{amount}} HP).",
       "account_check_failed": "No se pudo comprobar la cuenta. Inténtalo más tarde.",
+      "account_check_unreachable": "No se pudo conectar con el servidor para comprobar esta cuenta. Revisa tu conexión e inténtalo de nuevo.",
       "memo_marker_only": "Un memo cifrado necesita texto después de #."
     },
     "confirm_title": {

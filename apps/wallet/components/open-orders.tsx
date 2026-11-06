@@ -7,9 +7,9 @@ import { Button, Dialog, DialogContent, DialogFooter, DialogTrigger } from '@ui/
 import { dateToFormatted } from '@ui/lib/parse-date';
 import { useState } from 'react';
 import Loading from '@ui/components/loading';
+import { Icons } from '@ui/components/icons';
 import { useCancelMarketOrder } from './hooks/use-market-mutation';
 import { handleError } from '@ui/lib/handle-error';
-import { useQueryClient } from '@tanstack/react-query';
 import { convertStringToBig, isHive } from '@ui/lib/helpers';
 
 interface OpenOrderProps {
@@ -18,22 +18,33 @@ interface OpenOrderProps {
   loading: boolean;
 }
 
-const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
-  const { t } = useTranslation('common_wallet');
-  const [sortAsc, setSortAsc] = useState(true);
+/**
+ * Cancels `user`'s orders. An order is cancelling from the confirmation until the list no longer has
+ * it, which may be several seconds after the broadcast, so it cannot be cancelled twice meanwhile;
+ * a failed cancel makes it cancellable again.
+ */
+function useOrderCancel(user: string) {
   const cancelOrderMutation = useCancelMarketOrder();
-  const queryClient = useQueryClient();
+  const [cancellingIds, setCancellingIds] = useState<ReadonlySet<number>>(() => new Set());
 
   const cancelOrder = async (orderId: number) => {
+    setCancellingIds((prev) => new Set(prev).add(orderId));
     const params = { owner: user, orderId };
     try {
       await cancelOrderMutation.mutateAsync(params);
     } catch (error) {
+      setCancellingIds((prev) => new Set([...prev].filter((id) => id !== orderId)));
       handleError(error, { method: 'limit_order_cancel', params });
-    } finally {
-      queryClient.invalidateQueries({ queryKey: ['openOrders', user] });
     }
   };
+
+  return { cancelOrder, isCancelling: (orderId: number) => cancellingIds.has(orderId) };
+}
+
+const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
+  const { t } = useTranslation('common_wallet');
+  const [sortAsc, setSortAsc] = useState(true);
+  const { cancelOrder, isCancelling } = useOrderCancel(user);
 
   return (
     <div className={clsx('mt-4 flex h-[342px] w-full flex-col justify-between')}>
@@ -98,30 +109,42 @@ const OpenOrders: React.FC<OpenOrderProps> = ({ user, orders, loading }) => {
                         %
                       </td>
                       <td>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              className="h-fit py-0 text-destructive hover:bg-transparent"
-                              onClick={() => null}
-                            >
-                              {t('market_page.cancel')}
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="text-left sm:max-w-[425px]">
-                            {t('market_page.confirm_cancel_order', {
-                              orderId: order.orderid,
-                              user: order.seller
-                            })}
-                            <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
-                              <DialogTrigger asChild>
-                                <Button variant="redHover" onClick={() => cancelOrder(order.orderid)}>
-                                  {t('market_page.cancel_order')}
-                                </Button>
-                              </DialogTrigger>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
+                        {isCancelling(order.orderid) ? (
+                          <Button
+                            variant="ghost"
+                            className="h-fit py-0 text-destructive hover:bg-transparent"
+                            disabled
+                            data-testid="open-order-cancelling"
+                          >
+                            <Icons.spinner className="mr-1 h-3 w-3 animate-spin" />
+                            {t('market_page.cancelling')}
+                          </Button>
+                        ) : (
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                className="h-fit py-0 text-destructive hover:bg-transparent"
+                                onClick={() => null}
+                              >
+                                {t('market_page.cancel')}
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="text-left sm:max-w-[425px]">
+                              {t('market_page.confirm_cancel_order', {
+                                orderId: order.orderid,
+                                user: order.seller
+                              })}
+                              <DialogFooter className="flex flex-row items-start gap-4 sm:flex-row-reverse sm:justify-start">
+                                <DialogTrigger asChild>
+                                  <Button variant="redHover" onClick={() => cancelOrder(order.orderid)}>
+                                    {t('market_page.cancel_order')}
+                                  </Button>
+                                </DialogTrigger>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        )}
                       </td>
                     </tr>
                   );

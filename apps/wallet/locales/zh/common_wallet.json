@@ -289,6 +289,7 @@
     "no_orders": "你没有未成交的订单。",
     "confirm_cancel_order": "取消 {{user}} 的订单 {{orderId}}？",
     "cancel_order": "取消订单",
+    "cancelling": "正在取消…",
     "order_placed": "订单已提交",
     "order_placed_buy": "以 {{hbd}} 买入 {{hive}}",
     "order_placed_sell": "以 {{hbd}} 卖出 {{hive}}",
@@ -563,6 +564,7 @@
       "cannot_delegate": "你暂时无法代理：最低代理数量为 {{min}} HP，而你可用的只有 {{available}} HP。",
       "delegation_below_minimum": "代理被拒绝：最低数量为 {{min}} HP（你尝试代理 {{amount}} HP）。",
       "account_check_failed": "无法检查该账户，请稍后重试。",
+      "account_check_unreachable": "无法连接服务器来检查此账户。请检查网络连接后重试。",
       "memo_marker_only": "加密备注需要在 # 后面填写内容。"
     },
     "confirm_title": {

@@ -4,6 +4,8 @@ import { OBSERVE, useOperationMutation } from '@ui/components/hooks/use-operatio
 import { formatNaiAsset, isHive } from '@ui/lib/helpers';
 import { useTranslation } from '@/wallet/i18n/client';
 
+const OPEN_ORDERS_REFRESH_DELAYS = [0, 4000, 10000, 20000];
+
 type CreateOrderParams = {
   amountToSell: asset;
   owner: string;
@@ -53,6 +55,9 @@ export const useCancelMarketOrder = () => {
       title: t('market_page.order_cancelled'),
       description: t('market_page.order_cancelled_description', { orderId })
     }),
+    // The API node lists the order for a while after the block that cancelled it
+    invalidate: ({ owner }) => [['openOrders', owner]],
+    invalidateDelays: OPEN_ORDERS_REFRESH_DELAYS,
     reportErrors: false
   });
 };

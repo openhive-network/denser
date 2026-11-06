@@ -487,7 +487,15 @@
     "load_failed_description": "API Hive не ответил. Обычно это временно.",
     "go_home": "На главную",
     "more_options": "Другие параметры",
-    "loading_profile": "Загрузка профиля"
+    "loading_profile": "Загрузка профиля",
+    "follow_toasts": {
+      "followed_title": "Вы подписались",
+      "followed_description": "Теперь вы подписаны на {{username}}.",
+      "unfollowed_title": "Вы отписались",
+      "unfollowed_description": "Вы отписались от {{username}}.",
+      "unfollowed_all_title": "Вы отписались от всех",
+      "unfollowed_all_description": "Вы больше ни на кого не подписаны."
+    }
   },
   "communities": {
     "set_title_for_user": "Установить заголовок для @{{username}}",
@@ -701,7 +709,15 @@
       "you_might_also_like": "Вам также может понравиться",
       "title": "Рекомендации"
     },
-    "browse_to_original_post": "Перейти к оригинальному посту @{{author}}"
+    "browse_to_original_post": "Перейти к оригинальному посту @{{author}}",
+    "comment_toasts": {
+      "posted_title": "Комментарий опубликован",
+      "posted_description": "Ваш комментарий опубликован.",
+      "updated_title": "Комментарий обновлён",
+      "updated_description": "Ваш комментарий обновлён.",
+      "deleted_title": "Комментарий удалён",
+      "deleted_description": "Ваш комментарий удалён."
+    }
   },
   "submit_page": {
     "log_in_to_post": "Войдите, чтобы опубликовать сообщение.",

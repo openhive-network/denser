@@ -149,7 +149,8 @@ const MODULES: Record<string, string> = {
   './safe-storage-generation-subscription': new URL('./safe-storage-generation-subscription.ts', import.meta.url).href,
   './worker-release': new URL('./worker-release.ts', import.meta.url).href,
   './online-client-operation': new URL('./online-client-operation.ts', import.meta.url).href,
-  './sign-out-epoch': new URL('./sign-out-epoch.ts', import.meta.url).href
+  './sign-out-epoch': new URL('./sign-out-epoch.ts', import.meta.url).href,
+  './safe-storage-lock': new URL('./safe-storage-lock.ts', import.meta.url).href
 };
 registerHooks({
   resolve(specifier, context, nextResolve) {

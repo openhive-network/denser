@@ -301,6 +301,7 @@
     "no_orders": "У вас нет открытых заказов.",
     "confirm_cancel_order": "Отменить заказ {{orderId}} пользователя {{user}}?",
     "cancel_order": "Отменить заказ",
+    "cancelling": "Отмена…",
     "order_placed": "Заявка размещена",
     "order_placed_buy": "Покупка {{hive}} за {{hbd}}",
     "order_placed_sell": "Продажа {{hive}} за {{hbd}}",
@@ -584,6 +585,7 @@
       "cannot_delegate": "Вы пока не можете делегировать: минимальное делегирование — {{min}} HP, а у вас доступно {{available}} HP.",
       "delegation_below_minimum": "Делегирование отклонено: минимум — {{min}} HP (вы указали {{amount}} HP).",
       "account_check_failed": "Не удалось проверить аккаунт. Повторите попытку позже.",
+      "account_check_unreachable": "Не удалось связаться с сервером для проверки аккаунта. Проверьте подключение и повторите попытку.",
       "memo_marker_only": "Зашифрованная заметка должна содержать текст после #."
     },
     "confirm_title": {

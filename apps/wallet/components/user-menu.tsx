@@ -15,8 +15,9 @@ import LangSubmenu from './lang-submenu';
 import { useLogout } from '@smart-signer/lib/auth/use-logout';
 import env from '@beam-australia/react-env';
 import { getLogger } from '@ui/lib/logging';
-import { KeyType, LoginType, User } from '@smart-signer/types/common';
-import SessionTimeNote from '@smart-signer/components/session-time-note';
+import { KeyType, User } from '@smart-signer/types/common';
+import SafeStorageSessionNote from '@smart-signer/components/safe-storage-session-note';
+import { useSafeStorageLockNotice } from '@smart-signer/lib/auth/use-safe-storage-lock';
 import { useTranslation } from '@/wallet/i18n/client';
 import { Tooltip, TooltipProvider, TooltipTrigger } from '@ui/components/tooltip';
 import { useDismissOnPointerDownOutside } from '@ui/hooks/use-dismiss-on-pointer-down-outside';
@@ -38,6 +39,7 @@ type LoginDialogTarget = { username?: string; keyType?: KeyType };
  */
 const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User; tooltip?: ReactNode }) => {
   const onLogout = useLogout('/');
+  useSafeStorageLockNotice(user);
   const blogHost = env('BLOG_DOMAIN');
   const { t } = useTranslation('common_wallet');
   const { authority, chip } = useLoginAuthorityLabels(user);
@@ -91,9 +93,7 @@ const UserMenu = ({ children, user, tooltip }: { children: ReactNode; user: User
               >
                 {chip}
               </span>
-              {user.loginType === LoginType.hbauth && (
-                <SessionTimeNote className="text-xs font-normal text-muted-foreground" />
-              )}
+              <SafeStorageSessionNote user={user} className="text-xs font-normal text-muted-foreground" />
             </div>
             <Icons.walletlogo className=" w-20" />
           </DropdownMenuLabel>

@@ -247,7 +247,7 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
     return;
   }
 
-  const { errorTitle, fullError, isWellKnownError, isKeychainMessageMissing } = transformError<T>(error, ctx);
+  const { errorTitle, fullError, isWellKnownError, keychainFallback } = transformError<T>(error, ctx);
 
   if (!!env('SENTRY_DSN') && !isWellKnownError)
     reportToSentry(fullError);
@@ -255,7 +255,7 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
   toast({
     description: (
       <ErrorToastContent
-        errorTitle={isKeychainMessageMissing ? <KeychainErrorFallbackTitle /> : errorTitle}
+        errorTitle={keychainFallback ? <KeychainErrorFallbackTitle fallback={keychainFallback} /> : errorTitle}
         fullError={fullError}
         displayControls={!isWellKnownError}
       />

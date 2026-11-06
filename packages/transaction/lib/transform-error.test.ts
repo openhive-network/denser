@@ -8,14 +8,30 @@ class WaxKeychainProviderError extends Error {
 
 describe('transformError', () => {
   it("shows the Keychain extension's own answer and keeps it reportable, with details", () => {
-    const error = new WaxKeychainProviderError('Keychain error: An error occured while signing the transaction');
-    const { errorTitle, fullError, isWellKnownError, isKeychainMessageMissing } = transformError(error);
-    expect(errorTitle).to.equal('An error occured while signing the transaction');
-    expect(fullError).to.equal(
-      'WaxKeychainProviderError: Keychain error: An error occured while signing the transaction'
-    );
+    const error = new WaxKeychainProviderError('Keychain error: The account is not in your wallet');
+    const { errorTitle, fullError, isWellKnownError, keychainFallback } = transformError(error);
+    expect(errorTitle).to.equal('The account is not in your wallet');
+    expect(fullError).to.equal('WaxKeychainProviderError: Keychain error: The account is not in your wallet');
     expect(isWellKnownError).to.equal(false);
-    expect(isKeychainMessageMissing).to.equal(false);
+    expect(keychainFallback).to.equal(null);
+  });
+
+  for (const message of [
+    'An error occured while signing the transaction',
+    'An error occurred while signing the transaction.'
+  ]) {
+    it(`flags Keychain's generic signing failure for the app's own text, keeping it reportable (${message})`, () => {
+      const error = new WaxKeychainProviderError(`Keychain error: ${message}`);
+      const { fullError, isWellKnownError, keychainFallback } = transformError(error);
+      expect(keychainFallback).to.equal('signing_failed');
+      expect(fullError).to.equal(`WaxKeychainProviderError: Keychain error: ${message}`);
+      expect(isWellKnownError).to.equal(false);
+    });
+  }
+
+  it('does not flag a Keychain answer that only mentions signing', () => {
+    const error = new WaxKeychainProviderError('Keychain error: An error occurred while signing the transaction: key missing');
+    expect(transformError(error).keychainFallback).to.equal(null);
   });
 
   /** What wax's Keychain provider throws: the extension's message flattened, its response kept as the cause */
@@ -91,10 +107,10 @@ describe('transformError', () => {
   for (const message of ['undefined', '', '   ']) {
     it(`flags a Keychain error without an answer (${JSON.stringify(message)}) instead of showing it`, () => {
       const error = new WaxKeychainProviderError(`Keychain error: ${message}`);
-      const { errorTitle, isWellKnownError, isKeychainMessageMissing } = transformError(error);
+      const { errorTitle, isWellKnownError, keychainFallback } = transformError(error);
       expect(errorTitle).to.equal('Error');
       expect(isWellKnownError).to.equal(false);
-      expect(isKeychainMessageMissing).to.equal(true);
+      expect(keychainFallback).to.equal('no_message');
     });
   }
 
@@ -106,10 +122,10 @@ describe('transformError', () => {
   });
 
   it('keeps the generic title for an unknown error', () => {
-    const { errorTitle, isWellKnownError, isKeychainMessageMissing } = transformError(new Error('boom'));
+    const { errorTitle, isWellKnownError, keychainFallback } = transformError(new Error('boom'));
     expect(errorTitle).to.equal('Error');
     expect(isWellKnownError).to.equal(false);
-    expect(isKeychainMessageMissing).to.equal(false);
+    expect(keychainFallback).to.equal(null);
   });
 });
 

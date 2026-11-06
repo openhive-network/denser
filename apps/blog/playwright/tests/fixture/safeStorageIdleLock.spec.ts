@@ -64,7 +64,8 @@ test.describe('Safe-storage idle lock', () => {
     await page.goto(PAGE_WITH_HEADER);
 
     const loginForm = await openAddAccountDialog(page);
-    await expectCaption(loginForm, 'Locks after 15 min idle');
+    // Two sentences: the idle time ends with its own full stop
+    await expectCaption(loginForm, 'Locks after 15 min idle. Each signature restarts the timer.');
     await loginForm.loginDialog.getByTestId('session-time-select').click();
 
     await expect(page.getByRole('option')).toHaveText(['5 min', '15 min', '1 h', '8 h']);

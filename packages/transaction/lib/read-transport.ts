@@ -147,6 +147,32 @@ export const isConnectionFailure = (error: unknown): boolean => {
   return false;
 };
 
+/** wax's `WaxRequestError` family, by name: this module does not import wax (see `fetchReadTransport`). */
+export const WAX_REQUEST_ERROR_NAMES: ReadonlySet<string> = new Set([
+  'WaxRequestError',
+  'WaxMalformedJsonError',
+  'WaxNon_2XX_3XX_ResponseCodeError',
+  'WaxUnknownRequestError',
+  'WaxRequestTimeoutError',
+  'WaxRequestAbortedByUser'
+]);
+
+/**
+ * Whether `error`, or a few levels deep its `cause`, is a request that got no usable answer from the
+ * node, a `ReadTransportError` or one of wax's `WaxRequestError` family: the node could not be
+ * reached, did not answer in time or answered with an HTTP error. False for an answer the node gave,
+ * such as a JSON-RPC error.
+ */
+export const isNodeRequestFailure = (error: unknown): boolean => {
+  let current = error;
+  for (let depth = 0; depth <= MAX_CAUSE_DEPTH && isObject(current); depth += 1) {
+    const name = Reflect.get(current, 'name');
+    if (name === 'ReadTransportError' || (typeof name === 'string' && WAX_REQUEST_ERROR_NAMES.has(name))) return true;
+    current = Reflect.get(current, 'cause');
+  }
+  return false;
+};
+
 const describeRequest = (request: IReadRequest): string => `"${request.method} ${request.endpoint + request.url}"`;
 
 const parseBody = (request: IReadRequest, status: number, text: string): unknown => {

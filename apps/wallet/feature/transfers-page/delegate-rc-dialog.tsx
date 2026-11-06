@@ -51,6 +51,7 @@ const MINIMUM_NOTE_ID = 'delegate-rc-minimum';
 const ACCOUNT_STATUS_KEYS: Partial<Record<AccountLookupStatus, string>> = {
   checking: 'transfers_page.delegate_rc.checking_account',
   not_found: 'transfers_page.error.not_found',
+  unreachable: 'transfers_page.error.account_check_unreachable',
   error: 'transfers_page.delegate_rc.account_check_failed'
 };
 
@@ -174,7 +175,7 @@ const DelegateRCDialog = ({
               label={t('transfers_page.delegate_rc.to_account')}
               inputProps={{
                 disabled: delegateMutation.isPending,
-                'aria-invalid': accountStatus === 'not_found' || accountStatus === 'error',
+                'aria-invalid': accountStatus === 'not_found' || accountStatus === 'unreachable' || accountStatus === 'error',
                 'aria-describedby': accountStatusKey ? ACCOUNT_STATUS_ID : undefined
               }}
               onChange={setToAccount}

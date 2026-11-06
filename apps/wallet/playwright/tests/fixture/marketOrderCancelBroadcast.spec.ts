@@ -116,6 +116,25 @@ test.describe('Market limit order cancel broadcast', () => {
     expect(broadcasts.calls).toHaveLength(0);
   });
 
+  test('WALLET-TX-ORDER-CANCEL-04 — an order being cancelled cannot be cancelled again while the node still lists it', async ({
+    page
+  }) => {
+    const broadcasts = await installBroadcastInterceptor(page);
+    await confirmBroadcastsInBlocks(page);
+    const confirmation = await openCancelConfirmation(page);
+    await confirmation.getByRole('button', { name: 'Cancel Order' }).click();
+    await broadcasts.waitForCount(1);
+
+    // The stub node keeps listing OPEN_ORDER, as an API node does for a while after the cancel
+    const cancelling = page.getByTestId('open-order-cancelling');
+    await expect(cancelling).toBeVisible();
+    await expect(cancelling).toBeDisabled();
+    await expect(cancelling).toHaveText('Cancelling…');
+    await expect(toastsTitled(page, 'Order cancelled')).toHaveCount(1);
+    await expect(page.getByRole('button', { name: 'Cancel', exact: true })).toHaveCount(0);
+    expect(broadcasts.calls).toHaveLength(1);
+  });
+
   for (const labels of ORDER_CANCELLED_LOCALES) {
     test(`WALLET-TX-ORDER-CANCEL-03-${labels.locale} — a cancelled order shows one success toast`, async ({
       page,
