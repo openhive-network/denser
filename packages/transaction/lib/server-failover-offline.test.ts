@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import { HEDGE_DELAY_MS, jsonRpcHealthKey, wrapChainWithServerFailover } from './server-failover';
+import { FAILOVER_ATTEMPT_TIMEOUT_MS, HEDGE_DELAY_MS, jsonRpcHealthKey, wrapChainWithServerFailover } from './server-failover';
 import { NodeHealth } from './node-health';
-import { Connectivity, UNREACHABLE_RECHECK_MS } from './connectivity';
+import { Connectivity, SILENT_NODE_WINDOW_MS, UNREACHABLE_RECHECK_MS } from './connectivity';
 import type { IReadRequest } from './read-client';
 import { ReadTransportError } from './read-transport';
 
@@ -22,7 +22,8 @@ const REQUEST: IReadRequest = { method: 'POST', endpoint: PRIMARY, url: '', time
 const networkFailure = () =>
   new ReadTransportError('Unknown request error caught (possible network or CORS error)', REQUEST);
 
-type TNodeState = 'ok' | 'offline' | 'http-503';
+// `hanging`: the request gets no answer until its timeout, with no `offline` event.
+type TNodeState = 'ok' | 'offline' | 'http-503' | 'hanging';
 
 const setup = (state: Record<string, TNodeState>) => {
   let time = 0;
@@ -30,15 +31,19 @@ const setup = (state: Record<string, TNodeState>) => {
   const health = new NodeHealth({ now });
   const connectivity = new Connectivity({ now });
   const calls: string[] = [];
-  const makeChain = (node: string): IFakeChain => ({
+  const makeChain = (node: string, timeoutMs = FAILOVER_ATTEMPT_TIMEOUT_MS): IFakeChain => ({
     endpointUrl: node,
-    withTimeout: () => makeChain(node),
+    withTimeout: (ms) => makeChain(node, ms),
     api: {
       database_api: {
         get_dynamic_global_properties: async () => {
           calls.push(node);
           if (state[node] === 'ok') return { node };
           if (state[node] === 'http-503') throw new ReadTransportError('#503', REQUEST, 503);
+          if (state[node] === 'hanging') {
+            time += timeoutMs;
+            throw new ReadTransportError('Request timeout', REQUEST);
+          }
           throw networkFailure();
         }
       }
@@ -48,7 +53,7 @@ const setup = (state: Record<string, TNodeState>) => {
     fallbackNodes: NODES.slice(1),
     health,
     connectivity,
-    createNodeChain: (node) => makeChain(node),
+    createNodeChain: (node, timeoutMs) => makeChain(node, timeoutMs),
     isTransportError: (error) => error instanceof ReadTransportError,
     now,
     // Retries run at once; a hedge never starts, so a node is asked only after the previous one failed.
@@ -64,6 +69,7 @@ const setup = (state: Record<string, TNodeState>) => {
 };
 
 const offlineEverywhere = (): Record<string, TNodeState> => Object.fromEntries(NODES.map((node) => [node, 'offline']));
+const hangingEverywhere = (): Record<string, TNodeState> => Object.fromEntries(NODES.map((node) => [node, 'hanging']));
 
 describe('wrapChainWithServerFailover: connectivity', () => {
   it('finds the network down when no node answers a call at all', async () => {
@@ -170,6 +176,49 @@ describe('wrapChainWithServerFailover: connectivity', () => {
     expect(connectivity.isConnected()).to.equal(true);
   });
 
+  it('finds the network down when every node stays silent across calls that each ask fewer', async () => {
+    const { read, calls, connectivity } = setup(hangingEverywhere());
+
+    await read().catch(() => undefined);
+    expect(calls).to.deep.equal([PRIMARY]);
+    expect(connectivity.isConnected()).to.equal(true);
+    for (let i = 1; i < NODES.length; i += 1) await read().catch(() => undefined);
+
+    expect(calls).to.deep.equal(NODES);
+    expect(connectivity.isConnected()).to.equal(false);
+    calls.length = 0;
+    await read().catch(() => undefined);
+    await read().catch(() => undefined);
+    expect(calls).to.have.length(2);
+  });
+
+  it('is connected again when a node answers after the nodes stayed silent', async () => {
+    const state = hangingEverywhere();
+    const { read, connectivity } = setup(state);
+    for (let i = 0; i < NODES.length; i += 1) await read().catch(() => undefined);
+    NODES.forEach((node) => {
+      state[node] = 'ok';
+    });
+
+    await read();
+
+    expect(connectivity.isConnected()).to.equal(true);
+  });
+
+  it('keeps the network up when two nodes stall while another answers', async () => {
+    const state = hangingEverywhere();
+    state[NODES[2]] = 'ok';
+    const { read, calls, connectivity, advance } = setup(state);
+
+    for (let i = 0; i < 6; i += 1) {
+      await read().catch(() => undefined);
+      expect(connectivity.isConnected()).to.equal(true);
+      advance(10_000);
+    }
+
+    expect(calls).to.include.members(NODES);
+  });
+
   it('asks only the first node while the browser is offline', async () => {
     const { read, calls, connectivity } = setup(offlineEverywhere());
     const target = new EventTarget();
@@ -209,6 +258,39 @@ describe('Connectivity', () => {
 
     expect(connectivity.isConnected()).to.equal(true);
     expect(connectivity.admitsFailover()).to.equal(true);
+  });
+
+  it('finds the nodes unreachable once each was silent within SILENT_NODE_WINDOW_MS', () => {
+    let time = 0;
+    const connectivity = new Connectivity({ now: () => time });
+
+    connectivity.reportSilent(NODES[0], NODES);
+    time += SILENT_NODE_WINDOW_MS + 1;
+    connectivity.reportSilent(NODES[1], NODES);
+    connectivity.reportSilent(NODES[2], NODES);
+    expect(connectivity.isConnected()).to.equal(true);
+
+    connectivity.reportSilent(NODES[0], NODES);
+    expect(connectivity.isConnected()).to.equal(false);
+  });
+
+  it('forgets silent nodes once any node answers', () => {
+    const connectivity = new Connectivity();
+
+    connectivity.reportSilent(NODES[0], NODES);
+    connectivity.reportSilent(NODES[1], NODES);
+    connectivity.reportAnswered();
+    connectivity.reportSilent(NODES[2], NODES);
+
+    expect(connectivity.isConnected()).to.equal(true);
+  });
+
+  it('never finds a single node unreachable by its silence alone', () => {
+    const connectivity = new Connectivity();
+
+    connectivity.reportSilent(PRIMARY, [PRIMARY]);
+
+    expect(connectivity.isConnected()).to.equal(true);
   });
 
   it('counts only a request that got no answer as unanswered', () => {
