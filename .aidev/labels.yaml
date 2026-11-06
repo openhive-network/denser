@@ -114,10 +114,10 @@ labels:
     authority: descriptive
 
   # ---- Provenance: who filed it. ----
-  - name: ai-filed
+  - name: automated
     group: provenance
-    color: "#666666"
-    description: "Filed by automation rather than by a person."
+    color: "#bfbfbf"
+    description: "Filed by an automated aidev process."
     authority: descriptive
   - name: retry-candidate
     group: provenance
