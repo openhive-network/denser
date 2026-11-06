@@ -146,6 +146,7 @@
     "sign_in_pending": "別のサインインが応答を待っています。ウォレット拡張機能で完了または拒否するか、キャンセルしてやり直してください。",
     "sign_in_pending_generic": "別のサインインが応答を待っています。完了するか、キャンセルしてやり直してください。",
     "cancel_pending_sign_in": "保留中のサインインをキャンセル",
+    "wallet_extension_no_answer": "{{wallet}} がサインインのリクエストに応答しませんでした。もう一度お試しください。繰り返し発生する場合はページを再読み込みしてください。",
     "safe_storage_name": "安全な保管",
     "signin_with_metamask": "MetaMask拡張機能",
     "signin_with_google": "Googleアカウント",

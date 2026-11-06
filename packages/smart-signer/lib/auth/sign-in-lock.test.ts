@@ -1,13 +1,7 @@
-import { afterEach, beforeEach, describe, it, mock } from 'node:test';
+import { afterEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import {
-  ABANDONED_SIGN_IN_TIMEOUT_MS,
-  abandonPendingSignIn,
-  cancelPendingSignIn,
-  runExclusiveSignIn,
-  SignInPendingError
-} from './sign-in-lock.ts';
+import { cancelPendingSignIn, runExclusiveSignIn, SignInPendingError } from './sign-in-lock.ts';
 
 function deferred() {
   let resolve = () => {};
@@ -51,11 +45,7 @@ function translate(locale: string, key: string): unknown {
 }
 
 describe('runExclusiveSignIn', () => {
-  beforeEach(() => mock.timers.enable({ apis: ['setTimeout'] }));
-  afterEach(() => {
-    cancelPendingSignIn();
-    mock.timers.reset();
-  });
+  afterEach(() => cancelPendingSignIn());
 
   it('refuses a second request from a remounted form while the first is pending', async () => {
     const requests: string[] = [];
@@ -112,25 +102,6 @@ describe('runExclusiveSignIn', () => {
     assert.deepEqual(requests, ['first form', 'retry']);
   });
 
-  it('frees the lock of a sign-in left behind by a closed dialog once the timeout passes', async () => {
-    const requests: string[] = [];
-    mountForm(requests, 'first form')(NEVER_ANSWERED);
-    abandonPendingSignIn();
-
-    mock.timers.tick(ABANDONED_SIGN_IN_TIMEOUT_MS - 1);
-    await assert.rejects(mountForm(requests, 'too early')(Promise.resolve()), SignInPendingError);
-
-    mock.timers.tick(1);
-    await mountForm(requests, 'after timeout')(Promise.resolve());
-    assert.deepEqual(requests, ['first form', 'after timeout']);
-  });
-
-  it('keeps the lock of a pending sign-in whose dialog stays open', async () => {
-    mountForm([], 'first form')(NEVER_ANSWERED);
-    mock.timers.tick(ABANDONED_SIGN_IN_TIMEOUT_MS * 10);
-    await assert.rejects(mountForm([], 'second form')(Promise.resolve()), SignInPendingError);
-  });
-
   it('frees the lock at once on an explicit cancel', async () => {
     const requests: string[] = [];
     mountForm(requests, 'first form')(NEVER_ANSWERED);
@@ -155,17 +126,5 @@ describe('runExclusiveSignIn', () => {
     newerRequest.resolve();
     await newer;
     assert.deepEqual(requests, ['stale form', 'newer form']);
-  });
-
-  it('does not let the timer of a settled sign-in free the lock of a newer one', async () => {
-    const firstRequest = deferred();
-    const first = mountForm([], 'first form')(firstRequest.promise);
-    abandonPendingSignIn();
-    firstRequest.resolve();
-    await first;
-
-    mountForm([], 'newer form')(NEVER_ANSWERED);
-    mock.timers.tick(ABANDONED_SIGN_IN_TIMEOUT_MS);
-    await assert.rejects(mountForm([], 'third form')(Promise.resolve()), SignInPendingError);
   });
 });

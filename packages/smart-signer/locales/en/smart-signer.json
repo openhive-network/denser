@@ -146,6 +146,7 @@
     "sign_in_pending": "Another sign-in is still waiting for an answer. Finish or reject it in your wallet extension, or cancel it to start over.",
     "sign_in_pending_generic": "Another sign-in is still waiting for an answer. Finish or cancel it to start over.",
     "cancel_pending_sign_in": "Cancel pending sign-in",
+    "wallet_extension_no_answer": "{{wallet}} did not answer the sign-in request. Try again, or reload the page if it keeps happening.",
     "safe_storage_name": "Safe Storage",
     "signin_with_metamask": "MetaMask extension",
     "signin_with_google": "Google Account",
