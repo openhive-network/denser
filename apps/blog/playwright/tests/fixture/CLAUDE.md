@@ -312,7 +312,10 @@ test('...', async ({ page, fixtureProxy }) => {
 });
 ```
 
-Used by `feedNavigation.spec.ts` (feed skeleton during Trending → Hot).
+Used by `feedNavigation.spec.ts` (feed skeleton during Trending → Hot), and by
+`liteSlowNode.spec.ts`, which holds every `lite.*` call to play a lite node
+stalled past the lite read budget (only recorded calls are held: an unrecorded
+`lite.*` call is answered "Api not found lite" at once).
 
 ---
 
@@ -1099,6 +1102,15 @@ and POSTs each request to its own origin's `/__signer-requests` before answering
 (called after `stubSigners`) collects them, as `liteGraduation.spec.ts` does to check what the signer was
 asked to sign. An `addInitScript` runs again on every navigation and reload: a spec that needs a
 different stored identity after a reload needs another test.
+
+### An unrecorded `lite.*` read on a lite-aware recording outlives the spec
+
+On a recording with `lite.get_info` (`litePost` and its overlays), the server
+reads posts through `lite.*`. A `lite.*` read the recording lacks is answered
+"Api not found lite", and the server then routes `lite` away from `:8200` for
+later specs too. Keep such a spec to the reads its recording has; a spec that
+releases a hold on `lite.*` (`liteSlowNode.spec.ts`) closes its page first, so
+no prefetch starts a read after the release.
 
 ### `fixtureTestName` is worker-scoped
 

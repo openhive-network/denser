@@ -1,0 +1,1787 @@
+{
+  "httpMethod": "POST",
+  "requestPath": "/",
+  "requestBody": {
+    "jsonrpc": "2.0",
+    "method": "bridge.get_ranked_posts",
+    "params": {
+      "sort": "trending",
+      "start_author": "",
+      "start_permlink": "",
+      "limit": 20,
+      "tag": "",
+      "observer": "hive.blog"
+    },
+    "id": 1
+  },
+  "requestHash": "b4724695413bd11f",
+  "method": "bridge.get_ranked_posts",
+  "params": {
+    "sort": "trending",
+    "start_author": "",
+    "start_permlink": "",
+    "limit": 20,
+    "tag": "",
+    "observer": "hive.blog"
+  },
+  "response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": [
+      {
+        "active_votes": [
+          {
+            "rshares": 12547927271,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 7888157701633,
+            "voter": "neoxian"
+          },
+          {
+            "rshares": 872157119952,
+            "voter": "arcange"
+          },
+          {
+            "rshares": 1085488544,
+            "voter": "kaykunoichi"
+          },
+          {
+            "rshares": 518128067,
+            "voter": "noborders"
+          }
+        ],
+        "author": "sam.hangout",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.76,
+        "author_role": "member",
+        "author_title": "Community Portal",
+        "beneficiaries": [
+          {
+            "account": "commentrewarder",
+            "weight": 5000
+          }
+        ],
+        "blacklists": [],
+        "body": "<div class=text-justify>\n\nhttps://files.peakd.com/file/peakd-hive/sam.hangout/AK6YNUhNSxUPp8pzbwfmpgsTVDKV3mWYBi6RjpMMtDyYT433KNpnk57cjJL6rD2.jpeg\n\n\n<center> ***“The vote is precious. It is the most powerful non-violent tool we have in a democratic society, and we must use it.” — John Lewis***</center>\n\n<br>\n\n##### Summary Of The Hangout\n\nYes o, my people! It’s a great pleasure to give a summary of another weekend in the Sam’s hangout and today is not an exception. We appreciate @yechee for suggesting a topic for the discussion. \n\n<center>![untitled.gif](https://media.tenor.com/RXYplEFdNxkAAAAC/overview-elmo.gif)</center>\n\nIn the concluded hangout, we had over 150+ comments! We can go harder this week, right? Together, we can make big things happen. We want to specially appreciate those that gave their thoughts on the topic and also participated fully in the hangout. We had over 15+ people who joined us this past weekend. We want to say a big thank you for making time for us and we hope to see you all this weekend too. \n\nThe title was ***VOTING AND TRUST***  **[SAM’S HANGOUT WK 108](https://peakd.com/hive-11060/@sam.hangout/sams-hangout-108-voting-and-trust).**\n\nWe actually got some people joining us for the first time and I want to encourage us to keep up the good work of telling those of our brethren that are yet to know about the hangout, and also don’t forget to join our [discord server](https://discord.gg/kxa3Zt5sQH) where we get to interact more and also stay informed.  Remember it happens here every weekend (Friday to Sunday). Once again, thank you and don’t forget that without you all of this won’t be possible. \n\nHighlights of the hangout\n\n@afrikens’s response. \n\n\n![IMG_0890.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/23swrckinQg8u2jAEoJRjHfzWYw51jnDnxwVw1oxqz1Mv2YArxNstA4BVFpxAA8WhZXB8.jpeg)\n\n\n![IMG_0891.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/23swrkrrqTd2Wzyqn3zFJCCJds15ThuLKA76f1BRJUH7hcNoVuHVfYztiJ1dxyiVf2u8u.jpeg)\n\n\n\n@amara24’s response\n\n\n![IMG_0892.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/23swpXFj5A4kxHTcF9vhJ6vHSgewr7ZJbyMWThw7Bk8fC7dP12QD7i4wn6BjwN99GbjoW.jpeg)\n\n\n![IMG_0896.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/23swrcm3z1tGLcKfQguXntPRfLqxNNmXiDxnq214dDiXf47anZesw6EWrNsK4hGZxmJtr.jpeg)\n\n\n![IMG_0897.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/23swrkrTFpWRZtvWc7xS86GcdLKhDhBfbgGyaP4eVFH8cp4tRvJCRKQXhCpzzNSTA79W8.jpeg)\n\n\n\n@daverick’s response\n\n![IMG_0898.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/23swpXG9LdbvvjME7PbYVEAYu7GyjzdrgNBM7nhnt5Y6uHCyCymXrbu53pyyTkpRdDsJb.jpeg)\n\n\n\n![IMG_0899.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/Eo1xKiqMrnQtnQNSHwSuEtcsQW3zTQXvJX1t88bxEHiJ8FGaLdHYGr2tbE8ccRmWm8M.jpeg)\n\n\n\n@nkemakonam89’s response \n\n![IMG_0900.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/23swptXgE7BeF9X5YFzBTSp5jCJJNMx1C4BR3hR9zM2smwczMKPpqhPBZkfABEECT4U3y.jpeg)\n\n\n\n@zusi78's response\n\n\n![IMG_0901.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/23swq4f9JKSXBodsLi7vzx39UHgLcgkNXivxfwipirt4uVKGJ5ywXuW1cFHP3dVe7fuGC.jpeg)\n\n\n![IMG_0902.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/EnyqRtdDLwP5hfDpWSKGdqt2wM6NfaJwUjfinG97j8q9ivNdBorHEiGnsDHUefT2BCv.jpeg)\n\n\n\n![IMG_0903.jpeg](https://files.peakd.com/file/peakd-hive/sam.hangout/23swrcm3z75dApenMghRpNUdPKjde4Ey6rv9wwLCpyBSH3vbh8ApoERa886hGsa4cBFV1.jpeg)\n\n\n\n___\n\n##### *[Don’t forget, our curators go around sourcing for good posts you’ve made (as long as you join the hangout) and supporting it with upvotes as a form of encouragement and appreciation. Just keep showing up and sharing your quality posts, our eyes are on you, hehe]().*\n\n![](https://images.ecency.com/DQmQWoxkS76WaKfxVcADaSSuBRAtGFfdPJyRSq4eXHm7iCo/hive_naija_engagement_2.png) \n\n<br>\n\n> **<div class=\"phishy\">Please don't hesitate to leave any more suggestions to aid us in doing this more efficiently and also don't hesitate to leave an observation if you think something is wrong with any of the information here in our discord server. Thank you!</div>**\n\n![](https://images.ecency.com/DQmQWoxkS76WaKfxVcADaSSuBRAtGFfdPJyRSq4eXHm7iCo/hive_naija_engagement_2.png)\n\n<br> \n\nFor our **OWAMBE SATURDAY** click on this [link](https://peakd.com/hive-11060/@sam.hangout/re-samhangout-tdp2f4)\nFor our **SUNDAY REFLECTIONS** click on this [link](https://peakd.com/hive-11060/@sam.hangout/re-samhangout-tdqs4w)\n\nThank you all for your responses! Let’s do this again better this weekend!\n\nNote, for now our prizes are not fixed so you never know what to expect! For this just concluded hangout, we did giveaways  in our discord server and there will be some more giveaways tomorrow! Join now! You can find the link below. Also comment on this post and get a part of the rewards.\n<br>\n\nPrize courtesy of:\n\n@sam.hangout\n\n![](https://images.ecency.com/DQmQWoxkS76WaKfxVcADaSSuBRAtGFfdPJyRSq4eXHm7iCo/hive_naija_engagement_2.png)\n\n<br>\n\n##### <center>SPECIAL APPRECIATION</center>\n\nThanks to our Main sponsors \n\n[![IMG_4024.png](https://files.peakd.com/file/peakd-hive/sam.chess/AJixwmkxeintkZ5z7AfiLFzzrQRVDqRGSjSpq78gqcpo9PPcqULWwaiRTFYTccQ.png)](https://peakd.com/@stayoutoftherz) [![IMG_4025.png](https://files.peakd.com/file/peakd-hive/sam.chess/AK7xdYUqwP6uuQPd1pjnWBpQwEcXMurPXr3RQUdrMNDxJHs9xdbqKaP5BuGZGKS.png)](https://peakd.com/@brianoflondon/activities) [![IMG_4026.png](https://files.peakd.com/file/peakd-hive/sam.chess/AKGZTZMLUJjgy6gpEWmwn6Lof5tSPsMY18duyDwpGEFb6bMdaA8YdAuZyv9bXv7.png)](https://peakd.com/@aliento) [![IMG_4027.jpeg](https://files.peakd.com/file/peakd-hive/sam.chess/AJpiYsFWYrabepAF28sU2WHx3JvztNi9Yb1WnDZdj1sdhViuABRiBNQmdLH1V2j.jpeg)](https://peakd.com/@yabapmatt)\n\n**<sub>[If you want to sponsor any weekend, please you can state it in the comments section or just DM samostically on discord. It will be highly appreciated]()</sub>**\n\n\n![](https://images.ecency.com/DQmQWoxkS76WaKfxVcADaSSuBRAtGFfdPJyRSq4eXHm7iCo/hive_naija_engagement_2.png)\n\n**<center><sub>Thank you so much brothers and sisters for your time and presence, it's very well appreciated and most especially, I appreciate the new users joining us ❤. if you want me to tag you and put you on my list for the next hangout, please signify at the comment section.`</sub></center>**\n\n![](https://images.ecency.com/DQmQWoxkS76WaKfxVcADaSSuBRAtGFfdPJyRSq4eXHm7iCo/hive_naija_engagement_2.png)\n\n***\n\n>! These are the lists of some of those who joined us the past weekend. Thank you for coming! ❤️ @nkemakonam89 @daverick @afrikens @quduus1 @marsdave @henrietta27\n@monica-ene @mega13 @zali.bee @amara24 @goldenproject @treasuree @zusi78  \n\n<sub> See you again this Friday! Please remember; ***The engagement doesn't stop here, please check up on your brothers and sisters. Assist and support them with kind words and encouragement. Together we can all grow.*** </sub>\n\n*<center><sub>[All gifs used are powered by tenor]()</sub></center>* \n\n</div>",
+        "category": "hive-11060",
+        "children": 9,
+        "community": "hive-11060",
+        "community_title": "Hive Naija",
+        "created": "2026-04-20T22:58:33",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/AK6YNUhNSxUPp8pzbwfmpgsTVDKV3mWYBi6RjpMMtDyYT433KNpnk57cjJL6rD2.jpeg",
+            "https://media.tenor.com/RXYplEFdNxkAAAAC/overview-elmo.gif",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/23swrckinQg8u2jAEoJRjHfzWYw51jnDnxwVw1oxqz1Mv2YArxNstA4BVFpxAA8WhZXB8.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/23swrkrrqTd2Wzyqn3zFJCCJds15ThuLKA76f1BRJUH7hcNoVuHVfYztiJ1dxyiVf2u8u.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/23swpXFj5A4kxHTcF9vhJ6vHSgewr7ZJbyMWThw7Bk8fC7dP12QD7i4wn6BjwN99GbjoW.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/23swrcm3z1tGLcKfQguXntPRfLqxNNmXiDxnq214dDiXf47anZesw6EWrNsK4hGZxmJtr.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/23swrkrTFpWRZtvWc7xS86GcdLKhDhBfbgGyaP4eVFH8cp4tRvJCRKQXhCpzzNSTA79W8.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/23swpXG9LdbvvjME7PbYVEAYu7GyjzdrgNBM7nhnt5Y6uHCyCymXrbu53pyyTkpRdDsJb.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/Eo1xKiqMrnQtnQNSHwSuEtcsQW3zTQXvJX1t88bxEHiJ8FGaLdHYGr2tbE8ccRmWm8M.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/23swptXgE7BeF9X5YFzBTSp5jCJJNMx1C4BR3hR9zM2smwczMKPpqhPBZkfABEECT4U3y.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/23swq4f9JKSXBodsLi7vzx39UHgLcgkNXivxfwipirt4uVKGJ5ywXuW1cFHP3dVe7fuGC.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/EnyqRtdDLwP5hfDpWSKGdqt2wM6NfaJwUjfinG97j8q9ivNdBorHEiGnsDHUefT2BCv.jpeg",
+            "https://files.peakd.com/file/peakd-hive/sam.hangout/23swrcm3z75dApenMghRpNUdPKjde4Ey6rv9wwLCpyBSH3vbh8ApoERa886hGsa4cBFV1.jpeg",
+            "https://images.ecency.com/DQmQWoxkS76WaKfxVcADaSSuBRAtGFfdPJyRSq4eXHm7iCo/hive_naija_engagement_2.png",
+            "https://files.peakd.com/file/peakd-hive/sam.chess/AJixwmkxeintkZ5z7AfiLFzzrQRVDqRGSjSpq78gqcpo9PPcqULWwaiRTFYTccQ.png"
+          ],
+          "tags": [
+            "summary",
+            "highlights",
+            "engagement",
+            "neoxian",
+            "hive-engine",
+            "gems",
+            "samhangout",
+            "tribes",
+            "waivio"
+          ],
+          "users": [
+            "yechee",
+            "sam.hangout",
+            "afrikens",
+            "amara24",
+            "daverick",
+            "nkemakonam89",
+            "zusi78",
+            "stayoutoftherz",
+            "brianoflondon",
+            "aliento"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 257449630450869,
+        "payout": 25.063,
+        "payout_at": "2026-04-27T22:58:33",
+        "pending_payout_value": "25.063 HBD",
+        "percent_hbd": 10000,
+        "permlink": "sams-hangout-week-108-summaryhighlights",
+        "post_id": 149878251,
+        "reblogs": 5,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 272
+        },
+        "title": "Sam’s Hangout Week #108 - Summary/Highlights",
+        "updated": "2026-04-21T03:16:24",
+        "url": "/hive-11060/@sam.hangout/sams-hangout-week-108-summaryhighlights"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 300313955211,
+            "voter": "flemingfarm"
+          },
+          {
+            "rshares": 16234094849354,
+            "voter": "acidyo"
+          },
+          {
+            "rshares": 6075124854,
+            "voter": "leprechaun"
+          },
+          {
+            "rshares": 17991305068,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 35721077687,
+            "voter": "jeffjagoe"
+          }
+        ],
+        "author": "solominer",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 81.41,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<center>\n\nWith just a little over a week from their planned planting date, I think they should be ready for ground when it comes time. We are still getting freezing days even late into April, so I find myself biding my time on these until its safe enough to plant. As days even dropping under 40F can really strain them. And we are indeed getting days into the 30s and 20s sometimes. So I will keep them in their tent until May 1st.\n\nhttps://i.postimg.cc/6qk1F0QB/P1017140.jpg\n\nhttps://i.postimg.cc/hj4MPVZP/A1.png Strain:|Desfrán |\n-|-|\nhttps://i.postimg.cc/3NVZBV8d/B3.png Dominance: | 100% sativa\nhttps://i.postimg.cc/FRPpf1wb/C2.png Nutrients used: | Happy Frog Soil / Ocean Forest soil. Big Bloom, Grow big:All FoxFarm products.\nhttps://i.postimg.cc/D08g1nK9/D3.png Lineage: | Destroyer x Meao Thai landrace\nhttps://i.postimg.cc/KcHQxkPx/E2.png Current growing stage: | Vegetative |\nhttps://i.postimg.cc/8Pf45p4W/F1.png Current plant age: | 30 days old\nhttps://i.postimg.cc/vZRzxJ2K/G2.png Sex: | Feminized\nhttps://i.postimg.cc/YC1x6dJC/H1.png Location: | Central Virginia\n\nhttps://i.postimg.cc/j2wF89tp/P1017125.jpg\n\nTaking a step back, we can see all four plants. The bottom left doing the best of the bunch.\n\nhttps://i.postimg.cc/L5c0GT8G/P1017129.jpg\n\nI have little doubt in this one, and if it ends up taking off and the others die out I can take cuttings from this one and start clones. Though they would be pretty far behind compared to the mother, I could still probably propagate fast enough to get back to all four plants if they did not do well. \n\nhttps://i.postimg.cc/L5c0GT8c/P1017132.jpg\n\nBut chances are they will grow out of their funk and become some great sativa plants.\n\nhttps://i.postimg.cc/XqRDt8vM/P1017133.jpg\n\nGetting them ready for the spring sunlight I have raised the LED lighting intensity to 50%\n\nhttps://i.postimg.cc/Y05yT3Sk/P1017137.jpg\n\nSeems they are handling it well, being on 25% before I dont want them shocked when they are planted outside.\n\n\nhttps://i.postimg.cc/Y05yT3Sp/P1017142.jpg\n\nThe yelling of the bottom leaves was due to too much light in the beginning. I started off the seedlings with 50% which was probably too much. Since this LED light is new to me I am still dialing in its settings.\n\nhttps://i.postimg.cc/J0fdSqh7/P1017144.jpg\n\nAll are doing well, giving them mistings many times a day.\n\nhttps://i.postimg.cc/WzBfxn4h/P1017145.jpg\n\nI have fed them twice now, and seemed to grow a little bigger after each time.\n\nhttps://i.postimg.cc/5yhkD3tY/P1017149.jpg\n\nIts always so hard to say which of the four will do the best. Sometimes surpassing others along the way as each of them wake up.\n\nhttps://i.postimg.cc/sxk0bc2G/P1017152.jpg\n\nWith the leaves \"praying upwards\" they are wanting the light and not overwhelmed at this point. Early on the leaves were folding downwards telling me they were getting too much light. So I adjusted the height and intensity to help them.\n\nhttps://i.postimg.cc/7hFQjVLT/P1017154.jpg\n\nSo now we wait, for warmer weather. In another week and a half I should be good to go to plant outside. I will do another update post on day forty, hopefully they will have grown even more from that point. But regardless I am looking forward to seeing them grow throughout the summer. Being my first sativa growing outdoors it could be interesting, I have been told pure sativas are harder to grow. So I guess soon we will find out.\n\nHappy 4/20 y'all\n\n### Previous posts on this grow:\n\nhttps://peakd.com/hive-140635/@solominer/desfran-day-10\nhttps://peakd.com/hive-140635/@solominer/desfran-day-20\n\nhttps://images.hive.blog/0x0/https://files.peakd.com/file/peakd-hive/solominer/242Dd9C2jF4NEnMg18iUNqcEwcDz5zrMyWaB4xWassopgTZoFzXmS5hxTovrH5f3p23h8.jpg\n\n</center>",
+        "category": "hive-140635",
+        "children": 7,
+        "community": "hive-140635",
+        "community_title": "HiveGarden",
+        "created": "2026-04-20T15:59:39",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://i.postimg.cc/6qk1F0QB/P1017140.jpg",
+            "https://i.postimg.cc/hj4MPVZP/A1.png",
+            "https://i.postimg.cc/3NVZBV8d/B3.png",
+            "https://i.postimg.cc/FRPpf1wb/C2.png",
+            "https://i.postimg.cc/D08g1nK9/D3.png",
+            "https://i.postimg.cc/KcHQxkPx/E2.png",
+            "https://i.postimg.cc/8Pf45p4W/F1.png",
+            "https://i.postimg.cc/vZRzxJ2K/G2.png",
+            "https://i.postimg.cc/YC1x6dJC/H1.png",
+            "https://i.postimg.cc/j2wF89tp/P1017125.jpg",
+            "https://i.postimg.cc/L5c0GT8G/P1017129.jpg",
+            "https://i.postimg.cc/L5c0GT8c/P1017132.jpg",
+            "https://i.postimg.cc/XqRDt8vM/P1017133.jpg",
+            "https://i.postimg.cc/Y05yT3Sk/P1017137.jpg",
+            "https://i.postimg.cc/Y05yT3Sp/P1017142.jpg"
+          ],
+          "tags": [
+            "cannabis",
+            "plants",
+            "grow",
+            "marijuana",
+            "420",
+            "blog",
+            "life",
+            "garden",
+            "weed",
+            "ganja"
+          ],
+          "users": [
+            "solominer"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 312254524845848,
+        "payout": 30.28,
+        "payout_at": "2026-04-27T15:59:39",
+        "pending_payout_value": "30.280 HBD",
+        "percent_hbd": 0,
+        "permlink": "desfran-day-30",
+        "post_id": 149873948,
+        "reblogs": 4,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 406
+        },
+        "title": " Desfrán – Day 30",
+        "updated": "2026-04-20T15:59:39",
+        "url": "/hive-140635/@solominer/desfran-day-30"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 821910290,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 6297836738,
+            "voter": "drifter1"
+          },
+          {
+            "rshares": 31538954770,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 74062250278,
+            "voter": "eric-boucher"
+          },
+          {
+            "rshares": 655513970,
+            "voter": "juanmiguelsalas"
+          }
+        ],
+        "author": "antonydossantos",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 70.86,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "----\nSeulawah RG nature tourism, a small paradise with pristine natural views and the best place to relieve fatigue and enjoy a very peaceful atmosphere.\n----\n\n![IMG-20260421-WA0001.jpg](https://images.hive.blog/DQmYQcdomGCnoZmdrwmg5HHrG8Kth5r6bUvqHm7DhnTsEFb/IMG-20260421-WA0001.jpg)\n\n<div class=\"text-justify\">\n\nGood evening, my friends, wherever you are. I hope you are all healthy and happy so you can go about your daily activities as usual. I hope you all have a pleasant day.\n\nIn this blog, I want to share some images with you all related to one of the tourist destinations I've also shared in my previous blog, *Seulawah RG Nature Tourism*. However, in this blog, we will focus on exploring and seeing the facilities at that destination.\n\nSo, keep following my blog to see the Seulawah Agam RG tourist destination, along with short articles from me.\n\n![IMG-20260420-WA0008.jpg](https://images.hive.blog/DQmdxovqGMbXf7Na9BPyQvQxFVNgT6J1XVWqCFGR4aPZrWk/IMG-20260420-WA0008.jpg)\n\n![IMG-20260420-WA0007.jpg](https://images.hive.blog/DQmPK6nvDf4w7vAzKsD5PKPHoq7NJvTSa6xv1r4KRRtTfRe/IMG-20260420-WA0007.jpg)\n\nLocated in Makmur Village, Blang Bintang District, Aceh Besar Regency, Seulawah RG Nature Tourism Destination is a relatively new tourist destination known for its pristine natural scenery and is a great place to unwind and enjoy a peaceful atmosphere with friends or family.\n\n![IMG-20260420-WA0006.jpg](https://images.hive.blog/DQmUYLtefchxuedgAU26A7B4XPUsyB9YtHDh1ZQumMiyBzX/IMG-20260420-WA0006.jpg)\n\n![IMG-20260420-WA0000.jpg](https://images.hive.blog/DQmUJnpHEp9YqwzgEY9XkD7ZeYZMXdhvUdQ2U1vbHCX1ya5/IMG-20260420-WA0000.jpg)\n\n![IMG-20260420-WA0018.jpg](https://images.hive.blog/DQmdP7HjQp5u9Wf9oD6yb4oBGFwJQQbTbEs1f44kEHSZkfc/IMG-20260420-WA0018.jpg)\n\nThe first thing that caught my attention as I explored this tourist destination was the strikingly colored, love-shaped building perched atop a hill.\n\nMy friend...\nAfter I researched the area and arrived, I discovered that this striking building was one of the VIP villas located within the area.\nHowever, on sunny days, this area is often used by visitors as a photo spot, with its stunning views, especially since the building is situated at the highest point of the area, surrounded by synthetic grass.\n\n![IMG-20260420-WA0001.jpg](https://images.hive.blog/DQmSiVAWzgMrA3ozAz5mPEwBS6B8h2tcvCi2aNZ5w9FTwsq/IMG-20260420-WA0001.jpg)\n\n![IMG-20260420-WA0003.jpg](https://images.hive.blog/DQmNgWbVJimKNhCbrSYnKec42E1pecupc7encB22GS6oTdA/IMG-20260420-WA0003.jpg)\n\nAt a glance when I was in this area, I could see the vastness of the Seulawah RG Natural Tourism destination area.\n\n![IMG-20260420-WA0010.jpg](https://images.hive.blog/DQmaFuYBTDF5fqDJC1CvfGBf2WDKk5pVvfgKnbPCATwCtpb/IMG-20260420-WA0010.jpg)\n\n![IMG-20260420-WA0017.jpg](https://images.hive.blog/DQmZ3mcNDY8qU2tBoYZmH4jRNzSVtSGz6YXUyaCZBq48RQk/IMG-20260420-WA0017.jpg)\n\n![IMG-20260420-WA0016.jpg](https://images.hive.blog/DQmTqTWYnDkFr3H82GJysqJbX87iWBV8K7q6G56BV2VqTkZ/IMG-20260420-WA0016.jpg)\n\n![IMG-20260420-WA0015.jpg](https://images.hive.blog/DQmTe2zmsccjvHfGFYjxajbV1NjW5Ufres69fwHXC1mdP31/IMG-20260420-WA0015.jpg)\n\n![IMG-20260420-WA0013.jpg](https://images.hive.blog/DQmYyqn5bNdWVHbKQgSzrKfQPCzrfHbetDLaULy42Q5NzM9/IMG-20260420-WA0013.jpg)\n\nThen I continued to explore the tourist destination area which is not far from the striking building which is one of the VIP Villas, we can also immediately see the swimming pool.\n\n![IMG-20260420-WA0002.jpg](https://images.hive.blog/DQmQD83CdzzjoyW5soRZhfr7Ezt2Dbum8ruGqGXtVxcsFJZ/IMG-20260420-WA0002.jpg)\n\n![IMG-20260420-WA0005.jpg](https://images.hive.blog/DQmQZ8nYtLhxPeq8BoCK9FSvVSAnpREgVos6x8vE3zvMuaY/IMG-20260420-WA0005.jpg)\n\nNow, for those of us who enjoy fishing, you can rest assured that this place also offers a fishing platform with a super-abundance of fish.\n\nIn the image I've shared, you can see this simple pond, which is part of the area provided by this place and is also one of the interesting facilities to try. Therefore, I highly recommend those of you who enjoy fishing, if you visit here, try to catch some really, really big fish, if you're lucky.\n\n![IMG-20260420-WA0009.jpg](https://images.hive.blog/DQmPUiYw1dXBKJ5ReSU2AQC2nPq4TMJjjmQGvkaxLfVfbAf/IMG-20260420-WA0009.jpg)\n\n![IMG-20260420-WA0004.jpg](https://images.hive.blog/DQmVw5mxQuphAoGRhGEYzC4JLbZ3Yg3RAHzK9UgrijC6vHm/IMG-20260420-WA0004.jpg)\n\n![IMG-20260420-WA0014.jpg](https://images.hive.blog/DQmRLyMTeGqsnzYTHE2xVCTiJqP8ARtwPZakAAo2BKtFxq3/IMG-20260420-WA0014.jpg)\n\nWhile fishing, you can also order food, as there's a food service station next to the pond. I think the light snacks available in the area are a perfect way to enjoy the fishing atmosphere while fishing.\n\nFurthermore, the area is very spacious, with more than one food service station.\n\n![IMG-20260420-WA0012.jpg](https://images.hive.blog/DQmSj73zB38y2uor9XRvkeFp9pqrr322jqhQpmktufTXQMJ/IMG-20260420-WA0012.jpg)\n\n![IMG-20260420-WA0011.jpg](https://images.hive.blog/DQmTw4KbtNPAYzxYartsZnZ5aiJ3HnMqBo3nx5ih8UAX9c6/IMG-20260420-WA0011.jpg)\n\nAnother facility I encountered while exploring this tourist destination was a playground.\n\nMy friends...\nSo, for those of you visiting with your beloved children, don't worry, because this place also provides children's play facilities and a wide selection of games.\n\n![IMG-20260420-WA0019.jpg](https://images.hive.blog/DQmTkAjzq9AVyUxArKe75VzsZu1CDS2k8VzgeaVGW3aLcox/IMG-20260420-WA0019.jpg)\n\n![IMG-20260324-WA0142.jpg](https://images.hive.blog/DQmaKzANbSFT3o7rKG9nXgRWdeLjxvWmyELX2C4tPQj7FMM/IMG-20260324-WA0142.jpg)\n\n![IMG-20260324-WA0140.jpg](https://images.hive.blog/DQmP7qAjbvmiriKb2kT4f6s8Wgmmz8qfyMwb1eGVcxVWide/IMG-20260324-WA0140.jpg)\n\nOkay, my friends, those are some pictures of the facilities at the Seulawah RG nature tourism site.\n\nFrom that, I can say that not all places can provide a sense of calm with adequate facilities, but this place is different. Here, the atmosphere, views, and feelings blend perfectly.\nFor me, this isn't just a hangout spot; it's more like a place to reset.\nTherefore, I highly recommend that you all consider visiting the Seulawah RG nature tourism site if you're ever in Aceh.\n\nAnd thank you very much to all of you who have taken the time to view and read my blog to the end.\nLeave your comments, support, and input, which means a lot to me, so I can make this blog even better in the future.\n\nThat's all for now.\nGreetings everyone.\nSee you in my next blog.\n\n----\n----\nCamera used  | Handphone\n| - | -\nLens | 64 mp\nF-stop | \nIso speed | ISO \nFocal length |  MM\nPhotography | Seulawah RG Nature Tourism,\nPhotographer | @antonydossantos\n \n----\nAbout the author \n----\nMaulizar Mawardi or better known as @antonydossantos. I am a student. Like taking pictures, but not a professional photographer, insect lover, nature lover, looking for momentum is my hobby.\n\n----\n<center>\n\n[//]:# (!worldmappin 5.53311 lat 95.48879 long  d3scr)",
+        "category": "hive-163772",
+        "children": 4,
+        "community": "hive-163772",
+        "community_title": "Worldmappin",
+        "created": "2026-04-20T18:00:36",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.8-vision",
+          "description": "Seulawah RG nature tourism, a small paradise with pristine natural views and the best place to relieve fatigue and enjoy a very peaceful atmosphere. Good evening, my friends, wherever you are. I hope you",
+          "format": "markdown+html",
+          "image": [
+            "https://images.hive.blog/DQmYQcdomGCnoZmdrwmg5HHrG8Kth5r6bUvqHm7DhnTsEFb/IMG-20260421-WA0001.jpg",
+            "https://images.hive.blog/DQmdxovqGMbXf7Na9BPyQvQxFVNgT6J1XVWqCFGR4aPZrWk/IMG-20260420-WA0008.jpg",
+            "https://images.hive.blog/DQmPK6nvDf4w7vAzKsD5PKPHoq7NJvTSa6xv1r4KRRtTfRe/IMG-20260420-WA0007.jpg",
+            "https://images.hive.blog/DQmUYLtefchxuedgAU26A7B4XPUsyB9YtHDh1ZQumMiyBzX/IMG-20260420-WA0006.jpg",
+            "https://images.hive.blog/DQmUJnpHEp9YqwzgEY9XkD7ZeYZMXdhvUdQ2U1vbHCX1ya5/IMG-20260420-WA0000.jpg",
+            "https://images.hive.blog/DQmdP7HjQp5u9Wf9oD6yb4oBGFwJQQbTbEs1f44kEHSZkfc/IMG-20260420-WA0018.jpg",
+            "https://images.hive.blog/DQmSiVAWzgMrA3ozAz5mPEwBS6B8h2tcvCi2aNZ5w9FTwsq/IMG-20260420-WA0001.jpg",
+            "https://images.hive.blog/DQmNgWbVJimKNhCbrSYnKec42E1pecupc7encB22GS6oTdA/IMG-20260420-WA0003.jpg",
+            "https://images.hive.blog/DQmaFuYBTDF5fqDJC1CvfGBf2WDKk5pVvfgKnbPCATwCtpb/IMG-20260420-WA0010.jpg"
+          ],
+          "image_ratios": [
+            "1.4004",
+            "1.3333",
+            "1.3333",
+            "1.3333",
+            "1.3333"
+          ],
+          "tags": [
+            "hive-163772",
+            "neoxian",
+            "waivio",
+            "travel",
+            "qurator",
+            "appreciator",
+            "ocdb",
+            "pob",
+            "archon",
+            "pepe"
+          ],
+          "thumbnails": [
+            "https://images.hive.blog/DQmYQcdomGCnoZmdrwmg5HHrG8Kth5r6bUvqHm7DhnTsEFb/IMG-20260421-WA0001.jpg"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 267831477227187,
+        "payout": 26.067,
+        "payout_at": "2026-04-27T18:00:36",
+        "pending_payout_value": "26.067 HBD",
+        "percent_hbd": 10000,
+        "permlink": "green-calm-and-comfortable-come",
+        "post_id": 149875582,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 853
+        },
+        "title": "\"Green, Calm, and Comfortable, Come Follow Me to Explore the Natural Tourism of Seulawah RG\" (part 2) ",
+        "updated": "2026-04-20T18:00:36",
+        "url": "/hive-163772/@antonydossantos/green-calm-and-comfortable-come"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 22006994755693,
+            "voter": "steempty"
+          },
+          {
+            "rshares": 445047201,
+            "voter": "nanzo-scoop"
+          },
+          {
+            "rshares": 131570644874,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 3012562427,
+            "voter": "leprechaun"
+          },
+          {
+            "rshares": 14107267744,
+            "voter": "ak2020"
+          }
+        ],
+        "author": "acidyo",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 83.91,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Random idea out there, let me know what you think, lol\n\nHaven't spent a lot of tokens/time/work on this, very early iteration, just throwing it out there to see what people think :D\n\nhttps://youtu.be/chiRdzbUmIo",
+        "category": "social",
+        "children": 30,
+        "created": "2026-04-20T22:58:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [],
+          "tags": [
+            "social"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 218850363469762,
+        "payout": 21.309,
+        "payout_at": "2026-04-27T22:58:06",
+        "pending_payout_value": "21.309 HBD",
+        "percent_hbd": 10000,
+        "permlink": "i-dont-even-know-really",
+        "post_id": 149878248,
+        "reblogs": 5,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 757
+        },
+        "title": "I don't even know really",
+        "updated": "2026-04-20T22:58:06",
+        "url": "/social/@acidyo/i-dont-even-know-really"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1257865435,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 9471755107,
+            "voter": "drifter1"
+          },
+          {
+            "rshares": 202071281393,
+            "voter": "team"
+          },
+          {
+            "rshares": 47333432155,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 111118375417,
+            "voter": "eric-boucher"
+          }
+        ],
+        "author": "silviabeneforti",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 79.39,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "\nHello hivers, an happy Monday to you all.\nI hope you spent a nice weekend and a good start of a new working week.\nYesterday I went with my hubby @paolobeneforti to an art exhibition in a museum here in my city (Pistoia, Italy) where we could watch some interesting paintings by the artist Marino Marini (1901-1980). You can read more about the artist [here](https://en.wikipedia.org/wiki/Marino_Marini_(sculptor)).\n\nMarini was born in Pistoia and, even if when he was an adult he lived in different cities, he was always connected with my city and, whe he died, an entire museum opened to show their artwork here and in Florence too.\nSince a couple of years the Marini Museum is closed to work on the building, but the most part of his work was placed in different museums like the one I visited yesterday, called Museum Palazzo Fabroni.\n\n\n![Inside the San Giovanni in Corte Baptistery (2).png](https://files.peakd.com/file/peakd-hive/silviabeneforti/23ydEUDx9BkPRwfQtD5k9r8PXfMJoy6vZFGpjr8aRLsVRgRu7aiHMSsGPKxqw2w942PWu.png)\n\n\nEven if Marini never abandoned painting, his main works are sculptures. Beautiful, large and small, metal scupltures (especially bronze ones). The most famous ones are about an horse and a rider and you can see a couple of them (small ones) in the following pics:\n\n\n![DSCN9904bis2.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EpA3XiRpkXY9SJ2BG5MyNJMjFB9U71xjrBTmkeenCoAUeauXjANAovUTRh85TH2VayW.JPG)\n\n![DSCN9904.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EokbdZufvYvHWC4s9U7EsrCxDeXoWWypjYRiFBYAeato2BpNJ9DiauHxXvzFDoPvDKA.JPG)\n\nIn the past I could watch the larger ones (very large!) in another museum and they were really fantastic, believe me.\n\n\nSince some months, the Palazzo Fabroni (a beautiful Museum of 20th-century and contemporary art in my city) host a beautiful selection of Marini’s paintings and yesterday there was a guided tour with a friend of us and so we decided to spend our Sunday in the museum.\n\nWe watched the most part of these painting before, but it was very interesting to watch them again in a different place and while our friend was talking about them. Of course, I took some pics to share with you, so you can enjoy a sort of \"virtual tour\" between the artworks by Marino Marini!\n\nThere were a lot of different artworks in different rooms of the museum. Every room is about a theme and so I decided to wrote 2 contents about this visit, so I can show you everything better.\n\nAt the start there is a room about \"the horse and the rider\" where there are the 2 small bronze sculptures in the first pics and some paintings about the same theme:\n\n![DSCN9900.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoyRPfLFSyGwwmTnULfKqjPfhkyVaNx6aN58CdnqAjaEYdhxrhD8KanX3ZyCycXSYSt.JPG)\n\n![DSCN9907.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoGzKNetpL4QWukPHswm2go2hN5iF9ukVLR9n2JNXDMqvFGneSmH3rWh84DtJNo2XPW.JPG)\n\n\n![DSCN9906.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EonkXUF1Stx7WpYFvTBchDGxqkscW8UqfnBeTLVj1QPfGHLFXgTz4rQ35PTkXrzWhuS.JPG)\n\n\n![DSCN9907.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoGzKNetpL4QWukPHswm2go2hN5iF9ukVLR9n2JNXDMqvFGneSmH3rWh84DtJNo2XPW.JPG)\n\nMarino Marini loved to experiment with different techniques and, in the next room, we can see some artwork in a cubism style (the most part of them are oil on canvas and mixed media on canvas and paper):\n\n![DSCN9908.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EqDn5aqsQPdiAiEMPtzJKY3rHmFgGBaJfhgj1Uk6HkTHLJ6xVPp1PXC32hKgM1gVUvM.JPG)\n\n![DSCN9911.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoK7HQvTRAZYtrf2ViUceSK2qdH9BMyurLMV5AshE715DjE72qQKuurCuKE33VtkgzP.JPG)\n\n![DSCN9910.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EonnRTBbFxU9SC1U44zp8P7R5JmiJwtx3pjQ1vvvAGrfpbyRiaVph3vg4rGHkePgrXh.JPG)\n\n![DSCN9913.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoGxzoNXm8XbMF6VKUoqgvgsXiYErb2JaT3EsK2GqYWMnDRtWruyGf22UrS7XTCS7Y3.JPG)\n\nAnothe theme of the artworks by Marini was the \"jugglers\" and we can see some of those ones in another, dedicated room:\n\n\n![DSCN9923.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EpLhxP5N35ksdGdrPhvNuhA1THkg7ebt1xWFMnx4esqnMaRtVrx28NiMQ8TfDEaZSiv.JPG)\n\n![DSCN9924.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoK7kdX3X2sPzmuXepYEnDBjUUdpw1EKNJ8C4MshXCXozxxUAHieNoQnC1585aju6jZ.JPG)\n\n![DSCN9925.JPG](https://files.peakd.com/file/peakd-hive/silviabeneforti/EoCiaa74A1jBmQNVUApKwmfoVjNaLmZAmkcdXZW6XqoEmSmeuQvhzT1bd3PrX3zmqHa.JPG)\n\nI know the pictures can't represent the beauty of the paintings and it's difficult to take pics where you can see the way to put colors on the canvas, but it was very interesting for me to watch all of theme so close, believe me.\n\nSoon I'll share with you the second part of the exhibition, with other interesting paintings and small sculptures, stay tuned. ❤️\n\nSee ya soon and stay safe,\nSilvia\n\n\n<p></p>\n<p><br/><br/>***If you like my artworks, you can find them on my online shops on<br/>Artfinder ( <a href=\"https://www.artfinder.com/silviabeneforti#/\">https://www.artfinder.com/silviabeneforti#/</a>), on Etsy (<a href=\"https://www.etsy.com/shop/vumap\">https://www.etsy.com/shop/vumap</a>) and on my Saatchi page too (https://www.saatchiart.com/en-it/account/profile/421497). If you are interested about my artworks, you can buy my catalogue here:\n\nUS (https://www.amazon.com/dp/B0C9S4VLQK)\nItaly (https://www.amazon.it/dp/B0C9S4VLQK)\nUk (https://www.amazon.co.uk/dp/B0C9S4VLQK) \nYou can find it in different countries, you have just to search \"silvia beneforti portfolio\" on Amazon. ^_^\n ^_^ ****<br/></p>\n<p><img src=\"https://i.imgur.com/VX5g1gb.png\"/></p>\n</html>",
+        "category": "hive-148441",
+        "children": 3,
+        "community": "hive-148441",
+        "community_title": "GEMS",
+        "created": "2026-04-20T13:19:51",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/23ydEUDx9BkPRwfQtD5k9r8PXfMJoy6vZFGpjr8aRLsVRgRu7aiHMSsGPKxqw2w942PWu.png",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EpA3XiRpkXY9SJ2BG5MyNJMjFB9U71xjrBTmkeenCoAUeauXjANAovUTRh85TH2VayW.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EokbdZufvYvHWC4s9U7EsrCxDeXoWWypjYRiFBYAeato2BpNJ9DiauHxXvzFDoPvDKA.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EoyRPfLFSyGwwmTnULfKqjPfhkyVaNx6aN58CdnqAjaEYdhxrhD8KanX3ZyCycXSYSt.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EoGzKNetpL4QWukPHswm2go2hN5iF9ukVLR9n2JNXDMqvFGneSmH3rWh84DtJNo2XPW.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EonkXUF1Stx7WpYFvTBchDGxqkscW8UqfnBeTLVj1QPfGHLFXgTz4rQ35PTkXrzWhuS.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EqDn5aqsQPdiAiEMPtzJKY3rHmFgGBaJfhgj1Uk6HkTHLJ6xVPp1PXC32hKgM1gVUvM.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EoK7HQvTRAZYtrf2ViUceSK2qdH9BMyurLMV5AshE715DjE72qQKuurCuKE33VtkgzP.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EonnRTBbFxU9SC1U44zp8P7R5JmiJwtx3pjQ1vvvAGrfpbyRiaVph3vg4rGHkePgrXh.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EoGxzoNXm8XbMF6VKUoqgvgsXiYErb2JaT3EsK2GqYWMnDRtWruyGf22UrS7XTCS7Y3.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EpLhxP5N35ksdGdrPhvNuhA1THkg7ebt1xWFMnx4esqnMaRtVrx28NiMQ8TfDEaZSiv.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EoK7kdX3X2sPzmuXepYEnDBjUUdpw1EKNJ8C4MshXCXozxxUAHieNoQnC1585aju6jZ.JPG",
+            "https://files.peakd.com/file/peakd-hive/silviabeneforti/EoCiaa74A1jBmQNVUApKwmfoVjNaLmZAmkcdXZW6XqoEmSmeuQvhzT1bd3PrX3zmqHa.JPG",
+            "https://i.imgur.com/VX5g1gb.png"
+          ],
+          "tags": [
+            "art",
+            "artist",
+            "painting",
+            "creativecoin",
+            "proofofbrain",
+            "illustration",
+            "exhibition"
+          ],
+          "users": [
+            "paolobeneforti"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 294185245501298,
+        "payout": 28.481,
+        "payout_at": "2026-04-27T13:19:51",
+        "pending_payout_value": "28.481 HBD",
+        "percent_hbd": 10000,
+        "permlink": "the-art-exhibition-marino-marini-the-painting-part-1",
+        "post_id": 149871946,
+        "reblogs": 3,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1169
+        },
+        "title": "The art exhibition: Marino Marini, the painting. Part 1.",
+        "updated": "2026-04-20T13:19:51",
+        "url": "/hive-148441/@silviabeneforti/the-art-exhibition-marino-marini-the-painting-part-1"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 1257865435,
+            "voter": "tuck-fheman"
+          },
+          {
+            "rshares": 9471755107,
+            "voter": "drifter1"
+          },
+          {
+            "rshares": 202071281393,
+            "voter": "team"
+          },
+          {
+            "rshares": 47333432155,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 4661634503,
+            "voter": "leprechaun"
+          }
+        ],
+        "author": "vincentnijman",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 73.97,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Yesterday, I felt pretty overwhelmed and, frankly,  a bit depressed. I literally struggled to express myself ( both on here and to @clareartista ) and spend most of the time being quiet, not doing much at all. I struggled to smile and enjoying things proved extremely difficult. I also felt very low on energy, no matter how much ( good food ) I ate. Almost as if I was experiencing a hangover. \n\nNow I have had plenty of hangovers in my life ( from drinking too much alcohol the day/ night before  ) but this was a different one. \n\nI guess you could call it an energy hangover. \n\nI suspect that it was caused by a - very exceptional - cup of coffee, some sugary things and a small bit of alcohol, two days earlier, mixed with us having had a visitor for two full days and three nights. \n\nClare's friend left us yesterday morning, after arriving early Thursday night and even though she has been a pretty easy going guest, it left a mark on me/ us. Both Clare and I are famous for being super attentive and social when the need arises and often have to deal with the consequences ( of giving away too much of our energy ) soon after.\n\nComunque/ anyhow, we decided to call it a night early, yesterday ( which is nothing new as we mostly rise with the sun and go to bed when the sun sets ) and this morning I woke up a new man, again.\n\nSo far, today, apart from having had a very luxurious, savory double breakfast, Clare and I have mostly enjoyed spending time in our garden/ on our land. In fact, whilst I am writing this, Clare is still snipping brambles and moving stones. Opening up yet another path in the area above our old well. \n\nI suspect that she will come in soon though, as it's raining and it is pretty much lunch time. I am already looking forward to a nice ( rice and beans? ) dish.\n\nI just heard some rumbling of thunder. This is supposed to be the rain before the (actual proper) rain that will likely follow tomorrow.\n\nWe welcome any amount of it ( although we prefer to keep the inside of our house dry, if possible - see my earlier posts ) as it has been very dry and our land ( 's top soil ) seems pretty parched, even though it is only mid Spring.\n\n![](https://images.ecency.com/DQmRh4JEBY3kgbQo6U9qM5m1QX99vZq9ganJx4aJuTz4zsA/1776685038698.jpg)\n\n![](https://images.ecency.com/DQmUaS1Mq9fY9DVAZPbKqJWryMd66ghEgEuqmKHbbssH9Rr/1776685038337.jpg)\n\n![](https://images.ecency.com/DQmStaUf84U6z6Pfdx8g5nBec4FfTwXTS8T2DakbMZhgXiT/1776685037377.jpg)\n\nDry or not ( he typed while the rain poured down outside ), most of our trees are hardy and used to extremes. So, as you can see on the pictures, our olives, figs and walnut trees are doing pretty good. \n\nIt is, in fact, very exciting to see how well they are doing ( as a consequence of us taking care of them, since last Summer ). And, unlike some people, nature tends to reprocicate abundantly.\n\nIt is also extra special to experience our very first Spring out here, on our land. Everything is new and the view around us changes every single day.\n\n![](https://images.ecency.com/DQmcyudwcomxpAT6qUGqjgHH3WV2YcungJrdghcG7WUCduw/1776685038053.jpg)\n\n![](https://images.ecency.com/DQma3534FUqmWfmyQiVzTyQivfkK7bCPM9fHCr4SaAmno4q/1776685037775.jpg)\n\nI did cut down two of our 80+ olives though as they were growing too close to other ones. They will make for amazing firewood. \n\n**Notice the stump in the foreground of the following pic?**\n\n![](https://images.ecency.com/DQmaBfZvUdJ5BJ9XjTYuqgET1AEhNTjb6U2wfqzH1mavPY8/1776684952333.jpg)\n\n*Fun fact: freshly sawn olivewood seems to smell like applecider or apple juice* \n\n![](https://images.ecency.com/DQmbz2gvmETKircmGqeGH1bdNMgzkHivxGWaUk6JZ5MiKDi/1776684953404.jpg)\n\nNow let me end this with some pretty pictures of several of our walnut trees and approaching rain clouds.\n\nWe will likely have more than enough of this amazing fruit to last us an entire year, after our next harvest coming Autumn.\n\nSending love from Molise, Italia.  \n\n![](https://images.ecency.com/DQmQrDHmUUoay8iGSMqd6zwPuwA516AzMLLV3SgKEuPRuPT/1776684952873.jpg)\n\n![](https://images.ecency.com/DQmZmrvPDecCPMmMxsRMscMALwMtUMuMRQeSY6wE55JJ6Q8/1776684953174.jpg)\n\n![](https://images.ecency.com/DQmdwnANt5CAw7gUehh3pNSorJcXXFvV4jPDECCxF3eBY8B/1776684952696.jpg)\n\n\n![](https://images.ecency.com/DQmRAUhwSy2pcgcUdNi5W5rwbZpEmVtehjpBgHj9jkPHPqj/image_a8fafe43_d3b3_45da_a74d_36fbc2f42ecb3606015080383241848.jpg)",
+        "category": "hive-114308",
+        "children": 8,
+        "community": "hive-114308",
+        "community_title": "Homesteading",
+        "created": "2026-04-20T12:28:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/3.5.3-mobile",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmRh4JEBY3kgbQo6U9qM5m1QX99vZq9ganJx4aJuTz4zsA/1776685038698.jpg",
+            "https://images.ecency.com/DQmUaS1Mq9fY9DVAZPbKqJWryMd66ghEgEuqmKHbbssH9Rr/1776685038337.jpg",
+            "https://images.ecency.com/DQmStaUf84U6z6Pfdx8g5nBec4FfTwXTS8T2DakbMZhgXiT/1776685037377.jpg",
+            "https://images.ecency.com/DQmcyudwcomxpAT6qUGqjgHH3WV2YcungJrdghcG7WUCduw/1776685038053.jpg",
+            "https://images.ecency.com/DQma3534FUqmWfmyQiVzTyQivfkK7bCPM9fHCr4SaAmno4q/1776685037775.jpg",
+            "https://images.ecency.com/DQmaBfZvUdJ5BJ9XjTYuqgET1AEhNTjb6U2wfqzH1mavPY8/1776684952333.jpg",
+            "https://images.ecency.com/DQmbz2gvmETKircmGqeGH1bdNMgzkHivxGWaUk6JZ5MiKDi/1776684953404.jpg",
+            "https://images.ecency.com/DQmQrDHmUUoay8iGSMqd6zwPuwA516AzMLLV3SgKEuPRuPT/1776684952873.jpg",
+            "https://images.ecency.com/DQmZmrvPDecCPMmMxsRMscMALwMtUMuMRQeSY6wE55JJ6Q8/1776684953174.jpg",
+            "https://images.ecency.com/DQmdwnANt5CAw7gUehh3pNSorJcXXFvV4jPDECCxF3eBY8B/1776684952696.jpg"
+          ],
+          "image_ratios": [
+            0.75,
+            1.3333333333333333,
+            1.3333333333333333,
+            1.3333333333333333,
+            1.3333333333333333
+          ],
+          "links": [],
+          "tags": [
+            "hive-114308",
+            "gardening",
+            "life",
+            "hangover",
+            "abundance",
+            "naturr",
+            "figs",
+            "olives",
+            "walnuts"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 297409217329709,
+        "payout": 28.894,
+        "payout_at": "2026-04-27T12:28:00",
+        "pending_payout_value": "28.894 HBD",
+        "percent_hbd": 0,
+        "permlink": "figs-walnuts-olives-to-cure",
+        "post_id": 149871113,
+        "reblogs": 3,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 1211
+        },
+        "title": "Figs, walnuts, olives to cure an energy hangover",
+        "updated": "2026-04-20T12:38:03",
+        "url": "/hive-114308/@vincentnijman/figs-walnuts-olives-to-cure"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 4617161788,
+            "voter": "robsteady"
+          },
+          {
+            "rshares": 125601670386,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 1773376239,
+            "voter": "allyinspirit"
+          },
+          {
+            "rshares": 523018158,
+            "voter": "stea90"
+          },
+          {
+            "rshares": 1085488544,
+            "voter": "kaykunoichi"
+          }
+        ],
+        "author": "ph1102",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 78.67,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "When I'm outside and somewhere else than the city I live in and I need to do something, the first thought is to find a \"coworking place\", or some Internet cafe (if something like that exists in the area), to do my work... And every time I get that thought, I remind myself of my \"workplace\" during almost every single Sunday, which looks like what you see in the image below... How much do I pay for? Well, it costs me around $3 per hour, and I get a free coffee! 😍\n\n<center>\n![WorkerBee Pool 271.jpg](https://files.peakd.com/file/peakd-hive/ph1102/23xp6mnyVC8DLVsfbJcLxauwCZQHnKbBWTikz85X6b8xveKkEL5BkGV48EwqnNJGaCdBj.jpg)\n*Created on Canva.com, using my photo as a background*\n</center>\n\nIt sounds incredible and unreal, doesn't it? While all that I said is true, let me explain in detail how that's possible... Every Sunday, my wife plays piano in this hotel in Calpe, during breakfast... It is a 4-star hotel (for those outside Europe, 3-star hotels are already good looking, and 4 and 5 take it to another level), and what you see in the photo is the lobby of the hotel... Everyone can enter the lobby, even if you are not the guest of the hotel... \n\nSo, every Sunday, I come here to wait for my wife to finish playing and to help her out by taking her piano to the car... I sit at one of these tables, order a coffee (which costs $3... I know, it's a bit expensive for just a coffee), take out my laptop, connect to the local wifi, and finish my everyday morning routine... That's how this place \"costs\" me only $3 per hour!\n\n<center>\n![Liotes Divider Blue.png](https://files.peakd.com/file/peakd-hive/ph1102/23tkbF4DcCGQEGiCeHeG4sUJewcA9b5MwubaESF9UnsbGiZjuEBo43Dsdseh7hKo2qwcG.png)\n</center> \n\nYou see what I did there? While writing, I was singing along to the song from Monty Python's Life of Brian movie, *Always look at the bright side of life...* It's easy to complain about the expensive coffee, bad Internet connection, working on Sunday, driving to the job, etc. But the truth is that we should look at the bigger picture, the \"small\" wins, and take care of ourselves... I read a fantastic self-reflection [post](https://ecency.com/hive-126152/@selfhelp4trolls/giving-myself-everything-i-want--8cd) by @selfhelp4trolls, where he began it with: \n\n> It’s been a while since I can remember feeling BAD.\n\nGo and check the post out as it can change your perspective, and make you rethink your future decisions and actions... \n\nI had some hard talks with my closest friends during my Easter holidays... We all have issues and problems in life, and they can be small or big, but when we encounter them, we MAKE them HUGE, many times bigger than they are... It's hard to keep rational thinking during those moments, as much as you try... But, from my personal experience, most of the time it gets better, it's not the \"end of the world\", but mostly, it's the \"beginning of a new chapter.\"\n\nLet's be honest here, it can get worse, but when that happens, the upside gets even bigger... It's like with the crypto prices... The sharper the dip, the higher the recovery! Bad moments are important as they are those \"waking up calls\" that kick our ass and put us back on the rails, but on the other railways! With a positive attitude, the result is always much better than the previous state, and the reward is much bigger than the loss!\n\nThat's the moment when the $3 coffee becomes a deal, and not an inconvenience... The value is much bigger than the price... \n\n<center>\n![Liotes Divider Blue.png](https://files.peakd.com/file/peakd-hive/ph1102/23tkbF4DcCGQEGiCeHeG4sUJewcA9b5MwubaESF9UnsbGiZjuEBo43Dsdseh7hKo2qwcG.png)\n</center> \n\nLet's see the WorkerBee Pool numbers for this week...\n\n**This week, we have mined 106 BEE tokens in total, 6 tokens MORE than the week before**... Some big moves in the price of WORKERBEE happened, so the APR went a bit down...\n\nThis week, we got 1 new delegator! Welcome to the pool, @juanvegetarian! Also, we got additional delegations from old members! It looks like our last week's delegator went hard with delegation! The pool has over 2K more WB tokens delegated in just a week! Thanks for your continuous support, guys and girls! I really appreciate it! \n\n> **This pool doesn't charge fees, and you can earn up to 20% more by delegating to it!** \n\n<center>\n![image.png](https://files.peakd.com/file/peakd-hive/ph1102/23tmjDPHY2TJ98DNVWBZ65h9zZGT62oBU3VaXuSCwVBsRZcUiAJxDEHVkXWtZ7roBBrFe.png)\n![image.png](https://files.peakd.com/file/peakd-hive/ph1102/23tw83Ju7oqXNtgDEtpydTxZv7rg5YFzqFLv6pSbC9yEszCvQMG67u5WPcJ7kPA2dXGB9.png)\n</center>\n\n<center>\n![Liotes Divider Blue.png](https://files.peakd.com/file/peakd-hive/ph1102/23tkbF4DcCGQEGiCeHeG4sUJewcA9b5MwubaESF9UnsbGiZjuEBo43Dsdseh7hKo2qwcG.png)\n</center>\n\n**What about the bonus tokens?**\n\nIt's time to distribute some **LEN tokens** as a bonus today! As a co-founder of @liotes, I'm happy to see how the project grows day by day... Just today, in our [Liotes news](https://ecency.com/hive-181335/@liotes/8f753ecc) video, @achim03 shared that our main account that grows only by LENM token sales will soon be Orca! That's awesome to see! As the project steadily grows, it becomes more resilient, and we will be able to help out many great authors, creators, and project owners to grow on HIVE with our different initiatives!\n\n> **There will be distributed 80 LEN tokens to the delegators of the pool as a bonus reward today!** \n\n<center>\n![image.png](https://files.peakd.com/file/peakd-hive/ph1102/Ep3jbjcqFoPFHDTYqafaozeJgy7v9m4odDvaPWgBHxbs7U9LJLwcibhTDaBAD6H37Bn.png)\n</center>\n\n80 LEN tokens will be distributed as a bonus... The APR (without the bonus) was **7.915%**, and when we added the bonus, it went up to **9.551%**!\n\n*I have calculated the ROI approximately with medium prices for all tokens when creating this post... So, those numbers are valid if you bought WB and sold BEE tokens at the middle HiveEngine price...*\n\n> *Do you want to sponsor the PH-Pool with your tokens, receive a short SPONSORED segment in this post, and raise awareness about your front-end or dApp? Please let me know in the comment section, or contact me through Discord or Twitter, and we will find the best solution for both parties...*\n\n<center>\n![Liotes Divider Blue.png](https://files.peakd.com/file/peakd-hive/ph1102/23tkbF4DcCGQEGiCeHeG4sUJewcA9b5MwubaESF9UnsbGiZjuEBo43Dsdseh7hKo2qwcG.png)\n</center>\n\n> **If you want to join the WorkerBee PH-Pool, the only thing that you have to do is to STAKE tokens to YOUR account and DELEGATE your staked WORKERBEE tokens to THIS account (@ph1102)! Every week, you will get your portion of mined BEE tokens and BONUS rewards!**\n\n> **.:. DO NOT STAKE TOKENS TO MY ACCOUNT!!! Just DELEGATE! .:.**\n\n<center>\n![Liotes Divider Blue.png](https://files.peakd.com/file/peakd-hive/ph1102/23tkbF4DcCGQEGiCeHeG4sUJewcA9b5MwubaESF9UnsbGiZjuEBo43Dsdseh7hKo2qwcG.png)\n</center>\n\n#### All payments will be made after publishing this post...\n\n*If you have any questions, please leave them in the comment section!*\n\nYou can find more about this pool in the initial post here https://ecency.com/hive-119826/@ph1102/workerbee-p-h-ool-let-s-help-each-other.\n\n<p> </p>\n\nThank you for your time.\n\n--ph--\n\n*None of this is financial advice!!!*\n\n\n<center>\n![Liotes Divider Blue.png](https://files.peakd.com/file/peakd-hive/ph1102/23tkbF4DcCGQEGiCeHeG4sUJewcA9b5MwubaESF9UnsbGiZjuEBo43Dsdseh7hKo2qwcG.png)\n\n## [👉 Vote for Liotes HIVE Witness HERE 👈](https://vote.hive.uno/@liotes)\n\nDon't forget to **follow, reblog, and browse [my Hive page](https://peakd.com/@ph1102)** to stay connected with all the great stuff!\n</center>",
+        "category": "hive-125125",
+        "children": 10,
+        "community": "hive-125125",
+        "community_title": "Ecency",
+        "created": "2026-04-20T19:31:48",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.8-vision",
+          "description": "When I'm outside and somewhere else than the city I live in and I need to do something, the first thought is to find a \"coworking place\", or some Internet cafe (if something like that exists",
+          "format": "markdown+html",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/ph1102/23xp6mnyVC8DLVsfbJcLxauwCZQHnKbBWTikz85X6b8xveKkEL5BkGV48EwqnNJGaCdBj.jpg",
+            "https://files.peakd.com/file/peakd-hive/ph1102/23tkbF4DcCGQEGiCeHeG4sUJewcA9b5MwubaESF9UnsbGiZjuEBo43Dsdseh7hKo2qwcG.png",
+            "https://files.peakd.com/file/peakd-hive/ph1102/23tmjDPHY2TJ98DNVWBZ65h9zZGT62oBU3VaXuSCwVBsRZcUiAJxDEHVkXWtZ7roBBrFe.png",
+            "https://files.peakd.com/file/peakd-hive/ph1102/23tw83Ju7oqXNtgDEtpydTxZv7rg5YFzqFLv6pSbC9yEszCvQMG67u5WPcJ7kPA2dXGB9.png",
+            "https://files.peakd.com/file/peakd-hive/ph1102/Ep3jbjcqFoPFHDTYqafaozeJgy7v9m4odDvaPWgBHxbs7U9LJLwcibhTDaBAD6H37Bn.png"
+          ],
+          "image_ratios": [
+            "1.7778",
+            "8.5714",
+            "0.4809",
+            "0.4809",
+            "1.6104"
+          ],
+          "tags": [
+            "hive-125125",
+            "blogging",
+            "workerbee",
+            "pool",
+            "bee",
+            "hive-engine",
+            "bbh",
+            "liotes",
+            "len",
+            "motivation"
+          ],
+          "thumbnails": [
+            "https://files.peakd.com/file/peakd-hive/ph1102/23xp6mnyVC8DLVsfbJcLxauwCZQHnKbBWTikz85X6b8xveKkEL5BkGV48EwqnNJGaCdBj.jpg"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 225759807572180,
+        "payout": 21.972,
+        "payout_at": "2026-04-27T19:31:48",
+        "pending_payout_value": "21.972 HBD",
+        "percent_hbd": 10000,
+        "permlink": "free-coffee-workerbee-ph-pool",
+        "post_id": 149876289,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 537
+        },
+        "title": "Free Coffee! .:. WorkerBee PH-Pool Week 271",
+        "updated": "2026-04-20T19:31:48",
+        "url": "/hive-125125/@ph1102/free-coffee-workerbee-ph-pool"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 26915673526915,
+            "voter": "adm"
+          },
+          {
+            "rshares": 300358905699,
+            "voter": "flemingfarm"
+          },
+          {
+            "rshares": 5094732678,
+            "voter": "bustillo"
+          },
+          {
+            "rshares": 1085488544,
+            "voter": "kaykunoichi"
+          },
+          {
+            "rshares": 198158776064,
+            "voter": "timcliff"
+          }
+        ],
+        "author": "ecency",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 77.66,
+        "author_role": "admin",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Ecency is not just a social app for the Hive blockchain - it's a fully-featured crypto wallet that puts you in control of your digital assets right from your phone. Whether you're holding HIVE,  \nHBD, Hive Power (HP), Hive Engine tokens, or even Ecency Points, the Ecency wallet gives you a unified portfolio view with real-time fiat conversion rates.\n\n<img src=\"https://images.ecency.com/DQmXLSZRsczVeGAdr1zNychbiLkWeJKmUVADKqqLBV4KUAk/thumbnail.png\" alt=\"\" />\n\nWhat Can You Manage?\n--------------------\n\n**Native Hive Assets:**\n\n*   **HIVE** - the base currency of the blockchain\n    \n*   **HBD (Hive Backed Dollars)** - the stablecoin pegged to USD\n    \n*   **Hive Power (HP)** - your staked influence on the network\n    \n\n**Layer 2 Tokens:**\n\n*   **Hive Engine Tokens** - community tokens like LEO, BEE, POB, and hundreds more\n    \n*   **SPK Network Tokens** - SPK, LARYNX, and governance tokens\n    \n\n**Ecency Points:**\n\n*   Earned through activity (posting, commenting, referring friends)\n    \n*   Can be used to promote or boost content\n    \n\nPortfolio at a Glance\n---------------------\n\nOpen the Wallet tab and you see your entire portfolio: liquid balances, savings, staked amounts, pending rewards, and estimated fiat value - all in one screen. Tap any asset to see detailed  \ntransaction history, pending requests, and available actions.\n\nYou can customize which tokens appear in your wallet. Hide the ones you don't care about, keep the ones you do. Your preferences sync across devices through your Hive profile.\n\nClaiming Rewards\n----------------\n\nEarned author or curation rewards? A single tap on the \"Claim\" button collects your pending HIVE, HBD, and HP rewards. The same goes for Hive Engine token rewards and Ecency Points - claim them all from within the wallet.\n\n* * *\n\n**Ecency makes managing your Hive assets as simple as checking your bank account - except you actually own your keys.**",
+        "category": "hive-125125",
+        "children": 11,
+        "community": "hive-125125",
+        "community_title": "Ecency",
+        "created": "2026-04-20T07:24:06",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "ecency/4.3.8-vision",
+          "description": "Ecency is not just a social app for the Hive blockchain - it's a fully-featured crypto wallet that puts you in control of your digital assets right from your phone. Whether you're holding HIVE, HBD, Hive",
+          "format": "markdown+html",
+          "image": [
+            "https://images.ecency.com/DQmXLSZRsczVeGAdr1zNychbiLkWeJKmUVADKqqLBV4KUAk/thumbnail.png"
+          ],
+          "image_ratios": [
+            "1.2500"
+          ],
+          "links": [],
+          "links_meta": {},
+          "tags": [
+            "hive-125125",
+            "hive",
+            "wallet",
+            "mobile",
+            "crypto",
+            "web3",
+            "hbd",
+            "pocket",
+            "android",
+            "ios"
+          ],
+          "thumbnails": [
+            "https://images.ecency.com/DQmXLSZRsczVeGAdr1zNychbiLkWeJKmUVADKqqLBV4KUAk/thumbnail.png"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 337074308596708,
+        "payout": 32.803,
+        "payout_at": "2026-04-27T07:24:06",
+        "pending_payout_value": "32.803 HBD",
+        "percent_hbd": 10000,
+        "permlink": "your-crypto-wallet-in-your",
+        "post_id": 149869244,
+        "reblogs": 21,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 415
+        },
+        "title": "Your Crypto Wallet in Your Pocket - Managing HIVE, HBD & More with Ecency",
+        "updated": "2026-04-20T07:24:06",
+        "url": "/hive-125125/@ecency/your-crypto-wallet-in-your"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 300358905699,
+            "voter": "flemingfarm"
+          },
+          {
+            "rshares": 670002238,
+            "voter": "andyjim"
+          },
+          {
+            "rshares": 450510083469,
+            "voter": "alexpmorris"
+          },
+          {
+            "rshares": 1085488544,
+            "voter": "kaykunoichi"
+          },
+          {
+            "rshares": 71392886652,
+            "voter": "josepimpo"
+          }
+        ],
+        "author": "dalz",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 81.18,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "A Look at the Number One DEX Uniswap | Data on TVL, Volume, Users, Top Pairs and More | Apr 2026\n\nFrom all the defi apps we have seen in the crypto market, Uniswap has kept its dominance and continued to develop and grow. It was the first defi app to bring in users thanks to its simplicity and incentives. Following the FTX collapse and the multiple other collapses centralized entities in 2022, its importance grew even more. In the last period Uniswap seems to be growing and spreading on other ETH L2 chains like Arbitrum, Base etc. It also facing a strong competition from other projects on Solana.\n\nLet’s take a look how is the protocol performing under the current market conditions. \n\n \n\n\n\n\n![01.png](https://files.peakd.com/file/peakd-hive/dalz/23vsBZe8G6fFR8TZMm7D4ZKwQu23FeymsQJaajeEt7EMKeNVmCEMU1PoC9NxPvQzYof1D.png)\n\n\n\n\n\n\nHere we will be looking at:\n-\tTotal value locked\n-\tTrading volume\n-\tTop exchanges\n-\tNumber of users\n-\tTop Pairs\n-\tPrice\n\n**The period that we will be looking at is 2020 - 2026.**\n\n\n## Total Value Locked\nHere is the chart for the TVL on Uniswap starting from September 2020 according to DeFiLama.\n\n \n\n\n\n\n\n\n\n![image001.png](https://files.peakd.com/file/peakd-hive/dalz/23tRv7N1VCyzZA3xspHR2jsjb1JWkpo7Sffov3zvKVHgZWi1bU8DaMvDBsDzBX1zR1ajX.png)\n\n\n\n\n\n\n\n\nUniswap launched its token back in September 2020, and the liquidity grew fast then. A record high of 10B was reached in April 2021, and again in November 2021. Since then, it has been a downtrend and dropped to 3.5B at the end of 2023. \nIn 2024 the TVL grew at first reaching 6B in April, and since then it has been sideways in the range of 4B to 6B, up to recently when it dropped to around **3B** where we are now. \n\n## Trading Volume\n\nTrading volume is extremely important. That is where the fees come from and the APR for liquidity providers. No trading volume means no fees and no capital in the protocol. \nThe chart for the trading volume looks like this.\n\n\n \n\n\n\n\n![image003.png](https://files.peakd.com/file/peakd-hive/dalz/23uEyz1tc7L8Emhea1DGryyZP8LK4kBvAYLGzK15YaB2NA7LA2xTPctNtc1dVv8b77gJD.png)\n\n\n\n\n\n\nThis is a chart for the daily trading volume. It’s quite volatile. \n\nThe daily trading volume has been more constant in the last year, similar to the TVL, with occasional spikes whenever there is some volatility in the market. At times there was more than 5B in daily volume, all legit and recorded on chain with fees paid. \n\nWe can notice the drop in the last months with the training volume hovering around 2B. Still it’s a big number. \n\nNote that the data for the volume above is a summary of all the different chains where Uniswap operates. Uniswap is now multichain with BSC, Base, Arbitrum, Unichain etc. integrated. \n\n### The monthly trading volume looks like this:\n\n\n \n\n\n\n\n![image005.png](https://files.peakd.com/file/peakd-hive/dalz/23tvVgyEeAAMKcuiL6ukxxStu1ynErWdwFHtS42pWB4Fu26gMa6hFmo6yMVixTB3j685e.png)\n\n\n\n\n\n\n\nA clearer picture here than the daily volume. \nAn increase in the trading volume in 2021, a drop in 2022, and a growth since then up to recently in October 2025 when it reached more than 100B in trading volume in one month. \nA drop since then and in the last few months the trading volume is around **60B** per month. \n\nWhen we break down the trading volume per chain we get this:\n\n \n\n\n\n\n\n\n![image007.png](https://files.peakd.com/file/peakd-hive/dalz/23tRvSesZrci4mV8QGmdX4rdJg9dRPCi8JvLdEsq2MYL8gwcLAWJ3UwR4WgdYREqzm7HC.png)\n\n\n\n\n\n\n\nWe can notice the fragmentation since 2024. More and more chains came online ad they sort of took over a share from Ethereum. In the last period, chains with high volume except Ethereum have been BSC, Arbitrum and Base. \n\n\n\n## DEX VS CEX Volume\nIf we take a look at the data for the trading volume on the other exchanges provided by some of the aggregators like Coingecko the numbers looks like this. \n\n\n \n\n\n\n![image009.png](https://files.peakd.com/file/peakd-hive/dalz/Eo6CgyVcygjpxd5dZVQE2sLs6j6U37o7EKu6XHKJELix7FK1oPHHxwttgUgqCEQWewS.png)\n\n\n\n\n\n\n\n\nUniswap ranks in the top 10, or on the fourth spot now, that is quite good ranking. At times it has been even on the second spot just after Binance. \n\n\n## Monthly Active Users\nHow many users does Uniswap have? Here is the chart.\n\n\n\n \n\n\n\n![image011.png](https://files.peakd.com/file/peakd-hive/dalz/23tRv7NLrboHXSZtE4Ryjcw2KGXwXz2weDWkaF15hBNtJbEQxHLHQdXbAG5TDvPW11To2.png)\n\n\n\n\n\n\n\n\nThis is a chart on a monthly basis.\nWe can see a massive growth in 2024 monthly due to the expansion on other chains. The record high numbers of MAUs was reached in June 2025 with 22M users. Quite the number. Since then a sharp drop in the MAUs to around **3M** in the last months. \n\n\n\n## Top Trading Pairs on Uniswap\n\nHere is the chart for the top trading pairs **ranked by liquidity.**\n\n \n\n\n\n\n\n![image013.png](https://files.peakd.com/file/peakd-hive/dalz/23uFGsSyZaRG122dhh1TUnmWGPa9LhUnNhn18VbUBppChFSbSYHCTMrRri1BmgqpbtkrS.png)\n\n\n\n\n\n\n\n\nThe WISE/ETH pool is on the top spot with 130M on the V2 on Ethereum. \n\nThe ETH-USDC pair is on the second spot with close to 130M. In the past the stablecoin to stablecoin pairs were on the top in liquidity like USDC-USDT but obviously these have now moved elsewhere.  WBTC in the top as well with two pairs against USDT and ETH. Note that the liquidity of the pairs is combined from different chain and pools. \n\n\n## Price\nThe chart for the UNI price looks like this.\n\n\n\n \n\n\n\n\n![image015.png](https://files.peakd.com/file/peakd-hive/dalz/23t79QDAQtSVTYLFuK35Cx75oCiHVZeKFc4DuhdVLvCxKGsLmCTPXk2F9F3hmBAva8KKN.png)\n\n\n\n\n\n\n\nThe UNI token has been on a wild ride, reaching $40 at some point in 2021. Since then, it has dropped and has been hovering around the $5 mark for a long time. \nIn the last few months it has even dropped lower than that and it is now around \n\n\nfirst half of 2024 it has increased again to 15 USD at one point and dropped to back to 5$. In the last months it has increased again and now it is close to **10 USD**.\n\n\n\n\nAll the best\n@dalz\n",
+        "category": "uniswap",
+        "children": 3,
+        "created": "2026-04-20T13:52:30",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/dalz/23vsBZe8G6fFR8TZMm7D4ZKwQu23FeymsQJaajeEt7EMKeNVmCEMU1PoC9NxPvQzYof1D.png",
+            "https://files.peakd.com/file/peakd-hive/dalz/23tRv7N1VCyzZA3xspHR2jsjb1JWkpo7Sffov3zvKVHgZWi1bU8DaMvDBsDzBX1zR1ajX.png",
+            "https://files.peakd.com/file/peakd-hive/dalz/23uEyz1tc7L8Emhea1DGryyZP8LK4kBvAYLGzK15YaB2NA7LA2xTPctNtc1dVv8b77gJD.png",
+            "https://files.peakd.com/file/peakd-hive/dalz/23tvVgyEeAAMKcuiL6ukxxStu1ynErWdwFHtS42pWB4Fu26gMa6hFmo6yMVixTB3j685e.png",
+            "https://files.peakd.com/file/peakd-hive/dalz/23tRvSesZrci4mV8QGmdX4rdJg9dRPCi8JvLdEsq2MYL8gwcLAWJ3UwR4WgdYREqzm7HC.png",
+            "https://files.peakd.com/file/peakd-hive/dalz/Eo6CgyVcygjpxd5dZVQE2sLs6j6U37o7EKu6XHKJELix7FK1oPHHxwttgUgqCEQWewS.png",
+            "https://files.peakd.com/file/peakd-hive/dalz/23tRv7NLrboHXSZtE4Ryjcw2KGXwXz2weDWkaF15hBNtJbEQxHLHQdXbAG5TDvPW11To2.png",
+            "https://files.peakd.com/file/peakd-hive/dalz/23uFGsSyZaRG122dhh1TUnmWGPa9LhUnNhn18VbUBppChFSbSYHCTMrRri1BmgqpbtkrS.png",
+            "https://files.peakd.com/file/peakd-hive/dalz/23t79QDAQtSVTYLFuK35Cx75oCiHVZeKFc4DuhdVLvCxKGsLmCTPXk2F9F3hmBAva8KKN.png"
+          ],
+          "tags": [
+            "uniswap",
+            "uni",
+            "data",
+            "stats",
+            "tvl",
+            "volume",
+            "activity"
+          ],
+          "users": [
+            "dalz"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 241315704463661,
+        "payout": 23.487,
+        "payout_at": "2026-04-27T13:52:30",
+        "pending_payout_value": "23.487 HBD",
+        "percent_hbd": 10000,
+        "permlink": "a-look-at-the-number-one-dex-uniswap-or-data-on-tvl-volume-users-top-pairs-and-more-or-apr-2026",
+        "post_id": 149872520,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 354
+        },
+        "title": "A Look at the Number One DEX Uniswap | Data on TVL, Volume, Users, Top Pairs and More | Apr 2026",
+        "updated": "2026-04-20T13:52:30",
+        "url": "/uniswap/@dalz/a-look-at-the-number-one-dex-uniswap-or-data-on-tvl-volume-users-top-pairs-and-more-or-apr-2026"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 4287519053000,
+            "voter": "magicmonk"
+          },
+          {
+            "rshares": 4193137751144,
+            "voter": "redes"
+          },
+          {
+            "rshares": 3292701166,
+            "voter": "funnel"
+          },
+          {
+            "rshares": 2511130735,
+            "voter": "thereikiforest"
+          },
+          {
+            "rshares": 67438427716445,
+            "voter": "ranchorelaxo"
+          }
+        ],
+        "author": "new.things",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.05,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<center><figure><img alt=\"Blue lake in Mount Gambier has been a popular tourist stop for a long time. I remember stopping here 30 odd years ago when I was driving around Australia in my little Toyota Corolla station wagon with a couple of friends. I don’t remember much from the trip, that far back, other than I was surprised that the water in this crater lake was indeed very blue. I am always very skeptical as usually most or at least some of these types of tourist attractions are only worthwhile when there are ideal weather or environmental conditions. I am happy to report that the blue lake has been worth the visit, the three times I have been there and one was even in the rain. They reckon this extinct volcano lake stays blue because of a limestone layer and the remains of marine organisms over millions of years. After reading that I was then wondering if it was a good idea to be actually drinking from the local water supply as it is pumped from this very lake. I am also happy to report that the water tasted fine and left will no side effects, that we know off.\" src=\"https://img.travelfeed.io/new.things%2F2026-04-10-03-04-813-20260301_150813-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>Blue lake in Mount Gambier has been a popular tourist stop for a long time. I remember stopping here 30 odd years ago when I was driving around Australia in my little Toyota Corolla station wagon with a couple of friends. I don't remember much from the trip, that far back, other than I was surprised that the water in this crater lake was indeed very blue. I am always very skeptical as usually most or at least some of these types of tourist attractions are only worthwhile when there are ideal weather or environmental conditions. I am happy to report that the blue lake has been worth the visit, the three times I have been there and one was even in the rain. They reckon this extinct volcano lake stays blue because of a limestone layer and the remains of marine organisms over millions of years. After reading that I was then wondering if it was a good idea to be actually drinking from the local water supply as it is pumped from this very lake. I am also happy to report that the water tasted fine and left will no side effects, that we know off.&nbsp;</figcaption></center></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-592-20260301_150317-jpg\" width=\"3024\" height=\"4032\" /></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-177-20260301_150414-jpg\" width=\"4032\" height=\"3024\" /></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-057-20260301_150515-jpg\" width=\"4032\" height=\"3024\" /></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-452-20260301_150602-jpg\" width=\"3024\" height=\"4032\" /></figure></center>\n\n<center><figure><img alt=\"The pumping station for the town water supply\" src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-228-20260301_163459-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>The pumping station for the town water supply</figcaption></center></figure></center>\n\n<center><figure><img alt=\"The old train line is now a trail trail.\" src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-008-20260301_171400-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>The old train line is now a trail trail.</figcaption></center></figure></center>\n\n\n\n<div json=\"{&quot;id&quot;:&quot;KazE6xCdWV&quot;,&quot;type&quot;:&quot;imageGallery&quot;,&quot;data&quot;:{&quot;images&quot;:[{&quot;url&quot;:&quot;https://img.travelfeed.io/new.things%2F2026-04-12-00-04-313-20260301_171349-jpg&quot;,&quot;width&quot;:&quot;4032&quot;,&quot;height&quot;:&quot;3024&quot;},{&quot;url&quot;:&quot;https://img.travelfeed.io/new.things%2F2026-04-12-00-04-584-20260301_171402-jpg&quot;,&quot;width&quot;:&quot;4032&quot;,&quot;height&quot;:&quot;3024&quot;}],&quot;style&quot;:&quot;masonry&quot;}}\"><center><img src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-313-20260301_171349-jpg\" /></center><center><img src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-584-20260301_171402-jpg\" /></center></div>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-078-20260301_171442-jpg\" width=\"3024\" height=\"4032\" /></figure></center>\n\n<center><figure><img alt=\"The Green Lake is nearby but not as spectacular\" src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-764-20260301_152917-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>The Green Lake is nearby but not as spectacular</figcaption></center></figure></center>\n\n<center><figure><img alt=\"They even have their own parkrun, we will have to try and make it back again on a Saturday morning.\" src=\"https://img.travelfeed.io/new.things%2F2026-04-10-03-04-658-20260301_163623-jpg\" width=\"4032\" height=\"3024\" /><center><figcaption>They even have their own parkrun, we will have to try and make it back again on a Saturday morning.</figcaption></center></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-11-10-04-247-20260301_164529-jpg\" width=\"3024\" height=\"4032\" /></figure></center>\n\n<center><figure><img alt=\"I ran most of the course any way.\" src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-978-20260301_164744-jpg\" width=\"2944\" height=\"2208\" /><center><figcaption>I ran most of the course any way.</figcaption></center></figure></center>\n\n<center><figure><img src=\"https://img.travelfeed.io/new.things%2F2026-04-12-00-04-193-screenshot-2026-04-10-135815-png\" width=\"1194\" height=\"721\" /></figure></center>\n\n\n\n<hr /><center><em>View this post <a href=\"https://travelfeed.com/@new.things/blue-lake-mount-gambier-south-australia\">on TravelFeed</a> for the best experience.</em></center>\n\n[//]:# (!pinmapple -37.828423 lat 140.78069 long  d3scr)",
+        "category": "hive-184437",
+        "children": 6,
+        "community": "hive-184437",
+        "community_title": "TravelFeed",
+        "created": "2026-04-20T22:53:00",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "travelfeed/5.0",
+          "coverImage": "https://img.travelfeed.io/new.things%2F2026-04-10-03-04-040-20260301_151207-jpg",
+          "description": "Blue lake in Mount Gambier has been a popular tourist stop for a long time. I remember stopping here 30 odd years ago wh",
+          "image": [
+            "https://img.travelfeed.io/new.things%2F2026-04-10-03-04-040-20260301_151207-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-10-03-04-813-20260301_150813-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-11-10-04-592-20260301_150317-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-11-10-04-177-20260301_150414-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-11-10-04-057-20260301_150515-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-11-10-04-452-20260301_150602-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-11-10-04-228-20260301_163459-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-12-00-04-008-20260301_171400-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-12-00-04-313-20260301_171349-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-12-00-04-078-20260301_171442-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-11-10-04-764-20260301_152917-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-10-03-04-658-20260301_163623-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-11-10-04-247-20260301_164529-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-12-00-04-978-20260301_164744-jpg",
+            "https://img.travelfeed.io/new.things%2F2026-04-12-00-04-193-screenshot-2026-04-10-135815-png"
+          ],
+          "location": {
+            "category": "city",
+            "latitude": -37.828423,
+            "longitude": 140.78069
+          },
+          "tags": [
+            "travel",
+            "bluelake",
+            "southaustralia",
+            "mountgambier"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 167186094210156,
+        "payout": 16.273,
+        "payout_at": "2026-04-27T22:53:00",
+        "pending_payout_value": "16.273 HBD",
+        "percent_hbd": 10000,
+        "permlink": "blue-lake-mount-gambier-south-australia",
+        "post_id": 149878234,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 155
+        },
+        "title": "Blue Lake, Mount Gambier, South Australia.",
+        "updated": "2026-04-20T22:53:00",
+        "url": "/hive-184437/@new.things/blue-lake-mount-gambier-south-australia"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 4950135843433,
+            "voter": "steemychicken1"
+          },
+          {
+            "rshares": 823684207,
+            "voter": "copychicken1"
+          },
+          {
+            "rshares": 4520285468,
+            "voter": "leprechaun"
+          },
+          {
+            "rshares": 1085488544,
+            "voter": "kaykunoichi"
+          },
+          {
+            "rshares": 12862657158999,
+            "voter": "magicmonk"
+          }
+        ],
+        "author": "gungunkrishu",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 80.46,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Hey All,\n\n\n[Amazon](https://www.amazon.in/) is a known brand and I guess it doesnt require any introduction. I have been leveraging the Amazon platform off lately for online shopping. Its my go to place for for almost everything, whether it’s groceries, gadgets, or last-minute needs. At first I check Amazon for the deals and if not found then only do I move to the other option which is [Flipkart](https://www.flipkart.com/) that again is also a well known and reliable platform for online shopping. But here come the irony when I got this message from amazon stating the following::\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/gungunkrishu/23xpF8HHxBMiRnbMpVsKQeRRusVjiD2ChfVdSM6kq7hSML2Wh9axhsMkTLCpRwVHnvq7o.png)\n\n### Amazon - Excessive Returns - Leading too Account Suspension\n\nAmazon notification mail stated that - my amazon account have high returns and rejects for a few category of products. They will be monitoring my account and may be subject to additional check for continued high returns and rejects. And if found guilty they will suspend my account. But wait for a second I am their premium customer and as per records in last one year I had place 260+ order are you kidding me Amazon folks by sending this notification to your customer?\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/gungunkrishu/23tw9kF8kkut714RkfxshtMQzBw6vq3o7xGpSvGSGfwoVaxfwg2c1gqbMonPjEq2nMmJX.png)\n\n\nAnother example that I can quote with regards to how much I leverage the Amazon platform is around the purchse of [XIAOMI Pad 7 Nano Texture Display [Smartchoice] | Snapdragon 7+ Gen 3| 3.2K Display (28.44 cm /11.2\") Tablet| 12GB, 256GB| Anti-Reflective| Anti-Glare| HyperOS 2| Dolby Vision Atmos | Mirage Purple](https://www.amazon.in/dp/B0DW4FLFHV?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_4&th=1). Xiaomi Pad along with other accessrioes it costed me around Rs.32K INR which is equivalent to $350 dollars.\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/gungunkrishu/23t8D1d7U31rgfuLLDjFdCYP4WB5TdgdPMp88kENJ3UCM67jYTV3u8gDx6ESB9D4pKsjD.png)\n\nIs amazon not seeing these high priced orders being placed and questioning the return order. Well, I had my reasons for the returns and they were mainly related to quality issues with clothing, and in some cases, I received items with the wrong size or color compared to what I had originally ordered. So I guess what will the customer do - Return the product RIGHT? So why the hell are you guys sending the notification to the customers stating that the account will be monitiored and suspended. To be honest, I did not like this gesture of Amazon on sending notification to geniune customers - what was th need here when you can track their order history and as to how much worth of shopping they are doing. Frankly was not needed at all. Anyways moving forward this was an eye opener for me when these online shopping platfroms can block users account.. Clear case of centralization and I guess we need some kind of decentralization here as well where technologies like blockchain could potentially come to the rescue by giving users more control and transparency. This is the image from the notification mail sent to me from Amazon indicating where I stand...\n\n\n![image.png](https://files.peakd.com/file/peakd-hive/gungunkrishu/23xyts8tZm1FY9Lr1LpmjwiKEcsYgg64jzNxgv1GK5AeDgo1sJcEkzh3GskkaaZMoBS6Y.png)\n\nAlmost at the edge of my account being blocked. They also mention avoid excessive returns and cancellations and to that I stand that I will return if I dont like the product. SIMPLE as that. Did you guys receive any kind of such notifications? Let me know in the comment section below. And well this should be it for todays post on - \"Amazon - Excessive Returns and Rejects Can lead to Account Suspension...\" ***If Shopping Online, Be Vigilant***... Cheers\n\n\n\n#Amazon #OnlineShopping #Ecommerce #Blockchain #Decentralization\n\n\nImage Source:: Amazon, Proc canva license, ChatGpt\n\nBest Regards\nParas\n\n---\n\nPS:- None of the above is a FINANCIAL Advice. Please DYOR; Do your own research. I have a personal interest in blockchain, stocks, and cryptocurrencies and actively invest in emerging projects.\n\n---",
+        "category": "hive-146620",
+        "children": 6,
+        "community": "hive-146620",
+        "community_title": "Olio di Balena",
+        "created": "2026-04-20T13:02:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23xpF8HHxBMiRnbMpVsKQeRRusVjiD2ChfVdSM6kq7hSML2Wh9axhsMkTLCpRwVHnvq7o.png",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23tw9kF8kkut714RkfxshtMQzBw6vq3o7xGpSvGSGfwoVaxfwg2c1gqbMonPjEq2nMmJX.png",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23t8D1d7U31rgfuLLDjFdCYP4WB5TdgdPMp88kENJ3UCM67jYTV3u8gDx6ESB9D4pKsjD.png",
+            "https://files.peakd.com/file/peakd-hive/gungunkrishu/23xyts8tZm1FY9Lr1LpmjwiKEcsYgg64jzNxgv1GK5AeDgo1sJcEkzh3GskkaaZMoBS6Y.png"
+          ],
+          "tags": [
+            "amazon",
+            "shopping",
+            "india",
+            "arcadecolony",
+            "online",
+            "return",
+            "policy",
+            "cent"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 232228595137379,
+        "payout": 22.498,
+        "payout_at": "2026-04-27T13:02:09",
+        "pending_payout_value": "22.498 HBD",
+        "percent_hbd": 0,
+        "permlink": "amazon-excessive-returns-and-rejects-can-lead-to-account-suspension-thoughts",
+        "post_id": 149871396,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 353
+        },
+        "title": "Amazon - Excessive Returns and Rejects Can lead to Account Suspension - Thoughts?",
+        "updated": "2026-04-20T13:17:30",
+        "url": "/hive-146620/@gungunkrishu/amazon-excessive-returns-and-rejects-can-lead-to-account-suspension-thoughts"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 6075124854,
+            "voter": "leprechaun"
+          },
+          {
+            "rshares": 19196646227,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 12516827819,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 4933037181,
+            "voter": "gidlark"
+          },
+          {
+            "rshares": 17120117290,
+            "voter": "jeffjagoe"
+          }
+        ],
+        "author": "tattoodjay",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 82.59,
+        "author_role": "member",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "# Monochrome Monday a few shots from recent walks  \n\n\n\nI hope you all had a good weekend. Mine was fairly quiet as the temps have cooled down a bit again, so no morning walks, but I am glad I was able to get out a few days last week and can share a few shots from recent walks that I feel work well in monochrome edits \n\nThese also could be seen as a teaser for some future posts as I picked shots from a few spots I visited last week, still have plenty to go through and edit but quickly picked a few to edit for this post.\n\nand trying to remain positive, these cooler days without morning walks will give me time to go through the shots I got and edit some for posts ;) \n\nStarting with this shot from a walk I took around Buttonwood Park here in New Bedford MA the other day\n\nWe have had some fairly wild storms recently with heavy wind, and this tree clearly took a hit \n\n<center>  \n![mono recent walks-4.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/242Ney7ydbyQjY4NkyTzQCu3mLY9m96iuYjSs3zf5r58MoXtiwufb7rnqonyp9ybz46VE.jpg)\n\n\n<sup> **Sony A7iv 23mm F8 1/400 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/242Ney7ydbyQjY4NkyTzQCu3mLY9m96iuYjSs3zf5r58MoXtiwufb7rnqonyp9ybz46VE.jpg)**</sup>\n</center>  \n<br>\n\nOur Primary care Doctor, moved to an Office in Fall River recently and finding a new Primary care doctor in New Bedford is a nightmare at the moment with months long waiting lists, so we followed our Doctor to his new practice in Fall River which isnt far at all maybe a 20 minute drive to the facility his building is in, and since i schedule my appointments with him for first thing in the morning, it works out OK as if its a nice day I head to Fall River for sunrise and visited a few spots before heading for my appointment\n\nOne spot i visited was Kennedy Park which I had not bene to before a nice park and it has this cool building \n\n\n\n\n\n<center> \n![mono recent walks-3.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/242Y7vncps5ukJ1uD93NmMheTDVE2dwc11vwRw8pfm72KW14r45JbyTzKSjz6gi3jnPH2.jpg)\n \n\n<sup> **Sony A7iv 21mm F5.6 1/160 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/242Y7vncps5ukJ1uD93NmMheTDVE2dwc11vwRw8pfm72KW14r45JbyTzKSjz6gi3jnPH2.jpg)**</sup>\n</center>  \n<br>\n\nthe First spot I went to that morning was Heritage State park in Fall River and got a nice walk in caught a nice sunrise as well, this park also has views of the Ships in Battle ship Cove including this one \n\n\n<center>  \n![mono recent walks-2.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/242hcxrdqxB2rxP2r3LKaYfWckbMUtP3CMZVoot5J1JXV2JGfrNQfe8fyP3hhPd2JA63c.jpg)\n\n\n<sup> **Sony A7iv 35mm F11 1/20 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/242hcxrdqxB2rxP2r3LKaYfWckbMUtP3CMZVoot5J1JXV2JGfrNQfe8fyP3hhPd2JA63c.jpg)**</sup>\n</center>  \n<br>\n\nand this last shot is from a mroning I parked by and walked around the port and across intot he historic district\n\n\n<center>  \n![mono recent walks.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/23uFRpiAHwe33uZ5ESjCuq7Ep4gFnsL7fHuh9h5odGVgAiCiR4Cr8SHF2itEBtJF1SpiQ.jpg)\n\n\n<sup> **Sony A7iv  28mm F8 2.5 Sec ISO 100**</sup> \n <sup> **[Click here to view larger](https://files.peakd.com/file/peakd-hive/tattoodjay/23uFRpiAHwe33uZ5ESjCuq7Ep4gFnsL7fHuh9h5odGVgAiCiR4Cr8SHF2itEBtJF1SpiQ.jpg)**</sup>\n</center>  \n<br>\n\n## And that’s all folks \n***\n## unless stated otherwise all photos used in my posts are taken and owned by myself, if you wish to use any of my images please contact me. \n\n\n***\n![](https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif)\n***\n![TEAMUSA JJ hive.jpg](https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg)\n## TeamUSA is a Community for and supporting those from of in the United States, and now is in the process of rebuilding stronger than ever join us on [Discord](https://discord.gg/85ac2SM)\n<br>\n\n[//]:# (!worldmappin 41.63463 lat -70.92160 long Massachusetts, USA d3scr)",
+        "category": "hive-194913",
+        "children": 9,
+        "community": "hive-194913",
+        "community_title": "Photography Lovers",
+        "created": "2026-04-20T10:37:24",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "description": "Monochrome Monday a few shots from recent walks  ",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/242Ney7ydbyQjY4NkyTzQCu3mLY9m96iuYjSs3zf5r58MoXtiwufb7rnqonyp9ybz46VE.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/242Y7vncps5ukJ1uD93NmMheTDVE2dwc11vwRw8pfm72KW14r45JbyTzKSjz6gi3jnPH2.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/242hcxrdqxB2rxP2r3LKaYfWckbMUtP3CMZVoot5J1JXV2JGfrNQfe8fyP3hhPd2JA63c.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/23uFRpiAHwe33uZ5ESjCuq7Ep4gFnsL7fHuh9h5odGVgAiCiR4Cr8SHF2itEBtJF1SpiQ.jpg",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/QGGXzaN9-4LQGm7AE-tattoodjay.gif",
+            "https://files.peakd.com/file/peakd-hive/tattoodjay/4ZhsGb6n-TEAMUSA20JJ20-hive.jpg"
+          ],
+          "tags": [
+            "photography",
+            "phototalent",
+            "photocircle",
+            "ocd",
+            "neoxian",
+            "proofofbrain",
+            "vyb",
+            "pimp",
+            "leo"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 250099469434222,
+        "payout": 24.353,
+        "payout_at": "2026-04-27T10:37:24",
+        "pending_payout_value": "24.353 HBD",
+        "percent_hbd": 10000,
+        "permlink": "monochrome-monday-a-few-shots-from-recent-walks",
+        "post_id": 149870399,
+        "reblogs": 8,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 592
+        },
+        "title": "Monochrome Monday a few shots from recent walks  ",
+        "updated": "2026-04-20T10:37:24",
+        "url": "/hive-194913/@tattoodjay/monochrome-monday-a-few-shots-from-recent-walks"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 32213787441926,
+            "voter": "abit"
+          },
+          {
+            "rshares": 26915673526915,
+            "voter": "adm"
+          },
+          {
+            "rshares": 25470080496,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 12511894059,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 871562436228,
+            "voter": "arcange"
+          }
+        ],
+        "author": "oflyhigh",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 86.13,
+        "author_role": "mod",
+        "author_title": "O哥🐱",
+        "beneficiaries": [
+          {
+            "account": "cutehive.com",
+            "weight": 5000
+          }
+        ],
+        "blacklists": [],
+        "body": "自从上次写的[如何评估见证人节点运行情况](https://hive.blog/hive-105017/@oflyhigh/2ckrfy)，已经过去了十余天，经过我和AI的不屑努力，[Hive Witness Monitor](https://witness-monitor.cutehive.com/)终于发布了。\n\n正式的发布消息以及介绍，可以参考这篇文章：\n>[Introducing Hive Witness Monitor: Making Witness Evaluation and Voting Decisions Simple and Intuitive](https://hive.blog/hive-139531/@cutehive.com/introducing-hive-witness-monitor-making-witness-evaluation-and-voting-decisions-simple-and-intuitive)。\n\n在这里呢，我用这个工具，来汇报一下见证人节点的健康状态。\n\n\n\n为了便于标识，我把健康状况有问题的节点，大致分成以下类别：\n![c84c4dd7bd1b88c9990bcf925967a1b5.png](https://images.hive.blog/DQmUBQnzXUHR95K2hhopVcQYAHxxxKcz4mm7yPyD1kLfhvV/c84c4dd7bd1b88c9990bcf925967a1b5.png)\n\n排名前100的节点状态：\n![fe914f0b74ccd654e82a713d4e44bdb0.png](https://images.hive.blog/DQmPzB5qRASdkZXtEqFhB93a4ifF94dMgHGfVBQC7kpLT5j/fe914f0b74ccd654e82a713d4e44bdb0.png)\n\n前200名节点的状态：\n![71e03a5f447586d67143a329ca77a7a9.png](https://images.hive.blog/DQmQdqr5F6crvpJnBjnHUSGyeG9sGNFLmgniHm7oVfWFRzL/71e03a5f447586d67143a329ca77a7a9.png)\n\n我看了一下https://www.cutehive.com/witnesses ，以第100个节点为例，如果正常出块的话，每天大约3.8个块。所以排名100以后的节点的健康状况，对HIVE链的影响有限。所以我们主要关心一下TOP 100节点。\n\n版本过时的（***建议大家调整投票***）\n![549d830aeb8aacf7d6c347a56153dc6b.png](https://images.hive.blog/DQmfXH5gb27X3un9GhfGzedAWAnhjnGVgeCPj4nC9piTLZA/549d830aeb8aacf7d6c347a56153dc6b.png)\n\n\n出块停滞、出块延时的（***建议大家调整投票***）\n![586b45102d86a517b16fc4ee40a8ea2b.png](https://images.hive.blog/DQmSSfMW6TpCUmKiFFrLs6Ei3vSwVtECcPL6sFs9FCixbDA/586b45102d86a517b16fc4ee40a8ea2b.png)\n\n长期停机的（***建议大家调整投票***）\n![15c1bc25aeb748ffd7f9749973e791e7.png](https://images.hive.blog/DQmfTPNKdt3TqLjKSCWoxW978bXWU8TkPYj3oHxQYuwm6sh/15c1bc25aeb748ffd7f9749973e791e7.png)\n\n\n这样一看，HIVE TOP 100节点中，竟然又20个节点状态不健康，根据HIVE出块规则，其中的离线节点对区块链不会有什么不良影响。但长期离线的，说明他们的心思已经不在HIVE上了，大家应该尽快调整投票，投给健康的节点。\n\n而版本过时以及出块停滞（延迟）的节点，更不应该出现在TOP 100内：版本过时的应该及时更新版本到最新的硬分叉版本；出块停滞（延迟的）说明节点出现故障了（比如崩溃），应该切换到备份节点，或者离线进入维护状态。\n\n大家可以检查一下自己的见证人投票，有没有投给不健康的节点，如有，建议及时调整。\n\n另外建议小伙伴们可以考虑将我设置为你的见证人投票代理哦，那样我会帮你选出健康的见证人节点哦。\n\n# 相关链接\n* https://witness-monitor.cutehive.com/\n* https://www.cutehive.com/witnesses\n* [Introducing Hive Witness Monitor: Making Witness Evaluation and Voting Decisions Simple and Intuitive](https://hive.blog/hive-139531/@cutehive.com/introducing-hive-witness-monitor-making-witness-evaluation-and-voting-decisions-simple-and-intuitive)",
+        "category": "hive-105017",
+        "children": 5,
+        "community": "hive-105017",
+        "community_title": "HIVE CN 中文社区",
+        "created": "2026-04-20T08:19:27",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "hiveblog/0.1",
+          "format": "markdown",
+          "image": [
+            "https://images.hive.blog/DQmUBQnzXUHR95K2hhopVcQYAHxxxKcz4mm7yPyD1kLfhvV/c84c4dd7bd1b88c9990bcf925967a1b5.png",
+            "https://images.hive.blog/DQmPzB5qRASdkZXtEqFhB93a4ifF94dMgHGfVBQC7kpLT5j/fe914f0b74ccd654e82a713d4e44bdb0.png",
+            "https://images.hive.blog/DQmQdqr5F6crvpJnBjnHUSGyeG9sGNFLmgniHm7oVfWFRzL/71e03a5f447586d67143a329ca77a7a9.png",
+            "https://images.hive.blog/DQmfXH5gb27X3un9GhfGzedAWAnhjnGVgeCPj4nC9piTLZA/549d830aeb8aacf7d6c347a56153dc6b.png",
+            "https://images.hive.blog/DQmSSfMW6TpCUmKiFFrLs6Ei3vSwVtECcPL6sFs9FCixbDA/586b45102d86a517b16fc4ee40a8ea2b.png",
+            "https://images.hive.blog/DQmfTPNKdt3TqLjKSCWoxW978bXWU8TkPYj3oHxQYuwm6sh/15c1bc25aeb748ffd7f9749973e791e7.png"
+          ],
+          "links": [
+            "https://hive.blog/hive-105017/@oflyhigh/2ckrfy"
+          ],
+          "tags": [
+            "cn",
+            "life",
+            "blog",
+            "tool",
+            "hive",
+            "witness",
+            "witness-category"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 268308405538939,
+        "payout": 25.964,
+        "payout_at": "2026-04-27T08:19:27",
+        "pending_payout_value": "25.964 HBD",
+        "percent_hbd": 10000,
+        "permlink": "5bcukm-hive",
+        "post_id": 149869580,
+        "reblogs": 4,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 336
+        },
+        "title": "HIVE见证人节点健康状况报告",
+        "updated": "2026-04-20T08:19:27",
+        "url": "/hive-105017/@oflyhigh/5bcukm-hive"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 117579592588,
+            "voter": "pharesim"
+          },
+          {
+            "rshares": 4950135843433,
+            "voter": "steemychicken1"
+          },
+          {
+            "rshares": 823684207,
+            "voter": "copychicken1"
+          },
+          {
+            "rshares": 202071281393,
+            "voter": "team"
+          },
+          {
+            "rshares": 2776980702,
+            "voter": "leprechaun"
+          }
+        ],
+        "author": "papilloncharity",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 82.56,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "It looked like an ordinary garden flower bed, but I decided to wait for nature's visitors.\n![040.jpg](https://files.peakd.com/file/peakd-hive/papilloncharity/23wCFwR5yw3ce9dnsFSFbgrYpQuncqEobiJhbqwf9py5tcUWyfEx8jV1epftxRi4EHP9B.jpg)\n\nSo many times, one just has to sit still and to wait for the action. This was such a time.\n\nWe were on our way out for a meeting when all of a sudden the water icon lit up red on the car's instrument screen, then a beep noise started as a warning. So, halfway we had to stop at a service station so that I could see why the car was crying for water. I cannot blame the car as the water level was dangerously low, and so I topped it up to the correct level. However, it would have been dicey to continue on the trip as it was a warm day, and I didn't know if the water would start acting up again. Years ago, the car that I had at the time overheated, and it cooked the engine. I had pulled over but the damage was already done. That is why I decided this time to turn back. So, we rescheduled the meeting on my wife's phone and we headed back. On the way the car was behaving, and we pulled in at a local farm for a coffee to steady my nerves :) \n\nJust as well that we did as there is a coffee shop on the farm and while we waited for the coffee some movement caught my eye in a flowerbed close by. So, I kept my eye on the flowerbed and that's when I first saw the Acraea butterfly that landed on a flower. Some bees were also active in the flowerbed and with great luck a dragonfly came to sit close to us in the morning sun. All the photos that you will see in here were taken by me in that flowerbed.\nCome and see.\n\nThe butterfly, also in the first picture, is a Garden Acraea (Acraea horta). \nIt is a member of the Subfamily Helioconiinae. There are six Acraea species in the country, and this Acraea is the only specie to be found in the Western Cape. \n![111.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23wC7xFazPd8HyLUqLAvZfVXpDum3enxtyQtxBXKtQ5dCnZV4f3fU86d8CkG8e7iBVq4c.JPG)\n\nDid I tell you that the bees were also active in the flowerbed. \n![011.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23wMTpa6VvYQWzpGNzTyYjufo5fRFKayvj3uVQSyTXjC9P2pgZmePs59K9N1mDcFmecZo.JPG)\n\nThey were honeybees collecting pollen. \n![010.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23uFRQYTspgM7sJ143T1CwHyS7jArR3tMcxvPgowRRTUvx3TGhKeDXh5y22oyW6XmBokt.JPG)\n\nJust another one in a shady spot.\n![125.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23vhqH7gx5j1mR67LuZuD63RwTXoDxyFk9GGxNJCBJjEWdckW12wZYGgmCN868M9CXmQZ.JPG)\n\nHere below I will show you three photos of the flowerbed.\n![015.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EoAZpYEUcJGSbMYWc2diqc2LraNEddNXfct3E1oDogYu7Sq46QpRvj6Up6UwjxfAVjQ.JPG)\n\n![017.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/EonkbWsohu45AD9Mt8Em7gJgQxov8jwX4B1YujZFMGnmTTPYNhLCEToqEiirTYoYKok.JPG)\n\n![021.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23xp6gdKAaTKKZkTLEY6qf37MVGuDVgBDogyMkBPHKJzTnxAHM6pWSqCSwbqSkQiWDYrn.JPG)\n\nThat's the dragonfly that came to sit close by, and it looked like a Two-striped Skimmer (Orthetrum caffrum).  \n![009.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23zm5ky2dfdmYDXAYPmbHMWxumBDasKdneKe7zHXPACC9y4Km4Lv7tZayZj9TnWqU9RU3.JPG)\n\nFor some reason, he was skimming up and down and I will show you the reason why in another post. \n![026.JPG](https://files.peakd.com/file/peakd-hive/papilloncharity/23wr7hyo3KnfuCZWeTTgCMMSW9NiUHPhw4yYJMj1Y2bWDcvKbF2zs8uwda7XazJknPkdb.JPG)\n\nNature's song will continue long after humans are gone, as it was like such before and it will be the same after. Billions of people have enjoyed nature's bounty through all of the generations, and nature's resilience is legendary. Let me tell you that we were so happy to see this flowerbed, as it always shows us how simple life can be. I am reminded here, of a story about a wildfire scorching the earth, and afterwards to everyone's amazement a lovely crystal white flower started growing in the blackened wasteland of the fire. \nSuch is life. \n\nI hope you enjoyed the pictures and story.\n\nPhotos by Zac Smith. All-Rights-Reserved.\n\nCamera: Canon PowershotSX70HS Bridge camera.\n\nUntil next time, cheers!",
+        "category": "hive-194913",
+        "children": 6,
+        "community": "hive-194913",
+        "community_title": "Photography Lovers",
+        "created": "2026-04-20T11:11:57",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.3.4",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23wCFwR5yw3ce9dnsFSFbgrYpQuncqEobiJhbqwf9py5tcUWyfEx8jV1epftxRi4EHP9B.jpg",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23wC7xFazPd8HyLUqLAvZfVXpDum3enxtyQtxBXKtQ5dCnZV4f3fU86d8CkG8e7iBVq4c.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23wMTpa6VvYQWzpGNzTyYjufo5fRFKayvj3uVQSyTXjC9P2pgZmePs59K9N1mDcFmecZo.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23uFRQYTspgM7sJ143T1CwHyS7jArR3tMcxvPgowRRTUvx3TGhKeDXh5y22oyW6XmBokt.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23vhqH7gx5j1mR67LuZuD63RwTXoDxyFk9GGxNJCBJjEWdckW12wZYGgmCN868M9CXmQZ.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EoAZpYEUcJGSbMYWc2diqc2LraNEddNXfct3E1oDogYu7Sq46QpRvj6Up6UwjxfAVjQ.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/EonkbWsohu45AD9Mt8Em7gJgQxov8jwX4B1YujZFMGnmTTPYNhLCEToqEiirTYoYKok.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23xp6gdKAaTKKZkTLEY6qf37MVGuDVgBDogyMkBPHKJzTnxAHM6pWSqCSwbqSkQiWDYrn.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23zm5ky2dfdmYDXAYPmbHMWxumBDasKdneKe7zHXPACC9y4Km4Lv7tZayZj9TnWqU9RU3.JPG",
+            "https://files.peakd.com/file/peakd-hive/papilloncharity/23wr7hyo3KnfuCZWeTTgCMMSW9NiUHPhw4yYJMj1Y2bWDcvKbF2zs8uwda7XazJknPkdb.JPG"
+          ],
+          "tags": [
+            "photographylovers",
+            "photography",
+            "flowers",
+            "hiveinsects",
+            "colors",
+            "proofofbrain",
+            "creativecoin",
+            "neoxian",
+            "vyb",
+            "silverbloggers"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 240331798423222,
+        "payout": 23.401,
+        "payout_at": "2026-04-27T11:11:57",
+        "pending_payout_value": "23.401 HBD",
+        "percent_hbd": 0,
+        "permlink": "bees-butterflies-and-dragonflies-in-this-garden",
+        "post_id": 149870627,
+        "reblogs": 4,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 534
+        },
+        "title": "Bees, butterflies and dragonflies in this garden.",
+        "updated": "2026-04-20T11:11:57",
+        "url": "/hive-194913/@papilloncharity/bees-butterflies-and-dragonflies-in-this-garden"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 15086374161,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 1834653802,
+            "voter": "leprechaun"
+          },
+          {
+            "rshares": 2866806612,
+            "voter": "robsteady"
+          },
+          {
+            "rshares": 22072933364,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 937281745,
+            "voter": "jeffjagoe"
+          }
+        ],
+        "author": "selfhelp4trolls",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 75.1,
+        "author_role": "guest",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "leofinance",
+            "weight": 500
+          }
+        ],
+        "blacklists": [],
+        "body": "https://img.leopedia.io/DQmUsHRcGqY6tUvNRi8RhgowHDQifTKdggCVpD8YWRyg1PQ/IMG_2870.jpeg \n\n\nIt’s been a while since I can remember feeling BAD. It’s probably a lot shorter than I realize but this may be the longest i’ve ever gone without some kind of emotional crash, either due to external circumstances or internal dissatisfaction. \n\nI’m not saying I haven’t been sad or mad but these feelings don’t get in the way of anything and they don’t distract from anything.  Bad news comes and I do what I can to mitigate it.  Good news comes and it becomes fuel. There is no negative ruminating. There is no fixation. There is hardly any worry. I just don’t do it anymore.\n\nI’m finally free. I’ve finally trained myself to keep my eye on the prize.  I can’t ever be sure I’ll even get there, but if I don’t I will be as sure as I can that it nothing to do with a lack of efforts. And I know deep down that I am on the path I’m meant to be on. \n\nIt may not be the path I’d choose if I could go back in time, but it’s always the path I’ll feel best about choosing tomorrow. \n\nWhen I think about how I got here, it all feels a bit abstract because I tried for years and years with varying results but then suddenly one day it just clicked. \n\nI started enjoying the whole process. \n\nBut telling someone to enjoy the process is like telling them to just be happy. If they don’t know how, it feels like telling someone to be 15 cm taller. It feels like something out of your hands. \n\nI think the biggest change that made this possible was a full commitment towards giving myself everything I wanted, starting with the things I had immediate influrnce over. \n\nFirst I let go of all guilt around being happy. That means even if others are suffering, even if people call it selfish, I have to prioritize my own mental state. \n\n(And interestingly enough you can actually feel sympathy and even deep sadness and full happiness at the same time if you don’t judge yourself for how you feel.  The emotions come up and if you just let them be, they can co-exist.)\n\nThen I started to face my fears and battled them one by one. I started dressing in ways I was scared to dress before. I said things I was scared to say. I got rid of all the pleasantries that drained me (obligatory participation in events, meeting friends when I felt tired) and kept the ones that feel good (like making someone feel welcome or showing appreciation). \n\nI stopped hiding myself from my students even though it meant risking my salary, but even if I lost a student or two, the rest became even more appreciative and I’ve built a much better reputation as an artist as a result.  I was invited to play a show by one of my top 10 favorite Japanese bands, twice, and became acquantinces with another. Friends started paying attention to my work again after years of a lukewarm response. \n\nWe seem to associate prioritizing our happiness with being selfish and it’s not. Selfishness is when we disregard others out of spite or laziness. It’s when we beleive that we have to sacrifice our own happiness to make other people happy and then try to recoup our losses. \n\nI can see through most “bad” people. They are almost all people who weren’t good enough to themselves and put someone elses happiness before thenselves until they couldn’t bear to anymore and decided to say “Fuck it!”, OR they are people who believe too religiously in zero sum games.  \n\nNot everything is a zero sum game. Some trees bear enough fruit, and some cups runneth over. \n\nA nice person is someone who puts others first and betrays themselves. \nA good person is someone who never gives up on practical alternatives to zero sum. \n\nI do not aim for nice. \nI always aim for good. \n\nThat being said, I will never go out of my way to hurt someone and if I am put in a situation where one of us has to lose, I look for a different kind of framing that all parties might agree to, or at least have fewer problems with. \n\nOne trap I find people falling into is giving too much authority to others over their own life. You are allowed to be who you want to be and do what you want to do.  It’s hard sometimes because self sacrifice is the norm in almost every culture (otherwise how do you get people to pay taxes abd join the army) and sacrfice is not always a bad thing if you truly believe in what you are doing, but in those situations, it no longer feels like sacrifice, it feels like honest devotion and it will make you excited.  \n\nSometimes it’s easier to lie to ourselves than to face the fact that the people around us overstepped in a way that forced us to betray ourselves. If you found yourself in a job you hated becayse of your parents you know what I am talking about. \n\nIt can be very hard to live true to yourself.  \n\nWe may also find ourselves full of spite and without a moral compass when we detach from social support networks and belief systems that have allowed us to betray ourselves.  In my experience this is a case of fatigue and disconnection from passion, too many years of silently allowing ourselves to be a victim to the whims of the world. \n\nWhen you rediscover your passion and pursue it head on, it’s impossible to remain spiteful and feeling like a victim. \n\nSo if you sense a darkness in you as you pursue your own happiness over others, remember that that isn’t you, it’s your neglected inner child that needs acknowledgement and love and support, and once you give it that you’ll see it become more compassionate again, so believe in goodness and aim for it, even if it feels like a lie at first. \n\nBeing able to afford true deep appreciation and unconditional love requires us to give that to ourselves first so we may need a fair bit of rewiring. \n\nI try to follow my joy wherever it leads, even into unfamiliar territory, with the exception of when it would impose upon the freedom of others.  Everyone should be allowed to follow their own path and everyone should be able to say no if they don’t want to follow you down yours. \n\nI don’t completey disregard consequences, but I don’t exaggerate them, and I always look for where I might be letting my fear cause me to overfixate them. Then it just turns into a simple question “Am I willing to pay that price? Or “Am I willing to take that risk?” And I trust and devote myself to my first instinct answer.  \n\nYou may have to build more trust within yourself and start to understand your fears and motovations more before it becomes this simple, but you can get there. \n\nThe rest is just a game of faith and devotion to yourself. You either believe that you are going to be able to live the live you are aiming towards if you devote yourself to it, or you stop caring about getting there and instead just focus on showing up for yourself no matter what, even if you were to end up losing, because losing on your own terms is better than winning on someone elses\n\n—-\n# new music here!\n# https://linktr.ee/ipluseverything\n\nPosted Using [INLEO](https://inleo.io/@selfhelp4trolls/giving-myself-everything-i-want--8cd)",
+        "category": "hive-126152",
+        "children": 2,
+        "community": "hive-126152",
+        "community_title": "Reflections",
+        "created": "2026-04-20T05:34:42",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "leothreads/0.3",
+          "canonical_url": "https://inleo.io/@selfhelp4trolls/giving-myself-everything-i-want--8cd",
+          "dimensions": {},
+          "format": "markdown",
+          "image": [
+            "https://img.leopedia.io/DQmUsHRcGqY6tUvNRi8RhgowHDQifTKdggCVpD8YWRyg1PQ/IMG_2870.jpeg"
+          ],
+          "image_ratios": [
+            1.3333333333333333
+          ],
+          "images": [
+            "https://img.leopedia.io/DQmUsHRcGqY6tUvNRi8RhgowHDQifTKdggCVpD8YWRyg1PQ/IMG_2870.jpeg"
+          ],
+          "isPoll": false,
+          "links": [
+            "https://linktr.ee/ipluseverything",
+            "https://inleo.io/@selfhelp4trolls/giving-myself-everything-i-want--8cd"
+          ],
+          "links_meta": {
+            "https://inleo.io/@selfhelp4trolls/giving-myself-everything-i-want--8cd": {
+              "title": "Giving myself everything I want "
+            }
+          },
+          "tags": [
+            "hive-126152"
+          ],
+          "type": "post"
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 288003773553826,
+        "payout": 27.956,
+        "payout_at": "2026-04-27T05:34:42",
+        "pending_payout_value": "27.956 HBD",
+        "percent_hbd": 0,
+        "permlink": "giving-myself-everything-i-want--8cd",
+        "post_id": 149868541,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 537
+        },
+        "title": "Giving myself everything I want ",
+        "updated": "2026-04-20T06:00:36",
+        "url": "/hive-126152/@selfhelp4trolls/giving-myself-everything-i-want--8cd"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 202071281393,
+            "voter": "team"
+          },
+          {
+            "rshares": 373914473629,
+            "voter": "slickwilly"
+          },
+          {
+            "rshares": 43799556522,
+            "voter": "rok-sivante"
+          },
+          {
+            "rshares": 21777242268,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 506971223826,
+            "voter": "daan"
+          }
+        ],
+        "author": "bozz",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 82.27,
+        "author_role": "admin",
+        "author_title": "",
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "<center>![image.png](https://files.peakd.com/file/peakd-hive/bozz/23yJGFWVqvKumP1RCmMojGU9LVgqvDBCvkydQ6sN5cE2jF6oA4GokvtvuJM6ctU8ZLkMx.png)</center>\n\n-----------------------\n\nI had some big plans for the past couple of weekends.  Okay, maybe not big plans, but I had some stuff I wanted to get done now that the weather is starting to be a bit more cooperative.  In fact, a week ago this past Saturday was just about one of the most perfect days we have had in 2026 so far.  Unfortunately life, or more specifically @mrsbozz had other plans for me.\n\nHer parents recently bought a new house, and so the past couple of weekends have been spent helping them get packed up and moved over to then new address.  I'm a bit sad to say they still have a long way to go, but we are making progress.  It's actually kind of funny, despite the fact that I did not grow up in their old house like my wife did, I still feel a bit of sadness about them leaving it behind.\n\nJust the other day I mentioned to her that I didn't get to spend my last Christmas there.  You might recall I was sick this past year for Christmas, so I spent the majority of my time at my own house staring at the ceiling or the toilet bowl.  I didn't get to participate in any of the fun traditions we have built over the past several decades.\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/bozz/242NfAmRhzcF9RRuPLSasoZAEz22rF4jgCvDKtLMs2AAirZFroJwY7819tthy4yVn9rdW.png)</center>\n\n--------------------------\n\nDespite that, this is still a good move for them and I am excited for them. The old house was great when they were younger and had three kids running around, but now that is just the two of them, they really don't need all that space.  Likewise, as they get older, it's good to be part of a community where the yardwork and all of that is taken care of by someone else.  \n\nIt will be a shift for them, but I think they will settle in just fine.  They just might need to find some new hobbies.  Especially my father in law.  He used to love to putter around the yard, so it will be hard for him to let that go I think.  \n\nSpeaking of puttering, I have some rocks I have been meaning to move from one flower bed to another for several years now.  That was on my list to get started last weekend.  The lawn is ready to have its first cut of the year, so I need to get to that sometime too. \n\nThe problem is, the next two or three weekends in a row my wife and I have plans that I made for us a long time ago.  Meanwhile, I need to get our travel trailer home from storage at my parents house.  Get it cleaned, washed, de-winterized, repack the wheel bearings, check the gas lines for leaks, and get it all packed up for our first camping trip of the season at the end of May.\n\n<center>![image.png](https://files.peakd.com/file/peakd-hive/bozz/23wWy7DVjnpNWj7e3ffaHUZrT4M6vK4LRejXu31qsRE5LrRx4JXAKo2eNZSJUjbEiAP7i.png)</center>\n\n----------------------------\n\nNo big deal right?  Meanwhile, we also need to get the power washer from my brother in law so we can get the deck ready to go for the summer.  Put away all the winter stuff and pull out all the summer stuff from the shed.  @mrsbozz wants the windows on the house professionally washed, and I need to get the garage cleaned up at some point.\n\nNo rush...\n\nI don't want to say I am annoyed that my last two weekends have been blown up.  I don't think that is quite the right word.  It's been for the greater good, and I fully acknowledge that.  I just hope the weather cooperates so I can get the rest of this stuff done.  The good news is, it looks like the rain is going to hold off for a bit, but we really need the temps to stay above freezing for a while now.  \n\n\n----------\n\n<center>\n### [My Sports Account - @bozz.sports](https://www.peakd.com/@bozz.sports)\n</center>\n\n----------\n\n#### <center>Come hang out in [The Pub](https://peakd.com/c/hive-178138/created)</center>\n<center>[Find us on Discord](https://discord.gg/cCEMJXAEXk)</center>\n\n<center>Or Check out my [Grilling and Smoking Community on HIVE](https://peakd.com/c/hive-138631/created)</center>\n\n-------------\n\n<center>![TEAMUSAhive_footer_bozz.jpg](https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg)</center>\n\n----------------\n\n<center>*All pictures/screenshots taken by myself or @mrsbozz unless otherwise sourced*</center>\n\n",
+        "category": "hive-178138",
+        "children": 11,
+        "community": "hive-178138",
+        "community_title": "The Pub",
+        "created": "2026-04-20T11:13:42",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "description": "Sometimes life just has other plans for you",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/bozz/23yJGFWVqvKumP1RCmMojGU9LVgqvDBCvkydQ6sN5cE2jF6oA4GokvtvuJM6ctU8ZLkMx.png",
+            "https://files.peakd.com/file/peakd-hive/bozz/242NfAmRhzcF9RRuPLSasoZAEz22rF4jgCvDKtLMs2AAirZFroJwY7819tthy4yVn9rdW.png",
+            "https://files.peakd.com/file/peakd-hive/bozz/23wWy7DVjnpNWj7e3ffaHUZrT4M6vK4LRejXu31qsRE5LrRx4JXAKo2eNZSJUjbEiAP7i.png",
+            "https://files.peakd.com/file/peakd-hive/bozz/fXpCTKUZ-TEAMUSA-hive_footer_bozz.jpg"
+          ],
+          "tags": [
+            "thepub",
+            "weekend",
+            "pimp",
+            "tribes",
+            "gems",
+            "bbh",
+            "thealliance",
+            "silverbloggers",
+            "discovery-it",
+            "ccc"
+          ],
+          "users": [
+            "mrsbozz",
+            "bozz.sports"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 235089536646615,
+        "payout": 22.891,
+        "payout_at": "2026-04-27T11:13:42",
+        "pending_payout_value": "22.891 HBD",
+        "percent_hbd": 10000,
+        "permlink": "weekends-derailed",
+        "post_id": 149870634,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 595
+        },
+        "title": "Weekends Derailed",
+        "updated": "2026-04-20T11:13:42",
+        "url": "/hive-178138/@bozz/weekends-derailed"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 22006994755693,
+            "voter": "steempty"
+          },
+          {
+            "rshares": 190372039734919,
+            "voter": "blocktrades"
+          },
+          {
+            "rshares": 445047201,
+            "voter": "nanzo-scoop"
+          },
+          {
+            "rshares": 131570644874,
+            "voter": "kevinwong"
+          },
+          {
+            "rshares": 3012562427,
+            "voter": "leprechaun"
+          }
+        ],
+        "author": "acidyo",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 83.91,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "Going over what's been implemented since. \n\nA lot of cleaning up still to do as well as further implementation + a lot of manual work later in line with artists, but exciting nonetheless! \n\nLet me know what you think of the gameplay/logic/progress! \n\nhttps://youtu.be/rSoH35KQD-Q",
+        "category": "holo",
+        "children": 27,
+        "created": "2026-04-19T14:06:51",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [],
+          "tags": [
+            "holo",
+            "tcg"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 478866301638980,
+        "payout": 47.403,
+        "payout_at": "2026-04-26T14:06:51",
+        "pending_payout_value": "47.403 HBD",
+        "percent_hbd": 10000,
+        "permlink": "holozing-tcg-log",
+        "post_id": 149860932,
+        "reblogs": 9,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 867
+        },
+        "title": "Holozing TCG log",
+        "updated": "2026-04-19T14:06:51",
+        "url": "/holo/@acidyo/holozing-tcg-log"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 4950135843433,
+            "voter": "steemychicken1"
+          },
+          {
+            "rshares": 823684207,
+            "voter": "copychicken1"
+          },
+          {
+            "rshares": 4661634503,
+            "voter": "leprechaun"
+          },
+          {
+            "rshares": 523018158,
+            "voter": "stea90"
+          },
+          {
+            "rshares": 35993186677,
+            "voter": "quigua"
+          }
+        ],
+        "author": "claudio83",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 81.6,
+        "author_role": "mod",
+        "author_title": "",
+        "beneficiaries": [
+          {
+            "account": "balaenoptera",
+            "weight": 300
+          }
+        ],
+        "blacklists": [],
+        "body": "The success of the VOUCHER shop is an example of the team's excellent management of the major issue of Splinterlands cryptocurrency management. In the early stages of the game, tokens such as DEC, SPS, SPT, and VOUCHER itself were launched, effectively creating a resource dispersion problem and a progressive loss of value for the coins themselves, due to the post-2017 bear market.\n\n![1000063463.jpg](https://files.peakd.com/file/peakd-hive/claudio83/23tbkWe3MpAYzmAMAGLujEtkyYFUwbq47iZDDRaPw1KadkJa5JDhX4e7dfSFxE6z8WgLH.jpg)\n___\n\nThe VOUCHER token was created as a tool for obtaining discounts on the purchase of packs. The discounts were indeed significant, up to 50% off the initial price. I myself took advantage of them, for example, during the Chaos Legion pack sale, with pack prices dropping from 4,000 to 2,000 DEC, allowing me to obtain a large number of packs during the presale.\n\nVOUCHER was then retained in the Splinterlands game as a reward for staking SPS, and any movement from player accounts to the market was blocked. However, it is possible to continue purchasing tokens still circulating in the market and transfer them to player accounts. This way, the circulating supply should gradually decrease over time.\n\n<center>\nThank you for taking the time to read this post. If you haven't signed up to Splinterlands yet, I invite you to give it a try. You can use my [referral link](https://steemmonsters.com?ref=claudio83) </center>\n\n# ITA\n\nIl successo dello shop VOUCHER è un esempio di ottima gestione da parte del team in merito al grande problema della gestione delle cruptovalute del mondo Splinterlands. In una prima fase del gioco, infatti, sono stati lanciati tokens come DEC, SPS, SPT e lo stesso VOUCHER, creando in effetti un problema di dispersione delle risorse ed una progressiva perdita di valore delle stesse monete, a causa del bear market post 2017.\n\n![1000063463.jpg](https://files.peakd.com/file/peakd-hive/claudio83/23tbkWe3MpAYzmAMAGLujEtkyYFUwbq47iZDDRaPw1KadkJa5JDhX4e7dfSFxE6z8WgLH.jpg)\n___\n\nIl token VOUCHER è nato come uno strumento per ottenere sconti sull'acquisto dei pacchi. Gli sconti in effetti sono stati importanti, fino al 50% del prezzo iniziale. Io stesso ne ho usufruito ad esempio durante la vendita dei pacchi Chaos Legion, con i prezzi dei pacchi scrsi da 4000 a 2000 DEC, e ciò ha consentito di ottenere un gran numero di pacchi durante il Presale.\n\nVOUCHER è stato poi mantenuto nel gioco di Splinterlands come rewards dello staking di SPS e qualsiasi movimento dall'account dei giocatori verso il market è stato inibito. È possibile invece continuare ad acquistare il token ancora circolante nel market e trasferirli nell'account dei giocatori. In questo modo nel corso del tempo la supply circolante dovrebbe pian piano ridursi\n\n<center>\nThank you for taking the time to read this post. If you haven't signed up to Splinterlands yet, I invite you to give it a try. You can use my [referral link](https://steemmonsters.com?ref=claudio83) </center>",
+        "category": "hive-146620",
+        "children": 2,
+        "community": "hive-146620",
+        "community_title": "Olio di Balena",
+        "created": "2026-04-20T10:53:45",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/claudio83/23tbkWe3MpAYzmAMAGLujEtkyYFUwbq47iZDDRaPw1KadkJa5JDhX4e7dfSFxE6z8WgLH.jpg"
+          ],
+          "tags": [
+            "splinterlands",
+            "arcadecolony",
+            "nfts",
+            "playtoearn",
+            "blockchaingaming"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 224879037130218,
+        "payout": 21.732,
+        "payout_at": "2026-04-27T10:53:45",
+        "pending_payout_value": "21.732 HBD",
+        "percent_hbd": 0,
+        "permlink": "voucher-is-increasingly-the-protagonist-with-the-purchases-of-the-new-cards",
+        "post_id": 149870513,
+        "reblogs": 1,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 214
+        },
+        "title": "VOUCHER is increasingly the protagonist with the purchases of the new cards",
+        "updated": "2026-04-20T10:53:45",
+        "url": "/hive-146620/@claudio83/voucher-is-increasingly-the-protagonist-with-the-purchases-of-the-new-cards"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 202071281393,
+            "voter": "team"
+          },
+          {
+            "rshares": 12520602868,
+            "voter": "roelandp"
+          },
+          {
+            "rshares": 871712091314,
+            "voter": "arcange"
+          },
+          {
+            "rshares": 153762571092,
+            "voter": "penguinpablo"
+          },
+          {
+            "rshares": 1563817529,
+            "voter": "funnyman"
+          }
+        ],
+        "author": "jack.russelle",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 77.52,
+        "beneficiaries": [],
+        "blacklists": [],
+        "body": "So many people come and visit this country and want to scoot around on a motorbike to get to some of the out of city things that are around Chiang Mai.   This can be a good idea if you actually are capable of driving a motorbike and honestly, there really isn't that much to it.   I've been to and lived in a number of other places in this country and it is just more of the same.  In one way, Chiang Mai is easier because the roads are in pretty great shape here and there has been a lot of forward planning to ensure that there actually are enough roads for most of the demand that traffic dictates.   \n\nObviously there are exceptions but if you are just traveling here on holiday, you are pretty unlikely to end up in rush hour gridlocked traffic unless you are very unlucky.\n\n<center>  https://www.triptipedia.com/tip/img/Vl02JddFg.jpg\n[src](https://www.triptipedia.com/tip/img/Vl02JddFg.jpg)</center>\nOne thing though, that you can get away with in most of the rest of the country that you can't really get away with here, is dodging the police if you are operating a motorbike without a license.\n\nThe thing is, the police proabably aren't truly interested in keeping the roads safer, they are interested in collecting money from people that don't have the correct certification and in most situations, unless you have a legitimate international license the likes of which I don't even know how someone acquires, you aren't going to have what they are looking for because they aren't actually looking for a license, they are looking to fine you right there on the spot.  \n\nThis is something you just kind of have to come to terms with if you are visiting here, or like me, living here.   \n\nI have some tips to save yourself a bunch of headache though and maybe even get you out of it altogether.\n\n<h3> comply, show ID </h3> \n\nIf you end up in a checkpoint where they ask for your ID or license, provide them with any sort of photo ID.   If you have a driving license in your home country, show them that.  Then, answer in the affirmative if they ask things like \"is this international?\" or \"is this for motorcycle\".  Remember, if you tell a little white lie here this isn't any different than them purposely fleecing visitors.  Safety is not their concern hence the fact that Thailand regularly ranks in the top 3 for most road deaths of any country in the world.  \n\n<h3> Be friendly </h3>\n\nActing like a \"Karen\" might get you out of situations in USA but it is only going to make things a lot worse for you over here.  Thai police are definitely on a power trip, but they will treat you with respect if you do so as well.   Throwing a fit will only make the fine larger, so keep it cool.\n\n<h3> If you are fined, pay on the spot </h3> \n\nSome people are upset and refuse to pay on the spot for some receipt that is probably not official anyway.   IF you play this game you are going to lose.   They will in fact allow you to go to the station and take care of your \"ticket\" there but now you have just turned a 5-minute transaction into an all day affair and trust me when I say that they are going to make this take as long as possible.   In order to save $20 or so you have just wasted your entire day.  Also the system is not going to change just because you think you are going to go over the heads of a corrupt street officer.   The **entire organization is in on it** so it's not like if you ask to speak to a manager that internal affairs are going to get involved and thank you for exposing their system.  \n\n<h3> do NOT record them </h3> \n\nThis is a fantastic way to super-escalate the situation\n\n<h3> Keep your ticket if you get one </h3>\n\nThis is one of the rather amusing things about routine traffic violations in Thailand.  If you are issued a ticket, there is an unofficial rule that you cannot be charged for that same made up crime for 7 days.   So if you got a ticket for driving without a license, you can carry on doing so for another week.  In a country with actual road rules, driving without a license would mean you are removed from the streets and your vehicle is towed at your own expense.  In Thailand the infraction was never about a law to begin with so they don't really care.   This 7-day grace period is likely in place so that the population don't riot and burn down police stations and yes, this is something that actually does happen and when it does, the police just get out of the way and let the people burn it.\n\n<h3> Keep that ticket forever </h3>\n\nUsing my own system, I have had the same \"no license\" ticket in my motorbike compartment for several years and if I see a checkpoint, I slow down, pull out the ticket and then show it to the guy who is flagging down vehicles.   Chances are, this person seeing a ticket AT ALL is going to convince him to flag you on through because it is such a common thing for there to be multiple checkpoints all over the city and surrounding areas on the same day.\n\nIF they guy happens to look at it closely (and with dozens of this exact situation happening to me they NEVER have) and they say \"hey this is from last year!\" you can just claim ignorance.   Just say \"oh, I didn't know\" then be polite and comply.   This is a bullshit situation anyway, so you may as well play along.\n\n<h3> Carry small bills </h3>  \n\nThe fine is often simply made up on the spot and if you open your wallet and you have a bunch of 1000 Baht notes and several 500's, you can be assured your fine will be at least 500.  However, if you have a few 100's in there and then just chump change, you can probably get away with just paying a couple hundred.   They are not going to ask anyone to do a QR bank transfer because that is a little thing that some people in the legal system refer to as \"evidence.\" \n\n<hr> \n<center> https://static.bangkokpost.com/media/content/20210331/c1_2092559.jpg\n[src](https://static.bangkokpost.com/media/content/20210331/c1_2092559.jpg)</center> \nYou many not like it, but this is simply the way it is in Thailand.   You almost certainly do not qualify to have a Thai driving license unless you have a work permit.  They always fiddle with these rules and often it feels as though it is specifically designed so that a certain percentage of people are always going to be in violation and therefore, can generate pocket money for the officers to kick up to the boss man.   \n\nI tend to look at it from the standpoint of which would you rather have?  A mildly corrupt police force looking for kickbacks, or a situation like we have in the United States where you would never be allowed to drive anyway?\n\nFollow these above steps though and there is a good chance you might just avoid getting fined at all.  If you do get fined, treat it as a vacation experience.   Fighting it is a waste of time and the system is not going to change.   \n\n",
+        "category": "thailand",
+        "children": 3,
+        "created": "2026-04-20T12:24:09",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "description": "Are the police corrupt?  yes.... can you minimize the damage?  Also Yes.   ",
+          "format": "markdown",
+          "image": [
+            "https://www.triptipedia.com/tip/img/Vl02JddFg.jpg",
+            "https://static.bangkokpost.com/media/content/20210331/c1_2092559.jpg",
+            "https://static.bangkokpost.com/media/content/20210331/c1_2092559.jpg)"
+          ],
+          "tags": [
+            "thailand",
+            "travel",
+            "visiting",
+            "expat",
+            "police",
+            "tips",
+            "driving"
+          ],
+          "users": []
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 206146094427102,
+        "payout": 20.072,
+        "payout_at": "2026-04-27T12:24:09",
+        "pending_payout_value": "20.072 HBD",
+        "percent_hbd": 10000,
+        "permlink": "tips-to-handing-the-police-with-a-motorbike-in-thailand",
+        "post_id": 149871076,
+        "reblogs": 0,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 107
+        },
+        "title": "Tips to handing the police with a motorbike in Thailand ",
+        "updated": "2026-04-20T12:24:09",
+        "url": "/thailand/@jack.russelle/tips-to-handing-the-police-with-a-motorbike-in-thailand"
+      },
+      {
+        "active_votes": [
+          {
+            "rshares": 166597362668,
+            "voter": "simba"
+          },
+          {
+            "rshares": 44995853300,
+            "voter": "fractalnode"
+          },
+          {
+            "rshares": 21780768958,
+            "voter": "good-karma"
+          },
+          {
+            "rshares": 28698818039,
+            "voter": "nascimentoab"
+          },
+          {
+            "rshares": 23882912456,
+            "voter": "kendewitt"
+          }
+        ],
+        "author": "threespeak",
+        "author_payout_value": "0.000 HBD",
+        "author_reputation": 76.12,
+        "beneficiaries": [
+          {
+            "account": "eddie-3speak",
+            "weight": 1600
+          },
+          {
+            "account": "forkyishere",
+            "weight": 1100
+          },
+          {
+            "account": "joseamenac",
+            "weight": 1300
+          },
+          {
+            "account": "ph1102",
+            "weight": 2000
+          },
+          {
+            "account": "rishi556.lambo",
+            "weight": 1100
+          },
+          {
+            "account": "sagarkothari88",
+            "weight": 1300
+          },
+          {
+            "account": "snapie",
+            "weight": 1600
+          }
+        ],
+        "blacklists": [],
+        "body": "![image.png](https://files.peakd.com/file/peakd-hive/eddie-3speak/Eo6DF1G75FXBGvGKkKoSBHKeXSKLQaW5riEfLNkqktVRVi4WR9kETH9Mqve3jg8PVpD.png)\n\nThis is the weekly activity report for the 3Speak decentralized encoding network. The report covers encoder node activity, aggregated output per Hive account, and reward distribution based on work completed during the week.\n\nThis week, **225 encoding jobs** were processed across 8 nodes operated by 7 Hive accounts. Most nodes held a 100% success rate, with one node at 97%.\n\n---\n\n## Encoder Activity\n\n| Encoder Node | Hive Account | Jobs | Success |\n|---|---|---|---|\n| 3speak-snapie-encoder | @snapie | 37 | 100% |\n| eddie-3speak-encoder | @eddie-3speak | 35 | 97% |\n| 3speak-ph1102-node | @ph1102 | 31 | 100% |\n| sagar-ubuntu-1 | @sagarkothari88 | 29 | 100% |\n| Butter-Node | @joseamenac | 29 | 100% |\n| 3speak-encoder-node | @rishi556.lambo | 26 | 100% |\n| atexoras-3speak-encoder | @forkyishere | 25 | 100% |\n| ph1102-mac-node | @ph1102 | 13 | 100% |\n\n---\n\n## Aggregated Jobs by Hive Account\n\n| Hive Account | Total Jobs |\n|---|---|\n| @ph1102 | 44 |\n| @snapie | 37 |\n| @eddie-3speak | 35 |\n| @sagarkothari88 | 29 |\n| @joseamenac | 29 |\n| @rishi556.lambo | 26 |\n| @forkyishere | 25 |\n\n**Total: 225 jobs**\n\n---\n\n## Reward Distribution (7 Beneficiaries)\n\nOnly 7 accounts were active this week, so all are included as beneficiaries.\n\n| Hive Account | Jobs | Percentage |\n|---|---|---|\n| @ph1102 | 44 | 20% |\n| @snapie | 37 | 16% |\n| @eddie-3speak | 35 | 16% |\n| @sagarkothari88 | 29 | 13% |\n| @joseamenac | 29 | 13% |\n| @rishi556.lambo | 26 | 11% |\n| @forkyishere | 25 | 11% |\n| **Total** | **225** | **100%** |\n\n---\n\n## Notes\n\n- **@ph1102** leads the week with 44 aggregated jobs across two nodes, both back in action after `ph1102-mac-node` was inactive last week.\n- **@rishi556.lambo** is back with 26 jobs after being absent in Week 19.\n- **@sagarkothari88** ran a single node this week (`sagar-ubuntu-1` only), down from the usual multi-node setup.\n- Overall volume continues a gradual downward trend: 279 (Weeks 15/16) to 232/233 (Weeks 17/18) to 246 (Week 19) to 225 this week.\n\n---\n\n## Get Involved\n\nWant to help power decentralized video encoding on 3Speak? Running an encoder node is a great way to contribute to the network and earn rewards for your work.\n\nReach out to **@eddiespino** on the 3Speak Discord for more info:\nhttps://discord.gg/NSFS2VGj83\n\n**Useful links:**\n- [Gateway Monitor](https://gateway-monitor.3speak.tv)\n- [Direct Encoding Monitor](https://gateway-monitor.3speak.tv/direct-encoding)\n- [Analytics](https://monitor.3speak.tv/analytics)\n- [Preview Frontend](https://preview.3speak.tv)\n\n---\n\n*Thank you to all encoder operators for keeping the 3Speak network decentralized and running strong.*",
+        "category": "encoding",
+        "children": 9,
+        "created": "2026-04-20T02:00:45",
+        "curator_payout_value": "0.000 HBD",
+        "depth": 0,
+        "is_paidout": false,
+        "json_metadata": {
+          "app": "peakd/2026.4.3",
+          "format": "markdown",
+          "image": [
+            "https://files.peakd.com/file/peakd-hive/eddie-3speak/Eo6DF1G75FXBGvGKkKoSBHKeXSKLQaW5riEfLNkqktVRVi4WR9kETH9Mqve3jg8PVpD.png"
+          ],
+          "tags": [
+            "encoding",
+            "infrastructure",
+            "threespeak",
+            "3speak",
+            "videos",
+            "hive",
+            "update"
+          ],
+          "users": [
+            "snapie",
+            "eddie-3speak",
+            "ph1102",
+            "sagarkothari88",
+            "joseamenac",
+            "rishi556.lambo",
+            "forkyishere",
+            "eddiespino"
+          ]
+        },
+        "max_accepted_payout": "1000000.000 HBD",
+        "net_rshares": 291481938362934,
+        "payout": 28.269,
+        "payout_at": "2026-04-27T02:00:45",
+        "pending_payout_value": "28.269 HBD",
+        "percent_hbd": 10000,
+        "permlink": "3speak-encoder-network-weekly-activity-report-week-20",
+        "post_id": 149866738,
+        "reblogs": 2,
+        "replies": [],
+        "stats": {
+          "flag_weight": 0,
+          "gray": false,
+          "hide": false,
+          "total_votes": 356
+        },
+        "title": "3Speak Encoder Network Weekly Activity Report — Week 20",
+        "updated": "2026-04-20T02:00:45",
+        "url": "/encoding/@threespeak/3speak-encoder-network-weekly-activity-report-week-20"
+      }
+    ]
+  },
+  "responseStatus": 200,
+  "responseContentType": "application/json"
+}

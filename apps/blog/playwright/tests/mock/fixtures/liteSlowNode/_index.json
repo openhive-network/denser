@@ -1,0 +1,10 @@
+{
+  "testName": "liteSlowNode",
+  "base": "litePost",
+  "additive": true,
+  "methods": {
+    "bridge.list_communities": 1,
+    "GET /hivesense-api": 1,
+    "bridge.get_ranked_posts": 3
+  }
+}
