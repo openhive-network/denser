@@ -78,9 +78,12 @@ export const nonEmpty = (value: string | null | undefined): string | undefined =
 
 /**
  * The length REST post lists cut bodies at (`truncate-body`): a card shows only a summary and an
- * image, and this gets past the few images many posts open with to the text a summary is made of.
+ * image, and a post without a metadata image takes its card image from the body, where the first one
+ * can start thousands of characters in. Measured on trending/created/hot/payout lists, this keeps
+ * every sampled card's image and summary as from the full body; 5000 kept all but one image, which
+ * started at 8750.
  */
-export const POST_LIST_BODY_LENGTH = 1000;
+export const POST_LIST_BODY_LENGTH = 9000;
 
 /** The params a REST post list read adds for a list sized for cards: no votes, cut bodies. */
 export type TPostListShape = Pick<HivemindRestPostPage, 'votes' | 'truncate-body'>;
