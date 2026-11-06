@@ -434,6 +434,8 @@
         "last_button": "末页",
         "viewing_page": "正在查看第 {{current}} 页，共 {{total}} 页",
         "users_on_list": "列表中的用户：{{number}}",
+        "accounts_count_other": "{{count}} 个账户",
+        "lists_count_other": "{{count}} 个列表",
         "unfollow_all": {
           "button": "取消关注所有人",
           "title": "取消关注所有账户？",

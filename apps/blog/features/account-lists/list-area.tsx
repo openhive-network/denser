@@ -53,6 +53,10 @@ const ListArea = ({
   const [page, setPage] = useState(0);
   const [addValue, setAddValue] = useState('');
   const totalItems = data?.filter((e) => e.name !== 'null').length ?? 0;
+  const countsLists = variant === 'followBlacklist' || variant === 'followMutedList';
+  const itemsCountLabel = countsLists
+    ? t('user_profile.lists.list.lists_count', { count: totalItems })
+    : t('user_profile.lists.list.accounts_count', { count: totalItems });
 
   return (
     <div
@@ -147,12 +151,12 @@ const ListArea = ({
           <span className="text-xs text-primary/50">
             {t('user_profile.lists.list.viewing_page', { current: page + 1, total: splitArrays.length })}
             {' \u00B7 '}
-            {totalItems} {totalItems === 1 ? 'item' : 'items'}
+            {itemsCountLabel}
           </span>
         </div>
       ) : totalItems > 0 ? (
         <span className="text-xs text-primary/50">
-          {totalItems} {totalItems === 1 ? 'item' : 'items'}
+          {itemsCountLabel}
         </span>
       ) : null}
 
