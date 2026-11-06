@@ -155,6 +155,12 @@ export function isNodeNetworkFailure(error: unknown): error is Error {
 const MAX_CAUSE_DEPTH = 5;
 
 /**
+ * The name webpack's and Turbopack's runtimes give the error of a script chunk that could not be
+ * loaded, as `findChunkLoadError` of `@hive/ui` reads it; this module loads without the app's aliases.
+ */
+const CHUNK_LOAD_ERROR_NAME = 'ChunkLoadError';
+
+/**
  * `error` or, a few levels deep, its `cause` that `matches`: a signer that wraps the failure of a node
  * read (hb-auth's unlock checks the key against the account) keeps it as the cause.
  */
@@ -206,12 +212,17 @@ export class TransactionNotConfirmedError extends Error {
 }
 
 /**
- * `error` as a `TransactionNotConfirmedError` when it is WorkerBee's expired-listener rejection or a
- * request timeout or network failure other than of a pre-broadcast verification read, else as is.
+ * `error` as a `TransactionNotConfirmedError` when it is WorkerBee's expired-listener rejection, a
+ * request timeout or network failure other than of a pre-broadcast verification read, or a chunk load
+ * failure, else as is. A chunk load failure carries no request to tell when it happened: the failover
+ * chain loads code on a read's first failure, which may be a read of the block scanner after the node
+ * took the transaction, so it counts as possibly sent.
  */
 export function toNotConfirmedError(error: unknown, transactionId: string): unknown {
   return error instanceof Error &&
-    (LISTENER_EXPIRED_PATTERN.test(error.message) || isUnconfirmedRequestFailure(error))
+    (LISTENER_EXPIRED_PATTERN.test(error.message) ||
+      isUnconfirmedRequestFailure(error) ||
+      findInCauses(error, (candidate) => candidate.name === CHUNK_LOAD_ERROR_NAME) !== undefined)
     ? new TransactionNotConfirmedError(transactionId, error)
     : error;
 }
