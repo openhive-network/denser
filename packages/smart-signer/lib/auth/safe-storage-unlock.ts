@@ -2,7 +2,10 @@ import type { KeyAuthorityType, OnlineClient } from '@hiveio/hb-auth';
 import { classifyUnlockRefusal, WrongSafeStoragePasswordError } from '@smart-signer/lib/wrong-safe-storage-password';
 
 /** What unlocking a key stored in safe storage needs of hb-auth's client */
-export type SafeStorageUnlockClient = Pick<OnlineClient, 'authenticate' | 'unlock' | 'getRegisteredUserByUsername'>;
+export type SafeStorageUnlockClient = Pick<
+  OnlineClient,
+  'authenticate' | 'lock' | 'unlock' | 'getRegisteredUserByUsername'
+>;
 
 /** `error` as a WrongSafeStoragePasswordError when it is hb-auth refusing the password of `username`, else undefined */
 async function asWrongPassword(
@@ -38,8 +41,10 @@ export async function authenticateStoredKey(
 
 /**
  * Unlocks the wallet of `username`, whom safe storage holds, with `password` before its `keyType` key
- * is written over: hb-auth's `unlock` when its worker has a session of the user, else signing in with
- * the key held for `keyType`, as `authenticateStoredKey` does. Resolves true once unlocked, false when
+ * is written over: hb-auth's `unlock` when its worker has a session of the user, locking it first when
+ * unlocked, else signing in with the key held for `keyType`, as `authenticateStoredKey` does. hb-auth's
+ * `unlock` skips the password of an unlocked wallet, while `lock` keeps the session; a wrong password
+ * thus leaves the session locked, along with any other user's hb-auth had unlocked. Resolves true once unlocked, false when
  * hb-auth refused for another reason than the password (no key held for `keyType`, or one no longer on
  * chain), which leaves the password to the write. Rejects with WrongSafeStoragePasswordError when
  * hb-auth refused `password`.
@@ -52,8 +57,10 @@ export async function unlockBeforeKeyWrite(
 ): Promise<boolean> {
   const user = await client.getRegisteredUserByUsername(username);
   try {
-    if (user?.authorized) await client.unlock(username, password);
-    else await client.authenticate(username, password, keyType);
+    if (user?.authorized) {
+      if (user.unlocked) await client.lock();
+      await client.unlock(username, password);
+    } else await client.authenticate(username, password, keyType);
     return true;
   } catch (error) {
     const wrongPassword = await asWrongPassword(client, username, error);
