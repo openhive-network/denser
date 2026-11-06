@@ -12,30 +12,50 @@ const HISTORY_ROWS_PER_VIEW = 50;
 
 const DELEGATED_VESTS_PATTERN = /delegated_vesting_shares\\*":\{[^}]*?\\*"amount\\*":\\*"(\d+)/;
 
+/** How long one response body may take to read before it counts as not carrying the account. */
+const BODY_READ_TIMEOUT_MS = 5_000;
+
 /**
  * Follows the responses the page renders the account from: the server-rendered document (or RSC
  * refresh) carrying the account prefetched on the server, or the browser's own find_accounts when
  * that prefetch failed. The returned function answers whether the latest of them has the account
  * delegating HIVE POWER, and fails when none carried the account.
+ *
+ * Only requests whose body finished downloading count, in the order they finished: a response of a
+ * page navigated away from (the language switch reloads the page) may never finish, and awaiting its
+ * body would wait out the test. Each read is still bounded, as Playwright can lose a body it had.
  */
 function trackRenderedDelegation(page: Page): () => Promise<boolean> {
   const amounts: Promise<string | undefined>[] = [];
-  page.on('response', (response) => {
-    const type = response.request().resourceType();
-    if ((type !== 'document' && type !== 'fetch') || !response.ok()) return;
-    amounts.push(
-      response
-        .text()
-        .then((body) => body.match(DELEGATED_VESTS_PATTERN)?.[1])
-        // The body of a response from a page navigated away from is gone; that page shows nothing now
-        .catch(() => undefined)
-    );
+  page.on('requestfinished', (request) => {
+    const type = request.resourceType();
+    if (type !== 'document' && type !== 'fetch') return;
+    amounts.push(readDelegatedVests(request.response()));
   });
   return async () => {
     const latest = (await Promise.all(amounts)).filter((amount) => amount !== undefined).at(-1);
     if (latest === undefined) throw new Error('No response the page rendered carried the account');
     return BigInt(latest) > 0n;
   };
+}
+
+async function readDelegatedVests(pendingResponse: Promise<Response | null>): Promise<string | undefined> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timedOut = new Promise<undefined>((resolve) => {
+    timer = setTimeout(() => resolve(undefined), BODY_READ_TIMEOUT_MS);
+  });
+  const read = pendingResponse
+    .then(async (response) => {
+      if (!response?.ok()) return undefined;
+      return (await response.text()).match(DELEGATED_VESTS_PATTERN)?.[1];
+    })
+    // The body of a response from a page navigated away from is gone; that page shows nothing now
+    .catch(() => undefined);
+  try {
+    return await Promise.race([read, timedOut]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // The delegated sentence is shown only while the account delegates, which changes over time.
@@ -233,10 +253,9 @@ test.describe('Wallet page of @gtg tests', () => {
     await expect(walletPage.walletAccountHistoryRow.first()).toBeVisible({ timeout: 30000 });
     await walletPage.walletSearchInput.fill('unknownuser');
     await expect(walletPage.walletSearchInput).toHaveAttribute('value', 'unknownuser');
-    await expect(walletPage.walletAccountHistoryNoTransactionMsg).toHaveText(
-      'No transactions found',
-      { timeout: 15000 }
-    ); // a typo to correct
+    await expect(walletPage.walletAccountHistoryNoTransactionMsg).toHaveText('No transactions found', {
+      timeout: 15000
+    }); // a typo to correct
     await expect(
       await walletPage.getElementCssPropertyValue(
         await walletPage.walletAccountHistoryNoTransactionMsg,
@@ -336,7 +355,8 @@ test.describe('Wallet page of @gtg tests', () => {
 
     const delegationsResponse = page.waitForResponse(
       (response) =>
-        Boolean(response.request().postData()?.includes('database_api.list_vesting_delegations')) && response.ok()
+        Boolean(response.request().postData()?.includes('database_api.list_vesting_delegations')) &&
+        response.ok()
     );
     await walletPage.delegationsTab.click();
     const delegations = await readRenderedDelegations(await delegationsResponse, username);
