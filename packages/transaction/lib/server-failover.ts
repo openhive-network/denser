@@ -58,13 +58,20 @@ interface IFailoverPolicy {
   budgetMs?: number;
   /** Most nodes one call asks; all of them when absent. */
   maxNodes?: number;
+  /**
+   * Whether a node's silence is reported to `connectivity.reportSilent`. A call that may stall on
+   * every node while the network works (a heavy query, held to its own timeout) must not report it,
+   * or it would find the network down.
+   */
+  reportsSilence: boolean;
 }
 
 const DEFAULT_POLICY: IFailoverPolicy = {
   attemptTimeoutMs: FAILOVER_ATTEMPT_TIMEOUT_MS,
   retriesPrimary: true,
   hedgeDelayMs: HEDGE_DELAY_MS,
-  budgetMs: FAILOVER_BUDGET_MS
+  budgetMs: FAILOVER_BUDGET_MS,
+  reportsSilence: true
 };
 
 /**
@@ -76,7 +83,8 @@ const DEFAULT_POLICY: IFailoverPolicy = {
 const slowCallPolicy = (timeoutMs: number): IFailoverPolicy => ({
   attemptTimeoutMs: timeoutMs,
   retriesPrimary: false,
-  maxNodes: 2
+  maxNodes: 2,
+  reportsSilence: false
 });
 
 /** How a node did on one call: served or answered it, or could not (it lacks the API, or failed). */
@@ -178,6 +186,8 @@ interface IFailoverCall<T> {
   isApiNotServed: (error: unknown) => boolean;
   /** Whether a healthy primary is asked once more before the next node. */
   retriesPrimary: boolean;
+  /** Whether a node that gave no answer is reported to `connectivity.reportSilent`. */
+  reportsSilence: boolean;
   onFailover?: (node: string) => void;
   report?: (node: string, outcome: TFailoverOutcome) => void;
 }
@@ -273,10 +283,12 @@ export function parseFallbackNodes(
  * With `connectivity`, a call made while the network is down asks its first node that is not down
  * once and records nothing about it, any answer of a node (an HTTP error included) tells
  * `connectivity` the network works, and each node that got no answer at all is reported to it as
- * silent, which tells it the network is down once every node was, across calls.
+ * silent, which tells it the network is down once every node was, across calls. A `lite.*` call
+ * reports no silence: nodes may stall on it alone while every other call works.
  *
  * A chain derived by `withTimeout(timeoutMs)` fails over as well, sharing `health`, but each call
- * asks a node once with `timeoutMs`, without hedging, and asks two nodes at most.
+ * asks a node once with `timeoutMs`, without hedging, asks two nodes at most, and reports no
+ * silence: a heavy query may stall on every node while the network works.
  *
  * On the server one node blip would otherwise turn a whole page render into an error; in the browser
  * the selected node being unreachable would otherwise fail every client-side read.
@@ -445,7 +457,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
       // slow may still serve the others, so a timeout stays recorded for this family alone.
       const unreachable = unreachableKeyOf(node);
       if (unreachable !== undefined && isConnectionFailure(nodeError)) health.markDown(unreachable);
-      if (!answered) connectivity?.reportSilent(node, configuredNodes);
+      if (!answered && call.reportsSilence) connectivity?.reportSilent(node, configuredNodes);
       const error = notServed ? 'apiNotFound' : 'transport';
       call.report?.(node, { ok: false, error, latencyMs: now() - nodeStartedAt });
       return { kind: 'failed' };
@@ -535,6 +547,8 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
         : isTransportError,
       isApiNotServed: isApiNotServedError,
       retriesPrimary: policy.retriesPrimary,
+      // Nodes may stall on an optional namespace alone while serving every other call.
+      reportsSilence: policy.reportsSilence && !isOptional,
       onFailover: route ? route.onFallback : onFailover,
       report: route?.report
     });
@@ -564,6 +578,7 @@ function wrapWithPolicy<T extends IFailoverChain<T>>(
       isNodeFailure: (error) => isUnavailable(error, path),
       isApiNotServed: isEndpointMissing,
       retriesPrimary: false,
+      reportsSilence: policy.reportsSilence,
       onFailover: route?.onFallback,
       report: route?.report
     });
