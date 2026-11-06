@@ -85,4 +85,33 @@ test.describe('WIF sign-in with a key of the wrong role', () => {
     expect(storedKeys).toEqual([]);
     expect(broadcasts).toEqual([]);
   });
+
+  test("WALLET-WIF-LOGIN-02 — cancelling the WIF dialog is the user's cancel, with no error", async ({ page }) => {
+    const loginForm = new LoginForm(page);
+    await page.goto(`${WALLET_BASE_PATH}/market`);
+
+    await expect(async () => {
+      await page.getByRole('button', { name: 'Login', exact: true }).click();
+      await expect(loginForm.loginDialog).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: HYDRATION_TIMEOUT });
+
+    await loginForm.otherSignInOptionsButton.click();
+    await loginForm.otherSignInOptionsUsernameInput.fill(STUB_ACCOUNT);
+    await expect(loginForm.signInWithWifButton).toBeEnabled();
+    await loginForm.signInWithWifButton.click();
+
+    await expect(loginForm.headerEnterYourWifKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    // The sign-in step spins until the sign-in settled, the error, if any, already shown
+    const signInSpinner = loginForm.loginDialog.locator('.animate-spin');
+    await expect(signInSpinner).toBeVisible();
+    await loginForm.passwordToUnlockKeyCancelButton.click();
+
+    await expect(loginForm.headerEnterYourWifKey).toBeHidden();
+    await expect(signInSpinner).toHaveCount(0);
+    await expect(loginForm.otherSignInOptionsUsernameInput).toHaveValue(STUB_ACCOUNT);
+    // Counted at once: a retried count would wait out the toast's own dismissal
+    expect(await page.getByTestId('error-toast-content').count()).toBe(0);
+    await expect(loginForm.otherSignInOptionsErrorMessage).toHaveCount(0);
+    expect(broadcasts).toEqual([]);
+  });
 });

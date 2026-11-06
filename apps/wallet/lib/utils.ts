@@ -9,6 +9,7 @@ import { joinSiteUrl } from '@ui/lib/site-url';
 import { createNaiAsset } from '@ui/lib/asset-constants';
 import { vestsToHiveSatoshis, vestsToNearestHiveSatoshis } from '@ui/lib/asset-math';
 import { formatAsset } from '@ui/lib/asset-format';
+import { isUserCancelled } from '@ui/lib/user-cancelled';
 
 export { getFilter } from './history-filter';
 
@@ -75,10 +76,8 @@ export function handleAuthorityError(
   updateAuthorityMutation: ReturnType<typeof useUpdateAuthorityOperationMutation>
 ) {
   if (!updateAuthorityMutation.isError) return '';
-  const rejectedError = updateAuthorityMutation.error;
-  if (rejectedError === 'rejected') {
-    return 'Operation rejected due of Owner Key';
-  }
+  // A cancelled owner key prompt is the user's own cancel: nothing was sent, nothing to show
+  if (isUserCancelled(updateAuthorityMutation.error)) return '';
   const transactionError = updateAuthorityMutation.error as Error;
   const message = transactionError.message;
   try {

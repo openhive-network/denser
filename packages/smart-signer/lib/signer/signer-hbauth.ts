@@ -16,7 +16,7 @@ import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-stor
 import { registerAddedSafeStorageKeyWithin } from '@smart-signer/lib/signer/safe-storage-registration';
 import { SHARED_KEY_LOOKUP } from '@smart-signer/lib/auth/shared-key-types';
 import { unlockHint } from '@smart-signer/lib/signer/unlock-hint';
-import { askWhileSignedIn, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
+import { askWhileSignedIn, askWhileSignedInIfSo, requireStillSignedInAs } from '@smart-signer/lib/signer/signed-in-check';
 import { promptedKeyRegistration } from '@smart-signer/lib/signer/prompted-key-registration';
 import { SignedOutError } from '@transaction/lib/signed-out';
 
@@ -83,7 +83,11 @@ export class SignerHbauth extends Signer {
 
     try {
       if (!this.passwordPromise) {
-        this.passwordPromise = this.getPasswordPromise(passwordFormOptions);
+        // Unlocks safe storage only for a user still signed in: one who switched account in another
+        // tab while asked would have the account signed in before unlocked
+        this.passwordPromise = askWhileSignedInIfSo(this.username, () =>
+          this.getPasswordPromise(passwordFormOptions)
+        );
       }
       const { password } = await this.passwordPromise;
       return password;
@@ -218,7 +222,7 @@ export class SignerHbauth extends Signer {
 
       try {
         const { password: singleSignPassword } = await askWhileSignedIn(username, () =>
-          PasswordDialogModalPromise({ isOpen: true, passwordFormOptions })
+          this.getKeyFromUser(passwordFormOptions)
         );
 
         if (!singleSignPassword) {
