@@ -146,6 +146,7 @@
     "sign_in_pending": "另一个登录仍在等待响应。请在钱包扩展中完成或拒绝它，或取消后重新开始。",
     "sign_in_pending_generic": "另一个登录仍在等待响应。请完成它，或取消后重新开始。",
     "cancel_pending_sign_in": "取消待处理的登录",
+    "wallet_extension_no_answer": "{{wallet}} 没有响应登录请求。请重试；如果问题持续出现，请重新加载页面。",
     "safe_storage_name": "安全存储",
     "signin_with_metamask": "MetaMask 扩展程序",
     "signin_with_google": "Google 账户",

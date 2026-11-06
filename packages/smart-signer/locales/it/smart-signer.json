@@ -146,6 +146,7 @@
     "sign_in_pending": "Un altro accesso è ancora in attesa di risposta. Completalo o rifiutalo nell'estensione del tuo portafoglio, oppure annullalo per ricominciare.",
     "sign_in_pending_generic": "Un altro accesso è ancora in attesa di risposta. Completalo oppure annullalo per ricominciare.",
     "cancel_pending_sign_in": "Annulla l'accesso in sospeso",
+    "wallet_extension_no_answer": "{{wallet}} non ha risposto alla richiesta di accesso. Riprova oppure ricarica la pagina se succede di nuovo.",
     "safe_storage_name": "Conservazione sicura",
     "signin_with_metamask": "Estensione MetaMask",
     "signin_with_google": "Account Google",

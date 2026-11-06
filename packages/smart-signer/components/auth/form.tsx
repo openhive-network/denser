@@ -7,12 +7,8 @@ import { useLocalStorage } from 'usehooks-ts';
 import Methods from './methods/methods';
 import SafeStorageKeyUpdate, { SafeStorageKeyUpdateRef } from './methods/safestorage-key-update';
 import { getLogger } from '@hive/ui/lib/logging';
-import {
-  abandonPendingSignIn,
-  cancelPendingSignIn,
-  runExclusiveSignIn,
-  SignInPendingError
-} from '@smart-signer/lib/auth/sign-in-lock';
+import { cancelPendingSignIn, runExclusiveSignIn, SignInPendingError } from '@smart-signer/lib/auth/sign-in-lock';
+import { awaitWalletExtensionAnswer, WalletExtensionTimeoutError } from '@smart-signer/lib/auth/wallet-extension-answer';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { toast } from '@ui/components/hooks/use-toast';
 import { ToastAction } from '@ui/components/toast';
@@ -20,11 +16,11 @@ import { useSharedTranslation } from '@ui/lib/i18n-client';
 
 const logger = getLogger('app');
 
-/** Sign-in methods answered in a browser wallet extension */
-const WALLET_EXTENSION_LOGIN_TYPES: ReadonlySet<LoginType> = new Set([
-  LoginType.keychain,
-  LoginType.peakvault,
-  LoginType.metamask
+/** Sign-in methods answered in a browser wallet extension, with the extension's name */
+const WALLET_EXTENSION_NAMES: ReadonlyMap<LoginType, string> = new Map([
+  [LoginType.keychain, 'Hive Keychain'],
+  [LoginType.peakvault, 'PeakVault'],
+  [LoginType.metamask, 'MetaMask']
 ]);
 import Passkey from './methods/passkey';
 import { configuredPasskeySigners } from '@ui/config/public-vars';
@@ -76,8 +72,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       // this may be called for clearing process
       // when cancel sign in flow
       async cancel() {
-        // set cancelled state
-        abandonPendingSignIn();
+        // A closed dialog no longer waits for its sign-in, so the next one must not be refused
+        cancelPendingSignIn();
         // Both refs are read before awaiting: the closed dialog unmounts the steps meanwhile
         await Promise.all([safeStorageRef.current?.cancel(), safeStorageKeyUpdateRef.current?.cancel()]);
       }
@@ -107,6 +103,8 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
     function reportSignInPending(error: SignInPendingError): void {
       toast({
         description: t(error.translationKey),
+        // Stays until the user cancels the pending sign-in or dismisses the toast
+        duration: Infinity,
         action: (
           <ToastAction altText={t('login_form.cancel_pending_sign_in')} onClick={cancelPendingSignIn}>
             {t('login_form.cancel_pending_sign_in')}
@@ -115,19 +113,38 @@ const SignInForm = forwardRef<SignInFormRef, SignInFormProps>(
       });
     }
 
-    /** Resolves with false when the sign-in was not sent because another one is pending */
+    function reportWalletExtensionTimeout(walletName: string): void {
+      toast({
+        description: t('login_form.wallet_extension_no_answer', { wallet: walletName }),
+        variant: 'destructive'
+      });
+    }
+
+    /**
+     * Resolves with false when the sign-in was not sent because another one is pending,
+     * or when the wallet extension did not answer it in time
+     */
     async function signIn(loginType: LoginType, username: string, keyType: KeyType): Promise<boolean> {
+      const walletName = WALLET_EXTENSION_NAMES.get(loginType);
       try {
         await runExclusiveSignIn(async () => {
-          await sign(loginType, username, keyType);
+          const signing = sign(loginType, username, keyType);
+          await (walletName ? awaitWalletExtensionAnswer(signing) : signing);
           await submit(username);
-        }, WALLET_EXTENSION_LOGIN_TYPES.has(loginType));
+        }, walletName !== undefined);
         return true;
       } catch (error) {
-        if (!(error instanceof SignInPendingError)) throw error;
-        logger.info('Sign-in with %s not sent: another sign-in is in progress', loginType);
-        reportSignInPending(error);
-        return false;
+        if (error instanceof SignInPendingError) {
+          logger.info('Sign-in with %s not sent: another sign-in is in progress', loginType);
+          reportSignInPending(error);
+          return false;
+        }
+        if (walletName && error instanceof WalletExtensionTimeoutError) {
+          logger.warn('Sign-in with %s dropped: the wallet extension did not answer', loginType);
+          reportWalletExtensionTimeout(walletName);
+          return false;
+        }
+        throw error;
       }
     }
 

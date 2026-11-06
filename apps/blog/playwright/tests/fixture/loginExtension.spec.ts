@@ -6,6 +6,7 @@ import { installBroadcastInterceptor } from '../support/fixture-auth/broadcast-i
 import { TIMEOUTS } from '../support/constants';
 import type { User } from '@smart-signer/types/common';
 import enSmartSigner from '@smart-signer/locales/en/smart-signer.json';
+import { WALLET_EXTENSION_ANSWER_TIMEOUT_MS } from '@smart-signer/lib/auth/wallet-extension-answer';
 
 /**
  * With a signing extension in the page the login dialog's first page offers it above the safe
@@ -26,6 +27,10 @@ const PAGE_WITH_HEADER = '/faq.html';
 const SIGN_IN_TIMEOUT_MS = 30_000;
 const EN_EXTENSION_SIGN_IN = enSmartSigner.login_form.extension_sign_in;
 const EN_SAFE_STORAGE = enSmartSigner.login_form.signin_safe_storage;
+const EN_KEYCHAIN_NO_ANSWER = enSmartSigner.login_form.wallet_extension_no_answer.replace(
+  '{{wallet}}',
+  'Hive Keychain'
+);
 
 /** A well-formed (65-byte, hex) signature; verify_authority is stubbed, so it need not be valid. */
 const KEYCHAIN_SIGNATURE = `1f${'ab'.repeat(64)}`;
@@ -37,9 +42,10 @@ interface IKeychainSignTxCall {
 
 const SIGN_TX_CALLS_GLOBAL = '__loginKeychainSignTxCalls';
 
-async function installKeychainStub(page: Page): Promise<void> {
+/** `answers`: false for an extension that receives the signing request but never answers it */
+async function installKeychainStub(page: Page, answers = true): Promise<void> {
   await page.addInitScript(
-    ({ signature, callsGlobal }) => {
+    ({ signature, callsGlobal, answers }) => {
       type Callback = (response: { success: boolean; result: unknown }) => void;
       const calls: IKeychainSignTxCall[] = [];
       Reflect.set(window, callsGlobal, calls);
@@ -48,11 +54,11 @@ async function installKeychainStub(page: Page): Promise<void> {
           callback({ success: true, result: signature }),
         requestSignTx: (account: string, tx: object, role: string, callback: Callback) => {
           calls.push({ account, role });
-          callback({ success: true, result: { ...tx, signatures: [signature] } });
+          if (answers) callback({ success: true, result: { ...tx, signatures: [signature] } });
         }
       });
     },
-    { signature: KEYCHAIN_SIGNATURE, callsGlobal: SIGN_TX_CALLS_GLOBAL }
+    { signature: KEYCHAIN_SIGNATURE, callsGlobal: SIGN_TX_CALLS_GLOBAL, answers }
   );
 }
 
@@ -145,5 +151,45 @@ test.describe('Login dialog — extension sign-in on the first page', () => {
     await loginForm.otherSignInOptionsButton.click();
     await expect(loginForm.hiveKeychainExtensionButton).toBeVisible();
     await expect(strictMode).toHaveCount(0);
+  });
+
+  test('LOGIN-EXT-06 — a sign-in the extension never answers stops waiting and says so', async ({ page }) => {
+    await page.clock.install();
+    await installKeychainStub(page, false);
+    const loginForm = await openLoginDialog(page);
+    const keychainButton = page.getByRole('button', { name: EN_EXTENSION_SIGN_IN.keychain });
+
+    await loginForm.usernameInput.fill(USERNAME);
+    await keychainButton.click();
+    await expect.poll(() => keychainSignTxCalls(page), { timeout: SIGN_IN_TIMEOUT_MS }).toHaveLength(1);
+    await expect(keychainButton).toBeDisabled();
+
+    await page.clock.fastForward(WALLET_EXTENSION_ANSWER_TIMEOUT_MS);
+    await expect(page.getByText(EN_KEYCHAIN_NO_ANSWER)).toBeVisible();
+    await expect(keychainButton).toBeEnabled();
+    await expect(loginForm.loginDialog).toBeVisible();
+
+    await keychainButton.click();
+    await expect.poll(() => keychainSignTxCalls(page), { timeout: SIGN_IN_TIMEOUT_MS }).toHaveLength(2);
+    await expect(page.getByText(enSmartSigner.login_form.sign_in_pending)).toHaveCount(0);
+  });
+
+  test('LOGIN-EXT-07 — closing the dialog cancels the sign-in waiting for the extension', async ({ page }) => {
+    await installKeychainStub(page, false);
+    const homePage = new HomePage(page);
+    const loginForm = await openLoginDialog(page);
+    const keychainButton = page.getByRole('button', { name: EN_EXTENSION_SIGN_IN.keychain });
+
+    await loginForm.usernameInput.fill(USERNAME);
+    await keychainButton.click();
+    await expect.poll(() => keychainSignTxCalls(page), { timeout: SIGN_IN_TIMEOUT_MS }).toHaveLength(1);
+    await loginForm.closeDialog.click();
+    await expect(loginForm.loginDialog).toBeHidden();
+
+    await homePage.loginBtn.click();
+    await loginForm.usernameInput.fill(USERNAME);
+    await keychainButton.click();
+    await expect.poll(() => keychainSignTxCalls(page), { timeout: SIGN_IN_TIMEOUT_MS }).toHaveLength(2);
+    await expect(page.getByText(enSmartSigner.login_form.sign_in_pending)).toHaveCount(0);
   });
 });

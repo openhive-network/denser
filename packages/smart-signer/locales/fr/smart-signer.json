@@ -146,6 +146,7 @@
     "sign_in_pending": "Une autre connexion attend encore une réponse. Terminez-la ou refusez-la dans votre extension de portefeuille, ou annulez-la pour recommencer.",
     "sign_in_pending_generic": "Une autre connexion attend encore une réponse. Terminez-la ou annulez-la pour recommencer.",
     "cancel_pending_sign_in": "Annuler la connexion en attente",
+    "wallet_extension_no_answer": "{{wallet}} n'a pas répondu à la demande de connexion. Réessayez, ou rechargez la page si cela se reproduit.",
     "safe_storage_name": "Stockage sécurisé",
     "signin_with_metamask": "Extension MetaMask",
     "signin_with_google": "Compte Google",
