@@ -1,7 +1,7 @@
 import { afterEach, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { cancelPendingSignIn, runExclusiveSignIn, SignInPendingError } from './sign-in-lock.ts';
+import { cancelPendingSignIn, runExclusiveSignIn, SignInCancelledError, SignInPendingError } from './sign-in-lock.ts';
 
 function deferred() {
   let resolve = () => {};
@@ -126,5 +126,29 @@ describe('runExclusiveSignIn', () => {
     newerRequest.resolve();
     await newer;
     assert.deepEqual(requests, ['stale form', 'newer form']);
+  });
+
+  it('ends a cancelled sign-in as cancelled, not with the error it settles with later', async () => {
+    const staleRequest = deferred();
+    const stale = mountForm([], 'closed form')(staleRequest.promise);
+    cancelPendingSignIn();
+
+    staleRequest.reject(new Error('The wallet extension did not answer'));
+    await assert.rejects(stale, SignInCancelledError);
+  });
+
+  it('lets a cancelled sign-in see its cancel before acting on a late answer', async () => {
+    const submits: string[] = [];
+    const lateAnswer = deferred();
+    const stale = runExclusiveSignIn(async (cancelled) => {
+      await lateAnswer.promise;
+      cancelled.throwIfAborted();
+      submits.push('closed form');
+    }, true);
+    cancelPendingSignIn();
+
+    lateAnswer.resolve();
+    await assert.rejects(stale, SignInCancelledError);
+    assert.deepEqual(submits, []);
   });
 });

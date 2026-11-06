@@ -25,6 +25,8 @@ const USERNAME = 'gtg';
 const PAGE_WITH_HEADER = '/faq.html';
 // The sign-in loads the signing stack (wax, the hb-auth worker) first
 const SIGN_IN_TIMEOUT_MS = 30_000;
+// Real time a toast raised by a timer the page clock fired takes to show
+const TOAST_RENDER_MS = 1000;
 const EN_EXTENSION_SIGN_IN = enSmartSigner.login_form.extension_sign_in;
 const EN_SAFE_STORAGE = enSmartSigner.login_form.signin_safe_storage;
 const EN_KEYCHAIN_NO_ANSWER = enSmartSigner.login_form.wallet_extension_no_answer.replace(
@@ -41,25 +43,58 @@ interface IKeychainSignTxCall {
 }
 
 const SIGN_TX_CALLS_GLOBAL = '__loginKeychainSignTxCalls';
+const HELD_ANSWERS_GLOBAL = '__loginKeychainHeldAnswers';
 
-/** `answers`: false for an extension that receives the signing request but never answers it */
+/**
+ * `answers`: false for an extension that receives the signing request but does not answer it,
+ * until the test does with `answerHeldSignTx`
+ */
 async function installKeychainStub(page: Page, answers = true): Promise<void> {
   await page.addInitScript(
-    ({ signature, callsGlobal, answers }) => {
+    ({ signature, callsGlobal, heldAnswersGlobal, answers }) => {
       type Callback = (response: { success: boolean; result: unknown }) => void;
       const calls: IKeychainSignTxCall[] = [];
+      const heldAnswers: (() => void)[] = [];
       Reflect.set(window, callsGlobal, calls);
+      Reflect.set(window, heldAnswersGlobal, heldAnswers);
       Reflect.set(window, 'hive_keychain', {
         requestSignBuffer: (_account: string, _message: string, _role: string, callback: Callback) =>
           callback({ success: true, result: signature }),
         requestSignTx: (account: string, tx: object, role: string, callback: Callback) => {
           calls.push({ account, role });
-          if (answers) callback({ success: true, result: { ...tx, signatures: [signature] } });
+          const answer = () => callback({ success: true, result: { ...tx, signatures: [signature] } });
+          if (answers) answer();
+          else heldAnswers.push(answer);
         }
       });
     },
-    { signature: KEYCHAIN_SIGNATURE, callsGlobal: SIGN_TX_CALLS_GLOBAL, answers }
+    {
+      signature: KEYCHAIN_SIGNATURE,
+      callsGlobal: SIGN_TX_CALLS_GLOBAL,
+      heldAnswersGlobal: HELD_ANSWERS_GLOBAL,
+      answers
+    }
   );
+}
+
+/** Answers the `index`-th signing request a stub installed with `answers` false received */
+async function answerHeldSignTx(page: Page, index: number): Promise<void> {
+  await page.evaluate(
+    ({ heldAnswersGlobal, index }) => Reflect.get(window, heldAnswersGlobal)[index](),
+    { heldAnswersGlobal: HELD_ANSWERS_GLOBAL, index }
+  );
+}
+
+/** Where a sign-in submits: the backend's login, or the switch of a client-only sign-in */
+const SUBMIT_PATHS = /\/api\/auth\/(login|switch)$/;
+
+/** Records the sign-in submits the page sends to the app's auth API */
+function recordSignInSubmits(page: Page): string[] {
+  const requests: string[] = [];
+  page.on('request', (request) => {
+    if (SUBMIT_PATHS.test(new URL(request.url()).pathname)) requests.push(request.url());
+  });
+  return requests;
 }
 
 const keychainSignTxCalls = (page: Page): Promise<IKeychainSignTxCall[]> =>
@@ -191,5 +226,63 @@ test.describe('Login dialog — extension sign-in on the first page', () => {
     await keychainButton.click();
     await expect.poll(() => keychainSignTxCalls(page), { timeout: SIGN_IN_TIMEOUT_MS }).toHaveLength(2);
     await expect(page.getByText(enSmartSigner.login_form.sign_in_pending)).toHaveCount(0);
+  });
+
+  test('LOGIN-EXT-08 — a sign-in whose dialog was closed shows no timeout when the extension never answers', async ({
+    page
+  }) => {
+    await page.clock.install();
+    await installKeychainStub(page, false);
+    const homePage = new HomePage(page);
+    const loginForm = await openLoginDialog(page);
+    const keychainButton = page.getByRole('button', { name: EN_EXTENSION_SIGN_IN.keychain });
+
+    await loginForm.usernameInput.fill(USERNAME);
+    await keychainButton.click();
+    await expect.poll(() => keychainSignTxCalls(page), { timeout: SIGN_IN_TIMEOUT_MS }).toHaveLength(1);
+    await loginForm.closeDialog.click();
+    await expect(loginForm.loginDialog).toBeHidden();
+
+    await page.clock.fastForward(WALLET_EXTENSION_ANSWER_TIMEOUT_MS);
+    // An orphaned sign-in shows its toast within a render of the timeout (LOGIN-EXT-06). The toast
+    // closes itself after a while, so a retrying assertion would wait it out: count once instead
+    await page.waitForTimeout(TOAST_RENDER_MS);
+    expect(await page.getByText(EN_KEYCHAIN_NO_ANSWER).count()).toBe(0);
+
+    await homePage.loginBtn.click();
+    await loginForm.usernameInput.fill(USERNAME);
+    await keychainButton.click();
+    await expect.poll(() => keychainSignTxCalls(page), { timeout: SIGN_IN_TIMEOUT_MS }).toHaveLength(2);
+    await expect(keychainButton).toBeDisabled();
+  });
+
+  test('LOGIN-EXT-09 — a sign-in whose dialog was closed does not submit a late extension answer', async ({
+    page
+  }) => {
+    await installKeychainStub(page, false);
+    await installBroadcastInterceptor(page);
+    const signInSubmits = recordSignInSubmits(page);
+    const homePage = new HomePage(page);
+    const loginForm = await openLoginDialog(page);
+    const keychainButton = page.getByRole('button', { name: EN_EXTENSION_SIGN_IN.keychain });
+
+    await loginForm.usernameInput.fill(USERNAME);
+    await keychainButton.click();
+    await expect.poll(() => keychainSignTxCalls(page), { timeout: SIGN_IN_TIMEOUT_MS }).toHaveLength(1);
+    await loginForm.closeDialog.click();
+    await expect(loginForm.loginDialog).toBeHidden();
+    await answerHeldSignTx(page, 0);
+
+    // A sign-in made after it submits once, so a second request would be the closed dialog's
+    await homePage.loginBtn.click();
+    await loginForm.usernameInput.fill(USERNAME);
+    await keychainButton.click();
+    await expect.poll(() => keychainSignTxCalls(page), { timeout: SIGN_IN_TIMEOUT_MS }).toHaveLength(2);
+    await answerHeldSignTx(page, 1);
+    await expect
+      .poll(() => readStoredUser(page), { timeout: SIGN_IN_TIMEOUT_MS })
+      .toMatchObject({ username: USERNAME, loginType: 'keychain' });
+    await expect(loginForm.loginDialog).toBeHidden();
+    expect(signInSubmits).toHaveLength(1);
   });
 });
