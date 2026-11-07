@@ -222,7 +222,10 @@
     "transaction_id": "ID de la transacción:",
     "pending_until": "Un bloque aún puede incluirla hasta las {{time}}. Hasta entonces no se volverá a enviar la misma transacción.",
     "earlier_may_still_apply": "No se envió: una transacción idéntica que enviaste antes aún puede aplicarse hasta las {{time}}. Revisa tu historial y vuelve a intentarlo solo si para entonces no se ha aplicado.",
-    "earlier_applied": "No se envió: una transacción idéntica que enviaste antes ya se ha aplicado. Vuelve a enviarla solo si quieres hacerlo dos veces."
+    "earlier_applied": "No se envió: una transacción idéntica que enviaste antes ya se ha aplicado. Vuelve a enviarla solo si quieres hacerlo dos veces.",
+    "settled_applied": "Un bloque incluyó tu transacción: se ha aplicado.",
+    "settled_expired": "Tu transacción caducó sin que ningún bloque la incluyera, así que no se aplicó. Puedes enviarla de nuevo.",
+    "settled_unknown": "No se pudo averiguar si tu transacción se aplicó antes de caducar. Revisa tu historial antes de enviarla de nuevo."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Monedero no encontrado",

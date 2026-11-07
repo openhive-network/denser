@@ -49,7 +49,12 @@ import {
 } from './lib/transaction-inclusion';
 import { buildFollowListReset, type FollowListReset } from './lib/follow-list-reset';
 import { readTransactionExpiration, TRANSACTION_EXPIRATION } from './lib/transaction-expiration';
-import { UnconfirmedBroadcasts } from './lib/unconfirmed-broadcasts';
+import {
+  type BroadcastSettlement,
+  type IUnconfirmedBroadcast,
+  UnconfirmedBroadcasts
+} from './lib/unconfirmed-broadcasts';
+import { notifyBroadcastSettled } from './lib/broadcast-settlement';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
 export type { ProfileMetadataUpdate } from './lib/profile-metadata';
@@ -99,6 +104,19 @@ function serializedOperations(txBuilder: ITransaction): string {
   return JSON.stringify(txBuilder.transaction.operations);
 }
 
+function reportSettled(
+  { transactionId }: IUnconfirmedBroadcast,
+  settlement: BroadcastSettlement,
+  failure?: unknown
+): void {
+  if (settlement === 'unknown') {
+    logger.warn(failure, 'Cannot tell whether transaction %s applied before its expiration', transactionId);
+  } else {
+    logger.info('Transaction %s that may still apply settled: %s', transactionId, settlement);
+  }
+  notifyBroadcastSettled({ transactionId, settlement });
+}
+
 export class TransactionService {
   /**
    * Options for Signer.
@@ -119,11 +137,12 @@ export class TransactionService {
   });
 
   /**
-   * This page's broadcasts that may still apply, refused as resends until their expiration.
+   * This page's broadcasts that may still apply, refused as resends until their expiration, and looked
+   * up until then: how each settles is told to `subscribeToBroadcastSettlement`'s listeners.
    *
    * @memberof TransactionService
    */
-  private readonly unconfirmedBroadcasts = new UnconfirmedBroadcasts(lookUpTransactionInclusion);
+  private readonly unconfirmedBroadcasts = new UnconfirmedBroadcasts(lookUpTransactionInclusion, reportSettled);
 
   setSignerOptions(signerOptions: SignerOptions) {
     this.signerOptions = signerOptions;
@@ -368,7 +387,10 @@ export class TransactionService {
     }
   }
 
-  /** Holds a sent transaction that may still apply until its expiration, so a resend of it is refused. */
+  /**
+   * Holds a sent transaction that may still apply until its expiration, so a resend of it is refused,
+   * and follows it until a block includes it or it expires, to tell the page.
+   */
   private recordUnconfirmed(txBuilder: ITransaction, transactionId: string): void {
     const expiration = transactionExpiration(txBuilder);
     if (!expiration) return;

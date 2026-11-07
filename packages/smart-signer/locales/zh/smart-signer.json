@@ -222,7 +222,10 @@
     "transaction_id": "交易 ID：",
     "pending_until": "在 {{time}} 之前，它仍可能被区块收录。在此之前，相同的交易不会被再次提交。",
     "earlier_may_still_apply": "未发送：您之前发送的相同交易在 {{time}} 之前仍可能生效。请查看历史记录，仅当到那时仍未生效时再重试。",
-    "earlier_applied": "未发送：您之前发送的相同交易已经生效。仅当您确实想执行两次时才再次提交。"
+    "earlier_applied": "未发送：您之前发送的相同交易已经生效。仅当您确实想执行两次时才再次提交。",
+    "settled_applied": "区块已包含您的交易：交易已生效。",
+    "settled_expired": "您的交易已过期，没有任何区块包含它，因此未生效。您可以再次发送。",
+    "settled_unknown": "无法确定您的交易在过期前是否已生效。再次发送前请查看您的历史记录。"
   },
   "google_drive_error": {
     "wallet_not_found_title": "未找到钱包",

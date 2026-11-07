@@ -222,7 +222,10 @@
     "transaction_id": "Transaction ID:",
     "pending_until": "A block can still include it until {{time}}. Submitting the same transaction again is held back until then.",
     "earlier_may_still_apply": "Not sent: an identical transaction you sent earlier may still apply until {{time}}. Check your history, and try again only if it has not applied by then.",
-    "earlier_applied": "Not sent: an identical transaction you sent earlier has been applied. Submit again only if you mean to do it twice."
+    "earlier_applied": "Not sent: an identical transaction you sent earlier has been applied. Submit again only if you mean to do it twice.",
+    "settled_applied": "A block included your transaction: it has been applied.",
+    "settled_expired": "Your transaction expired without any block including it, so it did not apply. You can send it again.",
+    "settled_unknown": "Could not find out whether your transaction applied before it expired. Check your history before sending it again."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Wallet Not Found",

@@ -14,6 +14,7 @@ import { LoggedUserProvider } from '@/blog/features/votes/hooks/use-logged-user'
 import { ThemeProvider } from '@/blog/features/layouts/theme-provider';
 import { ModalContainer } from '@smart-signer/components/modal-container';
 import { Toaster } from '@ui/components/toaster';
+import { BroadcastSettlementToasts } from '@smart-signer/components/broadcast-settlement-toasts';
 import {
   NavigationProgressProvider,
   NavigationProgress,
@@ -54,6 +55,7 @@ export const Providers: FC<PropsWithChildren<{ nonce?: string }>> = ({ children,
         <ReactQueryDevtools initialIsOpen={false} />
         <ModalContainer />
         <Toaster label={t('global.notifications_region')} />
+        <BroadcastSettlementToasts />
         <SocialSyncListener />
       </QueryClientProvider>
     </>

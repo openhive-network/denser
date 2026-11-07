@@ -222,7 +222,10 @@
     "transaction_id": "ID transakcji:",
     "pending_until": "Blok może ją jeszcze uwzględnić do {{time}}. Do tego czasu ta sama transakcja nie zostanie wysłana ponownie.",
     "earlier_may_still_apply": "Nie wysłano: identyczna transakcja wysłana wcześniej może jeszcze zostać wykonana do {{time}}. Sprawdź historię i spróbuj ponownie tylko wtedy, gdy do tego czasu nie zostanie wykonana.",
-    "earlier_applied": "Nie wysłano: identyczna transakcja wysłana wcześniej została już wykonana. Wyślij ją ponownie tylko wtedy, gdy chcesz wykonać ją dwa razy."
+    "earlier_applied": "Nie wysłano: identyczna transakcja wysłana wcześniej została już wykonana. Wyślij ją ponownie tylko wtedy, gdy chcesz wykonać ją dwa razy.",
+    "settled_applied": "Blok uwzględnił Twoją transakcję: została wykonana.",
+    "settled_expired": "Twoja transakcja wygasła, zanim uwzględnił ją jakikolwiek blok, więc nie została wykonana. Możesz wysłać ją ponownie.",
+    "settled_unknown": "Nie udało się ustalić, czy Twoja transakcja została wykonana przed wygaśnięciem. Sprawdź historię, zanim wyślesz ją ponownie."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Nie znaleziono portfela",

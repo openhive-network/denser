@@ -3,6 +3,7 @@
 import { useSharedTranslation } from '@ui/lib/i18n-client';
 import { SMART_SIGNER_NAMESPACE } from '@smart-signer/lib/i18n';
 import { formatTime } from '@smart-signer/lib/format-time';
+import { TransactionIdLine } from '@smart-signer/components/transaction-id-line';
 
 /**
  * Tells the user their transaction was sent but a block has not been seen to include it yet, so it may
@@ -32,22 +33,11 @@ export function TransactionNotConfirmedMessage({
           {t('request_error.pending_until', { time: formatTime(expiration, i18n.language) })}
         </p>
       ) : null}
-      <p className="break-all">
-        {t('request_error.transaction_id')}{' '}
-        {explorerDomain ? (
-          <a
-            href={`${explorerDomain}/tx/${transactionId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-            data-testid="transaction-not-confirmed-id"
-          >
-            {transactionId}
-          </a>
-        ) : (
-          <span data-testid="transaction-not-confirmed-id">{transactionId}</span>
-        )}
-      </p>
+      <TransactionIdLine
+        transactionId={transactionId}
+        explorerDomain={explorerDomain}
+        testId="transaction-not-confirmed-id"
+      />
     </div>
   );
 }
