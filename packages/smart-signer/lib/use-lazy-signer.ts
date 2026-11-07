@@ -2,6 +2,9 @@ import { useEffect, useMemo } from 'react';
 import type { SignerTool } from '@smart-signer/lib/signer/get-signer';
 import type { SignerOptions } from '@smart-signer/lib/signer/signer';
 import { setSignerOptions } from '@transaction/lib/signer-options';
+import { setSignerWarmup } from '@transaction/lib/warm-signer';
+import { warmEphemeralBeekeeper } from '@smart-signer/lib/ephemeral-beekeeper';
+import { LoginType } from '@smart-signer/types/common';
 import { SignedOutError } from '@transaction/lib/signed-out';
 
 /**
@@ -20,6 +23,11 @@ export const useLazySigner = ({ username, loginType, keyType, storageType }: Sig
     // Also the logged-out user's, so a sign-out (here or in another tab) leaves no account to sign for
     setSignerOptions({ username, loginType, keyType, storageType });
   }, [username, loginType, keyType, storageType]);
+
+  useEffect(() => {
+    // The WIF signer signs in a Beekeeper instance it would load only on its first signature
+    setSignerWarmup(username !== '' && loginType === LoginType.wif ? warmEphemeralBeekeeper : undefined);
+  }, [username, loginType]);
 
   return useMemo(() => {
     let signer: Promise<SignerTool> | undefined;

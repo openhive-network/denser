@@ -19,6 +19,7 @@ import { createReadClient, IReadClient, IReadClientConfig } from './read-client'
 import { fetchReadTransport, isRestApiUnavailable, ReadTransportError } from './read-transport';
 import { announceApiNodeSwitch } from './api-node-switch';
 import { getBrowserConnectivity } from './connectivity';
+import { warmSigner } from './warm-signer';
 import { createApiSetRouting } from './api-sets/call-routing';
 import type { TApiSetId } from '@ui/config/api-set-ids';
 import {
@@ -150,6 +151,8 @@ const withFailover = (baseChain: Chain): Chain =>
 export const getChain = (): Promise<Chain> => {
   if (chain) return chain;
 
+  // Wax loads for an action, which usually signs next (see DR-005)
+  warmSigner();
   const hiveChain = getHiveChainService().getHiveChain().then(wrapChainWithLogging);
   chain = hiveChain.then(withFailover).catch((error) => {
     chain = undefined; // Clear cache so next call retries

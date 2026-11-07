@@ -13,7 +13,6 @@ import {
   storeStubAccountKey
 } from '../support/walletApiStub';
 import enSmartSigner from '../../../../../packages/smart-signer/locales/en/smart-signer.json';
-import { testTimeout } from '../../../../../playwright/support/timeouts';
 
 /**
  * A transfer from a balance menu signs and broadcasts one `transfer_operation` with what the
@@ -241,9 +240,7 @@ test.describe('Transfer broadcast', () => {
 
     // While it spins OK has no name: it is the dialog's only disabled button
     await expect(confirmDialog(page).locator('button[disabled]')).toHaveCount(1);
-    // After the chain, the WIF signer loads beekeeper: its chunk, its WASM's URL and the WASM, one
-    // after another, each delayed here
-    await broadcasts.waitForCount(1, testTimeout('broadcast-count', 20_000));
+    await broadcasts.waitForCount(1);
     // Once the submission has ended, a second one would have broadcast too
     await expect(ok).toBeEnabled({ timeout: 20_000 });
     expect(broadcasts.calls).toHaveLength(1);
