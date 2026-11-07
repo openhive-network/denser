@@ -13,6 +13,7 @@ import {
   storeStubAccountKey
 } from '../support/walletApiStub';
 import enSmartSigner from '../../../../../packages/smart-signer/locales/en/smart-signer.json';
+import { testTimeout } from '../../../../../playwright/support/timeouts';
 
 /**
  * A transfer from a balance menu signs and broadcasts one `transfer_operation` with what the
