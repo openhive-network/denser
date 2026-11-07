@@ -4,6 +4,9 @@ import type { InclusionLookup } from './transaction-inclusion';
 // a block interval later.
 const BLOCK_INTERVAL_MS = 3_000;
 
+/** How often a broadcast that may still apply is looked up, until a block includes it or it expires. */
+const SETTLE_POLL_INTERVAL_MS = 20_000;
+
 /** A broadcast that may still apply: sent, but not seen in a block before an answer was due. */
 export interface IUnconfirmedBroadcast {
   /** The id the user is shown, the one a block lists for it. */
@@ -37,17 +40,48 @@ export class EarlierBroadcastPendingError extends Error {
   }
 }
 
-/** The broadcasts of this page that may still apply, held until their expiration or a block includes them. */
+/**
+ * How a broadcast that may still apply settled: `applied` once a block was found to include it, `expired`
+ * when the node answered that none did after its expiration, `unknown` when the lookup at the expiration
+ * failed.
+ */
+export type BroadcastSettlement = 'applied' | 'expired' | 'unknown';
+
+/** With `unknown`, `failure` is the failure of the lookup at the expiration. */
+export type BroadcastSettledListener = (
+  broadcast: IUnconfirmedBroadcast,
+  settlement: BroadcastSettlement,
+  failure?: unknown
+) => void;
+
+export interface ISettleClock {
+  now: () => number;
+  /** Resolves after `ms` milliseconds. */
+  wait: (ms: number) => Promise<void>;
+}
+
+const REAL_CLOCK: ISettleClock = {
+  now: () => Date.now(),
+  wait: (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+};
+
+/**
+ * The broadcasts of this page that may still apply, held until their expiration or a block includes them.
+ * Each one recorded is looked up every `SETTLE_POLL_INTERVAL_MS` until then, and `onSettled` is told how
+ * it settled, unless `checkResend` reported it applied first.
+ */
 export class UnconfirmedBroadcasts {
   private pending: IUnconfirmedBroadcast[] = [];
 
   constructor(
     private readonly lookUpInclusion: InclusionLookup,
-    private readonly now: () => number = Date.now
+    private readonly onSettled: BroadcastSettledListener,
+    private readonly clock: ISettleClock = REAL_CLOCK
   ) {}
 
   record(broadcast: IUnconfirmedBroadcast): void {
     this.pending.push(broadcast);
+    void this.settle(broadcast);
   }
 
   /**
@@ -79,10 +113,44 @@ export class UnconfirmedBroadcasts {
     );
   }
 
+  /**
+   * Looks `broadcast` up until a block includes it or its expiration, plus a block interval, has passed,
+   * waiting a poll interval before the first lookup. A lookup failure before then is retried at the next.
+   */
+  private async settle(broadcast: IUnconfirmedBroadcast): Promise<void> {
+    const deadline = broadcast.expiration.getTime() + BLOCK_INTERVAL_MS;
+    let wait = SETTLE_POLL_INTERVAL_MS;
+    for (;;) {
+      await this.clock.wait(wait);
+      if (!this.pending.includes(broadcast)) return;
+      const final = this.clock.now() >= deadline;
+      let settlement: BroadcastSettlement | undefined;
+      let failure: unknown;
+      try {
+        if (await this.lookUpInclusion(broadcast.transactionIds)) settlement = 'applied';
+        else if (final) settlement = 'expired';
+      } catch (error) {
+        // The node cannot tell: ask again, or at the expiration report the outcome unknown
+        failure = error;
+        if (final) settlement = 'unknown';
+      }
+      // `checkResend` reported it applied meanwhile
+      if (!this.pending.includes(broadcast)) return;
+      if (settlement) {
+        this.forget(broadcast);
+        this.onSettled(broadcast, settlement, failure);
+        return;
+      }
+      wait = Math.min(SETTLE_POLL_INTERVAL_MS, Math.max(deadline - this.clock.now(), 0));
+    }
+  }
+
   private findPending(operations: string): IUnconfirmedBroadcast | undefined {
-    const now = this.now();
-    this.pending = this.pending.filter(({ expiration }) => expiration.getTime() + BLOCK_INTERVAL_MS > now);
-    return this.pending.find((broadcast) => broadcast.operations === operations);
+    const now = this.clock.now();
+    return this.pending.find(
+      (broadcast) =>
+        broadcast.operations === operations && broadcast.expiration.getTime() + BLOCK_INTERVAL_MS > now
+    );
   }
 
   private forget(broadcast: IUnconfirmedBroadcast): void {

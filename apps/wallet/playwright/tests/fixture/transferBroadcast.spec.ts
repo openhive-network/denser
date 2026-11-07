@@ -113,6 +113,43 @@ const delayCodeLoads = (page: Page, delayMs: number) =>
 
 const RAW_NETWORK_ERROR = 'Unknown request error caught';
 
+/**
+ * The node's side of a broadcast that may still apply, which a spec moves on: whether a broadcast
+ * fails on the network, and what `find_transaction` answers.
+ */
+const routeUnconfirmedTransfer = async (page: Page) => {
+  const node = { abortBroadcasts: true, findStatus: 'unknown' };
+  await page.route(
+    (url) => url.hostname === '127.0.0.1' && url.port === String(FIXTURE_API_PORT),
+    (route) => {
+      const body = route.request().postDataJSON() as { method?: string; id?: number } | null;
+      if (body?.method === 'network_broadcast_api.broadcast_transaction' && node.abortBroadcasts) {
+        return route.abort('connectionreset');
+      }
+      if (body?.method === 'transaction_status_api.find_transaction') {
+        return route.fulfill({ json: { jsonrpc: '2.0', id: body.id ?? 1, result: { status: node.findStatus } } });
+      }
+      return route.fallback();
+    }
+  );
+  return node;
+};
+
+/** Sends the same transfer again from the page as it is, which still holds the earlier broadcast. */
+const transferAgain = async (page: Page) => {
+  const dialog = await openBalanceMenuDialog(
+    page,
+    page.getByTestId('wallet-hive-value').getByRole('button'),
+    'Transfer',
+    'Transfer To Account'
+  );
+  await fillTransfer(dialog, '1.5', MEMO);
+  await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
+};
+
+/** Up to two lookups of the settle loop (one poll interval each) and the toast. */
+const SETTLE_TIMEOUT_MS = 50_000;
+
 test.describe('Transfer broadcast', () => {
   test('WALLET-TX-TRANSFER-01 — confirming a transfer broadcasts its from, to, amount and memo', async ({ page }) => {
     const broadcasts = await installBroadcastInterceptor(page);
@@ -273,5 +310,60 @@ test.describe('Transfer broadcast', () => {
     await expect(ok).toBeEnabled();
     expect(broadcasts.calls).toHaveLength(0);
     expect(pageErrors).toHaveLength(0);
+  });
+
+  test('WALLET-TX-TRANSFER-10 — a transfer that may still apply is reported applied once a block includes it, and can be sent again', async ({
+    page
+  }) => {
+    test.setTimeout(testTimeout('settle-applied', 120_000));
+    const broadcasts = await installBroadcastInterceptor(page);
+    const node = await routeUnconfirmedTransfer(page);
+    const dialog = await openTransferDialog(page, 'wallet-hive-value');
+    await fillTransfer(dialog, '1.5', MEMO);
+    await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
+    await expect(page.getByTestId('transaction-not-confirmed-message')).toBeVisible({ timeout: 20_000 });
+    const transactionId = await page.getByTestId('transaction-not-confirmed-id').textContent();
+
+    node.findStatus = 'within_reversible_block';
+    const settled = page.getByTestId('broadcast-settled-message');
+    await expect(settled).toHaveAttribute('data-settlement', 'applied', { timeout: SETTLE_TIMEOUT_MS });
+    await expect(settled).toContainText(enSmartSigner.request_error.settled_applied);
+    await expect(page.getByTestId('broadcast-settled-id')).toHaveText(transactionId ?? '');
+
+    // Within its expiration, but settled: the same transfer is sent, not held back
+    node.abortBroadcasts = false;
+    await transferAgain(page);
+    await broadcasts.waitForCount(1, testTimeout('broadcast-count', 20_000));
+    expectTransferOperation(broadcasts.calls[0], {
+      from: STUB_ACCOUNT,
+      to: STUB_FOLLOWED,
+      amount: naiAsset('1.500 HIVE'),
+      memo: MEMO
+    });
+  });
+
+  test('WALLET-TX-TRANSFER-11 — a transfer that may still apply is reported not applied once it expires, and is sent again', async ({
+    page
+  }) => {
+    test.setTimeout(testTimeout('settle-expired', 120_000));
+    const broadcasts = await installBroadcastInterceptor(page);
+    const node = await routeUnconfirmedTransfer(page);
+    const dialog = await openTransferDialog(page, 'wallet-hive-value');
+    await fillTransfer(dialog, '1.5', MEMO);
+    await confirmDialog(page).getByRole('button', { name: 'OK' }).click();
+    await expect(page.getByTestId('transaction-not-confirmed-message')).toBeVisible({ timeout: 20_000 });
+
+    // The page's clock passes the transaction's expiration, ten minutes after it was built; the next
+    // lookup is the last
+    await page.clock.setSystemTime(Date.now() + 11 * 60_000);
+
+    const settled = page.getByTestId('broadcast-settled-message');
+    await expect(settled).toHaveAttribute('data-settlement', 'expired', { timeout: SETTLE_TIMEOUT_MS });
+    await expect(settled).toContainText(enSmartSigner.request_error.settled_expired);
+
+    node.abortBroadcasts = false;
+    await transferAgain(page);
+    await broadcasts.waitForCount(1, testTimeout('broadcast-count', 20_000));
+    expect(broadcasts.calls).toHaveLength(1);
   });
 });

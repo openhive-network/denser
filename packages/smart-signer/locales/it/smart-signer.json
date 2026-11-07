@@ -222,7 +222,10 @@
     "transaction_id": "ID della transazione:",
     "pending_until": "Un blocco può ancora includerla fino alle {{time}}. Fino ad allora la stessa transazione non verrà inviata di nuovo.",
     "earlier_may_still_apply": "Non inviata: una transazione identica inviata in precedenza potrebbe ancora essere applicata fino alle {{time}}. Controlla la cronologia e riprova solo se entro allora non è stata applicata.",
-    "earlier_applied": "Non inviata: una transazione identica inviata in precedenza è stata applicata. Inviala di nuovo solo se vuoi eseguirla due volte."
+    "earlier_applied": "Non inviata: una transazione identica inviata in precedenza è stata applicata. Inviala di nuovo solo se vuoi eseguirla due volte.",
+    "settled_applied": "Un blocco ha incluso la tua transazione: è stata applicata.",
+    "settled_expired": "La tua transazione è scaduta senza che alcun blocco la includesse, quindi non è stata applicata. Puoi inviarla di nuovo.",
+    "settled_unknown": "Impossibile sapere se la tua transazione è stata applicata prima della scadenza. Controlla la cronologia prima di inviarla di nuovo."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Portafoglio non trovato",

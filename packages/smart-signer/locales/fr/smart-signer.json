@@ -222,7 +222,10 @@
     "transaction_id": "ID de la transaction :",
     "pending_until": "Un bloc peut encore l'inclure jusqu'à {{time}}. D'ici là, la même transaction ne sera pas renvoyée.",
     "earlier_may_still_apply": "Non envoyée : une transaction identique envoyée plus tôt peut encore s'appliquer jusqu'à {{time}}. Vérifiez votre historique et ne réessayez que si elle ne s'est pas appliquée d'ici là.",
-    "earlier_applied": "Non envoyée : une transaction identique envoyée plus tôt a été appliquée. Renvoyez-la seulement si vous voulez l'effectuer deux fois."
+    "earlier_applied": "Non envoyée : une transaction identique envoyée plus tôt a été appliquée. Renvoyez-la seulement si vous voulez l'effectuer deux fois.",
+    "settled_applied": "Un bloc a inclus votre transaction : elle a été appliquée.",
+    "settled_expired": "Votre transaction a expiré sans qu'aucun bloc ne l'inclue, elle n'a donc pas été appliquée. Vous pouvez l'envoyer à nouveau.",
+    "settled_unknown": "Impossible de savoir si votre transaction a été appliquée avant son expiration. Vérifiez votre historique avant de l'envoyer à nouveau."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Portefeuille introuvable",

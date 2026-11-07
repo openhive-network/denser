@@ -44,6 +44,7 @@ const STUBS: Record<string, unknown> = {
   './lib/follow-list-reset': {},
   './lib/transaction-expiration': {},
   './lib/unconfirmed-broadcasts': { UnconfirmedBroadcasts: class {} },
+  './lib/broadcast-settlement': {},
   './lib/validate-hive-account': {},
   './lib/validation': {}
 };
