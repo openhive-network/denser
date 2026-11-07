@@ -129,12 +129,22 @@ labels:
     color: "#f39c12"
     description: "Filed by the spec-coverage gate for integration points a landed change missed."
     authority: descriptive
+  - name: devops
+    group: type
+    color: "#7f8c8d"
+    description: "Operational workflow that changes system state, not code (analysis + fixups via aidev/OS commands, possibly filing issues). devops + todo = approved for devops-run. No promote/deploy lifecycle. Never combined with implement/high-level/analyze."
+    authority: executive
+  - name: analyze
+    group: type
+    color: "#0d5c63"
+    description: "Read-only diagnosis of a specific problem under the analysis-only contract (#9034/#9056) — investigate and report, mutating nothing. analyze + todo = approved for analyze-run. No promote/deploy lifecycle. Never combined with implement/devops/high-level."
+    authority: executive
 
 exclusive_groups:
   - name: status
     labels: [todo, in-progress]
   - name: primary-type
-    labels: [implement, high-level]
+    labels: [implement, high-level, devops, analyze]
   - name: priority
     labels: ["priority::critical", "priority::high", "priority::medium", "priority::low"]
 
