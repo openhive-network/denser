@@ -10,6 +10,7 @@ import { getChain } from '@hive/common-hiveio-packages';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
+import { signDigestWithWif } from '@smart-signer/lib/ephemeral-beekeeper';
 import { MissingAuthorityError } from '@transaction/lib/missing-authority';
 import { SignedOutError } from '@transaction/lib/signed-out';
 import { TRANSACTION_EXPIRATION } from '@transaction/lib/transaction-expiration';
@@ -24,7 +25,9 @@ const logger = getLogger('app');
  * Signs challenges (any strings or byte arrays) or Hive transactions
  * with Hive private keys.
  *
- * As we already have hb-auth, we can just reuse its beekeeper instance
+ * Signs in a Beekeeper wallet of its own that lives for one signature (see
+ * `ephemeral-beekeeper`), not in hb-auth's instance: that one locks after the
+ * safe-storage lock time, which a WIF session that keeps no key there must not.
  *
  * @export
  * @class SignerWif
@@ -45,7 +48,7 @@ export class SignerWif extends SignerHbauth {
 
     const otherKey = signingKeyType === this.keyType ? null : await this.getOtherKey(signingKeyType);
     const signature = otherKey
-      ? await (await this.hbAuthClient).singleSign(this.username, digest, otherKey.wif, signingKeyType)
+      ? await signDigestWithWif(digest, otherKey.wif)
       : await this.signDigest(digest, '', singleSignKeyType, requiredKeyType);
     txBuilder.addSignature(signature);
 
@@ -109,11 +112,6 @@ export class SignerWif extends SignerHbauth {
       throw new Error(`Unsupported keyType: ${keyType}`);
     }
 
-    const authClient = await this.hbAuthClient;
-    if (!validKeyTypes.includes(this.keyType)) {
-      throw new Error(`Unsupported singleSignKeyType: ${this.keyType}`);
-    }
-
     try {
       let wif = explicitPassword;
 
@@ -127,14 +125,7 @@ export class SignerWif extends SignerHbauth {
       if (!wif)
         throw new Error("Failed to parse private key from storage");
 
-      const signature = await authClient.singleSign(
-        username,
-        digest,
-        wif,
-        this.keyType
-      );
-
-      return signature;
+      return await signDigestWithWif(digest, wif);
     } catch (error) {
       logger.error('Error in single sign: %s', error instanceof Error ? error.message : String(error));
       throw error;

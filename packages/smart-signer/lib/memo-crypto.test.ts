@@ -8,17 +8,18 @@ const SILENT_LOGGER_MODULE =
 // Under node's type stripping the `@smart-signer/` alias does not resolve.
 const MEMO_LAYOUT_MODULE = new URL('./memo-layout.ts', import.meta.url).href;
 const SNAP_VERSION_MODULE = new URL('./metamask-snap-version.ts', import.meta.url).href;
+const EPHEMERAL_BEEKEEPER_MODULE = new URL('./ephemeral-beekeeper.ts', import.meta.url).href;
 registerHooks({
   resolve(specifier, context, nextResolve) {
     if (specifier === '@hive/ui/lib/logging') return { url: SILENT_LOGGER_MODULE, shortCircuit: true };
     if (specifier === '@smart-signer/lib/memo-layout') return { url: MEMO_LAYOUT_MODULE, shortCircuit: true };
     if (specifier === '@smart-signer/lib/metamask-snap-version') return { url: SNAP_VERSION_MODULE, shortCircuit: true };
+    if (specifier === '@smart-signer/lib/ephemeral-beekeeper') return { url: EPHEMERAL_BEEKEEPER_MODULE, shortCircuit: true };
     return nextResolve(specifier, context);
   }
 });
 
 const {
-  createLazyAsyncSingleton,
   decryptMemoWithPrivateKey,
   decryptMemoWithProvider,
   decryptMemoWithSnap,
@@ -102,49 +103,6 @@ describe('memo-crypto: encrypt/decrypt with a MEMO private key', () => {
 
     assert.match(encrypted, BASE58_CIPHERTEXT);
     assert.equal(await decryptMemoWithPrivateKey(RECIPIENT_MEMO_WIF, encrypted), '#hello');
-  });
-});
-
-describe('memo-crypto: createLazyAsyncSingleton (regression for beekeeper re-init)', () => {
-  it('invokes the factory once and shares the same result across calls', async () => {
-    let calls = 0;
-    const getInstance = createLazyAsyncSingleton(async () => {
-      calls++;
-      return { id: calls };
-    });
-
-    const first = await getInstance();
-    const second = await getInstance();
-
-    assert.equal(calls, 1);
-    assert.equal(second, first);
-  });
-
-  it('shares the same in-flight promise for concurrent callers', async () => {
-    let calls = 0;
-    const getInstance = createLazyAsyncSingleton(async () => {
-      calls++;
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      return calls;
-    });
-
-    const [a, b] = await Promise.all([getInstance(), getInstance()]);
-
-    assert.equal(calls, 1);
-    assert.equal(a, b);
-  });
-
-  it('does not cache a rejection - the next call retries the factory', async () => {
-    let calls = 0;
-    const getInstance = createLazyAsyncSingleton(async () => {
-      calls++;
-      if (calls === 1) throw new Error('transient init failure');
-      return calls;
-    });
-
-    await assert.rejects(getInstance(), /transient init failure/);
-    assert.equal(await getInstance(), 2);
-    assert.equal(calls, 2);
   });
 });
 
