@@ -48,6 +48,8 @@ import {
   watchInclusion
 } from './lib/transaction-inclusion';
 import { buildFollowListReset, type FollowListReset } from './lib/follow-list-reset';
+import { readTransactionExpiration, TRANSACTION_EXPIRATION } from './lib/transaction-expiration';
+import { UnconfirmedBroadcasts } from './lib/unconfirmed-broadcasts';
 
 export { PUBLISHING_APP } from './lib/publishing-app';
 export type { ProfileMetadataUpdate } from './lib/profile-metadata';
@@ -79,12 +81,22 @@ export interface TransactionBroadcastResult {
    * lookup rejects.
    */
   included?: Promise<boolean>;
+  /** With `included`: the transaction's expiration, until which a block may still include it. */
+  expiration?: Date;
 }
 
 export interface Authorizes {
   weight_threshold: number;
   account_auths: { [key: string]: number };
   key_auths: { [key: string]: number };
+}
+
+function transactionExpiration(txBuilder: ITransaction): Date | undefined {
+  return readTransactionExpiration(txBuilder.transaction.expiration);
+}
+
+function serializedOperations(txBuilder: ITransaction): string {
+  return JSON.stringify(txBuilder.transaction.operations);
 }
 
 export class TransactionService {
@@ -106,6 +118,13 @@ export class TransactionService {
     createBot: (hiveChain) => new WorkerBee(hiveChain)
   });
 
+  /**
+   * This page's broadcasts that may still apply, refused as resends until their expiration.
+   *
+   * @memberof TransactionService
+   */
+  private readonly unconfirmedBroadcasts = new UnconfirmedBroadcasts(lookUpTransactionInclusion);
+
   setSignerOptions(signerOptions: SignerOptions) {
     this.signerOptions = signerOptions;
   }
@@ -124,7 +143,10 @@ export class TransactionService {
    * caller names a key in `transactionOptions`, the signer is asked for the
    * key the transaction's operations require (`resolveRequiredKeyType`).
    * Rejects with `SignedOutError`, building nothing, when no user is
-   * signed in.
+   * signed in. The transaction expires `TRANSACTION_EXPIRATION` after
+   * the head block, the time the user has to approve it in the signer.
+   * Rejects with `EarlierBroadcastPendingError`, signing nothing, when
+   * an earlier broadcast of the same operations may still apply.
    *
    * @param {(opBuilder: ITransaction) => void} cb
    * @param {TransactionOptions} [transactionOptions={}]
@@ -149,13 +171,15 @@ export class TransactionService {
       ...transactionOptions
     };
 
-    const txBuilder = await (await getChain()).createTransaction();
+    const txBuilder = await (await getChain()).createTransaction(TRANSACTION_EXPIRATION);
 
     // Create transaction from operation
     cb(txBuilder);
 
     // Validate transaction
     txBuilder.validate();
+
+    await this.unconfirmedBroadcasts.checkResend(serializedOperations(txBuilder));
 
     const { signature, pack } = await this.signTransaction(
       txBuilder,
@@ -230,9 +254,10 @@ export class TransactionService {
     try {
       await chain.api.network_broadcast_api.broadcast_transaction({ max_block_age: -1, trx: txBuilder.toApiJson() });
     } catch (caught) {
-      const error = toNotConfirmedError(caught, transactionId);
+      const error = toNotConfirmedError(caught, transactionId, transactionExpiration(txBuilder));
       if (error instanceof TransactionNotConfirmedError) {
         logger.warn('Broadcast request for transaction %s got no answer; it may still apply', transactionId);
+        this.recordUnconfirmed(txBuilder, transactionId);
       }
       throw error;
     }
@@ -278,9 +303,15 @@ export class TransactionService {
         return { transactionId };
       });
     } catch (caught) {
-      const error = toObservedBroadcastError(caught, transactionId, (e) => e instanceof WorkerBeeError);
+      const error = toObservedBroadcastError(
+        caught,
+        transactionId,
+        (e) => e instanceof WorkerBeeError,
+        transactionExpiration(txBuilder)
+      );
       const operationNames = getOperationNames(txBuilder.transaction.operations).join(', ');
       if (error instanceof TransactionNotConfirmedError) {
+        this.recordUnconfirmed(txBuilder, transactionId);
         logger.warn(
           '%s of %s sent but not confirmed in time, it may still apply: transaction %s',
           operationNames,
@@ -306,7 +337,8 @@ export class TransactionService {
    * it in a block under its HF26 or legacy id. The bot watches from
    * before the broadcast, so the transaction cannot land in a block it
    * skipped. When the bot cannot be set up, the transaction is broadcast
-   * without `included`.
+   * without `included`. When `included` is false or rejects, the
+   * transaction may still apply and is held as an unconfirmed broadcast.
    *
    * @param {ITransaction} txBuilder
    * @return {*}  {Promise<TransactionBroadcastResult>}
@@ -324,11 +356,28 @@ export class TransactionService {
     }
     try {
       const result = await this.broadcastTransaction(txBuilder, transactionId);
-      return watch ? { ...result, included: watch.included } : result;
+      if (!watch) return result;
+      const recordUnlessIncluded = (included: boolean) => {
+        if (!included) this.recordUnconfirmed(txBuilder, transactionId);
+      };
+      watch.included.then(recordUnlessIncluded, () => recordUnlessIncluded(false));
+      return { ...result, included: watch.included, expiration: transactionExpiration(txBuilder) };
     } catch (error) {
       watch?.cancel();
       throw error;
     }
+  }
+
+  /** Holds a sent transaction that may still apply until its expiration, so a resend of it is refused. */
+  private recordUnconfirmed(txBuilder: ITransaction, transactionId: string): void {
+    const expiration = transactionExpiration(txBuilder);
+    if (!expiration) return;
+    this.unconfirmedBroadcasts.record({
+      transactionId,
+      transactionIds: [txBuilder.id, txBuilder.legacy_id],
+      operations: serializedOperations(txBuilder),
+      expiration
+    });
   }
 
   /** Subscribes the session's bot to `transactionIds`, holding the bot until the watch settles. */

@@ -12,6 +12,7 @@ import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-
 import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
 import { MissingAuthorityError } from '@transaction/lib/missing-authority';
 import { SignedOutError } from '@transaction/lib/signed-out';
+import { TRANSACTION_EXPIRATION } from '@transaction/lib/transaction-expiration';
 import { KeyType } from '@smart-signer/types/common';
 import { findSharedKeyTypes } from '@smart-signer/lib/auth/shared-key-types';
 import { notifySafeStorageKeysChanged } from '@smart-signer/lib/signer/safe-storage-keys';
@@ -241,7 +242,7 @@ export class SignerWif extends SignerHbauth {
     try {
       const wax = await getChain();
 
-      const tx = await wax.createTransaction();
+      const tx = await wax.createTransaction(TRANSACTION_EXPIRATION);
       tx.pushOperation({
         custom_json_operation: {
           id: 'test',

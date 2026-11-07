@@ -242,11 +242,14 @@ function isUnconfirmedRequestFailure(error: Error): boolean {
  */
 export class TransactionNotConfirmedError extends Error {
   readonly transactionId: string;
+  /** The transaction's expiration, when known: until then a block may still include it. */
+  readonly expiration?: Date;
 
-  constructor(transactionId: string, cause?: unknown) {
+  constructor(transactionId: string, cause?: unknown, expiration?: Date) {
     super(`Transaction ${transactionId} was broadcast but not seen in a block in time`, { cause });
     this.name = 'TransactionNotConfirmedError';
     this.transactionId = transactionId;
+    this.expiration = expiration;
   }
 }
 
@@ -255,14 +258,14 @@ export class TransactionNotConfirmedError extends Error {
  * request timeout or network failure other than of a pre-broadcast verification read, or a chunk load
  * failure, else as is. A chunk load failure carries no request to tell when it happened: the failover
  * chain loads code on a read's first failure, which may be a read of the block scanner after the node
- * took the transaction, so it counts as possibly sent.
+ * took the transaction, so it counts as possibly sent. `expiration` is the transaction's, when known.
  */
-export function toNotConfirmedError(error: unknown, transactionId: string): unknown {
+export function toNotConfirmedError(error: unknown, transactionId: string, expiration?: Date): unknown {
   return error instanceof Error &&
     (LISTENER_EXPIRED_PATTERN.test(error.message) ||
       isUnconfirmedRequestFailure(error) ||
       findInCauses(error, (candidate) => candidate.name === CHUNK_LOAD_ERROR_NAME) !== undefined)
-    ? new TransactionNotConfirmedError(transactionId, error)
+    ? new TransactionNotConfirmedError(transactionId, error, expiration)
     : error;
 }
 
@@ -276,9 +279,10 @@ export function toNotConfirmedError(error: unknown, transactionId: string): unkn
 export function toObservedBroadcastError(
   error: unknown,
   transactionId: string,
-  isWorkerBeeError: (error: unknown) => boolean
+  isWorkerBeeError: (error: unknown) => boolean,
+  expiration?: Date
 ): unknown {
   return isWorkerBeeError(error)
-    ? new TransactionNotConfirmedError(transactionId, error)
-    : toNotConfirmedError(error, transactionId);
+    ? new TransactionNotConfirmedError(transactionId, error, expiration)
+    : toNotConfirmedError(error, transactionId, expiration);
 }

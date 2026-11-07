@@ -207,7 +207,7 @@
     "keychain_no_message": "Hive Keychain no pudo completar la solicitud y no indicó el motivo.",
     "superseded_key_write": "Otra pestaña interrumpió el guardado de la clave {{keyType}} de @{{username}} en el almacenamiento seguro. Vuelve a añadir la clave {{keyType}} al almacenamiento seguro.",
     "signed_out": "Has cerrado sesión. Inicia sesión e inténtalo de nuevo.",
-    "transaction_expired": "Tu transacción caducó antes de ser aprobada, así que no se envió nada. Inténtalo de nuevo y apruébala en aproximadamente un minuto.",
+    "transaction_expired": "Tu transacción caducó antes de ser aprobada, así que no se envió nada. Inténtalo de nuevo y apruébala en menos de 10 minutos.",
     "transaction_expiration_too_far_ahead": "El nodo rechazó la hora de caducidad de tu transacción, así que no se envió nada. Comprueba que el reloj de tu dispositivo sea correcto e inténtalo de nuevo.",
     "wrong_safe_storage_password": "Contraseña del almacenamiento seguro incorrecta. Introduce la contraseña que configuraste para el almacenamiento seguro e inténtalo de nuevo.",
     "safe_storage_posting_key_not_authorized": "La clave de publicación (posting) guardada en el almacenamiento seguro ya no funciona para tu cuenta; puede que se haya cambiado. Vuelve a iniciar sesión con tu clave de publicación (posting) actual.",
@@ -219,7 +219,10 @@
     "timeout": "El servidor no respondió a tiempo. Inténtalo de nuevo.",
     "network": "No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.",
     "not_confirmed": "Transacción enviada, pero ningún bloque la ha confirmado todavía. Aún puede aplicarse: revisa tu historial antes de volver a intentarlo.",
-    "transaction_id": "ID de la transacción:"
+    "transaction_id": "ID de la transacción:",
+    "pending_until": "Un bloque aún puede incluirla hasta las {{time}}. Hasta entonces no se volverá a enviar la misma transacción.",
+    "earlier_may_still_apply": "No se envió: una transacción idéntica que enviaste antes aún puede aplicarse hasta las {{time}}. Revisa tu historial y vuelve a intentarlo solo si para entonces no se ha aplicado.",
+    "earlier_applied": "No se envió: una transacción idéntica que enviaste antes ya se ha aplicado. Vuelve a enviarla solo si quieres hacerlo dos veces."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Monedero no encontrado",

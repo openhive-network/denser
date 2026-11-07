@@ -207,7 +207,7 @@
     "keychain_no_message": "Hive Keychain non è riuscito a completare la richiesta e non ha indicato il motivo.",
     "superseded_key_write": "Un'altra scheda ha interrotto il salvataggio della chiave {{keyType}} di @{{username}} nell'archivio sicuro. Aggiungi di nuovo la chiave {{keyType}} all'archivio sicuro.",
     "signed_out": "Sei disconnesso. Accedi e riprova.",
-    "transaction_expired": "La transazione è scaduta prima di essere approvata, quindi non è stato inviato nulla. Riprova e approvala entro circa un minuto.",
+    "transaction_expired": "La transazione è scaduta prima di essere approvata, quindi non è stato inviato nulla. Riprova e approvala entro 10 minuti.",
     "transaction_expiration_too_far_ahead": "Il nodo ha rifiutato l'ora di scadenza della transazione, quindi non è stato inviato nulla. Verifica che l'orologio del dispositivo sia corretto e riprova.",
     "wrong_safe_storage_password": "Password dell'archivio sicuro errata. Inserisci la password impostata per l'archivio sicuro e riprova.",
     "safe_storage_posting_key_not_authorized": "La chiave di pubblicazione (posting) conservata nell'archivio sicuro non funziona più per il tuo account; potrebbe essere stata cambiata. Accedi di nuovo con la tua chiave di pubblicazione (posting) attuale.",
@@ -219,7 +219,10 @@
     "timeout": "Il server non ha risposto in tempo. Riprova.",
     "network": "Impossibile raggiungere il server. Controlla la connessione e riprova.",
     "not_confirmed": "Transazione inviata, ma nessun blocco l'ha ancora confermata. Potrebbe ancora essere applicata: controlla la cronologia prima di riprovare.",
-    "transaction_id": "ID della transazione:"
+    "transaction_id": "ID della transazione:",
+    "pending_until": "Un blocco può ancora includerla fino alle {{time}}. Fino ad allora la stessa transazione non verrà inviata di nuovo.",
+    "earlier_may_still_apply": "Non inviata: una transazione identica inviata in precedenza potrebbe ancora essere applicata fino alle {{time}}. Controlla la cronologia e riprova solo se entro allora non è stata applicata.",
+    "earlier_applied": "Non inviata: una transazione identica inviata in precedenza è stata applicata. Inviala di nuovo solo se vuoi eseguirla due volte."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Portafoglio non trovato",
