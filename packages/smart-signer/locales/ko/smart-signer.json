@@ -207,7 +207,7 @@
     "keychain_no_message": "Hive Keychain이 요청을 완료하지 못했으며 이유를 알려 주지 않았습니다.",
     "superseded_key_write": "다른 탭 때문에 @{{username}}의 {{keyType}} 키를 안전한 저장소에 저장하는 작업이 중단되었습니다. {{keyType}} 키를 안전한 저장소에 다시 추가하세요.",
     "signed_out": "로그아웃된 상태입니다. 로그인한 후 다시 시도해 주세요.",
-    "transaction_expired": "트랜잭션이 승인되기 전에 만료되어 아무것도 전송되지 않았습니다. 다시 시도하고 약 1분 이내에 승인하세요.",
+    "transaction_expired": "트랜잭션이 승인되기 전에 만료되어 아무것도 전송되지 않았습니다. 다시 시도하고 10분 이내에 승인하세요.",
     "transaction_expiration_too_far_ahead": "노드가 트랜잭션의 만료 시간을 거부하여 아무것도 전송되지 않았습니다. 기기의 시계가 정확한지 확인한 후 다시 시도하세요.",
     "wrong_safe_storage_password": "안전한 저장소 비밀번호가 올바르지 않습니다. 안전한 저장소에 설정한 비밀번호를 입력하고 다시 시도해 주세요.",
     "safe_storage_posting_key_not_authorized": "안전한 저장소에 보관된 게시(posting) 키가 더 이상 계정에서 작동하지 않습니다. 키가 변경되었을 수 있습니다. 현재 게시(posting) 키로 다시 로그인해 주세요.",
@@ -219,7 +219,10 @@
     "timeout": "서버가 제때 응답하지 않았습니다. 다시 시도해 주세요.",
     "network": "서버에 연결할 수 없습니다. 연결을 확인하고 다시 시도해 주세요.",
     "not_confirmed": "트랜잭션을 전송했지만 아직 블록에서 확인되지 않았습니다. 나중에 적용될 수 있으니 다시 시도하기 전에 내역을 확인하세요.",
-    "transaction_id": "트랜잭션 ID:"
+    "transaction_id": "트랜잭션 ID:",
+    "pending_until": "{{time}}까지는 블록에 포함될 수 있습니다. 그때까지 같은 트랜잭션의 재전송은 보류됩니다.",
+    "earlier_may_still_apply": "전송되지 않음: 이전에 보낸 동일한 트랜잭션이 {{time}}까지 적용될 수 있습니다. 내역을 확인하고 그때까지 적용되지 않은 경우에만 다시 시도하세요.",
+    "earlier_applied": "전송되지 않음: 이전에 보낸 동일한 트랜잭션이 이미 적용되었습니다. 두 번 실행하려는 경우에만 다시 제출하세요."
   },
   "google_drive_error": {
     "wallet_not_found_title": "지갑을 찾을 수 없음",

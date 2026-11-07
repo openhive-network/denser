@@ -207,7 +207,7 @@
     "keychain_no_message": "Hive Keychain nie zdołał wykonać żądania i nie podał przyczyny.",
     "superseded_key_write": "Inna karta przerwała zapisywanie klucza {{keyType}} konta @{{username}} w bezpiecznym magazynie. Dodaj klucz {{keyType}} do bezpiecznego magazynu ponownie.",
     "signed_out": "Jesteś wylogowany. Zaloguj się i spróbuj ponownie.",
-    "transaction_expired": "Transakcja wygasła, zanim została zatwierdzona, więc nic nie zostało wysłane. Spróbuj ponownie i zatwierdź ją w ciągu około minuty.",
+    "transaction_expired": "Transakcja wygasła, zanim została zatwierdzona, więc nic nie zostało wysłane. Spróbuj ponownie i zatwierdź ją w ciągu 10 minut.",
     "transaction_expiration_too_far_ahead": "Węzeł odrzucił czas wygaśnięcia transakcji, więc nic nie zostało wysłane. Sprawdź, czy zegar urządzenia jest ustawiony poprawnie, i spróbuj ponownie.",
     "wrong_safe_storage_password": "Nieprawidłowe hasło do bezpiecznego magazynu. Wpisz hasło ustawione dla bezpiecznego magazynu i spróbuj ponownie.",
     "safe_storage_posting_key_not_authorized": "Klucz do publikowania (posting) zapisany w bezpiecznym magazynie nie działa już dla Twojego konta; mógł zostać zmieniony. Zaloguj się ponownie, podając aktualny klucz do publikowania (posting).",
@@ -219,7 +219,10 @@
     "timeout": "Serwer nie odpowiedział na czas. Spróbuj ponownie.",
     "network": "Nie udało się połączyć z serwerem. Sprawdź połączenie i spróbuj ponownie.",
     "not_confirmed": "Transakcja wysłana, ale żaden blok jeszcze jej nie potwierdził. Może jeszcze zostać wykonana: sprawdź historię, zanim spróbujesz ponownie.",
-    "transaction_id": "ID transakcji:"
+    "transaction_id": "ID transakcji:",
+    "pending_until": "Blok może ją jeszcze uwzględnić do {{time}}. Do tego czasu ta sama transakcja nie zostanie wysłana ponownie.",
+    "earlier_may_still_apply": "Nie wysłano: identyczna transakcja wysłana wcześniej może jeszcze zostać wykonana do {{time}}. Sprawdź historię i spróbuj ponownie tylko wtedy, gdy do tego czasu nie zostanie wykonana.",
+    "earlier_applied": "Nie wysłano: identyczna transakcja wysłana wcześniej została już wykonana. Wyślij ją ponownie tylko wtedy, gdy chcesz wykonać ją dwa razy."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Nie znaleziono portfela",

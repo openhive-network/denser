@@ -33,6 +33,7 @@ export function useBackgroundConfirmation(operation: ConfirmedOperation) {
               <TransactionNotConfirmedMessage
                 transactionId={result.transactionId}
                 explorerDomain={env('EXPLORER_DOMAIN')}
+                expiration={result.expiration}
                 message={
                   operation === 'comment' ? t('global.comment_not_confirmed') : t('global.vote_not_confirmed')
                 }

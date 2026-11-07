@@ -42,6 +42,8 @@ const STUBS: Record<string, unknown> = {
   './lib/workerbee-session': { WorkerBeeSession: class {} },
   './lib/transaction-inclusion': { inclusionLookupVia: () => async () => false },
   './lib/follow-list-reset': {},
+  './lib/transaction-expiration': {},
+  './lib/unconfirmed-broadcasts': { UnconfirmedBroadcasts: class {} },
   './lib/validate-hive-account': {},
   './lib/validation': {}
 };

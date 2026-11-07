@@ -21,12 +21,12 @@ const MESSAGES = [
   {
     locale: 'en',
     message:
-      'Your transaction expired before it was approved, so nothing was sent. Please try again and approve it within about a minute.'
+      'Your transaction expired before it was approved, so nothing was sent. Please try again and approve it within 10 minutes.'
   },
   {
     locale: 'pl',
     message:
-      'Transakcja wygasła, zanim została zatwierdzona, więc nic nie zostało wysłane. Spróbuj ponownie i zatwierdź ją w ciągu około minuty.'
+      'Transakcja wygasła, zanim została zatwierdzona, więc nic nie zostało wysłane. Spróbuj ponownie i zatwierdź ją w ciągu 10 minut.'
   }
 ];
 

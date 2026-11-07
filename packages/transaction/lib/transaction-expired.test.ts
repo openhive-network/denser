@@ -42,9 +42,9 @@ function waxError(message: string): Error {
 describe('findTransactionExpirationRejection', () => {
   it('reads an already passed expiration as expired', () => {
     expect(findTransactionExpirationRejection(waxError(expiredAnswer))).to.equal('expired');
-    expect(findTransactionExpirationRejection('Transaction expiration exception: now < trx.expiration')).to.equal(
-      'expired'
-    );
+    expect(
+      findTransactionExpirationRejection('Transaction expiration exception: now < trx.expiration')
+    ).to.equal('expired');
   });
 
   it('reads an expiration beyond the maximum as too far ahead', () => {
@@ -61,7 +61,9 @@ describe('findTransactionExpirationRejection', () => {
   });
 
   it('takes the exception name or its message alone for an expired transaction', () => {
-    expect(findTransactionExpirationRejection(new Error('transaction_expiration_exception'))).to.equal('expired');
+    expect(findTransactionExpirationRejection(new Error('transaction_expiration_exception'))).to.equal(
+      'expired'
+    );
     expect(findTransactionExpirationRejection('transaction expiration exception: now < trx_exp: ')).to.equal(
       'expired'
     );
@@ -74,11 +76,28 @@ describe('findTransactionExpirationRejection', () => {
     );
   });
 
+  it('classifies a transaction built 10 minutes ahead by the assertion it failed, not by its expiration', () => {
+    // Signed after its 10-minute window had passed
+    const lateAnswer = nodeAnswer('now < full_transaction->get_runtime_expiration()', {
+      now: '2026-11-03T17:10:05',
+      'full_transaction->get_runtime_expiration()': '2026-11-03T17:10:00'
+    });
+    expect(findTransactionExpirationRejection(waxError(lateAnswer))).to.equal('expired');
+    // A 10-minute expiration is within the node's hour, so a rejection for anything else is not an expiration
+    const otherAnswer = JSON.stringify({
+      error: {
+        message: 'missing required posting authority',
+        data: { stack: [{ data: { 'trx.expiration': '2026-11-03T17:10:00', now: '2026-11-03T17:00:00' } }] }
+      }
+    });
+    expect(findTransactionExpirationRejection(waxError(otherAnswer))).to.equal(null);
+  });
+
   it('does not take other rejections or a timeout for an expiration', () => {
     expect(findTransactionExpirationRejection(new Error('missing required active authority'))).to.equal(null);
-    expect(findTransactionExpirationRejection(new Error('Request timed out: "POST https://api.hive.blog"'))).to.equal(
-      null
-    );
+    expect(
+      findTransactionExpirationRejection(new Error('Request timed out: "POST https://api.hive.blog"'))
+    ).to.equal(null);
     expect(findTransactionExpirationRejection(new Error('max_til_exp'))).to.equal(null);
     expect(findTransactionExpirationRejection(undefined)).to.equal(null);
   });

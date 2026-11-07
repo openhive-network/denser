@@ -207,7 +207,7 @@
     "keychain_no_message": "Hive Keychain could not complete the request and gave no reason.",
     "superseded_key_write": "Another tab interrupted saving the {{keyType}} key of @{{username}} to safe storage. Add the {{keyType}} key to safe storage again.",
     "signed_out": "You are signed out. Sign in and try again.",
-    "transaction_expired": "Your transaction expired before it was approved, so nothing was sent. Please try again and approve it within about a minute.",
+    "transaction_expired": "Your transaction expired before it was approved, so nothing was sent. Please try again and approve it within 10 minutes.",
     "transaction_expiration_too_far_ahead": "The node rejected your transaction's expiration time, so nothing was sent. Check that your device's clock is correct and try again.",
     "wrong_safe_storage_password": "Wrong safe storage password. Enter the password you set for safe storage and try again.",
     "safe_storage_posting_key_not_authorized": "The posting key kept in safe storage no longer works for your account; it may have been changed. Sign in again with your current posting key.",
@@ -219,7 +219,10 @@
     "timeout": "The server did not respond in time. Please try again.",
     "network": "Could not reach the server. Check your connection and try again.",
     "not_confirmed": "Transaction sent, but no block has confirmed it yet. It may still apply: check your history before trying again.",
-    "transaction_id": "Transaction ID:"
+    "transaction_id": "Transaction ID:",
+    "pending_until": "A block can still include it until {{time}}. Submitting the same transaction again is held back until then.",
+    "earlier_may_still_apply": "Not sent: an identical transaction you sent earlier may still apply until {{time}}. Check your history, and try again only if it has not applied by then.",
+    "earlier_applied": "Not sent: an identical transaction you sent earlier has been applied. Submit again only if you mean to do it twice."
   },
   "google_drive_error": {
     "wallet_not_found_title": "Wallet Not Found",

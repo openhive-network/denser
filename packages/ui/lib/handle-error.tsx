@@ -11,6 +11,7 @@ import {
   TransactionNotConfirmedError
 } from '@hive/transaction/lib/transaction-inclusion';
 import { findTransactionExpirationRejection } from '@hive/transaction/lib/transaction-expired';
+import { EarlierBroadcastPendingError } from '@hive/transaction/lib/unconfirmed-broadcasts';
 import { AssetPrecisionMessage } from '@smart-signer/components/asset-precision-message';
 import { KeychainErrorFallbackTitle } from '@smart-signer/components/keychain-error-fallback-title';
 import { MissingAuthorityMessage } from '@smart-signer/components/missing-authority-message';
@@ -24,6 +25,7 @@ import { RequestNetworkErrorMessage } from '@smart-signer/components/request-net
 import { RequestTimeoutMessage } from '@smart-signer/components/request-timeout-message';
 import { TransactionNotConfirmedMessage } from '@smart-signer/components/transaction-not-confirmed-message';
 import { TransactionExpiredMessage } from '@smart-signer/components/transaction-expired-message';
+import { EarlierBroadcastPendingMessage } from '@smart-signer/components/earlier-broadcast-pending-message';
 import { WrongSafeStoragePasswordMessage } from '@smart-signer/components/wrong-safe-storage-password-message';
 import { SafeStorageKeyNotAuthorizedMessage } from '@smart-signer/components/safe-storage-key-not-authorized-message';
 import {
@@ -204,6 +206,25 @@ export function handleError<T>(error: unknown, ctx?: { method: string; params: T
       description: (
         <TransactionNotConfirmedMessage
           transactionId={error.transactionId}
+          explorerDomain={env('EXPLORER_DOMAIN')}
+          expiration={error.expiration}
+        />
+      ),
+      variant: 'default',
+      ...toastOptions
+    });
+    return;
+  }
+
+  // Nothing was sent: an identical transaction sent earlier may still apply, or has applied
+  if (error instanceof EarlierBroadcastPendingError) {
+    logger.warn('Resend in %s held back: transaction %s %s', ctx?.method, error.transactionId, error.state);
+    toast({
+      description: (
+        <EarlierBroadcastPendingMessage
+          transactionId={error.transactionId}
+          state={error.state}
+          expiration={error.expiration}
           explorerDomain={env('EXPLORER_DOMAIN')}
         />
       ),

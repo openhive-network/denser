@@ -607,6 +607,19 @@ describe('toNotConfirmedError', () => {
     });
   }
 
+  it("carries the transaction's expiration, until which a block may still include it", () => {
+    const expiration = new Date('2026-11-07T02:10:00Z');
+    const error = toNotConfirmedError(
+      requestTimeout('network_broadcast_api.broadcast_transaction'),
+      'a2192469',
+      expiration
+    );
+
+    if (!(error instanceof TransactionNotConfirmedError))
+      return expect.fail('not a TransactionNotConfirmedError');
+    expect(error.expiration).to.equal(expiration);
+  });
+
   it('reads the method from a request payload sent as a JSON string', () => {
     const original = requestTimeout('network_broadcast_api.broadcast_transaction', { dataAsString: true });
 
