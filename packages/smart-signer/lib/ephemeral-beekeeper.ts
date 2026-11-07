@@ -32,6 +32,16 @@ const getBeekeeperInstance = createLazyAsyncSingleton<IBeekeeperInstance>(async 
 });
 
 /**
+ * Starts loading the instance ahead of a signature, so the signature does not wait for Beekeeper's
+ * JS and WASM. A failed load is only logged: the next signature retries it.
+ */
+export function warmEphemeralBeekeeper(): void {
+  getBeekeeperInstance().catch((error: unknown) => {
+    logger.warn(error, 'Beekeeper warm-up failed; the next signature retries the load');
+  });
+}
+
+/**
  * Runs `fn` with a temporary in-memory Beekeeper wallet, in a session closed afterwards, so no key
  * imported into it outlives the call. `walletPrefix` names the wallet, for Beekeeper's errors.
  */

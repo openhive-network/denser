@@ -10,7 +10,7 @@ import { getChain } from '@hive/common-hiveio-packages';
 import { verifyAuthorityOrThrow } from '@smart-signer/lib/signer/verify-authority';
 import { validateKeyAuthority } from '@smart-signer/lib/validators/validate-key-authority';
 import { wifCredentialKey } from '@smart-signer/lib/signer/credential-storage';
-import { signDigestWithWif } from '@smart-signer/lib/ephemeral-beekeeper';
+import { signDigestWithWif, warmEphemeralBeekeeper } from '@smart-signer/lib/ephemeral-beekeeper';
 import { MissingAuthorityError } from '@transaction/lib/missing-authority';
 import { SignedOutError } from '@transaction/lib/signed-out';
 import { TRANSACTION_EXPIRATION } from '@transaction/lib/transaction-expiration';
@@ -36,6 +36,8 @@ const logger = getLogger('app');
 export class SignerWif extends SignerHbauth {
   constructor(signerOptions: SignerOptions, pack: TTransactionPackType = TTransactionPackType.HF_26) {
     super(signerOptions, pack);
+    // Created to sign: the load overlaps the rest of the action, or the user entering the key
+    warmEphemeralBeekeeper();
   }
 
   override async signTransaction({ digest, transaction, singleSignKeyType, requiredKeyType }: SignTransaction): Promise<string> {

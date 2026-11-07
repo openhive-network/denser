@@ -1,6 +1,7 @@
 import type { TransactionService } from '../index';
 import { getBrowserConnectivity } from './connectivity';
 import { createChunkLoader } from './load-chunk';
+import { warmSigner } from './warm-signer';
 
 type AsyncMethodNames<T> = {
   [K in keyof T]: T[K] extends (...args: never[]) => Promise<unknown> ? K : never;
@@ -26,6 +27,8 @@ export const transactionService = new Proxy(
       // Not a thenable: `await`ing or returning the stand-in must not call a method.
       if (typeof method === 'symbol' || method === 'then') return undefined;
       return async (...args: unknown[]) => {
+        // From code already loaded, so the signer's loads run alongside the transaction module's
+        warmSigner();
         const service = await loadTransactionService();
         return Reflect.apply(Reflect.get(service, method), service, args);
       };
