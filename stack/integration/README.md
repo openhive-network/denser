@@ -24,8 +24,10 @@ each a production (`output: 'standalone'`) build with that base path.
   behind `~/sites-router` (haproxy on 192.168.50.199 that routes by TLS SNI). The site's
   caddy listens on 127.0.0.4 and takes the client address from the router's PROXY
   header. `*.discuss.peerverity.info` resolves there internally and publicly.
-- **Network:** `DENSER_NETWORK=mainnet` (default, api.hive.blog) or `mirrornet`
-  (api.fake.openhive.network); see `networks/`. Switching is a restart, not a rebuild:
+- **Network:** `DENSER_NETWORK=mainnet` (default, api.syncad.com first, then api.hive.blog and
+  api.openhive.network; hivemind REST on api.syncad.com) or `mirrornet`
+  (api.fake.openhive.network, hivemind over JSON-RPC); see `networks/`. `HIVEMIND_REST_NODES`
+  in `.env` replaces the network's hivemind REST nodes (empty: JSON-RPC only). Switching is a restart, not a rebuild:
   edit `.env`, then `./upgrade.sh`.
   On mainnet, logging in signs **real** transactions.
 - **HTML cache** (optional, `DENSER_HTML_CACHE=varnish`): varnish between caddy and the

@@ -47,10 +47,17 @@ export const SELECTABLE_API_NODES: readonly string[] = [
 ];
 
 /**
- * The sets the wallet reads: accounts and broadcasts, profiles, lite accounts' follows, balances and
- * account history.
+ * The sets the wallet reads: accounts and broadcasts, profiles, lite accounts' follows, the account
+ * history of its transfers list (hivemind REST), balances and HAfAH's account history.
  */
-export const WALLET_API_SETS: readonly TApiSetId[] = ['core', 'bridge', 'lite', 'balance-api', 'hafah'];
+export const WALLET_API_SETS: readonly TApiSetId[] = [
+  'core',
+  'bridge',
+  'lite',
+  'hivemind-rest',
+  'balance-api',
+  'hafah'
+];
 
 /** The sets an app routes: the wallet's own, every set for the blog. */
 export const apiSetsOfApp = (app: string | undefined): readonly TApiSetId[] =>

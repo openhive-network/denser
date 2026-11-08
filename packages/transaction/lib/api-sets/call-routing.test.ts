@@ -156,6 +156,34 @@ describe('routing the browser calls by API set', () => {
     expect(await routing.nodesOf('lite', [CONFIGURED, LITE_NODE])).to.deep.equal([CONFIGURED, LITE_NODE]);
   });
 
+  it("sends hivemind REST calls where bridge's go while the routes know no hivemind REST node", async () => {
+    const { routing } = setup(
+      {},
+      { routes: { core: [CONFIGURED], bridge: [CHOSEN, LITE_NODE] }, selections: { bridge: CHOSEN } }
+    );
+    expect(await routing.nodesOf('hivemind-rest', [CONFIGURED])).to.deep.equal([CHOSEN, LITE_NODE, CONFIGURED]);
+  });
+
+  it('puts a REST node picked before API sets existed first for hivemind REST calls', async () => {
+    const withoutOwnNodes = setup({}, { routes: { bridge: [LITE_NODE] }, selections: {} }, LEGACY_PICK);
+    expect(await withoutOwnNodes.routing.nodesOf('hivemind-rest', [CONFIGURED])).to.deep.equal([
+      LEGACY_PICK,
+      LITE_NODE,
+      CONFIGURED
+    ]);
+    const withOwnNodes = setup({}, { routes: { 'hivemind-rest': [CHOSEN] }, selections: {} }, LEGACY_PICK);
+    expect(await withOwnNodes.routing.nodesOf('hivemind-rest', [CONFIGURED])).to.deep.equal([
+      LEGACY_PICK,
+      CHOSEN,
+      CONFIGURED
+    ]);
+  });
+
+  it('sends hivemind REST calls to its own nodes, then the configured ones, once the routes know some', async () => {
+    const { routing } = setup({}, { routes: { bridge: [CHOSEN], 'hivemind-rest': [LITE_NODE] }, selections: {} });
+    expect(await routing.nodesOf('hivemind-rest', [CONFIGURED])).to.deep.equal([LITE_NODE, CONFIGURED]);
+  });
+
   it("puts the user's choice for a set before this session's automatic switch", async () => {
     const { chain, routing, switches, announced } = setup(
       { [CHOSEN]: { database_api: 'transport' } },
