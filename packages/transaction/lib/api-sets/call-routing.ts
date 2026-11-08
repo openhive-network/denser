@@ -32,8 +32,13 @@ export interface IBrowserNodeState {
  * whether it serves `lite.*`.
  */
 const JSON_RPC_NODE_SETS: ReadonlySet<TApiSetId> = new Set(['core', 'bridge']);
-/** The sets the browser's one REST node served before API sets existed. */
-const REST_NODE_SETS: ReadonlySet<TApiSetId> = new Set(['balance-api', 'hafah']);
+/** The sets the browser's one REST node served before API sets existed (the wallet's account history among them). */
+const REST_NODE_SETS: ReadonlySet<TApiSetId> = new Set(['balance-api', 'hafah', 'hivemind-rest']);
+/**
+ * Sets whose calls go where another set's do while the routes know no node of their own: hivemind
+ * REST is hivemind, so without hivemind REST nodes its calls go to the node serving bridge.
+ */
+const STAND_IN_SETS: Readonly<Partial<Record<TApiSetId, TApiSetId>>> = { 'hivemind-rest': 'bridge' };
 
 export interface IApiSetRouting {
   /** `routeFor` of `wrapChainWithServerFailover`. */
@@ -55,7 +60,8 @@ export interface IApiSetRouting {
  * the JSON-RPC node this session switched to, goes first for the sets that node served, unless the
  * user chose a node for the set. Only a core call that left the browser's JSON-RPC node switches
  * that node: a bridge, lite or search-api node failing, or not serving the call, says nothing about core.
- * A lite call fails over within the lite set's nodes only.
+ * A lite call fails over within the lite set's nodes only. A hivemind REST call goes where bridge's
+ * do while the routes know no hivemind REST node.
  */
 export function createApiSetRouting(browser?: IBrowserNodeState): IApiSetRouting {
   const pinnedNodeOf = (setId: TApiSetId): string | undefined => {
@@ -86,6 +92,14 @@ export function createApiSetRouting(browser?: IBrowserNodeState): IApiSetRouting
 
   const routeOf = async (setId: TApiSetId, configured: readonly string[]): Promise<IApiSetRoute> => {
     const pinned = pinnedNodeOf(setId);
+    const standIn = STAND_IN_SETS[setId];
+    if (standIn) {
+      const route = await routeApiSet(setId, { configured: [] });
+      if (route.nodes.length > 0) return routeApiSet(setId, { pinned, configured });
+      // Outcomes still go to the set's own view, which ignores those of a set it does not route.
+      const { nodes } = await routeOf(standIn, configured);
+      return { ...route, nodes: [...new Set([pinned, ...nodes].filter((node): node is string => !!node))] };
+    }
     if (!OPTIONAL_API_SETS.has(setId)) return routeApiSet(setId, { pinned, configured });
     // The configured nodes stand in only while no view knows the set's nodes.
     const route = await routeApiSet(setId, { pinned, configured: [] });

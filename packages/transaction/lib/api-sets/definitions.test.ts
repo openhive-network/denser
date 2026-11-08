@@ -2,10 +2,11 @@ import { afterEach, describe, it } from 'mocha';
 import { expect } from 'chai';
 import { TransportError, type ApiTransport } from '@hiveio/healthchecker-component/engine';
 import { apiSetsOfApp, resolveApiSetsConfig, SELECTABLE_API_NODES } from '@ui/config/api-sets';
+import { createApiSetRouting } from './call-routing';
 import { createApiSetEngine } from './definitions';
 import { createEngineView } from './engine-view';
 import { probeAnswerOf } from './probe-answers';
-import { bootstrapOf } from './router';
+import { bootstrapOf, provideApiSetView } from './router';
 
 const FYP_URL = 'https://api.syncad.com/haf-fyp-api';
 const FYP_PROBE_PATH = '/v1/fyp/feed/hive.blog?page=1&page-size=1';
@@ -167,5 +168,48 @@ describe('the API set engine probing lite', () => {
     const engine = createApiSetEngine(config);
 
     expect(createEngineView(engine, config).nodesFor('lite')).to.include(LITE_NODE);
+  });
+});
+
+describe("the wallet's hivemind REST reads", () => {
+  const OPENHIVE = 'https://api.openhive.network';
+  const CONFIGURED = [NO_LITE_NODE, OPENHIVE, LITE_NODE];
+  const ACCOUNT_OPERATIONS = ['hivemind-api', 'accountsOperations'];
+
+  afterEach(() => provideApiSetView(undefined));
+
+  const walletRouting = (hivemindRestNodes?: string) => {
+    const config = resolveApiSetsConfig(
+      { apiEndpoint: LITE_NODE, allowedNodes: `${NO_LITE_NODE} ${OPENHIVE}`, hivemindRestNodes },
+      apiSetsOfApp('wallet')
+    );
+    const engine = createApiSetEngine(config);
+    provideApiSetView(() => createEngineView(engine, config));
+    const nodesOfCall = async () =>
+      (await createApiSetRouting().routeCall('restApi', ACCOUNT_OPERATIONS, CONFIGURED))?.nodes;
+    return { config, engine, nodesOfCall };
+  };
+
+  it('go to the hivemind REST nodes, then to the configured ones', async () => {
+    const { config, nodesOfCall } = walletRouting(OPENHIVE);
+    expect(config.sets).to.include('hivemind-rest');
+    expect(await nodesOfCall()).to.deep.equal([OPENHIVE, NO_LITE_NODE, LITE_NODE]);
+  });
+
+  it("go to the node the user chose for hivemind REST, over the set's own", async () => {
+    const { engine, nodesOfCall } = walletRouting(LITE_NODE);
+    engine.report('hivemind-rest', NO_LITE_NODE, { ok: true });
+    expect(engine.select('hivemind-rest', NO_LITE_NODE)).to.equal(true);
+    expect((await nodesOfCall())?.[0]).to.equal(NO_LITE_NODE);
+  });
+
+  it("go where bridge's calls do while no hivemind REST node is configured", async () => {
+    const { config, engine, nodesOfCall } = walletRouting();
+    expect(config.sets).to.not.include('hivemind-rest');
+    expect((await nodesOfCall())?.[0]).to.equal(LITE_NODE);
+
+    engine.report('bridge', OPENHIVE, { ok: true });
+    expect(engine.select('bridge', OPENHIVE)).to.equal(true);
+    expect((await nodesOfCall())?.[0]).to.equal(OPENHIVE);
   });
 });
