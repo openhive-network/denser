@@ -57,14 +57,21 @@ const liteProbe: ApiProbe = async (context: ProbeContext) => {
 };
 
 /**
+ * A post list of the hivemind version whose REST reads denser's feeds make: older hivemind REST nodes
+ * answer `/hivemind-api/` and some reads (account operations, discussions) but 404 a post list, so
+ * its root would count them as serving the set.
+ */
+const HIVEMIND_REST_PROBE_PATH = '/hivemind-api/posts?sort=trending&limit=1&votes=none';
+
+/**
  * How the engine asks a node whether it serves a set: a cheap call of the API (a post that does not
- * exist, an API's root), whose own error still counts as served.
+ * exist, an API's root, a one-post list), whose own error still counts as served.
  */
 const PROBES: Readonly<Record<TApiSetId, ApiProbe>> = {
   core: jsonRpcMethodProbe('database_api.get_dynamic_global_properties', {}),
   bridge: jsonRpcApiProbe('bridge.get_post', { author: 'hc-probe', permlink: 'hc-probe', observer: '' }),
   lite: liteProbe,
-  'hivemind-rest': restProbe('/hivemind-api/'),
+  'hivemind-rest': restProbe(HIVEMIND_REST_PROBE_PATH),
   'balance-api': restProbe('/balance-api/'),
   hafah: restProbe('/hafah-api/'),
   hivesense: restProbe('/hivesense-api/'),

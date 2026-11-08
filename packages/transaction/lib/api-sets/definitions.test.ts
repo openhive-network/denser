@@ -1,6 +1,6 @@
 import { afterEach, describe, it } from 'mocha';
 import { expect } from 'chai';
-import { TransportError, type ApiTransport } from '@hiveio/healthchecker-component/engine';
+import { ApiSetEngine, TransportError, type ApiTransport } from '@hiveio/healthchecker-component/engine';
 import { apiSetsOfApp, resolveApiSetsConfig, SELECTABLE_API_NODES } from '@ui/config/api-sets';
 import { createApiSetRouting } from './call-routing';
 import { createApiSetEngine } from './definitions';
@@ -211,5 +211,70 @@ describe("the wallet's hivemind REST reads", () => {
     engine.report('bridge', OPENHIVE, { ok: true });
     expect(engine.select('bridge', OPENHIVE)).to.equal(true);
     expect((await nodesOfCall())?.[0]).to.equal(OPENHIVE);
+  });
+});
+
+describe('the hivemind REST probe', () => {
+  const NEW_HIVEMIND = 'https://api.syncad.com';
+  const OLD_HIVEMIND = 'https://api.hive.blog';
+  const FAILING = 'https://hive.roelandp.nl';
+  const PROBE_PATH = '/hivemind-api/posts?sort=trending&limit=1&votes=none';
+  const NO_FUNCTION = { code: 'PGRST202', message: 'Could not find the function hivemind_endpoints.home(sort)' };
+  const realFetch = globalThis.fetch;
+  const probed: string[] = [];
+
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+    provideApiSetView(undefined);
+    probed.length = 0;
+  });
+
+  /** Every node routes the root and account operations; only `NEW_HIVEMIND` serves post lists, `FAILING` answers 500. */
+  const stubHivemindNodes = () => {
+    globalThis.fetch = (async (input: string | URL, init: RequestInit = {}) => {
+      if (init.method === 'POST') return json({ jsonrpc: '2.0', id: 1, result: { head_block_number: 1 } });
+      const url = new URL(String(input));
+      const node = url.origin;
+      const path = `${url.pathname}${url.search}`;
+      if (!url.pathname.startsWith('/hivemind-api/')) return json({});
+      probed.push(`${node}${path}`);
+      if (node === FAILING) return json({ message: 'Internal Server Error' }, 500);
+      if (url.pathname === '/hivemind-api/' || url.pathname.endsWith('/operations')) return json({});
+      return node === NEW_HIVEMIND ? json([]) : json(NO_FUNCTION, 404);
+    }) as typeof fetch;
+  };
+
+  const probedEngine = async () => {
+    stubHivemindNodes();
+    const config = resolveApiSetsConfig(
+      { apiEndpoint: NEW_HIVEMIND, allowedNodes: `${OLD_HIVEMIND} ${FAILING}`, hivemindRestNodes: NEW_HIVEMIND },
+      apiSetsOfApp('blog')
+    );
+    const engine = createApiSetEngine(config);
+    await engine.refresh();
+    return { config, engine };
+  };
+
+  it('asks a post list, so a node without one is unsupported and one answering 5xx down', async () => {
+    const { engine } = await probedEngine();
+
+    expect(probed).to.include.members([NEW_HIVEMIND, OLD_HIVEMIND, FAILING].map((node) => `${node}${PROBE_PATH}`));
+    const states = Object.fromEntries(engine.rankings('hivemind-rest').map(({ node, state }) => [node, state]));
+    expect(states[NEW_HIVEMIND]).to.equal('eligible');
+    expect(states[OLD_HIVEMIND]).to.equal('unsupported');
+    expect(states[FAILING]).to.equal('down');
+    expect(engine.fallbackOrder('hivemind-rest')).to.deep.equal([NEW_HIVEMIND]);
+  });
+
+  it("sends a cookie's choice of an unsupported node's post lists to an eligible node", async () => {
+    const { config, engine } = await probedEngine();
+    const cookie = new URLSearchParams({ v: '1', 's.hivemind-rest': OLD_HIVEMIND }).toString();
+    const view = createEngineView(ApiSetEngine.forRequest(engine, cookie), config);
+    expect(view.selectedNode('hivemind-rest')).to.equal(OLD_HIVEMIND);
+    provideApiSetView(() => view);
+
+    const route = await createApiSetRouting().routeCall('restApi', ['hivemind-api', 'rankedPosts'], [NEW_HIVEMIND]);
+
+    expect(route?.nodes).to.deep.equal([NEW_HIVEMIND]);
   });
 });
