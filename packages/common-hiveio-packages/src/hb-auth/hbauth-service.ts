@@ -16,8 +16,10 @@ import { holdRunningWorker, holdWorker, otherRunningWorkers, startWithWorker } f
 import { runOperation, type OnlineClientOperationOptions, type OperationClient } from './online-client-operation';
 import { getSignOutEpoch, recordWorkerLoggedOut, signOutEpochToLogOut } from './sign-out-epoch';
 import { setSafeStorageLockProbe } from './safe-storage-lock';
+import { LiteWalletClient } from './lite-wallet-client';
 
 export { SupersededKeyWriteError, type OnlineClientOperationOptions } from './online-client-operation';
+export type { LiteWalletClient } from './lite-wallet-client';
 
 const logger = getLogger('app');
 
@@ -82,6 +84,7 @@ let lastRetirement: Promise<void> = Promise.resolve();
 let operationAwaitsReplacement = false;
 
 let offlineClientPromise: Promise<OfflineClient> | undefined = undefined;
+let liteWalletClientPromise: Promise<LiteWalletClient> | undefined = undefined;
 
 // Lets go of the worker each online client holds (worker-release.ts)
 const workerReleases = new WeakMap<OnlineClient, () => void>();
@@ -236,15 +239,15 @@ const setOnlineClient = async (
 };
 
 // This is intentionally non-async method as we don't want any race condition for offlineClientPromise !== undefined check
-const setOfflineClient = async (): Promise<OfflineClient> => {
+const setOfflineClient = async <T extends OfflineClient>(Client: new (options: ClientOptions) => T): Promise<T> => {
   const clientOptions = getDefaultClientOptions(currentWorkerGeneration());
-  logger.info('Creating instance of HB-Auth OfflineClient with options: %o', clientOptions);
+  logger.info('Creating instance of HB-Auth %s with options: %o', Client.name, clientOptions);
 
   const chain = await getChain();
   // Held while the page lives: the offline client is never replaced
   await holdWorker(clientOptions.workerUrl);
 
-  const client = new OfflineClient(clientOptions);
+  const client = new Client(clientOptions);
 
   await startClient(client, chain, clientOptions.workerUrl);
 
@@ -480,11 +483,25 @@ export const getOfflineClient = (): Promise<OfflineClient> => {
   if (offlineClientPromise)
     return offlineClientPromise;
 
-  offlineClientPromise = setOfflineClient().catch((error) => {
+  offlineClientPromise = setOfflineClient(OfflineClient).catch((error) => {
     offlineClientPromise = undefined; // Clear cache so next call retries
     throw error;
   });
   return offlineClientPromise;
+};
+
+/**
+ * The offline client of the lite accounts' safe storage entries (lite-wallet-client.ts), with the
+ * worker the offline client has, started on the first call.
+ */
+export const getLiteWalletClient = (): Promise<LiteWalletClient> => {
+  if (liteWalletClientPromise) return liteWalletClientPromise;
+
+  liteWalletClientPromise = setOfflineClient(LiteWalletClient).catch((error) => {
+    liteWalletClientPromise = undefined; // Clear cache so next call retries
+    throw error;
+  });
+  return liteWalletClientPromise;
 };
 
 // Asks the online client this page started, and starts none: a page that has not signed holds no worker

@@ -8,7 +8,8 @@ import type { StoredLiteIdentity } from './lite-identity-record';
 
 /**
  * Whether to prompt the guest to secure `identity`: from the moment it turns registered (its first
- * post) while this is mounted, on a gateway that relays authority edits, until dismissed or secured.
+ * post) while this is mounted, where it can be secured (`available`: a gateway that relays authority
+ * edits, or Safe Storage), until dismissed or secured.
  */
 export function useLiteSecurePrompt(identity: StoredLiteIdentity | null, available: boolean) {
   // null while no identity is known (also before hydration reads storage): only an identity seen
@@ -28,13 +29,18 @@ export function useLiteSecurePrompt(identity: StoredLiteIdentity | null, availab
   };
 }
 
-/** The non-blocking card after a first post: the account lives only here; Secure it, or dismiss. */
+/**
+ * The non-blocking card after a first post: the account lives only here; Secure it, or dismiss.
+ * `safeStorageOnly` where no passkey signer can secure it, and Secure moves its keys into Safe Storage.
+ */
 export default function LiteSecurePrompt({
   onSecure,
-  onDismiss
+  onDismiss,
+  safeStorageOnly = false
 }: {
   onSecure: () => void;
   onDismiss: () => void;
+  safeStorageOnly?: boolean;
 }) {
   const { t } = useTranslation('common_blog');
 
@@ -55,7 +61,7 @@ export default function LiteSecurePrompt({
           <Icons.close className="h-4 w-4" />
         </button>
       </div>
-      <p>{t('lite_account.passkey.warning_unsecured')}</p>
+      <p>{t(safeStorageOnly ? 'lite_account.safe_storage.warning_unsecured' : 'lite_account.passkey.warning_unsecured')}</p>
       <Button
         type="button"
         size="sm"
@@ -63,7 +69,7 @@ export default function LiteSecurePrompt({
         onClick={onSecure}
         data-testid="lite-secure-prompt-action"
       >
-        {t('lite_account.passkey.secure_action')}
+        {t(safeStorageOnly ? 'lite_account.safe_storage.secure_action' : 'lite_account.passkey.secure_action')}
       </Button>
     </div>
   );

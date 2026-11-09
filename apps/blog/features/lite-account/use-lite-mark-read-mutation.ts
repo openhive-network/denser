@@ -8,6 +8,7 @@ import { getLogger } from '@ui/lib/logging';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
 import { unreadNotificationsKey } from '@/blog/features/activity-log/hooks/use-unread-notifications';
 import { liteGatewayEndpoint } from './lite-endpoints';
+import { openLiteKeyStore } from './open-lite-key-store';
 import { showsLiteReadMarker } from './lite-read-marker';
 import { liteRelayInfoQuery } from './lite-relay-info-query';
 import { liteActorDid, liteSocialFailure } from './lite-social-state';
@@ -45,8 +46,11 @@ export function useLiteMarkNotificationsReadMutation() {
     mutationFn: async (date: string) => {
       const info = relay.data?.enabled ? relay.data : undefined;
       if (!identity || !app || !info) throw new Error('lite set_last_read not available');
-      const { buildLiteSocialTransaction, relayLiteSocial } = await import('./lite-social');
-      const tx = buildLiteSocialTransaction({ identity, app, chainId: info.chain_id, action: { method: 'set_last_read', date } });
+      const [{ buildLiteSocialTransaction, relayLiteSocial }, keys] = await Promise.all([
+        import('./lite-social'),
+        openLiteKeyStore(identity, info.chain_id)
+      ]);
+      const tx = await buildLiteSocialTransaction({ name: identity.name, keys, app, action: { method: 'set_last_read', date } });
       const result = await relayLiteSocial(liteGatewayEndpoint('/l2'), tx);
       logger.info('Lite set_last_read relayed: %o', result);
       return result;

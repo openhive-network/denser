@@ -2,8 +2,18 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { createLiteIdentity } from '@hiveio/lite-account';
 
-const { graduatedIdentity, readStoredLiteIdentity, securedIdentity, signedInIdentity, signingIdentity, storedFromCreated } =
-  await import('./lite-identity-record.ts');
+const {
+  canSecureInSafeStorage,
+  canSecureWithPasskey,
+  graduatedIdentity,
+  heldKeyRoles,
+  inSafeStorage,
+  liteKeyStoreKind,
+  readStoredLiteIdentity,
+  securedIdentity,
+  signedInIdentity,
+  storedFromCreated
+} = await import('./lite-identity-record.ts');
 
 const NOW = Date.parse('2026-10-23T12:00:00Z');
 const created = createLiteIdentity('brave-otter-4823', NOW);
@@ -83,6 +93,60 @@ describe('signedInIdentity', () => {
       [identity.registered, identity.secured, identity.createdAt],
       [true, true, '2026-10-23T12:00:00.000Z']
     );
-    assert.equal(signingIdentity(identity).ownerWif, '');
+    assert.deepEqual(heldKeyRoles(identity), ['posting']);
+  });
+});
+
+describe('the key store of a stored identity', () => {
+  const registered = { ...storedFromCreated(created), registered: true };
+
+  it('reads an identity stored before Safe Storage as local, adding nothing to the record', () => {
+    const legacy = JSON.parse(JSON.stringify(registered));
+    const stored = readStoredLiteIdentity(legacy);
+    assert.ok(stored);
+    assert.equal('keyStore' in stored, false);
+    assert.equal(liteKeyStoreKind(stored), 'local');
+    assert.deepEqual(heldKeyRoles(stored), ['owner', 'posting']);
+    assert.deepEqual(JSON.parse(JSON.stringify(stored)), { ...legacy, secured: false });
+  });
+
+  it('keeps no WIF once in Safe Storage, and the public keys', () => {
+    const moved = inSafeStorage(registered);
+    assert.equal(moved.keyStore, 'safe-storage');
+    assert.equal(JSON.stringify(moved).includes(created.ownerWif), false);
+    assert.equal(JSON.stringify(moved).includes(created.postingWif), false);
+    assert.deepEqual([moved.ownerPublicKey, moved.postingPublicKey], [created.ownerPublicKey, created.postingPublicKey]);
+    const read = readStoredLiteIdentity(JSON.parse(JSON.stringify(moved)));
+    assert.deepEqual(read && [liteKeyStoreKind(read), read.postingPublicKey, heldKeyRoles(read)], [
+      'safe-storage',
+      created.postingPublicKey,
+      ['owner', 'posting']
+    ]);
+  });
+
+  it('reads a Safe Storage record without any WIF it carries', () => {
+    const read = readStoredLiteIdentity({ ...registered, keyStore: 'safe-storage' });
+    assert.deepEqual([read?.ownerWif, read?.postingWif], [undefined, undefined]);
+  });
+
+  it('holds only the posting key in Safe Storage once a passkey root owns the account', () => {
+    const secured = securedIdentity(inSafeStorage(registered), ROOT_KEY, SIGNER, '2027-01-21T12:00:00');
+    assert.deepEqual([liteKeyStoreKind(secured), heldKeyRoles(secured)], ['safe-storage', ['posting']]);
+  });
+
+  it('secures with a passkey only an unsecured identity holding its owner key, in either store', () => {
+    assert.equal(canSecureWithPasskey(registered), true);
+    assert.equal(canSecureWithPasskey(inSafeStorage(registered)), true);
+    assert.equal(canSecureWithPasskey(storedFromCreated(created)), false);
+    assert.equal(canSecureWithPasskey(securedIdentity(registered, ROOT_KEY, SIGNER, '2027-01-21T12:00:00')), false);
+  });
+
+  it('moves into Safe Storage the keys of a registered local identity only', () => {
+    assert.equal(canSecureInSafeStorage(registered), true);
+    assert.equal(canSecureInSafeStorage(securedIdentity(registered, ROOT_KEY, SIGNER, '2027-01-21T12:00:00')), true);
+    assert.equal(canSecureInSafeStorage(inSafeStorage(registered)), false);
+    assert.equal(canSecureInSafeStorage(storedFromCreated(created)), false);
+    const { ownerWif: _owner, ...withoutOwner } = registered;
+    assert.equal(canSecureInSafeStorage(withoutOwner), false);
   });
 });

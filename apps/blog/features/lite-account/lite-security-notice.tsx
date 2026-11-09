@@ -14,19 +14,26 @@ const NAMED_MESSAGE_KEYS: Partial<Record<SecurityWarning, string>> = {
   add_backup: 'lite_account.passkey.warning_add_backup_named'
 };
 
-type Props = { notice: SecurityNotice | null; onSecure: () => void; className?: string };
+type Props = {
+  notice: SecurityNotice | null;
+  onSecure: () => void;
+  /** No passkey signer can secure the account: its Secure moves the keys into Safe Storage. */
+  safeStorageOnly?: boolean;
+  className?: string;
+};
 
 /**
  * What the account's owner authority warrants telling its holder: that it lives only in this
  * browser (with the Secure action), or, secured by a single passkey, that a backup is advisable;
  * naming the passkey by its label when it has one.
  */
-export default function LiteSecurityNotice({ notice, onSecure, className }: Props) {
+export default function LiteSecurityNotice({ notice, onSecure, safeStorageOnly = false, className }: Props) {
   const { t } = useTranslation('common_blog');
   if (!notice) return null;
   const { warning, passkeyLabel } = notice;
   const unsecured = warning === 'unsecured';
   const namedKey = passkeyLabel ? NAMED_MESSAGE_KEYS[warning] : undefined;
+  const messageKey = safeStorageOnly && unsecured ? 'lite_account.safe_storage.warning_unsecured' : MESSAGE_KEYS[warning];
 
   return (
     <div
@@ -43,7 +50,7 @@ export default function LiteSecurityNotice({ notice, onSecure, className }: Prop
       <p>
         {namedKey
           ? t(namedKey, { label: passkeyLabel, interpolation: { escapeValue: false } })
-          : t(MESSAGE_KEYS[warning])}
+          : t(messageKey)}
       </p>
       {unsecured ? (
         <Button
@@ -53,7 +60,7 @@ export default function LiteSecurityNotice({ notice, onSecure, className }: Prop
           onClick={onSecure}
           data-testid="lite-security-secure"
         >
-          {t('lite_account.passkey.secure_action')}
+          {t(safeStorageOnly ? 'lite_account.safe_storage.secure_action' : 'lite_account.passkey.secure_action')}
         </Button>
       ) : null}
     </div>

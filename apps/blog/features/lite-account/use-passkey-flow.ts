@@ -7,6 +7,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useTranslation } from '@/blog/i18n/client';
 import { liteAuthorityErrorKey } from './lite-authority-errors';
 import { liteAuthorityKey } from './lite-authority-query';
+import { useLiteWalletFailureToast } from './use-lite-wallet-failure-toast';
 import { openSignerPopup, type SignerPopup } from '@smart-signer/lib/passkey/signer-client';
 
 const logger = getLogger('app');
@@ -14,22 +15,24 @@ const logger = getLogger('app');
 /**
  * Runs a passkey flow: `start(popup)` gets the signer popup opened at `origin` (opened here, in the
  * click, or the browser blocks it), then the flow. A failure is logged and toasted with its cause,
- * except a cancelled popup, which changes nothing and says nothing. The account's authority is
- * read again afterwards either way.
+ * except a cancelled popup or Safe Storage unlock step, which changes nothing and says nothing.
+ * The account's authority is read again afterwards either way.
  */
 export function usePasskeyFlow(name: string | undefined) {
   const { t } = useTranslation('common_blog');
   const queryClient = useQueryClient();
   const [pending, setPending] = useState(false);
+  const walletFailed = useLiteWalletFailureToast();
 
   const fail = useCallback(
     (error: unknown) => {
+      if (walletFailed(error)) return;
       const key = liteAuthorityErrorKey(error);
       if (key === null) return;
       logger.error(error, 'Lite passkey flow failed');
       toast({ title: t('lite_account.passkey.failed_title'), description: t(key), variant: 'destructive' });
     },
-    [t]
+    [t, walletFailed]
   );
 
   const run = useCallback(

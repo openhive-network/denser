@@ -3,10 +3,12 @@ import type { OnlineClient, OfflineClient } from '@hiveio/hb-auth';
 import {
   getOnlineClient,
   getOfflineClient,
+  getLiteWalletClient,
   logoutFromEveryWorker,
   logoutEveryoneFromStartedWorkers,
   logoutFromStartedWorkers,
   withOnlineClient,
+  type LiteWalletClient,
   type OnlineClientOperationOptions
 } from "@hive/common-hiveio-packages";
 import { forgetSafeStorageLock } from '@hive/common-hiveio-packages/safe-storage-lock';
@@ -47,6 +49,10 @@ class HbauthService {
   }
   async getOfflineClient(): Promise<OfflineClient> {
     return await getOfflineClient();
+  }
+  /** The offline client of the lite accounts' entries, named `did:lite:…` */
+  async getLiteWalletClient(): Promise<LiteWalletClient> {
+    return await getLiteWalletClient();
   }
   /** Runs `operation` with the online client; a key write it repeats in another worker asks for the password when needed */
   withOnlineClient<T>(operation: (client: OnlineClient) => Promise<T>): Promise<T> {

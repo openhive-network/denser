@@ -1103,6 +1103,18 @@ and POSTs each request to its own origin's `/__signer-requests` before answering
 asked to sign. An `addInitScript` runs again on every navigation and reload: a spec that needs a
 different stored identity after a reload needs another test.
 
+### The fixture build configures a passkey signer; the dev stack does not
+
+`playwright.fixture.config.ts` sets `REACT_APP_PASSKEY_SIGNERS` to `https://signer.syncad.com`, so the
+lite passkey UI shows in every fixture run unless a spec clears it (`configureSigners(page, [])`).
+The dev stack's blog has none: specs that rely on the default signer (`liteIdentityPasskey*.spec.ts`
+LITE-ID-04–07, 03, 09, 10) fail on `.aidev/dev-stack-spec.sh` and pass in `fixture_e2e`; check them
+there. `liteIdentitySafeStorage.spec.ts` clears the list in a `beforeEach` and sets one where it needs
+it, so it runs the same on both. It runs hb-auth's Beekeeper in the browser (no mock): its
+`walletAliases` reads hb-auth's alias store (`/aliases_*` in IndexedDB), and `recoveredKeys` checks
+relayed signatures with `@hiveio/lite-account` in a child `node` process, since Playwright's loader
+cannot import the ESM-only package.
+
 ### An unrecorded `lite.*` read on a lite-aware recording outlives the spec
 
 On a recording with `lite.get_info` (`litePost` and its overlays), the server

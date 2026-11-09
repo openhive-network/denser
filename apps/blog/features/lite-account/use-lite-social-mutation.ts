@@ -10,6 +10,7 @@ import { getLogger } from '@ui/lib/logging';
 import { useTranslation } from '@/blog/i18n/client';
 import { scheduleValidatedRefetch } from '@/blog/lib/react-query';
 import { liteGatewayEndpoint } from './lite-endpoints';
+import { openLiteKeyStore } from './open-lite-key-store';
 import {
   applyLiteSocialAction,
   EMPTY_LITE_RELATIONS,
@@ -32,6 +33,7 @@ import { useLiteApiInfo } from './use-lite-api-info';
 import { liteRelayInfoQuery } from './lite-relay-info-query';
 import { useRetryCountdown } from './use-retry-countdown';
 import { useStoredLiteIdentity } from './use-stored-lite-identity';
+import { useLiteWalletFailureToast } from './use-lite-wallet-failure-toast';
 
 // No runtime import of @hiveio/lite-account here (`useLiteRelayInfo` has one): these hooks serve
 // buttons on every feed and profile page; the signing code is imported on the first op.
@@ -95,11 +97,13 @@ function snapshot(queryClient: QueryClient, keys: (readonly unknown[])[]): Snaps
   return keys.map((key) => ({ key, data: queryClient.getQueryData(key) }));
 }
 
-/** Logs a failed lite social op and toasts the gateway's reason (`retryAfterS` for `rate_limited`). */
+/** Logs a failed lite social op and toasts the gateway's reason (`retryAfterS` for `rate_limited`), or the Safe Storage unlock step's. */
 export function useLiteSocialFailureToast() {
   const { t } = useTranslation('common_blog');
+  const walletFailed = useLiteWalletFailureToast();
   return (error: unknown, retryAfterS: number | undefined) => {
     logger.error(error, 'Lite social op failed');
+    if (walletFailed(error)) return;
     const key = liteSocialErrorKey(liteSocialFailure(error)?.code);
     const description = t(`lite_account.social.errors.${key}`, { seconds: retryAfterS ?? DEFAULT_RETRY_S });
     toast({ title: t('lite_account.social.failed_title'), description, variant: 'destructive' });
@@ -140,8 +144,11 @@ export function useLiteSocialMutation(method: LiteSocialMethod) {
     mutationFn: async (action: LiteSocialAction) => {
       const info = relay.data?.enabled ? relay.data : undefined;
       if (!identity || !app || !info) throw new Error('lite social op not available');
-      const { buildLiteSocialTransaction, relayLiteSocial } = await import('./lite-social');
-      const tx = buildLiteSocialTransaction({ identity, app, chainId: info.chain_id, action });
+      const [{ buildLiteSocialTransaction, relayLiteSocial }, keys] = await Promise.all([
+        import('./lite-social'),
+        openLiteKeyStore(identity, info.chain_id)
+      ]);
+      const tx = await buildLiteSocialTransaction({ name: identity.name, keys, app, action });
       const result = await relayLiteSocial(liteGatewayEndpoint('/l2'), tx);
       logger.info('Lite social op relayed: %o', result);
       return result;

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { CircleSpinner } from '@ui/components/circle-spinner';
-import { buildLiteReplyRequest, type LiteIdentity } from '@hiveio/lite-account';
+import type { LiteAppIds } from '@hiveio/lite-account';
 import { currentPostsNamespace } from '@transaction/lib/lite-api';
 import { Button } from '@ui/components/button';
 import { toast } from '@ui/components/hooks/use-toast';
@@ -11,7 +11,9 @@ import { useStorageWithTTL } from '@ui/hooks/useStorageWithTTL';
 import { StorageTTL } from '@ui/lib/storage-with-ttl';
 import DialogLogin from '@/blog/components/dialog-login';
 import { useTranslation } from '@/blog/i18n/client';
+import type { StoredLiteIdentity } from './lite-identity-record';
 import { isLiteNameTaken } from './lite-name-availability';
+import { signedLiteReply } from './lite-signed-requests';
 import LiteNameDialog from './lite-name-dialog';
 import { liteReplyDraftKey, markLiteReplySignIn } from './lite-sign-in-handoff';
 import { readiness, readinessText, useLiteGatewayHealth, type LiteReadiness } from './use-lite-gateway-health';
@@ -19,6 +21,8 @@ import { useLiteIdentity } from './use-lite-identity';
 import { useLiteRelayInfo } from './use-lite-relay-info';
 import { useLiteReplyMutation } from './use-lite-reply-mutation';
 import { useRetryCountdown } from './use-retry-countdown';
+import { useLiteWalletFailureToast } from './use-lite-wallet-failure-toast';
+import { openLiteKeyStore } from './open-lite-key-store';
 
 const MdEditor = dynamic(() => import('../post-editor/md-editor'), {
   ssr: false,
@@ -62,6 +66,7 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
   const [checking, setChecking] = useState(false);
   const [notReady, setNotReady] = useState<LiteReadiness | null>(null);
   const countdown = useRetryCountdown();
+  const walletFailed = useLiteWalletFailureToast();
   const mutation = useLiteReplyMutation(() => {
     markRegistered();
     toast({ title: t('lite_account.save_identity.title'), description: t('lite_account.save_identity.description') });
@@ -93,22 +98,35 @@ export function LiteReplyBox({ parentAuthor, l1ParentAuthor, parentPermlink, dis
     return false;
   };
 
-  const submit = async (who: LiteIdentity) => {
+  /** The reply signed through the identity's key store; null when its unlock step stopped it (toasted). */
+  const sign = async (who: StoredLiteIdentity, info: { gate_account: string; chain_id: string; apps: LiteAppIds }) => {
+    try {
+      return await signedLiteReply({
+        identity: who,
+        keys: await openLiteKeyStore(who, info.chain_id),
+        gateAccount: info.gate_account,
+        chainId: info.chain_id,
+        apps: info.apps,
+        comment: { parent_author: l1ParentAuthor ?? parentAuthor, parent_permlink: parentPermlink, title: '', body: text, tags: [] },
+        clientId: ensureClientId()
+      });
+    } catch (error) {
+      if (walletFailed(error)) return null;
+      throw error;
+    }
+  };
+
+  const submit = async (who: StoredLiteIdentity) => {
     if (!relay.data?.enabled) return;
+    const info = relay.data;
     if (!(await gatewayReady())) return;
-    const built = buildLiteReplyRequest({
-      identity: who,
-      gateAccount: relay.data.gate_account,
-      chainId: relay.data.chain_id,
-      apps: relay.data.apps,
-      comment: { parent_author: l1ParentAuthor ?? parentAuthor, parent_permlink: parentPermlink, title: '', body: text, tags: [] },
-      clientId: ensureClientId()
-    });
+    const built = await sign(who, info);
+    if (!built) return;
     try {
       await mutation.mutateAsync({
         built,
-        gateAccount: relay.data.gate_account,
-        apps: relay.data.apps,
+        gateAccount: info.gate_account,
+        apps: info.apps,
         attester: who.name,
         body: text,
         parentAuthor,
