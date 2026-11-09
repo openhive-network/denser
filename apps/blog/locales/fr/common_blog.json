@@ -148,6 +148,11 @@
         "active": "Menu du compte {{username}}, clé active",
         "posting_and_active": "Menu du compte {{username}}, clés de publication et active"
       },
+      "account_menu_key_locked": {
+        "posting": "Menu du compte {{username}}, clé de publication verrouillée",
+        "active": "Menu du compte {{username}}, clé active verrouillée",
+        "posting_and_active": "Menu du compte {{username}}, clés de publication et active verrouillées"
+      },
       "account_menu_signer": "Menu du compte {{username}}, {{method}}",
       "profile": "Profil",
       "notifications": "Notifications",

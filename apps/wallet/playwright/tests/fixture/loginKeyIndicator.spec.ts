@@ -125,7 +125,7 @@ test.describe('A WIF session with the active key', () => {
     await loginForm.otherSignInOptionsButton.click();
     await expect(loginForm.otherSignInOptionsUsernameInput).toHaveValue(STUB_ACCOUNT);
     await loginForm.signInWithWifButton.click();
-    await expect(loginForm.headerEnterYourWifKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await expect(loginForm.headerEnterYourKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
     await loginForm.postingPrivateKeyInput.fill(POSTING_WIF);
     await loginForm.postingPrivateKeySubmitButton.click();
 

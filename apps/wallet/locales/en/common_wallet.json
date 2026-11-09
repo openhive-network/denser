@@ -93,6 +93,11 @@
         "active": "{{username}} account menu, active key",
         "posting_and_active": "{{username}} account menu, posting and active keys"
       },
+      "account_menu_key_locked": {
+        "posting": "{{username}} account menu, posting key locked",
+        "active": "{{username}} account menu, active key locked",
+        "posting_and_active": "{{username}} account menu, posting and active keys locked"
+      },
       "account_menu_signer": "{{username}} account menu, {{method}}",
       "wallet": "Wallet",
       "blog": "Blog",

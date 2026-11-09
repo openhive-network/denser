@@ -1,6 +1,7 @@
 import type { User } from '@smart-signer/types/common';
 import type { LoginAuthority } from '@smart-signer/lib/auth/login-authority';
 import { useLoginAuthority } from '@smart-signer/lib/auth/use-login-authority';
+import { useSafeStorageLockState } from '@smart-signer/lib/auth/use-safe-storage-lock';
 import { useTranslation } from '@/wallet/i18n/client';
 
 export interface LoginAuthorityLabels {
@@ -16,13 +17,15 @@ export function useLoginAuthorityLabels(user: User): LoginAuthorityLabels {
   const { t } = useTranslation('common_wallet');
   const { username } = user;
   const authority = useLoginAuthority(user);
+  const locked = useSafeStorageLockState(user) === 'locked';
   if (authority.kind === 'key') {
     // One key's name, or `posting_and_active`
     const keys = authority.keyTypes.join('_and_');
+    const accountMenuKey = locked ? 'account_menu_key_locked' : 'account_menu_key';
     return {
       authority,
       chip: t(`navigation.user_menu.key_type.${keys}`),
-      accountMenu: t(`navigation.user_menu.account_menu_key.${keys}`, { username })
+      accountMenu: t(`navigation.user_menu.${accountMenuKey}.${keys}`, { username })
     };
   }
   const method = t(`navigation.user_menu.login_method.${authority.loginType}`);

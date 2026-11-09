@@ -96,7 +96,7 @@ test.describe('A WIF sign-in with a key that is both the posting and the active 
     await loginForm.otherSignInOptionsButton.click();
     await loginForm.otherSignInOptionsUsernameInput.fill(SHARED_KEY_ACCOUNT);
     await loginForm.signInWithWifButton.click();
-    await expect(loginForm.headerEnterYourWifKey).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
+    await expect(loginForm.headerEnterYourKey).toBeVisible({ timeout: SIGN_IN_TIMEOUT_MS });
     await loginForm.storeKeyCheckbox.check();
     await loginForm.postingPrivateKeyInput.fill(FIXTURE_POSTING_WIF);
     await loginForm.postingPrivateKeySubmitButton.click();

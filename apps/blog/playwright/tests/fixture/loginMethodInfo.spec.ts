@@ -62,7 +62,7 @@ test.describe('Login dialog — sign-in method info', () => {
     // The trigger sits beside the WIF button, not in it: clicking it must not start the WIF sign-in.
     await loginForm.otherSignInOptionsUsernameInput.fill('guest4test');
     await page.getByTestId('method-info-wif').click();
-    await expect(loginForm.headerEnterYourWifKey).toBeHidden();
+    await expect(loginForm.headerEnterYourKey).toBeHidden();
     await expect(loginForm.otherSignInOptionsDescription).toBeVisible();
   });
 

@@ -308,7 +308,7 @@ const SafeStorageKeyUpdate = forwardRef<SafeStorageKeyUpdateRef, SafeStorageKeyU
             </div>
             {registeredUser && (
               <div className="text-xs text-muted-foreground">
-                {t('login_form.signin_safe_storage.add_key_info')}
+                {t(`login_form.signin_safe_storage.add_key_info_${selectedKeyType}`)}
               </div>
             )}
             {error && <div className="text-sm text-destructive">{error}</div>}

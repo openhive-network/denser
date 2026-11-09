@@ -33,8 +33,7 @@ const ACTIVE_WIF = '5Jp5Ei5K5Yg8BpALHRsS1bnfsWu7oLUAUk77CinpCbHDsCTeJrR';
 /** Randomly generated, of no account. */
 const POSTING_WIF = '5JSTSDF5nUcChE6SeyWG28ktUevv1Bg6rUnmueRQw2cxyGqE4oT';
 
-const ACTIVE_KEY_PROMPT = 'This operation requires your active key for one time signing.';
-const SESSION_KEY_PROMPT = 'Enter your WIF key';
+const ACTIVE_KEY_PROMPT = 'Enter your active key';
 const DELEGATE_RC = 'Delegate RC';
 /** The transfer dialog's labels and the expected message, in each locale checked. */
 const LOCALES = [
@@ -167,9 +166,6 @@ const activeKeyPrompt = (page: Page) => page.getByRole('dialog').filter({ hasTex
 
 const storedActiveKey = (page: Page) =>
   page.evaluate((key) => window.localStorage.getItem(key), `wif.${STUB_ACCOUNT}@active`);
-
-/** The prompt for the key the session signed in with, when it is not stored */
-const sessionKeyPrompt = (page: Page) => page.getByRole('dialog').filter({ hasText: SESSION_KEY_PROMPT });
 
 /** Every WIF key stored for the account */
 const storedWifKeys = (page: Page) =>
@@ -354,7 +350,8 @@ test.describe('A posting-key session on the wallet', () => {
     await page.goto(ownTransfersPage);
     await submitTransfer(page, EN_LABELS);
 
-    const prompt = sessionKeyPrompt(page);
+    // The prompt for the key the session signed in with, not stored: the active key here
+    const prompt = activeKeyPrompt(page);
     await expect(prompt).toBeVisible({ timeout: HYDRATION_TIMEOUT });
     await signOutUnheard(page);
     await prompt.getByTestId('posting-private-key-input').fill(ACTIVE_WIF);

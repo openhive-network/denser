@@ -93,6 +93,11 @@
         "active": "Меню аккаунта {{username}}, активный ключ",
         "posting_and_active": "Меню аккаунта {{username}}, ключи публикации и активный"
       },
+      "account_menu_key_locked": {
+        "posting": "Меню аккаунта {{username}}, ключ публикации заблокирован",
+        "active": "Меню аккаунта {{username}}, активный ключ заблокирован",
+        "posting_and_active": "Меню аккаунта {{username}}, ключи публикации и активный заблокированы"
+      },
       "account_menu_signer": "Меню аккаунта {{username}}, {{method}}",
       "wallet": "Кошелёк",
       "blog": "Блог",

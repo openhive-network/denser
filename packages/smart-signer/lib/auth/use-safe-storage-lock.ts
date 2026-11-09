@@ -45,7 +45,9 @@ export function useSafeStorageLockNotice(user: User): void {
     if (last?.username !== user.username || last.state !== 'unlocked' || state !== 'locked') return;
     toast({
       title: t('session_time.locked'),
-      description: t('session_time.locked_notice')
+      description: t('session_time.locked_notice'),
+      // Locking happens while the user is away: a timed toast would be gone when they return
+      duration: Infinity
     });
   }, [state, t, user.username]);
 }

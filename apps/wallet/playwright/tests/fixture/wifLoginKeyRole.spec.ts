@@ -70,13 +70,13 @@ test.describe('WIF sign-in with a key of the wrong role', () => {
     await expect(loginForm.signInWithWifButton).toBeEnabled();
     await loginForm.signInWithWifButton.click();
 
-    await expect(loginForm.headerEnterYourWifKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await expect(loginForm.headerEnterYourKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
     await loginForm.storeKeyCheckbox.check();
     await loginForm.postingPrivateKeyInput.fill(POSTING_WIF);
     await loginForm.postingPrivateKeySubmitButton.click();
 
     await expect(loginForm.passwordErrorMessageEnterYourWifKey).toHaveText(ACTIVE_KEY_ERROR);
-    await expect(loginForm.headerEnterYourWifKey).toBeVisible();
+    await expect(loginForm.headerEnterYourKey).toBeVisible();
     await expect(loginForm.postingPrivateKeyInput).toHaveValue('');
     await expect(loginForm.storeKeyCheckbox).toBeChecked();
     await expect(loginForm.otherSignInOptionsUsernameInput).toHaveValue(STUB_ACCOUNT);
@@ -100,13 +100,13 @@ test.describe('WIF sign-in with a key of the wrong role', () => {
     await expect(loginForm.signInWithWifButton).toBeEnabled();
     await loginForm.signInWithWifButton.click();
 
-    await expect(loginForm.headerEnterYourWifKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
+    await expect(loginForm.headerEnterYourKey).toBeVisible({ timeout: HYDRATION_TIMEOUT });
     // The sign-in step spins until the sign-in settled, the error, if any, already shown
     const signInSpinner = loginForm.loginDialog.locator('.animate-spin');
     await expect(signInSpinner).toBeVisible();
     await loginForm.passwordToUnlockKeyCancelButton.click();
 
-    await expect(loginForm.headerEnterYourWifKey).toBeHidden();
+    await expect(loginForm.headerEnterYourKey).toBeHidden();
     await expect(signInSpinner).toHaveCount(0);
     await expect(loginForm.otherSignInOptionsUsernameInput).toHaveValue(STUB_ACCOUNT);
     // Counted at once: a retried count would wait out the toast's own dismissal

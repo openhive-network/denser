@@ -93,6 +93,11 @@
         "active": "{{username}} 的账户菜单，活动密钥",
         "posting_and_active": "{{username}} 的账户菜单，发帖密钥和活动密钥"
       },
+      "account_menu_key_locked": {
+        "posting": "{{username}} 的账户菜单，发帖密钥已锁定",
+        "active": "{{username}} 的账户菜单，活动密钥已锁定",
+        "posting_and_active": "{{username}} 的账户菜单，发帖密钥和活动密钥已锁定"
+      },
       "account_menu_signer": "{{username}} 的账户菜单，{{method}}",
       "wallet": "钱包",
       "blog": "博客",
